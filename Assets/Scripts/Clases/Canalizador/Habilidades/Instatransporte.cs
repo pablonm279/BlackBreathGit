@@ -4,7 +4,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
-using UnityEditor;
 
 public class Instatransporte : Habilidad
 {

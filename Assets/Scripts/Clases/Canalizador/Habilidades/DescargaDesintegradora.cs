@@ -305,7 +305,7 @@ private void ObtenerObjetivos()
         }
         else
         {
-           if(c.Presente.GetComponent<Unidad>() == null && c.Presente.GetComponent<Obstaculo>())
+           if(c.Presente.GetComponent<Unidad>() == null && c.Presente.GetComponent<Obstaculo>() == null)
            {
             continue;
            }
@@ -343,3 +343,4 @@ private void ObtenerObjetivos()
 
     
 }
+

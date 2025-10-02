@@ -2018,7 +2018,7 @@ public class CampaignManager : MonoBehaviour
     pers1.iResDivino = 0;
 
 
- 
+    pers1.AddComponent<DescargaDesintegradora>(); pers1.GetComponent<DescargaDesintegradora>().NIVEL = 1;
 
     SortearRasgos(pers1); //Método vacío!!
 

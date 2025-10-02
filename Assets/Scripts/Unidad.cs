@@ -9,7 +9,6 @@ using TMPro;
 using System.Threading.Tasks;
 using System.Transactions;
 using UnityEngine.Analytics;
-using UnityEditor;
 using System.Linq;
 
 public class Unidad : MonoBehaviour

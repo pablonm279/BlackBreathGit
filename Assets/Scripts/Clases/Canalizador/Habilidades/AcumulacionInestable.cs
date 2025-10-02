@@ -4,7 +4,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
-using UnityEditor;
 
 public class AcumulacionInestable : Habilidad
 {
@@ -123,11 +122,11 @@ public class AcumulacionInestable : Habilidad
   }
 
    
-    public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
+    public override Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
     {
-        // El log de uso ahora está centralizado en Habilidad.Resolver
-        base.Resolver(Objetivos);
+        return base.Resolver(Objetivos, cas);
     }
+
 
 
 
@@ -247,3 +246,4 @@ public class AcumulacionInestable : Habilidad
     }
  
 }
+
