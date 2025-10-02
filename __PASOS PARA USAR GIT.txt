@@ -1,0 +1,56 @@
+=========================
+Chuleta Git - Proyecto Unity
+=========================
+
+📌 Flujo típico de trabajo (consola)
+
+1. Abrir consola en la carpeta del proyecto
+   - En el explorador → clic derecho en la carpeta raíz (donde están Assets/)
+   - Seleccionar "Open Git Bash here"
+
+2. Traer cambios del remoto (por si alguien más trabajó)
+   git pull
+
+3. Trabajar en Unity normalmente
+
+4. Preparar los cambios para commit
+   git add .
+
+5. Crear el commit con descripción
+   git commit -m "mensaje corto y claro de lo que hiciste"
+
+   Ejemplos:
+   git commit -m "feat: agregada habilidad de la Purificadora"
+   git commit -m "fix: corregido bug en IAUnidad"
+   git commit -m "chore: actualización de .gitignore"
+
+6. Subir cambios a GitHub
+   git push
+
+-------------------------
+📌 Comandos útiles extra
+
+- Ver el estado actual
+  git status
+
+- Ver las ramas existentes
+  git branch
+
+- Crear y cambiar a una nueva rama
+  git checkout -b feat/nombre-rama
+
+- Cambiar de rama
+  git checkout main
+
+- Traer cambios y mezclarlos automáticamente
+  git pull
+
+- Subir cambios al remoto
+  git push
+
+-------------------------
+💡 Tips
+
+- Siempre hacé "git pull" antes de empezar a trabajar.
+- Usá mensajes de commit claros y cortos.
+- Para features grandes, trabajá en una rama aparte y luego mergeá a main.
