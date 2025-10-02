@@ -1,0 +1,289 @@
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\AlientoNegroWipeController.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\DesapareceBloqueoCargar.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\EdgePanCameraX.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\FakeGroundShadow.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\FondoMovimiento.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\LogDeCampania.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\LookAtCamera.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\MapDecorator.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\MenuController.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\MenuNodoPersonaje.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\MusicManager.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\RandomizeScaleAnchorBottom.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\SunController.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\SunRaysBillboard.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\TooltipBatalla.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\TooltipItems.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\TooltipNodos.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\VFXmanejohumo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Editor\SunControllerEditor.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\obj\Debug\net10.0\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ALIADOS\Aliado - Desertor 1\GolpeDesertor.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ALIADOS\Aliado - Desertor 2\AtaqueArcoDesertor.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ALIADOS\Aliado - Manifestaci¢n Arcana\GolpeManifestacion.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ALIADOS\Aliado - Manifestaci¢n Arcana\Manifestacion_Descargaarcana.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ALIADOS\Aliado - Miliciano 1\GolpeMiliciano1.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ALIADOS\Aliado - Miliciano 2\BallestaMiliciano.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladr¢n\EnemigoUnidadLadron.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladr¢n\EspadaCortaLadron.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladr¢n\LadronEnvenenarArma.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\BANDIDOS\PerroAdiestrado\IAMordidaPerroAdiestrado.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\BANDIDOS\Rufi n con Ballesta\IABallestaRufian.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\BANDIDOS\Rufi n con Ballesta\IAEmpujonRufian.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\BANDIDOS\Rufi n con Mazo\EnemigoUnidadRufianMazo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\BANDIDOS\Rufi n con Mazo\IAGolpeMazoRufian.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\CORROMPIDOS\Alima¤a Corrompida\IAAlimaniaAcido.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\CORROMPIDOS\Alima¤a Corrompida\IAAlimaniaProliferar.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\CORROMPIDOS\Devorador Corrompido\IADevorarSangre.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\CORROMPIDOS\Devorador Corrompido\IAGarraDevorador.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\CORROMPIDOS\Guerrero Corrompido\IAGarraGuerreroCorrompido.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAChirridoVagranilo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAMordidaVagranilo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\VagraniloMayor\IAChirridoMayor.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\VagraniloMayor\IAMordidaVagraniloMayor.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\Arbol de los Lamentos\AtaqueVaina.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\Arbol de los Lamentos\CrecimientoEspinoso.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\Arbol de los Lamentos\Lamentodelbosque.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\Arbol de los Lamentos\EnredaderaEspinosa\TrampaEnredaderaEspinosa.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\Arbol de los Lamentos\Raiz\AtaqueRaiz.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\CariciadelBosque.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\Enredar.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\RafagaEspinas.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\GolpeEspectroBosque.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\Perdicion.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\Fuego Fatuo\GolpeFuegoFatuo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\LoboAlfaEspectral\AullidoDeLaManada.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\LoboEspectral\IAGarraEspectral.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\LoboEspectral\IAMordiscoArdiente.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\LoboEspectral\ReaccionMuerteLoboEspectral.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\TreantEspectral\GolpeEnredadera.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\_OBJETOSDeBatalla\Barricada\Barricada.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\_OBJETOSDeBatalla\NidoDefensivo\TrampaNidoDefensivo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\_OBJETOSDeBatalla\Pinchos\TrampaPinchos.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\AdministradorEscenas.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\ArrowFlight.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\BattleManager.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\btnItemEnVenta.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\btnItemInventario.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Buff.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Casilla.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\ComponentCopier.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\ContenedorPrefabs.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\ContenedorPrefabsCamp.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\EfectosDanios.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Estados.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\GrillaManager.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\IAUnidad.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\LadoManager.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\LookAtCamera.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\LookAtCameraNOX.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Obstaculo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\rotaraCamara.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\TextoFlotanteManager.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\TiradaDeDados.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\tooltip.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UIbotonesPasivas.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UnidadCanvas.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UnidadPoseController.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Actividades.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\AlientoNegroVFX.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\AtributosZona.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\BezierCurve.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\btnActividad.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\CampaignManager.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\ContenedorDeNodos.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\EventosAdmin.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\MapaManager.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\MenuBatallas.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\MenuCaravana.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\MenuDescanso.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\MenuPersonajes.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\MenuSequitos.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Nodo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\obj\Debug\net10.0\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\obj\Debug\net10.0\obj\Debug\net10.0\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Personajes\btnPersonaje.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Personajes\Personaje.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Sequitos\Sequito.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Sequitos\SequitoArtistas.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Sequitos\SequitoClerigos.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Sequitos\SequitoCronistas.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Sequitos\SequitoCuranderos.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Sequitos\SequitoDesertores.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Sequitos\SequitoEsclavos.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Sequitos\SequitoHerboristas.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Sequitos\SequitoHerreria.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Sequitos\SequitoMercaderes.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Sequitos\SequitoNobles.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campa¤a\Sequitos\SequitoRefugiados.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\ClaseAcechador.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Actividades\Actividad_AfilarArmas.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Actividades\Actividad_Coercion.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Actividades\Actividad_VigilarDesdeLasSombras.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\ArrojarAbrojos.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\Asesinar.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\AtaqueEspadaCorta.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\BombaDeHumo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\CorteIncapacitante.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\DisparoEnvenenado.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\HaciaLasSombras.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONMaestriaBallesta.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONMaestriaEspadaCorta.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONMasacre.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONSigiloso.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONSueldo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\TiroBallestaDeMano.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\Abrojos\Abrojo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\Habilidades\BombaHumo\TrampaBombaHumo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armaduras\Armadura de Cuero Reforzado\_Armadura de Cuero Reforzado Base\armaduraDeCueroReforzado.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armas\Espada Corta\Infrecuente_Espada Corta Arcana\AtaqueEspadaCortaArcana.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armas\Espada Corta\Infrecuente_Espada Corta Filonegro\AtaqueEspadaCortaFilonegro.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armas\Espada Corta\Rara_Espada Corta Consumevida\AtaqueEspadaCortaConsumevida.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armas\Espada Corta\__Espada Corta Base\armaEspadaCorta.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\ClaseCaballero.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Actividades\Actividad_MantenerArmadura.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Actividades\Actividad_RelatosDeBatalla.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Actividades\Actividad_Vigilar.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\CorteHorizontal.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\CorteVertical.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\GritoMotivador.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\HombroConHombro.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\MarcaSiguesTu.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\Partir.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\PosturaDefensiva.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\PrimerosAuxilios.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\ReaccionPosturaDefensiva.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONAcorazado.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONArmaduraLimitante.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONCorajeInquebrantable.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONDeterminacion.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONImplacable.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\Habilidades\SiguesTu.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armaduras\Coraza\_CorazaBase\armaduraCoraza.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armas\Mandoble\Infrecuente_MandobleSagrado\CorteVerticalSagrado.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armas\Mandoble\Infrecuente_MandobleSediento\CorteVerticalSediento.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armas\Mandoble\Rara_MandobleCongelado\CorteVerticalCongelado.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armas\Mandoble\_Mandobles Base\armaMandoble.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\ClaseCanalizador.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Actividades\Actividad_ConcentracionArcana.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Actividades\Actividad_CrearSimboloArcanoProteccion.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Actividades\Actividad_Telekinesis.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\AcumulacionInestable.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\AcumularEnergia.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\DescargaArcana.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\DescargaDePoder.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\DescargaDesintegradora.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\EscudoEnergetico.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\HojaDeEnergia.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\Instatransporte.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\ManifestacionArcana.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\ReaccionEscudoEnergetico.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\ReaccionSifonArcano.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\REPRESENTACIONAcumulacionProtegida.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\REPRESENTACIONExcesoDePoder.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\REPRESENTACIONSobrecarga.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\SifonArcano.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Canalizador\Habilidades\ResiduoEnerg‚tico\ResiduoEnergetico.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\ClaseExplorador.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Actividades\Actividad_CazaNocturna.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Actividades\Actividad_Exploracion.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Actividades\Actividad_PrepararFlechas.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\Acechar.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\CorteDaga.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\DisparoPotente.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\Fogata.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\ImprovisarFlechas.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\MarcaMarcarPresa.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\MarcarPresa.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\Rafaga.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONAcrobatico.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONPasoCauteloso.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONReconocimiento.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONVistaLejana.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\TiroconArco.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\Vigilancia.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\Fogata\TrampaFogata.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\Habilidades\VigilanciaTrampa\VigilanciaTrampa.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armaduras\ArmaduraDeCuero\_Armadura De Cuero Base\armaduraDeCuero.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armas\Arco Largo\Infrecuente_ArcoLargoAcido\TiroconArcoAcido.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armas\Arco Largo\Infrecuente_ArcoLargoPotente\TiroconArcoPotente.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armas\Arco Largo\Raro_ArcoLargoRalentizante\TiroconArcoRalentizante.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armas\Arco Largo\_Arco Largo Base\armaArcoLargo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\ClasePurificadora.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Actividades\Actividad_AyudarDesamparados.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Actividades\Actividad_ColaborarConLosCuranderos.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Actividades\Actividad_RitualDeLimpieza.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\CastigaraLosMalvados.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\Enmendar.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\EscudodeFe.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\GolpeBaston.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\LlamaDivina.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\PilaresDeLuz.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\ReaccionCastigarMalvados.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\REPRESENTACIONAlmaEndeble.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\REPRESENTACIONAuraSagrada.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\REPRESENTACIONEcosDivinos.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\REPRESENTACIONFervorConjunto.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\SalmoPurificador.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\EcosDivinos\EcosDivinos.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\EscudoFe\TrampaEscudoFe.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\Habilidades\PilaresDeLuz\PilarDeLuz.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\Purificadora\_ItemsExclusivos\Armas\Baculo Purificador\_Baculo Purificador Base\armaBaculoPurificador.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\_ActividadesBase\Actividad.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\_ActividadesBase\Actividad_Descansar.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\_ActividadesBase\Actividad_Entrenar.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Clases\_ActividadesBase\Actividad_Guardia.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\Consumible.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\BalsamoClaridad\Cons_BalsamoClaridad.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\BalsamoEnergizante\Cons_BalsamoEnergizante.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\BalsamoFort\Cons_BalsamoFort.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\Elixir de Resistencia al Fr¡o\Cons_ElixirResistenciaFrio.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\Elixir de Resistencia al Fuego\Cons_ElixirResistenciaFuego.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\Elixir de Resistencia al Rayo\Cons_ElixirResistenciaRayo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\Elixir de Resistencia al µcido\Cons_ElixirResistenciaAcido.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\Panacea\Cons_Panacea.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\Poci¢n Curaci¢n Menor\Cons_PocionCuracionMenor.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\Poci¢n de Curaci¢n Mayor\Cons_PocionCuracionMayor.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\Poci¢n de Curaci¢n Media\Cons_PocionCuracionMedia.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\S¡mbolo Arcano Prot\Cons_SimboloArcanoProteccion.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Equipo\Equipo.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Equipo\Item.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Equipo\Accesorios\Accesorio.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Equipo\Accesorios\anillodedestruccion.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Equipo\Accesorios\anillodeinteligencia.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Equipo\Armaduras\Armadura.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Equipo\Armaduras\ArmaduraCueroReforzadoAcechador\armaduraCueroReforzadoAcechador.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Equipo\Armaduras\ArmaduraPesadaCaballero\armaduraPesadaCaballero.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Equipo\Armas\Arma.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Equipo\Armas\ArcoDeExplorador\armaArcodeexplorador.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Equipo\Armas\BastonPurificadora\armaBastonPurificadora.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Equipo\Armas\EspadaCortaAcechador\armaEspadacortaAcechador.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Equipo\Armas\MandobleDeCaballero\armaMandobledeCaballero.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\AtaqueBasico.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\BoladeFuego.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidad.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Marca.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Reaccion.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\RetrasarTurno.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidades IA\IAArcoGoblin.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidades IA\IABolaDeFuego.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidades IA\IAHabilidad.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidades IA\IAPatada.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Trampas\Trampa.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Trampas\TrampaFuego.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Trampas\MasaContaminada\TrampaMasaContaminada.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\obj\Debug\net10.0\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Sistema\HandicapDificultad.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\AutodestruirDelay.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\BotonHabilidad.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIBarraOrdenTurno.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIBotonesConsumibles.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIBotonesHabilidades.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIContadorAP.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIEstadoCuadro.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIInfoChar.cs
+C:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UITarjetaBarraOrdenTurno.cs

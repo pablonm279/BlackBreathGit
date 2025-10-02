@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &100267512930674072
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1961727574435556647}
+  - component: {fileID: 8382119713494711311}
+  m_Layer: 0
+  m_Name: Habilidad
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1961727574435556647
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100267512930674072}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7376735116894727221}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8382119713494711311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100267512930674072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e7bb4f6fa6401047b45dfa6a4ba288d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nombre: 
+  costoAP: 0
+  vfxImpacto: {fileID: 0}
+  vfxCasteo: {fileID: 0}
+  requiereRecurso: 0
+  costoPM: 0
+  cooldownMax: 0
+  cooldownActual: 0
+  Usuario: {fileID: 0}
+  scEstaUnidad: {fileID: 0}
+  NIVEL: -1
+  IDenClase: 0
+  agregaDesdeArmaUI: {fileID: 0}
+  txtDescripcion: 
+  imHab: {fileID: 0}
+  lCasillasafectadas: []
+  esZonal: 0
+  targetEspecial: 0
+  enArea: 0
+  esforzable: 0
+  esCargable: 0
+  esMelee: 0
+  bAfectaObstaculos: 0
+  poneTrampas: 0
+  poneObstaculo: 0
+  esHostil: 0
+  esDiscreta: 0
+  seEsforzaria: 0
+  VFXenObjetivo: {fileID: 0}
+  bonusAtaque: 0
+  XdDanio: 0
+  daniodX: 0
+  criticoRangoHab: 0
+  tipoDanio: 0
+--- !u!1 &2341824744167478734
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7376735116894727221}
+  - component: {fileID: 765741505553530280}
+  m_Layer: 0
+  m_Name: armaMandoble +2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7376735116894727221
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2341824744167478734}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1279.393, y: 433.43793, z: 101.60617}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1961727574435556647}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &765741505553530280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2341824744167478734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d73a03be1850c641afa65282c92e2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imItem: {fileID: 21300000, guid: 2beef4b94d00e6b459a880d05c93966b, type: 3}
+  sNombreItem: Mandoble +2
+  IDClasesQuePuedenUsarEsteItem: 01000000
+  iPrecio: 255
+  itemDescrpicion: "<i>Los Caballeros siempre andan equipados con un mandoble muy
+    pesado y poderoso. Junto con su armadura pesada, hacen el n\xFAcleo del equipo
+    de estos valientes guerreros.</i>\n\n<b>\\n\\nOtorga: Corte Vertical \n\nMejora
+    +2: +2 Ataque +10% Da\xF1o</b></b>"
+  iRareza: 2
+  nivelMejora: 2
+  habilidadAtaque: {fileID: 8382119713494711311}
+  habilidadExtra1: {fileID: 0}
+  habilidadExtra2: {fileID: 0}
+  requisitoFue: 3
+  requisitoAgi: 0
+  requisitoPoder: 0
+  buffFuerza: 0
+  buffAgi: 0
+  buffPoder: 0
+  buffIniciativa: 0
+  buffApMax: 0
+  buffValMax: 0
+  buffhpMax: 0
+  buffArmadura: 0
+  buffDefensa: 0
+  buffTSReflejo: 0
+  buffTSFortaleza: 0
+  buffTSMental: 0
+  buffResFuego: 0
+  buffResRayo: 0
+  buffResHielo: 0
+  buffResArcano: 0
+  buffResAcido: 0
+  buffResNecro: 0
+  buffResDivino: 0

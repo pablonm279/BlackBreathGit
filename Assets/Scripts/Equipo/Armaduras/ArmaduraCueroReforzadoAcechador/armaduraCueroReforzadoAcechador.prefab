@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &868725138070425223
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1391678300758245428}
+  - component: {fileID: -274672158167638981}
+  m_Layer: 0
+  m_Name: armaduraCueroReforzadoAcechador
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1391678300758245428
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 868725138070425223}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1279.393, y: 433.43793, z: 101.60617}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4170325817490423462}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-274672158167638981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 868725138070425223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfb190020a62c944f9add9a9ba9e0044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imItem: {fileID: 21300000, guid: 31236c6f3050689478ff98bcca45f235, type: 3}
+  sNombreItem: Armadura de Cuero Reforzado
+  iPrecio: 85
+  itemDescrpicion: Armadura de Cuero Reforzado de acechador
+  requisitoFue: 0
+  requisitoAgi: 0
+  requisitoPoder: 0
+  habilidadExtra1: {fileID: 0}
+  habilidadExtra2: {fileID: 0}
+  buffFuerza: 0
+  buffAgi: 0
+  buffPoder: 0
+  buffIniciativa: 0
+  buffApMax: 0
+  buffValMax: 0
+  buffhpMax: 0
+  buffArmadura: 0
+  buffDefensa: 0
+  buffTSReflejo: 0
+  buffTSFortaleza: 0
+  buffTSMental: 0
+  buffResFuego: 0
+  buffResRayo: 0
+  buffResHielo: 0
+  buffResArcano: 0
+  buffResAcido: 0
+  buffResNecro: 0
+  buffResDivino: 0
+--- !u!1 &8854738861334537308
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4170325817490423462}
+  m_Layer: 0
+  m_Name: Habilidad
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4170325817490423462
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8854738861334537308}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1391678300758245428}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

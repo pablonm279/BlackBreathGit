@@ -1,0 +1,25 @@
+# Unity generado
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]in/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+UserSettings/
+ 
+# Rider / VS / VSCode
+.vscode/
+.idea/
+*.csproj
+*.sln
+*.user
+*.unityproj
+
+# Cache de paquetes
+/[Pp]ackages/com.unity.package-manager*/.cache/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db

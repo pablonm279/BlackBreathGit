@@ -1,0 +1,571 @@
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+using System.Threading.Tasks;
+using System;
+
+public class Partir : Habilidad
+{
+   
+
+    [SerializeField] private GameObject VFXenObjetivo;
+    [SerializeField] private int bonusAtaque;
+    [SerializeField] private int XdDanio;
+    [SerializeField] private int daniodX;
+    [SerializeField] private int criticoRangoHab;//lo que resta al rango de crpitico del dado (mientras mayor, mas probable)
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+
+ 
+
+      public override void  Awake()
+    {
+      nombre = "Partir";
+      IDenClase = 6;
+      costoAP = 4;
+      costoPM = 1;
+      Usuario = this.gameObject;
+      scEstaUnidad = Usuario.GetComponent<Unidad>();
+      esZonal = false;
+      enArea = 0;
+      esforzable = 1;
+      esCargable = false;
+      esMelee = true;
+      esHostil = true;
+      cooldownMax = 3;
+      bAfectaObstaculos = true;
+
+      bonusAtaque = 0; 
+      XdDanio = 2;
+      daniodX = 10; //2d10 +5
+      tipoDanio = 2; //Cortante
+      criticoRangoHab = 0;
+
+       imHab = Resources.Load<Sprite>("imHab/Caballero_Partir");
+      
+      ActualizarDescripcion();
+    
+    }
+
+     public override void ActualizarDescripcion()
+    {
+      if(NIVEL<2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Partir I</b></color>\n\n"; 
+        txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza /color> - Daño: Cortante 2d10 +5 - </color>\n";
+        txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
+
+        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
+
+         if (EsEscenaCampaña())
+        {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +4 Daño</color>\n\n";
+          }
+          }
+        }
+      }
+      if(NIVEL== 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Partir II</b></color>\n\n"; 
+        txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza /color> - Daño: Cortante 2d10 +9 - </color>\n";
+        txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
+
+        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
+
+         if (EsEscenaCampaña())
+        {if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+        {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +2 Ataque</color>\n\n";
+          }
+        }
+        }
+      }
+      if(NIVEL== 3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Partir III</b></color>\n\n"; 
+        txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +2</color> - Daño: Cortante 2d10 +9 - </color>\n";
+        txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
+
+        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+             txtDescripcion += $"<color=#dfea02>-Opción A: +2 dificultad TS Mental Enemigos</color>\n";
+             txtDescripcion += $"<color=#dfea02>-Opción B: +1 Rango Crítico</color>\n";
+          }
+          }
+        }
+      }
+      if(NIVEL== 4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Partir IV a</b></color>\n\n"; 
+        txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +2</color> - Daño: Cortante 2d10 +9 - </color>\n";
+        txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 5. Aplica Aterrado.\n\n";
+
+        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>";
+      }
+      if(NIVEL== 5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Partir IV b</b></color>\n\n"; 
+        txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +2</color> - Daño: Cortante 2d10 +9 - +1 Rango Crítico.</color> \n";
+        txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
+
+        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>";
+      }
+
+
+
+    }
+
+    Casilla Origen;
+    public override void Activar()
+    {
+        Origen = Usuario.GetComponent<Unidad>().CasillaPosicion;
+        ObtenerObjetivos();
+
+      
+        BattleManager.Instance.SeleccionandoObjetivo = true;
+        BattleManager.Instance.HabilidadActiva = this;
+
+        
+    }
+    
+    
+
+    public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
+    {
+    
+     if(obj is Unidad) //Acá van los efectos a Unidades.
+     {
+       Unidad objetivo = (Unidad)obj;
+
+       float defensaObjetivo = objetivo.ObtenerdefensaActual();
+       print("Defensa: "+ defensaObjetivo);
+
+       int danioMarca = 0;
+       if(NIVEL > 2)
+       {bonusAtaque += 2;}
+       if(NIVEL == 5)
+       {criticoRangoHab += 1;}
+       float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
+       if(ChequearTieneSiguesTu(objetivo))
+       {
+         bonusAtaque += 5;
+         danioMarca = 8;
+         Destroy(objetivo.GetComponent<MarcaSiguesTu>());
+
+         if(gameObject.GetComponent<SiguesTu>().NIVEL > 1)
+         { criticoRango +=2;    }
+         if(gameObject.GetComponent<SiguesTu>().NIVEL > 2)
+         { danioMarca +=2;    }
+       }
+
+      
+
+      
+       int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarFuerza, bonusAtaque, criticoRango, objetivo, 1); // En habilidades caballero +1 a pifia, debilidad de Caballero
+       print("Resultado tirada "+resultadoTirada);
+
+
+      if (resultadoTirada == -1)
+      {//PIFIA 
+        print("Pifia");
+        objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
+        //BattleManager.Instance.TerminarTurno(); //Al ser Pifia, termina el turno.
+        scEstaUnidad.EstablecerAPActualA(0);
+      }
+      else if (resultadoTirada == 0)
+      {//FALLO
+        print("Fallo");
+        objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
+
+      }
+      else if (resultadoTirada == 1)
+      {//ROCE
+        print("Roce");
+        float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + scEstaUnidad.mod_CarFuerza + 5 + danioMarca;
+        if (NIVEL > 1) { danio += 4; }
+
+        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+
+        danio -= danio / 2; //Reduce 50% por roce
+
+        objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
+
+        VFXAplicar(objetivo.gameObject);
+
+
+      }
+      else if (resultadoTirada == 2)
+      {//GOLPE
+        print("Golpe");
+
+        float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + scEstaUnidad.mod_CarFuerza + 5 + danioMarca;
+        if (NIVEL > 1) { danio += 4; }
+
+        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+
+        objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
+
+        VFXAplicar(objetivo.gameObject);
+
+
+      }
+      else if (resultadoTirada == 3)
+      {//CRITICO
+        print("Critico");
+
+        float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + scEstaUnidad.mod_CarFuerza + 5 + danioMarca;
+        if (NIVEL > 1) { danio += 4; }
+
+        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+
+        objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
+        
+                 VFXAplicar(objetivo.gameObject);
+
+      }
+     
+       
+       //Chequea si la unidad muere
+      if(objetivo.HP_actual < 2)
+      {
+        PARTIREfectoAEnemigosPorMuerte(objetivo);
+      }
+
+
+
+
+
+
+
+        objetivo.AplicarDebuffPorAtaquesreiterados(1);
+       }   
+     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
+     {
+       Obstaculo objetivo = (Obstaculo)obj;
+       //---
+
+
+       float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+scEstaUnidad.mod_CarFuerza;
+       danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
+       
+       objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
+     }
+    }
+    bool ChequearTieneSiguesTu(Unidad obj)
+    { 
+      if(obj.GetComponent<MarcaSiguesTu>() != null)
+      {
+        if(obj.GetComponent<MarcaSiguesTu>().quienMarco == scEstaUnidad)
+        {
+          return true;
+        }
+      
+      }
+      return false;
+    }
+    void VFXAplicar(GameObject objetivo)
+    {
+         VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_Partir");
+
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
+
+    //Provisorio
+    private List<Unidad> lObjetivosPosibles = new List<Unidad>();
+    private List<Obstaculo> lObstaculosPosibles = new List<Obstaculo>();
+
+    private void ObtenerObjetivos()
+    {
+      //Cualquier objetivo en 1 de alcance 3 de ancho
+      lObjetivosPosibles.Clear();
+      
+      //Melee - Si está en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      int rangoPlus = 0;
+   
+      if(esMelee) 
+      {
+        if(Usuario.GetComponent<Unidad>().CasillaPosicion.posX == 3)
+        {
+           rangoPlus = AumentarRangoMelee();
+        }
+
+        if (TieneObstaculooUnidadAdelanteDeSuLado() != 0)
+        {
+          rangoPlus ++;
+        }
+      }
+      List<Casilla> lCasillasafectadas = Origen.ObtenerCasillasRango(1+rangoPlus,1);
+    
+      foreach(Casilla c in lCasillasafectadas)
+      {
+       
+       
+       c.ActivarCapaColorRojo();
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras también
+       {
+         if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
+       } 
+
+
+
+        if(c.Presente == null)
+        {
+            continue;
+        }
+        
+        if(!bAfectaObstaculos) //Si no afecta obstaculos se descarta la casilla si no hay unidad, si afecta obstaculo se descarta si tampoco hay obstaculo
+        {
+           if(c.Presente.GetComponent<Unidad>() == null)
+           {
+            continue;
+           }
+
+           if(c.Presente.GetComponent<Unidad>() != null)
+           {
+             lObjetivosPosibles.Add(c.Presente.GetComponent<Unidad>());;
+           }
+
+        }
+        else
+        {
+           if(c.Presente.GetComponent<Unidad>() == null && c.Presente.GetComponent<Obstaculo>() == null)
+           {
+            continue;
+           }
+
+           if(c.Presente.GetComponent<Unidad>() != null)
+           {
+             lObjetivosPosibles.Add(c.Presente.GetComponent<Unidad>());;
+           }
+
+           if(c.Presente.GetComponent<Obstaculo>() != null)
+           {
+             lObstaculosPosibles.Add(c.Presente.GetComponent<Obstaculo>());;
+           }
+
+        }
+
+      }
+    
+
+      BattleManager.Instance.lUnidadesPosiblesHabilidadActiva.Clear();
+      BattleManager.Instance.lUnidadesPosiblesHabilidadActiva = new List<Unidad>(lObjetivosPosibles);
+
+      BattleManager.Instance.lObstaculosPosiblesHabilidadActiva.Clear();
+      BattleManager.Instance.lObstaculosPosiblesHabilidadActiva = new List<Obstaculo>(lObstaculosPosibles);
+       
+    
+        
+
+
+
+      
+         
+    }
+    
+       void VFXAplicarEnemigo(GameObject objetivo)
+  {
+    VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_GritoMotivadorEfectoEnemigo");
+
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200; 
+            //---
+  }
+    private int AumentarRangoMelee() //aumenta el rango melee si no hay nada en frente ni filas adyacentes al origen de la habilidad
+  {
+
+    LadoManager scLado = Origen.ladoOpuesto.GetComponent<LadoManager>();
+
+    int posYorigen = scEstaUnidad.CasillaPosicion.posY;
+
+
+    List<Casilla> casillasAdyacentesyFrenteColumna1 = new List<Casilla>();
+    List<Casilla> casillasAdyacentesyFrenteColumna2 = new List<Casilla>();
+
+    foreach (Transform child in Origen.ladoOpuesto.transform) //Itera en cada casilla del lado opuesto
+    {
+      Casilla cas = child.GetComponent<Casilla>();
+
+      if (cas.posX == 3) //Columna 1 (frente)
+      {
+        int calculo = Math.Abs(cas.posY - posYorigen); //distancia en Y al origen para calcular adyacentes o frontal
+
+        if (calculo < 2)
+        {
+          casillasAdyacentesyFrenteColumna1.Add(cas);
+        }
+      }
+
+      if (cas.posX == 2) //Columna 2 (medio)
+      {
+        int calculo = Math.Abs(cas.posY - posYorigen); //distancia en Y al origen para calcular adyacentes o frontal
+
+        if (calculo < 2)
+        {
+          casillasAdyacentesyFrenteColumna2.Add(cas);
+        }
+      }
+
+
+    }
+
+    //Se fija si las 3 casillas de la columna 1 están vacias
+    foreach (Casilla cas in casillasAdyacentesyFrenteColumna1)
+    {
+      if (cas.bTieneUnidadoObstaculo()) //si alguna de las 3 tiene algo, no aumenta el rango melee
+      {
+        return 0;
+      }
+    }
+    foreach (Casilla casOsc in casillasAdyacentesyFrenteColumna1) //si ninguna de las tres tiene algo, las oscurece
+    { casOsc.ActivarCapaColorNegro(); }
+
+
+
+
+
+    foreach (Casilla cas in casillasAdyacentesyFrenteColumna2)
+    {
+      if (cas.bTieneUnidadoObstaculo()) //y si alguna de las 3 tiene algo, aumenta solo en 1 
+      {
+        return 1;
+      }
+    }
+    foreach (Casilla casOsc in casillasAdyacentesyFrenteColumna2) //si ninguna de las tres tiene algo, las oscurece
+    { casOsc.ActivarCapaColorNegro(); }
+
+
+
+
+    return 2; //si ninguna de las 2 columnas tiene algo, aumenta al maximo
+  }
+
+  int TieneObstaculooUnidadAdelanteDeSuLado()
+    {
+      int orX = Origen.posX;
+      int orY = Origen.posY;
+      GameObject lado = Origen.ladoGO;
+
+      
+      if(orX != 2) //Solamente util en la columna del medio
+      {
+         return 0;
+      }
+ 
+       Casilla casillaRevisar = null;
+       foreach(Transform child in lado.transform)
+       {
+         Casilla cas = child.GetComponent<Casilla>();
+         if((cas.posY == orY)&&(cas.posX == orX+1))
+         {
+          casillaRevisar = cas;
+         }
+
+       }
+
+      if(casillaRevisar.Presente != null)
+      {
+        if(casillaRevisar.Presente.GetComponent<Unidad>() != null)
+        {
+          return 1; //Devuelve 1 si es unidad
+        }
+
+        if(casillaRevisar.Presente.GetComponent<Obstaculo>() != null)
+        {
+           if(casillaRevisar.Presente.GetComponent<Obstaculo>().bPermiteAtacarDetras)
+          {
+            return 2; //Devuelve 2 si es obstaculo
+          }
+          else{ return 0;}
+        }
+      }
+      return 0; //Devuelve 0 si no hay nada 
+    }
+
+
+
+
+    void PARTIREfectoAEnemigosPorMuerte(Unidad Objetivo)
+    {
+       
+        List<Unidad> enemigos = new List<Unidad>();
+
+        foreach(Casilla cas in Objetivo.CasillaPosicion.ObtenerCasillasMismoLado())
+        {
+           if(cas.Presente != null)
+           {
+             if(cas.Presente.GetComponent<Unidad>() != null)
+             {
+                Unidad uni = cas.Presente.GetComponent<Unidad>();
+                int nDif = 3;
+                if(NIVEL == 4){nDif += 2;}
+
+                if(uni.TiradaSalvacion(uni.mod_TSMental, nDif))
+                {
+                    /////////////////////////////////////////////
+                    //BUFF ---- Así se aplica un buff/debuff
+                    Buff buff = new Buff();
+                    buff.buffNombre = "Aterrorizado";
+                    buff.boolfDebufftBuff = false;
+                    buff.DuracionBuffRondas = 2;
+                    buff.cantAtaque -= 2;
+                    buff.cantAPMax -= 1;
+                    buff.cantTsMental -= 2;
+                    buff.AplicarBuff(uni);
+                    // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+                    Buff buffComponent = ComponentCopier.CopyComponent(buff, uni.gameObject);
+                    
+                    VFXAplicarEnemigo(uni.gameObject);
+                 
+                }
+                else
+                {
+                    uni.GenerarTextoFlotante("Resiste Aterrorizado", Color.cyan);
+                }
+
+
+             }
+
+
+
+           }         
+
+
+
+        }
+
+
+
+
+    }
+}
+

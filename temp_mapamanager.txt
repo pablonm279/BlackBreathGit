@@ -1,0 +1,48 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MapaManager : MonoBehaviour
+{
+    
+    public ContenedorDeNodos scContenedordeNodos;
+
+    public Nodo nodoActual;
+    public GameObject goCaravana;
+
+    void Start()
+    {
+        GenerarNodos();
+    }
+
+    
+  
+
+    public void GenerarNodos()
+    {
+
+       Nodo origen = scContenedordeNodos.ObtenerNodoSegunXY(0,0);
+       origen.DeterminarConexiones();
+       nodoActual = origen;
+       DesactivarNodosSinUsar();
+    
+       origen.PosicionarObjetoEnNodo(goCaravana);
+    }
+
+    void DesactivarNodosSinUsar()
+    {
+       
+        for (int i = scContenedordeNodos.listTodosNodos.Count - 1; i >= 0; i--)
+        {   
+            Nodo n = scContenedordeNodos.listTodosNodos[i];
+            if (!n.yatiroConexiones && n.posXNodo != 11)
+            {   
+                n.gameObject.SetActive(false);
+                scContenedordeNodos.listTodosNodos.RemoveAt(i);
+            }
+        }
+
+    }
+
+}
+

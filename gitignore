@@ -1,0 +1,59 @@
+# ---- Unity typical ----
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+MemoryCaptures/
+Assets/AssetStoreTools*
+# Packages auto-generated
+Packages/com.unity.collab-proxy/
+# Burst cache
+[Bb]urstCache/
+# Crash Reports
+sysinfo.txt
+# Rider / VS / VSCode
+.vs/
+.vscode/
+*.csproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+# Unity
+*.unitypackage
+# Auto-generated Lighting/Data
+Assets/**/Lightmap-*
+Assets/**/LightingData.asset
+Assets/**/ReflectionProbe-*
+# Addressables / Streaming
+Assets/AddressableAssetsData/*
+!Assets/AddressableAssetsData/*.bin*
+# Logs
+*.log
+# Mac/Windows system files
+.DS_Store
+Thumbs.db
+# JetBrains
+.idea/
+# Crashlytics
+Assets/StreamingAssets/crashlytics-build.properties
+# Cache
+*[Cc]ache/
+
+# ---- Keep folders (empty) ----
+# Use .gitkeep files to preserve empty directories
+
+# ---- Optional: ignore large exports ----
+*.zip
+*.7z
+*.rar
