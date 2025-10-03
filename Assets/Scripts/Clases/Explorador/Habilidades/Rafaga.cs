@@ -162,6 +162,16 @@ public class Rafaga : Habilidad
     
       
 
+    protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        return Task.CompletedTask;
+    }
+
+    protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        return Task.CompletedTask;
+    }
+
     public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
       Unidad objetivo = (Unidad)obj;
@@ -213,12 +223,19 @@ public class Rafaga : Habilidad
              
        int danioMarca = 0;
        
-       Usuario.GetComponent<ClaseExplorador>().Cantidad_flechas--; 
-       CrearProyectil(objetivo);
-       scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
+      Usuario.GetComponent<ClaseExplorador>().Cantidad_flechas--;
+      Task impacto = CrearProyectil(objetivo);
+      scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
 
-       await Task.Delay(1300);
-       float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
+      if (impacto != null)
+      {
+        await impacto;
+      }
+      else
+      {
+        await Task.Delay(200);
+      }
+      float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
        //Chequear si tiene Marcar Presa
        if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para próximas habilidades de daño del explorador
@@ -307,32 +324,50 @@ public class Rafaga : Habilidad
 
     }
     
-    async Task CrearProyectil(object Objetivo)
-   {
-      await Task.Delay(200);
-      GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
-      GameObject Proyectil = Instantiate(flechaPrefab);
-      Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-      Proyectil.GetComponent<ArrowFlight>().parabola = 0.7f;
-      Proyectil.GetComponent<ArrowFlight>().velocidad = 4.9f;
-    
-    
-      if(Objetivo != null)
-      {
-      
-        if(Objetivo is Unidad)
+    private Task CrearProyectil(object objetivo)
+    {
+        if (objetivo == null)
         {
-          Unidad obj = (Unidad)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
+            return Task.CompletedTask;
         }
-        else if(Objetivo is Obstaculo)
+
+        return LanzarProyectilAsync(objetivo);
+    }
+
+    private async Task LanzarProyectilAsync(object objetivo)
+    {
+        await Task.Delay(200);
+
+        GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
+        if (flechaPrefab == null)
         {
-          Obstaculo obj = (Obstaculo)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
+            return;
         }
-      }
-     
-   }
+
+        GameObject proyectil = Instantiate(flechaPrefab);
+        ArrowFlight flight = proyectil.GetComponent<ArrowFlight>();
+
+        Transform destino = null;
+        if (objetivo is Unidad unidadObjetivo)
+        {
+            destino = unidadObjetivo.transform;
+        }
+        else if (objetivo is Obstaculo obstaculoObjetivo)
+        {
+            destino = obstaculoObjetivo.transform;
+        }
+
+        if (flight != null && destino != null)
+        {
+            flight.Configure(transform, destino, 0.7f, 4.9f);
+            await flight.EsperarImpactoAsync();
+        }
+        else
+        {
+            await Task.Delay(150);
+        }
+    }
+
     void VFXAplicar(GameObject objetivo)
     {
        //GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation); 

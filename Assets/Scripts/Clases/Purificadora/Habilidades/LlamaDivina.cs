@@ -163,20 +163,43 @@ public class LlamaDivina : Habilidad
     
       
 
-    public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
+    protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        if (objetivos == null || objetivos.Count == 0)
+        {
+            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
+        }
+
+        List<Task> impactos = new List<Task>();
+        foreach (var objetivo in objetivos)
+        {
+            var impacto = CrearProyectil(objetivo);
+            if (impacto != null)
+            {
+                impactos.Add(impacto);
+            }
+        }
+
+        if (impactos.Count == 0)
+        {
+            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
+        }
+
+        return Task.WhenAll(impactos);
+    }
+
+    protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        return Task.CompletedTask;
+    }
+
+    public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     { 
     
      if(obj is Unidad) //Acá van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
-       float defensaObjetivo = objetivo.ObtenerdefensaActual();
-      
-        
-      
-       CrearProyectil(objetivo);
-
-       await Task.Delay(1300);
-       float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
+       float defensaObjetivo = objetivo.ObtenerdefensaActual();float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
       
        int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarPoder, bonusAtaque, criticoRango, objetivo, 0); 
@@ -271,33 +294,50 @@ public class LlamaDivina : Habilidad
         }
     }
     
-    async Task CrearProyectil(object Objetivo)
-   {
-      await Task.Delay(200);
-      GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.LlamaDivina;
-      GameObject Proyectil = Instantiate(flechaPrefab);
-      Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-      Proyectil.GetComponent<ArrowFlight>().parabola = 0.22f;
-      Proyectil.GetComponent<ArrowFlight>().velocidad = 5.7f;
-    
-    
-      if(Objetivo != null)
-      {
-      
-        if(Objetivo is Unidad)
-        { 
-          Unidad obj = (Unidad)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-        }
-        else if(Objetivo is Obstaculo)
+    private Task CrearProyectil(object objetivo)
+    {
+        if (objetivo == null)
         {
-          Obstaculo obj = (Obstaculo)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
+            return Task.CompletedTask;
         }
-      }
-     
-   }
 
+        return LanzarProyectilAsync(objetivo);
+    }
+
+    private async Task LanzarProyectilAsync(object objetivo)
+    {
+        await Task.Delay(200);
+
+        GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.LlamaDivina;
+        if (flechaPrefab == null)
+        {
+            await Task.Delay(200);
+            return;
+        }
+
+        GameObject proyectil = Instantiate(flechaPrefab);
+        ArrowFlight flight = proyectil.GetComponent<ArrowFlight>();
+
+        Transform destino = null;
+        if (objetivo is Unidad unidad)
+        {
+            destino = unidad.transform;
+        }
+        else if (objetivo is Obstaculo obstaculo)
+        {
+            destino = obstaculo.transform;
+        }
+
+        if (flight != null && destino != null)
+        {
+            flight.Configure(transform, destino, 0.22f, 5.7f);
+            await flight.EsperarImpactoAsync();
+        }
+        else
+        {
+            await Task.Delay(200);
+        }
+    }
     void EfectoAdicional(Unidad objetivo)
     { 
 
@@ -408,3 +448,4 @@ public class LlamaDivina : Habilidad
 
    
 }
+

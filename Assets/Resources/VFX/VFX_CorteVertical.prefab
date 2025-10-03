@@ -36,7 +36,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -2.687}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.26, y: -5.33}
+  m_AnchoredPosition: {x: -1.26, y: -4.3}
   m_SizeDelta: {x: 7.594, y: 18.043}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &112651379559731483
@@ -141,10 +141,10 @@ MonoBehaviour:
   extraShake: 0
   shakeAmplitude: 0.35
   shakeFrequency: 1.1
-  playSfx: 0
-  sfxClip: {fileID: 0}
-  sfxVolume: 0.8
-  sfxDelay: 0.05
+  playSfx: 1
+  sfxClip: {fileID: 8300000, guid: 1067c6a5ec536804989e77f771bbba29, type: 3}
+  sfxVolume: 1
+  sfxDelay: 0
   onPlay:
     m_PersistentCalls:
       m_Calls: []
@@ -525,4 +525,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a31d3ac91f917984b871f7571057cb78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delayautodestruir: 0.45
+  delayautodestruir: 0.6

@@ -132,9 +132,9 @@ public class DisparoPotente : Habilidad
     }
 
     Casilla Origen;
+    private Task impactoFilaPendiente;
     public override void Activar()
-    { 
-        seTiroFlechaVFX = false;
+    {
         Origen = Usuario.GetComponent<Unidad>().CasillaPosicion;
         ObtenerObjetivos();
         
@@ -147,7 +147,38 @@ public class DisparoPotente : Habilidad
     }
     
     
-    bool seTiroFlechaVFX = false;
+    protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        if (objetivos == null || objetivos.Count == 0)
+        {
+            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
+        }
+
+        Casilla referencia = null;
+        if (objetivos[0] is Unidad unidadObjetivo)
+        {
+            referencia = unidadObjetivo.CasillaPosicion;
+        }
+
+        if (referencia == null)
+        {
+            referencia = casillaOrigenTrampas;
+        }
+
+        impactoFilaPendiente = CrearProyectilFila(referencia);
+        if (impactoFilaPendiente == null)
+        {
+            return Task.Delay(300);
+        }
+
+        return impactoFilaPendiente;
+    }
+
+    protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        return Task.CompletedTask;
+    }
+
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
@@ -155,13 +186,6 @@ public class DisparoPotente : Habilidad
      { 
       
         Unidad objetivo = (Unidad)obj;
-       if(seTiroFlechaVFX == false)
-       {
-         seTiroFlechaVFX = true;
-         // Dispara un proyectil que recorra toda la fila (3 casillas) y se pierda más allá
-         // usando la casilla clickeada como referencia de dirección.
-         CrearProyectilFila(objetivo.CasillaPosicion);
-       }
        
        int danioMarca = 0;
 
@@ -256,69 +280,139 @@ public class DisparoPotente : Habilidad
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
      }
     }
-  
-    async Task CrearProyectil(object Objetivo)
-   {
-      await Task.Delay(80);
-      GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
-      GameObject Proyectil = Instantiate(flechaPrefab);
-      Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-      Proyectil.GetComponent<ArrowFlight>().parabola = 0.12f;
-      Proyectil.GetComponent<ArrowFlight>().velocidad = 9.2f;
-    
-    
-      if(Objetivo != null)
-      {
-      
-        if(Objetivo is Unidad)
-        { 
-          Unidad obj = (Unidad)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-        }
-        else if(Objetivo is Obstaculo)
-        {
-          Obstaculo obj = (Obstaculo)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-        }
-         else if(Objetivo is Casilla)
-        {
-         Casilla obj = (Casilla)Objetivo;
-         Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-        }
-     }
-     
-   }
 
-    async Task CrearProyectilFila(Casilla casillaClick)
+    private Task CrearProyectil(object objetivo)
     {
-      await Task.Delay(10);
-      // Spawn simple: flecha nace detrás de X=3 de la fila enemiga (misma Y) y no se mueve aquí
-      int filaY = (casillaClick != null) ? casillaClick.posY : Origen.posY;
-      List<Casilla> filaFull = new List<Casilla>();
-      foreach (var c in BattleManager.Instance.lCasillasTotal)
-      {
-        if (c.lado != Origen.lado && c.posY == filaY)
+        if (objetivo == null)
         {
-          filaFull.Add(c);
+            return Task.CompletedTask;
         }
-      }
-      if (filaFull.Count == 0) { return; }
-      Casilla startCas = null;
-      foreach (var c in filaFull) { if (c.posX == 3) { startCas = c; break; } }
-      if (startCas == null)
-      {
-        foreach (var c in filaFull) { if (startCas == null || c.posX > startCas.posX) startCas = c; }
-      }
-      Casilla endCas = startCas;
-      foreach (var c in filaFull) { if (c.posX < endCas.posX) endCas = c; }
-      Vector3 dir = (endCas.transform.position - startCas.transform.position).normalized;
-      float offsetBehind = 2.2f;
-      Vector3 spawnPos = startCas.transform.position - dir * offsetBehind;
-      GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.FlechaPotente;
-      Instantiate(flechaPrefab, spawnPos, Quaternion.identity);
- 
 
-     
+        return LanzarProyectilAsync(objetivo);
+    }
+
+    private async Task LanzarProyectilAsync(object objetivo)
+    {
+        await Task.Delay(80);
+
+        GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
+        if (flechaPrefab == null)
+        {
+            return;
+        }
+
+        GameObject proyectil = Instantiate(flechaPrefab);
+        ArrowFlight flight = proyectil.GetComponent<ArrowFlight>();
+
+        Transform destino = null;
+        if (objetivo is Unidad unidadObjetivo)
+        {
+            destino = unidadObjetivo.transform;
+        }
+        else if (objetivo is Obstaculo obstaculoObjetivo)
+        {
+            destino = obstaculoObjetivo.transform;
+        }
+        else if (objetivo is Casilla casillaObjetivo)
+        {
+            destino = casillaObjetivo.transform;
+        }
+
+        if (flight != null && destino != null)
+        {
+            flight.Configure(transform, destino, 0.12f, 9.2f);
+            await flight.EsperarImpactoAsync();
+        }
+        else
+        {
+            await Task.Delay(200);
+        }
+    }
+    private Task CrearProyectilFila(Casilla casillaClick)
+    {
+        if (casillaClick == null)
+        {
+            return Task.CompletedTask;
+        }
+
+        return LanzarProyectilFilaAsync(casillaClick);
+    }
+
+    private async Task LanzarProyectilFilaAsync(Casilla casillaClick)
+    {
+        await Task.Delay(10);
+
+        int filaY = casillaClick.posY;
+        List<Casilla> filaFull = new List<Casilla>();
+        foreach (var c in BattleManager.Instance.lCasillasTotal)
+        {
+            if (c.lado != Origen.lado && c.posY == filaY)
+            {
+                filaFull.Add(c);
+            }
+        }
+        if (filaFull.Count == 0)
+        {
+            return;
+        }
+
+        Casilla startCas = null;
+        foreach (var c in filaFull)
+        {
+            if (c.posX == 3)
+            {
+                startCas = c;
+                break;
+            }
+        }
+        if (startCas == null)
+        {
+            startCas = filaFull[0];
+            foreach (var c in filaFull)
+            {
+                if (c.posX > startCas.posX)
+                {
+                    startCas = c;
+                }
+            }
+        }
+
+        Casilla endCas = startCas;
+        foreach (var c in filaFull)
+        {
+            if (c.posX < endCas.posX)
+            {
+                endCas = c;
+            }
+        }
+
+        Vector3 dir = (endCas.transform.position - startCas.transform.position).normalized;
+        if (dir.sqrMagnitude < 0.0001f)
+        {
+            dir = Vector3.right;
+        }
+
+        float offsetBehind = 2.2f;
+        Vector3 spawnPos = startCas.transform.position - dir * offsetBehind;
+
+        GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.FlechaPotente;
+        if (flechaPrefab == null)
+        {
+            return;
+        }
+
+        Quaternion rotacion = dir.sqrMagnitude > 0.0001f ? Quaternion.LookRotation(dir) * Quaternion.Euler(0f, -90f, 0f) : Quaternion.Euler(0f, -90f, 0f);
+        GameObject flecha = Instantiate(flechaPrefab, spawnPos, rotacion);
+        FlechaPotenteVuelo vuelo = flecha.GetComponent<FlechaPotenteVuelo>();
+        if (vuelo != null)
+        {
+            vuelo.Configure(dir);
+            await vuelo.EsperarFinalAsync();
+        }
+        else
+        {
+            await Task.Delay(500);
+        }
     }
     void VFXAplicar(GameObject objetivo)
     {
@@ -413,3 +507,9 @@ public class DisparoPotente : Habilidad
 
     
 }
+
+
+
+
+
+

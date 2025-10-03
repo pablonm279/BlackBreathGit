@@ -29,7 +29,7 @@ public class EcosDivinos : Trampa
  
  
   
-  public async override void  AplicarEfectosTrampa(Unidad objetivo)
+  public override void  AplicarEfectosTrampa(Unidad objetivo)
   {
    
     if(objetivo.CasillaPosicion.lado == unidadCreadora.CasillaPosicion.lado) //Aliados
@@ -78,3 +78,4 @@ public class EcosDivinos : Trampa
   }
 
 }
+

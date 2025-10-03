@@ -146,25 +146,52 @@ if(NIVEL == 5)
     }
 
     Casilla Origen;
+    private Task preImpactoPendiente;
+
     public override void Activar()
-    { 
-        seTiroFlechaVFX = false;
+    {
         Origen = Usuario.GetComponent<Unidad>().CasillaPosicion;
         ObtenerObjetivos();
-        
-     
+
         BattleManager.Instance.SeleccionandoObjetivo = true;
         BattleManager.Instance.HabilidadActiva = this;
-
-        
     }
-    
-    public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
-     {
-        // El log de uso ahora está centralizado en Habilidad.Resolver
-        base.Resolver(Objetivos);
-     }
-    bool seTiroFlechaVFX = false;
+
+    protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        Casilla referencia = casillaOrigenTrampas;
+
+        if (objetivos != null && objetivos.Count > 0)
+        {
+            if (objetivos[0] is Unidad unidadObjetivo)
+            {
+                referencia = unidadObjetivo.CasillaPosicion;
+            }
+            else if (objetivos[0] is Obstaculo obstaculoObjetivo)
+            {
+                referencia = obstaculoObjetivo.CasillaPosicion;
+            }
+        }
+
+        if (referencia == null && BattleManager.Instance.casillaClickHabilidad != null)
+        {
+            referencia = BattleManager.Instance.casillaClickHabilidad;
+        }
+
+        if (referencia == null)
+        {
+            referencia = Origen;
+        }
+
+        preImpactoPendiente = CrearProyectilFila(referencia);
+        return preImpactoPendiente ?? Task.CompletedTask;
+    }
+
+    protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        return Task.CompletedTask;
+    }
+
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
@@ -172,16 +199,6 @@ if(NIVEL == 5)
      { 
       
         Unidad objetivo = (Unidad)obj;
-      if (seTiroFlechaVFX == false)
-      {
-        seTiroFlechaVFX = true;
-
-
-
-          Casilla cas = objetivo.GetComponent<Unidad>().CasillaPosicion.ObtenerCasillasMasAtrasEnFila();
-          Casilla casClick = BattleManager.Instance.casillaClickHabilidad != null ? BattleManager.Instance.casillaClickHabilidad : objetivo.CasillaPosicion;
-          CrearVFXFila(casClick);
-       }
        
        int danioExtra = 0;
        if (NIVEL > 1) { danioExtra += 3; }
@@ -275,37 +292,91 @@ if(NIVEL == 5)
     //Provisorio
     private List<Unidad> lObjetivosPosibles = new List<Unidad>();
     private List<Obstaculo> lObstaculosPosibles = new List<Obstaculo>();
-  async Task CrearVFXFila(Casilla casillaClick)
+    private Task CrearProyectilFila(Casilla casillaClick)
     {
-      await Task.Delay(10);
-      // Spawn simple: flecha nace detrás de X=3 de la fila enemiga (misma Y) y no se mueve aquí
-      int filaY = (casillaClick != null) ? casillaClick.posY : Origen.posY;
-      int ladoRef = (casillaClick != null) ? casillaClick.lado : Origen.lado;
-      List<Casilla> filaFull = new List<Casilla>();
-      foreach (var c in BattleManager.Instance.lCasillasTotal)
-      {
-        if (c.lado == ladoRef && c.posY == filaY)
+        if (casillaClick == null)
         {
-          filaFull.Add(c);
+            return Task.CompletedTask;
         }
-      }
-      if (filaFull.Count == 0) { return; }
-      Casilla startCas = null;
-      foreach (var c in filaFull) { if (c.posX == 3) { startCas = c; break; } }
-      if (startCas == null)
-      {
-        foreach (var c in filaFull) { if (startCas == null || c.posX > startCas.posX) startCas = c; }
-      }
-      Casilla endCas = startCas;
-      foreach (var c in filaFull) { if (c.posX < endCas.posX) endCas = c; }
-      Vector3 dir = (endCas.transform.position - startCas.transform.position).normalized;
-      float offsetBehind = 2.2f;
-      Vector3 spawnPos = startCas.transform.position - dir * offsetBehind;
-      GameObject vfxPrefab = BattleManager.Instance.contenedorPrefabs.VFXDescargaDePoder_Fila;
-      Instantiate(vfxPrefab, spawnPos, Quaternion.identity);
- 
 
-     
+        return LanzarProyectilFilaAsync(casillaClick);
+    }
+
+    private async Task LanzarProyectilFilaAsync(Casilla casillaClick)
+    {
+        await Task.Delay(10);
+
+        int filaY = casillaClick.posY;
+        int ladoRef = casillaClick.lado;
+        List<Casilla> filaFull = new List<Casilla>();
+        foreach (var c in BattleManager.Instance.lCasillasTotal)
+        {
+            if (c.lado == ladoRef && c.posY == filaY)
+            {
+                filaFull.Add(c);
+            }
+        }
+        if (filaFull.Count == 0)
+        {
+            return;
+        }
+
+        Casilla startCas = null;
+        foreach (var c in filaFull)
+        {
+            if (c.posX == 3)
+            {
+                startCas = c;
+                break;
+            }
+        }
+        if (startCas == null)
+        {
+            foreach (var c in filaFull)
+            {
+                if (startCas == null || c.posX > startCas.posX)
+                {
+                    startCas = c;
+                }
+            }
+        }
+
+        Casilla endCas = startCas;
+        foreach (var c in filaFull)
+        {
+            if (c.posX < endCas.posX)
+            {
+                endCas = c;
+            }
+        }
+
+        Vector3 dir = (endCas.transform.position - startCas.transform.position).normalized;
+        if (dir.sqrMagnitude < 0.0001f)
+        {
+            dir = Vector3.right;
+        }
+
+        float offsetBehind = 2.2f;
+        Vector3 spawnPos = startCas.transform.position - dir * offsetBehind;
+
+        GameObject vfxPrefab = BattleManager.Instance.contenedorPrefabs.VFXDescargaDePoder_Fila;
+        if (vfxPrefab == null)
+        {
+            return;
+        }
+
+        Quaternion rotacion = dir.sqrMagnitude > 0.0001f ? Quaternion.LookRotation(dir) * Quaternion.Euler(0f, -90f, 0f) : Quaternion.Euler(0f, -90f, 0f);
+        GameObject vfx = Instantiate(vfxPrefab, spawnPos, rotacion);
+        FlechaPotenteVuelo vuelo = vfx.GetComponent<FlechaPotenteVuelo>();
+        if (vuelo != null)
+        {
+            vuelo.Configure(dir);
+            await vuelo.EsperarFinalAsync();
+        }
+        else
+        {
+            await Task.Delay(400);
+        }
     }
 
 private void ObtenerObjetivos()
@@ -380,3 +451,10 @@ private void ObtenerObjetivos()
 
     
 }
+
+
+
+
+
+
+

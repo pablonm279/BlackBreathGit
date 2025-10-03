@@ -118,7 +118,6 @@ if(NIVEL == 3)
     Casilla Origen;
     public override void Activar()
     { 
-        seTiroFlechaVFX = false;
         Origen = Usuario.GetComponent<Unidad>().CasillaPosicion;
         ObtenerObjetivos();
         
@@ -138,24 +137,31 @@ if(NIVEL == 3)
     if(scEstaUnidad is ClaseCanalizador can){ if (NIVEL != 5) { can.CambiarEnergia(-1); } }
   }
     
-    bool seTiroFlechaVFX = false;
+    protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        float delay = 0.7f;
+        var pose = scEstaUnidad.GetComponent<UnidadPoseController>();
+        if (pose != null)
+        {
+            delay = pose.duracionPoseHabilidad;
+        }
+
+        int ms = Mathf.RoundToInt(Mathf.Max(0.1f, delay) * 1000f);
+        return Task.Delay(ms);
+    }
+
+    protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        return Task.CompletedTask;
+    }
+
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
      if(obj is Unidad) //Acá van los efectos a Unidades.
      { 
       
-        Unidad objetivo = (Unidad)obj;
-       if(seTiroFlechaVFX == false)
-       {
-         seTiroFlechaVFX = true;
-         
-
-        
-         Casilla cas = objetivo.GetComponent<Unidad>().CasillaPosicion.ObtenerCasillasMasAtrasEnFila();
-
-       }
-       
+        Unidad objetivo = (Unidad)obj;       
        int danioExtra = 0;
        if (NIVEL > 1) { danioExtra += 3; }
 
@@ -343,4 +349,5 @@ private void ObtenerObjetivos()
 
     
 }
+
 

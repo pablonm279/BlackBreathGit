@@ -76,7 +76,37 @@ public class DescargaArcana : Habilidad
     
       
 
-    public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
+    protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        if (objetivos == null || objetivos.Count == 0)
+        {
+            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
+        }
+
+        List<Task> impactos = new List<Task>();
+        foreach (var objetivo in objetivos)
+        {
+            var impacto = CrearProyectil(objetivo);
+            if (impacto != null)
+            {
+                impactos.Add(impacto);
+            }
+        }
+
+        if (impactos.Count == 0)
+        {
+            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
+        }
+
+        return Task.WhenAll(impactos);
+    }
+
+    protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        return Task.CompletedTask;
+    }
+
+    public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
      if(obj is Unidad) //Acá van los efectos a Unidades.
@@ -85,11 +115,7 @@ public class DescargaArcana : Habilidad
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
              
        int danioMarca = 0;
-       
-       CrearProyectil(objetivo);
-
-       await Task.Delay(1300);
-       float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
+      float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
 
        int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarPoder, bonusAtaque, criticoRango, objetivo, 0); 
@@ -155,33 +181,50 @@ public class DescargaArcana : Habilidad
        objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
      }
     }
-    
-    async Task CrearProyectil(object Objetivo)
-   {
-      await Task.Delay(50);
-      GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.DescargaArcana;
-      GameObject Proyectil = Instantiate(flechaPrefab);
-      Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-      Proyectil.GetComponent<ArrowFlight>().parabola = 0.30f;
-      Proyectil.GetComponent<ArrowFlight>().velocidad = 4.8f;
-    
-    
-      if(Objetivo != null)
-      {
-      
-        if(Objetivo is Unidad)
-        { 
-          Unidad obj = (Unidad)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-        }
-        else if(Objetivo is Obstaculo)
+    internal Task CrearProyectil(object objetivo)
+    {
+        if (objetivo == null)
         {
-          Obstaculo obj = (Obstaculo)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
+            return Task.CompletedTask;
         }
-      }
-     
-   }
+
+        return LanzarProyectilAsync(objetivo);
+    }
+
+    private async Task LanzarProyectilAsync(object objetivo)
+    {
+        await Task.Delay(50);
+
+        GameObject proyectilPrefab = BattleManager.Instance.contenedorPrefabs.DescargaArcana;
+        if (proyectilPrefab == null)
+        {
+            return;
+        }
+
+        GameObject proyectil = Instantiate(proyectilPrefab);
+        ArrowFlight flight = proyectil.GetComponent<ArrowFlight>();
+
+        Transform destino = null;
+        if (objetivo is Unidad unidad)
+        {
+            destino = unidad.transform;
+        }
+        else if (objetivo is Obstaculo obstaculo)
+        {
+            destino = obstaculo.transform;
+        }
+
+        if (flight != null && destino != null)
+        {
+            flight.Configure(transform, destino, 0.30f, 4.8f);
+            await flight.EsperarImpactoAsync();
+        }
+        else
+        {
+            await Task.Delay(200);
+        }
+    }
+
     void VFXAplicar(GameObject objetivo)
     {
        //GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation); 
@@ -272,3 +315,4 @@ public class DescargaArcana : Habilidad
     }
  
 }
+

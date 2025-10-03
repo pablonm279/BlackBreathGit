@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.96996224, g: 1, b: 0, a: 0.45490196}
+  m_Color: {r: 0.96996224, g: 1, b: 0, a: 0.6039216}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -187,10 +187,10 @@ MonoBehaviour:
   extraShake: 0
   shakeAmplitude: 0.35
   shakeFrequency: 1.1
-  playSfx: 0
-  sfxClip: {fileID: 0}
-  sfxVolume: 0.8
-  sfxDelay: 0.05
+  playSfx: 1
+  sfxClip: {fileID: 8300000, guid: e9fff86044e53fc42b1e1194800c0d79, type: 3}
+  sfxVolume: 0.869
+  sfxDelay: 0
   onPlay:
     m_PersistentCalls:
       m_Calls: []

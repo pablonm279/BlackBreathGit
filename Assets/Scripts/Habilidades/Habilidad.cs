@@ -47,6 +47,19 @@ public abstract class Habilidad : MonoBehaviour
     public bool esHostil; //Si es para enemigos o aliados
     public bool esDiscreta = false; //No quita sigilo
 
+    protected virtual int DelayPreImpactoMs => 1000;
+    protected virtual int DelayPostImpactoMs => 700;
+
+    protected virtual Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        return DelayPreImpactoMs > 0 ? Task.Delay(DelayPreImpactoMs) : Task.CompletedTask;
+    }
+
+    protected virtual Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        return DelayPostImpactoMs > 0 ? Task.Delay(DelayPostImpactoMs) : Task.CompletedTask;
+    }
+
     public abstract void Activar();
     
     public static event EventHandler OnUsarHabilidad;
@@ -103,7 +116,8 @@ public abstract class Habilidad : MonoBehaviour
       BattleManager.Instance.SombrearANoParticipantesHabilidad(lUnidadesPosibles.ConvertAll(x => (object)x));
     }
 
-    await Task.Delay(1000);
+    await Task.Delay(250);
+    await EsperarPreImpactoAsync(Objetivos, casillaOrigenTrampas);
 
     int tirada = UnityEngine.Random.Range(1, 21); //la tirada es la misma para toda la habilidad, no para cada objetivo
 
@@ -119,7 +133,7 @@ public abstract class Habilidad : MonoBehaviour
       AplicarEfectosHabilidad(null, tirada, casillaOrigenTrampas);
     }
 
-    await Task.Delay(700);
+    await EsperarPostImpactoAsync(Objetivos, casillaOrigenTrampas);
     if (Objetivos != null)
     {
       BattleManager.Instance.DesombrearANoParticipantesHabilidad(lUnidadesPosibles.ConvertAll(x => (object)x));
@@ -316,3 +330,5 @@ public abstract class Habilidad : MonoBehaviour
 
 
 }
+
+

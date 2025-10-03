@@ -120,8 +120,7 @@ public class CampaignManager : MonoBehaviour
     CrearExplorador();
     CrearCanalizador();
 
-    CrearCanalizador();
-    CrearCanalizador();
+    
 
   
   }
@@ -1634,7 +1633,6 @@ public class CampaignManager : MonoBehaviour
     pers1.AddComponent<REPRESENTACIONCorajeInquebrantable>();
     pers1.GetComponent<REPRESENTACIONCorajeInquebrantable>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
                                                                          //pers1.AddComponent<Cortevertical>(); AGREGADO POR MANDOBLE
-    pers1.AddComponent<CorteHorizontal>();pers1.GetComponent<CorteHorizontal>().NIVEL = 1;
     //Habilidades Base
     int randHabPot1 = UnityEngine.Random.Range(1, 5);
     switch (randHabPot1)
@@ -1731,6 +1729,7 @@ public class CampaignManager : MonoBehaviour
     pers1.GetComponent<ImprovisarFlechas>().NIVEL = 1;
     pers1.AddComponent<CorteDaga>(); //La daga no es item
 
+     
 
     //Habilidades Base
     int randHabPot1 = UnityEngine.Random.Range(1, 5);
@@ -1799,7 +1798,7 @@ public class CampaignManager : MonoBehaviour
 
     pers1.iDefensa = 11;
     pers1.iArmadura = 0; //lo da la armadura
-    pers1.iApMax = 4; //
+    pers1.iApMax = 40; //
     pers1.iValMax = 5;
     pers1.iIniciativa = 2 + UnityEngine.Random.Range(0, 2); ;
 
@@ -1828,7 +1827,6 @@ public class CampaignManager : MonoBehaviour
     pers1.AddComponent<REPRESENTACIONFervorConjunto>();
     pers1.GetComponent<REPRESENTACIONFervorConjunto>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
 
-    
     //Habilidades Base
     int randHabPot1 = UnityEngine.Random.Range(1, 5);
     switch (randHabPot1)
@@ -1930,7 +1928,6 @@ public class CampaignManager : MonoBehaviour
     pers1.AddComponent<TiroBallestaDeMano>();
 
 
-
     //Habilidades Base
     int randHabPot1 = UnityEngine.Random.Range(1, 3);
     switch (randHabPot1)
@@ -1938,6 +1935,7 @@ public class CampaignManager : MonoBehaviour
       case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONMaestriaBallesta>(); pers1.GetComponent<REPRESENTACIONMaestriaBallesta>().NIVEL = 1; break;
       case 2: pers1.Habilidad_2 = 1; pers1.AddComponent<REPRESENTACIONMaestriaEspadaCorta>(); pers1.GetComponent<REPRESENTACIONMaestriaEspadaCorta>().NIVEL = 1; break;
     }
+
 
 
     int randHabPot2 = UnityEngine.Random.Range(1, 7);
@@ -2018,7 +2016,7 @@ public class CampaignManager : MonoBehaviour
     pers1.iResDivino = 0;
 
 
-    pers1.AddComponent<DescargaDesintegradora>(); pers1.GetComponent<DescargaDesintegradora>().NIVEL = 1;
+
 
     SortearRasgos(pers1); //Método vacío!!
 

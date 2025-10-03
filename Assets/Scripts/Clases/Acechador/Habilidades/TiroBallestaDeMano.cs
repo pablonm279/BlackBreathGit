@@ -142,7 +142,37 @@ public class TiroBallestaDeMano : Habilidad
     
       
 
-    public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
+    protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        if (objetivos == null || objetivos.Count == 0)
+        {
+            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
+        }
+
+        List<Task> impactos = new List<Task>();
+        foreach (var objetivo in objetivos)
+        {
+            var impacto = CrearProyectil(objetivo);
+            if (impacto != null)
+            {
+                impactos.Add(impacto);
+            }
+        }
+
+        if (impactos.Count == 0)
+        {
+            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
+        }
+
+        return Task.WhenAll(impactos);
+    }
+
+    protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        return Task.CompletedTask;
+    }
+
+    public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
      if(obj is Unidad) //Acá van los efectos a Unidades.
@@ -150,13 +180,7 @@ public class TiroBallestaDeMano : Habilidad
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
              
-       int danioMarca = 0;
-       
-      
-       CrearProyectil(objetivo);
-
-       await Task.Delay(1300);
-       float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
+       int danioMarca = 0;float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
       
 
@@ -223,33 +247,50 @@ public class TiroBallestaDeMano : Habilidad
        objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
      }
     }
-    
-    async Task CrearProyectil(object Objetivo)
-   {
-      await Task.Delay(100);
-      GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.ViroteBallestadeMano;
-      GameObject Proyectil = Instantiate(flechaPrefab);
-      Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-      Proyectil.GetComponent<ArrowFlight>().parabola = 0.16f;
-      Proyectil.GetComponent<ArrowFlight>().velocidad = 5.3f;
-    
-    
-      if(Objetivo != null)
-      {
-      
-        if(Objetivo is Unidad)
-        { 
-          Unidad obj = (Unidad)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-        }
-        else if(Objetivo is Obstaculo)
+    private Task CrearProyectil(object objetivo)
+    {
+        if (objetivo == null)
         {
-          Obstaculo obj = (Obstaculo)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
+            return Task.CompletedTask;
         }
-      }
-     
-   }
+
+        return LanzarProyectilAsync(objetivo);
+    }
+
+    private async Task LanzarProyectilAsync(object objetivo)
+    {
+        await Task.Delay(100);
+
+        GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.ViroteBallestadeMano;
+        if (flechaPrefab == null)
+        {
+            return;
+        }
+
+        GameObject proyectil = Instantiate(flechaPrefab);
+        ArrowFlight flight = proyectil.GetComponent<ArrowFlight>();
+
+        Transform destino = null;
+        if (objetivo is Unidad unidadObjetivo)
+        {
+            destino = unidadObjetivo.transform;
+        }
+        else if (objetivo is Obstaculo obstaculoObjetivo)
+        {
+            destino = obstaculoObjetivo.transform;
+        }
+
+        if (flight != null && destino != null)
+        {
+            flight.Configure(transform, destino, 0.12f, 5.0f);
+            await flight.EsperarImpactoAsync();
+        }
+        else
+        {
+            await Task.Delay(200);
+        }
+    }
+
     void VFXAplicar(GameObject objetivo)
     {
        //GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation); 
@@ -340,3 +381,4 @@ public class TiroBallestaDeMano : Habilidad
     }
  
 }
+

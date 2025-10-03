@@ -141,10 +141,10 @@ MonoBehaviour:
   extraShake: 0
   shakeAmplitude: 0.35
   shakeFrequency: 1.1
-  playSfx: 0
-  sfxClip: {fileID: 0}
-  sfxVolume: 0.8
-  sfxDelay: 0.05
+  playSfx: 1
+  sfxClip: {fileID: 8300000, guid: 60ae4b1f6a0b85f4cad3dbd1f8e3bc46, type: 3}
+  sfxVolume: 0.95
+  sfxDelay: 0.15
   onPlay:
     m_PersistentCalls:
       m_Calls: []

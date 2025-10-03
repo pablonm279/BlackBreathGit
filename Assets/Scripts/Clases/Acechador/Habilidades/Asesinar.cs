@@ -163,7 +163,25 @@ public class Asesinar : Habilidad
         
     }
     
-    public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
+    protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        float delay = 0.6f;
+        var pose = scEstaUnidad.GetComponent<UnidadPoseController>();
+        if (pose != null)
+        {
+            delay = pose.duracionPoseAtacar;
+        }
+
+        int ms = Mathf.RoundToInt(Mathf.Max(0.1f, delay * 0.5f) * 1000f);
+        return Task.Delay(ms);
+    }
+
+    protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        return Task.Delay(250);
+    }
+
+    public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
   {
 
     if (obj is Unidad) //Acá van los efectos a Unidades.
@@ -267,10 +285,6 @@ public class Asesinar : Habilidad
 
        
       }
-
-
-      await Task.Delay(1100);  //Esto es para que espere a que se aplique el daño, antes de chequear si murio
-
 
       if (objetivo.HP_actual < 1 && resultadoTirada > 0)
       {
@@ -395,3 +409,8 @@ public class Asesinar : Habilidad
    
  
 }
+
+
+
+
+

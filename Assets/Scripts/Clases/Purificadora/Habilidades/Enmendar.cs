@@ -142,7 +142,7 @@ public class Enmendar : Habilidad
     
     
 
-    public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
+    public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
      if(obj is Unidad) //Acá van los efectos a Unidades.
@@ -297,3 +297,4 @@ public class Enmendar : Habilidad
 
  
 }
+

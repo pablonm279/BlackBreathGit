@@ -39,6 +39,7 @@ public class ContenedorPrefabs : MonoBehaviour
     [Header("VFX")]
 
     public GameObject Flecha;
+    public GameObject Virote;
     public GameObject ViroteBallestadeMano;
     public GameObject ViroteBallestadeManoVeneno;
     public GameObject LlamaDivina;

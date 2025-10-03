@@ -30,7 +30,15 @@ public class ReaccionPosturaDefensiva : Reaccion
 
         scEstaUnidad.ReproducirAnimacionAtaque();
 
-        await Task.Delay(400);
+        float delay = 0.6f;
+        var pose = scEstaUnidad.GetComponent<UnidadPoseController>();
+        if (pose != null)
+        {
+            delay = pose.duracionPoseAtacar;
+        }
+
+        int ms = Mathf.RoundToInt(Mathf.Max(0.1f, delay * 0.5f) * 1000f);
+        await Task.Delay(ms);
 
         int tirada =  UnityEngine.Random.Range(1,21);
         corteVertical.AplicarEfectosHabilidad(uTriggerer, tirada, null);
@@ -48,3 +56,4 @@ public class ReaccionPosturaDefensiva : Reaccion
 
 
 }
+

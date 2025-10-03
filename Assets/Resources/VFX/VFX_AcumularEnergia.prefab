@@ -104,7 +104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playOnEnable: 1
   playOnClick: 0
-  startDelay: 0
+  startDelay: 0.2
   duration: 2
   curve:
     serializedVersion: 2
@@ -141,10 +141,10 @@ MonoBehaviour:
   extraShake: 0
   shakeAmplitude: 0.35
   shakeFrequency: 1.1
-  playSfx: 0
-  sfxClip: {fileID: 0}
-  sfxVolume: 0.8
-  sfxDelay: 0.05
+  playSfx: 1
+  sfxClip: {fileID: 8300000, guid: bf08c1571472363458ec7a859a6ea294, type: 3}
+  sfxVolume: 0.905
+  sfxDelay: 0
   onPlay:
     m_PersistentCalls:
       m_Calls: []

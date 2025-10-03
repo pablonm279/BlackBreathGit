@@ -141,7 +141,7 @@ public class EscudodeFe : Habilidad
 
 
 
-  public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla cas)
+  public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla cas)
   {
     if (cas == null)
     {
@@ -232,3 +232,4 @@ public class EscudodeFe : Habilidad
 
  
 }
+

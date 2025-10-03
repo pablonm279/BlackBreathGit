@@ -1020,6 +1020,8 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           uCausante.OcasionoDanioaEnemigo(this, tipoDanio, esCritico, danioFinal); //se le avisa al causante que le hizo daño a la unidad, para lo que sea.
           LlamarReacciones(2, uCausante, false, danio, tipoDanio); //Llama a las reacciones de la unidad que recibe el daño.
         }
+
+       
       }
 
       scUnidadCanvas.txtDaño.text = "";

@@ -105,7 +105,7 @@ MonoBehaviour:
   playOnEnable: 1
   playOnClick: 0
   startDelay: 0.2
-  duration: 0.12
+  duration: 0.3
   curve:
     serializedVersion: 2
     m_Curve:
@@ -141,8 +141,8 @@ MonoBehaviour:
   extraShake: 0
   shakeAmplitude: 6.58
   shakeFrequency: 1.1
-  playSfx: 0
-  sfxClip: {fileID: 0}
+  playSfx: 1
+  sfxClip: {fileID: 8300000, guid: d834f3ce594fe564eb61445b411dd1eb, type: 3}
   sfxVolume: 0.8
   sfxDelay: 0.05
   onPlay:
@@ -409,7 +409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a31d3ac91f917984b871f7571057cb78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delayautodestruir: 0.45
+  delayautodestruir: 0.65
 --- !u!1 &7369721744714185875
 GameObject:
   m_ObjectHideFlags: 0
