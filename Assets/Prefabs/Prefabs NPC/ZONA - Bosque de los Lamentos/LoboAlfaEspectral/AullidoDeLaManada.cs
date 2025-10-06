@@ -66,7 +66,19 @@ public class AullidoDeLaManada : IAHabilidad
     
      
    }
+        void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_AullidoManada");
 
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
 
     private List<Unidad> lObjetivosPosibles = new List<Unidad>();
     private List<Obstaculo> lObstaculosPosibles = new List<Obstaculo>();
@@ -164,9 +176,10 @@ public class AullidoDeLaManada : IAHabilidad
      if(obj is Unidad)
      {
        Unidad objetivo = (Unidad)obj;
+       VFXAplicar(objetivo.gameObject);
        /////////////////////////////////////////////
-       //BUFF ---- Así se aplica un buff/debuff
-       Buff buff = new Buff();
+      //BUFF ---- Así se aplica un buff/debuff
+      Buff buff = new Buff();
        buff.buffNombre = "Aullido de la Manada";
        buff.boolfDebufftBuff = true;
        buff.DuracionBuffRondas = 3;

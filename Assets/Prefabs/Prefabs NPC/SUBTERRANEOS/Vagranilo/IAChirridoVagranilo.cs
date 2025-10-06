@@ -25,7 +25,7 @@ public class IAChirridoVagranilo : IAHabilidad
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 1;
       esMelee = false;
-      hAlcance = 3;
+      hAlcance = 4;
       hCooldownMax = 3;
       esHostil = true;
       prioridad = 5;
@@ -49,7 +49,7 @@ public class IAChirridoVagranilo : IAHabilidad
 
     void Start()
     {
-      prioridad = pPrioridad;
+      prioridad = 5;
     }
 
   object Objetivo;
@@ -80,7 +80,7 @@ public class IAChirridoVagranilo : IAHabilidad
      if(obj is Unidad)
      {
         Unidad objetivo = (Unidad)obj;
-     
+        VFXAplicar(objetivo.gameObject);
          if(objetivo.TiradaSalvacion(objetivo.mod_TSMental, 11))
           {
             //Si falla, se aturde y hace 2d4 daño verdadero
@@ -92,7 +92,19 @@ public class IAChirridoVagranilo : IAHabilidad
          
     }
 
-   
+     void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_Chirrido");
+
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
     public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
    {
     

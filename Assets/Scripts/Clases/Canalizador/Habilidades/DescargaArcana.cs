@@ -216,7 +216,7 @@ public class DescargaArcana : Habilidad
 
         if (flight != null && destino != null)
         {
-            flight.Configure(transform, destino, 0.30f, 4.8f);
+            flight.Configure(transform, destino, 0.30f, 5.3f);
             await flight.EsperarImpactoAsync();
         }
         else

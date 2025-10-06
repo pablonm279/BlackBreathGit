@@ -163,7 +163,7 @@ if(NIVEL == 5)
        ReaccionEscudoEnergetico reaccionPosturaDefensiva = ComponentCopier.CopyComponent(reaccion, objetivo.gameObject);
 
        //Usarla termina el turno
-       BattleManager.Instance.TerminarTurno();
+      // BattleManager.Instance.TerminarTurno();
      }
     
     

@@ -14,12 +14,10 @@ public class BallestaMiliciano : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano
 
-
-    
   void Awake()
-   {
+  {
       nombre = "Tiro de Ballesta";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
@@ -31,21 +29,14 @@ public class BallestaMiliciano : IAHabilidad
       prioridad = pPrioridad;
       costoAP = 2;
       afectaObstaculos = true;
-      
-
 
       hActualCooldown = hCooldownMax;
 
       bonusAtaque = 0;
       XdDanio = 1;
       daniodX = 6; //3d5
-      tipoDanio = 1; //Perforante
-
-
-      
-
-    
-   }
+      tipoDanio = 2; //Perforante
+  }
 
     void Start()
     {
@@ -56,61 +47,77 @@ public class BallestaMiliciano : IAHabilidad
    public async override Task ActivarHabilidad()
    {
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
-     
+
       scEstaUnidad.ReproducirAnimacionAtaque();
 
       Objetivo = EstablecerObjetivoPrioritario();
-          PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
+      PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 
-    
-      Invoke("CrearProyectil", 0.9f);
+      Task impactoPendiente = Objetivo != null ? CrearProyectil(Objetivo) : Task.CompletedTask;
+      await impactoPendiente;
 
-     
-    
-      await Task.Delay(1300);
-      //Esto es cuando el objetivo es uno solo,
-      AplicarEfectosHabilidad(Objetivo);
-     
-   }
-
-    void CrearProyectil()
-   {
-      GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
-      GameObject Proyectil = Instantiate(flechaPrefab);
-      Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-      Proyectil.GetComponent<ArrowFlight>().velocidad = 4.6f;
-      Proyectil.GetComponent<ArrowFlight>().parabola = 0.7f;  
-    
-     
       if (Objetivo != null)
-    {
-
-      if (Objetivo is Unidad)
       {
-        Unidad obj = (Unidad)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
+          AplicarEfectosHabilidad(Objetivo);
       }
-      else if (Objetivo is Obstaculo)
-      {
-        Obstaculo obj = (Obstaculo)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-      }
-    }
-     
    }
+
+   internal Task CrearProyectil(object objetivo)
+    {
+        if (objetivo == null)
+        {
+            return Task.CompletedTask;
+        }
+
+        return LanzarProyectilAsync(objetivo);
+    }
+
+    private async Task LanzarProyectilAsync(object objetivo)
+    {
+        await Task.Delay(50);
+
+        GameObject proyectilPrefab = BattleManager.Instance.contenedorPrefabs.ViroteBallestadeMano;
+        if (proyectilPrefab == null)
+        {
+            return;
+        }
+
+        GameObject proyectil = Instantiate(proyectilPrefab);
+        ArrowFlight flight = proyectil.GetComponent<ArrowFlight>();
+
+        Transform destino = null;
+        if (objetivo is Unidad unidad)
+        {
+            destino = unidad.transform;
+        }
+        else if (objetivo is Obstaculo obstaculo)
+        {
+            destino = obstaculo.transform;
+        }
+
+        if (flight != null && destino != null)
+        {
+            flight.Configure(transform, destino, 0.40f, 5.3f);
+            await flight.EsperarImpactoAsync();
+        }
+        else
+        {
+            await Task.Delay(200);
+        }
+    }
     public override void AplicarEfectosHabilidad(object obj)
     {
       if(obj is Unidad)
      {
           Unidad objetivo = (Unidad)obj;
-     
+
      float defensaObjetivo = objetivo.ObtenerdefensaActual();
 //     print("Defensa: "+ defensaObjetivo);
 
      int resultadoTirada = TiradaAtaque(defensaObjetivo, scEstaUnidad.mod_CarAgilidad, bonusAtaque, scEstaUnidad.mod_CriticoRangoDado, objetivo) ;
    //  print("Resultado tirada "+resultadoTirada);
-     
-   
+
+
 
      if(resultadoTirada == -1)
      {//PIFIA 
@@ -144,7 +151,7 @@ public class BallestaMiliciano : IAHabilidad
         danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
 
        objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
-    
+
 
      }
      else if (resultadoTirada == 3)
@@ -153,9 +160,9 @@ public class BallestaMiliciano : IAHabilidad
 
        float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
         danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
-      
+     
        objetivo.RecibirDanio(danio, tipoDanio, true,  scEstaUnidad);
-    
+
      }
      
       objetivo.AplicarDebuffPorAtaquesreiterados(1);
@@ -172,20 +179,20 @@ public class BallestaMiliciano : IAHabilidad
     }
 
    
-    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
+    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun l�gica
    {
     
-      // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+      // Obtener la unidad due�a
+    Unidad unidadDuena = gameObject.GetComponent<Unidad>();
+    if (unidadDuena == null) return null;
    
     // Filtrar las unidades
      print("Sel objPosibles "+objPosibles.Count);
    
-     
+    
     var unidades = objPosibles.OfType<Unidad>().ToList();
     print("Sel obj unidades cant: "+unidades.Count);
-    // Filtrar los obstáculos
+    // Filtrar los obst�culos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
      print("Sel obj obstaculos cant: "+obstaculos.Count);
 
@@ -193,7 +200,7 @@ public class BallestaMiliciano : IAHabilidad
    
     var unidadesOrdenadas = unidades
         .OrderBy(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDuena.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -203,7 +210,7 @@ public class BallestaMiliciano : IAHabilidad
         return unidadesOrdenadas.FirstOrDefault();
     }else{print("lista unidades vacia");}
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obst�culo
      if (obstaculos.Any())
      {
        var obstaculo = obstaculos.FirstOrDefault();

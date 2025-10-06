@@ -40,7 +40,7 @@ public class TiroBallestaDeMano : Habilidad
       
       XdDanio = 1;
       daniodX = 10; //1d10
-      tipoDanio = 1; //Perforante
+      tipoDanio = 2; //Perforante
       criticoRangoHab = 0;
 
 

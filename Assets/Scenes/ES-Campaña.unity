@@ -15706,7 +15706,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.31244242, y: -0, z: -0, w: 0.94993675}
   m_LocalPosition: {x: -4.01, y: -3.72, z: 13.93}
-  m_LocalScale: {x: 33.12031, y: 24.82751, z: 1.3256}
+  m_LocalScale: {x: 37.263664, y: 25.813164, z: 1.3256}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1838169351}
@@ -29412,6 +29412,19 @@ MonoBehaviour:
   DevoradorCorrompido: {fileID: 918802445406618680, guid: 857fe92e413e8024da2247ad09ed3dfe, type: 3}
   GuerreroCorrompido: {fileID: 918802445406618680, guid: 166e7fd751aabe74284b2c554c08210c, type: 3}
   AlimaniaCorrompida: {fileID: 918802445406618680, guid: daf2fe1b32640b54db2b07843915c4d5, type: 3}
+  sonidoPerforante: {fileID: 8300000, guid: ef8f2cec97c297c478bef19113045bf7, type: 3}
+  sonidoCortante: {fileID: 8300000, guid: 5e0b2a5c4a821014182ca259aa31e404, type: 3}
+  sonidoContundente: {fileID: 8300000, guid: d962dcd56f9e3de45a8440012d0a4c64, type: 3}
+  sonidoArcano: {fileID: 8300000, guid: 9eeb34177234fe7449ad4e6b051b569b, type: 3}
+  sonidoFuego: {fileID: 8300000, guid: a1a60cc3397d69a4d98ba0b5e5866d37, type: 3}
+  sonidoDivino: {fileID: 8300000, guid: 9eeb34177234fe7449ad4e6b051b569b, type: 3}
+  sonidoNecro: {fileID: 8300000, guid: b2cf253477e2321489b9b5bd6ff7b21d, type: 3}
+  sonidoElectrico: {fileID: 8300000, guid: d5947fe63c075a8468aa5f2c7c56877b, type: 3}
+  sonidoHielo: {fileID: 8300000, guid: 88a6d27191b3901459b741a7d7ebd19f, type: 3}
+  sonidoAcido: {fileID: 8300000, guid: fd541a16eea54fe4da3fbff13129531e, type: 3}
+  sonidoVerdadero: {fileID: 8300000, guid: 9eeb34177234fe7449ad4e6b051b569b, type: 3}
+  sonidoMovimientoLigero: {fileID: 8300000, guid: 37c7a9007abd141419686f231f784a22, type: 3}
+  sonidoErrar: {fileID: 8300000, guid: 52ea8a8d7fe7d094483f6c19fa4c014e, type: 3}
 --- !u!114 &1009579541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29528,11 +29541,11 @@ MonoBehaviour:
     ataquePct: 0
     ataqueFlat: 0
     defensaPct: 0
-    defensaFlat: -8
+    defensaFlat: 0
     armaduraPct: 0
     armaduraFlat: 0
     iniciativaPct: 0
-    iniciativaFlat: -100
+    iniciativaFlat: 0
     critDanoPct: 0
     critDanoFlat: 0
     critRangoFlat: 0

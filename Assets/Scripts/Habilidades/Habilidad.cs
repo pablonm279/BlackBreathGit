@@ -284,6 +284,8 @@ public abstract class Habilidad : MonoBehaviour
       }
         
 
+     if (resultado < 2 && BattleManager.Instance.HabilidadActiva.esMelee)
+    { AudioSource.PlayClipAtPoint(BattleManager.Instance.contenedorPrefabs.sonidoErrar, transform.position); }
 
       return resultado;
     }

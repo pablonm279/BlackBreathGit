@@ -63,7 +63,19 @@ public class IAGarraEspectral : IAHabilidad
      
    }
 
-    
+      void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_GarraEspectro");
+
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
     public override void AplicarEfectosHabilidad(object obj)
     {
      if(obj is Unidad)
@@ -95,7 +107,7 @@ public class IAGarraEspectral : IAHabilidad
          //   print("Roce");
             float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
              danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
-
+            VFXAplicar(objetivo.gameObject);
             danio -= danio/2; //Reduce 50% por roce
 
             objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
@@ -108,7 +120,7 @@ public class IAGarraEspectral : IAHabilidad
 
             float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
              danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
-
+            VFXAplicar(objetivo.gameObject);
 
             objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
             
@@ -118,7 +130,7 @@ public class IAGarraEspectral : IAHabilidad
           else if (resultadoTirada == 3)
           {//CRITICO
           //  print("Critico");
-
+            VFXAplicar(objetivo.gameObject);
             float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
             danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
 

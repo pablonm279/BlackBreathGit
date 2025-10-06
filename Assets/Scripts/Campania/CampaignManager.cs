@@ -121,7 +121,6 @@ public class CampaignManager : MonoBehaviour
     CrearCanalizador();
 
     
-
   
   }
   private void Start()
@@ -1789,7 +1788,7 @@ public class CampaignManager : MonoBehaviour
     pers1.idRetrato = 6;
     pers1.iPuestoDeseado = 1;
 
-    pers1.fVidaMaxima = 40 + UnityEngine.Random.Range(1, 5);
+    pers1.fVidaMaxima = 4 + UnityEngine.Random.Range(1, 5);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 1 + UnityEngine.Random.Range(0, 2);
@@ -1798,7 +1797,7 @@ public class CampaignManager : MonoBehaviour
 
     pers1.iDefensa = 11;
     pers1.iArmadura = 0; //lo da la armadura
-    pers1.iApMax = 40; //
+    pers1.iApMax = 4; //
     pers1.iValMax = 5;
     pers1.iIniciativa = 2 + UnityEngine.Random.Range(0, 2); ;
 

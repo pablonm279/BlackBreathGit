@@ -47,7 +47,19 @@ public class GolpeEnredadera : IAHabilidad
     {
       prioridad = pPrioridad;
     }
+     void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_AtaqueLiana");
 
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
 
    public async override Task ActivarHabilidad()
    {
@@ -100,7 +112,7 @@ public class GolpeEnredadera : IAHabilidad
             danio -= danio/2; //Reduce 50% por roce
 
             objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
-
+            VFXAplicar(objetivo.gameObject);
           }
           else if (resultadoTirada == 2)
           {//GOLPE
@@ -111,7 +123,7 @@ public class GolpeEnredadera : IAHabilidad
 
 
             objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
-            
+            VFXAplicar(objetivo.gameObject);
             AplicaEnredadoTirada(objetivo, 0);
 
           }
@@ -123,7 +135,7 @@ public class GolpeEnredadera : IAHabilidad
             danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
 
             
-            
+            VFXAplicar(objetivo.gameObject);
             
             objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
             

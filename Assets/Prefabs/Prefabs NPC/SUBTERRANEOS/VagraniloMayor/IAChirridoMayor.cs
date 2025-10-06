@@ -116,7 +116,19 @@ public class IAChirridoMayor : IAHabilidad
     }
 
     }
+       void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_Chirrido");
 
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
    
     private List<Casilla> ObtenerAfectadosZonaObjetivo(int zonax, int zonay, object Objetivo) //Obtiene las casillas a una determinada distancia del objetivo en X o/y en Y
     {
@@ -173,7 +185,7 @@ public class IAChirridoMayor : IAHabilidad
      if(objetivo is Unidad)
      {
        Unidad obj = (Unidad)objetivo;
-             
+           VFXAplicar(obj.gameObject);
          if(obj.TiradaSalvacion(obj.mod_TSMental, 12))
           {
             /////////////////////////////////////////////

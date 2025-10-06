@@ -212,24 +212,35 @@ public class Unidad : MonoBehaviour
   private UnidadPoseController poseController;
   
 
-  UnidadCanvas scUnidadCanvas; 
+  UnidadCanvas scUnidadCanvas;
   public
- 
 
- 
-BattleManager scBattleManager;
-private void Awake()
-{   
-   scBattleManager = BattleManager.Instance;
 
-   scUnidadCanvas = GetComponentInChildren<UnidadCanvas>();
 
-   scBattleManager.OnRondaNueva  += BattleManager_OnRondaNueva;
+ BattleManager scBattleManager;
+  public Transform puntoSaliente;
+  public Transform puntoEntrante;
+  private void Awake()
+  {
+    scBattleManager = BattleManager.Instance;
 
-   animator = GetComponent<Animator>();
-   poseController = GetComponent<UnidadPoseController>();
+    scUnidadCanvas = GetComponentInChildren<UnidadCanvas>();
 
-   ValentiaP_actual = 0;
+    scBattleManager.OnRondaNueva += BattleManager_OnRondaNueva;
+
+    animator = GetComponent<Animator>();
+    poseController = GetComponent<UnidadPoseController>();
+
+    ValentiaP_actual = 0;
+   
+  
+  Transform child4 = transform.childCount > 4 ? transform.GetChild(4) : null;
+
+  if (child4 != null && child4.childCount >= 2)
+  {
+    puntoSaliente = child4.GetChild(0);
+    puntoEntrante = child4.GetChild(1);
+  }
 }
 
   public void ReproducirAnimacionAtaque()
@@ -374,7 +385,7 @@ float critRangoDado, float critDañoBonus, float Ataque, float TSReflejos, float
    
 }
 
-public float velocidadMovimiento = 3.5f; 
+public float velocidadMovimiento = 2.8f; 
 public bool movimientoEnCurso = false;
   // Casilla origen al comenzar el movimiento; se limpia Presente solo una vez
   private Casilla casillaOrigenEnMovimiento;
@@ -384,6 +395,7 @@ public bool movimientoEnCurso = false;
        Invoke("AcomodarSortingLayer", 1.15f); //Para que el sprite quede bien en el orden de sorting layer
 
     }
+  public bool NoSonidoAlMover;
     private void FixedUpdate()
   {
 
@@ -394,6 +406,9 @@ public bool movimientoEnCurso = false;
         if (!movimientoEnCurso)
         {
           if (poseController != null) { poseController.OnStartMove(); }
+
+          if (!NoSonidoAlMover) { AudioSource.PlayClipAtPoint(BattleManager.Instance.contenedorPrefabs.sonidoMovimientoLigero, transform.position); }
+
           // Guardar casilla origen y limpiar Presente una sola vez
           casillaOrigenEnMovimiento = CasillaPosicion;
           if (casillaOrigenEnMovimiento != null)
@@ -412,7 +427,7 @@ public bool movimientoEnCurso = false;
         transform.position = nuevaPosicion;
 
         // Comprueba si el objeto ha llegado a la casilla deseada
-        if (Vector3.Distance(transform.position, CasillaDeseadaMov.transform.position) < 0.035f)
+        if (Vector3.Distance(transform.position, CasillaDeseadaMov.transform.position) < 0.045f)
         {
           LlegoACasilla(CasillaDeseadaMov);
           CasillaPosicion = CasillaDeseadaMov;
@@ -922,6 +937,95 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     return false;
   }
 
+  [Header("Sonidos")]
+  public List<AudioClip> sonidosRecibirDanio = new List<AudioClip>();
+  private AudioSource audioSource;
+
+  /// <summary>
+  /// Reproduce un sonido aleatorio de la lista de sonidos de recibir daño.
+  /// </summary>
+  private int ultimoSonidoDanioIndex = -1;
+  public async Task ReproducirSonidoRecibirDanio(int tipodanio)
+  {
+   
+  // Reproduce un sonido específico según el tipo de daño antes del await
+  if (BattleManager.Instance != null && BattleManager.Instance.contenedorPrefabs != null)
+  {
+     await Task.Delay(20);
+    AudioClip clip = null;
+    switch (tipodanio)
+    {
+      case 1: // Cortante
+        clip = BattleManager.Instance.contenedorPrefabs.sonidoCortante;
+        break;
+      case 2: // Perforante
+        clip = BattleManager.Instance.contenedorPrefabs.sonidoPerforante;
+        break;
+      case 3: // Contundente
+        clip = BattleManager.Instance.contenedorPrefabs.sonidoContundente;
+        break;
+      case 4: // Fuego
+        clip = BattleManager.Instance.contenedorPrefabs.sonidoFuego;
+        break;
+      case 5: // Hielo
+        clip = BattleManager.Instance.contenedorPrefabs.sonidoHielo;
+        break;
+      case 6: // Rayo
+        clip = BattleManager.Instance.contenedorPrefabs.sonidoElectrico;
+        break;
+      case 7: // Ácido
+        clip = BattleManager.Instance.contenedorPrefabs.sonidoAcido;
+        break;
+      case 8: // Arcano
+        clip = BattleManager.Instance.contenedorPrefabs.sonidoArcano;
+        break;
+      case 9: // Necro
+        clip = BattleManager.Instance.contenedorPrefabs.sonidoNecro;
+        break;
+      case 10: // Verdadero
+        clip = BattleManager.Instance.contenedorPrefabs.sonidoVerdadero;
+        break;
+      case 11: // Divino
+        clip = BattleManager.Instance.contenedorPrefabs.sonidoDivino;
+        break;
+    }
+    if (clip != null)
+    {
+      if (audioSource == null)
+      {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+          audioSource = gameObject.AddComponent<AudioSource>();
+        }
+      }
+      audioSource.PlayOneShot(clip);
+    }
+  }
+   
+   
+   
+    await Task.Delay(300);
+    if (sonidosRecibirDanio != null && sonidosRecibirDanio.Count > 0)
+    {
+      if (audioSource == null)
+      {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+          audioSource = gameObject.AddComponent<AudioSource>();
+        }
+      }
+      int index;
+      do
+      {
+        index = UnityEngine.Random.Range(0, sonidosRecibirDanio.Count);
+      } while (sonidosRecibirDanio.Count > 1 && index == ultimoSonidoDanioIndex);
+
+      ultimoSonidoDanioIndex = index;
+      audioSource.PlayOneShot(sonidosRecibirDanio[index]);
+    }
+  }
   public async virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
   {
     await Task.Delay(delayEfectos); //Delay para que se vea el efecto de daño en la unidad antes de aplicar el daño
@@ -1020,8 +1124,10 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           uCausante.OcasionoDanioaEnemigo(this, tipoDanio, esCritico, danioFinal); //se le avisa al causante que le hizo daño a la unidad, para lo que sea.
           LlamarReacciones(2, uCausante, false, danio, tipoDanio); //Llama a las reacciones de la unidad que recibe el daño.
         }
-
-       
+        if (danioFinal > 2)
+        {
+          await ReproducirSonidoRecibirDanio(tipoDanio);
+        }
       }
 
       scUnidadCanvas.txtDaño.text = "";

@@ -393,6 +393,7 @@ GameObject:
   - component: {fileID: 4974604081013211805}
   - component: {fileID: 5274352758734813587}
   - component: {fileID: 6898273786953949368}
+  - component: {fileID: -7665666266544025481}
   m_Layer: 7
   m_Name: UnidadEnemiga
   m_TagString: Unidad
@@ -441,18 +442,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CasillaPosicion: {fileID: 0}
   CasillaDeseadaMov: {fileID: 0}
+  CasillaForzadoaMover: {fileID: 0}
   estaCargando: {fileID: 0}
   valorCargando: 0
   uRetrato: {fileID: 0}
   uImage: {fileID: 6443253124490330045}
   uNombre: 
+  tags: []
   at_iniciativa: 6
   mod_iniciativa: 0
   iniciativa_actual: 0
+  esEtereo: 0
   at_maxHP: 0
   mod_maxHP: 0
   HP_actual: 0
   at_maxAccionP: 0
+  esInmobil: 0
   mod_maxAccionP: 0
   AccionP_actual: 0
   AccionP_SeEsforzo: 0
@@ -479,6 +484,8 @@ MonoBehaviour:
   mod_ResArcano: 0
   at_ResNecro: 0
   mod_ResNecro: 0
+  at_ResDivino: 0
+  mod_ResDivino: 0
   at_Defensa: 0
   mod_Defensa: 0
   Defensa_AtaquesRepetidosRonda: 0
@@ -501,16 +508,36 @@ MonoBehaviour:
   estado_ardiendo: 0
   estado_congelado: 0
   estado_aturdido: 0
+  estado_evasion: 0
   estado_inmovil: 0
   estado_armaduraModificador: 0
   estado_acido: 0
   estado_sangrado: 0
   estado_veneno: 0
   estado_invulnerable: 0
+  estado_regeneravida: 0
+  estado_regeneraarmadura: 0
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
+  estado_Corrupto: 0
+  inmunidad_Ceguera: 0
+  inmunidad_Oscuridad: 0
+  inmunidad_Trampas: 0
+  bonusdam_fuego: 0
+  bonusdam_hielo: 0
+  bonusdam_rayo: 0
+  bonusdam_acido: 0
+  bonusdam_arcano: 0
+  bonusdam_necro: 0
+  bonusdam_divino: 0
+  barreraDeDanio: 0
+  tejidoCuracMagica: 0
+  loMatoCorrompido: 0
+  entroComoAliado: 0
+  scBattleManager: {fileID: 0}
   velocidadMovimiento: 2.5
   movimientoEnCurso: 0
+  sonidosRecibirDanio: []
 --- !u!65 &1509404197017943415
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -545,6 +572,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   esRango: 0
+  bPuedeVerEscondidos: 0
+  costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0
   HabPosibles: []
@@ -564,6 +593,7 @@ MonoBehaviour:
   costoAP: 0
   vfxImpacto: {fileID: 0}
   vfxCasteo: {fileID: 0}
+  requiereRecurso: 0
   costoPM: 0
   cooldownMax: 0
   cooldownActual: 0
@@ -582,7 +612,10 @@ MonoBehaviour:
   esCargable: 0
   esMelee: 0
   bAfectaObstaculos: 0
+  poneTrampas: 0
+  poneObstaculo: 0
   esHostil: 0
+  esDiscreta: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -629,6 +662,103 @@ MonoBehaviour:
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 6984132662335430785}
   barraVida: {fileID: 6166577802057363619}
+--- !u!82 &-7665666266544025481
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5347618400333068394}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &5466267883174967827
 GameObject:
   m_ObjectHideFlags: 0

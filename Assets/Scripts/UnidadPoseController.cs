@@ -60,6 +60,7 @@ public class UnidadPoseController : MonoBehaviour
 
     public void OnStartMove()
     {
+       
         SetSprite(poseMover);
     }
 

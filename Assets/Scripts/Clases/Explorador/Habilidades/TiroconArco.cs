@@ -38,7 +38,7 @@ public class TiroconArco : Habilidad
       bonusAtaque = 0;
       XdDanio = 1;
       daniodX = 10; //1d10
-      tipoDanio = 1; //Perforante
+      tipoDanio = 2; //Perforante
       criticoRangoHab = 0;
 
       requiereRecurso = 1; //esto es para que el boton no se active al apretar si no tiene X recursos (ej Flecha). Ver en BotonHabilidad.

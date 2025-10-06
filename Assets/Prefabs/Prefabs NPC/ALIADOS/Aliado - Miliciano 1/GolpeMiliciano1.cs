@@ -48,7 +48,19 @@ public class GolpeMiliciano1 : IAHabilidad
       prioridad = pPrioridad;
     }
 
+    void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_GolpeDesertor");
 
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
    public async override Task ActivarHabilidad()
    {
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
@@ -72,60 +84,60 @@ public class GolpeMiliciano1 : IAHabilidad
           float defensaObjetivo = objetivo.ObtenerdefensaActual();
 
           int resultadoTirada = TiradaAtaque(defensaObjetivo, scEstaUnidad.mod_CarFuerza, bonusAtaque, scEstaUnidad.mod_CriticoRangoDado, objetivo) ;
-          
-        
-
-          if(resultadoTirada == -1)
-          {//PIFIA 
-        //    print("Pifia");
-            objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
-            //BattleManager.Instance.TerminarTurno(); //Al ser Pifia, termina el turno.
-       scEstaUnidad.EstablecerAPActualA(0);
-            
-          }
-          else if (resultadoTirada == 0)
-          {//FALLO
-           // print("Fallo");
-
-            objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
-
-          }
-          else if (resultadoTirada == 1)
-          {//ROCE
-         //   print("Roce");
-            float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
-             danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
-
-            danio -= danio/2; //Reduce 50% por roce
-
-            objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
-
-          }
-          else if (resultadoTirada == 2)
-          {//GOLPE
-         //   print("Golpe");
-
-            float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
-             danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
 
 
-            objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
-            
 
-          }
-          else if (resultadoTirada == 3)
-          {//CRITICO
-          //  print("Critico");
+      if (resultadoTirada == -1)
+      {//PIFIA 
+       //    print("Pifia");
+        objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
+        //BattleManager.Instance.TerminarTurno(); //Al ser Pifia, termina el turno.
+        scEstaUnidad.EstablecerAPActualA(0);
+      
+      }
+      else if (resultadoTirada == 0)
+      {//FALLO
+       // print("Fallo");
 
-            float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
-            danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
+        objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
+     
+      }
+      else if (resultadoTirada == 1)
+      {//ROCE
+       //   print("Roce");
+        float danio = TiradaDeDados.TirarDados(XdDanio, daniodX);
+        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+       VFXAplicar(objetivo.gameObject);
+        danio -= danio / 2; //Reduce 50% por roce
 
-            
-            
-            
-            objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
-            
-          }
+        objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
+
+      }
+      else if (resultadoTirada == 2)
+      {//GOLPE
+       //   print("Golpe");
+        VFXAplicar(objetivo.gameObject);
+        float danio = TiradaDeDados.TirarDados(XdDanio, daniodX);
+        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+
+
+        objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
+
+
+      }
+      else if (resultadoTirada == 3)
+      {//CRITICO
+       //  print("Critico");
+
+        float danio = TiradaDeDados.TirarDados(XdDanio, daniodX);
+        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+
+        VFXAplicar(objetivo.gameObject);
+
+
+        objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
+
+      }
           
             objetivo.AplicarDebuffPorAtaquesreiterados(1);
      }

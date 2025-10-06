@@ -1,0 +1,381 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Gestor de Heroes - Midnight Suns</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body { font-family: "Segoe UI", Tahoma, Arial, sans-serif; background: #0c1119; color: #e4ecfa; margin: 0; padding: 20px; }
+main { max-width: 1180px; margin: 0 auto; background: #121b26; border: 1px solid #1f2a36; border-radius: 14px; padding: 26px 28px 32px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35); display: flex; flex-direction: column; gap: 20px; }
+h1 { margin: 0 0 12px; font-size: 30px; }
+.controls, .mission-controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.controls { justify-content: space-between; }
+.day-info { display: flex; align-items: baseline; gap: 12px; font-size: 15px; }
+.day-info strong { font-size: 18px; }
+button { background: #1f3b58; color: #e4ecfa; border: none; border-radius: 8px; padding: 9px 14px; font-size: 13px; cursor: pointer; transition: all 0.18s ease; display: inline-flex; align-items: center; gap: 6px; }
+button:hover:not(:disabled) { background: #275179; transform: translateY(-1px); }
+button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+button.primary { background: #3a7bd5; color: #ffffff; }
+button.primary:hover:not(:disabled) { background: #3f8df2; }
+button.danger { background: #c0392b; }
+button.danger:hover:not(:disabled) { background: #d64533; }
+button.ghost { background: transparent; border: 1px solid #3a4a5c; }
+.button-tag { padding: 2px 8px; border-radius: 8px; font-size: 12px; }
+.table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid #1c2736; }
+table { width: 100%; border-collapse: collapse; min-width: 680px; }
+th, td { padding: 14px 16px; vertical-align: top; }
+thead th { border-bottom: 1px solid #233141; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: #7c8ba1; text-align: left; }
+tbody tr { border-bottom: 1px solid #1c2734; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr.hero-row { background: var(--row-bg, #121b26); }
+tbody tr.hero-row:hover { transform: translateY(-1px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18); }
+tbody tr.blocked td { opacity: 0.85; }
+tbody tr.row-inactive td { opacity: 0.75; }
+tbody tr.row-dead td { opacity: 0.55; text-decoration: line-through; }
+tbody tr.row-dead .hero-icon { filter: grayscale(1); }
+tbody tr.row-selected { outline: 2px solid rgba(90, 168, 255, 0.45); outline-offset: -2px; }
+.selection-col { width: 72px; text-align: center; }
+.selection-cell { text-align: center; vertical-align: top; padding-top: 24px; }
+.selector-button { width: 42px; height: 42px; border-radius: 12px; border: 1px solid rgba(140, 170, 215, 0.4); background: rgba(16, 26, 38, 0.92); color: #9cb8ff; font-weight: 600; font-size: 14px; justify-content: center; }
+.selector-button:hover:not(:disabled) { border-color: rgba(145, 180, 255, 0.85); color: #d1e0ff; }
+.selector-button.active { background: rgba(65, 125, 245, 0.85); border-color: rgba(111, 170, 255, 0.95); color: #ffffff; box-shadow: 0 10px 18px rgba(56, 125, 255, 0.35); }
+.hero-card { background: rgba(13, 20, 30, 0.55); border: 1px solid rgba(35, 49, 65, 0.7); border-radius: 14px; padding: 18px 20px 18px; display: flex; flex-direction: column; gap: 16px; }
+.hero-header { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
+.hero-header-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.hero-name-block { display: flex; align-items: center; gap: 12px; }
+.hero-name-title { font-size: 22px; font-weight: 700; margin: 0; }
+.hero-badges-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-height: 18px; }
+.hero-icon { width: 54px; height: 54px; border-radius: 16px; background: #1c2734; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; text-transform: uppercase; letter-spacing: 0.06em; color: #ffffff; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); }
+.relationship-heart { background: rgba(255, 90, 120, 0.18); color: #ff94b5; border: 1px solid rgba(255, 130, 155, 0.45); border-radius: 50%; width: 34px; height: 34px; font-size: 16px; font-weight: 700; justify-content: center; position: relative; }
+.relationship-heart:hover { background: rgba(255, 90, 120, 0.28); }
+.relationship-tooltip { position: absolute; top: 110%; left: 50%; transform: translateX(-50%) translateY(-6px); background: rgba(18, 27, 38, 0.98); border: 1px solid #2c3a4b; border-radius: 12px; padding: 12px 16px; width: clamp(220px, 20vw, 320px); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4); opacity: 0; pointer-events: none; transition: opacity 0.12s ease, transform 0.12s ease; z-index: 30; text-align: left; }
+.relationship-heart:hover .relationship-tooltip { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+.relationship-list { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.relationship-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid rgba(60, 78, 99, 0.3); }
+.relationship-row:last-child { border-bottom: none; }
+.relationship-value { font-weight: 700; }
+.rel-high { color: #7bed8d; }
+.rel-mid { color: #f7dc6f; }
+.rel-low { color: #ff7f7f; }
+.hero-metrics { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; }
+.metric { flex: 1 1 220px; display: flex; flex-direction: column; gap: 6px; }
+.metric-header { display: flex; align-items: center; justify-content: space-between; font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: #8da2bb; }
+.metric-label { font-weight: 600; color: #d6e2f1; }
+.metric-value { font-weight: 700; font-size: 14px; color: #e4ecfa; }
+.metric-track { background: rgba(18, 27, 38, 0.95); border-radius: 999px; height: 7px; width: 100%; overflow: hidden; }
+.metric-fill { height: 100%; border-radius: inherit; transition: width 0.2s ease-in-out; }
+.metric-fill.metric-morale { background: linear-gradient(90deg, #e74c3c 0%, #f7dc6f 50%, #58d68d 100%); }
+.metric-fill.metric-health { background: linear-gradient(90deg, #e74c3c 0%, #f39c12 50%, #7bdcb5 100%); }
+.hero-status-line { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; font-size: 12px; color: #aebbd0; }
+.status-chip { display: inline-flex; align-items: center; justify-content: center; padding: 2px 10px; border-radius: 999px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; color: #ffffff; }
+.hero-days { font-size: 12px; font-weight: 500; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-start; }
+.hero-actions button { flex: 1 1 110px; font-size: 11px; padding: 6px 8px; border-radius: 6px; }
+.badge { padding: 2px 8px; border-radius: 999px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+.badge-leader { background: rgba(255, 215, 0, 0.18); color: #ffe27a; border: 1px solid rgba(255, 215, 0, 0.35); }
+.badge-squad { background: rgba(90, 168, 255, 0.18); color: #9fc7ff; border: 1px solid rgba(90, 168, 255, 0.35); }
+.tag { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #ffffff; }
+.status-ready { background: #1e8449; }
+.status-inactive { background: #5d6775; }
+.status-wounded { background: #922b21; }
+.status-fatigued { background: #b9770e; }
+.status-activity { background: #16a085; }
+.status-rest { background: #1abc9c; }
+.status-vacation { background: #3498db; }
+.status-derrota { background: #c0392b; }
+.status-sick { background: #8e44ad; }
+.status-absence { background: #5d6d7e; }
+.status-no-morale { background: #2c3e50; }
+.status-dead { background: #2d3436; color: #f5f5f5; }
+.tag-blocked { background: #7f8c8d; color: #121b26; font-weight: 600; }
+.morale-critical { color: #ff6b6b; }
+.morale-low { color: #ffa726; }
+.morale-high { color: #7bed8d; }
+.health-critical { color: #ff6b6b; }
+.summary { font-size: 14px; color: #9fb2c7; display: flex; flex-wrap: wrap; gap: 12px; }
+.summary span { display: inline-flex; align-items: center; gap: 4px; }
+.summary-ok { color: #7bed8d; font-weight: 600; }
+.summary-warning { color: #ffb347; font-weight: 600; }
+.summary-danger { color: #ff6b6b; font-weight: 600; }
+.selection-info { font-size: 14px; color: #9fb2c7; display: flex; flex-wrap: wrap; gap: 12px; }
+.selection-info strong { color: #e4ecfa; }
+.notice { padding: 2px 8px; border-radius: 8px; font-size: 13px; font-weight: 600; }
+.notice-danger { color: #ff6b6b; background: rgba(220, 76, 100, 0.15); border: 1px solid rgba(220, 76, 100, 0.35); }
+.notice-warning { color: #f9c74f; background: rgba(249, 199, 79, 0.15); border: 1px solid rgba(249, 199, 79, 0.35); }
+.notice-info { color: #8ec6ff; background: rgba(100, 160, 255, 0.12); border: 1px solid rgba(100, 160, 255, 0.3); }
+.relationship-panel { border: 1px solid #1c2b3a; border-radius: 12px; padding: 18px 20px; background: #111924; display: flex; flex-direction: column; gap: 14px; }
+.relationship-panel h2 { margin: 0; font-size: 18px; }
+.relationship-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.relationship-panel select { background: #1b2736; color: #e4ecfa; border: 1px solid #2a3a4d; border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+.relationship-summary { font-size: 14px; color: #9fb2c7; display: flex; gap: 12px; align-items: center; }
+.relationship-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+.relationship-buttons button { padding: 6px 10px; font-size: 12px; border-radius: 6px; }
+.relationship-buttons .positive { background: #2e7d32; }
+.relationship-buttons .positive:hover { background: #388e3c; }
+.relationship-buttons .negative { background: #b23a48; }
+.relationship-buttons .negative:hover { background: #d04f5d; }
+.relationship-buttons .reset { background: #34495e; }
+.event-log { border: 1px solid #1c2b3a; border-radius: 12px; padding: 16px 18px; background: #101722; max-height: 260px; overflow-y: auto; }
+.event-log h2 { margin: 0 0 10px; font-size: 18px; }
+.event-log-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
+.event-log-list li { border-bottom: 1px solid rgba(42, 58, 77, 0.5); padding-bottom: 6px; }
+.event-log-list li:last-child { border-bottom: none; }
+.event-log-time { color: #7c8ba1; font-size: 12px; margin-right: 6px; }
+.star-selector { display: flex; align-items: center; gap: 8px; }
+.star-selector span { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #7c8ba1; }
+.star-button { width: 42px; height: 38px; border-radius: 10px; border: 1px solid rgba(90, 120, 170, 0.45); background: rgba(19, 28, 40, 0.85); font-size: 15px; font-weight: 600; justify-content: center; }
+.star-button.active { background: rgba(255, 215, 0, 0.2); border-color: rgba(255, 215, 0, 0.6); color: #ffe27a; box-shadow: 0 10px 18px rgba(255, 215, 0, 0.25); }
+@media (max-width: 960px) {
+  .hero-actions button { flex: 1 1 48%; }
+}
+@media (max-width: 780px) {
+  body { padding: 16px; }
+  main { padding: 22px; }
+  table { min-width: 640px; }
+  .hero-actions button { flex: 1 1 100%; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Gestor de Heroes - Midnight Suns</h1>
+    <div class="summary" id="missionSummary"></div>
+  </header>
+  <section class="controls">
+    <div class="day-info">
+      <span>Dia actual:</span>
+      <strong id="dayCount">0</strong>
+    </div>
+  </section>
+  <section class="mission-controls">
+    <div class="star-selector" id="starSelector">
+      <span>Estrellas Mision</span>
+      <button type="button" class="star-button" data-star="1">★</button>
+      <button type="button" class="star-button" data-star="2">★★</button>
+      <button type="button" class="star-button" data-star="3">★★★</button>
+    </div>
+    <button id="advanceSuccessBtn" class="primary">Avanzar - Mision Exitosa</button>
+    <button id="advanceFailBtn" class="danger">Avanzar - Mision Fallida</button>
+  </section>
+  <div class="selection-info" id="selectionInfo"></div>
+  <section class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th class="selection-col">Equipo</th>
+          <th>Detalle</th>
+        </tr>
+      </thead>
+      <tbody id="heroesBody"></tbody>
+    </table>
+  </section>
+  <section class="relationship-panel">
+    <h2>Gestion de Relaciones</h2>
+    <div class="relationship-controls">
+      <label>Heroe A
+        <select id="relationshipHeroA"></select>
+      </label>
+      <label>Heroe B
+        <select id="relationshipHeroB"></select>
+      </label>
+      <div class="relationship-summary">Relacion actual: <strong id="relationshipCurrentValue">-</strong></div>
+    </div>
+    <div class="relationship-buttons">
+      <button type="button" class="negative" data-rel-change="-2">-2</button>
+      <button type="button" class="negative" data-rel-change="-1">-1</button>
+      <button type="button" class="positive" data-rel-change="1">+1</button>
+      <button type="button" class="positive" data-rel-change="2">+2</button>
+      <button type="button" class="reset" id="relationshipResetBtn">Reset (4)</button>
+    </div>
+  </section>
+  <section class="event-log">
+    <h2>Registro de Eventos</h2>
+    <ul class="event-log-list" id="eventLogList"></ul>
+  </section>
+</main>
+<script>
+const STORAGE_KEY = "midnightSunsHeroTracker:v4";
+const LEGACY_KEYS = ["midnightSunsHeroTracker:v1", "midnightSunsHeroTracker:v2", "midnightSunsHeroTracker:v3"];
+const MAX_MORALE = 10;
+const MIN_MORALE = 0;
+const DEFAULT_MORALE = 5;
+const MAX_HEALTH = 5;
+const MIN_HEALTH = 0;
+const DEFAULT_HEALTH = 5;
+const REQUIRED_SELECTION = 3;
+const RELATION_MIN = 0;
+const RELATION_MAX = 10;
+const DEFAULT_RELATION = 4;
+const FRIEND_THRESHOLD = 7;
+const ENEMY_THRESHOLD = 2;
+const DAILY_EVENT_MIN = 1;
+const DAILY_EVENT_MAX = 3;
+const HERO_CONFIG = [
+  { id: "hunter", name: "Hunter", initials: "HT", color: "#ba68c8" },
+  { id: "iron-man", name: "Iron Man", initials: "IM", color: "#ff6f61" },
+  { id: "captain-america", name: "Captain America", initials: "CA", color: "#4f82d8" },
+  { id: "captain-marvel", name: "Captain Marvel", initials: "CM", color: "#f4b400" },
+  { id: "doctor-strange", name: "Doctor Strange", initials: "DS", color: "#6f52ed" },
+  { id: "blade", name: "Blade", initials: "BL", color: "#2ecc71" },
+  { id: "ghost-rider", name: "Ghost Rider", initials: "GR", color: "#ff8c42" },
+  { id: "magik", name: "Magik", initials: "MG", color: "#f39c12" },
+  { id: "nico-minoru", name: "Nico Minoru", initials: "NM", color: "#9b59b6" },
+  { id: "scarlet-witch", name: "Scarlet Witch", initials: "SW", color: "#d63d5d" },
+  { id: "spider-man", name: "Spider-Man", initials: "SM", color: "#e74c3c" },
+  { id: "wolverine", name: "Wolverine", initials: "WV", color: "#ffb300" },
+  { id: "hulk", name: "Hulk", initials: "HK", color: "#27ae60" },
+  { id: "deadpool", name: "Deadpool", initials: "DP", color: "#c0392b" },
+  { id: "venom", name: "Venom", initials: "VN", color: "#34495e" },
+  { id: "morbius", name: "Morbius", initials: "MB", color: "#566573" },
+  { id: "storm", name: "Storm", initials: "ST", color: "#6ec6ff" }
+];
+let currentDay = 0;
+let selectedStarCount = 3;
+const missionSelection = [];
+const heroes = HERO_CONFIG.map((config, index) => ({
+  ...config,
+  order: index,
+  active: false,
+  morale: DEFAULT_MORALE,
+  health: DEFAULT_HEALTH,
+  status: null,
+  daysRemaining: 0,
+  dead: false
+}));
+const heroMap = new Map(heroes.map(hero => [hero.id, hero]));
+const relationships = {};
+const eventLog = [];
+const dayCountEl = document.getElementById("dayCount");
+const tableBody = document.getElementById("heroesBody");
+const summaryEl = document.getElementById("missionSummary");
+const selectionInfoEl = document.getElementById("selectionInfo");
+const starButtons = Array.from(document.querySelectorAll(".star-button"));
+const advanceSuccessBtn = document.getElementById("advanceSuccessBtn");
+const advanceFailBtn = document.getElementById("advanceFailBtn");
+const relationshipHeroASelect = document.getElementById("relationshipHeroA");
+const relationshipHeroBSelect = document.getElementById("relationshipHeroB");
+const relationshipValueEl = document.getElementById("relationshipCurrentValue");
+const relationshipButtons = Array.from(document.querySelectorAll("[data-rel-change]"));
+const relationshipResetBtn = document.getElementById("relationshipResetBtn");
+const eventLogListEl = document.getElementById("eventLogList");
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+function clampMorale(value) {
+  return clamp(Math.round(value), MIN_MORALE, MAX_MORALE);
+}
+function clampHealth(value) {
+  return clamp(Math.round(value), MIN_HEALTH, MAX_HEALTH);
+}
+function clampRelation(value) {
+  return clamp(Math.round(value), RELATION_MIN, RELATION_MAX);
+}
+function initializeRelationships() {
+  HERO_CONFIG.forEach(hero => {
+    relationships[hero.id] = {};
+    HERO_CONFIG.forEach(other => {
+      if (hero.id !== other.id) {
+        relationships[hero.id][other.id] = DEFAULT_RELATION;
+      }
+    });
+  });
+}
+function cloneRelationships() {
+  const snapshot = {};
+  Object.keys(relationships).forEach(id => {
+    snapshot[id] = { ...relationships[id] };
+  });
+  return snapshot;
+}
+function getHeroName(id) {
+  return heroMap.get(id)?.name || id;
+}
+function getRelationship(idA, idB) {
+  if (idA === idB) return RELATION_MAX;
+  return relationships[idA]?.[idB] ?? DEFAULT_RELATION;
+}
+function setRelationship(idA, idB, value) {
+  if (idA === idB) return;
+  const clamped = clampRelation(value);
+  if (!relationships[idA]) relationships[idA] = {};
+  if (!relationships[idB]) relationships[idB] = {};
+  relationships[idA][idB] = clamped;
+  relationships[idB][idA] = clamped;
+}
+function adjustRelationship(idA, idB, delta, origin) {
+  if (idA === idB || !delta) return;
+  const current = getRelationship(idA, idB);
+  const next = clampRelation(current + delta);
+  setRelationship(idA, idB, next);
+  if (origin) {
+    addLog(`${origin}: relacion ${getHeroName(idA)} / ${getHeroName(idB)} -> ${next}`);
+  }
+}
+function isFriend(idA, idB) {
+  return getRelationship(idA, idB) >= FRIEND_THRESHOLD;
+}
+function isEnemy(idA, idB) {
+  return getRelationship(idA, idB) <= ENEMY_THRESHOLD;
+}
+function friendsOf(id) {
+  return HERO_CONFIG.filter(other => other.id !== id && isFriend(id, other.id));
+}
+function enemiesOf(id) {
+  return HERO_CONFIG.filter(other => other.id !== id && isEnemy(id, other.id));
+}
+function addLog(message) {
+  const entry = { day: currentDay, text: message, timestamp: Date.now() };
+  eventLog.push(entry);
+  if (eventLog.length > 200) {
+    eventLog.splice(0, eventLog.length - 200);
+  }
+  renderLog();
+}
+function renderLog() {
+  const items = eventLog.slice().reverse().map(entry => `<li><span class="event-log-time">Dia ${entry.day}</span>${entry.text}</li>`);
+  eventLogListEl.innerHTML = items.join("");
+}
+function populateRelationshipSelects() {
+  const options = HERO_CONFIG.map(hero => `<option value="${hero.id}">${hero.name}</option>`).join("");
+  const baseOption = '<option value="">Selecciona</option>';
+  relationshipHeroASelect.innerHTML = baseOption + options;
+  relationshipHeroBSelect.innerHTML = baseOption + options;
+}
+function updateRelationshipEditor() {
+  const idA = relationshipHeroASelect.value;
+  const idB = relationshipHeroBSelect.value;
+  if (!idA || !idB || idA === idB) {
+    relationshipValueEl.textContent = "-";
+    relationshipButtons.forEach(btn => btn.disabled = true);
+    relationshipResetBtn.disabled = true;
+    return;
+  }
+  relationshipValueEl.textContent = getRelationship(idA, idB);
+  relationshipButtons.forEach(btn => btn.disabled = false);
+  relationshipResetBtn.disabled = false;
+}
+tableBody.addEventListener("click", event => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+  const action = button.getAttribute("data-action");
+  const heroId = button.getAttribute("data-id");
+  handleAction(heroId, action);
+});
+starButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    selectedStarCount = Number(button.dataset.star);
+    syncStarButtons();
+    updateMissionControls();
+    saveState();
+  });
+});
+
+
+advanceSuccessBtn.addEventListener("click", () => {
+  if (!canAdvanceMission()) return;
+  advanceDayWithOutcome("success", selectedStarCount);
+});
+avanceFail??

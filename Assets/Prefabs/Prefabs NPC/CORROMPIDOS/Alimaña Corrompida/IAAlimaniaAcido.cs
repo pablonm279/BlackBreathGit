@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -17,7 +17,6 @@ public class IAAlimaniaAcido : IAHabilidad
     [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
 
 
-    
   void Awake()
    {
       nombre = "Arrojar Corrosión";
@@ -31,7 +30,7 @@ public class IAAlimaniaAcido : IAHabilidad
       prioridad = 0;
       costoAP = 4;
       afectaObstaculos = true;
-      
+
 
 
       hActualCooldown = hCooldownMax;
@@ -40,11 +39,6 @@ public class IAAlimaniaAcido : IAHabilidad
       XdDanio = 2;
       daniodX = 6; //2d8+4
       tipoDanio = 7; //Ácido
-
-
-      
-
-    
    }
 
     void Start()
@@ -59,49 +53,62 @@ public class IAAlimaniaAcido : IAHabilidad
 
     PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 
-
-
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
 
     scEstaUnidad.ReproducirAnimacionAtaque();
 
-  
+    Task impactoPendiente = Objetivo != null ? CrearProyectil(Objetivo) : Task.CompletedTask;
+    await impactoPendiente;
 
-    Invoke("CrearProyectil", 0.9f);
-
-
-
-    await Task.Delay(1800);
-    //Esto es cuando el objetivo es uno solo,
-    AplicarEfectosHabilidad(Objetivo);
-
-     
-   }
-
-    void CrearProyectil()
-   {
-      GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.ArrojarCorrosion;
-      GameObject Proyectil = Instantiate(flechaPrefab);
-      Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-      Proyectil.GetComponent<ArrowFlight>().velocidad = 3.6f;
-      Proyectil.GetComponent<ArrowFlight>().parabola = 1.1f;
-
-      if (Objetivo != null)
+    if (Objetivo != null)
     {
-
-      if (Objetivo is Unidad)
-      {
-        Unidad obj = (Unidad)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-      }
-      else if (Objetivo is Obstaculo)
-      {
-        Obstaculo obj = (Obstaculo)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-      }
+        AplicarEfectosHabilidad(Objetivo);
     }
-     
+  }
+
+    internal Task CrearProyectil(object objetivo)
+   {
+      if (objetivo == null)
+      {
+        return Task.CompletedTask;
+      }
+
+      return LanzarProyectilAsync(objetivo);
    }
+
+    private async Task LanzarProyectilAsync(object objetivo)
+    {
+        await Task.Delay(50);
+
+        GameObject proyectilPrefab = BattleManager.Instance.contenedorPrefabs.ArrojarCorrosion;
+        if (proyectilPrefab == null)
+        {
+            return;
+        }
+
+        GameObject proyectil = Instantiate(proyectilPrefab);
+        ArrowFlight flight = proyectil.GetComponent<ArrowFlight>();
+
+        Transform destino = null;
+        if (objetivo is Unidad unidad)
+        {
+            destino = unidad.transform;
+        }
+        else if (objetivo is Obstaculo obstaculo)
+        {
+            destino = obstaculo.transform;
+        }
+
+        if (flight != null && destino != null)
+        {
+            flight.Configure(transform, destino, 1.1f, 3.6f);
+            await flight.EsperarImpactoAsync();
+        }
+        else
+        {
+            await Task.Delay(200);
+        }
+    }
     public override void AplicarEfectosHabilidad(object obj)
     {
       if(obj is Unidad)
@@ -205,7 +212,7 @@ public class IAAlimaniaAcido : IAHabilidad
     // Filtrar las unidades
      print("Sel objPosibles "+objPosibles.Count);
    
-     
+    
     var unidades = objPosibles.OfType<Unidad>().ToList();
     print("Sel obj unidades cant: "+unidades.Count);
     // Filtrar los obstáculos

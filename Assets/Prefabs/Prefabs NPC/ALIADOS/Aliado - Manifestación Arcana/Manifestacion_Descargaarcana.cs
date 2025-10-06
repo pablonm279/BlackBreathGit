@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -17,7 +17,6 @@ public class Manifestacion_Descargaarcana : IAHabilidad
     [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
 
 
-    
   void Awake()
    {
       nombre = "Descarga Arcana";
@@ -31,7 +30,7 @@ public class Manifestacion_Descargaarcana : IAHabilidad
       prioridad = pPrioridad;
       costoAP = 2;
       afectaObstaculos = true;
-      
+
 
 
       hActualCooldown = hCooldownMax;
@@ -40,11 +39,6 @@ public class Manifestacion_Descargaarcana : IAHabilidad
       XdDanio = 2;
       daniodX = 4; //2d4
       tipoDanio = 8; //Arcano
-
-
-      
-
-    
    }
 
     void Start()
@@ -56,60 +50,78 @@ public class Manifestacion_Descargaarcana : IAHabilidad
    public async override Task ActivarHabilidad()
    {
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
-     
+
       scEstaUnidad.ReproducirAnimacionAtaque();
 
       Objetivo = EstablecerObjetivoPrioritario();
-          PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
+      PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 
-    
-      Invoke("CrearProyectil", 0.9f);
+      Task impactoPendiente = Objetivo != null ? CrearProyectil(Objetivo) : Task.CompletedTask;
+      await impactoPendiente;
 
-     
-    
-      await Task.Delay(1300);
-      //Esto es cuando el objetivo es uno solo,
-      AplicarEfectosHabilidad(Objetivo);
-     
+      if (Objetivo != null)
+      {
+          AplicarEfectosHabilidad(Objetivo);
+      }
    }
 
-   void CrearProyectil()
-   {
-      GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.DescargaArcana;
-      GameObject Proyectil = Instantiate(flechaPrefab);
-      Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-    
-     
-      if(Objetivo != null)
-      {
-     
-      if(Objetivo is Unidad)
-      {
-        Unidad obj = (Unidad)Objetivo;
-       Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-      }
-      else if(Objetivo is Obstaculo)
-      {
-        Obstaculo obj = (Obstaculo)Objetivo;
-       Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-      }
-      }
-     
-   }
+   internal Task CrearProyectil(object objetivo)
+    {
+        if (objetivo == null)
+        {
+            return Task.CompletedTask;
+        }
+
+        return LanzarProyectilAsync(objetivo);
+    }
+
+    private async Task LanzarProyectilAsync(object objetivo)
+    {
+        await Task.Delay(50);
+
+        GameObject proyectilPrefab = BattleManager.Instance.contenedorPrefabs.DescargaArcana;
+        if (proyectilPrefab == null)
+        {
+            return;
+        }
+
+        GameObject proyectil = Instantiate(proyectilPrefab);
+        ArrowFlight flight = proyectil.GetComponent<ArrowFlight>();
+
+        Transform destino = null;
+        if (objetivo is Unidad unidad)
+        {
+            destino = unidad.transform;
+        }
+        else if (objetivo is Obstaculo obstaculo)
+        {
+            destino = obstaculo.transform;
+        }
+
+        if (flight != null && destino != null)
+        {
+            flight.Configure(transform, destino, 0.65f, 4.8f);
+            await flight.EsperarImpactoAsync();
+        }
+        else
+        {
+            await Task.Delay(200);
+        }
+    }
     public override void AplicarEfectosHabilidad(object obj)
     {
-   
+
      if(obj is Unidad)
      {
 
-     
+
         Unidad objetivo = (Unidad)obj;
-     
+
         float defensaObjetivo = objetivo.ObtenerdefensaActual();
 
         int resultadoTirada = TiradaAtaque(defensaObjetivo, scEstaUnidad.mod_CarPoder, bonusAtaque, scEstaUnidad.mod_CriticoRangoDado, objetivo) ;
-     
-   
+
+
 
      if(resultadoTirada == -1)
      {//PIFIA 
@@ -143,7 +155,7 @@ public class Manifestacion_Descargaarcana : IAHabilidad
         danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
 
        objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
-    
+
 
      }
      else if (resultadoTirada == 3)
@@ -152,27 +164,27 @@ public class Manifestacion_Descargaarcana : IAHabilidad
 
        float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
         danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
-      
+
        objetivo.RecibirDanio(danio, tipoDanio, true,  scEstaUnidad);
-    
+
      }
-     
+
       objetivo.AplicarDebuffPorAtaquesreiterados(1);
-      
+
      }
       else if(obj is Obstaculo)
      {
           Obstaculo objetivo = (Obstaculo)obj;
-          
+
           float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
            danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
-           
+
           objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
      }
-     
+
     }
 
-   
+
     public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
    {
     
@@ -183,7 +195,7 @@ public class Manifestacion_Descargaarcana : IAHabilidad
     // Filtrar las unidades
      print("Sel objPosibles "+objPosibles.Count);
    
-     
+    
     var unidades = objPosibles.OfType<Unidad>().ToList();
     print("Sel obj unidades cant: "+unidades.Count);
     // Filtrar los obstáculos

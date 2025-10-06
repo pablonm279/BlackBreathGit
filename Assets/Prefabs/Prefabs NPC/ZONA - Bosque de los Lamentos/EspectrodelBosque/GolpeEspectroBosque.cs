@@ -62,7 +62,19 @@ public class GolpeEspectroBosque : IAHabilidad
       AplicarEfectosHabilidad(Objetivo);
      
    }
+        void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_GarraEspectro");
 
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
     
     public override void AplicarEfectosHabilidad(object obj)
     {
@@ -97,7 +109,7 @@ public class GolpeEspectroBosque : IAHabilidad
              danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
 
             danio -= danio/2; //Reduce 50% por roce
-
+          VFXAplicar(objetivo.gameObject);
             objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
            
           }
@@ -107,7 +119,7 @@ public class GolpeEspectroBosque : IAHabilidad
 
             float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
             danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
-
+          VFXAplicar(objetivo.gameObject);
 
             objetivo.RecibirDanio(danio+4, tipoDanio, false,  scEstaUnidad);
 
@@ -115,7 +127,7 @@ public class GolpeEspectroBosque : IAHabilidad
           else if (resultadoTirada == 3)
           {//CRITICO
           //  print("Critico");
-
+          VFXAplicar(objetivo.gameObject);
             float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
             danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
 

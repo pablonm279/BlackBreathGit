@@ -39,7 +39,6 @@ public class ContenedorPrefabs : MonoBehaviour
     [Header("VFX")]
 
     public GameObject Flecha;
-    public GameObject Virote;
     public GameObject ViroteBallestadeMano;
     public GameObject ViroteBallestadeManoVeneno;
     public GameObject LlamaDivina;
@@ -94,9 +93,26 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject Ladron;
     public GameObject RufianConBallesta;
     public GameObject RufianConMazo;
-    public GameObject PerroAdiestrado; 
+    public GameObject PerroAdiestrado;
     public GameObject DevoradorCorrompido;
     public GameObject GuerreroCorrompido;
     public GameObject AlimaniaCorrompida;
-    
+
+
+    [Header("Sonidos Daño")]
+
+    public AudioClip sonidoPerforante;
+    public AudioClip sonidoCortante;
+    public AudioClip sonidoContundente;
+    public AudioClip sonidoArcano;
+    public AudioClip sonidoFuego;
+    public AudioClip sonidoDivino;
+    public AudioClip sonidoNecro;
+    public AudioClip sonidoElectrico;
+    public AudioClip sonidoHielo;
+    public AudioClip sonidoAcido;
+    public AudioClip sonidoVerdadero;
+    public AudioClip sonidoMovimientoLigero;
+    public AudioClip sonidoErrar;
+
 }

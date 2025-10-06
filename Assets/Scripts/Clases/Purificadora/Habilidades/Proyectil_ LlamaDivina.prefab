@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 2105633647798340256}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.448, z: 0.062}
+  m_LocalPosition: {x: 0, y: 0, z: 0.062}
   m_LocalScale: {x: 0.36397, y: 0.13676, z: 0.000100000005}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -137,8 +137,6 @@ MonoBehaviour:
   endMarker: {fileID: 0}
   parabola: 0
   velocidad: 0
-  offsetStartY: 0.09
-  offsetEndY: 0.04
 --- !u!82 &9003452082906731512
 AudioSource:
   m_ObjectHideFlags: 0
@@ -279,7 +277,7 @@ Transform:
   m_GameObject: {fileID: 8104475024167382613}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.449, z: 0.082}
+  m_LocalPosition: {x: 0, y: 0, z: 0.082}
   m_LocalScale: {x: 0.036462877, y: 0.00933762, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

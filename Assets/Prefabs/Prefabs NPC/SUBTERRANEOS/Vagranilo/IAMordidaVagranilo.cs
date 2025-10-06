@@ -25,7 +25,7 @@ public class IAMordidaVagranilo : IAHabilidad
       hAlcance = 1;
       hCooldownMax = 0;
       esHostil = true;
-      prioridad = 1;
+      prioridad = 0;
       costoAP = 1;
       afectaObstaculos = true;
       
@@ -45,7 +45,7 @@ public class IAMordidaVagranilo : IAHabilidad
 
     void Start()
     {
-      prioridad = pPrioridad;
+      prioridad = 0;
     }
 
 
@@ -72,64 +72,65 @@ public class IAMordidaVagranilo : IAHabilidad
           float defensaObjetivo = objetivo.ObtenerdefensaActual();
 
           int resultadoTirada = TiradaAtaque(defensaObjetivo, scEstaUnidad.mod_CarFuerza, bonusAtaque, scEstaUnidad.mod_CriticoRangoDado, objetivo) ;
-          
-        
 
-          if(resultadoTirada == -1)
-          {//PIFIA 
-        //    print("Pifia");
-            objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
-            //BattleManager.Instance.TerminarTurno(); //Al ser Pifia, termina el turno.
-       scEstaUnidad.EstablecerAPActualA(0);
-            
+
+
+      if (resultadoTirada == -1)
+      {//PIFIA 
+       //    print("Pifia");
+        objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
+        //BattleManager.Instance.TerminarTurno(); //Al ser Pifia, termina el turno.
+        scEstaUnidad.EstablecerAPActualA(0);
+
+      }
+      else if (resultadoTirada == 0)
+      {//FALLO
+       // print("Fallo");
+
+        objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
+
+      }
+      else if (resultadoTirada == 1)
+      {//ROCE
+       //   print("Roce");
+        float danio = TiradaDeDados.TirarDados(XdDanio, daniodX);
+        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+
+        danio -= danio / 2; //Reduce 50% por roce
+
+        objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
+
+        AplicaSangradoTirada(objetivo, -2);
+             VFXAplicar(objetivo.gameObject);
           }
-          else if (resultadoTirada == 0)
-          {//FALLO
-           // print("Fallo");
+      else if (resultadoTirada == 2)
+      {//GOLPE
+       //   print("Golpe");
 
-            objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
-
-          }
-          else if (resultadoTirada == 1)
-          {//ROCE
-         //   print("Roce");
-            float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
-             danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
-
-            danio -= danio/2; //Reduce 50% por roce
-
-            objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
-
-            AplicaSangradoTirada(objetivo, -2);
-          }
-          else if (resultadoTirada == 2)
-          {//GOLPE
-         //   print("Golpe");
-
-            float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
-             danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
+        float danio = TiradaDeDados.TirarDados(XdDanio, daniodX);
+        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
 
 
-            objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
-            
-            AplicaSangradoTirada(objetivo, 0);
+        objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
-          }
-          else if (resultadoTirada == 3)
-          {//CRITICO
-          //  print("Critico");
+        AplicaSangradoTirada(objetivo, 0);
+        VFXAplicar(objetivo.gameObject);
+      }
+      else if (resultadoTirada == 3)
+      {//CRITICO
+       //  print("Critico");
 
-            float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
-            danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
+        float danio = TiradaDeDados.TirarDados(XdDanio, daniodX);
+        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
 
-            
-            
-            
-            objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
-            
-            AplicaSangradoTirada(objetivo, 1);
-          }
-          
+
+
+
+        objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
+
+        AplicaSangradoTirada(objetivo, 1);
+      }
+          VFXAplicar(objetivo.gameObject);
             objetivo.AplicarDebuffPorAtaquesreiterados(1);
      }
      else if(obj is Obstaculo)
@@ -170,11 +171,23 @@ public override object EstablecerObjetivoPrioritario()
     return obstaculo;
 }
 
+ void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_DevorarSangre");
 
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
 
 void AplicaSangradoTirada(Unidad unidad, int extraDC)
 {
-    if (unidad.TiradaSalvacion(unidad.mod_TSFortaleza, 9 + extraDC))
+    if (unidad.TiradaSalvacion(unidad.mod_TSFortaleza, 7 + extraDC))
     {
         unidad.estado_sangrado = 1;
 

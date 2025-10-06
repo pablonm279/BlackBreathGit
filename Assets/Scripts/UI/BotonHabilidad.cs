@@ -97,10 +97,12 @@ public class BotonHabilidad : MonoBehaviour
 
 
     public void ActivarHabilidad(bool yaVienedeCargando)
-    { BattleManager.Instance.bOcupado = false;
+    {
+
+        
       if (CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>().escenaActual != 1)
       {return;} // Sale del método si la escena no es "ES-Batallas"
-      
+      BattleManager.Instance.bOcupado = false;
       if(HabilidadRepresentada.GetType().Name.Contains("REPRESENTACION"))
       {return;} //Si se clickea el boton de una pasiva, no pasa nada
 

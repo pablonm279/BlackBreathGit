@@ -36,7 +36,7 @@ public class IAMordidaPerroAdiestrado : IAHabilidad
       bonusAtaque = 0;
       XdDanio = 2;
       daniodX = 6; //2d6
-      tipoDanio = 2; //Cortante
+      tipoDanio = 1; //Cortante
 
 
    
@@ -48,7 +48,19 @@ public class IAMordidaPerroAdiestrado : IAHabilidad
       prioridad = pPrioridad;
     }
 
+     void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_MordidaMastin");
 
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
    public async override Task ActivarHabilidad()
    {
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
@@ -100,6 +112,7 @@ public class IAMordidaPerroAdiestrado : IAHabilidad
         danio -= danio / 2; //Reduce 50% por roce
 
         objetivo.RecibirDanio(danio + 1, tipoDanio, false, scEstaUnidad);
+        VFXAplicar(objetivo.gameObject);
 
       }
       else if (resultadoTirada == 2)
@@ -111,6 +124,7 @@ public class IAMordidaPerroAdiestrado : IAHabilidad
 
 
         objetivo.RecibirDanio(danio + 2, tipoDanio, false, scEstaUnidad);
+        VFXAplicar(objetivo.gameObject);
 
         if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 12))
         {
@@ -125,6 +139,7 @@ public class IAMordidaPerroAdiestrado : IAHabilidad
 
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX);
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+        VFXAplicar(objetivo.gameObject);
 
 
 

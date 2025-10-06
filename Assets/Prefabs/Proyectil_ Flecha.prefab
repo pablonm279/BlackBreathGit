@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 2105633647798340256}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.4554, z: -0.0097}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.359482, y: 0.11491, z: 0.000100000005}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -250,8 +250,6 @@ MonoBehaviour:
   endMarker: {fileID: 0}
   parabola: 0
   velocidad: 0
-  offsetStartY: 1.5
-  offsetEndY: 0
 --- !u!1 &7435397058753712318
 GameObject:
   m_ObjectHideFlags: 0
@@ -278,7 +276,7 @@ Transform:
   m_GameObject: {fileID: 7435397058753712318}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.454, z: -0.128}
+  m_LocalPosition: {x: 0, y: 0, z: -0.128}
   m_LocalScale: {x: 0.17159, y: 0.026291305, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

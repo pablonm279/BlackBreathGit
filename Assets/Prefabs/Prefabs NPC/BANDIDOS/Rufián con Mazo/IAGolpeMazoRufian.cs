@@ -64,16 +64,29 @@ public class IAGolpeMazoRufian : IAHabilidad
       AplicarEfectosHabilidad(Objetivo);
      
    }
+   
+     void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_GolpeGenerico");
 
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
     
     public override void AplicarEfectosHabilidad(object obj)
+  {
+    if (obj is Unidad)
     {
-     if(obj is Unidad)
-     {
-          Unidad objetivo = (Unidad)obj;
-          float defensaObjetivo = objetivo.ObtenerdefensaActual();
+      Unidad objetivo = (Unidad)obj;
+      float defensaObjetivo = objetivo.ObtenerdefensaActual();
 
-          int resultadoTirada = TiradaAtaque(defensaObjetivo, scEstaUnidad.mod_CarFuerza, bonusAtaque, scEstaUnidad.mod_CriticoRangoDado, objetivo) ;
+      int resultadoTirada = TiradaAtaque(defensaObjetivo, scEstaUnidad.mod_CarFuerza, bonusAtaque, scEstaUnidad.mod_CriticoRangoDado, objetivo);
 
 
 
@@ -101,6 +114,7 @@ public class IAGolpeMazoRufian : IAHabilidad
         danio -= danio / 2; //Reduce 50% por roce
 
         objetivo.RecibirDanio(danio + 1, tipoDanio, false, scEstaUnidad);
+        VFXAplicar(objetivo.gameObject);
 
 
       }
@@ -113,7 +127,8 @@ public class IAGolpeMazoRufian : IAHabilidad
 
 
         objetivo.RecibirDanio(danio + 5, tipoDanio, false, scEstaUnidad);
-       
+        VFXAplicar(objetivo.gameObject);
+
 
 
 
@@ -129,21 +144,22 @@ public class IAGolpeMazoRufian : IAHabilidad
 
 
         objetivo.RecibirDanio(danio + 10, tipoDanio, true, scEstaUnidad);
-        
+        VFXAplicar(objetivo.gameObject);
+
 
       }
-          
-            objetivo.AplicarDebuffPorAtaquesreiterados(1);
-     }
-     else if(obj is Obstaculo)
-     {
-          Obstaculo objetivo = (Obstaculo)obj;
-          
-          float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
-           danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
-          objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
-     }
+
+      objetivo.AplicarDebuffPorAtaquesreiterados(1);
     }
+    else if (obj is Obstaculo)
+    {
+      Obstaculo objetivo = (Obstaculo)obj;
+
+      float danio = TiradaDeDados.TirarDados(XdDanio, daniodX);
+      danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+      objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
+    }
+  }
 
 public override object EstablecerObjetivoPrioritario() 
 {

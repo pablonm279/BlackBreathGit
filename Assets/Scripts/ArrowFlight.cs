@@ -1,19 +1,16 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using UnityEngine;
 
 public class ArrowFlight : MonoBehaviour
 {
     public Transform startMarker; // Punto de inicio (personaje)
     public Transform endMarker;   // Punto final (enemigo)
- 
 
     private float startTime;
     private float journeyLength;
 
     public float parabola;
     public float velocidad;
-    public float offsetStartY; //para que salga mas arriba o abajo
-    public float offsetEndY; //para que pegue mas arriba o abajo
 
     TaskCompletionSource<bool> impactoTcs;
     bool configurado;
@@ -22,31 +19,38 @@ public class ArrowFlight : MonoBehaviour
     {
         impactoTcs = new TaskCompletionSource<bool>();
     }
-
-    public void Configure(Transform inicio, Transform destino, float alturaParabola, float velocidadVuelo, float offsetInicio = 0f, float offsetDestino = 0f)
+    
+    public void Configure(Transform inicio, Transform destino, float alturaParabola, float velocidadVuelo)
     {
-        startMarker = inicio;
-        endMarker = destino;
+        startMarker = ResolvePuntoSalida(inicio);
+        endMarker = ResolvePuntoEntrada(destino);
         parabola = alturaParabola;
         velocidad = velocidadVuelo;
-        offsetStartY = offsetInicio;
-        offsetEndY = offsetDestino;
 
         startTime = Time.time;
         configurado = true;
-        journeyLength = Vector3.Distance(startMarker.position + new Vector3(0, offsetStartY, 0), endMarker.position + new Vector3(0, offsetEndY, 0));
-        transform.position = startMarker.position + new Vector3(0, offsetStartY, 0);
+
+        journeyLength = Vector3.Distance(GetStartPosition(), GetEndPosition());
+        if (journeyLength <= 0.0001f)
+        {
+            journeyLength = 0.0001f;
+        }
+
+        transform.position = GetStartPosition();
         if (endMarker != null)
         {
-            transform.LookAt(endMarker.position);
+            transform.LookAt(GetEndPosition());
         }
     }
 
     void Start()
     {
+        startMarker = ResolvePuntoSalida(startMarker);
+        endMarker = ResolvePuntoEntrada(endMarker);
+
         if (!configurado && startMarker != null && endMarker != null)
         {
-            Configure(startMarker, endMarker, parabola, velocidad, offsetStartY, offsetEndY);
+            Configure(startMarker, endMarker, parabola, velocidad);
         }
     }
 
@@ -67,7 +71,10 @@ public class ArrowFlight : MonoBehaviour
     }
 
     void Update()
-    {
+    {   Debug.DrawLine(GetStartPosition(), GetStartPosition() + Vector3.up * 0.5f, Color.yellow);
+        startMarker = ResolvePuntoSalida(startMarker);
+        endMarker = ResolvePuntoEntrada(endMarker);
+
         if (startMarker == null || endMarker == null)
         {
             Destruir();
@@ -83,8 +90,8 @@ public class ArrowFlight : MonoBehaviour
 
         float fracJourney = Mathf.Clamp01(distCovered / distanciaTotal);
 
-        Vector3 origen = startMarker.position + new Vector3(0, offsetStartY, 0);
-        Vector3 destino = endMarker.position + new Vector3(0, offsetEndY, 0);
+        Vector3 origen = GetStartPosition();
+        Vector3 destino = GetEndPosition();
 
         Vector3 nextPosition = CalculateParabolicPath(origen, destino, parabola, fracJourney);
         transform.position = nextPosition;
@@ -104,10 +111,71 @@ public class ArrowFlight : MonoBehaviour
         }
     }
 
+    Vector3 GetStartPosition()
+    {
+        if (startMarker == null)
+        {
+            return transform.position;
+        }
+
+        return startMarker.position;
+    }
+
+    Vector3 GetEndPosition()
+    {
+        if (endMarker == null)
+        {
+            return transform.position;
+        }
+
+        return endMarker.position;
+    }
+
+    Transform ResolvePuntoSalida(Transform posibleInicio)
+    {
+        if (posibleInicio == null)
+        {
+            return null;
+        }
+
+        Unidad unidad = posibleInicio.GetComponentInParent<Unidad>();
+        if (unidad != null && unidad.puntoSaliente != null)
+        {
+            return unidad.puntoSaliente;
+        }
+
+        return posibleInicio;
+    }
+
+    Transform ResolvePuntoEntrada(Transform posibleDestino)
+    {
+        if (posibleDestino == null)
+        {
+            return null;
+        }
+
+        Unidad unidad = posibleDestino.GetComponentInParent<Unidad>();
+        if (unidad != null && unidad.puntoEntrante != null)
+        {
+            return unidad.puntoEntrante;
+        }
+
+        return posibleDestino;
+    }
+
     Vector3 CalculateParabolicPath(Vector3 start, Vector3 end, float height, float t)
     {
-        float parabolicT = Mathf.Sin(t * Mathf.PI);
+        // interpolación lineal entre inicio y fin
+        Vector3 pos = Vector3.Lerp(start, end, t);
 
-        return Vector3.Lerp(start, end, t) + Vector3.up * parabolicT * height;
+        // parábola: 4 * h * t * (1 - t) asegura que:
+        //   t=0  → 0
+        //   t=0.5 → altura máxima
+        //   t=1  → 0
+        float parabola = 4 * height * t * (1 - t);
+
+        pos.y += parabola;
+        return pos;
     }
+
 }

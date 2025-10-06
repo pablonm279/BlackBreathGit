@@ -43,7 +43,7 @@ public class DisparoEnvenenado : Habilidad
 
     XdDanio = 3;
     daniodX = 4; //1d10
-    tipoDanio = 1; //Perforante
+    tipoDanio = 2; //Perforante
     criticoRangoHab = 0;
 
 

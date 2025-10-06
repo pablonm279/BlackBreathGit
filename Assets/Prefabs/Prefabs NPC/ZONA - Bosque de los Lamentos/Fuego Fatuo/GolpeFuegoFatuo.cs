@@ -97,7 +97,7 @@ public class GolpeFuegoFatuo : IAHabilidad
              danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
 
             danio -= danio/2; //Reduce 50% por roce
-
+            VFXAplicar(objetivo.gameObject);
             objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
            
           }
@@ -111,7 +111,7 @@ public class GolpeFuegoFatuo : IAHabilidad
 
               
             AplicarPosesion(objetivo);
-            
+            VFXAplicar(objetivo.gameObject);
 
             objetivo.RecibirDanio(danio+1, tipoDanio, false,  scEstaUnidad);
 
@@ -126,7 +126,7 @@ public class GolpeFuegoFatuo : IAHabilidad
           
             AplicarPosesion(objetivo);
           
-            
+            VFXAplicar(objetivo.gameObject);
             objetivo.RecibirDanio(danio+2, tipoDanio, true, scEstaUnidad);
           
           }
@@ -144,60 +144,74 @@ public class GolpeFuegoFatuo : IAHabilidad
 
     }
 
-public GameObject VFXEstadoPrefab;
-public void AplicarPosesion(Unidad objetivo)
-{
-  if(objetivo.TiradaSalvacion(objetivo.mod_TSMental, 10))
-  {
-    bool yaposeido = false;
-    Buff[] buffs = objetivo.GetComponents<Buff>();
-    foreach (Buff buff in buffs)
+  public GameObject VFXEstadoPrefab;
+
+        void VFXAplicar(GameObject objetivo)
     {
-      if(buff.buffNombre == "Encarnado")
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_GarraEspectro");
+
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
+  public void AplicarPosesion(Unidad objetivo)
+  {
+    if (objetivo.TiradaSalvacion(objetivo.mod_TSMental, 10))
+    {
+      bool yaposeido = false;
+      Buff[] buffs = objetivo.GetComponents<Buff>();
+      foreach (Buff buff in buffs)
       {
-        yaposeido = true;
+        if (buff.buffNombre == "Encarnado")
+        {
+          yaposeido = true;
+        }
+
       }
 
+      if (!yaposeido)
+      {
+        //!!!!!!!!!!
+        /////////////////////////////////////////////
+        //BUFF ---- Así se aplica un buff/debuff
+        Buff buff = new Buff();
+        buff.buffNombre = "Encarnado";
+        buff.buffDescr = "Poseído por Fuego Fatuo. No puede actuar y recibe daño desde adentro cada turno.";
+        buff.boolfDebufftBuff = false;
+        buff.DuracionBuffRondas = 2;
+        buff.CustomEffectInicioTurnoID = 1; //Efecto posesión
+        buff.unidadOrigen = scEstaUnidad;
+
+        //Aplica VFX del estado
+        GameObject goVFX = Instantiate(VFXEstadoPrefab, objetivo.transform.position, objetivo.transform.rotation);
+        goVFX.transform.parent = objetivo.transform;
+        buff.goVFX = goVFX;
+
+        buff.AplicarBuff(objetivo);
+        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
+
+
+        //esconder grafico
+        scEstaUnidad.gameObject.transform.GetChild(3).GetChild(1).gameObject.SetActive(false);
+        scEstaUnidad.estado_invulnerable = 2;
+        scEstaUnidad.estado_aturdido = 2;
+
+
+        BattleManager.Instance.EscribirLog($"{objetivo.uNombre} fue Encarnado por Fuego Fatuo");
+
+
+
+      }
     }
 
-    if(!yaposeido)
-    {
-      //!!!!!!!!!!
-      /////////////////////////////////////////////
-      //BUFF ---- Así se aplica un buff/debuff
-      Buff buff = new Buff();
-      buff.buffNombre = "Encarnado";
-      buff.buffDescr = "Poseído por Fuego Fatuo. No puede actuar y recibe daño desde adentro cada turno.";
-      buff.boolfDebufftBuff = false;
-      buff.DuracionBuffRondas = 2;
-      buff.CustomEffectInicioTurnoID = 1; //Efecto posesión
-      buff.unidadOrigen = scEstaUnidad;
-      
-      //Aplica VFX del estado
-      GameObject goVFX = Instantiate(VFXEstadoPrefab, objetivo.transform.position, objetivo.transform.rotation);
-      goVFX.transform.parent = objetivo.transform;
-      buff.goVFX =  goVFX;
 
-      buff.AplicarBuff(objetivo);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-      Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
-
-
-      //esconder grafico
-      scEstaUnidad.gameObject.transform.GetChild(3).GetChild(1).gameObject.SetActive(false);
-      scEstaUnidad.estado_invulnerable = 2;
-      scEstaUnidad.estado_aturdido = 2;
-
-
-      BattleManager.Instance.EscribirLog($"{objetivo.uNombre} fue Encarnado por Fuego Fatuo");
-      
-
-      
-    }
-  }
-    
-
-}    
+  }    
 
 public override object EstablecerObjetivoPrioritario() 
 {

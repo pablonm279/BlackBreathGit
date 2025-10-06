@@ -113,7 +113,19 @@ public class IAGarraGuerreroCorrompido : IAHabilidad
     }
 
     }
+         void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_GarraDevorador");
 
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
      private List<Casilla> ObtenerAfectadosZonaObjetivo(object obj) //Obtiene las casillas a una determinada distancia del objetivo en X o/y en Y
     {
       List<Casilla> casillasEnZona = new List<Casilla>();
@@ -175,7 +187,7 @@ public class IAGarraGuerreroCorrompido : IAHabilidad
 
         objetivo.RecibirDanio(danio + 3, tipoDanio, false, scEstaUnidad);
 
-
+        VFXAplicar(objetivo.gameObject);
       }
       else if (resultadoTirada == 2)
       {//GOLPE
@@ -184,7 +196,7 @@ public class IAGarraGuerreroCorrompido : IAHabilidad
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX);
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
 
-
+        VFXAplicar(objetivo.gameObject);
 
         objetivo.RecibirDanio(danio + 5, tipoDanio, false, scEstaUnidad);
 
@@ -195,8 +207,8 @@ public class IAGarraGuerreroCorrompido : IAHabilidad
 
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX);
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
-
-
+        
+        VFXAplicar(objetivo.gameObject);
 
 
         objetivo.RecibirDanio(danio + 10, tipoDanio, true, scEstaUnidad);

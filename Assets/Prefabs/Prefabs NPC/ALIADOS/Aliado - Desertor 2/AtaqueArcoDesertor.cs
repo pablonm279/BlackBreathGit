@@ -39,7 +39,7 @@ public class AtaqueArcoDesertor : IAHabilidad
       bonusAtaque = 0;
       XdDanio = 2;
       daniodX = 4; 
-      tipoDanio = 1; //Perforante
+      tipoDanio = 2; //Perforante
 
 
       
@@ -62,41 +62,59 @@ public class AtaqueArcoDesertor : IAHabilidad
       Objetivo = EstablecerObjetivoPrioritario();
       PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 
-      Invoke("CrearProyectil", 0.9f);
+            Task impactoPendiente = Objetivo != null ? CrearProyectil(Objetivo) : Task.CompletedTask;
+      await impactoPendiente;
 
-     
-    
-      await Task.Delay(1300);
-      //Esto es cuando el objetivo es uno solo,
-      AplicarEfectosHabilidad(Objetivo);
-     
-   }
-
-    void CrearProyectil()
-   {
-      GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
-      GameObject Proyectil = Instantiate(flechaPrefab);
-      Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-      Proyectil.GetComponent<ArrowFlight>().velocidad = 4.6f;
-      Proyectil.GetComponent<ArrowFlight>().parabola = 0.75f;  
-    
-     
       if (Objetivo != null)
-    {
-
-      if (Objetivo is Unidad)
       {
-        Unidad obj = (Unidad)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
+          AplicarEfectosHabilidad(Objetivo);
       }
-      else if (Objetivo is Obstaculo)
-      {
-        Obstaculo obj = (Obstaculo)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-      }
-    }
      
    }
+
+   internal Task CrearProyectil(object objetivo)
+    {
+        if (objetivo == null)
+        {
+            return Task.CompletedTask;
+        }
+
+        return LanzarProyectilAsync(objetivo);
+    }
+
+    private async Task LanzarProyectilAsync(object objetivo)
+    {
+        await Task.Delay(50);
+
+        GameObject proyectilPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
+        if (proyectilPrefab == null)
+        {
+            return;
+        }
+
+        GameObject proyectil = Instantiate(proyectilPrefab);
+        ArrowFlight flight = proyectil.GetComponent<ArrowFlight>();
+
+        Transform destino = null;
+        if (objetivo is Unidad unidad)
+        {
+            destino = unidad.transform;
+        }
+        else if (objetivo is Obstaculo obstaculo)
+        {
+            destino = obstaculo.transform;
+        }
+
+        if (flight != null && destino != null)
+        {
+            flight.Configure(transform, destino, 0.40f, 5.3f);
+            await flight.EsperarImpactoAsync();
+        }
+        else
+        {
+            await Task.Delay(200);
+        }
+    }
     public override void AplicarEfectosHabilidad(object obj)
     {
       if(obj is Unidad)

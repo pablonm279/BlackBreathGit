@@ -64,7 +64,19 @@ public class EspadaCortaLadron : IAHabilidad
      
    }
 
-    
+        void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_AtaqueDaga");
+
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
     public override void AplicarEfectosHabilidad(object obj)
     {
      if(obj is Unidad)
@@ -100,6 +112,7 @@ public class EspadaCortaLadron : IAHabilidad
         danio -= danio / 2; //Reduce 50% por roce
 
         objetivo.RecibirDanio(danio + 1, tipoDanio, false, scEstaUnidad);
+        VFXAplicar(objetivo.gameObject);
 
       }
       else if (resultadoTirada == 2)
@@ -111,6 +124,8 @@ public class EspadaCortaLadron : IAHabilidad
 
 
         objetivo.RecibirDanio(danio + 2, tipoDanio, false, scEstaUnidad);
+                VFXAplicar(objetivo.gameObject);
+
 
         if (scEstaUnidad.TieneBuffNombre("Arma Envenenada"))
         {
@@ -131,12 +146,14 @@ public class EspadaCortaLadron : IAHabilidad
 
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX);
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+                VFXAplicar(objetivo.gameObject);
+
 
 
 
 
         objetivo.RecibirDanio(danio + 4, tipoDanio, true, scEstaUnidad);
-         if (scEstaUnidad.TieneBuffNombre("Arma Envenenada"))
+        if (scEstaUnidad.TieneBuffNombre("Arma Envenenada"))
         {
           if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 14))
           {

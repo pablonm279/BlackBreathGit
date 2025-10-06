@@ -73,6 +73,20 @@ public class LadronEnvenenarArma : IAHabilidad
      
    }
 
+      void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_EnvenenarArmaAI");
+
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
+
   public GameObject VFXEstadoPrefab;
     public override void AplicarEfectosHabilidad(object obj)
     {
@@ -82,10 +96,12 @@ public class LadronEnvenenarArma : IAHabilidad
 
      
         Unidad objetivo = (Unidad)obj;
+        
+        VFXAplicar(objetivo.gameObject);
      
        /////////////////////////////////////////////
-       //BUFF ---- Así se aplica un buff/debuff
-       Buff buff = new Buff();
+      //BUFF ---- Así se aplica un buff/debuff
+      Buff buff = new Buff();
        buff.buffNombre = "Arma Envenenada"; //El ataque basico del Ladron controla si tiene este buff para aplicar veneno
        buff.boolfDebufftBuff = true;
        buff.DuracionBuffRondas = 2;

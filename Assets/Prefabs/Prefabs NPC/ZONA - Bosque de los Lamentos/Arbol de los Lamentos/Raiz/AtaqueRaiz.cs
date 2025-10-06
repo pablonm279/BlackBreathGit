@@ -22,7 +22,7 @@ public class AtaqueRaiz : IAHabilidad
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 1;
       esMelee = true;
-      hAlcance = 1;
+      hAlcance = 4;
       hCooldownMax = 0;
       esHostil = true;
       prioridad = 1;
@@ -36,7 +36,7 @@ public class AtaqueRaiz : IAHabilidad
       bonusAtaque = 0;
       XdDanio = 1;
       daniodX = 8; //1d6
-      tipoDanio = 1; //Perforante
+      tipoDanio = 2; //Perforante
 
 
    
@@ -97,7 +97,7 @@ public class AtaqueRaiz : IAHabilidad
             danio -= danio/2; //Reduce 50% por roce
 
             objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
-
+          VFXAplicar(objetivo.gameObject);
             AplicaSangradoTirada(objetivo, -2);
           }
           else if (resultadoTirada == 2)
@@ -111,7 +111,7 @@ public class AtaqueRaiz : IAHabilidad
             objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
             
             AplicaSangradoTirada(objetivo, 0);
-
+          VFXAplicar(objetivo.gameObject);
           }
           else if (resultadoTirada == 3)
           {//CRITICO
@@ -127,7 +127,7 @@ public class AtaqueRaiz : IAHabilidad
             
             AplicaSangradoTirada(objetivo, 1);
           }
-          
+          VFXAplicar(objetivo.gameObject);
             objetivo.AplicarDebuffPorAtaquesreiterados(1);
      }
      else if(obj is Obstaculo)
@@ -139,7 +139,19 @@ public class AtaqueRaiz : IAHabilidad
           objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
      }
     }
+     void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_AtaqueLiana");
 
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
 public override object EstablecerObjetivoPrioritario() 
 {
     // Obtener la unidad dueña

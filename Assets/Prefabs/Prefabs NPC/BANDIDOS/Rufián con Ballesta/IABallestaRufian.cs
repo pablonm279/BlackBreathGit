@@ -39,7 +39,7 @@ public class IABallestaRufian : IAHabilidad
       bonusAtaque = 0;
       XdDanio = 2;
       daniodX = 8; //2d8+3
-      tipoDanio = 1; //Perforante
+      tipoDanio = 2; //Perforante
 
 
       
@@ -78,7 +78,7 @@ public class IABallestaRufian : IAHabilidad
       GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
       GameObject Proyectil = Instantiate(flechaPrefab);
       Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-      Proyectil.GetComponent<ArrowFlight>().velocidad = 4.8f;
+      Proyectil.GetComponent<ArrowFlight>().velocidad = 5.3f;
       Proyectil.GetComponent<ArrowFlight>().parabola = 0.6f;  
     
      

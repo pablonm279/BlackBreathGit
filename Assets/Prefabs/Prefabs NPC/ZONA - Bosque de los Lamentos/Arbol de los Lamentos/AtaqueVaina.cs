@@ -69,7 +69,19 @@ public class AtaqueVaina : IAHabilidad
       AplicarEfectosHabilidad(Objetivo);
      
    }
+       void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_AtaqueLiana");
 
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
       public override void AplicarEfectosHabilidad(object obj)
     {
    
@@ -107,7 +119,7 @@ public class AtaqueVaina : IAHabilidad
 
        objetivo.RecibirDanio(danio, tipoDanio, false,  scEstaUnidad);
 
-
+        VFXAplicar(objetivo.gameObject);
      }
      else if (resultadoTirada == 2)
      {//GOLPE
@@ -120,7 +132,7 @@ public class AtaqueVaina : IAHabilidad
       
        AplicaAtraerVaina(objetivo);
 
-
+        VFXAplicar(objetivo.gameObject);
      }
      else if (resultadoTirada == 3)
      {//CRITICO
@@ -131,7 +143,7 @@ public class AtaqueVaina : IAHabilidad
       
        objetivo.RecibirDanio(danio, tipoDanio, true,  scEstaUnidad);
        AplicaAtraerVaina(objetivo);
-
+        VFXAplicar(objetivo.gameObject);
      }
      
       objetivo.AplicarDebuffPorAtaquesreiterados(1);

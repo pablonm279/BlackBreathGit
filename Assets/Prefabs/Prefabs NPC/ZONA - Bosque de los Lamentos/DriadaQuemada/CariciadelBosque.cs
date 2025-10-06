@@ -82,8 +82,9 @@ public class CariciadelBosque : IAHabilidad
 
      
         Unidad objetivo = (Unidad)obj;
-     
-  
+
+        VFXAplicar(objetivo.gameObject);
+
         int cura = 5+UnityEngine.Random.Range(1,20);
         objetivo.RecibirCuracion(cura, true);    
    
@@ -95,7 +96,19 @@ public class CariciadelBosque : IAHabilidad
      }
          
     }
+   void VFXAplicar(GameObject objetivo)
+    {
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_CariciaDelBosque");
 
+    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
+    vfx.transform.parent = objetivo.transform;
+     
+   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+   canvasObjeto.overrideSorting = true;
+   canvasObjeto.sortingOrder =  200;  
+
+    }
 public override List<object> ListaHayObjetivosAlAlcance()
 {
   //Se overridea la obtención de objetivos posibles, para poder remover los sanos

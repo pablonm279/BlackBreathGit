@@ -42,7 +42,7 @@ public class DisparoPotente : Habilidad
       if(NIVEL == 5){bonusAtaque += 2;}
       XdDanio = 1;
       daniodX = 10; //1d10+3
-      tipoDanio = 1; //Cortante
+      tipoDanio = 2; //Perforante
       criticoRangoHab = 0;
 
       imHab = Resources.Load<Sprite>("imHab/Explorador_TiroPotente");
