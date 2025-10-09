@@ -50,30 +50,49 @@ public class MenuCaravana : MonoBehaviour
      [SerializeField] GameObject contenedorSequitos;
     public void AbrirMenuMejoras()
     {
+        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 8) { return; }
         ActualizarMejoras();
         MenuPersonajes.SetActive(false);
         MenuSequitos.SetActive(false);
         MenuMejoras.SetActive(!MenuMejoras.activeInHierarchy);
 
+        if (MenuMejoras.activeInHierarchy)
+        {
+            CampaignManager.Instance.scTutorialManager.establecerPasoEspecifico(9);
+        }
+        else { CampaignManager.Instance.scTutorialManager.cerrarPasoEspecifico(9);}
+
     }
     public void AbrirMenuSequitos()
     {
-        
+        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 8) { return; }
         MenuPersonajes.SetActive(false);
         MenuMejoras.SetActive(false);
         MenuSequitos.SetActive(!MenuSequitos.activeInHierarchy);
+        
+         if (MenuSequitos.activeInHierarchy)
+        {
+            CampaignManager.Instance.scTutorialManager.establecerPasoEspecifico(10);
+        }
+        else { CampaignManager.Instance.scTutorialManager.cerrarPasoEspecifico(10);}
        
     }
     public void AbrirMenuPersonajes()
     {
-        
-       
+        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 8) { return; }
+
         MenuMejoras.SetActive(false);
         MenuSequitos.SetActive(false);
         MenuPersonajes.SetActive(!MenuPersonajes.activeInHierarchy);
         MenuPersonajes.GetComponent<MenuPersonajes>().SeleccionarPersonaje(MenuPersonajes.GetComponent<MenuPersonajes>().listaPersonajes[0], null);
         MenuPersonajes.GetComponent<MenuPersonajes>().ActualizarLista();
         MenuPersonajes.GetComponent<MenuPersonajes>().itemDesc.text = "";
+        
+          if (MenuPersonajes.activeInHierarchy)
+        {
+            CampaignManager.Instance.scTutorialManager.establecerPasoEspecifico(11);
+        }
+        else { CampaignManager.Instance.scTutorialManager.cerrarPasoEspecifico(11);}
        
     }
     public void ActualizarMejoras()

@@ -770,6 +770,7 @@ GameObject:
   - component: {fileID: 5723670442405472956}
   - component: {fileID: -2583139982368537784}
   - component: {fileID: 3744599345364507859}
+  - component: {fileID: 7677651047814667185}
   m_Layer: 7
   m_Name: Miliciano1
   m_TagString: Unidad
@@ -1272,6 +1273,33 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7677651047814667185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5662508880646372543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db4d2b02a8060864db72bf0f94c7e4da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nombre: 
+  vfxImpacto: {fileID: 0}
+  vfxCasteo: {fileID: 0}
+  hAncho: 0
+  hAlcance: 0
+  esMelee: 0
+  afectaObstaculos: 0
+  hCooldownMax: 0
+  hActualCooldown: 0
+  Usuario: {fileID: 0}
+  scEstaUnidad: {fileID: 0}
+  esHostil: 0
+  prioridad: 0
+  costoAP: 0
+  nombreHabilidad: Pasar Turno
 --- !u!1 &6482854240559061438
 GameObject:
   m_ObjectHideFlags: 0

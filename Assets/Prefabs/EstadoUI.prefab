@@ -148,36 +148,36 @@ MonoBehaviour:
   goTooltip: {fileID: 4467432598393290967}
   textTooltip: {fileID: 5963370968034480923}
   textStacks: {fileID: 6616334194727497191}
-  imArdiendo: {fileID: 21300000, guid: 783eef22207f8bf45a3fbb7f64115ef6, type: 3}
-  imAturdido: {fileID: 21300000, guid: d16f2b10d98bf3d46bf1a1b3a7c92219, type: 3}
-  imAcido: {fileID: 21300000, guid: 569703c186dcae4489ddefedecf10b17, type: 3}
-  imCongelado: {fileID: 21300000, guid: 816ad16ac7fdba5438ed539151c08f65, type: 3}
-  ResRed: {fileID: 21300000, guid: f93b922acb46da2458be57801771acd2, type: 3}
-  ArmMod: {fileID: 21300000, guid: 09d4af0a64ff9214e8123aa3a117beee, type: 3}
-  imSangrado: {fileID: 21300000, guid: 3a2fabbb3809af44683017576af0e899, type: 3}
-  imVeneno: {fileID: 21300000, guid: 0eb6fd93efeaee54693efe2e0c8421e7, type: 3}
+  imArdiendo: {fileID: 21300000, guid: 4c6c235278b2b3f428ad883aa86463c3, type: 3}
+  imAturdido: {fileID: 21300000, guid: 8723e570d3ffe6a46af1ffb59bbbf5a4, type: 3}
+  imAcido: {fileID: 21300000, guid: ec361092374a197439b8bf1a9da92ebc, type: 3}
+  imCongelado: {fileID: 21300000, guid: 7adbe2be02cfd2643886d2f592e4bb45, type: 3}
+  ResRed: {fileID: 21300000, guid: 8e3fde14000417f4da030117214c3c22, type: 3}
+  ArmMod: {fileID: 21300000, guid: bd0cb74454994944bb9f2631c3683ad2, type: 3}
+  imSangrado: {fileID: 21300000, guid: a1912f374aa85494f87bdb3302dda0cf, type: 3}
+  imVeneno: {fileID: 21300000, guid: ed893f1f14a966b4aa48dd6c7adce8b9, type: 3}
   imApMod: {fileID: 21300000, guid: 7116d6fffd9270c43854cef35ddd4465, type: 3}
-  imBuff: {fileID: 21300000, guid: 1ffc9784b15c4734dbd6b72f99df1849, type: 3}
-  imDebuff: {fileID: 21300000, guid: 995c00d019cb1d34093da4b8eafff2dc, type: 3}
-  imReaccion: {fileID: 21300000, guid: d0e1f44e9dcdab841b4c8f5f3eb461ec, type: 3}
-  imMarca: {fileID: 21300000, guid: f42f67c0e41a71d48b1eb81097dc21aa, type: 3}
-  imRegvid: {fileID: 21300000, guid: fe3e003fa378c2e488c2409fb1c2f83c, type: 3}
-  imRegArm: {fileID: 21300000, guid: c874bbed92819fc46baad2a1a67525c3, type: 3}
-  imEvasion: {fileID: 21300000, guid: 90dfaa6e44f5d5e4d82b1a4e0d6aade0, type: 3}
-  imFlechas: {fileID: 21300000, guid: b3711bf48b4f90346bac2046569ce756, type: 3}
-  imBonusFuego: {fileID: 21300000, guid: 783eef22207f8bf45a3fbb7f64115ef6, type: 3}
-  imBonusArcano: {fileID: 21300000, guid: 105803015ef93334e856424aa9400844, type: 3}
-  imBonusHielo: {fileID: 21300000, guid: 11ffe61b9d779f841b84c0b742de05c3, type: 3}
-  imBonusRayo: {fileID: 21300000, guid: f8e1b36f411a50042ac9d5f1bce7b544, type: 3}
-  imBonusAcido: {fileID: 21300000, guid: 569703c186dcae4489ddefedecf10b17, type: 3}
-  imBonusNecro: {fileID: 21300000, guid: f91646aef245ced4b8ef8ae56e583428, type: 3}
-  imBonusDivino: {fileID: 21300000, guid: 5042d6ab517aed543b81598cf5878493, type: 3}
-  imPurificadoraFervor: {fileID: 21300000, guid: 7aca6d3d917693d40b7538440b292ac5, type: 3}
-  imBarrera: {fileID: 21300000, guid: 5475f85d336c0d64eb4623af7f6a5f6d, type: 3}
-  imResiduoTejido: {fileID: 21300000, guid: 407bcdecbf6ae3e45b3a541d8403c3dc, type: 3}
-  imEstaEscondido: {fileID: 21300000, guid: e99baa68d4ad3f948b1f4b670cf70dfc, type: 3}
+  imBuff: {fileID: 21300000, guid: a67ed21e91b13384599185a3be53498f, type: 3}
+  imDebuff: {fileID: 21300000, guid: 32796ac887dbc334c83ceb53e00932ec, type: 3}
+  imReaccion: {fileID: 21300000, guid: ff387d5136bed3d429ec677d0bf67304, type: 3}
+  imMarca: {fileID: 21300000, guid: bca9f77d83c43c3439e8057deac3d5d6, type: 3}
+  imRegvid: {fileID: 21300000, guid: 0ec42da06ead7834dabc75fd0d757d54, type: 3}
+  imRegArm: {fileID: 21300000, guid: a6314da3b23923c4bb1010aee078b5ea, type: 3}
+  imEvasion: {fileID: 21300000, guid: 8b14c8c1183c31940a2e39741e85ec3a, type: 3}
+  imFlechas: {fileID: 21300000, guid: f7e2299b35420cb4ab1c7299db52df9b, type: 3}
+  imBonusFuego: {fileID: 21300000, guid: 4c9df375eb1c5b146b9019c7c1d98ed0, type: 3}
+  imBonusArcano: {fileID: 21300000, guid: b28774ea9e29e1c4e8452d5851efe531, type: 3}
+  imBonusHielo: {fileID: 21300000, guid: 60fd681b5124e2741a5449aa18d9fafa, type: 3}
+  imBonusRayo: {fileID: 21300000, guid: 0d4d4e1d69ad0544587fd43e30c95d4c, type: 3}
+  imBonusAcido: {fileID: 21300000, guid: 074e9879040ed8a4f92cdf773c127aa2, type: 3}
+  imBonusNecro: {fileID: 21300000, guid: fae159798d6095946aa7a3c18da6b78f, type: 3}
+  imBonusDivino: {fileID: 21300000, guid: b0f80af4641b2a34abb34f5fcfba8c78, type: 3}
+  imPurificadoraFervor: {fileID: 21300000, guid: 4c58f4912c53c01468eefe9352f1d1be, type: 3}
+  imBarrera: {fileID: 21300000, guid: ba9860e49b44caa4c9b81af42252e1e3, type: 3}
+  imResiduoTejido: {fileID: 21300000, guid: d9ebbe08371b9454590ad7156c7deeff, type: 3}
+  imEstaEscondido: {fileID: 21300000, guid: fcf30fbbad8654e47a36e953b680e45f, type: 3}
   imCorrupto: {fileID: 21300000, guid: 01c1a4a2c58e1cf4bbdda2485dd0634b, type: 3}
-  imTierEnergia: {fileID: 21300000, guid: 8f30305b5ccede448b3ced38ca44b1d2, type: 3}
+  imTierEnergia: {fileID: 21300000, guid: 098691b982b5f61439cb04e82bb88ff0, type: 3}
 --- !u!114 &4928361254003252941
 MonoBehaviour:
   m_ObjectHideFlags: 0

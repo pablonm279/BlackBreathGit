@@ -46,45 +46,57 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
        
     }
     public void ActualizarColores()
-    { 
-        
-      scUInfochar = BattleManager.Instance.scUIInfoChar;
-      if(scUInfochar != null)
-      {
+    {
+        if (this == null || gameObject == null)
+        {
+            return;
+        }
 
+        var image = GetComponent<Image>();
+        if (image == null)
+        {
+            return;
+        }
 
-            if (BattleManager.Instance.unidadActiva == scUnidad)
+        GameObject marcadorSeleccion = null;
+        if (transform != null && transform.childCount > 0)
+        {
+            marcadorSeleccion = transform.GetChild(0)?.gameObject;
+        }
+
+        var battleManager = BattleManager.Instance;
+        if (battleManager == null)
+        {
+            return;
+        }
+
+        scUInfochar = battleManager.scUIInfoChar;
+        if (scUInfochar == null)
+        {
+            return;
+        }
+
+        if (battleManager.unidadActiva == scUnidad)
+        {
+            image.color = new Color(0.95f, 0.95f, 0.75f);
+            if (marcadorSeleccion != null)
             {
-                if (gameObject != null)
-                {
-                    gameObject.GetComponent<Image>().color = new Color(0.95f, 0.95f, 0.75f);
-                    gameObject.transform.GetChild(0).gameObject.SetActive(true);
-                }
+                marcadorSeleccion.SetActive(true);
             }
-            else
-            {
-                if (gameObject != null)
-                {
-                    if (scUnidad != null)
-                    {
-                        if (scUnidad.CasillaPosicion != null)
-                        {
-                            if (scUnidad.CasillaPosicion.lado == 1)
-                            {
-                                gameObject.GetComponent<Image>().color = new Color(0.4f, 0.1f, 0.1f);
+            return;
+        }
 
-                            }
-                            else { if (gameObject != null) { gameObject.GetComponent<Image>().color = new Color(0.2f, 0.2f, 0.7f); } }
-                        }
-                    }
-                }
-                            gameObject.transform.GetChild(0).gameObject.SetActive(false);
+        if (scUnidad?.CasillaPosicion != null)
+        {
+            image.color = scUnidad.CasillaPosicion.lado == 1
+                ? new Color(0.4f, 0.1f, 0.1f)
+                : new Color(0.2f, 0.2f, 0.7f);
+        }
 
-       }
-       
-
-       }
-
+        if (marcadorSeleccion != null)
+        {
+            marcadorSeleccion.SetActive(false);
+        }
     }
     public void ActualizarInfo()
     {

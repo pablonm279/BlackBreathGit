@@ -52,7 +52,11 @@ public class EdgePanCameraZ : MonoBehaviour
         bool enBordeDer = mouseX >= (Screen.width - edgeThickness);
 
         Vector3 lp = transform.localPosition;
-
+        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 7)
+        {
+            return;
+        }
+        
         if (enBordeDer && !CampaignManager.Instance.MoviendoCaravana)
         {
             // Factor por proximidad al borde derecho

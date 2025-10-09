@@ -5839,6 +5839,7 @@ GameObject:
   - component: {fileID: 980348670611540924}
   - component: {fileID: 8312513947131487872}
   - component: {fileID: 573804793130973649}
+  - component: {fileID: 8377157680226521845}
   m_Layer: 7
   m_Name: Raiz Maldita
   m_TagString: Unidad
@@ -5891,7 +5892,7 @@ MonoBehaviour:
   CasillaForzadoaMover: {fileID: 0}
   estaCargando: {fileID: 0}
   valorCargando: 0
-  uRetrato: {fileID: 21300000, guid: 93f2a61c417540245ae30bf0ecae12a3, type: 3}
+  uRetrato: {fileID: 21300000, guid: 4cc0a96e19b85ad49b3939a7bce51702, type: 3}
   uImage: {fileID: 6347170311452768780}
   uNombre: Raiz Maldita
   tags:
@@ -5986,6 +5987,7 @@ MonoBehaviour:
   puntoEntrante: {fileID: 0}
   velocidadMovimiento: 0
   movimientoEnCurso: 0
+  NoSonidoAlMover: 0
   sonidosRecibirDanio:
   - {fileID: 8300000, guid: b24f7eb117acaf9469b2328c34ab020a, type: 3}
 --- !u!65 &1808362541228834871
@@ -6143,6 +6145,33 @@ MonoBehaviour:
   XdDanio: 1
   daniodX: 8
   tipoDanio: 1
+--- !u!114 &8377157680226521845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8665596444869409323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db4d2b02a8060864db72bf0f94c7e4da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nombre: 
+  vfxImpacto: {fileID: 0}
+  vfxCasteo: {fileID: 0}
+  hAncho: 0
+  hAlcance: 0
+  esMelee: 0
+  afectaObstaculos: 0
+  hCooldownMax: 0
+  hActualCooldown: 0
+  Usuario: {fileID: 0}
+  scEstaUnidad: {fileID: 0}
+  esHostil: 0
+  prioridad: -500
+  costoAP: 0
+  nombreHabilidad: Pasar Turno
 --- !u!1 &9162567597424905344
 GameObject:
   m_ObjectHideFlags: 0
@@ -6181,7 +6210,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.083, y: -13.31}
+  m_AnchoredPosition: {x: 1.083, y: -14.69}
   m_SizeDelta: {x: 15.873, y: 26.346}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3214179596268234319

@@ -167,6 +167,7 @@ GameObject:
   - component: {fileID: 4035915313142497635}
   - component: {fileID: 1863475614806247225}
   - component: {fileID: 5709115630828620053}
+  - component: {fileID: 636438966761155611}
   m_Layer: 7
   m_Name: Miliciano2
   m_TagString: Unidad
@@ -474,6 +475,33 @@ MonoBehaviour:
   XdDanio: 0
   daniodX: 0
   tipoDanio: 0
+--- !u!114 &636438966761155611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 295497129713313217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db4d2b02a8060864db72bf0f94c7e4da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nombre: 
+  vfxImpacto: {fileID: 0}
+  vfxCasteo: {fileID: 0}
+  hAncho: 0
+  hAlcance: 0
+  esMelee: 0
+  afectaObstaculos: 0
+  hCooldownMax: 0
+  hActualCooldown: 0
+  Usuario: {fileID: 0}
+  scEstaUnidad: {fileID: 0}
+  esHostil: 0
+  prioridad: 0
+  costoAP: 0
+  nombreHabilidad: Pasar Turno
 --- !u!1 &1250772329134638780
 GameObject:
   m_ObjectHideFlags: 0

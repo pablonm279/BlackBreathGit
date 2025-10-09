@@ -497,22 +497,34 @@ public class Nodo : MonoBehaviour
 
   private void OnMouseDown()
   {
+    // Bloquear avance si el tutorial está activo y el paso es menor a 7
+    if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 6)
+    {
+      return;
+    }
 
     if (EventSystem.current.IsPointerOverGameObject() && !TooltipNodos.Instance.tooltipObject.activeInHierarchy)
     {
       return;
     }
+
     if (scMapaManager.nodoActual.DestinosPosibles.Contains(this))
     {
       CampaignManager.Instance.MoviendoCaravana = true;
 
       MoverJugadorANodo(scMapaManager.nodoActual, this);
+
+      // Si el tutorial está activo y el paso es exactamente 6, avanzar el tutorial
+      if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 7)
+      {
+        CampaignManager.Instance.scTutorialManager.SiguientePaso();
+      }
+
       if (posXNodo - scMapaManager.nodoActual.posXNodo > 1) //Si se mueve a un nodo mas lejano que 1, se considera un atajo
       {
         CampaignManager.Instance.EscribirLog("-Al viajar por el atajo subterráneo, la moral de la caravana disminuye. -5 Esperanza");
         CampaignManager.Instance.CambiarEsperanzaActual(-5);
       }
-     
     }
   }
   public float velocidadMovimiento = 6f;

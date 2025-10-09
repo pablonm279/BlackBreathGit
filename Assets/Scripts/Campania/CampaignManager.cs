@@ -17,7 +17,7 @@ public class CampaignManager : MonoBehaviour
   public GameObject goCanvas;
   public MapaManager scMapaManager;
   public AtributosZona scAtributosZona;
-
+  public TutorialManager scTutorialManager;
   public AlientoNegroVFX scAlientoNegroVFX;
   public MenuSequitos scMenuSequito;
   public MenuPersonajes scMenuPersonajes;
@@ -90,12 +90,12 @@ public class CampaignManager : MonoBehaviour
     }
     sfxMovimientoSource.volume = sfxMovimientoVolumen;
 
-    CambiarCivilesActuales(120);
+    CambiarCivilesActuales(110);
     CambiarEsperanzaActual(75);
-    CambiarSuministrosActuales(350);
-    CambiarMaterialesActuales(55);
-    CambiarBueyesActuales(25);
-    CambiarOroActual(500);
+    CambiarSuministrosActuales(320);
+    CambiarMaterialesActuales(50);
+    CambiarBueyesActuales(20);
+    CambiarOroActual(400);
     CambiarValorAlientoNegro(1);
 
     scAtributosZona.ConstruirZonaBosqueAngustiante(1);
@@ -123,6 +123,17 @@ public class CampaignManager : MonoBehaviour
     
   
   }
+
+  private void OnEnable()
+  {
+    TryProcesarColaTextoFlotante();
+  }
+
+  private void OnDisable()
+  {
+    procesandoCola = false;
+  }
+
   private void Start()
   {
     if (logDeCampania != null)
@@ -802,22 +813,22 @@ public class CampaignManager : MonoBehaviour
 
       txtTooltipAlientoNegro.text = "<color=#8708a4><b>                  El Aliento Negro</b></color>\n\n\n";
       txtTooltipAlientoNegro.text += "<color=#ebdeef>Al morir el Liche, liberó un último estertor de muerte y putrefacción que se expande por cientos de kilómetros alrededor.";
-      txtTooltipAlientoNegro.text += "\n\nLlamado el Aliento Negro, esta ola de peste y podredumbre lentamente está envolviendo a los seres vivos que no logran escapar, provocándoles la muerte, o peor. </color>\n\n\n";
+      txtTooltipAlientoNegro.text += $"\n\nLlamado el Aliento Negro, esta ola de peste y podredumbre lentamente está envolviendo a los seres vivos que no logran escapar, provocándoles la muerte, o peor. </color>\n\n\n\n";
       if (tierAliento == 1)
       {
-        txtTooltipAlientoNegro.text += "<color=#bae895><b>Estado: Distante</b> - La Caravana viaja con tranquilidad.</color>";
+        txtTooltipAlientoNegro.text += $"<color=#bae895><b>Estado: Distante</b> ({EstadoAlientoNegro}/20) - La Caravana viaja con tranquilidad.</color>";
       }
       if (tierAliento == 2)
       {
-        txtTooltipAlientoNegro.text += "<color=#c8a6e8><b>Estado: Cerca</b> - La Caravana comienza a preocuparse y la podredumbre se siente en el aire. Los muertos acechan en las sombras.</color>";
+        txtTooltipAlientoNegro.text += $"<color=#c8a6e8><b>Estado: Cerca</b> ({EstadoAlientoNegro}/20) - La Caravana comienza a preocuparse y la podredumbre se siente en el aire. Los muertos acechan en las sombras.</color>";
       }
       if (tierAliento == 3)
       {
-        txtTooltipAlientoNegro.text += "<color=#aa66ea><b>Estado: Dentro</b> - La Caravana ya es directamente afectada por el hedor. Los muertos se dejan ver.</color>";
+        txtTooltipAlientoNegro.text += $"<color=#aa66ea><b>Estado: Dentro</b> ({EstadoAlientoNegro}/20) - La Caravana ya es directamente afectada por el hedor. Los muertos se dejan ver.</color>";
       }
       if (tierAliento == 4)
       {
-        txtTooltipAlientoNegro.text += "<color=#7a1dd1><b>Estado: Nocivo</b> - La peste comienza a tomar vidas civiles. Los muertos son implacables.</color>";
+        txtTooltipAlientoNegro.text += $"<color=#7a1dd1><b>Estado: Nocivo</b> ({EstadoAlientoNegro}/20) - La peste comienza a tomar vidas civiles. Los muertos son implacables.</color>";
       }
 
     }
@@ -926,6 +937,9 @@ public class CampaignManager : MonoBehaviour
       case 4: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = "Cansados(5)"; valueFatiga.color = new Color(0.75f, 0.3f, 0.25f); break;
       case > 4: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = "Exhaustos(6)"; valueFatiga.color = new Color(0.8f, 0.15f, 0.45f); break;
     }
+
+    if (FatigaActual > 3) { alertaFatiga.SetActive(true); }
+    else { alertaFatiga.SetActive(false); }
   }
   void EventoFatiga(int fatigaAnterior, int fatigaAhora)
   {
@@ -1010,6 +1024,8 @@ public class CampaignManager : MonoBehaviour
       valueEsperanza.color = new Color(0.05f, 0.85f, 0.55f);
     }
 
+    if (EsperanzaActual < 20) { alertaEsperanza.SetActive(true); }
+    else { alertaEsperanza.SetActive(false); }
   }
 
 
@@ -1074,7 +1090,12 @@ public class CampaignManager : MonoBehaviour
     {
       CargaMaxActual += 50; //Bonus de carga por los esclavos
     }
+    
+  
+
     return CargaMaxActual;
+
+    
   }
 
   public async void CambiarBueyesActuales(int bueyes)
@@ -1096,6 +1117,11 @@ public class CampaignManager : MonoBehaviour
     else { valueCargaLlevada.color = new Color(0.35f, 0.7f, 0.3f); }
     valueCargaMax.text = "/" + CargaMaxActual + ")";
     valueCargaLlevada.text = "(" + cargaActual + "";
+
+    if (cargaActual > CargaMaxActual) { alertaCarga.SetActive(true); }
+    else { alertaCarga.SetActive(false); }
+
+
     return cargaActual;
   }
 
@@ -1132,7 +1158,15 @@ public class CampaignManager : MonoBehaviour
     valueSuministros.text = "" + SuministrosActuales;
     GetCargaLlevadaActual();
 
+    if (SuministrosActuales < GetCivilesActual()) {alertaSuministros.SetActive(true); }
+    else { alertaSuministros.SetActive(false); }
+
   }
+
+  public GameObject alertaSuministros;
+  public GameObject alertaFatiga;
+  public GameObject alertaEsperanza;
+  public GameObject alertaCarga;
 
   public void AbandonarSuministros()
   {
@@ -1241,7 +1275,7 @@ public class CampaignManager : MonoBehaviour
 
       int num = GetEsperanzaActual();
       text = $"La <color=#a0e812>Esperanza</color> determina el optimismo de la Caravana en general sobre la posibilidad de cumplir la misión y llegar al puerto.\n\n";
-      text += $"{num}/100 de <color=#a0e812>Esperanza</color>\n\n";
+      text += $"{num}/100 de <color=#a0e812>Esperanza</color>\n";
 
       if (num < 11) { text += $" <color=#982a1b>1-20 Civiles abandonarán la Caravana cada descanso.</color>\n"; }
       if (num < 20 && num >= 11) { text += $" <color=#982a1b>1-10 Civiles abandonarán la Caravana cada descanso.</color>\n"; }
@@ -1510,6 +1544,15 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] GameObject puntoPantalla;
   private static int delayAcumulado = 0;
 
+  private void TryProcesarColaTextoFlotante()
+  {
+    if (!isActiveAndEnabled || procesandoCola || colaTextos.Count == 0)
+      return;
+
+    procesandoCola = true;
+    StartCoroutine(ProcesarColaTextoFlotante());
+  }
+
   // Serializa los textos a través de una cola para que no se pisen.
   // Mantiene la firma Task para compatibilidad; retorna completado inmediatamente.
   public Task GenerarTextoFlotanteCampaña(string txString, Color color)
@@ -1518,12 +1561,7 @@ public class CampaignManager : MonoBehaviour
       return Task.CompletedTask;
 
     colaTextos.Enqueue((txString, color));
-    if (!procesandoCola)
-    {
-      // Evita iniciar múltiples coroutines si entran varias llamadas en el mismo frame
-      procesandoCola = true;
-      StartCoroutine(ProcesarColaTextoFlotante());
-    }
+    TryProcesarColaTextoFlotante();
 
     return Task.CompletedTask;
   }

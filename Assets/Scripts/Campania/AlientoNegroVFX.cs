@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,20 +6,38 @@ public class AlientoNegroVFX : MonoBehaviour
 {
     public Slider sliderAlientoNegro; // Referencia al slider
     float estadoAlientoNegro;  // Estado actual del Aliento Negro
+    private Coroutine moverCoroutine;
 
     public void AvanzarAlientoNegro(int cant)
     {
-        // Calcula la nueva posición basada en la cantidad multiplicada por una unidad de movimiento.
-        int mover = cant*160;
+        // Calcula la nueva posicion basada en la cantidad multiplicada por una unidad de movimiento.
+        int mover = cant * 160;
         Vector3 nuevaPosicion = transform.localPosition + Vector3.right * mover;
-        
 
         // Calcula el nuevo valor del slider
         estadoAlientoNegro = CampaignManager.Instance.GetValorAlientoNegro();
         float nuevoValorSlider = estadoAlientoNegro / 20f;
 
+        if (sliderAlientoNegro == null)
+        {
+            AplicarEstadoInstantaneo(nuevaPosicion, nuevoValorSlider);
+            return;
+        }
+
+        if (moverCoroutine != null)
+        {
+            StopCoroutine(moverCoroutine);
+            moverCoroutine = null;
+        }
+
+        if (!isActiveAndEnabled)
+        {
+            AplicarEstadoInstantaneo(nuevaPosicion, nuevoValorSlider);
+            return;
+        }
+
         // Inicia la corrutina para mover el objeto y actualizar el slider.
-        StartCoroutine(MoverAlientoNegro(nuevaPosicion, nuevoValorSlider, 3f)); // 3 segundos para completar el movimiento.
+        moverCoroutine = StartCoroutine(MoverAlientoNegro(nuevaPosicion, nuevoValorSlider, 3f)); // 3 segundos para completar el movimiento.
     }
 
     private IEnumerator MoverAlientoNegro(Vector3 destino, float nuevoValorSlider, float duracion)
@@ -33,17 +51,36 @@ public class AlientoNegroVFX : MonoBehaviour
             tiempoTranscurrido += Time.deltaTime;
             float t = tiempoTranscurrido / duracion;
 
-            // Interpolación del movimiento
+            // Interpolacion del movimiento
             transform.localPosition = Vector3.Lerp(posicionInicial, destino, t);
 
-            // Interpolación del valor del slider
+            // Interpolacion del valor del slider
             sliderAlientoNegro.value = Mathf.Lerp(valorInicialSlider, nuevoValorSlider, t);
 
             yield return null;
         }
 
-        // Asegúrate de que el objeto alcance la posición final exacta.
+        moverCoroutine = null;
+        // Asegurate de que el objeto alcance la posicion final exacta.
         transform.localPosition = destino;
         sliderAlientoNegro.value = nuevoValorSlider;
+    }
+
+    private void AplicarEstadoInstantaneo(Vector3 destino, float nuevoValorSlider)
+    {
+        transform.localPosition = destino;
+        if (sliderAlientoNegro != null)
+        {
+            sliderAlientoNegro.value = nuevoValorSlider;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (moverCoroutine != null)
+        {
+            StopCoroutine(moverCoroutine);
+            moverCoroutine = null;
+        }
     }
 }

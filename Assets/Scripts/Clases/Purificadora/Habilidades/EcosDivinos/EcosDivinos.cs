@@ -31,32 +31,34 @@ public class EcosDivinos : Trampa
   
   public override void  AplicarEfectosTrampa(Unidad objetivo)
   {
-   
-    if(objetivo.CasillaPosicion.lado == unidadCreadora.CasillaPosicion.lado) //Aliados
+    if (unidadCreadora != null && objetivo != null)
     {
-         
-       int rand =UnityEngine.Random.Range(1, 11);
-       if(NIVEL > 1){rand+=2;}
-       if(NIVEL > 2){rand+= 2;}
-       if(NIVEL == 4){rand+=5;}
+      if (objetivo.CasillaPosicion.lado == unidadCreadora.CasillaPosicion.lado) //Aliados
+      {
 
-       objetivo.RecibirCuracion(rand, true);
-       objetivo.SumarValentia(1);
+        int rand = UnityEngine.Random.Range(1, 11);
+        if (NIVEL > 1) { rand += 2; }
+        if (NIVEL > 2) { rand += 2; }
+        if (NIVEL == 4) { rand += 5; }
 
-       if(objetivo == unidadCreadora){unidadCreadora.GetComponent<ClasePurificadora>().CambiarFervor(1);}
+        objetivo.RecibirCuracion(rand, true);
+        objetivo.SumarValentia(1);
+
+        if (objetivo == unidadCreadora) { unidadCreadora.GetComponent<ClasePurificadora>().CambiarFervor(1); }
+      }
+      else //Enemigos
+      {
+        int rand = UnityEngine.Random.Range(1, 11);
+        if (NIVEL > 1) { rand += 2; }
+        if (NIVEL > 2) { rand += 2; }
+        if (NIVEL == 5) { rand += 5; }
+
+        objetivo.RecibirDanio(rand, 11, false, unidadCreadora);
+
+      }
+
+      ReducirUsos();
     }
-    else //Enemigos
-    {
-      int rand =UnityEngine.Random.Range(1, 11);
-      if(NIVEL > 1){rand+=2;}
-      if(NIVEL > 2){rand+= 2;}
-      if(NIVEL == 5){rand+=5;}
-
-      objetivo.RecibirDanio(rand,11,false, unidadCreadora);
-
-    }
-
-     ReducirUsos();
   }
 
   void ActivarVFXModeloTrampa()

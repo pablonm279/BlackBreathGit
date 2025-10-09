@@ -9,7 +9,7 @@ using TMPro;
 
 public class BattleManager : MonoBehaviour
 {
-
+  public TutorialCombate scTutorialCombate;
   public GameObject prefabUnidad;
   public GameObject prefabUnidadCaballero;
   public GameObject prefabUnidadExplorador;

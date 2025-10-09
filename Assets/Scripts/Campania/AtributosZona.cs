@@ -108,11 +108,11 @@ public class AtributosZona : MonoBehaviour
 
       modChanceExploracion = 5;
 
-      Clima_chances_Sol = 40;
-      Clima_chances_Calor = 42;
-      Clima_chances_Lluvia = 65;
-      Clima_chances_Nieve = 75;
-      Clima_chances_Niebla = 100;
+      Clima_chances_Sol = 60;
+      Clima_chances_Calor = 85;
+      Clima_chances_Lluvia = 100;
+      Clima_chances_Nieve = 0;
+      Clima_chances_Niebla = 0;
 
 
 

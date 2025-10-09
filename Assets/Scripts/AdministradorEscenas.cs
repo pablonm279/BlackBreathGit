@@ -138,8 +138,9 @@ IEnumerator FadeTo(float target, float time)
     EscenaCampaign.SetActive(false);
     EscenaBatalla.SetActive(true);
     // Silenciar logs de combate durante la preparación (buffs/estados iniciales)
-    if (BattleManager.Instance != null) { BattleManager.Instance.silenciarLogCombate = true; }
-
+    BattleManager.Instance.silenciarLogCombate = true; 
+    bool bonusiniciativaTutorial = false;
+    BattleManager.Instance.scTutorialCombate.IniciarPrimerCombate(); bonusiniciativaTutorial = true; 
 
 
 
@@ -172,6 +173,8 @@ IEnumerator FadeTo(float target, float time)
     if (unidadPers1 != null)
     {
       unidadPers1.ComienzoBatallaClase();
+
+      if (bonusiniciativaTutorial) { unidadPers1.mod_iniciativa += 20;  unidadPers1.iniciativa_actual += 20;}
     }
     if (unidadPers2 != null)
     {
@@ -2040,7 +2043,7 @@ IEnumerator FadeTo(float target, float time)
       if (pers.fVidaActual < 1) { pers.fVidaActual = 1; }
       pers.fVidaMaxima -= 1 * nEnergiaCombate;
 
-      print($"Al tener {nEnergiaCombate} Energia, {scCanalizador.uNombre} perdió {damPorEnergia * nEnergiaCombate} vida y {1 * nEnergiaCombate} mas hp.");
+ //     print($"Al tener {nEnergiaCombate} Energia, {scCanalizador.uNombre} perdió {damPorEnergia * nEnergiaCombate} vida y {1 * nEnergiaCombate} mas hp.");
 
     }
 
