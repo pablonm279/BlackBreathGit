@@ -528,7 +528,6 @@ IEnumerator FadeTo(float target, float time)
 
   void AdministrarFondos(int idEncuentro)
   {
-    print("AdministrarFondos called with idEncuentro: " + idEncuentro + " IDZonaActual: " + CampaignManager.Instance.scAtributosZona.Nombre);
     if (idEncuentro > 400 && idEncuentro < 450) //Si es encuentro subterraneo
     {
               mrFondoBatalla.material = listaFondosSubterraneos[UnityEngine.Random.Range(0, listaFondosSubterraneos.Count)];
@@ -1605,7 +1604,7 @@ IEnumerator FadeTo(float target, float time)
       Buff Herido = new Buff();
       Herido.buffNombre = "Flechas Preparadas";
       Herido.boolfDebufftBuff = true;
-      Herido.cantDanioPorcentaje += 10;
+      Herido.cantDanioPorcentaje += 5;
       unidad.GetComponent<ClaseExplorador>().PrepararFlechasDelay();
       Herido.AplicarBuff(unidad);
       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
@@ -1874,6 +1873,7 @@ IEnumerator FadeTo(float target, float time)
     Personaje2 = null;
     Personaje3 = null;
     Personaje4 = null;
+  
 
     BattleManager.Instance.aliadosRefuerzos.Clear();
     BattleManager.Instance.enemigosRefuerzos.Clear();
@@ -1889,6 +1889,7 @@ IEnumerator FadeTo(float target, float time)
 
     EliminarTodasLasUnidades();
     EliminarTodasLasTrampas();
+    EliminarTodosLosPresentes();
 
     BattleManager.Instance.RondaNro = 1;
     BattleManager.Instance.unidadActiva = null;
@@ -1907,7 +1908,26 @@ IEnumerator FadeTo(float target, float time)
 
 
   }
+  public void EliminarTodosLosPresentes()
+  {
+    foreach (var casilla in BattleManager.Instance.ladoA.casillasLado)
+    {
+      if(casilla.Presente != null)
+      {
+        Destroy(casilla.Presente);
+        casilla.Presente = null;
+      }
 
+    }
+    foreach (var casilla in BattleManager.Instance.ladoB.casillasLado)
+    {
+     if(casilla.Presente != null)
+      {
+        Destroy(casilla.Presente);
+        casilla.Presente = null;
+      }
+    }
+  }
   public void EliminarTodasLasUnidades()
   {
     // Buscar todos los objetos con el tag "Unidad"
@@ -1931,7 +1951,7 @@ IEnumerator FadeTo(float target, float time)
         trampa.DestruirTrampa();
       }
     }
-     foreach (var casilla in BattleManager.Instance.ladoA.casillasLado)
+     foreach (var casilla in BattleManager.Instance.ladoB.casillasLado)
     {
       var trampas = casilla.GetComponents<Trampa>();
       foreach (var trampa in trampas)

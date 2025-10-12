@@ -17,7 +17,17 @@ public class MenuBatallas : MonoBehaviour
 
   public void ActualizarLista()
  {
-     
+    int seleccionados = 0;
+    if (scAdministradorEscenas.Personaje1 != null) seleccionados++;
+    if (scAdministradorEscenas.Personaje2 != null) seleccionados++;
+    if (scAdministradorEscenas.Personaje3 != null) seleccionados++;
+    if (scAdministradorEscenas.Personaje4 != null) seleccionados++;
+
+    // Asumiendo que tienes un TextMeshProUGUI llamado txtSeleccionadosPersonajes
+    if (txtSeleccionadosPersonajes != null)
+    {
+        txtSeleccionadosPersonajes.text = $"{seleccionados}/4";
+    }
     // Verifica si todos los personajes son null
     bool todosVacios = scAdministradorEscenas.Personaje1 == null &&
                        scAdministradorEscenas.Personaje2 == null &&
@@ -185,11 +195,11 @@ public class MenuBatallas : MonoBehaviour
 
     ActualizarLista();
 
- 
+   
 
     
  }
-
+ public TextMeshProUGUI txtSeleccionadosPersonajes;
  public int esEmboscadaEnemiga;
  public int EventoBatallaID = 0;
  public void EventoBatallaNormal(int n, int esEmboscada = 0)
@@ -394,7 +404,11 @@ public class MenuBatallas : MonoBehaviour
                     }
                 }
 
+                   if(EventoBatallaID == 0) //Si por alguna razón no se asignó un ID, se asigna uno genérico
+                {
+                    EventoBatallaID =  EventoBatallaID = scZona.FASE1IDAtaqueCaravana1; //Bandidos Ataque a Caravana I
 
+                }
 
 
 
@@ -634,11 +648,34 @@ public class MenuBatallas : MonoBehaviour
             CampaignManager.Instance.CambiarBueyesActuales(-1);
         }
     }
+        if (EventoBatallaID == 11) //FASE 1 Bosque Ardiente Jefe Arbol Lamentos
+        {
+            if (resultado == 1) //Victoria
+            {
+                txtRecompensa.text = "Se han obtenido 580 Exp, 310 Oro y 32 Materiales.";
+                CampaignManager.Instance.CambiarOroActual(310);
+                CampaignManager.Instance.CambiarMaterialesActuales(40);
+                aumentochancesitem += 100; //Batallas elite garantizan Items
+                DarExperiencia(580);
+                //Efectos victoria siguiente zona- HACER
+
+            }
+            else //Derrota
+            {
+                txtRecompensa.text = "La caravana ha fracasado. Fin del juego.";
+            }
+           
+           
+                if (CampaignManager.Instance.scTutorialManager.tutorialActivo)
+                { 
+                    CampaignManager.Instance.scTutorialManager.establecerPasoEspecifico(12);
+                }
+    }
         #endregion
 
-    //Resultados batalla BANDIDOS
-    #region 
-    if (EventoBatallaID == 500) //FASE 1 Bandidos Normal
+        //Resultados batalla BANDIDOS
+        #region 
+        if (EventoBatallaID == 500) //FASE 1 Bandidos Normal
         {
             if (resultado == 1) //Victoria
             {

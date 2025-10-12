@@ -286,13 +286,8 @@ public class Asesinar : Habilidad
        
       }
 
-      if (objetivo.HP_actual < 1 && resultadoTirada > 0)
-      {
-        scEstaUnidad.GanarEscondido(1);
-        cooldownActual = 1; //Si mata, reduce el cooldown a 1 turno.
-
-        if (NIVEL == 4) { scEstaUnidad.SumarValentia(2); }
-      }
+      fueElObjetivoAsesinado = objetivo;
+      Invoke("ChequeoMuerteObjetivo", 3.0f); //Chequea si el objetivo murió, y aplica efectos de ser así.
 
       objetivo.AplicarDebuffPorAtaquesreiterados(1);
     }
@@ -308,7 +303,32 @@ public class Asesinar : Habilidad
       objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
     }
   }
-    
+ Unidad fueElObjetivoAsesinado;
+  void ChequeoMuerteObjetivo()
+  {
+    bool aplicarEfectos = false;
+    if (fueElObjetivoAsesinado == null)
+    {
+      aplicarEfectos = true; //Si no existe se asume que murio
+    } //Si no había objetivo, no hace nada
+    else if (fueElObjetivoAsesinado.HP_actual < 1)
+    {
+      aplicarEfectos = true; //Si no tiene vida, murio
+    }
+
+    if (aplicarEfectos)
+    { 
+      scEstaUnidad.GanarEscondido(1);
+      cooldownActual = 1; //Si mata, reduce el cooldown a 1 turno.
+
+      if (NIVEL == 4) { scEstaUnidad.SumarValentia(2); }
+    }
+    fueElObjetivoAsesinado = null;
+  }
+
+
+
+ 
        void VFXAplicar(GameObject objetivo)
     {
       VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_ASesinar");

@@ -120,7 +120,7 @@ public class Acechar : Habilidad
     public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
     {
         // El log de uso ahora está centralizado en Habilidad.Resolver
-        base.Resolver(Objetivos);
+      await  base.Resolver(Objetivos);
     }
 
 

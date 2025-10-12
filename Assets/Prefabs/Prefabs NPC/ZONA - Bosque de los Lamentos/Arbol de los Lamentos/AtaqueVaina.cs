@@ -38,7 +38,7 @@ public class AtaqueVaina : IAHabilidad
 
       bonusAtaque = 6;
       XdDanio = 2;
-      daniodX = 8; //2d8
+      daniodX = 10; //2d8
       tipoDanio = 1; //Cortante
 
 

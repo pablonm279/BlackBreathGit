@@ -149,8 +149,9 @@ public class CorteHorizontal : Habilidad
    public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
    {
     // El log de uso ahora está centralizado en Habilidad.Resolver
-    base.Resolver(Objetivos);
-    VFXAplicarOrigen(Usuario.gameObject);
+     VFXAplicarOrigen(Usuario.gameObject);
+   await base.Resolver(Objetivos);
+   
    }
 
     protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)

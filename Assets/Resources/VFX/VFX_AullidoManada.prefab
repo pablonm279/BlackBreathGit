@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a31d3ac91f917984b871f7571057cb78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delayautodestruir: 2.5
+  delayautodestruir: 2.8
 --- !u!1 &8293571200389841917
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,7 +198,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.028}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.99, y: 0.14}
+  m_AnchoredPosition: {x: -0.99, y: -1.95}
   m_SizeDelta: {x: 16.352, y: 10.215}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5889510623318074358
@@ -305,7 +305,7 @@ MonoBehaviour:
   shakeFrequency: 1.1
   playSfx: 1
   sfxClip: {fileID: 8300000, guid: 4bb15ee4b8c17ed4cbb43d085aa06199, type: 3}
-  sfxVolume: 0.8
+  sfxVolume: 0.72
   sfxDelay: 0
   onPlay:
     m_PersistentCalls:

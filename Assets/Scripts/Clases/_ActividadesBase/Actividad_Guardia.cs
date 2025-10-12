@@ -7,8 +7,8 @@ public class Actividad_Guardia : Actividad
     void Awake()
     {
       IDActividad = 3; //Guardia
- 
-      desc = "<color=#0cca74><b>Guardia: </b></color><color=#d3d3d3><i>El personaje se mantendrá alerta y custodiará la caravana.</color></i>\\n\\nSi se produce una emboscada, podrá participar activamente de la defensa. +3% Exploración al descansar.";
+
+      desc = "<color=#0cca74><b>Guardia: </b></color><color=#d3d3d3><i>El personaje se mantendrá alerta y custodiará la caravana.</color></i>\\n\\nSi se produce una emboscada, podrá participar de la defensa sin penalización. +3% Exploración al descansar.";
 
 
 

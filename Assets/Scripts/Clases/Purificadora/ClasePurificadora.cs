@@ -117,6 +117,7 @@ void ActualizarFervor()
         buff.buffNombre = $"Fervor: {Cantidad_Fervor}";
         buff.boolfDebufftBuff = true;
         buff.DuracionBuffRondas = 1;
+        buff.suprimeTextoFlotante = true;
         barreraDeDanio += 1*Cantidad_Fervor;
         buff.cantDamBonusElementalDiv += 1*Cantidad_Fervor;
         buff.AplicarBuff(this);
@@ -191,6 +192,7 @@ void ActualizarAuraSagrada()
         buff.buffNombre = "Aura Sagrada";
         buff.boolfDebufftBuff = true;
         buff.DuracionBuffRondas = 2;
+        buff.suprimeTextoFlotante = true;
         buff.cantDamBonusElementalDiv += 1;
         if(PASIVA_AuraSagrada > 2){  buff.cantDamBonusElementalDiv ++;}
         if(PASIVA_AuraSagrada == 5 && Cantidad_Fervor > 2){ buff.cantDamBonusElementalDiv += 2;}

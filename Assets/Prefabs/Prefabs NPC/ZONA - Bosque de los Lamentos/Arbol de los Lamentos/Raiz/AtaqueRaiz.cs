@@ -35,7 +35,7 @@ public class AtaqueRaiz : IAHabilidad
 
       bonusAtaque = 0;
       XdDanio = 1;
-      daniodX = 8; //1d6
+      daniodX = 10; //1d10
       tipoDanio = 2; //Perforante
 
 

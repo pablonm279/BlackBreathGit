@@ -25,17 +25,18 @@ public class UIContadorAP : MonoBehaviour
         {
             Destroy(buttonTransform.gameObject);
         }
-
+    
       
       if(BattleManager.Instance.unidadActiva != null)
       {
         Unidad unidadSeleccionada = BattleManager.Instance.unidadActiva.gameObject.GetComponent<Unidad>();
-      
-        for (int i = 0; i < unidadSeleccionada.ObtenerAPActual(); i++)
-        {
-           GameObject circuloAP =  Instantiate(circuloAPprefab, transform);
+
+      for (int i = 0; i < unidadSeleccionada.ObtenerAPActual(); i++)
+      {
+        GameObject circuloAP = Instantiate(circuloAPprefab, transform);
+          circuloAP.GetComponent<Image>().color = new Color(0.7f, 0.0f, 0.0f); // Rojo oscuro
         
-        }
+       }
       }
       
       // Luego de actualizar la UI, revisar si debe indicarse pasar turno
@@ -45,7 +46,7 @@ public class UIContadorAP : MonoBehaviour
       }
     }
 
-   public void MarcarCirculos(int n)
+  public void MarcarCirculos(int n)
   {
     // Obtén la cantidad total de elementos en el GridLayoutGroup
     int totalCirculos = transform.childCount;
@@ -59,12 +60,13 @@ public class UIContadorAP : MonoBehaviour
     // Itera sobre los últimos N elementos y cambia su color a azul
     for (int i = totalCirculos - n; i < totalCirculos; i++)
     {
-        Transform circuloTransform = transform.GetChild(i);
-        Image circuloImage = circuloTransform.GetComponent<Image>();
+      Transform circuloTransform = transform.GetChild(i);
+      Image circuloImage = circuloTransform.GetComponent<Image>();
 
-        // Cambia el color a azul (puedes ajustar esto según tus necesidades)
-        circuloImage.color = Color.blue;
+      // Cambia el color a azul (puedes ajustar esto según tus necesidades)
+      circuloImage.color = new Color(0.15f, 0.15f, 0.7f); // Azul 
     }
+   
   }
 
 
@@ -78,8 +80,8 @@ public class UIContadorAP : MonoBehaviour
         Transform circuloTransform = transform.GetChild(i);
         Image circuloImage = circuloTransform.GetComponent<Image>();
 
-        // Restablece el color a blanco
-        circuloImage.color = Color.white;
+        // Restablece el color a rojo
+        circuloImage.color = new Color(0.7f, 0.0f, 0.0f); // Rojo oscuro
     }
   }
 

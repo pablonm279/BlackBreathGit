@@ -12,7 +12,7 @@ public class TrampaFogata : Trampa
      NIVEL = Nivel;
      intDificultadVer = 0;   
      intUsos = 3;
-     intDuracionTurnos = 3;
+     intDuracionTurnos = 4;
      if(Nivel > 1){intUsos++;intDuracionTurnos++;}
      esPersistente = true;
 

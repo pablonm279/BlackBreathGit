@@ -820,15 +820,15 @@ public class CampaignManager : MonoBehaviour
       }
       if (tierAliento == 2)
       {
-        txtTooltipAlientoNegro.text += $"<color=#c8a6e8><b>Estado: Cerca</b> ({EstadoAlientoNegro}/20) - La Caravana comienza a preocuparse y la podredumbre se siente en el aire. Los muertos acechan en las sombras.</color>";
+        txtTooltipAlientoNegro.text += $"<color=#c8a6e8><b>Estado: Cerca</b> ({EstadoAlientoNegro}/20) - La Caravana comienza a preocuparse y la podredumbre se siente en el aire. Los Corrompidos acechan en las sombras.</color>";
       }
       if (tierAliento == 3)
       {
-        txtTooltipAlientoNegro.text += $"<color=#aa66ea><b>Estado: Dentro</b> ({EstadoAlientoNegro}/20) - La Caravana ya es directamente afectada por el hedor. Los muertos se dejan ver.</color>";
+        txtTooltipAlientoNegro.text += $"<color=#aa66ea><b>Estado: Dentro</b> ({EstadoAlientoNegro}/20) - La Caravana ya es directamente afectada por el hedor. Los Corrompidos se dejan ver.</color>";
       }
       if (tierAliento == 4)
       {
-        txtTooltipAlientoNegro.text += $"<color=#7a1dd1><b>Estado: Nocivo</b> ({EstadoAlientoNegro}/20) - La peste comienza a tomar vidas civiles. Los muertos son implacables.</color>";
+        txtTooltipAlientoNegro.text += $"<color=#7a1dd1><b>Estado: Nocivo</b> ({EstadoAlientoNegro}/20) - La peste comienza a tomar vidas civiles. Los Corrompidos son implacables.</color>";
       }
 
     }
@@ -947,9 +947,9 @@ public class CampaignManager : MonoBehaviour
     {
       switch (fatigaAhora)
       {
-        case 4: CambiarEsperanzaActual(-10); int rand = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand); EscribirLog($"-La fatiga ha provocado la muerte de algunos Bueyes. {rand} Bueyes"); break;    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        case 5: CambiarEsperanzaActual(-15); int rand2 = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand2); EscribirLog($"-La fatiga ha provocado la muerte de algunos Bueyes. {rand2} Bueyes"); break;
-        case > 5: CambiarEsperanzaActual(-20); int rand3 = UnityEngine.Random.Range(-4, 1); CambiarBueyesActuales(rand3); int rand4 = UnityEngine.Random.Range(-10, 1); CambiarCivilesActuales(rand4); EscribirLog($"-La fatiga extrema ha provocado la muerte de algunos Bueyes y Civiles. {rand3} Bueyes {rand4} Civiles"); break;
+        case 4: CambiarEsperanzaActual(-10); int rand = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand); if(rand < 0) {EscribirLog($"-La fatiga ha provocado la muerte de algunos Bueyes. {rand} Bueyes");} break;    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        case 5: CambiarEsperanzaActual(-15); int rand2 = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand2); if(rand2 < 0) {EscribirLog($"-La fatiga ha provocado la muerte de algunos Bueyes. {rand2} Bueyes");} break;
+        case > 5: CambiarEsperanzaActual(-20); int rand3 = UnityEngine.Random.Range(-4, 1); CambiarBueyesActuales(rand3); int rand4 = UnityEngine.Random.Range(-10, 1); CambiarCivilesActuales(rand4); if(rand3 < 0 || rand4 < 0) {EscribirLog($"-La fatiga extrema ha provocado la muerte de algunos Bueyes y Civiles. {rand3} Bueyes {rand4} Civiles");} break;
       }
       if (scMenuSequito.TieneSequito(9) && fatigaAhora >= 4) //Si hay un Séquito de Nobles y la fatiga es 4 o más
       {
@@ -1145,6 +1145,7 @@ public class CampaignManager : MonoBehaviour
   #endregion
   #region Suministros
   [SerializeField] private TextMeshProUGUI valueSuministros;
+  [SerializeField] private TextMeshProUGUI valueCantdescansos;
   private int SuministrosActuales;
   public int GetSuministrosActuales()
   {
@@ -1155,7 +1156,18 @@ public class CampaignManager : MonoBehaviour
     SuministrosActuales += suministros;
     await GenerarTextoRecursos(suministros, valueSuministros.gameObject, false);
 
+    float consumo = GetCivilesActual() + GetBueyesActual() * 2;
     valueSuministros.text = "" + SuministrosActuales;
+
+    // Calcula cuántos días alcanzan los suministros actuales
+    int diasSuministros = Mathf.FloorToInt(SuministrosActuales / consumo);
+
+
+    if (diasSuministros != 1)
+    { valueCantdescansos.text = $"<i>{(int)diasSuministros} descansos</i>"; }
+    else { valueCantdescansos.text = $"<i>{(int)diasSuministros} descanso</i>"; }
+
+
     GetCargaLlevadaActual();
 
     if (SuministrosActuales < GetCivilesActual()) {alertaSuministros.SetActive(true); }
@@ -1826,7 +1838,7 @@ public class CampaignManager : MonoBehaviour
     pers1.idRetrato = 6;
     pers1.iPuestoDeseado = 1;
 
-    pers1.fVidaMaxima = 4 + UnityEngine.Random.Range(1, 5);
+    pers1.fVidaMaxima = 35 + UnityEngine.Random.Range(1, 5);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 1 + UnityEngine.Random.Range(0, 2);

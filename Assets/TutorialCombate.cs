@@ -74,7 +74,11 @@ public class TutorialCombate : MonoBehaviour
         pasoActual--;
         MostrarPaso(pasoActual);
     }
-
+    public void omitirTutorialCombate()
+    {
+       
+        FinalizarTutorialCombate();
+    }
     private void ComenzarTutorialCombate()
     {    
         if (pasosCombate == null || pasosCombate.Length == 0) return;
@@ -88,6 +92,8 @@ public class TutorialCombate : MonoBehaviour
     {
         tutorialCombateActivo = false;
         pasoActual = pasosCombate.Length - 1;
+
+        gameObject.SetActive(false);
         
     }
 

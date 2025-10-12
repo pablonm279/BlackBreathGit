@@ -263,7 +263,7 @@ public class MenuDescanso : MonoBehaviour
 
     } //Recoleccion Materiales
 
-    float consumo = CampaignManager.Instance.GetCivilesActual();
+    float consumo = CampaignManager.Instance.GetCivilesActual()+ CampaignManager.Instance.GetBueyesActual()*2;
     if (tareaCivilSeleccionada == 3)
     {
       consumo = consumo * 1.2f;

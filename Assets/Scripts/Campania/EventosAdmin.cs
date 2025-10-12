@@ -269,8 +269,8 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento201;
             txtTitulo.text = "Destello Esperanzador";
 
-            txtDescripcion.text = "Durante la noche, los civiles reunidos divisan un destello de luz clara y hermosa en el horizonte hacia la dirección del arca.\n";
-            txtDescripcion.text += "Quizás sea una señal, quizás una casualidad, pero los civiles se ven ahora más optimistas, por más que aún falte un largo trecho.\n\n\n\n\n\n\n";
+            txtDescripcion.text = "Durante la noche, los civiles reunidos divisan un destello de luz clara y hermosa en el horizonte hacia la dirección del puerto.\n";
+            txtDescripcion.text += "Quizás sea una señal, quizás casualidad, pero los civiles se ven ahora más optimistas, por más que aún falte un largo trecho.\n\n\n\n\n\n\n";
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
             txtDescripcion.text += "<color=#a0e812><b>+15 Esperanza</b></color>";
@@ -475,7 +475,7 @@ public class EventosAdmin : MonoBehaviour
             txtDescripcion.text+="\nSe conseguirán de 18-30 Materiales y 80-140 Suministros.";
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
-            txtDescripcion.text+="<color=#a0e812><b>\nDescansar en este lugar tendrá beneficios adicionales:+20% efectividad a tareas de Recolección.</b></color>";
+            txtDescripcion.text+="<color=#a0e812><b>\n\nDescansar en este lugar tendrá beneficios adicionales:+20% efectividad a tareas de Recolección.</b></color>";
 
             botonA.SetActive(false);
 

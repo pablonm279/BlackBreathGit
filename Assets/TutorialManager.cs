@@ -33,7 +33,7 @@ public class TutorialManager : MonoBehaviour
             tutorialActivo = false; // Finaliza el tutorial
         }
     }
-    
+
     private HashSet<int> pasosUsadosPorEstablecer = new HashSet<int>();
 
     public void establecerPasoEspecifico(int x)
@@ -57,13 +57,13 @@ public class TutorialManager : MonoBehaviour
         if (pasoActual != x) return;
 
         pasosTutorial[pasoActual].SetActive(false);
-   
-      
+
+
     }
 
-  
 
-   public void anteriorPaso()
+
+    public void anteriorPaso()
     {
 
         if (!tutorialActivo) return;
@@ -88,7 +88,7 @@ public class TutorialManager : MonoBehaviour
         MostrarPaso(pasoActual);
     }
     void MostrarPaso(int index)
-    { 
+    {
         if (pasosTutorial == null || pasosTutorial.Length == 0) return;
         if (index < 0 || index >= pasosTutorial.Length) return;
 
@@ -102,5 +102,10 @@ public class TutorialManager : MonoBehaviour
         {
             paso.SetActive(false); // Oculta todos los pasos
         }
+    }
+    
+    public void SalirDelJuego()
+    {
+        Application.Quit();
     }
 }

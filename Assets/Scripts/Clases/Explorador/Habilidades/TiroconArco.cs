@@ -224,7 +224,16 @@ public class TiroconArco : Habilidad
     {
         await Task.Delay(200);
 
-        GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
+    GameObject flechaPrefab = null;
+    if (scEstaUnidad.bonusdam_fuego > 0)
+    {
+       flechaPrefab = BattleManager.Instance.contenedorPrefabs.FlechaFuego;
+    }
+    else
+    {
+       flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
+    }
+        
         if (flechaPrefab == null)
         {
             return;

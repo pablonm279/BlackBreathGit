@@ -18,8 +18,9 @@ public class BotonHabilidad : MonoBehaviour
     [SerializeField]private GameObject goDesc;
     [SerializeField]private TextMeshProUGUI txtDescHab;
 
-
+    [SerializeField]private GameObject prefabCirculoAccion;
     
+    [SerializeField]private GameObject contenedorCirculosAccion;
 
     public UIBotonesHabilidades scUiBotonesHabilidades;
 
@@ -38,7 +39,21 @@ public class BotonHabilidad : MonoBehaviour
 
 
 
+        // Instanciar tantos prefabCirculoAccion en contenedorCirculosAccion como el costo de AP de la habilidad
+        if (contenedorCirculosAccion != null && prefabCirculoAccion != null && HabilidadRepresentada != null)
+        {
+            // Limpiar los círculos existentes primero
+            foreach (Transform child in contenedorCirculosAccion.transform)
+            {
+            Destroy(child.gameObject);
+            }
 
+            int cantidad = Mathf.Max(0, (int)HabilidadRepresentada.costoAP);
+            for (int i = 0; i < cantidad; i++)
+            {
+            Instantiate(prefabCirculoAccion, contenedorCirculosAccion.transform);
+            }
+        }
     }
 
    public void hoverDescripcion(int n)
@@ -265,15 +280,45 @@ public class BotonHabilidad : MonoBehaviour
         BotonActivo = false;
     }
 
-   
+
     private void Update()
     {
-        if(HabilidadRepresentada != null)
+        if (HabilidadRepresentada != null)
         {
-         nombreHabilidad.text = HabilidadRepresentada.nombre;
+            nombreHabilidad.text = HabilidadRepresentada.nombre;
 
-         if(HabilidadRepresentada.cooldownActual > 0){nombreHabilidad.text += " "+HabilidadRepresentada.cooldownActual+" T";}
+            if (HabilidadRepresentada.cooldownActual > 0) { nombreHabilidad.text += " " + HabilidadRepresentada.cooldownActual + " T"; }
 
+            // Actualiza el fill de cooldown en tiempo real para reflejar
+            // inmediatamente los cambios al usar la habilidad o al cambiar de turno.
+            UpdateCooldownMuestra();
+        }
+
+        if (contenedorCirculosAccion != null && BattleManager.Instance != null && BattleManager.Instance.unidadActiva != null)
+        {
+            float apActual = BattleManager.Instance.unidadActiva.ObtenerAPActual();
+            int apNecesarios = Mathf.Max(0, (int)HabilidadRepresentada.costoAP);
+            int esforzable = HabilidadRepresentada.esforzable; 
+
+            for (int i = 0; i < contenedorCirculosAccion.transform.childCount; i++)
+            {
+                Image img = contenedorCirculosAccion.transform.GetChild(i).GetComponent<Image>();
+                if (img != null)
+                {
+                    if (i < apActual)
+                    {
+                       img.color = new Color(0.1f, 0.1f, 0.8f, 1f); // Azul brillante para AP disponible
+                    }
+                    else if (i < apActual + esforzable && i < apNecesarios)
+                    {
+                        img.color = new Color(1.5f, 0.1f, 0.1f, 1f); // Rojo brillante para esforzable
+                    }
+                    else
+                    {
+                        img.color = new Color(0.3f, 0.3f, 0.3f, 1f); // Oscuro si no tiene AP ni puede esforzarse
+                    }
+                }
+            }
         }
     }
 

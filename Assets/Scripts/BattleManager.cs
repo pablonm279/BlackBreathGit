@@ -250,7 +250,7 @@ public class BattleManager : MonoBehaviour
       unidadActiva.ArrancaTurnoEstaUnidad();
       scUIInfoChar.ActualizarInfoChar(unidadActiva);
       /*---*/
-      ActualizarlistaHabilidades();//dejar aca y arria, se llama 2 veces
+      ActualizarlistaHabilidades();//dejar aca y arriba, se llama 2 veces
 
       indexTurno++;
 
@@ -307,6 +307,7 @@ public class BattleManager : MonoBehaviour
   public void TerminarTurno() //Termina el turno de la unidad activa
   {
     scUIBotonesHab.UIDesactivarBotones();
+    
     unidadActiva.TerminaTurnoEstaUnidad();
 
     if (indexTurno >= 0 && indexTurno < lUnidadesTotal.Count)
@@ -319,6 +320,18 @@ public class BattleManager : MonoBehaviour
     }
     else
     {
+      // Si no quedan enemigos en el campo y hay refuerzos pendientes,
+      // forzar que aparezcan en la próxima ronda sin importar el delay actual.
+      // Ajustamos el umbral para que en la próxima Ronda (RondaNro+1) se cumpla (RondaNro+1 > delayRefuerzo).
+      if (enemigosRefuerzos != null && enemigosRefuerzos.Count > 0 && ladoA != null && ladoA.unidadesLado.Count == 0)
+      {
+        if (delayRefuerzo > RondaNro)
+        {
+          delayRefuerzo = RondaNro;
+          ActualizarRefuerzosUI();
+        }
+      }
+
       RondaNueva();
     }
 
@@ -396,7 +409,9 @@ public class BattleManager : MonoBehaviour
   }
   public void ActualizarRefuerzosUI()
   {
-    txtRefuerzosContador.text = "" + enemigosRefuerzos.Count() + "/" + (delayRefuerzo - RondaNro + 1);
+    int tiempoRestante = delayRefuerzo - RondaNro + 1;
+    if (tiempoRestante < 0) { tiempoRestante = 0; }
+    txtRefuerzosContador.text = "" + enemigosRefuerzos.Count() + "/" + tiempoRestante;
     if (enemigosRefuerzos.Count < 1)
     { goRefuerzos.SetActive(false); }
     else { goRefuerzos.SetActive(true); }
@@ -415,7 +430,9 @@ public class BattleManager : MonoBehaviour
 
   public void ActualizarAliadosRefUI()
   {
-    txtAliadosContador.text = "" + aliadosRefuerzos.Count() + "/" + (delayAliados - RondaNro + 1);
+    int tiempoRestante = delayAliados - RondaNro + 1;
+    if (tiempoRestante < 0) { tiempoRestante = 0; }
+    txtAliadosContador.text = "" + aliadosRefuerzos.Count() + "/" + tiempoRestante;
     if (aliadosRefuerzos.Count < 1)
     { goAliadosRefuerzos.SetActive(false); }
     else { goAliadosRefuerzos.SetActive(true); }
@@ -453,6 +470,7 @@ public class BattleManager : MonoBehaviour
     }
 
     ActualizarRefuerzosUI();
+    
   }
   void AdministrarRefuerzosAliados()
   {
@@ -524,7 +542,7 @@ public class BattleManager : MonoBehaviour
 
     EscribirLog($"<color=#d92b08>{enemigo.GetComponent<Unidad>().uNombre} se ha unido a la batalla. Quedan {enemigosRefuerzos.Count() - 1} refuerzos.</color> ");
 
-
+    scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
   }
   void MandarRefuerzoAliado(GameObject enemigo)
   {
@@ -567,7 +585,7 @@ public class BattleManager : MonoBehaviour
     }
 
     EscribirLog($"<color=#d92b08>{enemigo.GetComponent<Unidad>().uNombre} se ha unido a la batalla. Quedan {enemigosRefuerzos.Count() - 1} refuerzos.</color> ");
-
+    scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
 
 
   }

@@ -461,7 +461,7 @@ public bool movimientoEnCurso = false;
         Vector3 direccion = CasillaForzadoaMover.transform.position - transform.position;
 
         // Calcula la nueva posición interpolando suavemente
-        Vector3 nuevaPosicion = transform.position + direccion.normalized * (velocidadMovimiento * 1.5f) * Time.fixedDeltaTime;
+        Vector3 nuevaPosicion = transform.position + direccion.normalized * velocidadMovimiento * Time.fixedDeltaTime;
 
         // Establece la nueva posición
         transform.position = nuevaPosicion;
@@ -694,11 +694,11 @@ void ReducirDuracionMarcas()
 
 }
 void ReducirDuracionBuffs()
-{
+{ print("Dentro de reducir buffs");
   Buff[] buffs = gameObject.GetComponents<Buff>();
 
         foreach (Buff buff in buffs)
-        { 
+        { print("Dentro de reducir buffs, reduce tal buff: "+ buff.buffNombre);
             buff.DuracionBuffRondas--;
 
             if (buff.DuracionBuffRondas == 0) // no se chequea < 1, porque los buffs eternos arrancan en -1 duracion
@@ -756,7 +756,7 @@ void ActivarEfectosCustomBuffsInicioTurno()
   {
     BattleManager.Instance.botonConsumibleA.SetActive(true);
     BattleManager.Instance.botonConsumibleA.transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().text = ConsumibleA.sNombreItem;
-
+    BattleManager.Instance.botonConsumibleA.GetComponent<Image>().sprite = ConsumibleA.imItem;
   }
   else
   {
@@ -767,7 +767,7 @@ void ActivarEfectosCustomBuffsInicioTurno()
   {
     BattleManager.Instance.botonConsumibleB.SetActive(true);
     BattleManager.Instance.botonConsumibleB.transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().text = ConsumibleB.sNombreItem;
-
+    BattleManager.Instance.botonConsumibleB.GetComponent<Image>().sprite = ConsumibleB.imItem;
   }
   else
   {
@@ -789,7 +789,7 @@ void ActivarEfectosCustomBuffsInicioTurno()
 
     LlamarReacciones(5, this, false); //Reacciones al terminar turno
 
-
+    print("Llama a Reducir Buffs");
     ReducirDuracionBuffs(); //Se reduce duracion de buffs/debuffs al terminar el turno
     
     ControlarSiEsDescanso();
@@ -1236,7 +1236,8 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     }
     else
     {
-      GenerarTextoFlotante("Invulnerable", Color.gray);
+      if (TieneBuffNombre("Invulnerable"))
+      { GenerarTextoFlotante("Invulnerable", Color.gray); }
 
     }
   }
@@ -1383,7 +1384,9 @@ public async virtual void RecibirDanioBonusElemental(float Xddanio, int tipoDani
     }
     else
     {
-      GenerarTextoFlotante("Invulnerable", Color.gray);
+       if (TieneBuffNombre("Invulnerable"))
+      { GenerarTextoFlotante("Invulnerable", Color.gray); }
+
 
     }
 

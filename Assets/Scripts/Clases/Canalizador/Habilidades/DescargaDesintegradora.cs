@@ -131,7 +131,7 @@ if(NIVEL == 3)
   public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
   {
     // El log de uso ahora está centralizado en Habilidad.Resolver
-    base.Resolver(Objetivos);
+  await  base.Resolver(Objetivos);
 
     if (NIVEL != 4) { scEstaUnidad.estado_aturdido+=1; print(6565); }
     if(scEstaUnidad is ClaseCanalizador can){ if (NIVEL != 5) { can.CambiarEnergia(-1); } }
