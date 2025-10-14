@@ -232,7 +232,12 @@ public class UIInfoChar : MonoBehaviour
         GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(27,1);
      }
+         //AGREGAR LOS NUEVOS TMB EN UNIDADCANVAS PARA QUE APAREZCAN EN LA BARRA DE VIDA----!! 
+           //Y en stacks poner -1 para que no muestre numero en la barra de vida.
+           //Y que el parametro desdeBarraVida sea true.
      
+
+
      //MostrarBuffs/Debuffs
          foreach (Buff buff in scUnidadMostrada.gameObject.GetComponents<Buff>())
          {

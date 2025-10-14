@@ -108,22 +108,37 @@ void ActualizarFervor()
 {
    barreraDeDanio -= 1*Cantidad_Fervor;
    if(barreraDeDanio < 0){barreraDeDanio = 0;}
+   
+    if (TieneBuffNombre("Fervor"))
+    {
+      Buff[] buffs = GetComponents<Buff>();
+      foreach (Buff buff in buffs)
+      {
+        if (buff.buffNombre.StartsWith("Fervor"))
+        {
+          buff.RemoverBuff(this);
+        }
+      }
+    }
 
-  if(Cantidad_Fervor > 0)
-  {
-      /////////////////////////////////////////////
+    {
+      if (Cantidad_Fervor > 0) 
+      {
+        /////////////////////////////////////////////
         //BUFF ---- Así se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = $"Fervor: {Cantidad_Fervor}";
         buff.boolfDebufftBuff = true;
         buff.DuracionBuffRondas = 1;
         buff.suprimeTextoFlotante = true;
-        barreraDeDanio += 1*Cantidad_Fervor;
-        buff.cantDamBonusElementalDiv += 1*Cantidad_Fervor;
+        buff.esBuffVisibleUI = false;
+        barreraDeDanio += 1 * Cantidad_Fervor;
+        buff.cantDamBonusElementalDiv += 1 * Cantidad_Fervor;
         buff.AplicarBuff(this);
         // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, this.gameObject);
-  }
+      }
+    }
 }
 
 void CrearTrampaEcosDivinos()

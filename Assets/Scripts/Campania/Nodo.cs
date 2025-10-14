@@ -65,12 +65,14 @@ public class Nodo : MonoBehaviour
     if (hayExploracionExplorador != "")//Explorador: Exploración
     {
       TiradaExploracion(200, false); //Explora si o si los adyacentes
-      TiradaExploracion(55, true, hayExploracionExplorador); //Y tiene 35% de explorar los siguientes y -15% de explorar los siguientes etc.
+      TiradaExploracion(40, true, hayExploracionExplorador); //Y tiene 45% de explorar los siguientes y -15% de explorar los siguientes etc.
 
     }
     else
     {
       TiradaExploracion(200, false);
+    //  TiradaExploracion(50, true, hayExploracionExplorador); //Y tiene 35% de explorar los siguientes y -15% de explorar los siguientes etc.
+
     }
 
 
@@ -88,7 +90,7 @@ public class Nodo : MonoBehaviour
 
     chancesAtajo += 5 * CampaignManager.Instance.CuantosPersonajesHacenTalActividad(9); //+5% de chances de encontrar un atajo si hay Exploradores explorando
 
-    if(UnityEngine.Random.Range(0, 100) < chancesAtajo && posXNodo < 9)
+    if(UnityEngine.Random.Range(0, 100) < chancesAtajo && posXNodo < 9)  //sacar el +1000
     {
       CampaignManager.Instance.EscribirLog("-Se ha encontrado un atajo subterráneo.");
 
@@ -679,6 +681,7 @@ public class Nodo : MonoBehaviour
 
   public void Revelar(bool esAtajo)
   {
+    bool estabaRevelado = revelado;
     revelado = true;
     if (tipoNodo == 0)
     { //
@@ -821,7 +824,7 @@ public class Nodo : MonoBehaviour
       }
     }
 
-    ActivarNodoVisual(tipoNodo, esAtajo);
+    ActivarNodoVisual(tipoNodo, esAtajo, estabaRevelado);
 
 
     int chancesAtaqueSubterraneo = 20; //20% de chances de que al llegar al nodo, la caravana sea emboscada por un ataque subterraneo
@@ -832,35 +835,49 @@ public class Nodo : MonoBehaviour
  
 
   }
-  public void TiradaExploracion(int chances, bool continua, string actividadExploradorON = "")
+  public void TiradaExploracion(int chances, bool continua, string actividadExploradorON = "", bool sinLog = false)
   {
-
-
+    bool yaAvisoLog = sinLog; //Sinlog es para que no se avise en el log
+    int cappedChance = Mathf.Clamp(chances, 0, 100);
     foreach (Nodo nodo in DestinosPosibles)
-    {
-      int tirada =UnityEngine.Random.Range(0, 100);
-      if (tirada < chances)
+    { 
+      int tirada = UnityEngine.Random.Range(0, 100);
+   
+       if (tirada < cappedChance)
       {
         nodo.Revelar(false); //Revela el nodo
-        if (actividadExploradorON != "")
+        int logChance = Mathf.Min(cappedChance, 90);
+        if ((continua || !string.IsNullOrEmpty(actividadExploradorON)) && logChance > 36) 
         {
-          CampaignManager.Instance.EscribirLog($"-{actividadExploradorON} ha Explorado con éxito el camino adelante.");
+          if (!yaAvisoLog)
+          {
+            if (!string.IsNullOrEmpty(actividadExploradorON))
+            {
+              CampaignManager.Instance.EscribirLog($"<color=#7ED6F7>-{actividadExploradorON} ha Explorado con éxito el camino adelante.</color> (Tirada: {tirada} < {cappedChance})");
+            }
+            else
+            {
+              CampaignManager.Instance.EscribirLog($"<color=#7ED6F7>-Durante el Descanso, se ha Explorado con éxito el camino adelante.</color> (Tirada: {tirada} < {cappedChance})");
+             }
+            
+            yaAvisoLog = true;
+          }
+          if (continua)
+          {
+            int nextChance = Mathf.Clamp(logChance - 15, 0, 90);
+            if (nextChance > 0)
+            {
+              nodo.TiradaExploracion(nextChance, true, "", true);
+            }
+          }
         }
-       
-
-        if (continua)
-        {
-          nodo.TiradaExploracion(chances - 15, true);
-        }
-
-
       }
-
+     
     }
 
   }
   bool esMisterioso = false; //Nodo que no fue revelado visualmente
-  void ActivarNodoVisual(int num, bool esAtajo)
+  void ActivarNodoVisual(int num, bool esAtajo, bool estabaRevelado)
   {
     foreach (Transform child in transform)
     {
@@ -871,36 +888,38 @@ public class Nodo : MonoBehaviour
 
     }
 
+    esMisterioso = false;
+
     //Chances NodoMisterioso 15%
     int chancesMisterioso = 15;
-    if(CampaignManager.Instance.intTipoClima == 5) //Niebla
+    if (CampaignManager.Instance.intTipoClima == 5) //Niebla
     {
-        chancesMisterioso += 10;
+      chancesMisterioso += 10;
     }
     if (CampaignManager.Instance.CuantosPersonajesHacenTalActividad(9) > 0) //Si hay un explorador con actividad Explorando
     {
-        chancesMisterioso -= CampaignManager.Instance.CuantosPersonajesHacenTalActividad(9) * 5; //-5 por cada explorador
+      chancesMisterioso -= CampaignManager.Instance.CuantosPersonajesHacenTalActividad(9) * 5; //-5 por cada explorador
     }
-   
+
     //Controles
     if (posXNodo == 10 || posXNodo == 1) //Si es el nodo final o inicial, no puede ser misterioso
     {
       chancesMisterioso = 0;
     }
-    if (!revelado)//Si ya habia sido revelado, no puede ser misterioso
+    if (estabaRevelado)//Si ya habia sido revelado, no puede ser misterioso
     {
       chancesMisterioso = 0;
     }
-   
 
-    if(UnityEngine.Random.Range(0, 100) < chancesMisterioso) //Si es un nodo normal, hay 20% de que sea un misterioso
+
+    if (UnityEngine.Random.Range(0, 100) < chancesMisterioso) //Si es un nodo normal, hay % de que sea un misterioso
     {
       num = 12; //Nodo Misterioso - No se revela visualmente
-      esMisterioso = true;  print("Nodo Misterioso Activado");
+      esMisterioso = true;
     }
     if (esAtajo) //Nodo Salida subterraneo, sobreescribe cualquier otra visual
     {
-      num = 13; 
+      num = 13;
     }
 
     switch (num)
@@ -917,14 +936,28 @@ public class Nodo : MonoBehaviour
       case 11: transform.GetChild(9).gameObject.SetActive(true); break;  //Zona Expuesta
       case 12: transform.GetChild(10).gameObject.SetActive(true); break;  //Nodo Misterioso - No se revela visualmente
       case 13: transform.GetChild(11).gameObject.SetActive(true); break;  //Nodo Salida subterraneo
-      case 14: transform.GetChild(12).gameObject.SetActive(true); break;  //Nodo Salida subterraneo
+      case 14: transform.GetChild(12).gameObject.SetActive(true); break;  //
+        /*El child 13 es el vfx "revelado" dejarlo asi, si se agregan nuevos nodos, saltearlo*/
     }
-
+   if (CampaignManager.Instance.scMapaManager.nodoActual != null)
+    {
+      if (!CampaignManager.Instance.scMapaManager.nodoActual.DestinosPosibles.Contains(this) || esAtajo) 
+      {
+        transform.GetChild(13).gameObject.SetActive(true); //Activa el vfx de "revelado" pero no en inmediatos
+      }
+    }
+   
+  
+    
   }
 
 
   public string descripcion;
 
+    void OnEnable()
+    {
+        transform.GetChild(tipoNodo).gameObject.SetActive(true); //Activa el vfx de "revelado"
+    }
     void OnMouseEnter()
     {
         if (!EventSystem.current.IsPointerOverGameObject()) // evita conflicto con UI

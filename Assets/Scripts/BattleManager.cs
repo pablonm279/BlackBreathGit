@@ -59,7 +59,7 @@ public class BattleManager : MonoBehaviour
   public Image widgetClima;
   public GameObject climaTooltip;
   public TextMeshProUGUI textClimaTooltip;
-
+  public TextMeshProUGUI rondaText;
   public bool bOcupado; //Variable de control de flujo de batalla
 
   public GameObject nocheLienzo;
@@ -380,6 +380,8 @@ public class BattleManager : MonoBehaviour
     {
       AdministrarRefuerzosAliados();
     }
+
+    rondaText.text = "Ronda " + RondaNro;
   //  BorrarLog();
   }
 

@@ -1318,7 +1318,7 @@ public class CampaignManager : MonoBehaviour
 
       text = $"<color=#ffdda5>---<b>Haz click para abandonar <color=#b7972c>5 Suministros</color> y alivianar la Carga. -1 Esperanza</b>---</color>\n\n\n";
       int num = GetSuministrosActuales();
-      text += $"Los <color=#b7972c>Suministros</color> constituyen las reservas de comida y elementos de supervivencia de la caravana.\n\nCada <color=#c918bb>Civil</color> consume 1 en cada Descanso.\n";
+      text += $"Los <color=#b7972c>Suministros</color> constituyen las reservas de comida y elementos de supervivencia de la caravana.\n\nCada <color=#c918bb>Civil</color> consume 1 en cada Descanso. Los Bueyes consumen 2.\n";
       text += $"\nLlevas {num} <color=#b7972c>Suministros</color>, por un total de peso de {num}.\n\n\n";
 
 

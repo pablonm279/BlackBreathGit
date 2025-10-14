@@ -3,57 +3,59 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
+using Unity.VisualScripting;
 
 public class UIEstadoCuadro : MonoBehaviour
 {
-   
-   public int indexEstadoRepresentado;
-   private Image Retrato;
 
-   public GameObject goTooltip;
-   public TextMeshProUGUI textTooltip;
+  public int indexEstadoRepresentado;
+  private Image Retrato;
 
-   public TextMeshProUGUI textStacks;
-   
-   void Awake()
-   {
-     Retrato = gameObject.GetComponent<Image>();
+  public GameObject goTooltip;
+  public TextMeshProUGUI textTooltip;
 
-   }
+  public TextMeshProUGUI textStacks;
 
-   public Sprite imArdiendo; 
-   public Sprite imAturdido; 
-   public Sprite imAcido;
-   public Sprite imCongelado;  
-   public Sprite ResRed; 
-   public Sprite ArmMod; 
-   public Sprite imSangrado; 
-   public Sprite imVeneno; 
-   public Sprite imApMod; 
-   public Sprite imBuff; 
-   public Sprite imDebuff; 
-   public Sprite imReaccion;
-   public Sprite imMarca;
-   public Sprite imRegvid;
-   public Sprite imRegArm;
-   public Sprite imEvasion;
-   public Sprite imFlechas;
-   public Sprite imBonusFuego;
-   public Sprite imBonusArcano;
-   public Sprite imBonusHielo;
-   public Sprite imBonusRayo;
-   public Sprite imBonusAcido;
-   public Sprite imBonusNecro;
-   public Sprite imBonusDivino;
-   public Sprite imPurificadoraFervor;
-   public Sprite imBarrera;
-   public Sprite imResiduoTejido;
-   public Sprite imEstaEscondido;
-   public Sprite imCorrupto;
-   public Sprite imTierEnergia; //Canalizador
-   public void RepresentarEstado(int index, int stacks)
+  void Awake()
   {
+    Retrato = gameObject.GetComponent<Image>();
 
+  }
+
+  public Sprite imArdiendo;
+  public Sprite imAturdido;
+  public Sprite imAcido;
+  public Sprite imCongelado;
+  public Sprite ResRed;
+  public Sprite ArmMod;
+  public Sprite imSangrado;
+  public Sprite imVeneno;
+  public Sprite imApMod;
+  public Sprite imBuff;
+  public Sprite imDebuff;
+  public Sprite imReaccion;
+  public Sprite imMarca;
+  public Sprite imRegvid;
+  public Sprite imRegArm;
+  public Sprite imEvasion;
+  public Sprite imFlechas;
+  public Sprite imBonusFuego;
+  public Sprite imBonusArcano;
+  public Sprite imBonusHielo;
+  public Sprite imBonusRayo;
+  public Sprite imBonusAcido;
+  public Sprite imBonusNecro;
+  public Sprite imBonusDivino;
+  public Sprite imPurificadoraFervor;
+  public Sprite imBarrera;
+  public Sprite imResiduoTejido;
+  public Sprite imEstaEscondido;
+  public Sprite imCorrupto;
+  public Sprite imTierEnergia; //Canalizador
+  public void RepresentarEstado(int index, int stacks, bool desdeBarraVida = false)
+  {
+    debarravida = desdeBarraVida;
     if (stacks == -1)
     {
       textStacks.text = "";
@@ -62,6 +64,7 @@ public class UIEstadoCuadro : MonoBehaviour
     {
       textStacks.text = "" + stacks;
     }
+
 
 
     //1 - Ardiendo
@@ -86,7 +89,8 @@ public class UIEstadoCuadro : MonoBehaviour
     //25 - Escondido Tier II
     //26 - Canalizador: Tier Energia
     //27 - Corrupto
-
+    if (Retrato == null) { return; }
+    if (textTooltip == null) { return; }
     switch (index)
     {
       case 1: Retrato.sprite = imArdiendo; textTooltip.text = "Ardiendo: causa daño cada turno, se apaga con AP disponibles."; break;
@@ -119,35 +123,69 @@ public class UIEstadoCuadro : MonoBehaviour
     }
   }
 
- 
-   public void RepresentarBuff(Buff buff)
-   {
-       textStacks.text ="";
-       textTooltip.text = GenerarDescripcionBuff(buff); //Efectos del buff
+  public TooltipBatalla scTooltipBatalla;
+  void OnStart()
+  {
+    BuscartooltipBatallaTag();
+  }
 
-       if(buff.boolfDebufftBuff){Retrato.sprite = imBuff;}else{Retrato.sprite = imDebuff;}
-   }
-
-    public void RepresentarReaccion(Reaccion buff)
-   {
-       textStacks.text =""+buff.usos;
-       textTooltip.text = buff.descripcion; //Efectos del buff
-
-       Retrato.sprite = imReaccion;
-   }
-
-   public void RepresentarMarca(Marca buff)
-   {
-       textStacks.text =""+buff.duracion;
-       textTooltip.text = buff.descripcion; //Efectos del buff
-
-       Retrato.sprite = imMarca;
-   }
-
-     private string GenerarDescripcionBuff(Buff buff)
+  void BuscartooltipBatallaTag()
+  {
+    GameObject[] all = Resources.FindObjectsOfTypeAll<GameObject>();
+    foreach (var go in all)
     {
-        string descripcion = ""+buff.buffNombre+"\n"+buff.buffDescr+"\n";
-       
+      if (go.CompareTag("TooltipBatalla"))
+      {
+        scTooltipBatalla = go.GetComponent<TooltipBatalla>();
+        break;
+      }
+    }
+  }
+  public void RepresentarBuff(Buff buff, bool desdeBarraVida = false)
+  {
+    debarravida = desdeBarraVida;
+    textStacks.text = "";
+    textTooltip.text = GenerarDescripcionBuff(buff); //Efectos del buff
+    if (Retrato != null && imBuff != null && imDebuff != null)
+    {
+      if (buff.boolfDebufftBuff) { Retrato.sprite = imBuff; } else { Retrato.sprite = imDebuff; }
+    }
+  }
+
+  public void RepresentarReaccion(Reaccion buff, bool desdeBarraVida = false)
+  {
+    debarravida = desdeBarraVida;
+    textStacks.text = "" + buff.usos;
+
+     if (desdeBarraVida) { textStacks.text = ""; }
+
+    textTooltip.text = buff.descripcion; //Efectos del buff
+    if (Retrato != null && imReaccion != null)
+    {
+      Retrato.sprite = imReaccion;
+    }
+  }
+
+  public void RepresentarMarca(Marca buff, bool desdeBarraVida = false)
+  {
+    debarravida = desdeBarraVida;
+    textStacks.text = "" + buff.duracion;
+    
+
+    if (desdeBarraVida) { textStacks.text = ""; }
+
+    textTooltip.text = buff.descripcion; //Efectos del buff
+
+     if (Retrato != null && imMarca != null)
+    {
+      Retrato.sprite = imMarca;
+    }
+  }
+
+  private string GenerarDescripcionBuff(Buff buff)
+  {
+    string descripcion = "" + buff.buffNombre + "\n" + buff.buffDescr + "\n";
+
 
     if (buff.percHPMax != 0) descripcion += $"HP Máximo: <color={(buff.percHPMax > 0 ? "green" : "red")}>{buff.percHPMax}%</color>\n";
     if (buff.cantHPMax != 0) descripcion += $"HP Máximo: <color={(buff.cantHPMax > 0 ? "green" : "red")}>{buff.cantHPMax}</color>\n";
@@ -200,7 +238,7 @@ public class UIEstadoCuadro : MonoBehaviour
     if (buff.cantDanioPorcentaje != 0) descripcion += $"Daño: <color={(buff.cantDanioPorcentaje > 0 ? "green" : "red")}>{buff.cantDanioPorcentaje}%</color>\n";
 
     if (buff.cantCritDado != 0) descripcion += $"Crítico Dado: <color={(buff.cantCritDado > 0 ? "green" : "red")}>{buff.cantCritDado}</color>\n";
-    
+
     if (buff.percCritDaño != 0) descripcion += $"Daño Crítico: <color={(buff.percCritDaño > 0 ? "green" : "red")}>{buff.percCritDaño}%</color>\n";
     if (buff.cantCritDaño != 0) descripcion += $"Daño Crítico: <color={(buff.cantCritDaño > 0 ? "green" : "red")}>{buff.cantCritDaño}</color>\n";
 
@@ -220,23 +258,45 @@ public class UIEstadoCuadro : MonoBehaviour
     if (buff.cantDamBonusElementalNec != 0) descripcion += $"Bonus daño necro: <color={(buff.cantDamBonusElementalNec > 0 ? "green" : "red")}>{buff.cantDamBonusElementalNec}</color>\n";
     if (buff.cantDamBonusElementalRay != 0) descripcion += $"Bonus daño rayo: <color={(buff.cantDamBonusElementalRay > 0 ? "green" : "red")}>{buff.cantDamBonusElementalRay}</color>\n";
 
-        if (buff.DuracionBuffRondas > 0) descripcion += $"Duración: {buff.DuracionBuffRondas} rondas\n";
-        else if (buff.DuracionBuffRondas < 0) descripcion += "Duración: Permanente\n";
+    if (buff.DuracionBuffRondas > 0) descripcion += $"Duración: {buff.DuracionBuffRondas} rondas\n";
+    else if (buff.DuracionBuffRondas < 0) descripcion += "Duración: Permanente\n";
 
-        return descripcion;
-    }
+    return descripcion;
+  }
 
-   public void ActivarTooltip()
-   {
+  public void ActivarTooltip()
+  {
+    if (!debarravida)
       goTooltip.SetActive(true);
 
-   }
 
-   public void DesactivarTooltip()
-   {
-     goTooltip.SetActive(false);
+    if (debarravida)
+    {
+      BuscartooltipBatallaTag();
+      scTooltipBatalla.ShowTooltipText(textTooltip.text);
+
+     
+
+    }
+  }
+
+  public void DesactivarTooltip()
+  {
     
-   }
+    if (!debarravida)
+      goTooltip.SetActive(false);
 
 
+    if (debarravida)
+    {
+      BuscartooltipBatallaTag();
+    
+      scTooltipBatalla.tooltipObject.SetActive(false);
+    }
+  }
+
+  public bool debarravida = false;
+
+ 
+ 
 }

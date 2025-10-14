@@ -694,11 +694,11 @@ void ReducirDuracionMarcas()
 
 }
 void ReducirDuracionBuffs()
-{ print("Dentro de reducir buffs");
+{
   Buff[] buffs = gameObject.GetComponents<Buff>();
 
         foreach (Buff buff in buffs)
-        { print("Dentro de reducir buffs, reduce tal buff: "+ buff.buffNombre);
+        { 
             buff.DuracionBuffRondas--;
 
             if (buff.DuracionBuffRondas == 0) // no se chequea < 1, porque los buffs eternos arrancan en -1 duracion
@@ -1673,18 +1673,20 @@ public void RecibirCuracion(float curacion, bool magica)
 
 }
 
-public void ActualizarBarraVidaPropia()
-{
-  if (scUnidadCanvas != null && scUnidadCanvas.barraVida != null && mod_maxHP > 0f)
+  public void ActualizarBarraVidaPropia()
   {
-    float ratio = Mathf.Clamp01(HP_actual / mod_maxHP);
-    scUnidadCanvas.barraVida.value = ratio;
-  }
+    if (scUnidadCanvas != null && scUnidadCanvas.barraVida != null && mod_maxHP > 0f)
+    {
+      // float ratio = Mathf.Clamp01(HP_actual / mod_maxHP);
+      //scUnidadCanvas.barraVida.value = ratio;
+    }
 
-  if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
-  {
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
-  }
+    if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
+    {
+      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+    }
+  
+    
 }
 
 private bool yaMurio = false;

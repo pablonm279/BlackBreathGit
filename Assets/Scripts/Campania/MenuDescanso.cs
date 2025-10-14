@@ -227,6 +227,9 @@ public class MenuDescanso : MonoBehaviour
 
     chancesExploracion += CampaignManager.Instance.ExploracionSumadaPorActividades();
 
+    chancesAtaqueACaravana = Mathf.Clamp(chancesAtaqueACaravana, 0, 100);
+    chancesExploracion = Mathf.Clamp(chancesExploracion, 0, 100);
+
     textEmboscadaChances.text = "Las probabilidades de sufrir un ataque a la Caravana "+chancesAtaqueACaravana+"%";
     textExploracionChances.text = "Las probabilidades de exploración: "+chancesExploracion+"%";
 

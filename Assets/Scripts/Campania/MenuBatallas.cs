@@ -233,7 +233,7 @@ public class MenuBatallas : MonoBehaviour
                     }
 
                 }
-                else if(UnityEngine.Random.Range(1, 100) < 70) // Batalla de ZONA   
+                else if(UnityEngine.Random.Range(1, 100) < 70) // Batalla de ZONA  
                 {
 
                     int randomEncuentroNormal =UnityEngine.Random.Range(1, 8);

@@ -524,10 +524,7 @@ MonoBehaviour:
   - {fileID: 9114552496750484229, guid: e8851735db4a3694c819a03d321b0b07, type: 3}
   - {fileID: 9114552496750484229, guid: 0a0cff4bfceccc145ac97f0e76dc8f85, type: 3}
   - {fileID: 9114552496750484229, guid: aa94cdf1f8bb666498c03c9c2c8d159d, type: 3}
-  AccesoriosAVender:
-  - {fileID: 1780994479000739857, guid: 976e3419dae32b842a75198f5e5cdf1b, type: 3}
-  - {fileID: 7134741394859233719, guid: ae8476fd6b4bac8478cd81aedbaa31c9, type: 3}
-  - {fileID: 1780994479000739857, guid: 976e3419dae32b842a75198f5e5cdf1b, type: 3}
+  AccesoriosAVender: []
   ConsumiblesAVender:
   - {fileID: 6791631824163478663, guid: edf31f12884f22844b7e44c01846dd03, type: 3}
   - {fileID: 500088475482616300, guid: 5ceabc5fdcea2874fb0584ec1b254064, type: 3}

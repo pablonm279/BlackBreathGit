@@ -53,7 +53,7 @@ public class Partir : Habilidad
       {
         txtDescripcion = "<color=#5dade2><b>Partir I</b></color>\n\n"; 
         txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza /color> - Daño: Cortante 2d10 +5 - </color>\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza </color> - Daño: Cortante 2d10 +5 - </color>\n";
         txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
 
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
@@ -73,7 +73,7 @@ public class Partir : Habilidad
       {
         txtDescripcion = "<color=#5dade2><b>Partir II</b></color>\n\n"; 
         txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza /color> - Daño: Cortante 2d10 +9 - </color>\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza </color> - Daño: Cortante 2d10 +9 - </color>\n";
         txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
 
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
@@ -241,14 +241,10 @@ public class Partir : Habilidad
 
       }
      
-       
-       //Chequea si la unidad muere
-      if(objetivo.HP_actual < 2)
-      {
-        PARTIREfectoAEnemigosPorMuerte(objetivo);
-      }
+    
 
-
+       fueElObjetivoAsesinado = objetivo;
+      Invoke("ChequeoMuerteObjetivo", 3.0f); //Chequea si el objetivo murió, y aplica efectos de ser así.
 
 
 
@@ -268,6 +264,7 @@ public class Partir : Habilidad
        objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
      }
     }
+     Unidad fueElObjetivoAsesinado;
     bool ChequearTieneSiguesTu(Unidad obj)
     { 
       if(obj.GetComponent<MarcaSiguesTu>() != null)
@@ -297,7 +294,24 @@ public class Partir : Habilidad
     //Provisorio
     private List<Unidad> lObjetivosPosibles = new List<Unidad>();
     private List<Obstaculo> lObstaculosPosibles = new List<Obstaculo>();
+     void ChequeoMuerteObjetivo()
+  {
+    bool aplicarEfectos = false;
+    if (fueElObjetivoAsesinado == null)
+    {
+      aplicarEfectos = true; //Si no existe se asume que murio
+    } //Si no había objetivo, no hace nada
+    else if (fueElObjetivoAsesinado.HP_actual < 1)
+    {
+      aplicarEfectos = true; //Si no tiene vida, murio
+    }
 
+    if (aplicarEfectos)
+    { 
+      PARTIREfectoAEnemigosPorMuerte();
+    }
+    fueElObjetivoAsesinado = null;
+  }
     private void ObtenerObjetivos()
     {
       //Cualquier objetivo en 1 de alcance 3 de ancho
@@ -514,12 +528,12 @@ public class Partir : Habilidad
 
 
 
-    void PARTIREfectoAEnemigosPorMuerte(Unidad Objetivo)
+    void PARTIREfectoAEnemigosPorMuerte()
     {
        
         List<Unidad> enemigos = new List<Unidad>();
 
-        foreach(Casilla cas in Objetivo.CasillaPosicion.ObtenerCasillasMismoLado())
+        foreach(Casilla cas in scEstaUnidad.CasillaPosicion.ObtenerCasillasLadoOpuesto())
         {
            if(cas.Presente != null)
            {

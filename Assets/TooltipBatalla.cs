@@ -19,9 +19,23 @@ public class TooltipBatalla : MonoBehaviour
     public void ShowTooltip(int tipo)
     {
         tooltipObject.SetActive(true);
-        tooltipText.text = ObtenerContenidoTooltip(tipo);
-        tooltipObject.transform.position = Input.mousePosition;
+        desdeBarraVida = false;
+      
+            tooltipObject.transform.position = Input.mousePosition;
+            tooltipText.text = ObtenerContenidoTooltip(tipo);
+        
     }
+    bool desdeBarraVida = false;
+    public void ShowTooltipText(string txt)
+    {
+        tooltipObject.SetActive(true);
+        desdeBarraVida = true;
+        tooltipObject.transform.position = Input.mousePosition;
+        tooltipText.text = txt;
+    }
+
+   
+
 
     private string ObtenerContenidoTooltip(int tipo)
     {
@@ -52,23 +66,23 @@ public class TooltipBatalla : MonoBehaviour
             case 12:
                 return "Resistencia Necrótica: Cantidad de daño que previene.";
             case 13:
-                return "Resistencia Divina: Cantidad de daño que previene.";   
+                return "Resistencia Divina: Cantidad de daño que previene.";
             case 14:
-                return "Residuo Energético: Otorga daño arcano y hiere levemente.";        
+                return "Residuo Energético: Otorga daño arcano y hiere levemente.";
             case 15:
-                return "Zona bajo Vigilancia del Explorador.";        
+                return "Zona bajo Vigilancia del Explorador.";
             case 16:
-                return "Añade daño fuego al Explorador si está adyacente.";       
+                return "Añade daño fuego al Explorador si está adyacente.";
             case 17:
-                return "Abrojos: Inflige daño y puede desangrar.";         
+                return "Abrojos: Inflige daño y puede desangrar.";
             case 18:
-                return "Eco Divino: Cura a aliados y daña a enemigos.";                      
+                return "Eco Divino: Cura a aliados y daña a enemigos.";
             case 19:
-                return "Humo: Esconde a los personajes dentro.";       
+                return "Humo: Esconde a los personajes dentro.";
             case 20:
-                return "Escudo de Fe: Protege a los aliados dentro.";     
+                return "Escudo de Fe: Protege a los aliados dentro.";
             case 21:
-                return "Masa Contaminada: Hace daño ácido. Potencia enemigos corruptos.";            
+                return "Masa Contaminada: Hace daño ácido. Potencia enemigos corruptos.";
             case 22:
                 return "Pinchos: Daña a enemigos que los pisen.";
             case 23:
@@ -105,14 +119,20 @@ public class TooltipBatalla : MonoBehaviour
     public void HideTooltip()
     {
         tooltipObject.SetActive(false);
+        desdeBarraVida = false;
     }
 
-    void Update()
+    void LateUpdate()
     {
-        if (tooltipObject.activeSelf)
-        {
-            tooltipObject.transform.position = Input.mousePosition;
-        }
+        if (!desdeBarraVida) { return; }
+
+
+        tooltipObject.transform.position = Input.mousePosition;
+            
+     Vector2 m = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
+     if (tooltipObject.activeSelf && m.sqrMagnitude > 0f) HideTooltip();
+
+        
     }
     
 

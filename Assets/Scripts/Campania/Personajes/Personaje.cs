@@ -210,7 +210,7 @@ public class Personaje : MonoBehaviour
     {
        fExperienciaActual += cant;
        
-        float ExperienciaNecesaria = 100 + (fNivelActual*25);
+        float ExperienciaNecesaria = 100 + (fNivelActual*50); //100 + (nivel actual *50)
         if (fExperienciaActual >= ExperienciaNecesaria)
         {
           fExperienciaActual -= ExperienciaNecesaria;

@@ -55,7 +55,7 @@ public class MapDecorator : MonoBehaviour
     [SerializeField] bool usarSemillaAleatoria = false;
 
     [Header("Rendimiento (async)")]
-    [SerializeField] int porFrame = 40;
+    [SerializeField] int porFrame = 60;
 
     // ---- internos ----
     struct Segmento { public Vector3 a, b; public float halfWidth; }
