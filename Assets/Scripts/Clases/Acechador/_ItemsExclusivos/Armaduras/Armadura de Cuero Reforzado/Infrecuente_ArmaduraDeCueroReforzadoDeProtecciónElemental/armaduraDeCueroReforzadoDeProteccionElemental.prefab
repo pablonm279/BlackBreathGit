@@ -46,12 +46,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: 6263a18b0a28ea3489a9d6d76386bdd5, type: 3}
-  sNombreItem: "Armadura de Cuero Reforzado de Protecci\xF3n Elemental +1"
+  sNombreItem: "Armadura de Cuero Reforzado de Protecci\xF3n Elemental"
   IDClasesQuePuedenUsarEsteItem: 04000000
   iPrecio: 178
-  itemDescrpicion: "<i>Una Armadura de Cuero Reforzada que proteje levemente contra
-    los elementos naturales.</i>\n\n+5 Armadura\nEfecto: +3 Protecci\xF3n Fuego,
-    Hielo, Rayo y \xC1cido.\n"
+  itemDescripcion: 
   iRareza: 1
   nivelMejora: 1
   requisitoFue: 0

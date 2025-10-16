@@ -345,7 +345,10 @@ public class BattleManager : MonoBehaviour
 
     RondaNro++;
     silenciarLogCombate = false;
-    EscribirLog($"==== Ronda {RondaNro} comienza ====");
+    if (TRADU.i.nIdioma == 1)
+    { EscribirLog("==== Ronda " + RondaNro + " comienza ===="); }
+    else if (TRADU.i.nIdioma == 2)
+    { EscribirLog("==== Round " + RondaNro + " begins ===="); } 
 
     OnRondaNueva?.Invoke(this, EventArgs.Empty);
 
@@ -381,7 +384,7 @@ public class BattleManager : MonoBehaviour
       AdministrarRefuerzosAliados();
     }
 
-    rondaText.text = "Ronda " + RondaNro;
+    rondaText.text = TRADU.i.Traducir("Ronda") + " " + RondaNro;
   //  BorrarLog();
   }
 
@@ -542,7 +545,7 @@ public class BattleManager : MonoBehaviour
       enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
     }
 
-    EscribirLog($"<color=#d92b08>{enemigo.GetComponent<Unidad>().uNombre} se ha unido a la batalla. Quedan {enemigosRefuerzos.Count() - 1} refuerzos.</color> ");
+    EscribirLog("<color=#d92b08>"+enemigo.GetComponent<Unidad>().uNombre+TRADU.i.Traducir(" se ha unido a la batalla. Quedan ")+(enemigosRefuerzos.Count() - 1)+TRADU.i.Traducir(" refuerzos.</color> "));
 
     scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
   }
@@ -586,7 +589,7 @@ public class BattleManager : MonoBehaviour
       enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
     }
 
-    EscribirLog($"<color=#d92b08>{enemigo.GetComponent<Unidad>().uNombre} se ha unido a la batalla. Quedan {enemigosRefuerzos.Count() - 1} refuerzos.</color> ");
+    EscribirLog("<color=#d92b08>"+enemigo.GetComponent<Unidad>().uNombre+TRADU.i.Traducir(" se ha unido a la batalla. Quedan ")+(enemigosRefuerzos.Count() - 1)+TRADU.i.Traducir(" refuerzos.</color> "));
     scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
 
 
@@ -916,11 +919,11 @@ public class BattleManager : MonoBehaviour
 
       switch (CampaignManager.Instance.intTipoClima)
       {
-        case 1: textClimaTooltip.text = "Clima normal."; break;
-        case 2: textClimaTooltip.text = "Calor: Todas las unidades obtienen 'Acalorado'."; break;
-        case 3: textClimaTooltip.text = "Lluvia: Todas las unidades obtienen 'Mojado'. -1 Ataque a habilidades de rango."; break;
-        case 4: textClimaTooltip.text = "Nieve: Todas las unidades obtienen 'Frío'."; break;
-        case 5: textClimaTooltip.text = "Niebla: -2 Ataque a habilidades de rango."; break;
+        case 1: textClimaTooltip.text = TRADU.i.Traducir("Clima normal."); break;
+        case 2: textClimaTooltip.text = TRADU.i.Traducir("Calor: Todas las unidades obtienen 'Acalorado'."); break;
+        case 3: textClimaTooltip.text = TRADU.i.Traducir("Lluvia: Todas las unidades obtienen 'Mojado'. -1 Ataque a habilidades de rango."); break;
+        case 4: textClimaTooltip.text = TRADU.i.Traducir("Nieve: Todas las unidades obtienen 'Frío'."); break;
+        case 5: textClimaTooltip.text = TRADU.i.Traducir("Niebla: -2 Ataque a habilidades de rango."); break;
       }
 
 

@@ -121,7 +121,83 @@ public class PilaresDeLuz : Habilidad
         txtDescripcion += $"<color=#c8c8c8><b>Convoca un pilar en la casilla seleccionada y uno en las casillas de arriba y abajo (si están desocupadas).</b>  </color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
        }
+    if (TRADU.i.nIdioma == 2) // English translation
+    {
+      if (NIVEL < 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Pillars of Light I</b></color>\n\n";
+        txtDescripcion += "<i>Summons two pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
+        txtDescripcion += "<i>Pillar: HP: 20 -- Damage: 1d8 Divine + Power, double to Undead and Ethereal.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tile below, if occupied then on the tile above.</b></color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
 
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: +5 HP</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Pillars of Light II</b></color>\n\n";
+        txtDescripcion += "<i>Summons two pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
+        txtDescripcion += "<i>Pillar: HP: 25 -- Damage: 1d8 Divine + Power, double to Undead and Ethereal.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tile below, if occupied then on the tile above.</b></color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: +3 Damage</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Pillars of Light III</b></color>\n\n";
+        txtDescripcion += "<i>Summons two pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
+        txtDescripcion += "<i>Pillar: HP: 25 -- Damage: 1d8+3 Divine + Power, double to Undead and Ethereal.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tile below, if occupied then on the tile above.</b></color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Option A: Gain 3 Damage Resistance.</color>\n";
+              txtDescripcion += $"<color=#dfea02>-Option B: +1 Pillar.</color>\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Pillars of Light IV a</b></color>\n\n";
+        txtDescripcion += "<i>Summons two pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
+        txtDescripcion += "<i>Pillar: HP: 25 and 3 Damage Resistance.-- Damage: 1d8+3 Divine + Power, double to Undead and Ethereal.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tile below, if occupied then on the tile above.</b></color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+      }
+      if (NIVEL == 5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Pillars of Light IV b</b></color>\n\n";
+        txtDescripcion += "<i>Summons three pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
+        txtDescripcion += "<i>Pillar: HP: 25.-- Damage: 1d8+3 Divine + Power, double to Undead and Ethereal.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tiles above and below (if unoccupied).</b></color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+      }
+    }
 
 
     }

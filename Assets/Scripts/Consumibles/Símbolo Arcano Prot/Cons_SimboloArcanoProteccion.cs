@@ -10,8 +10,8 @@ public class Cons_SimboloArcanoProteccion : Consumible
 
     void Awake()
     {
-      sNombreItem = "Símbolo de Protección Arcano";
-      itemDescripcion = "Otorga 3 de Resistencia contra todos los elementos. Dura 4 turnos.";
+      sNombreItem = TRADU.i.Traducir("Símbolo de Protección Arcano");
+      itemDescripcion = TRADU.i.Traducir("Otorga 3 de Resistencia contra todos los elementos. Dura 4 turnos.");
 
     }
 

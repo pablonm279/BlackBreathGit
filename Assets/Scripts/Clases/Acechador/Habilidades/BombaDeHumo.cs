@@ -115,7 +115,75 @@ public class BombaDeHumo : Habilidad
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP-1} \n- Costo Val: {costoPM} \n</color>\n\n";
        }
 
-
+    if (TRADU.i.nIdioma == 2) // English translation
+    {
+      if (NIVEL < 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Smoke Bomb I</b></color>\n\n";
+        txtDescripcion += "<i>Throws a Smoke Bomb that hides allies in the tile and adjacent ones, granting attack bonuses.</i>\n";
+        txtDescripcion += "<i>The smoke lasts for 2 turns.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: -1 Cooldown.</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Smoke Bomb II</b></color>\n\n";
+        txtDescripcion += "<i>Throws a Smoke Bomb that hides allies in the tile and adjacent ones, granting attack bonuses.</i>\n";
+        txtDescripcion += "<i>The smoke lasts for 2 turns.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: -1 AP</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Smoke Bomb III</b></color>\n\n";
+        txtDescripcion += "<i>Throws a Smoke Bomb that hides allies in the tile and adjacent ones, granting attack bonuses.</i>\n";
+        txtDescripcion += "<i>The smoke lasts for 2 turns.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP - 1} \n- Val Cost: {costoPM} \n</color>\n\n";
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Option A: +1 Turn Duration.</color>\n";
+              txtDescripcion += $"<color=#dfea02>-Option B: Enlarges the area.</color>\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Smoke Bomb IVa</b></color>\n\n";
+        txtDescripcion += "<i>Throws a Smoke Bomb that hides allies in the tile and adjacent ones, granting attack bonuses.</i>\n";
+        txtDescripcion += "<i>The smoke lasts for 3 turns.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP - 1} \n- Val Cost: {costoPM} \n</color>\n\n";
+      }
+      if (NIVEL == 5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Smoke Bomb IVb</b></color>\n\n";
+        txtDescripcion += "<i>Throws a Smoke Bomb that hides allies in the tile and around, granting attack bonuses.</i>\n";
+        txtDescripcion += "<i>The smoke lasts for 2 turns.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP - 1} \n- Val Cost: {costoPM} \n</color>\n\n";
+      }
+    }
 
     }
     void Start()

@@ -54,6 +54,14 @@ public class AtaqueEspadaCorta : Habilidad
       txtDescripcion += "<i>Con su mano hábil, el Acechador asesta un golpe con la espada corta.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza + {bonusAtaque}</color> - Daño: Cortante 1d6+2- </color>\n\n";
       txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+
+      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+      {
+        txtDescripcion = "<color=#5dade2><b>Short Sword Slash</b></color>\n\n";
+        txtDescripcion += "<i>With skilled hand, the Stalker delivers a blow with the short sword.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength + {bonusAtaque}</color> - Damage: Slashing 1d6+2- </color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+      }
        
     }
     
@@ -80,55 +88,82 @@ public class AtaqueEspadaCorta : Habilidad
     
     
     void ChequearMaestria()
-  {
-    int NivelMaestria = claseAcechador.PASIVA_MaestriaConEspadacorta;
-
-    if (NivelMaestria == 1)
     {
+      int NivelMaestria = claseAcechador.PASIVA_MaestriaConEspadacorta;
+
+      if (NivelMaestria == 1)
+      {
       bonusAtaque = 1;
       damExtra += 2;
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño.</i>\n\n";
-
-    }
-    else if (NivelMaestria == 2)
-    {
+      if (TRADU.i.nIdioma == 1)
+      {
+        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño.</i>\n\n";
+      }
+      if (TRADU.i.nIdioma == 2)
+      {
+        txtDescripcion += "\n\n<i>Short Sword Mastery adds: +1 Attack +2 Damage.</i>\n\n";
+      }
+      }
+      else if (NivelMaestria == 2)
+      {
       bonusAtaque = 1;
       damExtra += 2;
       criticoRangoHab = 1;
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
-
-    }
-    else if (NivelMaestria == 3)
-    {
+      if (TRADU.i.nIdioma == 1)
+      {
+        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
+      }
+      if (TRADU.i.nIdioma == 2)
+      {
+        txtDescripcion += "\n\n<i>Short Sword Mastery adds: +1 Attack +2 Damage +1 Critical Range.</i>\n\n";
+      }
+      }
+      else if (NivelMaestria == 3)
+      {
       bonusAtaque = 1;
       damExtra += 2;
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n";
-
-
-    }
-    else if (NivelMaestria == 4)
-    {
+      if (TRADU.i.nIdioma == 1)
+      {
+        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n";
+      }
+      if (TRADU.i.nIdioma == 2)
+      {
+        txtDescripcion += "\n\n<i>Short Sword Mastery adds: +1 Attack +2 Damage +1 Critical Range, -1 AP.</i>\n\n";
+      }
+      }
+      else if (NivelMaestria == 4)
+      {
       bonusAtaque = 1;
       damExtra += 4;
       criticoRangoHab = 2;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +2 Rango Crítico.</i>\n\n";
-
-    }
-    else if (NivelMaestria == 5)
-    {
+      if (TRADU.i.nIdioma == 1)
+      {
+        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +2 Rango Crítico.</i>\n\n";
+      }
+      if (TRADU.i.nIdioma == 2)
+      {
+        txtDescripcion += "\n\n<i>Short Sword Mastery adds: +1 Attack +4 Damage +2 Critical Range.</i>\n\n";
+      }
+      }
+      else if (NivelMaestria == 5)
+      {
       bonusAtaque = 2;
       damExtra += 4;
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +2 Ataque +4 Daño +1 Rango Crítico.</i>\n\n";
-
+      if (TRADU.i.nIdioma == 1)
+      {
+        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +2 Ataque +4 Daño +1 Rango Crítico.</i>\n\n";
+      }
+      if (TRADU.i.nIdioma == 2)
+      {
+        txtDescripcion += "\n\n<i>Short Sword Mastery adds: +2 Attack +4 Damage +1 Critical Range.</i>\n\n";
+      }
+      }
     }
-    
-  }
-    
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
   {

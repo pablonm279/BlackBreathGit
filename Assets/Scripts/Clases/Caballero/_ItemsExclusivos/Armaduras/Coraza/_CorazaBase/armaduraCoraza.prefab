@@ -47,11 +47,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: b8e65ad09a769384aa0aacbb27d8e36f, type: 3}
   sNombreItem: Coraza
+  IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 50
-  itemDescrpicion: "<i>Los Caballeros dependen de su Coraza para subsistir, es extremadamente
-    resistente y pesada. Pero han aprendido a dominarla.</i>\n<b>\\n\\nArmadura:
-    5 \\n-2 Resistencia Rayo \n\nOtorga: Armadura Limitante \n</b>"
+  itemDescripcion: 
   iRareza: 0
   nivelMejora: 0
   requisitoFue: 3

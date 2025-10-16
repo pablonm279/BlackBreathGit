@@ -29,22 +29,22 @@ public class SequitoCronistas : MonoBehaviour
 
         progresoCronica = 150 + (1 * CampaignManager.Instance.GetEsperanzaActual()) + valorCambiosCronicas;
 
-        txtDesc.text = $"Un grupo de eruditos unidos que se dedican a registrar los sucesos del viaje de la caravana hacia el puerto. Sus escrituras pueden ser una fuenta de ingresos y moral, pero también puede ser contraproducente en los peores momentos.\n\n";
-        txtMecanica.text = $"EFECTOS PASIVOS:\n\n-Otorgan +5 de Esperanza por batallas ganadas (-3 Derrotas). ";
+        txtDesc.text = TRADU.i.Traducir("Un grupo de eruditos unidos que se dedican a registrar los sucesos del viaje de la caravana hacia el puerto. Sus escrituras pueden ser una fuenta de ingresos y moral, pero también puede ser contraproducente en los peores momentos.\n\n");
+        txtMecanica.text = TRADU.i.Traducir("EFECTOS PASIVOS:\n\n-Otorgan +5 de Esperanza por batallas ganadas (-3 Derrotas). ");
         if (yaVendioCronica)
         {
-            txtMecanica.text += "\n\n-Ya se ha vendido la crónica de este viaje.";
+            txtMecanica.text += TRADU.i.Traducir("\n\n-Ya se ha vendido la crónica de este viaje.");
         }
         else
         {
             txtMecanica.text += 
-                "\n\n- Crónica: Acumula valor de la siguiente manera:" +
-                "\n   • Base: 150 Oro" +
-                "\n   • +1 Oro por cada punto de Esperanza" +
-                "\n   • +20 Oro por cada nodo viajado" +
-                "\n   • +50 Oro por cada batalla ganada / -50 Oro por cada batalla perdida" +
-                "\n\nSe puede vender en Asentamientos o Puestos Comerciales.";
-            txtMecanica.text += $"\n\n\n\n-Valor Crónica: {progresoCronica} Oro";
+                TRADU.i.Traducir("\n\n- Crónica: Acumula valor de la siguiente manera:") +
+                TRADU.i.Traducir("\n   • Base: 150 Oro") +
+                TRADU.i.Traducir("\n   • +1 Oro por cada punto de Esperanza") +
+                TRADU.i.Traducir("\n   • +20 Oro por cada nodo viajado") +
+                TRADU.i.Traducir("\n   • +50 Oro por cada batalla ganada / -50 Oro por cada batalla perdida") +
+                TRADU.i.Traducir("\n\nSe puede vender en Asentamientos o Puestos Comerciales.");
+            txtMecanica.text += TRADU.i.Traducir("\n\n\n\n-Valor Crónica: Oro: ") + progresoCronica;
         }
 
        
@@ -77,7 +77,7 @@ public class SequitoCronistas : MonoBehaviour
         if (!yaVendioCronica)
         {
             CampaignManager.Instance.CambiarOroActual(progresoCronica);
-            CampaignManager.Instance.EscribirLog($"-Se ha vendido la crónica del viaje por {progresoCronica} de Oro.");
+            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Se ha vendido la crónica del viaje por Oro: ") + progresoCronica);
             yaVendioCronica = true;
             Actualizar();
         }

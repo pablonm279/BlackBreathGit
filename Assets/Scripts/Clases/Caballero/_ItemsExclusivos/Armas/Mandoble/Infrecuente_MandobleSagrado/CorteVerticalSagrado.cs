@@ -46,11 +46,22 @@ public class CorteVerticalSagrado : Habilidad
 
       imHab = Resources.Load<Sprite>("imHab/Caballero_corteVertical");
 
-      txtDescripcion = "<color=#5dade2><b>Corte Vertical Sagrado</b></color>\n\n"; 
-      txtDescripcion += "<i>Con el mandoble, el Caballero efectúa un ataque de arriba hacia abajo, lento, pero capaz de provocar grandes daños.</i>\n\n";
-      txtDescripcion += "<i>+1d8 Daño Divino a Nomuertos y Etereos.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Daño: Cortante 2d8- </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+      if (TRADU.i.nIdioma == 1)
+      {
+        txtDescripcion = "<color=#5dade2><b>Corte Vertical Sagrado</b></color>\n\n";
+        txtDescripcion += "<i>Con el mandoble, el Caballero efectúa un ataque de arriba hacia abajo, lento, pero capaz de provocar grandes daños.</i>\n\n";
+        txtDescripcion += "<i>+1d8 Daño Divino a Nomuertos y Etereos.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Daño: Cortante 2d8- </color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+      }
+      if (TRADU.i.nIdioma == 2) //Inglés
+      {
+        txtDescripcion = "<color=#5dade2><b>Sacred Vertical Slash</b></color>\n\n";
+        txtDescripcion += "<i>With the greatsword, the Knight performs a slow downward attack, capable of inflicting great damage.</i>\n\n";
+        txtDescripcion += "<i>+1d8 Divine Damage to Undead and Ethereal.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +{bonusAtaque}</color> - Damage: Slashing 2d8- </color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+      }
        
     }
 

@@ -18,7 +18,14 @@ public class ReaccionPosturaDefensiva : Reaccion
     corteVertical =  gameObject.GetComponent<Cortevertical>();
     
 
-    descripcion = $"Reacción: El caballero atacará a cualquier enemigo que falle un ataque cuerpo a cuerpo contra él.";
+    if (TRADU.i.nIdioma == 1)
+    {
+      descripcion = $"Reacción: El caballero atacará a cualquier enemigo que falle un ataque cuerpo a cuerpo contra él.";
+    }
+    if (TRADU.i.nIdioma == 2)
+    {
+      descripcion = $"Reaction: The knight will attack any enemy that misses a melee attack against him.";
+    }
 
    }
 
@@ -43,8 +50,14 @@ public class ReaccionPosturaDefensiva : Reaccion
         int tirada =  UnityEngine.Random.Range(1,21);
         corteVertical.AplicarEfectosHabilidad(uTriggerer, tirada, null);
 
-        BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} reacciona con {nombre}.");
-      
+        if (TRADU.i.nIdioma == 1)
+        {
+            BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} reacciona con {nombre}.");
+        }
+        if (TRADU.i.nIdioma == 2)
+        {
+            BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} reacts with {nombre}.");
+        }
         //--------------------------
         usos--;
         if(usos == 0)

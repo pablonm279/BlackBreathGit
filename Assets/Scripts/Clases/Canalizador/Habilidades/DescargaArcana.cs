@@ -49,12 +49,26 @@ public class DescargaArcana : Habilidad
 
 
 
-      imHab = Resources.Load<Sprite>("imHab/Canalizador_DescargaArcana");
+      if (TRADU.i.nIdioma == 1)
+      {
+        // Español
+        imHab = Resources.Load<Sprite>("imHab/Canalizador_DescargaArcana");
 
-      txtDescripcion = "<color=#5dade2><b>Descarga Arcana</b></color>\n\n"; 
-      txtDescripcion += "<i>El canalizador lanza una descarga de energía a un enemigo, haciendo daño arcano.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Alcance: 6</b> -Ataque: <color=#ea0606>Poder</color> - Daño: Perforante 1d8 + Poder-</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+        txtDescripcion = "<color=#5dade2><b>Descarga Arcana</b></color>\n\n"; 
+        txtDescripcion += "<i>El canalizador lanza una descarga de energía a un enemigo, haciendo daño arcano.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>Alcance: 6</b> -Ataque: <color=#ea0606>Poder</color> - Daño: Perforante 1d8 + Poder-</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+      }
+      if (TRADU.i.nIdioma == 2)
+      {
+        // Inglés
+        imHab = Resources.Load<Sprite>("imHab/Canalizador_DescargaArcana");
+
+        txtDescripcion = "<color=#5dade2><b>Arcane Discharge</b></color>\n\n";
+        txtDescripcion += "<i>The channeler launches a burst of energy at an enemy, dealing arcane damage.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>Range: 6</b> -Attack: <color=#ea0606>Power</color> - Damage: Piercing 1d8 + Power-</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+      }
        
     }
 

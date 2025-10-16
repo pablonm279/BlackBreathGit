@@ -20,7 +20,7 @@ public class Perdicion : IAHabilidad
     
   void Awake()
    {
-      nombre = "Perdicion";
+      nombre = "Perdición";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 1;

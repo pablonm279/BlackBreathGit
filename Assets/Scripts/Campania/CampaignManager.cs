@@ -130,7 +130,7 @@ public class CampaignManager : MonoBehaviour
   }
 
   private void OnDisable()
-  {
+  { 
     procesandoCola = false;
   }
 
@@ -138,6 +138,8 @@ public class CampaignManager : MonoBehaviour
   {
     if (logDeCampania != null)
       logDeCampania.SetDiaActual(numeroTurno);
+
+    TRADU.i.ActualizarIdioma();
   }
 
 
@@ -171,7 +173,7 @@ public class CampaignManager : MonoBehaviour
     if (scMenuSequito.TieneSequito(10) && random2 < 21) //Clérigos !!! 21
     {
       sePrevieneAvanceAliento = true;
-      EscribirLog($"-Los rezos constantes del Séquito de Clérigos han logrado frenar el avance del Aliento Negro.");
+      EscribirLog(TRADU.i.Traducir("-Los rezos constantes del Séquito de Clérigos han logrado frenar el avance del Aliento Negro."));
 
     }
 
@@ -181,7 +183,7 @@ public class CampaignManager : MonoBehaviour
       if (pers.ActividadSeleccionada == 10 && random < 15 && !sePrevieneAvanceAliento) //Ritual de Limpieza
       {
         sePrevieneAvanceAliento = true;
-        EscribirLog($"-{pers.sNombre} ha realizado con éxito un Ritual de Limpieza, previniendo el avance del Aliento Negro.");
+        EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" ha realizado con éxito un Ritual de Limpieza, previniendo el avance del Aliento Negro."));
         break;
       }
 
@@ -197,30 +199,30 @@ public class CampaignManager : MonoBehaviour
     numeroTurno++;
     if (destino.costoMovimiento > 1)
     {
-      EscribirLog($"-El viaje por el camino escarpado ha demorado la caravana. +{destino.costoMovimiento} Avance del Aliento Negro");
+      EscribirLog(TRADU.i.Traducir("-El viaje por el camino escarpado ha demorado la caravana. +") + destino.costoMovimiento + TRADU.i.Traducir(" Avance del Aliento Negro"));
     }
 
     //Si Nieva, avanza 1 mas el Álito
     if (intTipoClima == 4)
     {
-      EscribirLog("-La nieve a retrasado el viaje. +1 Avance del Aliento Negro");
+      EscribirLog(TRADU.i.Traducir("-La nieve a retrasado el viaje. +1 Avance del Aliento Negro"));
       CambiarValorAlientoNegro(1);
     }
 
     //Efectos en Civiles segun Tier de Aliento
     if (GetTierAlientoNegro() == 1)
     {
-      EscribirLog("-La ausencia de Aliento Negro al viajar, inspira a la Caravana. +2 Esperanza");
+      EscribirLog(TRADU.i.Traducir("-La ausencia de Aliento Negro al viajar, inspira a la Caravana. +2 Esperanza"));
       CambiarEsperanzaActual(2);
     }
     if (GetTierAlientoNegro() == 2)
     {
-      EscribirLog("-La presencia notable del Aliento Negro al viajar, provoca incertidumbre en la Caravana. -3 Esperanza");
+      EscribirLog(TRADU.i.Traducir("-La presencia notable del Aliento Negro al viajar, provoca incertidumbre en la Caravana. -3 Esperanza"));
       CambiarEsperanzaActual(-3);
     }
     if (GetTierAlientoNegro() == 3)
     {
-      EscribirLog("-La gran presencia de Aliento Negro en el aire, provoca temor en la Caravana. -5 Esperanza");
+      EscribirLog(TRADU.i.Traducir("-La gran presencia de Aliento Negro en el aire, provoca temor en la Caravana. -5 Esperanza"));
       CambiarEsperanzaActual(-5);
     }
     if (GetTierAlientoNegro() == 4)
@@ -228,7 +230,7 @@ public class CampaignManager : MonoBehaviour
       CambiarEsperanzaActual(-7);
       int random = UnityEngine.Random.Range(0, 5);
       CambiarCivilesActuales(-random);
-      EscribirLog($"-La presencia de Aliento Negro en el aire es fatal para los Civiles. -7 Esperanza -{random} Civiles");
+      EscribirLog(TRADU.i.Traducir("-La presencia de Aliento Negro en el aire es fatal para los Civiles. -7 Esperanza -") + random + TRADU.i.Traducir(" Civiles"));
     }
 
     if (sequitoHerrerosMantArmaduras > 0) { sequitoHerrerosMantArmaduras--; }
@@ -314,7 +316,7 @@ public class CampaignManager : MonoBehaviour
       if (scMenuSequito.TieneSequito(5))
       {
         scSequitoHerboristas.vecesEnClaro++;
-        EscribirLog($"-El Séquito de Herboristas ha visitado un Claro y recolectado hierbas curativas.");
+        EscribirLog(TRADU.i.Traducir("-El Séquito de Herboristas ha visitado un Claro y recolectado hierbas curativas."));
       }
     }
     if (ID == 4) //Posada
@@ -330,11 +332,11 @@ public class CampaignManager : MonoBehaviour
     if (ID == 6) //Puesto Comercial
     {
       goUIComercioNodo.SetActive(true);
-      txtDescripcionPuestoComercial.text = "Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\n\nTu Séquito de Mercaderes ha actualizado su Inventario. ";
+      txtDescripcionPuestoComercial.text = TRADU.i.Traducir("Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\n\nTu Séquito de Mercaderes ha actualizado su Inventario.");
 
       ResetearPuestoComercial();
       scSequitoMercaderes.GenerarItemsVendidos();
-      EscribirLog("El Séquito de Mercaderes ha actualizado su inventario en el Puesto Comercial.");
+      EscribirLog(TRADU.i.Traducir("El Séquito de Mercaderes ha actualizado su inventario en el Puesto Comercial."));
       scMapaManager.nodoActual.nodoDespejado = true;
     }
     if (ID == 7) //Personaje / Séquito
@@ -368,17 +370,17 @@ public class CampaignManager : MonoBehaviour
     {
 
       goUISantuario.SetActive(true);
-     txtdescripcionSantuario.text = "Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n\n. ";
+     txtdescripcionSantuario.text = TRADU.i.Traducir("Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n\n. ");
 
       CambiarEsperanzaActual(10);
-      EscribirLog("-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza.");
+      EscribirLog(TRADU.i.Traducir("-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza."));
 
       foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
       {
         if (pers.IDClase == 3) // Purificadora
         {
           pers.RecibirExperiencia(60);
-          EscribirLog($"-Como Purificadora, {pers.sNombre} gana 60 Experiencia por la visita al santuario.");
+          EscribirLog(TRADU.i.Traducir("-Como Purificadora,")+pers.sNombre+TRADU.i.Traducir(" gana 60 Experiencia por la visita al santuario."));
         }
         float curacion = pers.fVidaMaxima * 0.15f;
         pers.RecibirCuracion(curacion);
@@ -394,7 +396,7 @@ public class CampaignManager : MonoBehaviour
       if (!scSequitoCronistas.yaVendioCronica)
       {
         scSequitoCronistas.valorCambiosCronicas += 20;
-        EscribirLog($"-El Séquito de Cronistas ha registrado el viaje. +20 Valor Crónica.");
+        EscribirLog(TRADU.i.Traducir("-El Séquito de Cronistas ha registrado el viaje. +20 Valor Crónica."));
       }
     }
     //Nobles
@@ -402,13 +404,13 @@ public class CampaignManager : MonoBehaviour
     {
       int oro = GetEsperanzaActual() / 3;
       CambiarOroActual(oro);
-      EscribirLog($"-El Séquito de Nobles ha hecho una donación. +{oro} Oro.");
+      EscribirLog(TRADU.i.Traducir("-El Séquito de Nobles ha hecho una donación. Oro: "+oro));
     }
     //Esclavos
     if (scMenuSequito.TieneSequito(11))
     {
       CambiarEsperanzaActual(-2);
-      EscribirLog($"-Los Civiles se sienten culpables por la presencia de los Esclavos. -2 Esperanza.");
+      EscribirLog(TRADU.i.Traducir("-Los Civiles se sienten culpables por la presencia de los Esclavos. -2 Esperanza."));
     }
     
   }
@@ -429,7 +431,7 @@ public class CampaignManager : MonoBehaviour
 
     CambiarOroActual(-200);
     CambiarValorAlientoNegro(-3);
-    EscribirLog("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se ha gastado 200 de oro.");
+    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se ha gastado 200 de oro."));
 
     // Buscar personajes corruptos
     var corruptos = scMenuPersonajes.listaPersonajes.FindAll(p => p.Camp_Corrupto);
@@ -437,11 +439,11 @@ public class CampaignManager : MonoBehaviour
     {
       var personajeCurado = corruptos[UnityEngine.Random.Range(0, corruptos.Count)];
       personajeCurado.Camp_Corrupto = false;
-      EscribirLog($"-{personajeCurado.sNombre} ha sido purificado de la corrupción.");
+      EscribirLog(personajeCurado.sNombre+TRADU.i.Traducir(" ha sido purificado de la corrupción."));
     }
     else
     {
-      EscribirLog("-No hay personajes corruptos para purificar.");
+      EscribirLog(TRADU.i.Traducir("-No hay personajes corruptos para purificar."));
     }
 
     goUISantuario.SetActive(false);
@@ -453,13 +455,13 @@ public class CampaignManager : MonoBehaviour
     if (GetBueyesActual() < 3)
     {
       txtBueyes.color = Color.red;
-      EscribirLog("-No tienes suficientes bueyes para realizar el ritual en el santuario.");
+      EscribirLog(TRADU.i.Traducir("-No tienes suficientes bueyes para realizar el ritual en el santuario."));
       return;
     }
 
     CambiarBueyesActuales(-3);
     CambiarValorAlientoNegro(-3);
-    EscribirLog("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se han sacrificado 3 bueyes.");
+    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se han sacrificado 3 bueyes."));
 
     // Buscar personajes corruptos
     var corruptos = scMenuPersonajes.listaPersonajes.FindAll(p => p.Camp_Corrupto);
@@ -467,11 +469,11 @@ public class CampaignManager : MonoBehaviour
     {
       var personajeCurado = corruptos[UnityEngine.Random.Range(0, corruptos.Count)];
       personajeCurado.Camp_Corrupto = false;
-      EscribirLog($"-{personajeCurado.sNombre} ha sido purificado de la corrupción.");
+      EscribirLog("-"+personajeCurado.sNombre+TRADU.i.Traducir(" ha sido purificado de la corrupción."));
     }
     else
     {
-      EscribirLog("-No hay personajes corruptos para purificar.");
+      EscribirLog(TRADU.i.Traducir("-No hay personajes corruptos para purificar."));
     }
     goUISantuario.SetActive(false);
 
@@ -518,9 +520,18 @@ public class CampaignManager : MonoBehaviour
     precio1Material = 18 - sequitoMercaderesTier;
     precio1Buey = 20 - sequitoMercaderesTier;
 
-    txtDescSum.text = $"<Color=#F26B70>Venta: {(int)precio10Suministros / 2} Oro</color>    x10   <Color=#5ABD46>Compra: {(int)precio10Suministros} Oro</color>";
-    txtDescMat.text = $"<Color=#F26B70>Venta: {(int)precio1Material / 2} Oro</color>    x1   <Color=#5ABD46>Compra: {(int)precio1Material} Oro</color>";
-    txtDescBuey.text = $"<Color=#F26B70>Venta: {(int)precio1Buey / 2}  Oro</color>    x1   <Color=#5ABD46>Compra: {(int)precio1Buey} Oro</color>";
+    if (TRADU.i.nIdioma == 1) //Español
+    {
+      txtDescSum.text = $"<Color=#F26B70>Venta: {(int)precio10Suministros / 2} Oro</color>    x10   <Color=#5ABD46>Compra: {(int)precio10Suministros} Oro</color>";
+      txtDescMat.text = $"<Color=#F26B70>Venta: {(int)precio1Material / 2} Oro</color>    x1   <Color=#5ABD46>Compra: {(int)precio1Material} Oro</color>";
+      txtDescBuey.text = $"<Color=#F26B70>Venta: {(int)precio1Buey / 2}  Oro</color>    x1   <Color=#5ABD46>Compra: {(int)precio1Buey} Oro</color>";
+    }
+    else if (TRADU.i.nIdioma == 2) //Inglés
+    {
+      txtDescSum.text = $"<Color=#F26B70>Sell: {(int)precio10Suministros / 2} Gold</color>    x10   <Color=#5ABD46>Buy: {(int)precio10Suministros} Gold</color>";
+      txtDescMat.text = $"<Color=#F26B70>Sell: {(int)precio1Material / 2} Gold</color>    x1   <Color=#5ABD46>Buy: {(int)precio1Material} Gold</color>";
+      txtDescBuey.text = $"<Color=#F26B70>Sell: {(int)precio1Buey / 2}  Gold</color>    x1   <Color=#5ABD46>Buy: {(int)precio1Buey} Gold</color>";
+    }
     ActualizarPuestoComercial();
   }
 
@@ -682,7 +693,7 @@ public class CampaignManager : MonoBehaviour
         int rand2 = UnityEngine.Random.Range(1, 6);
 
         CambiarSuministrosActuales(-rand2);
-        EscribirLog($"-El Séquito de Artistas ha tenido un festín y despilfarrado {rand2} suministros.");
+        EscribirLog(TRADU.i.Traducir("-El Séquito de Artistas ha tenido un festín y despilfarrado suministros: ")+rand2);
       }
     }
 
@@ -714,7 +725,7 @@ public class CampaignManager : MonoBehaviour
         float porcentajeVidaMax = pers.fVidaMaxima * curacionFinalSequito;
         if (pers.fVidaMaxima > pers.fVidaActual)
         {
-          EscribirLog($"-{pers.sNombre} se cura {(int)porcentajeVidaMax} PV por su Actividad de <b>Descanso</b>.");
+          EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" se cura ")+(int)porcentajeVidaMax+TRADU.i.Traducir(" PV por su Actividad de <b>Descanso</b>."));
         }
         pers.RecibirCuracion(porcentajeVidaMax);
 
@@ -728,7 +739,7 @@ public class CampaignManager : MonoBehaviour
         }
         pers.RecibirExperiencia(exp);
 
-        EscribirLog($"-{pers.sNombre} gana {exp} Experiencia por su Actividad de <b>Entrenamiento</b>.");
+        EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" gana ") + exp + TRADU.i.Traducir(" Experiencia por su Actividad de <b>Entrenamiento</b>."));
 
       }
       if (pers.ActividadSeleccionada == 4) //Caballero: Relatos de Batalla
@@ -743,34 +754,34 @@ public class CampaignManager : MonoBehaviour
         }
 
 
-        EscribirLog($"-{pers.sNombre} brinda 10 Experiencia a sus compañeros de menor nivel por su Actividad de <b>Relatos de Batalla</b>.");
+        EscribirLog($"-"+pers.sNombre+TRADU.i.Traducir(" brinda 10 Experiencia a sus compañeros de menor nivel por su Actividad de <b>Relatos de Batalla</b>."));
 
       }
       if (pers.ActividadSeleccionada == 7) //Explorador: Caza Nocturna
       {
         int rand = UnityEngine.Random.Range(1, 5);
         CambiarSuministrosActuales(rand);
-        EscribirLog($"-{pers.sNombre} consigue {rand} suministros por su Actividad de <b>Caza Nocturna</b>.");
+        EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" consigue ") + rand + TRADU.i.Traducir(" suministros por su Actividad de <b>Caza Nocturna</b>."));
       }
       if (pers.ActividadSeleccionada == 11) //Purificadora: Ayudar a los Desamparados
       {
         int rand = UnityEngine.Random.Range(1, 4);
         CambiarEsperanzaActual(rand);
-        EscribirLog($"-{pers.sNombre} realiza su actividad <b>Ayudar a los Desamparados</b> y la esperanza aumenta en {rand}.");
+        EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" realiza su actividad <b>Ayudar a los Desamparados</b> y la esperanza aumenta en ") + rand + ".");
       }
       if (pers.ActividadSeleccionada == 15) //Acechador: Coerción
       {
         int rand = UnityEngine.Random.Range(1, 10);
         CambiarEsperanzaActual(-1);
         CambiarOroActual(rand);
-        EscribirLog($"-{pers.sNombre} obtiene {rand} de Oro de los Mercaderes de la Caravana, que fueron coercionados para que donen a la causa. -1 Esperanza");
+        EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" obtiene ") + rand + TRADU.i.Traducir(" de Oro de los Mercaderes de la Caravana, que fueron coercionados para que donen a la causa. -1 Esperanza"));
       }
       if (pers.ActividadSeleccionada == 18) //Canalizador: Simbolo de Proteccion Arcano
       {
 
         GameObject consumible = Instantiate(scContprefab.SimboloProtArcano.gameObject);
         scMenuPersonajes.scEquipo.listInventario.Add(consumible);
-        EscribirLog($"-{pers.sNombre} ha creado un Símbolo de Protección Arcano.");
+        EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" ha creado un Símbolo de Protección Arcano."));
 
       }
     }
@@ -811,24 +822,24 @@ public class CampaignManager : MonoBehaviour
       tooltipAlientoNegro.SetActive(true);
       int tierAliento = (int)GetTierAlientoNegro();
 
-      txtTooltipAlientoNegro.text = "<color=#8708a4><b>                  El Aliento Negro</b></color>\n\n\n";
-      txtTooltipAlientoNegro.text += "<color=#ebdeef>Al morir el Liche, liberó un último estertor de muerte y putrefacción que se expande por cientos de kilómetros alrededor.";
-      txtTooltipAlientoNegro.text += $"\n\nLlamado el Aliento Negro, esta ola de peste y podredumbre lentamente está envolviendo a los seres vivos que no logran escapar, provocándoles la muerte, o peor. </color>\n\n\n\n";
+      txtTooltipAlientoNegro.text = TRADU.i.Traducir("<color=#8708a4><b>                  El Aliento Negro</b></color>\n\n\n");
+      txtTooltipAlientoNegro.text += TRADU.i.Traducir("<color=#ebdeef>Al morir el Liche, liberó un último estertor de muerte y putrefacción que se expande por cientos de kilómetros alrededor.</color>");
+      txtTooltipAlientoNegro.text += TRADU.i.Traducir("\n\nLlamado el Aliento Negro, esta ola de peste y podredumbre lentamente está envolviendo a los seres vivos que no logran escapar, provocándoles la muerte, o peor. </color>\n\n\n\n");
       if (tierAliento == 1)
       {
-        txtTooltipAlientoNegro.text += $"<color=#bae895><b>Estado: Distante</b> ({EstadoAlientoNegro}/20) - La Caravana viaja con tranquilidad.</color>";
+        txtTooltipAlientoNegro.text += TRADU.i.Traducir("<color=#bae895><b>Estado: Distante</b> (") + EstadoAlientoNegro +  TRADU.i.Traducir("/20) - La Caravana viaja con tranquilidad.</color>");
       }
       if (tierAliento == 2)
       {
-        txtTooltipAlientoNegro.text += $"<color=#c8a6e8><b>Estado: Cerca</b> ({EstadoAlientoNegro}/20) - La Caravana comienza a preocuparse y la podredumbre se siente en el aire. Los Corrompidos acechan en las sombras.</color>";
+        txtTooltipAlientoNegro.text += TRADU.i.Traducir("<color=#c8a6e8><b>Estado: Cerca</b> (") + EstadoAlientoNegro + TRADU.i.Traducir("/20) - La Caravana comienza a preocuparse y la podredumbre se siente en el aire. Los Corrompidos acechan en las sombras.</color>");
       }
       if (tierAliento == 3)
       {
-        txtTooltipAlientoNegro.text += $"<color=#aa66ea><b>Estado: Dentro</b> ({EstadoAlientoNegro}/20) - La Caravana ya es directamente afectada por el hedor. Los Corrompidos se dejan ver.</color>";
+        txtTooltipAlientoNegro.text += TRADU.i.Traducir("<color=#aa66ea><b>Estado: Dentro</b> (") + EstadoAlientoNegro + TRADU.i.Traducir("/20) - La Caravana ya es directamente afectada por el hedor. Los Corrompidos se dejan ver.</color>");
       }
       if (tierAliento == 4)
       {
-        txtTooltipAlientoNegro.text += $"<color=#7a1dd1><b>Estado: Nocivo</b> ({EstadoAlientoNegro}/20) - La peste comienza a tomar vidas civiles. Los Corrompidos son implacables.</color>";
+        txtTooltipAlientoNegro.text += TRADU.i.Traducir("<color=#7a1dd1><b>Estado: Nocivo</b> (") + EstadoAlientoNegro + TRADU.i.Traducir("/20) - La peste comienza a tomar vidas civiles. Los Corrompidos son implacables.</color>");
       }
 
     }
@@ -929,13 +940,13 @@ public class CampaignManager : MonoBehaviour
     int fatigaNueva = FatigaActual;
     switch (FatigaActual)
     {
-      case < 0: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = "Enérgicos(0)"; valueFatiga.color = new Color(0.1f, 0.95f, 0.2f); break;
-      case 0: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = "Descansados(1)"; valueFatiga.color = new Color(0.1f, 0.9f, 0.3f); break;
-      case 1: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = "Frescos(2)"; valueFatiga.color = new Color(0.1f, 0.7f, 0.3f); break;
-      case 2: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = "En Marcha(3)"; valueFatiga.color = new Color(0.25f, 0.6f, 0.3f); break;
-      case 3: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = "Agitados(4)"; valueFatiga.color = new Color(0.55f, 0.5f, 0.2f); break;
-      case 4: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = "Cansados(5)"; valueFatiga.color = new Color(0.75f, 0.3f, 0.25f); break;
-      case > 4: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = "Exhaustos(6)"; valueFatiga.color = new Color(0.8f, 0.15f, 0.45f); break;
+      case < 0: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = TRADU.i.Traducir("Enérgicos(0)"); valueFatiga.color = new Color(0.1f, 0.95f, 0.2f); break;
+      case 0: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = TRADU.i.Traducir("Descansados(1)"); valueFatiga.color = new Color(0.1f, 0.9f, 0.3f); break;
+      case 1: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = TRADU.i.Traducir("Frescos(2)"); valueFatiga.color = new Color(0.1f, 0.7f, 0.3f); break;
+      case 2: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = TRADU.i.Traducir("En Marcha(3)"); valueFatiga.color = new Color(0.25f, 0.6f, 0.3f); break;
+      case 3: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = TRADU.i.Traducir("Agitados(4)"); valueFatiga.color = new Color(0.55f, 0.5f, 0.2f); break;
+      case 4: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = TRADU.i.Traducir("Cansados(5)"); valueFatiga.color = new Color(0.75f, 0.3f, 0.25f); break;
+      case > 4: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = TRADU.i.Traducir("Exhaustos(6)"); valueFatiga.color = new Color(0.8f, 0.15f, 0.45f); break;
     }
 
     if (FatigaActual > 3) { alertaFatiga.SetActive(true); }
@@ -947,14 +958,14 @@ public class CampaignManager : MonoBehaviour
     {
       switch (fatigaAhora)
       {
-        case 4: CambiarEsperanzaActual(-10); int rand = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand); if(rand < 0) {EscribirLog($"-La fatiga ha provocado la muerte de algunos Bueyes. {rand} Bueyes");} break;    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        case 5: CambiarEsperanzaActual(-15); int rand2 = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand2); if(rand2 < 0) {EscribirLog($"-La fatiga ha provocado la muerte de algunos Bueyes. {rand2} Bueyes");} break;
-        case > 5: CambiarEsperanzaActual(-20); int rand3 = UnityEngine.Random.Range(-4, 1); CambiarBueyesActuales(rand3); int rand4 = UnityEngine.Random.Range(-10, 1); CambiarCivilesActuales(rand4); if(rand3 < 0 || rand4 < 0) {EscribirLog($"-La fatiga extrema ha provocado la muerte de algunos Bueyes y Civiles. {rand3} Bueyes {rand4} Civiles");} break;
+        case 4: CambiarEsperanzaActual(-10); int rand = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand); if(rand < 0) {EscribirLog(TRADU.i.Traducir("-La fatiga ha provocado la muerte de algunos Bueyes.")+" -"+rand+TRADU.i.Traducir(" Bueyes"));} break;    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        case 5: CambiarEsperanzaActual(-15); int rand2 = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand2); if(rand2 < 0) {EscribirLog(TRADU.i.Traducir("-La fatiga ha provocado la muerte de algunos Bueyes.")+" -"+rand2+TRADU.i.Traducir(" Bueyes"));} break;
+        case > 5: CambiarEsperanzaActual(-20); int rand3 = UnityEngine.Random.Range(-4, 1); CambiarBueyesActuales(rand3); int rand4 = UnityEngine.Random.Range(-10, 1); CambiarCivilesActuales(rand4); if(rand3 < 0 || rand4 < 0) {EscribirLog(TRADU.i.Traducir("-La fatiga extrema ha provocado la muerte de algunos Bueyes y Civiles.")+" -"+rand3+TRADU.i.Traducir(" Bueyes -")+rand4+TRADU.i.Traducir(" Civiles"));} break;
       }
       if (scMenuSequito.TieneSequito(9) && fatigaAhora >= 4) //Si hay un Séquito de Nobles y la fatiga es 4 o más
       {
         CambiarEsperanzaActual(-2);
-        CampaignManager.Instance.EscribirLog($"-El Séquito de Nobles se queja por la falta de descanso. -2 Esperanza");
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-El Séquito de Nobles se queja por la falta de descanso. -2 Esperanza"));
       }
 
       if (fatigaAhora == 5)
@@ -963,7 +974,7 @@ public class CampaignManager : MonoBehaviour
         {
           pers.Camp_Fatigado = true;
         }
-        EscribirLog($"-Tus héroes están fatigados. Afectará su rendimiento en batalla.");
+        EscribirLog(TRADU.i.Traducir("-Tus personajes están fatigados. Afectará su rendimiento en batalla."));
 
       }
     }
@@ -1138,7 +1149,7 @@ public class CampaignManager : MonoBehaviour
       CambiarBueyesActuales(-1);
       CambiarSuministrosActuales(20);
       CambiarEsperanzaActual(-2);
-      EscribirLog("-El sacrificio de Bueyes para obtener Suministros ha provocado preocupación. -2 Esperanza");
+      EscribirLog(TRADU.i.Traducir("-El sacrificio de Bueyes para obtener Suministros ha provocado preocupación. -2 Esperanza"));
     }
   }
 
@@ -1163,9 +1174,25 @@ public class CampaignManager : MonoBehaviour
     int diasSuministros = Mathf.FloorToInt(SuministrosActuales / consumo);
 
 
-    if (diasSuministros != 1)
-    { valueCantdescansos.text = $"<i>{(int)diasSuministros} descansos</i>"; }
-    else { valueCantdescansos.text = $"<i>{(int)diasSuministros} descanso</i>"; }
+    switch (TRADU.i.nIdioma)
+    {
+      case 1: //Español
+      {
+          if (diasSuministros != 1)
+          { valueCantdescansos.text = $"<i>{(int)diasSuministros} descansos</i>"; }
+          else { valueCantdescansos.text = $"<i>{(int)diasSuministros} descanso</i>"; }
+          break;
+      }
+      case 2: //Ingles
+      {
+        if (diasSuministros != 1)
+        { valueCantdescansos.text = $"<i>{(int)diasSuministros} rests</i>"; }
+        else { valueCantdescansos.text = $"<i>{(int)diasSuministros} rest</i>"; } break;
+      }
+
+
+
+    }
 
 
     GetCargaLlevadaActual();
@@ -1286,14 +1313,14 @@ public class CampaignManager : MonoBehaviour
       String text = "";
 
       int num = GetEsperanzaActual();
-      text = $"La <color=#a0e812>Esperanza</color> determina el optimismo de la Caravana en general sobre la posibilidad de cumplir la misión y llegar al puerto.\n\n";
-      text += $"{num}/100 de <color=#a0e812>Esperanza</color>\n";
+      text = TRADU.i.Traducir("La <color=#a0e812>Esperanza</color> determina el optimismo de la Caravana en general sobre la posibilidad de cumplir la misión y llegar al puerto.\n\n");
+      text += num+TRADU.i.Traducir("/100 de <color=#a0e812>Esperanza</color>\n");
 
-      if (num < 11) { text += $" <color=#982a1b>1-20 Civiles abandonarán la Caravana cada descanso.</color>\n"; }
-      if (num < 20 && num >= 11) { text += $" <color=#982a1b>1-10 Civiles abandonarán la Caravana cada descanso.</color>\n"; }
-      if (num >= 20 && num < 80) { text += $""; }
-      if (num >= 80 && num < 90) { text += $" <color=#39a91b>Los Civiles donarán algo de Oro cada descanso.</color>\n"; }
-      if (num >= 90) { text += $" <color=#39a91b>Los Civiles donarán buena cantidad de Oro cada descanso.</color>\n"; }
+      if (num < 11) { text += TRADU.i.Traducir(" <color=#982a1b>1-20 Civiles abandonarán la Caravana cada descanso.</color>\n"); }
+      if (num < 20 && num >= 11) { text += TRADU.i.Traducir(" <color=#982a1b>1-10 Civiles abandonarán la Caravana cada descanso.</color>\n"); }
+      if (num >= 20 && num < 80) { text += ""; }
+      if (num >= 80 && num < 90) { text += TRADU.i.Traducir(" <color=#39a91b>Los Civiles donarán algo de Oro cada descanso.</color>\n"); }
+      if (num >= 90) { text += TRADU.i.Traducir(" <color=#39a91b>Los Civiles donarán buena cantidad de Oro cada descanso.</color>\n"); }
 
       tooltipGOEsperanza.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
     }
@@ -1303,9 +1330,9 @@ public class CampaignManager : MonoBehaviour
       String text = "";
 
       float num = GetCivilesActual();
-      text = $"Los <color=#c918bb>Civiles</color> que lleva la caravana hacia el Puerto. Salvar la mayor cantidad es el objetivo principal de esta misión.\n\nCada uno consume 1 de <color=#b7972c>Suministros</color> cada Descanso, y la cantidad de Civiles determina la eficiencia de las Tareas Civiles.\n";
-      text += $"\nLlevas {(int)num} <color=#c918bb>Civiles</color>, deben ser al menos 100 para que la misión se considere exitosa.\n\n";
-      text += $"\nLas fuerzas de la Milicia de la caravana son de <color=#a8a29c>{(int)GetMiliciasActual()}, que equivalen a {(int)GetMiliciasActual() / 10}</color> Milicianos que ayudarán a defenderla de ataques directos.\n\n";
+      text = TRADU.i.Traducir("Los <color=#c918bb>Civiles</color> que lleva la caravana hacia el Puerto. Salvar la mayor cantidad es el objetivo principal de esta misión.\n\nCada uno consume 1 de <color=#b7972c>Suministros</color> cada Descanso, y la cantidad de Civiles determina la eficiencia de las Tareas Civiles.\n");
+      text += TRADU.i.Traducir("\nLlevas ") + (int)num + TRADU.i.Traducir(" <color=#c918bb>Civiles</color>, deben ser al menos 100 para que la misión se considere exitosa.\n\n");
+      text += TRADU.i.Traducir("\nLas fuerzas de la Milicia de la caravana son de <color=#a8a29c>") + (int)GetMiliciasActual() +" </color>" + TRADU.i.Traducir(", que equivalen a ") +"<color=#a8a29c>"+ (int)GetMiliciasActual() / 10 + TRADU.i.Traducir("</color> Milicianos que ayudarán a defenderla de ataques directos.\n\n");
 
 
 
@@ -1316,10 +1343,10 @@ public class CampaignManager : MonoBehaviour
       tooltipGOSuministros.SetActive(true);
       String text = "";
 
-      text = $"<color=#ffdda5>---<b>Haz click para abandonar <color=#b7972c>5 Suministros</color> y alivianar la Carga. -1 Esperanza</b>---</color>\n\n\n";
+      text = TRADU.i.Traducir("<color=#ffdda5>---<b>Haz click para abandonar <color=#b7972c>5 Suministros</color> y alivianar la Carga. -1 Esperanza</b>---</color>\n\n\n");
       int num = GetSuministrosActuales();
-      text += $"Los <color=#b7972c>Suministros</color> constituyen las reservas de comida y elementos de supervivencia de la caravana.\n\nCada <color=#c918bb>Civil</color> consume 1 en cada Descanso. Los Bueyes consumen 2.\n";
-      text += $"\nLlevas {num} <color=#b7972c>Suministros</color>, por un total de peso de {num}.\n\n\n";
+      text += TRADU.i.Traducir($"Los <color=#b7972c>Suministros</color> constituyen las reservas de comida y elementos de supervivencia de la caravana.\n\nCada <color=#c918bb>Civil</color> consume 1 en cada Descanso. Los Bueyes consumen 2.\n");
+      text += TRADU.i.Traducir("\nLlevas ") + num + TRADU.i.Traducir(" <color=#b7972c>Suministros</color>, por un total de peso de ") + num + ".\n\n\n";
 
 
 
@@ -1330,10 +1357,10 @@ public class CampaignManager : MonoBehaviour
       tooltipGOMateriales.SetActive(true);
       String text = "";
 
-      text = $"<color=#ffdda5>---<b>Haz click para abandonar <color=#b34f09>2 Materiales</color> y alivianar la Carga. -1 Esperanza</b>---</color>\n\n\n";
+      text = TRADU.i.Traducir("<color=#ffdda5>---<b>Haz click para abandonar <color=#b34f09>2 Materiales</color> y alivianar la Carga. -1 Esperanza</b>---</color>\n\n\n");
       int num = GetMaterialesActuales();
-      text += $"Los <color=#b34f09>Materiales</color> son elementos básicos de construcción utilizados para mantenimiento y expansión de la caravana.\nCada uno pesa 3.\n";
-      text += $"\nLlevas {num} <color=#b34f09>Materiales</color>, por un total de peso de {num * 3}.\n\n\n";
+      text += TRADU.i.Traducir("Los <color=#b34f09>Materiales</color> son elementos básicos de construcción utilizados para mantenimiento y expansión de la caravana.\nCada uno pesa 3.\n");
+      text += TRADU.i.Traducir("\nLlevas ") + num + TRADU.i.Traducir(" <color=#b34f09>Materiales</color>, por un total de peso de ") + (num * 3) + ".\n\n\n";
 
 
 
@@ -1343,20 +1370,20 @@ public class CampaignManager : MonoBehaviour
     {
       tooltipGOBueyes.SetActive(true);
       String text = "";
-      text = $"<color=#ffdda5>---<b>Haz click para sacrificar <color=#9e2a1c>1 Buey</color> para obtener <color=#b7972c>20 Suministros</color>. -2 Esperanza</b>---</color>\n\n\n";
+      text = TRADU.i.Traducir("<color=#ffdda5>---<b>Haz click para sacrificar <color=#9e2a1c>1 Buey</color> para obtener <color=#b7972c>20 Suministros</color>. -2 Esperanza</b>---</color>\n\n\n") ;
       int num = GetBueyesActual();
       int num2 = GetSuministrosActuales();
       int num3 = GetMaterialesActuales();
       int num4 = GetCargaLlevadaActual();
 
       int cargaPorBuey = 25 + mejoraCaravanaAlforjas;
-      text += $"Los <color=#9e2a1c>Bueyes</color> son utilizados para llevar la carga de la caravana.\nCada uno da {cargaPorBuey} de Capacidad de Carga.\n";
-      text += $"\nLlevas {num} <color=#9e2a1c>Bueyes</color>, por un total de Capacidad de Carga de {num * cargaPorBuey}.\n\n\n";
-      text += $"\nLlevas {num2} <color=#b7972c>Suministros</color> y {num3} <color=#b34f09>Materiales</color> por un total de peso de {num4}/{num * 25}.\n\n";
+      text += TRADU.i.Traducir("Los <color=#9e2a1c>Bueyes</color> son utilizados para llevar la carga de la caravana.\nCada uno da ") + cargaPorBuey + TRADU.i.Traducir(" de Capacidad de Carga.\n");
+      text += TRADU.i.Traducir("\nLlevas ") +num+TRADU.i.Traducir(" <color=#9e2a1c>Bueyes</color>, por un total de Capacidad de Carga de ") + (num * cargaPorBuey) + ".\n\n\n";
+      text += TRADU.i.Traducir("\nLlevas ") +num2+TRADU.i.Traducir(" <color=#b7972c>Suministros</color> y ") + num3 + TRADU.i.Traducir(" <color=#b34f09>Materiales</color> por un total de peso de ") + num4 + "/" + (num * 25) + ".\n\n";
 
       if (num4 > GetCapacidadDeCargaActual())
       {
-        text += $"<color=#cc0d0d>La Caravana lleva Sobrecarga. Cada tramo que se haga duplica la Fatiga obtenida y reduce 10 la <color=#a0e812>Esperanza</color></color>.\n\n\n";
+        text += TRADU.i.Traducir("<color=#cc0d0d>La Caravana lleva Sobrecarga. Cada tramo que se haga duplica la Fatiga obtenida y reduce 10 la <color=#a0e812>Esperanza</color></color>.\n\n\n");
 
       }
 
@@ -1368,7 +1395,7 @@ public class CampaignManager : MonoBehaviour
       String text = "";
 
      
-      text = $"El <color=#d8a205>Oro</color> que lleva la Caravana, utilizado para comprar bienes y contratar servicios.";
+      text = TRADU.i.Traducir("El <color=#d8a205>Oro</color> que lleva la Caravana, utilizado para comprar bienes y contratar servicios.");
 
       tooltipGOOro.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
     }
@@ -1378,20 +1405,20 @@ public class CampaignManager : MonoBehaviour
       String text = "";
 
       int num = GetFatigaActual();
-      text = $"Indica que tanta <color=#06c297>Fatiga</color> tiene la Caravana en general.\n\n\n";
-      text += $"Cada tramo de viaje la aumenta en 1.\n";
-      text += $"Si descansas volverá a 0 y arrancarán el nuevo día Descansados(1).\n\n";
+      text = TRADU.i.Traducir("Indica que tanta <color=#06c297>Fatiga</color> tiene la Caravana en general.\n\n\n");
+      text += TRADU.i.Traducir("Cada tramo de viaje la aumenta en 1.\n");
+      text += TRADU.i.Traducir("Si descansas volverá a 0 y arrancarán el nuevo día Descansados(1).\n\n");
 
 
 
       switch (FatigaActual)
       {
-        case 0: text += $"Actualmente estan Descansados(1), no habrá penalizaciones por viajar.\n\n"; ; break;
-        case 1: text += $"Actualmente estan Frescos(2), no habrá penalizaciones por viajar."; break;
-        case 2: text += $"Actualmente estan En Marcha(3), no habrá penalizaciones por viajar."; break;
-        case 3: text += $"Actualmente estan Agitados(4), -10 Esperanza y pocos Bueyes podrían morir y los héroes se fatigarán si marchas."; break;
-        case 4: text += $"Actualmente estan Cansados(5), -15 Esperanza y algunos Bueyes podrán morir si viajas."; break;
-        case > 4: text += $"Actualmente estan Exhaustos(6), -20 Esperanza y varios Bueyes podrán morir si viajas."; break;
+        case 0: text += TRADU.i.Traducir("Actualmente estan Descansados(1), no habrá penalizaciones por viajar.\n\n"); break;
+        case 1: text += TRADU.i.Traducir("Actualmente estan Frescos(2), no habrá penalizaciones por viajar."); break;
+        case 2: text += TRADU.i.Traducir("Actualmente estan En Marcha(3), no habrá penalizaciones por viajar."); break;
+        case 3: text += TRADU.i.Traducir("Actualmente estan Agitados(4), -10 Esperanza, pocos Bueyes podrían morir si viajas."); break;
+        case 4: text += TRADU.i.Traducir("Actualmente estan Cansados(5), -15 Esperanza y algunos Bueyes podrán morir si viajas."); break;
+        case > 4: text += TRADU.i.Traducir("Actualmente estan Exhaustos(6), -20 Esperanza y varios Bueyes podrán morir si viajas."); break;
       }
 
 
@@ -1460,11 +1487,11 @@ public class CampaignManager : MonoBehaviour
 
       switch (intTipoClima)
       {
-        case 1: textClimaTooltip.text = $"Día {numeroTurno}: -Soleado: +5 Esperanza."; break;
-        case 2: textClimaTooltip.text = $"Día {numeroTurno}: -Ola de Calor: +1 Fatiga. Jornada Libre da +5 Esperanza, otras Tareas Civiles dan -3."; break;
-        case 3: textClimaTooltip.text = $"Día {numeroTurno}: -Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% Emboscada."; break;
-        case 4: textClimaTooltip.text = $"Día {numeroTurno}: -Nieve: +3 Esperanza. -15% Recolecciónes, -20% Emboscada. Viajar lleva el doble de tiempo."; break;
-        case 5: textClimaTooltip.text = $"Día {numeroTurno}: -Niebla: -20% Recolecciónes, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos."; break;
+        case 1: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Soleado: +5 Esperanza."); break;
+        case 2: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Ola de Calor: +1 Fatiga. Jornada Libre da +5 Esperanza, otras Tareas Civiles dan -3."); break;
+        case 3: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% Emboscada."); break;
+        case 4: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Nieve: +3 Esperanza. -15% Recolecciónes, -20% Emboscada. Viajar lleva el doble de tiempo."); break;
+        case 5: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Niebla: -20% Recolecciónes, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos."); break;
 
 
 
@@ -1682,7 +1709,7 @@ public class CampaignManager : MonoBehaviour
     pers1.AddComponent<REPRESENTACIONCorajeInquebrantable>();
     pers1.GetComponent<REPRESENTACIONCorajeInquebrantable>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
                                                                          //pers1.AddComponent<Cortevertical>(); AGREGADO POR MANDOBLE
-    //Habilidades Base
+                                                                         //Habilidades Base
     int randHabPot1 = UnityEngine.Random.Range(1, 5);
     switch (randHabPot1)
     {
@@ -1723,6 +1750,8 @@ public class CampaignManager : MonoBehaviour
     scMenuPersonajes.listaPersonajes.Add(pers1);
 
     scMenuPersonajes.scEquipo.ActualizarEquipo(pers1);
+    
+
 
 
   }
@@ -1918,7 +1947,7 @@ public class CampaignManager : MonoBehaviour
 
 
 
-    pers1.itemArma = Instantiate(scContprefab.armaBaculoPurificador3);
+    pers1.itemArma = Instantiate(scContprefab.armaBaculoPurificador);
     pers1.spRetrato = scMenuPersonajes.Female001;
     scMenuPersonajes.listaPersonajes.Add(pers1);
     scMenuPersonajes.scEquipo.ActualizarEquipo(pers1);
@@ -2254,7 +2283,7 @@ public class CampaignManager : MonoBehaviour
       case 4: CrearAcechador(); break;
       case 5: CrearCanalizador(); break;
     }
-    EscribirLog($"-Un nuevo héroe se ha unido a la caravana: {scMenuPersonajes.listaPersonajes[scMenuPersonajes.listaPersonajes.Count - 1].sNombre}.");
+    EscribirLog(TRADU.i.Traducir("-Un nuevo personaje se ha unido a la caravana: ") + scMenuPersonajes.listaPersonajes[scMenuPersonajes.listaPersonajes.Count - 1].sNombre + ".");
   }
 
 

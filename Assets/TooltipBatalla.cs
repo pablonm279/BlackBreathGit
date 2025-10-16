@@ -22,7 +22,7 @@ public class TooltipBatalla : MonoBehaviour
         desdeBarraVida = false;
       
             tooltipObject.transform.position = Input.mousePosition;
-            tooltipText.text = ObtenerContenidoTooltip(tipo);
+            tooltipText.text = TRADU.i.Traducir(ObtenerContenidoTooltip(tipo));
         
     }
     bool desdeBarraVida = false;
@@ -31,7 +31,7 @@ public class TooltipBatalla : MonoBehaviour
         tooltipObject.SetActive(true);
         desdeBarraVida = true;
         tooltipObject.transform.position = Input.mousePosition;
-        tooltipText.text = txt;
+        tooltipText.text = TRADU.i.Traducir(txt);
     }
 
    

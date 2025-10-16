@@ -64,14 +64,17 @@ public class DisparoEnvenenado : Habilidad
   {
     int NivelMaestria = claseAcechador.PASIVA_MaestriaConBallestaMano;
 
- 
+
 
     if (NivelMaestria == 1)
     {
       bonusAtaque = 1;
       damExtra += 2;
-      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño.</i>\n\n";
-     
+
+      if (TRADU.i.nIdioma == 1)
+      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño.</i>\n\n"; }
+      if (TRADU.i.nIdioma == 2)
+      { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 2)
@@ -79,7 +82,10 @@ public class DisparoEnvenenado : Habilidad
       bonusAtaque = 1;
       damExtra += 2;
       criticoRangoHab = 1;
-      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
+      if (TRADU.i.nIdioma == 1)
+      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n"; }
+      if (TRADU.i.nIdioma == 2)
+      {  txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 3)
@@ -88,7 +94,10 @@ public class DisparoEnvenenado : Habilidad
       damExtra += 2;
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n";
+      if(TRADU.i.nIdioma== 1)
+      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n"; }
+      if(TRADU.i.nIdioma== 2)
+      { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +1 Critical Range, -1 AP.</i>\n\n"; }
 
 
     }
@@ -99,7 +108,10 @@ public class DisparoEnvenenado : Habilidad
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
       hAlcance += 1; //Alcance +1
-      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
+      if(TRADU.i.nIdioma== 1)
+      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n"; }
+      if(TRADU.i.nIdioma== 2)
+      { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Range +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 5)
@@ -110,7 +122,10 @@ public class DisparoEnvenenado : Habilidad
       cooldownMax -= 1; //Cooldown -1
       costoAP -= 1; //costo AP -1
       cooldownActual = 0;
-      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
+      if(TRADU.i.nIdioma== 1)
+      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n"; }
+      if(TRADU.i.nIdioma== 2)
+      { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: Removes Cooldown, +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
 
     }
 
@@ -200,6 +215,91 @@ public class DisparoEnvenenado : Habilidad
       txtDescripcion += $"<color=#44d3ec>-Usa Ballesta de Mano -Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
     }
 
+
+    if (TRADU.i.nIdioma == 2)
+    {
+      if (NIVEL < 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Poison Shot I</b></color>\n\n";
+        txtDescripcion += "<i>With the hand crossbow, shoots a poisoned bolt at the enemy.</i>\n\n";
+        txtDescripcion += "-Attack: <color=#ea0606>Agility</color><i> Piercing Damage: 3d4 + Agility. </i>\n\n";
+        txtDescripcion += "<color=#c8c8c8>On hit - Fortitude Save DC 12: Applies 2 Poison.</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Uses Hand Crossbow -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += "<color=#dfea02>-Next Level: Applies +1 Poison</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Poison Shot II</b></color>\n\n";
+        txtDescripcion += "<i>With the hand crossbow, shoots a poisoned bolt at the enemy.</i>\n\n";
+        txtDescripcion += "-Attack: <color=#ea0606>Agility</color><i> Piercing Damage: 3d4 + Agility. </i>\n\n";
+        txtDescripcion += "<color=#c8c8c8>On hit - Fortitude Save DC 12: Applies 3 Poison.</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Uses Hand Crossbow -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += "<color=#dfea02>-Next Level: +1 DC</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Poison Shot III</b></color>\n\n";
+        txtDescripcion += "<i>With the hand crossbow, shoots a poisoned bolt at the enemy.</i>\n\n";
+        txtDescripcion += "-Attack: <color=#ea0606>Agility</color><i> Piercing Damage: 3d4 + Agility. </i>\n\n";
+        txtDescripcion += "<color=#c8c8c8>On hit - Fortitude Save DC 13: Applies 3 Poison.</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Uses Hand Crossbow -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += "<color=#dfea02>-Option A: Applies +2 Poison</color>\n";
+              txtDescripcion += "<color=#dfea02>-Option B: -1 Cooldown</color>\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Poison Shot IV a</b></color>\n\n";
+        txtDescripcion += "<i>With the hand crossbow, shoots a poisoned bolt at the enemy.</i>\n\n";
+        txtDescripcion += "-Attack: <color=#ea0606>Agility</color><i> Piercing Damage: 3d4 + Agility. </i>\n\n";
+        txtDescripcion += "<color=#c8c8c8>On hit - Fortitude Save DC 13: Applies 5 Poison.</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Uses Hand Crossbow -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+      }
+      if (NIVEL == 5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Poison Shot IV b</b></color>\n\n";
+        txtDescripcion += "<i>With the hand crossbow, shoots a poisoned bolt at the enemy.</i>\n\n";
+        txtDescripcion += "-Attack: <color=#ea0606>Agility</color><i> Piercing Damage: 3d4 + Agility. </i>\n\n";
+        txtDescripcion += "<color=#c8c8c8>On hit - Fortitude Save DC 13: Applies 3 Poison.</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Uses Hand Crossbow -Cooldown: {cooldownMax-1} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+      }
+    }
+
+
+
+
+
+
+
     if (SceneManager.GetActiveScene().name != "ES-Campaña")
     {
 
@@ -207,26 +307,57 @@ public class DisparoEnvenenado : Habilidad
       int NivelMaestria = claseAcechador.PASIVA_MaestriaConBallestaMano;
       if (NivelMaestria == 1)
       {
+        if (TRADU.i.nIdioma == 1)
+        {
+          txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño.</i>\n\n";
 
-        txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño.</i>\n\n";
+        }
+        if (TRADU.i.nIdioma == 2)
+        {
+          txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage.</i>\n\n";
+
+        }
       }
       else if (NivelMaestria == 2)
       {
-        txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
+        if (TRADU.i.nIdioma == 1)
+        {
+          txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
+
+        }
+        if (TRADU.i.nIdioma == 2)
+        {
+          txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +1 Critical Range.</i>\n\n";
+
+        }
+
       }
       else if (NivelMaestria == 3)
       {
+        if (TRADU.i.nIdioma == 1)
+        { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n"; }
+        if (TRADU.i.nIdioma == 2)
+        { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +1 Critical Range, -1 AP.</i>\n\n"; }
 
-        txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n";
       }
       else if (NivelMaestria == 4)
       {
+        if (TRADU.i.nIdioma == 1)
+        { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n"; }
+        if (TRADU.i.nIdioma == 2)
+        { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Range +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
 
-        txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
       }
       else if (NivelMaestria == 5)
       {
-        txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
+        if (TRADU.i.nIdioma == 1)
+        {
+          txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
+        }
+        if (TRADU.i.nIdioma == 2)
+        {
+          txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: Removes Cooldown, +1 Attack +2 Damage +1 Critical Range.</i>\n\n";
+        }
       }
     }
   }

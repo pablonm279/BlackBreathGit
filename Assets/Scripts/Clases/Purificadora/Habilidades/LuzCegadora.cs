@@ -129,7 +129,78 @@ public class LuzCegadora : Habilidad
         }
 
 
+        if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+        {
+          if (NIVEL < 2)
+          {
+            txtDescripcion = "<color=#5dade2><b>Blinding Light I</b></color>\n\n";
+            txtDescripcion += "<i>The Purifier emits a divine light in an area that blinds enemies and damages impure beings.</i>\n\n";
+            txtDescripcion += $"<color=#c8c8c8>Blind: -3 Attack, -2 Defense, - Reflexes; <color=#ea0606>Reflex Saving Throw: DC:9 + Power </color> - Damage: Divine 2d6 to Undead and Ethereal- </color>\n";
+            txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
 
+            if (EsEscenaCampaña())
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+              {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                {
+                  txtDescripcion += $"<color=#dfea02>-Next Level: +1 DC</color>\n\n";
+                }
+              }
+            }
+          }
+          if (NIVEL == 2)
+          {
+            txtDescripcion = "<color=#5dade2><b>Blinding Light II</b></color>\n\n";
+            txtDescripcion += "<i>The Purifier emits a divine light in an area that blinds enemies and damages impure beings.</i>\n\n";
+            txtDescripcion += $"<color=#c8c8c8>Blind: -3 Attack, -2 Defense, - Reflexes; <color=#ea0606>Reflex Saving Throw: DC:10 + Power </color> - Damage: Divine 2d6 to Undead and Ethereal- </color>\n";
+            txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
+
+            if (EsEscenaCampaña())
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+              {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                {
+                  txtDescripcion += $"<color=#dfea02>-Next Level: +1d6 damage</color>\n\n";
+                }
+              }
+            }
+          }
+          if (NIVEL == 3)
+          {
+            txtDescripcion = "<color=#5dade2><b>Blinding Light III</b></color>\n\n";
+            txtDescripcion += "<i>The Purifier emits a divine light in an area that blinds enemies and damages impure beings.</i>\n\n";
+            txtDescripcion += $"<color=#c8c8c8>Blind: -3 Attack, -2 Defense, - Reflexes; <color=#ea0606>Reflex Saving Throw: DC:10 + Power </color> - Damage: Divine 3d6 to Undead and Ethereal- </color>\n";
+            txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
+
+            if (EsEscenaCampaña())
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+              {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                {
+                  txtDescripcion += $"<color=#dfea02>-Option A: -1 Valor cost</color>\n";
+                  txtDescripcion += $"<color=#dfea02>-Option B: Deals 1/3 damage to all other enemies. </color>\n";
+                }
+              }
+            }
+          }
+          if (NIVEL == 4)
+          {
+            txtDescripcion = "<color=#5dade2><b>Blinding Light IV a</b></color>\n\n";
+            txtDescripcion += "<i>The Purifier emits a divine light in an area that blinds enemies and damages impure beings.</i>\n\n";
+            txtDescripcion += $"<color=#c8c8c8>Blind: -3 Attack, -2 Defense, - Reflexes; <color=#ea0606>Reflex Saving Throw: DC:10 + Power </color> - Damage: Divine 3d6 to Undead and Ethereal- </color>\n";
+            txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM-1} </color>\n\n";
+          }
+          if (NIVEL == 5)
+          {
+            txtDescripcion = "<color=#5dade2><b>Blinding Light IV b</b></color>\n\n";
+            txtDescripcion += "<i>The Purifier emits a divine light in an area that blinds enemies and damages impure beings.</i>\n\n";
+            txtDescripcion += $"<color=#c8c8c8>Blind: -3 Attack, -2 Defense, - Reflexes; <color=#ea0606>Reflex Saving Throw: DC:10 + Power </color> - Damage: Divine 3d6 to Undead and Ethereal- 1d6 to Others </color>\n";
+            txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
+          }
+        }
     }
 
     Casilla Origen;

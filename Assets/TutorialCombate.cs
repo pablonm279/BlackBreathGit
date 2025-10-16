@@ -98,13 +98,23 @@ public class TutorialCombate : MonoBehaviour
     }
 
     private void MostrarPaso(int index)
-    { 
+    {
         if (pasosCombate == null || pasosCombate.Length == 0) return;
         if (index < 0 || index >= pasosCombate.Length) return;
         for (int i = 0; i < pasosCombate.Length; i++)
         {
-            if (pasosCombate[i] == null) {  continue; }
-            pasosCombate[i].SetActive(i == index); 
+            if (pasosCombate[i] == null) { continue; }
+            pasosCombate[i].SetActive(i == index);
+        }
+
+          GameObject tutoActual = pasosCombate[index];
+         if (TRADU.i.nIdioma == 1) //Esp
+        {  
+            tutoActual.transform.GetChild(0).gameObject.SetActive(true);
+        }
+        else if (TRADU.i.nIdioma == 2) //Ing
+        {
+            tutoActual.transform.GetChild(1).gameObject.SetActive(true);
         }
     }
 

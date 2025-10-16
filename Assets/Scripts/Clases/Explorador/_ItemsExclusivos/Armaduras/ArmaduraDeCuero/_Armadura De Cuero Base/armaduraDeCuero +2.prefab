@@ -46,11 +46,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: 49be163aaafef3f4289051ce7b2680cf, type: 3}
-  sNombreItem: Armadura de Cuero +2
+  sNombreItem: Armadura de Cuero
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 220
-  itemDescrpicion: "<i>Una Armadura de Cuero que brinda cierta protecci\xF3n al Explorador
-    mientras le permite moverse con libertad.</i>\n\n+5 Armadura\n+1 Defensa\n"
+  itemDescripcion: 
   iRareza: 2
   nivelMejora: 2
   requisitoFue: 0

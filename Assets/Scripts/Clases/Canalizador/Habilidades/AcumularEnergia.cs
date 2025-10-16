@@ -37,19 +37,36 @@ public class AcumularEnergia : Habilidad
 
     public override void ActualizarDescripcion()
     {
-      
-       txtDescripcion = "<color=#5dade2><b>Acumular Energía</b></color>\n\n";
-       txtDescripcion += "<i>El Canalizador concentra su fuerza interior para potenciar sus poderes. " +
-                  "Cada vez que completa la concentración sin interrupciones, gana un nivel de Energía al inicio de su siguiente turno.</i>\n\n";
-       txtDescripcion += "<color=#c8c8c8><b>Niveles de Energía:</b>\n" +
-                  "• <b>I</b>: +10% Daño, +1 Dado crítico, -1 Res. Arcano\n" +
-                  "• <b>II</b>: +15% Daño, +1 AP, -5 Res. Arcano\n" +
-                  "• <b>III</b>: +15% Daño, +1 AP, +1 Dado crítico, -8 Res. Arcano</color>\n\n";
-       txtDescripcion += "<color=#c8c8c8><b>Costo:</b> 3 AP • Termina turno</color>\n\n";
-       txtDescripcion += "<color=#c8c8c8><b>Mecánica:</b> Al activar “Acumular Energía”, el Canalizador recibe el Buff “<b>Acumulando Energía</b>”. " +
-                  "Si recibe daño mientras mantiene este Buff, debe superar una Tirada de Salvación Mental o lo pierde. " +
-                  "Si inicia su siguiente turno con el Buff activo, sube un Nivel de Energía.</color>\n";  
-      
+      if (TRADU.i.nIdioma == 1)
+      {
+        // Español
+        txtDescripcion = "<color=#5dade2><b>Acumular Energía</b></color>\n\n";
+        txtDescripcion += "<i>El Canalizador concentra su fuerza interior para potenciar sus poderes. " +
+               "Cada vez que completa la concentración sin interrupciones, gana un nivel de Energía al inicio de su siguiente turno.</i>\n\n";
+        txtDescripcion += "<color=#c8c8c8><b>Niveles de Energía:</b>\n" +
+               "• <b>I</b>: +10% Daño, +1 Dado crítico, -1 Res. Arcano\n" +
+               "• <b>II</b>: +15% Daño, +1 AP, -5 Res. Arcano\n" +
+               "• <b>III</b>: +15% Daño, +1 AP, +1 Dado crítico, -8 Res. Arcano</color>\n\n";
+        txtDescripcion += "<color=#c8c8c8><b>Costo:</b> 3 AP • Termina turno</color>\n\n";
+        txtDescripcion += "<color=#c8c8c8><b>Mecánica:</b> Al activar “Acumular Energía”, el Canalizador recibe el Buff “<b>Acumulando Energía</b>”. " +
+               "Si recibe daño mientras mantiene este Buff, debe superar una Tirada de Salvación Mental o lo pierde. " +
+               "Si inicia su siguiente turno con el Buff activo, sube un Nivel de Energía.</color>\n";
+      }
+      if (TRADU.i.nIdioma == 2)
+      {
+        // English
+        txtDescripcion = "<color=#5dade2><b>Gather Energy</b></color>\n\n";
+        txtDescripcion += "<i>The Channeler focuses his inner strength to enhance his powers. " +
+               "Each time he completes the concentration without interruptions, he gains an Energy level at the start of his next turn.</i>\n\n";
+        txtDescripcion += "<color=#c8c8c8><b>Energy Levels:</b>\n" +
+               "• <b>I</b>: +10% Damage, +1 Critical Die, -1 Arcane Resistance\n" +
+               "• <b>II</b>: +15% Damage, +1 AP, -5 Arcane Resistance\n" +
+               "• <b>III</b>: +15% Damage, +1 AP, +1 Critical Die, -8 Arcane Resistance</color>\n\n";
+        txtDescripcion += "<color=#c8c8c8><b>Cost:</b> 3 AP • Ends turn</color>\n\n";
+        txtDescripcion += "<color=#c8c8c8><b>Mechanic:</b> When activating “Gather Energy”, the Channeler receives the Buff “<b>Gathering</b>”. " +
+               "If they take damage while holding this Buff, they must pass a Mental Saving Throw or lose it. " +
+               "If they start his next turn with the Buff active, they gain an Energy Level.</color>\n";
+      }
     }
 
    

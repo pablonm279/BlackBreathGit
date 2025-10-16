@@ -63,80 +63,153 @@ public class Rafaga : Habilidad
        
     }
 
-   
-     public override void ActualizarDescripcion()
+
+  public override void ActualizarDescripcion()
+  {
+    if (NIVEL < 2)
     {
-      if(NIVEL<2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Ráfaga I</b></color>\n\n"; 
-        txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque}</color> - Daño: Perforante 1d10- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax} \n- Costo AP: 1 por tiro Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-          }
-          }
-        }
-   
-      }
-      if(NIVEL== 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Ráfaga II</b></color>\n\n"; 
-        txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque+1}</color> - Daño: Perforante 1d10- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax} \n- Costo AP: 1 por tiro \n- Costo Val: {costoPM} </color>\n\n";
-
-    
-       if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 Cooldown</color>\n\n";
-          }
-          }
-        }
-      }
-      if(NIVEL== 3)
-      {
-        txtDescripcion = "<color=#5dade2><b>Ráfaga III</b></color>\n\n"; 
-        txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque+1}</color> - Daño: Perforante 1d10- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax-1} \n- Costo AP: 1 por tiro \n- Costo Val: {costoPM} </color>\n\n";
+      txtDescripcion = "<color=#5dade2><b>Ráfaga I</b></color>\n\n";
+      txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque}</color> - Daño: Perforante 1d10- </color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax} \n- Costo AP: 1 por tiro Esforzable \n- Costo Val: {costoPM} </color>\n\n";
 
       if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
           {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: -1 costo Valentía</color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: +2 Ataque</color>\n";
-          }
+            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
           }
         }
-
       }
-      if(NIVEL== 4)
+
+    }
+    if (NIVEL == 2)
+    {
+      txtDescripcion = "<color=#5dade2><b>Ráfaga II</b></color>\n\n";
+      txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque + 1}</color> - Daño: Perforante 1d10- </color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax} \n- Costo AP: 1 por tiro \n- Costo Val: {costoPM} </color>\n\n";
+
+
+      if (EsEscenaCampaña())
       {
-        txtDescripcion = "<color=#5dade2><b>Ráfaga IV a</b></color>\n\n"; 
-        txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque+1}</color> - Daño: Perforante 1d10- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax-1} \n- Costo AP: 1 por tiro \n- Costo Val: {costoPM-1} </color>\n\n";
-     }
-      if(NIVEL== 5)
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 Cooldown</color>\n\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 3)
+    {
+      txtDescripcion = "<color=#5dade2><b>Ráfaga III</b></color>\n\n";
+      txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque + 1}</color> - Daño: Perforante 1d10- </color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax - 1} \n- Costo AP: 1 por tiro \n- Costo Val: {costoPM} </color>\n\n";
+
+      if (EsEscenaCampaña())
       {
-        txtDescripcion = "<color=#5dade2><b>Ráfaga IV b</b></color>\n\n"; 
-        txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque+3}</color> - Daño: Perforante 1d10- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax-1} \n- Costo AP: 1 por tiro \n- Costo Val: {costoPM} </color>\n\n";
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Opción A: -1 costo Valentía</color>\n";
+            txtDescripcion += $"<color=#dfea02>-Opción B: +2 Ataque</color>\n";
+          }
+        }
+      }
+
+    }
+    if (NIVEL == 4)
+    {
+      txtDescripcion = "<color=#5dade2><b>Ráfaga IV a</b></color>\n\n";
+      txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque + 1}</color> - Daño: Perforante 1d10- </color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax - 1} \n- Costo AP: 1 por tiro \n- Costo Val: {costoPM - 1} </color>\n\n";
+    }
+    if (NIVEL == 5)
+    {
+      txtDescripcion = "<color=#5dade2><b>Ráfaga IV b</b></color>\n\n";
+      txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque + 3}</color> - Daño: Perforante 1d10- </color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax - 1} \n- Costo AP: 1 por tiro \n- Costo Val: {costoPM} </color>\n\n";
+    }
+      
+      if (TRADU.i.nIdioma == 2) // English translation
+      {
+        if (NIVEL < 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Burst I</b></color>\n\n";
+          txtDescripcion += "<i>The Explorer repeatedly attacks the enemy with their bow, and if the enemy dies, seeks another random enemy.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>Attacks until out of AP or arrows.</b> -Attack: <color=#ea0606>Agility {bonusAtaque}</color> - Damage: Piercing 1d10- </color>\n";
+          txtDescripcion += $"<color=#44d3ec>-Arrows: 1 per shot \n-Cooldown: {cooldownMax} \n- AP Cost: 1 per shot Effortable \n- Valor Cost: {costoPM} </color>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Burst II</b></color>\n\n";
+          txtDescripcion += "<i>The Explorer repeatedly attacks the enemy with their bow, and if the enemy dies, seeks another random enemy.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>Attacks until out of AP or arrows.</b> -Attack: <color=#ea0606>Agility {bonusAtaque + 1}</color> - Damage: Piercing 1d10- </color>\n";
+          txtDescripcion += $"<color=#44d3ec>-Arrows: 1 per shot \n-Cooldown: {cooldownMax} \n- AP Cost: 1 per shot \n- Valor Cost: {costoPM} </color>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: -1 Cooldown</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Burst III</b></color>\n\n";
+          txtDescripcion += "<i>The Explorer repeatedly attacks the enemy with their bow, and if the enemy dies, seeks another random enemy.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>Attacks until out of AP or arrows.</b> -Attack: <color=#ea0606>Agility {bonusAtaque + 1}</color> - Damage: Piercing 1d10- </color>\n";
+          txtDescripcion += $"<color=#44d3ec>-Arrows: 1 per shot \n-Cooldown: {cooldownMax - 1} \n- AP Cost: 1 per shot \n- Valor Cost: {costoPM} </color>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Option A: -1 Valor cost</color>\n";
+                txtDescripcion += $"<color=#dfea02>-Option B: +2 Attack</color>\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Burst IV a</b></color>\n\n";
+          txtDescripcion += "<i>The Explorer repeatedly attacks the enemy with their bow, and if the enemy dies, seeks another random enemy.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>Attacks until out of AP or arrows.</b> -Attack: <color=#ea0606>Agility {bonusAtaque + 1}</color> - Damage: Piercing 1d10- </color>\n";
+          txtDescripcion += $"<color=#44d3ec>-Arrows: 1 per shot \n-Cooldown: {cooldownMax - 1} \n- AP Cost: 1 per shot \n- Valor Cost: {costoPM - 1} </color>\n\n";
+        }
+        if (NIVEL == 5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Burst IV b</b></color>\n\n";
+          txtDescripcion += "<i>The Explorer repeatedly attacks the enemy with their bow, and if the enemy dies, seeks another random enemy.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>Attacks until out of AP or arrows.</b> -Attack: <color=#ea0606>Agility {bonusAtaque + 3}</color> - Damage: Piercing 1d10- </color>\n";
+          txtDescripcion += $"<color=#44d3ec>-Arrows: 1 per shot \n-Cooldown: {cooldownMax - 1} \n- AP Cost: 1 per shot \n- Valor Cost: {costoPM} </color>\n\n";
+        }
       }
 
 

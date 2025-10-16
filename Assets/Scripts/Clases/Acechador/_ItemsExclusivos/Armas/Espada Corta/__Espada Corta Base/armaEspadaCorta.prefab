@@ -49,12 +49,7 @@ MonoBehaviour:
   sNombreItem: Espada Corta
   IDClasesQuePuedenUsarEsteItem: 04000000
   iPrecio: 45
-  itemDescrpicion: '<i>El acechador utiliza una filosa espada corta para combatir
-    cuerpo a cuerpo y asestar golpes mortales. </i>
-
-
-    <b>Otorga: Ataque Espada
-    Corta</b>'
+  itemDescripcion: 
   iRareza: 0
   nivelMejora: 0
   habilidadAtaque: {fileID: 670376592415151795}

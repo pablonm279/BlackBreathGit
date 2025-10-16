@@ -16,44 +16,51 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
     [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
      ClaseAcechador claseAcechador;
-      public override void  Awake()
-    {
-
-      
-      nombre = "Corte de Espada Corta Consumevida";
-      costoAP = 3;
-      costoPM = 0;
-      Usuario = this.gameObject;
-      scEstaUnidad = Usuario.GetComponent<Unidad>();
-      claseAcechador = scEstaUnidad as ClaseAcechador;
-
-      esZonal = false;
-      enArea = 0;
-      esforzable = 1;
-      esCargable = false;
-      esMelee = true;
-      esHostil = true;
-      cooldownMax = 0;
-      bAfectaObstaculos = true;
-
-      bonusAtaque = 1;
-      XdDanio = 1;
-      daniodX = 6; //1d6
-      tipoDanio = 2; //Cortante
+  public override void Awake()
+  {
 
 
+    nombre = "Corte de Espada Corta Consumevida";
+    costoAP = 3;
+    costoPM = 0;
+    Usuario = this.gameObject;
+    scEstaUnidad = Usuario.GetComponent<Unidad>();
+    claseAcechador = scEstaUnidad as ClaseAcechador;
+
+    esZonal = false;
+    enArea = 0;
+    esforzable = 1;
+    esCargable = false;
+    esMelee = true;
+    esHostil = true;
+    cooldownMax = 0;
+    bAfectaObstaculos = true;
+
+    bonusAtaque = 1;
+    XdDanio = 1;
+    daniodX = 6; //1d6
+    tipoDanio = 2; //Cortante
 
 
 
 
 
-      imHab = Resources.Load<Sprite>("imHab/Acechador_EspadaCorta");
 
-      txtDescripcion = "<color=#5dade2><b>Corte de Espada corta Consumevida</b></color>\n\n"; 
-      txtDescripcion += "<i>Con su mano hábil, el Acechador asesta un golpe con la espada corta.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza + {bonusAtaque}</color> - Daño: Cortante 1d6+2-</color>\nAl impactar a un enemigo se gana +10% Daño por 2 turnos.\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+
+    imHab = Resources.Load<Sprite>("imHab/Acechador_EspadaCorta");
+
+    txtDescripcion = "<color=#5dade2><b>Corte de Espada corta Consumevida</b></color>\n\n";
+    txtDescripcion += "<i>Con su mano hábil, el Acechador asesta un golpe con la espada corta.</i>\n\n";
+    txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza + {bonusAtaque}</color> - Daño: Cortante 1d6+2-</color>\nAl impactar a un enemigo se gana +10% Daño por 2 turnos.\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
        
+    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+    {
+      txtDescripcion = "<color=#5dade2><b>Life-consuming Short Sword Slash</b></color>\n\n";
+      txtDescripcion += "<i>With skilled hand, the Stalker delivers a strike with the short sword.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength + {bonusAtaque}</color> - Damage: Slashing 1d6+2-</color>\nOn hit, gain +10% Damage for 2 turns.\n";
+      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+     }
     }
     
    void Start()

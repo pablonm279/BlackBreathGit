@@ -46,11 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: 820d2af56ff0d2e49a5819c821c488e4, type: 3}
-  sNombreItem: Coraza de Fuerza de Gigante +2
+  sNombreItem: Coraza de Fuerza de Gigante
+  IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 610
-  itemDescrpicion: "<i>Esta coraza otorga +2 de Fuerza a qui\xE9n la vista.</i>\n<b>\\n\\nArmadura:
-    8 \\n-2 Resistencia Rayo \\n +1 Defensa\n\n\nOtorga: Armadura Limitante \n</b>"
+  itemDescripcion: 
   iRareza: 2
   nivelMejora: 2
   requisitoFue: 3
@@ -70,7 +70,7 @@ MonoBehaviour:
   buffTSReflejo: 0
   buffTSFortaleza: 0
   buffTSMental: 0
-  buffResFuego: 2
+  buffResFuego: 0
   buffResRayo: -2
   buffResHielo: 0
   buffResArcano: 0

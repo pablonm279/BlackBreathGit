@@ -65,19 +65,19 @@ public class MenuNodoPersonaje : MonoBehaviour
         switch (ID)
         {
             case 1:
-                txt.text = "Caballero";
+                txt.text = TRADU.i.Traducir("Caballero");
                 break;
             case 2:
-                txt.text = "Explorador";
+                txt.text = TRADU.i.Traducir("Explorador");
                 break;
             case 3:
-                txt.text = "Purificadora";
+                txt.text = TRADU.i.Traducir("Purificadora");
                 break;
             case 4:
-                txt.text = "Acechador";
+                txt.text = TRADU.i.Traducir("Acechador");
                 break;
             case 5:
-                txt.text = "Canalizador";
+                txt.text = TRADU.i.Traducir("Canalizador");
                 break;
 
         }

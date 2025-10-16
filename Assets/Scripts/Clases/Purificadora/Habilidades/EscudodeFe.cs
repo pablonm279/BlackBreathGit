@@ -113,7 +113,75 @@ public class EscudodeFe : Habilidad
         txtDescripcion += "<i>'Escudo de Fe:' Dura 3 T. Otorga a la unidad presente en la casilla +3 Barrera y 1 TS por cada Fervor de la Purificadora y +1 Defensa y cura 2d6. </i>\n";
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM-1} \n</color>\n\n";
      }
-
+    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+    {
+      if (NIVEL < 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Shield of Faith I</b></color>\n\n";
+        txtDescripcion += "<i>Creates a 'Shield of Faith' that lasts 3 turns on the target tile and adjacent tiles.</i>\n";
+        txtDescripcion += "<i>'Shield of Faith:' Lasts 3 T. Grants the unit on the tile +3 Barrier and 1 ST for each Purifier's Fervor.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: -1 Val Cost.</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Shield of Faith II</b></color>\n\n";
+        txtDescripcion += "<i>Creates a 'Shield of Faith' that lasts 3 turns on the target tile and adjacent tiles.</i>\n";
+        txtDescripcion += "<i>'Shield of Faith:' Lasts 3 T. Grants the unit on the tile +3 Barrier and 1 ST for each Purifier's Fervor.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM - 1} \n</color>\n\n";
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: Buff: +1 Defense</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Shield of Faith III</b></color>\n\n";
+        txtDescripcion += "<i>Creates a 'Shield of Faith' that lasts 3 turns on the target tile and adjacent tiles.</i>\n";
+        txtDescripcion += "<i>'Shield of Faith:' Lasts 3 T. Grants the unit on the tile +3 Barrier and 1 ST for each Purifier's Fervor and +1 Defense.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM - 1} \n</color>\n\n";
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Option A: +1 Turn Duration. </color>\n";
+              txtDescripcion += $"<color=#dfea02>-Option B: Heals 2d6 each turn.</color>\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Shield of Faith IVa</b></color>\n\n";
+        txtDescripcion += "<i>Creates a 'Shield of Faith' that lasts 3 turns on the target tile and adjacent tiles.</i>\n";
+        txtDescripcion += "<i>'Shield of Faith:' Lasts 4 T. Grants the unit on the tile +3 Barrier and 1 ST for each Purifier's Fervor and +1 Defense.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM - 1} \n</color>\n\n";
+      }
+      if (NIVEL == 5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Shield of Faith IVb</b></color>\n\n";
+        txtDescripcion += "<i>Creates a 'Shield of Faith' that lasts 3 turns on the target tile and adjacent tiles.</i>\n";
+        txtDescripcion += "<i>'Shield of Faith:' Lasts 3 T. Grants the unit on the tile +3 Barrier and 1 ST for each Purifier's Fervor, +1 Defense, and heals 2d6.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM - 1} \n</color>\n\n";
+      }
+    }
 
 
     }

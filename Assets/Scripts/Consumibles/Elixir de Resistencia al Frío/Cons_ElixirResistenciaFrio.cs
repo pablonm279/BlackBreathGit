@@ -8,9 +8,10 @@ using UnityEngine;
 public class Cons_ElixirResistenciaFrio : Consumible
 {
 
-    void Awake()
-    {
-      sNombreItem = "Elixir de Resistencia al Frío";
+  void Awake()
+  {
+    sNombreItem = TRADU.i.Traducir("Elixir de Resistencia al Frío");
+    itemDescripcion = TRADU.i.Traducir("Aumenta la resistencia al frío en 5 por el combate.");
     }
 
     public override void UsarConsumible(Unidad unidad)

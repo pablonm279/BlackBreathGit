@@ -100,7 +100,7 @@ public abstract class Habilidad : MonoBehaviour
     // Log de uso de habilidad
     if (BattleManager.Instance != null && scEstaUnidad != null)
     {
-      BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} usa {nombre}.");
+      BattleManager.Instance.EscribirLog(TRADU.i.Traducir(scEstaUnidad.uNombre) + " " + TRADU.i.Traducir("usa ") + TRADU.i.Traducir(nombre) + ".");
     }
 
     List<Unidad> lUnidadesPosibles = new List<Unidad>(BattleManager.Instance.lUnidadesTotal);
@@ -238,7 +238,7 @@ public abstract class Habilidad : MonoBehaviour
       {
         if(!esMelee)
         {
-          iTiradaAtaque -= 1; sAtaqueModClima += " (-1 Lluvia)";
+          iTiradaAtaque -= 1; sAtaqueModClima += TRADU.i.Traducir(" (-1 Lluvia)");
         }
         
       }
@@ -246,7 +246,7 @@ public abstract class Habilidad : MonoBehaviour
       {
         if(!esMelee)
         {
-          iTiradaAtaque -= 2; sAtaqueModClima += " (-2 Niebla)";
+          iTiradaAtaque -= 2; sAtaqueModClima += TRADU.i.Traducir(" (-2 Niebla)");
         }
         
       }
@@ -255,8 +255,8 @@ public abstract class Habilidad : MonoBehaviour
     
       if(iTiradaAtaque <= 1 + sumaPifia)//Pifia
       { 
-        scEstaUnidad.GenerarTextoFlotante("<b>Pifia</b>", Color.red);
-        BattleManager.Instance.EscribirLog($"-Tirada de Ataque: 1d20 = {sAtaqueModClima}. Resultado: Pifia.");
+        scEstaUnidad.GenerarTextoFlotante( TRADU.i.Traducir("<b>Pifia</b>"), Color.red);
+        BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ")+sAtaqueModClima+TRADU.i.Traducir(". Resultado: Pifia."));
         return -1;
       }
 
@@ -267,20 +267,20 @@ public abstract class Habilidad : MonoBehaviour
 
       if(iResultadoAtaque == defensaObjetivo)
       {   
-          BattleManager.Instance.EscribirLog($"-Tirada de Ataque: 1d20 = {sAtaqueModClima} +{efectosAlAtaque} vs Defensa: {defensaObjetivo}. Resultado: Roce.");
+        BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ")+sAtaqueModClima+TRADU.i.Traducir(". Resultado: Fallo."));
           return 1; //Roce
       }
       if(iResultadoAtaque > defensaObjetivo)
       {
-          BattleManager.Instance.EscribirLog($"-Tirada de Ataque: 1d20 = {sAtaqueModClima} +{efectosAlAtaque} vs Defensa: {defensaObjetivo}. Resultado: Golpe.");
+        BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ")+sAtaqueModClima+TRADU.i.Traducir(". Resultado: Roce."));
 
           return 2; //Golpe
       }
      
       if(resultado == 0)
       {  
-         BattleManager.Instance.EscribirLog($"-Tirada de Ataque: 1d20 = {sAtaqueModClima} +{efectosAlAtaque} vs Defensa: {defensaObjetivo}. Resultado: Fallo.");
-         unidadAtacada.GenerarTextoFlotante("Fallo", new Color(0.8f, 0.8f, 0.8f));
+        BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ")+sAtaqueModClima+TRADU.i.Traducir(". Resultado: Golpe."));
+         unidadAtacada.GenerarTextoFlotante(TRADU.i.Traducir("Fallo"), new Color(0.8f, 0.8f, 0.8f));
       }
         
 

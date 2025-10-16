@@ -52,26 +52,25 @@ public class CorteHorizontal : Habilidad
 
     public override void ActualizarDescripcion()
     {
+      if (TRADU.i.nIdioma == 1) // Español
+      {
       if(NIVEL<2)
       {
         txtDescripcion = "<color=#5dade2><b>Corte Horizontal I</b></color>\n\n"; 
         txtDescripcion += "<i>Con el mandoble, el Caballero efectúa un ataque horizontal que afecta a varios enemigos delante de él.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>MELEE - 3 de Ancho</b> -Ataque: <color=#ea0606>Fuerza {bonusAtaque}</color> - Daño: Cortante 2d6- </color>\n";
         txtDescripcion += $"Enemigos: TS Fortaleza vs 2. Aplica 3 Sangrado.\n\n";
-
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
         if (EsEscenaCampaña())
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
+        if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+        {
           if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
           {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +2 Daño</color>\n\n";
-          }
+          txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +2 Daño</color>\n\n";
           }
         }
-   
+        }
       }
       if(NIVEL== 2)
       {
@@ -80,15 +79,15 @@ public class CorteHorizontal : Habilidad
         txtDescripcion += $"<color=#c8c8c8><b>MELEE - 3 de Ancho</b> -Ataque: <color=#ea0606>Fuerza {bonusAtaque}</color> - Daño: Cortante 2d6+2- </color>\n\n";
         txtDescripcion += $"Enemigos: TS Fortaleza vs 2. Aplica 3 Sangrado.\n\n";
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-         if (EsEscenaCampaña())
+        if (EsEscenaCampaña())
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
+        if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+        {
           if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
           {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
+          txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
           }
-          }
+        }
         }
       }
       if(NIVEL== 3)
@@ -100,16 +99,15 @@ public class CorteHorizontal : Habilidad
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
         if (EsEscenaCampaña())
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
+        if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+        {
           if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
           {
-             txtDescripcion += $"<color=#dfea02>-Opción A: -1 costo Valentía</color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: +1 TS Fortaleza +1 Sangrado Aplicado</color>\n";
-          }
+          txtDescripcion += $"<color=#dfea02>-Opción A: -1 costo Valentía</color>\n";
+          txtDescripcion += $"<color=#dfea02>-Opción B: +1 TS Fortaleza +1 Sangrado Aplicado</color>\n";
           }
         }
-
+        }
       }
       if(NIVEL== 4)
       {
@@ -127,9 +125,81 @@ public class CorteHorizontal : Habilidad
         txtDescripcion += $"Enemigos: TS Fortaleza vs 3. Aplica 4 Sangrado.\n\n";
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>";
       }
-
-
-
+      }
+      if (TRADU.i.nIdioma == 2) // Inglés
+      {
+      if(NIVEL<2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Horizontal Slash I</b></color>\n\n"; 
+        txtDescripcion += "<i>With the greatsword, the Knight performs a horizontal attack that affects several enemies in front of him.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE - 3 Wide</b> -Attack: <color=#ea0606>Strength {bonusAtaque}</color> - Damage: Slashing 2d6- </color>\n";
+        txtDescripcion += $"Enemies: Fortitude Save vs 2. Applies 3 Bleed.\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
+        if (EsEscenaCampaña())
+        {
+        if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+        {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+          txtDescripcion += $"<color=#dfea02>-Next Level: +2 Damage</color>\n\n";
+          }
+        }
+        }
+      }
+      if(NIVEL== 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Horizontal Slash II</b></color>\n\n"; 
+        txtDescripcion += "<i>With the greatsword, the Knight performs a horizontal attack that affects several enemies in front of him.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE - 3 Wide</b> -Attack: <color=#ea0606>Strength {bonusAtaque}</color> - Damage: Slashing 2d6+2- </color>\n\n";
+        txtDescripcion += $"Enemies: Fortitude Save vs 2. Applies 3 Bleed.\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
+        if (EsEscenaCampaña())
+        {
+        if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+        {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+          txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack</color>\n\n";
+          }
+        }
+        }
+      }
+      if(NIVEL== 3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Horizontal Slash III</b></color>\n\n"; 
+        txtDescripcion += "<i>With the greatsword, the Knight performs a horizontal attack that affects several enemies in front of him.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE - 3 Wide</b> -Attack: <color=#ea0606>Strength {bonusAtaque}</color> - Damage: Slashing 2d6+2- </color>\n\n";
+        txtDescripcion += $"Enemies: Fortitude Save vs 2. Applies 3 Bleed.\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
+        if (EsEscenaCampaña())
+        {
+        if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+        {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+          txtDescripcion += $"<color=#dfea02>-Option A: -1 Valor cost</color>\n";
+          txtDescripcion += $"<color=#dfea02>-Option B: +1 Fortitude Save +1 Bleed Applied</color>\n";
+          }
+        }
+        }
+      }
+      if(NIVEL== 4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Horizontal Slash IV a</b></color>\n\n"; 
+        txtDescripcion += "<i>With the greatsword, the Knight performs a horizontal attack that affects several enemies in front of him.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE - 3 Wide</b> -Attack: <color=#ea0606>Strength {bonusAtaque}</color> - Damage: Slashing 2d6+2- </color>\n\n";
+        txtDescripcion += $"Enemies: Fortitude Save vs 2. Applies 3 Bleed.\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>";
+      }
+      if(NIVEL== 5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Horizontal Slash IV b</b></color>\n\n"; 
+        txtDescripcion += "<i>With the greatsword, the Knight performs a horizontal attack that affects several enemies in front of him.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE - 3 Wide</b> -Attack: <color=#ea0606>Strength {bonusAtaque}</color> - Damage: Slashing 2d6+2- </color>\n\n";
+        txtDescripcion += $"Enemies: Fortitude Save vs 3. Applies 4 Bleed.\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>";
+      }
+      }
     }
 
     Casilla Origen;

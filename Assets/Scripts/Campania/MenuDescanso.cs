@@ -84,9 +84,9 @@ public class MenuDescanso : MonoBehaviour
        }
 
 
-        tareaCivilDescripcion.text ="<b><u>Recolección de Suministros</b></u>\n\n\n";
-        tareaCivilDescripcion.text +="Los civiles se dedicarán a recolectar distintos suministros de las inmediaciones al campamento.\n\n";
-        tareaCivilDescripcion.text +=$"<color=#d8a205>Se juntarán entre {(int)valor} y {(int)valor+20} suministros. </color>\n\n\n";
+        tareaCivilDescripcion.text =TRADU.i.Traducir("<b><u>Recolección de Suministros</b></u>\n\n\n");
+        tareaCivilDescripcion.text +=TRADU.i.Traducir("Los civiles se dedicarán a recolectar distintos suministros de las inmediaciones al campamento.\n\n");
+        tareaCivilDescripcion.text +=TRADU.i.Traducir($"<color=#d8a205>Se juntarán entre ") + (int)valor + TRADU.i.Traducir(" y ") + (int)valor + 10 + TRADU.i.Traducir(" suministros. </color>\n\n\n");
 
         chancesAtaqueACaravana = 25 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
         chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -117,9 +117,9 @@ public class MenuDescanso : MonoBehaviour
         }
 
 
-        tareaCivilDescripcion.text ="<b><u>Recolección de Materiales</b></u>\n\n\n";
-        tareaCivilDescripcion.text +="Los civiles se dedicarán a recolectar materiales básicos en la zona.\n\n";
-        tareaCivilDescripcion.text +=$"<color=#d8a205>Se juntarán entre {(int)valor} y {(int)valor+10} materiales. </color>\n\n\n";
+        tareaCivilDescripcion.text =TRADU.i.Traducir("<b><u>Recolección de Materiales</b></u>\n\n\n");
+        tareaCivilDescripcion.text +=TRADU.i.Traducir("Los civiles se dedicarán a recolectar materiales básicos en la zona.\n\n");
+        tareaCivilDescripcion.text +=TRADU.i.Traducir("<color=#d8a205>Se juntarán entre ") + (int)valor + TRADU.i.Traducir(" y ") + (int)valor + 10 + TRADU.i.Traducir(" materiales. </color>\n\n\n");
 
         chancesAtaqueACaravana = 25 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
         chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -138,9 +138,9 @@ public class MenuDescanso : MonoBehaviour
 
         tareaCivilSeleccionada = n;
 
-        tareaCivilDescripcion.text ="<b><u>Feria</b></u>\n\n\n";
-        tareaCivilDescripcion.text +="Los civiles dedicarán el día a organizar una feria con varios juegos y celebraciones.\n\n";
-        tareaCivilDescripcion.text +=$"<color=#d8a205>Se conseguirá entre 15 y 25 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n";
+        tareaCivilDescripcion.text =TRADU.i.Traducir("<b><u>Feria</b></u>\n\n\n");
+        tareaCivilDescripcion.text +=TRADU.i.Traducir("Los civiles dedicarán el día a organizar una feria con varios juegos y celebraciones.\n\n");
+        tareaCivilDescripcion.text +=TRADU.i.Traducir("<color=#d8a205>Se conseguirá entre 15 y 25 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n");
 
         chancesAtaqueACaravana = 30 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
         chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -157,9 +157,9 @@ public class MenuDescanso : MonoBehaviour
 
         tareaCivilSeleccionada = n;
 
-        tareaCivilDescripcion.text ="<b><u>Día Libre</b></u>\n\n\n";
-        tareaCivilDescripcion.text +="Los civiles se tomarán el día para descansar y recobrar fuerzas.\n\n";
-        tareaCivilDescripcion.text +=$"<color=#d8a205>Se conseguirá 10 de Esperanza y el día siguiente arrancará con -1 Fatiga.</color>\n\n\n";
+        tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Día Libre</b></u>\n\n\n");
+        tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se tomarán el día para descansar y recobrar fuerzas.\n\n");
+        tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se conseguirá 10 de Esperanza y el día siguiente arrancará con -1 Fatiga.</color>\n\n\n");
 
         chancesAtaqueACaravana = 20 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
         chancesExploracion = 50 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -177,9 +177,9 @@ public class MenuDescanso : MonoBehaviour
 
         tareaCivilSeleccionada = n;
 
-        tareaCivilDescripcion.text ="<b><u>Estado de Alerta</b></u>\n\n\n";
-        tareaCivilDescripcion.text +="Durante el descanso, se asignarán a los civiles mas aptos físicamente a la vigilancia del area circundante al campamento.\n\n";
-        tareaCivilDescripcion.text +=$"<color=#d8a205>Previene cualquier Emboscada en este descanso. +20% a Exploración. -10 Esperanza.</color>\n\n\n";
+        tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Estado de Alerta</b></u>\n\n\n");
+        tareaCivilDescripcion.text += TRADU.i.Traducir("Durante el descanso, se asignarán a los civiles mas aptos físicamente a la vigilancia del area circundante al campamento.\n\n");
+        tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Previene cualquier Emboscada en este descanso. +20% a Exploración. -10 Esperanza.</color>\n\n\n");
 
         chancesAtaqueACaravana = 0;
         chancesExploracion =  80 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -230,8 +230,8 @@ public class MenuDescanso : MonoBehaviour
     chancesAtaqueACaravana = Mathf.Clamp(chancesAtaqueACaravana, 0, 100);
     chancesExploracion = Mathf.Clamp(chancesExploracion, 0, 100);
 
-    textEmboscadaChances.text = "Las probabilidades de sufrir un ataque a la Caravana "+chancesAtaqueACaravana+"%";
-    textExploracionChances.text = "Las probabilidades de exploración: "+chancesExploracion+"%";
+    textEmboscadaChances.text = TRADU.i.Traducir("Las probabilidades de sufrir un ataque a la Caravana ") + chancesAtaqueACaravana + "%";
+    textExploracionChances.text = TRADU.i.Traducir("Las probabilidades de exploración: ")+chancesExploracion+"%";
 
  }
 
@@ -283,12 +283,12 @@ public class MenuDescanso : MonoBehaviour
       if (tareaCivilSeleccionada == 4) // y se descansa, da +5 esperanza
       {
         CampaignManager.Instance.CambiarEsperanzaActual(5);
-        CampaignManager.Instance.EscribirLog($"-El tener un Día Libre en plena Ola de Calor, ha caído bien en los Civiles. +5 Esperanza");
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-El tener un Día Libre en plena Ola de Calor, ha caído bien en los Civiles. +5 Esperanza"));
       }
       else
       {
         CampaignManager.Instance.CambiarEsperanzaActual(-3); //si se hace otra cosa, -3
-        CampaignManager.Instance.EscribirLog($"-El tener que trabajar en plena Ola de Calor, ha caído mal en los Civiles. -3 Esperanza");
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-El tener que trabajar en plena Ola de Calor, ha caído mal en los Civiles. -3 Esperanza"));
       }
 
     }
@@ -305,7 +305,7 @@ public class MenuDescanso : MonoBehaviour
       if (pers.ActividadSeleccionada == 4) //Caballero: Relatos de Batalla
       {
         CampaignManager.Instance.CambiarEsperanzaActual(4);
-        CampaignManager.Instance.EscribirLog($"-{pers.sNombre} comparte sus historias de batalla con los civiles. +4 Esperanza");
+        CampaignManager.Instance.EscribirLog($"-"+pers.sNombre+TRADU.i.Traducir(" comparte sus historias de batalla con los civiles. +4 Esperanza"));
       }
       if (pers.Camp_Enfermo > 0) //Disminuye Enfermedad
       {
@@ -317,7 +317,7 @@ public class MenuDescanso : MonoBehaviour
         if (pers.Camp_Enfermo > 0 && rand <= 20 + (int)tierCuranderos * 10)
         {
           pers.Camp_Enfermo -= 1;
-          CampaignManager.Instance.EscribirLog($"-El Séquito de Curanderos ha reducido la enfermedad de {pers.sNombre} en 1 extra.");
+          CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-El Séquito de Curanderos ha reducido la enfermedad de")+ pers.sNombre+TRADU.i.Traducir(" en 1 extra."));
 
         }
       }
@@ -348,7 +348,7 @@ public class MenuDescanso : MonoBehaviour
 
       if (pers.fVidaMaxima > pers.fVidaActual)
       {
-        CampaignManager.Instance.EscribirLog($"-{pers.sNombre} se cura {(int)porcentajeVidaMax} PV tras el Descanso.");
+        CampaignManager.Instance.EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" se cura ")+(int)porcentajeVidaMax+TRADU.i.Traducir(" PV tras el Descanso."));
       }
       pers.RecibirCuracion(porcentajeVidaMax);
 
@@ -359,20 +359,20 @@ public class MenuDescanso : MonoBehaviour
     if (CampaignManager.Instance.scMenuSequito.TieneSequito(4) && tareaCivilSeleccionada == 3) //Artistas
     {
       CampaignManager.Instance.CambiarEsperanzaActual(10);
-      CampaignManager.Instance.EscribirLog($"-En la Feria, los Artistas han realizado un espectáculo que ha levantado el ánimo de los Civiles. +10 Esperanza");
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-En la Feria, los Artistas han realizado un espectáculo que ha levantado el ánimo de los Civiles. +10 Esperanza"));
     }
     if (CampaignManager.Instance.scMenuSequito.TieneSequito(5)) //Herboristas
     {
       CampaignManager.Instance.scSequitoHerboristas.cantBalsamoFort = 2;
       CampaignManager.Instance.scSequitoHerboristas.cantBalsamoReflej = 2;
       CampaignManager.Instance.scSequitoHerboristas.cantBalsamoMental = 2;
-      CampaignManager.Instance.EscribirLog($"-Los Herboristas han preparado sus Bálsamos.");
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Herboristas han preparado sus Bálsamos."));
     }
     if (CampaignManager.Instance.scMenuSequito.TieneSequito(11)) //Esclavos
     {
       int random = UnityEngine.Random.Range(10, 16);
 
-      CampaignManager.Instance.EscribirLog($"-Los Esclavos han recolectado {random} Materiales.");
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Esclavos han recolectado ") + random + TRADU.i.Traducir(" Materiales."));
       CampaignManager.Instance.CambiarMaterialesActuales(random);
     }
 
@@ -406,7 +406,7 @@ public class MenuDescanso : MonoBehaviour
       float mueren = faltaSum / 20;
       CampaignManager.Instance.CambiarCivilesActuales(-(int)mueren);
 
-      CampaignManager.Instance.EscribirLog($"-La falta de Suministros ha provocado la muerte de {mueren} Civiles.");
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La falta de Suministros ha provocado la muerte de ")+mueren+TRADU.i.Traducir(" Civiles."));
 
 
     }
@@ -424,14 +424,14 @@ public class MenuDescanso : MonoBehaviour
     {
       int random = UnityEngine.Random.Range(1, 5);
       CampaignManager.Instance.CambiarCivilesActuales(-random);
-      CampaignManager.Instance.EscribirLog($"-Por la baja Esperanza {random} Civiles han abandonado la Caravana.");
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Por la baja Esperanza ")+random+TRADU.i.Traducir(" Civiles han abandonado la Caravana."));
 
     }
     else if (CampaignManager.Instance.GetEsperanzaActual() <= 10)
     {
       int random = UnityEngine.Random.Range(1, 11);
       CampaignManager.Instance.CambiarCivilesActuales(-random);
-      CampaignManager.Instance.EscribirLog($"-Por la muy baja Esperanza {random} Civiles han abandonado la Caravana.");
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Por la muy baja Esperanza ")+random+TRADU.i.Traducir(" Civiles han abandonado la Caravana."));
     }
 
     //Efectos Esperanza en Descanso 
@@ -440,13 +440,13 @@ public class MenuDescanso : MonoBehaviour
       float random = UnityEngine.Random.Range(1, 21) + CampaignManager.Instance.GetCivilesActual() / 3;
       CampaignManager.Instance.CambiarOroActual((int)random);
 
-      CampaignManager.Instance.EscribirLog($"-Debido al optimismo que rodea la Caravana, los Civiles han donado {random} Oro.");
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Debido al optimismo que rodea la Caravana, los Civiles han donado Oro: ")+random);
     }
     else if (CampaignManager.Instance.GetEsperanzaActual() >= 90)
     {
       float random = UnityEngine.Random.Range(1, 21) + CampaignManager.Instance.GetCivilesActual() / 2;
       CampaignManager.Instance.CambiarOroActual((int)random);
-      CampaignManager.Instance.EscribirLog($"-Debido al gran optimismo que rodea la Caravana, los Civiles han donado {random} Oro.");
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Debido al gran optimismo que rodea la Caravana, los Civiles han donado Oro: ")+random);
 
     }
 
@@ -460,12 +460,12 @@ public class MenuDescanso : MonoBehaviour
     {
       sueldoAcechadores = CampaignManager.Instance.CuantosPersonajesSonDeTalClase(4) * 20; //Acechadores
       CampaignManager.Instance.CambiarOroActual(-sueldoAcechadores);
-      CampaignManager.Instance.EscribirLog($"-Los Acechadores en la Caravana se han cobrado su sueldo por {sueldoAcechadores} de Oro.");
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Acechadores en la Caravana se han cobrado su sueldo por Oro: ")+sueldoAcechadores);
     }
     else //Si la esperanza es mayor o igual a 70, no cobran.
     {
       int cantidadacechadores = CampaignManager.Instance.CuantosPersonajesSonDeTalClase(4); //Acechadores
-      CampaignManager.Instance.EscribirLog($"-Debido a la alta Esperanza, los Acechadores han decidido no cobrar su sueldo esta vez.");
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Debido a la alta Esperanza, los Acechadores han decidido no cobrar su sueldo esta vez."));
 
     }
     #endregion
@@ -478,7 +478,7 @@ public class MenuDescanso : MonoBehaviour
       if (pers.ActividadSeleccionada == 10 && random < 25) //Purificadora: Ritual de Limpieza 
       {
         sePrevieneAvanceAliento = true;
-        CampaignManager.Instance.EscribirLog($"-{pers.sNombre} ha realizado con éxito un Ritual de Limpieza durante el descanso, previniendo el avance del Aliento Negro.");
+        CampaignManager.Instance.EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha realizado con éxito un Ritual de Limpieza durante el descanso, previniendo el avance del Aliento Negro."));
         break;
       }
     }
@@ -488,12 +488,12 @@ public class MenuDescanso : MonoBehaviour
       if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 4) //Bonus descansar en claro
       {
         CampaignManager.Instance.CambiarValorAlientoNegro(1);
-        CampaignManager.Instance.EscribirLog("-Durante el descanso en el Claro, el Aliento Negro ha avanzado 1.");
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Durante el descanso en el Claro, el Aliento Negro ha avanzado 1."));
       }
       else
       {
         CampaignManager.Instance.CambiarValorAlientoNegro(2);
-        CampaignManager.Instance.EscribirLog("-Durante el descanso, el Aliento Negro ha avanzado 2.");
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Durante el descanso, el Aliento Negro ha avanzado 2."));
 
       }
     }
@@ -513,7 +513,7 @@ public class MenuDescanso : MonoBehaviour
     int randomEmboscada = UnityEngine.Random.Range(1, 101);
     if (randomEmboscada <= chancesAtaqueACaravana) 
     {
-      CampaignManager.Instance.EscribirLog($"-La caravana han sufrido un Ataque durante el descanso. Probabilidades {chancesAtaqueACaravana}% - Tirada: 1d100 = {randomEmboscada}");
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La caravana han sufrido un Ataque durante el descanso. Probabilidades ")+chancesAtaqueACaravana+TRADU.i.Traducir("% - Tirada: 1d100 = ")+randomEmboscada);
 
       CampaignManager.Instance.scMenuBatallas.EventoBatallaCaravana(0, 3);
       // (Audio) Ignorado: la música de batalla se maneja en AdministradorEscenas
@@ -547,7 +547,7 @@ public void TiradaClima()
         CampaignManager.Instance.intTipoClima = 1;
         CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_sol;
 
-        CampaignManager.Instance.EscribirLog("-Es un día hermoso. +5 Esperanza.");
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Es un día hermoso. +5 Esperanza."));
         CampaignManager.Instance.CambiarEsperanzaActual(5);
 
     }
@@ -556,7 +556,7 @@ public void TiradaClima()
         CampaignManager.Instance.intTipoClima = 2;
         CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_calor;
 
-        CampaignManager.Instance.EscribirLog("-La Ola de Calor se hace insoportable. +1 Fatiga.");
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Ola de Calor se hace insoportable. +1 Fatiga."));
         CampaignManager.Instance.CambiarFatigaActual(+1);
     }
     else if(random < CampaignManager.Instance.scAtributosZona.Clima_chances_Lluvia)
@@ -564,14 +564,14 @@ public void TiradaClima()
         CampaignManager.Instance.intTipoClima = 3;
         CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_lluvia;
 
-        CampaignManager.Instance.EscribirLog("-La Lluvia hace el viaje más difícil. -5 Esperanza.");
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Lluvia hace el viaje más difícil. -5 Esperanza."));
         CampaignManager.Instance.CambiarEsperanzaActual(-5);
     }
     else if(random < CampaignManager.Instance.scAtributosZona.Clima_chances_Nieve)
     {
         CampaignManager.Instance.intTipoClima = 4;
         CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_nieve;
-        CampaignManager.Instance.EscribirLog("-La Nieve mejora el ánimo. +3 Esperanza.");
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Nieve mejora el ánimo. +3 Esperanza."));
         CampaignManager.Instance.CambiarEsperanzaActual(3);
     }
     else if(random < CampaignManager.Instance.scAtributosZona.Clima_chances_Niebla)

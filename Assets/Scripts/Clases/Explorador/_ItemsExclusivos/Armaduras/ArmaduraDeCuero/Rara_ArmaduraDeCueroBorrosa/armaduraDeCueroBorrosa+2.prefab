@@ -46,12 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: 49be163aaafef3f4289051ce7b2680cf, type: 3}
-  sNombreItem: Armadura de Cuero Borrosa +2
+  sNombreItem: Armadura de Cuero Borrosa
+  IDEfectoEspecial: 4
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 225
-  itemDescrpicion: "<i>Esta Armadura de Cuero enga\xF1a a los enemigos haciendo al
-    portador borroso a simple vista.\n\nEfecto: Otorga +3 Evasi\xF3n al comenzar
-    el combate.\n</i>\n\n+5 Armadura\n+1 Defensa"
+  itemDescripcion: 
   iRareza: 2
   nivelMejora: 2
   requisitoFue: 0

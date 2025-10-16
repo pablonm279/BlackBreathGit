@@ -17,12 +17,17 @@ public class REPRESENTACIONPasoCauteloso : Habilidad
 
     public bool seusoEsteTurno = false;
 
-    public override void  ActualizarDescripcion()
+  public override void ActualizarDescripcion()
+  {
+
+    txtDescripcion = "<color=#5dade2><b>Paso Cauteloso</b></color>\n\n";
+    txtDescripcion += "<i>(Pasiva) Una vez por turno, al entrar en una casilla afectadas por un efecto hostil, el Explorador logra evadirlo.</i>\n\n";
+    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
     {
-     
-        txtDescripcion = "<color=#5dade2><b>Paso Cauteloso</b></color>\n\n"; 
-        txtDescripcion += "<i>(Pasiva) Una vez por turno, al entrar en una casilla afectadas por un efecto hostil, el Explorador logra evadirlo.</i>\n\n";
+      txtDescripcion = "<color=#5dade2><b>Cautious Step</b></color>\n\n";
+      txtDescripcion += "<i>(Passive) Once per turn, when entering a tile affected by a hostile effect, the Explorer manages to evade it.</i>\n\n";
     }
+  }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}
     public override void Activar()

@@ -32,6 +32,10 @@ public class RetrasarTurno : Habilidad
 
 
       txtDescripcion = "Retrasa tu acción este turno. Pasas al final de la cola."; 
+      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+      {
+          txtDescripcion = "Delay your action this turn. You move to the end of the queue.";
+      }
 
       imHab = Resources.Load<Sprite>("imHab/Retrasar_Turno");
 

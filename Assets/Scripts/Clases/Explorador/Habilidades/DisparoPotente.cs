@@ -127,7 +127,78 @@ public class DisparoPotente : Habilidad
         txtDescripcion += $"<color=#44d3ec>-Flechas: 2 - Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
       }
 
+      if (TRADU.i.nIdioma == 2) // English translation
+      {
+        if (NIVEL < 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Powerful Shot I</b></color>\n\n";
+          txtDescripcion += "<i>Using all the strength of their bow, the Explorer fires an arrow that pierces enemies in the same row.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>Affects the entire row.</b> -Attack: <color=#ea0606>Agility {bonusAtaque}</color> - Damage: Piercing 1d10+3- </color>\n";
+          txtDescripcion += $"<color=#44d3ec>-Arrows: 2 -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
 
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: +2 Damage</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Powerful Shot II</b></color>\n\n";
+          txtDescripcion += "<i>Using all the strength of their bow, the Explorer fires an arrow that pierces enemies in the same row.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>Affects the entire row.</b> -Attack: <color=#ea0606>Agility {bonusAtaque}</color> - Damage: Piercing 1d10+5- </color>\n";
+          txtDescripcion += $"<color=#44d3ec>-Arrows: 2 -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Powerful Shot III</b></color>\n\n";
+          txtDescripcion += "<i>Using all the strength of their bow, the Explorer fires an arrow that pierces enemies in the same row.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>Affects the entire row.</b> -Attack: <color=#ea0606>Agility {bonusAtaque}</color> - Damage: Piercing 1d10+5- </color>\n";
+          txtDescripcion += $"<color=#44d3ec>-Arrows: 2 -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Option A: -1 Valor cost</color>\n";
+                txtDescripcion += $"<color=#dfea02>-Option B: +2 Attack</color>\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Powerful Shot IV a</b></color>\n\n";
+          txtDescripcion += "<i>Using all the strength of their bow, the Explorer fires an arrow that pierces enemies in the same row.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>Affects the entire row.</b> -Attack: <color=#ea0606>Agility {bonusAtaque}</color> - Damage: Piercing 1d10+5- </color>\n";
+          txtDescripcion += $"<color=#44d3ec>-Arrows: 2 -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
+        }
+        if (NIVEL == 5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Powerful Shot IV b</b></color>\n\n";
+          txtDescripcion += "<i>Using all the strength of their bow, the Explorer fires an arrow that pierces enemies in the same row.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>Affects the entire row.</b> -Attack: <color=#ea0606>Agility {bonusAtaque}</color> - Damage: Piercing 1d10+5- </color>\n";
+          txtDescripcion += $"<color=#44d3ec>-Arrows: 2 -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
+        }
+      }
 
     }
 

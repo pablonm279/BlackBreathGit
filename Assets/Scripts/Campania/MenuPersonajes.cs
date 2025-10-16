@@ -137,11 +137,11 @@ public class MenuPersonajes : MonoBehaviour
     //Clase
     switch (pSel.IDClase)
     {
-      case 1: txtClase.text = "Caballero"; break;
-      case 2: txtClase.text = "Explorador"; break;
-      case 3: txtClase.text = "Purificadora"; break;
-      case 4: txtClase.text = "Acechador"; break;
-      case 5: txtClase.text = "Canalizador"; break;
+      case 1: txtClase.text = TRADU.i.Traducir("Caballero"); break;
+      case 2: txtClase.text = TRADU.i.Traducir("Explorador"); break;
+      case 3: txtClase.text = TRADU.i.Traducir("Purificadora"); break;
+      case 4: txtClase.text = TRADU.i.Traducir("Acechador"); break;
+      case 5: txtClase.text = TRADU.i.Traducir("Canalizador"); break;
         //----
 
 
@@ -166,17 +166,17 @@ public class MenuPersonajes : MonoBehaviour
     imCorazon.fillAmount = Mathf.Clamp01((float)pSel.fVidaActual / (pSel.fVidaMaxima + scEquipo.BuffTOTALEQUIPOhpMax));
     txtHP.text = "" + (int)pSel.fVidaActual + "/" + (pSel.fVidaMaxima + scEquipo.BuffTOTALEQUIPOhpMax);
     imMedalla.fillAmount = Mathf.Clamp01((float)pSel.fExperienciaActual / (100 + (pSel.fNivelActual*25)));
-    txtFuerza.text = "Fuerza: " + (pSel.iFuerza + scEquipo.BuffTOTALEQUIPOFuerza);
-    txtAgi.text = "Agilidad: " + (pSel.iAgi + scEquipo.BuffTOTALEQUIPOAgi);
-    txtPoder.text = "Poder: " + (pSel.iPoder + scEquipo.BuffTOTALEQUIPOPoder);
-    txtIniciativa.text = "Iniciativa: " + (pSel.iIniciativa + scEquipo.BuffTOTALEQUIPOIniciativa);
-    txtApMax.text = "AP: " + (pSel.iApMax + scEquipo.BuffTOTALEQUIPOApMax);
-    txtValMax.text = "Valentía: " + (pSel.iValMax + scEquipo.BuffTOTALEQUIPOValMax);
-    txtArmadura.text = "Armadura: " + (pSel.iArmadura + scEquipo.BuffTOTALEQUIPOArmadura);
-    txtDefensa.text = "Defensa: " + (pSel.iDefensa + scEquipo.BuffTOTALEQUIPODefensa);
-    txtTSReflejo.text = "-Reflejos: " + (pSel.iTSReflejo + scEquipo.BuffTOTALEQUIPOTSReflejo);
-    txtTSFortaleza.text = "-Fortaleza: " + (pSel.iTSFortaleza + scEquipo.BuffTOTALEQUIPOTSFortaleza);
-    txtTSMental.text = "-Mental: " + (pSel.iTSMental + scEquipo.BuffTOTALEQUIPOTSMental);
+    txtFuerza.text = TRADU.i.Traducir("Fuerza: ") + (pSel.iFuerza + scEquipo.BuffTOTALEQUIPOFuerza);
+    txtAgi.text = TRADU.i.Traducir("Agilidad: ") + (pSel.iAgi + scEquipo.BuffTOTALEQUIPOAgi);
+    txtPoder.text = TRADU.i.Traducir("Poder: ") + (pSel.iPoder + scEquipo.BuffTOTALEQUIPOPoder);
+    txtIniciativa.text = TRADU.i.Traducir("Iniciativa: ") + (pSel.iIniciativa + scEquipo.BuffTOTALEQUIPOIniciativa);
+    txtApMax.text = TRADU.i.Traducir("PA: ") + (pSel.iApMax + scEquipo.BuffTOTALEQUIPOApMax);
+    txtValMax.text = TRADU.i.Traducir("Valentía: ") + (pSel.iValMax + scEquipo.BuffTOTALEQUIPOValMax);
+    txtArmadura.text = TRADU.i.Traducir("Armadura: ") + (pSel.iArmadura + scEquipo.BuffTOTALEQUIPOArmadura);
+    txtDefensa.text = TRADU.i.Traducir("Defensa: ") + (pSel.iDefensa + scEquipo.BuffTOTALEQUIPODefensa);
+    txtTSReflejo.text = TRADU.i.Traducir("-Reflejos: ") + (pSel.iTSReflejo + scEquipo.BuffTOTALEQUIPOTSReflejo);
+    txtTSFortaleza.text = TRADU.i.Traducir("-Fortaleza: ") + (pSel.iTSFortaleza + scEquipo.BuffTOTALEQUIPOTSFortaleza);
+    txtTSMental.text = TRADU.i.Traducir("-Mental: ") + (pSel.iTSMental + scEquipo.BuffTOTALEQUIPOTSMental);
     txtResFuego.text = "" + (pSel.iResFuego + scEquipo.BuffTOTALEQUIPOResFuego);
     txtResRayo.text = "" + (pSel.iResRayo + scEquipo.BuffTOTALEQUIPOResRayo);
     txtResHielo.text = "" + (pSel.iResHielo + scEquipo.BuffTOTALEQUIPOResHielo);
@@ -207,23 +207,23 @@ public class MenuPersonajes : MonoBehaviour
 
 
     //Estados Campaña
-    if (pSel.Camp_Fatigado) { txtContenedorRasgos.text += "<color=#2a9c71>\n\nFatigado: -1 AP máximo. </color>"; }
-    if (pSel.Camp_Bendecido_SequitoClerigos) { txtContenedorRasgos.text += "<color=#2a9c71>\n\nBendecido por Plegaria: +1 Ataque +1 Defensa +5 Res.Necro +2 TSMental.</color>"; }
+    if (pSel.Camp_Fatigado) { txtContenedorRasgos.text += TRADU.i.Traducir("<color=#2a9c71>\n\nFatigado: -1 PA máximo. </color>"); }
+    if (pSel.Camp_Bendecido_SequitoClerigos) { txtContenedorRasgos.text += "<color=#2a9c71>\n\n"+TRADU.i.Traducir("Bendecido por Plegaria: +1 Ataque +1 Defensa +5 Res.Necro +2 TSMental.</color>"); }
 
-    if (pSel.Camp_Herido) { txtContenedorRasgos.text += "<color=#d80404>\n\nHerido:-1 Atributos. Si cae en combate, muere. </color>"; }
-    if (pSel.Camp_Corrupto) { txtContenedorRasgos.text += "<color=#d80404>\n\nCorrupto: Los enemigos corrompidos se curan al atacarlo, le infligen mas daño, y si lo derriban en combate, muere. </color>"; }
-    if (pSel.Camp_Enfermo > 0) { txtContenedorRasgos.text += $"<color=#d80404>\n\nEnfermo por {pSel.Camp_Enfermo} días. -15% daño, -3 TS Fortaleza, -1 AP </color>"; }
-    if (pSel.Camp_Moral < 0) { txtContenedorRasgos.text += $"<color=#d80404>\n\nBaja Moral por {-pSel.Camp_Moral} días. -1 Ataque y Defensa, -3 TS Mental, -2 Valentía Inicial</color>"; }
-    if (pSel.Camp_Moral > 0) { txtContenedorRasgos.text += $"<color=#d80404>\n\nAlta Moral por {pSel.Camp_Moral} días. +1 Ataque, +2 TS Mental, +2 Valentía Inicial</color>"; }
+    if (pSel.Camp_Herido) { txtContenedorRasgos.text += TRADU.i.Traducir("<color=#d80404>\n\nHerido:-1 Atributos. Si cae en combate, muere. </color>"); }
+    if (pSel.Camp_Corrupto) { txtContenedorRasgos.text += TRADU.i.Traducir("<color=#d80404>\n\nCorrupto: Los enemigos corrompidos se curan al atacarlo, le infligen mas daño, y si lo derriban en combate, muere. </color>"); }
+    if (pSel.Camp_Enfermo > 0) { txtContenedorRasgos.text += TRADU.i.Traducir("<color=#d80404>\n\nEnfermo por ")+pSel.Camp_Enfermo+TRADU.i.Traducir(" días. -15% daño, -3 TS Fortaleza, -1 PA </color>"); }
+    if (pSel.Camp_Moral < 0) { txtContenedorRasgos.text +=TRADU.i.Traducir("<color=#d80404>\n\nBaja Moral por ")+-pSel.Camp_Moral+TRADU.i.Traducir(" días. -1 Ataque y Defensa, -3 TS Mental, -2 Valentía Inicial</color>"); }
+    if (pSel.Camp_Moral > 0) { txtContenedorRasgos.text += TRADU.i.Traducir("<color=#d80404>\n\nAlta Moral por ")+pSel.Camp_Moral+TRADU.i.Traducir(" días. +1 Ataque, +2 TS Mental, +2 Valentía Inicial</color>"); }
   }
 
   string DevolverRasgo(int id)
   {
     string rasgoDesc = "";
 
-    if (id == 1) { rasgoDesc = "Torpe: +1 Rango Pifias"; }
-    if (id == 2) { rasgoDesc = "Valiente: +2 Valentía Máxima."; }
-    if (id == 3) { rasgoDesc = "Alegre: +2 Esperanza al Descansar."; }
+    if (id == 1) { rasgoDesc = TRADU.i.Traducir("Torpe: +1 Rango Pifias"); }
+    if (id == 2) { rasgoDesc = TRADU.i.Traducir("Valiente: +2 Valentía Máxima."); }
+    if (id == 3) { rasgoDesc = TRADU.i.Traducir("Alegre: +2 Esperanza al Descansar."); }
     //.....
 
 

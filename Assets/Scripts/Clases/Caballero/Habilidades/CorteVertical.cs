@@ -15,41 +15,54 @@ public class Cortevertical : Habilidad
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
     [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
-      public override void  Awake()
+  public override void Awake()
+  {
+    nombre = "Corte Vertical";
+    costoAP = 3;
+    costoPM = 0;
+    Usuario = this.gameObject;
+    scEstaUnidad = Usuario.GetComponent<Unidad>();
+    esZonal = false;
+    enArea = 0;
+    esforzable = 1;
+    esCargable = false;
+    esMelee = true;
+    esHostil = true;
+    cooldownMax = 0;
+    bAfectaObstaculos = true;
+
+    bonusAtaque = 1;
+    XdDanio = 2;
+    daniodX = 8; //2d8
+    tipoDanio = 2; //Cortante
+    criticoRangoHab = 0;
+
+
+
+
+
+
+
+
+    imHab = Resources.Load<Sprite>("imHab/Caballero_CorteVertical");
+
+    if (TRADU.i.nIdioma == 1)
     {
-      nombre = "Corte Vertical";
-      costoAP = 3;
-      costoPM = 0;
-      Usuario = this.gameObject;
-      scEstaUnidad = Usuario.GetComponent<Unidad>();
-      esZonal = false;
-      enArea = 0;
-      esforzable = 1;
-      esCargable = false;
-      esMelee = true;
-      esHostil = true;
-      cooldownMax = 0;
-      bAfectaObstaculos = true;
-
-      bonusAtaque = 1;
-      XdDanio = 2;
-      daniodX = 8; //2d8
-      tipoDanio = 2; //Cortante
-      criticoRangoHab = 0;
-
-
-
-
-
-
-
-
-      imHab = Resources.Load<Sprite>("imHab/Caballero_CorteVertical");
-
-      txtDescripcion = "<color=#5dade2><b>Corte Vertical</b></color>\n\n"; 
-      txtDescripcion += "<i>Con el mandoble, el Caballero efectúa un ataque de arriba hacia abajo, lento, pero capaz de provocar grandes daños.</i>\n\n";
+      txtDescripcion = "<color=#5dade2><b>Corte Vertical</b></color>\n\n";
+      txtDescripcion += "<i>Con el mandoble, el Caballero efectúa un ataque de arriba hacia abajo capaz de provocar grandes daños.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Daño: Cortante 2d8- </color>\n\n";
       txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+    }
+    if (TRADU.i.nIdioma == 2) //Ingles
+    {
+        txtDescripcion = "<color=#5dade2><b>Vertical Cut</b></color>\n\n";
+        txtDescripcion += "<i>With the greatsword, the Knight performs downward attack, capable of inflicting great damage.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +{bonusAtaque}</color> - Damage: Slashing 2d8- </color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+    }
+
+
+
        
     }
 

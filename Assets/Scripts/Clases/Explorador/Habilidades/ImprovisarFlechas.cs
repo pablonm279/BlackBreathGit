@@ -110,7 +110,70 @@ public class ImprovisarFlechas : Habilidad
 
        }
 
-
+      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+      {
+        if (NIVEL < 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Improvise Arrows I</b></color>\n\n";
+          txtDescripcion += "<i>The Explorer creates 1 arrow per remaining AP, ends the Turn. Also gains +1 Critical Chance for 1 turn.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Arrow created.</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Improvise Arrows II</b></color>\n\n";
+          txtDescripcion += "<i>The Explorer creates 1 arrow per remaining AP +1, ends the Turn. Also gains +1 Critical Chance for 1 turn.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Critical Chance </color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Improvise Arrows III</b></color>\n\n";
+          txtDescripcion += "<i>The Explorer creates 1 arrow per remaining AP +1, ends the Turn. Also gains +2 Critical Chance for 1 turn.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Option A: +1 Arrow Recovered. </color>\n";
+                txtDescripcion += $"<color=#dfea02>-Option B: +1 Turn Buff Duration.</color>\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Improvise Arrows IVa</b></color>\n\n";
+          txtDescripcion += "<i>The Explorer creates 1 arrow per remaining AP +2, ends the Turn. Also gains +2 Critical Chance for 1 turn.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+        }
+        if (NIVEL == 5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Improvise Arrows IVb</b></color>\n\n";
+          txtDescripcion += "<i>The Explorer creates 1 arrow per remaining AP +1, ends the Turn. Also gains +2 Critical Chance for 2 turns.</i>\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+        }
+      }
 
     }
 

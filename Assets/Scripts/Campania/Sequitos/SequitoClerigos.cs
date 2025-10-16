@@ -26,8 +26,8 @@ public class SequitoClerigos : MonoBehaviour
     {
 
 
-        txtDesc.text = $"Los Clérigos del Sol Radiante Purificador participaron como apoyo en el combate contra el Liche. La mayoría murieron en la onda expansiva en ese momento, pero todavía quedan algunos grupos tratando de llegar al puerto y sobrevivir mientras luchan por retrasar al Aliento Negro.\n\n";
-        txtMecanica.text = $"EFECTOS PASIVOS:\n\n-Otorgan 15 Esperanza al unirse a la Caravana, -20 Esperanza al perderse.\n\n-20% probabilidades de Retrasar el Aliento Negro en cada viaje.\n\n-Si el Aliento Negro llega a nivel superior a 16, los Clérigos mueren.";
+        txtDesc.text = TRADU.i.Traducir("Los Clérigos del Sol Radiante Purificador participaron como apoyo en el combate contra el Liche. La mayoría murieron en la onda expansiva en ese momento, pero todavía quedan algunos grupos tratando de llegar al puerto y sobrevivir mientras luchan por retrasar al Aliento Negro.\n\n");
+        txtMecanica.text = TRADU.i.Traducir("EFECTOS PASIVOS:\n\n-Otorgan 15 Esperanza al unirse a la Caravana, -20 Esperanza al perderse.\n\n-20% probabilidades de Retrasar el Aliento Negro en cada viaje.\n\n-Si el Aliento Negro llega a nivel superior a 16, los Clérigos mueren.");
 
         int oroActual = CampaignManager.Instance.GetOroActuales(); // Ajusta según tu implementación real
         int costo = 250;
@@ -35,17 +35,17 @@ public class SequitoClerigos : MonoBehaviour
 
         if (seHizoPlegaria)
         {
-            costooroplegaria.text = "<color=red>La plegaria ya fue realizada.</color>";
+            costooroplegaria.text = TRADU.i.Traducir("<color=red>La plegaria ya fue realizada.</color>");
         }
         else
         {
             if (oroActual < costo)
             {
-                costooroplegaria.text = "<color=red>No hay oro suficiente para una donación de 250 Oro.</color>";
+                costooroplegaria.text = TRADU.i.Traducir("<color=red>No hay oro suficiente para una donación de 250 Oro.</color>")  ;
             }
             else
             {
-                costooroplegaria.text = "Se hará una donación de 250 Oro.";
+                costooroplegaria.text = TRADU.i.Traducir("Se hará una donación de 250 Oro.");
             }
         }
     }

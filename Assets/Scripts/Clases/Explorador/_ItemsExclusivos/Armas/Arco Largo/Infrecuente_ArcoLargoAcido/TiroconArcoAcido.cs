@@ -19,45 +19,55 @@ public class TiroconArcoAcido : Habilidad
 
     private int hAlcance = 7;
     private int hAncho = 1; //1 - adyancentes también
-     public override void  Awake()
-    {
-      nombre = "Tiro con Arco Acido";
-      costoAP = 3;
-      costoPM = 0;
-      Usuario = this.gameObject;
-      scEstaUnidad = Usuario.GetComponent<Unidad>();
-      esZonal = false;
-      enArea = 0;
-      esforzable = 1;
-      esCargable = false;
-      esMelee = false;
-      esHostil = true;
-      cooldownMax = 0;
-      bAfectaObstaculos = true;
+  public override void Awake()
+  {
+    nombre = "Tiro con Arco Acido";
+    costoAP = 3;
+    costoPM = 0;
+    Usuario = this.gameObject;
+    scEstaUnidad = Usuario.GetComponent<Unidad>();
+    esZonal = false;
+    enArea = 0;
+    esforzable = 1;
+    esCargable = false;
+    esMelee = false;
+    esHostil = true;
+    cooldownMax = 0;
+    bAfectaObstaculos = true;
 
-      bonusAtaque = 0;
-      XdDanio = 1;
-      daniodX = 10; //1d10
-      tipoDanio = 1; //Perforante
-      criticoRangoHab = 0;
+    bonusAtaque = 0;
+    XdDanio = 1;
+    daniodX = 10; //1d10
+    tipoDanio = 1; //Perforante
+    criticoRangoHab = 0;
 
-      requiereRecurso = 1; //esto es para que el boton no se active al apretar si no tiene X recursos (ej Flecha). Ver en BotonHabilidad.
+    requiereRecurso = 1; //esto es para que el boton no se active al apretar si no tiene X recursos (ej Flecha). Ver en BotonHabilidad.
 
+
+
+
+
+
+
+
+
+    imHab = Resources.Load<Sprite>("imHab/Explorador_Tiroconarco");
+
+    txtDescripcion = "<color=#5dade2><b>Tiro con Arco Ácido</b></color>\n\n";
+    txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
+    txtDescripcion += "<i>+1d6 daño Ácido.</i>\n\n";
+    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
       
-
-
-
-
-
-
-
-      imHab = Resources.Load<Sprite>("imHab/Explorador_Tiroconarco");
-
-      txtDescripcion = "<color=#5dade2><b>Tiro con Arco Ácido</b></color>\n\n"; 
-      txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
-      txtDescripcion += "<i>+1d6 daño Ácido.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+      if(TRADU.i.nIdioma == 2)
+      {
+        nombre = "Acid Bow Shot";
+        txtDescripcion = "<color=#5dade2><b>Acid Bow Shot</b></color>\n\n";
+        txtDescripcion += "<i>The ranger attacks the enemy with his bow.</i>\n\n";
+        txtDescripcion += "<i>+1d6 Acid damage.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>Range: 7</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Piercing 1d10+1- Requires 1 Arrow</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+      }
        
     }
 

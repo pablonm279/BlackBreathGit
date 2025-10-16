@@ -46,11 +46,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: 8be8b1cac600fee4aa8a357c5e7ffc93, type: 3}
-  sNombreItem: Armadura de Cuero Reforzado +2
+  sNombreItem: Armadura de Cuero Reforzado
   IDClasesQuePuedenUsarEsteItem: 04000000
   iPrecio: 256
-  itemDescrpicion: "<i>Una Armadura de Cuero que brinda una decente protecci\xF3n
-    al Acechador mientras le permite moverse con sigilo.</i>\n\n+6 Armadura\n+1 Defensa"
+  itemDescripcion: 
   iRareza: 2
   nivelMejora: 2
   requisitoFue: 0

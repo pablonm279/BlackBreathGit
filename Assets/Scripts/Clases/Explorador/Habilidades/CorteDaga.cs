@@ -50,7 +50,14 @@ public class CorteDaga : Habilidad
       txtDescripcion += "<i>El Explorador utiliza su arma secundaria para atacar a su enemigo en combate cuerpo a cuerpo.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Cortante 1d6- </color>\n\n";
       txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
-       
+
+      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+      {
+        txtDescripcion = "<color=#5dade2><b>Dagger Slash</b></color>\n\n";
+        txtDescripcion += "<i>The Explorer uses their secondary weapon to attack an enemy in melee combat.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Slashing 1d6- </color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+      }
     }
 
    

@@ -504,14 +504,29 @@ public class MenuBatallas : MonoBehaviour
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 120 Exp, 140 Oro y 10 Materiales.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 120 Exp, 140 Oro y 10 Materiales.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "120 Exp, 140 Gold and 10 Materials obtained.";
+            }
+          
             CampaignManager.Instance.CambiarOroActual(140);
             CampaignManager.Instance.CambiarMaterialesActuales(10);
             DarExperiencia(120);
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana, 15 Civiles fueron asesinados, -15 esperanza";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana, 15 Civiles fueron asesinados, -15 esperanza";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan, 15 Civilians killed, -15 hope";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-15);
             CampaignManager.Instance.CambiarEsperanzaActual(-15);
         }
@@ -520,14 +535,28 @@ public class MenuBatallas : MonoBehaviour
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 135 Exp, 100 Oro y 15 Materiales.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 135 Exp, 100 Oro y 15 Materiales.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "135 Exp, 100 Gold and 15 Materials obtained.";
+            }
             CampaignManager.Instance.CambiarOroActual(100);
             CampaignManager.Instance.CambiarMaterialesActuales(15);
             DarExperiencia(135);
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana, 20 Civiles fueron asesinados, -17 esperanza";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana, 20 Civiles fueron asesinados, -17 esperanza";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan, 20 Civilians killed, -17 hope";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-20);
             CampaignManager.Instance.CambiarEsperanzaActual(-17);
         }
@@ -536,14 +565,28 @@ public class MenuBatallas : MonoBehaviour
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 105 Exp, 80 Oro y 13 Materiales.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 105 Exp, 80 Oro y 13 Materiales.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "105 Exp, 80 Gold and 13 Materials obtained.";
+            }
             CampaignManager.Instance.CambiarOroActual(80);
             CampaignManager.Instance.CambiarMaterialesActuales(13);
             DarExperiencia(105);
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana, 12 Civiles fueron asesinados, -12 esperanza";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana, 12 Civiles fueron asesinados, -12 esperanza";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan, 12 Civilians killed, -12 hope";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-12);
             CampaignManager.Instance.CambiarEsperanzaActual(-12);
         }
@@ -552,14 +595,28 @@ public class MenuBatallas : MonoBehaviour
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 125 Exp, 110 Oro y 10 Materiales.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 125 Exp, 110 Oro y 10 Materiales.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "125 Exp, 110 Gold and 10 Materials obtained.";
+            }
             CampaignManager.Instance.CambiarOroActual(110);
             CampaignManager.Instance.CambiarMaterialesActuales(10);
             DarExperiencia(125);
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana, 18 Civiles fueron asesinados, -16 esperanza";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana, 18 Civiles fueron asesinados, -16 esperanza";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan, 18 Civilians killed, -16 hope";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-18);
             CampaignManager.Instance.CambiarEsperanzaActual(-16);
         }
@@ -568,14 +625,28 @@ public class MenuBatallas : MonoBehaviour
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 152 Exp, 101 Oro y 22 Materiales.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 152 Exp, 101 Oro y 22 Materiales.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "152 Exp, 101 Gold and 22 Materials obtained.";
+            }
             CampaignManager.Instance.CambiarOroActual(101);
             CampaignManager.Instance.CambiarMaterialesActuales(22);
             DarExperiencia(152);
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana, 17 Civiles fueron asesinados, -14 esperanza";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana, 17 Civiles fueron asesinados, -14 esperanza";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan, 17 Civilians killed, -14 hope";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-17);
             CampaignManager.Instance.CambiarEsperanzaActual(-14);
         }
@@ -584,13 +655,27 @@ public class MenuBatallas : MonoBehaviour
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 220 Exp, 141 Oro.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 220 Exp, 141 Oro.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "220 Exp, 141 Gold obtained.";
+            }
             CampaignManager.Instance.CambiarOroActual(141);
             DarExperiencia(220);
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana, 13 Civiles fueron asesinados, -21 esperanza";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana, 13 Civiles fueron asesinados, -21 esperanza";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan, 13 Civilians killed, -21 hope";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-13);
             CampaignManager.Instance.CambiarEsperanzaActual(-21);
         }
@@ -599,14 +684,28 @@ public class MenuBatallas : MonoBehaviour
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 95 Exp, 88 Oro y 9 Materiales.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 95 Exp, 88 Oro y 9 Materiales.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "95 Exp, 88 Gold and 9 Materials obtained.";
+            }
             CampaignManager.Instance.CambiarOroActual(88);
             CampaignManager.Instance.CambiarMaterialesActuales(9);
             DarExperiencia(95);
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana, 11 Civiles fueron asesinados, -10 esperanza";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana, 11 Civiles fueron asesinados, -10 esperanza";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan, 11 Civilians killed, -10 hope";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-11);
             CampaignManager.Instance.CambiarEsperanzaActual(-10);
         }
@@ -615,7 +714,14 @@ public class MenuBatallas : MonoBehaviour
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 310 Exp, 180 Oro y 25 Materiales.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 310 Exp, 180 Oro y 25 Materiales.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "310 Exp, 180 Gold and 25 Materials obtained.";
+            }
             CampaignManager.Instance.CambiarOroActual(180);
             CampaignManager.Instance.CambiarMaterialesActuales(25);
             aumentochancesitem += 100; //Batallas elite garantizan Items
@@ -623,7 +729,14 @@ public class MenuBatallas : MonoBehaviour
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana, 21 Civiles fueron asesinados, -15 esperanza, 1 Buey asesinado.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana, 21 Civiles fueron asesinados, -15 esperanza, 1 Buey asesinado.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan, 21 Civilians killed, -15 hope, 1 Ox killed.";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-21);
             CampaignManager.Instance.CambiarEsperanzaActual(-15);
             CampaignManager.Instance.CambiarBueyesActuales(-1);
@@ -634,7 +747,14 @@ public class MenuBatallas : MonoBehaviour
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 305 Exp, 120 Oro y 32 Materiales.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 305 Exp, 120 Oro y 32 Materiales.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "305 Exp, 120 Gold and 32 Materials obtained.";
+            }
             CampaignManager.Instance.CambiarOroActual(120);
             CampaignManager.Instance.CambiarMaterialesActuales(32);
             aumentochancesitem += 100; //Batallas elite garantizan Items
@@ -642,68 +762,116 @@ public class MenuBatallas : MonoBehaviour
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana, 19 Civiles fueron asesinados, -13 esperanza, 1 Buey asesinado.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana, 19 Civiles fueron asesinados, -13 esperanza, 1 Buey asesinado.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan, 19 Civilians killed, -13 hope, 1 Ox killed.";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-19);
             CampaignManager.Instance.CambiarEsperanzaActual(-13);
             CampaignManager.Instance.CambiarBueyesActuales(-1);
         }
     }
-        if (EventoBatallaID == 11) //FASE 1 Bosque Ardiente Jefe Arbol Lamentos
+    if (EventoBatallaID == 11) //FASE 1 Bosque Ardiente Jefe Arbol Lamentos
+    {
+        if (resultado == 1) //Victoria
         {
-            if (resultado == 1) //Victoria
+            if (TRADU.i.nIdioma == 1)
             {
                 txtRecompensa.text = "Se han obtenido 580 Exp, 310 Oro y 32 Materiales.";
-                CampaignManager.Instance.CambiarOroActual(310);
-                CampaignManager.Instance.CambiarMaterialesActuales(40);
-                aumentochancesitem += 100; //Batallas elite garantizan Items
-                DarExperiencia(580);
-                //Efectos victoria siguiente zona- HACER
-
             }
-            else //Derrota
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "580 Exp, 310 Gold and 32 Materials obtained.";
+            }
+            CampaignManager.Instance.CambiarOroActual(310);
+            CampaignManager.Instance.CambiarMaterialesActuales(40);
+            aumentochancesitem += 100; //Batallas elite garantizan Items
+            DarExperiencia(580);
+            //Efectos victoria siguiente zona- HACER
+
+        }
+        else //Derrota
+        {
+            if (TRADU.i.nIdioma == 1)
             {
                 txtRecompensa.text = "La caravana ha fracasado. Fin del juego.";
             }
-           
-           
-                if (CampaignManager.Instance.scTutorialManager.tutorialActivo)
-                { 
-                    CampaignManager.Instance.scTutorialManager.establecerPasoEspecifico(12);
-                }
-    }
-        #endregion
-
-        //Resultados batalla BANDIDOS
-        #region 
-        if (EventoBatallaID == 500) //FASE 1 Bandidos Normal
-        {
-            if (resultado == 1) //Victoria
+            else if (TRADU.i.nIdioma == 2)
             {
-                txtRecompensa.text = "Se han obtenido 110 Exp, 150 Oro y 3 Materiales.";
-                CampaignManager.Instance.CambiarOroActual(150);
-                CampaignManager.Instance.CambiarMaterialesActuales(3);
-                DarExperiencia(110);
-            }
-            else //Derrota
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 5 Civiles fueron asesinados, -8 esperanza, 65 oro robado.";
-                CampaignManager.Instance.CambiarCivilesActuales(-5);
-                CampaignManager.Instance.CambiarEsperanzaActual(-8);
-                CampaignManager.Instance.CambiarOroActual(-65);
+                txtRecompensa.text = "The caravan has failed. Game over.";
             }
         }
+
+        if (CampaignManager.Instance.scTutorialManager.tutorialActivo)
+        { 
+            CampaignManager.Instance.scTutorialManager.establecerPasoEspecifico(12);
+        }
+    }
+    #endregion
+
+    //Resultados batalla BANDIDOS
+    #region 
+    if (EventoBatallaID == 500) //FASE 1 Bandidos Normal
+    {
+        if (resultado == 1) //Victoria
+        {
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 110 Exp, 150 Oro y 3 Materiales.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "110 Exp, 150 Gold and 3 Materials obtained.";
+            }
+            CampaignManager.Instance.CambiarOroActual(150);
+            CampaignManager.Instance.CambiarMaterialesActuales(3);
+            DarExperiencia(110);
+        }
+        else //Derrota
+        {
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana, 5 Civiles fueron asesinados, -8 esperanza, 65 oro robado.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan, 5 Civilians killed, -8 hope, 65 gold stolen.";
+            }
+            CampaignManager.Instance.CambiarCivilesActuales(-5);
+            CampaignManager.Instance.CambiarEsperanzaActual(-8);
+            CampaignManager.Instance.CambiarOroActual(-65);
+        }
+    }
     if (EventoBatallaID == 501) //FASE 1 Bandidos Normal
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 120 Exp, 130 Oro y 2 Materiales.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 120 Exp, 130 Oro y 2 Materiales.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "120 Exp, 130 Gold and 2 Materials obtained.";
+            }
             CampaignManager.Instance.CambiarOroActual(130);
             CampaignManager.Instance.CambiarMaterialesActuales(2);
             DarExperiencia(120);
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana, 8 Civiles fueron asesinados, -11 esperanza, 45 oro robado.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana, 8 Civiles fueron asesinados, -11 esperanza, 45 oro robado.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan, 8 Civilians killed, -11 hope, 45 gold stolen.";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-8);
             CampaignManager.Instance.CambiarEsperanzaActual(-11);
             CampaignManager.Instance.CambiarOroActual(-45);
@@ -713,67 +881,123 @@ public class MenuBatallas : MonoBehaviour
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 140 Exp, 170 Oro y 11 Materiales.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 140 Exp, 170 Oro y 11 Materiales.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "140 Exp, 170 Gold and 11 Materials obtained.";
+            }
             CampaignManager.Instance.CambiarOroActual(170);
             CampaignManager.Instance.CambiarMaterialesActuales(11);
             DarExperiencia(140);
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana, 10 Civiles fueron asesinados, -14 esperanza, 61 oro robado.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana, 10 Civiles fueron asesinados, -14 esperanza, 61 oro robado.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan, 10 Civilians killed, -14 hope, 61 gold stolen.";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-10);
             CampaignManager.Instance.CambiarEsperanzaActual(-14);
             CampaignManager.Instance.CambiarOroActual(-61);
         }
     }
     if (EventoBatallaID == 503) //FASE 1 Bandidos Normal
+    {
+        if (resultado == 1) //Victoria
         {
-            if (resultado == 1) //Victoria
+            if (TRADU.i.nIdioma == 1)
             {
                 txtRecompensa.text = "Se han obtenido 114 Exp, 155 Oro y 9 Materiales.";
-                CampaignManager.Instance.CambiarOroActual(155);
-                CampaignManager.Instance.CambiarMaterialesActuales(9);
-                DarExperiencia(114);
             }
-            else //Derrota
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "114 Exp, 155 Gold and 9 Materials obtained.";
+            }
+            CampaignManager.Instance.CambiarOroActual(155);
+            CampaignManager.Instance.CambiarMaterialesActuales(9);
+            DarExperiencia(114);
+        }
+        else //Derrota
+        {
+            if (TRADU.i.nIdioma == 1)
             {
                 txtRecompensa.text = "Has fallado en defender a la caravana, 4 Civiles fueron asesinados, -9 esperanza, 50 oro robado.";
-                CampaignManager.Instance.CambiarCivilesActuales(-4);
-                CampaignManager.Instance.CambiarEsperanzaActual(-9);
-                CampaignManager.Instance.CambiarOroActual(-50);
             }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan, 4 Civilians killed, -9 hope, 50 gold stolen.";
+            }
+            CampaignManager.Instance.CambiarCivilesActuales(-4);
+            CampaignManager.Instance.CambiarEsperanzaActual(-9);
+            CampaignManager.Instance.CambiarOroActual(-50);
         }
+    }
     #endregion
 
     //Resultados batalla CORRUPTOS
     #region 
     if (EventoBatallaID == 600) //FASE 1 Corruptos Normal
+    {
+        if (resultado == 1) //Victoria
         {
-            if (resultado == 1) //Victoria
+            if (TRADU.i.nIdioma == 1)
             {
                 txtRecompensa.text = "Se han obtenido 160 Exp, -1 Avance Aliento Negro.";
-                DarExperiencia(160);
-                CampaignManager.Instance.CambiarValorAlientoNegro(-1);
             }
-            else //Derrota
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "160 Exp, -1 Black Breath Progress.";
+            }
+            DarExperiencia(160);
+            CampaignManager.Instance.CambiarValorAlientoNegro(-1);
+        }
+        else //Derrota
+        {
+            if (TRADU.i.nIdioma == 1)
             {
                 txtRecompensa.text = "Has fallado en defender a la caravana de los Corruptos, 13 Civiles fueron asesinados, -11 esperanza, +1 Avance Aliento Negro.";
-                CampaignManager.Instance.CambiarCivilesActuales(-13);
-                CampaignManager.Instance.CambiarEsperanzaActual(-11);
-                CampaignManager.Instance.CambiarValorAlientoNegro(1);
             }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan from the Corrupted, 13 Civilians killed, -11 hope, +1 Black Breath Progress.";
+            }
+            CampaignManager.Instance.CambiarCivilesActuales(-13);
+            CampaignManager.Instance.CambiarEsperanzaActual(-11);
+            CampaignManager.Instance.CambiarValorAlientoNegro(1);
         }
+    }
     if (EventoBatallaID == 601) //FASE 1 Corruptos Normal
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 180 Exp, -1 Avance Aliento Negro.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 180 Exp, -1 Avance Aliento Negro.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "180 Exp, -1 Black Breath Progress.";
+            }
             DarExperiencia(180);
             CampaignManager.Instance.CambiarValorAlientoNegro(-1);
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana de los Corruptos, 15 Civiles fueron asesinados, -12 esperanza, +1 Avance Aliento Negro.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana de los Corruptos, 15 Civiles fueron asesinados, -12 esperanza, +1 Avance Aliento Negro.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan from the Corrupted, 15 Civilians killed, -12 hope, +1 Black Breath Progress.";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-15);
             CampaignManager.Instance.CambiarEsperanzaActual(-12);
             CampaignManager.Instance.CambiarValorAlientoNegro(1);
@@ -783,13 +1007,27 @@ public class MenuBatallas : MonoBehaviour
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 140 Exp, -1 Avance Aliento Negro.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 140 Exp, -1 Avance Aliento Negro.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "140 Exp, -1 Black Breath Progress.";
+            }
             DarExperiencia(140);
             CampaignManager.Instance.CambiarValorAlientoNegro(-1);
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana de los Corruptos, 15 Civiles fueron asesinados, -12 esperanza, +1 Avance Aliento Negro.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana de los Corruptos, 15 Civiles fueron asesinados, -12 esperanza, +1 Avance Aliento Negro.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan from the Corrupted, 15 Civilians killed, -12 hope, +1 Black Breath Progress.";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-11);
             CampaignManager.Instance.CambiarEsperanzaActual(-12);
             CampaignManager.Instance.CambiarValorAlientoNegro(1);
@@ -799,33 +1037,63 @@ public class MenuBatallas : MonoBehaviour
     {
         if (resultado == 1) //Victoria
         {
-            txtRecompensa.text = "Se han obtenido 140 Exp, -1 Avance Aliento Negro.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Se han obtenido 140 Exp, -1 Avance Aliento Negro.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "140 Exp, -1 Black Breath Progress.";
+            }
             DarExperiencia(140);
             CampaignManager.Instance.CambiarValorAlientoNegro(-1);
         }
         else //Derrota
         {
-            txtRecompensa.text = "Has fallado en defender a la caravana de los Corruptos, 14 Civiles fueron asesinados, -10 esperanza, +1 Avance Aliento Negro.";
+            if (TRADU.i.nIdioma == 1)
+            {
+                txtRecompensa.text = "Has fallado en defender a la caravana de los Corruptos, 14 Civiles fueron asesinados, -10 esperanza, +1 Avance Aliento Negro.";
+            }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan from the Corrupted, 14 Civilians killed, -10 hope, +1 Black Breath Progress.";
+            }
             CampaignManager.Instance.CambiarCivilesActuales(-14);
             CampaignManager.Instance.CambiarEsperanzaActual(-10);
             CampaignManager.Instance.CambiarValorAlientoNegro(1);
         }
     }
     if (EventoBatallaID == 604) //FASE 1 Corruptos Normal
+    {
+        if (resultado == 1) //Victoria
         {
-            if (resultado == 1) //Victoria
+            if (TRADU.i.nIdioma == 1)
             {
                 txtRecompensa.text = "Se han obtenido 170 Exp, -1 Avance Aliento Negro.";
-                DarExperiencia(170);
-                CampaignManager.Instance.CambiarValorAlientoNegro(-1);
             }
-            else //Derrota
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "170 Exp, -1 Black Breath Progress.";
+            }
+            DarExperiencia(170);
+            CampaignManager.Instance.CambiarValorAlientoNegro(-1);
+        }
+        else //Derrota
+        {
+            if (TRADU.i.nIdioma == 1)
             {
                 txtRecompensa.text = "Has fallado en defender a la caravana de los Corruptos, 16 Civiles fueron asesinados, -9 esperanza, +1 Avance Aliento Negro.";
-                CampaignManager.Instance.CambiarCivilesActuales(-16);
-                CampaignManager.Instance.CambiarEsperanzaActual(-9);
-                CampaignManager.Instance.CambiarValorAlientoNegro(1);
             }
+            else if (TRADU.i.nIdioma == 2)
+            {
+                txtRecompensa.text = "Failed to defend the caravan from the Corrupted, 16 Civilians killed, -9 hope, +1 Black Breath Progress.";
+            }
+            CampaignManager.Instance.CambiarCivilesActuales(-16);
+            CampaignManager.Instance.CambiarEsperanzaActual(-9);
+            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+        }
+    
+            
         }
     #endregion
 
@@ -844,7 +1112,7 @@ public class MenuBatallas : MonoBehaviour
             int materiales =UnityEngine.Random.Range(22, 36); // Materiales entre 22 y 35
             int esperanza =UnityEngine.Random.Range(12, 25); // Esperanza entre 12 y 20
 
-            txtRecompensa.text = $"Se han obtenido {oro} Oro, {materiales} Materiales y +{esperanza} Esperanza.";
+            txtRecompensa.text = TRADU.i.Traducir("Se han obtenido ") + oro + TRADU.i.Traducir(" Oro, ") + materiales + TRADU.i.Traducir(" Materiales y +") + esperanza + TRADU.i.Traducir(" Esperanza.");
             CampaignManager.Instance.CambiarOroActual(oro);
             CampaignManager.Instance.CambiarMaterialesActuales(materiales);
             CampaignManager.Instance.CambiarEsperanzaActual(esperanza);
@@ -868,7 +1136,7 @@ public class MenuBatallas : MonoBehaviour
             {
                 if (CampaignManager.Instance.scMenuSequito.SequitoAlAzarPerdido(out string nombre))
                 {
-                    txtRecompensa.text += $"\n\n-Los enemigos han eliminado al {nombre} luego de la Batalla.";
+                    txtRecompensa.text += TRADU.i.Traducir("\n\n-Los enemigos han eliminado al ") + nombre + TRADU.i.Traducir(" luego de la Batalla.");
                 }
             }
         
@@ -884,7 +1152,7 @@ public class MenuBatallas : MonoBehaviour
             {
                 Item recompensa = CampaignManager.Instance.scMenuSequito.Sequito003Mercaderes.GetComponent<SequitoMercaderes>().ObtenerItemAlAzar();
                 CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(recompensa.gameObject);
-                txtRecompensa.text += $"\n\n- Has encontrado un objeto de recompensa: {recompensa.sNombreItem}.";
+                txtRecompensa.text += TRADU.i.Traducir("\n\n- Has encontrado un objeto de recompensa: ") + recompensa.sNombreItem + ".";
 
             }
 
@@ -903,12 +1171,12 @@ public class MenuBatallas : MonoBehaviour
             {
                 CampaignManager.Instance.scSequitoCronistas.valorCambiosCronicas += 50;
                 CampaignManager.Instance.CambiarEsperanzaActual(+5);
-                CampaignManager.Instance.EscribirLog("-Los Cronistas han registrado la victoria, +50 Valor Crónica, +5 Esperanza.");
+                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la victoria, +50 Valor Crónica, +5 Esperanza."));
             }
             else //Derrota
             {
                 CampaignManager.Instance.scSequitoCronistas.valorCambiosCronicas -= 50;
-                CampaignManager.Instance.EscribirLog("-Los Cronistas han registrado la derrota, -50 Valor Crónica. -3 Esperanza.");
+                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la derrota, -50 Valor Crónica. -3 Esperanza."));
                 CampaignManager.Instance.CambiarEsperanzaActual(-3);
 
             }
@@ -962,7 +1230,7 @@ public class MenuBatallas : MonoBehaviour
                     else
                     {
                         pers.Camp_Corrupto = true;
-                        CampaignManager.Instance.EscribirLog($"{uni.uNombre} ha sido corrompido.");
+                        CampaignManager.Instance.EscribirLog("-" + uni.uNombre + TRADU.i.Traducir(" ha sido corrompido."));
 
 
                     }

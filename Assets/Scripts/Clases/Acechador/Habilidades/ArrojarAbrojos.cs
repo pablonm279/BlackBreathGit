@@ -125,7 +125,83 @@ public class ArrojarAbrojos : Habilidad
        }
 
 
+  if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+  {
+    if (NIVEL < 2)
+    {
+      txtDescripcion = "<color=#5dade2><b>Throw Caltrops I</b></color>\n\n";
+      txtDescripcion += "<i>Throws caltrops on the target tile and on the immediate diagonals that do not have enemies.</i>\n";
+      txtDescripcion += "<i>Each enemy that moves to the affected tiles suffers piercing damage 2d8 and Bleeding 2.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>If the enemy passes a Reflex DC 11 check, avoids bleeding and halves the damage.</b></color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Discreet - Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
 
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Next Level: +2 Damage</color>\n\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 2)
+    {
+      txtDescripcion = "<color=#5dade2><b>Throw Caltrops II</b></color>\n\n";
+      txtDescripcion += "<i>Throws caltrops on the target tile and on the immediate diagonals that do not have enemies.</i>\n";
+      txtDescripcion += "<i>Each enemy that moves to the affected tiles suffers piercing damage 2d8 +2 and Bleeding 2.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>If the enemy passes a Reflex DC 11 check, avoids bleeding and halves the damage.</b></color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Discreet - Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Next Level: +1 DC</color>\n\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 3)
+    {
+      txtDescripcion = "<color=#5dade2><b>Throw Caltrops III</b></color>\n\n";
+      txtDescripcion += "<i>Throws caltrops on the target tile and on the immediate diagonals that do not have enemies.</i>\n";
+      txtDescripcion += "<i>Each enemy that moves to the affected tiles suffers piercing damage 2d8 +2 and Bleeding 2.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>If the enemy passes a Reflex DC 12 check, avoids bleeding and halves the damage.</b></color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Discreet - Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Option A: +1 Bleeding.</color>\n";
+            txtDescripcion += $"<color=#dfea02>-Option B: Removes 1 AP from the enemy.</color>\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 4)
+    {
+      txtDescripcion = "<color=#5dade2><b>Throw Caltrops IVa</b></color>\n\n";
+      txtDescripcion += "<i>Throws caltrops on the target tile and on the immediate diagonals that do not have enemies.</i>\n";
+      txtDescripcion += "<i>Each enemy that moves to the affected tiles suffers piercing damage 2d8 +2 and Bleeding 3.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>If the enemy passes a Reflex DC 12 check, avoids bleeding and halves the damage.</b></color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Discreet - Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+    }
+    if (NIVEL == 5)
+    {
+      txtDescripcion = "<color=#5dade2><b>Throw Caltrops IVb</b></color>\n\n";
+      txtDescripcion += "<i>Throws caltrops on the target tile and on the immediate diagonals that do not have enemies.</i>\n";
+      txtDescripcion += "<i>Each enemy that moves to the affected tiles suffers piercing damage 2d8 +2, Bleeding 2 and loses 1 AP.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>If the enemy passes a Reflex DC 12 check, avoids bleeding and halves the damage.</b></color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Discreet - Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+    }
+  }
     }
     void Start()
     {

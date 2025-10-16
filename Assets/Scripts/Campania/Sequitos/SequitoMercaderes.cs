@@ -37,9 +37,9 @@ public class SequitoMercaderes : MonoBehaviour
 
         //Mejora Tiendas
         int tier = CampaignManager.Instance.sequitoMercaderesTier;
-        txtTierTiendas.text = "Tamaño Tiendas: " + (int)tier;
+        txtTierTiendas.text = TRADU.i.Traducir("Tamaño Tiendas: ") + (int)tier;
         int valor = 30 + CampaignManager.Instance.sequitoMercaderesTier * 12;
-        txtCostoMejoraTiendas.text = valor + " Materiales";
+        txtCostoMejoraTiendas.text = valor + TRADU.i.Traducir(" Materiales");
 
 
         if (tier > 2)
@@ -126,7 +126,7 @@ public class SequitoMercaderes : MonoBehaviour
             }
         }
 
-        CampaignManager.Instance.EscribirLog("-El Séquito de Mercaderes ha actualizado su oferta.");
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-El Séquito de Mercaderes ha actualizado su oferta."));
         MostrarInventarioVenta();
     }
 

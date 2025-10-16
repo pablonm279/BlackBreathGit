@@ -206,7 +206,7 @@ public class Personaje : MonoBehaviour
         }
     }
 
-     public void RecibirExperiencia(float cant)
+    public void RecibirExperiencia(float cant)
     {
        fExperienciaActual += cant;
        
@@ -218,27 +218,55 @@ public class Personaje : MonoBehaviour
 
 
 
-          float cantHPMensaje; 
-          string nvMensaje = $"{sNombre} ha subido a Nivel {fNivelActual} y obtuvo: ";
-          switch(fNivelActual)
-          {
-           
-            case 2: cantHPMensaje = fVidaMaxima/10; nvMensaje +=$"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Punto Atributo";break;
-            case 3: cantHPMensaje = fVidaMaxima/10; nvMensaje +=$"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Habilidad Nueva  +1 AP Máximo";break;
-            case 4: cantHPMensaje = fVidaMaxima/10; nvMensaje +=$"{(int)cantHPMensaje} Vida +2 Puntos de Habilidad +1 Punto Salvación";break;
-            case 5: cantHPMensaje = fVidaMaxima/15; nvMensaje +=$"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Punto Atributo";break;
-            case 6: cantHPMensaje = fVidaMaxima/10; nvMensaje +=$"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Habilidad Nueva";break;
-            case 7: cantHPMensaje = fVidaMaxima/10; nvMensaje +=$"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 AP Máximo";break;
-            case 8: cantHPMensaje = fVidaMaxima/10; nvMensaje +=$"{(int)cantHPMensaje} Vida +2 Puntos de Habilidad +1 Punto Salvación";break;
-            case 9: cantHPMensaje = fVidaMaxima/10; nvMensaje +=$"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Punto Atributo";break;
-            case 10: cantHPMensaje = fVidaMaxima/15; nvMensaje +=$"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Habilidad Definitiva";break;
-            case 11: cantHPMensaje = fVidaMaxima/10; nvMensaje +=$"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Punto Salvación";break;
-            case 12: cantHPMensaje = fVidaMaxima/10; nvMensaje +=$"{(int)cantHPMensaje} Vida +2 Puntos de Habilidad +1 Punto Atributo";break;
-            case 13: cantHPMensaje = fVidaMaxima/10; nvMensaje +=$"{(int)cantHPMensaje} Vida +1 Punto de Habilidad";break;
+          float cantHPMensaje;
+          string nvMensaje = "";
+      if (TRADU.i.nIdioma == 1)
+      {
+        nvMensaje = $"{sNombre} ha subido a Nivel {fNivelActual} y obtuvo: ";
+        switch (fNivelActual)
+        {
 
-          }
+          case 2: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Punto Atributo"; break;
+          case 3: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Habilidad Nueva  +1 AP Máximo"; break;
+          case 4: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Vida +2 Puntos de Habilidad +1 Punto Salvación"; break;
+          case 5: cantHPMensaje = fVidaMaxima / 15; nvMensaje += $"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Punto Atributo"; break;
+          case 6: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Habilidad Nueva"; break;
+          case 7: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 AP Máximo"; break;
+          case 8: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Vida +2 Puntos de Habilidad +1 Punto Salvación"; break;
+          case 9: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Punto Atributo"; break;
+          case 10: cantHPMensaje = fVidaMaxima / 15; nvMensaje += $"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Habilidad Definitiva"; break;
+          case 11: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Vida +1 Punto de Habilidad +1 Punto Salvación"; break;
+          case 12: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Vida +2 Puntos de Habilidad +1 Punto Atributo"; break;
+          case 13: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Vida +1 Punto de Habilidad"; break;
 
+        }
+      }
+      else if (TRADU.i.nIdioma == 2)
+      {
+
+        nvMensaje = $"{sNombre} is now level {fNivelActual} and obtained: ";
+        switch (fNivelActual)
+        {
+          case 2: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Health +1 Skill Point +1 Attribute Point"; break;
+          case 3: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Health +1 Skill Point +1 New Skill +1 Max AP"; break;
+          case 4: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Health +2 Skill Points +1 Saving Throw Point"; break;
+          case 5: cantHPMensaje = fVidaMaxima / 15; nvMensaje += $"{(int)cantHPMensaje} Health +1 Skill Point +1 Attribute Point"; break;
+          case 6: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Health +1 Skill Point +1 New Skill"; break;
+          case 7: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Health +1 Skill Point +1 Max AP"; break;
+          case 8: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Health +2 Skill Points +1 Saving Throw Point"; break;
+          case 9: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Health +1 Skill Point +1 Attribute Point"; break;
+          case 10: cantHPMensaje = fVidaMaxima / 15; nvMensaje += $"{(int)cantHPMensaje} Health +1 Skill Point +1 Ultimate Skill"; break;
+          case 11: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Health +1 Skill Point +1 Saving Throw Point"; break;
+          case 12: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Health +2 Skill Points +1 Attribute Point"; break;
+          case 13: cantHPMensaje = fVidaMaxima / 10; nvMensaje += $"{(int)cantHPMensaje} Health +1 Skill Point"; break;
+        }
+
+
+        }
           CampaignManager.Instance.EscribirLog("<Color=#F0CC39><b>"+nvMensaje+"</b></color>");
+      }
+
+
 
       if (fNivelActual == 2)
       {
@@ -397,15 +425,15 @@ public class Personaje : MonoBehaviour
         NivelPuntoHabilidad += 1;
           
       }
-        }
-    }
-
-
-
-
-
-
-
-
+   }
 }
+
+
+
+
+
+
+
+
+
 

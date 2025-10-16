@@ -15,41 +15,49 @@ public class GolpeBaston : Habilidad
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
     [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
-      public override void  Awake()
-    {
-      nombre = "Corte Vertical";
-      costoAP = 2;
-      costoPM = 0;
-      Usuario = this.gameObject;
-      scEstaUnidad = Usuario.GetComponent<Unidad>();
-      esZonal = false;
-      enArea = 0;
-      esforzable = 1;
-      esCargable = false;
-      esMelee = true;
-      esHostil = true;
-      cooldownMax = 0;
-      bAfectaObstaculos = true;
+  public override void Awake()
+  {
+    nombre = "Corte Vertical";
+    costoAP = 2;
+    costoPM = 0;
+    Usuario = this.gameObject;
+    scEstaUnidad = Usuario.GetComponent<Unidad>();
+    esZonal = false;
+    enArea = 0;
+    esforzable = 1;
+    esCargable = false;
+    esMelee = true;
+    esHostil = true;
+    cooldownMax = 0;
+    bAfectaObstaculos = true;
 
-      bonusAtaque = 0;
-      XdDanio = 1;
-      daniodX = 8; //1d6
-      tipoDanio = 3; //Contundente
-      criticoRangoHab = 0;
-
-
+    bonusAtaque = 0;
+    XdDanio = 1;
+    daniodX = 8; //1d6
+    tipoDanio = 3; //Contundente
+    criticoRangoHab = 0;
 
 
 
 
 
 
-      imHab = Resources.Load<Sprite>("imHab/Purificadora_GolpeBaston");
 
-      txtDescripcion = "<color=#5dade2><b>Golpe de Bastón</b></color>\n\n"; 
-      txtDescripcion += "<i>Con el bastón de purificación, el personaje asesta un golpe a su enemigo.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Daño: Contundente 1d6- </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+
+    imHab = Resources.Load<Sprite>("imHab/Purificadora_GolpeBaston");
+
+    txtDescripcion = "<color=#5dade2><b>Golpe de Bastón</b></color>\n\n";
+    txtDescripcion += "<i>Con el bastón de purificación, el personaje asesta un golpe a su enemigo.</i>\n\n";
+    txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Daño: Contundente 1d6- </color>\n\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+      {
+        nombre = "Staff Strike";
+        txtDescripcion = "<color=#5dade2><b>Staff Strike</b></color>\n\n";
+        txtDescripcion += "<i>With the purification staff, the character delivers a blow to their enemy.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +{bonusAtaque}</color> - Damage: Bludgeoning 1d6- </color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+      }
        
     }
 

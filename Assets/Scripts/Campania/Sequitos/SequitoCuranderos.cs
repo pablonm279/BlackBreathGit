@@ -49,13 +49,13 @@ public class SequitoCuranderos : MonoBehaviour
       }
       else { bonusHerboristas = 0; }
 
-    string bonusText = bonusHerboristas > 0 ? $" +{bonusHerboristas}% por Herboristas" : "";
+    string bonusText = bonusHerboristas > 0 ? " +" + bonusHerboristas + TRADU.i.Traducir("% por Herboristas") : "";
 
-    txtDescMejoraCuracion.text = $"Carros de Tratamiento: Mejorar los carros utilizados por el Séquito de Curanderos para tratar heridos significará una mejora en los tratamientos recibidos por los heridos y su tiempo de recuperación. \nCada Tier aumenta en 5% la curación diaria de los personajes que Descansen y reduce el costo de Tratar Heridas. \nAdemás cada tier da un 10% extra a las posibilidades de reducir Enfermedades al Descansar (20% base). \nCuración proporcionada: {CampaignManager.Instance.sequitoCuranderosMejoraCuracion*100}%{bonusText}";
+    txtDescMejoraCuracion.text = TRADU.i.Traducir("Carros de Tratamiento: Mejorar los carros utilizados por el Séquito de Curanderos para tratar heridos significará una mejora en los tratamientos recibidos por los heridos y su tiempo de recuperación. \nCada Tier aumenta en 5% la curación diaria de los personajes que Descansen y reduce el costo de Tratar Heridas. \nAdemás cada tier da un 10% extra a las posibilidades de reducir Enfermedades al Descansar (20% base). \nCuración proporcionada: ") + (CampaignManager.Instance.sequitoCuranderosMejoraCuracion * 100) + "%" + bonusText;
     float tier =((CampaignManager.Instance.sequitoCuranderosMejoraCuracion*100)-10)/5;
     txtTierCuracion.text = "Tier "+(int)tier;
     valormejora =(int)( 30+(CampaignManager.Instance.sequitoCuranderosMejoraCuracion*150));
-    txtCostoMejoraCuracion.text = valormejora+" Materiales";
+    txtCostoMejoraCuracion.text = valormejora+TRADU.i.Traducir(" Materiales");
 
      if(tier > 2)
     {
@@ -76,11 +76,11 @@ public class SequitoCuranderos : MonoBehaviour
     float costoCurar = 500 - CampaignManager.Instance.sequitoCuranderosMejoraCuracion*1000;
      if(CampaignManager.Instance.GetOroActuales() >= costoCurar)
      {
-       txtTratarHeridas.text = $"Tratar Heridas - Coste: <color=#A5B328>{(int)costoCurar}</color>";
+       txtTratarHeridas.text = TRADU.i.Traducir("Tratar Heridas - Coste: <color=#A5B328>") + (int)costoCurar + "</color>";
      }
      else
      {
-       txtTratarHeridas.text = $"Tratar Heridas - Coste: <color=#C40E0E>{(int)costoCurar}</color>";
+       txtTratarHeridas.text = TRADU.i.Traducir("Tratar Heridas - Coste: <color=#C40E0E>") + (int)costoCurar + "</color>";
      }
 
 
@@ -124,7 +124,7 @@ public class SequitoCuranderos : MonoBehaviour
     {
         pers.Camp_Herido = false;
         CampaignManager.Instance.CambiarOroActual(-(int)costoCurar);
-        CampaignManager.Instance.EscribirLog($"{pers.sNombre} ha recibido tratamiento especial y sus heridas han sanado.");
+        CampaignManager.Instance.EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" ha recibido tratamiento especial y sus heridas han sanado."));
         Actualizar();
     }
    }

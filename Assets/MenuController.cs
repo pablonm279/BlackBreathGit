@@ -13,12 +13,37 @@ public class MenuController : MonoBehaviour
     [SerializeField] float fadeTime = 0.4f;
     [SerializeField] GameObject panelOpciones; // Opcional
 
+    public GameObject logoIngles;
+    public GameObject logoEspaniol;
+    public GameObject disclaimerIngles;
+    public GameObject disclaimerEspaniol;
+    public GameObject Opciones;
+
     void Awake()
     {
         if (panelOpciones != null) panelOpciones.SetActive(false);
         if (fader != null) fader.alpha = 1f;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+
+
+
+
+        if (TRADU.i.nIdioma == 1)
+        {
+            logoEspaniol.SetActive(true);
+            logoIngles.SetActive(false);
+            disclaimerIngles.SetActive(false);
+            disclaimerEspaniol.SetActive(true);
+        }
+        else if (TRADU.i.nIdioma == 2)
+        {
+            logoEspaniol.SetActive(false);
+            logoIngles.SetActive(true);
+            disclaimerIngles.SetActive(true);
+            disclaimerEspaniol.SetActive(false);
+        }
+
     }
 
     IEnumerator Start()
@@ -27,16 +52,27 @@ public class MenuController : MonoBehaviour
         yield return FadeTo(0f, fadeTime);
     }
 
+
+    public void CambiarIdioma(int n)
+    { 
+        if (n != 1 && n != 2) return;
+
+       // TRADU.i.nIdioma = n;
+        PlayerPrefs.SetInt("nIdioma", n);
+        PlayerPrefs.Save();
+
+       
+
+    }
     public void OnNuevaPartida()
     {
         StartCoroutine(CargarJuego());
     }
-
-    public void OnOpciones()
+    public void abriropciones()
     {
-        if (panelOpciones != null) panelOpciones.SetActive(!panelOpciones.activeSelf);
+        Opciones.SetActive(!Opciones.activeInHierarchy);
     }
-
+   
     public void OnSalir()
     {
     #if UNITY_EDITOR

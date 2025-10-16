@@ -117,7 +117,7 @@ public class btnItemInventario : MonoBehaviour
     if (n == 1)
     {
       Vector3 pos = Input.mousePosition;
-      string total = itemRepresentado.sNombreItem + "\n\n" + itemRepresentado.itemDescripcion;
+      string total = TRADU.i.Traducir(itemRepresentado.sNombreItem) + "\n\n" + TRADU.i.Traducir(itemRepresentado.itemDescripcion);
       TooltipItems.Instance.ShowTooltip(total, pos);
 
         }

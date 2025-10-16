@@ -120,7 +120,7 @@ public class ClaseCanalizador : Unidad
             if (TiradaSalvacion(mod_TSMental, 10 + danio / 3))
             {
                 RemoverBuffNombre("Acumulando");
-                BattleManager.Instance.EscribirLog($"-{uNombre} falló la Tirada de Cocnentración y ya no acumula energía.");
+                BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" falló la Tirada de Concentración y ya no acumula energía."));
             }
         }
 

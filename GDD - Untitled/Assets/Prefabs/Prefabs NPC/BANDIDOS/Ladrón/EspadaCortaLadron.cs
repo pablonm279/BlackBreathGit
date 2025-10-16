@@ -142,7 +142,7 @@ public class EspadaCortaLadron : IAHabilidad
           {
             objetivo.estado_veneno += 3;
             objetivo.GenerarTextoFlotante("Envenenado", Color.green);
-            BattleManager.Instance.EscribirLog($"{objetivo.uNombre} ha sido envenenado por {scEstaUnidad.uNombre}.");
+            BattleManager.Instance.EscribirLog(objetivo.uNombre+TRADU.i.Traducir(" ha sido envenenado por ") + scEstaUnidad.uNombre);
           }
 
           scEstaUnidad.RemoverBuffNombre("Arma Envenenada");

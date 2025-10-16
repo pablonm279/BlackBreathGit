@@ -8,9 +8,10 @@ using UnityEngine;
 public class Cons_Panacea : Consumible
 {
 
-    void Awake()
-    {
-      sNombreItem = "Panacea";
+  void Awake()
+  {
+    sNombreItem = TRADU.i.Traducir("Panacea");
+        itemDescripcion = TRADU.i.Traducir("Remueve todos los debuffs de la unidad.");
     }
 
   public override void UsarConsumible(Unidad unidad)

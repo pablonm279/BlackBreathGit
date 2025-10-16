@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6943522482587772077}
-  - component: {fileID: -1126510372339129508}
+  - component: {fileID: 6300747339089710755}
   m_Layer: 0
   m_Name: armaBaculoPurificador  +1
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   - {fileID: 426194219716832938}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-1126510372339129508
+--- !u!114 &6300747339089710755
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,16 +42,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1793359817975873017}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a2ced5f8edac2a45afbf5ae510dd4c1, type: 3}
+  m_Script: {fileID: 11500000, guid: fd490e26dd3afcd40be351087b3c1a89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: 7414d451b86eb344ca834d453fed25f9, type: 3}
-  sNombreItem: "B\xE1culo Purificador +1"
+  imItem: {fileID: 21300000, guid: 7a5cc1455de1f54468cff98d7e1ed369, type: 3}
+  sNombreItem: Baculo Purificador
+  IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 03000000
-  iPrecio: 75
-  itemDescrpicion: "<i>Los Purificadores llevan b\xE1culos embl\xE9maticos de su
-    profesi\xF3n que amplifican sus poderes.</i>\n\n<b>Otorga: Golpe con B\xE1culo</b>\n<b>Mejora
-    +1: +1 Ataque +5% Da\xF1o</b>"
+  iPrecio: 74
+  itemDescripcion: 
   iRareza: 1
   nivelMejora: 1
   habilidadAtaque: {fileID: 2369216239339639149}

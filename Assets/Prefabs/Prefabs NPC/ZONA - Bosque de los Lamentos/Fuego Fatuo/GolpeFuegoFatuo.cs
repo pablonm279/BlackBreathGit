@@ -203,7 +203,7 @@ public class GolpeFuegoFatuo : IAHabilidad
         scEstaUnidad.estado_aturdido = 2;
 
 
-        BattleManager.Instance.EscribirLog($"{objetivo.uNombre} fue Encarnado por Fuego Fatuo");
+        BattleManager.Instance.EscribirLog(objetivo.uNombre + TRADU.i.Traducir(" fue Encarnado por Fuego Fatuo"));
 
 
 

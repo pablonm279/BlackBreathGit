@@ -7,8 +7,8 @@ public class Actividad_PrepararFlechas: Actividad
     void Awake()
     {
       IDActividad = 8; //
- 
-      desc = "<color=#0cca74><b>Preparar Flechas: </b></color><color=#d3d3d3><i>El personaje invertirá su tiempo en crear y mejorar sus flechas.</color></i>\\n\\nSi se produce un combate tendrá +3 Flechas y +5% daño.";
+
+      desc = TRADU.i.Traducir("<color=#0cca74><b>Preparar Flechas: </b></color><color=#d3d3d3><i>El personaje invertirá su tiempo en crear y mejorar sus flechas.</color></i>\\n\\nSi se produce un combate tendrá +3 Flechas y +5% daño.");
 
     }
 }

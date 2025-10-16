@@ -22,6 +22,10 @@ public class ReaccionSifonArcano : Reaccion
 
 
     descripcion = $"Reacción: Al final de cada turno recibirá daño arcano, incrementado por la cantidad de Residuos de Energía presentes.";
+    if (TRADU.i.nIdioma == 2) // agrega la traducción a inglés
+    {
+      descripcion = "Reaction: At the end of each turn, receives arcane damage increased by the number of Energy Residues present.";
+    }
 
   }
 

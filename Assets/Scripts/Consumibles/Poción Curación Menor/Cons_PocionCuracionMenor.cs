@@ -8,9 +8,10 @@ using UnityEngine;
 public class Cons_PocionCuracionMenor : Consumible
 {
 
-    void Awake()
-    {
-      sNombreItem = "Poción de Curación Menor";
+  void Awake()
+  {
+    sNombreItem = TRADU.i.Traducir("Poción de Curación Menor");
+    itemDescripcion = TRADU.i.Traducir("Restaura 6 + 1d6 puntos de vida.");
     }
 
     public override void UsarConsumible(Unidad unidad)

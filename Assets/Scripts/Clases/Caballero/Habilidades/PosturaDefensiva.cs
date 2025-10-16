@@ -36,95 +36,154 @@ public class PosturaDefensiva : Habilidad
    
     public override void ActualizarDescripcion()
     {
+      if (TRADU.i.nIdioma == 1) // Español
+      {
         if(NIVEL<2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Postura Defensiva I</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Caballero se posiciona en una postura especial, listo para recibir ataques y contraatacar.</i>\n";
-        txtDescripcion += "<i>Reacción: Aumenta 1 la Defensa, y contraataca al enemigo si falla un ataque melee contra el Caballero. Si es dañado, cancela la reacción.</i>\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Contraataca con: Corte Vertical -1 Ataque. 1 vez.</color>\n\n";
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} - termina Turno \n- Costo Val: {costoPM} \n</color>\n\n";
-
-        if (EsEscenaCampaña())
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          txtDescripcion = "<color=#5dade2><b>Postura Defensiva I</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero se posiciona en una postura especial, listo para recibir ataques y contraatacar.</i>\n";
+          txtDescripcion += "<i>Reacción: Aumenta 1 la Defensa, y contraataca al enemigo si falla un ataque melee contra el Caballero. Si es dañado, cancela la reacción.</i>\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Contraataca con: Corte Vertical -1 Ataque. 1 vez.</color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} - termina Turno \n- Costo Val: {costoPM} \n</color>\n\n";
+          if (EsEscenaCampaña())
           {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Defensa</color>\n\n";
-          }
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Defensa</color>\n\n";
+              }
+            }
           }
         }
-       }
-       if(NIVEL==2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Postura Defensiva II</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Caballero se posiciona en una postura especial, listo para recibir ataques y contraatacar.</i>\n";
-        txtDescripcion += "<i>Reacción: Aumenta 2 la Defensa, y contraataca al enemigo si falla un ataque melee contra el Caballero. Si es dañado, cancela la reacción.</i>\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Contraataca con: Corte Vertical -1 Ataque. 1 vez.</color>\n\n";
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} - termina Turno \n- Costo Val: {costoPM} \n</color>\n\n";
-
-         if (EsEscenaCampaña())
+        if(NIVEL==2)
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          txtDescripcion = "<color=#5dade2><b>Postura Defensiva II</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero se posiciona en una postura especial, listo para recibir ataques y contraatacar.</i>\n";
+          txtDescripcion += "<i>Reacción: Aumenta 2 la Defensa, y contraataca al enemigo si falla un ataque melee contra el Caballero. Si es dañado, cancela la reacción.</i>\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Contraataca con: Corte Vertical -1 Ataque. 1 vez.</color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} - termina Turno \n- Costo Val: {costoPM} \n</color>\n\n";
+          if (EsEscenaCampaña())
           {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque a Reacción</color>\n\n";
-          }
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque a Reacción</color>\n\n";
+              }
+            }
           }
         }
-       }
-       if(NIVEL==3)
-       {
-        txtDescripcion = "<color=#5dade2><b>Postura Defensiva III</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Caballero se posiciona en una postura especial, listo para recibir ataques y contraatacar.</i>\n";
-        txtDescripcion += "<i>Reacción: Aumenta 1 la Defensa, y contraataca al enemigo si falla un ataque melee contra el Caballero. Si es dañado, cancela la reacción.</i>\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Contraataca con: Corte Vertical. 1 vez. </color>\n\n";
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} - termina Turno \n- Costo Val: {costoPM} \n</color>\n\n";
-
-        if (EsEscenaCampaña())
+        if(NIVEL==3)
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          txtDescripcion = "<color=#5dade2><b>Postura Defensiva III</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero se posiciona en una postura especial, listo para recibir ataques y contraatacar.</i>\n";
+          txtDescripcion += "<i>Reacción: Aumenta 1 la Defensa, y contraataca al enemigo si falla un ataque melee contra el Caballero. Si es dañado, cancela la reacción.</i>\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Contraataca con: Corte Vertical. 1 vez. </color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} - termina Turno \n- Costo Val: {costoPM} \n</color>\n\n";
+          if (EsEscenaCampaña())
           {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: Ya no se cancela al recibir un golpe</color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: +1 contraataque</color>\n";
-          }
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Opción A: Ya no se cancela al recibir un golpe</color>\n";
+                txtDescripcion += $"<color=#dfea02>-Opción B: +1 contraataque</color>\n";
+              }
+            }
           }
         }
-       }
-       if(NIVEL==4)
-       {
-        txtDescripcion = "<color=#5dade2><b>Postura Defensiva IV a</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Caballero se posiciona en una postura especial, listo para recibir ataques y contraatacar.</i>\n";
-        txtDescripcion += "<i>Reacción: Aumenta 1 la Defensa, y contraataca al enemigo si falla un ataque melee contra el Caballero.</i>\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Contraataca con: Corte Vertical. 1 vez. </color>\n\n";
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} - termina Turno \n- Costo Val: {costoPM} \n</color>";
-       }
-       if(NIVEL==5)
-       {
-        txtDescripcion = "<color=#5dade2><b>Postura Defensiva III</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Caballero se posiciona en una postura especial, listo para recibir ataques y contraatacar.</i>\n";
-        txtDescripcion += "<i>Reacción: Aumenta 1 la Defensa, y contraataca al enemigo si falla un ataque melee contra el Caballero. Si es dañado, cancela la reacción.</i>\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Contraataca con: Corte Vertical. 2 veces. </color>\n\n";
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} - termina Turno \n- Costo Val: {costoPM} \n</color>";
-       }
-
-
-
-
-
+        if(NIVEL==4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Postura Defensiva IV a</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero se posiciona en una postura especial, listo para recibir ataques y contraatacar.</i>\n";
+          txtDescripcion += "<i>Reacción: Aumenta 1 la Defensa, y contraataca al enemigo si falla un ataque melee contra el Caballero.</i>\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Contraataca con: Corte Vertical. 1 vez. </color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} - termina Turno \n- Costo Val: {costoPM} \n</color>";
+        }
+        if(NIVEL==5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Postura Defensiva IV b</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero se posiciona en una postura especial, listo para recibir ataques y contraatacar.</i>\n";
+          txtDescripcion += "<i>Reacción: Aumenta 1 la Defensa, y contraataca al enemigo si falla un ataque melee contra el Caballero. Si es dañado, cancela la reacción.</i>\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Contraataca con: Corte Vertical. 2 veces. </color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} - termina Turno \n- Costo Val: {costoPM} \n</color>";
+        }
+      }
+      if (TRADU.i.nIdioma == 2) // Inglés
+      {
+        if(NIVEL<2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Defensive Stance I</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight assumes a special stance, ready to receive attacks and counterattack.</i>\n";
+          txtDescripcion += "<i>Reaction: Increases Defense by 1, and counterattacks the enemy if they miss a melee attack against the Knight. If damaged, cancels the reaction.</i>\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Counterattacks with: Vertical Slash -1 Attack. 1 time.</color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Val Cost: {costoPM} \n</color>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Defense</color>\n\n";
+              }
+            }
+          }
+        }
+        if(NIVEL==2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Defensive Stance II</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight assumes a special stance, ready to receive attacks and counterattack.</i>\n";
+          txtDescripcion += "<i>Reaction: Increases Defense by 2, and counterattacks the enemy if they miss a melee attack against the Knight. If damaged, cancels the reaction.</i>\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Counterattacks with: Vertical Slash -1 Attack. 1 time.</color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Val Cost: {costoPM} \n</color>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Reaction Attack</color>\n\n";
+              }
+            }
+          }
+        }
+        if(NIVEL==3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Defensive Stance III</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight assumes a special stance, ready to receive attacks and counterattack.</i>\n";
+          txtDescripcion += "<i>Reaction: Increases Defense by 1, and counterattacks the enemy if they miss a melee attack against the Knight. If damaged, cancels the reaction.</i>\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Counterattacks with: Vertical Slash. 1 time. </color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Val Cost: {costoPM} \n</color>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Option A: No longer cancels when hit</color>\n";
+                txtDescripcion += $"<color=#dfea02>-Option B: +1 counterattack</color>\n";
+              }
+            }
+          }
+        }
+        if(NIVEL==4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Defensive Stance IV a</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight assumes a special stance, ready to receive attacks and counterattack.</i>\n";
+          txtDescripcion += "<i>Reaction: Increases Defense by 1, and counterattacks the enemy if they miss a melee attack against the Knight.</i>\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Counterattacks with: Vertical Slash. 1 time. </color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Val Cost: {costoPM} \n</color>";
+        }
+        if(NIVEL==5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Defensive Stance IVb</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight assumes a special stance, ready to receive attacks and counterattack.</i>\n";
+          txtDescripcion += "<i>Reaction: Increases Defense by 1, and counterattacks the enemy if they miss a melee attack against the Knight. If damaged, cancels the reaction.</i>\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE -</b> -Counterattacks with: Vertical Slash. 2 times. </color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Val Cost: {costoPM} \n</color>";
+        }
+      }
     }
     Casilla Origen;
     public override void Activar()

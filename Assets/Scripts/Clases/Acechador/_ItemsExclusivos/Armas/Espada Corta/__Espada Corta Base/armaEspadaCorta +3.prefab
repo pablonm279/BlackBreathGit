@@ -46,12 +46,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: d7eb5239203bc7a4fa1cc4edf4dc022b, type: 3}
-  sNombreItem: Espada Corta +3
+  sNombreItem: Espada Corta
   IDClasesQuePuedenUsarEsteItem: 04000000
   iPrecio: 485
-  itemDescrpicion: "<i>El acechador utiliza una filosa espada corta para combatir
-    cuerpo a cuerpo y asestar golpes mortales. </i>\n\n<b>Otorga: Ataque Espada Corta</b>\n<b>Mejora
-    +3: +3 Ataque  +15% Da\xF1o (afecta tambi\xE9n a la Ballesta de Mano)</b> "
+  itemDescripcion: 
   iRareza: 3
   nivelMejora: 3
   habilidadAtaque: {fileID: 670376592415151795}

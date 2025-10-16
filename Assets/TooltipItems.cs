@@ -19,7 +19,7 @@ public class TooltipItems: MonoBehaviour
     public void ShowTooltip(string content, Vector3 position)
     {
         tooltipObject.SetActive(true);
-        tooltipText.text = content;
+        tooltipText.text = TRADU.i.Traducir(content);
         tooltipObject.transform.position = position;
     }
 

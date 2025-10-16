@@ -46,12 +46,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: d9b195f05eefe2b458326dd1a0d431eb, type: 3}
-  sNombreItem: "Armadura de Cuero Necr\xF3tico +1"
+  sNombreItem: "Armadura de Cuero Necr\xF3tico"
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 225
-  itemDescrpicion: "<i>Una Armadura de Cuero hecha con tejido necr\xF3tico que brinda
-    protecci\xF3n contra da\xF1o Necro.\n\nOtorga +4 Resistencia al Da\xF1o Necro
-    y -1 Resistencia Da\xF1o Divino.\n</i>\n\n+4 Armadura"
+  itemDescripcion: 
   iRareza: 1
   nivelMejora: 1
   requisitoFue: 0

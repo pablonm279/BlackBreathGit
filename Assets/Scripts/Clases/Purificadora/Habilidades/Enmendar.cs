@@ -115,7 +115,78 @@ public class Enmendar : Habilidad
         txtDescripcion += $"<color=#44d3ec>-Curación mágica. Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
       }
 
+  if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+  {
+    if (NIVEL < 2)
+    {
+      txtDescripcion = "<color=#5dade2><b>Mend I</b></color>\n\n";
+      txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
+      txtDescripcion += "<i>Healing: 3d6 +1 per Zeal +1 per Power. Consumes 1 Zeal.</i>\n";
+      txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
 
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Next Level: +1 Healing</color>\n\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 2)
+    {
+      txtDescripcion = "<color=#5dade2><b>Mend II</b></color>\n\n";
+      txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
+      txtDescripcion += "<i>Healing: 3d6+1, +1 per Zeal +1 per Power. Consumes 1 Zeal.</i>\n";
+      txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Next Level: +2 Healing</color>\n\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 3)
+    {
+      txtDescripcion = "<color=#5dade2><b>Mend III</b></color>\n\n";
+      txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
+      txtDescripcion += "<i>Healing: 3d6+3, +1 per Zeal +1 per Power. Consumes 1 Zeal.</i>\n";
+      txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Option A: Does not consume Zeal </color>\n";
+            txtDescripcion += $"<color=#dfea02>-Option B: Healing bonus per Zeal is tripled</color>\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 4)
+    {
+      txtDescripcion = "<color=#5dade2><b>Mend IV a</b></color>\n\n";
+      txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
+      txtDescripcion += "<i>Healing: 3d6+3, +1 per Zeal +1 per Power.</i>\n";
+      txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+    }
+    if (NIVEL == 5)
+    {
+      txtDescripcion = "<color=#5dade2><b>Mend IV b</b></color>\n\n";
+      txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
+      txtDescripcion += "<i>Healing: 3d6+3, +3 per Zeal +1 per Power. Consumes 1 Zeal.</i>\n";
+      txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
+    }
+  }
 
     }
     void Start()

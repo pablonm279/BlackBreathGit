@@ -37,69 +37,69 @@ public class ManifestacionArcana : Habilidad
       
       imHab = Resources.Load<Sprite>("imHab/Canalizador_ManifestacionArcana");
     }
-    public override void ActualizarDescripcion()
+  public override void ActualizarDescripcion()
+  {
+    if (NIVEL < 2)
     {
-       if (NIVEL < 2)
-{
-    txtDescripcion = "<color=#ab47bc><b>Manifestación Arcana</b></color>\n\n";
-    txtDescripcion += "<i>Canaliza energía pura para invocar una criatura semi-humanoide formada de residuos arcanos fluctuantes. Su fuerza aumenta según la energía acumulada en el campo.</i>\n\n";
-    txtDescripcion += $"<color=#44d3ec>-Costo AP: 7 - Costo Val: 1 - Cooldown: {cooldownMax}</color>\n";
-    txtDescripcion += $"<color=#44d3ec>-Requiere Nivel de Energía: 2</color>\n\n";
-    txtDescripcion += "<color=#c8c8c8><b>Efecto:</b></color> Invoca una <b>Manifestación Arcana</b>.\n";
-    txtDescripcion += "Al ser invocada, absorbe todos los Residuos Energéticos del campo, ganando <color=#58d68d>+5% Daño</color> y <color=#58d68d>+6 Vida</color> por cada uno.\n\n";
+      txtDescripcion = "<color=#ab47bc><b>Manifestación Arcana</b></color>\n\n";
+      txtDescripcion += "<i>Canaliza energía pura para invocar una criatura semi-humanoide formada de residuos arcanos fluctuantes. Su fuerza aumenta según la energía acumulada en el campo.</i>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Costo AP: 7 - Costo Val: 1 - Cooldown: {cooldownMax}</color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Requiere Nivel de Energía: 2</color>\n\n";
+      txtDescripcion += "<color=#c8c8c8><b>Efecto:</b></color> Invoca una <b>Manifestación Arcana</b>.\n";
+      txtDescripcion += "Al ser invocada, absorbe todos los Residuos Energéticos del campo, ganando <color=#58d68d>+5% Daño</color> y <color=#58d68d>+6 Vida</color> por cada uno.\n\n";
 
-    if (EsEscenaCampaña())
-    {
+      if (EsEscenaCampaña())
+      {
         if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
         {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Defensa</color>\n\n";
-            }
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Defensa</color>\n\n";
+          }
         }
+      }
     }
-}
-if (NIVEL == 2)
-{
-    txtDescripcion = "<color=#ab47bc><b>Manifestación Arcana II</b></color>\n\n";
-    txtDescripcion += "<i>Canaliza energía pura para invocar una criatura semi-humanoide formada de residuos arcanos fluctuantes. Su fuerza aumenta según la energía acumulada en el campo.</i>\n\n";
-    txtDescripcion += $"<color=#44d3ec>-Costo AP: 7 - Costo Val: 1 - Cooldown: {cooldownMax}</color>\n";
-    txtDescripcion += $"<color=#44d3ec>-Requiere Nivel de Energía: 2</color>\n\n";
-    txtDescripcion += "<color=#c8c8c8><b>Efecto:</b></color> Invoca una <b>Manifestación Arcana</b>, que absorbe todos los Residuos Energéticos del campo, ganando <color=#58d68d>+5% Daño</color> y <color=#58d68d>+6 Vida</color> por cada uno.\n";
-    txtDescripcion += "<color=#58d68d>+1 Defensa base</color>\n\n";
-
-    if (EsEscenaCampaña())
+    if (NIVEL == 2)
     {
+      txtDescripcion = "<color=#ab47bc><b>Manifestación Arcana II</b></color>\n\n";
+      txtDescripcion += "<i>Canaliza energía pura para invocar una criatura semi-humanoide formada de residuos arcanos fluctuantes. Su fuerza aumenta según la energía acumulada en el campo.</i>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Costo AP: 7 - Costo Val: 1 - Cooldown: {cooldownMax}</color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Requiere Nivel de Energía: 2</color>\n\n";
+      txtDescripcion += "<color=#c8c8c8><b>Efecto:</b></color> Invoca una <b>Manifestación Arcana</b>, que absorbe todos los Residuos Energéticos del campo, ganando <color=#58d68d>+5% Daño</color> y <color=#58d68d>+6 Vida</color> por cada uno.\n";
+      txtDescripcion += "<color=#58d68d>+1 Defensa base</color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
         if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
         {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-            }
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
+          }
         }
+      }
     }
-}
-if (NIVEL == 3)
-{
-    txtDescripcion = "<color=#ab47bc><b>Manifestación Arcana III</b></color>\n\n";
-    txtDescripcion += "<i>Canaliza energía pura para invocar una criatura semi-humanoide formada de residuos arcanos fluctuantes. Su fuerza aumenta según la energía acumulada en el campo.</i>\n\n";
-    txtDescripcion += $"<color=#44d3ec>-Costo AP: 7 - Costo Val: 1 - Cooldown: {cooldownMax}</color>\n";
-    txtDescripcion += $"<color=#44d3ec>-Requiere Nivel de Energía: 2</color>\n\n";
-    txtDescripcion += "<color=#c8c8c8><b>Efecto:</b></color> Invoca una <b>Manifestación Arcana</b>, que absorbe todos los Residuos Energéticos del campo, ganando <color=#58d68d>+5% Daño</color> y <color=#58d68d>+6 Vida</color> por cada uno.\n";
-    txtDescripcion += "<color=#58d68d>+1 Defensa base</color>\n";
-    txtDescripcion += "<color=#58d68d>+1 Ataque base</color>\n\n";
-
-    if (EsEscenaCampaña())
+    if (NIVEL == 3)
     {
+      txtDescripcion = "<color=#ab47bc><b>Manifestación Arcana III</b></color>\n\n";
+      txtDescripcion += "<i>Canaliza energía pura para invocar una criatura semi-humanoide formada de residuos arcanos fluctuantes. Su fuerza aumenta según la energía acumulada en el campo.</i>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Costo AP: 7 - Costo Val: 1 - Cooldown: {cooldownMax}</color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Requiere Nivel de Energía: 2</color>\n\n";
+      txtDescripcion += "<color=#c8c8c8><b>Efecto:</b></color> Invoca una <b>Manifestación Arcana</b>, que absorbe todos los Residuos Energéticos del campo, ganando <color=#58d68d>+5% Daño</color> y <color=#58d68d>+6 Vida</color> por cada uno.\n";
+      txtDescripcion += "<color=#58d68d>+1 Defensa base</color>\n";
+      txtDescripcion += "<color=#58d68d>+1 Ataque base</color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
         if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
         {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-                txtDescripcion += $"<color=#dfea02>-Próximo Nivel:\nA) +1 AP Máximo\nB) -1 Requisito Energía</color>\n\n";
-            }
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Próximo Nivel:\nA) +1 AP Máximo\nB) -1 Requisito Energía</color>\n\n";
+          }
         }
+      }
     }
-}
     if (NIVEL == 4)
     {
       txtDescripcion = "<color=#ab47bc><b>Manifestación Arcana IVa</b></color>\n\n";
@@ -111,19 +111,105 @@ if (NIVEL == 3)
       txtDescripcion += "<color=#58d68d>+1 Ataque base</color>\n";
       txtDescripcion += "<color=#dfea02> +1 AP Máximo</color>\n";
     }
-if (NIVEL == 5)
-{
-    txtDescripcion = "<color=#ab47bc><b>Manifestación Arcana IVb</b></color>\n\n";
-    txtDescripcion += "<i>Canaliza energía pura para invocar una criatura semi-humanoide formada de residuos arcanos fluctuantes. Su fuerza aumenta según la energía acumulada en el campo.</i>\n\n";
-    txtDescripcion += $"<color=#44d3ec>-Costo AP: 7 - Costo Val: 1 - Cooldown: {cooldownMax}</color>\n";
-    txtDescripcion += $"<color=#44d3ec>-Requiere Nivel de Energía: 1</color>\n\n";
-    txtDescripcion += "<color=#c8c8c8><b>Efecto:</b></color> Invoca una <b>Manifestación Arcana</b>, que absorbe todos los Residuos Energéticos del campo, ganando <color=#58d68d>+5% Daño</color> y <color=#58d68d>+6 Vida</color> por cada uno.\n";
-    txtDescripcion += "<color=#58d68d>+1 Defensa base</color>\n";
-    txtDescripcion += "<color=#58d68d>+1 Ataque base</color>\n";
-
-}
+    if (NIVEL == 5)
+    {
+      txtDescripcion = "<color=#ab47bc><b>Manifestación Arcana IVb</b></color>\n\n";
+      txtDescripcion += "<i>Canaliza energía pura para invocar una criatura semi-humanoide formada de residuos arcanos fluctuantes. Su fuerza aumenta según la energía acumulada en el campo.</i>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Costo AP: 7 - Costo Val: 1 - Cooldown: {cooldownMax}</color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Requiere Nivel de Energía: 1</color>\n\n";
+      txtDescripcion += "<color=#c8c8c8><b>Efecto:</b></color> Invoca una <b>Manifestación Arcana</b>, que absorbe todos los Residuos Energéticos del campo, ganando <color=#58d68d>+5% Daño</color> y <color=#58d68d>+6 Vida</color> por cada uno.\n";
+      txtDescripcion += "<color=#58d68d>+1 Defensa base</color>\n";
+      txtDescripcion += "<color=#58d68d>+1 Ataque base</color>\n";
 
     }
+
+    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+    {
+      if (NIVEL < 2)
+      {
+        txtDescripcion = "<color=#ab47bc><b>Arcane Manifestation</b></color>\n\n";
+        txtDescripcion += "<i>Channels pure energy to summon a semi-humanoid creature formed from fluctuating arcane residues. Its strength increases according to the energy accumulated on the field.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>-AP Cost: 7 - Value Cost: 1 - Cooldown: {cooldownMax}</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Requires Energy Level: 2</color>\n\n";
+        txtDescripcion += "<color=#c8c8c8><b>Effect:</b></color> Summons an <b>Arcane Manifestation</b>.\n";
+        txtDescripcion += "Upon being summoned, it absorbs all Energy Residues on the field, gaining <color=#58d68d>+5% Damage</color> and <color=#58d68d>+6 Health</color> for each one.\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: +1 Defense</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 2)
+      {
+        txtDescripcion = "<color=#ab47bc><b>Arcane Manifestation II</b></color>\n\n";
+        txtDescripcion += "<i>Channels pure energy to summon a semi-humanoid creature formed from fluctuating arcane residues. Its strength increases according to the energy accumulated on the field.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>-AP Cost: 7 - Value Cost: 1 - Cooldown: {cooldownMax}</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Requires Energy Level: 2</color>\n\n";
+        txtDescripcion += "<color=#c8c8c8><b>Effect:</b></color> Summons an <b>Arcane Manifestation</b>, which absorbs all Energy Residues on the field, gaining <color=#58d68d>+5% Damage</color> and <color=#58d68d>+6 Health</color> for each one.\n";
+        txtDescripcion += "<color=#58d68d>+1 Base Defense</color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 3)
+      {
+        txtDescripcion = "<color=#ab47bc><b>Arcane Manifestation III</b></color>\n\n";
+        txtDescripcion += "<i>Channels pure energy to summon a semi-humanoid creature formed from fluctuating arcane residues. Its strength increases according to the energy accumulated on the field.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>-AP Cost: 7 - Value Cost: 1 - Cooldown: {cooldownMax}</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Requires Energy Level: 2</color>\n\n";
+        txtDescripcion += "<color=#c8c8c8><b>Effect:</b></color> Summons an <b>Arcane Manifestation</b>, which absorbs all Energy Residues on the field, gaining <color=#58d68d>+5% Damage</color> and <color=#58d68d>+6 Health</color> for each one.\n";
+        txtDescripcion += "<color=#58d68d>+1 Base Defense</color>\n";
+        txtDescripcion += "<color=#58d68d>+1 Base Attack</color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level:\nA) +1 Max AP\nB) -1 Energy Requirement</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 4)
+      {
+        txtDescripcion = "<color=#ab47bc><b>Arcane Manifestation IVa</b></color>\n\n";
+        txtDescripcion += "<i>Channels pure energy to summon a semi-humanoid creature formed from fluctuating arcane residues. Its strength increases according to the energy accumulated on the field.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>-AP Cost: 7 - Value Cost: 1 - Cooldown: {cooldownMax}</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Requires Energy Level: 2</color>\n\n";
+        txtDescripcion += "<color=#c8c8c8><b>Effect:</b></color> Summons an <b>Arcane Manifestation</b>, which absorbs all Energy Residues on the field, gaining <color=#58d68d>+5% Damage</color> and <color=#58d68d>+6 Health</color> for each one.\n";
+        txtDescripcion += "<color=#58d68d>+1 Base Defense</color>\n";
+        txtDescripcion += "<color=#58d68d>+1 Base Attack</color>\n";
+        txtDescripcion += "<color=#dfea02> +1 Max AP</color>\n";
+      }
+      if (NIVEL == 5)
+      {
+        txtDescripcion = "<color=#ab47bc><b>Arcane Manifestation IVb</b></color>\n\n";
+        txtDescripcion += "<i>Channels pure energy to summon a semi-humanoid creature formed from fluctuating arcane residues. Its strength increases according to the energy accumulated on the field.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>-AP Cost: 7 - Value Cost: 1 - Cooldown: {cooldownMax}</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Requires Energy Level: 1</color>\n\n";
+        txtDescripcion += "<color=#c8c8c8><b>Effect:</b></color> Summons an <b>Arcane Manifestation</b>, which absorbs all Energy Residues on the field, gaining <color=#58d68d>+5% Damage</color> and <color=#58d68d>+6 Health</color> for each one.\n";
+        txtDescripcion += "<color=#58d68d>+1 Base Defense</color>\n";
+        txtDescripcion += "<color=#58d68d>+1 Base Attack</color>\n";
+      }
+    }
+
+  }
     void Start()
     {
       

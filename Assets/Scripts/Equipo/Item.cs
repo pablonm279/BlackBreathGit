@@ -8,7 +8,7 @@ public abstract class Item : MonoBehaviour
 {
      public Sprite imItem;
      public string sNombreItem;
-
+     public int IDEfectoEspecial; //Solamente a las que son necesarias referenciar en AdministradorEscenas, como las armaduras con efectos especiales
      public List<int> IDClasesQuePuedenUsarEsteItem = new List<int>();
 
 

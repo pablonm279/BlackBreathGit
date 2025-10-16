@@ -85,7 +85,74 @@ if(NIVEL==5)
     txtDescripcion += "<color=#c8c8c8>Si completa con éxito la acumulación, obtiene <b>+1 AP</b> ese turno.</color>\n";
 }
 
-      
+    if (TRADU.i.nIdioma == 2) // English translation
+    {
+        if (NIVEL < 2)
+        {
+            txtDescripcion = "<color=#5dade2><b>Protected Charging I</b></color>\n\n";
+            txtDescripcion += "<i>(Passive) The Channeler covers their body with protective energy when Charging power.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>When Charging Energy, gains <b>1 + Power + 3 x Energy</b> Barrier and <b>+1 to Mental Save</b> until their next turn.</color>\n\n";
+
+            if (EsEscenaCampaña())
+            {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+                {
+                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                    {
+                        txtDescripcion += $"<color=#dfea02>- Next Level: +2 Barrier when accumulating Energy.</color>\n\n";
+                    }
+                }
+            }
+        }
+        if (NIVEL == 2)
+        {
+            txtDescripcion = "<color=#5dade2><b>Protected Charging II</b></color>\n\n";
+            txtDescripcion += "<i>(Passive) The Channeler covers their body with protective energy when Charging power.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>When Charging Energy, gains <b>1 + Power + 3 x Energy +2</b> Barrier and <b>+1 to Mental Save</b> until their next turn.</color>\n\n";
+
+            if (EsEscenaCampaña())
+            {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+                {
+                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                    {
+                        txtDescripcion += $"<color=#dfea02>- Next Level: +1 additional Mental Save.</color>\n\n";
+                    }
+                }
+            }
+        }
+        if (NIVEL == 3)
+        {
+            txtDescripcion = "<color=#5dade2><b>Protected Charging III</b></color>\n\n";
+            txtDescripcion += "<i>(Passive) The Channeler covers their body with protective energy when Charging power.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>When Charging Energy, gains <b>1 + Power + 3 x Energy +2</b> Barrier and <b>+2 to Mental Save</b> until their next turn.</color>\n\n";
+
+            if (EsEscenaCampaña())
+            {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+                {
+                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                    {
+                        txtDescripcion += $"<color=#dfea02>- Option A: If the Mental Save for concentration is passed, the attacker takes 1d10 Arcane damage.</color>\n";
+                        txtDescripcion += $"<color=#dfea02>- Option B: If Charging is successfully completed, gains +1 AP that turn.</color>\n";
+                    }
+                }
+            }
+        }
+        if (NIVEL == 4)
+        {
+            txtDescripcion = "<color=#5dade2><b>Protected Charging IV a</b></color>\n\n";
+            txtDescripcion += "<i>(Passive) The Channeler covers their body with protective energy when Charging power.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>When Charging Energy, gains <b>1 + Power + 3 x Energy +6</b> Barrier and <b>+2 to Mental Save</b> until their next turn.</color>\n\n";
+        }
+        if (NIVEL == 5)
+        {
+            txtDescripcion = "<color=#5dade2><b>Protected Charging IV b</b></color>\n\n";
+            txtDescripcion += "<i>(Passive) The Channeler covers their body with protective energy when Charging power.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>When Charging Energy, gains <b>1 + Power + 3 x Energy +2</b> Barrier and <b>+2 to Mental Save</b> until their next turn.</color>\n\n";
+            txtDescripcion += "<color=#c8c8c8>If Charging is successfully completed, gains <b>+1 AP</b> that turn.</color>\n";
+        }
+    }
 
     }
 

@@ -10,8 +10,8 @@ public class Cons_BalsamoFort : Consumible
 
     void Awake()
     {
-      sNombreItem = "Bálsamo Fortalecedor";
-      itemDescripcion = "+2 TS Fortaleza por todo el combate.";
+      sNombreItem = TRADU.i.Traducir("Bálsamo Fortalecedor");
+      itemDescripcion = TRADU.i.Traducir("+2 TS Fortaleza por todo el combate.");
 
     }
 

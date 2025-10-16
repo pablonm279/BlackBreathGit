@@ -541,14 +541,27 @@ void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad l
     {
 
 
-
-      if (CasillaPosicion.lado == 1)
+      if (TRADU.i.nIdioma == 1)
       {
-        scBattleManager.EscribirLog($"<size=130%><color=#ae1b00>---Turno de {uNombre}---</color></size>");
+        if (CasillaPosicion.lado == 1)
+        {
+          scBattleManager.EscribirLog($"<size=130%><color=#ae1b00>---Turno de {uNombre}---</color></size>");
+        }
+        else
+        {
+          scBattleManager.EscribirLog($"<size=130%><color=#003cab>---Turno de {uNombre}---</color></size>");
+        }
       }
-      else
+       if (TRADU.i.nIdioma == 2)
       {
-        scBattleManager.EscribirLog($"<size=130%><color=#003cab>---Turno de {uNombre}---</color></size>");
+        if (CasillaPosicion.lado == 1)
+        {
+          scBattleManager.EscribirLog($"<size=130%><color=#ae1b00>---{uNombre}'s Turn---</color></size>");
+        }
+        else
+        {
+          scBattleManager.EscribirLog($"<size=130%><color=#003cab>---{uNombre}'s Turn---</color></size>");
+        }
       }
 
       if (gameObject.GetComponent<RetrasarTurno>().yaRetraso == false)
@@ -614,7 +627,7 @@ void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad l
 
         //Buff / Debuff
         //ReducirDuracionBuffs();
-     
+
 
         //Consumibles
         ChequearTieneConsumibles();
@@ -789,7 +802,6 @@ void ActivarEfectosCustomBuffsInicioTurno()
 
     LlamarReacciones(5, this, false); //Reacciones al terminar turno
 
-    print("Llama a Reducir Buffs");
     ReducirDuracionBuffs(); //Se reduce duracion de buffs/debuffs al terminar el turno
     
     ControlarSiEsDescanso();
@@ -825,8 +837,8 @@ private void ResolverCargarHabilidades()
     {
        valorCargando -= (int)AccionP_actual;
 
-       
-       scBattleManager.EscribirLog($"{uNombre} sigue canalizando.");
+
+       scBattleManager.EscribirLog(uNombre+TRADU.i.Traducir(" sigue canalizando."));
 
        BattleManager.Instance.TerminarTurno();
 
@@ -884,14 +896,14 @@ private void OnDestroy()
 public virtual void PerderEscondido()
 {
   estaEscondido = 0;
-  scBattleManager.EscribirLog($"{uNombre} ya no está escondido.");
+  scBattleManager.EscribirLog(uNombre + TRADU.i.Traducir(" ya no está escondido."));
   gameObject.transform.GetChild(3).GetChild(1).GetChild(1).gameObject.SetActive(false);
   //aca agregar tratamientos de vfx de revelar etc.
 }
 public virtual void GanarEscondido(int n) // n es Tier de Escondido, 1 se va al recibir daño u atacar, 2 no se va al recibir daño ni atacar
 {
   estaEscondido = n;
-  scBattleManager.EscribirLog($"{uNombre} está escondido.");
+  scBattleManager.EscribirLog(uNombre + TRADU.i.Traducir(" está escondido."));
   gameObject.transform.GetChild(3).GetChild(1).GetChild(1).gameObject.SetActive(true);
   //aca agregar tratamientos de vfx de esconderse etc.
 }
@@ -1107,7 +1119,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         if (barreraDeDanio < 0) barreraDeDanio = 0;
 
         if (danioBloqueado > 0)
-        { BattleManager.Instance.EscribirLog($"La Barrera de {uNombre} absorbió {danioBloqueado} de daño."); }
+        { BattleManager.Instance.EscribirLog(TRADU.i.Traducir("La Barrera de ") + uNombre + TRADU.i.Traducir(" absorbió ") + danioBloqueado + TRADU.i.Traducir(" de daño.")); }
       }
 
 
@@ -1154,15 +1166,19 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
 
 
-      if (CasillaPosicion.lado == 1)
-      {
-        scBattleManager.EscribirLog($"<color=#d92b08>{uNombre} recibe {danioFinal} de daño {stDaniotipo}.</color>");
+    
+        if (TRADU.i.nIdioma == 1)
+        {
+          scBattleManager.EscribirLog($"<color=#d92b08>{uNombre} recibe {danioFinal} de daño {stDaniotipo}.</color>");
+        }
+        else if (TRADU.i.nIdioma == 2)
+        {
+          scBattleManager.EscribirLog($"<color=#d92b08>{uNombre} takes {danioFinal} {TRADU.i.Traducir(stDaniotipo)} damage.</color>");
+        }
 
-      }
-      else
-      {
-        scBattleManager.EscribirLog($"{uNombre} recibe {danioFinal} de daño {stDaniotipo}.");
-      }
+
+      
+    
 
 
    
@@ -1237,7 +1253,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     else
     {
       if (TieneBuffNombre("Invulnerable"))
-      { GenerarTextoFlotante("Invulnerable", Color.gray); }
+      { GenerarTextoFlotante( TRADU.i.Traducir("Invulnerable"), Color.gray); }
 
     }
   }
@@ -1345,15 +1361,14 @@ public async virtual void RecibirDanioBonusElemental(float Xddanio, int tipoDani
       }
 
 
-      if (CasillaPosicion.lado == 1)
-      {
-        scBattleManager.EscribirLog($"<color=#d92b08>{uNombre} recibe {danioFinal} de daño extra elemental de {stDaniotipo}.</color>");
-
-      }
-      else
-      {
-        scBattleManager.EscribirLog($"{uNombre} recibe {danioFinal} de daño extra elemental de {stDaniotipo}.");
-      }
+       if (TRADU.i.nIdioma == 1)
+        {
+          scBattleManager.EscribirLog($"<color=#d92b08>{uNombre} recibe {danioFinal} de daño elemental extra {stDaniotipo}.</color>");
+        }
+        else if (TRADU.i.nIdioma == 2)
+        {
+          scBattleManager.EscribirLog($"<color=#d92b08>{uNombre} takes {danioFinal} {TRADU.i.Traducir(stDaniotipo)} extra damage.</color>");
+        }
 
 
 
@@ -1385,7 +1400,7 @@ public async virtual void RecibirDanioBonusElemental(float Xddanio, int tipoDani
     else
     {
        if (TieneBuffNombre("Invulnerable"))
-      { GenerarTextoFlotante("Invulnerable", Color.gray); }
+      { GenerarTextoFlotante( TRADU.i.Traducir("Invulnerable"), Color.gray); }
 
 
     }
@@ -1463,7 +1478,15 @@ public virtual void SumarValentia(int cant)
       if(cant > 0)
       {txtVAl.text = "+ "+cant; } else {txtVAl.text = " "+cant; }
 
-     scBattleManager.EscribirLog($"{uNombre} gana {cant} de Valentía.");
+     switch (TRADU.i.nIdioma)
+     {
+      case 1:
+        scBattleManager.EscribirLog($"{uNombre} gana {cant} de Valentía.");
+        break;
+      case 2:
+        scBattleManager.EscribirLog($"{uNombre} obtains {cant} Valor.");
+        break;
+     } 
 
       BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
   }
@@ -1661,8 +1684,8 @@ public void RecibirCuracion(float curacion, bool magica)
  { 
    HP_actual += (int)curaFinal;
   if(HP_actual > mod_maxHP){HP_actual = mod_maxHP; }
-  GenerarTextoFlotante("Cura "+(int)curaFinal, Color.green);
-  scBattleManager.EscribirLog($"{uNombre} recibe <color=#11c66b>{curaFinal}</color> de curación.");
+  GenerarTextoFlotante(TRADU.i.Traducir("Cura ")+(int)curaFinal, Color.green);
+  scBattleManager.EscribirLog(uNombre+TRADU.i.Traducir(" recibe <color=#11c66b>") +curaFinal+TRADU.i.Traducir("</color> de curación."));
 
   if(magica){ tejidoCuracMagica += (int)curaFinal/5;} //Cada 5 curación mágica se suma 1 de residuo tejido curativo que previene 1 de futuras curaciones.
  }
@@ -1737,12 +1760,12 @@ public void UnidadMuere()
 
     if(CasillaPosicion.lado == 1)
     {
-          scBattleManager.EscribirLog($"<color=#d92b08>{uNombre} muere.</color>");
+          scBattleManager.EscribirLog($"<color=#d92b08>"+uNombre+TRADU.i.Traducir(" muere.")+"</color>");
 
     }
     else
     {
-          scBattleManager.EscribirLog($"{uNombre} muere.");
+          scBattleManager.EscribirLog($""+uNombre+TRADU.i.Traducir(" muere.")+"");
     }
 
 
@@ -1964,12 +1987,12 @@ public async void OnMouseDown()
 
     if (resultado) //positivo NO se salva
     {
-      BattleManager.Instance.EscribirLog($"{uNombre} realiza Tirada de Salvación: 1d20 = {iTiradaDefensa} +{atributoDefiende} vs Tirada Dificultad: {iResultadoAtaque}. Resultado: No se salva.");
+      BattleManager.Instance.EscribirLog(uNombre+TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende + " vs Tirada Dificultad: " + iResultadoAtaque + ". Resultado: No se salva.");
     }
     else //NegativoSeSalva
     {
-      BattleManager.Instance.EscribirLog($"{uNombre} realiza Tirada de Salvación: 1d20 = {iTiradaDefensa} +{atributoDefiende} vs Tirada Dificultad: {iResultadoAtaque}. Resultado: Se salva.");
-      GenerarTextoFlotante("Resiste", Color.green);
+      BattleManager.Instance.EscribirLog(uNombre+TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende + " vs Tirada Dificultad: " + iResultadoAtaque + ". Resultado: Se salva.");
+      GenerarTextoFlotante(TRADU.i.Traducir("Resiste"), Color.green);
    
     }
 
@@ -2263,7 +2286,6 @@ void AcomodarSortingLayer()
         break;
       }
     }
-    print(uNombre + "ChequearEstaAislado: " + estaAislado);
     return estaAislado;
   }
 

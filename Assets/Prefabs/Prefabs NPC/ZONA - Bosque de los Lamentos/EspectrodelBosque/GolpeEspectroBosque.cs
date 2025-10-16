@@ -17,7 +17,7 @@ public class GolpeEspectroBosque : IAHabilidad
    
   void Awake()
    {
-      nombre = "Golpe de Espectro del Bosque";
+      nombre = "Golpe de Espectro";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 1;

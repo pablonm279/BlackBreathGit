@@ -134,7 +134,83 @@ public class Purificacion : Habilidad
         txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
         }
 
+    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+    {
+      if (NIVEL < 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Purification I</b></color>\n\n";
+        txtDescripcion += "<i>Using the faith of the entire caravan, launches a massive attack against all enemies.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>Fervor Damage: 4 + Power + 1d10 - Divine Damage; <color=#ea0606>Reflex Saving Throw: DC:9 + Power - avoids 1/2 damage, if failed Burns 2</color>\n";
+        txtDescripcion += $"<i>The Purifier loses all Fervor.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
 
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: +1 Fervor Damage</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Purification II</b></color>\n\n";
+        txtDescripcion += "<i>Using the faith of the entire caravan, launches a massive attack against all enemies.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>Fervor Damage: 5 + Power + 1d10 - Divine Damage; <color=#ea0606>Reflex Saving Throw: DC:9 + Power - avoids 1/2 damage, if failed Burns 2</color>\n";
+        txtDescripcion += $"<i>The Purifier loses all Fervor.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: +1 DC</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Purification III</b></color>\n\n";
+        txtDescripcion += "<i>Using the faith of the entire caravan, launches a massive attack against all enemies.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>Fervor Damage: 5 + Power + 1d10 - Divine Damage; <color=#ea0606>Reflex Saving Throw: DC:10 + Power - avoids 1/2 damage, if failed Burns 2</color>\n";
+        txtDescripcion += $"<i>The Purifier loses all Fervor.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Option A: +2 burn</color>\n";
+              txtDescripcion += $"<color=#dfea02>-Option B: Deals 1/3 damage to all other enemies.</color>\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Purification IVa</b></color>\n\n";
+        txtDescripcion += "<i>Using the faith of the entire caravan, launches a massive attack against all enemies.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>Fervor Damage: 5 + Power + 1d10 - Divine Damage; <color=#ea0606>Reflex Saving Throw: DC:10 + Power - avoids 1/2 damage, if failed Burns 4</color>\n";
+        txtDescripcion += $"<i>The Purifier loses all Fervor.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+      }
+      if (NIVEL == 5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Purification IVb</b></color>\n\n";
+        txtDescripcion += "<i>Using the faith of the entire caravan, launches a massive attack against all enemies.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>Fervor Damage: 5 + Power + 1d10 - Divine Damage; <color=#ea0606>Reflex Saving Throw: DC:10 + Power - avoids 1/2 damage, if failed Burns 2</color>\n";
+        txtDescripcion += $"<i>The Purifier keeps 1 Fervor.</i>\n";
+        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+      }
+    }
 
     }
 

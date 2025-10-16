@@ -49,8 +49,7 @@ MonoBehaviour:
   sNombreItem: Armadura de Cuero
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 45
-  itemDescrpicion: "<i>Una Armadura de Cuero que brinda cierta protecci\xF3n al Explorador
-    mientras le permite moverse con libertad.</i>\n\n+2 Armadura"
+  itemDescripcion: 
   iRareza: 0
   nivelMejora: 0
   requisitoFue: 0

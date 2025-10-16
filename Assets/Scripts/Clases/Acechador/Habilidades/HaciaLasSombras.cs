@@ -38,82 +38,152 @@ public class HaciaLasSombras : Habilidad
     
     }
 
-    public override void ActualizarDescripcion()
+  public override void ActualizarDescripcion()
+  {
+    if (NIVEL < 2)
     {
-         if(NIVEL<2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Hacia Las Sombras I</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Acechador se desvanece en las sombras para buscar un nuevo enfoque y recuperarse.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Se mueve a la casilla seleccionada, gana 2 Evasión, Escondido II, remueve debuffs y termina el turno.</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM} </color>\n\n";
+      txtDescripcion = "<color=#5dade2><b>Hacia Las Sombras I</b></color>\n\n";
 
-        if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 Enfriamiento</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Hacia Las Sombras II</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Acechador se desvanece en las sombras para buscar un nuevo enfoque y recuperarse.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Se mueve a la casilla seleccionada, gana 2 Evasión, Escondido II, remueve debuffs y termina el turno.</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM} </color>\n\n";
+      txtDescripcion += "<i>El Acechador se desvanece en las sombras para buscar un nuevo enfoque y recuperarse.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>Se mueve a la casilla seleccionada, gana 2 Evasión, Escondido II, remueve debuffs y termina el turno.</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM} </color>\n\n";
 
-        if (EsEscenaCampaña())
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
         {
-           if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
           {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Evasión</color>\n\n";
+            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 Enfriamiento</color>\n\n";
           }
-         }
         }
-       }
-       if(NIVEL==3)
-       {
-        txtDescripcion = "<color=#5dade2><b>Hacia Las Sombras III</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Acechador se desvanece en las sombras para buscar un nuevo enfoque y recuperarse.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Se mueve a la casilla seleccionada, gana 3 Evasión, Escondido II, remueve debuffs y termina el turno.</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM} </color>\n\n";
-        
-         if (EsEscenaCampaña())
+      }
+    }
+    if (NIVEL == 2)
+    {
+      txtDescripcion = "<color=#5dade2><b>Hacia Las Sombras II</b></color>\n\n";
+
+      txtDescripcion += "<i>El Acechador se desvanece en las sombras para buscar un nuevo enfoque y recuperarse.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>Se mueve a la casilla seleccionada, gana 2 Evasión, Escondido II, remueve debuffs y termina el turno.</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax - 1} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM} </color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
         {
-           if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-           {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
           {
-             txtDescripcion += $"<color=#dfea02>-Opción A: No termina turno.</color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: No cuesta Valentía.</color>\n";
+            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Evasión</color>\n\n";
           }
-           }
         }
-       }
-       if(NIVEL==4)
-       {
-         txtDescripcion = "<color=#5dade2><b>Hacia Las Sombras IVa</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Acechador se desvanece en las sombras para buscar un nuevo enfoque y recuperarse.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Se mueve a la casilla seleccionada, gana 2 Evasión, Escondido II, remueve debuffs.</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM} </color>\n\n";
+      }
+    }
+    if (NIVEL == 3)
+    {
+      txtDescripcion = "<color=#5dade2><b>Hacia Las Sombras III</b></color>\n\n";
+
+      txtDescripcion += "<i>El Acechador se desvanece en las sombras para buscar un nuevo enfoque y recuperarse.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>Se mueve a la casilla seleccionada, gana 3 Evasión, Escondido II, remueve debuffs y termina el turno.</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax - 1} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM} </color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Opción A: No termina turno.</color>\n";
+            txtDescripcion += $"<color=#dfea02>-Opción B: No cuesta Valentía.</color>\n";
+          }
         }
-       if(NIVEL==5)
-       {
-         txtDescripcion = "<color=#5dade2><b>Hacia Las Sombras IVb</b></color>\n\n"; 
+      }
+    }
+    if (NIVEL == 4)
+    {
+      txtDescripcion = "<color=#5dade2><b>Hacia Las Sombras IVa</b></color>\n\n";
+
+      txtDescripcion += "<i>El Acechador se desvanece en las sombras para buscar un nuevo enfoque y recuperarse.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>Se mueve a la casilla seleccionada, gana 2 Evasión, Escondido II, remueve debuffs.</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax - 1} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM} </color>\n\n";
+    }
+    if (NIVEL == 5)
+    {
+      txtDescripcion = "<color=#5dade2><b>Hacia Las Sombras IVb</b></color>\n\n";
+
+      txtDescripcion += "<i>El Acechador se desvanece en las sombras para buscar un nuevo enfoque y recuperarse.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>Se mueve a la casilla seleccionada, gana 2 Evasión, Escondido II, remueve debuffs y termina el turno.</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax - 1} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM - 1} </color>\n\n";
+    }
        
-        txtDescripcion += "<i>El Acechador se desvanece en las sombras para buscar un nuevo enfoque y recuperarse.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Se mueve a la casilla seleccionada, gana 2 Evasión, Escondido II, remueve debuffs y termina el turno.</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM-1} </color>\n\n";
-       }
+      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+      {
+        if (NIVEL < 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Into the Shadows I</b></color>\n\n";
+          txtDescripcion += "<i>The Stalker vanishes into the shadows to seek a new approach and recover.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8>Moves to the selected tile, gains 2 Evasion, Hidden II, removes debuffs and ends the turn.</color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}- Ends turn \n- Valor Cost: {costoPM} </color>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: -1 Cooldown</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Into the Shadows II</b></color>\n\n";
+          txtDescripcion += "<i>The Stalker vanishes into the shadows to seek a new approach and recover.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8>Moves to the selected tile, gains 2 Evasion, Hidden II, removes debuffs and ends the turn.</color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP}- Ends turn \n- Valor Cost: {costoPM} </color>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Evasion</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Into the Shadows III</b></color>\n\n";
+          txtDescripcion += "<i>The Stalker vanishes into the shadows to seek a new approach and recover.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8>Moves to the selected tile, gains 3 Evasion, Hidden II, removes debuffs and ends the turn.</color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP}- Ends turn \n- Valor Cost: {costoPM} </color>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Option A: Does not end turn.</color>\n";
+                txtDescripcion += $"<color=#dfea02>-Option B: No Valor cost.</color>\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Into the Shadows IVa</b></color>\n\n";
+          txtDescripcion += "<i>The Stalker vanishes into the shadows to seek a new approach and recover.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8>Moves to the selected tile, gains 2 Evasion, Hidden II, removes debuffs.</color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP}- Ends turn \n- Valor Cost: {costoPM} </color>\n\n";
+        }
+        if (NIVEL == 5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Into the Shadows IVb</b></color>\n\n";
+          txtDescripcion += "<i>The Stalker vanishes into the shadows to seek a new approach and recover.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8>Moves to the selected tile, gains 2 Evasion, Hidden II, removes debuffs and ends the turn.</color>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP}- Ends turn \n- Valor Cost: {costoPM - 1} </color>\n\n";
+        }
+      }
 
 
     }

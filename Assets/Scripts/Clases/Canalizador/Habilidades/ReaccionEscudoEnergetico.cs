@@ -20,6 +20,10 @@ public class ReaccionEscudoEnergetico : Reaccion
     
 
     descripcion = $"Reacción: El canalizador se defiende y contraataca con Descargas Arcanas si es atacado con proyectiles sin éxito.";
+    if (TRADU.i.nIdioma == 2) // agrega la traducción a inglés
+    {
+      descripcion = $"Reaction: The channeler defends and counterattacks with Arcane Bursts if attacked unsuccessfully with projectiles.";
+    }
 
    }
 
@@ -38,7 +42,14 @@ public class ReaccionEscudoEnergetico : Reaccion
 
         descargaArcana.AplicarEfectosHabilidad(uTriggerer, tirada, null);
 
-        BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} reacciona con {nombre}.");
+        if (TRADU.i.nIdioma == 2)
+        {
+            BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} reacts with {nombre}.");
+        }
+        else if(TRADU.i.nIdioma == 1)
+        {
+            BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} reacciona con {nombre}.");
+        }
 
        //---Genera Residuo energetico
       List<Casilla> casillasAlrededor = scEstaUnidad.CasillaPosicion.ObtenerCasillasAlrededor(2);

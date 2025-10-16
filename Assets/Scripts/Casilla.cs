@@ -82,12 +82,12 @@ public async void OnMouseDown()
         }
         else if (aliado.estado_inmovil > 0)
         {
-          BattleManager.Instance.EscribirLog("No puedes intercambiar con una unidad inmovilizada.");
+          BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con una unidad inmovilizada."));
           return;
         }
         else if (aliado.TieneBuffNombre("Desplazado"))
         {
-          BattleManager.Instance.EscribirLog("No puedes intercambiar con una unidad que ya está Desplazada.");
+          BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con una unidad que ya está Desplazada."));
           return;
         }
         else
@@ -123,13 +123,13 @@ public async void OnMouseDown()
           }
           else
           {
-            BattleManager.Instance.EscribirLog("No tienes AP suficientes para intercambiar.");
+            BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No tienes PA suficientes para intercambiar."));
           }
         }
         }
       else
         {
-          BattleManager.Instance.EscribirLog("No puedes intercambiar con obstáculos.");
+          BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con obstáculos."));
         }
       
     }

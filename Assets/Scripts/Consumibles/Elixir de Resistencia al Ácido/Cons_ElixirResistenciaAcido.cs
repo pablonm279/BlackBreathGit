@@ -8,9 +8,11 @@ using UnityEngine;
 public class Cons_ElixirResistenciaAcido : Consumible
 {
 
-    void Awake()
-    {
-      sNombreItem = "Elixir de Resistencia al Ácido";
+  void Awake()
+  {
+    sNombreItem = TRADU.i.Traducir("Elixir de Resistencia al Ácido");
+        itemDescripcion = TRADU.i.Traducir("Aumenta la resistencia al ácido en 5 por el combate.");
+
     }
 
     public override void UsarConsumible(Unidad unidad)

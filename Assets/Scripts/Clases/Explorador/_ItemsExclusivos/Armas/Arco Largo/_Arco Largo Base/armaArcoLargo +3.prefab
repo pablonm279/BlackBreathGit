@@ -46,12 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: 5b73de817bcd2ee4b81f75ea6eb0cd5f, type: 3}
-  sNombreItem: Arco Largo +3
+  sNombreItem: Arco Largo
+  IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 450
-  itemDescrpicion: "<i>Cada explorador lleva un Arco Largo como equipamiento principal,
-    tanto para cazar animales como para defenderse.</i>\n\n<b>Otorga: Tiro con Arco</b>\n<b>Mejora
-    +3: +3 Ataque  +15% Da\xF1o</b"
+  itemDescripcion: 
   iRareza: 3
   nivelMejora: 3
   habilidadAtaque: {fileID: 1624686996790798170}

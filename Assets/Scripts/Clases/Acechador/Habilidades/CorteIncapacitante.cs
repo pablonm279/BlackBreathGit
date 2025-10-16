@@ -140,33 +140,134 @@ public class CorteIncapacitante : Habilidad
       txtDescripcion += $"<color=#44d3ec>-Usa Espada Corta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
     }
    
-   
+    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+    {
+      if (NIVEL < 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Crippling Slash I</b></color>\n\n";
+        txtDescripcion += "<i>Delivers a slash that temporarily cripples the enemy's movements.</i>\n\n";
+        txtDescripcion += $"-Attack: <color=#ea0606>Strength</color><i> Slashing Damage: 2d6 + 3 + Strength. </i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 7 + Agility: Crippled: Immobile, -20% damage, -2 Attack. 2 Turns</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Uses Short Sword -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Crippling Slash II</b></color>\n\n";
+        txtDescripcion += "<i>Delivers a slash that temporarily cripples the enemy's movements.</i>\n\n";
+        txtDescripcion += $"-Attack: <color=#ea0606>Strength+1</color><i> Slashing Damage: 2d6 + 3 + Strength. </i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 7 + Agility: Crippled: Immobile, -20% damage, -2 Attack. 2 Turns</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Uses Short Sword -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: +1 DC</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Crippling Slash III</b></color>\n\n";
+        txtDescripcion += "<i>Delivers a slash that temporarily cripples the enemy's movements.</i>\n\n";
+        txtDescripcion += $"-Attack: <color=#ea0606>Strength+1</color><i> Slashing Damage: 2d6 + 3 + Strength. </i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 8 + Agility: Crippled: Immobile, -20% damage, -2 Attack. 2 Turns</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Uses Short Sword -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Option A: Applies 3 Bleed</color>\n";
+              txtDescripcion += $"<color=#dfea02>-Option B: +1 Turn Crippled Duration</color>\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Crippling Slash IVa</b></color>\n\n";
+        txtDescripcion += "<i>Delivers a slash that temporarily cripples the enemy's movements.</i>\n\n";
+        txtDescripcion += $"-Attack: <color=#ea0606>Strength+1</color><i> Slashing Damage: 2d6 + 3 + Strength. </i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 8 + Agility: Crippled: Immobile, -20% damage, -2 Attack, applies 3 Bleed. 2 Turns</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Uses Short Sword -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+      }
+      if (NIVEL == 5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Crippling Slash IVb</b></color>\n\n";
+        txtDescripcion += "<i>Delivers a slash that temporarily cripples the enemy's movements.</i>\n\n";
+        txtDescripcion += $"-Attack: <color=#ea0606>Strength+1</color><i> Slashing Damage: 2d6 + 3 + Strength. </i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 8 + Agility: Crippled: Immobile, -20% damage, -2 Attack. 3 Turns</color>\n";
+        txtDescripcion += $"<color=#44d3ec>-Uses Short Sword -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+      }
+    }
    
   if (SceneManager.GetActiveScene().name != "ES-Campaña")
     {
       int NivelMaestria = claseAcechador.PASIVA_MaestriaConBallestaMano;
       if (NivelMaestria == 1)
       {
-
-        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño.</i>\n\n";
+        if (TRADU.i.nIdioma == 1)
+        { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño.</i>\n\n"; }
+        if (TRADU.i.nIdioma == 2)
+        {
+          txtDescripcion += "\n\n<i>Short Sword Mastery adds: +1 Attack +2 Damage.</i>\n\n";
+        }
       }
       else if (NivelMaestria == 2)
       {
-        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
+        if (TRADU.i.nIdioma == 1)
+        { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n"; }
+        if (TRADU.i.nIdioma == 2)
+        {
+          txtDescripcion += "\n\n<i>Short Sword Mastery adds: +1 Attack +2 Damage +1 Critical Range.</i>\n\n";
+        }
       }
       else if (NivelMaestria == 3)
       {
-
-        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n";
+        if (TRADU.i.nIdioma == 1)
+        { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n"; }
+        if (TRADU.i.nIdioma == 2)
+        {
+          txtDescripcion += "\n\n<i>Short Sword Mastery adds: +1 Attack +2 Damage +1 Critical Range, -1 AP.</i>\n\n";
+        }
+      
       }
       else if (NivelMaestria == 4)
       {
-
-        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +2 Rango Crítico.</i>\n\n";
+         if (TRADU.i.nIdioma == 1)
+        { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +2 Rango Crítico.</i>\n\n"; }
+        if (TRADU.i.nIdioma == 2)
+        {
+          txtDescripcion += "\n\n<i>Short Sword Mastery adds: +1 Attack +4 Damage +2 Critical Range.</i>\n\n";
+        }
+     
       }
       else if (NivelMaestria == 5)
       {
-        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +2 Ataque +4 Daño +1 Rango Crítico.</i>\n\n";
+         if (TRADU.i.nIdioma == 1)
+        { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: Remueve Cooldown, +2 Ataque +4 Daño +1 Rango Crítico.</i>\n\n"; }
+        if (TRADU.i.nIdioma == 2)
+        {
+          txtDescripcion += "\n\n<i>Short Sword Mastery adds: Removes Cooldown, +2 Attack +4 Damage +1 Critical Range.</i>\n\n";
+        }
+      
       }
     }
 

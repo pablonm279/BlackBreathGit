@@ -123,8 +123,80 @@ public class CastigaraLosMalvados : Habilidad
  }
 
 
-
-
+  if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+  {
+    if (NIVEL < 2)
+    {
+      txtDescripcion = "<color=#5dade2><b>Punish the Wicked I</b></color>\n\n";
+      txtDescripcion += "<i>If the target harms an allied character, they must pass a Mental saving throw or suffer divine damage and lose their remaining AP.</i>\n";
+      txtDescripcion += $"<i>Saving Throw: DC 10+ Power. Lasts 2 uses or until saved.</i>\n";
+      txtDescripcion += "<i>Damage: 1d6+ 1/3 damage dealt to the allied character.</i>\n";
+      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Next Level: +1 DC</color>\n\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 2)
+    {
+      txtDescripcion = "<color=#5dade2><b>Punish the Wicked II</b></color>\n\n";
+      txtDescripcion += "<i>If the target harms an allied character, they must pass a Mental saving throw or suffer divine damage and lose their remaining AP.</i>\n";
+      txtDescripcion += $"<i>Saving Throw: DC 11+ Power. Lasts 2 uses or until saved.</i>\n";
+      txtDescripcion += "<i>Damage: 1d6+ 1/3 damage dealt to the allied character.</i>\n";
+      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Next Level: -1 Cooldown</color>\n\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 3)
+    {
+      txtDescripcion = "<color=#5dade2><b>Punish the Wicked III</b></color>\n\n";
+      txtDescripcion += "<i>If the target harms an allied character, they must pass a Mental saving throw or suffer divine damage and lose their remaining AP.</i>\n";
+      txtDescripcion += $"<i>Saving Throw: DC 11+ Power. Lasts 2 uses or until saved.</i>\n";
+      txtDescripcion += "<i>Damage: 1d6+ 1/3 damage dealt to the allied character.</i>\n";
+      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Option A: +1 Use.</color>\n";
+            txtDescripcion += $"<color=#dfea02>-Option B: increases to +1/2 damage dealt to the allied character.</color>\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 4)
+    {
+      txtDescripcion = "<color=#5dade2><b>Punish the Wicked IVa</b></color>\n\n";
+      txtDescripcion += "<i>If the target harms an allied character, they must pass a Mental saving throw or suffer divine damage and lose their remaining AP.</i>\n";
+      txtDescripcion += $"<i>Saving Throw: DC 11+ Power. Lasts 3 uses or until saved.</i>\n";
+      txtDescripcion += "<i>Damage: 1d6+ 1/3 damage dealt to the allied character.</i>\n";
+      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
+    }
+    if (NIVEL == 5)
+    {
+      txtDescripcion = "<color=#5dade2><b>Punish the Wicked IVb</b></color>\n\n";
+      txtDescripcion += "<i>If the target harms an allied character, they must pass a Mental saving throw or suffer divine damage and lose their remaining AP.</i>\n";
+      txtDescripcion += $"<i>Saving Throw: DC 11+ Power. Lasts 2 uses or until saved.</i>\n";
+      txtDescripcion += "<i>Damage: 1d6+ 1/2 damage dealt to the allied character.</i>\n";
+      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
+    }
+  }
 
 
    }

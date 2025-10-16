@@ -145,7 +145,83 @@ public class LlamaDivina : Habilidad
       }
 
 
+  if (TRADU.i.nIdioma == 2) // English translation
+  {
+    if (NIVEL < 2)
+    {
+      txtDescripcion = "<color=#5dade2><b>Divine Flame I</b></color>\n\n";
+      txtDescripcion += "<i>The Purifier throws a flame of divine fire that damages the target and may set it ablaze.</i>\n\n";
+      txtDescripcion += $"<i>Divine Damage: 3d6 + 4 +Power.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 8+Power: Applies Burning 3 and instantly kills Undead and Ethereal.</color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
 
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Next Level: +1 Save</color>\n\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 2)
+    {
+      txtDescripcion = "<color=#5dade2><b>Divine Flame II</b></color>\n\n";
+      txtDescripcion += "<i>The Purifier throws a flame of divine fire that damages the target and may set it ablaze.</i>\n\n";
+      txtDescripcion += $"<i>Divine Damage: 3d6 + 4 +Power.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 9+Power: Applies Burning 3 and instantly kills Undead and Ethereal.</color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Next Level: +3 Damage</color>\n\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 3)
+    {
+      txtDescripcion = "<color=#5dade2><b>Divine Flame III</b></color>\n\n";
+      txtDescripcion += "<i>The Purifier throws a flame of divine fire that damages the target and may set it ablaze.</i>\n\n";
+      txtDescripcion += $"<i>Divine Damage: 3d6 + 7 +Power.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 9+Power: Applies Burning 3 and instantly kills Undead and Ethereal.</color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Option A: On kill: gain 1 Fervor.</color>\n";
+            txtDescripcion += $"<color=#dfea02>-Option B: +2 Burning.</color>\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 4)
+    {
+      txtDescripcion = "<color=#5dade2><b>Divine Flame IV a</b></color>\n\n";
+      txtDescripcion += "<i>The Purifier throws a flame of divine fire that damages the target and may set it ablaze.</i>\n\n";
+      txtDescripcion += $"<i>Divine Damage: 3d6 + 7 +Power. On kill: gain 1 Fervor.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 9+Power: Applies Burning 3 and instantly kills Undead and Ethereal.</color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+    }
+    if (NIVEL == 5)
+    {
+      txtDescripcion = "<color=#5dade2><b>Divine Flame IV b</b></color>\n\n";
+      txtDescripcion += "<i>The Purifier throws a flame of divine fire that damages the target and may set it ablaze.</i>\n\n";
+      txtDescripcion += $"<i>Divine Damage: 3d6 + 7 +Power.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 9+Power: Applies Burning 5 and instantly kills Undead and Ethereal.</color>\n";
+      txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+    }
+  }
 
 
      }

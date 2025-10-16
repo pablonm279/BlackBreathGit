@@ -39,79 +39,156 @@ public class Instatransporte : Habilidad
 
   public override void ActualizarDescripcion()
   {
-    if(NIVEL < 2)
-{
-    txtDescripcion = "<color=#5dade2><b>Instatransporte I</b></color>\n\n";
-    txtDescripcion += "<i>Desapareciendo en un destello de energía, se teletransporta a otra casilla, dejando un residuo energético en las casillas adyacentes.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8>- Movimiento instantáneo.\n- Deja <b>Residuos Energéticos</b> en cruz adyacente.\n- Ignora y destruye trampas en la casilla de destino.\n- Gana <color=#44d3ec>+1 Evasión</color> al usarla.</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Alcance: 3 \n- Cooldown: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-
-    if (EsEscenaCampaña())
+    if (NIVEL < 2)
     {
-        if(CampaignManager.Instance.scMenuPersonajes.pSel != null)
+      txtDescripcion = "<color=#5dade2><b>Instatransporte I</b></color>\n\n";
+      txtDescripcion += "<i>Desapareciendo en un destello de energía, se teletransporta a otra casilla, dejando un residuo energético en las casillas adyacentes.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>- Movimiento instantáneo.\n- Deja <b>Residuos Energéticos</b> en cruz adyacente.\n- Ignora y destruye trampas en la casilla de destino.\n- Gana <color=#44d3ec>+1 Evasión</color> al usarla.</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Alcance: 3 \n- Cooldown: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
         {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-                txtDescripcion += $"<color=#dfea02>- Próximo Nivel: -1 Cooldown</color>\n\n";
-            }
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>- Próximo Nivel: -1 Cooldown</color>\n\n";
+          }
         }
+      }
     }
-}
 
-if(NIVEL == 2)
-{
-    txtDescripcion = "<color=#5dade2><b>Instatransporte II</b></color>\n\n";
-    txtDescripcion += "<i>Desapareciendo en un destello de energía, se teletransporta a otra casilla, dejando un residuo energético en las casillas adyacentes.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8>- Movimiento instantáneo.\n- Deja <b>Residuos Energéticos</b> en cruz adyacente.\n- Ignora y destruye trampas en la casilla de destino.\n- Gana <color=#44d3ec>+1 Evasión</color> al usarla.</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Alcance: 3 \n- Cooldown: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-
-    if (EsEscenaCampaña())
+    if (NIVEL == 2)
     {
-        if(CampaignManager.Instance.scMenuPersonajes.pSel != null)
+      txtDescripcion = "<color=#5dade2><b>Instatransporte II</b></color>\n\n";
+      txtDescripcion += "<i>Desapareciendo en un destello de energía, se teletransporta a otra casilla, dejando un residuo energético en las casillas adyacentes.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>- Movimiento instantáneo.\n- Deja <b>Residuos Energéticos</b> en cruz adyacente.\n- Ignora y destruye trampas en la casilla de destino.\n- Gana <color=#44d3ec>+1 Evasión</color> al usarla.</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Alcance: 3 \n- Cooldown: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
         {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-                txtDescripcion += $"<color=#dfea02>- Próximo Nivel: +1 Alcance</color>\n\n";
-            }
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>- Próximo Nivel: +1 Alcance</color>\n\n";
+          }
         }
+      }
     }
-}
 
-if(NIVEL == 3)
-{
-    txtDescripcion = "<color=#5dade2><b>Instatransporte III</b></color>\n\n";
-    txtDescripcion += "<i>Desapareciendo en un destello de energía, se teletransporta a otra casilla, dejando un residuo energético en las casillas adyacentes.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8>- Movimiento instantáneo.\n- Deja <b>Residuos Energéticos</b> en cruz adyacente.\n- Ignora y destruye trampas en la casilla de destino.\n- Gana <color=#44d3ec>+1 Evasión</color> al usarla.</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Alcance: 4 \n- Cooldown: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-
-    if (EsEscenaCampaña())
+    if (NIVEL == 3)
     {
-        if(CampaignManager.Instance.scMenuPersonajes.pSel != null)
+      txtDescripcion = "<color=#5dade2><b>Instatransporte III</b></color>\n\n";
+      txtDescripcion += "<i>Desapareciendo en un destello de energía, se teletransporta a otra casilla, dejando un residuo energético en las casillas adyacentes.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>- Movimiento instantáneo.\n- Deja <b>Residuos Energéticos</b> en cruz adyacente.\n- Ignora y destruye trampas en la casilla de destino.\n- Gana <color=#44d3ec>+1 Evasión</color> al usarla.</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Alcance: 4 \n- Cooldown: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
         {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-                txtDescripcion += $"<color=#dfea02>- Opción A: Deja residuos en todo alrededor</color>\n";
-                txtDescripcion += $"<color=#dfea02>- Opción B: +1 Evasión</color>\n\n";
-            }
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>- Opción A: Deja residuos en todo alrededor</color>\n";
+            txtDescripcion += $"<color=#dfea02>- Opción B: +1 Evasión</color>\n\n";
+          }
         }
+      }
     }
-}
 
-if(NIVEL == 4)
-{
-    txtDescripcion = "<color=#5dade2><b>Instatransporte IV a</b></color>\n\n";
-    txtDescripcion += "<i>Desapareciendo en un destello de energía, se teletransporta a otra casilla, dejando un residuo energético en las casillas alrededor.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8>- Movimiento instantáneo.\n- Deja <b>Residuos Energéticos</b> en todo alrededor.\n- Ignora y destruye trampas en la casilla de destino.\n- Gana <color=#44d3ec>+1 Evasión</color> al usarla.</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Alcance: 4 \n- Cooldown: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-}
+    if (NIVEL == 4)
+    {
+      txtDescripcion = "<color=#5dade2><b>Instatransporte IV a</b></color>\n\n";
+      txtDescripcion += "<i>Desapareciendo en un destello de energía, se teletransporta a otra casilla, dejando un residuo energético en las casillas alrededor.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>- Movimiento instantáneo.\n- Deja <b>Residuos Energéticos</b> en todo alrededor.\n- Ignora y destruye trampas en la casilla de destino.\n- Gana <color=#44d3ec>+1 Evasión</color> al usarla.</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Alcance: 4 \n- Cooldown: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
+    }
 
-if(NIVEL == 5)
-{
-    txtDescripcion = "<color=#5dade2><b>Instatransporte IV b</b></color>\n\n";
-    txtDescripcion += "<i>Desapareciendo en un destello de energía, se teletransporta a otra casilla, dejando un residuo energético en las casillas adyacentes.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8>- Movimiento instantáneo.\n- Deja <b>Residuos Energéticos</b> en cruz adyacente.\n- Ignora y destruye trampas en la casilla de destino.\n- Gana <color=#44d3ec>+2 Evasión</color> al usarla.</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Alcance: 4 \n- Cooldown: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-}
+    if (NIVEL == 5)
+    {
+      txtDescripcion = "<color=#5dade2><b>Instatransporte IV b</b></color>\n\n";
+      txtDescripcion += "<i>Desapareciendo en un destello de energía, se teletransporta a otra casilla, dejando un residuo energético en las casillas adyacentes.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>- Movimiento instantáneo.\n- Deja <b>Residuos Energéticos</b> en cruz adyacente.\n- Ignora y destruye trampas en la casilla de destino.\n- Gana <color=#44d3ec>+2 Evasión</color> al usarla.</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Alcance: 4 \n- Cooldown: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
+    }
+
+    if (TRADU.i.nIdioma == 2) // English translation
+    {
+      if (NIVEL < 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Instatransport I</b></color>\n\n";
+        txtDescripcion += "<i>Disappearing in a flash of energy, instantly teleports to another tile, leaving an energy residue on adjacent tiles.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>- Instant movement.\n- Leaves <b>Energy Residue</b> on adjacent cross.\n- Ignores and destroys traps on the destination tile.\n- Gains <color=#44d3ec>+1 Evasion</color> when used.</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Range: 3 \n- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>- Next Level: -1 Cooldown</color>\n\n";
+            }
+          }
+        }
+      }
+
+      if (NIVEL == 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Instatransport II</b></color>\n\n";
+        txtDescripcion += "<i>Disappearing in a flash of energy, instantly teleports to another tile, leaving an energy residue on adjacent tiles.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>- Instant movement.\n- Leaves <b>Energy Residue</b> on adjacent cross.\n- Ignores and destroys traps on the destination tile.\n- Gains <color=#44d3ec>+1 Evasion</color> when used.</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Range: 3 \n- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>- Next Level: +1 Range</color>\n\n";
+            }
+          }
+        }
+      }
+
+      if (NIVEL == 3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Instatransport III</b></color>\n\n";
+        txtDescripcion += "<i>Disappearing in a flash of energy, instantly teleports to another tile, leaving an energy residue on adjacent tiles.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>- Instant movement.\n- Leaves <b>Energy Residue</b> on adjacent cross.\n- Ignores and destroys traps on the destination tile.\n- Gains <color=#44d3ec>+1 Evasion</color> when used.</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Range: 4 \n- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>- Option A: Leaves residue all around</color>\n";
+              txtDescripcion += $"<color=#dfea02>- Option B: +1 Evasion</color>\n\n";
+            }
+          }
+        }
+      }
+
+      if (NIVEL == 4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Instatransport IV a</b></color>\n\n";
+        txtDescripcion += "<i>Disappearing in a flash of energy, instantly teleports to another tile, leaving an energy residue on surrounding tiles.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>- Instant movement.\n- Leaves <b>Energy Residue</b> all around.\n- Ignores and destroys traps on the destination tile.\n- Gains <color=#44d3ec>+1 Evasion</color> when used.</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Range: 4 \n- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+      }
+
+      if (NIVEL == 5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Instatransport IV b</b></color>\n\n";
+        txtDescripcion += "<i>Disappearing in a flash of energy, instantly teleports to another tile, leaving an energy residue on adjacent tiles.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8>- Instant movement.\n- Leaves <b>Energy Residue</b> on adjacent cross.\n- Ignores and destroys traps on the destination tile.\n- Gains <color=#44d3ec>+2 Evasion</color> when used.</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Range: 4 \n- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+      }
+    }
 
   }
 

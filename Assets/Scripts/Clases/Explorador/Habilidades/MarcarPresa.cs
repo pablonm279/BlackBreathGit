@@ -132,7 +132,84 @@ public class MarcarPresa : Habilidad
        }
 
 
-
+    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+    {
+      if (NIVEL < 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Mark Prey I</b></color>\n\n";
+        txtDescripcion += "<i>The Explorer marks a target as their prey, gaining bonuses when attacking it.</i>\n";
+        txtDescripcion += "<i>Mark: +2 Attack, +1 Critical Range, +15% critical damage. Lasts 3 Turns.</i>\n";
+        txtDescripcion += "<i>Debuff: -2 Attack against targets other than the prey.</i>\n\n";
+        txtDescripcion += "<i>On killing the prey: +1 AP, +2 Mental Save for 3 Turns, +1 Courage.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: +5% critical damage</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Mark Prey II</b></color>\n\n";
+        txtDescripcion += "<i>The Explorer marks a target as their prey, gaining bonuses when attacking it.</i>\n";
+        txtDescripcion += "<i>Mark: +2 Attack, +1 Critical Range, +20% critical damage. Lasts 3 Turns.</i>\n";
+        txtDescripcion += "<i>Debuff: -2 Attack against targets other than the prey.</i>\n\n";
+        txtDescripcion += "<i>On killing the prey: +1 AP, +2 Mental Save for 3 Turns, +1 Courage.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: +1 Critical Range</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Mark Prey III</b></color>\n\n";
+        txtDescripcion += "<i>The Explorer marks a target as their prey, gaining bonuses when attacking it.</i>\n";
+        txtDescripcion += "<i>Mark: +2 Attack, +2 Critical Range, +20% critical damage. Lasts 3 Turns.</i>\n";
+        txtDescripcion += "<i>Debuff: -2 Attack against targets other than the prey.</i>\n\n";
+        txtDescripcion += "<i>On killing the prey: +1 AP, +2 Mental Save for 3 Turns, +1 Courage.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Option A: no longer decreases Attack against other targets.</color>\n";
+              txtDescripcion += $"<color=#dfea02>-Option B: on killing the prey, gains +2 extra Courage.</color>\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Mark Prey IVa</b></color>\n\n";
+        txtDescripcion += "<i>The Explorer marks a target as their prey, gaining bonuses when attacking it.</i>\n";
+        txtDescripcion += "<i>Mark: +2 Attack, +2 Critical Range, +20% critical damage. Lasts 3 Turns.</i>\n";
+        txtDescripcion += "<i>On killing the prey: +1 AP, +2 Mental Save for 3 Turns, +1 Courage.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>";
+      }
+      if (NIVEL == 5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Mark Prey IVb</b></color>\n\n";
+        txtDescripcion += "<i>The Explorer marks a target as their prey, gaining bonuses when attacking it.</i>\n";
+        txtDescripcion += "<i>Mark: +2 Attack, +2 Critical Range, +20% critical damage. Lasts 3 Turns.</i>\n";
+        txtDescripcion += "<i>Debuff: -2 Attack against targets other than the prey.</i>\n\n";
+        txtDescripcion += "<i>On killing the prey: +2 AP, +3 Mental Save for 3 Turns, +2 Courage.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>";
+      }
+    }
 
 
 

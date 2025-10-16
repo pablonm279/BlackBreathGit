@@ -8,9 +8,11 @@ using UnityEngine;
 public class Cons_ElixirResistenciaRayo : Consumible
 {
 
-    void Awake()
-    {
-      sNombreItem = "Elixir de Resistencia al Rayo";
+  void Awake()
+  {
+    sNombreItem = TRADU.i.Traducir("Elixir de Resistencia al Rayo");
+        itemDescripcion = TRADU.i.Traducir("Aumenta la resistencia al rayo en 5 por el combate.");
+
     }
 
     public override void UsarConsumible(Unidad unidad)

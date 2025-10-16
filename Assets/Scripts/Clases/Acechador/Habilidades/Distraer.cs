@@ -137,7 +137,83 @@ public class Distraer : Habilidad
     }
    
    
-   
+  if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+  {
+    if (NIVEL < 2)
+    {
+      txtDescripcion = "<color=#5dade2><b>Distract I</b></color>\n\n";
+      txtDescripcion += "<i>Distracts an enemy with a thrown flash; if isolated and fails the save, the character becomes Hidden.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>Distracted: -2 AP, -2 Defense,<color=#ea0606>Mental Saving Throw: DC:12 </color></color>\n";
+      txtDescripcion += "<i><color=#44d3ec>If the enemy has no allies nearby, the Stalker gains Hidden I.</color></i>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Discreet -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Next Level: +1 DC.</color>\n\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 2)
+    {
+      txtDescripcion = "<color=#5dade2><b>Distract II</b></color>\n\n";
+      txtDescripcion += "<i>Distracts an enemy with a thrown flash; if isolated and fails the save, the character becomes Hidden.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>Distracted: -2 AP, -2 Defense,<color=#ea0606>Mental Saving Throw: DC:13 </color></color>\n";
+      txtDescripcion += "<i><color=#44d3ec>If the enemy has no allies nearby, the Stalker gains Hidden I.</color></i>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Discreet -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Next Level: -1 AP per Distracted.</color>\n\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 3)
+    {
+      txtDescripcion = "<color=#5dade2><b>Distract III</b></color>\n\n";
+      txtDescripcion += "<i>Distracts an enemy with a thrown flash; if isolated and fails the save, the character becomes Hidden.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>Distracted: -3 AP, -2 Defense,<color=#ea0606>Mental Saving Throw: DC:13 </color></color>\n";
+      txtDescripcion += "<i><color=#44d3ec>If the enemy has no allies nearby, the Stalker gains Hidden I.</color></i>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Discreet -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>\n\n";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Option A: -1 AP, -1 Defense per Distracted.</color>\n";
+            txtDescripcion += $"<color=#dfea02>-Option B: The Stalker gains Hidden II.</color>\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 4)
+    {
+      txtDescripcion = "<color=#5dade2><b>Distract IVa</b></color>\n\n";
+      txtDescripcion += "<i>Distracts an enemy with a thrown flash; if isolated and fails the save, the character becomes Hidden.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>Distracted: -4 AP, -3 Defense,<color=#ea0606>Mental Saving Throw: DC:13 </color></color>\n";
+      txtDescripcion += "<i><color=#44d3ec>If the enemy has no allies nearby, the Stalker gains Hidden I.</color></i>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Discreet -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>\n\n";
+    }
+    if (NIVEL == 5)
+    {
+      txtDescripcion = "<color=#5dade2><b>Distract IVb</b></color>\n\n";
+      txtDescripcion += "<i>Distracts an enemy with a thrown flash; if isolated and fails the save, the character becomes Hidden.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8>Distracted: -3 AP, -2 Defense,<color=#ea0606>Mental Saving Throw: DC:13 </color></color>\n";
+      txtDescripcion += "<i><color=#44d3ec>If the enemy has no allies nearby, the Stalker gains Hidden II.</color></i>\n\n";
+      txtDescripcion += $"<color=#44d3ec>-Discreet -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>\n\n";
+    }
+  }
  
   }
 

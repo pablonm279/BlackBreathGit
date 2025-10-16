@@ -11,6 +11,10 @@ public class MarcaMarcarPresa : Marca
    
 
     descripcion = $"Marcado: {quienMarco.uNombre} posee bonificaciones en ataques individuales contra este enemigo.";
+    if (TRADU.i.nIdioma == 2) // agrega la traducción a inglés
+    {
+        descripcion = $"Marked: {quienMarco.uNombre} has bonuses on single-target attacks against this enemy.";
+    }
 
    }
 

@@ -46,13 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: b8e65ad09a769384aa0aacbb27d8e36f, type: 3}
-  sNombreItem: 'Coraza Liviana '
-  IDClasesQuePuedenUsarEsteItem: 
+  sNombreItem: Coraza Liviana
+  IDEfectoEspecial: 0
+  IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 120
-  itemDescrpicion: "<i>Esta Coraza de Caballero est\xE1 compuesta de materiales mucho
-    mas livianos que las Corazas habituales, brinda la misma resistencia pero no
-    limita el movimiento del usuario.\n\nRemueve: Armadura Limitante.</i>\n<b>\\n\\nArmadura:
-    5 \\n-2 Resistencia Rayo \n\n\n</b>"
+  itemDescripcion: 
   iRareza: 0
   nivelMejora: 0
   requisitoFue: 3

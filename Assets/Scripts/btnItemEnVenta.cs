@@ -41,18 +41,18 @@ public class btnItemEnVenta : MonoBehaviour
          string precio ="";
          if(CampaignManager.Instance.GetOroActuales() >= itemRepresentado.iPrecio)
          {
-           precio =$"<Color=#e6b50f>\nPrecio: {itemRepresentado.iPrecio}</Color>";
+           precio =TRADU.i.Traducir("<Color=#e6b50f>\nPrecio: ")+itemRepresentado.iPrecio+"</Color>";
          }
          else
          {
-           precio =$"<Color=#e60f0f>\nPrecio: {itemRepresentado.iPrecio}</Color>";
+           precio =TRADU.i.Traducir("<Color=#e60f0f>\nPrecio: ")+itemRepresentado.iPrecio+"</Color>";
          }
           
 
 
 
 
-         txtItemVentaDescripcion.text = itemRepresentado.itemDescripcion+precio;
+         txtItemVentaDescripcion.text = TRADU.i.Traducir(itemRepresentado.itemDescripcion)+precio;
          
         }
         if(n == 0)

@@ -46,11 +46,22 @@ public class CorteVerticalCongelado : Habilidad
 
       imHab = Resources.Load<Sprite>("imHab/Caballero_corteVertical");
 
-      txtDescripcion = "<color=#5dade2><b>Corte Vertical Congelado</b></color>\n\n"; 
-      txtDescripcion += "<i>Con el mandoble, el Caballero efectúa un ataque de arriba hacia abajo, lento, pero capaz de provocar grandes daños.</i>\n\n";
-      txtDescripcion += "<i>+1d10 Daño Frío - si es Golpe Crítico, hace 1d6 a enemigos Adyacentes al objetivo.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Daño: Cortante 2d8- </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+      if (TRADU.i.nIdioma == 1)
+      {
+        txtDescripcion = "<color=#5dade2><b>Corte Vertical Congelado</b></color>\n\n";
+        txtDescripcion += "<i>Con el mandoble, el Caballero efectúa un ataque de arriba hacia abajo, lento, pero capaz de provocar grandes daños.</i>\n\n";
+        txtDescripcion += "<i>+1d10 Daño Frío - si es Golpe Crítico, hace 1d6 a enemigos Adyacentes al objetivo.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Daño: Cortante 2d8- </color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+      }
+      if (TRADU.i.nIdioma == 2) //Inglés
+      {
+        txtDescripcion = "<color=#5dade2><b>Frozen Vertical Slash</b></color>\n\n";
+        txtDescripcion += "<i>With the greatsword, the Knight performs a slow downward attack, capable of inflicting great damage.</i>\n\n";
+        txtDescripcion += "<i>+1d10 Cold Damage - if Critical Hit, deals 1d6 to enemies adjacent to the target.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +{bonusAtaque}</color> - Damage: Slashing 2d8- </color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+      }
        
     }
 

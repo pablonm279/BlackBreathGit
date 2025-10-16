@@ -54,7 +54,7 @@ public class UIInfoChar : MonoBehaviour
     
      BotonSalir.SetActive(hayUnidadSeleccionadaParaInfo);
     
-   vNombre.text = scUnidadMostrada.uNombre;
+   vNombre.text = TRADU.i.Traducir(scUnidadMostrada.uNombre);
    vHP.text = ((int)scUnidadMostrada.HP_actual) + "/";
    vHPMax.text = ((int)scUnidadMostrada.mod_maxHP) + "";
    vDefensa.text = ((int)scUnidadMostrada.ObtenerdefensaActual()) + "";
@@ -322,73 +322,71 @@ public class UIInfoChar : MonoBehaviour
 
   string ActualizarDescripcionAI()
   {
-    string desc = "";
-     if(unidadMostrada.uNombre == "Lobo Espectral")
-     {
-         desc = "<i>El Lobo Espectral es un enemigo feroz que se mueve y ataca rápidamente, mientras su destreza animal le brinda una buena defensa.</i>\n\n<color=#199F10>-Posee un mordisco imbuído en fuego que además de dañar, puede hacer arder a sus enemigos.</color>\n<color=#EE0000>-Estadísticas débiles.</color>";
-     }
-     if(unidadMostrada.uNombre == "Lobo Alfa Espectral")
-     {
-         desc = "<i>El Lobo Alfa Espectral es el líder de la manada, posee una complexión mas fuerte y resistente que los demás lobos aunque es un poco menos ágil.</i>\n\n<color=#199F10>-Tiene la capacidad de aullar para motivar a los demás lobos.</color>\n<color=#EE0000>-Si queda sólo no podrá motivar a nadie.</color>";
-     }
-     if(unidadMostrada.uNombre == "Driada Quemada")
-     {
-         desc = "<i>Antes siervas y cuidadoras del bosque, ahora manifestaciones de venganza y odio en contra de cualquier invasor del Bosque Ardiente.</i>\n\n<color=#199F10>-Puede enredar con raíces ignífugas.\n-Ataque de rango.</color>\n<color=#EE0000>-Relativamente débil.</color>";
-     }
-     if(unidadMostrada.uNombre == "Espectro del Bosque")
-     {
-         desc = "<i>El Espectro del Bosque es un alma en pena atrapada entre las cenizas de un bosque calcinado, su ira alimentada por la destrucción que no pudo evitar. Errante y vengativo, ataca a quienes osan cruzar su tierra calcinada.</i>\n\n<color=#199F10>-Inmune a ataques físicos.\n-Puede maldecir con Perdición.</color>\n<color=#EE0000>-Pierde parte de su inmunidad física momentáneamente al atacar.</color>";
-     }
-     if(unidadMostrada.uNombre == "Fuego Fatuo")
-     {
-         desc = "<i>Un eco etéreo de las llamas que lo consumieron, danzando entre las cenizas como un recordatorio del desastre. Aunque parece inofensivo, guía a los incautos hacia la perdición, vengando la memoria del bosque caído.</i>\n\n<color=#199F10>-Resistente a ataques físicos.\n-Puede encarnarse en sus enemigos.</color>\n<color=#EE0000>-Tiene poca vida.</color>";
-     }
-      if(unidadMostrada.uNombre == "Treant Espectral")
-     {
-         desc = "<i>Con su madera marcada y deformada por el fuego, estos antes pastores de árboles ahora deambulan trayendo muerte a los invasores de su hogar.</i>\n\n<color=#199F10>-Buena armadura que se regenera.\n-Puede enredar al golpear a sus enemigos.</color>\n<color=#EE0000>-Débil al fuego.</color>";
-     }
-      if(unidadMostrada.uNombre == "Manifestación Arcana")
-     {
-         desc = "<i>Constituído por pura energía arcana, este ente etéreo defiende al Canalizador que le dio forma.</i>\n\n<color=#199F10>-Resistente a ataques físicos.</color>";
-     }
-      if(unidadMostrada.uNombre == "Vagranilo")
-     {
-         desc = "<i>Un ser volador cuasihumano oriundo de las profundidades, no tiene vision pero compensa con una capacidad de audición excepcional.</i>\n\n<color=#199F10>-Evasivo.\n-Puede aturdir.\n-Puede atacar a enemigos escondidos.</color>\n<color=#EE0000>-Débil al daño Divino.</color>";
-     }
-     if(unidadMostrada.uNombre == "Vagranilo Mayor")
-     {
-         desc = "<i>Un ser terrible cuasihumano oriundo de las profundidades, no tiene vision pero compensa con una capacidad de audición excepcional.</i>\n\n<color=#199F10>-Chirrido Ensordecedor.\n-Puede atacar a enemigos escondidos.\n-Se cura al morder victimas con Sangre Contaminada.</color>\n<color=#EE0000>-Débil al daño Divino.</color>";
-     }
-     if(unidadMostrada.uNombre == "Ladrón")
-     {
-         desc = "<i>Este hombre ya era malvado antes, y ahora la situación desesperada ha acentuado su crueldad.</i>\n\n<color=#199F10>-Buena capacidad de Crítico.\n-Arranca escondido.\n-Puede envenenar su arma.</color>\n<color=#EE0000>-Bastante débil.</color>";
-     }
-     if(unidadMostrada.uNombre == "Rufián con Ballesta")
-     {
-         desc = "<i>Este hombre ya era malvado antes, y ahora la situación desesperada ha acentuado su crueldad.</i>\n\n<color=#199F10>-Resistente.\n-Puede empujar.</color>";
-     }
-     if (unidadMostrada.uNombre == "Rufián con Mazo")
-     {
-         desc = "<i>Este hombre ya era malvado antes, y ahora la situación desesperada ha acentuado su crueldad.</i>\n\n<color=#199F10>-Resistente.\n-Golpes devastadores.\n-Se enfurece.</color>\n<color=#EE0000>-Lento para actuar.</color>";
-     }
-     if (unidadMostrada.uNombre == "Perro Adiestrado")
-     {
-         desc = "<i>Un perro adiestrado para la batalla, fiel a su amo y feroz con sus enemigos.</i>\n\n<color=#199F10>-Puede Inmovilizar al morder.</color>\n<color=#EE0000>-Relativamente débil.</color>";
-     }
-     if (unidadMostrada.uNombre == "Devorador Corrompido")
-     {
-          desc = "<i>Otrora un habitante de las tierras, ahora corrompido por el Aliento Negro, deformado y hambriento.</i>\n\n<color=#A020F0>-Corrupto.</color>\n<color=#199F10>-Puede debilitar.\n-Absorbe vida de Personajes Corruptos.</color>\n<color=#EE0000>-Relativamente débil.</color>";
-     }
-     if (unidadMostrada.uNombre == "Guerrero Corrompido")
-     {
-          desc = "<i>Otrora un habitante de las tierras, ahora corrompido por el Aliento Negro, deformado y hambriento.</i>\n\n<color=#A020F0>-Corrupto.</color>\n<color=#199F10>-Fuerte.\n-Golpea en zona.</color>\n<color=#EE0000>-Posee sólo un tipo de ataque.</color>";
-     }
-     if (unidadMostrada.uNombre == "Alimaña Corrompida")
-     {
-          desc = "<i>No se logra discernir facilmente que animal fue originalmente, pero ahora es una criatura corrompida y muy nociva.</i>\n\n<color=#A020F0>-Corrupto.</color>\n<color=#199F10>-Largo alcance.\n-Crea Masa Contaminada.</color>\n<color=#EE0000>-Movimiento limitado.</color>";
-     }
-     
-
+   string desc = "";
+   if(unidadMostrada.uNombre == "Lobo Espectral")
+   {
+      desc = TRADU.i.Traducir("<i>El Lobo Espectral es un enemigo feroz que se mueve y ataca rápidamente, mientras su destreza animal le brinda una buena defensa.</i>\n\n<color=#199F10>-Posee un mordisco imbuído en fuego que además de dañar, puede hacer arder a sus enemigos.</color>\n<color=#EE0000>-Estadísticas débiles.</color>");
+   }
+   if(unidadMostrada.uNombre == "Lobo Alfa Espectral")
+   {
+      desc = TRADU.i.Traducir("<i>El Lobo Alfa Espectral es el líder de la manada, posee una complexión mas fuerte y resistente que los demás lobos aunque es un poco menos ágil.</i>\n\n<color=#199F10>-Tiene la capacidad de aullar para motivar a los demás lobos.</color>\n<color=#EE0000>-Si queda sólo no podrá motivar a nadie.</color>");
+   }
+   if(unidadMostrada.uNombre == "Driada Quemada")
+   {
+      desc = TRADU.i.Traducir("<i>Antes siervas y cuidadoras del bosque, ahora manifestaciones de venganza y odio en contra de cualquier invasor del Bosque Ardiente.</i>\n\n<color=#199F10>-Puede enredar con raíces ignífugas.\n-Ataque de rango.</color>\n<color=#EE0000>-Relativamente débil.</color>");
+   }
+   if(unidadMostrada.uNombre == "Espectro del Bosque")
+   {
+      desc = TRADU.i.Traducir("<i>El Espectro del Bosque es un alma en pena atrapada entre las cenizas de un bosque calcinado, su ira alimentada por la destrucción que no pudo evitar. Errante y vengativo, ataca a quienes osan cruzar su tierra calcinada.</i>\n\n<color=#199F10>-Inmune a ataques físicos.\n-Puede maldecir con Perdición.</color>\n<color=#EE0000>-Pierde parte de su inmunidad física momentáneamente al atacar.</color>");
+   }
+   if(unidadMostrada.uNombre == "Fuego Fatuo")
+   {
+      desc = TRADU.i.Traducir("<i>Un eco etéreo de las llamas que lo consumieron, danzando entre las cenizas como un recordatorio del desastre. Aunque parece inofensivo, guía a los incautos hacia la perdición, vengando la memoria del bosque caído.</i>\n\n<color=#199F10>-Resistente a ataques físicos.\n-Puede encarnarse en sus enemigos.</color>\n<color=#EE0000>-Tiene poca vida.</color>");
+   }
+   if(unidadMostrada.uNombre == "Treant Espectral")
+   {
+      desc = TRADU.i.Traducir("<i>Con su madera marcada y deformada por el fuego, estos antes pastores de árboles ahora deambulan trayendo muerte a los invasores de su hogar.</i>\n\n<color=#199F10>-Buena armadura que se regenera.\n-Puede enredar al golpear a sus enemigos.</color>\n<color=#EE0000>-Débil al fuego.</color>");
+   }
+   if(unidadMostrada.uNombre == "Manifestación Arcana")
+   {
+      desc = TRADU.i.Traducir("<i>Constituído por pura energía arcana, este ente etéreo defiende al Canalizador que le dio forma.</i>\n\n<color=#199F10>-Resistente a ataques físicos.</color>");
+   }
+   if(unidadMostrada.uNombre == "Vagranilo")
+   {
+      desc = TRADU.i.Traducir("<i>Un ser volador cuasihumano oriundo de las profundidades, no tiene vision pero compensa con una capacidad de audición excepcional.</i>\n\n<color=#199F10>-Evasivo.\n-Puede aturdir.\n-Puede atacar a enemigos escondidos.</color>\n<color=#EE0000>-Débil al daño Divino.</color>");
+   }
+   if(unidadMostrada.uNombre == "Vagranilo Mayor")
+   {
+      desc = TRADU.i.Traducir("<i>Un ser terrible cuasihumano oriundo de las profundidades, no tiene vision pero compensa con una capacidad de audición excepcional.</i>\n\n<color=#199F10>-Chirrido Ensordecedor.\n-Puede atacar a enemigos escondidos.\n-Se cura al morder victimas con Sangre Contaminada.</color>\n<color=#EE0000>-Débil al daño Divino.</color>");
+   }
+   if(unidadMostrada.uNombre == "Ladrón")
+   {
+      desc = TRADU.i.Traducir("<i>Este hombre ya era malvado antes, y ahora la situación desesperada ha acentuado su crueldad.</i>\n\n<color=#199F10>-Buena capacidad de Crítico.\n-Arranca escondido.\n-Puede envenenar su arma.</color>\n<color=#EE0000>-Bastante débil.</color>");
+   }
+   if(unidadMostrada.uNombre == "Rufián con Ballesta")
+   {
+      desc = TRADU.i.Traducir("<i>Este hombre ya era malvado antes, y ahora la situación desesperada ha acentuado su crueldad.</i>\n\n<color=#199F10>-Resistente.\n-Puede empujar.</color>");
+   }
+   if (unidadMostrada.uNombre == "Rufián con Mazo")
+   {
+      desc = TRADU.i.Traducir("<i>Este hombre ya era malvado antes, y ahora la situación desesperada ha acentuado su crueldad.</i>\n\n<color=#199F10>-Resistente.\n-Golpes devastadores.\n-Se enfurece.</color>\n<color=#EE0000>-Lento para actuar.</color>");
+   }
+   if (unidadMostrada.uNombre == "Perro Adiestrado")
+   {
+      desc = TRADU.i.Traducir("<i>Un perro adiestrado para la batalla, fiel a su amo y feroz con sus enemigos.</i>\n\n<color=#199F10>-Puede Inmovilizar al morder.</color>\n<color=#EE0000>-Relativamente débil.</color>");
+   }
+   if (unidadMostrada.uNombre == "Devorador Corrompido")
+   {
+      desc = TRADU.i.Traducir("<i>Otrora un habitante de las tierras, ahora corrompido por el Aliento Negro, deformado y hambriento.</i>\n\n<color=#A020F0>-Corrupto.</color>\n<color=#199F10>-Puede debilitar.\n-Absorbe vida de Personajes Corruptos.</color>\n<color=#EE0000>-Relativamente débil.</color>");
+   }
+   if (unidadMostrada.uNombre == "Guerrero Corrompido")
+   {
+      desc = TRADU.i.Traducir("<i>Otrora un habitante de las tierras, ahora corrompido por el Aliento Negro, deformado y hambriento.</i>\n\n<color=#A020F0>-Corrupto.</color>\n<color=#199F10>-Fuerte.\n-Golpea en zona.</color>\n<color=#EE0000>-Posee sólo un tipo de ataque.</color>");
+   }
+   if (unidadMostrada.uNombre == "Alimaña Corrompida")
+   {
+      desc = TRADU.i.Traducir("<i>No se logra discernir facilmente que animal fue originalmente, pero ahora es una criatura corrompida y muy nociva.</i>\n\n<color=#A020F0>-Corrupto.</color>\n<color=#199F10>-Largo alcance.\n-Crea Masa Contaminada.</color>\n<color=#EE0000>-Movimiento limitado.</color>");
+   }
 
    return desc;
   }

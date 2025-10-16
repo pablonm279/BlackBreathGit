@@ -46,10 +46,16 @@ public class ContenedorPrefabsCamp : MonoBehaviour
     public Armadura Coraza1; //+1
     public Armadura Coraza2; //+2
     public Armadura Coraza3; //+3
+    public Armadura CorazaLiviana; 
+    public Armadura CorazaLlamas; 
+    public Armadura CorazaGigantes; 
     public Armadura ArmaduraCuero;
     public Armadura ArmaduraCuero1; //+1
     public Armadura ArmaduraCuero2; //+2
     public Armadura ArmaduraCuero3; //+3
+    public Armadura ArmaduraCueroFortaleza;
+    public Armadura ArmaduraCueroNecrotico;
+    public Armadura ArmaduraCueroBorrosa;
 
     public Armadura ArmaduraCueroReforzado;
     public Armadura ArmaduraCueroReforzado1; //+1

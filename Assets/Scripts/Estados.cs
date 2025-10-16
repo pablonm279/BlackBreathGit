@@ -20,9 +20,9 @@ public class Estados : MonoBehaviour
             
             // Retraso de 0.75 segundo
             await Task.Delay(750);
-            
-            unidad.GenerarTextoFlotante("Apagando!", Color.red);
-            BattleManager.Instance.EscribirLog($"{unidad.uNombre} gasta 1 AP para apagar el fuego.");
+
+            unidad.GenerarTextoFlotante(TRADU.i.Traducir("Apagando!"), Color.red);
+            BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" gasta 1 PA para apagar el fuego."));
 
            
 
@@ -37,15 +37,15 @@ public class Estados : MonoBehaviour
 
      unidad.CambiarAPActual(-(int)unidad.estado_congelado/2);
      unidad.estado_congelado -= APValorSaca;
-     BattleManager.Instance.EscribirLog($"{unidad.uNombre} está congelado.");
+     BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" está congelado."));
 
 
      if(unidad.estado_congelado < 0)
      {
        unidad.estado_congelado = 0;
 
-       unidad.GenerarTextoFlotante("Descongelado!", Color.red);
-      BattleManager.Instance.EscribirLog($"{unidad.uNombre} se libró del congelamiento.");
+       unidad.GenerarTextoFlotante(TRADU.i.Traducir("Descongelado!"), Color.red);
+      BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" se libró del congelamiento."));
 
 
      }
@@ -57,7 +57,7 @@ public class Estados : MonoBehaviour
      unidad.EstablecerAPActualA(0);
      unidad.estado_aturdido--;
 
-     BattleManager.Instance.EscribirLog($"{unidad.uNombre} está aturdido.");
+     BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" está aturdido."));
 
      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
   }
@@ -74,7 +74,7 @@ public class Estados : MonoBehaviour
     if(unidad.estado_armaduraModificador > 0)
     {
       unidad.estado_armaduraModificador--;
-      BattleManager.Instance.EscribirLog($"{unidad.uNombre} regenera {unidad.estado_regeneraarmadura} Armadura.");
+      BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" regenera ") + unidad.estado_regeneraarmadura + TRADU.i.Traducir(" Armadura."));
     }
 
     BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
@@ -84,7 +84,7 @@ public class Estados : MonoBehaviour
      
      unidad.estado_inmovil--;
 
-     BattleManager.Instance.EscribirLog($"{unidad.uNombre} está inmovilizado.");
+     BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" está inmovilizado."));
 
      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
   }
@@ -108,19 +108,19 @@ public class Estados : MonoBehaviour
   public static void  Efecto_Veneno(Unidad unidad)
   {
     unidad.RecibirDanio(1*unidad.estado_veneno, 10,false, null); 
-    BattleManager.Instance.EscribirLog($"{unidad.uNombre} recibe {1*unidad.estado_veneno} daño veneno.");
+    BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" recibe ") + (1*unidad.estado_veneno) + TRADU.i.Traducir(" daño veneno."));
 
 
    if(unidad.TiradaSalvacion(unidad.mod_TSFortaleza, unidad.estado_veneno)) //Cada turno se puede salvar del veneno, pero si peirde se suma 1 stack
    {
-     unidad.estado_veneno = 0; unidad.GenerarTextoFlotante("<s>" + "Veneno" + "</s>", Color.green);
-    BattleManager.Instance.EscribirLog($"{unidad.uNombre} resiste totalmente al veneno.");
+     unidad.estado_veneno = 0; unidad.GenerarTextoFlotante("<s>" + TRADU.i.Traducir("Veneno") + "</s>", Color.green);
+    BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" resiste totalmente al veneno."));
 
    }
    else
    {
       Estados.Aplicar_Veneno(unidad, 1);
-      BattleManager.Instance.EscribirLog($"{unidad.uNombre} falla su Tirada de salvación y el veneno empeora.");
+      BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" falla su Tirada de salvación y el veneno empeora."));
 
    }
    
@@ -133,10 +133,10 @@ public class Estados : MonoBehaviour
      if(unidad.estado_ardiendo > -1) //-1 Es si es inmune al estado.
      {
        unidad.estado_ardiendo += stacks;
-       unidad.GenerarTextoFlotante("+"+stacks+" arde", Color.red);
+       unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" arde"), Color.red);
 
        BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
-     } else{unidad.GenerarTextoFlotante("Inmune", Color.green);}
+     } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
   public static void  Aplicar_Veneno(Unidad unidad, int stacks)
@@ -144,9 +144,9 @@ public class Estados : MonoBehaviour
      if(unidad.estado_veneno > -1) //-1 Es si es inmune al estado.
      {
        unidad.estado_veneno += stacks;
-       unidad.GenerarTextoFlotante("+"+stacks+" veneno", Color.green);
+       unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" veneno"), Color.green);
        BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
-     } else{unidad.GenerarTextoFlotante("Inmune", Color.green);}
+     } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
   public static void  Aplicar_Congelado(Unidad unidad, int stacks)
@@ -154,10 +154,10 @@ public class Estados : MonoBehaviour
      if(unidad.estado_congelado > -1) //-1 Es si es inmune al estado.
      {
       unidad.estado_congelado += stacks;
-      unidad.GenerarTextoFlotante("+"+stacks+" frio", Color.cyan);
+      unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" frio"), Color.cyan);
 
       BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
-     } else{unidad.GenerarTextoFlotante("Inmune", Color.green);}
+     } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
   public static void  Aplicar_Aturdido(Unidad unidad, int stacks)
@@ -167,11 +167,11 @@ public class Estados : MonoBehaviour
       if(unidad.estado_aturdido < stacks)
       {
         unidad.estado_aturdido = stacks;
-        unidad.GenerarTextoFlotante("+"+stacks+" aturde", Color.yellow);
+        unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" aturde"), Color.yellow);
       }
 
       BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
-     } else{unidad.GenerarTextoFlotante("Inmune", Color.green);}
+     } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
   public static void  Aplicar_Inmovil(Unidad unidad, int stacks)
   {
@@ -180,11 +180,11 @@ public class Estados : MonoBehaviour
       if(unidad.estado_inmovil < stacks)
       {
         unidad.estado_inmovil = stacks;
-        unidad.GenerarTextoFlotante("+"+stacks+" inmóvil", Color.yellow);
+        unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" inmóvil"), Color.yellow);
       }
 
       BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
-     } else{unidad.GenerarTextoFlotante("Inmune", Color.green);}
+     } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
 
@@ -193,11 +193,11 @@ public class Estados : MonoBehaviour
     if(unidad.estado_sangrado > -1) //-1 Es si es inmune al estado.
     {
        unidad.estado_sangrado += stacks;
-       unidad.GenerarTextoFlotante("+"+stacks+" sangrado", Color.red);
+       unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" sangrado"), Color.red);
      
 
       BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
-    } else{unidad.GenerarTextoFlotante("Inmune", Color.green);}
+    } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
   public static void  Aplicar_Acido(Unidad unidad, int stacks)
@@ -206,11 +206,10 @@ public class Estados : MonoBehaviour
     {
      
        unidad.estado_acido += stacks;
-       unidad.GenerarTextoFlotante("+"+stacks+" acido", Color.green);
-     
+       unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" acido"), Color.green);
 
      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
-    } else{unidad.GenerarTextoFlotante("Inmune", Color.green);}
+    } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
 

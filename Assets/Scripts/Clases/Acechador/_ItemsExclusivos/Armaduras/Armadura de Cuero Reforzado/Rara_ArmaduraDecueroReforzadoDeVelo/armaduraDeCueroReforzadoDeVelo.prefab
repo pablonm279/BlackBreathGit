@@ -46,12 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: 7fcceb45f2afe534dba3eb5b73f8874c, type: 3}
-  sNombreItem: Armadura de Cuero Reforzado de Velo +2
+  sNombreItem: Armadura de Cuero Reforzado de Velo
+  IDEfectoEspecial: 2
   IDClasesQuePuedenUsarEsteItem: 04000000
   iPrecio: 270
-  itemDescrpicion: "<i>Una Armadura de Cuero Reforzada que envuelve al usuario en
-    sombras si se recibe un da\xF1o cr\xEDtico.</i>\n\n+6 Armadura\n+1 Defensa\nEfecto:
-    al recibir un Golpe Cr\xEDtico, se gana Escondido I.\n"
+  itemDescripcion: 
   iRareza: 2
   nivelMejora: 2
   requisitoFue: 0

@@ -29,16 +29,15 @@ public class SequitoHerboristas : MonoBehaviour
     {
 
 
-        txtDesc.text = $"Un grupo de especialistas en recolectar hierbas y crear con ellas bálsamos especiales para vender. \nAdemás, sus hierbas proporcionarán beneficios curativos a la caravana.\nPero quizás no sean demasiado cuidadosos al adentrarse en zonas peligrosas para recolectar hierbas.\n\n";
-        txtMecanica.text = $"EFECTOS PASIVOS:\n\n-Hierbas curativas: Mejoran {3 + vecesEnClaro * 3}% la curación pasiva de la Caravana.\n\nEste índice aumenta un 3% cada vez que la Caravana visite un Claro.\n\n-A veces son descuidados al recolectar hierbas. +2% chances de que se de un ataque a la caravana tras descansar.";
+        txtDesc.text = TRADU.i.Traducir("Un grupo de especialistas en recolectar hierbas y crear con ellas bálsamos especiales para vender. \nAdemás, sus hierbas proporcionarán beneficios curativos a la caravana.\nPero quizás no sean demasiado cuidadosos al adentrarse en zonas peligrosas para recolectar hierbas.\n\n");
+        txtMecanica.text = TRADU.i.Traducir("EFECTOS PASIVOS:\n\n-Hierbas curativas: Mejoran ") + (3 + vecesEnClaro * 3) + TRADU.i.Traducir("% la curación pasiva de la Caravana.\n\nEste índice aumenta un 3% cada vez que la Caravana visite un Claro.\n\n-A veces son descuidados al recolectar hierbas. +2% chances de que se de un ataque a la caravana tras descansar.");
 
         int oroActual = CampaignManager.Instance.GetOroActuales();
-        string colorRojo = "<color=#FF0000>";
-        string colorFin = "</color>";
-
-        string precioFort = oroActual >= 50 ? "50 de oro" : $"{colorRojo}50 oro{colorFin}";
-        string precioReflej = oroActual >= 50 ? "50 de oro" : $"{colorRojo}50 oro{colorFin}";
-        string precioMental = oroActual >= 50 ? "50 de oro" : $"{colorRojo}50 oro{colorFin}";
+        
+        
+        string precioFort = oroActual >= 50 ? TRADU.i.Traducir("50 de oro") : "<color=#FF0000>"+TRADU.i.Traducir("50 de oro")+"</color>";
+        string precioReflej = oroActual >= 50 ? TRADU.i.Traducir("50 de oro") : "<color=#FF0000>"+TRADU.i.Traducir("50 de oro")+"</color>";
+        string precioMental = oroActual >= 50 ? TRADU.i.Traducir("50 de oro") : "<color=#FF0000>"+TRADU.i.Traducir("50 de oro")+"</color>";
 
         txstCantBalsamoFort.text = $"{cantBalsamoFort}/2 - {precioFort}";
         txstCantBalsamoReflej.text = $"{cantBalsamoReflej}/2 - {precioReflej}";

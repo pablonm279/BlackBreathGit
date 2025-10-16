@@ -10,8 +10,8 @@ public class Cons_BalsamoEnergizante : Consumible
 
     void Awake()
     {
-      sNombreItem = "Bálsamo Energizante";
-      itemDescripcion = "+2 TS Reflejos por todo el combate.";
+      sNombreItem = TRADU.i.Traducir("Bálsamo Energizante");
+      itemDescripcion = TRADU.i.Traducir("+2 TS Reflejos por todo el combate.");
 
     }
 

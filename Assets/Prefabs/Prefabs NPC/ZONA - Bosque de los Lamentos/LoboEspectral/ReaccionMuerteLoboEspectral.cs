@@ -20,7 +20,7 @@ public class ReaccionMuerteLoboEspectral : Reaccion
     corteVertical =  gameObject.GetComponent<Cortevertical>();
     
 
-    descripcion = $"Reacción: Al morir, enfurecerá a otros Lobos Espectrales.";
+    descripcion = TRADU.i.Traducir("Reacción: Al morir, enfurecerá a otros Lobos Espectrales.");
 
    }
 
@@ -30,8 +30,8 @@ public class ReaccionMuerteLoboEspectral : Reaccion
        
         
         await Task.Delay(400);
-        
-        BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} reacciona con {nombre}.");
+
+        BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir(" reacciona con ") + nombre + ".");
 
         List<Unidad> unidades = BattleManager.Instance.lUnidadesTotal;
         foreach(Unidad unidad in unidades )

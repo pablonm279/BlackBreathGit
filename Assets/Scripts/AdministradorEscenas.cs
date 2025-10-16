@@ -1705,21 +1705,21 @@ IEnumerator FadeTo(float target, float time)
     if (pers.itemArmadura != null)
     {
       //Armadura de Cuero Reforzado de Ligereza
-      if (pers.itemArmadura.sNombreItem == "Armadura de Cuero Reforzado de Ligereza +1")
+      if (pers.itemArmadura.IDEfectoEspecial == 1)
       {
         unidad.estado_evasion += 2; // Da +2 de evasión al comenzar el combate
       }
       //Armadura de Cuero Reforzado de Velo
-      if (pers.itemArmadura.sNombreItem == "Armadura de Cuero Reforzado de Velo +2" && unidad is ClaseAcechador unidadAcechador)
+      if (pers.itemArmadura.IDEfectoEspecial ==  2 && unidad is ClaseAcechador unidadAcechador)
       {
         unidadAcechador.tieneArmaduradeVelo = true; // Activa la armadura de velo
       }
       //Armadura de Coraza de Llamas +1
-      if (pers.itemArmadura.sNombreItem == "Armadura de Coraza de Llamas +1" && unidad is ClaseCaballero unidadCaballero)
+      if (pers.itemArmadura.IDEfectoEspecial == 3 && unidad is ClaseCaballero unidadCaballero)
       {
         unidadCaballero.tieneCorazaDeLlamas = true; // Activa la armadura de coraza de llamas
       }
-      if (pers.itemArmadura.sNombreItem == "Armadura de Cuero Borrosa +2")
+      if (pers.itemArmadura.IDEfectoEspecial == 4) // Activa la armadura de cuero borrosa
       {
         unidad.estado_evasion += 3; // Da +3 de evasión al comenzar el combate
       }

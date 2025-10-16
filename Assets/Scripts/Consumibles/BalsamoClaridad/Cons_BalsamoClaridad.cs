@@ -10,8 +10,8 @@ public class Cons_BalsamoClaridad : Consumible
 
     void Awake()
     {
-      sNombreItem = "Bálsamo de Claridad";
-      itemDescripcion = "+2 TS Mental por todo el combate.";
+      sNombreItem = TRADU.i.Traducir("Bálsamo de Claridad");
+      itemDescripcion = TRADU.i.Traducir("+2 TS Mental por todo el combate.");
 
     }
 

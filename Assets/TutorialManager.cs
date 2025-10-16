@@ -93,6 +93,18 @@ public class TutorialManager : MonoBehaviour
         if (index < 0 || index >= pasosTutorial.Length) return;
 
         pasosTutorial[index].SetActive(true); // Muestra el paso actual
+        GameObject tutoActual = pasosTutorial[index];
+
+        if (TRADU.i.nIdioma == 1) //Esp
+        {  
+            tutoActual.transform.GetChild(0).gameObject.SetActive(true);
+        }
+        else if (TRADU.i.nIdioma == 2) //Ing
+        {
+            if (tutoActual.transform.GetChild(1) != null)
+            { tutoActual.transform.GetChild(1).gameObject.SetActive(true); }
+        }
+
     }
 
     public void OmitirTutorial()

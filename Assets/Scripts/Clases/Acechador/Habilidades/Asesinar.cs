@@ -144,7 +144,88 @@ public class Asesinar : Habilidad
       txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
     }
    
-   
+    if (TRADU.i.nIdioma == 2) // English translation
+    {
+      if (NIVEL < 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Assassinate I</b></color>\n\n";
+        txtDescripcion += "<i>Attack a target from the shadows, dealing great damage if the enemy has no allies nearby.</i>\n\n";
+        txtDescripcion += "<i>On kill: cooldown is reduced to 1 and the Stalker gains Hidden I.</i>\n\n";
+        txtDescripcion += "<i><color=#ea0606>--Requires being Hidden to use--</color></i>\n\n";
+        txtDescripcion += $"-Attack:<color=#ea0606>Agility</color><i> Piercing Damage: 2d8 + 2 + Agility. +4 vs Humanoids. If the target is Isolated, +2 Attack and double damage.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: +2 Damage.</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Assassinate II</b></color>\n\n";
+        txtDescripcion += "<i>Attack a target from the shadows, dealing great damage if the enemy has no allies nearby.</i>\n\n";
+        txtDescripcion += "<i>On kill: cooldown is reduced to 1 and the Stalker gains Hidden I.</i>\n\n";
+        txtDescripcion += "<i><color=#ea0606>--Requires being Hidden to use--</color></i>\n\n";
+        txtDescripcion += $"-Attack:<color=#ea0606>Agility</color><i> Piercing Damage: 2d8 + 4 + Agility. +4 vs Humanoids. If the target is Isolated, +2 Attack and double damage.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack if isolated.</color>\n\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Assassinate III</b></color>\n\n";
+        txtDescripcion += "<i>Attack a target from the shadows, dealing great damage if the enemy has no allies nearby.</i>\n\n";
+        txtDescripcion += "<i>On kill: cooldown is reduced to 1 and the Stalker gains Hidden I.</i>\n\n";
+        txtDescripcion += "<i><color=#ea0606>--Requires being Hidden to use--</color></i>\n\n";
+        txtDescripcion += $"-Attack:<color=#ea0606>Agility</color><i> Piercing Damage: 2d8 + 4 + Agility. +4 vs Humanoids. If the target is Isolated, +3 Attack and double damage.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Option A: On kill, +1 Valor.</color>\n";
+              txtDescripcion += $"<color=#dfea02>-Option B: +3 Damage.</color>\n";
+            }
+          }
+        }
+      }
+      if (NIVEL == 4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Assassinate IVa</b></color>\n\n";
+        txtDescripcion += "<i>Attack a target from the shadows, dealing great damage if the enemy has no allies nearby.</i>\n\n";
+        txtDescripcion += "<i>On kill: cooldown is reduced to 1 and the Stalker gains Hidden I and +1 Valor.</i>\n\n";
+        txtDescripcion += "<i><color=#ea0606>--Requires being Hidden to use--</color></i>\n\n";
+        txtDescripcion += $"-Attack:<color=#ea0606>Agility</color><i> Piercing Damage: 2d8 + 4 + Agility. +4 vs Humanoids. If the target is Isolated, +3 Attack and double damage.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+      }
+      if (NIVEL == 5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Assassinate IVb</b></color>\n\n";
+        txtDescripcion += "<i>Attack a target from the shadows, dealing great damage if the enemy has no allies nearby.</i>\n\n";
+        txtDescripcion += "<i>On kill: cooldown is reduced to 1 and the Stalker gains Hidden I.</i>\n\n";
+        txtDescripcion += "<i><color=#ea0606>--Requires being Hidden to use--</color></i>\n\n";
+        txtDescripcion += $"-Attack:<color=#ea0606>Agility</color><i> Piercing Damage: 2d8 + 7 + Agility. +4 vs Humanoids. If the target is Isolated, +3 Attack and double damage.</i>\n\n";
+        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+      }
+    }
    
  
   }

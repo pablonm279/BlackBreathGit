@@ -335,7 +335,7 @@ MonoBehaviour:
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 3030485952608272424}
   txtVida: {fileID: 3224826130183209749}
-  barraVida: {fileID: 5021423734387292592}
+  barraVida: {fileID: 2656302545408759341}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 8903915253619086553}
 --- !u!114 &8387776193308940008
@@ -1475,11 +1475,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &5021423734387292592 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6162646531807787434, guid: ad323613071b64040902f61f50b3ea82, type: 3}
-  m_PrefabInstance: {fileID: 1164655590382534682}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8903915253619086553 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7762164691220649155, guid: ad323613071b64040902f61f50b3ea82, type: 3}

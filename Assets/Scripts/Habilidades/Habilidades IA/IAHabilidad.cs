@@ -294,7 +294,7 @@ public abstract class IAHabilidad : MonoBehaviour
   //Ataque vs Defensa convencional
   public int TiradaAtaque(float defensaObjetivo, float atributoAtaca, float modificadorHabilidadaAtaque, float modificadorDadoCritico, Unidad unidadAtacada, float tiradaAtaque = -1)
   {
-    //Pifia = -1
+   //Pifia = -1
     //Fallo = 0
     //Roce = 1
     //Golpe = 2
@@ -308,15 +308,18 @@ public abstract class IAHabilidad : MonoBehaviour
 
     int resultado = 0;
     float iTiradaAtaque = 0;
+    
     if (tiradaAtaque == -1)
     {
       iTiradaAtaque = UnityEngine.Random.Range(1, 21);
     }
     else { iTiradaAtaque = tiradaAtaque; }
+    float iResultadoAtaque = iTiradaAtaque + atributoAtaca + modificadorHabilidadaAtaque;
+
     if (iTiradaAtaque == 1)//Pifia
     {
-      scEstaUnidad.GenerarTextoFlotante("Pifia", Color.red);
-      BattleManager.Instance.EscribirLog($"<color=#d92b08>-Tirada de Ataque: 1d20 = {iTiradaAtaque}. Resultado: Pifia.</Color>");
+      scEstaUnidad.GenerarTextoFlotante(TRADU.i.Traducir("Pifia"), Color.red);
+      BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + iResultadoAtaque + TRADU.i.Traducir(". Resultado: Pifia."));
 
       return -1;
     }
@@ -324,23 +327,22 @@ public abstract class IAHabilidad : MonoBehaviour
     if (iTiradaAtaque >= 19 - modificadorDadoCritico) { return 3; } //Golpe crítico
 
 
-    float iResultadoAtaque = iTiradaAtaque + atributoAtaca + modificadorHabilidadaAtaque;
 
     if (iResultadoAtaque == defensaObjetivo)
     {
-      BattleManager.Instance.EscribirLog($"<color=#d92b08>-Tirada de Ataque: 1d20 = {iTiradaAtaque} +{atributoAtaca + modificadorHabilidadaAtaque} vs Defensa: {defensaObjetivo}. Resultado: Roce.</color>");
+      BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + iResultadoAtaque + TRADU.i.Traducir(". Resultado: Roce."));
       return 1; //Roce
     }
     if (iResultadoAtaque > defensaObjetivo)
     {
-      BattleManager.Instance.EscribirLog($"<color=#d92b08>-Tirada de Ataque: 1d20 = {iTiradaAtaque} +{atributoAtaca + modificadorHabilidadaAtaque} vs Defensa: {defensaObjetivo}. Resultado: Golpe.</color>");
+      BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + iResultadoAtaque + TRADU.i.Traducir(". Resultado: Golpe."));
       return 2; //Golpe
     }
 
-    if (resultado == 0)
+    if (resultado == 0) //Fallo
     {
-      BattleManager.Instance.EscribirLog($"<color=#d92b08>-Tirada de Ataque: 1d20 = {iTiradaAtaque} +{atributoAtaca + modificadorHabilidadaAtaque} vs Defensa: {defensaObjetivo}. Resultado: Fallo.</color>");
-      unidadAtacada.GenerarTextoFlotante("Fallo", Color.grey);
+      BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + iResultadoAtaque + TRADU.i.Traducir(". Resultado: Fallo."));
+      unidadAtacada.GenerarTextoFlotante(TRADU.i.Traducir("Fallo"), Color.grey);
     }
 
 
@@ -414,12 +416,12 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     // Log de uso de habilidad de IA
     if (BattleManager.Instance != null && scEstaUnidad != null)
     {
-      BattleManager.Instance.EscribirLog($"<color=#d92b08>{scEstaUnidad.uNombre} usa {nombre}.</color>");
+      BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir(" usa ") + nombre + ".</color>");
     }
     unidadesNoParticipantes = new List<object>(BattleManager.Instance.lUnidadesTotal);
     unidadesNoParticipantes.Remove(scEstaUnidad);
 
-    scEstaUnidad.GenerarTextoFlotante(nombre, Color.magenta);
+    scEstaUnidad.GenerarTextoFlotante(TRADU.i.Traducir(nombre), Color.magenta);
 
     if (objetivos != null && objetivos.Count > 0)
     {

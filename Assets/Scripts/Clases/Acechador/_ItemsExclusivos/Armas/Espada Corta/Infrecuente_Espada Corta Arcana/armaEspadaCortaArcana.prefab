@@ -46,13 +46,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: 83bcb4190e2e3304dae7b00040956f4c, type: 3}
-  sNombreItem: Espada Corta Arcana +1
+  sNombreItem: Espada Corta Arcana
   IDClasesQuePuedenUsarEsteItem: 04000000
   iPrecio: 145
-  itemDescrpicion: "<i>Espada Corta imbu\xEDda con energ\xEDa Arcana que la hace
-    m\xE1s poderosa.</i>\n\n<b>Otorga: Ataque Espada Corta Arcana</b>\n\nMejora +1:
-    +1 Ataque +5% Da\xF1o (afecta tambi\xE9n a la Ballesta de Mano)\nEfectos:+1d4
-    da\xF1o Arcano\n"
+  itemDescripcion: 
   iRareza: 1
   nivelMejora: 1
   habilidadAtaque: {fileID: 4790208597144995915}

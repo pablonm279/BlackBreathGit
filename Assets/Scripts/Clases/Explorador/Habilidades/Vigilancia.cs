@@ -14,40 +14,48 @@ public class Vigilancia : Habilidad
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de crpitico del dado (mientras mayor, mas probable)
     [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
-      public override void  Awake()
-    {
-      nombre = "Vigilancia";
-      costoAP = 3;
-      costoPM = 2;
-      IDenClase = 6;
+  public override void Awake()
+  {
+    nombre = "Vigilancia";
+    costoAP = 3;
+    costoPM = 2;
+    IDenClase = 6;
 
-      if(NIVEL == 4)
-      {costoPM--;}
+    if (NIVEL == 4)
+    { costoPM--; }
 
-      Usuario = this.gameObject;
-      scEstaUnidad = Usuario.GetComponent<Unidad>();
-      esZonal = false;
-      enArea = 1;//esto es solamente para que marque de azul las casillas afectadas, no tiene otro efecto
-      poneTrampas = true;
-      esforzable = 0;
-      esCargable = false;
-      esMelee = false;
-      esHostil = true;
-      cooldownMax = 3;
-      bAfectaObstaculos = false;
+    Usuario = this.gameObject;
+    scEstaUnidad = Usuario.GetComponent<Unidad>();
+    esZonal = false;
+    enArea = 1;//esto es solamente para que marque de azul las casillas afectadas, no tiene otro efecto
+    poneTrampas = true;
+    esforzable = 0;
+    esCargable = false;
+    esMelee = false;
+    esHostil = true;
+    cooldownMax = 3;
+    bAfectaObstaculos = false;
+
+
+
+    requiereRecurso = 2; //esto es para que el boton no se active al apretar si no tiene X recursos (ej Flecha). Ver en BotonHabilidad.
+    if (NIVEL == 5) { requiereRecurso++; }
+
+
+    imHab = Resources.Load<Sprite>("imHab/Explorador_Vigilancia");
+
+    txtDescripcion = "<color=#5dade2><b>Vigilancia I</b></color>\n\n";
+    txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
+    txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color> - Requiere 2 Flechas</color>\n\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
       
-
-      
-      requiereRecurso = 2; //esto es para que el boton no se active al apretar si no tiene X recursos (ej Flecha). Ver en BotonHabilidad.
-       if(NIVEL == 5){requiereRecurso++;}
-
-
-      imHab = Resources.Load<Sprite>("imHab/Explorador_Vigilancia");
-
-      txtDescripcion = "<color=#5dade2><b>Vigilancia I</b></color>\n\n"; 
-      txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color> - Requiere 2 Flechas</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
+      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+      {
+        txtDescripcion = "<color=#5dade2><b>Surveillance I</b></color>\n\n";
+        txtDescripcion += "<i>The explorer will attack any enemy that enters the Surveillance zone. Will make up to 2 attacks.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>RANGE</b> -Uses Attack: <color=#ea0606>Archery Shot</color> - Requires 2 Arrows</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}- ends Turn \n- Valor Cost: {costoPM} </color>";
+      }
 
     
     }

@@ -46,12 +46,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: d9b195f05eefe2b458326dd1a0d431eb, type: 3}
-  sNombreItem: Armadura de Cuero de Fortaleza +1
+  sNombreItem: Armadura de Cuero de Fortaleza
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 190
-  itemDescrpicion: "<i>Una Armadura de Cuero que brinda cierta protecci\xF3n al Explorador
-    mientras le permite moverse con libertad.\n\nOtorga +1 TS Fortaleza\n</i>\n\n+4
-    Armadura"
+  itemDescripcion: 
   iRareza: 1
   nivelMejora: 1
   requisitoFue: 0

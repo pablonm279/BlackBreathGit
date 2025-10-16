@@ -37,87 +37,165 @@ public class HombroConHombro : Habilidad
         ActualizarDescripcion();
     
     }
-     public override void ActualizarDescripcion()
-     {
+    public override void ActualizarDescripcion()
+    {
+      if (TRADU.i.nIdioma == 1) // Español
+      {
         if(NIVEL<2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Hombro con Hombro I</b></color>\n\n"; 
-        txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
-        txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +2 Defensa y Ataque por 3 Turnos. +1 Valentía a cada uno.</i>\n\n";
-        txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
-
-         if (EsEscenaCampaña())
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Defensa</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Hombro con Hombro II</b></color>\n\n"; 
-        txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
-        txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +3 Defensa y +2 Ataque por 3 Turnos. +1 Valentía a cada uno.</i>\n\n";
-        txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
+          txtDescripcion = "<color=#5dade2><b>Hombro con Hombro I</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
+          txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +2 Defensa y Ataque por 3 Turnos. +1 Valentía a cada uno.</i>\n\n";
+          txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
 
           if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
           {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==3)
-       {
-        txtDescripcion = "<color=#5dade2><b>Hombro con Hombro III</b></color>\n\n"; 
-        txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
-        txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +3 Defensa y Ataque por 3 Turnos. +1 Valentía a cada uno.</i>\n\n";
-        txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: Otorga Invulnerabilidad por 1 Turno</color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: Otorga +1 AP</color>\n";
-          }
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Defensa</color>\n\n";
+              }
+            }
           }
         }
-       }
-       if(NIVEL==4)
-       {
-        txtDescripcion = "<color=#5dade2><b>Hombro con Hombro IV a</b></color>\n\n"; 
-        txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
-        txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +3 Defensa y +2 Ataque por 3 Turnos. +1 Valentía a cada uno.</i>\n";
-        txtDescripcion += $"<i>Invulnerables el primer turno.</i>\n\n";
-        txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
-       }
-       if(NIVEL==5)
-       {
-        txtDescripcion = "<color=#5dade2><b>Hombro con Hombro IV b</b></color>\n\n"; 
-        txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
-        txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +3 Defensa y Ataque por 3 Turnos. +1 Valentía y AP a cada uno.</i>\n\n";
-        txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
-       }
+        if(NIVEL==2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Hombro con Hombro II</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
+          txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +3 Defensa y +2 Ataque por 3 Turnos. +1 Valentía a cada uno.</i>\n\n";
+          txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
 
+          if (EsEscenaCampaña())
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
+              }
+            }
+          }
+        }
+        if(NIVEL==3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Hombro con Hombro III</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
+          txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +3 Defensa y Ataque por 3 Turnos. +1 Valentía a cada uno.</i>\n\n";
+          txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
 
+          if (EsEscenaCampaña())
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Opción A: Otorga Invulnerabilidad por 1 Turno</color>\n";
+                txtDescripcion += $"<color=#dfea02>-Opción B: Otorga +1 AP</color>\n";
+              }
+            }
+          }
+        }
+        if(NIVEL==4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Hombro con Hombro IV a</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
+          txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +3 Defensa y +2 Ataque por 3 Turnos. +1 Valentía a cada uno.</i>\n";
+          txtDescripcion += $"<i>Invulnerables el primer turno.</i>\n\n";
+          txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+        }
+        if(NIVEL==5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Hombro con Hombro IV b</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
+          txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +3 Defensa y Ataque por 3 Turnos. +1 Valentía y AP a cada uno.</i>\n\n";
+          txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+        }
+      }
+      if (TRADU.i.nIdioma == 2) // Inglés
+      {
+        if(NIVEL<2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Shoulder to Shoulder I</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight stands beside his allies and inspires them to fight effectively.</i>\n\n";
+          txtDescripcion += $"<i>Buff to adjacent allies and those adjacent to them in the same column: +2 Defense and Attack for 3 Turns. +1 Valor to each.</i>\n\n";
+          txtDescripcion += $"<i>Cancels if any move.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>\n\n";
 
-     }
+          if (EsEscenaCampaña())
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Defense</color>\n\n";
+              }
+            }
+          }
+        }
+        if(NIVEL==2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Shoulder to Shoulder II</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight stands beside his allies and inspires them to fight effectively.</i>\n\n";
+          txtDescripcion += $"<i>Buff to adjacent allies and those adjacent to them in the same column: +3 Defense and +2 Attack for 3 Turns. +1 Valor to each.</i>\n\n";
+          txtDescripcion += $"<i>Cancels if any move.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack</color>\n\n";
+              }
+            }
+          }
+        }
+        if(NIVEL==3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Shoulder to Shoulder III</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight stands beside his allies and inspires them to fight effectively.</i>\n\n";
+          txtDescripcion += $"<i>Buff to adjacent allies and those adjacent to them in the same column: +3 Defense and Attack for 3 Turns. +1 Valor to each.</i>\n\n";
+          txtDescripcion += $"<i>Cancels if any move.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Option A: Grants Invulnerability for 1 Turn</color>\n";
+                txtDescripcion += $"<color=#dfea02>-Option B: Grants +1 AP</color>\n";
+              }
+            }
+          }
+        }
+        if(NIVEL==4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Shoulder to Shoulder IV a</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight stands beside his allies and inspires them to fight effectively.</i>\n\n";
+          txtDescripcion += $"<i>Buff to adjacent allies and those adjacent to them in the same column: +3 Defense and +2 Attack for 3 Turns. +1 Valor to each.</i>\n";
+          txtDescripcion += $"<i>Invulnerable the first turn.</i>\n\n";
+          txtDescripcion += $"<i>Cancels if any move.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>";
+        }
+        if(NIVEL==5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Shoulder to Shoulder IV b</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight stands beside his allies and inspires them to fight effectively.</i>\n\n";
+          txtDescripcion += $"<i>Buff to adjacent allies and those adjacent to them in the same column: +3 Defense and Attack for 3 Turns. +1 Valor and AP to each.</i>\n\n";
+          txtDescripcion += $"<i>Cancels if any move.</i>\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>";
+        }
+      }
+    }
    
 
     Casilla Origen;

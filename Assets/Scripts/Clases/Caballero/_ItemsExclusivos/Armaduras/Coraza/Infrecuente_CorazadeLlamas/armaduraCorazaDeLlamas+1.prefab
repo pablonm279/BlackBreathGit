@@ -46,14 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: 19be55d5ef6929141bb5524986761b6e, type: 3}
-  sNombreItem: Coraza de Llamas +1
+  sNombreItem: Coraza de Llamas
+  IDEfectoEspecial: 3
   IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 315
-  itemDescrpicion: "<i>Esta coraza otorga una peque\xF1a resistencia al fuego a quien
-    la porte, y adem\xE1s, al ser golpeado puede prender fuego al atacante.</i>\n<b>\\n\\nArmadura:
-    7 \\n-2 Resistencia Rayo \\n2 Resistencia Fuego\n\\nAl ser golpeado por enemigos
-    en la fila frontal: enemigo TS 10 Reflejos - Si falla obtiene Ardiendo 1.\n\nOtorga:
-    Armadura Limitante \n</b>"
+  itemDescripcion: 
   iRareza: 1
   nivelMejora: 1
   requisitoFue: 3

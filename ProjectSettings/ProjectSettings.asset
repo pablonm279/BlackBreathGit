@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: El Aliento Negro
+  productName: The Black Breath
   defaultCursor: {fileID: 2800000, guid: 667ffcfb980703f44920db4e6df39444, type: 3}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -161,7 +161,7 @@ PlayerSettings:
   androidMinAspectRatio: 1
   applicationIdentifier:
     Android: com.DefaultCompany.GDDUntitled
-    Standalone: com.DefaultCompany.El-Aliento-Negro
+    Standalone: com.DefaultCompany.The-Black-Breath
   buildNumber:
     Bratwurst: 0
     Standalone: 0

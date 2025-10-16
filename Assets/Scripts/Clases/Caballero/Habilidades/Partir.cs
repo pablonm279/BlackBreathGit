@@ -47,89 +47,156 @@ public class Partir : Habilidad
     
     }
 
-     public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
     {
-      if(NIVEL<2)
+      if (TRADU.i.nIdioma == 1) // Español
       {
-        txtDescripcion = "<color=#5dade2><b>Partir I</b></color>\n\n"; 
-        txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza </color> - Daño: Cortante 2d10 +5 - </color>\n";
-        txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
-
-         if (EsEscenaCampaña())
+        if(NIVEL<2)
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          txtDescripcion = "<color=#5dade2><b>Partir I</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza </color> - Daño: Cortante 2d10 +5 - </color>\n";
+          txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
+          if (EsEscenaCampaña())
           {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +4 Daño</color>\n\n";
-          }
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +4 Daño</color>\n\n";
+              }
+            }
           }
         }
-      }
-      if(NIVEL== 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Partir II</b></color>\n\n"; 
-        txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza </color> - Daño: Cortante 2d10 +9 - </color>\n";
-        txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
-
-         if (EsEscenaCampaña())
-        {if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+        if(NIVEL== 2)
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          txtDescripcion = "<color=#5dade2><b>Partir II</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza </color> - Daño: Cortante 2d10 +9 - </color>\n";
+          txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
+          if (EsEscenaCampaña())
           {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +2 Ataque</color>\n\n";
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +2 Ataque</color>\n\n";
+              }
+            }
           }
         }
-        }
-      }
-      if(NIVEL== 3)
-      {
-        txtDescripcion = "<color=#5dade2><b>Partir III</b></color>\n\n"; 
-        txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +2</color> - Daño: Cortante 2d10 +9 - </color>\n";
-        txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
-
-        if (EsEscenaCampaña())
+        if(NIVEL== 3)
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          txtDescripcion = "<color=#5dade2><b>Partir III</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +2</color> - Daño: Cortante 2d10 +9 - </color>\n";
+          txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
+          if (EsEscenaCampaña())
           {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: +2 dificultad TS Mental Enemigos</color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: +1 Rango Crítico</color>\n";
-          }
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Opción A: +2 dificultad TS Mental Enemigos</color>\n";
+                txtDescripcion += $"<color=#dfea02>-Opción B: +1 Rango Crítico</color>\n";
+              }
+            }
           }
         }
+        if(NIVEL== 4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Partir IV a</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +2</color> - Daño: Cortante 2d10 +9 - </color>\n";
+          txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 5. Aplica Aterrado.\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>";
+        }
+        if(NIVEL== 5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Partir IV b</b></color>\n\n"; 
+          txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +2</color> - Daño: Cortante 2d10 +9 - +1 Rango Crítico.</color> \n";
+          txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>";
+        }
       }
-      if(NIVEL== 4)
+      if (TRADU.i.nIdioma == 2) // Inglés
       {
-        txtDescripcion = "<color=#5dade2><b>Partir IV a</b></color>\n\n"; 
-        txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +2</color> - Daño: Cortante 2d10 +9 - </color>\n";
-        txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 5. Aplica Aterrado.\n\n";
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>";
+        if(NIVEL<2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Cleave I</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight strikes with all his might, dealing severe damage and terrifying his enemies.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength</color> - Damage: Slashing 2d10 +5 - </color>\n";
+          txtDescripcion += $"If the enemy is killed: all enemies Mental Save vs 3. Applies Terrified.\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable\n- Val Cost: {costoPM} </color>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: +4 Damage</color>\n\n";
+              }
+            }
+          }
+        }
+        if(NIVEL== 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Cleave II</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight strikes with all his might, dealing severe damage and terrifying his enemies.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength</color> - Damage: Slashing 2d10 +9 - </color>\n";
+          txtDescripcion += $"If the enemy is killed: all enemies Mental Save vs 3. Applies Terrified.\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable\n- Val Cost: {costoPM} </color>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Next Level: +2 Attack</color>\n\n";
+              }
+            }
+          }
+        }
+        if(NIVEL== 3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Cleave III</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight strikes with all his might, dealing severe damage and terrifying his enemies.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +2</color> - Damage: Slashing 2d10 +9 - </color>\n";
+          txtDescripcion += $"If the enemy is killed: all enemies Mental Save vs 3. Applies Terrified.\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable\n- Val Cost: {costoPM} </color>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+            {
+              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Option A: +2 difficulty Mental Save Enemies</color>\n";
+                txtDescripcion += $"<color=#dfea02>-Option B: +1 Critical Range</color>\n";
+              }
+            }
+          }
+        }
+        if(NIVEL== 4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Cleave IV a</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight strikes with all his might, dealing severe damage and terrifying his enemies.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +2</color> - Damage: Slashing 2d10 +9 - </color>\n";
+          txtDescripcion += $"If the enemy is killed: all enemies Mental Save vs 5. Applies Terrified.\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable\n- Val Cost: {costoPM} </color>";
+        }
+        if(NIVEL== 5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Cleave IV b</b></color>\n\n"; 
+          txtDescripcion += "<i>The Knight strikes with all his might, dealing severe damage and terrifying his enemies.</i>\n\n";
+          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +2</color> - Damage: Slashing 2d10 +9 - +1 Critical Range.</color> \n";
+          txtDescripcion += $"If the enemy is killed: all enemies Mental Save vs 3. Applies Terrified.\n\n";
+          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable\n- Val Cost: {costoPM} </color>";
+        }
       }
-      if(NIVEL== 5)
-      {
-        txtDescripcion = "<color=#5dade2><b>Partir IV b</b></color>\n\n"; 
-        txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +2</color> - Daño: Cortante 2d10 +9 - +1 Rango Crítico.</color> \n";
-        txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>";
-      }
-
-
-
     }
 
     Casilla Origen;

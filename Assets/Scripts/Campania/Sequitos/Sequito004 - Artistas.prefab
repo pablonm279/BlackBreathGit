@@ -110,6 +110,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2cdb159ec2a35142bd89edd4ae97fda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  txtDesc: {fileID: 2076389907010439041}
+  txtMecanica: {fileID: 6352629462537919484}
 --- !u!114 &3183500481651627598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1026,10 +1028,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "EFECTOS PASIVOS:\n\n-Al unirse a la Caravana se ganan 15 de Esperanza.\n\n-Cada
+  m_text: "EFECTOS PASIVOS:\\n\\n-Al unirse a la Caravana se ganan 15 de Esperanza.\\n\\n-Cada
     vez que se selecciona Feria como Tarea Civil de Descanso se ganan 10 de Esperanza
-    Extra.\n\n-Cada d\xEDa hay un 30% de chances de que hagan un fest\xEDn y despilfarren
-    1-4 Suministros.\n\n-Si abandonan la Caravana se pierden 15 de Esperanza.\n\n"
+    Extra.\\n\\n-Cada d\xEDa hay un 30% de chances de que hagan un fest\xEDn y despilfarren
+    1-4 Suministros.\\n\\n-Si abandonan la Caravana se pierden 15 de Esperanza."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -83,7 +83,7 @@ public class Nodo : MonoBehaviour
     {
       fatigaSuma += 1;
       esperanzaSuma -= 10;
-      CampaignManager.Instance.EscribirLog("-La Caravana ha viajado con exceso de Carga. -10 Esperanza +1 Fatiga");
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Caravana ha viajado con exceso de Carga. -10 Esperanza +1 Fatiga"));
     }
 
     int chancesAtajo = 15; //15% de chances de encontrar un atajo
@@ -92,7 +92,7 @@ public class Nodo : MonoBehaviour
 
     if(UnityEngine.Random.Range(0, 100) < chancesAtajo && posXNodo < 9)  //sacar el +1000
     {
-      CampaignManager.Instance.EscribirLog("-Se ha encontrado un atajo subterráneo.");
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Se ha encontrado un atajo subterráneo."));
 
       EncontrarAtajo(2, 0);
     }
@@ -524,7 +524,7 @@ public class Nodo : MonoBehaviour
 
       if (posXNodo - scMapaManager.nodoActual.posXNodo > 1) //Si se mueve a un nodo mas lejano que 1, se considera un atajo
       {
-        CampaignManager.Instance.EscribirLog("-Al viajar por el atajo subterráneo, la moral de la caravana disminuye. -5 Esperanza");
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Al viajar por el atajo subterráneo, la moral de la caravana disminuye. -5 Esperanza"));
         CampaignManager.Instance.CambiarEsperanzaActual(-5);
       }
     }
@@ -853,11 +853,11 @@ public class Nodo : MonoBehaviour
           {
             if (!string.IsNullOrEmpty(actividadExploradorON))
             {
-              CampaignManager.Instance.EscribirLog($"<color=#7ED6F7>-{actividadExploradorON} ha Explorado con éxito el camino adelante.</color> (Tirada: {tirada} < {cappedChance})");
+              CampaignManager.Instance.EscribirLog("<color=#7ED6F7>-"+actividadExploradorON+TRADU.i.Traducir(" ha Explorado con éxito el camino adelante.</color>")+ $"(Tirada: {tirada} < {cappedChance})");
             }
             else
             {
-              CampaignManager.Instance.EscribirLog($"<color=#7ED6F7>-Durante el Descanso, se ha Explorado con éxito el camino adelante.</color> (Tirada: {tirada} < {cappedChance})");
+              CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("<color=#7ED6F7>-Durante el Descanso, se ha Explorado con éxito el camino adelante.</color>")+ $"(Tirada: {tirada} < {cappedChance})");
              }
             
             yaAvisoLog = true;
@@ -964,30 +964,30 @@ public class Nodo : MonoBehaviour
         {
             switch (tipoNodo)
             {
-                case 1: descripcion = "Combate directo."; break;
-                case 2: descripcion = "Evento aleatorio."; break;
-                case 3: descripcion = "Claro tranquilo."; break;
-                case 4: descripcion = "Asentamiento."; break;
-                case 5: descripcion = "Recolección de Recursos."; break;
-                case 6: descripcion = "Puesto de Comercio."; break;
-                case 7: descripcion = "Adquisición de Personajes."; break;
-                case 8: descripcion = "Combate directo contra enemigos de Élite."; break;
-                case 10: descripcion = "Batalla final de la Zona actual."; break;
-                case 11: descripcion = "<b>(!)</b> Zona Expuesta, la caravana será emboscada."; break;
+                case 1: descripcion = TRADU.i.Traducir("Combate directo."); break;
+                case 2: descripcion = TRADU.i.Traducir("Evento aleatorio."); break;
+                case 3: descripcion = TRADU.i.Traducir("Claro tranquilo."); break;
+                case 4: descripcion = TRADU.i.Traducir("Asentamiento."); break;
+                case 5: descripcion = TRADU.i.Traducir("Recolección de Recursos."); break;
+                case 6: descripcion = TRADU.i.Traducir("Puesto de Comercio."); break;
+                case 7: descripcion = TRADU.i.Traducir("Adquisición de Personajes."); break;
+                case 8: descripcion = TRADU.i.Traducir("Combate directo contra enemigos de Élite."); break;
+                case 10: descripcion = TRADU.i.Traducir("Batalla final de la Zona actual."); break;
+                case 11: descripcion = TRADU.i.Traducir("<b>(!)</b> Zona Expuesta, la caravana será emboscada."); break;
 
-                default: descripcion = "Nodo Desconocido."; break;
+                default: descripcion = TRADU.i.Traducir("Nodo Desconocido."); break;
             }
             if (esMisterioso)
             {
-                descripcion = "Nodo Misterioso, no se ha logrado revelar.";
+                descripcion = TRADU.i.Traducir("Nodo Misterioso, no se ha logrado revelar.");
             }
             if ( transform.GetChild(11).gameObject.activeInHierarchy)
             {
-                descripcion = "Salida del atajo subterraneo, no sabemos que hay del otro lado.";
+                descripcion = TRADU.i.Traducir("Salida del atajo subterraneo, no sabemos que hay del otro lado.");
             }
              if ( transform.GetChild(12).gameObject.activeInHierarchy)
             {
-                descripcion = "Santuario de Purificadores.";
+                descripcion = TRADU.i.Traducir("Santuario de Purificadores.");
             }
 
 

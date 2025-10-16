@@ -17,7 +17,7 @@ public class GolpeEnredadera : IAHabilidad
    
   void Awake()
    {
-      nombre = "Golpe Enredadera";
+      nombre = "Golpe Enredado";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 1;

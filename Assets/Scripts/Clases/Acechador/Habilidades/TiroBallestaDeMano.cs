@@ -58,7 +58,13 @@ public class TiroBallestaDeMano : Habilidad
       txtDescripcion += "<i>Ataque secundario a distancia del Acechador.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>Alcance 3</b> -Ataque: <color=#ea0606>Agilidad</color> - Daño: Perforante 1d10-</color>\n\n";
       txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
-       
+      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+      {
+        txtDescripcion = "<color=#5dade2><b>Hand Crossbow Shot</b></color>\n\n";
+        txtDescripcion += "<i>Stalker's secondary ranged attack.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>Range 3</b> -Attack: <color=#ea0606>Agility</color> - Damage: Piercing 1d10-</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+      }
     }
 
   void Start()

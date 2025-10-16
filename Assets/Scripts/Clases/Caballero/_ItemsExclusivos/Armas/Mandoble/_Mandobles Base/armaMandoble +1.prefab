@@ -46,13 +46,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: c005ad5805234d643a29125d391a25e3, type: 3}
-  sNombreItem: Mandoble +1
+  sNombreItem: Mandoble
   IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 110
-  itemDescrpicion: "<i>Los Caballeros siempre andan equipados con un mandoble muy
-    pesado y poderoso. Junto con su armadura pesada, hacen el n\xFAcleo del equipo
-    de estos valientes guerreros.</i>\n\n<b>\\n\\nOtorga: Corte Vertical \n\nMejora
-    +1: +1 Ataque +5% Da\xF1o</b></b>\n"
+  itemDescripcion: 
   iRareza: 1
   nivelMejora: 1
   habilidadAtaque: {fileID: 6883895693932800439}

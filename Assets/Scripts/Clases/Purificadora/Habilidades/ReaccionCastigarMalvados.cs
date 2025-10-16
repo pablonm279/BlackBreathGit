@@ -22,6 +22,10 @@ public class ReaccionCastigarMalvados : Reaccion
     
 
     descripcion = $"Reacción: Cada vez que dañe a un enemigo, esta unidad deberá superar una tirada Mental o sufrir daño y perder sus AP restantes.";
+    if (TRADU.i.nIdioma == 2)
+    {
+      descripcion = "Reaction: Each time this unit damages an enemy, it must pass a Mental saving throw or suffer damage and lose its remaining AP.";
+    }
 
    }
 

@@ -18,7 +18,21 @@ public class Sequito : MonoBehaviour
     public TextMeshProUGUI txtmecanicas;
 
 
+   /* void Start()
+    {
+       Invoke("actualizarTradu",0.5f);
+    }
+    private void OnEnable() { 
+       Invoke("actualizarTradu",0.5f);
+    }
 
+    
+    void actualizarTradu()
+    {
+        txtNombre.text = TRADU.i.Traducir(txtNombre.text);
+        txtdesc.text = TRADU.i.Traducir(txtdesc.text);
+        txtmecanicas.text = TRADU.i.Traducir(txtmecanicas.text);
+    }*/
 
     private GameObject placeholderLugarContenido;
     public void clickRepresentar()
