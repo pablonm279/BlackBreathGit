@@ -24,7 +24,7 @@ public class TRADU : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.SetInt("nIdioma", 2); //Por defecto en inglés
+            PlayerPrefs.SetInt("nIdioma", 2); //Por defecto en ingles
         }
     }
 
@@ -358,15 +358,15 @@ public class TRADU : MonoBehaviour
             case "Ronda":
                 r = "Round";
                 break;
-            case "Clima Normal.":
+            case "Clima normal.":
                 r = "Normal weather."; break;
-            case "Calor: todas las unidades obtienen 'acalorado'.":
+            case "Calor: todas las unidades obtienen 'Acalorado'.":
                 r = "Heat: All units gain 'Heated'."; break;
-            case "Lluvia: todas las unidades obtienen 'mojado'. -1 ataque a habilidades de rango.":
+            case "Lluvia: todas las unidades obtienen 'Mojado'. -1 Ataque a habilidades de rango.":
                 r = "Rain: All units gain 'Wet'. -1 Attack to ranged skills."; break;
-            case "Nieve: todas las unidades obtienen 'frío'.":
+            case "Nieve: todas las unidades obtienen 'Frío'.":
                 r = "Snow: All units gain 'Cold'."; break;
-            case "Niebla: -2 ataque a habilidades de rango.":
+            case "Niebla: -2 Ataque a habilidades de rango.":
                 r = "Fog: -2 Attack to ranged skills."; break;
             case "<color=#c5c5c5>cortante</color>":
                 r = "<color=#c5c5c5>slashing</color>"; break; //Cortante
@@ -544,10 +544,10 @@ public class TRADU : MonoBehaviour
                 r = "Shows how much <color=#06c297>Fatigue</color> the Caravan has in general.\n\n\n";
                 break;
             case "Cada tramo de viaje la aumenta en 1.\n":
-                r = "Each segment of travel increases it by 1.\n";
+                r = "Each node traveled increases the Fatigue by 1.\n";
                 break;
             case "Si descansas volverá a 0 y arrancarán el nuevo día Descansados(1).\n\n":
-                r = "If you rest it will return to 0 and they will start the new day Rested(1).\n\n";
+                r = "If you rest it will return to 0 and the Caravan will start the next day Rested(1).\n\n";
                 break;
             case "Actualmente estan Descansados(1), no habrá penalizaciones por viajar.\n\n":
                 r = "Currently <color=#a8ff9e>Rested</color>(<color=#a8ff9e>1</color>), there will be no penalties for traveling.\n\n";
@@ -1078,7 +1078,7 @@ public class TRADU : MonoBehaviour
                 r = "AP: ";
                 break;
             case "Valentía: ":
-                r = "Courage: ";
+                r = "Valor: ";
                 break;
             case "Armadura: ":
                 r = "Armor: ";
@@ -1117,19 +1117,19 @@ public class TRADU : MonoBehaviour
                 r = "<color=#d80404>\n\nLow Morale for ";
                 break;
             case " días. -1 Ataque y Defensa, -3 TS Mental, -2 Valentía Inicial</color>":
-                r = " days. -1 Attack and Defense, -3 TS Mental, -2 Initial Courage</color>";
+                r = " days. -1 Attack and Defense, -3 TS Mental, -2 Initial Valor</color>";
                 break;
             case "<color=#d80404>\n\nAlta Moral por ":
                 r = "<color=#d80404>\n\nHigh Morale for ";
                 break;
             case " días. +1 Ataque, +2 TS Mental, +2 Valentía Inicial</color>":
-                r = " days. +1 Attack, +2 TS Mental, +2 Initial Courage</color>";
+                r = " days. +1 Attack, +2 TS Mental, +2 Initial Valor</color>";
                 break;
             case "Torpe: +1 Rango Pifias. ":
                 r = "Clumsy: +1 Fumble Range.";
                 break;
             case "Valiente: +2 Valentía Máxima.":
-                r = "Brave: +2 Max Courage.";
+                r = "Brave: +2 Max Valor.";
                 break;
             case "Alegre: +2 Esperanza al Descansar.":
                 r = "Cheerful: +2 Hope when Resting.";
@@ -1273,7 +1273,7 @@ public class TRADU : MonoBehaviour
                 r = "You do not have enough AP to swap.";
                 break;
             case "Apagando!":
-                r = "Turning off!";
+                r = "Extinguishing!";
                 break;
             case " gasta 1 PA para apagar el fuego.":
                 r = " spends 1 AP to extinguish the fire.";
@@ -2022,6 +2022,9 @@ public class TRADU : MonoBehaviour
             case "Elixir de Resistencia al Fuego":
                 r = "Elixir of Fire Resistance";
                 break;
+            case "Elixir de Resistencia al Fuego.":
+                r = "Elixir of Fire Resistance";
+                break;
             case "Elixir de Resistencia al Rayo":
                 r = "Elixir of Lightning Resistance";
                 break;
@@ -2697,6 +2700,31 @@ public class TRADU : MonoBehaviour
             case "<i>No se logra discernir facilmente que animal fue originalmente, pero ahora es una criatura corrompida y muy nociva.</i>\n\n<color=#A020F0>-Corrupto.</color>\n<color=#199F10>-Largo alcance.\n-Crea Masa Contaminada.</color>\n<color=#EE0000>-Movimiento limitado.</color>":
                 r = "<i>It is not easy to discern what animal it was originally, but now it is a corrupted and very harmful creature.</i>\n\n<color=#A020F0>-Corrupted.</color>\n<color=#199F10>-Long range.\n-Creates Contaminated Mass.</color>\n<color=#EE0000>-Limited movement.</color>";
                 break;
+            case "Dar Feedback":
+                r = "Give Feedback";
+                break;
+            case "Luchar":
+                r = "Fight";
+                break;
+            case "-Las Almas Danzantes de animales inocentes guian a la caravana. +5 Esperanza, 0% chances de emboscada.":
+                r = "-The Dancing Souls of innocent animals guide the caravan. +5 Hope, 0% chance of ambush.";
+                break;
+            case ": -Almas Danzantes: +5 Esperanza, -100% chances de Emboscada.":
+                r = ": -Dancing Souls: +5 Hope, -100% chance of Ambush.";
+                break;
+            case "-Las Almas Danzantes guían a la caravana. +5 Esperanza":
+                r = "-The Dancing Souls guide the caravan. +5 Hope";
+                break;
+            case "-La Aurora Boreal maravilla a toda la caravana. +10 Esperanza":
+                r = "-The Northern Lights amaze the entire caravan. +10 Hope";
+                break;
+            case ": -Aurora Boreal: +10 Esperanza.":
+                r = ": -Northern Lights: +10 Hope.";
+                break;
+           
+          
+          
+            
            
         
 

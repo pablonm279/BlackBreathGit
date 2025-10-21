@@ -82,6 +82,11 @@ public class MenuController : MonoBehaviour
     #endif
     }
 
+    public void OnFeedback()
+    {
+        Application.OpenURL("https://forms.gle/JBSKDkpa9MSfQx8k6");
+    }
+
     IEnumerator CargarJuego()
     {
         yield return FadeTo(1f, fadeTime);

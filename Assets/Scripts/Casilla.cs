@@ -40,7 +40,21 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
 
 public async void OnMouseDown() 
 {   
-  
+  // --- Cancelar habilidad activa si se hace clic en el campo ---
+    if (BattleManager.Instance.HabilidadActiva != null)
+    {
+      if (BattleManager.Instance.HabilidadActiva.esHostil && BattleManager.Instance.unidadActiva.CasillaPosicion.lado == this.lado)
+      {
+        // Cancela la selección de la habilidad al clikear casilla, solo si es hostil y es una casilla del mismo lado
+        BattleManager.Instance.HabilidadActiva = null;
+        BattleManager.Instance.SeleccionandoObjetivo = false;
+        BattleManager.Instance.LimpiarCapasCasillas();
+        BattleManager.Instance.scUIContadorAP.ResetearCirculos();
+        BattleManager.Instance.scUIBotonesHab.DeseleccionarTodas();
+        // return; // Sale sin ejecutar nada más
+      }
+    }
+
   
   
     //Unidad seleccionada - Movimiento

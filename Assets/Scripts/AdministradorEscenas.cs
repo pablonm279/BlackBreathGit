@@ -37,6 +37,7 @@ public class AdministradorEscenas : MonoBehaviour
   public MeshRenderer mrFondoBatalla;
 
  public List<Material> listaFondosBosqueLamentos; //Para agregar fondos simplemente hay que agregarlos a la lista
+ public List<Material> listaFondosPasoVientoHelado; //Para agregar fondos simplemente hay que agregarlos a la lista
  public List<Material> listaFondosSubterraneos; //Para agregar fondos simplemente hay que agregarlos a la lista
 
   [Header("UI")]
@@ -126,9 +127,17 @@ IEnumerator FadeTo(float target, float time)
     }
 
   // (removido) Loading label y animación de puntos
-
+  public GameObject VFXLluvia;
+  public GameObject VFXNieve;
+  public GameObject VFXNiebla;
+  public GameObject VFXAurora;
   public async void CargarBatalla(int IDEncuentro, int esEmboscada = 0)
   {
+    VFXLluvia.SetActive(false);
+    VFXNieve.SetActive(false);
+    VFXNiebla.SetActive(false);
+    VFXAurora.SetActive(false);
+    
     escenaActual = 1; //1 Batalla 0 Campaña
     CampaignManager.Instance.logDeCampania.LimpiarDesdeCampania();
     int idZona = CampaignManager.Instance.scAtributosZona.ID;
@@ -341,6 +350,7 @@ IEnumerator FadeTo(float target, float time)
     }
     if (climaCampaña == 3)//Lluvia
     {
+      VFXLluvia.SetActive(true);
       List<Unidad> listaUnidades = new List<Unidad>(BattleManager.Instance.ladoB.unidadesLado);
       listaUnidades.AddRange(BattleManager.Instance.ladoA.unidadesLado);
       foreach (Unidad u in listaUnidades)
@@ -365,6 +375,7 @@ IEnumerator FadeTo(float target, float time)
     }
     if (climaCampaña == 4)//Nieve
     {
+       VFXNieve.SetActive(true);
       List<Unidad> listaUnidades = new List<Unidad>(BattleManager.Instance.ladoB.unidadesLado);
       listaUnidades.AddRange(BattleManager.Instance.ladoA.unidadesLado);
       foreach (Unidad u in listaUnidades)
@@ -389,9 +400,15 @@ IEnumerator FadeTo(float target, float time)
       BattleManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_nieve;
     }
     if (climaCampaña == 5)//Niebla
-    {
+    { VFXNiebla.SetActive(true);
       //---
       BattleManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_niebla;
+    }
+    if (climaCampaña == 6)//Clima Especial 1
+    {
+      if (CampaignManager.Instance.scAtributosZona.ID == 2) //Paso Viento Helado
+      { VFXAurora.SetActive(true); }
+      
     }
     #endregion
     #region Corrupcion
@@ -530,7 +547,7 @@ IEnumerator FadeTo(float target, float time)
   {
     if (idEncuentro > 400 && idEncuentro < 450) //Si es encuentro subterraneo
     {
-              mrFondoBatalla.material = listaFondosSubterraneos[UnityEngine.Random.Range(0, listaFondosSubterraneos.Count)];
+      mrFondoBatalla.material = listaFondosSubterraneos[UnityEngine.Random.Range(0, listaFondosSubterraneos.Count)];
     }
     else
     {
@@ -540,6 +557,11 @@ IEnumerator FadeTo(float target, float time)
       {
         mrFondoBatalla.material = listaFondosBosqueLamentos[UnityEngine.Random.Range(0, listaFondosBosqueLamentos.Count)];
       }
+      if (IDZonaActual == "Paso Viento Helado") //FONDOS PASO VIENTO HELADO
+      {
+        mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
+      }
+     
 
 
     }

@@ -66,6 +66,7 @@ public class MapDecorator : MonoBehaviour
     Bounds   localBounds;
     Vector3  minL, maxL, sizeL;
     float    yLocalPlano;
+    float    safeMinX, safeMaxX, safeMinZ, safeMaxZ;
 
     // Tamaño en MUNDO
     float sx, sz;             // |lossyScale| X y Z
@@ -95,6 +96,8 @@ public class MapDecorator : MonoBehaviour
         maxL        = localBounds.max;
         sizeL       = localBounds.size;
         yLocalPlano = localBounds.center.y;
+        safeMinX    = minL.x; safeMaxX = maxL.x;
+        safeMinZ    = minL.z; safeMaxZ = maxL.z;
 
         // Escalas absolutas en mundo
         sx = Mathf.Abs(tPlane.lossyScale.x);
@@ -113,6 +116,8 @@ public class MapDecorator : MonoBehaviour
         rectMaxX = Mathf.Max(Mathf.Max(aW.x, bW.x), Mathf.Max(cW.x, dW.x));
         rectMinZ = Mathf.Min(Mathf.Min(aW.z, bW.z), Mathf.Min(cW.z, dW.z));
         rectMaxZ = Mathf.Max(Mathf.Max(aW.z, bW.z), Mathf.Max(cW.z, dW.z));
+
+        ActualizarZonaSegura();
 
         if (transform.lossyScale != Vector3.one)
             Debug.LogWarning("[MapDecorator] Este GameObject debería estar en escala (1,1,1) para no heredar escalas raras.");
@@ -176,6 +181,8 @@ public class MapDecorator : MonoBehaviour
         this.distNodo   = distNodoOverride;
         this.radioPoisson = rOverride;
         this.intentosPorPunto = kOverride;
+
+        ActualizarZonaSegura();
 
         cell = radioPoisson / Mathf.Sqrt(2f);
         grid = new Dictionary<CellKey, List<Vector3>>(1024);
@@ -274,6 +281,41 @@ public class MapDecorator : MonoBehaviour
         }
 
 //        Debug.Log($"[MapDecorator] (Async) Colocados {colocados}/{cantidad} '{prefab?.name}'.");
+    }
+
+    void ActualizarZonaSegura()
+    {
+        float margen = Mathf.Max(0f, distCamino);
+        float margenLocalX = margen / Mathf.Max(1e-6f, sx);
+        float margenLocalZ = margen / Mathf.Max(1e-6f, sz);
+
+        float propuestoMinX = minL.x + margenLocalX;
+        float propuestoMaxX = maxL.x - margenLocalX;
+        if (propuestoMinX > propuestoMaxX)
+        {
+            float centro = 0.5f * (minL.x + maxL.x);
+            safeMinX = safeMaxX = centro;
+            Debug.LogWarning("[MapDecorator] distCamino demasiado grande para el ancho del plane (eje X).");
+        }
+        else
+        {
+            safeMinX = propuestoMinX;
+            safeMaxX = propuestoMaxX;
+        }
+
+        float propuestoMinZ = minL.z + margenLocalZ;
+        float propuestoMaxZ = maxL.z - margenLocalZ;
+        if (propuestoMinZ > propuestoMaxZ)
+        {
+            float centro = 0.5f * (minL.z + maxL.z);
+            safeMinZ = safeMaxZ = centro;
+            Debug.LogWarning("[MapDecorator] distCamino demasiado grande para el largo del plane (eje Z).");
+        }
+        else
+        {
+            safeMinZ = propuestoMinZ;
+            safeMaxZ = propuestoMaxZ;
+        }
     }
 
     // ===================== Primer punto =====================
@@ -470,8 +512,8 @@ public class MapDecorator : MonoBehaviour
     // ===================== Util geométricas =====================
     Vector3 RandomPointInsideRect()
     {
-        float rx = Mathf.Lerp(minL.x, maxL.x, (float)rng.NextDouble());
-        float rz = Mathf.Lerp(minL.z, maxL.z, (float)rng.NextDouble());
+        float rx = Mathf.Lerp(safeMinX, safeMaxX, (float)rng.NextDouble());
+        float rz = Mathf.Lerp(safeMinZ, safeMaxZ, (float)rng.NextDouble());
         return tPlane.TransformPoint(new Vector3(rx, yLocalPlano, rz));
     }
 
@@ -487,8 +529,8 @@ public class MapDecorator : MonoBehaviour
     bool DentroDelRect(Vector3 world)
     {
         Vector3 local = tPlane.InverseTransformPoint(world);
-        return (local.x >= minL.x && local.x <= maxL.x &&
-                local.z >= minL.z && local.z <= maxL.z);
+        return (local.x >= safeMinX && local.x <= safeMaxX &&
+                local.z >= safeMinZ && local.z <= safeMaxZ);
     }
 
     static Vector3 LRPointWorld(LineRenderer lr, int i)

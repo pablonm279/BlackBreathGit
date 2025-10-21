@@ -29,6 +29,23 @@ public class MapaManager : MonoBehaviour
        origen.PosicionarObjetoEnNodo(goCaravana);
     }
 
+    // Reset total del mapa y regeneración para la siguiente zona
+    public void ResetearYGenerarSiguienteZona()
+    {
+        // 1) Reactivar todos y resetear estado por nodo
+        foreach (Nodo n in scContenedordeNodos.GetComponentsInChildren<Nodo>(true))
+        {
+            n.gameObject.SetActive(true);
+            n.ResetearParaNuevaZona();
+        }
+
+        // 2) Reconstruir la lista del contenedor (se había podado previamente)
+        scContenedordeNodos.RecolectarNodos();
+
+        // 3) Regenerar conexiones y posicionar caravana en el origen
+        GenerarNodos();
+    }
+
     void DesactivarNodosSinUsar()
     {
        
@@ -45,4 +62,3 @@ public class MapaManager : MonoBehaviour
     }
 
 }
-

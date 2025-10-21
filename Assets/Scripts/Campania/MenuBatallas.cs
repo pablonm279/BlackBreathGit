@@ -775,41 +775,46 @@ public class MenuBatallas : MonoBehaviour
             CampaignManager.Instance.CambiarBueyesActuales(-1);
         }
     }
-    if (EventoBatallaID == 11) //FASE 1 Bosque Ardiente Jefe Arbol Lamentos
-    {
-        if (resultado == 1) //Victoria
+        if (EventoBatallaID == 11) //FASE 1 Bosque Ardiente Jefe Arbol Lamentos
         {
-            if (TRADU.i.nIdioma == 1)
+            if (resultado == 1) //Victoria
             {
-                txtRecompensa.text = "Se han obtenido 580 Exp, 310 Oro y 32 Materiales.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "580 Exp, 310 Gold and 32 Materials obtained.";
-            }
-            CampaignManager.Instance.CambiarOroActual(310);
-            CampaignManager.Instance.CambiarMaterialesActuales(40);
-            aumentochancesitem += 100; //Batallas elite garantizan Items
-            DarExperiencia(580);
-            //Efectos victoria siguiente zona- HACER
+                if (TRADU.i.nIdioma == 1)
+                {
+                    txtRecompensa.text = "Se han obtenido 580 Exp, 310 Oro y 32 Materiales.";
+                }
+                else if (TRADU.i.nIdioma == 2)
+                {
+                    txtRecompensa.text = "580 Exp, 310 Gold and 32 Materials obtained.";
+                }
+                CampaignManager.Instance.CambiarOroActual(310);
+                CampaignManager.Instance.CambiarMaterialesActuales(40);
+                aumentochancesitem += 100; //Batallas elite garantizan Items
+                DarExperiencia(580);
+                //Efectos victoria siguiente zona- HACER
 
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "La caravana ha fracasado. Fin del juego.";
             }
-            else if (TRADU.i.nIdioma == 2)
+            else //Derrota
             {
-                txtRecompensa.text = "The caravan has failed. Game over.";
+                if (TRADU.i.nIdioma == 1)
+                {
+                    txtRecompensa.text = "La caravana ha fracasado. Fin del juego.";
+                }
+                else if (TRADU.i.nIdioma == 2)
+                {
+                    txtRecompensa.text = "The caravan has failed. Game over.";
+                }
             }
-        }
 
-        if (CampaignManager.Instance.scTutorialManager.tutorialActivo)
-        { 
-            CampaignManager.Instance.scTutorialManager.establecerPasoEspecifico(12);
-        }
+            if (CampaignManager.Instance.scTutorialManager.tutorialActivo)
+            {
+                CampaignManager.Instance.scTutorialManager.establecerPasoEspecifico(12);
+            }
+            else
+            { 
+                CampaignManager.Instance.OnDerrotadoJefeZona();
+
+            }
     }
     #endregion
 

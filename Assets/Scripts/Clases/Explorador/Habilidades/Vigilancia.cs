@@ -157,6 +157,11 @@ public class Vigilancia : Habilidad
      disparosEsteTurno = 2; //2 disparos por uso de habilidad
      if(NIVEL == 5){disparosEsteTurno++;}
 
+     if(casillaObjetivo == null)
+     {
+      if (obj is Unidad uni)
+      { casillaObjetivo = uni.GetComponent<Unidad>().CasillaPosicion; }
+     }
      List<Casilla> lCasillas = new List<Casilla>();
      lCasillas = casillaObjetivo.ObtenerCasillasAlrededor(1);
      lCasillas.Add(casillaObjetivo);

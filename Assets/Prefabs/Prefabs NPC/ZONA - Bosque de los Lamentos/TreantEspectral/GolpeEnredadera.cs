@@ -25,7 +25,7 @@ public class GolpeEnredadera : IAHabilidad
       hAlcance = 1;
       hCooldownMax = 0;
       esHostil = true;
-      prioridad = 1;
+      prioridad = 5;
       costoAP = 1;
       afectaObstaculos = true;
       

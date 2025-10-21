@@ -85,7 +85,7 @@ public class REPRESENTACIONVistaLejana : Habilidad
       {
         if (NIVEL < 2)
         {
-          txtDescripcion = "<color=#5dade2><b>Distant Sight I</b></color>\n\n";
+          txtDescripcion = "<color=#5dade2><b>Long Sight I</b></color>\n\n";
           txtDescripcion += "<i>(Passive) If the Explorer starts their turn in the last column, they gain +1 Attack and +10% Damage.</i>\n\n";
 
           if (EsEscenaCampaña())
@@ -101,7 +101,7 @@ public class REPRESENTACIONVistaLejana : Habilidad
         }
         if (NIVEL == 2)
         {
-          txtDescripcion = "<color=#5dade2><b>Distant Sight II</b></color>\n\n";
+          txtDescripcion = "<color=#5dade2><b>Long Sight II</b></color>\n\n";
           txtDescripcion += "<i>(Passive) If the Explorer starts their turn in the last column, they gain +1 Attack and +15% Damage.</i>\n\n";
           if (EsEscenaCampaña())
           {
@@ -116,7 +116,7 @@ public class REPRESENTACIONVistaLejana : Habilidad
         }
         if (NIVEL == 3)
         {
-          txtDescripcion = "<color=#5dade2><b>Distant Sight III</b></color>\n\n";
+          txtDescripcion = "<color=#5dade2><b>Long Sight III</b></color>\n\n";
           txtDescripcion += "<i>(Passive) If the Explorer starts their turn in the last column, they gain +2 Attack and +15% Damage.</i>\n\n";
 
           if (EsEscenaCampaña())
@@ -133,12 +133,12 @@ public class REPRESENTACIONVistaLejana : Habilidad
         }
         if (NIVEL == 4)
         {
-          txtDescripcion = "<color=#5dade2><b>Distant Sight IV a</b></color>\n\n";
+          txtDescripcion = "<color=#5dade2><b>Long Sight IV a</b></color>\n\n";
           txtDescripcion += "<i>(Passive) If the Explorer starts their turn in the last column, they gain +2 Attack, +1 Critical Dice Range and +15% Damage.</i>\n\n";
         }
         if (NIVEL == 5)
         {
-          txtDescripcion = "<color=#5dade2><b>Distant Sight IV b</b></color>\n\n";
+          txtDescripcion = "<color=#5dade2><b>Long Sight IV b</b></color>\n\n";
           txtDescripcion += "<i>(Passive) If the Explorer starts their turn in the last column, they gain +2 Attack, +1 Defense and +15% Damage.</i>\n\n";
         }
       }

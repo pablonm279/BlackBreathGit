@@ -133,7 +133,7 @@ public class Estados : MonoBehaviour
      if(unidad.estado_ardiendo > -1) //-1 Es si es inmune al estado.
      {
        unidad.estado_ardiendo += stacks;
-       unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" arde"), Color.red);
+       unidad.GenerarTextoFlotante(stacks+TRADU.i.Traducir(" arde"), Color.red);
 
        BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}

@@ -491,6 +491,40 @@ public class Nodo : MonoBehaviour
     }
   }
   public Material caminoLento;
+  // Resetea este nodo para reutilizarlo en una nueva zona
+  public void ResetearParaNuevaZona()
+  {
+    // Reset estado lógico
+    tipoNodo = 0;
+    nodoDespejado = false;
+    cantidadConexiones = 0;
+    costoMovimiento = 1;
+    revelado = false;
+    yatiroConexiones = false;
+    DestinosPosibles.Clear();
+
+    // Borrar líneas de caminos existentes
+    var destruir = new List<GameObject>();
+    foreach (Transform child in transform)
+    {
+      if (child.name.Contains("LineaCaminos"))
+      {
+        destruir.Add(child.gameObject);
+      }
+      // Desactivar visuales de nodos (se reactivan al revelar)
+      if (child.name.Contains("Nodo"))
+      {
+        child.gameObject.SetActive(false);
+      }
+    }
+    foreach (var go in destruir)
+    {
+      Destroy(go);
+    }
+
+    // Asegurar que el objeto del nodo esté activo para el nuevo cálculo
+    gameObject.SetActive(true);
+  }
   public void PosicionarObjetoEnNodo(GameObject go)
   {
     go.transform.position = transform.position;

@@ -20,17 +20,27 @@ public class UIBarraOrdenTurno : MonoBehaviour
         lUnidades.Clear();
         lUnidades = BattleManager.Instance.lUnidadesTotal.ToList(); //Copia los valores, sin el "tolist" copiaba la referencia a la otra lista, peligroso
 
-        
-     
-        foreach(Unidad unidad in lUnidades)
-        {
-           GameObject GTarjeta = Instantiate(prefabTarjetaBarraOrdenTurno, transform);
-           UITarjetaBarraOrdenTurno scTarjeta = GTarjeta.GetComponent<UITarjetaBarraOrdenTurno>();
 
-           scTarjeta.scUnidad = unidad;
-           scTarjeta.ActualizarInfo();
-           scTarjeta.MarcarTurnoActual();
-           
+
+        foreach (Unidad unidad in lUnidades)
+        {
+            GameObject GTarjeta = Instantiate(prefabTarjetaBarraOrdenTurno, transform);
+            UITarjetaBarraOrdenTurno scTarjeta = GTarjeta.GetComponent<UITarjetaBarraOrdenTurno>();
+
+            scTarjeta.scUnidad = unidad;
+            scTarjeta.ActualizarInfo();
+            scTarjeta.MarcarTurnoActual();
+
+            int indexunidad = BattleManager.Instance.lUnidadesTotal.IndexOf(unidad);
+            int indexTurno = BattleManager.Instance.indexTurno;
+
+            if (indexunidad < indexTurno)
+            {
+              scTarjeta.oscurecedor.SetActive(true);
+            }else
+            {
+              scTarjeta.oscurecedor.SetActive(false);
+            }
 
         }
 

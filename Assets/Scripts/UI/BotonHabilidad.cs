@@ -280,7 +280,7 @@ public class BotonHabilidad : MonoBehaviour
         BotonActivo = false;
     }
 
-
+    public GameObject Oscurecedor;
     private void Update()
     {
         if (HabilidadRepresentada != null)
@@ -298,7 +298,7 @@ public class BotonHabilidad : MonoBehaviour
         {
             float apActual = BattleManager.Instance.unidadActiva.ObtenerAPActual();
             int apNecesarios = Mathf.Max(0, (int)HabilidadRepresentada.costoAP);
-            int esforzable = HabilidadRepresentada.esforzable; 
+            int esforzable = HabilidadRepresentada.esforzable;
 
             for (int i = 0; i < contenedorCirculosAccion.transform.childCount; i++)
             {
@@ -307,7 +307,7 @@ public class BotonHabilidad : MonoBehaviour
                 {
                     if (i < apActual)
                     {
-                       img.color = new Color(0.1f, 0.1f, 0.8f, 1f); // Azul brillante para AP disponible
+                        img.color = new Color(0.1f, 0.1f, 0.8f, 1f); // Azul brillante para AP disponible
                     }
                     else if (i < apActual + esforzable && i < apNecesarios)
                     {
@@ -320,35 +320,48 @@ public class BotonHabilidad : MonoBehaviour
                 }
             }
         }
+   
+        // Mostrar/ocultar oscurecedor según si hay AP + esforzable suficientes
+        if (Oscurecedor != null && HabilidadRepresentada != null && BattleManager.Instance != null && BattleManager.Instance.unidadActiva != null)
+        {
+            int apActualInt = Mathf.Max(0, (int)BattleManager.Instance.unidadActiva.ObtenerAPActual());
+            int apNecesarios = Mathf.Max(0, (int)HabilidadRepresentada.costoAP);
+            int disponible = apActualInt + HabilidadRepresentada.esforzable;
+
+            Oscurecedor.SetActive(disponible < apNecesarios);
+        }
+   
     }
 
-    private  void VisualBotonActivo(int estado)
-    {
-       if (CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>().escenaActual != 1)
-      {return;} // Sale del método si la escena no es "ES-Batallas"
 
-      
-        if(estado == 1)
+    private void VisualBotonActivo(int estado)
+    {
+        if (CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>().escenaActual != 1)
+        { return; } // Sale del método si la escena no es "ES-Batallas"
+
+
+        if (estado == 1)
         {
-            if(BotonActivo == false)
+            if (BotonActivo == false)
             {
-                if(HabilidadRepresentada.esHostil)
-                    {
-                        BattleManager.Instance.TiltearCamaraLadoEnemigo(true);
-                    }
+                if (HabilidadRepresentada.esHostil)
+                {
+                    BattleManager.Instance.TiltearCamaraLadoEnemigo(true);
+                }
                 gameObject.GetComponent<RectTransform>().localScale += new Vector3(0.1f, 0.1f, 0.1f);
             }
 
         }
-        else if(estado == 0)
+        else if (estado == 0)
         {
- 
-            if(BotonActivo == true)
-            { BattleManager.Instance.DesmarcarTodasLasUnidades();
-                if(HabilidadRepresentada.esHostil)
-                    {
-                        BattleManager.Instance.TiltearCamaraLadoEnemigo(false);
-                    }
+
+            if (BotonActivo == true)
+            {
+                BattleManager.Instance.DesmarcarTodasLasUnidades();
+                if (HabilidadRepresentada.esHostil)
+                {
+                    BattleManager.Instance.TiltearCamaraLadoEnemigo(false);
+                }
                 gameObject.GetComponent<RectTransform>().localScale -= new Vector3(0.1f, 0.1f, 0.1f);
             }
         }

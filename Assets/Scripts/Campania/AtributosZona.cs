@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AtributosZona : MonoBehaviour
 {
-   public string Nombre; //En que posición sale la zona, para determinar dificultad de encuentros
+   public string Nombre;
    public int ID;
 
    public int FASE; //En que posición sale la zona, para determinar dificultad de encuentros
@@ -19,7 +19,7 @@ public class AtributosZona : MonoBehaviour
    public int Clima_chances_Lluvia;
    public int Clima_chances_Nieve;
    public int Clima_chances_Niebla;
-
+   public int Clima_chances_EspecialZona1;
 
    //ENCUENTROS FASE 1
    public int FASE1IDEncuentroNormal1;
@@ -83,10 +83,17 @@ public class AtributosZona : MonoBehaviour
    public MeshRenderer TexturaTerreno;
    public MeshRenderer TexturaBordeMapa;
 
+   
 
 
+   
    public Material MaterialBosqueAngustiante_Terreno;
    public Material MaterialBosqueAngustiante_BordeMapa;
+   public Material MaterialPasoVientoHelado_Terreno;
+   public Material MaterialPasoVientoHelado_BordeMapa;
+
+   public GameObject bosqueardienteContenedorGameObjects;
+   public GameObject pasovientoheladoContenedorGameObjects;
    public GameObject BosqueAngustiante_ArbolQuemado1;
    public GameObject BosqueAngustiante_ArbolQuemado2;
    public GameObject BosqueAngustiante_ArbolQuemado3;
@@ -97,9 +104,21 @@ public class AtributosZona : MonoBehaviour
    public GameObject BosqueAngustiante_Piedra2;
    public GameObject BosqueAngustiante_Llama;
 
+   public GameObject PasoVientoHelado_Arbol1;
+   public GameObject PasoVientoHelado_Arbol2;
+   public GameObject PasoVientoHelado_Mancha2;
+   public GameObject PasoVientoHelado_Manchahielo;
+   public GameObject PasoVientoHelado_Maleza1;
+   public GameObject PasoVientoHelado_Piedra1;
+   public GameObject PasoVientoHelado_Piedra2;
+   public GameObject PasoVientoHelado_Piedra3;
+   public GameObject PasoVientoHelado_grieta1;
+   public GameObject PasoVientoHelado_aldeatribal;
+   public GameObject PasoVientoHelado_simbolopagano;
+   public GameObject PasoVientoHelado_efigie;
    public void ConstruirZonaBosqueAngustiante(int iFASE)
    {
-      Nombre = "Bosque Angustiante";
+      Nombre = "Bosque Angustiante"; //dejar asi por ahora
       FASE = iFASE;
       ID = 1;
       modRecoleccionMateriales = -10;
@@ -108,12 +127,14 @@ public class AtributosZona : MonoBehaviour
 
       modChanceExploracion = 5;
 
-      Clima_chances_Sol = 60;
-      Clima_chances_Calor = 85;
-      Clima_chances_Lluvia = 100;
-      Clima_chances_Nieve = 0;
-      Clima_chances_Niebla = 0;
+      Clima_chances_Sol = 40;
+      Clima_chances_Calor = 50;
+      Clima_chances_Lluvia = 60;
+      Clima_chances_Nieve = 60;
+      Clima_chances_Niebla = 80;
+      Clima_chances_EspecialZona1 = 100;
 
+     
 
 
       FASE1IDEncuentroNormal1 = 1;
@@ -183,89 +204,14 @@ public class AtributosZona : MonoBehaviour
    {
       MusicManager.Instance.PlayCampania(ID);
    }
-
-   void AdornarBosqueArdiente()
-   {
+   IEnumerator AdornarBosqueArdienteConFadeAsync()
+   { 
 
       TexturaTerreno.material = MaterialBosqueAngustiante_Terreno;
       TexturaBordeMapa.material = MaterialBosqueAngustiante_BordeMapa;
-      
-      RenderSettings.fog = true;
-      RenderSettings.fogMode = FogMode.Exponential;
-      RenderSettings.fogDensity = 0.03f;
-      RenderSettings.fogColor = new Color(0.10f, 0.10f, 0.12f, 1f);
-
-      scMapDecorator.Generar(
-      BosqueAngustiante_ArbolQuemado1,
-      cantidad: 500,
-      distCamino: 0.1f,
-      distNodo: 0.1f,
-      r: 1.1f, //Separacion
-      k: 20
-      );
-
-      scMapDecorator.Generar(
-      BosqueAngustiante_ArbolQuemado2,
-      cantidad: 105,
-      distCamino: 0.12f,
-      distNodo: 0.12f,
-      r: 5.8f, //Separacion
-      k: 20
-      );
-
-      scMapDecorator.Generar(
-      BosqueAngustiante_ManchaCeniza1,
-      cantidad: 40,
-      distCamino: 0.10f,
-      distNodo: 0.10f,
-      r: 10.8f, //Separacion
-      k: 20
-      );
-
-
-      scMapDecorator.Generar(
-      BosqueAngustiante_Piedra1,
-      cantidad: 30,
-      distCamino: 0.6f,
-      distNodo: 0.8f,
-      r: 12.0f, //Separacion
-      k: 20
-      );
-
-      scMapDecorator.Generar(
-      BosqueAngustiante_Piedra2,
-      cantidad: 6,
-      distCamino: 2.6f,
-      distNodo: 2.8f,
-      r: 15.0f, //Separacion
-      k: 20
-      );
-
-      scMapDecorator.Generar(
-      BosqueAngustiante_Maleza1,
-      cantidad: 85,
-      distCamino: 0.2f,
-      distNodo: 0.8f,
-      r: 3.0f, //Separacion
-      k: 20
-      );
-      
-      scMapDecorator.Generar(
-      BosqueAngustiante_Llama,
-      cantidad: 15,
-      distCamino: 0.6f,
-      distNodo: 0.9f,
-      r: 13.0f, //Separacion
-      k: 20
-      );
-
-       
-
-
-   }
-
-   IEnumerator AdornarBosqueArdienteConFadeAsync()
-   {
+      pasovientoheladoContenedorGameObjects.SetActive(false);
+      bosqueardienteContenedorGameObjects.SetActive(true);
+      CampaignManager.Instance.sunController = bosqueardienteContenedorGameObjects.transform.GetChild(0).gameObject.GetComponent<SunController>();
       // Respetar timing previo y dejar terminar el fade inicial del AdministradorEscenas
       yield return new WaitForSecondsRealtime(0.5f);
 
@@ -340,4 +286,233 @@ public class AtributosZona : MonoBehaviour
          yield return admin.FadeOut(0.25f);
       }
    }
+
+
+   public void ConstruirZonaPasoVientoHelado(int iFASE)
+   {
+      Nombre = "Paso Viento Helado";
+      FASE = iFASE;
+      ID = 2;
+      modRecoleccionMateriales = +10;
+      modRecoleccionSuministros = -15;
+      modChanceEmboscada = 0;
+
+      modChanceExploracion = -10;
+
+       Clima_chances_Sol = 40;
+       Clima_chances_Calor = 40;
+       Clima_chances_Lluvia = 43;
+       Clima_chances_Nieve = 70;
+       Clima_chances_Niebla = 93;
+       Clima_chances_EspecialZona1 = 100;
+       
+
+
+
+      FASE1IDEncuentroNormal1 = 1;
+      FASE1IDEncuentroNormal2 = 2;
+      FASE1IDEncuentroNormal3 = 3;
+      FASE1IDEncuentroNormal4 = 4;
+      FASE1IDEncuentroNormal5 = 5;
+      FASE1IDEncuentroNormal6 = 6;
+      FASE1IDEncuentroNormal7 = 7;
+      FASE1IDEncuentroElite1 = 8;
+      FASE1IDEncuentroElite2 = 9;
+      FASE1IDEncuentroElite3 = 10;
+      FASE1IDEncuentroJefe1 = 11;
+      FASE1IDEncuentroJefe2 = 11; //!! cambiar cuando este el segundo jefe de fase 1
+      FASE1IDAtaqueCaravana1 = 13;
+      FASE1IDAtaqueCaravana2 = 14;
+
+      FASE2IDEncuentroNormal1 = 000;
+      FASE2IDEncuentroNormal2 = 000;
+      FASE2IDEncuentroNormal3 = 000;
+      FASE2IDEncuentroNormal4 = 000;
+      FASE2IDEncuentroNormal5 = 000;
+      FASE2IDEncuentroNormal6 = 000;
+      FASE2IDEncuentroNormal7 = 000;
+      FASE2IDEncuentroElite1 = 000;
+      FASE2IDEncuentroElite2 = 000;
+      FASE2IDEncuentroElite3 = 000;
+      FASE2IDEncuentroElite4 = 000;
+      FASE2IDEncuentroJefe1 = 000;
+      FASE2IDEncuentroJefe2 = 000;
+      FASE2IDAtaqueCaravana1 = 000;
+      FASE2IDAtaqueCaravana2 = 000;
+
+
+      FASE3IDEncuentroNormal1 = 000;
+      FASE3IDEncuentroNormal2 = 000;
+      FASE3IDEncuentroNormal3 = 000;
+      FASE3IDEncuentroNormal4 = 000;
+      FASE3IDEncuentroNormal5 = 000;
+      FASE3IDEncuentroNormal6 = 000;
+      FASE3IDEncuentroNormal7 = 000;
+      FASE3IDEncuentroElite1 = 000;
+      FASE3IDEncuentroElite2 = 000;
+      FASE3IDEncuentroElite3 = 000;
+      FASE3IDEncuentroElite4 = 000;
+      FASE3IDEncuentroJefe1 = 000;
+      FASE3IDEncuentroJefe2 = 000;
+      FASE3IDAtaqueCaravana1 = 000;
+      FASE3IDAtaqueCaravana2 = 000;
+
+
+
+
+
+
+      Invoke("PlayMusic", 0.2f);
+      // Usar fader como tapón mientras se adorna el mapa (async, sin freeze)
+      StartCoroutine(AdornarPasoVientoHeladoConFadeAsync());
+
+
+
+
+
+   }
+ IEnumerator AdornarPasoVientoHeladoConFadeAsync()
+   {
+     
+      TexturaTerreno.material = MaterialPasoVientoHelado_Terreno;
+      TexturaBordeMapa.material = MaterialPasoVientoHelado_BordeMapa;
+      pasovientoheladoContenedorGameObjects.SetActive(true);
+      bosqueardienteContenedorGameObjects.SetActive(false);
+      CampaignManager.Instance.sunController = pasovientoheladoContenedorGameObjects.transform.GetChild(0).gameObject.GetComponent<SunController>();
+
+      // Respetar timing previo y dejar terminar el fade inicial del AdministradorEscenas
+      yield return new WaitForSecondsRealtime(0.5f);
+
+      var admin = CampaignManager.Instance != null ? CampaignManager.Instance.scAdministradorEscenas : null;
+      if (admin != null)
+      {
+         // Tapón negro inmediato (sin fade-in) y bloqueo de fades concurrentes
+         admin.SetFaderHold(true); // fuerza alpha=1 inmediatamente
+      }
+
+
+      // Async sin congelar: replicamos las llamadas Generar pero con yield
+      yield return scMapDecorator.GenerarAsyncCR(
+         BosqueAngustiante_ArbolQuemado1,
+         cantidad: 14,
+         distCaminoOverride: 0.11f,
+         distNodoOverride: 0.15f,
+         rOverride: 6.25f,
+         kOverride: 20);
+         
+       yield return scMapDecorator.GenerarAsyncCR(
+        PasoVientoHelado_Arbol1,
+        cantidad: 25,
+        distCaminoOverride: 0.11f,
+        distNodoOverride: 0.15f,
+        rOverride: 5.95f,
+        kOverride: 20);
+      
+       yield return scMapDecorator.GenerarAsyncCR(
+        PasoVientoHelado_Arbol2,
+        cantidad: 40,
+        distCaminoOverride: 0.11f,
+        distNodoOverride: 0.15f,
+        rOverride: 5.85f,
+        kOverride: 20);
+      
+   
+      yield return scMapDecorator.GenerarAsyncCR(
+        PasoVientoHelado_Manchahielo,
+        cantidad: 4,
+        distCaminoOverride: 1.1f,
+        distNodoOverride: 0.83f,
+        rOverride: 13.85f,
+        kOverride: 20);
+      yield return scMapDecorator.GenerarAsyncCR(
+        PasoVientoHelado_Mancha2,
+        cantidad: 5,
+        distCaminoOverride: 0.11f,
+        distNodoOverride: 0.15f,
+        rOverride: 7.85f,
+        kOverride: 20);
+        
+      yield return scMapDecorator.GenerarAsyncCR(
+         PasoVientoHelado_Maleza1,
+         cantidad: 650,
+         distCaminoOverride: 0.1f,
+         distNodoOverride: 0.8f,
+         rOverride: 1.2f,
+         kOverride: 30);
+   
+     yield return scMapDecorator.GenerarAsyncCR(
+         BosqueAngustiante_ManchaCeniza1,
+         cantidad: 45,
+         distCaminoOverride: 0.10f,
+         distNodoOverride: 0.10f,
+         rOverride: 10.8f,
+         kOverride: 20);
+      
+       yield return scMapDecorator.GenerarAsyncCR(
+         PasoVientoHelado_Piedra1,
+         cantidad: 60,
+         distCaminoOverride: 0.10f,
+         distNodoOverride: 0.10f,
+         rOverride: 8.8f,
+         kOverride: 20);
+      
+       yield return scMapDecorator.GenerarAsyncCR(
+         PasoVientoHelado_Piedra2,
+         cantidad: 45,
+         distCaminoOverride: 0.10f,
+         distNodoOverride: 0.10f,
+         rOverride: 10.8f,
+         kOverride: 20);
+         
+      yield return scMapDecorator.GenerarAsyncCR(
+         PasoVientoHelado_Piedra3,
+         cantidad: 6,
+         distCaminoOverride: 1.60f,
+         distNodoOverride: 1.80f,
+         rOverride: 16.8f,
+         kOverride: 20);
+      
+        yield return scMapDecorator.GenerarAsyncCR(
+         PasoVientoHelado_grieta1,
+         cantidad: 2,
+         distCaminoOverride: 1.4f,
+         distNodoOverride: 1.40f,
+         rOverride: 15.8f,
+         kOverride: 20);
+
+        yield return scMapDecorator.GenerarAsyncCR(
+         PasoVientoHelado_aldeatribal,
+         cantidad: 7,
+         distCaminoOverride: 0.85f,
+         distNodoOverride: 1.30f,
+         rOverride: 7.8f,
+         kOverride: 20);
+      
+       yield return scMapDecorator.GenerarAsyncCR(
+         PasoVientoHelado_efigie,
+         cantidad: 10,
+         distCaminoOverride: 0.3f,
+         distNodoOverride: 0.50f,
+         rOverride: 7.8f,
+         kOverride: 20);
+      
+       yield return scMapDecorator.GenerarAsyncCR(
+         PasoVientoHelado_simbolopagano,
+         cantidad: 6,
+         distCaminoOverride: 0.8f,
+         distNodoOverride: 0.50f,
+         rOverride: 10.8f,
+         kOverride: 20);
+   
+      if (admin != null)
+      {
+         // Liberar bloqueo y volver a mostrar la escena
+         admin.SetFaderHold(false);
+         yield return admin.FadeOut(0.25f);
+      }
+   }
+
+
+
+
 }

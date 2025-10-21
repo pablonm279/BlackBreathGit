@@ -25,6 +25,16 @@ public class ContenedorDeNodos : MonoBehaviour
             listTodosNodos.Add(child.GetComponent<Nodo>());
         }
     }
+
+    // Permite reconstruir la lista tras reactivar/desactivar nodos en runtime
+    public void RecolectarNodos()
+    {
+        listTodosNodos.Clear();
+        foreach (Nodo child in transform.GetComponentsInChildren<Nodo>(true))
+        {
+            listTodosNodos.Add(child);
+        }
+    }
    
    
     public Nodo ObtenerNodoSegunXY(int X, int Y)

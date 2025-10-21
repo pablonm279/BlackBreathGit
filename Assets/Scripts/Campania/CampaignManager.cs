@@ -92,13 +92,14 @@ public class CampaignManager : MonoBehaviour
 
     CambiarCivilesActuales(110);
     CambiarEsperanzaActual(75);
-    CambiarSuministrosActuales(320);
-    CambiarMaterialesActuales(50);
-    CambiarBueyesActuales(20);
+    CambiarSuministrosActuales(300);
+    CambiarMaterialesActuales(45);
+    CambiarBueyesActuales(22);
     CambiarOroActual(400);
     CambiarValorAlientoNegro(1);
 
-    scAtributosZona.ConstruirZonaBosqueAngustiante(1);
+    //scAtributosZona.ConstruirZonaBosqueAngustiante(1);
+    scAtributosZona.ConstruirZonaPasoVientoHelado(1);
 
 
     scMenuSequito.AgregarSequito(1);
@@ -209,6 +210,20 @@ public class CampaignManager : MonoBehaviour
       CambiarValorAlientoNegro(1);
     }
 
+    if (intTipoClima == 6)
+    {
+      if (scAtributosZona.ID == 1) // Bosque Angustiante
+      {
+        EscribirLog(TRADU.i.Traducir("-Las Almas Danzantes guían a la caravana. +5 Esperanza"));
+        CambiarEsperanzaActual(5);
+      }
+      if (scAtributosZona.ID == 2) // Paso del Viento Helado
+      {
+        EscribirLog(TRADU.i.Traducir("-La Aurora Boreal maravilla a toda la caravana. +10 Esperanza"));
+        CambiarEsperanzaActual(10);
+      }
+    }
+
     //Efectos en Civiles segun Tier de Aliento
     if (GetTierAlientoNegro() == 1)
     {
@@ -271,17 +286,20 @@ public class CampaignManager : MonoBehaviour
       {
         chancesemboscada += 4; // +4% si hay un Séquito de Nobles
       }
-
+      if (intTipoClima == 6) //Almas Danzantes del bosque ardiente
+      {
+        chancesemboscada -= 100; // -100% si hay Almas Danzantes
+      }
       if (randomEmboscada <= chancesemboscada)
-      {
-        scMenuBatallas.EventoBatallaNormal(0, 1); //Emboscada
+        {
+          scMenuBatallas.EventoBatallaNormal(0, 1); //Emboscada
 
-      }
-      else
-      {
-        scMenuBatallas.EventoBatallaNormal(0, 0); //No emboscada
+        }
+        else
+        {
+          scMenuBatallas.EventoBatallaNormal(0, 0); //No emboscada
 
-      }
+        }
 
 
     }
@@ -413,6 +431,20 @@ public class CampaignManager : MonoBehaviour
       EscribirLog(TRADU.i.Traducir("-Los Civiles se sienten culpables por la presencia de los Esclavos. -2 Esperanza."));
     }
     
+  }
+
+  // Llamar desde el resultado de la Batalla Final (jefe derrotado)
+  public void OnDerrotadoJefeZona()
+  {
+    // Avanzar fase de zona y reconstruir mapa con mínimos acoples
+    int proximaFase = Mathf.Clamp(scAtributosZona.FASE + 1, 1, 3);
+
+    // Resetear mapa de nodos y conexiones
+    scMapaManager.ResetearYGenerarSiguienteZona();
+
+    // Reconstruir la ambientación y parámetros de la zona
+    scAtributosZona.ConstruirZonaPasoVientoHelado(proximaFase);
+
   }
   #region Santuario
   public GameObject goUIPersonajeSequito;
@@ -1468,14 +1500,17 @@ public class CampaignManager : MonoBehaviour
 
   }
 
-  public int intTipoClima; //1 Sol, 2 Calor, 3 Lluvia, 4 Nieve, 5 Niebla
+  public int intTipoClima; //1 - Sol, 2 - Calor, 3 - Lluvia, 4 - Nieve, 5 - Niebla
+  // Especiales:
+  // 6 - Bosque Ardiente Almas Danzantes
   public Image widgetClima;
   public Sprite clima_lluvia;
   public Sprite clima_nieve;
   public Sprite clima_sol;
   public Sprite clima_calor;
   public Sprite clima_niebla;
-
+  public Sprite clima_almasDanzantes;
+  public Sprite clima_auroraboreal;
   public GameObject climaTooltip;
   public TextMeshProUGUI textClimaTooltip;
 
@@ -1489,12 +1524,19 @@ public class CampaignManager : MonoBehaviour
       {
         case 1: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Soleado: +5 Esperanza."); break;
         case 2: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Ola de Calor: +1 Fatiga. Jornada Libre da +5 Esperanza, otras Tareas Civiles dan -3."); break;
-        case 3: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% Emboscada."); break;
+        case 3: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada."); break;
         case 4: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Nieve: +3 Esperanza. -15% Recolecciónes, -20% Emboscada. Viajar lleva el doble de tiempo."); break;
         case 5: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Niebla: -20% Recolecciónes, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos."); break;
-
-
-
+        case 6:
+          if (scAtributosZona.ID == 1) //Bosque ardiente
+          {
+            textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Almas Danzantes: +5 Esperanza, -100% chances de Emboscada.");
+          }
+          else if (scAtributosZona.ID == 2) //Paso Vientohelado
+          {
+            textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Aurora Boreal: +10 Esperanza."); break;
+          }
+          break;
 
 
       }
@@ -1797,8 +1839,7 @@ public class CampaignManager : MonoBehaviour
 
 
     SortearRasgos(pers1); //Método vacío!!
-
-
+pers1.AddComponent<Vigilancia>(); pers1.GetComponent<Vigilancia>().NIVEL = 1;
 
     //Habilidades Intrinsecas
     pers1.AddComponent<REPRESENTACIONPasoCauteloso>();

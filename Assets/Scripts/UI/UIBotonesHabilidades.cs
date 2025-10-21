@@ -23,6 +23,13 @@ public class UIBotonesHabilidades : MonoBehaviour
     {
        ActualizarBotonesHabilidad();
     }
+    public void DeseleccionarTodas()
+    {
+        foreach (BotonHabilidad boton in GetComponentsInChildren<BotonHabilidad>())
+        {
+            boton.DesactivarHabilidad();
+        }
+    }
 
     public UIbotonesPasivas botonesPasivas;
     public void ActualizarBotonesHabilidad()

@@ -25,24 +25,38 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
         scUInfochar = BattleManager.Instance.scUIInfoChar;
 
     }
+
+    public GameObject oscurecedor;
     void Update()
     {
-         if(scUInfochar.hayUnidadSeleccionadaParaInfo)
+        if (scUInfochar.hayUnidadSeleccionadaParaInfo)
         {
-           if(scUInfochar.unidadMostrada != null)
-           {
-            if(scUInfochar.unidadMostrada == scUnidad )
+            if (scUInfochar.unidadMostrada != null)
             {
-                seleccionado.SetActive(true);
+                if (scUInfochar.unidadMostrada == scUnidad)
+                {
+                    seleccionado.SetActive(true);
 
+                }
+                else
+                { seleccionado.SetActive(false); }
             }
             else
-            { seleccionado.SetActive(false);}
-           }
-           else
-           {seleccionado.SetActive(false);}
+            { seleccionado.SetActive(false); }
         }
-        else{seleccionado.SetActive(false);}
+        else { seleccionado.SetActive(false); }
+        
+          int indexunidad = BattleManager.Instance.lUnidadesTotal.IndexOf(scUnidad);
+         int indexTurno = BattleManager.Instance.indexTurno-1;
+
+          if (indexunidad < indexTurno)
+        {
+            oscurecedor.SetActive(true);
+        }
+        else
+        {
+            oscurecedor.SetActive(false);
+        }
        
     }
     public void ActualizarColores()
@@ -104,6 +118,8 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
         BarraVida.value = scUnidad.HP_actual / scUnidad.mod_maxHP;
 
         Retrato.sprite = scUnidad.uRetrato;
+        
+       
      
         ActualizarColores();
     }

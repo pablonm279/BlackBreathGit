@@ -86,7 +86,7 @@ public class MenuDescanso : MonoBehaviour
 
         tareaCivilDescripcion.text =TRADU.i.Traducir("<b><u>Recolección de Suministros</b></u>\n\n\n");
         tareaCivilDescripcion.text +=TRADU.i.Traducir("Los civiles se dedicarán a recolectar distintos suministros de las inmediaciones al campamento.\n\n");
-        tareaCivilDescripcion.text +=TRADU.i.Traducir($"<color=#d8a205>Se juntarán entre ") + (int)valor + TRADU.i.Traducir(" y ") + (int)valor + 10 + TRADU.i.Traducir(" suministros. </color>\n\n\n");
+        tareaCivilDescripcion.text +=TRADU.i.Traducir($"<color=#d8a205>Se juntarán entre ") + (int)valor + TRADU.i.Traducir(" y ") + ((int)valor + 10) + TRADU.i.Traducir(" suministros. </color>\n\n\n");
 
         chancesAtaqueACaravana = 25 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
         chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -119,7 +119,7 @@ public class MenuDescanso : MonoBehaviour
 
         tareaCivilDescripcion.text =TRADU.i.Traducir("<b><u>Recolección de Materiales</b></u>\n\n\n");
         tareaCivilDescripcion.text +=TRADU.i.Traducir("Los civiles se dedicarán a recolectar materiales básicos en la zona.\n\n");
-        tareaCivilDescripcion.text +=TRADU.i.Traducir("<color=#d8a205>Se juntarán entre ") + (int)valor + TRADU.i.Traducir(" y ") + (int)valor + 10 + TRADU.i.Traducir(" materiales. </color>\n\n\n");
+        tareaCivilDescripcion.text +=TRADU.i.Traducir("<color=#d8a205>Se juntarán entre ") + (int)valor + TRADU.i.Traducir(" y ") + ((int)valor + 10) + TRADU.i.Traducir(" materiales. </color>\n\n\n");
 
         chancesAtaqueACaravana = 25 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
         chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -201,6 +201,7 @@ public class MenuDescanso : MonoBehaviour
     {
         chancesExploracion -= 20;
     }
+    
     //Aliento negro aumenta chances de ataque a caravana
     chancesAtaqueACaravana += (int)(CampaignManager.Instance.GetValorAlientoNegro()/2);
 
@@ -226,6 +227,11 @@ public class MenuDescanso : MonoBehaviour
     chancesExploracion += CampaignManager.Instance.mejoraCaravanaCatalejos*5;
 
     chancesExploracion += CampaignManager.Instance.ExploracionSumadaPorActividades();
+    
+    if (CampaignManager.Instance.intTipoClima == 6) //Almas Danzantes
+    {
+      chancesAtaqueACaravana = 0;
+    }
 
     chancesAtaqueACaravana = Mathf.Clamp(chancesAtaqueACaravana, 0, 100);
     chancesExploracion = Mathf.Clamp(chancesExploracion, 0, 100);
@@ -537,52 +543,93 @@ public class MenuDescanso : MonoBehaviour
 
  }
 
- 
-public void TiradaClima()
-{
-    int random = UnityEngine.Random.Range(1,101);
+ public GameObject climaNieve;
+ public GameObject climaLluvia;
+ public GameObject climaNiebla;
+ public GameObject climaAlmasDanzantes;
+ public GameObject climaAuroraBoreal;
 
-    if(random < CampaignManager.Instance.scAtributosZona.Clima_chances_Sol)
+  public void TiradaClima()
+  {
+    int random = UnityEngine.Random.Range(1, 101);
+    climaNieve.SetActive(false);
+    climaLluvia.SetActive(false);
+    climaNiebla.SetActive(false);
+    climaAuroraBoreal.SetActive(false);
+    climaAlmasDanzantes.SetActive(false);
+
+    if (random < CampaignManager.Instance.scAtributosZona.Clima_chances_Sol)
     {
-        CampaignManager.Instance.intTipoClima = 1;
-        CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_sol;
+      CampaignManager.Instance.intTipoClima = 1;
+      CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_sol;
 
-        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Es un día hermoso. +5 Esperanza."));
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Es un día hermoso. +5 Esperanza."));
+      CampaignManager.Instance.CambiarEsperanzaActual(5);
+
+    }
+    else if (random < CampaignManager.Instance.scAtributosZona.Clima_chances_Calor)
+    {
+      CampaignManager.Instance.intTipoClima = 2;
+      CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_calor;
+
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Ola de Calor se hace insoportable. +1 Fatiga."));
+      CampaignManager.Instance.CambiarFatigaActual(+1);
+    }
+    else if (random < CampaignManager.Instance.scAtributosZona.Clima_chances_Lluvia)
+    {
+      climaLluvia.SetActive(true);
+      CampaignManager.Instance.intTipoClima = 3;
+      CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_lluvia;
+
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Lluvia hace el viaje más difícil. -5 Esperanza."));
+      CampaignManager.Instance.CambiarEsperanzaActual(-5);
+    }
+    else if (random < CampaignManager.Instance.scAtributosZona.Clima_chances_Nieve)
+    {
+      climaNieve.SetActive(true);
+      CampaignManager.Instance.intTipoClima = 4;
+      CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_nieve;
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Nieve mejora el ánimo. +3 Esperanza."));
+      CampaignManager.Instance.CambiarEsperanzaActual(3);
+    }
+    else if (random < CampaignManager.Instance.scAtributosZona.Clima_chances_Niebla)
+    {
+      climaNiebla.SetActive(true);
+      CampaignManager.Instance.intTipoClima = 5;
+      CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_niebla;
+    }
+    else if (random < CampaignManager.Instance.scAtributosZona.Clima_chances_EspecialZona1)
+    {
+      if (CampaignManager.Instance.scAtributosZona.ID == 1) //Bosque Ardiente - Almas Danzantes
+      {
+        climaAlmasDanzantes.SetActive(true);
+       
+        CampaignManager.Instance.intTipoClima = 6;
+        CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_almasDanzantes;
+       
+
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Las Almas Danzantes de animales inocentes guian a la caravana. +5 Esperanza, 0% chances de emboscada."));
         CampaignManager.Instance.CambiarEsperanzaActual(5);
+      }
+      if (CampaignManager.Instance.scAtributosZona.ID == 2) //Paso Helado - Aurora Boreal
+      {
+        climaAuroraBoreal.SetActive(true);
+     
+        CampaignManager.Instance.intTipoClima = 6;
+        CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_auroraboreal;
+        
+
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Aurora Boreal maravilla a toda la caravana. +10 Esperanza"));
+        CampaignManager.Instance.CambiarEsperanzaActual(10);
+      }
+
+
 
     }
-    else if(random < CampaignManager.Instance.scAtributosZona.Clima_chances_Calor)
-    {
-        CampaignManager.Instance.intTipoClima = 2;
-        CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_calor;
-
-        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Ola de Calor se hace insoportable. +1 Fatiga."));
-        CampaignManager.Instance.CambiarFatigaActual(+1);
-    }
-    else if(random < CampaignManager.Instance.scAtributosZona.Clima_chances_Lluvia)
-    {
-        CampaignManager.Instance.intTipoClima = 3;
-        CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_lluvia;
-
-        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Lluvia hace el viaje más difícil. -5 Esperanza."));
-        CampaignManager.Instance.CambiarEsperanzaActual(-5);
-    }
-    else if(random < CampaignManager.Instance.scAtributosZona.Clima_chances_Nieve)
-    {
-        CampaignManager.Instance.intTipoClima = 4;
-        CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_nieve;
-        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Nieve mejora el ánimo. +3 Esperanza."));
-        CampaignManager.Instance.CambiarEsperanzaActual(3);
-    }
-    else if(random < CampaignManager.Instance.scAtributosZona.Clima_chances_Niebla)
-    {
-        CampaignManager.Instance.intTipoClima = 5;
-        CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_niebla;
-    }
-    
 
 
 
-}
+
+  }
 
 }

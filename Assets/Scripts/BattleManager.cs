@@ -664,15 +664,18 @@ public class BattleManager : MonoBehaviour
   // Casilla clickeada para resolver la habilidad (para VFX con referencia de clic)
   public Casilla casillaClickHabilidad;
 
-  /* void Update()
-   {
-     if(HabilidadActiva != null)
-     {
-       OpacarCasillasMelee();
-
-     }
-
-   }*/
+     private void Update()
+    {
+        // Si el jugador hace clic derecho, cancelar habilidad activa
+        if (Input.GetMouseButtonDown(1) && unidadActiva != null && HabilidadActiva != null)
+        {
+            scUIBotonesHab.DeseleccionarTodas();
+            HabilidadActiva = null;
+            LimpiarCapasCasillas();
+            SeleccionandoObjetivo = false;
+            scUIContadorAP.ResetearCirculos();
+        }
+    }
 
   /* public void OpacarCasillasMelee()
   {
@@ -911,6 +914,8 @@ public class BattleManager : MonoBehaviour
 
   }
 
+  
+ 
   public void ActivartooltipClima(int n)
   {
     if (n == 1)
@@ -920,9 +925,9 @@ public class BattleManager : MonoBehaviour
       switch (CampaignManager.Instance.intTipoClima)
       {
         case 1: textClimaTooltip.text = TRADU.i.Traducir("Clima normal."); break;
-        case 2: textClimaTooltip.text = TRADU.i.Traducir("Calor: Todas las unidades obtienen 'Acalorado'."); break;
-        case 3: textClimaTooltip.text = TRADU.i.Traducir("Lluvia: Todas las unidades obtienen 'Mojado'. -1 Ataque a habilidades de rango."); break;
-        case 4: textClimaTooltip.text = TRADU.i.Traducir("Nieve: Todas las unidades obtienen 'Frío'."); break;
+        case 2: textClimaTooltip.text = TRADU.i.Traducir("Calor: todas las unidades obtienen 'Acalorado'."); break;
+        case 3: textClimaTooltip.text = TRADU.i.Traducir("Lluvia: todas las unidades obtienen 'Mojado'. -1 Ataque a habilidades de rango."); break;
+        case 4: textClimaTooltip.text = TRADU.i.Traducir("Nieve: todas las unidades obtienen 'Frío'."); break;
         case 5: textClimaTooltip.text = TRADU.i.Traducir("Niebla: -2 Ataque a habilidades de rango."); break;
       }
 

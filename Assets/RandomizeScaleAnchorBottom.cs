@@ -43,7 +43,7 @@ public class RandomizeScaleAnchorBottom : MonoBehaviour
         }
 
         // Escala aleatoria
-        float factor =UnityEngine.Random.Range(minFactor, maxFactor);
+        float factor = UnityEngine.Random.Range(minFactor, maxFactor);
         transform.localScale = initialScale * factor;
 
         // Recalcular fondo (pie) y ajustar posición para mantenerlo fijo
@@ -68,5 +68,32 @@ public class RandomizeScaleAnchorBottom : MonoBehaviour
             else b.Encapsulate(r.bounds);
         }
         return has ? b.min.y : transform.position.y;
+    }
+    
+
+
+    [Header("Rotación aleatoria")]
+    [Tooltip("Si está activo, rota aleatoriamente alrededor del eje Y (grados). Default: false.")]
+    [SerializeField] bool randomizeY = false;
+
+    bool rotationApplied = false;
+
+    void LateUpdate()
+    {
+        // Si aún no se aplicó la operación principal, resetea el flag para poder reaplicar
+        if (!done)
+        {
+            rotationApplied = false;
+            return;
+        }
+
+        if (rotationApplied) return;
+        rotationApplied = true;
+
+        if (!randomizeY) return;
+
+        float angleY = UnityEngine.Random.Range(0f, 360f);
+        Vector3 e = transform.eulerAngles;
+        transform.eulerAngles = new Vector3(e.x, angleY, e.z);
     }
 }
