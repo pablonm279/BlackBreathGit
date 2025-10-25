@@ -2721,6 +2721,175 @@ public class TRADU : MonoBehaviour
             case ": -Aurora Boreal: +10 Esperanza.":
                 r = ": -Northern Lights: +10 Hope.";
                 break;
+            case "Caníbal Kale'Tav":
+                r = "Kale'Tav Cannibal";
+                break;
+            case "Garra Caníbal":
+                r = "Cannibal Claw";
+                break;
+            case "Tentado por Sangre":
+                r = "Bloodlusted";
+                break;
+            case "<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Empieza combate con Evasión.\n-Se potencia si el enemigo está lastimado.</color>\n<color=#EE0000>-Una vez que perdió la evasión, es fácil de eliminar.</color>":
+                r = "<i>Tribe originating from the Icewind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Starts combat with Evasion.\n-Empowered if the enemy is wounded.</color>\n<color=#EE0000>-Once it loses evasion, it is easy to eliminate.</color>";
+                break;
+            case "Ataque Lanza":
+                r = "Spear Attack";
+                break;
+            case "Arrojar Lanza":
+                r = "Throw Spear";
+                break;
+            case "<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Ataque de lanza arrojadiza peligroso.</color>\n<color=#EE0000>-Poca Precisión.</color>":
+                r = "<i>Tribe originating from the Icewind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Dangerous thrown spear attack.</color>\n\n<color=#199F10>-Creates traps.</color>\n<color=#EE0000>-Low Accuracy.</color>";
+                break;
+            case "Improvisar Trampas":
+                r = "Improvise Traps";
+                break;
+            case "Trampa Improvisada: Daña y marca a unidades que la pisen.":
+                r = "Improvised Trap: Damages and marks units that step on it.";
+                break;
+            case "Marcado":
+                r = "Marked";
+                break;
+            case "Guerrero Kale'Tav":
+                r = "Kale'Tav Warrior";
+                break;
+            case "Cazador Kale'Tav":
+                r = "Kale'Tav Hunter";
+                break;
+            case "Furioso por Herida":
+                r = "Furious from Wound";
+                break;
+             case "<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Recibir Herida lo potencia.\n-Al matar a un enemigo se potencia.</color>\n<color=#EE0000>-Posee sólo un tipo de ataque.</color>":
+                r = "<i>Tribe originating from the Icewind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Receiving Wound empowers it.\n-Killing an enemy empowers it.</color>\n<color=#EE0000>-Only one type of attack.</color>";
+                break;
+             case "Regocijo Asesino":
+                r = "Killer's Rage";
+                break;
+             case "Hachazo Tribal":
+                    r = "Tribal Axe Strike";
+                break;
+             case "Bruja Kale'Tav":
+                    r = "Kale'Tav Witch";
+                break;
+             case "Golpe Bastón":
+                    r = "Staff Strike";
+                      break;
+               case "Ataque de Cuervo":
+                    r = "Raven Attack";
+                break;
+               case "<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Variedad de buffs y debuffs.</color>\n<color=#EE0000>-Poco resistente.</color>":
+                      r = "<i>Tribe originating from the Icewind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Variety of buffs and debuffs.</color>\n<color=#EE0000>-Weak resistance.</color>";
+                      break;
+               
+                /* case "":
+                    r = "";
+                    break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /* case "":
+                    r = "";
+                    break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /* case "":
+                    r = "";
+                    break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /* case "":
+                    r = "";
+                    break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /* case "":
+                    r = "";
+                    break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /* case "":
+                    r = "";
+                    break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /* case "":
+                    r = "";
+                    break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /* case "":
+                    r = "";
+                    break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /* case "":
+                    r = "";
+                    break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /* case "":
+                    r = "";
+                    break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /* case "":
+                    r = "";
+                    break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+                /*  case "":
+                      r = "";
+                      break;*/
+            /* case "":
+                r = "";
+                break;*/
+          /*  case "":
+                r = "";
+                break;*/
+          /*  case "":
+                r = "";
+                break;*/
            
           
           

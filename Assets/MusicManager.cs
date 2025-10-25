@@ -29,6 +29,12 @@ public class MusicManager : MonoBehaviour
     [Tooltip("Segundos de fundido al cambiar de tema o modo")]
     public float fadeTime = 1.5f;
 
+    [Header("Aliento Negro")]
+    [Tooltip("Lista reproducida cuando el Aliento Negro alcanza el tier 3 o superior")]
+    public List<AudioClip> temasAlientoNegro = new List<AudioClip>();
+    [Tooltip("Duración del fade al entrar o salir de la música del Aliento Negro")]
+    public float fadeAlientoNegro = 0.75f;
+
     [Header("Random")]
     public bool aleatorio = true;
     [Tooltip("Evita repetir el último tema al azar")]
@@ -44,8 +50,10 @@ public class MusicManager : MonoBehaviour
     ModoMusica modoActual = ModoMusica.Campania;
     int ultimoIndexCampania = -1;
     int ultimoIndexBatalla = -1;
+    int ultimoIndexAlientoNegro = -1;
     Coroutine rutinaCiclo;
     bool pausado = false;
+    bool usandoListaAlientoNegro = false;
 
     void Awake()
     {
@@ -218,35 +226,59 @@ public class MusicManager : MonoBehaviour
 
     // ----------------- LÓGICA INTERNA -----------------
 
+    bool DebeUsarMusicaAlientoNegro()
+    {
+        if (temasAlientoNegro == null || temasAlientoNegro.Count == 0) return false;
+        if (CampaignManager.Instance == null) return false;
+        return CampaignManager.Instance.GetTierAlientoNegro() >= 3f;
+    }
+
     IEnumerator Ciclo(bool conStinger = false)
     {
         while (zonaActual != null)
         {
-            // Elegir lista según modo
-            var lista = (modoActual == ModoMusica.Campania) ? zonaActual.temasCampania : zonaActual.temasBatalla;
+            bool usarAliento = modoActual == ModoMusica.Campania && DebeUsarMusicaAlientoNegro();
+            if (usarAliento && (temasAlientoNegro == null || temasAlientoNegro.Count == 0))
+            {
+                usarAliento = false;
+            }
+
+            List<AudioClip> lista = usarAliento
+                ? temasAlientoNegro
+                : (modoActual == ModoMusica.Campania ? zonaActual.temasCampania : zonaActual.temasBatalla);
+
+            if (usarAliento && (lista == null || lista.Count == 0))
+            {
+                Debug.LogWarning("[MusicManager] Lista de Aliento Negro vacía. Se usará la lista de zona.");
+                usarAliento = false;
+                lista = (modoActual == ModoMusica.Campania) ? zonaActual.temasCampania : zonaActual.temasBatalla;
+            }
+
             if (lista == null || lista.Count == 0)
             {
                 Debug.LogWarning($"[MusicManager] Lista vacía en {modoActual} de {zonaActual.nombreZona}");
                 yield break;
             }
 
-            int idx = SiguienteIndice(lista.Count);
+            int idx = SiguienteIndice(lista.Count, usarAliento);
             AudioClip clip = lista[idx];
 
             // Stinger de entrada a batalla
-            if (conStinger && modoActual == ModoMusica.Batalla && zonaActual.stingerBatalla != null)
+            if (!usarAliento && conStinger && modoActual == ModoMusica.Batalla && zonaActual.stingerBatalla != null)
             {
-                // Reproduce el stinger en el pasivo, rápido fade del activo
                 pasivo.clip = zonaActual.stingerBatalla;
                 pasivo.time = 0f;
                 pasivo.volume = 0f;
                 pasivo.Play();
 
-                // Fade out activo + fade in stinger corto
                 yield return StartCoroutine(CrossFade(pasivo, 0.85f * volumenBase, 0.25f));
                 yield return new WaitForSeconds(pasivo.clip.length * 0.85f);
                 yield return StartCoroutine(FadeOut(pasivo, 0.25f));
             }
+
+            float fadeCorto = Mathf.Max(0.05f, fadeAlientoNegro);
+            float fadeLargo = Mathf.Max(0.05f, fadeTime);
+            bool playlistCambio = usarAliento != usandoListaAlientoNegro;
 
             // Crossfade al tema elegido
             pasivo.clip = clip;
@@ -254,40 +286,82 @@ public class MusicManager : MonoBehaviour
             pasivo.volume = 0f;
             pasivo.Play();
 
-            yield return StartCoroutine(CrossFade(pasivo, volumenBase, fadeTime));
+            float crossFade = (usarAliento || playlistCambio) ? fadeCorto : fadeLargo;
+            yield return StartCoroutine(CrossFade(pasivo, volumenBase, crossFade));
             SwapFuentes();
+            usandoListaAlientoNegro = usarAliento;
 
             // Esperar el tema menos el tiempo de fade
-            float restante = Mathf.Max(0f, clip.length - fadeTime);
+            float restante = Mathf.Max(0f, clip.length - crossFade);
             float t = 0f;
+            bool forzarCambio = false;
             while (t < restante)
             {
                 if (!pausado) t += Time.unscaledDeltaTime;
+                if (usarAliento != DebeUsarMusicaAlientoNegro())
+                {
+                    forzarCambio = true;
+                    break;
+                }
                 yield return null;
             }
 
+            if (forzarCambio)
+            {
+                float salida = Mathf.Max(0.05f, fadeCorto * 0.5f);
+                yield return StartCoroutine(FadeOut(activo, salida));
+                continue;
+            }
+
             // Fade out suave antes del siguiente
-            yield return StartCoroutine(FadeOut(pasivo, fadeTime * 0.8f));
+            float fadeSalida = (usarAliento || playlistCambio) ? fadeCorto * 0.8f : fadeLargo * 0.8f;
+            yield return StartCoroutine(FadeOut(pasivo, Mathf.Max(0.05f, fadeSalida)));
         }
     }
 
-    int SiguienteIndice(int count)
+    int SiguienteIndice(int count, bool usarListaAliento)
     {
         if (!aleatorio)
         {
-            if (modoActual == ModoMusica.Campania) { ultimoIndexCampania = (ultimoIndexCampania + 1) % count; return ultimoIndexCampania; }
-            else { ultimoIndexBatalla = (ultimoIndexBatalla + 1) % count; return ultimoIndexBatalla; }
+            if (usarListaAliento)
+            {
+                ultimoIndexAlientoNegro = (ultimoIndexAlientoNegro + 1) % count;
+                return ultimoIndexAlientoNegro;
+            }
+            if (modoActual == ModoMusica.Campania)
+            {
+                ultimoIndexCampania = (ultimoIndexCampania + 1) % count;
+                return ultimoIndexCampania;
+            }
+            else
+            {
+                ultimoIndexBatalla = (ultimoIndexBatalla + 1) % count;
+                return ultimoIndexBatalla;
+            }
         }
 
         // Aleatorio con anti-repetición inmediata
-        int last = (modoActual == ModoMusica.Campania) ? ultimoIndexCampania : ultimoIndexBatalla;
-        int idx =UnityEngine.Random.Range(0, count);
+        int last = usarListaAliento
+            ? ultimoIndexAlientoNegro
+            : (modoActual == ModoMusica.Campania ? ultimoIndexCampania : ultimoIndexBatalla);
+        int idx = UnityEngine.Random.Range(0, count);
         if (evitarRepeticionInmediata && count > 1)
         {
             int safety = 0;
-            while (idx == last && safety++ < 10) idx =UnityEngine.Random.Range(0, count);
+            while (idx == last && safety++ < 10) idx = UnityEngine.Random.Range(0, count);
         }
-        if (modoActual == ModoMusica.Campania) ultimoIndexCampania = idx; else ultimoIndexBatalla = idx;
+        if (usarListaAliento)
+        {
+            ultimoIndexAlientoNegro = idx;
+        }
+        else if (modoActual == ModoMusica.Campania)
+        {
+            ultimoIndexCampania = idx;
+        }
+        else
+        {
+            ultimoIndexBatalla = idx;
+        }
         return idx;
     }
 
@@ -333,17 +407,17 @@ public class MusicManager : MonoBehaviour
         pasivo = tmp;
     }
     
-    // 🔹 Barajar lista al azar
-private void ShuffleList<T>(List<T> list)
-{
-    int n = list.Count;
-    while (n > 1)
+    // Barajar lista al azar
+    private void ShuffleList<T>(List<T> list)
     {
-        n--;
-        int k = UnityEngine.Random.Range(0, n + 1);
-        T value = list[k];
-        list[k] = list[n];
-        list[n] = value;
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = UnityEngine.Random.Range(0, n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
     }
-}
 }

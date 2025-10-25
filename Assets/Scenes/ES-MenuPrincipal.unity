@@ -1485,7 +1485,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: v 0.15 Early Access
+  m_text: v 0.2 Early Access
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -1602,7 +1602,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '--Demo Early Access-- v0.15
+  m_text: '--Demo Early Access-- v0.20
 
 
     Welcome to the Early Access demo of
@@ -4089,11 +4089,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "--Demo Early Access--   v0.15\n\nBienvenido a la demo Early Access de
-    \"El Aliento Negro\".\nEste juego est\xE1 en una fase temprana del desarrollo
-    y se encontrar\xE1n bugs, assets provisorios y falta de contenido.\n\nEsta Demo
-    mostrar\xE1 un ciclo completo de juego b\xE1sico en una de las zonas de la campa\xF1a
-    \"El Bosque Ardiente\".\n\nActualmente no se permite guardado de partida ni opciones
+  m_text: "--Demo Early Access--   v0.2\n\nBienvenido a la demo Early Access de \"El
+    Aliento Negro\".\nEste juego est\xE1 en una fase temprana del desarrollo y se
+    encontrar\xE1n bugs, assets provisorios y falta de contenido.\n\nEsta Demo mostrar\xE1
+    un ciclo completo de juego b\xE1sico en una de las zonas de la campa\xF1a \"El
+    Bosque Ardiente\".\n\nActualmente no se permite guardado de partida ni opciones
     adicionales.\n\nRecuerda darnos tu Feedback a trav\xE9s de este bot\xF3n para
     poder mejorar."
   m_isRightToLeft: 0

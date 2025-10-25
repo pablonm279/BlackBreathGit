@@ -50,6 +50,7 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject ArrojarCorrosion;
     public GameObject FlechaPotente;
     public GameObject VFXDescargaDePoder_Fila;
+    public GameObject LanzaTribal;
 
 
 
@@ -67,6 +68,7 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject TrampaPinchos;
     public GameObject TrampaNidoDefensivo;
     public GameObject MasaContaminada;
+    public GameObject TrampaImprovisadaTribal;
 
     [Header("Invocaciones")]
     public GameObject Canalizador_ManifestacionArcana;
@@ -99,8 +101,10 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject DevoradorCorrompido;
     public GameObject GuerreroCorrompido;
     public GameObject AlimaniaCorrompida;
-
-
+    public GameObject CanibalKaleTav;
+    public GameObject LanceroKaleTav;
+    public GameObject GuerreroKaleTav;
+    public GameObject BrujaKaleTav;
     [Header("Sonidos Daño")]
 
     public AudioClip sonidoPerforante;

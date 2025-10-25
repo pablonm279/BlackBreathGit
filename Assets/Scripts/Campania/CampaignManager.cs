@@ -110,6 +110,7 @@ public class CampaignManager : MonoBehaviour
 
 
     numeroTurno = 1;
+    posicionCaravana = 1;
 
     menuDescanso.GetComponent<MenuDescanso>().TiradaClima();
 
@@ -260,14 +261,14 @@ public class CampaignManager : MonoBehaviour
 
   public MenuBatallas scMenuBatallas;
   public GameObject goMenuBatallas;
-  public void LlegarANodo(int ID)
+  public void LlegarANodo(int ID, int posX)
   {
     // Detiene el sonido de movimiento al llegar al nodo
     if (sfxMovimientoSource != null && sfxMovimientoSource.isPlaying)
       sfxMovimientoSource.Stop();
 
-   
-    
+
+    posicionCaravana = posX+1;
     if (ID == 1) //Batalla
     {
 
@@ -917,37 +918,39 @@ public class CampaignManager : MonoBehaviour
 
   }
 
+  public int posicionCaravana; //1-12 la posicion de la caravana en los nodos
   void ActualizarTierAlientoNegro()
   {
     Image handleSliderCalavera = sliderAlientoNegro.gameObject.transform.GetChild(2).GetChild(0).gameObject.GetComponent<Image>();
 
-    if (EstadoAlientoNegro < 5)
+    float cercaniaAliento = -(posicionCaravana - EstadoAlientoNegro);
+
+    if (cercaniaAliento < 3)
     {
       TierAlientoNegro = 1;
 
-    //  handleSliderCalavera.color = new Color(0.15f, 0.15f, 0.15f);
+      //  handleSliderCalavera.color = new Color(0.15f, 0.15f, 0.15f);
 
     }
-    else if (EstadoAlientoNegro >= 5 && EstadoAlientoNegro < 11)
+    else if (cercaniaAliento >= 4  && cercaniaAliento < 6)
     {
       TierAlientoNegro = 2;
 
-    //  handleSliderCalavera.color = new Color(0.15f, 0.12f, 0.12f);
+      //  handleSliderCalavera.color = new Color(0.15f, 0.12f, 0.12f);
     }
-    else if (EstadoAlientoNegro > 10 && EstadoAlientoNegro < 16)
+    else if (cercaniaAliento >= 7 && cercaniaAliento < 9)
     {
       TierAlientoNegro = 3;
 
-    //  handleSliderCalavera.color = new Color(0.18f, 0.3f, 0.3f);
+      //  handleSliderCalavera.color = new Color(0.18f, 0.3f, 0.3f);
     }
-    else if (EstadoAlientoNegro > 15)
+    else if (cercaniaAliento >= 10)
     {
       TierAlientoNegro = 4;
 
-    //  handleSliderCalavera.color = new Color(0.75f, 0.2f, 0.6f);
+      //  handleSliderCalavera.color = new Color(0.75f, 0.2f, 0.6f);
 
     }
-
 
   }
   #endregion

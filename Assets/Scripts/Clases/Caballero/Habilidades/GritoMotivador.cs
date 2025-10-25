@@ -279,7 +279,7 @@ public class GritoMotivador : Habilidad
        buff.cantDanioPorcentaje += 10;
        if( NIVEL > 1)
        {
-        buff.cantDanioPorcentaje = +5;
+        buff.cantDanioPorcentaje += 5;
        }
        buff.AplicarBuff(objetivo);
        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff

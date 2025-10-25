@@ -200,7 +200,7 @@ IEnumerator FadeTo(float target, float time)
 
 
 
-    CrearEncuentroEnemigos(IDEncuentro);
+    CrearEncuentroEnemigos(50/*IDEncuentro*/);
 
     // Actualizar listas de unidades tras colocar aliados y enemigos
     if (BattleManager.Instance != null)
@@ -772,9 +772,10 @@ IEnumerator FadeTo(float target, float time)
   {
 
     BattleManager.Instance.RondaNro = 1;
+
+    #region Encuentros Bosque Ardiendo ID Entre 1 y 50
     ///FASE 1 - BOSQUE ARDIENDO
     ///
-    #region
     if (IDEncuentro == 1) // FASE 1 - BOSQUE ARDIENDO
     {
       GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
@@ -958,7 +959,7 @@ IEnumerator FadeTo(float target, float time)
     }
     if (IDEncuentro == 12) // FASE 1 - BOSQUE ARDIENDO - Jefe - PENDIENTE
     {
-      //PRENDIENTE
+      //PENDIENTE
     }
     if (IDEncuentro == 13) // FASE 1 - BOSQUE ARDIENDO - Ataque caravana 1
     {
@@ -1043,6 +1044,31 @@ IEnumerator FadeTo(float target, float time)
     }
     #endregion
 
+    #region Encuentros Paso Viento Helado ID Entre 50 y 100
+     ///FASE 1 - Paso Viento Helado
+      if (IDEncuentro == 50) // FASE 1 - Paso Vientohelado
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+
+
+    }
+    #endregion
+
+
+
+
+
+
+
+
+    
     #region //Batallas Subterraneas ID Entre 400 y 450
     if (IDEncuentro == 400) // FASE 1 - Batalla Subterranea  
     {

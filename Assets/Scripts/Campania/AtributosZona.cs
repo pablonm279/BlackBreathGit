@@ -225,15 +225,15 @@ public class AtributosZona : MonoBehaviour
       // Async sin congelar: replicamos las llamadas Generar pero con yield
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado1,
-         cantidad: 1350,
+         cantidad: 2350,
          distCaminoOverride: 0.08f,
          distNodoOverride: 0.1f,
-         rOverride: 0.85f,
+         rOverride: 0.87f,
          kOverride: 20);
 
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado2,
-         cantidad: 145,
+         cantidad: 345,
          distCaminoOverride: 0.12f,
          distNodoOverride: 0.12f,
          rOverride: 5.8f,
@@ -241,7 +241,7 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ManchaCeniza1,
-         cantidad: 65,
+         cantidad: 85,
          distCaminoOverride: 0.10f,
          distNodoOverride: 0.10f,
          rOverride: 10.8f,
@@ -249,7 +249,7 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_Piedra1,
-         cantidad: 40,
+         cantidad: 70,
          distCaminoOverride: 0.6f,
          distNodoOverride: 0.8f,
          rOverride: 7.0f,
@@ -257,7 +257,7 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_Piedra2,
-         cantidad: 5,
+         cantidad: 10,
          distCaminoOverride: 2.0f,
          distNodoOverride: 2.2f,
          rOverride: 11.0f,
@@ -265,7 +265,7 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_Maleza1,
-         cantidad: 120,
+         cantidad: 200,
          distCaminoOverride: 0.2f,
          distNodoOverride: 0.8f,
          rOverride: 4.0f,
@@ -273,7 +273,7 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_Llama,
-         cantidad: 45,
+         cantidad: 25,
          distCaminoOverride: 0.6f,
          distNodoOverride: 0.9f,
          rOverride: 8.0f,
@@ -293,7 +293,7 @@ public class AtributosZona : MonoBehaviour
       Nombre = "Paso Viento Helado";
       FASE = iFASE;
       ID = 2;
-      modRecoleccionMateriales = +10;
+      modRecoleccionMateriales = 10;
       modRecoleccionSuministros = -15;
       modChanceEmboscada = 0;
 
@@ -305,6 +305,10 @@ public class AtributosZona : MonoBehaviour
        Clima_chances_Nieve = 70;
        Clima_chances_Niebla = 93;
        Clima_chances_EspecialZona1 = 100;
+
+      
+
+       
        
 
 
@@ -394,7 +398,7 @@ public class AtributosZona : MonoBehaviour
       // Async sin congelar: replicamos las llamadas Generar pero con yield
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado1,
-         cantidad: 14,
+         cantidad: 22,
          distCaminoOverride: 0.11f,
          distNodoOverride: 0.15f,
          rOverride: 6.25f,
@@ -402,7 +406,7 @@ public class AtributosZona : MonoBehaviour
          
        yield return scMapDecorator.GenerarAsyncCR(
         PasoVientoHelado_Arbol1,
-        cantidad: 25,
+        cantidad: 35,
         distCaminoOverride: 0.11f,
         distNodoOverride: 0.15f,
         rOverride: 5.95f,
@@ -410,7 +414,7 @@ public class AtributosZona : MonoBehaviour
       
        yield return scMapDecorator.GenerarAsyncCR(
         PasoVientoHelado_Arbol2,
-        cantidad: 40,
+        cantidad: 55,
         distCaminoOverride: 0.11f,
         distNodoOverride: 0.15f,
         rOverride: 5.85f,
@@ -419,14 +423,14 @@ public class AtributosZona : MonoBehaviour
    
       yield return scMapDecorator.GenerarAsyncCR(
         PasoVientoHelado_Manchahielo,
-        cantidad: 4,
+        cantidad: 7,
         distCaminoOverride: 1.1f,
         distNodoOverride: 0.83f,
         rOverride: 13.85f,
         kOverride: 20);
       yield return scMapDecorator.GenerarAsyncCR(
         PasoVientoHelado_Mancha2,
-        cantidad: 5,
+        cantidad: 7,
         distCaminoOverride: 0.11f,
         distNodoOverride: 0.15f,
         rOverride: 7.85f,
@@ -434,15 +438,15 @@ public class AtributosZona : MonoBehaviour
         
       yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Maleza1,
-         cantidad: 650,
+         cantidad: 1150,
          distCaminoOverride: 0.1f,
          distNodoOverride: 0.8f,
-         rOverride: 1.2f,
+         rOverride: 1.1f,
          kOverride: 30);
    
      yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ManchaCeniza1,
-         cantidad: 45,
+         cantidad: 60,
          distCaminoOverride: 0.10f,
          distNodoOverride: 0.10f,
          rOverride: 10.8f,
@@ -450,7 +454,7 @@ public class AtributosZona : MonoBehaviour
       
        yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Piedra1,
-         cantidad: 60,
+         cantidad: 80,
          distCaminoOverride: 0.10f,
          distNodoOverride: 0.10f,
          rOverride: 8.8f,
@@ -458,7 +462,7 @@ public class AtributosZona : MonoBehaviour
       
        yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Piedra2,
-         cantidad: 45,
+         cantidad: 65,
          distCaminoOverride: 0.10f,
          distNodoOverride: 0.10f,
          rOverride: 10.8f,
@@ -466,7 +470,7 @@ public class AtributosZona : MonoBehaviour
          
       yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Piedra3,
-         cantidad: 6,
+         cantidad: 11,
          distCaminoOverride: 1.60f,
          distNodoOverride: 1.80f,
          rOverride: 16.8f,
@@ -474,7 +478,7 @@ public class AtributosZona : MonoBehaviour
       
         yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_grieta1,
-         cantidad: 2,
+         cantidad: 4,
          distCaminoOverride: 1.4f,
          distNodoOverride: 1.40f,
          rOverride: 15.8f,
@@ -482,7 +486,7 @@ public class AtributosZona : MonoBehaviour
 
         yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_aldeatribal,
-         cantidad: 7,
+         cantidad: 12,
          distCaminoOverride: 0.85f,
          distNodoOverride: 1.30f,
          rOverride: 7.8f,
@@ -490,7 +494,7 @@ public class AtributosZona : MonoBehaviour
       
        yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_efigie,
-         cantidad: 10,
+         cantidad: 15,
          distCaminoOverride: 0.3f,
          distNodoOverride: 0.50f,
          rOverride: 7.8f,
@@ -498,7 +502,7 @@ public class AtributosZona : MonoBehaviour
       
        yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_simbolopagano,
-         cantidad: 6,
+         cantidad: 4,
          distCaminoOverride: 0.8f,
          distNodoOverride: 0.50f,
          rOverride: 10.8f,

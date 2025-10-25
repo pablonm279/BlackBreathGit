@@ -630,7 +630,7 @@ public class Partir : Habilidad
                 }
                 else
                 {
-                    uni.GenerarTextoFlotante("Resiste Aterrorizado", Color.cyan);
+                   // uni.GenerarTextoFlotante("Resiste Aterrorizado", Color.cyan);
                 }
 
 

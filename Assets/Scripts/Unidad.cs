@@ -1185,8 +1185,8 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       ActualizarBarraVidaPropia();
       
 
-      //Chequear si queda Herido (25% menos de vida, recibe herida)
-      if (HP_actual < (mod_maxHP * 0.25))
+      //Chequear si queda Herido (30% menos de vida, recibe herida)
+      if (HP_actual < (mod_maxHP * 0.3))
       {
         RecibirHerida();
 
@@ -1415,7 +1415,7 @@ public virtual void ReducirArmaduraPorGolpe(float danioFinal)
 {
   if(danioFinal > 0){estado_armaduraModificador++;}
 }
- void RecibirHerida()
+ public virtual void  RecibirHerida()
 {
    bool yaEstaHerido = false;
    Buff[] buffs = gameObject.GetComponents<Buff>();
@@ -1433,9 +1433,9 @@ public virtual void ReducirArmaduraPorGolpe(float danioFinal)
        Herida.buffNombre = "Herida";
        Herida.boolfDebufftBuff = false;
        Herida.DuracionBuffRondas = -1;
-       Herida.cantAtFue = -1;
-       Herida.cantAtAgi = -1;
-       Herida.cantAtPod = -1;
+       Herida.cantAtFue -= 1;
+       Herida.cantAtAgi -= 1;
+       Herida.cantAtPod -= 1;
        Herida.cantAPMax -= 1;
        Herida.AplicarBuff(this);
        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff

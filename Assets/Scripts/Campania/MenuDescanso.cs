@@ -234,6 +234,7 @@ public class MenuDescanso : MonoBehaviour
     }
 
     chancesAtaqueACaravana = Mathf.Clamp(chancesAtaqueACaravana, 0, 100);
+    
     chancesExploracion = Mathf.Clamp(chancesExploracion, 0, 100);
 
     textEmboscadaChances.text = TRADU.i.Traducir("Las probabilidades de sufrir un ataque a la Caravana ") + chancesAtaqueACaravana + "%";

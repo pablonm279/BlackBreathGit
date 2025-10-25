@@ -92,7 +92,7 @@ public class TooltipBatalla : MonoBehaviour
             case 25:
                 return "Pilar de Luz: Obstáculo que daña a enemigos al ser atacado.";
             case 26:
-                return "";
+                return "Trampa Improvisada: Daña y marca a unidades que la pisen.";
             case 27:
                 return "";
             case 28:

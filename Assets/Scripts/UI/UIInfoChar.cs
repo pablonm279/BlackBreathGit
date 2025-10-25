@@ -387,7 +387,22 @@ public class UIInfoChar : MonoBehaviour
    {
       desc = TRADU.i.Traducir("<i>No se logra discernir facilmente que animal fue originalmente, pero ahora es una criatura corrompida y muy nociva.</i>\n\n<color=#A020F0>-Corrupto.</color>\n<color=#199F10>-Largo alcance.\n-Crea Masa Contaminada.</color>\n<color=#EE0000>-Movimiento limitado.</color>");
    }
-
+   if (unidadMostrada.uNombre == "Caníbal Kale'Tav")
+   {
+      desc = TRADU.i.Traducir("<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Empieza combate con Evasión.\n-Se potencia si el enemigo está lastimado.</color>\n<color=#EE0000>-Una vez que perdió la evasión, es fácil de eliminar.</color>");
+   }
+   if (unidadMostrada.uNombre == "Lancero Kale'Tav")
+   {
+      desc = TRADU.i.Traducir("<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Ataque de lanza arrojadiza peligroso.</color>\n<color=#EE0000>-Poca Precisión.</color>");
+   }
+   if (unidadMostrada.uNombre == "Guerrero Kale'Tav")
+   {
+      desc = TRADU.i.Traducir("<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Recibir Herida lo potencia.\n-Al matar a un enemigo se potencia.</color>\n<color=#EE0000>-Posee sólo un tipo de ataque.</color>");
+   }
+    if (unidadMostrada.uNombre == "Bruja Kale'Tav")
+   {
+      desc = TRADU.i.Traducir("<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Variedad de buffs y debuffs.</color>\n<color=#EE0000>-Poco resistente.</color>");
+   }
    return desc;
   }
   

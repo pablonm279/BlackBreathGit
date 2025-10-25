@@ -92,7 +92,7 @@ RectTransform:
   m_GameObject: {fileID: 2819805930132574834}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.1359749, y: 1.2, z: 1}
+  m_LocalScale: {x: 2.0715406, y: 1.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2044444096100727033}
@@ -132,7 +132,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 192a257e8532b42408754e15e0c1d5df, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0c6aab7aa04982f4f91243417516f04e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -536,10 +536,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetImage: {fileID: 5826135254095805491}
-  poseIdle: {fileID: 21300000, guid: 09f914078dda3f540921832901b89e85, type: 3}
-  poseMover: {fileID: 21300000, guid: 8913b322d94d8b04ba1844e229a027d0, type: 3}
-  poseAtacar: {fileID: 21300000, guid: 000234941f6bde24e8df1426ef331dbe, type: 3}
-  poseHabilidad: {fileID: 21300000, guid: abdda54a8bc616c4cb38c1f65f3ff599, type: 3}
+  poseIdle: {fileID: 21300000, guid: 0c6aab7aa04982f4f91243417516f04e, type: 3}
+  poseMover: {fileID: 21300000, guid: 05e651634ff88d248b6cd6d33c8c1801, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 812f13ee4a3f73a46b026372b2600e46, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: 0c51eb31b3fda974796cb8eb557c1d16, type: 3}
   duracionPoseAtacar: 1.45
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1.1

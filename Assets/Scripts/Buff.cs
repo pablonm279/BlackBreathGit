@@ -176,7 +176,7 @@ public class Buff : MonoBehaviour
         if (cantBarrera != 0) { unidad.barreraDeDanio += cantBarrera; }
 
         Color colorTexto = boolfDebufftBuff ? Color.cyan : Color.magenta;
-        bool suprimirPorInicioCombate = (BattleManager.Instance != null && BattleManager.Instance.silenciarLogCombate);
+        bool suprimirPorInicioCombate = BattleManager.Instance != null && BattleManager.Instance.silenciarLogCombate;
         if (!suprimeTextoFlotante && !suprimirPorInicioCombate)
         {
             if (DuracionBuffRondas > 0)
