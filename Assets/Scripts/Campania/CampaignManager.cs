@@ -98,8 +98,8 @@ public class CampaignManager : MonoBehaviour
     CambiarOroActual(400);
     CambiarValorAlientoNegro(1);
 
-    //scAtributosZona.ConstruirZonaBosqueAngustiante(1);
-    scAtributosZona.ConstruirZonaPasoVientoHelado(1);
+    scAtributosZona.ConstruirZonaBosqueAngustiante(1);
+    //scAtributosZona.ConstruirZonaPasoVientoHelado(1);
 
 
     scMenuSequito.AgregarSequito(1);
@@ -1842,7 +1842,7 @@ public class CampaignManager : MonoBehaviour
 
 
     SortearRasgos(pers1); //Método vacío!!
-pers1.AddComponent<Vigilancia>(); pers1.GetComponent<Vigilancia>().NIVEL = 1;
+
 
     //Habilidades Intrinsecas
     pers1.AddComponent<REPRESENTACIONPasoCauteloso>();

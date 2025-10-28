@@ -128,7 +128,7 @@ public class TRADU : MonoBehaviour
             case "Claro":
                 r = "Glade";
                 break;
-            case "Asentamiento":
+            case "Asentamiento.":
                 r = "Settlement";
                 break;
             case "Recursos":
@@ -2760,28 +2760,126 @@ public class TRADU : MonoBehaviour
             case "Furioso por Herida":
                 r = "Furious from Wound";
                 break;
-             case "<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Recibir Herida lo potencia.\n-Al matar a un enemigo se potencia.</color>\n<color=#EE0000>-Posee sólo un tipo de ataque.</color>":
+            case "<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Recibir Herida lo potencia.\n-Al matar a un enemigo se potencia.</color>\n<color=#EE0000>-Posee sólo un tipo de ataque.</color>":
                 r = "<i>Tribe originating from the Icewind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Receiving Wound empowers it.\n-Killing an enemy empowers it.</color>\n<color=#EE0000>-Only one type of attack.</color>";
                 break;
-             case "Regocijo Asesino":
+            case "Regocijo Asesino":
                 r = "Killer's Rage";
                 break;
-             case "Hachazo Tribal":
-                    r = "Tribal Axe Strike";
+            case "Hachazo Tribal":
+                r = "Tribal Axe Strike";
                 break;
-             case "Bruja Kale'Tav":
-                    r = "Kale'Tav Witch";
+            case "Bruja Kale'Tav":
+                r = "Kale'Tav Witch";
                 break;
-             case "Golpe Bastón":
-                    r = "Staff Strike";
+            case "Golpe Bastón":
+                r = "Staff Strike";
+                break;
+            case "Ataque de Cuervo":
+                r = "Raven Attack";
+                break;
+            case "<i><i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Potencia Aliados.\n-Su cuervo la defiende.</color>\n<color=#EE0000>-Poco resistente.</color>":
+                r = "<i>Tribe originating from the Icewind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Empowers Allies.\n-Its raven defends her.</color>\n<color=#EE0000>-Weak resistance.</color>";
+                break;
+            case "Frenesí del Asesinato":
+                r = "Murderous Frenzy";
+                break;
+            case "Derribado":
+                r = "Knocked Down";
+                break;
+            case "<i>Una criatura feroz nativa de la tundra. Es uno de los depredadores más temidos de la región y fuente de varias leyendas entre los Kale'Tav</i>\n\n<color=#199F10>-Regeneración leve.\n-Ataque de embestida en fila.</color>\n<color=#EE0000>-Suelen aparecer sólos o con una pareja como mucho.</color>":
+                r = "<i>A fierce creature native to the tundra. It is one of the most feared predators in the region and the source of several legends among the Kale'Tav</i>\n\n<color=#199F10>-Minor regeneration.\n-Row charge attack.</color>\n<color=#EE0000>-They usually appear alone or with a partner at most.</color>";
+                break;
+            case "Mordisco Faagdan":
+                r = "Faagdan Bite";
+                break;
+            case "Armadura masticada":
+                r = "Chewed Armor";
+                break;
+            case "Embestida Faagdan":
+                r = "Faagdan Charge";
+                break;
+            case "Garra Faagdan":
+                r = "Faagdan Claw";
+                break;
+            case "Pájaro Rompe-Hielos":
+                r = "Icebreaker Bird";
+                break;
+            case "Volador: Esta unidad no puede ser alcanzada por ataques melee, puede perder el vuelo al ser dañado o fallar un ataque.":
+                r = "Flying: This unit cannot be reached by melee attacks, it may lose flight when damaged or missing an attack.";
+                break;
+            case "Picotazo Rompehielo":
+                r = "Icebreaker Peck";
+                break;
+            case "Defensa abrumada":
+                r = "Defense Overwhelmed";
+                break;
+            case "Vuelo Alto":
+                r = "High Flight";
+                break;
+            case "<i>Este pájaro es muy territorial y ataca en grupo, su pico está hecho para romper el hielo grueso y poder pescar peces de gran tamaño, por lo tanto es muy peligroso.</i>\n\n<color=#199F10>-Vuela.\n-Su ataque baja defensa</color>\n<color=#EE0000>-Una vez que pierde su vuelo, es vulnerable.</color>":
+                r = "<i>This bird is very territorial and attacks in groups, its beak is made to break thick ice and fish, therefore it is very dangerous.</i>\n\n<color=#199F10>-Flies.\n-Its attack lowers defense</color>\n<color=#EE0000>-Once it loses its flight, it is vulnerable.</color>";
+                break;
+            case "Efigie Animada":
+                r = "Animated Effigy";
+                break;
+            case "Reacción: Al morir condena al enemigo que dió el último golpe.":
+                r = "REACTION: Upon death, it condemns the enemy that dealt the final blow.";
+                break;
+            case " es condenado por 3 turnos.":
+                r = " is condemned for 3 turns.";
+                break;
+            case "Condena: En X cantidad de turnos recibirá daño verdadero igual al 15% de su vida máxima.":
+                r = "Condemned: In X turns, it will receive true damage equal to 15% of its maximum health.";
+                break;
+            case " es dañado por la Condena.":
+                r = " is damaged by Condemnation.";
+                break;
+            case "Corte Hoz":
+                r = "Sickle Cut";
+                break;
+            case "<i>Armadas por la magia oscura de los Kale'Tav, estas efigies están por todo su territorio como primer linea de defensa en contra de quienes se atrevan a cruzar el Paso.</i>\n\n<color=#199F10>-Al ser destruída condena a su atacante.\n-Provoca sangrado.</color>\n<color=#EE0000>-Débiles.</color>":
+                r = "<i>Raised with the dark magic of the Kale'Tav, these effigies are spread throughout their territory as the first line of defense against those who dare to cross the Pass.</i>\n\n<color=#199F10>-Upon destruction, it condemns its attacker.\n-Causes bleeding.</color>\n<color=#EE0000>-Weak.</color>";
+                break;
+            case "Levantar Martillo":
+                r = "Raise Hammer";
+                break;
+            case "Martillo Listo":
+                r = "Hammer Ready";
+                break;
+            case "Gulek Gul pierde el buff 'Martillo Listo' tras recibir daño y no podrá utilizarlo.":
+                r = "Gulek Gul loses the 'Hammer Ready' buff after taking damage and will not be able to use it.";
+                break;
+            case "Martillo Pequeño":
+                r = "Small Hammer";
+                break;
+            case "Martillo Grande":
+                r = "Great Hammer";
+                break;
+            case "<i>Gulek-Gul es un Ettin muy venerado por los Kale'Tav. No habita con ellos, pero cuando se encuentran intrusos en la zona, baja de su colina decidido a proteger su territorio.</i>\n\n<color=#199F10>-Fuerza descomunal.\n-Golpea en zona.\n-Doble intento en tiradas de voluntad.</color>\n<color=#EE0000>-Necesita levantar el martillo grande antes de usarlo.\n-Si recibe daño o falla tirada de voluntad, deja caer el martillo.</color>":
+                r = "<i>Gulek-Gul is a Ettin highly revered by the Kale'Tav. He does not dwell with them, but when intruders are found in the area, he descends from his hill determined to protect his territory.</i>\n\n<color=#199F10>-Immense strength.\n-Hits in area.\n-Double attempt on will rolls.</color>\n<color=#EE0000>-Needs to lift the great hammer before using it.\n-If he takes damage or fails a will roll, he drops the hammer.</color>";
+                break;
+            case "Discutir Tácticas":
+                r = "Discuss Tactics";
+                break;
+            case "Enfoque Defensivo":
+                r = "Defensive Focus";
+                break;
+            case "Enfoque Agresivo":
+                r = "Aggressive Focus";
+                break;
+              case "Descansando":
+                r = "Resting";
+                break;
+            case "Gulek y Gul discuten tácticas, y resuelven adoptar un enfoque defensivo.":
+                r = "Gulek and Gul discuss tactics and decide to adopt a defensive approach.";
+                break;
+            case "Gulek y Gul discuten tácticas, y resuelven adoptar un enfoque ofensivo.":
+                r = "Gulek and Gul discuss tactics and decide to adopt an offensive approach.";
+                break;
+            case "Gulek y Gul discuten tácticas, y resuelven descansar para recuperar fuerzas.":
+                      r = "Gulek and Gul discuss tactics and decide to rest to regain strength.";
                       break;
-               case "Ataque de Cuervo":
-                    r = "Raven Attack";
-                break;
-               case "<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Variedad de buffs y debuffs.</color>\n<color=#EE0000>-Poco resistente.</color>":
-                      r = "<i>Tribe originating from the Icewind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Variety of buffs and debuffs.</color>\n<color=#EE0000>-Weak resistance.</color>";
-                      break;
-               
                 /* case "":
                     r = "";
                     break;*/
@@ -2800,144 +2898,54 @@ public class TRADU : MonoBehaviour
                 /*  case "":
                       r = "";
                       break;*/
-                /* case "":
-                    r = "";
-                    break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /* case "":
-                    r = "";
-                    break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /* case "":
-                    r = "";
-                    break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /* case "":
-                    r = "";
-                    break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /* case "":
-                    r = "";
-                    break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /* case "":
-                    r = "";
-                    break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /* case "":
-                    r = "";
-                    break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /* case "":
-                    r = "";
-                    break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /* case "":
-                    r = "";
-                    break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-                /*  case "":
-                      r = "";
-                      break;*/
-            /* case "":
-                r = "";
-                break;*/
-          /*  case "":
-                r = "";
-                break;*/
-          /*  case "":
-                r = "";
-                break;*/
-           
-          
-          
-            
-           
-        
 
-           
-        
-           
-           
-            
-            
-          
-            
-          
-          
-            
-            
-            
-           
-        
-           
-          
-           
-                
-            
-           
-           
-        
-           
-           
-           
-        
-           
-          
-           
-        
-         
-          
-          
-          
-          
-          
-          
-          
-          
-           
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

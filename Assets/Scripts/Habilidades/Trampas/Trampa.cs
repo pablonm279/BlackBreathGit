@@ -48,6 +48,7 @@ public abstract class Trampa : MonoBehaviour
                 {
                     if (!gameObject.GetComponent<Casilla>().Presente.GetComponent<Unidad>().inmunidad_Trampas)
                     {
+
                         //Si la casilla tiene una unidad, se aplica la trampa
                         AplicarEfectosTrampa(gameObject.GetComponent<Casilla>().Presente.GetComponent<Unidad>());
                     }

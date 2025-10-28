@@ -88,10 +88,11 @@ public class Buff : MonoBehaviour
   public bool esBuffVisibleUI = true;   //Si el buff se muestra en la UI de buffs del jugador, por defecto true.
 
   public bool esRemovible = true; //Si el buff se puede remover, o es permanente. Por defecto es true.
+  public bool esStackeable = true; //Si el buff se puede tener varias veces. Por defecto es true.
     public void AplicarBuff(Unidad unidad, Unidad Origen = null, bool removible = true)
     {
-        esRemovible = removible; //Si se puede remover con habilidades etc.
-
+        esRemovible = removible; // Si se puede remover con habilidades, etc.
+        if (unidad.TieneBuffNombre(buffNombre) && !esStackeable) { return; } // Si no es stackeable y ya lo tiene, no hace nada.
 
         if (percHPMax != 0) { unidad.mod_maxHP *= 1 + percHPMax / 100; }
         if (cantHPMax != 0) { unidad.mod_maxHP += cantHPMax; }
@@ -201,8 +202,8 @@ public class Buff : MonoBehaviour
         }
 
         BattleManager.Instance.EscribirLog(sBuff);
-    
-    // Repite el mismo patrón para otros atributos si es necesario...
+
+        // Repite el mismo patrón para otros atributos si es necesario...
     }
 
 

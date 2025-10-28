@@ -232,13 +232,23 @@ public class UIInfoChar : MonoBehaviour
         GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(27,1);
      }
+     if(scUnidadMostrada.estado_Volando)
+     { 
+        GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
+        GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(28,1);
+     }
+      if(scUnidadMostrada.estado_Condenado > 0)
+     { 
+        GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
+        GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(29,scUnidadMostrada.estado_Condenado);
+     }
          //AGREGAR LOS NUEVOS TMB EN UNIDADCANVAS PARA QUE APAREZCAN EN LA BARRA DE VIDA----!! 
-           //Y en stacks poner -1 para que no muestre numero en la barra de vida.
-           //Y que el parametro desdeBarraVida sea true.
-     
+         //Y en stacks poner -1 para que no muestre numero en la barra de vida.
+         //Y que el parametro desdeBarraVida sea true.
 
 
-     //MostrarBuffs/Debuffs
+
+         //MostrarBuffs/Debuffs
          foreach (Buff buff in scUnidadMostrada.gameObject.GetComponents<Buff>())
          {
             if (buff.DuracionBuffRondas != 0 && buff.esBuffVisibleUI)
@@ -401,7 +411,23 @@ public class UIInfoChar : MonoBehaviour
    }
     if (unidadMostrada.uNombre == "Bruja Kale'Tav")
    {
-      desc = TRADU.i.Traducir("<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Variedad de buffs y debuffs.</color>\n<color=#EE0000>-Poco resistente.</color>");
+      desc = TRADU.i.Traducir("<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Potencia Aliados.\n-Su cuervo la defiende.</color>\n<color=#EE0000>-Poco resistente.</color>");
+   }
+   if (unidadMostrada.uNombre == "Fagdaan")
+   {
+      desc = TRADU.i.Traducir("<i>Una criatura feroz nativa de la tundra. Es uno de los depredadores más temidos de la región y fuente de varias leyendas entre los Kale'Tav</i>\n\n<color=#199F10>-Regeneración leve.\n-Ataque de embestida en fila.</color>\n<color=#EE0000>-Suelen aparecer sólos o con una pareja como mucho.</color>");
+   }
+   if (unidadMostrada.uNombre == "Pájaro Rompe-Hielos")
+   {
+      desc = TRADU.i.Traducir("<i>Este pájaro es muy territorial y ataca en grupo, su pico está hecho para romper el hielo grueso y poder pescar peces de gran tamaño, por lo tanto es muy peligroso.</i>\n\n<color=#199F10>-Vuela.\n-Su ataque baja defensa</color>\n<color=#EE0000>-Una vez que pierde su vuelo, es vulnerable.</color>");
+   }
+   if (unidadMostrada.uNombre == "Efigie Animada")
+   {
+      desc = TRADU.i.Traducir("<i>Armadas por la magia oscura de los Kale'Tav, estas efigies están por todo su territorio como primer linea de defensa en contra de quienes se atrevan a cruzar el Paso.</i>\n\n<color=#199F10>-Al ser destruída condena a su atacante.\n-Provoca sangrado.</color>\n<color=#EE0000>-Débiles.</color>");
+   }
+   if (unidadMostrada.uNombre == "Gulek-Gul")
+   {
+      desc = TRADU.i.Traducir("<i>Gulek-Gul es un Ettin muy venerado por los Kale'Tav. No habita con ellos, pero cuando se encuentran intrusos en la zona, baja de su colina decidido a proteger su territorio.</i>\n\n<color=#199F10>-Fuerza descomunal.\n-Golpea en zona.\n-Doble intento en tiradas de voluntad.</color>\n<color=#EE0000>-Necesita levantar el martillo grande antes de usarlo.\n-Si recibe daño o falla tirada de voluntad, deja caer el martillo.</color>");
    }
    return desc;
   }

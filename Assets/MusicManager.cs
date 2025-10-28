@@ -298,7 +298,8 @@ public class MusicManager : MonoBehaviour
             while (t < restante)
             {
                 if (!pausado) t += Time.unscaledDeltaTime;
-                if (usarAliento != DebeUsarMusicaAlientoNegro())
+                bool deseaAlientoNegro = modoActual == ModoMusica.Campania && DebeUsarMusicaAlientoNegro();
+                if (deseaAlientoNegro != usarAliento)
                 {
                     forzarCambio = true;
                     break;

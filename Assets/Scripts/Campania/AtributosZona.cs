@@ -313,20 +313,20 @@ public class AtributosZona : MonoBehaviour
 
 
 
-      FASE1IDEncuentroNormal1 = 1;
-      FASE1IDEncuentroNormal2 = 2;
-      FASE1IDEncuentroNormal3 = 3;
-      FASE1IDEncuentroNormal4 = 4;
-      FASE1IDEncuentroNormal5 = 5;
-      FASE1IDEncuentroNormal6 = 6;
-      FASE1IDEncuentroNormal7 = 7;
-      FASE1IDEncuentroElite1 = 8;
-      FASE1IDEncuentroElite2 = 9;
-      FASE1IDEncuentroElite3 = 10;
-      FASE1IDEncuentroJefe1 = 11;
-      FASE1IDEncuentroJefe2 = 11; //!! cambiar cuando este el segundo jefe de fase 1
-      FASE1IDAtaqueCaravana1 = 13;
-      FASE1IDAtaqueCaravana2 = 14;
+      FASE1IDEncuentroNormal1 = 50;
+      FASE1IDEncuentroNormal2 = 51;
+      FASE1IDEncuentroNormal3 = 52;
+      FASE1IDEncuentroNormal4 = 53;
+      FASE1IDEncuentroNormal5 = 54;
+      FASE1IDEncuentroNormal6 = 55;
+      FASE1IDEncuentroNormal7 = 56;
+      FASE1IDEncuentroElite1 = 57;
+      FASE1IDEncuentroElite2 = 58;
+      FASE1IDEncuentroElite3 = 59;
+      FASE1IDEncuentroJefe1 = 60;
+      FASE1IDEncuentroJefe2 = 60; //!! cambiar cuando este el segundo jefe de fase 1
+      FASE1IDAtaqueCaravana1 = 62;
+      FASE1IDAtaqueCaravana2 = 63;
 
       FASE2IDEncuentroNormal1 = 000;
       FASE2IDEncuentroNormal2 = 000;

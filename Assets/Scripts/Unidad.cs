@@ -179,7 +179,11 @@ public class Unidad : MonoBehaviour
  public int estado_regeneraarmadura;
  public int estado_APModificador;
  public int estado_ResistenciasReducidas;
+ public int estado_Condenado; //En (stacks) Turnos, el personaje sufrirá daño verdadero = al 15% de su HP máximo al comenzar su turno.
  public bool estado_Corrupto;
+ public bool unidadVoladora;
+ public bool estado_Volando;
+
 
  [Header("Inmunidades Extras")]
  public bool inmunidad_Ceguera = false;
@@ -210,6 +214,12 @@ public class Unidad : MonoBehaviour
   //Animaciones
   private Animator animator;
   private UnidadPoseController poseController;
+  private Vector2 uImagePosVuelo;
+  private Vector2 uImagePosSuelo;
+  private Coroutine animacionVueloCoroutine;
+  private bool uImagePosInicializada;
+  [SerializeField] private float offsetVueloY = 13f;
+  [SerializeField] private float duracionAnimacionVuelo = 0.4f;
   
 
   UnidadCanvas scUnidadCanvas;
@@ -230,6 +240,7 @@ public class Unidad : MonoBehaviour
 
     animator = GetComponent<Animator>();
     poseController = GetComponent<UnidadPoseController>();
+    InicializarVueloVisual();
 
     ValentiaP_actual = 0;
    
@@ -242,6 +253,16 @@ public class Unidad : MonoBehaviour
     puntoEntrante = child4.GetChild(1);
   }
 }
+
+  void InicializarVueloVisual()
+  {
+    if (uImagePosInicializada || uImage == null) { return; }
+
+    RectTransform rectTransform = uImage.rectTransform;
+    uImagePosVuelo = rectTransform.anchoredPosition;
+    uImagePosSuelo = uImagePosVuelo + Vector2.down * offsetVueloY;
+    uImagePosInicializada = true;
+  }
 
   public void ReproducirAnimacionAtaque()
   {
@@ -293,8 +314,71 @@ private void Update()
     transform.GetChild(1).gameObject.SetActive(true);
  }else{  transform.GetChild(1).gameObject.SetActive(false);}
 
-
+    if (animator != null && unidadVoladora)
+    {
+      animator.enabled = estado_Volando;
+       
+      
+    }
 }
+
+  void ActualizarAnimacionVuelo(Vector2 destino, bool instantaneo)
+  {
+    if (!uImagePosInicializada || uImage == null) { return; }
+
+    if (animacionVueloCoroutine != null)
+    {
+      StopCoroutine(animacionVueloCoroutine);
+    }
+
+    RectTransform rectTransform = uImage.rectTransform;
+    if (instantaneo || duracionAnimacionVuelo <= 0f)
+    {
+      rectTransform.anchoredPosition = destino;
+      animacionVueloCoroutine = null;
+      return;
+    }
+
+    animacionVueloCoroutine = StartCoroutine(AnimarVuelo(destino));
+  }
+
+  IEnumerator AnimarVuelo(Vector2 destino)
+  {
+    if (uImage == null) { animacionVueloCoroutine = null; yield break; }
+
+    RectTransform rectTransform = uImage.rectTransform;
+    Vector2 origen = rectTransform.anchoredPosition;
+    float tiempo = 0f;
+
+    while (tiempo < duracionAnimacionVuelo)
+    {
+      tiempo += Time.deltaTime;
+      float t = Mathf.Clamp01(tiempo / duracionAnimacionVuelo);
+      rectTransform.anchoredPosition = Vector2.Lerp(origen, destino, t);
+      yield return null;
+    }
+
+    rectTransform.anchoredPosition = destino;
+    animacionVueloCoroutine = null;
+  }
+
+  public void LevantarVuelo(bool instantaneo = false)
+  {
+    if (!unidadVoladora) { return; }
+
+    estado_Volando = true;
+    InicializarVueloVisual();
+    ActualizarAnimacionVuelo(uImagePosVuelo, instantaneo);
+  }
+
+  public void BajarVuelo(bool instantaneo = false)
+  {
+    estado_Volando = false;
+    InicializarVueloVisual();
+    if (!unidadVoladora) { return; }
+
+    ActualizarAnimacionVuelo(uImagePosSuelo, instantaneo);
+  }
 
 
 public void CrearUnidad(
@@ -393,8 +477,11 @@ public bool movimientoEnCurso = false;
     void Start()
     {
        Invoke("AcomodarSortingLayer", 1.15f); //Para que el sprite quede bien en el orden de sorting layer
-
-    }
+       if(unidadVoladora)
+       {
+        LevantarVuelo(true);
+       }
+    } 
   public bool NoSonidoAlMover;
     private void FixedUpdate()
   {
@@ -607,6 +694,12 @@ void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad l
         //Veneno
         if (estado_veneno > 0 && !TieneTag("Etereo") && !TieneTag("Nomuerto")) { Estados.Efecto_Veneno(this); }
 
+        //Volando
+        if (unidadVoladora)
+        {
+          LevantarVuelo();
+        }
+
         //Invulnerable
         if (estado_invulnerable > 0)
         {
@@ -615,6 +708,12 @@ void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad l
 
         //Regenera vida
         if (estado_regeneravida > 0) { Estados.Efecto_RegeneraVida(this); }
+
+        //Condenado
+        if (estado_Condenado > 0)
+        {
+          Estados.Efecto_Condenado(this);
+        }
 
         //Regenera Armadura
         if (estado_regeneraarmadura > 0) { Estados.Efecto_RegeneraArmadura(this); }
@@ -1130,6 +1229,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       {
         ReproducirAnimacionRecibirDanio();
         ChequearCorrompidoVsCorrupto(uCausante, danioFinal);
+        BajarVuelo(); 
         estado_evasion = 0;
         if (uCausante != null)
         {
@@ -1436,7 +1536,6 @@ public virtual void ReducirArmaduraPorGolpe(float danioFinal)
        Herida.cantAtFue -= 1;
        Herida.cantAtAgi -= 1;
        Herida.cantAtPod -= 1;
-       Herida.cantAPMax -= 1;
        Herida.AplicarBuff(this);
        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
        Buff buffComponent = ComponentCopier.CopyComponent(Herida, gameObject);
@@ -1908,8 +2007,11 @@ public async void OnMouseDown()
   
   if(scBattleManager.lUnidadesPosiblesHabilidadActiva.Contains(this) && scBattleManager.SeleccionandoObjetivo)
   {
-    
-    if(scBattleManager.HabilidadActiva.esHostil && ObtenerEstaEscondido() > 0)
+    if(scBattleManager.HabilidadActiva.esMelee && estado_Volando)
+    {
+      //Si se quiere hacer una habilidad melee a una unidad voladora, no hace nada.
+    }
+    else if(scBattleManager.HabilidadActiva.esHostil && ObtenerEstaEscondido() > 0)
     {
       //Si se quiere hacer una habilidad hostil a una unidad escondida, no hace nada.
     }
@@ -1973,8 +2075,8 @@ public async void OnMouseDown()
  
 }
 
-  public bool TiradaSalvacion(float atributoDefiende, float dificultadHabilidada) //TRUE no se salva FALSE se salva (xd)
-    {
+  public virtual bool TiradaSalvacion(float atributoDefiende, float dificultadHabilidada) //TRUE no se salva FALSE se salva (xd)
+  {
       bool resultado = false;
 
       
@@ -1997,7 +2099,7 @@ public async void OnMouseDown()
     }
 
     return resultado;
-    }
+  }
 
   
   public void ForzarMoverAPrimeraFila()

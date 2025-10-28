@@ -26,7 +26,7 @@ public class IAAtaqueCuervo : IAHabilidad
       hAncho = 3;
       esMelee = false;
       hAlcance = 6;
-    hCooldownMax = 3;  
+    hCooldownMax = 20;  
       esHostil = true;
       prioridad = 7;
       costoAP = 1;
@@ -34,7 +34,7 @@ public class IAAtaqueCuervo : IAHabilidad
       
 
 
-      hActualCooldown = UnityEngine.Random.Range(0,hCooldownMax);
+      hActualCooldown = 20+UnityEngine.Random.Range(0,hCooldownMax);
 
       bonusAtaque = 0;
       XdDanio = 0;
@@ -49,48 +49,50 @@ public class IAAtaqueCuervo : IAHabilidad
 
     void Start()
     {
-      prioridad = pPrioridad;
+      prioridad = -10;
     }
 
   object Objetivo;
-   public async override Task ActivarHabilidad()
-   {
+  public async override Task ActivarHabilidad()
+  {
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
-     
-     // scEstaUnidad.ReproducirAnimacionAtaque();
 
-      Objetivo = EstablecerObjetivoPrioritario();
-           PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
+    // scEstaUnidad.ReproducirAnimacionAtaque();
+
+    Objetivo = EstablecerObjetivoPrioritario();
+    PrepararInicioAnimacion(null, Objetivo);//Despues de establecer objetivo
 
 
-    //  hActualCooldown = hCooldownMax;
+    hActualCooldown = hCooldownMax;
     EnemigoUnidadBrujaKaleTav scEstaBruja = scEstaUnidad.GetComponent<EnemigoUnidadBrujaKaleTav>();
-     scEstaBruja.MostrarImagenSinCuervoPorTresSegundos();
+    scEstaBruja.MostrarImagenSinCuervoPorTresSegundos();
 
-      await Task.Delay(1200);
-      //Esto es cuando el objetivo es uno solo,
-      AplicarEfectosHabilidad(Objetivo);
+    await Task.Delay(1200);
+    //Esto es cuando el objetivo es uno solo,
+    AplicarEfectosHabilidad(Objetivo);
+      
+    await Task.Delay(1000);
       
    }
 
   public GameObject VFXEstadoPrefab;
     public override void AplicarEfectosHabilidad(object obj)
     {
-   
-     if(obj is Unidad)
-     {
-      
-     
-     Unidad objetivo = (Unidad)obj;
+
+    if (obj is Unidad)
+    {
+
+
+      Unidad objetivo = (Unidad)obj;
 
       VFXAplicar(objetivo.gameObject);
 
       if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, 13))
       {
+        int danio = UnityEngine.Random.Range(3, 12);
+        objetivo.RecibirDanio(danio, 1, false, scEstaUnidad);
 
-        objetivo.RecibirDanio(5, 1, false, scEstaUnidad); 
-        
-       /////////////////////////////////////////////
+        /////////////////////////////////////////////
         //BUFF ---- Así se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Ciego";
@@ -103,6 +105,7 @@ public class IAAtaqueCuervo : IAHabilidad
         // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
       }
+      
      
      }
          

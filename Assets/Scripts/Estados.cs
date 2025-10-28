@@ -68,13 +68,28 @@ public class Estados : MonoBehaviour
     BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
 
   }
-   public static void  Efecto_RegeneraArmadura(Unidad unidad) //Regenera X Armadura por turno (si perdió armadura al recibir daño)
+  public static void Efecto_Condenado(Unidad unidad) //Cuando stacks llegue a 0 recibe 15% hpmax daño verdadero
   {
+    unidad.estado_Condenado--;
+    if (unidad.estado_Condenado < 1)
+    {
+      unidad.RecibirDanio(unidad.mod_maxHP * 0.15f, 10, false, null);
+      BattleManager.Instance.EscribirLog(unidad.uNombre + TRADU.i.Traducir(" es dañado por la Condena."));
+      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+
+      unidad.estado_Condenado = 0;
+    }
+
+  }
+
   
-    if(unidad.estado_armaduraModificador > 0)
+   public static void Efecto_RegeneraArmadura(Unidad unidad) //Regenera X Armadura por turno (si perdió armadura al recibir daño)
+  {
+
+    if (unidad.estado_armaduraModificador > 0)
     {
       unidad.estado_armaduraModificador--;
-      BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" regenera ") + unidad.estado_regeneraarmadura + TRADU.i.Traducir(" Armadura."));
+      BattleManager.Instance.EscribirLog(unidad.uNombre + TRADU.i.Traducir(" regenera ") + unidad.estado_regeneraarmadura + TRADU.i.Traducir(" Armadura."));
     }
 
     BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);

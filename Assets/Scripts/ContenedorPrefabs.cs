@@ -51,6 +51,7 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject FlechaPotente;
     public GameObject VFXDescargaDePoder_Fila;
     public GameObject LanzaTribal;
+    public GameObject BrujaKaleTav_DescargaMaldita;
 
 
 
@@ -105,6 +106,11 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject LanceroKaleTav;
     public GameObject GuerreroKaleTav;
     public GameObject BrujaKaleTav;
+    public GameObject Faagdan;
+    public GameObject PajaroRompehielos;
+    public GameObject EfigieAnimada;
+    public GameObject GulekGul;
+
     [Header("Sonidos Daño")]
 
     public AudioClip sonidoPerforante;

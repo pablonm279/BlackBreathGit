@@ -170,7 +170,7 @@ public class Nodo : MonoBehaviour
 
     if ((posXNodo == 0) && (posYNodo == 0)) // Nodo origen
     {
-      int random = UnityEngine.Random.Range(1, 5); // 1..4
+      int random = 1;// UnityEngine.Random.Range(1, 5); // 1..4
 
       if (random == 1)
       {
@@ -178,7 +178,7 @@ public class Nodo : MonoBehaviour
         ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 3));
         ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 5));
       }
-      else if (random == 2)
+    /*  else if (random == 2)
       {
         ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 2));
         ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 3));
@@ -195,7 +195,7 @@ public class Nodo : MonoBehaviour
         ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 1));
         ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 3));
         ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 4));
-      }
+      }*/
 
       TiradaExploracion(300, false);
     }
@@ -339,8 +339,8 @@ public class Nodo : MonoBehaviour
     // Construir malla plana del camino
     var caminoMesh = lineObject.GetComponent<CaminoMesh>();
     if (caminoMesh == null) caminoMesh = lineObject.AddComponent<CaminoMesh>();
-    caminoMesh.width   = lineWidth;
-    caminoMesh.yOffset = lineHeightOffset;                // 0.02 aprox
+  //  caminoMesh.width   = lineWidth;
+   // caminoMesh.yOffset = lineHeightOffset;                // 0.02 aprox
     caminoMesh.RebuildFromLine();
 
     // Material según tipo (normal vs atajo)
@@ -730,6 +730,7 @@ public class Nodo : MonoBehaviour
 
   void OnEnable()
   {
+    if (tipoNodo > 0)
     transform.GetChild(tipoNodo).gameObject.SetActive(true);
   }
 

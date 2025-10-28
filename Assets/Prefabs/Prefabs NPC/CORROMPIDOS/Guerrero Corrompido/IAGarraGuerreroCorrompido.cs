@@ -38,7 +38,7 @@ public class IAGarraGuerreroCorrompido : IAHabilidad
       bonusAtaque = 0;
       XdDanio = 3;
       daniodX = 6+5; //
-      tipoDanio = 2; //Cortante
+      tipoDanio = 1; //Cortante
 
 
    

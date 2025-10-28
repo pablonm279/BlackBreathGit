@@ -15,12 +15,17 @@ public class IAUnidad : MonoBehaviour
 
    public bool esRango; //Tiende a mantenerse atras
    public bool bPuedeVerEscondidos = false; //Si puede ver unidades escondidas, si no, no las ataca
-   public int costoMovimientoAP = 1; //Cuanto gasta de AP al moverse 
    
+
+   public int costoMovimientoAP = 1; //Cuanto gasta de AP al moverse 
+
    public int tendenciaMovY;
    public int tendenciaMovX;
 
    public List<IAHabilidad> HabPosibles = new List<IAHabilidad>();
+   private const int MaxIntentosPorTurno = 10;
+   private const int TimeoutHabilidadMs = 6000;
+   private const int DelayFinTurnoMs = 600;
    
    public void Awake()
    {
@@ -29,143 +34,180 @@ public class IAUnidad : MonoBehaviour
    }
    public async void RealizarTurnoIA()
    {
-   
-    int contadorIteraciones = 10; // Ajusta este valor segun sea necesario
-
-    while(scUnidad.ObtenerAPActual() > 0 && contadorIteraciones > 0)
-    {  
-      contadorIteraciones--;
-      if(contadorIteraciones == 0){break;}
-
-     if(HayHabilidadesPosibles().Count == 0) //No hay habilidades posibles
-     {
-       if(scUnidad.esInmobil)
-       {
-         scUnidad.CambiarAPActual(-(int)scUnidad.ObtenerAPActual()); //Si no tiene habilidades para hacer y es inmobil, gasta un AP
-         await Task.Delay(500);
-        // Invoke("TerminarTurnoDesdeWhile", 1.0f);
-         await Task.Delay(500); //Si no tiene habilidades para hacer y es inmobil termina turno
-         BattleManager.Instance.TerminarTurno();
-         break;
-       }
-     
-
-      // Llamar al metodo para moverse a la casilla objetivo de forma asincrona
-      LadoManager lado;
-      if (scUnidad.CasillaPosicion.lado == 1)
+      if (scUnidad == null)
       {
-        lado = BattleManager.Instance.ladoA;
-      }
-      else { lado = BattleManager.Instance.ladoB; }
-
-      int posXActual = scUnidad.CasillaPosicion.posX;
-      int posYActual = scUnidad.CasillaPosicion.posY;
-
-      int destinoX = posXActual;
-      int destinoY = posYActual;
-      bool intentoDeMovimiento = false;
-
-      int pasoX = Math.Sign(tendenciaMovX);
-      int pasoY = Math.Sign(tendenciaMovY);
-
-      if (pasoX != 0)
-      {
-        bool puedeMoverHorizontal = true;
-
-        if (pasoX > 0)
-        {
-          if (posXActual >= 3 || (esRango && posXActual != 1))
-          {
-            puedeMoverHorizontal = false;
-          }
-        }
-        else
-        {
-          if (posXActual <= 1)
-          {
-            puedeMoverHorizontal = false;
-          }
-        }
-
-        if (puedeMoverHorizontal)
-        {
-          destinoX = posXActual + pasoX;
-          tendenciaMovX -= pasoX;
-          intentoDeMovimiento = true;
-        }
-        else
-        {
-          tendenciaMovX = 0;
-        }
+         scUnidad = gameObject.GetComponent<Unidad>();
       }
 
-      if (!intentoDeMovimiento && pasoY != 0)
+      if (scUnidad == null)
       {
-        int candidatoY = posYActual + pasoY;
-        if (candidatoY >= 1 && candidatoY <= 5)
-        {
-          destinoY = candidatoY;
-          tendenciaMovY -= pasoY;
-          intentoDeMovimiento = true;
-        }
-        else
-        {
-          tendenciaMovY = 0;
-        }
+         Debug.LogWarning("[IAUnidad] No se pudo iniciar el turno porque no se encontro la componente Unidad.");
+         return;
       }
 
-      if (!intentoDeMovimiento)
+      if (BattleManager.Instance == null)
       {
-        tendenciaMovX = 0;
-        tendenciaMovY = 0;
-        await Task.Delay(300);
-        continue;
+         Debug.LogWarning($"[IAUnidad] {scUnidad.uNombre} no puede actuar sin BattleManager.");
+         return;
       }
 
-      Casilla destPosible = lado.ObtenerCasillaPorIndex(destinoX, destinoY);
-      if (destPosible != null)
+      int contadorIteraciones = MaxIntentosPorTurno;
+      bool turnoTerminado = false;
+      bool forzarFinalPorHabilidad = false;
+
+      while (scUnidad.ObtenerAPActual() > 0 && contadorIteraciones > 0 && !turnoTerminado)
       {
-        if (destPosible.Presente == null)
-        {
-          await MoverACasilla(destPosible);
-        }
-        else
-        {
-          await ChequearCasillasAlrededorParaMover(destPosible); //Medio aleatorio que sea, siempre priorizando "adelante"
-          //Si no se puede mover porque esta ocupada, que haga otra cosa. VER
-          scUnidad.CambiarAPActual(costoMovimientoAP); //por ahora esto para que no quede en loop
-          // BattleManager.Instance.TerminarTurno();
-          await Task.Delay(600);
-          Invoke("TerminarTurnoDesdeWhile", 1.5f);
-          await Task.Delay(600);
-          BattleManager.Instance.TerminarTurno();
+         contadorIteraciones--;
 
-          break;
+         List<IAHabilidad> habilidadesDisponibles = HayHabilidadesPosibles();
+         if (BattleManager.Instance.unidadActiva != scUnidad)
+         {
+            turnoTerminado = true;
+            break;
+         }
 
-        }
+         if (habilidadesDisponibles.Count == 0) // No hay habilidades posibles
+         {
+            await Task.Delay(1500);
 
+            if (scUnidad.esInmobil)
+            {
+               scUnidad.CambiarAPActual(-(int)scUnidad.ObtenerAPActual()); // Agota AP restante
+               turnoTerminado = await TerminarTurnoSeguro(false, "unidad inamovible sin acciones disponibles");
+               break;
+            }
+
+            // Llamar al metodo para moverse a la casilla objetivo de forma asincrona
+            LadoManager lado = scUnidad.CasillaPosicion.lado == 1 ? BattleManager.Instance.ladoA : BattleManager.Instance.ladoB;
+
+            int posXActual = scUnidad.CasillaPosicion.posX;
+            int posYActual = scUnidad.CasillaPosicion.posY;
+
+            int destinoX = posXActual;
+            int destinoY = posYActual;
+            bool intentoDeMovimiento = false;
+
+            int pasoX = Math.Sign(tendenciaMovX);
+            int pasoY = Math.Sign(tendenciaMovY);
+
+            if (pasoX != 0)
+            {
+               bool puedeMoverHorizontal = true;
+
+               if (pasoX > 0)
+               {
+                  if (posXActual >= 3 || (esRango && posXActual != 1))
+                  {
+                     puedeMoverHorizontal = false;
+                  }
+               }
+               else
+               {
+                  if (posXActual <= 1)
+                  {
+                     puedeMoverHorizontal = false;
+                  }
+               }
+
+               if (puedeMoverHorizontal)
+               {
+                  destinoX = posXActual + pasoX;
+                  tendenciaMovX -= pasoX;
+                  intentoDeMovimiento = true;
+               }
+               else
+               {
+                  tendenciaMovX = 0;
+               }
+            }
+
+            if (!intentoDeMovimiento && pasoY != 0)
+            {
+               int candidatoY = posYActual + pasoY;
+               if (candidatoY >= 1 && candidatoY <= 5)
+               {
+                  destinoY = candidatoY;
+                  tendenciaMovY -= pasoY;
+                  intentoDeMovimiento = true;
+               }
+               else
+               {
+                  tendenciaMovY = 0;
+               }
+            }
+
+            if (!intentoDeMovimiento)
+            {
+               tendenciaMovX = 0;
+               tendenciaMovY = 0;
+               await Task.Delay(300);
+               continue;
+            }
+
+            Casilla destPosible = lado.ObtenerCasillaPorIndex(destinoX, destinoY);
+            if (destPosible != null)
+            {
+               if (destPosible.Presente == null)
+               {
+                  await MoverACasilla(destPosible);
+               }
+               else
+               {
+                  await ChequearCasillasAlrededorParaMover(destPosible); // Intento alternativo para moverse
+                  scUnidad.CambiarAPActual(costoMovimientoAP); // Evita loops si no se mueve
+                  turnoTerminado = await TerminarTurnoSeguro(false, "sin casillas libres para moverse");
+                  break;
+               }
+            }
+            else
+            {
+               tendenciaMovX = 0;
+               tendenciaMovY = 0;
+            }
+         }
+         else if (scUnidad.HP_actual > 0) // Hay habilidades posibles y no murio por algun efecto
+         {
+            await Task.Delay(1500); // Intervalo entre acciones
+            bool ejecutoHabilidad = await EjecutarHabilidadConSalvaguarda(habilidadesDisponibles);
+            await Task.Delay(1000);
+
+            if (!ejecutoHabilidad)
+            {
+               scUnidad.CambiarAPActual(-(int)scUnidad.ObtenerAPActual());
+               forzarFinalPorHabilidad = true;
+               turnoTerminado = await TerminarTurnoSeguro(false, "no se pudo ejecutar ninguna habilidad disponible");
+            }
+         }
+         else
+         {
+            break;
+         }
       }
-      else
+
+      if (turnoTerminado || BattleManager.Instance == null)
       {
-        tendenciaMovX = 0;
-        tendenciaMovY = 0;
+         return;
       }
-    }
-     else if(scUnidad.HP_actual > 0) //Hay Habilidades posibles y no murio por algun efecto
-     {
-//       print("HAY hab cant: "+HayHabilidadesPosibles().Count);
-        await Task.Delay(2000);//Intervalo entre acciones
-        await ElegirQueHabilidadPosiblesHacer();
 
-     }
+      bool sinIntentosRestantes = contadorIteraciones <= 0 && scUnidad.ObtenerAPActual() > 0;
+      bool sinAP = scUnidad.ObtenerAPActual() < 1;
 
-    
-           
-    }
-   
-    if(scUnidad.ObtenerAPActual() < 1 && BattleManager.Instance.unidadActiva == gameObject.GetComponent<Unidad>())
-    { await Task.Delay(1500); TerminarTurnoDesdeWhile();}
-   
+      if (BattleManager.Instance.unidadActiva == scUnidad)
+      {
+         if (forzarFinalPorHabilidad)
+         {
+            await TerminarTurnoSeguro(false, "salida por fallo al resolver habilidades");
+         }
+         else if (sinIntentosRestantes)
+         {
+            scUnidad.CambiarAPActual(-(int)scUnidad.ObtenerAPActual());
+            await TerminarTurnoSeguro(false, "limite de iteraciones alcanzado");
+         }
+         else if (sinAP)
+         {
+            await TerminarTurnoSeguro(false);
+         }
+      }
    }
    
    async Task ChequearCasillasAlrededorParaMover(Casilla casilla)
@@ -179,7 +221,7 @@ public class IAUnidad : MonoBehaviour
        Casilla casillaActual = scUnidad.CasillaPosicion;
        if (casillaActual == null)
        {
-         await Task.Delay(1200);
+         await Task.Delay(1000);
          return;
        }
 
@@ -229,7 +271,7 @@ public class IAUnidad : MonoBehaviour
          await MoverACasilla(mejorOpcion);
        }
 
-       await Task.Delay(1200);
+       await Task.Delay(1400);
    }
 
 
@@ -255,13 +297,27 @@ public class IAUnidad : MonoBehaviour
    
       foreach(IAHabilidad hab in habilidades)
       {
-        List<object> obj = new List<object>();
-        obj = hab.ListaHayObjetivosAlAlcance();
+        if (hab == null)
+        {
+          continue;
+        }
+
+        List<object> obj;
+        try
+        {
+          obj = hab.ListaHayObjetivosAlAlcance() ?? new List<object>();
+        }
+        catch (Exception ex)
+        {
+          Debug.LogError($"[IAUnidad] {scUnidad?.uNombre} fallo al obtener objetivos para {hab.nombre}: {ex.Message}");
+          continue;
+        }
+
         if(hab.hActualCooldown > 0){continue;}
-        
+        if(hab.costoAP > scUnidad.ObtenerAPActual()+1){continue;} //Si no tiene AP suficiente, no se agrega
 
         if (!hab.afectaObstaculos)
-      { if (!obj.OfType<Unidad>().Any()) { obj.Clear(); } print("Se limpio lista porque no habia unidades"); }
+      { if (!obj.OfType<Unidad>().Any()) { obj.Clear(); } print("Se limpio lista porque no habia unidades: "+hab.nombre); }
 
         if(obj.Count == 0)
         {
@@ -270,7 +326,10 @@ public class IAUnidad : MonoBehaviour
         else
         {
        
-         HabPosibles.Add(hab); //Si esta habilidad tiene objetivos al alcance, se agrega a posibles
+         if (!HabPosibles.Contains(hab))
+         {
+           HabPosibles.Add(hab); //Si esta habilidad tiene objetivos al alcance, se agrega a posibles
+         }
         }
       }
        
@@ -279,33 +338,78 @@ public class IAUnidad : MonoBehaviour
    }
 
 
-   async Task ElegirQueHabilidadPosiblesHacer()
+   async Task<bool> EjecutarHabilidadConSalvaguarda(List<IAHabilidad> habilidadesDisponibles)
    {
-    // Obtener la habilidad con la mayor prioridad
+      if (habilidadesDisponibles == null || habilidadesDisponibles.Count == 0)
+      {
+         return false;
+      }
 
-        IAHabilidad habilidadConMayorPrioridad = HabPosibles.OrderByDescending(h => h.prioridad).FirstOrDefault();
+      List<IAHabilidad> habilidadesOrdenadas = habilidadesDisponibles.OrderByDescending(h => h.prioridad).ToList();
 
+      foreach (IAHabilidad habilidad in habilidadesOrdenadas)
+      {
+         if (habilidad == null)
+         {
+            continue;
+         }
 
+         try
+         {
+            Task habilidadTask = habilidad.ActivarHabilidad();
 
-        var sortedHabPosibles = HabPosibles.OrderBy(h => h.prioridad).ToList();
+            if (habilidadTask == null)
+            {
+               Debug.LogWarning($"[IAUnidad] {scUnidad.uNombre} recibio una tarea nula al activar {habilidad.nombre}.");
+               continue;
+            }
 
-        foreach (var hab in sortedHabPosibles)
-        {
-         // Debug.Log(hab + "  "+hab.prioridad); // Usar Debug.Log en lugar de print en Unity
-        }
+            Task timeoutTask = Task.Delay(TimeoutHabilidadMs);
+            Task tareaCompletada = await Task.WhenAny(habilidadTask, timeoutTask);
 
+            if (tareaCompletada == habilidadTask)
+            {
+               await habilidadTask; // Repropaga excepciones si las hay
+               return true;
+            }
 
-    if (habilidadConMayorPrioridad != null)
-    {
-      await habilidadConMayorPrioridad.ActivarHabilidad();
-    }
-    else
-    {
-             print("No se encontro ninguna habilidad.");
-             BattleManager.Instance.TerminarTurno();
+            Debug.LogWarning($"[IAUnidad] {scUnidad.uNombre} supero el tiempo limite al ejecutar {habilidad.nombre}.");
+         }
+         catch (Exception ex)
+         {
+            Debug.LogError($"[IAUnidad] Error ejecutando {habilidad?.nombre} para {scUnidad.uNombre}: {ex.Message}");
+         }
+      }
 
-    }
-        
+      return false;
+   }
+
+   async Task<bool> TerminarTurnoSeguro(bool agotarAP, string motivo = null)
+   {
+      if (scUnidad == null || BattleManager.Instance == null)
+      {
+         return false;
+      }
+
+      if (agotarAP && scUnidad.ObtenerAPActual() > 0)
+      {
+         scUnidad.CambiarAPActual(-(int)scUnidad.ObtenerAPActual());
+      }
+
+      if (!string.IsNullOrEmpty(motivo))
+      {
+         Debug.LogWarning($"[IAUnidad] {scUnidad.uNombre} finaliza turno de IA: {motivo}");
+      }
+
+      await Task.Delay(DelayFinTurnoMs);
+
+      if (BattleManager.Instance.unidadActiva == scUnidad)
+      {
+         BattleManager.Instance.TerminarTurno();
+         return true;
+      }
+
+      return false;
    }
 
    public async Task MoverACasilla(Casilla casillaObjetivo)
@@ -332,7 +436,7 @@ public class IAUnidad : MonoBehaviour
         scUnidad.CasillaDeseadaMov = casillaObjetivo;
         scUnidad.CambiarAPActual(-costoMovimientoAP);
         // Simulacion de un retraso de movimiento
-        await Task.Delay(900);
+        await Task.Delay(500);
 
         scUnidad.CasillaPosicion =  scUnidad.CasillaDeseadaMov;
         scUnidad.CasillaDeseadaMov = null;

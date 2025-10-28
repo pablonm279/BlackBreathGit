@@ -37,7 +37,7 @@ public class IAGolpeBastonBruja : IAHabilidad
 
     bonusAtaque = 0;
     XdDanio = 2;
-    daniodX = 6; //
+    daniodX = 4; //
     tipoDanio = 3; //Contundente
     
 

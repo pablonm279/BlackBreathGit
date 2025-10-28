@@ -190,7 +190,6 @@ public override object EstablecerObjetivoPrioritario()
 }
 
 
- public GameObject VFXEstadoPrefab;
 
 
 }

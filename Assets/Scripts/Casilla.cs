@@ -654,7 +654,7 @@ public bool bTieneObstaculo()
 
 }
 
-public bool bTieneUnidadoObstaculo()
+public bool bTieneUnidadoObstaculoParaMelee()
 {
   if(Presente == null)
   {
@@ -663,10 +663,10 @@ public bool bTieneUnidadoObstaculo()
 
   if(Presente.GetComponent<Unidad>() != null)
   {
-    if(Presente.GetComponent<Unidad>().ObtenerEstaEscondido() == 0)
+    if(Presente.GetComponent<Unidad>().ObtenerEstaEscondido() == 0 && !Presente.GetComponent<Unidad>().estado_Volando)
     {return true;} //Si la unidad no está escondida, la toma como que hay algo
     else
-    {return false;}//Si la unidad está escondida, la toma como que no hay nada
+    {return false;}//Si la unidad está escondida o volando la toma como que no hay nada
   }
   else if(Presente.GetComponent<Obstaculo>() != null)
   {

@@ -200,7 +200,7 @@ IEnumerator FadeTo(float target, float time)
 
 
 
-    CrearEncuentroEnemigos(50/*IDEncuentro*/);
+    CrearEncuentroEnemigos(IDEncuentro);
 
     // Actualizar listas de unidades tras colocar aliados y enemigos
     if (BattleManager.Instance != null)
@@ -288,7 +288,7 @@ IEnumerator FadeTo(float target, float time)
           buff.buffNombre = "Sorprendido";
           buff.boolfDebufftBuff = false;
           buff.DuracionBuffRondas = 2;
-          buff.cantIniciativa -= 3;
+          buff.cantIniciativa -= 5;
           buff.cantAPMax -= 2;
           buff.cantDefensa -= 2;
           buff.AplicarBuff(uni);
@@ -545,7 +545,7 @@ IEnumerator FadeTo(float target, float time)
 
   void AdministrarFondos(int idEncuentro)
   {
-    if (idEncuentro > 400 && idEncuentro < 450) //Si es encuentro subterraneo
+    if (idEncuentro > 399 && idEncuentro < 450) //Si es encuentro subterraneo
     {
       mrFondoBatalla.material = listaFondosSubterraneos[UnityEngine.Random.Range(0, listaFondosSubterraneos.Count)];
     }
@@ -1045,19 +1045,273 @@ IEnumerator FadeTo(float target, float time)
     #endregion
 
     #region Encuentros Paso Viento Helado ID Entre 50 y 100
-     ///FASE 1 - Paso Viento Helado
-      if (IDEncuentro == 50) // FASE 1 - Paso Vientohelado
+    ///FASE 1 - Paso Viento Helado
+    if (IDEncuentro == 50) // FASE 1 - Paso Vientohelado
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.GuerreroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+       
+      
+    }
+    if (IDEncuentro == 51) // FASE 1 - Paso Vientohelado
     {
       GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
       ColocarEnCasillaAleatoria(2, enemigo1);
       GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
       ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.LanceroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.GuerreroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+    }
+    if (IDEncuentro == 52) // FASE 1 - Paso Vientohelado
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.LanceroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.LanceroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+    }
+    if (IDEncuentro == 53) // FASE 1 - Paso Vientohelado
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.GuerreroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.EfigieAnimada);
+      ColocarEnCasillaAleatoria(2, enemigo2);
       GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
       ColocarEnCasillaAleatoria(2, enemigo3);
-      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.EfigieAnimada);
       ColocarEnCasillaAleatoria(2, enemigo4);
 
+       //Refuerzos
+      BattleManager.Instance.enemigosRefuerzos.Clear();
+      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
 
+      GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      enemigo5.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo5);
+
+      GameObject enemigo6 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      enemigo6.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo6);
+      BattleManager.Instance.ActualizarRefuerzosUI();
+    }
+    if (IDEncuentro == 54) // FASE 1 - Paso Vientohelado
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.Faagdan);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.PajaroRompehielos);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.PajaroRompehielos);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+    }
+    if (IDEncuentro == 55) // FASE 1 - Paso Vientohelado
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.PajaroRompehielos);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.PajaroRompehielos);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.PajaroRompehielos);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.PajaroRompehielos);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+        //Refuerzos
+      BattleManager.Instance.enemigosRefuerzos.Clear();
+      BattleManager.Instance.delayRefuerzo = 2; //aca poner el delay a gusto para el evento
+
+      GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.PajaroRompehielos);
+      enemigo5.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo5);
+
+      GameObject enemigo6 = Instantiate(ContenedorPrefabsBatalla.PajaroRompehielos);
+      enemigo6.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo6);
+      BattleManager.Instance.ActualizarRefuerzosUI();
+    }
+    if (IDEncuentro == 56) // FASE 1 - Paso Vientohelado
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.EfigieAnimada);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.EfigieAnimada);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.EfigieAnimada);
+      ColocarEnCasillaAleatoria(2, enemigo5);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.GuerreroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+    }
+    if (IDEncuentro == 57) // FASE 1 - Paso Vientohelado - ELITE
+    { 
+
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.Faagdan);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.Faagdan);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+    
+    }
+    if (IDEncuentro == 58) // FASE 1 - Paso Vientohelado - ELITE
+    {
+
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.GuerreroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.LanceroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.LanceroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo5);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+      
+        //Refuerzos
+      BattleManager.Instance.enemigosRefuerzos.Clear();
+      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+
+      GameObject enemigo6 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      enemigo5.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo6);
+
+      GameObject enemigo7 = Instantiate(ContenedorPrefabsBatalla.GuerreroKaleTav);
+      enemigo7.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo7);
+      BattleManager.Instance.ActualizarRefuerzosUI();
+    
+    }
+    if (IDEncuentro == 59) // FASE 1 - Paso Vientohelado - ELITE
+    {
+
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.LanceroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo5);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.EfigieAnimada);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+      
+        //Refuerzos
+      BattleManager.Instance.enemigosRefuerzos.Clear();
+      BattleManager.Instance.delayRefuerzo = 2; //aca poner el delay a gusto para el evento
+
+      GameObject enemigo6 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      enemigo5.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo6);
+
+      GameObject enemigo7 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      enemigo7.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo7);
+      BattleManager.Instance.ActualizarRefuerzosUI();
+    
+    }
+    if (IDEncuentro == 60) // FASE 1 - Jefe 1 - Paso Vientohelado
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.GulekGul);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+    
+    }
+    if (IDEncuentro == 61) // FASE 1 - Jefe 2 - Paso Vientohelado - PENDIENTE
+    {
+
+      //PENDIENTE
+    
+    }
+    if (IDEncuentro == 62) // FASE 1 - Paso Vientohelado - Ataque caravana 1
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.GuerreroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.GuerreroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.LanceroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.EfigieAnimada);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+
+      //Refuerzos
+      BattleManager.Instance.enemigosRefuerzos.Clear();
+      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+
+      GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      enemigo5.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo5);
+
+      GameObject enemigo6 = Instantiate(ContenedorPrefabsBatalla.LanceroKaleTav);
+      enemigo6.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo6);
+
+      GameObject enemigo7 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      enemigo7.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo7);
+
+      GameObject enemigo8 = Instantiate(ContenedorPrefabsBatalla.GuerreroKaleTav);
+      enemigo8.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo8);
+
+      GameObject enemigo9 = Instantiate(ContenedorPrefabsBatalla.EfigieAnimada);
+      enemigo9.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo9);
+
+      GameObject enemigo10 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      enemigo10.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo10);
+
+      BattleManager.Instance.ActualizarRefuerzosUI();
+      
+    
+    }
+    if (IDEncuentro == 63) //FASE 1 - Paso Vientohelado - Ataque caravana 2
+    {
+       GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+
+      //Refuerzos
+      BattleManager.Instance.enemigosRefuerzos.Clear();
+      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+
+      GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.GuerreroKaleTav);
+      enemigo5.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo5);
+
+      GameObject enemigo6 = Instantiate(ContenedorPrefabsBatalla.LanceroKaleTav);
+      enemigo6.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo6);
+
+      GameObject enemigo7 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      enemigo7.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo7);
+
+      GameObject enemigo8 = Instantiate(ContenedorPrefabsBatalla.EfigieAnimada);
+      enemigo8.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo8);
+
+      GameObject enemigo9 = Instantiate(ContenedorPrefabsBatalla.EfigieAnimada);
+      enemigo9.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo9);
+
+      GameObject enemigo10 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
+      enemigo10.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo10);
+
+      BattleManager.Instance.ActualizarRefuerzosUI();
+      
+    
     }
     #endregion
 
@@ -1068,7 +1322,7 @@ IEnumerator FadeTo(float target, float time)
 
 
 
-    
+
     #region //Batallas Subterraneas ID Entre 400 y 450
     if (IDEncuentro == 400) // FASE 1 - Batalla Subterranea  
     {

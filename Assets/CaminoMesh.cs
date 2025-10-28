@@ -6,9 +6,9 @@ using UnityEngine;
 public class CaminoMesh : MonoBehaviour
 {
     [Header("Ajustes visuales")]
-    public float width = 0.6f;           // Ancho del camino
-    public float yOffset = 0.02f;        // Altura para evitar z-fighting
-    public float uvTilesPerUnit = 0.35f; // Tiling a lo largo
+    private float width = 0.45f;           // Ancho del camino
+    private float yOffset = 0.02f;        // Altura para evitar z-fighting
+    private float uvTilesPerUnit = 0.35f; // Tiling a lo largo
 
     Mesh _mesh;
     MeshFilter _mf;
