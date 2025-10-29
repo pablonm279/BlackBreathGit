@@ -70,6 +70,9 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject TrampaNidoDefensivo;
     public GameObject MasaContaminada;
     public GameObject TrampaImprovisadaTribal;
+    public GameObject TrampaAlientoNegro;
+    public GameObject TrampaPrimerGolpeAlabardero;
+
 
     [Header("Invocaciones")]
     public GameObject Canalizador_ManifestacionArcana;
@@ -110,7 +113,10 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject PajaroRompehielos;
     public GameObject EfigieAnimada;
     public GameObject GulekGul;
-
+    public GameObject SoldadoVengadorKadryn;
+    public GameObject AlabarderoVengadorKadryn;
+    public GameObject ArqueroVengadorKadryn;
+    public GameObject PredicadorDelAlientoKadryn;
     [Header("Sonidos Daño")]
 
     public AudioClip sonidoPerforante;

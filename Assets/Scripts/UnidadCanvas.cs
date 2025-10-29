@@ -216,27 +216,27 @@ public class UnidadCanvas : MonoBehaviour
       if (scUnidadMostrada.bonusdam_arcano > 0)
       {
          GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
-         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(15, -1, true);
+         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(15, scUnidadMostrada.bonusdam_arcano, true);
       }
       if (scUnidadMostrada.bonusdam_fuego > 0)
       {
          GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
-         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(16, -1, true);
+         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(16, scUnidadMostrada.bonusdam_fuego, true);
       }
       if (scUnidadMostrada.bonusdam_hielo > 0)
       {
          GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
-         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(17, -1, true);
+         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(17, scUnidadMostrada.bonusdam_hielo, true);
       }
       if (scUnidadMostrada.bonusdam_necro > 0)
       {
          GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
-         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(18, -1, true);
+         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(18, scUnidadMostrada.bonusdam_necro, true);
       }
       if (scUnidadMostrada.bonusdam_rayo > 0)
       {
          GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
-         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(19, -1, true);
+         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(19, scUnidadMostrada.bonusdam_rayo, true);
       }
       /*  if(scUnidadMostrada is ClasePurificadora)
        { 
@@ -289,6 +289,11 @@ public class UnidadCanvas : MonoBehaviour
       {
          GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
          GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(29, -1, true);
+      }
+      if (scUnidadMostrada.estado_Escudado > 0)
+      {
+         GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
+         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(30, -1, true);
       }
     }
 

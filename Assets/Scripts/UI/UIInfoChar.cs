@@ -237,10 +237,15 @@ public class UIInfoChar : MonoBehaviour
         GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(28,1);
      }
-      if(scUnidadMostrada.estado_Condenado > 0)
+     if(scUnidadMostrada.estado_Condenado > 0)
      { 
         GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(29,scUnidadMostrada.estado_Condenado);
+     }
+     if(scUnidadMostrada.estado_Escudado > 0)
+     { 
+        GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
+        GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(30,scUnidadMostrada.estado_Escudado);
      }
          //AGREGAR LOS NUEVOS TMB EN UNIDADCANVAS PARA QUE APAREZCAN EN LA BARRA DE VIDA----!! 
          //Y en stacks poner -1 para que no muestre numero en la barra de vida.
@@ -428,6 +433,18 @@ public class UIInfoChar : MonoBehaviour
    if (unidadMostrada.uNombre == "Gulek-Gul")
    {
       desc = TRADU.i.Traducir("<i>Gulek-Gul es un Ettin muy venerado por los Kale'Tav. No habita con ellos, pero cuando se encuentran intrusos en la zona, baja de su colina decidido a proteger su territorio.</i>\n\n<color=#199F10>-Fuerza descomunal.\n-Golpea en zona.\n-Doble intento en tiradas de voluntad.</color>\n<color=#EE0000>-Necesita levantar el martillo grande antes de usarlo.\n-Si recibe daño o falla tirada de voluntad, deja caer el martillo.</color>");
+   }
+   if (unidadMostrada.uNombre == "Soldado Vengador de Kadryn")
+   {
+      desc = TRADU.i.Traducir("<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Unidad Escudada.\n-Buena Armadura.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Movimiento limitado.</color>");
+   }
+   if (unidadMostrada.uNombre == "Alabardero Vengador de Kadryn")
+   {
+      desc = TRADU.i.Traducir("<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Ataque de oportunidad.\n-Buena Armadura.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Movimiento limitado.</color>");
+   }
+   if (unidadMostrada.uNombre == "Arquero Vengador de Kadryn")
+   {
+      desc = TRADU.i.Traducir("<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Buen ataque.\n-Flecha envenenada.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Poco resistente.</color>");
    }
    return desc;
   }

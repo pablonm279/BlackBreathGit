@@ -121,7 +121,7 @@ public class Enmendar : Habilidad
     {
       txtDescripcion = "<color=#5dade2><b>Mend I</b></color>\n\n";
       txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
-      txtDescripcion += "<i>Healing: 3d6 +1 per Zeal +1 per Power. Consumes 1 Zeal.</i>\n";
+      txtDescripcion += "<i>Healing: 3d6 +1 per Fervor +1 per Power. Consumes 1 Fervor.</i>\n";
       txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
 
       if (EsEscenaCampaña())
@@ -139,7 +139,7 @@ public class Enmendar : Habilidad
     {
       txtDescripcion = "<color=#5dade2><b>Mend II</b></color>\n\n";
       txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
-      txtDescripcion += "<i>Healing: 3d6+1, +1 per Zeal +1 per Power. Consumes 1 Zeal.</i>\n";
+      txtDescripcion += "<i>Healing: 3d6+1, +1 per Fervor +1 per Power. Consumes 1 Fervor.</i>\n";
       txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
 
       if (EsEscenaCampaña())
@@ -157,7 +157,7 @@ public class Enmendar : Habilidad
     {
       txtDescripcion = "<color=#5dade2><b>Mend III</b></color>\n\n";
       txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
-      txtDescripcion += "<i>Healing: 3d6+3, +1 per Zeal +1 per Power. Consumes 1 Zeal.</i>\n";
+      txtDescripcion += "<i>Healing: 3d6+3, +1 per Fervor +1 per Power. Consumes 1 Fervor.</i>\n";
       txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
 
       if (EsEscenaCampaña())
@@ -166,8 +166,8 @@ public class Enmendar : Habilidad
         {
           if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
           {
-            txtDescripcion += $"<color=#dfea02>-Option A: Does not consume Zeal </color>\n";
-            txtDescripcion += $"<color=#dfea02>-Option B: Healing bonus per Zeal is tripled</color>\n";
+            txtDescripcion += $"<color=#dfea02>-Option A: Does not consume Fervor </color>\n";
+            txtDescripcion += $"<color=#dfea02>-Option B: Healing bonus per Fervor is tripled</color>\n";
           }
         }
       }
@@ -176,14 +176,14 @@ public class Enmendar : Habilidad
     {
       txtDescripcion = "<color=#5dade2><b>Mend IV a</b></color>\n\n";
       txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
-      txtDescripcion += "<i>Healing: 3d6+3, +1 per Zeal +1 per Power.</i>\n";
+      txtDescripcion += "<i>Healing: 3d6+3, +1 per Fervor +1 per Power.</i>\n";
       txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
     }
     if (NIVEL == 5)
     {
       txtDescripcion = "<color=#5dade2><b>Mend IV b</b></color>\n\n";
       txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
-      txtDescripcion += "<i>Healing: 3d6+3, +3 per Zeal +1 per Power. Consumes 1 Zeal.</i>\n";
+      txtDescripcion += "<i>Healing: 3d6+3, +3 per Fervor +1 per Power. Consumes 1 Fervor.</i>\n";
       txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
     }
   }

@@ -51,11 +51,11 @@ public class EnemigoGulekGul : Unidad
 
         if (resultado) // positivo NO se salva
         {
-            BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende + " vs Tirada Dificultad: " + iResultadoAtaque + ". Resultado: No se salva.");
+            BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende +  TRADU.i.Traducir(" vs Tirada Dificultad: ") + iResultadoAtaque + TRADU.i.Traducir(". Resultado: No se salva."));
         }
         else // Negativo Se Salva
         {
-            BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende + " vs Tirada Dificultad: " + iResultadoAtaque + ". Resultado: Se salva.");
+            BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende +  TRADU.i.Traducir(" vs Tirada Dificultad: ") + iResultadoAtaque +  TRADU.i.Traducir(". Resultado: Se salva."));
             GenerarTextoFlotante(TRADU.i.Traducir("Resiste"), Color.green);
             return resultado; // Si se salva, no se realiza un segundo intento
         }

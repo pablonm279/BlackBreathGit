@@ -94,9 +94,9 @@ public class TooltipBatalla : MonoBehaviour
             case 26:
                 return "Trampa Improvisada: Daña y marca a unidades que la pisen.";
             case 27:
-                return "";
+               return "Restos de Aliento: Potencia y cura a los Vengadores de Kadryn.";
             case 28:
-                return "";
+                return "Primer Golpe: el Alabardero ataca a la primera unidad que entra en la casilla.";
             case 29:
                 return "";
             case 30:

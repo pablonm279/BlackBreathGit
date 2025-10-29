@@ -250,13 +250,19 @@ public class MenuBatallas : MonoBehaviour
                 }
                 else //Batalla GENERICA 
                 {
-                    int randomEncuentroGenerico =UnityEngine.Random.Range(1, 5);
+                    int randomEncuentroGenerico =UnityEngine.Random.Range(1, 9);
                     switch (randomEncuentroGenerico)
                     {
                         case 1: EventoBatallaID = 500; break; //Bandidos 
                         case 2: EventoBatallaID = 501; break; //Bandidos II
                         case 3: EventoBatallaID = 502; break; //Bandidos III
                         case 4: EventoBatallaID = 503; break; //Bandidos IV
+                        //--504 y 505 son Ataques a Caravana
+                        case 5: EventoBatallaID = 506; break; //Vengadores I
+                        case 6: EventoBatallaID = 507; break; //Vengadores II
+                        case 7: EventoBatallaID = 508; break; //Vengadores III
+                        case 8: EventoBatallaID = 509; break; //Vengadores IV
+                        //--510 y 511 son Ataques a Caravana
 
                     }
                 }
@@ -396,15 +402,17 @@ public class MenuBatallas : MonoBehaviour
                 }
                 else //Encuentros genéricos
                 {
-                    int randomEncuentroGenerico = UnityEngine.Random.Range(1, 3);
+                    int randomEncuentroGenerico = UnityEngine.Random.Range(1, 5);
                     switch (randomEncuentroGenerico)
                     {
                         case 1: EventoBatallaID = 504; break; //Bandidos Ataque a Caravana I
                         case 2: EventoBatallaID = 505; break; //Bandidos Ataque a Caravana II
+                        case 3: EventoBatallaID = 510; break; //Vengadores Ataque a Caravana I
+                        case 4: EventoBatallaID = 511; break; //Vengadores Ataque a Caravana II
                     }
                 }
 
-                   if(EventoBatallaID == 0) //Si por alguna razón no se asignó un ID, se asigna uno genérico
+                if(EventoBatallaID == 0) //Si por alguna razón no se asignó un ID, se asigna uno genérico
                 {
                     EventoBatallaID =  EventoBatallaID = scZona.FASE1IDAtaqueCaravana1; //Bandidos Ataque a Caravana I
 
@@ -1343,7 +1351,7 @@ public class MenuBatallas : MonoBehaviour
         }
     }
 
-    scAdministradorEscenas.CargarBatalla(EventoBatallaID, esEmboscadaEnemiga);
+    scAdministradorEscenas.CargarBatalla(50/*EventoBatallaID*/, esEmboscadaEnemiga);
     
  }
 

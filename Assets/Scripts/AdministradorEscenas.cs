@@ -1044,6 +1044,7 @@ IEnumerator FadeTo(float target, float time)
     }
     #endregion
 
+
     #region Encuentros Paso Viento Helado ID Entre 50 y 100
     ///FASE 1 - Paso Viento Helado
     if (IDEncuentro == 50) // FASE 1 - Paso Vientohelado
@@ -1056,8 +1057,7 @@ IEnumerator FadeTo(float target, float time)
       ColocarEnCasillaAleatoria(2, enemigo3);
       GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.GuerreroKaleTav);
       ColocarEnCasillaAleatoria(2, enemigo4);
-       
-      
+
     }
     if (IDEncuentro == 51) // FASE 1 - Paso Vientohelado
     {
@@ -1196,17 +1196,18 @@ IEnumerator FadeTo(float target, float time)
       ColocarEnCasillaAleatoria(2, enemigo2);
       GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
       ColocarEnCasillaAleatoria(2, enemigo3);
-      GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.LanceroKaleTav);
-      ColocarEnCasillaAleatoria(2, enemigo5);
       GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.EfigieAnimada);
       ColocarEnCasillaAleatoria(2, enemigo4);
+      GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.LanceroKaleTav);
+      ColocarEnCasillaAleatoria(2, enemigo5);
+      
       
         //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
       BattleManager.Instance.delayRefuerzo = 2; //aca poner el delay a gusto para el evento
 
       GameObject enemigo6 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
-      enemigo5.SetActive(false);
+      enemigo6.SetActive(false);
       BattleManager.Instance.enemigosRefuerzos.Add(enemigo6);
 
       GameObject enemigo7 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
@@ -1381,7 +1382,7 @@ IEnumerator FadeTo(float target, float time)
     }
     #endregion
 
-    #region //Batallas Bandidos ID Entre 500 y 550
+    #region //Batallas Genericas ID Entre 500 y 599
     if (IDEncuentro == 500) // FASE 1 - Batalla Bandidos I
     {
       GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.Ladron);
@@ -1525,6 +1526,148 @@ IEnumerator FadeTo(float target, float time)
 
       BattleManager.Instance.ActualizarRefuerzosUI();
     }
+    if (IDEncuentro == 506) // FASE 1 - Batalla Vengadores I
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.SoldadoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.SoldadoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.ArqueroVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.ArqueroVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+
+   
+    }
+    if (IDEncuentro == 507) // FASE 1 - Batalla Vengadores II
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.AlabarderoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.SoldadoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.ArqueroVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.PredicadorDelAlientoKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+
+      //Refuerzos
+      BattleManager.Instance.enemigosRefuerzos.Clear();
+      BattleManager.Instance.delayRefuerzo = 2; //aca poner el delay a gusto para el evento
+
+      GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.SoldadoVengadorKadryn);
+      enemigo5.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo5);
+      BattleManager.Instance.ActualizarRefuerzosUI();
+
+    }
+    if (IDEncuentro == 508) // FASE 1 - Batalla Vengadores III
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.AlabarderoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.ArqueroVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.SoldadoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.PredicadorDelAlientoKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+
+    }
+    if (IDEncuentro == 509) // FASE 1 - Batalla Vengadores IV
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.AlabarderoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.SoldadoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.SoldadoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.PredicadorDelAlientoKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+
+      //Refuerzos
+      BattleManager.Instance.enemigosRefuerzos.Clear();
+      BattleManager.Instance.delayRefuerzo = 2; //aca poner el delay a gusto para el evento
+
+      GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.ArqueroVengadorKadryn);
+      enemigo5.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo5);
+      BattleManager.Instance.ActualizarRefuerzosUI();
+
+    }
+    if (IDEncuentro == 510) // FASE 1 - Batalla Bandidos - Ataque a Caravana I
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.SoldadoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.SoldadoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.ArqueroVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.AlabarderoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+
+      //Refuerzos
+      BattleManager.Instance.enemigosRefuerzos.Clear();
+      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+
+      GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.PredicadorDelAlientoKadryn);
+      enemigo5.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo5);
+
+      GameObject enemigo6 = Instantiate(ContenedorPrefabsBatalla.SoldadoVengadorKadryn);
+      enemigo6.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo6);
+
+      GameObject enemigo7 = Instantiate(ContenedorPrefabsBatalla.ArqueroVengadorKadryn);
+      enemigo7.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo7);
+
+      GameObject enemigo8 = Instantiate(ContenedorPrefabsBatalla.AlabarderoVengadorKadryn);
+      enemigo8.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo8);
+
+      
+     
+
+      BattleManager.Instance.ActualizarRefuerzosUI();
+    }
+    if (IDEncuentro == 511) // FASE 1 - Batalla Bandidos - Ataque a Caravana I
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.PredicadorDelAlientoKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo1);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.AlabarderoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo2);
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.ArqueroVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo3);
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.AlabarderoVengadorKadryn);
+      ColocarEnCasillaAleatoria(2, enemigo4);
+
+      //Refuerzos
+      BattleManager.Instance.enemigosRefuerzos.Clear();
+      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+
+      GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.ArqueroVengadorKadryn);
+      enemigo5.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo5);
+
+      GameObject enemigo6 = Instantiate(ContenedorPrefabsBatalla.SoldadoVengadorKadryn);
+      enemigo6.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo6);
+
+      GameObject enemigo7 = Instantiate(ContenedorPrefabsBatalla.SoldadoVengadorKadryn);
+      enemigo7.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo7);
+
+      GameObject enemigo8 = Instantiate(ContenedorPrefabsBatalla.PredicadorDelAlientoKadryn);
+      enemigo8.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(enemigo8);
+
+      
+     
+
+      BattleManager.Instance.ActualizarRefuerzosUI();
+    }
+   
+   
+   
     #endregion
 
     #region //Batallas Curruptas ID Entre 600 y 700

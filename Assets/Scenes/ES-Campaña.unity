@@ -155432,6 +155432,8 @@ MonoBehaviour:
   TrampaNidoDefensivo: {fileID: 5045894620138190777, guid: aaa8b1985653e8c48a2205c653a37f43, type: 3}
   MasaContaminada: {fileID: 2594742194738591821, guid: 01438d6eb8f643e408fb4803a204d532, type: 3}
   TrampaImprovisadaTribal: {fileID: 5045894620138190777, guid: 26a77ec268d4b7848ab0607bfae63e2f, type: 3}
+  TrampaAlientoNegro: {fileID: 5045894620138190777, guid: 66dbfa486e86da649ab4a70abf4c6c39, type: 3}
+  TrampaPrimerGolpeAlabardero: {fileID: 5045894620138190777, guid: 1c760ac4209fef142b19d76af5166ff9, type: 3}
   Canalizador_ManifestacionArcana: {fileID: 7275504028706692399, guid: 3be7fe65973040e47b37f320afac919b, type: 3}
   Miliciano1: {fileID: 5662508880646372543, guid: a547a67f84428104ba630290fc674194, type: 3}
   Miliciano2: {fileID: 295497129713313217, guid: 4b6c23917c56bda4b9cf60ce28dfbb70, type: 3}
@@ -155463,6 +155465,10 @@ MonoBehaviour:
   PajaroRompehielos: {fileID: 3855863790156444218, guid: 47ce289acc0b7114abb96095ca99d08a, type: 3}
   EfigieAnimada: {fileID: 5662508880646372543, guid: 12961db0a1ecf414eb9cb1ff2db2f4fa, type: 3}
   GulekGul: {fileID: 6817527822529779511, guid: fe63f37e1d424aa4d8ae291405029f7e, type: 3}
+  SoldadoVengadorKadryn: {fileID: 5662508880646372543, guid: 870512d8cc224474c85ae7634324084a, type: 3}
+  AlabarderoVengadorKadryn: {fileID: 5662508880646372543, guid: 0d913f02ddc553a46a54ec56e3814f4b, type: 3}
+  ArqueroVengadorKadryn: {fileID: 5662508880646372543, guid: 2c9c2b7f82cb1314f82b8859db7f12b2, type: 3}
+  PredicadorDelAlientoKadryn: {fileID: 5662508880646372543, guid: 58356cac127045c4a8852b01d0118399, type: 3}
   sonidoPerforante: {fileID: 8300000, guid: ef8f2cec97c297c478bef19113045bf7, type: 3}
   sonidoCortante: {fileID: 8300000, guid: 5e0b2a5c4a821014182ca259aa31e404, type: 3}
   sonidoContundente: {fileID: 8300000, guid: d962dcd56f9e3de45a8440012d0a4c64, type: 3}
@@ -155585,7 +155591,7 @@ MonoBehaviour:
     danioPorcPct: 0
     danioPorcFlat: 0
   ajustesEnemigos:
-    hpMaxPct: -99
+    hpMaxPct: 0
     hpMaxFlat: 0
     apMaxPct: 0
     apMaxFlat: 0
@@ -155608,7 +155614,7 @@ MonoBehaviour:
     tsAllFlat: 0
     danioPorcPct: 0
     danioPorcFlat: 0
-  presetSeleccionado: 3
+  presetSeleccionado: 4
   usarPresets: 1
 --- !u!1 &1013911160
 GameObject:
@@ -208557,6 +208563,7 @@ MonoBehaviour:
   imCorrupto: {fileID: 0}
   imVolador: {fileID: 0}
   imCondena: {fileID: 0}
+  imEscudado: {fileID: 0}
   imTierEnergia: {fileID: 0}
   scTooltipBatalla: {fileID: 0}
   debarravida: 0

@@ -19,6 +19,8 @@ public class Unidad : MonoBehaviour
    public Casilla CasillaDeseadaMov;
 
    public Casilla CasillaForzadoaMover;
+   // Marca si hay un desplazamiento forzado en curso para evitar reordenarlo cada frame
+   private bool movimientoForzadoPendiente;
 
    public Habilidad estaCargando; //la habilidad que está cargando el personaje para lanzar en un turno próximo
    public int valorCargando; //la cantidad de AP que le falta para terminar la habilidad
@@ -180,6 +182,7 @@ public class Unidad : MonoBehaviour
  public int estado_APModificador;
  public int estado_ResistenciasReducidas;
  public int estado_Condenado; //En (stacks) Turnos, el personaje sufrirá daño verdadero = al 15% de su HP máximo al comenzar su turno.
+ public int estado_Escudado; //10% por stack de prevenir un ataque de daño fisico. Pierde 1 stack.
  public bool estado_Corrupto;
  public bool unidadVoladora;
  public bool estado_Volando;
@@ -533,6 +536,7 @@ public bool movimientoEnCurso = false;
     {
       if ((CasillaPosicion != CasillaForzadoaMover) && (scBattleManager.unidadActiva != this))
       {
+        movimientoForzadoPendiente = true;
         if (!movimientoEnCurso)
         {
           if (poseController != null) { poseController.OnStartMove(); }
@@ -563,15 +567,19 @@ public bool movimientoEnCurso = false;
           scBattleManager.CalcularCasillasAMovimiento();
           ChequearSeMovio();
           CasillaPosicion.Presente = this.gameObject;
-          print(CasillaPosicion.Presente);
           CasillaForzadoaMover = null;
           CasillaDeseadaMov = null;
+          movimientoForzadoPendiente = false;
           movimientoEnCurso = false;
           casillaOrigenEnMovimiento = null;
           if (poseController != null) { poseController.OnStopMove(); }
         }
       }
 
+    }
+    else if (movimientoForzadoPendiente)
+    {
+      movimientoForzadoPendiente = false;
     }
 
 
@@ -1225,11 +1233,27 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
 
       if (danioFinal < 0) { danioFinal = 0; }
+
+      //ESTADO ESCUDADO: 10% de bloquear todo el daño por cada stack de escudo
+      if (estado_Escudado > 0)
+      {
+        int chances = 10 * estado_Escudado;
+        int random = UnityEngine.Random.Range(1, 101);
+        if (random <= chances)
+        {
+          danioFinal = 0;
+          scBattleManager.EscribirLog(uNombre + TRADU.i.Traducir(" bloquea el daño con su escudo."));
+          GenerarTextoFlotante(TRADU.i.Traducir("Bloqueado"), Color.cyan);
+          estado_Escudado--;
+        }
+      }
+      //----
       if (danioFinal > 0)
       {
+
         ReproducirAnimacionRecibirDanio();
         ChequearCorrompidoVsCorrupto(uCausante, danioFinal);
-        BajarVuelo(); 
+        BajarVuelo();
         estado_evasion = 0;
         if (uCausante != null)
         {
@@ -1243,7 +1267,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
 
       scUnidadCanvas.txtDaño.text = "";
-      await Task.Delay(700);
+      await Task.Delay(300);
       HP_actual -= (int)danioFinal;
       scUnidadCanvas.txtDaño.text = "-"+(int)danioFinal;
       if (esCritico) { scUnidadCanvas.txtDaño.text += "!"; }
@@ -2089,11 +2113,11 @@ public async void OnMouseDown()
 
     if (resultado) //positivo NO se salva
     {
-      BattleManager.Instance.EscribirLog(uNombre+TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende + " vs Tirada Dificultad: " + iResultadoAtaque + ". Resultado: No se salva.");
+            BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende +  TRADU.i.Traducir(" vs Tirada Dificultad: ") + iResultadoAtaque + TRADU.i.Traducir(". Resultado: No se salva."));
     }
     else //NegativoSeSalva
     {
-      BattleManager.Instance.EscribirLog(uNombre+TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende + " vs Tirada Dificultad: " + iResultadoAtaque + ". Resultado: Se salva.");
+            BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende +  TRADU.i.Traducir(" vs Tirada Dificultad: ") + iResultadoAtaque +  TRADU.i.Traducir(". Resultado: Se salva."));
       GenerarTextoFlotante(TRADU.i.Traducir("Resiste"), Color.green);
    
     }
@@ -2104,102 +2128,98 @@ public async void OnMouseDown()
   
   public void ForzarMoverAPrimeraFila()
   {
-    if(CasillaPosicion.posX == 3){ /*Nada*/ }
-    if(CasillaPosicion.posX == 2)
-    { 
-       Casilla casillaFrontal = CasillaPosicion.ladoGO.GetComponent<LadoManager>().ObtenerCasillaPorIndex(CasillaPosicion.posX+1, CasillaPosicion.posY);
-       if(casillaFrontal.Presente == null)
-       {   
-            CasillaForzadoaMover = casillaFrontal;
-       } 
-    }
-     if(CasillaPosicion.posX == 1)
-    { 
-       Casilla casillaFrontal = CasillaPosicion.ladoGO.GetComponent<LadoManager>().ObtenerCasillaPorIndex(CasillaPosicion.posX+2, CasillaPosicion.posY);
-       if(casillaFrontal.Presente == null)
-       {
-            CasillaForzadoaMover = casillaFrontal;
-       }
-       else
-       {
-        Casilla casillaFrontal2 = CasillaPosicion.ladoGO.GetComponent<LadoManager>().ObtenerCasillaPorIndex(CasillaPosicion.posX+1, CasillaPosicion.posY);
-         if(casillaFrontal2.Presente == null)
-         {
-            CasillaForzadoaMover = casillaFrontal2;
-         } 
+    Casilla casillaOrigen = movimientoForzadoPendiente && CasillaForzadoaMover != null
+      ? CasillaForzadoaMover
+      : CasillaPosicion;
 
-       } 
+    if (casillaOrigen == null || casillaOrigen.ladoGO == null)
+    {
+      return;
     }
 
+    if (casillaOrigen.posX >= 3)
+    {
+      return;
+    }
 
+    LadoManager lado = casillaOrigen.ladoGO.GetComponent<LadoManager>();
+    if (lado == null)
+    {
+      return;
+    }
+
+    Casilla destino = null;
+    for (int targetX = 3; targetX > casillaOrigen.posX; targetX--)
+    {
+      Casilla candidata = lado.ObtenerCasillaPorIndex(targetX, casillaOrigen.posY);
+      if (candidata != null && candidata.Presente == null)
+      {
+        destino = candidata;
+        break;
+      }
+    }
+
+    if (destino == null || destino == CasillaPosicion || destino == CasillaForzadoaMover)
+    {
+      return;
+    }
+
+    CasillaForzadoaMover = destino;
+    CasillaDeseadaMov = null;
+    movimientoForzadoPendiente = true;
   }
 
   public void EmpujarUnidad(int cantidad)
   {
-
-    print("EMPUJAR");
-    if (cantidad == 1)
+    if (cantidad <= 0)
     {
-      //Casilla atras
-      Casilla casillaAtras1 = CasillaPosicion.ladoGO.GetComponent<LadoManager>().ObtenerCasillaPorIndex(CasillaPosicion.posX - 1, CasillaPosicion.posY);
-      if (casillaAtras1 != null)
-      {
-        if (casillaAtras1.Presente == null)
-        {
-          CasillaForzadoaMover = casillaAtras1;
-        }
-      }
-    
+      return;
     }
 
-    if (cantidad == 2)
+    Casilla casillaOrigen = movimientoForzadoPendiente && CasillaForzadoaMover != null
+      ? CasillaForzadoaMover
+      : CasillaPosicion;
+
+    if (casillaOrigen == null || casillaOrigen.ladoGO == null)
     {
-      Casilla casillaAMover;
-      bool sepuedeaCas1 = false;
-      bool sepuedeaCas2 = false;
-      //Casilla atras
-      Casilla casillaAtras1 = CasillaPosicion.ladoGO.GetComponent<LadoManager>().ObtenerCasillaPorIndex(CasillaPosicion.posX - 1, CasillaPosicion.posY);
-      //Casilla atras
-      Casilla casillaAtras2 = CasillaPosicion.ladoGO.GetComponent<LadoManager>().ObtenerCasillaPorIndex(CasillaPosicion.posX - 2, CasillaPosicion.posY);
-      if (casillaAtras1 != null)
-      {
-        if (casillaAtras1.Presente == null)
-        {
-         sepuedeaCas1 = true;  
-        }
-      }
-       if (sepuedeaCas1 && casillaAtras2 != null)
-      { 
-        if (casillaAtras2.Presente == null)
-        {
-         sepuedeaCas2 = true;
-        }
-      }
-
-      //Si las dos casillas de atrás están libres, elige la más atrás
-      if (sepuedeaCas1 && sepuedeaCas2)
-      {
-        //Si las dos casillas de atrás están libres, elige la más atrás
-        casillaAMover = casillaAtras2;
-      }
-      else if (sepuedeaCas1 && !sepuedeaCas2)
-      {
-        //Si solo la primera está libre, mueve a esa
-        casillaAMover = casillaAtras1;
-      }
-      else
-      {
-        //Si ninguna está libre, no se mueve
-        return;
-      }
-     
-      CasillaForzadoaMover = casillaAMover;
+      return;
     }
-  
 
-  
-  
+    LadoManager lado = casillaOrigen.ladoGO.GetComponent<LadoManager>();
+    if (lado == null)
+    {
+      return;
+    }
 
+    int posXBase = casillaOrigen.posX;
+    int posY = casillaOrigen.posY;
+    Casilla destino = null;
+
+    for (int paso = 1; paso <= cantidad; paso++)
+    {
+      Casilla casillaAtras = lado.ObtenerCasillaPorIndex(posXBase - paso, posY);
+      if (casillaAtras == null)
+      {
+        break;
+      }
+
+      if (casillaAtras.Presente != null && casillaAtras.Presente != gameObject)
+      {
+        destino = null;
+        break;
+      }
+
+      destino = casillaAtras;
+    }
+
+    if (destino == null || destino == CasillaPosicion || destino == CasillaForzadoaMover)
+    {
+      return;
+    }
+
+    CasillaForzadoaMover = destino;
+    CasillaDeseadaMov = null;
+    movimientoForzadoPendiente = true;
   }
 
   public virtual void ActualizarClaseComienzoTurno() //Método vacío que se llama cada vez que arranca turno de la unidad
@@ -2411,6 +2431,7 @@ void AcomodarSortingLayer()
 
     CasillaPosicion.Presente = null; //En habilidades teletransporte importante sacarlo de la casilla origen
     CasillaForzadoaMover = null;
+    movimientoForzadoPendiente = false;
     CasillaDeseadaMov = null;
     cas.PonerObjetoEnCasilla(gameObject);/**/
     LlegoACasilla(cas);

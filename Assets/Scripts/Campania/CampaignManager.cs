@@ -98,8 +98,8 @@ public class CampaignManager : MonoBehaviour
     CambiarOroActual(400);
     CambiarValorAlientoNegro(1);
 
-    scAtributosZona.ConstruirZonaBosqueAngustiante(1);
-    //scAtributosZona.ConstruirZonaPasoVientoHelado(1);
+    //scAtributosZona.ConstruirZonaBosqueAngustiante(1);
+    scAtributosZona.ConstruirZonaPasoVientoHelado(1);
 
 
     scMenuSequito.AgregarSequito(1);

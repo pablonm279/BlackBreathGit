@@ -23,8 +23,8 @@ public class IAUnidad : MonoBehaviour
    public int tendenciaMovX;
 
    public List<IAHabilidad> HabPosibles = new List<IAHabilidad>();
-   private const int MaxIntentosPorTurno = 10;
-   private const int TimeoutHabilidadMs = 6000;
+   private const int MaxIntentosPorTurno = 8;
+   private const int TimeoutHabilidadMs = 1300;
    private const int DelayFinTurnoMs = 600;
    
    public void Awake()

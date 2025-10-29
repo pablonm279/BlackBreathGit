@@ -1189,7 +1189,7 @@ public class TRADU : MonoBehaviour
                 r = "<color=#0cca74><b>Ritual of Cleansing: </b></color><color=#d3d3d3><i>The Purifier will perform protection rituals to combat the Black Breath.</color></i>\\n\\nChance to avoid Black Breath advance: 25% while resting, 15% per day.";
                 break;
             case "<color=#0cca74><b>Ayudar a los Desamparados: </b></color><color=#d3d3d3><i>La Purificadora usará su tiempo para ayudar a los rezagados y más débiles de la caravana.</color></i>\\n\\n+1d3 Esperanza diaria. +1 Fervor en combate.":
-                r = "<color=#0cca74><b>Help the Hopeless: </b></color><color=#d3d3d3><i>The Purifier will use her time to help the laggards and weaker members of the caravan.</color></i>\\n\\n+1d3 Hope per day. +1 Zeal in combat.";
+                r = "<color=#0cca74><b>Help the Hopeless: </b></color><color=#d3d3d3><i>The Purifier will use her time to help the laggards and weaker members of the caravan.</color></i>\\n\\n+1d3 Hope per day. +1 Fervor in combat.";
                 break;
             case "<color=#0cca74><b>Concentración Arcana: </b></color><color=#d3d3d3><i>El Canalizador se concentra y mantiene su poder preparado para cualquier combate que surja.</color></i>\\n\\n+1 Nivel de Energía al iniciar combates.":
                 r = "<color=#0cca74><b>Arcane Concentration: </b></color><color=#d3d3d3><i>The Channeler focuses and keeps their power ready for any combat that arises.</color></i>\\n\\n+1 Energy Level at the start of combats.";
@@ -2868,7 +2868,7 @@ public class TRADU : MonoBehaviour
             case "Enfoque Agresivo":
                 r = "Aggressive Focus";
                 break;
-              case "Descansando":
+            case "Descansando":
                 r = "Resting";
                 break;
             case "Gulek y Gul discuten tácticas, y resuelven adoptar un enfoque defensivo.":
@@ -2878,26 +2878,123 @@ public class TRADU : MonoBehaviour
                 r = "Gulek and Gul discuss tactics and decide to adopt an offensive approach.";
                 break;
             case "Gulek y Gul discuten tácticas, y resuelven descansar para recuperar fuerzas.":
-                      r = "Gulek and Gul discuss tactics and decide to rest to regain strength.";
-                      break;
-                /* case "":
-                    r = "";
-                    break;*/
+                r = "Gulek and Gul discuss tactics and decide to rest to regain strength.";
+                break;
+            case "Escudado: 10% chances por stack de evitar un ataque físico. Al evitar uno, pierde un stack.":
+                r = "Shielded: 10% chance per stack to avoid a physical attack. Upon avoiding one, it loses a stack.";
+                break;
+            case " bloquea el daño con su escudo.":
+                r = " blocks damage with its shield.";
+                break;
+            case "Bloqueado":
+                r = "Blocked";
+                break;
+            case "Golpe Mazo":
+                r = "Mace Strike";
+                break;
+            case "<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Unidad Escudada.\n-Buena Armadura.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Movimiento limitado.</color>":
+                r = "<i>Organization of human mercenaries who were part of the defeated army of Lich Kadryn. Now they seek revenge by ensuring that no one escapes the Black Breath of their master.</i>\n\n<color=#199F10>-Shielded Unit.\n-Good Armor.\n-Upon death, leaves a cloud of black breath.</color>\n<color=#EE0000>-Limited movement.</color>";
+                break;
+            case "Extasiado por Aliento Negro":
+                r = "Ecstatic from Black Breath";
+                break;
+            case "Restos de Aliento: Potencia y cura a los Vengadores de Kadryn.":
+                  r = "Breath Residue: Empowers and heals the Avengers of Kadryn.";
+                  break;
+            case "Reacción: Al morir genera restos de Aliento Negro en el campo de batalla.":
+                  r = "Reaction: Upon death, generates residues of Black Breath on the battlefield.";
+                  break;
+            case "Soldado Vengador de Kadryn":
+                  r = "Footman Avenger of Kadryn";
+                  break;
+            case " reacciona con Primer Golpe.":
+                  r = " reacts with First Strike.";
+                  break;
+            case "Primer Golpe: el Alabardero ataca a la primera unidad que entra en la casilla.":
+                  r = "First Strike: the Halberdier attacks the first unit that enters the square.";
+                  break;
+            case "Alabardero Vengador de Kadryn":
+                  r = "Halberdier Avenger of Kadryn";
+                  break;
+            case "Estocada Alabarda":
+                  r = "Halberd Thrust";
+                  break;
+            case "<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Buen ataque.\n-Flecha envenenada.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Poco resistente.</color>":
+                  r = "Organization of human mercenaries who were part of the defeated army of Lich Kadryn. Now they seek revenge by ensuring that no one escapes the Black Breath of their master.</i>\n\n<color=#199F10>-Precise.\n-Poison Arrow.\n-Upon death, leaves a cloud of black breath.</color>\n<color=#EE0000>-Poor resistance.";
+                  break;
+            case "Tiro con Arco":
+                  r = "Bow Shot";
+                  break;
+            case "Primer Golpe":
+                  r = "First Strike";
+                  break;
+            case "Predicador del Aliento Negro":
+                  r = "Preacher of the Black Breath";
+                  break;
+            case "Oración de Kadryn":
+                  r = "Kadryn's Prayer";
+                  break;
+            case "Rayo Necrótico":
+                  r = "Necrotic Ray";
+                  break;
+            case "Liturgia de la Putrefacción":
+                  r = "Litany of Putrefaction";
+                  break;
+            case "es presa de la Putrefacción.":
+                  r = "falls prey to the Putrefaction.";
+                  break;
+            case "Putrefacción":
+                  r = "Putrefaction";
+                  break;
+            case "El Aliento Negro se expande por el campo enemigo.":
+                  r = "The Black Breath spreads across the enemy field.";
+                  break;
+            case "desata un rayo necrótico sobre":
+                  r = "unleashes a necrotic ray upon";
+                  break;
+            case "Sus defensas se corroen por el Aliento Negro.":
+                  r = "Their defenses are corroded by the Black Breath.";
+                  break;
                 /*  case "":
-                      r = "";
-                      break;*/
+                  r = "";
+                  break;*/
                 /*  case "":
-                      r = "";
-                      break;*/
-                /* case "":
-                    r = "";
-                    break;*/
+                  r = "";
+                  break;*/
                 /*  case "":
-                      r = "";
-                      break;*/
+                  r = "";
+                  break;*/
                 /*  case "":
-                      r = "";
-                      break;*/
+                  r = "";
+                  break;*/
+                /*  case "":
+                  r = "";
+                  break;*/
+                /*  case "":
+                  r = "";
+                  break;*/
+                /*  case "":
+                  r = "";
+                  break;*/
+                /*  case "":
+                  r = "";
+                  break;*/
+                /*  case "":
+                  r = "";
+                  break;*/
+                /*  case "":
+                  r = "";
+                  break;*/
+                /*  case "":
+                  r = "";
+                  break;*/
+              /*  case "":
+                r = "";
+                break;*/
+              /*  case "":
+                r = "";
+                break;*/
+
 
 
 

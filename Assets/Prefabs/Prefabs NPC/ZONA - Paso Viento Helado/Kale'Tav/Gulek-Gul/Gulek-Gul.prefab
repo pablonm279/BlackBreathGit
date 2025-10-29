@@ -654,9 +654,9 @@ MonoBehaviour:
   mod_iniciativa: 1
   iniciativa_actual: 0
   esEtereo: 0
-  at_maxHP: 325
-  mod_maxHP: 325
-  HP_actual: 325
+  at_maxHP: 360
+  mod_maxHP: 360
+  HP_actual: 360
   at_maxAccionP: 4
   esInmobil: 0
   mod_maxAccionP: 4
@@ -665,8 +665,8 @@ MonoBehaviour:
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
   ValentiaP_actual: 0
-  at_CarFuerza: 7
-  mod_CarFuerza: 7
+  at_CarFuerza: 8
+  mod_CarFuerza: 8
   at_CarAgilidad: 2
   mod_CarAgilidad: 2
   at_CarPoder: 2
@@ -693,15 +693,15 @@ MonoBehaviour:
   Defensa_BonusPASinUsar: 0
   at_Ataque: 0
   mod_Ataque: 0
-  mod_DanioPorcentaje: 0
+  mod_DanioPorcentaje: 15
   at_CriticoRangoDado: 0
   mod_CriticoRangoDado: 0
   "at_CriticoDa\xF1oBonus": 0
   "mod_CriticoDa\xF1oBonus": 0
   at_TSReflejos: 1
   mod_TSReflejos: 1
-  at_TSFortaleza: 6
-  mod_TSFortaleza: 6
+  at_TSFortaleza: 7
+  mod_TSFortaleza: 7
   at_TSMental: 3
   mod_TSMental: 3
   ConsumibleA: {fileID: 0}

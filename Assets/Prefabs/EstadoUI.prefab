@@ -179,6 +179,7 @@ MonoBehaviour:
   imCorrupto: {fileID: 21300000, guid: 01c1a4a2c58e1cf4bbdda2485dd0634b, type: 3}
   imVolador: {fileID: 21300000, guid: 6f46cc383d8cbf04dbe87234214f6f90, type: 3}
   imCondena: {fileID: 21300000, guid: 0b3e5be7f913ca84db8eed7943c6d4c7, type: 3}
+  imEscudado: {fileID: 21300000, guid: 439756459e0bcaf4383e1c6d5fb43338, type: 3}
   imTierEnergia: {fileID: 21300000, guid: 098691b982b5f61439cb04e82bb88ff0, type: 3}
   scTooltipBatalla: {fileID: 0}
   debarravida: 0
