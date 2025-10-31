@@ -1,8 +1,29 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+
+[System.Serializable]
+public class BattleRewardTuning
+{
+   public float expPerPoint = 25f;
+   public float goldPerPoint = 18f;
+   public float materialsPerPoint = 2f;
+   public float defeatHopeLossPerPoint = 2f;
+   public float defeatCivilLossPerPoint = 1f;
+   public int defeatOxLoss = 0;
+   public float victoryHopeBonus = 10f;
+   public float itemChancePerPoint = 0f;
+}
+
+[System.Serializable]
+public class BattleRewardProfile
+{
+   public BattleEncounterType battleType;
+   public BattleRewardTuning tuning = new BattleRewardTuning();
+}
 
 public class MenuBatallas : MonoBehaviour
 {
@@ -12,13 +33,215 @@ public class MenuBatallas : MonoBehaviour
  public GameObject contenedorUIPersonajes; 
  public AdministradorEscenas scAdministradorEscenas;
 
- public GameObject btnComenzar;
+ [Header("Generador de encuentros")]
+ [SerializeField] List<string> corruptFactionIds = new List<string>() { "Corruptos" };
+ [SerializeField, Range(0f, 100f)] float chanceBatallaZona = 70f;
+ [SerializeField] float corruptChancePerAliento = 4f;
+ [SerializeField] List<BattleRewardProfile> rewardProfiles = new List<BattleRewardProfile>();
+ [SerializeField] BattleRewardTuning defaultRewardTuning = new BattleRewardTuning();
 
+ EncounterDefinition encuentroGeneradoActual;
+ EncounterZoneType encuentroZonaActual;
+ BattleEncounterType encuentroTipoActual;
 
-  public void ActualizarLista()
+ public GameObject UIEmpezarBatalla;
+ public GameObject UIEmpezarBatallaACaravana;
+ public GameObject UITerminarBatalla;
+ public GameObject txtVictoria;
+ public GameObject txtDerrota;
+ public TextMeshProUGUI txtRecompensa;
+ public TextMeshProUGUI txtMilicianosDisponibles;
+
+ [SerializeField] GameObject btnComenzar;
+
+ void Awake()
  {
-    int seleccionados = 0;
-    if (scAdministradorEscenas.Personaje1 != null) seleccionados++;
+    EnsureRewardProfiles();
+ }
+
+ void OnValidate()
+ {
+    EnsureRewardProfiles();
+ }
+
+ void EnsureRewardProfiles()
+ {
+    if (defaultRewardTuning == null)
+    {
+       defaultRewardTuning = new BattleRewardTuning();
+    }
+
+    if (rewardProfiles == null)
+    {
+       rewardProfiles = new List<BattleRewardProfile>();
+    }
+
+    foreach (BattleEncounterType tipo in Enum.GetValues(typeof(BattleEncounterType)))
+    {
+       var profile = rewardProfiles.Find(p => p != null && p.battleType == tipo);
+       if (profile == null)
+       {
+          profile = new BattleRewardProfile { battleType = tipo, tuning = new BattleRewardTuning() };
+          rewardProfiles.Add(profile);
+       }
+       else if (profile.tuning == null)
+       {
+          profile.tuning = new BattleRewardTuning();
+       }
+
+       switch (tipo)
+       {
+          case BattleEncounterType.Elite:
+             profile.tuning.expPerPoint = defaultRewardTuning.expPerPoint * 1.35f;
+             profile.tuning.goldPerPoint = defaultRewardTuning.goldPerPoint * 1.2f;
+             profile.tuning.materialsPerPoint = defaultRewardTuning.materialsPerPoint * 1.6f;
+             profile.tuning.defeatHopeLossPerPoint = defaultRewardTuning.defeatHopeLossPerPoint * 1.1f;
+             profile.tuning.defeatCivilLossPerPoint = Mathf.Max(defaultRewardTuning.defeatCivilLossPerPoint, 1.2f);
+             profile.tuning.victoryHopeBonus = Mathf.Max(defaultRewardTuning.victoryHopeBonus, 12f);
+             profile.tuning.itemChancePerPoint = Mathf.Max(defaultRewardTuning.itemChancePerPoint, 6f);
+             break;
+          case BattleEncounterType.AtaqueCaravana:
+             profile.tuning.expPerPoint = defaultRewardTuning.expPerPoint * 1.1f;
+             profile.tuning.goldPerPoint = defaultRewardTuning.goldPerPoint * 1.6f;
+             profile.tuning.materialsPerPoint = defaultRewardTuning.materialsPerPoint * 1.4f;
+             profile.tuning.defeatHopeLossPerPoint = defaultRewardTuning.defeatHopeLossPerPoint * 1.5f;
+             profile.tuning.defeatCivilLossPerPoint = Mathf.Max(defaultRewardTuning.defeatCivilLossPerPoint, 2f);
+             profile.tuning.defeatOxLoss = Mathf.Max(profile.tuning.defeatOxLoss, 1);
+             profile.tuning.victoryHopeBonus = Mathf.Max(defaultRewardTuning.victoryHopeBonus, 15f);
+             profile.tuning.itemChancePerPoint = Mathf.Max(defaultRewardTuning.itemChancePerPoint, 6f);
+             break;
+          case BattleEncounterType.Subterraneo:
+             profile.tuning.expPerPoint = defaultRewardTuning.expPerPoint * 1.2f;
+             profile.tuning.goldPerPoint = defaultRewardTuning.goldPerPoint * 0.9f;
+             profile.tuning.materialsPerPoint = defaultRewardTuning.materialsPerPoint * 2.0f;
+             profile.tuning.defeatHopeLossPerPoint = defaultRewardTuning.defeatHopeLossPerPoint * 1.2f;
+             profile.tuning.defeatCivilLossPerPoint = defaultRewardTuning.defeatCivilLossPerPoint * 0.5f;
+             profile.tuning.victoryHopeBonus = Mathf.Max(defaultRewardTuning.victoryHopeBonus * 0.8f, 6f);
+             profile.tuning.itemChancePerPoint = Mathf.Max(defaultRewardTuning.itemChancePerPoint, 4f);
+             break;
+          case BattleEncounterType.Normal:
+          default:
+             profile.tuning.expPerPoint = defaultRewardTuning.expPerPoint;
+             profile.tuning.goldPerPoint = defaultRewardTuning.goldPerPoint;
+             profile.tuning.materialsPerPoint = defaultRewardTuning.materialsPerPoint;
+             profile.tuning.defeatHopeLossPerPoint = defaultRewardTuning.defeatHopeLossPerPoint;
+             profile.tuning.defeatCivilLossPerPoint = defaultRewardTuning.defeatCivilLossPerPoint;
+             profile.tuning.defeatOxLoss = defaultRewardTuning.defeatOxLoss;
+             profile.tuning.victoryHopeBonus = defaultRewardTuning.victoryHopeBonus;
+             profile.tuning.itemChancePerPoint = defaultRewardTuning.itemChancePerPoint;
+             break;
+       }
+    }
+ }
+
+ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predicate<EnemyFactionConfig> factionFilter, out EncounterDefinition definition, int faseOverride = 0)
+ {
+    definition = null;
+    var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+    if (atributosZona == null)
+    {
+       return false;
+    }
+
+    int fase = faseOverride > 0 ? faseOverride : Mathf.Max(1, atributosZona.FASE);
+   return EncounterGenerator.TryGenerateEncounter(atributosZona, zona, tipo, fase, out definition, factionFilter);
+ }
+
+ bool EsFaccionCorrupta(string factionId)
+ {
+    if (string.IsNullOrWhiteSpace(factionId) || corruptFactionIds == null || corruptFactionIds.Count == 0)
+    {
+       return false;
+    }
+
+    foreach (var id in corruptFactionIds)
+    {
+       if (!string.IsNullOrWhiteSpace(id) && string.Equals(id, factionId, StringComparison.OrdinalIgnoreCase))
+       {
+          return true;
+       }
+    }
+    return false;
+ }
+
+ bool EsFaccionDeLista(EnemyFactionConfig faction, List<string> ids)
+ {
+    if (faction == null || ids == null || ids.Count == 0)
+    {
+       return false;
+    }
+
+    foreach (var id in ids)
+    {
+       if (!string.IsNullOrWhiteSpace(id) && string.Equals(id, faction.factionId, StringComparison.OrdinalIgnoreCase))
+       {
+          return true;
+       }
+    }
+    return false;
+ }
+
+ bool DeberiaGenerarBatallaCorrupta()
+ {
+    if (corruptFactionIds == null || corruptFactionIds.Count == 0)
+    {
+       return false;
+    }
+
+    float aliento = CampaignManager.Instance != null ? CampaignManager.Instance.GetValorAlientoNegro() : 0f;
+    float chance = Mathf.Clamp(aliento * corruptChancePerAliento, 0f, 100f);
+    return UnityEngine.Random.Range(0f, 100f) < chance;
+ }
+
+ int ObtenerJefeIdAleatorio(EncounterZoneType zona, int fase)
+ {
+    List<int> ids = null;
+    switch (zona)
+    {
+       case EncounterZoneType.PasoVientoHelado:
+          if (fase == 1)
+          {
+             ids = new List<int> { 60, 61 };
+          }
+          break;
+       case EncounterZoneType.BosqueAngustiante:
+       default:
+          if (fase == 1)
+          {
+             ids = new List<int> { 11, 12 };
+          }
+          break;
+    }
+
+    if (ids != null && ids.Count > 0)
+    {
+       return ids[UnityEngine.Random.Range(0, ids.Count)];
+    }
+
+    return 0;
+ }
+
+ BattleRewardTuning GetRewardTuning(BattleEncounterType tipo)
+ {
+    if (rewardProfiles != null)
+    {
+       foreach (var profile in rewardProfiles)
+       {
+          if (profile != null && profile.battleType == tipo && profile.tuning != null)
+          {
+             return profile.tuning;
+          }
+       }
+    }
+
+    return defaultRewardTuning ?? new BattleRewardTuning();
+ }
+
+
+ public void ActualizarLista()
+{
+   int seleccionados = 0;
+   if (scAdministradorEscenas.Personaje1 != null) seleccionados++;
     if (scAdministradorEscenas.Personaje2 != null) seleccionados++;
     if (scAdministradorEscenas.Personaje3 != null) seleccionados++;
     if (scAdministradorEscenas.Personaje4 != null) seleccionados++;
@@ -114,11 +337,11 @@ public class MenuBatallas : MonoBehaviour
 
  }
  
-  public void DejanEnListaParticipantesSolo()
-  {
-     
-    foreach (Transform boton in contenedorUIPersonajes.transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
-    {
+public void DejanEnListaParticipantesSolo()
+ {
+   
+  foreach (Transform boton in contenedorUIPersonajes.transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
+   {
            btnPersonaje btn = boton.gameObject.GetComponent<btnPersonaje>();
            
             bool participo = false;
@@ -199,10 +422,10 @@ public class MenuBatallas : MonoBehaviour
 
     
  }
- public TextMeshProUGUI txtSeleccionadosPersonajes;
+ [SerializeField] TextMeshProUGUI txtSeleccionadosPersonajes;
  public int esEmboscadaEnemiga;
  public int EventoBatallaID = 0;
- public void EventoBatallaNormal(int n, int esEmboscada = 0)
+  public void EventoBatallaNormal(int n, int esEmboscada = 0)
  {  
     esEmboscadaEnemiga = esEmboscada;
 
@@ -210,71 +433,96 @@ public class MenuBatallas : MonoBehaviour
     UIEmpezarBatalla.SetActive(true);
     UIEmpezarBatallaACaravana.SetActive(false);
     UITerminarBatalla.SetActive(false);
-   //Si n es 0, el ID se determina al azar
-   if (n==0)
-   {
-    AtributosZona scZona = CampaignManager.Instance.scAtributosZona;
 
-            if (scZona.FASE == 1) //Encuentros para FASE 1
+    encuentroGeneradoActual = null;
+    encuentroTipoActual = BattleEncounterType.Normal;
+    EventoBatallaID = n;
+
+    var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+    EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
+    encuentroZonaActual = zonaActual;
+
+    if (n == 0)
+    {
+        bool generado = false;
+
+        if (DeberiaGenerarBatallaCorrupta())
+        {
+            generado = TryGenerarEncuentro(BattleEncounterType.Normal, EncounterZoneType.Generico, f => EsFaccionDeLista(f, corruptFactionIds), out encuentroGeneradoActual);
+            if (generado)
             {
-              int probabilidadesBatallaCorrupta = (int)CampaignManager.Instance.GetValorAlientoNegro()*4;
-
-              int tiradaCorrupta = UnityEngine.Random.Range(1, 100);
-              if (tiradaCorrupta < probabilidadesBatallaCorrupta) // Batalla CORRUPTA
-                {
-                    int randomEncuentroCorrupto =UnityEngine.Random.Range(1, 6);
-                    switch (randomEncuentroCorrupto)
-                    {
-                        case 1: EventoBatallaID = 600; break;
-                        case 2: EventoBatallaID = 601; break;
-                        case 3: EventoBatallaID = 602; break;
-                        case 4: EventoBatallaID = 603; break;
-                        case 5: EventoBatallaID = 604; break;
-                    }
-
-                }
-                else if(UnityEngine.Random.Range(1, 100) < 70) // Batalla de ZONA  
-                {
-
-                    int randomEncuentroNormal =UnityEngine.Random.Range(1, 8);
-                    switch (randomEncuentroNormal)
-                    {
-                        case 1: EventoBatallaID = scZona.FASE1IDEncuentroNormal1; break;
-                        case 2: EventoBatallaID = scZona.FASE1IDEncuentroNormal2; break;
-                        case 3: EventoBatallaID = scZona.FASE1IDEncuentroNormal3; break;
-                        case 4: EventoBatallaID = scZona.FASE1IDEncuentroNormal4; break;
-                        case 5: EventoBatallaID = scZona.FASE1IDEncuentroNormal5; break;
-                        case 6: EventoBatallaID = scZona.FASE1IDEncuentroNormal6; break;
-                        case 7: EventoBatallaID = scZona.FASE1IDEncuentroNormal7; break;
-                    }
-                }
-                else //Batalla GENERICA 
-                {
-                    int randomEncuentroGenerico =UnityEngine.Random.Range(1, 9);
-                    switch (randomEncuentroGenerico)
-                    {
-                        case 1: EventoBatallaID = 500; break; //Bandidos 
-                        case 2: EventoBatallaID = 501; break; //Bandidos II
-                        case 3: EventoBatallaID = 502; break; //Bandidos III
-                        case 4: EventoBatallaID = 503; break; //Bandidos IV
-                        //--504 y 505 son Ataques a Caravana
-                        case 5: EventoBatallaID = 506; break; //Vengadores I
-                        case 6: EventoBatallaID = 507; break; //Vengadores II
-                        case 7: EventoBatallaID = 508; break; //Vengadores III
-                        case 8: EventoBatallaID = 509; break; //Vengadores IV
-                        //--510 y 511 son Ataques a Caravana
-
-                    }
-                }
+                encuentroZonaActual = EncounterZoneType.Generico;
             }
-   }
-   else //Si no es 0, es especifico
-   { 
-    EventoBatallaID = n;
-   }
+        }
+
+        if (!generado && UnityEngine.Random.Range(0f, 100f) < chanceBatallaZona)
+        {
+            generado = TryGenerarEncuentro(BattleEncounterType.Normal, zonaActual, null, out encuentroGeneradoActual);
+            if (generado)
+            {
+                encuentroZonaActual = zonaActual;
+            }
+        }
+
+        if (!generado)
+        {
+            generado = TryGenerarEncuentro(BattleEncounterType.Normal, EncounterZoneType.Generico, null, out encuentroGeneradoActual);
+            if (generado)
+            {
+                encuentroZonaActual = EncounterZoneType.Generico;
+            }
+        }
+
+        if (!generado)
+        {
+            TryGenerarEncuentro(BattleEncounterType.Normal, zonaActual, null, out encuentroGeneradoActual);
+            encuentroZonaActual = zonaActual;
+        }
+
+        EventoBatallaID = encuentroGeneradoActual != null ? 0 : EventoBatallaID;
+    }
+    else
+    {
+        encuentroGeneradoActual = null;
+    }
+
     ActualizarLista();
- }
- public void EventoBatallaElite(int n, int esEmboscada = 0)
+ } public void EventoBatallaElite(int n, int esEmboscada = 0)
+ {
+    esEmboscadaEnemiga = esEmboscada;
+
+    gameObject.SetActive(true);
+    UIEmpezarBatalla.SetActive(true);
+    UIEmpezarBatallaACaravana.SetActive(false);
+    UITerminarBatalla.SetActive(false);
+
+    encuentroGeneradoActual = null;
+    encuentroTipoActual = BattleEncounterType.Elite;
+    EventoBatallaID = n;
+
+    var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+    EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
+    encuentroZonaActual = zonaActual;
+
+    if (n == 0)
+    {
+        if (!TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, null, out encuentroGeneradoActual))
+        {
+            if (TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, null, out encuentroGeneradoActual))
+            {
+                encuentroZonaActual = EncounterZoneType.Generico;
+            }
+        }
+
+        EventoBatallaID = encuentroGeneradoActual != null ? 0 : EventoBatallaID;
+    }
+    else
+    {
+        encuentroGeneradoActual = null;
+    }
+
+    ActualizarLista();
+ } public void EventoBatallaFinal(int n, int esEmboscada = 0)
  {  
     esEmboscadaEnemiga = esEmboscada;
 
@@ -282,864 +530,170 @@ public class MenuBatallas : MonoBehaviour
     UIEmpezarBatalla.SetActive(true);
     UIEmpezarBatallaACaravana.SetActive(false);
     UITerminarBatalla.SetActive(false);
-   //Si n es 0, el ID se determina al azar
-   if (n==0)
-   {
-    AtributosZona scZona = CampaignManager.Instance.scAtributosZona;
-    if(scZona.FASE == 1) //Encuentros para FASE 1
+
+    encuentroGeneradoActual = null;
+    encuentroTipoActual = BattleEncounterType.Normal;
+    var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+    encuentroZonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
+
+    if (n == 0)
     {
-        int randomEncuentroNormal =UnityEngine.Random.Range(1,4);
-        switch(randomEncuentroNormal)
+        int faseActual = atributosZona != null ? Mathf.Max(1, atributosZona.FASE) : 1;
+        int jefeId = ObtenerJefeIdAleatorio(encuentroZonaActual, faseActual);
+        if (jefeId != 0)
         {
-            case 1: EventoBatallaID = scZona.FASE1IDEncuentroElite1; break;
-            case 2: EventoBatallaID = scZona.FASE1IDEncuentroElite2; break;
-            case 3: EventoBatallaID = scZona.FASE1IDEncuentroElite3; break;
-        
+            EventoBatallaID = jefeId;
         }
     }
-   }
-   else //Si no es 0, es especifico
-   { 
-    EventoBatallaID = n;
-   }
+    else
+    {
+        EventoBatallaID = n;
+    }
 
     ActualizarLista();
- }
-
- public void EventoBatallaFinal(int n, int esEmboscada = 0)
- {  
+ } public void EventoBatallaCaravana(int n, int esEmboscada = 3/*3 es Ataque a Caravana*/)
+ {
     esEmboscadaEnemiga = esEmboscada;
 
     gameObject.SetActive(true);
-    UIEmpezarBatalla.SetActive(true);
-    UIEmpezarBatallaACaravana.SetActive(false);
+    UIEmpezarBatallaACaravana.SetActive(true);
+    UIEmpezarBatalla.SetActive(false);
     UITerminarBatalla.SetActive(false);
-   //Si n es 0, el ID se determina al azar
-   if (n==0)
-   {
-    AtributosZona scZona = CampaignManager.Instance.scAtributosZona;
-    if(scZona.FASE == 1) //Encuentros para FASE 1
+
+    if (txtMilicianosDisponibles != null)
     {
-        int randomEncuentroFinal = UnityEngine.Random.Range(1, 3);
-        switch (randomEncuentroFinal)
-        {
-            case 1: EventoBatallaID = scZona.FASE1IDEncuentroJefe1; break;
-            case 2: EventoBatallaID = scZona.FASE1IDEncuentroJefe2; break;
-        }
-    }
-   }
-   else //Si no es 0, es especifico
-   { 
-    EventoBatallaID = n;
-   }
-
-    ActualizarLista();
- }
-
-     public TextMeshProUGUI txtMilicianosDisponibles;
-
-    public void EventoBatallaCaravana(int n, int esEmboscada = 3/*3 es Ataque a Caravana*/)
-    {
-        esEmboscadaEnemiga = esEmboscada;
-
-        gameObject.SetActive(true);
-        UIEmpezarBatallaACaravana.SetActive(true);
-        UIEmpezarBatalla.SetActive(false);
-        UITerminarBatalla.SetActive(false);
-
         txtMilicianosDisponibles.text = "Milicianos disponibles: " + (int)CampaignManager.Instance.GetMiliciasActual() / 10;
-
-        // Autoseleccionar guardia/vigilar: tomar los primeros 4 de la lista si hay mas de 4
-        scAdministradorEscenas.Personaje1 = null;
-        scAdministradorEscenas.Personaje2 = null;
-        scAdministradorEscenas.Personaje3 = null;
-        scAdministradorEscenas.Personaje4 = null;
-
-        int asignados = 0;
-        foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
-        {
-            if (asignados >= 4) break;
-            if (pers == null) continue;
-            if (pers.Camp_Muerto) continue;
-            if (pers.fVidaActual <= 1) continue;
-            if (!((/*Base: Guardia*/pers.ActividadSeleccionada == 3) || (/*Caballero: Vigilar*/pers.ActividadSeleccionada == 6))) continue;
-
-            asignados++;
-            if (asignados == 1) scAdministradorEscenas.Personaje1 = pers;
-            else if (asignados == 2) scAdministradorEscenas.Personaje2 = pers;
-            else if (asignados == 3) scAdministradorEscenas.Personaje3 = pers;
-            else if (asignados == 4) scAdministradorEscenas.Personaje4 = pers;
-        }
-
-        //Si n es 0, el ID se determina al azar
-        if (n == 0)
-        {
-            AtributosZona scZona = CampaignManager.Instance.scAtributosZona;
-            if (scZona.FASE == 1) //Encuentros para FASE 1
-            {
-                int probabilidadesBatallaCorrupta = (int)CampaignManager.Instance.GetValorAlientoNegro() * 4;
-
-                int tiradaCorrupta =UnityEngine.Random.Range(1, 100);
-                if (tiradaCorrupta < probabilidadesBatallaCorrupta) // Batalla CORRUPTA
-                {
-                    int randomEncuentroCorrupto = UnityEngine.Random.Range(1, 6);
-                    switch (randomEncuentroCorrupto)
-                    {
-                        case 1: EventoBatallaID = 605; break;//Corruptos Ataque a Caravana I
-                        case 2: EventoBatallaID = 606; break;//Corruptos Ataque a Caravana II
-                    }
-
-                }
-                else if(UnityEngine.Random.Range(1, 100) < 70)
-                {
-                    int randomEncuentroNormal = UnityEngine.Random.Range(1, 3);
-                    switch (randomEncuentroNormal)
-                    {
-                        case 1: EventoBatallaID = scZona.FASE1IDAtaqueCaravana1; break;
-                        case 2: EventoBatallaID = scZona.FASE1IDAtaqueCaravana2; break;
-                    }
-
-                }
-                else //Encuentros genéricos
-                {
-                    int randomEncuentroGenerico = UnityEngine.Random.Range(1, 5);
-                    switch (randomEncuentroGenerico)
-                    {
-                        case 1: EventoBatallaID = 504; break; //Bandidos Ataque a Caravana I
-                        case 2: EventoBatallaID = 505; break; //Bandidos Ataque a Caravana II
-                        case 3: EventoBatallaID = 510; break; //Vengadores Ataque a Caravana I
-                        case 4: EventoBatallaID = 511; break; //Vengadores Ataque a Caravana II
-                    }
-                }
-
-                if(EventoBatallaID == 0) //Si por alguna razón no se asignó un ID, se asigna uno genérico
-                {
-                    EventoBatallaID =  EventoBatallaID = scZona.FASE1IDAtaqueCaravana1; //Bandidos Ataque a Caravana I
-
-                }
-
-
-
-            }
-
-            // Se actualiza la UI al final del metodo para ambos caminos
-        }
-        else //Si no es 0, es especifico
-        {
-         EventoBatallaID = n;
-        }
-
-        // Refrescar la lista con la seleccion automatica aplicada
-        ActualizarLista();
-
     }
 
-    public void EventoBatallaSubterranea(int FASE) //ID de 400 a 449
+    scAdministradorEscenas.Personaje1 = null;
+    scAdministradorEscenas.Personaje2 = null;
+    scAdministradorEscenas.Personaje3 = null;
+    scAdministradorEscenas.Personaje4 = null;
+
+    int asignados = 0;
+    foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
     {
-        //Es emboscada enemiga, es un ataque subterráneo
+        if (asignados >= 4) break;
+        if (pers == null) continue;
+        if (pers.Camp_Muerto) continue;
+        if (pers.fVidaActual <= 1) continue;
+        if (!((pers.ActividadSeleccionada == 3) || (pers.ActividadSeleccionada == 6))) continue;
 
-        esEmboscadaEnemiga = 1; //Es emboscada, es un ataque subterráneo
-
-        gameObject.SetActive(true);
-        UIEmpezarBatalla.SetActive(true);
-        UITerminarBatalla.SetActive(false);
-
-        txtMilicianosDisponibles.text = "Milicianos disponibles: " + (int)CampaignManager.Instance.GetMiliciasActual() / 10;
-
-        if (FASE == 1)
-        {
-            int randomSubterraneo = UnityEngine.Random.Range(1, 4);
-            switch (randomSubterraneo)
-            {
-                case 1: EventoBatallaID = 400; break;
-                case 2: EventoBatallaID = 401; break;
-                case 3: EventoBatallaID = 402; break;
-            }
-        }
-        else if (FASE == 2)
-        {
-            int randomSubterraneo = UnityEngine.Random.Range(1, 4);
-            switch (randomSubterraneo)
-            {
-                case 1: EventoBatallaID = 403; break;
-                case 2: EventoBatallaID = 404; break;
-                case 3: EventoBatallaID = 405; break;
-            }
-        }
-        else if (FASE == 3)
-        {
-            int randomSubterraneo = UnityEngine.Random.Range(1, 4);
-            switch (randomSubterraneo)
-            {
-                case 1: EventoBatallaID = 406; break;
-                case 2: EventoBatallaID = 407; break;
-                case 3: EventoBatallaID = 408; break;
-            }
-        }
-
-
-        ActualizarLista();
+        asignados++;
+        if (asignados == 1) scAdministradorEscenas.Personaje1 = pers;
+        else if (asignados == 2) scAdministradorEscenas.Personaje2 = pers;
+        else if (asignados == 3) scAdministradorEscenas.Personaje3 = pers;
+        else if (asignados == 4) scAdministradorEscenas.Personaje4 = pers;
     }
-   
- public GameObject UIEmpezarBatalla;
- public GameObject UIEmpezarBatallaACaravana;
 
- public GameObject UITerminarBatalla;
- public GameObject txtVictoria;
- public GameObject txtDerrota;
- public TextMeshProUGUI txtRecompensa;
- public void EfectosDeBatallaEnCampaña(int resultado) //1 Ganó, 0 Perdió
+    encuentroGeneradoActual = null;
+    encuentroTipoActual = BattleEncounterType.AtaqueCaravana;
+    EventoBatallaID = n;
+
+    var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+    EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
+    encuentroZonaActual = zonaActual;
+
+    if (n == 0)
+    {
+        bool generado = false;
+
+        if (DeberiaGenerarBatallaCorrupta())
+        {
+            generado = TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, EncounterZoneType.Generico, f => EsFaccionDeLista(f, corruptFactionIds), out encuentroGeneradoActual);
+            if (generado)
+            {
+                encuentroZonaActual = EncounterZoneType.Generico;
+            }
+        }
+
+        if (!generado && UnityEngine.Random.Range(0f, 100f) < chanceBatallaZona)
+        {
+            generado = TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, zonaActual, null, out encuentroGeneradoActual);
+            if (generado)
+            {
+                encuentroZonaActual = zonaActual;
+            }
+        }
+
+        if (!generado)
+        {
+            generado = TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, EncounterZoneType.Generico, null, out encuentroGeneradoActual);
+            if (generado)
+            {
+                encuentroZonaActual = EncounterZoneType.Generico;
+            }
+        }
+
+        if (!generado)
+        {
+            TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, zonaActual, null, out encuentroGeneradoActual);
+            encuentroZonaActual = zonaActual;
+        }
+
+        EventoBatallaID = encuentroGeneradoActual != null ? 0 : EventoBatallaID;
+    }
+    else
+    {
+        encuentroGeneradoActual = null;
+    }
+
+    ActualizarLista();
+ } public void EventoBatallaSubterranea(int fase)
+ {
+    esEmboscadaEnemiga = 1; // Ataque subterraneo siempre emboscada enemiga
+
+    gameObject.SetActive(true);
+    UIEmpezarBatalla.SetActive(true);
+    UIEmpezarBatallaACaravana.SetActive(false);
+    UITerminarBatalla.SetActive(false);
+
+    if (txtMilicianosDisponibles != null)
+    {
+        txtMilicianosDisponibles.text = "Milicianos disponibles: " + (int)CampaignManager.Instance.GetMiliciasActual() / 10;
+    }
+
+    encuentroGeneradoActual = null;
+    encuentroTipoActual = BattleEncounterType.Subterraneo;
+    encuentroZonaActual = EncounterZoneType.Subterraneo;
+    EventoBatallaID = 0;
+
+    int faseClamped = Mathf.Max(1, fase);
+    if (!TryGenerarEncuentro(BattleEncounterType.Subterraneo, EncounterZoneType.Subterraneo, null, out encuentroGeneradoActual, faseClamped))
+    {
+        var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+        EncounterZoneType zonaFallback = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
+        encuentroZonaActual = zonaFallback;
+        TryGenerarEncuentro(BattleEncounterType.Subterraneo, zonaFallback, null, out encuentroGeneradoActual, faseClamped);
+    }
+
+    ActualizarLista();
+ } public void EfectosDeBatallaEnCampaña(int resultado)
  {
     UIEmpezarBatalla.SetActive(false);
     UITerminarBatalla.SetActive(true);
 
-        if (resultado == 1)
-        {
-            txtVictoria.SetActive(true);
-            txtDerrota.SetActive(false);
-            CampaignManager.Instance.CambiarEsperanzaActual(10); //ganar siempre aumenta 10 de base
-        }
-        else
-        {
-            txtVictoria.SetActive(false);
-            txtDerrota.SetActive(true);
-        }
+    if (resultado == 1)
+    {
+        txtVictoria.SetActive(true);
+        txtDerrota.SetActive(false);
+    }
+    else
+    {
+        txtVictoria.SetActive(false);
+        txtDerrota.SetActive(true);
+    }
 
     int aumentochancesitem = 0;
-    //Resultados batalla BOSQUE ARDIENTE
-    #region
-    if (EventoBatallaID == 1) //FASE 1 Bosque Ardiente Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 120 Exp, 140 Oro y 10 Materiales.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "120 Exp, 140 Gold and 10 Materials obtained.";
-            }
-          
-            CampaignManager.Instance.CambiarOroActual(140);
-            CampaignManager.Instance.CambiarMaterialesActuales(10);
-            DarExperiencia(120);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 15 Civiles fueron asesinados, -15 esperanza";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan, 15 Civilians killed, -15 hope";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-15);
-            CampaignManager.Instance.CambiarEsperanzaActual(-15);
-        }
-    }
-    if (EventoBatallaID == 2) //FASE 1 Bosque Ardiente Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 135 Exp, 100 Oro y 15 Materiales.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "135 Exp, 100 Gold and 15 Materials obtained.";
-            }
-            CampaignManager.Instance.CambiarOroActual(100);
-            CampaignManager.Instance.CambiarMaterialesActuales(15);
-            DarExperiencia(135);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 20 Civiles fueron asesinados, -17 esperanza";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan, 20 Civilians killed, -17 hope";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-20);
-            CampaignManager.Instance.CambiarEsperanzaActual(-17);
-        }
-    }
-    if (EventoBatallaID == 3) //FASE 1 Bosque Ardiente Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 105 Exp, 80 Oro y 13 Materiales.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "105 Exp, 80 Gold and 13 Materials obtained.";
-            }
-            CampaignManager.Instance.CambiarOroActual(80);
-            CampaignManager.Instance.CambiarMaterialesActuales(13);
-            DarExperiencia(105);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 12 Civiles fueron asesinados, -12 esperanza";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan, 12 Civilians killed, -12 hope";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-12);
-            CampaignManager.Instance.CambiarEsperanzaActual(-12);
-        }
-    }
-    if (EventoBatallaID == 4) //FASE 1 Bosque Ardiente Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 125 Exp, 110 Oro y 10 Materiales.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "125 Exp, 110 Gold and 10 Materials obtained.";
-            }
-            CampaignManager.Instance.CambiarOroActual(110);
-            CampaignManager.Instance.CambiarMaterialesActuales(10);
-            DarExperiencia(125);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 18 Civiles fueron asesinados, -16 esperanza";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan, 18 Civilians killed, -16 hope";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-18);
-            CampaignManager.Instance.CambiarEsperanzaActual(-16);
-        }
-    }
-    if (EventoBatallaID == 5) //FASE 1 Bosque Ardiente Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 152 Exp, 101 Oro y 22 Materiales.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "152 Exp, 101 Gold and 22 Materials obtained.";
-            }
-            CampaignManager.Instance.CambiarOroActual(101);
-            CampaignManager.Instance.CambiarMaterialesActuales(22);
-            DarExperiencia(152);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 17 Civiles fueron asesinados, -14 esperanza";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan, 17 Civilians killed, -14 hope";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-17);
-            CampaignManager.Instance.CambiarEsperanzaActual(-14);
-        }
-    }
-    if (EventoBatallaID == 6) //FASE 1 Bosque Ardiente Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 220 Exp, 141 Oro.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "220 Exp, 141 Gold obtained.";
-            }
-            CampaignManager.Instance.CambiarOroActual(141);
-            DarExperiencia(220);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 13 Civiles fueron asesinados, -21 esperanza";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan, 13 Civilians killed, -21 hope";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-13);
-            CampaignManager.Instance.CambiarEsperanzaActual(-21);
-        }
-    }
-    if (EventoBatallaID == 7) //FASE 1 Bosque Ardiente Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 95 Exp, 88 Oro y 9 Materiales.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "95 Exp, 88 Gold and 9 Materials obtained.";
-            }
-            CampaignManager.Instance.CambiarOroActual(88);
-            CampaignManager.Instance.CambiarMaterialesActuales(9);
-            DarExperiencia(95);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 11 Civiles fueron asesinados, -10 esperanza";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan, 11 Civilians killed, -10 hope";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-11);
-            CampaignManager.Instance.CambiarEsperanzaActual(-10);
-        }
-    }
-    if (EventoBatallaID == 8) //FASE 1 Bosque Ardiente Elite
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 310 Exp, 180 Oro y 25 Materiales.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "310 Exp, 180 Gold and 25 Materials obtained.";
-            }
-            CampaignManager.Instance.CambiarOroActual(180);
-            CampaignManager.Instance.CambiarMaterialesActuales(25);
-            aumentochancesitem += 100; //Batallas elite garantizan Items
-            DarExperiencia(310);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 21 Civiles fueron asesinados, -15 esperanza, 1 Buey asesinado.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan, 21 Civilians killed, -15 hope, 1 Ox killed.";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-21);
-            CampaignManager.Instance.CambiarEsperanzaActual(-15);
-            CampaignManager.Instance.CambiarBueyesActuales(-1);
 
-        }
-    }
-    if (EventoBatallaID == 9) //FASE 1 Bosque Ardiente Elite
+    if (encuentroGeneradoActual != null)
     {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 305 Exp, 120 Oro y 32 Materiales.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "305 Exp, 120 Gold and 32 Materials obtained.";
-            }
-            CampaignManager.Instance.CambiarOroActual(120);
-            CampaignManager.Instance.CambiarMaterialesActuales(32);
-            aumentochancesitem += 100; //Batallas elite garantizan Items
-            DarExperiencia(305);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 19 Civiles fueron asesinados, -13 esperanza, 1 Buey asesinado.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan, 19 Civilians killed, -13 hope, 1 Ox killed.";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-19);
-            CampaignManager.Instance.CambiarEsperanzaActual(-13);
-            CampaignManager.Instance.CambiarBueyesActuales(-1);
-        }
+        ProcesarEncuentroGenerado(resultado, ref aumentochancesitem);
     }
-        if (EventoBatallaID == 11) //FASE 1 Bosque Ardiente Jefe Arbol Lamentos
-        {
-            if (resultado == 1) //Victoria
-            {
-                if (TRADU.i.nIdioma == 1)
-                {
-                    txtRecompensa.text = "Se han obtenido 580 Exp, 310 Oro y 32 Materiales.";
-                }
-                else if (TRADU.i.nIdioma == 2)
-                {
-                    txtRecompensa.text = "580 Exp, 310 Gold and 32 Materials obtained.";
-                }
-                CampaignManager.Instance.CambiarOroActual(310);
-                CampaignManager.Instance.CambiarMaterialesActuales(40);
-                aumentochancesitem += 100; //Batallas elite garantizan Items
-                DarExperiencia(580);
-                //Efectos victoria siguiente zona- HACER
-
-            }
-            else //Derrota
-            {
-                if (TRADU.i.nIdioma == 1)
-                {
-                    txtRecompensa.text = "La caravana ha fracasado. Fin del juego.";
-                }
-                else if (TRADU.i.nIdioma == 2)
-                {
-                    txtRecompensa.text = "The caravan has failed. Game over.";
-                }
-            }
-
-            if (CampaignManager.Instance.scTutorialManager.tutorialActivo)
-            {
-                CampaignManager.Instance.scTutorialManager.establecerPasoEspecifico(12);
-            }
-            else
-            { 
-                CampaignManager.Instance.OnDerrotadoJefeZona();
-
-            }
-    }
-    #endregion
-
-    //Resultados batalla BANDIDOS
-    #region 
-    if (EventoBatallaID == 500) //FASE 1 Bandidos Normal
+    else
     {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 110 Exp, 150 Oro y 3 Materiales.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "110 Exp, 150 Gold and 3 Materials obtained.";
-            }
-            CampaignManager.Instance.CambiarOroActual(150);
-            CampaignManager.Instance.CambiarMaterialesActuales(3);
-            DarExperiencia(110);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 5 Civiles fueron asesinados, -8 esperanza, 65 oro robado.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan, 5 Civilians killed, -8 hope, 65 gold stolen.";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-5);
-            CampaignManager.Instance.CambiarEsperanzaActual(-8);
-            CampaignManager.Instance.CambiarOroActual(-65);
-        }
+        ProcesarEncuentroLegacy(resultado, ref aumentochancesitem);
     }
-    if (EventoBatallaID == 501) //FASE 1 Bandidos Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 120 Exp, 130 Oro y 2 Materiales.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "120 Exp, 130 Gold and 2 Materials obtained.";
-            }
-            CampaignManager.Instance.CambiarOroActual(130);
-            CampaignManager.Instance.CambiarMaterialesActuales(2);
-            DarExperiencia(120);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 8 Civiles fueron asesinados, -11 esperanza, 45 oro robado.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan, 8 Civilians killed, -11 hope, 45 gold stolen.";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-8);
-            CampaignManager.Instance.CambiarEsperanzaActual(-11);
-            CampaignManager.Instance.CambiarOroActual(-45);
-        }
-    }
-    if (EventoBatallaID == 502) //FASE 1 Bandidos Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 140 Exp, 170 Oro y 11 Materiales.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "140 Exp, 170 Gold and 11 Materials obtained.";
-            }
-            CampaignManager.Instance.CambiarOroActual(170);
-            CampaignManager.Instance.CambiarMaterialesActuales(11);
-            DarExperiencia(140);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 10 Civiles fueron asesinados, -14 esperanza, 61 oro robado.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan, 10 Civilians killed, -14 hope, 61 gold stolen.";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-10);
-            CampaignManager.Instance.CambiarEsperanzaActual(-14);
-            CampaignManager.Instance.CambiarOroActual(-61);
-        }
-    }
-    if (EventoBatallaID == 503) //FASE 1 Bandidos Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 114 Exp, 155 Oro y 9 Materiales.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "114 Exp, 155 Gold and 9 Materials obtained.";
-            }
-            CampaignManager.Instance.CambiarOroActual(155);
-            CampaignManager.Instance.CambiarMaterialesActuales(9);
-            DarExperiencia(114);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana, 4 Civiles fueron asesinados, -9 esperanza, 50 oro robado.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan, 4 Civilians killed, -9 hope, 50 gold stolen.";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-4);
-            CampaignManager.Instance.CambiarEsperanzaActual(-9);
-            CampaignManager.Instance.CambiarOroActual(-50);
-        }
-    }
-    #endregion
-
-    //Resultados batalla CORRUPTOS
-    #region 
-    if (EventoBatallaID == 600) //FASE 1 Corruptos Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 160 Exp, -1 Avance Aliento Negro.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "160 Exp, -1 Black Breath Progress.";
-            }
-            DarExperiencia(160);
-            CampaignManager.Instance.CambiarValorAlientoNegro(-1);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana de los Corruptos, 13 Civiles fueron asesinados, -11 esperanza, +1 Avance Aliento Negro.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan from the Corrupted, 13 Civilians killed, -11 hope, +1 Black Breath Progress.";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-13);
-            CampaignManager.Instance.CambiarEsperanzaActual(-11);
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
-        }
-    }
-    if (EventoBatallaID == 601) //FASE 1 Corruptos Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 180 Exp, -1 Avance Aliento Negro.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "180 Exp, -1 Black Breath Progress.";
-            }
-            DarExperiencia(180);
-            CampaignManager.Instance.CambiarValorAlientoNegro(-1);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana de los Corruptos, 15 Civiles fueron asesinados, -12 esperanza, +1 Avance Aliento Negro.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan from the Corrupted, 15 Civilians killed, -12 hope, +1 Black Breath Progress.";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-15);
-            CampaignManager.Instance.CambiarEsperanzaActual(-12);
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
-        }
-    }
-    if (EventoBatallaID == 602) //FASE 1 Corruptos Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 140 Exp, -1 Avance Aliento Negro.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "140 Exp, -1 Black Breath Progress.";
-            }
-            DarExperiencia(140);
-            CampaignManager.Instance.CambiarValorAlientoNegro(-1);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana de los Corruptos, 15 Civiles fueron asesinados, -12 esperanza, +1 Avance Aliento Negro.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan from the Corrupted, 15 Civilians killed, -12 hope, +1 Black Breath Progress.";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-11);
-            CampaignManager.Instance.CambiarEsperanzaActual(-12);
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
-        }
-    }
-    if (EventoBatallaID == 603) //FASE 1 Corruptos Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 140 Exp, -1 Avance Aliento Negro.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "140 Exp, -1 Black Breath Progress.";
-            }
-            DarExperiencia(140);
-            CampaignManager.Instance.CambiarValorAlientoNegro(-1);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana de los Corruptos, 14 Civiles fueron asesinados, -10 esperanza, +1 Avance Aliento Negro.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan from the Corrupted, 14 Civilians killed, -10 hope, +1 Black Breath Progress.";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-14);
-            CampaignManager.Instance.CambiarEsperanzaActual(-10);
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
-        }
-    }
-    if (EventoBatallaID == 604) //FASE 1 Corruptos Normal
-    {
-        if (resultado == 1) //Victoria
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Se han obtenido 170 Exp, -1 Avance Aliento Negro.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "170 Exp, -1 Black Breath Progress.";
-            }
-            DarExperiencia(170);
-            CampaignManager.Instance.CambiarValorAlientoNegro(-1);
-        }
-        else //Derrota
-        {
-            if (TRADU.i.nIdioma == 1)
-            {
-                txtRecompensa.text = "Has fallado en defender a la caravana de los Corruptos, 16 Civiles fueron asesinados, -9 esperanza, +1 Avance Aliento Negro.";
-            }
-            else if (TRADU.i.nIdioma == 2)
-            {
-                txtRecompensa.text = "Failed to defend the caravan from the Corrupted, 16 Civilians killed, -9 hope, +1 Black Breath Progress.";
-            }
-            CampaignManager.Instance.CambiarCivilesActuales(-16);
-            CampaignManager.Instance.CambiarEsperanzaActual(-9);
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
-        }
-    
-            
-        }
-    #endregion
-
-     
-     
-     
-     
-    // Resultados batallas de Caravana sin importar zona, recompensa al azar, al perder se pierde la partida
-    // Batallas Caravanas Resultados
-    HashSet<int> idsBatallaCaravana = new HashSet<int> { 13, 14, 504, 505, 605, 606 }; //Agregar ACA ids de ataques a caravana!!
-    if (idsBatallaCaravana.Contains(EventoBatallaID))
-    {
-        if (resultado == 1) //Victoria
-        {
-            int oro =UnityEngine.Random.Range(280, 351); // Oro entre 280 y 350
-            int materiales =UnityEngine.Random.Range(22, 36); // Materiales entre 22 y 35
-            int esperanza =UnityEngine.Random.Range(12, 25); // Esperanza entre 12 y 20
-
-            txtRecompensa.text = TRADU.i.Traducir("Se han obtenido ") + oro + TRADU.i.Traducir(" Oro, ") + materiales + TRADU.i.Traducir(" Materiales y +") + esperanza + TRADU.i.Traducir(" Esperanza.");
-            CampaignManager.Instance.CambiarOroActual(oro);
-            CampaignManager.Instance.CambiarMaterialesActuales(materiales);
-            CampaignManager.Instance.CambiarEsperanzaActual(esperanza);
-        }
-        else //Derrota
-        {
-            //FIN DEL JUEGO
-        }
-    }
-
-
-
-
-
     //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
     if (resultado == 2) //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
     {
@@ -1160,7 +714,7 @@ public class MenuBatallas : MonoBehaviour
         {
             int rand =UnityEngine.Random.Range(1, 101);
             aumentochancesitem += CampaignManager.Instance.mejoraCaravanaCatalejos*5;
-            int prob = 35+aumentochancesitem; //!! 35%
+            int prob = 30+aumentochancesitem; //!! 30%
             if (rand < prob) // chances de perder un sequito al perder una pelea
             {
                 Item recompensa = CampaignManager.Instance.scMenuSequito.Sequito003Mercaderes.GetComponent<SequitoMercaderes>().ObtenerItemAlAzar();
@@ -1184,12 +738,12 @@ public class MenuBatallas : MonoBehaviour
             {
                 CampaignManager.Instance.scSequitoCronistas.valorCambiosCronicas += 50;
                 CampaignManager.Instance.CambiarEsperanzaActual(+5);
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la victoria, +50 Valor Crónica, +5 Esperanza."));
+                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la victoria, +50 Valor Cr├│nica, +5 Esperanza."));
             }
             else //Derrota
             {
                 CampaignManager.Instance.scSequitoCronistas.valorCambiosCronicas -= 50;
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la derrota, -50 Valor Crónica. -3 Esperanza."));
+                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la derrota, -50 Valor Cr├│nica. -3 Esperanza."));
                 CampaignManager.Instance.CambiarEsperanzaActual(-3);
 
             }
@@ -1351,9 +905,158 @@ public class MenuBatallas : MonoBehaviour
         }
     }
 
-    scAdministradorEscenas.CargarBatalla(50/*EventoBatallaID*/, esEmboscadaEnemiga);
+    if (encuentroGeneradoActual != null)
+    {
+        scAdministradorEscenas.CargarBatalla(EventoBatallaID, esEmboscadaEnemiga, encuentroGeneradoActual);
+    }
+    else
+    {
+        scAdministradorEscenas.CargarBatalla(EventoBatallaID, esEmboscadaEnemiga);
+    }
     
  }
 
 
+ void ProcesarEncuentroGenerado(int resultado, ref int aumentochancesitem)
+ {
+    if (encuentroGeneradoActual == null)
+    {
+        return;
+    }
+
+    var tuning = GetRewardTuning(encuentroTipoActual);
+    int totalPoints = Mathf.Max(1, encuentroGeneradoActual.totalBudget);
+
+    if (resultado == 1)
+    {
+        int exp = Mathf.RoundToInt(totalPoints * tuning.expPerPoint);
+        int oro = Mathf.RoundToInt(totalPoints * tuning.goldPerPoint);
+        int materiales = Mathf.RoundToInt(totalPoints * tuning.materialsPerPoint);
+        int hopeBonus = Mathf.RoundToInt(tuning.victoryHopeBonus);
+
+        if (oro != 0) CampaignManager.Instance.CambiarOroActual(oro);
+        if (materiales != 0) CampaignManager.Instance.CambiarMaterialesActuales(materiales);
+        if (exp > 0) DarExperiencia(exp);
+        if (hopeBonus != 0) CampaignManager.Instance.CambiarEsperanzaActual(hopeBonus);
+
+        if (txtRecompensa != null)
+        {
+            txtRecompensa.text = FormatearTextoVictoria(exp, oro, materiales, hopeBonus);
+        }
+
+        aumentochancesitem += Mathf.RoundToInt(totalPoints * tuning.itemChancePerPoint);
+        RegistrarLogEncuentro(resultado, exp, oro, materiales);
+    }
+    else
+    {
+        int hopeLoss = Mathf.RoundToInt(totalPoints * tuning.defeatHopeLossPerPoint);
+        int civiliansLoss = Mathf.RoundToInt(totalPoints * tuning.defeatCivilLossPerPoint);
+        int oxLoss = encuentroTipoActual == BattleEncounterType.AtaqueCaravana ? tuning.defeatOxLoss : 0;
+
+        if (hopeLoss > 0) CampaignManager.Instance.CambiarEsperanzaActual(-hopeLoss);
+        if (civiliansLoss > 0) CampaignManager.Instance.CambiarCivilesActuales(-civiliansLoss);
+        if (oxLoss > 0) CampaignManager.Instance.CambiarBueyesActuales(-oxLoss);
+
+        if (txtRecompensa != null)
+        {
+            txtRecompensa.text = FormatearTextoDerrota(hopeLoss, civiliansLoss, oxLoss);
+        }
+
+        RegistrarLogEncuentro(resultado, 0, 0, 0);
+
+        if (EsFaccionCorrupta(encuentroGeneradoActual.factionId))
+        {
+            CampaignManager.Instance.CambiarValorAlientoNegro(2);
+        }
+    }
+ }
+
+ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
+ {
+    if (txtRecompensa != null)
+    {
+        txtRecompensa.text = resultado == 1
+            ? TRADU.i.Traducir("Victoria sin recompensas definidas para este encuentro clásico.")
+            : TRADU.i.Traducir("Derrota en un encuentro clásico. Los efectos específicos aún no están configurados.");
+    }
+
+    int deltaEsperanza = resultado == 1 ? +5 : -5;
+    CampaignManager.Instance.CambiarEsperanzaActual(deltaEsperanza);
+ }
+
+ string FormatearTextoVictoria(int exp, int oro, int materiales, int hopeBonus)
+ {
+    List<string> partes = new List<string>();
+
+    if (exp > 0) partes.Add(exp + (TRADU.i.nIdioma == 2 ? " Exp" : " Exp"));
+    if (oro > 0) partes.Add(oro + (TRADU.i.nIdioma == 2 ? " Gold" : " Oro"));
+    if (materiales > 0) partes.Add(materiales + (TRADU.i.nIdioma == 2 ? " Materials" : " Materiales"));
+
+    string contenido = partes.Count > 0 ? string.Join(", ", partes) : TRADU.i.Traducir("sin botín");
+    string texto = TRADU.i.nIdioma == 2
+        ? contenido + " obtained."
+        : TRADU.i.Traducir("Se han obtenido ") + contenido + ".";
+
+    if (hopeBonus > 0)
+    {
+        texto += TRADU.i.nIdioma == 2 ? $" +{hopeBonus} Hope." : $" +{hopeBonus} " + TRADU.i.Traducir("Esperanza.");
+    }
+
+    return texto;
+ }
+
+ string FormatearTextoDerrota(int hopeLoss, int civilLoss, int oxLoss)
+ {
+    List<string> partesEs = new List<string>();
+    List<string> partesEn = new List<string>();
+
+    if (civilLoss > 0)
+    {
+        partesEs.Add(civilLoss + " Civiles");
+        partesEn.Add(civilLoss + " Civilians");
+    }
+    if (hopeLoss > 0)
+    {
+        partesEs.Add("-" + hopeLoss + " Esperanza");
+        partesEn.Add("-" + hopeLoss + " Hope");
+    }
+    if (oxLoss > 0)
+    {
+        partesEs.Add(oxLoss + " Bueyes");
+        partesEn.Add(oxLoss + " Oxen");
+    }
+
+    if (partesEs.Count == 0)
+    {
+        partesEs.Add(TRADU.i.Traducir("Sin consecuencias graves."));
+        partesEn.Add("No major consequences.");
+    }
+
+    string textoEs = TRADU.i.Traducir("Derrota: ") + string.Join(", ", partesEs) + ".";
+    string textoEn = "Defeat: " + string.Join(", ", partesEn) + ".";
+
+    return TRADU.i.nIdioma == 2 ? textoEn : textoEs;
+ }
+
+ void RegistrarLogEncuentro(int resultado, int exp, int oro, int materiales)
+ {
+    if (CampaignManager.Instance == null || encuentroGeneradoActual == null)
+    {
+        return;
+    }
+
+    string faccion = !string.IsNullOrWhiteSpace(encuentroGeneradoActual.factionName)
+        ? encuentroGeneradoActual.factionName
+        : encuentroGeneradoActual.factionId;
+    string tipo = encuentroTipoActual.ToString();
+
+    if (resultado == 1)
+    {
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Victoria contra ") + faccion + $" ({tipo})");
+    }
+    else
+    {
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Derrota frente a ") + faccion + $" ({tipo})");
+    }
+ }
 }

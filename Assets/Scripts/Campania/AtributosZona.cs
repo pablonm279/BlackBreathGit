@@ -1,6 +1,59 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+public enum EncounterZoneType
+{
+   BosqueAngustiante,
+   PasoVientoHelado,
+   Generico,
+   Subterraneo
+}
+
+public enum BattleEncounterType
+{
+   Normal,
+   Elite,
+   AtaqueCaravana,
+   Subterraneo
+}
+
+[Serializable]
+public class EnemyTierPool
+{
+   public List<GameObject> tier1 = new List<GameObject>();
+   public List<GameObject> tier2 = new List<GameObject>();
+   public List<GameObject> tier3 = new List<GameObject>();
+   public List<GameObject> tier4 = new List<GameObject>();
+}
+
+[Serializable]
+public class EnemyFactionConfig
+{
+   public string factionId;
+   public string displayName;
+   public EnemyTierPool tiers = new EnemyTierPool();
+}
+
+[Serializable]
+public class BattleFactionPool
+{
+   public BattleEncounterType battleType;
+   public List<EnemyFactionConfig> factions = new List<EnemyFactionConfig>();
+}
+
+[Serializable]
+public class EncounterZoneConfig
+{
+   public string inspectorLabel;
+   public List<BattleFactionPool> battlePools = new List<BattleFactionPool>();
+
+   public BattleFactionPool GetPool(BattleEncounterType type)
+   {
+      return battlePools.Find(pool => pool != null && pool.battleType == type);
+   }
+}
 
 public class AtributosZona : MonoBehaviour
 {
@@ -21,63 +74,73 @@ public class AtributosZona : MonoBehaviour
    public int Clima_chances_Niebla;
    public int Clima_chances_EspecialZona1;
 
-   //ENCUENTROS FASE 1
-   public int FASE1IDEncuentroNormal1;
-   public int FASE1IDEncuentroNormal2;
-   public int FASE1IDEncuentroNormal3;
-   public int FASE1IDEncuentroNormal4;
-   public int FASE1IDEncuentroNormal5;
-   public int FASE1IDEncuentroNormal6;
-   public int FASE1IDEncuentroNormal7;
-   public int FASE1IDEncuentroElite1;
-   public int FASE1IDEncuentroElite2;
-   public int FASE1IDEncuentroElite3;
-   public int FASE1IDEncuentroElite4;
-   public int FASE1IDEncuentroJefe1;
-   public int FASE1IDEncuentroJefe2;
-   public int FASE1IDAtaqueCaravana1;
-   public int FASE1IDAtaqueCaravana2;
-
-   //ENCUENTROS FASE 2
-   public int FASE2IDEncuentroNormal1;
-   public int FASE2IDEncuentroNormal2;
-   public int FASE2IDEncuentroNormal3;
-   public int FASE2IDEncuentroNormal4;
-   public int FASE2IDEncuentroNormal5;
-   public int FASE2IDEncuentroNormal6;
-   public int FASE2IDEncuentroNormal7;
-   public int FASE2IDEncuentroElite1;
-   public int FASE2IDEncuentroElite2;
-   public int FASE2IDEncuentroElite3;
-   public int FASE2IDEncuentroElite4;
-   public int FASE2IDEncuentroJefe1;
-   public int FASE2IDEncuentroJefe2;
-   public int FASE2IDAtaqueCaravana1;
-   public int FASE2IDAtaqueCaravana2;
-
-   //ENCUENTROS FASE 3
-   public int FASE3IDEncuentroNormal1;
-   public int FASE3IDEncuentroNormal2;
-   public int FASE3IDEncuentroNormal3;
-   public int FASE3IDEncuentroNormal4;
-   public int FASE3IDEncuentroNormal5;
-   public int FASE3IDEncuentroNormal6;
-   public int FASE3IDEncuentroNormal7;
-   public int FASE3IDEncuentroElite1;
-   public int FASE3IDEncuentroElite2;
-   public int FASE3IDEncuentroElite3;
-   public int FASE3IDEncuentroElite4;
-   public int FASE3IDEncuentroJefe1;
-   public int FASE3IDEncuentroJefe2;
-   public int FASE3IDAtaqueCaravana1;
-   public int FASE3IDAtaqueCaravana2;
-
+   [Header("Encuentros dinámicos")]
+   public EncounterZoneConfig bosqueAngustianteEncuentros = new EncounterZoneConfig();
+   public EncounterZoneConfig pasoVientoHeladoEncuentros = new EncounterZoneConfig();
+   public EncounterZoneConfig genericosEncuentros = new EncounterZoneConfig();
+   public EncounterZoneConfig subterraneosEncuentros = new EncounterZoneConfig();
 
    MapDecorator scMapDecorator;
 
    void Awake()
    {
       scMapDecorator = GetComponent<MapDecorator>();
+      EnsureEncounterLabels();
+   }
+
+   void OnValidate()
+   {
+      EnsureEncounterLabels();
+   }
+
+   void EnsureEncounterLabels()
+   {
+      if (bosqueAngustianteEncuentros != null && string.IsNullOrWhiteSpace(bosqueAngustianteEncuentros.inspectorLabel))
+      {
+         bosqueAngustianteEncuentros.inspectorLabel = "Bosque Angustiante";
+      }
+      if (pasoVientoHeladoEncuentros != null && string.IsNullOrWhiteSpace(pasoVientoHeladoEncuentros.inspectorLabel))
+      {
+         pasoVientoHeladoEncuentros.inspectorLabel = "Paso Vientohelado";
+      }
+      if (genericosEncuentros != null && string.IsNullOrWhiteSpace(genericosEncuentros.inspectorLabel))
+      {
+         genericosEncuentros.inspectorLabel = "Genéricos";
+      }
+      if (subterraneosEncuentros != null && string.IsNullOrWhiteSpace(subterraneosEncuentros.inspectorLabel))
+      {
+         subterraneosEncuentros.inspectorLabel = "Subterráneos";
+      }
+   }
+
+   public EncounterZoneConfig GetEncounterConfig(EncounterZoneType zoneType)
+   {
+      switch (zoneType)
+      {
+         case EncounterZoneType.BosqueAngustiante:
+            return bosqueAngustianteEncuentros;
+         case EncounterZoneType.PasoVientoHelado:
+            return pasoVientoHeladoEncuentros;
+         case EncounterZoneType.Generico:
+            return genericosEncuentros;
+         case EncounterZoneType.Subterraneo:
+            return subterraneosEncuentros;
+         default:
+            return null;
+      }
+   }
+
+   public EncounterZoneType GetZoneTypeById(int zoneId)
+   {
+      switch (zoneId)
+      {
+         case 1:
+            return EncounterZoneType.BosqueAngustiante;
+         case 2:
+            return EncounterZoneType.PasoVientoHelado;
+         default:
+            return EncounterZoneType.Generico;
+      }
    }
 
    public MeshRenderer TexturaTerreno;
@@ -136,54 +199,6 @@ public class AtributosZona : MonoBehaviour
 
      
 
-
-      FASE1IDEncuentroNormal1 = 1;
-      FASE1IDEncuentroNormal2 = 2;
-      FASE1IDEncuentroNormal3 = 3;
-      FASE1IDEncuentroNormal4 = 4;
-      FASE1IDEncuentroNormal5 = 5;
-      FASE1IDEncuentroNormal6 = 6;
-      FASE1IDEncuentroNormal7 = 7;
-      FASE1IDEncuentroElite1 = 8;
-      FASE1IDEncuentroElite2 = 9;
-      FASE1IDEncuentroElite3 = 10;
-      FASE1IDEncuentroJefe1 = 11;
-      FASE1IDEncuentroJefe2 = 11; //!! cambiar cuando este el segundo jefe de fase 1
-      FASE1IDAtaqueCaravana1 = 13;
-      FASE1IDAtaqueCaravana2 = 14;
-
-      FASE2IDEncuentroNormal1 = 000;
-      FASE2IDEncuentroNormal2 = 000;
-      FASE2IDEncuentroNormal3 = 000;
-      FASE2IDEncuentroNormal4 = 000;
-      FASE2IDEncuentroNormal5 = 000;
-      FASE2IDEncuentroNormal6 = 000;
-      FASE2IDEncuentroNormal7 = 000;
-      FASE2IDEncuentroElite1 = 000;
-      FASE2IDEncuentroElite2 = 000;
-      FASE2IDEncuentroElite3 = 000;
-      FASE2IDEncuentroElite4 = 000;
-      FASE2IDEncuentroJefe1 = 000;
-      FASE2IDEncuentroJefe2 = 000;
-      FASE2IDAtaqueCaravana1 = 000;
-      FASE2IDAtaqueCaravana2 = 000;
-
-
-      FASE3IDEncuentroNormal1 = 000;
-      FASE3IDEncuentroNormal2 = 000;
-      FASE3IDEncuentroNormal3 = 000;
-      FASE3IDEncuentroNormal4 = 000;
-      FASE3IDEncuentroNormal5 = 000;
-      FASE3IDEncuentroNormal6 = 000;
-      FASE3IDEncuentroNormal7 = 000;
-      FASE3IDEncuentroElite1 = 000;
-      FASE3IDEncuentroElite2 = 000;
-      FASE3IDEncuentroElite3 = 000;
-      FASE3IDEncuentroElite4 = 000;
-      FASE3IDEncuentroJefe1 = 000;
-      FASE3IDEncuentroJefe2 = 000;
-      FASE3IDAtaqueCaravana1 = 000;
-      FASE3IDAtaqueCaravana2 = 000;
 
 
 
@@ -307,64 +322,6 @@ public class AtributosZona : MonoBehaviour
        Clima_chances_EspecialZona1 = 100;
 
       
-
-       
-       
-
-
-
-      FASE1IDEncuentroNormal1 = 50;
-      FASE1IDEncuentroNormal2 = 51;
-      FASE1IDEncuentroNormal3 = 52;
-      FASE1IDEncuentroNormal4 = 53;
-      FASE1IDEncuentroNormal5 = 54;
-      FASE1IDEncuentroNormal6 = 55;
-      FASE1IDEncuentroNormal7 = 56;
-      FASE1IDEncuentroElite1 = 57;
-      FASE1IDEncuentroElite2 = 58;
-      FASE1IDEncuentroElite3 = 59;
-      FASE1IDEncuentroJefe1 = 60;
-      FASE1IDEncuentroJefe2 = 60; //!! cambiar cuando este el segundo jefe de fase 1
-      FASE1IDAtaqueCaravana1 = 62;
-      FASE1IDAtaqueCaravana2 = 63;
-
-      FASE2IDEncuentroNormal1 = 000;
-      FASE2IDEncuentroNormal2 = 000;
-      FASE2IDEncuentroNormal3 = 000;
-      FASE2IDEncuentroNormal4 = 000;
-      FASE2IDEncuentroNormal5 = 000;
-      FASE2IDEncuentroNormal6 = 000;
-      FASE2IDEncuentroNormal7 = 000;
-      FASE2IDEncuentroElite1 = 000;
-      FASE2IDEncuentroElite2 = 000;
-      FASE2IDEncuentroElite3 = 000;
-      FASE2IDEncuentroElite4 = 000;
-      FASE2IDEncuentroJefe1 = 000;
-      FASE2IDEncuentroJefe2 = 000;
-      FASE2IDAtaqueCaravana1 = 000;
-      FASE2IDAtaqueCaravana2 = 000;
-
-
-      FASE3IDEncuentroNormal1 = 000;
-      FASE3IDEncuentroNormal2 = 000;
-      FASE3IDEncuentroNormal3 = 000;
-      FASE3IDEncuentroNormal4 = 000;
-      FASE3IDEncuentroNormal5 = 000;
-      FASE3IDEncuentroNormal6 = 000;
-      FASE3IDEncuentroNormal7 = 000;
-      FASE3IDEncuentroElite1 = 000;
-      FASE3IDEncuentroElite2 = 000;
-      FASE3IDEncuentroElite3 = 000;
-      FASE3IDEncuentroElite4 = 000;
-      FASE3IDEncuentroJefe1 = 000;
-      FASE3IDEncuentroJefe2 = 000;
-      FASE3IDAtaqueCaravana1 = 000;
-      FASE3IDAtaqueCaravana2 = 000;
-
-
-
-
-
 
       Invoke("PlayMusic", 0.2f);
       // Usar fader como tapón mientras se adorna el mapa (async, sin freeze)

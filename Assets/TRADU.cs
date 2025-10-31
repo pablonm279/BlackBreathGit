@@ -228,7 +228,7 @@ public class TRADU : MonoBehaviour
                 r = "<color=#ba3fef>-If you deny access, you will lose 15 Hope.</color>\n\n"; break;
             case "<color=#ba3fef>-Si los dejas ir, hay un %":
                 r = "<color=#ba3fef>-If you let them go, there is a %"; break;
-            case " <i>(Determinado por Aliento Negro)</i> de que se contaminen y mueran 25 Civiles. Si no está contaminada descansarán (-1 Fatiga).</color>\n\n":
+            case "<i>(Determinado por Aliento Negro)</i> de que se contaminen y mueran 25 Civiles. Si no está contaminada descansarán (-1 Fatiga).</color>\n\n":
                 r = " <i>(Determined by Black Breath)</i> chance they are contaminated and 25 Civilians die. If not contaminated they will rest (-1 Fatigue).</color>\n\n"; break;
             case "\nAparentemente tuvieron un incidente durante un entrenamiento leve que se dispusieron a realizar y en el cual ambos se lastimaron levemente.\n\n":
                 r = "\nApparently they had an incident during a light training they set out to do in which both were slightly injured.\n\n"; break;
@@ -507,8 +507,8 @@ public class TRADU : MonoBehaviour
             case " <color=#b7972c>Suministros</color>, por un total de peso de ":
                 r = " <color=#b7972c>Supplies</color>, for a total weight of ";
                 break;
-            case "<color=#ffdda5>---<b>Haz click para abandonar <color=#b34f09>2 Materiales</color> y alivianar la Carga. -1 Esperanza</b>---</color>\n\n\n":
-                r = "<color=#ffdda5>---<b>Click to abandon <color=#b34f09>2 Materials</color> and lighten the Load. -1 Hope</b>---</color>\n\n\n";
+            case "<color=#ffdda5>---<b>Haz click para abandonar <color=#b34f09>2 Materiales</color> y alivianar la Carga.</b>---</color>\n\n\n":
+                r = "<color=#ffdda5>---<b>Click to abandon <color=#b34f09>2 Materials</color> and lighten the Load.</b>---</color>\n\n\n";
                 break;
             case "Los <color=#b34f09>Materiales</color> son elementos básicos de construcción utilizados para mantenimiento y expansión de la caravana.\nCada uno pesa 3.\n":
                 r = "The <color=#b34f09>Materials</color> are basic construction elements used for maintenance and expansion of the caravan.\nEach one weighs 3.\n";
@@ -2955,9 +2955,9 @@ public class TRADU : MonoBehaviour
             case "Sus defensas se corroen por el Aliento Negro.":
                   r = "Their defenses are corroded by the Black Breath.";
                   break;
-                /*  case "":
-                  r = "";
-                  break;*/
+              case "Castigar a los Malvados":
+                  r = "Punish the Wicked";
+                  break;
                 /*  case "":
                   r = "";
                   break;*/

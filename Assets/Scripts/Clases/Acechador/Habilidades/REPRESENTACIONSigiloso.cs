@@ -24,7 +24,7 @@ public class REPRESENTACIONSigiloso : Habilidad
     if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
     {
       txtDescripcion = "<color=#5dade2><b>Stealthy</b></color>\n\n";
-      txtDescripcion += "<i>(Passive) The Stalker starts hidden in every combat that is not an enemy ambush.</i>\n\nWhile hidden, gains 'On the Prowl' which grants +2 Attack, +1 Critical Die, and 10% damage. Also, is not penalized in night combats.";
+      txtDescripcion += "<i>(Passive) The Stalker starts hidden in every combat that is not an enemy ambush.</i>\n\nWhile hidden, gains 'Stalking' which grants +2 Attack, +1 Critical Die, and 10% damage. Also, is not penalized in night combats.";
     }
 
   }

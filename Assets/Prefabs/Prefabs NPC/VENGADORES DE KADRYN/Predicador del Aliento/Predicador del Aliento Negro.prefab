@@ -687,6 +687,7 @@ MonoBehaviour:
   uNombre: Predicador del Aliento Negro
   tags:
   - Humanoide
+  - Corrupto
   at_iniciativa: 2
   mod_iniciativa: 2
   iniciativa_actual: 0

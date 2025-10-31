@@ -14,7 +14,7 @@ public class TextoFlotanteManager : MonoBehaviour
     [Header("Parámetros de animación")]
     public float duracion = 1.5f;
     public float desplazamientoY = 50f;
-    public float retrasoEntreTextos = 0.15f;
+    public float retrasoEntreTextos = 0.001f;
 
     private Queue<IEnumerator> colaTextos = new Queue<IEnumerator>();
     private bool procesandoCola = false;

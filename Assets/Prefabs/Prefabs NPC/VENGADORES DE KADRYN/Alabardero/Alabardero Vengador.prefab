@@ -686,6 +686,7 @@ MonoBehaviour:
   uNombre: Alabardero Vengador de Kadryn
   tags:
   - Humanoide
+  - Corrupto
   at_iniciativa: 5
   mod_iniciativa: 5
   iniciativa_actual: 0

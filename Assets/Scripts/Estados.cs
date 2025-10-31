@@ -16,10 +16,10 @@ public class Estados : MonoBehaviour
         while(unidad.ObtenerAPActual() > 0 && unidad.estado_ardiendo > 0)
         {
             Aplicar_Ardiendo(unidad, -3);
-           unidad.CambiarAPActual(-1); 
-            
-            // Retraso de 0.75 segundo
-            await Task.Delay(750);
+           unidad.CambiarAPActual(-1);
+
+            // Retraso de 1.15 segundos
+            await Task.Delay(1150);
 
             unidad.GenerarTextoFlotante(TRADU.i.Traducir("Apagando!"), Color.red);
             BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" gasta 1 PA para apagar el fuego."));

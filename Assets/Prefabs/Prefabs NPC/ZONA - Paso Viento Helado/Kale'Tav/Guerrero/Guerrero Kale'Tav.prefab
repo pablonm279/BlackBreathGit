@@ -869,13 +869,13 @@ MonoBehaviour:
   uImage: {fileID: 7996714464312373375}
   uNombre: Guerrero Kale'Tav
   tags: []
-  at_iniciativa: 2
-  mod_iniciativa: 2
-  iniciativa_actual: 2
+  at_iniciativa: 3
+  mod_iniciativa: 3
+  iniciativa_actual: 3
   esEtereo: 0
-  at_maxHP: 46
-  mod_maxHP: 46
-  HP_actual: 46
+  at_maxHP: 54
+  mod_maxHP: 54
+  HP_actual: 54
   at_maxAccionP: 4
   esInmobil: 0
   mod_maxAccionP: 4
@@ -884,8 +884,8 @@ MonoBehaviour:
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
   ValentiaP_actual: 0
-  at_CarFuerza: 5
-  mod_CarFuerza: 5
+  at_CarFuerza: 6
+  mod_CarFuerza: 6
   at_CarAgilidad: 3
   mod_CarAgilidad: 3
   at_CarPoder: 2
@@ -910,8 +910,8 @@ MonoBehaviour:
   mod_Defensa: 11
   Defensa_AtaquesRepetidosRonda: 0
   Defensa_BonusPASinUsar: 0
-  at_Ataque: 2
-  mod_Ataque: 2
+  at_Ataque: 3
+  mod_Ataque: 3
   mod_DanioPorcentaje: 0
   at_CriticoRangoDado: 1
   mod_CriticoRangoDado: 0
@@ -939,7 +939,11 @@ MonoBehaviour:
   estado_regeneraarmadura: 0
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
+  estado_Condenado: 0
+  estado_Escudado: 0
   estado_Corrupto: 0
+  unidadVoladora: 0
+  estado_Volando: 0
   inmunidad_Ceguera: 0
   inmunidad_Oscuridad: 0
   inmunidad_Trampas: 0
@@ -954,6 +958,8 @@ MonoBehaviour:
   tejidoCuracMagica: 0
   loMatoCorrompido: 0
   entroComoAliado: 0
+  offsetVueloY: 13
+  duracionAnimacionVuelo: 0.4
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
