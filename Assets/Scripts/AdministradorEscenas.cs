@@ -131,8 +131,14 @@ IEnumerator FadeTo(float target, float time)
   public GameObject VFXNieve;
   public GameObject VFXNiebla;
   public GameObject VFXAurora;
-  public async void CargarBatalla(int IDEncuentro, int esEmboscada = 0)
+  EncounterDefinition encuentroGeneradoActual;
+  int ultimoIDEncuentro;
+
+  public async void CargarBatalla(int IDEncuentro, int esEmboscada = 0, EncounterDefinition encuentro = null)
   {
+    ultimoIDEncuentro = IDEncuentro;
+    encuentroGeneradoActual = encuentro;
+
     VFXLluvia.SetActive(false);
     VFXNieve.SetActive(false);
     VFXNiebla.SetActive(false);
@@ -159,7 +165,7 @@ IEnumerator FadeTo(float target, float time)
       CrearDefensasCaravana();
     }
 
-    AdministrarFondos(IDEncuentro);
+    AdministrarFondos(IDEncuentro, encuentroGeneradoActual);
 
     if (Personaje1 != null)
     {
@@ -200,7 +206,7 @@ IEnumerator FadeTo(float target, float time)
 
 
 
-    CrearEncuentroEnemigos(IDEncuentro);
+    CrearEncuentroEnemigos(IDEncuentro, encuentroGeneradoActual);
 
     // Actualizar listas de unidades tras colocar aliados y enemigos
     if (BattleManager.Instance != null)
@@ -316,7 +322,7 @@ IEnumerator FadeTo(float target, float time)
     }
 
     int climaCampaña = CampaignManager.Instance.intTipoClima;
-    if (IDEncuentro > 400 && IDEncuentro < 450) { climaCampaña = 0; }//Si es encuentro subterraneo no hay clima
+    if (EsEncuentroSubterraneo(IDEncuentro)) { climaCampaña = 0; }//Si es encuentro subterraneo no hay clima
 
     if (climaCampaña == 1)//Normal (soleado)
     {
@@ -491,7 +497,7 @@ IEnumerator FadeTo(float target, float time)
     #endregion
     #region Noche
     int randomNoche = UnityEngine.Random.Range(1, 101); //1-100
-    if (IDEncuentro > 400 && IDEncuentro < 450) { randomNoche = 0; }//Si es encuentro subterraneo siempre es "noche"
+    if (EsEncuentroSubterraneo(IDEncuentro)) { randomNoche = 0; }//Si es encuentro subterraneo siempre es "noche"
 
     if (randomNoche <= 25) //probabilidad noche 
     {
@@ -543,33 +549,62 @@ IEnumerator FadeTo(float target, float time)
 
   }
 
-  void AdministrarFondos(int idEncuentro)
+  void AdministrarFondos(int idEncuentro, EncounterDefinition encounterDefinition = null)
   {
-    if (idEncuentro > 399 && idEncuentro < 450) //Si es encuentro subterraneo
+    bool esSubterraneo = (encounterDefinition != null && (encounterDefinition.battleType == BattleEncounterType.Subterraneo || encounterDefinition.zoneType == EncounterZoneType.Subterraneo))
+       || (idEncuentro > 399 && idEncuentro < 450);
+
+    if (esSubterraneo) // Encuentro subterraneo
     {
-      mrFondoBatalla.material = listaFondosSubterraneos[UnityEngine.Random.Range(0, listaFondosSubterraneos.Count)];
+      if (listaFondosSubterraneos != null && listaFondosSubterraneos.Count > 0)
+      {
+         mrFondoBatalla.material = listaFondosSubterraneos[UnityEngine.Random.Range(0, listaFondosSubterraneos.Count)];
+      }
+      return;
+    }
+
+    EncounterZoneType zonaEncuentro;
+    if (encounterDefinition != null)
+    {
+      zonaEncuentro = encounterDefinition.zoneType;
     }
     else
     {
-      string IDZonaActual = CampaignManager.Instance.scAtributosZona.Nombre;
-
-      if (IDZonaActual == "Bosque Angustiante") //FONDOS BOSQUE DE LOS LAMENTOS
-      {
-        mrFondoBatalla.material = listaFondosBosqueLamentos[UnityEngine.Random.Range(0, listaFondosBosqueLamentos.Count)];
-      }
-      if (IDZonaActual == "Paso Viento Helado") //FONDOS PASO VIENTO HELADO
-      {
-        mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
-      }
-     
-
-
+      var atributosZona = CampaignManager.Instance.scAtributosZona;
+      zonaEncuentro = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
     }
 
-    
-   
-
-
+    switch (zonaEncuentro)
+    {
+       case EncounterZoneType.PasoVientoHelado:
+          if (listaFondosPasoVientoHelado != null && listaFondosPasoVientoHelado.Count > 0)
+          {
+             mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
+          }
+          break;
+       case EncounterZoneType.Generico:
+          // Usa la zona activa de campaña si existe, si no, cae al bosque
+          if (CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null)
+          {
+             var zonaActiva = CampaignManager.Instance.scAtributosZona.GetZoneTypeById(CampaignManager.Instance.scAtributosZona.ID);
+             if (zonaActiva == EncounterZoneType.PasoVientoHelado)
+             {
+                if (listaFondosPasoVientoHelado != null && listaFondosPasoVientoHelado.Count > 0)
+                {
+                   mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
+                   break;
+                }
+             }
+          }
+          goto case EncounterZoneType.BosqueAngustiante;
+       case EncounterZoneType.BosqueAngustiante:
+       default:
+          if (listaFondosBosqueLamentos != null && listaFondosBosqueLamentos.Count > 0)
+          {
+             mrFondoBatalla.material = listaFondosBosqueLamentos[UnityEngine.Random.Range(0, listaFondosBosqueLamentos.Count)];
+          }
+          break;
+    }
 
  }
   public void ColocarPersonajecomoUnidad(Personaje pers, int indexRefuezo = 0)
@@ -767,12 +802,70 @@ IEnumerator FadeTo(float target, float time)
 
   }
 
+  void CrearEncuentroDinamico(EncounterDefinition encounterDefinition)
+  {
+    if (encounterDefinition == null)
+    {
+      return;
+    }
+
+    var battleManager = BattleManager.Instance;
+    if (battleManager == null)
+    {
+      return;
+    }
+
+    battleManager.enemigosRefuerzos.Clear();
+    battleManager.delayRefuerzo = ObtenerDelayRefuerzosAleatorio();
+
+    foreach (var slot in encounterDefinition.units)
+    {
+      if (slot == null || slot.prefab == null)
+      {
+        continue;
+      }
+
+      GameObject enemigo = Instantiate(slot.prefab);
+      if (slot.spawnAsReinforcement)
+      {
+        enemigo.SetActive(false);
+        battleManager.enemigosRefuerzos.Add(enemigo);
+      }
+      else
+      {
+        ColocarEnCasillaAleatoria(2, enemigo);
+      }
+    }
+
+    battleManager.ActualizarRefuerzosUI();
+  }
+  bool EsEncuentroSubterraneo(int idEncuentro)
+  {
+    if (encuentroGeneradoActual != null)
+    {
+      return encuentroGeneradoActual.battleType == BattleEncounterType.Subterraneo
+        || encuentroGeneradoActual.zoneType == EncounterZoneType.Subterraneo;
+    }
+
+    return idEncuentro > 399 && idEncuentro < 450;
+  }
   public GameObject CanvasUnidades;
-  void CrearEncuentroEnemigos(int IDEncuentro)  //Agregar en MenuBatallas "EfectosDeBatallaEnCampaña" las recompensas/penalizaciones por ganar/perder de cada encuentro nuevo
+  int ObtenerDelayRefuerzosAleatorio()
+  {
+    return UnityEngine.Random.Range(1, 4);
+  }
+
+  void CrearEncuentroEnemigos(int IDEncuentro, EncounterDefinition encounterDefinition = null)  //Agregar en MenuBatallas "EfectosDeBatallaEnCampaña" las recompensas/penalizaciones por ganar/perder de cada encuentro nuevo
   {
 
     BattleManager.Instance.RondaNro = 1;
 
+    if (encounterDefinition != null)
+    {
+      CrearEncuentroDinamico(encounterDefinition);
+      return;
+    }
+      //OBSOLETOO
     #region Encuentros Bosque Ardiendo ID Entre 1 y 50
     ///FASE 1 - BOSQUE ARDIENDO
     ///
@@ -789,7 +882,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 4; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
       enemigo5.SetActive(false);
@@ -834,7 +927,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.DriadaQuemada);
       enemigo5.SetActive(false);
@@ -858,7 +951,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.FuegoFatuo);
       enemigo5.SetActive(false);
@@ -925,7 +1018,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 2; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.FuegoFatuo);
       enemigo5.SetActive(false);
@@ -974,7 +1067,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.TreantEspectral);
       enemigo5.SetActive(false);
@@ -1014,7 +1107,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 2; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.EspectodelBosque);
       enemigo5.SetActive(false);
@@ -1094,7 +1187,7 @@ IEnumerator FadeTo(float target, float time)
 
        //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
       enemigo5.SetActive(false);
@@ -1126,7 +1219,7 @@ IEnumerator FadeTo(float target, float time)
       ColocarEnCasillaAleatoria(2, enemigo4);
         //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 2; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.PajaroRompehielos);
       enemigo5.SetActive(false);
@@ -1175,7 +1268,7 @@ IEnumerator FadeTo(float target, float time)
       
         //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo6 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
       enemigo5.SetActive(false);
@@ -1204,7 +1297,7 @@ IEnumerator FadeTo(float target, float time)
       
         //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 2; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo6 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
       enemigo6.SetActive(false);
@@ -1241,7 +1334,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
       enemigo5.SetActive(false);
@@ -1284,7 +1377,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.GuerreroKaleTav);
       enemigo5.SetActive(false);
@@ -1420,7 +1513,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.RufianConBallesta);
       enemigo5.SetActive(false);
@@ -1440,7 +1533,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 2; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.PerroAdiestrado);
       enemigo5.SetActive(false);
@@ -1464,7 +1557,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.RufianConMazo);
       enemigo5.SetActive(false);
@@ -1505,7 +1598,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.Ladron);
       enemigo5.SetActive(false);
@@ -1552,7 +1645,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 2; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.SoldadoVengadorKadryn);
       enemigo5.SetActive(false);
@@ -1585,7 +1678,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 2; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.ArqueroVengadorKadryn);
       enemigo5.SetActive(false);
@@ -1606,7 +1699,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.PredicadorDelAlientoKadryn);
       enemigo5.SetActive(false);
@@ -1642,7 +1735,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.ArqueroVengadorKadryn);
       enemigo5.SetActive(false);
@@ -1691,7 +1784,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 2; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.DevoradorCorrompido);
       enemigo5.SetActive(false);
@@ -1728,7 +1821,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.AlimaniaCorrompida);
       enemigo5.SetActive(false);
@@ -1753,7 +1846,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.AlimaniaCorrompida);
       enemigo5.SetActive(false);
@@ -1790,7 +1883,7 @@ IEnumerator FadeTo(float target, float time)
 
       //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = 3; //aca poner el delay a gusto para el evento
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.GuerreroCorrompido);
       enemigo5.SetActive(false);
@@ -1833,37 +1926,52 @@ IEnumerator FadeTo(float target, float time)
   }
   void ColocarEnCasillaAleatoria(int iLado, GameObject GO)
   {
-
-    LadoManager lado = null;
-    if (iLado == 1)
+    bool IntentarColocar(GameObject unidad, LadoManager ladoObjetivo, List<int> columnasPreferidas)
     {
-      lado = BattleManager.Instance.ladoB; //Player
-    }
-    else { lado = BattleManager.Instance.ladoA; } //Enemigos
-
-    int intentos = 0; // Para limitar los intentos de colocar la unidad
-    bool colocado = false;
-
-    while (!colocado && intentos < 100) // Limitar los intentos para evitar bucles infinitos
-    {
-      int rX = UnityEngine.Random.Range(1, 4);  // Rango de x
-      int rY = UnityEngine.Random.Range(1, 6);  // Rango de y
-
-      if (lado.ColocarEnCasilla(GO, rX, rY))
+      int intentos = 0;
+      while (intentos < 100)
       {
-        colocado = true; // Si fue colocado con éxito, salir del bucle
+        int columna = columnasPreferidas == null
+          ? UnityEngine.Random.Range(1, 4)
+          : columnasPreferidas[UnityEngine.Random.Range(0, columnasPreferidas.Count)];
+        int fila = UnityEngine.Random.Range(1, 6);
+
+        if (ladoObjetivo.ColocarEnCasilla(unidad, columna, fila))
+        {
+          return true;
+        }
+
+        intentos++;
       }
 
-      intentos++;
+      return false;
+    }
+
+    LadoManager lado = iLado == 1 ? BattleManager.Instance.ladoB : BattleManager.Instance.ladoA;
+
+    List<int> columnasPreferidas = null;
+    if (iLado != 1)
+    {
+      IAUnidad iaUnidad = GO.GetComponent<IAUnidad>();
+      if (iaUnidad != null)
+      {
+        columnasPreferidas = iaUnidad.esRango ? new List<int> { 1 } : new List<int> { 2, 3 };
+      }
+    }
+
+    bool colocado = IntentarColocar(GO, lado, columnasPreferidas);
+
+    if (!colocado && columnasPreferidas != null)
+    {
+      colocado = IntentarColocar(GO, lado, new List<int> { 1, 2, 3 });
     }
 
     if (!colocado)
     {
-      Debug.LogError("No se pudo colocar el objeto en ninguna casilla después de 100 intentos.");
+      Debug.LogError("No se pudo colocar el objeto en ninguna casilla despues de 100 intentos.");
     }
   }
-
-    void ColocarEnCasillaAleatoriaEnColumna(int iLado, int columna, GameObject GO)
+  void ColocarEnCasillaAleatoriaEnColumna(int iLado, int columna, GameObject GO)
     {
       LadoManager lado = null;
       if (iLado == 1)
@@ -2337,6 +2445,7 @@ IEnumerator FadeTo(float target, float time)
     EliminarTodosLosPresentes();
 
     BattleManager.Instance.RondaNro = 1;
+
     BattleManager.Instance.unidadActiva = null;
     BattleManager.Instance.indexTurno = 0;
 

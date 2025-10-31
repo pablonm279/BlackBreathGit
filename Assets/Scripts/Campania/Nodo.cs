@@ -40,6 +40,7 @@ public class Nodo : MonoBehaviour
   public bool yatiroConexiones = false;
   Nodo vieneDeNodo;
   bool esMisterioso = false; // Nodo no revelado visualmente
+  int numVisualActual = -1;
 
   void Start()
   {
@@ -680,10 +681,41 @@ public class Nodo : MonoBehaviour
     }
   }
 
-  void ActivarNodoVisual(int num, bool esAtajo, bool estabaRevelado)
+  void DesactivarGraficosNodo()
   {
     foreach (Transform child in transform)
       if (child.name.Contains("Nodo")) child.gameObject.SetActive(false);
+  }
+
+  bool ActivarVisualPorCodigo(int codigo)
+  {
+    int indice = -1;
+    switch (codigo)
+    {
+      case 1: indice = 1; break;
+      case 2: indice = 2; break;
+      case 3: indice = 3; break;
+      case 4: indice = 4; break;
+      case 5: indice = 5; break;
+      case 6: indice = 6; break;
+      case 7: indice = 7; break;
+      case 8: indice = 8; break;
+      case 10: indice = 8; break;
+      case 11: indice = 9; break;
+      case 12: indice = 10; break;
+      case 13: indice = 11; break;
+      case 14: indice = 12; break;
+    }
+
+    if (indice < 0 || indice >= transform.childCount) return false;
+
+    transform.GetChild(indice).gameObject.SetActive(true);
+    return true;
+  }
+
+  void ActivarNodoVisual(int num, bool esAtajo, bool estabaRevelado)
+  {
+    DesactivarGraficosNodo();
 
     esMisterioso = false;
 
@@ -702,24 +734,11 @@ public class Nodo : MonoBehaviour
     }
     if (esAtajo) num = 13; // salida atajo
 
-    switch (num)
-    {
-      case 1: transform.GetChild(1).gameObject.SetActive(true); break;
-      case 2: transform.GetChild(2).gameObject.SetActive(true); break;
-      case 3: transform.GetChild(3).gameObject.SetActive(true); break;
-      case 4: transform.GetChild(4).gameObject.SetActive(true); break;
-      case 5: transform.GetChild(5).gameObject.SetActive(true); break;
-      case 6: transform.GetChild(6).gameObject.SetActive(true); break;
-      case 7: transform.GetChild(7).gameObject.SetActive(true); break;
-      case 8: transform.GetChild(8).gameObject.SetActive(true); break;
-      case 10: transform.GetChild(8).gameObject.SetActive(true); break;
-      case 11: transform.GetChild(9).gameObject.SetActive(true); break;
-      case 12: transform.GetChild(10).gameObject.SetActive(true); break;
-      case 13: transform.GetChild(11).gameObject.SetActive(true); break;
-      case 14: transform.GetChild(12).gameObject.SetActive(true); break;
-    }
+    numVisualActual = num;
+    if (!ActivarVisualPorCodigo(numVisualActual))
+      numVisualActual = -1;
 
-    if (CampaignManager.Instance.scMapaManager.nodoActual != null)
+    if (CampaignManager.Instance.scMapaManager.nodoActual != null && transform.childCount > 13)
     {
       if (!CampaignManager.Instance.scMapaManager.nodoActual.DestinosPosibles.Contains(this) || esAtajo)
         transform.GetChild(13).gameObject.SetActive(true); // vfx de revelado (no inmediatos)
@@ -730,8 +749,34 @@ public class Nodo : MonoBehaviour
 
   void OnEnable()
   {
-    if (tipoNodo > 0)
-    transform.GetChild(tipoNodo).gameObject.SetActive(true);
+    int codigoAAplicar = numVisualActual > 0 ? numVisualActual : tipoNodo;
+    if (codigoAAplicar <= 0) return;
+
+    DesactivarGraficosNodo();
+
+    bool visualActivado = ActivarVisualPorCodigo(codigoAAplicar);
+    if (visualActivado)
+    {
+      numVisualActual = codigoAAplicar;
+    }
+    else if (codigoAAplicar != tipoNodo && tipoNodo > 0)
+    {
+      visualActivado = ActivarVisualPorCodigo(tipoNodo);
+      if (visualActivado)
+        numVisualActual = tipoNodo;
+    }
+
+    if (!visualActivado) return;
+
+    if (CampaignManager.Instance != null &&
+        CampaignManager.Instance.scMapaManager != null &&
+        CampaignManager.Instance.scMapaManager.nodoActual != null &&
+        transform.childCount > 13)
+    {
+      bool esAtajoActivo = numVisualActual == 13;
+      if (!CampaignManager.Instance.scMapaManager.nodoActual.DestinosPosibles.Contains(this) || esAtajoActivo)
+        transform.GetChild(13).gameObject.SetActive(true);
+    }
   }
 
   void OnMouseEnter()

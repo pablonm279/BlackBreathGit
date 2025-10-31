@@ -685,6 +685,7 @@ MonoBehaviour:
   uNombre: Arquero Vengador de Kadryn
   tags:
   - Humanoide
+  - Corrupto
   at_iniciativa: 4
   mod_iniciativa: 4
   iniciativa_actual: 0

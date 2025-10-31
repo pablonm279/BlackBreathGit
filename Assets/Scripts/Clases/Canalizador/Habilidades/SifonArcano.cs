@@ -40,7 +40,7 @@ public class SifonArcano : Habilidad
       txtDescripcion = "<color=#5dade2><b>Sifón Arcano I</b></color>\n\n";
       txtDescripcion += "<i>Marca al objetivo con un vínculo inestable que drena su vitalidad, amplificado por la presencia de Residuos Energéticos.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>TS:</b> 7+Poder vs Fortaleza. - Dura 3 turnos.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d6 daño arcano x ({1}+1 por cada Residuo Energético en juego).</color>\n";
+      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d10 daño arcano x ({1}+1 por cada Residuo Energético en juego).</color>\n";
       txtDescripcion += $"<color=#44d3ec>- Costo AP: 3\n- Costo Val: 1\n- Cooldown: {cooldownMax}</color>\n";
       txtDescripcion += $"<color=#44d3ec>- Si muere bajo este efecto: el Canalizador obtiene +1 AP permanente y +10% Daño.</color>\n\n";
 
@@ -61,7 +61,7 @@ public class SifonArcano : Habilidad
       txtDescripcion = "<color=#5dade2><b>Sifón Arcano II</b></color>\n\n";
       txtDescripcion += "<i>Marca al objetivo con un vínculo inestable que drena su vitalidad, amplificado por la presencia de Residuos Energéticos.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>TS:</b> 7+Poder vs Fortaleza. - Dura 3 turnos.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d6 daño arcano x ({2}+1 por cada Residuo Energético en juego).</color>\n";
+      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d10 daño arcano x ({2}+1 por cada Residuo Energético en juego).</color>\n";
       txtDescripcion += $"<color=#44d3ec>- Costo AP: 3\n- Costo Val: 1\n- Cooldown: {cooldownMax}</color>\n";
       txtDescripcion += $"<color=#44d3ec>- Si muere bajo este efecto: el Canalizador obtiene +1 AP permanente y +10% Daño.</color>\n\n";
 
@@ -82,7 +82,7 @@ public class SifonArcano : Habilidad
       txtDescripcion = "<color=#5dade2><b>Sifón Arcano III</b></color>\n\n";
       txtDescripcion += "<i>Marca al objetivo con un vínculo inestable que drena su vitalidad, amplificado por la presencia de Residuos Energéticos.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>TS:</b> 8+Poder vs Fortaleza. - Dura 3 turnos.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d6 daño arcano x ({2}+1 por cada Residuo Energético en juego).</color>\n";
+      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d10 daño arcano x ({2}+1 por cada Residuo Energético en juego).</color>\n";
       txtDescripcion += $"<color=#44d3ec>- Costo AP: 3\n- Costo Val: 1\n- Cooldown: {cooldownMax}</color>\n";
       txtDescripcion += $"<color=#44d3ec>- Si muere bajo este efecto: el Canalizador obtiene +1 AP permanente y +10% Daño.</color>\n\n";
 
@@ -104,7 +104,7 @@ public class SifonArcano : Habilidad
       txtDescripcion = "<color=#5dade2><b>Sifón Arcano IV a</b></color>\n\n";
       txtDescripcion += "<i>Marca al objetivo con un vínculo inestable que drena su vitalidad, amplificado por la presencia de Residuos Energéticos.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>TS:</b> 8+Poder vs Fortaleza. - Dura 3 turnos.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d6 daño arcano x ({2}+1 por cada Residuo Energético en juego).</color>\n";
+      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d10 daño arcano x ({2}+1 por cada Residuo Energético en juego).</color>\n";
       txtDescripcion += $"<color=#44d3ec>- Costo AP: 3\n- Costo Val: 1\n- Cooldown: {cooldownMax}</color>\n";
       txtDescripcion += $"<color=#44d3ec>- Si muere bajo este efecto: el Canalizador obtiene +1 AP permanente, +10% Daño y +1 Nivel de Energía.</color>\n\n";
     }
@@ -115,7 +115,7 @@ public class SifonArcano : Habilidad
       txtDescripcion = "<color=#5dade2><b>Sifón Arcano IV b</b></color>\n\n";
       txtDescripcion += "<i>Marca al objetivo con un vínculo inestable que drena su vitalidad, amplificado por la presencia de Residuos Energéticos.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>TS:</b> 8+Poder vs Fortaleza. - Dura 4 turnos.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d6 daño arcano x ({2}+1 por cada Residuo Energético en juego).</color>\n";
+      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d10 daño arcano x ({2}+1 por cada Residuo Energético en juego).</color>\n";
       txtDescripcion += $"<color=#44d3ec>- Costo AP: 3\n- Costo Val: 1\n- Cooldown: {cooldownMax}</color>\n";
       txtDescripcion += $"<color=#44d3ec>- Si muere bajo este efecto: el Canalizador obtiene +1 AP permanente y +10% Daño.</color>\n\n";
     }
@@ -128,7 +128,7 @@ public class SifonArcano : Habilidad
       txtDescripcion = "<color=#5dade2><b>Arcane Siphon I</b></color>\n\n";
       txtDescripcion += "<i>Marks the target with an unstable link that drains its vitality, amplified by the presence of Energy Residues.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>ST:</b> 7+Power vs Fortitude. - Lasts 3 turns.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d6 arcane damage x ({1}+1 for each Energy Residue in play).</color>\n";
+      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d10 arcane damage x ({1}+1 for each Energy Residue in play).</color>\n";
       txtDescripcion += $"<color=#44d3ec>- AP Cost: 3\n- Val Cost: 1\n- Cooldown: {cooldownMax}</color>\n";
       txtDescripcion += $"<color=#44d3ec>- If killed under this effect: the Channeler gains +1 permanent AP and +10% Damage.</color>\n\n";
 
@@ -149,7 +149,7 @@ public class SifonArcano : Habilidad
       txtDescripcion = "<color=#5dade2><b>Arcane Siphon II</b></color>\n\n";
       txtDescripcion += "<i>Marks the target with an unstable link that drains its vitality, amplified by the presence of Energy Residues.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>ST:</b> 7+Power vs Fortitude. - Lasts 3 turns.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d6 arcane damage x ({2}+1 for each Energy Residue in play).</color>\n";
+      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d10 arcane damage x ({2}+1 for each Energy Residue in play).</color>\n";
       txtDescripcion += $"<color=#44d3ec>- AP Cost: 3\n- Val Cost: 1\n- Cooldown: {cooldownMax}</color>\n";
       txtDescripcion += $"<color=#44d3ec>- If killed under this effect: the Channeler gains +1 permanent AP and +10% Damage.</color>\n\n";
 
@@ -170,7 +170,7 @@ public class SifonArcano : Habilidad
       txtDescripcion = "<color=#5dade2><b>Arcane Siphon III</b></color>\n\n";
       txtDescripcion += "<i>Marks the target with an unstable link that drains its vitality, amplified by the presence of Energy Residues.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>ST:</b> 8+Power vs Fortitude. - Lasts 3 turns.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d6 arcane damage x ({2}+1 for each Energy Residue in play).</color>\n";
+      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d10 arcane damage x ({2}+1 for each Energy Residue in play).</color>\n";
       txtDescripcion += $"<color=#44d3ec>- AP Cost: 3\n- Val Cost: 1\n- Cooldown: {cooldownMax}</color>\n";
       txtDescripcion += $"<color=#44d3ec>- If killed under this effect: the Channeler gains +1 permanent AP and +10% Damage.</color>\n\n";
 
@@ -192,7 +192,7 @@ public class SifonArcano : Habilidad
       txtDescripcion = "<color=#5dade2><b>Arcane Siphon IV a</b></color>\n\n";
       txtDescripcion += "<i>Marks the target with an unstable link that drains its vitality, amplified by the presence of Energy Residues.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>ST:</b> 8+Power vs Fortitude. - Lasts 3 turns.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d6 arcane damage x ({2}+1 for each Energy Residue in play).</color>\n";
+      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d10 arcane damage x ({2}+1 for each Energy Residue in play).</color>\n";
       txtDescripcion += $"<color=#44d3ec>- AP Cost: 3\n- Val Cost: 1\n- Cooldown: {cooldownMax}</color>\n";
       txtDescripcion += $"<color=#44d3ec>- If killed under this effect: the Channeler gains +1 permanent AP, +10% Damage and +1 Energy Level.</color>\n\n";
     }
@@ -203,7 +203,7 @@ public class SifonArcano : Habilidad
       txtDescripcion = "<color=#5dade2><b>Arcane Siphon IV b</b></color>\n\n";
       txtDescripcion += "<i>Marks the target with an unstable link that drains its vitality, amplified by the presence of Energy Residues.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>ST:</b> 8+Power vs Fortitude. - Lasts 4 turns.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d6 arcane damage x ({2}+1 for each Energy Residue in play).</color>\n";
+      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d10 arcane damage x ({2}+1 for each Energy Residue in play).</color>\n";
       txtDescripcion += $"<color=#44d3ec>- AP Cost: 3\n- Val Cost: 1\n- Cooldown: {cooldownMax}</color>\n";
       txtDescripcion += $"<color=#44d3ec>- If killed under this effect: the Channeler gains +1 permanent AP and +10% Damage.</color>\n\n";
     }
@@ -236,7 +236,7 @@ public class SifonArcano : Habilidad
 
     if (obj is Unidad uni) //Acá van los efectos a Unidades.
     {
-      float dc = 7 + scEstaUnidad.mod_CarPoder; 
+      float dc = 8 + scEstaUnidad.mod_CarPoder; 
       VFXAplicar(uni.gameObject);
       if (NIVEL > 2) { dc += 1; }
 

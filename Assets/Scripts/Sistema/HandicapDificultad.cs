@@ -74,8 +74,15 @@ namespace Sistema
     [Tooltip("Si está activo, el preset se SUMA a los ajustes de enemigos al aplicar el handicap (no los sobreescribe). Aliados no son afectados por el preset.")]
     public bool usarPresets = true;
 
+    [Header("Ajuste de puntos para generador de encuentros")]
+    [Tooltip("Valor adicional que se suma (o resta) al presupuesto de puntos de los enemigos al generar una batalla.")]
+    public int puntosExtraEnemigos = 0;
+
     private readonly HashSet<int> _aplicadosAliados = new HashSet<int>();
     private readonly HashSet<int> _aplicadosEnemigos = new HashSet<int>();
+
+    public static int AjustePuntosEnemigos =>
+      Instance != null ? Instance.puntosExtraEnemigos : 0;
 
     private void Awake()
     {

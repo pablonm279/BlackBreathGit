@@ -98,8 +98,8 @@ public class CampaignManager : MonoBehaviour
     CambiarOroActual(400);
     CambiarValorAlientoNegro(1);
 
-    //scAtributosZona.ConstruirZonaBosqueAngustiante(1);
-    scAtributosZona.ConstruirZonaPasoVientoHelado(1);
+    scAtributosZona.ConstruirZonaBosqueAngustiante(1);
+    //scAtributosZona.ConstruirZonaPasoVientoHelado(1);
 
 
     scMenuSequito.AgregarSequito(1);
@@ -1266,7 +1266,7 @@ public class CampaignManager : MonoBehaviour
   public void AbandonarMateriales()
   {
     CambiarMaterialesActuales(-2);
-    CambiarEsperanzaActual(-1);
+   // CambiarEsperanzaActual(-1);
   }
 
 
@@ -1392,7 +1392,7 @@ public class CampaignManager : MonoBehaviour
       tooltipGOMateriales.SetActive(true);
       String text = "";
 
-      text = TRADU.i.Traducir("<color=#ffdda5>---<b>Haz click para abandonar <color=#b34f09>2 Materiales</color> y alivianar la Carga. -1 Esperanza</b>---</color>\n\n\n");
+      text = TRADU.i.Traducir("<color=#ffdda5>---<b>Haz click para abandonar <color=#b34f09>2 Materiales</color> y alivianar la Carga.</b>---</color>\n\n\n");
       int num = GetMaterialesActuales();
       text += TRADU.i.Traducir("Los <color=#b34f09>Materiales</color> son elementos básicos de construcción utilizados para mantenimiento y expansión de la caravana.\nCada uno pesa 3.\n");
       text += TRADU.i.Traducir("\nLlevas ") + num + TRADU.i.Traducir(" <color=#b34f09>Materiales</color>, por un total de peso de ") + (num * 3) + ".\n\n\n";

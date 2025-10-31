@@ -475,6 +475,7 @@ GameObject:
   - component: {fileID: 6709699644619208355}
   - component: {fileID: 6788679752014171776}
   - component: {fileID: -2368153877597377738}
+  - component: {fileID: 730264758856137864}
   m_Layer: 7
   m_Name: Fuego Fatuo
   m_TagString: Unidad
@@ -604,7 +605,11 @@ MonoBehaviour:
   estado_regeneraarmadura: 0
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
+  estado_Condenado: 0
+  estado_Escudado: 0
   estado_Corrupto: 0
+  unidadVoladora: 0
+  estado_Volando: 0
   inmunidad_Ceguera: 0
   inmunidad_Oscuridad: 0
   inmunidad_Trampas: 1
@@ -619,6 +624,8 @@ MonoBehaviour:
   tejidoCuracMagica: 0
   loMatoCorrompido: 0
   entroComoAliado: 0
+  offsetVueloY: 13
+  duracionAnimacionVuelo: 0.4
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
@@ -883,6 +890,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &730264758856137864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3855863790156444218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea53e8ea861cb0e49ab545538d2b893d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4225752100268397624
 GameObject:
   m_ObjectHideFlags: 0
