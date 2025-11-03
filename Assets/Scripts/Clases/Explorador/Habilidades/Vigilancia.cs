@@ -157,14 +157,30 @@ public class Vigilancia : Habilidad
      disparosEsteTurno = 2; //2 disparos por uso de habilidad
      if(NIVEL == 5){disparosEsteTurno++;}
 
-     if(casillaObjetivo == null)
+     Casilla casillaDestino = casillaObjetivo;
+     if (casillaDestino == null)
      {
-      if (obj is Unidad uni)
-      { casillaObjetivo = uni.GetComponent<Unidad>().CasillaPosicion; }
+      if (obj is Unidad unidadObjetivo && unidadObjetivo.CasillaPosicion != null)
+      {
+        casillaDestino = unidadObjetivo.CasillaPosicion;
+      }
+      else if (obj is Obstaculo obstaculoObjetivo && obstaculoObjetivo.CasillaPosicion != null)
+      {
+        casillaDestino = obstaculoObjetivo.CasillaPosicion;
+      }
+      else if (obj is Casilla casillaClickeada)
+      {
+        casillaDestino = casillaClickeada;
+      }
      }
-     List<Casilla> lCasillas = new List<Casilla>();
-     lCasillas = casillaObjetivo.ObtenerCasillasAlrededor(1);
-     lCasillas.Add(casillaObjetivo);
+
+     if (casillaDestino == null)
+     {
+      Debug.LogWarning("Vigilancia.AplicarEfectosHabilidad no pudo determinar casilla objetivo.");
+      return;
+     }
+     List<Casilla> lCasillas = casillaDestino.ObtenerCasillasAlrededor(1);
+     lCasillas.Add(casillaDestino);
 
      foreach(Casilla cas in lCasillas)
      {
@@ -192,6 +208,7 @@ public class Vigilancia : Habilidad
     {
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
+      lObstaculosPosibles.Clear();
       
       lCasillasafectadas = Origen.ObtenerCasillasRango(6,3);
     

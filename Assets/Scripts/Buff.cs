@@ -182,11 +182,11 @@ public class Buff : MonoBehaviour
         {
             if (DuracionBuffRondas > 0)
             {
-                unidad.GenerarTextoFlotante(TRADU.i.Traducir(buffNombre) + " " + DuracionBuffRondas + "T", colorTexto);
+                unidad.GenerarTextoFlotante("+"+TRADU.i.Traducir(buffNombre) + " " + DuracionBuffRondas + "T", colorTexto);
             }
             else if (DuracionBuffRondas < 0)
             {
-                unidad.GenerarTextoFlotante(TRADU.i.Traducir(buffNombre), colorTexto);
+                unidad.GenerarTextoFlotante("+" + TRADU.i.Traducir(buffNombre), colorTexto);
             }
         }
 

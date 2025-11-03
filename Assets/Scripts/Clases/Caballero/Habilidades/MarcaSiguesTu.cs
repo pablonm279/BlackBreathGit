@@ -10,7 +10,7 @@ public class MarcaSiguesTu : Marca
    {
    
 
-    descripcion = $"Marca: {quienMarco.uNombre} posee bonificaciones de daño y ataque con ataques individuales contra este enemigo.";
+    descripcion = TRADU.i.Traducir("Marca: ") + quienMarco.uNombre + TRADU.i.Traducir(" posee bonificaciones de daño y ataque con ataques individuales contra este enemigo.");
 
    }
 

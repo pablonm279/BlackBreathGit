@@ -1243,7 +1243,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         {
           danioFinal = 0;
           scBattleManager.EscribirLog(uNombre + TRADU.i.Traducir(" bloquea el daño con su escudo."));
-          GenerarTextoFlotante(TRADU.i.Traducir("Bloqueado"), Color.cyan);
+          GenerarTextoFlotante(TRADU.i.Traducir("Bloqueado"), Color.cyan, FloatingTextContext.Block);
           estado_Escudado--;
         }
       }
@@ -1267,12 +1267,22 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
 
       scUnidadCanvas.txtDaño.text = "";
-      await Task.Delay(300);
+   
       HP_actual -= (int)danioFinal;
-      scUnidadCanvas.txtDaño.text = "-"+(int)danioFinal;
-      if (esCritico) { scUnidadCanvas.txtDaño.text += "!"; }
+      string textoDanio = "-" + (int)danioFinal;
+      if (esCritico) { textoDanio += "!"; }
+      Color colorDanio = scUnidadCanvas.txtDaño != null ? scUnidadCanvas.txtDaño.color : Color.white;
 
-
+      if (danioFinal > 0)
+      {
+        await GenerarTextoFlotante(textoDanio, colorDanio, esCritico ? FloatingTextContext.CriticalDamage : FloatingTextContext.Damage, scUnidadCanvas.txtDaño);
+      }
+      else if (scUnidadCanvas.txtDaño != null)
+      {
+        scUnidadCanvas.txtDaño.text = textoDanio;
+      }
+      
+      await Task.Delay(300);
       string stDaniotipo = "";
       switch (tipoDanio)
       {
@@ -1377,7 +1387,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     else
     {
       if (TieneBuffNombre("Invulnerable"))
-      { GenerarTextoFlotante( TRADU.i.Traducir("Invulnerable"), Color.gray); }
+      { GenerarTextoFlotante( TRADU.i.Traducir("Invulnerable"), Color.gray, FloatingTextContext.Resist); }
 
     }
   }
@@ -1466,7 +1476,17 @@ public async virtual void RecibirDanioBonusElemental(float Xddanio, int tipoDani
       scUnidadCanvas.txtDaño.text = "";
       await Task.Delay(700);
       HP_actual -= (int)danioFinal;
-      scUnidadCanvas.txtDaño.text = "-"+(int)danioFinal;
+      string textoDanioElemental = "-" + (int)danioFinal;
+      Color colorDanioElemental = scUnidadCanvas.txtDaño != null ? scUnidadCanvas.txtDaño.color : Color.white;
+
+      if (danioFinal > 0)
+      {
+        await GenerarTextoFlotante(textoDanioElemental, colorDanioElemental, FloatingTextContext.Damage, scUnidadCanvas.txtDaño);
+      }
+      else if (scUnidadCanvas.txtDaño != null)
+      {
+        scUnidadCanvas.txtDaño.text = textoDanioElemental;
+      }
 
       string stDaniotipo = "";
       switch (tipoDanio)
@@ -1524,7 +1544,7 @@ public async virtual void RecibirDanioBonusElemental(float Xddanio, int tipoDani
     else
     {
        if (TieneBuffNombre("Invulnerable"))
-      { GenerarTextoFlotante( TRADU.i.Traducir("Invulnerable"), Color.gray); }
+      { GenerarTextoFlotante( TRADU.i.Traducir("Invulnerable"), Color.gray, FloatingTextContext.Resist); }
 
 
     }
@@ -1762,13 +1782,13 @@ public virtual void AplicarDesesperanzado()
 }
 
  
-  public async Task GenerarTextoFlotante(string txString, Color color)
+  public async Task GenerarTextoFlotante(string txString, Color color, FloatingTextContext contexto = FloatingTextContext.Generic, TextMeshProUGUI overrideText = null)
   {
 
   // Encuentra todos los objetos existentes del prefab scUnidadCanvas.PrefabtxtDaño
 
   // Calcula el retraso total en milisegundos
-   int delayPerObject = UnityEngine.Random.Range(0, 800); // Retraso entre 100 y 500 ms por objeto
+   int delayPerObject = UnityEngine.Random.Range(250, 350); // Retraso entre 200 y 300 ms por objeto
    GameObject[] existingTextObjects = GameObject.FindGameObjectsWithTag(scUnidadCanvas.PrefabtxtDaño.tag);
 
    int totalDelay = delayPerObject * existingTextObjects.Length;
@@ -1777,16 +1797,34 @@ public virtual void AplicarDesesperanzado()
      await Task.Delay(totalDelay);
 
        // Instancia el nuevo objeto
-      GameObject goTextoFlotante = Instantiate(scUnidadCanvas.PrefabtxtDaño, scUnidadCanvas.unidadCanvas.transform, false);
-      TextMeshProUGUI txtMesh = goTextoFlotante.GetComponent<TextMeshProUGUI>();
+      TextMeshProUGUI txtMesh = overrideText;
+      GameObject goTextoFlotante = null;
 
-      // Configura el texto y el color
-       txtMesh.text = txString;
-      txtMesh.color = color;
-     
+      if (txtMesh == null)
+      {
+        goTextoFlotante = Instantiate(scUnidadCanvas.PrefabtxtDaño, scUnidadCanvas.unidadCanvas.transform, false);
+        txtMesh = goTextoFlotante.GetComponent<TextMeshProUGUI>();
+      }
+      else
+      {
+        goTextoFlotante = txtMesh.gameObject;
+      }
 
-        // Genera el texto flotante
-    TextoFlotanteManager.Instance.GenerarTextoFlotante(txString, color);
+      if (txtMesh != null)
+      {
+        txtMesh.text = txString;
+        txtMesh.color = color;
+      }
+
+      FloatingTextAnimator animator = goTextoFlotante != null ? goTextoFlotante.GetComponent<FloatingTextAnimator>() : null;
+      if (animator != null)
+      {
+        animator.Play(txString, color, contexto);
+      }
+      else if (TextoFlotanteManager.Instance != null && overrideText == null)
+      {
+        TextoFlotanteManager.Instance.GenerarTextoFlotante(txString, color, contexto);
+      }
     }
 
 
@@ -1807,7 +1845,7 @@ public void RecibirCuracion(float curacion, bool magica)
  { 
    HP_actual += (int)curaFinal;
   if(HP_actual > mod_maxHP){HP_actual = mod_maxHP; }
-  GenerarTextoFlotante(TRADU.i.Traducir("Cura ")+(int)curaFinal, Color.green);
+  GenerarTextoFlotante(TRADU.i.Traducir("Cura ")+(int)curaFinal, Color.green, FloatingTextContext.Heal);
   scBattleManager.EscribirLog(uNombre+TRADU.i.Traducir(" recibe <color=#11c66b>") +curaFinal+TRADU.i.Traducir("</color> de curación."));
 
   if(magica){ tejidoCuracMagica += (int)curaFinal/5;} //Cada 5 curación mágica se suma 1 de residuo tejido curativo que previene 1 de futuras curaciones.
@@ -2117,10 +2155,12 @@ public async void OnMouseDown()
     }
     else //NegativoSeSalva
     {
-            BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende +  TRADU.i.Traducir(" vs Tirada Dificultad: ") + iResultadoAtaque +  TRADU.i.Traducir(". Resultado: Se salva."));
-      GenerarTextoFlotante(TRADU.i.Traducir("Resiste"), Color.green);
-   
-    }
+
+      BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende +  TRADU.i.Traducir(" vs Tirada Dificultad: ") + iResultadoAtaque +  TRADU.i.Traducir(". Resultado: Se salva."));
+      Color colorResist = (CasillaPosicion != null && CasillaPosicion.lado == 1) ? new Color(0.65f, 0f, 0f) : new Color(0f, 0.65f, 0f);
+      GenerarTextoFlotante(TRADU.i.Traducir("Resiste"), colorResist, FloatingTextContext.Resist);
+       
+        }
 
     return resultado;
   }

@@ -740,6 +740,9 @@ public class Nodo : MonoBehaviour
 
     if (CampaignManager.Instance.scMapaManager.nodoActual != null && transform.childCount > 13)
     {
+      int nodoenXactual = CampaignManager.Instance.scMapaManager.nodoActual.posXNodo;
+      if (nodoenXactual == posXNodo) {return;} //No activa VFx de revelado en nodos de la misma altura en X
+
       if (!CampaignManager.Instance.scMapaManager.nodoActual.DestinosPosibles.Contains(this) || esAtajo)
         transform.GetChild(13).gameObject.SetActive(true); // vfx de revelado (no inmediatos)
     }
@@ -774,6 +777,8 @@ public class Nodo : MonoBehaviour
         transform.childCount > 13)
     {
       bool esAtajoActivo = numVisualActual == 13;
+      int nodoenXactual = CampaignManager.Instance.scMapaManager.nodoActual.posXNodo;
+      if (nodoenXactual == posXNodo) {return;} //No activa VFx de revelado en nodos de la misma altura en X
       if (!CampaignManager.Instance.scMapaManager.nodoActual.DestinosPosibles.Contains(this) || esAtajoActivo)
         transform.GetChild(13).gameObject.SetActive(true);
     }

@@ -342,7 +342,7 @@ public abstract class IAHabilidad : MonoBehaviour
     if (resultado == 0) //Fallo
     {
       BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + iResultadoAtaque + TRADU.i.Traducir(". Resultado: Fallo."));
-      unidadAtacada.GenerarTextoFlotante(TRADU.i.Traducir("Fallo"), Color.grey);
+      unidadAtacada.GenerarTextoFlotante(TRADU.i.Traducir("Fallo"), Color.grey, FloatingTextContext.Miss);
     }
 
 
@@ -421,7 +421,7 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     unidadesNoParticipantes = new List<object>(BattleManager.Instance.lUnidadesTotal);
     unidadesNoParticipantes.Remove(scEstaUnidad);
 
-    scEstaUnidad.GenerarTextoFlotante(TRADU.i.Traducir(nombre), Color.magenta);
+    scEstaUnidad.GenerarTextoFlotante("<i>" + TRADU.i.Traducir(nombre) + "</i>", Color.red);
 
     if (objetivos != null && objetivos.Count > 0)
     {

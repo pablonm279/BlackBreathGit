@@ -64,11 +64,11 @@ Material:
     m_Ints: []
     m_Floats:
     - _BumpScale: 1
-    - _Cutoff: 0.878
+    - _Cutoff: 0.95
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
-    - _Glossiness: 0.591
+    - _Glossiness: 0.727
     - _GlossyReflections: 1
     - _Metallic: 0.598
     - _Mode: 1

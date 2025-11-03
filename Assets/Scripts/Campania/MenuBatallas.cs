@@ -719,7 +719,7 @@ public void DejanEnListaParticipantesSolo()
             {
                 Item recompensa = CampaignManager.Instance.scMenuSequito.Sequito003Mercaderes.GetComponent<SequitoMercaderes>().ObtenerItemAlAzar();
                 CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(recompensa.gameObject);
-                txtRecompensa.text += TRADU.i.Traducir("\n\n- Has encontrado un objeto de recompensa: ") + recompensa.sNombreItem + ".";
+                txtRecompensa.text += TRADU.i.Traducir("\n\n- Has encontrado un objeto de recompensa: ") + TRADU.i.Traducir(recompensa.sNombreItem) + ".";
 
             }
 

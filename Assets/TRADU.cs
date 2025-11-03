@@ -2958,12 +2958,12 @@ public class TRADU : MonoBehaviour
               case "Castigar a los Malvados":
                   r = "Punish the Wicked";
                   break;
-                /*  case "":
-                  r = "";
-                  break;*/
-                /*  case "":
-                  r = "";
-                  break;*/
+              case "Marca: ":
+                  r = "Mark: ";
+                  break;
+              case " posee bonificaciones de daño y ataque con ataques individuales contra este enemigo.":
+                  r = " has bonuses to damage and attack with individual attacks against this enemy.";
+                  break;
                 /*  case "":
                   r = "";
                   break;*/

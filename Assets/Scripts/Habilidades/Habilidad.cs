@@ -280,7 +280,7 @@ public abstract class Habilidad : MonoBehaviour
     if (resultado == 0)
     {
       BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + sAtaqueModClima + TRADU.i.Traducir(". Resultado: Golpe."));
-      unidadAtacada.GenerarTextoFlotante(TRADU.i.Traducir("Fallo"), new Color(0.8f, 0.8f, 0.8f));
+      unidadAtacada.GenerarTextoFlotante(TRADU.i.Traducir("Fallo"), new Color(0.8f, 0.8f, 0.8f), FloatingTextContext.Miss);
     }
 
 

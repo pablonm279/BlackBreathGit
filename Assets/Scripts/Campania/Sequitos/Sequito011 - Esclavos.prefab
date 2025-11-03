@@ -114,8 +114,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 433.8518, y: -393.46}
-  m_SizeDelta: {x: 517.7036, y: 850.92}
+  m_AnchoredPosition: {x: 465.9824, y: -296.15918}
+  m_SizeDelta: {x: 585.9432, y: 806.8621}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &633902483652130657
 CanvasRenderer:
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 17e50253ba630ed42b7eeb1c1fe7850e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f886d2a20c9378d4f90a2fb2e078ba50, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -325,8 +325,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -91.29817}
-  m_SizeDelta: {x: 402.64, y: 222.8064}
+  m_AnchoredPosition: {x: 0, y: -145.49612}
+  m_SizeDelta: {x: 402.64, y: 342.9709}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7521355882606595503
 CanvasRenderer:
@@ -349,14 +349,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.15388037, g: 0.15388037, b: 0.24528301, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4baaa47fc985ef44ba9afbad417a3539, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e7a07d236dba2a34a8f0aff06f3954db, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -454,15 +454,15 @@ MonoBehaviour:
   m_text: "Se perder\xE1 el s\xE9quito, pero se sumar\xE1n como civiles comunes a
     la caravana. +25 Esperanza"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
+  m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4288651665
-  m_fontColor: {r: 0.5694642, g: 0.6320754, b: 0.6232362, a: 1}
+    rgba: 4292337817
+  m_fontColor: {r: 0.6000801, g: 0.8773585, b: 0.8426987, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -548,7 +548,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3683022255708173305}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -557,8 +557,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.64850825}
   m_AnchorMax: {x: 0.5, y: 0.64850825}
-  m_AnchoredPosition: {x: 3.4818, y: -9}
-  m_SizeDelta: {x: 402.6451, y: 18.9401}
+  m_AnchoredPosition: {x: -144.6, y: -29}
+  m_SizeDelta: {x: 197.84, y: 41.6557}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6072197438642335276
 CanvasRenderer:
@@ -588,17 +588,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Cantidad de Civiles: 20'
+  m_text: 'Cantidad de Civiles: 25.'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
+  m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294938586
-  m_fontColor: {r: 0.8544293, g: 0.5613208, b: 1, a: 1}
+    rgba: 4278255577
+  m_fontColor: {r: 0.84955823, g: 1, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -621,7 +621,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 2
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -653,7 +653,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 18.9608, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: 17.213684}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -820,7 +820,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4778004583846374890}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -829,8 +829,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.64850825}
   m_AnchorMax: {x: 0.5, y: 0.64850825}
-  m_AnchoredPosition: {x: 3.4818, y: 126}
-  m_SizeDelta: {x: 402.6451, y: 101.7043}
+  m_AnchoredPosition: {x: 1.9187012, y: 136}
+  m_SizeDelta: {x: 391.72, y: 195.7229}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4267832825813729127
 CanvasRenderer:
@@ -860,19 +860,20 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Han sido esclavos toda su vida, e incluso en estas circunstancias se comportan
-    como tal. La situaci\xF3n amerita aprovecharse de su condici\xF3n para obtener
-    ventajas de mano de obra, \xBFo quiz\xE1s lleg\xF3 el momento de liberarlos?"
+  m_text: "Un grupo de nobles que se vieron obligados a abandonar la comodidad de
+    sus tierras, ahora viajan junto a la caravana y si bien no son de gran utilidad
+    y pueden ser poco discretos al viajar, al menos donan peri\xF3dicamente parte
+    de su riqueza para asegurarse de que no ser\xE1n abandonados."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
+  m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4292269782
-  m_fontColor: {r: 0.8392157, g: 0.8392157, b: 0.8392157, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -889,13 +890,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15
-  m_fontSizeBase: 15
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 2
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -927,7 +928,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 22.141586, y: 0, z: 16.96399, w: 0}
+  m_margin: {x: -49.836838, y: 0, z: -58.952637, w: 38.19879}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -967,8 +968,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.64850825}
   m_AnchorMax: {x: 0.5, y: 0.64850825}
-  m_AnchoredPosition: {x: 1.7396, y: -18.52716}
-  m_SizeDelta: {x: 399.16, y: 235.3069}
+  m_AnchoredPosition: {x: 0.8, y: 15.5}
+  m_SizeDelta: {x: 384.5409, y: 235.3069}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3381794076757901508
 CanvasRenderer:
@@ -998,22 +999,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'EFECTOS PASIVOS:
-
-
-
-
-'
+  m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
+  m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4291348680
+  m_fontColor: {r: 0.7830189, g: 0.7830189, b: 0.7830189, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1030,8 +1026,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1068,7 +1064,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 20.690598, y: 40.73712, z: 21.694519, w: 10.363342}
+  m_margin: {x: 0, y: 20.595276, z: -4.3115845, w: -109.56238}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1273,7 +1269,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.7490196, b: 0.33333334, a: 1}
+  m_Color: {r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

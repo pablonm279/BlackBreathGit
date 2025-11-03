@@ -187,6 +187,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f6ebed17d815a34e8599c5a31f5d638, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 0.2
-  yOffset: 0.015
-  uvTilesPerUnit: 0.4
