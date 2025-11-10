@@ -9,7 +9,7 @@ public class TutorialManager : MonoBehaviour
 
     public GameObject[] pasosTutorial; // Array de objetos del tutorial
 
-    void Start()
+    public void ComenzarTutorial()
     {
         if (tutorialActivo && pasosTutorial.Length > 0)
         {

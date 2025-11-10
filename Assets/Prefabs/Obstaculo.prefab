@@ -514,7 +514,7 @@ GameObject:
   - component: {fileID: 3416648779419231424}
   m_Layer: 0
   m_Name: Obstaculo
-  m_TagString: Untagged
+  m_TagString: Obstaculo
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -604,9 +604,13 @@ MonoBehaviour:
   hpMax: 12
   hpCurr: 12
   iDureza: 2
+  intDuracionTurnos: 0
+  bPermiteAtacarDetras: 0
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   unidadCanvas: {fileID: 7546067854644206732}
+  puntoEntrante: {fileID: 0}
   "txtDa\xF1o": {fileID: 0}
+  CasillaPosicion: {fileID: 0}
   barraVida: {fileID: 1275708003733049991}
 --- !u!1 &7546067854644206732
 GameObject:

@@ -233,7 +233,7 @@ public class CastigaraLosMalvados : Habilidad
       reaccion.nombre = "Castigar a los Malvados";
       ReaccionCastigarMalvados reaccionPosturaDefensiva = ComponentCopier.CopyComponent(reaccion, objetivo.gameObject);
 
-      objetivo.GenerarTextoFlotante("Castigar a los Malvados", Color.yellow);
+      objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Castigar a los Malvados"), Color.yellow);
       }
      
     }

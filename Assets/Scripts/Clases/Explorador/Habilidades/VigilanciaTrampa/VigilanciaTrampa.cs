@@ -31,27 +31,48 @@ public class VigilanciaTrampa : Trampa
   public async override void AplicarEfectosTrampa(Unidad objetivo)
   {
 
-    if (unidadCreadora.GetComponent<Vigilancia>().disparosEsteTurno > 0)
+    Vigilancia vigilancia = unidadCreadora.GetComponent<Vigilancia>();
+    if (vigilancia == null)
     {
-      unidadCreadora.GetComponent<Vigilancia>().disparosEsteTurno--;
+      Debug.LogWarning("VigilanciaTrampa no encontró la habilidad Vigilancia en la unidad creadora.");
+      return;
+    }
+    if (tiroArco == null)
+    {
+      Debug.LogWarning("VigilanciaTrampa no encontró TiroconArco en la unidad creadora.");
+      return;
+    }
+
+    if (vigilancia.disparosEsteTurno > 0)
+    {
+      vigilancia.disparosEsteTurno--;
       //objetivo.AccionP_actual = 0; //Cuando a una IA le reacciona un personaje, se queda sin AP, para que no haga cosas mientras el pj reacciona
 
       unidadCreadora.ReproducirAnimacionHabilidadNoHostil();
 
-      await Task.Delay(200);
+      List<object> objetivos = objetivo != null ? new List<object> { objetivo } : null;
+      if (objetivos != null)
+      {
+        await tiroArco.PrepararImpactoManualAsync(objetivos, unidadCreadora.CasillaPosicion);
+      }
 
       int tirada = UnityEngine.Random.Range(1, 21);
 
-      if (unidadCreadora.GetComponent<Vigilancia>().NIVEL > 1)
+      if (vigilancia.NIVEL > 1)
       {
         tirada += 1;
       }
-      if (unidadCreadora.GetComponent<Vigilancia>().NIVEL > 2)
+      if (vigilancia.NIVEL > 2)
       {
         tirada += 1;
       }
 
       tiroArco.AplicarEfectosHabilidad(objetivo, tirada, null);
+
+      if (objetivos != null)
+      {
+        await tiroArco.FinalizarImpactoManualAsync(objetivos, unidadCreadora.CasillaPosicion);
+      }
 
       BattleManager.Instance.EscribirLog($"{unidadCreadora.uNombre} reacciona con {nombre}.");
 

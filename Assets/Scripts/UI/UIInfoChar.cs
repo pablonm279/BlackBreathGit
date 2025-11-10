@@ -253,27 +253,13 @@ public class UIInfoChar : MonoBehaviour
 
 
 
-         //MostrarBuffs/Debuffs
-         foreach (Buff buff in scUnidadMostrada.gameObject.GetComponents<Buff>())
-         {
-            if (buff.DuracionBuffRondas != 0 && buff.esBuffVisibleUI)
-            {
-               GameObject buffCuadro = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
-               bool buffdebuff = buff.boolfDebufftBuff;
-
-               string sName = "";
-               if (buff.DuracionBuffRondas > 0)
-               {
-                  sName = buff.buffNombre + " " + buff.DuracionBuffRondas;
-               }
-               if (buff.DuracionBuffRondas < 0)
-               {
-                  sName = buff.buffNombre;
-               }
-
-               buffCuadro.GetComponent<UIEstadoCuadro>().RepresentarBuff(buff);
-            }
-         }
+        //MostrarBuffs/Debuffs
+        List<BuffUIHelper.BuffStack> buffStacks = BuffUIHelper.GetVisibleBuffStacks(scUnidadMostrada);
+        foreach (BuffUIHelper.BuffStack stack in buffStacks)
+        {
+           GameObject buffCuadro = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
+           buffCuadro.GetComponent<UIEstadoCuadro>().RepresentarBuff(stack.AggregatedBuff, false, stack.StackCount);
+        }
 
        //MostrarReacciones
       foreach (Reaccion buff in scUnidadMostrada.gameObject.GetComponents<Reaccion>())
@@ -445,6 +431,22 @@ public class UIInfoChar : MonoBehaviour
    if (unidadMostrada.uNombre == "Arquero Vengador de Kadryn")
    {
       desc = TRADU.i.Traducir("<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Buen ataque.\n-Flecha envenenada.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Poco resistente.</color>");
+   }
+   if (unidadMostrada.uNombre == "Predicador del Aliento Negro")
+   {
+      desc = TRADU.i.Traducir("<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Ataque de rango infalible.\n-Potencia Aliados.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Poco resistente.</color>");
+   }
+   if (unidadMostrada.uNombre == "Raiz-Viva Ardiendo")
+   {
+      desc = TRADU.i.Traducir("<i>Raiz-Viva del bosque mismo que ha salido a la superficie obligada por las llamas, ahora atacará furiosa a cualquier invasor del bosque.</i>\n\n<color=#199F10>-Ataque de llamas infalible.\n-Se entierra para curarse.</color>\n<color=#EE0000>-Inmóvil.</color>");
+   }
+   if (unidadMostrada.uNombre == "Oso Espectral")
+   {
+      desc = TRADU.i.Traducir("<i>Este oso se ha convertido en un feroz espectro que deambula el bosque ardiente. Su potencia física es aterradora.</i>\n\n<color=#199F10>-Ataques abrumadores.\n-Gran cantidad de vida.</color>\n<color=#EE0000>-Mayor probabilidad de pifia.</color>");
+   }
+   if (unidadMostrada.uNombre == "Faagdan")
+   {
+      desc = TRADU.i.Traducir("<i>Esta bestia oriunda del Paso es material de varias leyendas y pesadillas entre los Kale'Tav. De cuerpo robusto y cuernos afilados, supone un peligro para los viajeros incautos.</i>\n\n<color=#199F10>-Ataques de carga en fila.\n-Regeneración leve.</color>\n<color=#EE0000>-Lento.</color>");
    }
    return desc;
   }

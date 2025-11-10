@@ -108,7 +108,6 @@ public class IADebatirTacticas : IAHabilidad
         Buff buff = new Buff();
         buff.buffNombre = "Enfoque Defensivo";
         buff.boolfDebufftBuff = true;
-        buff.cantAPMax = 1;
         buff.DuracionBuffRondas = 4;
         buff.cantArmadura += 3;
         buff.cantDefensa += 3;
@@ -124,7 +123,6 @@ public class IADebatirTacticas : IAHabilidad
         Buff buff = new Buff();
         buff.buffNombre = "Enfoque Agresivo";
         buff.boolfDebufftBuff = true;
-        buff.cantAPMax = 1;
         buff.DuracionBuffRondas = 4;
         buff.cantCritDado += 2;
         buff.cantAtaque += 3;
@@ -145,10 +143,10 @@ public class IADebatirTacticas : IAHabilidad
           buff.buffNombre = "Descansando";
           buff.boolfDebufftBuff = true;
           buff.cantAPMax = -4;
-          buff.DuracionBuffRondas = 2;
+          buff.DuracionBuffRondas = 1;
           buff.AplicarBuff(objetivo);
 
-          objetivo.GetComponent<Unidad>().RecibirCuracion(45, false);
+          objetivo.GetComponent<Unidad>().RecibirCuracion(75, false);
           // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
           Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
           BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir("Gulek y Gul discuten tácticas, y resuelven descansar para recuperar fuerzas."));

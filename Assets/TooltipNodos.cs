@@ -16,11 +16,25 @@ public class TooltipNodos : MonoBehaviour
         tooltipObject.SetActive(false);
     }
 
-    public void ShowTooltip(string content, Vector3 position)
+    public void ShowTooltip(string content, Vector3 position, Nodo nodo)
     {
         tooltipObject.SetActive(true);
         tooltipText.text = content;
         tooltipObject.transform.position = position;
+
+        if (nodo.nodoIncendiado)
+        {
+            tooltipText.text += TRADU.i.Traducir("\n<color=#FF3D00>--Incendiado--</color>");
+        }
+         if (nodo.nodoRitual)
+        {
+            tooltipText.text += TRADU.i.Traducir("\n<color=#6A0DAD>--Ritual--</color>");
+        }
+
+
+        
+
+       
     }
 
     public void HideTooltip()

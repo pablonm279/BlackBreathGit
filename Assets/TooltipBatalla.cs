@@ -98,13 +98,13 @@ public class TooltipBatalla : MonoBehaviour
             case 28:
                 return "Primer Golpe: el Alabardero ataca a la primera unidad que entra en la casilla.";
             case 29:
-                return "";
+                return "Refuerzos aliados disponibles, irán uniéndose a la batalla gradualmente.";
             case 30:
-                return "";
+                return "Refuerzos enemigos disponibles, irán uniéndose a la batalla gradualmente.";
             case 31:
-                return "";
+                return "Llamas: infligen daño fuego a unidades que entren en la casilla.";
             case 32:
-                return "";
+                return "Barro: reduce 2 PA a unidades que entren en la casilla.";
             case 33:
                 return "";
             case 34:

@@ -34,6 +34,8 @@ public class ContenedorPrefabs : MonoBehaviour
     [Header("Obstaculos")]
     public GameObject PurificadoraPilarDeLuz;
     public GameObject Barricada;
+    public GameObject Roca1;
+    public GameObject Roca2;
 
 
     [Header("VFX")]
@@ -72,7 +74,7 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject TrampaImprovisadaTribal;
     public GameObject TrampaAlientoNegro;
     public GameObject TrampaPrimerGolpeAlabardero;
-
+    public GameObject TrampaBarro;
 
     [Header("Invocaciones")]
     public GameObject Canalizador_ManifestacionArcana;
@@ -117,6 +119,8 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject AlabarderoVengadorKadryn;
     public GameObject ArqueroVengadorKadryn;
     public GameObject PredicadorDelAlientoKadryn;
+    public GameObject NinfaDeFuego;
+
     [Header("Sonidos Daño")]
 
     public AudioClip sonidoPerforante;

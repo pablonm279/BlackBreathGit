@@ -39,6 +39,7 @@ public class MenuBatallas : MonoBehaviour
  [SerializeField] float corruptChancePerAliento = 4f;
  [SerializeField] List<BattleRewardProfile> rewardProfiles = new List<BattleRewardProfile>();
  [SerializeField] BattleRewardTuning defaultRewardTuning = new BattleRewardTuning();
+ const string KaleTavFactionId = "Kale'Tav";
 
  EncounterDefinition encuentroGeneradoActual;
  EncounterZoneType encuentroZonaActual;
@@ -134,17 +135,28 @@ public class MenuBatallas : MonoBehaviour
     }
  }
 
- bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predicate<EnemyFactionConfig> factionFilter, out EncounterDefinition definition, int faseOverride = 0)
- {
-    definition = null;
-    var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
-    if (atributosZona == null)
+bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predicate<EnemyFactionConfig> factionFilter, out EncounterDefinition definition, int faseOverride = 0)
+{
+   definition = null;
+   var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+   if (atributosZona == null)
     {
        return false;
     }
 
-    int fase = faseOverride > 0 ? faseOverride : Mathf.Max(1, atributosZona.FASE);
-   return EncounterGenerator.TryGenerateEncounter(atributosZona, zona, tipo, fase, out definition, factionFilter);
+   int fase = faseOverride > 0 ? faseOverride : Mathf.Max(1, atributosZona.FASE);
+  return EncounterGenerator.TryGenerateEncounter(atributosZona, zona, tipo, fase, out definition, factionFilter);
+}
+
+ bool EsNodoActualRitualKaleTav()
+ {
+    var manager = CampaignManager.Instance;
+    if (manager == null || manager.scMapaManager == null || manager.scMapaManager.nodoActual == null)
+    {
+       return false;
+    }
+
+    return manager.scMapaManager.nodoActual.tipoNodo == 15;
  }
 
  bool EsFaccionCorrupta(string factionId)
@@ -487,7 +499,7 @@ public void DejanEnListaParticipantesSolo()
     }
 
     ActualizarLista();
- } public void EventoBatallaElite(int n, int esEmboscada = 0)
+ } public void EventoBatallaElite(int n, int esEmboscada = 0, bool forzarRitualKaleTav = false)
  {
     esEmboscadaEnemiga = esEmboscada;
 
@@ -506,15 +518,38 @@ public void DejanEnListaParticipantesSolo()
 
     if (n == 0)
     {
-        if (!TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, null, out encuentroGeneradoActual))
+        bool generado = false;
+        bool esRitualKaleTav = forzarRitualKaleTav || EsNodoActualRitualKaleTav();
+
+        if (esRitualKaleTav)
+        {
+            Predicate<EnemyFactionConfig> kaleFilter = faction =>
+                faction != null &&
+                !string.IsNullOrWhiteSpace(faction.factionId) &&
+                string.Equals(faction.factionId, KaleTavFactionId, StringComparison.OrdinalIgnoreCase);
+
+            generado = TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, kaleFilter, out encuentroGeneradoActual);
+            if (!generado && TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, kaleFilter, out encuentroGeneradoActual))
+            {
+                encuentroZonaActual = EncounterZoneType.Generico;
+                generado = true;
+            }
+        }
+
+        if (!generado && !TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, null, out encuentroGeneradoActual))
         {
             if (TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, null, out encuentroGeneradoActual))
             {
                 encuentroZonaActual = EncounterZoneType.Generico;
+                generado = true;
             }
         }
+        else
+        {
+            generado = true;
+        }
 
-        EventoBatallaID = encuentroGeneradoActual != null ? 0 : EventoBatallaID;
+        EventoBatallaID = generado && encuentroGeneradoActual != null ? 0 : EventoBatallaID;
     }
     else
     {
@@ -562,7 +597,7 @@ public void DejanEnListaParticipantesSolo()
 
     if (txtMilicianosDisponibles != null)
     {
-        txtMilicianosDisponibles.text = "Milicianos disponibles: " + (int)CampaignManager.Instance.GetMiliciasActual() / 10;
+        txtMilicianosDisponibles.text = TRADU.i.Traducir("Milicianos disponibles: ") + (int)CampaignManager.Instance.GetMiliciasActual() / 10;
     }
 
     scAdministradorEscenas.Personaje1 = null;
@@ -650,7 +685,7 @@ public void DejanEnListaParticipantesSolo()
 
     if (txtMilicianosDisponibles != null)
     {
-        txtMilicianosDisponibles.text = "Milicianos disponibles: " + (int)CampaignManager.Instance.GetMiliciasActual() / 10;
+        txtMilicianosDisponibles.text = TRADU.i.Traducir("Milicianos disponibles: ")  + (int)CampaignManager.Instance.GetMiliciasActual() / 10;
     }
 
     encuentroGeneradoActual = null;
@@ -693,6 +728,11 @@ public void DejanEnListaParticipantesSolo()
     else
     {
         ProcesarEncuentroLegacy(resultado, ref aumentochancesitem);
+    }
+
+    if (resultado == 1)
+    {
+        AplicarVictoriaRitualKaleTav();
     }
     //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
     if (resultado == 2) //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
@@ -1058,5 +1098,29 @@ public void DejanEnListaParticipantesSolo()
     {
         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Derrota frente a ") + faccion + $" ({tipo})");
     }
+ }
+
+ void AplicarVictoriaRitualKaleTav()
+ {
+    var manager = CampaignManager.Instance;
+    if (manager == null || manager.scMapaManager == null)
+    {
+        return;
+    }
+
+    var nodoActual = manager.scMapaManager.nodoActual;
+    if (nodoActual == null || nodoActual.tipoNodo != 15)
+    {
+        return;
+    }
+
+    if (nodoActual.nodoRitual)
+    {
+        nodoActual.DesactivarRitual();
+    }
+    nodoActual.nodoRitual = false;
+
+    manager.CambiarEsperanzaActual(10);
+    manager.EscribirLog(TRADU.i.Traducir("-El ritual Kale'Tav ha sido detenido. +10 Esperanza."));
  }
 }

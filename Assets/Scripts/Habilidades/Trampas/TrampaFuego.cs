@@ -5,24 +5,30 @@ using UnityEngine;
 public class TrampaFuego : Trampa
 {
   
-  
-  public void Inicializar()
+   public void Inicializar()
   {
-     nombre = "Trampa de Fuego";
+     nombre = "Llama";
      intDificultadVer = 0;   
-     intUsos = 2;
-     esPersistente = false;
+     intUsos = 10;
+     intDuracionTurnos = 500;
+     esPersistente = true;
 
      ActivarVFXModeloTrampa();
 
-    
-
   }
-
-  public override void AplicarEfectosTrampa(Unidad unidad)
+ 
+  public override void  AplicarEfectosTrampa(Unidad objetivo)
   {
-    unidad.RecibirDanio(500, 1, false, null);
-    ReducirUsos();
+    
+         int danio =UnityEngine.Random.Range(5,14)+2;
+         objetivo.RecibirDanio(danio,4,false, null);
+
+        if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, 12))
+        {
+          objetivo.estado_ardiendo = +2;
+        }
+
+          ReducirUsos();
   }
 
   void ActivarVFXModeloTrampa()

@@ -2731,7 +2731,7 @@ public class TRADU : MonoBehaviour
                 r = "Bloodlusted";
                 break;
             case "<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Empieza combate con Evasión.\n-Se potencia si el enemigo está lastimado.</color>\n<color=#EE0000>-Una vez que perdió la evasión, es fácil de eliminar.</color>":
-                r = "<i>Tribe originating from the Icewind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Starts combat with Evasion.\n-Empowered if the enemy is wounded.</color>\n<color=#EE0000>-Once it loses evasion, it is easy to eliminate.</color>";
+                r = "<i>Tribe originating from the Frozenwind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Starts combat with Evasion.\n-Empowered if the enemy is wounded.</color>\n<color=#EE0000>-Once it loses evasion, it is easy to eliminate.</color>";
                 break;
             case "Ataque Lanza":
                 r = "Spear Attack";
@@ -2740,7 +2740,7 @@ public class TRADU : MonoBehaviour
                 r = "Throw Spear";
                 break;
             case "<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Ataque de lanza arrojadiza peligroso.</color>\n<color=#EE0000>-Poca Precisión.</color>":
-                r = "<i>Tribe originating from the Icewind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Dangerous thrown spear attack.</color>\n\n<color=#199F10>-Creates traps.</color>\n<color=#EE0000>-Low Accuracy.</color>";
+                r = "<i>Tribe originating from the Frozenwind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Dangerous thrown spear attack.</color>\n\n<color=#199F10>-Creates traps.</color>\n<color=#EE0000>-Low Accuracy.</color>";
                 break;
             case "Improvisar Trampas":
                 r = "Improvise Traps";
@@ -2761,7 +2761,7 @@ public class TRADU : MonoBehaviour
                 r = "Furious from Wound";
                 break;
             case "<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Recibir Herida lo potencia.\n-Al matar a un enemigo se potencia.</color>\n<color=#EE0000>-Posee sólo un tipo de ataque.</color>":
-                r = "<i>Tribe originating from the Icewind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Receiving Wound empowers it.\n-Killing an enemy empowers it.</color>\n<color=#EE0000>-Only one type of attack.</color>";
+                r = "<i>Tribe originating from the Frozenwind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Receiving Wound empowers it.\n-Killing an enemy empowers it.</color>\n<color=#EE0000>-Only one type of attack.</color>";
                 break;
             case "Regocijo Asesino":
                 r = "Killer's Rage";
@@ -2779,7 +2779,7 @@ public class TRADU : MonoBehaviour
                 r = "Raven Attack";
                 break;
             case "<i><i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Potencia Aliados.\n-Su cuervo la defiende.</color>\n<color=#EE0000>-Poco resistente.</color>":
-                r = "<i>Tribe originating from the Icewind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Empowers Allies.\n-Its raven defends her.</color>\n<color=#EE0000>-Weak resistance.</color>";
+                r = "<i>Tribe originating from the Frozenwind Passage, these wild humanoids are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Empowers Allies.\n-Its raven defends her.</color>\n<color=#EE0000>-Weak resistance.</color>";
                 break;
             case "Frenesí del Asesinato":
                 r = "Murderous Frenzy";
@@ -2899,99 +2899,231 @@ public class TRADU : MonoBehaviour
                 r = "Ecstatic from Black Breath";
                 break;
             case "Restos de Aliento: Potencia y cura a los Vengadores de Kadryn.":
-                  r = "Breath Residue: Empowers and heals the Avengers of Kadryn.";
-                  break;
+                r = "Breath Residue: Empowers and heals the Avengers of Kadryn.";
+                break;
             case "Reacción: Al morir genera restos de Aliento Negro en el campo de batalla.":
-                  r = "Reaction: Upon death, generates residues of Black Breath on the battlefield.";
-                  break;
+                r = "Reaction: Upon death, generates residues of Black Breath on the battlefield.";
+                break;
             case "Soldado Vengador de Kadryn":
-                  r = "Footman Avenger of Kadryn";
-                  break;
+                r = "Footman Avenger of Kadryn";
+                break;
             case " reacciona con Primer Golpe.":
-                  r = " reacts with First Strike.";
-                  break;
+                r = " reacts with First Strike.";
+                break;
             case "Primer Golpe: el Alabardero ataca a la primera unidad que entra en la casilla.":
-                  r = "First Strike: the Halberdier attacks the first unit that enters the square.";
-                  break;
+                r = "First Strike: the Halberdier attacks the first unit that enters the square.";
+                break;
             case "Alabardero Vengador de Kadryn":
-                  r = "Halberdier Avenger of Kadryn";
-                  break;
+                r = "Halberdier Avenger of Kadryn";
+                break;
             case "Estocada Alabarda":
-                  r = "Halberd Thrust";
-                  break;
+                r = "Halberd Thrust";
+                break;
             case "<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Buen ataque.\n-Flecha envenenada.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Poco resistente.</color>":
-                  r = "Organization of human mercenaries who were part of the defeated army of Lich Kadryn. Now they seek revenge by ensuring that no one escapes the Black Breath of their master.</i>\n\n<color=#199F10>-Precise.\n-Poison Arrow.\n-Upon death, leaves a cloud of black breath.</color>\n<color=#EE0000>-Poor resistance.";
-                  break;
+                r = "<i>Organization of human mercenaries who were part of the defeated army of Lich Kadryn. Now they seek revenge by ensuring that no one escapes the Black Breath of their master.</i>\n\n<color=#199F10>-Precise.\n-Poison Arrow.\n-Upon death, leaves a cloud of black breath.</color>\n<color=#EE0000>-Poor resistance.";
+                break;
             case "Tiro con Arco":
-                  r = "Bow Shot";
-                  break;
+                r = "Bow Shot";
+                break;
             case "Primer Golpe":
-                  r = "First Strike";
-                  break;
+                r = "First Strike";
+                break;
             case "Predicador del Aliento Negro":
-                  r = "Preacher of the Black Breath";
-                  break;
+                r = "Preacher of the Black Breath";
+                break;
+             case "<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Ataque de rango infalible.\n-Potencia Aliados.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Poco resistente.</color>":
+                r = "<i>Organization of human mercenaries who were part of the defeated army of Lich Kadryn. Now they seek revenge by ensuring that no one escapes the Black Breath of their master.</i>\n\n<color=#199F10>-Infallible range attack.\n-Ally Empowerment.\n-Upon death, leaves a cloud of black breath.</color>\n<color=#EE0000>-Poor resistance.</color>";
+                break;
             case "Oración de Kadryn":
-                  r = "Kadryn's Prayer";
-                  break;
+                r = "Kadryn's Prayer";
+                break;
             case "Rayo Necrótico":
-                  r = "Necrotic Ray";
-                  break;
+                r = "Necrotic Ray";
+                break;
             case "Liturgia de la Putrefacción":
-                  r = "Litany of Putrefaction";
-                  break;
+                r = "Litany of Putrefaction";
+                break;
             case "es presa de la Putrefacción.":
-                  r = "falls prey to the Putrefaction.";
-                  break;
+                r = "falls prey to the Putrefaction.";
+                break;
             case "Putrefacción":
-                  r = "Putrefaction";
-                  break;
+                r = "Putrefaction";
+                break;
             case "El Aliento Negro se expande por el campo enemigo.":
-                  r = "The Black Breath spreads across the enemy field.";
-                  break;
+                r = "The Black Breath spreads across the enemy field.";
+                break;
             case "desata un rayo necrótico sobre":
-                  r = "unleashes a necrotic ray upon";
-                  break;
+                r = "unleashes a necrotic ray upon";
+                break;
             case "Sus defensas se corroen por el Aliento Negro.":
-                  r = "Their defenses are corroded by the Black Breath.";
+                r = "Their defenses are corroded by the Black Breath.";
+                break;
+            case "Castigar a los Malvados":
+                r = "Punish the Wicked";
+                break;
+            case "Marca: ":
+                r = "Mark: ";
+                break;
+            case " posee bonificaciones de daño y ataque con ataques individuales contra este enemigo.":
+                r = " has bonuses to damage and attack with individual attacks against this enemy.";
+                break;
+            case "Ninfa Ardiendo":
+                r = "Burning Nymph";
+                break;
+            case "Ataque Raiz Ardiente":
+                r = "Burning Root Attack";
+                break;
+            case "se entierra y desaparece del campo.":
+                r = "buries itself and disappears from the field.";
+                break;
+            case "emerge de vuelta.":
+                r = "emerges back.";
+                break;
+            case "Emergida":
+                r = "Emerged";
+                break;
+            case "Enterrarse":
+                r = "Bury";
+                break;
+            case "Enterrado":
+                r = "Buried";
+                break;
+            case "La raiz permanece oculta bajo tierra, preparandose para emerger.":
+                r = "The root remains hidden underground, preparing to emerge.";
+                break;
+            case "Llamarada Raiz":
+                r = "Flame attack";
+                break;
+            case "<i>Raiz-Viva del bosque mismo que ha salido a la superficie obligada por las llamas, ahora atacará furiosa a cualquier invasor del bosque.</i>\n\n<color=#199F10>-Ataque de llamas infalible.\n-Se entierra para curarse.</color>\n<color=#EE0000>-Inmóvil.</color>":
+                  r = "<i>Living-Root of the forest itself that has come to the surface forced by the flames, it will now furiously attack any invader of the forest.</i>\n\n<color=#199F10>-Infallible flame attack.\n-Buries itself to heal.</color>\n<color=#EE0000>-Immobile.</color>";
                   break;
-              case "Castigar a los Malvados":
-                  r = "Punish the Wicked";
-                  break;
-              case "Marca: ":
-                  r = "Mark: ";
-                  break;
-              case " posee bonificaciones de daño y ataque con ataques individuales contra este enemigo.":
-                  r = " has bonuses to damage and attack with individual attacks against this enemy.";
-                  break;
+            case "Garra Oso Espectral":
+                r = "Spectral Bear Claw";
+                break;
+            case "<i>Este oso se ha convertido en un feroz espectro que deambula el bosque ardiente. Su potencia física es aterradora.</i>\n\n<color=#199F10>-Ataques abrumadores.\n-Gran cantidad de vida.</color>\n<color=#EE0000>-Mayor probabilidad de pifia.</color>":
+                 r = "<i>This bear has become a fierce specter roaming the burning forest. Its physical power is terrifying.</i>\n\n<color=#199F10>-Overwhelming attacks.\n-Great amount of life.</color>\n<color=#EE0000>-Higher chance of fumble.</color>";
+                 break;
+            case "Bonus de daño elemental.":
+                r = "Bonus elemental damage.";
+                break;
+            case "<i>Esta bestia oriunda del Paso es material de varias leyendas y pesadillas entre los Kale'Tav. De cuerpo robusto y cuernos afilados, supone un peligro para los viajeros incautos.</i>\n\n<color=#199F10>-Ataques de carga en fila.\n-Regeneración leve.</color>\n<color=#EE0000>-Lento.</color>":
+                 r = "<i>This beast native to the Passage is the origin of various legends and nightmares among the Kale'Tav. With a robust body and sharp horns, it poses a danger to unwary travelers.</i>\n\n<color=#199F10>-Line charge attacks.\n-Slight regeneration.</color>\n<color=#EE0000>-Slow.</color>";
+                 break;
+             case "Milicianos disponibles: ":
+                r = "Available Militiamen: ";
+                break;
+                  case "<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Ataque de oportunidad.\n-Buena Armadura.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Movimiento limitado.</color>":
+                 r = "<i>Organization of human mercenaries who were part of the defeated army of the Lich Kadryn. Now they seek revenge by trying to ensure that no one escapes the Black Breath of their master.</i>\n\n<color=#199F10>-Opportunity attack.\n-Good Armor.\n-When they die, they leave a cloud of black breath.</color>\n<color=#EE0000>-Limited movement.</color>";
+                 break;
+            case "Refuerzos":
+                r = "Reinforcements";
+                break;
+            case "Refuerzos aliados disponibles, irán uniéndose a la batalla gradualmente.":
+                 r = "Allied reinforcements available, will gradually join the battle.";
+                 break;
+            case "Refuerzos enemigos disponibles, irán uniéndose a la batalla gradualmente.":
+                r = "Enemy reinforcements available, will gradually join the battle.";
+                break;
+            case "El Bosque Ardiente":
+                 r = "The Burning Forest";
+                 break;
+            case "Paso Vientohelado":
+                 r = "Frozenwind Passage";
+                 break;
+              case "A medida que viajas por el bosque, las llamas envolverán regiones del mapa de forma inesperada.\n\nSi intentas atravesar un Nodo prendido fuego, perderás 10 de Esperanza y 8-15 Civiles.\nNo se podrá descansar en nodos incendiados.\n\nAdemás, las batallas que tengan lugar en un Nodo incendiado, tendrán llamas en el campo de batalla.":
+                 r = "As you travel through the forest, flames will engulf regions of the map unexpectedly.\n\nIf you try to cross a node on fire, you will lose 10 Hope and 8-15 Civilians.\nYou will not be able to rest in burning nodes.\n\nAdditionally, battles taking place in a burning Node will have flames on the battlefield.";
+                 break;
+             case "<color=#FF3D00>-El incendio ha envuelto un nodo cercano al camino de la caravana.</color>":
+                 r = "<color=#FF3D00>-The fire has engulfed a node near the caravan's path.</color>";
+                 break;
+             case "\n<color=#FF3D00>--Incendiado--</color>":
+                 r = "\n<color=#FF3D00>--Burning--</color>";
+                 break;
+             case "La lluvia ha apagado los incendios en el área temporalmente.":
+                 r = "The rain has temporarily extinguished the fires in the area.";
+                 break;
+             case "Llamas: infligen daño fuego a unidades que entren en la casilla.":
+                 r = "Flames: deal fire damage to units entering the tile.";
+                 break;
+             case "Raiz-Viva Ardiendo":
+                 r = "Burning Living-Root";
+                 break;
+             case "Enfurecido por el Fuego":
+                 r = "Enraged by Fire";
+                 break;
+             case "Barro: reduce 2 PA a unidades que entren en la casilla.":
+                 r = "Mud: reduces 2 AP to units entering the tile.";
+                 break;
+            case "La tribu Kale'Tav está realizando rituales en el área, preparándose para el Aliento Negro.\n\nAl escuchar sus tambores a lo lejos sabrás dónde se encuentran.\nPor cada Ritual completado, sus combatientes recibirán bonificaciones en batalla.\n\nPara interrumpir un ritual debes aproximarte a los nodos marcados y derrotarlos.\n\nFuerza Kale'Tav: ":
+                 r = "The Kale'Tav tribe is performing rituals in the area, preparing for the Black Breath.\n\nHearing their drums in the distance will let you know where they are.\nFor each completed Ritual, their fighters will receive bonuses in battle.\n\nTo interrupt a ritual you must approach the marked nodes and defeat them.\n\nKale'Tav Strength: ";
+                 break;
+            case "<color=#6A0DAD>-Un ritual Kale'Tav ha comenzado en un nodo cercano. La música profana desalienta a la caravana. -5 Esperanza.</color>":
+                r = "<color=#6A0DAD>-A Kale'Tav ritual has started at a node near the caravan's path.</color>";
+                break;
+            case "<color=#FF3D00>-Un ritual Kale'Tav ha sido completado. La fuerza de Kale'Tav aumenta en 1.</color>":
+                 r = "<color=#FF3D00>-A Kale'Tav ritual has been completed. Kale'Tav's strength increases by 1.</color>";
+                 break;
+            case "-El ritual Kale'Tav ha sido detenido. +10 Esperanza.":
+                r = "-The Kale'Tav ritual has been stopped. +10 Hope.";
+                break;
+            case "Batalla Kale'Tav":
+                 r = "Kale'Tav Battle";
+                 break;
+              case "Fuerza Kale'Tav":
+                r = "Kale'Tav Strength";
+                break;
                 /*  case "":
-                  r = "";
-                  break;*/
+                 r = "";
+                 break;*/
                 /*  case "":
-                  r = "";
-                  break;*/
-                /*  case "":
-                  r = "";
-                  break;*/
-                /*  case "":
-                  r = "";
-                  break;*/
-                /*  case "":
-                  r = "";
-                  break;*/
-                /*  case "":
-                  r = "";
-                  break;*/
-                /*  case "":
-                  r = "";
-                  break;*/
-                /*  case "":
-                  r = "";
-                  break;*/
-              /*  case "":
                 r = "";
                 break;*/
-              /*  case "":
+                /*  case "":
+                 r = "";
+                 break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                 r = "";
+                 break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                 r = "";
+                 break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                 r = "";
+                 break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                 r = "";
+                 break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                 r = "";
+                 break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                 /*  case "":
+                  r = "";
+                  break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                 /*  case "":
+                  r = "";
+                  break;*/
+                /*  case "":
                 r = "";
                 break;*/
 

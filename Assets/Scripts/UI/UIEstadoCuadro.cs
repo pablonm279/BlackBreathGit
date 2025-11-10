@@ -111,14 +111,14 @@ public class UIEstadoCuadro : MonoBehaviour
       case 11: Retrato.sprite = imRegArm; textTooltip.text = TRADU.i.Traducir("Regeneración Armadura: recupera Armadura perdida cada turno."); break;
       case 12: Retrato.sprite = imEvasion; textTooltip.text = TRADU.i.Traducir("Evasión: cada stack aumenta 1 la Defensa, se elimina al recibir daño."); break;
       case 13: Retrato.sprite = imFlechas; textTooltip.text = TRADU.i.Traducir("Flechas: Cantidad de flechas disponibles."); break;
-      case 14: Retrato.sprite = imBonusAcido; textTooltip.text = "+1-" + BattleManager.Instance.scUIInfoChar.unidadMostrada.bonusdam_acido + TRADU.i.Traducir(" Bonus daño elemental Acido."); break;
-      case 15: Retrato.sprite = imBonusArcano; textTooltip.text = "+1-" + BattleManager.Instance.scUIInfoChar.unidadMostrada.bonusdam_arcano + TRADU.i.Traducir(" Bonus daño elemental Arcano."); break;
-      case 16: Retrato.sprite = imBonusFuego; textTooltip.text = "+1-" + BattleManager.Instance.scUIInfoChar.unidadMostrada.bonusdam_fuego + TRADU.i.Traducir(" Bonus daño elemental Fuego."); break;
-      case 17: Retrato.sprite = imBonusHielo; textTooltip.text = "+1-" + BattleManager.Instance.scUIInfoChar.unidadMostrada.bonusdam_hielo + TRADU.i.Traducir(" Bonus daño elemental Hielo."); break;
-      case 18: Retrato.sprite = imBonusNecro; textTooltip.text = "+1-" + BattleManager.Instance.scUIInfoChar.unidadMostrada.bonusdam_necro + TRADU.i.Traducir(" Bonus daño elemental Necro."); break;
-      case 19: Retrato.sprite = imBonusRayo; textTooltip.text = "+1-" + BattleManager.Instance.scUIInfoChar.unidadMostrada.bonusdam_rayo + TRADU.i.Traducir(" Bonus daño elemental Rayo."); break;
+      case 14: Retrato.sprite = imBonusAcido; textTooltip.text = TRADU.i.Traducir("Bonus daño elemental Acido."); break;
+      case 15: Retrato.sprite = imBonusArcano; textTooltip.text =  TRADU.i.Traducir("Bonus daño elemental Arcano."); break;
+      case 16: Retrato.sprite = imBonusFuego; textTooltip.text = TRADU.i.Traducir("Bonus daño elemental Fuego."); break;
+      case 17: Retrato.sprite = imBonusHielo; textTooltip.text =  TRADU.i.Traducir("Bonus daño elemental Hielo."); break;
+      case 18: Retrato.sprite = imBonusNecro; textTooltip.text =  TRADU.i.Traducir("Bonus daño elemental Necro."); break;
+      case 19: Retrato.sprite = imBonusRayo; textTooltip.text =  TRADU.i.Traducir("Bonus daño elemental Rayo."); break;
       case 20: Retrato.sprite = imPurificadoraFervor; textTooltip.text = TRADU.i.Traducir("Fervor: Cantidad de Fervor que tiene la purificadora."); break;
-      case 21: Retrato.sprite = imBonusDivino; textTooltip.text = "+1-" + BattleManager.Instance.scUIInfoChar.unidadMostrada.bonusdam_divino + TRADU.i.Traducir(" Bonus daño elemental Divino."); break;
+      case 21: Retrato.sprite = imBonusDivino; textTooltip.text = TRADU.i.Traducir("Bonus daño elemental Divino."); break;
       case 22: Retrato.sprite = imBarrera; textTooltip.text = TRADU.i.Traducir("Barrera: previene X cantidad de daño."); break;
       case 23: Retrato.sprite = imResiduoTejido; textTooltip.text = TRADU.i.Traducir("Residuo de Tejido: se obtiene al recibir curación de origen mágico. Previene X puntos de curación."); break;
       case 24: Retrato.sprite = imEstaEscondido; textTooltip.text = TRADU.i.Traducir("Escondido I: Esta unidad está escondida y los enemigos no pueden atacarla. El efecto se remueve al atacar o recibir daño."); break;
@@ -150,10 +150,14 @@ public class UIEstadoCuadro : MonoBehaviour
       }
     }
   }
-  public void RepresentarBuff(Buff buff, bool desdeBarraVida = false)
+  public void RepresentarBuff(Buff buff, bool desdeBarraVida = false, int stackCount = 1)
   {
     debarravida = desdeBarraVida;
-    textStacks.text = "";
+    if (textStacks != null)
+    {
+      textStacks.text = (!desdeBarraVida && stackCount > 1) ? $"x{stackCount}" : "";
+    }
+
     textTooltip.text = GenerarDescripcionBuff(buff); //Efectos del buff
     if (Retrato != null && imBuff != null && imDebuff != null)
     {

@@ -10,6 +10,7 @@ TagManager:
   - Nodo
   - MapaObjeto
   - TooltipBatalla
+  - Obstaculo
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - Suelo
   - Camino
   - MapaObjeto
-  - 
+  - Postprocessing
   - 
   - 
   - 

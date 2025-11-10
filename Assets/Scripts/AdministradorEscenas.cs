@@ -143,7 +143,7 @@ IEnumerator FadeTo(float target, float time)
     VFXNieve.SetActive(false);
     VFXNiebla.SetActive(false);
     VFXAurora.SetActive(false);
-    
+
     escenaActual = 1; //1 Batalla 0 Campaña
     CampaignManager.Instance.logDeCampania.LimpiarDesdeCampania();
     int idZona = CampaignManager.Instance.scAtributosZona.ID;
@@ -153,9 +153,9 @@ IEnumerator FadeTo(float target, float time)
     EscenaCampaign.SetActive(false);
     EscenaBatalla.SetActive(true);
     // Silenciar logs de combate durante la preparación (buffs/estados iniciales)
-    BattleManager.Instance.silenciarLogCombate = true; 
+    BattleManager.Instance.silenciarLogCombate = true;
     bool bonusiniciativaTutorial = false;
-    BattleManager.Instance.scTutorialCombate.IniciarPrimerCombate(); bonusiniciativaTutorial = true; 
+    BattleManager.Instance.scTutorialCombate.IniciarPrimerCombate(); bonusiniciativaTutorial = true;
 
 
 
@@ -189,7 +189,7 @@ IEnumerator FadeTo(float target, float time)
     {
       unidadPers1.ComienzoBatallaClase();
 
-      if (bonusiniciativaTutorial) { unidadPers1.mod_iniciativa += 20;  unidadPers1.iniciativa_actual += 20;}
+      if (bonusiniciativaTutorial) { unidadPers1.mod_iniciativa += 20; unidadPers1.iniciativa_actual += 20; }
     }
     if (unidadPers2 != null)
     {
@@ -255,13 +255,13 @@ IEnumerator FadeTo(float target, float time)
     if (esEmboscada == 3)//Ataque a Caravana
     {
       // Evitar que los personajes forzados aparezcan tambin como refuerzos: marcar temporalmente como "Guardia"
-      List<System.Tuple<Personaje,int>> actividadesPrevias = new List<System.Tuple<Personaje,int>>();
+      List<System.Tuple<Personaje, int>> actividadesPrevias = new List<System.Tuple<Personaje, int>>();
       if (PersonajesSorprendidosInicioCaravana != null && PersonajesSorprendidosInicioCaravana.Count > 0)
       {
         foreach (var p in PersonajesSorprendidosInicioCaravana)
         {
           if (p == null) continue;
-          actividadesPrevias.Add(new System.Tuple<Personaje,int>(p, p.ActividadSeleccionada));
+          actividadesPrevias.Add(new System.Tuple<Personaje, int>(p, p.ActividadSeleccionada));
           p.ActividadSeleccionada = 3; // Guardia
         }
       }
@@ -381,7 +381,7 @@ IEnumerator FadeTo(float target, float time)
     }
     if (climaCampaña == 4)//Nieve
     {
-       VFXNieve.SetActive(true);
+      VFXNieve.SetActive(true);
       List<Unidad> listaUnidades = new List<Unidad>(BattleManager.Instance.ladoB.unidadesLado);
       listaUnidades.AddRange(BattleManager.Instance.ladoA.unidadesLado);
       foreach (Unidad u in listaUnidades)
@@ -406,7 +406,8 @@ IEnumerator FadeTo(float target, float time)
       BattleManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_nieve;
     }
     if (climaCampaña == 5)//Niebla
-    { VFXNiebla.SetActive(true);
+    {
+      VFXNiebla.SetActive(true);
       //---
       BattleManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_niebla;
     }
@@ -414,7 +415,7 @@ IEnumerator FadeTo(float target, float time)
     {
       if (CampaignManager.Instance.scAtributosZona.ID == 2) //Paso Viento Helado
       { VFXAurora.SetActive(true); }
-      
+
     }
     #endregion
     #region Corrupcion
@@ -529,7 +530,86 @@ IEnumerator FadeTo(float target, float time)
       BattleManager.Instance.nocheLienzo.SetActive(false);
     }
     #endregion
+    #region Ritual Kale'Tav
+    LadoManager ladodeEnemigos = BattleManager.Instance.ladoA; //Enemigos
+      foreach (Unidad u in ladodeEnemigos.unidadesLado)
+      { 
+        int repeticiones = CampaignManager.Instance.scAtributosZona.PasoVientoHelado_FuerzaKaleTav;
+       for (int i = 0; i < repeticiones; i++)
+       {
+        if (u.TieneTag("Kale'Tav") && CampaignManager.Instance.scAtributosZona.ID == 2)
+        {
+          // BUFF ---- Así se aplica un buff/debuff
+          Buff buff = new Buff();
+          buff.buffNombre = "Fuerza Kale'Tav";
+          buff.boolfDebufftBuff = true;
+          buff.DuracionBuffRondas = -1;
+          buff.cantDanioPorcentaje += 10;
+          buff.cantHPMax += 10;
+          buff.cantTsMental += 1;
+          buff.cantTsFortaleza += 1;
+          buff.AplicarBuff(u);
+          // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+          Buff buffComponent = ComponentCopier.CopyComponent(buff, u.gameObject);
+        }
+       }
+      }
+    #endregion
+    #region Objetos en Batalla
+    //Fuego de Bosque Ardiente
+    if (CampaignManager.Instance.scMapaManager.nodoActual.nodoIncendiado)
+    {
 
+
+      int cantidadTrampas = UnityEngine.Random.Range(1, 6) + 2;
+      List<Casilla> casillasDisponiblesLadoA = BattleManager.Instance.ladoA.ObtenerCasillasDesocupadas();
+      List<Casilla> casillasDisponiblesLadoB = BattleManager.Instance.ladoB.ObtenerCasillasDesocupadas();
+
+
+
+      for (int i = 0; i < cantidadTrampas; i++)
+      {
+        if (casillasDisponiblesLadoA.Count > 0)
+        {
+          Casilla casilla = casillasDisponiblesLadoA[UnityEngine.Random.Range(0, casillasDisponiblesLadoA.Count)];
+          casillasDisponiblesLadoA.Remove(casilla);
+          TrampaFuego trampa = casilla.gameObject.AddComponent<TrampaFuego>();
+          trampa.Inicializar();
+        }
+
+        if (casillasDisponiblesLadoB.Count > 0)
+        {
+          Casilla casilla = casillasDisponiblesLadoB[UnityEngine.Random.Range(0, casillasDisponiblesLadoB.Count)];
+          casillasDisponiblesLadoB.Remove(casilla);
+          TrampaFuego trampa = casilla.gameObject.AddComponent<TrampaFuego>();
+          trampa.Inicializar();
+        }
+      }
+
+      LadoManager ladodeEnemigos2 = BattleManager.Instance.ladoA; //Enemigos
+      foreach (Unidad u in ladodeEnemigos2.unidadesLado)
+      {
+        // BUFF ---- Así se aplica un buff/debuff
+        Buff buff = new Buff();
+        buff.buffNombre = "Enfurecido por el Fuego";
+        buff.boolfDebufftBuff = true;
+        buff.DuracionBuffRondas = -1;
+        buff.cantDanioPorcentaje += 15;
+        buff.cantAtaque += 2;
+        buff.cantDefensa -= 2;
+        buff.AplicarBuff(u);
+        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+        Buff buffComponent = ComponentCopier.CopyComponent(buff, u.gameObject);
+      }
+    }
+
+    //Obstaculos genericos
+    if (ProbabilidadPorcentual(70))
+    {
+      GenerarObstaculosGenericos();
+    }
+
+    #endregion
 
 
 
@@ -546,7 +626,128 @@ IEnumerator FadeTo(float target, float time)
     // RondaNueva() incrementa el contador, por eso se inicializa en 0 aquí.
     BattleManager.Instance.RondaNro = 0;
     BattleManager.Instance.RondaNueva();
+    
+     Invoke ("ColocarunidadesEnCanvasUnidades", 0.3f);
 
+  }
+
+  void GenerarObstaculosGenericos()
+  {
+    BattleManager battleManager = BattleManager.Instance;
+    if (battleManager == null)
+    {
+      Debug.LogWarning("[AdministradorEscenas] No se pudo generar obstaculos: BattleManager no inicializado.");
+      return;
+    }
+
+    LadoManager ladoEnemigo = battleManager.ladoA;
+    LadoManager ladoAliado = battleManager.ladoB;
+
+    if (ladoEnemigo == null || ladoAliado == null)
+    {
+      Debug.LogWarning("[AdministradorEscenas] No se pudo generar obstaculos: lados sin configurar.");
+      return;
+    }
+
+    if (ContenedorPrefabsBatalla == null)
+    {
+      Debug.LogWarning("[AdministradorEscenas] No se pudo generar obstaculos: contenedor de prefabs nulo.");
+      return;
+    }
+
+    if (ProbabilidadPorcentual(500))
+    {
+      int cantidadrocamenor = 2+UnityEngine.Random.Range(0, 3);
+      ColocarObstaculos(ContenedorPrefabsBatalla.Roca1, cantidadrocamenor, ladoAliado, ladoEnemigo);
+    }
+
+    if (ProbabilidadPorcentual(500))
+    {
+      int cantidadRocaMayor = 2+UnityEngine.Random.Range(0, 3);
+      ColocarObstaculos(ContenedorPrefabsBatalla.Roca2, cantidadRocaMayor, ladoAliado, ladoEnemigo);
+    }
+
+    int chancesBarro = 30;
+    bool climaLluvioso = CampaignManager.Instance != null && CampaignManager.Instance.intTipoClima == 3;
+    if (climaLluvioso) { chancesBarro = Mathf.Min(chancesBarro + 50, 100); }
+
+    if (ProbabilidadPorcentual(chancesBarro))
+    {
+      int cantidadBarro = UnityEngine.Random.Range(0, 3);
+      if (climaLluvioso) { cantidadBarro += 4; }
+      ColocarTrampasDeBarro(cantidadBarro, ladoAliado, ladoEnemigo);
+    }
+  }
+
+  void ColocarObstaculos(GameObject prefab, int cantidad, LadoManager ladoAliado, LadoManager ladoEnemigo)
+  {
+
+    if (prefab == null || cantidad <= 0)
+    {
+      return;
+    }
+
+    for (int i = 0; i < cantidad; i++)
+    {
+      Casilla casilla = ObtenerCasillaAleatoriaDisponible(ladoAliado, ladoEnemigo);
+      if (casilla == null)
+      {
+        Debug.LogWarning("[AdministradorEscenas] No hay casillas disponibles para colocar obstaculos.");
+        break;
+      }
+      if (casilla.Presente == null)
+      {
+        GameObject obst5 = Instantiate(prefab);
+        casilla.PonerObjetoEnCasilla(obst5);
+      }
+
+
+    }
+    
+   
+  }
+
+  void ColocarTrampasDeBarro(int cantidad, LadoManager ladoAliado, LadoManager ladoEnemigo)
+  {
+    if (cantidad <= 0)
+    {
+      return;
+    }
+
+    for (int i = 0; i < cantidad; i++)
+    {
+      Casilla casilla = ObtenerCasillaAleatoriaDisponible(ladoAliado, ladoEnemigo);
+      if (casilla == null)
+      {
+        Debug.LogWarning("[AdministradorEscenas] No hay casillas disponibles para colocar Trampa de Barro.");
+        break;
+      }
+
+      TrampaBarro trampa = casilla.gameObject.AddComponent<TrampaBarro>();
+      trampa.Inicializar();
+    }
+  }
+
+  Casilla ObtenerCasillaAleatoriaDisponible(LadoManager ladoAliado, LadoManager ladoEnemigo)
+  {
+    bool aliadosPrimero = UnityEngine.Random.Range(0, 2) == 0;
+    LadoManager preferido = aliadosPrimero ? ladoAliado : ladoEnemigo;
+    LadoManager alternativo = aliadosPrimero ? ladoEnemigo : ladoAliado;
+
+    Casilla casilla = preferido != null ? preferido.ObtenerCasillaAleatoria(true) : null;
+    if (casilla == null && alternativo != null)
+    {
+      casilla = alternativo.ObtenerCasillaAleatoria(true);
+    }
+
+    return casilla;
+  }
+
+  bool ProbabilidadPorcentual(int porcentaje)
+  {
+    if (porcentaje <= 0) { return false; }
+    if (porcentaje >= 100) { return true; }
+    return UnityEngine.Random.Range(0, 100) < porcentaje;
   }
 
   void AdministrarFondos(int idEncuentro, EncounterDefinition encounterDefinition = null)
@@ -715,7 +916,7 @@ IEnumerator FadeTo(float target, float time)
       unidadPers4 = persUnidad.GetComponent<Unidad>();
     }
 
-
+   
 
 
 
@@ -1911,18 +2112,27 @@ IEnumerator FadeTo(float target, float time)
 
 
    
-    Invoke ("ColocarunidadesEnCanvasUnidades", 0.5f);
+    Invoke ("ColocarunidadesEnCanvasUnidades", 0.3f);
   }
 
- void ColocarunidadesEnCanvasUnidades()
+  void ColocarunidadesEnCanvasUnidades()
   {
     GameObject[] unidades = GameObject.FindGameObjectsWithTag("Unidad");
     foreach (GameObject unidad in unidades)
     {
-        unidad.transform.SetParent(CanvasUnidades.transform, true); // Mantiene la escala
-       // unidad.transform.localPosition = Vector3.zero; // O la posición relativa correcta
-       // unidad.transform.localScale = Vector3.one;     // Asegura escala normal
+      print("colocando unidad en canvas unidades: " + unidad.name);
+      unidad.transform.SetParent(CanvasUnidades.transform, true); // Mantiene la escala
+                                                                  // unidad.transform.localPosition = Vector3.zero; // O la posición relativa correcta
+                                                                  // unidad.transform.localScale = Vector3.one;     // Asegura escala normal
     }
+    GameObject[] obstaculos = GameObject.FindGameObjectsWithTag("Obstaculo");
+    foreach (GameObject obstaculo in obstaculos)
+    {
+      obstaculo.transform.SetParent(CanvasUnidades.transform, true); // Mantiene la escala
+       // obstaculo.transform.localPosition = Vector3.zero; // O la posición relativa correcta
+       // obstaculo.transform.localScale = Vector3.one;     // Asegura escala normal
+    }
+  
   }
   void ColocarEnCasillaAleatoria(int iLado, GameObject GO)
   {
@@ -2670,3 +2880,4 @@ IEnumerator FadeTo(float target, float time)
 
 
 }
+

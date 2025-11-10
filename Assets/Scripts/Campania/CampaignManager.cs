@@ -244,7 +244,7 @@ public class CampaignManager : MonoBehaviour
     if (GetTierAlientoNegro() == 4)
     {
       CambiarEsperanzaActual(-7);
-      int random = UnityEngine.Random.Range(0, 5);
+      int random = UnityEngine.Random.Range(1, 5);
       CambiarCivilesActuales(-random);
       EscribirLog(TRADU.i.Traducir("-La presencia de Aliento Negro en el aire es fatal para los Civiles. -7 Esperanza -") + random + TRADU.i.Traducir(" Civiles"));
     }
@@ -261,14 +261,14 @@ public class CampaignManager : MonoBehaviour
 
   public MenuBatallas scMenuBatallas;
   public GameObject goMenuBatallas;
-  public void LlegarANodo(int ID, int posX)
+  public void LlegarANodo(int ID, int posX, Nodo nodo)
   {
     // Detiene el sonido de movimiento al llegar al nodo
     if (sfxMovimientoSource != null && sfxMovimientoSource.isPlaying)
       sfxMovimientoSource.Stop();
 
 
-    posicionCaravana = posX+1;
+    posicionCaravana = posX + 1;
     if (ID == 1) //Batalla
     {
 
@@ -292,15 +292,15 @@ public class CampaignManager : MonoBehaviour
         chancesemboscada -= 100; // -100% si hay Almas Danzantes
       }
       if (randomEmboscada <= chancesemboscada)
-        {
-          scMenuBatallas.EventoBatallaNormal(0, 1); //Emboscada
+      {
+        scMenuBatallas.EventoBatallaNormal(0, 1); //Emboscada
 
-        }
-        else
-        {
-          scMenuBatallas.EventoBatallaNormal(0, 0); //No emboscada
+      }
+      else
+      {
+        scMenuBatallas.EventoBatallaNormal(0, 0); //No emboscada
 
-        }
+      }
 
 
     }
@@ -322,7 +322,7 @@ public class CampaignManager : MonoBehaviour
         EmpezarEventoBueno();
 
       }
-      else { EmpezarEventoMalo();  }
+      else { EmpezarEventoMalo(); }
 
 
       scMapaManager.nodoActual.nodoDespejado = true;
@@ -389,7 +389,7 @@ public class CampaignManager : MonoBehaviour
     {
 
       goUISantuario.SetActive(true);
-     txtdescripcionSantuario.text = TRADU.i.Traducir("Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n\n. ");
+      txtdescripcionSantuario.text = TRADU.i.Traducir("Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n\n. ");
 
       CambiarEsperanzaActual(10);
       EscribirLog(TRADU.i.Traducir("-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza."));
@@ -399,16 +399,25 @@ public class CampaignManager : MonoBehaviour
         if (pers.IDClase == 3) // Purificadora
         {
           pers.RecibirExperiencia(60);
-          EscribirLog(TRADU.i.Traducir("-Como Purificadora,")+pers.sNombre+TRADU.i.Traducir(" gana 60 Experiencia por la visita al santuario."));
+          EscribirLog(TRADU.i.Traducir("-Como Purificadora,") + pers.sNombre + TRADU.i.Traducir(" gana 60 Experiencia por la visita al santuario."));
         }
         float curacion = pers.fVidaMaxima * 0.15f;
         pers.RecibirCuracion(curacion);
-       
+
       }
 
       scMapaManager.nodoActual.nodoDespejado = true;
 
     }
+    if (ID == 15) //Batalla Ritual PasoVientohelado
+    {
+
+      goMenuBatallas.SetActive(true);
+      scMenuBatallas.EventoBatallaElite(0, 0, true); //0 es Random
+
+    }
+  
+  
     //Cronistas
     if (scMenuSequito.TieneSequito(7))
     {
@@ -423,7 +432,7 @@ public class CampaignManager : MonoBehaviour
     {
       int oro = GetEsperanzaActual() / 3;
       CambiarOroActual(oro);
-      EscribirLog(TRADU.i.Traducir("-El Séquito de Nobles ha hecho una donación. Oro: "+oro));
+      EscribirLog(TRADU.i.Traducir("-El Séquito de Nobles ha hecho una donación. Oro: " + oro));
     }
     //Esclavos
     if (scMenuSequito.TieneSequito(11))
@@ -431,7 +440,20 @@ public class CampaignManager : MonoBehaviour
       CambiarEsperanzaActual(-2);
       EscribirLog(TRADU.i.Traducir("-Los Civiles se sienten culpables por la presencia de los Esclavos. -2 Esperanza."));
     }
-    
+
+
+    BosqueArdienteMecanicaIncendio(50);
+    PasoVientoHeladoMecanicaRituales(30);
+
+
+    if (nodo.nodoIncendiado)
+    {
+      CambiarEsperanzaActual(-10);
+      int nmuertos = UnityEngine.Random.Range(8, 16);
+      CambiarCivilesActuales(-nmuertos);
+      EscribirLog(TRADU.i.Traducir("-La caravana ha llegado a un nodo incendiado. -10 Esperanza.  " + nmuertos + " Civiles Muertos."));
+    }
+   
   }
 
   // Llamar desde el resultado de la Batalla Final (jefe derrotado)
@@ -446,6 +468,179 @@ public class CampaignManager : MonoBehaviour
     // Reconstruir la ambientación y parámetros de la zona
     scAtributosZona.ConstruirZonaPasoVientoHelado(proximaFase);
 
+  }
+
+  public void BosqueArdienteMecanicaIncendio(int probabilidad)
+  {
+    if (scAtributosZona.ID == 1) //Solo en Bosque Ardiente
+    {
+      int randomIncendio = UnityEngine.Random.Range(1, 101);
+      if (posicionCaravana < 9 && randomIncendio <= probabilidad)
+      { 
+        int random = UnityEngine.Random.Range(1, 3);
+        Nodo nodoAIncendiar = ObtenerNodoFuturoAleatorio(random);
+        if (nodoAIncendiar != null && !nodoAIncendiar.nodoIncendiado)
+        {
+          nodoAIncendiar.ActivarIncendio();
+            EscribirLog(TRADU.i.Traducir("<color=#FF3D00>-El incendio ha envuelto un nodo cercano al camino de la caravana.</color>"));
+
+
+
+
+        }
+      }
+
+
+
+    }
+  }
+ 
+  public void PasoVientoHeladoMecanicaRituales(int probabilidad)
+  {
+    
+    if (scAtributosZona.ID == 2) //Solo en Paso Viento Helado
+    {
+      List<Nodo> todosNodos = scMapaManager.scContenedordeNodos.listTodosNodos;
+      bool yaHayRitual = false;
+      foreach (Nodo n in todosNodos)
+      {
+        if (n.nodoRitual)
+        {
+          yaHayRitual = true;
+          break;
+        }
+      }
+      int randomritual = UnityEngine.Random.Range(1, 101);
+      if (posicionCaravana < 11 && randomritual <= probabilidad && !yaHayRitual)
+      {
+        int random = UnityEngine.Random.Range(1, 3);
+        Nodo nodoRitual = ObtenerNodoFuturoAleatorio(random);
+        nodoRitual.tipoNodo = 15; // Nodo Ritual
+        nodoRitual.ActivarNodoVisual(15, false, true);
+
+        if (nodoRitual != null && !nodoRitual.nodoRitual)
+        {
+          nodoRitual.ActivarRitual();
+          CambiarEsperanzaActual(-5);
+          EscribirLog(TRADU.i.Traducir("<color=#6A0DAD>-Un ritual Kale'Tav ha comenzado en un nodo cercano. La música profana desalienta a la caravana. -5 Esperanza.</color>"));
+
+
+
+
+        }
+      }
+
+      // Buscar nodos activos con ritual detrás de la caravana, aumentar fuerza Kale'Tav, registrar y desactivar ritual
+
+      foreach (Nodo nodoCandidato in todosNodos)
+      {
+        if (!nodoCandidato.gameObject.activeInHierarchy) { continue; }
+
+
+        if (nodoCandidato.nodoRitual && nodoCandidato.posXNodo < posicionCaravana - 1)
+        {
+          scAtributosZona.PasoVientoHelado_FuerzaKaleTav++;
+          EscribirLog(TRADU.i.Traducir("<color=#FF3D00>-Un ritual Kale'Tav ha sido completado. La fuerza de Kale'Tav aumenta en 1.</color>"));
+          nodoCandidato.DesactivarRitual();
+        }
+
+
+
+
+      }
+
+    }
+  }
+  public Nodo ObtenerNodoFuturoAleatorio(int distancia = 0)
+  {
+    if (scMapaManager == null || scMapaManager.nodoActual == null)
+    {
+      return null;
+    }
+
+    if (distancia < 0)
+    {
+      distancia = 0;
+    }
+
+    var nodosPorDistancia = new Dictionary<int, List<Nodo>>();
+    var visitados = new HashSet<Nodo>();
+    var colaNodos = new Queue<Nodo>();
+    var colaDistancias = new Queue<int>();
+
+    var nodoOrigen = scMapaManager.nodoActual;
+    visitados.Add(nodoOrigen);
+    colaNodos.Enqueue(nodoOrigen);
+    colaDistancias.Enqueue(0);
+
+    while (colaNodos.Count > 0)
+    {
+      var nodoActual = colaNodos.Dequeue();
+      int distanciaActual = colaDistancias.Dequeue();
+
+      if (nodoActual.DestinosPosibles == null || nodoActual.DestinosPosibles.Count == 0)
+      {
+        continue;
+      }
+
+      foreach (var destino in nodoActual.DestinosPosibles)
+      {
+        if (destino == null) continue;
+        if (!destino.gameObject.activeInHierarchy) continue;
+        if (!visitados.Add(destino)) continue;
+
+        int distanciaDestino = distanciaActual + 1;
+
+        if (!nodosPorDistancia.TryGetValue(distanciaDestino, out var lista))
+        {
+          lista = new List<Nodo>();
+          nodosPorDistancia[distanciaDestino] = lista;
+        }
+        lista.Add(destino);
+
+        colaNodos.Enqueue(destino);
+        colaDistancias.Enqueue(distanciaDestino);
+      }
+    }
+
+    if (nodosPorDistancia.Count == 0)
+    {
+      return null;
+    }
+
+    if (distancia == 0)
+    {
+      var distanciasDisponibles = new List<int>(nodosPorDistancia.Keys);
+      distanciasDisponibles.Sort();
+
+      var distanciasElegibles = new List<int>();
+      foreach (var dist in distanciasDisponibles)
+      {
+        if (nodosPorDistancia[dist].Exists(n => n.DestinosPosibles != null && n.DestinosPosibles.Count > 0))
+        {
+          distanciasElegibles.Add(dist);
+        }
+      }
+
+      var opciones = distanciasElegibles.Count > 0 ? distanciasElegibles : distanciasDisponibles;
+      if (opciones.Count == 0)
+      {
+        return null;
+      }
+
+      int distanciaSeleccionada = opciones[UnityEngine.Random.Range(0, opciones.Count)];
+      var candidatos = nodosPorDistancia[distanciaSeleccionada];
+      return candidatos[UnityEngine.Random.Range(0, candidatos.Count)];
+    }
+    else
+    {
+      if (!nodosPorDistancia.TryGetValue(distancia, out var candidatos) || candidatos.Count == 0)
+      {
+        return null;
+      }
+
+      return candidatos[UnityEngine.Random.Range(0, candidatos.Count)];
+    }
   }
   #region Santuario
   public GameObject goUIPersonajeSequito;
@@ -1337,6 +1532,7 @@ public class CampaignManager : MonoBehaviour
   public GameObject tooltipGOBueyes;
   public GameObject tooltipGOOro;
   public GameObject tooltipGOFatiga;
+  public GameObject tooltipGOMecanicaZona;
 
 
   public void TooltipRecursoEntrar(int n)
@@ -1349,7 +1545,7 @@ public class CampaignManager : MonoBehaviour
 
       int num = GetEsperanzaActual();
       text = TRADU.i.Traducir("La <color=#a0e812>Esperanza</color> determina el optimismo de la Caravana en general sobre la posibilidad de cumplir la misión y llegar al puerto.\n\n");
-      text += num+TRADU.i.Traducir("/100 de <color=#a0e812>Esperanza</color>\n");
+      text += num + TRADU.i.Traducir("/100 de <color=#a0e812>Esperanza</color>\n");
 
       if (num < 11) { text += TRADU.i.Traducir(" <color=#982a1b>1-20 Civiles abandonarán la Caravana cada descanso.</color>\n"); }
       if (num < 20 && num >= 11) { text += TRADU.i.Traducir(" <color=#982a1b>1-10 Civiles abandonarán la Caravana cada descanso.</color>\n"); }
@@ -1367,7 +1563,7 @@ public class CampaignManager : MonoBehaviour
       float num = GetCivilesActual();
       text = TRADU.i.Traducir("Los <color=#c918bb>Civiles</color> que lleva la caravana hacia el Puerto. Salvar la mayor cantidad es el objetivo principal de esta misión.\n\nCada uno consume 1 de <color=#b7972c>Suministros</color> cada Descanso, y la cantidad de Civiles determina la eficiencia de las Tareas Civiles.\n");
       text += TRADU.i.Traducir("\nLlevas ") + (int)num + TRADU.i.Traducir(" <color=#c918bb>Civiles</color>, deben ser al menos 100 para que la misión se considere exitosa.\n\n");
-      text += TRADU.i.Traducir("\nLas fuerzas de la Milicia de la caravana son de <color=#a8a29c>") + (int)GetMiliciasActual() +" </color>" + TRADU.i.Traducir(", que equivalen a ") +"<color=#a8a29c>"+ (int)GetMiliciasActual() / 10 + TRADU.i.Traducir("</color> Milicianos que ayudarán a defenderla de ataques directos.\n\n");
+      text += TRADU.i.Traducir("\nLas fuerzas de la Milicia de la caravana son de <color=#a8a29c>") + (int)GetMiliciasActual() + " </color>" + TRADU.i.Traducir(", que equivalen a ") + "<color=#a8a29c>" + (int)GetMiliciasActual() / 10 + TRADU.i.Traducir("</color> Milicianos que ayudarán a defenderla de ataques directos.\n\n");
 
 
 
@@ -1405,7 +1601,7 @@ public class CampaignManager : MonoBehaviour
     {
       tooltipGOBueyes.SetActive(true);
       String text = "";
-      text = TRADU.i.Traducir("<color=#ffdda5>---<b>Haz click para sacrificar <color=#9e2a1c>1 Buey</color> para obtener <color=#b7972c>20 Suministros</color>. -2 Esperanza</b>---</color>\n\n\n") ;
+      text = TRADU.i.Traducir("<color=#ffdda5>---<b>Haz click para sacrificar <color=#9e2a1c>1 Buey</color> para obtener <color=#b7972c>20 Suministros</color>. -2 Esperanza</b>---</color>\n\n\n");
       int num = GetBueyesActual();
       int num2 = GetSuministrosActuales();
       int num3 = GetMaterialesActuales();
@@ -1413,8 +1609,8 @@ public class CampaignManager : MonoBehaviour
 
       int cargaPorBuey = 25 + mejoraCaravanaAlforjas;
       text += TRADU.i.Traducir("Los <color=#9e2a1c>Bueyes</color> son utilizados para llevar la carga de la caravana.\nCada uno da ") + cargaPorBuey + TRADU.i.Traducir(" de Capacidad de Carga.\n");
-      text += TRADU.i.Traducir("\nLlevas ") +num+TRADU.i.Traducir(" <color=#9e2a1c>Bueyes</color>, por un total de Capacidad de Carga de ") + (num * cargaPorBuey) + ".\n\n\n";
-      text += TRADU.i.Traducir("\nLlevas ") +num2+TRADU.i.Traducir(" <color=#b7972c>Suministros</color> y ") + num3 + TRADU.i.Traducir(" <color=#b34f09>Materiales</color> por un total de peso de ") + num4 + "/" + (num * 25) + ".\n\n";
+      text += TRADU.i.Traducir("\nLlevas ") + num + TRADU.i.Traducir(" <color=#9e2a1c>Bueyes</color>, por un total de Capacidad de Carga de ") + (num * cargaPorBuey) + ".\n\n\n";
+      text += TRADU.i.Traducir("\nLlevas ") + num2 + TRADU.i.Traducir(" <color=#b7972c>Suministros</color> y ") + num3 + TRADU.i.Traducir(" <color=#b34f09>Materiales</color> por un total de peso de ") + num4 + "/" + (num * 25) + ".\n\n";
 
       if (num4 > GetCapacidadDeCargaActual())
       {
@@ -1429,7 +1625,7 @@ public class CampaignManager : MonoBehaviour
       tooltipGOOro.SetActive(true);
       String text = "";
 
-     
+
       text = TRADU.i.Traducir("El <color=#d8a205>Oro</color> que lleva la Caravana, utilizado para comprar bienes y contratar servicios.");
 
       tooltipGOOro.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
@@ -1460,6 +1656,25 @@ public class CampaignManager : MonoBehaviour
       tooltipGOFatiga.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
 
     }
+    else if (n == 8) //Mecánica Especial del mapa
+    {
+
+      tooltipGOMecanicaZona.SetActive(true);
+      TextMeshProUGUI text = tooltipGOMecanicaZona.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+
+      if (scAtributosZona.ID == 1) //Bosque Ardiente
+      {
+
+        text.text = TRADU.i.Traducir("A medida que viajas por el bosque, las llamas envolverán regiones del mapa de forma inesperada.\n\nSi intentas atravesar un Nodo prendido fuego, perderás 10 de Esperanza y 8-15 Civiles.\nNo se podrá descansar en nodos incendiados.\n\nAdemás, las batallas que tengan lugar en un Nodo incendiado, tendrán llamas en el campo de batalla.");
+      }
+       if (scAtributosZona.ID == 2) //Paso Vientohelado
+      {
+          text.text = TRADU.i.Traducir("La tribu Kale'Tav está realizando rituales en el área, preparándose para el Aliento Negro.\n\nAl escuchar sus tambores a lo lejos sabrás dónde se encuentran.\nPor cada Ritual completado, sus combatientes recibirán bonificaciones en batalla.\n\nPara interrumpir un ritual debes aproximarte a los nodos marcados y derrotarlos.\n\nFuerza Kale'Tav: ") + scAtributosZona.PasoVientoHelado_FuerzaKaleTav;
+      }
+     
+
+
+    }
 
 
 
@@ -1475,6 +1690,7 @@ public class CampaignManager : MonoBehaviour
     tooltipGOBueyes.SetActive(false);
     tooltipGOOro.SetActive(false);
     tooltipGOFatiga.SetActive(false);
+    tooltipGOMecanicaZona.SetActive(false);
   }
 
   #endregion
@@ -1489,7 +1705,7 @@ public class CampaignManager : MonoBehaviour
 
   public void AbrirMenuDescanso()
   {
-    if (!menuDescanso.activeInHierarchy && scMapaManager.nodoActual.nodoDespejado)
+    if (!menuDescanso.activeInHierarchy && scMapaManager.nodoActual.nodoDespejado && !scMapaManager.nodoActual.nodoIncendiado)
     {
       menuDescanso.GetComponent<MenuDescanso>().SeleccionarActividadCivil(1);
       menuDescanso.SetActive(true);
@@ -1851,7 +2067,7 @@ public class CampaignManager : MonoBehaviour
     pers1.GetComponent<ImprovisarFlechas>().NIVEL = 1;
     pers1.AddComponent<CorteDaga>(); //La daga no es item
 
-     
+  
 
     //Habilidades Base
     int randHabPot1 = UnityEngine.Random.Range(1, 5);

@@ -46,7 +46,7 @@ public class PilaresDeLuz : Habilidad
         txtDescripcion = "<color=#5dade2><b>Pilares de Luz I</b></color>\n\n"; 
        
         txtDescripcion += "<i>Convoca dos pilares de luz que obstaculizan enemigos y hacen daño divino a quienes los ataquen.</i>\n";
-        txtDescripcion += "<i>Pilar: Vida: 20 -- Daño: 1d8 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
+        txtDescripcion += "<i>Pilar: Vida: 20 -- Daño: 1d6 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>Convoca un pilar en la casilla seleccionada y uno en una casilla abajo, si está ocupada, entonces en la de arriba.</b>  </color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
 
@@ -66,7 +66,7 @@ public class PilaresDeLuz : Habilidad
         txtDescripcion = "<color=#5dade2><b>Pilares de Luz II</b></color>\n\n"; 
        
         txtDescripcion += "<i>Convoca dos pilares de luz que obstaculizan enemigos y hacen daño divino a quienes los ataquen.</i>\n";
-        txtDescripcion += "<i>Pilar: Vida: 25 -- Daño: 1d8 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
+        txtDescripcion += "<i>Pilar: Vida: 25 -- Daño: 1d6 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>Convoca un pilar en la casilla seleccionada y uno en una casilla abajo, si está ocupada, entonces en la de arriba.</b>  </color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
 
@@ -86,7 +86,7 @@ public class PilaresDeLuz : Habilidad
         txtDescripcion = "<color=#5dade2><b>Pilares de Luz III</b></color>\n\n"; 
        
         txtDescripcion += "<i>Convoca dos pilares de luz que obstaculizan enemigos y hacen daño divino a quienes los ataquen.</i>\n";
-        txtDescripcion += "<i>Pilar: Vida: 25 -- Daño: 1d8+3 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
+        txtDescripcion += "<i>Pilar: Vida: 25 -- Daño: 1d6+3 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>Convoca un pilar en la casilla seleccionada y uno en una casilla abajo, si está ocupada, entonces en la de arriba.</b>  </color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
 
@@ -107,7 +107,7 @@ public class PilaresDeLuz : Habilidad
         txtDescripcion = "<color=#5dade2><b>Pilares de Luz IV a</b></color>\n\n"; 
        
         txtDescripcion += "<i>Convoca dos pilares de luz que obstaculizan enemigos y hacen daño divino a quienes los ataquen.</i>\n";
-        txtDescripcion += "<i>Pilar: Vida: 25 y 3 de Resistencia al daño.-- Daño: 1d8+3 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
+        txtDescripcion += "<i>Pilar: Vida: 25 y 3 de Resistencia al daño.-- Daño: 1d6+3 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>Convoca un pilar en la casilla seleccionada y uno en una casilla abajo, si está ocupada, entonces en la de arriba.</b>  </color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
 
@@ -117,7 +117,7 @@ public class PilaresDeLuz : Habilidad
         txtDescripcion = "<color=#5dade2><b>Pilares de Luz IV b</b></color>\n\n"; 
        
         txtDescripcion += "<i>Convoca tres pilares de luz que obstaculizan enemigos y hacen daño divino a quienes los ataquen.</i>\n";
-        txtDescripcion += "<i>Pilar: Vida: 25.-- Daño: 1d8+3 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
+        txtDescripcion += "<i>Pilar: Vida: 25.-- Daño: 1d6+3 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>Convoca un pilar en la casilla seleccionada y uno en las casillas de arriba y abajo (si están desocupadas).</b>  </color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
        }
@@ -127,7 +127,7 @@ public class PilaresDeLuz : Habilidad
       {
         txtDescripcion = "<color=#5dade2><b>Pillars of Light I</b></color>\n\n";
         txtDescripcion += "<i>Summons two pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
-        txtDescripcion += "<i>Pillar: HP: 20 -- Damage: 1d8 Divine + Power, double to Undead and Ethereal.</i>\n\n";
+        txtDescripcion += "<i>Pillar: HP: 20 -- Damage: 1d6 Divine + Power, double to Undead and Ethereal.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tile below, if occupied then on the tile above.</b></color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
 
@@ -146,7 +146,7 @@ public class PilaresDeLuz : Habilidad
       {
         txtDescripcion = "<color=#5dade2><b>Pillars of Light II</b></color>\n\n";
         txtDescripcion += "<i>Summons two pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
-        txtDescripcion += "<i>Pillar: HP: 25 -- Damage: 1d8 Divine + Power, double to Undead and Ethereal.</i>\n\n";
+        txtDescripcion += "<i>Pillar: HP: 25 -- Damage: 1d6 Divine + Power, double to Undead and Ethereal.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tile below, if occupied then on the tile above.</b></color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
 
@@ -165,7 +165,7 @@ public class PilaresDeLuz : Habilidad
       {
         txtDescripcion = "<color=#5dade2><b>Pillars of Light III</b></color>\n\n";
         txtDescripcion += "<i>Summons two pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
-        txtDescripcion += "<i>Pillar: HP: 25 -- Damage: 1d8+3 Divine + Power, double to Undead and Ethereal.</i>\n\n";
+        txtDescripcion += "<i>Pillar: HP: 25 -- Damage: 1d6+3 Divine + Power, double to Undead and Ethereal.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tile below, if occupied then on the tile above.</b></color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
 
@@ -185,7 +185,7 @@ public class PilaresDeLuz : Habilidad
       {
         txtDescripcion = "<color=#5dade2><b>Pillars of Light IV a</b></color>\n\n";
         txtDescripcion += "<i>Summons two pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
-        txtDescripcion += "<i>Pillar: HP: 25 and 3 Damage Resistance.-- Damage: 1d8+3 Divine + Power, double to Undead and Ethereal.</i>\n\n";
+        txtDescripcion += "<i>Pillar: HP: 25 and 3 Damage Resistance.-- Damage: 1d6+3 Divine + Power, double to Undead and Ethereal.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tile below, if occupied then on the tile above.</b></color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
       }
@@ -193,7 +193,7 @@ public class PilaresDeLuz : Habilidad
       {
         txtDescripcion = "<color=#5dade2><b>Pillars of Light IV b</b></color>\n\n";
         txtDescripcion += "<i>Summons three pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
-        txtDescripcion += "<i>Pillar: HP: 25.-- Damage: 1d8+3 Divine + Power, double to Undead and Ethereal.</i>\n\n";
+        txtDescripcion += "<i>Pillar: HP: 25.-- Damage: 1d6+3 Divine + Power, double to Undead and Ethereal.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tiles above and below (if unoccupied).</b></color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
       }

@@ -160,6 +160,12 @@ public class ArrowFlight : MonoBehaviour
             return unidad.puntoEntrante;
         }
 
+        Obstaculo obstaculo = posibleDestino.GetComponentInParent<Obstaculo>();
+        if (obstaculo != null && obstaculo.puntoEntrante != null)
+        {
+            return obstaculo.puntoEntrante;
+        }
+
         return posibleDestino;
     }
 

@@ -60,6 +60,22 @@ public abstract class Habilidad : MonoBehaviour
     return DelayPostImpactoMs > 0 ? Task.Delay(DelayPostImpactoMs) : Task.CompletedTask;
   }
 
+  /// <summary>
+  /// Permite disparar manualmente el flujo de pre-impacto (proyectiles, delays, etc.) sin pasar por Resolver.
+  /// </summary>
+  public Task PrepararImpactoManualAsync(List<object> objetivos, Casilla casillaOrigenTrampas = null)
+  {
+    return EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
+  }
+
+  /// <summary>
+  /// Permite disparar manualmente el flujo de post-impacto (esperas, limpieza) sin pasar por Resolver.
+  /// </summary>
+  public Task FinalizarImpactoManualAsync(List<object> objetivos, Casilla casillaOrigenTrampas = null)
+  {
+    return EsperarPostImpactoAsync(objetivos, casillaOrigenTrampas);
+  }
+
   public abstract void Activar();
 
   public static event EventHandler OnUsarHabilidad;

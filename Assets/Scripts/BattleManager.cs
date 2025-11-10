@@ -61,7 +61,7 @@ public class BattleManager : MonoBehaviour
   public TextMeshProUGUI textClimaTooltip;
   public TextMeshProUGUI rondaText;
   public bool bOcupado; //Variable de control de flujo de batalla
-
+  
   public GameObject nocheLienzo;
   private void Awake()
   {
@@ -416,7 +416,9 @@ public class BattleManager : MonoBehaviour
   {
     int tiempoRestante = delayRefuerzo - RondaNro + 1;
     if (tiempoRestante < 0) { tiempoRestante = 0; }
-    txtRefuerzosContador.text = "" + enemigosRefuerzos.Count() + "/" + tiempoRestante;
+    txtRefuerzosContador.text = "" + enemigosRefuerzos.Count();
+
+    txtRefuerzosTiempo.text = "" + tiempoRestante;
     if (enemigosRefuerzos.Count < 1)
     { goRefuerzos.SetActive(false); }
     else { goRefuerzos.SetActive(true); }
@@ -425,10 +427,12 @@ public class BattleManager : MonoBehaviour
   public List<GameObject> enemigosRefuerzos = new List<GameObject>();
   public int delayRefuerzo = 0; //La cantidad de turnos para que empiecen a aparecer los refuerzos.
   public TextMeshProUGUI txtRefuerzosContador;
+  public TextMeshProUGUI txtRefuerzosTiempo;
   public GameObject goRefuerzos;
 
 
   public TextMeshProUGUI txtAliadosContador;
+  public TextMeshProUGUI txtAliadosRefTiempo;
   public List<GameObject> aliadosRefuerzos = new List<GameObject>();
   public GameObject goAliadosRefuerzos;
   int delayAliados = 1;
@@ -437,7 +441,9 @@ public class BattleManager : MonoBehaviour
   {
     int tiempoRestante = delayAliados - RondaNro + 1;
     if (tiempoRestante < 0) { tiempoRestante = 0; }
-    txtAliadosContador.text = "" + aliadosRefuerzos.Count() + "/" + tiempoRestante;
+    txtAliadosContador.text = "" + aliadosRefuerzos.Count();
+    txtAliadosRefTiempo.text = "" + tiempoRestante;
+    
     if (aliadosRefuerzos.Count < 1)
     { goAliadosRefuerzos.SetActive(false); }
     else { goAliadosRefuerzos.SetActive(true); }
@@ -546,7 +552,7 @@ public class BattleManager : MonoBehaviour
     }
 
     EscribirLog("<color=#d92b08>"+enemigo.GetComponent<Unidad>().uNombre+TRADU.i.Traducir(" se ha unido a la batalla. Quedan ")+(enemigosRefuerzos.Count() - 1)+TRADU.i.Traducir(" refuerzos.</color> "));
-
+    AplicarEfectosInicioCombate(enemigo.GetComponent<Unidad>());
     scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
   }
   void MandarRefuerzoAliado(GameObject enemigo)
@@ -588,14 +594,40 @@ public class BattleManager : MonoBehaviour
       scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
       enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
     }
-
+    AplicarEfectosInicioCombate(enemigo.GetComponent<Unidad>());
     EscribirLog("<color=#d92b08>"+enemigo.GetComponent<Unidad>().uNombre+TRADU.i.Traducir(" se ha unido a la batalla. Quedan ")+(enemigosRefuerzos.Count() - 1)+TRADU.i.Traducir(" refuerzos.</color> "));
     scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
 
 
   }
 
+  void AplicarEfectosInicioCombate(Unidad u)
+  {
+    //Aca van los efectos y controles a aplicar que deben recibir los refuerzos.
+    //Kale'Tav fuerza
+      int repeticiones = CampaignManager.Instance.scAtributosZona.PasoVientoHelado_FuerzaKaleTav;
+       for (int i = 0; i < repeticiones; i++)
+       {
+        if (u.TieneTag("Kale'Tav") && CampaignManager.Instance.scAtributosZona.ID == 2)
+        {
+          // BUFF ---- Así se aplica un buff/debuff
+          Buff buff = new Buff();
+          buff.buffNombre = "Fuerza Kale'Tav";
+          buff.boolfDebufftBuff = true;
+          buff.DuracionBuffRondas = -1;
+          buff.cantDanioPorcentaje += 10;
+          buff.cantHPMax += 10;
+          buff.cantTsMental += 1;
+          buff.cantTsFortaleza += 1;
+          buff.AplicarBuff(u);
+          // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+          Buff buffComponent = ComponentCopier.CopyComponent(buff, u.gameObject);
+        }
+       }
+    
 
+
+  }
 
   public List<Casilla> lCasillasMovimiento = new List<Casilla>();
   public List<Casilla> CalcularCasillasAMovimiento()
@@ -947,11 +979,12 @@ public class BattleManager : MonoBehaviour
 
     // Primero, asegúrate que el oscurecedor esté en el lugar correcto en la jerarquía
     Transform oscurecedorTransform = oscurecedor.transform;
+    HashSet<object> unidadesSet = (unidades != null) ? new HashSet<object>(unidades) : new HashSet<object>();
 
     foreach (Unidad uni in lUnidadesTotal)
     {
       Transform unidadTransform = uni.transform;
-      if (unidades.Contains(uni))
+      if (ListaContieneObjeto(unidadesSet, uni, uni.gameObject))
       {
         // Sombrear y poner por encima del oscurecedor
         uni.gameObject.transform.GetChild(3).GetChild(1).GetChild(1).gameObject.SetActive(true); // Sombrear
@@ -993,6 +1026,18 @@ public class BattleManager : MonoBehaviour
       
       uni.AcomodarSortingLayerDelay(); // Acomodar sorting layer despues de un pequeño delay
     }
+
+    foreach (GameObject obstaculoGO in GameObject.FindGameObjectsWithTag("Obstaculo"))
+    {
+      Obstaculo obstaculo = obstaculoGO.GetComponent<Obstaculo>();
+      if (obstaculo == null)
+      {
+        continue;
+      }
+
+      bool sombrearObstaculo = ListaContieneObjeto(unidadesSet, obstaculo, obstaculoGO);
+      AjustarObstaculoDuranteSeleccion(obstaculo, sombrearObstaculo, oscurecedorTransform);
+    }
   }
 
   public GameObject oscurecedor;
@@ -1015,6 +1060,18 @@ public class BattleManager : MonoBehaviour
         ((Unidad)unidad).gameObject.transform.GetChild(3).gameObject.GetComponent<Canvas>().overrideSorting = false;
         ((Unidad)unidad).gameObject.transform.GetChild(3).gameObject.GetComponent<Canvas>().sortingOrder = 0; 
       }
+      else if (unidad is Obstaculo)
+      {
+        RestaurarObstaculoTrasDesombrear((Obstaculo)unidad);
+      }
+      else if (unidad is GameObject && ((GameObject)unidad).CompareTag("Obstaculo"))
+      {
+        Obstaculo obstaculo = ((GameObject)unidad).GetComponent<Obstaculo>();
+        if (obstaculo != null)
+        {
+          RestaurarObstaculoTrasDesombrear(obstaculo);
+        }
+      }
     }
     
          
@@ -1029,6 +1086,92 @@ public class BattleManager : MonoBehaviour
     if (hd != null)
     {
       hd.EstablecerDificultadCombate(nivel);
+    }
+  }
+
+  private static bool ListaContieneObjeto(HashSet<object> objetos, params object[] candidatos)
+  {
+    if (objetos == null || objetos.Count == 0)
+    {
+      return false;
+    }
+
+    foreach (object candidato in candidatos)
+    {
+      if (candidato != null && objetos.Contains(candidato))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private static void AjustarOrdenRespectoOscurecedor(Transform objetivo, Transform oscurecedorTransform, bool colocarEncima)
+  {
+    if (objetivo == null || oscurecedorTransform == null)
+    {
+      return;
+    }
+
+    if (objetivo.parent != oscurecedorTransform.parent)
+    {
+      return;
+    }
+
+    int oscurecedorIndex = oscurecedorTransform.GetSiblingIndex();
+    int maxIndex = objetivo.parent.childCount - 1;
+    int newIndex = colocarEncima ? Mathf.Min(oscurecedorIndex + 1, maxIndex) : Mathf.Max(oscurecedorIndex - 1, 0);
+
+    objetivo.SetSiblingIndex(newIndex);
+  }
+
+  private void AjustarObstaculoDuranteSeleccion(Obstaculo obstaculo, bool sombrear, Transform oscurecedorTransform)
+  {
+    if (obstaculo == null)
+    {
+      return;
+    }
+
+    Transform obstaculoTransform = obstaculo.transform;
+    AjustarOrdenRespectoOscurecedor(obstaculoTransform, oscurecedorTransform, sombrear);
+
+    Canvas obstaculoCanvas = obstaculoTransform.GetComponentInChildren<Canvas>(true);
+    if (obstaculoCanvas == null)
+    {
+      return;
+    }
+
+    obstaculoCanvas.overrideSorting = true;
+    obstaculoCanvas.sortingOrder = sombrear ? 0 : 5;
+
+    Transform barraVida = obstaculoCanvas.transform.Find("BarraVida");
+    if (barraVida != null)
+    {
+      barraVida.gameObject.SetActive(!sombrear);
+    }
+  }
+
+  private void RestaurarObstaculoTrasDesombrear(Obstaculo obstaculo)
+  {
+    if (obstaculo == null)
+    {
+      return;
+    }
+
+    Canvas obstaculoCanvas = obstaculo.transform.GetComponentInChildren<Canvas>(true);
+    if (obstaculoCanvas == null)
+    {
+      return;
+    }
+
+    obstaculoCanvas.overrideSorting = false;
+    obstaculoCanvas.sortingOrder = 0;
+
+    Transform barraVida = obstaculoCanvas.transform.Find("BarraVida");
+    if (barraVida != null)
+    {
+      barraVida.gameObject.SetActive(true);
     }
   }
 

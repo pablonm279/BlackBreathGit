@@ -1235,7 +1235,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       if (danioFinal < 0) { danioFinal = 0; }
 
       //ESTADO ESCUDADO: 10% de bloquear todo el daño por cada stack de escudo
-      if (estado_Escudado > 0)
+      if (estado_Escudado > 0 && uCausante != null)
       {
         int chances = 10 * estado_Escudado;
         int random = UnityEngine.Random.Range(1, 101);
@@ -1788,7 +1788,7 @@ public virtual void AplicarDesesperanzado()
   // Encuentra todos los objetos existentes del prefab scUnidadCanvas.PrefabtxtDaño
 
   // Calcula el retraso total en milisegundos
-   int delayPerObject = UnityEngine.Random.Range(250, 350); // Retraso entre 200 y 300 ms por objeto
+   int delayPerObject = UnityEngine.Random.Range(350, 400); // Retraso entre 200 y 300 ms por objeto
    GameObject[] existingTextObjects = GameObject.FindGameObjectsWithTag(scUnidadCanvas.PrefabtxtDaño.tag);
 
    int totalDelay = delayPerObject * existingTextObjects.Length;

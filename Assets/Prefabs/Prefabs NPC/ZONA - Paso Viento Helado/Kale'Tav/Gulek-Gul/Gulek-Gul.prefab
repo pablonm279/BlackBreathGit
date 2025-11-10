@@ -650,6 +650,7 @@ MonoBehaviour:
   tags:
   - Jefe
   - Gigante
+  - Kale'Tav
   at_iniciativa: 1
   mod_iniciativa: 1
   iniciativa_actual: 0
@@ -721,6 +722,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
   estado_Volando: 0
@@ -748,6 +750,7 @@ MonoBehaviour:
   NoSonidoAlMover: 0
   sonidosRecibirDanio:
   - {fileID: 8300000, guid: c5045bc0a712a8848b65ad17930777eb, type: 3}
+  - {fileID: 8300000, guid: 7fbc6c18059925649b3a5d728ec11db5, type: 3}
 --- !u!114 &44784835747747117
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -388,7 +388,9 @@ public class MenuDescanso : MonoBehaviour
 
 
 
-
+     CampaignManager.Instance.BosqueArdienteMecanicaIncendio(40);
+     CampaignManager.Instance.BosqueArdienteMecanicaIncendio(40);
+     CampaignManager.Instance.PasoVientoHeladoMecanicaRituales(30);
 
     int fatiga = CampaignManager.Instance.GetFatigaActual();
     if (tareaCivilSeleccionada == 4)
@@ -584,6 +586,20 @@ public class MenuDescanso : MonoBehaviour
 
       CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Lluvia hace el viaje más difícil. -5 Esperanza."));
       CampaignManager.Instance.CambiarEsperanzaActual(-5);
+      
+      bool logLluviaIncendios = false;
+      foreach (Nodo nodo in CampaignManager.Instance.scMapaManager.scContenedordeNodos.listTodosNodos)
+      {
+        if (nodo.nodoIncendiado)
+        {
+          nodo.DesactivarIncendio();
+          if (!logLluviaIncendios)
+          {
+            CampaignManager.Instance.EscribirLog("<color=#00c8ff>" + TRADU.i.Traducir("La lluvia ha apagado los incendios en el área temporalmente.") + "</color>");
+            logLluviaIncendios = true;
+          }
+        }
+      }
     }
     else if (random < CampaignManager.Instance.scAtributosZona.Clima_chances_Nieve)
     {
@@ -604,10 +620,10 @@ public class MenuDescanso : MonoBehaviour
       if (CampaignManager.Instance.scAtributosZona.ID == 1) //Bosque Ardiente - Almas Danzantes
       {
         climaAlmasDanzantes.SetActive(true);
-       
+
         CampaignManager.Instance.intTipoClima = 6;
         CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_almasDanzantes;
-       
+
 
         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Las Almas Danzantes de animales inocentes guian a la caravana. +5 Esperanza, 0% chances de emboscada."));
         CampaignManager.Instance.CambiarEsperanzaActual(5);
@@ -615,10 +631,10 @@ public class MenuDescanso : MonoBehaviour
       if (CampaignManager.Instance.scAtributosZona.ID == 2) //Paso Helado - Aurora Boreal
       {
         climaAuroraBoreal.SetActive(true);
-     
+
         CampaignManager.Instance.intTipoClima = 6;
         CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_auroraboreal;
-        
+
 
         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Aurora Boreal maravilla a toda la caravana. +10 Esperanza"));
         CampaignManager.Instance.CambiarEsperanzaActual(10);

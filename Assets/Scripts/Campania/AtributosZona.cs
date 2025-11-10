@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public enum EncounterZoneType
 {
@@ -60,6 +61,7 @@ public class AtributosZona : MonoBehaviour
    public string Nombre;
    public int ID;
 
+   public TextMeshProUGUI txtNombreZona;
    public int FASE; //En que posición sale la zona, para determinar dificultad de encuentros
    public int modRecoleccionMateriales;
    public int modRecoleccionSuministros;
@@ -74,11 +76,16 @@ public class AtributosZona : MonoBehaviour
    public int Clima_chances_Niebla;
    public int Clima_chances_EspecialZona1;
 
+   public int PasoVientoHelado_FuerzaKaleTav = 0;
+
    [Header("Encuentros dinámicos")]
    public EncounterZoneConfig bosqueAngustianteEncuentros = new EncounterZoneConfig();
    public EncounterZoneConfig pasoVientoHeladoEncuentros = new EncounterZoneConfig();
    public EncounterZoneConfig genericosEncuentros = new EncounterZoneConfig();
    public EncounterZoneConfig subterraneosEncuentros = new EncounterZoneConfig();
+
+   [Header("Debug de encuentros")]
+   public List<GameObject> debugEncounterUnits = new List<GameObject>();
 
    MapDecorator scMapDecorator;
 
@@ -144,6 +151,7 @@ public class AtributosZona : MonoBehaviour
    }
 
    public MeshRenderer TexturaTerreno;
+   public MeshRenderer TexturaTerrenoExtension;
    public MeshRenderer TexturaBordeMapa;
 
    
@@ -179,6 +187,10 @@ public class AtributosZona : MonoBehaviour
    public GameObject PasoVientoHelado_aldeatribal;
    public GameObject PasoVientoHelado_simbolopagano;
    public GameObject PasoVientoHelado_efigie;
+
+
+   public GameObject BosqueArdiente_Descripcion;
+   public GameObject Pasovientohelado_Descripcion;
    public void ConstruirZonaBosqueAngustiante(int iFASE)
    {
       Nombre = "Bosque Angustiante"; //dejar asi por ahora
@@ -197,12 +209,13 @@ public class AtributosZona : MonoBehaviour
       Clima_chances_Niebla = 80;
       Clima_chances_EspecialZona1 = 100;
 
-     
 
+      txtNombreZona.text = TRADU.i.Traducir("El Bosque Ardiente");
 
+      BosqueArdiente_Descripcion.SetActive(true);
+      Pasovientohelado_Descripcion.SetActive(false);
 
-
-
+      CampaignManager.Instance.BosqueArdienteMecanicaIncendio(100);
 
 
       Invoke("PlayMusic", 0.2f);
@@ -223,6 +236,7 @@ public class AtributosZona : MonoBehaviour
    { 
 
       TexturaTerreno.material = MaterialBosqueAngustiante_Terreno;
+      TexturaTerrenoExtension.material = MaterialBosqueAngustiante_Terreno;
       TexturaBordeMapa.material = MaterialBosqueAngustiante_BordeMapa;
       pasovientoheladoContenedorGameObjects.SetActive(false);
       bosqueardienteContenedorGameObjects.SetActive(true);
@@ -305,7 +319,7 @@ public class AtributosZona : MonoBehaviour
 
    public void ConstruirZonaPasoVientoHelado(int iFASE)
    {
-      Nombre = "Paso Viento Helado";
+      Nombre = "Paso Vientohelado";
       FASE = iFASE;
       ID = 2;
       modRecoleccionMateriales = 10;
@@ -321,7 +335,13 @@ public class AtributosZona : MonoBehaviour
        Clima_chances_Niebla = 93;
        Clima_chances_EspecialZona1 = 100;
 
-      
+     
+
+      Pasovientohelado_Descripcion.SetActive(true);
+      BosqueArdiente_Descripcion.SetActive(false);
+
+      txtNombreZona.text = TRADU.i.Traducir(Nombre);
+
 
       Invoke("PlayMusic", 0.2f);
       // Usar fader como tapón mientras se adorna el mapa (async, sin freeze)
@@ -336,6 +356,7 @@ public class AtributosZona : MonoBehaviour
    {
      
       TexturaTerreno.material = MaterialPasoVientoHelado_Terreno;
+      TexturaTerrenoExtension.material = MaterialPasoVientoHelado_Terreno;
       TexturaBordeMapa.material = MaterialPasoVientoHelado_BordeMapa;
       pasovientoheladoContenedorGameObjects.SetActive(true);
       bosqueardienteContenedorGameObjects.SetActive(false);
@@ -355,7 +376,7 @@ public class AtributosZona : MonoBehaviour
       // Async sin congelar: replicamos las llamadas Generar pero con yield
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado1,
-         cantidad: 22,
+         cantidad: 28,
          distCaminoOverride: 0.11f,
          distNodoOverride: 0.15f,
          rOverride: 6.25f,
@@ -363,7 +384,7 @@ public class AtributosZona : MonoBehaviour
          
        yield return scMapDecorator.GenerarAsyncCR(
         PasoVientoHelado_Arbol1,
-        cantidad: 35,
+        cantidad: 39,
         distCaminoOverride: 0.11f,
         distNodoOverride: 0.15f,
         rOverride: 5.95f,
@@ -395,7 +416,7 @@ public class AtributosZona : MonoBehaviour
         
       yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Maleza1,
-         cantidad: 1150,
+         cantidad: 1450,
          distCaminoOverride: 0.1f,
          distNodoOverride: 0.8f,
          rOverride: 1.1f,
@@ -411,7 +432,7 @@ public class AtributosZona : MonoBehaviour
       
        yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Piedra1,
-         cantidad: 80,
+         cantidad: 85,
          distCaminoOverride: 0.10f,
          distNodoOverride: 0.10f,
          rOverride: 8.8f,
@@ -419,7 +440,7 @@ public class AtributosZona : MonoBehaviour
       
        yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Piedra2,
-         cantidad: 65,
+         cantidad: 68,
          distCaminoOverride: 0.10f,
          distNodoOverride: 0.10f,
          rOverride: 10.8f,

@@ -868,7 +868,9 @@ MonoBehaviour:
   uRetrato: {fileID: 21300000, guid: a5c2c47861889364cac35470514261f8, type: 3}
   uImage: {fileID: 7996714464312373375}
   uNombre: Guerrero Kale'Tav
-  tags: []
+  tags:
+  - Humanoide
+  - Kale'Tav
   at_iniciativa: 3
   mod_iniciativa: 3
   iniciativa_actual: 3

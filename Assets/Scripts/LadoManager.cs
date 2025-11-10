@@ -33,7 +33,7 @@ public class LadoManager : MonoBehaviour
   public List<Unidad> unidadesLado = new List<Unidad>();
   public List<Casilla> casillasLado = new List<Casilla>();
 
-  
+ 
 
   void Start()
   {
@@ -74,7 +74,13 @@ public class LadoManager : MonoBehaviour
 
         }
 
-    
+        foreach (Unidad unidadEnterrada in IAEnterrarRaizFuego.ObtenerUnidadesEnterradas(esLado))
+        {
+            if (unidadEnterrada != null && !unidadesLado.Contains(unidadEnterrada))
+            {
+                unidadesLado.Add(unidadEnterrada);
+            }
+        }
    }
 
     public void ActualizarListaDeCasillasEnLado()
@@ -160,7 +166,21 @@ public Casilla ObtenerCasillaPorIndex(int posX, int posY)
 
     return null;
   }
+ public List<Casilla> ObtenerCasillasDesocupadas()
+  {
+    List<Casilla> casillasDesocupadas = new List<Casilla>();
 
+    foreach  (Transform hijos in transform)
+    {
+      Casilla casilla = hijos.GetComponent<Casilla>();
+      if (casilla != null && casilla.Presente == null)
+      {
+        casillasDesocupadas.Add(casilla);
+      }
+    }
+
+    return casillasDesocupadas;
+  }
 
 public List<Casilla> filaCasillasSegunRango(int fila, int rango, int ancho)  //Se llama desde ObtenerCasillasRango en Casilla
 {

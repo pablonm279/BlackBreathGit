@@ -16,7 +16,7 @@ public ClasePurificadora scCreador;
 
     if (uCausante != null)
     {
-      int dam =UnityEngine.Random.Range(1, 9) + (int)scCreador.mod_CarPoder;
+      int dam =UnityEngine.Random.Range(1, 7) + (int)scCreador.mod_CarPoder;
       if(NIVEL > 2){ dam+=3;}
       if(uCausante.TieneTag("Nomuerto") || uCausante.TieneTag("Etereo"))
       {

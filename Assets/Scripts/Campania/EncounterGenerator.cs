@@ -63,6 +63,11 @@ public static class EncounterGenerator
          return false;
       }
 
+      if (TryGetDebugEncounter(atributosZona, zoneType, battleType, fase, out encounter))
+      {
+         return true;
+      }
+
       var zoneConfig = atributosZona.GetEncounterConfig(zoneType);
       if (zoneConfig == null)
       {
@@ -188,6 +193,69 @@ public static class EncounterGenerator
 
          remaining -= selectedTier;
       }
+   }
+
+   static bool TryGetDebugEncounter(
+      AtributosZona atributosZona,
+      EncounterZoneType zoneType,
+      BattleEncounterType battleType,
+      int fase,
+      out EncounterDefinition definition)
+   {
+      definition = null;
+      if (atributosZona == null || atributosZona.debugEncounterUnits == null)
+      {
+         return false;
+      }
+
+      var forcedUnits = new List<GameObject>();
+      foreach (var prefab in atributosZona.debugEncounterUnits)
+      {
+         if (prefab != null)
+         {
+            forcedUnits.Add(prefab);
+         }
+      }
+
+      if (forcedUnits.Count == 0)
+      {
+         return false;
+      }
+
+      int faseClamped = Mathf.Max(1, fase);
+      int baseBudget = GetBaseBudget(battleType);
+      int randomBonus = 0;
+      int totalBudget = baseBudget * faseClamped + randomBonus;
+      totalBudget += Sistema.HandicapDificultad.AjustePuntosEnemigos;
+      totalBudget = Mathf.Max(1, totalBudget);
+      int initialCap = Mathf.Max(1, forcedUnits.Count);
+      int reinforcementDelay = 0;
+
+      definition = new EncounterDefinition
+      {
+         zoneType = zoneType,
+         battleType = battleType,
+         factionId = "DebugEncounter",
+         factionName = string.IsNullOrWhiteSpace(atributosZona.Nombre) ? "DebugEncounter" : atributosZona.Nombre,
+         fase = faseClamped,
+         baseBudget = baseBudget,
+         randomBonus = randomBonus,
+         totalBudget = totalBudget,
+         initialCap = initialCap,
+         reinforcementDelay = reinforcementDelay
+      };
+
+      foreach (var prefab in forcedUnits)
+      {
+         definition.units.Add(new EncounterUnitSlot
+         {
+            prefab = prefab,
+            tierCost = 0,
+            spawnAsReinforcement = false
+         });
+      }
+
+      return true;
    }
 
    static List<int> GetAvailableTiers(EnemyFactionConfig faction, int remainingBudget, int maxTierAllowed)

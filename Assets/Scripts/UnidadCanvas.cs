@@ -61,7 +61,7 @@ public class UnidadCanvas : MonoBehaviour
             Image barraFillImage = barraVida.gameObject.transform.GetChild(1).GetChild(0).GetComponentInChildren<Image>();
             if (yapasosuturno)
             {
-                barraFillImage.color = new Color(barraFillImage.color.r, barraFillImage.color.g, barraFillImage.color.b, 0.25f); // oscurecer (alpha 0.5)
+                barraFillImage.color = new Color(barraFillImage.color.r, barraFillImage.color.g, barraFillImage.color.b, 0.45f); // oscurecer (alpha 0.5)
             }
             else
             {
@@ -110,16 +110,13 @@ public class UnidadCanvas : MonoBehaviour
         }
 
         // Mostrar Buffs
-        foreach (Buff buff in scUnidadMostrada.gameObject.GetComponents<Buff>())
+        List<BuffUIHelper.BuffStack> buffStacks = BuffUIHelper.GetVisibleBuffStacks(scUnidadMostrada);
+        foreach (BuffUIHelper.BuffStack stack in buffStacks)
         {
-            if (buff.DuracionBuffRondas != 0 && buff.esBuffVisibleUI)
-            {
-                if (buff.esRemovible)
-                {
-                    GameObject buffCuadro = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
-                    buffCuadro.GetComponent<UIEstadoCuadro>().RepresentarBuff(buff, true);
-                }
-            }
+            if (!stack.AggregatedBuff.esRemovible) { continue; }
+
+            GameObject buffCuadro = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
+            buffCuadro.GetComponent<UIEstadoCuadro>().RepresentarBuff(stack.AggregatedBuff, true, stack.StackCount);
         }
 
         // Mostrar Reacciones

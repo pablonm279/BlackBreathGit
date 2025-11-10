@@ -292,7 +292,7 @@ public abstract class IAHabilidad : MonoBehaviour
   }
 
   //Ataque vs Defensa convencional
-  public int TiradaAtaque(float defensaObjetivo, float atributoAtaca, float modificadorHabilidadaAtaque, float modificadorDadoCritico, Unidad unidadAtacada, float tiradaAtaque = -1)
+  public int TiradaAtaque(float defensaObjetivo, float atributoAtaca, float modificadorHabilidadaAtaque, float modificadorDadoCritico, Unidad unidadAtacada, float tiradaAtaque = -1, int rangoPifiaExtra = 0)
   {
    //Pifia = -1
     //Fallo = 0
@@ -316,7 +316,7 @@ public abstract class IAHabilidad : MonoBehaviour
     else { iTiradaAtaque = tiradaAtaque; }
     float iResultadoAtaque = iTiradaAtaque + atributoAtaca + modificadorHabilidadaAtaque;
 
-    if (iTiradaAtaque == 1)//Pifia
+    if (iTiradaAtaque < (2 + rangoPifiaExtra))//Pifia
     {
       scEstaUnidad.GenerarTextoFlotante(TRADU.i.Traducir("Pifia"), Color.red);
       BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + iResultadoAtaque + TRADU.i.Traducir(". Resultado: Pifia."));

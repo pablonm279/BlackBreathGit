@@ -8,6 +8,8 @@ public class TrampaPrimerGolpeAlabardero : Trampa
   
   IAGolpeAlabarda tiroArco;
   public Unidad unidadCreadora;
+  bool destruidaPorMuerteCreador;
+  bool creadorAsignado;
   public void InicializarCreador(Unidad creadora)
   {
     unidadCreadora = creadora;
@@ -15,6 +17,7 @@ public class TrampaPrimerGolpeAlabardero : Trampa
      Invoke("Activar", 0.5f);
     tiroArco = unidadCreadora.GetComponent<IAGolpeAlabarda>();
     Inicializar();
+    creadorAsignado = true;
     
   
   }
@@ -38,6 +41,11 @@ public class TrampaPrimerGolpeAlabardero : Trampa
   { 
     activa = true;
    print(222);
+  }
+
+  void Update()
+  {
+    VerificarCreadorSigueActivo();
   }
 
   public async override void AplicarEfectosTrampa(Unidad objetivo)
@@ -80,6 +88,41 @@ public class TrampaPrimerGolpeAlabardero : Trampa
       float posY = gameObject.GetComponent<Casilla>().posY;
       canvas.sortingOrder = 60 - Mathf.RoundToInt(10 * posY) -2;
     }
+  }
+
+  void VerificarCreadorSigueActivo()
+  {
+    if (destruidaPorMuerteCreador)
+    {
+      return;
+    }
+
+    if (!creadorAsignado)
+    {
+      return;
+    }
+
+    if (unidadCreadora == null)
+    {
+      DestruirTrampaPorMuerteCreador();
+      return;
+    }
+
+    if (unidadCreadora.HP_actual <= 0 || !unidadCreadora.gameObject.activeInHierarchy)
+    {
+      DestruirTrampaPorMuerteCreador();
+    }
+  }
+
+  void DestruirTrampaPorMuerteCreador()
+  {
+    if (destruidaPorMuerteCreador)
+    {
+      return;
+    }
+
+    destruidaPorMuerteCreador = true;
+    DestruirTrampa();
   }
 
 }

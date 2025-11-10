@@ -281,10 +281,8 @@ public bool PonerObjetoEnCasilla(GameObject GO)
   
     if (Presente != null)
     {
-      print("Casilla Ocupada, no se puede colocar objeto");
       return false;
     }
-
     GO.transform.position = transform.position;
     NuevoObjetoPresenteEnCasilla(GO);
  

@@ -229,7 +229,15 @@ public class ArrojarAbrojos : Habilidad
       
       List<Casilla> CasillasXcas = new List<Casilla>();
 
-    CasillasXcas.Add(cas); // Agregar la casilla original
+    if (cas != null)
+    {
+      // Solo agregamos la casilla objetivo si está libre de unidades
+      var unidadEnCasilla = cas.Presente != null ? cas.Presente.GetComponent<Unidad>() : null;
+      if (unidadEnCasilla == null)
+      {
+        CasillasXcas.Add(cas); // Agregar la casilla original si está libre
+      }
+    }
     foreach (Casilla c in BattleManager.Instance.lCasillasTotal)
     {
 

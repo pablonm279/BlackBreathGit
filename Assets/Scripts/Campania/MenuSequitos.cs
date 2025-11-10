@@ -21,7 +21,7 @@ public class MenuSequitos : MonoBehaviour
    {
       if (ID == 1)
       {
-         GameObject goSequito = Instantiate(Sequito001Herreros, transform.GetChild(1).gameObject.transform);
+         GameObject goSequito = Instantiate(Sequito001Herreros, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
 
          scSequito.txtNombre.text = TRADU.i.Traducir("Séquito de Herreros");
@@ -30,7 +30,7 @@ public class MenuSequitos : MonoBehaviour
 
       if (ID == 2)
       {
-         GameObject goSequito = Instantiate(Sequito002Curanderos, transform.GetChild(1).gameObject.transform);
+         GameObject goSequito = Instantiate(Sequito002Curanderos, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
 
          scSequito.txtNombre.text =  TRADU.i.Traducir("Séquito de Curanderos");
@@ -38,7 +38,7 @@ public class MenuSequitos : MonoBehaviour
       }
       if (ID == 3)
       {
-         GameObject goSequito = Instantiate(Sequito003Mercaderes, transform.GetChild(1).gameObject.transform);
+         GameObject goSequito = Instantiate(Sequito003Mercaderes, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
 
          CampaignManager.Instance.scSequitoMercaderes = goSequito.GetComponent<SequitoMercaderes>();
@@ -47,7 +47,7 @@ public class MenuSequitos : MonoBehaviour
       }
       if (ID == 4 && !CampaignManager.Instance.scMenuSequito.TieneSequito(4))
       {
-         GameObject goSequito = Instantiate(Sequito004Artistas, transform.GetChild(1).gameObject.transform);
+         GameObject goSequito = Instantiate(Sequito004Artistas, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
 
          CampaignManager.Instance.scSequitoArtistas = goSequito.GetComponent<SequitoArtistas>();
@@ -61,7 +61,7 @@ public class MenuSequitos : MonoBehaviour
       }
       if (ID == 5 && !CampaignManager.Instance.scMenuSequito.TieneSequito(5))
       {
-         GameObject goSequito = Instantiate(Sequito005Herboristas, transform.GetChild(1).gameObject.transform);
+         GameObject goSequito = Instantiate(Sequito005Herboristas, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
 
          CampaignManager.Instance.scSequitoHerboristas = goSequito.GetComponent<SequitoHerboristas>();
@@ -73,7 +73,7 @@ public class MenuSequitos : MonoBehaviour
       }
       if (ID == 6 && !CampaignManager.Instance.scMenuSequito.TieneSequito(6))
       {
-         GameObject goSequito = Instantiate(Sequito006Desertores, transform.GetChild(1).gameObject.transform);
+         GameObject goSequito = Instantiate(Sequito006Desertores, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
 
          CampaignManager.Instance.scSequitoDesertores = goSequito.GetComponent<SequitoDesertores>();
@@ -86,7 +86,7 @@ public class MenuSequitos : MonoBehaviour
       }
       if (ID == 7 && !CampaignManager.Instance.scMenuSequito.TieneSequito(7))
       {
-         GameObject goSequito = Instantiate(Sequito007Cronistas, transform.GetChild(1).gameObject.transform);
+         GameObject goSequito = Instantiate(Sequito007Cronistas, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
 
          CampaignManager.Instance.scSequitoCronistas = goSequito.GetComponent<SequitoCronistas>();
@@ -98,7 +98,7 @@ public class MenuSequitos : MonoBehaviour
       }
       if (ID == 8 && !CampaignManager.Instance.scMenuSequito.TieneSequito(8))
       {
-         GameObject goSequito = Instantiate(Sequito008Refugiados, transform.GetChild(1).gameObject.transform);
+         GameObject goSequito = Instantiate(Sequito008Refugiados, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
 
          CampaignManager.Instance.scSequitoRefugiados = goSequito.GetComponent<SequitoRefugiados>();
@@ -111,7 +111,7 @@ public class MenuSequitos : MonoBehaviour
       }
       if (ID == 9 && !CampaignManager.Instance.scMenuSequito.TieneSequito(9))
       {
-         GameObject goSequito = Instantiate(Sequito009Nobles, transform.GetChild(1).gameObject.transform);
+         GameObject goSequito = Instantiate(Sequito009Nobles, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
 
          CampaignManager.Instance.scSequitoNobles = goSequito.GetComponent<SequitoNobles>();
@@ -123,7 +123,7 @@ public class MenuSequitos : MonoBehaviour
       }
       if (ID == 10 && !CampaignManager.Instance.scMenuSequito.TieneSequito(10))
       {
-         GameObject goSequito = Instantiate(Sequito010Clerigos, transform.GetChild(1).gameObject.transform);
+         GameObject goSequito = Instantiate(Sequito010Clerigos, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
 
          CampaignManager.Instance.scSequitoClerigos = goSequito.GetComponent<SequitoClerigos>();
@@ -136,7 +136,7 @@ public class MenuSequitos : MonoBehaviour
       }
       if (ID == 11 && !CampaignManager.Instance.scMenuSequito.TieneSequito(11))
       {
-         GameObject goSequito = Instantiate(Sequito011Esclavos, transform.GetChild(1).gameObject.transform);
+         GameObject goSequito = Instantiate(Sequito011Esclavos, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
 
          CampaignManager.Instance.scSequitoEsclavos = goSequito.GetComponent<SequitoEsclavos>();

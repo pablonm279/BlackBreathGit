@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public abstract class Obstaculo : MonoBehaviour
+public class Obstaculo : MonoBehaviour
 {
 
   public string oName;
@@ -21,7 +21,12 @@ public abstract class Obstaculo : MonoBehaviour
     scBattleManager = BattleManager.Instance;
   }
   
-  
+  private void Start()
+  {
+    // Initialize stats as they are set in the Unity Inspector
+    hpCurr = hpMax;
+    ActualizarBarraVidaPropia();
+  }
 
 private async void OnMouseDown() 
 {
@@ -55,6 +60,7 @@ private async void OnMouseDown()
 
  public GameObject PrefabtxtDaño;
  public GameObject unidadCanvas;
+ public Transform puntoEntrante;
  public TextMeshProUGUI txtDaño;
 public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante)
 {
@@ -90,7 +96,10 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
 [SerializeField] private Slider barraVida;
   void ActualizarBarraVidaPropia()
  {
-  barraVida.value = hpCurr / hpMax;
+    if (barraVida != null)
+    {
+      barraVida.value = hpCurr / hpMax;
+    }
  }
 
   public void LlamarReacciones(int tipo, Unidad triggerer, bool melee)  //tipo de Trigger de la reaccion en cuestión
