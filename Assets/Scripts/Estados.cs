@@ -10,7 +10,7 @@ public class Estados : MonoBehaviour
   
   public async static void  Efecto_Ardiendo(Unidad unidad)
   {
-        unidad.RecibirDanio(1*unidad.estado_ardiendo, 4,false, null); 
+        unidad.RecibirDanio(2*unidad.estado_ardiendo, 4,false, null); 
        
         
         while(unidad.ObtenerAPActual() > 0 && unidad.estado_ardiendo > 0)
@@ -33,10 +33,10 @@ public class Estados : MonoBehaviour
 
   public static void  Efecto_Congelado(Unidad unidad)
   {
-     int APValorSaca = (int)unidad.ObtenerAPActual()*2;
+     
 
-     unidad.CambiarAPActual(-(int)unidad.estado_congelado/2);
-     unidad.estado_congelado -= APValorSaca;
+     unidad.CambiarAPActual(-(int)unidad.estado_congelado);
+     unidad.estado_congelado -= 1;
      BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" está congelado."));
 
 
@@ -126,7 +126,7 @@ public class Estados : MonoBehaviour
     BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" recibe ") + (1*unidad.estado_veneno) + TRADU.i.Traducir(" daño veneno."));
 
 
-   if(unidad.TiradaSalvacion(unidad.mod_TSFortaleza, unidad.estado_veneno)) //Cada turno se puede salvar del veneno, pero si peirde se suma 1 stack
+   if(unidad.TiradaSalvacion(unidad.mod_TSFortaleza, 7+unidad.estado_veneno)) //Cada turno se puede salvar del veneno, pero si peirde se suma 1 stack
    {
      unidad.estado_veneno = 0; unidad.GenerarTextoFlotante("<s>" + TRADU.i.Traducir("Veneno") + "</s>", Color.green);
     BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" resiste totalmente al veneno."));

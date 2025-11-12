@@ -281,6 +281,8 @@ public class BotonHabilidad : MonoBehaviour
     }
 
     public GameObject Oscurecedor;
+    public GameObject Melee;
+
     private void Update()
     {
         if (HabilidadRepresentada != null)
@@ -320,7 +322,7 @@ public class BotonHabilidad : MonoBehaviour
                 }
             }
         }
-   
+
         // Mostrar/ocultar oscurecedor según si hay AP + esforzable suficientes
         if (Oscurecedor != null && HabilidadRepresentada != null && BattleManager.Instance != null && BattleManager.Instance.unidadActiva != null)
         {
@@ -329,8 +331,17 @@ public class BotonHabilidad : MonoBehaviour
             int disponible = apActualInt + HabilidadRepresentada.esforzable;
 
             Oscurecedor.SetActive(disponible < apNecesarios);
+
+            if (HabilidadRepresentada.esMelee)
+            {
+                Melee.SetActive(true);
+            }
+            else
+            {
+                Melee.SetActive(false);
+            }
         }
-   
+
     }
 
 

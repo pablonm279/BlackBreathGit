@@ -3072,54 +3072,52 @@ public class TRADU : MonoBehaviour
               case "Fuerza Kale'Tav":
                 r = "Kale'Tav Strength";
                 break;
-                /*  case "":
-                 r = "";
-                 break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                 r = "";
-                 break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                 r = "";
-                 break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                 r = "";
-                 break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                 r = "";
-                 break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                 r = "";
-                 break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                 r = "";
-                 break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                 /*  case "":
-                  r = "";
-                  break;*/
-                /*  case "":
-                r = "";
-                break;*/
+            case "Manual":
+                 r = "Handbook";
+                break;
+            case "Mapa":
+                r = "Map";
+                break;
+            case "Zonas":
+                 r = "Zones";
+                 break;
+            case "Civiles":
+                 r = "Civilians";
+                 break;
+            case "Personajes":
+                 r = "Characters";
+                 break;
+            case "Aliento Negro":
+                 r = "Black Breath";
+                 break;
+            case "Ir al Manual de Combate":
+                 r = "Go to Battle Handbook";
+                 break;
+            case "Ir al Manual de Campaña":
+                 r = "Go to Campaign Handbook";
+                 break;
+            case "Combate":
+                 r = "Combat";
+                 break;
+            case "Grillas":
+                 r = "Grids";
+                 break;
+            case "Turnos":
+                 r = "Turns";
+                 break;
+            case "Acciones":
+                r = "Actions";
+                break;
+            case "Sistema":
+                 r = "System";
+                 break;
+            case "Daños":
+                 r = "Damages";
+                 break;
+            case "Estados":
+                  r = "Statuses";
+                  break;
+    
                  /*  case "":
                   r = "";
                   break;*/

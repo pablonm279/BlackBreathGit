@@ -17,6 +17,8 @@ public class AdministradorEscenas : MonoBehaviour
   public GameObject EscenaBatalla;
   public ContenedorPrefabs ContenedorPrefabsBatalla;
 
+  public GameObject HandbookCampania;
+
   public int escenaActual; //0 campaña 1 batalla
 
 
@@ -36,9 +38,9 @@ public class AdministradorEscenas : MonoBehaviour
 
   public MeshRenderer mrFondoBatalla;
 
- public List<Material> listaFondosBosqueLamentos; //Para agregar fondos simplemente hay que agregarlos a la lista
- public List<Material> listaFondosPasoVientoHelado; //Para agregar fondos simplemente hay que agregarlos a la lista
- public List<Material> listaFondosSubterraneos; //Para agregar fondos simplemente hay que agregarlos a la lista
+  public List<Material> listaFondosBosqueLamentos; //Para agregar fondos simplemente hay que agregarlos a la lista
+  public List<Material> listaFondosPasoVientoHelado; //Para agregar fondos simplemente hay que agregarlos a la lista
+  public List<Material> listaFondosSubterraneos; //Para agregar fondos simplemente hay que agregarlos a la lista
 
   [Header("UI")]
   [SerializeField] CanvasGroup fader;        // Imagen negra con CanvasGroup
@@ -49,82 +51,82 @@ public class AdministradorEscenas : MonoBehaviour
 
   // (removido) UI de carga sutil
 
-    IEnumerator Start()
-    {
-        // Fade-in al entrar al menú
-        yield return FadeTo(0f, fadeTime);
-    }
+  IEnumerator Start()
+  {
+    // Fade-in al entrar al menú
+    yield return FadeTo(0f, fadeTime);
+  }
 
-   public void PlayFadeInOut(float fadeDuration, float holdDuration)
-{
+  public void PlayFadeInOut(float fadeDuration, float holdDuration)
+  {
     StartCoroutine(FadeInOut(fadeDuration, holdDuration));
-}
+  }
 
-private IEnumerator FadeInOut(float fadeDuration, float holdDuration)
-{
+  private IEnumerator FadeInOut(float fadeDuration, float holdDuration)
+  {
     // Se oscurece (fade in)
     yield return StartCoroutine(FadeTo(1f, fadeDuration));
 
     // Mantiene la pantalla negra
     if (holdDuration > 0f)
-        yield return new WaitForSecondsRealtime(holdDuration);
+      yield return new WaitForSecondsRealtime(holdDuration);
 
     // Se aclara (fade out)
     yield return StartCoroutine(FadeTo(0f, fadeDuration));
-}
+  }
 
-IEnumerator FadeTo(float target, float time)
-{
+  IEnumerator FadeTo(float target, float time)
+  {
     if (fader == null) yield break;
     // Si intentan hacer fade-out mientras está bloqueado, esperar hasta liberar
     if (faderHold && target < 1f)
     {
-        while (faderHold) { yield return null; }
+      while (faderHold) { yield return null; }
     }
     float start = fader.alpha;
     float t = 0f;
-        while (t < time)
-        {
-            // Si durante la animación se activa un hold y el destino es fade-out, pausar hasta liberar y reanudar suave
-            if (faderHold && target < 1f)
-            {
-                while (faderHold) { yield return null; }
-                start = fader.alpha;
-                t = 0f;
-            }
-            t += Time.unscaledDeltaTime;
-            fader.alpha = Mathf.Lerp(start, target, t / time);
-            yield return null;
-        }
-        fader.alpha = target;
-    }
-
-    // Expuestos para poder hacer yield desde otras clases (p.ej. AtributosZona)
-    public IEnumerator FadeIn(float duration)
+    while (t < time)
     {
-        yield return FadeTo(1f, duration);
+      // Si durante la animación se activa un hold y el destino es fade-out, pausar hasta liberar y reanudar suave
+      if (faderHold && target < 1f)
+      {
+        while (faderHold) { yield return null; }
+        start = fader.alpha;
+        t = 0f;
+      }
+      t += Time.unscaledDeltaTime;
+      fader.alpha = Mathf.Lerp(start, target, t / time);
+      yield return null;
     }
+    fader.alpha = target;
+  }
 
-    public IEnumerator FadeOut(float duration)
-    {
-        yield return FadeTo(0f, duration);
-    }
+  // Expuestos para poder hacer yield desde otras clases (p.ej. AtributosZona)
+  public IEnumerator FadeIn(float duration)
+  {
+    yield return FadeTo(1f, duration);
+  }
 
-    // Forzar mantener pantalla negra y bloquear fade-outs hasta liberar
-    public void SetFaderHold(bool hold)
+  public IEnumerator FadeOut(float duration)
+  {
+    yield return FadeTo(0f, duration);
+  }
+
+  // Forzar mantener pantalla negra y bloquear fade-outs hasta liberar
+  public void SetFaderHold(bool hold)
+  {
+    faderHold = hold;
+    if (fader != null && hold)
     {
-        faderHold = hold;
-        if (fader != null && hold)
-        {
-            fader.alpha = 1f;
-            fader.blocksRaycasts = true;
-            fader.interactable = false;
-        }
-        else if (fader != null && !hold)
-        {
-            fader.blocksRaycasts = false;
-        }
+      fader.alpha = 1f;
+      fader.blocksRaycasts = true;
+      fader.interactable = false;
     }
+    else if (fader != null && !hold)
+    {
+      fader.blocksRaycasts = false;
+    }
+  }
 
   // (removido) Loading label y animación de puntos
   public GameObject VFXLluvia;
@@ -532,11 +534,11 @@ IEnumerator FadeTo(float target, float time)
     #endregion
     #region Ritual Kale'Tav
     LadoManager ladodeEnemigos = BattleManager.Instance.ladoA; //Enemigos
-      foreach (Unidad u in ladodeEnemigos.unidadesLado)
-      { 
-        int repeticiones = CampaignManager.Instance.scAtributosZona.PasoVientoHelado_FuerzaKaleTav;
-       for (int i = 0; i < repeticiones; i++)
-       {
+    foreach (Unidad u in ladodeEnemigos.unidadesLado)
+    {
+      int repeticiones = CampaignManager.Instance.scAtributosZona.PasoVientoHelado_FuerzaKaleTav;
+      for (int i = 0; i < repeticiones; i++)
+      {
         if (u.TieneTag("Kale'Tav") && CampaignManager.Instance.scAtributosZona.ID == 2)
         {
           // BUFF ---- Así se aplica un buff/debuff
@@ -552,8 +554,8 @@ IEnumerator FadeTo(float target, float time)
           // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
           Buff buffComponent = ComponentCopier.CopyComponent(buff, u.gameObject);
         }
-       }
       }
+    }
     #endregion
     #region Objetos en Batalla
     //Fuego de Bosque Ardiente
@@ -626,8 +628,8 @@ IEnumerator FadeTo(float target, float time)
     // RondaNueva() incrementa el contador, por eso se inicializa en 0 aquí.
     BattleManager.Instance.RondaNro = 0;
     BattleManager.Instance.RondaNueva();
-    
-     Invoke ("ColocarunidadesEnCanvasUnidades", 0.3f);
+
+    Invoke("ColocarunidadesEnCanvasUnidades", 0.3f);
 
   }
 
@@ -657,13 +659,13 @@ IEnumerator FadeTo(float target, float time)
 
     if (ProbabilidadPorcentual(500))
     {
-      int cantidadrocamenor = 2+UnityEngine.Random.Range(0, 3);
+      int cantidadrocamenor = 2 + UnityEngine.Random.Range(0, 3);
       ColocarObstaculos(ContenedorPrefabsBatalla.Roca1, cantidadrocamenor, ladoAliado, ladoEnemigo);
     }
 
     if (ProbabilidadPorcentual(500))
     {
-      int cantidadRocaMayor = 2+UnityEngine.Random.Range(0, 3);
+      int cantidadRocaMayor = 2 + UnityEngine.Random.Range(0, 3);
       ColocarObstaculos(ContenedorPrefabsBatalla.Roca2, cantidadRocaMayor, ladoAliado, ladoEnemigo);
     }
 
@@ -703,8 +705,8 @@ IEnumerator FadeTo(float target, float time)
 
 
     }
-    
-   
+
+
   }
 
   void ColocarTrampasDeBarro(int cantidad, LadoManager ladoAliado, LadoManager ladoEnemigo)
@@ -759,7 +761,7 @@ IEnumerator FadeTo(float target, float time)
     {
       if (listaFondosSubterraneos != null && listaFondosSubterraneos.Count > 0)
       {
-         mrFondoBatalla.material = listaFondosSubterraneos[UnityEngine.Random.Range(0, listaFondosSubterraneos.Count)];
+        mrFondoBatalla.material = listaFondosSubterraneos[UnityEngine.Random.Range(0, listaFondosSubterraneos.Count)];
       }
       return;
     }
@@ -777,37 +779,37 @@ IEnumerator FadeTo(float target, float time)
 
     switch (zonaEncuentro)
     {
-       case EncounterZoneType.PasoVientoHelado:
-          if (listaFondosPasoVientoHelado != null && listaFondosPasoVientoHelado.Count > 0)
+      case EncounterZoneType.PasoVientoHelado:
+        if (listaFondosPasoVientoHelado != null && listaFondosPasoVientoHelado.Count > 0)
+        {
+          mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
+        }
+        break;
+      case EncounterZoneType.Generico:
+        // Usa la zona activa de campaña si existe, si no, cae al bosque
+        if (CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null)
+        {
+          var zonaActiva = CampaignManager.Instance.scAtributosZona.GetZoneTypeById(CampaignManager.Instance.scAtributosZona.ID);
+          if (zonaActiva == EncounterZoneType.PasoVientoHelado)
           {
-             mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
+            if (listaFondosPasoVientoHelado != null && listaFondosPasoVientoHelado.Count > 0)
+            {
+              mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
+              break;
+            }
           }
-          break;
-       case EncounterZoneType.Generico:
-          // Usa la zona activa de campaña si existe, si no, cae al bosque
-          if (CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null)
-          {
-             var zonaActiva = CampaignManager.Instance.scAtributosZona.GetZoneTypeById(CampaignManager.Instance.scAtributosZona.ID);
-             if (zonaActiva == EncounterZoneType.PasoVientoHelado)
-             {
-                if (listaFondosPasoVientoHelado != null && listaFondosPasoVientoHelado.Count > 0)
-                {
-                   mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
-                   break;
-                }
-             }
-          }
-          goto case EncounterZoneType.BosqueAngustiante;
-       case EncounterZoneType.BosqueAngustiante:
-       default:
-          if (listaFondosBosqueLamentos != null && listaFondosBosqueLamentos.Count > 0)
-          {
-             mrFondoBatalla.material = listaFondosBosqueLamentos[UnityEngine.Random.Range(0, listaFondosBosqueLamentos.Count)];
-          }
-          break;
+        }
+        goto case EncounterZoneType.BosqueAngustiante;
+      case EncounterZoneType.BosqueAngustiante:
+      default:
+        if (listaFondosBosqueLamentos != null && listaFondosBosqueLamentos.Count > 0)
+        {
+          mrFondoBatalla.material = listaFondosBosqueLamentos[UnityEngine.Random.Range(0, listaFondosBosqueLamentos.Count)];
+        }
+        break;
     }
 
- }
+  }
   public void ColocarPersonajecomoUnidad(Personaje pers, int indexRefuezo = 0)
   {
 
@@ -886,7 +888,7 @@ IEnumerator FadeTo(float target, float time)
 
     //Ubicación
     if (indexRefuezo == 0) //Si no es refuerzo, se coloca en una casilla aleatoria
-    { ColocarEnCasillaAleatoriaEnColumna(1,pers.iPuestoDeseado, persUnidad); }
+    { ColocarEnCasillaAleatoriaEnColumna(1, pers.iPuestoDeseado, persUnidad); }
 
     //Estados-Buffs
     AplicarEstadosCampaña(pers, persUnidad);
@@ -916,7 +918,7 @@ IEnumerator FadeTo(float target, float time)
       unidadPers4 = persUnidad.GetComponent<Unidad>();
     }
 
-   
+
 
 
 
@@ -1066,7 +1068,7 @@ IEnumerator FadeTo(float target, float time)
       CrearEncuentroDinamico(encounterDefinition);
       return;
     }
-      //OBSOLETOO
+    //OBSOLETOO
     #region Encuentros Bosque Ardiendo ID Entre 1 y 50
     ///FASE 1 - BOSQUE ARDIENDO
     ///
@@ -1386,7 +1388,7 @@ IEnumerator FadeTo(float target, float time)
       GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.EfigieAnimada);
       ColocarEnCasillaAleatoria(2, enemigo4);
 
-       //Refuerzos
+      //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
       BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
@@ -1418,7 +1420,7 @@ IEnumerator FadeTo(float target, float time)
       ColocarEnCasillaAleatoria(2, enemigo3);
       GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.PajaroRompehielos);
       ColocarEnCasillaAleatoria(2, enemigo4);
-        //Refuerzos
+      //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
       BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
@@ -1445,13 +1447,13 @@ IEnumerator FadeTo(float target, float time)
       ColocarEnCasillaAleatoria(2, enemigo4);
     }
     if (IDEncuentro == 57) // FASE 1 - Paso Vientohelado - ELITE
-    { 
+    {
 
       GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.Faagdan);
       ColocarEnCasillaAleatoria(2, enemigo1);
       GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.Faagdan);
       ColocarEnCasillaAleatoria(2, enemigo2);
-    
+
     }
     if (IDEncuentro == 58) // FASE 1 - Paso Vientohelado - ELITE
     {
@@ -1466,8 +1468,8 @@ IEnumerator FadeTo(float target, float time)
       ColocarEnCasillaAleatoria(2, enemigo5);
       GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
       ColocarEnCasillaAleatoria(2, enemigo4);
-      
-        //Refuerzos
+
+      //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
       BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
@@ -1479,7 +1481,7 @@ IEnumerator FadeTo(float target, float time)
       enemigo7.SetActive(false);
       BattleManager.Instance.enemigosRefuerzos.Add(enemigo7);
       BattleManager.Instance.ActualizarRefuerzosUI();
-    
+
     }
     if (IDEncuentro == 59) // FASE 1 - Paso Vientohelado - ELITE
     {
@@ -1494,9 +1496,9 @@ IEnumerator FadeTo(float target, float time)
       ColocarEnCasillaAleatoria(2, enemigo4);
       GameObject enemigo5 = Instantiate(ContenedorPrefabsBatalla.LanceroKaleTav);
       ColocarEnCasillaAleatoria(2, enemigo5);
-      
-      
-        //Refuerzos
+
+
+      //Refuerzos
       BattleManager.Instance.enemigosRefuerzos.Clear();
       BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
@@ -1508,19 +1510,19 @@ IEnumerator FadeTo(float target, float time)
       enemigo7.SetActive(false);
       BattleManager.Instance.enemigosRefuerzos.Add(enemigo7);
       BattleManager.Instance.ActualizarRefuerzosUI();
-    
+
     }
     if (IDEncuentro == 60) // FASE 1 - Jefe 1 - Paso Vientohelado
     {
       GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.GulekGul);
       ColocarEnCasillaAleatoria(2, enemigo1);
-    
+
     }
     if (IDEncuentro == 61) // FASE 1 - Jefe 2 - Paso Vientohelado - PENDIENTE
     {
 
       //PENDIENTE
-    
+
     }
     if (IDEncuentro == 62) // FASE 1 - Paso Vientohelado - Ataque caravana 1
     {
@@ -1562,12 +1564,12 @@ IEnumerator FadeTo(float target, float time)
       BattleManager.Instance.enemigosRefuerzos.Add(enemigo10);
 
       BattleManager.Instance.ActualizarRefuerzosUI();
-      
-    
+
+
     }
     if (IDEncuentro == 63) //FASE 1 - Paso Vientohelado - Ataque caravana 2
     {
-       GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
       ColocarEnCasillaAleatoria(2, enemigo1);
       GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.BrujaKaleTav);
       ColocarEnCasillaAleatoria(2, enemigo2);
@@ -1605,8 +1607,8 @@ IEnumerator FadeTo(float target, float time)
       BattleManager.Instance.enemigosRefuerzos.Add(enemigo10);
 
       BattleManager.Instance.ActualizarRefuerzosUI();
-      
-    
+
+
     }
     #endregion
 
@@ -1649,28 +1651,34 @@ IEnumerator FadeTo(float target, float time)
 
     }
 
-    /*Vacio*/if (IDEncuentro == 403) // FASE 2 - Batalla Subterranea
+    /*Vacio*/
+    if (IDEncuentro == 403) // FASE 2 - Batalla Subterranea
     {
 
     }
-    /*Vacio*/if (IDEncuentro == 404) // FASE 2 - Batalla Subterranea
+    /*Vacio*/
+    if (IDEncuentro == 404) // FASE 2 - Batalla Subterranea
     {
 
     }
-    /*Vacio*/if (IDEncuentro == 405) // FASE 2 - Batalla Subterranea
+    /*Vacio*/
+    if (IDEncuentro == 405) // FASE 2 - Batalla Subterranea
     {
 
     }
 
-    /*Vacio*/ if (IDEncuentro == 406) // FASE 3 - Batalla Subterranea
+    /*Vacio*/
+    if (IDEncuentro == 406) // FASE 3 - Batalla Subterranea
     {
 
     }
-    /*Vacio*/ if (IDEncuentro == 407) // FASE 3 - Batalla Subterranea
+    /*Vacio*/
+    if (IDEncuentro == 407) // FASE 3 - Batalla Subterranea
     {
 
     }
-    /*Vacio*/ if (IDEncuentro == 408) // FASE 3 - Batalla Subterranea
+    /*Vacio*/
+    if (IDEncuentro == 408) // FASE 3 - Batalla Subterranea
     {
 
     }
@@ -1831,7 +1839,7 @@ IEnumerator FadeTo(float target, float time)
       GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.ArqueroVengadorKadryn);
       ColocarEnCasillaAleatoria(2, enemigo4);
 
-   
+
     }
     if (IDEncuentro == 507) // FASE 1 - Batalla Vengadores II
     {
@@ -1918,8 +1926,8 @@ IEnumerator FadeTo(float target, float time)
       enemigo8.SetActive(false);
       BattleManager.Instance.enemigosRefuerzos.Add(enemigo8);
 
-      
-     
+
+
 
       BattleManager.Instance.ActualizarRefuerzosUI();
     }
@@ -1954,14 +1962,14 @@ IEnumerator FadeTo(float target, float time)
       enemigo8.SetActive(false);
       BattleManager.Instance.enemigosRefuerzos.Add(enemigo8);
 
-      
-     
+
+
 
       BattleManager.Instance.ActualizarRefuerzosUI();
     }
-   
-   
-   
+
+
+
     #endregion
 
     #region //Batallas Curruptas ID Entre 600 y 700
@@ -2111,8 +2119,8 @@ IEnumerator FadeTo(float target, float time)
     #endregion
 
 
-   
-    Invoke ("ColocarunidadesEnCanvasUnidades", 0.3f);
+
+    Invoke("ColocarunidadesEnCanvasUnidades", 0.3f);
   }
 
   void ColocarunidadesEnCanvasUnidades()
@@ -2129,10 +2137,10 @@ IEnumerator FadeTo(float target, float time)
     foreach (GameObject obstaculo in obstaculos)
     {
       obstaculo.transform.SetParent(CanvasUnidades.transform, true); // Mantiene la escala
-       // obstaculo.transform.localPosition = Vector3.zero; // O la posición relativa correcta
-       // obstaculo.transform.localScale = Vector3.one;     // Asegura escala normal
+                                                                     // obstaculo.transform.localPosition = Vector3.zero; // O la posición relativa correcta
+                                                                     // obstaculo.transform.localScale = Vector3.one;     // Asegura escala normal
     }
-  
+
   }
   void ColocarEnCasillaAleatoria(int iLado, GameObject GO)
   {
@@ -2182,39 +2190,39 @@ IEnumerator FadeTo(float target, float time)
     }
   }
   void ColocarEnCasillaAleatoriaEnColumna(int iLado, int columna, GameObject GO)
+  {
+    LadoManager lado = null;
+    if (iLado == 1)
     {
-      LadoManager lado = null;
-      if (iLado == 1)
-      {
-        lado = BattleManager.Instance.ladoB; //Player
-      }
-      else
-      {
-        lado = BattleManager.Instance.ladoA; //Enemigos
-      }
-
-      int intentos = 0; // Para limitar los intentos de colocar la unidad
-      bool colocado = false;
-
-      // columna es la Y (de 1 a 5 normalmente)
-      while (!colocado && intentos < 100) // Limitar los intentos para evitar bucles infinitos
-      {
-        int rX = UnityEngine.Random.Range(1, 6);  // Rango de x (filas) de 1 a 5 inclusive
-        int rY = columna; // Usar la columna indicada
-
-        if (lado.ColocarEnCasilla(GO, rY, rX))
-        {
-          colocado = true; // Si fue colocado con éxito, salir del bucle
-        }
-
-        intentos++;
-      }
-
-      if (!colocado)
-      {
-        Debug.LogError("No se pudo colocar el objeto en la columna " + columna + " después de 100 intentos.");
-      }
+      lado = BattleManager.Instance.ladoB; //Player
     }
+    else
+    {
+      lado = BattleManager.Instance.ladoA; //Enemigos
+    }
+
+    int intentos = 0; // Para limitar los intentos de colocar la unidad
+    bool colocado = false;
+
+    // columna es la Y (de 1 a 5 normalmente)
+    while (!colocado && intentos < 100) // Limitar los intentos para evitar bucles infinitos
+    {
+      int rX = UnityEngine.Random.Range(1, 6);  // Rango de x (filas) de 1 a 5 inclusive
+      int rY = columna; // Usar la columna indicada
+
+      if (lado.ColocarEnCasilla(GO, rY, rX))
+      {
+        colocado = true; // Si fue colocado con éxito, salir del bucle
+      }
+
+      intentos++;
+    }
+
+    if (!colocado)
+    {
+      Debug.LogError("No se pudo colocar el objeto en la columna " + columna + " después de 100 intentos.");
+    }
+  }
 
   void ColocarEnCasillaEspecifica(int iLado, GameObject GO, int X, int Y)
   {
@@ -2313,7 +2321,7 @@ IEnumerator FadeTo(float target, float time)
       //--------------------------------------
 
     }
-     if (pers.Camp_Moral > 0) //Alta Moral
+    if (pers.Camp_Moral > 0) //Alta Moral
     {
       //BUFF ---- Así se aplica un buff/debuff
       Buff AltaMoral = new Buff();
@@ -2418,12 +2426,12 @@ IEnumerator FadeTo(float target, float time)
     if (pers.itemArma != null)  //ARMA
     {
       if (pers.itemArma.nivelMejora > 0)   //Cada +1 da +1Ataque y +5% daño.
-      { 
+      {
         Buff buffArma = new Buff();
         buffArma.buffNombre = "Arma";
         buffArma.boolfDebufftBuff = true;
         buffArma.cantAtaque += pers.itemArma.nivelMejora; //+1 Ataque por cada nivel de mejora
-        buffArma.cantDanioPorcentaje += 5* pers.itemArma.nivelMejora; //5% por cada nivel de mejora
+        buffArma.cantDanioPorcentaje += 5 * pers.itemArma.nivelMejora; //5% por cada nivel de mejora
         buffArma.esBuffVisibleUI = false; //No se muestra en la UI
         buffArma.DuracionBuffRondas = -1; //Duración indefinida
         buffArma.AplicarBuff(unidad);
@@ -2431,22 +2439,22 @@ IEnumerator FadeTo(float target, float time)
         Buff buffComponent = ComponentCopier.CopyComponent(buffArma, GO.gameObject);
       }
     }
-   /* if (pers.itemArmadura != null)  //EN ARMADURAS SE PUEDE CAMBIAR DIRECTAMENTE EN EL ITEM, MEJOR ASI SE MUESTRA EN LA UI
-    ------------- NO SE APLICA ARMADURA POR MEJORA
-    {
-      if (pers.itemArmadura.nivelMejora > 0)   //Cada +1 da +2 Armadura.
-      {
-        Buff buffArmadura = new Buff();
-        buffArmadura.buffNombre = "Armadura";
-        buffArmadura.boolfDebufftBuff = true;
-        buffArmadura.cantArmadura += 2*pers.itemArmadura.nivelMejora; // +2 Armadura por nivel de mejora
-        buffArmadura.esBuffVisibleUI = false; //No se muestra en la UI
-        buffArmadura.DuracionBuffRondas = -1; //Duración indefinida
-        buffArmadura.AplicarBuff(unidad);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-        Buff buffComponent = ComponentCopier.CopyComponent(buffArmadura, GO.gameObject);
-      }
-    }*/
+    /* if (pers.itemArmadura != null)  //EN ARMADURAS SE PUEDE CAMBIAR DIRECTAMENTE EN EL ITEM, MEJOR ASI SE MUESTRA EN LA UI
+     ------------- NO SE APLICA ARMADURA POR MEJORA
+     {
+       if (pers.itemArmadura.nivelMejora > 0)   //Cada +1 da +2 Armadura.
+       {
+         Buff buffArmadura = new Buff();
+         buffArmadura.buffNombre = "Armadura";
+         buffArmadura.boolfDebufftBuff = true;
+         buffArmadura.cantArmadura += 2*pers.itemArmadura.nivelMejora; // +2 Armadura por nivel de mejora
+         buffArmadura.esBuffVisibleUI = false; //No se muestra en la UI
+         buffArmadura.DuracionBuffRondas = -1; //Duración indefinida
+         buffArmadura.AplicarBuff(unidad);
+         // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+         Buff buffComponent = ComponentCopier.CopyComponent(buffArmadura, GO.gameObject);
+       }
+     }*/
 
 
 
@@ -2462,7 +2470,7 @@ IEnumerator FadeTo(float target, float time)
   }
   void AplicarEfectosItemsEspecificos(Personaje pers, GameObject GO)
   {
-     Unidad unidad = GO.GetComponent<Unidad>();
+    Unidad unidad = GO.GetComponent<Unidad>();
 
     //Armaduras
     if (pers.itemArmadura != null)
@@ -2473,7 +2481,7 @@ IEnumerator FadeTo(float target, float time)
         unidad.estado_evasion += 2; // Da +2 de evasión al comenzar el combate
       }
       //Armadura de Cuero Reforzado de Velo
-      if (pers.itemArmadura.IDEfectoEspecial ==  2 && unidad is ClaseAcechador unidadAcechador)
+      if (pers.itemArmadura.IDEfectoEspecial == 2 && unidad is ClaseAcechador unidadAcechador)
       {
         unidadAcechador.tieneArmaduradeVelo = true; // Activa la armadura de velo
       }
@@ -2636,7 +2644,7 @@ IEnumerator FadeTo(float target, float time)
     Personaje2 = null;
     Personaje3 = null;
     Personaje4 = null;
-  
+
 
     BattleManager.Instance.aliadosRefuerzos.Clear();
     BattleManager.Instance.enemigosRefuerzos.Clear();
@@ -2676,7 +2684,7 @@ IEnumerator FadeTo(float target, float time)
   {
     foreach (var casilla in BattleManager.Instance.ladoA.casillasLado)
     {
-      if(casilla.Presente != null)
+      if (casilla.Presente != null)
       {
         Destroy(casilla.Presente);
         casilla.Presente = null;
@@ -2685,7 +2693,7 @@ IEnumerator FadeTo(float target, float time)
     }
     foreach (var casilla in BattleManager.Instance.ladoB.casillasLado)
     {
-     if(casilla.Presente != null)
+      if (casilla.Presente != null)
       {
         Destroy(casilla.Presente);
         casilla.Presente = null;
@@ -2705,7 +2713,7 @@ IEnumerator FadeTo(float target, float time)
   }
   public void EliminarTodasLasTrampas()
   {
-    
+
     // Elimina todos los componentes de tipo Trampa en cada casilla de ambos lados
     foreach (var casilla in BattleManager.Instance.ladoA.casillasLado)
     {
@@ -2715,16 +2723,16 @@ IEnumerator FadeTo(float target, float time)
         trampa.DestruirTrampa();
       }
     }
-     foreach (var casilla in BattleManager.Instance.ladoB.casillasLado)
+    foreach (var casilla in BattleManager.Instance.ladoB.casillasLado)
     {
       var trampas = casilla.GetComponents<Trampa>();
       foreach (var trampa in trampas)
       {
-         trampa.DestruirTrampa();
+        trampa.DestruirTrampa();
       }
     }
 
-  
+
   }
   void PlasmarEfectosBatallaEnPersonajes()
   {
@@ -2770,53 +2778,53 @@ IEnumerator FadeTo(float target, float time)
       if (BattleManager.Instance.RondaNro > longitudBatallaFatiga) { Personaje4.Camp_Fatigado = true; } //Batalla de mas de 7 turnos, fatiga.
     }
 
-  // Plasmar efectos de los refuerzos aliados (no milicianos) 
-  //EN TEORIA ESTO NO ES NECESARIO YA QUE SI SE PIERDEN BATALLAS DE REFUERZOS SE PIERDE EL JUEGO
-  List<Unidad> aliadosQueEntraron = new List<Unidad>();
-  foreach (Unidad unidadRefuerzo in BattleManager.Instance.ladoB.unidadesLado)
-  {
+    // Plasmar efectos de los refuerzos aliados (no milicianos) 
+    //EN TEORIA ESTO NO ES NECESARIO YA QUE SI SE PIERDEN BATALLAS DE REFUERZOS SE PIERDE EL JUEGO
+    List<Unidad> aliadosQueEntraron = new List<Unidad>();
+    foreach (Unidad unidadRefuerzo in BattleManager.Instance.ladoB.unidadesLado)
+    {
       if (unidadRefuerzo == null) continue;
       if (unidadRefuerzo.entroComoAliado)
       {
         aliadosQueEntraron.Add(unidadRefuerzo);
       }
-    
-     
-  }
-  foreach (Unidad unidadRefuerzo in aliadosQueEntraron)
-  {
-    
-    // Buscar el personaje correspondiente al refuerzo (por nombre)
-    bool encontrado = false;
-    foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
+
+
+    }
+    foreach (Unidad unidadRefuerzo in aliadosQueEntraron)
     {
-      if (pers.sNombre == unidadRefuerzo.uNombre)
+
+      // Buscar el personaje correspondiente al refuerzo (por nombre)
+      bool encontrado = false;
+      foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
       {
-        // Plasmar vida actual (no puede terminar con más vida de la que empezó)
-        if (unidadRefuerzo.HP_actual < pers.fVidaActual)
+        if (pers.sNombre == unidadRefuerzo.uNombre)
         {
-          pers.fVidaActual = unidadRefuerzo.HP_actual;
-        }
+          // Plasmar vida actual (no puede terminar con más vida de la que empezó)
+          if (unidadRefuerzo.HP_actual < pers.fVidaActual)
+          {
+            pers.fVidaActual = unidadRefuerzo.HP_actual;
+          }
 
-        CanalizadorPasivaSobrecarga(pers, unidadRefuerzo);
-        CampaignManager.Instance.scMenuBatallas.AdministrarHeridas(pers,unidadRefuerzo);
+          CanalizadorPasivaSobrecarga(pers, unidadRefuerzo);
+          CampaignManager.Instance.scMenuBatallas.AdministrarHeridas(pers, unidadRefuerzo);
 
-        if (BattleManager.Instance.RondaNro > longitudBatallaFatiga)
+          if (BattleManager.Instance.RondaNro > longitudBatallaFatiga)
           {
             pers.Camp_Fatigado = true;
           }
-        encontrado = true;
-        break;
+          encontrado = true;
+          break;
+        }
       }
     }
-  }
 
 
   }
 
   void CanalizadorPasivaSobrecarga(Personaje pers, Unidad unidad)
   {
-    if (unidad is ClaseCanalizador scCanalizador &&  pers.fVidaActual > 0)
+    if (unidad is ClaseCanalizador scCanalizador && pers.fVidaActual > 0)
     {
 
       float maxHP = pers.fVidaMaxima;
@@ -2827,57 +2835,68 @@ IEnumerator FadeTo(float target, float time)
       if (pers.fVidaActual < 1) { pers.fVidaActual = 1; }
       pers.fVidaMaxima -= 1 * nEnergiaCombate;
 
- //     print($"Al tener {nEnergiaCombate} Energia, {scCanalizador.uNombre} perdió {damPorEnergia * nEnergiaCombate} vida y {1 * nEnergiaCombate} mas hp.");
+      //     print($"Al tener {nEnergiaCombate} Energia, {scCanalizador.uNombre} perdió {damPorEnergia * nEnergiaCombate} vida y {1 * nEnergiaCombate} mas hp.");
 
     }
 
 
 
   }
-  
-   void AsignarRefuerzosAliados()
-    { 
-        AdministradorEscenas scAdminEscenas = CampaignManager.Instance.scMenuBatallas.scAdministradorEscenas;
 
-        int cantRefuerzoAliadoHeroe = 0;
-        foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
+  void AsignarRefuerzosAliados()
+  {
+    AdministradorEscenas scAdminEscenas = CampaignManager.Instance.scMenuBatallas.scAdministradorEscenas;
+
+    int cantRefuerzoAliadoHeroe = 0;
+    foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
+    {
+      if (!pers.Camp_Muerto && pers.fVidaActual > 1) //Si no está muerto y tiene vida
+      {
+        if (!(/*Base: Guardia*/pers.ActividadSeleccionada == 3) && !(/*Caballero: Vigilar*/pers.ActividadSeleccionada == 6))
         {
-            if (!pers.Camp_Muerto && pers.fVidaActual > 1) //Si no está muerto y tiene vida
-            {
-                if (!(/*Base: Guardia*/pers.ActividadSeleccionada == 3) && !(/*Caballero: Vigilar*/pers.ActividadSeleccionada == 6))
-                {   cantRefuerzoAliadoHeroe++;
-                    //Si no está haciendo guardia, lo agrega como refuerzo, pero no lo muestra
-                    scAdminEscenas.ColocarPersonajecomoUnidad(pers, cantRefuerzoAliadoHeroe);
-                }
-            }
-
+          cantRefuerzoAliadoHeroe++;
+          //Si no está haciendo guardia, lo agrega como refuerzo, pero no lo muestra
+          scAdminEscenas.ColocarPersonajecomoUnidad(pers, cantRefuerzoAliadoHeroe);
         }
-           //Agrega milicianos como refuerzos
-            int cantidadMilicianos = (int)CampaignManager.Instance.GetMiliciasActual() / 10; //Cada 10 milicianos, uno se une como refuerzo
-           if (cantidadMilicianos > 0)
-          {
-              bool tieneDesertores = CampaignManager.Instance.scMenuSequito.TieneSequito(6);
-              var prefabs = scAdminEscenas.ContenedorPrefabsBatalla;
-
-              for (int i = 0; i < cantidadMilicianos; i++)
-              {
-                  GameObject aliado;
-
-                  if (tieneDesertores)
-                      aliado = Instantiate(i % 2 == 0 ? prefabs.Desertor2 : prefabs.Desertor1);
-                  else
-                      aliado = Instantiate(i % 2 == 0 ? prefabs.Miliciano2 : prefabs.Miliciano1);
-
-                  aliado.SetActive(false);
-                  BattleManager.Instance.aliadosRefuerzos.Add(aliado);
-              }
-          }
-
-      // Da vuelta la lista de refuerzos aliados
-      BattleManager.Instance.aliadosRefuerzos.Reverse();
+      }
 
     }
+    //Agrega milicianos como refuerzos
+    int cantidadMilicianos = (int)CampaignManager.Instance.GetMiliciasActual() / 10; //Cada 10 milicianos, uno se une como refuerzo
+    if (cantidadMilicianos > 0)
+    {
+      bool tieneDesertores = CampaignManager.Instance.scMenuSequito.TieneSequito(6);
+      var prefabs = scAdminEscenas.ContenedorPrefabsBatalla;
 
+      for (int i = 0; i < cantidadMilicianos; i++)
+      {
+        GameObject aliado;
+
+        if (tieneDesertores)
+          aliado = Instantiate(i % 2 == 0 ? prefabs.Desertor2 : prefabs.Desertor1);
+        else
+          aliado = Instantiate(i % 2 == 0 ? prefabs.Miliciano2 : prefabs.Miliciano1);
+
+        aliado.SetActive(false);
+        BattleManager.Instance.aliadosRefuerzos.Add(aliado);
+      }
+    }
+
+    // Da vuelta la lista de refuerzos aliados
+    BattleManager.Instance.aliadosRefuerzos.Reverse();
+
+  }
+
+
+  void Update()
+    {
+        // Detecta cuando se presiona la tecla H una sola vez
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            // Cambia el estado activo del GameObject
+            HandbookCampania.SetActive(!HandbookCampania.activeSelf);
+        }
+    }
 
 }
 

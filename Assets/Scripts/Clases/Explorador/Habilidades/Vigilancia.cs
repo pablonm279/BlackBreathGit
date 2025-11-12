@@ -49,95 +49,137 @@ public class Vigilancia : Habilidad
     txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color> - Requiere 2 Flechas</color>\n\n";
     txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
       
-      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-      {
-        txtDescripcion = "<color=#5dade2><b>Surveillance I</b></color>\n\n";
-        txtDescripcion += "<i>The explorer will attack any enemy that enters the Surveillance zone. Will make up to 2 attacks.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>RANGE</b> -Uses Attack: <color=#ea0606>Archery Shot</color> - Requires 2 Arrows</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}- ends Turn \n- Valor Cost: {costoPM} </color>";
-      }
+      
 
     
     }
 
-   
-    public override void ActualizarDescripcion()
+
+  public override void ActualizarDescripcion()
+  {
+    if (NIVEL < 2)
     {
-      if(NIVEL<2)
-      {
-         txtDescripcion = "<color=#5dade2><b>Vigilancia I</b></color>\n\n"; 
-         txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
-         txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color> con -2 Ataque. Requiere 2 Flechas</color>\n\n";
-         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
+      txtDescripcion = "<color=#5dade2><b>Vigilancia I</b></color>\n\n";
+      txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color> con -2 Ataque. Requiere 2 Flechas</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
 
-        if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-          }
-          }
-        }
-   
-      }
-      if(NIVEL== 2)
+      if (EsEscenaCampaña())
       {
-         txtDescripcion = "<color=#5dade2><b>Vigilancia II</b></color>\n\n"; 
-         txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
-         txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color> con -1 Ataque. Requiere 2 Flechas</color>\n\n";
-         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
-
-        if (EsEscenaCampaña())
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
           {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-          }
+            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
           }
         }
       }
-      if(NIVEL== 3)
-      {
-         txtDescripcion = "<color=#5dade2><b>Vigilancia III</b></color>\n\n"; 
-         txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
-         txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color>. Requiere 2 Flechas</color>\n\n";
-         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
-
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"\n\n<color=#dfea02>-Opción A: -1 costo Valentía</color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: +1 cantidad de Ataques, +1 uso Flecha</color>\n";
-          }
-          }
-        }
-      }
-      if(NIVEL== 4)
-      {
-         txtDescripcion = "<color=#5dade2><b>Vigilancia IV a</b></color>\n\n"; 
-         txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
-         txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color>. Requiere 2 Flechas</color>\n\n";
-         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM-1} </color>";
-
-     }
-      if(NIVEL== 5)
-      {
-         txtDescripcion = "<color=#5dade2><b>Vigilancia IV b</b></color>\n\n"; 
-         txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 3 ataques.</i>\n\n";
-         txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color>. Requiere 3 Flechas</color>\n\n";
-         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
-      }
-
-
 
     }
+    if (NIVEL == 2)
+    {
+      txtDescripcion = "<color=#5dade2><b>Vigilancia II</b></color>\n\n";
+      txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color> con -1 Ataque. Requiere 2 Flechas</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 3)
+    {
+      txtDescripcion = "<color=#5dade2><b>Vigilancia III</b></color>\n\n";
+      txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color>. Requiere 2 Flechas</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
+
+      if (EsEscenaCampaña())
+      {
+        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+          {
+            txtDescripcion += $"\n\n<color=#dfea02>-Opción A: -1 costo Valentía</color>\n";
+            txtDescripcion += $"<color=#dfea02>-Opción B: +1 cantidad de Ataques, +1 uso Flecha</color>\n";
+          }
+        }
+      }
+    }
+    if (NIVEL == 4)
+    {
+      txtDescripcion = "<color=#5dade2><b>Vigilancia IV a</b></color>\n\n";
+      txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color>. Requiere 2 Flechas</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM - 1} </color>";
+
+    }
+    if (NIVEL == 5)
+    {
+      txtDescripcion = "<color=#5dade2><b>Vigilancia IV b</b></color>\n\n";
+      txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 3 ataques.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color>. Requiere 3 Flechas</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
+    }
+
+    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+    {
+      if (NIVEL < 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Surveillance I</b></color>\n\n";
+        txtDescripcion += "<i>The explorer will attack any enemy that enters the Surveillance zone. Will make up to 2 attacks.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>RANGE</b> -Uses Attack: <color=#ea0606>Archery Shot</color> -2 Attack. Requires 2 Arrows</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Valor Cost: {costoPM} </color>";
+      }
+      else if (NIVEL == 2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Surveillance II</b></color>\n\n";
+        txtDescripcion += "<i>The explorer will attack any enemy that enters the Surveillance zone. Will make up to 2 attacks.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>RANGE</b> -Uses Attack: <color=#ea0606>Archery Shot</color> -1 Attack. Requires 2 Arrows</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Valor Cost: {costoPM} </color>";
+      }
+      else if (NIVEL == 3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Surveillance III</b></color>\n\n";
+        txtDescripcion += "<i>The explorer will attack any enemy that enters the Surveillance zone. Will make up to 2 attacks.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>RANGE</b> -Uses Attack: <color=#ea0606>Archery Shot</color>. Requires 2 Arrows</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Valor Cost: {costoPM} </color>";
+
+        if (EsEscenaCampaña())
+        {
+          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"\n\n<color=#dfea02>-Option A: -1 Valor cost</color>\n";
+              txtDescripcion += $"<color=#dfea02>-Option B: +1 number of Attacks, +1 Arrow usage</color>\n";
+            }
+          }
+        }
+      }
+      else if (NIVEL == 4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Surveillance IV a</b></color>\n\n";
+        txtDescripcion += "<i>The explorer will attack any enemy that enters the Surveillance zone. Will make up to 2 attacks.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>RANGE</b> -Uses Attack: <color=#ea0606>Archery Shot</color>. Requires 2 Arrows</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Valor Cost: {costoPM - 1} </color>";
+      }
+      else if (NIVEL == 5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Surveillance IV b</b></color>\n\n";
+        txtDescripcion += "<i>The explorer will attack any enemy that enters the Surveillance zone. Will make up to 3 attacks.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>RANGE</b> -Uses Attack: <color=#ea0606>Archery Shot</color>. Requires 3 Arrows</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Valor Cost: {costoPM} </color>";
+      }
+    }
+  }
     Casilla Origen;
     public override void Activar()
     {

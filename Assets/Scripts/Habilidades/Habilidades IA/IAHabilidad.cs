@@ -214,7 +214,7 @@ public abstract class IAHabilidad : MonoBehaviour
 
         if (cas.Presente != null)
         {
-          objPosibles.Add(cas.Presente.GetComponent<Unidad>()); print(111);
+          objPosibles.Add(cas.Presente.GetComponent<Unidad>());
         }
 
 
