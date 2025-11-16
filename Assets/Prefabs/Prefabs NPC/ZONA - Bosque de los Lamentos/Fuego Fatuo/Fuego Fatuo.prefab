@@ -802,7 +802,7 @@ AudioSource:
   m_GameObject: {fileID: 3855863790156444218}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7507993178760270779, guid: fbdf7fc758aa3084098230e3e6c39e8b, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -902,6 +902,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea53e8ea861cb0e49ab545538d2b893d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  graficoFuegoFatuo: {fileID: 0}
 --- !u!1 &4225752100268397624
 GameObject:
   m_ObjectHideFlags: 0

@@ -158,7 +158,7 @@ public class UIInfoChar : MonoBehaviour
      {
             ClaseExplorador exp = (ClaseExplorador)scUnidadMostrada;
             GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
-            GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(13, exp.Cantidad_flechas);
+            GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(13, exp.ObtenerCantidadFlechas());
      }
      if(scUnidadMostrada.bonusdam_acido > 0)
      { 

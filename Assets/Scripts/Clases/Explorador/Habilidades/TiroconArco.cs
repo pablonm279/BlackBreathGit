@@ -57,24 +57,47 @@ public class TiroconArco : Habilidad
     txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
     txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
     txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
-      
-      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-      {
-        nombre = "Bow Shot";
-        txtDescripcion = "<color=#5dade2><b>Bow Shot</b></color>\n\n";
-        txtDescripcion += "<i>The ranger attacks the enemy with his bow.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Range: 7</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Piercing 1d10+1- Requires 1 Arrow</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
-      }
-       
+
+    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+    {
+      nombre = "Bow Shot";
+      txtDescripcion = "<color=#5dade2><b>Bow Shot</b></color>\n\n";
+      txtDescripcion += "<i>The ranger attacks the enemy with his bow.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>Range: 7</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Piercing 1d10+1- Requires 1 Arrow</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
     }
 
    
-     public override void ActualizarDescripcion(){}
+  }
+
+
+  public override void ActualizarDescripcion()
+  {
+       txtDescripcion = "<color=#5dade2><b>Tiro con Arco</b></color>\n\n";
+    txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
+    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+
+    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+    {
+      nombre = "Bow Shot";
+      txtDescripcion = "<color=#5dade2><b>Bow Shot</b></color>\n\n";
+      txtDescripcion += "<i>The ranger attacks the enemy with his bow.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>Range: 7</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Piercing 1d10+1- Requires 1 Arrow</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+    }
+     ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
+    if (clase.ObtenerCantidadFlechas() < 1)
+    {
+        txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
+
+    }
+
+      }
     Casilla Origen;
     public override void Activar()
     {
-        if(Usuario.GetComponent<ClaseExplorador>().Cantidad_flechas > 0)
+        if(Usuario.GetComponent<ClaseExplorador>().ObtenerCantidadFlechas() > 0)
         {
           Origen = Usuario.GetComponent<Unidad>().CasillaPosicion;
           ObtenerObjetivos();
@@ -98,7 +121,7 @@ public class TiroconArco : Habilidad
         var clase = Usuario.GetComponent<ClaseExplorador>();
         if (clase != null)
         {
-            clase.Cantidad_flechas--;
+            clase.CambiarCantidadFlechas(-1);
         }
 
         foreach (var objetivo in objetivos)

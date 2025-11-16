@@ -74,7 +74,7 @@ public class TiroconArcoRalentizante : Habilidad
     Casilla Origen;
     public override void Activar()
     {
-        if(Usuario.GetComponent<ClaseExplorador>().Cantidad_flechas > 0)
+        if(Usuario.GetComponent<ClaseExplorador>().ObtenerCantidadFlechas() > 0)
         {
           Origen = Usuario.GetComponent<Unidad>().CasillaPosicion;
           ObtenerObjetivos();
@@ -99,7 +99,7 @@ public class TiroconArcoRalentizante : Habilidad
              
        int danioMarca = 0;
        
-       Usuario.GetComponent<ClaseExplorador>().Cantidad_flechas--;
+       Usuario.GetComponent<ClaseExplorador>().CambiarCantidadFlechas(-1);
        CrearProyectil(objetivo);
 
        await Task.Delay(1300);

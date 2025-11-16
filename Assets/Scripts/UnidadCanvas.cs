@@ -58,7 +58,7 @@ public class UnidadCanvas : MonoBehaviour
             bool yapasosuturno = indexTurno > posEstaUnidad+1;
 
 
-            Image barraFillImage = barraVida.gameObject.transform.GetChild(1).GetChild(0).GetComponentInChildren<Image>();
+            Image barraFillImage = barraVida.gameObject.transform.GetChild(2).GetChild(0).GetComponentInChildren<Image>();
             if (yapasosuturno)
             {
                 barraFillImage.color = new Color(barraFillImage.color.r, barraFillImage.color.g, barraFillImage.color.b, 0.45f); // oscurecer (alpha 0.5)

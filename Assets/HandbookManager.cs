@@ -95,6 +95,6 @@ public class HandbookManager : MonoBehaviour
     
     public void cerrarHandbook()
     {
-        this.gameObject.SetActive(false);
+        transform.parent.gameObject.SetActive(false);
     }
 }

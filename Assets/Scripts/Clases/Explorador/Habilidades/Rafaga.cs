@@ -213,14 +213,19 @@ public class Rafaga : Habilidad
       }
 
 
+      ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
+    if (clase.ObtenerCantidadFlechas() < 1)
+    {
+        txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
 
+    }
     }
 
 
     Casilla Origen;
     public override void Activar()
     {
-        if(Usuario.GetComponent<ClaseExplorador>().Cantidad_flechas > 0)
+        if(Usuario.GetComponent<ClaseExplorador>().ObtenerCantidadFlechas() > 0)
         {
           Origen = Usuario.GetComponent<Unidad>().CasillaPosicion;
           ObtenerObjetivos();
@@ -249,7 +254,7 @@ public class Rafaga : Habilidad
     {
       Unidad objetivo = (Unidad)obj;
       ClaseExplorador scEstaUnidadExp = Usuario.GetComponent<ClaseExplorador>();
-      while(scEstaUnidad.ObtenerAPActual() > 0 && scEstaUnidadExp.Cantidad_flechas > 0)
+      while(scEstaUnidad.ObtenerAPActual() > 0 && scEstaUnidadExp.ObtenerCantidadFlechas() > 0)
       {
 
           BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(scEstaUnidad);
@@ -296,7 +301,7 @@ public class Rafaga : Habilidad
              
        int danioMarca = 0;
        
-      Usuario.GetComponent<ClaseExplorador>().Cantidad_flechas--;
+      Usuario.GetComponent<ClaseExplorador>().CambiarCantidadFlechas(-1);
       Task impacto = CrearProyectil(objetivo);
       scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
 

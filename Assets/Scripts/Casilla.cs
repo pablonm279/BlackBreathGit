@@ -12,35 +12,70 @@ public class Casilla : MonoBehaviour
   public int lado; //1 A Enemigo  -   2 B PC
   public int posX;
   public int posY;
- 
+
   public int costoMovimiento = 1;
   public GameObject ladoOpuesto;
   public GameObject ladoGO;
-  
+
   public GameObject Presente; // El GameObject presente en la casilla
 
-public bool TEST = false;
-public int TESTINT;
-public int TESTINT2;
+  public bool TEST = false;
+  public int TESTINT;
+  public int TESTINT2;
 
-public GameObject TESTGO;
-void Start()
-{
-  BattleManager.Instance.OnRondaNueva  += BattleManager_OnRondaNueva;
-}
-
-
-private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
-{
- 
- //---
-
-}
+  public GameObject TESTGO;
+  void Start()
+  {
+    BattleManager.Instance.OnRondaNueva += BattleManager_OnRondaNueva;
+  }
 
 
-public async void OnMouseDown() 
-{   
-  // --- Cancelar habilidad activa si se hace clic en el campo ---
+  private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
+  {
+
+    //---
+
+  }
+
+  public TooltipBatalla scTooltipBatalla;
+  public void MostrarAPparaMovimiento()
+  {
+    if (lado == 1) { return; } //Solo para aliados
+
+    //Unidad seleccionada - Movimiento
+    Unidad unidad = BattleManager.Instance.unidadActiva;
+
+    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
+    {
+      int costoMovimientoTotal = costoMovimiento;
+
+      int diferenciaX = Mathf.Abs(unidad.CasillaPosicion.posX - posX);
+      int diferenciaY = Mathf.Abs(unidad.CasillaPosicion.posY - posY);
+
+      // Comprueba si las casillas están en posiciones diagonales
+      if (diferenciaX == 1 && diferenciaY == 1)
+      {
+        costoMovimientoTotal++;
+      }
+
+      if (unidad.ObtenerAPActual() >= costoMovimientoTotal)
+      {
+        string text = "" + TRADU.i.Traducir("Coste: ") + costoMovimientoTotal + " " + TRADU.i.Traducir("PA");
+        scTooltipBatalla.ShowTooltip(0, text);
+      }
+      else
+      {
+        string text = "<color=red>" + TRADU.i.Traducir("Coste: ") + costoMovimientoTotal + " " + TRADU.i.Traducir("PA") + "</color>";
+        scTooltipBatalla.ShowTooltip(0, text);
+
+      }
+    }
+
+
+  }
+  public async void OnMouseDown()
+  {
+    // --- Cancelar habilidad activa si se hace clic en el campo ---
     if (BattleManager.Instance.HabilidadActiva != null)
     {
       if (BattleManager.Instance.HabilidadActiva.esHostil && BattleManager.Instance.unidadActiva.CasillaPosicion.lado == this.lado)
@@ -55,33 +90,35 @@ public async void OnMouseDown()
       }
     }
 
-  
-  
+
+
+
+
     //Unidad seleccionada - Movimiento
     Unidad unidad = BattleManager.Instance.unidadActiva;
-    
+
     //!!!
     unidad.CasillaPosicion.CalcularDistanciaACasilla(this, out int x, out int y, out bool lado);
     //!!!
-    if(BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil <1)
+    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
-       int costoMovimientoTotal = costoMovimiento;
+      int costoMovimientoTotal = costoMovimiento;
 
-       int diferenciaX = Mathf.Abs(unidad.CasillaPosicion.posX - posX);
-       int diferenciaY = Mathf.Abs(unidad.CasillaPosicion.posY - posY);
+      int diferenciaX = Mathf.Abs(unidad.CasillaPosicion.posX - posX);
+      int diferenciaY = Mathf.Abs(unidad.CasillaPosicion.posY - posY);
 
-       // Comprueba si las casillas están en posiciones diagonales
-       if (diferenciaX == 1 && diferenciaY == 1)
-       {
-          costoMovimientoTotal++;
-       }
+      // Comprueba si las casillas están en posiciones diagonales
+      if (diferenciaX == 1 && diferenciaY == 1)
+      {
+        costoMovimientoTotal++;
+      }
 
-       if(unidad.ObtenerAPActual() >= costoMovimientoTotal)
-       { 
-         unidad.CambiarAPActual(-costoMovimientoTotal); 
-         BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
-         unidad.CasillaDeseadaMov = this;
-       }
+      if (unidad.ObtenerAPActual() >= costoMovimientoTotal)
+      {
+        unidad.CambiarAPActual(-costoMovimientoTotal);
+        BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
+        unidad.CasillaDeseadaMov = this;
+      }
     }
     // Intercambio con aliado: mover a casilla ocupada por aliado y que el aliado vaya a la casilla original
     if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente != null && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
@@ -140,62 +177,62 @@ public async void OnMouseDown()
             BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No tienes PA suficientes para intercambiar."));
           }
         }
-        }
+      }
       else
-        {
-          BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con obstáculos."));
-        }
-      
-    }
-   
-    //Para habilidades en Área
-    if(BattleManager.Instance.HabilidadActiva != null && !BattleManager.Instance.bOcupado)
-    {
-      
-      if(BattleManager.Instance.HabilidadActiva.enArea > 0 || BattleManager.Instance.HabilidadActiva.targetEspecial > 0  && BattleManager.Instance.SeleccionandoObjetivo)
       {
-        print(00);
-      if(!BattleManager.Instance.HabilidadActiva.lCasillasafectadas.Contains(this)){ print(11);  return;} //Si no está en el área, no hace nada
+        BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con obstáculos."));
+      }
+
+    }
+
+    //Para habilidades en Área
+    if (BattleManager.Instance.HabilidadActiva != null && !BattleManager.Instance.bOcupado)
+    {
+
+      if (BattleManager.Instance.HabilidadActiva.enArea > 0 || BattleManager.Instance.HabilidadActiva.targetEspecial > 0 && BattleManager.Instance.SeleccionandoObjetivo)
+      {
+
+        if (!BattleManager.Instance.HabilidadActiva.lCasillasafectadas.Contains(this)) { return; } //Si no está en el área, no hace nada
 
 
-       List<Unidad> lUnidadesEnArea = new List<Unidad>();
-       List<Obstaculo> lObstaculosEnArea = new List<Obstaculo>();
+        List<Unidad> lUnidadesEnArea = new List<Unidad>();
+        List<Obstaculo> lObstaculosEnArea = new List<Obstaculo>();
 
-       foreach(Unidad enAzul in unidadesEnCasAzul)
-       { 
-        if(lUnidadesEnArea.Contains(enAzul) == false) //Que no se duplique
-        {lUnidadesEnArea.Add(enAzul);}
-       }
-       foreach(Obstaculo enAzul in obstaculosEnCasAzul)
-       { 
-         if(lObstaculosEnArea.Contains(enAzul) == false) //Que no se duplique
-         {lObstaculosEnArea.Add(enAzul);}
-       }
+        foreach (Unidad enAzul in unidadesEnCasAzul)
+        {
+          if (lUnidadesEnArea.Contains(enAzul) == false) //Que no se duplique
+          { lUnidadesEnArea.Add(enAzul); }
+        }
+        foreach (Obstaculo enAzul in obstaculosEnCasAzul)
+        {
+          if (lObstaculosEnArea.Contains(enAzul) == false) //Que no se duplique
+          { lObstaculosEnArea.Add(enAzul); }
+        }
 
-       foreach(Casilla u in BattleManager.Instance.HabilidadActiva.lCasillasafectadas)
-       {
-          if(u.Presente != null)
+        foreach (Casilla u in BattleManager.Instance.HabilidadActiva.lCasillasafectadas)
+        {
+          if (u.Presente != null)
           {
             if (u.Presente.GetComponent<Unidad>() != null)
             {
-              if(unidadesEnCasAzul.Contains(u.Presente.GetComponent<Unidad>()) && lUnidadesEnArea.Contains(u.Presente.GetComponent<Unidad>()) == false)
+              if (unidadesEnCasAzul.Contains(u.Presente.GetComponent<Unidad>()) && lUnidadesEnArea.Contains(u.Presente.GetComponent<Unidad>()) == false)
               {
-               lUnidadesEnArea.Add(u.Presente.GetComponent<Unidad>());  
+                lUnidadesEnArea.Add(u.Presente.GetComponent<Unidad>());
               }
-           
+
             }
             if (u.Presente.GetComponent<Obstaculo>() != null)
             {
-               if(obstaculosEnCasAzul.Contains(u.Presente.GetComponent<Obstaculo>())&& lObstaculosEnArea.Contains(u.Presente.GetComponent<Obstaculo>()) == false)
-               {
+              if (obstaculosEnCasAzul.Contains(u.Presente.GetComponent<Obstaculo>()) && lObstaculosEnArea.Contains(u.Presente.GetComponent<Obstaculo>()) == false)
+              {
                 lObstaculosEnArea.Add(u.Presente.GetComponent<Obstaculo>());
-               }
+              }
             }
 
           }
 
 
-       }
+        }
 
         if (BattleManager.Instance.HabilidadActiva.poneTrampas) //Habilidad que pone "trampas" en casillas
         {
@@ -219,8 +256,8 @@ public async void OnMouseDown()
           // await BattleManager.Instance.HabilidadActiva.Resolver(listResolverUnidades);
 
           //---La idea es que resolver se llame 1 sola vez para evitar efectos de algunas habilidades duplicados.
-           List<object> listResolverUnidades = new List<object>();
-           listResolverUnidades.AddRange(lUnidadesEnArea);
+          List<object> listResolverUnidades = new List<object>();
+          listResolverUnidades.AddRange(lUnidadesEnArea);
           BattleManager.Instance.casillaClickHabilidad = this;
           if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
           {
@@ -229,7 +266,7 @@ public async void OnMouseDown()
           else
           {
             List<object> listResolverObstaculos = new List<object>();
-            listResolverObstaculos.AddRange(lObstaculosEnArea); 
+            listResolverObstaculos.AddRange(lObstaculosEnArea);
             List<object> combinedList = new List<object>();
             combinedList.AddRange(listResolverObstaculos);
             combinedList.AddRange(listResolverUnidades);
@@ -238,28 +275,28 @@ public async void OnMouseDown()
           }
 
           BattleManager.Instance.casillaClickHabilidad = null;
-          }
+        }
 
-      
-          BattleManager.Instance.scUIBotonesHab.UIDesactivarBotones();
+
+        BattleManager.Instance.scUIBotonesHab.UIDesactivarBotones();
 
 
       }
-      else if(BattleManager.Instance.SeleccionandoObjetivo && BattleManager.Instance.HabilidadActiva.poneTrampas&& BattleManager.Instance.HabilidadActiva.lCasillasafectadas.Contains(this))
-      { 
-            BattleManager.Instance.casillaClickHabilidad = this;
-            await BattleManager.Instance.HabilidadActiva.Resolver(null, this); 
-            BattleManager.Instance.casillaClickHabilidad = null;
+      else if (BattleManager.Instance.SeleccionandoObjetivo && BattleManager.Instance.HabilidadActiva.poneTrampas && BattleManager.Instance.HabilidadActiva.lCasillasafectadas.Contains(this))
+      {
+        BattleManager.Instance.casillaClickHabilidad = this;
+        await BattleManager.Instance.HabilidadActiva.Resolver(null, this);
+        BattleManager.Instance.casillaClickHabilidad = null;
       }
-      else if(BattleManager.Instance.SeleccionandoObjetivo && BattleManager.Instance.HabilidadActiva.esZonal&& BattleManager.Instance.HabilidadActiva.lCasillasafectadas.Contains(this))
-      { 
-            List<object> objetos = BattleManager.Instance.lUnidadesPosiblesHabilidadActiva.Cast<object>().ToList();
-            BattleManager.Instance.casillaClickHabilidad = this;
-            await BattleManager.Instance.HabilidadActiva.Resolver(objetos, this);
-            BattleManager.Instance.casillaClickHabilidad = null;
+      else if (BattleManager.Instance.SeleccionandoObjetivo && BattleManager.Instance.HabilidadActiva.esZonal && BattleManager.Instance.HabilidadActiva.lCasillasafectadas.Contains(this))
+      {
+        List<object> objetos = BattleManager.Instance.lUnidadesPosiblesHabilidadActiva.Cast<object>().ToList();
+        BattleManager.Instance.casillaClickHabilidad = this;
+        await BattleManager.Instance.HabilidadActiva.Resolver(objetos, this);
+        BattleManager.Instance.casillaClickHabilidad = null;
       }
       else if (BattleManager.Instance.HabilidadActiva.poneObstaculo)
-      { 
+      {
         if (Presente == null && BattleManager.Instance.HabilidadActiva.lCasillasafectadas.Contains(this)) // Si es habilidad que pone obstaculo, debe estar vacia la casilla
         {
           BattleManager.Instance.casillaClickHabilidad = this;
@@ -268,54 +305,54 @@ public async void OnMouseDown()
         }
       }
     }
-    
-  
-
-}
 
 
 
+  }
 
-public bool PonerObjetoEnCasilla(GameObject GO)
-{
-  
+
+
+
+  public bool PonerObjetoEnCasilla(GameObject GO)
+  {
+
     if (Presente != null)
     {
       return false;
     }
     GO.transform.position = transform.position;
     NuevoObjetoPresenteEnCasilla(GO);
- 
 
-    if(GO.GetComponent<Unidad>() != null)
+
+    if (GO.GetComponent<Unidad>() != null)
     {
       GO.GetComponent<Unidad>().CasillaPosicion = this;
     }
-    if(GO.GetComponent<Obstaculo>() != null)
+    if (GO.GetComponent<Obstaculo>() != null)
     {
       GO.GetComponent<Obstaculo>().CasillaPosicion = this;
     }
 
-     //Esto pone en la capa del canvas del objeto/unidad segun Y de esta casilla
-     Canvas canvasObjeto = GO.GetComponentInChildren<Canvas>();
-     if (canvasObjeto != null)
-     {
+    //Esto pone en la capa del canvas del objeto/unidad segun Y de esta casilla
+    Canvas canvasObjeto = GO.GetComponentInChildren<Canvas>();
+    if (canvasObjeto != null)
+    {
       canvasObjeto.overrideSorting = true;
       canvasObjeto.sortingOrder = 60 - posY * 10;
-     }
-            //---
+    }
+    //---
 
-      return true;
+    return true;
 
-}
+  }
 
-public void PonerObjetoEnCasillaAnimado(GameObject GO, int lado)
-{
-  
+  public void PonerObjetoEnCasillaAnimado(GameObject GO, int lado)
+  {
+
     if (Presente != null)
     {
-        print("Casilla Ocupada, no se puede colocar objeto");
-        return;
+      print("Casilla Ocupada, no se puede colocar objeto");
+      return;
     }
 
     // Iniciar la corrutina para mover el objeto de forma animada
@@ -327,14 +364,14 @@ public void PonerObjetoEnCasillaAnimado(GameObject GO, int lado)
     // Si es una Unidad u Obstáculo, actualizar su casilla de posición
     if (GO.GetComponent<Unidad>() != null)
     {
-        GO.GetComponent<Unidad>().CasillaPosicion = this;
+      GO.GetComponent<Unidad>().CasillaPosicion = this;
     }
     if (GO.GetComponent<Obstaculo>() != null)
     {
-        GO.GetComponent<Obstaculo>().CasillaPosicion = this;
+      GO.GetComponent<Obstaculo>().CasillaPosicion = this;
     }
 
-}
+  }
 
   IEnumerator MoverObjetoAnimado(GameObject GO, int lado)
   {
@@ -382,13 +419,13 @@ public void PonerObjetoEnCasillaAnimado(GameObject GO, int lado)
       // Asegurarse de que el objeto esté exactamente en la posición final
       GO.transform.position = posicionFinal;
     }
-}
+  }
 
 
 
 
-public List<Casilla> ObtenerCasillasAlrededor(int x)
-{   
+  public List<Casilla> ObtenerCasillasAlrededor(int x)
+  {
     List<Casilla> lCasillas = new List<Casilla>();
 
     // Obtén la casilla actual
@@ -398,154 +435,154 @@ public List<Casilla> ObtenerCasillasAlrededor(int x)
     // Recorre las casillas en el rango especificado (x)
     for (int i = -x; i <= x; i++)
     {
-        for (int j = -x; j <= x; j++)
+      for (int j = -x; j <= x; j++)
+      {
+        // Calcula las coordenadas de la casilla vecina
+        int xVecina = posXActual + i;
+        int yVecina = posYActual + j;
+
+        // Verifica si la casilla vecina está dentro del rango especificado (distancia x)
+        if (Mathf.Abs(xVecina - posXActual) + Mathf.Abs(yVecina - posYActual) <= x)
         {
-            // Calcula las coordenadas de la casilla vecina
-            int xVecina = posXActual + i;
-            int yVecina = posYActual + j;
+          // Asegúrate de no agregar la casilla actual a la lista
+          if (xVecina == posXActual && yVecina == posYActual)
+            continue;
 
-            // Verifica si la casilla vecina está dentro del rango especificado (distancia x)
-            if (Mathf.Abs(xVecina - posXActual) + Mathf.Abs(yVecina - posYActual) <= x)
+          // Si x es 1, agrega las casillas adyacentes (sin diagonales)
+          if (x == 1 && (Mathf.Abs(i) == 1 || Mathf.Abs(j) == 1) && !(Mathf.Abs(i) == 1 && Mathf.Abs(j) == 1))
+          {
+            Casilla casillaVecina = EncontrarCasillaEnPosicion(xVecina, yVecina);
+            if (casillaVecina != null)
             {
-                // Asegúrate de no agregar la casilla actual a la lista
-                if (xVecina == posXActual && yVecina == posYActual)
-                    continue;
-
-                // Si x es 1, agrega las casillas adyacentes (sin diagonales)
-                if (x == 1 && (Mathf.Abs(i) == 1 || Mathf.Abs(j) == 1) && !(Mathf.Abs(i) == 1 && Mathf.Abs(j) == 1))
-                {
-                    Casilla casillaVecina = EncontrarCasillaEnPosicion(xVecina, yVecina);
-                    if (casillaVecina != null)
-                    {
-                        lCasillas.Add(casillaVecina);
-                    }
-                }
-                // Si x es 2, agrega las casillas adyacentes y las diagonales inmediatas
-                else if (x == 2 && Mathf.Abs(i) <= 1 && Mathf.Abs(j) <= 1)
-                {  
-                    Casilla casillaVecina = EncontrarCasillaEnPosicion(xVecina, yVecina);
-                    if (casillaVecina != null)
-                    {
-                        lCasillas.Add(casillaVecina);
-                    }
-                }
-                // Si x es mayor que 2, agrega las casillas no diagonales a distancia 2
-                else if (x > 2 && ((Mathf.Abs(i) == 2 && Mathf.Abs(j) != 2 || Mathf.Abs(j) == 2 && Mathf.Abs(i) != 2)||(Mathf.Abs(i) <= 1 && Mathf.Abs(j) <= 1)))
-                {  
-                    Casilla casillaVecina = EncontrarCasillaEnPosicion(xVecina, yVecina);
-                    if (casillaVecina != null)
-                    {
-                        lCasillas.Add(casillaVecina);
-                    }
-                }
+              lCasillas.Add(casillaVecina);
             }
+          }
+          // Si x es 2, agrega las casillas adyacentes y las diagonales inmediatas
+          else if (x == 2 && Mathf.Abs(i) <= 1 && Mathf.Abs(j) <= 1)
+          {
+            Casilla casillaVecina = EncontrarCasillaEnPosicion(xVecina, yVecina);
+            if (casillaVecina != null)
+            {
+              lCasillas.Add(casillaVecina);
+            }
+          }
+          // Si x es mayor que 2, agrega las casillas no diagonales a distancia 2
+          else if (x > 2 && ((Mathf.Abs(i) == 2 && Mathf.Abs(j) != 2 || Mathf.Abs(j) == 2 && Mathf.Abs(i) != 2) || (Mathf.Abs(i) <= 1 && Mathf.Abs(j) <= 1)))
+          {
+            Casilla casillaVecina = EncontrarCasillaEnPosicion(xVecina, yVecina);
+            if (casillaVecina != null)
+            {
+              lCasillas.Add(casillaVecina);
+            }
+          }
         }
+      }
     }
 
     return lCasillas;
-}
+  }
 
-public List<Casilla> ObtenerCasillasenMismaFila()
-{
-     List<Casilla> lCasillas = new List<Casilla>();
-    foreach(Casilla cas in BattleManager.Instance.lCasillasTotal)
+  public List<Casilla> ObtenerCasillasenMismaFila()
+  {
+    List<Casilla> lCasillas = new List<Casilla>();
+    foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
     {
-      if(cas.posY == posY && cas.lado == lado)
+      if (cas.posY == posY && cas.lado == lado)
       {
-           lCasillas.Add(cas);
+        lCasillas.Add(cas);
       }
 
     }
-  
-  return lCasillas;
-}
 
-public Casilla ObtenerCasillasMasAtrasEnFila()
-{
+    return lCasillas;
+  }
+
+  public Casilla ObtenerCasillasMasAtrasEnFila()
+  {
     Casilla lCas = this;
-    foreach(Casilla cas in BattleManager.Instance.lCasillasTotal)
+    foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
     {
-      if(cas.posY == posY && cas.lado == lado)
+      if (cas.posY == posY && cas.lado == lado)
       {
-           if(cas.posX < posX)
-           {
-              lCas = cas;
+        if (cas.posX < posX)
+        {
+          lCas = cas;
 
-           }
-          
+        }
+
       }
 
     }
-  
-  return lCas;
-}
 
-public List<Casilla> ObtenerCasillasMismoLado()
-{
-     List<Casilla> lCasillas = new List<Casilla>();
-    foreach(Casilla cas in BattleManager.Instance.lCasillasTotal)
+    return lCas;
+  }
+
+  public List<Casilla> ObtenerCasillasMismoLado()
+  {
+    List<Casilla> lCasillas = new List<Casilla>();
+    foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
     {
-      if(cas.lado == lado)
+      if (cas.lado == lado)
       {
-           lCasillas.Add(cas);
+        lCasillas.Add(cas);
       }
 
     }
-  
-  return lCasillas;
-}
 
-public List<Casilla> ObtenerCasillasLadoOpuesto()
-{
-     List<Casilla> lCasillas = new List<Casilla>();
-    foreach(Casilla cas in BattleManager.Instance.lCasillasTotal)
+    return lCasillas;
+  }
+
+  public List<Casilla> ObtenerCasillasLadoOpuesto()
+  {
+    List<Casilla> lCasillas = new List<Casilla>();
+    foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
     {
       if (cas.lado != lado)
       {
         lCasillas.Add(cas);
-          
+
       }
 
     }
-  
-  return lCasillas;
-}
 
-public List<Casilla> ObtenerCasillasenMismaColumna()
-{
-     List<Casilla> lCasillas = new List<Casilla>();
-    foreach(Casilla cas in BattleManager.Instance.lCasillasTotal)
+    return lCasillas;
+  }
+
+  public List<Casilla> ObtenerCasillasenMismaColumna()
+  {
+    List<Casilla> lCasillas = new List<Casilla>();
+    foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
     {
-      if(cas.posX == posX && cas.lado == lado)
+      if (cas.posX == posX && cas.lado == lado)
       {
-           lCasillas.Add(cas);
+        lCasillas.Add(cas);
       }
 
     }
-  
-  return lCasillas;
-}
-public List<Casilla> ObtenerCasillasAdyacentesEnColumna()
-{
-   List<Casilla> lCasillas = new List<Casilla>();
-    foreach(Casilla cas in BattleManager.Instance.lCasillasTotal)
+
+    return lCasillas;
+  }
+  public List<Casilla> ObtenerCasillasAdyacentesEnColumna()
+  {
+    List<Casilla> lCasillas = new List<Casilla>();
+    foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
     {
-      if(cas.posX == posX && cas.lado == lado)
+      if (cas.posX == posX && cas.lado == lado)
       {
-          // Comprueba si la casilla es adyacente en la columna (diferencia de 1 en posY)
-          if (Mathf.Abs(cas.posY - posY) == 1)
-          {
-            lCasillas.Add(cas);
-          }
+        // Comprueba si la casilla es adyacente en la columna (diferencia de 1 en posY)
+        if (Mathf.Abs(cas.posY - posY) == 1)
+        {
+          lCasillas.Add(cas);
+        }
       }
 
     }
-  
-  return lCasillas;
 
-}
-public List<Casilla> ObtenerCasillasAlrededorParaMovimiento()
-{
+    return lCasillas;
+
+  }
+  public List<Casilla> ObtenerCasillasAlrededorParaMovimiento()
+  {
     List<Casilla> lCasillas = new List<Casilla>();
 
     // Obtén la casilla actual
@@ -555,172 +592,174 @@ public List<Casilla> ObtenerCasillasAlrededorParaMovimiento()
     // Recorre las casillas en el rango especificado (x)
     for (int i = -1; i <= 1; i++)
     {
-        for (int j = -1; j <= 1; j++)
+      for (int j = -1; j <= 1; j++)
+      {
+        // Asegúrate de no agregar la casilla actual a la lista
+        if (i == 0 && j == 0)
+          continue;
+
+        // Calcula las coordenadas de la casilla vecina
+        int xVecina = posXActual + i;
+        int yVecina = posYActual + j;
+
+        // Agrega la casilla vecina a la lista si está dentro del rango especificado (distancia x)
+        if (Mathf.Abs(xVecina - posXActual) <= 1 && Mathf.Abs(yVecina - posYActual) <= 1)
         {
-            // Asegúrate de no agregar la casilla actual a la lista
-            if (i == 0 && j == 0)
-                continue;
-
-            // Calcula las coordenadas de la casilla vecina
-            int xVecina = posXActual + i;
-            int yVecina = posYActual + j;
-
-            // Agrega la casilla vecina a la lista si está dentro del rango especificado (distancia x)
-            if (Mathf.Abs(xVecina - posXActual) <= 1 && Mathf.Abs(yVecina - posYActual) <= 1)
-            {
-                // Encuentra la casilla vecina en la posición (xVecina, yVecina) y agrégala a la lista
-                Casilla casillaVecina = EncontrarCasillaEnPosicion(xVecina, yVecina);
-                if (casillaVecina != null)
-                {
-                    lCasillas.Add(casillaVecina);
-                }
-            }
+          // Encuentra la casilla vecina en la posición (xVecina, yVecina) y agrégala a la lista
+          Casilla casillaVecina = EncontrarCasillaEnPosicion(xVecina, yVecina);
+          if (casillaVecina != null)
+          {
+            lCasillas.Add(casillaVecina);
+          }
         }
+      }
     }
 
     return lCasillas;
-}
-public List<Casilla> ObtenerCasillasRango(int alcance, int ancho/*0 es en la misma fila, 1 tmb en adyacentes*/) //Segun la posicion en su lado obtiene hasta que casillas del lado opuesto llega la habilidad según el alcance
-{
-   
+  }
+  public List<Casilla> ObtenerCasillasRango(int alcance, int ancho/*0 es en la misma fila, 1 tmb en adyacentes*/) //Segun la posicion en su lado obtiene hasta que casillas del lado opuesto llega la habilidad según el alcance
+  {
+
     List<Casilla> lCasillas = new List<Casilla>();
 
     // Obtén la casilla actual
     int posXActual = this.posX;
     int posYActual = this.posY;
 
-    int RangoEnOtroLado = alcance - (3-posX);
+    int RangoEnOtroLado = alcance - (3 - posX);
     lCasillas = ladoOpuesto.GetComponent<LadoManager>().filaCasillasSegunRango(posY, RangoEnOtroLado, ancho);
 
- 
+
 
     return lCasillas;
-}
+  }
 
-private Casilla EncontrarCasillaEnPosicion(int posX, int posY)
-{
+  private Casilla EncontrarCasillaEnPosicion(int posX, int posY)
+  {
     // Obtenemos el transform del padre de las casillas (supongamos que todas las casillas están en el mismo padre)
     Transform padreDeCasillas = transform.parent;
 
     // Recorremos todos los objetos hijos del padre
     foreach (Transform hijo in padreDeCasillas)
     {
-        // Comprobamos si el hijo tiene un componente Casilla
-        Casilla casilla = hijo.GetComponent<Casilla>();
-        if (casilla != null)
+      // Comprobamos si el hijo tiene un componente Casilla
+      Casilla casilla = hijo.GetComponent<Casilla>();
+      if (casilla != null)
+      {
+        // Comparamos las coordenadas
+        if (casilla.posX == posX && casilla.posY == posY)
         {
-            // Comparamos las coordenadas
-            if (casilla.posX == posX && casilla.posY == posY)
-            {
-                // Devolvemos la casilla encontrada
-                return casilla;
-            }
+          // Devolvemos la casilla encontrada
+          return casilla;
         }
+      }
     }
 
     // Si no se encontró ninguna casilla en la posición dada, devolvemos null
     return null;
-}
-
-public bool bTieneUnidad()
-{
-  if(Presente == null)
-  {
-       return false;
   }
 
-  if(Presente.GetComponent<Unidad>() != null)
+  public bool bTieneUnidad()
   {
-       return true;
-  }
-  else{ return false;}
+    if (Presente == null)
+    {
+      return false;
+    }
 
-}
+    if (Presente.GetComponent<Unidad>() != null)
+    {
+      return true;
+    }
+    else { return false; }
 
-public bool bTieneObstaculo()
-{
-  if(Presente == null)
-  {
-       return false;
-  }
-
-  if(Presente.GetComponent<Obstaculo>() != null)
-  {
-       return true;
-  }
-  else{ return false;}
-
-}
-
-public bool bTieneUnidadoObstaculoParaMelee()
-{
-  if(Presente == null)
-  {
-       return false;
   }
 
-  if(Presente.GetComponent<Unidad>() != null)
+  public bool bTieneObstaculo()
   {
-    if(Presente.GetComponent<Unidad>().ObtenerEstaEscondido() == 0 && !Presente.GetComponent<Unidad>().estado_Volando)
-    {return true;} //Si la unidad no está escondida, la toma como que hay algo
-    else
-    {return false;}//Si la unidad está escondida o volando la toma como que no hay nada
+    if (Presente == null)
+    {
+      return false;
+    }
+
+    if (Presente.GetComponent<Obstaculo>() != null)
+    {
+      return true;
+    }
+    else { return false; }
+
   }
-  else if(Presente.GetComponent<Obstaculo>() != null)
+
+  public bool bTieneUnidadoObstaculoParaMelee()
   {
-       return true;
+    if (Presente == null)
+    {
+      return false;
+    }
+
+    if (Presente.GetComponent<Unidad>() != null)
+    {
+      if (Presente.GetComponent<Unidad>().ObtenerEstaEscondido() == 0 && !Presente.GetComponent<Unidad>().estado_Volando)
+      { return true; } //Si la unidad no está escondida, la toma como que hay algo
+      else
+      { return false; }//Si la unidad está escondida o volando la toma como que no hay nada
+    }
+    else if (Presente.GetComponent<Obstaculo>() != null)
+    {
+      return true;
+    }
+    else { return false; }
+
   }
-  else{ return false;}
 
-}
+  public void ActivarCapaColorRojo()
+  {
+    transform.GetChild(1).gameObject.SetActive(true);
+  }
 
-public void ActivarCapaColorRojo()
-{
-  transform.GetChild(1).gameObject.SetActive(true);
-}
-
-public void DesactivarCapaColorRojo()
-{
-  transform.GetChild(1).gameObject.SetActive(false);
-}
-public void ActivarCapaColorNegro()
-{
-   transform.GetChild(1).gameObject.SetActive(false); //desactiva la capa roja también
-   GetComponent<MeshRenderer>().enabled = false; //desactiva la casilla en si
-   transform.GetChild(2).gameObject.SetActive(true);
-}
-public void ActivarCapaColorAzul()
-{
-  transform.GetChild(0).gameObject.SetActive(true);
-}
-public void DesactivarCapaColorAzul()
-{
-  transform.GetChild(0).gameObject.SetActive(false);
-}
+  public void DesactivarCapaColorRojo()
+  {
+    transform.GetChild(1).gameObject.SetActive(false);
+  }
+  public void ActivarCapaColorNegro()
+  {
+    transform.GetChild(1).gameObject.SetActive(false); //desactiva la capa roja también
+    GetComponent<MeshRenderer>().enabled = false; //desactiva la casilla en si
+    transform.GetChild(2).gameObject.SetActive(true);
+  }
+  public void ActivarCapaColorAzul()
+  {
+    transform.GetChild(0).gameObject.SetActive(true);
+  }
+  public void DesactivarCapaColorAzul()
+  {
+    transform.GetChild(0).gameObject.SetActive(false);
+  }
 
 
 
-public void DesactivarCapas()
-{
-  transform.GetChild(0).gameObject.SetActive(false);
-  transform.GetChild(1).gameObject.SetActive(false);
-   transform.GetChild(2).gameObject.SetActive(false);
-   GetComponent<MeshRenderer>().enabled = true;
-  //Agregar mas
-}
+  public void DesactivarCapas()
+  {
+    transform.GetChild(0).gameObject.SetActive(false);
+    transform.GetChild(1).gameObject.SetActive(false);
+    transform.GetChild(2).gameObject.SetActive(false);
+    GetComponent<MeshRenderer>().enabled = true;
+    //Agregar mas
+  }
 
- List<Casilla> casAlre = new List<Casilla>();
+  List<Casilla> casAlre = new List<Casilla>();
 
-[SerializeField]public List<Unidad> unidadesEnCasAzul =  new List<Unidad>();
-[SerializeField]public List<Obstaculo> obstaculosEnCasAzul =  new List<Obstaculo>();
-public void OnMouseEnter() 
-{   
+  [SerializeField] public List<Unidad> unidadesEnCasAzul = new List<Unidad>();
+  [SerializeField] public List<Obstaculo> obstaculosEnCasAzul = new List<Obstaculo>();
+  public void OnMouseOver()
+  {
+
+    MostrarAPparaMovimiento();
     unidadesEnCasAzul.Clear();
     obstaculosEnCasAzul.Clear();
     casAlre.Clear();
-  //Controlar se esta haciendo hablidad en Area, marca las casillas en la zona de alcance y en el area
-  if(BattleManager.Instance.HabilidadActiva != null)
-  {
+    //Controlar se esta haciendo hablidad en Area, marca las casillas en la zona de alcance y en el area
+    if (BattleManager.Instance.HabilidadActiva != null)
+    {
       if (BattleManager.Instance.HabilidadActiva.enArea > 0 && BattleManager.Instance.SeleccionandoObjetivo)
       {
 
@@ -1017,7 +1056,7 @@ public void OnMouseEnter()
         MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
       }
       else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 7) //Target Especial 7: La del origen y diagonales adyacentes X
-      { 
+      {
         casAlre.Add(this); //Agrega la casilla de origen
         foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
         {
@@ -1075,24 +1114,24 @@ public void OnMouseEnter()
       }
       else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 8) //Target Especial 8: T horizontal
       {
-        print(11);
+
         foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
-        { 
+        {
           if ((cas.posY == posY && cas.posX == posX - 1) && (cas.lado == lado))
           {
-            casAlre.Add(cas);print(01);
+            casAlre.Add(cas);
           }
           if ((cas.posY == posY && cas.posX == posX - 2) && (cas.lado == lado))
           {
-            casAlre.Add(cas);print(02);
+            casAlre.Add(cas);
           }
           if ((cas.posY == posY + 1 && cas.posX == posX - 2) && (cas.lado == lado))
           {
-            casAlre.Add(cas);print(03);
+            casAlre.Add(cas);
           }
           if ((cas.posY == posY - 1 && cas.posX == posX - 2) && (cas.lado == lado))
           {
-            casAlre.Add(cas);print(04);
+            casAlre.Add(cas);
           }
         }
         foreach (Casilla cas in casAlre)
@@ -1126,7 +1165,7 @@ public void OnMouseEnter()
           }
 
         }
-               MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
+        MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
 
       }
       else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 9) //Target Especial 9: Pirámide invertida
@@ -1185,7 +1224,7 @@ public void OnMouseEnter()
         MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
       }
 
-    //---
+      //---
       if (Presente != null)
       {
         if (Presente.GetComponent<Unidad>() != null)
@@ -1197,74 +1236,77 @@ public void OnMouseEnter()
           obstaculosEnCasAzul.Add(Presente.GetComponent<Obstaculo>());
         }
       }
-   
-     
+
+
+
+    }
 
   }
-   
-}
 
-public void OnMouseExit() 
-{
-  if(BattleManager.Instance.HabilidadActiva != null)
+  public void OnMouseExit()
   {
-    if(BattleManager.Instance.HabilidadActiva.enArea > 0 && BattleManager.Instance.SeleccionandoObjetivo)
-     { DesmarcarCasillasAlreAzul(); DesactivarCapaColorAzul();}
-      else if(BattleManager.Instance.HabilidadActiva.targetEspecial > 0)  
-     {
+    scTooltipBatalla.HideTooltip();
+    if (BattleManager.Instance.HabilidadActiva != null)
+    {
+      if (BattleManager.Instance.HabilidadActiva.enArea > 0 && BattleManager.Instance.SeleccionandoObjetivo)
+      { DesmarcarCasillasAlreAzul(); DesactivarCapaColorAzul(); }
+      else if (BattleManager.Instance.HabilidadActiva.targetEspecial > 0)
+      {
         DesmarcarCasillasAlreAzul(); DesactivarCapaColorAzul();
-     }
-    
+      }
+
+    }
   }
-}
 
-private void MarcarCasillasAzul( List<Casilla> casillasZonahab )
-{
-    if(casillasZonahab.Contains(this)) //Marca casilla actual si esta en la zona de la habilidad
-    {
-        ActivarCapaColorAzul();
-    }
-
-
-    foreach(Casilla cas in casAlre) //Marca casillas alrededor si la central está en la zona de la habilidad
-    {   if(casillasZonahab.Contains(this) )
-       {
-        cas.ActivarCapaColorAzul();
-       }
-    }
-}
-
-private void DesmarcarCasillasAlreAzul()
-{
-    foreach(Casilla cas in casAlre)
-    {
-        cas.DesactivarCapaColorAzul();
-    }
-}
-
-public void CalcularDistanciaACasilla(Casilla casObjetivo, out int yVert, out int xHor, out bool mismoLado)
-{
- 
-  
-  if(lado == casObjetivo.lado) //Casillas del mismo lado
+  private void MarcarCasillasAzul(List<Casilla> casillasZonahab)
   {
-    mismoLado = true;
-    xHor =  posX - casObjetivo.posX; //Si es positiva la diferencia, quiere decir que queda a esa distancia hacia afuera, negativo, hacia centro.
-  }
-  else
-  { 
-    mismoLado = false;
-    xHor =  7 - posX - casObjetivo.posX; //La diferencia siempre va a dar positiva al estar del otro lado
-    
+    if (casillasZonahab.Contains(this)) //Marca casilla actual si esta en la zona de la habilidad
+    {
+      ActivarCapaColorAzul();
+    }
+
+
+    foreach (Casilla cas in casAlre) //Marca casillas alrededor si la central está en la zona de la habilidad
+    {
+      if (casillasZonahab.Contains(this))
+      {
+        cas.ActivarCapaColorAzul();
+      }
+    }
   }
 
-  
-  yVert = (posY - casObjetivo.posY); //Si es positiva la diferencia, quiere decir que queda a esa distancia hacia arriba, negativo, hacia abajo.
-
- if(Presente != null){
- 
+  private void DesmarcarCasillasAlreAzul()
+  {
+    foreach (Casilla cas in casAlre)
+    {
+      cas.DesactivarCapaColorAzul();
+    }
   }
-}
+
+  public void CalcularDistanciaACasilla(Casilla casObjetivo, out int yVert, out int xHor, out bool mismoLado)
+  {
+
+
+    if (lado == casObjetivo.lado) //Casillas del mismo lado
+    {
+      mismoLado = true;
+      xHor = posX - casObjetivo.posX; //Si es positiva la diferencia, quiere decir que queda a esa distancia hacia afuera, negativo, hacia centro.
+    }
+    else
+    {
+      mismoLado = false;
+      xHor = 7 - posX - casObjetivo.posX; //La diferencia siempre va a dar positiva al estar del otro lado
+
+    }
+
+
+    yVert = (posY - casObjetivo.posY); //Si es positiva la diferencia, quiere decir que queda a esa distancia hacia arriba, negativo, hacia abajo.
+
+    if (Presente != null)
+    {
+
+    }
+  }
 
   public void NuevoObjetoPresenteEnCasilla(GameObject obj)
   {
@@ -1284,7 +1326,7 @@ public void CalcularDistanciaACasilla(Casilla casObjetivo, out int yVert, out in
           hd.AplicarSiCorresponde(unidad, lado);
         }
       }
-      catch {}
+      catch { }
 
       //------------- TRIGGER DE TRAMPAS
       if (GetComponent<Trampa>() != null)
@@ -1320,19 +1362,162 @@ public void CalcularDistanciaACasilla(Casilla casObjetivo, out int yVert, out in
 
 
     }
-  
-      // Si el objeto tiene Canvas, permite override y ajusta el sort order
-      Canvas canvas = obj.GetComponentInChildren<Canvas>();
-      if (canvas != null)
+
+    // Si el objeto tiene Canvas, permite override y ajusta el sort order
+    Canvas canvas = obj.GetComponentInChildren<Canvas>();
+    if (canvas != null)
+    {
+      canvas.overrideSorting = true;
+      canvas.sortingOrder = 60 - 10 * posY;
+    }
+
+
+  }
+
+  public GameObject resaltadorBordeActivo;
+  public void ResaltarCasillaActiva(bool res)
+  {
+    resaltadorBordeActivo.SetActive(res);
+  }
+
+  public GameObject Borde;
+  public GameObject Sombra;
+  public GameObject Actual;
+  public GameObject Mover;
+  public GameObject MoverCostoso;
+  public GameObject Desplazable;
+
+  void Update()
+  {
+    if (Borde != null)
+    {
+      if (Presente != null)
       {
-        canvas.overrideSorting = true;
-        canvas.sortingOrder = 60 - 10 * posY;
+        if (Presente.GetComponent<Obstaculo>() != null)
+        {
+          Borde.SetActive(false);
+          Actual.SetActive(false);
+          Sombra.SetActive(false);
+          Desplazable.SetActive(false);
+          
+        }
+        else if (Presente.GetComponent<Unidad>() != null && esMovible() >= 10)
+        {
+          Mover.SetActive(false);
+          MoverCostoso.SetActive(false);
+          Borde.SetActive(false);
+
+          Desplazable.SetActive(true);
+        }
+        else
+        {
+          Borde.SetActive(false);
+          if (Sombra != null)
+          {
+            Sombra.SetActive(true);
+            Desplazable.SetActive(false);
+
+            if (BattleManager.Instance.unidadActiva == Presente.GetComponent<Unidad>())
+            {
+              Actual.SetActive(true);
+            }
+            else { Actual.SetActive(false); }
+
+          }
+        }
+      }
+      else
+      {
+
+        Actual.SetActive(false);
+        if (Sombra != null)
+        { 
+        Sombra.SetActive(false);
+        }
+         Mover.SetActive(false);
+         MoverCostoso.SetActive(false);
+         Borde.SetActive(false);
+         Desplazable.SetActive(false);
+
+
+
+
+        if (esMovible() == 1)
+        {
+          Mover.SetActive(true);
+        }
+        else if (esMovible() > 1 && esMovible() < 10)
+        {
+          MoverCostoso.SetActive(true);
+        }
+        else if (esMovible() >= 10)
+        {
+         
+          Desplazable.SetActive(true);
+        }
+        else
+        {
+          if (gameObject.GetComponent<Trampa>() == null)
+          { Borde.SetActive(true); Desplazable.SetActive(false);}
+        }
+      }
+    }
+  }
+
+  int esMovible()
+  {
+     int res = 0;
+     if (lado == 1) { return 0; } //Solo para aliados
+
+    //Unidad seleccionada - Movimiento
+    Unidad unidad = BattleManager.Instance.unidadActiva;
+
+    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
+    {
+      int costoMovimientoTotal = costoMovimiento;
+
+      int diferenciaX = Mathf.Abs(unidad.CasillaPosicion.posX - posX);
+      int diferenciaY = Mathf.Abs(unidad.CasillaPosicion.posY - posY);
+
+      // Comprueba si las casillas están en posiciones diagonales
+      if (diferenciaX == 1 && diferenciaY == 1)
+      {
+        costoMovimientoTotal++;
+      }
+      if (unidad.ObtenerAPActual() < costoMovimientoTotal)
+      {
+        res = 0;
+      }
+      else
+      {
+        res = costoMovimientoTotal;
+
+      }
+    }
+    else if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente != null && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
+    { 
+      if (Presente.GetComponent<Unidad>() != null)
+      { 
+        if (!Presente.GetComponent<Unidad>().TieneBuffNombre("Desplazado"))
+        {
+         
+          res = 10; //Desplazable
+        }
+        else
+        {
+          res = 0;
+        }
+
+        
       }
 
+    }  else
+        {
+          res = 0;
+        }
 
-}
 
-
-
+    return res;
+  }
 
 }

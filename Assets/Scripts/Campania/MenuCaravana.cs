@@ -48,6 +48,17 @@ public class MenuCaravana : MonoBehaviour
     int costoMejorarDefensas = 0;
 
      [SerializeField] GameObject contenedorSequitos;
+
+    public bool SeApretoESC()
+    { 
+        bool habiaalgoabierto = MenuMejoras.activeInHierarchy || MenuSequitos.activeInHierarchy || MenuPersonajes.activeInHierarchy;
+        
+        MenuMejoras.SetActive(false);
+        MenuSequitos.SetActive(false);
+        MenuPersonajes.SetActive(false);
+
+        return habiaalgoabierto;
+    }
     public void AbrirMenuMejoras()
     {
         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 8) { return; }
@@ -60,7 +71,7 @@ public class MenuCaravana : MonoBehaviour
         {
             CampaignManager.Instance.scTutorialManager.establecerPasoEspecifico(9);
         }
-        else { CampaignManager.Instance.scTutorialManager.cerrarPasoEspecifico(9);}
+        else { CampaignManager.Instance.scTutorialManager.cerrarPasoEspecifico(9); }
 
     }
     public void AbrirMenuSequitos()

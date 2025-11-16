@@ -1796,6 +1796,8 @@ public class CampaignManager : MonoBehaviour
 
 
 
+  public MenuCaravana scMenuCaravana;
+  public MenuOpciones scMenuOpciones;
 
   void Update()
   {
@@ -1804,6 +1806,36 @@ public class CampaignManager : MonoBehaviour
       botonDescansar.sprite = campSi;
     }
     else { botonDescansar.sprite = campNo; }
+
+
+    //HOTKEYS
+    // Detecta cuando se presiona la tecla H una sola vez
+    if (Input.GetKeyDown(KeyCode.R))
+    {
+      AbrirMenuDescanso();
+    }
+    if (Input.GetKeyDown(KeyCode.C))
+    {
+      scMenuCaravana.AbrirMenuPersonajes();
+    }
+    if (Input.GetKeyDown(KeyCode.I))
+    {
+      scMenuCaravana.AbrirMenuMejoras();
+    }
+    if (Input.GetKeyDown(KeyCode.M))
+    {
+      scMenuCaravana.AbrirMenuSequitos();
+    }
+     if (Input.GetKeyDown(KeyCode.Escape))
+    {
+      if (!scMenuCaravana.SeApretoESC()) //Si se apreto escape se cierran menus, si no habia ningun abierto abre opciones
+      {
+         scMenuOpciones.abrirMenu(); 
+      }
+      
+     
+    }
+
 
   }
 
@@ -2362,6 +2394,7 @@ public class CampaignManager : MonoBehaviour
     pers1.AddComponent<REPRESENTACIONSobrecarga>();
     pers1.AddComponent<AcumularEnergia>();
     pers1.AddComponent<DescargaArcana>();
+
    
     //Habilidades Base
     int randHabPot1 = UnityEngine.Random.Range(1, 3);

@@ -243,6 +243,7 @@ public class BattleManager : MonoBehaviour
 
 
       /*---*/
+      SincronizarHabilidadDestruirObstaculo(unidadActiva);
       ActualizarlistaHabilidades();//dejar aca y abajo, se llama 2 veces
 
       OnTurnoNuevo?.Invoke(this, EventArgs.Empty);
@@ -250,6 +251,7 @@ public class BattleManager : MonoBehaviour
       unidadActiva.ArrancaTurnoEstaUnidad();
       scUIInfoChar.ActualizarInfoChar(unidadActiva);
       /*---*/
+      SincronizarHabilidadDestruirObstaculo(unidadActiva);
       ActualizarlistaHabilidades();//dejar aca y arriba, se llama 2 veces
 
       indexTurno++;
@@ -680,7 +682,96 @@ public class BattleManager : MonoBehaviour
   private void ActualizarlistaHabilidades()
   {
     scUIBotonesHab.ActualizarBotonesHabilidad();
+    _requiereActualizarBotones = false;
 
+  }
+
+  private void CancelarHabilidadActiva()
+  {
+    if (HabilidadActiva == null)
+    {
+      return;
+    }
+
+    scUIBotonesHab?.DeseleccionarTodas();
+    HabilidadActiva = null;
+    SeleccionandoObjetivo = false;
+    LimpiarCapasCasillas();
+    scUIContadorAP?.ResetearCirculos();
+  }
+
+  private bool _requiereActualizarBotones;
+
+  private void SolicitarActualizarBotones()
+  {
+    _requiereActualizarBotones = true;
+  }
+
+  private bool DebeTenerHabilidadDestruirObstaculo(Unidad unidad)
+  {
+    if (unidad == null)
+    {
+      return false;
+    }
+
+    if (unidad.GetComponent<IAUnidad>() != null)
+    {
+      return false;
+    }
+
+    if (unidad.CasillaPosicion == null)
+    {
+      return false;
+    }
+
+    List<Casilla> casillas = unidad.CasillaPosicion.ObtenerCasillasAlrededor(1);
+    foreach (Casilla casilla in casillas)
+    {
+      if (casilla == null || casilla.Presente == null)
+      {
+        continue;
+      }
+
+      if (casilla.lado != unidad.CasillaPosicion.lado)
+      {
+        continue;
+      }
+
+      Obstaculo obstaculo = casilla.Presente.GetComponent<Obstaculo>();
+      if (obstaculo != null && obstaculo.destruiblePorMismoLado)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public void SincronizarHabilidadDestruirObstaculo(Unidad unidad)
+  {
+    if (unidad == null)
+    {
+      return;
+    }
+
+    DestruirObstaculo habilidad = unidad.GetComponent<DestruirObstaculo>();
+    bool requiere = DebeTenerHabilidadDestruirObstaculo(unidad);
+
+    if (requiere && habilidad == null)
+    {
+      habilidad = unidad.gameObject.AddComponent<DestruirObstaculo>();
+      habilidad.NIVEL = Mathf.Max(1, habilidad.NIVEL);
+      SolicitarActualizarBotones();
+    }
+    else if (!requiere && habilidad != null)
+    {
+      if (HabilidadActiva == habilidad)
+      {
+        CancelarHabilidadActiva();
+      }
+      Destroy(habilidad);
+      SolicitarActualizarBotones();
+    }
   }
   public void LimpiarCapasCasillas()
   {
@@ -695,19 +786,74 @@ public class BattleManager : MonoBehaviour
   public Habilidad HabilidadActiva;
   // Casilla clickeada para resolver la habilidad (para VFX con referencia de clic)
   public Casilla casillaClickHabilidad;
+  private static readonly KeyCode[] _habilidadHotkeys = new[]
+  {
+    KeyCode.Alpha1,
+    KeyCode.Alpha2,
+    KeyCode.Alpha3
+  };
 
-     private void Update()
+  private void Update()
+  {
+    // Si el jugador hace clic derecho o ESC mientras hay una habilidad activa, cancelarla
+    if ((Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape)) && (unidadActiva != null && HabilidadActiva != null))
     {
-        // Si el jugador hace clic derecho, cancelar habilidad activa
-        if (Input.GetMouseButtonDown(1) && unidadActiva != null && HabilidadActiva != null)
-        {
-            scUIBotonesHab.DeseleccionarTodas();
-            HabilidadActiva = null;
-            LimpiarCapasCasillas();
-            SeleccionandoObjetivo = false;
-            scUIContadorAP.ResetearCirculos();
-        }
+      CancelarHabilidadActiva();
     }
+    else if (Input.GetKeyDown(KeyCode.Escape))
+    {
+      //ACA QUE ABRA MENU OPCIONES DE BATALLA CUANDO ESTEN
+    }
+
+    if (Input.GetKeyDown(KeyCode.I))
+    {
+      scUIInfoChar.BotonInfoenemigos();
+    }
+    ManejarHotkeysHabilidadesJugador();
+    if (Input.GetKeyDown(KeyCode.Space))
+    {
+      TerminarTurno();
+    }
+
+    if (unidadActiva != null && scUIBotonesHab != null && unidadActiva.GetComponent<IAUnidad>() == null)
+    {
+      bool requiereHabilidad = DebeTenerHabilidadDestruirObstaculo(unidadActiva);
+      bool tieneHabilidad = unidadActiva.GetComponent<DestruirObstaculo>() != null;
+      if (requiereHabilidad != tieneHabilidad)
+      {
+        SincronizarHabilidadDestruirObstaculo(unidadActiva);
+        scUIBotonesHab.ActualizarBotonesHabilidad();
+      }
+    }
+  }
+
+  private void ManejarHotkeysHabilidadesJugador()
+  {
+    if (unidadActiva == null || scUIBotonesHab == null)
+    {
+      return;
+    }
+
+    if (unidadActiva.GetComponent<IAUnidad>() != null)
+    {
+      return;
+    }
+
+    for (int i = 0; i < _habilidadHotkeys.Length; i++)
+    {
+      if (Input.GetKeyDown(_habilidadHotkeys[i]))
+      {
+        scUIBotonesHab.ActivarHabilidadPorHotkeyIndex(i);
+        break;
+      }
+    }
+
+    if (_requiereActualizarBotones && (HabilidadActiva == null || !SeleccionandoObjetivo))
+    {
+      _requiereActualizarBotones = false;
+      scUIBotonesHab?.ActualizarBotonesHabilidad();
+    }
+  }
 
   /* public void OpacarCasillasMelee()
   {

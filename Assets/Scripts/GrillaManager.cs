@@ -8,6 +8,6 @@ public class GrillaManager : MonoBehaviour
    public GameObject LadoA;
    public GameObject LadoB;
  
-  
-
+   
+   
 }

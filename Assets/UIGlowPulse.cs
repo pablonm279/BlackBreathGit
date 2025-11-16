@@ -14,6 +14,8 @@ public class UIGlowPulse : MonoBehaviour
     public float pulseSpeed = 0.7f;          // Velocidad de pulso
     public bool syncWithOthers = false;    // Si querés sincronizar varios glows
 
+    public bool activo = false;
+
     void Awake()
     {
         img = GetComponent<Image>();
@@ -22,6 +24,7 @@ public class UIGlowPulse : MonoBehaviour
 
     void Update()
     {
+       
         // Tiempo base: si sync está activo, todos comparten el mismo valor
         float t = syncWithOthers ? Time.time : (Time.time + GetInstanceID() * 0.1f);
 

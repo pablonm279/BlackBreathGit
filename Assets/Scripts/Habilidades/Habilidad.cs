@@ -345,9 +345,9 @@ public abstract class Habilidad : MonoBehaviour
     else { return false; }
 
   }
-    
-    
 
+
+  
 
 }
 

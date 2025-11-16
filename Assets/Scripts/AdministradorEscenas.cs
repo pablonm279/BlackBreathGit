@@ -2887,14 +2887,16 @@ public class AdministradorEscenas : MonoBehaviour
 
   }
 
-
+  public void AbrirHandbook()
+  {
+    HandbookCampania.SetActive(!HandbookCampania.activeSelf);
+  }
   void Update()
     {
         // Detecta cuando se presiona la tecla H una sola vez
         if (Input.GetKeyDown(KeyCode.H))
         {
-            // Cambia el estado activo del GameObject
-            HandbookCampania.SetActive(!HandbookCampania.activeSelf);
+           AbrirHandbook();
         }
     }
 

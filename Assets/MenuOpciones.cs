@@ -10,13 +10,13 @@ public class MenuOpciones : MonoBehaviour
 
     public void abrirMenu()
     {
-        menuOpciones.SetActive(true);
-        Time.timeScale = 0f;
+        menuOpciones.SetActive(!menuOpciones.activeInHierarchy);
+       
     }
     public void cerrarMenu()
     {
         menuOpciones.SetActive(false);
-        Time.timeScale = 1f;
+        
     }
 
     public void salirdeljuego()

@@ -95,8 +95,19 @@ public class LadoManager : MonoBehaviour
         }
     }
    }
-
-
+  public LadoManager ladoOpuesto;
+  public void ResaltarLadoActivo()
+  {
+    foreach (Casilla casilla in casillasLado)
+    {
+      casilla.ResaltarCasillaActiva(true);
+    }
+     foreach(Casilla casilla in ladoOpuesto.casillasLado)
+    {
+      casilla.ResaltarCasillaActiva(false);
+    }
+   
+}
 
 private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
 {

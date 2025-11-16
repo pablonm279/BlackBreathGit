@@ -55,11 +55,11 @@ public class MenuController : MonoBehaviour
 
     public void CambiarIdioma(int n)
     { 
-        if (n != 1 && n != 2) return;
+     //   if (n != 1 && n != 2) return;
 
        // TRADU.i.nIdioma = n;
-        PlayerPrefs.SetInt("nIdioma", n);
-        PlayerPrefs.Save();
+      //  PlayerPrefs.SetInt("nIdioma", n);
+      //  PlayerPrefs.Save();
 
        
 

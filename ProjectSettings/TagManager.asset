@@ -11,6 +11,7 @@ TagManager:
   - MapaObjeto
   - TooltipBatalla
   - Obstaculo
+  - ReproductorMusica
   layers:
   - Default
   - TransparentFX

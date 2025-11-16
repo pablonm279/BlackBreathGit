@@ -11,6 +11,8 @@ public class Obstaculo : MonoBehaviour
   public float hpMax;
   public float hpCurr;
   public float iDureza; // el daño que absorbe
+  public bool destruiblePorMismoLado = true; // el daño que absorbe
+
   public int intDuracionTurnos; 
 
   public bool bPermiteAtacarDetras; //Determina sin las unidades del mismo lado melee, suman 1 a su rango para atacar atravez de este obstaculo si esta adelante
@@ -87,6 +89,15 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
      Invoke("DesactivarGOconDelay", 0.5f);
      CasillaPosicion.Presente = null;
 
+  }
+
+  /// <summary>
+  /// Permite a otras lógicas forzar la destrucción del obstáculo reutilizando
+  /// el mismo flujo visual que se dispara al llegar a 0 de vida.
+  /// </summary>
+  public void ForzarDestruccion()
+  {
+    ObstaculoDestruir();
   }
   void DesactivarGOconDelay()
   {

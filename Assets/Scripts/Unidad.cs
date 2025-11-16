@@ -314,8 +314,10 @@ private void Update()
 
  if(BattleManager.Instance.unidadActiva == this)
  {
-    transform.GetChild(1).gameObject.SetActive(true);
- }else{  transform.GetChild(1).gameObject.SetActive(false);}
+    transform.GetChild(3).GetChild(0).GetChild(0).gameObject.SetActive(true);
+ }
+  else
+ { transform.GetChild(3).GetChild(0).GetChild(0).gameObject.SetActive(false); }
 
     if (animator != null && unidadVoladora)
     {
@@ -625,6 +627,7 @@ void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad l
       }
 
       cas.Presente = gameObject;
+      transform.position = cas.transform.position;
     }
 }
 
@@ -754,7 +757,8 @@ void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad l
         //Chequear Trampas Persistentes en su casilla
         Invoke("ChequearTrampaPersistenteenCasilla", 0.1f); //Se invoca con un delay para que se aplique después de los efectos de inicio de turno
 
-
+        //Activar resaltar lado
+         Invoke("ResaltarLado", 0.1f);
 
 
       }
@@ -763,11 +767,20 @@ void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad l
       if (GetComponent<IAUnidad>() != null)
       {
         GetComponent<IAUnidad>().RealizarTurnoIA();
+
+        GenerarTextoFlotante(TRADU.i.Traducir("Activa!"), Color.red);
       }
-
-
+      else 
+      {
+        GenerarTextoFlotante(TRADU.i.Traducir("Activa!"), Color.cyan);
+      }
     }
 
+  }
+
+  void ResaltarLado()
+  {
+        CasillaPosicion.ladoGO.GetComponent<LadoManager>().ResaltarLadoActivo();
   }
 
   void ChequearTrampaPersistenteenCasilla()  //0 referencias porque se Invoka--Chequear si hay trampas persistentes en la casilla, y aplicar sus efectos al arrancar el turno de la unidad
@@ -2036,7 +2049,7 @@ public void OnMouseEnter()
 
      if(scBattleManager.SeleccionandoObjetivo)
      {
-        CasillaPosicion.OnMouseEnter();
+        CasillaPosicion.OnMouseOver();
 
      }
 

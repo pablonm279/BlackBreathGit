@@ -90,11 +90,43 @@ public class UIBotonesHabilidades : MonoBehaviour
         }
     }
 
-     public void UIDesactivarBotones()
+    public void UIDesactivarBotones()
     {  
         foreach (Transform buttonTransform in transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
         {
           buttonTransform.GetComponent<BotonHabilidad>().DesactivarBoton();
         }
+    }
+
+    public bool ActivarHabilidadPorHotkeyIndex(int index)
+    {
+        if (listaBotonesHabilidad == null || index < 0)
+        {
+            return false;
+        }
+
+        int indiceFiltrado = 0;
+        foreach (BotonHabilidad boton in listaBotonesHabilidad)
+        {
+            if (boton == null || boton.HabilidadRepresentada == null)
+            {
+                continue;
+            }
+
+            if (boton.HabilidadRepresentada is RetrasarTurno)
+            {
+                continue;
+            }
+
+            if (indiceFiltrado == index)
+            {
+                boton.ActivarHabilidad(false);
+                return true;
+            }
+
+            indiceFiltrado++;
+        }
+
+        return false;
     }
 }

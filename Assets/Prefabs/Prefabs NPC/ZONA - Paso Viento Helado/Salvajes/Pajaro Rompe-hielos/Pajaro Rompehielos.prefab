@@ -604,6 +604,8 @@ MonoBehaviour:
   estado_regeneraarmadura: 0
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
+  estado_Condenado: 0
+  estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 1
   estado_Volando: 0
@@ -767,7 +769,7 @@ AudioSource:
   m_GameObject: {fileID: 3855863790156444218}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7507993178760270779, guid: fbdf7fc758aa3084098230e3e6c39e8b, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0

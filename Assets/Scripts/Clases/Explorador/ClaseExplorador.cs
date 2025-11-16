@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 public class ClaseExplorador : Unidad
 {
   
-public int Cantidad_flechas;
+private int Cantidad_flechas;
 
  public int PASIVA_VistaLejana; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ° 5 nv 4b
  public int PASIVA_Acrobatico; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ° 5 nv 4b
@@ -186,10 +186,24 @@ public override void AcabaDeMatarUnidad(Unidad uVictima)
 
 
 
-public void CambiarCantidadFlechas(int n)
-{
+  public void CambiarCantidadFlechas(int n)
+  {
     Cantidad_flechas += n;
-}
+
+    if (Cantidad_flechas < 1)
+    {
+      Cantidad_flechas = 0;
+    }
+      
+      GenerarTextoFlotante(TRADU.i.Traducir("Sin flechas!"), Color.red);
+    
+ }
+
+  public int ObtenerCantidadFlechas()
+  {
+   
+    return Cantidad_flechas;
+  }
 
   public override void ActualizarClaseComienzoTurno()
   {

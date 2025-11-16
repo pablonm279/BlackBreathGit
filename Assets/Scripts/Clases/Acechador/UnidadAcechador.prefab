@@ -553,7 +553,11 @@ MonoBehaviour:
   estado_regeneraarmadura: 0
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
+  estado_Condenado: 0
+  estado_Escudado: 0
   estado_Corrupto: 0
+  unidadVoladora: 0
+  estado_Volando: 0
   inmunidad_Ceguera: 0
   inmunidad_Oscuridad: 0
   inmunidad_Trampas: 0
@@ -568,6 +572,8 @@ MonoBehaviour:
   tejidoCuracMagica: 0
   loMatoCorrompido: 0
   entroComoAliado: 0
+  offsetVueloY: 13
+  duracionAnimacionVuelo: 0.4
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
@@ -611,7 +617,7 @@ AudioSource:
   m_GameObject: {fileID: 6303116932380645211}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7507993178760270779, guid: fbdf7fc758aa3084098230e3e6c39e8b, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -1052,7 +1058,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8729342596116197782}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.0244}
   m_LocalScale: {x: 0.95, y: 1.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

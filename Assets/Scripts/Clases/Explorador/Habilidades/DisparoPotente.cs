@@ -199,7 +199,12 @@ public class DisparoPotente : Habilidad
           txtDescripcion += $"<color=#44d3ec>-Arrows: 2 -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
         }
       }
+        ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
+    if (clase.ObtenerCantidadFlechas() < 1)
+    {
+        txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
 
+    }
     }
 
     Casilla Origen;
@@ -209,7 +214,7 @@ public class DisparoPotente : Habilidad
         Origen = Usuario.GetComponent<Unidad>().CasillaPosicion;
         ObtenerObjetivos();
         
-        Usuario.GetComponent<ClaseExplorador>().Cantidad_flechas -= 2;
+        Usuario.GetComponent<ClaseExplorador>().CambiarCantidadFlechas(-2);
       
         BattleManager.Instance.SeleccionandoObjetivo = true;
         BattleManager.Instance.HabilidadActiva = this;

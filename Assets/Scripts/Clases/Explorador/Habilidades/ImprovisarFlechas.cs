@@ -217,7 +217,7 @@ public class ImprovisarFlechas : Habilidad
          flechasCreadas++;
         }
         
-        Usuario.GetComponent<ClaseExplorador>().Cantidad_flechas += flechasCreadas;
+        Usuario.GetComponent<ClaseExplorador>().CambiarCantidadFlechas(flechasCreadas);
 
         VFXAplicar(Usuario);
        scEstaUnidad.EstablecerAPActualA(0);

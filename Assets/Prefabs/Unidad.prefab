@@ -563,7 +563,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &82051889994103697
 Transform:
   m_ObjectHideFlags: 0
@@ -772,7 +772,11 @@ MonoBehaviour:
   estado_regeneraarmadura: 0
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
+  estado_Condenado: 0
+  estado_Escudado: 0
   estado_Corrupto: 0
+  unidadVoladora: 0
+  estado_Volando: 0
   inmunidad_Ceguera: 0
   inmunidad_Oscuridad: 0
   inmunidad_Trampas: 0
@@ -787,6 +791,8 @@ MonoBehaviour:
   tejidoCuracMagica: 0
   loMatoCorrompido: 0
   entroComoAliado: 0
+  offsetVueloY: 13
+  duracionAnimacionVuelo: 0.4
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
@@ -896,10 +902,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unidadCanvas: {fileID: 1944879868172456426}
   "txtDa\xF1o": {fileID: 0}
+  txtArmadura: {fileID: 0}
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 1946085209912635236}
+  txtVida: {fileID: 0}
   barraVida: {fileID: 0}
+  casillaEstadoPrefab: {fileID: 0}
+  contenedorCasillasEstados: {fileID: 0}
 --- !u!82 &887615143132016759
 AudioSource:
   m_ObjectHideFlags: 0
@@ -909,7 +919,7 @@ AudioSource:
   m_GameObject: {fileID: 6540749011219660495}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7507993178760270779, guid: fbdf7fc758aa3084098230e3e6c39e8b, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -1009,6 +1019,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BarraVida
       objectReference: {fileID: 0}
+    - target: {fileID: 3584434968079806738, guid: ad323613071b64040902f61f50b3ea82, type: 3}
+      propertyPath: m_Color.b
+      value: 0.11534355
+      objectReference: {fileID: 0}
+    - target: {fileID: 3584434968079806738, guid: ad323613071b64040902f61f50b3ea82, type: 3}
+      propertyPath: m_Color.g
+      value: 0.74828136
+      objectReference: {fileID: 0}
+    - target: {fileID: 3584434968079806738, guid: ad323613071b64040902f61f50b3ea82, type: 3}
+      propertyPath: m_Color.r
+      value: 0.9056604
+      objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1096,6 +1118,18 @@ PrefabInstance:
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5732755257837101463, guid: ad323613071b64040902f61f50b3ea82, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7506736064120203851, guid: ad323613071b64040902f61f50b3ea82, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.1147
+      objectReference: {fileID: 0}
+    - target: {fileID: 7506736064120203851, guid: ad323613071b64040902f61f50b3ea82, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.2586709
       objectReference: {fileID: 0}
     - target: {fileID: 7824808104588706269, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchorMax.x

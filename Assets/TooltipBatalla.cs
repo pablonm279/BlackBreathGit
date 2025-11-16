@@ -16,13 +16,13 @@ public class TooltipBatalla : MonoBehaviour
         tooltipObject.SetActive(false);
     }
 
-    public void ShowTooltip(int tipo)
+    public void ShowTooltip(int tipo, string forcedText = "")
     {
         tooltipObject.SetActive(true);
         desdeBarraVida = false;
       
             tooltipObject.transform.position = Input.mousePosition;
-            tooltipText.text = TRADU.i.Traducir(ObtenerContenidoTooltip(tipo));
+            tooltipText.text = string.IsNullOrEmpty(forcedText) ? TRADU.i.Traducir(ObtenerContenidoTooltip(tipo)) : forcedText;
         
     }
     bool desdeBarraVida = false;

@@ -128,17 +128,17 @@ public class BotonHabilidad : MonoBehaviour
         {
             if (HabilidadRepresentada.nombre == "Tiro con Arco")
             {
-                if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseExplorador>().Cantidad_flechas < HabilidadRepresentada.requiereRecurso)
+                if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseExplorador>().ObtenerCantidadFlechas() < HabilidadRepresentada.requiereRecurso)
                 { return; }
             }
             if (HabilidadRepresentada.nombre == "Tiro Potente")
             {
-                if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseExplorador>().Cantidad_flechas < HabilidadRepresentada.requiereRecurso)
+                if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseExplorador>().ObtenerCantidadFlechas() < HabilidadRepresentada.requiereRecurso)
                 { return; }
             }
             if (HabilidadRepresentada.nombre == "Vigilancia")
             {
-                if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseExplorador>().Cantidad_flechas < HabilidadRepresentada.requiereRecurso)
+                if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseExplorador>().ObtenerCantidadFlechas() < HabilidadRepresentada.requiereRecurso)
                 { return; }
             }
             if (HabilidadRepresentada.nombre == "Enmendar")
