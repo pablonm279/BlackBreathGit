@@ -179,9 +179,9 @@ public class MenuDescanso : MonoBehaviour
 
         tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Estado de Alerta</b></u>\n\n\n");
         tareaCivilDescripcion.text += TRADU.i.Traducir("Durante el descanso, se asignarán a los civiles mas aptos físicamente a la vigilancia del area circundante al campamento.\n\n");
-        tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Previene cualquier Emboscada en este descanso. +20% a Exploración. -10 Esperanza.</color>\n\n\n");
+        tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Reduce chances de ataque a caravana. +20% a Exploración. -10 Esperanza.</color>\n\n\n");
 
-        chancesAtaqueACaravana = 0;
+        chancesAtaqueACaravana = 0 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
         chancesExploracion =  80 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
 
 
@@ -221,6 +221,8 @@ public class MenuDescanso : MonoBehaviour
    
     }
 
+    
+
     if (CampaignManager.Instance.scMenuSequito.TieneSequito(5)) { chancesAtaqueACaravana += 2; } //Herboristas, aumentan chances 2%
     
     chancesAtaqueACaravana -= CampaignManager.Instance.mejoraCaravanaAntorchas*5;
@@ -231,6 +233,10 @@ public class MenuDescanso : MonoBehaviour
     if (CampaignManager.Instance.intTipoClima == 6) //Almas Danzantes
     {
       chancesAtaqueACaravana = 0;
+    }
+     if (CampaignManager.Instance.intTipoClima == 9) //Masacre Zarkil
+    {
+      chancesAtaqueACaravana += 10;
     }
 
     chancesAtaqueACaravana = Mathf.Clamp(chancesAtaqueACaravana, 0, 100);
@@ -551,7 +557,7 @@ public class MenuDescanso : MonoBehaviour
  public GameObject climaNiebla;
  public GameObject climaAlmasDanzantes;
  public GameObject climaAuroraBoreal;
-
+ public GameObject climaMasacre;
   public void TiradaClima()
   {
     int random = UnityEngine.Random.Range(1, 101);
@@ -559,7 +565,12 @@ public class MenuDescanso : MonoBehaviour
     climaLluvia.SetActive(false);
     climaNiebla.SetActive(false);
     climaAuroraBoreal.SetActive(false);
+    climaMasacre.SetActive(false);
     climaAlmasDanzantes.SetActive(false);
+
+    
+
+
 
     if (random < CampaignManager.Instance.scAtributosZona.Clima_chances_Sol)
     {
@@ -586,7 +597,7 @@ public class MenuDescanso : MonoBehaviour
 
       CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Lluvia hace el viaje más difícil. -5 Esperanza."));
       CampaignManager.Instance.CambiarEsperanzaActual(-5);
-      
+
       bool logLluviaIncendios = false;
       foreach (Nodo nodo in CampaignManager.Instance.scMapaManager.scContenedordeNodos.listTodosNodos)
       {
@@ -632,7 +643,7 @@ public class MenuDescanso : MonoBehaviour
       {
         climaAuroraBoreal.SetActive(true);
 
-        CampaignManager.Instance.intTipoClima = 6;
+        CampaignManager.Instance.intTipoClima = 7;
         CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_auroraboreal;
 
 
@@ -640,6 +651,24 @@ public class MenuDescanso : MonoBehaviour
         CampaignManager.Instance.CambiarEsperanzaActual(10);
       }
 
+      if (CampaignManager.Instance.scAtributosZona.ID == 3) //Nedukazal - Oscuridad
+      {
+        CampaignManager.Instance.intTipoClima = 8;
+        CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_NedukazalNormal;
+
+      }
+
+
+    }
+    else if (random < CampaignManager.Instance.scAtributosZona.Clima_chances_EspecialZona2)
+    {
+      if (CampaignManager.Instance.scAtributosZona.ID == 3) //Nedukazal - Masacre
+      {
+        climaMasacre.SetActive(true);
+        CampaignManager.Instance.intTipoClima = 9;
+        CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_NedukazalMasacre;
+        CampaignManager.Instance.CambiarEsperanzaActual(-10);
+      }
 
 
     }

@@ -40,6 +40,9 @@ public class AdministradorEscenas : MonoBehaviour
 
   public List<Material> listaFondosBosqueLamentos; //Para agregar fondos simplemente hay que agregarlos a la lista
   public List<Material> listaFondosPasoVientoHelado; //Para agregar fondos simplemente hay que agregarlos a la lista
+
+  public List<Material> listaFondosNedukazal; //Para agregar fondos simplemente hay que agregarlos a la lista
+
   public List<Material> listaFondosSubterraneos; //Para agregar fondos simplemente hay que agregarlos a la lista
 
   [Header("UI")]
@@ -413,7 +416,7 @@ public class AdministradorEscenas : MonoBehaviour
       //---
       BattleManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_niebla;
     }
-    if (climaCampaña == 6)//Clima Especial 1
+    if (climaCampaña == 7)//Aurora Boreal
     {
       if (CampaignManager.Instance.scAtributosZona.ID == 2) //Paso Viento Helado
       { VFXAurora.SetActive(true); }
@@ -557,6 +560,25 @@ public class AdministradorEscenas : MonoBehaviour
       }
     }
     #endregion
+    #region Zarkil Masacre
+    LadoManager ladodeEnemigos2 = BattleManager.Instance.ladoA; //Enemigos
+    foreach (Unidad u in ladodeEnemigos2.unidadesLado)
+    {
+      if (u.TieneTag("Zarkil") && CampaignManager.Instance.scAtributosZona.ID == 3)
+      {
+        // BUFF ---- Así se aplica un buff/debuff
+        Buff buff = new Buff();
+        buff.buffNombre = "Masacre Zarkil";
+        buff.boolfDebufftBuff = true;
+        buff.DuracionBuffRondas = -1;
+        buff.cantCritDado += 2;
+        buff.percCritDaño += 20;
+        buff.AplicarBuff(u);
+        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+        Buff buffComponent = ComponentCopier.CopyComponent(buff, u.gameObject);
+      }
+    }
+    #endregion
     #region Objetos en Batalla
     //Fuego de Bosque Ardiente
     if (CampaignManager.Instance.scMapaManager.nodoActual.nodoIncendiado)
@@ -588,8 +610,8 @@ public class AdministradorEscenas : MonoBehaviour
         }
       }
 
-      LadoManager ladodeEnemigos2 = BattleManager.Instance.ladoA; //Enemigos
-      foreach (Unidad u in ladodeEnemigos2.unidadesLado)
+      LadoManager ladodeEnemigos3 = BattleManager.Instance.ladoA; //Enemigos
+      foreach (Unidad u in ladodeEnemigos3.unidadesLado)
       {
         // BUFF ---- Así se aplica un buff/debuff
         Buff buff = new Buff();
@@ -630,6 +652,16 @@ public class AdministradorEscenas : MonoBehaviour
     BattleManager.Instance.RondaNueva();
 
     Invoke("ColocarunidadesEnCanvasUnidades", 0.3f);
+
+    bool modorapido = PlayerPrefs.GetInt("modoRapido", 0) == 1;
+    if (modorapido)
+    {
+      BattleManager.Instance.ActivarModoRapido(true);
+    }
+    else
+    {  
+      BattleManager.Instance.ActivarModoRapido(false);
+    }
 
   }
 
@@ -785,6 +817,12 @@ public class AdministradorEscenas : MonoBehaviour
           mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
         }
         break;
+       case EncounterZoneType.Nedukazal:
+        if (listaFondosNedukazal != null && listaFondosNedukazal.Count > 0)
+        {
+          mrFondoBatalla.material = listaFondosNedukazal[UnityEngine.Random.Range(0, listaFondosNedukazal.Count)];
+        }
+        break;
       case EncounterZoneType.Generico:
         // Usa la zona activa de campaña si existe, si no, cae al bosque
         if (CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null)
@@ -798,6 +836,15 @@ public class AdministradorEscenas : MonoBehaviour
               break;
             }
           }
+          if (zonaActiva == EncounterZoneType.Nedukazal)
+          {
+            if (listaFondosNedukazal != null && listaFondosNedukazal.Count > 0)
+            {
+              mrFondoBatalla.material = listaFondosNedukazal[UnityEngine.Random.Range(0, listaFondosNedukazal.Count)];
+              break;
+            }
+          }
+         
         }
         goto case EncounterZoneType.BosqueAngustiante;
       case EncounterZoneType.BosqueAngustiante:
@@ -2666,6 +2713,7 @@ public class AdministradorEscenas : MonoBehaviour
 
     BattleManager.Instance.unidadActiva = null;
     BattleManager.Instance.indexTurno = 0;
+   
 
     CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(0.7f, 1.6f);
     await Task.Delay(TimeSpan.FromSeconds(1.6f));
@@ -2675,6 +2723,7 @@ public class AdministradorEscenas : MonoBehaviour
     escenaActual = 0;
     EscenaBatalla.SetActive(false);
 
+    Time.timeScale = 1; //Vuelve el tiempo al normal(por si habia modo rapido), pero no cambia el estado de Modorapido
 
 
 

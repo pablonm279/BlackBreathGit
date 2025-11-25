@@ -193,9 +193,10 @@ public override void AcabaDeMatarUnidad(Unidad uVictima)
     if (Cantidad_flechas < 1)
     {
       Cantidad_flechas = 0;
+      GenerarTextoFlotante(TRADU.i.Traducir("Sin flechas!"), Color.red);
+
     }
       
-      GenerarTextoFlotante(TRADU.i.Traducir("Sin flechas!"), Color.red);
     
  }
 

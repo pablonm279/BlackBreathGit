@@ -16,13 +16,13 @@ public class TooltipBatalla : MonoBehaviour
         tooltipObject.SetActive(false);
     }
 
-    public void ShowTooltip(int tipo, string forcedText = "")
+    public void ShowTooltip(int tipo)
     {
         tooltipObject.SetActive(true);
         desdeBarraVida = false;
       
-            tooltipObject.transform.position = Input.mousePosition;
-            tooltipText.text = string.IsNullOrEmpty(forcedText) ? TRADU.i.Traducir(ObtenerContenidoTooltip(tipo)) : forcedText;
+        tooltipObject.transform.position = Input.mousePosition;
+        tooltipText.text = TRADU.i.Traducir(ObtenerContenidoTooltip(tipo));
         
     }
     bool desdeBarraVida = false;
@@ -106,9 +106,9 @@ public class TooltipBatalla : MonoBehaviour
             case 32:
                 return "Barro: reduce 2 PA a unidades que entren en la casilla.";
             case 33:
-                return "";
+                return "Modo Rápido";
             case 34:
-                return "";
+                return "Mirada de Masacre: al moverse aquí, Tirada de salvación mental CD 13 o se pierde el turno.";
             case 35:
                 return "";
             default:

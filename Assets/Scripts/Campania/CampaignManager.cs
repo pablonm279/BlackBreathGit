@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
+using UnityEditor;
 
 public class CampaignManager : MonoBehaviour
 {
@@ -98,8 +99,9 @@ public class CampaignManager : MonoBehaviour
     CambiarOroActual(400);
     CambiarValorAlientoNegro(1);
 
-    scAtributosZona.ConstruirZonaBosqueAngustiante(1);
+    //scAtributosZona.ConstruirZonaBosqueAngustiante(1);
     //scAtributosZona.ConstruirZonaPasoVientoHelado(1);
+    scAtributosZona.ConstruirZonaNedukazal(1);
 
 
     scMenuSequito.AgregarSequito(1);
@@ -122,9 +124,11 @@ public class CampaignManager : MonoBehaviour
     CrearExplorador();
     CrearCanalizador();
 
-    
-  
+
+    AjustarDificultad();
+
   }
+
 
   private void OnEnable()
   {
@@ -132,7 +136,7 @@ public class CampaignManager : MonoBehaviour
   }
 
   private void OnDisable()
-  { 
+  {
     procesandoCola = false;
   }
 
@@ -142,15 +146,17 @@ public class CampaignManager : MonoBehaviour
       logDeCampania.SetDiaActual(numeroTurno);
 
     TRADU.i.ActualizarIdioma();
+
+    MenuOpciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
   }
 
 
   #region Nodos
   public SunController sunController;
-  
+
   public void ViajeIniciado(Nodo destino)
   {
-    
+
     bool sePrevieneAvanceAliento = false;
     sunController.OnTravelStart(); // duración en segundos
 
@@ -185,7 +191,7 @@ public class CampaignManager : MonoBehaviour
       if (pers.ActividadSeleccionada == 10 && random < 15 && !sePrevieneAvanceAliento) //Ritual de Limpieza
       {
         sePrevieneAvanceAliento = true;
-        EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" ha realizado con éxito un Ritual de Limpieza, previniendo el avance del Aliento Negro."));
+        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha realizado con éxito un Ritual de Limpieza, previniendo el avance del Aliento Negro."));
         break;
       }
 
@@ -416,8 +422,8 @@ public class CampaignManager : MonoBehaviour
       scMenuBatallas.EventoBatallaElite(0, 0, true); //0 es Random
 
     }
-  
-  
+
+
     //Cronistas
     if (scMenuSequito.TieneSequito(7))
     {
@@ -453,7 +459,7 @@ public class CampaignManager : MonoBehaviour
       CambiarCivilesActuales(-nmuertos);
       EscribirLog(TRADU.i.Traducir("-La caravana ha llegado a un nodo incendiado. -10 Esperanza.  " + nmuertos + " Civiles Muertos."));
     }
-   
+
   }
 
   // Llamar desde el resultado de la Batalla Final (jefe derrotado)
@@ -476,13 +482,13 @@ public class CampaignManager : MonoBehaviour
     {
       int randomIncendio = UnityEngine.Random.Range(1, 101);
       if (posicionCaravana < 9 && randomIncendio <= probabilidad)
-      { 
+      {
         int random = UnityEngine.Random.Range(1, 3);
         Nodo nodoAIncendiar = ObtenerNodoFuturoAleatorio(random);
         if (nodoAIncendiar != null && !nodoAIncendiar.nodoIncendiado)
         {
           nodoAIncendiar.ActivarIncendio();
-            EscribirLog(TRADU.i.Traducir("<color=#FF3D00>-El incendio ha envuelto un nodo cercano al camino de la caravana.</color>"));
+          EscribirLog(TRADU.i.Traducir("<color=#FF3D00>-El incendio ha envuelto un nodo cercano al camino de la caravana.</color>"));
 
 
 
@@ -494,10 +500,10 @@ public class CampaignManager : MonoBehaviour
 
     }
   }
- 
+
   public void PasoVientoHeladoMecanicaRituales(int probabilidad)
   {
-    
+
     if (scAtributosZona.ID == 2) //Solo en Paso Viento Helado
     {
       List<Nodo> todosNodos = scMapaManager.scContenedordeNodos.listTodosNodos;
@@ -645,7 +651,7 @@ public class CampaignManager : MonoBehaviour
   #region Santuario
   public GameObject goUIPersonajeSequito;
 
-  
+
   public TextMeshProUGUI txtOro;
   public TextMeshProUGUI txtBueyes;
 
@@ -667,7 +673,7 @@ public class CampaignManager : MonoBehaviour
     {
       var personajeCurado = corruptos[UnityEngine.Random.Range(0, corruptos.Count)];
       personajeCurado.Camp_Corrupto = false;
-      EscribirLog(personajeCurado.sNombre+TRADU.i.Traducir(" ha sido purificado de la corrupción."));
+      EscribirLog(personajeCurado.sNombre + TRADU.i.Traducir(" ha sido purificado de la corrupción."));
     }
     else
     {
@@ -677,7 +683,7 @@ public class CampaignManager : MonoBehaviour
     goUISantuario.SetActive(false);
   }
 
-  public void abandonarsantuario() {  goUIPersonajeSequito.SetActive(false);}
+  public void abandonarsantuario() { goUIPersonajeSequito.SetActive(false); }
   public void RealizarRitualSantuarioPorBueyes()
   {
     if (GetBueyesActual() < 3)
@@ -697,7 +703,7 @@ public class CampaignManager : MonoBehaviour
     {
       var personajeCurado = corruptos[UnityEngine.Random.Range(0, corruptos.Count)];
       personajeCurado.Camp_Corrupto = false;
-      EscribirLog("-"+personajeCurado.sNombre+TRADU.i.Traducir(" ha sido purificado de la corrupción."));
+      EscribirLog("-" + personajeCurado.sNombre + TRADU.i.Traducir(" ha sido purificado de la corrupción."));
     }
     else
     {
@@ -912,7 +918,7 @@ public class CampaignManager : MonoBehaviour
   void EfectosdeSequitos()
   {
 
-   
+
     if (scMenuSequito.TieneSequito(4)) //Artistas
     {
       int rand = UnityEngine.Random.Range(1, 4);
@@ -921,7 +927,7 @@ public class CampaignManager : MonoBehaviour
         int rand2 = UnityEngine.Random.Range(1, 6);
 
         CambiarSuministrosActuales(-rand2);
-        EscribirLog(TRADU.i.Traducir("-El Séquito de Artistas ha tenido un festín y despilfarrado suministros: ")+rand2);
+        EscribirLog(TRADU.i.Traducir("-El Séquito de Artistas ha tenido un festín y despilfarrado suministros: ") + rand2);
       }
     }
 
@@ -953,7 +959,7 @@ public class CampaignManager : MonoBehaviour
         float porcentajeVidaMax = pers.fVidaMaxima * curacionFinalSequito;
         if (pers.fVidaMaxima > pers.fVidaActual)
         {
-          EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" se cura ")+(int)porcentajeVidaMax+TRADU.i.Traducir(" PV por su Actividad de <b>Descanso</b>."));
+          EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" se cura ") + (int)porcentajeVidaMax + TRADU.i.Traducir(" PV por su Actividad de <b>Descanso</b>."));
         }
         pers.RecibirCuracion(porcentajeVidaMax);
 
@@ -967,7 +973,7 @@ public class CampaignManager : MonoBehaviour
         }
         pers.RecibirExperiencia(exp);
 
-        EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" gana ") + exp + TRADU.i.Traducir(" Experiencia por su Actividad de <b>Entrenamiento</b>."));
+        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" gana ") + exp + TRADU.i.Traducir(" Experiencia por su Actividad de <b>Entrenamiento</b>."));
 
       }
       if (pers.ActividadSeleccionada == 4) //Caballero: Relatos de Batalla
@@ -982,34 +988,34 @@ public class CampaignManager : MonoBehaviour
         }
 
 
-        EscribirLog($"-"+pers.sNombre+TRADU.i.Traducir(" brinda 10 Experiencia a sus compañeros de menor nivel por su Actividad de <b>Relatos de Batalla</b>."));
+        EscribirLog($"-" + pers.sNombre + TRADU.i.Traducir(" brinda 10 Experiencia a sus compañeros de menor nivel por su Actividad de <b>Relatos de Batalla</b>."));
 
       }
       if (pers.ActividadSeleccionada == 7) //Explorador: Caza Nocturna
       {
         int rand = UnityEngine.Random.Range(1, 5);
         CambiarSuministrosActuales(rand);
-        EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" consigue ") + rand + TRADU.i.Traducir(" suministros por su Actividad de <b>Caza Nocturna</b>."));
+        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" consigue ") + rand + TRADU.i.Traducir(" suministros por su Actividad de <b>Caza Nocturna</b>."));
       }
       if (pers.ActividadSeleccionada == 11) //Purificadora: Ayudar a los Desamparados
       {
         int rand = UnityEngine.Random.Range(1, 4);
         CambiarEsperanzaActual(rand);
-        EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" realiza su actividad <b>Ayudar a los Desamparados</b> y la esperanza aumenta en ") + rand + ".");
+        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" realiza su actividad <b>Ayudar a los Desamparados</b> y la esperanza aumenta en ") + rand + ".");
       }
       if (pers.ActividadSeleccionada == 15) //Acechador: Coerción
       {
         int rand = UnityEngine.Random.Range(1, 10);
         CambiarEsperanzaActual(-1);
         CambiarOroActual(rand);
-        EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" obtiene ") + rand + TRADU.i.Traducir(" de Oro de los Mercaderes de la Caravana, que fueron coercionados para que donen a la causa. -1 Esperanza"));
+        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" obtiene ") + rand + TRADU.i.Traducir(" de Oro de los Mercaderes de la Caravana, que fueron coercionados para que donen a la causa. -1 Esperanza"));
       }
       if (pers.ActividadSeleccionada == 18) //Canalizador: Simbolo de Proteccion Arcano
       {
 
         GameObject consumible = Instantiate(scContprefab.SimboloProtArcano.gameObject);
         scMenuPersonajes.scEquipo.listInventario.Add(consumible);
-        EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" ha creado un Símbolo de Protección Arcano."));
+        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha creado un Símbolo de Protección Arcano."));
 
       }
     }
@@ -1055,7 +1061,7 @@ public class CampaignManager : MonoBehaviour
       txtTooltipAlientoNegro.text += TRADU.i.Traducir("\n\nLlamado el Aliento Negro, esta ola de peste y podredumbre lentamente está envolviendo a los seres vivos que no logran escapar, provocándoles la muerte, o peor. </color>\n\n\n\n");
       if (tierAliento == 1)
       {
-        txtTooltipAlientoNegro.text += TRADU.i.Traducir("<color=#bae895><b>Estado: Distante</b> (") + EstadoAlientoNegro +  TRADU.i.Traducir("/20) - La Caravana viaja con tranquilidad.</color>");
+        txtTooltipAlientoNegro.text += TRADU.i.Traducir("<color=#bae895><b>Estado: Distante</b> (") + EstadoAlientoNegro + TRADU.i.Traducir("/20) - La Caravana viaja con tranquilidad.</color>");
       }
       if (tierAliento == 2)
       {
@@ -1092,6 +1098,9 @@ public class CampaignManager : MonoBehaviour
   }
   public void CambiarValorAlientoNegro(int aliento)
   {
+    if (scAtributosZona.ID == 3) { return; }  //Nedukazal no tiene Aliento Negro 
+
+
     EstadoAlientoNegro += aliento;
 
     if (EstadoAlientoNegro < 0) { EstadoAlientoNegro = 0; }
@@ -1127,7 +1136,7 @@ public class CampaignManager : MonoBehaviour
       //  handleSliderCalavera.color = new Color(0.15f, 0.15f, 0.15f);
 
     }
-    else if (cercaniaAliento >= 4  && cercaniaAliento < 6)
+    else if (cercaniaAliento >= 4 && cercaniaAliento < 6)
     {
       TierAlientoNegro = 2;
 
@@ -1188,9 +1197,9 @@ public class CampaignManager : MonoBehaviour
     {
       switch (fatigaAhora)
       {
-        case 4: CambiarEsperanzaActual(-10); int rand = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand); if(rand < 0) {EscribirLog(TRADU.i.Traducir("-La fatiga ha provocado la muerte de algunos Bueyes.")+" -"+rand+TRADU.i.Traducir(" Bueyes"));} break;    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        case 5: CambiarEsperanzaActual(-15); int rand2 = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand2); if(rand2 < 0) {EscribirLog(TRADU.i.Traducir("-La fatiga ha provocado la muerte de algunos Bueyes.")+" -"+rand2+TRADU.i.Traducir(" Bueyes"));} break;
-        case > 5: CambiarEsperanzaActual(-20); int rand3 = UnityEngine.Random.Range(-4, 1); CambiarBueyesActuales(rand3); int rand4 = UnityEngine.Random.Range(-10, 1); CambiarCivilesActuales(rand4); if(rand3 < 0 || rand4 < 0) {EscribirLog(TRADU.i.Traducir("-La fatiga extrema ha provocado la muerte de algunos Bueyes y Civiles.")+" -"+rand3+TRADU.i.Traducir(" Bueyes -")+rand4+TRADU.i.Traducir(" Civiles"));} break;
+        case 4: CambiarEsperanzaActual(-10); int rand = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand); if (rand < 0) { EscribirLog(TRADU.i.Traducir("-La fatiga ha provocado la muerte de algunos Bueyes.") + " -" + rand + TRADU.i.Traducir(" Bueyes")); } break;    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        case 5: CambiarEsperanzaActual(-15); int rand2 = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand2); if (rand2 < 0) { EscribirLog(TRADU.i.Traducir("-La fatiga ha provocado la muerte de algunos Bueyes.") + " -" + rand2 + TRADU.i.Traducir(" Bueyes")); } break;
+        case > 5: CambiarEsperanzaActual(-20); int rand3 = UnityEngine.Random.Range(-4, 1); CambiarBueyesActuales(rand3); int rand4 = UnityEngine.Random.Range(-10, 1); CambiarCivilesActuales(rand4); if (rand3 < 0 || rand4 < 0) { EscribirLog(TRADU.i.Traducir("-La fatiga extrema ha provocado la muerte de algunos Bueyes y Civiles.") + " -" + rand3 + TRADU.i.Traducir(" Bueyes -") + rand4 + TRADU.i.Traducir(" Civiles")); } break;
       }
       if (scMenuSequito.TieneSequito(9) && fatigaAhora >= 4) //Si hay un Séquito de Nobles y la fatiga es 4 o más
       {
@@ -1331,12 +1340,12 @@ public class CampaignManager : MonoBehaviour
     {
       CargaMaxActual += 50; //Bonus de carga por los esclavos
     }
-    
-  
+
+
 
     return CargaMaxActual;
 
-    
+
   }
 
   public async void CambiarBueyesActuales(int bueyes)
@@ -1407,18 +1416,19 @@ public class CampaignManager : MonoBehaviour
     switch (TRADU.i.nIdioma)
     {
       case 1: //Español
-      {
+        {
           if (diasSuministros != 1)
           { valueCantdescansos.text = $"<i>{(int)diasSuministros} descansos</i>"; }
           else { valueCantdescansos.text = $"<i>{(int)diasSuministros} descanso</i>"; }
           break;
-      }
+        }
       case 2: //Ingles
-      {
-        if (diasSuministros != 1)
-        { valueCantdescansos.text = $"<i>{(int)diasSuministros} rests</i>"; }
-        else { valueCantdescansos.text = $"<i>{(int)diasSuministros} rest</i>"; } break;
-      }
+        {
+          if (diasSuministros != 1)
+          { valueCantdescansos.text = $"<i>{(int)diasSuministros} rests</i>"; }
+          else { valueCantdescansos.text = $"<i>{(int)diasSuministros} rest</i>"; }
+          break;
+        }
 
 
 
@@ -1427,7 +1437,7 @@ public class CampaignManager : MonoBehaviour
 
     GetCargaLlevadaActual();
 
-    if (SuministrosActuales < GetCivilesActual()) {alertaSuministros.SetActive(true); }
+    if (SuministrosActuales < GetCivilesActual()) { alertaSuministros.SetActive(true); }
     else { alertaSuministros.SetActive(false); }
 
   }
@@ -1461,7 +1471,7 @@ public class CampaignManager : MonoBehaviour
   public void AbandonarMateriales()
   {
     CambiarMaterialesActuales(-2);
-   // CambiarEsperanzaActual(-1);
+    // CambiarEsperanzaActual(-1);
   }
 
 
@@ -1667,11 +1677,15 @@ public class CampaignManager : MonoBehaviour
 
         text.text = TRADU.i.Traducir("A medida que viajas por el bosque, las llamas envolverán regiones del mapa de forma inesperada.\n\nSi intentas atravesar un Nodo prendido fuego, perderás 10 de Esperanza y 8-15 Civiles.\nNo se podrá descansar en nodos incendiados.\n\nAdemás, las batallas que tengan lugar en un Nodo incendiado, tendrán llamas en el campo de batalla.");
       }
-       if (scAtributosZona.ID == 2) //Paso Vientohelado
+      if (scAtributosZona.ID == 2) //Paso Vientohelado
       {
-          text.text = TRADU.i.Traducir("La tribu Kale'Tav está realizando rituales en el área, preparándose para el Aliento Negro.\n\nAl escuchar sus tambores a lo lejos sabrás dónde se encuentran.\nPor cada Ritual completado, sus combatientes recibirán bonificaciones en batalla.\n\nPara interrumpir un ritual debes aproximarte a los nodos marcados y derrotarlos.\n\nFuerza Kale'Tav: ") + scAtributosZona.PasoVientoHelado_FuerzaKaleTav;
+        text.text = TRADU.i.Traducir("La tribu Kale'Tav está realizando rituales en el área, preparándose para el Aliento Negro.\n\nAl escuchar sus tambores a lo lejos sabrás dónde se encuentran.\nPor cada Ritual completado, sus combatientes recibirán bonificaciones en batalla.\n\nPara interrumpir un ritual debes aproximarte a los nodos marcados y derrotarlos.\n\nFuerza Kale'Tav: ") + scAtributosZona.PasoVientoHelado_FuerzaKaleTav;
       }
-     
+      if (scAtributosZona.ID == 3) //Nedukazal
+      {
+        text.text = TRADU.i.Traducir("Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será mas propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Pie</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta zona.");
+      }
+
 
 
     }
@@ -1720,8 +1734,11 @@ public class CampaignManager : MonoBehaviour
   }
 
   public int intTipoClima; //1 - Sol, 2 - Calor, 3 - Lluvia, 4 - Nieve, 5 - Niebla
-  // Especiales:
-  // 6 - Bosque Ardiente Almas Danzantes
+                           // Especiales:
+                           // 6 - Bosque Ardiente Almas Danzantes
+                           // 7 - Paso Vientohelado Aurora Boreal
+                           // 8 - Nedukazal Oscuridad
+                           // 9 - Nedukazal - Masacre
   public Image widgetClima;
   public Sprite clima_lluvia;
   public Sprite clima_nieve;
@@ -1730,6 +1747,8 @@ public class CampaignManager : MonoBehaviour
   public Sprite clima_niebla;
   public Sprite clima_almasDanzantes;
   public Sprite clima_auroraboreal;
+  public Sprite clima_NedukazalNormal;
+  public Sprite clima_NedukazalMasacre;
   public GameObject climaTooltip;
   public TextMeshProUGUI textClimaTooltip;
 
@@ -1741,21 +1760,15 @@ public class CampaignManager : MonoBehaviour
 
       switch (intTipoClima)
       {
-        case 1: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Soleado: +5 Esperanza."); break;
-        case 2: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Ola de Calor: +1 Fatiga. Jornada Libre da +5 Esperanza, otras Tareas Civiles dan -3."); break;
-        case 3: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada."); break;
-        case 4: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Nieve: +3 Esperanza. -15% Recolecciónes, -20% Emboscada. Viajar lleva el doble de tiempo."); break;
-        case 5: textClimaTooltip.text = TRADU.i.Traducir("Día ")+numeroTurno+ TRADU.i.Traducir(": -Niebla: -20% Recolecciónes, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos."); break;
-        case 6:
-          if (scAtributosZona.ID == 1) //Bosque ardiente
-          {
-            textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Almas Danzantes: +5 Esperanza, -100% chances de Emboscada.");
-          }
-          else if (scAtributosZona.ID == 2) //Paso Vientohelado
-          {
-            textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Aurora Boreal: +10 Esperanza."); break;
-          }
-          break;
+        case 1: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Soleado: +5 Esperanza."); break;
+        case 2: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Ola de Calor: +1 Fatiga. Jornada Libre da +5 Esperanza, otras Tareas Civiles dan -3."); break;
+        case 3: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada."); break;
+        case 4: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Nieve: +3 Esperanza. -15% Recolecciónes, -20% Emboscada. Viajar lleva el doble de tiempo."); break;
+        case 5: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Niebla: -20% Recolecciónes, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos."); break;
+        case 6: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Almas Danzantes: +5 Esperanza, -100% chances de Emboscada."); break;
+        case 7: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Aurora Boreal: +10 Esperanza."); break;
+        case 8: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Nedukazal está a oscuras."); break;
+        case 9: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Masacre: Nedukazal está siendo atacada. -10 Esperanza. +10% Emboscada. Los Zârkil están potenciados."); break;
 
 
       }
@@ -1797,7 +1810,12 @@ public class CampaignManager : MonoBehaviour
 
 
   public MenuCaravana scMenuCaravana;
-  public MenuOpciones scMenuOpciones;
+  public GameObject MenuOpciones;
+
+  public void abrirOpciones()
+  {
+    MenuOpciones.SetActive(!MenuOpciones.activeInHierarchy);
+  }
 
   void Update()
   {
@@ -1826,14 +1844,14 @@ public class CampaignManager : MonoBehaviour
     {
       scMenuCaravana.AbrirMenuSequitos();
     }
-     if (Input.GetKeyDown(KeyCode.Escape))
+    if (Input.GetKeyDown(KeyCode.Escape))
     {
       if (!scMenuCaravana.SeApretoESC()) //Si se apreto escape se cierran menus, si no habia ningun abierto abre opciones
       {
-         scMenuOpciones.abrirMenu(); 
+        MenuOpciones.SetActive(true);
       }
-      
-     
+
+
     }
 
 
@@ -1858,7 +1876,7 @@ public class CampaignManager : MonoBehaviour
 
   }
 
- [SerializeField] public LogDeCampania logDeCampania;
+  [SerializeField] public LogDeCampania logDeCampania;
   public void EscribirLog(string log)
   {
     if (logDeCampania == null) return;
@@ -1869,8 +1887,8 @@ public class CampaignManager : MonoBehaviour
 
     GenerarTextoFlotanteCampaña(log, Color.cyan);
 
-   
-}
+
+  }
 
   public GameObject prefabTextoCampaña;
   [SerializeField] GameObject puntoPantalla;
@@ -1918,7 +1936,7 @@ public class CampaignManager : MonoBehaviour
       {
         // Manejo local: instancia el prefab directamente
         GameObject goTextoFlotante = Instantiate(prefabTextoCampaña, puntoPantalla.transform, false);
-        
+
         // Calcula desplazamiento vertical según cuántos spawns recientes hay aún cerca del origen
         recentSpawnTimes.RemoveAll(t => Time.time - t > stackWindowSeconds);
         int stackIndex = recentSpawnTimes.Count; // 0 para el primero, 1 para el segundo, etc.
@@ -2043,7 +2061,7 @@ public class CampaignManager : MonoBehaviour
     scMenuPersonajes.listaPersonajes.Add(pers1);
 
     scMenuPersonajes.scEquipo.ActualizarEquipo(pers1);
-    
+
 
 
 
@@ -2099,7 +2117,7 @@ public class CampaignManager : MonoBehaviour
     pers1.GetComponent<ImprovisarFlechas>().NIVEL = 1;
     pers1.AddComponent<CorteDaga>(); //La daga no es item
 
-  
+
 
     //Habilidades Base
     int randHabPot1 = UnityEngine.Random.Range(1, 5);
@@ -2395,7 +2413,7 @@ public class CampaignManager : MonoBehaviour
     pers1.AddComponent<AcumularEnergia>();
     pers1.AddComponent<DescargaArcana>();
 
-   
+
     //Habilidades Base
     int randHabPot1 = UnityEngine.Random.Range(1, 3);
     switch (randHabPot1)
@@ -2611,5 +2629,24 @@ public class CampaignManager : MonoBehaviour
 
     int index = UnityEngine.Random.Range(0, personajesDisponibles.Count);
     return personajesDisponibles[index];
+  }
+
+  public void AjustarDificultad()
+  {
+
+    int difPlayerPrefs = PlayerPrefs.GetInt("dificultad_index", 2);
+    int presetNivel = Sistema.HandicapDificultad.ConvertirIndexPrefsAPresetNivel(difPlayerPrefs);
+
+    var handicap = Sistema.HandicapDificultad.Instance;
+    if (handicap != null)
+    {
+      handicap.AplicarDificultadDesdePlayerPrefs();
+    }
+    else if (BattleManager.Instance != null)
+    {
+      BattleManager.Instance.EstablecerDificultadCombate(presetNivel);
+    }
+
+
   }
 }

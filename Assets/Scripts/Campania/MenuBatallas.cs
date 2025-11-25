@@ -1092,11 +1092,11 @@ public void DejanEnListaParticipantesSolo()
 
     if (resultado == 1)
     {
-        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Victoria contra ") + faccion + $" ({tipo})");
+       // CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Victoria contra ") + faccion + $" ({tipo})");
     }
     else
     {
-        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Derrota frente a ") + faccion + $" ({tipo})");
+        //CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Derrota frente a ") + faccion + $" ({tipo})");
     }
  }
 

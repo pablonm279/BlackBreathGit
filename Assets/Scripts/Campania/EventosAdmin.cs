@@ -472,7 +472,11 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Recursos");
 
             txtDescripcion.text=TRADU.i.Traducir("Has llegado a un lugar rico en recursos naturales, los civiles se han puesto a recolectar lo que han podido.");
-            txtDescripcion.text+=TRADU.i.Traducir("\nSe conseguirán de 18-30 Materiales y 80-140 Suministros.");
+
+            if (CampaignManager.Instance.scAtributosZona.ID == 3)//Nedukazal
+            { txtDescripcion.text += TRADU.i.Traducir("\nSe conseguirán de 25-40 Materiales y 60-85 Suministros."); }
+            else 
+            { txtDescripcion.text += TRADU.i.Traducir("\nSe conseguirán de 18-30 Materiales y 80-140 Suministros."); }
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
             txtDescripcion.text+=TRADU.i.Traducir("<color=#a0e812><b>\n\nDescansar en este lugar tendrá beneficios adicionales:+20% efectividad a tareas de Recolección.</b></color>");
@@ -804,12 +808,22 @@ public class EventosAdmin : MonoBehaviour
    
     if(eventoActual == 403) //Recursos
     {
-       
-        int suministros =UnityEngine.Random.Range(80,141);
-        CampaignManager.Instance.CambiarSuministrosActuales(suministros);
-        int materiales =UnityEngine.Random.Range(18,31);
-        CampaignManager.Instance.CambiarMaterialesActuales(materiales);
-       
+            if (CampaignManager.Instance.scAtributosZona.ID == 3)//Nedukazal
+            {
+                int suministros = UnityEngine.Random.Range(60, 86);
+                CampaignManager.Instance.CambiarSuministrosActuales(suministros);
+                int materiales = UnityEngine.Random.Range(25, 41);
+                CampaignManager.Instance.CambiarMaterialesActuales(materiales);
+
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                int suministros = UnityEngine.Random.Range(80, 141);
+                CampaignManager.Instance.CambiarSuministrosActuales(suministros);
+                int materiales = UnityEngine.Random.Range(18, 31);
+                CampaignManager.Instance.CambiarMaterialesActuales(materiales);
+            }
         gameObject.SetActive(false);
     }
 

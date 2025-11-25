@@ -11,6 +11,7 @@ namespace Sistema
   public class HandicapDificultad : MonoBehaviour
   {
     public static HandicapDificultad Instance { get; private set; }
+    private const string PrefKeyDificultad = "dificultad_index";
 
     [Header("General")]
     public bool habilitado = true;
@@ -92,10 +93,12 @@ namespace Sistema
         return;
       }
       Instance = this;
+      AplicarDificultadDesdePlayerPrefs();
     }
 
     private void Start()
     {
+    
       // Barrido inicial para unidades ya colocadas en escena
       StartCoroutine(ApplyInitialSweep());
     }
@@ -226,6 +229,20 @@ namespace Sistema
       presetSeleccionado = preset;
     }
 
+    public void AplicarDificultadDesdePlayerPrefs()
+    {
+      int dificultadIndex = PlayerPrefs.GetInt(PrefKeyDificultad, 2); // 2 = Normal por defecto
+      int presetNivel = ConvertirIndexPrefsAPresetNivel(dificultadIndex);
+      EstablecerDificultadCombate((DificultadPreset)presetNivel);
+    }
+
+    public static int ConvertirIndexPrefsAPresetNivel(int dificultadIndex)
+    {
+      // Dropdown 0..4 -> Preset enum 1..5
+      int presetNivel = Mathf.Clamp(dificultadIndex + 1, (int)DificultadPreset.MuyFacil, (int)DificultadPreset.MuyDificil);
+      return presetNivel;
+    }
+
     private Ajustes ObtenerAjustesPreset(DificultadPreset preset)
     {
       // Solo tocamos: HP Max, Ataque, Daño% y TS (todas).
@@ -247,9 +264,9 @@ namespace Sistema
         case DificultadPreset.Default:
           break;
         case DificultadPreset.Dificil:
-          a.hpMaxPct = 10f;
+          a.hpMaxPct = 15f;
           a.ataqueFlat = 1f;
-          a.danioPorcPct = 7f;
+          a.danioPorcPct = 10f;
           a.tsAllFlat = 1f;
           break;
         case DificultadPreset.MuyDificil:

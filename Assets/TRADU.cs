@@ -966,8 +966,8 @@ public class TRADU : MonoBehaviour
             case "Durante el descanso, se asignarán a los civiles mas aptos físicamente a la vigilancia del area circundante al campamento.\n\n":
                 r = "During rest, the most physically fit civilians will be assigned to monitor the area surrounding the camp.\n\n";
                 break;
-            case "<color=#d8a205>Previene cualquier Emboscada en este descanso. +20% a Exploración. -10 Esperanza.</color>\n\n\n":
-                r = "<color=#d8a205>Prevents any Ambush during this rest. +20% to Exploration. -10 Hope.</color>\n\n\n";
+            case "<color=#d8a205>Reduce chances de ataque a caravana. +20% a Exploración. -10 Esperanza.</color>\n\n\n":
+                r = "<color=#d8a205>Reduces chances of Ambush during this rest. +20% to Exploration. -10 Hope.</color>\n\n\n";
                 break;
             case "<b><u>Día Libre</b></u>\n\n\n":
                 r = "<b><u>Day Off</b></u>\n\n\n";
@@ -3195,75 +3195,72 @@ public class TRADU : MonoBehaviour
             case "Accesos Rápidos":
                 r = "Hotkeys";
                 break;
-                /*  case "":
+            case "Dificultad":
+                r = "Difficulty";
+                break;
+            case "-----Combate-----":
+                r = "-----Combat-----";
+                break;
+            case "Modo Rápido":
+                r = "Fast Mode";
+                break;
+            case "Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será mas propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Pie</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta zona.":
+                r = "Due to the invasion, Nedukazal is shrouded in chaos and darkness, so the caravan will not be able to clearly see the path ahead.\n\nRelying on its own light, it will be more prone to ambushes (+20%).\n\nUpgrade the <b>Standing Torches</b> to increase the vision range.\n\nThe Black Breath will not be a concern in this area.";
+                break;
+            case "\nSe conseguirán de 25-40 Materiales y 60-85 Suministros.":
+                r = "\n25-40 Materials and 60-85 Supplies will be gathered.";
+                break;
+            case ": -Nedukazal está a oscuras.":
+                r = ": -Nedukazal is in darkness.";
+                break;
+            case ": -Masacre: Nedukazal está siendo atacada. -10 Esperanza. +10% Emboscada. Los Zârkil están potenciados.":
+                r = ": -Massacre: Nedukazal is being attacked. -10 Hope. +10% Ambush. The Zârkil are empowered.";
+                break;
+            case "Garra Zarkil":
                 r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
+                break;
+            case "Zarkil Acechador":
+                r = "Zarkil Stalker";
+                break;
+            case "Masacre Zarkil":
+                r = "Zarkil Massacre";
+                break;
+            case "<i>Raza de criaturas demoníacas que invaden Nedulkazan desde abajo en busca de sacrificios y oro. </i>\n\n<color=#199F10>-Al esquivar un ataque se moverán.\n-Puede ver escondidos.</color>\n<color=#EE0000>-Posee sólo un tipo de ataque.</color>":
+                r = "<i>Race of demonic creatures that invade Nedulkazan from below in search of sacrifices and gold. </i>\n\n<color=#199F10>-When dodging an attack, they will move.\n-Can see hidden units.</color>\n<color=#EE0000>-Only one type of attack.</color>";
+                break;
+            case "Agazapado":
+                r = "Lurking";
+            break;
+            case "Zarkil Guerrero":
+                r = "Zarkil Warrior";
+            break;
+            case "Mirada de la Masacre":
+                r = "Gaze of the Massacre";
+                break;
+            case " reacciona con Mirada de la Masacre.":
+                r = " reacts with Gaze of the Massacre.";
+                break;
+            case "Aterrado":
+                r = "Terrified";
+                break;
+            case "Mirada de Masacre: al moverse aquí, Tirada de salvación mental CD 13 o se pierde el turno.":
+                r = "Gaze of the Massacre: when moving here, Mental saving throw DC 13 or lose the turn.";
+                break;
+            case "<i>Raza de criaturas demoníacas que invaden Nedulkazan desde abajo en busca de sacrificios y oro. </i>\n\n<color=#199F10>-Puede aterrar a criaturas enfrente.\n-Puede ver escondidos.</color>\n<color=#EE0000>-Posee sólo un tipo de ataque.</color>":
+                r = "<i>Race of demonic creatures that invade Nedulkazan from below in search of sacrifices and gold. </i>\n\n<color=#199F10>-Can terrify creatures in front.\n-Can see hidden units.</color>\n<color=#EE0000>-Only one type of attack.</color>";
+                break;
+            case "Zarkil Vociferador":
+                r = "Zarkil Shouter";
+                break;
+            case "Grito de batalla Zarkil":
+                r = "Zarkil Battle Cry";
+                break;
+            case "Orden Recibida":
+                r = "Order Received";
+                break;
+            case "<i>Raza de criaturas demoníacas que invaden Nedulkazan desde abajo en busca de sacrificios y oro. </i>\n\n<color=#199F10>-Grito aturdidor que además motiva aliados.\n-Puede ver escondidos.\n-Puede atacar repetidamente.</color>\n<color=#EE0000></color>":
+                r = "<i>Race of demonic creatures that invade Nedulkazan from below in search of sacrifices and gold. </i>\n\n<color=#199F10>-Stunning shout that also motivates allies.\n-Can see hidden units.\n-Can attack repeatedly.</color>\n<color=#EE0000></color>";
+                break;
                 /*  case "":
                 r = "";
                 break;*/

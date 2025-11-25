@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,11 +26,14 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public TMP_Dropdown resolucionDropdown;
     public TMP_Dropdown graficosDropdown;
+    public TMP_Dropdown dificultadDropdown;
 
     private List<Resolution> resolucionesSoportadas = new List<Resolution>();
     private int resolucionActualIndex = 0;
 
     public Toggle fullscreenToggle;
+    public Toggle modorapidoToggle;
+
 
     void Start()
     {
@@ -87,24 +90,40 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         bool fs = PlayerPrefs.GetInt("fullscreen", 1) == 1;
         if (fullscreenToggle != null)
             fullscreenToggle.SetIsOnWithoutNotify(fs);
-
         Screen.fullScreen = fs;
 
         // Calidad grafica
         int calidadIndex = PlayerPrefs.GetInt("graficos_index", QualitySettings.GetQualityLevel());
-         print($"Obteniendo calidad grafica nivel {calidadIndex}");
-        
+//        print($"Obteniendo calidad grafica nivel {calidadIndex}");
+
         QualitySettings.SetQualityLevel(calidadIndex, true);
         PlayerPrefs.SetInt("graficos_index", calidadIndex); // asegura persistencia inmediata
         PlayerPrefs.Save();
-        graficosDropdown.SetValueWithoutNotify(calidadIndex); 
+        graficosDropdown.SetValueWithoutNotify(calidadIndex);
+        TraducirDropdownGraficos();
+        TraducirDropdownDificultad();
+
+        int difGuardada = PlayerPrefs.GetInt("dificultad_index", 2); // 2 = Normal por defecto (índice dropdown)
+        difGuardada = Mathf.Clamp(difGuardada, 0, Mathf.Max(0, dificultadDropdown.options.Count - 1));
+        dificultadDropdown.SetValueWithoutNotify(difGuardada);
+
+        // Modo rapido
+        bool modorapido = PlayerPrefs.GetInt("modoRapido", 0) == 1;
+        if (modorapidoToggle != null)
+            modorapidoToggle.SetIsOnWithoutNotify(modorapido);
+
     }
 
     public void CambiarEfectos()
     {
         // Volumen de la música
         PlayerPrefs.SetFloat("Vol_Musica", volMusicaSlider.value);
-        musicaFondo.volume = volMusicaSlider.value;
+        if (musicaFondo.GetComponent<MusicManager>() != null)
+        {
+            musicaFondo.GetComponent<MusicManager>().SetVolumen(volMusicaSlider.value);
+        }
+        else {    musicaFondo.volume = volMusicaSlider.value;}
+     
 
         // Sonido en segundo plano
         PlayerPrefs.SetInt("Background_Sound", musicInBackgroundToggle.isOn ? 1 : 0);
@@ -129,7 +148,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         // Resolución y pantalla completa
 
         AplicarResolucion();
-       
+
 
 
         //---
@@ -171,7 +190,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             PanelControles.transform.GetChild(1).gameObject.SetActive(false); // Inglés
 
         }
-        else if(nidioma == 2)
+        else if (nidioma == 2)
         {
             PanelControles.transform.GetChild(0).gameObject.SetActive(false); // Español
             PanelControles.transform.GetChild(1).gameObject.SetActive(true); // Inglés
@@ -297,7 +316,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
         bool full = fullscreenToggle.isOn;
 
-       // print($"Aplicando resolución {r.width}x{r.height} | Fullscreen = {full}");
+        // print($"Aplicando resolución {r.width}x{r.height} | Fullscreen = {full}");
 
         // Aplicar TODO junto: resolución + fullscreen
         Screen.SetResolution(r.width, r.height, full);
@@ -308,21 +327,80 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-   public void AplicarGraficos()
+    public void AplicarGraficos()
     {
         int index = graficosDropdown.value;
         QualitySettings.SetQualityLevel(index, true);
         print($"Aplicando calidad gráfica nivel {index}");
-        
+
         PlayerPrefs.SetInt("graficos_index", index);
         PlayerPrefs.Save();
         print($"playerprefs {PlayerPrefs.GetInt("graficos_index")}");
-        
+
 
     }
-    
 
+    public void AplicarDificultad()
+    {
+        int index = dificultadDropdown.value;
+        PlayerPrefs.SetInt("dificultad_index", index);
+        PlayerPrefs.Save();
+
+        if (CampaignManager.Instance != null) {CampaignManager.Instance.AjustarDificultad(); }
+    }
+
+    void TraducirDropdownGraficos()
+    {
+        if (TRADU.i.nIdioma == 1)
+        {
+            graficosDropdown.options[0].text = "Baja";
+            graficosDropdown.options[1].text = "Media";
+            graficosDropdown.options[2].text = "Ultra";
+            // graficosDropdown.options[3].text = "Ultra";
+        }
+        else if (TRADU.i.nIdioma == 2)
+        {
+            graficosDropdown.options[0].text = "Low";
+            graficosDropdown.options[1].text = "Medium";
+            graficosDropdown.options[2].text = "Ultra";
+            //   graficosDropdown.options[3].text = "Ultra";
+        }
+
+
+    }
+
+    void TraducirDropdownDificultad()
+    {
+        if (dificultadDropdown == null || dificultadDropdown.options.Count < 5)
+            return;
+
+        if (TRADU.i.nIdioma == 1)
+        {
+            dificultadDropdown.options[0].text = "Muy Facil";
+            dificultadDropdown.options[1].text = "Facil";
+            dificultadDropdown.options[2].text = "Normal";
+            dificultadDropdown.options[3].text = "Dificil";
+            dificultadDropdown.options[4].text = "Muy Dificil";
+        }
+        else if (TRADU.i.nIdioma == 2)
+        {
+            dificultadDropdown.options[0].text = "Very Easy";
+            dificultadDropdown.options[1].text = "Easy";
+            dificultadDropdown.options[2].text = "Normal";
+            dificultadDropdown.options[3].text = "Hard";
+            dificultadDropdown.options[4].text = "Very Hard";
+        }
+    }
+
+    public void AplicarModoRapido()
+    {
+        bool modorapido = modorapidoToggle.isOn;
+        PlayerPrefs.SetInt("modoRapido", modorapido ? 1 : 0);
+        PlayerPrefs.Save();
+
+    }   
 
 
 }
+
 

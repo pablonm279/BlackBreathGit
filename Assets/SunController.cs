@@ -15,6 +15,9 @@ public class SunController : MonoBehaviour
     [Header("Paso por viaje (Y)")]
     [FormerlySerializedAs("pasoX")] public float pasoY = -4f; // grados que rota en Y por cada avance
 
+    [Header("Comportamiento")]
+    public bool Fijo = false; // si esta activo, no rota al bajar la intensidad
+
     [Header("Atardecer")]
     [Range(0.5f, 1f)] public float intensityStepFactor = 0.95f; // 5% menos por step
     [Range(0f, 1f)] public float colorStep = 0.05f;             // cuánto se acerca al color atardecer por step
@@ -61,7 +64,8 @@ public class SunController : MonoBehaviour
     {
         // Rotación SOLO en eje Y, acumulativa y robusta (espacio local)
         Quaternion startRot = transform.localRotation;
-        Quaternion targetRot = startRot * Quaternion.Euler(0f, pasoY, 0f);
+        bool bloquearRotacion = Fijo;
+        Quaternion targetRot = bloquearRotacion ? startRot : startRot * Quaternion.Euler(0f, pasoY, 0f);
 
         // Usar el Light de este mismo GameObject
         var ownLight = GetComponent<Light>();
@@ -77,7 +81,8 @@ public class SunController : MonoBehaviour
         while (t < 1f)
         {
             t += Time.deltaTime / dur;
-            transform.localRotation = Quaternion.Slerp(startRot, targetRot, t);
+            if (!bloquearRotacion)
+                transform.localRotation = Quaternion.Slerp(startRot, targetRot, t);
             if (ownLight)
             {
                 ownLight.intensity = Mathf.Lerp(startInt, targetInt, t);
@@ -87,7 +92,8 @@ public class SunController : MonoBehaviour
         }
 
         // Fijar el estado final exacto
-        transform.localRotation = targetRot;
+        if (!bloquearRotacion)
+            transform.localRotation = targetRot;
         if (ownLight)
         {
             ownLight.intensity = targetInt;
@@ -143,7 +149,8 @@ public class SunController : MonoBehaviour
     // Paso instantáneo para usar desde el Editor (fuera de Play Mode)
     public void EditorStepInstant()
     {
-        transform.localRotation = transform.localRotation * Quaternion.Euler(0f, pasoY, 0f);
+        if (!Fijo)
+            transform.localRotation = transform.localRotation * Quaternion.Euler(0f, pasoY, 0f);
         var ownLight = GetComponent<Light>();
         if (ownLight)
         {

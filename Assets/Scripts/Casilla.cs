@@ -61,12 +61,12 @@ public class Casilla : MonoBehaviour
       if (unidad.ObtenerAPActual() >= costoMovimientoTotal)
       {
         string text = "" + TRADU.i.Traducir("Coste: ") + costoMovimientoTotal + " " + TRADU.i.Traducir("PA");
-        scTooltipBatalla.ShowTooltip(0, text);
+        scTooltipBatalla.ShowTooltipText(text);
       }
       else
       {
         string text = "<color=red>" + TRADU.i.Traducir("Coste: ") + costoMovimientoTotal + " " + TRADU.i.Traducir("PA") + "</color>";
-        scTooltipBatalla.ShowTooltip(0, text);
+        scTooltipBatalla.ShowTooltipText(text);
 
       }
     }
@@ -1471,7 +1471,11 @@ public class Casilla : MonoBehaviour
 
     //Unidad seleccionada - Movimiento
     Unidad unidad = BattleManager.Instance.unidadActiva;
-
+    
+    if(unidad == null)
+    {
+      return 0;
+    }
     if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
       int costoMovimientoTotal = costoMovimiento;
@@ -1495,12 +1499,12 @@ public class Casilla : MonoBehaviour
       }
     }
     else if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente != null && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
-    { 
+    {
       if (Presente.GetComponent<Unidad>() != null)
-      { 
+      {
         if (!Presente.GetComponent<Unidad>().TieneBuffNombre("Desplazado"))
         {
-         
+
           res = 10; //Desplazable
         }
         else
@@ -1508,13 +1512,14 @@ public class Casilla : MonoBehaviour
           res = 0;
         }
 
-        
+
       }
 
-    }  else
-        {
-          res = 0;
-        }
+    }
+    else
+    {
+      res = 0;
+    }
 
 
     return res;

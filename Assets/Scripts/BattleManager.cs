@@ -61,7 +61,7 @@ public class BattleManager : MonoBehaviour
   public TextMeshProUGUI textClimaTooltip;
   public TextMeshProUGUI rondaText;
   public bool bOcupado; //Variable de control de flujo de batalla
-  
+
   public GameObject nocheLienzo;
   private void Awake()
   {
@@ -78,6 +78,11 @@ public class BattleManager : MonoBehaviour
   private void Start()
   {
     ArmarListadeCasillastotales();
+    var handicapDificultad = GetComponent<Sistema.HandicapDificultad>();
+    if (handicapDificultad != null)
+    {
+      handicapDificultad.AplicarDificultadDesdePlayerPrefs();
+    }
 
     RondaNro = 1;
 
@@ -229,7 +234,7 @@ public class BattleManager : MonoBehaviour
           UIActivarCanvas0Jugadoro1AI(1);//Enemigo
         }
         else
-        { 
+        {
           UIActivarCanvas0Jugadoro1AI(2);//Aliado
 
         }
@@ -309,7 +314,7 @@ public class BattleManager : MonoBehaviour
   public void TerminarTurno() //Termina el turno de la unidad activa
   {
     scUIBotonesHab.UIDesactivarBotones();
-    
+
     unidadActiva.TerminaTurnoEstaUnidad();
 
     if (indexTurno >= 0 && indexTurno < lUnidadesTotal.Count)
@@ -350,7 +355,7 @@ public class BattleManager : MonoBehaviour
     if (TRADU.i.nIdioma == 1)
     { EscribirLog("==== Ronda " + RondaNro + " comienza ===="); }
     else if (TRADU.i.nIdioma == 2)
-    { EscribirLog("==== Round " + RondaNro + " begins ===="); } 
+    { EscribirLog("==== Round " + RondaNro + " begins ===="); }
 
     OnRondaNueva?.Invoke(this, EventArgs.Empty);
 
@@ -387,7 +392,7 @@ public class BattleManager : MonoBehaviour
     }
 
     rondaText.text = TRADU.i.Traducir("Ronda") + " " + RondaNro;
-  //  BorrarLog();
+    //  BorrarLog();
   }
 
   void DisminuirDuracionObstaculos()
@@ -445,7 +450,7 @@ public class BattleManager : MonoBehaviour
     if (tiempoRestante < 0) { tiempoRestante = 0; }
     txtAliadosContador.text = "" + aliadosRefuerzos.Count();
     txtAliadosRefTiempo.text = "" + tiempoRestante;
-    
+
     if (aliadosRefuerzos.Count < 1)
     { goAliadosRefuerzos.SetActive(false); }
     else { goAliadosRefuerzos.SetActive(true); }
@@ -483,7 +488,7 @@ public class BattleManager : MonoBehaviour
     }
 
     ActualizarRefuerzosUI();
-    
+
   }
   void AdministrarRefuerzosAliados()
   {
@@ -553,7 +558,7 @@ public class BattleManager : MonoBehaviour
       enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
     }
 
-    EscribirLog("<color=#d92b08>"+enemigo.GetComponent<Unidad>().uNombre+TRADU.i.Traducir(" se ha unido a la batalla. Quedan ")+(enemigosRefuerzos.Count() - 1)+TRADU.i.Traducir(" refuerzos.</color> "));
+    EscribirLog("<color=#d92b08>" + enemigo.GetComponent<Unidad>().uNombre + TRADU.i.Traducir(" se ha unido a la batalla. Quedan ") + (enemigosRefuerzos.Count() - 1) + TRADU.i.Traducir(" refuerzos.</color> "));
     AplicarEfectosInicioCombate(enemigo.GetComponent<Unidad>());
     scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
   }
@@ -597,7 +602,7 @@ public class BattleManager : MonoBehaviour
       enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
     }
     AplicarEfectosInicioCombate(enemigo.GetComponent<Unidad>());
-    EscribirLog("<color=#d92b08>"+enemigo.GetComponent<Unidad>().uNombre+TRADU.i.Traducir(" se ha unido a la batalla. Quedan ")+(enemigosRefuerzos.Count() - 1)+TRADU.i.Traducir(" refuerzos.</color> "));
+    EscribirLog("<color=#d92b08>" + enemigo.GetComponent<Unidad>().uNombre + TRADU.i.Traducir(" se ha unido a la batalla. Quedan ") + (enemigosRefuerzos.Count() - 1) + TRADU.i.Traducir(" refuerzos.</color> "));
     scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
 
 
@@ -607,27 +612,40 @@ public class BattleManager : MonoBehaviour
   {
     //Aca van los efectos y controles a aplicar que deben recibir los refuerzos.
     //Kale'Tav fuerza
-      int repeticiones = CampaignManager.Instance.scAtributosZona.PasoVientoHelado_FuerzaKaleTav;
-       for (int i = 0; i < repeticiones; i++)
-       {
-        if (u.TieneTag("Kale'Tav") && CampaignManager.Instance.scAtributosZona.ID == 2)
-        {
-          // BUFF ---- Así se aplica un buff/debuff
-          Buff buff = new Buff();
-          buff.buffNombre = "Fuerza Kale'Tav";
-          buff.boolfDebufftBuff = true;
-          buff.DuracionBuffRondas = -1;
-          buff.cantDanioPorcentaje += 10;
-          buff.cantHPMax += 10;
-          buff.cantTsMental += 1;
-          buff.cantTsFortaleza += 1;
-          buff.AplicarBuff(u);
-          // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-          Buff buffComponent = ComponentCopier.CopyComponent(buff, u.gameObject);
-        }
-       }
-    
+    int repeticiones = CampaignManager.Instance.scAtributosZona.PasoVientoHelado_FuerzaKaleTav;
+    for (int i = 0; i < repeticiones; i++)
+    {
+      if (u.TieneTag("Kale'Tav") && CampaignManager.Instance.scAtributosZona.ID == 2)
+      {
+        // BUFF ---- Así se aplica un buff/debuff
+        Buff buff = new Buff();
+        buff.buffNombre = "Fuerza Kale'Tav";
+        buff.boolfDebufftBuff = true;
+        buff.DuracionBuffRondas = -1;
+        buff.cantDanioPorcentaje += 10;
+        buff.cantHPMax += 10;
+        buff.cantTsMental += 1;
+        buff.cantTsFortaleza += 1;
+        buff.AplicarBuff(u);
+        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+        Buff buffComponent = ComponentCopier.CopyComponent(buff, u.gameObject);
+      }
+    }
 
+    //Zarkil Masacre
+     if (u.TieneTag("Zarkil") && CampaignManager.Instance.scAtributosZona.ID == 3)
+      {
+        // BUFF ---- Así se aplica un buff/debuff
+        Buff buff = new Buff();
+        buff.buffNombre = "Masacre Zarkil";
+        buff.boolfDebufftBuff = true;
+        buff.DuracionBuffRondas = -1;
+        buff.cantCritDado += 2;
+        buff.percCritDaño += 20;
+        buff.AplicarBuff(u);
+        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+        Buff buffComponent = ComponentCopier.CopyComponent(buff, u.gameObject);
+      }
 
   }
 
@@ -673,7 +691,7 @@ public class BattleManager : MonoBehaviour
       }
     }
     // Ordena la lista de unidades por iniciativa de mayor a menor
-      lUnidadesTotal = lUnidadesTotal.OrderByDescending(u => u.iniciativa_actual).ToList();
+    lUnidadesTotal = lUnidadesTotal.OrderByDescending(u => u.iniciativa_actual).ToList();
 
   }
 
@@ -809,10 +827,20 @@ public class BattleManager : MonoBehaviour
     {
       scUIInfoChar.BotonInfoenemigos();
     }
+    if (Input.GetKeyDown(KeyCode.F))
+    {
+      ActivarModoRapido(!modoRapidoActivado);
+    }
     ManejarHotkeysHabilidadesJugador();
     if (Input.GetKeyDown(KeyCode.Space))
     {
-      TerminarTurno();
+      if (unidadActiva != null)
+      {
+        if (unidadActiva.GetComponent<IAUnidad>() == null)
+        {
+          TerminarTurno();
+        }
+      }
     }
 
     if (unidadActiva != null && scUIBotonesHab != null && unidadActiva.GetComponent<IAUnidad>() == null)
@@ -1071,7 +1099,7 @@ public class BattleManager : MonoBehaviour
     // Asegura que el logger sabe el día actual
     logDeCampania.SetDiaActual(RondaNro);
     logDeCampania.Escribir(log, true);
-   
+
   }
 
   public void BorrarLog()
@@ -1092,8 +1120,8 @@ public class BattleManager : MonoBehaviour
 
   }
 
-  
- 
+
+
   public void ActivartooltipClima(int n)
   {
     if (n == 1)
@@ -1169,7 +1197,7 @@ public class BattleManager : MonoBehaviour
           unidadTransform.SetSiblingIndex(newIndex);
         }
       }
-      
+
       uni.AcomodarSortingLayerDelay(); // Acomodar sorting layer despues de un pequeño delay
     }
 
@@ -1204,7 +1232,7 @@ public class BattleManager : MonoBehaviour
 
         //
         ((Unidad)unidad).gameObject.transform.GetChild(3).gameObject.GetComponent<Canvas>().overrideSorting = false;
-        ((Unidad)unidad).gameObject.transform.GetChild(3).gameObject.GetComponent<Canvas>().sortingOrder = 0; 
+        ((Unidad)unidad).gameObject.transform.GetChild(3).gameObject.GetComponent<Canvas>().sortingOrder = 0;
       }
       else if (unidad is Obstaculo)
       {
@@ -1219,9 +1247,9 @@ public class BattleManager : MonoBehaviour
         }
       }
     }
-    
-         
-  // Poner el oscurecedor como primer hijo en la jerarquía
+
+
+    // Poner el oscurecedor como primer hijo en la jerarquía
     oscurecedor.transform.SetAsFirstSibling();
   }
 
@@ -1320,5 +1348,41 @@ public class BattleManager : MonoBehaviour
       barraVida.gameObject.SetActive(true);
     }
   }
+
+  public bool modoRapidoActivado = false;
+  public GameObject btnModoRapido;
+
+  public void btnCambiarEstadoModoRapido()
+  { 
+    ActivarModoRapido(!modoRapidoActivado);
+  }
+  public void ActivarModoRapido(bool activar)
+  {
+    if (activar)
+    {
+      modoRapidoActivado = true;
+      Time.timeScale = 1.35f;
+      PlayerPrefs.SetInt("modoRapido", modoRapidoActivado ? 1 : 0);
+      PlayerPrefs.Save();
+
+      btnModoRapido.transform.GetChild(0).gameObject.SetActive(false);
+      btnModoRapido.transform.GetChild(1).gameObject.SetActive(true);
+
+    }
+    else
+    {
+      modoRapidoActivado = false;
+      Time.timeScale = 1f;
+      PlayerPrefs.SetInt("modoRapido", modoRapidoActivado ? 1 : 0);
+      PlayerPrefs.Save();
+
+      btnModoRapido.transform.GetChild(0).gameObject.SetActive(true);
+      btnModoRapido.transform.GetChild(1).gameObject.SetActive(false);
+    }
+
+
+  }
+  
+
 
 }

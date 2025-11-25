@@ -75,6 +75,7 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject TrampaAlientoNegro;
     public GameObject TrampaPrimerGolpeAlabardero;
     public GameObject TrampaBarro;
+    public GameObject TrampaMiradaMasacre;
 
     [Header("Invocaciones")]
     public GameObject Canalizador_ManifestacionArcana;

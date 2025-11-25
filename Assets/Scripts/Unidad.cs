@@ -1802,6 +1802,7 @@ public virtual void AplicarDesesperanzado()
 
   // Calcula el retraso total en milisegundos
    int delayPerObject = UnityEngine.Random.Range(350, 400); // Retraso entre 200 y 300 ms por objeto
+  
    GameObject[] existingTextObjects = GameObject.FindGameObjectsWithTag(scUnidadCanvas.PrefabtxtDaño.tag);
 
    int totalDelay = delayPerObject * existingTextObjects.Length;

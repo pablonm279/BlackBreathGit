@@ -167,9 +167,11 @@ public class IAUnidad : MonoBehaviour
          }
          else if (scUnidad.HP_actual > 0) // Hay habilidades posibles y no murio por algun efecto
          {
-            await Task.Delay(1500); // Intervalo entre acciones
+            int delay = BattleManager.Instance.modoRapidoActivado ? 600 : 800;
+            if(esRango){delay += 200;} //Mas tiempo para unidades a distancia
+            await Task.Delay(delay); // Intervalo entre acciones
             bool ejecutoHabilidad = await EjecutarHabilidadConSalvaguarda(habilidadesDisponibles);
-            await Task.Delay(1000);
+            await Task.Delay(delay);
 
             if (!ejecutoHabilidad)
             {
@@ -317,7 +319,7 @@ public class IAUnidad : MonoBehaviour
         if(hab.costoAP > scUnidad.ObtenerAPActual()+1){continue;} //Si no tiene AP suficiente, no se agrega
 
         if (!hab.afectaObstaculos)
-      { if (!obj.OfType<Unidad>().Any()) { obj.Clear(); } print("Se limpio lista porque no habia unidades: "+hab.nombre); }
+      { if (!obj.OfType<Unidad>().Any()) { obj.Clear(); } }
 
         if(obj.Count == 0)
         {

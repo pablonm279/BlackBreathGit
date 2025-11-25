@@ -179,3 +179,4 @@ MonoBehaviour:
   minFactor: 0.677
   maxFactor: 1.297
   anchorWorldUp: 1
+  randomizeY: 1

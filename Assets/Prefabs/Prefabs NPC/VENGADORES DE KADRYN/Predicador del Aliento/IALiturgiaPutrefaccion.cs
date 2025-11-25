@@ -109,7 +109,6 @@ public class IALiturgiaPutrefaccion : IAHabilidad
     Buff copia = ComponentCopier.CopyComponent(putrefaccion, objetivo.gameObject);
     copia.esStackeable = false;
 
-    objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Putrefacción"), new Color(0.4f, 1f, 0.7f));
     BattleManager.Instance?.EscribirLog($"{objetivo.uNombre} {TRADU.i.Traducir("es presa de la Putrefacción.")}");
   }
 

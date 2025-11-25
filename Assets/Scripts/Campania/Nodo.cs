@@ -17,6 +17,8 @@ public class Nodo : MonoBehaviour
   public int costoMovimiento = 1;
   public List<Nodo> DestinosPosibles = new List<Nodo>();
   public bool revelado = false;
+  public List<int> ObligatorioEnZona = new List<int>();
+  public List<int> ProhibidoEnZona = new List<int>();
 
   public MapaManager scMapaManager;
 
@@ -50,7 +52,9 @@ public class Nodo : MonoBehaviour
 
     int random = UnityEngine.Random.Range(0, 100);
     if (random < 20 && posXNodo > 1) //20% camino difícil
-      costoMovimiento = 2;
+    { costoMovimiento = 2; }
+
+    EsconderSiNedukazal();
   }
 
   public void LlegoCaravana()
@@ -89,6 +93,7 @@ public class Nodo : MonoBehaviour
 
     int chancesAtajo = 15;
     chancesAtajo += 5 * CampaignManager.Instance.CuantosPersonajesHacenTalActividad(9);
+    if(CampaignManager.Instance.scAtributosZona.ID == 3){ chancesAtajo = 0; } // En Nedukazal no hay atajos
 
     if (UnityEngine.Random.Range(0, 100) < chancesAtajo && posXNodo < 9)
     {
@@ -107,6 +112,9 @@ public class Nodo : MonoBehaviour
   {
     if (scContenedorNodos2 == null)
       scContenedorNodos2 = CampaignManager.Instance.scMapaManager.scContenedordeNodos;
+    int zonaId = -1;
+    if (CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null)
+      zonaId = CampaignManager.Instance.scAtributosZona.ID;
 
     int nextX = posXNodo + X;
     List<Nodo> posiblesAtajos = new List<Nodo>();
@@ -118,6 +126,7 @@ public class Nodo : MonoBehaviour
 
       Nodo c = scContenedorNodos2.ObtenerNodoSegunXY(nextX, y);
       if (c == null) continue;
+      if (!EstaPermitidoEnZona(c, zonaId)) continue;
       if (DestinosPosibles.Contains(c)) continue;
 
       bool hayRutaIntermedia = false;
@@ -149,7 +158,7 @@ public class Nodo : MonoBehaviour
         if (y < 1 || y > 5) continue;
 
         Nodo c = scContenedorNodos2.ObtenerNodoSegunXY(nextX, y);
-        if (c != null && !DestinosPosibles.Contains(c))
+        if (c != null && !DestinosPosibles.Contains(c) && EstaPermitidoEnZona(c, zonaId))
           posiblesAtajos.Add(c);
       }
     }
@@ -167,6 +176,9 @@ public class Nodo : MonoBehaviour
   {
     int xadelante = posXNodo + 1;
     scContenedorNodos2 = CampaignManager.Instance.scMapaManager.scContenedordeNodos;
+    int zonaId = -1;
+    if (CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null)
+      zonaId = CampaignManager.Instance.scAtributosZona.ID;
 
     if (yatiroConexiones) return;
     yatiroConexiones = true;
@@ -177,88 +189,97 @@ public class Nodo : MonoBehaviour
 
       if (random == 1)
       {
-        ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 1));
-        ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 3));
-        ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 5));
+        IntentarConectar(1, 1, zonaId);
+        IntentarConectar(1, 3, zonaId);
+        IntentarConectar(1, 5, zonaId);
       }
       /*  else if (random == 2)
         {
-          ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 2));
-          ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 3));
-          ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 4));
+          IntentarConectar(1, 2, zonaId);
+          IntentarConectar(1, 3, zonaId);
+          IntentarConectar(1, 4, zonaId);
         }
         else if (random == 3)
         {
-          ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 2));
-          ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 3));
-          ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 5));
+          IntentarConectar(1, 2, zonaId);
+          IntentarConectar(1, 3, zonaId);
+          IntentarConectar(1, 5, zonaId);
         }
         else if (random == 4)
         {
-          ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 1));
-          ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 3));
-          ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(1, 4));
+          IntentarConectar(1, 1, zonaId);
+          IntentarConectar(1, 3, zonaId);
+          IntentarConectar(1, 4, zonaId);
         }*/
 
       TiradaExploracion(300, false);
     }
     else if (posXNodo == 1)
     {
-      ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, posYNodo - 1));
-      ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, posYNodo));
+      IntentarConectar(xadelante, posYNodo - 1, zonaId);
+      IntentarConectar(xadelante, posYNodo, zonaId);
     }
     else if (posYNodo == 1 && posXNodo < 10)
     {
       int random1 = UnityEngine.Random.Range(1, 5);
-      if (random1 == 1) ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 1));
-      else if (random1 == 2) { ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 1)); ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 2)); }
-      else if (random1 == 3) ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 2));
-      else if (random1 == 4) { ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 1)); ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 2)); }
+      if (random1 == 1) IntentarConectar(xadelante, 1, zonaId);
+      else if (random1 == 2) { IntentarConectar(xadelante, 1, zonaId); IntentarConectar(xadelante, 2, zonaId); }
+      else if (random1 == 3) IntentarConectar(xadelante, 2, zonaId);
+      else if (random1 == 4) { IntentarConectar(xadelante, 1, zonaId); IntentarConectar(xadelante, 2, zonaId); }
     }
     else if (posYNodo == 2 && posXNodo < 10)
     {
       int random2 = UnityEngine.Random.Range(1, 6);
-      if (random2 == 1) ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 1));
-      else if (random2 == 2) { ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 2)); ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 3)); }
-      else if (random2 == 3) ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 2));
-      else if (random2 == 4) { ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 2)); ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 3)); }
-      else if (random2 == 5) ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 3));
+      if (random2 == 1) IntentarConectar(xadelante, 1, zonaId);
+      else if (random2 == 2) { IntentarConectar(xadelante, 2, zonaId); IntentarConectar(xadelante, 3, zonaId); }
+      else if (random2 == 3) IntentarConectar(xadelante, 2, zonaId);
+      else if (random2 == 4) { IntentarConectar(xadelante, 2, zonaId); IntentarConectar(xadelante, 3, zonaId); }
+      else if (random2 == 5) IntentarConectar(xadelante, 3, zonaId);
     }
     else if (posYNodo == 3 && posXNodo < 10)
     {
       int random3 = UnityEngine.Random.Range(1, 6);
-      if (random3 == 1) ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 2));
-      else if (random3 == 2) ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 3));
-      else if (random3 == 3) { ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 2)); ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 4)); }
-      else if (random3 == 4) { ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 3)); ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 4)); }
-      else if (random3 == 5) { ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 3)); ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 2)); ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 4)); }
+      if (random3 == 1) IntentarConectar(xadelante, 2, zonaId);
+      else if (random3 == 2) IntentarConectar(xadelante, 3, zonaId);
+      else if (random3 == 3) { IntentarConectar(xadelante, 2, zonaId); IntentarConectar(xadelante, 4, zonaId); }
+      else if (random3 == 4) { IntentarConectar(xadelante, 3, zonaId); IntentarConectar(xadelante, 4, zonaId); }
+      else if (random3 == 5) { IntentarConectar(xadelante, 3, zonaId); IntentarConectar(xadelante, 2, zonaId); IntentarConectar(xadelante, 4, zonaId); }
     }
     else if (posYNodo == 4 && posXNodo < 10)
     {
       int random4 = UnityEngine.Random.Range(1, 6);
-      if (random4 == 1) ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 4));
-      else if (random4 == 2) { ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 4)); ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 5)); }
-      else if (random4 == 3) ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 3));
-      else if (random4 == 4) ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 4));
-      else if (random4 == 5) { ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 4)); ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 3)); }
+      if (random4 == 1) IntentarConectar(xadelante, 4, zonaId);
+      else if (random4 == 2) { IntentarConectar(xadelante, 4, zonaId); IntentarConectar(xadelante, 5, zonaId); }
+      else if (random4 == 3) IntentarConectar(xadelante, 3, zonaId);
+      else if (random4 == 4) IntentarConectar(xadelante, 4, zonaId);
+      else if (random4 == 5) { IntentarConectar(xadelante, 4, zonaId); IntentarConectar(xadelante, 3, zonaId); }
     }
     else if (posYNodo == 5 && posXNodo < 10)
     {
       int random5 = UnityEngine.Random.Range(1, 5);
-      if (random5 == 1) ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 5));
-      else if (random5 == 2) { ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 5)); ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 4)); }
-      else if (random5 == 3) ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 4));
-      else if (random5 == 4) { ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 4)); ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(xadelante, 5)); }
+      if (random5 == 1) IntentarConectar(xadelante, 5, zonaId);
+      else if (random5 == 2) { IntentarConectar(xadelante, 5, zonaId); IntentarConectar(xadelante, 4, zonaId); }
+      else if (random5 == 3) IntentarConectar(xadelante, 4, zonaId);
+      else if (random5 == 4) { IntentarConectar(xadelante, 4, zonaId); IntentarConectar(xadelante, 5, zonaId); }
     }
     else if (posXNodo == 10)
     {
-      ConectarConNodo(scContenedorNodos2.ObtenerNodoSegunXY(11, 10));
+      IntentarConectar(11, 10, zonaId);
     }
+
+    if (DestinosPosibles.Count == 0 && posXNodo < 10)
+      ConectarFallbackSiguienteColumna(xadelante, zonaId);
   }
 
   public void ConectarConNodo(Nodo nodoB, bool esPorAbajo = false)
   {
     if (nodoB == null) return;
+
+    int zonaId = -1;
+    if (CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null)
+      zonaId = CampaignManager.Instance.scAtributosZona.ID;
+    if (!EstaPermitidoEnZona(nodoB, zonaId)) return;
+    if (DestinosPosibles.Contains(nodoB)) return;
 
     Nodo nodoA = this;
     nodoA.DestinosPosibles.Add(nodoB);
@@ -373,6 +394,9 @@ public class Nodo : MonoBehaviour
     }
     foreach (var go in destruir) Destroy(go);
 
+
+    transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
+    EsconderSiNedukazal();
     gameObject.SetActive(true);
   }
 
@@ -445,6 +469,7 @@ public class Nodo : MonoBehaviour
     }
 
     StartCoroutine(MoverAloLargoDeLaCurva(lineaTransform.GetComponent<LineRenderer>()));
+
   }
 
   private IEnumerator MoverAloLargoDeLaCurva(LineRenderer lineRenderer)
@@ -690,6 +715,13 @@ public class Nodo : MonoBehaviour
       if (posXNodo == 11) { tipoNodo = 10; }
     }
 
+    //Correctores por zona
+    //Nedukazal no tiene Santuarios
+    if (CampaignManager.Instance.scAtributosZona.ID == 3) //Nedukazal
+    {
+      if (tipoNodo == 14) tipoNodo = 1; //Santuario a Batalla normal
+    }
+
     ActivarNodoVisual(tipoNodo, esAtajo, estabaRevelado);
 
     int chancesAtaqueSubterraneo = 20;
@@ -744,9 +776,9 @@ public class Nodo : MonoBehaviour
     }
   }
 
-   bool ActivarVisualPorCodigo(int codigo)
+  bool ActivarVisualPorCodigo(int codigo)
   {
-   
+
     int indice = -1;
     switch (codigo)
     {
@@ -886,11 +918,12 @@ public class Nodo : MonoBehaviour
     print("ActivarIncendio called");
     nodoIncendiado = true;
     transform.GetChild(14).gameObject.SetActive(true);
-    
+
   }
 
   public void DesactivarIncendio()
-  {print("DesactivarIncendio called");
+  {
+    print("DesactivarIncendio called");
     nodoIncendiado = false;
     transform.GetChild(14).gameObject.SetActive(false);
   }
@@ -900,12 +933,69 @@ public class Nodo : MonoBehaviour
     print("ActivarRitual called");
     nodoRitual = true;
     transform.GetChild(15).gameObject.SetActive(true);
-  } 
-  
+  }
+
   public void DesactivarRitual()
   {
     print("DesactivarRitual called");
     nodoRitual = false;
     transform.GetChild(15).gameObject.SetActive(false);
-  } 
+  }
+
+  bool EstaPermitidoEnZona(Nodo nodo, int zonaId)
+  {
+    if (nodo == null) return false;
+    if (zonaId <= 0) return true;
+    return nodo.ProhibidoEnZona == null || !nodo.ProhibidoEnZona.Contains(zonaId);
+  }
+
+  Nodo ObtenerNodoPermitido(int x, int y, int zonaId)
+  {
+    if (scContenedorNodos2 == null) return null;
+    Nodo destino = scContenedorNodos2.ObtenerNodoSegunXY(x, y);
+    if (!EstaPermitidoEnZona(destino, zonaId)) return null;
+    return destino;
+  }
+
+  bool IntentarConectar(int x, int y, int zonaId, bool esPorAbajo = false)
+  {
+    Nodo destino = ObtenerNodoPermitido(x, y, zonaId);
+    if (destino == null) return false;
+    ConectarConNodo(destino, esPorAbajo);
+    return true;
+  }
+
+  void ConectarFallbackSiguienteColumna(int nextX, int zonaId)
+  {
+    if (scContenedorNodos2 == null) return;
+
+    Nodo mejor = null;
+    int mejorDistY = int.MaxValue;
+
+    foreach (Nodo candidato in scContenedorNodos2.listTodosNodos)
+    {
+      if (candidato == null) continue;
+      if (candidato.posXNodo != nextX) continue;
+      if (!EstaPermitidoEnZona(candidato, zonaId)) continue;
+
+      int distY = Mathf.Abs(candidato.posYNodo - posYNodo);
+      if (distY < mejorDistY)
+      {
+        mejorDistY = distY;
+        mejor = candidato;
+        if (mejorDistY == 0) break;
+      }
+    }
+
+    if (mejor != null)
+      ConectarConNodo(mejor);
+  }
+
+  public void EsconderSiNedukazal()
+  {
+    if (CampaignManager.Instance.scAtributosZona.ID == 3)
+    { 
+      transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
+    }
+  }
 }

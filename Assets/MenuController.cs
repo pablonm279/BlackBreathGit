@@ -18,6 +18,7 @@ public class MenuController : MonoBehaviour
     public GameObject disclaimerIngles;
     public GameObject disclaimerEspaniol;
     public GameObject Opciones;
+  
 
     void Awake()
     {
@@ -43,6 +44,10 @@ public class MenuController : MonoBehaviour
             disclaimerIngles.SetActive(true);
             disclaimerEspaniol.SetActive(false);
         }
+
+
+       Opciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
+
 
     }
 

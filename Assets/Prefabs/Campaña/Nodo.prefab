@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6545967299445935536}
   - component: {fileID: 8786623736026864117}
   - component: {fileID: 7332898203968917717}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: NodoBatalla
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 8844330560080439678}
   - component: {fileID: 3496247863835380054}
   - component: {fileID: 1329412727939263740}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: NodoMisterioso
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -183,7 +183,7 @@ GameObject:
   - component: {fileID: 85722383784002139}
   - component: {fileID: 1851032636793121146}
   - component: {fileID: 4242630976417590136}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5015,7 +5015,7 @@ GameObject:
   - component: {fileID: 261173425136930300}
   - component: {fileID: 6734267041325267560}
   - component: {fileID: 4164805139984205341}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: NodoPosada
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5102,7 +5102,7 @@ GameObject:
   - component: {fileID: 2092676326277998750}
   - component: {fileID: 4103449021472906165}
   - component: {fileID: 1613296408949350723}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5210,7 +5210,7 @@ GameObject:
   - component: {fileID: 4261225441518936723}
   - component: {fileID: 6885997042278232778}
   - component: {fileID: 2387848749634468356}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5318,7 +5318,7 @@ GameObject:
   - component: {fileID: 839844281431157133}
   - component: {fileID: 876975035262378999}
   - component: {fileID: 6588079558310957333}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5426,7 +5426,7 @@ GameObject:
   - component: {fileID: 4013923434575900850}
   - component: {fileID: 8833362470423413739}
   - component: {fileID: 5890277064937046957}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fuego (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10281,7 +10281,7 @@ GameObject:
   - component: {fileID: 7922855697650098887}
   - component: {fileID: 5866458857938495863}
   - component: {fileID: 3226618234757993589}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: NodoSantuario
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10367,7 +10367,7 @@ GameObject:
   - component: {fileID: 9067273566678923526}
   - component: {fileID: 2635088900740873516}
   - component: {fileID: 1031909404179397479}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fuego (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15210,7 +15210,7 @@ GameObject:
   - component: {fileID: 5666556402704603402}
   - component: {fileID: 1520675712324934931}
   - component: {fileID: 3528867128272037608}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15320,7 +15320,7 @@ GameObject:
   - component: {fileID: 1606603766680545042}
   - component: {fileID: 6346815812441233704}
   - component: {fileID: 6051794866349153470}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: '!!13-Revelado'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15463,7 +15463,7 @@ GameObject:
   - component: {fileID: 3055971459931349956}
   - component: {fileID: 67392706710449372}
   - component: {fileID: 3064154009073711041}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15571,7 +15571,7 @@ GameObject:
   - component: {fileID: 4890468489743103506}
   - component: {fileID: 1141076233844265105}
   - component: {fileID: 5438720926366668998}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15679,7 +15679,7 @@ GameObject:
   - component: {fileID: 499214532963144211}
   - component: {fileID: 91192057144919723}
   - component: {fileID: 3459834333755089346}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: '!!15-NodoRitual_Paso Vientohelado'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15866,7 +15866,7 @@ GameObject:
   - component: {fileID: 4179281934698725871}
   - component: {fileID: 52312926242846499}
   - component: {fileID: 1059451077141440164}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20698,7 +20698,7 @@ GameObject:
   - component: {fileID: 3584594529453396541}
   - component: {fileID: 6331231945653881651}
   - component: {fileID: 5689498444105083497}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25530,7 +25530,7 @@ GameObject:
   - component: {fileID: 7465893859698076373}
   - component: {fileID: 4961711667870826545}
   - component: {fileID: 5167754799099839485}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30361,7 +30361,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2126450708763754501}
   - component: {fileID: 155476686396036439}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30456,7 +30456,7 @@ GameObject:
   - component: {fileID: 43796878226706706}
   - component: {fileID: 6404659187428292529}
   - component: {fileID: 5585293380583585362}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fuego (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35311,7 +35311,7 @@ GameObject:
   - component: {fileID: 5035837106744709186}
   - component: {fileID: 8260395891362825793}
   - component: {fileID: 7669148306367002895}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: NodoAtajo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35395,7 +35395,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7306117994871302220}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: '!!14-Incendiado_BosqueArdiente'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35431,7 +35431,7 @@ GameObject:
   - component: {fileID: 6303001881580812570}
   - component: {fileID: 2791026349849539815}
   - component: {fileID: 7815539537814969776}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35539,7 +35539,7 @@ GameObject:
   - component: {fileID: 834220424241371579}
   - component: {fileID: 6634955680381378713}
   - component: {fileID: 8677881295228239314}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fuego (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40394,7 +40394,7 @@ GameObject:
   - component: {fileID: 6263266940659174309}
   - component: {fileID: 3664960164128999644}
   - component: {fileID: 8141572228677024855}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: NodoEvento
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40481,7 +40481,7 @@ GameObject:
   - component: {fileID: 8623979695503882446}
   - component: {fileID: 4789112945970690560}
   - component: {fileID: 4493750551845186460}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40588,7 +40588,7 @@ GameObject:
   - component: {fileID: 6223581859916114816}
   - component: {fileID: 3266173992538624797}
   - component: {fileID: 6182188922314386499}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45420,7 +45420,7 @@ GameObject:
   - component: {fileID: 8851987042687633761}
   - component: {fileID: 5171607495926180489}
   - component: {fileID: 4508450429802538933}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: NodoOculto
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45507,7 +45507,7 @@ GameObject:
   - component: {fileID: 4725420319695926542}
   - component: {fileID: 4709832710519589909}
   - component: {fileID: 5339711683207244792}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fuego (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50362,7 +50362,7 @@ GameObject:
   - component: {fileID: 8774653381289452407}
   - component: {fileID: 4715909061405482343}
   - component: {fileID: 8730860794286850155}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55195,7 +55195,7 @@ GameObject:
   - component: {fileID: 6818613118628424396}
   - component: {fileID: 849687426220985402}
   - component: {fileID: 61396076179618234}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55302,7 +55302,7 @@ GameObject:
   - component: {fileID: 6923498048090995673}
   - component: {fileID: 3616971643352917352}
   - component: {fileID: 381938800693642259}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60134,7 +60134,7 @@ GameObject:
   - component: {fileID: 3302666103111145109}
   - component: {fileID: 9114511650565229225}
   - component: {fileID: 3972401531646163754}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: NodoClaro
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60220,7 +60220,7 @@ GameObject:
   - component: {fileID: 7625284847610913836}
   - component: {fileID: 2468632847997034407}
   - component: {fileID: 842206767255072457}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: NodoComerciante
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60307,7 +60307,7 @@ GameObject:
   - component: {fileID: 6980152258385391987}
   - component: {fileID: 780979878081369657}
   - component: {fileID: 2473046831767524333}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fuego (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65161,7 +65161,7 @@ GameObject:
   - component: {fileID: 1233533313427016937}
   - component: {fileID: 4980951775091032622}
   - component: {fileID: 3457455981549093431}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: NodoPersonaje
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65247,7 +65247,7 @@ GameObject:
   - component: {fileID: 7949749074614325302}
   - component: {fileID: 7486023604688826594}
   - component: {fileID: 4538494934595125201}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: NodoZonaExpuesta
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65334,7 +65334,7 @@ GameObject:
   - component: {fileID: 54003806630023651}
   - component: {fileID: 8732123364960889540}
   - component: {fileID: 2939731915296314684}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fuego (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70190,7 +70190,7 @@ GameObject:
   - component: {fileID: 5321517674732682800}
   - component: {fileID: 500921830644967858}
   - component: {fileID: 4047410835397162366}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70298,7 +70298,7 @@ GameObject:
   - component: {fileID: 5403749015516191756}
   - component: {fileID: 9214022428828298911}
   - component: {fileID: 5487200601387005009}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: Nodo
   m_TagString: Nodo
   m_Icon: {fileID: 0}
@@ -70363,7 +70363,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.8
+  m_Radius: 1.05
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
@@ -70413,7 +70413,7 @@ GameObject:
   - component: {fileID: 5923153190635647408}
   - component: {fileID: 6878760220873774079}
   - component: {fileID: 908627383919125848}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70520,7 +70520,7 @@ GameObject:
   - component: {fileID: 8377933867228569562}
   - component: {fileID: 4636610557182966166}
   - component: {fileID: 3537530093108833367}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75351,7 +75351,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8090973962498573301}
   - component: {fileID: 8458428680641452111}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75446,7 +75446,7 @@ GameObject:
   - component: {fileID: 9087079376555327685}
   - component: {fileID: 2599393056923015207}
   - component: {fileID: 3309209704001047585}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75553,7 +75553,7 @@ GameObject:
   - component: {fileID: 2564383331625226558}
   - component: {fileID: 7572993043750744799}
   - component: {fileID: 6083581719009521477}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: NodoRecursos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75640,7 +75640,7 @@ GameObject:
   - component: {fileID: 6777952503930369205}
   - component: {fileID: 6283404399526998548}
   - component: {fileID: 220404717121661859}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fuego (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -80495,7 +80495,7 @@ GameObject:
   - component: {fileID: 8173526314260238475}
   - component: {fileID: 2388110839071677854}
   - component: {fileID: 5177255731114299536}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85328,7 +85328,7 @@ GameObject:
   - component: {fileID: 3162496588140244576}
   - component: {fileID: 4417131091631981422}
   - component: {fileID: 2004941562281070158}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85435,7 +85435,7 @@ GameObject:
   - component: {fileID: 1761902409684004293}
   - component: {fileID: 2150164497025119195}
   - component: {fileID: 5289009652367469101}
-  m_Layer: 11
+  m_Layer: 14
   m_Name: NodoBatallaElite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85522,7 +85522,7 @@ GameObject:
   - component: {fileID: 1973583249644919247}
   - component: {fileID: 8600541654278746989}
   - component: {fileID: 2613296194626801453}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85629,7 +85629,7 @@ GameObject:
   - component: {fileID: 7427145670339687502}
   - component: {fileID: 2204711656405478416}
   - component: {fileID: 8933601388784620308}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90462,7 +90462,7 @@ GameObject:
   - component: {fileID: 5575144746500345190}
   - component: {fileID: 3526786440528869027}
   - component: {fileID: 8941451577602680800}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fuego (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95318,7 +95318,7 @@ GameObject:
   - component: {fileID: 5675049572576399708}
   - component: {fileID: 8915321045320375962}
   - component: {fileID: 2089454112610673987}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95425,7 +95425,7 @@ GameObject:
   - component: {fileID: 6335152656519139263}
   - component: {fileID: 1274124668258839593}
   - component: {fileID: 1987635823497165690}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fuego
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -448,6 +448,18 @@ public class UIInfoChar : MonoBehaviour
    {
       desc = TRADU.i.Traducir("<i>Esta bestia oriunda del Paso es material de varias leyendas y pesadillas entre los Kale'Tav. De cuerpo robusto y cuernos afilados, supone un peligro para los viajeros incautos.</i>\n\n<color=#199F10>-Ataques de carga en fila.\n-Regeneración leve.</color>\n<color=#EE0000>-Lento.</color>");
    }
+   if (unidadMostrada.uNombre == "Zarkil Acechador")
+   {
+      desc = TRADU.i.Traducir("<i>Raza de criaturas demoníacas que invaden Nedulkazan desde abajo en busca de sacrificios y oro. </i>\n\n<color=#199F10>-Al esquivar un ataque se moverán.\n-Puede ver escondidos.</color>\n<color=#EE0000>-Posee sólo un tipo de ataque.</color>");
+   }
+   if (unidadMostrada.uNombre == "Zarkil Guerrero")
+   {
+      desc = TRADU.i.Traducir("<i>Raza de criaturas demoníacas que invaden Nedulkazan desde abajo en busca de sacrificios y oro. </i>\n\n<color=#199F10>-Puede aterrar a criaturas enfrente.\n-Puede ver escondidos.</color>\n<color=#EE0000>-Posee sólo un tipo de ataque.</color>");
+   }
+   if (unidadMostrada.uNombre == "Zarkil Vociferador")
+   {
+      desc = TRADU.i.Traducir("<i>Raza de criaturas demoníacas que invaden Nedulkazan desde abajo en busca de sacrificios y oro. </i>\n\n<color=#199F10>-Grito aturdidor que además motiva aliados.\n-Puede ver escondidos.\n-Puede atacar repetidamente.</color>\n<color=#EE0000></color>");
+   }
    return desc;
   }
   

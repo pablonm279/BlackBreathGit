@@ -212,7 +212,8 @@ public class Rafaga : Habilidad
         }
       }
 
-
+      if (CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>().escenaActual != 1)
+       {return;} // Sale del método si la escena no es "ES-Batallas"
       ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
     if (clase.ObtenerCantidadFlechas() < 1)
     {

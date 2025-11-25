@@ -173,7 +173,7 @@ public class MenuCaravana : MonoBehaviour
        }
 
         ActualizarMejoras();
-
+        CampaignManager.Instance.scAtributosZona.ActualizarLuzNedukazal();
     }
     public void MejorarAlforjas()
     {

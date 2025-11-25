@@ -199,6 +199,9 @@ public class DisparoPotente : Habilidad
           txtDescripcion += $"<color=#44d3ec>-Arrows: 2 -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
         }
       }
+
+        if (CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>().escenaActual != 1)
+       {return;} // Sale del método si la escena no es "ES-Batallas"
         ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
     if (clase.ObtenerCantidadFlechas() < 1)
     {

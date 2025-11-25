@@ -86,12 +86,17 @@ public class TiroconArco : Habilidad
       txtDescripcion += $"<color=#c8c8c8><b>Range: 7</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Piercing 1d10+1- Requires 1 Arrow</color>\n\n";
       txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
     }
-     ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
-    if (clase.ObtenerCantidadFlechas() < 1)
-    {
+
+      if (CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>().escenaActual != 1)
+       {return;} // Sale del método si la escena no es "ES-Batallas"
+
+      ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
+      if (clase.ObtenerCantidadFlechas() < 1)
+      {
         txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
 
-    }
+      }
+    
 
       }
     Casilla Origen;
