@@ -10,6 +10,7 @@ public class ArrowFlight : MonoBehaviour
     private float journeyLength;
 
     public float parabola;
+    private float parabolaBase;
     public float velocidad;
 
     TaskCompletionSource<bool> impactoTcs;
@@ -18,13 +19,15 @@ public class ArrowFlight : MonoBehaviour
     void Awake()
     {
         impactoTcs = new TaskCompletionSource<bool>();
+        RenderOrderHelper.ForzarProyectilAlFrente(gameObject);
     }
     
     public void Configure(Transform inicio, Transform destino, float alturaParabola, float velocidadVuelo)
     {
         startMarker = ResolvePuntoSalida(inicio);
         endMarker = ResolvePuntoEntrada(destino);
-        parabola = alturaParabola;
+        parabolaBase = alturaParabola;
+        parabola = AjustarParabolaPorDistancia(parabolaBase, startMarker, endMarker);
         velocidad = velocidadVuelo;
 
         startTime = Time.time;
@@ -50,7 +53,8 @@ public class ArrowFlight : MonoBehaviour
 
         if (!configurado && startMarker != null && endMarker != null)
         {
-            Configure(startMarker, endMarker, parabola, velocidad);
+            parabolaBase = parabola;
+            Configure(startMarker, endMarker, parabolaBase, velocidad);
         }
     }
 
@@ -169,6 +173,35 @@ public class ArrowFlight : MonoBehaviour
         return posibleDestino;
     }
 
+    float AjustarParabolaPorDistancia(float baseParabola, Transform inicio, Transform destino)
+    {
+        if (inicio == null || destino == null)
+        {
+            return baseParabola;
+        }
+
+        float bParabola = baseParabola;
+        
+        Unidad unidadInicio = inicio.GetComponentInParent<Unidad>();
+        float posXinicio = unidadInicio.CasillaPosicion.posX * 0.10f;
+
+
+        float posXdestino = 0;
+        if (destino.GetComponentInParent<Unidad>() != null)
+        {
+            Unidad unidadDestino = destino.GetComponentInParent<Unidad>();
+            posXdestino = -(unidadDestino.CasillaPosicion.posX * 0.05f);
+        }
+
+        float restaFinal = Mathf.Abs(posXdestino - posXinicio);
+        print("Resta final ajuste parabola: " + baseParabola + " -" + restaFinal);
+        bParabola -= restaFinal;
+        
+        return bParabola;
+    }
+
+   
+   
     Vector3 CalculateParabolicPath(Vector3 start, Vector3 end, float height, float t)
     {
         // interpolación lineal entre inicio y fin

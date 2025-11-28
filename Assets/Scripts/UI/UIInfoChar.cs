@@ -460,6 +460,18 @@ public class UIInfoChar : MonoBehaviour
    {
       desc = TRADU.i.Traducir("<i>Raza de criaturas demoníacas que invaden Nedulkazan desde abajo en busca de sacrificios y oro. </i>\n\n<color=#199F10>-Grito aturdidor que además motiva aliados.\n-Puede ver escondidos.\n-Puede atacar repetidamente.</color>\n<color=#EE0000></color>");
    }
+   if (unidadMostrada.uNombre == "Zarkil Alado")
+   {
+      desc = TRADU.i.Traducir("<i>Raza de criaturas demoníacas que invaden Nedulkazan desde abajo en busca de sacrificios y oro. </i>\n\n<color=#199F10>-Ataque debilitador infalible.\n-Puede ver escondidos.\n-Volador.</color>\n<color=#EE0000>-Débil</color>");
+   }
+   if (unidadMostrada.uNombre == "Zarkilever")
+   {
+      desc = TRADU.i.Traducir("<i>Criatura muy feroz controlada porlos Zarkils utilizada como fuerza de impacto y para causar grietas en superficies duras. </color>\n\n<color=#199F10>-Buena Armadura.\n-Saborea a las víctimas.</color>\n<color=#EE0000></color>");
+   }
+    if (unidadMostrada.uNombre == "Comandante Zarkil")
+   {
+      desc = TRADU.i.Traducir("<i>Tiene una legión entera de Zarkils bajo su liderazgo, simplemente debe señalar un objetivo y sus súbditos se encargarán del resto.</color>\n\n<color=#199F10>-Llama refuerzos sin fin.\n-Ataque debilitador infalible.</color>\n<color=#EE0000>-No es fuerte por si solo.</color>");
+   }
    return desc;
   }
   

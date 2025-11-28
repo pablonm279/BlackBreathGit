@@ -32,4 +32,10 @@ public class TextoInicialManager : MonoBehaviour
         CampaignManager.Instance.scTutorialManager.ComenzarTutorial();
     }
 
+     public void ContinuarZonaNueva()
+    {
+        gameObject.SetActive(false);
+        CampaignManager.Instance.ContinuarASiguienteZona();
+    }
+
 }

@@ -35,7 +35,6 @@ public class MenuBatallas : MonoBehaviour
 
  [Header("Generador de encuentros")]
  [SerializeField] List<string> corruptFactionIds = new List<string>() { "Corruptos" };
- [SerializeField, Range(0f, 100f)] float chanceBatallaZona = 70f;
  [SerializeField] float corruptChancePerAliento = 4f;
  [SerializeField] List<BattleRewardProfile> rewardProfiles = new List<BattleRewardProfile>();
  [SerializeField] BattleRewardTuning defaultRewardTuning = new BattleRewardTuning();
@@ -208,21 +207,27 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
  int ObtenerJefeIdAleatorio(EncounterZoneType zona, int fase)
  {
     List<int> ids = null;
-    switch (zona)
-    {
-       case EncounterZoneType.PasoVientoHelado:
-          if (fase == 1)
-          {
-             ids = new List<int> { 60, 61 };
-          }
-          break;
-       case EncounterZoneType.BosqueAngustiante:
-       default:
-          if (fase == 1)
-          {
-             ids = new List<int> { 11, 12 };
-          }
-          break;
+        switch (zona)
+        {
+            case EncounterZoneType.PasoVientoHelado:
+                if (fase == 1)
+                {
+                    ids = new List<int> { 60};
+                }
+                break;
+            case EncounterZoneType.BosqueAngustiante:
+            default:
+                if (fase == 1)
+                {
+                    ids = new List<int> { 11 };
+                }
+                break;
+            case EncounterZoneType.Nedukazal:
+            if (fase == 1)
+            {
+             ids = new List<int> { 100 };
+            }
+            break;
     }
 
     if (ids != null && ids.Count > 0)
@@ -457,6 +462,7 @@ public void DejanEnListaParticipantesSolo()
     if (n == 0)
     {
         bool generado = false;
+        float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
 
         if (DeberiaGenerarBatallaCorrupta())
         {
@@ -467,7 +473,7 @@ public void DejanEnListaParticipantesSolo()
             }
         }
 
-        if (!generado && UnityEngine.Random.Range(0f, 100f) < chanceBatallaZona)
+        if (!generado && UnityEngine.Random.Range(0f, 100f) < chanceEncuentroPropio)
         {
             generado = TryGenerarEncuentro(BattleEncounterType.Normal, zonaActual, null, out encuentroGeneradoActual);
             if (generado)
@@ -519,6 +525,7 @@ public void DejanEnListaParticipantesSolo()
     if (n == 0)
     {
         bool generado = false;
+        float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
         bool esRitualKaleTav = forzarRitualKaleTav || EsNodoActualRitualKaleTav();
 
         if (esRitualKaleTav)
@@ -536,17 +543,35 @@ public void DejanEnListaParticipantesSolo()
             }
         }
 
-        if (!generado && !TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, null, out encuentroGeneradoActual))
+        if (!generado)
         {
-            if (TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, null, out encuentroGeneradoActual))
+            bool intentarZonaPrimero = UnityEngine.Random.Range(0f, 100f) < chanceEncuentroPropio;
+            if (intentarZonaPrimero)
             {
-                encuentroZonaActual = EncounterZoneType.Generico;
-                generado = true;
+                generado = TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, null, out encuentroGeneradoActual);
+                if (generado)
+                {
+                    encuentroZonaActual = zonaActual;
+                }
+                else if (TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, null, out encuentroGeneradoActual))
+                {
+                    encuentroZonaActual = EncounterZoneType.Generico;
+                    generado = true;
+                }
             }
-        }
-        else
-        {
-            generado = true;
+            else
+            {
+                generado = TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, null, out encuentroGeneradoActual);
+                if (generado)
+                {
+                    encuentroZonaActual = EncounterZoneType.Generico;
+                }
+                else if (TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, null, out encuentroGeneradoActual))
+                {
+                    encuentroZonaActual = zonaActual;
+                    generado = true;
+                }
+            }
         }
 
         EventoBatallaID = generado && encuentroGeneradoActual != null ? 0 : EventoBatallaID;
@@ -632,6 +657,7 @@ public void DejanEnListaParticipantesSolo()
     if (n == 0)
     {
         bool generado = false;
+        float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
 
         if (DeberiaGenerarBatallaCorrupta())
         {
@@ -642,7 +668,7 @@ public void DejanEnListaParticipantesSolo()
             }
         }
 
-        if (!generado && UnityEngine.Random.Range(0f, 100f) < chanceBatallaZona)
+        if (!generado && UnityEngine.Random.Range(0f, 100f) < chanceEncuentroPropio)
         {
             generado = TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, zonaActual, null, out encuentroGeneradoActual);
             if (generado)

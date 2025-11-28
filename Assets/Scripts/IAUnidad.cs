@@ -25,7 +25,7 @@ public class IAUnidad : MonoBehaviour
    public List<IAHabilidad> HabPosibles = new List<IAHabilidad>();
    private const int MaxIntentosPorTurno = 8;
    private const int TimeoutHabilidadMs = 1300;
-   private const int DelayFinTurnoMs = 600;
+   private const int DelayFinTurnoMs = 900;
    
    public void Awake()
    {
@@ -167,7 +167,7 @@ public class IAUnidad : MonoBehaviour
          }
          else if (scUnidad.HP_actual > 0) // Hay habilidades posibles y no murio por algun efecto
          {
-            int delay = BattleManager.Instance.modoRapidoActivado ? 600 : 800;
+            int delay = BattleManager.Instance.modoRapidoActivado ? 1100 : 1400;
             if(esRango){delay += 200;} //Mas tiempo para unidades a distancia
             await Task.Delay(delay); // Intervalo entre acciones
             bool ejecutoHabilidad = await EjecutarHabilidadConSalvaguarda(habilidadesDisponibles);

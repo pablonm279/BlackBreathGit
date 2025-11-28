@@ -14,7 +14,7 @@ public class Acechar : Habilidad
      public override void  Awake()
     {
       nombre = "Acechar";
-      costoAP = 2;
+      costoAP = 1;
       costoPM = 0;
       IDenClase = 7;
 

@@ -438,7 +438,7 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     }
 
     BattleManager.Instance.SombrearANoParticipantesHabilidad(unidadesNoParticipantes);
-    await Task.Delay(1100);
+    await Task.Delay(1500);
     BattleManager.Instance.DesombrearANoParticipantesHabilidad(unidadesNoParticipantes);
 }
 

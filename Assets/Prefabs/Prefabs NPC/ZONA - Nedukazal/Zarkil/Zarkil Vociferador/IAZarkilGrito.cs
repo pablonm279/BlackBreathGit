@@ -31,7 +31,7 @@ public class IAZarkilGrito : IAHabilidad
       hAncho = 5;
       esMelee = false;
       hAlcance = 8;
-      hCooldownMax = 4;
+      hCooldownMax = 5;
       esHostil = true;
       prioridad = 10;
       costoAP = 5;
@@ -145,7 +145,7 @@ public class IAZarkilGrito : IAHabilidad
         {
           Unidad obj = cas.Presente.GetComponent<Unidad>();
 
-          if (obj.TiradaSalvacion(obj.mod_TSMental, 10))
+          if (obj.TiradaSalvacion(obj.mod_TSMental, 9))
           {
 
             obj.estado_aturdido += 1;

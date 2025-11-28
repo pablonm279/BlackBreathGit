@@ -58,7 +58,7 @@ public class TrampaMiradamasacre : Trampa
       if (objetivo.TiradaSalvacion(objetivo.mod_TSMental, 13))
       {
         objetivo.CambiarAPActual(-(int)objetivo.ObtenerAPActual());
-        objetivo.GenerarTextoFlotante("Aterrado", Color.red);
+        objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Aterrado"), Color.red);
         BattleManager.Instance.EscribirLog(objetivo.uNombre + TRADU.i.Traducir(" se aterra por Mirada de la Masacre y pierde el turno."));
 
         //---
@@ -66,7 +66,7 @@ public class TrampaMiradamasacre : Trampa
         Buff buff = new Buff();
         buff.buffNombre = "Por la masacre";
         buff.boolfDebufftBuff = true;
-        buff.DuracionBuffRondas = 1;
+        buff.DuracionBuffRondas = 2;
         buff.cantDanioPorcentaje += 20;
         buff.cantAtaque += 2;
         buff.esStackeable = false;

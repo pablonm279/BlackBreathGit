@@ -1,0 +1,20 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Desactivarsizonaincorrecta : MonoBehaviour
+{
+    public int IDzonaCorrecta;  
+    
+    void OnEnable()
+    {
+        if (CampaignManager.Instance.scAtributosZona.ID != IDzonaCorrecta)
+        {
+            print("Desactivado nodo por zona incorrecta");
+            gameObject.SetActive(false);
+
+           
+        }
+      
+    }
+}

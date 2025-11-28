@@ -17,7 +17,7 @@ public class IAMiradadeMasacre : IAHabilidad
     hAncho = 1;
     esMelee = false;
     hAlcance = 1;
-    hCooldownMax = 1;
+    hCooldownMax = 2;
     esHostil = false;
     prioridad = 10;
     costoAP = 1;
@@ -55,10 +55,7 @@ public class IAMiradadeMasacre : IAHabilidad
     AplicarEfectosHabilidad(scEstaUnidad);
 
 
-    if (BattleManager.Instance != null && BattleManager.Instance.unidadActiva == scEstaUnidad)
-    {
-      BattleManager.Instance.TerminarTurno();
-    }
+  
   }
 
   public override async void AplicarEfectosHabilidad(object _)

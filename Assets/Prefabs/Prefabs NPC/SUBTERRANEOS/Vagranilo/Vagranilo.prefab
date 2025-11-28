@@ -469,7 +469,7 @@ MonoBehaviour:
   estado_Condenado: 0
   estado_Escudado: 0
   estado_Corrupto: 0
-  unidadVoladora: 0
+  unidadVoladora: 1
   estado_Volando: 0
   inmunidad_Ceguera: 1
   inmunidad_Oscuridad: 1
@@ -700,7 +700,7 @@ AudioSource:
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 1.35
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -820,8 +820,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.3, y: -8.15}
-  m_SizeDelta: {x: 25.9, y: 19.95}
+  m_AnchoredPosition: {x: -0.3, y: -7.26}
+  m_SizeDelta: {x: 25.9, y: 17.065}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2707832116491439208
 CanvasRenderer:
@@ -1278,7 +1278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 4.27
+      value: 5.629997
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

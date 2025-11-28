@@ -15679,6 +15679,7 @@ GameObject:
   - component: {fileID: 499214532963144211}
   - component: {fileID: 91192057144919723}
   - component: {fileID: 3459834333755089346}
+  - component: {fileID: 8814875851553800285}
   m_Layer: 14
   m_Name: '!!15-NodoRitual_Paso Vientohelado'
   m_TagString: Untagged
@@ -15855,6 +15856,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8814875851553800285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1969049721621315941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cb06a1a77b025142bd0d238ca362794, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IDzonaCorrecta: 2
 --- !u!1 &2218154820339519664
 GameObject:
   m_ObjectHideFlags: 0
@@ -35395,6 +35409,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7306117994871302220}
+  - component: {fileID: 3947308504439884803}
   m_Layer: 14
   m_Name: '!!14-Incendiado_BosqueArdiente'
   m_TagString: Untagged
@@ -35419,6 +35434,19 @@ Transform:
   - {fileID: 8090973962498573301}
   m_Father: {fileID: 5021837157380839591}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3947308504439884803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3202399158236014890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cb06a1a77b025142bd0d238ca362794, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IDzonaCorrecta: 1
 --- !u!1 &3313543436926032590
 GameObject:
   m_ObjectHideFlags: 0
@@ -70387,6 +70415,8 @@ MonoBehaviour:
   costoMovimiento: 1
   DestinosPosibles: []
   revelado: 0
+  ObligatorioEnZona: 
+  ProhibidoEnZona: 
   scMapaManager: {fileID: 0}
   linePrefab: {fileID: 9221151320870401559, guid: d3655eff514fea94db90e0f5b139a996, type: 3}
   lineWidth: 0.6

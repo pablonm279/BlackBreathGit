@@ -10,9 +10,9 @@ public class ReaccionEscurridizo : Reaccion
    void Start()
    {
 
-    TipoTrigger =1;
+    TipoTrigger = 1;
     usos = 10;
-    permanente = false;
+    permanente = true;
     scEstaUnidad = gameObject.GetComponent<Unidad>();
     
 

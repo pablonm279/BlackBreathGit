@@ -14,6 +14,7 @@ public class FlechaPotenteVuelo : MonoBehaviour
     private void OnEnable()
     {
         completadoTcs = new TaskCompletionSource<bool>();
+        RenderOrderHelper.ForzarProyectilAlFrente(gameObject);
         direccionMovimiento = transform.right;
         StartCoroutine(MoverYDestruir());
     }

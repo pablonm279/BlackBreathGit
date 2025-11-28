@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System;
 using Unity.VisualScripting;
 using TMPro;
+using UnityEngine.Rendering;
 
 public class BattleManager : MonoBehaviour
 {
@@ -633,7 +634,7 @@ public class BattleManager : MonoBehaviour
     }
 
     //Zarkil Masacre
-     if (u.TieneTag("Zarkil") && CampaignManager.Instance.scAtributosZona.ID == 3)
+     if (u.TieneTag("Zarkil") && CampaignManager.Instance.scAtributosZona.ID == 3 && CampaignManager.Instance.intTipoClima == 9)
       {
         // BUFF ---- Así se aplica un buff/debuff
         Buff buff = new Buff();
@@ -719,6 +720,11 @@ public class BattleManager : MonoBehaviour
   }
 
   private bool _requiereActualizarBotones;
+  // Cache para restaurar estado de render de obstáculos tras sombrear
+  private readonly Dictionary<Renderer, (int sortingLayerId, int sortingOrder)> _renderOriginalObstaculos = new Dictionary<Renderer, (int sortingLayerId, int sortingOrder)>();
+  private readonly Dictionary<SortingGroup, (int sortingLayerId, int sortingOrder)> _sortingGroupOriginalObstaculos = new Dictionary<SortingGroup, (int sortingLayerId, int sortingOrder)>();
+  private readonly Dictionary<Canvas, (bool overrideSorting, int sortingOrder)> _canvasOriginalObstaculos = new Dictionary<Canvas, (bool overrideSorting, int sortingOrder)>();
+  private readonly Dictionary<Transform, int> _siblingOriginalObstaculos = new Dictionary<Transform, int>();
 
   private void SolicitarActualizarBotones()
   {
@@ -1288,8 +1294,17 @@ public class BattleManager : MonoBehaviour
       return;
     }
 
+    // Si no comparten padre, al menos mueve el objetivo al extremo de su propio padre
+    // para que no quede siempre sobre el resto.
     if (objetivo.parent != oscurecedorTransform.parent)
     {
+      if (objetivo.parent != null)
+      {
+        int maxIndex2 = objetivo.parent.childCount - 1;
+        int newIndex2 = colocarEncima ? maxIndex2 : 0;
+        newIndex2 = Mathf.Clamp(newIndex2, 0, maxIndex2);
+        objetivo.SetSiblingIndex(newIndex2);
+      }
       return;
     }
 
@@ -1308,23 +1323,87 @@ public class BattleManager : MonoBehaviour
     }
 
     Transform obstaculoTransform = obstaculo.transform;
+    if (!_siblingOriginalObstaculos.ContainsKey(obstaculoTransform) && obstaculoTransform.parent != null)
+    {
+      _siblingOriginalObstaculos[obstaculoTransform] = obstaculoTransform.GetSiblingIndex();
+    }
     AjustarOrdenRespectoOscurecedor(obstaculoTransform, oscurecedorTransform, sombrear);
 
+    int ordenOscurecedor = ObtenerOrdenOscurecedor(oscurecedorTransform);
+    int ordenSombreado = ordenOscurecedor - 1;
+    int ordenDestacado = ordenOscurecedor + 1;
+
+    AjustarRenderersObstaculo(obstaculoTransform, sombrear, ordenSombreado, ordenDestacado);
+
     Canvas obstaculoCanvas = obstaculoTransform.GetComponentInChildren<Canvas>(true);
-    if (obstaculoCanvas == null)
+    if (obstaculoCanvas != null)
     {
-      return;
-    }
+      if (!_canvasOriginalObstaculos.ContainsKey(obstaculoCanvas))
+      {
+        _canvasOriginalObstaculos[obstaculoCanvas] = (obstaculoCanvas.overrideSorting, obstaculoCanvas.sortingOrder);
+      }
 
-    obstaculoCanvas.overrideSorting = true;
-    obstaculoCanvas.sortingOrder = sombrear ? 0 : 5;
+      obstaculoCanvas.overrideSorting = true;
+      obstaculoCanvas.sortingOrder = sombrear ? ordenSombreado : ordenDestacado;
 
-    Transform barraVida = obstaculoCanvas.transform.Find("BarraVida");
-    if (barraVida != null)
-    {
-      barraVida.gameObject.SetActive(!sombrear);
+      Transform barraVida = obstaculoCanvas.transform.Find("BarraVida");
+      if (barraVida != null)
+      {
+        barraVida.gameObject.SetActive(!sombrear);
+      }
     }
   }
+
+  private int ObtenerOrdenOscurecedor(Transform oscurecedorTransform)
+  {
+    if (oscurecedorTransform == null)
+    {
+      return 0;
+    }
+
+    SortingGroup sg = oscurecedorTransform.GetComponentInChildren<SortingGroup>(true);
+    if (sg != null)
+    {
+      return sg.sortingOrder;
+    }
+
+    Canvas canvas = oscurecedorTransform.GetComponentInChildren<Canvas>(true);
+    if (canvas != null)
+    {
+      return canvas.sortingOrder;
+    }
+
+    Renderer rend = oscurecedorTransform.GetComponentInChildren<Renderer>(true);
+    if (rend != null)
+    {
+      return rend.sortingOrder;
+    }
+
+    return 0;
+  }
+
+  private void AjustarRenderersObstaculo(Transform obstaculoTransform, bool sombrear, int ordenSombreado, int ordenDestacado)
+  {
+    foreach (SortingGroup sg in obstaculoTransform.GetComponentsInChildren<SortingGroup>(true))
+    {
+      if (!_sortingGroupOriginalObstaculos.ContainsKey(sg))
+      {
+        _sortingGroupOriginalObstaculos[sg] = (sg.sortingLayerID, sg.sortingOrder);
+      }
+      sg.sortingOrder = sombrear ? ordenSombreado : ordenDestacado;
+    }
+
+    foreach (Renderer renderer in obstaculoTransform.GetComponentsInChildren<Renderer>(true))
+    {
+      if (!_renderOriginalObstaculos.ContainsKey(renderer))
+      {
+        _renderOriginalObstaculos[renderer] = (renderer.sortingLayerID, renderer.sortingOrder);
+      }
+
+      renderer.sortingOrder = sombrear ? ordenSombreado : ordenDestacado;
+    }
+  }
+
 
   private void RestaurarObstaculoTrasDesombrear(Obstaculo obstaculo)
   {
@@ -1333,19 +1412,54 @@ public class BattleManager : MonoBehaviour
       return;
     }
 
-    Canvas obstaculoCanvas = obstaculo.transform.GetComponentInChildren<Canvas>(true);
-    if (obstaculoCanvas == null)
+    if (_siblingOriginalObstaculos.TryGetValue(obstaculo.transform, out int siblingIndex) && obstaculo.transform.parent != null)
     {
-      return;
+      int maxIndex = Mathf.Max(obstaculo.transform.parent.childCount - 1, 0);
+      obstaculo.transform.SetSiblingIndex(Mathf.Clamp(siblingIndex, 0, maxIndex));
     }
 
-    obstaculoCanvas.overrideSorting = false;
-    obstaculoCanvas.sortingOrder = 0;
+    RestaurarOrdenObstaculo(obstaculo.transform);
 
-    Transform barraVida = obstaculoCanvas.transform.Find("BarraVida");
-    if (barraVida != null)
+    Canvas obstaculoCanvas = obstaculo.transform.GetComponentInChildren<Canvas>(true);
+    if (obstaculoCanvas != null)
     {
-      barraVida.gameObject.SetActive(true);
+      if (_canvasOriginalObstaculos.TryGetValue(obstaculoCanvas, out var original))
+      {
+        obstaculoCanvas.overrideSorting = original.overrideSorting;
+        obstaculoCanvas.sortingOrder = original.sortingOrder;
+      }
+      else
+      {
+        obstaculoCanvas.overrideSorting = false;
+        obstaculoCanvas.sortingOrder = 0;
+      }
+
+      Transform barraVida = obstaculoCanvas.transform.Find("BarraVida");
+      if (barraVida != null)
+      {
+        barraVida.gameObject.SetActive(true);
+      }
+    }
+  }
+
+  private void RestaurarOrdenObstaculo(Transform obstaculoTransform)
+  {
+    foreach (SortingGroup sg in obstaculoTransform.GetComponentsInChildren<SortingGroup>(true))
+    {
+      if (_sortingGroupOriginalObstaculos.TryGetValue(sg, out var original))
+      {
+        sg.sortingLayerID = original.sortingLayerId;
+        sg.sortingOrder = original.sortingOrder;
+      }
+    }
+
+    foreach (Renderer renderer in obstaculoTransform.GetComponentsInChildren<Renderer>(true))
+    {
+      if (_renderOriginalObstaculos.TryGetValue(renderer, out var original))
+      {
+        renderer.sortingLayerID = original.sortingLayerId;
+        renderer.sortingOrder = original.sortingOrder;
+      }
     }
   }
 

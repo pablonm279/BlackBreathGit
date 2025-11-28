@@ -46,7 +46,7 @@ public class AdministradorEscenas : MonoBehaviour
   public List<Material> listaFondosSubterraneos; //Para agregar fondos simplemente hay que agregarlos a la lista
 
   [Header("UI")]
-  [SerializeField] CanvasGroup fader;        // Imagen negra con CanvasGroup
+  [SerializeField] public CanvasGroup fader;        // Imagen negra con CanvasGroup
   [SerializeField] float fadeTime = 0.4f;
 
   // Bloqueo para mantener el fader negro (evita fade-outs concurrentes)
@@ -564,7 +564,7 @@ public class AdministradorEscenas : MonoBehaviour
     LadoManager ladodeEnemigos2 = BattleManager.Instance.ladoA; //Enemigos
     foreach (Unidad u in ladodeEnemigos2.unidadesLado)
     {
-      if (u.TieneTag("Zarkil") && CampaignManager.Instance.scAtributosZona.ID == 3)
+      if (u.TieneTag("Zarkil") && CampaignManager.Instance.scAtributosZona.ID == 3 && CampaignManager.Instance.intTipoClima == 9)
       {
         // BUFF ---- Así se aplica un buff/debuff
         Buff buff = new Buff();
@@ -659,7 +659,7 @@ public class AdministradorEscenas : MonoBehaviour
       BattleManager.Instance.ActivarModoRapido(true);
     }
     else
-    {  
+    {
       BattleManager.Instance.ActivarModoRapido(false);
     }
 
@@ -817,7 +817,7 @@ public class AdministradorEscenas : MonoBehaviour
           mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
         }
         break;
-       case EncounterZoneType.Nedukazal:
+      case EncounterZoneType.Nedukazal:
         if (listaFondosNedukazal != null && listaFondosNedukazal.Count > 0)
         {
           mrFondoBatalla.material = listaFondosNedukazal[UnityEngine.Random.Range(0, listaFondosNedukazal.Count)];
@@ -844,7 +844,7 @@ public class AdministradorEscenas : MonoBehaviour
               break;
             }
           }
-         
+
         }
         goto case EncounterZoneType.BosqueAngustiante;
       case EncounterZoneType.BosqueAngustiante:
@@ -1659,6 +1659,22 @@ public class AdministradorEscenas : MonoBehaviour
     }
     #endregion
 
+
+
+    #region Encuentros Nedukazal ID Entre 100 y 150
+    if (IDEncuentro == 100) // FASE 1 - Nedukazal - Jefe Comandante Zarkil
+    {
+      GameObject jefe = Instantiate(ContenedorPrefabsBatalla.ComandanteZarkil);
+      ColocarEnCasillaEspecifica(2, jefe, 1, 3);
+
+      GameObject acechador1 = Instantiate(ContenedorPrefabsBatalla.ZarkilAcechador);
+      ColocarEnCasillaAleatoria(2, acechador1);
+      GameObject acechador2 = Instantiate(ContenedorPrefabsBatalla.ZarkilAcechador);
+      ColocarEnCasillaAleatoria(2, acechador2);
+      GameObject guerrero = Instantiate(ContenedorPrefabsBatalla.ZarkilGuerrero);
+      ColocarEnCasillaAleatoria(2, guerrero);
+    }
+    #endregion
 
 
 
@@ -2713,7 +2729,7 @@ public class AdministradorEscenas : MonoBehaviour
 
     BattleManager.Instance.unidadActiva = null;
     BattleManager.Instance.indexTurno = 0;
-   
+
 
     CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(0.7f, 1.6f);
     await Task.Delay(TimeSpan.FromSeconds(1.6f));
@@ -2941,13 +2957,15 @@ public class AdministradorEscenas : MonoBehaviour
     HandbookCampania.SetActive(!HandbookCampania.activeSelf);
   }
   void Update()
+  {
+    // Detecta cuando se presiona la tecla H una sola vez
+    if (Input.GetKeyDown(KeyCode.H))
     {
-        // Detecta cuando se presiona la tecla H una sola vez
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-           AbrirHandbook();
-        }
+      AbrirHandbook();
     }
+  }
+
+
 
 }
 

@@ -394,9 +394,9 @@ public class Nodo : MonoBehaviour
     }
     foreach (var go in destruir) Destroy(go);
 
-
+    transform.GetChild(0).gameObject.SetActive(true);
     transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
-    EsconderSiNedukazal();
+    Invoke("EsconderSiNedukazal", 0.15f); 
     gameObject.SetActive(true);
   }
 
@@ -994,8 +994,10 @@ public class Nodo : MonoBehaviour
   public void EsconderSiNedukazal()
   {
     if (CampaignManager.Instance.scAtributosZona.ID == 3)
-    { 
+    {
       transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
     }
+    else
+    { transform.GetChild(0).GetChild(0).gameObject.SetActive(true);}
   }
 }

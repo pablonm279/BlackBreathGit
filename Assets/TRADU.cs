@@ -2034,6 +2034,15 @@ public class TRADU : MonoBehaviour
             case "Protección Arcana":
                 r = "Arcane Protection";
                 break;
+            case "IA Lenguetazo":
+                r = "AI Tongue Lash";
+                break;
+            case "Saboreado":
+                r = "Savored";
+                break;
+            case "recibirá más daño del Zarkilever":
+                r = "will take more damage from the Zarkilever";
+                break;
             case "Armadura Rota":
                 r = "Broken Armor";
                 break;
@@ -3184,14 +3193,14 @@ public class TRADU : MonoBehaviour
                 r = "Graphics Quality";
                 break;
             case "Alta":
-                 r = "High";
-                 break;
+                r = "High";
+                break;
             case "Media":
-                 r = "Medium";
-                 break;
+                r = "Medium";
+                break;
             case "Baja":
-                 r = "Low";
-                 break;
+                r = "Low";
+                break;
             case "Accesos Rápidos":
                 r = "Hotkeys";
                 break;
@@ -3230,12 +3239,15 @@ public class TRADU : MonoBehaviour
                 break;
             case "Agazapado":
                 r = "Lurking";
-            break;
+                break;
             case "Zarkil Guerrero":
                 r = "Zarkil Warrior";
-            break;
+                break;
             case "Mirada de la Masacre":
                 r = "Gaze of the Massacre";
+                break;
+            case "Victima de la masacre":
+                r = "Massacre's Victim";
                 break;
             case " reacciona con Mirada de la Masacre.":
                 r = " reacts with Gaze of the Massacre.";
@@ -3261,6 +3273,48 @@ public class TRADU : MonoBehaviour
             case "<i>Raza de criaturas demoníacas que invaden Nedulkazan desde abajo en busca de sacrificios y oro. </i>\n\n<color=#199F10>-Grito aturdidor que además motiva aliados.\n-Puede ver escondidos.\n-Puede atacar repetidamente.</color>\n<color=#EE0000></color>":
                 r = "<i>Race of demonic creatures that invade Nedulkazan from below in search of sacrifices and gold. </i>\n\n<color=#199F10>-Stunning shout that also motivates allies.\n-Can see hidden units.\n-Can attack repeatedly.</color>\n<color=#EE0000></color>";
                 break;
+            case "Rayo Debilitador":
+                r = "Weakening Ray";
+                break;
+            case "Debilitado":
+                r = "Weakened";
+                break;
+            case "<i>Raza de criaturas demoníacas que invaden Nedulkazan desde abajo en busca de sacrificios y oro. </i>\n\n<color=#199F10>-Ataque debilitador infalible.\n-Puede ver escondidos.\n-Volador.</color>\n<color=#EE0000>-Débil</color>":
+                r = "<i>Race of demonic creatures that invade Nedulkazan from below in search of sacrifices and gold. </i>\n\n<color=#199F10>-Unerring weakening attack.\n-Can see hidden units.\n-Flying.</color>\n<color=#EE0000>-Weak</color>";
+                break;
+            case "Zarkil Alado":
+                r = "Winged Zarkil";
+                break;
+            case "Mordisco Zarkilever":
+                r = "Zarkilever Bite";
+                break;
+            case " sufre el efecto de Saboreado, recibiendo 15 de daño extra y curando al Zarkilever por 14 puntos de vida.":
+                r = " suffers the Savored effect, receiving 15 extra damage and healing the Zarkilever for 14 health points.";
+                break;
+            case "Saborear":
+                r = "Taste";
+                break;
+            case "Saboreando!":
+                r = "Tasting!";
+                break;
+            case "<i>Criatura muy feroz controlada porlos Zarkils utilizada como fuerza de impacto y para causar grietas en superficies duras. </color>\n\n<color=#199F10>-Buena Armadura.\n-Saborea a las víctimas.</color>\n<color=#EE0000></color>":
+                r = " <i>Very fierce creature controlled by the Zarkils used as a shock force and to cause cracks in hard surfaces. </color>\n\n<color=#199F10>-Good Armor.\n-Tastes victims.</color>\n<color=#EE0000></color>";
+                break;
+            case "Por la masacre":
+                r = "For the massacre";
+                break;
+            case "Llamada Zarkil":
+                r = "Zarkil Call";
+                break;
+            case "Rayo Zarkil":
+                r = "Zarkil Ray";
+                break;
+            case "Comandante Zarkil":
+                r = "Zarkil Commander";
+                break;
+            case "<i>Tiene una legión entera de Zarkils bajo su liderazgo, simplemente debe señalar un objetivo y sus súbditos se encargarán del resto.</color>\n\n<color=#199F10>-Llama refuerzos sin fin.\n-Ataque debilitador infalible.</color>\n<color=#EE0000>-No es fuerte por si solo.</color>":
+                r = "<i>He has an entire legion of Zarkils under his leadership, he just has to point to a target and his subjects will take care of the rest.</color>\n\n<color=#199F10>-Calls endless reinforcements.\n-Unerring weakening attack.</color>\n<color=#EE0000>-Not strong on his own.</color>";
+                break;
                 /*  case "":
                 r = "";
                 break;*/
@@ -3282,6 +3336,34 @@ public class TRADU : MonoBehaviour
                 /*  case "":
                 r = "";
                 break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+
 
 
 

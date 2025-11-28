@@ -49,6 +49,7 @@ public class BattleFactionPool
 public class EncounterZoneConfig
 {
    public string inspectorLabel;
+   [Range(0f, 100f)] public float chanceEncuentroPropio = 70f;
    public List<BattleFactionPool> battlePools = new List<BattleFactionPool>();
 
    public BattleFactionPool GetPool(BattleEncounterType type)
@@ -60,7 +61,7 @@ public class EncounterZoneConfig
 public class AtributosZona : MonoBehaviour
 {
    public string Nombre;
-   public int ID;
+   public int ID; //1 Bosque Ardiente, 2 Paso Vientohelado, 3 Nedukazal
 
    public TextMeshProUGUI txtNombreZona;
    public int FASE; //En que posición sale la zona, para determinar dificultad de encuentros
@@ -140,6 +141,12 @@ public class AtributosZona : MonoBehaviour
          default:
             return null;
       }
+   }
+
+   public float GetChanceEncuentroPropio(EncounterZoneType zoneType)
+   {
+      var config = GetEncounterConfig(zoneType);
+      return config != null ? config.chanceEncuentroPropio : 70f;
    }
 
    public EncounterZoneType GetZoneTypeById(int zoneId)
@@ -254,6 +261,7 @@ public class AtributosZona : MonoBehaviour
       TexturaTerrenoExtension.material = MaterialBosqueAngustiante_Terreno;
       TexturaBordeMapa.material = MaterialBosqueAngustiante_BordeMapa;
       pasovientoheladoContenedorGameObjects.SetActive(false);
+      nedukazalContenedorGameObjects.SetActive(false);
       bosqueardienteContenedorGameObjects.SetActive(true);
       CampaignManager.Instance.sunController = bosqueardienteContenedorGameObjects.transform.GetChild(0).gameObject.GetComponent<SunController>();
       // Respetar timing previo y dejar terminar el fade inicial del AdministradorEscenas
@@ -377,6 +385,7 @@ public class AtributosZona : MonoBehaviour
       TexturaBordeMapa.material = MaterialPasoVientoHelado_BordeMapa;
       pasovientoheladoContenedorGameObjects.SetActive(true);
       bosqueardienteContenedorGameObjects.SetActive(false);
+      nedukazalContenedorGameObjects.SetActive(false);
       CampaignManager.Instance.sunController = pasovientoheladoContenedorGameObjects.transform.GetChild(0).gameObject.GetComponent<SunController>();
 
       // Respetar timing previo y dejar terminar el fade inicial del AdministradorEscenas
@@ -560,7 +569,7 @@ public class AtributosZona : MonoBehaviour
          var luz = Nedukazal_CaravanaLuz.GetComponent<Light>();
          if (luz != null)
          {
-            luz.range = 6+CampaignManager.Instance.mejoraCaravanaAntorchas;
+            luz.range = 6 + CampaignManager.Instance.mejoraCaravanaAntorchas;
          }
       }
    }
@@ -576,11 +585,11 @@ public class AtributosZona : MonoBehaviour
    public GameObject VFX_AlientoNegroNedukazal;
 
 
- 
 
 
-    IEnumerator AdornarNedukazalConFadeAsync()
-   { 
+
+   IEnumerator AdornarNedukazalConFadeAsync()
+   {
 
       TexturaTerreno.material = MaterialNedukazal_Terreno;
       TexturaTerrenoExtension.material = MaterialNedukazal_Terreno;
@@ -608,13 +617,13 @@ public class AtributosZona : MonoBehaviour
          rOverride: 6.7f,
          kOverride: 20);
 
-    yield return scMapDecorator.GenerarAsyncCR(
-         BosqueAngustiante_ManchaCeniza1,
-         cantidad: 105,
-         distCaminoOverride: 0.10f,
-         distNodoOverride: 0.40f,
-         rOverride: 10.8f,
-         kOverride: 20);
+      yield return scMapDecorator.GenerarAsyncCR(
+           BosqueAngustiante_ManchaCeniza1,
+           cantidad: 105,
+           distCaminoOverride: 0.10f,
+           distNodoOverride: 0.40f,
+           rOverride: 10.8f,
+           kOverride: 20);
 
       yield return scMapDecorator.GenerarAsyncCR(
          Nedukazal_Escombro3,
@@ -631,7 +640,7 @@ public class AtributosZona : MonoBehaviour
          distNodoOverride: 1.9f,
          rOverride: 13.0f,
          kOverride: 20);
-      
+
       yield return scMapDecorator.GenerarAsyncCR(
          Nedukazal_Edificio2,
          cantidad: 3,
@@ -639,7 +648,7 @@ public class AtributosZona : MonoBehaviour
          distNodoOverride: 2.2f,
          rOverride: 27.0f,
          kOverride: 20);
-      
+
       yield return scMapDecorator.GenerarAsyncCR(
            Nedukazal_Maleza1,
            cantidad: 300,
@@ -648,22 +657,22 @@ public class AtributosZona : MonoBehaviour
            rOverride: 1.67f,
            kOverride: 20);
 
-       yield return scMapDecorator.GenerarAsyncCR(
-           Nedukazal_Aldea1,
-           cantidad: 15,
-           distCaminoOverride: 0.28f,
-           distNodoOverride: 0.85f,
-           rOverride: 7.5f,
-           kOverride: 20);
+      yield return scMapDecorator.GenerarAsyncCR(
+          Nedukazal_Aldea1,
+          cantidad: 15,
+          distCaminoOverride: 0.28f,
+          distNodoOverride: 0.85f,
+          rOverride: 7.5f,
+          kOverride: 20);
 
-       /* yield return scMapDecorator.GenerarAsyncCR(
-           BosqueAngustiante_Llama,
-           cantidad: 25,
-           distCaminoOverride: 0.6f,
-           distNodoOverride: 0.9f,
-           rOverride: 8.0f,
-           kOverride: 20);
-  */
+      /* yield return scMapDecorator.GenerarAsyncCR(
+          BosqueAngustiante_Llama,
+          cantidad: 25,
+          distCaminoOverride: 0.6f,
+          distNodoOverride: 0.9f,
+          rOverride: 8.0f,
+          kOverride: 20);
+ */
       if (admin != null)
       {
          // Liberar bloqueo y volver a mostrar la escena
@@ -673,4 +682,83 @@ public class AtributosZona : MonoBehaviour
    }
 
 
+ 
+// Lista para llevar registro del estado de las zonas
+// 0: No cruzada, 1: Cruzada, 2: Descartada
+public List<int> ZonasEstado = new List<int>();
+
+/// <summary>
+/// Inicializa la lista de estados de las zonas.
+/// Debe llamarse al inicio del juego o cuando se reinicia la campaña.
+/// </summary>
+
+
+
+/// <summary>
+/// Actualiza el estado de una zona específica.
+/// </summary>
+/// <param name="zonaID">El ID de la zona a actualizar (índice en la lista).</param>
+/// <param name="estado">El nuevo estado de la zona (0: No cruzada, 1: Cruzada, 2: Descartada).</param>
+public void ActualizarEstadoZona(int zonaID, int estado)
+{
+   zonaID -= 1; // Ajustar para índice basado en cero
+   if (zonaID >= 0 && zonaID < ZonasEstado.Count)
+      {
+         ZonasEstado[zonaID] = estado;
+      }
+      else
+      {
+         Debug.LogWarning($"ZonaID {zonaID} está fuera de rango.");
+      }
+}
+
+
+   public void GenerarZona(int ID = 0)
+   {
+      int zona = ID;
+
+      FASE++;
+      // Si no se pasa ID, seleccionar aleatoriamente de las zonas con estado 0
+      if (zona == 0)
+      {
+         var zonasDisponibles = new List<int>();
+         for (int i = 0; i < ZonasEstado.Count; i++)
+         {
+            if (ZonasEstado[i] == 0)
+            {
+               zonasDisponibles.Add(i + 1); // Los IDs de las zonas comienzan desde 1
+            }
+         }
+
+         if (zonasDisponibles.Count > 0)
+         {
+            zona = zonasDisponibles[UnityEngine.Random.Range(0, zonasDisponibles.Count)];
+         }
+         else
+         {
+            Debug.LogWarning("No hay zonas disponibles con estado 0.");
+            return;
+         }
+      }
+
+
+
+      switch (zona)
+      {
+         case 1:
+            ConstruirZonaBosqueAngustiante(FASE);
+            break;
+         case 2:
+            ConstruirZonaPasoVientoHelado(FASE);
+            break;
+         case 3:
+            ConstruirZonaNedukazal(FASE);
+            break;
+
+      }
+
+      CampaignManager.Instance.scMapaManager.GenerarNodos();
+      CampaignManager.Instance.ForzarTiradaClima();
+      
+  }
 }

@@ -49,6 +49,8 @@ public class EncounterDefinition
 
 public static class EncounterGenerator
 {
+   const int MaxInitialUnits = 6;
+
    public static bool TryGenerateEncounter(
       AtributosZona atributosZona,
       EncounterZoneType zoneType,
@@ -110,7 +112,7 @@ public static class EncounterGenerator
       int totalBudget = baseBudget * faseClamped + randomBonus;
       totalBudget += Sistema.HandicapDificultad.AjustePuntosEnemigos;
       totalBudget = Mathf.Max(1, totalBudget);
-      int initialCap = Mathf.Max(1, faseClamped) * 5;
+      int initialCap = Mathf.Min(MaxInitialUnits, Mathf.Max(1, faseClamped) * 5);
       int reinforcementDelay = Mathf.Clamp(2 + faseClamped, 3, 6);
 
       var generated = new EncounterDefinition
@@ -159,6 +161,7 @@ public static class EncounterGenerator
       int initialCount = 0;
       int safetyCounter = 0;
       int maxTierAllowed = definition != null && definition.fase <= 1 ? 2 : 4;
+      int allowedInitial = Mathf.Min(initialCap, MaxInitialUnits);
 
       while (remaining > 0 && safetyCounter < 200)
       {
@@ -177,7 +180,7 @@ public static class EncounterGenerator
          }
 
          var prefab = tierList[UnityEngine.Random.Range(0, tierList.Count)];
-         bool spawnAsReinforcement = initialCount >= initialCap;
+         bool spawnAsReinforcement = initialCount >= allowedInitial;
 
          definition.units.Add(new EncounterUnitSlot
          {
@@ -228,7 +231,7 @@ public static class EncounterGenerator
       int totalBudget = baseBudget * faseClamped + randomBonus;
       totalBudget += Sistema.HandicapDificultad.AjustePuntosEnemigos;
       totalBudget = Mathf.Max(1, totalBudget);
-      int initialCap = Mathf.Max(1, forcedUnits.Count);
+      int initialCap = Mathf.Min(MaxInitialUnits, Mathf.Max(1, forcedUnits.Count));
       int reinforcementDelay = 0;
 
       definition = new EncounterDefinition
@@ -245,14 +248,17 @@ public static class EncounterGenerator
          reinforcementDelay = reinforcementDelay
       };
 
+      int index = 0;
       foreach (var prefab in forcedUnits)
       {
          definition.units.Add(new EncounterUnitSlot
          {
             prefab = prefab,
             tierCost = 0,
-            spawnAsReinforcement = false
+            spawnAsReinforcement = index >= MaxInitialUnits
          });
+
+         index++;
       }
 
       return true;

@@ -12,7 +12,7 @@ public class MapaManager : MonoBehaviour
 
     void Start()
     {
-        GenerarNodos();
+       GenerarNodos();
     }
 
     
@@ -28,12 +28,15 @@ public class MapaManager : MonoBehaviour
        }
 
        Nodo origen = scContenedordeNodos.ObtenerNodoSegunXY(0,0);
-       origen.DeterminarConexiones();
-       nodoActual = origen;
-       ForzarNodosObligatorios(zonaId);
-       DesactivarNodosSinUsar(zonaId);
-    
-       origen.PosicionarObjetoEnNodo(goCaravana);
+        if (origen != null)
+        {
+            origen.DeterminarConexiones();
+            nodoActual = origen;
+            ForzarNodosObligatorios(zonaId);
+            DesactivarNodosSinUsar(zonaId);
+
+            origen.PosicionarObjetoEnNodo(goCaravana);
+        }
   }
 
     // Reset total del mapa y regeneración para la siguiente zona
@@ -49,8 +52,15 @@ public class MapaManager : MonoBehaviour
         // 2) Reconstruir la lista del contenedor (se había podado previamente)
         scContenedordeNodos.RecolectarNodos();
 
-        // 3) Regenerar conexiones y posicionar caravana en el origen
-        GenerarNodos();
+        //3) Eliminar adornos de la zona anterior
+        GameObject[] objetosMapa = GameObject.FindGameObjectsWithTag("MapaObjeto");
+        foreach (GameObject objeto in objetosMapa)
+        {
+            Destroy(objeto);
+        }
+        
+
+
     }
 
     void DesactivarNodosSinUsar(int zonaId)

@@ -100,8 +100,19 @@ public class EventosAdmin : MonoBehaviour
      retratoParticipante1.SetActive(false);
      retratoParticipante2.SetActive(false);
 
+        //Filtro Nedukazal
+        if(CampaignManager.Instance.scAtributosZona.ID == 3)
+        {
+            if(ID == 1 || ID == 3 || ID == 8 || ID == 201 || ID == 205 || ID == 209 ) //Evetos prohibidos en Nedukazal -- Ir agregando mas
+            {
+                int eventoproximo = ID + 1;
+                EmpezarEvento(eventoproximo); //Tira otro evento
+                return;
+            }
+        }
+
         //EVENTOS MALOS  GENERICOS 1 -80  Hechos: 10/80
-        if(ID == 1) //Retraso Nocturno
+        if (ID == 1) //Retraso Nocturno
         {
             imRetrato.sprite = Evento001;
             txtTitulo.text = TRADU.i.Traducir("Retraso Nocturno");

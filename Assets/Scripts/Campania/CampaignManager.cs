@@ -99,9 +99,8 @@ public class CampaignManager : MonoBehaviour
     CambiarOroActual(400);
     CambiarValorAlientoNegro(1);
 
-    //scAtributosZona.ConstruirZonaBosqueAngustiante(1);
-    //scAtributosZona.ConstruirZonaPasoVientoHelado(1);
-    scAtributosZona.ConstruirZonaNedukazal(1);
+    
+    scAtributosZona.GenerarZona(0); //0 es aleatorio
 
 
     scMenuSequito.AgregarSequito(1);
@@ -114,8 +113,7 @@ public class CampaignManager : MonoBehaviour
     numeroTurno = 1;
     posicionCaravana = 1;
 
-    menuDescanso.GetComponent<MenuDescanso>().TiradaClima();
-
+    ForzarTiradaClima();
 
 
     CrearCaballero();
@@ -150,7 +148,10 @@ public class CampaignManager : MonoBehaviour
     MenuOpciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
   }
 
-
+  public void ForzarTiradaClima()
+  { 
+        menuDescanso.GetComponent<MenuDescanso>().TiradaClima();
+  }
   #region Nodos
   public SunController sunController;
 
@@ -461,18 +462,36 @@ public class CampaignManager : MonoBehaviour
     }
 
   }
+  
+
+
+  public GameObject goUIVictoriaZona;
 
   // Llamar desde el resultado de la Batalla Final (jefe derrotado)
   public void OnDerrotadoJefeZona()
   {
-    // Avanzar fase de zona y reconstruir mapa con mínimos acoples
-    int proximaFase = Mathf.Clamp(scAtributosZona.FASE + 1, 1, 3);
 
-    // Resetear mapa de nodos y conexiones
+    goUIVictoriaZona.SetActive(true);
+
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      pers.RecibirCuracion(2000);
+      pers.Camp_Herido = false;
+    }
+    CambiarSuministrosActuales(120);
+    CambiarMaterialesActuales(40);
+
+  
+
+  }
+
+  public void ContinuarASiguienteZona()
+  {
+    scAdministradorEscenas.fader.alpha = 1f;
+    posicionCaravana = 1;
+    scAtributosZona.ActualizarEstadoZona(scAtributosZona.ID, 1); //Zona completada
     scMapaManager.ResetearYGenerarSiguienteZona();
-
-    // Reconstruir la ambientación y parámetros de la zona
-    scAtributosZona.ConstruirZonaPasoVientoHelado(proximaFase);
+    scAtributosZona.GenerarZona(0); //0 es aleatorio
 
   }
 
