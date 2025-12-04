@@ -229,9 +229,9 @@ public class BombaDeHumo : Habilidad
 
       foreach (Casilla c in casillasAlrededor)
       {
-        c.AddComponent<TrampaBombaHumo>();
-
-        c.GetComponent<TrampaBombaHumo>().Inicializar(NIVEL);
+        TrampaBombaHumo trampa = c.AddComponent<TrampaBombaHumo>();
+        trampa.Inicializar(NIVEL);
+        trampa.AsignarCreador(scEstaUnidad);
       }
 
 

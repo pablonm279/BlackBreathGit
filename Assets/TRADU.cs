@@ -2838,8 +2838,8 @@ public class TRADU : MonoBehaviour
             case " es condenado por 3 turnos.":
                 r = " is condemned for 3 turns.";
                 break;
-            case "Condena: En X cantidad de turnos recibirá daño verdadero igual al 15% de su vida máxima.":
-                r = "Condemned: In X turns, it will receive true damage equal to 15% of its maximum health.";
+            case "Condena: En X cantidad de turnos recibirá daño verdadero igual al 10% de su vida máxima por turno con el efecto.":
+                r = "Condemned: In X turns, it will receive true damage equal to 10% of its maximum health per turn with the effect.";
                 break;
             case " es dañado por la Condena.":
                 r = " is damaged by Condemnation.";
@@ -3315,30 +3315,30 @@ public class TRADU : MonoBehaviour
             case "<i>Tiene una legión entera de Zarkils bajo su liderazgo, simplemente debe señalar un objetivo y sus súbditos se encargarán del resto.</color>\n\n<color=#199F10>-Llama refuerzos sin fin.\n-Ataque debilitador infalible.</color>\n<color=#EE0000>-No es fuerte por si solo.</color>":
                 r = "<i>He has an entire legion of Zarkils under his leadership, he just has to point to a target and his subjects will take care of the rest.</color>\n\n<color=#199F10>-Calls endless reinforcements.\n-Unerring weakening attack.</color>\n<color=#EE0000>-Not strong on his own.</color>";
                 break;
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
+            case "Llamada Espectral":
+                r = "Spectral Call";
+                break;
+            case "Condena del bosque":
+                r = "Forest's Curse";
+                break;
+            case "<i>Manifestación de la energía espectral del bosque. Desde su interior emana un fulgor fantasmal frío, como un espíritu atrapado que se retuerce para escapar.</color>\n\n<color=#199F10>-Llama refuerzos sin fin.\n-Ataque necrótico que condena a dos objetivos.</color>\n<color=#EE0000>-Inmóvil.</color>":
+                r = "<i>Manifestation of the spectral energy of the forest. From within it emanates a cold ghostly glow, like a trapped spirit writhing to escape.</color>\n\n<color=#199F10>-Calls endless reinforcements.\n-Necrotic attack that condemns two targets.</color>\n<color=#EE0000>-Immobile.</color>";
+                break;
+            case "Aliento Helado":
+                r = "Frost Breath";
+                break;
+            case "Draco de Hielo":
+                r = "Ice Drake";
+                break;
+            case "Garra Draco":
+                r = "Drake Claw";
+                break;
+            case "<i>Estas criaturas aladas habitan en las regiones más frías del Paso. Son conocidas por ser muy territoriales y por su aliento gélido.</i>\n\n<color=#199F10>-Vuelo.\n-Aliento gélido en zona.\n-Regenera armadura.</color>\n<color=#EE0000>-Débil al fuego.</color>":
+                r = "<i>These winged creatures inhabit the coldest regions of the Pass. They are known for being very territorial and for their icy breath.</i>\n\n<color=#199F10>-Flight.\n-Icy breath in area.\n-Regenerates armor.</color>\n<color=#EE0000>-Weak to fire.</color>";
+                break;
+            case "Aturdido":
+                r = "Stunned";
+                break;
                 /*  case "":
                 r = "";
                 break;*/

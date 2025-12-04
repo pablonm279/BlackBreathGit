@@ -78,10 +78,13 @@ public class CrecimientoEspinoso : IAHabilidad
         { 
           TrampaEnredaderaEspinosa tr1 = ladoPC.c1x1.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
           tr1.Inicializar();
+          tr1.AsignarCreador(scEstaUnidad);
           TrampaEnredaderaEspinosa tr2 = ladoPC.c2x1.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
           tr2.Inicializar();
+          tr2.AsignarCreador(scEstaUnidad);
           TrampaEnredaderaEspinosa tr3 = ladoPC.c3x1.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
           tr3.Inicializar();
+          tr3.AsignarCreador(scEstaUnidad);
         }
         else{ filaAfectada--;}
         }
@@ -91,10 +94,13 @@ public class CrecimientoEspinoso : IAHabilidad
         {
           TrampaEnredaderaEspinosa tr1 = ladoPC.c1x2.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
           tr1.Inicializar();
+          tr1.AsignarCreador(scEstaUnidad);
           TrampaEnredaderaEspinosa tr2 = ladoPC.c2x2.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
           tr2.Inicializar();
+          tr2.AsignarCreador(scEstaUnidad);
           TrampaEnredaderaEspinosa tr3 = ladoPC.c3x2.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
           tr3.Inicializar();
+          tr3.AsignarCreador(scEstaUnidad);
         }else{ filaAfectada++;}
         }
       if(filaAfectada == 3)
@@ -103,10 +109,13 @@ public class CrecimientoEspinoso : IAHabilidad
           {
             TrampaEnredaderaEspinosa tr1 = ladoPC.c1x3.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
             tr1.Inicializar();
+            tr1.AsignarCreador(scEstaUnidad);
             TrampaEnredaderaEspinosa tr2 = ladoPC.c2x3.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
             tr2.Inicializar();
+            tr2.AsignarCreador(scEstaUnidad);
             TrampaEnredaderaEspinosa tr3 = ladoPC.c3x3.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
             tr3.Inicializar();
+            tr3.AsignarCreador(scEstaUnidad);
           }else{ filaAfectada++;}
         }
         if(filaAfectada == 4)
@@ -115,10 +124,13 @@ public class CrecimientoEspinoso : IAHabilidad
           {
             TrampaEnredaderaEspinosa tr1 = ladoPC.c1x4.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
             tr1.Inicializar();
+            tr1.AsignarCreador(scEstaUnidad);
             TrampaEnredaderaEspinosa tr2 = ladoPC.c2x4.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
             tr2.Inicializar();
+            tr2.AsignarCreador(scEstaUnidad);
             TrampaEnredaderaEspinosa tr3 = ladoPC.c3x4.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
             tr3.Inicializar();
+            tr3.AsignarCreador(scEstaUnidad);
           }else{ filaAfectada++;}
         }
         if(filaAfectada == 5)
@@ -127,10 +139,13 @@ public class CrecimientoEspinoso : IAHabilidad
           {
             TrampaEnredaderaEspinosa tr1 = ladoPC.c1x5.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
             tr1.Inicializar();
+            tr1.AsignarCreador(scEstaUnidad);
             TrampaEnredaderaEspinosa tr2 = ladoPC.c2x5.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
             tr2.Inicializar();
+            tr2.AsignarCreador(scEstaUnidad);
             TrampaEnredaderaEspinosa tr3 = ladoPC.c3x5.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
             tr3.Inicializar();
+            tr3.AsignarCreador(scEstaUnidad);
           }
         }
      }

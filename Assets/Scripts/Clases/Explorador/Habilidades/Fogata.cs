@@ -227,8 +227,9 @@ public class Fogata : Habilidad
 
     public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla cas)
     {
-       cas.AddComponent<TrampaFogata>();
-       cas.GetComponent<TrampaFogata>().Inicializar(NIVEL);
+       TrampaFogata trampa = cas.AddComponent<TrampaFogata>();
+       trampa.Inicializar(NIVEL);
+       trampa.AsignarCreador(scEstaUnidad);
      
    
     }

@@ -196,8 +196,9 @@ public class IAAlimaniaAcido : IAHabilidad
       var seleccionadas = casillas.OrderBy(x => UnityEngine.Random.value).Take(2).ToList();
       foreach (var c in seleccionadas)
       {
-        c.AddComponent<TrampaMasaContaminada>();
-        c.GetComponent<TrampaMasaContaminada>().Inicializar();
+        var trampa = c.AddComponent<TrampaMasaContaminada>();
+        trampa.Inicializar();
+        trampa.AsignarCreador(scEstaUnidad);
       }
     }
 

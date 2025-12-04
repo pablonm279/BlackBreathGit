@@ -7,12 +7,11 @@ public class TrampaPrimerGolpeAlabardero : Trampa
 {
   
   IAGolpeAlabarda tiroArco;
-  public Unidad unidadCreadora;
   bool destruidaPorMuerteCreador;
   bool creadorAsignado;
   public void InicializarCreador(Unidad creadora)
   {
-    unidadCreadora = creadora;
+    AsignarCreador(creadora);
     print(111);
      Invoke("Activar", 0.5f);
     tiroArco = unidadCreadora.GetComponent<IAGolpeAlabarda>();
@@ -27,7 +26,7 @@ public class TrampaPrimerGolpeAlabardero : Trampa
     nombre = "Primer Golpe";
     intDificultadVer = 0;
     intUsos = 1;
-    intDuracionTurnos = 2;
+    intDuracionTurnos = 1;
     esPersistente = false;
     tiroArco = unidadCreadora.GetComponent<IAGolpeAlabarda>();
     ActivarVFXModeloTrampa();
@@ -40,7 +39,7 @@ public class TrampaPrimerGolpeAlabardero : Trampa
   void Activar()
   { 
     activa = true;
-   print(222);
+  
   }
 
   void Update()

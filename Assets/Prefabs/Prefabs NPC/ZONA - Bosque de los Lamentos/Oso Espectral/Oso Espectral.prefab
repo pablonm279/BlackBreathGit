@@ -874,9 +874,9 @@ MonoBehaviour:
   mod_iniciativa: 2
   iniciativa_actual: 0
   esEtereo: 0
-  at_maxHP: 83
-  mod_maxHP: 83
-  HP_actual: 83
+  at_maxHP: 90
+  mod_maxHP: 90
+  HP_actual: 90
   at_maxAccionP: 0
   esInmobil: 0
   mod_maxAccionP: 3
@@ -885,8 +885,8 @@ MonoBehaviour:
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
   ValentiaP_actual: 0
-  at_CarFuerza: 7
-  mod_CarFuerza: 7
+  at_CarFuerza: 8
+  mod_CarFuerza: 8
   at_CarAgilidad: 3
   mod_CarAgilidad: 3
   at_CarPoder: 2
@@ -941,6 +941,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0

@@ -183,14 +183,14 @@ public class ArrowFlight : MonoBehaviour
         float bParabola = baseParabola;
         
         Unidad unidadInicio = inicio.GetComponentInParent<Unidad>();
-        float posXinicio = unidadInicio.CasillaPosicion.posX * 0.10f;
+        float posXinicio = unidadInicio.CasillaPosicion.posX * 0.07f;
 
 
         float posXdestino = 0;
         if (destino.GetComponentInParent<Unidad>() != null)
         {
             Unidad unidadDestino = destino.GetComponentInParent<Unidad>();
-            posXdestino = -(unidadDestino.CasillaPosicion.posX * 0.05f);
+            posXdestino = -(unidadDestino.CasillaPosicion.posX * 0.04f);
         }
 
         float restaFinal = Mathf.Abs(posXdestino - posXinicio);

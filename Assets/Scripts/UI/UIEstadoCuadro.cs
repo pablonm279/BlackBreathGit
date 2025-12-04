@@ -126,7 +126,7 @@ public class UIEstadoCuadro : MonoBehaviour
       case 26: Retrato.sprite = imTierEnergia; textTooltip.text = TRADU.i.Traducir("Energía: Nivel de Energía Acumulada por el Canalizador."); break;
       case 27: Retrato.sprite = imCorrupto; textTooltip.text = TRADU.i.Traducir("Corrupto: Recibe daño adicional de enemigos Corrompidos que además se curan al dañarlo. Si lo deja fuera de combate un enemigo corrompido, muere."); break;
       case 28: Retrato.sprite = imVolador; textTooltip.text = TRADU.i.Traducir("Volador: Esta unidad no puede ser alcanzada por ataques melee, puede perder el vuelo al ser dañado o fallar un ataque."); break;
-      case 29: Retrato.sprite = imCondena; textTooltip.text = TRADU.i.Traducir("Condena: En X cantidad de turnos recibirá daño verdadero igual al 15% de su vida máxima."); break;
+      case 29: Retrato.sprite = imCondena; textTooltip.text = TRADU.i.Traducir("Condena: En X cantidad de turnos recibirá daño verdadero igual al 10% de su vida máxima por turno con el efecto."); break;
       case 30: Retrato.sprite = imEscudado; textTooltip.text = TRADU.i.Traducir("Escudado: 10% chances por stack de evitar un ataque físico. Al evitar uno, pierde un stack."); break;
 
     }

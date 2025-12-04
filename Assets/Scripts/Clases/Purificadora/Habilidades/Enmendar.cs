@@ -26,7 +26,7 @@ public class Enmendar : Habilidad
       esCargable = false;
       esMelee = false;
       esHostil = false;
-      cooldownMax = 0;
+      cooldownMax = 2;
       bAfectaObstaculos = false;
       
      

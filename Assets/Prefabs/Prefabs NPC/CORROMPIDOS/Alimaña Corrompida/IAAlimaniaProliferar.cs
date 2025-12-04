@@ -101,8 +101,9 @@ public class IAAlimaniaProliferar : IAHabilidad
 
       foreach (var c in casillasLibres)
       {
-        c.AddComponent<TrampaMasaContaminada>();
-        c.GetComponent<TrampaMasaContaminada>().Inicializar();
+        var trampa = c.AddComponent<TrampaMasaContaminada>();
+        trampa.Inicializar();
+        trampa.AsignarCreador(scEstaUnidad);
       }
     }
   }

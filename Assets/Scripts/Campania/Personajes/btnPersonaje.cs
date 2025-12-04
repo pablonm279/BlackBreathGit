@@ -19,7 +19,7 @@ public class btnPersonaje : MonoBehaviour
       }
       else //Si estan los sequitos activos, por lo tanto se asume que es el de curanderos curando.
       {
-        CampaignManager.Instance.goSequitos.transform.GetChild(1).GetChild(1).gameObject.GetComponent<SequitoCuranderos>().TratarHerida(personajeRepresentado);
+        CampaignManager.Instance.goSequitos.transform.GetChild(2).GetChild(1).gameObject.GetComponent<SequitoCuranderos>().TratarHerida(personajeRepresentado);
       }
     }
     else if (CampaignManager.Instance.scMenuBatallas.UIEmpezarBatalla.activeInHierarchy || CampaignManager.Instance.scMenuBatallas.UIEmpezarBatallaACaravana.activeInHierarchy) //Si esta en la pantalla de batalla, se selecciona el personaje para la batalla

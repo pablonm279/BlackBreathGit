@@ -181,7 +181,8 @@ public class Unidad : MonoBehaviour
  public int estado_regeneraarmadura;
  public int estado_APModificador;
  public int estado_ResistenciasReducidas;
- public int estado_Condenado; //En (stacks) Turnos, el personaje sufrirá daño verdadero = al 15% de su HP máximo al comenzar su turno.
+ public int estado_Condenado; //En (stacks) turnos. Al llegar a 0 inflige 5% de HP max por cada turno consecutivo que estuvo activo.
+ [HideInInspector] public int estado_CondenadoTurnosSeguidos; //Cuenta turnos seguidos con la condena activa para el danio acumulado.
  public int estado_Escudado; //10% por stack de prevenir un ataque de daño fisico. Pierde 1 stack.
  public bool estado_Corrupto;
  public bool unidadVoladora;
@@ -381,6 +382,17 @@ private void Update()
     estado_Volando = false;
     InicializarVueloVisual();
     if (!unidadVoladora) { return; }
+
+    // BUFF ---- Así se aplica un buff/debuff
+    Buff buff = new Buff();
+    buff.buffNombre = "Derribado";
+    buff.boolfDebufftBuff = false;
+    buff.DuracionBuffRondas = 1;
+    buff.cantAPMax -= 2;
+    buff.cantDefensa -= 3;
+    buff.AplicarBuff(this);
+    // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+    Buff buffComponent = ComponentCopier.CopyComponent(buff, this.gameObject);
 
     ActualizarAnimacionVuelo(uImagePosSuelo, instantaneo);
   }
@@ -667,6 +679,8 @@ void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad l
 
         if (GetComponent<IAUnidad>() == null) { ReproducirAnimacionTurnoNuevo(); } //Las unidades no IA, tienen esa pequeña animación
 
+        BattleManager.Instance.ReducirDuracionTrampasDeUnidad(this);
+
         //-------------------------------Defensa_AtaquesRepetidosRonda
         Defensa_AtaquesRepetidosRonda = 0;
         //---
@@ -724,6 +738,10 @@ void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad l
         if (estado_Condenado > 0)
         {
           Estados.Efecto_Condenado(this);
+        }
+        else
+        {
+          estado_CondenadoTurnosSeguidos = 0;
         }
 
         //Regenera Armadura
@@ -792,8 +810,10 @@ void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad l
             // Si la trampa es persistente, aplicar sus efectos
             if (trmp.esPersistente)
             {
-              print($"aplicando efectos{ trmp.nombre } trampa persistente a "+ uNombre);
-              trmp.AplicarEfectosTrampa(this);
+              if (!(inmunidad_Trampas && !trmp.esTrampaFavorable))
+              {
+                trmp.AplicarEfectosTrampa(this);
+              }
             }
 
         }
@@ -1162,6 +1182,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
   {
     await Task.Delay(delayEfectos); //Delay para que se vea el efecto de daño en la unidad antes de aplicar el daño
     float danioFinal = 0;
+    bool textoDanioMostrado = false;
     if (estado_invulnerable == 0)
     {
       if (estaEscondido == 1) //Si esta escondido "1" (el escondido 2 perdura igual) y recibe daño, pierde el "escondido"
@@ -1258,6 +1279,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           scBattleManager.EscribirLog(uNombre + TRADU.i.Traducir(" bloquea el daño con su escudo."));
           GenerarTextoFlotante(TRADU.i.Traducir("Bloqueado"), Color.cyan, FloatingTextContext.Block);
           estado_Escudado--;
+          textoDanioMostrado = true;
         }
       }
       //----
@@ -1295,7 +1317,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         scUnidadCanvas.txtDaño.text = textoDanio;
       }
       
-      await Task.Delay(300);
+      await Task.Delay(100);
       string stDaniotipo = "";
       switch (tipoDanio)
       {

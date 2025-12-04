@@ -100,7 +100,7 @@ public class CampaignManager : MonoBehaviour
     CambiarValorAlientoNegro(1);
 
     
-    scAtributosZona.GenerarZona(0); //0 es aleatorio
+    scAtributosZona.GenerarZona(1); //0 es aleatorio
 
 
     scMenuSequito.AgregarSequito(1);

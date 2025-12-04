@@ -227,10 +227,11 @@ public class EscudodeFe : Habilidad
 
       foreach (Casilla c in casillasAlrededor)
       {
-        c.AddComponent<TrampaEscudoFe>();
+        TrampaEscudoFe trampa = c.AddComponent<TrampaEscudoFe>();
 
         int fervorActual = Usuario.GetComponent<ClasePurificadora>().ObtenerFervor();
-        c.GetComponent<TrampaEscudoFe>().Inicializar(NIVEL, fervorActual);
+        trampa.Inicializar(NIVEL, fervorActual);
+        trampa.AsignarCreador(scEstaUnidad);
       }
 
 

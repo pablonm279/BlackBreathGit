@@ -1334,6 +1334,12 @@ public class Casilla : MonoBehaviour
         Trampa scTramp = gameObject.GetComponent<Trampa>();
         Unidad scUnidad = obj.GetComponent<Unidad>();
 
+        // Si la unidad es inmune y la trampa no es favorable, no aplica efectos.
+        if (scUnidad != null && scUnidad.inmunidad_Trampas && !scTramp.esTrampaFavorable)
+        {
+          return;
+        }
+
         bool seEvadeEfecto = false;
 
         if (obj.GetComponent<REPRESENTACIONPasoCauteloso>() != null)

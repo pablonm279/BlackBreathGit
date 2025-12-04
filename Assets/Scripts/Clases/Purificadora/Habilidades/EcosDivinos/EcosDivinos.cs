@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 public class EcosDivinos : Trampa
 {
   
- 
-  public Unidad unidadCreadora;
   public int NIVEL;
   public void InicializarCreador(Unidad creadora)
   {
-    unidadCreadora = creadora;
+    AsignarCreador(creadora);
     Inicializar();
   }
   

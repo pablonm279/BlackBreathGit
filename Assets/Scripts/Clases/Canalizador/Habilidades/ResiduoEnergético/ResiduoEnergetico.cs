@@ -7,12 +7,10 @@ using Unity.VisualScripting;
 public class ResiduoEnergetico : Trampa
 {
   
- 
-  public Unidad unidadCreadora;
   public int NIVEL;
   public void InicializarCreador(Unidad creadora, int NIVEL)
   {
-    unidadCreadora = creadora;
+    AsignarCreador(creadora);
     this.NIVEL = NIVEL;
     Inicializar();
   }

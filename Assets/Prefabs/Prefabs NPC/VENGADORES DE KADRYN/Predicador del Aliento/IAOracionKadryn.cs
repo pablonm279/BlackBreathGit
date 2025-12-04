@@ -81,6 +81,7 @@ public class IAOracionKadryn : IAHabilidad
     {
       TrampaAlientoNegro trampa = casilla.gameObject.AddComponent<TrampaAlientoNegro>();
       trampa.Inicializar();
+      trampa.AsignarCreador(scEstaUnidad);
     }
 
     if (seleccionadas.Count > 0)

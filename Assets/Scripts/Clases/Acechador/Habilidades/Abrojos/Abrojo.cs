@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 public class Abrojo : Trampa
 {
   
- 
-  public Unidad unidadCreadora;
   public int NIVEL;
   public void InicializarCreador(Unidad creadora, int Nivel)
   {
-    unidadCreadora = creadora;
+    AsignarCreador(creadora);
     Inicializar(Nivel);
   }
 

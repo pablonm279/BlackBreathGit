@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 public class TrampaMiradamasacre : Trampa
 {
   
-  public Unidad unidadCreadora;
   bool destruidaPorMuerteCreador;
   bool creadorAsignado;
   public void InicializarCreador(Unidad creadora)
   {
-    unidadCreadora = creadora;
+    AsignarCreador(creadora);
      Invoke("Activar", 0.5f);
     Inicializar();
     creadorAsignado = true;

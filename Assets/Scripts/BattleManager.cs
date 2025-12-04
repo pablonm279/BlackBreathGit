@@ -366,7 +366,6 @@ public class BattleManager : MonoBehaviour
     ActualizarRefuerzosUI();
     ActualizarAliadosRefUI();
     DisminuirDuracionObstaculos(); //Se disminuye la duracion de los obstaculos al final de la ronda
-    DuracionTrampasenCasillas(); //Se disminuye la duracion de las trampas al final de la ronda
 
     indexTurno = 0;
     if (lUnidadesTotal.Count > 0)
@@ -960,27 +959,32 @@ public class BattleManager : MonoBehaviour
 
   }
 
-  void DuracionTrampasenCasillas()
+  public void ReducirDuracionTrampasDeUnidad(Unidad creador)
   {
+    if (creador == null) { return; }
+
     foreach (Transform trans in ladoA.transform)
     {
-      ReduceDuracionTrampasCasillas(trans);
+      ReduceDuracionTrampasCasillas(trans, creador);
     }
     foreach (Transform trans in ladoB.transform)
     {
-      ReduceDuracionTrampasCasillas(trans);
+      ReduceDuracionTrampasCasillas(trans, creador);
     }
   }
 
-  void ReduceDuracionTrampasCasillas(Transform trans)
+  void ReduceDuracionTrampasCasillas(Transform trans, Unidad creador)
   {
     // Obtener todos los componentes Trampa en el objeto y sus hijos
     Trampa[] trampas = trans.GetComponentsInChildren<Trampa>();
 
     foreach (Trampa trmp in trampas)
     {
-      // Reduce la duración y la destruye si es 0
-      trmp.ReducirDuracion(1);
+      // Reduce la duracion solo para las trampas del creador
+      if (trmp.unidadCreadora == creador)
+      {
+        trmp.ReducirDuracion(1);
+      }
     }
   }
 
@@ -1327,13 +1331,20 @@ public class BattleManager : MonoBehaviour
     {
       _siblingOriginalObstaculos[obstaculoTransform] = obstaculoTransform.GetSiblingIndex();
     }
-    AjustarOrdenRespectoOscurecedor(obstaculoTransform, oscurecedorTransform, sombrear);
+    // Empuja los obstaculos al fondo de la jerarquia para que no tapen a las unidades ni al oscurecedor
+    if (obstaculoTransform.parent != null)
+    {
+      obstaculoTransform.SetSiblingIndex(0);
+    }
+    else
+    {
+      AjustarOrdenRespectoOscurecedor(obstaculoTransform, oscurecedorTransform, false);
+    }
 
     int ordenOscurecedor = ObtenerOrdenOscurecedor(oscurecedorTransform);
-    int ordenSombreado = ordenOscurecedor - 1;
-    int ordenDestacado = ordenOscurecedor + 1;
+    int ordenObstaculo = ordenOscurecedor - 50; // suficientemente bajo para quedar siempre detrǭs
 
-    AjustarRenderersObstaculo(obstaculoTransform, sombrear, ordenSombreado, ordenDestacado);
+    AjustarRenderersObstaculo(obstaculoTransform, sombrear, ordenObstaculo, ordenObstaculo);
 
     Canvas obstaculoCanvas = obstaculoTransform.GetComponentInChildren<Canvas>(true);
     if (obstaculoCanvas != null)
@@ -1344,7 +1355,7 @@ public class BattleManager : MonoBehaviour
       }
 
       obstaculoCanvas.overrideSorting = true;
-      obstaculoCanvas.sortingOrder = sombrear ? ordenSombreado : ordenDestacado;
+      obstaculoCanvas.sortingOrder = ordenObstaculo;
 
       Transform barraVida = obstaculoCanvas.transform.Find("BarraVida");
       if (barraVida != null)

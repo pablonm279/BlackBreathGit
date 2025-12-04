@@ -76,9 +76,11 @@ public class IAImprovisarTrampas : IAHabilidad
     {
       TrampaImprovisadaTribal tr1 = casillasDisponibles[0].gameObject.AddComponent<TrampaImprovisadaTribal>();
       tr1.Inicializar();
+      tr1.AsignarCreador(scEstaUnidad);
 
       TrampaImprovisadaTribal tr2 = casillasDisponibles[1].gameObject.AddComponent<TrampaImprovisadaTribal>();
       tr2.Inicializar();
+      tr2.AsignarCreador(scEstaUnidad);
     }
     
     

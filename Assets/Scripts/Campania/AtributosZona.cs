@@ -537,7 +537,7 @@ public class AtributosZona : MonoBehaviour
       Clima_chances_Lluvia = 00;
       Clima_chances_Nieve = 00;
       Clima_chances_Niebla = 00;
-      Clima_chances_EspecialZona1 = 70; //70
+      Clima_chances_EspecialZona1 = 60; //60
       Clima_chances_EspecialZona2 = 100;
 
 

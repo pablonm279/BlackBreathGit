@@ -56,7 +56,7 @@ public class Estados : MonoBehaviour
   {
      unidad.EstablecerAPActualA(0);
      unidad.estado_aturdido--;
-
+    unidad.GenerarTextoFlotante(TRADU.i.Traducir("Aturdido!"), Color.yellow);
      BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" está aturdido."));
 
      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
@@ -68,16 +68,19 @@ public class Estados : MonoBehaviour
     BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
 
   }
-  public static void Efecto_Condenado(Unidad unidad) //Cuando stacks llegue a 0 recibe 15% hpmax daño verdadero
+  public static void Efecto_Condenado(Unidad unidad) //Cuando stacks llegue a 0 recibe 5% hpmax por turno activo (danio verdadero)
   {
+    unidad.estado_CondenadoTurnosSeguidos++;
     unidad.estado_Condenado--;
     if (unidad.estado_Condenado < 1)
     {
-      unidad.RecibirDanio(unidad.mod_maxHP * 0.15f, 10, false, null);
+      float porcentajeAcumulado = 0.05f * unidad.estado_CondenadoTurnosSeguidos;
+      unidad.RecibirDanio(unidad.mod_maxHP * porcentajeAcumulado, 10, false, null);
       BattleManager.Instance.EscribirLog(unidad.uNombre + TRADU.i.Traducir(" es dañado por la Condena."));
       BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
 
       unidad.estado_Condenado = 0;
+      unidad.estado_CondenadoTurnosSeguidos = 0;
     }
 
   }

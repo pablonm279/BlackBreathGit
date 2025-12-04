@@ -63,7 +63,7 @@ private async void OnMouseDown()
  public GameObject PrefabtxtDaño;
  public GameObject unidadCanvas;
  public Transform puntoEntrante;
- public TextMeshProUGUI txtDaño;
+public TextMeshProUGUI txtDaño;
 public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante)
 {
     float danioFinal = danio - iDureza;
@@ -71,10 +71,34 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
 
     hpCurr -= danioFinal;
 
-    // Mostrar el daño recibido
-    GameObject goDanioRecibido = Instantiate(PrefabtxtDaño, unidadCanvas.transform, false);
-    TextMeshProUGUI txtDaño = goDanioRecibido.GetComponent<TextMeshProUGUI>();
-    txtDaño.text = ((int)danioFinal).ToString();
+    // Mostrar el daño recibido (también cuando el resultado es 0)
+    if (PrefabtxtDaño != null && unidadCanvas != null)
+    {
+        GameObject goDanioRecibido = Instantiate(PrefabtxtDaño, unidadCanvas.transform, false);
+        TextMeshProUGUI textoTMP = goDanioRecibido.GetComponent<TextMeshProUGUI>();
+        string textoDanio = ((int)danioFinal).ToString();
+        Color colorDanio = textoTMP != null ? textoTMP.color : Color.white;
+        FloatingTextContext contexto = danioFinal > 0 ? FloatingTextContext.Damage : FloatingTextContext.Resist;
+
+        FloatingTextAnimator animator = goDanioRecibido.GetComponent<FloatingTextAnimator>();
+        if (animator != null)
+        {
+            animator.Play(textoDanio, colorDanio, contexto);
+        }
+        else
+        {
+            if (textoTMP != null)
+            {
+                textoTMP.text = textoDanio;
+                textoTMP.color = colorDanio;
+            }
+
+            if (TextoFlotanteManager.Instance != null)
+            {
+                TextoFlotanteManager.Instance.GenerarTextoFlotante(textoDanio, colorDanio, contexto);
+            }
+        }
+    }
 
     ActualizarBarraVidaPropia();
 

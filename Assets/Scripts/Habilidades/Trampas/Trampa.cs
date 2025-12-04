@@ -16,10 +16,17 @@ public abstract class Trampa : MonoBehaviour
     public bool esPersistente; //persistente significa que aplica sus efectos cada turno a quien esté arriba o solo cuando lo pisan
    
 
+    public Unidad unidadCreadora { get; private set; }
+
     public GameObject GOvfx; //Aca se guarda el GO del vfx que se crea, para poder eliminarlo junto a la trampa
     private void Awake()
     {   
      scBattleManager = BattleManager.Instance;
+    }
+
+    public void AsignarCreador(Unidad creador)
+    {
+        unidadCreadora = creador;
     }
 
     public void ReducirUsos()
@@ -46,11 +53,12 @@ public abstract class Trampa : MonoBehaviour
             { 
                 if (gameObject.GetComponent<Casilla>().Presente.GetComponent<Unidad>() != null)
                 {
-                    if (!gameObject.GetComponent<Casilla>().Presente.GetComponent<Unidad>().inmunidad_Trampas)
+                    Unidad unidad = gameObject.GetComponent<Casilla>().Presente.GetComponent<Unidad>();
+                    if (!(unidad.inmunidad_Trampas && !esTrampaFavorable))
                     {
 
                         //Si la casilla tiene una unidad, se aplica la trampa
-                        AplicarEfectosTrampa(gameObject.GetComponent<Casilla>().Presente.GetComponent<Unidad>());
+                        AplicarEfectosTrampa(unidad);
                     }
                 }
 

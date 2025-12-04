@@ -7,10 +7,9 @@ public class VigilanciaTrampa : Trampa
 {
   
   TiroconArco tiroArco;
-  public Unidad unidadCreadora;
   public void InicializarCreador(Unidad creadora)
   {
-    unidadCreadora = creadora;
+    AsignarCreador(creadora);
     Inicializar();
   }
   

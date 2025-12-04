@@ -34,6 +34,7 @@ public class ReaccionVengadorKadryn : Reaccion
       {
         TrampaAlientoNegro tr1 = casilla.gameObject.AddComponent<TrampaAlientoNegro>();
         tr1.Inicializar();
+        tr1.AsignarCreador(scEstaUnidad);
 
       }
     }
