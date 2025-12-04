@@ -45,7 +45,7 @@ public class TiroBallestaDeMano : Habilidad
 
 
       
-
+       tipoPorcentaje = 2;
 
 
 

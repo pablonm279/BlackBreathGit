@@ -46,7 +46,7 @@ public class CorteIncapacitante : Habilidad
 
 
 
-
+       tipoPorcentaje = 1;
 
 
 

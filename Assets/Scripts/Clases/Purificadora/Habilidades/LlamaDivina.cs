@@ -50,6 +50,7 @@ public class LlamaDivina : Habilidad
       requiereRecurso = 0; //esto es para que el boton no se active al apretar si no tiene X recursos (ej Flecha). Ver en BotonHabilidad.
 
       
+        tipoPorcentaje = 2;
 
 
 

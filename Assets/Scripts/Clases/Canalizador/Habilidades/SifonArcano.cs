@@ -293,19 +293,20 @@ public class SifonArcano : Habilidad
         {
             continue;
         }
-        
+       
         if(!bAfectaObstaculos) //Si no afecta obstaculos se descarta la casilla si no hay unidad, si afecta obstaculo se descarta si tampoco hay obstaculo
         {
            if(c.Presente.GetComponent<Unidad>() == null)
            {
             continue;
            }
-           
-           if(c.Presente.GetComponent<Unidad>() != null)
-           {
-             c.ActivarCapaColorRojo();
-             lObjetivosPosibles.Add(c.Presente.GetComponent<Unidad>());
-           }
+
+        if (c.Presente.GetComponent<Unidad>() != null)
+        {
+          c.ActivarCapaColorRojo();
+          lObjetivosPosibles.Add(c.Presente.GetComponent<Unidad>());
+         
+        }
           
 
         }

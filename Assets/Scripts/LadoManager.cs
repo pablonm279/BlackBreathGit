@@ -150,7 +150,8 @@ public bool ColocarEnCasilla(GameObject GO, int x, int y)
   {
     GO.GetComponent<Obstaculo>().CasillaPosicion = cas;
   }
-
+      // Reduce the scale of the object to 87% of its original size
+    GO.transform.localScale = new Vector3(GO.transform.localScale.x * 0.9f, GO.transform.localScale.y * 0.9f, GO.transform.localScale.z * 0.9f);
   return true;
 }
 

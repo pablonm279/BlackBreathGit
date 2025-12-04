@@ -43,7 +43,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
     criticoRangoHab = 0;
 
 
-
+     tipoPorcentaje = 1;
 
 
 

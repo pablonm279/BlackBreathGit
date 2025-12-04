@@ -2058,6 +2058,61 @@ public void Marcar(int n)
     }
 
 }
+
+  public void MostrarProbabilidad(float? probabilidad)
+  {
+    if (scUnidadCanvas == null)
+    {
+      return;
+    }
+
+    if (!probabilidad.HasValue)
+    {
+      OcultarProbabilidad();
+      return;
+    }
+
+    if (scUnidadCanvas.txtProbabilidad == null)
+    {
+      scUnidadCanvas.CrearTextoProbabilidad();
+    }
+
+    if (scUnidadCanvas.txtProbabilidad != null)
+    {
+      float valor = Mathf.Clamp01(probabilidad.Value);
+      string texto = $"{Mathf.RoundToInt(valor * 100f)}%";
+      if (scUnidadCanvas.txtProbabilidad.text != texto)
+      {
+        scUnidadCanvas.txtProbabilidad.text = texto;
+      }
+      // Color: rojo (<50%), amarillo (~50%) a verde (>=75%)
+      Color col;
+      if (valor < 0.6f)
+      {
+        col = Color.Lerp(new Color(0.8f, 0f, 0f), new Color(1f, 0.9f, 0f), valor / 0.6f);
+      }
+      else
+      {
+        col = Color.Lerp(new Color(1f, 0.9f, 0f), new Color(0.1f, 0.8f, 0.2f), (valor - 0.6f) / 0.4f);
+      }
+      if (scUnidadCanvas.txtProbabilidad.color != col)
+      {
+        scUnidadCanvas.txtProbabilidad.color = col;
+      }
+      if (!scUnidadCanvas.txtProbabilidad.gameObject.activeSelf)
+      {
+        scUnidadCanvas.txtProbabilidad.gameObject.SetActive(true);
+      }
+    }
+  }
+
+  public void OcultarProbabilidad()
+  {
+    if (scUnidadCanvas != null && scUnidadCanvas.txtProbabilidad != null)
+    {
+      scUnidadCanvas.txtProbabilidad.gameObject.SetActive(false);
+    }
+  }
 Unidad anterior = null;
 public void OnMouseEnter() 
 {
@@ -2105,19 +2160,21 @@ public async void OnMouseDown()
   
   if(scBattleManager.lUnidadesPosiblesHabilidadActiva.Contains(this) && scBattleManager.SeleccionandoObjetivo)
   {
-    if(scBattleManager.HabilidadActiva.esMelee && estado_Volando)
-    {
-      //Si se quiere hacer una habilidad melee a una unidad voladora, no hace nada.
-    }
-    else if(scBattleManager.HabilidadActiva.esHostil && ObtenerEstaEscondido() > 0)
-    {
-      //Si se quiere hacer una habilidad hostil a una unidad escondida, no hace nada.
-    }
-    else
-    {
+      if (scBattleManager.HabilidadActiva.esMelee && estado_Volando)
+      {
+        //Si se quiere hacer una habilidad melee a una unidad voladora, no hace nada.
+        GenerarTextoFlotante(TRADU.i.Traducir("Inalcanzable: unidad volando"), Color.gray, FloatingTextContext.Resist);
+      }
+      else if (scBattleManager.HabilidadActiva.esHostil && ObtenerEstaEscondido() > 0)
+      {
+        //Si se quiere hacer una habilidad hostil a una unidad escondida, no hace nada.
+        GenerarTextoFlotante(TRADU.i.Traducir("Inalcanzable: unidad escondida"), Color.gray, FloatingTextContext.Resist);
+      }
+      else
+      {
 
-    
-    string sss = "Se resuelve la habilidad "+scBattleManager.HabilidadActiva.nombre+" hecha por "+scBattleManager.HabilidadActiva.gameObject+ " a "+ this;
+
+        string sss = "Se resuelve la habilidad " + scBattleManager.HabilidadActiva.nombre + " hecha por " + scBattleManager.HabilidadActiva.gameObject + " a " + this;
 
 
 
@@ -2134,17 +2191,17 @@ public async void OnMouseDown()
           CasillaPosicion.OnMouseDown();
         }
         else if (scBattleManager.HabilidadActiva.targetEspecial > 0 && !BattleManager.Instance.bOcupado)
-        { 
-           CasillaPosicion.OnMouseDown();
+        {
+          CasillaPosicion.OnMouseDown();
 
         }
-        else if(!BattleManager.Instance.bOcupado)
+        else if (!BattleManager.Instance.bOcupado)
         {
           List<object> listaUno = new List<object> { this };
           await scBattleManager.HabilidadActiva.Resolver(listaUno);
           BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(anterior);
         }
-   }
+      }
   }
   else
   {

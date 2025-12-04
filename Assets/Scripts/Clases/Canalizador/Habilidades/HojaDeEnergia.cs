@@ -34,7 +34,7 @@ public class HojaDeEnergia : Habilidad
       esHostil = true;
       cooldownMax = 3;
       bAfectaObstaculos = true;
-
+       tipoPorcentaje = 1;
       targetEspecial = 3;
       if (NIVEL == 4) { targetEspecial = 4;}
 

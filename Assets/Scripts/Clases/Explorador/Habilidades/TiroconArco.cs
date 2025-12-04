@@ -45,7 +45,7 @@ public class TiroconArco : Habilidad
 
 
 
-
+    tipoPorcentaje = 2;
 
 
 

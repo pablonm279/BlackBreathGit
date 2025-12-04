@@ -115,9 +115,11 @@ public class Casilla : MonoBehaviour
 
       if (unidad.ObtenerAPActual() >= costoMovimientoTotal)
       {
+
         unidad.CambiarAPActual(-costoMovimientoTotal);
         BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
         unidad.CasillaDeseadaMov = this;
+         await unidad.GenerarTextoFlotante("<size=70%>-" + costoMovimientoTotal + " " + TRADU.i.Traducir(" PA") + "</size>", new Color(1.0f, 0.5f, 0.0f)); // Naranja
       }
     }
     // Intercambio con aliado: mover a casilla ocupada por aliado y que el aliado vaya a la casilla original
@@ -341,7 +343,8 @@ public class Casilla : MonoBehaviour
       canvasObjeto.sortingOrder = 60 - posY * 10;
     }
     //---
-
+    // Reduce the scale of the object to 87% of its original size
+    GO.transform.localScale = new Vector3(GO.transform.localScale.x * 0.9f, GO.transform.localScale.y * 0.9f, GO.transform.localScale.z * 0.9f);
     return true;
 
   }
@@ -370,7 +373,8 @@ public class Casilla : MonoBehaviour
     {
       GO.GetComponent<Obstaculo>().CasillaPosicion = this;
     }
-
+        // Reduce the scale of the object to 87% of its original size
+    GO.transform.localScale = new Vector3(GO.transform.localScale.x * 0.9f, GO.transform.localScale.y * 0.9f, GO.transform.localScale.z * 0.9f);
   }
 
   IEnumerator MoverObjetoAnimado(GameObject GO, int lado)

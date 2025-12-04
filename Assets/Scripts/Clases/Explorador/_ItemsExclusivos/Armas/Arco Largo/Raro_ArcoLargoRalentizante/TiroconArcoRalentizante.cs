@@ -48,6 +48,7 @@ public class TiroconArcoRalentizante : Habilidad
 
 
 
+      tipoPorcentaje = 2;
 
 
 

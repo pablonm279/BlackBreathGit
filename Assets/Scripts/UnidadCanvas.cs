@@ -13,6 +13,8 @@ public class UnidadCanvas : MonoBehaviour
     public GameObject PrefabtxtDaño;
     public GameObject PrefabtxtValentia;
     public GameObject imMarcador;
+    public TextMeshProUGUI txtProbabilidad;
+    public GameObject PrefabtxtProbabilidad;
 
     public TextMeshProUGUI txtVida;
 
@@ -134,6 +136,42 @@ public class UnidadCanvas : MonoBehaviour
         }
 
         MostrarEstados(scUnidadMostrada);
+    }
+
+    public void CrearTextoProbabilidad()
+    {
+        if (txtProbabilidad != null)
+        {
+            return;
+        }
+
+        GameObject goNuevo = null;
+        if (PrefabtxtProbabilidad != null && unidadCanvas != null)
+        {
+            goNuevo = Instantiate(PrefabtxtProbabilidad, unidadCanvas.transform);
+        }
+        if (goNuevo == null)
+        {
+            goNuevo = new GameObject("txtProbabilidad");
+            goNuevo.transform.SetParent(unidadCanvas != null ? unidadCanvas.transform : transform, false);
+            TextMeshProUGUI tmp = goNuevo.AddComponent<TextMeshProUGUI>();
+            tmp.fontSize = 4f;
+            tmp.alignment = TextAlignmentOptions.Center;
+          
+        }
+
+        txtProbabilidad = goNuevo.GetComponent<TextMeshProUGUI>() ?? goNuevo.GetComponentInChildren<TextMeshProUGUI>();
+
+        RectTransform rt = txtProbabilidad != null ? txtProbabilidad.GetComponent<RectTransform>() : null;
+        if (rt != null)
+        {
+            rt.anchoredPosition = new Vector2(0f, 18f);
+        }
+
+        if (txtProbabilidad != null)
+        {
+            txtProbabilidad.gameObject.SetActive(false);
+        }
     }
 
    void MostrarEstados(Unidad scUnidadMostrada)

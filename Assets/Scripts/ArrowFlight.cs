@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class ArrowFlight : MonoBehaviour
@@ -12,6 +12,7 @@ public class ArrowFlight : MonoBehaviour
     public float parabola;
     private float parabolaBase;
     public float velocidad;
+    [SerializeField] private float alturaMinimaParabola = 0.05f;
 
     TaskCompletionSource<bool> impactoTcs;
     bool configurado;
@@ -51,6 +52,9 @@ public class ArrowFlight : MonoBehaviour
         startMarker = ResolvePuntoSalida(startMarker);
         endMarker = ResolvePuntoEntrada(endMarker);
 
+        //Desescalar
+        transform.localScale = new Vector3(transform.localScale.x * 0.9f, transform.localScale.y * 0.9f, transform.localScale.z * 0.9f);
+
         if (!configurado && startMarker != null && endMarker != null)
         {
             parabolaBase = parabola;
@@ -75,7 +79,7 @@ public class ArrowFlight : MonoBehaviour
     }
 
     void Update()
-    {   Debug.DrawLine(GetStartPosition(), GetStartPosition() + Vector3.up * 0.5f, Color.yellow);
+    {
         startMarker = ResolvePuntoSalida(startMarker);
         endMarker = ResolvePuntoEntrada(endMarker);
 
@@ -177,7 +181,7 @@ public class ArrowFlight : MonoBehaviour
     {
         if (inicio == null || destino == null)
         {
-            return baseParabola;
+            return Mathf.Max(baseParabola, alturaMinimaParabola);
         }
 
         float bParabola = baseParabola;
@@ -194,9 +198,11 @@ public class ArrowFlight : MonoBehaviour
         }
 
         float restaFinal = Mathf.Abs(posXdestino - posXinicio);
-        print("Resta final ajuste parabola: " + baseParabola + " -" + restaFinal);
         bParabola -= restaFinal;
         
+        // Evita alturas negativas o planas que invierten la curva
+        bParabola = Mathf.Max(bParabola, alturaMinimaParabola);
+
         return bParabola;
     }
 
@@ -204,14 +210,15 @@ public class ArrowFlight : MonoBehaviour
    
     Vector3 CalculateParabolicPath(Vector3 start, Vector3 end, float height, float t)
     {
-        // interpolación lineal entre inicio y fin
+        float h = Mathf.Max(height, alturaMinimaParabola);
+        // interpolacion lineal entre inicio y fin
         Vector3 pos = Vector3.Lerp(start, end, t);
 
-        // parábola: 4 * h * t * (1 - t) asegura que:
-        //   t=0  → 0
-        //   t=0.5 → altura máxima
-        //   t=1  → 0
-        float parabola = 4 * height * t * (1 - t);
+        // parabola: 4 * h * t * (1 - t) asegura que:
+        //   t=0  -> 0
+        //   t=0.5 -> altura maxima
+        //   t=1  -> 0
+        float parabola = 4 * h * t * (1 - t);
 
         pos.y += parabola;
         return pos;

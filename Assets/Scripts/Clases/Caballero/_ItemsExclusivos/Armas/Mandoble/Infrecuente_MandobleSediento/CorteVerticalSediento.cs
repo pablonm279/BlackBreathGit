@@ -39,7 +39,7 @@ public class CorteVerticalSediento : Habilidad
 
 
 
-
+       tipoPorcentaje = 1;
 
 
 

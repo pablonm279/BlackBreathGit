@@ -41,9 +41,9 @@ public class DescargaArcana : Habilidad
       tipoDanio = 8; //Arcano
       criticoRangoHab = 0;
 
-  
 
 
+    tipoPorcentaje = 2;
 
 
 

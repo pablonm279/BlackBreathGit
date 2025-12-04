@@ -5692,7 +5692,12 @@ MonoBehaviour:
   estado_regeneraarmadura: 0
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
+  estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
+  estado_Escudado: 0
   estado_Corrupto: 0
+  unidadVoladora: 0
+  estado_Volando: 0
   inmunidad_Ceguera: 0
   inmunidad_Oscuridad: 0
   inmunidad_Trampas: 0
@@ -5707,6 +5712,8 @@ MonoBehaviour:
   tejidoCuracMagica: 0
   loMatoCorrompido: 0
   entroComoAliado: 0
+  offsetVueloY: 13
+  duracionAnimacionVuelo: 0.4
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
@@ -5939,7 +5946,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.083, y: -14.69}
+  m_AnchoredPosition: {x: 1.083, y: -17.3}
   m_SizeDelta: {x: 15.873, y: 26.346}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3214179596268234319

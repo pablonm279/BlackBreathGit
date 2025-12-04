@@ -45,7 +45,7 @@ public class Asesinar : Habilidad
       criticoRangoHab = 0;
 
 
-
+      tipoPorcentaje = 2;
 
       requiereRecurso = 1; //No requiere recurso
 

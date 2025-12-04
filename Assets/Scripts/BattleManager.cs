@@ -806,7 +806,21 @@ public class BattleManager : MonoBehaviour
 
   }
   public bool SeleccionandoObjetivo;
-  public Habilidad HabilidadActiva;
+  private Habilidad _habilidadActiva;
+  public Habilidad HabilidadActiva
+  {
+    get => _habilidadActiva;
+    set
+    {
+      if (_habilidadActiva == value)
+      {
+        return;
+      }
+
+      _habilidadActiva?.LimpiarMarcasUnidadesPosibles();
+      _habilidadActiva = value;
+    }
+  }
   // Casilla clickeada para resolver la habilidad (para VFX con referencia de clic)
   public Casilla casillaClickHabilidad;
   private static readonly KeyCode[] _habilidadHotkeys = new[]
@@ -857,6 +871,28 @@ public class BattleManager : MonoBehaviour
         SincronizarHabilidadDestruirObstaculo(unidadActiva);
         scUIBotonesHab.ActualizarBotonesHabilidad();
       }
+    }
+  }
+
+  private void LateUpdate()
+  {
+    SincronizarMarcasHabilidadActiva();
+  }
+
+  private void SincronizarMarcasHabilidadActiva()
+  {
+    if (HabilidadActiva == null)
+    {
+      return;
+    }
+
+    if (SeleccionandoObjetivo)
+    {
+      HabilidadActiva.SincronizarMarcasUnidadesPosibles();
+    }
+    else
+    {
+      HabilidadActiva.LimpiarMarcasUnidadesPosibles();
     }
   }
 
@@ -1025,6 +1061,7 @@ public class BattleManager : MonoBehaviour
     foreach (Unidad uni in lUnidadesTotal)
     {
       uni.Marcar(0);
+      uni.OcultarProbabilidad();
     }
 
 

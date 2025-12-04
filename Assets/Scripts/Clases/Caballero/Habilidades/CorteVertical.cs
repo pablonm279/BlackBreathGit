@@ -38,7 +38,7 @@ public class Cortevertical : Habilidad
     criticoRangoHab = 0;
 
 
-
+     tipoPorcentaje = 1;
 
 
 

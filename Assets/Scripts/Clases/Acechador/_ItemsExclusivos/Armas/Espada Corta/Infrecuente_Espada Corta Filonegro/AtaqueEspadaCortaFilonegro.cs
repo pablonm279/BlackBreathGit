@@ -44,7 +44,7 @@ public class AtaqueEspadaCortaFilonegro : Habilidad
 
 
 
-
+     tipoPorcentaje = 1;
 
 
 

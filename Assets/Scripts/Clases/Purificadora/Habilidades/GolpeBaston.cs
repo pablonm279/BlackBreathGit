@@ -40,6 +40,7 @@ public class GolpeBaston : Habilidad
 
 
 
+      tipoPorcentaje = 1;
 
 
 

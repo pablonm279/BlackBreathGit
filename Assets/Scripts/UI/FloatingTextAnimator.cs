@@ -149,6 +149,11 @@ public class FloatingTextAnimator : MonoBehaviour
         missProfile?.Validate();
     }
 
+    public void SetBasePosition(Vector2 anchoredPosition)
+    {
+        baseAnchoredPosition = anchoredPosition;
+    }
+
     public Coroutine Play(string text, Color color, FloatingTextContext context)
     {
         if (tmp == null || rect == null)

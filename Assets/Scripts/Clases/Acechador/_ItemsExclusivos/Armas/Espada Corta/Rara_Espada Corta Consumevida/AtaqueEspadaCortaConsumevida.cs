@@ -42,7 +42,7 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
     tipoDanio = 2; //Cortante
 
 
-
+     tipoPorcentaje = 1;
 
 
 

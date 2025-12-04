@@ -40,7 +40,7 @@ public class Partir : Habilidad
       daniodX = 10; //2d10 +5
       tipoDanio = 2; //Cortante
       criticoRangoHab = 0;
-
+       tipoPorcentaje = 1;
        imHab = Resources.Load<Sprite>("imHab/Caballero_Partir");
       
       ActualizarDescripcion();

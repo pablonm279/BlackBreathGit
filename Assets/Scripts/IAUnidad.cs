@@ -24,8 +24,35 @@ public class IAUnidad : MonoBehaviour
 
    public List<IAHabilidad> HabPosibles = new List<IAHabilidad>();
    private const int MaxIntentosPorTurno = 8;
-   private const int TimeoutHabilidadMs = 1300;
-   private const int DelayFinTurnoMs = 900;
+   private readonly List<Task> _habilidadesEnCurso = new List<Task>();
+
+   private struct AITurnTimings
+   {
+      public int DelaySinObjetivosMs;
+      public int DelayPreAccionMs;
+      public int DelayPostAccionMs;
+      public int DelayMovimientoFallbackMs;
+      public int DelayFinTurnoMs;
+      public int HabilidadTimeoutMs;
+      public int GraciaHabilidadMs;
+      public int ExtraRangoMs;
+
+      public static AITurnTimings Crear(bool modoRapido)
+      {
+         float factor = modoRapido ? 0.65f : 1f;
+         return new AITurnTimings
+         {
+            DelaySinObjetivosMs = Mathf.RoundToInt(1200f * factor),
+            DelayPreAccionMs = Mathf.RoundToInt(950f * factor),
+            DelayPostAccionMs = Mathf.RoundToInt(650f * factor),
+            DelayMovimientoFallbackMs = Mathf.RoundToInt(260f * factor),
+            DelayFinTurnoMs = Mathf.RoundToInt(750f * factor),
+            HabilidadTimeoutMs = Mathf.RoundToInt(1500f * factor),
+            GraciaHabilidadMs = Mathf.RoundToInt(800f * factor),
+            ExtraRangoMs = Mathf.RoundToInt(180f * factor)
+         };
+      }
+   }
    
    public void Awake()
    {
@@ -57,6 +84,7 @@ public class IAUnidad : MonoBehaviour
 
       while (scUnidad.ObtenerAPActual() > 0 && contadorIteraciones > 0 && !turnoTerminado)
       {
+         AITurnTimings timings = ObtenerTimingsActuales();
          contadorIteraciones--;
 
          List<IAHabilidad> habilidadesDisponibles = HayHabilidadesPosibles();
@@ -68,12 +96,12 @@ public class IAUnidad : MonoBehaviour
 
          if (habilidadesDisponibles.Count == 0) // No hay habilidades posibles
          {
-            await Task.Delay(1500);
+            await DelayIA(timings.DelaySinObjetivosMs);
 
             if (scUnidad.esInmobil)
             {
                scUnidad.CambiarAPActual(-(int)scUnidad.ObtenerAPActual()); // Agota AP restante
-               turnoTerminado = await TerminarTurnoSeguro(false, "unidad inamovible sin acciones disponibles");
+               turnoTerminado = await TerminarTurnoSeguro(false, timings, "unidad inamovible sin acciones disponibles");
                break;
             }
 
@@ -140,7 +168,7 @@ public class IAUnidad : MonoBehaviour
             {
                tendenciaMovX = 0;
                tendenciaMovY = 0;
-               await Task.Delay(300);
+               await DelayIA(timings.DelayMovimientoFallbackMs);
                continue;
             }
 
@@ -153,9 +181,9 @@ public class IAUnidad : MonoBehaviour
                }
                else
                {
-                  await ChequearCasillasAlrededorParaMover(destPosible); // Intento alternativo para moverse
+                  await ChequearCasillasAlrededorParaMover(destPosible, timings); // Intento alternativo para moverse
                   scUnidad.CambiarAPActual(costoMovimientoAP); // Evita loops si no se mueve
-                  turnoTerminado = await TerminarTurnoSeguro(false, "sin casillas libres para moverse");
+                  turnoTerminado = await TerminarTurnoSeguro(false, timings, "sin casillas libres para moverse");
                   break;
                }
             }
@@ -167,17 +195,17 @@ public class IAUnidad : MonoBehaviour
          }
          else if (scUnidad.HP_actual > 0) // Hay habilidades posibles y no murio por algun efecto
          {
-            int delay = BattleManager.Instance.modoRapidoActivado ? 1100 : 1400;
-            if(esRango){delay += 200;} //Mas tiempo para unidades a distancia
-            await Task.Delay(delay); // Intervalo entre acciones
-            bool ejecutoHabilidad = await EjecutarHabilidadConSalvaguarda(habilidadesDisponibles);
-            await Task.Delay(delay);
+            int delay = timings.DelayPreAccionMs + (esRango ? timings.ExtraRangoMs : 0);
+            await DelayIA(delay); // Intervalo entre acciones
+            bool ejecutoHabilidad = await EjecutarHabilidadConSalvaguarda(habilidadesDisponibles, timings);
+            await EsperarHabilidadesPendientes(timings.GraciaHabilidadMs);
+            await DelayIA(timings.DelayPostAccionMs + (esRango ? timings.ExtraRangoMs / 2 : 0));
 
             if (!ejecutoHabilidad)
             {
                scUnidad.CambiarAPActual(-(int)scUnidad.ObtenerAPActual());
                forzarFinalPorHabilidad = true;
-               turnoTerminado = await TerminarTurnoSeguro(false, "no se pudo ejecutar ninguna habilidad disponible");
+               turnoTerminado = await TerminarTurnoSeguro(false, timings, "no se pudo ejecutar ninguna habilidad disponible");
             }
          }
          else
@@ -193,26 +221,83 @@ public class IAUnidad : MonoBehaviour
 
       bool sinIntentosRestantes = contadorIteraciones <= 0 && scUnidad.ObtenerAPActual() > 0;
       bool sinAP = scUnidad.ObtenerAPActual() < 1;
+      AITurnTimings finTimings = ObtenerTimingsActuales();
 
       if (BattleManager.Instance.unidadActiva == scUnidad)
       {
          if (forzarFinalPorHabilidad)
          {
-            await TerminarTurnoSeguro(false, "salida por fallo al resolver habilidades");
+            await TerminarTurnoSeguro(false, finTimings, "salida por fallo al resolver habilidades");
          }
          else if (sinIntentosRestantes)
          {
             scUnidad.CambiarAPActual(-(int)scUnidad.ObtenerAPActual());
-            await TerminarTurnoSeguro(false, "limite de iteraciones alcanzado");
+            await TerminarTurnoSeguro(false, finTimings, "limite de iteraciones alcanzado");
          }
          else if (sinAP)
          {
-            await TerminarTurnoSeguro(false);
+            await TerminarTurnoSeguro(false, finTimings);
          }
       }
    }
+
+   private static Task DelayIA(int milliseconds)
+   {
+      return Task.Delay(Mathf.Max(0, milliseconds));
+   }
+
+   private AITurnTimings ObtenerTimingsActuales()
+   {
+      bool modoRapido = BattleManager.Instance != null && BattleManager.Instance.modoRapidoActivado;
+      return AITurnTimings.Crear(modoRapido);
+   }
+
+   private void RegistrarHabilidadEnCurso(Task habilidadTask)
+   {
+      if (habilidadTask == null) { return; }
+
+      lock (_habilidadesEnCurso)
+      {
+         _habilidadesEnCurso.Add(habilidadTask);
+      }
+
+      habilidadTask.ContinueWith(_ =>
+      {
+         lock (_habilidadesEnCurso)
+         {
+            _habilidadesEnCurso.Remove(habilidadTask);
+         }
+      }, TaskScheduler.Default);
+   }
+
+   private async Task EsperarHabilidadesPendientes(int maxEsperaMs)
+   {
+      Task[] snapshot;
+      lock (_habilidadesEnCurso)
+      {
+         snapshot = _habilidadesEnCurso.Where(t => t != null && !t.IsCompleted && !t.IsCanceled).ToArray();
+      }
+
+      if (snapshot.Length == 0)
+      {
+         return;
+      }
+
+      Task allTasks = Task.WhenAll(snapshot);
+      Task limitTask = DelayIA(maxEsperaMs);
+      Task finished = await Task.WhenAny(allTasks, limitTask);
+
+      if (finished != allTasks)
+      {
+         Debug.LogWarning($"[IAUnidad] {scUnidad?.uNombre} finaliza con {snapshot.Length} tareas de habilidad pendientes (timeout de espera).");
+      }
+      else
+      {
+         await allTasks; // Repropaga si hubo excepciones
+      }
+   }
    
-   async Task ChequearCasillasAlrededorParaMover(Casilla casilla)
+   async Task ChequearCasillasAlrededorParaMover(Casilla casilla, AITurnTimings timings)
    {
        LadoManager lado;
        if(scUnidad.CasillaPosicion.lado == 1)
@@ -223,7 +308,7 @@ public class IAUnidad : MonoBehaviour
        Casilla casillaActual = scUnidad.CasillaPosicion;
        if (casillaActual == null)
        {
-         await Task.Delay(1000);
+         await DelayIA(timings.DelaySinObjetivosMs);
          return;
        }
 
@@ -273,7 +358,7 @@ public class IAUnidad : MonoBehaviour
          await MoverACasilla(mejorOpcion);
        }
 
-       await Task.Delay(1400);
+       await DelayIA(timings.DelayPostAccionMs);
    }
 
 
@@ -340,7 +425,7 @@ public class IAUnidad : MonoBehaviour
    }
 
 
-   async Task<bool> EjecutarHabilidadConSalvaguarda(List<IAHabilidad> habilidadesDisponibles)
+   async Task<bool> EjecutarHabilidadConSalvaguarda(List<IAHabilidad> habilidadesDisponibles, AITurnTimings timings)
    {
       if (habilidadesDisponibles == null || habilidadesDisponibles.Count == 0)
       {
@@ -366,12 +451,20 @@ public class IAUnidad : MonoBehaviour
                continue;
             }
 
-            Task timeoutTask = Task.Delay(TimeoutHabilidadMs);
-            Task tareaCompletada = await Task.WhenAny(habilidadTask, timeoutTask);
+            RegistrarHabilidadEnCurso(habilidadTask);
+
+            Task tareaCompletada = await Task.WhenAny(habilidadTask, DelayIA(timings.HabilidadTimeoutMs));
 
             if (tareaCompletada == habilidadTask)
             {
                await habilidadTask; // Repropaga excepciones si las hay
+               return true;
+            }
+
+            Task gracia = await Task.WhenAny(habilidadTask, DelayIA(timings.GraciaHabilidadMs));
+            if (gracia == habilidadTask)
+            {
+               await habilidadTask;
                return true;
             }
 
@@ -386,7 +479,7 @@ public class IAUnidad : MonoBehaviour
       return false;
    }
 
-   async Task<bool> TerminarTurnoSeguro(bool agotarAP, string motivo = null)
+   async Task<bool> TerminarTurnoSeguro(bool agotarAP, AITurnTimings timings, string motivo = null)
    {
       if (scUnidad == null || BattleManager.Instance == null)
       {
@@ -403,7 +496,8 @@ public class IAUnidad : MonoBehaviour
          Debug.LogWarning($"[IAUnidad] {scUnidad.uNombre} finaliza turno de IA: {motivo}");
       }
 
-      await Task.Delay(DelayFinTurnoMs);
+      await EsperarHabilidadesPendientes(timings.GraciaHabilidadMs);
+      await DelayIA(timings.DelayFinTurnoMs);
 
       if (BattleManager.Instance.unidadActiva == scUnidad)
       {

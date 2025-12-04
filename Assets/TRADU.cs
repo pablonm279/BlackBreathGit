@@ -3339,6 +3339,87 @@ public class TRADU : MonoBehaviour
             case "Aturdido":
                 r = "Stunned";
                 break;
+            case "Inalcanzable: unidad volando":
+                r = "Unreachable: flying unit";
+                break;
+            case "Inalcanzable: unidad escondida":
+                r = "Unreachable: hidden unit";
+                break;
+            case " PA":
+                r = " AP";
+                break;
+            case "No hay suficientes flechas":
+                r = "Not enough arrows";
+                break;
+            case "No hay suficientes energía":
+                r = "Not enough energy";
+                break;
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
+                /*  case "":
+                r = "";
+                break;*/
                 /*  case "":
                 r = "";
                 break;*/

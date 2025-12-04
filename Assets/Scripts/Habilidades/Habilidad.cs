@@ -1,10 +1,11 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
+using System.Reflection;
 
 public abstract class Habilidad : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public abstract class Habilidad : MonoBehaviour
   public List<Casilla> lCasillasafectadas = new List<Casilla>();
   public bool esZonal; //true si afecta a todas las unidades en el rango, false si es individual.
 
-  //TARGETEO ESPECIAL - 1: Misma Fila  - 2: Misma Columna - 3: Dos Casillas (Vertical) - 4: Tres Casillas (Vertical) - 5: Dos Casillas (Atrás)
+  //TARGETEO ESPECIAL - 1: Misma Fila  - 2: Misma Columna - 3: Dos Casillas (Vertical) - 4: Tres Casillas (Vertical) - 5: Dos Casillas (AtrÃ¡s)
   public int targetEspecial = 0;  //1: Misma fila  2: Misma Columna 3: Dos Casillas (Vert) 4: Tres Casillas (Vert)5: Dos Casillas (Atras) 
                                   //6: 3 casillas Vertical y las de atras
   public int enArea = 0; //Si este valor es mayor a 0, permite tarjetear celdas, afectando a unidades alrededor. 1, cruz, 2 cuadrado, 3 todo
@@ -46,6 +47,12 @@ public abstract class Habilidad : MonoBehaviour
 
   public bool esHostil; //Si es para enemigos o aliados
   public bool esDiscreta = false; //No quita sigilo
+
+  [Tooltip("0=Sin mostrar probabilidad, 1=Ataque melee, 2=Ataque rango")]
+  public int tipoPorcentaje = 0;
+
+  // Unidades resaltadas al previsualizar la habilidad (se limpia al cancelar/resolver)
+  private readonly HashSet<Unidad> unidadesMarcadasPrevisualizacion = new HashSet<Unidad>();
 
   protected virtual int DelayPreImpactoMs => 1000;
   protected virtual int DelayPostImpactoMs => 700;
@@ -87,11 +94,13 @@ public abstract class Habilidad : MonoBehaviour
   }
   public abstract void Awake();
 
-  // Método abstracto para activar la habilidad.
+  // MÃ©todo abstracto para activar la habilidad.
   public virtual async Task Resolver(List<object> Objetivos, Casilla casillaOrigenTrampas = null)
   {
     BattleManager.Instance.bOcupado = true;
-    // Animación/pose:
+    // Al confirmar la habilidad, limpiar marcas de previsualizacion en unidades.
+    LimpiarMarcasUnidadesPosibles();
+    // AnimaciÃ³n/pose:
     // - Canalizador: toda habilidad hostil usa ataque (melee o rango)
     // - Resto: hostil melee usa ataque; hostil a distancia y no hostil usan pose de habilidad
     if (scEstaUnidad is ClaseCanalizador && esHostil)
@@ -169,7 +178,7 @@ public abstract class Habilidad : MonoBehaviour
 
     BattleManager.Instance.LimpiarCapasCasillas();
 
-    if (scEstaUnidad.valorCargando > 0) //si está cargando y le alcanza que reste ap igual a lo que le faltaba
+    if (scEstaUnidad.valorCargando > 0) //si estÃ¡ cargando y le alcanza que reste ap igual a lo que le faltaba
     {
       scEstaUnidad.CambiarAPActual(-scEstaUnidad.valorCargando);
       scEstaUnidad.valorCargando = 0;
@@ -242,7 +251,7 @@ public abstract class Habilidad : MonoBehaviour
     //Fallo = 0
     //Roce = 1
     //Golpe = 2
-    //Crítico = 3
+    //CrÃ­tico = 3
 
     int resultado = 0;
 
@@ -276,7 +285,7 @@ public abstract class Habilidad : MonoBehaviour
       return -1;
     }
 
-    if (iTiradaAtaque >= 19 - modificadorDadoCritico) { return 3; } //Golpe crítico
+    if (iTiradaAtaque >= 19 - modificadorDadoCritico) { return 3; } //Golpe crÃ­tico
 
     float efectosAlAtaque = atributoAtaca + modificadorHabilidadaAtaque + scEstaUnidad.mod_Ataque;
     float iResultadoAtaque = iTiradaAtaque + efectosAlAtaque;
@@ -323,17 +332,17 @@ public abstract class Habilidad : MonoBehaviour
 
     if(resultado)
     {
-       BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} realiza Tirada de Salvación: 1d20 = {iTiradaDefensa} +{atributoDefiende} vs Tirada Dificultad: {iResultadoAtaque}. Resultado: No se salva.");
+       BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} realiza Tirada de SalvaciÃ³n: 1d20 = {iTiradaDefensa} +{atributoDefiende} vs Tirada Dificultad: {iResultadoAtaque}. Resultado: No se salva.");
     }
     else
     {
-       BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} realiza Tirada de Salvación: 1d20 = {iTiradaDefensa} +{atributoDefiende} vs Tirada Dificultad: {iResultadoAtaque}. Resultado: Se salva.");
+       BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} realiza Tirada de SalvaciÃ³n: 1d20 = {iTiradaDefensa} +{atributoDefiende} vs Tirada Dificultad: {iResultadoAtaque}. Resultado: Se salva.");
     }
 
     return resultado;
   }*/
 
-  public abstract void AplicarEfectosHabilidad(object unidad, int tirada, Casilla casillaOrigenTrampa); //la tirada se determina antes de entrar a cada objetivo, para que sea la misma
+    public abstract void AplicarEfectosHabilidad(object unidad, int tirada, Casilla casillaOrigenTrampa); //la tirada se determina antes de entrar a cada objetivo, para que sea la misma
 
   public bool EsEscenaCampaña()
   {
@@ -346,9 +355,165 @@ public abstract class Habilidad : MonoBehaviour
 
   }
 
+  /// <summary>
+  /// Marca las unidades actualmente en rango segun lUnidadesPosiblesHabilidadActiva y limpia las que ya no aplican.
+  /// </summary>
+  public void SincronizarMarcasUnidadesPosibles()
+  {
+    SincronizarMarcasUnidades(BattleManager.Instance != null ? BattleManager.Instance.lUnidadesPosiblesHabilidadActiva : null);
+  }
 
-  
+  /// <summary>
+  /// Limpia las unidades marcadas en la ultima previsualizacion de la habilidad.
+  /// </summary>
+  public void LimpiarMarcasUnidadesPosibles()
+  {
+    if (unidadesMarcadasPrevisualizacion.Count == 0)
+    {
+      return;
+    }
+
+    foreach (Unidad unidad in unidadesMarcadasPrevisualizacion)
+    {
+      unidad?.Marcar(0);
+      unidad?.OcultarProbabilidad();
+    }
+
+    unidadesMarcadasPrevisualizacion.Clear();
+  }
+
+  private void SincronizarMarcasUnidades(IEnumerable<Unidad> unidadesObjetivo)
+  {
+    if (unidadesObjetivo == null)
+    {
+      LimpiarMarcasUnidadesPosibles();
+      return;
+    }
+
+    HashSet<Unidad> nuevas = new HashSet<Unidad>();
+    foreach (Unidad unidad in unidadesObjetivo)
+    {
+      if (unidad == null)
+      {
+        continue;
+      }
+
+      if (unidadesMarcadasPrevisualizacion.Add(unidad))
+      {
+        unidad.Marcar(1);
+      }
+
+      float? prob = CalcularProbabilidadSobreObjetivo(unidad);
+      unidad.MostrarProbabilidad(prob);
+
+      nuevas.Add(unidad);
+    }
+
+    if (unidadesMarcadasPrevisualizacion.Count == 0)
+    {
+      return;
+    }
+
+    List<Unidad> paraRemover = new List<Unidad>();
+    foreach (Unidad unidadMarcada in unidadesMarcadasPrevisualizacion)
+    {
+      if (!nuevas.Contains(unidadMarcada))
+      {
+        unidadMarcada?.Marcar(0);
+        unidadMarcada?.OcultarProbabilidad();
+        paraRemover.Add(unidadMarcada);
+      }
+    }
+
+    foreach (Unidad unidad in paraRemover)
+    {
+      unidadesMarcadasPrevisualizacion.Remove(unidad);
+    }
+  }
+
+  public float? CalcularProbabilidadSobreObjetivo(Unidad objetivo)
+  {
+    if (objetivo == null || scEstaUnidad == null)
+    {
+      return null;
+    }
+
+    switch (tipoPorcentaje)
+    {
+      case 1:
+        return CalcularProbAtaque(objetivo, true);
+      case 2:
+        return CalcularProbAtaque(objetivo, false);
+      default:
+        return null;
+    }
+  }
+
+  private float CalcularProbAtaque(Unidad objetivo, bool esMeleePorcentaje)
+  {
+    float atributoAtacante = esMeleePorcentaje ? scEstaUnidad.mod_CarFuerza : scEstaUnidad.mod_CarAgilidad;
+    float ataqueTotal = scEstaUnidad.mod_Ataque + atributoAtacante + ObtenerBonusAtaque();
+    if (!esMeleePorcentaje && CampaignManager.Instance != null)
+    {
+      // Penalidades de clima a ataques a distancia
+      if (CampaignManager.Instance.intTipoClima == 3) // Lluvia
+      {
+        ataqueTotal -= 1f;
+      }
+      else if (CampaignManager.Instance.intTipoClima == 5) // Niebla
+      {
+        ataqueTotal -= 2f;
+      }
+    }
+    float defensaObjetivo = objetivo.ObtenerdefensaActual();
+
+    int exitos = 0;
+    for (int dado = 1; dado <= 20; dado++)
+    {
+      bool pifia = dado == 1;
+      bool critico = dado >= 19;
+      if (pifia)
+      {
+        continue;
+      }
+
+      if (critico)
+      {
+        exitos++;
+        continue;
+      }
+
+      float resultado = dado + ataqueTotal;
+      if (resultado > defensaObjetivo)
+      {
+        exitos++;
+      }
+    }
+
+    return exitos / 20f;
+  }
+
+  protected virtual float ObtenerBonusAtaque()
+  {
+    // Busca un campo/propiedad llamado "bonusAtaque" en la habilidad concreta (serializado privado o público).
+    BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+    var campo = GetType().GetField("bonusAtaque", flags);
+    if (campo != null && (campo.FieldType == typeof(int) || campo.FieldType == typeof(float)))
+    {
+      object val = campo.GetValue(this);
+      if (val is int i) return i;
+      if (val is float f) return f;
+    }
+
+    var prop = GetType().GetProperty("bonusAtaque", flags);
+    if (prop != null && prop.CanRead)
+    {
+      object val = prop.GetValue(this, null);
+      if (val is int i) return i;
+      if (val is float f) return f;
+    }
+
+    return 0f;
+  }
 
 }
-
-

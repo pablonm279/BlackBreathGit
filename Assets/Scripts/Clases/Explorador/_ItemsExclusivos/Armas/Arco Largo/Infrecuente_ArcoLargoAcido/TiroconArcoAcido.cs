@@ -45,7 +45,7 @@ public class TiroconArcoAcido : Habilidad
 
 
 
-
+     tipoPorcentaje = 2;
 
 
 

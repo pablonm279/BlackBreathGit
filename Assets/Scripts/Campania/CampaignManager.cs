@@ -1867,8 +1867,17 @@ public class CampaignManager : MonoBehaviour
     {
       if (!scMenuCaravana.SeApretoESC()) //Si se apreto escape se cierran menus, si no habia ningun abierto abre opciones
       {
-        MenuOpciones.SetActive(true);
+        if (menuDescanso.activeInHierarchy)
+        {
+          menuDescanso.SetActive(false);
+        }
+        else
+        { 
+            MenuOpciones.SetActive(true);
+        }
+      
       }
+      
 
 
     }

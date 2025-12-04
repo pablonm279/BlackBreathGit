@@ -39,7 +39,7 @@ public class CorteVerticalSagrado : Habilidad
 
 
 
-
+       tipoPorcentaje = 1;
 
 
 

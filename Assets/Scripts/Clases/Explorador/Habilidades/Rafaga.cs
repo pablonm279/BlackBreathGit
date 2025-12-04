@@ -38,7 +38,7 @@ public class Rafaga : Habilidad
       cooldownMax = 5;
       if(NIVEL > 2){cooldownMax--;}
       bAfectaObstaculos = false;
-
+       tipoPorcentaje = 2;
       bonusAtaque = -2;
       if(NIVEL > 1){bonusAtaque++;}
       if(NIVEL == 5){bonusAtaque++;}

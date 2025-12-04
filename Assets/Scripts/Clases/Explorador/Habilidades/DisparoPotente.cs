@@ -34,7 +34,7 @@ public class DisparoPotente : Habilidad
       esHostil = true;
       cooldownMax = 3;
       bAfectaObstaculos = true;
-
+       tipoPorcentaje = 2;
       targetEspecial = 1; //Misma fila
 
       bonusAtaque = -1;

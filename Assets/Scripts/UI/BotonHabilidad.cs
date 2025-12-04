@@ -129,17 +129,17 @@ public class BotonHabilidad : MonoBehaviour
             if (HabilidadRepresentada.nombre == "Tiro con Arco")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseExplorador>().ObtenerCantidadFlechas() < HabilidadRepresentada.requiereRecurso)
-                { return; }
+                {BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes flechas"), Color.gray, FloatingTextContext.Resist); return; }
             }
             if (HabilidadRepresentada.nombre == "Tiro Potente")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseExplorador>().ObtenerCantidadFlechas() < HabilidadRepresentada.requiereRecurso)
-                { return; }
+                {BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes flechas"), Color.gray, FloatingTextContext.Resist); return; }
             }
             if (HabilidadRepresentada.nombre == "Vigilancia")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseExplorador>().ObtenerCantidadFlechas() < HabilidadRepresentada.requiereRecurso)
-                { return; }
+                {BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes flechas"), Color.gray, FloatingTextContext.Resist); return; }
             }
             if (HabilidadRepresentada.nombre == "Enmendar")
             {
@@ -154,12 +154,12 @@ public class BotonHabilidad : MonoBehaviour
             if (HabilidadRepresentada.nombre == "Descarga Desintegradora")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseCanalizador>().ObtenerEnergia() < HabilidadRepresentada.requiereRecurso)
-                { return; }
+                {BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes energía"), Color.gray, FloatingTextContext.Resist); return; }
             }
             if (HabilidadRepresentada.nombre == "Manifestacion Arcana")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseCanalizador>().ObtenerEnergia() < HabilidadRepresentada.requiereRecurso)
-                { return; }
+                {BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes energía"), Color.gray, FloatingTextContext.Resist); return; }
             }
             
       }

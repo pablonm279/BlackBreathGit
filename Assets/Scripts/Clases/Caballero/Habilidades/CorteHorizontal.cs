@@ -16,37 +16,39 @@ public class CorteHorizontal : Habilidad
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
     [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
 
-   
-     public override void  Awake()
-    {
-      nombre = "Corte Horizontal";
-      IDenClase = 3;
-      costoAP = 4;
-      costoPM = 2;
-      if(NIVEL == 4){costoPM -= 1;}
-      Usuario = this.gameObject;
-      scEstaUnidad = Usuario.GetComponent<Unidad>();
-      esZonal = true;
-      enArea = 0;
-      esforzable = 1;
-      esCargable = false;
-      esMelee = true;
-      esHostil = true;
-      cooldownMax = 2;
-      bAfectaObstaculos = true;
 
-      targetEspecial = 4;
+  public override void Awake()
+  {
+    nombre = "Corte Horizontal";
+    IDenClase = 3;
+    costoAP = 4;
+    costoPM = 2;
+    if (NIVEL == 4) { costoPM -= 1; }
+    Usuario = this.gameObject;
+    scEstaUnidad = Usuario.GetComponent<Unidad>();
+    esZonal = true;
+    enArea = 0;
+    esforzable = 1;
+    esCargable = false;
+    esMelee = true;
+    esHostil = true;
+    cooldownMax = 2;
+    bAfectaObstaculos = true;
 
-      bonusAtaque = -2;
-      if(NIVEL > 2){bonusAtaque += 1;}
-      XdDanio = 2;
-      daniodX = 6; //2d6
-      tipoDanio = 2; //Cortante
-      criticoRangoHab = 0;
+    targetEspecial = 4;
 
-      imHab = Resources.Load<Sprite>("imHab/Caballero_CorteHorizontal");
+    bonusAtaque = -2;
+    if (NIVEL > 2) { bonusAtaque += 1; }
+    XdDanio = 2;
+    daniodX = 6; //2d6
+    tipoDanio = 2; //Cortante
+    criticoRangoHab = 0;
+
+    imHab = Resources.Load<Sprite>("imHab/Caballero_CorteHorizontal");
+
+    ActualizarDescripcion();
       
-      ActualizarDescripcion();
+     tipoPorcentaje = 1;
       
     }
 

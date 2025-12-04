@@ -30,7 +30,7 @@ public class CorteDaga : Habilidad
       esHostil = true;
       cooldownMax = 0;
       bAfectaObstaculos = true;
-
+       tipoPorcentaje = 1;
       bonusAtaque = 0;
       XdDanio = 1;
       daniodX = 6; //1d6

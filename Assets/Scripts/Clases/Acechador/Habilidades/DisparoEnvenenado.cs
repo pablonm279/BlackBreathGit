@@ -46,7 +46,7 @@ public class DisparoEnvenenado : Habilidad
     tipoDanio = 2; //Perforante
     criticoRangoHab = 0;
 
-
+     tipoPorcentaje = 2;
     imHab = Resources.Load<Sprite>("imHab/Acechador_DisparoEnvenenado");
 
  
