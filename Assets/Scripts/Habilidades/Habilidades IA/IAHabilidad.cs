@@ -308,42 +308,103 @@ public abstract class IAHabilidad : MonoBehaviour
 
     int resultado = 0;
     float iTiradaAtaque = 0;
+    float tiradaBase = tiradaAtaque;
     
     if (tiradaAtaque == -1)
     {
       iTiradaAtaque = UnityEngine.Random.Range(1, 21);
+      tiradaBase = iTiradaAtaque;
     }
     else { iTiradaAtaque = tiradaAtaque; }
     float iResultadoAtaque = iTiradaAtaque + atributoAtaca + modificadorHabilidadaAtaque;
 
-    if (iTiradaAtaque < (2 + rangoPifiaExtra))//Pifia
+    string objetivoNombre = unidadAtacada != null ? unidadAtacada.uNombre : TRADU.i.Traducir("objetivo");
+    float limitePifia = 2 + rangoPifiaExtra;
+    int umbralPifia = Mathf.RoundToInt(limitePifia - 1);
+    float umbralCritico = 19 - modificadorDadoCritico;
+    string textoResultado;
+    CombatLogFormatter.CombatOutcome outcome;
+
+    if (iTiradaAtaque < limitePifia)//Pifia
     {
       scEstaUnidad.GenerarTextoFlotante(TRADU.i.Traducir("Pifia"), Color.red);
-      BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + iResultadoAtaque + TRADU.i.Traducir(". Resultado: Pifia."));
+      textoResultado = TRADU.i.Traducir("Pifia");
+      BattleManager.Instance.EscribirLog(
+        CombatLogFormatter.FormatearAtaque(
+          scEstaUnidad.uNombre,
+          objetivoNombre,
+          tiradaBase,
+          iTiradaAtaque,
+          atributoAtaca,
+          modificadorHabilidadaAtaque,
+          0f,
+          defensaObjetivo,
+          textoResultado,
+          CombatLogFormatter.CombatOutcome.Pifia,
+          umbralPifia,
+          Mathf.RoundToInt(umbralCritico)));
 
       return -1;
     }
 
-    if (iTiradaAtaque >= 19 - modificadorDadoCritico) { return 3; } //Golpe crítico
-
-
-
-    if (iResultadoAtaque == defensaObjetivo)
+    if (iTiradaAtaque >= umbralCritico)
     {
-      BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + iResultadoAtaque + TRADU.i.Traducir(". Resultado: Roce."));
-      return 1; //Roce
+      textoResultado = TRADU.i.Traducir("Crítico");
+      BattleManager.Instance.EscribirLog(
+        CombatLogFormatter.FormatearAtaque(
+          scEstaUnidad.uNombre,
+          objetivoNombre,
+          tiradaBase,
+          iTiradaAtaque,
+          atributoAtaca,
+          modificadorHabilidadaAtaque,
+          0f,
+          defensaObjetivo,
+          textoResultado,
+          CombatLogFormatter.CombatOutcome.Critico,
+          umbralPifia,
+          Mathf.RoundToInt(umbralCritico),
+          0f,
+          TRADU.i.Traducir("Impacto crítico")));
+      return 3; //Golpe crítico
     }
+
+
+
     if (iResultadoAtaque > defensaObjetivo)
     {
-      BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + iResultadoAtaque + TRADU.i.Traducir(". Resultado: Golpe."));
-      return 2; //Golpe
+      resultado = 2; //Golpe
+      outcome = CombatLogFormatter.CombatOutcome.Golpe;
+      textoResultado = TRADU.i.Traducir("Golpe");
     }
-
-    if (resultado == 0) //Fallo
+    else if (Mathf.Approximately(iResultadoAtaque, defensaObjetivo))
     {
-      BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + iResultadoAtaque + TRADU.i.Traducir(". Resultado: Fallo."));
+      resultado = 1; //Roce
+      outcome = CombatLogFormatter.CombatOutcome.Roce;
+      textoResultado = TRADU.i.Traducir("Roce");
+    }
+    else
+    {
+      resultado = 0; //Fallo
+      outcome = CombatLogFormatter.CombatOutcome.Fallo;
+      textoResultado = TRADU.i.Traducir("Fallo");
       unidadAtacada.GenerarTextoFlotante(TRADU.i.Traducir("Fallo"), Color.grey, FloatingTextContext.Miss);
     }
+
+    BattleManager.Instance.EscribirLog(
+      CombatLogFormatter.FormatearAtaque(
+        scEstaUnidad.uNombre,
+        objetivoNombre,
+        tiradaBase,
+        iTiradaAtaque,
+        atributoAtaca,
+        modificadorHabilidadaAtaque,
+        0f,
+        defensaObjetivo,
+        textoResultado,
+        outcome,
+        umbralPifia,
+        Mathf.RoundToInt(umbralCritico)));
 
 
 
@@ -416,7 +477,8 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     // Log de uso de habilidad de IA
     if (BattleManager.Instance != null && scEstaUnidad != null)
     {
-      BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir(" usa ") + nombre + ".</color>");
+      string nombreHab = TRADU.i != null ? TRADU.i.Traducir(nombre) : nombre;
+      BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir(" usa ") + nombreHab + ".</color>");
     }
     unidadesNoParticipantes = new List<object>(BattleManager.Instance.lUnidadesTotal);
     unidadesNoParticipantes.Remove(scEstaUnidad);

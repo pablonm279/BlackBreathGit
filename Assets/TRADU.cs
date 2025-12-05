@@ -3354,27 +3354,78 @@ public class TRADU : MonoBehaviour
             case "No hay suficientes energía":
                 r = "Not enough energy";
                 break;
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
+            case "ATQ":
+                r = "ATK";
+                break;
+            case "TS":
+                r = "SV";
+                break;
+            case "mods":
+                r = "mods";
+                break;
+            case "atr":
+                r = "attr";
+                break;
+            case "hab":
+                r = "skill";
+                break;
+            case "atq":
+                r = "atk";
+                break;
+            case "clima":
+                r = "weather";
+                break;
+            case "situacional":
+                r = "situational";
+                break;
+            case "vs":
+                r = "vs";
+                break;
+            case "DEF":
+                r = "DEF";
+                break;
+            case "crit":
+                r = "crit";
+                break;
+            case "pifia":
+                r = "fumble";
+                break;
+            case "ESTADO":
+                r = "STATUS";
+                break;
+            case "BUFF":
+                r = "BUFF";
+                break;
+            case "DEBUFF":
+                r = "DEBUFF";
+                break;
+            case "TRAMPA":
+                r = "TRAP";
+                break;
+            case "DAÑO":
+                r = "DAM";
+                break;
+            case "MUERTE":
+                r = "DEATH";
+                break;
+            case "CURACION":
+                r = "HEAL";
+                break;
+            case "Golpe":
+                r = "Hit";
+                break;
+            case "Crítico":
+                r = "Critical";
+                break;
+            case "Roce":
+                r = "Graze";
+                break;
+            case "Exito":
+                r = "Success";
+                break;
+            case "Tiro Potente":
+                r = "Powerful Shot";
+                break;
                 /*  case "":
                 r = "";
                 break;*/

@@ -22,7 +22,7 @@ public class Estados : MonoBehaviour
             await Task.Delay(1150);
 
             unidad.GenerarTextoFlotante(TRADU.i.Traducir("Apagando!"), Color.red);
-            BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" gasta 1 PA para apagar el fuego."));
+            BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" gasta 1 PA para apagar el fuego.")));
 
            
 
@@ -37,7 +37,7 @@ public class Estados : MonoBehaviour
 
      unidad.CambiarAPActual(-(int)unidad.estado_congelado);
      unidad.estado_congelado -= 1;
-     BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" está congelado."));
+     BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" está congelado.")));
 
 
      if(unidad.estado_congelado < 0)
@@ -45,7 +45,7 @@ public class Estados : MonoBehaviour
        unidad.estado_congelado = 0;
 
        unidad.GenerarTextoFlotante(TRADU.i.Traducir("Descongelado!"), Color.red);
-      BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" se libró del congelamiento."));
+      BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" se libró del congelamiento.")));
 
 
      }
@@ -57,7 +57,7 @@ public class Estados : MonoBehaviour
      unidad.EstablecerAPActualA(0);
      unidad.estado_aturdido--;
     unidad.GenerarTextoFlotante(TRADU.i.Traducir("Aturdido!"), Color.yellow);
-     BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" está aturdido."));
+     BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" está aturdido.")));
 
      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
   }
@@ -76,7 +76,7 @@ public class Estados : MonoBehaviour
     {
       float porcentajeAcumulado = 0.05f * unidad.estado_CondenadoTurnosSeguidos;
       unidad.RecibirDanio(unidad.mod_maxHP * porcentajeAcumulado, 10, false, null);
-      BattleManager.Instance.EscribirLog(unidad.uNombre + TRADU.i.Traducir(" es dañado por la Condena."));
+      BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre + TRADU.i.Traducir(" es dañado por la Condena.")));
       BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
 
       unidad.estado_Condenado = 0;
@@ -92,7 +92,7 @@ public class Estados : MonoBehaviour
     if (unidad.estado_armaduraModificador > 0)
     {
       unidad.estado_armaduraModificador--;
-      BattleManager.Instance.EscribirLog(unidad.uNombre + TRADU.i.Traducir(" regenera ") + unidad.estado_regeneraarmadura + TRADU.i.Traducir(" Armadura."));
+      BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre + TRADU.i.Traducir(" regenera ") + unidad.estado_regeneraarmadura + TRADU.i.Traducir(" Armadura.")));
     }
 
     BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
@@ -102,7 +102,7 @@ public class Estados : MonoBehaviour
      
      unidad.estado_inmovil--;
 
-     BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" está inmovilizado."));
+     BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" está inmovilizado.")));
 
      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
   }
@@ -126,19 +126,19 @@ public class Estados : MonoBehaviour
   public static void  Efecto_Veneno(Unidad unidad)
   {
     unidad.RecibirDanio(1*unidad.estado_veneno, 10,false, null); 
-    BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" recibe ") + (1*unidad.estado_veneno) + TRADU.i.Traducir(" daño veneno."));
+    BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" recibe ") + (1*unidad.estado_veneno) + TRADU.i.Traducir(" daño veneno.")));
 
 
    if(unidad.TiradaSalvacion(unidad.mod_TSFortaleza, 7+unidad.estado_veneno)) //Cada turno se puede salvar del veneno, pero si peirde se suma 1 stack
    {
      unidad.estado_veneno = 0; unidad.GenerarTextoFlotante("<s>" + TRADU.i.Traducir("Veneno") + "</s>", Color.green);
-    BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" resiste totalmente al veneno."));
+    BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" resiste totalmente al veneno.")));
 
    }
    else
    {
       Estados.Aplicar_Veneno(unidad, 1);
-      BattleManager.Instance.EscribirLog(unidad.uNombre+TRADU.i.Traducir(" falla su Tirada de salvación y el veneno empeora."));
+      BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" falla su Tirada de salvación y el veneno empeora.")));
 
    }
    

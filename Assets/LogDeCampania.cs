@@ -26,8 +26,9 @@ public class LogDeCampania : MonoBehaviour
 
     private readonly List<EntradaLog> _entradas = new();
 
-    private static readonly Regex _regexTagsTMP =
-        new Regex(@"<\/?((b|i|u|s|mark|align|alpha|color|font|indent|line-height|link|lowercase|uppercase|smallcaps|size|space|sprite|style|sup|sub|voffset)(=[^>]*)?)>",
+    // Permite tags básicos (b, i, color, size, mark) y remueve el resto para evitar anidaciones peligrosas.
+    private static readonly Regex _regexTagsNoPermitidos =
+        new Regex(@"</?(?!\s*(?:b|i|color|size|mark)\b)[^>]+>",
                   RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     private struct EntradaLog
@@ -120,7 +121,7 @@ public class LogDeCampania : MonoBehaviour
             {
                 sb.Append("<size=").Append(sizeActualPct).Append("%>")
                   .Append("<color=").Append(colorActual).Append(">")
-                  .Append(prefijoDia).Append(" — ").Append(e.Texto)
+                  .Append(prefijoDia).Append(" - ").Append(e.Texto)
                   .Append("</color></size>");
             }
             else
@@ -128,7 +129,7 @@ public class LogDeCampania : MonoBehaviour
                 sb.Append("<i>")
                   .Append("<size=").Append(sizePasadoPct).Append("%>")
                   .Append("<color=").Append(colorPasado).Append(">")
-                  .Append(prefijoDia).Append(" — ").Append(e.Texto)
+                  .Append(prefijoDia).Append(" - ").Append(e.Texto)
                   .Append("</color></size>")
                   .Append("</i>");
             }
@@ -189,8 +190,8 @@ public class LogDeCampania : MonoBehaviour
     private static string Sanitizar(string s)
     {
         if (string.IsNullOrWhiteSpace(s)) return string.Empty;
-        // Quita todas las etiquetas TMP comunes para evitar anidaciones raras
-        string limpio = _regexTagsTMP.Replace(s, string.Empty);
+        // Quita etiquetas no permitidas pero conserva color/size/b/i/mark
+        string limpio = _regexTagsNoPermitidos.Replace(s, string.Empty);
         // Normalizar saltos de línea a una sola línea (log = 1 evento por línea)
         limpio = limpio.Replace("\r\n", " ").Replace('\n', ' ').Trim();
         return limpio;

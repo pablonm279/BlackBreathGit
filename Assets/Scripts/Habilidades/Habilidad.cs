@@ -255,15 +255,17 @@ public abstract class Habilidad : MonoBehaviour
 
     int resultado = 0;
 
+    float tiradaBase = tirada;
     float iTiradaAtaque = tirada;
+    float deltaClima = 0f;
 
-    string sAtaqueModClima = iTiradaAtaque + "";
     //Efectos de clima en Ataques
     if (CampaignManager.Instance.intTipoClima == 3) // Lluvia -1 ataque rango
     {
       if (!esMelee)
       {
-        iTiradaAtaque -= 1; sAtaqueModClima += TRADU.i.Traducir(" (-1 Lluvia)");
+        iTiradaAtaque -= 1;
+        deltaClima -= 1;
       }
 
     }
@@ -271,42 +273,101 @@ public abstract class Habilidad : MonoBehaviour
     {
       if (!esMelee)
       {
-        iTiradaAtaque -= 2; sAtaqueModClima += TRADU.i.Traducir(" (-2 Niebla)");
+        iTiradaAtaque -= 2;
+        deltaClima -= 2;
       }
 
     }
 
 
+    string objetivoNombre = unidadAtacada != null ? unidadAtacada.uNombre : TRADU.i.Traducir("objetivo");
+    int umbralPifia = 1 + sumaPifia;
+    float umbralCritico = 19 - modificadorDadoCritico;
+    string textoResultado;
+    CombatLogFormatter.CombatOutcome outcome;
 
-    if (iTiradaAtaque <= 1 + sumaPifia)//Pifia
+    if (iTiradaAtaque <= umbralPifia)//Pifia
     {
       scEstaUnidad.GenerarTextoFlotante(TRADU.i.Traducir("<b>Pifia</b>"), Color.red);
-      BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + sAtaqueModClima + TRADU.i.Traducir(". Resultado: Pifia."));
+      textoResultado = TRADU.i.Traducir("Pifia");
+      BattleManager.Instance.EscribirLog(
+        CombatLogFormatter.FormatearAtaque(
+          scEstaUnidad.uNombre,
+          objetivoNombre,
+          tiradaBase,
+          iTiradaAtaque,
+          atributoAtaca,
+          modificadorHabilidadaAtaque,
+          scEstaUnidad.mod_Ataque,
+          defensaObjetivo,
+          textoResultado,
+          CombatLogFormatter.CombatOutcome.Pifia,
+          umbralPifia,
+          Mathf.RoundToInt(umbralCritico),
+          deltaClima));
       return -1;
     }
 
-    if (iTiradaAtaque >= 19 - modificadorDadoCritico) { return 3; } //Golpe crÃ­tico
+    if (iTiradaAtaque >= umbralCritico) //Golpe crítico
+    {
+      textoResultado = TRADU.i.Traducir("Crítico");
+      BattleManager.Instance.EscribirLog(
+        CombatLogFormatter.FormatearAtaque(
+          scEstaUnidad.uNombre,
+          objetivoNombre,
+          tiradaBase,
+          iTiradaAtaque,
+          atributoAtaca,
+          modificadorHabilidadaAtaque,
+          scEstaUnidad.mod_Ataque,
+          defensaObjetivo,
+          textoResultado,
+          CombatLogFormatter.CombatOutcome.Critico,
+          umbralPifia,
+          Mathf.RoundToInt(umbralCritico),
+          deltaClima,
+          TRADU.i.Traducir("Impacto crítico")));
+      return 3;
+    }
 
     float efectosAlAtaque = atributoAtaca + modificadorHabilidadaAtaque + scEstaUnidad.mod_Ataque;
     float iResultadoAtaque = iTiradaAtaque + efectosAlAtaque;
 
-    if (iResultadoAtaque == defensaObjetivo)
-    {
-      BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + sAtaqueModClima + TRADU.i.Traducir(". Resultado: Fallo."));
-      return 1; //Roce
-    }
     if (iResultadoAtaque > defensaObjetivo)
     {
-      BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + sAtaqueModClima + TRADU.i.Traducir(". Resultado: Roce."));
-
-      return 2; //Golpe
+      resultado = 2; //Golpe
+      outcome = CombatLogFormatter.CombatOutcome.Golpe;
+      textoResultado = TRADU.i.Traducir("Golpe");
     }
-
-    if (resultado == 0)
+    else if (Mathf.Approximately(iResultadoAtaque, defensaObjetivo))
     {
-      BattleManager.Instance.EscribirLog(TRADU.i.Traducir("-Tirada de Ataque: 1d20 = ") + sAtaqueModClima + TRADU.i.Traducir(". Resultado: Golpe."));
+      resultado = 1; //Roce
+      outcome = CombatLogFormatter.CombatOutcome.Roce;
+      textoResultado = TRADU.i.Traducir("Roce");
+    }
+    else
+    {
+      resultado = 0; //Fallo
+      outcome = CombatLogFormatter.CombatOutcome.Fallo;
+      textoResultado = TRADU.i.Traducir("Fallo");
       unidadAtacada.GenerarTextoFlotante(TRADU.i.Traducir("Fallo"), new Color(0.8f, 0.8f, 0.8f), FloatingTextContext.Miss);
     }
+
+    BattleManager.Instance.EscribirLog(
+      CombatLogFormatter.FormatearAtaque(
+        scEstaUnidad.uNombre,
+        objetivoNombre,
+        tiradaBase,
+        iTiradaAtaque,
+        atributoAtaca,
+        modificadorHabilidadaAtaque,
+        scEstaUnidad.mod_Ataque,
+        defensaObjetivo,
+        textoResultado,
+        outcome,
+        umbralPifia,
+        Mathf.RoundToInt(umbralCritico),
+        deltaClima));
 
 
     if (resultado < 2 && BattleManager.Instance.HabilidadActiva.esMelee)
