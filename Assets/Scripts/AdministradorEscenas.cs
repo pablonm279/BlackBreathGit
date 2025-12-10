@@ -15,6 +15,7 @@ public class AdministradorEscenas : MonoBehaviour
 
   public GameObject EscenaCampaign;
   public GameObject EscenaBatalla;
+
   public ContenedorPrefabs ContenedorPrefabsBatalla;
 
   public GameObject HandbookCampania;
@@ -1066,7 +1067,9 @@ public class AdministradorEscenas : MonoBehaviour
     }
 
     battleManager.enemigosRefuerzos.Clear();
-    battleManager.delayRefuerzo = ObtenerDelayRefuerzosAleatorio();
+    battleManager.delayRefuerzo = encounterDefinition.reinforcementDelay > 0
+      ? encounterDefinition.reinforcementDelay
+      : ObtenerDelayRefuerzosAleatorio();
 
     foreach (var slot in encounterDefinition.units)
     {

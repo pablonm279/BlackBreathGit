@@ -119,7 +119,7 @@ public class Casilla : MonoBehaviour
         unidad.CambiarAPActual(-costoMovimientoTotal);
         BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
         unidad.CasillaDeseadaMov = this;
-         await unidad.GenerarTextoFlotante("<size=70%>-" + costoMovimientoTotal + " " + TRADU.i.Traducir(" PA") + "</size>", new Color(1.0f, 0.5f, 0.0f)); // Naranja
+        await unidad.GenerarTextoFlotante("<size=70%>-" + costoMovimientoTotal + " " + TRADU.i.Traducir(" PA") + "</size>", new Color(1.0f, 0.5f, 0.0f)); // Naranja
       }
     }
     // Intercambio con aliado: mover a casilla ocupada por aliado y que el aliado vaya a la casilla original
@@ -373,7 +373,7 @@ public class Casilla : MonoBehaviour
     {
       GO.GetComponent<Obstaculo>().CasillaPosicion = this;
     }
-        // Reduce the scale of the object to 87% of its original size
+    // Reduce the scale of the object to 87% of its original size
     GO.transform.localScale = new Vector3(GO.transform.localScale.x * 0.9f, GO.transform.localScale.y * 0.9f, GO.transform.localScale.z * 0.9f);
   }
 
@@ -746,6 +746,8 @@ public class Casilla : MonoBehaviour
     transform.GetChild(0).gameObject.SetActive(false);
     transform.GetChild(1).gameObject.SetActive(false);
     transform.GetChild(2).gameObject.SetActive(false);
+    transform.GetChild(2).gameObject.SetActive(false);
+    transform.GetChild(9).gameObject.SetActive(false);
     GetComponent<MeshRenderer>().enabled = true;
     //Agregar mas
   }
@@ -761,489 +763,496 @@ public class Casilla : MonoBehaviour
     unidadesEnCasAzul.Clear();
     obstaculosEnCasAzul.Clear();
     casAlre.Clear();
-    //Controlar se esta haciendo hablidad en Area, marca las casillas en la zona de alcance y en el area
-    if (BattleManager.Instance.HabilidadActiva != null)
-    {
-      if (BattleManager.Instance.HabilidadActiva.enArea > 0 && BattleManager.Instance.SeleccionandoObjetivo)
-      {
 
-        casAlre = ObtenerCasillasAlrededor(BattleManager.Instance.HabilidadActiva.enArea);
-        foreach (Casilla cas in casAlre)
-        {
-          if (cas.Presente != null)
-          {
-            if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                continue;
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-            }
-            else
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-
-            }
-
-          }
-
-        }
-        MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
-
-      }
-      else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 1)  //Target Especial 1: misma fila (horizontal)
-      {
-        casAlre = ObtenerCasillasenMismaFila();
-        MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
-
-        foreach (Casilla cas in casAlre)
-        {
-          if (cas.Presente != null)
-          {
-            if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                continue;
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-            }
-            else
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-
-            }
-
-          }
-
-        }
-
-      }
-      else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 2)  //Target Especial 2: misma columna (Vertical)
-      {
-        casAlre = ObtenerCasillasenMismaColumna();
-        MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
-
-        foreach (Casilla cas in casAlre)
-        {
-          if (cas.Presente != null)
-          {
-            if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                continue;
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-            }
-            else
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-
-            }
-
-          }
-
-        }
-      }
-      else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 3) //Target Especial 3: Dos Casillas (Vertical)
-      {
-        foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
-        {
-          if (cas.posY == posY + 1 && cas.posX == posX && cas.lado == lado)
-          {
-            casAlre.Add(cas);
-          }
-
-        }
-
-        foreach (Casilla cas in casAlre)
-        {
-          if (cas.Presente != null)
-          {
-            if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                continue;
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-            }
-            else
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-
-            }
-
-          }
-
-        }
-        MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
-      }
-      else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 4) //Target Especial 4: Tres Casillas (Vertical)
-      {
-        foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
-        {
-          if (((cas.posY == posY + 1 && cas.posX == posX) || (cas.posY == posY - 1 && cas.posX == posX)) && (cas.lado == lado))
-          {
-            casAlre.Add(cas);
-          }
-
-        }
-
-        foreach (Casilla cas in casAlre)
-        {
-          if (cas.Presente != null)
-          {
-            if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                continue;
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-            }
-            else
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-
-            }
-
-          }
-
-        }
-        MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
-      }
-      else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 5) //Target Especial 5: Dos Casillas (Atrás)
-      {
-        foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
-        {
-          if ((cas.posY == posY && cas.posX == posX - 1) && (cas.lado == lado))
-          {
-            casAlre.Add(cas);
-          }
-
-        }
-        foreach (Casilla cas in casAlre)
-        {
-          if (cas.Presente != null)
-          {
-            if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                continue;
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-            }
-            else
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-
-            }
-
-          }
-
-        }
-        MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
-      }
-      else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 6) //Target Especial 6: Tres Casillas y las de atras (Vertical)
-      {
-        foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
-        {
-          if (((cas.posY == posY + 1 && cas.posX == posX) || (cas.posY == posY - 1 && cas.posX == posX)) && (cas.lado == lado))
-          {
-            casAlre.Add(cas);
-          }
-          if (((cas.posY == posY + 1 && cas.posX == posX - 1) || (cas.posY == posY - 1 && cas.posX == posX - 1)) && (cas.lado == lado))
-          {
-            casAlre.Add(cas);
-          }
-          if (cas.posY == posY && cas.posX == posX - 1 && (cas.lado == lado))
-          {
-            casAlre.Add(cas);
-          }
-
-        }
-        foreach (Casilla cas in casAlre)
-        {
-          if (cas.Presente != null)
-          {
-            if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                continue;
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-            }
-            else
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-
-            }
-
-          }
-
-        }
-        MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
-      }
-      else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 7) //Target Especial 7: La del origen y diagonales adyacentes X
-      {
-        casAlre.Add(this); //Agrega la casilla de origen
-        foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
-        {
-
-          if ((cas.posY == posY + 1 && cas.posX == posX - 1) && (cas.lado == lado))
-          {
-            casAlre.Add(cas);
-          }
-          if ((cas.posY == posY + 1 && cas.posX == posX + 1) && (cas.lado == lado))
-          {
-            casAlre.Add(cas);
-          }
-          if ((cas.posY == posY - 1 && cas.posX == posX - 1) && (cas.lado == lado))
-          {
-            casAlre.Add(cas);
-          }
-          if ((cas.posY == posY - 1 && cas.posX == posX + 1) && (cas.lado == lado))
-          {
-            casAlre.Add(cas);
-          }
-
-        }
-        foreach (Casilla cas in casAlre)
-        {
-          if (cas.Presente != null)
-          {
-            if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                continue;
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-            }
-            else
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-
-            }
-
-          }
-
-        }
-        MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
-      }
-      else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 8) //Target Especial 8: T horizontal
-      {
-
-        foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
-        {
-          if ((cas.posY == posY && cas.posX == posX - 1) && (cas.lado == lado))
-          {
-            casAlre.Add(cas);
-          }
-          if ((cas.posY == posY && cas.posX == posX - 2) && (cas.lado == lado))
-          {
-            casAlre.Add(cas);
-          }
-          if ((cas.posY == posY + 1 && cas.posX == posX - 2) && (cas.lado == lado))
-          {
-            casAlre.Add(cas);
-          }
-          if ((cas.posY == posY - 1 && cas.posX == posX - 2) && (cas.lado == lado))
-          {
-            casAlre.Add(cas);
-          }
-        }
-        foreach (Casilla cas in casAlre)
-        {
-          if (cas.Presente != null)
-          {
-            if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                continue;
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-            }
-            else
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-
-            }
-
-          }
-
-        }
-        MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
-
-      }
-      else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 9) //Target Especial 9: Pirámide invertida
-      {
-        // Casilla de origen (punta de la pirámide)
-        casAlre.Add(this);
-
-        // 3 casillas en la columna siguiente (posX + 1)
-        foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
-        {
-          if (cas.lado == lado && cas.posX == posX - 1 &&
-            (cas.posY == posY - 1 || cas.posY == posY || cas.posY == posY + 1))
-          {
-            casAlre.Add(cas);
-          }
-        }
-
-        // 5 casillas en la última columna (posX + 2)
-        foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
-        {
-          if (cas.lado == lado && cas.posX == posX - 2 &&
-            (cas.posY == posY - 2 || cas.posY == posY - 1 || cas.posY == posY || cas.posY == posY + 1 || cas.posY == posY + 2))
-          {
-            casAlre.Add(cas);
-          }
-        }
-
-        foreach (Casilla cas in casAlre)
-        {
-          if (cas.Presente != null)
-          {
-            if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                continue;
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-            }
-            else
-            {
-              if (cas.Presente.GetComponent<Obstaculo>() != null)
-              {
-                obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
-              }
-              if (cas.Presente.GetComponent<Unidad>() != null)
-              {
-                unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
-              }
-            }
-          }
-        }
-        MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
-      }
-
-      //---
-      if (Presente != null)
-      {
-        if (Presente.GetComponent<Unidad>() != null)
-        {
-          unidadesEnCasAzul.Add(Presente.GetComponent<Unidad>());
-        }
-        if (Presente.GetComponent<Obstaculo>() != null)
-        {
-          obstaculosEnCasAzul.Add(Presente.GetComponent<Obstaculo>());
-        }
-      }
-
-
+    if (MarcaMelee.activeInHierarchy)
+    { 
+        string text = "" + TRADU.i.Traducir("Melee disponible");
+        scTooltipBatalla.ShowTooltipText(text);
 
     }
+    //Controlar se esta haciendo hablidad en Area, marca las casillas en la zona de alcance y en el area
+      if (BattleManager.Instance.HabilidadActiva != null)
+      {
+        if (BattleManager.Instance.HabilidadActiva.enArea > 0 && BattleManager.Instance.SeleccionandoObjetivo)
+        {
+
+          casAlre = ObtenerCasillasAlrededor(BattleManager.Instance.HabilidadActiva.enArea);
+          foreach (Casilla cas in casAlre)
+          {
+            if (cas.Presente != null)
+            {
+              if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  continue;
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+              }
+              else
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+
+              }
+
+            }
+
+          }
+          MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
+
+        }
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 1)  //Target Especial 1: misma fila (horizontal)
+        {
+          casAlre = ObtenerCasillasenMismaFila();
+          MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
+
+          foreach (Casilla cas in casAlre)
+          {
+            if (cas.Presente != null)
+            {
+              if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  continue;
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+              }
+              else
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+
+              }
+
+            }
+
+          }
+
+        }
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 2)  //Target Especial 2: misma columna (Vertical)
+        {
+          casAlre = ObtenerCasillasenMismaColumna();
+          MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
+
+          foreach (Casilla cas in casAlre)
+          {
+            if (cas.Presente != null)
+            {
+              if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  continue;
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+              }
+              else
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+
+              }
+
+            }
+
+          }
+        }
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 3) //Target Especial 3: Dos Casillas (Vertical)
+        {
+          foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
+          {
+            if (cas.posY == posY + 1 && cas.posX == posX && cas.lado == lado)
+            {
+              casAlre.Add(cas);
+            }
+
+          }
+
+          foreach (Casilla cas in casAlre)
+          {
+            if (cas.Presente != null)
+            {
+              if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  continue;
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+              }
+              else
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+
+              }
+
+            }
+
+          }
+          MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
+        }
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 4) //Target Especial 4: Tres Casillas (Vertical)
+        {
+          foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
+          {
+            if (((cas.posY == posY + 1 && cas.posX == posX) || (cas.posY == posY - 1 && cas.posX == posX)) && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+
+          }
+
+          foreach (Casilla cas in casAlre)
+          {
+            if (cas.Presente != null)
+            {
+              if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  continue;
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+              }
+              else
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+
+              }
+
+            }
+
+          }
+          MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
+        }
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 5) //Target Especial 5: Dos Casillas (Atrás)
+        {
+          foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
+          {
+            if ((cas.posY == posY && cas.posX == posX - 1) && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+
+          }
+          foreach (Casilla cas in casAlre)
+          {
+            if (cas.Presente != null)
+            {
+              if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  continue;
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+              }
+              else
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+
+              }
+
+            }
+
+          }
+          MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
+        }
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 6) //Target Especial 6: Tres Casillas y las de atras (Vertical)
+        {
+          foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
+          {
+            if (((cas.posY == posY + 1 && cas.posX == posX) || (cas.posY == posY - 1 && cas.posX == posX)) && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+            if (((cas.posY == posY + 1 && cas.posX == posX - 1) || (cas.posY == posY - 1 && cas.posX == posX - 1)) && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+            if (cas.posY == posY && cas.posX == posX - 1 && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+
+          }
+          foreach (Casilla cas in casAlre)
+          {
+            if (cas.Presente != null)
+            {
+              if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  continue;
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+              }
+              else
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+
+              }
+
+            }
+
+          }
+          MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
+        }
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 7) //Target Especial 7: La del origen y diagonales adyacentes X
+        {
+          casAlre.Add(this); //Agrega la casilla de origen
+          foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
+          {
+
+            if ((cas.posY == posY + 1 && cas.posX == posX - 1) && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+            if ((cas.posY == posY + 1 && cas.posX == posX + 1) && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+            if ((cas.posY == posY - 1 && cas.posX == posX - 1) && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+            if ((cas.posY == posY - 1 && cas.posX == posX + 1) && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+
+          }
+          foreach (Casilla cas in casAlre)
+          {
+            if (cas.Presente != null)
+            {
+              if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  continue;
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+              }
+              else
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+
+              }
+
+            }
+
+          }
+          MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
+        }
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 8) //Target Especial 8: T horizontal
+        {
+
+          foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
+          {
+            if ((cas.posY == posY && cas.posX == posX - 1) && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+            if ((cas.posY == posY && cas.posX == posX - 2) && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+            if ((cas.posY == posY + 1 && cas.posX == posX - 2) && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+            if ((cas.posY == posY - 1 && cas.posX == posX - 2) && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+          }
+          foreach (Casilla cas in casAlre)
+          {
+            if (cas.Presente != null)
+            {
+              if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  continue;
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+              }
+              else
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+
+              }
+
+            }
+
+          }
+          MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
+
+        }
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 9) //Target Especial 9: Pirámide invertida
+        {
+          // Casilla de origen (punta de la pirámide)
+          casAlre.Add(this);
+
+          // 3 casillas en la columna siguiente (posX + 1)
+          foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
+          {
+            if (cas.lado == lado && cas.posX == posX - 1 &&
+              (cas.posY == posY - 1 || cas.posY == posY || cas.posY == posY + 1))
+            {
+              casAlre.Add(cas);
+            }
+          }
+
+          // 5 casillas en la última columna (posX + 2)
+          foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
+          {
+            if (cas.lado == lado && cas.posX == posX - 2 &&
+              (cas.posY == posY - 2 || cas.posY == posY - 1 || cas.posY == posY || cas.posY == posY + 1 || cas.posY == posY + 2))
+            {
+              casAlre.Add(cas);
+            }
+          }
+
+          foreach (Casilla cas in casAlre)
+          {
+            if (cas.Presente != null)
+            {
+              if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  continue;
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+              }
+              else
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+              }
+            }
+          }
+          MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
+        }
+
+        //---
+        if (Presente != null)
+        {
+          if (Presente.GetComponent<Unidad>() != null)
+          {
+            unidadesEnCasAzul.Add(Presente.GetComponent<Unidad>());
+          }
+          if (Presente.GetComponent<Obstaculo>() != null)
+          {
+            obstaculosEnCasAzul.Add(Presente.GetComponent<Obstaculo>());
+          }
+        }
+
+
+
+      }
 
   }
 
@@ -1396,7 +1405,7 @@ public class Casilla : MonoBehaviour
   public GameObject Mover;
   public GameObject MoverCostoso;
   public GameObject Desplazable;
-
+  public GameObject MarcaMelee;
   void Update()
   {
     if (Borde != null)
@@ -1409,7 +1418,7 @@ public class Casilla : MonoBehaviour
           Actual.SetActive(false);
           Sombra.SetActive(false);
           Desplazable.SetActive(false);
-          
+
         }
         else if (Presente.GetComponent<Unidad>() != null && esMovible() >= 10)
         {
@@ -1441,13 +1450,13 @@ public class Casilla : MonoBehaviour
 
         Actual.SetActive(false);
         if (Sombra != null)
-        { 
-        Sombra.SetActive(false);
+        {
+          Sombra.SetActive(false);
         }
-         Mover.SetActive(false);
-         MoverCostoso.SetActive(false);
-         Borde.SetActive(false);
-         Desplazable.SetActive(false);
+        Mover.SetActive(false);
+        MoverCostoso.SetActive(false);
+        Borde.SetActive(false);
+        Desplazable.SetActive(false);
 
 
 
@@ -1462,13 +1471,13 @@ public class Casilla : MonoBehaviour
         }
         else if (esMovible() >= 10)
         {
-         
+
           Desplazable.SetActive(true);
         }
         else
         {
           if (gameObject.GetComponent<Trampa>() == null)
-          { Borde.SetActive(true); Desplazable.SetActive(false);}
+          { Borde.SetActive(true); Desplazable.SetActive(false); }
         }
       }
     }
@@ -1476,13 +1485,13 @@ public class Casilla : MonoBehaviour
 
   int esMovible()
   {
-     int res = 0;
-     if (lado == 1) { return 0; } //Solo para aliados
+    int res = 0;
+    if (lado == 1) { return 0; } //Solo para aliados
 
     //Unidad seleccionada - Movimiento
     Unidad unidad = BattleManager.Instance.unidadActiva;
-    
-    if(unidad == null)
+
+    if (unidad == null)
     {
       return 0;
     }
@@ -1533,6 +1542,14 @@ public class Casilla : MonoBehaviour
 
 
     return res;
+  }
+
+
+  public void activarCapaMelee(bool activar)
+  {
+
+    MarcaMelee.SetActive(activar);
+
   }
 
 }

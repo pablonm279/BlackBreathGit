@@ -109,7 +109,7 @@ public class btnItemInventario : MonoBehaviour
     void ActualizarInfoDelay()
     {
         scMenuPersonajes.ActualizarInfo();
-        scMenuPersonajes. ActualizarListaHabilidades();
+        scMenuPersonajes.ActualizarListaHabilidades();
         
     }
     public void HoverItem(int n)

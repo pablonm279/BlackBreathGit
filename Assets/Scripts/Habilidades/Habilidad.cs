@@ -211,6 +211,7 @@ public abstract class Habilidad : MonoBehaviour
   void ActualizarCirculosDelay()
   {
     BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
+  
   }
 
   void desocuparDelay()
@@ -257,6 +258,7 @@ public abstract class Habilidad : MonoBehaviour
 
     float tiradaBase = tirada;
     float iTiradaAtaque = tirada;
+    float iDadoSolo = tirada;
     float deltaClima = 0f;
 
     //Efectos de clima en Ataques
@@ -286,7 +288,7 @@ public abstract class Habilidad : MonoBehaviour
     string textoResultado;
     CombatLogFormatter.CombatOutcome outcome;
 
-    if (iTiradaAtaque <= umbralPifia)//Pifia
+    if (iDadoSolo <= umbralPifia)//Pifia
     {
       scEstaUnidad.GenerarTextoFlotante(TRADU.i.Traducir("<b>Pifia</b>"), Color.red);
       textoResultado = TRADU.i.Traducir("Pifia");
@@ -308,7 +310,7 @@ public abstract class Habilidad : MonoBehaviour
       return -1;
     }
 
-    if (iTiradaAtaque >= umbralCritico) //Golpe crítico
+    if (iDadoSolo >= umbralCritico) //Golpe crítico
     {
       textoResultado = TRADU.i.Traducir("Crítico");
       BattleManager.Instance.EscribirLog(

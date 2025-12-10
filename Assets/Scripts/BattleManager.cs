@@ -633,19 +633,19 @@ public class BattleManager : MonoBehaviour
     }
 
     //Zarkil Masacre
-     if (u.TieneTag("Zarkil") && CampaignManager.Instance.scAtributosZona.ID == 3 && CampaignManager.Instance.intTipoClima == 9)
-      {
-        // BUFF ---- Así se aplica un buff/debuff
-        Buff buff = new Buff();
-        buff.buffNombre = "Masacre Zarkil";
-        buff.boolfDebufftBuff = true;
-        buff.DuracionBuffRondas = -1;
-        buff.cantCritDado += 2;
-        buff.percCritDaño += 20;
-        buff.AplicarBuff(u);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-        Buff buffComponent = ComponentCopier.CopyComponent(buff, u.gameObject);
-      }
+    if (u.TieneTag("Zarkil") && CampaignManager.Instance.scAtributosZona.ID == 3 && CampaignManager.Instance.intTipoClima == 9)
+    {
+      // BUFF ---- Así se aplica un buff/debuff
+      Buff buff = new Buff();
+      buff.buffNombre = "Masacre Zarkil";
+      buff.boolfDebufftBuff = true;
+      buff.DuracionBuffRondas = -1;
+      buff.cantCritDado += 2;
+      buff.percCritDaño += 20;
+      buff.AplicarBuff(u);
+      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+      Buff buffComponent = ComponentCopier.CopyComponent(buff, u.gameObject);
+    }
 
   }
 
@@ -924,6 +924,7 @@ public class BattleManager : MonoBehaviour
     }
   }
 
+
   /* public void OpacarCasillasMelee()
   {
      if (HabilidadActiva.esMelee && unidadActiva.GetComponent<Unidad>().CasillaPosicion.posX == 3)
@@ -1025,10 +1026,17 @@ public class BattleManager : MonoBehaviour
   }
 
   public GameObject goCamara;
+
+  public bool seTilteo = false;
   public void TiltearCamaraLadoEnemigo(bool cBool)
   {
-    float targetAngle = cBool ? 3.5f : -3.5f;
-    StartCoroutine(RotateCameraSmoothly(targetAngle));
+    if (seTilteo != cBool)
+    {
+
+      seTilteo = cBool;
+      float targetAngle = cBool ? 3.5f : -3.5f;
+      StartCoroutine(RotateCameraSmoothly(targetAngle));
+    }
   }
 
   private IEnumerator RotateCameraSmoothly(float targetAngle)
@@ -1515,7 +1523,7 @@ public class BattleManager : MonoBehaviour
   public GameObject btnModoRapido;
 
   public void btnCambiarEstadoModoRapido()
-  { 
+  {
     ActivarModoRapido(!modoRapidoActivado);
   }
   public void ActivarModoRapido(bool activar)
@@ -1541,6 +1549,83 @@ public class BattleManager : MonoBehaviour
       btnModoRapido.transform.GetChild(0).gameObject.SetActive(true);
       btnModoRapido.transform.GetChild(1).gameObject.SetActive(false);
     }
+
+
+  }
+
+  public void ActualizarCasillasMelee()
+  {
+   
+
+    foreach (Casilla casillas in lCasillasTotal)
+    {
+      casillas.activarCapaMelee(false);
+    } //Resetear todas las casillas
+    if (unidadActiva.GetComponent<IAUnidad>() != null) //IA descartados
+    { 
+      return;
+    }
+
+     if (unidadActiva.ObtenerAPActual() < 1) 
+    { 
+      return;
+    }
+
+    bool tieneAlgunahabilidadMelee = false;
+    foreach (Habilidad habilidadActiva in unidadActiva.GetComponents<Habilidad>())
+    {
+      if (habilidadActiva.esMelee)
+      {
+        tieneAlgunahabilidadMelee = true;
+        break;
+      }
+      else
+      {
+        tieneAlgunahabilidadMelee = false;
+      }
+    }
+
+    if (!tieneAlgunahabilidadMelee)
+    {return; }
+
+    
+    // Marcar solo casillas vacías que sean atacables en melee.
+    // Regla: columna 3 siempre atacable; columna 2 atacable solo si la casilla delante contiene
+    // un obstáculo que permite atacar por detrás o una unidad
+    foreach (Casilla casilla in ladoB.casillasLado)
+    {
+      if (casilla == null || casilla.Presente != null)
+      continue;
+
+      int x = casilla.posX;
+      int y = casilla.posY;
+
+      if (x == 3)
+      {
+      casilla.activarCapaMelee(true);
+      continue;
+      }
+
+      if (x == 2)
+      {
+      Casilla frente = ladoB.ObtenerCasillaPorIndex(x + 1, y);
+      if (frente?.Presente != null)
+      {
+        Obstaculo obst = frente.Presente.GetComponent<Obstaculo>();
+        Unidad unidadFrente = frente.Presente.GetComponent<Unidad>();
+        if(unidadFrente == unidadActiva)
+        {
+          unidadFrente = null; // No cuenta si es la misma unidad
+        }
+        if ((obst != null && obst.bPermiteAtacarDetras) || (unidadFrente != null))
+          {
+            casilla.activarCapaMelee(true);
+          }
+      }
+      }
+    }
+
+    
 
 
   }

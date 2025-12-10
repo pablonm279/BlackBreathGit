@@ -100,7 +100,7 @@ public class CampaignManager : MonoBehaviour
     CambiarValorAlientoNegro(1);
 
     
-    scAtributosZona.GenerarZona(1); //0 es aleatorio
+    scAtributosZona.GenerarZona(0); //0 es aleatorio
 
 
     scMenuSequito.AgregarSequito(1);
@@ -1468,8 +1468,11 @@ public class CampaignManager : MonoBehaviour
 
   public void AbandonarSuministros()
   {
-    CambiarSuministrosActuales(-5);
-    CambiarEsperanzaActual(-1);
+    if (GetSuministrosActuales() > 4)
+    {
+      CambiarSuministrosActuales(-5);
+      CambiarEsperanzaActual(-1);
+    }
   }
 
   #endregion
@@ -1489,8 +1492,11 @@ public class CampaignManager : MonoBehaviour
   }
   public void AbandonarMateriales()
   {
-    CambiarMaterialesActuales(-2);
-    // CambiarEsperanzaActual(-1);
+    if (GetMaterialesActuales() > 1)
+    {
+      CambiarMaterialesActuales(-2);
+      // CambiarEsperanzaActual(-1);
+    }
   }
 
 
@@ -1748,6 +1754,8 @@ public class CampaignManager : MonoBehaviour
       menuDescanso.SetActive(false);
 
     }
+    if (!scMapaManager.nodoActual.nodoDespejado || scMapaManager.nodoActual.nodoIncendiado)
+    { EscribirLog(TRADU.i.Traducir("<color=#FF6666>No puedes descansar aquí.</color>")); }
 
 
   }

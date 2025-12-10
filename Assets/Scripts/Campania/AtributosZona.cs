@@ -28,6 +28,7 @@ public class EnemyTierPool
    public List<GameObject> tier2 = new List<GameObject>();
    public List<GameObject> tier3 = new List<GameObject>();
    public List<GameObject> tier4 = new List<GameObject>();
+   public List<GameObject> tier5 = new List<GameObject>();
 }
 
 [Serializable]
@@ -442,10 +443,10 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Maleza1,
-         cantidad: 1450,
+         cantidad: 1650,
          distCaminoOverride: 0.1f,
          distNodoOverride: 0.8f,
-         rOverride: 1.1f,
+         rOverride: 0.9f,
          kOverride: 30);
 
       yield return scMapDecorator.GenerarAsyncCR(

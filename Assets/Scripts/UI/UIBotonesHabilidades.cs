@@ -34,6 +34,7 @@ public class UIBotonesHabilidades : MonoBehaviour
     public UIbotonesPasivas botonesPasivas;
     public void ActualizarBotonesHabilidad()
     {  
+        // Las habilidades melee se ordenan al final para que queden al final del listado.
         botonesPasivas.ActualizarBotonesPasivas();
         foreach (Transform buttonTransform in transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
         {
@@ -49,32 +50,67 @@ public class UIBotonesHabilidades : MonoBehaviour
       if(BattleManager.Instance.unidadActiva != null)
       {
         GameObject unidadSeleccionada = BattleManager.Instance.unidadActiva.gameObject;
-      
-       foreach (Habilidad habilidad in unidadSeleccionada.GetComponents<Habilidad>())
-       {
-           if (habilidad is RetrasarTurno retrasar && retrasar.yaRetraso)
-           {
-                 continue;
-           }
+
+        List<Habilidad> noHostilNoMelee = new List<Habilidad>();
+        List<Habilidad> noHostilMelee = new List<Habilidad>();
+        List<Habilidad> hostilNoMelee = new List<Habilidad>();
+        List<Habilidad> hostilMelee = new List<Habilidad>();
+
+        foreach (Habilidad habilidad in unidadSeleccionada.GetComponents<Habilidad>())
+        {
+            if (habilidad is RetrasarTurno retrasar /*&& retrasar.yaRetraso*/) //Se desactiva retrasar TURNO siempre por ahora
+            {
+                continue;
+            }
 
             if(habilidad.GetType().Name.Contains("REPRESENTACION"))
             {
                 continue;
             }
 
-          
-           GameObject actionButtonTransform =  Instantiate(actionButtonPrefab, transform);
-           BotonHabilidad habilidadBotonUI = actionButtonTransform.GetComponent<BotonHabilidad>();
-           habilidadBotonUI.HabilidadRepresentada = habilidad;
-       
-           habilidadBotonUI.UpdateCooldownMuestra();
-          
-        
-          if(listaBotonesHabilidad != null)
-          {
-           listaBotonesHabilidad.Add(habilidadBotonUI);
-          }
-       } 
+            if (habilidad.esHostil)
+            {
+                if (habilidad.esMelee)
+                {
+                    hostilMelee.Add(habilidad);
+                }
+                else
+                {
+                    hostilNoMelee.Add(habilidad);
+                }
+            }
+            else
+            {
+                if (habilidad.esMelee)
+                {
+                    noHostilMelee.Add(habilidad);
+                }
+                else
+                {
+                    noHostilNoMelee.Add(habilidad);
+                }
+            }
+        }
+
+        foreach (Habilidad habilidad in noHostilNoMelee)
+        {
+            CrearBotonHabilidad(habilidad);
+        }
+
+        foreach (Habilidad habilidad in noHostilMelee)
+        {
+            CrearBotonHabilidad(habilidad);
+        }
+
+        foreach (Habilidad habilidad in hostilNoMelee)
+        {
+            CrearBotonHabilidad(habilidad);
+        }
+
+        foreach (Habilidad habilidad in hostilMelee)
+        {
+            CrearBotonHabilidad(habilidad);
+        }
       }
      
     }
@@ -82,11 +118,11 @@ public class UIBotonesHabilidades : MonoBehaviour
 
 
 
-    public void UIDesactivarHabilidades()
+    public void UIDesactivarHabilidades(bool omitirTilteo = false)
     {
         foreach (Transform buttonTransform in transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
         {
-           buttonTransform.GetComponent<BotonHabilidad>().DesactivarHabilidad();
+           buttonTransform.GetComponent<BotonHabilidad>().DesactivarHabilidad(omitirTilteo);
         }
     }
 
@@ -95,6 +131,19 @@ public class UIBotonesHabilidades : MonoBehaviour
         foreach (Transform buttonTransform in transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
         {
           buttonTransform.GetComponent<BotonHabilidad>().DesactivarBoton();
+        }
+    }
+
+    void CrearBotonHabilidad(Habilidad habilidad)
+    {
+        GameObject actionButtonTransform = Instantiate(actionButtonPrefab, transform);
+        BotonHabilidad habilidadBotonUI = actionButtonTransform.GetComponent<BotonHabilidad>();
+        habilidadBotonUI.HabilidadRepresentada = habilidad;
+        habilidadBotonUI.UpdateCooldownMuestra();
+
+        if(listaBotonesHabilidad != null)
+        {
+            listaBotonesHabilidad.Add(habilidadBotonUI);
         }
     }
 

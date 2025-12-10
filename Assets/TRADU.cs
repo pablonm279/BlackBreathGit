@@ -730,7 +730,7 @@ public class TRADU : MonoBehaviour
                 r = "Select a civilian task";
                 break;
             case "Menu de Descanso ":
-                r = "Rest Menu";
+                r = "Camp Menu";
                 break;
             case "Descansar":
                 r = "Rest";
@@ -3426,30 +3426,27 @@ public class TRADU : MonoBehaviour
             case "Tiro Potente":
                 r = "Powerful Shot";
                 break;
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
+            case "Cargando...":
+                r = "Loading...";
+                break;
+            case "Acampar":
+                r = "Camp";
+                break;
+            case "<color=#FF6666>No puedes descansar aquí.</color>":
+                r = "<color=#FF6666>You can't rest here.</color>";
+                break;
+            case "Actualmente encarnado en un enemigo, invulnerable.":
+                r = "Currently incarnated in an enemy, invulnerable.";
+                break;
+            case "Encarnado en Enemigo":
+                r = "Incarnated in Enemy";
+                break;
+             case "Adelántate para usarla":
+                r = "Melee: Move ahead to use it";
+                break;
+            case "Melee disponible":
+                r = "Melee available";
+                break;
                 /*  case "":
                 r = "";
                 break;*/

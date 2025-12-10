@@ -124,6 +124,12 @@ public class BotonHabilidad : MonoBehaviour
       if(HabilidadRepresentada.cooldownActual >0)
       {return;} //Control extra para que no se puedan activar habilidades en cooldown
 
+        if (HabilidadRepresentada.esMelee && !PuedeUsarHabilidadMelee())
+        {
+            BattleManager.Instance.unidadActiva?.GenerarTextoFlotante(TRADU.i.Traducir("Adelántate para usarla"), Color.gray, FloatingTextContext.Generic);
+            return;
+        }
+
         if (HabilidadRepresentada.requiereRecurso > 0) //de las habilidades que requieran un recurso, se fija una por una si lo cumplen
         {
             if (HabilidadRepresentada.nombre == "Tiro con Arco")
@@ -227,7 +233,7 @@ public class BotonHabilidad : MonoBehaviour
          
            int esfuerzo = iEsfuerzo;
 
-           scUiBotonesHabilidades.UIDesactivarHabilidades(); 
+           scUiBotonesHabilidades.UIDesactivarHabilidades(HabilidadRepresentada.esHostil); 
            HabilidadRepresentada.Activar();
            VisualBotonActivo(1);
           // BattleManager.Instance.OpacarCasillasMelee();
@@ -272,11 +278,11 @@ public class BotonHabilidad : MonoBehaviour
 
 
 
-     public void DesactivarHabilidad()
+     public void DesactivarHabilidad(bool omitirTilteo = false)
     {   
         BattleManager.Instance.DesmarcarTodasLasUnidades();
         if(BotonActivo == true)
-        {VisualBotonActivo(0);  }     
+        {VisualBotonActivo(0, omitirTilteo);  }     
         BotonActivo = false;
     }
 
@@ -329,8 +335,9 @@ public class BotonHabilidad : MonoBehaviour
             int apActualInt = Mathf.Max(0, (int)BattleManager.Instance.unidadActiva.ObtenerAPActual());
             int apNecesarios = Mathf.Max(0, (int)HabilidadRepresentada.costoAP);
             int disponible = apActualInt + HabilidadRepresentada.esforzable;
+            bool bloqueoMelee = HabilidadRepresentada.esMelee && !PuedeUsarHabilidadMelee();
 
-            Oscurecedor.SetActive(disponible < apNecesarios);
+            Oscurecedor.SetActive(disponible < apNecesarios || bloqueoMelee);
 
             if (HabilidadRepresentada.esMelee)
             {
@@ -345,7 +352,7 @@ public class BotonHabilidad : MonoBehaviour
     }
 
 
-    private void VisualBotonActivo(int estado)
+    private void VisualBotonActivo(int estado, bool omitirTilteo = false)
     {
         if (CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>().escenaActual != 1)
         { return; } // Sale del método si la escena no es "ES-Batallas"
@@ -369,7 +376,7 @@ public class BotonHabilidad : MonoBehaviour
             if (BotonActivo == true)
             {
                 BattleManager.Instance.DesmarcarTodasLasUnidades();
-                if (HabilidadRepresentada.esHostil)
+                if (HabilidadRepresentada.esHostil && !omitirTilteo)
                 {
                     BattleManager.Instance.TiltearCamaraLadoEnemigo(false);
                 }
@@ -397,6 +404,62 @@ public class BotonHabilidad : MonoBehaviour
         {
          return false;
         }
+    }
+
+    bool PuedeUsarHabilidadMelee()
+    {
+        if (HabilidadRepresentada == null || !HabilidadRepresentada.esMelee)
+        {
+            return true;
+        }
+
+        if (HabilidadRepresentada.nombre.Contains("Destruir Obstaculo"))
+        { 
+            return true;
+
+        }
+
+        if (BattleManager.Instance == null || BattleManager.Instance.unidadActiva == null)
+            {
+                return false;
+            }
+
+        Unidad unidad = BattleManager.Instance.unidadActiva;
+        if (unidad.CasillaPosicion == null)
+        {
+            return false;
+        }
+
+        int posX = unidad.CasillaPosicion.posX;
+        if (posX == 3)
+        {
+            return true;
+        }
+
+        if (posX == 2)
+        {
+            LadoManager lado = unidad.CasillaPosicion.ladoGO != null ? unidad.CasillaPosicion.ladoGO.GetComponent<LadoManager>() : null;
+            if (lado != null)
+            {
+                Casilla casillaDelantera = lado.ObtenerCasillaPorIndex(3, unidad.CasillaPosicion.posY);
+                if (casillaDelantera != null && casillaDelantera.Presente != null)
+                {
+                    Unidad aliado = casillaDelantera.Presente.GetComponent<Unidad>();
+                    if (aliado != null && aliado.CasillaPosicion != null && aliado.CasillaPosicion.lado == unidad.CasillaPosicion.lado)
+                    {
+                        return true;
+                    }
+
+                    Obstaculo obstaculo = casillaDelantera.Presente.GetComponent<Obstaculo>();
+                    if (obstaculo != null && obstaculo.bPermiteAtacarDetras)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
 

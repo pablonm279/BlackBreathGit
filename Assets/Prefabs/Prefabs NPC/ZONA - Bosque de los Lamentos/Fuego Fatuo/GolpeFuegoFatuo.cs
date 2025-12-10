@@ -201,7 +201,18 @@ public class GolpeFuegoFatuo : IAHabilidad
         scEstaUnidad.gameObject.transform.GetChild(3).GetChild(1).gameObject.SetActive(false);
         scEstaUnidad.estado_invulnerable = 2;
         scEstaUnidad.estado_aturdido = 2;
+        
+         // BUFF ---- Así se aplica un buff/debuff
+        Buff buff2 = new Buff();
+      buff.buffNombre = "Encarnado en Enemigo";
+      buff.buffDescr = "Actualmente encarnado en un enemigo, invulnerable.";
+      buff.boolfDebufftBuff = true;
+      buff.DuracionBuffRondas = 2;
+      buff.AplicarBuff(objetivo);
+      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+      Buff buffComponent2 = ComponentCopier.CopyComponent(buff, scEstaUnidad.gameObject);
 
+      
 
         BattleManager.Instance.EscribirLog(objetivo.uNombre + TRADU.i.Traducir(" fue Encarnado por Fuego Fatuo"));
 

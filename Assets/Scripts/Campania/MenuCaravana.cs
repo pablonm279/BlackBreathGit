@@ -111,7 +111,7 @@ public class MenuCaravana : MonoBehaviour
         //Antorchas
         costoMejorarAntorchas = 30 + (10 * CampaignManager.Instance.mejoraCaravanaAntorchas);
         txtTierMejoraAntorchas.text = "Tier " + CampaignManager.Instance.mejoraCaravanaAntorchas;
-        txtCostoMejoraAntorchas.text = "" + costoMejorarAntorchas + " Materiales";
+        txtCostoMejoraAntorchas.text = "" + costoMejorarAntorchas + TRADU.i.Traducir(" Materiales");
         if (costoMejorarAntorchas <= CampaignManager.Instance.GetMaterialesActuales())
         { /*txtCostoMejoraAntorchas.color = Color.white;*/ }
         else { txtCostoMejoraAntorchas.color = Color.red; }
@@ -120,7 +120,7 @@ public class MenuCaravana : MonoBehaviour
         //Alforjas
         costoMejorarAlforjas = 25 + (9 * CampaignManager.Instance.mejoraCaravanaAlforjas);
         txtTierMejoraAlforjas.text = "Tier " + CampaignManager.Instance.mejoraCaravanaAlforjas;
-        txtCostoMejoraAlforjas.text = "" + costoMejorarAlforjas + " Materiales";
+        txtCostoMejoraAlforjas.text = "" + costoMejorarAlforjas + TRADU.i.Traducir(" Materiales");
         if (costoMejorarAlforjas <= CampaignManager.Instance.GetMaterialesActuales())
         { /*txtCostoMejoraAlforjas.color = Color.white;*/ }
         else { txtCostoMejoraAlforjas.color = Color.red; }
@@ -129,7 +129,7 @@ public class MenuCaravana : MonoBehaviour
         //Tiendas
         costoMejorarTiendas = 45 + (15 * CampaignManager.Instance.mejoraCaravanaTiendas);
         txtTierMejoraTiendas.text = "Tier " + CampaignManager.Instance.mejoraCaravanaTiendas;
-        txtCostoMejoraTiendas.text = "" + costoMejorarTiendas + " Materiales";
+        txtCostoMejoraTiendas.text = "" + costoMejorarTiendas + TRADU.i.Traducir(" Materiales");
         if (costoMejorarTiendas <= CampaignManager.Instance.GetMaterialesActuales())
         { /*txtCostoMejoraTiendas.color = Color.white;*/ }
         else { txtCostoMejoraTiendas.color = Color.red; }
@@ -138,7 +138,7 @@ public class MenuCaravana : MonoBehaviour
         //Catalejos
         costoMejorarCatalejos = 35 + (11 * CampaignManager.Instance.mejoraCaravanaCatalejos);
         txtTierMejoraCatalejos.text = "Tier " + CampaignManager.Instance.mejoraCaravanaCatalejos;
-        txtCostoMejoraCatalejos.text = "" + costoMejorarCatalejos + " Materiales";
+        txtCostoMejoraCatalejos.text = "" + costoMejorarCatalejos + TRADU.i.Traducir(" Materiales");
         if (costoMejorarCatalejos <= CampaignManager.Instance.GetMaterialesActuales())
         { /*txtCostoMejoraCatalejos.color = Color.white; */}
         else { txtCostoMejoraCatalejos.color = Color.red; }
@@ -147,7 +147,7 @@ public class MenuCaravana : MonoBehaviour
         //Almacen
         costoMejorarAlmacen = 35 + (11 * CampaignManager.Instance.mejoraCaravanaAlmacen);
         txtTierMejoraAlmacen.text = "Tier " + CampaignManager.Instance.mejoraCaravanaAlmacen;
-        txtCostoMejoraAlmacen.text = "" + costoMejorarAlmacen + " Materiales";
+        txtCostoMejoraAlmacen.text = "" + costoMejorarAlmacen + TRADU.i.Traducir(" Materiales");
         if (costoMejorarAlmacen <= CampaignManager.Instance.GetMaterialesActuales())
         { /*txtCostoMejoraAlmacen.color = Color.white;*/ }
         else { txtCostoMejoraAlmacen.color = Color.red; }
@@ -156,7 +156,7 @@ public class MenuCaravana : MonoBehaviour
         //Defensas
         costoMejorarDefensas = 25 + (11 * CampaignManager.Instance.mejoraCaravanaDefensas);
         txtTierMejoraDefensas.text = "Tier " + CampaignManager.Instance.mejoraCaravanaDefensas;
-        txtCostoMejoraDefensas.text = "" + costoMejorarDefensas + " Materiales";
+        txtCostoMejoraDefensas.text = "" + costoMejorarDefensas + TRADU.i.Traducir(" Materiales");
         if (costoMejorarDefensas <= CampaignManager.Instance.GetMaterialesActuales())
         { /*txtCostoMejoraDefensas.color = Color.white;*/ }
         else { txtCostoMejoraDefensas.color = Color.red; }

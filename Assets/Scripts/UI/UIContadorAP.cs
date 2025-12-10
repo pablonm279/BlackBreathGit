@@ -38,11 +38,12 @@ public class UIContadorAP : MonoBehaviour
         
        }
       }
-      
-      // Luego de actualizar la UI, revisar si debe indicarse pasar turno
-      if (BattleManager.Instance != null)
-      {
-        BattleManager.Instance.RevisarAPUnidadActiva();
+
+    // Luego de actualizar la UI, revisar si debe indicarse pasar turno
+     if (BattleManager.Instance != null)
+     {
+       BattleManager.Instance.RevisarAPUnidadActiva();
+       BattleManager.Instance.ActualizarCasillasMelee();
       }
     }
 

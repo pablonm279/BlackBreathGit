@@ -188,8 +188,17 @@ public void AplicarPosesion(Unidad objetivo)
       scEstaUnidad.estado_invulnerable = 2;
       scEstaUnidad.estado_aturdido = 2;
 
+      // BUFF ---- Así se aplica un buff/debuff
+      Buff buff = new Buff();
+      buff.buffNombre = "Encarnado en Enemigo";
+      buff.buffDescr = "Actualmente encarnado en un enemigo, invulnerable.";
+      buff.boolfDebufftBuff = true;
+      buff.DuracionBuffRondas = 2;
+      buff.AplicarBuff(objetivo);
+      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+      Buff buffComponent = ComponentCopier.CopyComponent(buff, scEstaUnidad.gameObject);
 
-      BattleManager.Instance.EscribirLog($"{objetivo.uNombre} fue Encarnado por Fuego Fatuo");
+      BattleManager.Instance.EscribirLog(objetivo.uNombre + TRADU.i.Traducir(" fue Encarnado por Fuego Fatuo"));
       
 
       

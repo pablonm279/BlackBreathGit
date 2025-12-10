@@ -23,6 +23,7 @@ public class MenuDescanso : MonoBehaviour
   {
     if (MusicManager.Instance != null && sfxDescanso != null)
     {
+      sfxDescansoVolumen = PlayerPrefs.GetFloat("Vol_Musica", 0.8f);
       MusicManager.Instance.PlaySFXYReanudar(sfxDescanso, sfxDescansoVolumen, 0.8f);
     }
   }
