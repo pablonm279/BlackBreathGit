@@ -1257,6 +1257,9 @@ public class TRADU : MonoBehaviour
             case " refuerzos.</color> ":
                 r = " reinforcements.</color> ";
                 break;
+            case "<color=#199F10>Milicianos del cuartel se unen como refuerzos: Ballestero y Lancero.</color>":
+                r = "<color=#199F10>Garrison militia join as reinforcements: Crossbowman and Spearman.</color>";
+                break;
             case " ya no tiene ":
                 r = " is no longer ";
                 break;
@@ -3441,57 +3444,154 @@ public class TRADU : MonoBehaviour
             case "Encarnado en Enemigo":
                 r = "Incarnated in Enemy";
                 break;
-             case "Adelántate para usarla":
+            case "Adelántate para usarla":
                 r = "Melee: Move ahead to use it";
                 break;
             case "Melee disponible":
                 r = "Melee available";
                 break;
+            case "Intercambiable":
+                r = "Exchangeable";
+                break;
+            case "Habilidades de Combate":
+                r = "Combat Skills";
+                break;
+            case "Actividad durante el viaje":
+                r = "Activity while traveling";
+                break;
+            case "Selecciona un objetivo.":
+                r = "Choose a target.";
+                break;
+            case " % Chances":
+                r = " % To hit";
+                break;
+            case "No hay objetivos al alcance.":
+                r = "No targets in range.";
+                break;
+            case "¡Comienza la batalla!":
+                r = "The battle begins!";
+                break;
+            case "¡Viaje completado!":
+                r = "Travel completed!";
+                break;
+            case "Finalmente la caravana ha llegado a la Ciudad Puerto de Serria, donde la población civil se prepara para embarcar y así escapar del Aliento Negro.":
+                r = "At last, the caravan has arrived at the Port City of Serria, where the civilian population is preparing to embark and escape the Black Breath.";
+                break;
+            case "El viaje ha durado ":
+                r = "This trip lasted ";
+                break;
+            case " días enteros y han sobrevivido ":
+                r = " days and survived ";
+                break;
+            case "civiles.\n\n":
+                r = " civilians.\n\n";
+                break;
+            case "Además, el oro restante (":
+                r = "Additionally, the remaining gold (";
+                break;
+            case ") se ha donado a las arcas de la ciudad para ayudar a financiar la evacuación.\n\nLos Personajes sobrevivientes también se han unido al esfuerzo de evacuación para defender la ciudad.\n\n":
+                r = ") has been donated to the city treasury to help fund the evacuation.\n\nThe surviving Characters have also joined the evacuation effort to defend the city.\n";
+                break;
+            case "<b>Valor de Trabajo obtenido: ":
+                r = "<b>Work Value obtained: ";
+                break;
+            case "Valor de Trabajo Disponible:":
+                r = "Available Work Value:";
+                break;
+            case "Valor de Corrupción actual:":
+                r = "Current Corruption Value:";
+                break;
+            case "El <b>Nivel de Peligro</b> actual en el Bosque Ardiente es: ":
+                r = "The current <b>Danger Level</b> in the Burning Forest is: ";
+                break;
+            case "El <b>Nivel de Peligro</b> actual en el Paso Vientohelado es: ":
+                r = "The current <b>Danger Level</b> in the Frozen Wind Pass is: ";
+                break;
+            case "El <b>Nivel de Peligro</b> actual en Nedukazal es: ":
+                r = "The current <b>Danger Level</b> in Nedukazal is: ";
+                break;
+            case "Menu de Mejoras":
+                r = "Improvements Menu";
+                break;
+             case "Barcos":
+                r = "Ships";
+                break;
+            case "Templo":
+                r = "Temple";
+                break;
+          case "Barricadas":
+                r = "Barricades";
+                break;
+          case "Cuartel":
+                r = "Barracks";
+                break;
+          case "Almenaras":
+                r = "Beacons";
+                break;
+           case "Palacio":
+                r = "Palace";
+                break;
+          case "Granjas":
+                r = "Farms";
+                break;
+          case "La ciudad puede permitirse esperar ":
+                r = "The city can afford to wait ";
+                break;
+          case " caravanas más antes de tener que zarpar.":
+                r = " more caravans before having to set sail.";
+                break;
+          case "Misiones de Salvamento: ":
+                r = "Rescue Missions Available: ";
+                break;
+           case "Pueden ser solicitadas por caravanas futuras para ayudar en momentos de crisis.":
+                r = "They can be requested by future caravans to help in times of crisis.";
+                break;
+          case "Misiones Disponibles: ":
+                r = "Available Missions: ";
+                break;
+          case "Solicitar Salvamento:":
+                r = "Request Rescue:";
+                break;
+          case "Pedir Ayuda":
+                r = "Ask for Help";
+                break;
+          case "Misión de Salvamento":
+                r = "Rescue Mission";
+                break;
+          case "El ave mensajera regresa con un mensaje atado a sus patas. En él se indica el punto exacto al que la caravana deberá dirigirse para encontrarse con el equipo de salvamento, junto con los recursos cedidos por la ciudad de Serria.\n":
+                r = "The messenger bird returns with a message tied to its legs. It indicates the exact point where the caravan must go to meet the rescue team, along with the resources provided by the city of Serria.\n";
+                break;
+          case "Ubicación de la Misión de Salvamento":
+                r = "Rescue Mission Location";
+                break;
+          case "<color=#a0e812><b>\n\nSe ha marcado en el camino adelante el nodo al cual deberías dirigirte para encontrarte con el equipo de salvamento.</b></color>":
+                r = "<color=#a0e812><b>\n\nThe node ahead where you should head to meet the rescue team has been marked on the path.</b></color>";
+                break;
+          case "Un encuentro esperado":
+                r = "An Expected Encounter";
+                break;
+          case "Has llegado al lugar señalado por el ave mensajera y te has encontrado con el equipo de salvamento enviado por la Ciudad Puerto de Serria.\nEnseguida saludan a la caravana y comienzan a descargar los recursos que han traído para ayudarles en su travesía.\n\nInmediatamente los ánimos mejoran en la caravana al ver que no están solos en esta lucha.\n":
+                r = "You have arrived at the location indicated by the messenger bird and have met the rescue team sent by the Port City of Serria.\nThey immediately greet the caravan and begin unloading the resources they have brought to assist you on your journey.\n\nThe spirits in the caravan immediately improve upon seeing that they are not alone in this struggle.\n";
+                break;
+          case "<color=#a0e812><b>\n\nSe han entregado ":
+                r = "<color=#a0e812><b>\n\nThe caravan won ";
+                break;
+          case " suministros. +25 Esperanza. +20 Materiales y 200 Oro y un nuevo personaje se suma a la caravana</b></color>":
+                r = " supplies. +25 Hope. +20 Materials and 200 Gold and a new character joins the caravan</b></color>";
+                break;
+          case "-Las oraciones de los Purificadores del Templo de Serria merman el avance del Aliento Negro en: ":
+                r = "-The prayers of the Purifiers in the Temple of Serria reduce the advance of the Black Breath by: ";
+                break;
+          case " Esperanza":
+                r = " Hope";
+                break;
+          case "-Las almenaras de Serria se divisan a lo lejos sobre las montañas, brillando con fuerza y marcando el destino de la caravana: ":
+                r = "-The beacons of Serria can be seen in the distance over the mountains, shining brightly and marking the caravan's destination: ";
+                break;
                 /*  case "":
                 r = "";
                 break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
-                /*  case "":
-                r = "";
-                break;*/
+
 
 
 

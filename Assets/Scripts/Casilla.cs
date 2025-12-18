@@ -24,6 +24,16 @@ public class Casilla : MonoBehaviour
   public int TESTINT2;
 
   public GameObject TESTGO;
+
+  public GameObject MarcaMovX0Y1;
+  public GameObject MarcaMovX1Y1;
+  public GameObject MarcaMovX1Y0;
+  public GameObject MarcaMovXv1Y1;
+  public GameObject MarcaMovXv1Y0;
+  public GameObject MarcaMovX1Yv1;
+  public GameObject MarcaMovX0Yv1;
+  public GameObject MarcaMovXv1Yv1;
+ 
   void Start()
   {
     BattleManager.Instance.OnRondaNueva += BattleManager_OnRondaNueva;
@@ -35,6 +45,79 @@ public class Casilla : MonoBehaviour
 
     //---
 
+  }
+
+  public void ActualizarSenialadores()
+  {
+    Invoke("ActualizarSenialadoresmetod", 0.05f);
+  }
+
+  public void ActualizarSenialadoresmetod()
+  { 
+     if (BattleManager.Instance.unidadActiva.CasillaPosicion != this || BattleManager.Instance.unidadActiva.GetComponent<IAUnidad>() != null)
+    { return; }
+
+    ActualizarSenialadorDireccion(0, 1, MarcaMovX0Y1);
+    ActualizarSenialadorDireccion(1, 1, MarcaMovX1Y1);
+    ActualizarSenialadorDireccion(1, 0, MarcaMovX1Y0);
+    ActualizarSenialadorDireccion(-1, 1, MarcaMovXv1Y1);
+    ActualizarSenialadorDireccion(-1, 0, MarcaMovXv1Y0);
+    ActualizarSenialadorDireccion(1, -1, MarcaMovX1Yv1);
+    ActualizarSenialadorDireccion(0, -1, MarcaMovX0Yv1);
+    ActualizarSenialadorDireccion(-1, -1, MarcaMovXv1Yv1);
+
+
+  }
+
+  public void DesactivarSenialadores()
+  {
+    if (MarcaMovX0Y1 != null) MarcaMovX0Y1.SetActive(false);
+    if (MarcaMovX1Y1 != null) MarcaMovX1Y1.SetActive(false);
+    if (MarcaMovX1Y0 != null) MarcaMovX1Y0.SetActive(false);
+    if (MarcaMovXv1Y1 != null) MarcaMovXv1Y1.SetActive(false);
+    if (MarcaMovXv1Y0 != null) MarcaMovXv1Y0.SetActive(false);
+    if (MarcaMovX1Yv1 != null) MarcaMovX1Yv1.SetActive(false);
+    if (MarcaMovX0Yv1 != null) MarcaMovX0Yv1.SetActive(false);
+    if (MarcaMovXv1Yv1 != null) MarcaMovXv1Yv1.SetActive(false);
+
+
+
+
+
+
+  }
+
+  private void ActualizarSenialadorDireccion(int deltaX, int deltaY, GameObject marca)
+  {
+    if (marca == null) { return; }
+
+    Casilla destino = EncontrarCasillaEnPosicion(posX + deltaX, posY + deltaY);
+    bool puedeMover = false;
+
+    if (destino != null)
+    {
+      if (destino.Presente == null)
+      {
+        puedeMover = true;
+      }
+      else
+      {
+        if (destino.Presente.GetComponent<Obstaculo>() != null)
+        {
+          puedeMover = false;
+        }
+        else
+        {
+          Unidad unidadDestino = destino.Presente.GetComponent<Unidad>();
+          if (unidadDestino != null && !unidadDestino.TieneBuffNombre("Desplazado"))
+          {
+            puedeMover = true;
+          }
+        }
+      }
+    }
+
+    marca.SetActive(puedeMover);
   }
 
   public TooltipBatalla scTooltipBatalla;
@@ -764,11 +847,52 @@ public class Casilla : MonoBehaviour
     obstaculosEnCasAzul.Clear();
     casAlre.Clear();
 
-    if (MarcaMelee.activeInHierarchy)
-    { 
-        string text = "" + TRADU.i.Traducir("Melee disponible");
-        scTooltipBatalla.ShowTooltipText(text);
 
+    string text = "";
+    Unidad unidadActiva = BattleManager.Instance.unidadActiva;
+    Unidad aliado = Presente != null ? Presente.GetComponent<Unidad>() : null;
+
+    if (unidadActiva != null && aliado != null && aliado != unidadActiva)
+    {
+      bool puedeIntercambiar =
+        BattleManager.Instance.lCasillasMovimiento.Contains(this) &&
+        !unidadActiva.movimientoEnCurso &&
+        !BattleManager.Instance.SeleccionandoObjetivo &&
+        unidadActiva.estado_inmovil < 1 &&
+        aliado.estado_inmovil <= 0 &&
+        !aliado.TieneBuffNombre("Desplazado") &&
+        aliado.CasillaPosicion.lado == unidadActiva.CasillaPosicion.lado;
+
+      if (puedeIntercambiar)
+      {
+        int costoMovimientoTotal = costoMovimiento;
+        int diferenciaX = Mathf.Abs(unidadActiva.CasillaPosicion.posX - posX);
+        int diferenciaY = Mathf.Abs(unidadActiva.CasillaPosicion.posY - posY);
+
+        if (diferenciaX == 1 && diferenciaY == 1)
+        {
+          costoMovimientoTotal++;
+        }
+
+        if (unidadActiva.ObtenerAPActual() >= costoMovimientoTotal)
+        {
+          text = TRADU.i.Traducir("Intercambiable");
+        }
+      }
+    }
+
+    if (MarcaMelee != null && MarcaMelee.activeInHierarchy)
+    {
+      if (!string.IsNullOrEmpty(text))
+      {
+        text += "\n";
+      }
+      text += TRADU.i.Traducir("Melee disponible");
+    }
+
+    if (!string.IsNullOrEmpty(text))
+    {
+      scTooltipBatalla.ShowTooltipText(text);
     }
     //Controlar se esta haciendo hablidad en Area, marca las casillas en la zona de alcance y en el area
       if (BattleManager.Instance.HabilidadActiva != null)

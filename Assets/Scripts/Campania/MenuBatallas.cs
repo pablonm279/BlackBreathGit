@@ -40,9 +40,10 @@ public class MenuBatallas : MonoBehaviour
  [SerializeField] BattleRewardTuning defaultRewardTuning = new BattleRewardTuning();
  const string KaleTavFactionId = "Kale'Tav";
 
- EncounterDefinition encuentroGeneradoActual;
- EncounterZoneType encuentroZonaActual;
- BattleEncounterType encuentroTipoActual;
+  EncounterDefinition encuentroGeneradoActual;
+  EncounterZoneType encuentroZonaActual;
+  BattleEncounterType encuentroTipoActual;
+  bool esBatallaFinal = false;
 
  public GameObject UIEmpezarBatalla;
  public GameObject UIEmpezarBatallaACaravana;
@@ -57,6 +58,11 @@ public class MenuBatallas : MonoBehaviour
  void Awake()
  {
     EnsureRewardProfiles();
+ }
+
+ public BattleEncounterType ObtenerEncuentroTipoActual()
+ {
+    return encuentroTipoActual;
  }
 
  void OnValidate()
@@ -441,9 +447,10 @@ public void DejanEnListaParticipantesSolo()
  }
  [SerializeField] TextMeshProUGUI txtSeleccionadosPersonajes;
  public int esEmboscadaEnemiga;
- public int EventoBatallaID = 0;
+  public int EventoBatallaID = 0;
   public void EventoBatallaNormal(int n, int esEmboscada = 0)
- {  
+  {  
+    esBatallaFinal = false;
     esEmboscadaEnemiga = esEmboscada;
 
     gameObject.SetActive(true);
@@ -505,8 +512,9 @@ public void DejanEnListaParticipantesSolo()
     }
 
     ActualizarLista();
- } public void EventoBatallaElite(int n, int esEmboscada = 0, bool forzarRitualKaleTav = false)
- {
+  } public void EventoBatallaElite(int n, int esEmboscada = 0, bool forzarRitualKaleTav = false)
+  {
+    esBatallaFinal = false;
     esEmboscadaEnemiga = esEmboscada;
 
     gameObject.SetActive(true);
@@ -582,8 +590,9 @@ public void DejanEnListaParticipantesSolo()
     }
 
     ActualizarLista();
- } public void EventoBatallaFinal(int n, int esEmboscada = 0)
- {  
+  } public void EventoBatallaFinal(int n, int esEmboscada = 0)
+  {  
+    esBatallaFinal = true;
     esEmboscadaEnemiga = esEmboscada;
 
     gameObject.SetActive(true);
@@ -611,8 +620,9 @@ public void DejanEnListaParticipantesSolo()
     }
 
     ActualizarLista();
- } public void EventoBatallaCaravana(int n, int esEmboscada = 3/*3 es Ataque a Caravana*/)
- {
+  } public void EventoBatallaCaravana(int n, int esEmboscada = 3/*3 es Ataque a Caravana*/)
+  {
+    esBatallaFinal = false;
     esEmboscadaEnemiga = esEmboscada;
 
     gameObject.SetActive(true);
@@ -700,8 +710,9 @@ public void DejanEnListaParticipantesSolo()
     }
 
     ActualizarLista();
- } public void EventoBatallaSubterranea(int fase)
- {
+  } public void EventoBatallaSubterranea(int fase)
+  {
+    esBatallaFinal = false; // batalla especial pero no es la final de jefe
     esEmboscadaEnemiga = 1; // Ataque subterraneo siempre emboscada enemiga
 
     gameObject.SetActive(true);
@@ -729,10 +740,10 @@ public void DejanEnListaParticipantesSolo()
     }
 
     ActualizarLista();
- } public void EfectosDeBatallaEnCampaña(int resultado)
- {
-    UIEmpezarBatalla.SetActive(false);
-    UITerminarBatalla.SetActive(true);
+} public void EfectosDeBatallaEnCampaña(int resultado)
+{
+   UIEmpezarBatalla.SetActive(false);
+   UITerminarBatalla.SetActive(true);
 
     if (resultado == 1)
     {
@@ -756,10 +767,14 @@ public void DejanEnListaParticipantesSolo()
         ProcesarEncuentroLegacy(resultado, ref aumentochancesitem);
     }
 
-    if (resultado == 1)
-    {
-        AplicarVictoriaRitualKaleTav();
-    }
+   if (resultado == 1)
+   {
+      AplicarVictoriaRitualKaleTav();
+      if (esBatallaFinal && CampaignManager.Instance != null)
+      {
+         CampaignManager.Instance.OnDerrotadoJefeZona();
+      }
+   }
     //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
     if (resultado == 2) //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
     {
@@ -819,7 +834,8 @@ public void DejanEnListaParticipantesSolo()
 
    //Resetear
             EventoBatallaID = 0;
- }
+            esBatallaFinal = false;
+}
 
  void DarExperiencia(int cant)
  {

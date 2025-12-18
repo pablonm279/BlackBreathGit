@@ -652,6 +652,13 @@ public class AdministradorEscenas : MonoBehaviour
     BattleManager.Instance.RondaNro = 0;
     BattleManager.Instance.RondaNueva();
 
+    BattleEncounterType tipoEncuentroActual = encuentroGeneradoActual != null
+      ? encuentroGeneradoActual.battleType
+      : (CampaignManager.Instance != null && CampaignManager.Instance.scMenuBatallas != null
+        ? CampaignManager.Instance.scMenuBatallas.ObtenerEncuentroTipoActual()
+        : BattleEncounterType.Normal);
+    AgregarRefuerzosCuartel(tipoEncuentroActual, esEmboscada);
+
     Invoke("ColocarunidadesEnCanvasUnidades", 0.3f);
 
     bool modorapido = PlayerPrefs.GetInt("modoRapido", 0) == 1;
@@ -2911,6 +2918,49 @@ public class AdministradorEscenas : MonoBehaviour
 
   }
 
+  void AgregarRefuerzosCuartel(BattleEncounterType tipoEncuentro, int esEmboscada)
+  {
+    if (BattleManager.Instance == null || ContenedorPrefabsBatalla == null || MetaprogresionManager.Instance == null)
+    {
+      return;
+    }
+
+    if (esEmboscada == 1)
+    {
+      return;
+    }
+
+    if (tipoEncuentro != BattleEncounterType.Normal && tipoEncuentro != BattleEncounterType.Elite)
+    {
+      return;
+    }
+
+    int tierCuartel = MetaprogresionManager.Instance.SerriaTierCuartel;
+    if (tierCuartel <= 0)
+    {
+      return;
+    }
+
+    int chance = Mathf.Clamp(tierCuartel * 10, 0, 100);
+    if (!ProbabilidadPorcentual(chance))
+    {
+      return;
+    }
+
+    GameObject ballestero = Instantiate(ContenedorPrefabsBatalla.Miliciano2);
+    GameObject lancero = Instantiate(ContenedorPrefabsBatalla.Miliciano1);
+
+    ballestero.SetActive(false);
+    lancero.SetActive(false);
+
+    BattleManager.Instance.aliadosRefuerzos.Add(ballestero);
+    BattleManager.Instance.aliadosRefuerzos.Add(lancero);
+
+    BattleManager.Instance.ActualizarAliadosRefUI();
+
+    BattleManager.Instance.EscribirLog(TRADU.i.Traducir("<color=#199F10>Milicianos del cuartel se unen como refuerzos: Ballestero y Lancero.</color>"));
+  }
+
   void AsignarRefuerzosAliados()
   {
     AdministradorEscenas scAdminEscenas = CampaignManager.Instance.scMenuBatallas.scAdministradorEscenas;
@@ -2971,4 +3021,3 @@ public class AdministradorEscenas : MonoBehaviour
 
 
 }
-
