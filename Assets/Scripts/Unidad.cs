@@ -621,8 +621,8 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
     //--Cada enemigo que lo necesite deberá heredar de Unidad    
 
   }
-void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad llega a una casilla, se puede sobreescribir en las subclases
-{
+  void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad llega a una casilla, se puede sobreescribir en las subclases
+  {
     if (cas != null)
     {
 
@@ -641,6 +641,9 @@ void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad l
       cas.Presente = gameObject;
       transform.position = cas.transform.position;
     }
+
+    BattleManager.Instance.ActualizarCasillasMelee();
+    cas.ActualizarSenialadores();
 }
 
   public void ArrancaTurnoEstaUnidad()
@@ -778,8 +781,10 @@ void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad l
         Invoke("ChequearTrampaPersistenteenCasilla", 0.1f); //Se invoca con un delay para que se aplique después de los efectos de inicio de turno
 
         //Activar resaltar lado
-         Invoke("ResaltarLado", 0.1f);
+        Invoke("ResaltarLado", 0.1f);
 
+        //Señaladores direcciones
+        CasillaPosicion.ActualizarSenialadores();
 
       }
 
@@ -945,8 +950,10 @@ void ActivarEfectosCustomBuffsInicioTurno()
     LlamarReacciones(5, this, false); //Reacciones al terminar turno
 
     ReducirDuracionBuffs(); //Se reduce duracion de buffs/debuffs al terminar el turno
-    
+
     ControlarSiEsDescanso();
+    
+    CasillaPosicion.DesactivarSenialadores();
 
 }
 
@@ -2084,7 +2091,7 @@ public void Marcar(int n)
     if (scUnidadCanvas.txtProbabilidad != null)
     {
       float valor = Mathf.Clamp01(probabilidad.Value);
-      string texto = $"{Mathf.RoundToInt(valor * 100f)}%";
+      string texto = Mathf.RoundToInt(valor * 100f)+TRADU.i.Traducir(" % Chances");
       if (scUnidadCanvas.txtProbabilidad.text != texto)
       {
         scUnidadCanvas.txtProbabilidad.text = texto;
@@ -2161,9 +2168,9 @@ public void OnMouseExit()
 }
 public async void OnMouseDown() 
 {
-  
-  if(scBattleManager.lUnidadesPosiblesHabilidadActiva.Contains(this) && scBattleManager.SeleccionandoObjetivo)
-  {
+
+    if (scBattleManager.lUnidadesPosiblesHabilidadActiva.Contains(this) && scBattleManager.SeleccionandoObjetivo)
+    {
       if (scBattleManager.HabilidadActiva.esMelee && estado_Volando)
       {
         //Si se quiere hacer una habilidad melee a una unidad voladora, no hace nada.
@@ -2206,28 +2213,34 @@ public async void OnMouseDown()
           BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(anterior);
         }
       }
-  }
-  else
-  {
-    if(anterior == this)
-    {
-      BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo = false;
-      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(anterior);
-      Marcar(0);  anterior = null;
     }
-    else if( BattleManager.Instance.scUIInfoChar.unidadMostrada != this || BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo == false || anterior != null)
+    else
     {
-      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
-      BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo = true;
-      if(gameObject.GetComponent<IAUnidad>())
-      {BattleManager.Instance.scUIInfoChar.infoEnemigos.SetActive(true); BattleManager.Instance.scUIInfoChar.mostrardesc = true;}
-      Marcar(1);anterior = this;
-    }
-    else 
-    {
-       BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo = false;
-       Marcar(0); anterior = null;
-    }
+      if (anterior == this)
+      {
+        BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo = false;
+        BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(anterior);
+        Marcar(0); anterior = null;
+      }
+      else if (BattleManager.Instance.scUIInfoChar.unidadMostrada != this || BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo == false || anterior != null)
+      {
+        BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+        BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo = true;
+        if (gameObject.GetComponent<IAUnidad>())
+        { BattleManager.Instance.scUIInfoChar.infoEnemigos.SetActive(true); BattleManager.Instance.scUIInfoChar.mostrardesc = true; }
+        Marcar(1); anterior = this;
+      }
+      else
+      {
+        BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo = false;
+        Marcar(0); anterior = null;
+      }
+
+      if (CasillaPosicion.lado == 2 && scBattleManager.unidadActiva!= this && !scBattleManager.SeleccionandoObjetivo)
+      { 
+        CasillaPosicion.OnMouseDown();
+
+      }
 
   }
 
@@ -2258,7 +2271,7 @@ public async void OnMouseDown()
 
     if (!noSeSalva) //NegativoSeSalva
     {
-      Color colorResist = (CasillaPosicion != null && CasillaPosicion.lado == 1) ? new Color(0.65f, 0f, 0f) : new Color(0f, 0.65f, 0f);
+      Color colorResist = (CasillaPosicion != null && CasillaPosicion.lado == 1) ? new Color(0.75f, 0f, 0f) : new Color(0f, 0.75f, 0f);
       GenerarTextoFlotante(TRADU.i.Traducir("Resiste"), colorResist, FloatingTextContext.Resist);
     }
 

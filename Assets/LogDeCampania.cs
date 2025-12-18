@@ -45,6 +45,10 @@ public class LogDeCampania : MonoBehaviour
         diaActual = numeroTurno;
         ReconstruirTextoAjustado();
     }
+    public int GetDiaActual()
+    {
+        return diaActual;
+    }
 
     /// <summary>Agrega una entrada y refresca el texto.</summary>
     public void Escribir(string mensaje, bool esCombate = false)
@@ -55,9 +59,9 @@ public class LogDeCampania : MonoBehaviour
             return;
 
         var limpia = Sanitizar(mensaje);
-       
-            _entradas.Add(new EntradaLog { Dia = diaActual, Texto = limpia });
-        
+
+        _entradas.Add(new EntradaLog { Dia = diaActual, Texto = limpia });
+
 
         RecortarSiExcede();
         ReconstruirTextoAjustado(esCombate);

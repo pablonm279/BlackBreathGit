@@ -5,6 +5,7 @@ using UnityEngine;
 using System;
 using UnityEngine.Analytics;
 using System.Linq;
+using NUnit.Framework.Constraints;
 
 
 public class Casilla : MonoBehaviour
@@ -90,6 +91,21 @@ public class Casilla : MonoBehaviour
   private void ActualizarSenialadorDireccion(int deltaX, int deltaY, GameObject marca)
   {
     if (marca == null) { return; }
+
+    if (Mathf.Abs(deltaX) + Mathf.Abs(deltaY) > 1)
+    {
+      var unidad = BattleManager.Instance.unidadActiva;
+      if (unidad != null && unidad.ObtenerAPActual() <= 1)
+      {
+         marca.SetActive(false);
+        return;
+      }
+    }
+
+    if (BattleManager.Instance.unidadActiva.ObtenerAPActual() <= 0)
+    { marca.SetActive(false);
+      return;
+   }
 
     Casilla destino = EncontrarCasillaEnPosicion(posX + deltaX, posY + deltaY);
     bool puedeMover = false;
@@ -849,49 +865,10 @@ public class Casilla : MonoBehaviour
 
 
     string text = "";
-    Unidad unidadActiva = BattleManager.Instance.unidadActiva;
-    Unidad aliado = Presente != null ? Presente.GetComponent<Unidad>() : null;
-
-    if (unidadActiva != null && aliado != null && aliado != unidadActiva)
+   
+    if (MarcaMelee.activeInHierarchy)
     {
-      bool puedeIntercambiar =
-        BattleManager.Instance.lCasillasMovimiento.Contains(this) &&
-        !unidadActiva.movimientoEnCurso &&
-        !BattleManager.Instance.SeleccionandoObjetivo &&
-        unidadActiva.estado_inmovil < 1 &&
-        aliado.estado_inmovil <= 0 &&
-        !aliado.TieneBuffNombre("Desplazado") &&
-        aliado.CasillaPosicion.lado == unidadActiva.CasillaPosicion.lado;
-
-      if (puedeIntercambiar)
-      {
-        int costoMovimientoTotal = costoMovimiento;
-        int diferenciaX = Mathf.Abs(unidadActiva.CasillaPosicion.posX - posX);
-        int diferenciaY = Mathf.Abs(unidadActiva.CasillaPosicion.posY - posY);
-
-        if (diferenciaX == 1 && diferenciaY == 1)
-        {
-          costoMovimientoTotal++;
-        }
-
-        if (unidadActiva.ObtenerAPActual() >= costoMovimientoTotal)
-        {
-          text = TRADU.i.Traducir("Intercambiable");
-        }
-      }
-    }
-
-    if (MarcaMelee != null && MarcaMelee.activeInHierarchy)
-    {
-      if (!string.IsNullOrEmpty(text))
-      {
-        text += "\n";
-      }
-      text += TRADU.i.Traducir("Melee disponible");
-    }
-
-    if (!string.IsNullOrEmpty(text))
-    {
+       text += "" + TRADU.i.Traducir("Melee disponible");
       scTooltipBatalla.ShowTooltipText(text);
     }
     //Controlar se esta haciendo hablidad en Area, marca las casillas en la zona de alcance y en el area

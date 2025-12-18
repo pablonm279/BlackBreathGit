@@ -171,6 +171,7 @@ public abstract class Habilidad : MonoBehaviour
       scEstaUnidad.PerderEscondido();
     }
 
+    BattleManager.Instance.txtSeleccionaobj.SetActive(false);
     BattleManager.Instance.SeleccionandoObjetivo = false;
     BattleManager.Instance.lUnidadesPosiblesHabilidadActiva.Clear();
     BattleManager.Instance.lObstaculosPosiblesHabilidadActiva.Clear();

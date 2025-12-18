@@ -1257,9 +1257,6 @@ public class TRADU : MonoBehaviour
             case " refuerzos.</color> ":
                 r = " reinforcements.</color> ";
                 break;
-            case "<color=#199F10>Milicianos del cuartel se unen como refuerzos: Ballestero y Lancero.</color>":
-                r = "<color=#199F10>Garrison militia join as reinforcements: Crossbowman and Spearman.</color>";
-                break;
             case " ya no tiene ":
                 r = " is no longer ";
                 break;
@@ -3588,9 +3585,9 @@ public class TRADU : MonoBehaviour
           case "-Las almenaras de Serria se divisan a lo lejos sobre las montañas, brillando con fuerza y marcando el destino de la caravana: ":
                 r = "-The beacons of Serria can be seen in the distance over the mountains, shining brightly and marking the caravan's destination: ";
                 break;
-                /*  case "":
-                r = "";
-                break;*/
+           case "<b>Una patrulla de milicianos de Serria se une a la batalla como refuerzos.</b>":
+                r = "<b>A patrol of militiamen from Serria joins the battle as reinforcements.</b>";
+                break;
 
 
 

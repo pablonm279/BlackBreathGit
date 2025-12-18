@@ -15,6 +15,7 @@ public class CampaignManager : MonoBehaviour
   public static CampaignManager Instance { get; private set; }
 
   public GameObject prefabTextoRecursos;
+  // public Animator animCaravana;
   public GameObject goCanvas;
   public MapaManager scMapaManager;
   public AtributosZona scAtributosZona;
@@ -22,6 +23,7 @@ public class CampaignManager : MonoBehaviour
   public AlientoNegroVFX scAlientoNegroVFX;
   public MenuSequitos scMenuSequito;
   public MenuPersonajes scMenuPersonajes;
+  public GameObject goMenuPuerto;
   public int mejoraCaravanaAntorchas;
   public int mejoraCaravanaAlforjas;
   public int mejoraCaravanaTiendas;
@@ -59,6 +61,7 @@ public class CampaignManager : MonoBehaviour
   public int BATALLA_EnCurso;
 
   public GameObject goSequitos;
+  public GameObject goLogCampania;
 
   public AdministradorEscenas scAdministradorEscenas;
 
@@ -97,9 +100,9 @@ public class CampaignManager : MonoBehaviour
     CambiarMaterialesActuales(45);
     CambiarBueyesActuales(22);
     CambiarOroActual(400);
-    CambiarValorAlientoNegro(1);
+    CambiarValorAlientoNegro(2);
 
-    
+
     scAtributosZona.GenerarZona(0); //0 es aleatorio
 
 
@@ -124,6 +127,7 @@ public class CampaignManager : MonoBehaviour
 
 
     AjustarDificultad();
+   
 
   }
 
@@ -149,8 +153,8 @@ public class CampaignManager : MonoBehaviour
   }
 
   public void ForzarTiradaClima()
-  { 
-        menuDescanso.GetComponent<MenuDescanso>().TiradaClima();
+  {
+    menuDescanso.GetComponent<MenuDescanso>().TiradaClima();
   }
   #region Nodos
   public SunController sunController;
@@ -160,6 +164,7 @@ public class CampaignManager : MonoBehaviour
 
     bool sePrevieneAvanceAliento = false;
     sunController.OnTravelStart(); // duración en segundos
+                                   // animCaravana.SetBool("IsMoving", true);
 
     // Inicia sonido de caravana en movimiento
     if (sfxMovimientoCaravana != null)
@@ -270,10 +275,12 @@ public class CampaignManager : MonoBehaviour
   public GameObject goMenuBatallas;
   public void LlegarANodo(int ID, int posX, Nodo nodo)
   {
+    OnDerrotadoJefeZona();
     // Detiene el sonido de movimiento al llegar al nodo
     if (sfxMovimientoSource != null && sfxMovimientoSource.isPlaying)
       sfxMovimientoSource.Stop();
 
+    // animCaravana.SetBool("IsMoving", false);
 
     posicionCaravana = posX + 1;
     if (ID == 1) //Batalla
@@ -423,7 +430,11 @@ public class CampaignManager : MonoBehaviour
       scMenuBatallas.EventoBatallaElite(0, 0, true); //0 es Random
 
     }
-
+    if (ID == 16) //Mision Salvamento
+    {
+      EmpezarEvento(405);
+      scMapaManager.nodoActual.nodoDespejado = true;
+    }
 
     //Cronistas
     if (scMenuSequito.TieneSequito(7))
@@ -462,31 +473,43 @@ public class CampaignManager : MonoBehaviour
     }
 
   }
-  
+
 
 
   public GameObject goUIVictoriaZona;
 
   // Llamar desde el resultado de la Batalla Final (jefe derrotado)
-  public void OnDerrotadoJefeZona()
+  public async void OnDerrotadoJefeZona()
   {
-
-    goUIVictoriaZona.SetActive(true);
-
-    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    if (1 == 2/*scAtributosZona.FASE < 3*/)
     {
-      pers.RecibirCuracion(2000);
-      pers.Camp_Herido = false;
-    }
-    CambiarSuministrosActuales(120);
-    CambiarMaterialesActuales(40);
 
-  
+
+
+      goUIVictoriaZona.SetActive(true);
+
+      foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+      {
+        pers.RecibirCuracion(2000);
+        pers.Camp_Herido = false;
+      }
+      CambiarSuministrosActuales(120);
+      CambiarMaterialesActuales(40);
+    }
+    else
+    {
+      goLogCampania.SetActive(false);
+      CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(1.2f, 2.0f);
+      await Task.Delay(2200);
+      goMenuPuerto.SetActive(true);
+    }
 
   }
 
   public void ContinuarASiguienteZona()
   {
+    goLogCampania.SetActive(true);
+    scAdministradorEscenas.PlayFadeInOut(1.2f, 2.0f);
     scAdministradorEscenas.fader.alpha = 1f;
     posicionCaravana = 1;
     scAtributosZona.ActualizarEstadoZona(scAtributosZona.ID, 1); //Zona completada
@@ -702,7 +725,7 @@ public class CampaignManager : MonoBehaviour
     goUISantuario.SetActive(false);
   }
 
-  public void abandonarsantuario() { goUIPersonajeSequito.SetActive(false); }
+  public void abandonarsantuario() { goUISantuario.SetActive(false); }
   public void RealizarRitualSantuarioPorBueyes()
   {
     if (GetBueyesActual() < 3)
@@ -772,6 +795,14 @@ public class CampaignManager : MonoBehaviour
     precio10Suministros = 15 - sequitoMercaderesTier;
     precio1Material = 18 - sequitoMercaderesTier;
     precio1Buey = 20 - sequitoMercaderesTier;
+
+    int tierPalacio = MetaprogresionManager.Instance.SerriaTierPalacio;
+    float descuento = Mathf.Max(0f, 1f - 0.1f * tierPalacio); // cada tier baja 10% los precios
+    precio10Suministros *= descuento;
+    precio1Material *= descuento;
+    precio1Buey *= descuento;
+
+
 
     if (TRADU.i.nIdioma == 1) //Español
     {
@@ -1744,6 +1775,7 @@ public class CampaignManager : MonoBehaviour
 
   public void AbrirMenuDescanso()
   {
+
     if (!menuDescanso.activeInHierarchy && scMapaManager.nodoActual.nodoDespejado && !scMapaManager.nodoActual.nodoIncendiado)
     {
       menuDescanso.GetComponent<MenuDescanso>().SeleccionarActividadCivil(1);
@@ -1880,12 +1912,12 @@ public class CampaignManager : MonoBehaviour
           menuDescanso.SetActive(false);
         }
         else
-        { 
-            MenuOpciones.SetActive(true);
+        {
+          MenuOpciones.SetActive(true);
         }
-      
+
       }
-      
+
 
 
     }
@@ -2010,7 +2042,7 @@ public class CampaignManager : MonoBehaviour
   #region Crear Personajes
 
 
-  void CrearCaballero()
+  public void CrearCaballero()
   {
 
     GameObject caballero = Instantiate(prefabGOPersonaje);
@@ -2102,7 +2134,7 @@ public class CampaignManager : MonoBehaviour
 
 
   }
-  void CrearExplorador()
+  public void CrearExplorador()
   {
 
     GameObject explorador = Instantiate(prefabGOPersonaje);
@@ -2200,7 +2232,7 @@ public class CampaignManager : MonoBehaviour
 
 
   }
-  void CrearPurificadora()
+  public void CrearPurificadora()
   {
 
     GameObject purificadora = Instantiate(prefabGOPersonaje);
@@ -2301,7 +2333,7 @@ public class CampaignManager : MonoBehaviour
 
 
   }
-  void CrearAcechador()
+  public void CrearAcechador()
   {
 
     GameObject acechador = Instantiate(prefabGOPersonaje);
@@ -2401,7 +2433,7 @@ public class CampaignManager : MonoBehaviour
 
 
   }
-  void CrearCanalizador()
+  public void CrearCanalizador()
   {
 
     GameObject canalizador = Instantiate(prefabGOPersonaje);
@@ -2683,6 +2715,50 @@ public class CampaignManager : MonoBehaviour
       BattleManager.Instance.EstablecerDificultadCombate(presetNivel);
     }
 
+
+  }
+
+  public int peligrozonaanterior;
+  public void IncrementarDificultadSegunPeligroRegion(int peligro)
+  {
+
+    var hd = Sistema.HandicapDificultad.Instance;
+    if (hd != null)
+    {
+      hd.puntosExtraEnemigos -= 2 * peligrozonaanterior;
+
+      hd.puntosExtraEnemigos += 2 * peligro;
+    }
+
+
+    peligrozonaanterior = peligro;
+  }
+
+
+  public void AplicarEfectosMejorasPuerto()
+  {
+    //Templo
+    int templo = MetaprogresionManager.Instance.SerriaTierTemplo;
+    CambiarValorAlientoNegro(-templo);
+    List<Personaje> personajesDisponibles = scMenuPersonajes.listaPersonajes;
+    foreach (Personaje personaje in personajesDisponibles)
+    {
+      if (personaje.IDClase == 3) //Purificadora
+      {
+        personaje.RecibirExperiencia(100 * templo);
+      }
+    }
+    if (templo > 0)
+    { EscribirLog(TRADU.i.Traducir("-Las oraciones de los Purificadores del Templo de Serria merman el avance del Aliento Negro en: " + templo + "")); }
+    //---
+    //Almenaras
+    int almenaras = MetaprogresionManager.Instance.SerriaTierAlmenaras;
+
+
+    if (almenaras > 0 && scAtributosZona.ID != 3) //no en Nedukazal
+    { EscribirLog(TRADU.i.Traducir("-Las almenaras de Serria se divisan a lo lejos sobre las montañas, brillando con fuerza y marcando el destino de la caravana: " + almenaras * 5 + " Esperanza")); }
+    CambiarEsperanzaActual(almenaras * 5);
+    //---
 
   }
 }

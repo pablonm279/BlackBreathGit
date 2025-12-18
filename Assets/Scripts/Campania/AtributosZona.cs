@@ -223,6 +223,9 @@ public class AtributosZona : MonoBehaviour
       modRecoleccionSuministros = 5;
       modChanceEmboscada = 10;
 
+
+      Invoke("AumentarDifconDelayPorPeligroBosqueArdiente", 1.5f);
+
       modChanceExploracion = 5;
 
       Clima_chances_Sol = 40;
@@ -351,6 +354,8 @@ public class AtributosZona : MonoBehaviour
       modChanceEmboscada = 0;
 
       modChanceExploracion = -10;
+
+      Invoke("AumentarDifconDelayPorPeligroPasoVientoHelado", 1.5f);
 
       Clima_chances_Sol = 40;
       Clima_chances_Calor = 40;
@@ -533,6 +538,10 @@ public class AtributosZona : MonoBehaviour
 
       modChanceExploracion = -25;
 
+
+      Invoke("AumentarDifconDelayPorPeligroNedukazal", 1.5f);
+
+
       Clima_chances_Sol = 00;
       Clima_chances_Calor = 00;
       Clima_chances_Lluvia = 00;
@@ -683,27 +692,27 @@ public class AtributosZona : MonoBehaviour
    }
 
 
- 
-// Lista para llevar registro del estado de las zonas
-// 0: No cruzada, 1: Cruzada, 2: Descartada
-public List<int> ZonasEstado = new List<int>();
 
-/// <summary>
-/// Inicializa la lista de estados de las zonas.
-/// Debe llamarse al inicio del juego o cuando se reinicia la campaña.
-/// </summary>
+   // Lista para llevar registro del estado de las zonas
+   // 0: No cruzada, 1: Cruzada, 2: Descartada
+   public List<int> ZonasEstado = new List<int>();
+
+   /// <summary>
+   /// Inicializa la lista de estados de las zonas.
+   /// Debe llamarse al inicio del juego o cuando se reinicia la campaña.
+   /// </summary>
 
 
 
-/// <summary>
-/// Actualiza el estado de una zona específica.
-/// </summary>
-/// <param name="zonaID">El ID de la zona a actualizar (índice en la lista).</param>
-/// <param name="estado">El nuevo estado de la zona (0: No cruzada, 1: Cruzada, 2: Descartada).</param>
-public void ActualizarEstadoZona(int zonaID, int estado)
-{
-   zonaID -= 1; // Ajustar para índice basado en cero
-   if (zonaID >= 0 && zonaID < ZonasEstado.Count)
+   /// <summary>
+   /// Actualiza el estado de una zona específica.
+   /// </summary>
+   /// <param name="zonaID">El ID de la zona a actualizar (índice en la lista).</param>
+   /// <param name="estado">El nuevo estado de la zona (0: No cruzada, 1: Cruzada, 2: Descartada).</param>
+   public void ActualizarEstadoZona(int zonaID, int estado)
+   {
+      zonaID -= 1; // Ajustar para índice basado en cero
+      if (zonaID >= 0 && zonaID < ZonasEstado.Count)
       {
          ZonasEstado[zonaID] = estado;
       }
@@ -711,7 +720,7 @@ public void ActualizarEstadoZona(int zonaID, int estado)
       {
          Debug.LogWarning($"ZonaID {zonaID} está fuera de rango.");
       }
-}
+   }
 
 
    public void GenerarZona(int ID = 0)
@@ -760,6 +769,24 @@ public void ActualizarEstadoZona(int zonaID, int estado)
 
       CampaignManager.Instance.scMapaManager.GenerarNodos();
       CampaignManager.Instance.ForzarTiradaClima();
-      
-  }
+      CampaignManager.Instance.AplicarEfectosMejorasPuerto();
+
+   }
+
+
+   void AumentarDifconDelayPorPeligroNedukazal()
+   {
+      CampaignManager.Instance.IncrementarDificultadSegunPeligroRegion(MetaprogresionManager.Instance.NivelPeligroNedukazal);
+      MetaprogresionManager.Instance.NivelPeligroNedukazal++;
+   }
+   void AumentarDifconDelayPorPeligroBosqueArdiente()
+   {
+      CampaignManager.Instance.IncrementarDificultadSegunPeligroRegion(MetaprogresionManager.Instance.NivelPeligroBosqueArdiente);
+      MetaprogresionManager.Instance.NivelPeligroBosqueArdiente++;
+   }
+   void AumentarDifconDelayPorPeligroPasoVientoHelado()
+   { 
+      CampaignManager.Instance.IncrementarDificultadSegunPeligroRegion(MetaprogresionManager.Instance.NivelPeligroPasoVientohelado);
+      MetaprogresionManager.Instance.NivelPeligroPasoVientohelado++;
+   }
 }

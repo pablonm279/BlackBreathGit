@@ -13,6 +13,7 @@ public class ZonaMusical
     public List<AudioClip> temasBatalla = new List<AudioClip>();
     [Header("Opcional: stinger al entrar en batalla")]
     public AudioClip stingerBatalla;
+
 }
 
 public class MusicManager : MonoBehaviour

@@ -61,6 +61,8 @@ public class BattleManager : MonoBehaviour
   public GameObject climaTooltip;
   public TextMeshProUGUI textClimaTooltip;
   public TextMeshProUGUI rondaText;
+
+  public GameObject txtSeleccionaobj;
   public bool bOcupado; //Variable de control de flujo de batalla
 
   public GameObject nocheLienzo;
@@ -827,7 +829,14 @@ public class BattleManager : MonoBehaviour
   {
     KeyCode.Alpha1,
     KeyCode.Alpha2,
-    KeyCode.Alpha3
+    KeyCode.Alpha3,
+    KeyCode.Alpha4,
+    KeyCode.Alpha5,
+    KeyCode.Alpha6,
+    KeyCode.Alpha7,
+    KeyCode.Alpha8,
+    KeyCode.Alpha9,
+    KeyCode.Alpha0
   };
 
   private void Update()
@@ -877,6 +886,52 @@ public class BattleManager : MonoBehaviour
   private void LateUpdate()
   {
     SincronizarMarcasHabilidadActiva();
+
+    ActualizarTextoSeleccionObjetivo();
+  }
+
+  private void ActualizarTextoSeleccionObjetivo()
+  {
+    if (txtSeleccionaobj == null)
+    {
+      return;
+    }
+
+    TextMeshProUGUI tmp = txtSeleccionaobj.GetComponentInChildren<TextMeshProUGUI>(true);
+
+    if (!SeleccionandoObjetivo || HabilidadActiva == null)
+    {
+      txtSeleccionaobj.SetActive(false);
+      return;
+    }
+
+    bool hayObjetivos = (lUnidadesPosiblesHabilidadActiva != null && lUnidadesPosiblesHabilidadActiva.Count > 0) ||
+                        (lObstaculosPosiblesHabilidadActiva != null && lObstaculosPosiblesHabilidadActiva.Count > 0);
+
+    txtSeleccionaobj.SetActive(true);
+
+    if (!hayObjetivos)
+    {
+      if (HabilidadActiva.esHostil)
+      {
+        if (tmp != null)
+        {
+          tmp.text = TRADU.i.Traducir("No hay objetivos al alcance.");
+          tmp.color = Color.red;
+        }
+      }
+      else
+      {
+        txtSeleccionaobj.SetActive(false);
+      }
+      return;
+    }
+
+    if (tmp != null)
+    {
+      tmp.text = TRADU.i.Traducir("Selecciona un objetivo.");
+      tmp.color = HabilidadActiva.esHostil ? Color.red : new Color(0.55f, 0.75f, 1f);
+    }
   }
 
   private void SincronizarMarcasHabilidadActiva()
@@ -1555,19 +1610,19 @@ public class BattleManager : MonoBehaviour
 
   public void ActualizarCasillasMelee()
   {
-   
+
 
     foreach (Casilla casillas in lCasillasTotal)
     {
       casillas.activarCapaMelee(false);
     } //Resetear todas las casillas
     if (unidadActiva.GetComponent<IAUnidad>() != null) //IA descartados
-    { 
+    {
       return;
     }
 
-     if (unidadActiva.ObtenerAPActual() < 1) 
-    { 
+    if (unidadActiva.ObtenerAPActual() < 1)
+    {
       return;
     }
 
@@ -1586,50 +1641,82 @@ public class BattleManager : MonoBehaviour
     }
 
     if (!tieneAlgunahabilidadMelee)
-    {return; }
+    { return; }
 
-    
+
     // Marcar solo casillas vacías que sean atacables en melee.
     // Regla: columna 3 siempre atacable; columna 2 atacable solo si la casilla delante contiene
     // un obstáculo que permite atacar por detrás o una unidad
+
+    Casilla casillaActual = unidadActiva.CasillaPosicion;
+    if (casillaActual == null || casillaActual.Presente != unidadActiva.gameObject)
+    {
+      casillaActual = lCasillasTotal.FirstOrDefault(c => c.Presente == unidadActiva.gameObject);
+      if (casillaActual != null)
+      {
+        unidadActiva.CasillaPosicion = casillaActual;
+      }
+    }
+
+    if (EstaEnPosMelee(casillaActual, true))
+    { return; } //Si ya está en melee no marcar nada
+
     foreach (Casilla casilla in ladoB.casillasLado)
     {
-      if (casilla == null || casilla.Presente != null)
-      continue;
-
-      int x = casilla.posX;
-      int y = casilla.posY;
-
-      if (x == 3)
+      if (EstaEnPosMelee(casilla))
       {
-      casilla.activarCapaMelee(true);
-      continue;
+        casilla.activarCapaMelee(true);
+
       }
-
-      if (x == 2)
+      else
       {
+        casilla.activarCapaMelee(false);
+      }
+    }
+
+  }
+
+  bool EstaEnPosMelee(Casilla casilla, bool ignorarPresente = false)
+  {
+    if (casilla == null)
+    { return false; }
+    if (!ignorarPresente && casilla.Presente != null)
+    {
+      return false;
+    }
+
+    int x = casilla.posX;
+    int y = casilla.posY;
+
+    if (x == 3)
+    {
+
+      return true;
+    }
+
+    if (x == 2)
+    {
       Casilla frente = ladoB.ObtenerCasillaPorIndex(x + 1, y);
       if (frente?.Presente != null)
       {
         Obstaculo obst = frente.Presente.GetComponent<Obstaculo>();
         Unidad unidadFrente = frente.Presente.GetComponent<Unidad>();
-        if(unidadFrente == unidadActiva)
+        if (unidadFrente == unidadActiva)
         {
           unidadFrente = null; // No cuenta si es la misma unidad
         }
         if ((obst != null && obst.bPermiteAtacarDetras) || (unidadFrente != null))
-          {
-            casilla.activarCapaMelee(true);
-          }
-      }
+        {
+
+          return true;
+        }
       }
     }
 
-    
-
+    return false;
 
   }
-  
 
+ 
 
 }

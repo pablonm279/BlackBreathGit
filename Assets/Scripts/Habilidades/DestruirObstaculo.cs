@@ -15,7 +15,7 @@ public class DestruirObstaculo : Habilidad
     enArea = 0;
     esforzable = 1;
     esCargable = false;
-    esMelee = true;
+    esMelee = false;
     esHostil = false;
     bAfectaObstaculos = true;
     Usuario = gameObject;

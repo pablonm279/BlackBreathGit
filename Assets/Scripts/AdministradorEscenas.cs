@@ -317,15 +317,25 @@ public class AdministradorEscenas : MonoBehaviour
       }
     }
 
-    //Efectos ambientales de Batalla
-    #region Clima en Batalla
-
-    // Refrescar listas de unidades antes de aplicar clima
-    if (BattleManager.Instance != null)
+    if (esEmboscada == 0)
     {
-      BattleManager.Instance.ladoA.ActualizarListaDeUnidadesEnLado();
-      BattleManager.Instance.ladoB.ActualizarListaDeUnidadesEnLado();
+      int tierCuartel = MetaprogresionManager.Instance.SerriaTierCuartel;
+      if (UnityEngine.Random.Range(0,100) < tierCuartel * 10) 
+      {
+        AsignarRefuerzosCuartel();
+
+      }
+
     }
+    //Efectos ambientales de Batalla
+      #region Clima en Batalla
+
+      // Refrescar listas de unidades antes de aplicar clima
+      if (BattleManager.Instance != null)
+      {
+        BattleManager.Instance.ladoA.ActualizarListaDeUnidadesEnLado();
+        BattleManager.Instance.ladoB.ActualizarListaDeUnidadesEnLado();
+      }
 
     int climaCampaña = CampaignManager.Instance.intTipoClima;
     if (EsEncuentroSubterraneo(IDEncuentro)) { climaCampaña = 0; }//Si es encuentro subterraneo no hay clima
@@ -651,13 +661,6 @@ public class AdministradorEscenas : MonoBehaviour
     // RondaNueva() incrementa el contador, por eso se inicializa en 0 aquí.
     BattleManager.Instance.RondaNro = 0;
     BattleManager.Instance.RondaNueva();
-
-    BattleEncounterType tipoEncuentroActual = encuentroGeneradoActual != null
-      ? encuentroGeneradoActual.battleType
-      : (CampaignManager.Instance != null && CampaignManager.Instance.scMenuBatallas != null
-        ? CampaignManager.Instance.scMenuBatallas.ObtenerEncuentroTipoActual()
-        : BattleEncounterType.Normal);
-    AgregarRefuerzosCuartel(tipoEncuentroActual, esEmboscada);
 
     Invoke("ColocarunidadesEnCanvasUnidades", 0.3f);
 
@@ -2918,49 +2921,27 @@ public class AdministradorEscenas : MonoBehaviour
 
   }
 
-  void AgregarRefuerzosCuartel(BattleEncounterType tipoEncuentro, int esEmboscada)
+  void AsignarRefuerzosCuartel()
   {
-    if (BattleManager.Instance == null || ContenedorPrefabsBatalla == null || MetaprogresionManager.Instance == null)
+    AdministradorEscenas scAdminEscenas = CampaignManager.Instance.scMenuBatallas.scAdministradorEscenas;
+    var prefabs = scAdminEscenas.ContenedorPrefabsBatalla;
+
+    if (prefabs != null && BattleManager.Instance != null)
     {
-      return;
+      GameObject mil1 = Instantiate(prefabs.Miliciano1);
+      mil1.SetActive(false);
+      BattleManager.Instance.aliadosRefuerzos.Add(mil1);
+
+      GameObject mil2 = Instantiate(prefabs.Miliciano2);
+      mil2.SetActive(false);
+      BattleManager.Instance.aliadosRefuerzos.Add(mil2);
+
+      BattleManager.Instance.ActualizarRefuerzosUI();
     }
 
-    if (esEmboscada == 1)
-    {
-      return;
-    }
-
-    if (tipoEncuentro != BattleEncounterType.Normal && tipoEncuentro != BattleEncounterType.Elite)
-    {
-      return;
-    }
-
-    int tierCuartel = MetaprogresionManager.Instance.SerriaTierCuartel;
-    if (tierCuartel <= 0)
-    {
-      return;
-    }
-
-    int chance = Mathf.Clamp(tierCuartel * 10, 0, 100);
-    if (!ProbabilidadPorcentual(chance))
-    {
-      return;
-    }
-
-    GameObject ballestero = Instantiate(ContenedorPrefabsBatalla.Miliciano2);
-    GameObject lancero = Instantiate(ContenedorPrefabsBatalla.Miliciano1);
-
-    ballestero.SetActive(false);
-    lancero.SetActive(false);
-
-    BattleManager.Instance.aliadosRefuerzos.Add(ballestero);
-    BattleManager.Instance.aliadosRefuerzos.Add(lancero);
-
-    BattleManager.Instance.ActualizarAliadosRefUI();
-
-    BattleManager.Instance.EscribirLog(TRADU.i.Traducir("<color=#199F10>Milicianos del cuartel se unen como refuerzos: Ballestero y Lancero.</color>"));
+    BattleManager.Instance.EscribirLog(TRADU.i.Traducir("<b>Una patrulla de milicianos de Serria se une a la batalla como refuerzos.</b>"));
+    CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("<b>Una patrulla de milicianos de Serria se une a la batalla como refuerzos.</b>"));
   }
-
   void AsignarRefuerzosAliados()
   {
     AdministradorEscenas scAdminEscenas = CampaignManager.Instance.scMenuBatallas.scAdministradorEscenas;

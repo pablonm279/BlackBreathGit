@@ -60,11 +60,6 @@ public class MenuBatallas : MonoBehaviour
     EnsureRewardProfiles();
  }
 
- public BattleEncounterType ObtenerEncuentroTipoActual()
- {
-    return encuentroTipoActual;
- }
-
  void OnValidate()
  {
     EnsureRewardProfiles();

@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 public class MenuDescanso : MonoBehaviour
 {
-   
 
- public TextMeshProUGUI tareaCivilDescripcion;
+
+  public TextMeshProUGUI tareaCivilDescripcion;
 
   // SFX de descanso: arrastrar clip desde el Inspector
   public AudioClip sfxDescanso;
-  [Range(0f,1f)] public float sfxDescansoVolumen = 0.9f;
+  [Range(0f, 1f)] public float sfxDescansoVolumen = 0.9f;
   private AudioSource sfxDescansoSource;
 
   // Maneja audio al descansar: iniciar/terminar, con control de emboscada
@@ -28,183 +28,187 @@ public class MenuDescanso : MonoBehaviour
     }
   }
 
- [SerializeField] private GameObject btnRecoleccionSum;
- [SerializeField] private GameObject btnRecoleccionMat;
- [SerializeField] private GameObject btnFiesta;
- [SerializeField] private GameObject btnDiaLibre;
- [SerializeField] private GameObject btnAlerta;
+  [SerializeField] private GameObject btnRecoleccionSum;
+  [SerializeField] private GameObject btnRecoleccionMat;
+  [SerializeField] private GameObject btnFiesta;
+  [SerializeField] private GameObject btnDiaLibre;
+  [SerializeField] private GameObject btnAlerta;
 
- [SerializeField] private TextMeshProUGUI textExploracionChances;
- [SerializeField] private TextMeshProUGUI textEmboscadaChances;
- 
- public int chancesAtaqueACaravana;
- private int chancesExploracion;
- private int tareaCivilSeleccionada;
+  [SerializeField] private TextMeshProUGUI textExploracionChances;
+  [SerializeField] private TextMeshProUGUI textEmboscadaChances;
 
- float valor = 0; 
- public void SeleccionarActividadCivil(int n)
- {
-   if(CampaignManager.Instance.intTipoClima == 3) //Lluvia desactiva fiesta
-   {
-     btnFiesta.transform.GetChild(0).gameObject.SetActive(false);
+  public int chancesAtaqueACaravana;
+  private int chancesExploracion;
+  private int tareaCivilSeleccionada;
 
-    if(n == 3)
-    {n = 1;}
-   }
-   
+  float valor = 0;
+  public void SeleccionarActividadCivil(int n)
+  {
+    if (CampaignManager.Instance.intTipoClima == 3) //Lluvia desactiva fiesta
+    {
+      btnFiesta.transform.GetChild(0).gameObject.SetActive(false);
+
+      if (n == 3)
+      { n = 1; }
+    }
+
 
     Actualizar();
-    if(n == 1) //Suministros
+    if (n == 1) //Suministros
     {
-        btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(false);
-        btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(true);
-        btnFiesta.transform.GetChild(0).gameObject.SetActive(true);
-        btnDiaLibre.transform.GetChild(0).gameObject.SetActive(true);
-        btnAlerta.transform.GetChild(0).gameObject.SetActive(true);
-       
-      
-
-        tareaCivilSeleccionada = n;
-        valor = (CampaignManager.Instance.GetCivilesActual()/3)/100* (100+CampaignManager.Instance.scAtributosZona.modRecoleccionSuministros);
-
-       if(CampaignManager.Instance.intTipoClima == 3) //Lluvia
-       {
-        valor = valor*0.85f; // -15% recoleccion suministors si llueve
-       }
-       if(CampaignManager.Instance.intTipoClima == 4) //Nieve
-       {
-        valor = valor*0.85f; // -15% recoleccion suministors si neva
-       }
-       if(CampaignManager.Instance.intTipoClima == 5) //Niebla
-       {
-        valor = valor*0.80f; // -20% recoleccion suministors si hay niebla
-       }
-       if(CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 5) //Bonus recoleccion nodo recursos
-       {
-        valor = valor*1.2f; // +20% recoleccion 
-       }
+      btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(false);
+      btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(true);
+      btnFiesta.transform.GetChild(0).gameObject.SetActive(true);
+      btnDiaLibre.transform.GetChild(0).gameObject.SetActive(true);
+      btnAlerta.transform.GetChild(0).gameObject.SetActive(true);
 
 
-        tareaCivilDescripcion.text =TRADU.i.Traducir("<b><u>Recolección de Suministros</b></u>\n\n\n");
-        tareaCivilDescripcion.text +=TRADU.i.Traducir("Los civiles se dedicarán a recolectar distintos suministros de las inmediaciones al campamento.\n\n");
-        tareaCivilDescripcion.text +=TRADU.i.Traducir($"<color=#d8a205>Se juntarán entre ") + (int)valor + TRADU.i.Traducir(" y ") + ((int)valor + 10) + TRADU.i.Traducir(" suministros. </color>\n\n\n");
 
-        chancesAtaqueACaravana = 25 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
-        chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
+      tareaCivilSeleccionada = n;
+      valor = (CampaignManager.Instance.GetCivilesActual() / 3) / 100 * (100 + CampaignManager.Instance.scAtributosZona.modRecoleccionSuministros);
+
+      if (CampaignManager.Instance.intTipoClima == 3) //Lluvia
+      {
+        valor = valor * 0.85f; // -15% recoleccion suministors si llueve
+      }
+      if (CampaignManager.Instance.intTipoClima == 4) //Nieve
+      {
+        valor = valor * 0.85f; // -15% recoleccion suministors si neva
+      }
+      if (CampaignManager.Instance.intTipoClima == 5) //Niebla
+      {
+        valor = valor * 0.80f; // -20% recoleccion suministors si hay niebla
+      }
+      if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 5) //Bonus recoleccion nodo recursos
+      {
+        valor = valor * 1.2f; // +20% recoleccion 
+      }
+
+
+      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Recolección de Suministros</b></u>\n\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se dedicarán a recolectar distintos suministros de las inmediaciones al campamento.\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir($"<color=#d8a205>Se juntarán entre ") + (int)valor + TRADU.i.Traducir(" y ") + ((int)valor + 10) + TRADU.i.Traducir(" suministros. </color>\n\n\n");
+
+      chancesAtaqueACaravana = 25 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
+      chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
 
 
     }
-    else if(n == 2) //Materiales
+    else if (n == 2) //Materiales
     {
-        btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(true);
-        btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(false);
-        btnFiesta.transform.GetChild(0).gameObject.SetActive(true);
-        btnDiaLibre.transform.GetChild(0).gameObject.SetActive(true);
-        btnAlerta.transform.GetChild(0).gameObject.SetActive(true);
+      btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(true);
+      btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(false);
+      btnFiesta.transform.GetChild(0).gameObject.SetActive(true);
+      btnDiaLibre.transform.GetChild(0).gameObject.SetActive(true);
+      btnAlerta.transform.GetChild(0).gameObject.SetActive(true);
 
-        tareaCivilSeleccionada = n;
-        valor = (CampaignManager.Instance.GetCivilesActual()/5)/100* (100+CampaignManager.Instance.scAtributosZona.modRecoleccionMateriales);
-        if(CampaignManager.Instance.intTipoClima == 5) //Niebla
-        {
-          valor = valor*0.80f; // -20% recoleccion materiales si hay niebla
-        }
-        if(CampaignManager.Instance.intTipoClima == 4) //Nieve
-        {
-          valor = valor*0.85f; // -15% recoleccion materiales si hay Nieve
-        }
-        if(CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 5) //Bonus recoleccion nodo recursos
-        {
-          valor = valor*1.2f; // +20% recoleccion 
-        }
-
-
-        tareaCivilDescripcion.text =TRADU.i.Traducir("<b><u>Recolección de Materiales</b></u>\n\n\n");
-        tareaCivilDescripcion.text +=TRADU.i.Traducir("Los civiles se dedicarán a recolectar materiales básicos en la zona.\n\n");
-        tareaCivilDescripcion.text +=TRADU.i.Traducir("<color=#d8a205>Se juntarán entre ") + (int)valor + TRADU.i.Traducir(" y ") + ((int)valor + 10) + TRADU.i.Traducir(" materiales. </color>\n\n\n");
-
-        chancesAtaqueACaravana = 25 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
-        chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
+      tareaCivilSeleccionada = n;
+      valor = (CampaignManager.Instance.GetCivilesActual() / 5) / 100 * (100 + CampaignManager.Instance.scAtributosZona.modRecoleccionMateriales);
+      if (CampaignManager.Instance.intTipoClima == 5) //Niebla
+      {
+        valor = valor * 0.80f; // -20% recoleccion materiales si hay niebla
+      }
+      if (CampaignManager.Instance.intTipoClima == 4) //Nieve
+      {
+        valor = valor * 0.85f; // -15% recoleccion materiales si hay Nieve
+      }
+      if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 5) //Bonus recoleccion nodo recursos
+      {
+        valor = valor * 1.2f; // +20% recoleccion 
+      }
 
 
+      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Recolección de Materiales</b></u>\n\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se dedicarán a recolectar materiales básicos en la zona.\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se juntarán entre ") + (int)valor + TRADU.i.Traducir(" y ") + ((int)valor + 10) + TRADU.i.Traducir(" materiales. </color>\n\n\n");
 
+      chancesAtaqueACaravana = 25 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
+      chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
 
-    }
-    else if(n == 3) //Fiesta
-    {
-        btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(true);
-        btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(true);
-        btnFiesta.transform.GetChild(0).gameObject.SetActive(false);
-        btnDiaLibre.transform.GetChild(0).gameObject.SetActive(true);
-        btnAlerta.transform.GetChild(0).gameObject.SetActive(true);
-
-        tareaCivilSeleccionada = n;
-
-        tareaCivilDescripcion.text =TRADU.i.Traducir("<b><u>Feria</b></u>\n\n\n");
-        tareaCivilDescripcion.text +=TRADU.i.Traducir("Los civiles dedicarán el día a organizar una feria con varios juegos y celebraciones.\n\n");
-        tareaCivilDescripcion.text +=TRADU.i.Traducir("<color=#d8a205>Se conseguirá entre 15 y 25 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n");
-
-        chancesAtaqueACaravana = 30 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
-        chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
-
-
-    }
-    else if(n == 4) //Dia Libre
-    {
-        btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(true);
-        btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(true);
-        btnFiesta.transform.GetChild(0).gameObject.SetActive(true);
-        btnDiaLibre.transform.GetChild(0).gameObject.SetActive(false);
-        btnAlerta.transform.GetChild(0).gameObject.SetActive(true);
-
-        tareaCivilSeleccionada = n;
-
-        tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Día Libre</b></u>\n\n\n");
-        tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se tomarán el día para descansar y recobrar fuerzas.\n\n");
-        tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se conseguirá 10 de Esperanza y el día siguiente arrancará con -1 Fatiga.</color>\n\n\n");
-
-        chancesAtaqueACaravana = 20 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
-        chancesExploracion = 50 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
 
 
 
     }
-    else if(n == 5) //Alerta
+    else if (n == 3) //Fiesta
     {
-        btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(true);
-        btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(true);
-        btnFiesta.transform.GetChild(0).gameObject.SetActive(true);
-        btnDiaLibre.transform.GetChild(0).gameObject.SetActive(true);
-        btnAlerta.transform.GetChild(0).gameObject.SetActive(false);
+      btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(true);
+      btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(true);
+      btnFiesta.transform.GetChild(0).gameObject.SetActive(false);
+      btnDiaLibre.transform.GetChild(0).gameObject.SetActive(true);
+      btnAlerta.transform.GetChild(0).gameObject.SetActive(true);
 
-        tareaCivilSeleccionada = n;
+      tareaCivilSeleccionada = n;
 
-        tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Estado de Alerta</b></u>\n\n\n");
-        tareaCivilDescripcion.text += TRADU.i.Traducir("Durante el descanso, se asignarán a los civiles mas aptos físicamente a la vigilancia del area circundante al campamento.\n\n");
-        tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Reduce chances de ataque a caravana. +20% a Exploración. -10 Esperanza.</color>\n\n\n");
+      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Feria</b></u>\n\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles dedicarán el día a organizar una feria con varios juegos y celebraciones.\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se conseguirá entre 15 y 25 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n");
 
-        chancesAtaqueACaravana = 0 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
-        chancesExploracion =  80 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
+      chancesAtaqueACaravana = 30 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
+      chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
 
 
     }
-    
-  Actualizar();
-
- }
-
- private void Actualizar()
- {
-    if(CampaignManager.Instance.intTipoClima == 3 || CampaignManager.Instance.intTipoClima == 4 || CampaignManager.Instance.intTipoClima == 5) //Lluvia, Nieve o Niebla
+    else if (n == 4) //Dia Libre
     {
-        chancesAtaqueACaravana -= 20;
+      btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(true);
+      btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(true);
+      btnFiesta.transform.GetChild(0).gameObject.SetActive(true);
+      btnDiaLibre.transform.GetChild(0).gameObject.SetActive(false);
+      btnAlerta.transform.GetChild(0).gameObject.SetActive(true);
+
+      tareaCivilSeleccionada = n;
+
+      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Día Libre</b></u>\n\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se tomarán el día para descansar y recobrar fuerzas.\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se conseguirá 10 de Esperanza y el día siguiente arrancará con -1 Fatiga.</color>\n\n\n");
+
+      chancesAtaqueACaravana = 20 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
+      chancesExploracion = 50 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
+
+
+
     }
-    if(CampaignManager.Instance.intTipoClima == 5) //Niebla
+    else if (n == 5) //Alerta
     {
-        chancesExploracion -= 20;
+      btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(true);
+      btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(true);
+      btnFiesta.transform.GetChild(0).gameObject.SetActive(true);
+      btnDiaLibre.transform.GetChild(0).gameObject.SetActive(true);
+      btnAlerta.transform.GetChild(0).gameObject.SetActive(false);
+
+      tareaCivilSeleccionada = n;
+
+      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Estado de Alerta</b></u>\n\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("Durante el descanso, se asignarán a los civiles mas aptos físicamente a la vigilancia del area circundante al campamento.\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Reduce chances de ataque a caravana. +20% a Exploración. -10 Esperanza.</color>\n\n\n");
+
+      chancesAtaqueACaravana = 0 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
+      chancesExploracion = 80 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
+
+
     }
+
+    Actualizar();
+
+  }
+
+  private void Actualizar()
+  {
+    if (CampaignManager.Instance.intTipoClima == 3 || CampaignManager.Instance.intTipoClima == 4 || CampaignManager.Instance.intTipoClima == 5) //Lluvia, Nieve o Niebla
+    {
+      chancesAtaqueACaravana -= 20;
+    }
+    if (CampaignManager.Instance.intTipoClima == 5) //Niebla
+    {
+      chancesExploracion -= 20;
+    }
+
+
+    chancesExploracion += MetaprogresionManager.Instance.SerriaTierAlmenaras * 3;
+
     
     //Aliento negro aumenta chances de ataque a caravana
-    chancesAtaqueACaravana += (int)(CampaignManager.Instance.GetValorAlientoNegro()/2);
+    chancesAtaqueACaravana += (int)(CampaignManager.Instance.GetValorAlientoNegro() / 2);
 
     //Actividades que toquen emboscada y exploracion van aca 
     foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
@@ -219,35 +223,35 @@ public class MenuDescanso : MonoBehaviour
         chancesAtaqueACaravana -= 5;
 
       }
-   
+
     }
 
-    
+
 
     if (CampaignManager.Instance.scMenuSequito.TieneSequito(5)) { chancesAtaqueACaravana += 2; } //Herboristas, aumentan chances 2%
-    
-    chancesAtaqueACaravana -= CampaignManager.Instance.mejoraCaravanaAntorchas*5;
-    chancesExploracion += CampaignManager.Instance.mejoraCaravanaCatalejos*5;
+
+    chancesAtaqueACaravana -= CampaignManager.Instance.mejoraCaravanaAntorchas * 5;
+    chancesExploracion += CampaignManager.Instance.mejoraCaravanaCatalejos * 5;
 
     chancesExploracion += CampaignManager.Instance.ExploracionSumadaPorActividades();
-    
+
     if (CampaignManager.Instance.intTipoClima == 6) //Almas Danzantes
     {
       chancesAtaqueACaravana = 0;
     }
-     if (CampaignManager.Instance.intTipoClima == 9) //Masacre Zarkil
+    if (CampaignManager.Instance.intTipoClima == 9) //Masacre Zarkil
     {
       chancesAtaqueACaravana += 10;
     }
 
     chancesAtaqueACaravana = Mathf.Clamp(chancesAtaqueACaravana, 0, 100);
-    
+
     chancesExploracion = Mathf.Clamp(chancesExploracion, 0, 100);
 
     textEmboscadaChances.text = TRADU.i.Traducir("Las probabilidades de sufrir un ataque a la Caravana ") + chancesAtaqueACaravana + "%";
-    textExploracionChances.text = TRADU.i.Traducir("Las probabilidades de exploración: ")+chancesExploracion+"%";
+    textExploracionChances.text = TRADU.i.Traducir("Las probabilidades de exploración: ") + chancesExploracion + "%";
 
- }
+  }
 
 
 
@@ -280,7 +284,7 @@ public class MenuDescanso : MonoBehaviour
 
     } //Recoleccion Materiales
 
-    float consumo = CampaignManager.Instance.GetCivilesActual()+ CampaignManager.Instance.GetBueyesActual()*2;
+    float consumo = CampaignManager.Instance.GetCivilesActual() + CampaignManager.Instance.GetBueyesActual() * 2;
     if (tareaCivilSeleccionada == 3)
     {
       consumo = consumo * 1.2f;
@@ -319,7 +323,7 @@ public class MenuDescanso : MonoBehaviour
       if (pers.ActividadSeleccionada == 4) //Caballero: Relatos de Batalla
       {
         CampaignManager.Instance.CambiarEsperanzaActual(4);
-        CampaignManager.Instance.EscribirLog($"-"+pers.sNombre+TRADU.i.Traducir(" comparte sus historias de batalla con los civiles. +4 Esperanza"));
+        CampaignManager.Instance.EscribirLog($"-" + pers.sNombre + TRADU.i.Traducir(" comparte sus historias de batalla con los civiles. +4 Esperanza"));
       }
       if (pers.Camp_Enfermo > 0) //Disminuye Enfermedad
       {
@@ -327,21 +331,21 @@ public class MenuDescanso : MonoBehaviour
 
         //Sequito Curanderos ayuda a disminuir enfermedad 1 extra
         int rand = UnityEngine.Random.Range(1, 100);
-        float tierCuranderos =((CampaignManager.Instance.sequitoCuranderosMejoraCuracion*100)-10)/5;
+        float tierCuranderos = ((CampaignManager.Instance.sequitoCuranderosMejoraCuracion * 100) - 10) / 5;
         if (pers.Camp_Enfermo > 0 && rand <= 20 + (int)tierCuranderos * 10)
         {
           pers.Camp_Enfermo -= 1;
-          CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-El Séquito de Curanderos ha reducido la enfermedad de")+ pers.sNombre+TRADU.i.Traducir(" en 1 extra."));
+          CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-El Séquito de Curanderos ha reducido la enfermedad de") + pers.sNombre + TRADU.i.Traducir(" en 1 extra."));
 
         }
       }
       if (pers.Camp_Moral > 0) //Moral tiende a cero
       {
-        pers.Camp_Moral -= 1; 
+        pers.Camp_Moral -= 1;
       }
       if (pers.Camp_Moral < 0) //Moral tiende a cero
       {
-        pers.Camp_Moral += 1; 
+        pers.Camp_Moral += 1;
       }
 
 
@@ -362,7 +366,7 @@ public class MenuDescanso : MonoBehaviour
 
       if (pers.fVidaMaxima > pers.fVidaActual)
       {
-        CampaignManager.Instance.EscribirLog("-"+pers.sNombre+TRADU.i.Traducir(" se cura ")+(int)porcentajeVidaMax+TRADU.i.Traducir(" PV tras el Descanso."));
+        CampaignManager.Instance.EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" se cura ") + (int)porcentajeVidaMax + TRADU.i.Traducir(" PV tras el Descanso."));
       }
       pers.RecibirCuracion(porcentajeVidaMax);
 
@@ -395,9 +399,9 @@ public class MenuDescanso : MonoBehaviour
 
 
 
-     CampaignManager.Instance.BosqueArdienteMecanicaIncendio(40);
-     CampaignManager.Instance.BosqueArdienteMecanicaIncendio(40);
-     CampaignManager.Instance.PasoVientoHeladoMecanicaRituales(30);
+    CampaignManager.Instance.BosqueArdienteMecanicaIncendio(30);
+    CampaignManager.Instance.BosqueArdienteMecanicaIncendio(40);
+    CampaignManager.Instance.PasoVientoHeladoMecanicaRituales(30);
 
     int fatiga = CampaignManager.Instance.GetFatigaActual();
     if (tareaCivilSeleccionada == 4)
@@ -422,7 +426,7 @@ public class MenuDescanso : MonoBehaviour
       float mueren = faltaSum / 20;
       CampaignManager.Instance.CambiarCivilesActuales(-(int)mueren);
 
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La falta de Suministros ha provocado la muerte de ")+mueren+TRADU.i.Traducir(" Civiles."));
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La falta de Suministros ha provocado la muerte de ") + mueren + TRADU.i.Traducir(" Civiles."));
 
 
     }
@@ -440,14 +444,14 @@ public class MenuDescanso : MonoBehaviour
     {
       int random = UnityEngine.Random.Range(1, 5);
       CampaignManager.Instance.CambiarCivilesActuales(-random);
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Por la baja Esperanza ")+random+TRADU.i.Traducir(" Civiles han abandonado la Caravana."));
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Por la baja Esperanza ") + random + TRADU.i.Traducir(" Civiles han abandonado la Caravana."));
 
     }
     else if (CampaignManager.Instance.GetEsperanzaActual() <= 10)
     {
       int random = UnityEngine.Random.Range(1, 11);
       CampaignManager.Instance.CambiarCivilesActuales(-random);
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Por la muy baja Esperanza ")+random+TRADU.i.Traducir(" Civiles han abandonado la Caravana."));
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Por la muy baja Esperanza ") + random + TRADU.i.Traducir(" Civiles han abandonado la Caravana."));
     }
 
     //Efectos Esperanza en Descanso 
@@ -456,18 +460,18 @@ public class MenuDescanso : MonoBehaviour
       float random = UnityEngine.Random.Range(1, 21) + CampaignManager.Instance.GetCivilesActual() / 3;
       CampaignManager.Instance.CambiarOroActual((int)random);
 
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Debido al optimismo que rodea la Caravana, los Civiles han donado Oro: ")+random);
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Debido al optimismo que rodea la Caravana, los Civiles han donado Oro: ") + random);
     }
     else if (CampaignManager.Instance.GetEsperanzaActual() >= 90)
     {
       float random = UnityEngine.Random.Range(1, 21) + CampaignManager.Instance.GetCivilesActual() / 2;
       CampaignManager.Instance.CambiarOroActual((int)random);
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Debido al gran optimismo que rodea la Caravana, los Civiles han donado Oro: ")+random);
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Debido al gran optimismo que rodea la Caravana, los Civiles han donado Oro: ") + random);
 
     }
 
     TiradaClima();
-     CampaignManager.Instance.sunController.ResetSun();
+    CampaignManager.Instance.sunController.ResetSun();
 
     #region Acechadores Sueldo
     //Sueldo Acechadores
@@ -476,7 +480,7 @@ public class MenuDescanso : MonoBehaviour
     {
       sueldoAcechadores = CampaignManager.Instance.CuantosPersonajesSonDeTalClase(4) * 20; //Acechadores
       CampaignManager.Instance.CambiarOroActual(-sueldoAcechadores);
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Acechadores en la Caravana se han cobrado su sueldo por Oro: ")+sueldoAcechadores);
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Acechadores en la Caravana se han cobrado su sueldo por Oro: ") + sueldoAcechadores);
     }
     else //Si la esperanza es mayor o igual a 70, no cobran.
     {
@@ -522,43 +526,51 @@ public class MenuDescanso : MonoBehaviour
 
 
 
-
-    //Probabilidad emboscada
-    // (Audio) Se maneja al principio de Descansar()
-
-    int randomEmboscada = UnityEngine.Random.Range(1, 101);
-    if (randomEmboscada <= chancesAtaqueACaravana) 
+    if (!toggleMenuMisiones.isOn) //Si no pidió rescate, todo normal
     {
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La caravana han sufrido un Ataque durante el descanso. Probabilidades ")+chancesAtaqueACaravana+TRADU.i.Traducir("% - Tirada: 1d100 = ")+randomEmboscada);
+      //Probabilidad emboscada
+      // (Audio) Se maneja al principio de Descansar()
 
-      CampaignManager.Instance.scMenuBatallas.EventoBatallaCaravana(0, 3);
-      // (Audio) Ignorado: la música de batalla se maneja en AdministradorEscenas
-    }
-    else //no puede haber evento y emboscada
-    { 
-       if(randomEvento < factorEventoBuenoMalo)
+      int randomEmboscada = UnityEngine.Random.Range(1, 101);
+      if (randomEmboscada <= chancesAtaqueACaravana)
       {
-         if(CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 4) //En Claros no hay eventos negativos.
-         {CampaignManager.Instance.EmpezarEventoBueno();}
-         else{ CampaignManager.Instance.EmpezarEventoMalo();} //evento negativo de nodo normal
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La caravana han sufrido un Ataque durante el descanso. Probabilidades ") + chancesAtaqueACaravana + TRADU.i.Traducir("% - Tirada: 1d100 = ") + randomEmboscada);
 
-        
+        CampaignManager.Instance.scMenuBatallas.EventoBatallaCaravana(0, 3);
+        // (Audio) Ignorado: la música de batalla se maneja en AdministradorEscenas
+      }
+      else //no puede haber evento y emboscada
+      {
+        if (randomEvento < factorEventoBuenoMalo)
+        {
+          if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 4) //En Claros no hay eventos negativos.
+          { CampaignManager.Instance.EmpezarEventoBueno(); }
+          else { CampaignManager.Instance.EmpezarEventoMalo(); } //evento negativo de nodo normal
 
-      }else{ CampaignManager.Instance.EmpezarEventoBueno();}
 
-      // (Audio) Ya se reanudó desde MusicManager tras terminar el SFX
 
+        }
+        else { CampaignManager.Instance.EmpezarEventoBueno(); }
+
+        // (Audio) Ya se reanudó desde MusicManager tras terminar el SFX
+
+      }
+    }
+    else
+    {
+      CampaignManager.Instance.EmpezarEvento(404); //Evento de Misión de Rescate
+      MetaprogresionManager.Instance.MisionesSalvamento--;
     }
 
+    goMenuMisiones.SetActive(false);
+  }
 
- }
-
- public GameObject climaNieve;
- public GameObject climaLluvia;
- public GameObject climaNiebla;
- public GameObject climaAlmasDanzantes;
- public GameObject climaAuroraBoreal;
- public GameObject climaMasacre;
+  public GameObject climaNieve;
+  public GameObject climaLluvia;
+  public GameObject climaNiebla;
+  public GameObject climaAlmasDanzantes;
+  public GameObject climaAuroraBoreal;
+  public GameObject climaMasacre;
   public void TiradaClima()
   {
     int random = UnityEngine.Random.Range(1, 101);
@@ -569,7 +581,7 @@ public class MenuDescanso : MonoBehaviour
     climaMasacre.SetActive(false);
     climaAlmasDanzantes.SetActive(false);
 
-    
+
 
 
 
@@ -678,5 +690,53 @@ public class MenuDescanso : MonoBehaviour
 
 
   }
+
+
+
+  public TextMeshProUGUI txtCantidadMisionesdisp;
+  public TextMeshProUGUI txtResMision;
+ 
+
+  public GameObject goMenuMisiones;
+
+  public GameObject descIngles;
+  public GameObject descEsp;
+  
+  public Toggle toggleMenuMisiones;
+  public void AbrirMenuMisiones()
+  {
+    goMenuMisiones.SetActive(!goMenuMisiones.activeInHierarchy);
+    int misionesDisponibles = MetaprogresionManager.Instance.MisionesSalvamento;
+    txtCantidadMisionesdisp.text = TRADU.i.Traducir("Misiones Disponibles: ") + misionesDisponibles;
+    toggleMenuMisiones.isOn = false;
+
+    if (MetaprogresionManager.Instance.MisionesSalvamento < 1) { toggleMenuMisiones.interactable = false; }
+    else { toggleMenuMisiones.interactable = true; }
+
+    if (TRADU.i.nIdioma == 1) //Español
+    {
+      descIngles.SetActive(false);
+      descEsp.SetActive(true);
+      int suministros = 30;
+      suministros += MetaprogresionManager.Instance.SerriaTierGranjas * 15;
+
+      txtResMision.text = $"+25 Esperanza\n+{suministros} Suministros\n+20 Materiales\n+200 Oro\n+1 Explorador o Acechador";
+    }
+    else if (TRADU.i.nIdioma == 2)
+    {
+      descIngles.SetActive(true);
+      descEsp.SetActive(false);
+      int suministros = 30;
+      suministros += MetaprogresionManager.Instance.SerriaTierGranjas * 15;
+      txtResMision.text = $"+25 Hope\n+{suministros} Supplies\n+20 Materials\n+200 Gold\n+1 Explorer or Stalker";
+
+    }
+
+
+
+
+  }
+
+
 
 }

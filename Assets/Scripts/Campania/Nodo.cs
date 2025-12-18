@@ -765,7 +765,7 @@ public class Nodo : MonoBehaviour
     }
   }
 
-  void DesactivarGraficosNodo()
+  public void DesactivarGraficosNodo()
   {
     foreach (Transform child in transform)
     {
@@ -796,7 +796,7 @@ public class Nodo : MonoBehaviour
       case 13: indice = 11; break; // 13: Salida del atajo subterráneo
       case 14: indice = 12; break; //14: Santuario
       case 15: indice = 15; break; //15: Ritual Kale'Tav
-
+      case 16: indice = 16; break; //16: Misión de Salvamento
     }
 
 
@@ -821,7 +821,7 @@ public class Nodo : MonoBehaviour
     if (nodoRitual) chancesMisterioso = 0;
     if (nodoIncendiado) chancesMisterioso = 0;
 
-    if (UnityEngine.Random.Range(0, 100) < chancesMisterioso)
+    if (UnityEngine.Random.Range(0, 100) < chancesMisterioso && tipoNodo != 16)
     {
       num = 12; // misterioso
       esMisterioso = true;
@@ -838,7 +838,10 @@ public class Nodo : MonoBehaviour
       if (nodoenXactual >= posXNodo) { return; } //No activa VFx de revelado en nodos de la misma altura en X
 
       if (!CampaignManager.Instance.scMapaManager.nodoActual.DestinosPosibles.Contains(this) || esAtajo)
-        transform.GetChild(13).gameObject.SetActive(true); // vfx de revelado (no inmediatos)
+      {
+        if (tipoNodo != 16) //no vfx en misión de salvamento
+        { transform.GetChild(13).gameObject.SetActive(true); }
+      } // vfx de revelado (no inmediatos)
     }
 
   }
@@ -896,6 +899,7 @@ public class Nodo : MonoBehaviour
       case 10: descripcion = TRADU.i.Traducir("Batalla final de la Zona actual."); break;
       case 11: descripcion = TRADU.i.Traducir("<b>(!)</b> Zona Expuesta, la caravana será emboscada."); break;
       case 15: descripcion = TRADU.i.Traducir("Batalla Kale'Tav"); break;
+      case 16: descripcion = TRADU.i.Traducir("Ubicación de la Misión de Salvamento"); break;
 
       default: descripcion = TRADU.i.Traducir("Nodo Desconocido."); break;
     }

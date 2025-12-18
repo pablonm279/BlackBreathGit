@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -92,27 +93,26 @@ public class UIBotonesHabilidades : MonoBehaviour
             }
         }
 
-        foreach (Habilidad habilidad in noHostilNoMelee)
+        foreach (Habilidad habilidad in noHostilNoMelee.OrderBy(h => h.costoAP))
         {
             CrearBotonHabilidad(habilidad);
         }
 
-        foreach (Habilidad habilidad in noHostilMelee)
+        foreach (Habilidad habilidad in noHostilMelee.OrderBy(h => h.costoAP))
         {
             CrearBotonHabilidad(habilidad);
         }
 
-        foreach (Habilidad habilidad in hostilNoMelee)
+        foreach (Habilidad habilidad in hostilNoMelee.OrderBy(h => h.costoAP))
         {
             CrearBotonHabilidad(habilidad);
         }
 
-        foreach (Habilidad habilidad in hostilMelee)
+        foreach (Habilidad habilidad in hostilMelee.OrderBy(h => h.costoAP))
         {
             CrearBotonHabilidad(habilidad);
         }
       }
-     
     }
 
 
@@ -141,9 +141,10 @@ public class UIBotonesHabilidades : MonoBehaviour
         habilidadBotonUI.HabilidadRepresentada = habilidad;
         habilidadBotonUI.UpdateCooldownMuestra();
 
-        if(listaBotonesHabilidad != null)
+        if (listaBotonesHabilidad != null)
         {
             listaBotonesHabilidad.Add(habilidadBotonUI);
+            habilidadBotonUI.AsignarHotkey();
         }
     }
 
