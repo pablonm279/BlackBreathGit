@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_Caravana
+  m_Name: Mat_Caravanaposta2
   m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -45,7 +45,7 @@ Material:
         m_Scale: {x: 0.72, y: 1.4}
         m_Offset: {x: 0.11, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: d9559a523950b1140bda9565f1643d53, type: 3}
+        m_Texture: {fileID: 2800000, guid: 8dbdc4a9ec0a14e4b90633d45c58c4c0, type: 3}
         m_Scale: {x: 0.72, y: 1.4}
         m_Offset: {x: 0.11, y: 0}
     - _MetallicGlossMap:
@@ -62,7 +62,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BumpScale: 0.2
+    - _BumpScale: 0.3
     - _Cutoff: 0.572
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -79,7 +79,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.745283, g: 0.73473656, b: 0.73473656, a: 1}
+    - _Color: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
     - _EmissionColor: {r: 0.7075472, g: 0.65080994, b: 0.65080994, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+//using Unity.VisualScripting;
+//using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -36,7 +37,7 @@ public class Nodo : MonoBehaviour
   public Material caminoLento;
 
   // Lógica movimiento
-  public float velocidadMovimiento = 6f;
+  public float velocidadMovimiento = 4f;
 
   // Internos
   public bool yatiroConexiones = false;
@@ -61,6 +62,13 @@ public class Nodo : MonoBehaviour
   {
     CampaignManager.Instance.MoviendoCaravana = false;
     scMapaManager.nodoActual = this;
+
+    scMapaManager.goCaravanafollower1.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", false);
+    scMapaManager.goCaravanafollower2.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", false);
+    scMapaManager.goCaravanafollower3.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", false);
+    scMapaManager.goCaravanafollower4.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", false);
+    scMapaManager.goCaravanafollower5.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", false);
+    scMapaManager.goCaravanafollower6.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", false);
 
     string hayExploracionExplorador = "";
     foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
@@ -93,7 +101,7 @@ public class Nodo : MonoBehaviour
 
     int chancesAtajo = 15;
     chancesAtajo += 5 * CampaignManager.Instance.CuantosPersonajesHacenTalActividad(9);
-    if(CampaignManager.Instance.scAtributosZona.ID == 3){ chancesAtajo = 0; } // En Nedukazal no hay atajos
+    if (CampaignManager.Instance.scAtributosZona.ID == 3) { chancesAtajo = 0; } // En Nedukazal no hay atajos
 
     if (UnityEngine.Random.Range(0, 100) < chancesAtajo && posXNodo < 9)
     {
@@ -396,7 +404,7 @@ public class Nodo : MonoBehaviour
 
     transform.GetChild(0).gameObject.SetActive(true);
     transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
-    Invoke("EsconderSiNedukazal", 0.15f); 
+    Invoke("EsconderSiNedukazal", 0.15f);
     gameObject.SetActive(true);
   }
 
@@ -429,9 +437,15 @@ public class Nodo : MonoBehaviour
     }
   }
 
+
   public void MoverJugadorANodo(Nodo nodoOrigen, Nodo nodoDestino)
   {
-    velocidadMovimiento = 2f + 3f / nodoDestino.costoMovimiento;
+    velocidadMovimiento = 0.6f + 0.6f / nodoDestino.costoMovimiento;
+    int cansancio = CampaignManager.Instance.GetFatigaActual();
+
+
+    velocidadMovimiento -= cansancio * 0.07f; //Factor cansancio en velocidad
+
 
     if (nodoDestino == null || !nodoOrigen.DestinosPosibles.Contains(nodoDestino))
     {
@@ -468,39 +482,117 @@ public class Nodo : MonoBehaviour
         girarCaravana.CambiarSpriteSegunRuta(nodoOrigen, nodoDestino);
     }
 
-    StartCoroutine(MoverAloLargoDeLaCurva(lineaTransform.GetComponent<LineRenderer>()));
-
+   /* StartCoroutine(MoverAloLargoDeLaCurva(0.0f, true, scMapaManager.goCaravana, lineaTransform.GetComponent<LineRenderer>(), 1.5f));
+    StartCoroutine(MoverAloLargoDeLaCurva(0.35f, false, scMapaManager.goCaravanafollower1, lineaTransform.GetComponent<LineRenderer>(), 1.3f));
+    StartCoroutine(MoverAloLargoDeLaCurva(0.5f, false, scMapaManager.goCaravanafollower2, lineaTransform.GetComponent<LineRenderer>(), 1.15f));
+    StartCoroutine(MoverAloLargoDeLaCurva(0.75f, false, scMapaManager.goCaravanafollower3, lineaTransform.GetComponent<LineRenderer>(), 1.0f));
+    StartCoroutine(MoverAloLargoDeLaCurva(1.0f, false, scMapaManager.goCaravanafollower4, lineaTransform.GetComponent<LineRenderer>(), 0.95f));
+    StartCoroutine(MoverAloLargoDeLaCurva(1.15f, false, scMapaManager.goCaravanafollower5, lineaTransform.GetComponent<LineRenderer>(), 0.85f));
+    StartCoroutine(MoverAloLargoDeLaCurva(1.25f, false, scMapaManager.goCaravanafollower6, lineaTransform.GetComponent<LineRenderer>(), 0.8f));
+*/
+    StartCoroutine(MoverConvoyEnLinea(lineaTransform.GetComponent<LineRenderer>()));
   }
 
-  private IEnumerator MoverAloLargoDeLaCurva(LineRenderer lineRenderer)
+ /* private IEnumerator MoverAloLargoDeLaCurva(float delay, bool esLaLider, GameObject caravana, LineRenderer lineRenderer, float velRotacion)
   {
-    GameObject caravana = scMapaManager.goCaravana;
-    float t = 0f;
+    if (caravana == null) yield break;
+
+    GameObject caravanarotacion = esLaLider ? caravana.transform.GetChild(4).gameObject : caravana.transform.GetChild(0).gameObject;
+
     int resolution = lineRenderer.positionCount;
 
     Vector3 inicio = lineRenderer.GetPosition(0);
     Vector3 fin = lineRenderer.GetPosition(resolution - 1);
     Vector3 dirAvance = (fin - inicio).normalized;
 
-    Vector3 ultima = caravana.transform.position;
+    // Ajustes
+    float velocidadRotacion = velRotacion;                 // más alto = gira más rápido
+    float lookAhead = Mathf.Max(0.01f, 2f / Mathf.Max(2, resolution)); // cuánto “mira” hacia adelante en la curva
 
-    while (t < 1f)
+    // --- Rotación durante el delay (no mover aún) ---
+    float elapsed = 0f;
+    while (elapsed < delay)
     {
-      t += Time.deltaTime * velocidadMovimiento / resolution;
-      Vector3 nuevaPosicion = CalcularPosicionEnCurva(lineRenderer, t);
+      float tFuture = Mathf.Clamp01(0f + lookAhead);
+      Vector3 posFutura = CalcularPosicionEnCurva(lineRenderer, tFuture);
 
-      Vector3 delta = nuevaPosicion - ultima;
-      if (Vector3.Dot(delta, dirAvance) < 0f) nuevaPosicion = ultima;
+      Vector3 forward = (posFutura - caravanarotacion.transform.position);
+      forward.y = 0f;
+      if (forward.sqrMagnitude > 0.000001f)
+      {
+        Quaternion rotObjetivo = Quaternion.LookRotation(forward.normalized, Vector3.up);
+        float k = 1f - Mathf.Exp(-velocidadRotacion * Time.deltaTime);
+        caravanarotacion.transform.rotation = Quaternion.Slerp(caravanarotacion.transform.rotation, rotObjetivo, k);
+      }
 
-      caravana.transform.position = nuevaPosicion;
-      ultima = nuevaPosicion;
-
+      elapsed += Time.deltaTime;
       yield return null;
     }
 
-    caravana.transform.position = fin;
-    LlegoCaravana();
+  // Comienza el movimiento
+float t = 0f;
+Vector3 ultima = caravana.transform.position;
+
+// Cuánto del recorrido usás para acelerar y frenar (0.15 = 15%)
+const float ramp = 0.35f;
+
+while (t < 1f)
+{
+  float tNorm = Mathf.Clamp01(t);
+
+  // Factor de velocidad: acelera al inicio y frena al final
+  float inF  = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(tNorm / ramp));
+  float outF = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((1f - tNorm) / ramp));
+
+  float speedFactor = inF * outF;
+
+  // Piso para que no se quede “cerquita” eternamente
+  speedFactor = Mathf.Max(0.03f, speedFactor);
+
+  // Avance de t (acá va el suavizado)
+  t += Time.deltaTime * velocidadMovimiento / resolution * speedFactor;
+
+  // Snap final
+  if (t >= 0.999f) t = 1f;
+
+  float tClamped = Mathf.Clamp01(t);
+
+  // Posición SIEMPRE con tClamped (monótono)
+  Vector3 nuevaPosicion = CalcularPosicionEnCurva(lineRenderer, tClamped);
+
+  Vector3 delta = nuevaPosicion - ultima;
+  if (Vector3.Dot(delta, dirAvance) < 0f)
+    nuevaPosicion = ultima;
+
+  // Rotación siguiendo la curva (lookahead también con tClamped)
+  float tFuturo = Mathf.Clamp01(tClamped + lookAhead);
+  Vector3 posFutura = CalcularPosicionEnCurva(lineRenderer, tFuturo);
+
+  Vector3 forward = (posFutura - nuevaPosicion);
+  forward.y = 0f;
+
+  if (forward.sqrMagnitude > 0.000001f)
+  {
+    Quaternion rotObjetivo = Quaternion.LookRotation(forward.normalized, Vector3.up);
+    float k = 1f - Mathf.Exp(-velocidadRotacion * Time.deltaTime);
+    caravanarotacion.transform.rotation =
+      Quaternion.Slerp(caravanarotacion.transform.rotation, rotObjetivo, k);
   }
+
+  caravana.transform.position = nuevaPosicion;
+  ultima = nuevaPosicion;
+
+  yield return null;
+}
+
+caravana.transform.position = fin;
+if (esLaLider)
+{
+  LlegoCaravana();
+}
+  }*/
+
+
 
   private Vector3 CalcularPosicionEnCurva(LineRenderer lineRenderer, float t)
   {
@@ -1002,6 +1094,396 @@ public class Nodo : MonoBehaviour
       transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
     }
     else
-    { transform.GetChild(0).GetChild(0).gameObject.SetActive(true);}
+    { transform.GetChild(0).GetChild(0).gameObject.SetActive(true); }
   }
+  
+  [Header("Convoy")]
+public float rotSpeed = 10f;            // suavizado de rotación
+public float lookAheadDist = 0.5f;    // “mira” hacia adelante para orientar
+float gapDist = 0.66f;              // distancia entre vehículos
+private IEnumerator MoverConvoyEnLinea(LineRenderer lr)
+{
+    // Ajustes de suavizado (si querés tunear, subilos a fields públicos)
+    float easeInTime = 0.2f;       // segundos para acelerar al inicio
+    float easeOutDist = 0.6f;       // metros antes del final para frenar líder
+    float easeOutTailDist = 0.08f;   // “error” de cola para frenar al final
+    float minSpeedFactor = 0.10f;   // piso para que no se quede “cerquita”
+    float snapEps = 0.03f;          // snap final del líder (en metros aprox)
+
+    if (lr == null) yield break;
+
+    // Convoy ordenado
+    var convoy = new List<(GameObject go, Transform rot)>();
+    void AddIf(GameObject go, bool esLider)
+    {
+        if (go == null) return;
+        int idx = esLider ? 4 : 0; // tu setup
+        Transform rotT = (go.transform.childCount > idx) ? go.transform.GetChild(idx) : null;
+        convoy.Add((go, rotT));
+    }
+
+    AddIf(scMapaManager.goCaravana, true);
+    AddIf(scMapaManager.goCaravanafollower1, false);
+    AddIf(scMapaManager.goCaravanafollower2, false);
+    AddIf(scMapaManager.goCaravanafollower3, false);
+    AddIf(scMapaManager.goCaravanafollower4, false);
+    AddIf(scMapaManager.goCaravanafollower5, false);
+    AddIf(scMapaManager.goCaravanafollower6, false);
+
+    scMapaManager.goCaravanafollower1.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", true);
+    scMapaManager.goCaravanafollower2.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", true);
+    scMapaManager.goCaravanafollower3.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", true);
+    scMapaManager.goCaravanafollower4.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", true);
+    scMapaManager.goCaravanafollower5.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", true);
+    scMapaManager.goCaravanafollower6.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", true);
+
+    int m = convoy.Count;
+    if (m == 0) yield break;
+
+    // Puntos del camino en WORLD
+    int n = lr.positionCount;
+    if (n < 2) yield break;
+
+    Vector3[] pts = new Vector3[n];
+    for (int i = 0; i < n; i++)
+    {
+        Vector3 p = lr.GetPosition(i);
+        pts[i] = lr.useWorldSpace ? p : lr.transform.TransformPoint(p);
+    }
+
+    // Longitudes acumuladas del tramo
+    float[] segLen = new float[n - 1];
+    float[] cumLen = new float[n];
+    cumLen[0] = 0f;
+    for (int i = 0; i < n - 1; i++)
+    {
+        float L = Vector3.Distance(pts[i], pts[i + 1]);
+        segLen[i] = L;
+        cumLen[i + 1] = cumLen[i] + L;
+    }
+
+    float totalLen = cumLen[n - 1];
+    if (totalLen <= 0.0001f) yield break;
+
+    // Gap desde el Inspector (no lo pises con un local)
+    float gap = Mathf.Max(0.0001f, this.gapDist);
+
+
+    // Trail del líder: seed con estado actual (cola -> ... -> líder) para cero teleports
+    var trailPos = new List<Vector3>(256);
+    var trailRot = new List<Quaternion>(256);
+    var trailS   = new List<float>(256);
+
+    for (int i = m - 1; i >= 0; i--)
+    {
+        Vector3 p = convoy[i].go.transform.position;
+        Quaternion r = (convoy[i].rot != null) ? convoy[i].rot.rotation : Quaternion.identity;
+
+        if (trailPos.Count == 0)
+        {
+            trailPos.Add(p);
+            trailRot.Add(r);
+            trailS.Add(0f);
+        }
+        else
+        {
+            float add = Vector3.Distance(trailPos[trailPos.Count - 1], p);
+            trailPos.Add(p);
+            trailRot.Add(r);
+            trailS.Add(trailS[trailS.Count - 1] + add);
+        }
+    }
+
+    // “odómetro” de cada follower sobre el TRAIL (esto es lo que permite que sigan moviéndose al final)
+    float[] followerS = new float[m];
+    for (int i = 0; i < m; i++)
+        followerS[i] = ProjectDistanceOnTrail(trailPos, trailS, convoy[i].go.transform.position);
+
+    // Arrancamos líder en su proyección al tramo nuevo
+    float leaderS = ProjectDistanceOnPolyline(pts, cumLen, convoy[0].go.transform.position);
+
+    const float minSampleDist = 0.02f;
+    float maxTrailBack = gap * (m - 1) + 2.0f;
+
+    float elapsed = 0f;
+    bool leaderArrived = false;
+    float speedFactorSmoothed = minSpeedFactor;
+    const float speedSmooth = 10f; // subí a 12-16 si aún hay tirón
+    
+    while (true)
+    {
+      float dt = Time.deltaTime;
+      elapsed += dt;
+
+      // Factor de aceleración inicial
+      float easeIn = (easeInTime <= 0.0001f) ? 1f : Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / easeInTime));
+
+      // Factor de frenado (líder) o drenado (cola)
+      float easeOutFactor;
+
+      if (!leaderArrived)
+      {
+        float remaining = totalLen - leaderS;
+
+        // Snap para que no quede “cerquita”
+        if (remaining <= snapEps)
+        {
+          leaderS = totalLen;
+          leaderArrived = true;
+          remaining = 0f;
+        }
+
+        // 1 lejos, 0 cerca del final
+        easeOutFactor = (easeOutDist <= 0.0001f)
+            ? 1f
+            : Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(remaining / easeOutDist));
+      }
+      else
+      {
+        // Drenado: si la cola todavía tiene error grande, seguimos a buena velocidad;
+        // si el error es chico, frenamos suave.
+        float headTrailS2 = trailS[trailS.Count - 1];
+        float maxErr = 0f;
+
+        for (int i = 1; i < m; i++)
+        {
+          float targetS = headTrailS2 - gap * i;
+          if (targetS < trailS[0]) targetS = trailS[0];
+          float err = Mathf.Abs(followerS[i] - targetS);
+          if (err > maxErr) maxErr = err;
+        }
+
+        easeOutFactor = (easeOutTailDist <= 0.0001f)
+            ? 1f
+            : Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(maxErr / easeOutTailDist));
+      }
+
+      float speedFactorTarget = Mathf.Max(minSpeedFactor, easeIn * easeOutFactor);
+
+// suavizado exponencial independiente del FPS
+float kSpeed = 1f - Mathf.Exp(-speedSmooth * dt);
+speedFactorSmoothed = Mathf.Lerp(speedFactorSmoothed, speedFactorTarget, kSpeed);
+
+float step = Mathf.Max(0f, velocidadMovimiento) * dt * speedFactorSmoothed;
+
+
+      // Mover líder hasta el final (luego se queda)
+      if (!leaderArrived)
+      {
+        leaderS = Mathf.MoveTowards(leaderS, totalLen, step);
+        if (totalLen - leaderS <= snapEps)
+        {
+          leaderS = totalLen;
+          leaderArrived = true;
+        }
+      }
+
+      Vector3 leaderPos = PointAtDistance(pts, segLen, cumLen, leaderS);
+      convoy[0].go.transform.position = leaderPos;
+
+      // Rotación del líder por tangente
+      Quaternion leaderRot = Quaternion.identity;
+      if (convoy[0].rot != null)
+      {
+        float sF = Mathf.Min(leaderS + lookAheadDist, totalLen);
+        Vector3 posF = PointAtDistance(pts, segLen, cumLen, sF);
+
+        Vector3 fwd = posF - leaderPos;
+        fwd.y = 0f;
+
+        if (fwd.sqrMagnitude > 0.000001f)
+        {
+          Quaternion target = Quaternion.LookRotation(fwd.normalized, Vector3.up);
+          float k = 1f - Mathf.Exp(-rotSpeed * dt);
+          convoy[0].rot.rotation = Quaternion.Slerp(convoy[0].rot.rotation, target, k);
+        }
+        leaderRot = convoy[0].rot.rotation;
+      }
+
+      // Guardar sample del líder en el trail (siempre consistente)
+Vector3 lastPos = trailPos[trailPos.Count - 1];
+float moved = Vector3.Distance(lastPos, leaderPos);
+
+// si el líder realmente se movió, agregamos un sample nuevo
+if (moved > 0.00001f)
+{
+    trailPos.Add(leaderPos);
+    trailRot.Add(leaderRot);
+    trailS.Add(trailS[trailS.Count - 1] + moved);
+}
+else
+{
+    // si no se movió, actualizamos rot/pos por prolijidad
+    trailPos[trailPos.Count - 1] = leaderPos;
+    trailRot[trailRot.Count - 1] = leaderRot;
+}
+
+
+      float headTrailS = trailS[trailS.Count - 1];
+
+      // Followers: avanzan por el trail con su propio odómetro (esto permite “terminar” después)
+      bool allFollowersAtTarget = true;
+
+      for (int i = 1; i < m; i++)
+      {
+        float targetS = headTrailS - gap * i;
+        if (targetS < trailS[0]) targetS = trailS[0];
+
+        followerS[i] = Mathf.MoveTowards(followerS[i], targetS, step);
+
+        SampleTrail(trailPos, trailRot, trailS, followerS[i], out var p, out var r);
+        convoy[i].go.transform.position = p;
+
+        if (convoy[i].rot != null)
+        {
+          float k = 1f - Mathf.Exp(-rotSpeed * dt);
+          convoy[i].rot.rotation = Quaternion.Slerp(convoy[i].rot.rotation, r, k);
+        }
+
+        if (Mathf.Abs(followerS[i] - targetS) > 0.01f)
+          allFollowersAtTarget = false;
+      }
+
+      // Recorte del trail
+      while (trailS.Count > 2 && (headTrailS - trailS[0]) > maxTrailBack)
+      {
+        trailS.RemoveAt(0);
+        trailPos.RemoveAt(0);
+        trailRot.RemoveAt(0);
+
+        // Clamp por si justo recortaste “debajo” de algún follower
+        for (int i = 1; i < m; i++)
+          if (followerS[i] < trailS[0]) followerS[i] = trailS[0];
+      }
+
+      // Salida: líder llegó y cola drenó
+      if (leaderArrived && allFollowersAtTarget)
+        break;
+
+      yield return null;
+    }
+
+    // Snap final líder al último punto exacto del LR
+    convoy[0].go.transform.position = pts[n - 1];
+
+    LlegoCaravana();
+}
+
+// Helper: proyecta posición al TRAIL (polilínea) y devuelve “s”
+private static float ProjectDistanceOnTrail(List<Vector3> trailPos, List<float> trailS, Vector3 worldPos)
+{
+    Vector3 p = worldPos; p.y = 0f;
+    float bestS = trailS[0];
+    float bestD2 = float.PositiveInfinity;
+
+    for (int i = 0; i < trailPos.Count - 1; i++)
+    {
+        Vector3 a = trailPos[i]; a.y = 0f;
+        Vector3 b = trailPos[i + 1]; b.y = 0f;
+
+        Vector3 ab = b - a;
+        float ab2 = Vector3.Dot(ab, ab);
+        if (ab2 <= 0.000001f) continue;
+
+        float t = Vector3.Dot(p - a, ab) / ab2;
+        t = Mathf.Clamp01(t);
+
+        Vector3 proj = a + ab * t;
+        float d2 = (p - proj).sqrMagnitude;
+
+        if (d2 < bestD2)
+        {
+            bestD2 = d2;
+            float segL = Mathf.Sqrt(ab2);
+            bestS = trailS[i] + segL * t;
+        }
+    }
+
+    return bestS;
+}
+
+
+// Helpers (los mismos de antes)
+private static float ProjectDistanceOnPolyline(Vector3[] pts, float[] cumLen, Vector3 worldPos)
+{
+    Vector3 p = worldPos; p.y = 0f;
+
+    float bestS = 0f;
+    float bestD2 = float.PositiveInfinity;
+
+    for (int i = 0; i < pts.Length - 1; i++)
+    {
+        Vector3 a = pts[i]; a.y = 0f;
+        Vector3 b = pts[i + 1]; b.y = 0f;
+
+        Vector3 ab = b - a;
+        float ab2 = Vector3.Dot(ab, ab);
+        if (ab2 <= 0.000001f) continue;
+
+        float t = Vector3.Dot(p - a, ab) / ab2;
+        t = Mathf.Clamp01(t);
+
+        Vector3 proj = a + ab * t;
+        float d2 = (p - proj).sqrMagnitude;
+
+        if (d2 < bestD2)
+        {
+            bestD2 = d2;
+            float segL = Mathf.Sqrt(ab2);
+            bestS = cumLen[i] + segL * t;
+        }
+    }
+
+    return bestS;
+}
+
+private static Vector3 PointAtDistance(Vector3[] pts, float[] segLen, float[] cumLen, float s)
+{
+    if (s <= 0f) return pts[0];
+    float total = cumLen[cumLen.Length - 1];
+    if (s >= total) return pts[pts.Length - 1];
+
+    for (int i = 0; i < segLen.Length; i++)
+    {
+        float a = cumLen[i];
+        float b = cumLen[i + 1];
+        if (s > b) continue;
+
+        float L = segLen[i];
+        if (L <= 0.000001f) return pts[i];
+
+        float t = (s - a) / L;
+        return Vector3.Lerp(pts[i], pts[i + 1], t);
+    }
+
+    return pts[pts.Length - 1];
+}
+
+private static void SampleTrail(
+    List<Vector3> pos,
+    List<Quaternion> rot,
+    List<float> s,
+    float targetS,
+    out Vector3 outPos,
+    out Quaternion outRot)
+{
+    int last = s.Count - 1;
+
+    if (targetS <= s[0]) { outPos = pos[0]; outRot = rot[0]; return; }
+    if (targetS >= s[last]) { outPos = pos[last]; outRot = rot[last]; return; }
+
+    int j = 1;
+    while (j < s.Count && s[j] < targetS) j++;
+
+    int a = j - 1;
+    int b = j;
+
+    float t = Mathf.InverseLerp(s[a], s[b], targetS);
+    outPos = Vector3.Lerp(pos[a], pos[b], t);
+    outRot = Quaternion.Slerp(rot[a], rot[b], t);
+}
+
+
+
+
 }

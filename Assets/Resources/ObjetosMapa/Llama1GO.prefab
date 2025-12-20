@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3177341380423711066}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Llama1GO
   m_TagString: MapaObjeto
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 4283720768275440013}
   - component: {fileID: 3451375225959979168}
   - component: {fileID: 8365478810460367008}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fuego
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4883,7 +4883,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6462406167379423597}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Llama_BosqueArdiente
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4918,7 +4918,7 @@ GameObject:
   - component: {fileID: 7716295293839615301}
   - component: {fileID: 777409173439357633}
   - component: {fileID: 9108051549641908260}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9749,7 +9749,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6043408170693963497}
   - component: {fileID: 1443270843711716084}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}

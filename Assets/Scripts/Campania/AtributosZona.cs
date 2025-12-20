@@ -352,6 +352,7 @@ public class AtributosZona : MonoBehaviour
       modRecoleccionMateriales = 10;
       modRecoleccionSuministros = -15;
       modChanceEmboscada = 0;
+      PasoVientoHelado_FuerzaKaleTav = 0;
 
       modChanceExploracion = -10;
 

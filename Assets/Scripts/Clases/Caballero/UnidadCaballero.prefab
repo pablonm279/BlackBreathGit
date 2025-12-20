@@ -92,7 +92,7 @@ RectTransform:
   m_GameObject: {fileID: 2819805930132574834}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.0715406, y: 1.2, z: 1}
+  m_LocalScale: {x: 1.4493741, y: 1.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2044444096100727033}
@@ -101,8 +101,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2.507, y: -14.012}
-  m_SizeDelta: {x: 20.803, y: 32.86}
+  m_AnchoredPosition: {x: -3.2, y: -14.54}
+  m_SizeDelta: {x: 20.8, y: 31.98}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8974171338235392169
 CanvasRenderer:
@@ -132,7 +132,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0c6aab7aa04982f4f91243417516f04e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 09f914078dda3f540921832901b89e85, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -384,6 +384,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
@@ -479,6 +480,7 @@ MonoBehaviour:
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -525,6 +527,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 8980931837407634799}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 7539274265530817233}
   barraVida: {fileID: 6970752739144667113}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -542,10 +546,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetImage: {fileID: 5826135254095805491}
-  poseIdle: {fileID: 21300000, guid: 0c6aab7aa04982f4f91243417516f04e, type: 3}
-  poseMover: {fileID: 21300000, guid: 05e651634ff88d248b6cd6d33c8c1801, type: 3}
-  poseAtacar: {fileID: 21300000, guid: 812f13ee4a3f73a46b026372b2600e46, type: 3}
-  poseHabilidad: {fileID: 21300000, guid: 0c51eb31b3fda974796cb8eb557c1d16, type: 3}
+  poseIdle: {fileID: 21300000, guid: 09f914078dda3f540921832901b89e85, type: 3}
+  poseMover: {fileID: 21300000, guid: 8913b322d94d8b04ba1844e229a027d0, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 000234941f6bde24e8df1426ef331dbe, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: abdda54a8bc616c4cb38c1f65f3ff599, type: 3}
   duracionPoseAtacar: 1.45
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1.1

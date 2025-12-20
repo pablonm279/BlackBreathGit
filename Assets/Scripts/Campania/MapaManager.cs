@@ -9,6 +9,12 @@ public class MapaManager : MonoBehaviour
 
     public Nodo nodoActual;
     public GameObject goCaravana;
+    public GameObject goCaravanafollower1;
+    public GameObject goCaravanafollower2;
+    public GameObject goCaravanafollower3;
+    public GameObject goCaravanafollower4;
+    public GameObject goCaravanafollower5;
+    public GameObject goCaravanafollower6;
 
     void Start()
     {

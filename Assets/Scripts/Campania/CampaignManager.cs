@@ -15,7 +15,7 @@ public class CampaignManager : MonoBehaviour
   public static CampaignManager Instance { get; private set; }
 
   public GameObject prefabTextoRecursos;
-  // public Animator animCaravana;
+  public Animator animCaravana;
   public GameObject goCanvas;
   public MapaManager scMapaManager;
   public AtributosZona scAtributosZona;
@@ -53,6 +53,7 @@ public class CampaignManager : MonoBehaviour
 
   public int numeroTurno;
   public bool MoviendoCaravana = false;
+  public Nodo nodoDestinoActual;
 
   public GameObject prefabGOPersonaje;
 
@@ -102,8 +103,12 @@ public class CampaignManager : MonoBehaviour
     CambiarOroActual(400);
     CambiarValorAlientoNegro(2);
 
-
-    scAtributosZona.GenerarZona(0); //0 es aleatorio
+    int zona = 0; //Zona aleatoria
+    if (scTutorialManager.tutorialActivo)
+    {
+      zona = 1;
+    }
+    scAtributosZona.GenerarZona(zona); //0 es aleatorio - 1 Tutorial en Bosque Ardiente
 
 
     scMenuSequito.AgregarSequito(1);
@@ -163,8 +168,9 @@ public class CampaignManager : MonoBehaviour
   {
 
     bool sePrevieneAvanceAliento = false;
+    nodoDestinoActual = destino;
     sunController.OnTravelStart(); // duración en segundos
-                                   // animCaravana.SetBool("IsMoving", true);
+    animCaravana.SetBool("IsWalking", true);
 
     // Inicia sonido de caravana en movimiento
     if (sfxMovimientoCaravana != null)
@@ -275,12 +281,12 @@ public class CampaignManager : MonoBehaviour
   public GameObject goMenuBatallas;
   public void LlegarANodo(int ID, int posX, Nodo nodo)
   {
-    OnDerrotadoJefeZona();
+    
     // Detiene el sonido de movimiento al llegar al nodo
     if (sfxMovimientoSource != null && sfxMovimientoSource.isPlaying)
       sfxMovimientoSource.Stop();
 
-    // animCaravana.SetBool("IsMoving", false);
+    animCaravana.SetBool("IsWalking", false);
 
     posicionCaravana = posX + 1;
     if (ID == 1) //Batalla
@@ -481,7 +487,7 @@ public class CampaignManager : MonoBehaviour
   // Llamar desde el resultado de la Batalla Final (jefe derrotado)
   public async void OnDerrotadoJefeZona()
   {
-    if (1 == 2/*scAtributosZona.FASE < 3*/)
+    if (scAtributosZona.FASE < 3) //Zona completada pero no es la final
     {
 
 
@@ -1165,6 +1171,8 @@ public class CampaignManager : MonoBehaviour
       EscribirLog("-El Séquito de Clérigos ha perecido, ya que el Aliento Negro ha alcanzado un nivel crítico. -20 Esperanza");
     }
 
+    
+
   }
   public void AvanzarAlientoNegro(int n)
   {
@@ -1357,6 +1365,14 @@ public class CampaignManager : MonoBehaviour
     }
 
     GetMiliciasActual();
+
+
+    scMapaManager.goCaravanafollower1.SetActive(civilesActuales > 40);
+    scMapaManager.goCaravanafollower2.SetActive(civilesActuales > 60);
+    scMapaManager.goCaravanafollower3.SetActive(civilesActuales > 95);
+    scMapaManager.goCaravanafollower4.SetActive(civilesActuales > 120);
+    scMapaManager.goCaravanafollower5.SetActive(civilesActuales > 140);
+    scMapaManager.goCaravanafollower6.SetActive(civilesActuales > 180);
 
   }
 
