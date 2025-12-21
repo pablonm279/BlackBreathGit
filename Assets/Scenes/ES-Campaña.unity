@@ -19068,7 +19068,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.15
+      value: 0.20238799
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.z
@@ -19116,7 +19116,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 835867029049436105, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_Layer
@@ -23553,6 +23553,38 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 341496330}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -48338,6 +48370,38 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 341496330}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -123450,6 +123514,38 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 341496330}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
       objectReference: {fileID: 1534329407}
@@ -146747,6 +146843,38 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 341496330}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
       objectReference: {fileID: 1534329407}
@@ -150005,6 +150133,38 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 341496330}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -185044,6 +185204,18 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 2060765982}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -234511,6 +234683,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2060765982}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
       objectReference: {fileID: 1534329407}
@@ -235367,6 +235551,38 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 341496330}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -269741,6 +269957,26 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 2060765982}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -310350,6 +310586,26 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 2060765982}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -393798,6 +394054,38 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 341496330}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
       objectReference: {fileID: 1534329407}
@@ -399607,6 +399895,18 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 2060765982}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -405970,7 +406270,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.15
+      value: 0.20238799
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.z
@@ -406018,7 +406318,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 835867029049436105, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_Layer
@@ -420109,7 +420409,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.94900006}
   m_AnchorMax: {x: 0.6672917, y: 1}
-  m_AnchoredPosition: {x: 308, y: 7.199768}
+  m_AnchoredPosition: {x: 308, y: 7.199707}
   m_SizeDelta: {x: -1161.5928, y: 51.8579}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1202174233
@@ -420186,6 +420486,18 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 2060765982}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -437365,6 +437677,38 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 341496330}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
       objectReference: {fileID: 1534329407}
@@ -445111,7 +445455,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: -4.14}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1.0652, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1857401741}
@@ -453076,7 +453420,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.15
+      value: 0.20238799
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.z
@@ -453124,7 +453468,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 835867029049436105, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_Layer
@@ -484611,6 +484955,38 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 341496330}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
       objectReference: {fileID: 1534329407}
@@ -486301,6 +486677,18 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 2060765982}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -499099,7 +499487,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.15
+      value: 0.20238799
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.z
@@ -499147,7 +499535,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 835867029049436105, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_Layer
@@ -506410,6 +506798,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2060765982}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
       objectReference: {fileID: 1534329407}
@@ -507015,6 +507415,38 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 341496330}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -534653,6 +535085,18 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 2060765982}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -566003,6 +566447,38 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 341496330}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -599725,6 +600201,38 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 341496330}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
       objectReference: {fileID: 1534329407}
@@ -616652,6 +617160,38 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 341496330}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
       objectReference: {fileID: 1534329407}
@@ -622784,6 +623324,26 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2060765982}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
       objectReference: {fileID: 1534329407}
@@ -624709,6 +625269,38 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 341496330}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -646142,6 +646734,26 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2060765982}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
       objectReference: {fileID: 1534329407}
@@ -657029,7 +657641,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.15
+      value: 0.19
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.z
@@ -657077,7 +657689,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 835867029049436105, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_Layer
@@ -701550,7 +702162,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.15
+      value: 0.20238799
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.z
@@ -701598,7 +702210,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 835867029049436105, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_Layer
@@ -704914,6 +705526,38 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 341496330}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX0Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovX1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
       objectReference: {fileID: 1534329407}
@@ -706950,6 +707594,18 @@ PrefabInstance:
       propertyPath: ladoOpuesto
       value: 
       objectReference: {fileID: 2060765982}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y0
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Y1
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
+      propertyPath: MarcaMovXv1Yv1
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}
       propertyPath: scTooltipBatalla
       value: 
@@ -715253,7 +715909,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.15
+      value: 0.20238799
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_LocalScale.z
@@ -715301,7 +715957,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 669695760058925832, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 835867029049436105, guid: c1586adc03d4e7a4a890b2ef54789c8a, type: 3}
       propertyPath: m_Layer

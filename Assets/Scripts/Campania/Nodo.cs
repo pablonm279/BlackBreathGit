@@ -63,12 +63,28 @@ public class Nodo : MonoBehaviour
     CampaignManager.Instance.MoviendoCaravana = false;
     scMapaManager.nodoActual = this;
 
-    scMapaManager.goCaravanafollower1.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", false);
-    scMapaManager.goCaravanafollower2.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", false);
-    scMapaManager.goCaravanafollower3.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", false);
-    scMapaManager.goCaravanafollower4.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", false);
-    scMapaManager.goCaravanafollower5.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", false);
-    scMapaManager.goCaravanafollower6.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", false);
+    // Apagar animaciones con un retraso aleatorio hasta 0.25s por cada follower
+    if (scMapaManager != null)
+    {
+      IEnumerator SetWalkingFalseAfterRandomDelay(GameObject follower)
+      {
+      if (follower == null) yield break;
+      float delay = UnityEngine.Random.Range(0f, 0.25f);
+      yield return new WaitForSeconds(delay);
+      if (follower.transform.childCount > 0)
+      {
+        var animator = follower.transform.GetChild(0).GetComponent<Animator>();
+        if (animator != null) animator.SetBool("IsWalking", false);
+      }
+      }
+
+      StartCoroutine(SetWalkingFalseAfterRandomDelay(scMapaManager.goCaravanafollower1));
+      StartCoroutine(SetWalkingFalseAfterRandomDelay(scMapaManager.goCaravanafollower2));
+      StartCoroutine(SetWalkingFalseAfterRandomDelay(scMapaManager.goCaravanafollower3));
+      StartCoroutine(SetWalkingFalseAfterRandomDelay(scMapaManager.goCaravanafollower4));
+      StartCoroutine(SetWalkingFalseAfterRandomDelay(scMapaManager.goCaravanafollower5));
+      StartCoroutine(SetWalkingFalseAfterRandomDelay(scMapaManager.goCaravanafollower6));
+    }
 
     string hayExploracionExplorador = "";
     foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
