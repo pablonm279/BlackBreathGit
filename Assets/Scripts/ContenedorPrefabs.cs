@@ -124,6 +124,8 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject ComandanteZarkil;
     public GameObject ZarkilAcechador;
     public GameObject ZarkilGuerrero;
+    public GameObject MastinTuto;
+
 
     [Header("Sonidos Daño")]
 

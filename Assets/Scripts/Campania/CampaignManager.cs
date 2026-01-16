@@ -100,6 +100,15 @@ public class CampaignManager : MonoBehaviour
     CambiarSuministrosActuales(300);
     CambiarMaterialesActuales(45);
     CambiarBueyesActuales(22);
+
+    if (scTutorialManager.tutorialActivo)
+    {
+      CambiarMaterialesActuales(-10);
+      CambiarBueyesActuales(-4);
+      CambiarSuministrosActuales(-100);
+    }
+   
+    
     CambiarOroActual(400);
     CambiarValorAlientoNegro(2);
 
@@ -124,11 +133,18 @@ public class CampaignManager : MonoBehaviour
     ForzarTiradaClima();
 
 
-    CrearCaballero();
-    CrearPurificadora();
+   
     CrearAcechador();
-    CrearExplorador();
-    CrearCanalizador();
+
+
+
+    if (!scTutorialManager.tutorialActivo) //En tutorial son 4 de comienzo
+    {
+      CrearPurificadora();
+      CrearCanalizador();
+      CrearCaballero();
+      CrearExplorador();
+    }
 
 
     AjustarDificultad();
@@ -287,6 +303,10 @@ public class CampaignManager : MonoBehaviour
       sfxMovimientoSource.Stop();
 
     animCaravana.SetBool("IsWalking", false);
+    
+    if (scTutorialManager.pasoActual == 18) { scTutorialManager.SiguientePaso(); CambiarValorAlientoNegro(2); }
+    if (scTutorialManager.pasoActual == 31) { scTutorialManager.SiguientePaso();  }
+
 
     posicionCaravana = posX + 1;
     if (ID == 1) //Batalla
@@ -294,8 +314,9 @@ public class CampaignManager : MonoBehaviour
 
       goMenuBatallas.SetActive(true);
 
-
-
+      if (scTutorialManager.pasoActual == 2) {scTutorialManager.establecerPasoEspecifico(3); }
+     
+      
 
       //Probabilidad emboscada
       int randomEmboscada = UnityEngine.Random.Range(1, 101);
@@ -311,6 +332,10 @@ public class CampaignManager : MonoBehaviour
       {
         chancesemboscada -= 100; // -100% si hay Almas Danzantes
       }
+      if (scTutorialManager.tutorialActivo)
+      { chancesemboscada = 0; } //No emboscadas en tutorial
+
+
       if (randomEmboscada <= chancesemboscada)
       {
         scMenuBatallas.EventoBatallaNormal(0, 1); //Emboscada
@@ -526,6 +551,7 @@ public class CampaignManager : MonoBehaviour
 
   public void BosqueArdienteMecanicaIncendio(int probabilidad)
   {
+    if (scTutorialManager.tutorialActivo) {  return;  }
     if (scAtributosZona.ID == 1) //Solo en Bosque Ardiente
     {
       int randomIncendio = UnityEngine.Random.Range(1, 101);
@@ -729,9 +755,12 @@ public class CampaignManager : MonoBehaviour
     }
 
     goUISantuario.SetActive(false);
+
+    if (scTutorialManager.pasoActual == 20) { scTutorialManager.SiguientePaso(); }
   }
 
-  public void abandonarsantuario() { goUISantuario.SetActive(false); }
+  public void abandonarsantuario() { goUISantuario.SetActive(false);    if (scTutorialManager.pasoActual == 20) { scTutorialManager.SiguientePaso(); }
+ }
   public void RealizarRitualSantuarioPorBueyes()
   {
     if (GetBueyesActual() < 3)
@@ -758,6 +787,9 @@ public class CampaignManager : MonoBehaviour
       EscribirLog(TRADU.i.Traducir("-No hay personajes corruptos para purificar."));
     }
     goUISantuario.SetActive(false);
+
+    if (scTutorialManager.pasoActual == 20) { scTutorialManager.SiguientePaso(); }
+
 
   }
   #endregion
@@ -1791,6 +1823,8 @@ public class CampaignManager : MonoBehaviour
 
   public void AbrirMenuDescanso()
   {
+    if (scTutorialManager.tutorialActivo && scTutorialManager.pasoActual < 24) { return; }
+    if (scTutorialManager.tutorialActivo && scTutorialManager.pasoActual == 24) { scTutorialManager.SiguientePaso(); }
 
     if (!menuDescanso.activeInHierarchy && scMapaManager.nodoActual.nodoDespejado && !scMapaManager.nodoActual.nodoIncendiado)
     {
@@ -2205,20 +2239,23 @@ public class CampaignManager : MonoBehaviour
 
     //Habilidades Base
     int randHabPot1 = UnityEngine.Random.Range(1, 5);
-    switch (randHabPot1)
-    {
-      case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONVistaLejana>(); pers1.GetComponent<REPRESENTACIONVistaLejana>().NIVEL = 1; break;
-      case 2: pers1.Habilidad_2 = 1; pers1.AddComponent<DisparoPotente>(); pers1.GetComponent<DisparoPotente>().NIVEL = 1; break;
-      case 3: pers1.Habilidad_3 = 1; pers1.AddComponent<REPRESENTACIONAcrobatico>(); pers1.GetComponent<REPRESENTACIONAcrobatico>().NIVEL = 1; break;
-      case 4: pers1.Habilidad_4 = 1; pers1.AddComponent<MarcarPresa>(); pers1.GetComponent<MarcarPresa>().NIVEL = 1; break;
-    }
-    int randHabPot2 = UnityEngine.Random.Range(1, 4);
-    switch (randHabPot2)
-    {
-      case 1: pers1.Habilidad_5 = 1; pers1.AddComponent<Acechar>(); pers1.GetComponent<Acechar>().NIVEL = 1; break;
-      case 2: pers1.Habilidad_6 = 1; pers1.AddComponent<Vigilancia>(); pers1.GetComponent<Vigilancia>().NIVEL = 1; break;
-      case 3: pers1.Habilidad_7 = 1; pers1.AddComponent<Fogata>(); pers1.GetComponent<Fogata>().NIVEL = 1; break;
-    }
+   
+      switch (randHabPot1)
+      {
+        case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONVistaLejana>(); pers1.GetComponent<REPRESENTACIONVistaLejana>().NIVEL = 1; break;
+        case 2: pers1.Habilidad_2 = 1; pers1.AddComponent<DisparoPotente>(); pers1.GetComponent<DisparoPotente>().NIVEL = 1; break;
+        case 3: pers1.Habilidad_3 = 1; pers1.AddComponent<REPRESENTACIONAcrobatico>(); pers1.GetComponent<REPRESENTACIONAcrobatico>().NIVEL = 1; break;
+        case 4: pers1.Habilidad_4 = 1; pers1.AddComponent<MarcarPresa>(); pers1.GetComponent<MarcarPresa>().NIVEL = 1; break;
+      }
+      int randHabPot2 = UnityEngine.Random.Range(1, 4);
+      switch (randHabPot2)
+      {
+        case 1: pers1.Habilidad_5 = 1; pers1.AddComponent<Acechar>(); pers1.GetComponent<Acechar>().NIVEL = 1; break;
+        case 2: pers1.Habilidad_6 = 1; pers1.AddComponent<Vigilancia>(); pers1.GetComponent<Vigilancia>().NIVEL = 1; break;
+        case 3: pers1.Habilidad_7 = 1; pers1.AddComponent<Fogata>(); pers1.GetComponent<Fogata>().NIVEL = 1; break;
+      }
+    
+    
 
     pers1.ActividadSeleccionada = 1;
     pers1.AddComponent<Actividad_Descansar>();
@@ -2401,25 +2438,32 @@ public class CampaignManager : MonoBehaviour
 
 
     //Habilidades Base
-    int randHabPot1 = UnityEngine.Random.Range(1, 3);
-    switch (randHabPot1)
+    if (!scTutorialManager.tutorialActivo)
     {
-      case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONMaestriaBallesta>(); pers1.GetComponent<REPRESENTACIONMaestriaBallesta>().NIVEL = 1; break;
-      case 2: pers1.Habilidad_2 = 1; pers1.AddComponent<REPRESENTACIONMaestriaEspadaCorta>(); pers1.GetComponent<REPRESENTACIONMaestriaEspadaCorta>().NIVEL = 1; break;
+      int randHabPot1 = UnityEngine.Random.Range(1, 3);
+      switch (randHabPot1)
+      {
+        case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONMaestriaBallesta>(); pers1.GetComponent<REPRESENTACIONMaestriaBallesta>().NIVEL = 1; break;
+        case 2: pers1.Habilidad_2 = 1; pers1.AddComponent<REPRESENTACIONMaestriaEspadaCorta>(); pers1.GetComponent<REPRESENTACIONMaestriaEspadaCorta>().NIVEL = 1; break;
+      }
+
+
+
+      int randHabPot2 = UnityEngine.Random.Range(1, 7);
+      switch (randHabPot2)
+      {
+        case 1: pers1.Habilidad_3 = 1; pers1.AddComponent<DisparoEnvenenado>(); pers1.GetComponent<DisparoEnvenenado>().NIVEL = 1; break;
+        case 2: pers1.Habilidad_4 = 1; pers1.AddComponent<CorteIncapacitante>(); pers1.GetComponent<CorteIncapacitante>().NIVEL = 1; break;
+        case 3: pers1.Habilidad_5 = 1; pers1.AddComponent<BombaDeHumo>(); pers1.GetComponent<BombaDeHumo>().NIVEL = 1; break;
+        case 4: pers1.Habilidad_6 = 1; pers1.AddComponent<Asesinar>(); pers1.GetComponent<Asesinar>().NIVEL = 1; break;
+        case 5: pers1.Habilidad_7 = 1; pers1.AddComponent<Distraer>(); pers1.GetComponent<Distraer>().NIVEL = 1; break;
+        case 6: pers1.Habilidad_8 = 1; pers1.AddComponent<ArrojarAbrojos>(); pers1.GetComponent<ArrojarAbrojos>().NIVEL = 1; break;
+
+      }
     }
-
-
-
-    int randHabPot2 = UnityEngine.Random.Range(1, 7);
-    switch (randHabPot2)
+    else
     {
-      case 1: pers1.Habilidad_3 = 1; pers1.AddComponent<DisparoEnvenenado>(); pers1.GetComponent<DisparoEnvenenado>().NIVEL = 1; break;
-      case 2: pers1.Habilidad_4 = 1; pers1.AddComponent<CorteIncapacitante>(); pers1.GetComponent<CorteIncapacitante>().NIVEL = 1; break;
-      case 3: pers1.Habilidad_5 = 1; pers1.AddComponent<BombaDeHumo>(); pers1.GetComponent<BombaDeHumo>().NIVEL = 1; break;
-      case 4: pers1.Habilidad_6 = 1; pers1.AddComponent<Asesinar>(); pers1.GetComponent<Asesinar>().NIVEL = 1; break;
-      case 5: pers1.Habilidad_7 = 1; pers1.AddComponent<Distraer>(); pers1.GetComponent<Distraer>().NIVEL = 1; break;
-      case 6: pers1.Habilidad_8 = 1; pers1.AddComponent<ArrojarAbrojos>(); pers1.GetComponent<ArrojarAbrojos>().NIVEL = 1; break;
-
+       pers1.AddComponent<Distraer>(); pers1.GetComponent<Distraer>().NIVEL = 1;
     }
 
     //Habilidades de Actividad

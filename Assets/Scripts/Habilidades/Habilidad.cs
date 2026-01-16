@@ -97,9 +97,12 @@ public abstract class Habilidad : MonoBehaviour
   // MÃ©todo abstracto para activar la habilidad.
   public virtual async Task Resolver(List<object> Objetivos, Casilla casillaOrigenTrampas = null)
   {
+
     BattleManager.Instance.bOcupado = true;
     // Al confirmar la habilidad, limpiar marcas de previsualizacion en unidades.
     LimpiarMarcasUnidadesPosibles();
+    MeleeApproachMover acercamientoMelee = MeleeApproachMover.ObtenerOCrear(scEstaUnidad);
+    bool hizoAproximacion = acercamientoMelee != null && await acercamientoMelee.PrepararAproximacionJugadorAsync(this, Objetivos);
     // AnimaciÃ³n/pose:
     // - Canalizador: toda habilidad hostil usa ataque (melee o rango)
     // - Resto: hostil melee usa ataque; hostil a distancia y no hostil usan pose de habilidad
@@ -159,6 +162,10 @@ public abstract class Habilidad : MonoBehaviour
     }
 
     await EsperarPostImpactoAsync(Objetivos, casillaOrigenTrampas);
+    if (hizoAproximacion && acercamientoMelee != null)
+    {
+      await acercamientoMelee.VolverAPosicionInicialAsync();
+    }
     if (Objetivos != null)
     {
       BattleManager.Instance.DesombrearANoParticipantesHabilidad(lUnidadesPosibles.ConvertAll(x => (object)x));
@@ -206,6 +213,15 @@ public abstract class Habilidad : MonoBehaviour
     }
     Invoke("desocuparDelay", 0.5f);
     BattleManager.Instance.bOcupado = false;
+    
+    if(BattleManager.Instance.scTutorialCombate.tutorialCombateActivo)
+    {
+            if(BattleManager.Instance.scTutorialCombate.ObtenerPasoActual()  == 4)
+            {
+               await Task.Delay(1500);
+                BattleManager.Instance.scTutorialCombate.SiguientePasoCombate();
+            }
+    }
   }
 
 
@@ -288,6 +304,12 @@ public abstract class Habilidad : MonoBehaviour
     float umbralCritico = 19 - modificadorDadoCritico;
     string textoResultado;
     CombatLogFormatter.CombatOutcome outcome;
+
+    if (BattleManager.Instance.scTutorialCombate.tutorialCombateActivo)
+    {
+      iDadoSolo += 5;
+      if(iDadoSolo > 20) { iDadoSolo = 20; }
+    } //En tutorial no hay pifias
 
     if (iDadoSolo <= umbralPifia)//Pifia
     {

@@ -98,13 +98,16 @@ public class CaminoMesh : MonoBehaviour
             }
         }
 
-        _mesh.Clear();
-        _mesh.vertices  = verts;
-        _mesh.normals   = norms;
-        _mesh.uv        = uvs;
-        _mesh.triangles = tris;
-        _mesh.RecalculateBounds();
-        _mf.sharedMesh = _mesh;
+        if (_mesh != null)
+        {
+            _mesh.Clear();
+            _mesh.vertices = verts;
+            _mesh.normals = norms;
+            _mesh.uv = uvs;
+            _mesh.triangles = tris;
+            _mesh.RecalculateBounds();
+            _mf.sharedMesh = _mesh;
+        }
 
         if (_mr != null) _mr.enabled = true;
     }

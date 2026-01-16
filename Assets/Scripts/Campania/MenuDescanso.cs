@@ -257,6 +257,7 @@ public class MenuDescanso : MonoBehaviour
 
   public async void Descansar()
   {
+
     // Audio: al presionar Descansar, cortar música con fade, reproducir SFX y reanudar.
     IniciarAudioDescansoSimple();
     CampaignManager.Instance.numeroTurno++;
@@ -532,6 +533,8 @@ public class MenuDescanso : MonoBehaviour
       // (Audio) Se maneja al principio de Descansar()
 
       int randomEmboscada = UnityEngine.Random.Range(1, 101);
+      if (CampaignManager.Instance.scTutorialManager.tutorialActivo) { randomEmboscada += 100; } //no hay emboscada en el tutorial
+
       if (randomEmboscada <= chancesAtaqueACaravana)
       {
         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La caravana han sufrido un Ataque durante el descanso. Probabilidades ") + chancesAtaqueACaravana + TRADU.i.Traducir("% - Tirada: 1d100 = ") + randomEmboscada);
@@ -541,16 +544,16 @@ public class MenuDescanso : MonoBehaviour
       }
       else //no puede haber evento y emboscada
       {
-        if (randomEvento < factorEventoBuenoMalo)
+        if (!CampaignManager.Instance.scTutorialManager.tutorialActivo)
         {
-          if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 4) //En Claros no hay eventos negativos.
-          { CampaignManager.Instance.EmpezarEventoBueno(); }
-          else { CampaignManager.Instance.EmpezarEventoMalo(); } //evento negativo de nodo normal
-
-
-
+          if (randomEvento < factorEventoBuenoMalo)
+          {
+            if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 4) //En Claros no hay eventos negativos.
+            { CampaignManager.Instance.EmpezarEventoBueno(); }
+            else { CampaignManager.Instance.EmpezarEventoMalo(); } //evento negativo de nodo normal
+          }
+          else { CampaignManager.Instance.EmpezarEventoBueno(); }
         }
-        else { CampaignManager.Instance.EmpezarEventoBueno(); }
 
         // (Audio) Ya se reanudó desde MusicManager tras terminar el SFX
 
@@ -558,10 +561,15 @@ public class MenuDescanso : MonoBehaviour
     }
     else
     {
-      CampaignManager.Instance.EmpezarEvento(404); //Evento de Misión de Rescate
-      MetaprogresionManager.Instance.MisionesSalvamento--;
+      if (!CampaignManager.Instance.scTutorialManager.tutorialActivo)
+      {
+        CampaignManager.Instance.EmpezarEvento(404); //Evento de Mision de Rescate
+        MetaprogresionManager.Instance.MisionesSalvamento--;
+      }
     }
 
+    if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 26)
+    { CampaignManager.Instance.scTutorialManager.SiguientePaso(); }
     goMenuMisiones.SetActive(false);
   }
 
@@ -574,6 +582,11 @@ public class MenuDescanso : MonoBehaviour
   public void TiradaClima()
   {
     int random = UnityEngine.Random.Range(1, 101);
+    if (CampaignManager.Instance.scTutorialManager.tutorialActivo)
+    {
+     random = 1; //Siempre sol en tutorial
+    }
+   
     climaNieve.SetActive(false);
     climaLluvia.SetActive(false);
     climaNiebla.SetActive(false);
@@ -740,3 +753,4 @@ public class MenuDescanso : MonoBehaviour
 
 
 }
+

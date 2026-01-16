@@ -500,10 +500,65 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     }
 
     BattleManager.Instance.SombrearANoParticipantesHabilidad(unidadesNoParticipantes);
-    await Task.Delay(1500);
+
+    // Aproximación visual si es melee; usa primer objetivo o "solo"
+    object objetivoVisual = solo ?? (objetivos != null && objetivos.Count > 0 ? objetivos[0] : null);
+    bool seAproximo = await IntentarAproximarVisualMeleeAsync(objetivoVisual);
+
+    await Task.Delay(1900);
+    await VolverTrasAproximacionVisualAsync(seAproximo, true);
+
     BattleManager.Instance.DesombrearANoParticipantesHabilidad(unidadesNoParticipantes);
 }
 
+  protected Task<bool> IntentarAproximarVisualMeleeAsync(object objetivo, bool mantenerAdelante = false)
+  {
+    MeleeApproachMover mover = MeleeApproachMover.ObtenerOCrear(scEstaUnidad);
+    if (mover == null)
+    {
+      return Task.FromResult(false);
+    }
+
+    return mover.PrepararAproximacionIAAsync(esMelee, hAncho, objetivo, mantenerAdelante);
+  }
+
+  protected Task VolverTrasAproximacionVisualAsync(bool seAproximo, bool forzar = false)
+  {
+    MeleeApproachMover mover = MeleeApproachMover.ObtenerOCrear(scEstaUnidad);
+    if (!seAproximo || mover == null)
+    {
+      return Task.CompletedTask;
+    }
+
+    return mover.VolverAPosicionInicialAsync(forzar);
+  }
+
+  /// <summary>
+  /// Ejecuta la habilidad con aproximaci󮠶isual si es melee. Reduce boilerplate en las IA melee.
+  /// </summary>
+  protected async Task EjecutarMeleeConAproximacionAsync(object objetivo, Func<Task> resolver, bool mantenerAdelante = false, bool forzarRetornoDespues = true)
+  {
+    bool seAproximo = await IntentarAproximarVisualMeleeAsync(objetivo, mantenerAdelante);
+    if (resolver != null)
+    {
+      await resolver();
+    }
+    await VolverTrasAproximacionVisualAsync(seAproximo, forzarRetornoDespues || !mantenerAdelante);
+  }
+
+  protected bool TieneOtraHabilidadMeleeDisponible(float apDisponiblePost)
+  {
+    IAHabilidad[] habilidades = scEstaUnidad.GetComponents<IAHabilidad>();
+    foreach (var hab in habilidades)
+    {
+      if (hab == this) continue;
+      if (!hab.esMelee) continue;
+      if (hab.hActualCooldown > 0) continue;
+      if (apDisponiblePost < hab.costoAP) continue;
+      return true;
+    }
+    return false;
+  }
 
 
 

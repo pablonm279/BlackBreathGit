@@ -346,8 +346,10 @@ public class BattleManager : MonoBehaviour
     }
 
 
-
-
+    if (scTutorialCombate.tutorialCombateActivo && scTutorialCombate.ObtenerPasoActual() == 7)
+    {
+      scTutorialCombate.SiguientePasoCombate();
+    }
 
   }
   public void RondaNueva() //Finaliza la ronda y se reordenan las unidades según iniciativa
@@ -395,6 +397,12 @@ public class BattleManager : MonoBehaviour
 
     rondaText.text = TRADU.i.Traducir("Ronda") + " " + RondaNro;
     //  BorrarLog();
+
+     if (scTutorialCombate.tutorialCombateActivo && scTutorialCombate.ObtenerPasoActual() == 8)
+    {
+      scTutorialCombate.SiguientePasoCombate();
+    }
+
   }
 
   void DisminuirDuracionObstaculos()
@@ -844,6 +852,7 @@ public class BattleManager : MonoBehaviour
     // Si el jugador hace clic derecho o ESC mientras hay una habilidad activa, cancelarla
     if ((Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape)) && (unidadActiva != null && HabilidadActiva != null))
     {
+      if (scTutorialCombate.tutorialCombateActivo) { return; }
       CancelarHabilidadActiva();
     }
     else if (Input.GetKeyDown(KeyCode.Escape))
@@ -864,7 +873,7 @@ public class BattleManager : MonoBehaviour
     {
       if (unidadActiva != null)
       {
-        if (unidadActiva.GetComponent<IAUnidad>() == null)
+        if (unidadActiva.GetComponent<IAUnidad>() == null && scTutorialCombate.tutorialCombateActivo == false)
         {
           TerminarTurno();
         }

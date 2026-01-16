@@ -160,8 +160,13 @@ public class AdministradorEscenas : MonoBehaviour
     EscenaBatalla.SetActive(true);
     // Silenciar logs de combate durante la preparación (buffs/estados iniciales)
     BattleManager.Instance.silenciarLogCombate = true;
-    bool bonusiniciativaTutorial = false;
-    BattleManager.Instance.scTutorialCombate.IniciarPrimerCombate(); bonusiniciativaTutorial = true;
+    bool esPrimerCombateTutorial = IDEncuentro == 700 && CampaignManager.Instance != null
+      && CampaignManager.Instance.scTutorialManager != null
+      && CampaignManager.Instance.scTutorialManager.tutorialActivo;
+    if (esPrimerCombateTutorial && BattleManager.Instance.scTutorialCombate != null)
+    {
+      BattleManager.Instance.scTutorialCombate.IniciarPrimerCombate();
+    }
 
 
 
@@ -194,8 +199,6 @@ public class AdministradorEscenas : MonoBehaviour
     if (unidadPers1 != null)
     {
       unidadPers1.ComienzoBatallaClase();
-
-      if (bonusiniciativaTutorial) { unidadPers1.mod_iniciativa += 20; unidadPers1.iniciativa_actual += 20; }
     }
     if (unidadPers2 != null)
     {
@@ -208,6 +211,32 @@ public class AdministradorEscenas : MonoBehaviour
     if (unidadPers4 != null)
     {
       unidadPers4.ComienzoBatallaClase();
+    }
+
+    // Solo en la primera pelea del tutorial, mover al Explorador a (x1,y3) y aplicar su bonificador inicial
+    if (esPrimerCombateTutorial)
+    {
+      Unidad explorador = null;
+      if (unidadPers1 != null && unidadPers1.GetComponent<ClaseAcechador>() != null) explorador = unidadPers1;
+      else if (unidadPers2 != null && unidadPers2.GetComponent<ClaseAcechador>() != null) explorador = unidadPers2;
+      else if (unidadPers3 != null && unidadPers3.GetComponent<ClaseAcechador>() != null) explorador = unidadPers3;
+      else if (unidadPers4 != null && unidadPers4.GetComponent<ClaseAcechador>() != null) explorador = unidadPers4;
+
+      if (explorador != null)
+      {
+        // Limpiar casilla original antes de reubicar para evitar que quede marcado en dos casillas
+        if (explorador.CasillaPosicion != null)
+        {
+          explorador.CasillaPosicion.Presente = null;
+        }
+
+        explorador.mod_iniciativa += 20; explorador.iniciativa_actual += 20;
+        explorador.mod_Ataque += 11;
+        explorador.mod_DanioPorcentaje += 51;
+        explorador.mod_CriticoDañoBonus += 18;
+        explorador.mod_CriticoRangoDado += 20;
+        ColocarEnCasillaEspecifica(1, explorador.gameObject, 2, 2); // x1,y3 para la primera pelea del tutorial
+      }
     }
 
 
@@ -641,7 +670,11 @@ public class AdministradorEscenas : MonoBehaviour
     //Obstaculos genericos
     if (ProbabilidadPorcentual(70))
     {
-      GenerarObstaculosGenericos();
+      if (BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() == -1) //Si no es tutorial
+      {
+        GenerarObstaculosGenericos();
+      }
+
     }
 
     #endregion
@@ -882,7 +915,7 @@ public class AdministradorEscenas : MonoBehaviour
         //-----
     }
 
-
+   
     GameObject persUnidad = Instantiate(prefabClase);
     switch (pers.IDClase) // Cuerpos Clase
     {
@@ -2192,6 +2225,44 @@ public class AdministradorEscenas : MonoBehaviour
 
       BattleManager.Instance.ActualizarRefuerzosUI();
     }
+
+
+    if (IDEncuentro == 700) // TUTORIAL Batalla 
+    { 
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.RufianConBallesta);
+      ColocarEnCasillaEspecifica(2,enemigo1.gameObject,1,4); 
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.MastinTuto);
+      ColocarEnCasillaEspecifica(2,enemigo2.gameObject,3,2); 
+      /*GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.PerroAdiestrado);
+      ColocarEnCasillaEspecifica(2,enemigo2.gameObject,3,2); */
+    }
+    if (IDEncuentro == 701) // TUTORIAL Batalla final
+    {
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.LoboAlfaEspectral);
+      ColocarEnCasillaEspecifica(2, enemigo1.gameObject, 2, 3);
+
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
+      ColocarEnCasillaEspecifica(2, enemigo2.gameObject, 1, 4);
+
+      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
+      ColocarEnCasillaEspecifica(2, enemigo3.gameObject, 3, 4);
+
+      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
+      ColocarEnCasillaEspecifica(2, enemigo4.gameObject, 2, 5);
+
+      BattleManager.Instance.enemigosRefuerzos.Clear();
+      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio();
+
+      GameObject refuerzo1 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
+      refuerzo1.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(refuerzo1);
+
+      GameObject refuerzo2 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
+      refuerzo2.SetActive(false);
+      BattleManager.Instance.enemigosRefuerzos.Add(refuerzo2);
+
+      BattleManager.Instance.ActualizarRefuerzosUI();
+    }
     #endregion
 
 
@@ -2715,12 +2786,7 @@ public class AdministradorEscenas : MonoBehaviour
     CampaignManager.Instance.scMenuBatallas.DejanEnListaParticipantesSolo();
     CampaignManager.Instance.scMapaManager.nodoActual.nodoDespejado = true;
 
-    //Limpieza
-    Personaje1 = null;
-    Personaje2 = null;
-    Personaje3 = null;
-    Personaje4 = null;
-
+   
 
     BattleManager.Instance.aliadosRefuerzos.Clear();
     BattleManager.Instance.enemigosRefuerzos.Clear();
@@ -2748,12 +2814,40 @@ public class AdministradorEscenas : MonoBehaviour
     await Task.Delay(TimeSpan.FromSeconds(1.6f));
 
     EscenaCampaign.SetActive(true);
+    // Al volver a campaña, asegurar que los VFX de nodos reflejen su estado lógico
+    var contNodos = CampaignManager.Instance != null && CampaignManager.Instance.scMapaManager != null
+      ? CampaignManager.Instance.scMapaManager.scContenedordeNodos
+      : null;
+    if (contNodos != null && contNodos.listTodosNodos != null)
+    {
+      foreach (var nodo in contNodos.listTodosNodos)
+      {
+        if (nodo == null) continue;
+
+      
+
+        nodo.SincronizarVFXPersistentes();
+      }
+    }
+
     MusicManager.Instance.VolverACampania();
     escenaActual = 0;
     EscenaBatalla.SetActive(false);
 
     Time.timeScale = 1; //Vuelve el tiempo al normal(por si habia modo rapido), pero no cambia el estado de Modorapido
 
+    Task delayTask = Task.Delay(300);
+    await delayTask;
+    if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 3)
+    {
+      CampaignManager.Instance.scTutorialManager.SiguientePaso();
+      Personaje1.RecibirExperiencia(100);
+    }
+    //Limpieza
+    Personaje1 = null;
+    Personaje2 = null;
+    Personaje3 = null;
+    Personaje4 = null;
 
 
 

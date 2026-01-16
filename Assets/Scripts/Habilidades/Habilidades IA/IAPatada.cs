@@ -43,7 +43,7 @@ public class IAPatada : IAHabilidad
     
    }
 
-    void Start()
+   void Start()
     {
       prioridad = pPrioridad;
     }
@@ -51,12 +51,24 @@ public class IAPatada : IAHabilidad
 
    public async override Task ActivarHabilidad()
    {
+    float apAntes = scEstaUnidad.ObtenerAPActual();
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
-      
-      scEstaUnidad.ReproducirAnimacionAtaque();
-      await Task.Delay(1500);
       object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
-      AplicarEfectosHabilidad(Objetivo);
+      bool hayOtraMeleePendiente = false; // Fuerza retorno antes de otro ataque
+      await EjecutarMeleeConAproximacionAsync(Objetivo, async () =>
+      {
+        scEstaUnidad.ReproducirAnimacionAtaque();
+        await Task.Delay(1500);
+        if (Objetivo == null)
+        {
+          Objetivo = EstablecerObjetivoPrioritario();
+        }
+
+        if (Objetivo != null)
+        {
+          AplicarEfectosHabilidad(Objetivo);
+        }
+      }, hayOtraMeleePendiente, !hayOtraMeleePendiente);
      
    }
 

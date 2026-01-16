@@ -7,13 +7,120 @@ public class TutorialManager : MonoBehaviour
     public bool tutorialActivo = true;
     public int pasoActual = 0;
 
+    public Nodo NodoPelea1;
+    public Nodo Nodotut2;
+    public Nodo Nodotut3;
+    public Nodo Nodotut4;
+    public Nodo Nodotut5;
+    public Nodo Nodotut6;
+
     public GameObject[] pasosTutorial; // Array de objetos del tutorial
+
+    List<Nodo> ObtenerNodosTutorial()
+    {
+        var nodos = new List<Nodo>
+        {
+            NodoPelea1,
+            Nodotut2,
+            Nodotut3,
+            Nodotut4,
+            Nodotut5,
+            Nodotut6
+        };
+
+        nodos.RemoveAll(n => n == null);
+        return nodos;
+    }
+
+    void Start()
+    {
+       
+    }
+    void LimpiarConexionesNodo(Nodo nodo)
+    {
+        if (nodo == null) return;
+
+        nodo.DestinosPosibles.Clear();
+        nodo.cantidadConexiones = 0;
+
+        var destruir = new List<GameObject>();
+        foreach (Transform child in nodo.transform)
+        {
+            if (child.name.Contains("LineaCaminos"))
+            {
+                destruir.Add(child.gameObject);
+            }
+        }
+
+        foreach (var go in destruir)
+        {
+            Destroy(go);
+        }
+    }
+
+    public void ConfigurarConexionesLinealesTuto()
+    {
+        var contenedor = CampaignManager.Instance != null ? CampaignManager.Instance.scMapaManager?.scContenedordeNodos : null;
+        if (contenedor == null) return;
+
+        var nodosOrdenados = ObtenerNodosTutorial();
+        if (nodosOrdenados.Count == 0) return;
+
+        foreach (var nodo in nodosOrdenados)
+        {
+            nodo.gameObject.SetActive(true);
+            LimpiarConexionesNodo(nodo);
+        }
+
+        for (int i = 0; i < nodosOrdenados.Count - 1; i++)
+        {
+            var origen = nodosOrdenados[i];
+            var destino = nodosOrdenados[i + 1];
+            origen.ConectarConNodo(destino, false, false);
+        }
+    }
+
+    public void DesactivarOtrosNodosTuto()
+    {
+        var contenedor = CampaignManager.Instance != null ? CampaignManager.Instance.scMapaManager?.scContenedordeNodos : null;
+        if (contenedor == null) return;
+
+        contenedor.RecolectarNodos();
+
+        var nodosPermitidos = new HashSet<Nodo>(ObtenerNodosTutorial());
+
+        foreach (var nodo in contenedor.listTodosNodos)
+        {
+            if (nodo == null) continue;
+            if (nodosPermitidos.Contains(nodo)) continue;
+
+            nodo.gameObject.SetActive(false);
+        }
+    }
 
     public void ComenzarTutorial()
     {
         if (tutorialActivo && pasosTutorial.Length > 0)
         {
+              DesactivarOtrosNodosTuto();
+            ConfigurarConexionesLinealesTuto();
             MostrarPaso(pasoActual);
+
+         
+            Nodotut2.tipoNodo = 1;
+            Nodotut2.ActivarNodoVisual(2, false, true);
+
+            Nodotut3.tipoNodo = 5;
+            Nodotut3.ActivarNodoVisual(3, false, true);
+
+            Nodotut4.tipoNodo = 14;
+            Nodotut4.ActivarNodoVisual(4, false, true);
+
+            Nodotut5.tipoNodo = 3;
+            Nodotut5.ActivarNodoVisual(5, false, true);
+
+            Nodotut6.tipoNodo = 8;
+            Nodotut6.ActivarNodoVisual(6, false, true);
         }
     }
 

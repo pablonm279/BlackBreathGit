@@ -23,6 +23,8 @@ public class ClaseAcechador : Unidad
 
     public override void GanarEscondido(int n)
     {
+        if (BattleManager.Instance.scTutorialCombate.tutorialCombateActivo) { return; } // En el tutorial de combate no se gana escondido
+        
         base.GanarEscondido(n);
         // Obtener buff
         /////////////////////////////////////////////

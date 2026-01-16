@@ -248,7 +248,7 @@ public class Distraer : Habilidad
         Buff buff = new Buff();
         buff.buffNombre = "Distraído";
         buff.boolfDebufftBuff = false;
-        buff.DuracionBuffRondas = 1;
+        buff.DuracionBuffRondas = 2;
         buff.cantAPMax -= 2;
         buff.cantDefensa -= 2;
         if (NIVEL > 2) { buff.cantAPMax--; }

@@ -690,6 +690,10 @@ public class EventosAdmin : MonoBehaviour
     }
     public void ElegirOpcionB()
     {
+        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && (CampaignManager.Instance.scTutorialManager.pasoActual == 12 || CampaignManager.Instance.scTutorialManager.pasoActual == 22))
+        {
+            CampaignManager.Instance.scTutorialManager.SiguientePaso();
+        }
         //Malos
         if (eventoActual == 1)
         {

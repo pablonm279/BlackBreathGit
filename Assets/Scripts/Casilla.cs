@@ -34,10 +34,15 @@ public class Casilla : MonoBehaviour
   public GameObject MarcaMovX1Yv1;
   public GameObject MarcaMovX0Yv1;
   public GameObject MarcaMovXv1Yv1;
+  public GameObject MarcaMeleeAtraviesa;
  
   void Start()
   {
     BattleManager.Instance.OnRondaNueva += BattleManager_OnRondaNueva;
+    if (MarcaMeleeAtraviesa != null)
+    {
+      MarcaMeleeAtraviesa.SetActive(false);
+    }
   }
 
 
@@ -174,6 +179,25 @@ public class Casilla : MonoBehaviour
   }
   public async void OnMouseDown()
   {
+    //----
+    if(BattleManager.Instance.scTutorialCombate.tutorialCombateActivo && BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() < 6)
+    {
+
+      return;
+    }
+    if (BattleManager.Instance.scTutorialCombate.tutorialCombateActivo && BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() == 6 && (posX != 3 || posY != 3))
+    {
+
+      return;
+    }
+    else if (BattleManager.Instance.scTutorialCombate.tutorialCombateActivo && BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() == 6)
+    {
+      BattleManager.Instance.scTutorialCombate.SiguientePasoCombate();
+    }
+   
+
+
+
     // --- Cancelar habilidad activa si se hace clic en el campo ---
     if (BattleManager.Instance.HabilidadActiva != null)
     {
@@ -828,6 +852,10 @@ public class Casilla : MonoBehaviour
     transform.GetChild(1).gameObject.SetActive(false); //desactiva la capa roja también
     GetComponent<MeshRenderer>().enabled = false; //desactiva la casilla en si
     transform.GetChild(2).gameObject.SetActive(true);
+    if (MarcaMeleeAtraviesa != null)
+    {
+      MarcaMeleeAtraviesa.SetActive(true);
+    }
   }
   public void ActivarCapaColorAzul()
   {
@@ -848,6 +876,10 @@ public class Casilla : MonoBehaviour
     transform.GetChild(2).gameObject.SetActive(false);
     transform.GetChild(9).gameObject.SetActive(false);
     GetComponent<MeshRenderer>().enabled = true;
+    if (MarcaMeleeAtraviesa != null)
+    {
+      MarcaMeleeAtraviesa.SetActive(false);
+    }
     //Agregar mas
   }
 

@@ -61,36 +61,48 @@ public class MenuCaravana : MonoBehaviour
     }
     public void AbrirMenuMejoras()
     {
-        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 8) { return; }
+        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 15) { return; }
+        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 15)
+        { CampaignManager.Instance.scTutorialManager.SiguientePaso(); }
+
+
         ActualizarMejoras();
         MenuPersonajes.SetActive(false);
         MenuSequitos.SetActive(false);
         MenuMejoras.SetActive(!MenuMejoras.activeInHierarchy);
 
-        if (MenuMejoras.activeInHierarchy)
-        {
-            CampaignManager.Instance.scTutorialManager.establecerPasoEspecifico(9);
-        }
-        else { CampaignManager.Instance.scTutorialManager.cerrarPasoEspecifico(9); }
-
     }
     public void AbrirMenuSequitos()
     {
-        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 8) { return; }
+        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 27) { return; }
+         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 27)
+        {            CampaignManager.Instance.scTutorialManager.SiguientePaso();        }
+          if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 29)
+        {            CampaignManager.Instance.scTutorialManager.SiguientePaso();        }
+
         MenuPersonajes.SetActive(false);
         MenuMejoras.SetActive(false);
         MenuSequitos.SetActive(!MenuSequitos.activeInHierarchy);
+      
         
-         if (MenuSequitos.activeInHierarchy)
-        {
-            CampaignManager.Instance.scTutorialManager.establecerPasoEspecifico(10);
-        }
-        else { CampaignManager.Instance.scTutorialManager.cerrarPasoEspecifico(10);}
+        
        
     }
     public void AbrirMenuPersonajes()
     {
-        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 8) { return; }
+        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 5) { return; }
+        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 5)
+        {
+            CampaignManager.Instance.scTutorialManager.SiguientePaso();
+            CampaignManager.Instance.CrearCaballero();
+            CampaignManager.Instance.CrearExplorador();
+            
+        }
+        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 10)
+        {
+            CampaignManager.Instance.scTutorialManager.SiguientePaso();
+            
+        }
 
         MenuMejoras.SetActive(false);
         MenuSequitos.SetActive(false);
@@ -98,12 +110,8 @@ public class MenuCaravana : MonoBehaviour
         MenuPersonajes.GetComponent<MenuPersonajes>().SeleccionarPersonaje(MenuPersonajes.GetComponent<MenuPersonajes>().listaPersonajes[0], null);
         MenuPersonajes.GetComponent<MenuPersonajes>().ActualizarLista();
         MenuPersonajes.GetComponent<MenuPersonajes>().itemDesc.text = "";
-        
-          if (MenuPersonajes.activeInHierarchy)
-        {
-            CampaignManager.Instance.scTutorialManager.establecerPasoEspecifico(11);
-        }
-        else { CampaignManager.Instance.scTutorialManager.cerrarPasoEspecifico(11);}
+
+     
        
     }
     public void ActualizarMejoras()
@@ -181,6 +189,11 @@ public class MenuCaravana : MonoBehaviour
        {
         CampaignManager.Instance.mejoraCaravanaAlforjas += 1;
         CampaignManager.Instance.CambiarMaterialesActuales(-costoMejorarAlforjas);
+       }
+       if(CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 16)
+       {
+           AbrirMenuMejoras();
+           CampaignManager.Instance.scTutorialManager.SiguientePaso();
        }
 
         ActualizarMejoras();

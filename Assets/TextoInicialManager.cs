@@ -12,6 +12,12 @@ public class TextoInicialManager : MonoBehaviour
 
     void Start()
     {
+        if(CampaignManager.Instance.scTutorialManager.tutorialActivo)
+        {   
+            gameObject.SetActive(false);
+            Invoke("Continuar", 0.5f);
+        }
+      
         if (TRADU.i.nIdioma == 1)
         {
             versionEspañol.SetActive(true);

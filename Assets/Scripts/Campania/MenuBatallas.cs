@@ -264,10 +264,22 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
     if (scAdministradorEscenas.Personaje3 != null) seleccionados++;
     if (scAdministradorEscenas.Personaje4 != null) seleccionados++;
 
-    // Asumiendo que tienes un TextMeshProUGUI llamado txtSeleccionadosPersonajes
-    if (txtSeleccionadosPersonajes != null)
-    {
-        txtSeleccionadosPersonajes.text = $"{seleccionados}/4";
+        // Asumiendo que tienes un TextMeshProUGUI llamado txtSeleccionadosPersonajes
+        if (txtSeleccionadosPersonajes != null)
+        {
+            if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 4)
+            {
+                txtSeleccionadosPersonajes.text = $"{seleccionados}/1"; // Forzar a 1/4 durante el tutorial
+            }
+            else if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 40)
+            {
+                txtSeleccionadosPersonajes.text = $"{seleccionados}/3";
+            }
+            else
+            { 
+                  txtSeleccionadosPersonajes.text = $"{seleccionados}/4";
+
+            }
     }
     // Verifica si todos los personajes son null
     bool todosVacios = scAdministradorEscenas.Personaje1 == null &&
@@ -275,8 +287,9 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
                        scAdministradorEscenas.Personaje3 == null &&
                        scAdministradorEscenas.Personaje4 == null;
 
-    // Configura el estado del botón basándose en si hay personajes seleccionados o no
-    btnComenzar.SetActive(!todosVacios);
+        // Configura el estado del botón basándose en si hay personajes seleccionados o no
+       btnComenzar.SetActive(!todosVacios); 
+   
 
     foreach (Transform transform in contenedorUIPersonajes.transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
     {
@@ -461,63 +474,72 @@ public void DejanEnListaParticipantesSolo()
     EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
     encuentroZonaActual = zonaActual;
 
-    if (n == 0)
-    {
-        bool generado = false;
-        float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
-
-        if (DeberiaGenerarBatallaCorrupta())
+        if (n == 0)
         {
-            generado = TryGenerarEncuentro(BattleEncounterType.Normal, EncounterZoneType.Generico, f => EsFaccionDeLista(f, corruptFactionIds), out encuentroGeneradoActual);
-            if (generado)
+            bool generado = false;
+            float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
+
+            if (DeberiaGenerarBatallaCorrupta())
             {
-                encuentroZonaActual = EncounterZoneType.Generico;
+                generado = TryGenerarEncuentro(BattleEncounterType.Normal, EncounterZoneType.Generico, f => EsFaccionDeLista(f, corruptFactionIds), out encuentroGeneradoActual);
+                if (generado)
+                {
+                    encuentroZonaActual = EncounterZoneType.Generico;
+                }
             }
-        }
 
-        if (!generado && UnityEngine.Random.Range(0f, 100f) < chanceEncuentroPropio)
-        {
-            generado = TryGenerarEncuentro(BattleEncounterType.Normal, zonaActual, null, out encuentroGeneradoActual);
-            if (generado)
+            if (!generado && UnityEngine.Random.Range(0f, 100f) < chanceEncuentroPropio)
             {
+                generado = TryGenerarEncuentro(BattleEncounterType.Normal, zonaActual, null, out encuentroGeneradoActual);
+                if (generado)
+                {
+                    encuentroZonaActual = zonaActual;
+                }
+            }
+
+            if (!generado)
+            {
+                generado = TryGenerarEncuentro(BattleEncounterType.Normal, EncounterZoneType.Generico, null, out encuentroGeneradoActual);
+                if (generado)
+                {
+                    encuentroZonaActual = EncounterZoneType.Generico;
+                }
+            }
+
+            if (!generado)
+            {
+                TryGenerarEncuentro(BattleEncounterType.Normal, zonaActual, null, out encuentroGeneradoActual);
                 encuentroZonaActual = zonaActual;
             }
-        }
 
-        if (!generado)
-        {
-            generado = TryGenerarEncuentro(BattleEncounterType.Normal, EncounterZoneType.Generico, null, out encuentroGeneradoActual);
-            if (generado)
+            EventoBatallaID = encuentroGeneradoActual != null ? 0 : EventoBatallaID;
+
+            var tutorialManager = CampaignManager.Instance != null ? CampaignManager.Instance.scTutorialManager : null;
+            if(tutorialManager != null && tutorialManager.tutorialActivo && tutorialManager.pasoActual == 3)
             {
-                encuentroZonaActual = EncounterZoneType.Generico;
+                EventoBatallaID = 700; //Fuerza el encuentro del tutorial
+                encuentroGeneradoActual = null; // No usar el encuentro procedural durante el tutorial
             }
-        }
 
-        if (!generado)
+    }
+        else
         {
-            TryGenerarEncuentro(BattleEncounterType.Normal, zonaActual, null, out encuentroGeneradoActual);
-            encuentroZonaActual = zonaActual;
+            encuentroGeneradoActual = null;
         }
-
-        EventoBatallaID = encuentroGeneradoActual != null ? 0 : EventoBatallaID;
-    }
-    else
-    {
-        encuentroGeneradoActual = null;
-    }
 
     ActualizarLista();
-  } public void EventoBatallaElite(int n, int esEmboscada = 0, bool forzarRitualKaleTav = false)
-  {
-    esBatallaFinal = false;
-    esEmboscadaEnemiga = esEmboscada;
+  }
+    public void EventoBatallaElite(int n, int esEmboscada = 0, bool forzarRitualKaleTav = false)
+    {
+        esBatallaFinal = false;
+        esEmboscadaEnemiga = esEmboscada;
 
-    gameObject.SetActive(true);
-    UIEmpezarBatalla.SetActive(true);
-    UIEmpezarBatallaACaravana.SetActive(false);
-    UITerminarBatalla.SetActive(false);
+        gameObject.SetActive(true);
+        UIEmpezarBatalla.SetActive(true);
+        UIEmpezarBatallaACaravana.SetActive(false);
+        UITerminarBatalla.SetActive(false);
 
-    encuentroGeneradoActual = null;
+        encuentroGeneradoActual = null;
     encuentroTipoActual = BattleEncounterType.Elite;
     EventoBatallaID = n;
 
@@ -525,67 +547,80 @@ public void DejanEnListaParticipantesSolo()
     EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
     encuentroZonaActual = zonaActual;
 
+    var tutorialManager = CampaignManager.Instance != null ? CampaignManager.Instance.scTutorialManager : null;
+    bool esUltimoNodoTutorial = tutorialManager != null &&
+                                tutorialManager.tutorialActivo &&
+                                CampaignManager.Instance.scMapaManager != null &&
+                                CampaignManager.Instance.scMapaManager.nodoActual == tutorialManager.Nodotut6;
+    if (esUltimoNodoTutorial)
+    {
+        EventoBatallaID = 701; // Fuerza el encuentro final del tutorial
+        encuentroGeneradoActual = null;
+        ActualizarLista();
+        return;
+    }
+
     if (n == 0)
     {
         bool generado = false;
         float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
         bool esRitualKaleTav = forzarRitualKaleTav || EsNodoActualRitualKaleTav();
 
-        if (esRitualKaleTav)
-        {
-            Predicate<EnemyFactionConfig> kaleFilter = faction =>
-                faction != null &&
-                !string.IsNullOrWhiteSpace(faction.factionId) &&
-                string.Equals(faction.factionId, KaleTavFactionId, StringComparison.OrdinalIgnoreCase);
-
-            generado = TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, kaleFilter, out encuentroGeneradoActual);
-            if (!generado && TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, kaleFilter, out encuentroGeneradoActual))
+            if (esRitualKaleTav)
             {
-                encuentroZonaActual = EncounterZoneType.Generico;
-                generado = true;
-            }
-        }
+                Predicate<EnemyFactionConfig> kaleFilter = faction =>
+                    faction != null &&
+                    !string.IsNullOrWhiteSpace(faction.factionId) &&
+                    string.Equals(faction.factionId, KaleTavFactionId, StringComparison.OrdinalIgnoreCase);
 
-        if (!generado)
-        {
-            bool intentarZonaPrimero = UnityEngine.Random.Range(0f, 100f) < chanceEncuentroPropio;
-            if (intentarZonaPrimero)
-            {
-                generado = TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, null, out encuentroGeneradoActual);
-                if (generado)
-                {
-                    encuentroZonaActual = zonaActual;
-                }
-                else if (TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, null, out encuentroGeneradoActual))
+                generado = TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, kaleFilter, out encuentroGeneradoActual);
+                if (!generado && TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, kaleFilter, out encuentroGeneradoActual))
                 {
                     encuentroZonaActual = EncounterZoneType.Generico;
                     generado = true;
                 }
             }
-            else
+
+            if (!generado)
             {
-                generado = TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, null, out encuentroGeneradoActual);
-                if (generado)
+                bool intentarZonaPrimero = UnityEngine.Random.Range(0f, 100f) < chanceEncuentroPropio;
+                if (intentarZonaPrimero)
                 {
-                    encuentroZonaActual = EncounterZoneType.Generico;
+                    generado = TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, null, out encuentroGeneradoActual);
+                    if (generado)
+                    {
+                        encuentroZonaActual = zonaActual;
+                    }
+                    else if (TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, null, out encuentroGeneradoActual))
+                    {
+                        encuentroZonaActual = EncounterZoneType.Generico;
+                        generado = true;
+                    }
                 }
-                else if (TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, null, out encuentroGeneradoActual))
+                else
                 {
-                    encuentroZonaActual = zonaActual;
-                    generado = true;
+                    generado = TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, null, out encuentroGeneradoActual);
+                    if (generado)
+                    {
+                        encuentroZonaActual = EncounterZoneType.Generico;
+                    }
+                    else if (TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, null, out encuentroGeneradoActual))
+                    {
+                        encuentroZonaActual = zonaActual;
+                        generado = true;
+                    }
                 }
             }
+
+            EventoBatallaID = generado && encuentroGeneradoActual != null ? 0 : EventoBatallaID;
+        }
+        else
+        {
+            encuentroGeneradoActual = null;
         }
 
-        EventoBatallaID = generado && encuentroGeneradoActual != null ? 0 : EventoBatallaID;
-    }
-    else
-    {
-        encuentroGeneradoActual = null;
-    }
-
-    ActualizarLista();
-  } public void EventoBatallaFinal(int n, int esEmboscada = 0)
+        ActualizarLista();
+    } public void EventoBatallaFinal(int n, int esEmboscada = 0)
   {  
     esBatallaFinal = true;
     esEmboscadaEnemiga = esEmboscada;
@@ -913,7 +948,10 @@ public void DejanEnListaParticipantesSolo()
 
  public void CerrarMenuBatalla()
     {
-
+      if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 4)
+      {
+        CampaignManager.Instance.scTutorialManager.SiguientePaso();
+      }
         gameObject.SetActive(false);
     }
  public void ComenzarBatalla()
@@ -1048,8 +1086,37 @@ public void DejanEnListaParticipantesSolo()
     }
  }
 
- void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
- {
+void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
+{
+   if (EventoBatallaID == 700 || EventoBatallaID == 701)
+   {
+       int deltaEsperanzaTutorial = resultado == 1 ? +5 : -5;
+
+       if (resultado == 1)
+       {
+            const int exp = 160;
+            const int oro = 150;
+
+            CampaignManager.Instance.CambiarOroActual(oro);
+            DarExperiencia(exp);
+
+            if (txtRecompensa != null)
+            {
+                txtRecompensa.text = FormatearTextoVictoria(exp, oro, 0, deltaEsperanzaTutorial);
+            }
+        }
+        else
+        {
+            if (txtRecompensa != null)
+            {
+                txtRecompensa.text = FormatearTextoDerrota(-deltaEsperanzaTutorial, 0, 0);
+            }
+        }
+
+        CampaignManager.Instance.CambiarEsperanzaActual(deltaEsperanzaTutorial);
+        return;
+    }
+
     if (txtRecompensa != null)
     {
         txtRecompensa.text = resultado == 1

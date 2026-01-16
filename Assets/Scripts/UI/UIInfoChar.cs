@@ -472,7 +472,7 @@ public class UIInfoChar : MonoBehaviour
    {
       desc = TRADU.i.Traducir("<i>Tiene una legión entera de Zarkils bajo su liderazgo, simplemente debe señalar un objetivo y sus súbditos se encargarán del resto.</color>\n\n<color=#199F10>-Llama refuerzos sin fin.\n-Ataque debilitador infalible.</color>\n<color=#EE0000>-No es fuerte por si solo.</color>");
    }
-    if (unidadMostrada.uNombre == "Arbol Maldito")
+    if (unidadMostrada.uNombre == "Arbol Vengativo")
    {
       desc = TRADU.i.Traducir("<i>Manifestación de la energía espectral del bosque. Desde su interior emana un fulgor fantasmal frío, como un espíritu atrapado que se retuerce para escapar.</color>\n\n<color=#199F10>-Llama refuerzos sin fin.\n-Ataque necrótico que condena a dos objetivos.</color>\n<color=#EE0000>-Inmóvil.</color>");
    }
@@ -480,6 +480,7 @@ public class UIInfoChar : MonoBehaviour
    {
       desc = TRADU.i.Traducir("<i>Estas criaturas aladas habitan en las regiones más frías del Paso. Son conocidas por ser muy territoriales y por su aliento gélido.</i>\n\n<color=#199F10>-Vuelo.\n-Aliento gélido en zona.\n-Regenera armadura.</color>\n<color=#EE0000>-Débil al fuego.</color>");
    }
+   
   
    return desc;
   }

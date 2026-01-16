@@ -6,17 +6,17 @@ public class TutorialCombate : MonoBehaviour
 {
     [SerializeField] private TutorialManager tutorialManager;
     [SerializeField] private GameObject[] pasosCombate;
-    
 
-    private bool tutorialCombateActivo;
+
+    public bool tutorialCombateActivo;
     private bool primerCombateProcesado;
-    private int pasoActual = -1;
+    [SerializeField]private int pasoActual = -1;
 
-    
+
 
     private void Start()
     {
-        
+
     }
 
     /// <summary>
@@ -24,22 +24,22 @@ public class TutorialCombate : MonoBehaviour
     /// </summary>
     public void IniciarPrimerCombate()
     {
-       
+
         if (primerCombateProcesado) return;
         primerCombateProcesado = true;
 
         if (tutorialManager != null && tutorialManager.tutorialActivo)
-        { 
+        {
             ComenzarTutorialCombate();
         }
     }
 
     public void SiguientePasoCombate()
     {
-        
+
         if (!tutorialCombateActivo || pasosCombate == null || pasosCombate.Length == 0) return;
         if (pasoActual < 0 || pasoActual >= pasosCombate.Length) return;
-            
+
         if (pasosCombate[pasoActual] != null)
         {
             pasosCombate[pasoActual].SetActive(false);
@@ -48,11 +48,11 @@ public class TutorialCombate : MonoBehaviour
 
         if (pasoActual < pasosCombate.Length)
         {
-            MostrarPaso(pasoActual);   
+            MostrarPaso(pasoActual);
         }
         else
         {
-            FinalizarTutorialCombate(); 
+            FinalizarTutorialCombate();
         }
     }
 
@@ -76,13 +76,13 @@ public class TutorialCombate : MonoBehaviour
     }
     public void omitirTutorialCombate()
     {
-       
+
         FinalizarTutorialCombate();
     }
     private void ComenzarTutorialCombate()
-    {    
+    {
         if (pasosCombate == null || pasosCombate.Length == 0) return;
-        
+
         tutorialCombateActivo = true;
         pasoActual = 0;
         MostrarPaso(pasoActual);
@@ -94,7 +94,7 @@ public class TutorialCombate : MonoBehaviour
         pasoActual = pasosCombate.Length - 1;
 
         gameObject.SetActive(false);
-        
+
     }
 
     private void MostrarPaso(int index)
@@ -106,16 +106,20 @@ public class TutorialCombate : MonoBehaviour
             if (pasosCombate[i] == null) { continue; }
             pasosCombate[i].SetActive(i == index);
         }
-
-          GameObject tutoActual = pasosCombate[index];
-         if (TRADU.i.nIdioma == 1) //Esp
-        {  
+        GameObject tutoActual = pasosCombate[index];
+        if (TRADU.i.nIdioma == 1) //Esp
+        {
             tutoActual.transform.GetChild(0).gameObject.SetActive(true);
         }
         else if (TRADU.i.nIdioma == 2) //Ing
         {
             tutoActual.transform.GetChild(1).gameObject.SetActive(true);
         }
+    }
+    
+    public int ObtenerPasoActual()
+    {
+        return pasoActual;
     }
 
     

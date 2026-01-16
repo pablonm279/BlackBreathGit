@@ -785,6 +785,8 @@ public class MenuPersonajes : MonoBehaviour
       ActualizarInfo();
     }
 
+    if (CampaignManager.Instance.scTutorialManager.tutorialActivo) { CampaignManager.Instance.scTutorialManager.SiguientePaso(); }
+
   }
 
   public void SubirTiradaSalvacion(int i)

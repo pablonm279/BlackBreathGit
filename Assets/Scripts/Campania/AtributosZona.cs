@@ -236,7 +236,9 @@ public class AtributosZona : MonoBehaviour
       Clima_chances_EspecialZona1 = 100;
 
 
-      txtNombreZona.text = TRADU.i.Traducir("El Bosque Ardiente");
+
+      if (TRADU.i != null)
+      { txtNombreZona.text = TRADU.i.Traducir("El Bosque Ardiente"); }
 
       BosqueArdiente_Descripcion.SetActive(true);
       Pasovientohelado_Descripcion.SetActive(false);
@@ -246,7 +248,7 @@ public class AtributosZona : MonoBehaviour
 
       Invoke("PlayMusic", 0.2f);
       // Usar fader como tapón mientras se adorna el mapa (async, sin freeze)
-      StartCoroutine(AdornarBosqueArdienteConFadeAsync());
+     // StartCoroutine(AdornarBosqueArdienteConFadeAsync());
 
 
       Nedukazal_CaravanaLuz.SetActive(false);

@@ -118,7 +118,8 @@ public class Nodo : MonoBehaviour
     int chancesAtajo = 15;
     chancesAtajo += 5 * CampaignManager.Instance.CuantosPersonajesHacenTalActividad(9);
     if (CampaignManager.Instance.scAtributosZona.ID == 3) { chancesAtajo = 0; } // En Nedukazal no hay atajos
-
+    if (CampaignManager.Instance.scTutorialManager.tutorialActivo ) { chancesAtajo = 0; } // En Tutorial no hay atajos
+    
     if (UnityEngine.Random.Range(0, 100) < chancesAtajo && posXNodo < 9)
     {
       CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Se ha encontrado un atajo subterráneo."));
@@ -295,14 +296,14 @@ public class Nodo : MonoBehaviour
       ConectarFallbackSiguienteColumna(xadelante, zonaId);
   }
 
-  public void ConectarConNodo(Nodo nodoB, bool esPorAbajo = false)
+  public void ConectarConNodo(Nodo nodoB, bool esPorAbajo = false, bool propagar = true, bool ignorarRestricciones = false)
   {
     if (nodoB == null) return;
 
     int zonaId = -1;
     if (CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null)
       zonaId = CampaignManager.Instance.scAtributosZona.ID;
-    if (!EstaPermitidoEnZona(nodoB, zonaId)) return;
+    if (!ignorarRestricciones && !EstaPermitidoEnZona(nodoB, zonaId)) return;
     if (DestinosPosibles.Contains(nodoB)) return;
 
     Nodo nodoA = this;
@@ -395,7 +396,8 @@ public class Nodo : MonoBehaviour
     SetMaterialCamino(lineObject.transform, esPorAbajo ? MaterialAtajo : MaterialCaminoOriginal);
 
     // Continuar tirando conexiones
-    nodoB.DeterminarConexiones();
+    if (propagar)
+      nodoB.DeterminarConexiones();
   }
   // Resetea este nodo para reutilizarlo en una nueva zona
   public void ResetearParaNuevaZona()
@@ -431,8 +433,19 @@ public class Nodo : MonoBehaviour
 
   private void OnMouseDown()
   {
-    if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 6)
-      return;
+    var tm = CampaignManager.Instance != null ? CampaignManager.Instance.scTutorialManager : null;
+    if (tm != null && tm.tutorialActivo)
+    {
+      // permitir interacción solo en los pasos 2, 11, 17, 21 durante el tutorial
+      if (!(tm.pasoActual == 2 || tm.pasoActual == 11 || tm.pasoActual == 17 || tm.pasoActual == 21|| tm.pasoActual == 30))
+        return;
+
+      if (tm.pasoActual == 2)
+        tm.cerrarPasoEspecifico(2);
+
+      if (tm.pasoActual == 11 || tm.pasoActual == 17 || tm.pasoActual == 21 || tm.pasoActual == 30)
+        tm.SiguientePaso();
+    }
 
     if (EventSystem.current.IsPointerOverGameObject() && !TooltipNodos.Instance.tooltipObject.activeInHierarchy)
       return;
@@ -879,7 +892,9 @@ if (esLaLider)
     {
       if (!child.name.Contains("Nodo")) continue;
       int idx = child.GetSiblingIndex();
-      if (idx == 14 || idx == 15) continue; // no desactivar child 14 o 15
+      if (idx == 14 && nodoIncendiado) continue; 
+      if (idx == 15 && nodoRitual) continue;  
+
       child.gameObject.SetActive(false);
     }
   }
@@ -919,10 +934,21 @@ if (esLaLider)
 
     esMisterioso = false;
 
+    bool esTutorial = CampaignManager.Instance != null &&
+                      CampaignManager.Instance.scTutorialManager != null &&
+                      CampaignManager.Instance.scTutorialManager.tutorialActivo;
+
     int chancesMisterioso = 15;
     if (CampaignManager.Instance.intTipoClima == 5) chancesMisterioso += 10; // Niebla
     if (CampaignManager.Instance.CuantosPersonajesHacenTalActividad(9) > 0)
       chancesMisterioso -= CampaignManager.Instance.CuantosPersonajesHacenTalActividad(9) * 5;
+
+    if (esTutorial)
+    {
+      chancesMisterioso = 0;
+      esAtajo = false;
+      num = tipoNodo; // en tutorial no variamos el visual
+    }
 
     if (posXNodo == 10 || posXNodo == 1) chancesMisterioso = 0;
     if (estabaRevelado) chancesMisterioso = 0;
@@ -958,9 +984,13 @@ if (esLaLider)
 
   void OnEnable()
   {
+    // Sincronizar VFX persistentes con estado lógico al reactivar (antes de cualquier early-return)
+    //SincronizarVFXPersistentes();
+    SincronizarVFXPersistentes();
+    Invoke("SincronizarVFXPersistentes", 0.1f);
+
     int codigoAAplicar = numVisualActual > 0 ? numVisualActual : tipoNodo;
     if (codigoAAplicar <= 0) return;
-
     DesactivarGraficosNodo();
 
     bool visualActivado = ActivarVisualPorCodigo(codigoAAplicar);
@@ -1029,7 +1059,8 @@ if (esLaLider)
   {
     print("ActivarIncendio called");
     nodoIncendiado = true;
-    transform.GetChild(14).gameObject.SetActive(true);
+    if (transform.childCount > 14)
+      transform.GetChild(14).gameObject.SetActive(true);
 
   }
 
@@ -1037,21 +1068,57 @@ if (esLaLider)
   {
     print("DesactivarIncendio called");
     nodoIncendiado = false;
-    transform.GetChild(14).gameObject.SetActive(false);
+    if (transform.childCount > 14)
+      transform.GetChild(14).gameObject.SetActive(false);
   }
 
   public void ActivarRitual()
   {
     print("ActivarRitual called");
     nodoRitual = true;
-    transform.GetChild(15).gameObject.SetActive(true);
+    if (transform.childCount > 15)
+      transform.GetChild(15).gameObject.SetActive(true);
   }
 
   public void DesactivarRitual()
   {
     print("DesactivarRitual called");
     nodoRitual = false;
-    transform.GetChild(15).gameObject.SetActive(false);
+    if (transform.childCount > 15)
+      transform.GetChild(15).gameObject.SetActive(false);
+  }
+
+  public void SincronizarVFXPersistentes()
+  {
+    // En tutorial nunca deberían quedar incendios/rituales activos
+    if (CampaignManager.Instance != null &&
+        CampaignManager.Instance.scTutorialManager != null &&
+        CampaignManager.Instance.scTutorialManager.tutorialActivo)
+    {
+      nodoIncendiado = false;
+      nodoRitual = false;
+    }
+
+    // Fallback por índice (prefab original)
+    if (transform.childCount > 14)
+      transform.GetChild(14).gameObject.SetActive(nodoIncendiado);
+    if (transform.childCount > 15)
+      transform.GetChild(15).gameObject.SetActive(nodoRitual);
+
+    // Refuerzo por nombre (por si cambia el orden de hijos)
+    for (int i = 0; i < transform.childCount; i++)
+    {
+      var child = transform.GetChild(i);
+      string name = child.name.ToLowerInvariant();
+      if (name.Contains("incendiado") || name.Contains("fuego") || name.Contains("llama"))
+      {
+        child.gameObject.SetActive(nodoIncendiado);
+      }
+      else if (name.Contains("ritual"))
+      {
+        child.gameObject.SetActive(nodoRitual);
+      }
+    }
   }
 
   bool EstaPermitidoEnZona(Nodo nodo, int zonaId)

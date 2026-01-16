@@ -115,7 +115,13 @@ public class BotonHabilidad : MonoBehaviour
 
     public void ActivarHabilidad(bool yaVienedeCargando)
     {
-
+        if(BattleManager.Instance.scTutorialCombate.tutorialCombateActivo)
+        {
+            if(BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() < 4)
+            {
+                BattleManager.Instance.scTutorialCombate.SiguientePasoCombate();
+            }
+        }
 
         if (CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>().escenaActual != 1)
         { return; } // Sale del método si la escena no es "ES-Batallas"
@@ -196,6 +202,13 @@ public class BotonHabilidad : MonoBehaviour
         }
         else if (HabilidadRepresentada.tieneAPSuficientes(out esfuerzo) && HabilidadRepresentada.cooldownActual == 0)
         {
+             if(BattleManager.Instance.scTutorialCombate.tutorialCombateActivo)
+           {
+            if(BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() < 4)
+            {
+                    return;
+            }
+           }
             DesactivarBoton();
         }
 
