@@ -221,7 +221,7 @@ RectTransform:
   m_GameObject: {fileID: 2383047622823427081}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.77444303, y: 1.3437338, z: 1}
+  m_LocalScale: {x: 1.1399027, y: 1.3437338, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6721434453643647482}
@@ -589,6 +589,7 @@ GameObject:
   - component: {fileID: 266884403653698581}
   - component: {fileID: 5628045321942929616}
   - component: {fileID: 661614142842777680}
+  - component: {fileID: -2021034100918029128}
   m_Layer: 7
   m_Name: Ladron
   m_TagString: Unidad
@@ -738,6 +739,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
@@ -858,6 +860,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 3194716257158510271}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 674041290417585858}
   barraVida: {fileID: 92143109859765242}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -901,6 +905,7 @@ MonoBehaviour:
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -1036,6 +1041,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-2021034100918029128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5662508880646372543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 7996714464312373375}
+  poseIdle: {fileID: 21300000, guid: 4bc69acc4a9e73045abbaeafca9ef06c, type: 3}
+  poseMover: {fileID: 21300000, guid: 17dfe033126c6af4c8f842ba05da5c46, type: 3}
+  poseAtacar: {fileID: 21300000, guid: b022dda97e6cfeb438330fce0a0498c6, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: 15fd57bcd6a35e94a93b8b5fc8cc805b, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &5939473797897287989
 GameObject:
   m_ObjectHideFlags: 0

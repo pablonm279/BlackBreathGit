@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class btnPersonaje : MonoBehaviour
 {
   public Personaje personajeRepresentado;
+
+  public TextMeshProUGUI txtPersonajeRepresentado;
 
 
   public void SeleccionarPJ()
@@ -61,15 +64,41 @@ public class btnPersonaje : MonoBehaviour
     }
 
   }
+  public void representarinfo()
+  {
+    if (CampaignManager.Instance.goMenuBatallas.activeInHierarchy)
+    {
+      if (personajeRepresentado != null)
+      {
 
+        if (TRADU.i.nIdioma == 1) //Español
+        {
+          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>Nv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
+        }
+        if (TRADU.i.nIdioma == 2) //Inglés
+        {
+          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>Lv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
+        }
+
+
+
+      }
+    }
+
+  }
   private void OnEnable()
   {
 
-    representarVida();
+    RepresentarTodo();
 
 
   }
-
+  public void RepresentarTodo()
+  {
+    representarinfo();
+    representarVida();
+    RepresentarIconos();
+  }
   public void RepresentarIconos()
   {
     if (personajeRepresentado != null)

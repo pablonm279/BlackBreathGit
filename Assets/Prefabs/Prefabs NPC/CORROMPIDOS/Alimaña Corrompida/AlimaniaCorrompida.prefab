@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 8049184949014868410}
   - component: {fileID: 236331555239900694}
   - component: {fileID: -9221824505182179656}
+  - component: {fileID: 8575792908502139352}
   m_Layer: 7
   m_Name: AlimaniaCorrompida
   m_TagString: Unidad
@@ -233,6 +234,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
@@ -340,6 +342,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 3030485952608272424}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 2539443948527553279}
   barraVida: {fileID: 3107516186598432711}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -383,6 +387,7 @@ MonoBehaviour:
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -548,6 +553,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8575792908502139352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 918802445406618680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 5653486396256051881}
+  poseIdle: {fileID: 21300000, guid: 2de2d9e3ef2de4c488d3455dc3c861e0, type: 3}
+  poseMover: {fileID: 21300000, guid: 3f60566c475503148beb03697c0ef7db, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 3295d794371738e408885b9fe5e5ea6f, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: 3cdc965b4998ce6478bad1a3365a4e25, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &3030485952608272424
 GameObject:
   m_ObjectHideFlags: 0
@@ -702,7 +727,7 @@ RectTransform:
   m_GameObject: {fileID: 4612788786185205983}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.06}
-  m_LocalScale: {x: 1.5429, y: 1, z: 1}
+  m_LocalScale: {x: 1.5429, y: 1.1152, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4886713912358591016}
@@ -711,7 +736,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.20002, y: -20.53}
+  m_AnchoredPosition: {x: 0.20002, y: -17.93}
   m_SizeDelta: {x: 20.99, y: 28.225}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2299710019064433329
@@ -742,7 +767,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cb74c79aaf5bedd4498c67aa2cafab73, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2de2d9e3ef2de4c488d3455dc3c861e0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

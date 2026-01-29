@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -255,29 +255,92 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
     return defaultRewardTuning ?? new BattleRewardTuning();
  }
 
+ int ObtenerMaxAliadosPermitidos()
+ {
+    // Si no se configurÃ³ aÃºn, por defecto permitir todos los slots disponibles (mÃ¡x. 4).
+    int max = cantidadAliadosComienzo > 0 ? cantidadAliadosComienzo : 4;
+    return Mathf.Clamp(max, 1, 4);
+ }
+
+ int ContarAliadosSeleccionados()
+ {
+    int count = 0;
+    if (scAdministradorEscenas.Personaje1 != null) count++;
+    if (scAdministradorEscenas.Personaje2 != null) count++;
+    if (scAdministradorEscenas.Personaje3 != null) count++;
+    if (scAdministradorEscenas.Personaje4 != null) count++;
+    return count;
+ }
+
+ void AgregarSiNoEsta(List<Personaje> lista, Personaje pers)
+ {
+    if (pers != null && !lista.Contains(pers))
+    {
+       lista.Add(pers);
+    }
+ }
+
+ void AjustarSeleccionAlMaximo()
+ {
+    AjustarSeleccionAlMaximo(ObtenerMaxAliadosPermitidos());
+ }
+
+ void AjustarSeleccionAlMaximo(int maxPermitidos)
+ {
+    int max = Mathf.Clamp(maxPermitidos, 1, 4);
+
+    var seleccion = new List<Personaje>(4);
+    AgregarSiNoEsta(seleccion, scAdministradorEscenas.Personaje1);
+    AgregarSiNoEsta(seleccion, scAdministradorEscenas.Personaje2);
+    AgregarSiNoEsta(seleccion, scAdministradorEscenas.Personaje3);
+    AgregarSiNoEsta(seleccion, scAdministradorEscenas.Personaje4);
+
+    if (seleccion.Count > max)
+    {
+       seleccion.RemoveRange(max, seleccion.Count - max);
+    }
+
+    scAdministradorEscenas.Personaje1 = seleccion.Count > 0 ? seleccion[0] : null;
+    scAdministradorEscenas.Personaje2 = seleccion.Count > 1 ? seleccion[1] : null;
+    scAdministradorEscenas.Personaje3 = seleccion.Count > 2 ? seleccion[2] : null;
+    scAdministradorEscenas.Personaje4 = seleccion.Count > 3 ? seleccion[3] : null;
+ }
+
 
  public void ActualizarLista()
 {
-   int seleccionados = 0;
-   if (scAdministradorEscenas.Personaje1 != null) seleccionados++;
-    if (scAdministradorEscenas.Personaje2 != null) seleccionados++;
-    if (scAdministradorEscenas.Personaje3 != null) seleccionados++;
-    if (scAdministradorEscenas.Personaje4 != null) seleccionados++;
+   var tutorial = CampaignManager.Instance != null ? CampaignManager.Instance.scTutorialManager : null;
+   int limiteVisual = ObtenerMaxAliadosPermitidos();
+   if (tutorial != null && tutorial.tutorialActivo)
+   {
+       if (tutorial.pasoActual < 4)
+       {
+           limiteVisual = Mathf.Min(limiteVisual, 1);
+       }
+       else if (tutorial.pasoActual < 40)
+       {
+           limiteVisual = Mathf.Min(limiteVisual, 3);
+       }
+   }
+
+   AjustarSeleccionAlMaximo(limiteVisual);
+
+   int seleccionados = ContarAliadosSeleccionados();
 
         // Asumiendo que tienes un TextMeshProUGUI llamado txtSeleccionadosPersonajes
         if (txtSeleccionadosPersonajes != null)
         {
-            if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 4)
+            if (tutorial != null && tutorial.tutorialActivo && tutorial.pasoActual < 4)
             {
-                txtSeleccionadosPersonajes.text = $"{seleccionados}/1"; // Forzar a 1/4 durante el tutorial
+                txtSeleccionadosPersonajes.text = $"{seleccionados}/1"; // Forzar a 1 durante el tutorial
             }
-            else if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 40)
+            else if (tutorial != null && tutorial.tutorialActivo && tutorial.pasoActual < 40)
             {
                 txtSeleccionadosPersonajes.text = $"{seleccionados}/3";
             }
             else
             { 
-                  txtSeleccionadosPersonajes.text = $"{seleccionados}/4";
+                 txtSeleccionadosPersonajes.text = $"{seleccionados}/"+limiteVisual;
 
             }
     }
@@ -287,14 +350,29 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
                        scAdministradorEscenas.Personaje3 == null &&
                        scAdministradorEscenas.Personaje4 == null;
 
-        // Configura el estado del botón basándose en si hay personajes seleccionados o no
-       btnComenzar.SetActive(!todosVacios); 
+        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 50)
+        {
+            if (seleccionados > 2)
+            { 
+                  btnComenzar.SetActive(true);
+
+            }else
+            {
+                btnComenzar.SetActive(false);
+            }
+
+        }
+        else
+        {
+            // Configura el estado del botÃ³n basÃ¡ndose en si hay personajes seleccionados o no
+            btnComenzar.SetActive(!todosVacios);
+        }
    
 
     foreach (Transform transform in contenedorUIPersonajes.transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
-    {
-            Destroy(transform.gameObject);
-    }
+            {
+                Destroy(transform.gameObject);
+            }
 
         if (!UIEmpezarBatallaACaravana.activeInHierarchy)
         {
@@ -313,7 +391,7 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
         {
             foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
             {
-                if (!pers.Camp_Muerto && pers.fVidaActual > 1) //Si no está muerto y tiene vida
+                if (!pers.Camp_Muerto && pers.fVidaActual > 1) //Si no estÃ¡ muerto y tiene vida
                 {
                     if ((/*Base: Guardia*/pers.ActividadSeleccionada == 3) || (/*Caballero: Vigilar*/pers.ActividadSeleccionada == 6))
                     {
@@ -325,13 +403,13 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
                 }
             }
         }
-       
-   foreach (Transform child in contenedorUIPersonajes.transform)
+
+        foreach (Transform child in contenedorUIPersonajes.transform)
         {
             // Intenta obtener el componente btnPersonaje del hijo
             btnPersonaje btn = child.GetComponent<btnPersonaje>();
 
-            if (btn != null) // Asegúrate de que el componente btnPersonaje exista
+            if (btn != null) // AsegÃºrate de que el componente btnPersonaje exista
             {
                 btn.representarVida();
 
@@ -358,7 +436,8 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
             }
 
 
-           btn.RepresentarIconos();
+           
+            btn.RepresentarTodo(); 
 
 
         }
@@ -396,7 +475,7 @@ public void DejanEnListaParticipantesSolo()
 
  public void Seleccionar(Personaje pers)
  {
-     // Verificar si el personaje ya está seleccionado en alguna posición
+     // Verificar si el personaje ya estÃ¡ seleccionado en alguna posiciÃ³n
     if (scAdministradorEscenas.Personaje1 == pers)
     {
         scAdministradorEscenas.Personaje1 = null;
@@ -421,27 +500,33 @@ public void DejanEnListaParticipantesSolo()
         ActualizarLista();
         return;
     }
-    // Verificar si la primera posición está disponible
+    int maxAliados = ObtenerMaxAliadosPermitidos();
+    int seleccionadosActuales = ContarAliadosSeleccionados();
+    if (seleccionadosActuales >= maxAliados)
+    {
+        return;
+    }
+    // Verificar si la primera posiciÃ³n estÃ¡ disponible
     if (scAdministradorEscenas.Personaje1 == null)
     {
         scAdministradorEscenas.Personaje1 = pers;
     }
-    // Verificar si la segunda posición está disponible
+    // Verificar si la segunda posiciÃ³n estÃ¡ disponible
     else if (scAdministradorEscenas.Personaje2 == null)
     {
         scAdministradorEscenas.Personaje2 = pers;
     }
-    // Verificar si la tercera posición está disponible
+    // Verificar si la tercera posiciÃ³n estÃ¡ disponible
     else if (scAdministradorEscenas.Personaje3 == null)
     {
         scAdministradorEscenas.Personaje3 = pers;
     }
-    // Verificar si la cuarta posición está disponible
+    // Verificar si la cuarta posiciÃ³n estÃ¡ disponible
     else if (scAdministradorEscenas.Personaje4 == null)
     {
         scAdministradorEscenas.Personaje4 = pers;
     }
-    // Si todas están ocupadas, reemplazar al cuarto scAdministradorEscenas.Personaje
+    // Si todas estÃ¡n ocupadas, reemplazar al cuarto scAdministradorEscenas.Personaje
     else
     {
         scAdministradorEscenas.Personaje4 = pers;
@@ -456,23 +541,27 @@ public void DejanEnListaParticipantesSolo()
  [SerializeField] TextMeshProUGUI txtSeleccionadosPersonajes;
  public int esEmboscadaEnemiga;
   public int EventoBatallaID = 0;
+    public int cantidadAliadosComienzo;
   public void EventoBatallaNormal(int n, int esEmboscada = 0)
-  {  
-    esBatallaFinal = false;
-    esEmboscadaEnemiga = esEmboscada;
+    {
+        esBatallaFinal = false;
+        esEmboscadaEnemiga = esEmboscada;
 
-    gameObject.SetActive(true);
-    UIEmpezarBatalla.SetActive(true);
-    UIEmpezarBatallaACaravana.SetActive(false);
-    UITerminarBatalla.SetActive(false);
+        gameObject.SetActive(true);
+        UIEmpezarBatalla.SetActive(true);
+        UIEmpezarBatallaACaravana.SetActive(false);
+        UITerminarBatalla.SetActive(false);
 
-    encuentroGeneradoActual = null;
-    encuentroTipoActual = BattleEncounterType.Normal;
-    EventoBatallaID = n;
+        cantidadAliadosComienzo = 3;
+        AjustarSeleccionAlMaximo();
 
-    var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
-    EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
-    encuentroZonaActual = zonaActual;
+        encuentroGeneradoActual = null;
+        encuentroTipoActual = BattleEncounterType.Normal;
+        EventoBatallaID = n;
+
+        var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+        EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
+        encuentroZonaActual = zonaActual;
 
         if (n == 0)
         {
@@ -515,26 +604,27 @@ public void DejanEnListaParticipantesSolo()
             EventoBatallaID = encuentroGeneradoActual != null ? 0 : EventoBatallaID;
 
             var tutorialManager = CampaignManager.Instance != null ? CampaignManager.Instance.scTutorialManager : null;
-            if(tutorialManager != null && tutorialManager.tutorialActivo && tutorialManager.pasoActual == 3)
+            if (tutorialManager != null && tutorialManager.tutorialActivo && tutorialManager.pasoActual == 3)
             {
                 EventoBatallaID = 700; //Fuerza el encuentro del tutorial
                 encuentroGeneradoActual = null; // No usar el encuentro procedural durante el tutorial
             }
 
-    }
+        }
         else
         {
             encuentroGeneradoActual = null;
         }
 
-    ActualizarLista();
-  }
+        ActualizarLista();
+    }
     public void EventoBatallaElite(int n, int esEmboscada = 0, bool forzarRitualKaleTav = false)
     {
         esBatallaFinal = false;
         esEmboscadaEnemiga = esEmboscada;
-
-        gameObject.SetActive(true);
+        cantidadAliadosComienzo = 3;
+        AjustarSeleccionAlMaximo();
+        gameObject.SetActive(true); 
         UIEmpezarBatalla.SetActive(true);
         UIEmpezarBatallaACaravana.SetActive(false);
         UITerminarBatalla.SetActive(false);
@@ -620,131 +710,138 @@ public void DejanEnListaParticipantesSolo()
         }
 
         ActualizarLista();
-    } public void EventoBatallaFinal(int n, int esEmboscada = 0)
-  {  
-    esBatallaFinal = true;
-    esEmboscadaEnemiga = esEmboscada;
-
-    gameObject.SetActive(true);
-    UIEmpezarBatalla.SetActive(true);
-    UIEmpezarBatallaACaravana.SetActive(false);
-    UITerminarBatalla.SetActive(false);
-
-    encuentroGeneradoActual = null;
-    encuentroTipoActual = BattleEncounterType.Normal;
-    var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
-    encuentroZonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
-
-    if (n == 0)
+    }
+    public void EventoBatallaFinal(int n, int esEmboscada = 0)
     {
-        int faseActual = atributosZona != null ? Mathf.Max(1, atributosZona.FASE) : 1;
-        int jefeId = ObtenerJefeIdAleatorio(encuentroZonaActual, faseActual);
-        if (jefeId != 0)
+        esBatallaFinal = true;
+        esEmboscadaEnemiga = esEmboscada;
+        cantidadAliadosComienzo = 4;
+        AjustarSeleccionAlMaximo();
+        gameObject.SetActive(true);
+        UIEmpezarBatalla.SetActive(true);
+        UIEmpezarBatallaACaravana.SetActive(false);
+        UITerminarBatalla.SetActive(false);
+
+        encuentroGeneradoActual = null;
+        encuentroTipoActual = BattleEncounterType.Normal;
+        var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+        encuentroZonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
+
+        if (n == 0)
         {
-            EventoBatallaID = jefeId;
-        }
-    }
-    else
-    {
-        EventoBatallaID = n;
-    }
-
-    ActualizarLista();
-  } public void EventoBatallaCaravana(int n, int esEmboscada = 3/*3 es Ataque a Caravana*/)
-  {
-    esBatallaFinal = false;
-    esEmboscadaEnemiga = esEmboscada;
-
-    gameObject.SetActive(true);
-    UIEmpezarBatallaACaravana.SetActive(true);
-    UIEmpezarBatalla.SetActive(false);
-    UITerminarBatalla.SetActive(false);
-
-    if (txtMilicianosDisponibles != null)
-    {
-        txtMilicianosDisponibles.text = TRADU.i.Traducir("Milicianos disponibles: ") + (int)CampaignManager.Instance.GetMiliciasActual() / 10;
-    }
-
-    scAdministradorEscenas.Personaje1 = null;
-    scAdministradorEscenas.Personaje2 = null;
-    scAdministradorEscenas.Personaje3 = null;
-    scAdministradorEscenas.Personaje4 = null;
-
-    int asignados = 0;
-    foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
-    {
-        if (asignados >= 4) break;
-        if (pers == null) continue;
-        if (pers.Camp_Muerto) continue;
-        if (pers.fVidaActual <= 1) continue;
-        if (!((pers.ActividadSeleccionada == 3) || (pers.ActividadSeleccionada == 6))) continue;
-
-        asignados++;
-        if (asignados == 1) scAdministradorEscenas.Personaje1 = pers;
-        else if (asignados == 2) scAdministradorEscenas.Personaje2 = pers;
-        else if (asignados == 3) scAdministradorEscenas.Personaje3 = pers;
-        else if (asignados == 4) scAdministradorEscenas.Personaje4 = pers;
-    }
-
-    encuentroGeneradoActual = null;
-    encuentroTipoActual = BattleEncounterType.AtaqueCaravana;
-    EventoBatallaID = n;
-
-    var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
-    EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
-    encuentroZonaActual = zonaActual;
-
-    if (n == 0)
-    {
-        bool generado = false;
-        float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
-
-        if (DeberiaGenerarBatallaCorrupta())
-        {
-            generado = TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, EncounterZoneType.Generico, f => EsFaccionDeLista(f, corruptFactionIds), out encuentroGeneradoActual);
-            if (generado)
+            int faseActual = atributosZona != null ? Mathf.Max(1, atributosZona.FASE) : 1;
+            int jefeId = ObtenerJefeIdAleatorio(encuentroZonaActual, faseActual);
+            if (jefeId != 0)
             {
-                encuentroZonaActual = EncounterZoneType.Generico;
+                EventoBatallaID = jefeId;
             }
         }
-
-        if (!generado && UnityEngine.Random.Range(0f, 100f) < chanceEncuentroPropio)
+        else
         {
-            generado = TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, zonaActual, null, out encuentroGeneradoActual);
-            if (generado)
+            EventoBatallaID = n;
+        }
+
+        ActualizarLista();
+    }
+    public void EventoBatallaCaravana(int n, int esEmboscada = 3/*3 es Ataque a Caravana*/)
+    {
+        esBatallaFinal = false;
+        esEmboscadaEnemiga = esEmboscada;
+        cantidadAliadosComienzo = 4;
+        AjustarSeleccionAlMaximo();
+
+        gameObject.SetActive(true);
+        UIEmpezarBatallaACaravana.SetActive(true);
+        UIEmpezarBatalla.SetActive(false);
+        UITerminarBatalla.SetActive(false);
+
+        if (txtMilicianosDisponibles != null)
+        {
+            txtMilicianosDisponibles.text = TRADU.i.Traducir("Milicianos disponibles: ") + (int)CampaignManager.Instance.GetMiliciasActual() / 10;
+        }
+
+        scAdministradorEscenas.Personaje1 = null;
+        scAdministradorEscenas.Personaje2 = null;
+        scAdministradorEscenas.Personaje3 = null;
+        scAdministradorEscenas.Personaje4 = null;
+
+        int maxAliados = ObtenerMaxAliadosPermitidos();
+        int asignados = 0;
+        foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
+        {
+            if (asignados >= maxAliados) break;
+            if (pers == null) continue;
+            if (pers.Camp_Muerto) continue;
+            if (pers.fVidaActual <= 1) continue;
+            if (!((pers.ActividadSeleccionada == 3) || (pers.ActividadSeleccionada == 6))) continue;
+
+            asignados++;
+            if (asignados == 1) scAdministradorEscenas.Personaje1 = pers;
+            else if (asignados == 2) scAdministradorEscenas.Personaje2 = pers;
+            else if (asignados == 3) scAdministradorEscenas.Personaje3 = pers;
+            else if (asignados == 4) scAdministradorEscenas.Personaje4 = pers;
+        }
+
+        encuentroGeneradoActual = null;
+        encuentroTipoActual = BattleEncounterType.AtaqueCaravana;
+        EventoBatallaID = n;
+
+        var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+        EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
+        encuentroZonaActual = zonaActual;
+
+        if (n == 0)
+        {
+            bool generado = false;
+            float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
+
+            if (DeberiaGenerarBatallaCorrupta())
             {
+                generado = TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, EncounterZoneType.Generico, f => EsFaccionDeLista(f, corruptFactionIds), out encuentroGeneradoActual);
+                if (generado)
+                {
+                    encuentroZonaActual = EncounterZoneType.Generico;
+                }
+            }
+
+            if (!generado && UnityEngine.Random.Range(0f, 100f) < chanceEncuentroPropio)
+            {
+                generado = TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, zonaActual, null, out encuentroGeneradoActual);
+                if (generado)
+                {
+                    encuentroZonaActual = zonaActual;
+                }
+            }
+
+            if (!generado)
+            {
+                generado = TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, EncounterZoneType.Generico, null, out encuentroGeneradoActual);
+                if (generado)
+                {
+                    encuentroZonaActual = EncounterZoneType.Generico;
+                }
+            }
+
+            if (!generado)
+            {
+                TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, zonaActual, null, out encuentroGeneradoActual);
                 encuentroZonaActual = zonaActual;
             }
-        }
 
-        if (!generado)
+            EventoBatallaID = encuentroGeneradoActual != null ? 0 : EventoBatallaID;
+        }
+        else
         {
-            generado = TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, EncounterZoneType.Generico, null, out encuentroGeneradoActual);
-            if (generado)
-            {
-                encuentroZonaActual = EncounterZoneType.Generico;
-            }
+            encuentroGeneradoActual = null;
         }
 
-        if (!generado)
-        {
-            TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, zonaActual, null, out encuentroGeneradoActual);
-            encuentroZonaActual = zonaActual;
-        }
-
-        EventoBatallaID = encuentroGeneradoActual != null ? 0 : EventoBatallaID;
-    }
-    else
-    {
-        encuentroGeneradoActual = null;
-    }
-
-    ActualizarLista();
-  } public void EventoBatallaSubterranea(int fase)
+        ActualizarLista();
+    } public void EventoBatallaSubterranea(int fase)
   {
     esBatallaFinal = false; // batalla especial pero no es la final de jefe
     esEmboscadaEnemiga = 1; // Ataque subterraneo siempre emboscada enemiga
-
+    cantidadAliadosComienzo = 4;
+    AjustarSeleccionAlMaximo();
     gameObject.SetActive(true);
     UIEmpezarBatalla.SetActive(true);
     UIEmpezarBatallaACaravana.SetActive(false);
@@ -788,11 +885,11 @@ public void DejanEnListaParticipantesSolo()
 
     int aumentochancesitem = 0;
 
-    if (encuentroGeneradoActual != null)
-    {
+   if (encuentroGeneradoActual != null)
+   {
         ProcesarEncuentroGenerado(resultado, ref aumentochancesitem);
-    }
-    else
+   }
+   else
     {
         ProcesarEncuentroLegacy(resultado, ref aumentochancesitem);
     }
@@ -803,6 +900,11 @@ public void DejanEnListaParticipantesSolo()
       if (esBatallaFinal && CampaignManager.Instance != null)
       {
          CampaignManager.Instance.OnDerrotadoJefeZona();
+      }
+      else if (CampaignManager.Instance.scTutorialManager.tutorialActivo && EventoBatallaID == 701)
+      {
+         CampaignManager.Instance.scTutorialManager.SiguientePaso();
+         CampaignManager.Instance.AbrirCiudadPuerto(); //fin tutorial
       }
    }
     //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
@@ -849,12 +951,12 @@ public void DejanEnListaParticipantesSolo()
             {
                 CampaignManager.Instance.scSequitoCronistas.valorCambiosCronicas += 50;
                 CampaignManager.Instance.CambiarEsperanzaActual(+5);
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la victoria, +50 Valor Cr├│nica, +5 Esperanza."));
+                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la victoria, +50 Valor Crâ”œâ”‚nica, +5 Esperanza."));
             }
             else //Derrota
             {
                 CampaignManager.Instance.scSequitoCronistas.valorCambiosCronicas -= 50;
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la derrota, -50 Valor Cr├│nica. -3 Esperanza."));
+                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la derrota, -50 Valor Crâ”œâ”‚nica. -3 Esperanza."));
                 CampaignManager.Instance.CambiarEsperanzaActual(-3);
 
             }
@@ -897,7 +999,7 @@ public void DejanEnListaParticipantesSolo()
                     pers.fVidaActual = 5;
                 }
 
-                if (uni.loMatoCorrompido) //Si lo mató un corrupto, se marca como corrupto
+                if (uni.loMatoCorrompido) //Si lo matÃ³ un corrupto, se marca como corrupto
                 {
 
                     if (pers.Camp_Corrupto)
@@ -956,7 +1058,8 @@ public void DejanEnListaParticipantesSolo()
     }
  public void ComenzarBatalla()
  {
-    // Autorelleno para Ataque a Caravana: prioriza personajes con m1s vida
+    AjustarSeleccionAlMaximo();
+    // Autorelleno para Ataque a Caravana: prioriza personajes con m1s vida
     if (UIEmpezarBatallaACaravana != null && UIEmpezarBatallaACaravana.activeInHierarchy)
     {
         esEmboscadaEnemiga = 3; // Marcar tipo Ataque a Caravana
@@ -967,8 +1070,9 @@ public void DejanEnListaParticipantesSolo()
         if (scAdministradorEscenas.Personaje3 != null) seleccionados.Add(scAdministradorEscenas.Personaje3);
         if (scAdministradorEscenas.Personaje4 != null) seleccionados.Add(scAdministradorEscenas.Personaje4);
 
+        int maxAliadosPermitidos = ObtenerMaxAliadosPermitidos();
         int countSel = seleccionados.Count;
-        if (countSel < 4)
+        if (countSel < maxAliadosPermitidos)
         {
             // Candidatos: vivos, con vida > 1, no repetidos
             List<Personaje> candidatos = new List<Personaje>();
@@ -980,7 +1084,7 @@ public void DejanEnListaParticipantesSolo()
                 if (seleccionados.Contains(p)) continue;
                 candidatos.Add(p);
             }
-            // Ordenar por vida actual desc, luego vida mbxima desc
+            // Ordenar por vida actual desc, luego vida mbxima desc
             candidatos.Sort((a, b) => {
                 int cmp = b.fVidaActual.CompareTo(a.fVidaActual);
                 if (cmp == 0) cmp = b.fVidaMaxima.CompareTo(a.fVidaMaxima);
@@ -992,26 +1096,26 @@ public void DejanEnListaParticipantesSolo()
                 scAdministradorEscenas.PersonajesSorprendidosInicioCaravana = new List<Personaje>();
             }
 
-            // Rellenar huecos en orden 1..4
-            if (scAdministradorEscenas.Personaje1 == null && candidatos.Count > 0)
+            // Rellenar huecos en orden 1..4 respetando el lÃ­mite
+            if (maxAliadosPermitidos >= 1 && scAdministradorEscenas.Personaje1 == null && candidatos.Count > 0)
             {
                 var p = candidatos[0]; candidatos.RemoveAt(0);
                 scAdministradorEscenas.Personaje1 = p;
                 scAdministradorEscenas.PersonajesSorprendidosInicioCaravana.Add(p);
             }
-            if (scAdministradorEscenas.Personaje2 == null && candidatos.Count > 0)
+            if (maxAliadosPermitidos >= 2 && scAdministradorEscenas.Personaje2 == null && candidatos.Count > 0)
             {
                 var p = candidatos[0]; candidatos.RemoveAt(0);
                 scAdministradorEscenas.Personaje2 = p;
                 scAdministradorEscenas.PersonajesSorprendidosInicioCaravana.Add(p);
             }
-            if (scAdministradorEscenas.Personaje3 == null && candidatos.Count > 0)
+            if (maxAliadosPermitidos >= 3 && scAdministradorEscenas.Personaje3 == null && candidatos.Count > 0)
             {
                 var p = candidatos[0]; candidatos.RemoveAt(0);
                 scAdministradorEscenas.Personaje3 = p;
                 scAdministradorEscenas.PersonajesSorprendidosInicioCaravana.Add(p);
             }
-            if (scAdministradorEscenas.Personaje4 == null && candidatos.Count > 0)
+            if (maxAliadosPermitidos >= 4 && scAdministradorEscenas.Personaje4 == null && candidatos.Count > 0)
             {
                 var p = candidatos[0]; candidatos.RemoveAt(0);
                 scAdministradorEscenas.Personaje4 = p;
@@ -1094,7 +1198,7 @@ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
 
        if (resultado == 1)
        {
-            const int exp = 160;
+            const int exp = 180;
             const int oro = 150;
 
             CampaignManager.Instance.CambiarOroActual(oro);
@@ -1120,8 +1224,8 @@ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
     if (txtRecompensa != null)
     {
         txtRecompensa.text = resultado == 1
-            ? TRADU.i.Traducir("Victoria sin recompensas definidas para este encuentro clásico.")
-            : TRADU.i.Traducir("Derrota en un encuentro clásico. Los efectos específicos aún no están configurados.");
+            ? TRADU.i.Traducir("Victoria sin recompensas definidas para este encuentro clÃ¡sico.")
+            : TRADU.i.Traducir("Derrota en un encuentro clÃ¡sico. Los efectos especÃ­ficos aÃºn no estÃ¡n configurados.");
     }
 
     int deltaEsperanza = resultado == 1 ? +5 : -5;
@@ -1136,7 +1240,7 @@ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
     if (oro > 0) partes.Add(oro + (TRADU.i.nIdioma == 2 ? " Gold" : " Oro"));
     if (materiales > 0) partes.Add(materiales + (TRADU.i.nIdioma == 2 ? " Materials" : " Materiales"));
 
-    string contenido = partes.Count > 0 ? string.Join(", ", partes) : TRADU.i.Traducir("sin botín");
+    string contenido = partes.Count > 0 ? string.Join(", ", partes) : TRADU.i.Traducir("sin botÃ­n");
     string texto = TRADU.i.nIdioma == 2
         ? contenido + " obtained."
         : TRADU.i.Traducir("Se han obtenido ") + contenido + ".";

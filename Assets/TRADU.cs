@@ -3594,6 +3594,57 @@ public class TRADU : MonoBehaviour
             case "Puntos de Acción":
                 r = "Action Points";
                 break;
+            case "Volver al Menu Principal":
+                r = "Return to Main Menu";
+                break;
+            case "Tutorial activo, atajos deshabilitados.":
+                r = "Tutorial active, shortcuts disabled.";
+                break;
+             case "Cargar Partida":
+                r = "Load Game";
+                break;
+           /* case "":
+                r = "";
+                break;
+            case "":
+                r = "";
+                break;
+            case "":
+                r = "";
+                break;
+            case "":
+                r = "";
+                break;
+            case "":
+                r = "";
+                break;
+            case "":
+                r = "";
+                break;
+            case "":
+                r = "";
+                break;
+            case "":
+                r = "";
+                break;
+            case "":
+                r = "";
+                break;
+            case "":
+                r = "";
+                break;
+            case "":
+                r = "";
+                break;
+            case "":
+                r = "";
+                break;
+            case "":
+                r = "";
+                break;
+            case "":
+                r = "";
+                break;*/
              
 
 

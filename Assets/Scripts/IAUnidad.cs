@@ -458,6 +458,7 @@ public class IAUnidad : MonoBehaviour
             if (tareaCompletada == habilidadTask)
             {
                await habilidadTask; // Repropaga excepciones si las hay
+               await EsperarSecuenciaVisualAsync(habilidad, timings);
                return true;
             }
 
@@ -465,10 +466,12 @@ public class IAUnidad : MonoBehaviour
             if (gracia == habilidadTask)
             {
                await habilidadTask;
+               await EsperarSecuenciaVisualAsync(habilidad, timings);
                return true;
             }
 
             Debug.LogWarning($"[IAUnidad] {scUnidad.uNombre} supero el tiempo limite al ejecutar {habilidad.nombre}.");
+            await EsperarSecuenciaVisualAsync(habilidad, timings);
          }
          catch (Exception ex)
          {
@@ -477,6 +480,32 @@ public class IAUnidad : MonoBehaviour
       }
 
       return false;
+   }
+
+   private async Task EsperarSecuenciaVisualAsync(IAHabilidad habilidad, AITurnTimings timings)
+   {
+      if (habilidad == null)
+      {
+         return;
+      }
+
+      Task visualTask = habilidad.EsperarSecuenciaVisualAsync();
+      if (visualTask == null || visualTask.IsCompleted)
+      {
+         return;
+      }
+
+      int maxEsperaMs = Mathf.Max(timings.HabilidadTimeoutMs, timings.DelayPostAccionMs) + timings.GraciaHabilidadMs + 1200;
+      Task timeout = DelayIA(maxEsperaMs);
+      Task terminado = await Task.WhenAny(visualTask, timeout);
+
+      if (terminado != visualTask)
+      {
+         Debug.LogWarning($"[IAUnidad] {scUnidad?.uNombre} supera la espera visual de {habilidad.nombre}.");
+         return;
+      }
+
+      await visualTask;
    }
 
    async Task<bool> TerminarTurnoSeguro(bool agotarAP, AITurnTimings timings, string motivo = null)

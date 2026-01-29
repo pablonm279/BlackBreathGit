@@ -248,7 +248,7 @@ public class AtributosZona : MonoBehaviour
 
       Invoke("PlayMusic", 0.2f);
       // Usar fader como tapón mientras se adorna el mapa (async, sin freeze)
-     // StartCoroutine(AdornarBosqueArdienteConFadeAsync());
+      StartCoroutine(AdornarBosqueArdienteConFadeAsync());
 
 
       Nedukazal_CaravanaLuz.SetActive(false);

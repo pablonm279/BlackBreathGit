@@ -18,7 +18,7 @@ public class IALlamadaEspectral : IAHabilidad
     hAncho = 0;
     esMelee = false;
     hAlcance = 0;
-    hCooldownMax = 5;
+    hCooldownMax = 6;
     esHostil = false;
     prioridad = 20;
     costoAP = 4;

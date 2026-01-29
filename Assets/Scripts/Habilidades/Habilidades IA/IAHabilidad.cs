@@ -16,6 +16,8 @@ public abstract class IAHabilidad : MonoBehaviour
   public int hAlcance; //En habilidades no hostiles, funciona como alcance (distancia) a la casilla del aliado
   public bool esMelee; //Aumenta el rango si esta en la columna del frente
   public bool afectaObstaculos; //Aumenta el rango si esta en la columna del frente
+  [Header("Animacion")]
+  [SerializeField] public bool fuerzaPoseAtaque = false;
 
   public int hCooldownMax;
   public int hActualCooldown;
@@ -30,6 +32,12 @@ public abstract class IAHabilidad : MonoBehaviour
   public int costoAP;
 
   Casilla casillaOrigen;
+  private Task secuenciaVisualEnCurso = Task.CompletedTask;
+  private readonly object secuenciaVisualLock = new object();
+  private const int PausaPostAproximacionMs = 150;
+  private const int PausaAntesVolverMs = 2100;
+  private const float VentanaAnimacionDuplicada = 1.1f;
+  private float inicioSecuenciaVisual = -999f;
 
   public List<object> objPosibles = new List<object>(); //Esta variable guarda los objetivos posibles de la habilidad
 
@@ -39,6 +47,42 @@ public abstract class IAHabilidad : MonoBehaviour
   public abstract Task ActivarHabilidad();
 
   public abstract void AplicarEfectosHabilidad(object unidad);
+
+  /// <summary>
+  /// Ejecuta la animaciÃ³n/pose segÃºn el tipo de alcance de la habilidad IA.
+  /// </summary>
+  protected void ReproducirAnimacionSegunTipo(bool ignorarDuplicado = false)
+  {
+    if (scEstaUnidad == null)
+    {
+      scEstaUnidad = GetComponent<Unidad>();
+    }
+
+    if (scEstaUnidad == null)
+    {
+      return;
+    }
+
+    bool usarAtaque = fuerzaPoseAtaque || esMelee;
+    if (usarAtaque)
+    {
+      if (!ignorarDuplicado && scEstaUnidad.EsAnimacionAtaqueRecienteDesde(inicioSecuenciaVisual, VentanaAnimacionDuplicada)) { return; }
+      scEstaUnidad.ReproducirAnimacionAtaque(true);
+    }
+    else
+    {
+      if (!ignorarDuplicado && scEstaUnidad.EsAnimacionHabilidadRecienteDesde(inicioSecuenciaVisual, VentanaAnimacionDuplicada)) { return; }
+      scEstaUnidad.ReproducirAnimacionHabilidadNoHostil(true);
+    }
+  }
+
+  public Task EsperarSecuenciaVisualAsync()
+  {
+    lock (secuenciaVisualLock)
+    {
+      return secuenciaVisualEnCurso ?? Task.CompletedTask;
+    }
+  }
 
   public virtual List<object> ListaHayObjetivosAlAlcance() //Si se devuelve vacia, es porque no hay  if (lCasillasTotal.Count == 0)
   {
@@ -474,12 +518,31 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
 
   protected async void PrepararInicioAnimacion(List<object> objetivos, object solo)
   {
-    // Log de uso de habilidad de IA
-    if (BattleManager.Instance != null && scEstaUnidad != null)
+    TaskCompletionSource<bool> visualTcs = new TaskCompletionSource<bool>();
+    lock (secuenciaVisualLock)
     {
-      string nombreHab = TRADU.i != null ? TRADU.i.Traducir(nombre) : nombre;
-      BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir(" usa ") + nombreHab + ".</color>");
+      secuenciaVisualEnCurso = visualTcs.Task;
     }
+
+    try
+    {
+      inicioSecuenciaVisual = Time.time;
+      if (scEstaUnidad == null)
+      {
+        scEstaUnidad = GetComponent<Unidad>();
+      }
+
+      if (scEstaUnidad != null)
+      {
+        scEstaUnidad.SetSuprimirAnimacionIA(true);
+      }
+
+      // Log de uso de habilidad de IA
+      if (BattleManager.Instance != null && scEstaUnidad != null)
+      {
+        string nombreHab = TRADU.i != null ? TRADU.i.Traducir(nombre) : nombre;
+        BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir(" usa ") + nombreHab + ".</color>");
+      }
     unidadesNoParticipantes = new List<object>(BattleManager.Instance.lUnidadesTotal);
     unidadesNoParticipantes.Remove(scEstaUnidad);
 
@@ -504,11 +567,34 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     // Aproximación visual si es melee; usa primer objetivo o "solo"
     object objetivoVisual = solo ?? (objetivos != null && objetivos.Count > 0 ? objetivos[0] : null);
     bool seAproximo = await IntentarAproximarVisualMeleeAsync(objetivoVisual);
+    if (seAproximo && PausaPostAproximacionMs > 0)
+    {
+      await Task.Delay(PausaPostAproximacionMs);
+    }
 
-    await Task.Delay(1900);
+    ReproducirAnimacionSegunTipo(true);
+
+    if (PausaAntesVolverMs > 0)
+    {
+      await Task.Delay(PausaAntesVolverMs);
+    }
     await VolverTrasAproximacionVisualAsync(seAproximo, true);
 
-    BattleManager.Instance.DesombrearANoParticipantesHabilidad(unidadesNoParticipantes);
+      BattleManager.Instance.DesombrearANoParticipantesHabilidad(unidadesNoParticipantes);
+    }
+    catch (Exception ex)
+    {
+      Debug.LogWarning($"[IAHabilidad] Error en PrepararInicioAnimacion: {ex.Message}");
+    }
+    finally
+    {
+      if (scEstaUnidad != null)
+      {
+        scEstaUnidad.SetSuprimirAnimacionIA(false);
+      }
+
+      visualTcs.TrySetResult(true);
+    }
 }
 
   protected Task<bool> IntentarAproximarVisualMeleeAsync(object objetivo, bool mantenerAdelante = false)

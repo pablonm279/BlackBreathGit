@@ -21,7 +21,7 @@ public class IAAtaqueRaizArdiente : IAHabilidad
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 1;
-      esMelee = true;
+      esMelee = false;
       hAlcance = 3;
       hCooldownMax = 0;
       esHostil = true;

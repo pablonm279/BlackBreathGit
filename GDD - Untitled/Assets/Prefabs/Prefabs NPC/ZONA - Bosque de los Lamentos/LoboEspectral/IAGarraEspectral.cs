@@ -26,7 +26,7 @@ public class IAGarraEspectral : IAHabilidad
       hCooldownMax = 0;
       esHostil = true;
       prioridad = 1;
-      costoAP = 2;
+      costoAP = 3;
       afectaObstaculos = true;
       
 

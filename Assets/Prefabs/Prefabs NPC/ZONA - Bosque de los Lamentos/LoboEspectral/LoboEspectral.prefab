@@ -28,8 +28,8 @@ RectTransform:
   m_GameObject: {fileID: 452682925496149518}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.018}
-  m_LocalScale: {x: 1.1066629, y: 1.0590581, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.8211777, y: 1.4216795, z: 1.3424}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8138906719107459811}
   - {fileID: 7640339184957262715}
@@ -38,8 +38,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.28999853, y: -18.31}
-  m_SizeDelta: {x: 20.99, y: 19.12}
+  m_AnchoredPosition: {x: 0.28999853, y: -11.02}
+  m_SizeDelta: {x: 20.99, y: 26.17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3728128807783799882
 CanvasRenderer:
@@ -69,7 +69,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e46118b696890524cb8c3abc0005eec6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 84995875ba0f1014b8cf0ae6a27850cb, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -143,6 +143,7 @@ GameObject:
   - component: {fileID: 2732777772784433487}
   - component: {fileID: 2201771560144389694}
   - component: {fileID: -5140751484560078445}
+  - component: {fileID: 6287304211661952565}
   m_Layer: 7
   m_Name: LoboEspectral
   m_TagString: Unidad
@@ -271,6 +272,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
@@ -356,6 +358,7 @@ MonoBehaviour:
   hAlcance: 1
   esMelee: 1
   afectaObstaculos: 1
+  fuerzaPoseAtaque: 0
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -387,6 +390,7 @@ MonoBehaviour:
   hAlcance: 1
   esMelee: 1
   afectaObstaculos: 1
+  fuerzaPoseAtaque: 0
   hCooldownMax: 2
   hActualCooldown: 2
   Usuario: {fileID: 0}
@@ -439,6 +443,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 4124472057206314101}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 8282162193989390545}
   barraVida: {fileID: 8857966881904100841}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -478,10 +484,12 @@ MonoBehaviour:
   esCargable: 0
   esMelee: 0
   bAfectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -606,6 +614,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6287304211661952565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1216717484583080327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 5729401811697985342}
+  poseIdle: {fileID: 21300000, guid: 84995875ba0f1014b8cf0ae6a27850cb, type: 3}
+  poseMover: {fileID: 21300000, guid: 67a65384f8150c344a6af525fcf6fbf8, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 37f7dcca4064b5e45b29763dd750c4f6, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: 37f7dcca4064b5e45b29763dd750c4f6, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &1222569005234699974
 GameObject:
   m_ObjectHideFlags: 0
@@ -6135,7 +6163,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -6.57
+      value: -5.3
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

@@ -72,6 +72,8 @@ public class MenuController : MonoBehaviour
     public void OnNuevaPartida()
     {
         StartCoroutine(CargarJuego());
+
+      
     }
     public void abriropciones()
     {

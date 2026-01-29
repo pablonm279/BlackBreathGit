@@ -476,6 +476,7 @@ GameObject:
   - component: {fileID: 1170825602812765202}
   - component: {fileID: 4303543263459061319}
   - component: {fileID: 111823278064140853}
+  - component: {fileID: 1468163651631712974}
   m_Layer: 7
   m_Name: VagraniloMayor
   m_TagString: Unidad
@@ -604,6 +605,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
@@ -720,6 +722,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 8607512586909538151}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 7949166304531198262}
   barraVida: {fileID: 7371526122748503054}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -763,6 +767,7 @@ MonoBehaviour:
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -922,6 +927,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1468163651631712974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3855863790156444218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 1689448787243993455}
+  poseIdle: {fileID: 21300000, guid: c78ace765f2e3254ea2f206aaef0e319, type: 3}
+  poseMover: {fileID: 21300000, guid: 5f0b762792e27724db9e064cffd440c3, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 36cd210cdabb69c438c2049e5790a14a, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: 2cfa487206ede3f46a283f02b5550e4e, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &4225752100268397624
 GameObject:
   m_ObjectHideFlags: 0
@@ -950,7 +975,7 @@ RectTransform:
   m_GameObject: {fileID: 4225752100268397624}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.89319783, y: 1.2988493, z: 1}
+  m_LocalScale: {x: 1.4640405, y: 1.2988493, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5388793553552137983}
@@ -959,7 +984,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.64, y: -13.099}
+  m_AnchoredPosition: {x: -4.29, y: -13.099}
   m_SizeDelta: {x: 26, y: 26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2707832116491439208

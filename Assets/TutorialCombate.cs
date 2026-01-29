@@ -34,6 +34,16 @@ public class TutorialCombate : MonoBehaviour
         }
     }
 
+    public void IniciarCombateDesdePaso(int paso)
+    {
+        if (tutorialManager != null && !tutorialManager.tutorialActivo) return;
+        if (pasosCombate == null || pasosCombate.Length == 0) return;
+
+        tutorialCombateActivo = true;
+        pasoActual = Mathf.Clamp(paso, 0, pasosCombate.Length - 1);
+        MostrarPaso(pasoActual);
+    }
+
     public void SiguientePasoCombate()
     {
 

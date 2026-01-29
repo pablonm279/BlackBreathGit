@@ -21,15 +21,15 @@ public class MetaprogresionManager : MonoBehaviour
 
 
     public int CorrupcionGlobal;
-    public int CorrupcionMax;
-    public int ValordeTrabajoDisponible;
+    public int CorrupcionMax = 5;
+    public int ValordeTrabajoDisponible = 0;
 
     public int NivelPeligroBosqueArdiente;
     public int NivelPeligroPasoVientohelado;
     public int NivelPeligroNedukazal;
 
     public int CantidadCiviles;
-    public int MisionesSalvamento;
+    public int MisionesSalvamento = 1;
     
 
     public int SerriaTierBarcos;
@@ -48,10 +48,9 @@ public class MetaprogresionManager : MonoBehaviour
     public int SerriaPuntosAlmacenadosBarricadas;
     public int SerriaPuntosAlmacenadosTemplo;
 
-
-
+   
     public void AumentarAlmacenadosBarcos()
-    { 
+    {
         SerriaPuntosAlmacenadosBarcos += 5;
         ValordeTrabajoDisponible -= 5;
         int threshold = 40 - 5 * SerriaTierGranjas + 15 * SerriaTierBarcos;

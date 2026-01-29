@@ -137,7 +137,9 @@ public class TutorialManager : MonoBehaviour
         }
         else
         {
-            tutorialActivo = false; // Finaliza el tutorial
+              PlayerPrefs.SetInt("Tutorial_Terminado", 1); // asegura persistencia inmediata
+              PlayerPrefs.Save();
+              tutorialActivo = false; // Finaliza el tutorial
         }
     }
 

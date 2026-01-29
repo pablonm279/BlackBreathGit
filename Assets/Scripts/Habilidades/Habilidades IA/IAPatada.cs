@@ -57,7 +57,7 @@ public class IAPatada : IAHabilidad
       bool hayOtraMeleePendiente = false; // Fuerza retorno antes de otro ataque
       await EjecutarMeleeConAproximacionAsync(Objetivo, async () =>
       {
-        scEstaUnidad.ReproducirAnimacionAtaque();
+        ReproducirAnimacionSegunTipo();
         await Task.Delay(1500);
         if (Objetivo == null)
         {

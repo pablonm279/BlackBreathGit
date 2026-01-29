@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class MenuCiudadPuerto : MonoBehaviour
 {
@@ -376,18 +377,30 @@ public class MenuCiudadPuerto : MonoBehaviour
                 MetaprogresionManager.Instance.AumentarAlmacenadosBarricadas();
             }
         }
-        else if (n == 7)
-        {
-            if (MetaprogresionManager.Instance.ValordeTrabajoDisponible > 4)
-            { 
+     else if (n == 7)
+     {
+         if (MetaprogresionManager.Instance.ValordeTrabajoDisponible > 4)
+         { 
              
-                MetaprogresionManager.Instance.AumentarAlmacenadosAlmenaras();
-            }
+             MetaprogresionManager.Instance.AumentarAlmacenadosAlmenaras();
+         }
 
+     }
+
+
+         ActualizarValores();
+    }
+
+    public void VolverAlMenuPrincipal()
+    {   
+        PlayerPrefs.Save();
+        Time.timeScale = 1f; // asegurar que la proxima escena no quede pausada
+        if (MusicManager.Instance != null)
+        {
+            MusicManager.Instance.PausarMusica(false);
+            MusicManager.Instance.FadeOutYParar(0.5f);
         }
-
-
-          ActualizarValores();
+        SceneManager.LoadScene("ES-MenuPrincipal");
     }
 
 

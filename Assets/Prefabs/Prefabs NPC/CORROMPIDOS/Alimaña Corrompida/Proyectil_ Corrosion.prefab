@@ -308,8 +308,8 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.75294125, g: 0.04705883, b: 0.21568629, a: 1}
-      key1: {r: 0.8745099, g: 0.07058824, b: 0.33333334, a: 0.25882354}
+      key0: {r: 0, g: 0.67058825, b: 0.4291703, a: 1}
+      key1: {r: 0.070588246, g: 0.8745098, b: 0.5202712, a: 0.25882354}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -411,3 +411,4 @@ MonoBehaviour:
   endMarker: {fileID: 0}
   parabola: 0
   velocidad: 0
+  alturaMinimaParabola: 0.05

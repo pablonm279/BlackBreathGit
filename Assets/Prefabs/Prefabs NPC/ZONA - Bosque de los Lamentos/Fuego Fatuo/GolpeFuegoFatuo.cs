@@ -54,7 +54,7 @@ public class GolpeFuegoFatuo : IAHabilidad
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
       hActualCooldown = hCooldownMax;
       
-      scEstaUnidad.ReproducirAnimacionAtaque();
+      //scEstaUnidad.ReproducirAnimacionAtaque();
             object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
                 PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 

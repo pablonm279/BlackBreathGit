@@ -5233,6 +5233,7 @@ GameObject:
   - component: {fileID: 7183569897580904577}
   - component: {fileID: 3032909807885364115}
   - component: {fileID: 6648404533766146163}
+  - component: {fileID: 6117388961552480137}
   m_Layer: 7
   m_Name: Image
   m_TagString: Untagged
@@ -5249,8 +5250,8 @@ RectTransform:
   m_GameObject: {fileID: 4725468778746984210}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.78681237, y: 0.8571, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.7205313, y: 0.78489786, z: 0.91576}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5193793747634204484}
   - {fileID: 4956629255975220123}
@@ -5290,7 +5291,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 844c32d75af1f06439e7fe360e4c36fa, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e9fb91431f3fb994696e72a585907369, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5313,6 +5314,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
+--- !u!114 &6117388961552480137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4725468778746984210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff72c05bc90d2c14db4bdbf07a15b21a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  glowColor: {r: 0.16887684, g: 0.6048494, b: 0.6509434, a: 1}
+  minAlpha: 0
+  maxAlpha: 0.9
+  pulseSpeed: 0.5
+  syncWithOthers: 0
+  activo: 1
 --- !u!1 &5531547262566606933
 GameObject:
   m_ObjectHideFlags: 0
@@ -5331,7 +5350,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5193793747634204484
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5348,8 +5367,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.38, y: -0.76}
-  m_SizeDelta: {x: 48.85, y: 44.22}
+  m_AnchoredPosition: {x: -0.38, y: -0.12}
+  m_SizeDelta: {x: 48.85, y: 43.05}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2940301132278225537
 CanvasRenderer:
@@ -5372,14 +5391,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.000000055631006, b: 0, a: 0.6666667}
+  m_Color: {r: 0.4811321, g: 0.038581353, b: 0.038581353, a: 0.6666667}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 844c32d75af1f06439e7fe360e4c36fa, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5425,6 +5444,7 @@ GameObject:
   - component: {fileID: 6788446970790668812}
   - component: {fileID: 5206919352916891458}
   - component: {fileID: -4946802561204137039}
+  - component: {fileID: 4711731277052191370}
   m_Layer: 7
   m_Name: EspectrodelBosque
   m_TagString: Unidad
@@ -5554,6 +5574,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
@@ -5661,6 +5682,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 5531547262566606933}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 946754659262308017}
   barraVida: {fileID: 377874694616861577}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -5700,10 +5723,12 @@ MonoBehaviour:
   esCargable: 0
   esMelee: 0
   bAfectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -5729,6 +5754,7 @@ MonoBehaviour:
   hAlcance: 1
   esMelee: 1
   afectaObstaculos: 1
+  fuerzaPoseAtaque: 1
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -5761,14 +5787,15 @@ MonoBehaviour:
   hAlcance: 3
   esMelee: 0
   afectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   hCooldownMax: 3
   hActualCooldown: 0
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 0
-  prioridad: 10
+  prioridad: 55
   costoAP: 2
-  pPrioridad: 2
+  pPrioridad: 55
   bonusAtaque: 0
   XdDanio: 0
   daniodX: 0
@@ -5871,6 +5898,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4711731277052191370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5537953111248832586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 3032909807885364115}
+  poseIdle: {fileID: 21300000, guid: e9fb91431f3fb994696e72a585907369, type: 3}
+  poseMover: {fileID: 21300000, guid: 3d2dd53d96545ad4592e758d8d813a35, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 142f1ff4326a45340a27974e4e3df9f0, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: e1c6c02960e7ae34baaae3f67ea04ac0, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &6629396250897313548
 GameObject:
   m_ObjectHideFlags: 0

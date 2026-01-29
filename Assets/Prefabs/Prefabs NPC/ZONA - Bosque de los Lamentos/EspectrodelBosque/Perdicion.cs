@@ -49,7 +49,7 @@ public class Perdicion : IAHabilidad
 
     void Start()
     {
-      prioridad = pPrioridad;
+      prioridad = 55;
     }
 
   object Objetivo;
@@ -57,7 +57,7 @@ public class Perdicion : IAHabilidad
    {
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
      
-      scEstaUnidad.ReproducirAnimacionAtaque();
+     // scEstaUnidad.ReproducirAnimacionAtaque();
 
       Objetivo = EstablecerObjetivoPrioritario();
                 PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo

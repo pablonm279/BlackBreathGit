@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 8387776193308940008}
   - component: {fileID: 8175156899421619204}
   - component: {fileID: 7663313383021537334}
+  - component: {fileID: 3350814138362775932}
   m_Layer: 7
   m_Name: TreantEspectral
   m_TagString: Unidad
@@ -262,6 +263,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
@@ -369,6 +371,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 3030485952608272424}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 8680645628328105077}
   barraVida: {fileID: 8100337887170691405}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -408,10 +412,12 @@ MonoBehaviour:
   esCargable: 0
   esMelee: 0
   bAfectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -437,6 +443,7 @@ MonoBehaviour:
   hAlcance: 1
   esMelee: 1
   afectaObstaculos: 1
+  fuerzaPoseAtaque: 0
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -547,6 +554,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3350814138362775932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 918802445406618680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 5653486396256051881}
+  poseIdle: {fileID: 21300000, guid: c90185a887b6cd04aba606a79075695a, type: 3}
+  poseMover: {fileID: 21300000, guid: aa9353590e193ae4e8a7dbd37172ef34, type: 3}
+  poseAtacar: {fileID: 21300000, guid: a48258460ee32c04e9af75e4aac2e4f4, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: a48258460ee32c04e9af75e4aac2e4f4, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &1749626447682058629
 GameObject:
   m_ObjectHideFlags: 0
@@ -732,7 +759,7 @@ RectTransform:
   m_GameObject: {fileID: 4612788786185205983}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2824851, y: 1.4939173, z: 1}
+  m_LocalScale: {x: 2.0341437, y: 1.6067082, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4886713912358591016}
@@ -772,7 +799,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b780c903a6166e247b38feeed54815f4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c90185a887b6cd04aba606a79075695a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1320,7 +1347,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 6.5
+      value: 3.07
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

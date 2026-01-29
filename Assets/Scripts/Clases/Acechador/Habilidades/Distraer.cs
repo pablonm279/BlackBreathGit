@@ -63,7 +63,7 @@ public class Distraer : Habilidad
     {
       txtDescripcion = "<color=#5dade2><b>Distraer I</b></color>\n\n";
       txtDescripcion += "<i>Distrae con un destello arrojadizo a un enemigo, si está aislado y no se salva, el personaje se Esconde.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distraído: -2 AP, -2 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:12 </color></color>\n";
+      txtDescripcion += $"<color=#c8c8c8>Distraído: -2 PA, -2 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:12 </color></color>\n";
       txtDescripcion += "<i><color=#44d3ec>Si el enemigo no tiene aliados alrededor, el Acechador obtiene Escondido I.</color></i>\n\n";
       txtDescripcion += $"<color=#44d3ec>-Discreta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
 
@@ -83,7 +83,7 @@ public class Distraer : Habilidad
     {
       txtDescripcion = "<color=#5dade2><b>Distraer II</b></color>\n\n";
       txtDescripcion += "<i>Distrae con un destello arrojadizo a un enemigo, si está aislado y no se salva, el personaje se Esconde.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distraído: -2 AP, -2 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:13 </color></color>\n";
+      txtDescripcion += $"<color=#c8c8c8>Distraído: -2 PA, -2 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:13 </color></color>\n";
       txtDescripcion += "<i><color=#44d3ec>Si el enemigo no tiene aliados alrededor, el Acechador obtiene Escondido I.</color></i>\n\n";
       txtDescripcion += $"<color=#44d3ec>-Discreta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
 
@@ -102,7 +102,7 @@ public class Distraer : Habilidad
     {
       txtDescripcion = "<color=#5dade2><b>Distraer III</b></color>\n\n";
       txtDescripcion += "<i>Distrae con un destello arrojadizo a un enemigo, si está aislado y no se salva, el personaje se Esconde.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distraído: -3 AP, -2 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:13 </color></color>\n";
+      txtDescripcion += $"<color=#c8c8c8>Distraído: -3 PA, -2 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:13 </color></color>\n";
       txtDescripcion += "<i><color=#44d3ec>Si el enemigo no tiene aliados alrededor, el Acechador obtiene Escondido I.</color></i>\n\n";
       txtDescripcion += $"<color=#44d3ec>-Discreta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
 
@@ -123,7 +123,7 @@ public class Distraer : Habilidad
     {
       txtDescripcion = "<color=#5dade2><b>Distraer IVa</b></color>\n\n";
       txtDescripcion += "<i>Distrae con un destello arrojadizo a un enemigo, si está aislado y no se salva, el personaje se Esconde.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distraído: -4 AP, -3 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:13 </color></color>\n";
+      txtDescripcion += $"<color=#c8c8c8>Distraído: -4 PA, -3 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:13 </color></color>\n";
       txtDescripcion += "<i><color=#44d3ec>Si el enemigo no tiene aliados alrededor, el Acechador obtiene Escondido I.</color></i>\n\n";
       txtDescripcion += $"<color=#44d3ec>-Discreta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
     }
@@ -131,7 +131,7 @@ public class Distraer : Habilidad
     {
       txtDescripcion = "<color=#5dade2><b>Distraer IVb</b></color>\n\n";
       txtDescripcion += "<i>Distrae con un destello arrojadizo a un enemigo, si está aislado y no se salva, el personaje se Esconde.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distraído: -3 AP, -2 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:13 </color></color>\n";
+      txtDescripcion += $"<color=#c8c8c8>Distraído: -3 PA, -2 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:13 </color></color>\n";
       txtDescripcion += "<i><color=#44d3ec>Si el enemigo no tiene aliados alrededor, el Acechador obtiene Escondido II.</color></i>\n\n";
       txtDescripcion += $"<color=#44d3ec>-Discreta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
     }

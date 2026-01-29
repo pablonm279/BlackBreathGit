@@ -5245,8 +5245,8 @@ RectTransform:
   m_GameObject: {fileID: 6785599127545183066}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5851624, y: 1.1565872, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.1164546, y: 1.7136953, z: 0.91231}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2141404797064528879}
   - {fileID: 6864468400831585966}
@@ -5255,7 +5255,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.01, y: -17.48}
+  m_AnchoredPosition: {x: -0.01, y: -21.77}
   m_SizeDelta: {x: 20.99, y: 23.323}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2367726031596992557
@@ -5286,7 +5286,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2d44aac10764b53409bb5d913a3d3ee8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 39b65f743c36fd648b42c97fd5085d69, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5575,6 +5575,7 @@ GameObject:
   - component: {fileID: 6997833267015602725}
   - component: {fileID: 6284361815554980967}
   - component: {fileID: -2994343015150505624}
+  - component: {fileID: 2767961173046769503}
   m_Layer: 7
   m_Name: LoboAlfaEspectral
   m_TagString: Unidad
@@ -5703,6 +5704,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
@@ -5749,6 +5751,7 @@ MonoBehaviour:
   hAlcance: 10
   esMelee: 0
   afectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   hCooldownMax: 3
   hActualCooldown: 3
   Usuario: {fileID: 0}
@@ -5819,6 +5822,7 @@ MonoBehaviour:
   hAlcance: 1
   esMelee: 1
   afectaObstaculos: 1
+  fuerzaPoseAtaque: 1
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -5850,6 +5854,7 @@ MonoBehaviour:
   hAlcance: 1
   esMelee: 1
   afectaObstaculos: 1
+  fuerzaPoseAtaque: 1
   hCooldownMax: 2
   hActualCooldown: 2
   Usuario: {fileID: 0}
@@ -5902,6 +5907,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 6686742144782644999}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 7999100154230412677}
   barraVida: {fileID: 7430785888991625405}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -5941,10 +5948,12 @@ MonoBehaviour:
   esCargable: 0
   esMelee: 0
   bAfectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -6069,6 +6078,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2767961173046769503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9004922787472980425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 1077182125295868744}
+  poseIdle: {fileID: 21300000, guid: 39b65f743c36fd648b42c97fd5085d69, type: 3}
+  poseMover: {fileID: 21300000, guid: 9269e1eed978b224e86b581746f4f5ff, type: 3}
+  poseAtacar: {fileID: 21300000, guid: ea7e7b3beffcf7844ae94b7a1e28279c, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: aa84428220fdd744c94060ee3ec9ee80, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1001 &5711151464720401929
 PrefabInstance:
   m_ObjectHideFlags: 0

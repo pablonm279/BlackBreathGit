@@ -221,8 +221,8 @@ RectTransform:
   m_GameObject: {fileID: 2383047622823427081}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.1991841, y: 1.3831244, z: 1.0293143}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 0.9242788, y: 1.3831244, z: 1.0293143}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6721434453643647482}
   - {fileID: 8775609431354661570}
@@ -261,7 +261,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 978b14baaa9c3ee4b961cd7f56236eed, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7108e026fb925394297103e502e728a0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -588,6 +588,7 @@ GameObject:
   - component: {fileID: 661614142842777680}
   - component: {fileID: 568435241650679273}
   - component: {fileID: 3712878151823363350}
+  - component: {fileID: 7157196586169103954}
   m_Layer: 7
   m_Name: Oso Espectral
   m_TagString: Unidad
@@ -702,6 +703,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 3194716257158510271}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 674041290417585858}
   barraVida: {fileID: 92143109859765242}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -741,10 +744,12 @@ MonoBehaviour:
   esCargable: 0
   esMelee: 0
   bAfectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -989,6 +994,7 @@ MonoBehaviour:
   hAlcance: 0
   esMelee: 0
   afectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -1001,6 +1007,26 @@ MonoBehaviour:
   XdDanio: 0
   daniodX: 0
   tipoDanio: 0
+--- !u!114 &7157196586169103954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5662508880646372543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 7996714464312373375}
+  poseIdle: {fileID: 21300000, guid: 7108e026fb925394297103e502e728a0, type: 3}
+  poseMover: {fileID: 21300000, guid: c20e7071f23c1964cb9bd8e7f465b21a, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 8ed0643611966e14b88d79eff6d9233a, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: 8ed0643611966e14b88d79eff6d9233a, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &5939473797897287989
 GameObject:
   m_ObjectHideFlags: 0

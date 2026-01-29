@@ -64,7 +64,7 @@ public class IABolaDeFuego : IAHabilidad
    
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
     
-    scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
+    ReproducirAnimacionSegunTipo();
     await Task.Delay(2000);
     object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
     

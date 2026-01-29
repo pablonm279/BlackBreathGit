@@ -87,25 +87,28 @@ public class Personaje : MonoBehaviour
 
 
   
-    public int[] aRasgos = new int[300]; 
+    public int[] aRasgos = new int[300];
 
-
+  void Start()
+  {
+    ActividadSeleccionada = 3; //Guardia
+  }
     public void QuitarArma(Arma iArma)
-    {
-      // Obtiene todos los scripts (componentes que heredan de MonoBehaviour) del GameObject
+  {
+    // Obtiene todos los scripts (componentes que heredan de MonoBehaviour) del GameObject
     Habilidad[] scripts = GetComponents<Habilidad>();
 
     // Recorre todos los scripts
     foreach (Habilidad script in scripts)
     {
-        // Si la ahbilidad la agregó el arma que saca, quita la habilidad
-        if (script.agregaDesdeArmaUI == iArma)
-        {
-            Destroy(script);
-        }
+      // Si la ahbilidad la agregó el arma que saca, quita la habilidad
+      if (script.agregaDesdeArmaUI == iArma)
+      {
+        Destroy(script);
+      }
     }
-        itemArma = null;
-    }
+    itemArma = null;
+  }
 
     public void QuitarArmadura(Armadura iArma)
     {

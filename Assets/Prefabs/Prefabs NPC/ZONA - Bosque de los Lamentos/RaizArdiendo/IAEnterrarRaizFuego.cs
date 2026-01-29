@@ -111,10 +111,13 @@ public class IAEnterrarRaizFuego : IAHabilidad
     EnterrarUnidad(unidad);
   }
 
-  void EnterrarUnidad(Unidad unidad)
+ async void EnterrarUnidad(Unidad unidad)
   {
     casillaOrigenAlEnterrar = unidad.CasillaPosicion;
     ladoOriginal = casillaOrigenAlEnterrar != null ? casillaOrigenAlEnterrar.lado : 1;
+    unidad.GenerarTextoFlotante(TRADU.i.Traducir("Enterrado"), Color.cyan);
+
+    await Task.Delay(200);
 
     if (casillaOrigenAlEnterrar != null && casillaOrigenAlEnterrar.Presente == unidad.gameObject)
     {
@@ -148,6 +151,7 @@ public class IAEnterrarRaizFuego : IAHabilidad
       buffEnterradoActivo = ComponentCopier.CopyComponent(buff, unidad.gameObject);
       buffEnterradoActivo.esRemovible = false;
     }
+
 
     string textoEnterrar = TRADU.i.Traducir("se entierra y desaparece del campo.");
     BattleManager.Instance?.EscribirLog($"{unidad.uNombre} {textoEnterrar}");

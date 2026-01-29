@@ -57,7 +57,7 @@ public class IABallestaRufian : IAHabilidad
    {
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
      
-      scEstaUnidad.ReproducirAnimacionAtaque();
+      ReproducirAnimacionSegunTipo();
 
       Objetivo = EstablecerObjetivoPrioritario();
                   PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo

@@ -7,28 +7,31 @@ using TMPro;
 
 public class Estados : MonoBehaviour
 {
-  
-  public async static void  Efecto_Ardiendo(Unidad unidad)
+
+  public async static void Efecto_Ardiendo(Unidad unidad)
   {
-        unidad.RecibirDanio(2*unidad.estado_ardiendo, 4,false, null); 
-       
-        
-        while(unidad.ObtenerAPActual() > 0 && unidad.estado_ardiendo > 0)
-        {
-            Aplicar_Ardiendo(unidad, -3);
-           unidad.CambiarAPActual(-1);
+    unidad.RecibirDanio(2 * unidad.estado_ardiendo, 4, false, null);
 
-            // Retraso de 1.15 segundos
-            await Task.Delay(1150);
+    Aplicar_Ardiendo(unidad, -1);
+    if (unidad.estado_ardiendo < 0) { unidad.estado_ardiendo = 0; }
+    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+    
+       /* while(unidad.ObtenerAPActual() > 0 && unidad.estado_ardiendo > 0)
+  {
+      Aplicar_Ardiendo(unidad, -3);
+     unidad.CambiarAPActual(-1);
 
-            unidad.GenerarTextoFlotante(TRADU.i.Traducir("Apagando!"), Color.red);
-            BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" gasta 1 PA para apagar el fuego.")));
+      // Retraso de 1.15 segundos
+      await Task.Delay(1150);
 
-           
+      unidad.GenerarTextoFlotante(TRADU.i.Traducir("Apagando!"), Color.red);
+      BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" gasta 1 PA para apagar el fuego.")));
 
-            if(  unidad.estado_ardiendo < 0) {  unidad.estado_ardiendo = 0;}
-            BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
-        }
+
+
+      if(  unidad.estado_ardiendo < 0) {  unidad.estado_ardiendo = 0;}
+      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+  }*/
   }
 
   public static void  Efecto_Congelado(Unidad unidad)

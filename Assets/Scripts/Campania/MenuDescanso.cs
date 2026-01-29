@@ -584,7 +584,17 @@ public class MenuDescanso : MonoBehaviour
     int random = UnityEngine.Random.Range(1, 101);
     if (CampaignManager.Instance.scTutorialManager.tutorialActivo)
     {
-     random = 1; //Siempre sol en tutorial
+      if (CampaignManager.Instance.scTutorialManager.pasoActual > 4)
+      {
+        int lluviaForzada = CampaignManager.Instance.scAtributosZona.Clima_chances_Calor + 1;
+        if (lluviaForzada >= CampaignManager.Instance.scAtributosZona.Clima_chances_Lluvia)
+        {
+          lluviaForzada = Mathf.Max(1, CampaignManager.Instance.scAtributosZona.Clima_chances_Lluvia - 1);
+        }
+        random = Mathf.Clamp(lluviaForzada, 1, 100);
+      }
+      else
+      { random = 1; } //Siempre sol en los primeros pasos del tutorial
     }
    
     climaNieve.SetActive(false);

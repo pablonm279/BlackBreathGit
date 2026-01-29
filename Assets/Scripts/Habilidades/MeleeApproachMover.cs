@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
-
 /// <summary>
 /// Mueve temporalmente el GameObject de la unidad hacia el objetivo melee (con ligero zoom de cámara) y luego lo devuelve.
 /// Solo afecta lo visual; no toca casillas ni estado lógico.
@@ -15,6 +13,7 @@ public class MeleeApproachMover : MonoBehaviour
   [SerializeField] private float offsetAtras = 0.55f; // metros detrás del objetivo
   [SerializeField] private Vector3 offsetAdicional = Vector3.zero;
   [SerializeField] private float demoraAntesDeVolver = 0.8f;
+  [SerializeField] private float pausaTrasLlegar = 0.15f;
   [SerializeField] private float zoomCamaraFactor = 0.03f; // 3% por Y hacia el objetivo
 
   private Unidad unidad;
@@ -28,8 +27,6 @@ public class MeleeApproachMover : MonoBehaviour
 
   // Pose
   private UnidadPoseController poseController;
-  private Sprite spriteOriginal;
-  private Image imagenObjetivoPose;
 
   void Awake()
   {
@@ -133,6 +130,12 @@ public class MeleeApproachMover : MonoBehaviour
       {
         await AnimarWorld(tOrigen, origen, destino, durIda);
       }
+
+      if (pausaTrasLlegar > 0f)
+      {
+        int esperaMs = Mathf.RoundToInt(pausaTrasLlegar * 1000f);
+        await Task.Delay(Mathf.Max(0, esperaMs));
+      }
       exito = true;
       return exito;
     }
@@ -192,22 +195,13 @@ public class MeleeApproachMover : MonoBehaviour
   void AplicarPoseMovimiento()
   {
     if (poseController == null) return;
-    Image target = poseController.targetImage ?? unidad?.uImage;
-    if (target == null) return;
-    if (poseController.poseMover == null) return;
-    spriteOriginal = target.sprite;
-    imagenObjetivoPose = target;
-    target.sprite = poseController.poseMover;
+    poseController.OnStartMove();
   }
 
   void RestaurarPose()
   {
-    if (imagenObjetivoPose != null && spriteOriginal != null)
-    {
-      imagenObjetivoPose.sprite = spriteOriginal;
-    }
-    imagenObjetivoPose = null;
-    spriteOriginal = null;
+    if (poseController == null) return;
+    poseController.OnStopMove();
   }
 
   void LiberarLock()

@@ -41,6 +41,8 @@ public abstract class Habilidad : MonoBehaviour
   public bool esCargable; //Si no alcanzan los AP del turno, se castea otro turno cuando se paguen todos.
   public bool esMelee;
   public bool bAfectaObstaculos;
+  [Header("Animacion")]
+  [SerializeField] public bool fuerzaPoseAtaque = false;
 
   public bool poneTrampas; //Si la habilidad pone trampas 
   public bool poneObstaculo; //Si la habilidad pone obstaculo 
@@ -103,23 +105,15 @@ public abstract class Habilidad : MonoBehaviour
     LimpiarMarcasUnidadesPosibles();
     MeleeApproachMover acercamientoMelee = MeleeApproachMover.ObtenerOCrear(scEstaUnidad);
     bool hizoAproximacion = acercamientoMelee != null && await acercamientoMelee.PrepararAproximacionJugadorAsync(this, Objetivos);
-    // AnimaciÃ³n/pose:
-    // - Canalizador: toda habilidad hostil usa ataque (melee o rango)
-    // - Resto: hostil melee usa ataque; hostil a distancia y no hostil usan pose de habilidad
-    if (scEstaUnidad is ClaseCanalizador && esHostil)
+    // Animacion/pose:
+    // - fuerzaPoseAtaque: siempre usa ataque
+    // - Canalizador hostil: usa ataque
+    // - Hostil melee: usa ataque
+    // - Resto: usa pose de habilidad
+    bool usarAtaque = fuerzaPoseAtaque || (scEstaUnidad is ClaseCanalizador && esHostil) || (esHostil && esMelee);
+    if (usarAtaque)
     {
       scEstaUnidad.ReproducirAnimacionAtaque();
-    }
-    else if (esHostil)
-    {
-      if (esMelee)
-      {
-        scEstaUnidad.ReproducirAnimacionAtaque();
-      }
-      else
-      {
-        scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
-      }
     }
     else
     {

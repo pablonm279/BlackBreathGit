@@ -55,7 +55,7 @@ public class GolpeEspectroBosque : IAHabilidad
       hActualCooldown = hCooldownMax;
       
       AplicarPerdidaEtereo();
-      scEstaUnidad.ReproducirAnimacionAtaque();
+      //scEstaUnidad.ReproducirAnimacionAtaque();
       object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
           PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
       await Task.Delay(500);

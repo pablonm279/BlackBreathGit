@@ -350,11 +350,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff72c05bc90d2c14db4bdbf07a15b21a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  glowColor: {r: 1, g: 0.1462264, b: 0.40424886, a: 1}
+  glowColor: {r: 0.084104665, g: 0.8490566, b: 0.39467782, a: 1}
   minAlpha: 0.8
   maxAlpha: 1
   pulseSpeed: 1.6
   syncWithOthers: 1
+  activo: 0
 --- !u!1 &8289708120182501688
 GameObject:
   m_ObjectHideFlags: 0
@@ -582,7 +583,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 0, b: 0.22122145, a: 0.46666667}
+      maxColor: {r: 0.2783019, g: 1, b: 0.359422, a: 0.46666667}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -1667,10 +1668,10 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.8980392, g: 0.06274509, b: 0.30715984, a: 1}
-        key1: {r: 1, g: 0, b: 0.106202126, a: 0.8862745}
-        key2: {r: 1, g: 0.07058823, b: 0.3809179, a: 0.5803922}
-        key3: {r: 0.6132076, g: 0.03760237, b: 0.09873287, a: 0}
+        key0: {r: 0.06274509, g: 0.8980392, b: 0.327401, a: 1}
+        key1: {r: 0.12415449, g: 0.8490566, b: 0.4323153, a: 0.8862745}
+        key2: {r: 0.38959596, g: 0.8018868, b: 0.45645124, a: 0.5803922}
+        key3: {r: 0.42986825, g: 0.8679245, b: 0.58032185, a: 0}
         key4: {r: 1, g: 1, b: 1, a: 0}
         key5: {r: 1, g: 1, b: 1, a: 0}
         key6: {r: 0, g: 0, b: 0, a: 0}
@@ -1678,7 +1679,7 @@ ParticleSystem:
         ctime0: 0
         ctime1: 4241
         ctime2: 7325
-        ctime3: 24865
+        ctime3: 24287
         ctime4: 65535
         ctime5: 65535
         ctime6: 0

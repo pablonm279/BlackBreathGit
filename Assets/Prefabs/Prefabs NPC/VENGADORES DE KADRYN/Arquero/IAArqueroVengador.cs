@@ -38,7 +38,7 @@ public class IAArqueroVengador : IAHabilidad
 
       bonusAtaque = 1;
       XdDanio = 2;
-      daniodX = 6; //2d8+3
+      daniodX = 4; //2d8+3
       tipoDanio = 2; //Perforante
 
 

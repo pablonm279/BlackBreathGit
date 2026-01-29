@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Controlador genérico de poses por sprite para unidades NO IA
+// Controlador generico de poses por sprite para unidades (jugador o IA)
 public class UnidadPoseController : MonoBehaviour
 {
     [Header("Destino")]
@@ -12,13 +12,13 @@ public class UnidadPoseController : MonoBehaviour
     public Sprite poseIdle;
     public Sprite poseMover;
     public Sprite poseAtacar;
-  //  public Sprite poseDanyo;
+    // public Sprite poseDanyo;
     public Sprite poseHabilidad; // Para habilidades no hostiles
 
     [Header("Tiempos Pose Transitoria (seg)")]
-    public float duracionPoseAtacar = 0.5f;
-    public float duracionPoseDanyo = 0.4f;
-    public float duracionPoseHabilidad = 0.5f;
+    public float duracionPoseAtacar = 1.0f;
+    public float duracionPoseDanyo = 1.0f;
+    public float duracionPoseHabilidad = 1.0f;
 
     Unidad unidad;
     Coroutine revertCoroutine;
@@ -31,7 +31,8 @@ public class UnidadPoseController : MonoBehaviour
         {
             targetImage = unidad.uImage;
         }
-        // Si no se definió una pose idle, usa la sprite actual asignada
+
+        // Si no se definio una pose idle, usa la sprite actual asignada
         if (poseIdle == null && targetImage != null)
         {
             poseIdle = targetImage.sprite;
@@ -40,27 +41,32 @@ public class UnidadPoseController : MonoBehaviour
 
     bool DebeAplicar()
     {
-        // Solo aplica a unidades NO IA (por ahora)
-        if (GetComponent<IAUnidad>() != null) return false;
-        if (targetImage == null) return false;
-        return true;
+        // Aplica tanto a unidades de jugador como IA mientras haya imagen de destino
+        return targetImage != null;
     }
 
     void SetSprite(Sprite sp)
     {
-        if (!DebeAplicar()) return;
-        if (sp != null) targetImage.sprite = sp;
+        if (!DebeAplicar() || sp == null)
+        {
+            return;
+        }
+
+        targetImage.sprite = sp;
     }
 
     public void SetIdle()
     {
-        if (mantenerPoseHabilidad) return;
+        if (mantenerPoseHabilidad)
+        {
+            return;
+        }
+
         SetSprite(poseIdle);
     }
 
     public void OnStartMove()
     {
-       
         SetSprite(poseMover);
     }
 
@@ -71,7 +77,11 @@ public class UnidadPoseController : MonoBehaviour
 
     public void PlayAttackPose()
     {
-        if (mantenerPoseHabilidad) return; // Mantener pose de habilidad tiene prioridad
+        if (mantenerPoseHabilidad)
+        {
+            return; // Mantener pose de habilidad tiene prioridad
+        }
+
         SetSprite(poseAtacar);
         IniciarReversion(duracionPoseAtacar);
     }
@@ -80,10 +90,16 @@ public class UnidadPoseController : MonoBehaviour
     {
         if (mantenerPoseHabilidad)
         {
-            if (revertCoroutine != null) { StopCoroutine(revertCoroutine); revertCoroutine = null; }
+            if (revertCoroutine != null)
+            {
+                StopCoroutine(revertCoroutine);
+                revertCoroutine = null;
+            }
+
             SetSprite(poseHabilidad);
             return;
         }
+
         SetSprite(poseHabilidad);
         IniciarReversion(duracionPoseHabilidad);
     }
@@ -92,7 +108,12 @@ public class UnidadPoseController : MonoBehaviour
     public void EnterSkillPoseHold()
     {
         mantenerPoseHabilidad = true;
-        if (revertCoroutine != null) { StopCoroutine(revertCoroutine); revertCoroutine = null; }
+        if (revertCoroutine != null)
+        {
+            StopCoroutine(revertCoroutine);
+            revertCoroutine = null;
+        }
+
         SetSprite(poseHabilidad);
     }
 
@@ -100,13 +121,22 @@ public class UnidadPoseController : MonoBehaviour
     public void ExitPoseHold()
     {
         mantenerPoseHabilidad = false;
-        if (revertCoroutine != null) { StopCoroutine(revertCoroutine); revertCoroutine = null; }
+        if (revertCoroutine != null)
+        {
+            StopCoroutine(revertCoroutine);
+            revertCoroutine = null;
+        }
+
         SetIdle();
     }
 
     void IniciarReversion(float delay)
     {
-        if (revertCoroutine != null) StopCoroutine(revertCoroutine);
+        if (revertCoroutine != null)
+        {
+            StopCoroutine(revertCoroutine);
+        }
+
         revertCoroutine = StartCoroutine(RevertirTras(delay));
     }
 

@@ -26,7 +26,7 @@ public class IAGarraEspectral : IAHabilidad
       hCooldownMax = 0;
       esHostil = true;
       prioridad = 1;
-      costoAP = 1;
+      costoAP = 2;
       afectaObstaculos = true;
       
 
@@ -35,7 +35,7 @@ public class IAGarraEspectral : IAHabilidad
 
       bonusAtaque = 0;
       XdDanio = 1;
-      daniodX = 6; //1d6
+      daniodX = 8; //1d6
       tipoDanio = 2; //Cortante
 
 

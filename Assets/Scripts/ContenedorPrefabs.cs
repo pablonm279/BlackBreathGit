@@ -126,6 +126,8 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject ZarkilGuerrero;
     public GameObject MastinTuto;
 
+    public GameObject DEBUGPRUEBA;
+
 
     [Header("Sonidos Daño")]
 

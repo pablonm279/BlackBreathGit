@@ -52,7 +52,7 @@ public class AullidoDeLaManada : IAHabilidad
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
       hActualCooldown = hCooldownMax;
       
-      scEstaUnidad.ReproducirAnimacionAtaque();
+      //scEstaUnidad.ReproducirAnimacionAtaque();
 
       List<Casilla> lCasillasafectadas2 = scEstaUnidad.CasillaPosicion.ObtenerCasillasMismoLado();
       List<object> unidadesEnZona = ObtenerUnidadesEnZona(lCasillasafectadas2);

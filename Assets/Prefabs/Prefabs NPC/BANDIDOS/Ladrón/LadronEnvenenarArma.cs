@@ -57,7 +57,7 @@ public class LadronEnvenenarArma : IAHabilidad
   {
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
 
-    scEstaUnidad.ReproducirAnimacionAtaque();
+   // scEstaUnidad.ReproducirAnimacionAtaque();
 
     Objetivo = scEstaUnidad;
     PrepararInicioAnimacion(null, Objetivo);//Despues de establecer objetivo

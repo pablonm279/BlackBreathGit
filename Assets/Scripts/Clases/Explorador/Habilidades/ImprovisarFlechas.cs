@@ -42,7 +42,7 @@ public class ImprovisarFlechas : Habilidad
        {
         txtDescripcion = "<color=#5dade2><b>Improvisar Flechas I</b></color>\n\n"; 
        
-        txtDescripcion += "<i>El Explorador crea 1 flecha por AP restante, termina el Turno. Además obtiene +1 Probabilidad de crítico por 1 turno.</i>\n\n";
+        txtDescripcion += "<i>El Explorador crea 1 flecha por PA restante, termina el Turno. Además obtiene +1 Probabilidad de crítico por 1 turno.</i>\n\n";
 
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
 
@@ -62,7 +62,7 @@ public class ImprovisarFlechas : Habilidad
        
         txtDescripcion = "<color=#5dade2><b>Improvisar Flechas II</b></color>\n\n"; 
        
-        txtDescripcion += "<i>El Explorador crea 1 flecha por AP restante +1, termina el Turno. Además obtiene +1 Probabilidad de crítico por 1 turno.</i>\n\n";
+        txtDescripcion += "<i>El Explorador crea 1 flecha por PA restante +1, termina el Turno. Además obtiene +1 Probabilidad de crítico por 1 turno.</i>\n\n";
 
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
 
@@ -80,7 +80,7 @@ public class ImprovisarFlechas : Habilidad
        if(NIVEL==3)
        {
         txtDescripcion = "<color=#5dade2><b>Improvisar Flechas III</b></color>\n\n"; 
-        txtDescripcion += "<i>El Explorador crea 1 flecha por AP restante +1, termina el Turno. Además obtiene +2 Probabilidad de crítico por 1 turno.</i>\n\n";
+        txtDescripcion += "<i>El Explorador crea 1 flecha por PA restante +1, termina el Turno. Además obtiene +2 Probabilidad de crítico por 1 turno.</i>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
 
          if (EsEscenaCampaña())
@@ -98,14 +98,14 @@ public class ImprovisarFlechas : Habilidad
        if(NIVEL==4)
        {
         txtDescripcion = "<color=#5dade2><b>Improvisar Flechas IVa</b></color>\n\n"; 
-        txtDescripcion += "<i>El Explorador crea 1 flecha por AP restante +2, termina el Turno. Además obtiene +2 Probabilidad de crítico por 1 turno.</i>\n\n";
+        txtDescripcion += "<i>El Explorador crea 1 flecha por PA restante +2, termina el Turno. Además obtiene +2 Probabilidad de crítico por 1 turno.</i>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
 
        }
        if(NIVEL==5)
        {
         txtDescripcion = "<color=#5dade2><b>Improvisar Flechas IVb</b></color>\n\n"; 
-        txtDescripcion += "<i>El Explorador crea 1 flecha por AP restante +1, termina el Turno. Además obtiene +2 Probabilidad de crítico por 2 turnos.</i>\n";
+        txtDescripcion += "<i>El Explorador crea 1 flecha por PA restante +1, termina el Turno. Además obtiene +2 Probabilidad de crítico por 2 turnos.</i>\n";
         txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
 
        }

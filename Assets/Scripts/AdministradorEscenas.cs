@@ -163,9 +163,16 @@ public class AdministradorEscenas : MonoBehaviour
     bool esPrimerCombateTutorial = IDEncuentro == 700 && CampaignManager.Instance != null
       && CampaignManager.Instance.scTutorialManager != null
       && CampaignManager.Instance.scTutorialManager.tutorialActivo;
+    bool esCombateFinalTutorial = IDEncuentro == 701 && CampaignManager.Instance != null
+      && CampaignManager.Instance.scTutorialManager != null
+      && CampaignManager.Instance.scTutorialManager.tutorialActivo;
     if (esPrimerCombateTutorial && BattleManager.Instance.scTutorialCombate != null)
     {
       BattleManager.Instance.scTutorialCombate.IniciarPrimerCombate();
+    }
+    if (esCombateFinalTutorial && BattleManager.Instance.scTutorialCombate != null)
+    {
+      BattleManager.Instance.scTutorialCombate.IniciarCombateDesdePaso(12);
     }
 
 
@@ -239,7 +246,21 @@ public class AdministradorEscenas : MonoBehaviour
       }
     }
 
+    // Solo en la pelea final del tutorial, dar +20 iniciativa al Caballero
+    if (esCombateFinalTutorial)
+    {
+      Unidad caballero = null;
+      if (unidadPers1 != null && unidadPers1.GetComponent<ClaseCaballero>() != null) caballero = unidadPers1;
+      else if (unidadPers2 != null && unidadPers2.GetComponent<ClaseCaballero>() != null) caballero = unidadPers2;
+      else if (unidadPers3 != null && unidadPers3.GetComponent<ClaseCaballero>() != null) caballero = unidadPers3;
+      else if (unidadPers4 != null && unidadPers4.GetComponent<ClaseCaballero>() != null) caballero = unidadPers4;
 
+      if (caballero != null)
+      {
+        caballero.mod_iniciativa += 20;
+        caballero.iniciativa_actual += 20;
+      }
+    }
 
     CrearEncuentroEnemigos(IDEncuentro, encuentroGeneradoActual);
 
@@ -2228,21 +2249,24 @@ public class AdministradorEscenas : MonoBehaviour
 
 
     if (IDEncuentro == 700) // TUTORIAL Batalla 
-    { 
+    {
+      /*GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.DEBUGPRUEBA);
+      ColocarEnCasillaEspecifica(2,enemigo1.gameObject,1,4); 
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.DEBUGPRUEBA);
+      ColocarEnCasillaEspecifica(2,enemigo2.gameObject,3,2);*/
       GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.RufianConBallesta);
       ColocarEnCasillaEspecifica(2,enemigo1.gameObject,1,4); 
       GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.MastinTuto);
       ColocarEnCasillaEspecifica(2,enemigo2.gameObject,3,2); 
-      /*GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.PerroAdiestrado);
-      ColocarEnCasillaEspecifica(2,enemigo2.gameObject,3,2); */
+     
     }
     if (IDEncuentro == 701) // TUTORIAL Batalla final
     {
-      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.LoboAlfaEspectral);
-      ColocarEnCasillaEspecifica(2, enemigo1.gameObject, 2, 3);
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.DriadaQuemada);
+      ColocarEnCasillaEspecifica(2, enemigo1.gameObject, 1, 3);
 
-      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
-      ColocarEnCasillaEspecifica(2, enemigo2.gameObject, 1, 4);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.LoboAlfaEspectral);
+      ColocarEnCasillaEspecifica(2, enemigo2.gameObject, 3, 2);
 
       GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
       ColocarEnCasillaEspecifica(2, enemigo3.gameObject, 3, 4);
@@ -2841,7 +2865,7 @@ public class AdministradorEscenas : MonoBehaviour
     if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 3)
     {
       CampaignManager.Instance.scTutorialManager.SiguientePaso();
-      Personaje1.RecibirExperiencia(100);
+      //Personaje1.RecibirExperiencia(100);
     }
     //Limpieza
     Personaje1 = null;

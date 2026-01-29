@@ -14,7 +14,7 @@ public class IALlamaradaRaiz : IAHabilidad
   const int BonificacionDanio = 3;
  
   const float DuracionLinea = 0.35f;
-  const float AnchoLinea = 0.12f;
+  const float AnchoLinea = 0.08f;
   const int SegmentosLinea = 6;
 
   static Material materialLlamarada;
@@ -68,7 +68,7 @@ public class IALlamaradaRaiz : IAHabilidad
     }
     hActualCooldown = hCooldownMax;
     scEstaUnidad.CambiarAPActual(-costoAP);
-    scEstaUnidad.ReproducirAnimacionAtaque();
+   // scEstaUnidad.ReproducirAnimacionAtaque();
 
     PrepararInicioAnimacion(null, objetivo);
 

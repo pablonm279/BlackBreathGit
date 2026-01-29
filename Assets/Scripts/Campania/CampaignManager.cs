@@ -86,6 +86,24 @@ public class CampaignManager : MonoBehaviour
     Instance = this;
 
 
+    //Determinar si es Tuto o no
+    int yaPasotuto = PlayerPrefs.GetInt("Tutorial_Terminado");
+  
+
+    //FORZAR TUTO O NO - DESCOMENTAR ABAJO
+    yaPasotuto = 1;
+    //
+
+    if (yaPasotuto == 1)
+    {
+      scTutorialManager.tutorialActivo = false;
+    }
+    else
+    {
+      scTutorialManager.tutorialActivo = true;
+    }
+
+
     // Configurar el AudioSource para el SFX de movimiento de la caravana
     if (sfxMovimientoSource == null)
     {
@@ -106,6 +124,7 @@ public class CampaignManager : MonoBehaviour
       CambiarMaterialesActuales(-10);
       CambiarBueyesActuales(-4);
       CambiarSuministrosActuales(-100);
+      CambiarCivilesActuales(-25);
     }
    
     
@@ -113,11 +132,12 @@ public class CampaignManager : MonoBehaviour
     CambiarValorAlientoNegro(2);
 
     int zona = 0; //Zona aleatoria
+   
     if (scTutorialManager.tutorialActivo)
     {
       zona = 1;
     }
-    scAtributosZona.GenerarZona(zona); //0 es aleatorio - 1 Tutorial en Bosque Ardiente
+    scAtributosZona.GenerarZona(1); //0 es aleatorio - 1 Demo en Bosque Ardiente
 
 
     scMenuSequito.AgregarSequito(1);
@@ -133,17 +153,21 @@ public class CampaignManager : MonoBehaviour
     ForzarTiradaClima();
 
 
-   
-    CrearAcechador();
+
+
 
 
 
     if (!scTutorialManager.tutorialActivo) //En tutorial son 4 de comienzo
     {
-      CrearPurificadora();
-      CrearCanalizador();
-      CrearCaballero();
-      CrearExplorador();
+      AgregarHeroe(0);
+      AgregarHeroe(0);
+      AgregarHeroe(0);
+
+    }
+    else
+    {
+      CrearAcechador();
     }
 
 
@@ -529,12 +553,17 @@ public class CampaignManager : MonoBehaviour
     }
     else
     {
-      goLogCampania.SetActive(false);
-      CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(1.2f, 2.0f);
-      await Task.Delay(2200);
-      goMenuPuerto.SetActive(true);
+      AbrirCiudadPuerto();
     }
 
+  }
+
+  public async void AbrirCiudadPuerto()
+  {
+      goLogCampania.SetActive(false);
+      scAdministradorEscenas.PlayFadeInOut(1.2f, 2.0f);
+      await Task.Delay(2200);
+      goMenuPuerto.SetActive(true);
   }
 
   public void ContinuarASiguienteZona()
@@ -1385,12 +1414,12 @@ public class CampaignManager : MonoBehaviour
 
     if (civilesActuales < 0) { civilesActuales = 0; }
 
-    if (civilesActuales < 100)
+    if (civilesActuales < 50)
     {
       valueCiviles.text = "" + civilesActuales;
       valueCiviles.color = new Color(0.8f, 0.1f, 0.3f);
     }
-    else if (civilesActuales >= 100)
+    else if (civilesActuales >= 50)
     {
       valueCiviles.text = "" + civilesActuales;
       valueCiviles.color = new Color(0.4f, 0.7f, 0.4f);
@@ -1939,18 +1968,22 @@ public class CampaignManager : MonoBehaviour
     // Detecta cuando se presiona la tecla H una sola vez
     if (Input.GetKeyDown(KeyCode.R))
     {
+      if(scTutorialManager.tutorialActivo) {EscribirLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       AbrirMenuDescanso();
     }
     if (Input.GetKeyDown(KeyCode.C))
     {
+       if(scTutorialManager.tutorialActivo) {EscribirLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       scMenuCaravana.AbrirMenuPersonajes();
     }
     if (Input.GetKeyDown(KeyCode.I))
     {
+       if(scTutorialManager.tutorialActivo) {EscribirLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       scMenuCaravana.AbrirMenuMejoras();
     }
     if (Input.GetKeyDown(KeyCode.M))
     {
+       if(scTutorialManager.tutorialActivo) {EscribirLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       scMenuCaravana.AbrirMenuSequitos();
     }
     if (Input.GetKeyDown(KeyCode.Escape))
@@ -2139,21 +2172,30 @@ public class CampaignManager : MonoBehaviour
     pers1.GetComponent<REPRESENTACIONCorajeInquebrantable>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
                                                                          //pers1.AddComponent<Cortevertical>(); AGREGADO POR MANDOBLE
                                                                          //Habilidades Base
-    int randHabPot1 = UnityEngine.Random.Range(1, 5);
-    switch (randHabPot1)
+
+    if (!scTutorialManager.tutorialActivo)
     {
-      case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONAcorazado>(); pers1.GetComponent<REPRESENTACIONAcorazado>().NIVEL = 1; break;  //Acorazado
-      case 2: pers1.Habilidad_2 = 1; pers1.AddComponent<GritoMotivador>(); pers1.GetComponent<GritoMotivador>().NIVEL = 1; break; //Grito Motivador
-      case 3: pers1.Habilidad_3 = 1; pers1.AddComponent<CorteHorizontal>(); pers1.GetComponent<CorteHorizontal>().NIVEL = 1; break; //Corte Horizontal
-      case 4: pers1.Habilidad_4 = 1; pers1.AddComponent<PrimerosAuxilios>(); pers1.GetComponent<PrimerosAuxilios>().NIVEL = 1; break; //Primeros Auxilios
+      int randHabPot1 = UnityEngine.Random.Range(1, 5);
+      switch (randHabPot1)
+      {
+        case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONAcorazado>(); pers1.GetComponent<REPRESENTACIONAcorazado>().NIVEL = 1; break;  //Acorazado
+        case 2: pers1.Habilidad_2 = 1; pers1.AddComponent<GritoMotivador>(); pers1.GetComponent<GritoMotivador>().NIVEL = 1; break; //Grito Motivador
+        case 3: pers1.Habilidad_3 = 1; pers1.AddComponent<CorteHorizontal>(); pers1.GetComponent<CorteHorizontal>().NIVEL = 1; break; //Corte Horizontal
+        case 4: pers1.Habilidad_4 = 1; pers1.AddComponent<PrimerosAuxilios>(); pers1.GetComponent<PrimerosAuxilios>().NIVEL = 1; break; //Primeros Auxilios
+      }
+      int randHabPot2 = UnityEngine.Random.Range(1, 5);
+      switch (randHabPot2)
+      {
+        case 1: pers1.Habilidad_5 = 1; pers1.AddComponent<REPRESENTACIONDeterminacion>(); pers1.GetComponent<REPRESENTACIONDeterminacion>().NIVEL = 1; break;  //Acorazado
+        case 2: pers1.Habilidad_6 = 1; pers1.AddComponent<Partir>(); pers1.GetComponent<Partir>().NIVEL = 1; break;//Grito Motivador
+        case 3: pers1.Habilidad_7 = 1; pers1.AddComponent<PosturaDefensiva>(); pers1.GetComponent<PosturaDefensiva>().NIVEL = 1; break; //Corte Horizontal
+        case 4: pers1.Habilidad_8 = 1; pers1.AddComponent<SiguesTu>(); pers1.GetComponent<SiguesTu>().NIVEL = 1; break; //Primeros Auxilios
+      }
     }
-    int randHabPot2 = UnityEngine.Random.Range(1, 5);
-    switch (randHabPot2)
-    {
-      case 1: pers1.Habilidad_5 = 1; pers1.AddComponent<REPRESENTACIONDeterminacion>(); pers1.GetComponent<REPRESENTACIONDeterminacion>().NIVEL = 1; break;  //Acorazado
-      case 2: pers1.Habilidad_6 = 1; pers1.AddComponent<Partir>(); pers1.GetComponent<Partir>().NIVEL = 1; break;//Grito Motivador
-      case 3: pers1.Habilidad_7 = 1; pers1.AddComponent<PosturaDefensiva>(); pers1.GetComponent<PosturaDefensiva>().NIVEL = 1; break; //Corte Horizontal
-      case 4: pers1.Habilidad_8 = 1; pers1.AddComponent<SiguesTu>(); pers1.GetComponent<SiguesTu>().NIVEL = 1; break; //Primeros Auxilios
+    else
+    { 
+      pers1.AddComponent<GritoMotivador>(); pers1.GetComponent<GritoMotivador>().NIVEL = 1;
+
     }
 
     pers1.ActividadSeleccionada = 1;
@@ -2238,8 +2280,10 @@ public class CampaignManager : MonoBehaviour
 
 
     //Habilidades Base
-    int randHabPot1 = UnityEngine.Random.Range(1, 5);
-   
+    if (!scTutorialManager.tutorialActivo)
+    {
+      int randHabPot1 = UnityEngine.Random.Range(1, 5);
+
       switch (randHabPot1)
       {
         case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONVistaLejana>(); pers1.GetComponent<REPRESENTACIONVistaLejana>().NIVEL = 1; break;
@@ -2254,6 +2298,13 @@ public class CampaignManager : MonoBehaviour
         case 2: pers1.Habilidad_6 = 1; pers1.AddComponent<Vigilancia>(); pers1.GetComponent<Vigilancia>().NIVEL = 1; break;
         case 3: pers1.Habilidad_7 = 1; pers1.AddComponent<Fogata>(); pers1.GetComponent<Fogata>().NIVEL = 1; break;
       }
+    }
+    else
+    { 
+
+      pers1.AddComponent<MarcarPresa>(); pers1.GetComponent<MarcarPresa>().NIVEL = 1;
+      
+    }
     
     
 

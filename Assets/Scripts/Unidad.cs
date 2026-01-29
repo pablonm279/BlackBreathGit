@@ -20,7 +20,8 @@ public class Unidad : MonoBehaviour
 
    public Casilla CasillaForzadoaMover;
    // Marca si hay un desplazamiento forzado en curso para evitar reordenarlo cada frame
-   private bool movimientoForzadoPendiente;
+  private bool movimientoForzadoPendiente;
+  
 
    public Habilidad estaCargando; //la habilidad que está cargando el personaje para lanzar en un turno próximo
    public int valorCargando; //la cantidad de AP que le falta para terminar la habilidad
@@ -218,6 +219,9 @@ public class Unidad : MonoBehaviour
   //Animaciones
   private Animator animator;
   private UnidadPoseController poseController;
+  private bool suprimirAnimacionIA;
+  private float ultimoAtaqueAnimTime = -999f;
+  private float ultimoHabilidadAnimTime = -999f;
   private Vector2 uImagePosVuelo;
   private Vector2 uImagePosSuelo;
   private Coroutine animacionVueloCoroutine;
@@ -268,21 +272,43 @@ public class Unidad : MonoBehaviour
     uImagePosInicializada = true;
   }
 
-  public void ReproducirAnimacionAtaque()
+ bool evitarRepeticion = false;
+  public void ReproducirAnimacionAtaque(bool forzar = false)
   {
-    if(animator != null)
+    if (suprimirAnimacionIA && !forzar)
     {
-        animator.SetTrigger( "Trigger_Ataque");
-        
+      return;
     }
-    if(poseController != null){ poseController.PlayAttackPose(); }
+    ultimoAtaqueAnimTime = Time.time;
+    if (poseController != null) { poseController.PlayAttackPose(); }
+
+    
+    if (evitarRepeticion)
+    {
+      return;
+
+    }
+    if (animator != null)
+    {
+      animator.SetTrigger("Trigger_Ataque");
+
+    }
+    
+
+    evitarRepeticion = true;
+    Invoke("ResetearEvitarRepeticionAnimacion", 2.5f);
+  }
+  
+  void ResetearEvitarRepeticionAnimacion()
+  {
+    evitarRepeticion = false;
   }
   public void ReproducirAnimacionTurnoNuevo()
   {
-    if(animator != null)
+    if (animator != null)
     {
-        animator.SetTrigger( "Trigger_TurnoNuevo");
-       
+      animator.SetTrigger("Trigger_TurnoNuevo");
+
     }
   }
 
@@ -295,9 +321,50 @@ public class Unidad : MonoBehaviour
     }
   }
 
-  public void ReproducirAnimacionHabilidadNoHostil()
+  public void ReproducirAnimacionHabilidadNoHostil(bool forzar = false)
   {
+    if (suprimirAnimacionIA && !forzar)
+    {
+      return;
+    }
+
+    ultimoHabilidadAnimTime = Time.time;
     if(poseController != null){ poseController.PlaySkillPose(); }
+  }
+
+  public void SetSuprimirAnimacionIA(bool estado)
+  {
+    suprimirAnimacionIA = estado;
+  }
+
+  public bool ConsumirAnimacionAtaqueReciente(float ventanaSeg)
+  {
+    if (Time.time - ultimoAtaqueAnimTime <= ventanaSeg)
+    {
+      ultimoAtaqueAnimTime = -999f;
+      return true;
+    }
+    return false;
+  }
+
+  public bool ConsumirAnimacionHabilidadReciente(float ventanaSeg)
+  {
+    if (Time.time - ultimoHabilidadAnimTime <= ventanaSeg)
+    {
+      ultimoHabilidadAnimTime = -999f;
+      return true;
+    }
+    return false;
+  }
+
+  public bool EsAnimacionAtaqueRecienteDesde(float desdeTiempo, float ventanaSeg)
+  {
+    return ultimoAtaqueAnimTime >= desdeTiempo && (Time.time - ultimoAtaqueAnimTime) <= ventanaSeg;
+  }
+
+  public bool EsAnimacionHabilidadRecienteDesde(float desdeTiempo, float ventanaSeg)
+  {
+    return ultimoHabilidadAnimTime >= desdeTiempo && (Time.time - ultimoHabilidadAnimTime) <= ventanaSeg;
   }
 
   public void ReproducirAnimacionMorir()

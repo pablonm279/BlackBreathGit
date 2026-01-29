@@ -100,7 +100,7 @@ Transform:
   m_GameObject: {fileID: 853698833320071842}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.341, y: 0.897, z: 0}
+  m_LocalPosition: {x: -0.592, y: 1.117, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -252,7 +252,7 @@ RectTransform:
   m_GameObject: {fileID: 2383047622823427081}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.77444303, y: 1.3437338, z: 1}
+  m_LocalScale: {x: 1.249951, y: 1.3437338, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6721434453643647482}
@@ -620,6 +620,7 @@ GameObject:
   - component: {fileID: 1941214251729359250}
   - component: {fileID: 1742994253153694183}
   - component: {fileID: -963385243359191493}
+  - component: {fileID: 1349803699845025881}
   m_Layer: 7
   m_Name: RufianConBallesta
   m_TagString: Unidad
@@ -734,6 +735,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 3194716257158510271}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 7819030386915275838}
   barraVida: {fileID: 7250568786064449798}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -777,6 +780,7 @@ MonoBehaviour:
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -876,6 +880,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
@@ -1066,6 +1071,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1349803699845025881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5662508880646372543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 7996714464312373375}
+  poseIdle: {fileID: 21300000, guid: 5285346b9081c3f408bcb7a1a983318f, type: 3}
+  poseMover: {fileID: 21300000, guid: 8545036629f8db84babcff2dcdaf435c, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 699577ba1a65177498a699410bab044d, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: 7cd35fa22caf1d84e9bb20e98c408aa5, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &6374952428414666906
 GameObject:
   m_ObjectHideFlags: 0

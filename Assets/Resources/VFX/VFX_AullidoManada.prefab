@@ -266,7 +266,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playOnEnable: 1
   playOnClick: 0
-  startDelay: 0.1
+  startDelay: 0
   duration: 2.3
   curve:
     serializedVersion: 2

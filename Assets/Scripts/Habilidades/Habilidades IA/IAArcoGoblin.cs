@@ -57,7 +57,7 @@ public class IAArcoGoblin : IAHabilidad
    {
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
      
-      scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
+      ReproducirAnimacionSegunTipo();
 
       Objetivo = EstablecerObjetivoPrioritario();
     

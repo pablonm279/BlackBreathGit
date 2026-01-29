@@ -59,8 +59,8 @@ RectTransform:
   m_GameObject: {fileID: 1982316334472023316}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.77444303, y: 1.3437338, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.1012859, y: 1.6761736, z: 1.2474}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1712502404399993226}
   - {fileID: 4603968377136627950}
@@ -68,7 +68,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.42, y: -14.296}
+  m_AnchoredPosition: {x: 0.42, y: -11.3}
   m_SizeDelta: {x: 20.99, y: 19.951}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3613501316555806576
@@ -332,6 +332,7 @@ GameObject:
   - component: {fileID: 458194657597887037}
   - component: {fileID: -3160349142660803946}
   - component: {fileID: -2474114846408142249}
+  - component: {fileID: 4637895889034367653}
   m_Layer: 7
   m_Name: Desertor1
   m_TagString: Unidad
@@ -460,6 +461,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 4
   estado_Corrupto: 0
   unidadVoladora: 0
@@ -569,6 +571,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 5218141316656853349}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 997768320404023826}
   barraVida: {fileID: 415807056825040682}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -612,6 +616,7 @@ MonoBehaviour:
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -747,6 +752,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4637895889034367653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4571431021127121737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 5093457062167469117}
+  poseIdle: {fileID: 21300000, guid: c112a046e6df8ba4695dc527c56c40b8, type: 3}
+  poseMover: {fileID: 21300000, guid: 72990ab43e1739f408488f7c4202ca67, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 633fb9a28f8932f40a23191774143821, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: 633fb9a28f8932f40a23191774143821, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &4652049372102719088
 GameObject:
   m_ObjectHideFlags: 0

@@ -589,6 +589,7 @@ GameObject:
   - component: {fileID: 4271658784378029447}
   - component: {fileID: -1311657972801272182}
   - component: {fileID: 1847336553706942837}
+  - component: {fileID: 3766615295510944151}
   m_Layer: 7
   m_Name: Desertor2
   m_TagString: Unidad
@@ -717,6 +718,8 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
+  estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
   estado_Volando: 0
@@ -825,6 +828,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 4277565345341772785}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 3564955072405601088}
   barraVida: {fileID: 4135628892529471096}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -868,6 +873,7 @@ MonoBehaviour:
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -1002,6 +1008,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3766615295510944151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6052390167993862677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 6232689095815502372}
+  poseIdle: {fileID: 21300000, guid: 77a614cddab1f7c4e957a155d4a7639c, type: 3}
+  poseMover: {fileID: 21300000, guid: 4e46c6a0c57df9a408ccfcd3810490fa, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 2fc6d38143f9ef742936729240eaaae7, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: 2fc6d38143f9ef742936729240eaaae7, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &6675945245544070442
 GameObject:
   m_ObjectHideFlags: 0
@@ -1030,7 +1056,7 @@ RectTransform:
   m_GameObject: {fileID: 6675945245544070442}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.77444303, y: 1.3437338, z: 1}
+  m_LocalScale: {x: 0.9811418, y: 1.3437338, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1307032904713455823}
@@ -1039,8 +1065,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.42, y: -14.296}
-  m_SizeDelta: {x: 20.99, y: 19.951}
+  m_AnchoredPosition: {x: 0.041, y: -14.161}
+  m_SizeDelta: {x: 21.762, y: 20.152}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3583555842226505725
 CanvasRenderer:

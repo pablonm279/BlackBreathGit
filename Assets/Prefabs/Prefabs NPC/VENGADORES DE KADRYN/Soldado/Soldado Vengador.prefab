@@ -221,7 +221,7 @@ RectTransform:
   m_GameObject: {fileID: 2383047622823427081}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.003}
-  m_LocalScale: {x: 0.7464652, y: 1.3437338, z: 1}
+  m_LocalScale: {x: 1.242566, y: 1.3437338, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6721434453643647482}
@@ -230,7 +230,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.146, y: -13.562}
+  m_AnchoredPosition: {x: -1.44, y: -13.42}
   m_SizeDelta: {x: 22.077, y: 21.395}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1678664685221969079
@@ -261,7 +261,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 394550a16a7dd154f8f2f6de392662da, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 28f9a19496cb6c54db6d975f5975caae, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -589,6 +589,7 @@ GameObject:
   - component: {fileID: 7228685500029782457}
   - component: {fileID: 2175001444900354828}
   - component: {fileID: 8875323161980268468}
+  - component: {fileID: 838672228643129839}
   m_Layer: 7
   m_Name: Soldado Vengador
   m_TagString: Unidad
@@ -757,6 +758,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 5
   estado_Corrupto: 0
   unidadVoladora: 0
@@ -827,6 +829,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 3194716257158510271}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 988559560477343625}
   barraVida: {fileID: 406985320704813745}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -870,6 +874,7 @@ MonoBehaviour:
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -1025,6 +1030,26 @@ MonoBehaviour:
   scEstaUnidad: {fileID: 0}
   variableUnidad: {fileID: 0}
   variableFlexible3: 0
+--- !u!114 &838672228643129839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5662508880646372543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 7996714464312373375}
+  poseIdle: {fileID: 21300000, guid: 28f9a19496cb6c54db6d975f5975caae, type: 3}
+  poseMover: {fileID: 21300000, guid: 2b70cae25bb3e1943b3aa62d09f38ced, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 431eb86d5652d94439148fa68d65265b, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: 431eb86d5652d94439148fa68d65265b, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &7009645798215536787
 GameObject:
   m_ObjectHideFlags: 0
