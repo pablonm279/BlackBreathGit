@@ -68,14 +68,14 @@ public class ClaseCaballero : Unidad
 
    switch(PASIVA_Acorazado)
    {
-      case 0: if(danioFinal > 0){estado_armaduraModificador++;} break; //No tiene la pasiva
+      case 0: if(danioFinal > 0){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //No tiene la pasiva
       //-----------------------------------------------------//
-      case 1: if(danioFinal > 3){estado_armaduraModificador++;} break; //Nv 1  4 daño o mas para reducir armadura
-      case 2: if(danioFinal > 4){estado_armaduraModificador++;} break; //Nv 2  5 daño o mas para reducir armadura
-      case 3: if(danioFinal > 5){estado_armaduraModificador++;} break; //Nv 3  6 daño o mas para reducir armadura
-      case 4: if(danioFinal > 7){estado_armaduraModificador++;} break; //Nv 4a  8 daño o mas para reducir armadura
+      case 1: if(danioFinal > 3){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //Nv 1  4 daño o mas para reducir armadura
+      case 2: if(danioFinal > 4){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //Nv 2  5 daño o mas para reducir armadura
+      case 3: if(danioFinal > 5){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //Nv 3  6 daño o mas para reducir armadura
+      case 4: if(danioFinal > 7){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //Nv 4a  8 daño o mas para reducir armadura
       case 5: if(danioFinal > 5 && (ObtenerArmaduraActual() > mod_Armadura/2)) //Nv 4b 6 daño o mas, y no se puede reducir a menos de la mitad de la armadura inicial.
-      {estado_armaduraModificador++;} break;
+      {estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break;
    }
 
 

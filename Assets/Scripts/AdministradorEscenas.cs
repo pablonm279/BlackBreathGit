@@ -2419,7 +2419,9 @@ public class AdministradorEscenas : MonoBehaviour
       Fatigado.buffNombre = "Fatigado";
       Fatigado.boolfDebufftBuff = false;
       Fatigado.DuracionBuffRondas = -1;
-      Fatigado.cantAPMax -= 1;
+      Fatigado.cantAtFue -= 1;
+      Fatigado.cantAtAgi -= 1;
+      Fatigado.cantAtPod -= 1;
       Fatigado.AplicarBuff(unidad);
       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
       Buff buffComponent = ComponentCopier.CopyComponent(Fatigado, GO.gameObject);
@@ -2932,7 +2934,7 @@ public class AdministradorEscenas : MonoBehaviour
   }
   void PlasmarEfectosBatallaEnPersonajes()
   {
-    int longitudBatallaFatiga = 7;
+    int longitudBatallaFatiga = 5;
 
 
     if (Personaje1 != null)
@@ -2942,7 +2944,7 @@ public class AdministradorEscenas : MonoBehaviour
 
       CanalizadorPasivaSobrecarga(Personaje1, unidadPers1);
 
-      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga) { Personaje1.Camp_Fatigado = true; } //Batalla de mas de 7 turnos, fatiga.
+      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga) { Personaje1.Camp_Fatigado = true; } //Batalla de mas de 5 turnos, fatiga.
     }
     if (Personaje2 != null)
     {

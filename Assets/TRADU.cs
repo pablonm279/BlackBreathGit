@@ -3600,46 +3600,151 @@ public class TRADU : MonoBehaviour
             case "Tutorial activo, atajos deshabilitados.":
                 r = "Tutorial active, shortcuts disabled.";
                 break;
-             case "Cargar Partida":
+            case "Cargar Partida":
                 r = "Load Game";
                 break;
-           /* case "":
+            case "es condenado por":
+                r = "is condemned by";
+                break;
+            case "turnos.":
+                r = "turns.";
+                break;
+            case "resiste la condena, pero sufre el latido necrotico.":
+                r = "resists the condemnation, but suffers the necrotic beat.";
+                break;
+            case "desata una llamarada ardiente sobre":
+                r = "unleashes a burning attack on";
+                break;
+            case "desata un rayo debilitador sobre":
+                r = "unleashes a weakening bolt on";
+                break;
+            case " se aterra por Mirada de la Masacre y pierde el turno.":
+                r = " is terrified by the Gaze of Massacre and loses a turn.";
+                break;
+            case " obtiene un intento adicional de Tirada de Salvación.":
+                r = " gets an additional attempt at a Saving Throw.";
+                break;
+            case "Gulek y Gul discuten tácticas, y resuelven adoptar un enfoque agresivo.":
+                r = "Gulek and Gul discuss tactics, and decide to adopt an aggressive approach.";
+                break;
+            case "Aturdido!":
+                r = "Stunned!";
+                break;
+            case "Turno de":
+                r = "Turn of";
+                break;
+            case "No se salva":
+                r = "Not saved";
+                break;
+            case "Se salva":
+                r = "Saved";
+                break;
+            case "Fortaleza":
+                r = "Fortitude";
+                break;
+            case "Reflejos":
+                r = "Reflexes";
+                break;
+              case "":
                 r = "";
                 break;
-            case "":
-                r = "";
+            case "Mental":
+                r = "Mental";
                 break;
-            case "":
-                r = "";
+            case " obtiene ":
+                r = " gets ";
                 break;
-            case "":
-                r = "";
+            case ": -Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada.":
+                r = ": -Rain: -5 Hope. -15% Supplies Gathering, -20% Ambush Chance.";
                 break;
-            case "":
-                r = "";
+            case "Defender":
+                r = "Defend";
                 break;
-            case "":
-                r = "";
+              case "Huir":
+                r = "Flee";
                 break;
-            case "":
-                r = "";
+            case "Asentamiento":
+                r = "Settlement";
                 break;
-            case "":
-                r = "";
+            case "Esperanza.":
+                r = "Hope.";
                 break;
-            case "":
-                r = "";
+            case "Sin consecuencias graves.":
+                r = "No serious consequences.";
                 break;
-            case "":
-                r = "";
+            case "Derrota: ":
+                r = "Defeat: ";
                 break;
-            case "":
-                r = "";
+              case "-Victoria contra ":
+                r = "-Victory against ";
                 break;
-            case "":
-                r = "";
+            case "-Derrota frente a ":
+                r = "-Defeat against ";
                 break;
-            case "":
+            case " Materiales.":
+                r = " Materials.";
+                break;
+            case "<color=#2a9c71>\n\nFatigado: -1 Atributos hasa próximo descanso. </color>":
+                r = "<color=#2a9c71>\n\nTired: -1 Attributes until next rest. </color>";
+                break;
+            case "Torpe: +1 Rango Pifias":
+                r = "Clumsy: +1 Range Miss.";
+                break;
+              case "Poción de Curación Media":
+                r = "Medium Healing Potion";
+                break;
+            case "objetivo":
+                r = "target";
+                break;
+            case "Impacto crítico":
+                r = "Critical Hit";
+                break;
+            case " usa ":
+                r = " uses ";
+                break;
+            case "Bonus daño elemental Acido.":
+                r = "Acid Elemental Damage Bonus.";
+                break;
+              case "Bonus daño elemental Arcano.":
+                r = "Arcane Elemental Damage Bonus.";
+                break;
+            case "Bonus daño elemental Fuego.":
+                r = "Fire Elemental Damage Bonus.";
+                break;
+            case "Bonus daño elemental Hielo.":
+                r = "Ice Elemental Damage Bonus.";
+                break;
+            case "Bonus daño elemental Necro.":
+                r = "Necrotic Elemental Damage Bonus.";
+                break;
+            case "Bonus daño elemental Rayo.":
+                r = "Lightning Elemental Damage Bonus.";
+                break;
+              case "Bonus daño elemental Divino.":
+                r = "Divine Elemental Damage Bonus.";
+                break;
+            case "<i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Potencia Aliados.\n-Su cuervo la defiende.</color>\n<color=#EE0000>-Poco resistente.</color>":
+                r = "<i>Tribe from the Vientohelado pass, these wild beings are feared for their ferocity and pagan rituals.</i>\n\n<color=#199F10>-Strengthens Allies.\n-Its raven defends it.</color>\n<color=#EE0000>-Lowly resistant.</color>";
+                break;
+            case "Tiro Ballesta de Mano":
+                r = "Hand Crossbow Shot";
+                break;
+            case "Oso Espectral":
+                r = "Spectral Bear";
+                break;
+            case "<color=#8a5b32>perforante</color>":
+                r = "<color=#8a5b32>piercing</color>";
+                break;
+            case "Determinación ":
+                r = "Determination ";
+                break;
+            case "Barrera":
+                r = "Barrier";
+                break;
+            case "Muerto":
+                r = "Dead";
+                break;
+            /*case "":
                 r = "";
                 break;
             case "":

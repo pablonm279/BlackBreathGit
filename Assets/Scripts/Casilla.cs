@@ -458,13 +458,6 @@ public class Casilla : MonoBehaviour
       GO.GetComponent<Obstaculo>().CasillaPosicion = this;
     }
 
-    //Esto pone en la capa del canvas del objeto/unidad segun Y de esta casilla
-    Canvas canvasObjeto = GO.GetComponentInChildren<Canvas>();
-    if (canvasObjeto != null)
-    {
-      canvasObjeto.overrideSorting = true;
-      canvasObjeto.sortingOrder = 60 - posY * 10;
-    }
     //---
     // Reduce the scale of the object to 87% of its original size
     GO.transform.localScale = new Vector3(GO.transform.localScale.x * 0.9f, GO.transform.localScale.y * 0.9f, GO.transform.localScale.z * 0.9f);
@@ -1515,13 +1508,8 @@ public class Casilla : MonoBehaviour
 
     }
 
-    // Si el objeto tiene Canvas, permite override y ajusta el sort order
-    Canvas canvas = obj.GetComponentInChildren<Canvas>();
-    if (canvas != null)
-    {
-      canvas.overrideSorting = true;
-      canvas.sortingOrder = 60 - 10 * posY;
-    }
+    string sortingLayerCanvas = obj.GetComponent<Unidad>() != null ? "UI3D" : null;
+    RenderOrderHelper.AplicarOrdenPorY(obj, posY, sortingLayerCanvas);
 
 
   }

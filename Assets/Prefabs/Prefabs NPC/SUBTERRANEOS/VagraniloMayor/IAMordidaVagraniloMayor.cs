@@ -58,7 +58,7 @@ public class IAMordidaVagraniloMayor : IAHabilidad
             object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
                            PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 
-      await Task.Delay(500);
+      await Task.Delay(450);
       AplicarEfectosHabilidad(Objetivo);
      
    }
@@ -72,8 +72,7 @@ public class IAMordidaVagraniloMayor : IAHabilidad
      
    //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
    Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
-   canvasObjeto.overrideSorting = true;
-   canvasObjeto.sortingOrder =  200;  
+   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
 
     }
 

@@ -784,6 +784,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
@@ -807,6 +808,7 @@ MonoBehaviour:
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
+  goSANGRE: {fileID: 0}
   velocidadMovimiento: 3
   movimientoEnCurso: 0
   NoSonidoAlMover: 0
@@ -891,6 +893,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 1721322887294291828}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 1618269976996918917}
   barraVida: {fileID: 2191221845639652285}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -930,10 +934,12 @@ MonoBehaviour:
   esCargable: 0
   esMelee: 0
   bAfectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -959,6 +965,7 @@ MonoBehaviour:
   hAlcance: 5
   esMelee: 0
   afectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -990,6 +997,7 @@ MonoBehaviour:
   hAlcance: 10
   esMelee: 0
   afectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   hCooldownMax: 2
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -1022,6 +1030,7 @@ MonoBehaviour:
   hAlcance: 10
   esMelee: 0
   afectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   hCooldownMax: 3
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -1238,8 +1247,8 @@ RectTransform:
   m_GameObject: {fileID: 8607029267525624676}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.4055048, y: 2.171884, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.1514413, y: 1.7792875, z: 0.8192369}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4173311401586582042}
   - {fileID: 1186958633882235480}
@@ -1247,7 +1256,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.1, y: 8.8}
+  m_AnchoredPosition: {x: 0.1, y: 7.7}
   m_SizeDelta: {x: 65.9, y: 34.32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6439364340457022924

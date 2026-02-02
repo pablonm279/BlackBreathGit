@@ -1,0 +1,179 @@
+﻿Resumen:
+- Total claves en TRADU.cs: 1198
+- Llamadas TRADU.i.Traducir(...) no literales: 71
+- Claves literales faltantes (ocurrencias): 51
+- Claves literales faltantes (únicas): 46
+
+Claves literales faltantes (únicas):
+- \n<color=#6A0DAD>--Ritual--</color>
+- es condenado por
+- turnos.
+- resiste la condena, pero sufre el latido necrotico.
+- desata una llamarada ardiente sobre
+- desata un rayo debilitador sobre
+-  se aterra por Mirada de la Masacre y pierde el turno.
+-  obtiene un intento adicional de Tirada de Salvación.
+- Gulek y Gul discuten tácticas, y resuelven adoptar un enfoque agresivo.
+- Aturdido!
+- Turno de
+- No se salva
+- Se salva
+- Fortaleza
+- Reflejos
+- Mental
+-  obtiene 
+- : -Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada.
+- Defender
+- Huir
+- Asentamiento
+- -Los Cronistas han registrado la victoria, +50 Valor Crâ”œâ”‚nica, +5 Esperanza.
+- -Los Cronistas han registrado la derrota, -50 Valor Crâ”œâ”‚nica. -3 Esperanza.
+- Victoria sin recompensas definidas para este encuentro clÃ¡sico.
+- Derrota en un encuentro clÃ¡sico. Los efectos especÃ­ficos aÃºn no estÃ¡n configurados.
+- sin botÃ­n
+- Esperanza.
+- Sin consecuencias graves.
+- Derrota: 
+- -Victoria contra 
+- -Derrota frente a 
+-  Materiales.
+- <color=#2a9c71>\n\nFatigado: -1 Atributos hasa próximo descanso. </color>
+- Torpe: +1 Rango Pifias
+- Poción de Curación Media
+- objetivo
+- Impacto crítico
+-  usa 
+- Bonus daño elemental Acido.
+- Bonus daño elemental Arcano.
+- Bonus daño elemental Fuego.
+- Bonus daño elemental Hielo.
+- Bonus daño elemental Necro.
+- Bonus daño elemental Rayo.
+- Bonus daño elemental Divino.
+- <i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Potencia Aliados.\n-Su cuervo la defiende.</color>\n<color=#EE0000>-Poco resistente.</color>
+
+Ocurrencias de claves faltantes:
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\TooltipNodos.cs:31 :: \n<color=#6A0DAD>--Ritual--</color>
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\ArbolMaldito\IACondenaRaices.cs:94 :: es condenado por
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\ArbolMaldito\IACondenaRaices.cs:94 :: turnos.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\ArbolMaldito\IACondenaRaices.cs:98 :: resiste la condena, pero sufre el latido necrotico.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\RaizArdiendo\IALlamaradaRaiz.cs:104 :: desata una llamarada ardiente sobre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkil Alado\IARayoZarkil.cs:104 :: desata un rayo debilitador sobre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkil Comandante\IARayoZarkilComandante.cs:104 :: desata un rayo debilitador sobre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkil Guerrero\MiradaMasacre\TrampaMiradamasacre.cs:61 ::  se aterra por Mirada de la Masacre y pierde el turno.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\EnemigoGulekGul.cs:65 ::  obtiene un intento adicional de Tirada de Salvación.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs:132 :: Gulek y Gul discuten tácticas, y resuelven adoptar un enfoque agresivo.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs:167 :: Gulek y Gul discuten tácticas, y resuelven adoptar un enfoque agresivo.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Estados.cs:62 :: Aturdido!
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:762 :: Turno de
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:767 :: Turno de
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:2360 :: No se salva
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:2360 :: Se salva
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:2384 :: Fortaleza
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:2385 :: Reflejos
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:2386 :: Mental
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1128 ::  obtiene 
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1903 :: : -Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\EventosAdmin.cs:374 :: Defender
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\EventosAdmin.cs:376 :: Huir
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\EventosAdmin.cs:463 :: Asentamiento
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:954 :: -Los Cronistas han registrado la victoria, +50 Valor Crâ”œâ”‚nica, +5 Esperanza.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:959 :: -Los Cronistas han registrado la derrota, -50 Valor Crâ”œâ”‚nica. -3 Esperanza.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1227 :: Victoria sin recompensas definidas para este encuentro clÃ¡sico.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1228 :: Derrota en un encuentro clÃ¡sico. Los efectos especÃ­ficos aÃºn no estÃ¡n configurados.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1243 :: sin botÃ­n
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1250 :: Esperanza.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1279 :: Sin consecuencias graves.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1283 :: Derrota: 
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1303 :: -Victoria contra 
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1307 :: -Derrota frente a 
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuDescanso.cs:394 ::  Materiales.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuPersonajes.cs:217 :: <color=#2a9c71>\n\nFatigado: -1 Atributos hasa próximo descanso. </color>
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuPersonajes.cs:231 :: Torpe: +1 Rango Pifias
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Consumibles\Poción de Curación Media\Cons_PocionCuracionMedia.cs:13 :: Poción de Curación Media
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidad.cs:313 :: objetivo
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidad.cs:366 :: Impacto crítico
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidades IA\IAHabilidad.cs:365 :: objetivo
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidades IA\IAHabilidad.cs:413 :: Impacto crítico
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidades IA\IAHabilidad.cs:551 ::  usa 
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIEstadoCuadro.cs:114 :: Bonus daño elemental Acido.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIEstadoCuadro.cs:115 :: Bonus daño elemental Arcano.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIEstadoCuadro.cs:116 :: Bonus daño elemental Fuego.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIEstadoCuadro.cs:117 :: Bonus daño elemental Hielo.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIEstadoCuadro.cs:118 :: Bonus daño elemental Necro.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIEstadoCuadro.cs:119 :: Bonus daño elemental Rayo.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIEstadoCuadro.cs:121 :: Bonus daño elemental Divino.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIInfoChar.cs:405 :: <i>Tribu oriundas del paso Vientohelado, estos seres salvajes son temidos por su ferocidad y rituales paganos.</i>\n\n<color=#199F10>-Potencia Aliados.\n-Su cuervo la defiende.</color>\n<color=#EE0000>-Poco resistente.</color>
+
+Llamadas no literales (riesgo de no traducir):
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\MenuCiudadPuerto.cs:38 :: "
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\TooltipBatalla.cs:25 :: ObtenerContenidoTooltip(tipo
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\TooltipBatalla.cs:34 :: txt
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\TooltipItems.cs:22 :: content
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\btnItemEnVenta.cs:55 :: itemRepresentado.itemDescripcion
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\btnItemInventario.cs:120 :: itemRepresentado.sNombreItem
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\btnItemInventario.cs:120 :: itemRepresentado.itemDescripcion
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Buff.cs:185 :: buffNombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Buff.cs:189 :: buffNombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Buff.cs:193 :: buffNombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Buff.cs:300 :: buffNombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Buff.cs:303 :: buffNombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\CombatLogFormatter.cs:33 :: s
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:761 :: uNombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:762 :: nombreTurno
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:766 :: uNombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:767 :: nombreTurno
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:774 :: uNombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:778 :: uNombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:1295 :: uNombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:1455 :: stDaniotipo
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:1560 :: uNombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Unidad.cs:1660 :: stDaniotipo
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\AtributosZona.cs:375 :: Nombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\AtributosZona.cs:562 :: Nombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:508 :: "-El Séquito de Nobles ha hecho una donación. Oro: " + oro
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:527 :: "-La caravana ha llegado a un nodo incendiado. -10 Esperanza.  " + nmuertos + " Civiles Muertos."
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1181 :: "/20
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1185 :: "/20
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1189 :: "/20
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1193 :: "/20
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1301 :: "Enérgicos(0
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1302 :: "Descansados(1
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1303 :: "Frescos(2
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1304 :: "En Marcha(3
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1305 :: "Agitados(4
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1306 :: "Cansados(5
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1307 :: "Exhaustos(6
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1722 :: $"Los <color=#b7972c>Suministros</color> constituyen las reservas de comida y elementos de supervivencia de la caravana.\n\nCada <color=#c918bb>Civil</color> consume 1 en cada Descanso. Los Bueyes consumen 2.\n"
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1784 :: "Si descansas volverá a 0 y arrancarán el nuevo día Descansados(1
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1790 :: "Actualmente estan Descansados(1
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1791 :: "Actualmente estan Frescos(2
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1792 :: "Actualmente estan En Marcha(3
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1793 :: "Actualmente estan Agitados(4
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1794 :: "Actualmente estan Cansados(5
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1795 :: "Actualmente estan Exhaustos(6
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:1819 :: "Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será mas propensa a sufrir emboscadas (+20%
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:2863 :: "-Las oraciones de los Purificadores del Templo de Serria merman el avance del Aliento Negro en: " + templo + ""
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager.cs:2870 :: "-Las almenaras de Serria se divisan a lo lejos sobre las montañas, brillando con fuerza y marcando el destino de la caravana: " + almenaras * 5 + " Esperanza"
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\EventosAdmin.cs:203 :: "% Chances (40 base + Milicianos
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\EventosAdmin.cs:232 :: "<i>(Determinado por Aliento Negro
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\EventosAdmin.cs:269 :: " <i>(Determinado por Esperanza
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\EventosAdmin.cs:357 :: " <i>(Determinado por Nivel
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\EventosAdmin.cs:403 :: "<color=#ba3fef>Respondes: -'Conserva el dinero, tu aporte a la Caravana ya es considerable con tu esfuerzo diario, y estoy más que agradecido de poder contar contigo.'</color> Efectos: " + participanteEvento1.sNombre + " gana Alta Moral por 4 días y 50 Experiencia. \n\n"
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:935 :: recompensa.sNombreItem
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuDescanso.cs:90 :: $"<color=#d8a205>Se juntarán entre "
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\Nodo.cs:1038 :: "<b>(!
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\Sequitos\Sequito.cs:32 :: txtNombre.text
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\Sequitos\Sequito.cs:33 :: txtdesc.text
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\Sequitos\Sequito.cs:34 :: txtmecanicas.text
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\Sequitos\SequitoCronistas.cs:33 :: "EFECTOS PASIVOS:\n\n-Otorgan +5 de Esperanza por batallas ganadas (-3 Derrotas
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\Sequitos\SequitoCuranderos.cs:54 :: "Carros de Tratamiento: Mejorar los carros utilizados por el Séquito de Curanderos para tratar heridos significará una mejora en los tratamientos recibidos por los heridos y su tiempo de recuperación. \nCada Tier aumenta en 5% la curación diaria de los personajes que Descansen y reduce el costo de Tratar Heridas. \nAdemás cada tier da un 10% extra a las posibilidades de reducir Enfermedades al Descansar (20% base
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\Sequitos\SequitoNobles.cs:23 :: $"EFECTOS PASIVOS:\n\n-Cada día donan Oro equivalente a 1/3 de la Esperanza.\n\n-Se pierde 2 de Esperanza al viajar con fatiga 4 o mayor."
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\DestruirObstaculo.cs:118 :: texto
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidad.cs:125 :: scEstaUnidad.uNombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidad.cs:125 :: nombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidades IA\IAHabilidad.cs:550 :: nombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Habilidades\Habilidades IA\IAHabilidad.cs:556 :: nombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIEstadoCuadro.cs:200 :: buff.buffNombre
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIEstadoCuadro.cs:200 :: buff.buffDescr
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\UI\UIInfoChar.cs:57 :: scUnidadMostrada.uNombre

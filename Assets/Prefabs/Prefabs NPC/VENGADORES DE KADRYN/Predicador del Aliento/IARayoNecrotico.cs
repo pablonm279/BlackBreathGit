@@ -60,7 +60,7 @@ public class IARayoNecrotico : IAHabilidad
 
     PrepararInicioAnimacion(null, objetivo);
 
-    await Task.Delay(500);
+    await Task.Delay(450);
 
     AplicarEfectosHabilidad(objetivo);
 

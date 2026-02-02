@@ -574,6 +574,7 @@ public class CampaignManager : MonoBehaviour
     posicionCaravana = 1;
     scAtributosZona.ActualizarEstadoZona(scAtributosZona.ID, 1); //Zona completada
     scMapaManager.ResetearYGenerarSiguienteZona();
+    ResetearAlientoNegro();
     scAtributosZona.GenerarZona(0); //0 es aleatorio
 
   }
@@ -1234,6 +1235,12 @@ public class CampaignManager : MonoBehaviour
 
     
 
+  }
+
+  public void ResetearAlientoNegro()
+  { 
+    EstadoAlientoNegro = 3;
+    ActualizarTierAlientoNegro();
   }
   public void AvanzarAlientoNegro(int n)
   {

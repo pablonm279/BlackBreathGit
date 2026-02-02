@@ -56,8 +56,7 @@ public class GolpeEnredadera : IAHabilidad
      
    //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
    Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
-   canvasObjeto.overrideSorting = true;
-   canvasObjeto.sortingOrder =  200;  
+   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
 
     }
 
@@ -71,7 +70,7 @@ public class GolpeEnredadera : IAHabilidad
          PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 
 
-      await Task.Delay(700);
+      await Task.Delay(450);
       AplicarEfectosHabilidad(Objetivo);
      
    }
@@ -205,8 +204,7 @@ void AplicaEnredadoTirada(Unidad unidad, int extraDC)
 
             //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
             Canvas canvasObjeto = goVFX.GetComponentInChildren<Canvas>();
-            canvasObjeto.overrideSorting = true;
-            canvasObjeto.sortingOrder =  unidad.GetComponentInChildren<Canvas>().sortingOrder + 5; 
+            RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, unidad.transform, 5);
             //---
             
             buff.goVFX =  goVFX;

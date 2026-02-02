@@ -11,7 +11,8 @@ public enum FloatingTextContext
     Block = 3,
     Heal = 4,
     Resist = 5,
-    Miss = 6
+    Miss = 6,
+    Buff = 7
 }
 
 [Serializable]
@@ -24,7 +25,7 @@ public class FloatingTextProfile
     public Vector2 initialOffset = Vector2.zero;
 
     [Tooltip("Velocidad vertical (unidades de RectTransform por segundo).")]
-    public float verticalSpeed = 20f;
+    public float verticalSpeed = 15f;
 
     [Tooltip("Velocidad horizontal constante (usar 0 para solo movimiento vertical).")]
     public float horizontalSpeed = 0f;
@@ -126,19 +127,22 @@ public class FloatingTextAnimator : MonoBehaviour
     [SerializeField] private FloatingTextProfile healProfile = CreateHealProfile();
     [SerializeField] private FloatingTextProfile resistProfile = CreateResistProfile();
     [SerializeField] private FloatingTextProfile missProfile = CreateMissProfile();
+    [SerializeField] private FloatingTextProfile buffProfile = CreateBuffProfile();
 
     private TextMeshProUGUI tmp;
     private RectTransform rect;
     private Coroutine runningRoutine;
     private float randomSeed;
     private Vector2 baseAnchoredPosition;
+    private Vector2 initialAnchoredPosition;
 
     private void Awake()
     {
         tmp = GetComponent<TextMeshProUGUI>();
         rect = GetComponent<RectTransform>();
         randomSeed = UnityEngine.Random.Range(0f, 1000f);
-        baseAnchoredPosition = rect != null ? rect.anchoredPosition : Vector2.zero;
+        initialAnchoredPosition = rect != null ? rect.anchoredPosition : Vector2.zero;
+        baseAnchoredPosition = initialAnchoredPosition;
 
         genericProfile?.Validate();
         damageProfile?.Validate();
@@ -147,11 +151,29 @@ public class FloatingTextAnimator : MonoBehaviour
         healProfile?.Validate();
         resistProfile?.Validate();
         missProfile?.Validate();
+        buffProfile?.Validate();
     }
 
     public void SetBasePosition(Vector2 anchoredPosition)
     {
         baseAnchoredPosition = anchoredPosition;
+    }
+
+    public Vector2 GetInitialBasePosition()
+    {
+        return initialAnchoredPosition;
+    }
+
+    public float GetLifetime(FloatingTextContext context)
+    {
+        FloatingTextProfile profile = ResolveProfile(context);
+        if (profile == null)
+        {
+            return 0f;
+        }
+
+        profile.Validate();
+        return profile.lifetime;
     }
 
     public Coroutine Play(string text, Color color, FloatingTextContext context)
@@ -165,6 +187,8 @@ public class FloatingTextAnimator : MonoBehaviour
         {
             tmp.text = text;
             tmp.color = color;
+            rect.anchoredPosition = baseAnchoredPosition;
+            rect.localScale = Vector3.one;
             return null;
         }
 
@@ -259,6 +283,9 @@ public class FloatingTextAnimator : MonoBehaviour
                 break;
             case FloatingTextContext.Miss:
                 if (missProfile != null) { return FloatingTextProfile.Clone(missProfile); }
+                break;
+            case FloatingTextContext.Buff:
+                if (buffProfile != null) { return FloatingTextProfile.Clone(buffProfile); }
                 break;
         }
 
@@ -399,6 +426,20 @@ public class FloatingTextAnimator : MonoBehaviour
                 new Keyframe(0f, 0.96f),
                 new Keyframe(0.3f, 1.02f),
                 new Keyframe(1f, 0.96f))
+        };
+    }
+
+    private static FloatingTextProfile CreateBuffProfile()
+    {
+        return new FloatingTextProfile
+        {
+            lifetime = 1.45f,
+            verticalSpeed = 18f,
+            horizontalSpeed = 0f,
+            scaleCurve = new AnimationCurve(
+                new Keyframe(0f, 0.98f),
+                new Keyframe(0.25f, 1.03f),
+                new Keyframe(1f, 0.98f))
         };
     }
 }

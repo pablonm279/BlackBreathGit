@@ -103,8 +103,7 @@ public class Perdicion : IAHabilidad
             buff.goVFX =  goVFX;  
             //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
             Canvas canvasObjeto = goVFX.GetComponentInChildren<Canvas>();
-            canvasObjeto.overrideSorting = true;
-            canvasObjeto.sortingOrder =  objetivo.GetComponentInChildren<Canvas>().sortingOrder + 3; 
+            RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, objetivo.transform, 3);
             //---
             
 

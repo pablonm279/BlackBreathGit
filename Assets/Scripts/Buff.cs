@@ -182,11 +182,11 @@ public class Buff : MonoBehaviour
         {
             if (DuracionBuffRondas > 0)
             {
-                unidad.GenerarTextoFlotante("+"+TRADU.i.Traducir(buffNombre) + " " + DuracionBuffRondas + "T", colorTexto);
+                unidad.GenerarTextoFlotante("+"+TRADU.i.Traducir(buffNombre) + " " + DuracionBuffRondas + "T", colorTexto, FloatingTextContext.Buff);
             }
             else if (DuracionBuffRondas < 0)
             {
-                unidad.GenerarTextoFlotante("+" + TRADU.i.Traducir(buffNombre), colorTexto);
+                unidad.GenerarTextoFlotante("+" + TRADU.i.Traducir(buffNombre), colorTexto, FloatingTextContext.Buff);
             }
         }
 
@@ -297,7 +297,7 @@ public void RemoverBuff(Unidad unidad)
     bool suprimirPorInicioCombate = (BattleManager.Instance != null && BattleManager.Instance.silenciarLogCombate);
     if (!suprimeTextoFlotante && !suprimirPorInicioCombate)
     {
-        unidad.GenerarTextoFlotante("<s>" +  TRADU.i.Traducir(buffNombre) + "</s>", Color.cyan);
+        unidad.GenerarTextoFlotante("<s>" +  TRADU.i.Traducir(buffNombre) + "</s>", Color.cyan, FloatingTextContext.Buff);
     }
 
     string sBuff = unidad.uNombre + TRADU.i.Traducir(" ya no tiene ") + TRADU.i.Traducir(buffNombre) + ".";

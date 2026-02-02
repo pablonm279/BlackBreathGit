@@ -42,12 +42,12 @@ public class IAUnidad : MonoBehaviour
          float factor = modoRapido ? 0.65f : 1f;
          return new AITurnTimings
          {
-            DelaySinObjetivosMs = Mathf.RoundToInt(1200f * factor),
+            DelaySinObjetivosMs = Mathf.RoundToInt(800f * factor),
             DelayPreAccionMs = Mathf.RoundToInt(1350f * factor),
-            DelayPostAccionMs = Mathf.RoundToInt(850f * factor),
+            DelayPostAccionMs = Mathf.RoundToInt(250f * factor),
             DelayMovimientoFallbackMs = Mathf.RoundToInt(260f * factor),
             DelayFinTurnoMs = Mathf.RoundToInt(950f * factor),
-            HabilidadTimeoutMs = Mathf.RoundToInt(1500f * factor),
+            HabilidadTimeoutMs = Mathf.RoundToInt(1100f * factor),
             GraciaHabilidadMs = Mathf.RoundToInt(800f * factor),
             ExtraRangoMs = Mathf.RoundToInt(200f * factor)
          };
@@ -561,7 +561,7 @@ public class IAUnidad : MonoBehaviour
         scUnidad.CasillaDeseadaMov = casillaObjetivo;
         scUnidad.CambiarAPActual(-costoMovimientoAP);
         // Simulacion de un retraso de movimiento
-        await Task.Delay(500);
+        await Task.Delay(450);
 
         scUnidad.CasillaPosicion =  scUnidad.CasillaDeseadaMov;
         scUnidad.CasillaDeseadaMov = null;

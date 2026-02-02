@@ -788,8 +788,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.6, y: 0.95, z: 0.6}
-  m_Center: {x: 0, y: 0.62, z: 0}
+  m_Size: {x: 0.6, y: 0.65, z: 0.6}
+  m_Center: {x: 0, y: 0.4, z: 0}
 --- !u!114 &3030143752673215408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -825,10 +825,12 @@ MonoBehaviour:
   esCargable: 0
   esMelee: 0
   bAfectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -875,6 +877,8 @@ MonoBehaviour:
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   PrefabtxtValentia: {fileID: 2129066933443543855, guid: f9b91defce473fc409c7e7f304744cae, type: 3}
   imMarcador: {fileID: 4166843569280278101}
+  txtProbabilidad: {fileID: 0}
+  PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 7621900831962988461}
   barraVida: {fileID: 7051398126679206549}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
@@ -971,6 +975,7 @@ MonoBehaviour:
   estado_APModificador: 0
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
@@ -994,6 +999,7 @@ MonoBehaviour:
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
+  goSANGRE: {fileID: 6297216451574436529, guid: 5100a7ff70da9b9439f8624f4d7df7b0, type: 3}
   velocidadMovimiento: 3.1
   movimientoEnCurso: 0
   NoSonidoAlMover: 0

@@ -70,7 +70,7 @@ public class btnPersonaje : MonoBehaviour
     {
       if (personajeRepresentado != null)
       {
-
+        txtPersonajeRepresentado.gameObject.SetActive(true);
         if (TRADU.i.nIdioma == 1) //Español
         {
           txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>Nv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
@@ -83,7 +83,15 @@ public class btnPersonaje : MonoBehaviour
 
 
       }
+      else
+      {
+        txtPersonajeRepresentado.gameObject.SetActive(false);
+      }
     }
+    else
+      {
+        txtPersonajeRepresentado.gameObject.SetActive(false);
+      }
 
   }
   private void OnEnable()

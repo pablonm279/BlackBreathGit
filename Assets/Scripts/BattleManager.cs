@@ -219,8 +219,7 @@ public class BattleManager : MonoBehaviour
      trmp3.Inicializar();
      #endregion*/
 
-
-
+    ReordenarTodoPorY();
     ActualizarAliadosRefUI();
     //  RondaNueva();
 
@@ -1273,11 +1272,14 @@ public class BattleManager : MonoBehaviour
     // Primero, asegúrate que el oscurecedor esté en el lugar correcto en la jerarquía
     Transform oscurecedorTransform = oscurecedor.transform;
     HashSet<object> unidadesSet = (unidades != null) ? new HashSet<object>(unidades) : new HashSet<object>();
-
+    int ordenOscurecedor = ObtenerOrdenOscurecedor(oscurecedorTransform);
     foreach (Unidad uni in lUnidadesTotal)
     {
       Transform unidadTransform = uni.transform;
-      if (ListaContieneObjeto(unidadesSet, uni, uni.gameObject))
+      bool esNoParticipante = ListaContieneObjeto(unidadesSet, uni, uni.gameObject);
+      int posY = (uni.CasillaPosicion != null) ? uni.CasillaPosicion.posY : 0;
+      AplicarOrdenDuranteOscurecedor(uni.gameObject, posY, !esNoParticipante, ordenOscurecedor);
+      if (esNoParticipante)
       {
         // Sombrear y poner por encima del oscurecedor
         uni.gameObject.transform.GetChild(3).GetChild(1).GetChild(1).gameObject.SetActive(true); // Sombrear
@@ -1294,9 +1296,6 @@ public class BattleManager : MonoBehaviour
           int maxIndex = unidadTransform.parent.childCount - 1;
           int newIndex = Mathf.Min(oscurecedorIndex + 1, maxIndex);
 
-          unidadTransform.GetChild(3).gameObject.GetComponent<Canvas>().overrideSorting = true; // Asegurarse que el canvas de la unidad esté por encima
-          unidadTransform.GetChild(3).gameObject.GetComponent<Canvas>().sortingOrder = 0; // Asegurarse que el canvas de la unidad esté por encima
-
           unidadTransform.SetSiblingIndex(newIndex);
 
         }
@@ -1309,15 +1308,9 @@ public class BattleManager : MonoBehaviour
           int oscurecedorIndex = oscurecedorTransform.GetSiblingIndex();
           int newIndex = Mathf.Max(oscurecedorIndex - 1, 0);
 
-          unidadTransform.GetChild(3).gameObject.GetComponent<Canvas>().overrideSorting = true; // Asegurarse que el canvas de la unidad esté por encima
-          unidadTransform.GetChild(3).gameObject.GetComponent<Canvas>().sortingOrder = 5; // Asegurarse que el canvas de la unidad esté por encima
-
-
           unidadTransform.SetSiblingIndex(newIndex);
         }
       }
-
-      uni.AcomodarSortingLayerDelay(); // Acomodar sorting layer despues de un pequeño delay
     }
 
     foreach (GameObject obstaculoGO in GameObject.FindGameObjectsWithTag("Obstaculo"))
@@ -1329,11 +1322,57 @@ public class BattleManager : MonoBehaviour
       }
 
       bool sombrearObstaculo = ListaContieneObjeto(unidadesSet, obstaculo, obstaculoGO);
-      AjustarObstaculoDuranteSeleccion(obstaculo, sombrearObstaculo, oscurecedorTransform);
+      AjustarObstaculoDuranteSeleccion(obstaculo, sombrearObstaculo, oscurecedorTransform, ordenOscurecedor);
     }
   }
 
   public GameObject oscurecedor;
+  private const int OffsetOscurecedorParticipante = 200;
+  private const int OffsetOscurecedorNoParticipante = -200;
+
+  private int CalcularOrdenDuranteOscurecedor(int posY, bool esParticipante, int ordenOscurecedor)
+  {
+    int baseOrden = RenderOrderHelper.CalcularOrdenPorY(posY);
+    int offset = esParticipante ? OffsetOscurecedorParticipante : OffsetOscurecedorNoParticipante;
+    return ordenOscurecedor + offset + baseOrden;
+  }
+
+  private void AplicarOrdenDuranteOscurecedor(GameObject objetivo, int posY, bool esParticipante, int ordenOscurecedor)
+  {
+    if (objetivo == null)
+    {
+      return;
+    }
+
+    int ordenFinal = CalcularOrdenDuranteOscurecedor(posY, esParticipante, ordenOscurecedor);
+    RenderOrderHelper.AplicarOrdenBase(objetivo, ordenFinal, "UI3D");
+  }
+
+  private void ReordenarTodoPorY()
+  {
+    foreach (Unidad uni in lUnidadesTotal)
+    {
+      if (uni == null)
+      {
+        continue;
+      }
+
+      int posY = uni.CasillaPosicion != null ? uni.CasillaPosicion.posY : 0;
+      RenderOrderHelper.AplicarOrdenPorY(uni.gameObject, posY, "UI3D");
+    }
+
+    foreach (GameObject obstaculoGO in GameObject.FindGameObjectsWithTag("Obstaculo"))
+    {
+      Obstaculo obstaculo = obstaculoGO.GetComponent<Obstaculo>();
+      if (obstaculo == null)
+      {
+        continue;
+      }
+
+      int posY = obstaculo.CasillaPosicion != null ? obstaculo.CasillaPosicion.posY : 0;
+      RenderOrderHelper.AplicarOrdenPorY(obstaculo.gameObject, posY);
+    }
+  }
   public void DesombrearANoParticipantesHabilidad(List<object> unidades)
   {
 
@@ -1349,9 +1388,6 @@ public class BattleManager : MonoBehaviour
         { ((Unidad)unidad).gameObject.transform.GetChild(3).GetChild(1).GetChild(1).GetChild(0).gameObject.SetActive(true); } //ojo 
       ((Unidad)unidad).gameObject.transform.GetChild(3).GetChild(0).gameObject.SetActive(true); //barra
 
-        //
-        ((Unidad)unidad).gameObject.transform.GetChild(3).gameObject.GetComponent<Canvas>().overrideSorting = false;
-        ((Unidad)unidad).gameObject.transform.GetChild(3).gameObject.GetComponent<Canvas>().sortingOrder = 0;
       }
       else if (unidad is Obstaculo)
       {
@@ -1367,6 +1403,8 @@ public class BattleManager : MonoBehaviour
       }
     }
 
+    RestaurarTodosLosObstaculosTrasDesombrear();
+    ReordenarTodoPorY();
 
     // Poner el oscurecedor como primer hijo en la jerarquía
     oscurecedor.transform.SetAsFirstSibling();
@@ -1428,7 +1466,7 @@ public class BattleManager : MonoBehaviour
     objetivo.SetSiblingIndex(newIndex);
   }
 
-  private void AjustarObstaculoDuranteSeleccion(Obstaculo obstaculo, bool sombrear, Transform oscurecedorTransform)
+  private void AjustarObstaculoDuranteSeleccion(Obstaculo obstaculo, bool sombrear, Transform oscurecedorTransform, int ordenOscurecedor)
   {
     if (obstaculo == null)
     {
@@ -1450,8 +1488,8 @@ public class BattleManager : MonoBehaviour
       AjustarOrdenRespectoOscurecedor(obstaculoTransform, oscurecedorTransform, false);
     }
 
-    int ordenOscurecedor = ObtenerOrdenOscurecedor(oscurecedorTransform);
-    int ordenObstaculo = ordenOscurecedor - 50; // suficientemente bajo para quedar siempre detrǭs
+    int posY = obstaculo.CasillaPosicion != null ? obstaculo.CasillaPosicion.posY : 0;
+    int ordenObstaculo = CalcularOrdenDuranteOscurecedor(posY, !sombrear, ordenOscurecedor);
 
     AjustarRenderersObstaculo(obstaculoTransform, sombrear, ordenObstaculo, ordenObstaculo);
 
@@ -1524,6 +1562,19 @@ public class BattleManager : MonoBehaviour
     }
   }
 
+  private void RestaurarTodosLosObstaculosTrasDesombrear()
+  {
+    foreach (GameObject obstaculoGO in GameObject.FindGameObjectsWithTag("Obstaculo"))
+    {
+      Obstaculo obstaculo = obstaculoGO.GetComponent<Obstaculo>();
+      if (obstaculo == null)
+      {
+        continue;
+      }
+
+      RestaurarObstaculoTrasDesombrear(obstaculo);
+    }
+  }
 
   private void RestaurarObstaculoTrasDesombrear(Obstaculo obstaculo)
   {
@@ -1538,7 +1589,7 @@ public class BattleManager : MonoBehaviour
       obstaculo.transform.SetSiblingIndex(Mathf.Clamp(siblingIndex, 0, maxIndex));
     }
 
-    RestaurarOrdenObstaculo(obstaculo.transform);
+    bool restauroOrden = RestaurarOrdenObstaculo(obstaculo.transform);
 
     Canvas obstaculoCanvas = obstaculo.transform.GetComponentInChildren<Canvas>(true);
     if (obstaculoCanvas != null)
@@ -1547,6 +1598,7 @@ public class BattleManager : MonoBehaviour
       {
         obstaculoCanvas.overrideSorting = original.overrideSorting;
         obstaculoCanvas.sortingOrder = original.sortingOrder;
+        restauroOrden = true;
       }
       else
       {
@@ -1560,16 +1612,26 @@ public class BattleManager : MonoBehaviour
         barraVida.gameObject.SetActive(true);
       }
     }
+
+    if (!restauroOrden)
+    {
+      int posY = obstaculo.CasillaPosicion != null
+        ? obstaculo.CasillaPosicion.posY
+        : 0;
+      RenderOrderHelper.AplicarOrdenPorY(obstaculo.gameObject, posY);
+    }
   }
 
-  private void RestaurarOrdenObstaculo(Transform obstaculoTransform)
+  private bool RestaurarOrdenObstaculo(Transform obstaculoTransform)
   {
+    bool restauro = false;
     foreach (SortingGroup sg in obstaculoTransform.GetComponentsInChildren<SortingGroup>(true))
     {
       if (_sortingGroupOriginalObstaculos.TryGetValue(sg, out var original))
       {
         sg.sortingLayerID = original.sortingLayerId;
         sg.sortingOrder = original.sortingOrder;
+        restauro = true;
       }
     }
 
@@ -1579,8 +1641,11 @@ public class BattleManager : MonoBehaviour
       {
         renderer.sortingLayerID = original.sortingLayerId;
         renderer.sortingOrder = original.sortingOrder;
+        restauro = true;
       }
     }
+
+    return restauro;
   }
 
   public bool modoRapidoActivado = false;

@@ -20,8 +20,8 @@ public class TextoFlotanteManager : MonoBehaviour
 
     [Header("Parametros fallback")]
     public float duracion = 1.5f;
-    public float desplazamientoY = 50f;
-    public float retrasoEntreTextos = 0.001f;
+    public float desplazamientoY = 30f;
+    public float retrasoEntreTextos = 0.05f;
 
     private readonly Queue<FloatingTextRequest> colaTextos = new Queue<FloatingTextRequest>();
     private bool procesandoCola;
@@ -107,14 +107,14 @@ public class TextoFlotanteManager : MonoBehaviour
         GameObject goTexto = Instantiate(prefabTexto, contenedor, false);
         try
         {
+            FloatingTextAnimator animator = goTexto.GetComponent<FloatingTextAnimator>();
             RectTransform rect = goTexto.GetComponent<RectTransform>();
             if (rect != null)
             {
+                Vector2 basePosition = rect.anchoredPosition;
                 Vector2 offset = new Vector2(separacionHorizontal * slotIndex, separacionVertical * slotIndex);
-                rect.anchoredPosition += offset;
+                rect.anchoredPosition = basePosition /*+ offset*/;
             }
-
-            FloatingTextAnimator animator = goTexto.GetComponent<FloatingTextAnimator>();
 
             if (animator != null)
             {

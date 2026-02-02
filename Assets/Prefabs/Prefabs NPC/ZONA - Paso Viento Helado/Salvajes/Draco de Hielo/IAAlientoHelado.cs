@@ -46,9 +46,9 @@ public class IAAlientoHelado : IAHabilidad
     PrepararInicioAnimacion(objetivosComoObjetos, null);
     scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
     
-    await Task.Delay(500);
+    await Task.Delay(450);
     CrearVfx();
-     await Task.Delay(500);
+     await Task.Delay(450);
     foreach (Unidad objetivo in objetivos)
     {
       AplicarEfectosHabilidad(objetivo);

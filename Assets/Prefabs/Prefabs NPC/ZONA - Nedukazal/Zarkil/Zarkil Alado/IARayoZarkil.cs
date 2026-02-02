@@ -62,7 +62,7 @@ public class IARayoZarkil : IAHabilidad
     PrepararInicioAnimacion(null, objetivo);
 
 
-    await Task.Delay(500);
+    await Task.Delay(450);
    scEstaUnidad.GetComponent<AudioSource>().PlayOneShot(rayosonido);
 
     AplicarEfectosHabilidad(objetivo);

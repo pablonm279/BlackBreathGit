@@ -50,7 +50,7 @@ public class IAPrimerGolpeAlabardero : IAHabilidad
 
     hActualCooldown = hCooldownMax;
 
-    await Task.Delay(700);
+    await Task.Delay(450);
 
     AplicarEfectosHabilidad(scEstaUnidad);
 

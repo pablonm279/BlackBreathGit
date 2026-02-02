@@ -98,6 +98,13 @@ public class MenuPersonajes : MonoBehaviour
         }
         else { child.GetChild(5).gameObject.SetActive(false); }
 
+         if (btn.personajeRepresentado.Camp_Fatigado)
+        {
+          child.GetChild(11).gameObject.SetActive(true);
+        }
+        else { child.GetChild(11).gameObject.SetActive(false); }
+
+
 
 
 
@@ -207,7 +214,7 @@ public class MenuPersonajes : MonoBehaviour
 
 
     //Estados Campaña
-    if (pSel.Camp_Fatigado) { txtContenedorRasgos.text += TRADU.i.Traducir("<color=#2a9c71>\n\nFatigado: -1 PA máximo. </color>"); }
+    if (pSel.Camp_Fatigado) { txtContenedorRasgos.text += TRADU.i.Traducir("<color=#2a9c71>\n\nFatigado: -1 Atributos hasa próximo descanso. </color>"); }
     if (pSel.Camp_Bendecido_SequitoClerigos) { txtContenedorRasgos.text += "<color=#2a9c71>\n\n"+TRADU.i.Traducir("Bendecido por Plegaria: +1 Ataque +1 Defensa +5 Res.Necro +2 TSMental.</color>"); }
 
     if (pSel.Camp_Herido) { txtContenedorRasgos.text += TRADU.i.Traducir("<color=#d80404>\n\nHerido:-1 Atributos. Si cae en combate, muere. </color>"); }

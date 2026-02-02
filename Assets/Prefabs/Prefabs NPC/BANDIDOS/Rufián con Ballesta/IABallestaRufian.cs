@@ -67,7 +67,7 @@ public class IABallestaRufian : IAHabilidad
 
      
     
-      await Task.Delay(1300);
+      await Task.Delay(1100);
       //Esto es cuando el objetivo es uno solo,
       AplicarEfectosHabilidad(Objetivo);
      

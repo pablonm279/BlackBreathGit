@@ -101,8 +101,7 @@ public class Enredar : IAHabilidad
             buff.goVFX =  goVFX;
             //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
             Canvas canvasObjeto = goVFX.GetComponentInChildren<Canvas>();
-            canvasObjeto.overrideSorting = true;
-            canvasObjeto.sortingOrder =  objetivo.GetComponentInChildren<Canvas>().sortingOrder + 5; 
+            RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, objetivo.transform, 5);
             //---
 
             // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff

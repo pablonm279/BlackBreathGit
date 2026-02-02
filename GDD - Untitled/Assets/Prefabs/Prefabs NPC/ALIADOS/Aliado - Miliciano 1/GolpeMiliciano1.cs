@@ -55,7 +55,7 @@ public class GolpeMiliciano1 : IAHabilidad
       hActualCooldown = hCooldownMax;
       
       scEstaUnidad.ReproducirAnimacionAtaque();
-      await Task.Delay(700);
+      await Task.Delay(450);
       object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
           PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 

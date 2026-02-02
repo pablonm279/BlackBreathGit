@@ -213,6 +213,7 @@ MonoBehaviour:
   mod_maxAccionP: 3
   AccionP_actual: 3
   AccionP_SeEsforzo: 0
+  scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
   ValentiaP_actual: 0
@@ -280,7 +281,7 @@ MonoBehaviour:
   inmunidad_Ceguera: 0
   inmunidad_Oscuridad: 0
   inmunidad_Trampas: 0
-  bonusdam_fuego: 0
+  bonusdam_fuego: 1
   bonusdam_hielo: 0
   bonusdam_rayo: 0
   bonusdam_acido: 0
@@ -296,6 +297,7 @@ MonoBehaviour:
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
+  goSANGRE: {fileID: 0}
   velocidadMovimiento: 3.5
   movimientoEnCurso: 0
   NoSonidoAlMover: 0
@@ -447,6 +449,10 @@ MonoBehaviour:
   PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 8282162193989390545}
   barraVida: {fileID: 8857966881904100841}
+  barraVidaDamageFill: {fileID: 0}
+  barraVidaDamageColor: {r: 0.75, g: 0.12, b: 0.12, a: 0.6}
+  barraVidaDamageDelay: 0.12
+  barraVidaDamageSpeed: 0.9
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 2711672040162215709}
 --- !u!114 &2732777772784433487
@@ -5772,7 +5778,7 @@ Transform:
   m_GameObject: {fileID: 5218385583540490910}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.071, y: 0.637, z: 0}
+  m_LocalPosition: {x: 0.071, y: 0.504, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

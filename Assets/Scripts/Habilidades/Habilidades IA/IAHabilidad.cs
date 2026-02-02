@@ -201,19 +201,24 @@ public abstract class IAHabilidad : MonoBehaviour
              }
            }*/
 
-          if (cas.Presente != null)
-          {
-            if (cas.Presente.GetComponent<Unidad>() != null)
-            {
-              objPosibles.Add(cas.Presente.GetComponent<Unidad>());
-            }
-            else if (cas.Presente.GetComponent<Obstaculo>() != null)
-            {
-              objPosibles.Add(cas.Presente.GetComponent<Obstaculo>());
-            }
-          }
-
+      if (cas.Presente != null)
+      {
+        if (cas.Presente.GetComponent<Unidad>() != null)
+        {
+          objPosibles.Add(cas.Presente.GetComponent<Unidad>());
         }
+        else if (cas.Presente.GetComponent<Obstaculo>() != null)
+        {
+          objPosibles.Add(cas.Presente.GetComponent<Obstaculo>());
+        }
+      }
+
+    }
+  }
+
+      if (afectaObstaculos && objPosibles.Any(x => x is Unidad))
+      {
+        objPosibles.RemoveAll(x => x is Obstaculo);
       }
 
       return objPosibles;
@@ -394,6 +399,7 @@ public abstract class IAHabilidad : MonoBehaviour
     if (iTiradaAtaque >= umbralCritico)
     {
       textoResultado = TRADU.i.Traducir("Crítico");
+      ScreenFlash.FlashCritical();
       BattleManager.Instance.EscribirLog(
         CombatLogFormatter.FormatearAtaque(
           scEstaUnidad.uNombre,
@@ -451,6 +457,12 @@ public abstract class IAHabilidad : MonoBehaviour
         Mathf.RoundToInt(umbralCritico)));
 
 
+
+    if (resultado < 2 && esMelee)
+    {
+      Vector3 pos = scEstaUnidad != null ? scEstaUnidad.transform.position : transform.position;
+      AudioSource.PlayClipAtPoint(BattleManager.Instance.contenedorPrefabs.sonidoErrar, pos);
+    }
 
     return resultado;
   }
@@ -541,7 +553,7 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
       if (BattleManager.Instance != null && scEstaUnidad != null)
       {
         string nombreHab = TRADU.i != null ? TRADU.i.Traducir(nombre) : nombre;
-        BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir(" usa ") + nombreHab + ".</color>");
+        BattleManager.Instance.EscribirLog(TRADU.i.Traducir(scEstaUnidad.uNombre) + TRADU.i.Traducir(" usa ") + TRADU.i.Traducir(nombreHab) + ".</color>");
       }
     unidadesNoParticipantes = new List<object>(BattleManager.Instance.lUnidadesTotal);
     unidadesNoParticipantes.Remove(scEstaUnidad);
@@ -560,6 +572,28 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     if (solo != null)
     {
       unidadesNoParticipantes.Remove(solo);
+    }
+
+    List<Obstaculo> obstaculosObjetivos = new List<Obstaculo>();
+    if (objetivos != null && objetivos.Count > 0)
+    {
+      obstaculosObjetivos.AddRange(objetivos.FindAll(x => x is Obstaculo).ConvertAll(x => (Obstaculo)x));
+    }
+    if (solo is Obstaculo obstaculoSolo)
+    {
+      obstaculosObjetivos.Add(obstaculoSolo);
+    }
+    foreach (GameObject obstaculoGO in GameObject.FindGameObjectsWithTag("Obstaculo"))
+    {
+      Obstaculo obstaculo = obstaculoGO.GetComponent<Obstaculo>();
+      if (obstaculo == null)
+      {
+        continue;
+      }
+      if (!obstaculosObjetivos.Contains(obstaculo))
+      {
+        unidadesNoParticipantes.Add(obstaculo);
+      }
     }
 
     BattleManager.Instance.SombrearANoParticipantesHabilidad(unidadesNoParticipantes);

@@ -408,6 +408,7 @@ MonoBehaviour:
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
+  goSANGRE: {fileID: 6297216451574436529, guid: 5100a7ff70da9b9439f8624f4d7df7b0, type: 3}
   velocidadMovimiento: 3.5
   movimientoEnCurso: 0
   NoSonidoAlMover: 0
@@ -439,8 +440,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.6, y: 0.95, z: 0.6}
-  m_Center: {x: 0, y: 0.62, z: 0}
+  m_Size: {x: 0.6, y: 0.68, z: 0.6}
+  m_Center: {x: 0, y: 0.45, z: 0}
 --- !u!114 &5657778753918815871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,6 +477,7 @@ MonoBehaviour:
   esCargable: 0
   esMelee: 0
   bAfectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0

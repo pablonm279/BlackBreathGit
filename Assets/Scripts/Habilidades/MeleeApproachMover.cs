@@ -45,14 +45,22 @@ public class MeleeApproachMover : MonoBehaviour
   {
     if (habilidad == null || objetivos == null || objetivos.Count == 0) return Task.FromResult(false);
     if (!habilidad.esMelee || habilidad.esZonal || habilidad.enArea > 0) return Task.FromResult(false);
-    Unidad objetivo = ElegirUnidad(objetivos);
-    return objetivo == null ? Task.FromResult(false) : MoverHaciaObjetivoAsync(objetivo, false);
+    object objetivo = ElegirObjetivoVisual(objetivos);
+    if (!TryObtenerDatosObjetivo(objetivo, out Transform objetivoTransform, out int posX))
+    {
+      return Task.FromResult(false);
+    }
+    return MoverHaciaObjetivoAsync(objetivoTransform, posX, false);
   }
 
   public Task<bool> PrepararAproximacionIAAsync(bool esMelee, int ancho, object objetivo, bool mantenerAdelanteDespues)
   {
     if (!esMelee || ancho > 1) return Task.FromResult(false);
-    return objetivo is Unidad u ? MoverHaciaObjetivoAsync(u, mantenerAdelanteDespues) : Task.FromResult(false);
+    if (!TryObtenerDatosObjetivo(objetivo, out Transform objetivoTransform, out int posX))
+    {
+      return Task.FromResult(false);
+    }
+    return MoverHaciaObjetivoAsync(objetivoTransform, posX, mantenerAdelanteDespues);
   }
 
   public async Task VolverAPosicionInicialAsync(bool forzar = false)
@@ -89,15 +97,15 @@ public class MeleeApproachMover : MonoBehaviour
     LiberarLock();
   }
 
-  async Task<bool> MoverHaciaObjetivoAsync(Unidad objetivo, bool mantenerLuego)
+  async Task<bool> MoverHaciaObjetivoAsync(Transform objetivoTransform, int objetivoPosX, bool mantenerLuego)
   {
-    if (unidad == null || objetivo == null) return false;
+    if (unidad == null || objetivoTransform == null) return false;
     await lockMovimiento.WaitAsync();
     lockTomado = true;
     bool exito = false;
 
     Transform tOrigen = unidad.transform;
-    Transform tDestino = objetivo.transform;
+    Transform tDestino = objetivoTransform;
 
     Vector3 origen = tOrigen.position;
     Vector3 destinoBase = tDestino.position;
@@ -107,8 +115,8 @@ public class MeleeApproachMover : MonoBehaviour
     try
     {
       Vector3 destino = destinoBase - dir.normalized * offsetAtras + offsetAdicional;
-      float durIda = DuracionSegunPosX(objetivo.CasillaPosicion != null ? objetivo.CasillaPosicion.posX : 2, duracionIdaBase);
-      ultimaDuracionVuelta = DuracionSegunPosX(objetivo.CasillaPosicion != null ? objetivo.CasillaPosicion.posX : 2, duracionVueltaBase);
+      float durIda = DuracionSegunPosX(objetivoPosX, duracionIdaBase);
+      ultimaDuracionVuelta = DuracionSegunPosX(objetivoPosX, duracionVueltaBase);
 
       posicionRetorno = origen;
       mantenerAdelante = mantenerLuego;
@@ -148,13 +156,36 @@ public class MeleeApproachMover : MonoBehaviour
     }
   }
 
-  Unidad ElegirUnidad(IEnumerable<object> objetivos)
+  object ElegirObjetivoVisual(IEnumerable<object> objetivos)
   {
     foreach (object obj in objetivos)
     {
-      if (obj is Unidad u) return u;
+      if (obj is Unidad) return obj;
+    }
+    foreach (object obj in objetivos)
+    {
+      if (obj is Obstaculo) return obj;
     }
     return null;
+  }
+
+  bool TryObtenerDatosObjetivo(object objetivo, out Transform objetivoTransform, out int objetivoPosX)
+  {
+    objetivoTransform = null;
+    objetivoPosX = 2;
+    if (objetivo is Unidad unidadObjetivo)
+    {
+      objetivoTransform = unidadObjetivo.transform;
+      objetivoPosX = unidadObjetivo.CasillaPosicion != null ? unidadObjetivo.CasillaPosicion.posX : 2;
+      return true;
+    }
+    if (objetivo is Obstaculo obstaculoObjetivo)
+    {
+      objetivoTransform = obstaculoObjetivo.transform;
+      objetivoPosX = obstaculoObjetivo.CasillaPosicion != null ? obstaculoObjetivo.CasillaPosicion.posX : 2;
+      return true;
+    }
+    return false;
   }
 
   float DuracionSegunPosX(int posX, float baseDuracion)

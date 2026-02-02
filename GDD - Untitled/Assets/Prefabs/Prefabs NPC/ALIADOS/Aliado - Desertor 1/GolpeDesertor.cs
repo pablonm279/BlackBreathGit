@@ -60,7 +60,7 @@ public class GolpeDesertor : IAHabilidad
     hActualCooldown = hCooldownMax;
 
     scEstaUnidad.ReproducirAnimacionAtaque();
-    await Task.Delay(700);
+    await Task.Delay(450);
     AplicarEfectosHabilidad(Objetivo);
       
    

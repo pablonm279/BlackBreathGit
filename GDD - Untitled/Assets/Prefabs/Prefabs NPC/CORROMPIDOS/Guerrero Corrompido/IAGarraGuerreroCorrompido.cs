@@ -64,7 +64,7 @@ public class IAGarraGuerreroCorrompido : IAHabilidad
      unidadesEnZona.Add(Objetivo);
      PrepararInicioAnimacion(unidadesEnZona,null);//Despues de establecer objetivo
 
-    await Task.Delay(500);
+    await Task.Delay(450);
 
     AplicarEfectosHabilidad(Objetivo);
     AplicarEfectosEnZona(ObtenerAfectadosZonaObjetivo(Objetivo)); //aca se determina la zona del Ataque relativo al objetivo

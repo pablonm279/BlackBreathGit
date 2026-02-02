@@ -50,7 +50,7 @@ public class IAMiradadeMasacre : IAHabilidad
 
     hActualCooldown = 2;
 
-    await Task.Delay(700);
+    await Task.Delay(450);
 
     AplicarEfectosHabilidad(scEstaUnidad);
 

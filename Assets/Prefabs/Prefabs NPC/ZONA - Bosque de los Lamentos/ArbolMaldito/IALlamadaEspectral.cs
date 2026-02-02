@@ -74,7 +74,7 @@ public class IALlamadaEspectral : IAHabilidad
     PrepararInicioAnimacion(null, null);
     VFXAplicar(scEstaUnidad.gameObject);
  //   scEstaUnidad?.ReproducirAnimacionHabilidadNoHostil();
-    await Task.Delay(700);
+    await Task.Delay(450);
     
    
     for (int i = 0; i < CantidadRefuerzos; i++)
@@ -124,8 +124,7 @@ public class IALlamadaEspectral : IAHabilidad
      
    //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
    Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
-   canvasObjeto.overrideSorting = true;
-   canvasObjeto.sortingOrder =  200;  
+   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
 
   }
 }

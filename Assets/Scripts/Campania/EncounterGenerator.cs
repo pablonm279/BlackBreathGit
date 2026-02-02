@@ -115,7 +115,7 @@ public static class EncounterGenerator
          return false;
       }
       int baseBudget = GetBaseBudget(battleType);
-      int randomBonus = UnityEngine.Random.Range(0, 4); // 0 a 3 inclusive
+      int randomBonus = RollBudgetBonus(battleType, faseClamped);
       int totalBudget = baseBudget * faseClamped + randomBonus;
       totalBudget += Sistema.HandicapDificultad.AjustePuntosEnemigos;
       totalBudget = Mathf.Max(cheapestTier * minUnits, totalBudget);
@@ -519,5 +519,55 @@ public static class EncounterGenerator
       }
 
       return total;
+   }
+
+   static int RollBudgetBonus(BattleEncounterType battleType, int fase)
+   {
+      int baseSwing;
+      int spikeSwing;
+      float spikeChance;
+
+      switch (battleType)
+      {
+         case BattleEncounterType.AtaqueCaravana:
+            baseSwing = 4;
+            spikeSwing = 8;
+            spikeChance = 0.15f;
+            break;
+         case BattleEncounterType.Elite:
+            baseSwing = 3;
+            spikeSwing = 5;
+            spikeChance = 0.12f;
+            break;
+         case BattleEncounterType.Subterraneo:
+            baseSwing = 3;
+            spikeSwing = 4;
+            spikeChance = 0.12f;
+            break;
+         case BattleEncounterType.Normal:
+         default:
+            baseSwing = 3;
+            spikeSwing = 4;
+            spikeChance = 0.1f;
+            break;
+      }
+
+      int faseBonus = Mathf.Clamp(fase / 3, 0, 4);
+      baseSwing += faseBonus;
+      spikeSwing += faseBonus;
+
+      int bonus = UnityEngine.Random.Range(-baseSwing, baseSwing + 1);
+
+      if (UnityEngine.Random.value < spikeChance)
+      {
+         int spike = UnityEngine.Random.Range(baseSwing + 1, baseSwing + spikeSwing + 1);
+         if (UnityEngine.Random.value < 0.5f)
+         {
+            spike = -spike;
+         }
+         bonus += spike;
+      }
+
+      return bonus;
    }
 }

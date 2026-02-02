@@ -54,6 +54,7 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject VFXDescargaDePoder_Fila;
     public GameObject LanzaTribal;
     public GameObject BrujaKaleTav_DescargaMaldita;
+    public GameObject SangrePrefab;
 
 
 
@@ -142,6 +143,7 @@ public class ContenedorPrefabs : MonoBehaviour
     public AudioClip sonidoHielo;
     public AudioClip sonidoAcido;
     public AudioClip sonidoVerdadero;
+    public AudioClip sonidoArmadura;
     public AudioClip sonidoMovimientoLigero;
     public AudioClip sonidoErrar;
 

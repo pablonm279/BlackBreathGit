@@ -21,6 +21,21 @@ public class UnidadCanvas : MonoBehaviour
 
     public RectTransform barraVida;
     private Vector3 escalaBase;
+    [SerializeField] private Image barraVidaDamageFill;
+    [SerializeField] private Color barraVidaDamageColor = new Color(0.75f, 0.12f, 0.12f, 0.6f);
+    [SerializeField] private float barraVidaDamageDelay = 0.12f;
+    [SerializeField] private float barraVidaDamageSpeed = 0.9f;
+    [SerializeField] private Image barraVidaHealFill;
+    [SerializeField] private Color barraVidaHealColor = new Color(1f, 0.85f, 0.2f, 0.6f);
+    [SerializeField] private float barraVidaHealDelay = 0.08f;
+    [SerializeField] private float barraVidaHealSpeed = 0.9f;
+    private float barraVidaLastRatio = -1f;
+    private float barraVidaDamageRatio = -1f;
+    private float barraVidaHealRatio = -1f;
+    private Coroutine barraVidaDamageCoroutine;
+    private Coroutine barraVidaHealCoroutine;
+    private RectTransform barraVidaFillRect;
+    private Slider barraVidaSlider;
 
     void Start()
     {
@@ -28,6 +43,7 @@ public class UnidadCanvas : MonoBehaviour
         {
             escalaBase = barraVida.localScale;   // guardás la escala original
         }
+        PrepararBarraDanio();
     }
 
     void Update()
@@ -48,7 +64,11 @@ public class UnidadCanvas : MonoBehaviour
             // Mostrar barrera de daño en azul si existe
             if (unidad.barreraDeDanio > 0)
             {
-                txtVida.text += $" <color=#0074A6>({unidad.barreraDeDanio})</color>";
+                int barreraMostrada = Mathf.RoundToInt(unidad.barreraDeDanio);
+                if (barreraMostrada > 0)
+                {
+                    txtVida.text += $" <size=90%><color=#4FC3F7>+({barreraMostrada})</color></size>";
+                }
             }
         }
         if (barraVida != null)
@@ -70,9 +90,186 @@ public class UnidadCanvas : MonoBehaviour
                 barraFillImage.color = new Color(barraFillImage.color.r, barraFillImage.color.g, barraFillImage.color.b, 1f); // normal (alpha 1)
             }
         }
+        ActualizarBarraDanio(unidad);
         ActualizarEscalaBarra(unidad);
 
         ActualizarEstadosIconos();
+    }
+
+    void PrepararBarraDanio()
+    {
+        if (barraVida == null) { return; }
+        if (barraVidaSlider == null)
+        {
+            barraVidaSlider = barraVida.GetComponent<Slider>();
+        }
+        if (barraVidaSlider == null || barraVidaSlider.fillRect == null) { return; }
+
+        barraVidaFillRect = barraVidaSlider.fillRect;
+
+        RectTransform parent = barraVidaFillRect.parent as RectTransform;
+        if (parent == null) { return; }
+
+        Image fillImg = barraVidaFillRect.GetComponent<Image>();
+
+        if (barraVidaDamageFill == null)
+        {
+            GameObject go = new GameObject("DamageFill", typeof(RectTransform), typeof(Image));
+            RectTransform rt = go.GetComponent<RectTransform>();
+            rt.SetParent(parent, false);
+            rt.anchorMin = barraVidaFillRect.anchorMin;
+            rt.anchorMax = barraVidaFillRect.anchorMax;
+            rt.pivot = barraVidaFillRect.pivot;
+            rt.offsetMin = barraVidaFillRect.offsetMin;
+            rt.offsetMax = barraVidaFillRect.offsetMax;
+            rt.localScale = Vector3.one;
+
+            Image img = go.GetComponent<Image>();
+            if (fillImg != null)
+            {
+                img.sprite = fillImg.sprite;
+                img.type = fillImg.type;
+                img.fillMethod = fillImg.fillMethod;
+                img.fillOrigin = fillImg.fillOrigin;
+                img.fillClockwise = fillImg.fillClockwise;
+                img.preserveAspect = fillImg.preserveAspect;
+                img.material = fillImg.material;
+            }
+            img.color = barraVidaDamageColor;
+            img.raycastTarget = false;
+
+            int fillIndex = barraVidaFillRect.GetSiblingIndex();
+            rt.SetSiblingIndex(fillIndex);
+
+            barraVidaDamageFill = img;
+        }
+
+        if (barraVidaHealFill != null)
+        {
+            barraVidaHealFill.color = new Color(barraVidaHealColor.r, barraVidaHealColor.g, barraVidaHealColor.b, 0f);
+            barraVidaHealFill.gameObject.SetActive(false);
+        }
+    }
+
+    void ActualizarBarraDanio(Unidad unidad)
+    {
+        if (unidad == null || barraVida == null) { return; }
+        if (barraVidaDamageFill == null || barraVidaFillRect == null)
+        {
+            PrepararBarraDanio();
+            if (barraVidaDamageFill == null || barraVidaFillRect == null) { return; }
+        }
+
+        if (unidad.mod_maxHP <= 0f) { return; }
+        float ratio = Mathf.Clamp01(unidad.HP_actual / unidad.mod_maxHP);
+
+        if (barraVidaLastRatio < 0f)
+        {
+            barraVidaLastRatio = ratio;
+            barraVidaDamageRatio = ratio;
+            SetBarraDanioRatio(ratio);
+            return;
+        }
+
+        if (ratio < barraVidaLastRatio - 0.0001f)
+        {
+            barraVidaDamageRatio = Mathf.Max(barraVidaDamageRatio, barraVidaLastRatio);
+            if (barraVidaDamageCoroutine != null) { StopCoroutine(barraVidaDamageCoroutine); }
+            barraVidaDamageCoroutine = StartCoroutine(AnimarBarraDanio(ratio));
+
+        }
+        else if (ratio > barraVidaLastRatio + 0.0001f)
+        {
+            if (barraVidaDamageCoroutine != null) { StopCoroutine(barraVidaDamageCoroutine); barraVidaDamageCoroutine = null; }
+            barraVidaDamageRatio = ratio;
+            SetBarraDanioRatio(ratio);
+        }
+
+        barraVidaLastRatio = ratio;
+    }
+
+    IEnumerator AnimarBarraDanio(float targetRatio)
+    {
+        if (barraVidaDamageFill == null) { yield break; }
+        float startRatio = barraVidaDamageRatio;
+        if (targetRatio >= startRatio)
+        {
+            barraVidaDamageRatio = targetRatio;
+            SetBarraDanioRatio(targetRatio);
+            yield break;
+        }
+
+        if (barraVidaDamageDelay > 0f) { yield return new WaitForSeconds(barraVidaDamageDelay); }
+
+        while (barraVidaDamageRatio > targetRatio + 0.0001f)
+        {
+            barraVidaDamageRatio = Mathf.MoveTowards(barraVidaDamageRatio, targetRatio, barraVidaDamageSpeed * Time.deltaTime);
+            SetBarraDanioRatio(barraVidaDamageRatio);
+            yield return null;
+        }
+
+        barraVidaDamageRatio = targetRatio;
+        SetBarraDanioRatio(targetRatio);
+    }
+
+    IEnumerator AnimarBarraCuracion(float targetRatio)
+    {
+        if (barraVidaHealFill == null) { yield break; }
+        float startRatio = barraVidaHealRatio;
+        if (targetRatio <= startRatio)
+        {
+            barraVidaHealRatio = targetRatio;
+            SetBarraCuracionRatio(targetRatio);
+            yield break;
+        }
+
+        if (barraVidaHealDelay > 0f) { yield return new WaitForSeconds(barraVidaHealDelay); }
+
+        while (barraVidaHealRatio < targetRatio - 0.0001f)
+        {
+            barraVidaHealRatio = Mathf.MoveTowards(barraVidaHealRatio, targetRatio, barraVidaHealSpeed * Time.deltaTime);
+            SetBarraCuracionRatio(barraVidaHealRatio);
+            yield return null;
+        }
+
+        barraVidaHealRatio = targetRatio;
+        SetBarraCuracionRatio(targetRatio);
+        if (barraVidaHealFill != null)
+        {
+            barraVidaHealFill.color = new Color(barraVidaHealColor.r, barraVidaHealColor.g, barraVidaHealColor.b, 0f);
+        }
+    }
+
+    void SetBarraDanioRatio(float ratio)
+    {
+        if (barraVidaDamageFill == null || barraVidaFillRect == null) { return; }
+        RectTransform rt = barraVidaDamageFill.rectTransform;
+        Vector2 anchorMin = rt.anchorMin;
+        Vector2 anchorMax = rt.anchorMax;
+        anchorMin.x = barraVidaFillRect.anchorMin.x;
+        anchorMax.x = Mathf.Clamp01(ratio);
+        anchorMin.y = barraVidaFillRect.anchorMin.y;
+        anchorMax.y = barraVidaFillRect.anchorMax.y;
+        rt.anchorMin = anchorMin;
+        rt.anchorMax = anchorMax;
+        rt.offsetMin = barraVidaFillRect.offsetMin;
+        rt.offsetMax = barraVidaFillRect.offsetMax;
+    }
+
+    void SetBarraCuracionRatio(float ratio)
+    {
+        if (barraVidaHealFill == null || barraVidaFillRect == null) { return; }
+        RectTransform rt = barraVidaHealFill.rectTransform;
+        Vector2 anchorMin = rt.anchorMin;
+        Vector2 anchorMax = rt.anchorMax;
+        anchorMin.x = barraVidaFillRect.anchorMin.x;
+        anchorMax.x = Mathf.Clamp01(ratio);
+        anchorMin.y = barraVidaFillRect.anchorMin.y;
+        anchorMax.y = barraVidaFillRect.anchorMax.y;
+        rt.anchorMin = anchorMin;
+        rt.anchorMax = anchorMax;
+        rt.offsetMin = barraVidaFillRect.offsetMin;
+        rt.offsetMax = barraVidaFillRect.offsetMax;
     }
 
 

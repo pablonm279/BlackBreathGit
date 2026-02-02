@@ -127,6 +127,7 @@ public abstract class Habilidad : MonoBehaviour
 
     List<Unidad> lUnidadesPosibles = new List<Unidad>(BattleManager.Instance.lUnidadesTotal);
     lUnidadesPosibles.Remove(scEstaUnidad);
+    List<object> noParticipantes = null;
 
     if (Objetivos != null)
     {
@@ -135,7 +136,23 @@ public abstract class Habilidad : MonoBehaviour
       {
         lUnidadesPosibles.Remove(unidad);
       }
-      BattleManager.Instance.SombrearANoParticipantesHabilidad(lUnidadesPosibles.ConvertAll(x => (object)x));
+
+      noParticipantes = new List<object>(lUnidadesPosibles.ConvertAll(x => (object)x));
+      List<Obstaculo> obstaculosObjetivos = new List<Obstaculo>(Objetivos.FindAll(x => x is Obstaculo).ConvertAll(x => (Obstaculo)x));
+      foreach (GameObject obstaculoGO in GameObject.FindGameObjectsWithTag("Obstaculo"))
+      {
+        Obstaculo obstaculo = obstaculoGO.GetComponent<Obstaculo>();
+        if (obstaculo == null)
+        {
+          continue;
+        }
+        if (!obstaculosObjetivos.Contains(obstaculo))
+        {
+          noParticipantes.Add(obstaculo);
+        }
+      }
+
+      BattleManager.Instance.SombrearANoParticipantesHabilidad(noParticipantes);
     }
 
     await Task.Delay(250);
@@ -162,7 +179,7 @@ public abstract class Habilidad : MonoBehaviour
     }
     if (Objetivos != null)
     {
-      BattleManager.Instance.DesombrearANoParticipantesHabilidad(lUnidadesPosibles.ConvertAll(x => (object)x));
+      BattleManager.Instance.DesombrearANoParticipantesHabilidad(noParticipantes ?? lUnidadesPosibles.ConvertAll(x => (object)x));
     }
 
     //Si la habilidad es hostil, no Discreta, y tiene Escondido tier 1, se revela
@@ -330,6 +347,7 @@ public abstract class Habilidad : MonoBehaviour
     if (iDadoSolo >= umbralCritico) //Golpe crítico
     {
       textoResultado = TRADU.i.Traducir("Crítico");
+      ScreenFlash.FlashCritical();
       BattleManager.Instance.EscribirLog(
         CombatLogFormatter.FormatearAtaque(
           scEstaUnidad.uNombre,

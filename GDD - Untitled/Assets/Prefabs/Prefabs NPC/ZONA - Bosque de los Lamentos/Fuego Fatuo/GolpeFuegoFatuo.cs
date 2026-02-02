@@ -58,7 +58,7 @@ public class GolpeFuegoFatuo : IAHabilidad
             object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
                 PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 
-      await Task.Delay(500);
+      await Task.Delay(450);
       AplicarEfectosHabilidad(Objetivo);
      
    }

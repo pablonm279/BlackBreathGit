@@ -134,14 +134,6 @@ public bool ColocarEnCasilla(GameObject GO, int x, int y)
   GO.transform.position = cas.transform.position;
   cas.NuevoObjetoPresenteEnCasilla(GO);
 
-  // Si el objeto tiene Canvas, permite override y ajusta el sort order
-  Canvas canvas = GO.GetComponentInChildren<Canvas>();
-  if (canvas != null)
-  {
-    canvas.overrideSorting = true;
-    canvas.sortingOrder = 60 - 10 * cas.posY;
-  }
-
   if (GO.GetComponent<Unidad>() != null)
   {
     GO.GetComponent<Unidad>().CasillaPosicion = cas;

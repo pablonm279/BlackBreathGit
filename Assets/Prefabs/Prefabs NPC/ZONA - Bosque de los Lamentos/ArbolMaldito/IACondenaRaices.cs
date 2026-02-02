@@ -62,7 +62,7 @@ public class IACondenaRaices : IAHabilidad
     PrepararInicioAnimacion(null, objetivos[0]);
     scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
 
-    await Task.Delay(500);
+    await Task.Delay(450);
 
     hActualCooldown = hCooldownMax;
 

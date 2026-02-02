@@ -59,7 +59,7 @@ public class GolpeEnredadera : IAHabilidad
          PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 
 
-      await Task.Delay(700);
+      await Task.Delay(450);
       AplicarEfectosHabilidad(Objetivo);
      
    }

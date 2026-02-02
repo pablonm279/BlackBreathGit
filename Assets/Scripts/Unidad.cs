@@ -14,6 +14,8 @@ using System.Linq;
 public class Unidad : MonoBehaviour
 {
 
+  private static readonly Color ColorDanioFuego = new Color(1f, 0.65f, 0.25f, 1f);
+
    [Header ("Lógica")]
    public Casilla CasillaPosicion;
    public Casilla CasillaDeseadaMov;
@@ -76,7 +78,7 @@ public class Unidad : MonoBehaviour
   public float AccionP_SeEsforzo;
   
 
-
+   public Alcambiarvalorflash scTextoArmaduraFlash; 
 
   //Atributo - PM -------- Puntos de Mérito
   [SerializeField] private float at_maxMeritoP; 
@@ -231,6 +233,13 @@ public class Unidad : MonoBehaviour
   
 
   UnidadCanvas scUnidadCanvas;
+  [SerializeField] private bool apilarTextosFlotantes = false;
+  [SerializeField] private float floatingTextSlotSpacing = 9f;
+  [SerializeField] private float floatingTextSlotLifetimeFallback = 1.1f;
+  [SerializeField] private int floatingTextMaxSlots = 4;
+  [SerializeField] private float floatingTextMinInterval = 0.05f;
+  private float nextFloatingTextTime = -999f;
+  private readonly List<float> floatingTextSlotExpiries = new List<float>();
   public
 
 
@@ -298,6 +307,25 @@ public class Unidad : MonoBehaviour
     evitarRepeticion = true;
     Invoke("ResetearEvitarRepeticionAnimacion", 2.5f);
   }
+
+   public void ReproducirAnimacionMiss(bool forzar = false)
+  {
+    if (suprimirAnimacionIA && !forzar)
+    {
+      return;
+    }
+    if (!gameObject.activeInHierarchy || HP_actual <= 0)
+    {
+      return;
+    }
+
+    if (animator != null)
+    {
+      animator.SetTrigger("Trigger_Miss");
+
+    }
+  
+  }
   
   void ResetearEvitarRepeticionAnimacion()
   {
@@ -311,13 +339,21 @@ public class Unidad : MonoBehaviour
 
     }
   }
+  
+  public GameObject goSANGRE;
+
 
   public void ReproducirAnimacionRecibirDanio()
   {
-    if(animator != null)
+    if (animator != null)
     {
-        animator.SetTrigger( "Trigger_Recibedanio");
-        
+      animator.SetTrigger("Trigger_Recibedanio");
+
+    }
+
+    if (goSANGRE != null)
+    {
+      Instantiate(goSANGRE, puntoEntrante.position, Quaternion.identity);
     }
   }
 
@@ -558,14 +594,20 @@ public bool movimientoEnCurso = false;
   // Casilla origen al comenzar el movimiento; se limpia Presente solo una vez
   private Casilla casillaOrigenEnMovimiento;
 
-    void Start()
+  void Start()
+  {
+    Invoke("AcomodarSortingLayer", 1.15f); //Para que el sprite quede bien en el orden de sorting layer
+    if (unidadVoladora)
     {
-       Invoke("AcomodarSortingLayer", 1.15f); //Para que el sprite quede bien en el orden de sorting layer
-       if(unidadVoladora)
-       {
-        LevantarVuelo(true);
-       }
-    } 
+      LevantarVuelo(true);
+    }
+       
+    if(goSANGRE == null && !esEtereo && (TieneTag("Humanoide")|| TieneTag("Bestia") || TieneTag("Criatura")|| TieneTag("Animal")))
+    {
+      goSANGRE = BattleManager.Instance.contenedorPrefabs.SangrePrefab;
+    }
+      scTextoArmaduraFlash = scUnidadCanvas.barraVida.GetChild(4).GetChild(0).gameObject.GetComponent<Alcambiarvalorflash>();
+  } 
   public bool NoSonidoAlMover;
     private void FixedUpdate()
   {
@@ -1230,10 +1272,8 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       audioSource.PlayOneShot(clip);
     }
   }
-   
-   
-   
-    await Task.Delay(300);
+
+    await Task.Delay(450);
     if (sonidosRecibirDanio != null && sonidosRecibirDanio.Count > 0)
     {
       if (audioSource == null)
@@ -1254,11 +1294,72 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       audioSource.PlayOneShot(sonidosRecibirDanio[index]);
     }
   }
+
+  private void ReproducirSonidoArmadura()
+  {
+    if (BattleManager.Instance == null || BattleManager.Instance.contenedorPrefabs == null)
+    {
+      return;
+    }
+
+    AudioClip clip = BattleManager.Instance.contenedorPrefabs.sonidoArmadura;
+    if (clip == null)
+    {
+      return;
+    }
+
+    if (audioSource == null)
+    {
+      audioSource = GetComponent<AudioSource>();
+      if (audioSource == null)
+      {
+        audioSource = gameObject.AddComponent<AudioSource>();
+      }
+    }
+
+    audioSource.PlayOneShot(clip);
+  }
+
+  private int CalcularDanioBonusElemental(float Xddanio, int tipoDanio, out Color color)
+  {
+    color = Color.white;
+    if (Xddanio <= 0)
+    {
+      return 0;
+    }
+
+    int danio = UnityEngine.Random.Range(1, (int)Xddanio + 1);
+    float danioFinal = 0f;
+
+    switch (tipoDanio)
+    {
+      case 1: danioFinal = danio - mod_Armadura; color = Color.red; break; //Cortante
+      case 2: danioFinal = danio - mod_Armadura; color = Color.red; break; //Perforante
+      case 3: danioFinal = danio - mod_Armadura; color = Color.red; break; //Contundente
+      case 4: danioFinal = danio - ObtenerResistenciaA(1); color = ColorDanioFuego; break; //Fuego
+      case 5: danioFinal = danio - ObtenerResistenciaA(2); color = Color.cyan; break;//Hielo
+      case 6: danioFinal = danio - ObtenerResistenciaA(3); color = Color.yellow; break; //Rayo
+      case 7: danioFinal = danio - ObtenerResistenciaA(4); color = Color.green; break; //Acido
+      case 8: danioFinal = danio - ObtenerResistenciaA(5); color = Color.blue; break; //Arcano
+      case 9: danioFinal = danio - ObtenerResistenciaA(6); color = new Color(0.8f, 1f, 0.6f); break; //Necro
+      case 10: danioFinal = danio; color = Color.white; break; //Verdadero
+      case 11: danioFinal = danio - ObtenerResistenciaA(7); color = Color.yellow; break; //Divino
+    }
+
+    if (esEtereo && tipoDanio < 4)
+    {
+      danioFinal = danioFinal / 2;
+    }
+
+    if (danioFinal < 0) { danioFinal = 0; }
+    return (int)danioFinal;
+  }
   public async virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
   {
     await Task.Delay(delayEfectos); //Delay para que se vea el efecto de daño en la unidad antes de aplicar el daño
     float danioFinal = 0;
     bool textoDanioMostrado = false;
+    bool absorbioPorArmadura = false;
     string nombreLog = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;
     if (estado_invulnerable == 0)
     {
@@ -1274,30 +1375,80 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       if (estado_ardiendo > 0 && tipoDanio == 5) { estado_ardiendo = 0; } //Si recibe daño hielo y está ardiendo, remueve fuego.
 
 
-      if (scUnidadCanvas.unidadCanvas != null)
-      {
-        GameObject goDanioRecibido = Instantiate(scUnidadCanvas.PrefabtxtDaño, scUnidadCanvas.unidadCanvas.transform);
-        scUnidadCanvas.txtDaño = goDanioRecibido.GetComponent<TextMeshProUGUI>();
-      }
+      Color colorDanio = Color.white;
 
 
+
+      int stacksSangradoCrit = 0;
+      int stacksArdiendoCrit = 0;
+      int stacksCongeladoCrit = 0;
+      int stacksAcidoCrit = 0;
+      bool aplicarAturdidoCrit = false;
+      bool aplicarResReducidasCrit = false;
+      bool aplicarAPModCrit = false;
+      bool intentarCondenadoCrit = false;
 
       if (esCritico) //Al ser crítico el daño se aplican los efectos segun tipo de daño
       {
 
         switch (tipoDanio)
         {
-          case 1: danioFinal = EfectosDanios.CriticoCortante(danio, this); scUnidadCanvas.txtDaño.color = Color.red; ReducirArmaduraPorGolpe(danioFinal);break; //Cortante
-          case 2: danioFinal = EfectosDanios.CriticoPerforante(danio, this); scUnidadCanvas.txtDaño.color = Color.red; ReducirArmaduraPorGolpe(danioFinal);break; //Perforante
-          case 3: danioFinal = EfectosDanios.CriticoContundente(danio, this); scUnidadCanvas.txtDaño.color = Color.red; ReducirArmaduraPorGolpe(danioFinal);break; //Contundente
-          case 4: danioFinal = EfectosDanios.CriticoFuego(danio, this); scUnidadCanvas.txtDaño.color = Color.red; break; //Fuego
-          case 5: danioFinal = EfectosDanios.CriticoHielo(danio, this); scUnidadCanvas.txtDaño.color = Color.cyan; break; //Hielo
-          case 6: danioFinal = EfectosDanios.CriticoRayo(danio, this); scUnidadCanvas.txtDaño.color = Color.yellow; break; //Rayo
-          case 7: danioFinal = EfectosDanios.CriticoAcido(danio, this); scUnidadCanvas.txtDaño.color = Color.green; break; //Acido
-          case 8: danioFinal = EfectosDanios.CriticoArcano(danio, this); scUnidadCanvas.txtDaño.color = Color.blue; break; //Arcano
-          case 9: danioFinal = EfectosDanios.CriticoNecro(danio, this); scUnidadCanvas.txtDaño.color =  new Color(0.8f, 1f, 0.6f); break; //Necro
-          case 10: danioFinal = danio; scUnidadCanvas.txtDaño.color = Color.white; break; //Verdadero
-          case 11: danioFinal = EfectosDanios.CriticoDivino(danio, this); scUnidadCanvas.txtDaño.color = Color.yellow; break; //Divino
+          case 1:
+            danioFinal = danio - ObtenerArmaduraActual();
+            colorDanio = Color.red;
+            stacksSangradoCrit = (int)(danio / 4);
+            ReducirArmaduraPorGolpe(danioFinal);
+            break; //Cortante
+          case 2:
+            danioFinal = danio;
+            colorDanio = Color.red;
+            ReducirArmaduraPorGolpe(danioFinal);
+            break; //Perforante
+          case 3:
+            danioFinal = danio - ObtenerArmaduraActual();
+            colorDanio = Color.red;
+            aplicarAPModCrit = true;
+            ReducirArmaduraPorGolpe(danioFinal);
+            break; //Contundente
+          case 4:
+            danioFinal = danio - ObtenerResistenciaA(1);
+            colorDanio = ColorDanioFuego;
+            stacksArdiendoCrit = (int)(danioFinal / 3);
+            break; //Fuego
+          case 5:
+            danioFinal = danio - ObtenerResistenciaA(2);
+            colorDanio = Color.cyan;
+            stacksCongeladoCrit = (int)(danioFinal / 4);
+            break; //Hielo
+          case 6:
+            danioFinal = danio - ObtenerResistenciaA(3);
+            colorDanio = Color.yellow;
+            aplicarAturdidoCrit = true;
+            break; //Rayo
+          case 7:
+            danioFinal = danio - ObtenerResistenciaA(4);
+            colorDanio = Color.green;
+            stacksAcidoCrit = (int)(danioFinal / 5);
+            break; //Acido
+          case 8:
+            danioFinal = danio - ObtenerResistenciaA(5);
+            colorDanio = Color.blue;
+            aplicarResReducidasCrit = true;
+            break; //Arcano
+          case 9:
+            danioFinal = danio - ObtenerResistenciaA(6);
+            colorDanio = new Color(0.8f, 1f, 0.6f);
+            if (UnityEngine.Random.Range(0, 100) < (danioFinal / 2))
+            {
+              danioFinal = mod_maxHP + 1;
+            }
+            break; //Necro
+          case 10: danioFinal = danio; colorDanio = Color.white; break; //Verdadero
+          case 11:
+            danioFinal = danio - ObtenerResistenciaA(7);
+            colorDanio = Color.yellow;
+            intentarCondenadoCrit = true;
+            break; //Divino
         }
 
       }
@@ -1305,18 +1456,18 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       {
         switch (tipoDanio)
         {
-          case 1: danioFinal = danio - mod_Armadura; scUnidadCanvas.txtDaño.color = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Cortante
-          case 2: danioFinal = danio - mod_Armadura; scUnidadCanvas.txtDaño.color = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Perforante
-          case 3: danioFinal = danio - mod_Armadura; scUnidadCanvas.txtDaño.color = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Contundente
+          case 1: danioFinal = danio - ObtenerArmaduraActual(); colorDanio = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Cortante
+          case 2: danioFinal = danio - ObtenerArmaduraActual(); colorDanio = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Perforante
+          case 3: danioFinal = danio - ObtenerArmaduraActual(); colorDanio = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Contundente
                                                                                                       //Los 3 primeros tipos de daño (físico) al ser golpeado y dañado, reduce en 1 la armadura.
-          case 4: danioFinal = danio - ObtenerResistenciaA(1); scUnidadCanvas.txtDaño.color = Color.red; break; //Fuego
-          case 5: danioFinal = danio - ObtenerResistenciaA(2); scUnidadCanvas.txtDaño.color = Color.cyan; break;//Hielo
-          case 6: danioFinal = danio - ObtenerResistenciaA(3); scUnidadCanvas.txtDaño.color = Color.yellow; break; //Rayo
-          case 7: danioFinal = danio - ObtenerResistenciaA(4); scUnidadCanvas.txtDaño.color = Color.green; break; //Acido
-          case 8: danioFinal = danio - ObtenerResistenciaA(5); scUnidadCanvas.txtDaño.color = Color.blue; break; //Arcano
-          case 9: danioFinal = danio - ObtenerResistenciaA(6); scUnidadCanvas.txtDaño.color = new Color(0.8f, 1f, 0.6f); break; //Necro
-          case 10: danioFinal = danio; scUnidadCanvas.txtDaño.color = Color.white; break; //Verdadero
-          case 11: danioFinal = danio - ObtenerResistenciaA(7); scUnidadCanvas.txtDaño.color = Color.yellow; break; //Divino
+          case 4: danioFinal = danio - ObtenerResistenciaA(1); colorDanio = ColorDanioFuego; break; //Fuego
+          case 5: danioFinal = danio - ObtenerResistenciaA(2); colorDanio = Color.cyan; break;//Hielo
+          case 6: danioFinal = danio - ObtenerResistenciaA(3); colorDanio = Color.yellow; break; //Rayo
+          case 7: danioFinal = danio - ObtenerResistenciaA(4); colorDanio = Color.green; break; //Acido
+          case 8: danioFinal = danio - ObtenerResistenciaA(5); colorDanio = Color.blue; break; //Arcano
+          case 9: danioFinal = danio - ObtenerResistenciaA(6); colorDanio = new Color(0.8f, 1f, 0.6f); break; //Necro
+          case 10: danioFinal = danio; colorDanio = Color.white; break; //Verdadero
+          case 11: danioFinal = danio - ObtenerResistenciaA(7); colorDanio = Color.yellow; break; //Divino
         }
 
 
@@ -1327,6 +1478,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         danioFinal = danioFinal / 2;
       }
 
+      float barreraAntes = barreraDeDanio;
       float danioBloqueado = Mathf.Min(danioFinal, barreraDeDanio); // Daño que la barrera absorbe
       if (danioBloqueado > 0)
       {
@@ -1337,7 +1489,22 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         if (barreraDeDanio < 0) barreraDeDanio = 0;
 
         if (danioBloqueado > 0)
-        { BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(TRADU.i.Traducir("La Barrera de ") + uNombre + TRADU.i.Traducir(" absorbió ") + danioBloqueado + TRADU.i.Traducir(" de daño."))); }
+        {
+          BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(TRADU.i.Traducir("La Barrera de ") + uNombre + TRADU.i.Traducir(" absorbió ") + danioBloqueado + TRADU.i.Traducir(" de daño.")));
+
+          int barreraMostrada = Mathf.RoundToInt(danioBloqueado);
+          if (barreraMostrada > 0)
+          {
+            if (barreraAntes > 0 && barreraDeDanio <= 0)
+            {
+              GenerarTextoFlotante("(<s>" + TRADU.i.Traducir("Barrera") + "</s>)", Color.cyan, FloatingTextContext.Damage);
+            }
+            else
+            {
+              GenerarTextoFlotante("(-" + barreraMostrada + " " + TRADU.i.Traducir("Barrera") + ")", Color.cyan, FloatingTextContext.Damage);
+            }
+          }
+        }
       }
 
 
@@ -1359,6 +1526,11 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           textoDanioMostrado = true;
         }
       }
+
+      if (!textoDanioMostrado && danioFinal <= 0 && danioBloqueado <= 0 && tipoDanio <= 3)
+      {
+        absorbioPorArmadura = true;
+      }
       //----
       if (danioFinal > 0)
       {
@@ -1378,20 +1550,204 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         }
       }
 
-      scUnidadCanvas.txtDaño.text = "";
-   
-      HP_actual -= (int)danioFinal;
-      string textoDanio = "-" + (int)danioFinal;
-      if (esCritico) { textoDanio += "!"; }
-      Color colorDanio = scUnidadCanvas.txtDaño != null ? scUnidadCanvas.txtDaño.color : Color.white;
+      int bonusTotal = 0;
+      string bonusTexto = "";
+      bool bonusColorAsignado = false;
+      Color bonusColorPrimario = colorDanio;
 
-      if (danioFinal > 0)
+      if (uCausante != null)
       {
-        await GenerarTextoFlotante(textoDanio, colorDanio, esCritico ? FloatingTextContext.CriticalDamage : FloatingTextContext.Damage, scUnidadCanvas.txtDaño);
+        if (uCausante.bonusdam_acido > 0)
+        {
+          int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_acido, 7, out Color col);
+          if (bonus > 0)
+          {
+            bool bonusMismoTipo = tipoDanio == 7;
+            bonusTotal += bonus;
+            if (!bonusMismoTipo)
+            {
+              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
+              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
+            }
+          }
+        }
+        if (uCausante.bonusdam_arcano > 0)
+        {
+          int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_arcano, 8, out Color col);
+          if (bonus > 0)
+          {
+            bool bonusMismoTipo = tipoDanio == 8;
+            bonusTotal += bonus;
+            if (!bonusMismoTipo)
+            {
+              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
+              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
+            }
+          }
+        }
+        if (uCausante.bonusdam_fuego > 0)
+        {
+          int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_fuego, 4, out Color col);
+          if (bonus > 0)
+          {
+            bool bonusMismoTipo = tipoDanio == 4;
+            bonusTotal += bonus;
+            if (!bonusMismoTipo)
+            {
+              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
+              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
+            }
+          }
+        }
+        if (uCausante.bonusdam_hielo > 0)
+        {
+          int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_hielo, 5, out Color col);
+          if (bonus > 0)
+          {
+            bool bonusMismoTipo = tipoDanio == 5;
+            bonusTotal += bonus;
+            if (!bonusMismoTipo)
+            {
+              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
+              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
+            }
+          }
+        }
+        if (uCausante.bonusdam_necro > 0)
+        {
+          int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_necro, 9, out Color col);
+          if (bonus > 0)
+          {
+            bool bonusMismoTipo = tipoDanio == 9;
+            bonusTotal += bonus;
+            if (!bonusMismoTipo)
+            {
+              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
+              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
+            }
+          }
+        }
+        if (uCausante.bonusdam_rayo > 0)
+        {
+          int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_rayo, 6, out Color col);
+          if (bonus > 0)
+          {
+            bool bonusMismoTipo = tipoDanio == 6;
+            bonusTotal += bonus;
+            if (!bonusMismoTipo)
+            {
+              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
+              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
+            }
+          }
+        }
+        if (uCausante.bonusdam_divino > 0)
+        {
+          int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_divino, 11, out Color col);
+          if (bonus > 0)
+          {
+            bool bonusMismoTipo = tipoDanio == 11;
+            bonusTotal += bonus;
+            if (!bonusMismoTipo)
+            {
+              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
+              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
+            }
+          }
+        }
+      }
+
+      int danioTotal = (int)danioFinal + bonusTotal;
+      Color colorDanioFinal = (danioFinal <= 0 && bonusTotal > 0 && bonusColorAsignado) ? bonusColorPrimario : colorDanio;
+
+      if (danioTotal > 0 && scUnidadCanvas.unidadCanvas != null)
+      {
+        GameObject goDanioRecibido = Instantiate(scUnidadCanvas.PrefabtxtDaño, scUnidadCanvas.unidadCanvas.transform);
+        scUnidadCanvas.txtDaño = goDanioRecibido.GetComponent<TextMeshProUGUI>();
+        if (scUnidadCanvas.txtDaño != null)
+        {
+          scUnidadCanvas.txtDaño.color = colorDanioFinal;
+          scUnidadCanvas.txtDaño.text = "";
+        }
+      }
+   
+      if (absorbioPorArmadura)
+      {
+        if (scTextoArmaduraFlash != null)
+        {
+          scTextoArmaduraFlash.Flash(new Color(1f, 0.9f, 0.2f, 1f));
+        }
+        ReproducirSonidoArmadura();
+        if (danioTotal <= 0)
+        {
+          GenerarTextoFlotante(TRADU.i.Traducir("Armadura"), Color.yellow, FloatingTextContext.Resist);
+        }
+      }
+
+      bool muereConDanio = HP_actual - danioTotal < 1;
+      HP_actual -= danioTotal;
+      if (esCritico && !muereConDanio)
+      {
+        switch (tipoDanio)
+        {
+          case 1:
+            Estados.Aplicar_Sangrado(this, stacksSangradoCrit);
+            break;
+          case 3:
+            if (aplicarAPModCrit) { estado_APModificador -= 1; }
+            break;
+          case 4:
+            Estados.Aplicar_Ardiendo(this, stacksArdiendoCrit);
+            break;
+          case 5:
+            Estados.Aplicar_Congelado(this, stacksCongeladoCrit);
+            break;
+          case 6:
+            if (aplicarAturdidoCrit) { Estados.Aplicar_Aturdido(this, 1); }
+            break;
+          case 7:
+            Estados.Aplicar_Acido(this, stacksAcidoCrit);
+            break;
+          case 8:
+            if (aplicarResReducidasCrit) { estado_ResistenciasReducidas += 1; }
+            break;
+          case 11:
+            if (intentarCondenadoCrit && danioFinal > 0 && TiradaSalvacion(mod_TSMental, 17))
+            {
+              Buff buff = new Buff();
+              buff.buffNombre = "Condenado";
+              buff.boolfDebufftBuff = false;
+              buff.DuracionBuffRondas = -1;
+              buff.cantAtaque -= 1;
+              buff.cantResDiv -= 5;
+              buff.AplicarBuff(this);
+              Buff buffComponent = ComponentCopier.CopyComponent(buff, gameObject);
+            }
+            break;
+        }
+      }
+      string textoDanio = "-" + danioTotal;
+      if (!(danioFinal <= 0 && bonusTotal > 0))
+      {
+        textoDanio += bonusTexto;
+      }
+      if (esCritico) { textoDanio += "!"; }
+
+      if (danioTotal > 0)
+      {
+        await GenerarTextoFlotante(textoDanio, colorDanioFinal, esCritico ? FloatingTextContext.CriticalDamage : FloatingTextContext.Damage, scUnidadCanvas.txtDaño);
       }
       else if (scUnidadCanvas.txtDaño != null)
       {
-        scUnidadCanvas.txtDaño.text = textoDanio;
+        // No mostrar texto si el daño es 0
+        scUnidadCanvas.txtDaño.text = "";
       }
       
       await Task.Delay(100);
@@ -1401,7 +1757,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         case 1: stDaniotipo = "<color=#c5c5c5>cortante</color>"; break; //Cortante
         case 2: stDaniotipo = "<color=#8a5b32>perforante</color>"; break; //Perforante
         case 3: stDaniotipo = "<color=#c67f60>contundente</color>"; break; //Contundente
-        case 4: stDaniotipo = "<color=#ce3715>fuego</color>"; break; //Fuego
+        case 4: stDaniotipo = "<color=#FFA64D>fuego</color>"; break; //Fuego
         case 5: stDaniotipo = "<color=#63c4b7>hielo</color>"; break; //Hielo
         case 6: stDaniotipo = "<color=#7758df>rayo</color>"; break; //Rayo
         case 7: stDaniotipo = "<color=#28b717>ácido</color>"; break; //Acido
@@ -1413,14 +1769,19 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
 
     
+      if (danioTotal > 0)
+      {
+        string bonusLog = bonusTotal > 0 ? $" (+{bonusTotal} bonus elemental)" : "";
         if (TRADU.i.nIdioma == 1)
         {
-          scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio($"<color=#d92b08>{nombreLog} recibe {danioFinal} de daño {stDaniotipo}.</color>"));
+          scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio($"<color=#d92b08>{nombreLog} recibe {danioTotal} de daño {stDaniotipo}{bonusLog}.</color>"));
         }
         else if (TRADU.i.nIdioma == 2)
         {
-          scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio($"<color=#d92b08>{nombreLog} takes {danioFinal} {TRADU.i.Traducir(stDaniotipo)} damage.</color>"));
+          string bonusLogEn = bonusTotal > 0 ? $" (+{bonusTotal} elemental bonus)" : "";
+          scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio($"<color=#d92b08>{TRADU.i.Traducir(nombreLog)} takes {danioTotal} {TRADU.i.Traducir(stDaniotipo)} damage{bonusLogEn}.</color>"));
         }
+      }
 
 
       
@@ -1462,37 +1823,6 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
       }
 
-      if (uCausante != null)
-      {
-        if (uCausante.bonusdam_acido > 0)
-        {
-          RecibirDanioBonusElemental(uCausante.bonusdam_acido, 7, uCausante);
-        }
-        if (uCausante.bonusdam_arcano > 0)
-        {
-          RecibirDanioBonusElemental(uCausante.bonusdam_arcano, 8, uCausante);
-        }
-        if (uCausante.bonusdam_fuego > 0)
-        {
-          RecibirDanioBonusElemental(uCausante.bonusdam_fuego, 4, uCausante);
-        }
-        if (uCausante.bonusdam_hielo > 0)
-        {
-          RecibirDanioBonusElemental(uCausante.bonusdam_hielo, 5, uCausante);
-        }
-        if (uCausante.bonusdam_necro > 0)
-        {
-          RecibirDanioBonusElemental(uCausante.bonusdam_necro, 9, uCausante);
-        }
-        if (uCausante.bonusdam_rayo > 0)
-        {
-          RecibirDanioBonusElemental(uCausante.bonusdam_rayo, 6, uCausante);
-        }
-        if (uCausante.bonusdam_divino > 0)
-        {
-          RecibirDanioBonusElemental(uCausante.bonusdam_divino, 11, uCausante);
-        }
-      }
       BattleManager.Instance.scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
 
     }
@@ -1540,29 +1870,25 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       if (estado_ardiendo > 0 && tipoDanio == 5) { estado_ardiendo = 0; } //Si recibe daño hielo y está ardiendo, remueve fuego.
 
 
-      if (scUnidadCanvas.unidadCanvas != null)
-      {
-        GameObject goDanioRecibido = Instantiate(scUnidadCanvas.PrefabtxtDaño, scUnidadCanvas.unidadCanvas.transform);
-        scUnidadCanvas.txtDaño = goDanioRecibido.GetComponent<TextMeshProUGUI>();
-      }
+      Color colorDanioElemental = Color.white;
 
 
 
 
       switch (tipoDanio)
       {
-        case 1: danioFinal = danio - mod_Armadura; scUnidadCanvas.txtDaño.color = Color.red; break; //Cortante
-        case 2: danioFinal = danio - mod_Armadura; scUnidadCanvas.txtDaño.color = Color.red; break; //Perforante
-        case 3: danioFinal = danio - mod_Armadura; scUnidadCanvas.txtDaño.color = Color.red; break; //Contundente
+        case 1: danioFinal = danio - mod_Armadura; colorDanioElemental = Color.red; break; //Cortante
+        case 2: danioFinal = danio - mod_Armadura; colorDanioElemental = Color.red; break; //Perforante
+        case 3: danioFinal = danio - mod_Armadura; colorDanioElemental = Color.red; break; //Contundente
         //Los 3 primeros tipos de daño (físico) al ser golpeado y dañado, reduce en 1 la armadura.
-        case 4: danioFinal = danio - ObtenerResistenciaA(1); scUnidadCanvas.txtDaño.color = Color.red; break; //Fuego
-        case 5: danioFinal = danio - ObtenerResistenciaA(2); scUnidadCanvas.txtDaño.color = Color.cyan; break;//Hielo
-        case 6: danioFinal = danio - ObtenerResistenciaA(3); scUnidadCanvas.txtDaño.color = Color.yellow; break; //Rayo
-        case 7: danioFinal = danio - ObtenerResistenciaA(4); scUnidadCanvas.txtDaño.color = Color.green; break; //Acido
-        case 8: danioFinal = danio - ObtenerResistenciaA(5); scUnidadCanvas.txtDaño.color = Color.blue; break; //Arcano
-        case 9: danioFinal = danio - ObtenerResistenciaA(6); scUnidadCanvas.txtDaño.color =  new Color(0.8f, 1f, 0.6f); break; //Necro
-        case 10: danioFinal = danio; scUnidadCanvas.txtDaño.color = Color.white; break; //Verdadero
-        case 11: danioFinal = danio - ObtenerResistenciaA(7); scUnidadCanvas.txtDaño.color = Color.yellow; break; //Divino
+        case 4: danioFinal = danio - ObtenerResistenciaA(1); colorDanioElemental = ColorDanioFuego; break; //Fuego
+        case 5: danioFinal = danio - ObtenerResistenciaA(2); colorDanioElemental = Color.cyan; break;//Hielo
+        case 6: danioFinal = danio - ObtenerResistenciaA(3); colorDanioElemental = Color.yellow; break; //Rayo
+        case 7: danioFinal = danio - ObtenerResistenciaA(4); colorDanioElemental = Color.green; break; //Acido
+        case 8: danioFinal = danio - ObtenerResistenciaA(5); colorDanioElemental = Color.blue; break; //Arcano
+        case 9: danioFinal = danio - ObtenerResistenciaA(6); colorDanioElemental =  new Color(0.8f, 1f, 0.6f); break; //Necro
+        case 10: danioFinal = danio; colorDanioElemental = Color.white; break; //Verdadero
+        case 11: danioFinal = danio - ObtenerResistenciaA(7); colorDanioElemental = Color.yellow; break; //Divino
       }
 
 
@@ -1586,19 +1912,29 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
        /* ReproducirAnimacionRecibirDanio();*/ estado_evasion = 0;
       }
 
-      scUnidadCanvas.txtDaño.text = "";
-      await Task.Delay(700);
+      if (danioFinal > 0 && scUnidadCanvas.unidadCanvas != null)
+      {
+        GameObject goDanioRecibido = Instantiate(scUnidadCanvas.PrefabtxtDaño, scUnidadCanvas.unidadCanvas.transform);
+        scUnidadCanvas.txtDaño = goDanioRecibido.GetComponent<TextMeshProUGUI>();
+        if (scUnidadCanvas.txtDaño != null)
+        {
+          scUnidadCanvas.txtDaño.color = colorDanioElemental;
+          scUnidadCanvas.txtDaño.text = "";
+        }
+      }
+      await Task.Delay(150);
       HP_actual -= (int)danioFinal;
       string textoDanioElemental = "-" + (int)danioFinal;
-      Color colorDanioElemental = scUnidadCanvas.txtDaño != null ? scUnidadCanvas.txtDaño.color : Color.white;
+      Color colorDanioElementalFinal = colorDanioElemental;
 
       if (danioFinal > 0)
       {
-        await GenerarTextoFlotante(textoDanioElemental, colorDanioElemental, FloatingTextContext.Damage, scUnidadCanvas.txtDaño);
+        await GenerarTextoFlotante(textoDanioElemental, colorDanioElementalFinal, FloatingTextContext.Damage, scUnidadCanvas.txtDaño);
       }
       else if (scUnidadCanvas.txtDaño != null)
       {
-        scUnidadCanvas.txtDaño.text = textoDanioElemental;
+        // No mostrar texto si el daño es 0
+        scUnidadCanvas.txtDaño.text = "";
       }
 
       string stDaniotipo = "";
@@ -1607,7 +1943,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         case 1: stDaniotipo = "<color=#c5c5c5>cortante</color>"; break; //Cortante
         case 2: stDaniotipo = "<color=#8a5b32>perforante</color>"; break; //Perforante
         case 3: stDaniotipo = "<color=#c67f60>contundente</color>"; break; //Contundente
-        case 4: stDaniotipo = "<color=#ce3715>fuego</color>"; break; //Fuego
+        case 4: stDaniotipo = "<color=#FFA64D>fuego</color>"; break; //Fuego
         case 5: stDaniotipo = "<color=#63c4b7>hielo</color>"; break; //Hielo
         case 6: stDaniotipo = "<color=#7758df>rayo</color>"; break; //Rayo
         case 7: stDaniotipo = "<color=#28b717>ácido</color>"; break; //Acido
@@ -1618,7 +1954,9 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
 
 
-       if (TRADU.i.nIdioma == 1)
+      if (danioFinal > 0)
+      {
+        if (TRADU.i.nIdioma == 1)
         {
           scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio($"<color=#d92b08>{nombreLog} recibe {danioFinal} de daño elemental extra {stDaniotipo}.</color>"));
         }
@@ -1626,6 +1964,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         {
           scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio($"<color=#d92b08>{nombreLog} takes {danioFinal} {TRADU.i.Traducir(stDaniotipo)} extra damage.</color>"));
         }
+      }
 
 
 
@@ -1668,9 +2007,15 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
 
   }
-public virtual void ReducirArmaduraPorGolpe(float danioFinal)
-{
-  if(danioFinal > 0){estado_armaduraModificador++;}
+  public virtual void ReducirArmaduraPorGolpe(float danioFinal)
+  {
+   if (scTextoArmaduraFlash == null)
+    {
+      return;
+    }
+
+    if (danioFinal > 0) { estado_armaduraModificador++; scTextoArmaduraFlash.Flash(); }
+     
 }
  public virtual void  RecibirHerida()
 {
@@ -1714,6 +2059,7 @@ public virtual void AcabaDeMatarUnidad(Unidad uVictima)
 
 public virtual void FalloAtaqueRecibido(Unidad uOrigen, bool melee)
 {
+ ReproducirAnimacionMiss();
  LlamarReacciones(1, uOrigen, melee);
 }
 public virtual void SumarValentia(int cant)
@@ -1890,56 +2236,143 @@ public virtual void AplicarDesesperanzado()
        motivado.cantAtPod -= 1;
        motivado.cantAtAgi -= 1;
        motivado.AplicarBuff(this);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-       Buff buffComponent = ComponentCopier.CopyComponent(motivado, gameObject);
+      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+      Buff buffComponent = ComponentCopier.CopyComponent(motivado, gameObject);
 }
 
  
+  private int ReservarSlotTextoFlotante(float lifetime)
+  {
+    float now = Time.time;
+    for (int i = 0; i < floatingTextSlotExpiries.Count; i++)
+    {
+      if (floatingTextSlotExpiries[i] <= now)
+      {
+        floatingTextSlotExpiries[i] = now + lifetime;
+        return i;
+      }
+    }
+
+    int maxSlots = Mathf.Max(1, floatingTextMaxSlots);
+    if (floatingTextSlotExpiries.Count < maxSlots)
+    {
+      floatingTextSlotExpiries.Add(now + lifetime);
+      return floatingTextSlotExpiries.Count - 1;
+    }
+
+    int reuseIndex = 0;
+    float earliestExpiry = floatingTextSlotExpiries[0];
+    for (int i = 1; i < floatingTextSlotExpiries.Count; i++)
+    {
+      if (floatingTextSlotExpiries[i] < earliestExpiry)
+      {
+        earliestExpiry = floatingTextSlotExpiries[i];
+        reuseIndex = i;
+      }
+    }
+
+    floatingTextSlotExpiries[reuseIndex] = now + lifetime;
+    return reuseIndex;
+  }
+
+  private float ObtenerDuracionTextoFlotante(FloatingTextAnimator animator, FloatingTextContext contexto)
+  {
+    if (animator != null)
+    {
+      float lifetime = animator.GetLifetime(contexto);
+      if (lifetime > 0f)
+      {
+        return lifetime;
+      }
+    }
+
+    return floatingTextSlotLifetimeFallback;
+  }
+
   public async Task GenerarTextoFlotante(string txString, Color color, FloatingTextContext contexto = FloatingTextContext.Generic, TextMeshProUGUI overrideText = null)
   {
 
-  // Encuentra todos los objetos existentes del prefab scUnidadCanvas.PrefabtxtDaño
+    // Pequena espera para escalonar textos y evitar solapamientos
+    float delaySeconds = 0f;
+    if (floatingTextMinInterval > 0f)
+    {
+      float now = Time.time;
+      if (now < nextFloatingTextTime)
+      {
+        delaySeconds = nextFloatingTextTime - now;
+      }
+      nextFloatingTextTime = Mathf.Max(nextFloatingTextTime, now) + floatingTextMinInterval;
+    }
 
-  // Calcula el retraso total en milisegundos
-   int delayPerObject = UnityEngine.Random.Range(350, 400); // Retraso entre 200 y 300 ms por objeto
-  
-   GameObject[] existingTextObjects = GameObject.FindGameObjectsWithTag(scUnidadCanvas.PrefabtxtDaño.tag);
+    if (delaySeconds > 0f)
+    {
+      int delayMs = Mathf.CeilToInt(delaySeconds * 1000f);
+      await Task.Delay(delayMs);
+    }
 
-   int totalDelay = delayPerObject * existingTextObjects.Length;
+    // Instancia el nuevo objeto
+    TextMeshProUGUI txtMesh = overrideText;
+    GameObject goTextoFlotante = null;
 
-     // Espera el tiempo calculado
-     await Task.Delay(totalDelay);
-
-       // Instancia el nuevo objeto
-      TextMeshProUGUI txtMesh = overrideText;
-      GameObject goTextoFlotante = null;
-
-      if (txtMesh == null)
+    if (txtMesh == null || txtMesh.gameObject == null)
+    {
+      if (scUnidadCanvas != null && scUnidadCanvas.PrefabtxtDaño != null && scUnidadCanvas.unidadCanvas != null)
       {
         goTextoFlotante = Instantiate(scUnidadCanvas.PrefabtxtDaño, scUnidadCanvas.unidadCanvas.transform, false);
         txtMesh = goTextoFlotante.GetComponent<TextMeshProUGUI>();
       }
-      else
+    }
+    else
+    {
+      goTextoFlotante = txtMesh.gameObject;
+      if (!goTextoFlotante.activeSelf)
       {
-        goTextoFlotante = txtMesh.gameObject;
-      }
-
-      if (txtMesh != null)
-      {
-        txtMesh.text = txString;
-        txtMesh.color = color;
-      }
-
-      FloatingTextAnimator animator = goTextoFlotante != null ? goTextoFlotante.GetComponent<FloatingTextAnimator>() : null;
-      if (animator != null)
-      {
-        animator.Play(txString, color, contexto);
-      }
-      else if (TextoFlotanteManager.Instance != null && overrideText == null)
-      {
-        TextoFlotanteManager.Instance.GenerarTextoFlotante(txString, color, contexto);
+        goTextoFlotante.SetActive(true);
       }
     }
+
+    if (txtMesh != null)
+    {
+      txtMesh.text = txString;
+      txtMesh.color = color;
+    }
+
+    FloatingTextAnimator animator = goTextoFlotante != null ? goTextoFlotante.GetComponent<FloatingTextAnimator>() : null;
+    RectTransform rectTransform = goTextoFlotante != null ? goTextoFlotante.GetComponent<RectTransform>() : null;
+    if (rectTransform != null)
+    {
+      Vector2 basePosition = rectTransform.anchoredPosition;
+      if (animator != null)
+      {
+        basePosition = animator.GetInitialBasePosition();
+      }
+
+      if (apilarTextosFlotantes)
+      {
+        float lifetime = ObtenerDuracionTextoFlotante(animator, contexto);
+        int slotIndex = ReservarSlotTextoFlotante(lifetime);
+        basePosition += Vector2.up * (floatingTextSlotSpacing * slotIndex);
+      }
+
+      if (animator != null)
+      {
+        animator.SetBasePosition(basePosition);
+      }
+      else
+      {
+        rectTransform.anchoredPosition = basePosition;
+      }
+    }
+
+    if (animator != null)
+    {
+      animator.Play(txString, color, contexto);
+    }
+    else if (TextoFlotanteManager.Instance != null && overrideText == null)
+    {
+      TextoFlotanteManager.Instance.GenerarTextoFlotante(txString, color, contexto);
+    }
+  }
 
 
 public void RecibirCuracion(float curacion, bool magica)
@@ -1993,6 +2426,7 @@ public void UnidadMuere()
   if(!yaMurio)
   {
    yaMurio = true;
+   GenerarTextoFlotante(TRADU.i.Traducir("Muerto"), new Color(0.35f, 0.35f, 0.35f), FloatingTextContext.Resist);
 
    scBattleManager.OnRondaNueva  -= BattleManager_OnRondaNueva;
    int posicionUnidad =  BattleManager.Instance.lUnidadesTotal.IndexOf(this)+1;
@@ -2476,27 +2910,27 @@ void AcomodarSortingLayer()
     if (canvases == null || canvases.Length == 0)
     {
         print($"{name}: no encontré Canvas en hijos");
-        return;
     }
 
     // 2) Orden por Y de la casilla (fallback por posición mundial)
     int y = (CasillaPosicion != null) ? CasillaPosicion.posY
-                                      : Mathf.RoundToInt(transform.position.y);
-    int orden = 60 - (y * 10);
+                                      : 0;
+    int orden = RenderOrderHelper.CalcularOrdenPorY(y);
 
-    foreach (var c in canvases)
+    if (canvases != null)
     {
-        // Recomendado: World Space (o Screen Space - Camera con tu cámara de batalla)
-        if (c.renderMode == RenderMode.ScreenSpaceOverlay)
-            c.renderMode = RenderMode.WorldSpace;
+      foreach (var c in canvases)
+      {
+          // Recomendado: World Space (o Screen Space - Camera con tu cámara de batalla)
+          if (c.renderMode == RenderMode.ScreenSpaceOverlay)
+              c.renderMode = RenderMode.WorldSpace;
 
-        c.overrideSorting = true;
-        // Ponelo en la misma Sorting Layer que tus unidades, o una por encima (p.e. "UI3D")
-        c.sortingLayerID = SortingLayer.NameToID("UI3D"); // ajusta el nombre a tu proyecto
-        c.sortingOrder   = orden;
-        // (Opcional) si usas ScreenSpace-Camera:
-        // c.worldCamera = Camera.main; // o tu cámara de batalla
+          // (Opcional) si usas ScreenSpace-Camera:
+          // c.worldCamera = Camera.main; // o tu cámara de batalla
+      }
     }
+
+    RenderOrderHelper.AplicarOrdenBase(gameObject, orden, "UI3D");
 
     Canvas.ForceUpdateCanvases();
 
@@ -2719,3 +3153,9 @@ void AcomodarSortingLayer()
        
   }
 }
+
+
+
+
+
+

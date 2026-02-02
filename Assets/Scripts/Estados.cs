@@ -10,7 +10,7 @@ public class Estados : MonoBehaviour
 
   public async static void Efecto_Ardiendo(Unidad unidad)
   {
-    unidad.RecibirDanio(2 * unidad.estado_ardiendo, 4, false, null);
+    unidad.RecibirDanio(2 * unidad.estado_ardiendo, 4, false, null, 400);
 
     Aplicar_Ardiendo(unidad, -1);
     if (unidad.estado_ardiendo < 0) { unidad.estado_ardiendo = 0; }
@@ -78,7 +78,7 @@ public class Estados : MonoBehaviour
     if (unidad.estado_Condenado < 1)
     {
       float porcentajeAcumulado = 0.05f * unidad.estado_CondenadoTurnosSeguidos;
-      unidad.RecibirDanio(unidad.mod_maxHP * porcentajeAcumulado, 10, false, null);
+      unidad.RecibirDanio(unidad.mod_maxHP * porcentajeAcumulado, 10, false, null,400);
       BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre + TRADU.i.Traducir(" es dañado por la Condena.")));
       BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
 
@@ -118,7 +118,7 @@ public class Estados : MonoBehaviour
     if(unidad.HP_actual > unidad.mod_maxHP)  //Si al perder max HP, su vida actual es mayor a la amx, recibe daño verdadero para equiparar.
     {
        float cant = unidad.HP_actual - unidad.mod_maxHP ;
-       unidad.RecibirDanio(cant, 10,false, null); 
+       unidad.RecibirDanio(cant, 10,false, null,400); 
     }
     unidad.estado_sangrado--;
 
@@ -128,7 +128,7 @@ public class Estados : MonoBehaviour
 
   public static void  Efecto_Veneno(Unidad unidad)
   {
-    unidad.RecibirDanio(1*unidad.estado_veneno, 10,false, null); 
+    unidad.RecibirDanio(1*unidad.estado_veneno, 10,false, null,400); 
     BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" recibe ") + (1*unidad.estado_veneno) + TRADU.i.Traducir(" daño veneno.")));
 
 
@@ -154,7 +154,10 @@ public class Estados : MonoBehaviour
      if(unidad.estado_ardiendo > -1) //-1 Es si es inmune al estado.
      {
        unidad.estado_ardiendo += stacks;
-       unidad.GenerarTextoFlotante(stacks+TRADU.i.Traducir(" arde"), Color.red);
+
+       if(stacks > 0)
+        unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" arde"), Color.red);
+      
 
        BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}

@@ -490,7 +490,7 @@ public class DisparoPotente : Habilidad
         }
         else
         {
-            await Task.Delay(500);
+            await Task.Delay(450);
         }
     }
     void VFXAplicar(GameObject objetivo)
