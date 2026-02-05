@@ -12,7 +12,8 @@ public enum FloatingTextContext
     Heal = 4,
     Resist = 5,
     Miss = 6,
-    Buff = 7
+    BuffApply = 7,
+    BuffEnd = 8
 }
 
 [Serializable]
@@ -127,7 +128,8 @@ public class FloatingTextAnimator : MonoBehaviour
     [SerializeField] private FloatingTextProfile healProfile = CreateHealProfile();
     [SerializeField] private FloatingTextProfile resistProfile = CreateResistProfile();
     [SerializeField] private FloatingTextProfile missProfile = CreateMissProfile();
-    [SerializeField] private FloatingTextProfile buffProfile = CreateBuffProfile();
+    [SerializeField] private FloatingTextProfile buffApplyProfile = CreateBuffApplyProfile();
+    [SerializeField] private FloatingTextProfile buffEndProfile = CreateBuffEndProfile();
 
     private TextMeshProUGUI tmp;
     private RectTransform rect;
@@ -151,7 +153,8 @@ public class FloatingTextAnimator : MonoBehaviour
         healProfile?.Validate();
         resistProfile?.Validate();
         missProfile?.Validate();
-        buffProfile?.Validate();
+        buffApplyProfile?.Validate();
+        buffEndProfile?.Validate();
     }
 
     public void SetBasePosition(Vector2 anchoredPosition)
@@ -284,8 +287,11 @@ public class FloatingTextAnimator : MonoBehaviour
             case FloatingTextContext.Miss:
                 if (missProfile != null) { return FloatingTextProfile.Clone(missProfile); }
                 break;
-            case FloatingTextContext.Buff:
-                if (buffProfile != null) { return FloatingTextProfile.Clone(buffProfile); }
+            case FloatingTextContext.BuffApply:
+                if (buffApplyProfile != null) { return FloatingTextProfile.Clone(buffApplyProfile); }
+                break;
+            case FloatingTextContext.BuffEnd:
+                if (buffEndProfile != null) { return FloatingTextProfile.Clone(buffEndProfile); }
                 break;
         }
 
@@ -429,7 +435,7 @@ public class FloatingTextAnimator : MonoBehaviour
         };
     }
 
-    private static FloatingTextProfile CreateBuffProfile()
+    private static FloatingTextProfile CreateBuffApplyProfile()
     {
         return new FloatingTextProfile
         {
@@ -440,6 +446,20 @@ public class FloatingTextAnimator : MonoBehaviour
                 new Keyframe(0f, 0.98f),
                 new Keyframe(0.25f, 1.03f),
                 new Keyframe(1f, 0.98f))
+        };
+    }
+
+    private static FloatingTextProfile CreateBuffEndProfile()
+    {
+        return new FloatingTextProfile
+        {
+            lifetime = 1.5f,
+            verticalSpeed = 16f,
+            horizontalSpeed = 0f,
+            scaleCurve = new AnimationCurve(
+                new Keyframe(0f, 1.02f),
+                new Keyframe(0.2f, 1.06f),
+                new Keyframe(1f, 0.97f))
         };
     }
 }
