@@ -48,7 +48,7 @@ MonoBehaviour:
   imItem: {fileID: 21300000, guid: 6cfadad43debfa242811d0a79588a9d9, type: 3}
   sNombreItem: Armadura Pesada de Caballero
   iPrecio: 150
-  itemDescrpicion: 
+  itemDescripcion: "Armadura pesada con gran proteccion y menor movilidad."
   requisitoFue: 3
   requisitoAgi: 0
   requisitoPoder: 0

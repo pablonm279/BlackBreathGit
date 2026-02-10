@@ -50,7 +50,7 @@ MonoBehaviour:
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 610
-  itemDescripcion: 
+  itemDescripcion: "Coraza robusta que incrementa la fuerza bruta."
   iRareza: 2
   nivelMejora: 2
   requisitoFue: 3

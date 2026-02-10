@@ -50,7 +50,7 @@ MonoBehaviour:
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 03000000
   iPrecio: 260
-  itemDescripcion: 
+  itemDescripcion: "Baculo purificador que canaliza energia sagrada."
   iRareza: 3
   nivelMejora: 3
   habilidadAtaque: {fileID: 2369216239339639149}

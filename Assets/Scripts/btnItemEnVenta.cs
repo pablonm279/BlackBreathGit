@@ -49,10 +49,7 @@ public class btnItemEnVenta : MonoBehaviour
          }
           
 
-
-
-
-         txtItemVentaDescripcion.text = TRADU.i.Traducir(itemRepresentado.itemDescripcion)+precio;
+         txtItemVentaDescripcion.text = ItemTooltipFormatter.ConstruirTooltip(itemRepresentado, true) + precio;
          
         }
         if(n == 0)

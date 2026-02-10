@@ -58,6 +58,13 @@ public class Buff : MonoBehaviour
   public int cantDamBonusElementalArc;
   public int cantDamBonusElementalNec;
   public int cantDamBonusElementalDiv;
+  public int cantPenetracionArmadura;
+
+  public int cantReduccionDanioRecibidoPorcentaje;
+  public int cantReduccionDanioCriticoRecibidoPorcentaje;
+  public int cantResistenciaEstadosPorcentaje;
+  public int cantEspinasDanioPlano;
+  public int cantEspinasDanioPorcentaje;
 
   public float percDefensa;
   public float cantDefensa;
@@ -146,6 +153,33 @@ public class Buff : MonoBehaviour
         if (cantDamBonusElementalNec != 0) { unidad.bonusdam_necro += cantDamBonusElementalNec; }
         if (cantDamBonusElementalRay != 0) { unidad.bonusdam_rayo += cantDamBonusElementalRay; }
         if (cantDamBonusElementalDiv != 0) { unidad.bonusdam_divino += cantDamBonusElementalDiv; }
+        if (cantPenetracionArmadura != 0) { unidad.penetracionArmaduraPlano += cantPenetracionArmadura; if (unidad.penetracionArmaduraPlano < 0) { unidad.penetracionArmaduraPlano = 0; } }
+
+        if (cantReduccionDanioRecibidoPorcentaje != 0)
+        {
+            unidad.reduccionDanioRecibidoPorcentaje += cantReduccionDanioRecibidoPorcentaje;
+            unidad.reduccionDanioRecibidoPorcentaje = Mathf.Clamp(unidad.reduccionDanioRecibidoPorcentaje, 0, 95);
+        }
+        if (cantReduccionDanioCriticoRecibidoPorcentaje != 0)
+        {
+            unidad.reduccionDanioCriticoRecibidoPorcentaje += cantReduccionDanioCriticoRecibidoPorcentaje;
+            unidad.reduccionDanioCriticoRecibidoPorcentaje = Mathf.Clamp(unidad.reduccionDanioCriticoRecibidoPorcentaje, 0, 95);
+        }
+        if (cantResistenciaEstadosPorcentaje != 0)
+        {
+            unidad.resistenciaEstadosPorcentaje += cantResistenciaEstadosPorcentaje;
+            unidad.resistenciaEstadosPorcentaje = Mathf.Clamp(unidad.resistenciaEstadosPorcentaje, 0, 100);
+        }
+        if (cantEspinasDanioPlano != 0)
+        {
+            unidad.espinasDanioPlano += cantEspinasDanioPlano;
+            if (unidad.espinasDanioPlano < 0) { unidad.espinasDanioPlano = 0; }
+        }
+        if (cantEspinasDanioPorcentaje != 0)
+        {
+            unidad.espinasDanioPorcentaje += cantEspinasDanioPorcentaje;
+            if (unidad.espinasDanioPorcentaje < 0) { unidad.espinasDanioPorcentaje = 0; }
+        }
 
 
 
@@ -295,6 +329,33 @@ public void RemoverBuff(Unidad unidad)
     if (cantDamBonusElementalNec != 0) { unidad.bonusdam_necro -= cantDamBonusElementalNec; }
     if (cantDamBonusElementalRay != 0) { unidad.bonusdam_rayo -= cantDamBonusElementalRay; }
     if (cantDamBonusElementalDiv != 0) { unidad.bonusdam_divino -= cantDamBonusElementalDiv; }
+    if (cantPenetracionArmadura != 0) { unidad.penetracionArmaduraPlano -= cantPenetracionArmadura; if (unidad.penetracionArmaduraPlano < 0) { unidad.penetracionArmaduraPlano = 0; } }
+
+    if (cantReduccionDanioRecibidoPorcentaje != 0)
+    {
+        unidad.reduccionDanioRecibidoPorcentaje -= cantReduccionDanioRecibidoPorcentaje;
+        unidad.reduccionDanioRecibidoPorcentaje = Mathf.Clamp(unidad.reduccionDanioRecibidoPorcentaje, 0, 95);
+    }
+    if (cantReduccionDanioCriticoRecibidoPorcentaje != 0)
+    {
+        unidad.reduccionDanioCriticoRecibidoPorcentaje -= cantReduccionDanioCriticoRecibidoPorcentaje;
+        unidad.reduccionDanioCriticoRecibidoPorcentaje = Mathf.Clamp(unidad.reduccionDanioCriticoRecibidoPorcentaje, 0, 95);
+    }
+    if (cantResistenciaEstadosPorcentaje != 0)
+    {
+        unidad.resistenciaEstadosPorcentaje -= cantResistenciaEstadosPorcentaje;
+        unidad.resistenciaEstadosPorcentaje = Mathf.Clamp(unidad.resistenciaEstadosPorcentaje, 0, 100);
+    }
+    if (cantEspinasDanioPlano != 0)
+    {
+        unidad.espinasDanioPlano -= cantEspinasDanioPlano;
+        if (unidad.espinasDanioPlano < 0) { unidad.espinasDanioPlano = 0; }
+    }
+    if (cantEspinasDanioPorcentaje != 0)
+    {
+        unidad.espinasDanioPorcentaje -= cantEspinasDanioPorcentaje;
+        if (unidad.espinasDanioPorcentaje < 0) { unidad.espinasDanioPorcentaje = 0; }
+    }
     
     bool suprimirPorInicioCombate = (BattleManager.Instance != null && BattleManager.Instance.silenciarLogCombate);
     if (!suprimeTextoFlotante && !suprimirPorInicioCombate)

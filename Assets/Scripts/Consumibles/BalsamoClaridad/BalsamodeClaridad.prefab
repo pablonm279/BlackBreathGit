@@ -45,6 +45,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: 6a1ca2c80e02f6842af77ecdae7e9b01, type: 3}
-  sNombreItem: 
+  sNombreItem: "B\xE1lsamo de Claridad"
+  IDEfectoEspecial: 0
+  IDClasesQuePuedenUsarEsteItem: 
   iPrecio: 50
-  itemDescrpicion: 
+  itemDescripcion: Balsamo que mejora la mente y la concentracion por un combate.
+  iRareza: 0
+  nivelMejora: 0

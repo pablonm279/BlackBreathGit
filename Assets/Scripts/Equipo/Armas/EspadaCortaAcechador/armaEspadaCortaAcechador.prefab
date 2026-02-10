@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Espada Corta de Acechador
   IDClasesQuePuedenUsarEsteItem: 04000000
   iPrecio: 70
-  itemDescrpicion: '<i>Los Acechadores utilizan una espada corta que les permite
+  itemDescripcion: '<i>Los Acechadores utilizan una espada corta que les permite
     atacar con cautela sin ser vistos.</i><b>\n\nOtorga: Ataque Espada Corta</b>'
   habilidadAtaque: {fileID: 1190790172501250362}
   habilidadExtra1: {fileID: 0}

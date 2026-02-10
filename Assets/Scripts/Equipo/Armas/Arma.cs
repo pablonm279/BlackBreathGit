@@ -14,6 +14,9 @@ public abstract class Arma : Item
     public int requisitoFue;
     public int requisitoAgi;
     public int requisitoPoder;
+    
+    [Header("Debuff por impacto")]
+    public List<DebuffImpactoArmaData> debuffsImpactoArma = new List<DebuffImpactoArmaData>();
 
 
     //Buffs

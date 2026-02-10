@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Armadura de Cuero
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 220
-  itemDescripcion: 
+  itemDescripcion: "Armadura de cuero flexible para buena movilidad."
   iRareza: 2
   nivelMejora: 2
   requisitoFue: 0

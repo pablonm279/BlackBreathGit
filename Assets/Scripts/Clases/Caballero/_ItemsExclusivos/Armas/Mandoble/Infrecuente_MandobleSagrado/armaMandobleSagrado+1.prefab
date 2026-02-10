@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Mandoble Sagrado
   IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 220
-  itemDescripcion: 
+  itemDescripcion: "Mandoble bendecido con energia sagrada."
   iRareza: 1
   nivelMejora: 1
   habilidadAtaque: {fileID: 2282131005662849684}

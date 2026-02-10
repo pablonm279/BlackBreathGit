@@ -50,7 +50,7 @@ MonoBehaviour:
   IDEfectoEspecial: 2
   IDClasesQuePuedenUsarEsteItem: 04000000
   iPrecio: 270
-  itemDescripcion: 
+  itemDescripcion: "Armadura reforzada pensada para sigilo y evasiones."
   iRareza: 2
   nivelMejora: 2
   requisitoFue: 0

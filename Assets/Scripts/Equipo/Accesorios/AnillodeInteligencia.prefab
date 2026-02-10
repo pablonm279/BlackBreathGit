@@ -45,9 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: b5ee5cbdb9acde74fa8d1690f4ecbd88, type: 3}
-  sNombreItem: 
+  sNombreItem: Anillo de Inteligencia
+  IDEfectoEspecial: 0
+  IDClasesQuePuedenUsarEsteItem: 
   iPrecio: 210
-  itemDescrpicion: 
+  itemDescripcion: 'Anillo orientado al enfoque mental y control arcano. '
+  iRareza: 0
+  nivelMejora: 0
   requisitoFue: 0
   requisitoAgi: 0
   requisitoPoder: 0
@@ -71,3 +75,4 @@ MonoBehaviour:
   buffResArcano: 0
   buffResAcido: 0
   buffResNecro: 0
+  buffResDivino: 0

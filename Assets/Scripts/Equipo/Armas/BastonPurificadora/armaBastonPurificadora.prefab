@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: "Bast\xF3n de Purificadora"
   IDClasesQuePuedenUsarEsteItem: 03000000
   iPrecio: 65
-  itemDescrpicion: 
+  itemDescripcion: "Baston de purificadora para canalizar energia y golpear en melee."
   habilidadAtaque: {fileID: 4091912447371821650}
   habilidadExtra1: {fileID: 0}
   habilidadExtra2: {fileID: 0}

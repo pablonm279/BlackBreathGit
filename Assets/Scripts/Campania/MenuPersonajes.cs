@@ -341,7 +341,7 @@ public class MenuPersonajes : MonoBehaviour
     {
       //itemDesc.text = pSel.itemArma.itemDescrpicion;
       Vector3 pos = Input.mousePosition;
-      string total = pSel.itemArma.sNombreItem + "\n\n" +  pSel.itemArma.itemDescripcion;
+      string total = ItemTooltipFormatter.ConstruirTooltip(pSel.itemArma, true);
       TooltipItems.Instance.ShowTooltip(total, pos);
 
     }
@@ -355,7 +355,7 @@ public class MenuPersonajes : MonoBehaviour
       {
         // itemDesc.text = pSel.itemArmadura.itemDescrpicion;
          Vector3 pos = Input.mousePosition;
-     string total = pSel.itemArmadura.sNombreItem + "\n\n" +  pSel.itemArmadura.itemDescripcion;
+     string total = ItemTooltipFormatter.ConstruirTooltip(pSel.itemArmadura, true);
       TooltipItems.Instance.ShowTooltip(total, pos);
 
       }
@@ -389,7 +389,7 @@ public class MenuPersonajes : MonoBehaviour
     {
       //itemDesc.text = pSel.Accesorio1.itemDescrpicion;
       Vector3 pos = Input.mousePosition;
-      string total = pSel.Accesorio1.sNombreItem + "\n\n" +  pSel.Accesorio1.itemDescripcion;
+      string total = ItemTooltipFormatter.ConstruirTooltip(pSel.Accesorio1, true);
       TooltipItems.Instance.ShowTooltip(total, pos);
 
     }
@@ -421,7 +421,7 @@ public class MenuPersonajes : MonoBehaviour
     {
       //itemDesc.text = pSel.Accesorio2.itemDescrpicion;
       Vector3 pos = Input.mousePosition;
-      string total = pSel.Accesorio2.sNombreItem + "\n\n" +  pSel.Accesorio2.itemDescripcion;
+      string total = ItemTooltipFormatter.ConstruirTooltip(pSel.Accesorio2, true);
       TooltipItems.Instance.ShowTooltip(total, pos);
 
     }
@@ -454,7 +454,7 @@ public class MenuPersonajes : MonoBehaviour
     {
       //itemDesc.text = pSel.Consumible1.itemDescrpicion;
         Vector3 pos = Input.mousePosition;
-     string total = pSel.Consumible1.sNombreItem + "\n\n" +  pSel.Consumible1.itemDescripcion;
+     string total = ItemTooltipFormatter.ConstruirTooltip(pSel.Consumible1, true);
       TooltipItems.Instance.ShowTooltip(total, pos);
 
     }
@@ -486,7 +486,7 @@ public class MenuPersonajes : MonoBehaviour
     {
       //itemDesc.text = pSel.Consumible2.itemDescrpicion;
       Vector3 pos = Input.mousePosition;
-     string total = pSel.Consumible2.sNombreItem + "\n\n" +  pSel.Consumible2.itemDescripcion;
+     string total = ItemTooltipFormatter.ConstruirTooltip(pSel.Consumible2, true);
       TooltipItems.Instance.ShowTooltip(total, pos);
 
     }

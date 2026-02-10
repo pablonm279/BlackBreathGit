@@ -50,7 +50,7 @@ MonoBehaviour:
   IDEfectoEspecial: 3
   IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 315
-  itemDescripcion: 
+  itemDescripcion: "Coraza templada para contraataques de fuego."
   iRareza: 1
   nivelMejora: 1
   requisitoFue: 3

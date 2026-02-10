@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Mandoble Congelado
   IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 410
-  itemDescripcion: 
+  itemDescripcion: "Mandoble helado que enfria y desgasta al objetivo."
   iRareza: 2
   nivelMejora: 2
   habilidadAtaque: {fileID: 3592861480536177032}

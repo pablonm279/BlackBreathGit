@@ -1,0 +1,3584 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f667d89871104c7097d0c421f75fb7da, type: 3}
+  m_Name: ItemDatabase
+  m_EditorClassIdentifier: 
+  items:
+  - listaTitulo: "Accesorio - Anillo de Destrucci\xF3n"
+    id: ITEM_SCRIPTS_EQUIPO_ACCESORIOS_ANILLODEDESTRUCCION
+    prefab: {fileID: 1780994479000739857, guid: 976e3419dae32b842a75198f5e5cdf1b, type: 3}
+    nombre: "Anillo de Destrucci\xF3n"
+    descripcion: Anillo orientado al dano ofensivo y al impacto magico.
+    categoria: Accesorio
+    rareza: 0
+    icono: {fileID: 21300000, guid: ab46f2772972bf441adba675fc40c1b3, type: 3}
+    precio: 800
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 1
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 1039378382291529976, guid: 976e3419dae32b842a75198f5e5cdf1b, type: 3}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Accesorio - Anillo de Inteligencia
+    id: ITEM_SCRIPTS_EQUIPO_ACCESORIOS_ANILLODEINTELIGENCIA
+    prefab: {fileID: 7134741394859233719, guid: ae8476fd6b4bac8478cd81aedbaa31c9, type: 3}
+    nombre: Anillo de Inteligencia
+    descripcion: 'Anillo orientado al enfoque mental y control arcano. '
+    categoria: Accesorio
+    rareza: 0
+    icono: {fileID: 21300000, guid: b5ee5cbdb9acde74fa8d1690f4ecbd88, type: 3}
+    precio: 210
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 2
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 2
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: "Accesorio - Anillo de Resistencia al \xC1cido"
+    id: ITEM_SCRIPTS_EQUIPO_ACCESORIOS_ANILLODERESISTENCIAACIDA
+    prefab: {fileID: 1780994479000739857, guid: 84317eab8f4edb94f9344e3a2a2abac6, type: 3}
+    nombre: "Anillo de Resistencia al \xC1cido"
+    descripcion: "Este anillo otorga una significante resistencia al da\xF1o \xE1cido."
+    categoria: Accesorio
+    rareza: 1
+    icono: {fileID: 21300000, guid: ab46f2772972bf441adba675fc40c1b3, type: 3}
+    precio: 135
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 4
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Arco de Explorador
+    id: ITEM_SCRIPTS_EQUIPO_ARMAS_ARCODEEXPLORADOR_ARMAARCODEEXPLORADOR
+    prefab: {fileID: -107623814344834064, guid: c0e38b01116a88e4295d592cdf55f4ae, type: 3}
+    nombre: Arco de Explorador
+    descripcion: Arco estandar del explorador, fiable para ataques a distancia.
+    categoria: Arma
+    rareza: 0
+    icono: {fileID: 21300000, guid: e791751c3b36d454cb193876073f3207, type: 3}
+    precio: 100
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 7679013515914272161, guid: c0e38b01116a88e4295d592cdf55f4ae, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Arco Largo
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMAS_ARCO_LARGO_ARCO_LARGO_BASE_ARMAARCOLARGO_3
+    prefab: {fileID: -1126510372339129508, guid: 9b1772593cee96b469cf7977c6fb7584, type: 3}
+    nombre: Arco Largo
+    descripcion: Arco largo versatil para combate a distancia.
+    categoria: Arma
+    rareza: 3
+    icono: {fileID: 21300000, guid: 5b73de817bcd2ee4b81f75ea6eb0cd5f, type: 3}
+    precio: 450
+    nivelMejora: 3
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 1624686996790798170, guid: 9b1772593cee96b469cf7977c6fb7584, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 1
+  - listaTitulo: Arma - Arco Largo
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMAS_ARCO_LARGO_ARCO_LARGO_BASE_ARMAARCOLARGO_1
+    prefab: {fileID: -1126510372339129508, guid: ebbb68946805e3747b9e088ec9931b60, type: 3}
+    nombre: Arco Largo
+    descripcion: Arco largo versatil para combate a distancia.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: cc91afbce72d374488395d7b13e33c90, type: 3}
+    precio: 75
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 1624686996790798170, guid: ebbb68946805e3747b9e088ec9931b60, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Arco Largo
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMAS_ARCO_LARGO_ARCO_LARGO_BASE_ARMAARCOLARGO
+    prefab: {fileID: -1126510372339129508, guid: 573a972560a499449a045fc0c706051f, type: 3}
+    nombre: Arco Largo
+    descripcion: Arco largo versatil para combate a distancia.
+    categoria: Arma
+    rareza: 0
+    icono: {fileID: 21300000, guid: 69b49d8dd3b5d8246ad7c9a7e9ee070a, type: 3}
+    precio: 40
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 8424540023621367988, guid: 573a972560a499449a045fc0c706051f, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Arco Largo
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMAS_ARCO_LARGO_ARCO_LARGO_BASE_ARMAARCOLARGO_2
+    prefab: {fileID: -1126510372339129508, guid: 48729acf0e631674a94db925551aaef9, type: 3}
+    nombre: Arco Largo
+    descripcion: Arco largo versatil para combate a distancia.
+    categoria: Arma
+    rareza: 2
+    icono: {fileID: 21300000, guid: 10b79f9f390b2e5469bb47b3db27807d, type: 3}
+    precio: 210
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 1624686996790798170, guid: 48729acf0e631674a94db925551aaef9, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: "Arma - Arco Largo \xC1cido"
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMAS_ARCO_LARGO_INFRECUENTE_ARCOLARGOACIDO_ARMAARCOLARGOACIDO_1
+    prefab: {fileID: -1126510372339129508, guid: e4d4d3c5279920448977eee735e1c912, type: 3}
+    nombre: "Arco Largo \xC1cido"
+    descripcion: Arco largo con disparos corrosivos de acido.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: cc91afbce72d374488395d7b13e33c90, type: 3}
+    precio: 205
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 7318733154302280740, guid: e4d4d3c5279920448977eee735e1c912, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Arco Largo Potente
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMAS_ARCO_LARGO_INFRECUENTE_ARCOLARGOPOTENTE_ARMAARCOLARGOPOTENTE_1
+    prefab: {fileID: -1126510372339129508, guid: c4d89219de57d7d458b5fb39288f104d, type: 3}
+    nombre: Arco Largo Potente
+    descripcion: Arco largo reforzado para disparos de alto impacto.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: cc91afbce72d374488395d7b13e33c90, type: 3}
+    precio: 177
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 7919083883667790931, guid: c4d89219de57d7d458b5fb39288f104d, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Arco Largo Ralentizante
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMAS_ARCO_LARGO_RARO_ARCOLARGORALENTIZANTE_ARMAARCOLARGORALENTIZANTE_2
+    prefab: {fileID: -1126510372339129508, guid: 2d2567b63421d094cbb0b3ff3a15b2f3, type: 3}
+    nombre: Arco Largo Ralentizante
+    descripcion: Arco largo que reduce el ritmo del objetivo.
+    categoria: Arma
+    rareza: 2
+    icono: {fileID: 21300000, guid: 10b79f9f390b2e5469bb47b3db27807d, type: 3}
+    precio: 350
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 7015206785058780215, guid: 2d2567b63421d094cbb0b3ff3a15b2f3, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Baculo Purificador
+    id: ITEM_SCRIPTS_CLASES_PURIFICADORA_ITEMSEXCLUSIVOS_ARMAS_BACULO_PURIFICADOR_BACULO_PURIFICADOR_BASE_ARMABACULOPURIFICADOR_3
+    prefab: {fileID: -832172084951212843, guid: 9b7a605ab3496914ab7c37b6a5741da4, type: 3}
+    nombre: Baculo Purificador
+    descripcion: Baculo purificador que canaliza energia sagrada.
+    categoria: Arma
+    rareza: 3
+    icono: {fileID: 21300000, guid: 77cff5f5794672b498abd5dbab2a4bbb, type: 3}
+    precio: 260
+    nivelMejora: 3
+    idEfectoEspecial: 0
+    clasesPermitidas: 03000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 3
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 2369216239339639149, guid: 9b7a605ab3496914ab7c37b6a5741da4, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Baculo Purificador
+    id: ITEM_SCRIPTS_CLASES_PURIFICADORA_ITEMSEXCLUSIVOS_ARMAS_BACULO_PURIFICADOR_BACULO_PURIFICADOR_BASE_ARMABACULOPURIFICADOR_2
+    prefab: {fileID: -4085841515123236462, guid: 3984b18128e1746499bd289013126b1b, type: 3}
+    nombre: Baculo Purificador
+    descripcion: Baculo purificador que canaliza energia sagrada.
+    categoria: Arma
+    rareza: 2
+    icono: {fileID: 21300000, guid: bd7f5f0343733494d879594483f8a6e2, type: 3}
+    precio: 135
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 03000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 3
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 2369216239339639149, guid: 3984b18128e1746499bd289013126b1b, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Baculo Purificador
+    id: ITEM_SCRIPTS_CLASES_PURIFICADORA_ITEMSEXCLUSIVOS_ARMAS_BACULO_PURIFICADOR_BACULO_PURIFICADOR_BASE_ARMABACULOPURIFICADOR_1
+    prefab: {fileID: 6300747339089710755, guid: 6e3880c928cb71148bf9b79a878aec17, type: 3}
+    nombre: Baculo Purificador
+    descripcion: Baculo purificador que canaliza energia sagrada.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: 7a5cc1455de1f54468cff98d7e1ed369, type: 3}
+    precio: 74
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 03000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 3
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 2369216239339639149, guid: 6e3880c928cb71148bf9b79a878aec17, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Baculo Purificador
+    id: ITEM_SCRIPTS_CLASES_PURIFICADORA_ITEMSEXCLUSIVOS_ARMAS_BACULO_PURIFICADOR_BACULO_PURIFICADOR_BASE_ARMABACULOPURIFICADOR
+    prefab: {fileID: 4333385269096863343, guid: 386f25dda1c42f94984d52c8af4e7fa6, type: 3}
+    nombre: Baculo Purificador
+    descripcion: Baculo purificador que canaliza energia sagrada.
+    categoria: Arma
+    rareza: 0
+    icono: {fileID: 21300000, guid: 7414d451b86eb344ca834d453fed25f9, type: 3}
+    precio: 20
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 03000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 3
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 2369216239339639149, guid: 386f25dda1c42f94984d52c8af4e7fa6, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 1
+  - listaTitulo: "Arma - Bast\xF3n de Purificadora"
+    id: ITEM_SCRIPTS_EQUIPO_ARMAS_BASTONPURIFICADORA_ARMABASTONPURIFICADORA
+    prefab: {fileID: 4716217355383654269, guid: cd71629e26a90ae4088f44f3c93e6e5f, type: 3}
+    nombre: "Bast\xF3n de Purificadora"
+    descripcion: Baston de purificadora para canalizar energia y golpear en melee.
+    categoria: Arma
+    rareza: 0
+    icono: {fileID: 21300000, guid: b587d0e9febb8fb45812c8656caac230, type: 3}
+    precio: 65
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 03000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 3
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 4091912447371821650, guid: cd71629e26a90ae4088f44f3c93e6e5f, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 1
+  - listaTitulo: Arma - Espada Corta
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMAS_ESPADA_CORTA_ESPADA_CORTA_BASE_ARMAESPADACORTA
+    prefab: {fileID: -7845728578984888629, guid: 78570c7d42e18ff4ab07bc815319c6a9, type: 3}
+    nombre: Espada Corta
+    descripcion: Espada corta agil y versatil para combate cercano.
+    categoria: Arma
+    rareza: 0
+    icono: {fileID: 21300000, guid: 1790a8227f500384483c01ea90297ae4, type: 3}
+    precio: 45
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 670376592415151795, guid: 78570c7d42e18ff4ab07bc815319c6a9, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 1
+  - listaTitulo: Arma - Espada Corta
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMAS_ESPADA_CORTA_ESPADA_CORTA_BASE_ARMAESPADACORTA_2
+    prefab: {fileID: -7845728578984888629, guid: a07db32914606424080ccf3007623083, type: 3}
+    nombre: Espada Corta
+    descripcion: Espada corta agil y versatil para combate cercano.
+    categoria: Arma
+    rareza: 2
+    icono: {fileID: 21300000, guid: eedb3719dc41a744db47a31a65cf9888, type: 3}
+    precio: 198
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 670376592415151795, guid: a07db32914606424080ccf3007623083, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Espada Corta
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMAS_ESPADA_CORTA_ESPADA_CORTA_BASE_ARMAESPADACORTA_1
+    prefab: {fileID: -7845728578984888629, guid: 33c845f7f245f834cb1e752c2d99f906, type: 3}
+    nombre: Espada Corta
+    descripcion: Espada corta agil y versatil para combate cercano.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: c9032f573e9ca534a9d1a997e3cb9d0e, type: 3}
+    precio: 85
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 670376592415151795, guid: 33c845f7f245f834cb1e752c2d99f906, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Espada Corta
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMAS_ESPADA_CORTA_ESPADA_CORTA_BASE_ARMAESPADACORTA_3
+    prefab: {fileID: -7845728578984888629, guid: 74646b5f45f151c4daacb703432fb937, type: 3}
+    nombre: Espada Corta
+    descripcion: Espada corta agil y versatil para combate cercano.
+    categoria: Arma
+    rareza: 3
+    icono: {fileID: 21300000, guid: d7eb5239203bc7a4fa1cc4edf4dc022b, type: 3}
+    precio: 485
+    nivelMejora: 3
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 670376592415151795, guid: 74646b5f45f151c4daacb703432fb937, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Espada Corta Arcana
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMAS_ESPADA_CORTA_INFRECUENTE_ESPADA_CORTA_ARCANA_ARMAESPADACORTAARCANA
+    prefab: {fileID: -7845728578984888629, guid: 46695edd3c66c3541bc29a8d7d7ca48e, type: 3}
+    nombre: Espada Corta Arcana
+    descripcion: Espada corta imbuida con energia arcana.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: 83bcb4190e2e3304dae7b00040956f4c, type: 3}
+    precio: 145
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 4790208597144995915, guid: 46695edd3c66c3541bc29a8d7d7ca48e, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Espada Corta Consumevida
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMAS_ESPADA_CORTA_RARA_ESPADA_CORTA_CONSUMEVIDA_ARMAESPADACORTACONSUMEVIDA
+    prefab: {fileID: -7845728578984888629, guid: 28b76ec29d9dbc84b9ccdb43125bb216, type: 3}
+    nombre: Espada Corta Consumevida
+    descripcion: "<i>Esta espada corta consume energ\xEDa vital de sus victimas y
+      se la transfiere al portador.</i>\n<b>Otorga: Ataque Espada Corta Consumevida</b>\n\nMejora
+      +2: +2 Ataque +10% Da\xF1o (afecta tambi\xE9n a la Ballesta de Mano)\nEfecto:
+      Al da\xF1ar a un enemigo se gana +10% da\xF1o por 2 turnos. Acumulable.\n\n"
+    categoria: Arma
+    rareza: 2
+    icono: {fileID: 21300000, guid: 414d1ce99407ac04293e83cb45604019, type: 3}
+    precio: 340
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 3698515655082302367, guid: 28b76ec29d9dbc84b9ccdb43125bb216, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Espada Corta de Acechador
+    id: ITEM_SCRIPTS_EQUIPO_ARMAS_ESPADACORTAACECHADOR_ARMAESPADACORTAACECHADOR
+    prefab: {fileID: 2382491703511324309, guid: d9f1b55147f55a5438e64e9f644020b5, type: 3}
+    nombre: Espada Corta de Acechador
+    descripcion: '<i>Los Acechadores utilizan una espada corta que les permite atacar
+      con cautela sin ser vistos.</i><b>\n\nOtorga: Ataque Espada Corta</b>'
+    categoria: Arma
+    rareza: 0
+    icono: {fileID: 21300000, guid: d3885cca51b82e244a4c3fc410e72a24, type: 3}
+    precio: 70
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 2
+    requisitoAgi: 2
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 1190790172501250362, guid: d9f1b55147f55a5438e64e9f644020b5, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Espada Corta Filonegro
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMAS_ESPADA_CORTA_INFRECUENTE_ESPADA_CORTA_FILONEGRO_ARMAESPADACORTAFILONEGRO
+    prefab: {fileID: -7845728578984888629, guid: c13d10dc5b9c4394484841f359c1511f, type: 3}
+    nombre: Espada Corta Filonegro
+    descripcion: Espada corta de filo oscuro y dano certero.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: ad4c443966c6e344d87b9ad191abee4a, type: 3}
+    precio: 170
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 7054026973842621264, guid: c13d10dc5b9c4394484841f359c1511f, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Mandoble
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMAS_MANDOBLE_MANDOBLES_BASE_ARMAMANDOBLE_3
+    prefab: {fileID: 381250619854677881, guid: 48c84026f52a855469656dcc046030c1, type: 3}
+    nombre: Mandoble
+    descripcion: Mandoble pesado para golpes contundentes.
+    categoria: Arma
+    rareza: 3
+    icono: {fileID: 21300000, guid: 0bbb2fa20008b6d43ae9b57ccd674120, type: 3}
+    precio: 650
+    nivelMejora: 3
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 8877203065258719260, guid: 48c84026f52a855469656dcc046030c1, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Mandoble
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMAS_MANDOBLE_MANDOBLES_BASE_ARMAMANDOBLE_2
+    prefab: {fileID: 765741505553530280, guid: 6f7a0f04011e9d448b2c4c4bfbc0b964, type: 3}
+    nombre: Mandoble
+    descripcion: Mandoble pesado para golpes contundentes.
+    categoria: Arma
+    rareza: 2
+    icono: {fileID: 21300000, guid: 2beef4b94d00e6b459a880d05c93966b, type: 3}
+    precio: 255
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 8382119713494711311, guid: 6f7a0f04011e9d448b2c4c4bfbc0b964, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Mandoble
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMAS_MANDOBLE_MANDOBLES_BASE_ARMAMANDOBLE_1
+    prefab: {fileID: 8557412537474274451, guid: f53d706b58898864ba6e100ee0a509af, type: 3}
+    nombre: Mandoble
+    descripcion: Mandoble pesado para golpes contundentes.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: c005ad5805234d643a29125d391a25e3, type: 3}
+    precio: 110
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 6883895693932800439, guid: f53d706b58898864ba6e100ee0a509af, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Mandoble
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMAS_MANDOBLE_MANDOBLES_BASE_ARMAMANDOBLE
+    prefab: {fileID: 8557412537474274451, guid: dadbceb69926e0f498d8e182cf4d234e, type: 3}
+    nombre: Mandoble
+    descripcion: "<i>Los Caballeros siempre andan equipados con un mandoble muy pesado
+      y poderoso. Junto con su armadura pesada, hacen el n\xFAcleo del equipo de
+      estos valientes guerreros.</i>\n\n<b>\\n\\nOtorga: Corte Vertical</b> \n\n"
+    categoria: Arma
+    rareza: 0
+    icono: {fileID: 21300000, guid: dfb28ce9de7fcc441af831dda909be7f, type: 3}
+    precio: 45
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 6883895693932800439, guid: dadbceb69926e0f498d8e182cf4d234e, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 1
+  - listaTitulo: Arma - Mandoble Congelado
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMAS_MANDOBLE_RARA_MANDOBLECONGELADO_ARMAMANDOBLECONGELADO_2
+    prefab: {fileID: 8557412537474274451, guid: e4cb45c058957644d82b4e012e99f646, type: 3}
+    nombre: Mandoble Congelado
+    descripcion: Mandoble helado que enfria y desgasta al objetivo.
+    categoria: Arma
+    rareza: 2
+    icono: {fileID: 21300000, guid: 2beef4b94d00e6b459a880d05c93966b, type: 3}
+    precio: 410
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 3592861480536177032, guid: e4cb45c058957644d82b4e012e99f646, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Mandoble De Caballero
+    id: ITEM_SCRIPTS_EQUIPO_ARMAS_MANDOBLEDECABALLERO_ARMAMANDOBLEDECABALLERO
+    prefab: {fileID: 4300624250803482745, guid: 02e311fd278f3d94bb9b9c51bf200f9f, type: 3}
+    nombre: Mandoble De Caballero
+    descripcion: Mandoble pesado del caballero, potente en combate frontal.
+    categoria: Arma
+    rareza: 0
+    icono: {fileID: 21300000, guid: b90b2ff43ba1ec14581de4995b6340bd, type: 3}
+    precio: 120
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 6883895693932800439, guid: 02e311fd278f3d94bb9b9c51bf200f9f, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Mandoble Sagrado
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMAS_MANDOBLE_INFRECUENTE_MANDOBLESAGRADO_ARMAMANDOBLESAGRADO_1
+    prefab: {fileID: 8557412537474274451, guid: 4a41ddb1a64d72b4d800327a10a2b214, type: 3}
+    nombre: Mandoble Sagrado
+    descripcion: Mandoble bendecido con energia sagrada.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: c005ad5805234d643a29125d391a25e3, type: 3}
+    precio: 220
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 2282131005662849684, guid: 4a41ddb1a64d72b4d800327a10a2b214, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Mandoble Sediento
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMAS_MANDOBLE_INFRECUENTE_MANDOBLESEDIENTO_ARMAMANDOBLESEDIENTO_1
+    prefab: {fileID: 8557412537474274451, guid: f32aaa59bc54f234fbce51d4cfda851b, type: 3}
+    nombre: Mandoble Sediento
+    descripcion: Mandoble que castiga con mas fuerza a enemigos heridos.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: c005ad5805234d643a29125d391a25e3, type: 3}
+    precio: 220
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 3011479433564303587, guid: f32aaa59bc54f234fbce51d4cfda851b, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Armadura de Cuero
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURADECUERO_ARMADURA_DE_CUERO_BASE_ARMADURADECUERO_1
+    prefab: {fileID: 9114552496750484229, guid: 2c0df8a3033c09b49ab4b9f410b1b266, type: 3}
+    nombre: Armadura de Cuero
+    descripcion: Armadura de cuero flexible para buena movilidad.
+    categoria: Armadura
+    rareza: 1
+    icono: {fileID: 21300000, guid: d9b195f05eefe2b458326dd1a0d431eb, type: 3}
+    precio: 135
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 4
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Armadura de Cuero
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURADECUERO_ARMADURA_DE_CUERO_BASE_ARMADURADECUERO_2
+    prefab: {fileID: 3372764810285443771, guid: d7381d519dd9c754981130f255d4e76d, type: 3}
+    nombre: Armadura de Cuero
+    descripcion: Armadura de cuero flexible para buena movilidad.
+    categoria: Armadura
+    rareza: 2
+    icono: {fileID: 21300000, guid: 49be163aaafef3f4289051ce7b2680cf, type: 3}
+    precio: 220
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 5
+      buffDefensa: 1
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Armadura de Cuero
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURADECUERO_ARMADURA_DE_CUERO_BASE_ARMADURADECUERO_3
+    prefab: {fileID: 3609171456802955548, guid: 31bc26266eb55ae41a4111f8925176ba, type: 3}
+    nombre: Armadura de Cuero
+    descripcion: Armadura de cuero flexible para buena movilidad.
+    categoria: Armadura
+    rareza: 3
+    icono: {fileID: 21300000, guid: 10ab0f1e884c55c4cac198ccbbacc9ec, type: 3}
+    precio: 490
+    nivelMejora: 3
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 7
+      buffDefensa: 1
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Armadura de Cuero
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURADECUERO_ARMADURA_DE_CUERO_BASE_ARMADURADECUERO
+    prefab: {fileID: 554627427726029727, guid: 139415212170d9e46bd6343d5c0b40cc, type: 3}
+    nombre: Armadura de Cuero
+    descripcion: Armadura de cuero flexible para buena movilidad.
+    categoria: Armadura
+    rareza: 0
+    icono: {fileID: 21300000, guid: b62ae13f6c6570d4fa94cabd28d56d99, type: 3}
+    precio: 45
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 2
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 1
+  - listaTitulo: Armadura - Armadura de Cuero Borrosa
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURADECUERO_RARA_ARMADURADECUEROBORROSA_ARMADURADECUEROBORROSA_2
+    prefab: {fileID: 9114552496750484229, guid: aa94cdf1f8bb666498c03c9c2c8d159d, type: 3}
+    nombre: Armadura de Cuero Borrosa
+    descripcion: Armadura de cuero ligera orientada a evasion.
+    categoria: Armadura
+    rareza: 2
+    icono: {fileID: 21300000, guid: 49be163aaafef3f4289051ce7b2680cf, type: 3}
+    precio: 225
+    nivelMejora: 2
+    idEfectoEspecial: 4
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 4
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Armadura de Cuero de Fortaleza
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURADECUERO_INFRECUENTE_ARMADURADECUERODEFORTALEZA_ARMADURADECUERODEFORTALEZA_1
+    prefab: {fileID: 9114552496750484229, guid: e8851735db4a3694c819a03d321b0b07, type: 3}
+    nombre: Armadura de Cuero de Fortaleza
+    descripcion: Armadura de cuero que mejora la resistencia fisica.
+    categoria: Armadura
+    rareza: 1
+    icono: {fileID: 21300000, guid: d9b195f05eefe2b458326dd1a0d431eb, type: 3}
+    precio: 190
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 4
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 1
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: "Armadura - Armadura de Cuero Necr\xF3tico"
+    id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURADECUERO_INFRECUENTE_ARMADURADECUERONECR_TICO_ARMADURADECUERONECR_TICO_1
+    prefab: {fileID: 9114552496750484229, guid: 0a0cff4bfceccc145ac97f0e76dc8f85, type: 3}
+    nombre: "Armadura de Cuero Necr\xF3tico"
+    descripcion: Armadura de cuero flexible para buena movilidad.
+    categoria: Armadura
+    rareza: 1
+    icono: {fileID: 21300000, guid: d9b195f05eefe2b458326dd1a0d431eb, type: 3}
+    precio: 225
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 02000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 4
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 3
+      buffResDivino: -1
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Armadura de Cuero Reforzado
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURA_DE_CUERO_REFORZADO_ARMADURA_DE_CUERO_REFORZADO_BASE_ARMADURADECUEROREFORZADO_1
+    prefab: {fileID: 554627427726029727, guid: 1effc8a0af8942f478bbe1f526612f87, type: 3}
+    nombre: Armadura de Cuero Reforzado
+    descripcion: Armadura de cuero reforzado equilibrada y resistente.
+    categoria: Armadura
+    rareza: 1
+    icono: {fileID: 21300000, guid: aa816e92494a68c458714c337c441159, type: 3}
+    precio: 110
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 5
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Armadura de Cuero Reforzado
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURA_DE_CUERO_REFORZADO_ARMADURA_DE_CUERO_REFORZADO_BASE_ARMADURADECUEROREFORZADO_2
+    prefab: {fileID: 554627427726029727, guid: b3f9e5daee5a8464f93a5b94191a08da, type: 3}
+    nombre: Armadura de Cuero Reforzado
+    descripcion: Armadura de cuero reforzado equilibrada y resistente.
+    categoria: Armadura
+    rareza: 2
+    icono: {fileID: 21300000, guid: 8be8b1cac600fee4aa8a357c5e7ffc93, type: 3}
+    precio: 256
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 6
+      buffDefensa: 1
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Armadura de Cuero Reforzado
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURA_DE_CUERO_REFORZADO_ARMADURA_DE_CUERO_REFORZADO_BASE_ARMADURADECUEROREFORZADO_3
+    prefab: {fileID: 554627427726029727, guid: f09ed62adf9c8c34eaf72fcfc0baabca, type: 3}
+    nombre: Armadura de Cuero Reforzado
+    descripcion: Armadura de cuero reforzado equilibrada y resistente.
+    categoria: Armadura
+    rareza: 3
+    icono: {fileID: 21300000, guid: 631aecd505450d049ace4ee72f702252, type: 3}
+    precio: 520
+    nivelMejora: 3
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 8
+      buffDefensa: 1
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Armadura de Cuero Reforzado
+    id: ITEM_SCRIPTS_EQUIPO_ARMADURAS_ARMADURACUEROREFORZADOACECHADOR_ARMADURACUEROREFORZADOACECHADOR
+    prefab: {fileID: -274672158167638981, guid: ab6ed361b803d0c4394728af1a778af2, type: 3}
+    nombre: Armadura de Cuero Reforzado
+    descripcion: Armadura de Cuero Reforzado de acechador
+    categoria: Armadura
+    rareza: 0
+    icono: {fileID: 21300000, guid: 31236c6f3050689478ff98bcca45f235, type: 3}
+    precio: 85
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Armadura de Cuero Reforzado
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURA_DE_CUERO_REFORZADO_ARMADURA_DE_CUERO_REFORZADO_BASE_ARMADURADECUEROREFORZADO
+    prefab: {fileID: 554627427726029727, guid: 2418293d745dc0f498e2aecba5f85014, type: 3}
+    nombre: Armadura de Cuero Reforzado
+    descripcion: "<i>Una Armadura de Cuero que brinda una decente protecci\xF3n al
+      Acechador mientras le permite moverse con sigilo.</i>\n\n+3 Armadura"
+    categoria: Armadura
+    rareza: 0
+    icono: {fileID: 21300000, guid: 66065077db638d649baaa13bbc26b015, type: 3}
+    precio: 47
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 3
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 1
+  - listaTitulo: Armadura - Armadura de Cuero Reforzado de Ligereza
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURA_DE_CUERO_REFORZADO_INFRECUENTE_ARMADURADECUEROREFORZADODELIGEREZA_ARMADURADECUEROREFORZADODELIGEREZA
+    prefab: {fileID: 554627427726029727, guid: 50d70cad8d23b4a42b974449a0ff4137, type: 3}
+    nombre: Armadura de Cuero Reforzado de Ligereza
+    descripcion: Armadura reforzada que prioriza movilidad.
+    categoria: Armadura
+    rareza: 1
+    icono: {fileID: 21300000, guid: 48535645f35980e4a8980fea0f143363, type: 3}
+    precio: 190
+    nivelMejora: 1
+    idEfectoEspecial: 1
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 5
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: "Armadura - Armadura de Cuero Reforzado de Protecci\xF3n Elemental"
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURA_DE_CUERO_REFORZADO_INFRECUENTE_ARMADURADECUEROREFORZADODEPROTECCI_NELEMENTAL_ARMADURADECUEROREFORZADODEPROTECCIONELEMENTAL
+    prefab: {fileID: 554627427726029727, guid: 9b1a20f58a2713a41b39aa99b1400659, type: 3}
+    nombre: "Armadura de Cuero Reforzado de Protecci\xF3n Elemental"
+    descripcion: Armadura reforzada con defensa elemental adicional.
+    categoria: Armadura
+    rareza: 1
+    icono: {fileID: 21300000, guid: 6263a18b0a28ea3489a9d6d76386bdd5, type: 3}
+    precio: 178
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 5
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 3
+      buffResRayo: 3
+      buffResHielo: 3
+      buffResArcano: 0
+      buffResAcido: 3
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Armadura de Cuero Reforzado de Velo
+    id: ITEM_SCRIPTS_CLASES_ACECHADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURA_DE_CUERO_REFORZADO_RARA_ARMADURADECUEROREFORZADODEVELO_ARMADURADECUEROREFORZADODEVELO
+    prefab: {fileID: 554627427726029727, guid: 31f09f6301cdf1a48a200cc02f80b8ed, type: 3}
+    nombre: Armadura de Cuero Reforzado de Velo
+    descripcion: Armadura reforzada pensada para sigilo y evasiones.
+    categoria: Armadura
+    rareza: 2
+    icono: {fileID: 21300000, guid: 7fcceb45f2afe534dba3eb5b73f8874c, type: 3}
+    precio: 270
+    nivelMejora: 2
+    idEfectoEspecial: 2
+    clasesPermitidas: 04000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 6
+      buffDefensa: 1
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 3
+      buffResRayo: 3
+      buffResHielo: 3
+      buffResArcano: 0
+      buffResAcido: 3
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Armadura Pesada de Caballero
+    id: ITEM_SCRIPTS_EQUIPO_ARMADURAS_ARMADURAPESADACABALLERO_ARMADURAPESADACABALLERO
+    prefab: {fileID: 8699174448954785113, guid: ef4b9e8a3e2016f41a6442c031fd1f1c, type: 3}
+    nombre: Armadura Pesada de Caballero
+    descripcion: Armadura pesada con gran proteccion y menor movilidad.
+    categoria: Armadura
+    rareza: 0
+    icono: {fileID: 21300000, guid: 6cfadad43debfa242811d0a79588a9d9, type: 3}
+    precio: 150
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 5
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: -2
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 5396806420807064732, guid: ef4b9e8a3e2016f41a6442c031fd1f1c, type: 3}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Coraza
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMADURAS_CORAZA_CORAZABASE_ARMADURACORAZA
+    prefab: {fileID: 8699174448954785113, guid: e49d74027cbd0304b90a36130067f376, type: 3}
+    nombre: Coraza
+    descripcion: Coraza de caballero para defensa frontal solida.
+    categoria: Armadura
+    rareza: 0
+    icono: {fileID: 21300000, guid: b8e65ad09a769384aa0aacbb27d8e36f, type: 3}
+    precio: 50
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 5
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: -2
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 5396806420807064732, guid: e49d74027cbd0304b90a36130067f376, type: 3}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 1
+  - listaTitulo: Armadura - Coraza
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMADURAS_CORAZA_CORAZABASE_ARMADURACORAZA_3
+    prefab: {fileID: 8699174448954785113, guid: 84a43e26d964f4645b462e570ba87ee5, type: 3}
+    nombre: Coraza
+    descripcion: Coraza de caballero para defensa frontal solida.
+    categoria: Armadura
+    rareza: 1
+    icono: {fileID: 21300000, guid: 5a247a8fd25e5dd41aa2856688a1f92d, type: 3}
+    precio: 550
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 10
+      buffDefensa: 1
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: -2
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 5396806420807064732, guid: 84a43e26d964f4645b462e570ba87ee5, type: 3}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Coraza
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMADURAS_CORAZA_CORAZABASE_ARMADURACORAZA_2
+    prefab: {fileID: 8699174448954785113, guid: 84dded725592bf24a9357678dfbf07a8, type: 3}
+    nombre: Coraza
+    descripcion: Coraza de caballero para defensa frontal solida.
+    categoria: Armadura
+    rareza: 1
+    icono: {fileID: 21300000, guid: 820d2af56ff0d2e49a5819c821c488e4, type: 3}
+    precio: 340
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 8
+      buffDefensa: 1
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: -2
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 5396806420807064732, guid: 84dded725592bf24a9357678dfbf07a8, type: 3}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Coraza
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMADURAS_CORAZA_CORAZABASE_ARMADURACORAZA_1
+    prefab: {fileID: 8699174448954785113, guid: 928f8eca73de78d4f91c253dfca1a488, type: 3}
+    nombre: Coraza
+    descripcion: Coraza de caballero para defensa frontal solida.
+    categoria: Armadura
+    rareza: 1
+    icono: {fileID: 21300000, guid: 19be55d5ef6929141bb5524986761b6e, type: 3}
+    precio: 208
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 7
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: -2
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 5396806420807064732, guid: 928f8eca73de78d4f91c253dfca1a488, type: 3}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Coraza de Fuerza de Gigante
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMADURAS_CORAZA_RARA_CORAZADEFUERZADEGIGANTE_ARMADURACORAZADEFUERZADEGIGANTE
+    prefab: {fileID: 8699174448954785113, guid: 5d16c13c4a74d7d42a365533d766ce32, type: 3}
+    nombre: Coraza de Fuerza de Gigante
+    descripcion: Coraza robusta que incrementa la fuerza bruta.
+    categoria: Armadura
+    rareza: 2
+    icono: {fileID: 21300000, guid: 820d2af56ff0d2e49a5819c821c488e4, type: 3}
+    precio: 610
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 2
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 7
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: -2
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 5396806420807064732, guid: 5d16c13c4a74d7d42a365533d766ce32, type: 3}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Coraza de Llamas
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMADURAS_CORAZA_INFRECUENTE_CORAZADELLAMAS_ARMADURACORAZADELLAMAS_1
+    prefab: {fileID: 8699174448954785113, guid: 42bc39d040e023249a2152c13c83be2e, type: 3}
+    nombre: Coraza de Llamas
+    descripcion: Coraza templada para contraataques de fuego.
+    categoria: Armadura
+    rareza: 1
+    icono: {fileID: 21300000, guid: 19be55d5ef6929141bb5524986761b6e, type: 3}
+    precio: 315
+    nivelMejora: 1
+    idEfectoEspecial: 3
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 7
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 2
+      buffResRayo: -2
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 5396806420807064732, guid: 42bc39d040e023249a2152c13c83be2e, type: 3}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Coraza Liviana
+    id: ITEM_SCRIPTS_CLASES_CABALLERO_ITEMSEXCLUSIVOS_ARMADURAS_CORAZA_INFRECUENTE_CORAZALIVIANA_ARMADURACORAZALIVIANA
+    prefab: {fileID: -2479308862295878593, guid: 5620d01f12091bd44b7a545e909166d3, type: 3}
+    nombre: Coraza Liviana
+    descripcion: Coraza liviana para mantener proteccion con movilidad.
+    categoria: Armadura
+    rareza: 0
+    icono: {fileID: 21300000, guid: b8e65ad09a769384aa0aacbb27d8e36f, type: 3}
+    precio: 120
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 01000000
+    requisitoFue: 3
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 5
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: -2
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: "Consumible - B\xE1lsamo de Claridad"
+    id: ITEM_SCRIPTS_CONSUMIBLES_BALSAMOCLARIDAD_BALSAMODECLARIDAD
+    prefab: {fileID: 7763142053298409268, guid: 58ccf39d392d4d64a9e27cc92299f272, type: 3}
+    nombre: "B\xE1lsamo de Claridad"
+    descripcion: Balsamo que mejora la mente y la concentracion por un combate.
+    categoria: Consumible
+    rareza: 0
+    icono: {fileID: 21300000, guid: 6a1ca2c80e02f6842af77ecdae7e9b01, type: 3}
+    precio: 50
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: "Consumible - B\xE1lsamo de Resistencia"
+    id: ITEM_SCRIPTS_CONSUMIBLES_BALSAMOFORT_BALSAMOFORT
+    prefab: {fileID: 683065749756781170, guid: bd1fae79b46ebe845a31c0af9da58803, type: 3}
+    nombre: "B\xE1lsamo de Resistencia"
+    descripcion: Balsamo que refuerza la fortaleza y la resistencia por un combate.
+    categoria: Consumible
+    rareza: 0
+    icono: {fileID: 21300000, guid: 369fd37d98b8e6b4e8930c01014073b5, type: 3}
+    precio: 50
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: "Consumible - B\xE1lsamo Energizante"
+    id: ITEM_SCRIPTS_CONSUMIBLES_BALSAMOENERGIZANTE_BALSAMOENERGIZANTE
+    prefab: {fileID: 601830119931110894, guid: 6ca80050d289eaf43b22e3feb555004e, type: 3}
+    nombre: "B\xE1lsamo Energizante"
+    descripcion: Balsamo que acelera reflejos y reaccion por un combate.
+    categoria: Consumible
+    rareza: 0
+    icono: {fileID: 21300000, guid: 7612140f4c181434a9ba25a355a312a6, type: 3}
+    precio: 50
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: "Consumible - Elixir de Resistencia al \xC1cido"
+    id: ITEM_SCRIPTS_CONSUMIBLES_ELIXIR_DE_RESISTENCIA_AL_CIDO_ELIXIR_RESISTENCIAACIDO
+    prefab: {fileID: 2838462262336933394, guid: 390fe48e9fbac6f479b09a45ef3c24ae, type: 3}
+    nombre: "Elixir de Resistencia al \xC1cido"
+    descripcion: "Al ser consumido, este Elixir brinda protecci\xF3n al \xC1cido.\n\nConsumible:
+      +5 Resistencia al \xC1cido por toda la batalla."
+    categoria: Consumible
+    rareza: 0
+    icono: {fileID: 21300000, guid: 723c1a3065a69224a8ee4f08f4f2726f, type: 3}
+    precio: 45
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: ffffffff
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: "Consumible - Elixir de Resistencia al Fr\xEDo"
+    id: ITEM_SCRIPTS_CONSUMIBLES_ELIXIR_DE_RESISTENCIA_AL_FR_O_ELIXIR_RESISTENCIAFRIO
+    prefab: {fileID: 2742622318214431031, guid: 5ec8506964977eb4086e571bc1dd9a67, type: 3}
+    nombre: "Elixir de Resistencia al Fr\xEDo"
+    descripcion: "Al ser consumido, este Elixir brinda protecci\xF3n al Fr\xEDo.\n\nConsumible:
+      +5 Resistencia al Fr\xEDo  por toda la batalla."
+    categoria: Consumible
+    rareza: 0
+    icono: {fileID: 21300000, guid: d29cb794e24469a4a9eb568f1b72a976, type: 3}
+    precio: 45
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: ffffffff
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Consumible - Elixir de Resistencia al Fuego
+    id: ITEM_SCRIPTS_CONSUMIBLES_ELIXIR_DE_RESISTENCIA_AL_FUEGO_ELIXIR_RESISTENCIAFUEGO
+    prefab: {fileID: 4804655850201095305, guid: 837c5822ab50db54fbe74d29f6624994, type: 3}
+    nombre: Elixir de Resistencia al Fuego
+    descripcion: "Al ser consumido, este Elixir brinda protecci\xF3n al Fuego.\n\nConsumible:
+      +5 Resistencia al Fuego por toda la batalla."
+    categoria: Consumible
+    rareza: 0
+    icono: {fileID: 21300000, guid: 886eb2ce647b52d4fa98c70d9b8fb2d0, type: 3}
+    precio: 45
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: ffffffff
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Consumible - Elixir de Resistencia al Rayo
+    id: ITEM_SCRIPTS_CONSUMIBLES_ELIXIR_DE_RESISTENCIA_AL_RAYO_ELIXIR_RESISTENCIARAYO
+    prefab: {fileID: 3874705394702310464, guid: 6e2cc417cbac6f94aa049243c9200dc7, type: 3}
+    nombre: Elixir de Resistencia al Rayo
+    descripcion: "Al ser consumido, este Elixir brinda protecci\xF3n al Rayo.\n\nConsumible:
+      +5 Resistencia al Rayo por toda la batalla."
+    categoria: Consumible
+    rareza: 0
+    icono: {fileID: 21300000, guid: fbf12d6984fefa64a94a8c5f05540d9e, type: 3}
+    precio: 45
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: ffffffff
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Consumible - Panacea
+    id: ITEM_SCRIPTS_CONSUMIBLES_PANACEA_PANACEA
+    prefab: {fileID: 2838462262336933394, guid: e50dd0da88dd2f444a6cd95f334e5ded, type: 3}
+    nombre: Panacea
+    descripcion: 'Al ser consumido, remueve todos los efectos negativos del personaje
+
+
+      Consumible: 
+      Remueve todos los debuffs no ambientales.'
+    categoria: Consumible
+    rareza: 0
+    icono: {fileID: 21300000, guid: 0c2761fcc569e2d4281579f813340939, type: 3}
+    precio: 80
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: ffffffff
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: "Consumible - Poci\xF3n de Curaci\xF3n Mayor"
+    id: ITEM_SCRIPTS_CONSUMIBLES_POCI_N_DE_CURACI_N_MAYOR_POCION_CURACIONMAYOR
+    prefab: {fileID: 7031733620000119643, guid: db0e5a9dad411594f93d89b66bc1d5f6, type: 3}
+    nombre: "Poci\xF3n de Curaci\xF3n Mayor"
+    descripcion: "Esta poci\xF3n puede ser consumida para sanar heridas superficiales
+      en un instante.\n\nConsumible: Cura 20+2d8 Vida."
+    categoria: Consumible
+    rareza: 0
+    icono: {fileID: 21300000, guid: 85ae172e8d649a542a9e97c310be5cd7, type: 3}
+    precio: 78
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: ffffffff
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: "Consumible - Poci\xF3n de Curaci\xF3n Media"
+    id: ITEM_SCRIPTS_CONSUMIBLES_POCI_N_DE_CURACI_N_MEDIA_POCION_CURACIONMEDIA
+    prefab: {fileID: 500088475482616300, guid: 5ceabc5fdcea2874fb0584ec1b254064, type: 3}
+    nombre: "Poci\xF3n de Curaci\xF3n Media"
+    descripcion: "Esta poci\xF3n puede ser consumida para sanar heridas superficiales
+      en un instante.\n\nConsumible: Cura 12+1d8 Vida."
+    categoria: Consumible
+    rareza: 0
+    icono: {fileID: 21300000, guid: 85ae172e8d649a542a9e97c310be5cd7, type: 3}
+    precio: 55
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: ffffffff
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: "Consumible - Poci\xF3n de Curaci\xF3n Menor"
+    id: ITEM_SCRIPTS_CONSUMIBLES_POCI_N_CURACI_N_MENOR_POCION_CURACIONMENOR
+    prefab: {fileID: 6791631824163478663, guid: edf31f12884f22844b7e44c01846dd03, type: 3}
+    nombre: "Poci\xF3n de Curaci\xF3n Menor"
+    descripcion: "Esta poci\xF3n puede ser consumida para sanar heridas superficiales
+      en un instante.\n\nConsumible: Cura 5+1d6 Vida."
+    categoria: Consumible
+    rareza: 0
+    icono: {fileID: 21300000, guid: 85ae172e8d649a542a9e97c310be5cd7, type: 3}
+    precio: 20
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: ffffffff
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: "Consumible - S\xEDmbolo de Proteccion Arcano"
+    id: ITEM_SCRIPTS_CONSUMIBLES_S_MBOLO_ARCANO_PROT_SIMBOLO_ARCANO_DE_PROTECCION
+    prefab: {fileID: 8246585316837474729, guid: bffeccfe8b3c5ca4ab194902a65ef698, type: 3}
+    nombre: "S\xEDmbolo de Proteccion Arcano"
+    descripcion: Otorga 3 de Resistencia contra todos los elementos. Dura 4 turnos.
+    categoria: Consumible
+    rareza: 0
+    icono: {fileID: 21300000, guid: 7a8ecbc650c0f544aabe0da461ea4057, type: 3}
+    precio: 0
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: ffffffff
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+    debuffsImpactoArma: []
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0

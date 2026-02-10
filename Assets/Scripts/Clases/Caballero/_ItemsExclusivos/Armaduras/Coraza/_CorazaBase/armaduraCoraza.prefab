@@ -50,7 +50,7 @@ MonoBehaviour:
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 50
-  itemDescripcion: 
+  itemDescripcion: "Coraza de caballero para defensa frontal solida."
   iRareza: 0
   nivelMejora: 0
   requisitoFue: 3

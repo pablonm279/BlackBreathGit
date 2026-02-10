@@ -6,6 +6,9 @@ using TMPro;
 
 public class SequitoMercaderes : MonoBehaviour
 {
+    [Header("Fuente de Items")]
+    [SerializeField] ItemDatabase itemDatabase;
+    [SerializeField] bool usarItemDatabase = true;
 
     [SerializeField] List<Arma> ArmasAVender = new List<Arma>();
     [SerializeField] List<Armadura> ArmadurasAVender = new List<Armadura>();
@@ -28,8 +31,36 @@ public class SequitoMercaderes : MonoBehaviour
 
     void Start()
     {
+        AsegurarReferenciaDatabase();
         GenerarItemsVendidos();
 
+    }
+
+#if UNITY_EDITOR
+    void OnValidate()
+    {
+        if (itemDatabase == null)
+        {
+            itemDatabase = UnityEditor.AssetDatabase.LoadAssetAtPath<ItemDatabase>("Assets/Data/ItemDatabase.asset");
+        }
+    }
+#endif
+
+    void AsegurarReferenciaDatabase()
+    {
+        if (!usarItemDatabase || itemDatabase != null)
+        {
+            return;
+        }
+
+#if UNITY_EDITOR
+        itemDatabase = UnityEditor.AssetDatabase.LoadAssetAtPath<ItemDatabase>("Assets/Data/ItemDatabase.asset");
+#endif
+
+        if (itemDatabase == null)
+        {
+            Debug.LogWarning("[Items] SequitoMercaderes no tiene ItemDatabase asignada. Se usaran listas legacy.");
+        }
     }
 
     public void Actualizar()
@@ -85,11 +116,25 @@ public class SequitoMercaderes : MonoBehaviour
         // Limpiar la lista de ItemsVendidos antes de agregar nuevos elementos
         ItemsVendidos.Clear();
 
-        // Crear copias de las listas originales para modificar sin afectar las originales
-        List<Arma> armasDisponibles = new List<Arma>(ArmasAVender);
-        List<Armadura> armadurasDisponibles = new List<Armadura>(ArmadurasAVender);
-        List<Accesorio> accesoriosDisponibles = new List<Accesorio>(AccesoriosAVender);
-        List<Consumible> consumiblesDisponibles = new List<Consumible>(ConsumiblesAVender);
+        // Arma pools desde DB (activos y no excluidos de tiendas), con fallback a listas legacy.
+        List<Arma> armasDisponibles;
+        List<Armadura> armadurasDisponibles;
+        List<Accesorio> accesoriosDisponibles;
+        List<Consumible> consumiblesDisponibles;
+
+        bool loadedFromDatabase = TryBuildPoolsFromDatabase(
+            out armasDisponibles,
+            out armadurasDisponibles,
+            out accesoriosDisponibles,
+            out consumiblesDisponibles);
+
+        if (!loadedFromDatabase)
+        {
+            armasDisponibles = new List<Arma>(ArmasAVender);
+            armadurasDisponibles = new List<Armadura>(ArmadurasAVender);
+            accesoriosDisponibles = new List<Accesorio>(AccesoriosAVender);
+            consumiblesDisponibles = new List<Consumible>(ConsumiblesAVender);
+        }
 
         // Determinar cuántos items agregar de cada lista
         int cantidadPorLista = intItemsaVender / 4;
@@ -127,6 +172,12 @@ public class SequitoMercaderes : MonoBehaviour
         }
 
         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-El Séquito de Mercaderes ha actualizado su oferta."));
+        CompletarSlotsRestantesConPools(
+            armasDisponibles,
+            armadurasDisponibles,
+            accesoriosDisponibles,
+            consumiblesDisponibles,
+            random);
         MostrarInventarioVenta();
     }
 
@@ -157,38 +208,112 @@ public class SequitoMercaderes : MonoBehaviour
         }
     }
 
-    bool TienePersonajedeLaClasedelItem(Item item)
+    private void CompletarSlotsRestantesConPools(
+        List<Arma> armasDisponibles,
+        List<Armadura> armadurasDisponibles,
+        List<Accesorio> accesoriosDisponibles,
+        List<Consumible> consumiblesDisponibles,
+        System.Random random)
     {
-        bool tiene = false;
-        List<int> listaClasesIDPresentes = new List<int>();
-        //Determina qué clases están presentes en el equipo del jugador
-        // Esto se hace para evitar que el jugador compre un item que no puede usar
-        foreach (Personaje personaje in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
+        if (random == null)
         {
-            if (!listaClasesIDPresentes.Contains(personaje.IDClase))
-            {
-                listaClasesIDPresentes.Add(personaje.IDClase);
-            }
-        }
-        // Verificar si el item tiene una clase asociada
-        if (item.IDClasesQuePuedenUsarEsteItem != null && item.IDClasesQuePuedenUsarEsteItem.Count > 0)
-        {
-            foreach (int idClase in item.IDClasesQuePuedenUsarEsteItem)
-            {
-                if (listaClasesIDPresentes.Contains(idClase))
-                {
-                    tiene = true;
-                    break;
-                }
-            }
-        }
-        else
-        {
-            // Si el item no tiene clases asociadas, se asume que es usable por cualquier clase
-            tiene = true;
+            random = new System.Random();
         }
 
-        return tiene;
+        while (ItemsVendidos.Count < intItemsaVender)
+        {
+            List<Item> candidatos = new List<Item>();
+            candidatos.AddRange(FiltrarItemsValidos(armasDisponibles));
+            candidatos.AddRange(FiltrarItemsValidos(armadurasDisponibles));
+            candidatos.AddRange(FiltrarItemsValidos(accesoriosDisponibles));
+            candidatos.AddRange(FiltrarItemsValidos(consumiblesDisponibles));
+
+            if (candidatos.Count == 0)
+            {
+                break;
+            }
+
+            int index = random.Next(candidatos.Count);
+            Item elegido = candidatos[index];
+            if (elegido == null)
+            {
+                break;
+            }
+
+            ItemsVendidos.Add(Instantiate(elegido));
+
+            if (elegido is Arma arma)
+            {
+                armasDisponibles.Remove(arma);
+            }
+            else if (elegido is Armadura armadura)
+            {
+                armadurasDisponibles.Remove(armadura);
+            }
+            else if (elegido is Accesorio accesorio)
+            {
+                accesoriosDisponibles.Remove(accesorio);
+            }
+            else if (elegido is Consumible consumible)
+            {
+                consumiblesDisponibles.Remove(consumible);
+            }
+        }
+    }
+
+    private List<T> FiltrarItemsValidos<T>(List<T> source) where T : Item
+    {
+        List<T> result = new List<T>();
+        if (source == null)
+        {
+            return result;
+        }
+
+        for (int i = 0; i < source.Count; i++)
+        {
+            T item = source[i];
+            if (item != null && TienePersonajedeLaClasedelItem(item))
+            {
+                result.Add(item);
+            }
+        }
+
+        return result;
+    }
+
+    bool TienePersonajedeLaClasedelItem(Item item)
+    {
+        if (item == null)
+        {
+            return false;
+        }
+
+        // Si no tiene clases configuradas o incluye -1, cualquier clase puede usarlo.
+        if (item.UsaTodasLasClases())
+        {
+            return true;
+        }
+
+        // Evita ofrecer items que ninguna clase actual del grupo pueda equipar/usar.
+        if (CampaignManager.Instance == null || CampaignManager.Instance.scMenuPersonajes == null || CampaignManager.Instance.scMenuPersonajes.listaPersonajes == null)
+        {
+            return false;
+        }
+
+        foreach (Personaje personaje in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
+        {
+            if (personaje == null)
+            {
+                continue;
+            }
+
+            if (item.PuedeUsarClase(personaje.IDClase))
+            {
+                return true;
+            }
+        }
+
+        return false;
 
     }
 
@@ -217,16 +342,106 @@ public class SequitoMercaderes : MonoBehaviour
 
 
     }
-    
+
+    bool TryBuildPoolsFromDatabase(
+        out List<Arma> armas,
+        out List<Armadura> armaduras,
+        out List<Accesorio> accesorios,
+        out List<Consumible> consumibles)
+    {
+        armas = new List<Arma>();
+        armaduras = new List<Armadura>();
+        accesorios = new List<Accesorio>();
+        consumibles = new List<Consumible>();
+
+        if (!usarItemDatabase || itemDatabase == null || itemDatabase.items == null)
+        {
+            return false;
+        }
+
+        HashSet<Item> uniqueItems = new HashSet<Item>();
+        for (int i = 0; i < itemDatabase.items.Count; i++)
+        {
+            ItemDatabaseEntry entry = itemDatabase.items[i];
+            if (!EsEntradaValidaParaTiendas(entry))
+            {
+                continue;
+            }
+
+            Item prefab = entry.prefab;
+            if (prefab == null || !uniqueItems.Add(prefab))
+            {
+                continue;
+            }
+
+            if (prefab is Arma arma)
+            {
+                armas.Add(arma);
+            }
+            else if (prefab is Armadura armadura)
+            {
+                armaduras.Add(armadura);
+            }
+            else if (prefab is Accesorio accesorio)
+            {
+                accesorios.Add(accesorio);
+            }
+            else if (prefab is Consumible consumible)
+            {
+                consumibles.Add(consumible);
+            }
+        }
+
+        return armas.Count + armaduras.Count + accesorios.Count + consumibles.Count > 0;
+    }
+
+    List<Item> BuildItemsListFromDatabase()
+    {
+        List<Item> result = new List<Item>();
+        if (!usarItemDatabase || itemDatabase == null || itemDatabase.items == null)
+        {
+            return result;
+        }
+
+        HashSet<Item> uniqueItems = new HashSet<Item>();
+        for (int i = 0; i < itemDatabase.items.Count; i++)
+        {
+            ItemDatabaseEntry entry = itemDatabase.items[i];
+            if (!EsEntradaValidaParaTiendas(entry))
+            {
+                continue;
+            }
+
+            if (entry.prefab != null && uniqueItems.Add(entry.prefab))
+            {
+                result.Add(entry.prefab);
+            }
+        }
+
+        return result;
+    }
+
+    bool EsEntradaValidaParaTiendas(ItemDatabaseEntry entry)
+    {
+        return entry != null
+            && entry.prefab != null
+            && entry.activo
+            && !entry.excluirDeTiendas;
+    }
 
     public Item ObtenerItemAlAzar()
     {
-        // Crear una lista temporal con todos los items disponibles
-        List<Item> todosLosItems = new List<Item>();
-        todosLosItems.AddRange(ArmasAVender);
-        todosLosItems.AddRange(ArmadurasAVender);
-        todosLosItems.AddRange(AccesoriosAVender);
-        todosLosItems.AddRange(ConsumiblesAVender);
+        // Usa DB cuando existe: activos y no excluidos de tiendas.
+        List<Item> todosLosItems = BuildItemsListFromDatabase();
+
+        // Fallback legacy
+        if (todosLosItems.Count == 0)
+        {
+            todosLosItems.AddRange(ArmasAVender);
+            todosLosItems.AddRange(ArmadurasAVender);
+            todosLosItems.AddRange(AccesoriosAVender);
+            todosLosItems.AddRange(ConsumiblesAVender);
+        }
 
         if (todosLosItems.Count == 0)
             return null;

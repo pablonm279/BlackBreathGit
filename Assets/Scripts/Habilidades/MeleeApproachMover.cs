@@ -9,10 +9,10 @@ public class MeleeApproachMover : MonoBehaviour
 {
   [Header("Movimiento visual melee")]
   [SerializeField] private float duracionIdaBase = 0.4f;
-  [SerializeField] private float duracionVueltaBase = 0.4f;
+  [SerializeField] private float duracionVueltaBase = 0.3f;
   [SerializeField] private float offsetAtras = 0.55f; // metros detrás del objetivo
   [SerializeField] private Vector3 offsetAdicional = Vector3.zero;
-  [SerializeField] private float demoraAntesDeVolver = 0.8f;
+  [SerializeField] private float demoraAntesDeVolver = 0.2f;
   [SerializeField] private float pausaTrasLlegar = 0.15f;
   [SerializeField] private float zoomCamaraFactor = 0.03f; // 3% por Y hacia el objetivo
 

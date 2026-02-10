@@ -42,6 +42,7 @@ public class ImprovisarFlechas : Habilidad
 
       int flechasFijas = (NIVEL > 1 ? 1 : 0) + (NIVEL == 4 ? 1 : 0);
       int buffCrit = 1 + (NIVEL > 2 ? 1 : 0);
+      int buffPenetracion = 1;
       int duracionBuff = 2;
       bool sumaDanioNivel5 = NIVEL == 5;
 
@@ -66,7 +67,7 @@ public class ImprovisarFlechas : Habilidad
           cuerpo += "<b>Arrows gained:</b> current AP\n";
         }
         cuerpo += "<b>On cast:</b> sets current AP to 0\n";
-        cuerpo += $"<b>Buff ({duracionBuff} turns):</b> +{buffCrit} crit range";
+        cuerpo += $"<b>Buff ({duracionBuff} turns):</b> +{buffCrit} crit range, +{buffPenetracion} Armor Penetration";
         if (sumaDanioNivel5)
         {
           cuerpo += ", +15% Damage";
@@ -85,7 +86,7 @@ public class ImprovisarFlechas : Habilidad
           cuerpo += "<b>Flechas ganadas:</b> AP actuales\n";
         }
         cuerpo += "<b>Al lanzarla:</b> deja los AP actuales en 0\n";
-        cuerpo += $"<b>Buff ({duracionBuff} turnos):</b> +{buffCrit} rango critico";
+        cuerpo += $"<b>Buff ({duracionBuff} turnos):</b> +{buffCrit} rango critico, +{buffPenetracion} Penetracion de armadura";
         if (sumaDanioNivel5)
         {
           cuerpo += ", +15% Danio";
@@ -176,10 +177,11 @@ public class ImprovisarFlechas : Habilidad
        buff.boolfDebufftBuff = true;
        buff.DuracionBuffRondas = 2;
        buff.cantCritDado += 1;
-       if( NIVEL > 2)
-       {
-         buff.cantCritDado += 1;
-       }
+       buff.cantPenetracionArmadura  += 1;
+       if (NIVEL > 2)
+    {
+      buff.cantCritDado += 1;
+    }
         if( NIVEL == 5)
        {
          buff.cantDanioPorcentaje += 15;

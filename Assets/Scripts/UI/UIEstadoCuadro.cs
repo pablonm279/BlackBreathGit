@@ -250,6 +250,12 @@ public class UIEstadoCuadro : MonoBehaviour
     if (buff.cantDanioPorcentaje != 0) descripcion += TRADU.i.Traducir("Daño: ") + "<color=" + (buff.cantDanioPorcentaje > 0 ? "green" : "red") + ">" + buff.cantDanioPorcentaje + "%" + "</color>\n";
 
     if (buff.cantCritDado != 0) descripcion += TRADU.i.Traducir("Crítico Dado: ") + "<color=" + (buff.cantCritDado > 0 ? "green" : "red") + ">" + buff.cantCritDado + "</color>\n";
+    if (buff.cantPenetracionArmadura != 0) descripcion += EtiquetaBilingue("Penetracion armadura: ", "Armor Penetration: ") + "<color=" + (buff.cantPenetracionArmadura > 0 ? "green" : "red") + ">" + buff.cantPenetracionArmadura + "</color>\n";
+    if (buff.cantReduccionDanioRecibidoPorcentaje != 0) descripcion += EtiquetaBilingue("Reduccion dano recibido: ", "Damage reduction: ") + "<color=" + (buff.cantReduccionDanioRecibidoPorcentaje > 0 ? "green" : "red") + ">" + buff.cantReduccionDanioRecibidoPorcentaje + "%" + "</color>\n";
+    if (buff.cantReduccionDanioCriticoRecibidoPorcentaje != 0) descripcion += EtiquetaBilingue("Reduccion dano critico recibido: ", "Critical damage reduction: ") + "<color=" + (buff.cantReduccionDanioCriticoRecibidoPorcentaje > 0 ? "green" : "red") + ">" + buff.cantReduccionDanioCriticoRecibidoPorcentaje + "%" + "</color>\n";
+    if (buff.cantResistenciaEstadosPorcentaje != 0) descripcion += EtiquetaBilingue("Resistencia estados: ", "Status resistance: ") + "<color=" + (buff.cantResistenciaEstadosPorcentaje > 0 ? "green" : "red") + ">" + buff.cantResistenciaEstadosPorcentaje + "%" + "</color>\n";
+    if (buff.cantEspinasDanioPlano != 0) descripcion += EtiquetaBilingue("Espinas dano plano: ", "Flat thorns damage: ") + "<color=" + (buff.cantEspinasDanioPlano > 0 ? "green" : "red") + ">" + buff.cantEspinasDanioPlano + "</color>\n";
+    if (buff.cantEspinasDanioPorcentaje != 0) descripcion += EtiquetaBilingue("Espinas dano %: ", "Thorns damage %: ") + "<color=" + (buff.cantEspinasDanioPorcentaje > 0 ? "green" : "red") + ">" + buff.cantEspinasDanioPorcentaje + "%" + "</color>\n";
 
     if (buff.percCritDaño != 0) descripcion += TRADU.i.Traducir("Daño Crítico: ") + "<color=" + (buff.percCritDaño > 0 ? "green" : "red") + ">" + buff.percCritDaño + "%" + "</color>\n";
     if (buff.cantCritDaño != 0) descripcion += TRADU.i.Traducir("Daño Crítico: ") + "<color=" + (buff.cantCritDaño > 0 ? "green" : "red") + ">" + buff.cantCritDaño + "</color>\n";
@@ -274,6 +280,16 @@ public class UIEstadoCuadro : MonoBehaviour
     else if (buff.DuracionBuffRondas < 0) descripcion += TRADU.i.Traducir("Duración: Permanente\n");
 
     return descripcion;
+  }
+
+  private string EtiquetaBilingue(string textoEs, string textoEn)
+  {
+    if (TRADU.i != null && TRADU.i.nIdioma == 2)
+    {
+      return textoEn;
+    }
+
+    return textoEs;
   }
 
   public void ActivarTooltip()

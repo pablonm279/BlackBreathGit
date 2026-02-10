@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Espada Corta Arcana
   IDClasesQuePuedenUsarEsteItem: 04000000
   iPrecio: 145
-  itemDescripcion: 
+  itemDescripcion: "Espada corta imbuida con energia arcana."
   iRareza: 1
   nivelMejora: 1
   habilidadAtaque: {fileID: 4790208597144995915}

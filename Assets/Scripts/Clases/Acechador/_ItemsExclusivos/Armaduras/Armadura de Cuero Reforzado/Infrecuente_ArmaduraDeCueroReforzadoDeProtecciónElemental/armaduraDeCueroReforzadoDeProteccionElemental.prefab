@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: "Armadura de Cuero Reforzado de Protecci\xF3n Elemental"
   IDClasesQuePuedenUsarEsteItem: 04000000
   iPrecio: 178
-  itemDescripcion: 
+  itemDescripcion: "Armadura reforzada con defensa elemental adicional."
   iRareza: 1
   nivelMejora: 1
   requisitoFue: 0

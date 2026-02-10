@@ -50,7 +50,7 @@ MonoBehaviour:
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 205
-  itemDescripcion: 
+  itemDescripcion: "Arco largo con disparos corrosivos de acido."
   iRareza: 1
   nivelMejora: 1
   habilidadAtaque: {fileID: 7318733154302280740}

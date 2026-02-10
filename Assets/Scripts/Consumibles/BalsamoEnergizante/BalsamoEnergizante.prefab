@@ -45,6 +45,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: 7612140f4c181434a9ba25a355a312a6, type: 3}
-  sNombreItem: 
+  sNombreItem: "B\xE1lsamo Energizante"
+  IDEfectoEspecial: 0
+  IDClasesQuePuedenUsarEsteItem: 
   iPrecio: 50
-  itemDescrpicion: 
+  itemDescripcion: Balsamo que acelera reflejos y reaccion por un combate.
+  iRareza: 0
+  nivelMejora: 0

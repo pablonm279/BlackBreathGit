@@ -50,7 +50,7 @@ MonoBehaviour:
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 450
-  itemDescripcion: 
+  itemDescripcion: "Arco largo versatil para combate a distancia."
   iRareza: 3
   nivelMejora: 3
   habilidadAtaque: {fileID: 1624686996790798170}

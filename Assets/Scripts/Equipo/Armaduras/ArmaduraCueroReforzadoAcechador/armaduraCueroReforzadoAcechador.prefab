@@ -47,8 +47,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: 31236c6f3050689478ff98bcca45f235, type: 3}
   sNombreItem: Armadura de Cuero Reforzado
+  IDEfectoEspecial: 0
+  IDClasesQuePuedenUsarEsteItem: 04000000
   iPrecio: 85
-  itemDescrpicion: Armadura de Cuero Reforzado de acechador
+  itemDescripcion: Armadura de Cuero Reforzado de acechador
+  iRareza: 0
+  nivelMejora: 0
   requisitoFue: 0
   requisitoAgi: 0
   requisitoPoder: 0

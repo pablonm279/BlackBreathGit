@@ -77,6 +77,7 @@ public class Partir : Habilidad
         cuerpo += "<b>Target:</b> 1 enemy in front range\n";
         cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color> + Attack ({ataqueActual}){bonusAtaqueTxt} vs Defense. Fumble: 1-2. Crit: {criticoMin}-20\n";
         cuerpo += $"<b>Damage:</b> 2d10 + {danioBaseFijo} + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
+        cuerpo += $"<b>Armor Penetration:</b> {penetracionArmadura}\n";
         cuerpo += "<b>On kill:</b> All enemies roll save\n";
         cuerpo += $"{lineaSalvacionEn}\n";
         cuerpo += "<b>On failed save:</b> Terrified for 2 turns (-2 Attack, -1 Max AP, -2 Mental Save)";
@@ -87,6 +88,7 @@ public class Partir : Habilidad
         cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance frontal\n";
         cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Critico: {criticoMin}-20\n";
         cuerpo += $"<b>Danio:</b> 2d10 + {danioBaseFijo} + <color=#ea0606>Fuerza ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += $"<b>Penetracion de armadura:</b> {penetracionArmadura}\n";
         cuerpo += "<b>Si mata al objetivo:</b> todos los enemigos hacen TS\n";
         cuerpo += $"{lineaSalvacionEs}\n";
         cuerpo += "<b>Si falla TS:</b> Aterrorizado por 2 turnos (-2 Ataque, -1 AP Max, -2 TS Mental)";

@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Mandoble Sediento
   IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 220
-  itemDescripcion: 
+  itemDescripcion: "Mandoble que castiga con mas fuerza a enemigos heridos."
   iRareza: 1
   nivelMejora: 1
   habilidadAtaque: {fileID: 3011479433564303587}

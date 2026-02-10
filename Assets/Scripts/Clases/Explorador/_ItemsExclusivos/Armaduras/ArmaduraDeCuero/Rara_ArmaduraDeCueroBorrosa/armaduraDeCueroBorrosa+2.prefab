@@ -50,7 +50,7 @@ MonoBehaviour:
   IDEfectoEspecial: 4
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 225
-  itemDescripcion: 
+  itemDescripcion: "Armadura de cuero ligera orientada a evasion."
   iRareza: 2
   nivelMejora: 2
   requisitoFue: 0

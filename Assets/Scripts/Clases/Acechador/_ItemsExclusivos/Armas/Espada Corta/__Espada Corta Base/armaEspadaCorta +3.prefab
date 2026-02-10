@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Espada Corta
   IDClasesQuePuedenUsarEsteItem: 04000000
   iPrecio: 485
-  itemDescripcion: 
+  itemDescripcion: "Espada corta agil y versatil para combate cercano."
   iRareza: 3
   nivelMejora: 3
   habilidadAtaque: {fileID: 670376592415151795}

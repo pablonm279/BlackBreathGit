@@ -1,0 +1,3 @@
+Validation OK.
+Checked item prefabs: 66
+Issues found: 0

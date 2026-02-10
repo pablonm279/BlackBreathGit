@@ -149,8 +149,13 @@ public class Estados : MonoBehaviour
     BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
   }
 
-  public static void  Aplicar_Ardiendo(Unidad unidad, int stacks)
+  public static void  Aplicar_Ardiendo(Unidad unidad, int stacks, Unidad origen = null)
   {
+     if (stacks > 0 && unidad.IntentarResistenciaEstado("Ardiendo", origen))
+     {
+       return;
+     }
+
      if(unidad.estado_ardiendo > -1) //-1 Es si es inmune al estado.
      {
        unidad.estado_ardiendo += stacks;
@@ -163,8 +168,13 @@ public class Estados : MonoBehaviour
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
-  public static void  Aplicar_Veneno(Unidad unidad, int stacks)
+  public static void  Aplicar_Veneno(Unidad unidad, int stacks, Unidad origen = null)
   {
+     if (stacks > 0 && unidad.IntentarResistenciaEstado("Veneno", origen))
+     {
+       return;
+     }
+
      if(unidad.estado_veneno > -1) //-1 Es si es inmune al estado.
      {
        unidad.estado_veneno += stacks;
@@ -173,8 +183,13 @@ public class Estados : MonoBehaviour
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
-  public static void  Aplicar_Congelado(Unidad unidad, int stacks)
+  public static void  Aplicar_Congelado(Unidad unidad, int stacks, Unidad origen = null)
   {
+     if (stacks > 0 && unidad.IntentarResistenciaEstado("Congelado", origen))
+     {
+       return;
+     }
+
      if(unidad.estado_congelado > -1) //-1 Es si es inmune al estado.
      {
       unidad.estado_congelado += stacks;
@@ -184,8 +199,13 @@ public class Estados : MonoBehaviour
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
-  public static void  Aplicar_Aturdido(Unidad unidad, int stacks)
+  public static void  Aplicar_Aturdido(Unidad unidad, int stacks, Unidad origen = null)
   {
+     if (stacks > 0 && unidad.IntentarResistenciaEstado("Aturdido", origen))
+     {
+       return;
+     }
+
      if(unidad.estado_aturdido > -1) //-1 Es si es inmune al estado.
      {
       if(unidad.estado_aturdido < stacks)
@@ -197,8 +217,13 @@ public class Estados : MonoBehaviour
       BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
-  public static void  Aplicar_Inmovil(Unidad unidad, int stacks)
+  public static void  Aplicar_Inmovil(Unidad unidad, int stacks, Unidad origen = null)
   {
+     if (stacks > 0 && unidad.IntentarResistenciaEstado("Inmovil", origen))
+     {
+       return;
+     }
+
      if(unidad.estado_inmovil > -1) //-1 Es si es inmune al estado.
      {
       if(unidad.estado_inmovil < stacks)
@@ -212,8 +237,13 @@ public class Estados : MonoBehaviour
   }
 
 
-  public static void  Aplicar_Sangrado(Unidad unidad, int stacks)
+  public static void  Aplicar_Sangrado(Unidad unidad, int stacks, Unidad origen = null)
   {
+    if (stacks > 0 && unidad.IntentarResistenciaEstado("Sangrado", origen))
+    {
+      return;
+    }
+
     if(unidad.estado_sangrado > -1) //-1 Es si es inmune al estado.
     {
        unidad.estado_sangrado += stacks;
@@ -224,8 +254,13 @@ public class Estados : MonoBehaviour
     } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
-  public static void  Aplicar_Acido(Unidad unidad, int stacks)
+  public static void  Aplicar_Acido(Unidad unidad, int stacks, Unidad origen = null)
   {
+     if (stacks > 0 && unidad.IntentarResistenciaEstado("Acido", origen))
+     {
+       return;
+     }
+
      if(unidad.estado_acido > -1) //-1 Es si es inmune al estado.
     {
      

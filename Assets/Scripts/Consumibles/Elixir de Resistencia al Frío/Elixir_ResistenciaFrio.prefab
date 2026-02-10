@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: "Elixir de Resistencia al Fr\xEDo"
   IDClasesQuePuedenUsarEsteItem: ffffffff
   iPrecio: 45
-  itemDescrpicion: "Al ser consumido, este Elixir brinda protecci\xF3n al Fr\xEDo.\n\nConsumible:
+  itemDescripcion: "Al ser consumido, este Elixir brinda protecci\xF3n al Fr\xEDo.\n\nConsumible:
     +5 Resistencia al Fr\xEDo  por toda la batalla."
   iRareza: 0
   nivelMejora: 0

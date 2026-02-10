@@ -483,6 +483,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a71a78393c48264bb7f7b469bc2ff17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemDatabase: {fileID: 11400000, guid: 35da5d5ce36b413479132a2c43ecc27a, type: 2}
+  usarItemDatabase: 1
   ArmasAVender:
   - {fileID: -7845728578984888629, guid: 33c845f7f245f834cb1e752c2d99f906, type: 3}
   - {fileID: -7845728578984888629, guid: a07db32914606424080ccf3007623083, type: 3}

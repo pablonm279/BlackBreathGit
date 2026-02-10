@@ -21,12 +21,8 @@ public class btnItemInventario : MonoBehaviour
     public void ClickearItem()
     {
        TooltipItems.Instance.HideTooltip();
-    //Si la clase del personaje no puede usar el item, no hace nada
-    if (!itemRepresentado.GetComponent<Item>().IDClasesQuePuedenUsarEsteItem.Contains(-1)) //Si es -1 lo pueden usar todos
-    {
-     
-      if (!itemRepresentado.GetComponent<Item>().IDClasesQuePuedenUsarEsteItem.Contains(scMenuPersonajes.pSel.IDClase)) { return; } //Si no es -1 y no posee la clase, no puede usarlo
-    }
+    // Si no hay clases configuradas o hay -1, el item lo pueden usar todas las clases.
+    if (!itemRepresentado.PuedeUsarClase(scMenuPersonajes.pSel.IDClase)) { return; }
 
        if (itemRepresentado.GetComponent<Arma>() != null)
       {
@@ -117,7 +113,7 @@ public class btnItemInventario : MonoBehaviour
     if (n == 1)
     {
       Vector3 pos = Input.mousePosition;
-      string total = TRADU.i.Traducir(itemRepresentado.sNombreItem) + "\n\n" + TRADU.i.Traducir(itemRepresentado.itemDescripcion);
+      string total = ItemTooltipFormatter.ConstruirTooltip(itemRepresentado, true);
       TooltipItems.Instance.ShowTooltip(total, pos);
 
         }

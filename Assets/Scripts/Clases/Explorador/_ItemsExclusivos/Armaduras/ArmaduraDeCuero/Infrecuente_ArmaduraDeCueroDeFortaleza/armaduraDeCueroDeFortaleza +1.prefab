@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Armadura de Cuero de Fortaleza
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 190
-  itemDescripcion: 
+  itemDescripcion: "Armadura de cuero que mejora la resistencia fisica."
   iRareza: 1
   nivelMejora: 1
   requisitoFue: 0

@@ -48,6 +48,6 @@ MonoBehaviour:
   sNombreItem: "S\xEDmbolo de Proteccion Arcano"
   IDClasesQuePuedenUsarEsteItem: ffffffff
   iPrecio: 0
-  itemDescrpicion: Otorga 3 de Resistencia contra todos los elementos. Dura 4 turnos.
+  itemDescripcion: Otorga 3 de Resistencia contra todos los elementos. Dura 4 turnos.
   iRareza: 0
   nivelMejora: 0

@@ -52,6 +52,9 @@ public abstract class Habilidad : MonoBehaviour
 
   [Tooltip("0=Sin mostrar probabilidad, 1=Ataque melee, 2=Ataque rango")]
   public int tipoPorcentaje = 0;
+  [Header("Ataque")]
+  [Tooltip("Penetracion plana de armadura para esta habilidad. Solo aplica al resolver este ataque.")]
+  public int penetracionArmadura = 0;
 
   protected const string ColorDescripcionMecanica = "#c8c8c8";
   protected const string ColorDescripcionCostos = "#44d3ec";
@@ -374,24 +377,43 @@ public abstract class Habilidad : MonoBehaviour
       BattleManager.Instance.SombrearANoParticipantesHabilidad(noParticipantes);
     }
 
-    await Task.Delay(250);
-    await EsperarPreImpactoAsync(Objetivos, casillaOrigenTrampas);
-
-    int tirada = UnityEngine.Random.Range(1, 21); //la tirada es la misma para toda la habilidad, no para cada objetivo
-
-    if (Objetivos != null)
+    int penetracionAnteriorHabilidad = 0;
+    bool restituirPenetracionHabilidad = false;
+    if (scEstaUnidad != null)
     {
-      foreach (var objeto in Objetivos) //puede ser Unidad o Obstaculo
+      penetracionAnteriorHabilidad = scEstaUnidad.penetracionArmaduraHabilidadActual;
+      scEstaUnidad.penetracionArmaduraHabilidadActual = Mathf.Max(0, penetracionArmadura);
+      restituirPenetracionHabilidad = true;
+    }
+
+    try
+    {
+      await Task.Delay(250);
+      await EsperarPreImpactoAsync(Objetivos, casillaOrigenTrampas);
+
+      int tirada = UnityEngine.Random.Range(1, 21); //la tirada es la misma para toda la habilidad, no para cada objetivo
+
+      if (Objetivos != null)
       {
-        AplicarEfectosHabilidad(objeto, tirada, casillaOrigenTrampas);
+        foreach (var objeto in Objetivos) //puede ser Unidad o Obstaculo
+        {
+          AplicarEfectosHabilidad(objeto, tirada, casillaOrigenTrampas);
+        }
+      }
+      else
+      {
+        AplicarEfectosHabilidad(null, tirada, casillaOrigenTrampas);
+      }
+
+      await EsperarPostImpactoAsync(Objetivos, casillaOrigenTrampas);
+    }
+    finally
+    {
+      if (restituirPenetracionHabilidad && scEstaUnidad != null)
+      {
+        scEstaUnidad.penetracionArmaduraHabilidadActual = penetracionAnteriorHabilidad;
       }
     }
-    else
-    {
-      AplicarEfectosHabilidad(null, tirada, casillaOrigenTrampas);
-    }
-
-    await EsperarPostImpactoAsync(Objetivos, casillaOrigenTrampas);
     if (hizoAproximacion && acercamientoMelee != null)
     {
       await acercamientoMelee.VolverAPosicionInicialAsync();

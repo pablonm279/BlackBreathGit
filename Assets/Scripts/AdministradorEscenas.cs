@@ -966,7 +966,7 @@ public class AdministradorEscenas : MonoBehaviour
     float fPoder = pers.iPoder + sEquipo.BuffTOTALEQUIPOPoder;
     float fArmadura = pers.iArmadura + sEquipo.BuffTOTALEQUIPOArmadura;
     float resNecro = pers.iResNecro + sEquipo.BuffTOTALEQUIPOResNecro;
-    float ResDivino = pers.iResDivino + sEquipo.BuffTOTALEQUIPOResNecro;
+    float ResDivino = pers.iResDivino + sEquipo.BuffTOTALEQUIPOResDivino;
     float resArcano = pers.iResArcano + sEquipo.BuffTOTALEQUIPOResArcano;
     float resFuego = pers.iResFuego + sEquipo.BuffTOTALEQUIPOResFuego;
     float resHielo = pers.iResHielo + sEquipo.BuffTOTALEQUIPOResHielo;
@@ -990,6 +990,7 @@ public class AdministradorEscenas : MonoBehaviour
     //Vida
     var scUnidad = persUnidad.GetComponent<Unidad>();
     scUnidad.HP_actual = pers.fVidaActual;
+    scUnidad.ConfigurarDebuffsImpactoArma(pers.itemArma);
     // Sincroniza barra de vida de la unidad con la vida actual al inicio de la batalla
     scUnidad.ActualizarBarraVidaPropia();
 
@@ -2637,10 +2638,193 @@ public class AdministradorEscenas : MonoBehaviour
 
 
 
+    //Barrera/Evasion inicial de items equipados
+    AplicarAtributosInicioCombateDeItems(pers, unidad);
+
     //---
     BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
 
   }
+  void AplicarAtributosInicioCombateDeItems(Personaje pers, Unidad unidad)
+  {
+    if (pers == null || unidad == null)
+    {
+      return;
+    }
+
+    int barreraTotal = 0;
+    int evasionTotal = 0;
+    int bonusFuegoTotal = 0;
+    int bonusHieloTotal = 0;
+    int bonusRayoTotal = 0;
+    int bonusAcidoTotal = 0;
+    int bonusArcanoTotal = 0;
+    int bonusNecroTotal = 0;
+    int bonusDivinoTotal = 0;
+    int regenVidaTotal = 0;
+    int regenArmaduraTotal = 0;
+    int reduccionDanioTotal = 0;
+    int reduccionDanioCriticoTotal = 0;
+    int resistenciaEstadosTotal = 0;
+    int espinasPlanoTotal = 0;
+    int espinasPorcentajeTotal = 0;
+
+    SumarAtributosInicioCombateDeItem(
+      pers.itemArma,
+      ref barreraTotal, ref evasionTotal,
+      ref bonusFuegoTotal, ref bonusHieloTotal, ref bonusRayoTotal,
+      ref bonusAcidoTotal, ref bonusArcanoTotal, ref bonusNecroTotal, ref bonusDivinoTotal,
+      ref regenVidaTotal, ref regenArmaduraTotal,
+      ref reduccionDanioTotal, ref reduccionDanioCriticoTotal, ref resistenciaEstadosTotal,
+      ref espinasPlanoTotal, ref espinasPorcentajeTotal);
+    SumarAtributosInicioCombateDeItem(
+      pers.itemArmadura,
+      ref barreraTotal, ref evasionTotal,
+      ref bonusFuegoTotal, ref bonusHieloTotal, ref bonusRayoTotal,
+      ref bonusAcidoTotal, ref bonusArcanoTotal, ref bonusNecroTotal, ref bonusDivinoTotal,
+      ref regenVidaTotal, ref regenArmaduraTotal,
+      ref reduccionDanioTotal, ref reduccionDanioCriticoTotal, ref resistenciaEstadosTotal,
+      ref espinasPlanoTotal, ref espinasPorcentajeTotal);
+    SumarAtributosInicioCombateDeItem(
+      pers.Accesorio1,
+      ref barreraTotal, ref evasionTotal,
+      ref bonusFuegoTotal, ref bonusHieloTotal, ref bonusRayoTotal,
+      ref bonusAcidoTotal, ref bonusArcanoTotal, ref bonusNecroTotal, ref bonusDivinoTotal,
+      ref regenVidaTotal, ref regenArmaduraTotal,
+      ref reduccionDanioTotal, ref reduccionDanioCriticoTotal, ref resistenciaEstadosTotal,
+      ref espinasPlanoTotal, ref espinasPorcentajeTotal);
+    SumarAtributosInicioCombateDeItem(
+      pers.Accesorio2,
+      ref barreraTotal, ref evasionTotal,
+      ref bonusFuegoTotal, ref bonusHieloTotal, ref bonusRayoTotal,
+      ref bonusAcidoTotal, ref bonusArcanoTotal, ref bonusNecroTotal, ref bonusDivinoTotal,
+      ref regenVidaTotal, ref regenArmaduraTotal,
+      ref reduccionDanioTotal, ref reduccionDanioCriticoTotal, ref resistenciaEstadosTotal,
+      ref espinasPlanoTotal, ref espinasPorcentajeTotal);
+
+    if (barreraTotal != 0)
+    {
+      unidad.barreraDeDanio += barreraTotal;
+      if (unidad.barreraDeDanio < 0)
+      {
+        unidad.barreraDeDanio = 0;
+      }
+    }
+
+    if (evasionTotal != 0)
+    {
+      unidad.estado_evasion += evasionTotal;
+      if (unidad.estado_evasion < 0)
+      {
+        unidad.estado_evasion = 0;
+      }
+    }
+
+    if (bonusFuegoTotal != 0) { unidad.bonusdam_fuego += bonusFuegoTotal; }
+    if (bonusHieloTotal != 0) { unidad.bonusdam_hielo += bonusHieloTotal; }
+    if (bonusRayoTotal != 0) { unidad.bonusdam_rayo += bonusRayoTotal; }
+    if (bonusAcidoTotal != 0) { unidad.bonusdam_acido += bonusAcidoTotal; }
+    if (bonusArcanoTotal != 0) { unidad.bonusdam_arcano += bonusArcanoTotal; }
+    if (bonusNecroTotal != 0) { unidad.bonusdam_necro += bonusNecroTotal; }
+    if (bonusDivinoTotal != 0) { unidad.bonusdam_divino += bonusDivinoTotal; }
+
+    if (regenVidaTotal != 0)
+    {
+      unidad.estado_regeneravida += regenVidaTotal;
+      if (unidad.estado_regeneravida < 0)
+      {
+        unidad.estado_regeneravida = 0;
+      }
+    }
+
+    if (regenArmaduraTotal != 0)
+    {
+      unidad.estado_regeneraarmadura += regenArmaduraTotal;
+      if (unidad.estado_regeneraarmadura < 0)
+      {
+        unidad.estado_regeneraarmadura = 0;
+      }
+    }
+
+    if (reduccionDanioTotal != 0)
+    {
+      unidad.reduccionDanioRecibidoPorcentaje += reduccionDanioTotal;
+      unidad.reduccionDanioRecibidoPorcentaje = Mathf.Clamp(unidad.reduccionDanioRecibidoPorcentaje, 0, 95);
+    }
+
+    if (reduccionDanioCriticoTotal != 0)
+    {
+      unidad.reduccionDanioCriticoRecibidoPorcentaje += reduccionDanioCriticoTotal;
+      unidad.reduccionDanioCriticoRecibidoPorcentaje = Mathf.Clamp(unidad.reduccionDanioCriticoRecibidoPorcentaje, 0, 95);
+    }
+
+    if (resistenciaEstadosTotal != 0)
+    {
+      unidad.resistenciaEstadosPorcentaje += resistenciaEstadosTotal;
+      unidad.resistenciaEstadosPorcentaje = Mathf.Clamp(unidad.resistenciaEstadosPorcentaje, 0, 100);
+    }
+
+    if (espinasPlanoTotal != 0)
+    {
+      unidad.espinasDanioPlano += espinasPlanoTotal;
+      if (unidad.espinasDanioPlano < 0)
+      {
+        unidad.espinasDanioPlano = 0;
+      }
+    }
+
+    if (espinasPorcentajeTotal != 0)
+    {
+      unidad.espinasDanioPorcentaje += espinasPorcentajeTotal;
+      if (unidad.espinasDanioPorcentaje < 0)
+      {
+        unidad.espinasDanioPorcentaje = 0;
+      }
+    }
+  }
+
+  void SumarAtributosInicioCombateDeItem(
+    Item item,
+    ref int barreraTotal,
+    ref int evasionTotal,
+    ref int bonusFuegoTotal,
+    ref int bonusHieloTotal,
+    ref int bonusRayoTotal,
+    ref int bonusAcidoTotal,
+    ref int bonusArcanoTotal,
+    ref int bonusNecroTotal,
+    ref int bonusDivinoTotal,
+    ref int regenVidaTotal,
+    ref int regenArmaduraTotal,
+    ref int reduccionDanioTotal,
+    ref int reduccionDanioCriticoTotal,
+    ref int resistenciaEstadosTotal,
+    ref int espinasPlanoTotal,
+    ref int espinasPorcentajeTotal)
+  {
+    if (item == null)
+    {
+      return;
+    }
+
+    barreraTotal += item.barreraInicioCombate;
+    evasionTotal += item.evasionInicioCombate;
+    bonusFuegoTotal += item.bonusDanioFuegoInicioCombate;
+    bonusHieloTotal += item.bonusDanioHieloInicioCombate;
+    bonusRayoTotal += item.bonusDanioRayoInicioCombate;
+    bonusAcidoTotal += item.bonusDanioAcidoInicioCombate;
+    bonusArcanoTotal += item.bonusDanioArcanoInicioCombate;
+    bonusNecroTotal += item.bonusDanioNecroInicioCombate;
+    bonusDivinoTotal += item.bonusDanioDivinoInicioCombate;
+    regenVidaTotal += item.regeneracionVidaInicioCombate;
+    regenArmaduraTotal += item.regeneracionArmaduraInicioCombate;
+    reduccionDanioTotal += item.reduccionDanioRecibidoPorcentaje;
+    reduccionDanioCriticoTotal += item.reduccionDanioCriticoRecibidoPorcentaje;
+    resistenciaEstadosTotal += item.resistenciaEstadosPorcentaje;
+    espinasPlanoTotal += item.espinasDanioPlano;
+    espinasPorcentajeTotal += item.espinasDanioPorcentaje;
+  }
+
   void AplicarEfectosItemsEspecificos(Personaje pers, GameObject GO)
   {
     Unidad unidad = GO.GetComponent<Unidad>();

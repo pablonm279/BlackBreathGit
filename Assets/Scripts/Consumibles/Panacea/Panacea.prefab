@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Panacea
   IDClasesQuePuedenUsarEsteItem: ffffffff
   iPrecio: 80
-  itemDescrpicion: 'Al ser consumido, remueve todos los efectos negativos del personaje
+  itemDescripcion: 'Al ser consumido, remueve todos los efectos negativos del personaje
 
 
     Consumible: 

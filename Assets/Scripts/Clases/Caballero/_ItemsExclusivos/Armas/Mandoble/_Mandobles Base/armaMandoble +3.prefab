@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Mandoble
   IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 650
-  itemDescripcion: 
+  itemDescripcion: "Mandoble pesado para golpes contundentes."
   iRareza: 3
   nivelMejora: 3
   habilidadAtaque: {fileID: 8877203065258719260}
