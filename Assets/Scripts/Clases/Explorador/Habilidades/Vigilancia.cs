@@ -43,143 +43,97 @@ public class Vigilancia : Habilidad
 
 
     imHab = Resources.Load<Sprite>("imHab/Explorador_Vigilancia");
-
-    txtDescripcion = "<color=#5dade2><b>Vigilancia I</b></color>\n\n";
-    txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color> - Requiere 2 Flechas</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
-      
-      
-
-    
-    }
+    ActualizarDescripcion();
+  }
 
 
-  public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
   {
-    if (NIVEL < 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Vigilancia I</b></color>\n\n";
-      txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color> con -2 Ataque. Requiere 2 Flechas</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    var statsUI = ObtenerStatsDescripcionUI();
 
-      if (EsEscenaCampaña())
+    int agilidadActual = statsUI.Agilidad;
+    int ataqueActual = statsUI.Ataque;
+    int criticoBaseMin = Mathf.Clamp(19 - statsUI.CriticoRango, 2, 20);
+
+    int disparosPorUso = NIVEL == 5 ? 3 : 2;
+    int bonoTiradaReaccion = (NIVEL > 1 ? 1 : 0) + (NIVEL > 2 ? 1 : 0);
+
+    string tituloEs = "Vigilancia I";
+    string tituloEn = "Vigilance I";
+    if (NIVEL == 2) { tituloEs = "Vigilancia II"; tituloEn = "Vigilance II"; }
+    if (NIVEL == 3) { tituloEs = "Vigilancia III"; tituloEn = "Vigilance III"; }
+    if (NIVEL == 4) { tituloEs = "Vigilancia IV a"; tituloEn = "Vigilance IV a"; }
+    if (NIVEL == 5) { tituloEs = "Vigilancia IV b"; tituloEn = "Vigilance IV b"; }
+
+    string cuerpo = "";
+    if (esIngles)
+    {
+      cuerpo += "<b>Type:</b> Reactive Ranged (6 range)\n";
+      cuerpo += "<b>Target:</b> 1 enemy in range to place a 3x3 watch zone centered on that tile\n";
+      cuerpo += "<b>Roll/Save:</b> no save check on cast\n";
+      cuerpo += $"<b>Watch setup:</b> places traps on empty tiles of that 3x3 area (1 turn, 1 use each), up to {disparosPorUso} reaction shots total\n";
+      cuerpo += $"<b>Reaction shot:</b> uses Bow Shot roll with +{bonoTiradaReaccion} to the d20 result. Base roll shown in UI: 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) vs Defense. Base crit: {criticoBaseMin}-20\n";
+      cuerpo += "<b>Reaction damage:</b> same as Bow Shot (1d10 + 1 + Agility) | <b>Type:</b> Slashing\n";
+      cuerpo += $"<b>Resource:</b> needs at least {requiereRecurso} Arrows to activate, consumes 1 Arrow per reaction shot\n";
+      cuerpo += "<b>Turn flow:</b> using this skill ends your turn";
+    }
+    else
+    {
+      cuerpo += "<b>Tipo:</b> Rango Reactivo (6 alcance)\n";
+      cuerpo += "<b>Objetivo:</b> 1 enemigo en rango para colocar una zona de vigilancia 3x3 centrada en esa casilla\n";
+      cuerpo += "<b>Tirada/TS:</b> no tiene TS al lanzar\n";
+      cuerpo += $"<b>Preparacion:</b> coloca trampas en casillas vacias de esa area 3x3 (1 turno, 1 uso cada una), hasta {disparosPorUso} disparos reactivos en total\n";
+      cuerpo += $"<b>Disparo reactivo:</b> usa la tirada de Tiro con Arco con +{bonoTiradaReaccion} al resultado del d20. Tirada base mostrada: 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) vs Defensa. Critico base: {criticoBaseMin}-20\n";
+      cuerpo += "<b>Danio reactivo:</b> igual a Tiro con Arco (1d10 + 1 + Agilidad) | <b>Tipo:</b> Cortante\n";
+      cuerpo += $"<b>Recurso:</b> requiere al menos {requiereRecurso} Flechas para activar, consume 1 Flecha por disparo reactivo\n";
+      cuerpo += "<b>Flujo de turno:</b> usar esta habilidad termina tu turno";
+    }
+
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Val Cost: {costoPM}"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Val: {costoPM}";
+
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? tituloEn : tituloEs,
+      esIngles
+        ? "Controls space with reaction fire over a short zone window."
+        : "Controla espacio con fuego de reaccion durante una ventana corta.",
+      cuerpo,
+      costos,
+      "#5dade2");
+
+    bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    if (mostrarProximoNivel)
+    {
+      if (esIngles)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 reaction attack roll.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 reaction attack roll.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Val cost) or Option B (+1 reaction shot and +1 required Arrow).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 a la tirada de ataque reactiva.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 a la tirada de ataque reactiva.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo Val) u Opcion B (+1 disparo reactivo y +1 Flecha requerida).</color>"; }
+      }
+    }
+
+    if (CampaignManager.Instance != null && CampaignManager.Instance.gameObject != null && CampaignManager.Instance.gameObject.transform.parent != null && CampaignManager.Instance.gameObject.transform.parent.parent != null)
+    {
+      AdministradorEscenas admin = CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>();
+      if (admin != null && admin.escenaActual == 1)
+      {
+        ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
+        if (clase != null && clase.ObtenerCantidadFlechas() < requiereRecurso)
         {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-          }
+          txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
         }
-      }
-
-    }
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Vigilancia II</b></color>\n\n";
-      txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color> con -1 Ataque. Requiere 2 Flechas</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-          }
-        }
-      }
-    }
-    if (NIVEL == 3)
-    {
-      txtDescripcion = "<color=#5dade2><b>Vigilancia III</b></color>\n\n";
-      txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color>. Requiere 2 Flechas</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"\n\n<color=#dfea02>-Opción A: -1 costo Valentía</color>\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: +1 cantidad de Ataques, +1 uso Flecha</color>\n";
-          }
-        }
-      }
-    }
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Vigilancia IV a</b></color>\n\n";
-      txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 2 ataques.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color>. Requiere 2 Flechas</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM - 1} </color>";
-
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Vigilancia IV b</b></color>\n\n";
-      txtDescripcion += "<i>El explorador atacará a cualquier enemigo que entre en la zona de Vigilancia. Hará hasta 3 ataques.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>RANGO</b> -Usa Ataque: <color=#ea0606>Tiro con Arco</color>. Requiere 3 Flechas</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- termina Turno \n- Costo Val: {costoPM} </color>";
-    }
-
-    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-    {
-      if (NIVEL < 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Surveillance I</b></color>\n\n";
-        txtDescripcion += "<i>The explorer will attack any enemy that enters the Surveillance zone. Will make up to 2 attacks.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>RANGE</b> -Uses Attack: <color=#ea0606>Archery Shot</color> -2 Attack. Requires 2 Arrows</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Valor Cost: {costoPM} </color>";
-      }
-      else if (NIVEL == 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Surveillance II</b></color>\n\n";
-        txtDescripcion += "<i>The explorer will attack any enemy that enters the Surveillance zone. Will make up to 2 attacks.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>RANGE</b> -Uses Attack: <color=#ea0606>Archery Shot</color> -1 Attack. Requires 2 Arrows</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Valor Cost: {costoPM} </color>";
-      }
-      else if (NIVEL == 3)
-      {
-        txtDescripcion = "<color=#5dade2><b>Surveillance III</b></color>\n\n";
-        txtDescripcion += "<i>The explorer will attack any enemy that enters the Surveillance zone. Will make up to 2 attacks.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>RANGE</b> -Uses Attack: <color=#ea0606>Archery Shot</color>. Requires 2 Arrows</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Valor Cost: {costoPM} </color>";
-
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"\n\n<color=#dfea02>-Option A: -1 Valor cost</color>\n";
-              txtDescripcion += $"<color=#dfea02>-Option B: +1 number of Attacks, +1 Arrow usage</color>\n";
-            }
-          }
-        }
-      }
-      else if (NIVEL == 4)
-      {
-        txtDescripcion = "<color=#5dade2><b>Surveillance IV a</b></color>\n\n";
-        txtDescripcion += "<i>The explorer will attack any enemy that enters the Surveillance zone. Will make up to 2 attacks.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>RANGE</b> -Uses Attack: <color=#ea0606>Archery Shot</color>. Requires 2 Arrows</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Valor Cost: {costoPM - 1} </color>";
-      }
-      else if (NIVEL == 5)
-      {
-        txtDescripcion = "<color=#5dade2><b>Surveillance IV b</b></color>\n\n";
-        txtDescripcion += "<i>The explorer will attack any enemy that enters the Surveillance zone. Will make up to 3 attacks.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>RANGE</b> -Uses Attack: <color=#ea0606>Archery Shot</color>. Requires 3 Arrows</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} - ends Turn \n- Valor Cost: {costoPM} </color>";
       }
     }
   }
+
     Casilla Origen;
     public override void Activar()
     {
@@ -317,3 +271,4 @@ public class Vigilancia : Habilidad
     
 
 }
+

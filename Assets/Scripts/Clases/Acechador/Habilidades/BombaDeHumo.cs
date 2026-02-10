@@ -36,155 +36,76 @@ public class BombaDeHumo : Habilidad
 
 
       imHab = Resources.Load<Sprite>("imHab/Acechador_BombaDeHumo");
-
+      ActualizarDescripcion();
 
     }
     public override void ActualizarDescripcion()
     {
-         if(NIVEL<2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Bomba de Humo I</b></color>\n\n"; 
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
 
-        txtDescripcion += "<i>Arroja una Bomba de Humo que esconde a los aliados en la casilla y adyacentes y les otorga bonificaciones de ataque.</i>\n";
-        txtDescripcion += "<i>el Humo creado dura 2 Turnos. </i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
+      int radioZona = NIVEL == 5 ? 2 : 1;
+      int duracionHumo = NIVEL == 4 ? 3 : 2;
 
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 Cooldown.</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==2)
-       {
-       txtDescripcion = "<color=#5dade2><b>Bomba de Humo II</b></color>\n\n"; 
+      string tituloEs = "Bomba de Humo I";
+      string tituloEn = "Smoke Bomb I";
+      if (NIVEL == 2) { tituloEs = "Bomba de Humo II"; tituloEn = "Smoke Bomb II"; }
+      if (NIVEL == 3) { tituloEs = "Bomba de Humo III"; tituloEn = "Smoke Bomb III"; }
+      if (NIVEL == 4) { tituloEs = "Bomba de Humo IV a"; tituloEn = "Smoke Bomb IV a"; }
+      if (NIVEL == 5) { tituloEs = "Bomba de Humo IV b"; tituloEn = "Smoke Bomb IV b"; }
 
-        txtDescripcion += "<i>Arroja una Bomba de Humo que esconde a los aliados en la casilla y adyacentes y les otorga bonificaciones de ataque.</i>\n";
-        txtDescripcion += "<i>el Humo creado dura 2 Turnos. </i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-    if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-              txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 AP</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==3)
-       {
-        txtDescripcion = "<color=#5dade2><b>Bomba de Humo III</b></color>\n\n"; 
-
-        txtDescripcion += "<i>Arroja una Bomba de Humo que esconde a los aliados en la casilla y adyacentes y les otorga bonificaciones de ataque.</i>\n";
-        txtDescripcion += "<i>el Humo creado dura 2 Turnos. </i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP-1} \n- Costo Val: {costoPM} \n</color>\n\n";
- 
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: +1 Turno Duración. </color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: Agranda la zona.</color>\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==4)
-       {
-          txtDescripcion = "<color=#5dade2><b>Bomba de Humo IVa</b></color>\n\n"; 
-
-        txtDescripcion += "<i>Arroja una Bomba de Humo que esconde a los aliados en la casilla y adyacentes y les otorga bonificaciones de ataque.</i>\n";
-        txtDescripcion += "<i>el Humo creado dura 3 Turnos. </i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP-1} \n- Costo Val: {costoPM} \n</color>\n\n";
-       }
-       if(NIVEL==5)
-       {
-          txtDescripcion = "<color=#5dade2><b>Bomba de Humo IVb</b></color>\n\n"; 
-
-        txtDescripcion += "<i>Arroja una Bomba de Humo que esconde a los aliados en la casilla y alrededor y les otorga bonificaciones de ataque.</i>\n";
-        txtDescripcion += "<i>el Humo creado dura 2 Turnos. </i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP-1} \n- Costo Val: {costoPM} \n</color>\n\n";
-       }
-
-    if (TRADU.i.nIdioma == 2) // English translation
-    {
-      if (NIVEL < 2)
+      string cuerpo = "";
+      if (esIngles)
       {
-        txtDescripcion = "<color=#5dade2><b>Smoke Bomb I</b></color>\n\n";
-        txtDescripcion += "<i>Throws a Smoke Bomb that hides allies in the tile and adjacent ones, granting attack bonuses.</i>\n";
-        txtDescripcion += "<i>The smoke lasts for 2 turns.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Next Level: -1 Cooldown.</color>\n\n";
-            }
-          }
-        }
+        cuerpo += "<b>Type:</b> Utility Trap (4 range)\n";
+        cuerpo += "<b>Target:</b> 1 tile in range\n";
+        cuerpo += "<b>Roll/Save:</b> none\n";
+        cuerpo += $"<b>On cast:</b> creates smoke traps in area radius {radioZona} around target\n";
+        cuerpo += $"<b>Smoke trap profile:</b> 30 uses, {duracionHumo} turns duration, persistent\n";
+        cuerpo += "<b>On trap trigger (any unit):</b> grants Hidden (1) if not hidden\n";
+        cuerpo += "<b>Extra buff for non-Stalker units:</b> 2 turns, +2 Attack, +1 crit range";
       }
-      if (NIVEL == 2)
+      else
       {
-        txtDescripcion = "<color=#5dade2><b>Smoke Bomb II</b></color>\n\n";
-        txtDescripcion += "<i>Throws a Smoke Bomb that hides allies in the tile and adjacent ones, granting attack bonuses.</i>\n";
-        txtDescripcion += "<i>The smoke lasts for 2 turns.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Next Level: -1 AP</color>\n\n";
-            }
-          }
-        }
+        cuerpo += "<b>Tipo:</b> Trampa de Utilidad (4 alcance)\n";
+        cuerpo += "<b>Objetivo:</b> 1 casilla en rango\n";
+        cuerpo += "<b>Tirada/TS:</b> no tiene\n";
+        cuerpo += $"<b>Al lanzarla:</b> crea trampas de humo en area de radio {radioZona} alrededor de la casilla objetivo\n";
+        cuerpo += $"<b>Perfil de trampa de humo:</b> 30 usos, {duracionHumo} turnos de duracion, persistente\n";
+        cuerpo += "<b>Al activar trampa (cualquier unidad):</b> otorga Escondido (1) si no estaba escondido\n";
+        cuerpo += "<b>Buff extra para unidades no Acechador:</b> 2 turnos, +2 Ataque, +1 rango critico";
       }
-      if (NIVEL == 3)
-      {
-        txtDescripcion = "<color=#5dade2><b>Smoke Bomb III</b></color>\n\n";
-        txtDescripcion += "<i>Throws a Smoke Bomb that hides allies in the tile and adjacent ones, granting attack bonuses.</i>\n";
-        txtDescripcion += "<i>The smoke lasts for 2 turns.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP - 1} \n- Val Cost: {costoPM} \n</color>\n\n";
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Option A: +1 Turn Duration.</color>\n";
-              txtDescripcion += $"<color=#dfea02>-Option B: Enlarges the area.</color>\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 4)
-      {
-        txtDescripcion = "<color=#5dade2><b>Smoke Bomb IVa</b></color>\n\n";
-        txtDescripcion += "<i>Throws a Smoke Bomb that hides allies in the tile and adjacent ones, granting attack bonuses.</i>\n";
-        txtDescripcion += "<i>The smoke lasts for 3 turns.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP - 1} \n- Val Cost: {costoPM} \n</color>\n\n";
-      }
-      if (NIVEL == 5)
-      {
-        txtDescripcion = "<color=#5dade2><b>Smoke Bomb IVb</b></color>\n\n";
-        txtDescripcion += "<i>Throws a Smoke Bomb that hides allies in the tile and around, granting attack bonuses.</i>\n";
-        txtDescripcion += "<i>The smoke lasts for 2 turns.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP - 1} \n- Val Cost: {costoPM} \n</color>\n\n";
-      }
-    }
 
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "Creates a smoke field that restores stealth and buffs allies moving through it."
+          : "Crea un campo de humo que restaura sigilo y buffea aliados que lo atraviesan.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
+      {
+        return;
+      }
+
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 cooldown.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 AP cost.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 turn smoke duration) or Option B (radius 2 area).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 costo AP.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 turno de duracion de humo) u Opcion B (area radio 2).</color>"; }
+      }
     }
     void Start()
     {
@@ -301,3 +222,4 @@ public class BombaDeHumo : Habilidad
 
  
 }
+

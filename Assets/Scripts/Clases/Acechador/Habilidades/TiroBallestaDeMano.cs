@@ -37,36 +37,17 @@ public class TiroBallestaDeMano : Habilidad
       cooldownMax = 2;
       bAfectaObstaculos = true;
 
-      
+      bonusAtaque = 0;
       XdDanio = 1;
       daniodX = 10; //1d10
       tipoDanio = 2; //Perforante
       criticoRangoHab = 0;
 
-
-      
-       tipoPorcentaje = 2;
-
-
-
-
-
+      tipoPorcentaje = 2;
 
       imHab = Resources.Load<Sprite>("imHab/Acechador_BallestaDeMano");
-
-      txtDescripcion = "<color=#5dade2><b>Ballesta De Mano</b></color>\n\n"; 
-      txtDescripcion += "<i>Ataque secundario a distancia del Acechador.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Alcance 3</b> -Ataque: <color=#ea0606>Agilidad</color> - Daño: Perforante 1d10-</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
-      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-      {
-        txtDescripcion = "<color=#5dade2><b>Hand Crossbow Shot</b></color>\n\n";
-        txtDescripcion += "<i>Stalker's secondary ranged attack.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Range 3</b> -Attack: <color=#ea0606>Agility</color> - Damage: Piercing 1d10-</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
-      }
+      ActualizarDescripcion();
     }
-
   void Start()
   {
     if (claseAcechador != null)
@@ -123,7 +104,8 @@ public class TiroBallestaDeMano : Habilidad
       cooldownActual = 0;
       txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
 
-    }
+    }
+      ActualizarDescripcion();
     
   }
 
@@ -132,7 +114,53 @@ public class TiroBallestaDeMano : Habilidad
 
 
 
-     public override void ActualizarDescripcion() { }
+     public override void ActualizarDescripcion()
+  {
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    var statsUI = ObtenerStatsDescripcionUI();
+
+    int agilidadActual = statsUI.Agilidad;
+    int ataqueActual = statsUI.Ataque;
+    int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+    int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConBallestaMano : 0;
+
+    string cuerpo = "";
+    if (esIngles)
+    {
+      cuerpo += $"<b>Type:</b> Ranged ({hAlcance} range)\n";
+      cuerpo += "<b>Target:</b> 1 enemy in range\n";
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Damage:</b> 1d10 + {damExtra} + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Piercing";
+      if (nivelMaestria > 0)
+      {
+        cuerpo += $"\n<b>Passive applied:</b> Hand Crossbow Mastery (Tier {nivelMaestria})";
+      }
+    }
+    else
+    {
+      cuerpo += $"<b>Tipo:</b> Rango ({hAlcance} alcance)\n";
+      cuerpo += "<b>Objetivo:</b> 1 enemigo en rango\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Danio:</b> 1d10 + {damExtra} + <color=#ea0606>Agilidad ({agilidadActual})</color> | <b>Tipo:</b> Perforante";
+      if (nivelMaestria > 0)
+      {
+        cuerpo += $"\n<b>Pasiva aplicada:</b> Maestria con Ballesta de Mano (Tier {nivelMaestria})";
+      }
+    }
+
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? "Hand Crossbow Shot" : "Tiro Ballesta de Mano",
+      esIngles
+        ? "A short-range precision shot that scales with hand crossbow mastery."
+        : "Un disparo de precision a corto alcance que escala con maestria de ballesta de mano.",
+      cuerpo,
+      costos,
+      "#5dade2");
+  }
     Casilla Origen;
     public override void Activar()
     {
@@ -387,4 +415,7 @@ public class TiroBallestaDeMano : Habilidad
     }
  
 }
+
+
+
 

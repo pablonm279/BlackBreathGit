@@ -356,10 +356,10 @@ public class BattleManager : MonoBehaviour
 
     RondaNro++;
     silenciarLogCombate = false;
-    if (TRADU.i.nIdioma == 1)
-    { EscribirLog("==== Ronda " + RondaNro + " comienza ===="); }
-    else if (TRADU.i.nIdioma == 2)
-    { EscribirLog("==== Round " + RondaNro + " begins ===="); }
+    string rondaInicio = (TRADU.i != null)
+      ? TRADU.i.Traducir("==== Ronda ") + RondaNro + TRADU.i.Traducir(" comienza ====")
+      : "==== Ronda " + RondaNro + " comienza ====";
+    EscribirLog(rondaInicio);
 
     OnRondaNueva?.Invoke(this, EventArgs.Empty);
 

@@ -35,41 +35,44 @@ public class AcumularEnergia : Habilidad
     
     }
 
-    public override void ActualizarDescripcion()
+        public override void ActualizarDescripcion()
     {
-      if (TRADU.i.nIdioma == 1)
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+
+      string titulo = esIngles ? "Gather Energy" : "Acumular Energia";
+      string subtitulo = esIngles
+        ? "The Channeler enters concentration to increase their Energy tier at the start of the next turn."
+        : "El Canalizador entra en concentracion para aumentar su Nivel de Energia al inicio de su siguiente turno.";
+
+      string cuerpo = "";
+      if (esIngles)
       {
-        // Español
-        txtDescripcion = "<color=#5dade2><b>Acumular Energía</b></color>\n\n";
-        txtDescripcion += "<i>El Canalizador concentra su fuerza interior para potenciar sus poderes. " +
-               "Cada vez que completa la concentración sin interrupciones, gana un nivel de Energía al inicio de su siguiente turno.</i>\n\n";
-        txtDescripcion += "<color=#c8c8c8><b>Niveles de Energía:</b>\n" +
-               "• <b>I</b>: +10% Daño, +1 Dado crítico, -1 Res. Arcano\n" +
-               "• <b>II</b>: +15% Daño, +1 AP, -5 Res. Arcano\n" +
-               "• <b>III</b>: +15% Daño, +1 AP, +1 Dado crítico, -8 Res. Arcano</color>\n\n";
-        txtDescripcion += "<color=#c8c8c8><b>Costo:</b> 3 AP • Termina turno</color>\n\n";
-        txtDescripcion += "<color=#c8c8c8><b>Mecánica:</b> Al activar “Acumular Energía”, el Canalizador recibe el Buff “<b>Acumulando Energía</b>”. " +
-               "Si recibe daño mientras mantiene este Buff, debe superar una Tirada de Salvación Mental o lo pierde. " +
-               "Si inicia su siguiente turno con el Buff activo, sube un Nivel de Energía.</color>\n";
+        cuerpo += "<b>Type:</b> Self\n";
+        cuerpo += "<b>Target:</b> Self\n";
+        cuerpo += "<b>Effect on cast:</b> Applies <b>Gathering</b> buff (2 rounds)\n";
+        cuerpo += "<b>If concentration is maintained:</b> +1 Energy Tier on next turn\n";
+        cuerpo += "<b>Energy I:</b> +10% Damage, +1 Critical Die, -1 Arcane Resistance\n";
+        cuerpo += "<b>Energy II:</b> +15% Damage, +1 Max AP, -5 Arcane Resistance\n";
+        cuerpo += "<b>Energy III:</b> +15% Damage, +1 Max AP, +1 Critical Die, -8 Arcane Resistance";
       }
-      if (TRADU.i.nIdioma == 2)
+      else
       {
-        // English
-        txtDescripcion = "<color=#5dade2><b>Gather Energy</b></color>\n\n";
-        txtDescripcion += "<i>The Channeler focuses his inner strength to enhance his powers. " +
-               "Each time he completes the concentration without interruptions, he gains an Energy level at the start of his next turn.</i>\n\n";
-        txtDescripcion += "<color=#c8c8c8><b>Energy Levels:</b>\n" +
-               "• <b>I</b>: +10% Damage, +1 Critical Die, -1 Arcane Resistance\n" +
-               "• <b>II</b>: +15% Damage, +1 AP, -5 Arcane Resistance\n" +
-               "• <b>III</b>: +15% Damage, +1 AP, +1 Critical Die, -8 Arcane Resistance</color>\n\n";
-        txtDescripcion += "<color=#c8c8c8><b>Cost:</b> 3 AP • Ends turn</color>\n\n";
-        txtDescripcion += "<color=#c8c8c8><b>Mechanic:</b> When activating “Gather Energy”, the Channeler receives the Buff “<b>Gathering</b>”. " +
-               "If they take damage while holding this Buff, they must pass a Mental Saving Throw or lose it. " +
-               "If they start his next turn with the Buff active, they gain an Energy Level.</color>\n";
+        cuerpo += "<b>Tipo:</b> Propia\n";
+        cuerpo += "<b>Objetivo:</b> Propio usuario\n";
+        cuerpo += "<b>Efecto al activar:</b> Aplica buff <b>Acumulando</b> (2 rondas)\n";
+        cuerpo += "<b>Si mantiene la concentracion:</b> +1 Nivel de Energia al siguiente turno\n";
+        cuerpo += "<b>Energia I:</b> +10% Danio, +1 Dado Critico, -1 Resistencia Arcana\n";
+        cuerpo += "<b>Energia II:</b> +15% Danio, +1 AP Maximo, -5 Resistencia Arcana\n";
+        cuerpo += "<b>Energia III:</b> +15% Danio, +1 AP Maximo, +1 Dado Critico, -8 Resistencia Arcana";
       }
+
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Val Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Val: {costoPM}";
+
+      txtDescripcion = ConstruirDescripcionEstandar(titulo, subtitulo, cuerpo, costos, "#5dade2");
     }
 
-   
     public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
     {
         // El log de uso ahora está centralizado en Habilidad.Resolver
@@ -216,3 +219,4 @@ public class AcumularEnergia : Habilidad
     }
  
 }
+

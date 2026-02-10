@@ -57,14 +57,10 @@ public class ReaccionEscudoEnergetico : Reaccion
           await descargaArcana.FinalizarImpactoManualAsync(objetivos, scEstaUnidad?.CasillaPosicion);
         }
 
-        if (TRADU.i.nIdioma == 2)
-        {
-            BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} reacts with {nombre}.");
-        }
-        else if(TRADU.i.nIdioma == 1)
-        {
-            BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} reacciona con {nombre}.");
-        }
+        string unidadNombre = TRADU.i != null ? TRADU.i.Traducir(scEstaUnidad.uNombre) : scEstaUnidad.uNombre;
+        string verboReacciona = TRADU.i != null ? TRADU.i.Traducir("reacciona con ") : "reacciona con ";
+        string nombreHab = TRADU.i != null ? TRADU.i.Traducir(nombre) : nombre;
+        BattleManager.Instance.EscribirLog(unidadNombre + " " + verboReacciona + nombreHab + ".");
 
        //---Genera Residuo energetico
       List<Casilla> casillasAlrededor = scEstaUnidad.CasillaPosicion.ObtenerCasillasAlrededor(2);

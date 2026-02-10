@@ -30,192 +30,88 @@ public class SifonArcano : Habilidad
       bAfectaObstaculos = false;
 
       imHab = Resources.Load<Sprite>("imHab/Canalizador_SifonArcano");
+      ActualizarDescripcion();
      
     }
-
   public override void ActualizarDescripcion()
   {
-    if (NIVEL < 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Sifón Arcano I</b></color>\n\n";
-      txtDescripcion += "<i>Marca al objetivo con un vínculo inestable que drena su vitalidad, amplificado por la presencia de Residuos Energéticos.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>TS:</b> 7+Poder vs Fortaleza. - Dura 3 turnos.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d10 daño arcano x ({1}+1 por cada Residuo Energético en juego).</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- Costo AP: 3\n- Costo Val: 1\n- Cooldown: {cooldownMax}</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- Si muere bajo este efecto: el Canalizador obtiene +1 AP permanente y +10% Daño.</color>\n\n";
+    var statsUI = ObtenerStatsDescripcionUI();
+    int poderActual = statsUI.Poder;
+    int bonusDCNivel = NIVEL > 2 ? 1 : 0;
+    int dcBase = 8 + bonusDCNivel;
+    int duracionTurnos = NIVEL == 5 ? 4 : 3;
+    int bonusDanioBase = NIVEL > 1 ? 1 : 0;
+    string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual);
+    string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual);
 
-      if (EsEscenaCampaña())
+    string tituloEs = "Sifon Arcano I";
+    string tituloEn = "Arcane Siphon I";
+    if (NIVEL == 2) { tituloEs = "Sifon Arcano II"; tituloEn = "Arcane Siphon II"; }
+    if (NIVEL == 3) { tituloEs = "Sifon Arcano III"; tituloEn = "Arcane Siphon III"; }
+    if (NIVEL == 4) { tituloEs = "Sifon Arcano IV a"; tituloEn = "Arcane Siphon IV a"; }
+    if (NIVEL == 5) { tituloEs = "Sifon Arcano IV b"; tituloEn = "Arcane Siphon IV b"; }
+
+    string lineaDanioEs = bonusDanioBase > 0
+      ? $"<b>Danio por turno:</b> (1d10 + {bonusDanioBase}) x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano"
+      : "<b>Danio por turno:</b> 1d10 x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano";
+    string lineaDanioEn = bonusDanioBase > 0
+      ? $"<b>Turn Damage:</b> (1d10 + {bonusDanioBase}) x (1 + Energy Residues) | <b>Type:</b> Arcane"
+      : "<b>Turn Damage:</b> 1d10 x (1 + Energy Residues) | <b>Type:</b> Arcane";
+
+    if (TRADU.i != null && TRADU.i.nIdioma == 2)
+    {
+      string cuerpo = "";
+      cuerpo += "<b>Type:</b> Ranged (5 range)\n";
+      cuerpo += "<b>Target:</b> 1 enemy unit on the opposite side\n";
+      cuerpo += lineaSalvacionEn + "\n";
+      cuerpo += $"<b>On failed save:</b> Applies Arcane Siphon for {duracionTurnos} turns\n";
+      cuerpo += lineaDanioEn + "\n";
+      cuerpo += "<b>On kill by this effect:</b> +1 permanent AP max, +10% Damage and +1 Energy";
+
+      string costos = $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM} ";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        tituloEn,
+        "Marks the target with an unstable link that drains vitality over time, amplified by Energy Residues.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      if (EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>- Próximo Nivel: +1 Daño por Residuo</color>\n\n";
-          }
-        }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 base turn damage.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 DC.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A or B (IV upgrades).</color>"; }
       }
+      return;
     }
 
-    if (NIVEL == 2)
     {
-      txtDescripcion = "<color=#5dade2><b>Sifón Arcano II</b></color>\n\n";
-      txtDescripcion += "<i>Marca al objetivo con un vínculo inestable que drena su vitalidad, amplificado por la presencia de Residuos Energéticos.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>TS:</b> 7+Poder vs Fortaleza. - Dura 3 turnos.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d10 daño arcano x ({2}+1 por cada Residuo Energético en juego).</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- Costo AP: 3\n- Costo Val: 1\n- Cooldown: {cooldownMax}</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- Si muere bajo este efecto: el Canalizador obtiene +1 AP permanente y +10% Daño.</color>\n\n";
+      string cuerpo = "";
+      cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
+      cuerpo += "<b>Objetivo:</b> 1 unidad enemiga del lado opuesto\n";
+      cuerpo += lineaSalvacionEs + "\n";
+      cuerpo += $"<b>Si falla TS:</b> aplica Sifon Arcano por {duracionTurnos} turnos\n";
+      cuerpo += lineaDanioEs + "\n";
+      cuerpo += "<b>Si mata con este efecto:</b> +1 AP max permanente, +10% Danio y +1 Energia";
 
-      if (EsEscenaCampaña())
+      string costos = $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM} ";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        tituloEs,
+        "Marca al objetivo con un vinculo inestable que drena vitalidad por turnos, amplificado por Residuos Energeticos.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      if (EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>- Próximo Nivel: +1 DC</color>\n\n";
-          }
-        }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al danio base por turno.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A u Opcion B (mejoras IV).</color>"; }
       }
-    }
-
-    if (NIVEL == 3)
-    {
-      txtDescripcion = "<color=#5dade2><b>Sifón Arcano III</b></color>\n\n";
-      txtDescripcion += "<i>Marca al objetivo con un vínculo inestable que drena su vitalidad, amplificado por la presencia de Residuos Energéticos.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>TS:</b> 8+Poder vs Fortaleza. - Dura 3 turnos.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d10 daño arcano x ({2}+1 por cada Residuo Energético en juego).</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- Costo AP: 3\n- Costo Val: 1\n- Cooldown: {cooldownMax}</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- Si muere bajo este efecto: el Canalizador obtiene +1 AP permanente y +10% Daño.</color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>- Próximo Nivel:\nOpción A: Al matar con el efecto, gana 1 Nivel de Energía\nOpción B: +1 Turno de duración</color>\n\n";
-          }
-        }
-      }
-    }
-
-    if (NIVEL == 4)
-    {
-      // Variante A
-      txtDescripcion = "<color=#5dade2><b>Sifón Arcano IV a</b></color>\n\n";
-      txtDescripcion += "<i>Marca al objetivo con un vínculo inestable que drena su vitalidad, amplificado por la presencia de Residuos Energéticos.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>TS:</b> 8+Poder vs Fortaleza. - Dura 3 turnos.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d10 daño arcano x ({2}+1 por cada Residuo Energético en juego).</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- Costo AP: 3\n- Costo Val: 1\n- Cooldown: {cooldownMax}</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- Si muere bajo este efecto: el Canalizador obtiene +1 AP permanente, +10% Daño y +1 Nivel de Energía.</color>\n\n";
-    }
-
-    if (NIVEL == 5)
-    {
-      // Variante B
-      txtDescripcion = "<color=#5dade2><b>Sifón Arcano IV b</b></color>\n\n";
-      txtDescripcion += "<i>Marca al objetivo con un vínculo inestable que drena su vitalidad, amplificado por la presencia de Residuos Energéticos.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>TS:</b> 8+Poder vs Fortaleza. - Dura 4 turnos.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>Al final de cada turno del objetivo, recibe 1d10 daño arcano x ({2}+1 por cada Residuo Energético en juego).</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- Costo AP: 3\n- Costo Val: 1\n- Cooldown: {cooldownMax}</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- Si muere bajo este efecto: el Canalizador obtiene +1 AP permanente y +10% Daño.</color>\n\n";
-    }
-
-
-  if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-  {
-    if (NIVEL < 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Arcane Siphon I</b></color>\n\n";
-      txtDescripcion += "<i>Marks the target with an unstable link that drains its vitality, amplified by the presence of Energy Residues.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>ST:</b> 7+Power vs Fortitude. - Lasts 3 turns.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d10 arcane damage x ({1}+1 for each Energy Residue in play).</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- AP Cost: 3\n- Val Cost: 1\n- Cooldown: {cooldownMax}</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- If killed under this effect: the Channeler gains +1 permanent AP and +10% Damage.</color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>- Next Level: +1 Damage per Residue</color>\n\n";
-          }
-        }
-      }
-    }
-
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Arcane Siphon II</b></color>\n\n";
-      txtDescripcion += "<i>Marks the target with an unstable link that drains its vitality, amplified by the presence of Energy Residues.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>ST:</b> 7+Power vs Fortitude. - Lasts 3 turns.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d10 arcane damage x ({2}+1 for each Energy Residue in play).</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- AP Cost: 3\n- Val Cost: 1\n- Cooldown: {cooldownMax}</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- If killed under this effect: the Channeler gains +1 permanent AP and +10% Damage.</color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>- Next Level: +1 DC</color>\n\n";
-          }
-        }
-      }
-    }
-
-    if (NIVEL == 3)
-    {
-      txtDescripcion = "<color=#5dade2><b>Arcane Siphon III</b></color>\n\n";
-      txtDescripcion += "<i>Marks the target with an unstable link that drains its vitality, amplified by the presence of Energy Residues.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>ST:</b> 8+Power vs Fortitude. - Lasts 3 turns.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d10 arcane damage x ({2}+1 for each Energy Residue in play).</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- AP Cost: 3\n- Val Cost: 1\n- Cooldown: {cooldownMax}</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- If killed under this effect: the Channeler gains +1 permanent AP and +10% Damage.</color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>- Next Level:\nOption A: On kill with the effect, gain 1 Energy Level\nOption B: +1 turn duration</color>\n\n";
-          }
-        }
-      }
-    }
-
-    if (NIVEL == 4)
-    {
-      // Variant A
-      txtDescripcion = "<color=#5dade2><b>Arcane Siphon IV a</b></color>\n\n";
-      txtDescripcion += "<i>Marks the target with an unstable link that drains its vitality, amplified by the presence of Energy Residues.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>ST:</b> 8+Power vs Fortitude. - Lasts 3 turns.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d10 arcane damage x ({2}+1 for each Energy Residue in play).</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- AP Cost: 3\n- Val Cost: 1\n- Cooldown: {cooldownMax}</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- If killed under this effect: the Channeler gains +1 permanent AP, +10% Damage and +1 Energy Level.</color>\n\n";
-    }
-
-    if (NIVEL == 5)
-    {
-      // Variant B
-      txtDescripcion = "<color=#5dade2><b>Arcane Siphon IV b</b></color>\n\n";
-      txtDescripcion += "<i>Marks the target with an unstable link that drains its vitality, amplified by the presence of Energy Residues.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>ST:</b> 8+Power vs Fortitude. - Lasts 4 turns.</color>\n";
-      txtDescripcion += $"<color=#c8c8c8>At the end of each target's turn, it takes 1d10 arcane damage x ({2}+1 for each Energy Residue in play).</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- AP Cost: 3\n- Val Cost: 1\n- Cooldown: {cooldownMax}</color>\n";
-      txtDescripcion += $"<color=#44d3ec>- If killed under this effect: the Channeler gains +1 permanent AP and +10% Damage.</color>\n\n";
     }
   }
-
-
-
-
-
-
-  }
-
     Casilla Origen;
     public override void Activar()
     {

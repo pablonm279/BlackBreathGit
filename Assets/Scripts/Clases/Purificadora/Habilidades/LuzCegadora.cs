@@ -51,156 +51,90 @@ public class LuzCegadora : Habilidad
       
     }
 
-    public override void ActualizarDescripcion()
+        public override void ActualizarDescripcion()
     {
-      if(NIVEL<2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Luz Cegadora I</b></color>\n\n"; 
-        txtDescripcion += "<i>La Purificadora emite una luz divina en zona que ciega a enemigos y daña a seres impuros.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Cegar: -3 Ataque, -2 Defensa, - Reflejos; <color=#ea0606>Tirada Salvación Reflejos: DC:9 + Poder </color> - Daño: Divino 2d6 a Nomuertos y Etereos- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      var statsUI = ObtenerStatsDescripcionUI();
 
-        if (EsEscenaCampaña())
+      int poderActual = statsUI.Poder;
+      int dcBase = NIVEL > 1 ? 10 : 9;
+      bool agregaD6Divino = NIVEL > 2;
+      bool afectaOtrosEnemigos = NIVEL == 5;
+
+      string tituloEs = "Luz Cegadora I";
+      string tituloEn = "Blinding Light I";
+      if (NIVEL == 2) { tituloEs = "Luz Cegadora II"; tituloEn = "Blinding Light II"; }
+      if (NIVEL == 3) { tituloEs = "Luz Cegadora III"; tituloEn = "Blinding Light III"; }
+      if (NIVEL == 4) { tituloEs = "Luz Cegadora IV a"; tituloEn = "Blinding Light IV a"; }
+      if (NIVEL == 5) { tituloEs = "Luz Cegadora IV b"; tituloEn = "Blinding Light IV b"; }
+
+      string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Reflejos, dcBase, "Poder", "Power", poderActual);
+      string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Reflejos, dcBase, "Poder", "Power", poderActual);
+
+      string danioPrincipalEs = agregaD6Divino
+        ? $"1d10 + 1 + 1d6 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Divino"
+        : $"1d10 + 1 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Divino";
+      string danioPrincipalEn = agregaD6Divino
+        ? $"1d10 + 1 + 1d6 + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Divine"
+        : $"1d10 + 1 + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Divine";
+
+      string cuerpo = "";
+      if (esIngles)
+      {
+        cuerpo += "<b>Type:</b> Ranged (3 range)\n";
+        cuerpo += "<b>Target:</b> Frontal area (2 width)\n";
+        cuerpo += lineaSalvacionEn + "\n";
+        cuerpo += "<b>On failed save and if not immune to Blind:</b> Blinded for 2 rounds (-3 Attack, -2 Defense, -1 Reflex)\n";
+        cuerpo += $"<b>Damage vs Undead/Ethereal:</b> {danioPrincipalEn}";
+        if (afectaOtrosEnemigos)
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 DC</color>\n\n";
-          }
-          }
+          cuerpo += "\n<b>Other enemies:</b> receive 1/3 of the rolled Divine damage";
         }
-   
       }
-      if(NIVEL== 2)
+      else
       {
-       txtDescripcion = "<color=#5dade2><b>Luz Cegadora II</b></color>\n\n"; 
-        txtDescripcion += "<i>La Purificadora emite una luz divina en zona que ciega a enemigos y daña a seres impuros.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Cegar: -3 Ataque, -2 Defensa, - Reflejos; <color=#ea0606>Tirada Salvación Reflejos: DC:10 + Poder </color> - Daño: Divino 2d6 a Nomuertos y Etereos- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
-  
-    
-       if (EsEscenaCampaña())
+        cuerpo += "<b>Tipo:</b> Rango (3 alcance)\n";
+        cuerpo += "<b>Objetivo:</b> Area frontal (2 ancho)\n";
+        cuerpo += lineaSalvacionEs + "\n";
+        cuerpo += "<b>Si falla TS y no es inmune a Ceguera:</b> Ciego por 2 rondas (-3 Ataque, -2 Defensa, -1 Reflejos)\n";
+        cuerpo += $"<b>Danio vs Nomuerto/Etereo:</b> {danioPrincipalEs}";
+        if (afectaOtrosEnemigos)
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1d6 daño</color>\n\n";
-          }
-          }
+          cuerpo += "\n<b>Otros enemigos:</b> reciben 1/3 del danio Divino tirado";
         }
       }
-      if(NIVEL== 3)
+
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "The Purifier unleashes divine radiance that hinders enemies and burns impure targets."
+          : "La Purificadora desata una radiancia divina que debilita enemigos y quema objetivos impuros.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      bool mostrarProximoNivel = EsEscenaCampa�a() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
       {
-       txtDescripcion = "<color=#5dade2><b>Luz Cegadora III</b></color>\n\n"; 
-        txtDescripcion += "<i>La Purificadora emite una luz divina en zona que ciega a enemigos y daña a seres impuros.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Cegar: -3 Ataque, -2 Defensa, - Reflejos; <color=#ea0606>Tirada Salvación Reflejos: DC:10 + Poder </color> - Daño: Divino 3d6 a Nomuertos y Etereos- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
-  
-      if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: -1 costo Valentía</color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: Hace 1/3 daño a todos los otros enemigos. </color>\n";
-          }
-          }
-        }
-
+        return;
       }
-      if(NIVEL== 4)
+
+      if (esIngles)
       {
-        txtDescripcion = "<color=#5dade2><b>Luz Cegadora IV a</b></color>\n\n"; 
-        txtDescripcion += "<i>La Purificadora emite una luz divina en zona que ciega a enemigos y daña a seres impuros.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Cegar: -3 Ataque, -2 Defensa, - Reflejos; <color=#ea0606>Tirada Salvación Reflejos: DC:10 + Poder </color> - Daño: Divino 3d6 a Nomuertos y Etereos- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM-1} </color>\n\n";
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1d6 Divine damage vs Undead/Ethereal.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Val cost) or Option B (1/3 damage to other enemies).</color>"; }
       }
-      if(NIVEL== 5)
+      else
       {
-        txtDescripcion = "<color=#5dade2><b>Luz Cegadora IV b</b></color>\n\n"; 
-        txtDescripcion += "<i>La Purificadora emite una luz divina en zona que ciega a enemigos y daña a seres impuros.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Cegar: -3 Ataque, -2 Defensa, - Reflejos; <color=#ea0606>Tirada Salvación Reflejos: DC:10 + Poder </color> - Daño: Divino 3d6 a Nomuertos y Etereos- 1d6 al Resto </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-        }
-
-
-        if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-        {
-          if (NIVEL < 2)
-          {
-            txtDescripcion = "<color=#5dade2><b>Blinding Light I</b></color>\n\n";
-            txtDescripcion += "<i>The Purifier emits a divine light in an area that blinds enemies and damages impure beings.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8>Blind: -3 Attack, -2 Defense, - Reflexes; <color=#ea0606>Reflex Saving Throw: DC:9 + Power </color> - Damage: Divine 2d6 to Undead and Ethereal- </color>\n";
-            txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
-
-            if (EsEscenaCampaña())
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-              {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                {
-                  txtDescripcion += $"<color=#dfea02>-Next Level: +1 DC</color>\n\n";
-                }
-              }
-            }
-          }
-          if (NIVEL == 2)
-          {
-            txtDescripcion = "<color=#5dade2><b>Blinding Light II</b></color>\n\n";
-            txtDescripcion += "<i>The Purifier emits a divine light in an area that blinds enemies and damages impure beings.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8>Blind: -3 Attack, -2 Defense, - Reflexes; <color=#ea0606>Reflex Saving Throw: DC:10 + Power </color> - Damage: Divine 2d6 to Undead and Ethereal- </color>\n";
-            txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
-
-            if (EsEscenaCampaña())
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-              {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                {
-                  txtDescripcion += $"<color=#dfea02>-Next Level: +1d6 damage</color>\n\n";
-                }
-              }
-            }
-          }
-          if (NIVEL == 3)
-          {
-            txtDescripcion = "<color=#5dade2><b>Blinding Light III</b></color>\n\n";
-            txtDescripcion += "<i>The Purifier emits a divine light in an area that blinds enemies and damages impure beings.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8>Blind: -3 Attack, -2 Defense, - Reflexes; <color=#ea0606>Reflex Saving Throw: DC:10 + Power </color> - Damage: Divine 3d6 to Undead and Ethereal- </color>\n";
-            txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
-
-            if (EsEscenaCampaña())
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-              {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                {
-                  txtDescripcion += $"<color=#dfea02>-Option A: -1 Valor cost</color>\n";
-                  txtDescripcion += $"<color=#dfea02>-Option B: Deals 1/3 damage to all other enemies. </color>\n";
-                }
-              }
-            }
-          }
-          if (NIVEL == 4)
-          {
-            txtDescripcion = "<color=#5dade2><b>Blinding Light IV a</b></color>\n\n";
-            txtDescripcion += "<i>The Purifier emits a divine light in an area that blinds enemies and damages impure beings.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8>Blind: -3 Attack, -2 Defense, - Reflexes; <color=#ea0606>Reflex Saving Throw: DC:10 + Power </color> - Damage: Divine 3d6 to Undead and Ethereal- </color>\n";
-            txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM-1} </color>\n\n";
-          }
-          if (NIVEL == 5)
-          {
-            txtDescripcion = "<color=#5dade2><b>Blinding Light IV b</b></color>\n\n";
-            txtDescripcion += "<i>The Purifier emits a divine light in an area that blinds enemies and damages impure beings.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8>Blind: -3 Attack, -2 Defense, - Reflexes; <color=#ea0606>Reflex Saving Throw: DC:10 + Power </color> - Damage: Divine 3d6 to Undead and Ethereal- 1d6 to Others </color>\n";
-            txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
-          }
-        }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC de salvacion.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1d6 de danio Divino vs Nomuerto/Etereo.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo Val) u Opcion B (1/3 de danio a otros enemigos).</color>"; }
+      }
     }
 
     Casilla Origen;
@@ -231,7 +165,7 @@ public class LuzCegadora : Habilidad
         VFXAplicar(objetivo.gameObject);
       if (objetivo.inmunidad_Ceguera)
       {
-        objetivo.GenerarTextoFlotante("Inmune", Color.red);
+        objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.red);
       }
       else if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, dificultadAtributo)) //Si la tirada de salvacion es mayor a la tirada del usuario, no se aplica el efecto
       {
@@ -364,3 +298,4 @@ public class LuzCegadora : Habilidad
     
     
 }
+

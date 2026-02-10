@@ -248,6 +248,7 @@ GameObject:
   - component: {fileID: 3896944432580804204}
   - component: {fileID: 6785794506644449284}
   - component: {fileID: 4360330532430467366}
+  - component: {fileID: 5702488755417843956}
   m_Layer: 7
   m_Name: Image
   m_TagString: Untagged
@@ -327,6 +328,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
+--- !u!114 &5702488755417843956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4888557733310420769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78c622ef554cfcc46bb7c697a1927037, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shrinkAmount: 0.1182
+  breathsPerSecond: 0.25
+  randomDelayRange: {x: 0, y: 1.5}
+  useUnscaledTime: 0
+  alsoAffectWidth: 0
+  widthFactor: 0.5
 --- !u!1 &6457740566277436106
 GameObject:
   m_ObjectHideFlags: 0
@@ -726,6 +745,14 @@ MonoBehaviour:
   PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 4055037664898340864}
   barraVida: {fileID: 3484541556292160824}
+  barraVidaDamageFill: {fileID: 0}
+  barraVidaDamageColor: {r: 0.75, g: 0.12, b: 0.12, a: 0.6}
+  barraVidaDamageDelay: 0.12
+  barraVidaDamageSpeed: 0.9
+  barraVidaHealFill: {fileID: 0}
+  barraVidaHealColor: {r: 1, g: 0.85, b: 0.2, a: 0.6}
+  barraVidaHealDelay: 0.08
+  barraVidaHealSpeed: 0.9
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 8005023807402823628}
 --- !u!114 &89398736671745309
@@ -761,6 +788,7 @@ MonoBehaviour:
   mod_maxAccionP: 0
   AccionP_actual: 0
   AccionP_SeEsforzo: 0
+  scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
   ValentiaP_actual: 0
@@ -841,6 +869,11 @@ MonoBehaviour:
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  apilarTextosFlotantes: 0
+  floatingTextSlotSpacing: 9
+  floatingTextSlotLifetimeFallback: 1.1
+  floatingTextMaxSlots: 4
+  floatingTextMinInterval: 0.05
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}

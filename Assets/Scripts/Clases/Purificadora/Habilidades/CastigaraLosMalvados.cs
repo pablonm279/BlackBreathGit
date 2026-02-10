@@ -34,171 +34,81 @@ public class CastigaraLosMalvados : Habilidad
      
     }
 
-   public override void ActualizarDescripcion()
+      public override void ActualizarDescripcion()
    {
-       if(NIVEL<2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Castigar a los Malvados I</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Si el objetivo daña a un personaje aliado, debe superar una tirada Mental o sufrir daño divino y perder sus AP restantes.</i>\n";
-        txtDescripcion += $"<i>Tirada Salvación: DC 10+ Poder. Dura 2 usos o hasta salvarse. </i>\n";
-        txtDescripcion += "<i>Daño: 1d6+ 1/3 daño hecho al personaje aliado.</i>\n";
-      
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>\n\n";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      var statsUI = ObtenerStatsDescripcionUI();
 
+      int poderActual = statsUI.Poder;
+      int dcBase = NIVEL > 1 ? 11 : 10;
+      int usos = NIVEL == 4 ? 3 : 2;
+      string fraccionDanio = NIVEL == 5 ? "1/2" : "1/3";
 
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 DC</color>\n\n";
-          }
-          }
-        }
-   
-       }
-       if(NIVEL==2)
-       {
-         txtDescripcion = "<color=#5dade2><b>Castigar a los Malvados II</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Si el objetivo daña a un personaje aliado, debe superar una tirada Mental o sufrir daño divino y perder sus AP restantes.</i>\n";
-        txtDescripcion += $"<i>Tirada Salvación: DC 11+ Poder. Dura 2 usos o hasta salvarse. </i>\n";
-        txtDescripcion += "<i>Daño: 1d6+ 1/3 daño hecho al personaje aliado.</i>\n";
-      
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>\n\n";
- if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 Cooldown</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==3)
-       {
-         txtDescripcion = "<color=#5dade2><b>Castigar a los Malvados I</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Si el objetivo daña a un personaje aliado, debe superar una tirada Mental o sufrir daño divino y perder sus AP restantes.</i>\n";
-        txtDescripcion += $"<i>Tirada Salvación: DC 11+ Poder. Dura 2 usos o hasta salvarse. </i>\n";
-        txtDescripcion += "<i>Daño: 1d6+ 1/3 daño hecho al personaje aliado.</i>\n";
-      
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>\n\n";
+      string tituloEs = "Castigar a los Malvados I";
+      string tituloEn = "Punish the Wicked I";
+      if (NIVEL == 2) { tituloEs = "Castigar a los Malvados II"; tituloEn = "Punish the Wicked II"; }
+      if (NIVEL == 3) { tituloEs = "Castigar a los Malvados III"; tituloEn = "Punish the Wicked III"; }
+      if (NIVEL == 4) { tituloEs = "Castigar a los Malvados IV a"; tituloEn = "Punish the Wicked IV a"; }
+      if (NIVEL == 5) { tituloEs = "Castigar a los Malvados IV b"; tituloEn = "Punish the Wicked IV b"; }
 
-          if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: +1 Uso.</color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: aumenta a +1/2 daño hecho al personaje aliado.</color>\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==4)
-       {
-       txtDescripcion = "<color=#5dade2><b>Castigar a los Malvados IVa</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Si el objetivo daña a un personaje aliado, debe superar una tirada Mental o sufrir daño divino y perder sus AP restantes.</i>\n";
-        txtDescripcion += $"<i>Tirada Salvación: DC 11+ Poder. Dura 3 usos o hasta salvarse. </i>\n";
-        txtDescripcion += "<i>Daño: 1d6+ 1/3 daño hecho al personaje aliado.</i>\n";
-      
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>\n\n";
-    }
-       if(NIVEL==5)
-       {
-         txtDescripcion = "<color=#5dade2><b>Castigar a los Malvados IVb</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Si el objetivo daña a un personaje aliado, debe superar una tirada Mental o sufrir daño divino y perder sus AP restantes.</i>\n";
-        txtDescripcion += $"<i>Tirada Salvación: DC 11+ Poder. Dura 2 usos o hasta salvarse. </i>\n";
-        txtDescripcion += "<i>Daño: 1d6+ 1/2 daño hecho al personaje aliado.</i>\n";
-      
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>\n\n";
- }
+      string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Mental, dcBase, "Poder", "Power", poderActual);
+      string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Mental, dcBase, "Poder", "Power", poderActual);
 
-
-  if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-  {
-    if (NIVEL < 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Punish the Wicked I</b></color>\n\n";
-      txtDescripcion += "<i>If the target harms an allied character, they must pass a Mental saving throw or suffer divine damage and lose their remaining AP.</i>\n";
-      txtDescripcion += $"<i>Saving Throw: DC 10+ Power. Lasts 2 uses or until saved.</i>\n";
-      txtDescripcion += "<i>Damage: 1d6+ 1/3 damage dealt to the allied character.</i>\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
-      if (EsEscenaCampaña())
+      string cuerpo = "";
+      if (esIngles)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Next Level: +1 DC</color>\n\n";
-          }
-        }
+        cuerpo += "<b>Type:</b> Reactive mark\n";
+        cuerpo += "<b>Target:</b> 1 enemy unit on the opposite side\n";
+        cuerpo += "<b>Trigger:</b> Each time the marked unit damages one of your allies\n";
+        cuerpo += lineaSalvacionEn + "\n";
+        cuerpo += $"<b>On failed save:</b> Lose all remaining AP and take 1d6 + <color=#ea0606>Power ({poderActual})</color> + {fraccionDanio} of damage dealt | <b>Type:</b> Divine\n";
+        cuerpo += $"<b>Duration:</b> Up to {usos} failed saves, or ends early if the target succeeds the save";
       }
-    }
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Punish the Wicked II</b></color>\n\n";
-      txtDescripcion += "<i>If the target harms an allied character, they must pass a Mental saving throw or suffer divine damage and lose their remaining AP.</i>\n";
-      txtDescripcion += $"<i>Saving Throw: DC 11+ Power. Lasts 2 uses or until saved.</i>\n";
-      txtDescripcion += "<i>Damage: 1d6+ 1/3 damage dealt to the allied character.</i>\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
-      if (EsEscenaCampaña())
+      else
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Next Level: -1 Cooldown</color>\n\n";
-          }
-        }
+        cuerpo += "<b>Tipo:</b> Marca reactiva\n";
+        cuerpo += "<b>Objetivo:</b> 1 unidad enemiga del lado opuesto\n";
+        cuerpo += "<b>Disparo:</b> Cada vez que la unidad marcada dana a un aliado tuyo\n";
+        cuerpo += lineaSalvacionEs + "\n";
+        cuerpo += $"<b>Si falla TS:</b> Pierde todo su AP restante y recibe 1d6 + <color=#ea0606>Poder ({poderActual})</color> + {fraccionDanio} del dano infligido | <b>Tipo:</b> Divino\n";
+        cuerpo += $"<b>Duracion:</b> Hasta {usos} fallos de TS, o termina antes si el objetivo supera la TS";
       }
-    }
-    if (NIVEL == 3)
-    {
-      txtDescripcion = "<color=#5dade2><b>Punish the Wicked III</b></color>\n\n";
-      txtDescripcion += "<i>If the target harms an allied character, they must pass a Mental saving throw or suffer divine damage and lose their remaining AP.</i>\n";
-      txtDescripcion += $"<i>Saving Throw: DC 11+ Power. Lasts 2 uses or until saved.</i>\n";
-      txtDescripcion += "<i>Damage: 1d6+ 1/3 damage dealt to the allied character.</i>\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
-      if (EsEscenaCampaña())
+
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "Marks a target with divine retribution that punishes aggression."
+          : "Marca un objetivo con una represalia divina que castiga la agresion.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      bool mostrarProximoNivel = EsEscenaCampaña()
+        && CampaignManager.Instance != null
+        && CampaignManager.Instance.scMenuPersonajes != null
+        && CampaignManager.Instance.scMenuPersonajes.pSel != null
+        && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Option A: +1 Use.</color>\n";
-            txtDescripcion += $"<color=#dfea02>-Option B: increases to +1/2 damage dealt to the allied character.</color>\n";
-          }
-        }
+        return;
       }
-    }
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Punish the Wicked IVa</b></color>\n\n";
-      txtDescripcion += "<i>If the target harms an allied character, they must pass a Mental saving throw or suffer divine damage and lose their remaining AP.</i>\n";
-      txtDescripcion += $"<i>Saving Throw: DC 11+ Power. Lasts 3 uses or until saved.</i>\n";
-      txtDescripcion += "<i>Damage: 1d6+ 1/3 damage dealt to the allied character.</i>\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Punish the Wicked IVb</b></color>\n\n";
-      txtDescripcion += "<i>If the target harms an allied character, they must pass a Mental saving throw or suffer divine damage and lose their remaining AP.</i>\n";
-      txtDescripcion += $"<i>Saving Throw: DC 11+ Power. Lasts 2 uses or until saved.</i>\n";
-      txtDescripcion += "<i>Damage: 1d6+ 1/2 damage dealt to the allied character.</i>\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
-    }
-  }
 
-
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 cooldown.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 use) or Option B (damage share to 1/2).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC de salvacion.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 uso) u Opcion B (proporcion de dano a 1/2).</color>"; }
+      }
    }
 
     Casilla Origen;
@@ -224,7 +134,11 @@ public class CastigaraLosMalvados : Habilidad
 
       Unidad objetivo = (Unidad)obj;
 
-      BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} usa {nombre} en {objetivo.uNombre}");
+      BattleManager.Instance.EscribirLog(
+        TRADU.i.Traducir(scEstaUnidad.uNombre) + " " +
+        TRADU.i.Traducir("usa ") +
+        TRADU.i.Traducir(nombre) + " -> " +
+        TRADU.i.Traducir(objetivo.uNombre) + ".");
       VFXAplicar(objetivo.gameObject);
       //Agrega la reacción 
       ReaccionCastigarMalvados reaccion = new ReaccionCastigarMalvados();

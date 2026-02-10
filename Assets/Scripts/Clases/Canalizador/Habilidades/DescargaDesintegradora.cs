@@ -49,137 +49,100 @@ public class DescargaDesintegradora : Habilidad
 
     }
 
-  public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
   {
-    if (NIVEL < 2)
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    var statsUI = ObtenerStatsDescripcionUI();
+
+    int poderActual = statsUI.Poder;
+    int ataqueActual = statsUI.Ataque;
+    int criticoMin = Mathf.Clamp(19 - (statsUI.CriticoRango + 2), 2, 20);
+    int danioFijo = NIVEL > 1 ? 8 : 0;
+    int dcDesintegracion = NIVEL > 2 ? 10 : 9;
+    int energiaRequerida = NIVEL == 5 ? 1 : 2;
+    bool consumeEnergia = NIVEL != 5;
+    bool aturdeCaster = NIVEL != 4;
+    string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcDesintegracion);
+    string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, dcDesintegracion);
+
+    string tituloEs = "Descarga Desintegradora I";
+    string tituloEn = "Disintegrating Discharge I";
+    if (NIVEL == 2) { tituloEs = "Descarga Desintegradora II"; tituloEn = "Disintegrating Discharge II"; }
+    if (NIVEL == 3) { tituloEs = "Descarga Desintegradora III"; tituloEn = "Disintegrating Discharge III"; }
+    if (NIVEL == 4) { tituloEs = "Descarga Desintegradora IV a"; tituloEn = "Disintegrating Discharge IV a"; }
+    if (NIVEL == 5) { tituloEs = "Descarga Desintegradora IV b"; tituloEn = "Disintegrating Discharge IV b"; }
+
+    string danioEs = danioFijo > 0
+      ? $"3d12 + {danioFijo} + <color=#ea0606>Poder ({poderActual})</color>"
+      : $"3d12 + <color=#ea0606>Poder ({poderActual})</color>";
+    string danioEn = danioFijo > 0
+      ? $"3d12 + {danioFijo} + <color=#ea0606>Power ({poderActual})</color>"
+      : $"3d12 + <color=#ea0606>Power ({poderActual})</color>";
+
+    string cuerpo = "";
+    if (esIngles)
     {
-      txtDescripcion = "<color=#e67e22><b>Descarga Desintegradora I</b></color>\n\n";
-      txtDescripcion += "<i>Sólo al alcanzar su máxima Energía, el Canalizador libera una devastadora explosión de pura desintegración arcana.</i>\n\n";
-      txtDescripcion += "<color=#c8c8c8>- Costo: 6 AP | 1 Valentía | Requiere Energía 2+</color>\n";
-      txtDescripcion += "<color=#c8c8c8>- Alcance: en <b>Pirámide</b></color>\n";
-      txtDescripcion += "<color=#c8c8c8>- En area | Daño: 3d12 + Poder | Dado Crítico: 2</color>\n";
-      txtDescripcion += "<color=#c8c8c8>- TS Fortaleza 9: <b>Desintegra</b> (mata al objetivo)</color>\n";
-      txtDescripcion += "<color=#c8c8c8>- <b>Reduce 1 Nivel de Energía</b> y el Canalizador queda <b>Aturdido 1 turno</b>.</color>\n\n";
-      if (EsEscenaCampaña() && CampaignManager.Instance.scMenuPersonajes.pSel?.NivelPuntoHabilidad > 0)
-        txtDescripcion += "<color=#dfea02>- Próximo Nivel: +5 Daño.</color>\n\n";
+      cuerpo += "<b>Type:</b> Ranged (5 range)\n";
+      cuerpo += "<b>Target:</b> Pyramid area\n";
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color> + Attack ({ataqueActual}) + 5 vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
+      cuerpo += $"<b>Damage:</b> {danioEn} | <b>Type:</b> Arcane\n";
+      cuerpo += $"{lineaSalvacionEn}. On failed save: disintegrated (instant kill)\n";
+      cuerpo += consumeEnergia
+        ? "<b>Cast Drawback:</b> -1 Energy Tier"
+        : "<b>Cast Drawback:</b> Does not consume Energy Tier";
+      cuerpo += "\n";
+      cuerpo += aturdeCaster
+        ? "<b>Cast Drawback:</b> User is Stunned for 1 turn"
+        : "<b>Cast Drawback:</b> Does not Stun the user";
     }
-
-    if (NIVEL == 2)
+    else
     {
-      txtDescripcion = "<color=#e67e22><b>Descarga Desintegradora II</b></color>\n\n";
-      txtDescripcion += "<i>Sólo al alcanzar su máxima Energía, el Canalizador libera una devastadora explosión de pura desintegración arcana.</i>\n\n";
-      txtDescripcion += "<color=#c8c8c8>- Costo: 6 AP | 1 Valentía | Requiere Energía 2+</color>\n";
-      txtDescripcion += "<color=#c8c8c8>- Alcance: en <b>Pirámide</b></color>\n";
-      txtDescripcion += "<color=#c8c8c8>- En area | Daño: 3d12 + 5 + Poder | Dado Crítico: 2</color>\n";
-      txtDescripcion += "<color=#c8c8c8>- TS Fortaleza 9: <b>Desintegra</b></color>\n";
-      txtDescripcion += "<color=#c8c8c8>- <b>Reduce 1 Nivel de Energía</b> y el Canalizador queda <b>Aturdido 1 turno</b>.</color>\n\n";
-      if (EsEscenaCampaña() && CampaignManager.Instance.scMenuPersonajes.pSel?.NivelPuntoHabilidad > 0)
-        txtDescripcion += "<color=#dfea02>- Próximo Nivel: +1 DC.</color>\n\n";
+      cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
+      cuerpo += "<b>Objetivo:</b> Area en piramide\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}) + 5 vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
+      cuerpo += $"<b>Danio:</b> {danioEs} | <b>Tipo:</b> Arcano\n";
+      cuerpo += $"{lineaSalvacionEs}. Si falla TS: desintegrado (muerte instantanea)\n";
+      cuerpo += consumeEnergia
+        ? "<b>Costo al lanzar:</b> -1 Nivel de Energia"
+        : "<b>Costo al lanzar:</b> No consume Nivel de Energia";
+      cuerpo += "\n";
+      cuerpo += aturdeCaster
+        ? "<b>Costo al lanzar:</b> El usuario queda Aturdido 1 turno"
+        : "<b>Costo al lanzar:</b> No Aturde al usuario";
     }
 
-    if (NIVEL == 3)
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})\n- Requires Energy Tier: {energiaRequerida}+"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})\n- Requiere Nivel de Energia: {energiaRequerida}+";
+
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? tituloEn : tituloEs,
+      esIngles
+        ? "At peak charge, the Channeler unleashes a high-risk detonation that can erase targets outright."
+        : "Con la energia al maximo, el Canalizador libera una detonacion de alto riesgo capaz de borrar objetivos.",
+      cuerpo,
+      costos,
+      "#e67e22");
+
+    bool mostrarProximoNivel = EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    if (!mostrarProximoNivel)
     {
-      txtDescripcion = "<color=#e67e22><b>Descarga Desintegradora III</b></color>\n\n";
-      txtDescripcion += "<i>Sólo al alcanzar su máxima Energía, el Canalizador libera una devastadora explosión de pura desintegración arcana.</i>\n\n";
-      txtDescripcion += "<color=#c8c8c8>- Costo: 6 AP | 1 Valentía | Requiere Energía 2+</color>\n";
-      txtDescripcion += "<color=#c8c8c8>- Alcance: en <b>Pirámide</b></color>\n";
-      txtDescripcion += "<color=#c8c8c8>- En area | Daño: 3d12 + 5 + Poder | Dado Crítico: 2</color>\n";
-      txtDescripcion += "<color=#c8c8c8>- TS Fortaleza 10: <b>Desintegra</b></color>\n";
-      txtDescripcion += "<color=#c8c8c8>- <b>Reduce 1 Energía</b> y el Canalizador queda <b>Aturdido 1 turno</b>.</color>\n\n";
-      if (EsEscenaCampaña() && CampaignManager.Instance.scMenuPersonajes.pSel?.NivelPuntoHabilidad > 0)
-        txtDescripcion += "<color=#dfea02>- Próximo Nivel:\nOpción A: No aturde.\nOpción B: No reduce Energía.</color>\n\n";
+      return;
     }
 
-    if (NIVEL == 4)
+    if (esIngles)
     {
-      // Variante A: No aturde
-      txtDescripcion = "<color=#e67e22><b>Descarga Desintegradora IV (A)</b></color>\n\n";
-      txtDescripcion += "<i>Sólo al alcanzar su máxima Energía, el Canalizador libera una devastadora explosión de pura desintegración arcana.</i>\n\n";
-      txtDescripcion += "<color=#c8c8c8>- Costo: 6 AP | 1 Valentía | Requiere Energía 2+</color>\n";
-      txtDescripcion += "<color=#c8c8c8>- Alcance: en <b>Pirámide</b></color>\n";
-      txtDescripcion += "<color=#c8c8c8>- En area | Daño: 3d12 + 5 + Poder | Dado Crítico: 2</color>\n";
-      txtDescripcion += "<color=#c8c8c8>- TS Fortaleza 10: <b>Desintegra</b></color>\n";
-      txtDescripcion += "<color=#c8c8c8>- <b>Reduce 1 el Nivel de Energía</b>.</color>\n\n";
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +8 damage.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (no stun) or Option B (no Energy loss).</color>"; }
     }
-
-    if (NIVEL == 5)
+    else
     {
-      // Variante B: No reduce Energía
-      txtDescripcion += "<color=#e67e22><b>Descarga Desintegradora IV (B)</b></color>\n\n";
-      txtDescripcion += "<i>Sólo al alcanzar su máxima Energía, el Canalizador libera una devastadora explosión de pura desintegración arcana.</i>\n\n";
-      txtDescripcion += "<color=#c8c8c8>- Costo: 6 AP | 1 Valentía | Requiere Energía 2+</color>\n";
-      txtDescripcion += "<color=#c8c8c8>- Alcance: en <b>Pirámide</b></color>\n";
-      txtDescripcion += "<color=#c8c8c8>- En area | Daño: 3d12 + 5 + Poder | Dado Crítico: 2</color>\n";
-      txtDescripcion += "<color=#c8c8c8>- TS Fortaleza 10: <b>Desintegra</b></color>\n";
-      txtDescripcion += "<color=#c8c8c8>- <b>El canalizador queda <b>Aturdido 1 turno</b>.</color>\n\n";
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +8 de danio.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC de salvacion.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (sin aturdimiento) u Opcion B (sin perdida de Energia).</color>"; }
     }
-    
-    if (TRADU.i.nIdioma == 2)  // English translation
-    {
-      if (NIVEL < 2)
-      {
-        txtDescripcion = "<color=#e67e22><b>Disintegrating Discharge I</b></color>\n\n";
-        txtDescripcion += "<i>Only upon reaching maximum Energy, the Channeler unleashes a devastating explosion of pure arcane disintegration.</i>\n\n";
-        txtDescripcion += "<color=#c8c8c8>- Cost: 6 AP | 1 Valor | Requires Energy 2+</color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Range: in <b>Pyramid</b></color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Area | Damage: 3d12 + Power | Critical Die: 2</color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Fortitude Save 9: <b>Disintegrates</b> (kills the target)</color>\n";
-        txtDescripcion += "<color=#c8c8c8>- <b>Reduces 1 Energy Level</b> and the Channeler is <b>Stunned for 1 turn</b>.</color>\n\n";
-        if (EsEscenaCampaña() && CampaignManager.Instance.scMenuPersonajes.pSel?.NivelPuntoHabilidad > 0)
-          txtDescripcion += "<color=#dfea02>- Next Level: +5 Damage.</color>\n\n";
-      }
-
-      if (NIVEL == 2)
-      {
-        txtDescripcion = "<color=#e67e22><b>Disintegrating Discharge II</b></color>\n\n";
-        txtDescripcion += "<i>Only upon reaching maximum Energy, the Channeler unleashes a devastating explosion of pure arcane disintegration.</i>\n\n";
-        txtDescripcion += "<color=#c8c8c8>- Cost: 6 AP | 1 Valor | Requires Energy 2+</color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Range: in <b>Pyramid</b></color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Area | Damage: 3d12 + 5 + Power | Critical Die: 2</color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Fortitude Save 9: <b>Disintegrates</b></color>\n";
-        txtDescripcion += "<color=#c8c8c8>- <b>Reduces 1 Energy Level</b> and the Channeler is <b>Stunned for 1 turn</b>.</color>\n\n";
-        if (EsEscenaCampaña() && CampaignManager.Instance.scMenuPersonajes.pSel?.NivelPuntoHabilidad > 0)
-          txtDescripcion += "<color=#dfea02>- Next Level: +1 DC.</color>\n\n";
-      }
-
-      if (NIVEL == 3)
-      {
-        txtDescripcion = "<color=#e67e22><b>Disintegrating Discharge III</b></color>\n\n";
-        txtDescripcion += "<i>Only upon reaching maximum Energy, the Channeler unleashes a devastating explosion of pure arcane disintegration.</i>\n\n";
-        txtDescripcion += "<color=#c8c8c8>- Cost: 6 AP | 1 Valor | Requires Energy 2+</color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Range: in <b>Pyramid</b></color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Area | Damage: 3d12 + 5 + Power | Critical Die: 2</color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Fortitude Save 10: <b>Disintegrates</b></color>\n";
-        txtDescripcion += "<color=#c8c8c8>- <b>Reduces 1 Energy</b> and the Channeler is <b>Stunned for 1 turn</b>.</color>\n\n";
-        if (EsEscenaCampaña() && CampaignManager.Instance.scMenuPersonajes.pSel?.NivelPuntoHabilidad > 0)
-          txtDescripcion += "<color=#dfea02>- Next Level:\nOption A: Not stunned.\nOption B: Does not reduce Energy.</color>\n\n";
-      }
-
-      if (NIVEL == 4)
-      {
-        // Variant A: Not stunned
-        txtDescripcion = "<color=#e67e22><b>Disintegrating Discharge IV (A)</b></color>\n\n";
-        txtDescripcion += "<i>Only upon reaching maximum Energy, the Channeler unleashes a devastating explosion of pure arcane disintegration.</i>\n\n";
-        txtDescripcion += "<color=#c8c8c8>- Cost: 6 AP | 1 Valor | Requires Energy 2+</color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Range: in <b>Pyramid</b></color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Area | Damage: 3d12 + 5 + Power | Critical Die: 2</color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Fortitude Save 10: <b>Disintegrates</b></color>\n";
-        txtDescripcion += "<color=#c8c8c8>- <b>Reduces 1 Energy Level</b>.</color>\n\n";
-      }
-
-      if (NIVEL == 5)
-      {
-        // Variant B: Does not reduce Energy
-        txtDescripcion += "<color=#e67e22><b>Disintegrating Discharge IV (B)</b></color>\n\n";
-        txtDescripcion += "<i>Only upon reaching maximum Energy, the Channeler unleashes a devastating explosion of pure arcane disintegration.</i>\n\n";
-        txtDescripcion += "<color=#c8c8c8>- Cost: 6 AP | 1 Valor | Requires Energy 2+</color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Range: in <b>Pyramid</b></color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Area | Damage: 3d12 + 5 + Power | Critical Die: 2</color>\n";
-        txtDescripcion += "<color=#c8c8c8>- Fortitude Save 10: <b>Disintegrates</b></color>\n";
-        txtDescripcion += "<color=#c8c8c8>- <b>The channeler is <b>Stunned for 1 turn</b>.</color>\n\n";
-      }
-    }
-    }
+  }
 
     Casilla Origen;
     public override void Activar()
@@ -318,7 +281,9 @@ public class DescargaDesintegradora : Habilidad
     if (Objetivo.TiradaSalvacion(Objetivo.mod_TSFortaleza, dc))
     {
       Objetivo.RecibirDanio(Objetivo.mod_maxHP, 10, false, scEstaUnidad);
-      BattleManager.Instance.EscribirLog($"{Objetivo.uNombre} fue Desintegrado.");
+      string objetivoNombre = TRADU.i != null ? TRADU.i.Traducir(Objetivo.uNombre) : Objetivo.uNombre;
+      string textoDesintegrado = TRADU.i != null ? TRADU.i.Traducir("fue Desintegrado.") : "fue Desintegrado.";
+      BattleManager.Instance.EscribirLog(objetivoNombre + " " + textoDesintegrado);
     }
        
     }
@@ -414,5 +379,6 @@ private void ObtenerObjetivos()
 
     
 }
+
 
 

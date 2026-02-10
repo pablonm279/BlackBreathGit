@@ -39,167 +39,97 @@ public class PilaresDeLuz : Habilidad
       imHab = Resources.Load<Sprite>("imHab/Purificadora_PilaresDeLuz");
       ActualizarDescripcion();
     }
-    public override void ActualizarDescripcion()
+        public override void ActualizarDescripcion()
     {
-         if(NIVEL<2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Pilares de Luz I</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Convoca dos pilares de luz que obstaculizan enemigos y hacen daño divino a quienes los ataquen.</i>\n";
-        txtDescripcion += "<i>Pilar: Vida: 20 -- Daño: 1d6 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Convoca un pilar en la casilla seleccionada y uno en una casilla abajo, si está ocupada, entonces en la de arriba.</b>  </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      var statsUI = ObtenerStatsDescripcionUI();
 
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +5 Vida</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Pilares de Luz II</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Convoca dos pilares de luz que obstaculizan enemigos y hacen daño divino a quienes los ataquen.</i>\n";
-        txtDescripcion += "<i>Pilar: Vida: 25 -- Daño: 1d6 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Convoca un pilar en la casilla seleccionada y uno en una casilla abajo, si está ocupada, entonces en la de arriba.</b>  </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
+      int poderActual = statsUI.Poder;
+      int vidaPilar = NIVEL > 1 ? 25 : 20;
+      int resistenciaDanio = NIVEL == 4 ? 3 : 0;
+      int cantidadPilares = NIVEL == 5 ? 3 : 2;
+      int duracionTurnos = NIVEL == 5 ? 4 : 3;
+      int bonusDanio = NIVEL > 2 ? 3 : 0;
 
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +3 Daño</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==3)
-       {
-        txtDescripcion = "<color=#5dade2><b>Pilares de Luz III</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Convoca dos pilares de luz que obstaculizan enemigos y hacen daño divino a quienes los ataquen.</i>\n";
-        txtDescripcion += "<i>Pilar: Vida: 25 -- Daño: 1d6+3 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Convoca un pilar en la casilla seleccionada y uno en una casilla abajo, si está ocupada, entonces en la de arriba.</b>  </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
+      string tituloEs = "Pilares de Luz I";
+      string tituloEn = "Pillars of Light I";
+      if (NIVEL == 2) { tituloEs = "Pilares de Luz II"; tituloEn = "Pillars of Light II"; }
+      if (NIVEL == 3) { tituloEs = "Pilares de Luz III"; tituloEn = "Pillars of Light III"; }
+      if (NIVEL == 4) { tituloEs = "Pilares de Luz IV a"; tituloEn = "Pillars of Light IV a"; }
+      if (NIVEL == 5) { tituloEs = "Pilares de Luz IV b"; tituloEn = "Pillars of Light IV b"; }
 
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: Obtienen 3 de Resistencia al Daño. </color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: +1 Pilar. </color>\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==4)
-       {
-        txtDescripcion = "<color=#5dade2><b>Pilares de Luz IV a</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Convoca dos pilares de luz que obstaculizan enemigos y hacen daño divino a quienes los ataquen.</i>\n";
-        txtDescripcion += "<i>Pilar: Vida: 25 y 3 de Resistencia al daño.-- Daño: 1d6+3 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Convoca un pilar en la casilla seleccionada y uno en una casilla abajo, si está ocupada, entonces en la de arriba.</b>  </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
+      string danioPilarEs = bonusDanio > 0
+        ? $"1d6 + {bonusDanio} + <color=#ea0606>Poder ({poderActual})</color>"
+        : $"1d6 + <color=#ea0606>Poder ({poderActual})</color>";
+      string danioPilarEn = bonusDanio > 0
+        ? $"1d6 + {bonusDanio} + <color=#ea0606>Power ({poderActual})</color>"
+        : $"1d6 + <color=#ea0606>Power ({poderActual})</color>";
 
-       }
-       if(NIVEL==5)
-       {
-        txtDescripcion = "<color=#5dade2><b>Pilares de Luz IV b</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Convoca tres pilares de luz que obstaculizan enemigos y hacen daño divino a quienes los ataquen.</i>\n";
-        txtDescripcion += "<i>Pilar: Vida: 25.-- Daño: 1d6+3 Divino + Poder, doble a No-Muertos y Etéreos.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Convoca un pilar en la casilla seleccionada y uno en las casillas de arriba y abajo (si están desocupadas).</b>  </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-       }
-    if (TRADU.i.nIdioma == 2) // English translation
-    {
-      if (NIVEL < 2)
+      string cuerpo = "";
+      if (esIngles)
       {
-        txtDescripcion = "<color=#5dade2><b>Pillars of Light I</b></color>\n\n";
-        txtDescripcion += "<i>Summons two pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
-        txtDescripcion += "<i>Pillar: HP: 20 -- Damage: 1d6 Divine + Power, double to Undead and Ethereal.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tile below, if occupied then on the tile above.</b></color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-
-        if (EsEscenaCampaña())
+        cuerpo += "<b>Type:</b> Ranged (3 range)\n";
+        cuerpo += "<b>Target:</b> 1 tile in range\n";
+        cuerpo += $"<b>Summon:</b> {cantidadPilares} pillars (selected tile and adjacent tiles in the same column if free)\n";
+        cuerpo += $"<b>Pillar Stats:</b> HP {vidaPilar}";
+        if (resistenciaDanio > 0)
         {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Next Level: +5 HP</color>\n\n";
-            }
-          }
+          cuerpo += $", Damage Resistance {resistenciaDanio}";
         }
+        cuerpo += "\n";
+        cuerpo += $"<b>Retaliation:</b> {danioPilarEn} | <b>Type:</b> Divine (x2 vs Undead/Ethereal)\n";
+        cuerpo += $"<b>Duration:</b> {duracionTurnos} turns";
       }
-      if (NIVEL == 2)
+      else
       {
-        txtDescripcion = "<color=#5dade2><b>Pillars of Light II</b></color>\n\n";
-        txtDescripcion += "<i>Summons two pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
-        txtDescripcion += "<i>Pillar: HP: 25 -- Damage: 1d6 Divine + Power, double to Undead and Ethereal.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tile below, if occupied then on the tile above.</b></color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-
-        if (EsEscenaCampaña())
+        cuerpo += "<b>Tipo:</b> Rango (3 alcance)\n";
+        cuerpo += "<b>Objetivo:</b> 1 casilla en rango\n";
+        cuerpo += $"<b>Invocacion:</b> {cantidadPilares} pilares (casilla seleccionada y casillas adyacentes en la misma columna si estan libres)\n";
+        cuerpo += $"<b>Stats del pilar:</b> Vida {vidaPilar}";
+        if (resistenciaDanio > 0)
         {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Next Level: +3 Damage</color>\n\n";
-            }
-          }
+          cuerpo += $", Resistencia al dano {resistenciaDanio}";
         }
+        cuerpo += "\n";
+        cuerpo += $"<b>Contraataque:</b> {danioPilarEs} | <b>Tipo:</b> Divino (x2 vs Nomuerto/Etereo)\n";
+        cuerpo += $"<b>Duracion:</b> {duracionTurnos} turnos";
       }
-      if (NIVEL == 3)
-      {
-        txtDescripcion = "<color=#5dade2><b>Pillars of Light III</b></color>\n\n";
-        txtDescripcion += "<i>Summons two pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
-        txtDescripcion += "<i>Pillar: HP: 25 -- Damage: 1d6+3 Divine + Power, double to Undead and Ethereal.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tile below, if occupied then on the tile above.</b></color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
 
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Option A: Gain 3 Damage Resistance.</color>\n";
-              txtDescripcion += $"<color=#dfea02>-Option B: +1 Pillar.</color>\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 4)
-      {
-        txtDescripcion = "<color=#5dade2><b>Pillars of Light IV a</b></color>\n\n";
-        txtDescripcion += "<i>Summons two pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
-        txtDescripcion += "<i>Pillar: HP: 25 and 3 Damage Resistance.-- Damage: 1d6+3 Divine + Power, double to Undead and Ethereal.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tile below, if occupied then on the tile above.</b></color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-      }
-      if (NIVEL == 5)
-      {
-        txtDescripcion = "<color=#5dade2><b>Pillars of Light IV b</b></color>\n\n";
-        txtDescripcion += "<i>Summons three pillars of light that block enemies and deal divine damage to those who attack them.</i>\n";
-        txtDescripcion += "<i>Pillar: HP: 25.-- Damage: 1d6+3 Divine + Power, double to Undead and Ethereal.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Summons a pillar on the selected tile and one on the tiles above and below (if unoccupied).</b></color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-      }
-    }
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
 
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "Creates holy obstacles that punish attackers with divine retaliation."
+          : "Crea obstaculos sagrados que castigan a quienes los ataquen con represalia divina.",
+        cuerpo,
+        costos,
+        "#5dade2");
 
+      bool mostrarProximoNivel = EsEscenaCampaña()
+        && CampaignManager.Instance != null
+        && CampaignManager.Instance.scMenuPersonajes != null
+        && CampaignManager.Instance.scMenuPersonajes.pSel != null
+        && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
+      {
+        return;
+      }
+
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5 pillar HP.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +3 pillar retaliation damage.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+3 Damage Resistance) or Option B (+1 pillar).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5 Vida de pilar.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +3 danio de contraataque del pilar.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+3 Resistencia al dano) u Opcion B (+1 pilar).</color>"; }
+      }
     }
     void Start()
     {

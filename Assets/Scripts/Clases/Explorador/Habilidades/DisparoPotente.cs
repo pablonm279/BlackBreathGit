@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class DisparoPotente : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ãcido - 8: Arcano
 
    
    public override void  Awake()
@@ -49,167 +49,91 @@ public class DisparoPotente : Habilidad
       
 
       requiereRecurso = 2; //esto es para que el boton no se active al apretar si no tiene X recursos (ej Flecha). Ver en BotonHabilidad.
-      
+      ActualizarDescripcion();
+
     }
 
-    public override void ActualizarDescripcion()
+        public override void ActualizarDescripcion()
     {
-      if(NIVEL<2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Tiro Potente I</b></color>\n\n"; 
-        txtDescripcion += "<i>Utilizando toda la fuerza de su arco, el Explorador dispara una flecha que atraviesa enemigos en la misma fila.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Afecta a toda la fila.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque}</color> - Daño: Perforante 1d10+3- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Flechas: 2 -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      var statsUI = ObtenerStatsDescripcionUI();
 
-        if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +2 Daño</color>\n\n";
-          }
-          }
-        }
-   
-      }
-      if(NIVEL== 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Tiro Potente II</b></color>\n\n"; 
-        txtDescripcion += "<i>Utilizando toda la fuerza de su arco, el Explorador dispara una flecha que atraviesa enemigos en la misma fila.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Afecta a toda la fila.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque}</color> - Daño: Perforante 1d10+5- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Flechas: 2 - Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-    
-    
-       if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-          }
-          }
-        }
-      }
-      if(NIVEL== 3)
-      {
-        txtDescripcion = "<color=#5dade2><b>Tiro Potente III</b></color>\n\n"; 
-        txtDescripcion += "<i>Utilizando toda la fuerza de su arco, el Explorador dispara una flecha que atraviesa enemigos en la misma fila.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Afecta a toda la fila.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque}</color> - Daño: Perforante 1d10+5- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Flechas: 2 - Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
+      int agilidadActual = statsUI.Agilidad;
+      int ataqueActual = statsUI.Ataque;
+      int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+      int bonoAtaqueNivel = bonusAtaque;
+      int danioFijo = 2 + (NIVEL > 1 ? 2 : 0);
 
-      if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: -1 costo Valentía</color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: +2 Ataque</color>\n";
-          }
-          }
-        }
+      string tituloEs = "Tiro Potente I";
+      string tituloEn = "Powerful Shot I";
+      if (NIVEL == 2) { tituloEs = "Tiro Potente II"; tituloEn = "Powerful Shot II"; }
+      if (NIVEL == 3) { tituloEs = "Tiro Potente III"; tituloEn = "Powerful Shot III"; }
+      if (NIVEL == 4) { tituloEs = "Tiro Potente IV a"; tituloEn = "Powerful Shot IV a"; }
+      if (NIVEL == 5) { tituloEs = "Tiro Potente IV b"; tituloEn = "Powerful Shot IV b"; }
 
+      string cuerpo = "";
+      if (esIngles)
+      {
+        cuerpo += "<b>Type:</b> Ranged (line)\n";
+        cuerpo += "<b>Target:</b> Enemies on the same row\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonoAtaqueNivel} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Damage:</b> 1d10 + {danioFijo} + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Slashing\n";
+        cuerpo += "<b>Resource:</b> consumes 2 Arrows\n";
       }
-      if(NIVEL== 4)
+      else
       {
-        txtDescripcion = "<color=#5dade2><b>Tiro Potente IV a</b></color>\n\n"; 
-        txtDescripcion += "<i>Utilizando toda la fuerza de su arco, el Explorador dispara una flecha que atraviesa enemigos en la misma fila.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Afecta a toda la fila.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque}</color> - Daño: Perforante 1d10+5- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Flechas: 2 - Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-     }
-      if(NIVEL== 5)
-      {
-        txtDescripcion = "<color=#5dade2><b>Tiro Potente IV b</b></color>\n\n"; 
-        txtDescripcion += "<i>Utilizando toda la fuerza de su arco, el Explorador dispara una flecha que atraviesa enemigos en la misma fila.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Afecta a toda la fila.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque}</color> - Daño: Perforante 1d10+5- </color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Flechas: 2 - Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
+        cuerpo += "<b>Tipo:</b> Rango (linea)\n";
+        cuerpo += "<b>Objetivo:</b> Enemigos en la misma fila\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonoAtaqueNivel} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Danio:</b> 1d10 + {danioFijo} + <color=#ea0606>Agilidad ({agilidadActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += "<b>Recurso:</b> consume 2 Flechas\n";
       }
 
-      if (TRADU.i.nIdioma == 2) // English translation
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "A heavy line shot that pierces a full row at high AP cost."
+          : "Un disparo de linea pesado que barre una fila entera con alto costo de AP.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
       {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Powerful Shot I</b></color>\n\n";
-          txtDescripcion += "<i>Using all the strength of their bow, the Explorer fires an arrow that pierces enemies in the same row.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Affects the entire row.</b> -Attack: <color=#ea0606>Agility {bonusAtaque}</color> - Damage: Piercing 1d10+3- </color>\n";
-          txtDescripcion += $"<color=#44d3ec>-Arrows: 2 -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +2 Damage</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Powerful Shot II</b></color>\n\n";
-          txtDescripcion += "<i>Using all the strength of their bow, the Explorer fires an arrow that pierces enemies in the same row.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Affects the entire row.</b> -Attack: <color=#ea0606>Agility {bonusAtaque}</color> - Damage: Piercing 1d10+5- </color>\n";
-          txtDescripcion += $"<color=#44d3ec>-Arrows: 2 -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Powerful Shot III</b></color>\n\n";
-          txtDescripcion += "<i>Using all the strength of their bow, the Explorer fires an arrow that pierces enemies in the same row.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Affects the entire row.</b> -Attack: <color=#ea0606>Agility {bonusAtaque}</color> - Damage: Piercing 1d10+5- </color>\n";
-          txtDescripcion += $"<color=#44d3ec>-Arrows: 2 -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: -1 Valor cost</color>\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: +2 Attack</color>\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Powerful Shot IV a</b></color>\n\n";
-          txtDescripcion += "<i>Using all the strength of their bow, the Explorer fires an arrow that pierces enemies in the same row.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Affects the entire row.</b> -Attack: <color=#ea0606>Agility {bonusAtaque}</color> - Damage: Piercing 1d10+5- </color>\n";
-          txtDescripcion += $"<color=#44d3ec>-Arrows: 2 -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Powerful Shot IV b</b></color>\n\n";
-          txtDescripcion += "<i>Using all the strength of their bow, the Explorer fires an arrow that pierces enemies in the same row.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Affects the entire row.</b> -Attack: <color=#ea0606>Agility {bonusAtaque}</color> - Damage: Piercing 1d10+5- </color>\n";
-          txtDescripcion += $"<color=#44d3ec>-Arrows: 2 -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Valor Cost: {costoPM} </color>\n\n";
-        }
+        return;
       }
 
-        if (CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>().escenaActual != 1)
-       {return;} // Sale del método si la escena no es "ES-Batallas"
-        ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
-    if (clase.ObtenerCantidadFlechas() < 1)
-    {
-        txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 damage.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack roll bonus.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Val cost) or Option B (+2 attack roll bonus).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Val) u Opcion B (+2 al bono de ataque).</color>"; }
+      }
 
+      if (CampaignManager.Instance != null && CampaignManager.Instance.gameObject != null && CampaignManager.Instance.gameObject.transform.parent != null && CampaignManager.Instance.gameObject.transform.parent.parent != null)
+      {
+        AdministradorEscenas admin = CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>();
+        if (admin != null && admin.escenaActual == 1)
+        {
+          ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
+          if (clase != null && clase.ObtenerCantidadFlechas() < 1)
+          {
+            txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
+          }
+        }
+      }
     }
-    }
-
     Casilla Origen;
     private Task impactoFilaPendiente;
     public override void Activar()
@@ -261,7 +185,7 @@ public class DisparoPotente : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Acá van los efectos a Unidades.
+     if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
      { 
       
         Unidad objetivo = (Unidad)obj;
@@ -276,11 +200,11 @@ public class DisparoPotente : Habilidad
        print("Resultado tirada "+resultadoTirada);
        
         //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para próximas habilidades de daño del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prÃ³ximas habilidades de daÃ±o del explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de daño solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daño crítico.
+         danioMarca += 15; //Esto se suma al porcentaje de daÃ±o solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daÃ±o crÃ­tico.
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -347,7 +271,7 @@ public class DisparoPotente : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
+     else if (obj is Obstaculo) //AcÃ¡ van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -586,6 +510,7 @@ public class DisparoPotente : Habilidad
 
     
 }
+
 
 
 

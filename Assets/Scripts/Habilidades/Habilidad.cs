@@ -53,6 +53,25 @@ public abstract class Habilidad : MonoBehaviour
   [Tooltip("0=Sin mostrar probabilidad, 1=Ataque melee, 2=Ataque rango")]
   public int tipoPorcentaje = 0;
 
+  protected const string ColorDescripcionMecanica = "#c8c8c8";
+  protected const string ColorDescripcionCostos = "#44d3ec";
+
+  protected struct StatsDescripcionUI
+  {
+    public int Fuerza;
+    public int Agilidad;
+    public int Poder;
+    public int Ataque;
+    public int CriticoRango;
+  }
+
+  protected enum TipoSalvacionDescripcion
+  {
+    Fortaleza,
+    Reflejos,
+    Mental
+  }
+
   // Unidades resaltadas al previsualizar la habilidad (se limpia al cancelar/resolver)
   private readonly HashSet<Unidad> unidadesMarcadasPrevisualizacion = new HashSet<Unidad>();
 
@@ -67,6 +86,206 @@ public abstract class Habilidad : MonoBehaviour
   protected virtual Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
   {
     return DelayPostImpactoMs > 0 ? Task.Delay(DelayPostImpactoMs) : Task.CompletedTask;
+  }
+
+  protected string ConstruirDescripcionEstandar(string titulo, string subtitulo, string cuerpoMecanica, string bloqueCostos, string colorTitulo)
+  {
+    string desc = $"<color={colorTitulo}><b>{titulo}</b></color>\n\n";
+    if (!string.IsNullOrEmpty(subtitulo))
+    {
+      desc += $"<i>{subtitulo}</i>\n\n";
+    }
+
+    if (!string.IsNullOrEmpty(cuerpoMecanica))
+    {
+      desc += $"<color={ColorDescripcionMecanica}>{cuerpoMecanica}</color>\n\n";
+    }
+
+    if (!string.IsNullOrEmpty(bloqueCostos))
+    {
+      desc += $"<color={ColorDescripcionCostos}>{bloqueCostos}</color>";
+    }
+
+    return desc;
+  }
+
+  protected string ConstruirLineaSalvacion(
+    bool esIngles,
+    TipoSalvacionDescripcion tipo,
+    int dcBase,
+    string atributoEscalaEs = null,
+    string atributoEscalaEn = null,
+    int valorAtributoEscala = 0)
+  {
+    string tipoEs = "Fortaleza";
+    string tipoEn = "Fortitude";
+    if (tipo == TipoSalvacionDescripcion.Reflejos)
+    {
+      tipoEs = "Reflejos";
+      tipoEn = "Reflex";
+    }
+    else if (tipo == TipoSalvacionDescripcion.Mental)
+    {
+      tipoEs = "Mental";
+      tipoEn = "Mental";
+    }
+
+    bool usaEscalado = !string.IsNullOrEmpty(atributoEscalaEs) && !string.IsNullOrEmpty(atributoEscalaEn);
+    if (usaEscalado)
+    {
+      int dcTotal = dcBase + valorAtributoEscala;
+      if (esIngles)
+      {
+        return $"<b>Save:</b> {tipoEn}. Target rolls 1d20 + {tipoEn} vs DC {dcBase} + {atributoEscalaEn} ({valorAtributoEscala}) = {dcTotal}";
+      }
+
+      return $"<b>TS:</b> {tipoEs}. El objetivo tira 1d20 + {tipoEs} vs DC {dcBase} + {atributoEscalaEs} ({valorAtributoEscala}) = {dcTotal}";
+    }
+
+    if (esIngles)
+    {
+      return $"<b>Save:</b> {tipoEn}. Target rolls 1d20 + {tipoEn} vs DC {dcBase}";
+    }
+
+    return $"<b>TS:</b> {tipoEs}. El objetivo tira 1d20 + {tipoEs} vs DC {dcBase}";
+  }
+
+  protected StatsDescripcionUI ObtenerStatsDescripcionUI()
+  {
+    StatsDescripcionUI stats = new StatsDescripcionUI();
+
+    // En combate usar valores vivos con buffs/debuffs.
+    if (!EsEscenaCampaña() && scEstaUnidad != null)
+    {
+      stats.Fuerza = Mathf.RoundToInt(scEstaUnidad.mod_CarFuerza);
+      stats.Agilidad = Mathf.RoundToInt(scEstaUnidad.mod_CarAgilidad);
+      stats.Poder = Mathf.RoundToInt(scEstaUnidad.mod_CarPoder);
+      stats.Ataque = Mathf.RoundToInt(scEstaUnidad.mod_Ataque);
+      stats.CriticoRango = Mathf.RoundToInt(scEstaUnidad.mod_CriticoRangoDado);
+      return stats;
+    }
+
+    MenuPersonajes menu = null;
+    Personaje personaje = null;
+    if (CampaignManager.Instance != null)
+    {
+      menu = CampaignManager.Instance.scMenuPersonajes;
+      if (menu != null)
+      {
+        personaje = menu.pSel;
+      }
+    }
+
+    if (personaje == null)
+    {
+      if (Usuario != null)
+      {
+        personaje = Usuario.GetComponent<Personaje>();
+      }
+      if (personaje == null)
+      {
+        personaje = GetComponent<Personaje>();
+      }
+    }
+
+    if (personaje != null)
+    {
+      int buffFuerza;
+      int buffAgi;
+      int buffPoder;
+      CalcularBuffsEquipoCampania(personaje, menu, out buffFuerza, out buffAgi, out buffPoder);
+
+      stats.Fuerza = personaje.iFuerza + buffFuerza;
+      stats.Agilidad = personaje.iAgi + buffAgi;
+      stats.Poder = personaje.iPoder + buffPoder;
+      stats.Ataque = Mathf.RoundToInt(personaje.fBonusAtaque);
+      stats.CriticoRango = Mathf.RoundToInt(personaje.fCritRango);
+
+      // Replica estados de campaña que alteran atributos/ataque en batalla.
+      if (personaje.Camp_Fatigado || personaje.ActividadSeleccionada == 2)
+      {
+        stats.Fuerza -= 1;
+        stats.Agilidad -= 1;
+        stats.Poder -= 1;
+      }
+      if (personaje.Camp_Herido)
+      {
+        stats.Fuerza -= 1;
+        stats.Agilidad -= 1;
+        stats.Poder -= 1;
+      }
+      if (personaje.Camp_Bendecido_SequitoClerigos)
+      {
+        stats.Ataque += 1;
+      }
+      if (personaje.Camp_Moral > 0)
+      {
+        stats.Ataque += 1;
+      }
+      else if (personaje.Camp_Moral < 0)
+      {
+        stats.Ataque -= 1;
+      }
+
+      return stats;
+    }
+
+    // Fallback.
+    if (scEstaUnidad != null)
+    {
+      stats.Fuerza = Mathf.RoundToInt(scEstaUnidad.mod_CarFuerza);
+      stats.Agilidad = Mathf.RoundToInt(scEstaUnidad.mod_CarAgilidad);
+      stats.Poder = Mathf.RoundToInt(scEstaUnidad.mod_CarPoder);
+      stats.Ataque = Mathf.RoundToInt(scEstaUnidad.mod_Ataque);
+      stats.CriticoRango = Mathf.RoundToInt(scEstaUnidad.mod_CriticoRangoDado);
+    }
+
+    return stats;
+  }
+
+  private void CalcularBuffsEquipoCampania(Personaje personaje, MenuPersonajes menu, out int buffFuerza, out int buffAgi, out int buffPoder)
+  {
+    buffFuerza = 0;
+    buffAgi = 0;
+    buffPoder = 0;
+
+    if (menu != null && menu.scEquipo != null)
+    {
+      buffFuerza = menu.scEquipo.BuffTOTALEQUIPOFuerza;
+      buffAgi = menu.scEquipo.BuffTOTALEQUIPOAgi;
+      buffPoder = menu.scEquipo.BuffTOTALEQUIPOPoder;
+      return;
+    }
+
+    if (personaje == null)
+    {
+      return;
+    }
+
+    if (personaje.itemArma != null)
+    {
+      buffFuerza += personaje.itemArma.buffFuerza;
+      buffAgi += personaje.itemArma.buffAgi;
+      buffPoder += personaje.itemArma.buffPoder;
+    }
+    if (personaje.itemArmadura != null)
+    {
+      buffFuerza += personaje.itemArmadura.buffFuerza;
+      buffAgi += personaje.itemArmadura.buffAgi;
+      buffPoder += personaje.itemArmadura.buffPoder;
+    }
+    if (personaje.Accesorio1 != null)
+    {
+      buffFuerza += personaje.Accesorio1.buffFuerza;
+      buffAgi += personaje.Accesorio1.buffAgi;
+      buffPoder += personaje.Accesorio1.buffPoder;
+    }
+    if (personaje.Accesorio2 != null)
+    {
+      buffFuerza += personaje.Accesorio2.buffFuerza;
+      buffAgi += personaje.Accesorio2.buffAgi;
+      buffPoder += personaje.Accesorio2.buffPoder;
+    }
   }
 
   /// <summary>

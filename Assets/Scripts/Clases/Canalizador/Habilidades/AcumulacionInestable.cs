@@ -42,159 +42,77 @@ public class AcumulacionInestable : Habilidad
      if (NIVEL != 4 ) { cooldownActual = cooldownMax; }
 
   }
-  public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
   {
-    if (TRADU.i.nIdioma == 1)
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+
+    string tituloEs = "Acumulacion Inestable I";
+    string tituloEn = "Unstable Gathering I";
+    if (NIVEL == 2) { tituloEs = "Acumulacion Inestable II"; tituloEn = "Unstable Gathering II"; }
+    if (NIVEL == 3) { tituloEs = "Acumulacion Inestable III"; tituloEn = "Unstable Gathering III"; }
+    if (NIVEL == 4) { tituloEs = "Acumulacion Inestable IV a"; tituloEn = "Unstable Gathering IV a"; }
+    if (NIVEL == 5) { tituloEs = "Acumulacion Inestable IV b"; tituloEn = "Unstable Gathering IV b"; }
+
+    int bonusDanioArcano = NIVEL > 2 ? 7 : 5;
+    bool arrancaEnCooldown = NIVEL != 4;
+    bool recibeDanioPropio = NIVEL != 5;
+
+    string cuerpo = "";
+    if (esIngles)
     {
-      if (NIVEL < 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Acumulación Inestable I</b></color>\n\n";
-        txtDescripcion += "<i>Manipulando su energía interna de forma riesgosa, el personaje incrementa inmediatamente su energía a costa de su bienestar.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>- Gana <b>+1 Tier de Energía</b> al instante.\n- Obtiene <color=#ea0606>+5 Daño Arcano</color> por el turno.\n- Recibe <color=#ea0606>1d6 Daño Arcano</color> al usarla.</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} (arranca en Cooldown)\n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>- Próximo Nivel: -1 Cooldown</color>\n\n";
-            }
-          }
-        }
-      }
-
-      if (NIVEL == 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Acumulación Inestable II</b></color>\n\n";
-        txtDescripcion += "<i>Manipulando su energía interna de forma riesgosa, el personaje incrementa inmediatamente su energía a costa de su bienestar.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>- Gana <b>+1 Tier de Energía</b> al instante.\n- Obtiene <color=#ea0606>+5 Daño Arcano</color> por el turno.\n- Recibe <color=#ea0606>1d6 Daño Arcano</color> al usarla.</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} (arranca en Cooldown)\n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>- Próximo Nivel: +2 Daño Arcano</color>\n\n";
-            }
-          }
-        }
-      }
-
-      if (NIVEL == 3)
-      {
-        txtDescripcion = "<color=#5dade2><b>Acumulación Inestable III</b></color>\n\n";
-        txtDescripcion += "<i>Manipulando su energía interna de forma riesgosa, el personaje incrementa inmediatamente su energía a costa de su bienestar.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>- Gana <b>+1 Tier de Energía</b> al instante.\n- Obtiene <color=#ea0606>+7 Daño Arcano</color> por el turno.\n- Recibe <color=#ea0606>1d6 Daño Arcano</color> al usarla.</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} (arranca en Cooldown)\n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>- Opción A: No arranca en Cooldown</color>\n";
-              txtDescripcion += $"<color=#dfea02>- Opción B: No recibe daño al usarla</color>\n\n";
-            }
-          }
-        }
-      }
-
-      if (NIVEL == 4)
-      {
-        txtDescripcion = "<color=#5dade2><b>Acumulación Inestable IV a</b></color>\n\n";
-        txtDescripcion += "<i>Manipulando su energía interna de forma riesgosa, el personaje incrementa inmediatamente su energía a costa de su bienestar.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>- Gana <b>+1 Tier de Energía</b> al instante.\n- Obtiene <color=#ea0606>+7 Daño Arcano</color> por el turno.\n- Recibe <color=#ea0606>1d6 Daño Arcano</color> al usarla.</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1}\n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-      }
-
-      if (NIVEL == 5)
-      {
-        txtDescripcion = "<color=#5dade2><b>Acumulación Inestable IV b</b></color>\n\n";
-        txtDescripcion += "<i>Manipulando su energía interna de forma riesgosa, el personaje incrementa inmediatamente su energía a costa de su bienestar.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>- Gana <b>+1 Tier de Energía</b> al instante.\n- Obtiene <color=#ea0606>+7 Daño Arcano</color> por el turno.\n- <b>No recibe daño al usarla.</b></color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} (arranca en Cooldown)\n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-      }
+      cuerpo += "<b>Type:</b> Self\n";
+      cuerpo += "<b>Target:</b> Self\n";
+      cuerpo += "<b>Instant effect:</b> +1 Energy Tier\n";
+      cuerpo += $"<b>Buff (this turn):</b> +{bonusDanioArcano} Arcane damage\n";
+      cuerpo += recibeDanioPropio
+        ? "<b>Backlash:</b> Takes 1d6 Arcane damage on cast"
+        : "<b>Backlash:</b> No self damage on cast";
     }
-    if (TRADU.i.nIdioma == 2)
+    else
     {
-      if (NIVEL < 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Unstable Gathering I</b></color>\n\n";
-        txtDescripcion += "<i>By recklessly manipulating his inner energy, the character immediately increases his power at the cost of his well-being.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>- Instantly gains <b>+1 Energy Tier</b>.\n- Gains <color=#ea0606>+5 Arcane Damage</color> for the turn.\n- Takes <color=#ea0606>1d6 Arcane Damage</color> when used.</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} (starts on Cooldown)\n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+      cuerpo += "<b>Tipo:</b> Propia\n";
+      cuerpo += "<b>Objetivo:</b> Propio usuario\n";
+      cuerpo += "<b>Efecto instantaneo:</b> +1 Nivel de Energia\n";
+      cuerpo += $"<b>Buff (este turno):</b> +{bonusDanioArcano} de danio Arcano\n";
+      cuerpo += recibeDanioPropio
+        ? "<b>Contragolpe:</b> Recibe 1d6 de danio Arcano al usarla"
+        : "<b>Contragolpe:</b> No recibe danio al usarla";
+    }
 
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>- Next Level: -1 Cooldown</color>\n\n";
-            }
-          }
-        }
-      }
+    string notaInicioCooldown = esIngles
+      ? (arrancaEnCooldown ? "Starts on cooldown." : "Does not start on cooldown.")
+      : (arrancaEnCooldown ? "Arranca en enfriamiento." : "No arranca en enfriamiento.");
 
-      if (NIVEL == 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Unstable Gathering II</b></color>\n\n";
-        txtDescripcion += "<i>By recklessly manipulating his inner energy, the character immediately increases his Energy level at the cost of his well-being.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>- Instantly gains <b>+1 Energy Tier</b>.\n- Gains <color=#ea0606>+5 Arcane Damage</color> for the turn.\n- Takes <color=#ea0606>1d6 Arcane Damage</color> when used.</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} (starts on Cooldown)\n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- {notaInicioCooldown}"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- {notaInicioCooldown}";
 
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>- Next Level: +2 Arcane Damage</color>\n\n";
-            }
-          }
-        }
-      }
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? tituloEn : tituloEs,
+      esIngles
+        ? "The Channeler overloads their core to gain immediate power at a personal cost."
+        : "El Canalizador sobrecarga su nucleo para ganar poder inmediato a costa de su propio cuerpo.",
+      cuerpo,
+      costos,
+      "#5dade2");
 
-      if (NIVEL == 3)
-      {
-        txtDescripcion = "<color=#5dade2><b>Unstable Gathering III</b></color>\n\n";
-        txtDescripcion += "<i>By recklessly manipulating his inner energy, the character immediately increases his Energy level at the cost of his well-being.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>- Instantly gains <b>+1 Energy Tier</b>.\n- Gains <color=#ea0606>+7 Arcane Damage</color> for the turn.\n- Takes <color=#ea0606>1d6 Arcane Damage</color> when used.</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} (starts on Cooldown)\n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+    bool mostrarProximoNivel = EsEscenaCampa�a() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    if (!mostrarProximoNivel)
+    {
+      return;
+    }
 
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>- Option A: Does not start on Cooldown</color>\n";
-              txtDescripcion += $"<color=#dfea02>- Option B: Does not take damage when used</color>\n\n";
-            }
-          }
-        }
-      }
-
-      if (NIVEL == 4)
-      {
-        txtDescripcion = "<color=#5dade2><b>Unstable Gathering IV a</b></color>\n\n";
-        txtDescripcion += "<i>By recklessly manipulating his inner energy, the character immediately increases his Energy level at the cost of his well-being.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>- Instantly gains <b>+1 Energy Tier</b>.\n- Gains <color=#ea0606>+7 Arcane Damage</color> for the turn.\n- Takes <color=#ea0606>1d6 Arcane Damage</color> when used.</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1}\n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
-      }
-
-      if (NIVEL == 5)
-      {
-        txtDescripcion = "<color=#5dade2><b>Unstable Gathering IV b</b></color>\n\n";
-        txtDescripcion += "<i>By recklessly manipulating his inner energy, the character immediately increases his Energy level at the cost of his well-being.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>- Instantly gains <b>+1 Energy Tier</b>.\n- Gains <color=#ea0606>+7 Arcane Damage</color> for the turn.\n- <b>Does not take damage when used.</b></color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} (starts on Cooldown)\n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
-      }
+    if (esIngles)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 cooldown.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 Arcane bonus damage.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (no starting cooldown) or Option B (no self damage).</color>"; }
+    }
+    else
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de bonus de danio Arcano.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (no arranca en enfriamiento) u Opcion B (sin autodanio).</color>"; }
     }
   }
 
@@ -322,4 +240,5 @@ public class AcumulacionInestable : Habilidad
     }
  
 }
+
 

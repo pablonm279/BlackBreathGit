@@ -14,7 +14,7 @@ public class TextoFlotanteManager : MonoBehaviour
 
     [Header("Cola y superposicion")]
     public int maxTextosSimultaneos = 4;
-    public float separacionVertical = 18f;
+    public float separacionVertical = 4f;
     public float separacionHorizontal = 0f;
     public float esperaMaximaSlot = 0.35f;
 
@@ -113,7 +113,7 @@ public class TextoFlotanteManager : MonoBehaviour
             {
                 Vector2 basePosition = rect.anchoredPosition;
                 Vector2 offset = new Vector2(separacionHorizontal * slotIndex, separacionVertical * slotIndex);
-                rect.anchoredPosition = basePosition /*+ offset*/;
+                rect.anchoredPosition = basePosition    + offset;
             }
 
             if (animator != null)

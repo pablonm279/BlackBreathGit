@@ -29,7 +29,7 @@ public class ClaseCanalizador : Unidad
         if(reacc.NIVEL != 4) //Si tiene la reaccion activa y no es nivel 4a, la remueve
         {
           Destroy(reacc);
-          await gameObject.GetComponent<Unidad>().GenerarTextoFlotante("<s>" + "Escudo Energético" + "</s>", Color.blue);
+          await gameObject.GetComponent<Unidad>().GenerarTextoFlotante("<s>" + TRADU.i.Traducir("Escudo Energético") + "</s>", Color.blue);
           
 
         }
@@ -120,7 +120,8 @@ public class ClaseCanalizador : Unidad
             if (TiradaSalvacion(mod_TSMental, 10 + danio / 3))
             {
                 RemoverBuffNombre("Acumulando");
-                BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" falló la Tirada de Concentración y ya no acumula energía."));
+                string nombreUnidad = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;
+                BattleManager.Instance.EscribirLog(nombreUnidad + TRADU.i.Traducir(" falló la Tirada de Concentración y ya no acumula energía."));
             }
         }
 
@@ -146,7 +147,10 @@ public class ClaseCanalizador : Unidad
         if (TierEnergia < 0) { TierEnergia = 0; }
         if (TierEnergia > 3) { TierEnergia = 3; }
 
-        BattleManager.Instance.EscribirLog($"-{uNombre} ahora Maneja un Nivel {TierEnergia} de Energía.");
+        string nombreUnidad = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;
+        string ahoraManeja = TRADU.i != null ? TRADU.i.Traducir(" ahora Maneja un Nivel ") : " ahora Maneja un Nivel ";
+        string deEnergia = TRADU.i != null ? TRADU.i.Traducir(" de Energía.") : " de Energía.";
+        BattleManager.Instance.EscribirLog("-" + nombreUnidad + ahoraManeja + TierEnergia + deEnergia);
 
 
         RemoverBuffNombre("Energizado"); //Remueve el buff y lo actualiza segun nivel nuevo de energía

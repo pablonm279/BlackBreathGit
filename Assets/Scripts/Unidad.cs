@@ -1354,6 +1354,63 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     if (danioFinal < 0) { danioFinal = 0; }
     return (int)danioFinal;
   }
+
+  private string ObtenerTextoTipoDanioLog(int tipoDanio)
+  {
+    string colorHex;
+    string tipoDanioBase;
+
+    switch (tipoDanio)
+    {
+      case 1: colorHex = "#c5c5c5"; tipoDanioBase = "cortante"; break;
+      case 2: colorHex = "#8a5b32"; tipoDanioBase = "perforante"; break;
+      case 3: colorHex = "#c67f60"; tipoDanioBase = "contundente"; break;
+      case 4: colorHex = "#FFA64D"; tipoDanioBase = "fuego"; break;
+      case 5: colorHex = "#63c4b7"; tipoDanioBase = "hielo"; break;
+      case 6: colorHex = "#7758df"; tipoDanioBase = "rayo"; break;
+      case 7: colorHex = "#28b717"; tipoDanioBase = "ácido"; break;
+      case 8: colorHex = "#1760b7"; tipoDanioBase = "arcano"; break;
+      case 9: colorHex = "#8038b2"; tipoDanioBase = "necrótico"; break;
+      case 10: colorHex = "#d6c304"; tipoDanioBase = "verdadero"; break;
+      case 11: colorHex = "#d6c304"; tipoDanioBase = "divino"; break;
+      default: colorHex = "#ffffff"; tipoDanioBase = "daño"; break;
+    }
+
+    string tipoDanioTraducido = TRADU.i != null ? TRADU.i.Traducir(tipoDanioBase) : tipoDanioBase;
+    return $"<color={colorHex}>{tipoDanioTraducido}</color>";
+  }
+
+  private void EscribirLogDanioRecibido(string nombreLog, int danio, int tipoDanio, int bonusElemental = 0, bool esDanioElementalExtra = false)
+  {
+    if (scBattleManager == null || danio <= 0)
+    {
+      return;
+    }
+
+    string tipoDanioTexto = ObtenerTextoTipoDanioLog(tipoDanio);
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    string mensaje;
+
+    if (esDanioElementalExtra)
+    {
+      mensaje = esIngles
+        ? $"<color=#d92b08>{nombreLog} takes {danio} {tipoDanioTexto} extra damage.</color>"
+        : $"<color=#d92b08>{nombreLog} recibe {danio} de daño elemental extra {tipoDanioTexto}.</color>";
+    }
+    else if (esIngles)
+    {
+      string bonusLogEn = bonusElemental > 0 ? $" (+{bonusElemental} elemental bonus)" : string.Empty;
+      mensaje = $"<color=#d92b08>{nombreLog} takes {danio} {tipoDanioTexto} damage{bonusLogEn}.</color>";
+    }
+    else
+    {
+      string bonusLogEs = bonusElemental > 0 ? $" (+{bonusElemental} bonus elemental)" : string.Empty;
+      mensaje = $"<color=#d92b08>{nombreLog} recibe {danio} de daño {tipoDanioTexto}{bonusLogEs}.</color>";
+    }
+
+    scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio(mensaje));
+  }
+
   public async virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
   {
     await Task.Delay(delayEfectos); //Delay para que se vea el efecto de daño en la unidad antes de aplicar el daño
@@ -1751,36 +1808,9 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
       
       await Task.Delay(100);
-      string stDaniotipo = "";
-      switch (tipoDanio)
-      {
-        case 1: stDaniotipo = "<color=#c5c5c5>cortante</color>"; break; //Cortante
-        case 2: stDaniotipo = "<color=#8a5b32>perforante</color>"; break; //Perforante
-        case 3: stDaniotipo = "<color=#c67f60>contundente</color>"; break; //Contundente
-        case 4: stDaniotipo = "<color=#FFA64D>fuego</color>"; break; //Fuego
-        case 5: stDaniotipo = "<color=#63c4b7>hielo</color>"; break; //Hielo
-        case 6: stDaniotipo = "<color=#7758df>rayo</color>"; break; //Rayo
-        case 7: stDaniotipo = "<color=#28b717>ácido</color>"; break; //Acido
-        case 8: stDaniotipo = "<color=#1760b7>arcano</color>"; break; //Arcano
-        case 9: stDaniotipo = "<color=#8038b2>necrótico</color>"; break; //Necro
-        case 10: stDaniotipo = "<color=#d6c304>verdadero</color>"; break; //Verdadero
-        case 11: stDaniotipo = "<color=#d6c304>divino</color>"; break; //Divino
-      }
-
-
-    
       if (danioTotal > 0)
       {
-        string bonusLog = bonusTotal > 0 ? $" (+{bonusTotal} bonus elemental)" : "";
-        if (TRADU.i.nIdioma == 1)
-        {
-          scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio($"<color=#d92b08>{nombreLog} recibe {danioTotal} de daño {stDaniotipo}{bonusLog}.</color>"));
-        }
-        else if (TRADU.i.nIdioma == 2)
-        {
-          string bonusLogEn = bonusTotal > 0 ? $" (+{bonusTotal} elemental bonus)" : "";
-          scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio($"<color=#d92b08>{TRADU.i.Traducir(nombreLog)} takes {danioTotal} {TRADU.i.Traducir(stDaniotipo)} damage{bonusLogEn}.</color>"));
-        }
+        EscribirLogDanioRecibido(nombreLog, danioTotal, tipoDanio, bonusTotal);
       }
 
 
@@ -1936,34 +1966,9 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         // No mostrar texto si el daño es 0
         scUnidadCanvas.txtDaño.text = "";
       }
-
-      string stDaniotipo = "";
-      switch (tipoDanio)
-      {
-        case 1: stDaniotipo = "<color=#c5c5c5>cortante</color>"; break; //Cortante
-        case 2: stDaniotipo = "<color=#8a5b32>perforante</color>"; break; //Perforante
-        case 3: stDaniotipo = "<color=#c67f60>contundente</color>"; break; //Contundente
-        case 4: stDaniotipo = "<color=#FFA64D>fuego</color>"; break; //Fuego
-        case 5: stDaniotipo = "<color=#63c4b7>hielo</color>"; break; //Hielo
-        case 6: stDaniotipo = "<color=#7758df>rayo</color>"; break; //Rayo
-        case 7: stDaniotipo = "<color=#28b717>ácido</color>"; break; //Acido
-        case 8: stDaniotipo = "<color=#1760b7>arcano</color>"; break; //Arcano
-        case 9: stDaniotipo = "<color=#8038b2>necrótico</color>"; break; //Necro
-        case 10: stDaniotipo = "<color=#d6c304>verdadero</color>"; break; //Verdadero
-        case 11: stDaniotipo = "<color=#d6c304>divino</color>"; break; //Divino
-      }
-
-
       if (danioFinal > 0)
       {
-        if (TRADU.i.nIdioma == 1)
-        {
-          scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio($"<color=#d92b08>{nombreLog} recibe {danioFinal} de daño elemental extra {stDaniotipo}.</color>"));
-        }
-        else if (TRADU.i.nIdioma == 2)
-        {
-          scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio($"<color=#d92b08>{nombreLog} takes {danioFinal} {TRADU.i.Traducir(stDaniotipo)} extra damage.</color>"));
-        }
+        EscribirLogDanioRecibido(nombreLog, (int)danioFinal, tipoDanio, 0, true);
       }
 
 

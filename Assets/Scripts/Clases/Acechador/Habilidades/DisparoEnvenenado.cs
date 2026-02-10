@@ -48,6 +48,7 @@ public class DisparoEnvenenado : Habilidad
 
      tipoPorcentaje = 2;
     imHab = Resources.Load<Sprite>("imHab/Acechador_DisparoEnvenenado");
+    ActualizarDescripcion();
 
  
 
@@ -127,7 +128,8 @@ public class DisparoEnvenenado : Habilidad
       if(TRADU.i.nIdioma== 2)
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: Removes Cooldown, +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
 
-    }
+    }
+      ActualizarDescripcion();
 
   }
 
@@ -138,227 +140,84 @@ public class DisparoEnvenenado : Habilidad
 
   public override void ActualizarDescripcion()
   {
-    if (NIVEL < 2)
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    var statsUI = ObtenerStatsDescripcionUI();
+
+    int agilidadActual = statsUI.Agilidad;
+    int ataqueActual = statsUI.Ataque;
+    int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+
+    int dcBase = NIVEL > 2 ? 13 : 12;
+    int venenoAplicado = 2 + (NIVEL > 1 ? 1 : 0) + (NIVEL == 4 ? 2 : 0);
+    int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConBallestaMano : 0;
+
+    string tituloEs = "Disparo Envenenado I";
+    string tituloEn = "Poison Shot I";
+    if (NIVEL == 2) { tituloEs = "Disparo Envenenado II"; tituloEn = "Poison Shot II"; }
+    if (NIVEL == 3) { tituloEs = "Disparo Envenenado III"; tituloEn = "Poison Shot III"; }
+    if (NIVEL == 4) { tituloEs = "Disparo Envenenado IV a"; tituloEn = "Poison Shot IV a"; }
+    if (NIVEL == 5) { tituloEs = "Disparo Envenenado IV b"; tituloEn = "Poison Shot IV b"; }
+
+    string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Fortaleza, dcBase);
+
+    string cuerpo = "";
+    if (esIngles)
     {
-      txtDescripcion = "<color=#5dade2><b>Disparo Envenenado I</b></color>\n\n";
-      txtDescripcion += "<i>Con la ballesta de mano dispara un virote envenenado al enemigo.</i>\n\n";
-      txtDescripcion += $"-Ataque: <color=#ea0606>Agilidad</color><i> Daño Perforante: 3d4 + Agilidad. </i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 12: Aplica 2 Veneno.</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Usa Ballesta de Mano -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
+      cuerpo += $"<b>Type:</b> Ranged ({hAlcance} range)\n";
+      cuerpo += "<b>Target:</b> 1 enemy in range\n";
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Damage:</b> 3d4 + {damExtra} + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Piercing\n";
+      cuerpo += lineaSalvacion + "\n";
+      cuerpo += $"<b>On failed save:</b> applies {venenoAplicado} Poison";
+      if (nivelMaestria > 0)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: Aplica +1 Veneno</color>\n\n";
-          }
-        }
-      }
-
-    }
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Disparo Envenenado II</b></color>\n\n";
-      txtDescripcion += "<i>Con la ballesta de mano dispara un virote envenenado al enemigo.</i>\n\n";
-      txtDescripcion += $"-Ataque: <color=#ea0606>Agilidad</color><i> Daño Perforante: 3d4 + Agilidad. </i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 12: Aplica 3 Veneno.</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Usa Ballesta de Mano -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 DC</color>\n\n";
-          }
-        }
+        cuerpo += $"\n<b>Passive applied:</b> Hand Crossbow Mastery (Tier {nivelMaestria})";
       }
     }
-    if (NIVEL == 3)
+    else
     {
-      txtDescripcion = "<color=#5dade2><b>Disparo Envenenado III</b></color>\n\n";
-      txtDescripcion += "<i>Con la ballesta de mano dispara un virote envenenado al enemigo.</i>\n\n";
-      txtDescripcion += $"-Ataque: <color=#ea0606>Agilidad</color><i> Daño Perforante: 3d4 + Agilidad. </i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 13: Aplica 3 Veneno.</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Usa Ballesta de Mano -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
+      cuerpo += $"<b>Tipo:</b> Rango ({hAlcance} alcance)\n";
+      cuerpo += "<b>Objetivo:</b> 1 enemigo en rango\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Danio:</b> 3d4 + {damExtra} + <color=#ea0606>Agilidad ({agilidadActual})</color> | <b>Tipo:</b> Perforante\n";
+      cuerpo += lineaSalvacion + "\n";
+      cuerpo += $"<b>Si falla TS:</b> aplica {venenoAplicado} Veneno";
+      if (nivelMaestria > 0)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: Aplica +2 Veneno</color>\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: -1 Cooldown</color>\n";
-          }
-        }
-      }
-
-    }
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Disparo Envenenado IV a</b></color>\n\n";
-      txtDescripcion += "<i>Con la ballesta de mano dispara un virote envenenado al enemigo.</i>\n\n";
-      txtDescripcion += $"-Ataque: <color=#ea0606>Agilidad</color><i> Daño Perforante: 3d4 + Agilidad. </i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 13: Aplica 5 Veneno.</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Usa Ballesta de Mano -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Disparo Envenenado IV b</b></color>\n\n";
-      txtDescripcion += "<i>Con la ballesta de mano dispara un virote envenenado al enemigo.</i>\n\n";
-      txtDescripcion += $"-Ataque: <color=#ea0606>Agilidad</color><i> Daño Perforante: 3d4 + Agilidad. </i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 13: Aplica 3 Veneno.</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Usa Ballesta de Mano -Enfriamiento: {cooldownMax-1} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-    }
-
-
-    if (TRADU.i.nIdioma == 2)
-    {
-      if (NIVEL < 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Poison Shot I</b></color>\n\n";
-        txtDescripcion += "<i>With the hand crossbow, shoots a poisoned bolt at the enemy.</i>\n\n";
-        txtDescripcion += "-Attack: <color=#ea0606>Agility</color><i> Piercing Damage: 3d4 + Agility. </i>\n\n";
-        txtDescripcion += "<color=#c8c8c8>On hit - Fortitude Save DC 12: Applies 2 Poison.</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Uses Hand Crossbow -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += "<color=#dfea02>-Next Level: Applies +1 Poison</color>\n\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Poison Shot II</b></color>\n\n";
-        txtDescripcion += "<i>With the hand crossbow, shoots a poisoned bolt at the enemy.</i>\n\n";
-        txtDescripcion += "-Attack: <color=#ea0606>Agility</color><i> Piercing Damage: 3d4 + Agility. </i>\n\n";
-        txtDescripcion += "<color=#c8c8c8>On hit - Fortitude Save DC 12: Applies 3 Poison.</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Uses Hand Crossbow -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += "<color=#dfea02>-Next Level: +1 DC</color>\n\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 3)
-      {
-        txtDescripcion = "<color=#5dade2><b>Poison Shot III</b></color>\n\n";
-        txtDescripcion += "<i>With the hand crossbow, shoots a poisoned bolt at the enemy.</i>\n\n";
-        txtDescripcion += "-Attack: <color=#ea0606>Agility</color><i> Piercing Damage: 3d4 + Agility. </i>\n\n";
-        txtDescripcion += "<color=#c8c8c8>On hit - Fortitude Save DC 13: Applies 3 Poison.</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Uses Hand Crossbow -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += "<color=#dfea02>-Option A: Applies +2 Poison</color>\n";
-              txtDescripcion += "<color=#dfea02>-Option B: -1 Cooldown</color>\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 4)
-      {
-        txtDescripcion = "<color=#5dade2><b>Poison Shot IV a</b></color>\n\n";
-        txtDescripcion += "<i>With the hand crossbow, shoots a poisoned bolt at the enemy.</i>\n\n";
-        txtDescripcion += "-Attack: <color=#ea0606>Agility</color><i> Piercing Damage: 3d4 + Agility. </i>\n\n";
-        txtDescripcion += "<color=#c8c8c8>On hit - Fortitude Save DC 13: Applies 5 Poison.</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Uses Hand Crossbow -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-      }
-      if (NIVEL == 5)
-      {
-        txtDescripcion = "<color=#5dade2><b>Poison Shot IV b</b></color>\n\n";
-        txtDescripcion += "<i>With the hand crossbow, shoots a poisoned bolt at the enemy.</i>\n\n";
-        txtDescripcion += "-Attack: <color=#ea0606>Agility</color><i> Piercing Damage: 3d4 + Agility. </i>\n\n";
-        txtDescripcion += "<color=#c8c8c8>On hit - Fortitude Save DC 13: Applies 3 Poison.</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Uses Hand Crossbow -Cooldown: {cooldownMax-1} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+        cuerpo += $"\n<b>Pasiva aplicada:</b> Maestria con Ballesta de Mano (Tier {nivelMaestria})";
       }
     }
 
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
 
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? tituloEn : tituloEs,
+      esIngles
+        ? "A control shot that layers poison through a Fortitude save check."
+        : "Un disparo de control que acumula veneno mediante chequeo de TS Fortaleza.",
+      cuerpo,
+      costos,
+      "#5dade2");
 
-
-
-
-
-    if (SceneManager.GetActiveScene().name != "ES-Campaña")
+    bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    if (!mostrarProximoNivel)
     {
+      return;
+    }
 
-
-      int NivelMaestria = claseAcechador.PASIVA_MaestriaConBallestaMano;
-      if (NivelMaestria == 1)
-      {
-        if (TRADU.i.nIdioma == 1)
-        {
-          txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño.</i>\n\n";
-
-        }
-        if (TRADU.i.nIdioma == 2)
-        {
-          txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage.</i>\n\n";
-
-        }
-      }
-      else if (NivelMaestria == 2)
-      {
-        if (TRADU.i.nIdioma == 1)
-        {
-          txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
-
-        }
-        if (TRADU.i.nIdioma == 2)
-        {
-          txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +1 Critical Range.</i>\n\n";
-
-        }
-
-      }
-      else if (NivelMaestria == 3)
-      {
-        if (TRADU.i.nIdioma == 1)
-        { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n"; }
-        if (TRADU.i.nIdioma == 2)
-        { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +1 Critical Range, -1 AP.</i>\n\n"; }
-
-      }
-      else if (NivelMaestria == 4)
-      {
-        if (TRADU.i.nIdioma == 1)
-        { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n"; }
-        if (TRADU.i.nIdioma == 2)
-        { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Range +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
-
-      }
-      else if (NivelMaestria == 5)
-      {
-        if (TRADU.i.nIdioma == 1)
-        {
-          txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
-        }
-        if (TRADU.i.nIdioma == 2)
-        {
-          txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: Removes Cooldown, +1 Attack +2 Damage +1 Critical Range.</i>\n\n";
-        }
-      }
+    if (esIngles)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Poison on failed save.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC base.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 Poison) or Option B (-1 cooldown).</color>"; }
+    }
+    else
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Veneno si falla TS.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al DC base de TS.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Veneno) u Opcion B (-1 enfriamiento).</color>"; }
     }
   }
 
@@ -633,4 +492,5 @@ public class DisparoEnvenenado : Habilidad
 
 
 }
+
 

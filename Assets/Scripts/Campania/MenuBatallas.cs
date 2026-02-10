@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -951,12 +951,12 @@ public void DejanEnListaParticipantesSolo()
             {
                 CampaignManager.Instance.scSequitoCronistas.valorCambiosCronicas += 50;
                 CampaignManager.Instance.CambiarEsperanzaActual(+5);
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la victoria, +50 Valor Crâ”œâ”‚nica, +5 Esperanza."));
+                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la victoria, +50 Valor Crónica, +5 Esperanza."));
             }
             else //Derrota
             {
                 CampaignManager.Instance.scSequitoCronistas.valorCambiosCronicas -= 50;
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la derrota, -50 Valor Crâ”œâ”‚nica. -3 Esperanza."));
+                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas han registrado la derrota, -50 Valor Crónica. -3 Esperanza."));
                 CampaignManager.Instance.CambiarEsperanzaActual(-3);
 
             }
@@ -1224,8 +1224,8 @@ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
     if (txtRecompensa != null)
     {
         txtRecompensa.text = resultado == 1
-            ? TRADU.i.Traducir("Victoria sin recompensas definidas para este encuentro clÃ¡sico.")
-            : TRADU.i.Traducir("Derrota en un encuentro clÃ¡sico. Los efectos especÃ­ficos aÃºn no estÃ¡n configurados.");
+            ? TRADU.i.Traducir("Victoria sin recompensas definidas para este encuentro clásico.")
+            : TRADU.i.Traducir("Derrota en un encuentro clásico. Los efectos específicos aún no están configurados.");
     }
 
     int deltaEsperanza = resultado == 1 ? +5 : -5;
@@ -1240,7 +1240,7 @@ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
     if (oro > 0) partes.Add(oro + (TRADU.i.nIdioma == 2 ? " Gold" : " Oro"));
     if (materiales > 0) partes.Add(materiales + (TRADU.i.nIdioma == 2 ? " Materials" : " Materiales"));
 
-    string contenido = partes.Count > 0 ? string.Join(", ", partes) : TRADU.i.Traducir("sin botÃ­n");
+    string contenido = partes.Count > 0 ? string.Join(", ", partes) : TRADU.i.Traducir("sin botín");
     string texto = TRADU.i.nIdioma == 2
         ? contenido + " obtained."
         : TRADU.i.Traducir("Se han obtenido ") + contenido + ".";

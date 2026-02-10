@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -38,165 +38,81 @@ public class PrimerosAuxilios : Habilidad
     }
     public override void ActualizarDescripcion()
     {
-      if (TRADU.i.nIdioma == 1) // Español
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+
+      string dadoCuracion = NIVEL == 1 ? "1d4" : "1d6";
+      int usos = NIVEL > 2 ? 3 : 2;
+      int bonoResguardo = NIVEL == 4 ? 40 : 30;
+      bool trasladaCampania = NIVEL == 5;
+
+      string tituloEs = "Primeros Auxilios I";
+      string tituloEn = "First Aid I";
+      if (NIVEL == 2) { tituloEs = "Primeros Auxilios II"; tituloEn = "First Aid II"; }
+      if (NIVEL == 3) { tituloEs = "Primeros Auxilios III"; tituloEn = "First Aid III"; }
+      if (NIVEL == 4) { tituloEs = "Primeros Auxilios IV a"; tituloEn = "First Aid IV a"; }
+      if (NIVEL == 5) { tituloEs = "Primeros Auxilios IV b"; tituloEn = "First Aid IV b"; }
+
+      string cuerpo = "";
+      if (esIngles)
       {
-        if(NIVEL<2)
+        cuerpo += "<b>Type:</b> Heal\n";
+        cuerpo += "<b>Target:</b> Self or ally at range 1\n";
+        cuerpo += $"<b>Healing:</b> 1 + ({dadoCuracion} x current AP)\n";
+        cuerpo += "<b>Additional:</b> Removes Bleed and Poison\n";
+        cuerpo += $"<b>In cover bonus:</b> +{bonoResguardo}% healing if there is another ally in a more frontal column\n";
+        cuerpo += "<b>On cast:</b> spends all current AP";
+        if (trasladaCampania)
         {
-          txtDescripcion = "<color=#5dade2><b>Primeros Auxilios I</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero utiliza sus conocimientos de primeros auxilios para curarse a si mismo o a un aliado cercano.</i>\n";
-          txtDescripcion += "<i>A resguardo: si hay un aliado en una columna más frontal que el Caballero, cura un 30% más.</i>\n";
-          txtDescripcion += "<i>La cantidad a curar depende de sus AP disponibles, termina el turno.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Alcance: 1 Efectos: Cura 1+ 1d4 por AP. Remueve Sangrado y Veneno.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-Curación no mágica. Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n- 2 usos por Batalla</color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: cura 1d6 por AP</color>\n\n";
-              }
-            }
-          }
-        }
-        if(NIVEL==2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Primeros Auxilios II</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero utiliza sus conocimientos de primeros auxilios para curarse a si mismo o a un aliado cercano.</i>\n";
-          txtDescripcion += "<i>A resguardo: si hay un aliado en una columna más frontal que el Caballero, cura un 30% más.</i>\n";
-          txtDescripcion += "<i>La cantidad a curar depende de sus AP disponibles, termina el turno.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Alcance: 1 Efectos: Cura 1+ 1d6 por AP. Remueve Sangrado y Veneno.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-Curación no mágica. Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n- 2 usos por Batalla</color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Uso por Batalla</color>\n\n";
-              }
-            }
-          }
-        }
-        if(NIVEL==3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Primeros Auxilios III</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero utiliza sus conocimientos de primeros auxilios para curarse a si mismo o a un aliado cercano.</i>\n";
-          txtDescripcion += "<i>A resguardo: si hay un aliado en una columna más frontal que el Caballero, cura un 30% más.</i>\n";
-          txtDescripcion += "<i>La cantidad a curar depende de sus AP disponibles, termina el turno.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Alcance: 1 Efectos: Cura 1+ 1d6 por AP. Remueve Sangrado y Veneno.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-Curación no mágica. Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n- 3 usos por Batalla</color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Opción A: si hay un aliado en una columna mas frontal que el Caballero, cura un 40% más. </color>\n";
-                txtDescripcion += $"<color=#dfea02>-Opción B: La Curación se traslada a la Campaña</color>\n";
-              }
-            }
-          }
-        }
-        if(NIVEL==4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Primeros Auxilios IV a</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero utiliza sus conocimientos de primeros auxilios para curarse a si mismo o a un aliado cercano.</i>\n";
-          txtDescripcion += "<i>A resguardo: si hay un aliado en una columna más frontal que el Caballero, cura un 40% más.</i>\n";
-          txtDescripcion += "<i>La cantidad a curar depende de sus AP disponibles, termina el turno.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Alcance: 1 Efectos: Cura 1+ 1d6 por AP. Remueve Sangrado y Veneno.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-Curación no mágica. Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n- 3 usos por Batalla</color>";
-        }
-        if(NIVEL==5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Primeros Auxilios IV a</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero utiliza sus conocimientos de primeros auxilios para curarse a si mismo o a un aliado cercano.</i>\n";
-          txtDescripcion += "<i>A resguardo: si hay un aliado en una columna más frontal que el Caballero, cura un 30% más.</i>\n";
-          txtDescripcion += "<i>La cantidad a curar depende de sus AP disponibles, termina el turno. La curación se traslada a la campaña.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Alcance: 1 Efectos: Cura 1+ 1d6 por AP. Remueve Sangrado y Veneno.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-Curación no mágica. Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n- 3 usos por Batalla</color>";
+          cuerpo += "\n<b>Campaign:</b> this upgrade enables campaign transfer effect";
         }
       }
-      if (TRADU.i.nIdioma == 2) // Inglés
+      else
       {
-        if(NIVEL<2)
+        cuerpo += "<b>Tipo:</b> Curacion\n";
+        cuerpo += "<b>Objetivo:</b> Uno mismo o aliado a rango 1\n";
+        cuerpo += $"<b>Curacion:</b> 1 + ({dadoCuracion} x AP actuales)\n";
+        cuerpo += "<b>Adicional:</b> remueve Sangrado y Veneno\n";
+        cuerpo += $"<b>Bono en resguardo:</b> +{bonoResguardo}% curacion si hay otro aliado en una columna mas frontal\n";
+        cuerpo += "<b>Al lanzarla:</b> consume todos los AP actuales";
+        if (trasladaCampania)
         {
-          txtDescripcion = "<color=#5dade2><b>First Aid I</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight uses his first aid knowledge to heal himself or a nearby ally.</i>\n";
-          txtDescripcion += "<i>In cover: if there is an ally in a column ahead of the Knight, heals 30% more.</i>\n";
-          txtDescripcion += "<i>The amount healed depends on available AP, ends the turn.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Range: 1 Effects: Heals 1+ 1d4 per AP. Removes Bleeding and Poison.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-Non-magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n- 2 uses per Battle</color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: heals 1d6 per AP</color>\n\n";
-              }
-            }
-          }
+          cuerpo += "\n<b>Campania:</b> esta mejora habilita el efecto de traslado a campania";
         }
-        if(NIVEL==2)
-        {
-          txtDescripcion = "<color=#5dade2><b>First Aid II</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight uses his first aid knowledge to heal himself or a nearby ally.</i>\n";
-          txtDescripcion += "<i>In cover: if there is an ally in a column ahead of the Knight, heals 30% more.</i>\n";
-          txtDescripcion += "<i>The amount healed depends on available AP, ends the turn.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Range: 1 Effects: Heals 1+ 1d6 per AP. Removes Bleeding and Poison.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-Non-magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n- 2 uses per Battle</color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Use per Battle</color>\n\n";
-              }
-            }
-          }
-        }
-        if(NIVEL==3)
-        {
-          txtDescripcion = "<color=#5dade2><b>First Aid III</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight uses his first aid knowledge to heal himself or a nearby ally.</i>\n";
-          txtDescripcion += "<i>In cover: if there is an ally in a column ahead of the Knight, heals 30% more.</i>\n";
-          txtDescripcion += "<i>The amount healed depends on available AP, ends the turn.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Range: 1 Effects: Heals 1+ 1d6 per AP. Removes Bleeding and Poison.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-Non-magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n- 3 uses per Battle</color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: if there is an ally in a column ahead of the Knight, heals 40% more. </color>\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: Healing transfers to Campaign</color>\n";
-              }
-            }
-          }
-        }
-        if(NIVEL==4)
-        {
-          txtDescripcion = "<color=#5dade2><b>First Aid IV a</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight uses his first aid knowledge to heal himself or a nearby ally.</i>\n";
-          txtDescripcion += "<i>In cover: if there is an ally in a column ahead of the Knight, heals 40% more.</i>\n";
-          txtDescripcion += "<i>The amount healed depends on available AP, ends the turn.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Range: 1 Effects: Heals 1+ 1d6 per AP. Removes Bleeding and Poison.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-Non-magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n- 3 uses per Battle</color>";
-        }
-        if(NIVEL==5)
-        {
-          txtDescripcion = "<color=#5dade2><b>First Aid IV a</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight uses his first aid knowledge to heal himself or a nearby ally.</i>\n";
-          txtDescripcion += "<i>In cover: if there is an ally in a column ahead of the Knight, heals 30% more.</i>\n";
-          txtDescripcion += "<i>The amount healed depends on available AP, ends the turn. Healing transfers to campaign.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Range: 1 Effects: Heals 1+ 1d6 per AP. Removes Bleeding and Poison.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-Non-magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n- 3 uses per Battle</color>";
-        }
+      }
+
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Uses per battle: {usos}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Usos por batalla: {usos}";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "Field treatment that scales with the AP you are willing to spend right now."
+          : "Atencion de campo que escala segun los AP que decidas gastar en ese momento.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
+      {
+        return;
+      }
+
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: healing die changes from 1d4 to 1d6 per AP.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 use per battle.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+40% cover bonus) or Option B (campaign transfer upgrade).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: el dado de curacion pasa de 1d4 a 1d6 por AP.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 uso por batalla.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+40% en resguardo) u Opcion B (mejora de traslado a campania).</color>"; }
       }
     }
+
     void Start()
     {
         if(NIVEL > 2)
@@ -226,12 +142,12 @@ public class PrimerosAuxilios : Habilidad
     public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Acá van los efectos a Unidades.
+     if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
      {
         
        Unidad objetivo = (Unidad)obj;
         VFXAplicar(objetivo.gameObject);
-       BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} usa {nombre} en {objetivo.uNombre}");
+       BattleManager.Instance.EscribirLog(TRADU.i.Traducir(scEstaUnidad.uNombre) + " " + TRADU.i.Traducir("usa ") + TRADU.i.Traducir(nombre) + " -> " + TRADU.i.Traducir(objetivo.uNombre) + ".");
 
        int APusados = (int)scEstaUnidad.ObtenerAPActual();
 
@@ -272,12 +188,12 @@ public class PrimerosAuxilios : Habilidad
        if(objetivo.estado_sangrado > 0)
        {
          objetivo.estado_sangrado = 0;
-        await objetivo.GenerarTextoFlotante("<s>" + "Sangrado" + "</s>", Color.red);
+         await objetivo.GenerarTextoFlotante("<s>" + TRADU.i.Traducir("Sangrado") + "</s>", Color.red);
        }
        if(objetivo.estado_veneno > 0)
        {
          objetivo.estado_veneno = 0;
-        await objetivo.GenerarTextoFlotante("<s>" + "Veneno" + "</s>", Color.green);
+         await objetivo.GenerarTextoFlotante("<s>" + TRADU.i.Traducir("Veneno") + "</s>", Color.green);
        }
         objetivo.RecibirCuracion(curacion, false);
 
@@ -416,3 +332,6 @@ public class PrimerosAuxilios : Habilidad
 
  
 }
+
+
+

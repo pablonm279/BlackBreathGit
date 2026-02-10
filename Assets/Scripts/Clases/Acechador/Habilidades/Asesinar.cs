@@ -51,8 +51,7 @@ public class Asesinar : Habilidad
 
 
       imHab = Resources.Load<Sprite>("imHab/Acechador_Asesinar");
-
-       
+      ActualizarDescripcion();
     }
     
    void Start()
@@ -62,172 +61,86 @@ public class Asesinar : Habilidad
 
    public override void ActualizarDescripcion()
   {
-    if (NIVEL < 2)
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    var statsUI = ObtenerStatsDescripcionUI();
+
+    int agilidadActual = statsUI.Agilidad;
+    int ataqueActual = statsUI.Ataque;
+    int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+
+    int danioFijo = 2 + (NIVEL > 1 ? 2 : 0) + (NIVEL == 5 ? 3 : 0);
+    int bonoAtaqueAislado = 2 + (NIVEL > 2 ? 1 : 0);
+
+    string tituloEs = "Asesinar I";
+    string tituloEn = "Assassinate I";
+    if (NIVEL == 2) { tituloEs = "Asesinar II"; tituloEn = "Assassinate II"; }
+    if (NIVEL == 3) { tituloEs = "Asesinar III"; tituloEn = "Assassinate III"; }
+    if (NIVEL == 4) { tituloEs = "Asesinar IV a"; tituloEn = "Assassinate IV a"; }
+    if (NIVEL == 5) { tituloEs = "Asesinar IV b"; tituloEn = "Assassinate IV b"; }
+
+    string cuerpo = "";
+    if (esIngles)
     {
-      txtDescripcion = "<color=#5dade2><b>Asesinar I</b></color>\n\n";
-      txtDescripcion += "<i>Ataca a un objetivo desde las sombras, infiriéndole grandes daños si el enemigo no tiene aliados alrededor.</i>\n\n";
-      txtDescripcion += "<i>Al matar: reduce el Enfriamiento a 1 y el Acechador obtiene Escondido I.</i>\n\n";
-      txtDescripcion += "<i><color=#ea0606>--Requiere estar Escondido para usar--</color></i>\n\n";
-      txtDescripcion += $"-Ataque:<color=#ea0606>Agilidad</color><i> Daño Perforante: 2d8 + 2 + Agilidad. +4 a Humanoides. Si el objetivo está Aislado, +2 Ataque y duplica daño.</i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +2 Daño.</color>\n\n";
-          }
-        }
-      }
-
-    }
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Asesinar II</b></color>\n\n";
-      txtDescripcion += "<i>Ataca a un objetivo desde las sombras, infiriéndole grandes daños si el enemigo no tiene aliados alrededor.</i>\n\n";
-      txtDescripcion += "<i>Al matar: reduce el Enfriamiento a 1 y el Acechador obtiene Escondido I.</i>\n\n";
-      txtDescripcion += "<i><color=#ea0606>--Requiere estar Escondido para usar--</color></i>\n\n";
-      txtDescripcion += $"-Ataque:<color=#ea0606>Agilidad</color><i> Daño Perforante: 2d8 + 4 + Agilidad. +4 a Humanoides. Si el objetivo está Aislado, +2 Ataque y duplica daño.</i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque si está aislado.</color>\n\n";
-          }
-        }
-      }
-    }
-    if (NIVEL == 3)
-    {
-      txtDescripcion = "<color=#5dade2><b>Asesinar III</b></color>\n\n";
-      txtDescripcion += "<i>Ataca a un objetivo desde las sombras, infiriéndole grandes daños si el enemigo no tiene aliados alrededor.</i>\n\n";
-      txtDescripcion += "<i>Al matar: reduce el Enfriamiento a 1 y el Acechador obtiene Escondido I.</i>\n\n";
-      txtDescripcion += "<i><color=#ea0606>--Requiere estar Escondido para usar--</color></i>\n\n";
-      txtDescripcion += $"-Ataque:<color=#ea0606>Agilidad</color><i> Daño Perforante: 2d8 + 4 + Agilidad. +4 a Humanoides. Si el objetivo está Aislado, +3 Ataque y duplica daño.</i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: Al matar, +1 Valentía.</color>\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: +3 Daño.</color>\n";
-          }
-        }
-      }
-
-    }
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Asesinar IVa</b></color>\n\n";
-      txtDescripcion += "<i>Ataca a un objetivo desde las sombras, infiriéndole grandes daños si el enemigo no tiene aliados alrededor.</i>\n\n";
-      txtDescripcion += "<i>Al matar: reduce el Enfriamiento a 1 y el Acechador obtiene Escondido I y +1 Valentía.</i>\n\n";
-      txtDescripcion += "<i><color=#ea0606>--Requiere estar Escondido para usar--</color></i>\n\n";
-      txtDescripcion += $"-Ataque:<color=#ea0606>Agilidad</color><i> Daño Perforante: 2d8 + 4 + Agilidad. +4 a Humanoides. Si el objetivo está Aislado, +3 Ataque y duplica daño.</i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Asesinar IVb</b></color>\n\n";
-      txtDescripcion += "<i>Ataca a un objetivo desde las sombras, infiriéndole grandes daños si el enemigo no tiene aliados alrededor.</i>\n\n";
-      txtDescripcion += "<i>Al matar: reduce el Enfriamiento a 1 y el Acechador obtiene Escondido I.</i>\n\n";
-      txtDescripcion += "<i><color=#ea0606>--Requiere estar Escondido para usar--</color></i>\n\n";
-      txtDescripcion += $"-Ataque:<color=#ea0606>Agilidad</color><i> Daño Perforante: 2d8 + 7 + Agilidad. +4 a Humanoides. Si el objetivo está Aislado, +3 Ataque y duplica daño.</i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-    }
-   
-    if (TRADU.i.nIdioma == 2) // English translation
-    {
-      if (NIVEL < 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Assassinate I</b></color>\n\n";
-        txtDescripcion += "<i>Attack a target from the shadows, dealing great damage if the enemy has no allies nearby.</i>\n\n";
-        txtDescripcion += "<i>On kill: cooldown is reduced to 1 and the Stalker gains Hidden I.</i>\n\n";
-        txtDescripcion += "<i><color=#ea0606>--Requires being Hidden to use--</color></i>\n\n";
-        txtDescripcion += $"-Attack:<color=#ea0606>Agility</color><i> Piercing Damage: 2d8 + 2 + Agility. +4 vs Humanoids. If the target is Isolated, +2 Attack and double damage.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Next Level: +2 Damage.</color>\n\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Assassinate II</b></color>\n\n";
-        txtDescripcion += "<i>Attack a target from the shadows, dealing great damage if the enemy has no allies nearby.</i>\n\n";
-        txtDescripcion += "<i>On kill: cooldown is reduced to 1 and the Stalker gains Hidden I.</i>\n\n";
-        txtDescripcion += "<i><color=#ea0606>--Requires being Hidden to use--</color></i>\n\n";
-        txtDescripcion += $"-Attack:<color=#ea0606>Agility</color><i> Piercing Damage: 2d8 + 4 + Agility. +4 vs Humanoids. If the target is Isolated, +2 Attack and double damage.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack if isolated.</color>\n\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 3)
-      {
-        txtDescripcion = "<color=#5dade2><b>Assassinate III</b></color>\n\n";
-        txtDescripcion += "<i>Attack a target from the shadows, dealing great damage if the enemy has no allies nearby.</i>\n\n";
-        txtDescripcion += "<i>On kill: cooldown is reduced to 1 and the Stalker gains Hidden I.</i>\n\n";
-        txtDescripcion += "<i><color=#ea0606>--Requires being Hidden to use--</color></i>\n\n";
-        txtDescripcion += $"-Attack:<color=#ea0606>Agility</color><i> Piercing Damage: 2d8 + 4 + Agility. +4 vs Humanoids. If the target is Isolated, +3 Attack and double damage.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Option A: On kill, +1 Valor.</color>\n";
-              txtDescripcion += $"<color=#dfea02>-Option B: +3 Damage.</color>\n";
-            }
-          }
-        }
-      }
+      cuerpo += "<b>Type:</b> Ranged (4 range)\n";
+      cuerpo += "<b>Target:</b> 1 enemy\n";
+      cuerpo += "<b>Requirement:</b> Hidden (1)\n";
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Damage:</b> 2d8 + {danioFijo} + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Piercing\n";
+      cuerpo += "<b>Humanoid bonus:</b> +2 flat damage\n";
+      cuerpo += $"<b>If isolated:</b> +{bonoAtaqueAislado} attack and x2 final damage\n";
+      cuerpo += "<b>On kill:</b> gains Hidden (1), skill cooldown is set to 1";
       if (NIVEL == 4)
       {
-        txtDescripcion = "<color=#5dade2><b>Assassinate IVa</b></color>\n\n";
-        txtDescripcion += "<i>Attack a target from the shadows, dealing great damage if the enemy has no allies nearby.</i>\n\n";
-        txtDescripcion += "<i>On kill: cooldown is reduced to 1 and the Stalker gains Hidden I and +1 Valor.</i>\n\n";
-        txtDescripcion += "<i><color=#ea0606>--Requires being Hidden to use--</color></i>\n\n";
-        txtDescripcion += $"-Attack:<color=#ea0606>Agility</color><i> Piercing Damage: 2d8 + 4 + Agility. +4 vs Humanoids. If the target is Isolated, +3 Attack and double damage.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-      }
-      if (NIVEL == 5)
-      {
-        txtDescripcion = "<color=#5dade2><b>Assassinate IVb</b></color>\n\n";
-        txtDescripcion += "<i>Attack a target from the shadows, dealing great damage if the enemy has no allies nearby.</i>\n\n";
-        txtDescripcion += "<i>On kill: cooldown is reduced to 1 and the Stalker gains Hidden I.</i>\n\n";
-        txtDescripcion += "<i><color=#ea0606>--Requires being Hidden to use--</color></i>\n\n";
-        txtDescripcion += $"-Attack:<color=#ea0606>Agility</color><i> Piercing Damage: 2d8 + 7 + Agility. +4 vs Humanoids. If the target is Isolated, +3 Attack and double damage.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+        cuerpo += ", +2 Val";
       }
     }
-   
- 
+    else
+    {
+      cuerpo += "<b>Tipo:</b> Rango (4 alcance)\n";
+      cuerpo += "<b>Objetivo:</b> 1 enemigo\n";
+      cuerpo += "<b>Requisito:</b> Escondido (1)\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Danio:</b> 2d8 + {danioFijo} + <color=#ea0606>Agilidad ({agilidadActual})</color> | <b>Tipo:</b> Perforante\n";
+      cuerpo += "<b>Bono contra humanoides:</b> +2 danio plano\n";
+      cuerpo += $"<b>Si esta aislado:</b> +{bonoAtaqueAislado} ataque y x2 al danio final\n";
+      cuerpo += "<b>Al matar:</b> gana Escondido (1), el cooldown de la habilidad se fija en 1";
+      if (NIVEL == 4)
+      {
+        cuerpo += ", +2 Val";
+      }
+    }
+
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? tituloEn : tituloEs,
+      esIngles
+        ? "A burst finisher from stealth that spikes hard on isolated targets."
+        : "Un remate explosivo desde sigilo que pega muy fuerte a objetivos aislados.",
+      cuerpo,
+      costos,
+      "#5dade2");
+
+    bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    if (!mostrarProximoNivel)
+    {
+      return;
+    }
+
+    if (esIngles)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 flat damage.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack if target is isolated.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 Val on kill) or Option B (+3 flat damage).</color>"; }
+    }
+    else
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio plano.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 ataque si el objetivo esta aislado.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Val al matar) u Opcion B (+3 de danio plano).</color>"; }
+    }
   }
 
   int damExtra;
@@ -509,6 +422,7 @@ public class Asesinar : Habilidad
    
  
 }
+
 
 
 

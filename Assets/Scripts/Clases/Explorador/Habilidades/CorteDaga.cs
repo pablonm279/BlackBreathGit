@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class CorteDaga : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ãcido - 8: Arcano
      public override void  Awake()
     {
       nombre = "Corte Daga";
@@ -30,38 +30,55 @@ public class CorteDaga : Habilidad
       esHostil = true;
       cooldownMax = 0;
       bAfectaObstaculos = true;
-       tipoPorcentaje = 1;
+      tipoPorcentaje = 1;
       bonusAtaque = 0;
       XdDanio = 1;
       daniodX = 6; //1d6
       tipoDanio = 2; //Cortante
       criticoRangoHab = 0;
 
-
-
-
-
-
-
-
       imHab = Resources.Load<Sprite>("imHab/Explorador_CorteDaga");
-
-      txtDescripcion = "<color=#5dade2><b>Corte Daga</b></color>\n\n"; 
-      txtDescripcion += "<i>El Explorador utiliza su arma secundaria para atacar a su enemigo en combate cuerpo a cuerpo.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Cortante 1d6- </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
-
-      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-      {
-        txtDescripcion = "<color=#5dade2><b>Dagger Slash</b></color>\n\n";
-        txtDescripcion += "<i>The Explorer uses their secondary weapon to attack an enemy in melee combat.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Slashing 1d6- </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
-      }
+      ActualizarDescripcion();
     }
+    public override void ActualizarDescripcion()
+    {
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      var statsUI = ObtenerStatsDescripcionUI();
 
-   
-     public override void ActualizarDescripcion(){}
+      int agilidadActual = statsUI.Agilidad;
+      int fuerzaActual = statsUI.Fuerza;
+      int ataqueActual = statsUI.Ataque;
+      int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+
+      string cuerpo = "";
+      if (esIngles)
+      {
+        cuerpo += "<b>Type:</b> Melee\n";
+        cuerpo += "<b>Target:</b> 1 enemy in front range\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Damage:</b> 1d6 + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
+      }
+      else
+      {
+        cuerpo += "<b>Tipo:</b> Melee\n";
+        cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance frontal\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Danio:</b> 1d6 + <color=#ea0606>Fuerza ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+      }
+
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? "Dagger Slash" : "Corte Daga",
+        esIngles
+          ? "A quick melee cut for efficient close combat pressure."
+          : "Un corte melee rapido para mantener presion en combate cercano.",
+        cuerpo,
+        costos,
+        "#5dade2");
+    }
     Casilla Origen;
     public override void Activar()
     {
@@ -97,7 +114,7 @@ public class CorteDaga : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Acá van los efectos a Unidades.
+     if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -107,11 +124,11 @@ public class CorteDaga : Habilidad
 
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para próximas habilidades de daño del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prÃ³ximas habilidades de daÃ±o del explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de daño solamente al ser golpe critico, ver mas abajo. Ya que esta amrca agrega % daño crítico.
+         danioMarca += 15; //Esto se suma al porcentaje de daÃ±o solamente al ser golpe critico, ver mas abajo. Ya que esta amrca agrega % daÃ±o crÃ­tico.
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -176,7 +193,7 @@ public class CorteDaga : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
+     else if (obj is Obstaculo) //AcÃ¡ van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -211,7 +228,7 @@ public class CorteDaga : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si está en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si estÃ¡ en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -233,7 +250,7 @@ public class CorteDaga : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras también
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiÃ©n
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -329,7 +346,7 @@ public class CorteDaga : Habilidad
         
       }
 
-       //Se fija si las 3 casillas de la columna 1 están vacias
+       //Se fija si las 3 casillas de la columna 1 estÃ¡n vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
           if(cas.bTieneUnidadoObstaculoParaMelee()) //si alguna de las 3 tiene algo, no aumenta el rango melee
@@ -416,3 +433,4 @@ public class CorteDaga : Habilidad
       return false;
     }
 }
+

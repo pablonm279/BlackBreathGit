@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class SiguesTu : Habilidad
    
     public override void  Awake()
     {
-      nombre = "Sigues Tú";
+      nombre = "Sigues T\u00FA";
       IDenClase = 8;
       costoAP = 1;
       costoPM = 1;
@@ -35,102 +35,101 @@ public class SiguesTu : Habilidad
 
    public override void ActualizarDescripcion()
    {
-      if(NIVEL<2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Sigues Tú I</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Caballero señala a un enemigo, y lo amenaza de muerte.</i>\n";
-        txtDescripcion += "<i>Marca: El Caballero obtiene +5 Ataque y +8 Daño contra el objetivo si utiliza Partir o Corte Vertical. Dura 3 Turnos.</i>\n";
-        txtDescripcion += "<i>Debuff: enemigo TS Mental vs 3. -2 Ataque por 2 Turnos.</i>\n\n";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
 
+      int duracionMarca = 3;
+      int bonusDanioMarca = NIVEL > 2 ? 10 : 8;
+      int bonusCritMarca = NIVEL > 1 ? 2 : 0;
+      int dcSalvacion = NIVEL == 4 ? 103 : 3;
+      int durDebuff = NIVEL == 5 ? 4 : 2;
+      bool sinSalvacion = NIVEL == 4;
+      string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Mental, dcSalvacion);
+      string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Mental, dcSalvacion);
 
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>\n\n";
+      string tituloEs = "Sigues Tu I";
+      string tituloEn = "You Are Next I";
+      if (NIVEL == 2) { tituloEs = "Sigues Tu II"; tituloEn = "You Are Next II"; }
+      if (NIVEL == 3) { tituloEs = "Sigues Tu III"; tituloEn = "You Are Next III"; }
+      if (NIVEL == 4) { tituloEs = "Sigues Tu IV a"; tituloEn = "You Are Next IV a"; }
+      if (NIVEL == 5) { tituloEs = "Sigues Tu IV b"; tituloEn = "You Are Next IV b"; }
 
-
-         if (EsEscenaCampaña())
+      string cuerpo = "";
+      if (esIngles)
+      {
+        cuerpo += "<b>Type:</b> Mark + Debuff\n";
+        cuerpo += "<b>Target:</b> 1 enemy unit\n";
+        cuerpo += $"<b>Mark ({duracionMarca} turns):</b> enables bonuses only for Vertical Cut and Cleave\n";
+        cuerpo += $"<b>Marked bonuses:</b> +5 attack, +{bonusDanioMarca} damage";
+        if (bonusCritMarca > 0)
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +2 Rango Crítico al Ataque</color>\n\n";
-          }
-          }
+          cuerpo += $", +{bonusCritMarca} crit range";
         }
-   
-       }
-       if(NIVEL==2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Sigues Tú II</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Caballero señala a un enemigo, y lo amenaza de muerte.</i>\n";
-        txtDescripcion += "<i>Marca: El Caballero obtiene +5 Ataque, +2 Rango Crítico, +8 Daño contra el objetivo si utiliza Partir o Corte Vertical. Dura 3 Turnos.</i>\n";
-        txtDescripcion += "<i>Debuff: enemigo TS Mental vs 3. -2 Ataque por 2 Turnos.</i>\n\n";
-
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>\n\n";
-
-         if (EsEscenaCampaña())
+        cuerpo += "\n";
+        cuerpo += "<b>Mark consumption:</b> consumed on first Vertical Cut/Cleave attempt\n";
+        if (sinSalvacion)
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +2 Daño</color>\n\n";
-          }
-          }
+          cuerpo += $"<b>Debuff:</b> -2 Attack for {durDebuff} turns (no save)";
         }
-       }
-       if(NIVEL==3)
-       {
-        txtDescripcion = "<color=#5dade2><b>Sigues Tú III</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Caballero señala a un enemigo, y lo amenaza de muerte.</i>\n";
-        txtDescripcion += "<i>Marca: El Caballero obtiene +5 Ataque, +2 Rango Crítico, +10 Daño contra el objetivo si utiliza Partir o Corte Vertical. Dura 3 Turnos.</i>\n";
-        txtDescripcion += "<i>Debuff: enemigo TS Mental vs 3. -2 Ataque por 2 Turnos.</i>\n\n";
-
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>\n\n";
-
-          if (EsEscenaCampaña())
+        else
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: los enemigos no podrán salvarse del debuff</color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: +3 Turnos duración al debuff</color>\n";
-          }
-          }
+          cuerpo += $"{lineaSalvacionEn}\n";
+          cuerpo += $"<b>On failed save:</b> -2 Attack for {durDebuff} turns";
         }
-       }
-       if(NIVEL==4)
-       {
-        txtDescripcion = "<color=#5dade2><b>Sigues Tú IV a</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Caballero señala a un enemigo, y lo amenaza de muerte.</i>\n";
-        txtDescripcion += "<i>Marca: El Caballero obtiene +5 Ataque, +2 Rango Crítico, +10 Daño contra el objetivo si utiliza Partir o Corte Vertical. Dura 3 Turnos.</i>\n";
-        txtDescripcion += "<i>Debuff: enemigo -2 Ataque por 2 Turnos.</i>\n\n";
+      }
+      else
+      {
+        cuerpo += "<b>Tipo:</b> Marca + Debuff\n";
+        cuerpo += "<b>Objetivo:</b> 1 unidad enemiga\n";
+        cuerpo += $"<b>Marca ({duracionMarca} turnos):</b> habilita bonos solo para Corte Vertical y Partir\n";
+        cuerpo += $"<b>Bonos sobre marcado:</b> +5 ataque, +{bonusDanioMarca} danio";
+        if (bonusCritMarca > 0)
+        {
+          cuerpo += $", +{bonusCritMarca} rango critico";
+        }
+        cuerpo += "\n";
+        cuerpo += "<b>Consumo de marca:</b> se consume en el primer intento de Corte Vertical/Partir\n";
+        if (sinSalvacion)
+        {
+          cuerpo += $"<b>Debuff:</b> -2 Ataque por {durDebuff} turnos (sin TS)";
+        }
+        else
+        {
+          cuerpo += $"{lineaSalvacionEs}\n";
+          cuerpo += $"<b>Si falla TS:</b> -2 Ataque por {durDebuff} turnos";
+        }
+      }
 
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
 
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>";
-       }
-       if(NIVEL==5)
-       {
-        txtDescripcion = "<color=#5dade2><b>Sigues Tú IV b</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Caballero señala a un enemigo, y lo amenaza de muerte.</i>\n";
-        txtDescripcion += "<i>Marca: El Caballero obtiene +5 Ataque, +2 Rango Crítico, +10 Daño contra el objetivo si utiliza Partir o Corte Vertical. Dura 6 Turnos.</i>\n";
-        txtDescripcion += "<i>Debuff: enemigo TS Mental vs 3. -2 Ataque por 2 Turnos.</i>\n\n";
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "A lethal threat mark that sets up your single-target finishers."
+          : "Una marca de amenaza letal que prepara tus remates de objetivo unico.",
+        cuerpo,
+        costos,
+        "#5dade2");
 
+      bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
+      {
+        return;
+      }
 
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>";
-       }
-
-
-
-
-
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 crit range bonus on marked target.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 marked bonus damage.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (debuff has no save) or Option B (+2 debuff duration).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 rango critico sobre el marcado.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 danio extra al marcado.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (debuff sin TS) u Opcion B (+2 turnos de debuff).</color>"; }
+      }
 
    }
 
@@ -152,12 +151,12 @@ public class SiguesTu : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
 
-            if(obj is Unidad) //Acá van los efectos a Unidades.
+            if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
             {
                 
                 Unidad objetivo = (Unidad)obj;
 
-                BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} usa {nombre} en {objetivo.uNombre}");
+                BattleManager.Instance.EscribirLog(TRADU.i.Traducir(scEstaUnidad.uNombre) + " " + TRADU.i.Traducir("usa ") + TRADU.i.Traducir(nombre) + " -> " + TRADU.i.Traducir(objetivo.uNombre) + ".");
                 VFXAplicar(objetivo.gameObject);
                 MarcaSiguesTu marca = new MarcaSiguesTu();
                 marca.nombre = "Sigues Tu";
@@ -168,7 +167,7 @@ public class SiguesTu : Habilidad
                 MarcaSiguesTu buffComponent = ComponentCopier.CopyComponent(marca, objetivo.gameObject);
                 objetivo.Marcar(0);
 
-                objetivo.GenerarTextoFlotante("Marcado", Color.yellow);
+                objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Marcado"), Color.yellow);
 
                 int salvDC = 3;
                 if(NIVEL == 4){salvDC += 100;} //Si nivel 4a, "no hay tirada de salvacion"
@@ -177,14 +176,14 @@ public class SiguesTu : Habilidad
 
                 if(objetivo.TiradaSalvacion(objetivo.mod_TSMental, salvDC))
                 {
-                    //BUFF ---- Así se aplica un buff/debuff
+                    //BUFF ---- AsÃ­ se aplica un buff/debuff
                     Buff debuff = new Buff();
                     debuff.buffNombre = "Amedrentado";
                     debuff.boolfDebufftBuff = false;
                     debuff.DuracionBuffRondas = durDebuff;
                     debuff.cantAtaque = -2;
                     debuff.AplicarBuff(objetivo);
-                    // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+                    // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
                     ComponentCopier.CopyComponent(debuff, objetivo.gameObject);
 
                 }
@@ -286,3 +285,7 @@ public class SiguesTu : Habilidad
    
  
 }
+
+
+
+

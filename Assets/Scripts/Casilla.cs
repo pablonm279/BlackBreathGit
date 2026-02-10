@@ -253,7 +253,7 @@ public class Casilla : MonoBehaviour
       {
         if (aliado.CasillaPosicion.lado != unidad.CasillaPosicion.lado)
         {
-          BattleManager.Instance.EscribirLog("No puedes intercambiar con enemigos.");
+          BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con enemigos."));
           return;
         }
         else if (aliado.estado_inmovil > 0)

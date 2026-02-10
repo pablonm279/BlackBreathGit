@@ -17,6 +17,7 @@ public class BotonHabilidad : MonoBehaviour
     [SerializeField] private bool BotonActivo = false;
     [SerializeField] private GameObject goDesc;
     [SerializeField] private TextMeshProUGUI txtDescHab;
+    [SerializeField] private float hoverDelay = 0.35f;
 
     [SerializeField] private GameObject prefabCirculoAccion;
 
@@ -28,6 +29,8 @@ public class BotonHabilidad : MonoBehaviour
 
 
     TextMeshProUGUI nombreHabilidad;
+    private Coroutine hoverDescripcionRoutine;
+    private bool hoverDescripcionActiva;
     private void Awake()
     {
         scUiBotonesHabilidades = transform.parent.GetComponent<UIBotonesHabilidades>();
@@ -62,57 +65,90 @@ public class BotonHabilidad : MonoBehaviour
     {
         if (n == 1)
         {
-            HabilidadRepresentada.ActualizarDescripcion();
-            txtDescHab.text = HabilidadRepresentada.txtDescripcion;
-            goDesc.SetActive(true);
-
-            // Asegurarnos de que el goDesc (RectTransform) no salga de los márgenes de la pantalla
-            RectTransform descRect = goDesc.GetComponent<RectTransform>();
-
-            // Obtener las dimensiones de la pantalla
-            Vector2 screenSize = new Vector2(Screen.width, Screen.height);
-
-            // Obtener las coordenadas de la imagen en pantalla (anclada a su pivote)
-            Vector3[] corners = new Vector3[4];
-            descRect.GetWorldCorners(corners);
-
-            // Comprobar si alguna esquina está fuera de los márgenes de la pantalla
-            for (int i = 0; i < 4; i++)
+            hoverDescripcionActiva = true;
+            if (hoverDescripcionRoutine != null)
             {
-                Vector3 corner = corners[i];
+                StopCoroutine(hoverDescripcionRoutine);
+                hoverDescripcionRoutine = null;
+            }
 
-                // Si alguna parte de la descripción está fuera del lado izquierdo de la pantalla
-                if (corner.x < 0)
-                {
-                    descRect.position += new Vector3(-corner.x, 0, 0); // Ajustar al margen izquierdo
-                }
-
-                // Si alguna parte de la descripción está fuera del lado derecho de la pantalla
-                if (corner.x > screenSize.x)
-                {
-                    descRect.position += new Vector3(screenSize.x - corner.x, 0, 0); // Ajustar al margen derecho
-                }
-
-                // Si alguna parte de la descripción está fuera de la parte inferior de la pantalla
-                if (corner.y < 0)
-                {
-                    descRect.position += new Vector3(0, -corner.y, 0); // Ajustar al margen inferior
-                }
-
-                // Si alguna parte de la descripción está fuera de la parte superior de la pantalla
-                if (corner.y > screenSize.y)
-                {
-                    descRect.position += new Vector3(0, screenSize.y - corner.y, 0); // Ajustar al margen superior
-                }
+            if (hoverDelay <= 0f)
+            {
+                MostrarDescripcion();
+            }
+            else
+            {
+                hoverDescripcionRoutine = StartCoroutine(HoverDescripcionConDelay());
             }
         }
         else
         {
+            hoverDescripcionActiva = false;
+            if (hoverDescripcionRoutine != null)
+            {
+                StopCoroutine(hoverDescripcionRoutine);
+                hoverDescripcionRoutine = null;
+            }
             goDesc.SetActive(false);
         }
     }
 
+    private IEnumerator HoverDescripcionConDelay()
+    {
+        yield return new WaitForSeconds(hoverDelay);
+        if (hoverDescripcionActiva)
+        {
+            MostrarDescripcion();
+        }
+        hoverDescripcionRoutine = null;
+    }
 
+    private void MostrarDescripcion()
+    {
+        HabilidadRepresentada.ActualizarDescripcion();
+        txtDescHab.text = HabilidadRepresentada.txtDescripcion;
+        goDesc.SetActive(true);
+
+        // Asegurarnos de que el goDesc (RectTransform) no salga de los margenes de la pantalla
+        RectTransform descRect = goDesc.GetComponent<RectTransform>();
+
+        // Obtener las dimensiones de la pantalla
+        Vector2 screenSize = new Vector2(Screen.width, Screen.height);
+
+        // Obtener las coordenadas de la imagen en pantalla (anclada a su pivote)
+        Vector3[] corners = new Vector3[4];
+        descRect.GetWorldCorners(corners);
+
+        // Comprobar si alguna esquina esta fuera de los margenes de la pantalla
+        for (int i = 0; i < 4; i++)
+        {
+            Vector3 corner = corners[i];
+
+            // Si alguna parte de la descripcion esta fuera del lado izquierdo de la pantalla
+            if (corner.x < 0)
+            {
+                descRect.position += new Vector3(-corner.x, 0, 0); // Ajustar al margen izquierdo
+            }
+
+            // Si alguna parte de la descripcion esta fuera del lado derecho de la pantalla
+            if (corner.x > screenSize.x)
+            {
+                descRect.position += new Vector3(screenSize.x - corner.x, 0, 0); // Ajustar al margen derecho
+            }
+
+            // Si alguna parte de la descripcion esta fuera de la parte inferior de la pantalla
+            if (corner.y < 0)
+            {
+                descRect.position += new Vector3(0, -corner.y, 0); // Ajustar al margen inferior
+            }
+
+            // Si alguna parte de la descripcion esta fuera de la parte superior de la pantalla
+            if (corner.y > screenSize.y)
+            {
+                descRect.position += new Vector3(0, screenSize.y - corner.y, 0); // Ajustar al margen superior
+            }
+        }
+    }
     public void ActivarHabilidad(bool yaVienedeCargando)
     {
         if(BattleManager.Instance.scTutorialCombate.tutorialCombateActivo)

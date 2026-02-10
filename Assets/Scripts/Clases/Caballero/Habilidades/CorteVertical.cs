@@ -37,37 +37,51 @@ public class Cortevertical : Habilidad
     tipoDanio = 2; //Cortante
     criticoRangoHab = 0;
 
-
-     tipoPorcentaje = 1;
-
-
-
-
+    tipoPorcentaje = 1;
 
     imHab = Resources.Load<Sprite>("imHab/Caballero_CorteVertical");
+    ActualizarDescripcion();
+    }
 
-    if (TRADU.i.nIdioma == 1)
+    public override void ActualizarDescripcion()
     {
-      txtDescripcion = "<color=#5dade2><b>Corte Vertical</b></color>\n\n";
-      txtDescripcion += "<i>Con el mandoble, el Caballero efectúa un ataque de arriba hacia abajo capaz de provocar grandes daños.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Daño: Cortante 2d8- </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      var statsUI = ObtenerStatsDescripcionUI();
+
+      int fuerzaActual = statsUI.Fuerza;
+      int ataqueActual = statsUI.Ataque;
+      int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+      string bonusAtaqueTxt = bonusAtaque >= 0 ? $" + {bonusAtaque}" : $" - {Mathf.Abs(bonusAtaque)}";
+
+      string cuerpo = "";
+      if (esIngles)
+      {
+        cuerpo += "<b>Type:</b> Melee\n";
+        cuerpo += "<b>Target:</b> 1 enemy in front range\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color> + Attack ({ataqueActual}){bonusAtaqueTxt} vs Defense. Fumble: 1-2. Crit: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Damage:</b> 2d8 + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
+      }
+      else
+      {
+        cuerpo += "<b>Tipo:</b> Melee\n";
+        cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance frontal\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Critico: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Danio:</b> 2d8 + <color=#ea0606>Fuerza ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+      }
+
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? "Vertical Cut" : "Corte Vertical",
+        esIngles
+          ? "A heavy downward strike with strong single-hit damage."
+          : "Un golpe descendente pesado con danio alto en un solo impacto.",
+        cuerpo,
+        costos,
+        "#5dade2");
     }
-    if (TRADU.i.nIdioma == 2) //Ingles
-    {
-        txtDescripcion = "<color=#5dade2><b>Vertical Cut</b></color>\n\n";
-        txtDescripcion += "<i>With the greatsword, the Knight performs downward attack, capable of inflicting great damage.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +{bonusAtaque}</color> - Damage: Slashing 2d8- </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
-    }
-
-
-
-       
-    }
-
-   
-     public override void ActualizarDescripcion(){}
     Casilla Origen;
     public override void Activar()
     {
@@ -421,3 +435,4 @@ public class Cortevertical : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
+

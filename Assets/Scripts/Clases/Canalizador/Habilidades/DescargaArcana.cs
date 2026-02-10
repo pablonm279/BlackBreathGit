@@ -45,35 +45,65 @@ public class DescargaArcana : Habilidad
 
     tipoPorcentaje = 2;
 
+    imHab = Resources.Load<Sprite>("imHab/Canalizador_DescargaArcana");
+    ActualizarDescripcion();
+  }
+     public override void ActualizarDescripcion()
+    {
+      var statsUI = ObtenerStatsDescripcionUI();
+      int poderActual = statsUI.Poder;
+      int ataqueActual = statsUI.Ataque;
+      int criticoBonusUnidad = statsUI.CriticoRango;
+      string bonusTexto = bonusAtaque != 0 ? $" + {bonusAtaque}" : "";
+      int criticoMin = 19 - (criticoBonusUnidad + criticoRangoHab);
+      criticoMin = Mathf.Clamp(criticoMin, 2, 20);
 
+      // Valor visible para la descripcion: nunca mostrar mas de 5.
+      int alcanceVisible = Mathf.Clamp(hAlcance + 1, 1, 5);
+      string lineaTipoEs = esMelee ? "<b>Tipo:</b> Melee" : $"<b>Tipo:</b> Rango ({alcanceVisible} alcance)";
+      string lineaTipoEn = esMelee ? "<b>Type:</b> Melee" : $"<b>Type:</b> Ranged ({alcanceVisible} range)";
+      string anchoDetalleEs = hAncho == 0 ? "solo fila objetivo" : "fila objetivo + adyacentes";
+      string anchoDetalleEn = hAncho == 0 ? "target row only" : "target row + adjacent";
 
-
-
-      if (TRADU.i.nIdioma == 1)
+      if (TRADU.i != null && TRADU.i.nIdioma == 2)
       {
-        // Español
-        imHab = Resources.Load<Sprite>("imHab/Canalizador_DescargaArcana");
+        string cuerpo = "";
+        cuerpo += lineaTipoEn + "\n";
+        cuerpo += "<b>Target:</b> 1 enemy in range\n";
+        cuerpo += $"<b>Width:</b> {hAncho} ({anchoDetalleEn})\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color> + Attack ({ataqueActual}){bonusTexto} vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
+        cuerpo += $"<b>Damage:</b> 1d8 + 1 + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Arcane";
 
-        txtDescripcion = "<color=#5dade2><b>Descarga Arcana</b></color>\n\n"; 
-        txtDescripcion += "<i>El canalizador lanza una descarga de energía a un enemigo, haciendo daño arcano.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Alcance: 6</b> -Ataque: <color=#ea0606>Poder</color> - Daño: Perforante 1d8 + Poder-</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+        string costos = $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM} ";
+
+        txtDescripcion = ConstruirDescripcionEstandar(
+          "Arcane Discharge",
+          "The channeler launches a burst of energy at an enemy, dealing arcane damage.",
+          cuerpo,
+          costos,
+          "#5dade2");
+        return;
       }
-      if (TRADU.i.nIdioma == 2)
+
       {
-        // Inglés
-        imHab = Resources.Load<Sprite>("imHab/Canalizador_DescargaArcana");
+        string cuerpo = "";
+        cuerpo += lineaTipoEs + "\n";
+        cuerpo += "<b>Objetivo:</b> 1 enemigo en rango\n";
+        cuerpo += $"<b>Ancho:</b> {hAncho} ({anchoDetalleEs})\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}){bonusTexto} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
+        cuerpo += $"<b>Danio:</b> 1d8 + 1 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Arcano";
 
-        txtDescripcion = "<color=#5dade2><b>Arcane Discharge</b></color>\n\n";
-        txtDescripcion += "<i>The channeler launches a burst of energy at an enemy, dealing arcane damage.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Range: 6</b> -Attack: <color=#ea0606>Power</color> - Damage: Piercing 1d8 + Power-</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+        string costos = $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM} ";
+
+        txtDescripcion = ConstruirDescripcionEstandar(
+          "Descarga Arcana",
+          "El canalizador lanza una descarga de energia a un enemigo, haciendo danio arcano.",
+          cuerpo,
+          costos,
+          "#5dade2");
       }
-       
     }
 
-   
-     public override void ActualizarDescripcion(){}
     Casilla Origen;
     public override void Activar()
     {

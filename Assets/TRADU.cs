@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class TRADU : MonoBehaviour
@@ -50,7 +51,22 @@ public class TRADU : MonoBehaviour
         switch (nIdioma)
         {
             case 1: resultado = textComponent; break; //En español no traduce
-            case 2: resultado = TraducirIngles(textComponent); break; //INGLES
+            case 2:
+                resultado = TraducirIngles(textComponent);
+                if (resultado == textComponent && !string.IsNullOrEmpty(textComponent))
+                {
+                    // Compat fallback for mojibake keys already stored in the switch table.
+                    string claveMojibake = ConvertirATextoMojibake(textComponent);
+                    if (claveMojibake != textComponent)
+                    {
+                        string resultadoFallback = TraducirIngles(claveMojibake);
+                        if (resultadoFallback != claveMojibake)
+                        {
+                            resultado = resultadoFallback;
+                        }
+                    }
+                }
+                break; //INGLES
 
         }
 
@@ -65,6 +81,20 @@ public class TRADU : MonoBehaviour
 
 
 
+
+
+    string ConvertirATextoMojibake(string txt)
+    {
+        try
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(txt);
+            return Encoding.GetEncoding(1252).GetString(bytes);
+        }
+        catch
+        {
+            return txt;
+        }
+    }
 
     string TraducirIngles(string txt, bool esBotonFijo = false)
     {
@@ -1308,6 +1338,12 @@ public class TRADU : MonoBehaviour
             case "Veneno":
                 r = "Poison";
                 break;
+            case "Sangrado":
+                r = "Bleeding";
+                break;
+            case "Ardiendo":
+                r = "Burning";
+                break;
             case " resiste totalmente al veneno.":
                 r = " resist the poison.";
                 break;
@@ -1466,6 +1502,15 @@ public class TRADU : MonoBehaviour
                 break;
             case "-Los Cronistas han registrado la derrota, -50 Valor Crónica. -3 Esperanza.":
                 r = "-The Chroniclers have recorded the defeat, -50 Chronicle Valor. -3 Hope.";
+                break;
+            case "Victoria sin recompensas definidas para este encuentro clásico.":
+                r = "Victory with no rewards defined for this classic encounter.";
+                break;
+            case "Derrota en un encuentro clásico. Los efectos específicos aún no están configurados.":
+                r = "Defeat in a classic encounter. Specific effects are not configured yet.";
+                break;
+            case "sin botín":
+                r = "no loot";
                 break;
             case " ha sido corrompido.":
                 r = " has been corrupted.";
@@ -3729,6 +3774,156 @@ public class TRADU : MonoBehaviour
             case "Tiro Ballesta de Mano":
                 r = "Hand Crossbow Shot";
                 break;
+            case "Acumular Energ\u00eda":
+                r = "Accumulate Energy";
+                break;
+            case "Acumulaci\u00f3n Inestable":
+                r = "Unstable Accumulation";
+                break;
+            case "Acechar":
+                r = "Stalk";
+                break;
+            case "Arrojar Abrojos":
+                r = "Throw Caltrops";
+                break;
+            case "Asesinar":
+                r = "Assassinate";
+                break;
+            case "Bomba de Humo":
+                r = "Smoke Bomb";
+                break;
+            case "Corte Daga":
+                r = "Dagger Slash";
+                break;
+            case "Corte de Espada Corta":
+                r = "Short Sword Slash";
+                break;
+            case "Corte de Espada Corta Arcana":
+                r = "Arcane Short Sword Slash";
+                break;
+            case "Corte de Espada Corta Consumevida":
+                r = "Lifedrinker Short Sword Slash";
+                break;
+            case "Corte de Espada Corta Filonegro":
+                r = "Blackedge Short Sword Slash";
+                break;
+            case "Corte Horizontal":
+                r = "Horizontal Cut";
+                break;
+            case "Corte Incapacitante":
+                r = "Incapacitating Slash";
+                break;
+            case "Corte Vertical":
+                r = "Vertical Cut";
+                break;
+            case "Corte Vertical Congelado":
+                r = "Frozen Vertical Cut";
+                break;
+            case "Corte Vertical Sagrado":
+                r = "Sacred Vertical Cut";
+                break;
+            case "Corte Vertical Sediento":
+                r = "Thirsting Vertical Cut";
+                break;
+            case "Descarga De Poder":
+                r = "Power Discharge";
+                break;
+            case "Descarga Desintegradora":
+                r = "Disintegrating Discharge";
+                break;
+            case "Disparo Envenenado":
+                r = "Poisoned Shot";
+                break;
+            case "Distraer":
+                r = "Distract";
+                break;
+            case "Eco Divino":
+                r = "Divine Echo";
+                break;
+            case "Enmendar":
+                r = "Mend";
+                break;
+            case "Escudo de Fe":
+                r = "Shield of Faith";
+                break;
+            case "Fogata":
+                r = "Campfire";
+                break;
+            case "Hacia Las Sombras":
+                r = "Into the Shadows";
+                break;
+            case "Hoja de Energía":
+                r = "Energy Blade";
+                break;
+            case "HombroConHombro":
+                r = "Shoulder to Shoulder";
+                break;
+            case "Improvisar Flechas":
+                r = "Improvise Arrows";
+                break;
+            case "Instatransporte":
+                r = "Insta Transport";
+                break;
+            case "Llama Divina":
+                r = "Divine Flame";
+                break;
+            case "Luz Cegadora":
+                r = "Blinding Light";
+                break;
+            case "Marcar Presa":
+                r = "Mark Prey";
+                break;
+            case "Presa Marcada":
+                r = "Marked Prey";
+                break;
+            case "Partir":
+                r = "Cleave";
+                break;
+            case "Pilares De Luz":
+                r = "Pillars of Light";
+                break;
+            case "Primeros Auxilios":
+                r = "First Aid";
+                break;
+            case "Purificaci\u00f3n":
+                r = "Purification";
+                break;
+            case "R\u00e1faga":
+                r = "Barrage";
+                break;
+            case "Residuo Energetico":
+                r = "Energy Residue";
+                break;
+            case "Salmo Purificador":
+                r = "Purifying Psalm";
+                break;
+            case "Sigues T\u00FA":
+                r = "You Are Next";
+                break;
+            case "Sigues Tu":
+                r = "You Are Next";
+                break;
+            case "Sif\u00f3n Arcano":
+                r = "Arcane Siphon";
+                break;
+            case "Tiro con Arco Acido":
+                r = "Acid Bow Shot";
+                break;
+            case "Tiro con Arco Potente":
+                r = "Powerful Bow Shot";
+                break;
+            case "Tiro con Arco Ralentizante":
+                r = "Slowing Bow Shot";
+                break;
+            case "Vigilancia":
+                r = "Vigilance";
+                break;
+            case "Abrojo":
+                r = "Caltrop";
+                break;
+            case "Acid Bow Shot":
+                r = "Acid Bow Shot";
+                break;
             case "Oso Espectral":
                 r = "Spectral Bear";
                 break;
@@ -3743,6 +3938,54 @@ public class TRADU : MonoBehaviour
                 break;
             case "Muerto":
                 r = "Dead";
+                break;
+            case "reacciona con ":
+                r = "reacts with ";
+                break;
+            case "gana 1 Fervor por matar con ":
+                r = "gains 1 Fervor for killing with ";
+                break;
+            case "fue Desintegrado.":
+                r = "was Disintegrated.";
+                break;
+            case "==== Ronda ":
+                r = "==== Round ";
+                break;
+            case " comienza ====":
+                r = " begins ====";
+                break;
+            case "No puedes intercambiar con enemigos.":
+                r = "You can't swap with enemies.";
+                break;
+            case "-La Caravana ha sido emboscada por un ataque subterráneo.":
+                r = "-The Caravan has been ambushed by an underground attack.";
+                break;
+            case "-El Séquito de Clérigos ha perecido, ya que el Aliento Negro ha alcanzado un nivel crítico. -20 Esperanza":
+                r = "-The Clerics' Retinue has perished, as the Black Breath has reached a critical level. -20 Hope";
+                break;
+            case " ahora Maneja un Nivel ":
+                r = " now has Energy Level ";
+                break;
+            case " de Energía.":
+                r = ".";
+                break;
+            case " de Valentía.":
+                r = " Valor.";
+                break;
+            case "ARM":
+                r = "ARM";
+                break;
+            case "RES":
+                r = "RES";
+                break;
+            case "BAR":
+                r = "BAR";
+                break;
+            case "MIT":
+                r = "MIT";
+                break;
+            case "BON":
+                r = "BON";
                 break;
             /*case "":
                 r = "";

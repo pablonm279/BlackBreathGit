@@ -50,14 +50,10 @@ public class ReaccionPosturaDefensiva : Reaccion
         int tirada =  UnityEngine.Random.Range(1,21);
         corteVertical.AplicarEfectosHabilidad(uTriggerer, tirada, null);
 
-        if (TRADU.i.nIdioma == 1)
-        {
-            BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} reacciona con {nombre}.");
-        }
-        if (TRADU.i.nIdioma == 2)
-        {
-            BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} reacts with {nombre}.");
-        }
+        string unidadNombre = TRADU.i != null ? TRADU.i.Traducir(scEstaUnidad.uNombre) : scEstaUnidad.uNombre;
+        string verboReacciona = TRADU.i != null ? TRADU.i.Traducir("reacciona con ") : "reacciona con ";
+        string nombreHab = TRADU.i != null ? TRADU.i.Traducir(nombre) : nombre;
+        BattleManager.Instance.EscribirLog(unidadNombre + " " + verboReacciona + nombreHab + ".");
         //--------------------------
         usos--;
         if(usos == 0)

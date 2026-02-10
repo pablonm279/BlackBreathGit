@@ -33,171 +33,87 @@ public class EscudoEnergetico : Habilidad
     }
 
 
-    public override void ActualizarDescripcion()
+        public override void ActualizarDescripcion()
     {
-        if (NIVEL < 2)
-        {
-            txtDescripcion = "<color=#5dade2><b>Escudo Energético I</b></color>\n\n";
-            txtDescripcion += "<i>Canaliza una barrera de energía que refuerza su defensa y devuelve proyectiles en forma de descarga arcana.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8><b>Propio.</b> - Defensa: 1 + Nivel Energía - Proyectiles fallidos: Descarga Arcana al atacante y genera Residuo Energético en casilla adyacente.</color>\n";
-            txtDescripcion += $"<color=#44d3ec>- Máximo usos: 3 por turno\n- Costo AP: 2 (termina turno)\n- Cooldown: {cooldownMax} \n- Costo Val: 0</color>\n";
-            txtDescripcion += $"<color=#ea0606>- Se cancela si recibe daño</color>\n\n";
+        bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
 
-            if (EsEscenaCampaña())
+        string tituloEs = "Escudo Energetico I";
+        string tituloEn = "Energy Shield I";
+        if (NIVEL == 2) { tituloEs = "Escudo Energetico II"; tituloEn = "Energy Shield II"; }
+        if (NIVEL == 3) { tituloEs = "Escudo Energetico III"; tituloEn = "Energy Shield III"; }
+        if (NIVEL == 4) { tituloEs = "Escudo Energetico IV a"; tituloEn = "Energy Shield IV a"; }
+        if (NIVEL == 5) { tituloEs = "Escudo Energetico IV b"; tituloEn = "Energy Shield IV b"; }
+
+        int defensaBase = NIVEL > 1 ? 2 : 1;
+        int bonusAtaqueReaccion = NIVEL > 2 ? 1 : 0;
+        int usosReaccion = NIVEL == 5 ? 3 : 2;
+        bool seCancelaConDanio = NIVEL != 4;
+
+        string cuerpo = "";
+        if (esIngles)
+        {
+            cuerpo += "<b>Type:</b> Self\n";
+            cuerpo += "<b>Target:</b> Self\n";
+            cuerpo += $"<b>Defense Buff:</b> {defensaBase} + current Energy Tier (2 rounds)\n";
+            cuerpo += $"<b>Reaction:</b> On failed enemy projectile, counters with Arcane Discharge";
+            if (bonusAtaqueReaccion > 0)
             {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-                {
-                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                    {
-                        txtDescripcion += $"<color=#dfea02>- Próximo Nivel: +1 Defensa</color>\n\n";
-                    }
-                }
+                cuerpo += $" (+{bonusAtaqueReaccion} attack roll)";
             }
+            cuerpo += " and creates 1 Energy Residue nearby\n";
+            cuerpo += $"<b>Reaction Uses per cast:</b> {usosReaccion}\n";
+            cuerpo += seCancelaConDanio
+                ? "<b>Condition:</b> Shield is removed if user takes damage"
+                : "<b>Condition:</b> Shield is not removed by incoming damage";
         }
-
-        if (NIVEL == 2)
+        else
         {
-            txtDescripcion = "<color=#5dade2><b>Escudo Energético II</b></color>\n\n";
-            txtDescripcion += "<i>Canaliza una barrera de energía que refuerza su defensa y devuelve proyectiles en forma de descarga arcana.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8><b>Propio.</b> - Defensa: 2 + Nivel Energía - Proyectiles fallidos: Descarga Arcana al atacante y genera Residuo Energético en casilla adyacente.</color>\n";
-            txtDescripcion += $"<color=#44d3ec>- Máximo usos: 3 por turno\n- Costo AP: 2 (termina turno)\n- Cooldown: {cooldownMax} \n- Costo Val: 0</color>\n";
-            txtDescripcion += $"<color=#ea0606>- Se cancela si recibe daño</color>\n\n";
-
-            if (EsEscenaCampaña())
+            cuerpo += "<b>Tipo:</b> Propia\n";
+            cuerpo += "<b>Objetivo:</b> Propio usuario\n";
+            cuerpo += $"<b>Buff de Defensa:</b> {defensaBase} + Nivel de Energia actual (2 rondas)\n";
+            cuerpo += $"<b>Reaccion:</b> Ante proyectil enemigo fallido, contraataca con Descarga Arcana";
+            if (bonusAtaqueReaccion > 0)
             {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-                {
-                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                    {
-                        txtDescripcion += $"<color=#dfea02>- Próximo Nivel: +1 Tirada Ataque en Descarga</color>\n\n";
-                    }
-                }
+                cuerpo += $" (+{bonusAtaqueReaccion} a la tirada de ataque)";
             }
+            cuerpo += " y genera 1 Residuo Energetico cercano\n";
+            cuerpo += $"<b>Usos de la reaccion por casteo:</b> {usosReaccion}\n";
+            cuerpo += seCancelaConDanio
+                ? "<b>Condicion:</b> El escudo se cancela si recibe danio"
+                : "<b>Condicion:</b> El escudo no se cancela al recibir danio";
         }
 
-        if (NIVEL == 3)
+        string costos = esIngles
+            ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Val Cost: {costoPM}"
+            : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Val: {costoPM}";
+
+        txtDescripcion = ConstruirDescripcionEstandar(
+            esIngles ? tituloEn : tituloEs,
+            esIngles
+                ? "The Channeler forms a reactive barrier that reinforces defense and punishes ranged pressure."
+                : "El Canalizador forma una barrera reactiva que refuerza defensa y castiga la presion a distancia.",
+            cuerpo,
+            costos,
+            "#5dade2");
+
+        bool mostrarProximoNivel = EsEscenaCampa�a() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+        if (!mostrarProximoNivel)
         {
-            txtDescripcion = "<color=#5dade2><b>Escudo Energético III</b></color>\n\n";
-            txtDescripcion += "<i>Canaliza una barrera de energía que refuerza su defensa y devuelve proyectiles en forma de descarga arcana.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8><b>Propio.</b> - Defensa: 2 + Nivel Energía - Proyectiles fallidos: Descarga Arcana (+1 Ataque) al atacante y genera Residuo Energético en casilla adyacente.</color>\n";
-            txtDescripcion += $"<color=#44d3ec>- Máximo usos: 3 por turno\n- Costo AP: 2 (termina turno)\n- Cooldown: {cooldownMax} \n- Costo Val: 0</color>\n";
-            txtDescripcion += $"<color=#ea0606>- Se cancela si recibe daño</color>\n\n";
-
-            if (EsEscenaCampaña())
-            {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-                {
-                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                    {
-                        txtDescripcion += $"<color=#dfea02>- Próximo Nivel:\nOpción A: No se cancela al ser golpeado\nOpción B: +1 uso por turno</color>\n\n";
-                    }
-                }
-            }
+            return;
         }
 
-        if (NIVEL == 4)
+        if (esIngles)
         {
-            // Variante A
-            txtDescripcion = "<color=#5dade2><b>Escudo Energético IV a</b></color>\n\n";
-            txtDescripcion += "<i>Canaliza una barrera de energía que refuerza su defensa y devuelve proyectiles en forma de descarga arcana.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8><b>Propio.</b> - Defensa: 2 + Nivel Energía - Proyectiles fallidos: Descarga Arcana (+1 Ataque) al atacante y genera Residuo Energético en casilla adyacente.</color>\n";
-            txtDescripcion += $"<color=#44d3ec>- Máximo usos: 3 por turno\n- Costo AP: 2 (termina turno)\n- Cooldown: {cooldownMax} \n- Costo Val: 0</color>\n";
-            txtDescripcion += $"<color=#44d3ec>- Ya no se cancela al recibir daño</color>\n\n";
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 defense base.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack roll on counter discharge.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (no cancel on damage) or Option B (+1 reaction use).</color>"; }
         }
-
-        if (NIVEL == 5)
+        else
         {
-            // Variante B
-            txtDescripcion = "<color=#5dade2><b>Escudo Energético IV b</b></color>\n\n";
-            txtDescripcion += "<i>Canaliza una barrera de energía que refuerza su defensa y devuelve proyectiles en forma de descarga arcana.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8><b>Propio.</b> - Defensa: 2 + Nivel Energía - Proyectiles fallidos: Descarga Arcana (+1 Ataque) al atacante y genera Residuo Energético en casilla adyacente.</color>\n";
-            txtDescripcion += $"<color=#44d3ec>- Máximo usos: 4 por turno\n- Costo AP: 2 (termina turno)\n- Cooldown: {cooldownMax} \n- Costo Val: 0</color>\n";
-            txtDescripcion += $"<color=#ea0606>- Se cancela si recibe daño</color>\n\n";
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 defensa base.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 a la tirada de ataque de la descarga de reaccion.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (no se cancela por danio) u Opcion B (+1 uso de reaccion).</color>"; }
         }
-
-    if (TRADU.i.nIdioma == 2) // English translation
-    {
-        if (NIVEL < 2)
-        {
-            txtDescripcion = "<color=#5dade2><b>Energy Shield I</b></color>\n\n";
-            txtDescripcion += "<i>Channels a barrier of energy that boosts defense and returns projectiles as arcane discharge.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8><b>Self.</b> - Defense: 1 + Energy Level - Failed projectiles: Arcane Discharge to attacker and generates Energy Residue in adjacent tile.</color>\n";
-            txtDescripcion += $"<color=#44d3ec>- Max uses: 3 per turn\n- AP Cost: 2 (ends turn)\n- Cooldown: {cooldownMax} \n- Value Cost: 0</color>\n";
-            txtDescripcion += $"<color=#ea0606>- Cancels if damaged</color>\n\n";
-
-            if (EsEscenaCampaña())
-            {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-                {
-                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                    {
-                        txtDescripcion += $"<color=#dfea02>- Next Level: +1 Defense</color>\n\n";
-                    }
-                }
-            }
-        }
-
-        if (NIVEL == 2)
-        {
-            txtDescripcion = "<color=#5dade2><b>Energy Shield II</b></color>\n\n";
-            txtDescripcion += "<i>Channels a barrier of energy that boosts defense and returns projectiles as arcane discharge.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8><b>Self.</b> - Defense: 2 + Energy Level - Failed projectiles: Arcane Discharge to attacker and generates Energy Residue in adjacent tile.</color>\n";
-            txtDescripcion += $"<color=#44d3ec>- Max uses: 3 per turn\n- AP Cost: 2 (ends turn)\n- Cooldown: {cooldownMax} \n- Value Cost: 0</color>\n";
-            txtDescripcion += $"<color=#ea0606>- Cancels if damaged</color>\n\n";
-
-            if (EsEscenaCampaña())
-            {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-                {
-                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                    {
-                        txtDescripcion += $"<color=#dfea02>- Next Level: +1 Attack Roll in Discharge</color>\n\n";
-                    }
-                }
-            }
-        }
-
-        if (NIVEL == 3)
-        {
-            txtDescripcion = "<color=#5dade2><b>Energy Shield III</b></color>\n\n";
-            txtDescripcion += "<i>Channels a barrier of energy that boosts defense and returns projectiles as arcane discharge.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8><b>Self.</b> - Defense: 2 + Energy Level - Failed projectiles: Arcane Discharge (+1 Attack) to attacker and generates Energy Residue in adjacent tile.</color>\n";
-            txtDescripcion += $"<color=#44d3ec>- Max uses: 3 per turn\n- AP Cost: 2 (ends turn)\n- Cooldown: {cooldownMax} \n- Value Cost: 0</color>\n";
-            txtDescripcion += $"<color=#ea0606>- Cancels if damaged</color>\n\n";
-
-            if (EsEscenaCampaña())
-            {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-                {
-                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                    {
-                        txtDescripcion += $"<color=#dfea02>- Next Level:\nOption A: Does not cancel when hit\nOption B: +1 use per turn</color>\n\n";
-                    }
-                }
-            }
-        }
-
-        if (NIVEL == 4)
-        {
-            // Variant A
-            txtDescripcion = "<color=#5dade2><b>Energy Shield IV a</b></color>\n\n";
-            txtDescripcion += "<i>Channels a barrier of energy that boosts defense and returns projectiles as arcane discharge.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8><b>Self.</b> - Defense: 2 + Energy Level - Failed projectiles: Arcane Discharge (+1 Attack) to attacker and generates Energy Residue in adjacent tile.</color>\n";
-            txtDescripcion += $"<color=#44d3ec>- Max uses: 3 per turn\n- AP Cost: 2 (ends turn)\n- Cooldown: {cooldownMax} \n- Value Cost: 0</color>\n";
-            txtDescripcion += $"<color=#44d3ec>- No longer cancels when damaged</color>\n\n";
-        }
-
-        if (NIVEL == 5)
-        {
-            // Variant B
-            txtDescripcion = "<color=#5dade2><b>Energy Shield IV b</b></color>\n\n";
-            txtDescripcion += "<i>Channels a barrier of energy that boosts defense and returns projectiles as arcane discharge.</i>\n\n";
-            txtDescripcion += $"<color=#c8c8c8><b>Self.</b> - Defense: 2 + Energy Level - Failed projectiles: Arcane Discharge (+1 Attack) to attacker and generates Energy Residue in adjacent tile.</color>\n";
-            txtDescripcion += $"<color=#44d3ec>- Max uses: 4 per turn\n- AP Cost: 2 (ends turn)\n- Cooldown: {cooldownMax} \n- Value Cost: 0</color>\n";
-            txtDescripcion += $"<color=#ea0606>- Cancels if damaged</color>\n\n";
-        }
-    }
-
 
     }
     Casilla Origen;
@@ -320,3 +236,4 @@ public class EscudoEnergetico : Habilidad
    
  
 }
+

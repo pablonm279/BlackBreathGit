@@ -73,7 +73,10 @@ public class VigilanciaTrampa : Trampa
         await tiroArco.FinalizarImpactoManualAsync(objetivos, unidadCreadora.CasillaPosicion);
       }
 
-      BattleManager.Instance.EscribirLog($"{unidadCreadora.uNombre} reacciona con {nombre}.");
+      string unidadNombre = TRADU.i != null ? TRADU.i.Traducir(unidadCreadora.uNombre) : unidadCreadora.uNombre;
+      string verboReacciona = TRADU.i != null ? TRADU.i.Traducir("reacciona con ") : "reacciona con ";
+      string nombreHab = TRADU.i != null ? TRADU.i.Traducir(nombre) : nombre;
+      BattleManager.Instance.EscribirLog(unidadNombre + " " + verboReacciona + nombreHab + ".");
 
       //--------------------------
     }

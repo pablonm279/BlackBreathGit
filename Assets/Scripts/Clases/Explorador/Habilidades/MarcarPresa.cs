@@ -33,187 +33,85 @@ public class MarcarPresa : Habilidad
       ActualizarDescripcion();
     }
 
-   public override void ActualizarDescripcion()
-   {
-       if(NIVEL<2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Marcar Presa I</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Explorador marca un objetivo como su presa, obteniendo bonificaciones al atacarlo.</i>\n";
-        txtDescripcion += "<i>Marca:+2 Ataque +1 Rango Crítico, +15% daño crítico. Dura 3 Turnos.</i>\n";
-        txtDescripcion += "<i>Debuff:-2 Ataque contra otros objetivos que no sean la presa.</i>\n\n";
-        txtDescripcion += "<i>Al matar la presa: +1 AP +2 TS Mental por 3 Turnos. +1 Valentía.</i>\n\n";
+        public override void ActualizarDescripcion()
+  {
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
 
+    string tituloEs = "Marcar Presa I";
+    string tituloEn = "Mark Prey I";
+    if (NIVEL == 2) { tituloEs = "Marcar Presa II"; tituloEn = "Mark Prey II"; }
+    if (NIVEL == 3) { tituloEs = "Marcar Presa III"; tituloEn = "Mark Prey III"; }
+    if (NIVEL == 4) { tituloEs = "Marcar Presa IV a"; tituloEn = "Mark Prey IV a"; }
+    if (NIVEL == 5) { tituloEs = "Marcar Presa IV b"; tituloEn = "Mark Prey IV b"; }
 
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>\n\n";
+    int bonoAtaqueMarca = NIVEL == 4 ? 2 : 4;
+    int bonoCritRangoMarca = 1 + (NIVEL > 2 ? 1 : 0);
+    int bonoCritDanioMarca = 15 + (NIVEL > 1 ? 5 : 0);
 
+    int recompensaVal = NIVEL == 5 ? 2 : 1;
+    int recompensaApMax = NIVEL == 5 ? 2 : 1;
+    int recompensaTsMental = NIVEL == 5 ? 3 : 2;
 
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +5% daño crítico</color>\n\n";
-          }
-          }
-        }
-   
-       }
-       if(NIVEL==2)
-       {
-         txtDescripcion = "<color=#5dade2><b>Marcar Presa II</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Explorador marca un objetivo como su presa, obteniendo bonificaciones al atacarlo.</i>\n";
-        txtDescripcion += "<i>Marca:+2 Ataque +1 Rango Crítico, +20% daño crítico. Dura 3 Turnos.</i>\n";
-        txtDescripcion += "<i>Debuff:-2 Ataque contra otros objetivos que no sean la presa.</i>\n\n";
-        txtDescripcion += "<i>Al matar la presa: +1 AP +2 TS Mental por 3 Turnos. +1 Valentía.</i>\n\n";
+    bool aplicaDebuffPropio = NIVEL != 4;
 
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>\n\n";
-
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Rango Crítico</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==3)
-       {
-        txtDescripcion = "<color=#5dade2><b>Marcar Presa III</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Explorador marca un objetivo como su presa, obteniendo bonificaciones al atacarlo.</i>\n";
-        txtDescripcion += "<i>Marca:+2 Ataque +2 Rango Crítico, +20% daño crítico. Dura 3 Turnos.</i>\n";
-        txtDescripcion += "<i>Debuff:-2 Ataque contra otros objetivos que no sean la presa.</i>\n\n";
-        txtDescripcion += "<i>Al matar la presa: +1 AP +2 TS Mental por 3 Turnos. +1 Valentía.</i>\n\n";
-
-
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>\n\n";
-
-          if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: ya no disminuye Ataque contra otros objetivos.</color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: al matar a la presa obtiene +2 valentía extra.</color>\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==4)
-       {
-         txtDescripcion = "<color=#5dade2><b>Marcar Presa IVa</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Explorador marca un objetivo como su presa, obteniendo bonificaciones al atacarlo.</i>\n";
-        txtDescripcion += "<i>Marca:+2 Ataque +2 Rango Crítico, +20% daño crítico. Dura 3 Turnos.</i>\n";
-        txtDescripcion += "<i>Al matar la presa: +1 AP +2 TS Mental por 3 Turnos. +1 Valentía.</i>\n\n";
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>";
-       }
-       if(NIVEL==5)
-       {
-         txtDescripcion = "<color=#5dade2><b>Marcar Presa IVb</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Explorador marca un objetivo como su presa, obteniendo bonificaciones al atacarlo.</i>\n";
-        txtDescripcion += "<i>Marca:+2 Ataque +2 Rango Crítico, +20% daño crítico. Dura 3 Turnos.</i>\n";
-        txtDescripcion += "<i>Debuff:-2 Ataque contra otros objetivos que no sean la presa.</i>\n\n";
-        txtDescripcion += "<i>Al matar la presa: +2 AP +3 TS Mental por 3 Turnos. +2 Valentía.</i>\n\n";
-
-
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n</color>";
-       }
-
-
-    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+    string cuerpo = "";
+    if (esIngles)
     {
-      if (NIVEL < 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Mark Prey I</b></color>\n\n";
-        txtDescripcion += "<i>The Explorer marks a target as their prey, gaining bonuses when attacking it.</i>\n";
-        txtDescripcion += "<i>Mark: +2 Attack, +1 Critical Range, +15% critical damage. Lasts 3 Turns.</i>\n";
-        txtDescripcion += "<i>Debuff: -2 Attack against targets other than the prey.</i>\n\n";
-        txtDescripcion += "<i>On killing the prey: +1 AP, +2 Mental Save for 3 Turns, +1 Courage.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Next Level: +5% critical damage</color>\n\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Mark Prey II</b></color>\n\n";
-        txtDescripcion += "<i>The Explorer marks a target as their prey, gaining bonuses when attacking it.</i>\n";
-        txtDescripcion += "<i>Mark: +2 Attack, +1 Critical Range, +20% critical damage. Lasts 3 Turns.</i>\n";
-        txtDescripcion += "<i>Debuff: -2 Attack against targets other than the prey.</i>\n\n";
-        txtDescripcion += "<i>On killing the prey: +1 AP, +2 Mental Save for 3 Turns, +1 Courage.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Next Level: +1 Critical Range</color>\n\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 3)
-      {
-        txtDescripcion = "<color=#5dade2><b>Mark Prey III</b></color>\n\n";
-        txtDescripcion += "<i>The Explorer marks a target as their prey, gaining bonuses when attacking it.</i>\n";
-        txtDescripcion += "<i>Mark: +2 Attack, +2 Critical Range, +20% critical damage. Lasts 3 Turns.</i>\n";
-        txtDescripcion += "<i>Debuff: -2 Attack against targets other than the prey.</i>\n\n";
-        txtDescripcion += "<i>On killing the prey: +1 AP, +2 Mental Save for 3 Turns, +1 Courage.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>\n\n";
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Option A: no longer decreases Attack against other targets.</color>\n";
-              txtDescripcion += $"<color=#dfea02>-Option B: on killing the prey, gains +2 extra Courage.</color>\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 4)
-      {
-        txtDescripcion = "<color=#5dade2><b>Mark Prey IVa</b></color>\n\n";
-        txtDescripcion += "<i>The Explorer marks a target as their prey, gaining bonuses when attacking it.</i>\n";
-        txtDescripcion += "<i>Mark: +2 Attack, +2 Critical Range, +20% critical damage. Lasts 3 Turns.</i>\n";
-        txtDescripcion += "<i>On killing the prey: +1 AP, +2 Mental Save for 3 Turns, +1 Courage.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>";
-      }
-      if (NIVEL == 5)
-      {
-        txtDescripcion = "<color=#5dade2><b>Mark Prey IVb</b></color>\n\n";
-        txtDescripcion += "<i>The Explorer marks a target as their prey, gaining bonuses when attacking it.</i>\n";
-        txtDescripcion += "<i>Mark: +2 Attack, +2 Critical Range, +20% critical damage. Lasts 3 Turns.</i>\n";
-        txtDescripcion += "<i>Debuff: -2 Attack against targets other than the prey.</i>\n\n";
-        txtDescripcion += "<i>On killing the prey: +2 AP, +3 Mental Save for 3 Turns, +2 Courage.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n</color>";
-      }
+      cuerpo += "<b>Type:</b> Mark\n";
+      cuerpo += "<b>Target:</b> 1 enemy on opposite side\n";
+      cuerpo += "<b>Roll/Save:</b> none (direct application)\n";
+      cuerpo += "<b>Mark duration:</b> 3 turns\n";
+      cuerpo += $"<b>Bonuses vs marked target:</b> +{bonoAtaqueMarca} attack, +{bonoCritRangoMarca} crit range, +{bonoCritDanioMarca}% crit damage\n";
+      cuerpo += aplicaDebuffPropio
+        ? "<b>Self effect on cast:</b> -2 Attack for 2 turns (only against non-marked targets)\n"
+        : "<b>Self effect on cast:</b> no attack penalty against non-marked targets\n";
+      cuerpo += $"<b>On marked kill:</b> +{recompensaVal} Val, +{recompensaApMax} max AP and +{recompensaTsMental} Mental Save for 3 turns";
+    }
+    else
+    {
+      cuerpo += "<b>Tipo:</b> Marca\n";
+      cuerpo += "<b>Objetivo:</b> 1 enemigo del lado opuesto\n";
+      cuerpo += "<b>Tirada/TS:</b> no tiene (aplicacion directa)\n";
+      cuerpo += "<b>Duracion de marca:</b> 3 turnos\n";
+      cuerpo += $"<b>Bonos contra marcado:</b> +{bonoAtaqueMarca} ataque, +{bonoCritRangoMarca} rango critico, +{bonoCritDanioMarca}% danio critico\n";
+      cuerpo += aplicaDebuffPropio
+        ? "<b>Efecto propio al lanzar:</b> -2 Ataque por 2 turnos (solo contra objetivos no marcados)\n"
+        : "<b>Efecto propio al lanzar:</b> sin penalidad de ataque contra objetivos no marcados\n";
+      cuerpo += $"<b>Al matar al marcado:</b> +{recompensaVal} Val, +{recompensaApMax} AP max y +{recompensaTsMental} TS Mental por 3 turnos";
     }
 
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
 
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? tituloEn : tituloEs,
+      esIngles
+        ? "Paints a priority target and shifts your full damage profile into hunting it."
+        : "Marca un objetivo prioritario y redirige tu perfil ofensivo a cazarlo.",
+      cuerpo,
+      costos,
+      "#5dade2");
 
-   }
+    bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    if (!mostrarProximoNivel)
+    {
+      return;
+    }
+
+    if (esIngles)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% crit damage on marked target.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 crit range on marked target.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A removes self attack penalty; Option B improves kill reward (+1 Val, +1 max AP, +1 Mental Save).</color>"; }
+    }
+    else
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% al danio critico contra marcado.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al rango critico contra marcado.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A elimina la penalidad propia de ataque; Opcion B mejora la recompensa por muerte (+1 Val, +1 AP max, +1 TS Mental).</color>"; }
+    }
+  }
 
     Casilla Origen;
     public override void Activar()
@@ -239,7 +137,7 @@ public class MarcarPresa : Habilidad
           Unidad objetivo = (Unidad)obj;
           VFXAplicar(objetivo.gameObject);
 
-          BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} usa {nombre} en {objetivo.uNombre}");
+          BattleManager.Instance.EscribirLog(TRADU.i.Traducir(scEstaUnidad.uNombre) + " " + TRADU.i.Traducir("usa ") + TRADU.i.Traducir(nombre) + " -> " + TRADU.i.Traducir(objetivo.uNombre) + ".");
 
           MarcaMarcarPresa marca = new MarcaMarcarPresa();
           marca.nombre = "Presa Marcada";
@@ -250,7 +148,7 @@ public class MarcarPresa : Habilidad
           MarcaMarcarPresa buffComponent = ComponentCopier.CopyComponent(marca, objetivo.gameObject);
           objetivo.Marcar(0);
 
-          objetivo.GenerarTextoFlotante("Marcado", Color.yellow);
+          objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Marcado"), Color.yellow);
 
                         
       }
@@ -368,3 +266,5 @@ public class MarcarPresa : Habilidad
    
  
 }
+
+

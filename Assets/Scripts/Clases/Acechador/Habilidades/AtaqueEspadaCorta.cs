@@ -42,30 +42,11 @@ public class AtaqueEspadaCorta : Habilidad
       tipoDanio = 2; //Cortante
       criticoRangoHab = 0;
 
-
-
       tipoPorcentaje = 1;
 
-
-
-
       imHab = Resources.Load<Sprite>("imHab/Acechador_EspadaCorta");
-
-      txtDescripcion = "<color=#5dade2><b>Corte de Espada corta</b></color>\n\n"; 
-      txtDescripcion += "<i>Con su mano hábil, el Acechador asesta un golpe con la espada corta.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza + {bonusAtaque}</color> - Daño: Cortante 1d6+2- </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
-
-      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-      {
-        txtDescripcion = "<color=#5dade2><b>Short Sword Slash</b></color>\n\n";
-        txtDescripcion += "<i>With skilled hand, the Stalker delivers a blow with the short sword.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength + {bonusAtaque}</color> - Damage: Slashing 1d6+2- </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
-      }
-       
+      ActualizarDescripcion();
     }
-    
    void Start()
    {
     if (claseAcechador != null)
@@ -73,7 +54,55 @@ public class AtaqueEspadaCorta : Habilidad
    }
 
    int damExtra;
-     public override void ActualizarDescripcion() { }
+     public override void ActualizarDescripcion()
+  {
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      var statsUI = ObtenerStatsDescripcionUI();
+
+      int fuerzaActual = statsUI.Fuerza;
+      int ataqueActual = statsUI.Ataque;
+      int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+      int danioFijo = 2 + damExtra;
+
+      int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConEspadacorta : 0;
+
+      string cuerpo = "";
+      if (esIngles)
+      {
+        cuerpo += "<b>Type:</b> Melee\n";
+        cuerpo += "<b>Target:</b> 1 enemy in front melee range\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Damage:</b> 1d6 + {danioFijo} + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing";
+        if (nivelMaestria > 0)
+        {
+          cuerpo += $"\n<b>Passive applied:</b> Short Sword Mastery (Tier {nivelMaestria})";
+        }
+      }
+      else
+      {
+        cuerpo += "<b>Tipo:</b> Melee\n";
+        cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance melee frontal\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza ({fuerzaActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Danio:</b> 1d6 + {danioFijo} + <color=#ea0606>Fuerza ({fuerzaActual})</color> | <b>Tipo:</b> Cortante";
+        if (nivelMaestria > 0)
+        {
+          cuerpo += $"\n<b>Pasiva aplicada:</b> Maestria con Espada Corta (Tier {nivelMaestria})";
+        }
+      }
+
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? "Short Sword Slash" : "Corte de Espada Corta",
+        esIngles
+          ? "A reliable melee cut enhanced by short sword mastery."
+          : "Un corte melee confiable potenciado por maestria con espada corta.",
+        cuerpo,
+        costos,
+        "#5dade2");
+  }
     Casilla Origen;
     public override void Activar()
     {
@@ -164,6 +193,7 @@ public class AtaqueEspadaCorta : Habilidad
         txtDescripcion += "\n\n<i>Short Sword Mastery adds: +2 Attack +4 Damage +1 Critical Range.</i>\n\n";
       }
       }
+      ActualizarDescripcion();
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
@@ -463,3 +493,5 @@ public class AtaqueEspadaCorta : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
+
+

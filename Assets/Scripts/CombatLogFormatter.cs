@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 using UnityEngine;
 
@@ -60,7 +60,7 @@ public static class CombatLogFormatter
       sb.Append(atacanteTx);
       if (!string.IsNullOrEmpty(objetivoTx))
       {
-        sb.Append(" → ").Append(objetivoTx);
+        sb.Append(" -> ").Append(objetivoTx);
       }
     }
     else if (!string.IsNullOrEmpty(objetivoTx))
@@ -86,14 +86,14 @@ public static class CombatLogFormatter
       .Append(FormatearNumeroConSigno(modHabilidad)).Append(' ').Append(T("hab")).Append(' ')
       .Append(FormatearNumeroConSigno(modAtaque)).Append(' ').Append(T("atq")).Append(' ');
 
-    sb.Append("= ").Append(FormatearNumero(total))
+    sb.Append("| = ").Append(FormatearNumero(total))
       .Append(' ').Append(T("vs")).Append(' ').Append(T("DEF")).Append(' ').Append(FormatearNumero(defensaObjetivo))
-      .Append(" [").Append(T("crit")).Append(" ≥ ").Append(umbralCritico).Append(" | ").Append(T("pifia")).Append(" ≤ ").Append(umbralPifia).Append(']')
-      .Append(" → ").Append(ResaltarResultado(textoResultado, outcome));
+      .Append(" | ").Append(T("crit")).Append(" >= ").Append(umbralCritico)
+      .Append(" -> ").Append(ResaltarResultado(textoResultado, outcome));
 
     if (!string.IsNullOrWhiteSpace(notaExtra))
     {
-      sb.Append(" | ").Append(notaExtra);
+      sb.Append(" | ").Append(notaExtra.Trim());
     }
 
     return sb.ToString();
@@ -125,10 +125,10 @@ public static class CombatLogFormatter
     }
 
     sb.Append(" | d20: ").Append(FormatearNumero(d20))
-      .Append(" + ").Append(FormatearNumeroConSigno(atributo))
+      .Append(' ').Append(FormatearNumeroConSigno(atributo)).Append(' ').Append(T("atr"))
       .Append(" = ").Append(FormatearNumero(total))
-      .Append(' ').Append(T("vs")).Append(' ').Append(T("DC")).Append(' ').Append(FormatearNumero(dificultad))
-      .Append(" → ").Append(ResaltarResultado(textoResultado, outcome));
+      .Append(" | ").Append(T("vs")).Append(' ').Append(T("DC")).Append(' ').Append(FormatearNumero(dificultad))
+      .Append(" -> ").Append(ResaltarResultado(textoResultado, outcome));
 
     return sb.ToString();
   }

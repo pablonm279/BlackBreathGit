@@ -38,152 +38,98 @@ public class EscudodeFe : Habilidad
       
 
     }
-    public override void ActualizarDescripcion()
+        public override void ActualizarDescripcion()
     {
-         if(NIVEL<2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Escudo de Fe I</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Crea un 'Escudo de Fe' que dura 3 turnos en la casilla objetivo y en las casillas adyacentes.</i>\n";
-        txtDescripcion += "<i>'Escudo de Fe:' Dura 3 T. Otorga a la unidad presente en la casilla +3 Barrera y 1 TS por cada Fervor de la Purificadora. </i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      ClasePurificadora scPurificadora = Usuario != null ? Usuario.GetComponent<ClasePurificadora>() : null;
+      int fervorActual = scPurificadora != null ? scPurificadora.ObtenerFervor() : 0;
 
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 Costo Val.</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Escudo de Fe II</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Crea un 'Escudo de Fe' que dura 3 turnos en la casilla objetivo y en las casillas adyacentes.</i>\n";
-        txtDescripcion += "<i>'Escudo de Fe:' Dura 3 T. Otorga a la unidad presente en la casilla +3 Barrera y 1 TS por cada Fervor de la Purificadora. </i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM-1} \n</color>\n\n";
-    if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-              txtDescripcion += $"<color=#dfea02>-Próximo Nivel: Buff: +1 Defensa</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==3)
-       {
-         txtDescripcion = "<color=#5dade2><b>Escudo de Fe III</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Crea un 'Escudo de Fe' que dura 3 turnos en la casilla objetivo y en las casillas adyacentes.</i>\n";
-        txtDescripcion += "<i>'Escudo de Fe:' Dura 3 T. Otorga a la unidad presente en la casilla +3 Barrera y 1 TS por cada Fervor de la Purificadora y +1 Defensa. </i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM-1} \n</color>\n\n";
-   
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: +1 Turno Duración. </color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: Cura 2d6 cada Turno.</color>\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==4)
-       {
-        txtDescripcion = "<color=#5dade2><b>Escudo de Fe IVa</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Crea un 'Escudo de Fe' que dura 3 turnos en la casilla objetivo y en las casillas adyacentes.</i>\n";
-        txtDescripcion += "<i>'Escudo de Fe:' Dura 4 T. Otorga a la unidad presente en la casilla +3 Barrera y 1 TS por cada Fervor de la Purificadora y +1 Defensa. </i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM-1} \n</color>\n\n";
-    }
-       if(NIVEL==5)
-       {
-         txtDescripcion = "<color=#5dade2><b>Escudo de Fe IVb</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Crea un 'Escudo de Fe' que dura 3 turnos en la casilla objetivo y en las casillas adyacentes.</i>\n";
-        txtDescripcion += "<i>'Escudo de Fe:' Dura 3 T. Otorga a la unidad presente en la casilla +3 Barrera y 1 TS por cada Fervor de la Purificadora y +1 Defensa y cura 2d6. </i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM-1} \n</color>\n\n";
-     }
-    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-    {
-      if (NIVEL < 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Shield of Faith I</b></color>\n\n";
-        txtDescripcion += "<i>Creates a 'Shield of Faith' that lasts 3 turns on the target tile and adjacent tiles.</i>\n";
-        txtDescripcion += "<i>'Shield of Faith:' Lasts 3 T. Grants the unit on the tile +3 Barrier and 1 ST for each Purifier's Fervor.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Next Level: -1 Val Cost.</color>\n\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Shield of Faith II</b></color>\n\n";
-        txtDescripcion += "<i>Creates a 'Shield of Faith' that lasts 3 turns on the target tile and adjacent tiles.</i>\n";
-        txtDescripcion += "<i>'Shield of Faith:' Lasts 3 T. Grants the unit on the tile +3 Barrier and 1 ST for each Purifier's Fervor.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM - 1} \n</color>\n\n";
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Next Level: Buff: +1 Defense</color>\n\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 3)
-      {
-        txtDescripcion = "<color=#5dade2><b>Shield of Faith III</b></color>\n\n";
-        txtDescripcion += "<i>Creates a 'Shield of Faith' that lasts 3 turns on the target tile and adjacent tiles.</i>\n";
-        txtDescripcion += "<i>'Shield of Faith:' Lasts 3 T. Grants the unit on the tile +3 Barrier and 1 ST for each Purifier's Fervor and +1 Defense.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM - 1} \n</color>\n\n";
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Option A: +1 Turn Duration. </color>\n";
-              txtDescripcion += $"<color=#dfea02>-Option B: Heals 2d6 each turn.</color>\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 4)
-      {
-        txtDescripcion = "<color=#5dade2><b>Shield of Faith IVa</b></color>\n\n";
-        txtDescripcion += "<i>Creates a 'Shield of Faith' that lasts 3 turns on the target tile and adjacent tiles.</i>\n";
-        txtDescripcion += "<i>'Shield of Faith:' Lasts 4 T. Grants the unit on the tile +3 Barrier and 1 ST for each Purifier's Fervor and +1 Defense.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM - 1} \n</color>\n\n";
-      }
-      if (NIVEL == 5)
-      {
-        txtDescripcion = "<color=#5dade2><b>Shield of Faith IVb</b></color>\n\n";
-        txtDescripcion += "<i>Creates a 'Shield of Faith' that lasts 3 turns on the target tile and adjacent tiles.</i>\n";
-        txtDescripcion += "<i>'Shield of Faith:' Lasts 3 T. Grants the unit on the tile +3 Barrier and 1 ST for each Purifier's Fervor, +1 Defense, and heals 2d6.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM - 1} \n</color>\n\n";
-      }
-    }
+      int duracionTurnos = NIVEL == 4 ? 4 : 3;
+      int bonusTS = fervorActual;
+      int bonusBarrera = 3 * fervorActual;
+      bool agregaDefensa = NIVEL > 2;
+      bool agregaCuracion = NIVEL == 5;
 
+      string tituloEs = "Escudo de Fe I";
+      string tituloEn = "Shield of Faith I";
+      if (NIVEL == 2) { tituloEs = "Escudo de Fe II"; tituloEn = "Shield of Faith II"; }
+      if (NIVEL == 3) { tituloEs = "Escudo de Fe III"; tituloEn = "Shield of Faith III"; }
+      if (NIVEL == 4) { tituloEs = "Escudo de Fe IV a"; tituloEn = "Shield of Faith IV a"; }
+      if (NIVEL == 5) { tituloEs = "Escudo de Fe IV b"; tituloEn = "Shield of Faith IV b"; }
 
+      string cuerpo = "";
+      if (esIngles)
+      {
+        cuerpo += "<b>Type:</b> Ranged (8 range)\n";
+        cuerpo += "<b>Target:</b> 1 tile in range\n";
+        cuerpo += "<b>Area:</b> Selected tile + adjacent tiles\n";
+        cuerpo += $"<b>Trap Duration:</b> {duracionTurnos} turns\n";
+        cuerpo += $"<b>On trigger:</b> Grants +{bonusBarrera} Barrier and +{bonusTS} to Fortitude/Reflex/Mental (based on Fervor {fervorActual} at cast)";
+        if (agregaDefensa)
+        {
+          cuerpo += ", +1 Defense";
+        }
+        if (agregaCuracion)
+        {
+          cuerpo += ", heal 2d6";
+        }
+        cuerpo += "\n<b>Requirement:</b> Needs at least 1 Fervor to activate\n";
+        cuerpo += "<b>On cast:</b> Does not consume Fervor";
+      }
+      else
+      {
+        cuerpo += "<b>Tipo:</b> Rango (8 alcance)\n";
+        cuerpo += "<b>Objetivo:</b> 1 casilla en rango\n";
+        cuerpo += "<b>Area:</b> Casilla seleccionada + casillas adyacentes\n";
+        cuerpo += $"<b>Duracion de trampa:</b> {duracionTurnos} turnos\n";
+        cuerpo += $"<b>Al activarse:</b> Otorga +{bonusBarrera} Barrera y +{bonusTS} a Fortaleza/Reflejos/Mental (segun Fervor {fervorActual} al lanzar)";
+        if (agregaDefensa)
+        {
+          cuerpo += ", +1 Defensa";
+        }
+        if (agregaCuracion)
+        {
+          cuerpo += ", cura 2d6";
+        }
+        cuerpo += "\n<b>Requisito:</b> Necesita al menos 1 Fervor para activarse\n";
+        cuerpo += "<b>Al lanzar:</b> No consume Fervor";
+      }
+
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "Places sacred ward tiles that protect allies using current Fervor."
+          : "Coloca zonas sagradas que protegen aliados usando el Fervor actual.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      bool mostrarProximoNivel = EsEscenaCampaña()
+        && CampaignManager.Instance != null
+        && CampaignManager.Instance.scMenuPersonajes != null
+        && CampaignManager.Instance.scMenuPersonajes.pSel != null
+        && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
+      {
+        return;
+      }
+
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 Val cost.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Defense on trigger buff.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 turn duration) or Option B (+2d6 healing on trigger).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 costo de Val.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Defensa en el buff al activarse.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 turno de duracion) u Opcion B (+2d6 curacion al activarse).</color>"; }
+      }
     }
     void Start()
     {

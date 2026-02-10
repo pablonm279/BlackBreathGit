@@ -51,8 +51,7 @@ public class CorteIncapacitante : Habilidad
 
 
       imHab = Resources.Load<Sprite>("imHab/Acechador_CorteIncapacitante");
-
-       
+      ActualizarDescripcion();
     }
     
    void Start()
@@ -63,214 +62,95 @@ public class CorteIncapacitante : Habilidad
 
    public override void ActualizarDescripcion()
   {
-    if (NIVEL < 2)
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    var statsUI = ObtenerStatsDescripcionUI();
+
+    int fuerzaActual = statsUI.Fuerza;
+    int agilidadActual = statsUI.Agilidad;
+    int ataqueActual = statsUI.Ataque;
+    int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+
+    int danioFijo = 3 + damExtra;
+    int dcBase = NIVEL > 2 ? 8 : 7;
+    int duracion = NIVEL == 5 ? 3 : 2;
+    int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConEspadacorta : 0;
+
+    string tituloEs = "Corte Incapacitante I";
+    string tituloEn = "Crippling Slash I";
+    if (NIVEL == 2) { tituloEs = "Corte Incapacitante II"; tituloEn = "Crippling Slash II"; }
+    if (NIVEL == 3) { tituloEs = "Corte Incapacitante III"; tituloEn = "Crippling Slash III"; }
+    if (NIVEL == 4) { tituloEs = "Corte Incapacitante IV a"; tituloEn = "Crippling Slash IV a"; }
+    if (NIVEL == 5) { tituloEs = "Corte Incapacitante IV b"; tituloEn = "Crippling Slash IV b"; }
+
+    string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Fortaleza, dcBase, "Agilidad", "Agility", agilidadActual);
+
+    string cuerpo = "";
+    if (esIngles)
     {
-      txtDescripcion = "<color=#5dade2><b>Corte Incapacitante I</b></color>\n\n";
-      txtDescripcion += "<i>Realiza un corte que incapacita los movimientos del enemigo temporalmente.</i>\n\n";
-      txtDescripcion += $"-Ataque: <color=#ea0606>Fuerza</color><i> Daño Cortante: 2d6 + 3 + Fuerza. </i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 7 + Agilidad: Incapacitado: Inmóbil, -20% daño -2 Ataque. 2 Turnos</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Usa Espada Corta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-          }
-        }
-      }
-
-    }
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Corte Incapacitante II</b></color>\n\n";
-      txtDescripcion += "<i>Realiza un corte que incapacita los movimientos del enemigo temporalmente.</i>\n\n";
-      txtDescripcion += $"-Ataque: <color=#ea0606>Fuerza+1</color><i> Daño Cortante: 2d6 + 3 + Fuerza. </i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 7 + Agilidad: Incapacitado: Inmóbil, -20% daño -2 Ataque. 2 Turnos</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Usa Espada Corta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 DC</color>\n\n";
-          }
-        }
-      }
-    }
-    if (NIVEL == 3)
-    {
-      txtDescripcion = "<color=#5dade2><b>Corte Incapacitante III</b></color>\n\n";
-      txtDescripcion += "<i>Realiza un corte que incapacita los movimientos del enemigo temporalmente.</i>\n\n";
-      txtDescripcion += $"-Ataque: <color=#ea0606>Fuerza+1</color><i> Daño Cortante: 2d6 + 3 + Fuerza. </i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 8 + Agilidad: Incapacitado: Inmóbil, -20% daño -2 Ataque. 2 Turnos</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Usa Espada Corta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: Aplica 3 Sangrado</color>\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: +1 Turno Duración Incapacitado</color>\n";
-          }
-        }
-      }
-
-    }
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Corte Incapacitante IVa</b></color>\n\n";
-      txtDescripcion += "<i>Realiza un corte que incapacita los movimientos del enemigo temporalmente.</i>\n\n";
-      txtDescripcion += $"-Ataque: <color=#ea0606>Fuerza+1</color><i> Daño Cortante: 2d6 + 3 + Fuerza. </i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 8 + Agilidad: Incapacitado: Inmóbil, -20% daño -2 Ataque, aplica 3 Sangrado. 2 Turnos</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Usa Espada Corta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Corte Incapacitante IVb</b></color>\n\n";
-      txtDescripcion += "<i>Realiza un corte que incapacita los movimientos del enemigo temporalmente.</i>\n\n";
-      txtDescripcion += $"-Ataque: <color=#ea0606>Fuerza+1</color><i> Daño Cortante: 2d6 + 3 + Fuerza. </i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 8 + Agilidad: Incapacitado: Inmóbil, -20% daño -2 Ataque. 3 Turnos</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Usa Espada Corta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-    }
-   
-    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-    {
-      if (NIVEL < 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Crippling Slash I</b></color>\n\n";
-        txtDescripcion += "<i>Delivers a slash that temporarily cripples the enemy's movements.</i>\n\n";
-        txtDescripcion += $"-Attack: <color=#ea0606>Strength</color><i> Slashing Damage: 2d6 + 3 + Strength. </i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 7 + Agility: Crippled: Immobile, -20% damage, -2 Attack. 2 Turns</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Uses Short Sword -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack</color>\n\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Crippling Slash II</b></color>\n\n";
-        txtDescripcion += "<i>Delivers a slash that temporarily cripples the enemy's movements.</i>\n\n";
-        txtDescripcion += $"-Attack: <color=#ea0606>Strength+1</color><i> Slashing Damage: 2d6 + 3 + Strength. </i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 7 + Agility: Crippled: Immobile, -20% damage, -2 Attack. 2 Turns</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Uses Short Sword -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Next Level: +1 DC</color>\n\n";
-            }
-          }
-        }
-      }
-      if (NIVEL == 3)
-      {
-        txtDescripcion = "<color=#5dade2><b>Crippling Slash III</b></color>\n\n";
-        txtDescripcion += "<i>Delivers a slash that temporarily cripples the enemy's movements.</i>\n\n";
-        txtDescripcion += $"-Attack: <color=#ea0606>Strength+1</color><i> Slashing Damage: 2d6 + 3 + Strength. </i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 8 + Agility: Crippled: Immobile, -20% damage, -2 Attack. 2 Turns</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Uses Short Sword -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-
-        if (EsEscenaCampaña())
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-            {
-              txtDescripcion += $"<color=#dfea02>-Option A: Applies 3 Bleed</color>\n";
-              txtDescripcion += $"<color=#dfea02>-Option B: +1 Turn Crippled Duration</color>\n";
-            }
-          }
-        }
-      }
+      cuerpo += "<b>Type:</b> Melee\n";
+      cuerpo += "<b>Target:</b> 1 enemy in front melee range\n";
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Damage:</b> 2d6 + {danioFijo} + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
+      cuerpo += lineaSalvacion + "\n";
+      cuerpo += $"<b>On failed save:</b> Crippled ({duracion} turns): Immobile, -20% Damage, -2 Attack";
       if (NIVEL == 4)
       {
-        txtDescripcion = "<color=#5dade2><b>Crippling Slash IVa</b></color>\n\n";
-        txtDescripcion += "<i>Delivers a slash that temporarily cripples the enemy's movements.</i>\n\n";
-        txtDescripcion += $"-Attack: <color=#ea0606>Strength+1</color><i> Slashing Damage: 2d6 + 3 + Strength. </i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 8 + Agility: Crippled: Immobile, -20% damage, -2 Attack, applies 3 Bleed. 2 Turns</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Uses Short Sword -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+        cuerpo += ", +3 Bleed";
       }
-      if (NIVEL == 5)
+      if (nivelMaestria > 0)
       {
-        txtDescripcion = "<color=#5dade2><b>Crippling Slash IVb</b></color>\n\n";
-        txtDescripcion += "<i>Delivers a slash that temporarily cripples the enemy's movements.</i>\n\n";
-        txtDescripcion += $"-Attack: <color=#ea0606>Strength+1</color><i> Slashing Damage: 2d6 + 3 + Strength. </i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 8 + Agility: Crippled: Immobile, -20% damage, -2 Attack. 3 Turns</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Uses Short Sword -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
+        cuerpo += $"\n<b>Passive applied:</b> Short Sword Mastery (Tier {nivelMaestria})";
       }
     }
-   
-  if (SceneManager.GetActiveScene().name != "ES-Campaña")
+    else
     {
-      int NivelMaestria = claseAcechador.PASIVA_MaestriaConBallestaMano;
-      if (NivelMaestria == 1)
+      cuerpo += "<b>Tipo:</b> Melee\n";
+      cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance melee frontal\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza ({fuerzaActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Danio:</b> 2d6 + {danioFijo} + <color=#ea0606>Fuerza ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+      cuerpo += lineaSalvacion + "\n";
+      cuerpo += $"<b>Si falla TS:</b> Incapacitado ({duracion} turnos): Inmovil, -20% Danio, -2 Ataque";
+      if (NIVEL == 4)
       {
-        if (TRADU.i.nIdioma == 1)
-        { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño.</i>\n\n"; }
-        if (TRADU.i.nIdioma == 2)
-        {
-          txtDescripcion += "\n\n<i>Short Sword Mastery adds: +1 Attack +2 Damage.</i>\n\n";
-        }
+        cuerpo += ", +3 Sangrado";
       }
-      else if (NivelMaestria == 2)
+      if (nivelMaestria > 0)
       {
-        if (TRADU.i.nIdioma == 1)
-        { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n"; }
-        if (TRADU.i.nIdioma == 2)
-        {
-          txtDescripcion += "\n\n<i>Short Sword Mastery adds: +1 Attack +2 Damage +1 Critical Range.</i>\n\n";
-        }
-      }
-      else if (NivelMaestria == 3)
-      {
-        if (TRADU.i.nIdioma == 1)
-        { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n"; }
-        if (TRADU.i.nIdioma == 2)
-        {
-          txtDescripcion += "\n\n<i>Short Sword Mastery adds: +1 Attack +2 Damage +1 Critical Range, -1 AP.</i>\n\n";
-        }
-      
-      }
-      else if (NivelMaestria == 4)
-      {
-         if (TRADU.i.nIdioma == 1)
-        { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +2 Rango Crítico.</i>\n\n"; }
-        if (TRADU.i.nIdioma == 2)
-        {
-          txtDescripcion += "\n\n<i>Short Sword Mastery adds: +1 Attack +4 Damage +2 Critical Range.</i>\n\n";
-        }
-     
-      }
-      else if (NivelMaestria == 5)
-      {
-         if (TRADU.i.nIdioma == 1)
-        { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: Remueve Cooldown, +2 Ataque +4 Daño +1 Rango Crítico.</i>\n\n"; }
-        if (TRADU.i.nIdioma == 2)
-        {
-          txtDescripcion += "\n\n<i>Short Sword Mastery adds: Removes Cooldown, +2 Attack +4 Damage +1 Critical Range.</i>\n\n";
-        }
-      
+        cuerpo += $"\n<b>Pasiva aplicada:</b> Maestria con Espada Corta (Tier {nivelMaestria})";
       }
     }
 
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? tituloEn : tituloEs,
+      esIngles
+        ? "A control slash that can lock enemy movement after a save check."
+        : "Un corte de control que puede bloquear movimiento enemigo tras TS.",
+      cuerpo,
+      costos,
+      "#5dade2");
+
+    bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    if (!mostrarProximoNivel)
+    {
+      return;
+    }
+
+    if (esIngles)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack bonus.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC base.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+3 Bleed) or Option B (+1 turn duration).</color>"; }
+    }
+    else
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al DC base de TS.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+3 Sangrado) u Opcion B (+1 turno de duracion).</color>"; }
+    }
   }
 
   int damExtra;
@@ -334,7 +214,8 @@ public class CorteIncapacitante : Habilidad
       costoAP -= 1; //costo AP -1
       txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: Remueve Cooldown, +2 Ataque +4 Daño +1 Rango Crítico.</i>\n\n";
 
-    }
+    }
+      ActualizarDescripcion();
     
   }
     
@@ -673,3 +554,4 @@ public class CorteIncapacitante : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
+

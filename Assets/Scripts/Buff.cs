@@ -191,7 +191,8 @@ public class Buff : MonoBehaviour
             }
         }
 
-        string sBuff = unidad.uNombre + TRADU.i.Traducir(" recibe ") + TRADU.i.Traducir(buffNombre) + ".";
+        string nombreUnidadLog = TRADU.i != null ? TRADU.i.Traducir(unidad.uNombre) : unidad.uNombre;
+        string sBuff = nombreUnidadLog + TRADU.i.Traducir(" recibe ") + TRADU.i.Traducir(buffNombre) + ".";
 
         if (boolfDebufftBuff)
         {
@@ -301,7 +302,8 @@ public void RemoverBuff(Unidad unidad)
         unidad.GenerarTextoFlotante("<s>" +  TRADU.i.Traducir(buffNombre) + "</s>", Color.cyan, FloatingTextContext.BuffEnd);
     }
 
-    string sBuff = unidad.uNombre + TRADU.i.Traducir(" ya no tiene ") + TRADU.i.Traducir(buffNombre) + ".";
+    string nombreUnidadLog = TRADU.i != null ? TRADU.i.Traducir(unidad.uNombre) : unidad.uNombre;
+    string sBuff = nombreUnidadLog + TRADU.i.Traducir(" ya no tiene ") + TRADU.i.Traducir(buffNombre) + ".";
 
     if(boolfDebufftBuff)
     {

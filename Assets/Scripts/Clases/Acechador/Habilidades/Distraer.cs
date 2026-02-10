@@ -48,8 +48,7 @@ public class Distraer : Habilidad
 
 
       imHab = Resources.Load<Sprite>("imHab/Acechador_Distraer");
-
-       
+      ActualizarDescripcion();
     }
     
    void Start()
@@ -59,162 +58,77 @@ public class Distraer : Habilidad
 
    public override void ActualizarDescripcion()
   {
-    if (NIVEL < 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Distraer I</b></color>\n\n";
-      txtDescripcion += "<i>Distrae con un destello arrojadizo a un enemigo, si está aislado y no se salva, el personaje se Esconde.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distraído: -2 PA, -2 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:12 </color></color>\n";
-      txtDescripcion += "<i><color=#44d3ec>Si el enemigo no tiene aliados alrededor, el Acechador obtiene Escondido I.</color></i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
 
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 DC.</color>\n\n";
-          }
-        }
-      }
+    int dcBase = NIVEL > 1 ? 13 : 12;
+    int apPenalty = -2;
+    int defPenalty = -2;
+    if (NIVEL > 2) { apPenalty -= 1; }
+    if (NIVEL == 4) { apPenalty -= 1; defPenalty -= 1; }
+    int escondidoGanado = NIVEL == 5 ? 2 : 1;
 
-    }
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Distraer II</b></color>\n\n";
-      txtDescripcion += "<i>Distrae con un destello arrojadizo a un enemigo, si está aislado y no se salva, el personaje se Esconde.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distraído: -2 PA, -2 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:13 </color></color>\n";
-      txtDescripcion += "<i><color=#44d3ec>Si el enemigo no tiene aliados alrededor, el Acechador obtiene Escondido I.</color></i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
+    string tituloEs = "Distraer I";
+    string tituloEn = "Distract I";
+    if (NIVEL == 2) { tituloEs = "Distraer II"; tituloEn = "Distract II"; }
+    if (NIVEL == 3) { tituloEs = "Distraer III"; tituloEn = "Distract III"; }
+    if (NIVEL == 4) { tituloEs = "Distraer IV a"; tituloEn = "Distract IV a"; }
+    if (NIVEL == 5) { tituloEs = "Distraer IV b"; tituloEn = "Distract IV b"; }
 
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 AP por Distraído.</color>\n\n";
-          }
-        }
-      }
-    }
-    if (NIVEL == 3)
-    {
-      txtDescripcion = "<color=#5dade2><b>Distraer III</b></color>\n\n";
-      txtDescripcion += "<i>Distrae con un destello arrojadizo a un enemigo, si está aislado y no se salva, el personaje se Esconde.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distraído: -3 PA, -2 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:13 </color></color>\n";
-      txtDescripcion += "<i><color=#44d3ec>Si el enemigo no tiene aliados alrededor, el Acechador obtiene Escondido I.</color></i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
+    string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Mental, dcBase);
 
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: -1 AP, -1 Defensa por Distraído.</color>\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: El Acechador obtiene Escondido II.</color>\n";
-          }
-        }
-      }
+    string cuerpo = "";
+    if (esIngles)
+    {
+      cuerpo += "<b>Type:</b> Ranged (5 range)\n";
+      cuerpo += "<b>Target:</b> 1 enemy\n";
+      cuerpo += "<b>Roll/Save:</b> no attack roll\n";
+      cuerpo += lineaSalvacion + "\n";
+      cuerpo += $"<b>On failed save:</b> Distracted (2 turns): {apPenalty} max AP, {defPenalty} Defense\n";
+      cuerpo += $"<b>If target is isolated:</b> gain Hidden ({escondidoGanado})\n";
+      cuerpo += "<b>Stealth interaction:</b> Discreet (does not reveal the caster)";
+    }
+    else
+    {
+      cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
+      cuerpo += "<b>Objetivo:</b> 1 enemigo\n";
+      cuerpo += "<b>Tirada/TS:</b> no tiene tirada de ataque\n";
+      cuerpo += lineaSalvacion + "\n";
+      cuerpo += $"<b>Si falla TS:</b> Distraido (2 turnos): {apPenalty} AP max, {defPenalty} Defensa\n";
+      cuerpo += $"<b>Si el objetivo esta aislado:</b> ganas Escondido ({escondidoGanado})\n";
+      cuerpo += "<b>Interaccion con sigilo:</b> Discreta (no revela al lanzador)";
+    }
 
-    }
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Distraer IVa</b></color>\n\n";
-      txtDescripcion += "<i>Distrae con un destello arrojadizo a un enemigo, si está aislado y no se salva, el personaje se Esconde.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distraído: -4 PA, -3 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:13 </color></color>\n";
-      txtDescripcion += "<i><color=#44d3ec>Si el enemigo no tiene aliados alrededor, el Acechador obtiene Escondido I.</color></i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Distraer IVb</b></color>\n\n";
-      txtDescripcion += "<i>Distrae con un destello arrojadizo a un enemigo, si está aislado y no se salva, el personaje se Esconde.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distraído: -3 PA, -2 Defensa,<color=#ea0606>Tirada Salvación Mental: DC:13 </color></color>\n";
-      txtDescripcion += "<i><color=#44d3ec>Si el enemigo no tiene aliados alrededor, el Acechador obtiene Escondido II.</color></i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreta -Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
-    }
-   
-   
-  if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-  {
-    if (NIVEL < 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Distract I</b></color>\n\n";
-      txtDescripcion += "<i>Distracts an enemy with a thrown flash; if isolated and fails the save, the character becomes Hidden.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distracted: -2 AP, -2 Defense,<color=#ea0606>Mental Saving Throw: DC:12 </color></color>\n";
-      txtDescripcion += "<i><color=#44d3ec>If the enemy has no allies nearby, the Stalker gains Hidden I.</color></i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreet -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>\n\n";
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
 
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Next Level: +1 DC.</color>\n\n";
-          }
-        }
-      }
-    }
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Distract II</b></color>\n\n";
-      txtDescripcion += "<i>Distracts an enemy with a thrown flash; if isolated and fails the save, the character becomes Hidden.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distracted: -2 AP, -2 Defense,<color=#ea0606>Mental Saving Throw: DC:13 </color></color>\n";
-      txtDescripcion += "<i><color=#44d3ec>If the enemy has no allies nearby, the Stalker gains Hidden I.</color></i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreet -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>\n\n";
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? tituloEn : tituloEs,
+      esIngles
+        ? "A stealth-safe control tool that opens windows by draining enemy action economy."
+        : "Una herramienta de control discreta que abre ventanas drenando economia de acciones enemiga.",
+      cuerpo,
+      costos,
+      "#5dade2");
 
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Next Level: -1 AP per Distracted.</color>\n\n";
-          }
-        }
-      }
-    }
-    if (NIVEL == 3)
+    bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    if (!mostrarProximoNivel)
     {
-      txtDescripcion = "<color=#5dade2><b>Distract III</b></color>\n\n";
-      txtDescripcion += "<i>Distracts an enemy with a thrown flash; if isolated and fails the save, the character becomes Hidden.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distracted: -3 AP, -2 Defense,<color=#ea0606>Mental Saving Throw: DC:13 </color></color>\n";
-      txtDescripcion += "<i><color=#44d3ec>If the enemy has no allies nearby, the Stalker gains Hidden I.</color></i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreet -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>\n\n";
+      return;
+    }
 
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Option A: -1 AP, -1 Defense per Distracted.</color>\n";
-            txtDescripcion += $"<color=#dfea02>-Option B: The Stalker gains Hidden II.</color>\n";
-          }
-        }
-      }
-    }
-    if (NIVEL == 4)
+    if (esIngles)
     {
-      txtDescripcion = "<color=#5dade2><b>Distract IVa</b></color>\n\n";
-      txtDescripcion += "<i>Distracts an enemy with a thrown flash; if isolated and fails the save, the character becomes Hidden.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distracted: -4 AP, -3 Defense,<color=#ea0606>Mental Saving Throw: DC:13 </color></color>\n";
-      txtDescripcion += "<i><color=#44d3ec>If the enemy has no allies nearby, the Stalker gains Hidden I.</color></i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreet -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>\n\n";
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC base.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 max AP in Distracted debuff.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 max AP reduction and +1 Defense reduction) or Option B (gain Hidden II if isolated).</color>"; }
     }
-    if (NIVEL == 5)
+    else
     {
-      txtDescripcion = "<color=#5dade2><b>Distract IVb</b></color>\n\n";
-      txtDescripcion += "<i>Distracts an enemy with a thrown flash; if isolated and fails the save, the character becomes Hidden.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>Distracted: -3 AP, -2 Defense,<color=#ea0606>Mental Saving Throw: DC:13 </color></color>\n";
-      txtDescripcion += "<i><color=#44d3ec>If the enemy has no allies nearby, the Stalker gains Hidden II.</color></i>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreet -Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>\n\n";
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al DC base de TS.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 AP max en el debuff Distraido.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 reduccion de AP max y +1 reduccion de Defensa) u Opcion B (ganar Escondido II si esta aislado).</color>"; }
     }
-  }
- 
   }
 
   int damExtra;
@@ -372,3 +286,4 @@ public class Distraer : Habilidad
    
  
 }
+

@@ -128,7 +128,8 @@ public class ClaseAcechador : Unidad
         {
             uCausante.EstablecerAPActualA(0); //El atacante se queda sin AP asi no lo sigue atacando
             GanarEscondido(1);
-            BattleManager.Instance.EscribirLog(uNombre+TRADU.i.Traducir(" es escondido en las sombras tras recibir un ataque crítico por su Armadura de Velo."));
+            string nombreUnidad = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;
+            BattleManager.Instance.EscribirLog(nombreUnidad + TRADU.i.Traducir(" es escondido en las sombras tras recibir un ataque crítico por su Armadura de Velo."));
         }
     }
 

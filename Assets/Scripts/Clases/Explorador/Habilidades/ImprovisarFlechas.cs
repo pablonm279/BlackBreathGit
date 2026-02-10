@@ -36,147 +36,95 @@ public class ImprovisarFlechas : Habilidad
       imHab = Resources.Load<Sprite>("imHab/Explorador_ImprovisarFlechas");
       ActualizarDescripcion();
     }
-    public override void ActualizarDescripcion()
+        public override void ActualizarDescripcion()
     {
-         if(NIVEL<2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Improvisar Flechas I</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Explorador crea 1 flecha por PA restante, termina el Turno. Además obtiene +1 Probabilidad de crítico por 1 turno.</i>\n\n";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
 
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
+      int flechasFijas = (NIVEL > 1 ? 1 : 0) + (NIVEL == 4 ? 1 : 0);
+      int buffCrit = 1 + (NIVEL > 2 ? 1 : 0);
+      int duracionBuff = 2;
+      bool sumaDanioNivel5 = NIVEL == 5;
 
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Flecha creada.</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==2)
-       {
-       
-        txtDescripcion = "<color=#5dade2><b>Improvisar Flechas II</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>El Explorador crea 1 flecha por PA restante +1, termina el Turno. Además obtiene +1 Probabilidad de crítico por 1 turno.</i>\n\n";
+      string tituloEs = "Improvisar Flechas I";
+      string tituloEn = "Improvise Arrows I";
+      if (NIVEL == 2) { tituloEs = "Improvisar Flechas II"; tituloEn = "Improvise Arrows II"; }
+      if (NIVEL == 3) { tituloEs = "Improvisar Flechas III"; tituloEn = "Improvise Arrows III"; }
+      if (NIVEL == 4) { tituloEs = "Improvisar Flechas IV a"; tituloEn = "Improvise Arrows IV a"; }
+      if (NIVEL == 5) { tituloEs = "Improvisar Flechas IV b"; tituloEn = "Improvise Arrows IV b"; }
 
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Probabilidad de crítico </color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==3)
-       {
-        txtDescripcion = "<color=#5dade2><b>Improvisar Flechas III</b></color>\n\n"; 
-        txtDescripcion += "<i>El Explorador crea 1 flecha por PA restante +1, termina el Turno. Además obtiene +2 Probabilidad de crítico por 1 turno.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: +1 Flecha Recuperada. </color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: +1 Turno Duración Buff.</color>\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==4)
-       {
-        txtDescripcion = "<color=#5dade2><b>Improvisar Flechas IVa</b></color>\n\n"; 
-        txtDescripcion += "<i>El Explorador crea 1 flecha por PA restante +2, termina el Turno. Además obtiene +2 Probabilidad de crítico por 1 turno.</i>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-
-       }
-       if(NIVEL==5)
-       {
-        txtDescripcion = "<color=#5dade2><b>Improvisar Flechas IVb</b></color>\n\n"; 
-        txtDescripcion += "<i>El Explorador crea 1 flecha por PA restante +1, termina el Turno. Además obtiene +2 Probabilidad de crítico por 2 turnos.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM}</color>\n\n";
-
-       }
-
-      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+      string cuerpo = "";
+      if (esIngles)
       {
-        if (NIVEL < 2)
+        cuerpo += "<b>Type:</b> Utility\n";
+        cuerpo += "<b>Target:</b> Self\n";
+        if (flechasFijas > 0)
         {
-          txtDescripcion = "<color=#5dade2><b>Improvise Arrows I</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer creates 1 arrow per remaining AP, ends the Turn. Also gains +1 Critical Chance for 1 turn.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Arrow created.</color>\n\n";
-              }
-            }
-          }
+          cuerpo += $"<b>Arrows gained:</b> current AP + {flechasFijas}\n";
         }
-        if (NIVEL == 2)
+        else
         {
-          txtDescripcion = "<color=#5dade2><b>Improvise Arrows II</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer creates 1 arrow per remaining AP +1, ends the Turn. Also gains +1 Critical Chance for 1 turn.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Critical Chance </color>\n\n";
-              }
-            }
-          }
+          cuerpo += "<b>Arrows gained:</b> current AP\n";
         }
-        if (NIVEL == 3)
+        cuerpo += "<b>On cast:</b> sets current AP to 0\n";
+        cuerpo += $"<b>Buff ({duracionBuff} turns):</b> +{buffCrit} crit range";
+        if (sumaDanioNivel5)
         {
-          txtDescripcion = "<color=#5dade2><b>Improvise Arrows III</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer creates 1 arrow per remaining AP +1, ends the Turn. Also gains +2 Critical Chance for 1 turn.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: +1 Arrow Recovered. </color>\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: +1 Turn Buff Duration.</color>\n";
-              }
-            }
-          }
+          cuerpo += ", +15% Damage";
         }
-        if (NIVEL == 4)
+      }
+      else
+      {
+        cuerpo += "<b>Tipo:</b> Utilidad\n";
+        cuerpo += "<b>Objetivo:</b> Uno mismo\n";
+        if (flechasFijas > 0)
         {
-          txtDescripcion = "<color=#5dade2><b>Improvise Arrows IVa</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer creates 1 arrow per remaining AP +2, ends the Turn. Also gains +2 Critical Chance for 1 turn.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+          cuerpo += $"<b>Flechas ganadas:</b> AP actuales + {flechasFijas}\n";
         }
-        if (NIVEL == 5)
+        else
         {
-          txtDescripcion = "<color=#5dade2><b>Improvise Arrows IVb</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer creates 1 arrow per remaining AP +1, ends the Turn. Also gains +2 Critical Chance for 2 turns.</i>\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM}</color>\n\n";
+          cuerpo += "<b>Flechas ganadas:</b> AP actuales\n";
+        }
+        cuerpo += "<b>Al lanzarla:</b> deja los AP actuales en 0\n";
+        cuerpo += $"<b>Buff ({duracionBuff} turnos):</b> +{buffCrit} rango critico";
+        if (sumaDanioNivel5)
+        {
+          cuerpo += ", +15% Danio";
         }
       }
 
-    }
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
 
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "Converts tempo into ammo and primes your next attacks."
+          : "Convierte tempo en municion y prepara tus siguientes ataques.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
+      {
+        return;
+      }
+
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 fixed arrow.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 crit range in the buff.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 fixed arrow) or Option B (+15% damage in the buff).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 flecha fija.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 rango critico en el buff.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 flecha fija) u Opcion B (+15% danio en el buff).</color>"; }
+      }
+
+    }
     Casilla Origen;
     public override void Activar()
     {
@@ -199,7 +147,7 @@ public class ImprovisarFlechas : Habilidad
       cooldownActual = cooldownMax;
       
       
-       BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} usa {nombre}");
+       BattleManager.Instance.EscribirLog(TRADU.i.Traducir(scEstaUnidad.uNombre) + " " + TRADU.i.Traducir("usa ") + TRADU.i.Traducir(nombre) + ".");
 
        int APusados = (int)scEstaUnidad.ObtenerAPActual();
        int flechasCreadas = 0;
@@ -222,7 +170,7 @@ public class ImprovisarFlechas : Habilidad
         VFXAplicar(Usuario);
        scEstaUnidad.EstablecerAPActualA(0);
        /////////////////////////////////////////////
-       //BUFF ---- Así se aplica un buff/debuff
+       //BUFF ---- AsÃ­ se aplica un buff/debuff
        Buff buff = new Buff();
        buff.buffNombre = "Flechas Preparadas";
        buff.boolfDebufftBuff = true;
@@ -237,7 +185,7 @@ public class ImprovisarFlechas : Habilidad
          buff.cantDanioPorcentaje += 15;
        }
        buff.AplicarBuff(scEstaUnidad);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, scEstaUnidad.gameObject);
        
 
@@ -280,3 +228,4 @@ public class ImprovisarFlechas : Habilidad
 
  
 }
+

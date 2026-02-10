@@ -37,157 +37,85 @@ public class Enmendar : Habilidad
       requiereRecurso = 1; //esto es para que el boton no se active al apretar si no tiene X recursos (ej Flecha). Ver en BotonHabilidad.
       if(NIVEL == 4){requiereRecurso = 0;}
     }
-    public override void ActualizarDescripcion()
+        public override void ActualizarDescripcion()
     {
-         if(NIVEL<2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Enmendar I</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Realiza Curación de origen mágico a un aliado presente en un radio de 2 casillas.</i>\n";
-        txtDescripcion += "<i>Curación: 3d6 +1 por Fervor +1 por Poder. Consume 1 Fervor.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>-Curación mágica. Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      var statsUI = ObtenerStatsDescripcionUI();
 
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Curación</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Enmendar II</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Realiza Curación de origen mágico a un aliado presente en un radio de 2 casillas.</i>\n";
-        txtDescripcion += "<i>Curación: 3d6+1, +1 por Fervor +1 por Poder. Consume 1 Fervor.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>-Curación mágica. Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-
-      
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-              txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +2 Curación</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==3)
-       {
-         txtDescripcion = "<color=#5dade2><b>Enmendar III</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Realiza Curación de origen mágico a un aliado presente en un radio de 2 casillas.</i>\n";
-        txtDescripcion += "<i>Curación: 3d6+3, +1 por Fervor +1 por Poder. Consume 1 Fervor.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>-Curación mágica. Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: No consume Fervor </color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: El bonus de Curación por Fervor se triplica</color>\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==4)
-       {
-        txtDescripcion = "<color=#5dade2><b>Enmendar IV a</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Realiza Curación de origen mágico a un aliado presente en un radio de 2 casillas.</i>\n";
-        txtDescripcion += "<i>Curación: 3d6+3, +1 por Fervor +1 por Poder.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>-Curación mágica. Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-      }
-       if(NIVEL==5)
-       {
-       txtDescripcion = "<color=#5dade2><b>Enmendar IV b</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Realiza Curación de origen mágico a un aliado presente en un radio de 2 casillas..</i>\n";
-        txtDescripcion += "<i>Curación: 3d6+3, +3 por Fervor +1 por Poder. Consume 1 Fervor.</i>\n";
-        txtDescripcion += $"<color=#44d3ec>-Curación mágica. Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-      }
-
-  if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-  {
-    if (NIVEL < 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Mend I</b></color>\n\n";
-      txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
-      txtDescripcion += "<i>Healing: 3d6 +1 per Fervor +1 per Power. Consumes 1 Fervor.</i>\n";
-      txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-
-      if (EsEscenaCampaña())
+      int poderActual = statsUI.Poder;
+      int alcance = 4;
+      int bonusPlano = NIVEL > 2 ? 3 : (NIVEL > 1 ? 1 : 0);
+      bool consumeFervor = NIVEL != 4;
+      int fervorActual = 0;
+      ClasePurificadora scPurificadora = Usuario != null ? Usuario.GetComponent<ClasePurificadora>() : null;
+      if (scPurificadora != null)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Next Level: +1 Healing</color>\n\n";
-          }
-        }
+        fervorActual = scPurificadora.ObtenerFervor();
       }
-    }
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Mend II</b></color>\n\n";
-      txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
-      txtDescripcion += "<i>Healing: 3d6+1, +1 per Fervor +1 per Power. Consumes 1 Fervor.</i>\n";
-      txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
 
-      if (EsEscenaCampaña())
+      string tituloEs = "Enmendar I";
+      string tituloEn = "Mend I";
+      if (NIVEL == 2) { tituloEs = "Enmendar II"; tituloEn = "Mend II"; }
+      if (NIVEL == 3) { tituloEs = "Enmendar III"; tituloEn = "Mend III"; }
+      if (NIVEL == 4) { tituloEs = "Enmendar IV a"; tituloEn = "Mend IV a"; }
+      if (NIVEL == 5) { tituloEs = "Enmendar IV b"; tituloEn = "Mend IV b"; }
+
+      string bonusPlanoTexto = bonusPlano > 0 ? $" + {bonusPlano}" : "";
+      string cuerpo = "";
+      if (esIngles)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Next Level: +2 Healing</color>\n\n";
-          }
-        }
+        cuerpo += $"<b>Type:</b> Ranged ({alcance} range)\n";
+        cuerpo += "<b>Target:</b> 1 unit in range\n";
+        cuerpo += $"<b>Heal:</b> Random 4-18{bonusPlanoTexto} + <color=#ea0606>Power ({poderActual})</color> + Fervor ({fervorActual})\n";
+        cuerpo += "<b>Healing Type:</b> Magical healing\n";
+        cuerpo += "<b>Requirement:</b> Needs at least 1 Fervor to activate\n";
+        cuerpo += consumeFervor
+          ? "<b>On cast:</b> Consumes 1 Fervor"
+          : "<b>On cast:</b> Does not consume Fervor";
       }
-    }
-    if (NIVEL == 3)
-    {
-      txtDescripcion = "<color=#5dade2><b>Mend III</b></color>\n\n";
-      txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
-      txtDescripcion += "<i>Healing: 3d6+3, +1 per Fervor +1 per Power. Consumes 1 Fervor.</i>\n";
-      txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-
-      if (EsEscenaCampaña())
+      else
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Option A: Does not consume Fervor </color>\n";
-            txtDescripcion += $"<color=#dfea02>-Option B: Healing bonus per Fervor is tripled</color>\n";
-          }
-        }
+        cuerpo += $"<b>Tipo:</b> Rango ({alcance} alcance)\n";
+        cuerpo += "<b>Objetivo:</b> 1 unidad en rango\n";
+        cuerpo += $"<b>Curacion:</b> Aleatorio 4-18{bonusPlanoTexto} + <color=#ea0606>Poder ({poderActual})</color> + Fervor ({fervorActual})\n";
+        cuerpo += "<b>Tipo de curacion:</b> Curacion magica\n";
+        cuerpo += "<b>Requisito:</b> Necesita al menos 1 Fervor para activarse\n";
+        cuerpo += consumeFervor
+          ? "<b>Al lanzar:</b> Consume 1 Fervor"
+          : "<b>Al lanzar:</b> No consume Fervor";
       }
-    }
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Mend IV a</b></color>\n\n";
-      txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
-      txtDescripcion += "<i>Healing: 3d6+3, +1 per Fervor +1 per Power.</i>\n";
-      txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Mend IV b</b></color>\n\n";
-      txtDescripcion += "<i>Performs magical healing on an ally within a radius of 2 tiles.</i>\n";
-      txtDescripcion += "<i>Healing: 3d6+3, +3 per Fervor +1 per Power. Consumes 1 Fervor.</i>\n";
-      txtDescripcion += $"<color=#44d3ec>-Magical healing. Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-    }
-  }
 
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "A restorative spell that scales with current Fervor and Power."
+          : "Un hechizo restaurador que escala con el Fervor actual y el Poder.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      bool mostrarProximoNivel = EsEscenaCampa�a() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
+      {
+        return;
+      }
+
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 flat healing.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 flat healing.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (no Fervor consumption) or Option B (keeps Fervor consumption).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 curacion plana.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 curacion plana.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (sin consumo de Fervor) u Opcion B (mantiene consumo de Fervor).</color>"; }
+      }
     }
     void Start()
     {
@@ -223,7 +151,7 @@ public class Enmendar : Habilidad
        Unidad objetivo = (Unidad)obj;
        VFXAplicar(objetivo.gameObject);
       
-       BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} usa {nombre} en {objetivo.uNombre}");
+       BattleManager.Instance.EscribirLog(TRADU.i.Traducir(scEstaUnidad.uNombre) + " " + TRADU.i.Traducir("usa ") + TRADU.i.Traducir(nombre) + " -> " + TRADU.i.Traducir(objetivo.uNombre) + ".");
   
        int random = UnityEngine.Random.Range(4, 19);
        float curacion = random+scEstaUnidad.mod_CarPoder+Usuario.GetComponent<ClasePurificadora>().ObtenerFervor();
@@ -367,4 +295,5 @@ public class Enmendar : Habilidad
 
  
 }
+
 

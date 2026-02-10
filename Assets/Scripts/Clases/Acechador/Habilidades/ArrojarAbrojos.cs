@@ -41,167 +41,85 @@ public class ArrojarAbrojos : Habilidad
     }
     public override void ActualizarDescripcion()
     {
-       if(NIVEL<2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Arrojar Abrojos I</b></color>\n\n"; 
-       
-        txtDescripcion += "<i>Arroja abrojos en la casilla objetivo y en las diagonales inmediatas que no tengan enemigos.</i>\n";
-        txtDescripcion += "<i>Cada enemigo que se mueva a las casillas afectadas sufrirá daño perforante 2d8 y Sangrado 2.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Si el enemigo supera una tirada de Reflejos DC 11, evita el sangrado y reduce el daño a la mitad.</b>  </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>-Discreta - Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
 
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +2 Daño</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==2)
-       {
-        txtDescripcion = "<color=#5dade2><b>Arrojar Abrojos II</b></color>\n\n"; 
+      int dcBase = NIVEL > 2 ? 12 : 11;
+      int bleedAplicado = 2 + (NIVEL == 4 ? 1 : 0);
+      bool drenaAp = NIVEL == 5;
+      string danioBase = NIVEL > 1 ? "1d8 + 1" : "1d8";
 
-        txtDescripcion += "<i>Arroja abrojos en la casilla objetivo y en las diagonales inmediatas que no tengan enemigos.</i>\n";
-        txtDescripcion += "<i>Cada enemigo que se mueva a las casillas afectadas sufrirá daño perforante 2d8 +2 y Sangrado 2.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Si el enemigo supera una tirada de Reflejos DC 11, evita el sangrado y reduce el daño a la mitad.</b>  </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>-Discreta - Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
+      string tituloEs = "Arrojar Abrojos I";
+      string tituloEn = "Throw Caltrops I";
+      if (NIVEL == 2) { tituloEs = "Arrojar Abrojos II"; tituloEn = "Throw Caltrops II"; }
+      if (NIVEL == 3) { tituloEs = "Arrojar Abrojos III"; tituloEn = "Throw Caltrops III"; }
+      if (NIVEL == 4) { tituloEs = "Arrojar Abrojos IV a"; tituloEn = "Throw Caltrops IV a"; }
+      if (NIVEL == 5) { tituloEs = "Arrojar Abrojos IV b"; tituloEn = "Throw Caltrops IV b"; }
 
+      string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Reflejos, dcBase);
 
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 DC</color>\n\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==3)
-       {
-        txtDescripcion = "<color=#5dade2><b>Arrojar Abrojos III</b></color>\n\n"; 
-
-        txtDescripcion += "<i>Arroja abrojos en la casilla objetivo y en las diagonales inmediatas que no tengan enemigos.</i>\n";
-        txtDescripcion += "<i>Cada enemigo que se mueva a las casillas afectadas sufrirá daño perforante 2d8 +2 y Sangrado 2.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Si el enemigo supera una tirada de Reflejos DC 12, evita el sangrado y reduce el daño a la mitad.</b>  </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>-Discreta - Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-
-         if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: +1 Sangrado. </color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: Saca 1 Ap al enemigo.</color>\n";
-          }
-          }
-        }
-       }
-       if(NIVEL==4)
-       {
-        txtDescripcion = "<color=#5dade2><b>Arrojar Abrojos IVa</b></color>\n\n"; 
-
-        txtDescripcion += "<i>Arroja abrojos en la casilla objetivo y en las diagonales inmediatas que no tengan enemigos.</i>\n";
-        txtDescripcion += "<i>Cada enemigo que se mueva a las casillas afectadas sufrirá daño perforante 2d8 +2 y Sangrado 3.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Si el enemigo supera una tirada de Reflejos DC 12, evita el sangrado y reduce el daño a la mitad.</b>  </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>-Discreta - Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-
-       }
-       if(NIVEL==5)
-       {
-        txtDescripcion = "<color=#5dade2><b>Arrojar Abrojos IVb</b></color>\n\n"; 
-
-        txtDescripcion += "<i>Arroja abrojos en la casilla objetivo y en las diagonales inmediatas que no tengan enemigos.</i>\n";
-        txtDescripcion += "<i>Cada enemigo que se mueva a las casillas afectadas sufrirá daño perforante 2d8 +2, Sangrado 2 y perderá 1 AP.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Si el enemigo supera una tirada de Reflejos DC 12, evita el sangrado y reduce el daño a la mitad.</b>  </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>-Discreta - Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-
-       }
-
-
-  if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-  {
-    if (NIVEL < 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Throw Caltrops I</b></color>\n\n";
-      txtDescripcion += "<i>Throws caltrops on the target tile and on the immediate diagonals that do not have enemies.</i>\n";
-      txtDescripcion += "<i>Each enemy that moves to the affected tiles suffers piercing damage 2d8 and Bleeding 2.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>If the enemy passes a Reflex DC 11 check, avoids bleeding and halves the damage.</b></color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreet - Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-
-      if (EsEscenaCampaña())
+      string cuerpo = "";
+      if (esIngles)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        cuerpo += "<b>Type:</b> Ranged (3 range)\n";
+        cuerpo += "<b>Target:</b> 1 tile (plus empty diagonals around it)\n";
+        cuerpo += "<b>On cast:</b> places caltrop traps on the target tile and valid diagonals (same side)\n";
+        cuerpo += "<b>Trap profile:</b> 1 use, 10 turns duration\n";
+        cuerpo += $"<b>Trap trigger damage:</b> {danioBase} | <b>Type:</b> Piercing\n";
+        cuerpo += lineaSalvacion + "\n";
+        cuerpo += $"<b>On failed save:</b> damage x2, +{bleedAplicado} Bleed";
+        if (drenaAp)
         {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Next Level: +2 Damage</color>\n\n";
-          }
+          cuerpo += ", -1 AP";
         }
+        cuerpo += "\n<b>Stealth interaction:</b> Discreet (does not reveal the caster)";
       }
-    }
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Throw Caltrops II</b></color>\n\n";
-      txtDescripcion += "<i>Throws caltrops on the target tile and on the immediate diagonals that do not have enemies.</i>\n";
-      txtDescripcion += "<i>Each enemy that moves to the affected tiles suffers piercing damage 2d8 +2 and Bleeding 2.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>If the enemy passes a Reflex DC 11 check, avoids bleeding and halves the damage.</b></color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreet - Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-
-      if (EsEscenaCampaña())
+      else
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        cuerpo += "<b>Tipo:</b> Rango (3 alcance)\n";
+        cuerpo += "<b>Objetivo:</b> 1 casilla (mas diagonales vacias alrededor)\n";
+        cuerpo += "<b>Al lanzarla:</b> coloca trampas de abrojos en la casilla objetivo y diagonales validas (mismo lado)\n";
+        cuerpo += "<b>Perfil de trampa:</b> 1 uso, 10 turnos de duracion\n";
+        cuerpo += $"<b>Danio al activar trampa:</b> {danioBase} | <b>Tipo:</b> Perforante\n";
+        cuerpo += lineaSalvacion + "\n";
+        cuerpo += $"<b>Si falla TS:</b> danio x2, +{bleedAplicado} Sangrado";
+        if (drenaAp)
         {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Next Level: +1 DC</color>\n\n";
-          }
+          cuerpo += ", -1 AP";
         }
+        cuerpo += "\n<b>Interaccion con sigilo:</b> Discreta (no revela al lanzador)";
       }
-    }
-    if (NIVEL == 3)
-    {
-      txtDescripcion = "<color=#5dade2><b>Throw Caltrops III</b></color>\n\n";
-      txtDescripcion += "<i>Throws caltrops on the target tile and on the immediate diagonals that do not have enemies.</i>\n";
-      txtDescripcion += "<i>Each enemy that moves to the affected tiles suffers piercing damage 2d8 +2 and Bleeding 2.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>If the enemy passes a Reflex DC 12 check, avoids bleeding and halves the damage.</b></color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreet - Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
 
-      if (EsEscenaCampaña())
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "Seeds a movement denial zone with high punishment on failed reflex saves."
+          : "Siembra una zona de negacion de movimiento con alto castigo al fallar Reflejos.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Option A: +1 Bleeding.</color>\n";
-            txtDescripcion += $"<color=#dfea02>-Option B: Removes 1 AP from the enemy.</color>\n";
-          }
-        }
+        return;
       }
-    }
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Throw Caltrops IVa</b></color>\n\n";
-      txtDescripcion += "<i>Throws caltrops on the target tile and on the immediate diagonals that do not have enemies.</i>\n";
-      txtDescripcion += "<i>Each enemy that moves to the affected tiles suffers piercing damage 2d8 +2 and Bleeding 3.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>If the enemy passes a Reflex DC 12 check, avoids bleeding and halves the damage.</b></color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreet - Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Throw Caltrops IVb</b></color>\n\n";
-      txtDescripcion += "<i>Throws caltrops on the target tile and on the immediate diagonals that do not have enemies.</i>\n";
-      txtDescripcion += "<i>Each enemy that moves to the affected tiles suffers piercing damage 2d8 +2, Bleeding 2 and loses 1 AP.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>If the enemy passes a Reflex DC 12 check, avoids bleeding and halves the damage.</b></color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>-Discreet - Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-    }
-  }
+
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 trap damage.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC base.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 Bleed) or Option B (-1 AP on failed save).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 danio de trampa.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al DC base de TS.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 Sangrado) u Opcion B (-1 AP al fallar TS).</color>"; }
+      }
     }
     void Start()
     {
@@ -360,3 +278,4 @@ public class ArrojarAbrojos : Habilidad
 
  
 }
+

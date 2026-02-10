@@ -63,168 +63,92 @@ public class LlamaDivina : Habilidad
     }
 
    
-     public override void ActualizarDescripcion()
+          public override void ActualizarDescripcion()
      {
-         if(NIVEL<2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Llama Divina I</b></color>\n\n"; 
-        txtDescripcion += "<i>La Purificadora arroja una llama de fuego divino que daña al objetivo y puede dejarlo ardiendo.</i>\n\n";
-        txtDescripcion += $"<i>Daño Divino: 3d6 + 4 +Poder.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 8+Poder: Aplica Ardiendo 3 y mata No-muertos y etéreos instantáneamente.</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      var statsUI = ObtenerStatsDescripcionUI();
 
-        if (EsEscenaCampaña())
-        {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 TS</color>\n\n";
-          }
-          }
-        }
-   
-      }
-      if(NIVEL== 2)
-      {
-        txtDescripcion = "<color=#5dade2><b>Llama Divina II</b></color>\n\n"; 
-        txtDescripcion += "<i>La Purificadora arroja una llama de fuego divino que daña al objetivo y puede dejarlo ardiendo.</i>\n\n";
-        txtDescripcion += $"<i>Daño Divino: 3d6 + 4 +Poder.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 9+Poder: Aplica Ardiendo 3 y mata No-muertos y etéreos instantáneamente.</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
+      int poderActual = statsUI.Poder;
+      int ataqueActual = statsUI.Ataque;
+      int criticoMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+      int dcBase = NIVEL > 1 ? 9 : 8;
+      int quemadura = NIVEL == 5 ? 5 : 3;
+      int danioFijoActual = NIVEL > 2 ? 7 : 4;
+      bool ganaFervorAlMatar = NIVEL == 4;
 
-  
-    
-       if (EsEscenaCampaña())
+      string tituloEs = "Llama Divina I";
+      string tituloEn = "Divine Flame I";
+      if (NIVEL == 2) { tituloEs = "Llama Divina II"; tituloEn = "Divine Flame II"; }
+      if (NIVEL == 3) { tituloEs = "Llama Divina III"; tituloEn = "Divine Flame III"; }
+      if (NIVEL == 4) { tituloEs = "Llama Divina IV a"; tituloEn = "Divine Flame IV a"; }
+      if (NIVEL == 5) { tituloEs = "Llama Divina IV b"; tituloEn = "Divine Flame IV b"; }
+
+      string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual);
+      string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual);
+
+      string cuerpo = "";
+      if (esIngles)
+      {
+        cuerpo += "<b>Type:</b> Ranged (5 range)\n";
+        cuerpo += "<b>Target:</b> 1 unit in range\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color> + Attack ({ataqueActual}) vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
+        cuerpo += $"<b>Damage:</b> 3d6 + {danioFijoActual} + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Divine\n";
+        cuerpo += lineaSalvacionEn + "\n";
+        cuerpo += $"<b>On failed save:</b> Burning {quemadura}. Undead and Ethereal are instantly killed";
+        if (ganaFervorAlMatar)
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +3 Daño</color>\n\n";
-          }
-          }
+          cuerpo += "\n<b>IV a Extra:</b> On kill, gain +1 Fervor";
         }
       }
-      if(NIVEL== 3)
+      else
       {
-        txtDescripcion = "<color=#5dade2><b>Llama Divina III</b></color>\n\n"; 
-        txtDescripcion += "<i>La Purificadora arroja una llama de fuego divino que daña al objetivo y puede dejarlo ardiendo.</i>\n\n";
-        txtDescripcion += $"<i>Daño Divino: 3d6 + 7 +Poder.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 9+Poder: Aplica Ardiendo 3 y mata No-muertos y etéreos instantáneamente.</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-
-  
-      if (EsEscenaCampaña())
+        cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
+        cuerpo += "<b>Objetivo:</b> 1 unidad en rango\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}) vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
+        cuerpo += $"<b>Danio:</b> 3d6 + {danioFijoActual} + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Divino\n";
+        cuerpo += lineaSalvacionEs + "\n";
+        cuerpo += $"<b>Si falla TS:</b> Ardiendo {quemadura}. Nomuerto y Etereo mueren instantaneamente";
+        if (ganaFervorAlMatar)
         {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-          {
-          if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-             txtDescripcion += $"<color=#dfea02>-Opción A: Al matar: da 1 Fervor.</color>\n";
-             txtDescripcion += $"<color=#dfea02>-Opción B: +2 Arder. </color>\n";
-          }
-          }
-        }
-
-      }
-      if(NIVEL== 4)
-      {
-        txtDescripcion = "<color=#5dade2><b>Llama Divina IV a</b></color>\n\n"; 
-        txtDescripcion += "<i>La Purificadora arroja una llama de fuego divino que daña al objetivo y puede dejarlo ardiendo.</i>\n\n";
-        txtDescripcion += $"<i>Daño Divino: 3d6 + 7 +Poder. Al matar: da 1 Fervor.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 9+ Poder: Aplica Ardiendo 3 y mata No-muertos y etéreos instantáneamente.</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-      }
-      if(NIVEL== 5)
-      {
-        txtDescripcion = "<color=#5dade2><b>Llama Divina IV b</b></color>\n\n"; 
-        txtDescripcion += "<i>La Purificadora arroja una llama de fuego divino que daña al objetivo y puede dejarlo ardiendo.</i>\n\n";
-        txtDescripcion += $"<i>Daño Divino: 3d6 + 7 +Poder.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8>Al impactar - TS Fortitud DC 9+ Poder: Aplica Ardiendo 5 y mata No-muertos y etéreos instantáneamente.</color>\n";
-        txtDescripcion += $"<color=#44d3ec>-Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable \n- Costo Val: {costoPM} </color>\n\n";
-      }
-
-
-  if (TRADU.i.nIdioma == 2) // English translation
-  {
-    if (NIVEL < 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Divine Flame I</b></color>\n\n";
-      txtDescripcion += "<i>The Purifier throws a flame of divine fire that damages the target and may set it ablaze.</i>\n\n";
-      txtDescripcion += $"<i>Divine Damage: 3d6 + 4 +Power.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 8+Power: Applies Burning 3 and instantly kills Undead and Ethereal.</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Next Level: +1 Save</color>\n\n";
-          }
+          cuerpo += "\n<b>Extra IV a:</b> Al matar, gana +1 Fervor";
         }
       }
-    }
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Divine Flame II</b></color>\n\n";
-      txtDescripcion += "<i>The Purifier throws a flame of divine fire that damages the target and may set it ablaze.</i>\n\n";
-      txtDescripcion += $"<i>Divine Damage: 3d6 + 4 +Power.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 9+Power: Applies Burning 3 and instantly kills Undead and Ethereal.</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
 
-      if (EsEscenaCampaña())
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "A divine projectile that tests endurance and burns impure targets."
+          : "Un proyectil divino que pone a prueba la resistencia y quema objetivos impuros.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      bool mostrarProximoNivel = EsEscenaCampaña()
+        && CampaignManager.Instance != null
+        && CampaignManager.Instance.scMenuPersonajes != null
+        && CampaignManager.Instance.scMenuPersonajes.pSel != null
+        && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Next Level: +3 Damage</color>\n\n";
-          }
-        }
+        return;
       }
-    }
-    if (NIVEL == 3)
-    {
-      txtDescripcion = "<color=#5dade2><b>Divine Flame III</b></color>\n\n";
-      txtDescripcion += "<i>The Purifier throws a flame of divine fire that damages the target and may set it ablaze.</i>\n\n";
-      txtDescripcion += $"<i>Divine Damage: 3d6 + 7 +Power.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 9+Power: Applies Burning 3 and instantly kills Undead and Ethereal.</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
 
-      if (EsEscenaCampaña())
+      if (esIngles)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Option A: On kill: gain 1 Fervor.</color>\n";
-            txtDescripcion += $"<color=#dfea02>-Option B: +2 Burning.</color>\n";
-          }
-        }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +3 base damage.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 Fervor on kill) or Option B (+2 Burning).</color>"; }
       }
-    }
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Divine Flame IV a</b></color>\n\n";
-      txtDescripcion += "<i>The Purifier throws a flame of divine fire that damages the target and may set it ablaze.</i>\n\n";
-      txtDescripcion += $"<i>Divine Damage: 3d6 + 7 +Power. On kill: gain 1 Fervor.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 9+Power: Applies Burning 3 and instantly kills Undead and Ethereal.</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Divine Flame IV b</b></color>\n\n";
-      txtDescripcion += "<i>The Purifier throws a flame of divine fire that damages the target and may set it ablaze.</i>\n\n";
-      txtDescripcion += $"<i>Divine Damage: 3d6 + 7 +Power.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>On hit - Fortitude Save DC 9+Power: Applies Burning 5 and instantly kills Undead and Ethereal.</color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable \n- Val Cost: {costoPM} </color>\n\n";
-    }
-  }
-
-
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC de salvacion.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +3 de danio base.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 Fervor al matar) u Opcion B (+2 Ardiendo).</color>"; }
+      }
      }
     Casilla Origen;
     public override void Activar()
@@ -362,12 +286,18 @@ public class LlamaDivina : Habilidad
         if(objVerMurio == null)
         {
           scEstaUnidad.gameObject.GetComponent<ClasePurificadora>().CambiarFervor(1);
-          BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} gana 1 Fervor por matar con Llama Divina.");
+          BattleManager.Instance.EscribirLog(
+            TRADU.i.Traducir(scEstaUnidad.uNombre) + " " +
+            TRADU.i.Traducir("gana 1 Fervor por matar con ") +
+            TRADU.i.Traducir(nombre) + ".");
         }
         else if(objVerMurio.HP_actual < 1)
         {
           scEstaUnidad.gameObject.GetComponent<ClasePurificadora>().CambiarFervor(1);
-          BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} gana 1 Fervor por matar con Llama Divina.");
+          BattleManager.Instance.EscribirLog(
+            TRADU.i.Traducir(scEstaUnidad.uNombre) + " " +
+            TRADU.i.Traducir("gana 1 Fervor por matar con ") +
+            TRADU.i.Traducir(nombre) + ".");
         }
     }
     

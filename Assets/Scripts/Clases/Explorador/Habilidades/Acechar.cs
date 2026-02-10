@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -38,159 +38,87 @@ public class Acechar : Habilidad
 
   public override void ActualizarDescripcion()
   {
-    if (NIVEL < 2)
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    int buffAtaque = 2 + (NIVEL > 1 ? 1 : 0);
+    int buffCrit = NIVEL > 2 ? 1 : 0;
+    if (NIVEL == 4) { buffCrit += 2; }
+    int duracionTurnos = 2;
+    bool seRemueveAlDanar = NIVEL != 5;
+
+    string tituloEs = "Acechar I";
+    string tituloEn = "Hide I";
+    if (NIVEL == 2) { tituloEs = "Acechar II"; tituloEn = "Hide II"; }
+    if (NIVEL == 3) { tituloEs = "Acechar III"; tituloEn = "Hide III"; }
+    if (NIVEL == 4) { tituloEs = "Acechar IV a"; tituloEn = "Hide IV a"; }
+    if (NIVEL == 5) { tituloEs = "Acechar IV b"; tituloEn = "Hide IV b"; }
+
+    string cuerpo = "";
+    if (esIngles)
     {
-      txtDescripcion = "<color=#5dade2><b>Acechar I</b></color>\n\n";
-
-      txtDescripcion += "<i>El Explorador se esconde y gana un buff a su próximo ataque exitoso.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Buff:</b> +15% daño, +2 Ataque. Por 1 ataque exitoso o 2 turnos. Escondido. </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
+      cuerpo += "<b>Type:</b> Self Buff\n";
+      cuerpo += "<b>Target:</b> Self\n";
+      cuerpo += "<b>On cast:</b> gains Hidden (1)\n";
+      cuerpo += $"<b>Buff ({duracionTurnos} turns):</b> +15% Damage, +{buffAtaque} Attack";
+      if (buffCrit > 0)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-          }
-        }
+        cuerpo += $", +{buffCrit} crit range";
       }
+      cuerpo += "\n";
+      cuerpo += seRemueveAlDanar
+        ? "<b>Buff removal:</b> removed after dealing damage"
+        : "<b>Buff removal:</b> does not get removed after dealing damage";
     }
-    if (NIVEL == 2)
+    else
     {
-      txtDescripcion = "<color=#5dade2><b>Acechar II</b></color>\n\n";
-
-      txtDescripcion += "<i>El Explorador se esconde y gana un buff a sus ataques.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Buff:</b> +15% daño, +3 Ataque. Por 1 ataque exitoso o 2 turnos. Escondido. </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
+      cuerpo += "<b>Tipo:</b> Auto Buff\n";
+      cuerpo += "<b>Objetivo:</b> Uno mismo\n";
+      cuerpo += "<b>Al lanzarla:</b> gana Escondido (1)\n";
+      cuerpo += $"<b>Buff ({duracionTurnos} turnos):</b> +15% Danio, +{buffAtaque} Ataque";
+      if (buffCrit > 0)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: Otorga +1 Rango Crítico</color>\n\n";
-          }
-        }
+        cuerpo += $", +{buffCrit} rango critico";
       }
+      cuerpo += "\n";
+      cuerpo += seRemueveAlDanar
+        ? "<b>Remocion del buff:</b> se elimina al hacer danio"
+        : "<b>Remocion del buff:</b> no se elimina al hacer danio";
     }
-    if (NIVEL == 3)
+
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Val Cost: {costoPM}"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Val: {costoPM}";
+
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? tituloEn : tituloEs,
+      esIngles
+        ? "The Explorer vanishes from sight and primes a short offensive spike."
+        : "El Explorador se oculta y prepara una subida ofensiva breve.",
+      cuerpo,
+      costos,
+      "#5dade2");
+
+    bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    if (!mostrarProximoNivel)
     {
-      txtDescripcion = "<color=#5dade2><b>Acechar III</b></color>\n\n";
-
-      txtDescripcion += "<i>El Explorador se esconde y gana un buff a sus ataques.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Buff:</b> +15% daño, +3 Ataque, +1 Rango Crítico. Por 1 ataque exitoso o 2 turnos. Escondido. </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: +2 Rango Crítico</color>\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: El buff no se elimina al dañar a un enemigo.</color>\n";
-          }
-        }
-      }
+      return;
     }
-    if (NIVEL == 4)
+
+    if (esIngles)
     {
-      txtDescripcion = "<color=#5dade2><b>Acechar IV a</b></color>\n\n";
-
-      txtDescripcion += "<i>El Explorador se esconde y gana un buff a sus ataques.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Buff:</b> +15% daño, +3 Ataque, +3 Rango Crítico. Por 1 ataque exitoso o 2 turnos. Escondido. </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM} </color>\n\n";
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack buff.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 crit range buff.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 crit range) or Option B (buff persists after damage).</color>"; }
     }
-    if (NIVEL == 5)
+    else
     {
-      txtDescripcion = "<color=#5dade2><b>Acechar IV b</b></color>\n\n";
-
-      txtDescripcion += "<i>El Explorador se esconde y gana un buff a sus ataques.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Buff:</b> +15% daño, +3 Ataque, +1 Rango Crítico. Por 2 turnos. Escondido. </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP}- Termina turno \n- Costo Val: {costoPM} </color>\n\n";
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al buff de Ataque.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al buff de rango critico.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 rango critico) u Opcion B (el buff persiste al danar).</color>"; }
     }
-       
-
-      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-      {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Hide I</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer hides and gains a buff to their next successful attack.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff:</b> +15% damage, +2 Attack. For 1 successful attack or 2 turns. Hidden. </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}- Ends turn \n- Val Cost: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Hide II</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer hides and gains a buff to their attacks.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff:</b> +15% damage, +3 Attack. For 1 successful attack or 2 turns. Hidden. </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}- Ends turn \n- Val Cost: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: Grants +1 Critical Range</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Hide III</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer hides and gains a buff to their attacks.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff:</b> +15% damage, +3 Attack, +1 Critical Range. For 1 successful attack or 2 turns. Hidden. </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}- Ends turn \n- Val Cost: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: +2 Critical Range</color>\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: The buff is not removed when damaging an enemy.</color>\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Hide IV a</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer hides and gains a buff to their attacks.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff:</b> +15% damage, +3 Attack, +3 Critical Range. For 1 successful attack or 2 turns. Hidden. </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}- Ends turn \n- Val Cost: {costoPM} </color>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Hide IV b</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer hides and gains a buff to their attacks.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff:</b> +15% damage, +3 Attack, +1 Critical Range. For 2 turns. Hidden. </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP}- Ends turn \n- Val Cost: {costoPM} </color>\n\n";
-        }
-      }
-
-
-    }
-
-   
-    public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
+  }
+  public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
     {
-        // El log de uso ahora está centralizado en Habilidad.Resolver
+        // El log de uso ahora estÃ¡ centralizado en Habilidad.Resolver
       await  base.Resolver(Objetivos);
     }
 
@@ -215,14 +143,14 @@ public class Acechar : Habilidad
     {
 
     
-      if(obj is Unidad) //Acá van los efectos a Unidades.
+      if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
       {
 
         Unidad objetivo = (Unidad)obj;
-        BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} usa {nombre}");
+        BattleManager.Instance.EscribirLog(TRADU.i.Traducir(scEstaUnidad.uNombre) + " " + TRADU.i.Traducir("usa ") + TRADU.i.Traducir(nombre) + ".");
         VFXAplicar(objetivo.gameObject);
         /////////////////////////////////////////////
-        //BUFF ---- Así se aplica un buff/debuff
+        //BUFF ---- AsÃ­ se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Acechando";
         buff.boolfDebufftBuff = true;
@@ -233,7 +161,7 @@ public class Acechar : Habilidad
         if(NIVEL > 2){ buff.cantCritDado += 1;}
         if(NIVEL == 4){ buff.cantCritDado += 2;}
         buff.AplicarBuff(objetivo);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
         objetivo.Marcar(0);
 
@@ -312,3 +240,4 @@ public class Acechar : Habilidad
     }
  
 }
+

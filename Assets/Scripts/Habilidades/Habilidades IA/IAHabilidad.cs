@@ -552,8 +552,10 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
       // Log de uso de habilidad de IA
       if (BattleManager.Instance != null && scEstaUnidad != null)
       {
+        string unidadNombre = TRADU.i != null ? TRADU.i.Traducir(scEstaUnidad.uNombre) : scEstaUnidad.uNombre;
+        string verboUsa = TRADU.i != null ? TRADU.i.Traducir("usa ") : "usa ";
         string nombreHab = TRADU.i != null ? TRADU.i.Traducir(nombre) : nombre;
-        BattleManager.Instance.EscribirLog(TRADU.i.Traducir(scEstaUnidad.uNombre) + TRADU.i.Traducir(" usa ") + TRADU.i.Traducir(nombreHab) + ".</color>");
+        BattleManager.Instance.EscribirLog(unidadNombre + " " + verboUsa + nombreHab + ".");
       }
     unidadesNoParticipantes = new List<object>(BattleManager.Instance.lUnidadesTotal);
     unidadesNoParticipantes.Remove(scEstaUnidad);

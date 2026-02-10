@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,11 +15,11 @@ public class TiroconArco : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ãcido - 8: Arcano
 
     private int hAlcance = 7;
-    private int hAncho = 1; //1 - adyancentes también
-  public override void Awake()
+    private int hAncho = 1; //1 - adyancentes tambiÃ©n
+    public override void Awake()
   {
     nombre = "Tiro con Arco";
     costoAP = 3;
@@ -38,67 +38,71 @@ public class TiroconArco : Habilidad
     bonusAtaque = 0;
     XdDanio = 1;
     daniodX = 10; //1d10
-    tipoDanio = 2; //Perforante
+    tipoDanio = 2; //Cortante
     criticoRangoHab = 0;
 
-    requiereRecurso = 1; //esto es para que el boton no se active al apretar si no tiene X recursos (ej Flecha). Ver en BotonHabilidad.
-
-
-
+    requiereRecurso = 1;
     tipoPorcentaje = 2;
 
-
-
-
-
     imHab = Resources.Load<Sprite>("imHab/Explorador_Tiroconarco");
-
-    txtDescripcion = "<color=#5dade2><b>Tiro con Arco</b></color>\n\n";
-    txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
-
-    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-    {
-      nombre = "Bow Shot";
-      txtDescripcion = "<color=#5dade2><b>Bow Shot</b></color>\n\n";
-      txtDescripcion += "<i>The ranger attacks the enemy with his bow.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Range: 7</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Piercing 1d10+1- Requires 1 Arrow</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
-    }
-
-   
+    ActualizarDescripcion();
   }
-
-
-  public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
   {
-       txtDescripcion = "<color=#5dade2><b>Tiro con Arco</b></color>\n\n";
-    txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    var statsUI = ObtenerStatsDescripcionUI();
 
-    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
+    int agilidadActual = statsUI.Agilidad;
+    int ataqueActual = statsUI.Ataque;
+    int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+
+    string cuerpo = "";
+    if (esIngles)
     {
-      nombre = "Bow Shot";
-      txtDescripcion = "<color=#5dade2><b>Bow Shot</b></color>\n\n";
-      txtDescripcion += "<i>The ranger attacks the enemy with his bow.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Range: 7</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Piercing 1d10+1- Requires 1 Arrow</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+      cuerpo += $"<b>Type:</b> Ranged ({hAlcance} range)\n";
+      cuerpo += "<b>Target:</b> 1 enemy in range\n";
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Damage:</b> 1d10 + 1 + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Slashing\n";
+      cuerpo += "<b>Resource:</b> consumes 1 Arrow on shot\n";
+    }
+    else
+    {
+      cuerpo += $"<b>Tipo:</b> Rango ({hAlcance} alcance)\n";
+      cuerpo += "<b>Objetivo:</b> 1 enemigo en rango\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Danio:</b> 1d10 + 1 + <color=#ea0606>Agilidad ({agilidadActual})</color> | <b>Tipo:</b> Cortante\n";
+      cuerpo += "<b>Recurso:</b> consume 1 Flecha por disparo\n";
     }
 
-      if (CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>().escenaActual != 1)
-       {return;} // Sale del método si la escena no es "ES-Batallas"
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
 
-      ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
-      if (clase.ObtenerCantidadFlechas() < 1)
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? "Bow Shot" : "Tiro con Arco",
+      esIngles
+        ? "A reliable single-target shot that spends one arrow."
+        : "Un disparo de objetivo unico confiable que gasta una flecha.",
+      cuerpo,
+      costos,
+      "#5dade2");
+
+    if (CampaignManager.Instance != null && CampaignManager.Instance.gameObject != null)
+    {
+      if (CampaignManager.Instance.gameObject.transform.parent != null && CampaignManager.Instance.gameObject.transform.parent.parent != null)
       {
-        txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
-
+        AdministradorEscenas admin = CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>();
+        if (admin != null && admin.escenaActual == 1)
+        {
+          ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
+          if (clase != null && clase.ObtenerCantidadFlechas() < 1)
+          {
+            txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
+          }
+        }
       }
-    
-
-      }
+    }
+  }
     Casilla Origen;
     public override void Activar()
     {
@@ -154,7 +158,7 @@ public class TiroconArco : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
-     if(obj is Unidad) //Acá van los efectos a Unidades.
+     if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -165,11 +169,11 @@ public class TiroconArco : Habilidad
         float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
        //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para próximas habilidades de daño del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prÃ³ximas habilidades de daÃ±o del explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de daño solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daño crítico.
+         danioMarca += 15; //Esto se suma al porcentaje de daÃ±o solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daÃ±o crÃ­tico.
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -234,7 +238,7 @@ public class TiroconArco : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
+     else if (obj is Obstaculo) //AcÃ¡ van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -389,6 +393,7 @@ public class TiroconArco : Habilidad
     }
  
 }
+
 
 
 

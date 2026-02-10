@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -37,154 +37,94 @@ public class GritoMotivador : Habilidad
 
     public override void ActualizarDescripcion()
     {
-      if (TRADU.i.nIdioma == 1) // Español
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+
+      int buffDanio = NIVEL > 1 ? 15 : 10;
+      int valorAliados = NIVEL > 2 ? 1 : 0;
+      bool afectaEnemigos = NIVEL == 5;
+      int duracionDebuffEnemigos = 1;
+
+      string tituloEs = "Grito Motivador I";
+      string tituloEn = "War Cry I";
+      if (NIVEL == 2) { tituloEs = "Grito Motivador II"; tituloEn = "War Cry II"; }
+      if (NIVEL == 3) { tituloEs = "Grito Motivador III"; tituloEn = "War Cry III"; }
+      if (NIVEL == 4) { tituloEs = "Grito Motivador IV a"; tituloEn = "War Cry IV a"; }
+      if (NIVEL == 5) { tituloEs = "Grito Motivador IV b"; tituloEn = "War Cry IV b"; }
+
+      string cuerpo = "";
+      if (esIngles)
       {
-        if(NIVEL<2)
+        cuerpo += "<b>Type:</b> Support\n";
+        cuerpo += "<b>Target:</b> All allied units on your side\n";
+        cuerpo += $"<b>Allied buff:</b> +{buffDanio}% Damage for 3 turns\n";
+        if (valorAliados > 0)
         {
-          txtDescripcion = "<color=#5dade2><b>Grito Motivador I</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero anima a sus aliados a luchar con un grito motivador.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff a todos los Aliados:</b> +10% daño por 3 Turnos. +1 Valentía </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +5% Daño</color>\n\n";
-              }
-            }
-          }
+          cuerpo += $"<b>Allied bonus:</b> +{valorAliados} Valor\n";
         }
-        if(NIVEL==2)
+        if (NIVEL == 4)
         {
-          txtDescripcion = "<color=#5dade2><b>Grito Motivador II</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero anima a sus aliados a luchar con un grito motivador.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff a todos los Aliados:</b> +15% daño por 3 Turnos. +1 Valentía </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: Otorga +1 Valentía</color>\n\n";
-              }
-            }
-          }
+          cuerpo += "<b>Self bonus:</b> +2 Valor per affected ally\n";
         }
-        if(NIVEL==3)
+        if (afectaEnemigos)
         {
-          txtDescripcion = "<color=#5dade2><b>Grito Motivador III</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero anima a sus aliados a luchar con un grito motivador.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff a todos los Aliados:</b> +15% daño por 3 Turnos. +2 Valentía </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Opción A: +2 Valentía al Caballero</color>\n";
-                txtDescripcion += $"<color=#dfea02>-Opción B: Debuff Enemigos: -10% Daño</color>\n";
-              }
-            }
-          }
-        }
-        if(NIVEL==4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Grito Motivador IV a</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero anima a sus aliados a luchar con un grito motivador.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff a todos los Aliados:</b> +15% daño por 3 Turnos. +2 Valentía </color>\n";
-          txtDescripcion += $"+2 Valentía al Caballero. \n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";   
-        }
-        if(NIVEL==5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Grito Motivador IV b</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero anima a sus aliados a luchar con un grito motivador.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff a todos los Aliados:</b> +15% daño por 3 Turnos. +2 Valentía </color>\n";
-          txtDescripcion += $"-10% daño a enemigos que no superen una TS Mental por 2 Turnos. \n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";  
+          cuerpo += "<b>Enemy effect:</b> -10% Damage for 1 turn (no save)";
         }
       }
-      if (TRADU.i.nIdioma == 2) // Inglés
+      else
       {
-        if(NIVEL<2)
+        cuerpo += "<b>Tipo:</b> Soporte\n";
+        cuerpo += "<b>Objetivo:</b> Todas las unidades aliadas de tu lado\n";
+        cuerpo += $"<b>Buff aliados:</b> +{buffDanio}% Danio por 3 turnos\n";
+        if (valorAliados > 0)
         {
-          txtDescripcion = "<color=#5dade2><b>War Cry I</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight inspires allies to fight with a War Cry.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff to all Allies:</b> +10% damage for 3 Turns. +1 Valor </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +5% Damage</color>\n\n";
-              }
-            }
-          }
+          cuerpo += $"<b>Bono aliados:</b> +{valorAliados} Val\n";
         }
-        if(NIVEL==2)
+        if (NIVEL == 4)
         {
-          txtDescripcion = "<color=#5dade2><b>War Cry II</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight inspires allies to fight with a War Cry.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff to all Allies:</b> +15% damage for 3 Turns. +1 Valor </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: Grants +1 Valor</color>\n\n";
-              }
-            }
-          }
+          cuerpo += "<b>Bono propio:</b> +2 Val por cada aliado afectado\n";
         }
-        if(NIVEL==3)
+        if (afectaEnemigos)
         {
-          txtDescripcion = "<color=#5dade2><b>War Cry III</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight inspires allies to fight with a War Cry.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff to all Allies:</b> +15% damage for 3 Turns. +2 Valor </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: +2 Valor to the Knight</color>\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: Debuff Enemies: -10% Damage</color>\n";
-              }
-            }
-          }
+          cuerpo += $"<b>Efecto enemigos:</b> -10% Danio por {duracionDebuffEnemigos} turno (sin TS)";
         }
-        if(NIVEL==4)
-        {
-          txtDescripcion = "<color=#5dade2><b>War Cry IV a</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight inspires allies to fight with a War Cry.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff to all Allies:</b> +15% damage for 3 Turns. +2 Valor </color>\n";
-          txtDescripcion += $"+2 Valor to the Knight. \n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>";   
-        }
-        if(NIVEL==5)
-        {
-          txtDescripcion = "<color=#5dade2><b>War Cry IV b</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight inspires allies to fight with a War Cry.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff to all Allies:</b> +15% damage for 3 Turns. +2 Valor </color>\n";
-          txtDescripcion += $"-10% damage to enemies who fail a Mental Saving Throw for 2 Turns. \n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>";  
-        }
+      }
+
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "A commanding shout that empowers allies and, at mastery, weakens enemies."
+          : "Un grito de mando que potencia aliados y, al dominarlo, debilita enemigos.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
+      {
+        return;
+      }
+
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% allied damage buff.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: grants +1 Valor to allies.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 Valor per ally to self) or Option B (enemy damage debuff).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% al buff de danio aliado.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: otorga +1 Val a aliados.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Val por aliado para el Caballero) u Opcion B (debuff de danio a enemigos).</color>"; }
       }
     }
 
-
   public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
   {
-    // El log de uso ahora está centralizado en Habilidad.Resolver
+    // El log de uso ahora estÃ¡ centralizado en Habilidad.Resolver
     VFXAplicarPropio(Usuario.gameObject);
    await base.Resolver(Objetivos);
     
@@ -247,7 +187,7 @@ public class GritoMotivador : Habilidad
     {
 
     
-    if(obj is Unidad) //Acá van los efectos a Unidades.
+    if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
      {
 
        Unidad objetivo = (Unidad)obj;
@@ -268,7 +208,7 @@ public class GritoMotivador : Habilidad
             VFXAplicarAliado(objetivo.gameObject);
         }
        /////////////////////////////////////////////
-       //BUFF ---- Así se aplica un buff/debuff
+       //BUFF ---- AsÃ­ se aplica un buff/debuff
        Buff buff = new Buff();
        buff.buffNombre = "Grito Motivador";
        buff.boolfDebufftBuff = true;
@@ -279,7 +219,7 @@ public class GritoMotivador : Habilidad
         buff.cantDanioPorcentaje += 5;
        }
        buff.AplicarBuff(objetivo);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
         objetivo.Marcar(0);
@@ -288,14 +228,14 @@ public class GritoMotivador : Habilidad
      {
         VFXAplicarEnemigo(objetivo.gameObject);
        /////////////////////////////////////////////
-       //BUFF ---- Así se aplica un buff/debuff
+       //BUFF ---- AsÃ­ se aplica un buff/debuff
        Buff buff = new Buff();
        buff.buffNombre = "Grito Desmotivador";
        buff.boolfDebufftBuff = false;
        buff.DuracionBuffRondas = 1;
        buff.cantDanioPorcentaje -= 10;
        buff.AplicarBuff(objetivo);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
        
        objetivo.Marcar(0);
@@ -391,3 +331,6 @@ public class GritoMotivador : Habilidad
    
  
 }
+
+
+

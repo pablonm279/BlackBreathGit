@@ -52,191 +52,81 @@ public class DescargaDePoder : Habilidad
       
     }
    
-    public override void ActualizarDescripcion()
+        public override void ActualizarDescripcion()
     {
-      if (TRADU.i.nIdioma == 1)
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      var statsUI = ObtenerStatsDescripcionUI();
+
+      int poderActual = statsUI.Poder;
+      int ataqueActual = statsUI.Ataque;
+      int criticoBonusUnidad = statsUI.CriticoRango;
+      int bonusAtaqueNivel = NIVEL > 2 ? 1 : 0;
+      int danioFijo = NIVEL > 1 ? 5 : 0;
+      int criticoMin = Mathf.Clamp(19 - (criticoBonusUnidad + 2), 2, 20);
+
+      string tituloEs = "Descarga de Poder I";
+      string tituloEn = "Power Discharge I";
+      if (NIVEL == 2) { tituloEs = "Descarga de Poder II"; tituloEn = "Power Discharge II"; }
+      if (NIVEL == 3) { tituloEs = "Descarga de Poder III"; tituloEn = "Power Discharge III"; }
+      if (NIVEL == 4) { tituloEs = "Descarga de Poder IV a"; tituloEn = "Power Discharge IV a"; }
+      if (NIVEL == 5) { tituloEs = "Descarga de Poder IV b"; tituloEn = "Power Discharge IV b"; }
+
+      string bonusAtaqueEs = bonusAtaqueNivel != 0 ? $" + {bonusAtaqueNivel}" : "";
+      string bonusAtaqueEn = bonusAtaqueNivel != 0 ? $" + {bonusAtaqueNivel}" : "";
+
+      string danioEs = danioFijo > 0
+        ? $"3d6 + {danioFijo} + <color=#ea0606>Poder ({poderActual})</color>"
+        : $"3d6 + <color=#ea0606>Poder ({poderActual})</color>";
+      string danioEn = danioFijo > 0
+        ? $"3d6 + {danioFijo} + <color=#ea0606>Power ({poderActual})</color>"
+        : $"3d6 + <color=#ea0606>Power ({poderActual})</color>";
+
+      string cuerpo = "";
+      if (esIngles)
       {
-        // Español (igual que antes, solo encapsulado)
-        if(NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Descarga de Poder I</b></color>\n\n"; 
-          txtDescripcion += "<i>(Rango) Concentrando su energía, lanza una descarga arrolladora que impacta en un área en forma de T.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Área:</b> T (3 horizontal + 2 en vertical al final)\n";
-          txtDescripcion += $"- Ataque: <color=#ea0606>Poder</color>\n";
-          txtDescripcion += $"- Daño: 3d6+Poder Arcano\n";
-          txtDescripcion += $"- +2 Rango Crítico</color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-AP: 4  -Val: 0  -Esforzable: Sí\n-Enfriamiento: 4</color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +3 Daño</color>\n\n";
-              }
-            }
-          }
-        }
-
-        if(NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Descarga de Poder II</b></color>\n\n"; 
-          txtDescripcion += "<i>(Rango) Concentrando su energía, lanza una descarga arrolladora que impacta en un área en forma de T.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Área:</b> T (3 horizontal + 2 en vertical al final)\n";
-          txtDescripcion += $"- Ataque: <color=#ea0606>Poder</color>\n";
-          txtDescripcion += $"- Daño: 3d6+3+Poder Arcano\n";
-          txtDescripcion += $"- +2 Rango Crítico</color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-AP: 4  -Val: 0  -Esforzable: Sí\n-Enfriamiento: 4</color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-              }
-            }
-          }
-        }
-
-        if(NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Descarga de Poder III</b></color>\n\n"; 
-          txtDescripcion += "<i>(Rango) Concentrando su energía, lanza una descarga arrolladora que impacta en un área en forma de T.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Área:</b> T (3 horizontal + 2 en vertical al final)\n";
-          txtDescripcion += $"- Ataque: <color=#ea0606>Poder +1</color>\n";
-          txtDescripcion += $"- Daño: 3d6+3+Poder Arcano\n";
-          txtDescripcion += $"- +2 Rango Crítico</color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-AP: 4  -Val: 0  -Esforzable: Sí\n-Enfriamiento: 4</color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Opción A: -1 AP</color>\n";
-                txtDescripcion += $"<color=#dfea02>-Opción B: -1 Enfriamiento</color>\n";
-              }
-            }
-          }
-        }
-
-        if(NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Descarga de Poder IV a</b></color>\n\n"; 
-          txtDescripcion += "<i>(Rango) Concentrando su energía, lanza una descarga arrolladora que impacta en un área en forma de T.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Área:</b> T (3 horizontal + 2 en vertical al final)\n";
-          txtDescripcion += $"- Ataque: <color=#ea0606>Poder +1</color>\n";
-          txtDescripcion += $"- Daño: 3d6+3+Poder Arcano\n";
-          txtDescripcion += $"- +2 Rango Crítico</color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-AP: 3  -Val: 0  -Esforzable: Sí\n-Enfriamiento: 4</color>\n\n";
-        }
-
-        if(NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Descarga de Poder IV b</b></color>\n\n"; 
-          txtDescripcion += "<i>(Rango) Concentrando su energía, lanza una descarga arrolladora que impacta en un área en forma de T.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Área:</b> T (3 horizontal + 2 en vertical al final)\n";
-          txtDescripcion += $"- Ataque: <color=#ea0606>Poder +1</color>\n";
-          txtDescripcion += $"- Daño: 3d6+3+Poder Arcano\n";
-          txtDescripcion += $"- +2 Rango Crítico</color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-AP: 4  -Val: 0  -Esforzable: Sí\n-Enfriamiento: 3</color>\n\n";
-        }
+        cuerpo += "<b>Type:</b> Ranged (5 range)\n";
+        cuerpo += "<b>Target:</b> T area (3 horizontal + 2 at the far end)\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color> + Attack ({ataqueActual}){bonusAtaqueEn} vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
+        cuerpo += $"<b>Damage:</b> {danioEn} | <b>Type:</b> Arcane";
       }
-      if (TRADU.i.nIdioma == 2)
+      else
       {
-        // Inglés
-        if(NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Power Discharge I</b></color>\n\n"; 
-          txtDescripcion += "<i>(Range) Focusing energy, unleashes a sweeping attack that strikes in a T-shaped area.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Area:</b> T (3 horizontal + 2 vertical at the last column)\n";
-          txtDescripcion += $"- Attack: <color=#ea0606>Power</color>\n";
-          txtDescripcion += $"- Damage: 3d6+Arcane Power\n";
-          txtDescripcion += $"- +2 Critical Range</color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-AP: 4  -Val: 0  -Effortable: Yes\n-Cooldown: 4</color>\n\n";
+        cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
+        cuerpo += "<b>Objetivo:</b> Area en T (3 horizontal + 2 al fondo)\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
+        cuerpo += $"<b>Danio:</b> {danioEs} | <b>Tipo:</b> Arcano";
+      }
 
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +3 Damage</color>\n\n";
-              }
-            }
-          }
-        }
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
 
-        if(NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Power Discharge II</b></color>\n\n"; 
-          txtDescripcion += "<i>(Range) Focusing energy, unleashes a sweeping discharge that strikes in a T-shaped area.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Area:</b> T (3 horizontal + 2 vertical at the last column)\n";
-          txtDescripcion += $"- Attack: <color=#ea0606>Power</color>\n";
-          txtDescripcion += $"- Damage: 3d6+3+Arcane Power\n";
-          txtDescripcion += $"- +2 Critical Range</color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-AP: 4  -Val: 0  -Effortable: Yes\n-Cooldown: 4</color>\n\n";
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "The Channeler releases a concentrated shockwave that sweeps enemies in a T pattern."
+          : "El Canalizador libera una descarga concentrada que barre enemigos en patron de T.",
+        cuerpo,
+        costos,
+        "#5dade2");
 
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack</color>\n\n";
-              }
-            }
-          }
-        }
+      bool mostrarProximoNivel = EsEscenaCampa�a() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
+      {
+        return;
+      }
 
-        if(NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Power Discharge III</b></color>\n\n"; 
-          txtDescripcion += "<i>(Range) Focusing energy, unleashes a sweeping discharge that strikes in a T-shaped area.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Area:</b> T (3 horizontal + 2 vertical at the last column)\n";
-          txtDescripcion += $"- Attack: <color=#ea0606>Power +1</color>\n";
-          txtDescripcion += $"- Damage: 3d6+3+Arcane Power\n";
-          txtDescripcion += $"- +2 Critical Range</color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-AP: 4  -Val: 0  -Effortable: Yes\n-Cooldown: 4</color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: -1 AP</color>\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: -1 Cooldown</color>\n";
-              }
-            }
-          }
-        }
-
-        if(NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Power Discharge IV a</b></color>\n\n"; 
-          txtDescripcion += "<i>(Range) Focusing energy, unleashes a sweeping discharge that strikes in a T-shaped area.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Area:</b> T (3 horizontal + 2 vertical at the last column)\n";
-          txtDescripcion += $"- Attack: <color=#ea0606>Power +1</color>\n";
-          txtDescripcion += $"- Damage: 3d6+3+Arcane Power\n";
-          txtDescripcion += $"- +2 Critical Range</color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-AP: 3  -Val: 0  -Effortable: Yes\n-Cooldown: 4</color>\n\n";
-        }
-
-        if(NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Power Discharge IV b</b></color>\n\n"; 
-          txtDescripcion += "<i>(Range) Focusing energy, unleashes a sweeping discharge that strikes in a T-shaped area.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Area:</b> T (3 horizontal + 2 vertical at the last column)\n";
-          txtDescripcion += $"- Attack: <color=#ea0606>Power +1</color>\n";
-          txtDescripcion += $"- Damage: 3d6+3+Arcane Power\n";
-          txtDescripcion += $"- +2 Critical Range</color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>-AP: 4  -Val: 0  -Effortable: Yes\n-Cooldown: 3</color>\n\n";
-        }
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5 damage.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack roll bonus.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 AP) or Option B (-1 cooldown).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5 de danio.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 AP) u Opcion B (-1 enfriamiento).</color>"; }
       }
     }
 
@@ -546,6 +436,7 @@ private void ObtenerObjetivos()
 
     
 }
+
 
 
 

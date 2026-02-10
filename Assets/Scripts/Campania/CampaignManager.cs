@@ -169,7 +169,7 @@ public class CampaignManager : MonoBehaviour
     {
       CrearAcechador();
     }
-
+  
 
     AjustarDificultad();
    
@@ -448,7 +448,7 @@ public class CampaignManager : MonoBehaviour
     }
     if (ID == 12) //Ataque Subterráneo
     {
-      EscribirLog("-La Caravana ha sido emboscada por un ataque subterráneo.");
+      EscribirLog(TRADU.i.Traducir("-La Caravana ha sido emboscada por un ataque subterráneo."));
 
       goMenuBatallas.SetActive(true);
       scMenuBatallas.EventoBatallaSubterranea(scAtributosZona.FASE); //0 es Random
@@ -1230,7 +1230,7 @@ public class CampaignManager : MonoBehaviour
     if (EstadoAlientoNegro > 16 && scMenuSequito.TieneSequito(10)) //Sequito de Clérigos
     {
       scMenuSequito.RemoverSequito(10);
-      EscribirLog("-El Séquito de Clérigos ha perecido, ya que el Aliento Negro ha alcanzado un nivel crítico. -20 Esperanza");
+      EscribirLog(TRADU.i.Traducir("-El Séquito de Clérigos ha perecido, ya que el Aliento Negro ha alcanzado un nivel crítico. -20 Esperanza"));
     }
 
     

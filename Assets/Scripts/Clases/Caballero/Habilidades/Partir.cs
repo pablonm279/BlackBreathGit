@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class Partir : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de crpitico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ãcido - 8: Arcano
 
  
 
@@ -49,153 +49,79 @@ public class Partir : Habilidad
 
     public override void ActualizarDescripcion()
     {
-      if (TRADU.i.nIdioma == 1) // Español
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      var statsUI = ObtenerStatsDescripcionUI();
+
+      int fuerzaActual = statsUI.Fuerza;
+      int ataqueActual = statsUI.Ataque;
+      int bonusAtaqueNivel = NIVEL > 2 ? 2 : 0;
+      int bonusCritNivel = NIVEL == 5 ? 1 : 0;
+      int criticoMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab + bonusCritNivel), 2, 20);
+      int danioBaseFijo = 5 + (NIVEL > 1 ? 4 : 0);
+      int dcMiedo = NIVEL == 4 ? 5 : 3;
+      string bonusAtaqueTxt = bonusAtaqueNivel >= 0 ? $" + {bonusAtaqueNivel}" : $" - {Mathf.Abs(bonusAtaqueNivel)}";
+      string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Mental, dcMiedo);
+      string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Mental, dcMiedo);
+
+      string tituloEs = "Partir I";
+      string tituloEn = "Cleave I";
+      if (NIVEL == 2) { tituloEs = "Partir II"; tituloEn = "Cleave II"; }
+      if (NIVEL == 3) { tituloEs = "Partir III"; tituloEn = "Cleave III"; }
+      if (NIVEL == 4) { tituloEs = "Partir IV a"; tituloEn = "Cleave IV a"; }
+      if (NIVEL == 5) { tituloEs = "Partir IV b"; tituloEn = "Cleave IV b"; }
+
+      string cuerpo = "";
+      if (esIngles)
       {
-        if(NIVEL<2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Partir I</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza </color> - Daño: Cortante 2d10 +5 - </color>\n";
-          txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +4 Daño</color>\n\n";
-              }
-            }
-          }
-        }
-        if(NIVEL== 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Partir II</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza </color> - Daño: Cortante 2d10 +9 - </color>\n";
-          txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +2 Ataque</color>\n\n";
-              }
-            }
-          }
-        }
-        if(NIVEL== 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Partir III</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +2</color> - Daño: Cortante 2d10 +9 - </color>\n";
-          txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Opción A: +2 dificultad TS Mental Enemigos</color>\n";
-                txtDescripcion += $"<color=#dfea02>-Opción B: +1 Rango Crítico</color>\n";
-              }
-            }
-          }
-        }
-        if(NIVEL== 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Partir IV a</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +2</color> - Daño: Cortante 2d10 +9 - </color>\n";
-          txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 5. Aplica Aterrado.\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>";
-        }
-        if(NIVEL== 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Partir IV b</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero ataca con toda su fuerza al enemigo, ocasionando daños severos y aterra a sus enemigos.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +2</color> - Daño: Cortante 2d10 +9 - +1 Rango Crítico.</color> \n";
-          txtDescripcion += $"Si mata al enemigo: a todos los enemigos TS Mental vs 3. Aplica Aterrado.\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} Esforzable\n- Costo Val: {costoPM} </color>";
-        }
+        cuerpo += "<b>Type:</b> Melee\n";
+        cuerpo += "<b>Target:</b> 1 enemy in front range\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color> + Attack ({ataqueActual}){bonusAtaqueTxt} vs Defense. Fumble: 1-2. Crit: {criticoMin}-20\n";
+        cuerpo += $"<b>Damage:</b> 2d10 + {danioBaseFijo} + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
+        cuerpo += "<b>On kill:</b> All enemies roll save\n";
+        cuerpo += $"{lineaSalvacionEn}\n";
+        cuerpo += "<b>On failed save:</b> Terrified for 2 turns (-2 Attack, -1 Max AP, -2 Mental Save)";
       }
-      if (TRADU.i.nIdioma == 2) // Inglés
+      else
       {
-        if(NIVEL<2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Cleave I</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight strikes with all his might, dealing severe damage and terrifying his enemies.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength</color> - Damage: Slashing 2d10 +5 - </color>\n";
-          txtDescripcion += $"If the enemy is killed: all enemies Mental Save vs 3. Applies Terrified.\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable\n- Val Cost: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +4 Damage</color>\n\n";
-              }
-            }
-          }
-        }
-        if(NIVEL== 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Cleave II</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight strikes with all his might, dealing severe damage and terrifying his enemies.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength</color> - Damage: Slashing 2d10 +9 - </color>\n";
-          txtDescripcion += $"If the enemy is killed: all enemies Mental Save vs 3. Applies Terrified.\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable\n- Val Cost: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +2 Attack</color>\n\n";
-              }
-            }
-          }
-        }
-        if(NIVEL== 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Cleave III</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight strikes with all his might, dealing severe damage and terrifying his enemies.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +2</color> - Damage: Slashing 2d10 +9 - </color>\n";
-          txtDescripcion += $"If the enemy is killed: all enemies Mental Save vs 3. Applies Terrified.\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable\n- Val Cost: {costoPM} </color>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: +2 difficulty Mental Save Enemies</color>\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: +1 Critical Range</color>\n";
-              }
-            }
-          }
-        }
-        if(NIVEL== 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Cleave IV a</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight strikes with all his might, dealing severe damage and terrifying his enemies.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +2</color> - Damage: Slashing 2d10 +9 - </color>\n";
-          txtDescripcion += $"If the enemy is killed: all enemies Mental Save vs 5. Applies Terrified.\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable\n- Val Cost: {costoPM} </color>";
-        }
-        if(NIVEL== 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Cleave IV b</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight strikes with all his might, dealing severe damage and terrifying his enemies.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +2</color> - Damage: Slashing 2d10 +9 - +1 Critical Range.</color> \n";
-          txtDescripcion += $"If the enemy is killed: all enemies Mental Save vs 3. Applies Terrified.\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} Effortable\n- Val Cost: {costoPM} </color>";
-        }
+        cuerpo += "<b>Tipo:</b> Melee\n";
+        cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance frontal\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Critico: {criticoMin}-20\n";
+        cuerpo += $"<b>Danio:</b> 2d10 + {danioBaseFijo} + <color=#ea0606>Fuerza ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += "<b>Si mata al objetivo:</b> todos los enemigos hacen TS\n";
+        cuerpo += $"{lineaSalvacionEs}\n";
+        cuerpo += "<b>Si falla TS:</b> Aterrorizado por 2 turnos (-2 Ataque, -1 AP Max, -2 TS Mental)";
+      }
+
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "A crushing execution cut that can panic the entire enemy side on kill."
+          : "Un corte de ejecucion brutal que puede entrar en panico al lado enemigo al matar.",
+        cuerpo,
+        costos,
+        "#5dade2");
+
+      bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
+      {
+        return;
+      }
+
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +4 damage.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 attack roll bonus.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 save DC on kill) or Option B (+1 crit range).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +4 de danio.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 al bono de ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 DC del efecto al matar) u Opcion B (+1 rango critico).</color>"; }
       }
     }
 
@@ -217,7 +143,7 @@ public class Partir : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Acá van los efectos a Unidades.
+     if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
 
@@ -311,7 +237,7 @@ public class Partir : Habilidad
     
 
        fueElObjetivoAsesinado = objetivo;
-      Invoke("ChequeoMuerteObjetivo", 3.0f); //Chequea si el objetivo murió, y aplica efectos de ser así.
+      Invoke("ChequeoMuerteObjetivo", 3.0f); //Chequea si el objetivo muriÃ³, y aplica efectos de ser asÃ­.
 
 
 
@@ -319,7 +245,7 @@ public class Partir : Habilidad
 
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
+     else if (obj is Obstaculo) //AcÃ¡ van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -366,7 +292,7 @@ public class Partir : Habilidad
     if (fueElObjetivoAsesinado == null)
     {
       aplicarEfectos = true; //Si no existe se asume que murio
-    } //Si no había objetivo, no hace nada
+    } //Si no habÃ­a objetivo, no hace nada
     else if (fueElObjetivoAsesinado.HP_actual < 1)
     {
       aplicarEfectos = true; //Si no tiene vida, murio
@@ -383,7 +309,7 @@ public class Partir : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si está en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si estÃ¡ en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -405,7 +331,7 @@ public class Partir : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras también
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiÃ©n
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -517,7 +443,7 @@ public class Partir : Habilidad
 
     }
 
-    //Se fija si las 3 casillas de la columna 1 están vacias
+    //Se fija si las 3 casillas de la columna 1 estÃ¡n vacias
     foreach (Casilla cas in casillasAdyacentesyFrenteColumna1)
     {
       if (cas.bTieneUnidadoObstaculoParaMelee()) //si alguna de las 3 tiene algo, no aumenta el rango melee
@@ -611,7 +537,7 @@ public class Partir : Habilidad
                 if(uni.TiradaSalvacion(uni.mod_TSMental, nDif))
                 {
                     /////////////////////////////////////////////
-                    //BUFF ---- Así se aplica un buff/debuff
+                    //BUFF ---- AsÃ­ se aplica un buff/debuff
                     Buff buff = new Buff();
                     buff.buffNombre = "Aterrorizado";
                     buff.boolfDebufftBuff = false;
@@ -620,7 +546,7 @@ public class Partir : Habilidad
                     buff.cantAPMax -= 1;
                     buff.cantTsMental -= 2;
                     buff.AplicarBuff(uni);
-                    // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+                    // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
                     Buff buffComponent = ComponentCopier.CopyComponent(buff, uni.gameObject);
                     
                     VFXAplicarEnemigo(uni.gameObject);
@@ -647,4 +573,7 @@ public class Partir : Habilidad
 
     }
 }
+
+
+
 

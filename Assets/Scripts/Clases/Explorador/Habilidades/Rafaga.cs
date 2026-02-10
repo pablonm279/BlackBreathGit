@@ -59,169 +59,93 @@ public class Rafaga : Habilidad
 
 
       imHab = Resources.Load<Sprite>("imHab/Explorador_Rafaga");
-     
-       
+      ActualizarDescripcion();
     }
 
 
-  public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
   {
-    if (NIVEL < 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Ráfaga I</b></color>\n\n";
-      txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque}</color> - Daño: Perforante 1d10- </color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax} \n- Costo AP: 1 por tiro Esforzable \n- Costo Val: {costoPM} </color>\n\n";
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    var statsUI = ObtenerStatsDescripcionUI();
 
-      if (EsEscenaCampaña())
+    int agilidadActual = statsUI.Agilidad;
+    int ataqueActual = statsUI.Ataque;
+    int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+
+    string tituloEs = "Rafaga I";
+    string tituloEn = "Barrage I";
+    if (NIVEL == 2) { tituloEs = "Rafaga II"; tituloEn = "Barrage II"; }
+    if (NIVEL == 3) { tituloEs = "Rafaga III"; tituloEn = "Barrage III"; }
+    if (NIVEL == 4) { tituloEs = "Rafaga IV a"; tituloEn = "Barrage IV a"; }
+    if (NIVEL == 5) { tituloEs = "Rafaga IV b"; tituloEn = "Barrage IV b"; }
+
+    int bonusAtaqueNivel = bonusAtaque;
+
+    string cuerpo = "";
+    if (esIngles)
+    {
+      cuerpo += $"<b>Type:</b> Ranged ({hAlcance} range)\n";
+      cuerpo += "<b>Target:</b> 1 enemy in wide range (3-width). If it dies, continues on the next enemy in list\n";
+      cuerpo += "<b>Loop:</b> repeats shots until current AP reaches 0 or arrows reach 0\n";
+      cuerpo += $"<b>Roll (per shot):</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonusAtaqueNivel} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Damage (per shot):</b> 1d10 + 1 + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Piercing\n";
+      cuerpo += "<b>Resource:</b> consumes 1 Arrow and 1 AP per shot\n";
+      cuerpo += "<b>Turn flow:</b> using this skill ends your turn";
+    }
+    else
+    {
+      cuerpo += $"<b>Tipo:</b> Rango ({hAlcance} alcance)\n";
+      cuerpo += "<b>Objetivo:</b> 1 enemigo en rango amplio (ancho 3). Si muere, continua sobre el siguiente enemigo de la lista\n";
+      cuerpo += "<b>Bucle:</b> repite disparos hasta que tus AP actuales lleguen a 0 o te quedes sin flechas\n";
+      cuerpo += $"<b>Tirada (por disparo):</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaqueNivel} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Danio (por disparo):</b> 1d10 + 1 + <color=#ea0606>Agilidad ({agilidadActual})</color> | <b>Tipo:</b> Perforante\n";
+      cuerpo += "<b>Recurso:</b> consume 1 Flecha y 1 AP por disparo\n";
+      cuerpo += "<b>Flujo de turno:</b> usar esta habilidad termina tu turno";
+    }
+
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: variable (1 per shot)\n- Val Cost: {costoPM}"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: variable (1 por disparo)\n- Costo Val: {costoPM}";
+
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? tituloEn : tituloEs,
+      esIngles
+        ? "A sustained arrow sequence that drains your current action economy."
+        : "Una secuencia sostenida de flechas que vacia tu economia de acciones actual.",
+      cuerpo,
+      costos,
+      "#5dade2");
+
+    bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    if (mostrarProximoNivel)
+    {
+      if (esIngles)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack bonus.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 cooldown.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Val cost) or Option B (+2 attack bonus).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo Val) u Opcion B (+2 al bono de ataque).</color>"; }
+      }
+    }
+
+    if (CampaignManager.Instance != null && CampaignManager.Instance.gameObject != null && CampaignManager.Instance.gameObject.transform.parent != null && CampaignManager.Instance.gameObject.transform.parent.parent != null)
+    {
+      AdministradorEscenas admin = CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>();
+      if (admin != null && admin.escenaActual == 1)
+      {
+        ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
+        if (clase != null && clase.ObtenerCantidadFlechas() < 1)
         {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-          }
+          txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
         }
       }
-
     }
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Ráfaga II</b></color>\n\n";
-      txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque + 1}</color> - Daño: Perforante 1d10- </color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax} \n- Costo AP: 1 por tiro \n- Costo Val: {costoPM} </color>\n\n";
-
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 Cooldown</color>\n\n";
-          }
-        }
-      }
-    }
-    if (NIVEL == 3)
-    {
-      txtDescripcion = "<color=#5dade2><b>Ráfaga III</b></color>\n\n";
-      txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque + 1}</color> - Daño: Perforante 1d10- </color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax - 1} \n- Costo AP: 1 por tiro \n- Costo Val: {costoPM} </color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: -1 costo Valentía</color>\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: +2 Ataque</color>\n";
-          }
-        }
-      }
-
-    }
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Ráfaga IV a</b></color>\n\n";
-      txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque + 1}</color> - Daño: Perforante 1d10- </color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax - 1} \n- Costo AP: 1 por tiro \n- Costo Val: {costoPM - 1} </color>\n\n";
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Ráfaga IV b</b></color>\n\n";
-      txtDescripcion += "<i>El Explorador ataca repetidamente con su arco al enemigo, y si muere, busca otro enemigo al azar.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Ataca hasta quedarse sin AP o sin flechas.</b> -Ataque: <color=#ea0606>Agilidad {bonusAtaque + 3}</color> - Daño: Perforante 1d10- </color>\n";
-      txtDescripcion += $"<color=#44d3ec>-Flechas: 1 por tiro \n-Enfriamiento: {cooldownMax - 1} \n- Costo AP: 1 por tiro \n- Costo Val: {costoPM} </color>\n\n";
-    }
-      
-      if (TRADU.i.nIdioma == 2) // English translation
-      {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Burst I</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer repeatedly attacks the enemy with their bow, and if the enemy dies, seeks another random enemy.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Attacks until out of AP or arrows.</b> -Attack: <color=#ea0606>Agility {bonusAtaque}</color> - Damage: Piercing 1d10- </color>\n";
-          txtDescripcion += $"<color=#44d3ec>-Arrows: 1 per shot \n-Cooldown: {cooldownMax} \n- AP Cost: 1 per shot Effortable \n- Valor Cost: {costoPM} </color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Burst II</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer repeatedly attacks the enemy with their bow, and if the enemy dies, seeks another random enemy.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Attacks until out of AP or arrows.</b> -Attack: <color=#ea0606>Agility {bonusAtaque + 1}</color> - Damage: Piercing 1d10- </color>\n";
-          txtDescripcion += $"<color=#44d3ec>-Arrows: 1 per shot \n-Cooldown: {cooldownMax} \n- AP Cost: 1 per shot \n- Valor Cost: {costoPM} </color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: -1 Cooldown</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Burst III</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer repeatedly attacks the enemy with their bow, and if the enemy dies, seeks another random enemy.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Attacks until out of AP or arrows.</b> -Attack: <color=#ea0606>Agility {bonusAtaque + 1}</color> - Damage: Piercing 1d10- </color>\n";
-          txtDescripcion += $"<color=#44d3ec>-Arrows: 1 per shot \n-Cooldown: {cooldownMax - 1} \n- AP Cost: 1 per shot \n- Valor Cost: {costoPM} </color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: -1 Valor cost</color>\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: +2 Attack</color>\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Burst IV a</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer repeatedly attacks the enemy with their bow, and if the enemy dies, seeks another random enemy.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Attacks until out of AP or arrows.</b> -Attack: <color=#ea0606>Agility {bonusAtaque + 1}</color> - Damage: Piercing 1d10- </color>\n";
-          txtDescripcion += $"<color=#44d3ec>-Arrows: 1 per shot \n-Cooldown: {cooldownMax - 1} \n- AP Cost: 1 per shot \n- Valor Cost: {costoPM - 1} </color>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Burst IV b</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer repeatedly attacks the enemy with their bow, and if the enemy dies, seeks another random enemy.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Attacks until out of AP or arrows.</b> -Attack: <color=#ea0606>Agility {bonusAtaque + 3}</color> - Damage: Piercing 1d10- </color>\n";
-          txtDescripcion += $"<color=#44d3ec>-Arrows: 1 per shot \n-Cooldown: {cooldownMax - 1} \n- AP Cost: 1 per shot \n- Valor Cost: {costoPM} </color>\n\n";
-        }
-      }
-
-      if (CampaignManager.Instance.gameObject.transform.parent.parent.GetComponent<AdministradorEscenas>().escenaActual != 1)
-       {return;} // Sale del método si la escena no es "ES-Batallas"
-      ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
-    if (clase.ObtenerCantidadFlechas() < 1)
-    {
-        txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
-
-    }
-    }
-
+  }
 
     Casilla Origen;
     public override void Activar()
@@ -539,3 +463,5 @@ public class Rafaga : Habilidad
    
  
 }
+
+

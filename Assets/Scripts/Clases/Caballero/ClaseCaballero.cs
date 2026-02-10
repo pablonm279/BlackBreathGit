@@ -201,7 +201,7 @@ public class ClaseCaballero : Unidad
         if (reacc.NIVEL != 4) //Si tiene la reaccion activa y no es nivel 4a, la remueve
         {
           Destroy(reacc);
-          await gameObject.GetComponent<Unidad>().GenerarTextoFlotante("<s>" + "Postura Defensiva" + "</s>", Color.blue);
+          await gameObject.GetComponent<Unidad>().GenerarTextoFlotante("<s>" + TRADU.i.Traducir("Postura Defensiva") + "</s>", Color.blue);
 
 
         }
@@ -217,7 +217,7 @@ public class ClaseCaballero : Unidad
         if (uCausante.TiradaSalvacion(uCausante.mod_TSReflejos, 10))
         {
           uCausante.estado_ardiendo += 1; //Agrega el estado ardiente
-          uCausante.GenerarTextoFlotante("Ardiendo +1", Color.red);
+          uCausante.GenerarTextoFlotante(TRADU.i.Traducir("Ardiendo") + " +1", Color.red);
 
         }
 

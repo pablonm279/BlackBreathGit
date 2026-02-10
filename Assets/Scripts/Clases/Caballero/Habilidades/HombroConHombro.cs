@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -39,164 +39,86 @@ public class HombroConHombro : Habilidad
     }
     public override void ActualizarDescripcion()
     {
-      if (TRADU.i.nIdioma == 1) // Español
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+
+      int bonoDefensa = 2 + (NIVEL > 1 ? 1 : 0);
+      int bonoAtaque = 2 + (NIVEL > 2 ? 1 : 0);
+      bool daInvulnerable = NIVEL == 4;
+      bool daApMax = NIVEL == 5;
+
+      string tituloEs = "Hombro con Hombro I";
+      string tituloEn = "Shoulder to Shoulder I";
+      if (NIVEL == 2) { tituloEs = "Hombro con Hombro II"; tituloEn = "Shoulder to Shoulder II"; }
+      if (NIVEL == 3) { tituloEs = "Hombro con Hombro III"; tituloEn = "Shoulder to Shoulder III"; }
+      if (NIVEL == 4) { tituloEs = "Hombro con Hombro IV a"; tituloEn = "Shoulder to Shoulder IV a"; }
+      if (NIVEL == 5) { tituloEs = "Hombro con Hombro IV b"; tituloEn = "Shoulder to Shoulder IV b"; }
+
+      string cuerpo = "";
+      if (esIngles)
       {
-        if(NIVEL<2)
+        cuerpo += "<b>Type:</b> Support\n";
+        cuerpo += "<b>Target:</b> Self and adjacent allies in your column\n";
+        cuerpo += $"<b>Buff (3 turns):</b> +{bonoDefensa} Defense, +{bonoAtaque} Attack\n";
+        cuerpo += "<b>Per affected ally:</b> +1 Valor\n";
+        if (daInvulnerable)
         {
-          txtDescripcion = "<color=#5dade2><b>Hombro con Hombro I</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
-          txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +2 Defensa y Ataque por 3 Turnos. +1 Valentía a cada uno.</i>\n\n";
-          txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Defensa</color>\n\n";
-              }
-            }
-          }
+          cuerpo += "<b>Additional:</b> Invulnerable for 1 turn\n";
         }
-        if(NIVEL==2)
+        if (daApMax)
         {
-          txtDescripcion = "<color=#5dade2><b>Hombro con Hombro II</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
-          txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +3 Defensa y +2 Ataque por 3 Turnos. +1 Valentía a cada uno.</i>\n\n";
-          txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-              }
-            }
-          }
+          cuerpo += "<b>Additional:</b> +1 Max AP for 3 turns\n";
         }
-        if(NIVEL==3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Hombro con Hombro III</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
-          txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +3 Defensa y Ataque por 3 Turnos. +1 Valentía a cada uno.</i>\n\n";
-          txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Opción A: Otorga Invulnerabilidad por 1 Turno</color>\n";
-                txtDescripcion += $"<color=#dfea02>-Opción B: Otorga +1 AP</color>\n";
-              }
-            }
-          }
-        }
-        if(NIVEL==4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Hombro con Hombro IV a</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
-          txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +3 Defensa y +2 Ataque por 3 Turnos. +1 Valentía a cada uno.</i>\n";
-          txtDescripcion += $"<i>Invulnerables el primer turno.</i>\n\n";
-          txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
-        }
-        if(NIVEL==5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Hombro con Hombro IV b</b></color>\n\n"; 
-          txtDescripcion += "<i>El Caballero se posiciona junto a sus aliados y los impulsa a luchar eficazmente.</i>\n\n";
-          txtDescripcion += $"<i>Buff a aliados adyacentes y adyacentes a ellos en su misma columna: +3 Defensa y Ataque por 3 Turnos. +1 Valentía y AP a cada uno.</i>\n\n";
-          txtDescripcion += $"<i>Se cancela si alguno se mueve.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
-        }
+        cuerpo += "<b>Save:</b> None";
       }
-      if (TRADU.i.nIdioma == 2) // Inglés
+      else
       {
-        if(NIVEL<2)
+        cuerpo += "<b>Tipo:</b> Soporte\n";
+        cuerpo += "<b>Objetivo:</b> El usuario y aliados adyacentes en su columna\n";
+        cuerpo += $"<b>Buff (3 turnos):</b> +{bonoDefensa} Defensa, +{bonoAtaque} Ataque\n";
+        cuerpo += "<b>Por cada aliado afectado:</b> +1 Val\n";
+        if (daInvulnerable)
         {
-          txtDescripcion = "<color=#5dade2><b>Shoulder to Shoulder I</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight stands beside his allies and inspires them to fight effectively.</i>\n\n";
-          txtDescripcion += $"<i>Buff to adjacent allies and those adjacent to them in the same column: +2 Defense and Attack for 3 Turns. +1 Valor to each.</i>\n\n";
-          txtDescripcion += $"<i>Cancels if any move.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>\n\n";
+          cuerpo += "<b>Adicional:</b> Invulnerable por 1 turno\n";
+        }
+        if (daApMax)
+        {
+          cuerpo += "<b>Adicional:</b> +1 AP Max por 3 turnos\n";
+        }
+        cuerpo += "<b>TS:</b> No aplica";
+      }
 
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Defense</color>\n\n";
-              }
-            }
-          }
-        }
-        if(NIVEL==2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Shoulder to Shoulder II</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight stands beside his allies and inspires them to fight effectively.</i>\n\n";
-          txtDescripcion += $"<i>Buff to adjacent allies and those adjacent to them in the same column: +3 Defense and +2 Attack for 3 Turns. +1 Valor to each.</i>\n\n";
-          txtDescripcion += $"<i>Cancels if any move.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>\n\n";
+      string costos = esIngles
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
 
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack</color>\n\n";
-              }
-            }
-          }
-        }
-        if(NIVEL==3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Shoulder to Shoulder III</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight stands beside his allies and inspires them to fight effectively.</i>\n\n";
-          txtDescripcion += $"<i>Buff to adjacent allies and those adjacent to them in the same column: +3 Defense and Attack for 3 Turns. +1 Valor to each.</i>\n\n";
-          txtDescripcion += $"<i>Cancels if any move.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>\n\n";
+      txtDescripcion = ConstruirDescripcionEstandar(
+        esIngles ? tituloEn : tituloEs,
+        esIngles
+          ? "The Knight forms a compact frontline stance and boosts nearby allies."
+          : "El Caballero forma una linea cerrada y potencia a sus aliados cercanos.",
+        cuerpo,
+        costos,
+        "#5dade2");
 
-          if (EsEscenaCampaña())
-          {
-            if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
-            {
-              if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: Grants Invulnerability for 1 Turn</color>\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: Grants +1 AP</color>\n";
-              }
-            }
-          }
-        }
-        if(NIVEL==4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Shoulder to Shoulder IV a</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight stands beside his allies and inspires them to fight effectively.</i>\n\n";
-          txtDescripcion += $"<i>Buff to adjacent allies and those adjacent to them in the same column: +3 Defense and +2 Attack for 3 Turns. +1 Valor to each.</i>\n";
-          txtDescripcion += $"<i>Invulnerable the first turn.</i>\n\n";
-          txtDescripcion += $"<i>Cancels if any move.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>";
-        }
-        if(NIVEL==5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Shoulder to Shoulder IV b</b></color>\n\n"; 
-          txtDescripcion += "<i>The Knight stands beside his allies and inspires them to fight effectively.</i>\n\n";
-          txtDescripcion += $"<i>Buff to adjacent allies and those adjacent to them in the same column: +3 Defense and Attack for 3 Turns. +1 Valor and AP to each.</i>\n\n";
-          txtDescripcion += $"<i>Cancels if any move.</i>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} </color>";
-        }
+      bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      if (!mostrarProximoNivel)
+      {
+        return;
+      }
+
+      if (esIngles)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Defense buff.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Attack buff.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (Invulnerable 1 turn) or Option B (+1 Max AP).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al buff de Defensa.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al buff de Ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (Invulnerable 1 turno) u Opcion B (+1 AP Max).</color>"; }
       }
     }
-   
 
     Casilla Origen;
     public override void Activar()
@@ -216,13 +138,13 @@ public class HombroConHombro : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
 
-    if(obj is Unidad) //Acá van los efectos a Unidades.
+    if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
      {
 
       Unidad objetivo = (Unidad)obj;
         VFXAplicar(objetivo.gameObject);
        /////////////////////////////////////////////
-       //BUFF ---- Así se aplica un buff/debuff
+       //BUFF ---- AsÃ­ se aplica un buff/debuff
        Buff buff = new Buff();
        buff.buffNombre = "Hombro Con Hombro";
        buff.boolfDebufftBuff = true;
@@ -234,7 +156,7 @@ public class HombroConHombro : Habilidad
        if(NIVEL == 4){  objetivo.estado_invulnerable += 1;}
        if(NIVEL == 5){  buff.cantAPMax += 1;}
        buff.AplicarBuff(objetivo);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
        objetivo.Marcar(0);
@@ -272,7 +194,7 @@ public class HombroConHombro : Habilidad
       lCasillasafectadas.AddRange(Origen.ObtenerCasillasAdyacentesEnColumna());
       lCasillasafectadas.Add(Origen);
 
-      // Marca visualmente las casillas válidas para el clic de confirmación
+      // Marca visualmente las casillas vÃ¡lidas para el clic de confirmaciÃ³n
       foreach (Casilla cas in lCasillasafectadas)
       {
         cas.ActivarCapaColorAzul();
@@ -346,3 +268,6 @@ public class HombroConHombro : Habilidad
    
  
 }
+
+
+

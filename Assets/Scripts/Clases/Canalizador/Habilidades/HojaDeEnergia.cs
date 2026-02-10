@@ -50,158 +50,90 @@ public class HojaDeEnergia : Habilidad
       
     }
 
-  public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
   {
-    if (NIVEL < 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Hoja Energética I</b></color>\n\n";
-      txtDescripcion += "<i>Canalizando su poder en forma de hoja, desata un tajo de pura energía que atraviesa enemigos en área cercana, ignorando toda protección física o mágica.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>- Alcance: Melee (2 de Ancho)\n-Ataque: -1 + Fuerza\n- Daño: <color=#ea0606>Verdadero 2d6+Fuerza</color>\n- TS Fortaleza DC 12\n- Efectos: • Aplica <b>2 Sangrado</b> • Reduce todas las Resistencias en 3</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n- Esforzable: Sí</color>\n\n";
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    var statsUI = ObtenerStatsDescripcionUI();
 
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>- Próximo Nivel: +2 Daño</color>\n\n";
-          }
-        }
-      }
+    int fuerzaActual = statsUI.Fuerza;
+    int ataqueActual = statsUI.Ataque;
+    int criticoMin = Mathf.Clamp(19 - statsUI.CriticoRango, 2, 20);
+    int bonusAtaqueNivel = NIVEL > 2 ? 0 : -1;
+    int bonusDanioNivel = NIVEL > 1 ? 2 : 0;
+    int ancho = NIVEL == 4 ? 3 : 2;
+    int sangrado = NIVEL == 5 ? 3 : 2;
+    int reduccionRes = NIVEL == 5 ? 5 : 3;
+    string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, 12);
+    string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, 12);
+
+    string tituloEs = "Hoja Energetica I";
+    string tituloEn = "Energy Blade I";
+    if (NIVEL == 2) { tituloEs = "Hoja Energetica II"; tituloEn = "Energy Blade II"; }
+    if (NIVEL == 3) { tituloEs = "Hoja Energetica III"; tituloEn = "Energy Blade III"; }
+    if (NIVEL == 4) { tituloEs = "Hoja Energetica IV a"; tituloEn = "Energy Blade IV a"; }
+    if (NIVEL == 5) { tituloEs = "Hoja Energetica IV b"; tituloEn = "Energy Blade IV b"; }
+
+    string bonusAtaqueEs = bonusAtaqueNivel >= 0 ? $" + {bonusAtaqueNivel}" : $" - {Mathf.Abs(bonusAtaqueNivel)}";
+    string bonusAtaqueEn = bonusAtaqueNivel >= 0 ? $" + {bonusAtaqueNivel}" : $" - {Mathf.Abs(bonusAtaqueNivel)}";
+
+    string danioEs = bonusDanioNivel > 0
+      ? $"2d6 + {bonusDanioNivel} + <color=#ea0606>Fuerza ({fuerzaActual})</color>"
+      : $"2d6 + <color=#ea0606>Fuerza ({fuerzaActual})</color>";
+    string danioEn = bonusDanioNivel > 0
+      ? $"2d6 + {bonusDanioNivel} + <color=#ea0606>Strength ({fuerzaActual})</color>"
+      : $"2d6 + <color=#ea0606>Strength ({fuerzaActual})</color>";
+
+    string cuerpo = "";
+    if (esIngles)
+    {
+      cuerpo += "<b>Type:</b> Melee\n";
+      cuerpo += $"<b>Target:</b> Front area ({ancho} width)\n";
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color> + Attack ({ataqueActual}){bonusAtaqueEn} vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
+      cuerpo += $"<b>Damage:</b> {danioEn} | <b>Type:</b> True\n";
+      cuerpo += lineaSalvacionEn + "\n";
+      cuerpo += $"<b>On failed save:</b> +{sangrado} Bleed and -{reduccionRes} to all Resistances";
+    }
+    else
+    {
+      cuerpo += "<b>Tipo:</b> Melee\n";
+      cuerpo += $"<b>Objetivo:</b> Area frontal ({ancho} de ancho)\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
+      cuerpo += $"<b>Danio:</b> {danioEs} | <b>Tipo:</b> Verdadero\n";
+      cuerpo += lineaSalvacionEs + "\n";
+      cuerpo += $"<b>Si falla TS:</b> +{sangrado} Sangrado y -{reduccionRes} a todas las Resistencias";
     }
 
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Hoja Energética II</b></color>\n\n";
-      txtDescripcion += "<i>Canalizando su poder en forma de hoja, desata un tajo de pura energía que atraviesa enemigos en área cercana, ignorando toda protección física o mágica.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>- Alcance: Melee (2 de Ancho)\n-Ataque: -1 + Fuerza\n- Daño: <color=#ea0606>Verdadero 2d6+Fuerza+2</color>\n- TS Fortaleza DC 12\n- Efectos: • Aplica <b>2 Sangrado</b> • Reduce todas las Resistencias en 3</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n- Esforzable: Sí</color>\n\n";
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
 
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>- Próximo Nivel: +1 Ataque</color>\n\n";
-          }
-        }
-      }
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? tituloEn : tituloEs,
+      esIngles
+        ? "A condensed arcane blade cuts through the front line with true damage."
+        : "Una hoja arcana condensada atraviesa la primera linea con danio verdadero.",
+      cuerpo,
+      costos,
+      "#5dade2");
+
+    bool mostrarProximoNivel = EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    if (!mostrarProximoNivel)
+    {
+      return;
     }
 
-    if (NIVEL == 3)
+    if (esIngles)
     {
-      txtDescripcion = "<color=#5dade2><b>Hoja Energética III</b></color>\n\n";
-      txtDescripcion += "<i>Canalizando su poder en forma de hoja, desata un tajo de pura energía que atraviesa enemigos en área cercana, ignorando toda protección física o mágica.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>- Alcance: Melee (2 de Ancho)\n-Ataque: 0 + Fuerza\n- Daño: <color=#ea0606>Verdadero 2d6+Fuerza+2</color>\n- TS Fortaleza DC 12\n- Efectos: • Aplica <b>2 Sangrado</b> • Reduce todas las Resistencias en 3</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n- Esforzable: Sí</color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>- Opción A: +1 Ancho</color>\n";
-            txtDescripcion += $"<color=#dfea02>- Opción B: +2 Resistencias reducidas y +1 Sangrado</color>\n\n";
-          }
-        }
-      }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 damage.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack roll bonus.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 width) or Option B (+1 Bleed and -2 Resistances).</color>"; }
     }
-
-    if (NIVEL == 4)
+    else
     {
-      txtDescripcion = "<color=#5dade2><b>Hoja Energética IV a</b></color>\n\n";
-      txtDescripcion += "<i>Canalizando su poder en forma de hoja, desata un tajo de pura energía que atraviesa enemigos en área cercana, ignorando toda protección física o mágica.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>- Alcance: Melee (<b>3 de Ancho</b>)\n-Ataque: 0 + Fuerza\n- Daño: <color=#ea0606>Verdadero 2d6+Fuerza+2</color>\n- TS Fortaleza DC 12\n- Efectos: • Aplica <b>2 Sangrado</b> • Reduce todas las Resistencias en 3</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n- Esforzable: Sí</color>\n\n";
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 ancho) u Opcion B (+1 Sangrado y -2 Resistencias).</color>"; }
     }
-
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Hoja Energética IV b</b></color>\n\n";
-      txtDescripcion += "<i>Canalizando su poder en forma de hoja, desata un tajo de pura energía que atraviesa enemigos en área cercana, ignorando toda protección física o mágica.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>- Alcance: Melee (2 de Ancho)\n-Ataque: 0 + Fuerza\n- Daño: <color=#ea0606>Verdadero 2d6+Fuerza+2</color>\n- TS Fortaleza DC 12\n- Efectos: • Aplica <b>3 Sangrado</b> • Reduce todas las Resistencias en <b>5</b></color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM} \n- Esforzable: Sí</color>\n\n";
-    }
-
-  if (TRADU.i.nIdioma == 2) // English translation
-  {
-    if (NIVEL < 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Energy Blade I</b></color>\n\n";
-      txtDescripcion += "<i>Channeling power into a blade, unleashes a slash of pure energy that pierces enemies in a nearby area, ignoring all physical or magical protection.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>- Range: Melee (2 Wide)\n- Attack: -1 + Strength\n- Damage: <color=#ea0606>True 2d6+Strength</color>\n- Fortitude Save DC 12\n- Effects: • Applies <b>2 Bleed</b> • Reduces all Resistances by 3</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n- Effortable: Yes</color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>- Next Level: +2 Damage</color>\n\n";
-          }
-        }
-      }
-    }
-
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Energy Blade II</b></color>\n\n";
-      txtDescripcion += "<i>Channeling power into a blade, unleashes a slash of pure energy that pierces enemies in a nearby area, ignoring all physical or magical protection.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>- Range: Melee (2 Wide)\n- Attack: -1 + Strength\n- Damage: <color=#ea0606>True 2d6+Strength+2</color>\n- Fortitude Save DC 12\n- Effects: • Applies <b>2 Bleed</b> • Reduces all Resistances by 3</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n- Effortable: Yes</color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>- Next Level: +1 Attack</color>\n\n";
-          }
-        }
-      }
-    }
-
-    if (NIVEL == 3)
-    {
-      txtDescripcion = "<color=#5dade2><b>Energy Blade III</b></color>\n\n";
-      txtDescripcion += "<i>Channeling power into a blade, unleashes a slash of pure energy that pierces enemies in a nearby area, ignoring all physical or magical protection.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>- Range: Melee (2 Wide)\n- Attack: 0 + Strength\n- Damage: <color=#ea0606>True 2d6+Strength+2</color>\n- Fortitude Save DC 12\n- Effects: • Applies <b>2 Bleed</b> • Reduces all Resistances by 3</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n- Effortable: Yes</color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>- Option A: +1 Width</color>\n";
-            txtDescripcion += $"<color=#dfea02>- Option B: +2 Reduced Resistances and +1 Bleed</color>\n\n";
-          }
-        }
-      }
-    }
-
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Energy Blade IV a</b></color>\n\n";
-      txtDescripcion += "<i>Channeling power into a blade, unleashes a slash of pure energy that pierces enemies in a nearby area, ignoring all physical or magical protection.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>- Range: Melee (<b>3 Wide</b>)\n- Attack: 0 + Strength\n- Damage: <color=#ea0606>True 2d6+Strength+2</color>\n- Fortitude Save DC 12\n- Effects: • Applies <b>2 Bleed</b> • Reduces all Resistances by 3</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n- Effortable: Yes</color>\n\n";
-    }
-
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Energy Blade IV b</b></color>\n\n";
-      txtDescripcion += "<i>Channeling power into a blade, unleashes a slash of pure energy that pierces enemies in a nearby area, ignoring all physical or magical protection.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8>- Range: Melee (2 Wide)\n- Attack: 0 + Strength\n- Damage: <color=#ea0606>True 2d6+Strength+2</color>\n- Fortitude Save DC 12\n- Effects: • Applies <b>3 Bleed</b> • Reduces all Resistances by <b>5</b></color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM} \n- Effortable: Yes</color>\n\n";
-    }
-  }
 
   }
 
@@ -553,3 +485,4 @@ public class HojaDeEnergia : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
+

@@ -38,170 +38,71 @@ public class Fogata : Habilidad
       imHab = Resources.Load<Sprite>("imHab/Explorador_Fogata");
       ActualizarDescripcion();
     }
-  public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
   {
-    if (NIVEL < 2)
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+
+    int trampaUsos = NIVEL > 1 ? 4 : 3;
+    int duracionTrampaTurnos = NIVEL > 1 ? 5 : 4;
+    string dadoFuego = NIVEL == 4 ? "1d9" : "1d6";
+
+    string tituloEs = "Fogata I";
+    string tituloEn = "Campfire I";
+    if (NIVEL == 2) { tituloEs = "Fogata II"; tituloEn = "Campfire II"; }
+    if (NIVEL == 3) { tituloEs = "Fogata III"; tituloEn = "Campfire III"; }
+    if (NIVEL == 4) { tituloEs = "Fogata IV a"; tituloEn = "Campfire IV a"; }
+    if (NIVEL == 5) { tituloEs = "Fogata IV b"; tituloEn = "Campfire IV b"; }
+
+    string cuerpo = "";
+    if (esIngles)
     {
-      txtDescripcion = "<color=#5dade2><b>Fogata I</b></color>\n\n";
-
-      txtDescripcion += "<i>El Explorador prende una fogata en el campo de batalla que usará para encender sus flechas y obtener daño fuego.</i>\n";
-      txtDescripcion += "<i>Siempre que el explorador este adyacente (arriba, abajo y a los lados) de la fogata obtiene el buff.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Buff: +1d6 daño fuego. Dura 3 turnos.</b>  </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Turno duración</color>\n\n";
-          }
-        }
-      }
+      cuerpo += "<b>Type:</b> Utility Trap\n";
+      cuerpo += "<b>Target:</b> Adjacent tile (including own tile)\n";
+      cuerpo += $"<b>Campfire trap:</b> {duracionTrampaTurnos} turns, {trampaUsos} uses\n";
+      cuerpo += "<b>Trap trigger:</b> 1d3 fire damage (persistent)\n";
+      cuerpo += $"<b>Adjacency buff:</b> while adjacent to a campfire, gains fire arrows (+{dadoFuego} fire damage on attacks)";
     }
-    if (NIVEL == 2)
+    else
     {
-      txtDescripcion = "<color=#5dade2><b>Fogata II</b></color>\n\n";
-
-      txtDescripcion += "<i>El Explorador prende una fogata en el campo de batalla que usará para encender sus flechas y obtener daño fuego.</i>\n";
-      txtDescripcion += "<i>Siempre que el explorador este adyacente (arriba, abajo y a los lados) de la fogata obtiene el buff.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Buff: +1d6 daño fuego. Dura 4 turnos.</b>  </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 costo AP</color>\n\n";
-          }
-        }
-      }
+      cuerpo += "<b>Tipo:</b> Trampa de Utilidad\n";
+      cuerpo += "<b>Objetivo:</b> Casilla adyacente (incluye tu propia casilla)\n";
+      cuerpo += $"<b>Trampa fogata:</b> {duracionTrampaTurnos} turnos, {trampaUsos} usos\n";
+      cuerpo += "<b>Activacion de trampa:</b> 1d3 danio de fuego (persistente)\n";
+      cuerpo += $"<b>Buff por adyacencia:</b> mientras estas adyacente a una fogata, ganas flechas de fuego (+{dadoFuego} danio de fuego en ataques)";
     }
-    if (NIVEL == 3)
+
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? tituloEn : tituloEs,
+      esIngles
+        ? "Sets battlefield control and empowers shots near the fire."
+        : "Planta control en el terreno y potencia disparos cerca del fuego.",
+      cuerpo,
+      costos,
+      "#5dade2");
+
+    bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    if (!mostrarProximoNivel)
     {
-      txtDescripcion = "<color=#5dade2><b>Fogata III</b></color>\n\n";
-
-      txtDescripcion += "<i>El Explorador prende una fogata en el campo de batalla que usará para encender sus flechas y obtener daño fuego.</i>\n";
-      txtDescripcion += "<i>Siempre que el explorador este adyacente (arriba, abajo y a los lados) de la fogata obtiene el buff.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Buff: +1d6 daño fuego. Dura 4 turnos.</b>  </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP - 1} \n- Costo Val: {costoPM} \n</color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: +0d3 daño fuego. </color>\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: -1 costo AP. </color>\n";
-          }
-        }
-      }
+      return;
     }
-    if (NIVEL == 4)
+
+    if (esIngles)
     {
-      txtDescripcion = "<color=#5dade2><b>Fogata IVa</b></color>\n\n";
-
-      txtDescripcion += "<i>El Explorador prende una fogata en el campo de batalla que usará para encender sus flechas y obtener daño fuego.</i>\n";
-      txtDescripcion += "<i>Siempre que el explorador este adyacente (arriba, abajo y a los lados) de la fogata obtiene el buff.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Buff: +1d9 daño fuego. Dura 4 turnos.</b>  </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 trap use and +1 trap duration turn.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 AP cost.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1d3 fire-arrow bonus) or Option B (-1 AP cost).</color>"; }
     }
-    if (NIVEL == 5)
+    else
     {
-      txtDescripcion = "<color=#5dade2><b>Fogata IVb</b></color>\n\n";
-
-      txtDescripcion += "<i>El Explorador prende una fogata en el campo de batalla que usará para encender sus flechas y obtener daño fuego.</i>\n";
-      txtDescripcion += "<i>Siempre que el explorador este adyacente (arriba, abajo y a los lados) de la fogata obtiene el buff.</i>\n\n";
-      txtDescripcion += $"<color=#c8c8c8><b>Buff: +1d9 daño fuego. Dura 4 turnos.</b>  </color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP - 2} \n- Costo Val: {costoPM} \n</color>\n\n";
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 uso de trampa y +1 turno de duracion de trampa.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 costo AP.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1d3 al bono de flechas de fuego) u Opcion B (-1 costo AP).</color>"; }
     }
-       
-      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-      {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Campfire I</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer lights a campfire on the battlefield to ignite their arrows and gain fire damage.</i>\n";
-          txtDescripcion += "<i>Whenever the explorer is adjacent (up, down, and sides) to the campfire, they gain the buff.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff: +1d6 fire damage. Lasts 3 turns.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Turn duration</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Campfire II</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer lights a campfire on the battlefield to ignite their arrows and gain fire damage.</i>\n";
-          txtDescripcion += "<i>Whenever the explorer is adjacent (up, down, and sides) to the campfire, they gain the buff.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff: +1d6 fire damage. Lasts 4 turns.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: -1 AP cost</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Campfire III</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer lights a campfire on the battlefield to ignite their arrows and gain fire damage.</i>\n";
-          txtDescripcion += "<i>Whenever the explorer is adjacent (up, down, and sides) to the campfire, they gain the buff.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff: +1d6 fire damage. Lasts 4 turns.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP - 1} \n- Val Cost: {costoPM} \n</color>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: +0d3 fire damage. </color>\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: -1 AP cost. </color>\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Campfire IVa</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer lights a campfire on the battlefield to ignite their arrows and gain fire damage.</i>\n";
-          txtDescripcion += "<i>Whenever the explorer is adjacent (up, down, and sides) to the campfire, they gain the buff.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff: +1d9 fire damage. Lasts 4 turns.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} \n</color>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Campfire IVb</b></color>\n\n";
-          txtDescripcion += "<i>The Explorer lights a campfire on the battlefield to ignite their arrows and gain fire damage.</i>\n";
-          txtDescripcion += "<i>Whenever the explorer is adjacent (up, down, and sides) to the campfire, they gain the buff.</i>\n\n";
-          txtDescripcion += $"<color=#c8c8c8><b>Buff: +1d9 fire damage. Lasts 4 turns.</b>  </color>\n\n";
-          txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP - 2} \n- Val Cost: {costoPM} \n</color>\n\n";
-        }
-      }
-
-
-
-    }
+  }
     void Start()
     {
       
@@ -282,3 +183,4 @@ public class Fogata : Habilidad
 
  
 }
+

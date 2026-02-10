@@ -36,147 +36,86 @@ public class SalmoPurificador : Habilidad
      
 
     }
-  public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
   {
-    if (NIVEL < 2)
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+
+    int debuffsPorUnidad = 1;
+    if (NIVEL > 1) { debuffsPorUnidad += 1; }
+    if (NIVEL == 4) { debuffsPorUnidad += 1; }
+    bool daValentia = NIVEL == 5;
+
+    string tituloEs = "Salmo Purificador I";
+    string tituloEn = "Purifying Psalm I";
+    if (NIVEL == 2) { tituloEs = "Salmo Purificador II"; tituloEn = "Purifying Psalm II"; }
+    if (NIVEL == 3) { tituloEs = "Salmo Purificador III"; tituloEn = "Purifying Psalm III"; }
+    if (NIVEL == 4) { tituloEs = "Salmo Purificador IV a"; tituloEn = "Purifying Psalm IV a"; }
+    if (NIVEL == 5) { tituloEs = "Salmo Purificador IV b"; tituloEn = "Purifying Psalm IV b"; }
+
+    string cuerpo = "";
+    if (esIngles)
     {
-      txtDescripcion = "<color=#5dade2><b>Salmo Purificador I</b></color>\n\n";
-
-      txtDescripcion += "<i>Remueve 1 debuff no ambiental al azar del objetivo y de los aliados en casillas adyacentes (no en diagonal).</i>\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-
-      if (EsEscenaCampaña())
+      cuerpo += "<b>Type:</b> Ranged (4 range)\n";
+      cuerpo += "<b>Target:</b> 1 unit in range\n";
+      cuerpo += "<b>Area:</b> Target + adjacent units\n";
+      cuerpo += $"<b>Effect:</b> Removes up to {debuffsPorUnidad} removable Debuffs from each affected unit\n";
+      if (daValentia)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: Remueve 1 debuff extra.</color>\n\n";
-          }
-        }
+        cuerpo += "<b>IV b Extra:</b> +1 Valor to each affected unit per removed Debuff\n";
       }
+      cuerpo += "<b>Requirement:</b> Needs at least 1 Fervor to activate\n";
+      cuerpo += "<b>On cast:</b> Does not consume Fervor";
     }
-    if (NIVEL == 2)
+    else
     {
-      txtDescripcion = "<color=#5dade2><b>Salmo Purificador II</b></color>\n\n";
-
-      txtDescripcion += "<i>Remueve 2 debuff no ambientales al azar del objetivo y de los aliados en casillas adyacentes (no en diagonal).</i>\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-      if (EsEscenaCampaña())
+      cuerpo += "<b>Tipo:</b> Rango (4 alcance)\n";
+      cuerpo += "<b>Objetivo:</b> 1 unidad en rango\n";
+      cuerpo += "<b>Area:</b> Objetivo + unidades adyacentes\n";
+      cuerpo += $"<b>Efecto:</b> Remueve hasta {debuffsPorUnidad} Debuffs removibles de cada unidad afectada\n";
+      if (daValentia)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 Cooldown</color>\n\n";
-          }
-        }
+        cuerpo += "<b>Extra IV b:</b> +1 Valentia a cada unidad afectada por cada Debuff removido\n";
       }
+      cuerpo += "<b>Requisito:</b> Necesita al menos 1 Fervor para activarse\n";
+      cuerpo += "<b>Al lanzar:</b> No consume Fervor";
     }
-    if (NIVEL == 3)
+
+    string costos = esIngles
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
+
+    txtDescripcion = ConstruirDescripcionEstandar(
+      esIngles ? tituloEn : tituloEs,
+      esIngles
+        ? "A cleansing chant that removes hostile effects from a small cluster."
+        : "Un canto de limpieza que remueve efectos negativos en un pequeno grupo.",
+      cuerpo,
+      costos,
+      "#5dade2");
+
+    bool mostrarProximoNivel = EsEscenaCampaña()
+      && CampaignManager.Instance != null
+      && CampaignManager.Instance.scMenuPersonajes != null
+      && CampaignManager.Instance.scMenuPersonajes.pSel != null
+      && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    if (!mostrarProximoNivel)
     {
-      txtDescripcion = "<color=#5dade2><b>Salmo Purificador III</b></color>\n\n";
-
-      txtDescripcion += "<i>Remueve 2 debuff no ambientales al azar del objetivo y de los aliados en casillas adyacentes (no en diagonal).</i>\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax - 1} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: Remueve 1 debuff extra. </color>\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: Da +1 Valentía por debuff removido.</color>\n";
-          }
-        }
-      }
+      return;
     }
-    if (NIVEL == 4)
+
+    if (esIngles)
     {
-      txtDescripcion = "<color=#5dade2><b>Salmo Purificador IV a</b></color>\n\n";
-
-      txtDescripcion += "<i>Remueve 3 debuff no ambientales al azar del objetivo y de los aliados en casillas adyacentes (no en diagonal).</i>\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax - 1} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: removes +1 Debuff per unit.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 cooldown.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 removed Debuff) or Option B (+1 Valor per removed Debuff).</color>"; }
     }
-    if (NIVEL == 5)
+    else
     {
-      txtDescripcion = "<color=#5dade2><b>Salmo Purificador IV b</b></color>\n\n";
-
-      txtDescripcion += "<i>Remueve 2 debuff no ambientales al azar del objetivo y de los aliados en casillas adyacentes (no en diagonal).</i>\n";
-      txtDescripcion += "<i>Otorga 1 Punto de Valentía por cada debuff removido.</i>\n";
-      txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax - 1} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} \n</color>\n\n";
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: remueve +1 Debuff por unidad.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 Debuff removido) u Opcion B (+1 Valentia por Debuff removido).</color>"; }
     }
-         
-        if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-        {
-          if (NIVEL < 2)
-          {
-            txtDescripcion = "<color=#5dade2><b>Purifying Psalm I</b></color>\n\n";
-            txtDescripcion += "<i>Removes 1 random non-environmental debuff from the target and adjacent allies (not diagonally).</i>\n";
-            txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} \n</color>\n\n";
-            if (EsEscenaCampaña())
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-              {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                {
-                  txtDescripcion += $"<color=#dfea02>-Next Level: Removes 1 extra debuff.</color>\n\n";
-                }
-              }
-            }
-          }
-          if (NIVEL == 2)
-          {
-            txtDescripcion = "<color=#5dade2><b>Purifying Psalm II</b></color>\n\n";
-            txtDescripcion += "<i>Removes 2 random non-environmental debuffs from the target and adjacent allies (not diagonally).</i>\n";
-            txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} \n</color>\n\n";
-            if (EsEscenaCampaña())
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-              {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                {
-                  txtDescripcion += $"<color=#dfea02>-Next Level: -1 Cooldown</color>\n\n";
-                }
-              }
-            }
-          }
-          if (NIVEL == 3)
-          {
-            txtDescripcion = "<color=#5dade2><b>Purifying Psalm III</b></color>\n\n";
-            txtDescripcion += "<i>Removes 2 random non-environmental debuffs from the target and adjacent allies (not diagonally).</i>\n";
-            txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} \n</color>\n\n";
-            if (EsEscenaCampaña())
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-              {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                {
-                  txtDescripcion += $"<color=#dfea02>-Option A: Removes 1 extra debuff. </color>\n";
-                  txtDescripcion += $"<color=#dfea02>-Option B: Grants +1 Valor for each debuff removed.</color>\n";
-                }
-              }
-            }
-          }
-          if (NIVEL == 4)
-          {
-            txtDescripcion = "<color=#5dade2><b>Purifying Psalm IV a</b></color>\n\n";
-            txtDescripcion += "<i>Removes 3 random non-environmental debuffs from the target and adjacent allies (not diagonally).</i>\n";
-            txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} \n</color>\n\n";
-          }
-          if (NIVEL == 5)
-          {
-            txtDescripcion = "<color=#5dade2><b>Purifying Psalm IV b</b></color>\n\n";
-            txtDescripcion += "<i>Removes 2 random non-environmental debuffs from the target and adjacent allies (not diagonally).</i>\n";
-            txtDescripcion += "<i>Grants 1 Valor Point for each debuff removed.</i>\n";
-            txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax - 1} \n- AP Cost: {costoAP} \n- Valor Cost: {costoPM} \n</color>\n\n";
-          }
-        }
-
-
-
-    }
+  }
     void Start()
     {
        
