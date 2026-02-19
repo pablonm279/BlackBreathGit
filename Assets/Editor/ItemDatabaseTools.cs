@@ -341,6 +341,12 @@ public static class ItemDatabaseTools
             string nameFromPath = Path.GetFileNameWithoutExtension(newPath);
             item.sNombreItem = nameFromPath;
             item.itemDescripcion = string.Empty;
+
+            if (item is Consumible consumible)
+            {
+                consumible.efectoConsumible = new ConsumibleEfectoData();
+            }
+
             EditorUtility.SetDirty(item);
             AssetDatabase.SaveAssets();
         }
@@ -459,6 +465,7 @@ public static class ItemDatabaseTools
 
         entry.buffs = CloneBuffs(source.buffs);
         entry.debuffsImpactoArma = CloneDebuffsImpactoArma(source.debuffsImpactoArma);
+        entry.efectoConsumible = CloneConsumibleEfectoData(source.efectoConsumible);
 
         entry.habilidadAtaque = source.habilidadAtaque;
         entry.habilidadExtra1 = source.habilidadExtra1;
@@ -579,6 +586,18 @@ public static class ItemDatabaseTools
             }
         }
 
+        if (entry.efectoConsumible == null)
+        {
+            if (item is Consumible consumibleDefault)
+            {
+                entry.efectoConsumible = CloneConsumibleEfectoData(consumibleDefault.ObtenerEfectoConsumibleNormalizado());
+            }
+            else
+            {
+                entry.efectoConsumible = new ConsumibleEfectoData();
+            }
+        }
+
         if (entry.tags == null)
         {
             entry.tags = new List<string>();
@@ -626,6 +645,7 @@ public static class ItemDatabaseTools
         entry.buffs.espinasDanioPlano = item.espinasDanioPlano;
         entry.buffs.espinasDanioPorcentaje = item.espinasDanioPorcentaje;
         entry.debuffsImpactoArma = new List<DebuffImpactoArmaData>();
+        entry.efectoConsumible = new ConsumibleEfectoData();
         entry.habilidadAtaque = null;
         entry.habilidadExtra1 = null;
         entry.habilidadExtra2 = null;
@@ -658,6 +678,10 @@ public static class ItemDatabaseTools
             CopyBuffsFromAccesorio(entry.buffs, accesorio);
             entry.habilidadExtra1 = accesorio.habilidadExtra1;
             entry.habilidadExtra2 = accesorio.habilidadExtra2;
+        }
+        else if (item is Consumible consumible)
+        {
+            entry.efectoConsumible = CloneConsumibleEfectoData(consumible.ObtenerEfectoConsumibleNormalizado());
         }
 
         if (entry.tags == null)
@@ -735,6 +759,10 @@ public static class ItemDatabaseTools
             changed |= ApplyBuffsToAccesorio(accesorio, entry.buffs);
             changed |= SetObject(ref accesorio.habilidadExtra1, entry.habilidadExtra1);
             changed |= SetObject(ref accesorio.habilidadExtra2, entry.habilidadExtra2);
+        }
+        else if (item is Consumible consumible)
+        {
+            changed |= SetConsumibleEfectoData(ref consumible.efectoConsumible, entry.efectoConsumible);
         }
 
         return changed;
@@ -870,6 +898,11 @@ public static class ItemDatabaseTools
         }
 
         return clone;
+    }
+
+    private static ConsumibleEfectoData CloneConsumibleEfectoData(ConsumibleEfectoData source)
+    {
+        return source != null ? source.Clone() : new ConsumibleEfectoData();
     }
 
     private static DebuffImpactoArmaData CloneDebuffImpactoArma(DebuffImpactoArmaData source)
@@ -1228,6 +1261,99 @@ public static class ItemDatabaseTools
 
         current = target;
         return true;
+    }
+
+    private static bool SetConsumibleEfectoData(ref ConsumibleEfectoData current, ConsumibleEfectoData next)
+    {
+        ConsumibleEfectoData target = CloneConsumibleEfectoData(next);
+        if (ConsumibleEfectoDataIgual(current, target))
+        {
+            return false;
+        }
+
+        current = target;
+        return true;
+    }
+
+    private static bool ConsumibleEfectoDataIgual(ConsumibleEfectoData a, ConsumibleEfectoData b)
+    {
+        if (ReferenceEquals(a, b))
+        {
+            return true;
+        }
+
+        if (a == null || b == null)
+        {
+            return false;
+        }
+
+        return a.curacionBase == b.curacionBase
+            && a.curacionDadosCantidad == b.curacionDadosCantidad
+            && a.curacionDadosCaras == b.curacionDadosCaras
+            && a.curacionPorcentajeHPMax == b.curacionPorcentajeHPMax
+            && a.removerDebuffs == b.removerDebuffs
+            && a.removerBuffs == b.removerBuffs
+            && a.removerEstadosNegativos == b.removerEstadosNegativos
+            && a.modificarRegeneracionVida == b.modificarRegeneracionVida
+            && a.modificarRegeneracionArmadura == b.modificarRegeneracionArmadura
+            && a.modificarEvasion == b.modificarEvasion
+            && a.aplicarBuff == b.aplicarBuff
+            && a.nombreBuff == b.nombreBuff
+            && a.buffEsBeneficio == b.buffEsBeneficio
+            && a.duracionBuffRondas == b.duracionBuffRondas
+            && a.buffReferencia == b.buffReferencia
+            && ConsumibleBuffDataIgual(a.buff, b.buff);
+    }
+
+    private static bool ConsumibleBuffDataIgual(ConsumibleBuffData a, ConsumibleBuffData b)
+    {
+        if (ReferenceEquals(a, b))
+        {
+            return true;
+        }
+
+        if (a == null || b == null)
+        {
+            return false;
+        }
+
+        return a.cantAtFue == b.cantAtFue
+            && a.cantAtAgi == b.cantAtAgi
+            && a.cantAtPod == b.cantAtPod
+            && a.cantIniciativa == b.cantIniciativa
+            && a.cantAPMax == b.cantAPMax
+            && a.cantPMMax == b.cantPMMax
+            && a.cantHPMax == b.cantHPMax
+            && a.cantArmadura == b.cantArmadura
+            && a.cantDefensa == b.cantDefensa
+            && a.cantAtaque == b.cantAtaque
+            && a.cantDanioPorcentaje == b.cantDanioPorcentaje
+            && a.cantCritDado == b.cantCritDado
+            && a.cantCritDanio == b.cantCritDanio
+            && a.cantTsReflejos == b.cantTsReflejos
+            && a.cantTsFortaleza == b.cantTsFortaleza
+            && a.cantTsMental == b.cantTsMental
+            && a.cantResFue == b.cantResFue
+            && a.cantResHie == b.cantResHie
+            && a.cantResRay == b.cantResRay
+            && a.cantResAci == b.cantResAci
+            && a.cantResArc == b.cantResArc
+            && a.cantResNec == b.cantResNec
+            && a.cantResDiv == b.cantResDiv
+            && a.cantBarrera == b.cantBarrera
+            && a.cantDamBonusElementalFue == b.cantDamBonusElementalFue
+            && a.cantDamBonusElementalHie == b.cantDamBonusElementalHie
+            && a.cantDamBonusElementalRay == b.cantDamBonusElementalRay
+            && a.cantDamBonusElementalAci == b.cantDamBonusElementalAci
+            && a.cantDamBonusElementalArc == b.cantDamBonusElementalArc
+            && a.cantDamBonusElementalNec == b.cantDamBonusElementalNec
+            && a.cantDamBonusElementalDiv == b.cantDamBonusElementalDiv
+            && a.cantPenetracionArmadura == b.cantPenetracionArmadura
+            && a.cantReduccionDanioRecibidoPorcentaje == b.cantReduccionDanioRecibidoPorcentaje
+            && a.cantReduccionDanioCriticoRecibidoPorcentaje == b.cantReduccionDanioCriticoRecibidoPorcentaje
+            && a.cantResistenciaEstadosPorcentaje == b.cantResistenciaEstadosPorcentaje
+            && a.cantEspinasDanioPlano == b.cantEspinasDanioPlano
+            && a.cantEspinasDanioPorcentaje == b.cantEspinasDanioPorcentaje;
     }
 
     private static bool DebuffsImpactoArmaIguales(List<DebuffImpactoArmaData> a, List<DebuffImpactoArmaData> b)

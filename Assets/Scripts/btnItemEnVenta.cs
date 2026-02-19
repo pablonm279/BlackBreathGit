@@ -18,7 +18,7 @@ public class btnItemEnVenta : MonoBehaviour
     
     void Start()
     {
-       txtItemVentaDescripcion = transform.parent.parent.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>();
+       txtItemVentaDescripcion = transform.parent.parent.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>();
        scSequitoMercaderes = transform.parent.parent.parent.parent.gameObject.GetComponent<SequitoMercaderes>();
     }
     public void ClickearItem()

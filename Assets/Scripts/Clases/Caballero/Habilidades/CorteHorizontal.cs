@@ -80,7 +80,7 @@ public class CorteHorizontal : Habilidad
       {
         cuerpo += "<b>Type:</b> Melee\n";
         cuerpo += "<b>Target:</b> Front area (3 width)\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color> + Attack ({ataqueActual}){bonusAtaqueTxt} vs Defense. Fumble: 1-2. Crit: {criticoMin}-20\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color>  {bonusAtaqueTxt} vs Defense. Fumble: 1-2. Crit: {criticoMin}-20\n";
         cuerpo += danioFijo > 0
           ? $"<b>Damage:</b> 2d6 + {danioFijo} + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n"
           : $"<b>Damage:</b> 2d6 + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";

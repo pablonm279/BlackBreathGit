@@ -58,7 +58,7 @@ public class Cortevertical : Habilidad
       {
         cuerpo += "<b>Type:</b> Melee\n";
         cuerpo += "<b>Target:</b> 1 enemy in front range\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color> + Attack ({ataqueActual}){bonusAtaqueTxt} vs Defense. Fumble: 1-2. Crit: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color>  {bonusAtaqueTxt} vs Defense. Fumble: 1-2. Crit: {criticoBaseMin}-20\n";
         cuerpo += $"<b>Damage:</b> 2d8 + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
       }
       else

@@ -55,7 +55,7 @@ public class CorteDaga : Habilidad
       {
         cuerpo += "<b>Type:</b> Melee\n";
         cuerpo += "<b>Target:</b> 1 enemy in front range\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color>   + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
         cuerpo += $"<b>Damage:</b> 1d6 + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
       }
       else

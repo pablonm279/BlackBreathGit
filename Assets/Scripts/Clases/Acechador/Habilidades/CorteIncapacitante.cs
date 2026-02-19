@@ -89,7 +89,7 @@ public class CorteIncapacitante : Habilidad
     {
       cuerpo += "<b>Type:</b> Melee\n";
       cuerpo += "<b>Target:</b> 1 enemy in front melee range\n";
-      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color>   + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
       cuerpo += $"<b>Damage:</b> 2d6 + {danioFijo} + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
       cuerpo += lineaSalvacion + "\n";
       cuerpo += $"<b>On failed save:</b> Crippled ({duracion} turns): Immobile, -20% Damage, -2 Attack";
@@ -214,7 +214,8 @@ public class CorteIncapacitante : Habilidad
       costoAP -= 1; //costo AP -1
       txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: Remueve Cooldown, +2 Ataque +4 Daño +1 Rango Crítico.</i>\n\n";
 
-    }
+    }
+
       ActualizarDescripcion();
     
   }

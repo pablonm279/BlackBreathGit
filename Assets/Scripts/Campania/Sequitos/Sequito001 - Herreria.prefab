@@ -903,17 +903,17 @@ MonoBehaviour:
       m_Calls: []
   m_text: "El s\xE9quito de Herreros se encarga del mantenimiento y manufactura de
     las armas y armaduras de la Caravana. Su carro es especialmente pesado ya que,
-    montado ingeniosamente, carga con todas las necesidades b\xE1sicas de un herrero"
+    montado ingeniosamente, carga con todas las necesidades b\xE1sicas de un herrero."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
-  m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
+  m_sharedMaterial: {fileID: -4687675609486072877, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4290230199
+  m_fontColor: {r: 0.7169812, g: 0.7169812, b: 0.7169812, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -936,7 +936,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 2
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535

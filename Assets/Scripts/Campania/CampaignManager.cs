@@ -1724,10 +1724,10 @@ public class CampaignManager : MonoBehaviour
       tooltipGOSuministros.SetActive(true);
       String text = "";
 
-      text = TRADU.i.Traducir("<color=#ffdda5>---<b>Haz click para abandonar <color=#b7972c>5 Suministros</color> y alivianar la Carga. -1 Esperanza</b>---</color>\n\n\n");
+      text = TRADU.i.Traducir("<color=#ffdda5>---<b>Haz click para abandonar <color=#b7972c>5 Suministros</color> y alivianar la Carga. -1 Esperanza</b>---</color>\n\n");
       int num = GetSuministrosActuales();
       text += TRADU.i.Traducir($"Los <color=#b7972c>Suministros</color> constituyen las reservas de comida y elementos de supervivencia de la caravana.\n\nCada <color=#c918bb>Civil</color> consume 1 en cada Descanso. Los Bueyes consumen 2.\n");
-      text += TRADU.i.Traducir("\nLlevas ") + num + TRADU.i.Traducir(" <color=#b7972c>Suministros</color>, por un total de peso de ") + num + ".\n\n\n";
+      text += TRADU.i.Traducir("\nLlevas ") + num + TRADU.i.Traducir(" <color=#b7972c>Suministros</color>, por un total de peso de ") + num + ".\n\n";
 
 
 
@@ -1738,10 +1738,10 @@ public class CampaignManager : MonoBehaviour
       tooltipGOMateriales.SetActive(true);
       String text = "";
 
-      text = TRADU.i.Traducir("<color=#ffdda5>---<b>Haz click para abandonar <color=#b34f09>2 Materiales</color> y alivianar la Carga.</b>---</color>\n\n\n");
+      text = TRADU.i.Traducir("<color=#ffdda5>---<b>Haz click para abandonar <color=#b34f09>2 Materiales</color> y alivianar la Carga.</b>---</color>\n\n");
       int num = GetMaterialesActuales();
       text += TRADU.i.Traducir("Los <color=#b34f09>Materiales</color> son elementos básicos de construcción utilizados para mantenimiento y expansión de la caravana.\nCada uno pesa 3.\n");
-      text += TRADU.i.Traducir("\nLlevas ") + num + TRADU.i.Traducir(" <color=#b34f09>Materiales</color>, por un total de peso de ") + (num * 3) + ".\n\n\n";
+      text += TRADU.i.Traducir("\nLlevas ") + num + TRADU.i.Traducir(" <color=#b34f09>Materiales</color>, por un total de peso de ") + (num * 3) + ".\n\n";
 
 
 
@@ -1751,7 +1751,7 @@ public class CampaignManager : MonoBehaviour
     {
       tooltipGOBueyes.SetActive(true);
       String text = "";
-      text = TRADU.i.Traducir("<color=#ffdda5>---<b>Haz click para sacrificar <color=#9e2a1c>1 Buey</color> para obtener <color=#b7972c>20 Suministros</color>. -2 Esperanza</b>---</color>\n\n\n");
+      text = TRADU.i.Traducir("<color=#ffdda5>---<b>Haz click para sacrificar <color=#9e2a1c>1 Buey</color> para obtener <color=#b7972c>20 Suministros</color>. -2 Esperanza</b>---</color>\n\n");
       int num = GetBueyesActual();
       int num2 = GetSuministrosActuales();
       int num3 = GetMaterialesActuales();
@@ -1759,12 +1759,12 @@ public class CampaignManager : MonoBehaviour
 
       int cargaPorBuey = 25 + mejoraCaravanaAlforjas;
       text += TRADU.i.Traducir("Los <color=#9e2a1c>Bueyes</color> son utilizados para llevar la carga de la caravana.\nCada uno da ") + cargaPorBuey + TRADU.i.Traducir(" de Capacidad de Carga.\n");
-      text += TRADU.i.Traducir("\nLlevas ") + num + TRADU.i.Traducir(" <color=#9e2a1c>Bueyes</color>, por un total de Capacidad de Carga de ") + (num * cargaPorBuey) + ".\n\n\n";
+      text += TRADU.i.Traducir("\nLlevas ") + num + TRADU.i.Traducir(" <color=#9e2a1c>Bueyes</color>, por un total de Capacidad de Carga de ") + (num * cargaPorBuey) + ".\n\n";
       text += TRADU.i.Traducir("\nLlevas ") + num2 + TRADU.i.Traducir(" <color=#b7972c>Suministros</color> y ") + num3 + TRADU.i.Traducir(" <color=#b34f09>Materiales</color> por un total de peso de ") + num4 + "/" + (num * 25) + ".\n\n";
 
       if (num4 > GetCapacidadDeCargaActual())
       {
-        text += TRADU.i.Traducir("<color=#cc0d0d>La Caravana lleva Sobrecarga. Cada tramo que se haga duplica la Fatiga obtenida y reduce 10 la <color=#a0e812>Esperanza</color></color>.\n\n\n");
+        text += TRADU.i.Traducir("<color=#cc0d0d>La Caravana lleva Sobrecarga. Cada tramo que se haga duplica la Fatiga obtenida y reduce 10 la <color=#a0e812>Esperanza</color></color>.\n\n");
 
       }
 
@@ -1786,7 +1786,7 @@ public class CampaignManager : MonoBehaviour
       String text = "";
 
       int num = GetFatigaActual();
-      text = TRADU.i.Traducir("Indica que tanta <color=#06c297>Fatiga</color> tiene la Caravana en general.\n\n\n");
+      text = TRADU.i.Traducir("Indica que tanta <color=#06c297>Fatiga</color> tiene la Caravana en general.\n");
       text += TRADU.i.Traducir("Cada tramo de viaje la aumenta en 1.\n");
       text += TRADU.i.Traducir("Si descansas volverá a 0 y arrancarán el nuevo día Descansados(1).\n\n");
 
@@ -1905,15 +1905,15 @@ public class CampaignManager : MonoBehaviour
 
       switch (intTipoClima)
       {
-        case 1: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Soleado: +5 Esperanza."); break;
-        case 2: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Ola de Calor: +1 Fatiga. Jornada Libre da +5 Esperanza, otras Tareas Civiles dan -3."); break;
-        case 3: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada."); break;
-        case 4: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Nieve: +3 Esperanza. -15% Recolecciónes, -20% Emboscada. Viajar lleva el doble de tiempo."); break;
-        case 5: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Niebla: -20% Recolecciónes, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos."); break;
-        case 6: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Almas Danzantes: +5 Esperanza, -100% chances de Emboscada."); break;
-        case 7: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Aurora Boreal: +10 Esperanza."); break;
-        case 8: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Nedukazal está a oscuras."); break;
-        case 9: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + TRADU.i.Traducir(": -Masacre: Nedukazal está siendo atacada. -10 Esperanza. +10% Emboscada. Los Zârkil están potenciados."); break;
+        case 1: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + ":\n" + TRADU.i.Traducir("Soleado: +5 Esperanza."); break;
+        case 2: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + ":\n" + TRADU.i.Traducir("Ola de Calor: +1 Fatiga. Jornada Libre da +5 Esperanza, otras Tareas Civiles dan -3."); break;
+        case 3: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada."); break;
+        case 4: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Nieve: +3 Esperanza. -15% Recolecciónes, -20% Emboscada. Viajar lleva el doble de tiempo."); break;
+        case 5: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Niebla: -20% Recolecciónes, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos."); break;
+        case 6: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Almas Danzantes: +5 Esperanza, -100% chances de Emboscada."); break;
+        case 7: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Aurora Boreal: +10 Esperanza."); break;
+        case 8: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Nedukazal está a oscuras."); break;
+        case 9: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Masacre: Nedukazal está siendo atacada. -10 Esperanza. +10% Emboscada. Los Zârkil están potenciados."); break;
 
 
       }

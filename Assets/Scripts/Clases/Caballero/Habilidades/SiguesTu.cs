@@ -40,7 +40,7 @@ public class SiguesTu : Habilidad
       int duracionMarca = 3;
       int bonusDanioMarca = NIVEL > 2 ? 10 : 8;
       int bonusCritMarca = NIVEL > 1 ? 2 : 0;
-      int dcSalvacion = NIVEL == 4 ? 103 : 3;
+      int dcSalvacion = NIVEL == 4 ? 110 : 10;
       int durDebuff = NIVEL == 5 ? 4 : 2;
       bool sinSalvacion = NIVEL == 4;
       string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Mental, dcSalvacion);
@@ -169,7 +169,7 @@ public class SiguesTu : Habilidad
 
                 objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Marcado"), Color.yellow);
 
-                int salvDC = 3;
+                int salvDC = 10;
                 if(NIVEL == 4){salvDC += 100;} //Si nivel 4a, "no hay tirada de salvacion"
                 int durDebuff = 2;
                 if(NIVEL == 5){durDebuff += 2;} //Si nivel 4b, dura 2 turnos+ debuff

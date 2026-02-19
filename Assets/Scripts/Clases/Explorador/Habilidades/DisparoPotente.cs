@@ -78,7 +78,7 @@ public class DisparoPotente : Habilidad
       {
         cuerpo += "<b>Type:</b> Ranged (line)\n";
         cuerpo += "<b>Target:</b> Enemies on the same row\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonoAtaqueNivel} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color>   + {bonoAtaqueNivel} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
         cuerpo += $"<b>Damage:</b> 1d10 + {danioFijo} + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Slashing\n";
         cuerpo += $"<b>Armor Penetration:</b> {penetracionArmadura}\n";
         cuerpo += "<b>Resource:</b> consumes 2 Arrows\n";

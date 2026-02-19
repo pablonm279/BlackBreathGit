@@ -14,8 +14,12 @@ public class UIBotonesConsumibles : MonoBehaviour
      {
 
        Unidad unidad = BattleManager.Instance.unidadActiva;
+       if (unidad == null || unidad.ConsumibleA == null)
+       {
+         return;
+       }
        
-       unidad.ConsumibleA.UsarConsumible(unidad);
+       unidad.ConsumibleA.UsarConsumibleDesdeDatos(unidad);
 
        unidad.ConsumibleA = null; //Saca consumible
        
@@ -29,8 +33,12 @@ public class UIBotonesConsumibles : MonoBehaviour
      {
 
        Unidad unidad = BattleManager.Instance.unidadActiva;
+       if (unidad == null || unidad.ConsumibleB == null)
+       {
+         return;
+       }
        
-       unidad.ConsumibleB.UsarConsumible(unidad);
+       unidad.ConsumibleB.UsarConsumibleDesdeDatos(unidad);
 
        unidad.ConsumibleB = null; //Saca consumible
 

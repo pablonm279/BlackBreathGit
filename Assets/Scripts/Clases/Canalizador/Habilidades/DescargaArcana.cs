@@ -71,7 +71,7 @@ public class DescargaArcana : Habilidad
         cuerpo += lineaTipoEn + "\n";
         cuerpo += "<b>Target:</b> 1 enemy in range\n";
         cuerpo += $"<b>Width:</b> {hAncho} ({anchoDetalleEn})\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color> + Attack ({ataqueActual}){bonusTexto} vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color>  {bonusTexto} vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
         cuerpo += $"<b>Damage:</b> 1d8 + 1 + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Arcane";
 
         string costos = $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM} ";

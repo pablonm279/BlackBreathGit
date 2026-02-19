@@ -124,10 +124,53 @@ public class MenuNodoPersonaje : MonoBehaviour
                 //agregar nuevos!!
         }
 
+        string nombreSequitoTraducido = ObtenerNombreSequitoTraducido(sequitoPropuesto);
+        Sequito scSequito = null;
+        if (GOSequitoPropuesto != null)
+        {
+            scSequito = GOSequitoPropuesto.GetComponent<Sequito>();
+            if (scSequito != null && scSequito.txtNombre != null)
+            {
+                scSequito.txtNombre.text = nombreSequitoTraducido;
+            }
+        }
+
+        if (GOSequitoPropuesto == null || scSequito == null)
+            return;
+
         GOSequitoPropuesto.SetActive(false); //lo esconde
         imagensequito.sprite = GOSequitoPropuesto.transform.GetChild(1).GetChild(0).GetComponent<Image>().sprite;
-        descSequito.text = GOSequitoPropuesto.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text + "\n\n" + GOSequitoPropuesto.transform.GetChild(1).GetChild(1).GetComponent<TextMeshProUGUI>().text;
-        descSequito.text += "\n\n<size=75%><color=#CCCCCC>" + GOSequitoPropuesto.GetComponent<Sequito>().txtmecanicas.text + "</color></size>";
+        string descripcion = scSequito.txtdesc != null ? scSequito.txtdesc.text : "";
+        string mecanicas = scSequito.txtmecanicas != null ? scSequito.txtmecanicas.text : "";
+        string civilesRepresentados = ObtenerTextoCivilesRepresentados(scSequito.intRepresentacionciviles);
+
+        descSequito.text = "<size=100%><b>" + nombreSequitoTraducido + "</b></size>";
+        descSequito.text += "\n\n<size=85%><i>" + descripcion + "</i></size>";
+        descSequito.text += "\n<size=85%><b>" + civilesRepresentados + "</b></size>\n";
+        descSequito.text += "\n<size=95%><color=#000000><b>" + mecanicas + "</b></color></size>";
+    }
+
+    string ObtenerNombreSequitoTraducido(int idSequito)
+    {
+        switch (idSequito)
+        {
+            case 4: return TRADU.i.Traducir("Séquito de Artistas");
+            case 5: return TRADU.i.Traducir("Séquito de Herboristas");
+            case 6: return TRADU.i.Traducir("Séquito de Desertores");
+            case 7: return TRADU.i.Traducir("Séquito de Cronistas");
+            case 8: return TRADU.i.Traducir("Séquito de Refugiados");
+            case 9: return TRADU.i.Traducir("Séquito de Nobles");
+            case 10: return TRADU.i.Traducir("Séquito de Clérigos");
+            case 11: return TRADU.i.Traducir("Séquito de Esclavos");
+            default: return TRADU.i.Traducir("Séquito");
+        }
+    }
+
+    string ObtenerTextoCivilesRepresentados(int cantidad)
+    {
+        if (cantidad < 0)
+            return TRADU.i.Traducir("Civiles representados: No.");
+        return TRADU.i.Traducir("Civiles representados: ") + cantidad;
     }
 
     void OnDisable()

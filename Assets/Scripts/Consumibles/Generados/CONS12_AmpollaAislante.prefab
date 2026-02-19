@@ -1,0 +1,124 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &920000000000000711
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 920000000000000722}
+  - component: {fileID: 920000000000000733}
+  m_Layer: 0
+  m_Name: CONS12_AmpollaAislante
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &920000000000000722
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920000000000000711}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &920000000000000733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920000000000000711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 678a8b3ddc342ad468b974a204244880, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imItem: {fileID: 21300000, guid: d5ef45456de2a2f488190902d3a1ac56, type: 3}
+  sNombreItem: Ampolla Aislante
+  IDEfectoEspecial: 0
+  IDClasesQuePuedenUsarEsteItem: ffffffff
+  iPrecio: 95
+  itemDescripcion: Otorga resistencia alta al rayo.
+  iRareza: 1
+  nivelMejora: 0
+  barreraInicioCombate: 0
+  evasionInicioCombate: 0
+  bonusDanioFuegoInicioCombate: 0
+  bonusDanioHieloInicioCombate: 0
+  bonusDanioRayoInicioCombate: 0
+  bonusDanioAcidoInicioCombate: 0
+  bonusDanioArcanoInicioCombate: 0
+  bonusDanioNecroInicioCombate: 0
+  bonusDanioDivinoInicioCombate: 0
+  regeneracionVidaInicioCombate: 0
+  regeneracionArmaduraInicioCombate: 0
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
+  efectoConsumible:
+    curacionBase: 0
+    curacionDadosCantidad: 0
+    curacionDadosCaras: 0
+    curacionPorcentajeHPMax: 0
+    removerDebuffs: 0
+    removerBuffs: 0
+    removerEstadosNegativos: 0
+    modificarRegeneracionVida: 0
+    modificarRegeneracionArmadura: 0
+    modificarEvasion: 0
+    aplicarBuff: 1
+    nombreBuff: Aislamiento Electrico
+    buffEsBeneficio: 1
+    duracionBuffRondas: 3
+    buffReferencia: {fileID: 0}
+    buff:
+      cantAtFue: 0
+      cantAtAgi: 0
+      cantAtPod: 0
+      cantIniciativa: 0
+      cantAPMax: 0
+      cantPMMax: 0
+      cantHPMax: 0
+      cantArmadura: 0
+      cantDefensa: 0
+      cantAtaque: 0
+      cantDanioPorcentaje: 0
+      cantCritDado: 0
+      cantCritDanio: 0
+      cantTsReflejos: 0
+      cantTsFortaleza: 0
+      cantTsMental: 0
+      cantResFue: 0
+      cantResHie: 0
+      cantResRay: 6
+      cantResAci: 0
+      cantResArc: 0
+      cantResNec: 0
+      cantResDiv: 0
+      cantBarrera: 0
+      cantDamBonusElementalFue: 0
+      cantDamBonusElementalHie: 0
+      cantDamBonusElementalRay: 0
+      cantDamBonusElementalAci: 0
+      cantDamBonusElementalArc: 0
+      cantDamBonusElementalNec: 0
+      cantDamBonusElementalDiv: 0
+      cantPenetracionArmadura: 0
+      cantReduccionDanioRecibidoPorcentaje: 0
+      cantReduccionDanioCriticoRecibidoPorcentaje: 0
+      cantResistenciaEstadosPorcentaje: 0
+      cantEspinasDanioPlano: 0
+      cantEspinasDanioPorcentaje: 0

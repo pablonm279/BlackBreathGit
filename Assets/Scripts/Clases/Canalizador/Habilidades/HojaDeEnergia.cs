@@ -88,7 +88,7 @@ public class HojaDeEnergia : Habilidad
     {
       cuerpo += "<b>Type:</b> Melee\n";
       cuerpo += $"<b>Target:</b> Front area ({ancho} width)\n";
-      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color> + Attack ({ataqueActual}){bonusAtaqueEn} vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color>  {bonusAtaqueEn} vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
       cuerpo += $"<b>Damage:</b> {danioEn} | <b>Type:</b> True\n";
       cuerpo += lineaSalvacionEn + "\n";
       cuerpo += $"<b>On failed save:</b> +{sangrado} Bleed and -{reduccionRes} to all Resistances";

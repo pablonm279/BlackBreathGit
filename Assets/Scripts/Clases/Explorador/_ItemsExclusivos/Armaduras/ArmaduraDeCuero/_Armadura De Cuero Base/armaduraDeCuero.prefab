@@ -45,13 +45,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5476b006b37476c4fa24c49470529fcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: b62ae13f6c6570d4fa94cabd28d56d99, type: 3}
+  imItem: {fileID: 21300000, guid: e7a31583f1a80b14d93c3121d31bae55, type: 3}
   sNombreItem: Armadura de Cuero
+  IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 45
-  itemDescripcion: "Armadura de cuero flexible para buena movilidad."
+  itemDescripcion: Armadura de cuero flexible para buena movilidad.
   iRareza: 0
   nivelMejora: 0
+  barreraInicioCombate: 0
+  evasionInicioCombate: 0
+  bonusDanioFuegoInicioCombate: 0
+  bonusDanioHieloInicioCombate: 0
+  bonusDanioRayoInicioCombate: 0
+  bonusDanioAcidoInicioCombate: 0
+  bonusDanioArcanoInicioCombate: 0
+  bonusDanioNecroInicioCombate: 0
+  bonusDanioDivinoInicioCombate: 0
+  regeneracionVidaInicioCombate: 0
+  regeneracionArmaduraInicioCombate: 0
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
   requisitoFue: 0
   requisitoAgi: 3
   requisitoPoder: 0

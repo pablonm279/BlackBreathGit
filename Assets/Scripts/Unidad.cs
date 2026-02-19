@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -1440,19 +1440,136 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       case 4: colorHex = "#FFA64D"; tipoDanioBase = "fuego"; break;
       case 5: colorHex = "#63c4b7"; tipoDanioBase = "hielo"; break;
       case 6: colorHex = "#7758df"; tipoDanioBase = "rayo"; break;
-      case 7: colorHex = "#28b717"; tipoDanioBase = "Ã¡cido"; break;
+      case 7: colorHex = "#28b717"; tipoDanioBase = "\u00E1cido"; break;
       case 8: colorHex = "#1760b7"; tipoDanioBase = "arcano"; break;
-      case 9: colorHex = "#8038b2"; tipoDanioBase = "necrÃ³tico"; break;
+      case 9: colorHex = "#8038b2"; tipoDanioBase = "necr\u00F3tico"; break;
       case 10: colorHex = "#d6c304"; tipoDanioBase = "verdadero"; break;
       case 11: colorHex = "#d6c304"; tipoDanioBase = "divino"; break;
-      default: colorHex = "#ffffff"; tipoDanioBase = "daÃ±o"; break;
+      default: colorHex = "#ffffff"; tipoDanioBase = "da\u00F1o"; break;
     }
 
-    string tipoDanioTraducido = TRADU.i != null ? TRADU.i.Traducir(tipoDanioBase) : tipoDanioBase;
-    return $"<color={colorHex}>{tipoDanioTraducido}</color>";
+    string etiquetaBase = $"<color={colorHex}>{tipoDanioBase}</color>";
+    if (TRADU.i == null)
+    {
+      return etiquetaBase;
+    }
+
+    // 1) Traduccion exacta de la etiqueta (incluye color), que es como estan varias claves en TRADU.
+    string etiquetaTraducida = TRADU.i.Traducir(etiquetaBase);
+    if (!string.Equals(etiquetaTraducida, etiquetaBase, StringComparison.Ordinal))
+    {
+      return etiquetaTraducida;
+    }
+
+    // 2) Fallback: traducir solo la palabra.
+    string tipoDanioTraducido = TRADU.i.Traducir(tipoDanioBase);
+    if (!string.Equals(tipoDanioTraducido, tipoDanioBase, StringComparison.Ordinal))
+    {
+      return $"<color={colorHex}>{tipoDanioTraducido}</color>";
+    }
+
+    // 3) Fallback final para EN si faltan claves de TRADU.
+    if (TRADU.i.nIdioma == 2)
+    {
+      switch (tipoDanio)
+      {
+        case 1: tipoDanioTraducido = "slashing"; break;
+        case 2: tipoDanioTraducido = "piercing"; break;
+        case 3: tipoDanioTraducido = "bludgeoning"; break;
+        case 4: tipoDanioTraducido = "fire"; break;
+        case 5: tipoDanioTraducido = "ice"; break;
+        case 6: tipoDanioTraducido = "lightning"; break;
+        case 7: tipoDanioTraducido = "acid"; break;
+        case 8: tipoDanioTraducido = "arcane"; break;
+        case 9: tipoDanioTraducido = "necrotic"; break;
+        case 10: tipoDanioTraducido = "true"; break;
+        case 11: tipoDanioTraducido = "divine"; break;
+        default: tipoDanioTraducido = "damage"; break;
+      }
+
+      return $"<color={colorHex}>{tipoDanioTraducido}</color>";
+    }
+
+    return etiquetaBase;
+  }
+  private static string FormatearNumeroLogDanio(float valor)
+  {
+    return Mathf.Abs(valor % 1f) < 0.01f ? valor.ToString("0") : valor.ToString("0.##");
   }
 
-  private void EscribirLogDanioRecibido(string nombreLog, int danio, int tipoDanio, int bonusElemental = 0, bool esDanioElementalExtra = false)
+  private string ConstruirDetalleCalculoDanio(
+    float danioBase,
+    bool esCritico,
+    bool usoArmadura,
+    float armaduraEfectiva,
+    int penetracionTotal,
+    bool usoResistencia,
+    float resistenciaAplicada,
+    bool aplicoMitadEtereo,
+    float danioBloqueadoPorBarrera,
+    int bonusElemental,
+    int reduccionCritAplicada,
+    int reduccionGlobalAplicada,
+    int danioFinal)
+  {
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    List<string> partes = new List<string>(10)
+    {
+      (esIngles ? "base " : "base ") + FormatearNumeroLogDanio(danioBase)
+    };
+
+    if (esCritico)
+    {
+      partes.Add(esIngles ? "crit" : "crit");
+    }
+
+    if (usoArmadura && (armaduraEfectiva > 0f || penetracionTotal > 0))
+    {
+      if (penetracionTotal > 0)
+      {
+        partes.Add("arm " + FormatearNumeroLogDanio(armaduraEfectiva) + " (pen " + penetracionTotal + ")");
+      }
+      else
+      {
+        partes.Add("arm " + FormatearNumeroLogDanio(armaduraEfectiva));
+      }
+    }
+
+    if (usoResistencia && Mathf.Abs(resistenciaAplicada) > 0.01f)
+    {
+      partes.Add("res " + FormatearNumeroLogDanio(resistenciaAplicada));
+    }
+
+    if (aplicoMitadEtereo)
+    {
+      partes.Add(esIngles ? "ethereal x0.5" : "etereo x0.5");
+    }
+
+    if (danioBloqueadoPorBarrera > 0.01f)
+    {
+      partes.Add((esIngles ? "bar " : "bar ") + FormatearNumeroLogDanio(danioBloqueadoPorBarrera));
+    }
+
+    if (reduccionCritAplicada > 0)
+    {
+      partes.Add("redCrit " + reduccionCritAplicada);
+    }
+
+    if (reduccionGlobalAplicada > 0)
+    {
+      partes.Add("red " + reduccionGlobalAplicada);
+    }
+
+    if (bonusElemental > 0)
+    {
+      partes.Add("+elem " + bonusElemental);
+    }
+
+    partes.Add((esIngles ? "final " : "final ") + danioFinal);
+    return "[" + string.Join(" | ", partes) + "]";
+  }
+
+  private void EscribirLogDanioRecibido(string nombreLog, int danio, int tipoDanio, int bonusElemental = 0, bool esDanioElementalExtra = false, string detalleCalculo = null)
   {
     if (scBattleManager == null || danio <= 0)
     {
@@ -1480,6 +1597,11 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       mensaje = $"<color=#d92b08>{nombreLog} recibe {danio} de daÃ±o {tipoDanioTexto}{bonusLogEs}.</color>";
     }
 
+    if (!string.IsNullOrWhiteSpace(detalleCalculo))
+    {
+      mensaje += $" <size=82%><color=#c9c9c9>{detalleCalculo}</color></size>";
+    }
+
     scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio(mensaje));
   }
 
@@ -1505,8 +1627,26 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
 
       Color colorDanio = Color.white;
+      float armaduraBaseContraAtaque = ObtenerArmaduraActual();
+      int penetracionTotalContraAtaque = 0;
+      if (uCausante != null)
+      {
+        int penetracionEquipo = Mathf.Max(0, uCausante.penetracionArmaduraPlano);
+        int penetracionHabilidad = Mathf.Max(0, uCausante.penetracionArmaduraHabilidadActual);
+        penetracionTotalContraAtaque = penetracionEquipo + penetracionHabilidad;
+      }
+      float armaduraEfectivaContraAtaque = armaduraBaseContraAtaque - penetracionTotalContraAtaque;
+      if (armaduraEfectivaContraAtaque < 0f)
+      {
+        armaduraEfectivaContraAtaque = 0f;
+      }
 
-
+      bool usoArmaduraMitigacion = false;
+      bool usoResistenciaMitigacion = false;
+      float resistenciaAplicada = 0f;
+      bool aplicoMitadEtereo = false;
+      int reduccionCritAplicada = 0;
+      int reduccionGlobalAplicada = 0;
 
       int stacksSangradoCrit = 0;
       int stacksArdiendoCrit = 0;
@@ -1523,7 +1663,8 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         switch (tipoDanio)
         {
           case 1:
-            danioFinal = danio - ObtenerArmaduraEfectivaContraAtaque(uCausante);
+            usoArmaduraMitigacion = true;
+            danioFinal = danio - armaduraEfectivaContraAtaque;
             colorDanio = Color.red;
             stacksSangradoCrit = (int)(danio / 4);
             ReducirArmaduraPorGolpe(danioFinal);
@@ -1534,38 +1675,51 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
             ReducirArmaduraPorGolpe(danioFinal);
             break; //Perforante
           case 3:
-            danioFinal = danio - ObtenerArmaduraEfectivaContraAtaque(uCausante);
+            usoArmaduraMitigacion = true;
+            danioFinal = danio - armaduraEfectivaContraAtaque;
             colorDanio = Color.red;
             aplicarAPModCrit = true;
             ReducirArmaduraPorGolpe(danioFinal);
             break; //Contundente
           case 4:
-            danioFinal = danio - ObtenerResistenciaA(1);
+            usoResistenciaMitigacion = true;
+            resistenciaAplicada = ObtenerResistenciaA(1);
+            danioFinal = danio - resistenciaAplicada;
             colorDanio = ColorDanioFuego;
             stacksArdiendoCrit = (int)(danioFinal / 3);
             break; //Fuego
           case 5:
-            danioFinal = danio - ObtenerResistenciaA(2);
+            usoResistenciaMitigacion = true;
+            resistenciaAplicada = ObtenerResistenciaA(2);
+            danioFinal = danio - resistenciaAplicada;
             colorDanio = Color.cyan;
             stacksCongeladoCrit = (int)(danioFinal / 4);
             break; //Hielo
           case 6:
-            danioFinal = danio - ObtenerResistenciaA(3);
+            usoResistenciaMitigacion = true;
+            resistenciaAplicada = ObtenerResistenciaA(3);
+            danioFinal = danio - resistenciaAplicada;
             colorDanio = Color.yellow;
             aplicarAturdidoCrit = true;
             break; //Rayo
           case 7:
-            danioFinal = danio - ObtenerResistenciaA(4);
+            usoResistenciaMitigacion = true;
+            resistenciaAplicada = ObtenerResistenciaA(4);
+            danioFinal = danio - resistenciaAplicada;
             colorDanio = Color.green;
             stacksAcidoCrit = (int)(danioFinal / 5);
             break; //Acido
           case 8:
-            danioFinal = danio - ObtenerResistenciaA(5);
+            usoResistenciaMitigacion = true;
+            resistenciaAplicada = ObtenerResistenciaA(5);
+            danioFinal = danio - resistenciaAplicada;
             colorDanio = Color.blue;
             aplicarResReducidasCrit = true;
             break; //Arcano
           case 9:
-            danioFinal = danio - ObtenerResistenciaA(6);
+            usoResistenciaMitigacion = true;
+            resistenciaAplicada = ObtenerResistenciaA(6);
+            danioFinal = danio - resistenciaAplicada;
             colorDanio = new Color(0.8f, 1f, 0.6f);
             if (UnityEngine.Random.Range(0, 100) < (danioFinal / 2))
             {
@@ -1574,7 +1728,9 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
             break; //Necro
           case 10: danioFinal = danio; colorDanio = Color.white; break; //Verdadero
           case 11:
-            danioFinal = danio - ObtenerResistenciaA(7);
+            usoResistenciaMitigacion = true;
+            resistenciaAplicada = ObtenerResistenciaA(7);
+            danioFinal = danio - resistenciaAplicada;
             colorDanio = Color.yellow;
             intentarCondenadoCrit = true;
             break; //Divino
@@ -1585,18 +1741,18 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       {
         switch (tipoDanio)
         {
-          case 1: danioFinal = danio - ObtenerArmaduraEfectivaContraAtaque(uCausante); colorDanio = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Cortante
-          case 2: danioFinal = danio - ObtenerArmaduraEfectivaContraAtaque(uCausante); colorDanio = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Perforante
-          case 3: danioFinal = danio - ObtenerArmaduraEfectivaContraAtaque(uCausante); colorDanio = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Contundente
+          case 1: usoArmaduraMitigacion = true; danioFinal = danio - armaduraEfectivaContraAtaque; colorDanio = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Cortante
+          case 2: usoArmaduraMitigacion = true; danioFinal = danio - armaduraEfectivaContraAtaque; colorDanio = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Perforante
+          case 3: usoArmaduraMitigacion = true; danioFinal = danio - armaduraEfectivaContraAtaque; colorDanio = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Contundente
                                                                                                       //Los 3 primeros tipos de daÃ±o (fÃ­sico) al ser golpeado y daÃ±ado, reduce en 1 la armadura.
-          case 4: danioFinal = danio - ObtenerResistenciaA(1); colorDanio = ColorDanioFuego; break; //Fuego
-          case 5: danioFinal = danio - ObtenerResistenciaA(2); colorDanio = Color.cyan; break;//Hielo
-          case 6: danioFinal = danio - ObtenerResistenciaA(3); colorDanio = Color.yellow; break; //Rayo
-          case 7: danioFinal = danio - ObtenerResistenciaA(4); colorDanio = Color.green; break; //Acido
-          case 8: danioFinal = danio - ObtenerResistenciaA(5); colorDanio = Color.blue; break; //Arcano
-          case 9: danioFinal = danio - ObtenerResistenciaA(6); colorDanio = new Color(0.8f, 1f, 0.6f); break; //Necro
+          case 4: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(1); danioFinal = danio - resistenciaAplicada; colorDanio = ColorDanioFuego; break; //Fuego
+          case 5: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(2); danioFinal = danio - resistenciaAplicada; colorDanio = Color.cyan; break;//Hielo
+          case 6: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(3); danioFinal = danio - resistenciaAplicada; colorDanio = Color.yellow; break; //Rayo
+          case 7: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(4); danioFinal = danio - resistenciaAplicada; colorDanio = Color.green; break; //Acido
+          case 8: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(5); danioFinal = danio - resistenciaAplicada; colorDanio = Color.blue; break; //Arcano
+          case 9: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(6); danioFinal = danio - resistenciaAplicada; colorDanio = new Color(0.8f, 1f, 0.6f); break; //Necro
           case 10: danioFinal = danio; colorDanio = Color.white; break; //Verdadero
-          case 11: danioFinal = danio - ObtenerResistenciaA(7); colorDanio = Color.yellow; break; //Divino
+          case 11: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(7); danioFinal = danio - resistenciaAplicada; colorDanio = Color.yellow; break; //Divino
         }
 
 
@@ -1605,6 +1761,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       if (esEtereo && tipoDanio < 4)
       {
         danioFinal = danioFinal / 2;
+        aplicoMitadEtereo = true;
       }
 
       float barreraAntes = barreraDeDanio;
@@ -1796,7 +1953,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       int danioTotal = (int)danioFinal + bonusTotal;
       Color colorDanioFinal = (danioFinal <= 0 && bonusTotal > 0 && bonusColorAsignado) ? bonusColorPrimario : colorDanio;
       IntentarAplicarDebuffsImpactoArma(uCausante, tipoDanio, ref danioTotal);
-      AplicarMitigacionDefensivaAlDanioRecibido(tipoDanio, esCritico, ref danioTotal);
+      AplicarMitigacionDefensivaAlDanioRecibido(tipoDanio, esCritico, ref danioTotal, out reduccionCritAplicada, out reduccionGlobalAplicada);
 
       if (danioTotal > 0 && scUnidadCanvas.unidadCanvas != null)
       {
@@ -1885,7 +2042,21 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       await Task.Delay(100);
       if (danioTotal > 0)
       {
-        EscribirLogDanioRecibido(nombreLog, danioTotal, tipoDanio, bonusTotal);
+        string detalleCalculoDanio = ConstruirDetalleCalculoDanio(
+          danio,
+          esCritico,
+          usoArmaduraMitigacion,
+          armaduraEfectivaContraAtaque,
+          penetracionTotalContraAtaque,
+          usoResistenciaMitigacion,
+          resistenciaAplicada,
+          aplicoMitadEtereo,
+          danioBloqueado,
+          bonusTotal,
+          reduccionCritAplicada,
+          reduccionGlobalAplicada,
+          danioTotal);
+        EscribirLogDanioRecibido(nombreLog, danioTotal, tipoDanio, bonusTotal, false, detalleCalculoDanio);
       }
 
 
@@ -2169,8 +2340,16 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     }
   }
 
-  void AplicarMitigacionDefensivaAlDanioRecibido(int tipoDanio, bool esCritico, ref int danioTotal)
+  void AplicarMitigacionDefensivaAlDanioRecibido(
+    int tipoDanio,
+    bool esCritico,
+    ref int danioTotal,
+    out int reduccionCritAplicada,
+    out int reduccionGlobalAplicada)
   {
+    reduccionCritAplicada = 0;
+    reduccionGlobalAplicada = 0;
+
     if (danioTotal <= 0)
     {
       return;
@@ -2188,6 +2367,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       if (danioReducidoCrit > 0)
       {
         danioTotal -= danioReducidoCrit;
+        reduccionCritAplicada = danioReducidoCrit;
       }
     }
 
@@ -2204,6 +2384,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       if (danioReducido > 0)
       {
         danioTotal -= danioReducido;
+        reduccionGlobalAplicada = danioReducido;
       }
     }
 
@@ -2352,24 +2533,43 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
 
       Color colorDanioElemental = Color.white;
+      float armaduraBaseContraAtaque = ObtenerArmaduraActual();
+      int penetracionTotalContraAtaque = 0;
+      if (uCausante != null)
+      {
+        int penetracionEquipo = Mathf.Max(0, uCausante.penetracionArmaduraPlano);
+        int penetracionHabilidad = Mathf.Max(0, uCausante.penetracionArmaduraHabilidadActual);
+        penetracionTotalContraAtaque = penetracionEquipo + penetracionHabilidad;
+      }
+      float armaduraEfectivaContraAtaque = armaduraBaseContraAtaque - penetracionTotalContraAtaque;
+      if (armaduraEfectivaContraAtaque < 0f)
+      {
+        armaduraEfectivaContraAtaque = 0f;
+      }
+      bool usoArmaduraMitigacion = false;
+      bool usoResistenciaMitigacion = false;
+      float resistenciaAplicada = 0f;
+      bool aplicoMitadEtereo = false;
+      int reduccionCritAplicada = 0;
+      int reduccionGlobalAplicada = 0;
 
 
 
 
       switch (tipoDanio)
       {
-        case 1: danioFinal = danio - ObtenerArmaduraEfectivaContraAtaque(uCausante); colorDanioElemental = Color.red; break; //Cortante
-        case 2: danioFinal = danio - ObtenerArmaduraEfectivaContraAtaque(uCausante); colorDanioElemental = Color.red; break; //Perforante
-        case 3: danioFinal = danio - ObtenerArmaduraEfectivaContraAtaque(uCausante); colorDanioElemental = Color.red; break; //Contundente
+        case 1: usoArmaduraMitigacion = true; danioFinal = danio - armaduraEfectivaContraAtaque; colorDanioElemental = Color.red; break; //Cortante
+        case 2: usoArmaduraMitigacion = true; danioFinal = danio - armaduraEfectivaContraAtaque; colorDanioElemental = Color.red; break; //Perforante
+        case 3: usoArmaduraMitigacion = true; danioFinal = danio - armaduraEfectivaContraAtaque; colorDanioElemental = Color.red; break; //Contundente
         //Los 3 primeros tipos de daÃ±o (fÃ­sico) al ser golpeado y daÃ±ado, reduce en 1 la armadura.
-        case 4: danioFinal = danio - ObtenerResistenciaA(1); colorDanioElemental = ColorDanioFuego; break; //Fuego
-        case 5: danioFinal = danio - ObtenerResistenciaA(2); colorDanioElemental = Color.cyan; break;//Hielo
-        case 6: danioFinal = danio - ObtenerResistenciaA(3); colorDanioElemental = Color.yellow; break; //Rayo
-        case 7: danioFinal = danio - ObtenerResistenciaA(4); colorDanioElemental = Color.green; break; //Acido
-        case 8: danioFinal = danio - ObtenerResistenciaA(5); colorDanioElemental = Color.blue; break; //Arcano
-        case 9: danioFinal = danio - ObtenerResistenciaA(6); colorDanioElemental =  new Color(0.8f, 1f, 0.6f); break; //Necro
+        case 4: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(1); danioFinal = danio - resistenciaAplicada; colorDanioElemental = ColorDanioFuego; break; //Fuego
+        case 5: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(2); danioFinal = danio - resistenciaAplicada; colorDanioElemental = Color.cyan; break;//Hielo
+        case 6: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(3); danioFinal = danio - resistenciaAplicada; colorDanioElemental = Color.yellow; break; //Rayo
+        case 7: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(4); danioFinal = danio - resistenciaAplicada; colorDanioElemental = Color.green; break; //Acido
+        case 8: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(5); danioFinal = danio - resistenciaAplicada; colorDanioElemental = Color.blue; break; //Arcano
+        case 9: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(6); danioFinal = danio - resistenciaAplicada; colorDanioElemental =  new Color(0.8f, 1f, 0.6f); break; //Necro
         case 10: danioFinal = danio; colorDanioElemental = Color.white; break; //Verdadero
-        case 11: danioFinal = danio - ObtenerResistenciaA(7); colorDanioElemental = Color.yellow; break; //Divino
+        case 11: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(7); danioFinal = danio - resistenciaAplicada; colorDanioElemental = Color.yellow; break; //Divino
       }
 
 
@@ -2378,6 +2578,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       if (esEtereo && tipoDanio < 4)
       {
         danioFinal = danioFinal / 2;
+        aplicoMitadEtereo = true;
       }
 
 
@@ -2389,7 +2590,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
       if (danioFinal < 0) { danioFinal = 0; }
       int danioFinalInt = Mathf.RoundToInt(danioFinal);
-      AplicarMitigacionDefensivaAlDanioRecibido(tipoDanio, false, ref danioFinalInt);
+      AplicarMitigacionDefensivaAlDanioRecibido(tipoDanio, false, ref danioFinalInt, out reduccionCritAplicada, out reduccionGlobalAplicada);
       danioFinal = danioFinalInt;
       if (danioFinalInt > 0)
       {
@@ -2422,7 +2623,21 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
       if (danioFinalInt > 0)
       {
-        EscribirLogDanioRecibido(nombreLog, danioFinalInt, tipoDanio, 0, true);
+        string detalleCalculoDanio = ConstruirDetalleCalculoDanio(
+          danio,
+          false,
+          usoArmaduraMitigacion,
+          armaduraEfectivaContraAtaque,
+          penetracionTotalContraAtaque,
+          usoResistenciaMitigacion,
+          resistenciaAplicada,
+          aplicoMitadEtereo,
+          0f,
+          0,
+          reduccionCritAplicada,
+          reduccionGlobalAplicada,
+          danioFinalInt);
+        EscribirLogDanioRecibido(nombreLog, danioFinalInt, tipoDanio, 0, true, detalleCalculoDanio);
       }
 
 
@@ -3696,6 +3911,8 @@ void AcomodarSortingLayer()
        
   }
 }
+
+
 
 
 

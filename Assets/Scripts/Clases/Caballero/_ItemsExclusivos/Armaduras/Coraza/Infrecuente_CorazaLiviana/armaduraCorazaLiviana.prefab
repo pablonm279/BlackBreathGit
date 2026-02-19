@@ -45,14 +45,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601585ec2b24dda45902fb6057cbe01a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: b8e65ad09a769384aa0aacbb27d8e36f, type: 3}
+  imItem: {fileID: 21300000, guid: cf47293f22b58d44f9d8fed0fb9e6a07, type: 3}
   sNombreItem: Coraza Liviana
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 120
-  itemDescripcion: "Coraza liviana para mantener proteccion con movilidad."
+  itemDescripcion: Coraza liviana para mantener proteccion con movilidad.
   iRareza: 0
   nivelMejora: 0
+  barreraInicioCombate: 0
+  evasionInicioCombate: 0
+  bonusDanioFuegoInicioCombate: 0
+  bonusDanioHieloInicioCombate: 0
+  bonusDanioRayoInicioCombate: 0
+  bonusDanioAcidoInicioCombate: 0
+  bonusDanioArcanoInicioCombate: 0
+  bonusDanioNecroInicioCombate: 0
+  bonusDanioDivinoInicioCombate: 0
+  regeneracionVidaInicioCombate: 0
+  regeneracionArmaduraInicioCombate: 0
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
   requisitoFue: 3
   requisitoAgi: 0
   requisitoPoder: 0

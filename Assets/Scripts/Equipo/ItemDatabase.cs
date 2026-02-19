@@ -122,6 +122,7 @@ public class ItemDatabaseEntry
 
     public ItemBuffsData buffs = new ItemBuffsData();
     public List<DebuffImpactoArmaData> debuffsImpactoArma = new List<DebuffImpactoArmaData>();
+    public ConsumibleEfectoData efectoConsumible = new ConsumibleEfectoData();
 
     public Habilidad habilidadAtaque;
     public Habilidad habilidadExtra1;

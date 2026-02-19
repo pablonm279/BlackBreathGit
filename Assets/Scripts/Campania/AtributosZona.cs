@@ -221,7 +221,7 @@ public class AtributosZona : MonoBehaviour
       ID = 1;
       modRecoleccionMateriales = -10;
       modRecoleccionSuministros = 5;
-      modChanceEmboscada = 10;
+      modChanceEmboscada = 15;
 
 
       Invoke("AumentarDifconDelayPorPeligroBosqueArdiente", 1.5f);
@@ -248,7 +248,7 @@ public class AtributosZona : MonoBehaviour
 
       Invoke("PlayMusic", 0.2f);
       // Usar fader como tapón mientras se adorna el mapa (async, sin freeze)
-     // StartCoroutine(AdornarBosqueArdienteConFadeAsync());
+     StartCoroutine(AdornarBosqueArdienteConFadeAsync());
 
 
       Nedukazal_CaravanaLuz.SetActive(false);
@@ -353,7 +353,7 @@ public class AtributosZona : MonoBehaviour
       ID = 2;
       modRecoleccionMateriales = 10;
       modRecoleccionSuministros = -15;
-      modChanceEmboscada = 0;
+      modChanceEmboscada = 10;
       PasoVientoHelado_FuerzaKaleTav = 0;
 
       modChanceExploracion = -10;

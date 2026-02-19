@@ -416,22 +416,22 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
                 //Marca los retratos de los personajes seleccionados
                 if (scAdministradorEscenas.Personaje1 == btn.personajeRepresentado)
                 {
-                    btn.transform.GetChild(0).gameObject.SetActive(true);
+                    btn.transform.GetChild(12).gameObject.SetActive(true);
 
                 }
                 else if (scAdministradorEscenas.Personaje2 == btn.personajeRepresentado)
                 {
-                    btn.transform.GetChild(0).gameObject.SetActive(true);
+                    btn.transform.GetChild(12).gameObject.SetActive(true);
                 }
                 else if (scAdministradorEscenas.Personaje3 == btn.personajeRepresentado)
                 {
-                    btn.transform.GetChild(0).gameObject.SetActive(true);
+                    btn.transform.GetChild(12).gameObject.SetActive(true);
                 }
                 else if (scAdministradorEscenas.Personaje4 == btn.personajeRepresentado)
                 {
-                    btn.transform.GetChild(0).gameObject.SetActive(true);
+                    btn.transform.GetChild(12).gameObject.SetActive(true);
                 }
-                else { btn.transform.GetChild(0).gameObject.SetActive(false); }
+                else { btn.transform.GetChild(12).gameObject.SetActive(false); }
 
             }
 

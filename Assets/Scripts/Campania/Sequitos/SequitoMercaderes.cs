@@ -6,6 +6,10 @@ using TMPro;
 
 public class SequitoMercaderes : MonoBehaviour
 {
+    private const int RarezaMinTienda = 0; // Comun
+    private const int RarezaMaxTienda = 4; // Legendario
+    private const int CorrimientoPorFase = 10;
+
     [Header("Fuente de Items")]
     [SerializeField] ItemDatabase itemDatabase;
     [SerializeField] bool usarItemDatabase = true;
@@ -106,7 +110,7 @@ public class SequitoMercaderes : MonoBehaviour
 
     public void GenerarItemsVendidos()
     {
-        intItemsaVender = 5 + (3 * CampaignManager.Instance.sequitoMercaderesTier);
+        intItemsaVender = 6 + (3 * CampaignManager.Instance.sequitoMercaderesTier);
         // Destruir todas las instancias previas de ItemsVendidos
         foreach (Item item in ItemsVendidos)
         {
@@ -201,9 +205,14 @@ public class SequitoMercaderes : MonoBehaviour
                 if (itemsValidos.Count == 0)
                     break;
 
-                int index = random.Next(itemsValidos.Count);
-                ItemsVendidos.Add(Instantiate(itemsValidos[index]));
-                itemsDisponibles.Remove(itemsValidos[index]);
+                T itemElegido = SeleccionarItemPorRareza(itemsValidos, random);
+                if (itemElegido == null)
+                {
+                    break;
+                }
+
+                ItemsVendidos.Add(Instantiate(itemElegido));
+                itemsDisponibles.Remove(itemElegido);
             }
         }
     }
@@ -233,8 +242,7 @@ public class SequitoMercaderes : MonoBehaviour
                 break;
             }
 
-            int index = random.Next(candidatos.Count);
-            Item elegido = candidatos[index];
+            Item elegido = SeleccionarItemPorRareza(candidatos, random);
             if (elegido == null)
             {
                 break;
@@ -279,6 +287,100 @@ public class SequitoMercaderes : MonoBehaviour
         }
 
         return result;
+    }
+
+    private T SeleccionarItemPorRareza<T>(List<T> candidatos, System.Random random) where T : Item
+    {
+        if (candidatos == null || candidatos.Count == 0 || random == null)
+        {
+            return null;
+        }
+
+        List<T> elegibles = new List<T>();
+        for (int i = 0; i < candidatos.Count; i++)
+        {
+            T item = candidatos[i];
+            if (item == null)
+            {
+                continue;
+            }
+
+            if (item.iRareza >= RarezaMinTienda && item.iRareza <= RarezaMaxTienda)
+            {
+                elegibles.Add(item);
+            }
+        }
+
+        if (elegibles.Count == 0)
+        {
+            return null; // 0% mitico/artefacto en tienda
+        }
+
+        int rarezaObjetivo = TirarRarezaObjetivoMercaderes(random);
+
+        for (int rareza = rarezaObjetivo; rareza >= RarezaMinTienda; rareza--)
+        {
+            T item = ElegirAleatorioPorRareza(elegibles, rareza, random);
+            if (item != null)
+            {
+                return item;
+            }
+        }
+
+        for (int rareza = rarezaObjetivo + 1; rareza <= RarezaMaxTienda; rareza++)
+        {
+            T item = ElegirAleatorioPorRareza(elegibles, rareza, random);
+            if (item != null)
+            {
+                return item;
+            }
+        }
+
+        return elegibles[random.Next(elegibles.Count)];
+    }
+
+    private T ElegirAleatorioPorRareza<T>(List<T> candidatos, int rareza, System.Random random) where T : Item
+    {
+        List<T> pool = new List<T>();
+        for (int i = 0; i < candidatos.Count; i++)
+        {
+            T item = candidatos[i];
+            if (item != null && item.iRareza == rareza)
+            {
+                pool.Add(item);
+            }
+        }
+
+        if (pool.Count == 0)
+        {
+            return null;
+        }
+
+        return pool[random.Next(pool.Count)];
+    }
+
+    private int TirarRarezaObjetivoMercaderes(System.Random random)
+    {
+        int fase = ObtenerFaseActualMapa();
+        int corrimiento = Mathf.Clamp(fase - 1, 0, 2) * CorrimientoPorFase; // fase 2: +10, fase 3: +20
+        int tiradaBase = random.Next(1, 101);
+        int tiradaAjustada = Mathf.Clamp(tiradaBase + corrimiento, 1, 100);
+
+        if (tiradaAjustada <= 35) return 0; // Comun 35%
+        if (tiradaAjustada <= 65) return 1; // Infrecuente 30%
+        if (tiradaAjustada <= 85) return 2; // Raro 20%
+        if (tiradaAjustada <= 95) return 3; // Epico 10%
+        return 4; // Legendario 5%
+    }
+
+    private int ObtenerFaseActualMapa()
+    {
+        if (CampaignManager.Instance == null || CampaignManager.Instance.scAtributosZona == null)
+        {
+            return 1;
+        }
+
+        return Mathf.Max(1, CampaignManager.Instance.scAtributosZona.FASE);
     }
 
     bool TienePersonajedeLaClasedelItem(Item item)

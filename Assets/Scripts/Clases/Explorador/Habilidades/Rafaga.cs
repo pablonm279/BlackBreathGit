@@ -87,7 +87,7 @@ public class Rafaga : Habilidad
       cuerpo += $"<b>Type:</b> Ranged ({hAlcance} range)\n";
       cuerpo += "<b>Target:</b> 1 enemy in wide range (3-width). If it dies, continues on the next enemy in list\n";
       cuerpo += "<b>Loop:</b> repeats shots until current AP reaches 0 or arrows reach 0\n";
-      cuerpo += $"<b>Roll (per shot):</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonusAtaqueNivel} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Roll (per shot):</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color>   + {bonusAtaqueNivel} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
       cuerpo += $"<b>Damage (per shot):</b> 1d10 + 1 + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Piercing\n";
       cuerpo += "<b>Resource:</b> consumes 1 Arrow and 1 AP per shot\n";
       cuerpo += "<b>Turn flow:</b> using this skill ends your turn";

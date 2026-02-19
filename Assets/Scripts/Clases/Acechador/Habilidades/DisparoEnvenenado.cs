@@ -128,7 +128,8 @@ public class DisparoEnvenenado : Habilidad
       if(TRADU.i.nIdioma== 2)
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: Removes Cooldown, +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
 
-    }
+    }
+
       ActualizarDescripcion();
 
   }
@@ -164,8 +165,8 @@ public class DisparoEnvenenado : Habilidad
     if (esIngles)
     {
       cuerpo += $"<b>Type:</b> Ranged ({hAlcance} range)\n";
-      cuerpo += "<b>Target:</b> 1 enemy in range\n";
-      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+      cuerpo += "<b>Target:</b> 1 enemy in range\n"; 
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
       cuerpo += $"<b>Damage:</b> 3d4 + {damExtra} + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Piercing\n";
       cuerpo += lineaSalvacion + "\n";
       cuerpo += $"<b>On failed save:</b> applies {venenoAplicado} Poison";

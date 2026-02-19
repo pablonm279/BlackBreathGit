@@ -45,17 +45,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cdbc4182ea19314c8883133d992c0da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: b587d0e9febb8fb45812c8656caac230, type: 3}
+  imItem: {fileID: 21300000, guid: 10a261364bfbc214ebeb390d9cd9d9ca, type: 3}
   sNombreItem: "Bast\xF3n de Purificadora"
+  IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 03000000
   iPrecio: 65
-  itemDescripcion: "Baston de purificadora para canalizar energia y golpear en melee."
+  itemDescripcion: Baston de purificadora para canalizar energia y golpear en melee.
+  iRareza: 0
+  nivelMejora: 0
+  barreraInicioCombate: 0
+  evasionInicioCombate: 0
+  bonusDanioFuegoInicioCombate: 0
+  bonusDanioHieloInicioCombate: 0
+  bonusDanioRayoInicioCombate: 0
+  bonusDanioAcidoInicioCombate: 0
+  bonusDanioArcanoInicioCombate: 0
+  bonusDanioNecroInicioCombate: 0
+  bonusDanioDivinoInicioCombate: 0
+  regeneracionVidaInicioCombate: 0
+  regeneracionArmaduraInicioCombate: 0
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
   habilidadAtaque: {fileID: 4091912447371821650}
   habilidadExtra1: {fileID: 0}
   habilidadExtra2: {fileID: 0}
   requisitoFue: 0
   requisitoAgi: 0
   requisitoPoder: 3
+  debuffsImpactoArma: []
   buffFuerza: 0
   buffAgi: 0
   buffPoder: 0
@@ -142,10 +162,13 @@ MonoBehaviour:
   esCargable: 0
   esMelee: 0
   bAfectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
+  penetracionArmadura: 0
   seEsforzaria: 0
   VFXenObjetivo: {fileID: 0}
   bonusAtaque: 0

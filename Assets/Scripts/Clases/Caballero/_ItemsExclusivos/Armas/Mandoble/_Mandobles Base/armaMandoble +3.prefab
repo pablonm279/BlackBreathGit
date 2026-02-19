@@ -45,19 +45,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d73a03be1850c641afa65282c92e2ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: 0bbb2fa20008b6d43ae9b57ccd674120, type: 3}
+  imItem: {fileID: 21300000, guid: 3d5062fc777037e4a903382730e68847, type: 3}
   sNombreItem: Mandoble
+  IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 01000000
   iPrecio: 650
-  itemDescripcion: "Mandoble pesado para golpes contundentes."
+  itemDescripcion: Mandoble pesado para golpes contundentes.
   iRareza: 3
   nivelMejora: 3
+  barreraInicioCombate: 0
+  evasionInicioCombate: 0
+  bonusDanioFuegoInicioCombate: 0
+  bonusDanioHieloInicioCombate: 0
+  bonusDanioRayoInicioCombate: 0
+  bonusDanioAcidoInicioCombate: 0
+  bonusDanioArcanoInicioCombate: 0
+  bonusDanioNecroInicioCombate: 0
+  bonusDanioDivinoInicioCombate: 0
+  regeneracionVidaInicioCombate: 0
+  regeneracionArmaduraInicioCombate: 0
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
   habilidadAtaque: {fileID: 8877203065258719260}
   habilidadExtra1: {fileID: 0}
   habilidadExtra2: {fileID: 0}
   requisitoFue: 3
   requisitoAgi: 0
   requisitoPoder: 0
+  debuffsImpactoArma: []
   buffFuerza: 0
   buffAgi: 0
   buffPoder: 0
@@ -144,10 +162,13 @@ MonoBehaviour:
   esCargable: 0
   esMelee: 0
   bAfectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
+  penetracionArmadura: 0
   seEsforzaria: 0
   VFXenObjetivo: {fileID: 0}
   bonusAtaque: 0

@@ -91,7 +91,7 @@ public class LlamaDivina : Habilidad
       {
         cuerpo += "<b>Type:</b> Ranged (5 range)\n";
         cuerpo += "<b>Target:</b> 1 unit in range\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color> + Attack ({ataqueActual}) vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</colo r>  vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
         cuerpo += $"<b>Damage:</b> 3d6 + {danioFijoActual} + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Divine\n";
         cuerpo += lineaSalvacionEn + "\n";
         cuerpo += $"<b>On failed save:</b> Burning {quemadura}. Undead and Ethereal are instantly killed";

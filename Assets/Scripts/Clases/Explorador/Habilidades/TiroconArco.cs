@@ -61,7 +61,7 @@ public class TiroconArco : Habilidad
     {
       cuerpo += $"<b>Type:</b> Ranged ({hAlcance} range)\n";
       cuerpo += "<b>Target:</b> 1 enemy in range\n";
-      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color>   + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
       cuerpo += $"<b>Damage:</b> 1d10 + 1 + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Slashing\n";
       cuerpo += "<b>Resource:</b> consumes 1 Arrow on shot\n";
     }

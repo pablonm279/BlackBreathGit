@@ -73,7 +73,7 @@ public class Vigilancia : Habilidad
       cuerpo += "<b>Target:</b> 1 enemy in range to place a 3x3 watch zone centered on that tile\n";
       cuerpo += "<b>Roll/Save:</b> no save check on cast\n";
       cuerpo += $"<b>Watch setup:</b> places traps on empty tiles of that 3x3 area (1 turn, 1 use each), up to {disparosPorUso} reaction shots total\n";
-      cuerpo += $"<b>Reaction shot:</b> uses Bow Shot roll with +{bonoTiradaReaccion} to the d20 result. Base roll shown in UI: 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) vs Defense. Base crit: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Reaction shot:</b> uses Bow Shot roll with +{bonoTiradaReaccion} to the d20 result. Base roll shown in UI: 1d20 + <color=#ea0606>Agility ({agilidadActual})</colo r>  vs Defense. Base crit: {criticoBaseMin}-20\n";
       cuerpo += "<b>Reaction damage:</b> same as Bow Shot (1d10 + 1 + Agility) | <b>Type:</b> Slashing\n";
       cuerpo += $"<b>Resource:</b> needs at least {requiereRecurso} Arrows to activate, consumes 1 Arrow per reaction shot\n";
       cuerpo += "<b>Turn flow:</b> using this skill ends your turn";

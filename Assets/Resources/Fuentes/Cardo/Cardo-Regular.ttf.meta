@@ -1,0 +1,26 @@
+fileFormatVersion: 2
+guid: bb507edf7ad9da74687a4d5ba77acfe8
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 18
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Cardo
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: c0a57c881fb6a7343a6b46a59e292f13, type: 3}
+  - {fileID: 12800000, guid: f326f83a6b5b23b45b440a386955fbed, type: 3}
+  - {fileID: 12800000, guid: 29db2be79df4902478bdb2f8ed75433c, type: 3}
+  - {fileID: 12800000, guid: 9e20114027594d34d8fc19955335ca79, type: 3}
+  - {fileID: 12800000, guid: 8ae7838e12641144daabf2f49688642b, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

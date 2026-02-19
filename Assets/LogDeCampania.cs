@@ -19,8 +19,8 @@ public class LogDeCampania : MonoBehaviour
 
     [Header("Estilos")]
     [SerializeField] private string colorDia = "#2c81b9ff";     // Encabezado de día (prefijo de línea)
-    [SerializeField] private string colorActual = "#000000ff";  // Texto día actual
-    [SerializeField] private string colorPasado = "#565656ff";  // Texto días previos
+    [SerializeField] private string colorActual = "#ffffffff";  // Texto día actual
+    [SerializeField] private string colorPasado = "#d4d4d4ff";  // Texto días previos
     [SerializeField] private int sizeActualPct = 115;         // % tamaño día actual
     [SerializeField] private int sizePasadoPct = 80;          // % tamaño días pasados
 

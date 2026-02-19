@@ -45,14 +45,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5476b006b37476c4fa24c49470529fcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: 49be163aaafef3f4289051ce7b2680cf, type: 3}
+  imItem: {fileID: 21300000, guid: 96dd487916b49d94db4be9429a3fe126, type: 3}
   sNombreItem: Armadura de Cuero Borrosa
   IDEfectoEspecial: 4
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 225
-  itemDescripcion: "Armadura de cuero ligera orientada a evasion."
+  itemDescripcion: Armadura de cuero ligera orientada a evasion.
   iRareza: 2
   nivelMejora: 2
+  barreraInicioCombate: 0
+  evasionInicioCombate: 0
+  bonusDanioFuegoInicioCombate: 0
+  bonusDanioHieloInicioCombate: 0
+  bonusDanioRayoInicioCombate: 0
+  bonusDanioAcidoInicioCombate: 0
+  bonusDanioArcanoInicioCombate: 0
+  bonusDanioNecroInicioCombate: 0
+  bonusDanioDivinoInicioCombate: 0
+  regeneracionVidaInicioCombate: 0
+  regeneracionArmaduraInicioCombate: 0
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
   requisitoFue: 0
   requisitoAgi: 3
   requisitoPoder: 0

@@ -104,7 +104,8 @@ public class TiroBallestaDeMano : Habilidad
       cooldownActual = 0;
       txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
 
-    }
+    }
+
       ActualizarDescripcion();
     
   }
@@ -128,8 +129,8 @@ public class TiroBallestaDeMano : Habilidad
     if (esIngles)
     {
       cuerpo += $"<b>Type:</b> Ranged ({hAlcance} range)\n";
-      cuerpo += "<b>Target:</b> 1 enemy in range\n";
-      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+      cuerpo += "<b>Target:</b> 1 enemy in range\n"; 
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
       cuerpo += $"<b>Damage:</b> 1d10 + {damExtra} + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Piercing";
       if (nivelMaestria > 0)
       {

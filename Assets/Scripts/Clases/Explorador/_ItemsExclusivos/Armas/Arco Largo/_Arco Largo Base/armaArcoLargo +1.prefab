@@ -45,20 +45,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a2ced5f8edac2a45afbf5ae510dd4c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: cc91afbce72d374488395d7b13e33c90, type: 3}
+  imItem: {fileID: 21300000, guid: 07df2cef04cb8c24eaf76459233c670d, type: 3}
   sNombreItem: Arco Largo
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 02000000
   iPrecio: 75
-  itemDescripcion: "Arco largo versatil para combate a distancia."
+  itemDescripcion: Arco largo versatil para combate a distancia.
   iRareza: 1
   nivelMejora: 1
+  barreraInicioCombate: 0
+  evasionInicioCombate: 0
+  bonusDanioFuegoInicioCombate: 0
+  bonusDanioHieloInicioCombate: 0
+  bonusDanioRayoInicioCombate: 0
+  bonusDanioAcidoInicioCombate: 0
+  bonusDanioArcanoInicioCombate: 0
+  bonusDanioNecroInicioCombate: 0
+  bonusDanioDivinoInicioCombate: 0
+  regeneracionVidaInicioCombate: 0
+  regeneracionArmaduraInicioCombate: 0
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
   habilidadAtaque: {fileID: 1624686996790798170}
   habilidadExtra1: {fileID: 0}
   habilidadExtra2: {fileID: 0}
   requisitoFue: 0
   requisitoAgi: 3
   requisitoPoder: 0
+  debuffsImpactoArma: []
   buffFuerza: 0
   buffAgi: 0
   buffPoder: 0
@@ -145,10 +162,13 @@ MonoBehaviour:
   esCargable: 0
   esMelee: 0
   bAfectaObstaculos: 0
+  fuerzaPoseAtaque: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
+  tipoPorcentaje: 0
+  penetracionArmadura: 0
   seEsforzaria: 0
   VFXenObjetivo: {fileID: 0}
   bonusAtaque: 0

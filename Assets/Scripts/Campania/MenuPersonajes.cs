@@ -59,6 +59,22 @@ public class MenuPersonajes : MonoBehaviour
   [SerializeField] Image imCorazon;
   [SerializeField] Image imMedalla;
 
+  public void PrepararYAbrirMenu(Personaje personajeInicial = null)
+  {
+    if (listaPersonajes.Count == 0)
+    {
+      ActualizarLista();
+      ForzarRebuildInmediato();
+      return;
+    }
+
+    pSel = personajeInicial != null ? personajeInicial : listaPersonajes[0];
+    ActualizarLista();
+    CancelInvoke("ActualizarInfo");
+    ActualizarInfo();
+    ForzarRebuildInmediato();
+  }
+
   public void ActualizarLista()
   {
 
@@ -100,9 +116,9 @@ public class MenuPersonajes : MonoBehaviour
 
          if (btn.personajeRepresentado.Camp_Fatigado)
         {
-          child.GetChild(11).gameObject.SetActive(true);
+          child.GetChild(10).gameObject.SetActive(true);
         }
-        else { child.GetChild(11).gameObject.SetActive(false); }
+        else { child.GetChild(10).gameObject.SetActive(false); }
 
 
 
@@ -110,12 +126,12 @@ public class MenuPersonajes : MonoBehaviour
 
         if (pSel == btn.personajeRepresentado)
         {
-          btn.transform.GetChild(0).gameObject.SetActive(true);
+          btn.transform.GetChild(12).gameObject.SetActive(true);
 
         }
         else
         {
-          btn.transform.GetChild(0).gameObject.SetActive(false);
+          btn.transform.GetChild(12).gameObject.SetActive(false);
         }
       }
     }
@@ -126,13 +142,16 @@ public class MenuPersonajes : MonoBehaviour
 
   public void SeleccionarPersonaje(Personaje pers, GameObject btnPers)
   {
+    if (pers == null) return;
 
     pSel = pers;
     ActualizarLista();
-    if (btnPers != null)
-    { btnPers.transform.GetChild(0).gameObject.SetActive(true); }
+    if (btnPers != null && btnPers.transform.childCount > 0)
+    { btnPers.transform.GetChild(12).gameObject.SetActive(true); }
 
-    Invoke("ActualizarInfo", 0.15f);
+    CancelInvoke("ActualizarInfo");
+    ActualizarInfo();
+    ForzarRebuildInmediato();
 
   }
 
@@ -855,6 +874,31 @@ public class MenuPersonajes : MonoBehaviour
 
     pSel.iPuestoDeseado = pos;
 
+  }
+
+  void ForzarRebuildInmediato()
+  {
+    Canvas.ForceUpdateCanvases();
+
+    RectTransform root = transform as RectTransform;
+    if (root != null)
+      LayoutRebuilder.ForceRebuildLayoutImmediate(root);
+
+    if (contenedorUIPersonajes != null)
+    {
+      RectTransform rtLista = contenedorUIPersonajes.transform as RectTransform;
+      if (rtLista != null)
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rtLista);
+    }
+
+    if (listaHab != null)
+    {
+      RectTransform rtHab = listaHab as RectTransform;
+      if (rtHab != null)
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rtHab);
+    }
+
+    Canvas.ForceUpdateCanvases();
   }
 
 }

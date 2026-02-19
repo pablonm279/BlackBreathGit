@@ -44,10 +44,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 704e0c0224e861d499be4fd1b0146100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: 7a8ecbc650c0f544aabe0da461ea4057, type: 3}
+  imItem: {fileID: 21300000, guid: f34506612bdbd004ea5da277506466ef, type: 3}
   sNombreItem: "S\xEDmbolo de Proteccion Arcano"
+  IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: ffffffff
   iPrecio: 0
   itemDescripcion: Otorga 3 de Resistencia contra todos los elementos. Dura 4 turnos.
   iRareza: 0
   nivelMejora: 0
+  barreraInicioCombate: 0
+  evasionInicioCombate: 0
+  bonusDanioFuegoInicioCombate: 0
+  bonusDanioHieloInicioCombate: 0
+  bonusDanioRayoInicioCombate: 0
+  bonusDanioAcidoInicioCombate: 0
+  bonusDanioArcanoInicioCombate: 0
+  bonusDanioNecroInicioCombate: 0
+  bonusDanioDivinoInicioCombate: 0
+  regeneracionVidaInicioCombate: 0
+  regeneracionArmaduraInicioCombate: 0
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
+  efectoConsumible:
+    curacionBase: 0
+    curacionDadosCantidad: 0
+    curacionDadosCaras: 0
+    curacionPorcentajeHPMax: 0
+    removerDebuffs: 0
+    removerBuffs: 0
+    removerEstadosNegativos: 0
+    modificarRegeneracionVida: 0
+    modificarRegeneracionArmadura: 0
+    modificarEvasion: 0
+    aplicarBuff: 1
+    nombreBuff: Proteccion Arcana
+    buffEsBeneficio: 1
+    duracionBuffRondas: 3
+    buffReferencia: {fileID: 0}
+    buff:
+      cantAtFue: 0
+      cantAtAgi: 0
+      cantAtPod: 0
+      cantIniciativa: 0
+      cantAPMax: 0
+      cantPMMax: 0
+      cantHPMax: 0
+      cantArmadura: 0
+      cantDefensa: 0
+      cantAtaque: 0
+      cantDanioPorcentaje: 0
+      cantCritDado: 0
+      cantCritDanio: 0
+      cantTsReflejos: 0
+      cantTsFortaleza: 0
+      cantTsMental: 0
+      cantResFue: 3
+      cantResHie: 3
+      cantResRay: 3
+      cantResAci: 3
+      cantResArc: 3
+      cantResNec: 0
+      cantResDiv: 0
+      cantBarrera: 0
+      cantDamBonusElementalFue: 0
+      cantDamBonusElementalHie: 0
+      cantDamBonusElementalRay: 0
+      cantDamBonusElementalAci: 0
+      cantDamBonusElementalArc: 0
+      cantDamBonusElementalNec: 0
+      cantDamBonusElementalDiv: 0
+      cantPenetracionArmadura: 0
+      cantReduccionDanioRecibidoPorcentaje: 0
+      cantReduccionDanioCriticoRecibidoPorcentaje: 0
+      cantResistenciaEstadosPorcentaje: 0
+      cantEspinasDanioPlano: 0
+      cantEspinasDanioPorcentaje: 0

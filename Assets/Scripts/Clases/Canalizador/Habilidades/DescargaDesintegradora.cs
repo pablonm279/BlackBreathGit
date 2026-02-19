@@ -84,7 +84,7 @@ public class DescargaDesintegradora : Habilidad
     {
       cuerpo += "<b>Type:</b> Ranged (5 range)\n";
       cuerpo += "<b>Target:</b> Pyramid area\n";
-      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color> + Attack ({ataqueActual}) + 5 vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color>   + 5 vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
       cuerpo += $"<b>Damage:</b> {danioEn} | <b>Type:</b> Arcane\n";
       cuerpo += $"{lineaSalvacionEn}. On failed save: disintegrated (instant kill)\n";
       cuerpo += consumeEnergia

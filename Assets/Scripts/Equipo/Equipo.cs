@@ -29,6 +29,23 @@ public class Equipo : MonoBehaviour
  public int accesorioACambiar;
  public int consumibleACambiar;
 
+ private bool PuedeMostrarPorClase(Item item)
+ {
+    if (item == null)
+    {
+      return false;
+    }
+
+    MenuPersonajes menuPersonajes = CampaignManager.Instance != null ? CampaignManager.Instance.scMenuPersonajes : null;
+    Personaje personajeSeleccionado = menuPersonajes != null ? menuPersonajes.pSel : null;
+    if (personajeSeleccionado == null)
+    {
+      return true;
+    }
+
+    return item.PuedeUsarClase(personajeSeleccionado.IDClase);
+ }
+
  public void MostrarInventario(int tipo) //1 Armas
  {
 
@@ -44,14 +61,15 @@ public class Equipo : MonoBehaviour
     {
         foreach (GameObject goItem in listInventario)
         {
-            if(goItem.GetComponent<Arma>()!= null)
+            Arma arma = goItem != null ? goItem.GetComponent<Arma>() : null;
+            if(arma != null && PuedeMostrarPorClase(arma))
             {
                
                 GameObject btnItem =  Instantiate(prefabNtnInventario,listaItems);
                 btnItemInventario scBtnItem = btnItem.GetComponent<btnItemInventario>();
 
-                scBtnItem.imageMuestraItem.sprite = goItem.GetComponent<Arma>().imItem;
-                scBtnItem.itemRepresentado = goItem.GetComponent<Arma>();
+                scBtnItem.imageMuestraItem.sprite = arma.imItem;
+                scBtnItem.itemRepresentado = arma;
 
             }
 
@@ -63,13 +81,14 @@ public class Equipo : MonoBehaviour
     {
         foreach (GameObject goItem in listInventario)
         {
-            if(goItem.GetComponent<Armadura>()!= null)
+            Armadura armadura = goItem != null ? goItem.GetComponent<Armadura>() : null;
+            if(armadura != null && PuedeMostrarPorClase(armadura))
             {
                 GameObject btnItem =  Instantiate(prefabNtnInventario,listaItems);
                 btnItemInventario scBtnItem = btnItem.GetComponent<btnItemInventario>();
 
-                scBtnItem.imageMuestraItem.sprite = goItem.GetComponent<Armadura>().imItem;
-                scBtnItem.itemRepresentado = goItem.GetComponent<Armadura>();
+                scBtnItem.imageMuestraItem.sprite = armadura.imItem;
+                scBtnItem.itemRepresentado = armadura;
 
             }
 
@@ -81,13 +100,14 @@ public class Equipo : MonoBehaviour
     {
         foreach (GameObject goItem in listInventario)
         {
-            if(goItem.GetComponent<Accesorio>()!= null)
+            Accesorio accesorio = goItem != null ? goItem.GetComponent<Accesorio>() : null;
+            if(accesorio != null && PuedeMostrarPorClase(accesorio))
             {
                 GameObject btnItem =  Instantiate(prefabNtnInventario,listaItems);
                 btnItemInventario scBtnItem = btnItem.GetComponent<btnItemInventario>();
 
-                scBtnItem.imageMuestraItem.sprite = goItem.GetComponent<Accesorio>().imItem;
-                scBtnItem.itemRepresentado = goItem.GetComponent<Accesorio>();
+                scBtnItem.imageMuestraItem.sprite = accesorio.imItem;
+                scBtnItem.itemRepresentado = accesorio;
 
             }
 
@@ -99,13 +119,14 @@ public class Equipo : MonoBehaviour
     {
         foreach (GameObject goItem in listInventario)
         {
-            if(goItem.GetComponent<Consumible>()!= null)
+            Consumible consumible = goItem != null ? goItem.GetComponent<Consumible>() : null;
+            if(consumible != null && PuedeMostrarPorClase(consumible))
             {
                 GameObject btnItem =  Instantiate(prefabNtnInventario,listaItems);
                 btnItemInventario scBtnItem = btnItem.GetComponent<btnItemInventario>();
 
-                scBtnItem.imageMuestraItem.sprite = goItem.GetComponent<Consumible>().imItem;
-                scBtnItem.itemRepresentado = goItem.GetComponent<Consumible>();
+                scBtnItem.imageMuestraItem.sprite = consumible.imItem;
+                scBtnItem.itemRepresentado = consumible;
 
             }
 
@@ -117,12 +138,17 @@ public class Equipo : MonoBehaviour
     {
         foreach (GameObject goItem in listInventario)
         {
-            
+                Item item = goItem != null ? goItem.GetComponent<Item>() : null;
+                if (item == null || !PuedeMostrarPorClase(item))
+                {
+                    continue;
+                }
+
                 GameObject btnItem =  Instantiate(prefabNtnInventario,listaItems);
                 btnItemInventario scBtnItem = btnItem.GetComponent<btnItemInventario>();
 
-                scBtnItem.imageMuestraItem.sprite = goItem.GetComponent<Item>().imItem;
-                scBtnItem.itemRepresentado = goItem.GetComponent<Item>();
+                scBtnItem.imageMuestraItem.sprite = item.imItem;
+                scBtnItem.itemRepresentado = item;
 
            
             

@@ -58,7 +58,7 @@ public class Partir : Habilidad
       int bonusCritNivel = NIVEL == 5 ? 1 : 0;
       int criticoMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab + bonusCritNivel), 2, 20);
       int danioBaseFijo = 5 + (NIVEL > 1 ? 4 : 0);
-      int dcMiedo = NIVEL == 4 ? 5 : 3;
+      int dcMiedo = NIVEL == 4 ? 15 : 13;
       string bonusAtaqueTxt = bonusAtaqueNivel >= 0 ? $" + {bonusAtaqueNivel}" : $" - {Mathf.Abs(bonusAtaqueNivel)}";
       string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Mental, dcMiedo);
       string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Mental, dcMiedo);
@@ -75,7 +75,7 @@ public class Partir : Habilidad
       {
         cuerpo += "<b>Type:</b> Melee\n";
         cuerpo += "<b>Target:</b> 1 enemy in front range\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color> + Attack ({ataqueActual}){bonusAtaqueTxt} vs Defense. Fumble: 1-2. Crit: {criticoMin}-20\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color>  {bonusAtaqueTxt} vs Defense. Fumble: 1-2. Crit: {criticoMin}-20\n";
         cuerpo += $"<b>Damage:</b> 2d10 + {danioBaseFijo} + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
         cuerpo += $"<b>Armor Penetration:</b> {penetracionArmadura}\n";
         cuerpo += "<b>On kill:</b> All enemies roll save\n";
@@ -533,7 +533,7 @@ public class Partir : Habilidad
              if(cas.Presente.GetComponent<Unidad>() != null)
              {
                 Unidad uni = cas.Presente.GetComponent<Unidad>();
-                int nDif = 3;
+                int nDif = 13;
                 if(NIVEL == 4){nDif += 2;}
 
                 if(uni.TiradaSalvacion(uni.mod_TSMental, nDif))

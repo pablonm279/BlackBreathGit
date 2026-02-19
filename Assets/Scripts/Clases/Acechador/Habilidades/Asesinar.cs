@@ -84,7 +84,7 @@ public class Asesinar : Habilidad
       cuerpo += "<b>Type:</b> Ranged (4 range)\n";
       cuerpo += "<b>Target:</b> 1 enemy\n";
       cuerpo += "<b>Requirement:</b> Hidden (1)\n";
-      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color>   + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
       cuerpo += $"<b>Damage:</b> 2d8 + {danioFijo} + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Piercing\n";
       cuerpo += "<b>Humanoid bonus:</b> +2 flat damage\n";
       cuerpo += $"<b>If isolated:</b> +{bonoAtaqueAislado} attack and x2 final damage\n";

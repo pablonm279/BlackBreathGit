@@ -86,7 +86,7 @@ public class DescargaDePoder : Habilidad
       {
         cuerpo += "<b>Type:</b> Ranged (5 range)\n";
         cuerpo += "<b>Target:</b> T area (3 horizontal + 2 at the far end)\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color> + Attack ({ataqueActual}){bonusAtaqueEn} vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color>  {bonusAtaqueEn} vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
         cuerpo += $"<b>Damage:</b> {danioEn} | <b>Type:</b> Arcane";
       }
       else
@@ -110,7 +110,7 @@ public class DescargaDePoder : Habilidad
         costos,
         "#5dade2");
 
-      bool mostrarProximoNivel = EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      bool mostrarProximoNivel = EsEscenaCampaÃ±a() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)
       {
         return;
