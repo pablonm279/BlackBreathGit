@@ -50,7 +50,7 @@ public abstract class Habilidad : MonoBehaviour
   public bool esHostil; //Si es para enemigos o aliados
   public bool esDiscreta = false; //No quita sigilo
 
-  [Tooltip("0=Sin mostrar probabilidad, 1=Ataque melee, 2=Ataque rango")]
+  [Tooltip("0=Sin mostrar probabilidad, 1=Ataque melee (Fuerza), 2=Ataque rango (Agilidad), 3=Ataque magia (Poder)")]
   public int tipoPorcentaje = 0;
   [Header("Ataque")]
   [Tooltip("Penetracion plana de armadura para esta habilidad. Solo aplica al resolver este ataque.")]
@@ -780,19 +780,30 @@ public abstract class Habilidad : MonoBehaviour
     switch (tipoPorcentaje)
     {
       case 1:
-        return CalcularProbAtaque(objetivo, true);
+        return CalcularProbAtaque(objetivo, 1);
       case 2:
-        return CalcularProbAtaque(objetivo, false);
+        return CalcularProbAtaque(objetivo, 2);
+      case 3:
+        return CalcularProbAtaque(objetivo, 3);
       default:
         return null;
     }
   }
 
-  private float CalcularProbAtaque(Unidad objetivo, bool esMeleePorcentaje)
+  private float CalcularProbAtaque(Unidad objetivo, int tipoAtaquePorcentaje)
   {
-    float atributoAtacante = esMeleePorcentaje ? scEstaUnidad.mod_CarFuerza : scEstaUnidad.mod_CarAgilidad;
+    float atributoAtacante = scEstaUnidad.mod_CarAgilidad;
+    if (tipoAtaquePorcentaje == 1)
+    {
+      atributoAtacante = scEstaUnidad.mod_CarFuerza;
+    }
+    else if (tipoAtaquePorcentaje == 3)
+    {
+      atributoAtacante = scEstaUnidad.mod_CarPoder;
+    }
+
     float ataqueTotal = scEstaUnidad.mod_Ataque + atributoAtacante + ObtenerBonusAtaque();
-    if (!esMeleePorcentaje && CampaignManager.Instance != null)
+    if (tipoAtaquePorcentaje != 1 && CampaignManager.Instance != null)
     {
       // Penalidades de clima a ataques a distancia
       if (CampaignManager.Instance.intTipoClima == 3) // Lluvia

@@ -210,6 +210,11 @@ public class Buff : MonoBehaviour
 
         if (cantBarrera != 0) { unidad.barreraDeDanio += cantBarrera; }
 
+        // Fuerza escala la vida maxima en tiempo real.
+        unidad.RecalcularVidaPorFuerza(true);
+        unidad.RecalcularDefensaPorAgilidad();
+        unidad.RecalcularResElementalesPorPoder();
+
         Color colorTexto = boolfDebufftBuff ? Color.cyan : Color.magenta;
         FloatingTextContext contextoTexto = FloatingTextContext.BuffApply;
         bool suprimirPorInicioCombate = BattleManager.Instance != null && BattleManager.Instance.silenciarLogCombate;
@@ -321,6 +326,11 @@ public void RemoverBuff(Unidad unidad)
     if (cantTsMental != 0) { unidad.mod_TSMental -= cantTsMental; }
 
     if (cantBarrera != 0) { unidad.barreraDeDanio -= cantBarrera; if (unidad.barreraDeDanio < 0) { unidad.barreraDeDanio = 0; } }
+
+    // Fuerza escala la vida maxima en tiempo real.
+    unidad.RecalcularVidaPorFuerza(true);
+    unidad.RecalcularDefensaPorAgilidad();
+    unidad.RecalcularResElementalesPorPoder();
 
     if (cantDamBonusElementalAci != 0) { unidad.bonusdam_acido -= cantDamBonusElementalAci; }
     if (cantDamBonusElementalArc != 0) { unidad.bonusdam_arcano -= cantDamBonusElementalArc; }

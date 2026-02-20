@@ -30,6 +30,9 @@ public class LogDeCampania : MonoBehaviour
     private static readonly Regex _regexTagsNoPermitidos =
         new Regex(@"</?(?!\s*(?:b|i|color|size|mark)\b)[^>]+>",
                   RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    // Si el mensaje ya empieza con "-", lo quitamos para evitar "Día X - -Texto".
+    private static readonly Regex _regexGuionInicial =
+        new Regex(@"^((?:\s*<[^>]+>\s*)*)-\s*", RegexOptions.Compiled);
 
     private struct EntradaLog
     {
@@ -111,6 +114,7 @@ public class LogDeCampania : MonoBehaviour
         for (int i = 0; i < entradas.Count; i++)
         {
             var e = entradas[i];
+                string mensajeRender = NormalizarMensajeRender(e.Texto);
                 string prefijoDia;
                 if (esCombate)
                 {
@@ -125,7 +129,7 @@ public class LogDeCampania : MonoBehaviour
             {
                 sb.Append("<size=").Append(sizeActualPct).Append("%>")
                   .Append("<color=").Append(colorActual).Append(">")
-                  .Append(prefijoDia).Append(" - ").Append(e.Texto)
+                  .Append(prefijoDia).Append(" - ").Append(mensajeRender)
                   .Append("</color></size>");
             }
             else
@@ -133,7 +137,7 @@ public class LogDeCampania : MonoBehaviour
                 sb.Append("<i>")
                   .Append("<size=").Append(sizePasadoPct).Append("%>")
                   .Append("<color=").Append(colorPasado).Append(">")
-                  .Append(prefijoDia).Append(" - ").Append(e.Texto)
+                  .Append(prefijoDia).Append(" - ").Append(mensajeRender)
                   .Append("</color></size>")
                   .Append("</i>");
             }
@@ -199,5 +203,11 @@ public class LogDeCampania : MonoBehaviour
         // Normalizar saltos de línea a una sola línea (log = 1 evento por línea)
         limpio = limpio.Replace("\r\n", " ").Replace('\n', ' ').Trim();
         return limpio;
+    }
+
+    private static string NormalizarMensajeRender(string s)
+    {
+        if (string.IsNullOrWhiteSpace(s)) return string.Empty;
+        return _regexGuionInicial.Replace(s, "$1");
     }
 }

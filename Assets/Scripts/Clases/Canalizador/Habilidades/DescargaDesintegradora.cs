@@ -35,7 +35,7 @@ public class DescargaDesintegradora : Habilidad
       bAfectaObstaculos = true;
 
       targetEspecial = 9; //Piramide
-       tipoPorcentaje = 2;
+       tipoPorcentaje = 3;
       bonusAtaque = 5;
       XdDanio = 3;
       daniodX = 12; //3d12

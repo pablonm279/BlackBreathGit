@@ -291,7 +291,7 @@ public class Asesinar : Habilidad
       //---
 
       VFXAplicar(objetivo.gameObject);
-      float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + 3 + damExtra + scEstaUnidad.mod_CarFuerza;
+      float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + 3 + damExtra + scEstaUnidad.mod_CarAgilidad;
       danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
 
       objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);

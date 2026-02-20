@@ -45,7 +45,6 @@ public class CorteDaga : Habilidad
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       var statsUI = ObtenerStatsDescripcionUI();
 
-      int agilidadActual = statsUI.Agilidad;
       int fuerzaActual = statsUI.Fuerza;
       int ataqueActual = statsUI.Ataque;
       int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
@@ -55,14 +54,14 @@ public class CorteDaga : Habilidad
       {
         cuerpo += "<b>Type:</b> Melee\n";
         cuerpo += "<b>Target:</b> 1 enemy in front range\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color>   + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color>   + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
         cuerpo += $"<b>Damage:</b> 1d6 + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
       }
       else
       {
         cuerpo += "<b>Tipo:</b> Melee\n";
         cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance frontal\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza ({fuerzaActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
         cuerpo += $"<b>Danio:</b> 1d6 + <color=#ea0606>Fuerza ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
       }
 
@@ -139,7 +138,7 @@ public class CorteDaga : Habilidad
        
        }
        //----
-       int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarAgilidad, bonusAtaque, criticoRango, objetivo, 0);
+       int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarFuerza, bonusAtaque, criticoRango, objetivo, 0);
 
 
       if (resultadoTirada == -1)

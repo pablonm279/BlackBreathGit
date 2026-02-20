@@ -52,6 +52,8 @@ public class CampaignManager : MonoBehaviour
   public float sequitoCuranderosMejoraCuracion;
 
   public int numeroTurno;
+  private const string TEXTO_LOG_INICIO_CAMPANIA = "El viaje de la caravana ha comenzado.";
+  private bool logInicioCampaniaEscrito;
   public bool MoviendoCaravana = false;
   public Nodo nodoDestinoActual;
 
@@ -193,6 +195,7 @@ public class CampaignManager : MonoBehaviour
       logDeCampania.SetDiaActual(numeroTurno);
 
     TRADU.i.ActualizarIdioma();
+    EscribirLogInicioCampania();
 
     MenuOpciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
   }
@@ -2035,9 +2038,20 @@ public class CampaignManager : MonoBehaviour
   }
 
   [SerializeField] public LogDeCampania logDeCampania;
+  private void EscribirLogInicioCampania()
+  {
+    if (logInicioCampaniaEscrito || logDeCampania == null)
+      return;
+
+    string logInicio = TRADU.i != null ? TRADU.i.Traducir(TEXTO_LOG_INICIO_CAMPANIA) : TEXTO_LOG_INICIO_CAMPANIA;
+    logDeCampania.SetDiaActual(numeroTurno);
+    logDeCampania.Escribir(logInicio);
+    logInicioCampaniaEscrito = true;
+  }
   public void EscribirLog(string log)
   {
     if (logDeCampania == null) return;
+    if (numeroTurno <= 1) return;
 
     // Asegura que el logger sabe el día actual
     logDeCampania.SetDiaActual(numeroTurno);
@@ -2151,8 +2165,10 @@ public class CampaignManager : MonoBehaviour
     pers1.iFuerza = 3 + UnityEngine.Random.Range(0, 3);
     pers1.iAgi = 2 + UnityEngine.Random.Range(0, 2);
     pers1.iPoder = 0 + UnityEngine.Random.Range(0, 1);
+    pers1.InicializarEscaladoResElementalPorPoderSiHaceFalta();
 
     pers1.iDefensa = 13;
+    pers1.InicializarEscaladoDefensaPorAgilidadSiHaceFalta();
     pers1.iArmadura = 0; //lo da la armadura
     pers1.iApMax = 4;
     pers1.iValMax = 5;
@@ -2252,8 +2268,10 @@ public class CampaignManager : MonoBehaviour
     pers1.iFuerza = 3 + UnityEngine.Random.Range(0, 2);
     pers1.iAgi = 5 + UnityEngine.Random.Range(0, 3);
     pers1.iPoder = 1 + UnityEngine.Random.Range(0, 1);
+    pers1.InicializarEscaladoResElementalPorPoderSiHaceFalta();
 
     pers1.iDefensa = 13;
+    pers1.InicializarEscaladoDefensaPorAgilidadSiHaceFalta();
     pers1.iArmadura = 0; //lo da la armadura
     pers1.iApMax = 4; //
     pers1.iValMax = 3;
@@ -2362,8 +2380,10 @@ public class CampaignManager : MonoBehaviour
     pers1.iFuerza = 1 + UnityEngine.Random.Range(0, 2);
     pers1.iAgi = 2 + UnityEngine.Random.Range(0, 2);
     pers1.iPoder = 4 + UnityEngine.Random.Range(0, 3);
+    pers1.InicializarEscaladoResElementalPorPoderSiHaceFalta();
 
     pers1.iDefensa = 11;
+    pers1.InicializarEscaladoDefensaPorAgilidadSiHaceFalta();
     pers1.iArmadura = 0; //lo da la armadura
     pers1.iApMax = 4; //
     pers1.iValMax = 5;
@@ -2463,8 +2483,10 @@ public class CampaignManager : MonoBehaviour
     pers1.iFuerza = 4 + UnityEngine.Random.Range(0, 2);
     pers1.iAgi = 5 + UnityEngine.Random.Range(0, 3);
     pers1.iPoder = 4 + UnityEngine.Random.Range(0, 1);
+    pers1.InicializarEscaladoResElementalPorPoderSiHaceFalta();
 
     pers1.iDefensa = 13;
+    pers1.InicializarEscaladoDefensaPorAgilidadSiHaceFalta();
     pers1.iArmadura = 0; //lo da la armadura
     pers1.iApMax = 4;
     pers1.iValMax = 2;
@@ -2570,8 +2592,10 @@ public class CampaignManager : MonoBehaviour
     pers1.iFuerza = 2 + UnityEngine.Random.Range(0, 2);
     pers1.iAgi = 2 + UnityEngine.Random.Range(0, 2);
     pers1.iPoder = 4 + UnityEngine.Random.Range(0, 3);
+    pers1.InicializarEscaladoResElementalPorPoderSiHaceFalta();
 
     pers1.iDefensa = 11;
+    pers1.InicializarEscaladoDefensaPorAgilidadSiHaceFalta();
     pers1.iArmadura = 0; //lo da la armadura
     pers1.iApMax = 4;
     pers1.iValMax = 3;

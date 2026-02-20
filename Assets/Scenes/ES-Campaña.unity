@@ -483,7 +483,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -298.2, y: 18017.3}
+  m_AnchoredPosition: {x: -298.2, y: 18008}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 180}
 --- !u!114 &4710450
@@ -500,7 +500,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -7128,6 +7128,67 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 19541949}
+  m_CullTransparentMesh: 1
+--- !u!1 &22697471
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 22697472}
+  - component: {fileID: 22697474}
+  - component: {fileID: 22697473}
+  m_Layer: 5
+  m_Name: TooltipStats
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &22697472
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 22697471}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.85992, y: 0.62852, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 714136413}
+  - {fileID: 492901882}
+  m_Father: {fileID: 314276524}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -1482.6, y: -487.8733}
+  m_SizeDelta: {x: 239.9512, y: 103.5852}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &22697473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 22697471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a6fbf2fee79a114da280448d092f554, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipObject: {fileID: 22697471}
+  tooltipText: {fileID: 492901883}
+--- !u!222 &22697474
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 22697471}
   m_CullTransparentMesh: 1
 --- !u!1 &22718577
 GameObject:
@@ -18004,7 +18065,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 16, y: 373}
+  m_AnchoredPosition: {x: -2.8, y: 373}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &33430916
@@ -20789,7 +20850,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -231.9, y: -66.6}
+  m_AnchoredPosition: {x: -243.7, y: 7.200012}
   m_SizeDelta: {x: 271.9238, y: 35.9238}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &56121988
@@ -20861,8 +20922,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 21
+  m_fontSizeBase: 21
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -22437,8 +22498,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
-  m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
+  m_sharedMaterial: {fileID: -4687675609486072877, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -23252,7 +23313,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 37.5, y: -24.7}
+  m_AnchoredPosition: {x: 32.5, y: -30.6}
   m_SizeDelta: {x: 28.7535, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &73724564
@@ -56657,7 +56718,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -63935,6 +63996,8 @@ GameObject:
   - component: {fileID: 170438686}
   - component: {fileID: 170438687}
   - component: {fileID: 170438688}
+  - component: {fileID: 170438689}
+  - component: {fileID: 170438690}
   m_Layer: 5
   m_Name: vAcido
   m_TagString: Untagged
@@ -64060,6 +64123,67 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &170438689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170438685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Reduce el da\xF1o \xC1cido recibido."
+  textoPersonalizadoEN: Decreases incoming Acid damage.
+  usarPosicionMouse: 1
+--- !u!114 &170438690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170438685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 170438689}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 170438689}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &171362466
 GameObject:
   m_ObjectHideFlags: 0
@@ -70221,7 +70345,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -110122,6 +110246,8 @@ GameObject:
   - component: {fileID: 297140091}
   - component: {fileID: 297140093}
   - component: {fileID: 297140092}
+  - component: {fileID: 297140095}
+  - component: {fileID: 297140094}
   m_Layer: 5
   m_Name: APMax
   m_TagString: Untagged
@@ -110145,8 +110271,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -232.0001, y: -132.40005}
-  m_SizeDelta: {x: 225.9593, y: 35.9238}
+  m_AnchoredPosition: {x: -273.069, y: -132}
+  m_SizeDelta: {x: 143.822, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &297140092
 MonoBehaviour:
@@ -110247,6 +110373,67 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 297140090}
   m_CullTransparentMesh: 1
+--- !u!114 &297140094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297140090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 297140095}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 297140095}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &297140095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297140090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Cantidad de Puntos de Acci\xF3n disponibles cada Turno."
+  textoPersonalizadoEN: Quantity of Action Points available each turn.
+  usarPosicionMouse: 1
 --- !u!1 &297586352
 GameObject:
   m_ObjectHideFlags: 0
@@ -116332,6 +116519,7 @@ RectTransform:
   - {fileID: 287637060}
   - {fileID: 1198960041}
   - {fileID: 1606747028}
+  - {fileID: 22697472}
   - {fileID: 1649081256}
   - {fileID: 1729690074}
   - {fileID: 345379428}
@@ -117687,7 +117875,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.745283, g: 0.7136436, b: 0.7136436, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -123294,7 +123482,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 136.6, y: 13.364338}
+  m_AnchoredPosition: {x: 134.57486, y: 13.364338}
   m_SizeDelta: {x: 390.0835, y: 43.4911}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &333439667
@@ -123311,7 +123499,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -123327,8 +123515,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4292269782
-  m_fontColor: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
+    rgba: 4292927712
+  m_fontColor: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -123345,8 +123533,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -123357,7 +123545,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: -28
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -129483,14 +129671,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6163172, g: 0.8207547, b: 0.58459413, a: 1}
+  m_Color: {r: 0.3233258, g: 0.3962264, b: 0.28595585, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 26c0e99946c442b4eb9e3c93498963b4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1e7b0917ae43dbd469306b30f5753860, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -130847,6 +131035,8 @@ GameObject:
   - component: {fileID: 355290342}
   - component: {fileID: 355290343}
   - component: {fileID: 355290344}
+  - component: {fileID: 355290345}
+  - component: {fileID: 355290346}
   m_Layer: 5
   m_Name: vDivino
   m_TagString: Untagged
@@ -130972,6 +131162,67 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &355290345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355290341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Reduce el da\xF1o Divine recibido."
+  textoPersonalizadoEN: Decreases incoming Divine damage.
+  usarPosicionMouse: 1
+--- !u!114 &355290346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355290341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 355290345}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 355290345}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &359158868
 GameObject:
   m_ObjectHideFlags: 0
@@ -147526,7 +147777,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 347.296, z: -0.244}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1480, y: 197}
+  m_AnchoredPosition: {x: 1452, y: 280}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &382852599
@@ -153635,7 +153886,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 3
   m_wordSpacing: 2
-  m_lineSpacing: 4
+  m_lineSpacing: -1
   m_lineSpacingMax: 0
   m_paragraphSpacing: 3
   m_charWidthMaxAdj: 0
@@ -161254,6 +161505,8 @@ GameObject:
   - component: {fileID: 444436385}
   - component: {fileID: 444436387}
   - component: {fileID: 444436386}
+  - component: {fileID: 444436389}
+  - component: {fileID: 444436388}
   m_Layer: 5
   m_Name: ValMax
   m_TagString: Untagged
@@ -161277,8 +161530,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -232.0001, y: -153.80008}
-  m_SizeDelta: {x: 225.9593, y: 35.9238}
+  m_AnchoredPosition: {x: -259.12, y: -157.5}
+  m_SizeDelta: {x: 171.71, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &444436386
 MonoBehaviour:
@@ -161379,6 +161632,67 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 444436384}
   m_CullTransparentMesh: 1
+--- !u!114 &444436388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444436384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 444436389}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 444436389}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &444436389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444436384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Cantidad de Puntos de Valent\xEDa m\xE1ximos."
+  textoPersonalizadoEN: Maximum Valour Points.
+  usarPosicionMouse: 1
 --- !u!1 &445572731
 GameObject:
   m_ObjectHideFlags: 0
@@ -162625,7 +162939,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+  m_fontColor: {r: 0.8396226, g: 0.6657754, b: 0.51882344, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -162653,8 +162967,8 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
-  m_wordSpacing: -1
-  m_lineSpacing: -9
+  m_wordSpacing: -2
+  m_lineSpacing: -11
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -168675,6 +168989,7 @@ GameObject:
   - component: {fileID: 470313303}
   - component: {fileID: 470313302}
   - component: {fileID: 470313305}
+  - component: {fileID: 470313306}
   m_Layer: 5
   m_Name: Pos3
   m_TagString: Untagged
@@ -168797,6 +169112,54 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 470313306}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 470313306}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &470313306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 470313300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: 'Vanguardia: comienza el combate en la columna frontal.'
+  textoPersonalizadoEN: 'Frontline: starts combat on the front column.'
+  usarPosicionMouse: 1
 --- !u!1 &470853244
 GameObject:
   m_ObjectHideFlags: 0
@@ -169815,7 +170178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -170909,6 +171272,142 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 492143413}
+  m_CullTransparentMesh: 1
+--- !u!1 &492901881
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 492901882}
+  - component: {fileID: 492901884}
+  - component: {fileID: 492901883}
+  m_Layer: 5
+  m_Name: textotooltip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &492901882
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492901881}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.23558, y: 1.7103673, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 22697472}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 170.03206, y: 61.40529}
+  m_SizeDelta: {x: 201.045, y: 50.757}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &492901883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492901881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
+  m_sharedMaterial: {fileID: -4687675609486072877, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4291809231
+  m_fontColor: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 12
+  m_fontSizeBase: 15
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 11
+  m_fontSizeMax: 12
+  m_fontStyle: 1
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: -1
+  m_wordSpacing: -2
+  m_lineSpacing: -3
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: -9.807159, y: 5.624668, z: -13.788902, w: 2.7989655}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &492901884
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492901881}
   m_CullTransparentMesh: 1
 --- !u!1001 &496929203
 PrefabInstance:
@@ -211943,6 +212442,7 @@ GameObject:
   - component: {fileID: 574871657}
   - component: {fileID: 574871656}
   - component: {fileID: 574871659}
+  - component: {fileID: 574871660}
   m_Layer: 5
   m_Name: Pos1
   m_TagString: Untagged
@@ -212065,6 +212565,54 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 574871660}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 574871660}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &574871660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 574871654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: 'Retaguardia: comienza el combate en la columna trasera.'
+  textoPersonalizadoEN: 'Backline: starts combat on the back column.'
+  usarPosicionMouse: 1
 --- !u!1 &575495132
 GameObject:
   m_ObjectHideFlags: 0
@@ -220962,7 +221510,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 37.2, y: -56.700016}
+  m_AnchoredPosition: {x: 32.799957, y: -64.7}
   m_SizeDelta: {x: 28.7535, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &625051961
@@ -237957,6 +238505,8 @@ GameObject:
   - component: {fileID: 703263637}
   - component: {fileID: 703263639}
   - component: {fileID: 703263638}
+  - component: {fileID: 703263641}
+  - component: {fileID: 703263640}
   m_Layer: 5
   m_Name: Armadura
   m_TagString: Untagged
@@ -237980,8 +238530,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -232.0001, y: -174.1001}
-  m_SizeDelta: {x: 225.9593, y: 35.9238}
+  m_AnchoredPosition: {x: -259.12, y: -182.9}
+  m_SizeDelta: {x: 171.71, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &703263638
 MonoBehaviour:
@@ -238082,6 +238632,67 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 703263636}
   m_CullTransparentMesh: 1
+--- !u!114 &703263640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703263636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 703263641}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 703263641}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &703263641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703263636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Cada punto reduce 1 punto de da\xF1o f\xEDsico sufrido."
+  textoPersonalizadoEN: Each point reduces 1 physical damage taken.
+  usarPosicionMouse: 1
 --- !u!1 &704524456
 GameObject:
   m_ObjectHideFlags: 0
@@ -238430,7 +239041,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 221.71011, y: 4.6911597}
+  m_AnchoredPosition: {x: 218.46063, y: 4.6911597}
   m_SizeDelta: {x: 390.0835, y: 43.4911}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &707203944
@@ -238447,7 +239058,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -238463,8 +239074,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4292269782
-  m_fontColor: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
+    rgba: 4292927712
+  m_fontColor: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -238481,8 +239092,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -238493,7 +239104,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: -28
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -238519,7 +239130,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 89.07385, w: -10.07321}
+  m_margin: {x: 0, y: 0, z: 96.90099, w: -28.750854}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -238933,6 +239544,81 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 712827224}
+  m_CullTransparentMesh: 1
+--- !u!1 &714136412
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 714136413}
+  - component: {fileID: 714136415}
+  - component: {fileID: 714136414}
+  m_Layer: 5
+  m_Name: Imagen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &714136413
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714136412}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.0625, y: 1.3546128, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 22697472}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 172.3, y: 62}
+  m_SizeDelta: {x: 301.495, y: 103.58}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &714136414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714136412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: -1.29, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: bf77eea8e3f177a4a918dc404f8a505b, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &714136415
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714136412}
   m_CullTransparentMesh: 1
 --- !u!1 &715035250
 GameObject:
@@ -279123,6 +279809,8 @@ GameObject:
   - component: {fileID: 818527392}
   - component: {fileID: 818527394}
   - component: {fileID: 818527393}
+  - component: {fileID: 818527395}
+  - component: {fileID: 818527396}
   m_Layer: 5
   m_Name: AtributoPoder
   m_TagString: Untagged
@@ -279146,8 +279834,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -207.00003, y: -61.500076}
-  m_SizeDelta: {x: 271.9238, y: 35.9238}
+  m_AnchoredPosition: {x: -260.459, y: -65.9}
+  m_SizeDelta: {x: 165.008, y: 35.924}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &818527393
 MonoBehaviour:
@@ -279248,6 +279936,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 818527391}
   m_CullTransparentMesh: 1
+--- !u!114 &818527395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818527391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Determina Ataque y Da\xF1o de habilidades M\xE1gicas. Adem\xE1s
+    aumenta las resistencias elementales."
+  textoPersonalizadoEN: Increases Attack and Damage of Magic abilities. It also increases
+    Elemental Resistances.
+  usarPosicionMouse: 1
+--- !u!114 &818527396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818527391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 818527395}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 818527395}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &822761303
 GameObject:
   m_ObjectHideFlags: 0
@@ -279578,7 +280329,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -4.2, y: -387.9}
+  m_AnchoredPosition: {x: 56, y: -430.4}
   m_SizeDelta: {x: 378.156, y: 35.9238}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &824098799
@@ -322128,7 +322879,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -223.2, y: -297.1}
+  m_AnchoredPosition: {x: -245.7, y: -237.4}
   m_SizeDelta: {x: 271.9238, y: 35.9238}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &919194667
@@ -322200,8 +322951,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 21
+  m_fontSizeBase: 21
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -322535,6 +323286,8 @@ GameObject:
   - component: {fileID: 921953116}
   - component: {fileID: 921953118}
   - component: {fileID: 921953117}
+  - component: {fileID: 921953120}
+  - component: {fileID: 921953119}
   m_Layer: 5
   m_Name: TS-Reflejos
   m_TagString: Untagged
@@ -322559,8 +323312,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -250.90002, y: -271.90002}
-  m_SizeDelta: {x: 155.27, y: 35.9238}
+  m_AnchoredPosition: {x: -250.90002, y: -279.2}
+  m_SizeDelta: {x: 155.27, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &921953117
 MonoBehaviour:
@@ -322661,6 +323414,67 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 921953115}
   m_CullTransparentMesh: 1
+--- !u!114 &921953119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 921953115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 921953120}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 921953120}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &921953120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 921953115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Tirada de Salvaci\xF3n contra amenazas del entorno."
+  textoPersonalizadoEN: Saving Throw against enviromental hazards.
+  usarPosicionMouse: 1
 --- !u!1 &922006360
 GameObject:
   m_ObjectHideFlags: 0
@@ -393018,7 +393832,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 104.235985, y: -3.4}
+  m_AnchoredPosition: {x: 102.65015, y: -3.4}
   m_SizeDelta: {x: 390.0835, y: 43.4911}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1066182886
@@ -393035,7 +393849,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -393051,8 +393865,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4292269782
-  m_fontColor: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
+    rgba: 4292927712
+  m_fontColor: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -393069,8 +393883,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -393081,7 +393895,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: -28
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -393107,7 +393921,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 10.802368, y: 0, z: 83.12573, w: -17.869812}
+  m_margin: {x: 0, y: 0, z: 96.90099, w: -28.750854}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -404329,7 +405143,7 @@ RectTransform:
   m_GameObject: {fileID: 1077319465}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.6017178, y: 1.6667604, z: 1.1229296}
+  m_LocalScale: {x: 1.6017176, y: 1.6667604, z: 1.1229296}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 216481715}
@@ -404337,7 +405151,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 67.03993, y: -67.22726}
+  m_AnchoredPosition: {x: 77.05977, y: -67.22723}
   m_SizeDelta: {x: 24.5095, y: 25.6703}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1077319467
@@ -424152,6 +424966,7 @@ GameObject:
   - component: {fileID: 1123016600}
   - component: {fileID: 1123016599}
   - component: {fileID: 1123016602}
+  - component: {fileID: 1123016603}
   m_Layer: 5
   m_Name: Pos2
   m_TagString: Untagged
@@ -424274,6 +425089,54 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1123016603}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1123016603}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &1123016603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123016597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: 'Medio: comienza el combate en la columna del medio.'
+  textoPersonalizadoEN: 'Middleline: starts combat on the middle column.'
+  usarPosicionMouse: 1
 --- !u!1 &1124069792
 GameObject:
   m_ObjectHideFlags: 0
@@ -431891,7 +432754,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -50.5, y: 73.8}
+  m_AnchoredPosition: {x: -50.6, y: 71}
   m_SizeDelta: {x: -3.2349, y: 25.0141}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1149076563
@@ -433492,7 +434355,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 157.47269, y: 0.06794453}
+  m_AnchoredPosition: {x: 155.15726, y: 0.06794453}
   m_SizeDelta: {x: 390.0835, y: 43.4911}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1157209479
@@ -433509,7 +434372,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -433524,8 +434387,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4292269782
-  m_fontColor: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
+    rgba: 4292927712
+  m_fontColor: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -433542,8 +434405,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -433554,7 +434417,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: -28
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -433580,7 +434443,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 89.49231, w: -11.071289}
+  m_margin: {x: 0, y: 0, z: 96.90099, w: -28.750854}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -445383,6 +446246,8 @@ GameObject:
   - component: {fileID: 1178547626}
   - component: {fileID: 1178547628}
   - component: {fileID: 1178547627}
+  - component: {fileID: 1178547629}
+  - component: {fileID: 1178547630}
   m_Layer: 5
   m_Name: AtributoAgilidad
   m_TagString: Untagged
@@ -445406,8 +446271,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -207.00003, y: -39.4001}
-  m_SizeDelta: {x: 271.9238, y: 35.9238}
+  m_AnchoredPosition: {x: -260.459, y: -39.4001}
+  m_SizeDelta: {x: 165.008, y: 35.924}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1178547627
 MonoBehaviour:
@@ -445508,6 +446373,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1178547625}
   m_CullTransparentMesh: 1
+--- !u!114 &1178547629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178547625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Determina Ataque y Da\xF1o de habilidades de Rango. Adem\xE1s
+    aumenta la Defensa."
+  textoPersonalizadoEN: Increases Attack and Damage of Ranged abilities. It also
+    increases Defense.
+  usarPosicionMouse: 1
+--- !u!114 &1178547630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178547625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1178547629}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1178547629}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1178868649
 GameObject:
   m_ObjectHideFlags: 0
@@ -446226,7 +447154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -466482,7 +467410,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -476432,7 +477360,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 180.067}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 903, y: 266}
+  m_AnchoredPosition: {x: 903, y: 334}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1295300754
@@ -488481,6 +489409,8 @@ GameObject:
   - component: {fileID: 1321308289}
   - component: {fileID: 1321308291}
   - component: {fileID: 1321308290}
+  - component: {fileID: 1321308293}
+  - component: {fileID: 1321308292}
   m_Layer: 5
   m_Name: Iniciativa
   m_TagString: Untagged
@@ -488504,8 +489434,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -232, y: -110.900024}
-  m_SizeDelta: {x: 225.9593, y: 35.9238}
+  m_AnchoredPosition: {x: -281.603, y: -105.495}
+  m_SizeDelta: {x: 126.752, y: 25.114}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1321308290
 MonoBehaviour:
@@ -488606,6 +489536,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1321308288}
   m_CullTransparentMesh: 1
+--- !u!114 &1321308292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1321308288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1321308293}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1321308293}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &1321308293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1321308288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: Determina, tras una tirada, el orden del turno al comienzo
+    del combate.
+  textoPersonalizadoEN: Affects turn order when a battle starts.
+  usarPosicionMouse: 1
 --- !u!1 &1322636162
 GameObject:
   m_ObjectHideFlags: 0
@@ -513551,6 +514543,8 @@ GameObject:
   - component: {fileID: 1376691977}
   - component: {fileID: 1376691979}
   - component: {fileID: 1376691978}
+  - component: {fileID: 1376691981}
+  - component: {fileID: 1376691980}
   m_Layer: 5
   m_Name: Defensa
   m_TagString: Untagged
@@ -513574,8 +514568,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -232.0001, y: -194.20004}
-  m_SizeDelta: {x: 225.9593, y: 35.9238}
+  m_AnchoredPosition: {x: -259.12, y: -208.5}
+  m_SizeDelta: {x: 171.71, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1376691978
 MonoBehaviour:
@@ -513676,6 +514670,67 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1376691976}
   m_CullTransparentMesh: 1
+--- !u!114 &1376691980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1376691976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1376691981}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1376691981}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &1376691981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1376691976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: Reduce las chances de ser golpeado en combate.
+  textoPersonalizadoEN: Reduces the chance of being hit in combat.
+  usarPosicionMouse: 1
 --- !u!1 &1379128040
 GameObject:
   m_ObjectHideFlags: 0
@@ -516287,7 +517342,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -519610,7 +520665,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 37.2, y: -88.80001}
+  m_AnchoredPosition: {x: 32.299957, y: -106.3}
   m_SizeDelta: {x: 28.7535, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &1437278717
@@ -526014,6 +527069,8 @@ GameObject:
   - component: {fileID: 1448750344}
   - component: {fileID: 1448750345}
   - component: {fileID: 1448750346}
+  - component: {fileID: 1448750347}
+  - component: {fileID: 1448750348}
   m_Layer: 5
   m_Name: vFuego
   m_TagString: Untagged
@@ -526139,6 +527196,67 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1448750347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1448750343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Reduce el da\xF1o Fuego recibido."
+  textoPersonalizadoEN: Decreases incoming Fire damage.
+  usarPosicionMouse: 1
+--- !u!114 &1448750348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1448750343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1448750347}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1448750347}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1449622744
 GameObject:
   m_ObjectHideFlags: 0
@@ -534273,7 +535391,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 180.067}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 866, y: 530}
+  m_AnchoredPosition: {x: 899, y: 552}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1479266614
@@ -554875,16 +555993,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1532764643}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.3521422, y: 1.384115, z: 1}
+  m_LocalScale: {x: 1.3521421, y: 1.3841155, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1906991980}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 105.22602, y: -91.24292}
+  m_AnchoredPosition: {x: 115.246086, y: -91.24292}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1532764645
@@ -554901,7 +556019,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -569764,14 +570882,14 @@ RectTransform:
   m_GameObject: {fileID: 1580852240}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2293319, y: 1.3841151, z: 1}
+  m_LocalScale: {x: 1.2293317, y: 1.3841156, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1906991980}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 287.9004, y: 0.15605545}
+  m_AnchoredPosition: {x: 293.48676, y: 0.15582275}
   m_SizeDelta: {x: 390.0835, y: 43.4911}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1580852242
@@ -569788,7 +570906,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -569803,8 +570921,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4292269782
-  m_fontColor: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
+    rgba: 4292927712
+  m_fontColor: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -569821,8 +570939,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -569833,7 +570951,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: -28
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -569859,7 +570977,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 9.698242, y: 0, z: 85.73694, w: -8.22821}
+  m_margin: {x: 0, y: 0, z: 96.90099, w: -28.750854}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -580869,6 +581987,8 @@ GameObject:
   - component: {fileID: 1594489437}
   - component: {fileID: 1594489438}
   - component: {fileID: 1594489439}
+  - component: {fileID: 1594489440}
+  - component: {fileID: 1594489441}
   m_Layer: 5
   m_Name: vNecro
   m_TagString: Untagged
@@ -580994,6 +582114,67 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1594489440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1594489436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Reduce el da\xF1o Necr\xF3tico recibido."
+  textoPersonalizadoEN: Decreases incoming Necrotic damage.
+  usarPosicionMouse: 1
+--- !u!114 &1594489441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1594489436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1594489440}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1594489440}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1595508034
 GameObject:
   m_ObjectHideFlags: 0
@@ -626568,7 +627749,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -626767,6 +627948,8 @@ GameObject:
   - component: {fileID: 1700155453}
   - component: {fileID: 1700155454}
   - component: {fileID: 1700155455}
+  - component: {fileID: 1700155456}
+  - component: {fileID: 1700155457}
   m_Layer: 5
   m_Name: vHielo
   m_TagString: Untagged
@@ -626892,6 +628075,67 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1700155456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700155452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Reduce el da\xF1o Fr\xEDo recibido."
+  textoPersonalizadoEN: Decreases incoming Frost damage.
+  usarPosicionMouse: 1
+--- !u!114 &1700155457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700155452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1700155456}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1700155456}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1701032648
 GameObject:
   m_ObjectHideFlags: 0
@@ -639591,7 +640835,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1729690074
 RectTransform:
   m_ObjectHideFlags: 0
@@ -665505,7 +666749,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 260.4336, y: 7.2857}
+  m_AnchoredPosition: {x: 256, y: 7.2857}
   m_SizeDelta: {x: 317.4091, y: 41.7778}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1794062688
@@ -665522,7 +666766,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -665537,8 +666781,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4292269782
-  m_fontColor: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
+    rgba: 4292927712
+  m_fontColor: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -665555,8 +666799,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -665567,7 +666811,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: -28
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -665593,7 +666837,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 91.00061, w: -11.671553}
+  m_margin: {x: 0, y: 0, z: 96.90099, w: -28.750854}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -665642,7 +666886,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 7.027, y: 178.407, z: 449.822}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1357, y: -226}
+  m_AnchoredPosition: {x: 1338, y: -257}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1794324748
@@ -665899,14 +667143,14 @@ RectTransform:
   m_GameObject: {fileID: 1796627567}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2293319, y: 1.3841151, z: 1}
+  m_LocalScale: {x: 1.2293317, y: 1.3841156, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1906991980}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -6.9344616, y: -79.950096}
+  m_AnchoredPosition: {x: 3.085493, y: -79.95011}
   m_SizeDelta: {x: 49.803, y: 19.145}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1797669813
@@ -689562,7 +690806,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -706189,7 +707433,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -706447,8 +707691,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 143.6, y: -311.00003}
-  m_SizeDelta: {x: 110.28, y: 118.14}
+  m_AnchoredPosition: {x: 136.56009, y: -311.00003}
+  m_SizeDelta: {x: 101.91, y: 118.14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1906991981
 MonoBehaviour:
@@ -706464,7 +707708,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.8679245, g: 0.8679245, b: 0.8679245, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -709375,7 +710619,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -716656,6 +717900,8 @@ GameObject:
   - component: {fileID: 1964871642}
   - component: {fileID: 1964871643}
   - component: {fileID: 1964871644}
+  - component: {fileID: 1964871645}
+  - component: {fileID: 1964871646}
   m_Layer: 5
   m_Name: vRayo
   m_TagString: Untagged
@@ -716781,6 +718027,67 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1964871645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1964871641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Reduce el da\xF1o El\xE9ctrico recibido."
+  textoPersonalizadoEN: Decreases incoming Electric damage.
+  usarPosicionMouse: 1
+--- !u!114 &1964871646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1964871641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1964871645}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1964871645}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1967558533
 GameObject:
   m_ObjectHideFlags: 0
@@ -731127,7 +732434,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.69682753, g: 0.8584906, b: 0.6762638, a: 1}
+  m_Color: {r: 0.7000173, g: 0.745283, b: 0.4253738, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -731889,6 +733196,8 @@ GameObject:
   - component: {fileID: 2018462780}
   - component: {fileID: 2018462782}
   - component: {fileID: 2018462781}
+  - component: {fileID: 2018462783}
+  - component: {fileID: 2018462784}
   m_Layer: 5
   m_Name: AtributoFuerza
   m_TagString: Untagged
@@ -731912,8 +733221,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -207, y: -17}
-  m_SizeDelta: {x: 271.9238, y: 35.9238}
+  m_AnchoredPosition: {x: -260.459, y: -13.200012}
+  m_SizeDelta: {x: 165.008, y: 35.924}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2018462781
 MonoBehaviour:
@@ -732014,6 +733323,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2018462779}
   m_CullTransparentMesh: 1
+--- !u!114 &2018462783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018462779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Determina Ataque y Da\xF1o de habilidades Cuerpo a Cuerpo.
+    Adem\xE1s aumenta los Puntos de Vida."
+  textoPersonalizadoEN: Increases Attack and Damage of Melee abilities. It also increases
+    Hit Points.
+  usarPosicionMouse: 1
+--- !u!114 &2018462784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018462779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2018462783}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2018462783}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2020140223
 GameObject:
   m_ObjectHideFlags: 0
@@ -757136,6 +758508,8 @@ GameObject:
   - component: {fileID: 2116422223}
   - component: {fileID: 2116422225}
   - component: {fileID: 2116422224}
+  - component: {fileID: 2116422227}
+  - component: {fileID: 2116422226}
   m_Layer: 5
   m_Name: TS-Fortaleza
   m_TagString: Untagged
@@ -757160,8 +758534,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -250.9, y: -247.00003}
-  m_SizeDelta: {x: 155.27, y: 35.9238}
+  m_AnchoredPosition: {x: -250.9, y: -254.3}
+  m_SizeDelta: {x: 155.27, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2116422224
 MonoBehaviour:
@@ -757262,6 +758636,67 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2116422222}
   m_CullTransparentMesh: 1
+--- !u!114 &2116422226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2116422222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2116422227}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2116422227}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &2116422227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2116422222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Tirada de Salvaci\xF3n contra affecciones del cuerpo."
+  textoPersonalizadoEN: Saving Throw against physical conditions.
+  usarPosicionMouse: 1
 --- !u!1 &2117693131
 GameObject:
   m_ObjectHideFlags: 0
@@ -757790,6 +759225,8 @@ GameObject:
   - component: {fileID: 2122954464}
   - component: {fileID: 2122954465}
   - component: {fileID: 2122954466}
+  - component: {fileID: 2122954467}
+  - component: {fileID: 2122954468}
   m_Layer: 5
   m_Name: vArcano
   m_TagString: Untagged
@@ -757915,6 +759352,67 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2122954467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122954463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Reduce el da\xF1o Arcano recibido."
+  textoPersonalizadoEN: Decreases incoming Arcane damage.
+  usarPosicionMouse: 1
+--- !u!114 &2122954468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2122954463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2122954467}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2122954467}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2123124701
 GameObject:
   m_ObjectHideFlags: 0
@@ -758502,6 +760000,8 @@ GameObject:
   - component: {fileID: 2129213302}
   - component: {fileID: 2129213304}
   - component: {fileID: 2129213303}
+  - component: {fileID: 2129213306}
+  - component: {fileID: 2129213305}
   m_Layer: 5
   m_Name: TS-Mental
   m_TagString: Untagged
@@ -758526,8 +760026,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -250.90002, y: -294.80002}
-  m_SizeDelta: {x: 155.27, y: 35.9238}
+  m_AnchoredPosition: {x: -250.90002, y: -302.09998}
+  m_SizeDelta: {x: 155.27, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2129213303
 MonoBehaviour:
@@ -758628,6 +760128,67 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2129213301}
   m_CullTransparentMesh: 1
+--- !u!114 &2129213305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129213301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2129213306}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: MostrarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2129213306}
+          m_TargetAssemblyTypeName: TooltipAtributoHojaPersonaje, Assembly-CSharp
+          m_MethodName: OcultarTooltip
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &2129213306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129213301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c526e85a7183af944b8245e4fe684eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atributo: 99
+  textoPersonalizadoES: "Tirada de Salvaci\xF3n contra afecciones de la mente."
+  textoPersonalizadoEN: Saving Throw against mental conditions.
+  usarPosicionMouse: 1
 --- !u!1 &2129819877
 GameObject:
   m_ObjectHideFlags: 0
@@ -759274,7 +760835,7 @@ MonoBehaviour:
 
     Click the <b>red plus</b>
     to the right of the attribute you want to increase. For the <b>Stalker</b>, the
-    best choices are usually <b>Strength</b> or <b>Dexterity</b>, depending on your
+    best choices are usually <b>Strength</b> or <b>Agility</b>, depending on your
     playstyle.
 
 

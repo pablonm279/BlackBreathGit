@@ -17,7 +17,7 @@ public static class CombatLogFormatter
     Exito
   }
 
-  private const string ColorEtiquetaAtaque = "#5d4216ff";
+  private const string ColorEtiquetaAtaque = "#b88a4aff";
   private const string ColorEtiquetaSalvacion = "#194366ff";
   private const string ColorExito = "#12673cff";
   private const string ColorFallo = "#822121ff";

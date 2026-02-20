@@ -564,8 +564,8 @@ public class TRADU : MonoBehaviour
             case " <color=#b34f09>Materiales</color> por un total de peso de ":
                 r = " <color=#b34f09>Materials</color> for a total weight of ";
                 break;
-            case "<color=#cc0d0d>La Caravana lleva Sobrecarga. Cada tramo que se haga duplica la Fatiga obtenida y reduce 10 la <color=#a0e812>Esperanza</color></color>.\n\n\n":
-                r = "<color=#cc0d0d>The Caravan is Overloaded. Each segment traveled doubles the Fatigue gained and reduces Hope by 10</color>.\n\n\n";
+            case "<color=#cc0d0d>La Caravana lleva Sobrecarga. Cada tramo que se haga duplica la Fatiga obtenida y reduce 10 la <color=#a0e812>Esperanza</color></color>.\n\n":
+                r = "<color=#cc0d0d>The Caravan is Overloaded. Each segment traveled doubles the Fatigue gained and reduces Hope by 10</color>.\n\n";
                 break;
             case "El <color=#d8a205>Oro</color> que lleva la Caravana, utilizado para comprar bienes y contratar servicios.":
                 r = "<color=#d8a205>Gold</color> carried by the Caravan, used to purchase goods and hire services.";
@@ -994,7 +994,7 @@ public class TRADU : MonoBehaviour
                 r = "<b><u>High Alert</b></u>\n\n\n";
                 break;
             case "Durante el descanso, se asignarán a los civiles mas aptos físicamente a la vigilancia del area circundante al campamento.\n\n":
-                r = "During rest, the most physically fit civilians will be assigned to monitor the area surrounding the camp.\n\n";
+                r = "During rest, the most physically fit civilians will be assigned to surveil the area surrounding the camp.\n\n";
                 break;
             case "<color=#d8a205>Reduce chances de ataque a caravana. +20% a Exploración. -10 Esperanza.</color>\n\n\n":
                 r = "<color=#d8a205>Reduces chances of Ambush during this rest. +20% to Exploration. -10 Hope.</color>\n\n\n";
@@ -4130,6 +4130,9 @@ public class TRADU : MonoBehaviour
                 break;
             case "-La Caravana ha sido emboscada por un ataque subterráneo.":
                 r = "-The Caravan has been ambushed by an underground attack.";
+                break;
+            case "El viaje de la caravana ha comenzado.":
+                r = "The caravan's journey has begun.";
                 break;
             case "-El Séquito de Clérigos ha perecido, ya que el Aliento Negro ha alcanzado un nivel crítico. -20 Esperanza":
                 r = "-The Cleric Retinue has perished, as the Black Breath has reached a critical level. -20 Hope";

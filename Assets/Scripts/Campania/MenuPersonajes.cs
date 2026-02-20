@@ -189,8 +189,10 @@ public class MenuPersonajes : MonoBehaviour
     txtNombre.text = pSel.sNombre;
     txtExperiencia.text = $"" + pSel.fExperienciaActual + "/" + (100 + (pSel.fNivelActual * 25));
     txtNivel.text = "" + pSel.fNivelActual;
-    imCorazon.fillAmount = Mathf.Clamp01((float)pSel.fVidaActual / (pSel.fVidaMaxima + scEquipo.BuffTOTALEQUIPOhpMax));
-    txtHP.text = "" + (int)pSel.fVidaActual + "/" + (pSel.fVidaMaxima + scEquipo.BuffTOTALEQUIPOhpMax);
+    float vidaActualEscalada = pSel.ObtenerVidaActualConFuerza(scEquipo.BuffTOTALEQUIPOhpMax, scEquipo.BuffTOTALEQUIPOFuerza);
+    float vidaMaxEscalada = pSel.ObtenerVidaMaximaConFuerza(scEquipo.BuffTOTALEQUIPOhpMax, scEquipo.BuffTOTALEQUIPOFuerza);
+    imCorazon.fillAmount = Mathf.Clamp01(vidaActualEscalada / vidaMaxEscalada);
+    txtHP.text = "" + (int)vidaActualEscalada + "/" + (int)vidaMaxEscalada;
     imMedalla.fillAmount = Mathf.Clamp01((float)pSel.fExperienciaActual / (100 + (pSel.fNivelActual*25)));
     txtFuerza.text = TRADU.i.Traducir("Fuerza: ") + (pSel.iFuerza + scEquipo.BuffTOTALEQUIPOFuerza);
     txtAgi.text = TRADU.i.Traducir("Agilidad: ") + (pSel.iAgi + scEquipo.BuffTOTALEQUIPOAgi);
@@ -199,15 +201,15 @@ public class MenuPersonajes : MonoBehaviour
     txtApMax.text = TRADU.i.Traducir("PA: ") + (pSel.iApMax + scEquipo.BuffTOTALEQUIPOApMax);
     txtValMax.text = TRADU.i.Traducir("Valentía: ") + (pSel.iValMax + scEquipo.BuffTOTALEQUIPOValMax);
     txtArmadura.text = TRADU.i.Traducir("Armadura: ") + (pSel.iArmadura + scEquipo.BuffTOTALEQUIPOArmadura);
-    txtDefensa.text = TRADU.i.Traducir("Defensa: ") + (pSel.iDefensa + scEquipo.BuffTOTALEQUIPODefensa);
+    txtDefensa.text = TRADU.i.Traducir("Defensa: ") + Mathf.RoundToInt(pSel.ObtenerDefensaTotalConAgilidad(scEquipo.BuffTOTALEQUIPODefensa, scEquipo.BuffTOTALEQUIPOAgi));
     txtTSReflejo.text = TRADU.i.Traducir("-Reflejos: ") + (pSel.iTSReflejo + scEquipo.BuffTOTALEQUIPOTSReflejo);
     txtTSFortaleza.text = TRADU.i.Traducir("-Fortaleza: ") + (pSel.iTSFortaleza + scEquipo.BuffTOTALEQUIPOTSFortaleza);
     txtTSMental.text = TRADU.i.Traducir("-Mental: ") + (pSel.iTSMental + scEquipo.BuffTOTALEQUIPOTSMental);
-    txtResFuego.text = "" + (pSel.iResFuego + scEquipo.BuffTOTALEQUIPOResFuego);
-    txtResRayo.text = "" + (pSel.iResRayo + scEquipo.BuffTOTALEQUIPOResRayo);
-    txtResHielo.text = "" + (pSel.iResHielo + scEquipo.BuffTOTALEQUIPOResHielo);
-    txtResArcano.text = "" + (pSel.iResArcano + scEquipo.BuffTOTALEQUIPOResArcano);
-    txtResAcido.text = "" + (pSel.iResAcido + scEquipo.BuffTOTALEQUIPOResAcido);
+    txtResFuego.text = "" + pSel.ObtenerResElementalConPoder(pSel.iResFuego, scEquipo.BuffTOTALEQUIPOResFuego, scEquipo.BuffTOTALEQUIPOPoder);
+    txtResRayo.text = "" + pSel.ObtenerResElementalConPoder(pSel.iResRayo, scEquipo.BuffTOTALEQUIPOResRayo, scEquipo.BuffTOTALEQUIPOPoder);
+    txtResHielo.text = "" + pSel.ObtenerResElementalConPoder(pSel.iResHielo, scEquipo.BuffTOTALEQUIPOResHielo, scEquipo.BuffTOTALEQUIPOPoder);
+    txtResArcano.text = "" + pSel.ObtenerResElementalConPoder(pSel.iResArcano, scEquipo.BuffTOTALEQUIPOResArcano, scEquipo.BuffTOTALEQUIPOPoder);
+    txtResAcido.text = "" + pSel.ObtenerResElementalConPoder(pSel.iResAcido, scEquipo.BuffTOTALEQUIPOResAcido, scEquipo.BuffTOTALEQUIPOPoder);
     txtResNecro.text = "" + (pSel.iResNecro + scEquipo.BuffTOTALEQUIPOResNecro);
     txtResDivino.text = "" + (pSel.iResDivino + scEquipo.BuffTOTALEQUIPOResDivino);
 

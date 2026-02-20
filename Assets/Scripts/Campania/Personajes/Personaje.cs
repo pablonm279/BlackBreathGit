@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class Personaje : MonoBehaviour
 {
+    private const float PorcentajeVidaPorPuntoFuerza = 0.03f;
+    public int iDefensaBaseSinAgilidad;
+    public int iAgiReferenciaDefensa;
+    public bool escalaDefensaInicializada;
+    public int iPoderReferenciaResElemental;
+    public bool escalaResElementalPorPoderInicializada;
    
     public float fVidaActual;
     public float fVidaMaxima;
@@ -207,6 +213,63 @@ public class Personaje : MonoBehaviour
             fVidaActual = fVidaMaxima;
             Camp_Herido = false; //si se sana del todo, se remueve la herida
         }
+    }
+
+    public float ObtenerVidaMaximaConFuerza(float bonusVidaMax = 0f, float bonusFuerza = 0f)
+    {
+      float vidaBase = Mathf.Max(1f, fVidaMaxima + bonusVidaMax);
+      float fuerzaTotal = iFuerza + bonusFuerza;
+      float bonusVida = vidaBase * PorcentajeVidaPorPuntoFuerza * fuerzaTotal;
+      return Mathf.Max(1f, vidaBase + bonusVida);
+    }
+
+    public float ObtenerVidaActualConFuerza(float bonusVidaMax = 0f, float bonusFuerza = 0f)
+    {
+      float vidaMaxEscalada = ObtenerVidaMaximaConFuerza(bonusVidaMax, bonusFuerza);
+      float vidaBase = Mathf.Max(1f, fVidaMaxima + bonusVidaMax);
+      float bonusVida = vidaBase * PorcentajeVidaPorPuntoFuerza * (iFuerza + bonusFuerza);
+      return Mathf.Clamp(fVidaActual + bonusVida, 0f, vidaMaxEscalada);
+    }
+
+    public void InicializarEscaladoDefensaPorAgilidadSiHaceFalta()
+    {
+      if (escalaDefensaInicializada)
+      {
+        return;
+      }
+
+      iAgiReferenciaDefensa = iAgi;
+      iDefensaBaseSinAgilidad = iDefensa - iAgiReferenciaDefensa;
+      escalaDefensaInicializada = true;
+    }
+
+    public float ObtenerDefensaTotalConAgilidad(float bonusDefensa = 0f, float bonusAgilidad = 0f)
+    {
+      InicializarEscaladoDefensaPorAgilidadSiHaceFalta();
+      return iDefensaBaseSinAgilidad + bonusDefensa + iAgi + bonusAgilidad;
+    }
+
+    public void InicializarEscaladoResElementalPorPoderSiHaceFalta()
+    {
+      if (escalaResElementalPorPoderInicializada)
+      {
+        return;
+      }
+
+      iPoderReferenciaResElemental = iPoder;
+      escalaResElementalPorPoderInicializada = true;
+    }
+
+    public int ObtenerBonusResElementalPorPoder(float bonusPoder = 0f)
+    {
+      InicializarEscaladoResElementalPorPoderSiHaceFalta();
+      float poderTotal = iPoder + bonusPoder;
+      return Mathf.RoundToInt(poderTotal - iPoderReferenciaResElemental);
+    }
+
+    public int ObtenerResElementalConPoder(int resBase, float bonusRes = 0f, float bonusPoder = 0f)
+    {
+      return Mathf.RoundToInt(resBase + bonusRes + ObtenerBonusResElementalPorPoder(bonusPoder));
     }
 
     public void RecibirExperiencia(float cant)

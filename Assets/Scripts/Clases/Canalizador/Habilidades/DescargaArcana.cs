@@ -43,7 +43,7 @@ public class DescargaArcana : Habilidad
 
 
 
-    tipoPorcentaje = 2;
+    tipoPorcentaje = 3;
 
     imHab = Resources.Load<Sprite>("imHab/Canalizador_DescargaArcana");
     ActualizarDescripcion();

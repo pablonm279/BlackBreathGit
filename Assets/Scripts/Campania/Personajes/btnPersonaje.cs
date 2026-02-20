@@ -40,7 +40,9 @@ public class btnPersonaje : MonoBehaviour
     if (personajeRepresentado != null)
     {
 
-      float valor = 1 - (personajeRepresentado.fVidaActual / personajeRepresentado.fVidaMaxima);
+      float vidaMaxEscalada = personajeRepresentado.ObtenerVidaMaximaConFuerza();
+      float vidaActualEscalada = personajeRepresentado.ObtenerVidaActualConFuerza();
+      float valor = 1 - (vidaActualEscalada / vidaMaxEscalada);
 
       vidaRepresenta.fillAmount = valor;
 

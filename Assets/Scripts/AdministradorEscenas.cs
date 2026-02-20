@@ -965,13 +965,15 @@ public class AdministradorEscenas : MonoBehaviour
     float fAgilidad = pers.iAgi + sEquipo.BuffTOTALEQUIPOAgi;
     float fPoder = pers.iPoder + sEquipo.BuffTOTALEQUIPOPoder;
     float fArmadura = pers.iArmadura + sEquipo.BuffTOTALEQUIPOArmadura;
+    int bonusResElementalPorPoder = pers.ObtenerBonusResElementalPorPoder(sEquipo.BuffTOTALEQUIPOPoder);
     float resNecro = pers.iResNecro + sEquipo.BuffTOTALEQUIPOResNecro;
     float ResDivino = pers.iResDivino + sEquipo.BuffTOTALEQUIPOResDivino;
-    float resArcano = pers.iResArcano + sEquipo.BuffTOTALEQUIPOResArcano;
-    float resFuego = pers.iResFuego + sEquipo.BuffTOTALEQUIPOResFuego;
-    float resHielo = pers.iResHielo + sEquipo.BuffTOTALEQUIPOResHielo;
-    float resRayo = pers.iResRayo + sEquipo.BuffTOTALEQUIPOResRayo;
-    float fDefensa = pers.iDefensa + sEquipo.BuffTOTALEQUIPODefensa;
+    float resArcano = pers.iResArcano + sEquipo.BuffTOTALEQUIPOResArcano + bonusResElementalPorPoder;
+    float resFuego = pers.iResFuego + sEquipo.BuffTOTALEQUIPOResFuego + bonusResElementalPorPoder;
+    float resHielo = pers.iResHielo + sEquipo.BuffTOTALEQUIPOResHielo + bonusResElementalPorPoder;
+    float resRayo = pers.iResRayo + sEquipo.BuffTOTALEQUIPOResRayo + bonusResElementalPorPoder;
+    float resAcido = pers.iResAcido + sEquipo.BuffTOTALEQUIPOResAcido + bonusResElementalPorPoder;
+    float fDefensa = pers.ObtenerDefensaTotalConAgilidad(sEquipo.BuffTOTALEQUIPODefensa, sEquipo.BuffTOTALEQUIPOAgi);
     float fCritRango = pers.fCritRango;
     float fCritDanio = pers.fCritDanio;
     float fAtaque = pers.fBonusAtaque;
@@ -989,7 +991,9 @@ public class AdministradorEscenas : MonoBehaviour
 
     //Vida
     var scUnidad = persUnidad.GetComponent<Unidad>();
-    scUnidad.HP_actual = pers.fVidaActual;
+    float bonusVidaPorFuerza = scUnidad.ObtenerBonusVidaPorFuerzaActual();
+    scUnidad.HP_actual = Mathf.Clamp(pers.fVidaActual + bonusVidaPorFuerza, 0f, scUnidad.mod_maxHP);
+    scUnidad.EstablecerResistenciaAcidoBase(resAcido);
     scUnidad.ConfigurarDebuffsImpactoArma(pers.itemArma);
     // Sincroniza barra de vida de la unidad con la vida actual al inicio de la batalla
     scUnidad.ActualizarBarraVidaPropia();
@@ -3120,11 +3124,23 @@ public class AdministradorEscenas : MonoBehaviour
   {
     int longitudBatallaFatiga = 5;
 
+    float VidaCampaniaDesdeUnidad(Personaje pers, Unidad unidad)
+    {
+      if (pers == null || unidad == null)
+      {
+        return 0f;
+      }
+
+      float vidaSinBonusFuerza = unidad.HP_actual - unidad.ObtenerBonusVidaPorFuerzaActual();
+      return Mathf.Clamp(vidaSinBonusFuerza, 0f, pers.fVidaMaxima);
+    }
+
 
     if (Personaje1 != null)
     {
-      if (unidadPers1.HP_actual < Personaje1.fVidaActual)
-      { Personaje1.fVidaActual = unidadPers1.HP_actual; } //No puede terminar con mas vida de la que empezó
+      float vidaFinalCamp = VidaCampaniaDesdeUnidad(Personaje1, unidadPers1);
+      if (vidaFinalCamp < Personaje1.fVidaActual)
+      { Personaje1.fVidaActual = vidaFinalCamp; } //No puede terminar con mas vida de la que empezo
 
       CanalizadorPasivaSobrecarga(Personaje1, unidadPers1);
 
@@ -3132,8 +3148,9 @@ public class AdministradorEscenas : MonoBehaviour
     }
     if (Personaje2 != null)
     {
-      if (unidadPers2.HP_actual < Personaje2.fVidaActual)
-      { Personaje2.fVidaActual = unidadPers2.HP_actual; } //No puede terminar con mas vida de la que empezó
+      float vidaFinalCamp = VidaCampaniaDesdeUnidad(Personaje2, unidadPers2);
+      if (vidaFinalCamp < Personaje2.fVidaActual)
+      { Personaje2.fVidaActual = vidaFinalCamp; } //No puede terminar con mas vida de la que empezo
 
       CanalizadorPasivaSobrecarga(Personaje2, unidadPers2);
 
@@ -3142,8 +3159,9 @@ public class AdministradorEscenas : MonoBehaviour
     }
     if (Personaje3 != null)
     {
-      if (unidadPers3.HP_actual < Personaje3.fVidaActual)
-      { Personaje3.fVidaActual = unidadPers3.HP_actual; } //No puede terminar con mas vida de la que empezó
+      float vidaFinalCamp = VidaCampaniaDesdeUnidad(Personaje3, unidadPers3);
+      if (vidaFinalCamp < Personaje3.fVidaActual)
+      { Personaje3.fVidaActual = vidaFinalCamp; } //No puede terminar con mas vida de la que empezo
 
       CanalizadorPasivaSobrecarga(Personaje3, unidadPers3);
 
@@ -3152,8 +3170,9 @@ public class AdministradorEscenas : MonoBehaviour
     }
     if (Personaje4 != null)
     {
-      if (unidadPers4.HP_actual < Personaje4.fVidaActual)
-      { Personaje4.fVidaActual = unidadPers4.HP_actual; } //No puede terminar con mas vida de la que empezó
+      float vidaFinalCamp = VidaCampaniaDesdeUnidad(Personaje4, unidadPers4);
+      if (vidaFinalCamp < Personaje4.fVidaActual)
+      { Personaje4.fVidaActual = vidaFinalCamp; } //No puede terminar con mas vida de la que empezo
 
       CanalizadorPasivaSobrecarga(Personaje4, unidadPers4);
 
@@ -3183,9 +3202,10 @@ public class AdministradorEscenas : MonoBehaviour
         if (pers.sNombre == unidadRefuerzo.uNombre)
         {
           // Plasmar vida actual (no puede terminar con más vida de la que empezó)
-          if (unidadRefuerzo.HP_actual < pers.fVidaActual)
+          float vidaFinalCamp = VidaCampaniaDesdeUnidad(pers, unidadRefuerzo);
+          if (vidaFinalCamp < pers.fVidaActual)
           {
-            pers.fVidaActual = unidadRefuerzo.HP_actual;
+            pers.fVidaActual = vidaFinalCamp;
           }
 
           CanalizadorPasivaSobrecarga(pers, unidadRefuerzo);

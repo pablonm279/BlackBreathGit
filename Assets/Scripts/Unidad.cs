@@ -52,6 +52,16 @@ public class Unidad : MonoBehaviour
   [SerializeField] private float at_maxHP; 
   public float mod_maxHP; 
   public float HP_actual; 
+  private const float PorcentajeVidaPorPuntoFuerza = 0.05f;
+  private float bonusVidaPorFuerzaAplicado;
+  private float agilidadReferenciaDefensa;
+  private float bonusDefensaPorAgilidadAplicado;
+  private float poderReferenciaResElemental;
+  private float bonusResElementalPorPoderAplicado;
+  private bool statsInicializados;
+  private float ultimaFuerzaSincronizada;
+  private float ultimaAgilidadSincronizada;
+  private float ultimoPoderSincronizado;
 
   //Atributo - AP -------- Puntos de AcciÃ³n
   [SerializeField] private float at_maxAccionP; 
@@ -427,6 +437,7 @@ public class Unidad : MonoBehaviour
 
 private void Update()
 {
+  SincronizarEscaladosPorAtributos();
 
  if(BattleManager.Instance.unidadActiva == this)
  {
@@ -587,6 +598,8 @@ float critRangoDado, float critDañoBonus, float Ataque, float TSReflejos, float
 
   at_Defensa = Defensa;
   mod_Defensa = Defensa;
+  agilidadReferenciaDefensa = mod_CarAgilidad;
+  bonusDefensaPorAgilidadAplicado = 0f;
   at_Ataque = Ataque;
   mod_Ataque = Ataque;
 
@@ -597,9 +610,119 @@ float critRangoDado, float critDañoBonus, float Ataque, float TSReflejos, float
   at_TSMental = TSMental;
   mod_TSMental = TSMental;
 
+  // La Fuerza escala vida maxima para todas las unidades (PJ e IA).
+  RecalcularVidaPorFuerza(true);
+  // La Agilidad escala defensa sobre una referencia inicial para mantener el valor de arranque.
+  RecalcularDefensaPorAgilidad();
+  // El Poder escala resistencias elementales sobre una referencia inicial para mantener el valor de arranque.
+  poderReferenciaResElemental = mod_CarPoder;
+  bonusResElementalPorPoderAplicado = 0f;
+  RecalcularResElementalesPorPoder();
+
+  statsInicializados = true;
+  ultimaFuerzaSincronizada = mod_CarFuerza;
+  ultimaAgilidadSincronizada = mod_CarAgilidad;
+  ultimoPoderSincronizado = mod_CarPoder;
  
    
 }
+
+  private void SincronizarEscaladosPorAtributos()
+  {
+    if (!statsInicializados)
+    {
+      return;
+    }
+
+    if (!Mathf.Approximately(ultimaFuerzaSincronizada, mod_CarFuerza))
+    {
+      RecalcularVidaPorFuerza(true);
+      ultimaFuerzaSincronizada = mod_CarFuerza;
+    }
+
+    if (!Mathf.Approximately(ultimaAgilidadSincronizada, mod_CarAgilidad))
+    {
+      RecalcularDefensaPorAgilidad();
+      ultimaAgilidadSincronizada = mod_CarAgilidad;
+    }
+
+    if (!Mathf.Approximately(ultimoPoderSincronizado, mod_CarPoder))
+    {
+      RecalcularResElementalesPorPoder();
+      ultimoPoderSincronizado = mod_CarPoder;
+    }
+  }
+
+  public void RecalcularVidaPorFuerza(bool ajustarHPActual)
+  {
+    float bonusNuevo = at_maxHP * PorcentajeVidaPorPuntoFuerza * mod_CarFuerza;
+    float delta = bonusNuevo - bonusVidaPorFuerzaAplicado;
+    if (Mathf.Approximately(delta, 0f))
+    {
+      return;
+    }
+
+    mod_maxHP = Mathf.Max(1f, mod_maxHP + delta);
+    if (ajustarHPActual)
+    {
+      HP_actual = Mathf.Clamp(HP_actual + delta, 0f, mod_maxHP);
+    }
+    else
+    {
+      HP_actual = Mathf.Clamp(HP_actual, 0f, mod_maxHP);
+    }
+
+    bonusVidaPorFuerzaAplicado = bonusNuevo;
+    ActualizarBarraVidaPropia();
+
+    // Si el ajuste de fuerza deja a la unidad sin vida durante combate, muere.
+    if (HP_actual < 1f && BattleManager.Instance != null)
+    {
+      UnidadMuere();
+    }
+  }
+
+  public float ObtenerBonusVidaPorFuerzaActual()
+  {
+    return bonusVidaPorFuerzaAplicado;
+  }
+
+  public void RecalcularDefensaPorAgilidad()
+  {
+    float bonusNuevo = mod_CarAgilidad - agilidadReferenciaDefensa;
+    float delta = bonusNuevo - bonusDefensaPorAgilidadAplicado;
+    if (Mathf.Approximately(delta, 0f))
+    {
+      return;
+    }
+
+    mod_Defensa += delta;
+    bonusDefensaPorAgilidadAplicado = bonusNuevo;
+  }
+
+  public void RecalcularResElementalesPorPoder()
+  {
+    float bonusNuevo = mod_CarPoder - poderReferenciaResElemental;
+    float delta = bonusNuevo - bonusResElementalPorPoderAplicado;
+    if (Mathf.Approximately(delta, 0f))
+    {
+      return;
+    }
+
+    mod_ResFuego += delta;
+    mod_ResRayo += delta;
+    mod_ResHielo += delta;
+    mod_ResAcido += delta;
+    mod_ResArcano += delta;
+
+    bonusResElementalPorPoderAplicado = bonusNuevo;
+  }
+
+  public void EstablecerResistenciaAcidoBase(float resistenciaAcido)
+  {
+    at_ResAcido = resistenciaAcido;
+    mod_ResAcido = resistenciaAcido;
+  }
 
 public void ConfigurarDebuffsImpactoArma(Arma arma)
 {
@@ -3188,6 +3311,7 @@ public void AplicarDebuffPorAtaquesreiterados(int cant)
 
 public float ObtenerdefensaActual()
 {
+  SincronizarEscaladosPorAtributos();
   float defensa = mod_Defensa - Defensa_AtaquesRepetidosRonda + Defensa_BonusPASinUsar - AccionP_SeEsforzo + estado_evasion;
   
   if(estado_aturdido  > 0){ defensa -=5; defensa -= estado_evasion;}
@@ -3233,6 +3357,7 @@ public float ObtenerArmaduraEfectivaContraAtaque(Unidad uCausante)
 
 public float ObtenerResistenciaA(int tipo)
 {
+   SincronizarEscaladosPorAtributos();
    float res = 0;
    switch(tipo)
    {
@@ -3650,6 +3775,10 @@ public async void OnMouseDown()
   }
   public virtual void ComienzoBatallaClase() //MÃ©todo vacÃ­o que se llama al comenzar la batalla
   {
+    // Seguridad: recalcula por si la unidad llega con stats seteados por otra via.
+    RecalcularVidaPorFuerza(true);
+    RecalcularDefensaPorAgilidad();
+    RecalcularResElementalesPorPoder();
 
     TirarIniciativa();
    

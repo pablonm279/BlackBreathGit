@@ -38,7 +38,7 @@ public class DescargaDePoder : Habilidad
       bAfectaObstaculos = true;
 
       targetEspecial = 8; //T    
-       tipoPorcentaje = 2;
+       tipoPorcentaje = 3;
       bonusAtaque = 0;
       if (NIVEL > 2) { bonusAtaque += 1; }
       XdDanio = 3;
