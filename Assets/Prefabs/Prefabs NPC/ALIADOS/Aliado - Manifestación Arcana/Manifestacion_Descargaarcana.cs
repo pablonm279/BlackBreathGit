@@ -51,8 +51,6 @@ public class Manifestacion_Descargaarcana : IAHabilidad
    {
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
 
-      scEstaUnidad.ReproducirAnimacionAtaque();
-
       Objetivo = EstablecerObjetivoPrioritario();
       PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 
@@ -235,3 +233,5 @@ public class Manifestacion_Descargaarcana : IAHabilidad
   
  
   
+
+

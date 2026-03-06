@@ -14,7 +14,7 @@ public class CorteHorizontal : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ãcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
 
 
   public override void Awake()
@@ -100,8 +100,8 @@ public class CorteHorizontal : Habilidad
       }
 
       string costos = esIngles
-        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : tituloEs,
@@ -122,13 +122,13 @@ public class CorteHorizontal : Habilidad
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 damage.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack roll bonus.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Val cost) or Option B (+1 Save DC and +1 Bleed).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Valour Cost) or Option B (+1 Save DC and +1 Bleed).</color>"; }
       }
       else
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Val) u Opcion B (+1 DC y +1 Sangrado).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valentía) u Opcion B (+1 DC y +1 Sangrado).</color>"; }
       }
     }
 
@@ -148,7 +148,7 @@ public class CorteHorizontal : Habilidad
     
    public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
    {
-    // El log de uso ahora estÃ¡ centralizado en Habilidad.Resolver
+    // El log de uso ahora está centralizado en Habilidad.Resolver
      VFXAplicarOrigen(Usuario.gameObject);
    await base.Resolver(Objetivos);
    
@@ -175,7 +175,7 @@ public class CorteHorizontal : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaObjetivo)
     {
     
-     if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
+     if(obj is Unidad) //Acá van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -245,7 +245,7 @@ public class CorteHorizontal : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //AcÃ¡ van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -311,7 +311,7 @@ public class CorteHorizontal : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si estÃ¡ en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si está en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -333,7 +333,7 @@ public class CorteHorizontal : Habilidad
        lCasillasafectadas.Add(c);
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiÃ©n
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras también
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -433,7 +433,7 @@ public class CorteHorizontal : Habilidad
         
       }
 
-       //Se fija si las 3 casillas de la columna 1 estÃ¡n vacias
+       //Se fija si las 3 casillas de la columna 1 están vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
           if(cas.bTieneUnidadoObstaculoParaMelee()) //si alguna de las 3 tiene algo, no aumenta el rango melee
@@ -506,6 +506,9 @@ public class CorteHorizontal : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
+
+
+
 
 
 

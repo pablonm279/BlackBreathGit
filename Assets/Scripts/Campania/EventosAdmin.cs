@@ -118,7 +118,7 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Retraso Nocturno");
 
             txtDescripcion.text = TRADU.i.Traducir("Uno de los principales encargados de guiar la caravana y elegir las rutas más seguras accidentalmente perdió sus mapas.\n");
-            txtDescripcion.text += TRADU.i.Traducir("Los demás encargados lo ayudarán a buscarlos ya que esos mapas contiene información crucial de la zona actual, y sin su ayuda la caravana podría perderse.\n\n\n\n\n\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("Los demás encargados lo ayudarán a buscarlos ya que esos mapas contiene información crucial de la zona actual, y sin su ayuda la caravana podráa perderse.\n\n\n\n\n\n\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Pasan las Horas: +1 Avance Aliento Negro</b></color>");
@@ -176,7 +176,7 @@ public class EventosAdmin : MonoBehaviour
             retratoParticipante1.SetActive(true);
             retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
 
-            txtDescripcion.text = $"<b><color=#d1006f>" + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> se acerca a ti y no luce nada bien. Te comenta que ha empezado a sentirse enfermo y necesita médicina para mejorar pronto y estar nuevamente en condiciones de combatir.\n\n");
+            txtDescripcion.text = $"<b><color=#d1006f>" + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> se acerca a ti y no luce nada bien. Te comenta que ha empezado a sentirse enfermo y necesita medicina para mejorar pronto y estar nuevamente en condiciones de combatir.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Obtendrá el estado Enfermo por 4-7 días. Cada nivel del Séquito de Curanderos reducirá el tiempo de recuperación en 1 día.\n\n\n\n\n");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes comprar medicina por 45 Oro para reducir la Enfermedad un día extra.</color>\n\n");
@@ -194,7 +194,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento006;
             txtTitulo.text = TRADU.i.Traducir("Arcas Robadas");
 
-            txtDescripcion.text = TRADU.i.Traducir("Al grito de un guardia, tu atención se vuelve a uno de los carros que lleva las arcas con el oro de la caravana. Uno de sus cofres está volcado y el oro se ha derramado por el suelo. Aparentemente durante la noche, alguien logró forzarlo y se llevó parte del botín.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Al grito de un guardia, tu atención se vuelve a uno de los carros que lleva las arcas con el oro de la caravana. Uno de sus cofres está volcado y el oro se ha derramado por el suelo. Aparentemente durante la noche, alguien logró forzarlo y se llevó parte del botón.\n\n");
             int oroRobado = CampaignManager.Instance.GetOroActuales() / 4; //25% del oro actual
             if (oroRobado > CampaignManager.Instance.GetOroActuales()) { oroRobado = CampaignManager.Instance.GetOroActuales(); }
             int seguridad = 40 + (int)CampaignManager.Instance.GetMiliciasActual();
@@ -225,7 +225,7 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Río Contaminado");
 
             txtDescripcion.text = TRADU.i.Traducir("La Caravana encuentra un río con buen caudal y agua que parece decente. Varios civiles entusiasmados comienzan a dirigirse hacia él con la intención de recrearse y refrescarse.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("El agua podría estar contaminada por el Aliento Negro. Puedes negarle a los Civiles el acceso al agua o dejarlos a su propia suerte.\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("El agua podráa estar contaminada por el Aliento Negro. Puedes negarle a los Civiles el acceso al agua o dejarlos a su propia suerte.\n\n");
 
             int chancesContaminado = 30 + (int)CampaignManager.Instance.GetValorAlientoNegro() * 3;
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si les niegas el acceso perderás 15 de Esperanza.</color>\n\n");
@@ -262,7 +262,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento010;
             txtTitulo.text = TRADU.i.Traducir("Liderazgo Cuestionado");
 
-            txtDescripcion.text = TRADU.i.Traducir("Un Civil de origen noble se acerca a ti con altanería y comienza a cuestionar tu liderazgo. Argumentando que no estás tomando las decisiones correctas para el bienestar de la Caravana y que él mismo podría hacerlo mejor.\n");
+            txtDescripcion.text = TRADU.i.Traducir("Un Civil de origen noble se acerca a ti con altanería y comienza a cuestionar tu liderazgo. Argumentando que no estás tomando las decisiones correctas para el bienestar de la Caravana y que él mismo podráa hacerlo mejor.\n");
             txtDescripcion.text += TRADU.i.Traducir("Si bien sus puntos son poco coherentes, a medida que te habla en voz elevada, varios civiles comienzan a congregarse alrededor, curiosos.\n\n");
 
             int chances = 35 + (int)CampaignManager.Instance.GetEsperanzaActual() / 3;
@@ -304,7 +304,7 @@ public class EventosAdmin : MonoBehaviour
             retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
 
             txtDescripcion.text = TRADU.i.Traducir("Durante la noche, <b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> y <b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b> junto con algunos Civiles comienzan a contar chistes y anécdotas divertidas, riendo y disfrutando del momento.\n");
-            txtDescripcion.text += TRADU.i.Traducir("La atmósfera se vuelve más ligera y optimista, y por un breve instante, el peso de la situación parece desvanecerse.\n\n\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("La atmásfera se vuelve más ligera y optimista, y por un breve instante, el peso de la situación parece desvanecerse.\n\n\n\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>+5 Esperanza</b>\n\n</color>");
@@ -415,7 +415,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("Un hombre anciano aparece a un lado del camino haciendole señas con las manos a la Caravana. De cerca, te das cuenta que este hombre lleva viviendo muchísimos años en la zona y la conoce a la perfección.\n");
             txtDescripcion.text += TRADU.i.Traducir("'Aliento Negro o no, mis días ya están contados. Pero puedo transmitirles mis conocimientos sobre esta tierra, como último acto de bien.'- dice\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>Preguntas: -'¿Conoce algun atajo que nos aleje del peligro inminente al menos por unos kilómetros?'</color> Efectos: Si es posible se generará un Atajo subterráneo. \n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>Preguntas: -'¿Conoce algún atajo que nos aleje del peligro inminente al menos por unos kilómetros?'</color> Efectos: Si es posible se generará un Atajo subterráneo. \n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>Preguntas: -'Describanos el area circundante para que podamos tomar decisiones con más información.'</color> Efectos: Se revelarán próximos nodos. \n\n");
 
             textBotonA.text = TRADU.i.Traducir("Atajo");
@@ -504,7 +504,7 @@ public class EventosAdmin : MonoBehaviour
             txtDescripcion.text = TRADU.i.Traducir("El ave mensajera regresa con un mensaje atado a sus patas. En él se indica el punto exacto al que la caravana deberá dirigirse para encontrarse con el equipo de salvamento, junto con los recursos cedidos por la ciudad de Serria.\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>\n\nSe ha marcado en el camino adelante el nodo al cual deberías dirigirte para encontrarte con el equipo de salvamento.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>\n\nSe ha marcado en el camino adelante el nodo al cual deberáas dirigirte para encontrarte con el equipo de salvamento.</b></color>");
 
             botonA.SetActive(false);
 
@@ -905,3 +905,6 @@ public class EventosAdmin : MonoBehaviour
 
    }
 }
+
+
+

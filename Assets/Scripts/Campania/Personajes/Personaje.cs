@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -86,6 +86,7 @@ public class Personaje : MonoBehaviour
     public bool Camp_Herido;
     public int Camp_Enfermo; //es int porque al descender a 0 se va, -1 por viaje.
     public int Camp_Moral; //positiva buena, negativa mala tiende a cero cada dia
+    public bool Camp_Avergonzado; //Se limpia al cambiar de zona.
 
     public bool Camp_Muerto;
     public bool Camp_Corrupto;
@@ -493,6 +494,9 @@ public class Personaje : MonoBehaviour
       }
    }
 }
+
+
+
 
 
 

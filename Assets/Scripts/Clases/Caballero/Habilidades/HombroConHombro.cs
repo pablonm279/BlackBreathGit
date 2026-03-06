@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -59,7 +59,7 @@ public class HombroConHombro : Habilidad
         cuerpo += "<b>Type:</b> Support\n";
         cuerpo += "<b>Target:</b> Self and adjacent allies in your column\n";
         cuerpo += $"<b>Buff (3 turns):</b> +{bonoDefensa} Defense, +{bonoAtaque} Attack\n";
-        cuerpo += "<b>Per affected ally:</b> +1 Valor\n";
+        cuerpo += "<b>Per affected ally:</b> +1 Valour\n";
         if (daInvulnerable)
         {
           cuerpo += "<b>Additional:</b> Invulnerable for 1 turn\n";
@@ -75,7 +75,7 @@ public class HombroConHombro : Habilidad
         cuerpo += "<b>Tipo:</b> Soporte\n";
         cuerpo += "<b>Objetivo:</b> El usuario y aliados adyacentes en su columna\n";
         cuerpo += $"<b>Buff (3 turnos):</b> +{bonoDefensa} Defensa, +{bonoAtaque} Ataque\n";
-        cuerpo += "<b>Por cada aliado afectado:</b> +1 Val\n";
+        cuerpo += "<b>Por cada aliado afectado:</b> +1 Valentía\n";
         if (daInvulnerable)
         {
           cuerpo += "<b>Adicional:</b> Invulnerable por 1 turno\n";
@@ -88,8 +88,8 @@ public class HombroConHombro : Habilidad
       }
 
       string costos = esIngles
-        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : tituloEs,
@@ -138,13 +138,13 @@ public class HombroConHombro : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
 
-    if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
+    if(obj is Unidad) //Acá van los efectos a Unidades.
      {
 
       Unidad objetivo = (Unidad)obj;
         VFXAplicar(objetivo.gameObject);
        /////////////////////////////////////////////
-       //BUFF ---- AsÃ­ se aplica un buff/debuff
+       //BUFF ---- Así se aplica un buff/debuff
        Buff buff = new Buff();
        buff.buffNombre = "Hombro Con Hombro";
        buff.boolfDebufftBuff = true;
@@ -156,7 +156,7 @@ public class HombroConHombro : Habilidad
        if(NIVEL == 4){  objetivo.estado_invulnerable += 1;}
        if(NIVEL == 5){  buff.cantAPMax += 1;}
        buff.AplicarBuff(objetivo);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
        objetivo.Marcar(0);
@@ -194,7 +194,7 @@ public class HombroConHombro : Habilidad
       lCasillasafectadas.AddRange(Origen.ObtenerCasillasAdyacentesEnColumna());
       lCasillasafectadas.Add(Origen);
 
-      // Marca visualmente las casillas vÃ¡lidas para el clic de confirmaciÃ³n
+      // Marca visualmente las casillas vélidas para el clic de confirmación
       foreach (Casilla cas in lCasillasafectadas)
       {
         cas.ActivarCapaColorAzul();
@@ -268,6 +268,12 @@ public class HombroConHombro : Habilidad
    
  
 }
+
+
+
+
+
+
 
 
 

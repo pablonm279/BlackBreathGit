@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 public static class ItemTooltipFormatter
@@ -498,7 +498,7 @@ public static class ItemTooltipFormatter
         AgregarLineaStat(lineas, "Poder: ", buff.cantAtPod);
         AgregarLineaStat(lineas, "Iniciativa: ", buff.cantIniciativa);
         AgregarLineaStat(lineas, "PA: ", buff.cantAPMax);
-        AgregarLineaStat(lineas, "Valentia: ", buff.cantPMMax);
+        AgregarLineaStat(lineas, "Valentía: ", buff.cantPMMax);
         AgregarLineaStat(lineas, "HP Maximo: ", buff.cantHPMax);
         AgregarLineaStat(lineas, "Armadura: ", buff.cantArmadura);
         AgregarLineaStat(lineas, "Defensa: ", buff.cantDefensa);
@@ -545,7 +545,7 @@ public static class ItemTooltipFormatter
         AgregarLineaStat(lineas, "Poder: ", buffPoder);
         AgregarLineaStat(lineas, "Iniciativa: ", buffIniciativa);
         AgregarLineaStat(lineas, "PA: ", buffApMax);
-        AgregarLineaStat(lineas, "Valentia: ", buffValMax);
+        AgregarLineaStat(lineas, "Valentía: ", buffValMax);
         AgregarLineaStat(lineas, "HP Maximo: ", buffHpMax);
         AgregarLineaStat(lineas, "Armadura: ", buffArmadura);
         AgregarLineaStat(lineas, "Defensa: ", buffDefensa);
@@ -839,7 +839,7 @@ public static class ItemTooltipFormatter
             if (txt == "Robo vida") { return "Life Steal"; }
             if (txt == "Empuje") { return "Push"; }
             if (txt == "Jalon") { return "Pull"; }
-            if (txt == "Valentia: ") { return "Valor: "; }
+            if (txt == "Valentía: " || txt == "Valentia: ") { return "Valour: "; }
             if (txt == "HP Maximo: ") { return "Max HP: "; }
             if (txt == "Resistencia Acido: ") { return "Acid Resistance: "; }
             if (txt == "Resistencia Necrotica: ") { return "Necrotic Resistance: "; }
@@ -848,3 +848,5 @@ public static class ItemTooltipFormatter
         return traducido;
     }
 }
+
+

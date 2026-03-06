@@ -106,7 +106,8 @@ public class DestruirObstaculo : Habilidad
     }
 
     obstaculo.ForzarDestruccion();
-    BattleManager.Instance.EscribirLog(string.Format("{0} {1}", Traducir("Destruyes"), obstaculo.oName));
+    string nombreObstaculo = TRADU.i != null ? TRADU.i.Traducir(obstaculo.oName) : obstaculo.oName;
+    BattleManager.Instance.EscribirLog(string.Format("{0} {1}", Traducir("Destruyes"), nombreObstaculo));
     BattleManager.Instance.SincronizarHabilidadDestruirObstaculo(scEstaUnidad);
     BattleManager.Instance.CalcularCasillasAMovimiento();
   }

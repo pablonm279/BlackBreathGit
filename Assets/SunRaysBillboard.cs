@@ -22,7 +22,7 @@ public class SunRaysBillboard : MonoBehaviour
             var b = mapaRenderer.bounds;
             // centro del mapa y altura
            // transform.position = new Vector3(b.center.x, b.max.y + altura, b.center.z);
-            // tamaño del quad ≈ ancho del mapa
+            // tamaño del quad ? ancho del mapa
             float s = Mathf.Max(b.size.x, b.size.z) * sizeFactor;
             transform.localScale = new Vector3(s, s, 1f);
         }
@@ -44,3 +44,6 @@ public class SunRaysBillboard : MonoBehaviour
         }
     }
 }
+
+
+

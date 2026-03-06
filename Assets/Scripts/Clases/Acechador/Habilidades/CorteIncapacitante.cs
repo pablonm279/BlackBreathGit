@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -121,8 +121,8 @@ public class CorteIncapacitante : Habilidad
     }
 
     string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
 
     txtDescripcion = ConstruirDescripcionEstandar(
       esIngles ? tituloEn : tituloEs,
@@ -335,6 +335,7 @@ public class CorteIncapacitante : Habilidad
       //BUFF ---- Así se aplica un buff/debuff
       Buff buff = new Buff();
        buff.buffNombre = "Incapacitado";
+       buff.buffDescr = "Inmóvil, Melee solo adyacente.";
        buff.boolfDebufftBuff = false;
        buff.DuracionBuffRondas = duracion;
        buff.cantDanioPorcentaje -= 20;
@@ -555,4 +556,8 @@ public class CorteIncapacitante : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
+
+
+
+
 

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,6 +6,13 @@ using TMPro;
 
 public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 {
+    private const string PrefPostFx = "gfx_postfx_enabled";
+    private const string PrefAA = "gfx_aa_enabled";
+    private const string PrefBloom = "gfx_bloom_enabled";
+    private const string PrefDoF = "gfx_dof_enabled";
+    private const string PrefVsync = "gfx_vsync";
+    private const string PrefFpsLimit = "gfx_fps_limit";
+
     public Slider volMusicaSlider;
     public AudioSource musicaFondo;
 
@@ -34,6 +41,14 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public Toggle fullscreenToggle;
     public Toggle modorapidoToggle;
 
+    [Header("Visual Quality")]
+    public Toggle postFxToggle;
+    public Toggle aaToggle;
+    public Toggle bloomToggle;
+    public Toggle dofToggle;
+    public Toggle vSyncToggle;
+    public TMP_Dropdown fpsLimitDropdown;
+
 
     void Start()
     {
@@ -50,7 +65,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void AplicarEfectosEnUI()
     {
-        // Volumen de la música
+        // Volumen de la másica
         float volumenMusica = PlayerPrefs.GetFloat("Vol_Musica", 0.8f);
         if (volMusicaSlider.value > 0.9f)
         { volumenMusica = 0.9f; }
@@ -112,11 +127,13 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         if (modorapidoToggle != null)
             modorapidoToggle.SetIsOnWithoutNotify(modorapido);
 
+        CargarOpcionesVisuales();
+        AplicarPreferenciasSyncYFPS();
     }
 
     public void CambiarEfectos()
     {
-        // Volumen de la música
+        // Volumen de la másica
         PlayerPrefs.SetFloat("Vol_Musica", volMusicaSlider.value);
         if (musicaFondo.GetComponent<MusicManager>() != null)
         {
@@ -135,12 +152,14 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         {
             nIdioma = 1;
             PlayerPrefs.SetInt("nIdioma", nIdioma);
+            if (TRADU.i != null) TRADU.i.nIdioma = nIdioma;
             restartRequiredText.text = "Se requiere reiniciar para aplicar los cambios.";
         }
         else if (EnglishToggle.isOn)
         {
             nIdioma = 2;
             PlayerPrefs.SetInt("nIdioma", nIdioma);
+            if (TRADU.i != null) TRADU.i.nIdioma = nIdioma;
             restartRequiredText.text = "Restart required to apply changes.";
 
         }
@@ -150,6 +169,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         AplicarResolucion();
 
 
+        GuardarOpcionesVisuales();
+        AplicarPreferenciasSyncYFPS();
 
         //---
         PlayerPrefs.Save();
@@ -337,6 +358,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         PlayerPrefs.Save();
         print($"playerprefs {PlayerPrefs.GetInt("graficos_index")}");
 
+        AplicarPreferenciasSyncYFPS();
 
     }
 
@@ -398,9 +420,112 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         PlayerPrefs.SetInt("modoRapido", modorapido ? 1 : 0);
         PlayerPrefs.Save();
 
-    }   
+    }
+
+    public void AplicarPostFXToggle() { GuardarOpcionesVisuales(); PlayerPrefs.Save(); }
+    public void AplicarAAToggle() { GuardarOpcionesVisuales(); PlayerPrefs.Save(); }
+    public void AplicarBloomToggle() { GuardarOpcionesVisuales(); PlayerPrefs.Save(); }
+    public void AplicarDoFToggle() { GuardarOpcionesVisuales(); PlayerPrefs.Save(); }
+    public void AplicarVSyncToggle() { GuardarOpcionesVisuales(); AplicarPreferenciasSyncYFPS(); PlayerPrefs.Save(); }
+    public void AplicarFPSLimit() { GuardarOpcionesVisuales(); AplicarPreferenciasSyncYFPS(); PlayerPrefs.Save(); }
+
+    private void CargarOpcionesVisuales()
+    {
+        bool postFx = PlayerPrefs.GetInt(PrefPostFx, 1) == 1;
+        bool aa = PlayerPrefs.GetInt(PrefAA, 1) == 1;
+        bool bloom = PlayerPrefs.GetInt(PrefBloom, 1) == 1;
+        bool dof = PlayerPrefs.GetInt(PrefDoF, 0) == 1; // default: no blur de movimiento
+        bool vsync = PlayerPrefs.GetInt(PrefVsync, 1) == 1;
+        int fpsLimit = PlayerPrefs.GetInt(PrefFpsLimit, 60);
+
+        if (postFxToggle != null) { postFxToggle.SetIsOnWithoutNotify(postFx); }
+        if (aaToggle != null) { aaToggle.SetIsOnWithoutNotify(aa); }
+        if (bloomToggle != null) { bloomToggle.SetIsOnWithoutNotify(bloom); }
+        if (dofToggle != null) { dofToggle.SetIsOnWithoutNotify(dof); }
+        if (vSyncToggle != null) { vSyncToggle.SetIsOnWithoutNotify(vsync); }
+
+        if (fpsLimitDropdown != null)
+        {
+            InicializarDropdownFPS();
+            fpsLimitDropdown.SetValueWithoutNotify(MapearFPSAIndice(fpsLimit));
+        }
+    }
+
+    private void GuardarOpcionesVisuales()
+    {
+        if (postFxToggle != null) { PlayerPrefs.SetInt(PrefPostFx, postFxToggle.isOn ? 1 : 0); }
+        if (aaToggle != null) { PlayerPrefs.SetInt(PrefAA, aaToggle.isOn ? 1 : 0); }
+        if (bloomToggle != null) { PlayerPrefs.SetInt(PrefBloom, bloomToggle.isOn ? 1 : 0); }
+        if (dofToggle != null) { PlayerPrefs.SetInt(PrefDoF, dofToggle.isOn ? 1 : 0); }
+        if (vSyncToggle != null) { PlayerPrefs.SetInt(PrefVsync, vSyncToggle.isOn ? 1 : 0); }
+
+        if (fpsLimitDropdown != null)
+        {
+            int fps = MapearIndiceAFPS(fpsLimitDropdown.value);
+            PlayerPrefs.SetInt(PrefFpsLimit, fps);
+        }
+    }
+
+    private void AplicarPreferenciasSyncYFPS()
+    {
+        bool vsync = PlayerPrefs.GetInt(PrefVsync, 1) == 1;
+        QualitySettings.vSyncCount = vsync ? 1 : 0;
+
+        int fps = PlayerPrefs.GetInt(PrefFpsLimit, 60);
+        if (vsync)
+        {
+            Application.targetFrameRate = -1;
+        }
+        else
+        {
+            if (fps <= 0) { Application.targetFrameRate = -1; }
+            else { Application.targetFrameRate = Mathf.Clamp(fps, 30, 240); }
+        }
+    }
+
+    private void InicializarDropdownFPS()
+    {
+        if (fpsLimitDropdown == null) { return; }
+        if (fpsLimitDropdown.options != null && fpsLimitDropdown.options.Count > 0) { return; }
+
+        fpsLimitDropdown.ClearOptions();
+        fpsLimitDropdown.AddOptions(new List<string>
+        {
+            "30 FPS",
+            "60 FPS",
+            "120 FPS",
+            "144 FPS",
+            "240 FPS",
+            "Sin límite"
+        });
+    }
+
+    private static int MapearIndiceAFPS(int idx)
+    {
+        switch (idx)
+        {
+            case 0: return 30;
+            case 1: return 60;
+            case 2: return 120;
+            case 3: return 144;
+            case 4: return 240;
+            default: return 0; // sin limite
+        }
+    }
+
+    private static int MapearFPSAIndice(int fps)
+    {
+        if (fps <= 0) { return 5; }
+        if (fps <= 30) { return 0; }
+        if (fps <= 60) { return 1; }
+        if (fps <= 120) { return 2; }
+        if (fps <= 144) { return 3; }
+        return 4;
+    }
 
 
 }
+
+
 
 

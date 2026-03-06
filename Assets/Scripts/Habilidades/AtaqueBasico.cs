@@ -353,3 +353,6 @@ public class AtaqueBasico : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
+
+
+

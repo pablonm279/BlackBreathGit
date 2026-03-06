@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,10 +39,10 @@ public class SequitoCronistas : MonoBehaviour
         {
             txtMecanica.text += 
                 TRADU.i.Traducir("\n\n- Crónica: Acumula valor de la siguiente manera:") +
-                TRADU.i.Traducir("\n   • Base: 150 Oro") +
-                TRADU.i.Traducir("\n   • +1 Oro por cada punto de Esperanza") +
-                TRADU.i.Traducir("\n   • +20 Oro por cada nodo viajado") +
-                TRADU.i.Traducir("\n   • +50 Oro por cada batalla ganada / -50 Oro por cada batalla perdida") +
+                TRADU.i.Traducir("\n   ? Base: 150 Oro") +
+                TRADU.i.Traducir("\n   ? +1 Oro por cada punto de Esperanza") +
+                TRADU.i.Traducir("\n   ? +20 Oro por cada nodo viajado") +
+                TRADU.i.Traducir("\n   ? +50 Oro por cada batalla ganada / -50 Oro por cada batalla perdida") +
                 TRADU.i.Traducir("\n\nSe puede vender en Asentamientos o Puestos Comerciales.");
             txtMecanica.text += TRADU.i.Traducir("\n\n\n\n-Valor Crónica: Oro: ") + progresoCronica;
         }
@@ -84,3 +84,5 @@ public class SequitoCronistas : MonoBehaviour
     }
     
 }
+
+

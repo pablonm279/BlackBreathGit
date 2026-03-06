@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 /// <summary>
@@ -56,6 +56,14 @@ public class MeleeApproachMover : MonoBehaviour
   public Task<bool> PrepararAproximacionIAAsync(bool esMelee, int ancho, object objetivo, bool mantenerAdelanteDespues)
   {
     if (!esMelee || ancho > 1) return Task.FromResult(false);
+
+    // Si ya esta adelantado visualmente, no reaproxima; solo actualiza si debe mantenerse.
+    if (adelantado && posicionRetorno.HasValue)
+    {
+      mantenerAdelante = mantenerAdelanteDespues;
+      return Task.FromResult(true);
+    }
+
     if (!TryObtenerDatosObjetivo(objetivo, out Transform objetivoTransform, out int posX))
     {
       return Task.FromResult(false);
@@ -65,7 +73,7 @@ public class MeleeApproachMover : MonoBehaviour
 
   public async Task VolverAPosicionInicialAsync(bool forzar = false)
   {
-    if (!posicionRetorno.HasValue || unidad == null) { posicionRetorno = null; camaraRetorno = null; adelantado = false; RestaurarPose(); LiberarLock(); return; }
+    if (!posicionRetorno.HasValue || unidad == null) { posicionRetorno = null; camaraRetorno = null; adelantado = false; mantenerAdelante = false; RestaurarPose(); LiberarLock(); return; }
     if (mantenerAdelante && !forzar) return;
 
     await Task.Delay(Mathf.Max(0, Mathf.RoundToInt(demoraAntesDeVolver * 1000f)));
@@ -253,3 +261,6 @@ public class MeleeApproachMover : MonoBehaviour
     return Camera.main != null ? Camera.main.transform : null;
   }
 }
+
+
+

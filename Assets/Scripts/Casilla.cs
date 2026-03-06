@@ -165,12 +165,12 @@ public class Casilla : MonoBehaviour
       if (unidad.ObtenerAPActual() >= costoMovimientoTotal)
       {
         string text = "" + TRADU.i.Traducir("Coste: ") + costoMovimientoTotal + " " + TRADU.i.Traducir("PA");
-        scTooltipBatalla.ShowTooltipText(text);
+        scTooltipBatalla.ShowTooltipTextSinAnim(text);
       }
       else
       {
         string text = "<color=red>" + TRADU.i.Traducir("Coste: ") + costoMovimientoTotal + " " + TRADU.i.Traducir("PA") + "</color>";
-        scTooltipBatalla.ShowTooltipText(text);
+        scTooltipBatalla.ShowTooltipTextSinAnim(text);
 
       }
     }
@@ -310,7 +310,7 @@ public class Casilla : MonoBehaviour
 
     }
 
-    //Para habilidades en Área
+    //Para habilidades en área
     if (BattleManager.Instance.HabilidadActiva != null && !BattleManager.Instance.bOcupado)
     {
 
@@ -514,7 +514,7 @@ public class Casilla : MonoBehaviour
         yield return null; // Esperar al siguiente frame
       }
 
-      // Asegurarse de que el objeto esté exactamente en la posición final
+      // Asegurarse de que el objeto está exactamente en la posición final
       GO.transform.position = posicionFinal;
     }
     else if (lado == 1) //Aliados
@@ -536,7 +536,7 @@ public class Casilla : MonoBehaviour
         yield return null; // Esperar al siguiente frame
       }
 
-      // Asegurarse de que el objeto esté exactamente en la posición final
+      // Asegurarse de que el objeto está exactamente en la posición final
       GO.transform.position = posicionFinal;
     }
   }
@@ -894,7 +894,7 @@ public class Casilla : MonoBehaviour
     if (MarcaMelee.activeInHierarchy)
     {
        text += "" + TRADU.i.Traducir("Melee disponible");
-      scTooltipBatalla.ShowTooltipText(text);
+      scTooltipBatalla.ShowTooltipTextSinAnim(text);
     }
     //Controlar se esta haciendo hablidad en Area, marca las casillas en la zona de alcance y en el area
       if (BattleManager.Instance.HabilidadActiva != null)
@@ -1322,7 +1322,7 @@ public class Casilla : MonoBehaviour
             }
           }
 
-          // 5 casillas en la última columna (posX + 2)
+          // 5 casillas en la éltima columna (posX + 2)
           foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
           {
             if (cas.lado == lado && cas.posX == posX - 2 &&
@@ -1384,7 +1384,7 @@ public class Casilla : MonoBehaviour
 
   public void OnMouseExit()
   {
-    scTooltipBatalla.HideTooltip();
+    scTooltipBatalla.HideTooltipSinAnim();
     if (BattleManager.Instance.HabilidadActiva != null)
     {
       if (BattleManager.Instance.HabilidadActiva.enArea > 0 && BattleManager.Instance.SeleccionandoObjetivo)
@@ -1674,3 +1674,6 @@ public class Casilla : MonoBehaviour
   }
 
 }
+
+
+

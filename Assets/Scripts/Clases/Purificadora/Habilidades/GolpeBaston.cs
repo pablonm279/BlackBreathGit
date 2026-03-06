@@ -50,14 +50,14 @@ public class GolpeBaston : Habilidad
     txtDescripcion = "<color=#5dade2><b>Golpe de Bastón</b></color>\n\n";
     txtDescripcion += "<i>Con el bastón de purificación, el personaje asesta un golpe a su enemigo.</i>\n\n";
     txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Daño: Contundente 1d6- </color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
       if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
       {
         nombre = "Staff Strike";
         txtDescripcion = "<color=#5dade2><b>Staff Strike</b></color>\n\n";
         txtDescripcion += "<i>With the purification staff, the character delivers a blow to their enemy.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +{bonusAtaque}</color> - Damage: Bludgeoning 1d6- </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valour Cost: {costoPM} </color>";
       }
        
     }
@@ -367,3 +367,7 @@ public class GolpeBaston : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
+
+
+
+

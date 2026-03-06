@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -16,30 +16,37 @@ public class ClaseCaballero : Unidad
 
 
 
-  public override void SumarValentia(int cant)
+  public override void SumarValentia(int cant, string motivo = null)
   {
-  
+    base.SumarValentia(cant, motivo); //hace todo lo mismo que el metodo original, y agrega lo de abajo al final
+    AplicarPasivasValentiaCaballero();
+  }
 
-   base.SumarValentia(cant); //hace todo lo mismo que el metodo original, y agrega lo de abajo al final
+  public override void AjustarValentiaInicialSinLog(int cant)
+  {
+    base.AjustarValentiaInicialSinLog(cant);
+    AplicarPasivasValentiaCaballero();
+  }
 
-   if(ValentiaP_actual < 0) //Pasiva - "Coraje Inquebrantable: Sus puntos de valentía no pueden ser negativos."
-   {
-        ValentiaP_actual = 0;
-   }
+  private void AplicarPasivasValentiaCaballero()
+  {
+    if(ValentiaP_actual < 0) //Pasiva - "Coraje Inquebrantable: Sus puntos de valentía no pueden ser negativos."
+    {
+      ValentiaP_actual = 0;
+    }
 
-   //PASIVA_Implacable-------------------------------------
-   if(PASIVA_Implacable > 0 && ValentiaP_actual == mod_maxValentiaP && PASIVA_Implacable_CARGAS > 0) //Pasiva -Aumenta stats si Valentía al máximo, por 2 Turnos, 1 vez. 
-   {
-       bool yaTieneElBuff = false;
-       Buff[] buffs = gameObject.GetComponents<Buff>();
-       foreach(Buff b in buffs)
-       {
+    //PASIVA_Implacable-------------------------------------
+    if(PASIVA_Implacable > 0 && ValentiaP_actual == mod_maxValentiaP && PASIVA_Implacable_CARGAS > 0) //Pasiva -Aumenta stats si Valentía al máximo, por 2 Turnos, 1 vez. 
+    {
+      bool yaTieneElBuff = false;
+      Buff[] buffs = gameObject.GetComponents<Buff>();
+      foreach(Buff b in buffs)
+      {
         if(b.buffNombre == "Implacable"){  yaTieneElBuff = true;}
-   
-       }
+      }
 
-       if(!yaTieneElBuff)
-       {
+      if(!yaTieneElBuff)
+      {
         PASIVA_Implacable_CARGAS--;
         /////////////////////////////////////////////
         //BUFF ---- Así se aplica un buff/debuff
@@ -57,10 +64,8 @@ public class ClaseCaballero : Unidad
         buff.AplicarBuff(this);
         // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, gameObject);
-       }
-      
-   }
-   
+      }
+    }
   }
 
   public override void ReducirArmaduraPorGolpe(float danioFinal)
@@ -232,3 +237,7 @@ public class ClaseCaballero : Unidad
     }
 
 }
+
+
+
+

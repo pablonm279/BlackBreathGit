@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 public abstract class Habilidad : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public abstract class Habilidad : MonoBehaviour
   public List<Casilla> lCasillasafectadas = new List<Casilla>();
   public bool esZonal; //true si afecta a todas las unidades en el rango, false si es individual.
 
-  //TARGETEO ESPECIAL - 1: Misma Fila  - 2: Misma Columna - 3: Dos Casillas (Vertical) - 4: Tres Casillas (Vertical) - 5: Dos Casillas (AtrÃ¡s)
+  //TARGETEO ESPECIAL - 1: Misma Fila  - 2: Misma Columna - 3: Dos Casillas (Vertical) - 4: Tres Casillas (Vertical) - 5: Dos Casillas (Atrás)
   public int targetEspecial = 0;  //1: Misma fila  2: Misma Columna 3: Dos Casillas (Vert) 4: Tres Casillas (Vert)5: Dos Casillas (Atras) 
                                   //6: 3 casillas Vertical y las de atras
   public int enArea = 0; //Si este valor es mayor a 0, permite tarjetear celdas, afectando a unidades alrededor. 1, cruz, 2 cuadrado, 3 todo
@@ -43,6 +44,7 @@ public abstract class Habilidad : MonoBehaviour
   public bool bAfectaObstaculos;
   [Header("Animacion")]
   [SerializeField] public bool fuerzaPoseAtaque = false;
+  [SerializeField] public bool forzarPoseHabilidad = false;
 
   public bool poneTrampas; //Si la habilidad pone trampas 
   public bool poneObstaculo; //Si la habilidad pone obstaculo 
@@ -151,6 +153,49 @@ public abstract class Habilidad : MonoBehaviour
     }
 
     return $"<b>TS:</b> {tipoEs}. El objetivo tira 1d20 + {tipoEs} vs DC {dcBase}";
+  }
+
+  public static string LimpiarCostoValentiaDescripcion(string descripcion)
+  {
+    if (string.IsNullOrEmpty(descripcion))
+    {
+      return descripcion;
+    }
+
+    string texto = descripcion.Replace("\r\n", "\n");
+
+    // Elimina lineas de costo de Valentia en ES/EN, preservando cierre de color cuando viene en la misma linea.
+    texto = Regex.Replace(
+      texto,
+      @"\n?\s*-\s*(?:Val Cost|Valour Cost)\s*:[^\n]*(</color>)?",
+      m => string.IsNullOrEmpty(m.Groups[1].Value) ? string.Empty : "\n" + m.Groups[1].Value,
+      RegexOptions.IgnoreCase);
+
+    texto = Regex.Replace(
+      texto,
+      @"\n?\s*-\s*Costo(?:\s+de)?\s+(?:Val|Valent(?:i|í)a)\s*:[^\n]*(</color>)?",
+      m => string.IsNullOrEmpty(m.Groups[1].Value) ? string.Empty : "\n" + m.Groups[1].Value,
+      RegexOptions.IgnoreCase);
+
+    // Elimina hints de subida de nivel que solo hablaban de bajar costo de Valentia.
+    texto = Regex.Replace(
+      texto,
+      @"\n?\s*<color=#dfea02>\s*-\s*(?:Next Level|Proximo Nivel):\s*-1\s*(?:Val(?:our)? cost|costo(?:\s+de)?\s+(?:Val|Valent(?:i|í)a))\.\s*</color>",
+      string.Empty,
+      RegexOptions.IgnoreCase);
+
+    // Limpieza puntual de textos de opciones antiguas.
+    texto = texto.Replace("Option A (-1 Val cost) or Option B", "Option A or Option B");
+    texto = texto.Replace("Option A (-1 Valour cost) or Option B", "Option A or Option B");
+    texto = texto.Replace("Opcion A (-1 costo Val) u Opcion B", "Opcion A u Opcion B");
+    texto = texto.Replace("Opcion A (-1 costo de Val) u Opcion B", "Opcion A u Opcion B");
+    texto = texto.Replace("Opcion A (-1 costo Valentia) u Opcion B", "Opcion A u Opcion B");
+    texto = texto.Replace("Opcion A (-1 costo de Valentia) u Opcion B", "Opcion A u Opcion B");
+    texto = texto.Replace("Opcion A (-1 costo Valentía) u Opcion B", "Opcion A u Opcion B");
+    texto = texto.Replace("Opcion A (-1 costo de Valentía) u Opcion B", "Opcion A u Opcion B");
+
+    texto = Regex.Replace(texto, @"\n{3,}", "\n\n");
+    return texto;
   }
 
   protected StatsDescripcionUI ObtenerStatsDescripcionUI()
@@ -318,9 +363,19 @@ public abstract class Habilidad : MonoBehaviour
   }
   public abstract void Awake();
 
-  // MÃ©todo abstracto para activar la habilidad.
+  // Método abstracto para activar la habilidad.
   public virtual async Task Resolver(List<object> Objetivos, Casilla casillaOrigenTrampas = null)
   {
+    if (BattleManager.Instance != null)
+    {
+      if (!BattleManager.Instance.TryFiltrarObjetivosMeleePorInmovilizacion(scEstaUnidad, esMelee, Objetivos, out List<object> objetivosFiltrados))
+      {
+        scEstaUnidad?.GenerarTextoFlotante(TRADU.i.Traducir("Inmóvil, Melee solo adyacente."), Color.gray, FloatingTextContext.Generic);
+        return;
+      }
+
+      Objetivos = objetivosFiltrados;
+    }
 
     BattleManager.Instance.bOcupado = true;
     // Al confirmar la habilidad, limpiar marcas de previsualizacion en unidades.
@@ -328,11 +383,12 @@ public abstract class Habilidad : MonoBehaviour
     MeleeApproachMover acercamientoMelee = MeleeApproachMover.ObtenerOCrear(scEstaUnidad);
     bool hizoAproximacion = acercamientoMelee != null && await acercamientoMelee.PrepararAproximacionJugadorAsync(this, Objetivos);
     // Animacion/pose:
+    // - forzarPoseHabilidad: siempre usa pose de habilidad
     // - fuerzaPoseAtaque: siempre usa ataque
     // - Canalizador hostil: usa ataque
     // - Hostil melee: usa ataque
     // - Resto: usa pose de habilidad
-    bool usarAtaque = fuerzaPoseAtaque || (scEstaUnidad is ClaseCanalizador && esHostil) || (esHostil && esMelee);
+    bool usarAtaque = !forzarPoseHabilidad && (fuerzaPoseAtaque || (scEstaUnidad is ClaseCanalizador && esHostil) || (esHostil && esMelee));
     if (usarAtaque)
     {
       scEstaUnidad.ReproducirAnimacionAtaque();
@@ -438,7 +494,7 @@ public abstract class Habilidad : MonoBehaviour
 
     BattleManager.Instance.LimpiarCapasCasillas();
 
-    if (scEstaUnidad.valorCargando > 0) //si estÃ¡ cargando y le alcanza que reste ap igual a lo que le faltaba
+    if (scEstaUnidad.valorCargando > 0) //si está cargando y le alcanza que reste ap igual a lo que le faltaba
     {
       scEstaUnidad.CambiarAPActual(-scEstaUnidad.valorCargando);
       scEstaUnidad.valorCargando = 0;
@@ -459,10 +515,6 @@ public abstract class Habilidad : MonoBehaviour
 
     Invoke("ActualizarCirculosDelay", 0.5f); //Para que se actualice el UI de AP luego de un delay, para que no se vea el cambio de golpe
 
-    if (costoPM != 0)
-    {
-      scEstaUnidad.SumarValentia(-costoPM);
-    }
     Invoke("desocuparDelay", 0.5f);
     BattleManager.Instance.bOcupado = false;
     
@@ -521,7 +573,7 @@ public abstract class Habilidad : MonoBehaviour
     //Fallo = 0
     //Roce = 1
     //Golpe = 2
-    //CrÃ­tico = 3
+    //Crítico = 3
 
     int resultado = 0;
 
@@ -531,21 +583,12 @@ public abstract class Habilidad : MonoBehaviour
     float deltaClima = 0f;
 
     //Efectos de clima en Ataques
-    if (CampaignManager.Instance.intTipoClima == 3) // Lluvia -1 ataque rango
+    if (CampaignManager.Instance.intTipoClima == 5) // Niebla -1 ataque rango
     {
       if (!esMelee)
       {
         iTiradaAtaque -= 1;
         deltaClima -= 1;
-      }
-
-    }
-    if (CampaignManager.Instance.intTipoClima == 5) // Niebla -2 ataque rango
-    {
-      if (!esMelee)
-      {
-        iTiradaAtaque -= 2;
-        deltaClima -= 2;
       }
 
     }
@@ -566,6 +609,15 @@ public abstract class Habilidad : MonoBehaviour
     if (iDadoSolo <= umbralPifia)//Pifia
     {
       scEstaUnidad.GenerarTextoFlotante(TRADU.i.Traducir("<b>Pifia</b>"), Color.red);
+      string nombreAtacante = TRADU.i != null ? TRADU.i.Traducir(scEstaUnidad.uNombre) : scEstaUnidad.uNombre;
+      string nombreObjetivoValentia = unidadAtacada != null
+        ? (TRADU.i != null ? TRADU.i.Traducir(unidadAtacada.uNombre) : unidadAtacada.uNombre)
+        : (TRADU.i != null ? TRADU.i.Traducir("objetivo") : "objetivo");
+      bool enInglesValentia = TRADU.i != null && TRADU.i.nIdioma == 2;
+      string motivoPifiaValentia = enInglesValentia
+        ? nombreAtacante + " fumbles against " + nombreObjetivoValentia
+        : nombreAtacante + " pifia contra " + nombreObjetivoValentia;
+      scEstaUnidad.SumarValentia(-1, motivoPifiaValentia);
       textoResultado = TRADU.i.Traducir("Pifia");
       BattleManager.Instance.EscribirLog(
         CombatLogFormatter.FormatearAtaque(
@@ -671,11 +723,11 @@ public abstract class Habilidad : MonoBehaviour
 
     if(resultado)
     {
-       BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} realiza Tirada de SalvaciÃ³n: 1d20 = {iTiradaDefensa} +{atributoDefiende} vs Tirada Dificultad: {iResultadoAtaque}. Resultado: No se salva.");
+       BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} realiza Tirada de Salvación: 1d20 = {iTiradaDefensa} +{atributoDefiende} vs Tirada Dificultad: {iResultadoAtaque}. Resultado: No se salva.");
     }
     else
     {
-       BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} realiza Tirada de SalvaciÃ³n: 1d20 = {iTiradaDefensa} +{atributoDefiende} vs Tirada Dificultad: {iResultadoAtaque}. Resultado: Se salva.");
+       BattleManager.Instance.EscribirLog($"{scEstaUnidad.uNombre} realiza Tirada de Salvación: 1d20 = {iTiradaDefensa} +{atributoDefiende} vs Tirada Dificultad: {iResultadoAtaque}. Resultado: Se salva.");
     }
 
     return resultado;
@@ -806,13 +858,9 @@ public abstract class Habilidad : MonoBehaviour
     if (tipoAtaquePorcentaje != 1 && CampaignManager.Instance != null)
     {
       // Penalidades de clima a ataques a distancia
-      if (CampaignManager.Instance.intTipoClima == 3) // Lluvia
+      if (CampaignManager.Instance.intTipoClima == 5) // Niebla
       {
         ataqueTotal -= 1f;
-      }
-      else if (CampaignManager.Instance.intTipoClima == 5) // Niebla
-      {
-        ataqueTotal -= 2f;
       }
     }
     float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -867,3 +915,6 @@ public abstract class Habilidad : MonoBehaviour
   }
 
 }
+
+
+

@@ -1,0 +1,5133 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pong Local 2 Jugadores</title>
+  <style>
+    :root {
+      --bg-1: #0f172a;
+      --bg-2: #1e293b;
+      --accent: #38bdf8;
+      --accent-2: #fbbf24;
+      --text: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 20% 20%, #1d4ed833, transparent 45%),
+        radial-gradient(circle at 85% 75%, #f59e0b22, transparent 45%),
+        linear-gradient(140deg, var(--bg-1), var(--bg-2));
+      color: var(--text);
+      font-family: "Trebuchet MS", "Segoe UI", Tahoma, sans-serif;
+      padding: 20px;
+    }
+
+    .game-wrap {
+      width: min(1200px, 100%);
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 2vw + 1rem, 2.4rem);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .hud {
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      opacity: 0.9;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .sound-btn {
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: filter 120ms ease, transform 120ms ease;
+    }
+
+    .sound-btn:hover {
+      filter: brightness(1.15);
+      transform: translateY(-1px);
+    }
+
+    canvas {
+      width: 100%;
+      max-width: 1080px;
+      aspect-ratio: 9 / 5;
+      border: 2px solid #334155;
+      border-radius: 14px;
+      background: #020617;
+      box-shadow: 0 20px 45px #02061799;
+      cursor: pointer;
+      display: block;
+      margin: 0 auto;
+      transition: transform 220ms ease-out;
+      transform-origin: center center;
+    }
+
+    .help {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      opacity: 0.85;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <main class="game-wrap">
+    <h1>Pong Local</h1>
+    <div class="hud">
+      <span>Jugador 1: <strong>W</strong> sube, <strong>A</strong> baja, Poder: <strong>T</strong></span>
+      <span>Jugador 2: <strong>↑</strong> sube, <strong>↓</strong> baja, Poder: <strong>←</strong></span>
+      <span>Primero a <strong>21</strong> puntos</span>
+      <span>DLCs siempre ON: <strong>Terror + Desierto + Aliens</strong> | Armas: <strong>Q</strong> y <strong>Shift der.</strong> | Trance: <strong>E</strong> y <strong>Enter</strong></span>
+      <span>Franja central 25% = turbo + fuego negro</span>
+      <button id="musicToggle" class="sound-btn" type="button">Musica: OFF</button>
+      <button id="sfxToggle" class="sound-btn" type="button">Efectos: ON</button>
+    </div>
+    <canvas id="game" width="1080" height="600" aria-label="Juego Pong"></canvas>
+    <p class="help">Space o click para empezar. M: musica, N: efectos. Ciclo: dia/tarde/noche/amanecer con efectos especiales. El juego no se pausa al hacer punto: si se vacia la cancha, reaparece una pelota normal con efecto visual. La pelota violeta volvio a aparecer con su efecto de puntaje. Ciclones: 30% por minuto; Huracan negro: 2% por minuto (mas poderoso). Sombreros de amigos caen del cielo: si tu barra agarra uno, el siguiente rebote pega con mas estilo y control. DLCs siempre activos: terror tantrico, desierto patagonico y aliens. Estandarte = pickup circular de bandera: si lo agarra tu barra, queda fortificada por 10 segundos. Aliens: aparecen menos naves centradas que disparan y achican barras; si conviven 2 por mas de 6s, nace un agujero negro central mas agresivo y ya no aparecen mas aliens. Al llegar a 10 puntos, 70% de chance de evento caotico aleatorio. Al llegar a 20 puntos, hay 60% de chance de dragon: destruye una barra por 10 segundos y suena "mamma mia!".</p>
+  </main>
+
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+    const musicToggle = document.getElementById("musicToggle");
+    const sfxToggle = document.getElementById("sfxToggle");
+
+    const config = {
+      paddleWidth: 16,
+      paddleHeight: 105,
+      paddleGrowthPerPoint: 0.04,
+      paddleBoostZonePct: 0.25,
+      paddleEdgeSlowZonePct: 0.03,
+      paddleEdgeSlowMultiplier: 0.7,
+      boostMultiplier: 1.28,
+      blackFireMultiplier: 2.05,
+      paddleSpeed: 6.3,
+      phasePaddleSpeedDay: 1,
+      phasePaddleSpeedAfternoon: 1,
+      phasePaddleSpeedNight: 1.05,
+      phasePaddleSpeedDawn: 1.08,
+      ballSize: 12,
+      baseBallSpeed: 5.3,
+      phaseBallFrameMulDay: 1,
+      phaseBallFrameMulAfternoon: 1.00045,
+      phaseBallFrameMulNight: 0.9992,
+      phaseBallFrameMulDawn: 1.0002,
+      fireEffectMs: 900,
+      blackFireEffectMs: 1100,
+      maxBalls: 8,
+      dropBallRadius: 10,
+      dropSpawnMinMs: 1500,
+      dropSpawnMaxMs: 2900,
+      dropFallMinSpeed: 1.2,
+      dropFallMaxSpeed: 2.1,
+      maxScore: 21,
+      chaosTriggerScore: 10,
+      chaosTriggerChance: 0.7,
+      chaosBannerMs: 3400,
+      chaosDarkMs: 12000,
+      chaosBrightMs: 12000,
+      chaosWorldSlowMs: 20000,
+      chaosWorldSlowFactor: 0.52,
+      chaosBlackoutMs: 2000,
+      chaosManyBallsCount: 15,
+      chaosPaddleShrinkMs: 20000,
+      chaosPaddleShrinkMultiplier: 0.2,
+      chaosWeatherMs: 20000,
+      chaosRainCount: 88,
+      chaosLeafCount: 24,
+      chaosSnowCount: 72,
+      chaosCycloneDurationMs: 12000,
+      chaosCycloneRadiusPct: 0.15,
+      chaosCycloneReverseMultiplier: 0.8,
+      chaosCycloneSpinForce: 0.095,
+      chaosCyclonePullForce: 0.038,
+      chaosCycloneJitter: 0.34,
+      chaosCycloneMaxBallSpeed: 30,
+      alienSpawnMinMs: 16000,
+      alienSpawnMaxMs: 28000,
+      alienMaxConcurrent: 2,
+      alienRadius: 11,
+      alienSpeedMin: 2.9,
+      alienSpeedMax: 4.2,
+      alienCenterBias: 0.065,
+      alienCenterXMinPct: 0.22,
+      alienCenterXMaxPct: 0.78,
+      alienCenterYMinPct: 0.18,
+      alienCenterYMaxPct: 0.82,
+      alienShotMinMs: 900,
+      alienShotMaxMs: 1700,
+      alienBulletRadius: 4,
+      alienBulletSpeed: 6.3,
+      alienShrinkPerHit: 0.9,
+      dlcWeaponPaddleShrinkFactor: 0.975,
+      alienMinShrinkFactor: 0.45,
+      alienPairThresholdMs: 6000,
+      alienBlackHoleInitialRadius: 24,
+      alienBlackHoleMaxRadius: 132,
+      alienBlackHoleGrowthPerSec: 5.2,
+      alienBlackHolePullForce: 0.09,
+      alienBlackHoleSwirlForce: 0.045,
+      alienBlackHolePaddlePullX: 0.045,
+      dragonTriggerScore: 20,
+      dragonTriggerChance: 0.6,
+      dragonDestroyMs: 10000,
+      dragonApproachMs: 900,
+      dragonAttackDurationMs: 2300,
+      dragonMammaMiaMs: 1800,
+      pointPauseMs: 2000,
+      serveDelayMs: 1000,
+      fieldGrowthPerPoint: 1.006,
+      powerDurationMs: 5000,
+      powerCooldownRounds: 3,
+      powerBallSlowMultiplier: 0.8,
+      powerBallControlYSpeed: 5.2,
+      packamRadius: 18,
+      packamMinSpeed: 1.25,
+      packamMaxSpeed: 3.6,
+      packamChaseLerp: 0.11,
+      packamBurnDurationMs: 5000,
+      packamBurnSpeedMultiplier: 1.45,
+      packamLifetimeMs: 18000,
+      packamSpawnEveryPoints: 4,
+      packamGlobalSlowFactor: 0.97,
+      fieldShrinkOnPackamEat: 0.98,
+      minFieldScale: 0.68,
+      phaseDurationMs: 18000,
+      paddleFreezeGhostMs: 1000,
+      paddleFreezeVoidMs: 2000,
+      ghostSpeedFactor: 0.86,
+      ghostRadiusFactor: 0.8,
+      ghostChaseLerp: 0.09,
+      enhancedPowerDurationMs: 7000,
+      enhancedPowerBallSlowMultiplier: 0.7,
+      purpleBallSpawnChance: 0.15,
+      purpleBallGrowthFactor: 1.05,
+      purpleBallSpeedGrowthFactor: 1.05,
+      purpleAlertMs: 1700,
+      packamPurpleDisableRounds: 3,
+      stoneSpeed: 7.2,
+      stoneRadius: 10,
+      stoneSpreadY: 120,
+      penaltyShotSpeed: 8.2,
+      penaltyBallControlYSpeed: 6.2,
+      penaltyInitialShotsPerSide: 5,
+      fireworksSpawnMs: 380,
+      friendHatSpawnMinMs: 10000,
+      friendHatSpawnMaxMs: 17000,
+      friendHatFallMinSpeed: 1.45,
+      friendHatFallMaxSpeed: 2.25,
+      friendHatRadius: 11,
+      friendHatDurationMs: 9000,
+      friendHatBallSpeedMultiplier: 1.1,
+      friendHatBallSteer: 0.55,
+      dlcWeaponCooldownMs: 4200,
+      dlcWeaponRadius: 8,
+      dlcWeaponSpeed: 9.2,
+      dlcWeaponLifetimeMs: 2200,
+      dlcWeaponCurseMs: 3000,
+      dlcWeaponFreezeMs: 700,
+      dlcPaddleCurseSlowFactor: 0.72,
+      dlcBallCurseMs: 3500,
+      dlcBallCurseSpeedMultiplier: 1.16,
+      dlcRitualMaxCharge: 100,
+      dlcRitualChargePaddleHit: 13,
+      dlcRitualChargeWeaponBallHit: 17,
+      dlcRitualChargeWeaponPaddleHit: 23,
+      dlcTranceDurationMs: 6200,
+      dlcTranceCooldownMs: 12000,
+      dlcTranceSpeedMultiplier: 1.32,
+      dlcTranceWeaponCooldownFactor: 0.58,
+      dlcTranceBallMarkMs: 4200,
+      dlcTranceMarkScoreBonus: 1,
+      desertSandDrag: 0.9995,
+      desertMinBallSpeedFactor: 0.9,
+      desertStormIntervalMs: 17000,
+      desertStormDurationMs: 4600,
+      desertStormVyPush: 0.06,
+      desertBannerSpawnMinMs: 14000,
+      desertBannerSpawnMaxMs: 23000,
+      desertBannerRadius: 11,
+      desertBannerTravelMinSpeed: 1.9,
+      desertBannerTravelMaxSpeed: 2.8,
+      desertBannerVerticalDriftMax: 0.36,
+      desertFortifyDurationMs: 10000,
+      desertFortifyBounceDamp: 0.97,
+      cycloneChancePerMinute: 0.3,
+      blackCycloneChancePerMinute: 0.02,
+      cycloneRadiusPct: 0.15,
+      cycloneDurationMs: 9000,
+      blackCycloneDurationMs: 12000,
+      cycloneSpinForce: 0.032,
+      blackCycloneSpinForce: 0.078,
+      cyclonePullForce: 0.012,
+      blackCyclonePullForce: 0.032,
+      cycloneReverseSpeedMultiplier: 1.04,
+      blackCycloneReverseSpeedMultiplier: 1.36,
+    };
+
+    const sideMargin = 30;
+
+    const state = {
+      running: false,
+      gameOver: false,
+      scoreL: 0,
+      scoreR: 0,
+      left: {
+        x: sideMargin,
+        y: canvas.height / 2 - config.paddleHeight / 2,
+        height: config.paddleHeight,
+        up: false,
+        down: false,
+        powerActiveUntil: 0,
+        powerReadyRound: 0,
+        powerBuffPermanent: false,
+        powerUsedRound: -1,
+        friendHatUntil: 0,
+        friendHatStyle: 0,
+        cursedUntil: 0,
+        ritualCharge: 0,
+        tranceUntil: 0,
+        tranceReadyAt: 0,
+        desertFortifiedUntil: 0,
+        alienShrinkFactor: 1,
+        permanentlyDestroyed: false,
+        dragonBurned: false,
+        frozenUntil: 0,
+        destroyedUntilTime: 0,
+        destroyedUntilRound: 0,
+      },
+      right: {
+        x: canvas.width - sideMargin - config.paddleWidth,
+        y: canvas.height / 2 - config.paddleHeight / 2,
+        height: config.paddleHeight,
+        up: false,
+        down: false,
+        powerActiveUntil: 0,
+        powerReadyRound: 0,
+        powerBuffPermanent: false,
+        powerUsedRound: -1,
+        friendHatUntil: 0,
+        friendHatStyle: 1,
+        cursedUntil: 0,
+        ritualCharge: 0,
+        tranceUntil: 0,
+        tranceReadyAt: 0,
+        desertFortifiedUntil: 0,
+        alienShrinkFactor: 1,
+        permanentlyDestroyed: false,
+        dragonBurned: false,
+        frozenUntil: 0,
+        destroyedUntilTime: 0,
+        destroyedUntilRound: 0,
+      },
+      balls: [],
+      dropBalls: [],
+      lastWinner: "",
+      countdownUntil: 0,
+      countdownShown: 0,
+      serveReleaseUntil: 0,
+      nextDropSpawnAt: 0,
+      roundsStarted: 0,
+      fieldScale: 1,
+      packam: null,
+      packamPermanentlyDead: false,
+      packamDisabledUntilRound: 0,
+      lastBallTouchSide: null,
+      dayCycleStartedAt: performance.now(),
+      ghosts: [],
+      stones: [],
+      explosions: [],
+      purpleAlertUntil: 0,
+      fireworks: [],
+      nextFireworkAt: 0,
+      penalty: {
+        active: false,
+        shotIndex: 0,
+        shooter: null,
+        shotInProgress: false,
+        steerActive: false,
+        shotsL: [],
+        shotsR: [],
+      },
+      friendHats: [],
+      nextFriendHatAt: 0,
+      dlcTantricEnabled: true,
+      dlcWeapons: [],
+      dlcNextShotLeftAt: 0,
+      dlcNextShotRightAt: 0,
+      dlcDesertEnabled: true,
+      desertBanners: [],
+      nextDesertBannerAt: 0,
+      desertStormUntil: 0,
+      nextDesertStormAt: 0,
+      aliens: [],
+      alienBullets: [],
+      nextAlienSpawnAt: 0,
+      alienPairSince: 0,
+      blackHole: null,
+      cyclone: null,
+      cycloneAlertUntil: 0,
+      tenPointChaosRolled: false,
+      chaosEventText: "",
+      chaosEventUntil: 0,
+      chaosDarkUntil: 0,
+      chaosBrightUntil: 0,
+      chaosBlackoutUntil: 0,
+      chaosWorldSlowUntil: 0,
+      chaosPaddleShrinkUntil: 0,
+      chaosPaddleShrinkActive: false,
+      chaosWeatherType: null,
+      chaosWeatherUntil: 0,
+      chaosWeatherParticles: [],
+      dragonTriggered: false,
+      dragonAttack: null,
+      mammaMiaUntil: 0,
+      ballRespawnEffectUntil: 0,
+      lastTickAt: performance.now(),
+    };
+
+    const keyMap = {
+      KeyW: ["left", "up"],
+      KeyA: ["left", "down"],
+      ArrowUp: ["right", "up"],
+      ArrowDown: ["right", "down"],
+    };
+
+    const PHASE_ORDER = ["day", "afternoon", "night", "dawn"];
+    const FRIEND_HAT_STYLES = [
+      { brim: "#1d4ed8", crown: "#38bdf8", badge: "#e0f2fe" },
+      { brim: "#b45309", crown: "#f59e0b", badge: "#fef3c7" },
+      { brim: "#7e22ce", crown: "#d946ef", badge: "#f5d0fe" },
+      { brim: "#166534", crown: "#22c55e", badge: "#dcfce7" },
+    ];
+    const TANTRIC_WEAPON_KEYS = {
+      left: "KeyQ",
+      right: "ShiftRight",
+    };
+    const TANTRIC_TRANCE_KEYS = {
+      left: "KeyE",
+      right: "Enter",
+    };
+    const CHAOS_EVENT_KEYS = [
+      "dark",
+      "bright",
+      "slowworld",
+      "minusfive",
+      "blackout",
+      "manyballs",
+      "centercyclone",
+      "tinypaddles",
+      "rain",
+      "leaves",
+      "snow",
+    ];
+
+    const audio = {
+      ctx: null,
+      masterGain: null,
+      musicGain: null,
+      sfxGain: null,
+      musicTimer: null,
+      musicStep: 0,
+      musicEnabled: false,
+      sfxEnabled: true,
+      baseMusicGain: 0.42,
+      baseSfxGain: 0.95,
+    };
+
+    function createSvgImageAsset(svgMarkup) {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgMarkup)}`;
+      return img;
+    }
+
+    function buildTantricDlcAssets() {
+      const makeBackgroundSvg = (top, bottom, sigil, mist) => `
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1080 600'>
+          <defs>
+            <linearGradient id='bg' x1='0' y1='0' x2='0' y2='1'>
+              <stop offset='0%' stop-color='${top}' />
+              <stop offset='100%' stop-color='${bottom}' />
+            </linearGradient>
+            <radialGradient id='moon' cx='50%' cy='42%' r='38%'>
+              <stop offset='0%' stop-color='${sigil}' stop-opacity='0.5' />
+              <stop offset='100%' stop-color='${sigil}' stop-opacity='0' />
+            </radialGradient>
+            <pattern id='grid' width='56' height='56' patternUnits='userSpaceOnUse'>
+              <path d='M0 28H56 M28 0V56' stroke='${mist}' stroke-opacity='0.26' stroke-width='1'/>
+              <circle cx='28' cy='28' r='2' fill='${sigil}' fill-opacity='0.34'/>
+            </pattern>
+          </defs>
+          <rect width='1080' height='600' fill='url(#bg)' />
+          <rect width='1080' height='600' fill='url(#grid)' />
+          <ellipse cx='540' cy='320' rx='350' ry='220' fill='url(#moon)'/>
+          <path d='M120 520 Q540 300 960 520' stroke='${mist}' stroke-opacity='0.42' stroke-width='5' fill='none'/>
+          <path d='M150 560 Q540 360 930 560' stroke='${sigil}' stroke-opacity='0.25' stroke-width='4' fill='none'/>
+          <circle cx='540' cy='315' r='68' fill='none' stroke='${sigil}' stroke-opacity='0.52' stroke-width='4'/>
+          <circle cx='540' cy='315' r='24' fill='${sigil}' fill-opacity='0.42'/>
+        </svg>
+      `;
+
+      const makePaddleSkinSvg = (c1, c2, rune) => `
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 220'>
+          <defs>
+            <linearGradient id='p' x1='0' y1='0' x2='0' y2='1'>
+              <stop offset='0%' stop-color='${c1}'/>
+              <stop offset='100%' stop-color='${c2}'/>
+            </linearGradient>
+          </defs>
+          <rect x='0' y='0' width='48' height='220' rx='8' fill='url(#p)'/>
+          <rect x='7' y='10' width='34' height='200' rx='6' fill='${rune}' fill-opacity='0.12'/>
+          <path d='M12 34 L36 34 M12 72 L36 72 M12 110 L36 110 M12 148 L36 148 M12 186 L36 186' stroke='${rune}' stroke-opacity='0.5' stroke-width='3'/>
+          <circle cx='24' cy='110' r='10' fill='${rune}' fill-opacity='0.55'/>
+        </svg>
+      `;
+
+      const ballSkinSvg = `
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'>
+          <defs>
+            <radialGradient id='orb' cx='50%' cy='40%' r='55%'>
+              <stop offset='0%' stop-color='#fdf4ff'/>
+              <stop offset='65%' stop-color='#d946ef'/>
+              <stop offset='100%' stop-color='#581c87'/>
+            </radialGradient>
+          </defs>
+          <circle cx='48' cy='48' r='43' fill='url(#orb)'/>
+          <circle cx='48' cy='48' r='28' fill='none' stroke='#f5d0fe' stroke-opacity='0.85' stroke-width='5'/>
+          <circle cx='48' cy='48' r='8' fill='#fef9c3' fill-opacity='0.85'/>
+        </svg>
+      `;
+
+      const makeWeaponSvg = (color, accent) => `
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60'>
+          <defs>
+            <linearGradient id='w' x1='0' y1='0' x2='1' y2='0'>
+              <stop offset='0%' stop-color='${color}' stop-opacity='0'/>
+              <stop offset='50%' stop-color='${color}' stop-opacity='1'/>
+              <stop offset='100%' stop-color='${accent}' stop-opacity='0'/>
+            </linearGradient>
+          </defs>
+          <ellipse cx='60' cy='30' rx='58' ry='18' fill='url(#w)'/>
+          <circle cx='60' cy='30' r='10' fill='${accent}' fill-opacity='0.9'/>
+        </svg>
+      `;
+
+      return {
+        backgrounds: {
+          day: createSvgImageAsset(makeBackgroundSvg("#0b2f3d", "#12263a", "#67e8f9", "#f0f9ff")),
+          afternoon: createSvgImageAsset(makeBackgroundSvg("#4a1d15", "#34100f", "#fdba74", "#ffedd5")),
+          night: createSvgImageAsset(makeBackgroundSvg("#050816", "#0f172a", "#c4b5fd", "#93c5fd")),
+          dawn: createSvgImageAsset(makeBackgroundSvg("#312e81", "#172554", "#f9a8d4", "#ddd6fe")),
+        },
+        skins: {
+          leftPaddle: createSvgImageAsset(makePaddleSkinSvg("#0ea5e9", "#155e75", "#67e8f9")),
+          rightPaddle: createSvgImageAsset(makePaddleSkinSvg("#fb923c", "#7c2d12", "#fde68a")),
+          ball: createSvgImageAsset(ballSkinSvg),
+          leftWeapon: createSvgImageAsset(makeWeaponSvg("#22d3ee", "#f0f9ff")),
+          rightWeapon: createSvgImageAsset(makeWeaponSvg("#fb7185", "#ffe4e6")),
+        },
+      };
+    }
+
+    const tantricDlcAssets = buildTantricDlcAssets();
+
+    function buildDesertDlcAssets() {
+      const makeBackgroundSvg = (skyTop, skyBottom, dune1, dune2, sun, accent) => `
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1080 600'>
+          <defs>
+            <linearGradient id='sky' x1='0' y1='0' x2='0' y2='1'>
+              <stop offset='0%' stop-color='${skyTop}'/>
+              <stop offset='100%' stop-color='${skyBottom}'/>
+            </linearGradient>
+            <radialGradient id='sun' cx='70%' cy='28%' r='22%'>
+              <stop offset='0%' stop-color='${sun}' stop-opacity='0.95'/>
+              <stop offset='100%' stop-color='${sun}' stop-opacity='0'/>
+            </radialGradient>
+          </defs>
+          <rect width='1080' height='600' fill='url(#sky)'/>
+          <ellipse cx='760' cy='170' rx='190' ry='120' fill='url(#sun)'/>
+          <path d='M0 420 Q220 360 420 400 Q640 450 1080 390 L1080 600 L0 600 Z' fill='${dune1}'/>
+          <path d='M0 500 Q300 430 520 470 Q720 520 1080 460 L1080 600 L0 600 Z' fill='${dune2}'/>
+          <circle cx='230' cy='334' r='54' fill='none' stroke='${accent}' stroke-opacity='0.3' stroke-width='5'/>
+          <circle cx='230' cy='334' r='20' fill='${accent}' fill-opacity='0.23'/>
+          <text x='164' y='552' fill='${accent}' fill-opacity='0.45' font-size='32' font-family='Trebuchet MS'>ROCA</text>
+        </svg>
+      `;
+
+      const makePaddleSkinSvg = (base, stripe, emblem) => `
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 220'>
+          <rect width='48' height='220' rx='7' fill='${base}'/>
+          <rect x='6' y='10' width='36' height='200' rx='6' fill='${stripe}' fill-opacity='0.22'/>
+          <rect x='22' y='14' width='4' height='192' fill='${stripe}' fill-opacity='0.55'/>
+          <circle cx='24' cy='110' r='9' fill='${emblem}' fill-opacity='0.78'/>
+          <circle cx='24' cy='110' r='3' fill='${base}'/>
+        </svg>
+      `;
+
+      const ballSkinSvg = `
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'>
+          <defs>
+            <radialGradient id='b' cx='50%' cy='35%' r='58%'>
+              <stop offset='0%' stop-color='#fff7ed'/>
+              <stop offset='62%' stop-color='#f59e0b'/>
+              <stop offset='100%' stop-color='#9a3412'/>
+            </radialGradient>
+          </defs>
+          <circle cx='48' cy='48' r='42' fill='url(#b)'/>
+          <circle cx='48' cy='48' r='24' fill='none' stroke='#fef3c7' stroke-opacity='0.75' stroke-width='5'/>
+          <circle cx='48' cy='48' r='8' fill='#fff7ed' fill-opacity='0.9'/>
+        </svg>
+      `;
+
+      const bannerSvg = `
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'>
+          <circle cx='60' cy='60' r='46' fill='#1e3a8a' fill-opacity='0.86'/>
+          <circle cx='60' cy='60' r='30' fill='none' stroke='#e2e8f0' stroke-width='6'/>
+          <rect x='56' y='18' width='8' height='84' fill='#f8fafc'/>
+          <path d='M64 24 L100 36 L64 48 Z' fill='#bfdbfe'/>
+        </svg>
+      `;
+
+      return {
+        backgrounds: {
+          day: createSvgImageAsset(makeBackgroundSvg("#7c5525", "#b45309", "#d97706", "#b45309", "#fde68a", "#fef3c7")),
+          afternoon: createSvgImageAsset(makeBackgroundSvg("#5b3419", "#7c2d12", "#a16207", "#7c2d12", "#fdba74", "#fed7aa")),
+          night: createSvgImageAsset(makeBackgroundSvg("#1f2937", "#111827", "#374151", "#1f2937", "#fbbf24", "#fde68a")),
+          dawn: createSvgImageAsset(makeBackgroundSvg("#92400e", "#7c2d12", "#d97706", "#92400e", "#fcd34d", "#ffedd5")),
+        },
+        skins: {
+          leftPaddle: createSvgImageAsset(makePaddleSkinSvg("#0f172a", "#93c5fd", "#f8fafc")),
+          rightPaddle: createSvgImageAsset(makePaddleSkinSvg("#422006", "#fde68a", "#fffbeb")),
+          ball: createSvgImageAsset(ballSkinSvg),
+          banner: createSvgImageAsset(bannerSvg),
+        },
+      };
+    }
+
+    const desertDlcAssets = buildDesertDlcAssets();
+
+    function updateAudioButtonLabels() {
+      musicToggle.textContent = audio.musicEnabled ? "Musica: ON" : "Musica: OFF";
+      sfxToggle.textContent = audio.sfxEnabled ? "Efectos: ON" : "Efectos: OFF";
+    }
+
+    function initAudioEngine() {
+      if (audio.ctx) return;
+      const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextCtor) return;
+
+      audio.ctx = new AudioContextCtor();
+      audio.masterGain = audio.ctx.createGain();
+      audio.musicGain = audio.ctx.createGain();
+      audio.sfxGain = audio.ctx.createGain();
+
+      audio.masterGain.gain.value = 1;
+      audio.musicGain.gain.value = audio.musicEnabled ? audio.baseMusicGain : 0;
+      audio.sfxGain.gain.value = audio.sfxEnabled ? audio.baseSfxGain : 0;
+
+      audio.musicGain.connect(audio.masterGain);
+      audio.sfxGain.connect(audio.masterGain);
+      audio.masterGain.connect(audio.ctx.destination);
+
+      startMusicLoop();
+      updateAudioButtonLabels();
+    }
+
+    function ensureAudioReady() {
+      initAudioEngine();
+      if (audio.ctx && audio.ctx.state === "suspended") {
+        audio.ctx.resume();
+      }
+    }
+
+    function setMusicEnabled(value) {
+      audio.musicEnabled = value;
+      if (audio.musicGain && audio.ctx) {
+        const now = audio.ctx.currentTime;
+        audio.musicGain.gain.cancelScheduledValues(now);
+        audio.musicGain.gain.setTargetAtTime(value ? audio.baseMusicGain : 0, now, 0.02);
+      }
+      updateAudioButtonLabels();
+    }
+
+    function setSfxEnabled(value) {
+      audio.sfxEnabled = value;
+      if (audio.sfxGain && audio.ctx) {
+        const now = audio.ctx.currentTime;
+        audio.sfxGain.gain.cancelScheduledValues(now);
+        audio.sfxGain.gain.setTargetAtTime(value ? audio.baseSfxGain : 0, now, 0.02);
+      }
+      updateAudioButtonLabels();
+    }
+
+    function toggleMusic() {
+      ensureAudioReady();
+      setMusicEnabled(!audio.musicEnabled);
+    }
+
+    function toggleSfx() {
+      ensureAudioReady();
+      setSfxEnabled(!audio.sfxEnabled);
+    }
+
+    function playTone(freq, duration, type, volume, startAt = null, targetGain = null, endFreq = null) {
+      if (!audio.ctx || !freq) return;
+      const outGain = targetGain ?? audio.sfxGain;
+      const isMusicChannel = outGain === audio.musicGain;
+      if ((isMusicChannel && !audio.musicEnabled) || (!isMusicChannel && !audio.sfxEnabled)) return;
+
+      const osc = audio.ctx.createOscillator();
+      const gain = audio.ctx.createGain();
+      const startTime = startAt ?? audio.ctx.currentTime;
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, startTime);
+      if (endFreq) {
+        osc.frequency.exponentialRampToValueAtTime(Math.max(60, endFreq), startTime + duration);
+      }
+
+      gain.gain.setValueAtTime(0.0001, startTime);
+      gain.gain.exponentialRampToValueAtTime(volume, startTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+      osc.connect(gain);
+      gain.connect(outGain);
+      osc.start(startTime);
+      osc.stop(startTime + duration + 0.02);
+    }
+
+    function playPaddleHitSfx() {
+      const now = audio.ctx ? audio.ctx.currentTime : 0;
+      playTone(420, 0.06, "square", 0.12, now);
+      playTone(290, 0.05, "square", 0.08, now + 0.015);
+    }
+
+    function playBoostHitSfx() {
+      if (!audio.ctx) return;
+      const now = audio.ctx.currentTime;
+      playTone(480, 0.07, "sawtooth", 0.11, now, null, 760);
+      playTone(740, 0.09, "triangle", 0.09, now + 0.02, null, 980);
+      playTone(1250, 0.04, "square", 0.045, now + 0.035, null, 780);
+    }
+
+    function playBlackFireSfx() {
+      if (!audio.ctx) return;
+      const now = audio.ctx.currentTime;
+      playTone(110, 0.22, "sawtooth", 0.16, now, null, 52);
+      playTone(1700, 0.08, "square", 0.075, now + 0.01, null, 240);
+      playTone(420, 0.15, "triangle", 0.1, now + 0.035, null, 110);
+    }
+
+    function playWallHitSfx() {
+      playTone(250, 0.04, "triangle", 0.08);
+    }
+
+    function playScoreSfx() {
+      if (!audio.ctx) return;
+      const now = audio.ctx.currentTime;
+      playTone(330, 0.09, "triangle", 0.1, now);
+      playTone(470, 0.1, "triangle", 0.1, now + 0.095);
+    }
+
+    function playCountdownTickSfx(seconds) {
+      if (seconds <= 1) {
+        playTone(760, 0.08, "square", 0.09);
+      } else {
+        playTone(560, 0.08, "square", 0.08);
+      }
+    }
+
+    function playGameOverSfx() {
+      if (!audio.ctx) return;
+      const now = audio.ctx.currentTime;
+      playTone(420, 0.12, "sawtooth", 0.09, now, null, 320);
+      playTone(300, 0.16, "sawtooth", 0.08, now + 0.14, null, 220);
+    }
+
+    function playStartSfx() {
+      if (!audio.ctx) return;
+      const now = audio.ctx.currentTime;
+      playTone(440, 0.07, "triangle", 0.08, now);
+      playTone(620, 0.08, "triangle", 0.09, now + 0.08);
+    }
+
+    function playGhostLaughSfx() {
+      if (!audio.ctx) return;
+      const now = audio.ctx.currentTime;
+      playTone(980, 0.04, "square", 0.06, now, null, 1220);
+      playTone(820, 0.05, "square", 0.06, now + 0.045, null, 1030);
+      playTone(1080, 0.05, "triangle", 0.055, now + 0.09, null, 1320);
+    }
+
+    function playExplosionSfx() {
+      if (!audio.ctx) return;
+      const now = audio.ctx.currentTime;
+      playTone(80, 0.22, "sawtooth", 0.17, now, null, 40);
+      playTone(340, 0.08, "triangle", 0.12, now + 0.03, null, 120);
+      playTone(1800, 0.06, "square", 0.06, now + 0.01, null, 360);
+    }
+
+    function playPurpleAlertSfx() {
+      if (!audio.ctx) return;
+      const now = audio.ctx.currentTime;
+      playTone(540, 0.1, "sine", 0.08, now, null, 920);
+      playTone(1080, 0.13, "triangle", 0.09, now + 0.02, null, 1560);
+      playTone(690, 0.12, "square", 0.08, now + 0.06, null, 420);
+    }
+
+    function playKick(at) {
+      playTone(95, 0.12, "sine", 0.085, at, audio.musicGain, 45);
+      playTone(155, 0.05, "triangle", 0.05, at, audio.musicGain, 70);
+    }
+
+    function playSnare(at) {
+      playTone(240, 0.05, "triangle", 0.045, at, audio.musicGain, 120);
+      playTone(2100, 0.03, "square", 0.028, at + 0.006, audio.musicGain, 820);
+    }
+
+    function playHat(at) {
+      playTone(3600, 0.02, "square", 0.017, at, audio.musicGain, 1450);
+    }
+
+    function startMusicLoop() {
+      if (audio.musicTimer) return;
+
+      const riff = [164.81, 196, 220, 196, 246.94, 220, 196, 174.61];
+      const bass = [82.41, 82.41, 73.42, 82.41];
+      const stepMs = 116;
+
+      audio.musicTimer = setInterval(() => {
+        if (!audio.ctx || !audio.musicEnabled) return;
+        const step = audio.musicStep % 16;
+        const now = audio.ctx.currentTime + 0.004;
+
+        if (step % 2 === 0) {
+          const riffStep = (step / 2) % riff.length;
+          const note = riff[riffStep];
+          playTone(note, 0.13, "sawtooth", 0.05, now, audio.musicGain);
+          playTone(note * 2, 0.08, "square", 0.02, now + 0.005, audio.musicGain);
+        }
+
+        if (step % 4 === 0) {
+          const bassStep = (step / 4) % bass.length;
+          playTone(bass[bassStep], 0.24, "triangle", 0.055, now, audio.musicGain);
+        }
+
+        if (step === 0 || step === 6 || step === 8 || step === 14) {
+          playKick(now);
+        }
+        if (step === 4 || step === 12) {
+          playSnare(now);
+        }
+        if (step % 2 === 1) {
+          playHat(now);
+        }
+
+        audio.musicStep += 1;
+      }, stepMs);
+    }
+
+    function randomRange(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function getWorldTimeScale(now = performance.now()) {
+      return now < state.chaosWorldSlowUntil ? config.chaosWorldSlowFactor : 1;
+    }
+
+    function isChaosPaddleShrinkActive(now = performance.now()) {
+      return now < state.chaosPaddleShrinkUntil;
+    }
+
+    function setChaosEventBanner(text, now = performance.now()) {
+      state.chaosEventText = text;
+      state.chaosEventUntil = now + config.chaosBannerMs;
+    }
+
+    function respawnChaosParticle(particle, type) {
+      if (type === "rain") {
+        particle.x = randomRange(-30, canvas.width + 30);
+        particle.y = randomRange(-canvas.height, -10);
+        particle.vx = randomRange(-0.8, 0.8);
+        particle.vy = randomRange(8.2, 13.5);
+        particle.len = randomRange(10, 18);
+        particle.alpha = randomRange(0.28, 0.7);
+        return;
+      }
+      if (type === "leaves") {
+        particle.x = randomRange(-40, canvas.width + 40);
+        particle.y = randomRange(-canvas.height, -12);
+        particle.vx = randomRange(-0.8, 0.8);
+        particle.vy = randomRange(1.1, 2.6);
+        particle.rot = randomRange(0, Math.PI * 2);
+        particle.spin = randomRange(-0.06, 0.06);
+        particle.phase = randomRange(0, Math.PI * 2);
+        particle.size = randomRange(4, 8);
+        return;
+      }
+      particle.x = randomRange(-30, canvas.width + 30);
+      particle.y = randomRange(-canvas.height, -10);
+      particle.vx = randomRange(-0.5, 0.5);
+      particle.vy = randomRange(0.7, 2.2);
+      particle.phase = randomRange(0, Math.PI * 2);
+      particle.size = randomRange(1.6, 4.2);
+      particle.alpha = randomRange(0.35, 0.9);
+    }
+
+    function startChaosWeather(type, now = performance.now()) {
+      state.chaosWeatherType = type;
+      state.chaosWeatherUntil = now + config.chaosWeatherMs;
+      state.chaosWeatherParticles = [];
+
+      const count =
+        type === "rain"
+          ? config.chaosRainCount
+          : type === "leaves"
+          ? config.chaosLeafCount
+          : config.chaosSnowCount;
+
+      for (let i = 0; i < count; i += 1) {
+        const particle = {};
+        respawnChaosParticle(particle, type);
+        state.chaosWeatherParticles.push(particle);
+      }
+    }
+
+    function updateChaosWeather(now = performance.now()) {
+      const type = state.chaosWeatherType;
+      if (!type) return;
+
+      if (now >= state.chaosWeatherUntil) {
+        state.chaosWeatherType = null;
+        state.chaosWeatherParticles = [];
+        return;
+      }
+
+      const worldMul = getWorldTimeScale(now);
+      for (const particle of state.chaosWeatherParticles) {
+        if (type === "rain") {
+          particle.x += particle.vx * worldMul;
+          particle.y += particle.vy * worldMul;
+          if (particle.y > canvas.height + 30 || particle.x < -70 || particle.x > canvas.width + 70) {
+            respawnChaosParticle(particle, type);
+            particle.y = randomRange(-220, -20);
+          }
+          continue;
+        }
+
+        if (type === "leaves") {
+          particle.phase += 0.032 * worldMul;
+          particle.x += (particle.vx + Math.sin(particle.phase) * 0.88) * worldMul;
+          particle.y += particle.vy * worldMul;
+          particle.rot += particle.spin * worldMul;
+          if (particle.y > canvas.height + 28 || particle.x < -80 || particle.x > canvas.width + 80) {
+            respawnChaosParticle(particle, type);
+            particle.y = randomRange(-190, -20);
+          }
+          continue;
+        }
+
+        particle.phase += 0.016 * worldMul;
+        particle.x += (particle.vx + Math.sin(particle.phase) * 0.48) * worldMul;
+        particle.y += particle.vy * worldMul;
+        if (particle.y > canvas.height + 24 || particle.x < -50 || particle.x > canvas.width + 50) {
+          respawnChaosParticle(particle, type);
+          particle.y = randomRange(-240, -20);
+        }
+      }
+    }
+
+    function spawnChaosManyBalls(now = performance.now()) {
+      const targetCount = Math.max(config.chaosManyBallsCount, state.balls.length);
+      while (state.balls.length < targetCount) {
+        const direction = Math.random() > 0.5 ? 1 : -1;
+        const speed = config.baseBallSpeed * randomRange(0.86, 1.72);
+        const ball = createGameBall(direction, speed, true);
+        ball.x = canvas.width * 0.5 + randomRange(-150, 150) - ball.size * 0.5;
+        ball.y = randomRange(34, canvas.height - 34 - ball.size);
+        ball.vx += randomRange(-2.1, 2.1);
+        ball.vy += randomRange(-2.1, 2.1);
+        state.balls.push(ball);
+        if (state.balls.length > 32) break;
+      }
+      spawnExplosion(canvas.width * 0.5, canvas.height * 0.5, "#f8fafc", 1.8, now);
+    }
+
+    function spawnChaosCenterCyclone(now = performance.now()) {
+      const radius = Math.min(canvas.width, canvas.height) * config.chaosCycloneRadiusPct;
+      state.cyclone = {
+        x: canvas.width * 0.5,
+        y: canvas.height * 0.5,
+        radius,
+        isBlack: false,
+        chaotic: true,
+        bornAt: now,
+        endsAt: now + config.chaosCycloneDurationMs,
+      };
+      state.cycloneAlertUntil = now + 1300;
+      for (const ball of state.balls) {
+        ball.cycloneInside = false;
+      }
+      playBlackFireSfx();
+    }
+
+    function triggerChaosEventByKey(eventKey, now = performance.now()) {
+      switch (eventKey) {
+        case "dark":
+          state.chaosDarkUntil = Math.max(state.chaosDarkUntil, now + config.chaosDarkMs);
+          setChaosEventBanner("Caos: pantalla oscura", now);
+          break;
+        case "bright":
+          state.chaosBrightUntil = Math.max(state.chaosBrightUntil, now + config.chaosBrightMs);
+          setChaosEventBanner("Caos: brillo extremo", now);
+          break;
+        case "slowworld":
+          state.chaosWorldSlowUntil = Math.max(state.chaosWorldSlowUntil, now + config.chaosWorldSlowMs);
+          setChaosEventBanner("Caos: tiempo lento (menos barras)", now);
+          break;
+        case "minusfive": {
+          const side = Math.random() > 0.5 ? "left" : "right";
+          let removed = 0;
+          for (let i = 0; i < 5; i += 1) {
+            if (removePointBySide(side)) removed += 1;
+          }
+          setChaosEventBanner(`Caos: ${side === "left" ? "P1" : "P2"} pierde ${removed}`, now);
+          spawnExplosion(canvas.width * 0.5, canvas.height * 0.22, "#ef4444", 1.25, now);
+          break;
+        }
+        case "blackout":
+          state.chaosBlackoutUntil = Math.max(state.chaosBlackoutUntil, now + config.chaosBlackoutMs);
+          setChaosEventBanner("Caos: negro total", now);
+          break;
+        case "manyballs":
+          spawnChaosManyBalls(now);
+          setChaosEventBanner("Caos: 15 pelotas", now);
+          break;
+        case "centercyclone":
+          spawnChaosCenterCyclone(now);
+          setChaosEventBanner("Caos: tornado central", now);
+          break;
+        case "tinypaddles":
+          state.chaosPaddleShrinkUntil = Math.max(state.chaosPaddleShrinkUntil, now + config.chaosPaddleShrinkMs);
+          refreshPaddleSizes();
+          setChaosEventBanner("Caos: barras mini", now);
+          break;
+        case "rain":
+          startChaosWeather("rain", now);
+          setChaosEventBanner("Caos: lluvia", now);
+          break;
+        case "leaves":
+          startChaosWeather("leaves", now);
+          setChaosEventBanner("Caos: hojas", now);
+          break;
+        case "snow":
+          startChaosWeather("snow", now);
+          setChaosEventBanner("Caos: nieve", now);
+          break;
+        default:
+          break;
+      }
+    }
+
+    function maybeTriggerTenPointChaos(prevScoreL, prevScoreR, now = performance.now()) {
+      if (state.tenPointChaosRolled) return;
+
+      const reachedLeft = prevScoreL < config.chaosTriggerScore && state.scoreL >= config.chaosTriggerScore;
+      const reachedRight = prevScoreR < config.chaosTriggerScore && state.scoreR >= config.chaosTriggerScore;
+      if (!reachedLeft && !reachedRight) return;
+
+      state.tenPointChaosRolled = true;
+      if (Math.random() > config.chaosTriggerChance) {
+        setChaosEventBanner("10 puntos: caos evitado", now);
+        return;
+      }
+
+      const eventKey = CHAOS_EVENT_KEYS[Math.floor(randomRange(0, CHAOS_EVENT_KEYS.length))];
+      triggerChaosEventByKey(eventKey, now);
+    }
+
+    function clearChaosState(resetTrigger = false) {
+      const hadShrink = state.chaosPaddleShrinkActive || state.chaosPaddleShrinkUntil > 0;
+      state.chaosEventText = "";
+      state.chaosEventUntil = 0;
+      state.chaosDarkUntil = 0;
+      state.chaosBrightUntil = 0;
+      state.chaosBlackoutUntil = 0;
+      state.chaosWorldSlowUntil = 0;
+      state.chaosPaddleShrinkUntil = 0;
+      state.chaosPaddleShrinkActive = false;
+      state.chaosWeatherType = null;
+      state.chaosWeatherUntil = 0;
+      state.chaosWeatherParticles = [];
+      if (hadShrink) {
+        refreshPaddleSizes();
+      }
+      if (resetTrigger) {
+        state.tenPointChaosRolled = false;
+      }
+    }
+
+    function updateChaosState(now = performance.now()) {
+      const shrinkActive = isChaosPaddleShrinkActive(now);
+      if (shrinkActive !== state.chaosPaddleShrinkActive) {
+        state.chaosPaddleShrinkActive = shrinkActive;
+        refreshPaddleSizes();
+      }
+      if (state.chaosEventUntil > 0 && now >= state.chaosEventUntil) {
+        state.chaosEventText = "";
+      }
+      updateChaosWeather(now);
+    }
+
+    function powerKeyForSide(side) {
+      return side === "left" ? "KeyT" : "ArrowLeft";
+    }
+
+    function countGoals(shots) {
+      let goals = 0;
+      for (const shot of shots) {
+        if (shot) goals += 1;
+      }
+      return goals;
+    }
+
+    function getFriendHatStyle(styleIndex = 0) {
+      const idx = Math.abs(Math.floor(styleIndex)) % FRIEND_HAT_STYLES.length;
+      return FRIEND_HAT_STYLES[idx];
+    }
+
+    function isFriendHatActive(side, now = performance.now()) {
+      return now < state[side].friendHatUntil;
+    }
+
+    function clearFriendHatStates() {
+      state.left.friendHatUntil = 0;
+      state.right.friendHatUntil = 0;
+      state.friendHats = [];
+      state.nextFriendHatAt = 0;
+    }
+
+    function weaponKeyForSide(side) {
+      return side === "left" ? TANTRIC_WEAPON_KEYS.left : TANTRIC_WEAPON_KEYS.right;
+    }
+
+    function tranceKeyForSide(side) {
+      return side === "left" ? TANTRIC_TRANCE_KEYS.left : TANTRIC_TRANCE_KEYS.right;
+    }
+
+    function isTantricDlcEnabled() {
+      return state.dlcTantricEnabled;
+    }
+
+    function isDesertDlcEnabled() {
+      return state.dlcDesertEnabled;
+    }
+
+    function getDlcShotReadyAt(side) {
+      return side === "left" ? state.dlcNextShotLeftAt : state.dlcNextShotRightAt;
+    }
+
+    function setDlcShotReadyAt(side, when) {
+      if (side === "left") {
+        state.dlcNextShotLeftAt = when;
+      } else {
+        state.dlcNextShotRightAt = when;
+      }
+    }
+
+    function isPaddleCursed(side, now = performance.now()) {
+      return now < state[side].cursedUntil;
+    }
+
+    function isDesertFortified(side, now = performance.now()) {
+      return now < state[side].desertFortifiedUntil;
+    }
+
+    function isDesertStormActive(now = performance.now()) {
+      return now < state.desertStormUntil;
+    }
+
+    function isTranceActive(side, now = performance.now()) {
+      return now < state[side].tranceUntil;
+    }
+
+    function getRitualCharge(side) {
+      return Math.max(0, Math.min(config.dlcRitualMaxCharge, state[side].ritualCharge ?? 0));
+    }
+
+    function setRitualCharge(side, value) {
+      state[side].ritualCharge = Math.max(0, Math.min(config.dlcRitualMaxCharge, value));
+    }
+
+    function addRitualCharge(side, delta) {
+      if (!side) return;
+      if (!isTantricDlcEnabled()) return;
+      if (delta <= 0) return;
+      setRitualCharge(side, getRitualCharge(side) + delta);
+    }
+
+    function tryActivateTantricTrance(side, now = performance.now()) {
+      if (!isTantricDlcEnabled()) return false;
+      if (state.gameOver || !state.running || state.penalty.active) return false;
+      if (state.serveReleaseUntil > 0 || state.countdownUntil > 0) return false;
+      if (isPaddleDestroyed(side) || isPaddleFrozen(side, now)) return false;
+      if (now < state[side].tranceReadyAt) return false;
+      if (getRitualCharge(side) < config.dlcRitualMaxCharge) return false;
+
+      state[side].tranceUntil = now + config.dlcTranceDurationMs;
+      state[side].tranceReadyAt = now + config.dlcTranceCooldownMs;
+      setRitualCharge(side, 0);
+      spawnExplosion(state[side].x + config.paddleWidth * 0.5, state[side].y + state[side].height * 0.5, "#f43f5e", 1.45, now);
+      playBlackFireSfx();
+      return true;
+    }
+
+    function getDlcWeaponCooldownMs(side, now = performance.now()) {
+      const factor = isTranceActive(side, now) ? config.dlcTranceWeaponCooldownFactor : 1;
+      return config.dlcWeaponCooldownMs * factor;
+    }
+
+    function markBallByTrance(ball, side, now = performance.now()) {
+      ball.dlcMarkedBy = side;
+      ball.dlcMarkedUntil = now + config.dlcTranceBallMarkMs;
+    }
+
+    function isBallTranceMarked(ball, now = performance.now()) {
+      return ball.dlcMarkedBy && now < (ball.dlcMarkedUntil ?? 0);
+    }
+
+    function isBallDlcCursed(ball, now = performance.now()) {
+      return now < (ball.dlcCursedUntil ?? 0);
+    }
+
+    function clearDlcRoundEffects(resetCooldowns = false) {
+      state.left.cursedUntil = 0;
+      state.right.cursedUntil = 0;
+      state.left.tranceUntil = 0;
+      state.right.tranceUntil = 0;
+      state.dlcWeapons = [];
+      for (const ball of state.balls) {
+        ball.dlcCursedUntil = 0;
+        ball.dlcMarkedBy = null;
+        ball.dlcMarkedUntil = 0;
+      }
+      if (resetCooldowns) {
+        state.dlcNextShotLeftAt = 0;
+        state.dlcNextShotRightAt = 0;
+        state.left.tranceReadyAt = 0;
+        state.right.tranceReadyAt = 0;
+        state.left.ritualCharge = 0;
+        state.right.ritualCharge = 0;
+      }
+    }
+
+    function toggleTantricDlc(now = performance.now()) {
+      state.dlcTantricEnabled = true;
+      state.dlcNextShotLeftAt = now;
+      state.dlcNextShotRightAt = now;
+      state.left.tranceReadyAt = Math.min(state.left.tranceReadyAt, now);
+      state.right.tranceReadyAt = Math.min(state.right.tranceReadyAt, now);
+    }
+
+    function clearDesertDlcRoundEffects(resetTimers = false) {
+      state.left.desertFortifiedUntil = 0;
+      state.right.desertFortifiedUntil = 0;
+      state.desertBanners = [];
+      state.desertStormUntil = 0;
+      if (resetTimers) {
+        state.nextDesertBannerAt = 0;
+        state.nextDesertStormAt = 0;
+      }
+    }
+
+    function scheduleNextDesertBannerSpawn(now = performance.now()) {
+      state.nextDesertBannerAt = now + randomRange(config.desertBannerSpawnMinMs, config.desertBannerSpawnMaxMs);
+    }
+
+    function scheduleNextDesertStorm(now = performance.now()) {
+      state.nextDesertStormAt = now + config.desertStormIntervalMs;
+    }
+
+    function spawnDesertBanner(now = performance.now()) {
+      const fromLeft = Math.random() > 0.5;
+      state.desertBanners.push({
+        x: fromLeft ? -config.desertBannerRadius * 2 : canvas.width + config.desertBannerRadius * 2,
+        y: randomRange(70, canvas.height - 70),
+        vx: (fromLeft ? 1 : -1) * randomRange(config.desertBannerTravelMinSpeed, config.desertBannerTravelMaxSpeed),
+        vy: randomRange(-config.desertBannerVerticalDriftMax, config.desertBannerVerticalDriftMax),
+        radius: config.desertBannerRadius,
+        drift: randomRange(-0.22, 0.22),
+        bornAt: now,
+      });
+    }
+
+    function toggleDesertDlc(now = performance.now()) {
+      state.dlcDesertEnabled = true;
+      if (state.nextDesertBannerAt !== 0 && state.nextDesertStormAt !== 0) return;
+      scheduleNextDesertBannerSpawn(now);
+      scheduleNextDesertStorm(now);
+    }
+
+    function updateDesertBannerSpawns(now = performance.now()) {
+      if (!isDesertDlcEnabled()) return;
+      if (!state.running || state.gameOver || state.penalty.active) return;
+      if (state.serveReleaseUntil > 0 || state.countdownUntil > 0) return;
+      if (state.nextDesertBannerAt === 0) {
+        scheduleNextDesertBannerSpawn(now);
+      }
+      if (now >= state.nextDesertBannerAt) {
+        if (state.desertBanners.length < 3) {
+          spawnDesertBanner(now);
+        }
+        scheduleNextDesertBannerSpawn(now);
+      }
+    }
+
+    function updateDesertBanners(now = performance.now()) {
+      if (!isDesertDlcEnabled()) {
+        state.desertBanners = [];
+        return;
+      }
+      if (state.desertBanners.length === 0) return;
+
+      const freeze = !state.running || state.serveReleaseUntil > 0 || state.countdownUntil > 0 || state.penalty.active;
+      const worldMul = getWorldTimeScale(now);
+      for (let i = state.desertBanners.length - 1; i >= 0; i -= 1) {
+        const banner = state.desertBanners[i];
+        if (!freeze) {
+          banner.x += banner.vx * worldMul;
+          banner.y += (banner.vy + Math.sin((now - banner.bornAt) * 0.003) * banner.drift) * worldMul;
+        }
+
+        if (
+          banner.x + banner.radius < -20 ||
+          banner.x - banner.radius > canvas.width + 20 ||
+          banner.y + banner.radius < -20 ||
+          banner.y - banner.radius > canvas.height + 20
+        ) {
+          state.desertBanners.splice(i, 1);
+          continue;
+        }
+
+        if (!isPaddleDestroyed("left") && circleIntersectsPaddle(banner.x, banner.y, banner.radius, state.left)) {
+          state.left.desertFortifiedUntil = Math.max(state.left.desertFortifiedUntil, now + config.desertFortifyDurationMs);
+          state.desertBanners.splice(i, 1);
+          playBoostHitSfx();
+          continue;
+        }
+        if (!isPaddleDestroyed("right") && circleIntersectsPaddle(banner.x, banner.y, banner.radius, state.right)) {
+          state.right.desertFortifiedUntil = Math.max(state.right.desertFortifiedUntil, now + config.desertFortifyDurationMs);
+          state.desertBanners.splice(i, 1);
+          playBoostHitSfx();
+        }
+      }
+    }
+
+    function updateDesertStorm(now = performance.now()) {
+      if (!isDesertDlcEnabled()) {
+        state.desertStormUntil = 0;
+        state.nextDesertStormAt = 0;
+        return;
+      }
+      if (!state.running || state.gameOver || state.penalty.active) return;
+      if (state.serveReleaseUntil > 0 || state.countdownUntil > 0) return;
+
+      if (state.nextDesertStormAt === 0) {
+        scheduleNextDesertStorm(now);
+      }
+      if (now >= state.nextDesertStormAt) {
+        state.desertStormUntil = now + config.desertStormDurationMs;
+        scheduleNextDesertStorm(now);
+      }
+    }
+
+    function applyDesertFieldOnBall(ball, now = performance.now()) {
+      if (!isDesertDlcEnabled()) return;
+      const stormMul = isDesertStormActive(now) ? 0.9983 : 1;
+      const drag = config.desertSandDrag * stormMul;
+      ball.vx *= drag;
+      ball.vy *= drag;
+
+      if (isDesertStormActive(now)) {
+        ball.vy += Math.sin((now * 0.01 + ball.x * 0.02)) * config.desertStormVyPush;
+      }
+
+      const speed = Math.hypot(ball.vx, ball.vy);
+      const minSpeed = config.baseBallSpeed * config.desertMinBallSpeedFactor;
+      if (speed > 0.0001 && speed < minSpeed) {
+        const ratio = minSpeed / speed;
+        ball.vx *= ratio;
+        ball.vy *= ratio;
+      }
+    }
+
+    function scheduleNextAlienSpawn(now = performance.now()) {
+      state.nextAlienSpawnAt = now + randomRange(config.alienSpawnMinMs, config.alienSpawnMaxMs);
+    }
+
+    function spawnAlien(now = performance.now()) {
+      const angle = randomRange(0, Math.PI * 2);
+      const speed = randomRange(config.alienSpeedMin, config.alienSpeedMax);
+      const minX = canvas.width * config.alienCenterXMinPct;
+      const maxX = canvas.width * config.alienCenterXMaxPct;
+      const minY = canvas.height * config.alienCenterYMinPct;
+      const maxY = canvas.height * config.alienCenterYMaxPct;
+      state.aliens.push({
+        x: randomRange(minX, maxX),
+        y: randomRange(minY, maxY),
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        radius: config.alienRadius,
+        phase: randomRange(0, Math.PI * 2),
+        bornAt: now,
+        nextShotAt: now + randomRange(config.alienShotMinMs, config.alienShotMaxMs),
+      });
+      playBoostHitSfx();
+    }
+
+    function spawnAlienShot(alien, now = performance.now()) {
+      const targetSides = [];
+      if (!isPaddleDestroyed("left")) targetSides.push("left");
+      if (!isPaddleDestroyed("right")) targetSides.push("right");
+      if (targetSides.length === 0) return;
+
+      const targetSide = targetSides[Math.floor(randomRange(0, targetSides.length))];
+      const target = state[targetSide];
+      const tx = target.x + config.paddleWidth * 0.5;
+      const ty = target.y + target.height * 0.5;
+      const dx = tx - alien.x;
+      const dy = ty - alien.y;
+      const len = Math.hypot(dx, dy) || 1;
+
+      state.alienBullets.push({
+        x: alien.x,
+        y: alien.y,
+        vx: (dx / len) * config.alienBulletSpeed,
+        vy: (dy / len) * config.alienBulletSpeed,
+        radius: config.alienBulletRadius,
+      });
+      playWallHitSfx();
+    }
+
+    function applyAlienShrink(side, now = performance.now()) {
+      if (!side || isPaddleDestroyed(side)) return;
+      state[side].alienShrinkFactor = Math.max(
+        config.alienMinShrinkFactor,
+        state[side].alienShrinkFactor * config.alienShrinkPerHit
+      );
+      refreshPaddleSizes();
+      spawnExplosion(
+        state[side].x + config.paddleWidth * 0.5,
+        state[side].y + state[side].height * 0.5,
+        "#22c55e",
+        1,
+        now
+      );
+      playBlackFireSfx();
+    }
+
+    function applyPaddleMicroShrink(side, factor = config.dlcWeaponPaddleShrinkFactor) {
+      if (!side || isPaddleDestroyed(side)) return;
+      state[side].alienShrinkFactor = Math.max(
+        config.alienMinShrinkFactor,
+        state[side].alienShrinkFactor * factor
+      );
+      refreshPaddleSizes();
+    }
+
+    function clearAlienDlcState(resetTimers = false) {
+      state.aliens = [];
+      state.alienBullets = [];
+      state.alienPairSince = 0;
+      state.blackHole = null;
+      state.left.alienShrinkFactor = 1;
+      state.right.alienShrinkFactor = 1;
+      refreshPaddleSizes();
+      if (resetTimers) {
+        state.nextAlienSpawnAt = 0;
+      }
+    }
+
+    function applyBlackHoleForceToVelocity(entity, centerX, centerY, forceScale = 1) {
+      if (!state.blackHole) return false;
+      if (typeof entity.vx !== "number" || typeof entity.vy !== "number") return false;
+      const bh = state.blackHole;
+      const dx = bh.x - centerX;
+      const dy = bh.y - centerY;
+      const dist = Math.hypot(dx, dy) || 1;
+      const influence = Math.max(220, bh.radius * 3.2);
+      if (dist > influence) return false;
+
+      const att = 1 - Math.min(1, dist / influence);
+      const nx = dx / dist;
+      const ny = dy / dist;
+      const worldMul = getWorldTimeScale();
+      const holePower = 0.45 + bh.radius / config.alienBlackHoleMaxRadius;
+      const pull = config.alienBlackHolePullForce * att * forceScale * holePower * worldMul;
+      const swirl = config.alienBlackHoleSwirlForce * att * forceScale * holePower * worldMul;
+      entity.vx += nx * pull - ny * swirl;
+      entity.vy += ny * pull + nx * swirl;
+
+      if (dist < bh.radius * 0.58) {
+        entity.vx *= 0.986;
+        entity.vy *= 0.986;
+      }
+      return true;
+    }
+
+    function applyBlackHoleGravity(now = performance.now(), deltaMs = 16) {
+      if (!state.blackHole) return;
+      const bh = state.blackHole;
+      const growth = config.alienBlackHoleGrowthPerSec * (Math.max(0, deltaMs) / 1000);
+      bh.radius = Math.min(config.alienBlackHoleMaxRadius, bh.radius + growth);
+
+      for (const ball of state.balls) {
+        applyBlackHoleForceToVelocity(
+          ball,
+          ball.x + ball.size * 0.5,
+          ball.y + ball.size * 0.5,
+          1
+        );
+      }
+      for (const stone of state.stones) {
+        applyBlackHoleForceToVelocity(stone, stone.x, stone.y, 1.05);
+      }
+      for (const weapon of state.dlcWeapons) {
+        applyBlackHoleForceToVelocity(weapon, weapon.x, weapon.y, 1.05);
+      }
+      for (const ghost of state.ghosts) {
+        applyBlackHoleForceToVelocity(ghost, ghost.x, ghost.y, 0.86);
+      }
+      if (state.packam) {
+        applyBlackHoleForceToVelocity(state.packam, state.packam.x, state.packam.y, 0.92);
+      }
+      for (const drop of state.dropBalls) {
+        if (typeof drop.vx !== "number") drop.vx = 0;
+        applyBlackHoleForceToVelocity(drop, drop.x, drop.y, 0.72);
+      }
+      for (const alien of state.aliens) {
+        applyBlackHoleForceToVelocity(alien, alien.x, alien.y, 0.64);
+      }
+      for (const shot of state.alienBullets) {
+        applyBlackHoleForceToVelocity(shot, shot.x, shot.y, 0.75);
+      }
+
+      const worldMul = getWorldTimeScale(now);
+      const holePower = 0.42 + bh.radius / config.alienBlackHoleMaxRadius;
+      const movePaddleTowardCenter = (side) => {
+        if (isPaddleDestroyed(side)) return;
+        const paddle = state[side];
+        const px = paddle.x + config.paddleWidth * 0.5;
+        const py = paddle.y + paddle.height * 0.5;
+        const dx = bh.x - px;
+        const dy = bh.y - py;
+        const dist = Math.hypot(dx, dy) || 1;
+        const att = 1 - Math.min(1, dist / Math.max(280, bh.radius * 3));
+        paddle.y += (dy / dist) * 0.55 * att * holePower * worldMul;
+        if (side === "left") {
+          paddle.x += config.alienBlackHolePaddlePullX * (0.6 + att) * holePower * worldMul;
+        } else {
+          paddle.x -= config.alienBlackHolePaddlePullX * (0.6 + att) * holePower * worldMul;
+        }
+      };
+      movePaddleTowardCenter("left");
+      movePaddleTowardCenter("right");
+      clampPaddles();
+      clampPaddleXPositions();
+    }
+
+    function updateAlienDlc(now = performance.now(), deltaMs = 16) {
+      if (state.gameOver) {
+        state.aliens = [];
+        state.alienBullets = [];
+        state.alienPairSince = 0;
+        state.blackHole = null;
+        return;
+      }
+
+      const freeze = !state.running || state.serveReleaseUntil > 0 || state.countdownUntil > 0 || state.penalty.active;
+      if (state.nextAlienSpawnAt === 0) {
+        scheduleNextAlienSpawn(now);
+      }
+
+      if (!state.blackHole && !freeze && now >= state.nextAlienSpawnAt && state.aliens.length < config.alienMaxConcurrent) {
+        spawnAlien(now);
+        scheduleNextAlienSpawn(now);
+      }
+
+      const worldMul = getWorldTimeScale(now);
+      for (const alien of state.aliens) {
+        if (!freeze) {
+          alien.phase += 0.018 * worldMul;
+          alien.vx += randomRange(-0.12, 0.12);
+          alien.vy += randomRange(-0.12, 0.12);
+          const pullX = (canvas.width * 0.5 - alien.x) / canvas.width;
+          const pullY = (canvas.height * 0.5 - alien.y) / canvas.height;
+          alien.vx += pullX * config.alienCenterBias;
+          alien.vy += pullY * config.alienCenterBias;
+          const speed = Math.hypot(alien.vx, alien.vy) || 1;
+          const clamped = Math.max(config.alienSpeedMin, Math.min(config.alienSpeedMax, speed));
+          alien.vx = (alien.vx / speed) * clamped;
+          alien.vy = (alien.vy / speed) * clamped;
+          alien.x += alien.vx * worldMul;
+          alien.y += (alien.vy + Math.sin(alien.phase) * 0.22) * worldMul;
+
+          const margin = alien.radius + 4;
+          const minX = canvas.width * config.alienCenterXMinPct + margin;
+          const maxX = canvas.width * config.alienCenterXMaxPct - margin;
+          const minY = canvas.height * config.alienCenterYMinPct + margin;
+          const maxY = canvas.height * config.alienCenterYMaxPct - margin;
+          if (alien.x < minX || alien.x > maxX) alien.vx *= -0.92;
+          if (alien.y < minY || alien.y > maxY) alien.vy *= -0.92;
+
+          alien.x = Math.max(minX, Math.min(maxX, alien.x));
+          alien.y = Math.max(minY, Math.min(maxY, alien.y));
+
+          if (now >= alien.nextShotAt) {
+            spawnAlienShot(alien, now);
+            alien.nextShotAt = now + randomRange(config.alienShotMinMs, config.alienShotMaxMs);
+          }
+        }
+      }
+
+      for (let i = state.alienBullets.length - 1; i >= 0; i -= 1) {
+        const shot = state.alienBullets[i];
+        if (!freeze) {
+          shot.x += shot.vx * worldMul;
+          shot.y += shot.vy * worldMul;
+        }
+
+        if (
+          shot.x + shot.radius < -18 ||
+          shot.x - shot.radius > canvas.width + 18 ||
+          shot.y + shot.radius < -18 ||
+          shot.y - shot.radius > canvas.height + 18
+        ) {
+          state.alienBullets.splice(i, 1);
+          continue;
+        }
+
+        let hitDrop = false;
+        for (let d = state.dropBalls.length - 1; d >= 0; d -= 1) {
+          const drop = state.dropBalls[d];
+          const dx = drop.x - shot.x;
+          const dy = drop.y - shot.y;
+          const minDist = drop.radius + shot.radius;
+          if (dx * dx + dy * dy > minDist * minDist) continue;
+          state.dropBalls.splice(d, 1);
+          state.alienBullets.splice(i, 1);
+          spawnExplosion(drop.x, drop.y, "#86efac", 0.75, now);
+          hitDrop = true;
+          break;
+        }
+        if (hitDrop) {
+          continue;
+        }
+
+        if (!isPaddleDestroyed("left") && circleIntersectsPaddle(shot.x, shot.y, shot.radius, state.left)) {
+          applyAlienShrink("left", now);
+          state.alienBullets.splice(i, 1);
+          continue;
+        }
+        if (!isPaddleDestroyed("right") && circleIntersectsPaddle(shot.x, shot.y, shot.radius, state.right)) {
+          applyAlienShrink("right", now);
+          state.alienBullets.splice(i, 1);
+        }
+      }
+
+      if (!state.blackHole) {
+        if (state.aliens.length >= 2) {
+          if (state.alienPairSince === 0) {
+            state.alienPairSince = now;
+          } else if (now - state.alienPairSince >= config.alienPairThresholdMs) {
+            state.blackHole = {
+              x: canvas.width * 0.5,
+              y: canvas.height * 0.5,
+              radius: config.alienBlackHoleInitialRadius,
+              bornAt: now,
+            };
+            state.aliens = [];
+            state.alienBullets = [];
+            state.alienPairSince = 0;
+            playBlackFireSfx();
+          }
+        } else {
+          state.alienPairSince = 0;
+        }
+      }
+
+      if (state.blackHole && !freeze) {
+        applyBlackHoleGravity(now, deltaMs);
+      }
+    }
+
+    function rollMinuteChance(chancePerMinute, deltaMs) {
+      if (chancePerMinute <= 0 || deltaMs <= 0) return false;
+      const p = 1 - Math.pow(1 - chancePerMinute, deltaMs / 60000);
+      return Math.random() < p;
+    }
+
+    function getCycloneRadius(isBlack = false) {
+      const base = Math.min(canvas.width, canvas.height) * config.cycloneRadiusPct;
+      return isBlack ? base * 1.18 : base;
+    }
+
+    function clearCycloneState() {
+      state.cyclone = null;
+      state.cycloneAlertUntil = 0;
+      for (const ball of state.balls) {
+        ball.cycloneInside = false;
+      }
+    }
+
+    function spawnCyclone(now = performance.now(), isBlack = false) {
+      const radius = getCycloneRadius(isBlack);
+      state.cyclone = {
+        x: randomRange(radius + 20, canvas.width - radius - 20),
+        y: randomRange(radius + 20, canvas.height - radius - 20),
+        radius,
+        isBlack,
+        bornAt: now,
+        endsAt: now + (isBlack ? config.blackCycloneDurationMs : config.cycloneDurationMs),
+      };
+      state.cycloneAlertUntil = now + 1300;
+      for (const ball of state.balls) {
+        ball.cycloneInside = false;
+      }
+      if (isBlack) {
+        playBlackFireSfx();
+      } else {
+        playWallHitSfx();
+      }
+    }
+
+    function applyCycloneForceToVelocity(entity, centerX, centerY, radius, isBlack, sizeFactor = 1) {
+      if (typeof entity.vx !== "number" || typeof entity.vy !== "number") return false;
+      const dx = centerX - state.cyclone.x;
+      const dy = centerY - state.cyclone.y;
+      const dist = Math.hypot(dx, dy) || 1;
+      const reach = radius + state.cyclone.radius;
+      if (dist > reach) return false;
+
+      const nx = dx / dist;
+      const ny = dy / dist;
+      const tangentialX = -ny;
+      const tangentialY = nx;
+      const chaotic = Boolean(state.cyclone.chaotic);
+      const worldMul = getWorldTimeScale();
+      const spin =
+        (chaotic
+          ? config.chaosCycloneSpinForce
+          : isBlack
+          ? config.blackCycloneSpinForce
+          : config.cycloneSpinForce) *
+        sizeFactor *
+        worldMul;
+      const pull =
+        (chaotic
+          ? config.chaosCyclonePullForce
+          : isBlack
+          ? config.blackCyclonePullForce
+          : config.cyclonePullForce) *
+        sizeFactor *
+        worldMul;
+      entity.vx += tangentialX * spin - nx * pull;
+      entity.vy += tangentialY * spin - ny * pull;
+      if (chaotic) {
+        entity.vx += randomRange(-config.chaosCycloneJitter, config.chaosCycloneJitter) * 0.25 * worldMul;
+        entity.vy += randomRange(-config.chaosCycloneJitter, config.chaosCycloneJitter) * 0.25 * worldMul;
+      }
+      return true;
+    }
+
+    function applyCycloneToBall(ball) {
+      if (!state.cyclone) return;
+      const cx = ball.x + ball.size * 0.5;
+      const cy = ball.y + ball.size * 0.5;
+      const dx = cx - state.cyclone.x;
+      const dy = cy - state.cyclone.y;
+      const dist = Math.hypot(dx, dy) || 1;
+      const reach = state.cyclone.radius + ball.size * 0.45;
+      const inside = dist <= reach;
+
+      if (inside) {
+        const chaotic = Boolean(state.cyclone.chaotic);
+        const worldMul = getWorldTimeScale();
+        if (!ball.cycloneInside) {
+          const reverseMul = chaotic
+            ? config.chaosCycloneReverseMultiplier
+            : state.cyclone.isBlack
+            ? config.blackCycloneReverseSpeedMultiplier
+            : config.cycloneReverseSpeedMultiplier;
+          ball.vx *= -reverseMul;
+          ball.vy *= -reverseMul;
+        }
+        const nx = dx / dist;
+        const ny = dy / dist;
+        const tangentialX = -ny;
+        const tangentialY = nx;
+        const spin = chaotic
+          ? config.chaosCycloneSpinForce
+          : state.cyclone.isBlack
+          ? config.blackCycloneSpinForce
+          : config.cycloneSpinForce;
+        const pull = chaotic
+          ? config.chaosCyclonePullForce
+          : state.cyclone.isBlack
+          ? config.blackCyclonePullForce
+          : config.cyclonePullForce;
+        ball.vx += (tangentialX * spin - nx * pull) * worldMul;
+        ball.vy += (tangentialY * spin - ny * pull) * worldMul;
+        if (chaotic) {
+          ball.vx += randomRange(-config.chaosCycloneJitter, config.chaosCycloneJitter) * worldMul;
+          ball.vy += randomRange(-config.chaosCycloneJitter, config.chaosCycloneJitter) * worldMul;
+        }
+
+        const maxSpeed = chaotic ? config.chaosCycloneMaxBallSpeed : state.cyclone.isBlack ? 31 : 22;
+        const speed = Math.hypot(ball.vx, ball.vy) || 1;
+        if (speed > maxSpeed) {
+          const ratio = maxSpeed / speed;
+          ball.vx *= ratio;
+          ball.vy *= ratio;
+        }
+      }
+
+      ball.cycloneInside = inside;
+    }
+
+    function updateCyclone(now = performance.now(), deltaMs = 16) {
+      if (state.gameOver || !state.running || state.penalty.active || state.serveReleaseUntil > 0) {
+        clearCycloneState();
+        return;
+      }
+
+      if (state.cyclone && now >= state.cyclone.endsAt) {
+        clearCycloneState();
+      }
+
+      if (!state.cyclone) {
+        const blackRoll = rollMinuteChance(config.blackCycloneChancePerMinute, deltaMs);
+        const cycloneRoll = rollMinuteChance(config.cycloneChancePerMinute, deltaMs);
+        if (blackRoll || cycloneRoll) {
+          spawnCyclone(now, blackRoll);
+        }
+      }
+
+      if (!state.cyclone) return;
+
+      for (const ball of state.balls) {
+        applyCycloneToBall(ball);
+      }
+
+      for (const stone of state.stones) {
+        applyCycloneForceToVelocity(
+          stone,
+          stone.x,
+          stone.y,
+          stone.radius,
+          state.cyclone.isBlack,
+          1
+        );
+      }
+      for (const weapon of state.dlcWeapons) {
+        applyCycloneForceToVelocity(
+          weapon,
+          weapon.x,
+          weapon.y,
+          weapon.radius,
+          state.cyclone.isBlack,
+          1.05
+        );
+      }
+      for (const ghost of state.ghosts) {
+        applyCycloneForceToVelocity(
+          ghost,
+          ghost.x,
+          ghost.y,
+          ghost.radius,
+          state.cyclone.isBlack,
+          0.9
+        );
+      }
+      if (state.packam) {
+        applyCycloneForceToVelocity(
+          state.packam,
+          state.packam.x,
+          state.packam.y,
+          state.packam.radius,
+          state.cyclone.isBlack,
+          0.95
+        );
+      }
+      for (const drop of state.dropBalls) {
+        if (typeof drop.vx !== "number") drop.vx = 0;
+        const pseudo = { vx: drop.vx, vy: drop.vy };
+        const touched = applyCycloneForceToVelocity(
+          pseudo,
+          drop.x,
+          drop.y,
+          drop.radius,
+          state.cyclone.isBlack,
+          0.65
+        );
+        if (touched) {
+          drop.vx = pseudo.vx;
+          drop.vy = pseudo.vy;
+        }
+      }
+
+      const affectPaddle = (side) => {
+        if (isPaddleDestroyed(side)) return;
+        if (isDesertFortified(side, now)) return;
+        const paddle = state[side];
+        const cx = paddle.x + config.paddleWidth * 0.5;
+        const cy = paddle.y + paddle.height * 0.5;
+        const dx = cx - state.cyclone.x;
+        const dy = cy - state.cyclone.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        if (dist > state.cyclone.radius + paddle.height * 0.25) return;
+        const tangentialY = dx / dist;
+        paddle.y += tangentialY * (state.cyclone.isBlack ? 1.3 : 0.65);
+      };
+      affectPaddle("left");
+      affectPaddle("right");
+      clampPaddles();
+    }
+
+    function spawnExplosion(x, y, color = "#fb923c", power = 1, now = performance.now()) {
+      const burst = [];
+      const particleCount = Math.floor(14 + 10 * power);
+      for (let i = 0; i < particleCount; i += 1) {
+        const angle = randomRange(0, Math.PI * 2);
+        const speed = randomRange(1.6, 4.4) * (0.7 + power * 0.5);
+        burst.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          size: randomRange(2.2, 5.3),
+        });
+      }
+
+      state.explosions.push({
+        color,
+        bornAt: now,
+        durationMs: 720 + power * 180,
+        particles: burst,
+      });
+      playExplosionSfx();
+    }
+
+    function updateExplosions(now = performance.now()) {
+      for (let i = state.explosions.length - 1; i >= 0; i -= 1) {
+        const explosion = state.explosions[i];
+        const age = now - explosion.bornAt;
+        if (age >= explosion.durationMs) {
+          state.explosions.splice(i, 1);
+          continue;
+        }
+      }
+    }
+
+    function triggerPurpleAlert(now = performance.now()) {
+      state.purpleAlertUntil = Math.max(state.purpleAlertUntil, now + config.purpleAlertMs);
+      playPurpleAlertSfx();
+    }
+
+    function maybeConvertToPurpleBall(ball, now = performance.now()) {
+      if (Math.random() > config.purpleBallSpawnChance) return;
+      ball.isPurple = true;
+      ball.purpleGrowthCount = 0;
+      triggerPurpleAlert(now);
+    }
+
+    function createGameBall(direction = 1, speed = config.baseBallSpeed, allowPurple = true) {
+      const angle = randomRange(-Math.PI / 6, Math.PI / 6);
+      const dir = direction >= 0 ? 1 : -1;
+      const ball = {
+        x: canvas.width / 2 - config.ballSize / 2,
+        y: canvas.height / 2 - config.ballSize / 2,
+        vx: Math.cos(angle) * speed * dir,
+        vy: Math.sin(angle) * speed,
+        size: config.ballSize,
+        fireType: "none",
+        fireUntil: 0,
+        lastTouched: null,
+        controlledBy: null,
+        isPurple: false,
+        purpleGrowthCount: 0,
+        dlcCursedUntil: 0,
+        dlcMarkedBy: null,
+        dlcMarkedUntil: 0,
+        cycloneInside: false,
+      };
+      if (allowPurple) {
+        maybeConvertToPurpleBall(ball);
+      }
+      return ball;
+    }
+
+    function createBallFromDrop(drop, sourceBall) {
+      const sourceAngle = Math.atan2(sourceBall.vy, sourceBall.vx);
+      const speed = Math.max(config.baseBallSpeed * 0.95, Math.hypot(sourceBall.vx, sourceBall.vy) * 0.9);
+      const angle = sourceAngle + randomRange(-0.33, 0.33);
+      const ball = {
+        x: drop.x - config.ballSize / 2,
+        y: drop.y - config.ballSize / 2,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: config.ballSize,
+        fireType: "none",
+        fireUntil: 0,
+        lastTouched: sourceBall.lastTouched ?? null,
+        controlledBy: null,
+        isPurple: sourceBall.isPurple ?? false,
+        purpleGrowthCount: sourceBall.purpleGrowthCount ?? 0,
+        dlcCursedUntil: sourceBall.dlcCursedUntil ?? 0,
+        dlcMarkedBy: sourceBall.dlcMarkedBy ?? null,
+        dlcMarkedUntil: sourceBall.dlcMarkedUntil ?? 0,
+        cycloneInside: false,
+      };
+      return ball;
+    }
+
+    function resetRoundBalls(direction = 1, ballCount = 1) {
+      const balls = [createGameBall(direction)];
+      if (ballCount >= 3) {
+        balls.push(createGameBall(direction * (Math.random() > 0.5 ? 1 : -1), config.baseBallSpeed * 0.95));
+        balls.push(createGameBall(direction * (Math.random() > 0.5 ? 1 : -1), config.baseBallSpeed * 0.95));
+        balls[1].y = canvas.height * 0.36 - balls[1].size / 2;
+        balls[2].y = canvas.height * 0.64 - balls[2].size / 2;
+      }
+      state.balls = balls;
+    }
+
+    function resetToSingleBall(direction = 1) {
+      resetRoundBalls(direction, 1);
+    }
+
+    function spawnNormalBallWithEffect(direction = 1, now = performance.now()) {
+      const ball = createGameBall(direction, config.baseBallSpeed, true);
+      ball.fireType = "none";
+      ball.fireUntil = 0;
+      ball.dlcCursedUntil = 0;
+      ball.dlcMarkedBy = null;
+      ball.dlcMarkedUntil = 0;
+      ball.controlledBy = null;
+      ball.lastTouched = null;
+      state.balls.push(ball);
+      state.ballRespawnEffectUntil = now + 850;
+      spawnExplosion(canvas.width * 0.5, canvas.height * 0.5, "#e2e8f0", 1.05, now);
+      playStartSfx();
+    }
+
+    function applyFieldScale() {
+      canvas.style.transform = `scale(${state.fieldScale.toFixed(3)})`;
+    }
+
+    function refreshPaddleSizes() {
+      const shrinkMul = isChaosPaddleShrinkActive() ? config.chaosPaddleShrinkMultiplier : 1;
+      state.left.height = config.paddleHeight * (1 + state.scoreL * config.paddleGrowthPerPoint) * shrinkMul * state.left.alienShrinkFactor;
+      state.right.height = config.paddleHeight * (1 + state.scoreR * config.paddleGrowthPerPoint) * shrinkMul * state.right.alienShrinkFactor;
+      clampPaddles();
+      clampPaddleXPositions();
+    }
+
+    function clampPaddles() {
+      for (const paddle of [state.left, state.right]) {
+        if (paddle.y < 0) paddle.y = 0;
+        if (paddle.y + paddle.height > canvas.height) {
+          paddle.y = canvas.height - paddle.height;
+        }
+      }
+    }
+
+    function clampPaddleXPositions() {
+      const leftMin = sideMargin;
+      const leftMax = canvas.width * 0.5 - config.paddleWidth - 10;
+      state.left.x = Math.max(leftMin, Math.min(leftMax, state.left.x));
+
+      const rightMin = canvas.width * 0.5 + 10;
+      const rightMax = canvas.width - sideMargin - config.paddleWidth;
+      state.right.x = Math.max(rightMin, Math.min(rightMax, state.right.x));
+    }
+
+    function getCurrentPhase(now = performance.now()) {
+      const elapsed = Math.max(0, now - state.dayCycleStartedAt);
+      const phaseIndex = Math.floor(elapsed / config.phaseDurationMs) % PHASE_ORDER.length;
+      return PHASE_ORDER[phaseIndex];
+    }
+
+    function isNightPhase(now = performance.now()) {
+      return getCurrentPhase(now) === "night";
+    }
+
+    function isAfternoonPhase(now = performance.now()) {
+      return getCurrentPhase(now) === "afternoon";
+    }
+
+    function isDawnPhase(now = performance.now()) {
+      return getCurrentPhase(now) === "dawn";
+    }
+
+    function getPhasePaddleSpeedMultiplier(now = performance.now()) {
+      const phase = getCurrentPhase(now);
+      if (phase === "afternoon") return config.phasePaddleSpeedAfternoon;
+      if (phase === "night") return config.phasePaddleSpeedNight;
+      if (phase === "dawn") return config.phasePaddleSpeedDawn;
+      return config.phasePaddleSpeedDay;
+    }
+
+    function getPhaseBallFrameMultiplier(now = performance.now()) {
+      const phase = getCurrentPhase(now);
+      if (phase === "afternoon") return config.phaseBallFrameMulAfternoon;
+      if (phase === "night") return config.phaseBallFrameMulNight;
+      if (phase === "dawn") return config.phaseBallFrameMulDawn;
+      return config.phaseBallFrameMulDay;
+    }
+
+    function isPaddleFrozen(side, now = performance.now()) {
+      return now < state[side].frozenUntil;
+    }
+
+    function isPaddleDestroyed(side, now = performance.now()) {
+      return (
+        state[side].permanentlyDestroyed ||
+        now < state[side].destroyedUntilTime ||
+        state.roundsStarted < state[side].destroyedUntilRound
+      );
+    }
+
+    function canPaddleMove(side, now = performance.now()) {
+      return !isPaddleFrozen(side, now) && !isPaddleDestroyed(side, now);
+    }
+
+    function getPaddleMoveSpeed(side, now = performance.now()) {
+      let speed = config.paddleSpeed * getPhasePaddleSpeedMultiplier(now);
+      if (isPaddleCursed(side, now)) {
+        speed *= config.dlcPaddleCurseSlowFactor;
+      }
+      if (isTranceActive(side, now)) {
+        speed *= config.dlcTranceSpeedMultiplier;
+      }
+      return speed;
+    }
+
+    function freezePaddle(side, durationMs, now = performance.now()) {
+      state[side].frozenUntil = Math.max(state[side].frozenUntil, now + durationMs);
+    }
+
+    function destroyPaddleForRound(side) {
+      if (state[side].permanentlyDestroyed) return;
+      state[side].destroyedUntilRound = Math.max(state[side].destroyedUntilRound, state.roundsStarted + 1);
+      state[side].powerActiveUntil = 0;
+    }
+
+    function destroyPaddleForDuration(side, durationMs, now = performance.now(), fromDragon = false) {
+      if (!side || state[side].permanentlyDestroyed) return;
+      state[side].destroyedUntilTime = Math.max(state[side].destroyedUntilTime, now + Math.max(0, durationMs));
+      state[side].powerActiveUntil = 0;
+      if (fromDragon) {
+        state[side].dragonBurned = true;
+        state[side].friendHatUntil = 0;
+        state[side].desertFortifiedUntil = 0;
+        state[side].tranceUntil = 0;
+        state[side].cursedUntil = 0;
+        spawnExplosion(state[side].x + config.paddleWidth * 0.5, state[side].y + state[side].height * 0.5, "#f97316", 1.8, now);
+        playBlackFireSfx();
+      }
+    }
+
+    function maybeTriggerDragonAttack(now = performance.now()) {
+      if (state.dragonTriggered) return;
+      if (state.scoreL < config.dragonTriggerScore && state.scoreR < config.dragonTriggerScore) return;
+      state.dragonTriggered = true;
+      if (Math.random() > config.dragonTriggerChance) return;
+
+      const candidates = ["left", "right"].filter((side) => !isPaddleDestroyed(side, now));
+      if (candidates.length === 0) return;
+      const targetSide = candidates[Math.floor(Math.random() * candidates.length)];
+      const target = state[targetSide];
+      const fromLeft = Math.random() > 0.5;
+
+      state.dragonAttack = {
+        targetSide,
+        startedAt: now,
+        consumeAt: now + config.dragonApproachMs,
+        endsAt: now + config.dragonAttackDurationMs,
+        fromX: fromLeft ? -240 : canvas.width + 240,
+        toX: target.x + config.paddleWidth * 0.5,
+        y: target.y + target.height * 0.5,
+        consumed: false,
+      };
+    }
+
+    function updateDragonAttack(now = performance.now()) {
+      const atk = state.dragonAttack;
+      for (const side of ["left", "right"]) {
+        if (state[side].dragonBurned && !isPaddleDestroyed(side, now)) {
+          state[side].dragonBurned = false;
+        }
+      }
+      if (!atk) return;
+
+      if (!atk.consumed && now >= atk.consumeAt) {
+        destroyPaddleForDuration(atk.targetSide, config.dragonDestroyMs, now, true);
+        atk.consumed = true;
+        state.mammaMiaUntil = now + config.dragonMammaMiaMs;
+      }
+
+      if (now >= atk.endsAt) {
+        state.dragonAttack = null;
+      }
+    }
+
+    function grantPermanentPowerBuff(side) {
+      if (!side) return;
+      state[side].powerBuffPermanent = true;
+      state[side].powerReadyRound = 0;
+      state[side].powerUsedRound = -1;
+    }
+
+    function getPowerDurationMs(side) {
+      return state[side].powerBuffPermanent ? config.enhancedPowerDurationMs : config.powerDurationMs;
+    }
+
+    function getPowerSlowMultiplier(side) {
+      return state[side].powerBuffPermanent ? config.enhancedPowerBallSlowMultiplier : config.powerBallSlowMultiplier;
+    }
+
+    function updatePaddles(now = performance.now()) {
+      const leftSpeed = getPaddleMoveSpeed("left", now);
+      const rightSpeed = getPaddleMoveSpeed("right", now);
+      if (canPaddleMove("left", now)) {
+        if (state.left.up) state.left.y -= leftSpeed;
+        if (state.left.down) state.left.y += leftSpeed;
+      }
+      if (canPaddleMove("right", now)) {
+        if (state.right.up) state.right.y -= rightSpeed;
+        if (state.right.down) state.right.y += rightSpeed;
+      }
+      clampPaddles();
+    }
+
+    function intersects(ball, paddle, side = null) {
+      if (side && isPaddleDestroyed(side)) return false;
+      return (
+        ball.x < paddle.x + config.paddleWidth &&
+        ball.x + ball.size > paddle.x &&
+        ball.y < paddle.y + paddle.height &&
+        ball.y + ball.size > paddle.y
+      );
+    }
+
+    function isFireActive(ball, now = performance.now()) {
+      return ball.fireType !== "none" && now < ball.fireUntil;
+    }
+
+    function clearFireBall(ball) {
+      ball.fireType = "none";
+      ball.fireUntil = 0;
+    }
+
+    function clearAllFireBalls() {
+      for (const ball of state.balls) {
+        clearFireBall(ball);
+      }
+    }
+
+    function isPowerActive(side, now = performance.now()) {
+      return now < state[side].powerActiveUntil;
+    }
+
+    function tryActivatePower(side, now = performance.now()) {
+      if (state.gameOver || !state.running || state.serveReleaseUntil > 0) return false;
+      const paddle = state[side];
+      if (isPaddleDestroyed(side) || isPaddleFrozen(side, now)) return false;
+      if (now < paddle.powerActiveUntil) return false;
+      if (paddle.powerBuffPermanent) {
+        if (paddle.powerUsedRound === state.roundsStarted) return false;
+        paddle.powerUsedRound = state.roundsStarted;
+      } else {
+        if (state.roundsStarted < paddle.powerReadyRound) return false;
+        paddle.powerReadyRound = state.roundsStarted + config.powerCooldownRounds;
+      }
+      paddle.powerActiveUntil = now + getPowerDurationMs(side);
+      return true;
+    }
+
+    function clearBallControl(ball) {
+      ball.controlledBy = null;
+    }
+
+    function applyPurpleGrowth(ball, stacks = 1) {
+      if (!ball.isPurple) return;
+      const growthStacks = Math.max(0, Math.floor(stacks));
+      if (growthStacks === 0) return;
+
+      for (let i = 0; i < growthStacks; i += 1) {
+        ball.purpleGrowthCount += 1;
+        ball.size = Math.min(68, ball.size * config.purpleBallGrowthFactor);
+        ball.vx *= config.purpleBallSpeedGrowthFactor;
+        ball.vy *= config.purpleBallSpeedGrowthFactor;
+      }
+    }
+
+    function applyPowerControl(ball, side) {
+      if (ball.isPurple) {
+        applyPurpleGrowth(ball, 1);
+      }
+      const speed = Math.hypot(ball.vx, ball.vy);
+      if (speed > 0.0001) {
+        const target = speed * getPowerSlowMultiplier(side);
+        const ratio = target / speed;
+        ball.vx *= ratio;
+        ball.vy *= ratio;
+      }
+      ball.controlledBy = side;
+    }
+
+    function updateBallYControl(ball) {
+      if (!ball.controlledBy) return;
+      const controller = state[ball.controlledBy];
+      if (!controller) {
+        clearBallControl(ball);
+        return;
+      }
+      if (!canPaddleMove(ball.controlledBy)) return;
+      if (controller.up === controller.down) return;
+      const targetVy = controller.up ? -config.powerBallControlYSpeed : config.powerBallControlYSpeed;
+      ball.vy += (targetVy - ball.vy) * 0.35;
+    }
+
+    function bounceFromPaddle(ball, paddle, toRight) {
+      const now = performance.now();
+      const hitterSide = toRight ? "left" : "right";
+      const incomingFire = isFireActive(ball, now);
+      const relativeY = ball.y + ball.size / 2 - (paddle.y + paddle.height / 2);
+      const normalized = relativeY / (paddle.height / 2);
+      const bounceAngle = normalized * (Math.PI / 3);
+      const boostHit = isBoostHit(ball, paddle);
+      const edgeSlowHit = isEdgeSlowHit(ball, paddle);
+      const blackFireOut = boostHit && incomingFire;
+      const speedCap = blackFireOut ? 26 : boostHit ? 17 : 13;
+      const speedBase = Math.hypot(ball.vx, ball.vy) + 0.35;
+      const speedMultiplier = blackFireOut
+        ? config.blackFireMultiplier
+        : boostHit
+        ? config.boostMultiplier
+        : 1;
+      let speed = Math.min(speedCap, speedBase * speedMultiplier);
+      if (edgeSlowHit) {
+        speed = Math.max(config.baseBallSpeed * 0.55, speed * config.paddleEdgeSlowMultiplier);
+      }
+
+      ball.vx = Math.cos(bounceAngle) * speed * (toRight ? 1 : -1);
+      ball.vy = Math.sin(bounceAngle) * speed;
+      ball.lastTouched = toRight ? "left" : "right";
+      state.lastBallTouchSide = ball.lastTouched;
+
+      if (isTantricDlcEnabled()) {
+        addRitualCharge(hitterSide, config.dlcRitualChargePaddleHit);
+        if (isTranceActive(hitterSide, now)) {
+          markBallByTrance(ball, hitterSide, now);
+          ball.vx *= 1.07;
+          ball.vy *= 1.07;
+        }
+      }
+
+      const friendHatBoost = isFriendHatActive(hitterSide, now);
+      if (friendHatBoost) {
+        const controller = state[hitterSide];
+        const steer =
+          controller.up === controller.down ? 0 : controller.up ? -config.friendHatBallSteer : config.friendHatBallSteer;
+        ball.vy += steer;
+        ball.vx *= config.friendHatBallSpeedMultiplier;
+        ball.vy *= config.friendHatBallSpeedMultiplier;
+
+        const maxHatSpeed = blackFireOut ? 30 : boostHit ? 20 : 17;
+        const hatSpeed = Math.hypot(ball.vx, ball.vy) || 1;
+        if (hatSpeed > maxHatSpeed) {
+          const ratio = maxHatSpeed / hatSpeed;
+          ball.vx *= ratio;
+          ball.vy *= ratio;
+        }
+      }
+
+      const desertFortified = isDesertFortified(hitterSide, now);
+      if (desertFortified) {
+        ball.vx *= config.desertFortifyBounceDamp;
+        ball.vy *= config.desertFortifyBounceDamp;
+      }
+
+      if (ball.isPurple) {
+        const centerFireBonus = boostHit ? 1 : 0;
+        applyPurpleGrowth(ball, 1 + centerFireBonus);
+      }
+
+      if (toRight) {
+        ball.x = paddle.x + config.paddleWidth + 0.2;
+      } else {
+        ball.x = paddle.x - ball.size - 0.2;
+      }
+
+      if (blackFireOut) {
+        ball.fireType = "black";
+        ball.fireUntil = now + config.blackFireEffectMs;
+      } else if (boostHit) {
+        ball.fireType = "orange";
+        ball.fireUntil = now + config.fireEffectMs;
+      }
+
+      return { boosted: boostHit, blackFire: blackFireOut, edgeSlow: edgeSlowHit, friendHatBoost, desertFortified };
+    }
+
+    function getBoostZoneBounds(paddle) {
+      const zoneHeight = paddle.height * config.paddleBoostZonePct;
+      const zoneTop = paddle.y + (paddle.height - zoneHeight) / 2;
+      return { zoneTop, zoneBottom: zoneTop + zoneHeight, zoneHeight };
+    }
+
+    function isBoostHit(ball, paddle) {
+      const { zoneTop, zoneBottom } = getBoostZoneBounds(paddle);
+      const ballTop = ball.y;
+      const ballBottom = ball.y + ball.size;
+      return ballBottom >= zoneTop && ballTop <= zoneBottom;
+    }
+
+    function getEdgeSlowZoneBounds(paddle) {
+      const zoneHeight = Math.max(2, paddle.height * config.paddleEdgeSlowZonePct);
+      const topZoneBottom = paddle.y + zoneHeight;
+      const bottomZoneTop = paddle.y + paddle.height - zoneHeight;
+      return { zoneHeight, topZoneBottom, bottomZoneTop };
+    }
+
+    function isEdgeSlowHit(ball, paddle) {
+      const { topZoneBottom, bottomZoneTop } = getEdgeSlowZoneBounds(paddle);
+      const ballTop = ball.y;
+      const ballBottom = ball.y + ball.size;
+      const touchesTop = ballBottom >= paddle.y && ballTop <= topZoneBottom;
+      const touchesBottom = ballBottom >= bottomZoneTop && ballTop <= paddle.y + paddle.height;
+      return touchesTop || touchesBottom;
+    }
+
+    function scheduleNextDrop(now = performance.now()) {
+      state.nextDropSpawnAt = now + randomRange(config.dropSpawnMinMs, config.dropSpawnMaxMs);
+    }
+
+    function spawnDropBall() {
+      const margin = 72;
+      state.dropBalls.push({
+        x: randomRange(margin, canvas.width - margin),
+        y: -config.dropBallRadius * 2,
+        vx: 0,
+        vy: randomRange(config.dropFallMinSpeed, config.dropFallMaxSpeed),
+        radius: config.dropBallRadius,
+      });
+    }
+
+    function spawnPackam(now = performance.now()) {
+      if (state.packamPermanentlyDead || state.packam) return;
+      if (state.roundsStarted < state.packamDisabledUntilRound) return;
+      const angle = randomRange(0, Math.PI * 2);
+      const speed = randomRange(config.packamMinSpeed, config.packamMaxSpeed * 0.8) * config.packamGlobalSlowFactor;
+      state.packam = {
+        x: randomRange(140, canvas.width - 140),
+        y: randomRange(90, canvas.height - 90),
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        radius: config.packamRadius,
+        bornAt: now,
+        onFire: false,
+        fireUntil: 0,
+      };
+      playBlackFireSfx();
+    }
+
+    function removePointBySide(side) {
+      if (side === "left") {
+        if (state.scoreL <= 0) return false;
+        state.scoreL -= 1;
+      } else if (side === "right") {
+        if (state.scoreR <= 0) return false;
+        state.scoreR -= 1;
+      } else {
+        return false;
+      }
+      refreshPaddleSizes();
+      return true;
+    }
+
+    function getPackamTargetBall() {
+      if (state.balls.length === 0) return null;
+      const p = state.packam;
+      let target = null;
+      let bestDistSq = Number.POSITIVE_INFINITY;
+      for (const ball of state.balls) {
+        const dx = ball.x + ball.size / 2 - p.x;
+        const dy = ball.y + ball.size / 2 - p.y;
+        const distSq = dx * dx + dy * dy;
+        if (distSq < bestDistSq) {
+          bestDistSq = distSq;
+          target = ball;
+        }
+      }
+      return target;
+    }
+
+    function updatePackam(now) {
+      if (!state.packam) return;
+      const p = state.packam;
+      const worldMul = getWorldTimeScale(now);
+
+      if (p.onFire && now >= p.fireUntil) {
+        spawnExplosion(p.x, p.y, "#f97316", 1.1, now);
+        state.packam = null;
+        return;
+      }
+
+      const targetBall = getPackamTargetBall();
+      if (targetBall) {
+        const targetX = targetBall.x + targetBall.size / 2;
+        const targetY = targetBall.y + targetBall.size / 2;
+        const dx = targetX - p.x;
+        const dy = targetY - p.y;
+        const len = Math.hypot(dx, dy) || 1;
+        const fireMul = p.onFire ? config.packamBurnSpeedMultiplier : 1;
+        const desiredSpeed = config.packamMaxSpeed * fireMul * config.packamGlobalSlowFactor;
+        const desiredVx = (dx / len) * desiredSpeed;
+        const desiredVy = (dy / len) * desiredSpeed;
+        p.vx += (desiredVx - p.vx) * config.packamChaseLerp;
+        p.vy += (desiredVy - p.vy) * config.packamChaseLerp;
+      } else {
+        p.vx += randomRange(-0.03, 0.03);
+        p.vy += randomRange(-0.03, 0.03);
+      }
+
+      const speed = Math.hypot(p.vx, p.vy) || 1;
+      const fireMul = p.onFire ? config.packamBurnSpeedMultiplier : 1;
+      const minSpeed = config.packamMinSpeed * config.packamGlobalSlowFactor * (p.onFire ? 1.1 : 1);
+      const maxSpeed = config.packamMaxSpeed * fireMul * config.packamGlobalSlowFactor;
+      const clamped = Math.max(minSpeed, Math.min(maxSpeed, speed));
+      p.vx = (p.vx / speed) * clamped;
+      p.vy = (p.vy / speed) * clamped;
+
+      p.x += p.vx * worldMul;
+      p.y += p.vy * worldMul;
+
+      if (p.x - p.radius <= 0 || p.x + p.radius >= canvas.width) {
+        p.vx *= -1;
+      }
+      if (p.y - p.radius <= 0 || p.y + p.radius >= canvas.height) {
+        p.vy *= -1;
+      }
+
+      if (now - p.bornAt > config.packamLifetimeMs) {
+        spawnExplosion(p.x, p.y, "#fb923c", 0.9, now);
+        state.packam = null;
+        return;
+      }
+
+      for (let i = state.balls.length - 1; i >= 0; i -= 1) {
+        const ball = state.balls[i];
+        const dx = ball.x + ball.size / 2 - p.x;
+        const dy = ball.y + ball.size / 2 - p.y;
+        const minDist = ball.size / 2 + p.radius;
+        if (dx * dx + dy * dy <= minDist * minDist) {
+          if (ball.isPurple) {
+            spawnExplosion(p.x, p.y, "#a855f7", 1.2, now);
+            state.packam = null;
+            state.packamDisabledUntilRound = Math.max(
+              state.packamDisabledUntilRound,
+              state.roundsStarted + config.packamPurpleDisableRounds
+            );
+            return;
+          }
+
+          if (isFireActive(ball, now) && ball.fireType === "black") {
+            grantPermanentPowerBuff(ball.lastTouched);
+            spawnExplosion(p.x, p.y, "#1e293b", 1.4, now);
+            state.packamPermanentlyDead = true;
+            state.packam = null;
+            playBlackFireSfx();
+            return;
+          }
+
+          const atePoint = ball.lastTouched ? removePointBySide(ball.lastTouched) : false;
+          if (atePoint) {
+            state.fieldScale = Math.max(config.minFieldScale, state.fieldScale * config.fieldShrinkOnPackamEat);
+            applyFieldScale();
+          }
+          state.balls.splice(i, 1);
+          p.onFire = true;
+          p.fireUntil = now + config.packamBurnDurationMs;
+          playBlackFireSfx();
+          if (state.balls.length === 0) {
+            spawnNormalBallWithEffect(Math.random() > 0.5 ? 1 : -1, now);
+          }
+          return;
+        }
+      }
+    }
+
+    function circleIntersectsPaddle(cx, cy, r, paddle) {
+      const nearestX = Math.max(paddle.x, Math.min(cx, paddle.x + config.paddleWidth));
+      const nearestY = Math.max(paddle.y, Math.min(cy, paddle.y + paddle.height));
+      const dx = cx - nearestX;
+      const dy = cy - nearestY;
+      return dx * dx + dy * dy <= r * r;
+    }
+
+    function spawnNightGhosts() {
+      if (state.ghosts.length > 0) return;
+      const radius = config.packamRadius * config.ghostRadiusFactor;
+      const baseSpeed = config.packamMinSpeed * config.packamGlobalSlowFactor * config.ghostSpeedFactor;
+      state.ghosts = [
+        {
+          x: 120,
+          y: randomRange(90, canvas.height - 90),
+          vx: baseSpeed,
+          vy: randomRange(-baseSpeed, baseSpeed),
+          radius,
+          touchCooldownUntil: 0,
+        },
+        {
+          x: canvas.width - 120,
+          y: randomRange(90, canvas.height - 90),
+          vx: -baseSpeed,
+          vy: randomRange(-baseSpeed, baseSpeed),
+          radius,
+          touchCooldownUntil: 0,
+        },
+      ];
+    }
+
+    function updateNightGhosts(now) {
+      if (state.gameOver) {
+        state.ghosts = [];
+        return;
+      }
+      if (state.penalty.active) {
+        state.ghosts = [];
+        return;
+      }
+      if (!isNightPhase(now)) {
+        state.ghosts = [];
+        return;
+      }
+
+      if (state.ghosts.length < 2) {
+        spawnNightGhosts();
+      }
+
+      const targetSide = state.lastBallTouchSide || "left";
+      const targetPaddle = state[targetSide];
+      const targetX = targetPaddle.x + config.paddleWidth * 0.5;
+      const targetY = targetPaddle.y + targetPaddle.height * 0.5;
+      const freezeBetweenRounds = !state.running || state.serveReleaseUntil > 0 || state.countdownUntil > 0;
+      const worldMul = getWorldTimeScale(now);
+
+      if (freezeBetweenRounds) {
+        return;
+      }
+
+      for (const ghost of state.ghosts) {
+        const dx = targetX - ghost.x;
+        const dy = targetY - ghost.y;
+        const len = Math.hypot(dx, dy) || 1;
+        const desiredSpeed = config.packamMaxSpeed * config.packamGlobalSlowFactor * config.ghostSpeedFactor;
+        const desiredVx = (dx / len) * desiredSpeed;
+        const desiredVy = (dy / len) * desiredSpeed;
+        ghost.vx += (desiredVx - ghost.vx) * config.ghostChaseLerp;
+        ghost.vy += (desiredVy - ghost.vy) * config.ghostChaseLerp;
+
+        const speed = Math.hypot(ghost.vx, ghost.vy) || 1;
+        const minSpeed = config.packamMinSpeed * config.packamGlobalSlowFactor * config.ghostSpeedFactor * 0.85;
+        const maxSpeed = config.packamMaxSpeed * config.packamGlobalSlowFactor * config.ghostSpeedFactor;
+        const clamped = Math.max(minSpeed, Math.min(maxSpeed, speed));
+        ghost.vx = (ghost.vx / speed) * clamped;
+        ghost.vy = (ghost.vy / speed) * clamped;
+
+        ghost.x += ghost.vx * worldMul;
+        ghost.y += ghost.vy * worldMul;
+
+        if (ghost.x - ghost.radius <= 0 || ghost.x + ghost.radius >= canvas.width) {
+          ghost.vx *= -1;
+        }
+        if (ghost.y - ghost.radius <= 0 || ghost.y + ghost.radius >= canvas.height) {
+          ghost.vy *= -1;
+        }
+
+        if (now < ghost.touchCooldownUntil) {
+          continue;
+        }
+
+        if (!isPaddleDestroyed("left") && circleIntersectsPaddle(ghost.x, ghost.y, ghost.radius, state.left)) {
+          if (isDesertFortified("left", now)) {
+            ghost.touchCooldownUntil = now + 300;
+            ghost.vx = Math.abs(ghost.vx) * 1.08;
+            continue;
+          }
+          freezePaddle("left", config.paddleFreezeGhostMs, now);
+          playGhostLaughSfx();
+          ghost.touchCooldownUntil = now + 420;
+          ghost.vx = Math.abs(ghost.vx);
+          continue;
+        }
+        if (!isPaddleDestroyed("right") && circleIntersectsPaddle(ghost.x, ghost.y, ghost.radius, state.right)) {
+          if (isDesertFortified("right", now)) {
+            ghost.touchCooldownUntil = now + 300;
+            ghost.vx = -Math.abs(ghost.vx) * 1.08;
+            continue;
+          }
+          freezePaddle("right", config.paddleFreezeGhostMs, now);
+          playGhostLaughSfx();
+          ghost.touchCooldownUntil = now + 420;
+          ghost.vx = -Math.abs(ghost.vx);
+        }
+      }
+    }
+
+    function spawnSummerStones(fromSide, now = performance.now()) {
+      const sourcePaddle = state[fromSide];
+      const toRight = fromSide === "left";
+      for (let i = 0; i < 3; i += 1) {
+        const offsetY = randomRange(-config.stoneSpreadY, config.stoneSpreadY);
+        state.stones.push({
+          x: sourcePaddle.x + config.paddleWidth * 0.5,
+          y: sourcePaddle.y + sourcePaddle.height * 0.5 + offsetY,
+          vx: (toRight ? 1 : -1) * randomRange(config.stoneSpeed * 0.9, config.stoneSpeed * 1.15),
+          vy: randomRange(-1.4, 1.4),
+          radius: config.stoneRadius,
+          owner: fromSide,
+        });
+      }
+      spawnExplosion(sourcePaddle.x + config.paddleWidth * 0.5, sourcePaddle.y + sourcePaddle.height * 0.5, "#f97316", 1.45, now);
+    }
+
+    function updateStones(now = performance.now()) {
+      if (state.stones.length === 0) return;
+      if (!state.running || state.serveReleaseUntil > 0 || state.penalty.active) return;
+      const worldMul = getWorldTimeScale(now);
+
+      for (let i = state.stones.length - 1; i >= 0; i -= 1) {
+        const stone = state.stones[i];
+        stone.x += stone.vx * worldMul;
+        stone.y += stone.vy * worldMul;
+
+        if (stone.y - stone.radius <= 0 || stone.y + stone.radius >= canvas.height) {
+          stone.vy *= -1;
+          stone.y = Math.max(stone.radius, Math.min(canvas.height - stone.radius, stone.y));
+        }
+
+        const targetSide = stone.owner === "left" ? "right" : "left";
+        const targetPaddle = state[targetSide];
+        const stoneAsBall = {
+          x: stone.x - stone.radius,
+          y: stone.y - stone.radius,
+          size: stone.radius * 2,
+        };
+        if (!isPaddleDestroyed(targetSide) && intersects(stoneAsBall, targetPaddle, targetSide)) {
+          state.stones.splice(i, 1);
+          playPaddleHitSfx();
+          continue;
+        }
+
+        if (stone.owner === "left" && stone.x - stone.radius > canvas.width) {
+          state.stones.splice(i, 1);
+          scorePoint(true, { keepPlaying: true, points: 1 });
+          if (state.gameOver || state.penalty.active) return;
+          continue;
+        }
+        if (stone.owner === "right" && stone.x + stone.radius < 0) {
+          state.stones.splice(i, 1);
+          scorePoint(false, { keepPlaying: true, points: 1 });
+          if (state.gameOver || state.penalty.active) return;
+          continue;
+        }
+
+        if (stone.x + stone.radius < -24 || stone.x - stone.radius > canvas.width + 24) {
+          state.stones.splice(i, 1);
+        }
+      }
+    }
+
+    function scheduleNextFriendHatSpawn(now = performance.now()) {
+      state.nextFriendHatAt = now + randomRange(config.friendHatSpawnMinMs, config.friendHatSpawnMaxMs);
+    }
+
+    function spawnFriendHatPickup(now = performance.now()) {
+      state.friendHats.push({
+        x: randomRange(120, canvas.width - 120),
+        y: -config.friendHatRadius * 2,
+        vy: randomRange(config.friendHatFallMinSpeed, config.friendHatFallMaxSpeed),
+        radius: config.friendHatRadius,
+        style: Math.floor(randomRange(0, FRIEND_HAT_STYLES.length)),
+        tilt: randomRange(-0.35, 0.35),
+        spin: randomRange(-0.02, 0.02),
+        bornAt: now,
+      });
+    }
+
+    function collectFriendHat(side, hat, now = performance.now()) {
+      state[side].friendHatUntil = Math.max(state[side].friendHatUntil, now + config.friendHatDurationMs);
+      state[side].friendHatStyle = hat.style;
+      playBoostHitSfx();
+    }
+
+    function updateFriendHatSpawns(now = performance.now()) {
+      if (!state.running || state.gameOver || state.penalty.active) return;
+      if (state.serveReleaseUntil > 0 || state.countdownUntil > 0) return;
+
+      if (state.nextFriendHatAt === 0) {
+        scheduleNextFriendHatSpawn(now);
+      }
+
+      if (now >= state.nextFriendHatAt) {
+        if (state.friendHats.length < 3) {
+          spawnFriendHatPickup(now);
+        }
+        scheduleNextFriendHatSpawn(now);
+      }
+    }
+
+    function updateFriendHats(now = performance.now()) {
+      if (state.friendHats.length === 0) return;
+
+      const freeze = !state.running || state.serveReleaseUntil > 0 || state.countdownUntil > 0 || state.penalty.active;
+      const worldMul = getWorldTimeScale(now);
+      for (let i = state.friendHats.length - 1; i >= 0; i -= 1) {
+        const hat = state.friendHats[i];
+        if (!freeze) {
+          hat.y += hat.vy * worldMul;
+          hat.tilt += hat.spin * worldMul;
+        }
+
+        if (hat.y - hat.radius > canvas.height + 20) {
+          state.friendHats.splice(i, 1);
+          continue;
+        }
+
+        if (!isPaddleDestroyed("left") && circleIntersectsPaddle(hat.x, hat.y, hat.radius, state.left)) {
+          collectFriendHat("left", hat, now);
+          state.friendHats.splice(i, 1);
+          continue;
+        }
+        if (!isPaddleDestroyed("right") && circleIntersectsPaddle(hat.x, hat.y, hat.radius, state.right)) {
+          collectFriendHat("right", hat, now);
+          state.friendHats.splice(i, 1);
+        }
+      }
+    }
+
+    function getDlcWeaponColors(side) {
+      return side === "left"
+        ? { core: "#67e8f9", blast: "#22d3ee" }
+        : { core: "#fb7185", blast: "#f43f5e" };
+    }
+
+    function tryFireTantricWeapon(side, now = performance.now()) {
+      if (!isTantricDlcEnabled()) return false;
+      if (state.gameOver || !state.running || state.penalty.active) return false;
+      if (state.serveReleaseUntil > 0 || state.countdownUntil > 0) return false;
+      if (isPaddleDestroyed(side) || isPaddleFrozen(side, now)) return false;
+      if (now < getDlcShotReadyAt(side)) return false;
+
+      const shooter = state[side];
+      const toRight = side === "left";
+      const radius = config.dlcWeaponRadius;
+      const shotCount = isTranceActive(side, now) ? 3 : 1;
+      for (let i = 0; i < shotCount; i += 1) {
+        const spread = shotCount === 1 ? 0 : (i - 1) * 1.15;
+        state.dlcWeapons.push({
+          x: toRight ? shooter.x + config.paddleWidth + radius + 2 : shooter.x - radius - 2,
+          y: shooter.y + shooter.height * 0.5 + spread * 9,
+          vx: (toRight ? 1 : -1) * config.dlcWeaponSpeed,
+          vy: randomRange(-0.7, 0.7) + spread,
+          radius: shotCount === 1 ? radius : radius * 0.92,
+          owner: side,
+          bornAt: now,
+          phase: randomRange(0, Math.PI * 2),
+        });
+      }
+      setDlcShotReadyAt(side, now + getDlcWeaponCooldownMs(side, now));
+      playBlackFireSfx();
+      return true;
+    }
+
+    function updateDlcWeapons(now = performance.now()) {
+      if (!isTantricDlcEnabled()) {
+        state.dlcWeapons = [];
+        return;
+      }
+      if (state.dlcWeapons.length === 0) return;
+
+      const freeze = !state.running || state.serveReleaseUntil > 0 || state.countdownUntil > 0 || state.penalty.active;
+      const worldMul = getWorldTimeScale(now);
+      for (let i = state.dlcWeapons.length - 1; i >= 0; i -= 1) {
+        const weapon = state.dlcWeapons[i];
+        const age = now - weapon.bornAt;
+
+        if (!freeze) {
+          weapon.x += weapon.vx * worldMul;
+          weapon.y += (weapon.vy + Math.sin(age * 0.02 + weapon.phase) * 0.2) * worldMul;
+        }
+
+        if (age > config.dlcWeaponLifetimeMs) {
+          state.dlcWeapons.splice(i, 1);
+          continue;
+        }
+        if (weapon.x + weapon.radius < -26 || weapon.x - weapon.radius > canvas.width + 26) {
+          state.dlcWeapons.splice(i, 1);
+          continue;
+        }
+
+        let hitAlien = false;
+        for (let a = state.aliens.length - 1; a >= 0; a -= 1) {
+          const alien = state.aliens[a];
+          const dx = alien.x - weapon.x;
+          const dy = alien.y - weapon.y;
+          const minDist = alien.radius + weapon.radius;
+          if (dx * dx + dy * dy > minDist * minDist) continue;
+
+          state.aliens.splice(a, 1);
+          if (!state.blackHole && state.aliens.length < 2) {
+            state.alienPairSince = 0;
+          }
+          const colors = getDlcWeaponColors(weapon.owner);
+          spawnExplosion(alien.x, alien.y, colors.core, 1.2, now);
+          playBoostHitSfx();
+          state.dlcWeapons.splice(i, 1);
+          hitAlien = true;
+          break;
+        }
+        if (hitAlien) {
+          continue;
+        }
+
+        let hitTarget = false;
+        for (const ball of state.balls) {
+          const dx = ball.x + ball.size * 0.5 - weapon.x;
+          const dy = ball.y + ball.size * 0.5 - weapon.y;
+          const minDist = ball.size * 0.5 + weapon.radius;
+          if (dx * dx + dy * dy > minDist * minDist) continue;
+
+          ball.dlcCursedUntil = Math.max(ball.dlcCursedUntil ?? 0, now + config.dlcBallCurseMs);
+          ball.vx *= config.dlcBallCurseSpeedMultiplier;
+          ball.vy *= config.dlcBallCurseSpeedMultiplier;
+          addRitualCharge(weapon.owner, config.dlcRitualChargeWeaponBallHit);
+          if (isTranceActive(weapon.owner, now)) {
+            markBallByTrance(ball, weapon.owner, now);
+          }
+          const speed = Math.hypot(ball.vx, ball.vy) || 1;
+          if (speed > 28) {
+            const ratio = 28 / speed;
+            ball.vx *= ratio;
+            ball.vy *= ratio;
+          }
+          const colors = getDlcWeaponColors(weapon.owner);
+          spawnExplosion(ball.x + ball.size * 0.5, ball.y + ball.size * 0.5, colors.blast, 1, now);
+          playBoostHitSfx();
+          state.dlcWeapons.splice(i, 1);
+          hitTarget = true;
+          break;
+        }
+        if (hitTarget) {
+          continue;
+        }
+
+        for (let d = state.dropBalls.length - 1; d >= 0; d -= 1) {
+          const drop = state.dropBalls[d];
+          const dx = drop.x - weapon.x;
+          const dy = drop.y - weapon.y;
+          const minDist = drop.radius + weapon.radius;
+          if (dx * dx + dy * dy > minDist * minDist) continue;
+
+          state.dropBalls.splice(d, 1);
+          const colors = getDlcWeaponColors(weapon.owner);
+          spawnExplosion(drop.x, drop.y, colors.core, 0.85, now);
+          playPaddleHitSfx();
+          state.dlcWeapons.splice(i, 1);
+          hitTarget = true;
+          break;
+        }
+        if (hitTarget) {
+          continue;
+        }
+
+        const targetSide = weapon.owner === "left" ? "right" : "left";
+        if (isPaddleDestroyed(targetSide)) {
+          continue;
+        }
+        const targetPaddle = state[targetSide];
+        if (circleIntersectsPaddle(weapon.x, weapon.y, weapon.radius, targetPaddle)) {
+          if (isDesertFortified(targetSide, now)) {
+            spawnExplosion(weapon.x, weapon.y, "#e2e8f0", 0.9, now);
+            playPaddleHitSfx();
+            state.dlcWeapons.splice(i, 1);
+            continue;
+          }
+          freezePaddle(targetSide, config.dlcWeaponFreezeMs, now);
+          applyPaddleMicroShrink(targetSide);
+          state[targetSide].cursedUntil = Math.max(state[targetSide].cursedUntil, now + config.dlcWeaponCurseMs);
+          addRitualCharge(weapon.owner, config.dlcRitualChargeWeaponPaddleHit);
+          const colors = getDlcWeaponColors(weapon.owner);
+          spawnExplosion(weapon.x, weapon.y, colors.blast, 1.2, now);
+          playBlackFireSfx();
+          state.dlcWeapons.splice(i, 1);
+        }
+      }
+    }
+
+    function updateDropSpawns(now) {
+      if (state.nextDropSpawnAt === 0) {
+        scheduleNextDrop(now);
+      }
+
+      if (now >= state.nextDropSpawnAt) {
+        if (state.dropBalls.length < 7) {
+          spawnDropBall();
+        }
+        scheduleNextDrop(now);
+      }
+    }
+
+    function updateDropBalls() {
+      const worldMul = getWorldTimeScale();
+      for (let i = state.dropBalls.length - 1; i >= 0; i -= 1) {
+        const drop = state.dropBalls[i];
+        drop.x += (drop.vx ?? 0) * worldMul;
+        drop.y += drop.vy * worldMul;
+        if (typeof drop.vx === "number") {
+          drop.vx *= 0.992;
+        }
+        if (drop.y - drop.radius > canvas.height + 20) {
+          state.dropBalls.splice(i, 1);
+        }
+      }
+    }
+
+    function absorbDropBalls() {
+      if (state.balls.length === 0) return;
+
+      for (let i = state.dropBalls.length - 1; i >= 0; i -= 1) {
+        const drop = state.dropBalls[i];
+        let sourceBall = null;
+
+        for (const ball of state.balls) {
+          const bx = ball.x + ball.size / 2;
+          const by = ball.y + ball.size / 2;
+          const dx = bx - drop.x;
+          const dy = by - drop.y;
+          const minDist = ball.size / 2 + drop.radius;
+          if (dx * dx + dy * dy <= minDist * minDist) {
+            sourceBall = ball;
+            break;
+          }
+        }
+
+        if (!sourceBall) continue;
+
+        if (state.balls.length < config.maxBalls) {
+          state.balls.push(createBallFromDrop(drop, sourceBall));
+          playBoostHitSfx();
+        }
+        state.dropBalls.splice(i, 1);
+      }
+    }
+
+    function attachPenaltyBallToShooter(ball, shooterSide) {
+      const shooter = state[shooterSide];
+      const offsetX = shooterSide === "left" ? config.paddleWidth + 8 : -ball.size - 8;
+      ball.x = shooter.x + offsetX;
+      ball.y = shooter.y + shooter.height * 0.5 - ball.size * 0.5;
+      ball.vx = 0;
+      ball.vy = 0;
+      ball.controlledBy = null;
+      ball.lastTouched = shooterSide;
+    }
+
+    function setupPenaltyShot() {
+      const shooterSide = state.penalty.shotIndex % 2 === 0 ? "left" : "right";
+      state.penalty.shooter = shooterSide;
+      state.penalty.shotInProgress = false;
+      state.penalty.steerActive = false;
+      state.serveReleaseUntil = 0;
+      state.countdownUntil = 0;
+      state.countdownShown = 0;
+
+      const ball = createGameBall(shooterSide === "left" ? 1 : -1, config.baseBallSpeed, false);
+      ball.isPurple = false;
+      ball.purpleGrowthCount = 0;
+      ball.fireType = "none";
+      ball.fireUntil = 0;
+      ball.dlcCursedUntil = 0;
+      ball.dlcMarkedBy = null;
+      ball.dlcMarkedUntil = 0;
+      attachPenaltyBallToShooter(ball, shooterSide);
+      state.balls = [ball];
+      state.lastBallTouchSide = shooterSide;
+    }
+
+    function startPenaltyShootout() {
+      state.penalty.active = true;
+      state.penalty.shotIndex = 0;
+      state.penalty.shooter = null;
+      state.penalty.shotInProgress = false;
+      state.penalty.steerActive = false;
+      state.penalty.shotsL = [];
+      state.penalty.shotsR = [];
+
+      state.running = true;
+      state.packam = null;
+      state.ghosts = [];
+      state.stones = [];
+      state.dropBalls = [];
+      state.nextDropSpawnAt = 0;
+      state.ballRespawnEffectUntil = 0;
+      clearCycloneState();
+      clearFriendHatStates();
+      clearDlcRoundEffects(true);
+      clearDesertDlcRoundEffects(true);
+      state.left.frozenUntil = 0;
+      state.right.frozenUntil = 0;
+      state.left.destroyedUntilTime = 0;
+      state.right.destroyedUntilTime = 0;
+      state.left.destroyedUntilRound = 0;
+      state.right.destroyedUntilRound = 0;
+      state.left.dragonBurned = false;
+      state.right.dragonBurned = false;
+      setupPenaltyShot();
+    }
+
+    function launchPenaltyShot(side) {
+      if (!state.penalty.active) return false;
+      if (state.penalty.shotInProgress) return false;
+      if (state.penalty.shooter !== side) return false;
+      const ball = state.balls[0];
+      if (!ball) return false;
+
+      state.penalty.shotInProgress = true;
+      state.penalty.steerActive = true;
+      ball.vx = side === "left" ? config.penaltyShotSpeed : -config.penaltyShotSpeed;
+      ball.vy = 0;
+      ball.controlledBy = side;
+      playBoostHitSfx();
+      return true;
+    }
+
+    function computePenaltyWinner() {
+      const takenL = state.penalty.shotsL.length;
+      const takenR = state.penalty.shotsR.length;
+      const goalsL = countGoals(state.penalty.shotsL);
+      const goalsR = countGoals(state.penalty.shotsR);
+      const remL = Math.max(0, config.penaltyInitialShotsPerSide - takenL);
+      const remR = Math.max(0, config.penaltyInitialShotsPerSide - takenR);
+
+      if (goalsL > goalsR + remR) return "left";
+      if (goalsR > goalsL + remL) return "right";
+
+      if (takenL >= config.penaltyInitialShotsPerSide && takenR >= config.penaltyInitialShotsPerSide && takenL === takenR) {
+        if (goalsL > goalsR) return "left";
+        if (goalsR > goalsL) return "right";
+      }
+
+      return null;
+    }
+
+    function endPenaltyShootout(winnerSide) {
+      state.penalty.active = false;
+      state.penalty.shotInProgress = false;
+      state.penalty.steerActive = false;
+      state.balls = [];
+      state.running = false;
+      state.gameOver = true;
+      state.countdownUntil = 0;
+      state.countdownShown = 0;
+      state.serveReleaseUntil = 0;
+      state.lastWinner = winnerSide === "left" ? "Jugador 1" : "Jugador 2";
+      state.dropBalls = [];
+      state.stones = [];
+      state.ballRespawnEffectUntil = 0;
+      clearCycloneState();
+      clearFriendHatStates();
+      clearChaosState(false);
+      clearAlienDlcState(false);
+      clearDlcRoundEffects(true);
+      clearDesertDlcRoundEffects(true);
+      state.packam = null;
+      state.ghosts = [];
+      playGameOverSfx();
+    }
+
+    function recordPenaltyShot(shooterSide, goal) {
+      if (shooterSide === "left") {
+        state.penalty.shotsL.push(goal);
+      } else {
+        state.penalty.shotsR.push(goal);
+      }
+
+      state.penalty.shotIndex += 1;
+      const winner = computePenaltyWinner();
+      if (winner) {
+        endPenaltyShootout(winner);
+        return;
+      }
+
+      setupPenaltyShot();
+    }
+
+    function bouncePenaltyBall(ball, paddle, toRight) {
+      const relativeY = ball.y + ball.size * 0.5 - (paddle.y + paddle.height * 0.5);
+      const normalized = relativeY / (paddle.height * 0.5);
+      const bounceAngle = normalized * (Math.PI / 3.2);
+      const speed = Math.max(config.penaltyShotSpeed * 0.75, Math.hypot(ball.vx, ball.vy) * 1.02);
+      ball.vx = Math.cos(bounceAngle) * speed * (toRight ? 1 : -1);
+      ball.vy = Math.sin(bounceAngle) * speed;
+      if (toRight) {
+        ball.x = paddle.x + config.paddleWidth + 0.2;
+      } else {
+        ball.x = paddle.x - ball.size - 0.2;
+      }
+    }
+
+    function updatePenaltyMode(now) {
+      if (!state.penalty.active) return;
+      const ball = state.balls[0];
+      if (!ball) {
+        setupPenaltyShot();
+        return;
+      }
+      const worldMul = getWorldTimeScale(now);
+
+      const shooterSide = state.penalty.shooter;
+      if (!state.penalty.shotInProgress) {
+        attachPenaltyBallToShooter(ball, shooterSide);
+        return;
+      }
+
+      const shooter = state[shooterSide];
+      if (state.penalty.steerActive && shooter.up !== shooter.down) {
+        const targetVy = shooter.up ? -config.penaltyBallControlYSpeed : config.penaltyBallControlYSpeed;
+        ball.vy += (targetVy - ball.vy) * 0.35;
+      }
+
+      ball.x += ball.vx * worldMul;
+      ball.y += ball.vy * worldMul;
+
+      if (ball.y <= 0) {
+        state.penalty.steerActive = false;
+        clearBallControl(ball);
+        ball.y = 0;
+        ball.vy *= -1;
+        playWallHitSfx();
+      } else if (ball.y + ball.size >= canvas.height) {
+        state.penalty.steerActive = false;
+        clearBallControl(ball);
+        ball.y = canvas.height - ball.size;
+        ball.vy *= -1;
+        playWallHitSfx();
+      }
+
+      if (intersects(ball, state.left, "left") && ball.vx < 0) {
+        state.penalty.steerActive = false;
+        clearBallControl(ball);
+        bouncePenaltyBall(ball, state.left, true);
+        playPaddleHitSfx();
+      } else if (intersects(ball, state.right, "right") && ball.vx > 0) {
+        state.penalty.steerActive = false;
+        clearBallControl(ball);
+        bouncePenaltyBall(ball, state.right, false);
+        playPaddleHitSfx();
+      }
+
+      if (ball.x + ball.size < 0 || ball.x > canvas.width) {
+        const goal = shooterSide === "left" ? ball.x > canvas.width : ball.x + ball.size < 0;
+        recordPenaltyShot(shooterSide, goal);
+      }
+    }
+
+    function scorePoint(leftPlayerScores, options = {}) {
+      if (state.penalty.active) return;
+      const points = Math.max(1, Math.floor(options.points ?? 1));
+      const prevScoreL = state.scoreL;
+      const prevScoreR = state.scoreR;
+
+      if (leftPlayerScores) {
+        state.scoreL += points;
+      } else {
+        state.scoreR += points;
+      }
+      state.roundsStarted += 1;
+      playScoreSfx();
+      state.fieldScale *= Math.pow(config.fieldGrowthPerPoint, points);
+      applyFieldScale();
+      refreshPaddleSizes();
+      const now = performance.now();
+      maybeTriggerTenPointChaos(prevScoreL, prevScoreR, now);
+      maybeTriggerDragonAttack(now);
+
+      if (state.scoreL >= config.maxScore || state.scoreR >= config.maxScore) {
+        state.gameOver = true;
+        state.running = false;
+        state.countdownUntil = 0;
+        state.countdownShown = 0;
+        state.serveReleaseUntil = 0;
+        state.dropBalls = [];
+        state.ballRespawnEffectUntil = 0;
+        clearCycloneState();
+        clearFriendHatStates();
+        clearChaosState(false);
+        clearAlienDlcState(false);
+        clearDlcRoundEffects(true);
+        clearDesertDlcRoundEffects(true);
+        state.packam = null;
+        state.ghosts = [];
+        state.stones = [];
+        state.lastWinner = state.scoreL > state.scoreR ? "Jugador 1" : "Jugador 2";
+        playGameOverSfx();
+        return;
+      }
+
+      const totalPoints = state.scoreL + state.scoreR;
+      if (
+        !state.packamPermanentlyDead &&
+        totalPoints > 0 &&
+        totalPoints % config.packamSpawnEveryPoints === 0
+      ) {
+        spawnPackam();
+      }
+    }
+
+    function updateBalls(now) {
+      const worldMul = getWorldTimeScale(now);
+      const phaseBallMul = getPhaseBallFrameMultiplier(now);
+      for (let i = state.balls.length - 1; i >= 0; i -= 1) {
+        const ball = state.balls[i];
+        updateBallYControl(ball);
+        applyDesertFieldOnBall(ball, now);
+        ball.vx *= phaseBallMul;
+        ball.vy *= phaseBallMul;
+        ball.x += ball.vx * worldMul;
+        ball.y += ball.vy * worldMul;
+
+        if (ball.y <= 0) {
+          clearBallControl(ball);
+          ball.y = 0;
+          ball.vy *= -1;
+          playWallHitSfx();
+        } else if (ball.y + ball.size >= canvas.height) {
+          clearBallControl(ball);
+          ball.y = canvas.height - ball.size;
+          ball.vy *= -1;
+          playWallHitSfx();
+        }
+
+        if (intersects(ball, state.left, "left") && ball.vx < 0) {
+          clearBallControl(ball);
+          const afternoonBreak =
+            isAfternoonPhase(now) &&
+            isFireActive(ball, now) &&
+            !isBoostHit(ball, state.left) &&
+            !isDesertFortified("left", now);
+          if (afternoonBreak) {
+            destroyPaddleForRound("left");
+            ball.x = state.left.x - ball.size - 0.2;
+            playBlackFireSfx();
+            spawnSummerStones("left", now);
+          } else {
+            const hit = bounceFromPaddle(ball, state.left, true);
+            if (isPowerActive("left", now)) {
+              applyPowerControl(ball, "left");
+            }
+            if (
+              isDawnPhase(now) &&
+              isFireActive(ball, now) &&
+              ball.fireType === "black" &&
+              !isDesertFortified("left", now)
+            ) {
+              freezePaddle("left", config.paddleFreezeVoidMs, now);
+            }
+            if (hit.blackFire) {
+              playBlackFireSfx();
+            } else if (hit.boosted || hit.friendHatBoost || hit.desertFortified) {
+              playBoostHitSfx();
+            } else {
+              playPaddleHitSfx();
+            }
+          }
+        } else if (intersects(ball, state.right, "right") && ball.vx > 0) {
+          clearBallControl(ball);
+          const afternoonBreak =
+            isAfternoonPhase(now) &&
+            isFireActive(ball, now) &&
+            !isBoostHit(ball, state.right) &&
+            !isDesertFortified("right", now);
+          if (afternoonBreak) {
+            destroyPaddleForRound("right");
+            ball.x = state.right.x + config.paddleWidth + 0.2;
+            playBlackFireSfx();
+            spawnSummerStones("right", now);
+          } else {
+            const hit = bounceFromPaddle(ball, state.right, false);
+            if (isPowerActive("right", now)) {
+              applyPowerControl(ball, "right");
+            }
+            if (
+              isDawnPhase(now) &&
+              isFireActive(ball, now) &&
+              ball.fireType === "black" &&
+              !isDesertFortified("right", now)
+            ) {
+              freezePaddle("right", config.paddleFreezeVoidMs, now);
+            }
+            if (hit.blackFire) {
+              playBlackFireSfx();
+            } else if (hit.boosted || hit.friendHatBoost || hit.desertFortified) {
+              playBoostHitSfx();
+            } else {
+              playPaddleHitSfx();
+            }
+          }
+        }
+
+        if (ball.x + ball.size < 0 || ball.x > canvas.width) {
+          const leftPlayerScores = ball.x > canvas.width;
+          const scorerSide = leftPlayerScores ? "left" : "right";
+          let points = ball.isPurple ? Math.max(1, ball.purpleGrowthCount) : 1;
+          if (isTantricDlcEnabled() && isBallTranceMarked(ball, now) && ball.dlcMarkedBy === scorerSide) {
+            points += config.dlcTranceMarkScoreBonus;
+            spawnExplosion(ball.x + ball.size * 0.5, ball.y + ball.size * 0.5, "#f43f5e", 1.2, now);
+          }
+          state.balls.splice(i, 1);
+          scorePoint(leftPlayerScores, { points });
+          if (state.gameOver || state.penalty.active) {
+            return;
+          }
+        }
+      }
+
+      updateDropBalls();
+      absorbDropBalls();
+      updatePackam(now);
+      if (!state.gameOver && !state.penalty.active && state.running && state.serveReleaseUntil <= 0 && state.balls.length === 0) {
+        spawnNormalBallWithEffect(Math.random() > 0.5 ? 1 : -1, now);
+      }
+    }
+
+    function getPhasePalette(phase) {
+      if (phase === "afternoon") {
+        return { top: "#b45309", bottom: "#78350f", hLines: "#ffffff1f", vLines: "#1118273f", border: "#fed7aaad" };
+      }
+      if (phase === "night") {
+        return { top: "#0b1124", bottom: "#111827", hLines: "#ffffff15", vLines: "#93c5fd1f", border: "#cbd5e1aa" };
+      }
+      if (phase === "dawn") {
+        return { top: "#7c3aed", bottom: "#1d4ed8", hLines: "#f8fafc1f", vLines: "#fbcfe825", border: "#e0e7ffcc" };
+      }
+      return { top: "#0d9488", bottom: "#115e59", hLines: "#ffffff12", vLines: "#0f172a26", border: "#ecfeffcc" };
+    }
+
+    function drawTableField(now = performance.now()) {
+      const phase = getCurrentPhase(now);
+      const palette = getPhasePalette(phase);
+      const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      bg.addColorStop(0, palette.top);
+      bg.addColorStop(1, palette.bottom);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = palette.hLines;
+      for (let y = 8; y < canvas.height; y += 8) {
+        ctx.fillRect(0, y, canvas.width, 1);
+      }
+      ctx.fillStyle = palette.vLines;
+      for (let x = 12; x < canvas.width; x += 14) {
+        ctx.fillRect(x, 0, 1, canvas.height);
+      }
+
+      if (isTantricDlcEnabled()) {
+        const bgImage = tantricDlcAssets.backgrounds[phase];
+        if (bgImage && bgImage.complete) {
+          const alpha = phase === "night" ? 0.42 : phase === "afternoon" ? 0.34 : 0.3;
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+          ctx.restore();
+        }
+
+        if (isTranceActive("left", now) || isTranceActive("right", now)) {
+          const pulse = 0.12 + (Math.sin(now * 0.012) + 1) * 0.04;
+          const mix = isTranceActive("left", now) && isTranceActive("right", now) ? "#f472b6" : isTranceActive("left", now) ? "#67e8f9" : "#fb7185";
+          ctx.fillStyle = `${mix}${Math.floor(pulse * 255).toString(16).padStart(2, "0")}`;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      if (isDesertDlcEnabled()) {
+        const desertBg = desertDlcAssets.backgrounds[phase];
+        if (desertBg && desertBg.complete) {
+          const alpha = phase === "night" ? 0.34 : 0.42;
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.drawImage(desertBg, 0, 0, canvas.width, canvas.height);
+          ctx.restore();
+        }
+
+        if (isDesertStormActive(now)) {
+          const wind = (Math.sin(now * 0.006) + 1) * 0.5;
+          ctx.fillStyle = `rgba(245, 158, 11, ${0.08 + wind * 0.1})`;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.strokeStyle = "rgba(254, 243, 199, 0.22)";
+          ctx.lineWidth = 1;
+          for (let y = -20; y < canvas.height + 30; y += 22) {
+            const offset = ((now * 0.1 + y * 2) % (canvas.width + 120)) - 60;
+            ctx.beginPath();
+            ctx.moveTo(offset, y);
+            ctx.lineTo(offset + 90, y - 14);
+            ctx.stroke();
+          }
+        }
+      }
+
+      if (phase === "night") {
+        const glow = ctx.createRadialGradient(canvas.width * 0.5, canvas.height * 0.5, 40, canvas.width * 0.5, canvas.height * 0.5, canvas.height * 0.8);
+        glow.addColorStop(0, "rgba(56, 189, 248, 0.16)");
+        glow.addColorStop(1, "rgba(15, 23, 42, 0)");
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      ctx.strokeStyle = palette.border;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(6, 6, canvas.width - 12, canvas.height - 12);
+    }
+
+    function drawNet() {
+      ctx.fillStyle = "#e2e8f0bb";
+      const segH = 20;
+      const gap = 10;
+      const x = canvas.width / 2 - 1;
+      for (let y = 8; y < canvas.height - 8; y += segH + gap) {
+        ctx.fillRect(x, y, 2, segH);
+      }
+    }
+
+    function drawScores() {
+      const phase = getCurrentPhase();
+      const now = performance.now();
+      const phaseLabel =
+        phase === "afternoon"
+          ? "Tarde"
+          : phase === "night"
+          ? "Noche"
+          : phase === "dawn"
+          ? "Amanecer"
+          : "Dia";
+
+      ctx.fillStyle = "#cbd5e1";
+      ctx.font = "700 48px 'Trebuchet MS', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(state.scoreL, canvas.width * 0.25, 72);
+      ctx.fillText(state.scoreR, canvas.width * 0.75, 72);
+
+      ctx.font = "700 18px 'Trebuchet MS', sans-serif";
+      ctx.fillStyle = "#e2e8f0d6";
+      ctx.fillText(`Fase: ${phaseLabel}`, canvas.width * 0.5, 34);
+
+      if (state.left.powerBuffPermanent) {
+        ctx.fillStyle = "#22d3ee";
+        ctx.fillText("P1 Ultra Poder", canvas.width * 0.18, 34);
+      }
+      if (state.right.powerBuffPermanent) {
+        ctx.fillStyle = "#fbbf24";
+        ctx.fillText("P2 Ultra Poder", canvas.width * 0.82, 34);
+      }
+
+      if (isFriendHatActive("left", now)) {
+        ctx.fillStyle = getFriendHatStyle(state.left.friendHatStyle).crown;
+        ctx.fillText("P1 Sombrero", canvas.width * 0.16, 56);
+      }
+      if (isFriendHatActive("right", now)) {
+        ctx.fillStyle = getFriendHatStyle(state.right.friendHatStyle).crown;
+        ctx.fillText("P2 Sombrero", canvas.width * 0.84, 56);
+      }
+
+      if (isTantricDlcEnabled()) {
+        ctx.fillStyle = "#fca5a5";
+        ctx.fillText("DLC Terror Tantrico: ON", canvas.width * 0.5, 56);
+
+        const leftCd = Math.max(0, (getDlcShotReadyAt("left") - now) / 1000);
+        const rightCd = Math.max(0, (getDlcShotReadyAt("right") - now) / 1000);
+        const leftTranceCd = Math.max(0, (state.left.tranceReadyAt - now) / 1000);
+        const rightTranceCd = Math.max(0, (state.right.tranceReadyAt - now) / 1000);
+        const leftTranceOn = isTranceActive("left", now);
+        const rightTranceOn = isTranceActive("right", now);
+        ctx.font = "700 15px 'Trebuchet MS', sans-serif";
+        ctx.fillStyle = leftCd > 0 ? "#fca5a5" : "#67e8f9";
+        ctx.fillText(leftCd > 0 ? `Q ${leftCd.toFixed(1)}s` : "Q lista", canvas.width * 0.1, 88);
+        ctx.fillStyle = rightCd > 0 ? "#fca5a5" : "#fb7185";
+        ctx.fillText(rightCd > 0 ? `Shift ${rightCd.toFixed(1)}s` : "Shift lista", canvas.width * 0.9, 88);
+
+        ctx.fillStyle = leftTranceOn ? "#f472b6" : leftTranceCd > 0 ? "#fca5a5" : "#f9a8d4";
+        ctx.fillText(
+          leftTranceOn ? "E TRANCE" : leftTranceCd > 0 ? `E ${leftTranceCd.toFixed(1)}s` : "E listo",
+          canvas.width * 0.1,
+          106
+        );
+        ctx.fillStyle = rightTranceOn ? "#f472b6" : rightTranceCd > 0 ? "#fca5a5" : "#f9a8d4";
+        ctx.fillText(
+          rightTranceOn ? "Enter TRANCE" : rightTranceCd > 0 ? `Enter ${rightTranceCd.toFixed(1)}s` : "Enter listo",
+          canvas.width * 0.9,
+          106
+        );
+
+        const ritualW = 180;
+        const ritualH = 7;
+        const leftRatio = getRitualCharge("left") / config.dlcRitualMaxCharge;
+        const rightRatio = getRitualCharge("right") / config.dlcRitualMaxCharge;
+        ctx.fillStyle = "rgba(2, 6, 23, 0.65)";
+        ctx.fillRect(canvas.width * 0.08, 114, ritualW, ritualH);
+        ctx.fillRect(canvas.width * 0.75, 114, ritualW, ritualH);
+        ctx.fillStyle = leftTranceOn ? "#ec4899" : "#67e8f9";
+        ctx.fillRect(canvas.width * 0.08, 114, ritualW * leftRatio, ritualH);
+        ctx.fillStyle = rightTranceOn ? "#ec4899" : "#fb7185";
+        ctx.fillRect(canvas.width * 0.75, 114, ritualW * rightRatio, ritualH);
+      }
+
+      if (isDesertDlcEnabled()) {
+        const stormOn = isDesertStormActive(now);
+        const leftFortify = Math.max(0, (state.left.desertFortifiedUntil - now) / 1000);
+        const rightFortify = Math.max(0, (state.right.desertFortifiedUntil - now) / 1000);
+        ctx.font = "700 16px 'Trebuchet MS', sans-serif";
+        ctx.fillStyle = "#fde68a";
+        ctx.fillText("DLC Desierto de Roca: ON", canvas.width * 0.5, 128);
+        ctx.fillStyle = stormOn ? "#f59e0b" : "#fef3c7";
+        ctx.fillText(stormOn ? "Tormenta de arena activa" : "Viento patagonico estable", canvas.width * 0.5, 146);
+        ctx.fillStyle = leftFortify > 0 ? "#bfdbfe" : "#e2e8f0";
+        ctx.fillText(leftFortify > 0 ? `P1 Estandarte ${leftFortify.toFixed(1)}s` : "P1 sin estandarte", canvas.width * 0.2, 128);
+        ctx.fillStyle = rightFortify > 0 ? "#fde68a" : "#e2e8f0";
+        ctx.fillText(rightFortify > 0 ? `P2 Estandarte ${rightFortify.toFixed(1)}s` : "P2 sin estandarte", canvas.width * 0.8, 128);
+      }
+
+      if (state.cyclone) {
+        ctx.font = "700 16px 'Trebuchet MS', sans-serif";
+        ctx.fillStyle = state.cyclone.chaotic ? "#fdba74" : state.cyclone.isBlack ? "#cbd5e1" : "#bae6fd";
+        ctx.fillText(
+          state.cyclone.chaotic ? "Tornado caotico activo" : state.cyclone.isBlack ? "Huracan negro activo" : "Ciclon activo",
+          canvas.width * 0.5,
+          isDesertDlcEnabled() ? 164 : 128
+        );
+      }
+
+      const alienInfoY = isDesertDlcEnabled() ? 200 : 164;
+      ctx.font = "700 16px 'Trebuchet MS', sans-serif";
+      ctx.fillStyle = "#86efac";
+      ctx.fillText(`DLC Aliens: ON | Naves ${state.aliens.length}`, canvas.width * 0.5, alienInfoY);
+      if (!state.blackHole && state.alienPairSince > 0 && state.aliens.length >= 2) {
+        const remaining = Math.max(0, (config.alienPairThresholdMs - (now - state.alienPairSince)) / 1000);
+        ctx.fillStyle = "#bbf7d0";
+        ctx.fillText(`Agujero negro en ${remaining.toFixed(1)}s`, canvas.width * 0.5, alienInfoY + 18);
+      } else if (state.blackHole) {
+        ctx.fillStyle = "#93c5fd";
+        ctx.fillText(`Agujero negro activo (R ${state.blackHole.radius.toFixed(0)})`, canvas.width * 0.5, alienInfoY + 18);
+      }
+    }
+
+    function drawEffectTimers(now = performance.now()) {
+      const rows = [];
+      if (now < state.chaosWorldSlowUntil) {
+        rows.push({ text: `Tiempo lento ${((state.chaosWorldSlowUntil - now) / 1000).toFixed(1)}s`, color: "#fca5a5" });
+      }
+      if (now < state.left.destroyedUntilTime) {
+        rows.push({ text: `Dragon P1 ${((state.left.destroyedUntilTime - now) / 1000).toFixed(1)}s`, color: "#7dd3fc" });
+      }
+      if (now < state.right.destroyedUntilTime) {
+        rows.push({ text: `Dragon P2 ${((state.right.destroyedUntilTime - now) / 1000).toFixed(1)}s`, color: "#fde68a" });
+      }
+      if (state.chaosWeatherType && now < state.chaosWeatherUntil) {
+        const label =
+          state.chaosWeatherType === "rain" ? "Lluvia" : state.chaosWeatherType === "snow" ? "Nieve" : "Hojas";
+        rows.push({ text: `${label} ${((state.chaosWeatherUntil - now) / 1000).toFixed(1)}s`, color: "#bfdbfe" });
+      }
+      if (now < state.chaosDarkUntil) {
+        rows.push({ text: `Oscuro ${((state.chaosDarkUntil - now) / 1000).toFixed(1)}s`, color: "#cbd5e1" });
+      }
+      if (now < state.chaosBrightUntil) {
+        rows.push({ text: `Brillo ${((state.chaosBrightUntil - now) / 1000).toFixed(1)}s`, color: "#fef3c7" });
+      }
+      if (now < state.chaosBlackoutUntil) {
+        rows.push({ text: `Negro total ${((state.chaosBlackoutUntil - now) / 1000).toFixed(1)}s`, color: "#e2e8f0" });
+      }
+      if (rows.length === 0) return;
+
+      const panelW = 232;
+      const panelH = 12 + rows.length * 19;
+      const x = canvas.width - panelW - 12;
+      const y = 12;
+
+      ctx.fillStyle = "rgba(2, 6, 23, 0.58)";
+      ctx.fillRect(x, y, panelW, panelH);
+      ctx.strokeStyle = "rgba(148, 163, 184, 0.55)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, panelW, panelH);
+
+      ctx.textAlign = "left";
+      ctx.font = "700 13px 'Trebuchet MS', sans-serif";
+      for (let i = 0; i < rows.length; i += 1) {
+        const row = rows[i];
+        ctx.fillStyle = row.color;
+        ctx.fillText(row.text, x + 8, y + 16 + i * 18);
+      }
+    }
+
+    function drawPenaltyTracker() {
+      if (!state.penalty.active) return;
+
+      ctx.textAlign = "left";
+      ctx.font = "700 24px 'Trebuchet MS', sans-serif";
+      ctx.fillStyle = "#e2e8f0";
+      ctx.fillText("Penales", canvas.width * 0.44, 102);
+      if (state.penalty.shooter) {
+        ctx.font = "700 16px 'Trebuchet MS', sans-serif";
+        ctx.fillStyle = state.penalty.shooter === "left" ? "#22d3ee" : "#fbbf24";
+        ctx.fillText(`Patea: ${state.penalty.shooter === "left" ? "Jugador 1" : "Jugador 2"}`, canvas.width * 0.41, 122);
+      }
+
+      const drawMarks = (shots, xStart) => {
+        const maxMarks = Math.max(config.penaltyInitialShotsPerSide, shots.length);
+        for (let i = 0; i < maxMarks; i += 1) {
+          const shot = shots[i];
+          if (shot === undefined) {
+            ctx.fillStyle = "#94a3b8";
+            ctx.fillText("-", xStart + i * 20, 152);
+          } else if (shot) {
+            ctx.fillStyle = "#22c55e";
+            ctx.fillText("O", xStart + i * 20, 152);
+          } else {
+            ctx.fillStyle = "#ef4444";
+            ctx.fillText("X", xStart + i * 20, 152);
+          }
+        }
+      };
+
+      drawMarks(state.penalty.shotsL, canvas.width * 0.19);
+      drawMarks(state.penalty.shotsR, canvas.width * 0.63);
+    }
+
+    function drawFriendHatShape(x, y, width, styleIndex = 0, tilt = 0, pulse = 1, alpha = 1) {
+      const style = getFriendHatStyle(styleIndex);
+      const brimWidth = width * 2.05 * pulse;
+      const brimHeight = Math.max(4, width * 0.32 * pulse);
+      const crownWidth = width * 1.25 * pulse;
+      const crownHeight = Math.max(8, width * 0.84 * pulse);
+
+      ctx.save();
+      ctx.globalAlpha *= alpha;
+      ctx.translate(x, y);
+      ctx.rotate(tilt);
+
+      ctx.fillStyle = style.brim;
+      ctx.fillRect(-brimWidth * 0.5, 0, brimWidth, brimHeight);
+      ctx.fillStyle = style.crown;
+      ctx.fillRect(-crownWidth * 0.5, -crownHeight + 1, crownWidth, crownHeight);
+      ctx.fillStyle = style.badge;
+      ctx.fillRect(-3, -crownHeight + 3, 6, 4);
+      ctx.fillStyle = "#0f172acc";
+      ctx.fillRect(-1, -crownHeight + 4, 2, 2);
+      ctx.restore();
+    }
+
+    function drawFriendHats(now = performance.now()) {
+      for (const hat of state.friendHats) {
+        const pulse = 1 + Math.sin((now - hat.bornAt) * 0.012) * 0.08;
+        const glow = ctx.createRadialGradient(hat.x, hat.y, 1, hat.x, hat.y, hat.radius * 2.2);
+        glow.addColorStop(0, "rgba(250, 245, 255, 0.7)");
+        glow.addColorStop(1, "rgba(148, 163, 184, 0)");
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(hat.x, hat.y, hat.radius * 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        drawFriendHatShape(hat.x, hat.y + hat.radius * 0.16, hat.radius * 1.05, hat.style, hat.tilt, pulse, 1);
+      }
+    }
+
+    function drawDesertBanners(now = performance.now()) {
+      if (!isDesertDlcEnabled()) return;
+      for (const banner of state.desertBanners) {
+        const pulse = 1 + Math.sin((now - banner.bornAt) * 0.01) * 0.08;
+        const glow = ctx.createRadialGradient(banner.x, banner.y, 1, banner.x, banner.y, banner.radius * 2.8);
+        glow.addColorStop(0, "rgba(254, 243, 199, 0.8)");
+        glow.addColorStop(1, "rgba(217, 119, 6, 0)");
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(banner.x, banner.y, banner.radius * 2.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (desertDlcAssets.skins.banner.complete) {
+          ctx.save();
+          ctx.globalAlpha = 0.92;
+          ctx.drawImage(
+            desertDlcAssets.skins.banner,
+            banner.x - banner.radius * 1.5 * pulse,
+            banner.y - banner.radius * 1.5 * pulse,
+            banner.radius * 3 * pulse,
+            banner.radius * 3 * pulse
+          );
+          ctx.restore();
+        } else {
+          ctx.fillStyle = "#fef3c7";
+          ctx.beginPath();
+          ctx.arc(banner.x, banner.y, banner.radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    function drawDlcWeapons(now = performance.now()) {
+      if (!isTantricDlcEnabled()) return;
+      for (const weapon of state.dlcWeapons) {
+        const colors = getDlcWeaponColors(weapon.owner);
+        const glow = ctx.createRadialGradient(weapon.x, weapon.y, 1, weapon.x, weapon.y, weapon.radius * 3);
+        glow.addColorStop(0, `${colors.core}ee`);
+        glow.addColorStop(1, "rgba(15, 23, 42, 0)");
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(weapon.x, weapon.y, weapon.radius * 2.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        const img = weapon.owner === "left" ? tantricDlcAssets.skins.leftWeapon : tantricDlcAssets.skins.rightWeapon;
+        if (img.complete) {
+          ctx.save();
+          ctx.globalAlpha = 0.88;
+          ctx.translate(weapon.x, weapon.y);
+          ctx.rotate(Math.atan2(weapon.vy, weapon.vx));
+          ctx.drawImage(img, -weapon.radius * 3.4, -weapon.radius * 1.5, weapon.radius * 6.8, weapon.radius * 3);
+          ctx.restore();
+        } else {
+          ctx.fillStyle = colors.core;
+          ctx.beginPath();
+          ctx.arc(weapon.x, weapon.y, weapon.radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    function drawAliens(now = performance.now()) {
+      for (const alien of state.aliens) {
+        const wobble = Math.sin((now - alien.bornAt) * 0.012 + alien.phase) * 1.6;
+        ctx.save();
+        ctx.translate(alien.x, alien.y + wobble);
+        ctx.rotate(Math.atan2(alien.vy, alien.vx) * 0.08);
+
+        const glow = ctx.createRadialGradient(0, 0, 1, 0, 0, alien.radius * 3.1);
+        glow.addColorStop(0, "rgba(110, 231, 183, 0.55)");
+        glow.addColorStop(1, "rgba(17, 24, 39, 0)");
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(0, 0, alien.radius * 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#334155";
+        ctx.beginPath();
+        ctx.ellipse(0, 2, alien.radius * 1.6, alien.radius * 0.72, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#22c55e";
+        ctx.beginPath();
+        ctx.ellipse(0, -2, alien.radius * 0.95, alien.radius * 0.58, 0, Math.PI, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = "#86efac";
+        ctx.beginPath();
+        ctx.arc(-alien.radius * 0.28, -3, alien.radius * 0.12, 0, Math.PI * 2);
+        ctx.arc(alien.radius * 0.28, -3, alien.radius * 0.12, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#e2e8f0";
+        for (let i = -1; i <= 1; i += 1) {
+          ctx.beginPath();
+          ctx.arc(i * alien.radius * 0.55, alien.radius * 0.16, alien.radius * 0.11, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
+    function drawAlienBullets() {
+      for (const shot of state.alienBullets) {
+        const glow = ctx.createRadialGradient(shot.x, shot.y, 1, shot.x, shot.y, shot.radius * 4.2);
+        glow.addColorStop(0, "rgba(134, 239, 172, 0.95)");
+        glow.addColorStop(1, "rgba(20, 83, 45, 0)");
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(shot.x, shot.y, shot.radius * 3.7, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#86efac";
+        ctx.beginPath();
+        ctx.arc(shot.x, shot.y, shot.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawPaddle(paddle, color, boostColor, side, now = performance.now()) {
+      const night = isNightPhase(now);
+      const destroyed = isPaddleDestroyed(side);
+      const frozen = isPaddleFrozen(side, now);
+      const cursed = isPaddleCursed(side, now);
+      const baseColor = destroyed ? "rgba(51, 65, 85, 0.62)" : color;
+
+      if (night && !destroyed) {
+        ctx.shadowBlur = 16;
+        ctx.shadowColor = side === "left" ? "#22d3ee" : "#fbbf24";
+      }
+      ctx.fillStyle = baseColor;
+      ctx.fillRect(paddle.x, paddle.y, config.paddleWidth, paddle.height);
+      if (isDesertDlcEnabled() && !destroyed) {
+        const skin = side === "left" ? desertDlcAssets.skins.leftPaddle : desertDlcAssets.skins.rightPaddle;
+        if (skin.complete) {
+          ctx.save();
+          ctx.globalAlpha = 0.86;
+          ctx.drawImage(skin, paddle.x, paddle.y, config.paddleWidth, paddle.height);
+          ctx.restore();
+        }
+      } else if (isTantricDlcEnabled() && !destroyed) {
+        const skin = side === "left" ? tantricDlcAssets.skins.leftPaddle : tantricDlcAssets.skins.rightPaddle;
+        if (skin.complete) {
+          ctx.save();
+          ctx.globalAlpha = 0.84;
+          ctx.drawImage(skin, paddle.x, paddle.y, config.paddleWidth, paddle.height);
+          ctx.restore();
+        }
+      }
+      if (night) {
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = "transparent";
+      }
+
+      const edgeZones = getEdgeSlowZoneBounds(paddle);
+      ctx.fillStyle = "rgba(2, 6, 23, 0.7)";
+      ctx.fillRect(paddle.x, paddle.y, config.paddleWidth, edgeZones.zoneHeight);
+      ctx.fillRect(paddle.x, edgeZones.bottomZoneTop, config.paddleWidth, edgeZones.zoneHeight);
+
+      const { zoneTop, zoneHeight: boostZoneHeight } = getBoostZoneBounds(paddle);
+      ctx.fillStyle = destroyed ? "rgba(148, 163, 184, 0.25)" : boostColor;
+      ctx.fillRect(paddle.x - 1, zoneTop, config.paddleWidth + 2, boostZoneHeight);
+      ctx.strokeStyle = "#f8fafccc";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(paddle.x - 1, zoneTop, config.paddleWidth + 2, boostZoneHeight);
+      ctx.fillStyle = "#ffffff40";
+      ctx.fillRect(paddle.x + 1, zoneTop + boostZoneHeight * 0.35, Math.max(2, config.paddleWidth - 2), boostZoneHeight * 0.3);
+
+      if (destroyed) {
+        ctx.strokeStyle = "#ef4444cc";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(paddle.x, paddle.y);
+        ctx.lineTo(paddle.x + config.paddleWidth, paddle.y + paddle.height);
+        ctx.moveTo(paddle.x + config.paddleWidth, paddle.y);
+        ctx.lineTo(paddle.x, paddle.y + paddle.height);
+        ctx.stroke();
+        if (paddle.dragonBurned) {
+          const flicker = 0.34 + Math.sin(now * 0.018 + (side === "left" ? 0 : 1.8)) * 0.12;
+          const burn = ctx.createLinearGradient(paddle.x, paddle.y, paddle.x, paddle.y + paddle.height);
+          burn.addColorStop(0, `rgba(248, 113, 113, ${0.58 + flicker * 0.25})`);
+          burn.addColorStop(0.48, `rgba(249, 115, 22, ${0.4 + flicker * 0.2})`);
+          burn.addColorStop(1, "rgba(2, 6, 23, 0.5)");
+          ctx.fillStyle = burn;
+          ctx.fillRect(paddle.x, paddle.y, config.paddleWidth, paddle.height);
+
+          ctx.fillStyle = "rgba(251, 146, 60, 0.8)";
+          for (let i = 0; i < 3; i += 1) {
+            const flameX = paddle.x + config.paddleWidth * (0.22 + i * 0.3);
+            const flameH = 9 + Math.sin(now * 0.02 + i * 0.9) * 3;
+            ctx.beginPath();
+            ctx.moveTo(flameX, paddle.y - flameH);
+            ctx.lineTo(flameX - 3, paddle.y + 1);
+            ctx.lineTo(flameX + 3, paddle.y + 1);
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
+      } else if (frozen) {
+        ctx.fillStyle = "rgba(186, 230, 253, 0.3)";
+        ctx.fillRect(paddle.x, paddle.y, config.paddleWidth, paddle.height);
+      }
+
+      if (cursed && !destroyed) {
+        const pulse = 1 + Math.sin(now * 0.022 + (side === "left" ? 0 : 1.4)) * 0.12;
+        ctx.strokeStyle = "rgba(248, 113, 113, 0.88)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(paddle.x - 2, paddle.y - 2, config.paddleWidth + 4, paddle.height + 4);
+        ctx.fillStyle = "rgba(248, 113, 113, 0.22)";
+        ctx.fillRect(paddle.x, paddle.y, config.paddleWidth, paddle.height * (0.22 * pulse));
+      }
+
+      if (isDesertFortified(side, now) && !destroyed) {
+        const pulse = 1 + Math.sin(now * 0.014 + (side === "left" ? 0 : 1)) * 0.07;
+        const aura = side === "left" ? "rgba(191, 219, 254, 0.82)" : "rgba(253, 230, 138, 0.82)";
+        ctx.strokeStyle = aura;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(paddle.x - 3 * pulse, paddle.y - 3 * pulse, config.paddleWidth + 6 * pulse, paddle.height + 6 * pulse);
+      }
+
+      if (isTranceActive(side, now) && !destroyed) {
+        const pulse = 1 + Math.sin(now * 0.02 + (side === "left" ? 0.2 : 1.2)) * 0.12;
+        const auraColor = side === "left" ? "rgba(103, 232, 249, 0.85)" : "rgba(251, 113, 133, 0.85)";
+        ctx.strokeStyle = auraColor;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(paddle.x - 4 * pulse, paddle.y - 4 * pulse, config.paddleWidth + 8 * pulse, paddle.height + 8 * pulse);
+      }
+
+      if (isFriendHatActive(side, now) && !destroyed) {
+        const remainRatio = Math.max(0, (state[side].friendHatUntil - now) / config.friendHatDurationMs);
+        const pulse = 1 + Math.sin(now * 0.012 + (side === "left" ? 0 : 1.7)) * 0.07;
+        const x = paddle.x + config.paddleWidth * 0.5;
+        const y = paddle.y - 4;
+        const tilt = side === "left" ? -0.09 : 0.09;
+        drawFriendHatShape(x, y, config.paddleWidth, state[side].friendHatStyle, tilt, pulse, 1);
+
+        const style = getFriendHatStyle(state[side].friendHatStyle);
+        const hatBarLeft = paddle.x - 4;
+        const hatBarTop = paddle.y - 16;
+        const hatBarWidth = config.paddleWidth + 8;
+        ctx.fillStyle = "rgba(2, 6, 23, 0.75)";
+        ctx.fillRect(hatBarLeft, hatBarTop, hatBarWidth, 4);
+        ctx.fillStyle = style.crown;
+        ctx.fillRect(hatBarLeft, hatBarTop, hatBarWidth * remainRatio, 4);
+      }
+
+      if (isPowerActive(side, now)) {
+        const powerLeft = paddle.x - 4;
+        const powerTop = paddle.y - 4;
+        const powerWidth = config.paddleWidth + 8;
+        const powerHeight = paddle.height + 8;
+
+        ctx.strokeStyle = side === "left" ? "#22d3ee" : "#fbbf24";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(powerLeft, powerTop, powerWidth, powerHeight);
+
+        const remainRatio = Math.max(0, (state[side].powerActiveUntil - now) / getPowerDurationMs(side));
+        ctx.fillStyle = "rgba(2, 6, 23, 0.75)";
+        ctx.fillRect(powerLeft, powerTop - 6, powerWidth, 4);
+        ctx.fillStyle = side === "left" ? "#22d3ee" : "#fbbf24";
+        ctx.fillRect(powerLeft, powerTop - 6, powerWidth * remainRatio, 4);
+      }
+    }
+
+    function drawDropBalls() {
+      for (const drop of state.dropBalls) {
+        const glow = ctx.createRadialGradient(drop.x - 2, drop.y - 2, 1, drop.x, drop.y, drop.radius + 7);
+        glow.addColorStop(0, "#e0f2fe");
+        glow.addColorStop(0.6, "#38bdf8");
+        glow.addColorStop(1, "rgba(14, 116, 144, 0.15)");
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(drop.x, drop.y, drop.radius + 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#e0f2fe";
+        ctx.beginPath();
+        ctx.arc(drop.x, drop.y, drop.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawStones() {
+      for (const stone of state.stones) {
+        const glow = ctx.createRadialGradient(stone.x, stone.y, 1, stone.x, stone.y, stone.radius + 5);
+        glow.addColorStop(0, "#fde68a");
+        glow.addColorStop(1, "rgba(120, 53, 15, 0)");
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(stone.x, stone.y, stone.radius + 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#92400e";
+        ctx.beginPath();
+        ctx.arc(stone.x, stone.y, stone.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawExplosions(now = performance.now()) {
+      for (const explosion of state.explosions) {
+        const life = Math.max(0, 1 - (now - explosion.bornAt) / explosion.durationMs);
+        for (const particle of explosion.particles) {
+          const px = particle.x + particle.vx * (1 - life) * 26;
+          const py = particle.y + particle.vy * (1 - life) * 26;
+          ctx.globalAlpha = Math.max(0.08, life);
+          ctx.fillStyle = explosion.color;
+          ctx.beginPath();
+          ctx.arc(px, py, particle.size * life, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+
+    function spawnFirework(now = performance.now()) {
+      const x = randomRange(canvas.width * 0.12, canvas.width * 0.88);
+      const y = randomRange(canvas.height * 0.12, canvas.height * 0.46);
+      const colors = ["#22d3ee", "#f97316", "#f43f5e", "#a855f7", "#84cc16"];
+      const color = colors[Math.floor(randomRange(0, colors.length))];
+      const particles = [];
+      for (let i = 0; i < 34; i += 1) {
+        const angle = (Math.PI * 2 * i) / 34;
+        const speed = randomRange(1.8, 4.7);
+        particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, size: randomRange(1.6, 3.6) });
+      }
+      state.fireworks.push({ color, bornAt: now, durationMs: 1050, particles });
+    }
+
+    function updateFireworks(now = performance.now()) {
+      if (!state.gameOver) {
+        state.fireworks = [];
+        state.nextFireworkAt = 0;
+        return;
+      }
+
+      if (state.nextFireworkAt === 0 || now >= state.nextFireworkAt) {
+        spawnFirework(now);
+        state.nextFireworkAt = now + config.fireworksSpawnMs;
+      }
+
+      for (let i = state.fireworks.length - 1; i >= 0; i -= 1) {
+        const fw = state.fireworks[i];
+        if (now - fw.bornAt > fw.durationMs) {
+          state.fireworks.splice(i, 1);
+        }
+      }
+    }
+
+    function drawFireworks(now = performance.now()) {
+      if (!state.gameOver) return;
+      for (const fw of state.fireworks) {
+        const life = Math.max(0, 1 - (now - fw.bornAt) / fw.durationMs);
+        for (const p of fw.particles) {
+          const px = p.x + p.vx * (1 - life) * 28;
+          const py = p.y + p.vy * (1 - life) * 28 + (1 - life) * 6;
+          ctx.fillStyle = fw.color;
+          ctx.globalAlpha = Math.max(0.1, life);
+          ctx.beginPath();
+          ctx.arc(px, py, p.size * life, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+
+    function drawPurpleAlert(now = performance.now()) {
+      if (now >= state.purpleAlertUntil) return;
+      const ratio = Math.max(0, (state.purpleAlertUntil - now) / config.purpleAlertMs);
+      ctx.fillStyle = `rgba(168, 85, 247, ${0.18 + ratio * 0.22})`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.textAlign = "center";
+      ctx.font = "900 44px 'Trebuchet MS', sans-serif";
+      ctx.fillStyle = "#f5d0fe";
+      ctx.fillText("PELOTA VIOLETA", canvas.width * 0.5, canvas.height * 0.34);
+    }
+
+    function drawBallRespawnEffect(now = performance.now()) {
+      if (now >= state.ballRespawnEffectUntil) return;
+      const ratio = Math.max(0, (state.ballRespawnEffectUntil - now) / 850);
+      const cx = canvas.width * 0.5;
+      const cy = canvas.height * 0.5;
+      const radius = 44 + (1 - ratio) * 220;
+
+      ctx.strokeStyle = `rgba(226, 232, 240, ${0.2 + ratio * 0.7})`;
+      ctx.lineWidth = 2 + ratio * 4;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = `rgba(226, 232, 240, ${0.16 + ratio * 0.18})`;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 24 + ratio * 26, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawAlienBlackHole(now = performance.now()) {
+      if (!state.blackHole) return;
+      const bh = state.blackHole;
+      const rot = (now - bh.bornAt) * 0.0023;
+
+      const aura = ctx.createRadialGradient(bh.x, bh.y, bh.radius * 0.2, bh.x, bh.y, bh.radius * 3.3);
+      aura.addColorStop(0, "rgba(15, 23, 42, 0.82)");
+      aura.addColorStop(0.45, "rgba(56, 189, 248, 0.16)");
+      aura.addColorStop(1, "rgba(15, 23, 42, 0)");
+      ctx.fillStyle = aura;
+      ctx.beginPath();
+      ctx.arc(bh.x, bh.y, bh.radius * 3.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.save();
+      ctx.translate(bh.x, bh.y);
+      for (let i = 0; i < 4; i += 1) {
+        const ring = bh.radius * (0.82 + i * 0.34);
+        ctx.strokeStyle = `rgba(147, 197, 253, ${0.2 - i * 0.03})`;
+        ctx.lineWidth = 2 + (i === 0 ? 1 : 0);
+        ctx.beginPath();
+        ctx.arc(0, 0, ring, rot + i * 0.8, rot + Math.PI * 1.34 + i * 0.9);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      const core = ctx.createRadialGradient(bh.x, bh.y, bh.radius * 0.12, bh.x, bh.y, bh.radius);
+      core.addColorStop(0, "rgba(2, 6, 23, 0.98)");
+      core.addColorStop(0.7, "rgba(3, 7, 18, 0.96)");
+      core.addColorStop(1, "rgba(2, 6, 23, 0.35)");
+      ctx.fillStyle = core;
+      ctx.beginPath();
+      ctx.arc(bh.x, bh.y, bh.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawCyclone(now = performance.now()) {
+      if (!state.cyclone) return;
+      const cyclone = state.cyclone;
+      const lifeDuration = cyclone.chaotic
+        ? config.chaosCycloneDurationMs
+        : cyclone.isBlack
+        ? config.blackCycloneDurationMs
+        : config.cycloneDurationMs;
+      const lifeRatio = Math.max(0, (cyclone.endsAt - now) / lifeDuration);
+      const rot = (now - cyclone.bornAt) * 0.004;
+      const core = cyclone.chaotic
+        ? "rgba(30, 41, 59, 0.84)"
+        : cyclone.isBlack
+        ? "rgba(15, 23, 42, 0.84)"
+        : "rgba(125, 211, 252, 0.55)";
+      const edge = cyclone.chaotic
+        ? "rgba(249, 115, 22, 0.09)"
+        : cyclone.isBlack
+        ? "rgba(2, 6, 23, 0.12)"
+        : "rgba(224, 242, 254, 0.05)";
+      const grad = ctx.createRadialGradient(cyclone.x, cyclone.y, cyclone.radius * 0.2, cyclone.x, cyclone.y, cyclone.radius);
+      grad.addColorStop(0, core);
+      grad.addColorStop(1, edge);
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cyclone.x, cyclone.y, cyclone.radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.save();
+      ctx.translate(cyclone.x, cyclone.y);
+      for (let i = 0; i < 4; i += 1) {
+        const ring = cyclone.radius * (0.28 + i * 0.19);
+        ctx.strokeStyle = cyclone.chaotic
+          ? `rgba(251, 146, 60, ${0.33 - i * 0.05})`
+          : cyclone.isBlack
+          ? `rgba(148, 163, 184, ${0.26 - i * 0.04})`
+          : `rgba(224, 242, 254, ${0.38 - i * 0.06})`;
+        ctx.lineWidth = cyclone.chaotic ? 3 : cyclone.isBlack ? 3 : 2;
+        ctx.beginPath();
+        ctx.arc(0, 0, ring, rot + i * 0.6, rot + Math.PI * 1.45 + i * 0.6);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      if (now < state.cycloneAlertUntil) {
+        ctx.textAlign = "center";
+        ctx.font = "900 30px 'Trebuchet MS', sans-serif";
+        ctx.fillStyle = cyclone.chaotic ? "#fdba74" : cyclone.isBlack ? "#e2e8f0" : "#e0f2fe";
+        ctx.fillText(
+          cyclone.chaotic ? "TORNADO CAOTICO" : cyclone.isBlack ? "HURACAN NEGRO" : "CICLON",
+          cyclone.x,
+          cyclone.y - cyclone.radius - 14
+        );
+      } else if (lifeRatio < 0.2) {
+        ctx.textAlign = "center";
+        ctx.font = "700 16px 'Trebuchet MS', sans-serif";
+        ctx.fillStyle = cyclone.chaotic ? "#fdba74" : cyclone.isBlack ? "#cbd5e1" : "#bae6fd";
+        ctx.fillText("se disipa...", cyclone.x, cyclone.y - cyclone.radius - 10);
+      }
+    }
+
+    function drawChaosWeather(now = performance.now()) {
+      if (!state.chaosWeatherType || now >= state.chaosWeatherUntil) return;
+
+      if (state.chaosWeatherType === "rain") {
+        for (const particle of state.chaosWeatherParticles) {
+          ctx.strokeStyle = `rgba(191, 219, 254, ${particle.alpha * 0.72})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(particle.x, particle.y);
+          ctx.lineTo(particle.x + particle.vx * 1.9, particle.y + particle.len);
+          ctx.stroke();
+        }
+        return;
+      }
+
+      if (state.chaosWeatherType === "leaves") {
+        const palette = ["#b45309", "#f59e0b", "#92400e", "#84cc16"];
+        for (let i = 0; i < state.chaosWeatherParticles.length; i += 1) {
+          const particle = state.chaosWeatherParticles[i];
+          ctx.save();
+          ctx.globalAlpha = 0.82;
+          ctx.translate(particle.x, particle.y);
+          ctx.rotate(particle.rot);
+          ctx.fillStyle = palette[i % palette.length];
+          ctx.beginPath();
+          ctx.ellipse(0, 0, particle.size, particle.size * 0.52, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+        return;
+      }
+
+      for (const particle of state.chaosWeatherParticles) {
+        ctx.fillStyle = `rgba(226, 232, 240, ${particle.alpha * 0.78})`;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawChaosEventBanner(now = performance.now()) {
+      if (!state.chaosEventText || now >= state.chaosEventUntil) return;
+      const ratio = Math.max(0, (state.chaosEventUntil - now) / config.chaosBannerMs);
+      ctx.textAlign = "center";
+      ctx.font = "900 30px 'Trebuchet MS', sans-serif";
+      ctx.fillStyle = `rgba(254, 242, 242, ${0.4 + ratio * 0.6})`;
+      ctx.fillText(state.chaosEventText, canvas.width * 0.5, canvas.height * 0.19);
+      ctx.strokeStyle = `rgba(15, 23, 42, ${0.35 + ratio * 0.45})`;
+      ctx.lineWidth = 3;
+      ctx.strokeText(state.chaosEventText, canvas.width * 0.5, canvas.height * 0.19);
+    }
+
+    function drawChaosScreenEffects(now = performance.now()) {
+      if (now < state.chaosDarkUntil) {
+        const ratio = Math.max(0.18, (state.chaosDarkUntil - now) / config.chaosDarkMs);
+        ctx.fillStyle = `rgba(2, 6, 23, ${0.2 + ratio * 0.33})`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      if (now < state.chaosBrightUntil) {
+        const ratio = Math.max(0.16, (state.chaosBrightUntil - now) / config.chaosBrightMs);
+        ctx.fillStyle = `rgba(241, 245, 249, ${0.08 + ratio * 0.19})`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      if (now < state.chaosBlackoutUntil) {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.98)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    function drawGhosts(now = performance.now()) {
+      if (!isNightPhase(now)) return;
+      for (const ghost of state.ghosts) {
+        ctx.shadowBlur = 16;
+        ctx.shadowColor = "#93c5fd";
+        ctx.fillStyle = "rgba(148, 163, 184, 0.78)";
+        ctx.beginPath();
+        ctx.arc(ghost.x, ghost.y, ghost.radius, Math.PI, 0);
+        ctx.lineTo(ghost.x + ghost.radius, ghost.y + ghost.radius * 0.9);
+        ctx.lineTo(ghost.x + ghost.radius * 0.5, ghost.y + ghost.radius * 0.62);
+        ctx.lineTo(ghost.x, ghost.y + ghost.radius * 0.92);
+        ctx.lineTo(ghost.x - ghost.radius * 0.5, ghost.y + ghost.radius * 0.62);
+        ctx.lineTo(ghost.x - ghost.radius, ghost.y + ghost.radius * 0.9);
+        ctx.closePath();
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = "transparent";
+
+        ctx.fillStyle = "#0f172a";
+        ctx.beginPath();
+        ctx.arc(ghost.x - ghost.radius * 0.28, ghost.y - ghost.radius * 0.18, ghost.radius * 0.13, 0, Math.PI * 2);
+        ctx.arc(ghost.x + ghost.radius * 0.28, ghost.y - ghost.radius * 0.18, ghost.radius * 0.13, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawDragonAttack(now = performance.now()) {
+      const atk = state.dragonAttack;
+      if (!atk) return;
+
+      const total = Math.max(1, atk.endsAt - atk.startedAt);
+      const t = Math.min(1, Math.max(0, (now - atk.startedAt) / total));
+      const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      const x = atk.fromX + (atk.toX - atk.fromX) * eased;
+      const y = atk.y + Math.sin((now - atk.startedAt) * 0.011) * 8;
+      const dir = atk.fromX < atk.toX ? 1 : -1;
+      const jawOpen = atk.consumed ? Math.max(0, 1 - (now - atk.consumeAt) / 260) : 1;
+      const flap = Math.sin((now - atk.startedAt) * 0.022) * 11 * (1 - t * 0.25);
+      const bodyPulse = 1 + Math.sin((now - atk.startedAt) * 0.028) * 0.04;
+      const jawDrop = 7 + jawOpen * 12;
+
+      ctx.save();
+      ctx.globalAlpha = 0.7;
+      for (let i = 0; i < 6; i += 1) {
+        const trailX = x - dir * (38 + i * 22);
+        const trailR = 13 + i * 3.6;
+        ctx.fillStyle = `rgba(248, 113, 113, ${0.24 - i * 0.03})`;
+        ctx.beginPath();
+        ctx.arc(trailX, y + Math.sin(now * 0.01 + i) * 2, trailR, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(dir, 1);
+
+      const dragonGlow = ctx.createRadialGradient(20, 0, 8, 20, 0, 120);
+      dragonGlow.addColorStop(0, "rgba(251, 113, 133, 0.38)");
+      dragonGlow.addColorStop(1, "rgba(127, 29, 29, 0)");
+      ctx.fillStyle = dragonGlow;
+      ctx.beginPath();
+      ctx.arc(20, 0, 120, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "rgba(2, 6, 23, 0.4)";
+      ctx.beginPath();
+      ctx.ellipse(8, 36, 78, 15, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      const tailGrad = ctx.createLinearGradient(-170, 0, -35, 0);
+      tailGrad.addColorStop(0, "#450a0a");
+      tailGrad.addColorStop(0.6, "#7f1d1d");
+      tailGrad.addColorStop(1, "#b91c1c");
+      ctx.strokeStyle = tailGrad;
+      ctx.lineWidth = 12;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(-40, 6);
+      ctx.bezierCurveTo(-88, -20 - flap * 0.2, -124, 15, -160, -8 + Math.sin(now * 0.016) * 4);
+      ctx.stroke();
+      ctx.lineCap = "butt";
+
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath();
+      ctx.moveTo(-168, -12);
+      ctx.lineTo(-182, -3);
+      ctx.lineTo(-168, 6);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.globalAlpha = 0.52;
+      ctx.fillStyle = "#7f1d1d";
+      ctx.beginPath();
+      ctx.moveTo(-18, -8);
+      ctx.quadraticCurveTo(-92, -56 - flap * 0.5, -60, -2);
+      ctx.quadraticCurveTo(-28, -10, -12, 2);
+      ctx.closePath();
+      ctx.fill();
+
+      const wingGrad = ctx.createLinearGradient(-98, -38, -4, 16);
+      wingGrad.addColorStop(0, "#450a0a");
+      wingGrad.addColorStop(1, "#b91c1c");
+      ctx.globalAlpha = 0.9;
+      ctx.fillStyle = wingGrad;
+      ctx.beginPath();
+      ctx.moveTo(-8, -5);
+      ctx.quadraticCurveTo(-98, -66 - flap, -68, -1);
+      ctx.quadraticCurveTo(-36, -12, -10, 7);
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      const bodyGrad = ctx.createLinearGradient(-52, -24, 70, 26);
+      bodyGrad.addColorStop(0, "#7f1d1d");
+      bodyGrad.addColorStop(0.55, "#b91c1c");
+      bodyGrad.addColorStop(1, "#dc2626");
+      ctx.fillStyle = bodyGrad;
+      ctx.beginPath();
+      ctx.ellipse(10, 3, 62 * bodyPulse, 31, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "rgba(251, 146, 60, 0.45)";
+      ctx.beginPath();
+      ctx.ellipse(19, 10, 38, 15, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#fca5a5";
+      for (let i = 0; i < 7; i += 1) {
+        const sx = -27 + i * 14;
+        const sy = 7 + Math.sin(now * 0.018 + i * 1.2) * 1.4;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 3.7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = "#f97316";
+      for (let i = 0; i < 7; i += 1) {
+        const spikeX = -22 + i * 14;
+        const spikeH = 10 + (i % 2 === 0 ? 3 : 0) + Math.sin(now * 0.024 + i) * 1.7;
+        ctx.beginPath();
+        ctx.moveTo(spikeX - 3, -20);
+        ctx.lineTo(spikeX, -20 - spikeH);
+        ctx.lineTo(spikeX + 3, -20);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      const headGrad = ctx.createLinearGradient(44, -26, 110, 20);
+      headGrad.addColorStop(0, "#b91c1c");
+      headGrad.addColorStop(1, "#ef4444");
+      ctx.fillStyle = headGrad;
+      ctx.beginPath();
+      ctx.moveTo(44, -22);
+      ctx.lineTo(87, -19);
+      ctx.quadraticCurveTo(108, -10, 106, 2);
+      ctx.quadraticCurveTo(103, 17, 88, 21);
+      ctx.lineTo(56, 18);
+      ctx.quadraticCurveTo(43, 8, 44, -22);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = "#7f1d1d";
+      ctx.beginPath();
+      ctx.moveTo(57, 9);
+      ctx.lineTo(99, 9 + jawDrop * 0.35);
+      ctx.lineTo(91, 24 + jawDrop * 0.48);
+      ctx.lineTo(58, 19);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = "#f8fafc";
+      for (let i = 0; i < 5; i += 1) {
+        const tx = 67 + i * 7;
+        ctx.beginPath();
+        ctx.moveTo(tx, 6);
+        ctx.lineTo(tx + 2.4, 10);
+        ctx.lineTo(tx - 2.4, 10);
+        ctx.closePath();
+        ctx.fill();
+
+        const by = 10 + jawDrop * 0.22;
+        ctx.beginPath();
+        ctx.moveTo(tx + 1, by + 8);
+        ctx.lineTo(tx + 3.2, by + 3);
+        ctx.lineTo(tx - 1.4, by + 3.2);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      ctx.fillStyle = "#f8fafc";
+      ctx.beginPath();
+      ctx.arc(78, -8, 4.4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#111827";
+      ctx.beginPath();
+      ctx.arc(78.6, -8, 2.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(79.2, -8.8, 0.9, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#fca5a5";
+      ctx.beginPath();
+      ctx.moveTo(59, -20);
+      ctx.lineTo(52, -34);
+      ctx.lineTo(66, -24);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(73, -20);
+      ctx.lineTo(67, -34);
+      ctx.lineTo(80, -24);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = "#1f2937";
+      ctx.beginPath();
+      ctx.arc(95, -2, 1.6, 0, Math.PI * 2);
+      ctx.arc(95, 6, 1.6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      if (atk.consumed || now >= atk.consumeAt - 180) {
+        const target = state[atk.targetSide];
+        const tx = target.x + config.paddleWidth * 0.5;
+        const ty = target.y + target.height * 0.5;
+        const mouthX = x + dir * 99;
+        const mouthY = y + 10 + jawDrop * 0.2;
+        const breathGrad = ctx.createLinearGradient(mouthX, mouthY, tx, ty);
+        breathGrad.addColorStop(0, "rgba(251, 146, 60, 0.96)");
+        breathGrad.addColorStop(0.45, "rgba(248, 113, 113, 0.8)");
+        breathGrad.addColorStop(1, "rgba(124, 45, 18, 0.08)");
+
+        ctx.strokeStyle = breathGrad;
+        ctx.lineCap = "round";
+        for (let i = 0; i < 3; i += 1) {
+          const offset = (i - 1) * 4 + Math.sin(now * 0.03 + i * 1.1) * 1.5;
+          const cx = mouthX + (tx - mouthX) * 0.45 + Math.sin(now * 0.02 + i * 0.9) * 18;
+          const cy = mouthY + (ty - mouthY) * 0.45 + Math.cos(now * 0.024 + i * 1.4) * 12;
+          ctx.lineWidth = 6 + i * 3;
+          ctx.beginPath();
+          ctx.moveTo(mouthX, mouthY + offset);
+          ctx.quadraticCurveTo(cx, cy, tx, ty);
+          ctx.stroke();
+        }
+        ctx.lineCap = "butt";
+
+        for (let i = 0; i < 10; i += 1) {
+          const p = i / 10;
+          const bx = mouthX + (tx - mouthX) * p + Math.sin(now * 0.018 + i * 1.2) * 4;
+          const by = mouthY + (ty - mouthY) * p + Math.cos(now * 0.017 + i * 0.9) * 4;
+          const r = 1.2 + (1 - p) * 2.3;
+          ctx.fillStyle = p < 0.4 ? "rgba(254, 215, 170, 0.9)" : "rgba(251, 146, 60, 0.5)";
+          ctx.beginPath();
+          ctx.arc(bx, by, r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    function drawMammaMia(now = performance.now()) {
+      if (now >= state.mammaMiaUntil) return;
+      const ratio = Math.max(0, (state.mammaMiaUntil - now) / config.dragonMammaMiaMs);
+      const pulse = 1 + Math.sin(now * 0.025) * 0.08;
+      ctx.textAlign = "center";
+      ctx.font = `900 ${Math.floor(44 * pulse)}px 'Trebuchet MS', sans-serif`;
+      ctx.fillStyle = `rgba(254, 242, 242, ${0.4 + ratio * 0.6})`;
+      ctx.fillText("mamma mia!", canvas.width * 0.5, canvas.height * 0.33);
+      ctx.strokeStyle = `rgba(153, 27, 27, ${0.3 + ratio * 0.6})`;
+      ctx.lineWidth = 3;
+      ctx.strokeText("mamma mia!", canvas.width * 0.5, canvas.height * 0.33);
+    }
+
+    function drawPackam(now = performance.now()) {
+      if (!state.packam) return;
+      const p = state.packam;
+      const heading = Math.atan2(p.vy, p.vx);
+      const mouth = 0.22 + Math.sin(now * 0.015) * 0.12;
+      const night = isNightPhase(now);
+
+      if (p.onFire) {
+        ctx.shadowBlur = 24;
+        ctx.shadowColor = "#f97316";
+        ctx.fillStyle = "rgba(249, 115, 22, 0.38)";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius * 1.38, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = "transparent";
+      }
+
+      if (night && !p.onFire) {
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = "#fde047";
+      }
+
+      ctx.fillStyle = p.onFire ? "#fb923c" : "#fde047";
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.arc(p.x, p.y, p.radius, heading + mouth, heading - mouth + Math.PI * 2, false);
+      ctx.closePath();
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = "transparent";
+
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath();
+      ctx.arc(p.x + p.radius * 0.25, p.y - p.radius * 0.35, p.radius * 0.15, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawBall(ball, now = performance.now()) {
+      const phase = getCurrentPhase(now);
+      const isNight = phase === "night";
+      const isFire = isFireActive(ball, now);
+      const dlcCursed = isBallDlcCursed(ball, now);
+      const tranceMarked = isBallTranceMarked(ball, now);
+      const cx = ball.x + ball.size / 2;
+      const cy = ball.y + ball.size / 2;
+      const isPowerControlled = Boolean(ball.controlledBy);
+      const controlColor = ball.controlledBy === "left" ? "#38bdf8" : "#fbbf24";
+
+      const glowRadius = ball.size * (isNight ? 3.2 : dlcCursed ? 2.7 : 2.2);
+      const glow = ctx.createRadialGradient(cx, cy, ball.size * 0.2, cx, cy, glowRadius);
+      const glowCore = ball.isPurple
+        ? isNight
+          ? "rgba(233, 213, 255, 0.8)"
+          : "rgba(233, 213, 255, 0.56)"
+        : dlcCursed
+        ? "rgba(248, 113, 113, 0.68)"
+        : isNight
+        ? "rgba(224, 242, 254, 0.7)"
+        : "rgba(224, 242, 254, 0.42)";
+      glow.addColorStop(0, glowCore);
+      glow.addColorStop(1, "rgba(224, 242, 254, 0)");
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(cx, cy, glowRadius, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (isFire) {
+        const isBlackFire = ball.fireType === "black";
+        const vLen = Math.hypot(ball.vx, ball.vy) || 1;
+        const dirX = ball.vx / vLen;
+        const dirY = ball.vy / vLen;
+        const perpX = -dirY;
+        const perpY = dirX;
+        const tailLen = Math.max(26, ball.size * 2.2);
+        const tailX = cx - dirX * tailLen;
+        const tailY = cy - dirY * tailLen;
+
+        ctx.fillStyle = isBlackFire ? "rgba(2, 6, 23, 0.66)" : "rgba(249, 115, 22, 0.45)";
+        ctx.beginPath();
+        ctx.moveTo(cx + perpX * 5, cy + perpY * 5);
+        ctx.lineTo(cx - perpX * 5, cy - perpY * 5);
+        ctx.lineTo(tailX, tailY);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.shadowBlur = isBlackFire ? 26 : 22;
+        ctx.shadowColor = isBlackFire ? "#020617" : "#f97316";
+        ctx.fillStyle = isBlackFire ? "#1e293b" : "#fb923c";
+        ctx.beginPath();
+        ctx.arc(cx, cy, Math.max(config.ballSize * 0.9, ball.size * 0.52), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = "transparent";
+
+        ctx.fillStyle = isBlackFire ? "#cbd5e1" : "#fde047";
+        ctx.fillRect(ball.x + 2, ball.y + 2, ball.size - 4, ball.size - 4);
+        if (isDesertDlcEnabled() && desertDlcAssets.skins.ball.complete) {
+          ctx.save();
+          ctx.globalAlpha = 0.76;
+          ctx.drawImage(desertDlcAssets.skins.ball, ball.x, ball.y, ball.size, ball.size);
+          ctx.restore();
+        } else if (isTantricDlcEnabled() && tantricDlcAssets.skins.ball.complete) {
+          ctx.save();
+          ctx.globalAlpha = 0.7;
+          ctx.drawImage(tantricDlcAssets.skins.ball, ball.x, ball.y, ball.size, ball.size);
+          ctx.restore();
+        }
+        if (isPowerControlled) {
+          const pulse = 1 + Math.sin(now * 0.02) * 0.07;
+          ctx.strokeStyle = `${controlColor}dd`;
+          ctx.lineWidth = 2;
+          ctx.strokeRect(
+            ball.x - 3 * pulse,
+            ball.y - 3 * pulse,
+            ball.size + 6 * pulse,
+            ball.size + 6 * pulse
+          );
+        }
+        if (dlcCursed) {
+          const pulse = 1 + Math.sin(now * 0.025) * 0.15;
+          ctx.strokeStyle = "rgba(248, 113, 113, 0.95)";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(
+            ball.x - 2 * pulse,
+            ball.y - 2 * pulse,
+            ball.size + 4 * pulse,
+            ball.size + 4 * pulse
+          );
+        }
+        if (tranceMarked) {
+          const pulse = 1 + Math.sin(now * 0.03) * 0.12;
+          const markColor = ball.dlcMarkedBy === "left" ? "rgba(103, 232, 249, 0.95)" : "rgba(251, 113, 133, 0.95)";
+          ctx.strokeStyle = markColor;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(cx, cy, ball.size * 0.7 * pulse, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        return;
+      }
+
+      ctx.shadowBlur = isNight ? 16 : 10;
+      ctx.shadowColor = ball.isPurple ? "#d946ef" : isNight ? "#e0f2fe" : "#bae6fd";
+      ctx.fillStyle = ball.isPurple ? "#c084fc" : "#f8fafc";
+      ctx.fillRect(ball.x, ball.y, ball.size, ball.size);
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = "transparent";
+
+      if (isDesertDlcEnabled() && desertDlcAssets.skins.ball.complete) {
+        ctx.save();
+        ctx.globalAlpha = dlcCursed ? 0.95 : 0.82;
+        ctx.drawImage(desertDlcAssets.skins.ball, ball.x, ball.y, ball.size, ball.size);
+        ctx.restore();
+      } else if (isTantricDlcEnabled() && tantricDlcAssets.skins.ball.complete) {
+        ctx.save();
+        ctx.globalAlpha = dlcCursed ? 0.95 : 0.72;
+        ctx.drawImage(tantricDlcAssets.skins.ball, ball.x, ball.y, ball.size, ball.size);
+        ctx.restore();
+      }
+
+      if (dlcCursed) {
+        const pulse = 1 + Math.sin(now * 0.025) * 0.15;
+        ctx.strokeStyle = "rgba(248, 113, 113, 0.95)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(
+          ball.x - 2 * pulse,
+          ball.y - 2 * pulse,
+          ball.size + 4 * pulse,
+          ball.size + 4 * pulse
+        );
+      }
+
+      if (tranceMarked) {
+        const pulse = 1 + Math.sin(now * 0.03) * 0.12;
+        const markColor = ball.dlcMarkedBy === "left" ? "rgba(103, 232, 249, 0.95)" : "rgba(251, 113, 133, 0.95)";
+        ctx.strokeStyle = markColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, ball.size * 0.7 * pulse, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      if (isPowerControlled) {
+        const pulse = 1 + Math.sin(now * 0.02) * 0.07;
+        ctx.strokeStyle = `${controlColor}dd`;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(
+          ball.x - 3 * pulse,
+          ball.y - 3 * pulse,
+          ball.size + 6 * pulse,
+          ball.size + 6 * pulse
+        );
+      }
+    }
+
+    function drawServeDelayHint() {
+      if (!state.running || state.serveReleaseUntil <= 0) return;
+      const remainingMs = state.serveReleaseUntil - performance.now();
+      if (remainingMs <= 0) return;
+
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#f8fafccc";
+      ctx.font = "700 24px 'Trebuchet MS', sans-serif";
+      ctx.fillText("Preparense...", canvas.width / 2, canvas.height * 0.18);
+    }
+
+    function drawOverlay() {
+      if (state.running) return;
+
+      ctx.fillStyle = state.gameOver ? "#02061788" : "#020617cc";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.textAlign = "center";
+
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "700 40px 'Trebuchet MS', sans-serif";
+
+      if (state.gameOver) {
+        ctx.fillText(`${state.lastWinner} gana`, canvas.width / 2, canvas.height / 2 - 20);
+        ctx.font = "500 24px 'Trebuchet MS', sans-serif";
+        ctx.fillStyle = "#fbbf24";
+        ctx.fillText("Click para jugar otra partida", canvas.width / 2, canvas.height / 2 + 30);
+      } else if (state.countdownUntil > 0) {
+        const remainingMs = Math.max(0, state.countdownUntil - performance.now());
+        const seconds = Math.max(1, Math.ceil(remainingMs / 1000));
+        ctx.fillStyle = "#f8fafc";
+        ctx.fillText(`${seconds}`, canvas.width / 2, canvas.height / 2 - 10);
+        ctx.font = "500 20px 'Trebuchet MS', sans-serif";
+        ctx.fillStyle = "#38bdf8";
+        ctx.fillText("Saque en...", canvas.width / 2, canvas.height / 2 + 28);
+      } else {
+        ctx.fillText("Space o click para empezar", canvas.width / 2, canvas.height / 2 - 10);
+        ctx.font = "500 20px 'Trebuchet MS', sans-serif";
+        ctx.fillStyle = "#38bdf8";
+        ctx.fillText("P1: W/A + T + Q + E | P2: Flechas + ← + Shift + Enter | DLCs siempre ON", canvas.width / 2, canvas.height / 2 + 28);
+      }
+    }
+
+    function draw() {
+      const now = performance.now();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      drawTableField(now);
+      drawAlienBlackHole(now);
+      drawCyclone(now);
+      drawBallRespawnEffect(now);
+      drawFireworks(now);
+      drawNet();
+      drawScores();
+      drawEffectTimers(now);
+      drawPenaltyTracker();
+      drawPaddle(state.left, "#38bdf8", "#22d3ee", "left", now);
+      drawPaddle(state.right, "#fbbf24", "#fb923c", "right", now);
+      drawStones();
+      drawDlcWeapons(now);
+      drawAliens(now);
+      drawAlienBullets();
+      drawDropBalls();
+      drawFriendHats(now);
+      drawDesertBanners(now);
+      drawPackam(now);
+      drawGhosts(now);
+      drawDragonAttack(now);
+      for (const ball of state.balls) {
+        drawBall(ball, now);
+      }
+      drawExplosions(now);
+      drawChaosWeather(now);
+      drawPurpleAlert(now);
+      drawServeDelayHint();
+      drawOverlay();
+      drawMammaMia(now);
+      drawChaosEventBanner(now);
+      drawChaosScreenEffects(now);
+    }
+
+    function loop(now) {
+      const prevTick = state.lastTickAt || now;
+      const deltaMs = Math.max(0, Math.min(120, now - prevTick));
+      state.lastTickAt = now;
+
+      if (!state.running && !state.gameOver && state.countdownUntil > 0) {
+        const remainingMs = Math.max(0, state.countdownUntil - now);
+        const seconds = Math.max(1, Math.ceil(remainingMs / 1000));
+        if (seconds !== state.countdownShown) {
+          state.countdownShown = seconds;
+          playCountdownTickSfx(seconds);
+        }
+
+        if (now >= state.countdownUntil) {
+          state.countdownUntil = 0;
+          state.countdownShown = 0;
+          state.running = true;
+          state.serveReleaseUntil = now + config.serveDelayMs;
+        }
+      }
+
+      if (state.running) {
+        updatePaddles(now);
+        if (state.penalty.active) {
+          updatePenaltyMode(now);
+        } else {
+          if (state.serveReleaseUntil > 0) {
+            if (now >= state.serveReleaseUntil) {
+              state.serveReleaseUntil = 0;
+              state.roundsStarted += 1;
+              playStartSfx();
+            }
+          } else {
+            updateDropSpawns(now);
+            updateFriendHatSpawns(now);
+            updateFriendHats(now);
+            updateDesertStorm(now);
+            updateDesertBannerSpawns(now);
+            updateDesertBanners(now);
+            updateBalls(now);
+            updateDlcWeapons(now);
+            updateStones(now);
+          }
+        }
+      }
+      updateAlienDlc(now, deltaMs);
+      updateChaosState(now);
+      updateDragonAttack(now);
+      updateCyclone(now, deltaMs);
+      updateNightGhosts(now);
+      updateExplosions(now);
+      updateFireworks(now);
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    function startGame() {
+      if (state.countdownUntil > 0) return;
+      ensureAudioReady();
+
+      if (state.gameOver) {
+        const now = performance.now();
+        state.scoreL = 0;
+        state.scoreR = 0;
+        state.gameOver = false;
+        state.lastWinner = "";
+        state.countdownShown = 0;
+        state.countdownUntil = 0;
+        state.serveReleaseUntil = 0;
+        state.lastTickAt = now;
+        state.dropBalls = [];
+        state.nextDropSpawnAt = 0;
+        state.ballRespawnEffectUntil = 0;
+        clearCycloneState();
+        clearFriendHatStates();
+        clearDlcRoundEffects(true);
+        clearDesertDlcRoundEffects(true);
+        state.roundsStarted = 0;
+        state.fieldScale = 1;
+        applyFieldScale();
+        state.packam = null;
+        state.packamPermanentlyDead = false;
+        state.packamDisabledUntilRound = 0;
+        state.lastBallTouchSide = null;
+        state.dayCycleStartedAt = now;
+        state.left.x = sideMargin;
+        state.right.x = canvas.width - sideMargin - config.paddleWidth;
+        state.ghosts = [];
+        state.stones = [];
+        state.explosions = [];
+        state.purpleAlertUntil = 0;
+        state.fireworks = [];
+        state.nextFireworkAt = 0;
+        clearChaosState(true);
+        clearAlienDlcState(true);
+        state.left.powerActiveUntil = 0;
+        state.right.powerActiveUntil = 0;
+        state.left.powerReadyRound = 0;
+        state.right.powerReadyRound = 0;
+        state.left.powerBuffPermanent = false;
+        state.right.powerBuffPermanent = false;
+        state.left.powerUsedRound = -1;
+        state.right.powerUsedRound = -1;
+        state.left.friendHatStyle = 0;
+        state.right.friendHatStyle = 1;
+        state.left.cursedUntil = 0;
+        state.right.cursedUntil = 0;
+        state.left.desertFortifiedUntil = 0;
+        state.right.desertFortifiedUntil = 0;
+        state.left.frozenUntil = 0;
+        state.right.frozenUntil = 0;
+        state.left.destroyedUntilTime = 0;
+        state.right.destroyedUntilTime = 0;
+        state.left.destroyedUntilRound = 0;
+        state.right.destroyedUntilRound = 0;
+        state.left.permanentlyDestroyed = false;
+        state.right.permanentlyDestroyed = false;
+        state.left.dragonBurned = false;
+        state.right.dragonBurned = false;
+        state.dragonTriggered = false;
+        state.dragonAttack = null;
+        state.mammaMiaUntil = 0;
+        state.penalty.active = false;
+        state.penalty.shotIndex = 0;
+        state.penalty.shooter = null;
+        state.penalty.shotInProgress = false;
+        state.penalty.steerActive = false;
+        state.penalty.shotsL = [];
+        state.penalty.shotsR = [];
+        refreshPaddleSizes();
+        state.balls = [];
+        spawnNormalBallWithEffect(Math.random() > 0.5 ? 1 : -1, now);
+      }
+      if (state.balls.length === 0) {
+        spawnNormalBallWithEffect(Math.random() > 0.5 ? 1 : -1, performance.now());
+      }
+      if (!state.running) {
+        const now = performance.now();
+        state.lastTickAt = now;
+        if (state.roundsStarted === 0 && state.scoreL === 0 && state.scoreR === 0) {
+          state.dayCycleStartedAt = now;
+        }
+        state.serveReleaseUntil = now + config.serveDelayMs;
+        state.nextDropSpawnAt = 0;
+        state.nextFriendHatAt = 0;
+        clearDlcRoundEffects(false);
+        clearDesertDlcRoundEffects(false);
+        scheduleNextDrop(now);
+      }
+      state.running = true;
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space" && !e.repeat) {
+        ensureAudioReady();
+        startGame();
+        e.preventDefault();
+        return;
+      }
+
+      if (e.code === "KeyM" && !e.repeat) {
+        toggleMusic();
+        e.preventDefault();
+        return;
+      }
+
+      if (e.code === "KeyN" && !e.repeat) {
+        toggleSfx();
+        e.preventDefault();
+        return;
+      }
+
+      if (!e.repeat && (e.code === weaponKeyForSide("left") || e.code === weaponKeyForSide("right"))) {
+        ensureAudioReady();
+        const side = e.code === weaponKeyForSide("left") ? "left" : "right";
+        if (tryFireTantricWeapon(side)) {
+          e.preventDefault();
+          return;
+        }
+      }
+
+      if (!e.repeat && (e.code === tranceKeyForSide("left") || e.code === tranceKeyForSide("right"))) {
+        ensureAudioReady();
+        const side = e.code === tranceKeyForSide("left") ? "left" : "right";
+        tryActivateTantricTrance(side);
+        e.preventDefault();
+        return;
+      }
+
+      if (!e.repeat && (e.code === "KeyT" || e.code === "ArrowLeft")) {
+        ensureAudioReady();
+        const side = e.code === "KeyT" ? "left" : "right";
+        if (state.penalty.active) {
+          launchPenaltyShot(side);
+          e.preventDefault();
+          return;
+        }
+        if (tryActivatePower(side)) {
+          playBoostHitSfx();
+        }
+        e.preventDefault();
+        return;
+      }
+
+      if (keyMap[e.code]) {
+        ensureAudioReady();
+        const [side, dir] = keyMap[e.code];
+        state[side][dir] = true;
+        e.preventDefault();
+      }
+    });
+
+    document.addEventListener("keyup", (e) => {
+      if (keyMap[e.code]) {
+        const [side, dir] = keyMap[e.code];
+        state[side][dir] = false;
+        e.preventDefault();
+      }
+    });
+
+    canvas.addEventListener("click", () => {
+      startGame();
+    });
+
+    musicToggle.addEventListener("click", () => {
+      toggleMusic();
+    });
+
+    sfxToggle.addEventListener("click", () => {
+      toggleSfx();
+    });
+
+    refreshPaddleSizes();
+    resetToSingleBall(Math.random() > 0.5 ? 1 : -1);
+    updateAudioButtonLabels();
+    draw();
+    loop();
+  </script>
+</body>
+</html>

@@ -33,7 +33,7 @@ public class MusicManager : MonoBehaviour
     [Header("Aliento Negro")]
     [Tooltip("Lista reproducida cuando el Aliento Negro alcanza el tier 3 o superior")]
     public List<AudioClip> temasAlientoNegro = new List<AudioClip>();
-    [Tooltip("Duración del fade al entrar o salir de la música del Aliento Negro")]
+    [Tooltip("Duración del fade al entrar o salir de la másica del Aliento Negro")]
     public float fadeAlientoNegro = 0.75f;
 
     [Header("Random")]
@@ -171,7 +171,7 @@ public class MusicManager : MonoBehaviour
         }
     }
 
-    // Reproduce un SFX (2D), pausando la música con fade y reanudando el mismo tema/posición.
+    // Reproduce un SFX (2D), pausando la másica con fade y reanudando el mismo tema/posición.
     public void PlaySFXYReanudar(AudioClip clip, float volumen = 1f, float fade = 0.6f)
     {
         if (clip == null) return;
@@ -180,7 +180,7 @@ public class MusicManager : MonoBehaviour
 
     IEnumerator CoPlaySFXYReanudar_PauseResume(AudioClip clip, float volumen, float fade)
     {
-        // Guardar volúmenes actuales y cuáles suenan
+        // Guardar volúmenes actuales y cuéles suenan
         float a0 = a.volume, b0 = b.volume;
         bool aWas = a.isPlaying, bWas = b.isPlaying;
 
@@ -211,7 +211,7 @@ public class MusicManager : MonoBehaviour
             yield return null;
         }
 
-        // Reanudar música y subir al volumen previo
+        // Reanudar másica y subir al volumen previo
         PausarMusica(false);
         t = 0f;
         while (t < fade)
@@ -423,3 +423,6 @@ public class MusicManager : MonoBehaviour
         }
     }
 }
+
+
+

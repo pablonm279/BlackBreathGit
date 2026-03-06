@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using UnityEngine;
 
@@ -18,12 +18,13 @@ public static class CombatLogFormatter
   }
 
   private const string ColorEtiquetaAtaque = "#b88a4aff";
-  private const string ColorEtiquetaSalvacion = "#194366ff";
+  private const string ColorEtiquetaSalvacion = "#5f9f9bff";
   private const string ColorExito = "#12673cff";
   private const string ColorFallo = "#822121ff";
   private const string ColorRoce = "#7a6421ff";
   private const string ColorCritico = "#e03409ff";
   private const string ColorEstado = "#563795ff";
+  private const string ColorValour = "#5f9f9bff";
   private const string ColorBuff = "#2c766dff";
   private const string ColorDebuff = "#89354eff";
   private const string ColorTrampa = "#5c5049ff";
@@ -106,7 +107,8 @@ public static class CombatLogFormatter
     float atributo,
     float dificultad,
     string textoResultado,
-    CombatOutcome outcome)
+    CombatOutcome outcome,
+    bool colorearResultado = true)
   {
     float total = d20 + atributo;
 
@@ -128,7 +130,7 @@ public static class CombatLogFormatter
       .Append(' ').Append(FormatearNumeroConSigno(atributo)).Append(' ').Append(T("atr"))
       .Append(" = ").Append(FormatearNumero(total))
       .Append(" | ").Append(T("vs")).Append(' ').Append(T("DC")).Append(' ').Append(FormatearNumero(dificultad))
-      .Append(" -> ").Append(ResaltarResultado(textoResultado, outcome));
+      .Append(" -> ").Append(ResaltarResultado(textoResultado, outcome, colorearResultado));
 
     return sb.ToString();
   }
@@ -141,6 +143,11 @@ public static class CombatLogFormatter
   public static string EventoBuff(string mensaje, bool esBuff)
   {
     return Evento(esBuff ? T("BUFF") : T("DEBUFF"), esBuff ? ColorBuff : ColorDebuff, mensaje);
+  }
+
+  public static string EventoValour(string mensaje)
+  {
+    return Evento("VAL", ColorValour, mensaje);
   }
 
   public static string EventoTrampa(string mensaje)
@@ -173,8 +180,13 @@ public static class CombatLogFormatter
     return $"{Etiqueta(etiqueta, colorHex)} {mensaje}";
   }
 
-  private static string ResaltarResultado(string textoResultado, CombatOutcome outcome)
+  private static string ResaltarResultado(string textoResultado, CombatOutcome outcome, bool colorearResultado = true)
   {
+    if (!colorearResultado)
+    {
+      return $"<b>{T(textoResultado)}</b>";
+    }
+
     string color = outcome switch
     {
       CombatOutcome.Pifia => ColorFallo,
@@ -199,3 +211,4 @@ public static class CombatLogFormatter
     return Math.Abs(valor % 1) < 0.01f ? valor.ToString("+0;-0;+0") : valor.ToString("+0.##;-0.##;+0.##");
   }
 }
+

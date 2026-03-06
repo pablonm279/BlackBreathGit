@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -61,7 +61,7 @@ public class SalmoPurificador : Habilidad
       cuerpo += $"<b>Effect:</b> Removes up to {debuffsPorUnidad} removable Debuffs from each affected unit\n";
       if (daValentia)
       {
-        cuerpo += "<b>IV b Extra:</b> +1 Valor to each affected unit per removed Debuff\n";
+        cuerpo += "<b>IV b Extra:</b> +1 Valour to each affected unit per removed Debuff\n";
       }
       cuerpo += "<b>Requirement:</b> Needs at least 1 Fervor to activate\n";
       cuerpo += "<b>On cast:</b> Does not consume Fervor";
@@ -74,15 +74,15 @@ public class SalmoPurificador : Habilidad
       cuerpo += $"<b>Efecto:</b> Remueve hasta {debuffsPorUnidad} Debuffs removibles de cada unidad afectada\n";
       if (daValentia)
       {
-        cuerpo += "<b>Extra IV b:</b> +1 Valentia a cada unidad afectada por cada Debuff removido\n";
+        cuerpo += "<b>Extra IV b:</b> +1 Valentía a cada unidad afectada por cada Debuff removido\n";
       }
       cuerpo += "<b>Requisito:</b> Necesita al menos 1 Fervor para activarse\n";
       cuerpo += "<b>Al lanzar:</b> No consume Fervor";
     }
 
     string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
     txtDescripcion = ConstruirDescripcionEstandar(
       esIngles ? tituloEn : tituloEs,
@@ -107,13 +107,13 @@ public class SalmoPurificador : Habilidad
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: removes +1 Debuff per unit.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 cooldown.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 removed Debuff) or Option B (+1 Valor per removed Debuff).</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 removed Debuff) or Option B (+1 Valour per removed Debuff).</color>"; }
     }
     else
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: remueve +1 Debuff por unidad.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 Debuff removido) u Opcion B (+1 Valentia por Debuff removido).</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 Debuff removido) u Opcion B (+1 Valentía por Debuff removido).</color>"; }
     }
   }
     void Start()
@@ -186,7 +186,12 @@ public class SalmoPurificador : Habilidad
 
               if(buff != null)
               {
-                BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre+TRADU.i.Traducir(" remueve ")+buff.buffNombre+TRADU.i.Traducir(" de ")+aliado.uNombre+".");
+                string nombreLanzador = TRADU.i != null ? TRADU.i.Traducir(scEstaUnidad.uNombre) : scEstaUnidad.uNombre;
+                string nombreBuff = TRADU.i != null ? TRADU.i.Traducir(buff.buffNombre) : buff.buffNombre;
+                string nombreAliado = TRADU.i != null ? TRADU.i.Traducir(aliado.uNombre) : aliado.uNombre;
+                string verboRemueve = TRADU.i != null ? TRADU.i.Traducir(" remueve ") : " remueve ";
+                string conector = (TRADU.i != null && TRADU.i.nIdioma == 2) ? " from " : " de ";
+                BattleManager.Instance.EscribirLog(nombreLanzador + verboRemueve + nombreBuff + conector + nombreAliado + ".");
                 buff.RemoverBuff(aliado);
                
               }
@@ -296,3 +301,8 @@ public class SalmoPurificador : Habilidad
 
  
 }
+
+
+
+
+

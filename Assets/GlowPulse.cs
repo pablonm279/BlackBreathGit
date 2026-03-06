@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Renderer))]
 public class GlowPulse : MonoBehaviour
@@ -31,3 +31,5 @@ public class GlowPulse : MonoBehaviour
         mat.SetColor("_EmissionColor", finalColor);
     }
 }
+
+

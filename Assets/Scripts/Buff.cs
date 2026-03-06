@@ -8,6 +8,9 @@ public class Buff : MonoBehaviour
   public string buffDescr;
   // Si true, no genera texto flotante al aplicar/remover (útil para buffs iniciales de pelea, clima, etc.)
   public bool suprimeTextoFlotante = false;
+  public bool suprimeLogCombate = false;
+  // Si true, este buff/debuff muestra texto flotante incluso durante el silenciamiento del inicio de combate.
+  public bool forzarTextoFlotanteInicioCombate = false;
 
   public bool boolfDebufftBuff; //Si se considera buff true, o debuff false
   public float percHPMax;
@@ -72,7 +75,7 @@ public class Buff : MonoBehaviour
   public float percAtaque;
   public float cantAtaque;
 
-  public float cantDanioPorcentaje; //Para buffs estilo +10% daño, no se usarían +2 de daño por ejemplo. Tiene mas sentido en porcentaje.
+  public float cantDanioPorcentaje; //Para buffs estilo +10% daño, no se usaráan +2 de daño por ejemplo. Tiene mas sentido en porcentaje.
 
   public float cantCritDado;
   
@@ -218,7 +221,7 @@ public class Buff : MonoBehaviour
         Color colorTexto = boolfDebufftBuff ? Color.cyan : Color.magenta;
         FloatingTextContext contextoTexto = FloatingTextContext.BuffApply;
         bool suprimirPorInicioCombate = BattleManager.Instance != null && BattleManager.Instance.silenciarLogCombate;
-        if (!suprimeTextoFlotante && !suprimirPorInicioCombate)
+        if (!suprimeTextoFlotante && (!suprimirPorInicioCombate || forzarTextoFlotanteInicioCombate))
         {
             if (DuracionBuffRondas > 0)
             {
@@ -242,7 +245,10 @@ public class Buff : MonoBehaviour
             sBuff = $"<color=#b83406>{sBuff}</color>";
         }
 
-        BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoBuff(sBuff, boolfDebufftBuff));
+        if (!suprimeLogCombate && BattleManager.Instance != null)
+        {
+            BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoBuff(sBuff, boolfDebufftBuff));
+        }
 
         // Repite el mismo patrón para otros atributos si es necesario...
     }
@@ -368,7 +374,7 @@ public void RemoverBuff(Unidad unidad)
     }
     
     bool suprimirPorInicioCombate = (BattleManager.Instance != null && BattleManager.Instance.silenciarLogCombate);
-    if (!suprimeTextoFlotante && !suprimirPorInicioCombate)
+    if (!suprimeTextoFlotante && (!suprimirPorInicioCombate || forzarTextoFlotanteInicioCombate))
     {
         unidad.GenerarTextoFlotante("<s>" +  TRADU.i.Traducir(buffNombre) + "</s>", Color.cyan, FloatingTextContext.BuffEnd);
     }
@@ -391,7 +397,10 @@ public void RemoverBuff(Unidad unidad)
        unidadOrigen.transform.GetChild(3).GetChild(1).gameObject.SetActive(true);
     }
     
-    BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoBuff(sBuff, boolfDebufftBuff));
+    if (!suprimeLogCombate && BattleManager.Instance != null)
+    {
+        BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoBuff(sBuff, boolfDebufftBuff));
+    }
     // Si se remueve "Acumulando" del Canalizador, liberar la pose fija de habilidad
     if (buffNombre == "Acumulando" && unidad is ClaseCanalizador)
     {
@@ -424,3 +433,6 @@ Unidad scEstaUnidad =  gameObject.GetComponent<Unidad>();
 }
 
 }
+
+
+

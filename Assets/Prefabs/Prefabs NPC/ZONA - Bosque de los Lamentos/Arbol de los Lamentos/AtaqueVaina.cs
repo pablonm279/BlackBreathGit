@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -38,7 +38,7 @@ public class AtaqueVaina : IAHabilidad
 
       bonusAtaque = 6;
       XdDanio = 2;
-      daniodX = 10; //2d8
+      daniodX = 11; //2d8
       tipoDanio = 1; //Cortante
 
 
@@ -219,3 +219,4 @@ public class AtaqueVaina : IAHabilidad
   
  
   
+

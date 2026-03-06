@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -184,7 +184,7 @@ public class Lamentodelbosque : IAHabilidad
         buff.cantAtaque -= 2;
         buff.cantTsMental -= 2;
         buff.cantDanioPorcentaje -= 15;
-        obj.ValentiaP_actual -= 3;
+        obj.SumarValentia(-3);
 
         buff.AplicarBuff(obj);
 
@@ -259,3 +259,6 @@ public class Lamentodelbosque : IAHabilidad
   
  
   
+
+
+

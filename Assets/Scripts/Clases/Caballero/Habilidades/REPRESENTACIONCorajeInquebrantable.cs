@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,8 +17,8 @@ public class REPRESENTACIONCorajeInquebrantable : Habilidad
       }
       if (TRADU.i.nIdioma == 2)
       {
-          txtDescripcion = "<color=#5dade2><b>Unbreakable Courage</b></color>\n\n";
-          txtDescripcion += "<i>(Passive)Fights with courage, even in the darkest moments.\nTheir Courage points cannot be less than 0.</i>\n\n";
+          txtDescripcion = "<color=#5dade2><b>Unbreakable Valour</b></color>\n\n";
+          txtDescripcion += "<i>(Passive)Fights with valour, even in the darkest moments.\nTheir Valour points cannot be less than 0.</i>\n\n";
       }
 
     }
@@ -40,3 +40,6 @@ public class REPRESENTACIONCorajeInquebrantable : Habilidad
 
 
 }
+
+
+

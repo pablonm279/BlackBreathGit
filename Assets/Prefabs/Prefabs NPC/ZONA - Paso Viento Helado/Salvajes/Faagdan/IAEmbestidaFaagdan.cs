@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -237,3 +237,6 @@ public class IAEmbestidaFaagdan : IAHabilidad
     return objPosibles.OfType<Obstaculo>().FirstOrDefault();
   }
 }
+
+
+

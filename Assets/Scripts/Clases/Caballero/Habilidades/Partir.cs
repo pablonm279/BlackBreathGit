@@ -14,7 +14,7 @@ public class Partir : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de crpitico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ãcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
 
  
 
@@ -95,8 +95,8 @@ public class Partir : Habilidad
       }
 
       string costos = esIngles
-        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : tituloEs,
@@ -145,7 +145,7 @@ public class Partir : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
+     if(obj is Unidad) //Acá van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
 
@@ -239,7 +239,7 @@ public class Partir : Habilidad
     
 
        fueElObjetivoAsesinado = objetivo;
-      Invoke("ChequeoMuerteObjetivo", 3.0f); //Chequea si el objetivo muriÃ³, y aplica efectos de ser asÃ­.
+      Invoke("ChequeoMuerteObjetivo", 3.0f); //Chequea si el objetivo murió, y aplica efectos de ser así.
 
 
 
@@ -247,7 +247,7 @@ public class Partir : Habilidad
 
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //AcÃ¡ van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -294,7 +294,7 @@ public class Partir : Habilidad
     if (fueElObjetivoAsesinado == null)
     {
       aplicarEfectos = true; //Si no existe se asume que murio
-    } //Si no habÃ­a objetivo, no hace nada
+    } //Si no había objetivo, no hace nada
     else if (fueElObjetivoAsesinado.HP_actual < 1)
     {
       aplicarEfectos = true; //Si no tiene vida, murio
@@ -311,7 +311,7 @@ public class Partir : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si estÃ¡ en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si está en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -333,7 +333,7 @@ public class Partir : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiÃ©n
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras también
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -445,7 +445,7 @@ public class Partir : Habilidad
 
     }
 
-    //Se fija si las 3 casillas de la columna 1 estÃ¡n vacias
+    //Se fija si las 3 casillas de la columna 1 están vacias
     foreach (Casilla cas in casillasAdyacentesyFrenteColumna1)
     {
       if (cas.bTieneUnidadoObstaculoParaMelee()) //si alguna de las 3 tiene algo, no aumenta el rango melee
@@ -539,7 +539,7 @@ public class Partir : Habilidad
                 if(uni.TiradaSalvacion(uni.mod_TSMental, nDif))
                 {
                     /////////////////////////////////////////////
-                    //BUFF ---- AsÃ­ se aplica un buff/debuff
+                    //BUFF ---- Así se aplica un buff/debuff
                     Buff buff = new Buff();
                     buff.buffNombre = "Aterrorizado";
                     buff.boolfDebufftBuff = false;
@@ -548,7 +548,7 @@ public class Partir : Habilidad
                     buff.cantAPMax -= 1;
                     buff.cantTsMental -= 2;
                     buff.AplicarBuff(uni);
-                    // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
+                    // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
                     Buff buffComponent = ComponentCopier.CopyComponent(buff, uni.gameObject);
                     
                     VFXAplicarEnemigo(uni.gameObject);
@@ -575,6 +575,10 @@ public class Partir : Habilidad
 
     }
 }
+
+
+
+
 
 
 

@@ -7,6 +7,7 @@ using System;
 using Unity.VisualScripting;
 using TMPro;
 using UnityEngine.Rendering;
+using System.Text.RegularExpressions;
 
 public class BattleManager : MonoBehaviour
 {
@@ -40,6 +41,20 @@ public class BattleManager : MonoBehaviour
   public List<Obstaculo> lObstaculosPosiblesHabilidadActiva = new List<Obstaculo>();
   public event EventHandler OnRondaNueva;
   public event EventHandler OnTurnoNuevo;
+  public event Action<float> OnValourGlobalAliadosCambiado;
+
+  private const float UmbralValourMuyAlto = 90f;
+  private const float UmbralValourAlto = 70f;
+  private const float UmbralValourBajo = 40f;
+  private const float UmbralValourMuyBajo = 15f;
+  private const float ValourGlobalBasePct = 50f;
+  private const float ValourGlobalPctPorPuntoPromedio = 8f;
+  private const int DcValourBase = 15;
+  private const int DcValourMin = 8;
+  private const int DcValourMax = 22;
+  private const int MaxHuidasMoralPorRonda = 1;
+  private int huidasMoralEstaRonda = 0;
+  private float ultimoValourGlobalAliadosPct = -1f;
 
 
   public UIBotonesHabilidades scUIBotonesHab;
@@ -56,16 +71,21 @@ public class BattleManager : MonoBehaviour
 
   public GameObject UIGOPasarTurno;
 
-
   public Image widgetClima;
   public GameObject climaTooltip;
   public TextMeshProUGUI textClimaTooltip;
+  [Header("Tooltip Valour Global")]
+  public GameObject tooltipValorES;
+  public GameObject tooltipValorEN;
+  [SerializeField] private float tooltipValorHoverDelay = 0.25f;
   public TextMeshProUGUI rondaText;
 
   public GameObject txtSeleccionaobj;
   public bool bOcupado; //Variable de control de flujo de batalla
 
   public GameObject nocheLienzo;
+  private Coroutine coroutineTooltipValorDelay;
+  private bool tooltipValorHoverActivo;
   private void Awake()
   {
     if (Instance != null)
@@ -80,6 +100,8 @@ public class BattleManager : MonoBehaviour
 
   private void Start()
   {
+    ConfigurarMicroAnimacionesUI();
+
     ArmarListadeCasillastotales();
     var handicapDificultad = GetComponent<Sistema.HandicapDificultad>();
     if (handicapDificultad != null)
@@ -224,6 +246,47 @@ public class BattleManager : MonoBehaviour
     //  RondaNueva();
 
   }
+
+  private void ConfigurarMicroAnimacionesUI()
+  {
+    if (goLog != null)
+    {
+      UIFadeSlide animLog = UIFadeSlideUtility.Ensure(goLog);
+      if (animLog != null)
+      {
+        animLog.SetDurations(0.16f, 0.14f);
+        animLog.SetOffsets(new Vector2(0f, -16f), new Vector2(0f, -8f));
+        animLog.SetFollowMouse(false, Vector2.zero);
+      }
+    }
+
+    if (climaTooltip != null)
+    {
+      UIFadeSlide animClima = UIFadeSlideUtility.Ensure(climaTooltip);
+      if (animClima != null)
+      {
+        animClima.SetDurations(0.14f, 0.12f);
+        animClima.SetOffsets(new Vector2(0f, -10f), new Vector2(0f, -6f));
+        animClima.SetFollowMouse(false, Vector2.zero);
+      }
+    }
+
+    ConfigurarAnimTooltipValour(tooltipValorES);
+    ConfigurarAnimTooltipValour(tooltipValorEN);
+  }
+
+  private void ConfigurarAnimTooltipValour(GameObject tooltip)
+  {
+    if (tooltip == null) { return; }
+
+    UIFadeSlide anim = UIFadeSlideUtility.Ensure(tooltip);
+    if (anim != null)
+    {
+      anim.SetDurations(0.2f, 0.16f);
+      anim.SetOffsets(new Vector2(0f, -6f), new Vector2(0f, -4f));
+      anim.SetFollowMouse(false, Vector2.zero);
+    }
+  }
   public void ArrancarTurno() //Arranca el turno de la unidad activa
   {
     if (unidadActiva != null)
@@ -329,17 +392,7 @@ public class BattleManager : MonoBehaviour
     }
     else
     {
-      // Si no quedan enemigos en el campo y hay refuerzos pendientes,
-      // forzar que aparezcan en la próxima ronda sin importar el delay actual.
-      // Ajustamos el umbral para que en la próxima Ronda (RondaNro+1) se cumpla (RondaNro+1 > delayRefuerzo).
-      if (enemigosRefuerzos != null && enemigosRefuerzos.Count > 0 && ladoA != null && ladoA.unidadesLado.Count == 0)
-      {
-        if (delayRefuerzo > RondaNro)
-        {
-          delayRefuerzo = RondaNro;
-          ActualizarRefuerzosUI();
-        }
-      }
+      AcelerarRefuerzosSiLadoSinUnidades();
 
       RondaNueva();
     }
@@ -355,6 +408,7 @@ public class BattleManager : MonoBehaviour
   {
 
     RondaNro++;
+    huidasMoralEstaRonda = 0;
     silenciarLogCombate = false;
     string rondaInicio = (TRADU.i != null)
       ? TRADU.i.Traducir("==== Ronda ") + RondaNro + TRADU.i.Traducir(" comienza ====")
@@ -364,6 +418,17 @@ public class BattleManager : MonoBehaviour
     OnRondaNueva?.Invoke(this, EventArgs.Empty);
 
     AdministrarListas();
+    AcelerarRefuerzosSiLadoSinUnidades();
+    AplicarReglasValourGlobalInicioRonda();
+    AdministrarListas();
+
+    bool derrotaSinRefuerzos = ladoB != null && ladoB.unidadesLado.Count < 1 && aliadosRefuerzos.Count < 1;
+    bool victoriaSinRefuerzos = ladoA != null && ladoA.unidadesLado.Count < 1 && enemigosRefuerzos.Count < 1;
+    if (derrotaSinRefuerzos || victoriaSinRefuerzos)
+    {
+      ChequearFinBatalla();
+      return;
+    }
     EstablecerOrdenPorIniciativa();
 
     ActualizarRefuerzosUI();
@@ -453,6 +518,34 @@ public class BattleManager : MonoBehaviour
   public GameObject goAliadosRefuerzos;
   int delayAliados = 1;
 
+  public void ReiniciarEstadoRefuerzos()
+  {
+    DestruirRefuerzosPendientes(enemigosRefuerzos);
+    DestruirRefuerzosPendientes(aliadosRefuerzos);
+    enemigosRefuerzos.Clear();
+    aliadosRefuerzos.Clear();
+    delayRefuerzo = 0;
+    delayAliados = 1;
+    ActualizarRefuerzosUI();
+    ActualizarAliadosRefUI();
+  }
+
+  void DestruirRefuerzosPendientes(List<GameObject> listaRefuerzos)
+  {
+    if (listaRefuerzos == null)
+    {
+      return;
+    }
+
+    foreach (GameObject refuerzo in listaRefuerzos)
+    {
+      if (refuerzo != null)
+      {
+        Destroy(refuerzo);
+      }
+    }
+  }
+
   public void ActualizarAliadosRefUI()
   {
     int tiempoRestante = delayAliados - RondaNro + 1;
@@ -475,25 +568,23 @@ public class BattleManager : MonoBehaviour
     if (enemigosEnCampo > 6)
     {
       delayRefuerzo += 1;
+      ActualizarRefuerzosUI();
       return; // No mandar refuerzos si hay más de 6 enemigos
     }
 
     // Si hay más de 3 enemigos en la lista de refuerzos
-    if (enemigosRefuerzos.Count > 3)
+    int cantidadAEnviar = enemigosRefuerzos.Count > 3 ? 2 : 1;
+    for (int i = 0; i < cantidadAEnviar && enemigosRefuerzos.Count > 0; i++)
     {
-      // Mandar refuerzos en los dos primeros y quitarlos de la lista
-      MandarRefuerzoEnemigo(enemigosRefuerzos[0]);
-      MandarRefuerzoEnemigo(enemigosRefuerzos[1]);
-
-      // Eliminar los dos primeros de la lista
-      enemigosRefuerzos.RemoveAt(0); // Elimina el primer enemigo
-      enemigosRefuerzos.RemoveAt(0); // Elimina el nuevo primer enemigo, ya que la lista se ha reordenado
-    }
-    else if (enemigosRefuerzos.Count > 0) // Si hay 3 o menos
-    {
-      // Mandar un solo refuerzo y quitarlo de la lista
-      MandarRefuerzoEnemigo(enemigosRefuerzos[0]);
-      enemigosRefuerzos.RemoveAt(0);
+      bool seEnvio = MandarRefuerzoEnemigo(enemigosRefuerzos[0]);
+      if (seEnvio)
+      {
+        enemigosRefuerzos.RemoveAt(0);
+      }
+      else
+      {
+        break;
+      }
     }
 
     ActualizarRefuerzosUI();
@@ -512,16 +603,20 @@ public class BattleManager : MonoBehaviour
     if (aliadosEnCampo > 5)
     {
       delayAliados += 1;
+      ActualizarAliadosRefUI();
       return; // No mandar refuerzos si hay más de 5 aliados
     }
 
     if (aliadosRefuerzos.Count > 0) // Si hay 3 o menos
     {
       // Mandar un solo refuerzo y quitarlo de la lista
-      MandarRefuerzoAliado(aliadosRefuerzos[0]);
-      aliadosRefuerzos.RemoveAt(0);
-      // Hacer que los aliados solo lleguen cada 2 turnos, desde el 2do turno
-      delayAliados += 2;
+      bool seEnvio = MandarRefuerzoAliado(aliadosRefuerzos[0]);
+      if (seEnvio)
+      {
+        aliadosRefuerzos.RemoveAt(0);
+        // Hacer que los aliados solo lleguen cada 2 turnos, desde el 2do turno
+        delayAliados += 2;
+      }
 
     }
 
@@ -529,92 +624,463 @@ public class BattleManager : MonoBehaviour
     ActualizarAliadosRefUI();
   }
 
-  void MandarRefuerzoEnemigo(GameObject enemigo)
+  bool MandarRefuerzoEnemigo(GameObject enemigo)
   {
+    bool seColoco = false;
+    Unidad unidadRefuerzo = enemigo != null ? enemigo.GetComponent<Unidad>() : null;
+    if (unidadRefuerzo == null)
+    {
+      return false;
+    }
+
     if (ladoA.c1x3.Presente == null)
     {
       enemigo.SetActive(true);
       ladoA.c1x3.PonerObjetoEnCasillaAnimado(enemigo, 2);
       scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
-      enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
+      unidadRefuerzo.EstablecerAPActualA(0);
+      seColoco = true;
     }
     else if (ladoA.c1x2.Presente == null)
     {
       enemigo.SetActive(true);
       ladoA.c1x2.PonerObjetoEnCasillaAnimado(enemigo, 2);
       scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
-      enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
+      unidadRefuerzo.EstablecerAPActualA(0);
+      seColoco = true;
     }
     else if (ladoA.c1x4.Presente == null)
     {
       enemigo.SetActive(true);
       ladoA.c1x4.PonerObjetoEnCasillaAnimado(enemigo, 2);
       scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
-      enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
+      unidadRefuerzo.EstablecerAPActualA(0);
+      seColoco = true;
     }
     else if (ladoA.c1x5.Presente == null)
     {
       enemigo.SetActive(true);
       ladoA.c1x5.PonerObjetoEnCasillaAnimado(enemigo, 2);
       scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
-      enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
+      unidadRefuerzo.EstablecerAPActualA(0);
+      seColoco = true;
     }
     else if (ladoA.c1x1.Presente == null)
     {
       enemigo.SetActive(true);
       ladoA.c1x1.PonerObjetoEnCasillaAnimado(enemigo, 2);
       scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
-      enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
+      unidadRefuerzo.EstablecerAPActualA(0);
+      seColoco = true;
     }
 
-    EscribirLog("<color=#d92b08>" + enemigo.GetComponent<Unidad>().uNombre + TRADU.i.Traducir(" se ha unido a la batalla. Quedan ") + (enemigosRefuerzos.Count() - 1) + TRADU.i.Traducir(" refuerzos.</color> "));
-    AplicarEfectosInicioCombate(enemigo.GetComponent<Unidad>());
+    if (!seColoco)
+    {
+      return false;
+    }
+
+    string nombreRefuerzoEnemigo = TRADU.i != null ? TRADU.i.Traducir(unidadRefuerzo.uNombre) : unidadRefuerzo.uNombre;
+    string txtSeUnio = TRADU.i != null ? TRADU.i.Traducir(" se ha unido a la batalla. Quedan ") : " se ha unido a la batalla. Quedan ";
+    string txtRefuerzosRestantes = TRADU.i != null ? TRADU.i.Traducir(" refuerzos.</color> ") : " refuerzos.</color> ";
+    EscribirLog("<color=#d92b08>" + nombreRefuerzoEnemigo + txtSeUnio + (enemigosRefuerzos.Count() - 1) + txtRefuerzosRestantes);
+    AplicarImpactoValentiaPorRefuerzo(true, unidadRefuerzo);
+    AplicarEfectosInicioCombate(unidadRefuerzo);
     scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
+    return true;
   }
-  void MandarRefuerzoAliado(GameObject enemigo)
+  bool MandarRefuerzoAliado(GameObject enemigo)
   {
-    enemigo.GetComponent<Unidad>().entroComoAliado = true;
+    bool seColoco = false;
+    Unidad unidadRefuerzo = enemigo != null ? enemigo.GetComponent<Unidad>() : null;
+    if (unidadRefuerzo == null)
+    {
+      return false;
+    }
+
+    unidadRefuerzo.entroComoAliado = true;
 
     if (ladoB.c1x3.Presente == null)
     {
       enemigo.SetActive(true);
       ladoB.c1x3.PonerObjetoEnCasillaAnimado(enemigo, 1);
       scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
-      enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
+      unidadRefuerzo.EstablecerAPActualA(0);
+      seColoco = true;
     }
     else if (ladoB.c1x2.Presente == null)
     {
       enemigo.SetActive(true);
       ladoB.c1x2.PonerObjetoEnCasillaAnimado(enemigo, 1);
       scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
-      enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
+      unidadRefuerzo.EstablecerAPActualA(0);
+      seColoco = true;
     }
     else if (ladoB.c1x4.Presente == null)
     {
       enemigo.SetActive(true);
       ladoB.c1x4.PonerObjetoEnCasillaAnimado(enemigo, 1);
       scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
-      enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
+      unidadRefuerzo.EstablecerAPActualA(0);
+      seColoco = true;
     }
     else if (ladoB.c1x5.Presente == null)
     {
       enemigo.SetActive(true);
       ladoB.c1x5.PonerObjetoEnCasillaAnimado(enemigo, 1);
       scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
-      enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
+      unidadRefuerzo.EstablecerAPActualA(0);
+      seColoco = true;
     }
     else if (ladoB.c1x1.Presente == null)
     {
       enemigo.SetActive(true);
       ladoB.c1x1.PonerObjetoEnCasillaAnimado(enemigo, 1);
       scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
-      enemigo.GetComponent<Unidad>().EstablecerAPActualA(0);
+      unidadRefuerzo.EstablecerAPActualA(0);
+      seColoco = true;
     }
-    AplicarEfectosInicioCombate(enemigo.GetComponent<Unidad>());
-    EscribirLog("<color=#d92b08>" + enemigo.GetComponent<Unidad>().uNombre + TRADU.i.Traducir(" se ha unido a la batalla. Quedan ") + (enemigosRefuerzos.Count() - 1) + TRADU.i.Traducir(" refuerzos.</color> "));
+
+    if (!seColoco)
+    {
+      return false;
+    }
+
+    AplicarEfectosInicioCombate(unidadRefuerzo);
+    string nombreRefuerzoAliado = TRADU.i != null ? TRADU.i.Traducir(unidadRefuerzo.uNombre) : unidadRefuerzo.uNombre;
+    string txtSeUnio = TRADU.i != null ? TRADU.i.Traducir(" se ha unido a la batalla. Quedan ") : " se ha unido a la batalla. Quedan ";
+    string txtRefuerzosRestantes = TRADU.i != null ? TRADU.i.Traducir(" refuerzos.</color> ") : " refuerzos.</color> ";
+    EscribirLog("<color=#d92b08>" + nombreRefuerzoAliado + txtSeUnio + (aliadosRefuerzos.Count() - 1) + txtRefuerzosRestantes);
+    AplicarImpactoValentiaPorRefuerzo(false, unidadRefuerzo);
     scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
+    return true;
+  }
 
+  void AplicarImpactoValentiaPorRefuerzo(bool esRefuerzoEnemigo, Unidad refuerzo)
+  {
+    if (ladoB == null || ladoB.unidadesLado == null || ladoB.unidadesLado.Count < 1)
+    {
+      return;
+    }
 
+    string nombreRefuerzo = (TRADU.i != null && refuerzo != null) ? TRADU.i.Traducir(refuerzo.uNombre) : (refuerzo != null ? refuerzo.uNombre : "");
+    bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+
+    foreach (Unidad aliado in ladoB.unidadesLado)
+    {
+      if (aliado == null || aliado.HP_actual <= 0)
+      {
+        continue;
+      }
+
+      string nombreAliado = TRADU.i != null ? TRADU.i.Traducir(aliado.uNombre) : aliado.uNombre;
+      if (esRefuerzoEnemigo)
+      {
+        string motivoNegativo = enIngles
+          ? nombreAliado + " is shaken by enemy reinforcement " + nombreRefuerzo
+          : nombreAliado + " se desmoraliza por el refuerzo enemigo " + nombreRefuerzo;
+        aliado.SumarValentia(-1, motivoNegativo);
+      }
+      else
+      {
+        string motivoPositivo = enIngles
+          ? nombreAliado + " is encouraged by allied reinforcement " + nombreRefuerzo
+          : nombreAliado + " se anima con el refuerzo aliado " + nombreRefuerzo;
+        aliado.SumarValentia(1, motivoPositivo);
+      }
+    }
+  }
+
+  public float ObtenerValourGlobalAliadosPctActual()
+  {
+    List<Unidad> aliadosJugador = ObtenerAliadosJugadorParaValourGlobal();
+    if (aliadosJugador.Count < 1)
+    {
+      return 50f;
+    }
+
+    return CalcularValourGlobalAliadosPct(aliadosJugador);
+  }
+
+  public void NotificarCambioValourGlobal(bool forzar = false)
+  {
+    float pctActual = ObtenerValourGlobalAliadosPctActual();
+    if (!forzar && Mathf.Abs(pctActual - ultimoValourGlobalAliadosPct) < 0.01f)
+    {
+      return;
+    }
+
+    ultimoValourGlobalAliadosPct = pctActual;
+    OnValourGlobalAliadosCambiado?.Invoke(pctActual);
+  }
+
+  void AplicarReglasValourGlobalInicioRonda()
+  {
+    List<Unidad> aliadosJugador = ObtenerAliadosJugadorParaValourGlobal();
+    if (aliadosJugador.Count < 1)
+    {
+      return;
+    }
+
+    float valourGlobalPct = CalcularValourGlobalAliadosPct(aliadosJugador);
+    int valourMostrado = Mathf.RoundToInt(valourGlobalPct);
+    bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+
+    if (valourGlobalPct >= UmbralValourMuyAlto)
+    {
+      EscribirLog(CombatLogFormatter.EventoValour(enIngles
+        ? "Global Valour Very High (" + valourMostrado + "%): allies gain +15% damage and +1 AP this round."
+        : "Valentía global Muy Alta (" + valourMostrado + "%): los aliados ganan +15% daño y +1 AP esta ronda."));
+      AplicarBuffGlobalValourDanio(aliadosJugador);
+      AplicarBuffGlobalValourAP(aliadosJugador);
+      return;
+    }
+
+    if (valourGlobalPct >= UmbralValourAlto)
+    {
+      EscribirLog(CombatLogFormatter.EventoValour(enIngles
+        ? "Global Valour High (" + valourMostrado + "%): allies gain +1 AP this round."
+        : "Valentía global Alta (" + valourMostrado + "%): los aliados ganan +1 AP esta ronda."));
+      AplicarBuffGlobalValourAP(aliadosJugador);
+      return;
+    }
+
+    if (valourGlobalPct < UmbralValourMuyBajo)
+    {
+      EscribirLog(CombatLogFormatter.EventoValour(enIngles
+        ? "Global Valour Very Low (" + valourMostrado + "%): all allies roll Mental Save (DC 15 - current VAL, min 8 max 22). On fail: flee in shame (max 1 per round)."
+        : "Valentía global Muy Baja (" + valourMostrado + "%): todos los aliados tiran TS Mental (DC 15 - VAL actual, mín 8 máx 22). Si fallan: huyen avergonzados (máx 1 por ronda)."));
+      AplicarChequeoMoralGlobal(aliadosJugador, true);
+      return;
+    }
+
+    if (valourGlobalPct < UmbralValourBajo)
+    {
+      EscribirLog(CombatLogFormatter.EventoValour(enIngles
+        ? "Global Valour Low (" + valourMostrado + "%): all allies roll Mental Save (DC 15 - current VAL, min 8 max 22). On fail: Doubting 1 round (-10% damage, -1 Defense)."
+        : "Valentía global Baja (" + valourMostrado + "%): todos los aliados tiran TS Mental (DC 15 - VAL actual, mín 8 máx 22). Si fallan: Dudando 1 ronda (-10% daño, -1 Defensa)."));
+      AplicarChequeoMoralGlobal(aliadosJugador, false);
+    }
+  }
+
+  List<Unidad> ObtenerAliadosJugadorParaValourGlobal()
+  {
+    List<Unidad> aliados = new List<Unidad>();
+    if (ladoB == null || ladoB.unidadesLado == null)
+    {
+      return aliados;
+    }
+
+    foreach (Unidad unidad in ladoB.unidadesLado)
+    {
+      if (unidad == null || unidad.HP_actual <= 0 || unidad.GetComponent<IAUnidad>() != null || !unidad.gameObject.activeInHierarchy)
+      {
+        continue;
+      }
+
+      aliados.Add(unidad);
+    }
+
+    return aliados;
+  }
+
+  float CalcularValourGlobalAliadosPct(List<Unidad> aliadosJugador)
+  {
+    if (aliadosJugador == null || aliadosJugador.Count < 1)
+    {
+      return 0f;
+    }
+
+    float suma = 0f;
+    int cantidadValidos = 0;
+    foreach (Unidad unidad in aliadosJugador)
+    {
+      if (unidad == null)
+      {
+        continue;
+      }
+
+      suma += unidad.ValentiaP_actual;
+      cantidadValidos++;
+    }
+
+    if (cantidadValidos < 1)
+    {
+      return 50f;
+    }
+
+    float promedioValentia = suma / cantidadValidos;
+    float pct = ValourGlobalBasePct + (promedioValentia * ValourGlobalPctPorPuntoPromedio);
+    return Mathf.Clamp(pct, 0f, 100f);
+  }
+
+  void AplicarBuffGlobalValourDanio(List<Unidad> aliadosJugador)
+  {
+    foreach (Unidad aliado in aliadosJugador)
+    {
+      if (aliado == null) { continue; }
+
+      RefrescarBuffTemporalValour(aliado, "Valentía Global Muy Alta", buff =>
+      {
+        buff.boolfDebufftBuff = true;
+        buff.buffDescr = "La moral colectiva desborda. +15% daño y +1 PA máximo esta ronda.";
+        buff.DuracionBuffRondas = 1;
+        buff.cantDanioPorcentaje += 15;
+      });
+    }
+  }
+
+  void AplicarBuffGlobalValourAP(List<Unidad> aliadosJugador)
+  {
+    foreach (Unidad aliado in aliadosJugador)
+    {
+      if (aliado == null) { continue; }
+
+      RefrescarBuffTemporalValour(aliado, "Valentía Global Alta", buff =>
+      {
+        buff.boolfDebufftBuff = true;
+        buff.buffDescr = "La moral colectiva impulsa al grupo. +1 PA máximo esta ronda.";
+        buff.DuracionBuffRondas = 1;
+        buff.cantAPMax += 1;
+      });
+    }
+  }
+
+  void RefrescarBuffTemporalValour(Unidad unidad, string nombreBuff, Action<Buff> configurarBuff)
+  {
+    if (unidad == null || string.IsNullOrWhiteSpace(nombreBuff) || configurarBuff == null)
+    {
+      return;
+    }
+
+    // Compat: limpia alias viejos/nuevos para evitar duplicados por cambio de nombre.
+    if (nombreBuff == "Valentía Global Alta" || nombreBuff == "Valentia Global Alta" || nombreBuff == "Valour Global Alto")
+    {
+      unidad.RemoverBuffNombre("Valour Global Alto");
+      unidad.RemoverBuffNombre("Valentía Global Alta");
+      unidad.RemoverBuffNombre("Valentia Global Alta");
+    }
+    else if (nombreBuff == "Valentía Global Muy Alta" || nombreBuff == "Valentia Global Muy Alta" || nombreBuff == "Valour Global Muy Alto")
+    {
+      unidad.RemoverBuffNombre("Valour Global Muy Alto");
+      unidad.RemoverBuffNombre("Valentía Global Muy Alta");
+      unidad.RemoverBuffNombre("Valentia Global Muy Alta");
+    }
+
+    unidad.RemoverBuffNombre(nombreBuff);
+
+    Buff buff = new Buff();
+    buff.buffNombre = nombreBuff;
+    buff.esBuffVisibleUI = true;
+    buff.suprimeTextoFlotante = true;
+    buff.suprimeLogCombate = true;
+    configurarBuff(buff);
+    buff.AplicarBuff(unidad);
+    Buff buffComponent = ComponentCopier.CopyComponent(buff, unidad.gameObject);
+  }
+
+  void AplicarChequeoMoralGlobal(List<Unidad> aliadosJugador, bool modoMuyBajo)
+  {
+    if (aliadosJugador == null || aliadosJugador.Count < 1)
+    {
+      return;
+    }
+
+    List<Unidad> aliadosSnapshot = new List<Unidad>(aliadosJugador);
+    foreach (Unidad aliado in aliadosSnapshot)
+    {
+      if (aliado == null || aliado.HP_actual <= 0 || !aliado.gameObject.activeInHierarchy)
+      {
+        continue;
+      }
+
+      int dc = Mathf.Clamp(DcValourBase - Mathf.RoundToInt(aliado.ValentiaP_actual), DcValourMin, DcValourMax);
+      bool noSeSalva = aliado.TiradaSalvacion(aliado.mod_TSMental, dc, true);
+      if (!noSeSalva)
+      {
+        continue;
+      }
+
+      if (modoMuyBajo && huidasMoralEstaRonda < MaxHuidasMoralPorRonda && ProcesarHuidaPorMoral(aliado, dc))
+      {
+        continue;
+      }
+
+      AplicarDebuffDudando(aliado, dc, modoMuyBajo && huidasMoralEstaRonda >= MaxHuidasMoralPorRonda);
+    }
+  }
+
+  bool ProcesarHuidaPorMoral(Unidad aliado, int dc)
+  {
+    if (aliado == null)
+    {
+      return false;
+    }
+
+    if (!aliado.RetirarseDeBatallaPorMoral())
+    {
+      return false;
+    }
+
+    huidasMoralEstaRonda++;
+
+    AdministradorEscenas admin = ObtenerAdministradorEscenasActual();
+    if (admin != null)
+    {
+      admin.MarcarAvergonzadoDesdeUnidad(aliado);
+    }
+
+    bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    string nombreAliado = TRADU.i != null ? TRADU.i.Traducir(aliado.uNombre) : aliado.uNombre;
+    EscribirLog(CombatLogFormatter.EventoValour(enIngles
+      ? nombreAliado + " fails Mental Save (DC " + dc + ") and flees the battle in shame."
+      : nombreAliado + " falla la TS Mental (DC " + dc + ") y huye avergonzado de la batalla."));
+    return true;
+  }
+
+  void AplicarDebuffDudando(Unidad aliado, int dc, bool porLimiteHuida)
+  {
+    if (aliado == null)
+    {
+      return;
+    }
+
+    aliado.RemoverBuffNombre("Dudando");
+
+    Buff dudando = new Buff();
+    dudando.buffNombre = "Dudando";
+    dudando.buffDescr = "La moral flaquea por la presión del combate.";
+    dudando.esBuffVisibleUI = true;
+    dudando.boolfDebufftBuff = false;
+    dudando.DuracionBuffRondas = 1;
+    dudando.cantDanioPorcentaje -= 10;
+    dudando.cantDefensa -= 1;
+    dudando.AplicarBuff(aliado);
+    Buff buffComponent = ComponentCopier.CopyComponent(dudando, aliado.gameObject);
+
+    bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    string nombreAliado = TRADU.i != null ? TRADU.i.Traducir(aliado.uNombre) : aliado.uNombre;
+    if (porLimiteHuida)
+    {
+      EscribirLog(CombatLogFormatter.EventoValour(enIngles
+        ? nombreAliado + " fails Mental Save (DC " + dc + "). Doubting applied for 1 round (-10% damage, -1 Defense). Flee limit reached this round."
+        : nombreAliado + " falla la TS Mental (DC " + dc + "). Se aplica Dudando por 1 ronda (-10% daño, -1 Defensa). Se alcanzó el límite de huida en esta ronda."));
+    }
+    else
+    {
+      EscribirLog(CombatLogFormatter.EventoValour(enIngles
+        ? nombreAliado + " fails Mental Save (DC " + dc + ") and becomes Doubting for 1 round (-10% damage, -1 Defense)."
+        : nombreAliado + " falla la TS Mental (DC " + dc + ") y entra en Dudando por 1 ronda (-10% daño, -1 Defensa)."));
+    }
+  }
+
+  AdministradorEscenas ObtenerAdministradorEscenasActual()
+  {
+    if (transform == null || transform.parent == null || transform.parent.parent == null)
+    {
+      return null;
+    }
+
+    return transform.parent.parent.gameObject.GetComponent<AdministradorEscenas>();
   }
 
   void AplicarEfectosInicioCombate(Unidad u)
@@ -686,6 +1152,28 @@ public class BattleManager : MonoBehaviour
     lUnidadesTotal.Clear();
     lUnidadesTotal.AddRange(ladoA.GetComponent<LadoManager>().unidadesLado);
     lUnidadesTotal.AddRange(ladoB.GetComponent<LadoManager>().unidadesLado);
+    NotificarCambioValourGlobal();
+  }
+
+  void AcelerarRefuerzosSiLadoSinUnidades()
+  {
+    if (ladoA != null && ladoA.unidadesLado.Count < 1 && enemigosRefuerzos != null && enemigosRefuerzos.Count > 0)
+    {
+      if (delayRefuerzo > RondaNro)
+      {
+        delayRefuerzo = RondaNro;
+        ActualizarRefuerzosUI();
+      }
+    }
+
+    if (ladoB != null && ladoB.unidadesLado.Count < 1 && aliadosRefuerzos != null && aliadosRefuerzos.Count > 0)
+    {
+      if (delayAliados > RondaNro)
+      {
+        delayAliados = RondaNro;
+        ActualizarAliadosRefUI();
+      }
+    }
   }
   public void EstablecerOrdenPorIniciativa()
   {
@@ -830,6 +1318,78 @@ public class BattleManager : MonoBehaviour
       _habilidadActiva = value;
     }
   }
+
+  public bool DebeRestringirMeleePorInmovilizacion(Unidad unidad, bool habilidadEsMelee)
+  {
+    return unidad != null && habilidadEsMelee && unidad.estado_inmovil > 0;
+  }
+
+  public bool EsObjetivoMeleeAdyacentePermitido(Unidad atacante, object objetivo)
+  {
+    if (atacante == null || atacante.CasillaPosicion == null || objetivo == null)
+    {
+      return false;
+    }
+
+    Casilla casillaObjetivo = null;
+    if (objetivo is Unidad unidadObjetivo)
+    {
+      casillaObjetivo = unidadObjetivo.CasillaPosicion;
+    }
+    else if (objetivo is Obstaculo obstaculoObjetivo)
+    {
+      casillaObjetivo = obstaculoObjetivo.CasillaPosicion;
+    }
+
+    if (casillaObjetivo == null)
+    {
+      return false;
+    }
+
+    Casilla casillaAtacante = atacante.CasillaPosicion;
+    if (casillaAtacante.posX != 3)
+    {
+      return false;
+    }
+
+    if (casillaObjetivo.lado == casillaAtacante.lado)
+    {
+      return false;
+    }
+
+    if (casillaObjetivo.posX != 3)
+    {
+      return false;
+    }
+
+    return Mathf.Abs(casillaObjetivo.posY - casillaAtacante.posY) <= 1;
+  }
+
+  public bool TryFiltrarObjetivosMeleePorInmovilizacion(Unidad atacante, bool habilidadEsMelee, List<object> objetivosOriginales, out List<object> objetivosFiltrados)
+  {
+    if (!DebeRestringirMeleePorInmovilizacion(atacante, habilidadEsMelee))
+    {
+      objetivosFiltrados = objetivosOriginales;
+      return true;
+    }
+
+    if (objetivosOriginales == null || objetivosOriginales.Count == 0)
+    {
+      objetivosFiltrados = objetivosOriginales;
+      return false;
+    }
+
+    objetivosFiltrados = new List<object>(objetivosOriginales.Count);
+    foreach (object objetivo in objetivosOriginales)
+    {
+      if (EsObjetivoMeleeAdyacentePermitido(atacante, objetivo))
+      {
+        objetivosFiltrados.Add(objetivo);
+      }
+    }
+
+    return objetivosFiltrados.Count > 0;
+  }
   // Casilla clickeada para resolver la habilidad (para VFX con referencia de clic)
   public Casilla casillaClickHabilidad;
   private static readonly KeyCode[] _habilidadHotkeys = new[]
@@ -893,9 +1453,34 @@ public class BattleManager : MonoBehaviour
 
   private void LateUpdate()
   {
+    FiltrarObjetivosActivosMeleePorInmovilizacion();
+
     SincronizarMarcasHabilidadActiva();
 
     ActualizarTextoSeleccionObjetivo();
+  }
+
+  private void FiltrarObjetivosActivosMeleePorInmovilizacion()
+  {
+    if (!SeleccionandoObjetivo || HabilidadActiva == null || unidadActiva == null)
+    {
+      return;
+    }
+
+    if (!DebeRestringirMeleePorInmovilizacion(unidadActiva, HabilidadActiva.esMelee))
+    {
+      return;
+    }
+
+    if (lUnidadesPosiblesHabilidadActiva != null)
+    {
+      lUnidadesPosiblesHabilidadActiva.RemoveAll(unidadObjetivo => !EsObjetivoMeleeAdyacentePermitido(unidadActiva, unidadObjetivo));
+    }
+
+    if (lObstaculosPosiblesHabilidadActiva != null)
+    {
+      lObstaculosPosiblesHabilidadActiva.RemoveAll(obstaculoObjetivo => !EsObjetivoMeleeAdyacentePermitido(unidadActiva, obstaculoObjetivo));
+    }
   }
 
   private void ActualizarTextoSeleccionObjetivo()
@@ -1146,13 +1731,14 @@ public class BattleManager : MonoBehaviour
     // y aún no se actualizó la lista de unidades del lado.
     ladoA.ActualizarListaDeUnidadesEnLado();
     ladoB.ActualizarListaDeUnidadesEnLado();
+    AcelerarRefuerzosSiLadoSinUnidades();
 
     //Lado Enemigos
     if (ladoA.unidadesLado.Count < 1 && enemigosRefuerzos.Count < 1)
     {
       transform.parent.parent.gameObject.GetComponent<AdministradorEscenas>().FinDeBatalla(1); //Ganó jugador
     }
-    else if (ladoB.unidadesLado.Count < 1)
+    else if (ladoB.unidadesLado.Count < 1 && aliadosRefuerzos.Count < 1)
     {
       //Lado Jugador
       transform.parent.parent.gameObject.GetComponent<AdministradorEscenas>().FinDeBatalla(0); //Perdió jugador
@@ -1163,50 +1749,6 @@ public class BattleManager : MonoBehaviour
 
   [SerializeField] TextMeshProUGUI txtLog;
   [SerializeField] GameObject goLog;
-  /* public void EscribirLog(string log)
-  {
-     // Divide el texto existente en líneas
-     List<string> lineas = new List<string>(txtLog.text.Split('\n'));
-
-     // Si la cantidad de líneas es mayor que 20, elimina las primeras
-     while (lineas.Count > 70)
-     {
-         lineas.RemoveAt(0); // Elimina la primera línea
-     }
-
-     // Reinicia txtLog.text para construir el nuevo texto
-     txtLog.text = "";
-
-     foreach (string linea in lineas)
-     {
-         // Si la línea contiene "Día {numeroTurno}", no la modificamos
-         if (linea.Contains($"Ronda {RondaNro}"))
-         {
-             txtLog.text += linea + "\n";
-         }
-         else
-         {
-             // Si no contiene "Día {numeroTurno}", le cambiamos el color y el tamaño
-             txtLog.text += $"<size=70%>{linea}</size></color>\n";
-         }
-     }
-
-     // Agrega el nuevo log y el número de turno
-
-     txtLog.text += $"\n<size=120%><color=#cdcdcd>-Ronda {RondaNro}: </size></color>";
-     txtLog.text += $"<size=100%>{log}</size>";
-
-     // Si después de agregar las nuevas líneas, el total de líneas es mayor que 20, eliminar las más antiguas
-     List<string> nuevasLineas = new List<string>(txtLog.text.Split('\n'));
-     while (nuevasLineas.Count > 70)
-     {
-         nuevasLineas.RemoveAt(0); // Elimina la primera línea
-     }
-
-     // Reconstruye el txtLog.text con las líneas restantes
-     txtLog.text = string.Join("\n", nuevasLineas);
- }*/
-
   public List<string> lineas;
   [SerializeField] private LogDeCampania logDeCampania;
 
@@ -1214,10 +1756,90 @@ public class BattleManager : MonoBehaviour
   {
     if (logDeCampania == null) return;
 
-    // Asegura que el logger sabe el día actual
-    logDeCampania.SetDiaActual(RondaNro);
-    logDeCampania.Escribir(log, true);
+    string logNormalizado = TraducirNombresActoresEnLog(log);
 
+    // Asegura que el logger sabe el dia actual
+    logDeCampania.SetDiaActual(RondaNro);
+    logDeCampania.Escribir(logNormalizado, true);
+  }
+
+  private string TraducirNombresActoresEnLog(string log)
+  {
+    if (string.IsNullOrEmpty(log) || TRADU.i == null)
+    {
+      return log;
+    }
+
+    Dictionary<string, string> reemplazos = new Dictionary<string, string>();
+
+    void RegistrarNombre(string nombreOriginal)
+    {
+      if (string.IsNullOrWhiteSpace(nombreOriginal))
+      {
+        return;
+      }
+
+      string nombreTraducido = TRADU.i.Traducir(nombreOriginal);
+      if (string.IsNullOrWhiteSpace(nombreTraducido) || nombreTraducido == nombreOriginal)
+      {
+        return;
+      }
+
+      if (!reemplazos.ContainsKey(nombreOriginal))
+      {
+        reemplazos.Add(nombreOriginal, nombreTraducido);
+      }
+    }
+
+    if (lUnidadesTotal != null)
+    {
+      foreach (Unidad unidad in lUnidadesTotal)
+      {
+        if (unidad == null) continue;
+        RegistrarNombre(unidad.uNombre);
+      }
+    }
+
+    if (enemigosRefuerzos != null)
+    {
+      foreach (GameObject refuerzo in enemigosRefuerzos)
+      {
+        if (refuerzo == null) continue;
+        Unidad unidadRefuerzo = refuerzo.GetComponent<Unidad>();
+        if (unidadRefuerzo == null) continue;
+        RegistrarNombre(unidadRefuerzo.uNombre);
+      }
+    }
+
+    if (aliadosRefuerzos != null)
+    {
+      foreach (GameObject refuerzo in aliadosRefuerzos)
+      {
+        if (refuerzo == null) continue;
+        Unidad unidadRefuerzo = refuerzo.GetComponent<Unidad>();
+        if (unidadRefuerzo == null) continue;
+        RegistrarNombre(unidadRefuerzo.uNombre);
+      }
+    }
+
+    if (unidadActiva != null)
+    {
+      RegistrarNombre(unidadActiva.uNombre);
+    }
+
+    if (reemplazos.Count == 0)
+    {
+      return log;
+    }
+
+    string logNormalizado = log;
+    foreach (string nombreOriginal in reemplazos.Keys.OrderByDescending(n => n.Length))
+    {
+      string patron = $@"(?<![\p{{L}}\p{{N}}]){Regex.Escape(nombreOriginal)}(?![\p{{L}}\p{{N}}])";
+      logNormalizado = Regex.Replace(logNormalizado, patron, reemplazos[nombreOriginal]);
+    }
+
+    return logNormalizado;
   }
 
   public void BorrarLog()
@@ -1229,11 +1851,11 @@ public class BattleManager : MonoBehaviour
   {
     if (n == 1)
     {
-      goLog.SetActive(true);
+      UIFadeSlideUtility.Show(goLog);
     }
     else
     {
-      goLog.SetActive(false);
+      UIFadeSlideUtility.Hide(goLog);
     }
 
   }
@@ -1244,32 +1866,95 @@ public class BattleManager : MonoBehaviour
   {
     if (n == 1)
     {
-      climaTooltip.SetActive(true);
+      UIFadeSlideUtility.Show(climaTooltip);
 
       switch (CampaignManager.Instance.intTipoClima)
       {
         case 1: textClimaTooltip.text = TRADU.i.Traducir("Clima normal."); break;
         case 2: textClimaTooltip.text = TRADU.i.Traducir("Calor: todas las unidades obtienen 'Acalorado'."); break;
-        case 3: textClimaTooltip.text = TRADU.i.Traducir("Lluvia: todas las unidades obtienen 'Mojado'. -1 Ataque a habilidades de rango."); break;
+        case 3: textClimaTooltip.text = TRADU.i.Traducir("Lluvia: todas las unidades obtienen 'Mojado'."); break;
         case 4: textClimaTooltip.text = TRADU.i.Traducir("Nieve: todas las unidades obtienen 'Frío'."); break;
-        case 5: textClimaTooltip.text = TRADU.i.Traducir("Niebla: -2 Ataque a habilidades de rango."); break;
+        case 5: textClimaTooltip.text = TRADU.i.Traducir("Niebla: -1 Ataque a habilidades de rango."); break;
       }
 
 
     }
     else
     {
-      climaTooltip.SetActive(false);
+      UIFadeSlideUtility.Hide(climaTooltip);
 
     }
 
+  }
+
+  public void AbrirTooltipValor()
+  {
+    tooltipValorHoverActivo = true;
+    if (coroutineTooltipValorDelay != null)
+    {
+      StopCoroutine(coroutineTooltipValorDelay);
+    }
+
+    coroutineTooltipValorDelay = StartCoroutine(AbrirTooltipValorConDelay());
+  }
+
+  public void CerrarTooltipValor()
+  {
+    tooltipValorHoverActivo = false;
+    if (coroutineTooltipValorDelay != null)
+    {
+      StopCoroutine(coroutineTooltipValorDelay);
+      coroutineTooltipValorDelay = null;
+    }
+
+    if (tooltipValorES != null)
+    {
+      UIFadeSlideUtility.Hide(tooltipValorES);
+    }
+
+    if (tooltipValorEN != null)
+    {
+      UIFadeSlideUtility.Hide(tooltipValorEN);
+    }
+  }
+
+  private IEnumerator AbrirTooltipValorConDelay()
+  {
+    float delay = Mathf.Max(0f, tooltipValorHoverDelay);
+    if (delay > 0f)
+    {
+      yield return new WaitForSecondsRealtime(delay);
+    }
+
+    coroutineTooltipValorDelay = null;
+    if (!tooltipValorHoverActivo)
+    {
+      yield break;
+    }
+
+    if (tooltipValorES != null)
+    {
+      UIFadeSlideUtility.Hide(tooltipValorES);
+    }
+
+    if (tooltipValorEN != null)
+    {
+      UIFadeSlideUtility.Hide(tooltipValorEN);
+    }
+
+    bool idiomaEs = TRADU.i != null && TRADU.i.nIdioma == 1;
+    GameObject tooltipSeleccionado = idiomaEs ? tooltipValorES : tooltipValorEN;
+    if (tooltipSeleccionado != null)
+    {
+      UIFadeSlideUtility.Show(tooltipSeleccionado);
+    }
   }
 
   public void SombrearANoParticipantesHabilidad(List<object> unidades)
   {
     oscurecedor.SetActive(true);
 
-    // Primero, asegúrate que el oscurecedor esté en el lugar correcto en la jerarquía
+    // Primero, asegúrate que el oscurecedor está en el lugar correcto en la jerarquía
     Transform oscurecedorTransform = oscurecedor.transform;
     HashSet<object> unidadesSet = (unidades != null) ? new HashSet<object>(unidades) : new HashSet<object>();
     int ordenOscurecedor = ObtenerOrdenOscurecedor(oscurecedorTransform);
@@ -1794,3 +2479,7 @@ public class BattleManager : MonoBehaviour
  
 
 }
+
+
+
+

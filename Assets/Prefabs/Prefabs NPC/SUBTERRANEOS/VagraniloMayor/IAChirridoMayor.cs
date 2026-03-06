@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -195,7 +195,7 @@ public class IAChirridoMayor : IAHabilidad
             buff.DuracionBuffRondas = 1;
             buff.cantAPMax -= 1;
             buff.cantTsMental -= 2;
-            obj.ValentiaP_actual -= 1;
+            obj.SumarValentia(-1);
             
             buff.AplicarBuff(obj);
 
@@ -258,3 +258,6 @@ public class IAChirridoMayor : IAHabilidad
   
  
   
+
+
+

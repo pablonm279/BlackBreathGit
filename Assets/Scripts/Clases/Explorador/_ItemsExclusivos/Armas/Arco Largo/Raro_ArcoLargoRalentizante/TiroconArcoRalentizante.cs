@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -58,14 +58,14 @@ public class TiroconArcoRalentizante : Habilidad
     txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
     txtDescripcion += "<i>Al golpear TS Fortaleza DC 11: si falla, Ralentiza 2 turnos.</i>\n\n";
     txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
      if (TRADU.i.nIdioma == 2)
     {
       txtDescripcion = "<color=#5dade2><b>Slowing Bow Shot</b></color>\n\n";
       txtDescripcion += "<i>The explorer attacks the enemy with his bow.</i>\n\n";
       txtDescripcion += "<i>On hit, Fortitude Save DC 11: if failed, Slowed for 2 turns.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>Range: 7</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Piercing 1d10+1- Requires 1 Arrow</color>\n\n";
-      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+      txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valour Cost: {costoPM} </color>";
     }
        
     }
@@ -331,3 +331,7 @@ public class TiroconArcoRalentizante : Habilidad
     }
  
 }
+
+
+
+

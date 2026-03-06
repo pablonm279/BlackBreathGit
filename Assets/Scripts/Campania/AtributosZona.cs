@@ -283,10 +283,10 @@ public class AtributosZona : MonoBehaviour
       // Async sin congelar: replicamos las llamadas Generar pero con yield
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado1,
-         cantidad: 2350,
+         cantidad: 2850,
          distCaminoOverride: 0.08f,
          distNodoOverride: 0.1f,
-         rOverride: 0.87f,
+         rOverride: 0.78f,
          kOverride: 20);
 
       yield return scMapDecorator.GenerarAsyncCR(
@@ -793,3 +793,6 @@ public class AtributosZona : MonoBehaviour
       MetaprogresionManager.Instance.NivelPeligroPasoVientohelado++;
    }
 }
+
+
+

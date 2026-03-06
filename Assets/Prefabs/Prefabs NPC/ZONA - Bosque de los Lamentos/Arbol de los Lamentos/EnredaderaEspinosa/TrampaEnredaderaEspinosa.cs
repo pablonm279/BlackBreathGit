@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,6 +30,7 @@ public class TrampaEnredaderaEspinosa : Trampa
             //BUFF ---- Así se aplica un buff/debuff
             Buff buff = new Buff();
             buff.buffNombre = "Enredado";
+            buff.buffDescr = "Inmóvil, Melee solo adyacente.";
             buff.boolfDebufftBuff = false;
             buff.DuracionBuffRondas = 1;
             buff.cantAPMax -= 1;
@@ -66,3 +67,6 @@ public class TrampaEnredaderaEspinosa : Trampa
   }
 
 }
+
+
+

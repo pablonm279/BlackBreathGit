@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,7 +24,7 @@ public class REPRESENTACIONVistaLejana : Habilidad
     if (NIVEL < 2)
     {
       txtDescripcion = "<color=#5dade2><b>Vista Lejana I</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la última columna, recibe +1 Ataque y +10% Daño.</i>\n\n";
+      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la éltima columna, recibe +1 Ataque y +10% Daño.</i>\n\n";
 
       if (EsEscenaCampaña())
       {
@@ -41,7 +41,7 @@ public class REPRESENTACIONVistaLejana : Habilidad
     if (NIVEL == 2)
     {
       txtDescripcion = "<color=#5dade2><b>Vista Lejana II</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la última columna, recibe +1 Ataque y +15% Daño.</i>\n\n";
+      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la éltima columna, recibe +1 Ataque y +15% Daño.</i>\n\n";
       if (EsEscenaCampaña())
       {
         if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
@@ -56,7 +56,7 @@ public class REPRESENTACIONVistaLejana : Habilidad
     if (NIVEL == 3)
     {
       txtDescripcion = "<color=#5dade2><b>Vista Lejana III</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la última columna, recibe +2 Ataque y +15% Daño.</i>\n\n";
+      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la éltima columna, recibe +2 Ataque y +15% Daño.</i>\n\n";
 
       if (EsEscenaCampaña())
       {
@@ -73,12 +73,12 @@ public class REPRESENTACIONVistaLejana : Habilidad
     if (NIVEL == 4)
     {
       txtDescripcion = "<color=#5dade2><b>Vista Lejana IV a</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la última columna, recibe +2 Ataque, +1 Rango de Dado Crítico y +15% Daño.</i>\n\n";
+      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la éltima columna, recibe +2 Ataque, +1 Rango de Dado Crítico y +15% Daño.</i>\n\n";
     }
     if (NIVEL == 5)
     {
       txtDescripcion = "<color=#5dade2><b>Vista Lejana IV b</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la última columna, recibe +2 Ataque, +1 Defensa y +15% Daño.</i>\n\n";
+      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la éltima columna, recibe +2 Ataque, +1 Defensa y +15% Daño.</i>\n\n";
     }
        
       if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
@@ -160,3 +160,6 @@ public class REPRESENTACIONVistaLejana : Habilidad
 
 
 }
+
+
+

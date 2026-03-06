@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -57,7 +57,7 @@ public class TiroconArcoAcido : Habilidad
     txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
     txtDescripcion += "<i>+1d6 daño Ácido.</i>\n\n";
     txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
       
       if(TRADU.i.nIdioma == 2)
       {
@@ -66,7 +66,7 @@ public class TiroconArcoAcido : Habilidad
         txtDescripcion += "<i>The ranger attacks the enemy with his bow.</i>\n\n";
         txtDescripcion += "<i>+1d6 Acid damage.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>Range: 7</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Piercing 1d10+1- Requires 1 Arrow</color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valour Cost: {costoPM} </color>";
       }
        
     }
@@ -149,7 +149,7 @@ public class TiroconArcoAcido : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
-        float danioAcido = TiradaDeDados.TirarDados(1, 2); //1d2 de daño ácido
+        float danioAcido = TiradaDeDados.TirarDados(1, 2); //1d2 de daño Ácido
         objetivo.RecibirDanio(danioAcido, 7, false, scEstaUnidad);
 
 
@@ -164,7 +164,7 @@ public class TiroconArcoAcido : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
-        float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de daño ácido
+        float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de daño Ácido
         objetivo.RecibirDanio(danioAcido, 7, false, scEstaUnidad);
 
       }
@@ -177,7 +177,7 @@ public class TiroconArcoAcido : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 
-        float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de daño ácido
+        float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de daño Ácido
         objetivo.RecibirDanio(danioAcido, 7, true, scEstaUnidad);
 
       }
@@ -315,3 +315,7 @@ public class TiroconArcoAcido : Habilidad
     }
  
 }
+
+
+
+

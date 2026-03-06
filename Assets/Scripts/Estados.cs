@@ -275,3 +275,6 @@ public class Estados : MonoBehaviour
 
 
 }
+
+
+

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -55,7 +55,7 @@ public class UIContadorAP : MonoBehaviour
     Unidad unidadSeleccionada = BattleManager.Instance.unidadActiva.gameObject.GetComponent<Unidad>();
     int apSinEsfuerzo = (int)unidadSeleccionada.ObtenerAPActual();
 
-    // Asegúrate de que n esté dentro de los límites y no sea mayor que apSinEsfuerzo
+    // Asegúrate de que n está dentro de los límites y no sea mayor que apSinEsfuerzo
     n = Mathf.Clamp(n, 0, Mathf.Min(totalCirculos, apSinEsfuerzo));
 
     // Itera sobre los últimos N elementos y cambia su color a azul
@@ -86,7 +86,7 @@ public class UIContadorAP : MonoBehaviour
     }
   }
 
-public void SeEsforzaría(int n)
+public void SeEsforzaria(int n)
 {
     if(n > 0)
     {
@@ -99,3 +99,6 @@ public void SeEsforzaría(int n)
 
 
 }
+
+
+

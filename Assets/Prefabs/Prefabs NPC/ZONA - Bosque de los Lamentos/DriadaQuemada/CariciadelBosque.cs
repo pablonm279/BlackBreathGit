@@ -115,7 +115,7 @@ public override List<object> ListaHayObjetivosAlAlcance()
 
   List<object> unidadesAlAlcance = objPosibles;
 
-        // Filtrar las unidades que no estén "sanas" (HP_actual < mod_maxHP)
+        // Filtrar las unidades que no están "sanas" (HP_actual < mod_maxHP)
         unidadesAlAlcance = unidadesAlAlcance
         .OfType<Unidad>() // Asegurarse de trabajar con objetos de tipo Unidad
         .Where(u => u.HP_actual < u.mod_maxHP) // Solo unidades no sanas
@@ -150,3 +150,5 @@ public override object EstablecerObjetivoPrioritario()
   
  
   
+
+

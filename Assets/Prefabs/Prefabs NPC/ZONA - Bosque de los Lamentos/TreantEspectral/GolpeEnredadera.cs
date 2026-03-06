@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -192,6 +192,7 @@ void AplicaEnredadoTirada(Unidad unidad, int extraDC)
             //BUFF ---- Así se aplica un buff/debuff
             Buff buff = new Buff();
             buff.buffNombre = "Enredado";
+            buff.buffDescr = "Inmóvil, Melee solo adyacente.";
             buff.boolfDebufftBuff = false;
             buff.DuracionBuffRondas = 2;
             buff.cantAPMax -= 1;
@@ -221,3 +222,6 @@ void AplicaEnredadoTirada(Unidad unidad, int extraDC)
   
  
   
+
+
+

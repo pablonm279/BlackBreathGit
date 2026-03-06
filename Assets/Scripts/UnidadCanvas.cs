@@ -275,6 +275,13 @@ public class UnidadCanvas : MonoBehaviour
 
     [SerializeField] private GameObject casillaEstadoPrefab;
     [SerializeField] private GameObject contenedorCasillasEstados;
+    private int firmaEstadosUI = int.MinValue;
+
+    void OnEnable()
+    {
+        firmaEstadosUI = int.MinValue;
+    }
+
     void ActualizarEscalaBarra(Unidad unidad)
     {
         Casilla casilla = unidad.CasillaPosicion;
@@ -301,6 +308,15 @@ public class UnidadCanvas : MonoBehaviour
         if (contenedorCasillasEstados == null) return;
         Unidad scUnidadMostrada = GetComponentInParent<Unidad>();
         if (scUnidadMostrada == null) return;
+
+        int firmaActual = CalcularFirmaEstadosUI(scUnidadMostrada);
+        if (firmaActual == firmaEstadosUI) { return; }
+        firmaEstadosUI = firmaActual;
+
+        if (TooltipBatalla.Instance != null)
+        {
+            TooltipBatalla.Instance.HideTooltipSinAnim();
+        }
 
         // Limpiar los iconos previos antes de agregar los nuevos
         foreach (Transform child in contenedorCasillasEstados.transform)
@@ -333,6 +349,91 @@ public class UnidadCanvas : MonoBehaviour
         }
 
         MostrarEstados(scUnidadMostrada);
+    }
+
+    private static int MezclarHash(int actual, int valor)
+    {
+        unchecked { return (actual * 31) + valor; }
+    }
+
+    private static int HashTexto(string texto)
+    {
+        return string.IsNullOrEmpty(texto) ? 0 : texto.GetHashCode();
+    }
+
+    private int CalcularFirmaEstadosUI(Unidad unidad)
+    {
+        unchecked
+        {
+            int h = 17;
+            h = MezclarHash(h, unidad.GetInstanceID());
+
+            // Estados mostrados como iconos en barra de vida
+            h = MezclarHash(h, unidad.estado_ardiendo);
+            h = MezclarHash(h, unidad.estado_aturdido);
+            h = MezclarHash(h, unidad.estado_acido);
+            h = MezclarHash(h, unidad.estado_congelado);
+            h = MezclarHash(h, unidad.estado_ResistenciasReducidas);
+            h = MezclarHash(h, unidad.estado_sangrado);
+            h = MezclarHash(h, unidad.estado_veneno);
+            h = MezclarHash(h, unidad.estado_regeneravida);
+            h = MezclarHash(h, unidad.estado_regeneraarmadura);
+            h = MezclarHash(h, unidad.estado_evasion);
+            h = MezclarHash(h, unidad.bonusdam_acido);
+            h = MezclarHash(h, unidad.bonusdam_arcano);
+            h = MezclarHash(h, unidad.bonusdam_fuego);
+            h = MezclarHash(h, unidad.bonusdam_hielo);
+            h = MezclarHash(h, unidad.bonusdam_necro);
+            h = MezclarHash(h, unidad.bonusdam_rayo);
+            h = MezclarHash(h, unidad.bonusdam_divino);
+            h = MezclarHash(h, (int)unidad.tejidoCuracMagica);
+            h = MezclarHash(h, unidad.ObtenerEstaEscondido());
+            h = MezclarHash(h, unidad.estado_Corrupto ? 1 : 0);
+            h = MezclarHash(h, unidad.estado_Volando ? 1 : 0);
+            h = MezclarHash(h, unidad.estado_Condenado);
+            h = MezclarHash(h, unidad.estado_Escudado);
+
+            // Buffs visibles en barra (mismo filtro de render)
+            List<BuffUIHelper.BuffStack> buffStacks = BuffUIHelper.GetVisibleBuffStacks(unidad);
+            int visibles = 0;
+            for (int i = 0; i < buffStacks.Count; i++)
+            {
+                Buff b = buffStacks[i].AggregatedBuff;
+                if (ReferenceEquals(b, null) || !b.esRemovible) { continue; }
+
+                visibles++;
+                h = MezclarHash(h, HashTexto(b.buffNombre));
+                h = MezclarHash(h, HashTexto(b.buffDescr));
+                h = MezclarHash(h, b.boolfDebufftBuff ? 1 : 0);
+                h = MezclarHash(h, b.DuracionBuffRondas);
+                h = MezclarHash(h, buffStacks[i].StackCount);
+            }
+            h = MezclarHash(h, visibles);
+
+            // Reacciones mostradas
+            Reaccion[] reacciones = unidad.gameObject.GetComponents<Reaccion>();
+            h = MezclarHash(h, reacciones.Length);
+            for (int i = 0; i < reacciones.Length; i++)
+            {
+                Reaccion r = reacciones[i];
+                if (r == null) { continue; }
+                h = MezclarHash(h, r.usos);
+                h = MezclarHash(h, HashTexto(r.descripcion));
+            }
+
+            // Marcas mostradas
+            Marca[] marcas = unidad.gameObject.GetComponents<Marca>();
+            h = MezclarHash(h, marcas.Length);
+            for (int i = 0; i < marcas.Length; i++)
+            {
+                Marca m = marcas[i];
+                if (m == null) { continue; }
+                h = MezclarHash(h, m.duracion);
+                h = MezclarHash(h, HashTexto(m.descripcion));
+            }
+
+            return h;
+        }
     }
 
     public void CrearTextoProbabilidad()
@@ -530,3 +631,5 @@ public class UnidadCanvas : MonoBehaviour
     }
 
 }
+
+

@@ -145,3 +145,5 @@ public class MapaManager : MonoBehaviour
         return candidato;
     }
 }
+
+

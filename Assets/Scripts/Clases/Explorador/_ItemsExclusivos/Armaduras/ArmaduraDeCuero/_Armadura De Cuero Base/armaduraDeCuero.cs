@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -99,11 +99,11 @@ public class armaduraDeCuero : Armadura
       }
       //------
       //Si hay variantes especiales, se ponen aca abajo
-      if (sNombreItem == "Armadura de Cuero Necrótico")
+      if (sNombreItem == "Armadura de Cuero Necrítico")
       {
          if (TRADU.i.nIdioma == 1)
          {
-            sNombreItem = "Armadura de Cuero Necrótico";
+            sNombreItem = "Armadura de Cuero Necrítico";
             itemDescripcion = "Una armadura hecha de cuero necrosado.\n\n";
          }
          else if (TRADU.i.nIdioma == 2)
@@ -136,3 +136,6 @@ public class armaduraDeCuero : Armadura
    }
    
 }
+
+
+

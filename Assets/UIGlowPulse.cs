@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
@@ -32,3 +32,5 @@ public class UIGlowPulse : MonoBehaviour
         img.color = new Color(baseColor.r, baseColor.g, baseColor.b, alpha);
     }
 }
+
+

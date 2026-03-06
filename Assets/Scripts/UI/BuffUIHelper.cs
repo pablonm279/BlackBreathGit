@@ -24,7 +24,9 @@ public static class BuffUIHelper
             if (buff.DuracionBuffRondas == 0) { continue; }
             if (!buff.esBuffVisibleUI) { continue; }
 
-            string key = buff.buffNombre;
+            string key = string.IsNullOrWhiteSpace(buff.buffNombre)
+                ? "__buff_sin_nombre_" + buff.GetInstanceID()
+                : buff.buffNombre;
             if (!grouped.TryGetValue(key, out var list))
             {
                 list = new List<Buff>();
@@ -104,8 +106,8 @@ public static class BuffUIHelper
         aggregated.esRemovible = baseBuff.esRemovible;
         aggregated.esStackeable = baseBuff.esStackeable;
         aggregated.suprimeTextoFlotante = baseBuff.suprimeTextoFlotante;
-        aggregated.buffNombre = baseBuff.buffNombre;
-        aggregated.buffDescr = baseBuff.buffDescr;
+        aggregated.buffNombre = string.IsNullOrWhiteSpace(baseBuff.buffNombre) ? "Estado" : baseBuff.buffNombre;
+        aggregated.buffDescr = baseBuff.buffDescr ?? string.Empty;
         aggregated.boolfDebufftBuff = baseBuff.boolfDebufftBuff;
 
         return aggregated;

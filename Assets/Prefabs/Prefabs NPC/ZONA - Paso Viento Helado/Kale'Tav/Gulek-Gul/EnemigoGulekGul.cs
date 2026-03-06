@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -34,7 +34,7 @@ public class EnemigoGulekGul : Unidad
 
     }
     
-    public override bool TiradaSalvacion(float atributoDefiende, float dificultadHabilidada) //TRUE no se salva FALSE se salva (xd)
+    public override bool TiradaSalvacion(float atributoDefiende, float dificultadHabilidada, bool porValourGlobal = false) //TRUE no se salva FALSE se salva (xd)
   {
      bool resultado = false;
         int intentos = 1;
@@ -71,5 +71,7 @@ public class EnemigoGulekGul : Unidad
   
 
 }
+
+
 
 

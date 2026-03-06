@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -25,7 +25,7 @@ public class GritoMotivador : Habilidad
       esCargable = false;
       esMelee = false;
       esHostil = false;
-      cooldownMax = 3;
+      cooldownMax = 4;
       bAfectaObstaculos = false;
 
       imHab = Resources.Load<Sprite>("imHab/Caballero_GritoMotivador");
@@ -40,7 +40,7 @@ public class GritoMotivador : Habilidad
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
 
       int buffDanio = NIVEL > 1 ? 15 : 10;
-      int valorAliados = NIVEL > 2 ? 1 : 0;
+      int valorAliados = 1;
       bool afectaEnemigos = NIVEL == 5;
       int duracionDebuffEnemigos = 1;
 
@@ -59,11 +59,11 @@ public class GritoMotivador : Habilidad
         cuerpo += $"<b>Allied buff:</b> +{buffDanio}% Damage for 3 turns\n";
         if (valorAliados > 0)
         {
-          cuerpo += $"<b>Allied bonus:</b> +{valorAliados} Valor\n";
+          cuerpo += $"<b>Allied bonus:</b> +{valorAliados} Valour to other allies\n";
         }
         if (NIVEL == 4)
         {
-          cuerpo += "<b>Self bonus:</b> +2 Valor per affected ally\n";
+          cuerpo += "<b>Self bonus:</b> +2 Valour per affected ally\n";
         }
         if (afectaEnemigos)
         {
@@ -77,11 +77,11 @@ public class GritoMotivador : Habilidad
         cuerpo += $"<b>Buff aliados:</b> +{buffDanio}% Danio por 3 turnos\n";
         if (valorAliados > 0)
         {
-          cuerpo += $"<b>Bono aliados:</b> +{valorAliados} Val\n";
+          cuerpo += $"<b>Bono aliados:</b> +{valorAliados} Valentía a los demás aliados\n";
         }
         if (NIVEL == 4)
         {
-          cuerpo += "<b>Bono propio:</b> +2 Val por cada aliado afectado\n";
+          cuerpo += "<b>Bono propio:</b> +2 Valentía por cada aliado afectado\n";
         }
         if (afectaEnemigos)
         {
@@ -90,8 +90,8 @@ public class GritoMotivador : Habilidad
       }
 
       string costos = esIngles
-        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : tituloEs,
@@ -111,20 +111,20 @@ public class GritoMotivador : Habilidad
       if (esIngles)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% allied damage buff.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: grants +1 Valor to allies.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 Valor per ally to self) or Option B (enemy damage debuff).</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: improved progression toward IV specialization.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 Valour per ally to self) or Option B (enemy damage debuff).</color>"; }
       }
       else
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% al buff de danio aliado.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: otorga +1 Val a aliados.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Val por aliado para el Caballero) u Opcion B (debuff de danio a enemigos).</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: mejora la progresión hacia la especialización de nivel IV.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Valentía por aliado para el Caballero) u Opcion B (debuff de danio a enemigos).</color>"; }
       }
     }
 
   public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
   {
-    // El log de uso ahora estÃ¡ centralizado en Habilidad.Resolver
+    // El log de uso ahora está centralizado en Habilidad.Resolver
     VFXAplicarPropio(Usuario.gameObject);
    await base.Resolver(Objetivos);
     
@@ -187,17 +187,23 @@ public class GritoMotivador : Habilidad
     {
 
     
-    if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
+    if(obj is Unidad) //Acá van los efectos a Unidades.
      {
 
-       Unidad objetivo = (Unidad)obj;
+      Unidad objetivo = (Unidad)obj;
       if(objetivo.CasillaPosicion.lado == scEstaUnidad.CasillaPosicion.lado) //Chequea si son aliados para buffearlos o enemigos para debuffearlos (si nv5)
       { 
-      
-       if(NIVEL > 2)
+
+       if (objetivo != scEstaUnidad)
        {
-        objetivo.SumarValentia(1);
+        bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+        string nombreObjetivo = TRADU.i != null ? TRADU.i.Traducir(objetivo.uNombre) : objetivo.uNombre;
+        string motivoValentia = enIngles
+          ? nombreObjetivo + " is emboldened by War Cry"
+          : nombreObjetivo + " se envalentona por Grito Motivador";
+        objetivo.SumarValentia(1, motivoValentia);
        }
+
        if(NIVEL == 4)
        {
         scEstaUnidad.SumarValentia(2);
@@ -208,7 +214,7 @@ public class GritoMotivador : Habilidad
             VFXAplicarAliado(objetivo.gameObject);
         }
        /////////////////////////////////////////////
-       //BUFF ---- AsÃ­ se aplica un buff/debuff
+       //BUFF ---- Así se aplica un buff/debuff
        Buff buff = new Buff();
        buff.buffNombre = "Grito Motivador";
        buff.boolfDebufftBuff = true;
@@ -219,7 +225,7 @@ public class GritoMotivador : Habilidad
         buff.cantDanioPorcentaje += 5;
        }
        buff.AplicarBuff(objetivo);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
         objetivo.Marcar(0);
@@ -228,14 +234,14 @@ public class GritoMotivador : Habilidad
      {
         VFXAplicarEnemigo(objetivo.gameObject);
        /////////////////////////////////////////////
-       //BUFF ---- AsÃ­ se aplica un buff/debuff
+       //BUFF ---- Así se aplica un buff/debuff
        Buff buff = new Buff();
        buff.buffNombre = "Grito Desmotivador";
        buff.boolfDebufftBuff = false;
        buff.DuracionBuffRondas = 1;
        buff.cantDanioPorcentaje -= 10;
        buff.AplicarBuff(objetivo);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
        
        objetivo.Marcar(0);
@@ -331,6 +337,12 @@ public class GritoMotivador : Habilidad
    
  
 }
+
+
+
+
+
+
 
 
 

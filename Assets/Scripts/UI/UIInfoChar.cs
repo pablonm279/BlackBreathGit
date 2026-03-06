@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,6 +25,10 @@ public class UIInfoChar : MonoBehaviour
   [SerializeField] private TextMeshProUGUI vResNecro;
   [SerializeField] private TextMeshProUGUI vResDivino;
   [SerializeField] private TextMeshProUGUI vMerito;
+  [SerializeField] private Color vMeritoColorGanancia = new Color(0.27f, 0.94f, 0.58f, 1f);
+  [SerializeField] private Color vMeritoColorPerdida = new Color(1f, 0.36f, 0.36f, 1f);
+  [SerializeField] private float vMeritoPulseEscala = 1.18f;
+  [SerializeField] private float vMeritoPulseDuracion = 0.22f;
   [SerializeField] private GameObject vValentiaContenedor;
   
   [SerializeField] private GameObject vDescenemigoGO;
@@ -35,12 +39,23 @@ public class UIInfoChar : MonoBehaviour
 
   public GameObject infoEnemigos;
   public GameObject btninfoEnemigos;
+  private Color vMeritoColorBase = Color.white;
+  private Vector3 vMeritoEscalaBase = Vector3.one;
+  private bool vMeritoVisualInicializado;
+  private Coroutine vMeritoPulseCoroutine;
+  private Unidad unidadUltimoMerito;
+  private int valorUltimoMerito;
 
 
   
 
   public bool hayUnidadSeleccionadaParaInfo;
   public Unidad unidadMostrada;
+  private void Awake()
+  {
+    InicializarVisualMerito();
+  }
+
   public void ActualizarInfoChar(Unidad scUnidadMostrada)
   {
     if(unidadMostrada != null){unidadMostrada.Marcar(0);}
@@ -73,13 +88,15 @@ public class UIInfoChar : MonoBehaviour
      if(scUnidadMostrada.gameObject.GetComponent<IAUnidad>() != null)
      {
         vValentiaContenedor.SetActive(false);
+        ResetearVisualMerito();
+        unidadUltimoMerito = null;
         vDescEnemigo.text = ActualizarDescripcionAI(); 
         vDescenemigoGO.SetActive(mostrardesc);
         btninfoEnemigos.SetActive(true);
      }
      else
      { 
-        vMerito.text = ""+scUnidadMostrada.ValentiaP_actual;
+        ActualizarVisualMerito(scUnidadMostrada);
         vValentiaContenedor.SetActive(true);
         vDescenemigoGO.SetActive(false);
         btninfoEnemigos.SetActive(false);
@@ -280,9 +297,115 @@ public class UIInfoChar : MonoBehaviour
     }
     else
     { 
+        ResetearVisualMerito();
+        unidadUltimoMerito = null;
         gameObject.SetActive(false);
     }
 
+  }
+
+  private void InicializarVisualMerito()
+  {
+    if (vMeritoVisualInicializado || vMerito == null)
+    {
+      return;
+    }
+
+    vMeritoColorBase = vMerito.color;
+    vMeritoEscalaBase = vMerito.rectTransform.localScale;
+    vMeritoVisualInicializado = true;
+  }
+
+  private void ResetearVisualMerito()
+  {
+    InicializarVisualMerito();
+    if (vMerito == null)
+    {
+      return;
+    }
+
+    if (vMeritoPulseCoroutine != null)
+    {
+      StopCoroutine(vMeritoPulseCoroutine);
+      vMeritoPulseCoroutine = null;
+    }
+
+    vMerito.color = vMeritoColorBase;
+    vMerito.rectTransform.localScale = vMeritoEscalaBase;
+  }
+
+  private void ActualizarVisualMerito(Unidad unidad)
+  {
+    if (unidad == null || vMerito == null)
+    {
+      return;
+    }
+
+    InicializarVisualMerito();
+
+    int valorActual = Mathf.RoundToInt(unidad.ValentiaP_actual);
+    vMerito.text = valorActual.ToString();
+
+    if (unidadUltimoMerito != unidad)
+    {
+      unidadUltimoMerito = unidad;
+      valorUltimoMerito = valorActual;
+      ResetearVisualMerito();
+      return;
+    }
+
+    int delta = valorActual - valorUltimoMerito;
+    valorUltimoMerito = valorActual;
+    if (delta == 0)
+    {
+      return;
+    }
+
+    if (vMeritoPulseCoroutine != null)
+    {
+      StopCoroutine(vMeritoPulseCoroutine);
+    }
+    vMeritoPulseCoroutine = StartCoroutine(PulsoCambioValentia(delta > 0));
+  }
+
+  private IEnumerator PulsoCambioValentia(bool esGanancia)
+  {
+    if (vMerito == null)
+    {
+      yield break;
+    }
+
+    InicializarVisualMerito();
+
+    float duracionTotal = Mathf.Max(0.1f, vMeritoPulseDuracion);
+    float mediaDuracion = duracionTotal * 0.5f;
+    float factorEscala = Mathf.Max(1f, vMeritoPulseEscala);
+    Vector3 escalaObjetivo = vMeritoEscalaBase * factorEscala;
+    Color colorObjetivo = esGanancia ? vMeritoColorGanancia : vMeritoColorPerdida;
+
+    float tiempo = 0f;
+    while (tiempo < mediaDuracion)
+    {
+      tiempo += Time.deltaTime;
+      float t = Mathf.Clamp01(tiempo / mediaDuracion);
+      vMerito.color = Color.Lerp(vMeritoColorBase, colorObjetivo, t);
+      vMerito.rectTransform.localScale = Vector3.Lerp(vMeritoEscalaBase, escalaObjetivo, t);
+      yield return null;
+    }
+
+    tiempo = 0f;
+    while (tiempo < mediaDuracion)
+    {
+      tiempo += Time.deltaTime;
+      float t = Mathf.Clamp01(tiempo / mediaDuracion);
+      vMerito.color = Color.Lerp(colorObjetivo, vMeritoColorBase, t);
+      vMerito.rectTransform.localScale = Vector3.Lerp(escalaObjetivo, vMeritoEscalaBase, t);
+      yield return null;
+    }
+
+    vMerito.color = vMeritoColorBase;
+    vMerito.rectTransform.localScale = vMeritoEscalaBase;
+    vMeritoPulseCoroutine = null;
   }
   
   public GameObject BotonSalir;
@@ -326,7 +449,7 @@ public class UIInfoChar : MonoBehaviour
    string desc = "";
    if(unidadMostrada.uNombre == "Lobo Espectral")
    {
-      desc = TRADU.i.Traducir("<i>El Lobo Espectral es un enemigo feroz que se mueve y ataca rápidamente, mientras su destreza animal le brinda una buena defensa.</i>\n\n<color=#199F10>-Posee un mordisco imbuído en fuego que además de dañar, puede hacer arder a sus enemigos.</color>\n<color=#EE0000>-Estadísticas débiles.</color>");
+      desc = TRADU.i.Traducir("<i>El Lobo Espectral es un enemigo feroz que se mueve y ataca rápidamente, mientras su destreza animal le brinda una buena defensa.</i>\n\n<color=#199F10>-Posee un mordisco imbuido en fuego que además de dañar, puede hacer arder a sus enemigos.</color>\n<color=#EE0000>-Estadísticas débiles.</color>");
    }
    if(unidadMostrada.uNombre == "Lobo Alfa Espectral")
    {
@@ -350,7 +473,7 @@ public class UIInfoChar : MonoBehaviour
    }
    if(unidadMostrada.uNombre == "Manifestación Arcana")
    {
-      desc = TRADU.i.Traducir("<i>Constituído por pura energía arcana, este ente etéreo defiende al Canalizador que le dio forma.</i>\n\n<color=#199F10>-Resistente a ataques físicos.</color>");
+      desc = TRADU.i.Traducir("<i>Constituido por pura energía arcana, este ente etéreo defiende al Canalizador que le dio forma.</i>\n\n<color=#199F10>-Resistente a ataques físicos.</color>");
    }
    if(unidadMostrada.uNombre == "Vagranilo")
    {
@@ -414,7 +537,7 @@ public class UIInfoChar : MonoBehaviour
    }
    if (unidadMostrada.uNombre == "Efigie Animada")
    {
-      desc = TRADU.i.Traducir("<i>Armadas por la magia oscura de los Kale'Tav, estas efigies están por todo su territorio como primer linea de defensa en contra de quienes se atrevan a cruzar el Paso.</i>\n\n<color=#199F10>-Al ser destruída condena a su atacante.\n-Provoca sangrado.</color>\n<color=#EE0000>-Débiles.</color>");
+      desc = TRADU.i.Traducir("<i>Armadas por la magia oscura de los Kale'Tav, estas efigies están por todo su territorio como primer linea de defensa en contra de quienes se atrevan a cruzar el Paso.</i>\n\n<color=#199F10>-Al ser destruida condena a su atacante.\n-Provoca sangrado.</color>\n<color=#EE0000>-Débiles.</color>");
    }
    if (unidadMostrada.uNombre == "Gulek-Gul")
    {
@@ -497,3 +620,6 @@ public class UIInfoChar : MonoBehaviour
     ActualizarInfoChar(unidadMostrada);
   }
 }
+
+
+

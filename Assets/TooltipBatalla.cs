@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -9,33 +9,56 @@ public class TooltipBatalla : MonoBehaviour
 
     public GameObject tooltipObject;
     public TextMeshProUGUI tooltipText;
+    private UIFadeSlide tooltipAnim;
 
     void Awake()
     {
         Instance = this;
-        tooltipObject.SetActive(false);
+        if (tooltipObject == null) { return; }
+
+        tooltipAnim = UIFadeSlideUtility.Ensure(tooltipObject);
+        if (tooltipAnim != null)
+        {
+            tooltipAnim.SetDurations(0.14f, 0.14f);
+            tooltipAnim.SetOffsets(new Vector2(0f, -10f), new Vector2(0f, -8f));
+            tooltipAnim.SetFollowMouse(true, new Vector2(14f, -18f));
+            tooltipAnim.HideImmediate();
+        }
+        else
+        {
+            tooltipObject.SetActive(false);
+        }
     }
 
     public void ShowTooltip(int tipo)
     {
-        tooltipObject.SetActive(true);
+        if (tooltipObject == null) { return; }
+
         desdeBarraVida = false;
-      
-        tooltipObject.transform.position = Input.mousePosition;
+
+        UIFadeSlideUtility.ShowAt(tooltipObject, Input.mousePosition);
         tooltipText.text = TRADU.i.Traducir(ObtenerContenidoTooltip(tipo));
-        
     }
+
     bool desdeBarraVida = false;
+
     public void ShowTooltipText(string txt)
     {
-        tooltipObject.SetActive(true);
+        if (tooltipObject == null) { return; }
+
         desdeBarraVida = true;
-        tooltipObject.transform.position = Input.mousePosition;
+        UIFadeSlideUtility.ShowAt(tooltipObject, Input.mousePosition);
         tooltipText.text = TRADU.i.Traducir(txt);
     }
 
-   
+    public void ShowTooltipTextSinAnim(string txt)
+    {
+        if (tooltipObject == null) { return; }
 
+        desdeBarraVida = false;
+        UIFadeSlideUtility.ShowAtImmediate(tooltipObject, Input.mousePosition);
+        tooltipText.text = TRADU.i.Traducir(txt);
+    }
 
     private string ObtenerContenidoTooltip(int tipo)
     {
@@ -52,7 +75,7 @@ public class TooltipBatalla : MonoBehaviour
             case 5:
                 return "Mental: resistencia a efectos mentales.";
             case 6:
-                return "Valentía: recurso para habilidades especiales.";
+                return "Valentía: moral general en combate.";
             case 7:
                 return "Resistencia al Fuego: Cantidad de daño que previene.";
             case 8:
@@ -94,7 +117,7 @@ public class TooltipBatalla : MonoBehaviour
             case 26:
                 return "Trampa Improvisada: Daña y marca a unidades que la pisen.";
             case 27:
-               return "Restos de Aliento: Potencia y cura a los Vengadores de Kadryn.";
+                return "Restos de Aliento: Potencia y cura a los Vengadores de Kadryn.";
             case 28:
                 return "Primer Golpe: el Alabardero ataca a la primera unidad que entra en la casilla.";
             case 29:
@@ -118,23 +141,27 @@ public class TooltipBatalla : MonoBehaviour
 
     public void HideTooltip()
     {
-        tooltipObject.SetActive(false);
+        UIFadeSlideUtility.Hide(tooltipObject);
+        desdeBarraVida = false;
+    }
+
+    public void HideTooltipSinAnim()
+    {
+        UIFadeSlideUtility.HideImmediate(tooltipObject);
         desdeBarraVida = false;
     }
 
     void LateUpdate()
     {
         if (!desdeBarraVida) { return; }
+        if (tooltipObject == null) { return; }
 
-
-        tooltipObject.transform.position = Input.mousePosition;
-            
-     Vector2 m = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
-     if (tooltipObject.activeSelf && m.sqrMagnitude > 0f) HideTooltip();
-
-        
+        if (tooltipAnim == null)
+        {
+            tooltipObject.transform.position = Input.mousePosition;
+        }
     }
-    
-
-
 }
+
+
+

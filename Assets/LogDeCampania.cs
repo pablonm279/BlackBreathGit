@@ -118,11 +118,13 @@ public class LogDeCampania : MonoBehaviour
                 string prefijoDia;
                 if (esCombate)
                 {
-                     prefijoDia = $"<color={colorDia}>- Ronda {e.Dia}</color>";
+                     string etiquetaRonda = TRADU.i != null ? TRADU.i.Traducir("Ronda") : "Ronda";
+                     prefijoDia = $"<color={colorDia}>- {etiquetaRonda} {e.Dia}</color>";
                 }
                 else
                 {
-                     prefijoDia = $"<color={colorDia}>- Día {e.Dia}</color>";
+                     string etiquetaDia = TRADU.i != null ? TRADU.i.Traducir("Día") : "Día";
+                     prefijoDia = $"<color={colorDia}>- {etiquetaDia} {e.Dia}</color>";
                 }
 
             if (e.Dia == diaActual)
@@ -166,7 +168,7 @@ public class LogDeCampania : MonoBehaviour
     //    Para medir: GetPreferredValues(con width acotado) devuelve la altura real que necesita.
     Vector2 pref = txtLog.GetPreferredValues(txtLog.text, maxWidth, 0);
 
-    // margen de seguridad para que no “respire” al pixel
+    // margen de seguridad para que no "respire" al pixel
     const float margen = 2f;
 
     if (pref.y > maxHeight - margen)
@@ -211,3 +213,6 @@ public class LogDeCampania : MonoBehaviour
         return _regexGuionInicial.Replace(s, "$1");
     }
 }
+
+
+

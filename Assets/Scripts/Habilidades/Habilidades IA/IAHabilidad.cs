@@ -35,7 +35,8 @@ public abstract class IAHabilidad : MonoBehaviour
   private Task secuenciaVisualEnCurso = Task.CompletedTask;
   private readonly object secuenciaVisualLock = new object();
   private const int PausaPostAproximacionMs = 150;
-  private const int PausaAntesVolverMs = 2100;
+  private const int PausaAntesVolverMs = 1700;
+  private const int PausaEntreMeleesEncadenadosMs = 250;
   private const float VentanaAnimacionDuplicada = 1.1f;
   private float inicioSecuenciaVisual = -999f;
 
@@ -49,7 +50,7 @@ public abstract class IAHabilidad : MonoBehaviour
   public abstract void AplicarEfectosHabilidad(object unidad);
 
   /// <summary>
-  /// Ejecuta la animaciÃ³n/pose segÃºn el tipo de alcance de la habilidad IA.
+  /// Ejecuta la animación/pose según el tipo de alcance de la habilidad IA.
   /// </summary>
   protected void ReproducirAnimacionSegunTipo(bool ignorarDuplicado = false)
   {
@@ -216,11 +217,23 @@ public abstract class IAHabilidad : MonoBehaviour
     }
   }
 
-      if (afectaObstaculos && objPosibles.Any(x => x is Unidad))
+      if (afectaObstaculos)
       {
-        objPosibles.RemoveAll(x => x is Obstaculo);
+        List<Unidad> unidadesEnAlcance = objPosibles.OfType<Unidad>().ToList();
+
+        if (unidadesEnAlcance.Any())
+        {
+          // Si ya hay unidades al alcance, siempre se priorizan por sobre obstaculos.
+          objPosibles.RemoveAll(x => x is Obstaculo);
+        }
+        else if (HayUnidadesEnemigasVivasFueraDeAlcance(unidadesEnAlcance))
+        {
+          // Solo permitir atacar obstaculos cuando realmente estan protegiendo unidades enemigas.
+          objPosibles.RemoveAll(x => x is Obstaculo obstaculo && !ObstaculoProtegeUnidadEnemiga(obstaculo));
+        }
       }
 
+      AplicarRestriccionMeleePorInmovilizacion();
       return objPosibles;
     }
     else
@@ -275,7 +288,111 @@ public abstract class IAHabilidad : MonoBehaviour
 
 
     }
+    AplicarRestriccionMeleePorInmovilizacion();
     return objPosibles;
+  }
+
+  private void AplicarRestriccionMeleePorInmovilizacion()
+  {
+    if (BattleManager.Instance == null || scEstaUnidad == null)
+    {
+      return;
+    }
+
+    if (!BattleManager.Instance.DebeRestringirMeleePorInmovilizacion(scEstaUnidad, esMelee))
+    {
+      return;
+    }
+
+    objPosibles.RemoveAll(objetivo => !BattleManager.Instance.EsObjetivoMeleeAdyacentePermitido(scEstaUnidad, objetivo));
+  }
+
+  private bool HayUnidadesEnemigasVivasFueraDeAlcance(List<Unidad> unidadesEnAlcance)
+  {
+    if (BattleManager.Instance == null || BattleManager.Instance.lUnidadesTotal == null || casillaOrigen == null)
+    {
+      return false;
+    }
+
+    HashSet<Unidad> enAlcanceSet = new HashSet<Unidad>(unidadesEnAlcance ?? new List<Unidad>());
+    foreach (Unidad unidad in BattleManager.Instance.lUnidadesTotal)
+    {
+      if (!EsUnidadEnemigaVisible(unidad))
+      {
+        continue;
+      }
+
+      if (!enAlcanceSet.Contains(unidad))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private bool ObstaculoProtegeUnidadEnemiga(Obstaculo obstaculo)
+  {
+    if (obstaculo == null || obstaculo.CasillaPosicion == null || casillaOrigen == null || BattleManager.Instance == null)
+    {
+      return false;
+    }
+
+    // Si el obstaculo permite atacar detras, no se considera "protector".
+    if (obstaculo.bPermiteAtacarDetras)
+    {
+      return false;
+    }
+
+    Casilla casillaObstaculo = obstaculo.CasillaPosicion;
+    if (casillaObstaculo.lado == casillaOrigen.lado)
+    {
+      return false;
+    }
+
+    foreach (Unidad unidad in BattleManager.Instance.lUnidadesTotal)
+    {
+      if (!EsUnidadEnemigaVisible(unidad))
+      {
+        continue;
+      }
+
+      Casilla casillaUnidad = unidad.CasillaPosicion;
+      if (casillaUnidad == null || casillaUnidad.lado != casillaObstaculo.lado)
+      {
+        continue;
+      }
+
+      bool estaDetras = casillaUnidad.posX < casillaObstaculo.posX;
+      bool enCoberturaLateral = Math.Abs(casillaUnidad.posY - casillaObstaculo.posY) <= hAncho;
+      if (estaDetras && enCoberturaLateral)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private bool EsUnidadEnemigaVisible(Unidad unidad)
+  {
+    if (unidad == null || unidad.HP_actual <= 0 || unidad.CasillaPosicion == null || casillaOrigen == null)
+    {
+      return false;
+    }
+
+    if (unidad.CasillaPosicion.lado == casillaOrigen.lado)
+    {
+      return false;
+    }
+
+    IAUnidad ia = Usuario != null ? Usuario.GetComponent<IAUnidad>() : null;
+    if (ia != null && !ia.bPuedeVerEscondidos && unidad.ObtenerEstaEscondido() > 0)
+    {
+      return false;
+    }
+
+    return true;
   }
 
   int DeterminarAlcanceMeleeSegunColumnasOcupadas()
@@ -601,8 +718,9 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     BattleManager.Instance.SombrearANoParticipantesHabilidad(unidadesNoParticipantes);
 
     // Aproximación visual si es melee; usa primer objetivo o "solo"
+    bool mantenerAdelantePorCadena = DebeMantenerAdelanteParaEncadenarMelee();
     object objetivoVisual = solo ?? (objetivos != null && objetivos.Count > 0 ? objetivos[0] : null);
-    bool seAproximo = await IntentarAproximarVisualMeleeAsync(objetivoVisual);
+    bool seAproximo = await IntentarAproximarVisualMeleeAsync(objetivoVisual, mantenerAdelantePorCadena);
     if (seAproximo && PausaPostAproximacionMs > 0)
     {
       await Task.Delay(PausaPostAproximacionMs);
@@ -610,11 +728,26 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
 
     ReproducirAnimacionSegunTipo(true);
 
-    if (PausaAntesVolverMs > 0)
+    // La supresion solo se necesita durante la preparacion visual del ataque actual.
+    // Si se mantiene activa hasta el final de toda la secuencia, puede desincronizar
+    // la pose/animacion del siguiente ataque encadenado.
+    if (scEstaUnidad != null)
+    {
+      scEstaUnidad.SetSuprimirAnimacionIA(false);
+    }
+
+    if (mantenerAdelantePorCadena)
+    {
+      if (PausaEntreMeleesEncadenadosMs > 0)
+      {
+        await Task.Delay(PausaEntreMeleesEncadenadosMs);
+      }
+    }
+    else if (PausaAntesVolverMs > 0)
     {
       await Task.Delay(PausaAntesVolverMs);
     }
-    await VolverTrasAproximacionVisualAsync(seAproximo, true);
+    await VolverTrasAproximacionVisualAsync(seAproximo, !mantenerAdelantePorCadena);
 
       BattleManager.Instance.DesombrearANoParticipantesHabilidad(unidadesNoParticipantes);
     }
@@ -656,27 +789,52 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
   }
 
   /// <summary>
-  /// Ejecuta la habilidad con aproximaci󮠶isual si es melee. Reduce boilerplate en las IA melee.
+  /// Ejecuta la habilidad con aproximación visual si es melee. Reduce boilerplate en las IA melee.
   /// </summary>
   protected async Task EjecutarMeleeConAproximacionAsync(object objetivo, Func<Task> resolver, bool mantenerAdelante = false, bool forzarRetornoDespues = true)
   {
-    bool seAproximo = await IntentarAproximarVisualMeleeAsync(objetivo, mantenerAdelante);
+    bool mantenerReal = mantenerAdelante || DebeMantenerAdelanteParaEncadenarMelee();
+    bool seAproximo = await IntentarAproximarVisualMeleeAsync(objetivo, mantenerReal);
     if (resolver != null)
     {
       await resolver();
     }
-    await VolverTrasAproximacionVisualAsync(seAproximo, forzarRetornoDespues || !mantenerAdelante);
+    await VolverTrasAproximacionVisualAsync(seAproximo, forzarRetornoDespues || !mantenerReal);
   }
 
-  protected bool TieneOtraHabilidadMeleeDisponible(float apDisponiblePost)
+  protected bool DebeMantenerAdelanteParaEncadenarMelee()
   {
+    if (scEstaUnidad == null || !esMelee || hAncho > 1)
+    {
+      return false;
+    }
+
+    float apDisponiblePost = scEstaUnidad.ObtenerAPActual();
+    if (apDisponiblePost <= 0)
+    {
+      return false;
+    }
+
+    return TieneOtraHabilidadMeleeDisponible(apDisponiblePost, true);
+  }
+
+  protected bool TieneOtraHabilidadMeleeDisponible(float apDisponiblePost, bool incluirEsta = true)
+  {
+    if (scEstaUnidad == null)
+    {
+      return false;
+    }
+
     IAHabilidad[] habilidades = scEstaUnidad.GetComponents<IAHabilidad>();
     foreach (var hab in habilidades)
     {
-      if (hab == this) continue;
+      if (hab == null) continue;
+      if (!incluirEsta && hab == this) continue;
       if (!hab.esMelee) continue;
+      if (hab.hAncho > 1) continue;
       if (hab.hActualCooldown > 0) continue;
-      if (apDisponiblePost < hab.costoAP) continue;
+      // Mantiene el mismo criterio de disponibilidad que usa IAUnidad.HayHabilidadesPosibles (permite AP + 1).
+      if ((apDisponiblePost + 1f) < hab.costoAP) continue;
       return true;
     }
     return false;
@@ -685,3 +843,6 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
 
 
 }
+
+
+

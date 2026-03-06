@@ -194,6 +194,9 @@ public class MenuDescanso : MonoBehaviour
 
   private void Actualizar()
   {
+    bool enTutorial = CampaignManager.Instance.scTutorialManager != null &&
+                      CampaignManager.Instance.scTutorialManager.tutorialActivo;
+
     if (CampaignManager.Instance.intTipoClima == 3 || CampaignManager.Instance.intTipoClima == 4 || CampaignManager.Instance.intTipoClima == 5) //Lluvia, Nieve o Niebla
     {
       chancesAtaqueACaravana -= 20;
@@ -244,6 +247,11 @@ public class MenuDescanso : MonoBehaviour
       chancesAtaqueACaravana += 10;
     }
 
+    if (enTutorial)
+    {
+      chancesAtaqueACaravana = 0;
+    }
+
     chancesAtaqueACaravana = Mathf.Clamp(chancesAtaqueACaravana, 0, 100);
 
     chancesExploracion = Mathf.Clamp(chancesExploracion, 0, 100);
@@ -257,8 +265,10 @@ public class MenuDescanso : MonoBehaviour
 
   public async void Descansar()
   {
+    bool enTutorial = CampaignManager.Instance.scTutorialManager != null &&
+                      CampaignManager.Instance.scTutorialManager.tutorialActivo;
 
-    // Audio: al presionar Descansar, cortar música con fade, reproducir SFX y reanudar.
+    // Audio: al presionar Descansar, cortar másica con fade, reproducir SFX y reanudar.
     IniciarAudioDescansoSimple();
     CampaignManager.Instance.numeroTurno++;
 
@@ -499,7 +509,7 @@ public class MenuDescanso : MonoBehaviour
       if (pers.ActividadSeleccionada == 10 && random < 25) //Purificadora: Ritual de Limpieza 
       {
         sePrevieneAvanceAliento = true;
-        CampaignManager.Instance.EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha realizado con éxito un Ritual de Limpieza durante el descanso, previniendo el avance del Aliento Negro."));
+        CampaignManager.Instance.EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha realizado con Éxito un Ritual de Limpieza durante el descanso, previniendo el avance del Aliento Negro."));
         break;
       }
     }
@@ -533,18 +543,18 @@ public class MenuDescanso : MonoBehaviour
       // (Audio) Se maneja al principio de Descansar()
 
       int randomEmboscada = UnityEngine.Random.Range(1, 101);
-      if (CampaignManager.Instance.scTutorialManager.tutorialActivo) { randomEmboscada += 100; } //no hay emboscada en el tutorial
+      if (enTutorial) { randomEmboscada += 100; } //no hay emboscada en el tutorial
 
-      if (randomEmboscada <= chancesAtaqueACaravana)
+      if (!enTutorial && randomEmboscada <= chancesAtaqueACaravana)
       {
         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La caravana han sufrido un Ataque durante el descanso. Probabilidades ") + chancesAtaqueACaravana + TRADU.i.Traducir("% - Tirada: 1d100 = ") + randomEmboscada);
 
         CampaignManager.Instance.scMenuBatallas.EventoBatallaCaravana(0, 3);
-        // (Audio) Ignorado: la música de batalla se maneja en AdministradorEscenas
+        // (Audio) Ignorado: la másica de batalla se maneja en AdministradorEscenas
       }
       else //no puede haber evento y emboscada
       {
-        if (!CampaignManager.Instance.scTutorialManager.tutorialActivo)
+        if (!enTutorial)
         {
           if (randomEvento < factorEventoBuenoMalo)
           {
@@ -561,7 +571,7 @@ public class MenuDescanso : MonoBehaviour
     }
     else
     {
-      if (!CampaignManager.Instance.scTutorialManager.tutorialActivo)
+      if (!enTutorial)
       {
         CampaignManager.Instance.EmpezarEvento(404); //Evento de Mision de Rescate
         MetaprogresionManager.Instance.MisionesSalvamento--;
@@ -763,4 +773,7 @@ public class MenuDescanso : MonoBehaviour
 
 
 }
+
+
+
 

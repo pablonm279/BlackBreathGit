@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -168,7 +168,7 @@ public class TooltipAutoHeight : MonoBehaviour
 
     float GetVerticalPadding()
     {
-        // Si usas Padding como rect que “encierra” al texto, el padding real está en Background - Padding
+        // Si usas Padding como rect que "encierra" al texto, el padding real está en Background - Padding
         // Calculamos diferencia de alturas por offsets:
         float top = paddingRect.offsetMax.y;      // negativo
         float bottom = paddingRect.offsetMin.y;   // positivo
@@ -176,3 +176,5 @@ public class TooltipAutoHeight : MonoBehaviour
         return Mathf.Abs(top) + Mathf.Abs(bottom);
     }
 }
+
+

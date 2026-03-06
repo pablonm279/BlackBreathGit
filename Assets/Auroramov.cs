@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [ExecuteAlways]
 public class Auroramov : MonoBehaviour
@@ -29,10 +29,12 @@ public class Auroramov : MonoBehaviour
 
         transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime, Space.World);
 
-        // Movimiento lateral para simular “viento de aurora”
+        // Movimiento lateral para simular "viento de aurora"
         Vector3 pos = transform.position;
         pos.x = Mathf.Sin(Time.time * 0.2f) * 10f;
         transform.position = pos;
     }
 }
+
+
 

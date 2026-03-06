@@ -717,14 +717,15 @@ MonoBehaviour:
   mod_iniciativa: 0
   iniciativa_actual: 0
   esEtereo: 1
-  at_maxHP: 220
-  mod_maxHP: 220
-  HP_actual: 220
+  at_maxHP: 260
+  mod_maxHP: 260
+  HP_actual: 260
   at_maxAccionP: 3
   esInmobil: 1
   mod_maxAccionP: 3
   AccionP_actual: 3
   AccionP_SeEsforzo: 0
+  scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
   ValentiaP_actual: 0
@@ -734,8 +735,8 @@ MonoBehaviour:
   mod_CarAgilidad: 1
   at_CarPoder: 4
   mod_CarPoder: 4
-  at_Armadura: 5
-  mod_Armadura: 5
+  at_Armadura: 6
+  mod_Armadura: 6
   at_ResFuego: -4
   mod_ResFuego: -4
   at_ResHielo: 0
@@ -765,8 +766,8 @@ MonoBehaviour:
   mod_TSReflejos: 1
   at_TSFortaleza: 5
   mod_TSFortaleza: 5
-  at_TSMental: 3
-  mod_TSMental: 3
+  at_TSMental: 4
+  mod_TSMental: 4
   ConsumibleA: {fileID: 0}
   ConsumibleB: {fileID: 0}
   estado_ardiendo: 0
@@ -799,12 +800,25 @@ MonoBehaviour:
   bonusdam_arcano: 0
   bonusdam_necro: 0
   bonusdam_divino: 0
+  debuffsImpactoArma: []
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
+  penetracionArmaduraPlano: 0
+  penetracionArmaduraHabilidadActual: 0
   barreraDeDanio: 0
   tejidoCuracMagica: 0
   loMatoCorrompido: 0
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  apilarTextosFlotantes: 0
+  floatingTextSlotSpacing: 9
+  floatingTextSlotLifetimeFallback: 1.1
+  floatingTextMaxSlots: 4
+  floatingTextMinInterval: 0.05
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
@@ -897,6 +911,14 @@ MonoBehaviour:
   PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 1618269976996918917}
   barraVida: {fileID: 2191221845639652285}
+  barraVidaDamageFill: {fileID: 0}
+  barraVidaDamageColor: {r: 0.75, g: 0.12, b: 0.12, a: 0.6}
+  barraVidaDamageDelay: 0.12
+  barraVidaDamageSpeed: 0.9
+  barraVidaHealFill: {fileID: 0}
+  barraVidaHealColor: {r: 1, g: 0.85, b: 0.2, a: 0.6}
+  barraVidaHealDelay: 0.08
+  barraVidaHealSpeed: 0.9
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 4694107610616865097}
 --- !u!114 &1981830043046796933
@@ -935,11 +957,13 @@ MonoBehaviour:
   esMelee: 0
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  forzarPoseHabilidad: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
   tipoPorcentaje: 0
+  penetracionArmadura: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0

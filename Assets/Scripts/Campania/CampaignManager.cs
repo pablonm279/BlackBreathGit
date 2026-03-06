@@ -35,6 +35,10 @@ public class CampaignManager : MonoBehaviour
   public AudioClip sfxMovimientoCaravana;
   [Range(0f, 1f)] public float sfxMovimientoVolumen = 0.8f;
   private AudioSource sfxMovimientoSource;
+  private const float SfxDuracionFactorBase = 1.15f;
+  private const float SfxDuracionFactorTerrenoEspecial = 1.30f;
+  private const float SfxPitchBase = 1f / SfxDuracionFactorBase;
+  private const float SfxPitchTerrenoEspecial = 1f / SfxDuracionFactorTerrenoEspecial;
 
   public int sequitoHerrerosMantArmas;
   public int sequitoHerrerosMantArmaduras;
@@ -55,6 +59,7 @@ public class CampaignManager : MonoBehaviour
   private const string TEXTO_LOG_INICIO_CAMPANIA = "El viaje de la caravana ha comenzado.";
   private bool logInicioCampaniaEscrito;
   public bool MoviendoCaravana = false;
+  private bool transicionZonaEnCurso = false;
   public Nodo nodoDestinoActual;
 
   public GameObject prefabGOPersonaje;
@@ -65,6 +70,7 @@ public class CampaignManager : MonoBehaviour
 
   public GameObject goSequitos;
   public GameObject goLogCampania;
+  public GameObject goDerrota;
 
   public AdministradorEscenas scAdministradorEscenas;
 
@@ -86,6 +92,10 @@ public class CampaignManager : MonoBehaviour
     }
 
     Instance = this;
+    if (goDerrota != null)
+    {
+      goDerrota.SetActive(false);
+    }
 
 
     //Determinar si es Tuto o no
@@ -93,7 +103,7 @@ public class CampaignManager : MonoBehaviour
   
 
     //FORZAR TUTO O NO - DESCOMENTAR ABAJO
-    yaPasotuto = 1;
+   // yaPasotuto = 0;
     //
 
     if (yaPasotuto == 1)
@@ -207,10 +217,11 @@ public class CampaignManager : MonoBehaviour
   #region Nodos
   public SunController sunController;
 
-  public void ViajeIniciado(Nodo destino)
+  public void ViajeIniciado(Nodo destino, bool viajeSubterraneo = false)
   {
 
     bool sePrevieneAvanceAliento = false;
+    bool terrenoDificil = destino != null && destino.costoMovimiento > 1;
     nodoDestinoActual = destino;
     sunController.OnTravelStart(); // duración en segundos
     animCaravana.SetBool("IsWalking", true);
@@ -225,6 +236,7 @@ public class CampaignManager : MonoBehaviour
         sfxMovimientoSource.loop = true;
       }
       sfxMovimientoSource.volume = sfxMovimientoVolumen;
+      sfxMovimientoSource.pitch = (terrenoDificil || viajeSubterraneo) ? SfxPitchTerrenoEspecial : SfxPitchBase;
       if (sfxMovimientoSource.clip != sfxMovimientoCaravana)
         sfxMovimientoSource.clip = sfxMovimientoCaravana;
       if (!sfxMovimientoSource.isPlaying)
@@ -246,7 +258,7 @@ public class CampaignManager : MonoBehaviour
       if (pers.ActividadSeleccionada == 10 && random < 15 && !sePrevieneAvanceAliento) //Ritual de Limpieza
       {
         sePrevieneAvanceAliento = true;
-        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha realizado con éxito un Ritual de Limpieza, previniendo el avance del Aliento Negro."));
+        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha realizado con Éxito un Ritual de Limpieza, previniendo el avance del Aliento Negro."));
         break;
       }
 
@@ -265,7 +277,7 @@ public class CampaignManager : MonoBehaviour
       EscribirLog(TRADU.i.Traducir("-El viaje por el camino escarpado ha demorado la caravana. +") + destino.costoMovimiento + TRADU.i.Traducir(" Avance del Aliento Negro"));
     }
 
-    //Si Nieva, avanza 1 mas el Álito
+    //Si Nieva, avanza 1 mas el élito
     if (intTipoClima == 4)
     {
       EscribirLog(TRADU.i.Traducir("-La nieve a retrasado el viaje. +1 Avance del Aliento Negro"));
@@ -328,6 +340,8 @@ public class CampaignManager : MonoBehaviour
     // Detiene el sonido de movimiento al llegar al nodo
     if (sfxMovimientoSource != null && sfxMovimientoSource.isPlaying)
       sfxMovimientoSource.Stop();
+    if (sfxMovimientoSource != null)
+      sfxMovimientoSource.pitch = 1f;
 
     animCaravana.SetBool("IsWalking", false);
     
@@ -536,6 +550,33 @@ public class CampaignManager : MonoBehaviour
 
   public GameObject goUIVictoriaZona;
 
+  public void EvaluarDerrotaPorResultadoBatalla(bool fueDefensaCaravana, bool fueBatallaFinal)
+  {
+    bool tutorialActivo = scTutorialManager != null && scTutorialManager.tutorialActivo;
+    bool fueZonaExpuesta = false;
+    if (scMapaManager != null && scMapaManager.nodoActual != null)
+    {
+      fueZonaExpuesta = scMapaManager.nodoActual.tipoNodo == 11;
+    }
+
+    if (!tutorialActivo && !fueDefensaCaravana && !fueBatallaFinal && !fueZonaExpuesta)
+    {
+      return;
+    }
+
+    ActivarDerrota();
+  }
+
+  public void ActivarDerrota()
+  {
+    if (goDerrota == null)
+    {
+      return;
+    }
+
+    goDerrota.SetActive(true);
+  }
+
   // Llamar desde el resultado de la Batalla Final (jefe derrotado)
   public async void OnDerrotadoJefeZona()
   {
@@ -571,15 +612,38 @@ public class CampaignManager : MonoBehaviour
 
   public void ContinuarASiguienteZona()
   {
+    if (transicionZonaEnCurso) return;
+    StartCoroutine(ContinuarASiguienteZonaCR());
+  }
+
+  IEnumerator ContinuarASiguienteZonaCR()
+  {
+    transicionZonaEnCurso = true;
     goLogCampania.SetActive(true);
-    scAdministradorEscenas.PlayFadeInOut(1.2f, 2.0f);
-    scAdministradorEscenas.fader.alpha = 1f;
+    if (goUIVictoriaZona != null)
+    {
+      goUIVictoriaZona.SetActive(false);
+    }
+
+    if (scAdministradorEscenas != null)
+    {
+      // Tapar inmediatamente para que no se vea el reseteo/regeneracion del mapa.
+      scAdministradorEscenas.SetFaderHold(true);
+    }
+
+    // Asegura que el frame negro se pinte antes de mutar nodos/escenario.
+    yield return null;
+
     posicionCaravana = 1;
     scAtributosZona.ActualizarEstadoZona(scAtributosZona.ID, 1); //Zona completada
+    if (scAdministradorEscenas != null)
+    {
+      scAdministradorEscenas.LimpiarAvergonzadoPorCambioZona();
+    }
     scMapaManager.ResetearYGenerarSiguienteZona();
     ResetearAlientoNegro();
     scAtributosZona.GenerarZona(0); //0 es aleatorio
-
+    transicionZonaEnCurso = false;
   }
 
   public void BosqueArdienteMecanicaIncendio(int probabilidad)
@@ -635,7 +699,7 @@ public class CampaignManager : MonoBehaviour
         {
           nodoRitual.ActivarRitual();
           CambiarEsperanzaActual(-5);
-          EscribirLog(TRADU.i.Traducir("<color=#6A0DAD>-Un ritual Kale'Tav ha comenzado en un nodo cercano. La música profana desalienta a la caravana. -5 Esperanza.</color>"));
+          EscribirLog(TRADU.i.Traducir("<color=#6A0DAD>-Un ritual Kale'Tav ha comenzado en un nodo cercano. La másica profana desalienta a la caravana. -5 Esperanza.</color>"));
 
 
 
@@ -1048,7 +1112,7 @@ public class CampaignManager : MonoBehaviour
         int rand2 = UnityEngine.Random.Range(1, 6);
 
         CambiarSuministrosActuales(-rand2);
-        EscribirLog(TRADU.i.Traducir("-El Séquito de Artistas ha tenido un festín y despilfarrado suministros: ") + rand2);
+        EscribirLog(TRADU.i.Traducir("-El Séquito de Artistas ha tenido un festán y despilfarrado suministros: ") + rand2);
       }
     }
 
@@ -1423,17 +1487,7 @@ public class CampaignManager : MonoBehaviour
 
 
     if (civilesActuales < 0) { civilesActuales = 0; }
-
-    if (civilesActuales < 50)
-    {
-      valueCiviles.text = "" + civilesActuales;
-      valueCiviles.color = new Color(0.8f, 0.1f, 0.3f);
-    }
-    else if (civilesActuales >= 50)
-    {
-      valueCiviles.text = "" + civilesActuales;
-      valueCiviles.color = new Color(0.4f, 0.7f, 0.4f);
-    }
+    valueCiviles.text = "" + civilesActuales;
 
     GetMiliciasActual();
 
@@ -1715,7 +1769,7 @@ public class CampaignManager : MonoBehaviour
 
       float num = GetCivilesActual();
       text = TRADU.i.Traducir("Los <color=#c918bb>Civiles</color> que lleva la caravana hacia el Puerto. Salvar la mayor cantidad es el objetivo principal de esta misión.\n\nCada uno consume 1 de <color=#b7972c>Suministros</color> cada Descanso, y la cantidad de Civiles determina la eficiencia de las Tareas Civiles.\n");
-      text += TRADU.i.Traducir("\nLlevas ") + (int)num + TRADU.i.Traducir(" <color=#c918bb>Civiles</color>, deben ser al menos 100 para que la misión se considere exitosa.\n\n");
+      text += TRADU.i.Traducir("\nLlevas ") + (int)num + TRADU.i.Traducir(" <color=#c918bb>Civiles</color> en la caravana.\n\n");
       text += TRADU.i.Traducir("\nLas fuerzas de la Milicia de la caravana son de <color=#a8a29c>") + (int)GetMiliciasActual() + " </color>" + TRADU.i.Traducir(", que equivalen a ") + "<color=#a8a29c>" + (int)GetMiliciasActual() / 10 + TRADU.i.Traducir("</color> Milicianos que ayudarán a defenderla de ataques directos.\n\n");
 
 
@@ -1800,7 +1854,7 @@ public class CampaignManager : MonoBehaviour
         case 0: text += TRADU.i.Traducir("Actualmente estan Descansados(1), no habrá penalizaciones por viajar.\n\n"); break;
         case 1: text += TRADU.i.Traducir("Actualmente estan Frescos(2), no habrá penalizaciones por viajar."); break;
         case 2: text += TRADU.i.Traducir("Actualmente estan En Marcha(3), no habrá penalizaciones por viajar."); break;
-        case 3: text += TRADU.i.Traducir("Actualmente estan Agitados(4), -10 Esperanza, pocos Bueyes podrían morir si viajas."); break;
+        case 3: text += TRADU.i.Traducir("Actualmente estan Agitados(4), -10 Esperanza, pocos Bueyes podráan morir si viajas."); break;
         case 4: text += TRADU.i.Traducir("Actualmente estan Cansados(5), -15 Esperanza y algunos Bueyes podrán morir si viajas."); break;
         case > 4: text += TRADU.i.Traducir("Actualmente estan Exhaustos(6), -20 Esperanza y varios Bueyes podrán morir si viajas."); break;
       }
@@ -1911,12 +1965,12 @@ public class CampaignManager : MonoBehaviour
         case 1: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + ":\n" + TRADU.i.Traducir("Soleado: +5 Esperanza."); break;
         case 2: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + ":\n" + TRADU.i.Traducir("Ola de Calor: +1 Fatiga. Jornada Libre da +5 Esperanza, otras Tareas Civiles dan -3."); break;
         case 3: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada."); break;
-        case 4: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Nieve: +3 Esperanza. -15% Recolecciónes, -20% Emboscada. Viajar lleva el doble de tiempo."); break;
-        case 5: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Niebla: -20% Recolecciónes, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos."); break;
+        case 4: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Nieve: +3 Esperanza. -15% Recolecciones, -20% Emboscada. Viajar lleva el doble de tiempo."); break;
+        case 5: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Niebla: -20% Recolecciones, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos."); break;
         case 6: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Almas Danzantes: +5 Esperanza, -100% chances de Emboscada."); break;
         case 7: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Aurora Boreal: +10 Esperanza."); break;
         case 8: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Nedukazal está a oscuras."); break;
-        case 9: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Masacre: Nedukazal está siendo atacada. -10 Esperanza. +10% Emboscada. Los Zârkil están potenciados."); break;
+        case 9: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Masacre: Nedukazal está siendo atacada. -10 Esperanza. +10% Emboscada. Los Zúrkil están potenciados."); break;
 
 
       }
@@ -2904,3 +2958,6 @@ public class CampaignManager : MonoBehaviour
 
   }
 }
+
+
+

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -29,7 +29,7 @@ public class MenuNodoPersonaje : MonoBehaviour
                 CampaignManager.Instance.AgregarHeroe(IDClase3);
                 break;
             default:
-                Debug.LogError("Botón no válido: " + boton);
+                Debug.LogError("Botón no vélido: " + boton);
                 break;
         }
 
@@ -194,3 +194,6 @@ public class MenuNodoPersonaje : MonoBehaviour
 
 
 }
+
+
+

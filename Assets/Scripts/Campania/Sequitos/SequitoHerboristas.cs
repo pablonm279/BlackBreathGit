@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,7 +29,7 @@ public class SequitoHerboristas : MonoBehaviour
     {
 
 
-        txtDesc.text = TRADU.i.Traducir("Un grupo de especialistas en recolectar hierbas y crear con ellas bálsamos especiales para vender. \nAdemás, sus hierbas proporcionarán beneficios curativos a la caravana.\nPero quizás no sean demasiado cuidadosos al adentrarse en zonas peligrosas para recolectar hierbas.\n\n");
+        txtDesc.text = TRADU.i.Traducir("Un grupo de especialistas en recolectar hierbas y crear con ellas bélsamos especiales para vender. \nAdemás, sus hierbas proporcionarán beneficios curativos a la caravana.\nPero quizás no sean demasiado cuidadosos al adentrarse en zonas peligrosas para recolectar hierbas.\n\n");
         txtMecanica.text = TRADU.i.Traducir("EFECTOS PASIVOS:\n\n-Hierbas curativas: Mejoran ") + (3 + vecesEnClaro * 3) + TRADU.i.Traducir("% la curación pasiva de la Caravana.\n\nEste índice aumenta un 3% cada vez que la Caravana visite un Claro.\n\n-A veces son descuidados al recolectar hierbas. +2% chances de que se de un ataque a la caravana tras descansar.");
 
         int oroActual = CampaignManager.Instance.GetOroActuales();
@@ -93,3 +93,5 @@ public class SequitoHerboristas : MonoBehaviour
         Actualizar();
     }
 }
+
+

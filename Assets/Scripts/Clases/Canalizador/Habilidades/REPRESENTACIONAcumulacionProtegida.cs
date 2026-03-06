@@ -66,7 +66,7 @@ if(NIVEL==3)
             if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
             {
                 txtDescripcion += $"<color=#dfea02>- Opción A: Si supera la TS Mental de concentración, el atacante recibe 1d10 daño Arcano.</color>\n";
-                txtDescripcion += $"<color=#dfea02>- Opción B: Si completa con éxito la acumulación, obtiene +1 AP ese turno.</color>\n";
+                txtDescripcion += $"<color=#dfea02>- Opción B: Si completa con Éxito la acumulación, obtiene +1 AP ese turno.</color>\n";
             }
         }
     }
@@ -82,7 +82,7 @@ if(NIVEL==5)
     txtDescripcion = "<color=#5dade2><b>Acumulación Protegida IV b</b></color>\n\n"; 
     txtDescripcion += "<i>(Pasiva) El Canalizador recubre su cuerpo con energía protectora al acumular poder.</i>\n\n";
     txtDescripcion += "<color=#c8c8c8>Al Acumular Energía, obtiene <b>1 + Poder + 3 x Energía +2</b> de Barrera y <b>+2 a TS Mental</b> hasta su siguiente turno.</color>\n\n";
-    txtDescripcion += "<color=#c8c8c8>Si completa con éxito la acumulación, obtiene <b>+1 AP</b> ese turno.</color>\n";
+    txtDescripcion += "<color=#c8c8c8>Si completa con Éxito la acumulación, obtiene <b>+1 AP</b> ese turno.</color>\n";
 }
 
     if (TRADU.i.nIdioma == 2) // English translation
@@ -172,3 +172,6 @@ if(NIVEL==5)
 
 
 }
+
+
+

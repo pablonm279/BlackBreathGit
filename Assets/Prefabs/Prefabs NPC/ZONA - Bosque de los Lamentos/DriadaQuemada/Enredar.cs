@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -89,6 +89,7 @@ public class Enredar : IAHabilidad
             //BUFF ---- Así se aplica un buff/debuff
             Buff buff = new Buff();
             buff.buffNombre = "Enredadera Ardiente";
+            buff.buffDescr = "Inmóvil, Melee solo adyacente.";
             buff.boolfDebufftBuff = false;
             buff.DuracionBuffRondas = 2;
             buff.cantAPMax -= 1;
@@ -165,3 +166,6 @@ public class Enredar : IAHabilidad
   
  
   
+
+
+

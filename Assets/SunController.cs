@@ -10,7 +10,7 @@ public class SunController : MonoBehaviour
     public float duracion  = 1.2f;     // seg por viaje
 
     [Header("Orientación inicial (Y)")]
-    public float azimuthDerecha = 90f; // Y que corresponde a “derecha” en tu mapa
+    public float azimuthDerecha = 90f; // Y que corresponde a "derecha" en tu mapa
 
     [Header("Paso por viaje (Y)")]
     [FormerlySerializedAs("pasoX")] public float pasoY = -4f; // grados que rota en Y por cada avance
@@ -162,3 +162,6 @@ public class SunController : MonoBehaviour
     }
 #endif
 }
+
+
+

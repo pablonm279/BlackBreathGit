@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -13,7 +13,7 @@ public abstract class Trampa : MonoBehaviour
     public bool esTrampaFavorable = false; //true si es una trampa favorable, false si es desfavorable
     public int intUsos;
     public int intDuracionTurnos;   //duracion de la trampa en turnos, si es persistente se aplica cada turno
-    public bool esPersistente; //persistente significa que aplica sus efectos cada turno a quien esté arriba o solo cuando lo pisan
+    public bool esPersistente; //persistente significa que aplica sus efectos cada turno a quien está arriba o solo cuando lo pisan
    
 
     public Unidad unidadCreadora { get; private set; }
@@ -106,3 +106,5 @@ public abstract class Trampa : MonoBehaviour
 
     
 }
+
+

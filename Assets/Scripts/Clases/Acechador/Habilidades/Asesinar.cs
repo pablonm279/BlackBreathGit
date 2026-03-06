@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -91,7 +91,7 @@ public class Asesinar : Habilidad
       cuerpo += "<b>On kill:</b> gains Hidden (1), skill cooldown is set to 1";
       if (NIVEL == 4)
       {
-        cuerpo += ", +2 Val";
+        cuerpo += ", +2 Valour";
       }
     }
     else
@@ -106,13 +106,13 @@ public class Asesinar : Habilidad
       cuerpo += "<b>Al matar:</b> gana Escondido (1), el cooldown de la habilidad se fija en 1";
       if (NIVEL == 4)
       {
-        cuerpo += ", +2 Val";
+        cuerpo += ", +2 Valentía";
       }
     }
 
     string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Esforzable: Si ({esforzable})";
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
 
     txtDescripcion = ConstruirDescripcionEstandar(
       esIngles ? tituloEn : tituloEs,
@@ -133,13 +133,13 @@ public class Asesinar : Habilidad
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 flat damage.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack if target is isolated.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 Val on kill) or Option B (+3 flat damage).</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 Valour on kill) or Option B (+3 flat damage).</color>"; }
     }
     else
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio plano.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 ataque si el objetivo esta aislado.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Val al matar) u Opcion B (+3 de danio plano).</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Valentía al matar) u Opcion B (+3 de danio plano).</color>"; }
     }
   }
 
@@ -422,6 +422,10 @@ public class Asesinar : Habilidad
    
  
 }
+
+
+
+
 
 
 

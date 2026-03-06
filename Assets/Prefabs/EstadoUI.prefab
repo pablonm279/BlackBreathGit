@@ -159,6 +159,8 @@ MonoBehaviour:
   imApMod: {fileID: 21300000, guid: 7116d6fffd9270c43854cef35ddd4465, type: 3}
   imBuff: {fileID: 21300000, guid: a67ed21e91b13384599185a3be53498f, type: 3}
   imDebuff: {fileID: 21300000, guid: 32796ac887dbc334c83ceb53e00932ec, type: 3}
+  imValourGlobalBuff: {fileID: 21300000, guid: 851f47e6fea08be4c94571e71c8c1839, type: 3}
+  imValourGlobalDebuff: {fileID: 0}
   imReaccion: {fileID: 21300000, guid: ff387d5136bed3d429ec677d0bf67304, type: 3}
   imMarca: {fileID: 21300000, guid: bca9f77d83c43c3439e8057deac3d5d6, type: 3}
   imRegvid: {fileID: 21300000, guid: 0ec42da06ead7834dabc75fd0d757d54, type: 3}

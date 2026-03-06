@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -56,7 +56,7 @@ public class CaravanFollowerSimple : MonoBehaviour
         for (int i = 0; i < seedCount; i++)
             buffer.Add(new Snap(now - (seedCount - i) * 0.016f, lp));
 
-        // Reset de inercia para evitar tirón
+        // Reset de inercia para evitar tirán
         followerVelocity = Vector3.zero;
 
         ready = true;
@@ -122,3 +122,6 @@ public class CaravanFollowerSimple : MonoBehaviour
         transform.parent = null;
     }*/
 }
+
+
+

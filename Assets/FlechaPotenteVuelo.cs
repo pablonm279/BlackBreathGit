@@ -1,10 +1,10 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public class FlechaPotenteVuelo : MonoBehaviour
 {
-    [Header("Par�metros de vuelo")]
+    [Header("Parámetros de vuelo")]
     public float velocidad = 5f;     // unidades por segundo
     public float duracion = 2f;      // tiempo antes de destruirse
 
@@ -55,3 +55,5 @@ public class FlechaPotenteVuelo : MonoBehaviour
         completadoTcs?.TrySetResult(true);
     }
 }
+
+

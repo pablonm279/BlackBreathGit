@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -94,8 +94,8 @@ public class ImprovisarFlechas : Habilidad
       }
 
       string costos = esIngles
-        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : tituloEs,
@@ -171,7 +171,7 @@ public class ImprovisarFlechas : Habilidad
         VFXAplicar(Usuario);
        scEstaUnidad.EstablecerAPActualA(0);
        /////////////////////////////////////////////
-       //BUFF ---- AsÃ­ se aplica un buff/debuff
+       //BUFF ---- Así se aplica un buff/debuff
        Buff buff = new Buff();
        buff.buffNombre = "Flechas Preparadas";
        buff.boolfDebufftBuff = true;
@@ -187,7 +187,7 @@ public class ImprovisarFlechas : Habilidad
          buff.cantDanioPorcentaje += 15;
        }
        buff.AplicarBuff(scEstaUnidad);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, scEstaUnidad.gameObject);
        
 
@@ -230,4 +230,8 @@ public class ImprovisarFlechas : Habilidad
 
  
 }
+
+
+
+
 

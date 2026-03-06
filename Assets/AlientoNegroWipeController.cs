@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -56,3 +56,5 @@ public class AlientoNegroWipeController : MonoBehaviour
         if (sliderAlientoNegro) sliderAlientoNegro.value = cutoffActual;
     }
 }
+
+

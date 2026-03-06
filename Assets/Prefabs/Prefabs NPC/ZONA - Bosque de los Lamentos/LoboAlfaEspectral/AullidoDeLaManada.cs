@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -184,7 +184,7 @@ public class AullidoDeLaManada : IAHabilidad
        buff.DuracionBuffRondas = 3;
        buff.cantTsMental += 2;
        buff.percCritDaño += 10;
-       buff.cantDefensa += 1;
+       buff.cantAtaque += 1;
        buff.AplicarBuff(objetivo);
        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
@@ -214,3 +214,6 @@ public class AullidoDeLaManada : IAHabilidad
 
 
 }
+
+
+

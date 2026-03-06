@@ -65,3 +65,6 @@ public class ReaccionCastigarMalvados : Reaccion
 
 
 }
+
+
+

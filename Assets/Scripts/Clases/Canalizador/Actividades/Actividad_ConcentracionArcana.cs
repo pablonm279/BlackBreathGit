@@ -12,3 +12,6 @@ public class Actividad_ConcentracionArcana: Actividad
 
     }
 }
+
+
+

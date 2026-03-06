@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -8,9 +8,9 @@ using System.Data.Common;
 public class ClaseAcechador : Unidad
 {
 
-    public int PASIVA_MaestriaConBallestaMano; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ° 5 nv 4b
-    public int PASIVA_MaestriaConEspadacorta; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ° 5 nv 4b
-    public int PASIVA_Masacre; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ° 5 nv 4b
+    public int PASIVA_MaestriaConBallestaMano; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ? 5 nv 4b
+    public int PASIVA_MaestriaConEspadacorta; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ? 5 nv 4b
+    public int PASIVA_Masacre; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ? 5 nv 4b
 
     public override void ComienzoBatallaClase()
     {
@@ -134,5 +134,8 @@ public class ClaseAcechador : Unidad
     }
 
 }
+
+
+
 
 

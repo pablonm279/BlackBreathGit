@@ -83,8 +83,8 @@ public class PosturaDefensiva : Habilidad
       }
 
       string costos = esIngles
-        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Val Cost: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Val: {costoPM}";
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Valour Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : tituloEs,
@@ -133,7 +133,7 @@ public class PosturaDefensiva : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
 
-    if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
+    if(obj is Unidad) //Acá van los efectos a Unidades.
      {
 
        Unidad objetivo = (Unidad)obj;
@@ -141,7 +141,7 @@ public class PosturaDefensiva : Habilidad
 
       VFXAplicar(objetivo.gameObject);
        /////////////////////////////////////////////
-       //BUFF ---- AsÃ­ se aplica un buff/debuff
+       //BUFF ---- Así se aplica un buff/debuff
        Buff buff = new Buff();
        buff.buffNombre = "Postura Defensiva";
        buff.boolfDebufftBuff = true;
@@ -150,11 +150,11 @@ public class PosturaDefensiva : Habilidad
        if(NIVEL > 1){ buff.cantDefensa += 1;}
        if(NIVEL > 2){ buff.cantAtaque += 1;}
        buff.AplicarBuff(objetivo);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
        objetivo.Marcar(0);
 
-       //Agrega la reacciÃ³n 
+       //Agrega la reacción 
        ReaccionPosturaDefensiva reaccion = new ReaccionPosturaDefensiva();
        reaccion.NIVEL = NIVEL;
        reaccion.permanente = false;
@@ -236,6 +236,10 @@ public class PosturaDefensiva : Habilidad
    
  
 }
+
+
+
+
 
 
 

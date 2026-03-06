@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -68,7 +68,7 @@ public class SifonArcano : Habilidad
       cuerpo += lineaDanioEn + "\n";
       cuerpo += "<b>On kill by this effect:</b> +1 permanent AP max, +10% Damage and +1 Energy";
 
-      string costos = $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM} ";
+      string costos = $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM} ";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         tituloEn,
@@ -95,7 +95,7 @@ public class SifonArcano : Habilidad
       cuerpo += lineaDanioEs + "\n";
       cuerpo += "<b>Si mata con este efecto:</b> +1 AP max permanente, +10% Danio y +1 Energia";
 
-      string costos = $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM} ";
+      string costos = $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM} ";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         tituloEs,
@@ -250,3 +250,7 @@ public class SifonArcano : Habilidad
    
  
 }
+
+
+
+

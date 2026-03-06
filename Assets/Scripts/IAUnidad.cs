@@ -43,7 +43,7 @@ public class IAUnidad : MonoBehaviour
          return new AITurnTimings
          {
             DelaySinObjetivosMs = Mathf.RoundToInt(800f * factor),
-            DelayPreAccionMs = Mathf.RoundToInt(1350f * factor),
+            DelayPreAccionMs = Mathf.RoundToInt(1150f * factor),
             DelayPostAccionMs = Mathf.RoundToInt(250f * factor),
             DelayMovimientoFallbackMs = Mathf.RoundToInt(260f * factor),
             DelayFinTurnoMs = Mathf.RoundToInt(950f * factor),
@@ -166,6 +166,14 @@ public class IAUnidad : MonoBehaviour
 
             if (!intentoDeMovimiento)
             {
+               Casilla reposicionLateral = BuscarReposicionLateralGenerica(lado, scUnidad.CasillaPosicion);
+               if (reposicionLateral != null)
+               {
+                  await MoverACasilla(reposicionLateral);
+                  await DelayIA(timings.DelayMovimientoFallbackMs);
+                  continue;
+               }
+
                tendenciaMovX = 0;
                tendenciaMovY = 0;
                await DelayIA(timings.DelayMovimientoFallbackMs);
@@ -314,9 +322,11 @@ public class IAUnidad : MonoBehaviour
 
        Casilla mejorOpcion = null;
        int mejorDistancia = int.MaxValue;
+       int mejorPrioridadEmpate = int.MaxValue;
 
        int objetivoX = casilla != null ? casilla.posX : casillaActual.posX;
        int objetivoY = casilla != null ? casilla.posY : casillaActual.posY;
+       bool preferirCambioFila = casilla != null && casilla.posX > casillaActual.posX && casilla.posY == casillaActual.posY;
 
        int[,] offsets = new int[,] { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
 
@@ -345,10 +355,12 @@ public class IAUnidad : MonoBehaviour
          }
 
          int distancia = Math.Abs(objetivoX - nx) + Math.Abs(objetivoY - ny);
+         int prioridadEmpate = ObtenerPrioridadEnEmpate(dx, dy, preferirCambioFila);
 
-         if (distancia < mejorDistancia)
+         if (distancia < mejorDistancia || (distancia == mejorDistancia && prioridadEmpate < mejorPrioridadEmpate))
          {
            mejorDistancia = distancia;
+           mejorPrioridadEmpate = prioridadEmpate;
            mejorOpcion = candidata;
          }
        }
@@ -359,6 +371,142 @@ public class IAUnidad : MonoBehaviour
        }
 
        await DelayIA(timings.DelayPostAccionMs);
+   }
+
+   private Casilla BuscarReposicionLateralGenerica(LadoManager lado, Casilla casillaActual)
+   {
+      if (lado == null || casillaActual == null || scUnidad == null)
+      {
+         return null;
+      }
+
+      int direccionPreferida = ObtenerDireccionFilaHaciaEnemigo(casillaActual);
+      int[] intentos = direccionPreferida != 0
+         ? new int[] { direccionPreferida, -direccionPreferida }
+         : new int[] { 1, -1 };
+
+      foreach (int dy in intentos)
+      {
+         Casilla candidata = ObtenerCasillaLateralDisponible(lado, casillaActual, dy);
+         if (candidata != null)
+         {
+            return candidata;
+         }
+      }
+
+      if (!HayBloqueoFrontal(lado, casillaActual))
+      {
+         return null;
+      }
+
+      Casilla lateralArriba = ObtenerCasillaLateralDisponible(lado, casillaActual, 1);
+      if (lateralArriba != null)
+      {
+         return lateralArriba;
+      }
+
+      return ObtenerCasillaLateralDisponible(lado, casillaActual, -1);
+   }
+
+   private Casilla ObtenerCasillaLateralDisponible(LadoManager lado, Casilla origen, int deltaY)
+   {
+      if (lado == null || origen == null || deltaY == 0)
+      {
+         return null;
+      }
+
+      int nuevoY = origen.posY + deltaY;
+      if (nuevoY < 1 || nuevoY > 5)
+      {
+         return null;
+      }
+
+      Casilla candidata = lado.ObtenerCasillaPorIndex(origen.posX, nuevoY);
+      if (candidata == null || candidata.Presente != null)
+      {
+         return null;
+      }
+
+      return candidata;
+   }
+
+   private int ObtenerDireccionFilaHaciaEnemigo(Casilla casillaActual)
+   {
+      if (BattleManager.Instance == null || BattleManager.Instance.lUnidadesTotal == null || casillaActual == null)
+      {
+         return 0;
+      }
+
+      Unidad enemigoMasCercano = null;
+      int mejorDistanciaVertical = int.MaxValue;
+      int mejorDistanciaHorizontal = int.MaxValue;
+
+      foreach (Unidad unidad in BattleManager.Instance.lUnidadesTotal)
+      {
+         if (unidad == null || unidad.HP_actual <= 0 || unidad.CasillaPosicion == null)
+         {
+            continue;
+         }
+
+         if (unidad.CasillaPosicion.lado == casillaActual.lado)
+         {
+            continue;
+         }
+
+         if (!bPuedeVerEscondidos && unidad.ObtenerEstaEscondido() > 0)
+         {
+            continue;
+         }
+
+         int distanciaVertical = Math.Abs(unidad.CasillaPosicion.posY - casillaActual.posY);
+         int distanciaHorizontal = Math.Abs(3 - unidad.CasillaPosicion.posX);
+
+         if (distanciaVertical < mejorDistanciaVertical ||
+            (distanciaVertical == mejorDistanciaVertical && distanciaHorizontal < mejorDistanciaHorizontal))
+         {
+            mejorDistanciaVertical = distanciaVertical;
+            mejorDistanciaHorizontal = distanciaHorizontal;
+            enemigoMasCercano = unidad;
+         }
+      }
+
+      if (enemigoMasCercano == null || enemigoMasCercano.CasillaPosicion == null)
+      {
+         return 0;
+      }
+
+      return Math.Sign(enemigoMasCercano.CasillaPosicion.posY - casillaActual.posY);
+   }
+
+   private bool HayBloqueoFrontal(LadoManager lado, Casilla casillaActual)
+   {
+      if (lado == null || casillaActual == null || casillaActual.posX >= 3)
+      {
+         return false;
+      }
+
+      Casilla frontal = lado.ObtenerCasillaPorIndex(casillaActual.posX + 1, casillaActual.posY);
+      return frontal != null && frontal.Presente != null;
+   }
+
+   private static int ObtenerPrioridadEnEmpate(int dx, int dy, bool preferirCambioFila)
+   {
+      if (dy != 0)
+      {
+         return preferirCambioFila ? 0 : 1;
+      }
+
+      if (dx > 0)
+      {
+         return preferirCambioFila ? 1 : 0;
+      }
+
+      if (dx < 0)
+      {
+         return 2;
+      }
+
+      return 3;
    }
 
 
@@ -526,6 +674,7 @@ public class IAUnidad : MonoBehaviour
       }
 
       await EsperarHabilidadesPendientes(timings.GraciaHabilidadMs);
+      await ForzarRetornoMeleeVisualSiCorresponde();
       await DelayIA(timings.DelayFinTurnoMs);
 
       if (BattleManager.Instance.unidadActiva == scUnidad)
@@ -535,6 +684,29 @@ public class IAUnidad : MonoBehaviour
       }
 
       return false;
+   }
+
+   private async Task ForzarRetornoMeleeVisualSiCorresponde()
+   {
+      if (scUnidad == null)
+      {
+         return;
+      }
+
+      MeleeApproachMover mover = scUnidad.GetComponent<MeleeApproachMover>();
+      if (mover == null)
+      {
+         return;
+      }
+
+      try
+      {
+         await mover.VolverAPosicionInicialAsync(true);
+      }
+      catch (Exception ex)
+      {
+         Debug.LogWarning($"[IAUnidad] No se pudo forzar retorno visual melee de {scUnidad.uNombre}: {ex.Message}");
+      }
    }
 
    public async Task MoverACasilla(Casilla casillaObjetivo)

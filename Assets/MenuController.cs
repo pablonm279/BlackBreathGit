@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -23,10 +23,26 @@ public class MenuController : MonoBehaviour
     void Awake()
     {
         if (panelOpciones != null) panelOpciones.SetActive(false);
+
+        if (Opciones != null)
+        {
+            UIFadeSlide animOpciones = UIFadeSlideUtility.Ensure(Opciones);
+            if (animOpciones != null)
+            {
+                animOpciones.SetDurations(0.16f, 0.14f);
+                animOpciones.SetOffsets(new Vector2(0f, -14f), new Vector2(0f, -8f));
+                animOpciones.SetFollowMouse(false, Vector2.zero);
+            }
+        }
+
         if (fader != null) fader.alpha = 1f;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
+        if (TRADU.i != null)
+        {
+            TRADU.i.ActualizarIdioma();
+        }
 
 
 
@@ -77,7 +93,16 @@ public class MenuController : MonoBehaviour
     }
     public void abriropciones()
     {
-        Opciones.SetActive(!Opciones.activeInHierarchy);
+        if (Opciones == null) { return; }
+
+        if (Opciones.activeInHierarchy)
+        {
+            UIFadeSlideUtility.Hide(Opciones);
+        }
+        else
+        {
+            UIFadeSlideUtility.Show(Opciones);
+        }
     }
    
     public void OnSalir()
@@ -115,3 +140,6 @@ public class MenuController : MonoBehaviour
         fader.alpha = target;
     }
 }
+
+
+

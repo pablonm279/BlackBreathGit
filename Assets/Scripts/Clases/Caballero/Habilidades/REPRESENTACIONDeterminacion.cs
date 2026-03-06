@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -94,7 +94,7 @@ public class REPRESENTACIONDeterminacion : Habilidad
       if(NIVEL<2)
       {
         txtDescripcion = "<color=#5dade2><b>Determination I</b></color>\n\n"; 
-        txtDescripcion += "<i>(Passive)Their commitment to the cause is unwavering.\n +5% damage dealt per Courage Point.</i>\n\n";
+        txtDescripcion += "<i>(Passive)Their commitment to the cause is unwavering.\n +5% damage dealt per Valour Point.</i>\n\n";
 
         if (EsEscenaCampaña())
         {
@@ -110,7 +110,7 @@ public class REPRESENTACIONDeterminacion : Habilidad
       if(NIVEL==2)
       {
         txtDescripcion = "<color=#5dade2><b>Determination II</b></color>\n\n"; 
-        txtDescripcion += "<i>(Passive)Their commitment to the cause is unwavering.\n +5% damage dealt per Courage Point.</i>\n\n";
+        txtDescripcion += "<i>(Passive)Their commitment to the cause is unwavering.\n +5% damage dealt per Valour Point.</i>\n\n";
         txtDescripcion += "<i>When Motivated gains +1 to Saving Throws.\n\n";
 
         if (EsEscenaCampaña())
@@ -127,7 +127,7 @@ public class REPRESENTACIONDeterminacion : Habilidad
       if(NIVEL==3)
       {
         txtDescripcion = "<color=#5dade2><b>Determination III</b></color>\n\n"; 
-        txtDescripcion += "<i>(Passive)Their commitment to the cause is unwavering.\n +5% damage dealt per Courage Point.</i>\n\n";
+        txtDescripcion += "<i>(Passive)Their commitment to the cause is unwavering.\n +5% damage dealt per Valour Point.</i>\n\n";
         txtDescripcion += "<i>When Motivated gains +1 to Saving Throws.\n\n";
         txtDescripcion += "<i>When Euphoric gains +1 Attack.\n\n";
 
@@ -137,8 +137,8 @@ public class REPRESENTACIONDeterminacion : Habilidad
           {
             if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
             {
-              txtDescripcion += $"<color=#dfea02>-Option A: Start the battle with 5 Courage Points</color>\n";
-              txtDescripcion += $"<color=#dfea02>-Option B: +7% damage dealt per Courage Point</color>\n";
+              txtDescripcion += $"<color=#dfea02>-Option A: Start the battle with 5 Valour Points</color>\n";
+              txtDescripcion += $"<color=#dfea02>-Option B: +7% damage dealt per Valour Point</color>\n";
             }
           }
         }
@@ -146,15 +146,15 @@ public class REPRESENTACIONDeterminacion : Habilidad
       if(NIVEL==4)
       {
         txtDescripcion = "<color=#5dade2><b>Determination IV a</b></color>\n\n"; 
-        txtDescripcion += "<i>(Passive)Their commitment to the cause is unwavering.\n +5% damage dealt per Courage Point.</i>\n\n";
+        txtDescripcion += "<i>(Passive)Their commitment to the cause is unwavering.\n +5% damage dealt per Valour Point.</i>\n\n";
         txtDescripcion += "<i>When Motivated gains +1 to Saving Throws.\n";
         txtDescripcion += "<i>When Euphoric gains +1 Attack.\n";  
-        txtDescripcion += "<i>Starts the battle with 5 Courage Points.\n";    
+        txtDescripcion += "<i>Starts the battle with 5 Valour Points.\n";    
       }
       if(NIVEL==5)
       {
         txtDescripcion = "<color=#5dade2><b>Determination IV b</b></color>\n\n"; 
-        txtDescripcion += "<i>(Passive)Their commitment to the cause is unwavering.\n +7% damage dealt per Courage Point.</i>\n\n";
+        txtDescripcion += "<i>(Passive)Their commitment to the cause is unwavering.\n +7% damage dealt per Valour Point.</i>\n\n";
         txtDescripcion += "<i>When Motivated gains +1 to Saving Throws.\n";
         txtDescripcion += "<i>When Euphoric gains +1 Attack.\n";  
       }
@@ -176,3 +176,7 @@ public class REPRESENTACIONDeterminacion : Habilidad
 
 
 }
+
+
+
+

@@ -10,7 +10,7 @@ public class HabilidadIconVFX : MonoBehaviour
     // ============================
     //        AJUSTES BÁSICOS
     // ============================
-    [Header("▶ Disparo")]
+    [Header("Disparo")]
     [Tooltip("Si está activo, el efecto se reproduce automáticamente al habilitarse el objeto.")]
     public bool playOnEnable = true;
 
@@ -20,11 +20,11 @@ public class HabilidadIconVFX : MonoBehaviour
     [Tooltip("Retraso (segundos) antes de iniciar el efecto.")]
     [Range(0f, 3f)] public float startDelay = 0f;
 
-    [Header("▶ Duración y Curva")]
+    [Header("Duración y Curva")]
     [Tooltip("Duración total (segundos) de UNA pasada del efecto.")]
     [Range(0.05f, 5f)] public float duration = 0.6f;
 
-    [Tooltip("Curva de progresión del efecto (0→1).")]
+    [Tooltip("Curva de progresión del efecto (0-1).")]
     public AnimationCurve curve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     public enum LoopMode { None, Loop, PingPong }
@@ -48,7 +48,7 @@ public class HabilidadIconVFX : MonoBehaviour
         WipeRightToLeft
     }
 
-    [Header("▶ Efecto Base (uno principal)")]
+    [Header("Efecto Base (uno principal)")]
     [Tooltip("Efecto visual principal que se aplicará a la imagen.")]
     public BaseEffect baseEffect = BaseEffect.WipeTopToBottom;
 
@@ -58,7 +58,7 @@ public class HabilidadIconVFX : MonoBehaviour
     // ============================
     //         EFECTOS EXTRA
     // ============================
-    [Header("▶ Extras (opcionales)")]
+    [Header("Extras (opcionales)")]
     [Tooltip("Activa un pulso de brillo/escala mientras corre el efecto.")]
     public bool extraPulseGlow = true;
 
@@ -84,7 +84,7 @@ public class HabilidadIconVFX : MonoBehaviour
     // ============================
     //            AUDIO
     // ============================
-    [Header("▶ Audio (opcional)")]
+    [Header("Audio (opcional)")]
     public bool playSfx = false;
     public AudioClip sfxClip;
     [Range(0f, 1f)] public float sfxVolume = 0.8f;
@@ -93,25 +93,25 @@ public class HabilidadIconVFX : MonoBehaviour
     // ============================
     //            EVENTS
     // ============================
-    [Header("▶ Eventos (opcional)")]
+    [Header("Eventos (opcional)")]
     public UnityEvent onPlay;
     public UnityEvent onComplete;
 
     // ============================
     //        TIEMPO (extra)
     // ============================
-    [Header("▶ Tiempo (extra)")]
+    [Header("Tiempo (extra)")]
     [Tooltip("Usar Time.deltaTime (true) o Time.unscaledDeltaTime (false).")]
     public bool useScaledTime = false;
 
     // ============================
     //     TAMAÑO DINÁMICO
     // ============================
-    [Header("▶ Tamaño dinámico")]
+    [Header("Tamaño dinámico")]
     [Tooltip("Escala por eje controlada por curvas (se suma a la escala original).")]
     public bool sizeOverTime = false;
 
-    [Tooltip("Curva de escala X. 0=sin cambio; 1/−1 según multiplicador.")]
+    [Tooltip("Curva de escala X. 0=sin cambio; 1/-1 según multiplicador.")]
     public AnimationCurve sizeXCurve = AnimationCurve.Linear(0, 0, 1, 1);
     [Range(-2f, 2f)] public float sizeXMultiplier = 0.2f;
 
@@ -122,7 +122,7 @@ public class HabilidadIconVFX : MonoBehaviour
     // ============================
     //   MOVIMIENTO / VELOCIDAD
     // ============================
-    [Header("▶ Movimiento por velocidad")]
+    [Header("Movimiento por velocidad")]
     [Tooltip("Desplaza integrando velocidad por eje.")]
     public bool moveOverTime = false;
 
@@ -138,7 +138,7 @@ public class HabilidadIconVFX : MonoBehaviour
     // ============================
     //        ROTACIÓN Z
     // ============================
-    [Header("▶ Rotación Z")]
+    [Header("Rotación Z")]
     public bool rotateOverTime = false;
     public float rotDegrees = 15f;
     public AnimationCurve rotCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
@@ -146,12 +146,12 @@ public class HabilidadIconVFX : MonoBehaviour
     // ============================
     //   COLOR / ALPHA / MATERIAL
     // ============================
-    [Header("▶ Color / Alpha / Material")]
+    [Header("Color / Alpha / Material")]
     [Tooltip("Interpola color usando un gradiente a lo largo del efecto.")]
     public bool colorOverTime = false;
     public Gradient colorGradient;
 
-    [Tooltip("Multiplica alpha del Image por una curva (0→1).")]
+    [Tooltip("Multiplica alpha del Image por una curva (0-1).")]
     public bool extraAlphaCurve = false;
     public AnimationCurve alphaMulCurve = AnimationCurve.Linear(0, 1, 1, 1);
 
@@ -395,7 +395,7 @@ public class HabilidadIconVFX : MonoBehaviour
 
     private void ApplyExtras(float k, float dt)
     {
-        // ---- Escala “sizeOverTime” + pulso
+        // ---- Escala "sizeOverTime" + pulso
         Vector3 scaleNow = _origScale;
         if (sizeOverTime)
         {
@@ -447,14 +447,14 @@ public class HabilidadIconVFX : MonoBehaviour
             transform.localEulerAngles = e;
         }
 
-        // ---- Color (gradiente → luego glow mezcla)
+        // ---- Color (gradiente y luego glow mezcla)
         Color col = _origColor;
         if (colorOverTime && colorGradient != null)
             col = colorGradient.Evaluate(k);
 
         if (extraPulseGlow && glowIntensity > 0f)
         {
-            float tGlow = Mathf.Sin(k * Mathf.PI) * glowIntensity; // 0→1
+            float tGlow = Mathf.Sin(k * Mathf.PI) * glowIntensity; // 0-1
             col = Color.Lerp(col, glowColor, Mathf.Clamp01(tGlow));
         }
 
@@ -519,6 +519,9 @@ public class HabilidadIconVFX : MonoBehaviour
     // Helpers de Curva
     [ContextMenu("Curve/Set EaseInOut Default")]
     private void Curve_SetDefault() => curve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
-    [ContextMenu("Curve/Set Linear 0→1")]
+    [ContextMenu("Curve/Set Linear 0-1")]
     private void Curve_SetLinear() => curve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
 }
+
+
+

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -8,7 +8,7 @@ public class Nodo : MonoBehaviour
 {
   private ContenedorDeNodos scContenedorNodos2;
   public int tipoNodo;//1-Batalla  2-Elie  3-Evento  4-Claro
-  public int posXNodo; // de 1 a 11 que tan adelante estÃ¡ el nodo en el mapa,
+  public int posXNodo; // de 1 a 11 que tan adelante está el nodo en el mapa,
   public int posYNodo; // de A (1) a E (5) en que camino va, A siendo arriba E abajo.
 
   public bool nodoDespejado;
@@ -41,14 +41,14 @@ public class Nodo : MonoBehaviour
     string hayExploracionExplorador = "";
     foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
     {
-      if (pers.ActividadSeleccionada == 9) //Explorador: ExploraciÃ³n
+      if (pers.ActividadSeleccionada == 9) //Explorador: Exploración
       {
         hayExploracionExplorador = pers.sNombre;
 
       }
       if (pers.Camp_Enfermo > 0)
       {
-        pers.Camp_Enfermo -= 1; //Cada viaje se cura un dÃ­a
+        pers.Camp_Enfermo -= 1; //Cada viaje se cura un día
       }
       if (pers.Camp_Moral > 0) //Moral tiende a cero
       {
@@ -61,7 +61,7 @@ public class Nodo : MonoBehaviour
 
     }
 
-    if (hayExploracionExplorador != "")//Explorador: ExploraciÃ³n
+    if (hayExploracionExplorador != "")//Explorador: Exploración
     {
       TiradaExploracion(200, false); //Explora si o si los adyacentes
       TiradaExploracion(55, true, hayExploracionExplorador); //Y tiene 35% de explorar los siguientes y -15% de explorar los siguientes etc.
@@ -89,7 +89,7 @@ public class Nodo : MonoBehaviour
 
     if(UnityEngine.Random.Range(0, 100) < chancesAtajo && posXNodo < 9)
     {
-      CampaignManager.Instance.EscribirLog("-Se ha encontrado un atajo subterrÃ¡neo.");
+      CampaignManager.Instance.EscribirLog("-Se ha encontrado un atajo subterráneo.");
 
       EncontrarAtajo(2, 0);
     }
@@ -112,7 +112,7 @@ public class Nodo : MonoBehaviour
   {
     int nextX = posXNodo + X;
 
-    // Busca todos los nodos posibles en nextX y posYNodo-Y ... posYNodo+Y que no estÃ©n ya conectados
+    // Busca todos los nodos posibles en nextX y posYNodo-Y ... posYNodo+Y que no estén ya conectados
     List<Nodo> posiblesAtajos = new List<Nodo>();
 
     for (int dy = -Y; dy <= Y; dy++)
@@ -373,8 +373,8 @@ public class Nodo : MonoBehaviour
   public Material lineMaterial;
   private float lineWidth = 0.2f;
 
-  public float lineHeightOffset = 0.01f; // AÃ±ade un pequeÃ±o offset en altura para evitar giros
-  public GameObject linePrefab; // Asigna tu prefab de lÃ­nea en el inspector
+  public float lineHeightOffset = 0.01f; // Añade un pequeño offset en altura para evitar giros
+  public GameObject linePrefab; // Asigna tu prefab de línea en el inspector
 
   public void ConectarConNodo(Nodo nodoB, bool esPorAbajo = false)
   {
@@ -385,7 +385,7 @@ public class Nodo : MonoBehaviour
 
       cantidadConexiones++;
 
-      // Crear un GameObject para la lÃ­nea
+      // Crear un GameObject para la línea
       GameObject lineObject = Instantiate(linePrefab, this.transform);
       LineRenderer lineRenderer = lineObject.GetComponent<LineRenderer>();
 
@@ -397,7 +397,7 @@ public class Nodo : MonoBehaviour
       if (esPorAbajo)
       {
         // Controla la profundidad y la "erraticidad"
-        float profundidad =UnityEngine.Random.Range(-2.5f, -4.5f); // MÃ¡s profundo
+        float profundidad =UnityEngine.Random.Range(-2.5f, -4.5f); // Más profundo
         float offsetX1 =UnityEngine.Random.Range(-1.5f, 1.5f);
         float offsetX2 =UnityEngine.Random.Range(-1.5f, 1.5f);
 
@@ -407,8 +407,8 @@ public class Nodo : MonoBehaviour
         // Segundo punto de control: sigue bajo tierra, pero se acerca al destino
         p2 = p3 + new Vector3(offsetX2, profundidad, 0);
 
-        // Opcional: aÃ±ade un poco de "serpenteo" en la curva
-        // (puedes ajustar los valores para mÃ¡s o menos curvatura)
+        // Opcional: añade un poco de "serpenteo" en la curva
+        // (puedes ajustar los valores para más o menos curvatura)
       }
       else
       {
@@ -449,7 +449,7 @@ public class Nodo : MonoBehaviour
         float t = i / (float)(resolution - 1);
         Vector3 point = BezierCurve.GetPoint(p0, p1, p2, p3, t);
 
-        // Si esPorAbajo, suaviza la curva al final y reduce la profundidad mÃ¡xima
+        // Si esPorAbajo, suaviza la curva al final y reduce la profundidad máxima
         if (esPorAbajo && t > 0.1f && t < 0.9f)
         {
           // Menos erraticidad y menos profundidad
@@ -487,7 +487,7 @@ public class Nodo : MonoBehaviour
       MoverJugadorANodo(scMapaManager.nodoActual, this);
       if (posXNodo - scMapaManager.nodoActual.posXNodo > 1) //Si se mueve a un nodo mas lejano que 1, se considera un atajo
       {
-        CampaignManager.Instance.EscribirLog("-Al viajar por el atajo subterrÃ¡neo, la moral de la caravana disminuye. -5 Esperanza");
+        CampaignManager.Instance.EscribirLog("-Al viajar por el atajo subterráneo, la moral de la caravana disminuye. -5 Esperanza");
         CampaignManager.Instance.CambiarEsperanzaActual(-5);
       }
      
@@ -499,7 +499,7 @@ public class Nodo : MonoBehaviour
     velocidadMovimiento = 2 + 4 / nodoDestino.costoMovimiento;
     if (nodoDestino != null && nodoOrigen.DestinosPosibles.Contains(nodoDestino))
     {
-      // Encontrar la lÃ­nea correspondiente entre nodoOrigen y nodoDestino
+      // Encontrar la línea correspondiente entre nodoOrigen y nodoDestino
       Transform lineaTransform = null;
       foreach (Transform child in nodoOrigen.transform)
       {
@@ -522,12 +522,12 @@ public class Nodo : MonoBehaviour
       }
       else
       {
-        Debug.LogWarning("No se encontrÃ³ la lÃ­nea correspondiente entre los nodos.");
+        Debug.LogWarning("No se encontró la línea correspondiente entre los nodos.");
       }
     }
     else
     {
-      Debug.LogWarning("Nodo destino no vÃ¡lido o no estÃ¡ en la lista de destinos posibles.");
+      Debug.LogWarning("Nodo destino no válido o no está en la lista de destinos posibles.");
     }
   }
 
@@ -786,8 +786,8 @@ public class Nodo : MonoBehaviour
     int chancesAtaqueSubterraneo = 200; //20% de chances de que al llegar al nodo, la caravana sea emboscada por un ataque subterraneo
     if (esAtajo &&UnityEngine.Random.Range(0, 100) < chancesAtaqueSubterraneo)
     {
-      CampaignManager.Instance.EscribirLog("-La Caravana ha sido emboscada por un ataque subterrÃ¡neo.");
-      tipoNodo = 12; //Se convierte en un nodo de batalla subterrÃ¡nea
+      CampaignManager.Instance.EscribirLog("-La Caravana ha sido emboscada por un ataque subterráneo.");
+      tipoNodo = 12; //Se convierte en un nodo de batalla subterránea
     }
  
 
@@ -804,7 +804,7 @@ public class Nodo : MonoBehaviour
         nodo.Revelar(false); //Revela el nodo
         if (actividadExploradorON != "")
         {
-          CampaignManager.Instance.EscribirLog($"-{actividadExploradorON} ha Explorado con Ã©xito el camino adelante.");
+          CampaignManager.Instance.EscribirLog($"-{actividadExploradorON} ha Explorado con éxito el camino adelante.");
         }
 
         if (continua)
@@ -889,16 +889,16 @@ public class Nodo : MonoBehaviour
         {
             switch (tipoNodo)
             {
-                case 1: descripcion = "Combate directo de HÃ©roes contra enemigos."; break;
+                case 1: descripcion = "Combate directo de Héroes contra enemigos."; break;
                 case 2: descripcion = "Evento aleatorio."; break;
                 case 3: descripcion = "Claro tranquilo."; break;
                 case 4: descripcion = "Asentamiento."; break;
-                case 5: descripcion = "RecolecciÃ³n de Recursos."; break;
+                case 5: descripcion = "Recolección de Recursos."; break;
                 case 6: descripcion = "Puesto de Comercio."; break;
-                case 7: descripcion = "AdquisiciÃ³n de Personajes."; break;
-                case 8: descripcion = "Combate directo de HÃ©roes contra enemigos de Ã‰lite."; break;
+                case 7: descripcion = "Adquisición de Personajes."; break;
+                case 8: descripcion = "Combate directo de Héroes contra enemigos de Élite."; break;
                 case 10: descripcion = "Batalla final de la Zona actual."; break;
-                case 11: descripcion = "<b>(!)</b> Zona Expuesta, la caravana serÃ¡ emboscada."; break;
+                case 11: descripcion = "<b>(!)</b> Zona Expuesta, la caravana será emboscada."; break;
 
                 default: descripcion = "Nodo Desconocido."; break;
             }

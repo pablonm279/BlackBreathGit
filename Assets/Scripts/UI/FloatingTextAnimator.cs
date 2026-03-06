@@ -13,7 +13,9 @@ public enum FloatingTextContext
     Resist = 5,
     Miss = 6,
     BuffApply = 7,
-    BuffEnd = 8
+    BuffEnd = 8,
+    ValourGain = 9,
+    ValourLoss = 10
 }
 
 [Serializable]
@@ -130,6 +132,8 @@ public class FloatingTextAnimator : MonoBehaviour
     [SerializeField] private FloatingTextProfile missProfile = CreateMissProfile();
     [SerializeField] private FloatingTextProfile buffApplyProfile = CreateBuffApplyProfile();
     [SerializeField] private FloatingTextProfile buffEndProfile = CreateBuffEndProfile();
+    [SerializeField] private FloatingTextProfile valourGainProfile = CreateValourGainProfile();
+    [SerializeField] private FloatingTextProfile valourLossProfile = CreateValourLossProfile();
 
     private TextMeshProUGUI tmp;
     private RectTransform rect;
@@ -155,6 +159,8 @@ public class FloatingTextAnimator : MonoBehaviour
         missProfile?.Validate();
         buffApplyProfile?.Validate();
         buffEndProfile?.Validate();
+        valourGainProfile?.Validate();
+        valourLossProfile?.Validate();
     }
 
     public void SetBasePosition(Vector2 anchoredPosition)
@@ -291,6 +297,14 @@ public class FloatingTextAnimator : MonoBehaviour
                 if (buffApplyProfile != null) { return FloatingTextProfile.Clone(buffApplyProfile); }
                 break;
             case FloatingTextContext.BuffEnd:
+                if (buffEndProfile != null) { return FloatingTextProfile.Clone(buffEndProfile); }
+                break;
+            case FloatingTextContext.ValourGain:
+                if (valourGainProfile != null) { return FloatingTextProfile.Clone(valourGainProfile); }
+                if (buffApplyProfile != null) { return FloatingTextProfile.Clone(buffApplyProfile); }
+                break;
+            case FloatingTextContext.ValourLoss:
+                if (valourLossProfile != null) { return FloatingTextProfile.Clone(valourLossProfile); }
                 if (buffEndProfile != null) { return FloatingTextProfile.Clone(buffEndProfile); }
                 break;
         }
@@ -459,6 +473,34 @@ public class FloatingTextAnimator : MonoBehaviour
             scaleCurve = new AnimationCurve(
                 new Keyframe(0f, 1.02f),
                 new Keyframe(0.2f, 1.06f),
+                new Keyframe(1f, 0.97f))
+        };
+    }
+
+    private static FloatingTextProfile CreateValourGainProfile()
+    {
+        return new FloatingTextProfile
+        {
+            lifetime = 1.5f,
+            verticalSpeed = 20f,
+            horizontalSpeed = 0f,
+            scaleCurve = new AnimationCurve(
+                new Keyframe(0f, 0.98f),
+                new Keyframe(0.24f, 1.06f),
+                new Keyframe(1f, 0.98f))
+        };
+    }
+
+    private static FloatingTextProfile CreateValourLossProfile()
+    {
+        return new FloatingTextProfile
+        {
+            lifetime = 1.5f,
+            verticalSpeed = 18f,
+            horizontalSpeed = 0f,
+            scaleCurve = new AnimationCurve(
+                new Keyframe(0f, 1.01f),
+                new Keyframe(0.22f, 1.07f),
                 new Keyframe(1f, 0.97f))
         };
     }

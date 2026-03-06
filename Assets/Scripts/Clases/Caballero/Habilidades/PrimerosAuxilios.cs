@@ -81,8 +81,8 @@ public class PrimerosAuxilios : Habilidad
       }
 
       string costos = esIngles
-        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}\n- Uses per battle: {usos}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}\n- Usos por batalla: {usos}";
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Uses per battle: {usos}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Usos por batalla: {usos}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : tituloEs,
@@ -142,7 +142,7 @@ public class PrimerosAuxilios : Habilidad
     public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
+     if(obj is Unidad) //Acá van los efectos a Unidades.
      {
         
        Unidad objetivo = (Unidad)obj;
@@ -332,6 +332,9 @@ public class PrimerosAuxilios : Habilidad
 
  
 }
+
+
+
 
 
 

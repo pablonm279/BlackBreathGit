@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,4 +29,6 @@ public class LookAtCameraNOX : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, y, 0f);
     }
 }
+
+
 

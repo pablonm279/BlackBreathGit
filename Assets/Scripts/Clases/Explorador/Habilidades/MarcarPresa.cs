@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -65,7 +65,7 @@ public class MarcarPresa : Habilidad
       cuerpo += aplicaDebuffPropio
         ? "<b>Self effect on cast:</b> -2 Attack for 2 turns (only against non-marked targets)\n"
         : "<b>Self effect on cast:</b> no attack penalty against non-marked targets\n";
-      cuerpo += $"<b>On marked kill:</b> +{recompensaVal} Val, +{recompensaApMax} max AP and +{recompensaTsMental} Mental Save for 3 turns";
+      cuerpo += $"<b>On marked kill:</b> +{recompensaVal} Valour, +{recompensaApMax} max AP and +{recompensaTsMental} Mental Save for 3 turns";
     }
     else
     {
@@ -77,12 +77,12 @@ public class MarcarPresa : Habilidad
       cuerpo += aplicaDebuffPropio
         ? "<b>Efecto propio al lanzar:</b> -2 Ataque por 2 turnos (solo contra objetivos no marcados)\n"
         : "<b>Efecto propio al lanzar:</b> sin penalidad de ataque contra objetivos no marcados\n";
-      cuerpo += $"<b>Al matar al marcado:</b> +{recompensaVal} Val, +{recompensaApMax} AP max y +{recompensaTsMental} TS Mental por 3 turnos";
+      cuerpo += $"<b>Al matar al marcado:</b> +{recompensaVal} Valentía, +{recompensaApMax} AP max y +{recompensaTsMental} TS Mental por 3 turnos";
     }
 
     string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
     txtDescripcion = ConstruirDescripcionEstandar(
       esIngles ? tituloEn : tituloEs,
@@ -103,13 +103,13 @@ public class MarcarPresa : Habilidad
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% crit damage on marked target.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 crit range on marked target.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A removes self attack penalty; Option B improves kill reward (+1 Val, +1 max AP, +1 Mental Save).</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A removes self attack penalty; Option B improves kill reward (+1 Valour, +1 max AP, +1 Mental Save).</color>"; }
     }
     else
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% al danio critico contra marcado.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al rango critico contra marcado.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A elimina la penalidad propia de ataque; Opcion B mejora la recompensa por muerte (+1 Val, +1 AP max, +1 TS Mental).</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A elimina la penalidad propia de ataque; Opcion B mejora la recompensa por muerte (+1 Valentía, +1 AP max, +1 TS Mental).</color>"; }
     }
   }
 
@@ -266,5 +266,9 @@ public class MarcarPresa : Habilidad
    
  
 }
+
+
+
+
 
 

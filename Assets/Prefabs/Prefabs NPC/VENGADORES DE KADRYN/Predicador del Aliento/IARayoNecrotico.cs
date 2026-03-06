@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ public class IARayoNecrotico : IAHabilidad
 
   void Awake()
   {
-    nombre = "Rayo Necrótico";
+    nombre = "Rayo Necrítico";
     Usuario = gameObject;
     scEstaUnidad = Usuario.GetComponent<Unidad>();
     hAncho = 2;
@@ -228,3 +228,6 @@ public class IARayoNecrotico : IAHabilidad
     return puntos;
   }
 }
+
+
+

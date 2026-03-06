@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -22,7 +22,7 @@ public class DescargaArcana : Habilidad
      public override void  Awake()
     {
       nombre = "Descarga Arcana";
-      costoAP = 2;
+      costoAP = 3;
       costoPM = 0;
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
@@ -32,12 +32,14 @@ public class DescargaArcana : Habilidad
       esCargable = false;
       esMelee = false;
       esHostil = true;
+      forzarPoseHabilidad = false;
+      fuerzaPoseAtaque = true;
       cooldownMax = 0;
       bAfectaObstaculos = true;
 
       bonusAtaque = 0;
       XdDanio = 1;
-      daniodX = 8; //1d8
+      daniodX = 10; //1d10
       tipoDanio = 8; //Arcano
       criticoRangoHab = 0;
 
@@ -72,9 +74,9 @@ public class DescargaArcana : Habilidad
         cuerpo += "<b>Target:</b> 1 enemy in range\n";
         cuerpo += $"<b>Width:</b> {hAncho} ({anchoDetalleEn})\n";
         cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color>  {bonusTexto} vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
-        cuerpo += $"<b>Damage:</b> 1d8 + 1 + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Arcane";
+        cuerpo += $"<b>Damage:</b> 1d10 + 1 + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Arcane";
 
-        string costos = $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM} ";
+        string costos = $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM} ";
 
         txtDescripcion = ConstruirDescripcionEstandar(
           "Arcane Discharge",
@@ -91,9 +93,9 @@ public class DescargaArcana : Habilidad
         cuerpo += "<b>Objetivo:</b> 1 enemigo en rango\n";
         cuerpo += $"<b>Ancho:</b> {hAncho} ({anchoDetalleEs})\n";
         cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}){bonusTexto} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
-        cuerpo += $"<b>Danio:</b> 1d8 + 1 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Arcano";
+        cuerpo += $"<b>Danio:</b> 1d10 + 1 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Arcano";
 
-        string costos = $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM} ";
+        string costos = $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM} ";
 
         txtDescripcion = ConstruirDescripcionEstandar(
           "Descarga Arcana",
@@ -359,4 +361,7 @@ public class DescargaArcana : Habilidad
     }
  
 }
+
+
+
 

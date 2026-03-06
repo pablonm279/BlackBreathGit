@@ -85,8 +85,8 @@ public class Acechar : Habilidad
     }
 
     string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Val Cost: {costoPM}"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Val: {costoPM}";
+      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Valour Cost: {costoPM}"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentía: {costoPM}";
 
     txtDescripcion = ConstruirDescripcionEstandar(
       esIngles ? tituloEn : tituloEs,
@@ -118,7 +118,7 @@ public class Acechar : Habilidad
   }
   public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
     {
-        // El log de uso ahora estÃ¡ centralizado en Habilidad.Resolver
+        // El log de uso ahora está centralizado en Habilidad.Resolver
       await  base.Resolver(Objetivos);
     }
 
@@ -143,14 +143,14 @@ public class Acechar : Habilidad
     {
 
     
-      if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
+      if(obj is Unidad) //Acá van los efectos a Unidades.
       {
 
         Unidad objetivo = (Unidad)obj;
         BattleManager.Instance.EscribirLog(TRADU.i.Traducir(scEstaUnidad.uNombre) + " " + TRADU.i.Traducir("usa ") + TRADU.i.Traducir(nombre) + ".");
         VFXAplicar(objetivo.gameObject);
         /////////////////////////////////////////////
-        //BUFF ---- AsÃ­ se aplica un buff/debuff
+        //BUFF ---- Así se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Acechando";
         buff.boolfDebufftBuff = true;
@@ -161,7 +161,7 @@ public class Acechar : Habilidad
         if(NIVEL > 2){ buff.cantCritDado += 1;}
         if(NIVEL == 4){ buff.cantCritDado += 2;}
         buff.AplicarBuff(objetivo);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
         objetivo.Marcar(0);
 
@@ -240,4 +240,8 @@ public class Acechar : Habilidad
     }
  
 }
+
+
+
+
 

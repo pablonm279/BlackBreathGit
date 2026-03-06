@@ -4,6 +4,7 @@ using System.Collections.Generic;
 //using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Nodo : MonoBehaviour
 {
@@ -46,6 +47,30 @@ public class Nodo : MonoBehaviour
   public bool nodoIncendiado = false;
   public bool nodoRitual = false;
   int numVisualActual = -1;
+  private static GameObject undergroundTravelMarker;
+
+  private class UndergroundAudioFxState
+  {
+    public AudioReverbFilter reverb;
+    public AudioLowPassFilter lowPass;
+    public AudioEchoFilter echo;
+
+    public bool createdReverb;
+    public bool createdLowPass;
+    public bool createdEcho;
+
+    public bool reverbWasEnabled;
+    public bool lowPassWasEnabled;
+    public bool echoWasEnabled;
+
+    public AudioReverbPreset reverbPresetBefore;
+    public float lowPassCutoffBefore;
+    public float lowPassResonanceBefore;
+    public float echoWetBefore;
+    public float echoDryBefore;
+    public float echoDelayBefore;
+    public float echoDecayBefore;
+  }
 
   void Start()
   {
@@ -312,7 +337,7 @@ public class Nodo : MonoBehaviour
 
     // Crear línea
     GameObject lineObject = Instantiate(linePrefab, this.transform);
-    lineObject.name = "LineaCaminos";
+    lineObject.name = esPorAbajo ? "LineaCaminosSubterraneo" : "LineaCaminos";
 
     LineRenderer lineRenderer = lineObject.GetComponent<LineRenderer>();
     if (lineRenderer == null)
@@ -327,7 +352,7 @@ public class Nodo : MonoBehaviour
     Vector3 p0 = nodoA.transform.position;
     Vector3 p3 = nodoB.transform.position;
 
-    // Dirección y perpendicular para “empujar” la curva
+    // Dirección y perpendicular para "empujar" la curva
     Vector3 dir = (p3 - p0);
     float dist = dir.magnitude;
     if (dist < 0.001f) dist = 0.001f;
@@ -370,7 +395,7 @@ public class Nodo : MonoBehaviour
     Vector3 p1 = p0 + dir * (dist * t1) + perp * (sideSign * outward * (0.35f + 0.65f * Mathf.Abs(jitter1)));
     Vector3 p2 = p3 - dir * (dist * (1f - t2)) + perp * (sideSign * outward * (0.35f + 0.65f * Mathf.Abs(jitter2)));
 
-    // Curva Bézier → SIEMPRE PLANA en Y (evita hundirse bajo el suelo)
+    // Curva Bézier: SIEMPRE PLANA en Y (evita hundirse bajo el suelo)
     int resolution = 20;
     lineRenderer.positionCount = resolution;
     for (int i = 0; i < resolution; i++)
@@ -411,6 +436,9 @@ public class Nodo : MonoBehaviour
     DestinosPosibles.Clear();
     nodoIncendiado = false;
     nodoRitual = false;
+    esMisterioso = false;
+    numVisualActual = -1;
+    vieneDeNodo = null;
 
     var destruir = new List<GameObject>();
     foreach (Transform child in transform)
@@ -422,6 +450,7 @@ public class Nodo : MonoBehaviour
 
     transform.GetChild(0).gameObject.SetActive(true);
     transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
+    SincronizarVFXPersistentes();
     Invoke("EsconderSiNedukazal", 0.15f);
     gameObject.SetActive(true);
   }
@@ -439,12 +468,6 @@ public class Nodo : MonoBehaviour
       // permitir interacción solo en los pasos 2, 11, 17, 21 durante el tutorial
       if (!(tm.pasoActual == 2 || tm.pasoActual == 11 || tm.pasoActual == 17 || tm.pasoActual == 21|| tm.pasoActual == 30))
         return;
-
-      if (tm.pasoActual == 2)
-        tm.cerrarPasoEspecifico(2);
-
-      if (tm.pasoActual == 11 || tm.pasoActual == 17 || tm.pasoActual == 21 || tm.pasoActual == 30)
-        tm.SiguientePaso();
     }
 
     if (EventSystem.current.IsPointerOverGameObject() && !TooltipNodos.Instance.tooltipObject.activeInHierarchy)
@@ -452,6 +475,15 @@ public class Nodo : MonoBehaviour
 
     if (scMapaManager.nodoActual.DestinosPosibles.Contains(this))
     {
+      if (tm != null && tm.tutorialActivo)
+      {
+        if (tm.pasoActual == 2)
+          tm.cerrarPasoEspecifico(2);
+
+        if (tm.pasoActual == 11 || tm.pasoActual == 17 || tm.pasoActual == 21 || tm.pasoActual == 30)
+          tm.SiguientePaso();
+      }
+
       CampaignManager.Instance.MoviendoCaravana = true;
       MoverJugadorANodo(scMapaManager.nodoActual, this);
 
@@ -478,7 +510,7 @@ public class Nodo : MonoBehaviour
 
     if (nodoDestino == null || !nodoOrigen.DestinosPosibles.Contains(nodoDestino))
     {
-      Debug.LogWarning("Nodo destino no válido o no está en la lista de destinos posibles.");
+      Debug.LogWarning("Nodo destino no vélido o no está en la lista de destinos posibles.");
       return;
     }
 
@@ -501,8 +533,11 @@ public class Nodo : MonoBehaviour
       return;
     }
 
+    bool viajeSubterraneo = lineaTransform.name.Contains("Subterraneo")
+      || (nodoDestino.posXNodo - nodoOrigen.posXNodo > 1);
+
     vieneDeNodo = nodoOrigen;
-    CampaignManager.Instance.ViajeIniciado(nodoDestino);
+    CampaignManager.Instance.ViajeIniciado(nodoDestino, viajeSubterraneo);
 
     if (scMapaManager != null && scMapaManager.goCaravana != null)
     {
@@ -519,7 +554,7 @@ public class Nodo : MonoBehaviour
     StartCoroutine(MoverAloLargoDeLaCurva(1.15f, false, scMapaManager.goCaravanafollower5, lineaTransform.GetComponent<LineRenderer>(), 0.85f));
     StartCoroutine(MoverAloLargoDeLaCurva(1.25f, false, scMapaManager.goCaravanafollower6, lineaTransform.GetComponent<LineRenderer>(), 0.8f));
 */
-    StartCoroutine(MoverConvoyEnLinea(lineaTransform.GetComponent<LineRenderer>()));
+    StartCoroutine(MoverConvoyEnLinea(lineaTransform.GetComponent<LineRenderer>(), viajeSubterraneo));
   }
 
  /* private IEnumerator MoverAloLargoDeLaCurva(float delay, bool esLaLider, GameObject caravana, LineRenderer lineRenderer, float velRotacion)
@@ -536,7 +571,7 @@ public class Nodo : MonoBehaviour
 
     // Ajustes
     float velocidadRotacion = velRotacion;                 // más alto = gira más rápido
-    float lookAhead = Mathf.Max(0.01f, 2f / Mathf.Max(2, resolution)); // cuánto “mira” hacia adelante en la curva
+    float lookAhead = Mathf.Max(0.01f, 2f / Mathf.Max(2, resolution)); // cuánto "mira" hacia adelante en la curva
 
     // --- Rotación durante el delay (no mover aún) ---
     float elapsed = 0f;
@@ -575,7 +610,7 @@ while (t < 1f)
 
   float speedFactor = inF * outF;
 
-  // Piso para que no se quede “cerquita” eternamente
+  // Piso para que no se quede "cerquita" eternamente
   speedFactor = Mathf.Max(0.03f, speedFactor);
 
   // Avance de t (acá va el suavizado)
@@ -870,9 +905,9 @@ if (esLaLider)
         if (!yaAvisoLog)
         {
           if (!string.IsNullOrEmpty(actividadExploradorON))
-            CampaignManager.Instance.EscribirLog("<color=#7ED6F7>-" + actividadExploradorON + TRADU.i.Traducir(" ha Explorado con éxito el camino adelante.</color>") + $"(Tirada: {tirada} < {cappedChance})");
+            CampaignManager.Instance.EscribirLog("<color=#7ED6F7>-" + actividadExploradorON + TRADU.i.Traducir(" ha Explorado con Éxito el camino adelante.</color>") + $"(Tirada: {tirada} < {cappedChance})");
           else
-            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("<color=#7ED6F7>-Durante el Descanso, se ha Explorado con éxito el camino adelante.</color>") + $"(Tirada: {tirada} < {cappedChance})");
+            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("<color=#7ED6F7>-Durante el Descanso, se ha Explorado con Éxito el camino adelante.</color>") + $"(Tirada: {tirada} < {cappedChance})");
 
           yaAvisoLog = true;
         }
@@ -1033,7 +1068,7 @@ if (esLaLider)
       case 5: descripcion = TRADU.i.Traducir("Recolección de Recursos."); break;
       case 6: descripcion = TRADU.i.Traducir("Puesto de Comercio."); break;
       case 7: descripcion = TRADU.i.Traducir("Adquisición de Personajes."); break;
-      case 8: descripcion = TRADU.i.Traducir("Combate directo contra enemigos de Élite."); break;
+      case 8: descripcion = TRADU.i.Traducir("Combate directo contra enemigos de élite."); break;
       case 10: descripcion = TRADU.i.Traducir("Batalla final de la Zona actual."); break;
       case 11: descripcion = TRADU.i.Traducir("<b>(!)</b> Zona Expuesta, la caravana será emboscada."); break;
       case 15: descripcion = TRADU.i.Traducir("Batalla Kale'Tav"); break;
@@ -1090,7 +1125,7 @@ if (esLaLider)
 
   public void SincronizarVFXPersistentes()
   {
-    // En tutorial nunca deberían quedar incendios/rituales activos
+    // En tutorial nunca deberáan quedar incendios/rituales activos
     if (CampaignManager.Instance != null &&
         CampaignManager.Instance.scTutorialManager != null &&
         CampaignManager.Instance.scTutorialManager.tutorialActivo)
@@ -1182,15 +1217,15 @@ if (esLaLider)
   
   [Header("Convoy")]
 public float rotSpeed = 10f;            // suavizado de rotación
-public float lookAheadDist = 0.5f;    // “mira” hacia adelante para orientar
+public float lookAheadDist = 0.5f;    // "mira" hacia adelante para orientar
 float gapDist = 0.66f;              // distancia entre vehículos
-private IEnumerator MoverConvoyEnLinea(LineRenderer lr)
+private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = false)
 {
     // Ajustes de suavizado (si querés tunear, subilos a fields públicos)
     float easeInTime = 0.2f;       // segundos para acelerar al inicio
     float easeOutDist = 0.6f;       // metros antes del final para frenar líder
-    float easeOutTailDist = 0.08f;   // “error” de cola para frenar al final
-    float minSpeedFactor = 0.10f;   // piso para que no se quede “cerquita”
+    float easeOutTailDist = 0.08f;   // "error" de cola para frenar al final
+    float minSpeedFactor = 0.10f;   // piso para que no se quede "cerquita"
     float snapEps = 0.03f;          // snap final del líder (en metros aprox)
 
     if (lr == null) yield break;
@@ -1223,6 +1258,21 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr)
     int m = convoy.Count;
     if (m == 0) yield break;
 
+    var undergroundRenderers = new List<Renderer>();
+    var undergroundRendererInitialStates = new List<bool>();
+    bool convoyOculto = false;
+    GameObject markerGO = null;
+    Vector3 markerBaseScale = new Vector3(0.24f, 0.24f, 0.24f);
+    const float markerYOffset = 0.2f;
+    const float markerPulseSpeed = 8f;
+    const float markerPulseAmp = 0.1f;
+    const float tramoEntradaSalidaVisible = 0.18f;
+    const float profundidadSubterraneaY = 1.2f;
+    const float overlayAlphaMax = 0.322f; // +15% más oscuro
+    GameObject overlayGO = null;
+    Image overlayImage = null;
+    UndergroundAudioFxState undergroundAudioFx = null;
+
     // Puntos del camino en WORLD
     int n = lr.positionCount;
     if (n < 2) yield break;
@@ -1251,6 +1301,18 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr)
     // Gap desde el Inspector (no lo pises con un local)
     float gap = Mathf.Max(0.0001f, this.gapDist);
 
+    if (viajeSubterraneo)
+    {
+      for (int i = 0; i < convoy.Count; i++)
+      {
+        RegistrarRenderersSubterraneos(convoy[i].rot, undergroundRenderers, undergroundRendererInitialStates);
+      }
+      markerGO = GetOrCreateUndergroundTravelMarker();
+      overlayGO = CrearOverlayViajeSubterraneo(out overlayImage);
+      undergroundAudioFx = PrepararAudioSubterraneo();
+      ActualizarAudioSubterraneo(undergroundAudioFx, 0f);
+    }
+
 
     // Trail del líder: seed con estado actual (cola -> ... -> líder) para cero teleports
     var trailPos = new List<Vector3>(256);
@@ -1277,7 +1339,7 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr)
         }
     }
 
-    // “odómetro” de cada follower sobre el TRAIL (esto es lo que permite que sigan moviéndose al final)
+    // "odómetro" de cada follower sobre el TRAIL (esto es lo que permite que sigan moviéndose al final)
     float[] followerS = new float[m];
     for (int i = 0; i < m; i++)
         followerS[i] = ProjectDistanceOnTrail(trailPos, trailS, convoy[i].go.transform.position);
@@ -1291,10 +1353,12 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr)
     float elapsed = 0f;
     bool leaderArrived = false;
     float speedFactorSmoothed = minSpeedFactor;
-    const float speedSmooth = 10f; // subí a 12-16 si aún hay tirón
+    const float speedSmooth = 10f; // subí a 12-16 si aún hay tirán
     
-    while (true)
+    try
     {
+      while (true)
+      {
       float dt = Time.deltaTime;
       elapsed += dt;
 
@@ -1308,7 +1372,7 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr)
       {
         float remaining = totalLen - leaderS;
 
-        // Snap para que no quede “cerquita”
+        // Snap para que no quede "cerquita"
         if (remaining <= snapEps)
         {
           leaderS = totalLen;
@@ -1361,7 +1425,39 @@ float step = Mathf.Max(0f, velocidadMovimiento) * dt * speedFactorSmoothed;
         }
       }
 
-      Vector3 leaderPos = PointAtDistance(pts, segLen, cumLen, leaderS);
+      Vector3 leaderPosCamino = PointAtDistance(pts, segLen, cumLen, leaderS);
+      float offsetYSubterraneo = 0f;
+
+      if (viajeSubterraneo)
+      {
+        float progreso = totalLen <= 0.0001f ? 1f : Mathf.Clamp01(leaderS / totalLen);
+        bool ocultarAhora = progreso > tramoEntradaSalidaVisible && progreso < (1f - tramoEntradaSalidaVisible);
+
+        if (ocultarAhora != convoyOculto)
+        {
+          SetRenderersVisible(undergroundRenderers, !ocultarAhora);
+          convoyOculto = ocultarAhora;
+        }
+
+        if (markerGO != null)
+        {
+          markerGO.SetActive(ocultarAhora);
+          if (ocultarAhora)
+          {
+            float pulse = 1f + markerPulseAmp * Mathf.Sin(elapsed * markerPulseSpeed);
+            markerGO.transform.localScale = markerBaseScale * pulse;
+            markerGO.transform.position = leaderPosCamino + Vector3.up * markerYOffset;
+          }
+        }
+
+        float intensidadSubterranea = CalcularIntensidadSubterranea(progreso, tramoEntradaSalidaVisible);
+        AplicarTinteSubterraneo(overlayImage, intensidadSubterranea, overlayAlphaMax);
+        ActualizarAudioSubterraneo(undergroundAudioFx, intensidadSubterranea);
+        offsetYSubterraneo = CalcularOffsetYSubterraneo(progreso, tramoEntradaSalidaVisible, profundidadSubterraneaY);
+      }
+
+      Vector3 leaderPos = leaderPosCamino;
+      leaderPos.y += offsetYSubterraneo;
       convoy[0].go.transform.position = leaderPos;
 
       // Rotación del líder por tangente
@@ -1404,7 +1500,7 @@ else
 
       float headTrailS = trailS[trailS.Count - 1];
 
-      // Followers: avanzan por el trail con su propio odómetro (esto permite “terminar” después)
+      // Followers: avanzan por el trail con su propio odómetro (esto permite "terminar" después)
       bool allFollowersAtTarget = true;
 
       for (int i = 1; i < m; i++)
@@ -1415,6 +1511,7 @@ else
         followerS[i] = Mathf.MoveTowards(followerS[i], targetS, step);
 
         SampleTrail(trailPos, trailRot, trailS, followerS[i], out var p, out var r);
+        p.y += offsetYSubterraneo;
         convoy[i].go.transform.position = p;
 
         if (convoy[i].rot != null)
@@ -1434,7 +1531,7 @@ else
         trailPos.RemoveAt(0);
         trailRot.RemoveAt(0);
 
-        // Clamp por si justo recortaste “debajo” de algún follower
+        // Clamp por si justo recortaste "debajo" de algún follower
         for (int i = 1; i < m; i++)
           if (followerS[i] < trailS[0]) followerS[i] = trailS[0];
       }
@@ -1444,15 +1541,27 @@ else
         break;
 
       yield return null;
-    }
+      }
 
-    // Snap final líder al último punto exacto del LR
-    convoy[0].go.transform.position = pts[n - 1];
+      // Snap final líder al último punto exacto del LR
+      convoy[0].go.transform.position = pts[n - 1];
+    }
+    finally
+    {
+      if (viajeSubterraneo)
+      {
+        RestaurarRenderers(undergroundRenderers, undergroundRendererInitialStates);
+        if (markerGO != null) markerGO.SetActive(false);
+        AplicarTinteSubterraneo(overlayImage, 0f, overlayAlphaMax);
+        RestaurarAudioSubterraneo(undergroundAudioFx);
+        if (overlayGO != null) Destroy(overlayGO);
+      }
+    }
 
     LlegoCaravana();
 }
 
-// Helper: proyecta posición al TRAIL (polilínea) y devuelve “s”
+// Helper: proyecta posición al TRAIL (polilínea) y devuelve "s"
 private static float ProjectDistanceOnTrail(List<Vector3> trailPos, List<float> trailS, Vector3 worldPos)
 {
     Vector3 p = worldPos; p.y = 0f;
@@ -1566,7 +1675,282 @@ private static void SampleTrail(
     outRot = Quaternion.Slerp(rot[a], rot[b], t);
 }
 
+private static void RegistrarRenderersSubterraneos(Transform root, List<Renderer> renderers, List<bool> enabledInicial)
+{
+  if (root == null) return;
+
+  Renderer[] encontrados = root.GetComponentsInChildren<Renderer>(true);
+  for (int i = 0; i < encontrados.Length; i++)
+  {
+    Renderer r = encontrados[i];
+    if (r == null) continue;
+
+    renderers.Add(r);
+    enabledInicial.Add(r.enabled);
+  }
+}
+
+private static void SetRenderersVisible(List<Renderer> renderers, bool visible)
+{
+  if (renderers == null) return;
+
+  for (int i = 0; i < renderers.Count; i++)
+  {
+    Renderer r = renderers[i];
+    if (r == null) continue;
+    r.enabled = visible;
+  }
+}
+
+private static void RestaurarRenderers(List<Renderer> renderers, List<bool> enabledInicial)
+{
+  if (renderers == null || enabledInicial == null) return;
+  int n = Mathf.Min(renderers.Count, enabledInicial.Count);
+
+  for (int i = 0; i < n; i++)
+  {
+    Renderer r = renderers[i];
+    if (r == null) continue;
+    r.enabled = enabledInicial[i];
+  }
+}
+
+private static float CalcularOffsetYSubterraneo(float progreso, float tramoEntradaSalida, float profundidadY)
+{
+  if (tramoEntradaSalida <= 0.0001f) return -Mathf.Abs(profundidadY);
+
+  float depth = Mathf.Abs(profundidadY);
+  float p = Mathf.Clamp01(progreso);
+
+  if (p <= tramoEntradaSalida)
+  {
+    float t = Mathf.Clamp01(p / tramoEntradaSalida);
+    return -Mathf.SmoothStep(0f, depth, t);
+  }
+
+  if (p >= 1f - tramoEntradaSalida)
+  {
+    float t = Mathf.Clamp01((p - (1f - tramoEntradaSalida)) / tramoEntradaSalida);
+    return -Mathf.SmoothStep(depth, 0f, t);
+  }
+
+  return -depth;
+}
+
+private static float CalcularIntensidadSubterranea(float progreso, float tramoEntradaSalida)
+{
+  if (tramoEntradaSalida <= 0.0001f) return 1f;
+
+  float p = Mathf.Clamp01(progreso);
+  if (p <= tramoEntradaSalida)
+  {
+    float t = Mathf.Clamp01(p / tramoEntradaSalida);
+    return Mathf.SmoothStep(0f, 1f, t);
+  }
+
+  if (p >= 1f - tramoEntradaSalida)
+  {
+    float t = Mathf.Clamp01((p - (1f - tramoEntradaSalida)) / tramoEntradaSalida);
+    return Mathf.SmoothStep(1f, 0f, t);
+  }
+
+  return 1f;
+}
+
+private static GameObject CrearOverlayViajeSubterraneo(out Image overlayImage)
+{
+  overlayImage = null;
+
+  GameObject canvasGO = new GameObject("UndergroundTravelOverlay", typeof(Canvas));
+  Canvas canvas = canvasGO.GetComponent<Canvas>();
+  canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+  canvas.sortingOrder = 8000;
+
+  GameObject tintGO = new GameObject("Tint", typeof(RectTransform), typeof(Image));
+  tintGO.transform.SetParent(canvasGO.transform, false);
+
+  RectTransform rt = tintGO.GetComponent<RectTransform>();
+  rt.anchorMin = Vector2.zero;
+  rt.anchorMax = Vector2.one;
+  rt.offsetMin = Vector2.zero;
+  rt.offsetMax = Vector2.zero;
+
+  overlayImage = tintGO.GetComponent<Image>();
+  overlayImage.raycastTarget = false;
+  overlayImage.color = new Color(0.2f, 0.12f, 0.06f, 0f);
+
+  return canvasGO;
+}
+
+private static void AplicarTinteSubterraneo(Image overlayImage, float intensidad, float alphaMax)
+{
+  if (overlayImage == null) return;
+
+  Color c = overlayImage.color;
+  c.a = Mathf.Clamp01(intensidad) * Mathf.Clamp01(alphaMax);
+  overlayImage.color = c;
+}
+
+private static AudioListener ObtenerAudioListenerActivo()
+{
+  if (Camera.main != null)
+  {
+    AudioListener mainListener = Camera.main.GetComponent<AudioListener>();
+    if (mainListener != null) return mainListener;
+  }
+
+  return Object.FindObjectOfType<AudioListener>();
+}
+
+private static UndergroundAudioFxState PrepararAudioSubterraneo()
+{
+  AudioListener listener = ObtenerAudioListenerActivo();
+  if (listener == null) return null;
+
+  GameObject go = listener.gameObject;
+  var estado = new UndergroundAudioFxState();
+
+  estado.reverb = go.GetComponent<AudioReverbFilter>();
+  if (estado.reverb == null)
+  {
+    estado.reverb = go.AddComponent<AudioReverbFilter>();
+    estado.createdReverb = true;
+  }
+  estado.reverbWasEnabled = estado.reverb.enabled;
+  estado.reverbPresetBefore = estado.reverb.reverbPreset;
+  estado.reverb.enabled = true;
+
+  estado.lowPass = go.GetComponent<AudioLowPassFilter>();
+  if (estado.lowPass == null)
+  {
+    estado.lowPass = go.AddComponent<AudioLowPassFilter>();
+    estado.createdLowPass = true;
+  }
+  estado.lowPassWasEnabled = estado.lowPass.enabled;
+  estado.lowPassCutoffBefore = estado.lowPass.cutoffFrequency;
+  estado.lowPassResonanceBefore = estado.lowPass.lowpassResonanceQ;
+  estado.lowPass.enabled = true;
+
+  estado.echo = go.GetComponent<AudioEchoFilter>();
+  if (estado.echo == null)
+  {
+    estado.echo = go.AddComponent<AudioEchoFilter>();
+    estado.createdEcho = true;
+  }
+  estado.echoWasEnabled = estado.echo.enabled;
+  estado.echoWetBefore = estado.echo.wetMix;
+  estado.echoDryBefore = estado.echo.dryMix;
+  estado.echoDelayBefore = estado.echo.delay;
+  estado.echoDecayBefore = estado.echo.decayRatio;
+  estado.echo.enabled = true;
+
+  return estado;
+}
+
+private static void ActualizarAudioSubterraneo(UndergroundAudioFxState estado, float intensidad)
+{
+  if (estado == null) return;
+
+  float blend = Mathf.Clamp01(intensidad);
+
+  if (estado.reverb != null)
+  {
+    estado.reverb.enabled = blend > 0.001f;
+    estado.reverb.reverbPreset = AudioReverbPreset.Cave;
+  }
+
+  if (estado.lowPass != null)
+  {
+    estado.lowPass.enabled = blend > 0.001f;
+    estado.lowPass.cutoffFrequency = Mathf.Lerp(22000f, 1200f, blend);
+    estado.lowPass.lowpassResonanceQ = Mathf.Lerp(1f, 1.15f, blend);
+  }
+
+  if (estado.echo != null)
+  {
+    estado.echo.enabled = blend > 0.001f;
+    estado.echo.wetMix = Mathf.Lerp(0f, 0.25f, blend);
+    estado.echo.dryMix = 1f;
+    estado.echo.delay = Mathf.Lerp(30f, 140f, blend);
+    estado.echo.decayRatio = Mathf.Lerp(0f, 0.18f, blend);
+  }
+}
+
+private static void RestaurarAudioSubterraneo(UndergroundAudioFxState estado)
+{
+  if (estado == null) return;
+
+  if (estado.reverb != null)
+  {
+    if (estado.createdReverb)
+      Object.Destroy(estado.reverb);
+    else
+    {
+      estado.reverb.reverbPreset = estado.reverbPresetBefore;
+      estado.reverb.enabled = estado.reverbWasEnabled;
+    }
+  }
+
+  if (estado.lowPass != null)
+  {
+    if (estado.createdLowPass)
+      Object.Destroy(estado.lowPass);
+    else
+    {
+      estado.lowPass.cutoffFrequency = estado.lowPassCutoffBefore;
+      estado.lowPass.lowpassResonanceQ = estado.lowPassResonanceBefore;
+      estado.lowPass.enabled = estado.lowPassWasEnabled;
+    }
+  }
+
+  if (estado.echo != null)
+  {
+    if (estado.createdEcho)
+      Object.Destroy(estado.echo);
+    else
+    {
+      estado.echo.wetMix = estado.echoWetBefore;
+      estado.echo.dryMix = estado.echoDryBefore;
+      estado.echo.delay = estado.echoDelayBefore;
+      estado.echo.decayRatio = estado.echoDecayBefore;
+      estado.echo.enabled = estado.echoWasEnabled;
+    }
+  }
+}
+
+private static GameObject GetOrCreateUndergroundTravelMarker()
+{
+  if (undergroundTravelMarker != null) return undergroundTravelMarker;
+
+  undergroundTravelMarker = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+  undergroundTravelMarker.name = "UndergroundTravelMarker";
+  undergroundTravelMarker.transform.localScale = new Vector3(0.24f, 0.24f, 0.24f);
+
+  Collider col = undergroundTravelMarker.GetComponent<Collider>();
+  if (col != null) Object.Destroy(col);
+
+  Renderer renderer = undergroundTravelMarker.GetComponent<Renderer>();
+  if (renderer != null)
+  {
+    Shader shader = Shader.Find("Legacy Shaders/Particles/Additive");
+    if (shader == null) shader = Shader.Find("Unlit/Color");
+    if (shader == null) shader = Shader.Find("Standard");
+
+    Material markerMaterial = new Material(shader);
+    markerMaterial.color = new Color(0.62f, 0.98f, 0.76f, 0.85f);
+    renderer.sharedMaterial = markerMaterial;
+    renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+    renderer.receiveShadows = false;
+  }
+
+  undergroundTravelMarker.SetActive(false);
+  return undergroundTravelMarker;
+}
+
 
 
 
 }
+
+
+

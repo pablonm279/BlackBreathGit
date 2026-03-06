@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -188,4 +188,6 @@ public abstract class Item : MonoBehaviour
          return IDClasesQuePuedenUsarEsteItem.Contains(idClase);
      }
 }
+
+
 

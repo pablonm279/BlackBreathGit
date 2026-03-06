@@ -106,7 +106,7 @@ public class BotonHabilidad : MonoBehaviour
     private void MostrarDescripcion()
     {
         HabilidadRepresentada.ActualizarDescripcion();
-        txtDescHab.text = HabilidadRepresentada.txtDescripcion;
+        txtDescHab.text = Habilidad.LimpiarCostoValentiaDescripcion(HabilidadRepresentada.txtDescripcion);
         goDesc.SetActive(true);
 
         // Asegurarnos de que el goDesc (RectTransform) no salga de los margenes de la pantalla
@@ -170,7 +170,15 @@ public class BotonHabilidad : MonoBehaviour
 
         if (HabilidadRepresentada.esMelee && !PuedeUsarHabilidadMelee())
         {
-            BattleManager.Instance.unidadActiva?.GenerarTextoFlotante(TRADU.i.Traducir("Adelántate para usarla"), Color.gray, FloatingTextContext.Generic);
+            Unidad unidadActiva = BattleManager.Instance.unidadActiva;
+            if (unidadActiva != null && unidadActiva.estado_inmovil > 0)
+            {
+                unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("Inmóvil, Melee solo adyacente."), Color.gray, FloatingTextContext.Generic);
+            }
+            else
+            {
+                unidadActiva?.GenerarTextoFlotante(TRADU.i.Traducir("Adelántate para usarla"), Color.gray, FloatingTextContext.Generic);
+            }
             return;
         }
 
@@ -297,7 +305,7 @@ public class BotonHabilidad : MonoBehaviour
         {
             BattleManager.Instance.scUIContadorAP.MarcarCirculos((int)HabilidadRepresentada.costoAP);
         }
-        BattleManager.Instance.scUIContadorAP.SeEsforzaría(esfuerzo);
+        BattleManager.Instance.scUIContadorAP.SeEsforzaria(esfuerzo);
 
 
 
@@ -482,6 +490,11 @@ public class BotonHabilidad : MonoBehaviour
         }
 
         int posX = unidad.CasillaPosicion.posX;
+        if (unidad.estado_inmovil > 0)
+        {
+            return posX == 3;
+        }
+
         if (posX == 3)
         {
             return true;
@@ -594,3 +607,6 @@ public class BotonHabilidad : MonoBehaviour
     }
     
 }
+
+
+

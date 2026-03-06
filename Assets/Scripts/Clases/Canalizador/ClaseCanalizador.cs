@@ -9,8 +9,8 @@ public class ClaseCanalizador : Unidad
 {
 
     [SerializeField] private int TierEnergia = 0;
-    public int PASIVA_AcumulacionProtegida; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ° 5 nv 4b
-    public int PASIVA_ExcesoDePoder; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ° 5 nv 4b
+    public int PASIVA_AcumulacionProtegida; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ? 5 nv 4b
+    public int PASIVA_ExcesoDePoder; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ? 5 nv 4b
 
 
     public async override void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
@@ -206,5 +206,8 @@ public class ClaseCanalizador : Unidad
         return TierEnergia;
     }
 }
+
+
+
 
 

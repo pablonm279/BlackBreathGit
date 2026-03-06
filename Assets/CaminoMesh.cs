@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
@@ -121,3 +121,5 @@ public class CaminoMesh : MonoBehaviour
 
     public MeshRenderer GetMeshRenderer() => _mr;
 }
+
+

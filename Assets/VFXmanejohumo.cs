@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(ParticleSystem))]
 public class UIFogBreath : MonoBehaviour
@@ -49,3 +49,6 @@ public class UIFogBreath : MonoBehaviour
         }
     }
 }
+
+
+

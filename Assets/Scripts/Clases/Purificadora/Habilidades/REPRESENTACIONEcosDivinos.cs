@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -95,7 +95,7 @@ public class REPRESENTACIONEcosDivinos : Habilidad
         {
           txtDescripcion = "<color=#5dade2><b>Divine Echoes I</b></color>\n\n";
           txtDescripcion += "<i>(Passive) Each turn generates a Divine Echo anywhere on the battlefield, damaging enemies or healing allies who touch them.</i>\n\n";
-          txtDescripcion += "<i>To allies: Heals 1d10 and adds +1 Valor. If it's the Purifier, gains 1 Fervor. Magical healing.</i>\n\n";
+          txtDescripcion += "<i>To allies: Heals 1d10 and adds +1 Valour. If it's the Purifier, gains 1 Fervor. Magical healing.</i>\n\n";
           txtDescripcion += "<i>To enemies: Deals 1d10 Divine damage.</i>\n\n";
 
           if (EsEscenaCampaña())
@@ -113,7 +113,7 @@ public class REPRESENTACIONEcosDivinos : Habilidad
         {
           txtDescripcion = "<color=#5dade2><b>Divine Echoes II</b></color>\n\n";
           txtDescripcion += "<i>(Passive) Each turn generates a Divine Echo anywhere on the battlefield, damaging enemies or healing allies who touch them.</i>\n\n";
-          txtDescripcion += "<i>To allies: Heals 1d10+2 and adds +1 Valor. If it's the Purifier, gains 1 Fervor. Magical healing.</i>\n\n";
+          txtDescripcion += "<i>To allies: Heals 1d10+2 and adds +1 Valour. If it's the Purifier, gains 1 Fervor. Magical healing.</i>\n\n";
           txtDescripcion += "<i>To enemies: Deals 1d10+2 Divine damage.</i>\n\n";
 
           if (EsEscenaCampaña())
@@ -131,7 +131,7 @@ public class REPRESENTACIONEcosDivinos : Habilidad
         {
           txtDescripcion = "<color=#5dade2><b>Divine Echoes III</b></color>\n\n";
           txtDescripcion += "<i>(Passive) Each turn generates a Divine Echo anywhere on the battlefield, damaging enemies or healing allies who touch them.</i>\n\n";
-          txtDescripcion += "<i>To allies: Heals 1d10+4 and adds +1 Valor. If it's the Purifier, gains 1 Fervor. Magical healing.</i>\n\n";
+          txtDescripcion += "<i>To allies: Heals 1d10+4 and adds +1 Valour. If it's the Purifier, gains 1 Fervor. Magical healing.</i>\n\n";
           txtDescripcion += "<i>To enemies: Deals 1d10+4 Divine damage.</i>\n\n";
           if (EsEscenaCampaña())
           {
@@ -149,14 +149,14 @@ public class REPRESENTACIONEcosDivinos : Habilidad
         {
           txtDescripcion = "<color=#5dade2><b>Divine Echoes IV a</b></color>\n\n";
           txtDescripcion += "<i>(Passive) Each turn generates a Divine Echo anywhere on the battlefield, damaging enemies or healing allies who touch them.</i>\n\n";
-          txtDescripcion += "<i>To allies: Heals 1d10+9 and adds +1 Valor. If it's the Purifier, gains 1 Fervor. Magical healing.</i>\n\n";
+          txtDescripcion += "<i>To allies: Heals 1d10+9 and adds +1 Valour. If it's the Purifier, gains 1 Fervor. Magical healing.</i>\n\n";
           txtDescripcion += "<i>To enemies: Deals 1d10+4 Divine damage.</i>\n\n";
         }
         if (NIVEL == 5)
         {
           txtDescripcion = "<color=#5dade2><b>Divine Echoes IV b</b></color>\n\n";
           txtDescripcion += "<i>(Passive) Each turn generates a Divine Echo anywhere on the battlefield, damaging enemies or healing allies who touch them.</i>\n\n";
-          txtDescripcion += "<i>To allies: Heals 1d10+4 and adds +1 Valor. If it's the Purifier, gains 1 Fervor. Magical healing.</i>\n\n";
+          txtDescripcion += "<i>To allies: Heals 1d10+4 and adds +1 Valour. If it's the Purifier, gains 1 Fervor. Magical healing.</i>\n\n";
           txtDescripcion += "<i>To enemies: Deals 1d10+9 Divine damage.</i>\n\n";
         }
       }
@@ -177,3 +177,7 @@ public class REPRESENTACIONEcosDivinos : Habilidad
 
 
 }
+
+
+
+

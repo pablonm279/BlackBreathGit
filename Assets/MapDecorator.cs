@@ -10,7 +10,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class MapDecorator : MonoBehaviour
 {
-    [Header("Área de trabajo (OBLIGATORIO)")]
+    [Header("área de trabajo (OBLIGATORIO)")]
     [SerializeField] MeshFilter planeMesh;
 
     [Header("Caminos y Nodos (exclusiones)")]
@@ -49,7 +49,7 @@ public class MapDecorator : MonoBehaviour
     [SerializeField] LayerMask capasCaminos;
     [SerializeField] float radioCheckCamino = 1.0f; // acolchado extra del checkSphere
 
-    [Header("Aleatoriedad / estética")]
+    [Header("Aleatoriedad / estática")]
     [SerializeField] bool rotarYRandom = false;
     [SerializeField] int  semilla = 12345;
     [SerializeField] bool usarSemillaAleatoria = false;
@@ -82,11 +82,23 @@ public class MapDecorator : MonoBehaviour
     Dictionary<CellKey, List<Vector3>> grid;
     float cell; // r / sqrt(2)
 
+    // índices de exclusión (grilla en mundo) para acelerar PasaExclusiones
+    Dictionary<CellKey, List<int>> segmentGrid;
+    Dictionary<CellKey, List<int>> nodeGrid;
+    List<int> segmentCandidates = new List<int>(64);
+    List<int> nodeCandidates = new List<int>(32);
+    int[] segmentVisitStamp = System.Array.Empty<int>();
+    int[] nodeVisitStamp = System.Array.Empty<int>();
+    int currentSegmentStamp = 1;
+    int currentNodeStamp = 1;
+    float exclusionCellSize = 1f;
+    float maxSegmentHalfWidth = 0f;
+
     void Awake()
     {
         if (!planeMesh || !planeMesh.sharedMesh)
         {
-            Debug.LogError("[MapDecorator] Asigná un MeshFilter válido.");
+            Debug.LogError("[MapDecorator] Asigná un MeshFilter vélido.");
             enabled = false; return;
         }
 
@@ -120,7 +132,7 @@ public class MapDecorator : MonoBehaviour
         ActualizarZonaSegura();
 
         if (transform.lossyScale != Vector3.one)
-            Debug.LogWarning("[MapDecorator] Este GameObject debería estar en escala (1,1,1) para no heredar escalas raras.");
+            Debug.LogWarning("[MapDecorator] Este GameObject deberáa estar en escala (1,1,1) para no heredar escalas raras.");
     }
 
     // ===================== API =====================
@@ -189,8 +201,9 @@ public class MapDecorator : MonoBehaviour
 
         RecolectarCaminosFiltrados();
         RecolectarNodos();
+        ConstruirIndicesExclusion();
 
-       // Debug.Log($"[MapDecorator] Área={tPlane.name}  SizeWorld=({sizeWorldX:F1},{sizeWorldZ:F1})  r={radioPoisson}  k={intentosPorPunto}  distCamino={distCamino}  distNodo={distNodo}  Caminos={segmentos.Count} tramos  Nodos={nodos.Count}");
+       // Debug.Log($"[MapDecorator] área={tPlane.name}  SizeWorld=({sizeWorldX:F1},{sizeWorldZ:F1})  r={radioPoisson}  k={intentosPorPunto}  distCamino={distCamino}  distNodo={distNodo}  Caminos={segmentos.Count} tramos  Nodos={nodos.Count}");
     }
 
     // ===================== Núcleo =====================
@@ -367,7 +380,7 @@ public class MapDecorator : MonoBehaviour
         {
             if (!lr || lr.positionCount < 2) continue;
 
-            float worldWidthLR = MaxWidthWorld(lr);                         // ancho “real” del LR
+            float worldWidthLR = MaxWidthWorld(lr);                         // ancho real del LR
             float worldWidth   = Mathf.Max(worldWidthLR, anchoCaminoMinWorld); // piso mínimo
             float half         = 0.5f * worldWidth + margenCamino;
 
@@ -440,6 +453,59 @@ public class MapDecorator : MonoBehaviour
         foreach (var go in FindByTagSafe(tagNodos)) nodos.Add(go.transform);
     }
 
+    void ConstruirIndicesExclusion()
+    {
+        maxSegmentHalfWidth = 0f;
+        for (int i = 0; i < segmentos.Count; i++)
+            if (segmentos[i].halfWidth > maxSegmentHalfWidth) maxSegmentHalfWidth = segmentos[i].halfWidth;
+
+        float maxSegmentRange = distCamino + maxSegmentHalfWidth;
+        exclusionCellSize = Mathf.Max(0.5f, Mathf.Max(radioPoisson, Mathf.Max(distNodo, maxSegmentRange)));
+
+        segmentGrid = new Dictionary<CellKey, List<int>>(Mathf.Max(64, segmentos.Count * 2));
+        nodeGrid = new Dictionary<CellKey, List<int>>(Mathf.Max(32, nodos.Count * 2));
+
+        if (segmentVisitStamp.Length < segmentos.Count) segmentVisitStamp = new int[segmentos.Count];
+        if (nodeVisitStamp.Length < nodos.Count) nodeVisitStamp = new int[nodos.Count];
+        currentSegmentStamp = 1;
+        currentNodeStamp = 1;
+
+        for (int i = 0; i < segmentos.Count; i++)
+        {
+            var s = segmentos[i];
+            float range = distCamino + s.halfWidth;
+            float minX = Mathf.Min(s.a.x, s.b.x) - range;
+            float maxX = Mathf.Max(s.a.x, s.b.x) + range;
+            float minZ = Mathf.Min(s.a.z, s.b.z) - range;
+            float maxZ = Mathf.Max(s.a.z, s.b.z) + range;
+            IndexarRect(segmentGrid, minX, maxX, minZ, maxZ, i);
+        }
+
+        float nodoRange = distNodo;
+        for (int i = 0; i < nodos.Count; i++)
+        {
+            Vector3 p = nodos[i].position;
+            IndexarRect(nodeGrid, p.x - nodoRange, p.x + nodoRange, p.z - nodoRange, p.z + nodoRange, i);
+        }
+    }
+
+    void IndexarRect(Dictionary<CellKey, List<int>> indice, float minX, float maxX, float minZ, float maxZ, int item)
+    {
+        var cmin = CellFromWorldForExclusion(minX, minZ);
+        var cmax = CellFromWorldForExclusion(maxX, maxZ);
+        for (int x = cmin.x; x <= cmax.x; x++)
+        for (int z = cmin.z; z <= cmax.z; z++)
+        {
+            var key = new CellKey(x, z);
+            if (!indice.TryGetValue(key, out var list))
+            {
+                list = new List<int>(4);
+                indice.Add(key, list);
+            }
+            list.Add(item);
+        }
+    }
+
     static GameObject[] FindByTagSafe(string tag)
     {
         try { return GameObject.FindGameObjectsWithTag(tag); }
@@ -448,20 +514,48 @@ public class MapDecorator : MonoBehaviour
 
     bool PasaExclusiones(Vector3 p)
     {
-        // 1) por segmentos de LR (con ancho real + piso mínimo)
-        for (int i = 0; i < segmentos.Count; i++)
+        // 1) por segmentos de LR (con ancho real + piso mínimo) usando índice espacial
+        if (segmentos.Count > 0)
         {
-            var s = segmentos[i];
-            float d = DistSegXZ(p, s.a, s.b) - s.halfWidth;
-            if (d < distCamino) return false;
+            currentSegmentStamp++;
+            if (currentSegmentStamp == int.MaxValue)
+            {
+                System.Array.Clear(segmentVisitStamp, 0, segmentVisitStamp.Length);
+                currentSegmentStamp = 1;
+            }
+
+            segmentCandidates.Clear();
+            float queryRange = distCamino + maxSegmentHalfWidth;
+            RecolectarCandidatos(segmentGrid, p.x, p.z, queryRange, segmentCandidates, segmentVisitStamp, currentSegmentStamp);
+
+            for (int i = 0; i < segmentCandidates.Count; i++)
+            {
+                var s = segmentos[segmentCandidates[i]];
+                float permitido = distCamino + s.halfWidth;
+                if (DistSegXZSqr(p, s.a, s.b) < permitido * permitido) return false;
+            }
         }
 
         // 2) por colisión de capa (malla de camino)
         if (usarExclusionPorCapaCaminos && TocaCaminoPorCapa(p)) return false;
 
-        // 3) nodos
-        for (int i = 0; i < nodos.Count; i++)
-            if (DistXZ(p, nodos[i].position) < distNodo) return false;
+        // 3) nodos usando índice espacial
+        if (nodos.Count > 0)
+        {
+            currentNodeStamp++;
+            if (currentNodeStamp == int.MaxValue)
+            {
+                System.Array.Clear(nodeVisitStamp, 0, nodeVisitStamp.Length);
+                currentNodeStamp = 1;
+            }
+
+            nodeCandidates.Clear();
+            RecolectarCandidatos(nodeGrid, p.x, p.z, distNodo, nodeCandidates, nodeVisitStamp, currentNodeStamp);
+
+            float distNodoSqr = distNodo * distNodo;
+            for (int i = 0; i < nodeCandidates.Count; i++)
+                if (SqrDistXZ(p, nodos[nodeCandidates[i]].position) < distNodoSqr) return false;
+        }
 
         return true;
     }
@@ -498,6 +592,34 @@ public class MapDecorator : MonoBehaviour
         lista.Add(p);
     }
 
+    void RecolectarCandidatos(
+        Dictionary<CellKey, List<int>> indice,
+        float worldX,
+        float worldZ,
+        float rango,
+        List<int> salida,
+        int[] visitStamp,
+        int stamp)
+    {
+        var cmin = CellFromWorldForExclusion(worldX - rango, worldZ - rango);
+        var cmax = CellFromWorldForExclusion(worldX + rango, worldZ + rango);
+
+        for (int x = cmin.x; x <= cmax.x; x++)
+        for (int z = cmin.z; z <= cmax.z; z++)
+        {
+            var key = new CellKey(x, z);
+            if (!indice.TryGetValue(key, out var list)) continue;
+            for (int i = 0; i < list.Count; i++)
+            {
+                int idx = list[i];
+                if (idx < 0 || idx >= visitStamp.Length) continue;
+                if (visitStamp[idx] == stamp) continue;
+                visitStamp[idx] = stamp;
+                salida.Add(idx);
+            }
+        }
+    }
+
     // *** indexar usando DISTANCIAS EN MUNDO ***
     CellKey CellFromWorld(Vector3 w)
     {
@@ -507,6 +629,13 @@ public class MapDecorator : MonoBehaviour
         int gx = Mathf.FloorToInt(wx / cell);
         int gz = Mathf.FloorToInt(wz / cell);
         return new CellKey(gx, gz);
+    }
+
+    CellKey CellFromWorldForExclusion(float worldX, float worldZ)
+    {
+        float gx = (worldX - rectMinX) / Mathf.Max(1e-6f, exclusionCellSize);
+        float gz = (worldZ - rectMinZ) / Mathf.Max(1e-6f, exclusionCellSize);
+        return new CellKey(Mathf.FloorToInt(gx), Mathf.FloorToInt(gz));
     }
 
     // ===================== Util geométricas =====================
@@ -546,6 +675,17 @@ public class MapDecorator : MonoBehaviour
         return Vector2.Distance(P, A + t * AB);
     }
 
+    static float DistSegXZSqr(Vector3 p, Vector3 a, Vector3 b)
+    {
+        Vector2 P = new Vector2(p.x, p.z), A = new Vector2(a.x, a.z), B = new Vector2(b.x, b.z);
+        Vector2 AB = B - A;
+        float den = Vector2.Dot(AB, AB);
+        if (den < 1e-6f) return (P - A).sqrMagnitude;
+        float t = Mathf.Clamp01(Vector2.Dot(P - A, AB) / den);
+        Vector2 q = A + t * AB;
+        return (P - q).sqrMagnitude;
+    }
+
     static float DistXZ(Vector3 a, Vector3 b){ float dx=a.x-b.x, dz=a.z-b.z; return Mathf.Sqrt(dx*dx + dz*dz); }
     static float SqrDistXZ(Vector3 a, Vector3 b){ float dx=a.x-b.x, dz=a.z-b.z; return dx*dx + dz*dz; }
 
@@ -579,7 +719,7 @@ public class MapDecorator : MonoBehaviour
 
         var go = Instantiate(prefab, pos, Quaternion.identity, transform);
         if (rotarYRandom) go.transform.rotation = Quaternion.Euler(0f,UnityEngine.Random.Range(0f, 360f), 0f);
-        // Escala del prefab NO se toca (asegurate que este GameObject padre esté en 1,1,1).
+        // Escala del prefab NO se toca (asegurate que este GameObject padre está en 1,1,1).
     }
 
     // ===================== Gizmos =====================
@@ -602,3 +742,6 @@ public class MapDecorator : MonoBehaviour
             Gizmos.DrawLine(segmentos[i].a, segmentos[i].b);
     }
 }
+
+
+

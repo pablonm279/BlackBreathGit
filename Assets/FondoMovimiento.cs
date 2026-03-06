@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class BackgroundBreathing : MonoBehaviour
@@ -9,9 +9,9 @@ public class BackgroundBreathing : MonoBehaviour
     public FondoMovimiento panMode = FondoMovimiento.AutoDetect;
 
     [Header("Vaivén (paneo)")]
-    [Tooltip("Amplitud horizontal en píxeles si es RectTransform; en UV si es RawImage (0–1).")]
+    [Tooltip("Amplitud horizontal en píxeles si es RectTransform; en UV si es RawImage (0-1).")]
     public float amplitudeX = 20f;
-    [Tooltip("Amplitud vertical en píxeles si es RectTransform; en UV si es RawImage (0–1).")]
+    [Tooltip("Amplitud vertical en píxeles si es RectTransform; en UV si es RawImage (0-1).")]
     public float amplitudeY = 0f;
     [Tooltip("Velocidad del vaivén.")]
     public float panSpeed = 0.2f;
@@ -30,6 +30,10 @@ public class BackgroundBreathing : MonoBehaviour
     [Header("Suavizado")]
     [Tooltip("Usar tiempo independiente de Time.timeScale (menú suele estar pausado).")]
     public bool useUnscaledTime = true;
+
+    [Header("Intensidad global")]
+    [Tooltip("Multiplicador global del efecto. 1.15 = 15% mas notorio.")]
+    public float globalIntensity = 1.15f;
 
     // Cache
     RectTransform rect;
@@ -56,26 +60,27 @@ public class BackgroundBreathing : MonoBehaviour
         float t = useUnscaledTime ? Time.unscaledTime : Time.time;
 
         // --- Paneo / Vaivén ---
+        float intensity = Mathf.Max(0f, globalIntensity);
         float ox = Mathf.Sin((t + panPhase) * panSpeed);
         float oy = Mathf.Sin((t + panPhase) * panSpeed * 0.85f); // leve desfase para Y
 
         if (panMode == FondoMovimiento.RectTransform && rect != null)
         {
-            rect.anchoredPosition = startAnchoredPos + new Vector2(ox * amplitudeX, oy * amplitudeY);
+            rect.anchoredPosition = startAnchoredPos + new Vector2(ox * amplitudeX * intensity, oy * amplitudeY * intensity);
         }
         else if (panMode == FondoMovimiento.RawImageUV && raw != null)
         {
             // Paneo UV sutil (no corta la imagen)
             Rect uv = startUV;
-            uv.x += ox * amplitudeX;
-            uv.y += oy * amplitudeY;
+            uv.x += ox * amplitudeX * intensity;
+            uv.y += oy * amplitudeY * intensity;
             raw.uvRect = uv;
         }
 
-        // --- Zoom “respirante” ---
+        // --- Zoom "respirante" ---
         if (enableBreathing && rect != null)
         {
-            float z = Mathf.Sin((t + zoomPhase) * zoomSpeed) * zoomAmplitude;
+            float z = Mathf.Sin((t + zoomPhase) * zoomSpeed) * zoomAmplitude * intensity;
             rect.localScale = startScale * (1f + z);
         }
     }
@@ -93,3 +98,6 @@ public class BackgroundBreathing : MonoBehaviour
             raw.uvRect = startUV;
     }
 }
+
+
+

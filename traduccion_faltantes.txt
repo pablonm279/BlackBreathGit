@@ -26,11 +26,11 @@ Claves literales faltantes (únicas):
 - Defender
 - Huir
 - Asentamiento
-- -Los Cronistas han registrado la victoria, +50 Valor Crâ”œâ”‚nica, +5 Esperanza.
-- -Los Cronistas han registrado la derrota, -50 Valor Crâ”œâ”‚nica. -3 Esperanza.
-- Victoria sin recompensas definidas para este encuentro clÃ¡sico.
-- Derrota en un encuentro clÃ¡sico. Los efectos especÃ­ficos aÃºn no estÃ¡n configurados.
-- sin botÃ­n
+- -Los Cronistas han registrado la victoria, +50 Valor Crónica, +5 Esperanza.
+- -Los Cronistas han registrado la derrota, -50 Valor Crónica. -3 Esperanza.
+- Victoria sin recompensas definidas para este encuentro clásico.
+- Derrota en un encuentro clásico. Los efectos específicos aún no están configurados.
+- sin botín
 - Esperanza.
 - Sin consecuencias graves.
 - Derrota: 
@@ -77,11 +77,11 @@ c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\CampaignManager
 c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\EventosAdmin.cs:374 :: Defender
 c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\EventosAdmin.cs:376 :: Huir
 c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\EventosAdmin.cs:463 :: Asentamiento
-c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:954 :: -Los Cronistas han registrado la victoria, +50 Valor Crâ”œâ”‚nica, +5 Esperanza.
-c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:959 :: -Los Cronistas han registrado la derrota, -50 Valor Crâ”œâ”‚nica. -3 Esperanza.
-c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1227 :: Victoria sin recompensas definidas para este encuentro clÃ¡sico.
-c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1228 :: Derrota en un encuentro clÃ¡sico. Los efectos especÃ­ficos aÃºn no estÃ¡n configurados.
-c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1243 :: sin botÃ­n
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:954 :: -Los Cronistas han registrado la victoria, +50 Valor Crónica, +5 Esperanza.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:959 :: -Los Cronistas han registrado la derrota, -50 Valor Crónica. -3 Esperanza.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1227 :: Victoria sin recompensas definidas para este encuentro clásico.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1228 :: Derrota en un encuentro clásico. Los efectos específicos aún no están configurados.
+c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1243 :: sin botín
 c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1250 :: Esperanza.
 c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1279 :: Sin consecuencias graves.
 c:\UnityProyectosNOborrar\GDD - Untitled\Assets\Scripts\Campania\MenuBatallas.cs:1283 :: Derrota: 

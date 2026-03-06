@@ -80,3 +80,6 @@ public class SequitoClerigos : MonoBehaviour
 
  
 }
+
+
+

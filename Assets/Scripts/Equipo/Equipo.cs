@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -489,4 +489,6 @@ if (scPerssel.Accesorio2.habilidadExtra2 != null) // Agrega la habilidad extra 2
 
 
 }
+
+
 

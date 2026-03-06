@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +11,7 @@ public class Cons_ElixirResistenciaAcido : Consumible
   void Awake()
   {
     sNombreItem = TRADU.i.Traducir("Elixir de Resistencia al Ácido");
-        itemDescripcion = TRADU.i.Traducir("Aumenta la resistencia al ácido en 5 por el combate.");
+        itemDescripcion = TRADU.i.Traducir("Aumenta la resistencia al Ácido en 5 por el combate.");
 
     }
 
@@ -23,10 +23,13 @@ public class Cons_ElixirResistenciaAcido : Consumible
        buff.buffNombre = "Elixir de Resistencia al Ácido";
        buff.boolfDebufftBuff = true;
        buff.DuracionBuffRondas = -1;
-       buff.cantResAci += 5; // Aumenta la resistencia al ácido en 5
+       buff.cantResAci += 5; // Aumenta la resistencia al Ácido en 5
        buff.AplicarBuff(unidad);
        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, unidad.gameObject);
     }
 
 }
+
+
+

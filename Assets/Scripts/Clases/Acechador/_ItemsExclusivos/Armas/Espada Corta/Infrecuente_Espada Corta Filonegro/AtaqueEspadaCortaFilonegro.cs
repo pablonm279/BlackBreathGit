@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -53,14 +53,14 @@ public class AtaqueEspadaCortaFilonegro : Habilidad
     txtDescripcion = "<color=#5dade2><b>Corte de Espada corta Filonegro</b></color>\n\n";
     txtDescripcion += "<i>Con su mano hábil, el Acechador asesta un golpe con la espada corta.</i>\n\n";
     txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza + {bonusAtaque}</color> - Daño: Cortante 1d6+2- +1 Dado Crítico, Daño crítico x2. </color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Val: {costoPM} </color>";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
 
     if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
     {
             txtDescripcion = "<color=#5dade2><b>Blackblade Short Sword Slash</b></color>\n\n";
             txtDescripcion += "<i>With skilled hand, the Stalker delivers a blow with the short sword.</i>\n\n";
             txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength + {bonusAtaque}</color> - Damage: Slashing 1d6+2- +1 Critical Die, Critical damage x2. </color>\n\n";
-            txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Val Cost: {costoPM} </color>";
+            txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valour Cost: {costoPM} </color>";
 
 
      }
@@ -433,3 +433,7 @@ public class AtaqueEspadaCortaFilonegro : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
+
+
+
+

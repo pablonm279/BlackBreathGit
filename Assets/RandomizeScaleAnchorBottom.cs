@@ -97,3 +97,6 @@ public class RandomizeScaleAnchorBottom : MonoBehaviour
         transform.eulerAngles = new Vector3(e.x, angleY, e.z);
     }
 }
+
+
+

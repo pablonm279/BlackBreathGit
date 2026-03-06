@@ -95,3 +95,6 @@ public class FakeGroundShadow : MonoBehaviour
         tf.localScale = new Vector3(diameter, 1f, diameter);
     }
 }
+
+
+

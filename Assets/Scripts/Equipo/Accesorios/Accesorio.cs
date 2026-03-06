@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -61,7 +61,7 @@ public abstract class Accesorio  : Item
                 itemDescripcion += $"\nAP Máx: {(buffApMax > 0 ? "+" : "")}{buffApMax}";
             // Valor Máx
             if (buffValMax != 0)
-                itemDescripcion += $"\nValor Máx: {(buffValMax > 0 ? "+" : "")}{buffValMax}";
+                itemDescripcion += $"\nValentía Máx: {(buffValMax > 0 ? "+" : "")}{buffValMax}";
             // HP Máx
             if (buffhpMax != 0)
                 itemDescripcion += $"\nHP Máx: {(buffhpMax > 0 ? "+" : "")}{buffhpMax}";
@@ -92,7 +92,7 @@ public abstract class Accesorio  : Item
             if (buffResAcido != 0)
                 itemDescripcion += $"\nRes. Ácido: {(buffResAcido > 0 ? "+" : "")}{buffResAcido}";
             if (buffResNecro != 0)
-                itemDescripcion += $"\nRes. Necrótico: {(buffResNecro > 0 ? "+" : "")}{buffResNecro}";
+                itemDescripcion += $"\nRes. Necrítico: {(buffResNecro > 0 ? "+" : "")}{buffResNecro}";
             if (buffResDivino != 0)
                 itemDescripcion += $"\nRes. Divino: {(buffResDivino > 0 ? "+" : "")}{buffResDivino}";
         }
@@ -115,7 +115,7 @@ public abstract class Accesorio  : Item
                 itemDescripcion += $"\nMax AP: {(buffApMax > 0 ? "+" : "")}{buffApMax}";
             // Max Valor
             if (buffValMax != 0)
-                itemDescripcion += $"\nMax Valor: {(buffValMax > 0 ? "+" : "")}{buffValMax}";
+                itemDescripcion += $"\nMax Valour: {(buffValMax > 0 ? "+" : "")}{buffValMax}";
             // Max HP
             if (buffhpMax != 0)
                 itemDescripcion += $"\nMax HP: {(buffhpMax > 0 ? "+" : "")}{buffhpMax}";
@@ -153,3 +153,7 @@ public abstract class Accesorio  : Item
 
     }
 }
+
+
+
+

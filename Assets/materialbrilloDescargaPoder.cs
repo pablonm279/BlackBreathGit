@@ -40,7 +40,7 @@ public class materialbrilloDescargaPoder : MonoBehaviour
             // Crea una instancia del material para no afectar materiales compartidos.
             _matInstance = targetRenderer.material;
 
-            // Asegura que la Emision esté activa en el shader Standard.
+            // Asegura que la Emision está activa en el shader Standard.
             _matInstance.EnableKeyword("_EMISSION");
 
             // Si no tiene emisión definida, usa el color de pulso por defecto.
@@ -89,3 +89,5 @@ public class materialbrilloDescargaPoder : MonoBehaviour
         transform.localScale = _baseScale;
     }
 }
+
+

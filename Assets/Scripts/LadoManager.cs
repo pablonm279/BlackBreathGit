@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -250,6 +250,9 @@ while (!correcto && intentos < 100) // Limitar los intentos para evitar bucles i
 
 
 }
+
+
+
 
 
 

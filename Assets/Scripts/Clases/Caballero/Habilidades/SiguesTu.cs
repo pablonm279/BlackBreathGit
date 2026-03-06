@@ -100,8 +100,8 @@ public class SiguesTu : Habilidad
       }
 
       string costos = esIngles
-        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Val Cost: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Val: {costoPM}";
+        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : tituloEs,
@@ -151,7 +151,7 @@ public class SiguesTu : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
 
-            if(obj is Unidad) //AcÃ¡ van los efectos a Unidades.
+            if(obj is Unidad) //Acá van los efectos a Unidades.
             {
                 
                 Unidad objetivo = (Unidad)obj;
@@ -176,14 +176,14 @@ public class SiguesTu : Habilidad
 
                 if(objetivo.TiradaSalvacion(objetivo.mod_TSMental, salvDC))
                 {
-                    //BUFF ---- AsÃ­ se aplica un buff/debuff
+                    //BUFF ---- Así se aplica un buff/debuff
                     Buff debuff = new Buff();
                     debuff.buffNombre = "Amedrentado";
                     debuff.boolfDebufftBuff = false;
                     debuff.DuracionBuffRondas = durDebuff;
                     debuff.cantAtaque = -2;
                     debuff.AplicarBuff(objetivo);
-                    // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
+                    // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
                     ComponentCopier.CopyComponent(debuff, objetivo.gameObject);
 
                 }
@@ -285,6 +285,10 @@ public class SiguesTu : Habilidad
    
  
 }
+
+
+
+
 
 
 

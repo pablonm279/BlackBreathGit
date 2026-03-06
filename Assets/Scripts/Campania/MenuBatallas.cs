@@ -44,6 +44,7 @@ public class MenuBatallas : MonoBehaviour
   EncounterZoneType encuentroZonaActual;
   BattleEncounterType encuentroTipoActual;
   bool esBatallaFinal = false;
+  bool transicionJefeZonaPendiente = false;
 
  public GameObject UIEmpezarBatalla;
  public GameObject UIEmpezarBatallaACaravana;
@@ -54,6 +55,27 @@ public class MenuBatallas : MonoBehaviour
  public TextMeshProUGUI txtMilicianosDisponibles;
 
  [SerializeField] GameObject btnComenzar;
+ bool bloqueoComenzarBatalla = false;
+
+ void OnEnable()
+ {
+    bloqueoComenzarBatalla = false;
+    SetBotonComenzarInteractable(true);
+ }
+
+ void SetBotonComenzarInteractable(bool interactable)
+ {
+    if (btnComenzar == null)
+    {
+      return;
+    }
+
+    Button btn = btnComenzar.GetComponent<Button>();
+    if (btn != null)
+    {
+      btn.interactable = interactable;
+    }
+ }
 
  void Awake()
  {
@@ -207,28 +229,11 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
 
  int ObtenerJefeIdAleatorio(EncounterZoneType zona, int fase)
  {
-    List<int> ids = null;
-        switch (zona)
-        {
-            case EncounterZoneType.PasoVientoHelado:
-                if (fase == 1)
-                {
-                    ids = new List<int> { 60};
-                }
-                break;
-            case EncounterZoneType.BosqueAngustiante:
-            default:
-                if (fase == 1)
-                {
-                    ids = new List<int> { 11 };
-                }
-                break;
-            case EncounterZoneType.Nedukazal:
-            if (fase == 1)
-            {
-             ids = new List<int> { 100 };
-            }
-            break;
+    List<int> ids = ObtenerIdsJefePorZonaYFase(zona, fase);
+    if ((ids == null || ids.Count == 0) && fase != 1)
+    {
+        // Fallback: si la fase actual no tiene jefe configurado, usar el de fase 1 de la zona.
+        ids = ObtenerIdsJefePorZonaYFase(zona, 1);
     }
 
     if (ids != null && ids.Count > 0)
@@ -237,6 +242,25 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
     }
 
     return 0;
+ }
+
+ List<int> ObtenerIdsJefePorZonaYFase(EncounterZoneType zona, int fase)
+ {
+    switch (zona)
+    {
+        case EncounterZoneType.PasoVientoHelado:
+            if (fase == 1) return new List<int> { 60 };
+            break;
+        case EncounterZoneType.Nedukazal:
+            if (fase == 1) return new List<int> { 100 };
+            break;
+        case EncounterZoneType.BosqueAngustiante:
+        default:
+            if (fase == 1) return new List<int> { 11 };
+            break;
+    }
+
+    return null;
  }
 
  BattleRewardTuning GetRewardTuning(BattleEncounterType tipo)
@@ -257,7 +281,7 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
 
  int ObtenerMaxAliadosPermitidos()
  {
-    // Si no se configurÃ³ aÃºn, por defecto permitir todos los slots disponibles (mÃ¡x. 4).
+    // Si no se configuró aún, por defecto permitir todos los slots disponibles (máx. 4).
     int max = cantidadAliadosComienzo > 0 ? cantidadAliadosComienzo : 4;
     return Mathf.Clamp(max, 1, 4);
  }
@@ -364,7 +388,7 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
         }
         else
         {
-            // Configura el estado del botÃ³n basÃ¡ndose en si hay personajes seleccionados o no
+            // Configura el estado del botón basíndose en si hay personajes seleccionados o no
             btnComenzar.SetActive(!todosVacios);
         }
    
@@ -391,7 +415,7 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
         {
             foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
             {
-                if (!pers.Camp_Muerto && pers.fVidaActual > 1) //Si no estÃ¡ muerto y tiene vida
+                if (!pers.Camp_Muerto && pers.fVidaActual > 1) //Si no está muerto y tiene vida
                 {
                     if ((/*Base: Guardia*/pers.ActividadSeleccionada == 3) || (/*Caballero: Vigilar*/pers.ActividadSeleccionada == 6))
                     {
@@ -409,7 +433,7 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
             // Intenta obtener el componente btnPersonaje del hijo
             btnPersonaje btn = child.GetComponent<btnPersonaje>();
 
-            if (btn != null) // AsegÃºrate de que el componente btnPersonaje exista
+            if (btn != null) // Asegúrate de que el componente btnPersonaje exista
             {
                 btn.representarVida();
 
@@ -475,7 +499,7 @@ public void DejanEnListaParticipantesSolo()
 
  public void Seleccionar(Personaje pers)
  {
-     // Verificar si el personaje ya estÃ¡ seleccionado en alguna posiciÃ³n
+     // Verificar si el personaje ya está seleccionado en alguna posición
     if (scAdministradorEscenas.Personaje1 == pers)
     {
         scAdministradorEscenas.Personaje1 = null;
@@ -506,27 +530,27 @@ public void DejanEnListaParticipantesSolo()
     {
         return;
     }
-    // Verificar si la primera posiciÃ³n estÃ¡ disponible
+    // Verificar si la primera posición está disponible
     if (scAdministradorEscenas.Personaje1 == null)
     {
         scAdministradorEscenas.Personaje1 = pers;
     }
-    // Verificar si la segunda posiciÃ³n estÃ¡ disponible
+    // Verificar si la segunda posición está disponible
     else if (scAdministradorEscenas.Personaje2 == null)
     {
         scAdministradorEscenas.Personaje2 = pers;
     }
-    // Verificar si la tercera posiciÃ³n estÃ¡ disponible
+    // Verificar si la tercera posición está disponible
     else if (scAdministradorEscenas.Personaje3 == null)
     {
         scAdministradorEscenas.Personaje3 = pers;
     }
-    // Verificar si la cuarta posiciÃ³n estÃ¡ disponible
+    // Verificar si la cuarta posición está disponible
     else if (scAdministradorEscenas.Personaje4 == null)
     {
         scAdministradorEscenas.Personaje4 = pers;
     }
-    // Si todas estÃ¡n ocupadas, reemplazar al cuarto scAdministradorEscenas.Personaje
+    // Si todas están ocupadas, reemplazar al cuarto scAdministradorEscenas.Personaje
     else
     {
         scAdministradorEscenas.Personaje4 = pers;
@@ -721,6 +745,10 @@ public void DejanEnListaParticipantesSolo()
         UIEmpezarBatalla.SetActive(true);
         UIEmpezarBatallaACaravana.SetActive(false);
         UITerminarBatalla.SetActive(false);
+        if (txtMilicianosDisponibles != null)
+        {
+            txtMilicianosDisponibles.text = TRADU.i.Traducir("Milicianos disponibles: ") + (int)CampaignManager.Instance.GetMiliciasActual() / 10;
+        }
 
         encuentroGeneradoActual = null;
         encuentroTipoActual = BattleEncounterType.Normal;
@@ -871,6 +899,9 @@ public void DejanEnListaParticipantesSolo()
 {
    UIEmpezarBatalla.SetActive(false);
    UITerminarBatalla.SetActive(true);
+   transicionJefeZonaPendiente = false;
+   bool fueBatallaFinalActual = esBatallaFinal;
+   bool fueDefensaCaravana = encuentroTipoActual == BattleEncounterType.AtaqueCaravana || esEmboscadaEnemiga == 3;
 
     if (resultado == 1)
     {
@@ -899,7 +930,7 @@ public void DejanEnListaParticipantesSolo()
       AplicarVictoriaRitualKaleTav();
       if (esBatallaFinal && CampaignManager.Instance != null)
       {
-         CampaignManager.Instance.OnDerrotadoJefeZona();
+         transicionJefeZonaPendiente = true;
       }
       else if (CampaignManager.Instance.scTutorialManager.tutorialActivo && EventoBatallaID == 701)
       {
@@ -907,6 +938,10 @@ public void DejanEnListaParticipantesSolo()
          CampaignManager.Instance.AbrirCiudadPuerto(); //fin tutorial
       }
    }
+    else if (resultado == 2 && CampaignManager.Instance != null)
+    {
+        CampaignManager.Instance.EvaluarDerrotaPorResultadoBatalla(fueDefensaCaravana, fueBatallaFinalActual);
+    }
     //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
     if (resultado == 2) //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
     {
@@ -999,7 +1034,7 @@ public void DejanEnListaParticipantesSolo()
                     pers.fVidaActual = 5;
                 }
 
-                if (uni.loMatoCorrompido) //Si lo matÃ³ un corrupto, se marca como corrupto
+                if (uni.loMatoCorrompido) //Si lo mató un corrupto, se marca como corrupto
                 {
 
                     if (pers.Camp_Corrupto)
@@ -1054,10 +1089,32 @@ public void DejanEnListaParticipantesSolo()
       {
         CampaignManager.Instance.scTutorialManager.SiguientePaso();
       }
+        bool debeResolverTransicionJefeZona = transicionJefeZonaPendiente;
+        transicionJefeZonaPendiente = false;
         gameObject.SetActive(false);
+
+        if (debeResolverTransicionJefeZona && CampaignManager.Instance != null)
+        {
+          CampaignManager.Instance.OnDerrotadoJefeZona();
+        }
     }
  public void ComenzarBatalla()
  {
+    if (bloqueoComenzarBatalla)
+    {
+      return;
+    }
+
+    bloqueoComenzarBatalla = true;
+    SetBotonComenzarInteractable(false);
+
+    if (scAdministradorEscenas == null)
+    {
+      bloqueoComenzarBatalla = false;
+      SetBotonComenzarInteractable(true);
+      return;
+    }
+
     AjustarSeleccionAlMaximo();
     // Autorelleno para Ataque a Caravana: prioriza personajes con m1s vida
     if (UIEmpezarBatallaACaravana != null && UIEmpezarBatallaACaravana.activeInHierarchy)
@@ -1096,7 +1153,7 @@ public void DejanEnListaParticipantesSolo()
                 scAdministradorEscenas.PersonajesSorprendidosInicioCaravana = new List<Personaje>();
             }
 
-            // Rellenar huecos en orden 1..4 respetando el lÃ­mite
+            // Rellenar huecos en orden 1..4 respetando el límite
             if (maxAliadosPermitidos >= 1 && scAdministradorEscenas.Personaje1 == null && candidatos.Count > 0)
             {
                 var p = candidatos[0]; candidatos.RemoveAt(0);
@@ -1124,13 +1181,14 @@ public void DejanEnListaParticipantesSolo()
         }
     }
 
+    bool usarRefuerzosAliadosCaravana = esBatallaFinal;
     if (encuentroGeneradoActual != null)
     {
-        scAdministradorEscenas.CargarBatalla(EventoBatallaID, esEmboscadaEnemiga, encuentroGeneradoActual);
+        scAdministradorEscenas.CargarBatalla(EventoBatallaID, esEmboscadaEnemiga, encuentroGeneradoActual, usarRefuerzosAliadosCaravana);
     }
     else
     {
-        scAdministradorEscenas.CargarBatalla(EventoBatallaID, esEmboscadaEnemiga);
+        scAdministradorEscenas.CargarBatalla(EventoBatallaID, esEmboscadaEnemiga, null, usarRefuerzosAliadosCaravana);
     }
     
  }
@@ -1240,7 +1298,7 @@ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
     if (oro > 0) partes.Add(oro + (TRADU.i.nIdioma == 2 ? " Gold" : " Oro"));
     if (materiales > 0) partes.Add(materiales + (TRADU.i.nIdioma == 2 ? " Materials" : " Materiales"));
 
-    string contenido = partes.Count > 0 ? string.Join(", ", partes) : TRADU.i.Traducir("sin botín");
+    string contenido = partes.Count > 0 ? string.Join(", ", partes) : TRADU.i.Traducir("sin botón");
     string texto = TRADU.i.nIdioma == 2
         ? contenido + " obtained."
         : TRADU.i.Traducir("Se han obtenido ") + contenido + ".";
@@ -1332,3 +1390,6 @@ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
     manager.EscribirLog(TRADU.i.Traducir("-El ritual Kale'Tav ha sido detenido. +10 Esperanza."));
  }
 }
+
+
+

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 //using UnityEditor.SearchService;
 using UnityEngine;
@@ -19,7 +19,7 @@ public class ReaccionEscudoEnergetico : Reaccion
     descargaArcana =  gameObject.GetComponent<DescargaArcana>();
     
 
-    descripcion = $"Reacción: El canalizador se defiende y contraataca con Descargas Arcanas si es atacado con proyectiles sin éxito.";
+    descripcion = $"Reacción: El canalizador se defiende y contraataca con Descargas Arcanas si es atacado con proyectiles sin Éxito.";
     if (TRADU.i.nIdioma == 2) // agrega la traducción a inglés
     {
       descripcion = $"Reaction: The channeler defends and counterattacks with Arcane Bursts if attacked unsuccessfully with projectiles.";
@@ -83,4 +83,7 @@ public class ReaccionEscudoEnergetico : Reaccion
 
 
 }
+
+
+
 

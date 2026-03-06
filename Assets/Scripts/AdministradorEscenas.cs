@@ -45,6 +45,9 @@ public class AdministradorEscenas : MonoBehaviour
   public List<Material> listaFondosNedukazal; //Para agregar fondos simplemente hay que agregarlos a la lista
 
   public List<Material> listaFondosSubterraneos; //Para agregar fondos simplemente hay que agregarlos a la lista
+  private BattleAmbientLife battleAmbientLife;
+  private EncounterZoneType zonaVisualBatallaActual = EncounterZoneType.BosqueAngustiante;
+  private bool fondoBatallaSubterraneoActual;
 
   [Header("UI")]
   [SerializeField] public CanvasGroup fader;        // Imagen negra con CanvasGroup
@@ -139,11 +142,13 @@ public class AdministradorEscenas : MonoBehaviour
   public GameObject VFXAurora;
   EncounterDefinition encuentroGeneradoActual;
   int ultimoIDEncuentro;
+  int tipoEmboscadaActual = 0;
 
-  public async void CargarBatalla(int IDEncuentro, int esEmboscada = 0, EncounterDefinition encuentro = null)
+  public async void CargarBatalla(int IDEncuentro, int esEmboscada = 0, EncounterDefinition encuentro = null, bool usarRefuerzosAliadosCaravana = false)
   {
     ultimoIDEncuentro = IDEncuentro;
     encuentroGeneradoActual = encuentro;
+    tipoEmboscadaActual = esEmboscada;
 
     VFXLluvia.SetActive(false);
     VFXNieve.SetActive(false);
@@ -160,6 +165,7 @@ public class AdministradorEscenas : MonoBehaviour
     EscenaBatalla.SetActive(true);
     // Silenciar logs de combate durante la preparación (buffs/estados iniciales)
     BattleManager.Instance.silenciarLogCombate = true;
+    BattleManager.Instance.ReiniciarEstadoRefuerzos();
     bool esPrimerCombateTutorial = IDEncuentro == 700 && CampaignManager.Instance != null
       && CampaignManager.Instance.scTutorialManager != null
       && CampaignManager.Instance.scTutorialManager.tutorialActivo;
@@ -184,6 +190,7 @@ public class AdministradorEscenas : MonoBehaviour
     }
 
     AdministrarFondos(IDEncuentro, encuentroGeneradoActual);
+    ConfigurarAmbienteVidaBatalla();
 
     if (Personaje1 != null)
     {
@@ -269,6 +276,7 @@ public class AdministradorEscenas : MonoBehaviour
     {
       BattleManager.Instance.ladoA.ActualizarListaDeUnidadesEnLado();
       BattleManager.Instance.ladoB.ActualizarListaDeUnidadesEnLado();
+      AplicarAjusteValentiaInicialPorEsperanza();
     }
 
 
@@ -285,6 +293,21 @@ public class AdministradorEscenas : MonoBehaviour
       }
 
 
+      Personaje ObtenerPersonajeAliado(Unidad unidad)
+      {
+        if (unidad == unidadPers1) return Personaje1;
+        if (unidad == unidadPers2) return Personaje2;
+        if (unidad == unidadPers3) return Personaje3;
+        if (unidad == unidadPers4) return Personaje4;
+        return null;
+      }
+
+      bool EstaEnGuardiaOVigilanciaCaballero(Personaje personaje)
+      {
+        if (personaje == null) { return false; }
+        return personaje.ActividadSeleccionada == 3 || personaje.ActividadSeleccionada == 6;
+      }
+
       LadoManager ladoBueno = BattleManager.Instance.ladoB; //Buenos
       foreach (Unidad u in ladoBueno.unidadesLado)
       {
@@ -294,10 +317,17 @@ public class AdministradorEscenas : MonoBehaviour
 
         /////////////////////////////////////////////
         //BUFF ---- Así se aplica un buff/debuff
+        Personaje personajeAliado = ObtenerPersonajeAliado(u);
+        if (EstaEnGuardiaOVigilanciaCaballero(personajeAliado))
+        {
+          continue;
+        }
+
         Buff buff = new Buff();
         buff.buffNombre = "Sorprendido";
+        buff.forzarTextoFlotanteInicioCombate = true;
         buff.boolfDebufftBuff = false;
-        buff.DuracionBuffRondas = 1;
+        buff.DuracionBuffRondas = 4;
         buff.cantIniciativa -= 3;
         buff.cantAPMax -= 2;
         buff.cantDefensa -= 2;
@@ -333,7 +363,7 @@ public class AdministradorEscenas : MonoBehaviour
         }
       }
 
-      // Aplicar "Sorprendido" (2 rondas) solo a los que fueron forzados a desplegar
+      // Aplicar "Sorprendido" (4 rondas) solo a los que fueron forzados a desplegar
       if (PersonajesSorprendidosInicioCaravana != null && PersonajesSorprendidosInicioCaravana.Count > 0)
       {
         // Aplicar a cada uno de los 4 posibles participantes si corresponde
@@ -345,11 +375,12 @@ public class AdministradorEscenas : MonoBehaviour
           // Remover ocultamiento si lo tuviera
           uni.PerderEscondido();
 
-          // Debuff Sorprendido: mismos efectos que emboscada, pero 2 rondas
+          // Debuff Sorprendido: mismos efectos que emboscada, pero 4 rondas
           Buff buff = new Buff();
           buff.buffNombre = "Sorprendido";
+          buff.forzarTextoFlotanteInicioCombate = true;
           buff.boolfDebufftBuff = false;
-          buff.DuracionBuffRondas = 2;
+          buff.DuracionBuffRondas = 4;
           buff.cantIniciativa -= 5;
           buff.cantAPMax -= 2;
           buff.cantDefensa -= 2;
@@ -366,8 +397,12 @@ public class AdministradorEscenas : MonoBehaviour
         PersonajesSorprendidosInicioCaravana.Clear();
       }
     }
+    else if (usarRefuerzosAliadosCaravana)
+    {
+      AsignarRefuerzosAliados(filtrarPorActividadGuardia: false);
+    }
 
-    if (esEmboscada == 0)
+    if (esEmboscada == 0 && !usarRefuerzosAliadosCaravana)
     {
       int tierCuartel = MetaprogresionManager.Instance.SerriaTierCuartel;
       if (UnityEngine.Random.Range(0,100) < tierCuartel * 10) 
@@ -806,6 +841,59 @@ public class AdministradorEscenas : MonoBehaviour
 
   }
 
+  void ColocarPiedrasVariadasEnLadoEnemigo(int cantidad)
+  {
+    if (cantidad <= 0 || BattleManager.Instance == null || BattleManager.Instance.ladoA == null || ContenedorPrefabsBatalla == null)
+    {
+      return;
+    }
+
+    List<GameObject> prefabsPiedra = new List<GameObject>();
+    if (ContenedorPrefabsBatalla.Roca1 != null) { prefabsPiedra.Add(ContenedorPrefabsBatalla.Roca1); }
+    if (ContenedorPrefabsBatalla.Roca2 != null) { prefabsPiedra.Add(ContenedorPrefabsBatalla.Roca2); }
+    if (prefabsPiedra.Count < 1)
+    {
+      return;
+    }
+
+    for (int i = 0; i < prefabsPiedra.Count; i++)
+    {
+      int randomIndex = UnityEngine.Random.Range(i, prefabsPiedra.Count);
+      GameObject tmp = prefabsPiedra[i];
+      prefabsPiedra[i] = prefabsPiedra[randomIndex];
+      prefabsPiedra[randomIndex] = tmp;
+    }
+
+    LadoManager ladoEnemigo = BattleManager.Instance.ladoA;
+    ladoEnemigo.ActualizarListaDeCasillasEnLado();
+
+    List<Casilla> casillasLibres = new List<Casilla>();
+    foreach (Casilla casilla in ladoEnemigo.casillasLado)
+    {
+      if (casilla == null || casilla.Presente != null)
+      {
+        continue;
+      }
+
+      casillasLibres.Add(casilla);
+    }
+
+    int cantidadAColocar = Mathf.Min(cantidad, casillasLibres.Count);
+    int indicePrefab = 0;
+    for (int i = 0; i < cantidadAColocar; i++)
+    {
+      int indiceCasilla = UnityEngine.Random.Range(0, casillasLibres.Count);
+      Casilla casillaElegida = casillasLibres[indiceCasilla];
+      casillasLibres.RemoveAt(indiceCasilla);
+
+      GameObject prefabPiedra = prefabsPiedra[indicePrefab];
+      indicePrefab = (indicePrefab + 1) % prefabsPiedra.Count;
+
+      GameObject piedra = Instantiate(prefabPiedra);
+      casillaElegida.PonerObjetoEnCasilla(piedra);
+    }
+  }
+
   void ColocarTrampasDeBarro(int cantidad, LadoManager ladoAliado, LadoManager ladoEnemigo)
   {
     if (cantidad <= 0)
@@ -853,9 +941,11 @@ public class AdministradorEscenas : MonoBehaviour
   {
     bool esSubterraneo = (encounterDefinition != null && (encounterDefinition.battleType == BattleEncounterType.Subterraneo || encounterDefinition.zoneType == EncounterZoneType.Subterraneo))
        || (idEncuentro > 399 && idEncuentro < 450);
+    fondoBatallaSubterraneoActual = esSubterraneo;
 
     if (esSubterraneo) // Encuentro subterraneo
     {
+      zonaVisualBatallaActual = EncounterZoneType.Subterraneo;
       if (listaFondosSubterraneos != null && listaFondosSubterraneos.Count > 0)
       {
         mrFondoBatalla.material = listaFondosSubterraneos[UnityEngine.Random.Range(0, listaFondosSubterraneos.Count)];
@@ -873,16 +963,19 @@ public class AdministradorEscenas : MonoBehaviour
       var atributosZona = CampaignManager.Instance.scAtributosZona;
       zonaEncuentro = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
     }
+    zonaVisualBatallaActual = zonaEncuentro;
 
     switch (zonaEncuentro)
     {
       case EncounterZoneType.PasoVientoHelado:
+        zonaVisualBatallaActual = EncounterZoneType.PasoVientoHelado;
         if (listaFondosPasoVientoHelado != null && listaFondosPasoVientoHelado.Count > 0)
         {
           mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
         }
         break;
       case EncounterZoneType.Nedukazal:
+        zonaVisualBatallaActual = EncounterZoneType.Nedukazal;
         if (listaFondosNedukazal != null && listaFondosNedukazal.Count > 0)
         {
           mrFondoBatalla.material = listaFondosNedukazal[UnityEngine.Random.Range(0, listaFondosNedukazal.Count)];
@@ -895,6 +988,7 @@ public class AdministradorEscenas : MonoBehaviour
           var zonaActiva = CampaignManager.Instance.scAtributosZona.GetZoneTypeById(CampaignManager.Instance.scAtributosZona.ID);
           if (zonaActiva == EncounterZoneType.PasoVientoHelado)
           {
+            zonaVisualBatallaActual = EncounterZoneType.PasoVientoHelado;
             if (listaFondosPasoVientoHelado != null && listaFondosPasoVientoHelado.Count > 0)
             {
               mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
@@ -903,6 +997,7 @@ public class AdministradorEscenas : MonoBehaviour
           }
           if (zonaActiva == EncounterZoneType.Nedukazal)
           {
+            zonaVisualBatallaActual = EncounterZoneType.Nedukazal;
             if (listaFondosNedukazal != null && listaFondosNedukazal.Count > 0)
             {
               mrFondoBatalla.material = listaFondosNedukazal[UnityEngine.Random.Range(0, listaFondosNedukazal.Count)];
@@ -914,6 +1009,7 @@ public class AdministradorEscenas : MonoBehaviour
         goto case EncounterZoneType.BosqueAngustiante;
       case EncounterZoneType.BosqueAngustiante:
       default:
+        zonaVisualBatallaActual = EncounterZoneType.BosqueAngustiante;
         if (listaFondosBosqueLamentos != null && listaFondosBosqueLamentos.Count > 0)
         {
           mrFondoBatalla.material = listaFondosBosqueLamentos[UnityEngine.Random.Range(0, listaFondosBosqueLamentos.Count)];
@@ -921,6 +1017,25 @@ public class AdministradorEscenas : MonoBehaviour
         break;
     }
 
+  }
+
+  void ConfigurarAmbienteVidaBatalla()
+  {
+    if (EscenaBatalla == null)
+    {
+      return;
+    }
+
+    if (battleAmbientLife == null)
+    {
+      battleAmbientLife = EscenaBatalla.GetComponent<BattleAmbientLife>();
+      if (battleAmbientLife == null)
+      {
+        battleAmbientLife = EscenaBatalla.AddComponent<BattleAmbientLife>();
+      }
+    }
+
+    battleAmbientLife.Configurar(mrFondoBatalla, zonaVisualBatallaActual, fondoBatallaSubterraneoActual);
   }
   public void ColocarPersonajecomoUnidad(Personaje pers, int indexRefuezo = 0)
   {
@@ -1039,6 +1154,88 @@ public class AdministradorEscenas : MonoBehaviour
 
 
 
+  }
+
+  void AplicarAjusteValentiaInicialPorEsperanza()
+  {
+    if (BattleManager.Instance == null || BattleManager.Instance.ladoB == null || CampaignManager.Instance == null)
+    {
+      return;
+    }
+
+    int esperanzaActual = CampaignManager.Instance.GetEsperanzaActual();
+    int ajusteValentia = (esperanzaActual - 50) / 20;
+    if (ajusteValentia == 0)
+    {
+      return;
+    }
+
+    foreach (Unidad aliado in BattleManager.Instance.ladoB.unidadesLado)
+    {
+      if (aliado == null || aliado.GetComponent<IAUnidad>() != null)
+      {
+        continue;
+      }
+
+      aliado.AjustarValentiaInicialSinLog(ajusteValentia);
+    }
+  }
+
+  public Personaje ObtenerPersonajeDesdeUnidad(Unidad unidad)
+  {
+    if (unidad == null)
+    {
+      return null;
+    }
+
+    if (unidad == unidadPers1) { return Personaje1; }
+    if (unidad == unidadPers2) { return Personaje2; }
+    if (unidad == unidadPers3) { return Personaje3; }
+    if (unidad == unidadPers4) { return Personaje4; }
+
+    if (CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null)
+    {
+      foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
+    {
+        if (pers == null) { continue; }
+        if (pers.sNombre == unidad.uNombre)
+        {
+          return pers;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  public bool MarcarAvergonzadoDesdeUnidad(Unidad unidad)
+  {
+    Personaje pers = ObtenerPersonajeDesdeUnidad(unidad);
+    if (pers == null)
+    {
+      return false;
+    }
+
+    pers.Camp_Avergonzado = true;
+    return true;
+  }
+
+  public void LimpiarAvergonzadoPorCambioZona()
+  {
+    if (CampaignManager.Instance == null || CampaignManager.Instance.scMenuPersonajes == null)
+    {
+      return;
+    }
+
+    foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null)
+      {
+        continue;
+      }
+
+      pers.Camp_Avergonzado = false;
+    }
   }
 
   void CrearDefensasCaravana()
@@ -1351,7 +1548,7 @@ public class AdministradorEscenas : MonoBehaviour
       BattleManager.Instance.enemigosRefuerzos.Add(enemigo6);
 
       GameObject enemigo7 = Instantiate(ContenedorPrefabsBatalla.FuegoFatuo);
-      enemigo6.SetActive(false);
+      enemigo7.SetActive(false);
       BattleManager.Instance.enemigosRefuerzos.Add(enemigo7);
       BattleManager.Instance.ActualizarRefuerzosUI();
 
@@ -1371,6 +1568,8 @@ public class AdministradorEscenas : MonoBehaviour
       ColocarEnCasillaEspecifica(2, enemigo5, 3, 4);
       GameObject enemigo6 = Instantiate(ContenedorPrefabsBatalla.Raizmaldita);
       ColocarEnCasillaEspecifica(2, enemigo6, 3, 5);
+
+      ColocarPiedrasVariadasEnLadoEnemigo(4);
     }
     if (IDEncuentro == 12) // FASE 1 - BOSQUE ARDIENDO - Jefe - PENDIENTE
     {
@@ -1593,7 +1792,7 @@ public class AdministradorEscenas : MonoBehaviour
       BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio(); //aca poner el delay a gusto para el evento
 
       GameObject enemigo6 = Instantiate(ContenedorPrefabsBatalla.CanibalKaleTav);
-      enemigo5.SetActive(false);
+      enemigo6.SetActive(false);
       BattleManager.Instance.enemigosRefuerzos.Add(enemigo6);
 
       GameObject enemigo7 = Instantiate(ContenedorPrefabsBatalla.GuerreroKaleTav);
@@ -2276,8 +2475,7 @@ public class AdministradorEscenas : MonoBehaviour
       GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
       ColocarEnCasillaEspecifica(2, enemigo3.gameObject, 3, 4);
 
-      GameObject enemigo4 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
-      ColocarEnCasillaEspecifica(2, enemigo4.gameObject, 2, 5);
+     
 
       BattleManager.Instance.enemigosRefuerzos.Clear();
       BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio();
@@ -2388,7 +2586,7 @@ public class AdministradorEscenas : MonoBehaviour
 
       if (lado.ColocarEnCasilla(GO, rY, rX))
       {
-        colocado = true; // Si fue colocado con éxito, salir del bucle
+        colocado = true; // Si fue colocado con Éxito, salir del bucle
       }
 
       intentos++;
@@ -2492,7 +2690,7 @@ public class AdministradorEscenas : MonoBehaviour
       Bajamoral.cantTsMental -= 3;
       Bajamoral.cantDefensa -= 1;
       Bajamoral.cantAtaque -= 1;
-      unidad.ValentiaP_actual -= 2;
+      unidad.SumarValentia(-2);
       Bajamoral.AplicarBuff(unidad);
       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
       Buff buffComponent = ComponentCopier.CopyComponent(Bajamoral, GO.gameObject);
@@ -2508,12 +2706,29 @@ public class AdministradorEscenas : MonoBehaviour
       AltaMoral.DuracionBuffRondas = -1;
       AltaMoral.cantTsMental += 2;
       AltaMoral.cantAtaque += 1;
-      unidad.ValentiaP_actual += 2;
+      unidad.SumarValentia(2);
       AltaMoral.AplicarBuff(unidad);
       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
       Buff buffComponent = ComponentCopier.CopyComponent(AltaMoral, GO.gameObject);
       //--------------------------------------
 
+    }
+    if (pers.Camp_Avergonzado) //Avergonzado
+    {
+      //BUFF ---- Así se aplica un buff/debuff
+      Buff avergonzado = new Buff();
+      avergonzado.buffNombre = "Avergonzado";
+      avergonzado.boolfDebufftBuff = false;
+      avergonzado.DuracionBuffRondas = -1;
+      avergonzado.cantTsMental -= 2;
+      avergonzado.percHPMax -= 10;
+      avergonzado.AplicarBuff(unidad);
+      Buff buffComponent = ComponentCopier.CopyComponent(avergonzado, GO.gameObject);
+
+      if (unidad.HP_actual > unidad.mod_maxHP)
+      {
+        unidad.HP_actual = unidad.mod_maxHP;
+      }
     }
     if (pers.Camp_Corrupto) //Corrupto
     {
@@ -2533,11 +2748,12 @@ public class AdministradorEscenas : MonoBehaviour
       Buff buffComponent = ComponentCopier.CopyComponent(Herido, GO.gameObject);
       //--------------------------------------
     }
-    if (pers.ActividadSeleccionada == 1) //Base: Descansar
+    if (pers.ActividadSeleccionada == 1 && tipoEmboscadaActual == 0) //Base: Descansar (no aplica en emboscadas)
     {
       //BUFF ---- Así se aplica un buff/debuff
       Buff Herido = new Buff();
       Herido.buffNombre = "Fresco";
+      Herido.forzarTextoFlotanteInicioCombate = true;
       Herido.boolfDebufftBuff = true;
       Herido.DuracionBuffRondas = 2;
       Herido.cantIniciativa += 3;
@@ -3002,8 +3218,7 @@ public class AdministradorEscenas : MonoBehaviour
 
    
 
-    BattleManager.Instance.aliadosRefuerzos.Clear();
-    BattleManager.Instance.enemigosRefuerzos.Clear();
+    BattleManager.Instance.ReiniciarEstadoRefuerzos();
 
     if (unidadPers1 != null)
     { Destroy(unidadPers1); }
@@ -3198,7 +3413,7 @@ public class AdministradorEscenas : MonoBehaviour
       // Buscar el personaje correspondiente al refuerzo (por nombre)
       bool encontrado = false;
       foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
-      {
+    {
         if (pers.sNombre == unidadRefuerzo.uNombre)
         {
           // Plasmar vida actual (no puede terminar con más vida de la que empezó)
@@ -3260,22 +3475,26 @@ public class AdministradorEscenas : MonoBehaviour
       mil2.SetActive(false);
       BattleManager.Instance.aliadosRefuerzos.Add(mil2);
 
-      BattleManager.Instance.ActualizarRefuerzosUI();
+      BattleManager.Instance.ActualizarAliadosRefUI();
     }
 
     BattleManager.Instance.EscribirLog(TRADU.i.Traducir("<b>Una patrulla de milicianos de Serria se une a la batalla como refuerzos.</b>"));
     CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("<b>Una patrulla de milicianos de Serria se une a la batalla como refuerzos.</b>"));
   }
-  void AsignarRefuerzosAliados()
+  void AsignarRefuerzosAliados(bool filtrarPorActividadGuardia = true)
   {
     AdministradorEscenas scAdminEscenas = CampaignManager.Instance.scMenuBatallas.scAdministradorEscenas;
 
     int cantRefuerzoAliadoHeroe = 0;
     foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
     {
+      if (pers == Personaje1 || pers == Personaje2 || pers == Personaje3 || pers == Personaje4)
+      {
+        continue; // Ya está desplegado al inicio, no duplicar como refuerzo.
+      }
       if (!pers.Camp_Muerto && pers.fVidaActual > 1) //Si no está muerto y tiene vida
       {
-        if (!(/*Base: Guardia*/pers.ActividadSeleccionada == 3) && !(/*Caballero: Vigilar*/pers.ActividadSeleccionada == 6))
+        if (!filtrarPorActividadGuardia || (!(/*Base: Guardia*/pers.ActividadSeleccionada == 3) && !(/*Caballero: Vigilar*/pers.ActividadSeleccionada == 6)))
         {
           cantRefuerzoAliadoHeroe++;
           //Si no está haciendo guardia, lo agrega como refuerzo, pero no lo muestra
@@ -3307,6 +3526,7 @@ public class AdministradorEscenas : MonoBehaviour
 
     // Da vuelta la lista de refuerzos aliados
     BattleManager.Instance.aliadosRefuerzos.Reverse();
+    BattleManager.Instance.ActualizarAliadosRefUI();
 
   }
 
@@ -3326,3 +3546,7 @@ public class AdministradorEscenas : MonoBehaviour
 
 
 }
+
+
+
+

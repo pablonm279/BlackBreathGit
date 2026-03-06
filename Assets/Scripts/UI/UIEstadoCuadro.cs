@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -140,6 +140,12 @@ public class UIEstadoCuadro : MonoBehaviour
 
   void BuscartooltipBatallaTag()
   {
+    if (TooltipBatalla.Instance != null)
+    {
+      scTooltipBatalla = TooltipBatalla.Instance;
+      return;
+    }
+
     GameObject[] all = Resources.FindObjectsOfTypeAll<GameObject>();
     foreach (var go in all)
     {
@@ -269,7 +275,7 @@ public class UIEstadoCuadro : MonoBehaviour
     if (buff.percTsMental != 0) descripcion += TRADU.i.Traducir("TS Mental: ") + "<color=" + (buff.percTsMental > 0 ? "green" : "red") + ">" + buff.percTsMental + "%" + "</color>\n";
     if (buff.cantTsMental != 0) descripcion += TRADU.i.Traducir("TS Mental: ") + "<color=" + (buff.cantTsMental > 0 ? "green" : "red") + ">" + buff.cantTsMental + "</color>\n";
 
-    if (buff.cantDamBonusElementalAci != 0) descripcion += TRADU.i.Traducir("Bonus daño ácido: ") + "<color=" + (buff.cantDamBonusElementalAci > 0 ? "green" : "red") + ">" + buff.cantDamBonusElementalAci + "</color>\n";
+    if (buff.cantDamBonusElementalAci != 0) descripcion += TRADU.i.Traducir("Bonus daño Ácido: ") + "<color=" + (buff.cantDamBonusElementalAci > 0 ? "green" : "red") + ">" + buff.cantDamBonusElementalAci + "</color>\n";
     if (buff.cantDamBonusElementalArc != 0) descripcion += TRADU.i.Traducir("Bonus daño arcano: ") + "<color=" + (buff.cantDamBonusElementalArc > 0 ? "green" : "red") + ">" + buff.cantDamBonusElementalArc + "</color>\n";
     if (buff.cantDamBonusElementalFue != 0) descripcion += TRADU.i.Traducir("Bonus daño fuego: ") + "<color=" + (buff.cantDamBonusElementalFue > 0 ? "green" : "red") + ">" + buff.cantDamBonusElementalFue + "</color>\n";
     if (buff.cantDamBonusElementalHie != 0) descripcion += TRADU.i.Traducir("Bonus daño hielo: ") + "<color=" + (buff.cantDamBonusElementalHie > 0 ? "green" : "red") + ">" + buff.cantDamBonusElementalHie + "</color>\n";
@@ -318,8 +324,11 @@ public class UIEstadoCuadro : MonoBehaviour
     if (debarravida)
     {
       BuscartooltipBatallaTag();
-    
-      scTooltipBatalla.tooltipObject.SetActive(false);
+
+      if (scTooltipBatalla != null)
+      {
+        scTooltipBatalla.HideTooltipSinAnim();
+      }
     }
   }
 
@@ -328,3 +337,6 @@ public class UIEstadoCuadro : MonoBehaviour
  
  
 }
+
+
+

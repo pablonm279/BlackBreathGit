@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -88,8 +88,8 @@ public class REPRESENTACIONImplacable : Habilidad
       if(NIVEL<2)
       {
         txtDescripcion = "<color=#5dade2><b>Relentless I</b></color>\n\n"; 
-        txtDescripcion += "<i>(Passive) +2 Maximum Valor.</i>\n\n";
-        txtDescripcion += "<i>If Valor is at Maximum: +2 AP, +3 Strength, +20% Damage, +3 Mental Save. Lasts 2 Turns. 1 time.</i>\n\n";
+        txtDescripcion += "<i>(Passive) +2 Maximum Valour.</i>\n\n";
+        txtDescripcion += "<i>If Valour is at Maximum: +2 AP, +3 Strength, +20% Damage, +3 Mental Save. Lasts 2 Turns. 1 time.</i>\n\n";
         if (EsEscenaCampaña())
         {
           if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
@@ -104,8 +104,8 @@ public class REPRESENTACIONImplacable : Habilidad
       if(NIVEL==2)
       {
         txtDescripcion = "<color=#5dade2><b>Relentless II</b></color>\n\n"; 
-        txtDescripcion += "<i>(Passive) +2 Maximum Valor.</i>\n\n";
-        txtDescripcion += "<i>If Valor is at Maximum: +2 AP, +4 Strength, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts 2 Turns. 1 time.</i>\n\n";
+        txtDescripcion += "<i>(Passive) +2 Maximum Valour.</i>\n\n";
+        txtDescripcion += "<i>If Valour is at Maximum: +2 AP, +4 Strength, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts 2 Turns. 1 time.</i>\n\n";
         if (EsEscenaCampaña())
         {
           if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
@@ -120,15 +120,15 @@ public class REPRESENTACIONImplacable : Habilidad
       if(NIVEL==3)
       {
         txtDescripcion = "<color=#5dade2><b>Relentless III</b></color>\n\n"; 
-        txtDescripcion += "<i>(Passive) +2 Maximum Valor.</i>\n\n";
-        txtDescripcion += "<i>If Valor is at Maximum: +2 AP, +4 Strength, +1 Critical Range, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts 2 Turns. 1 time.</i>\n\n";
+        txtDescripcion += "<i>(Passive) +2 Maximum Valour.</i>\n\n";
+        txtDescripcion += "<i>If Valour is at Maximum: +2 AP, +4 Strength, +1 Critical Range, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts 2 Turns. 1 time.</i>\n\n";
         if (EsEscenaCampaña())
         {
           if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
           {
             if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
             {
-              txtDescripcion += $"<color=#dfea02>-Option A: -1 Maximum Valor +1 Skill Use</color>\n";
+              txtDescripcion += $"<color=#dfea02>-Option A: -1 Maximum Valour +1 Skill Use</color>\n";
               txtDescripcion += $"<color=#dfea02>-Option B: +1 Turn duration</color>\n";
             }
           }
@@ -137,14 +137,14 @@ public class REPRESENTACIONImplacable : Habilidad
       if(NIVEL==4)
       {
         txtDescripcion = "<color=#5dade2><b>Relentless IV a</b></color>\n\n"; 
-        txtDescripcion += "<i>(Passive) +1 Maximum Valor.</i>\n\n";
-        txtDescripcion += "<i>If Valor is at Maximum: +2 AP, +4 Strength, +1 Critical Range, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts 2 Turns. 2 times.</i>\n\n";
+        txtDescripcion += "<i>(Passive) +1 Maximum Valour.</i>\n\n";
+        txtDescripcion += "<i>If Valour is at Maximum: +2 AP, +4 Strength, +1 Critical Range, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts 2 Turns. 2 times.</i>\n\n";
       }
       if(NIVEL==5)
       {
         txtDescripcion = "<color=#5dade2><b>Relentless IV b</b></color>\n\n"; 
-        txtDescripcion += "<i>(Passive) +2 Maximum Valor.</i>\n\n";
-        txtDescripcion += "<i>If Valor is at Maximum: +2 AP, +4 Strength, +1 Critical Range, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts  Turns. 1 time.</i>\n\n";
+        txtDescripcion += "<i>(Passive) +2 Maximum Valour.</i>\n\n";
+        txtDescripcion += "<i>If Valour is at Maximum: +2 AP, +4 Strength, +1 Critical Range, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts  Turns. 1 time.</i>\n\n";
       }
     }
   }
@@ -164,3 +164,7 @@ public class REPRESENTACIONImplacable : Habilidad
 
 
 }
+
+
+
+
