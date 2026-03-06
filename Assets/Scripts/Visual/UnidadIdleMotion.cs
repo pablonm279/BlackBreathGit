@@ -8,9 +8,9 @@ public class UnidadIdleMotion : MonoBehaviour
   [SerializeField] private bool habilitado = true;
   [SerializeField] private bool soloEnBatalla = true;
   [SerializeField] private float amplitudX = 1.05f;
-  [SerializeField] private float amplitudY = 5.2f;
+  [SerializeField] private float amplitudY = 5.7f;
   [SerializeField] private float amplitudRotacion = 0.55f;
-  [SerializeField] private float velocidad = 0.86f;
+  [SerializeField] private float velocidad = 0.93f;
   [SerializeField] private float suavizado = 7.5f;
   [SerializeField] private float factorDuranteMovimiento = 0.2f;
   [SerializeField] private float multiplicadorGlobal = 1.05f; // +5% general

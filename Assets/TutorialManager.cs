@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TutorialManager : MonoBehaviour
 {
+    private const string TutorialTerminadoKey = "Tutorial_Terminado";
+
     public bool tutorialActivo = true;
     public int pasoActual = 0;
 
@@ -15,6 +17,7 @@ public class TutorialManager : MonoBehaviour
     public Nodo Nodotut6;
 
     public GameObject[] pasosTutorial; // Array de objetos del tutorial
+    private readonly HashSet<int> pasosUsadosPorEstablecer = new HashSet<int>();
 
     List<Nodo> ObtenerNodosTutorial()
     {
@@ -100,35 +103,29 @@ public class TutorialManager : MonoBehaviour
 
     public void ComenzarTutorial()
     {
-        if (tutorialActivo && pasosTutorial.Length > 0)
-        {
-              DesactivarOtrosNodosTuto();
-            ConfigurarConexionesLinealesTuto();
-            MostrarPaso(pasoActual);
+        if (!tutorialActivo || !TienePasosTutorial()) return;
 
-         
-            Nodotut2.tipoNodo = 1;
-            Nodotut2.ActivarNodoVisual(2, false, true);
+        pasosUsadosPorEstablecer.Clear();
+        pasoActual = Mathf.Clamp(pasoActual, 0, pasosTutorial.Length - 1);
 
-            Nodotut3.tipoNodo = 5;
-            Nodotut3.ActivarNodoVisual(3, false, true);
+        DesactivarOtrosNodosTuto();
+        ConfigurarConexionesLinealesTuto();
+        OcultarTodosLosPasos();
+        MostrarPaso(pasoActual);
 
-            Nodotut4.tipoNodo = 14;
-            Nodotut4.ActivarNodoVisual(4, false, true);
-
-            Nodotut5.tipoNodo = 3;
-            Nodotut5.ActivarNodoVisual(5, false, true);
-
-            Nodotut6.tipoNodo = 8;
-            Nodotut6.ActivarNodoVisual(6, false, true);
-        }
+        ConfigurarVisualNodoTutorial(Nodotut2, 1, 2);
+        ConfigurarVisualNodoTutorial(Nodotut3, 5, 3);
+        ConfigurarVisualNodoTutorial(Nodotut4, 14, 4);
+        ConfigurarVisualNodoTutorial(Nodotut5, 3, 5);
+        ConfigurarVisualNodoTutorial(Nodotut6, 8, 6);
     }
 
     public void SiguientePaso()
     {
-        if (!tutorialActivo) return;
+        if (!tutorialActivo || !TienePasosTutorial()) return;
+        if (!IndicePasoValido(pasoActual)) pasoActual = 0;
 
-        pasosTutorial[pasoActual].SetActive(false); // Oculta el paso actual
+        SetPasoActivo(pasoActual, false); // Oculta el paso actual
         pasoActual++;
 
         if (pasoActual < pasosTutorial.Length)
@@ -137,35 +134,31 @@ public class TutorialManager : MonoBehaviour
         }
         else
         {
-              PlayerPrefs.SetInt("Tutorial_Terminado", 1); // asegura persistencia inmediata
-              PlayerPrefs.Save();
-              tutorialActivo = false; // Finaliza el tutorial
+            FinalizarTutorial();
         }
     }
-
-    private HashSet<int> pasosUsadosPorEstablecer = new HashSet<int>();
 
     public void establecerPasoEspecifico(int x)
     {
 
-        if (!tutorialActivo) return;
-        if (x < 0 || x > pasosTutorial.Length) return;
+        if (!tutorialActivo || !TienePasosTutorial()) return;
+        if (!IndicePasoValido(x)) return;
         if (pasosUsadosPorEstablecer.Contains(x)) return;
 
         pasosUsadosPorEstablecer.Add(x);
 
-        pasosTutorial[pasoActual].SetActive(false);
+        SetPasoActivo(pasoActual, false);
         pasoActual = x;
         MostrarPaso(pasoActual);
     }
 
     public void cerrarPasoEspecifico(int x)
     {
-        if (!tutorialActivo) return;
-        if (x < 0 || x > pasosTutorial.Length) return;
+        if (!tutorialActivo || !TienePasosTutorial()) return;
+        if (!IndicePasoValido(x)) return;
         if (pasoActual != x) return;
 
-        pasosTutorial[pasoActual].SetActive(false);
+        SetPasoActivo(pasoActual, false);
 
 
     }
@@ -175,59 +168,114 @@ public class TutorialManager : MonoBehaviour
     public void anteriorPaso()
     {
 
-        if (!tutorialActivo) return;
+        if (!tutorialActivo || !TienePasosTutorial()) return;
+        if (!IndicePasoValido(pasoActual)) pasoActual = 0;
 
         // Evitar ir más atrás del primer paso
         if (pasoActual <= 0)
         {
-            print(333);
             pasoActual = 0;
             MostrarPaso(pasoActual);
             return;
         }
 
         // Ocultar el paso actual antes de retroceder
-        pasosTutorial[pasoActual].SetActive(false);
+        SetPasoActivo(pasoActual, false);
 
         // Retroceder un paso
         pasoActual--;
 
         // Mostrar el nuevo paso actual
-        pasosTutorial[pasoActual].SetActive(true);
         MostrarPaso(pasoActual);
     }
+
     void MostrarPaso(int index)
     {
-        if (pasosTutorial == null || pasosTutorial.Length == 0) return;
-        if (index < 0 || index >= pasosTutorial.Length) return;
+        if (!TienePasosTutorial()) return;
+        if (!IndicePasoValido(index)) return;
+        if (pasosTutorial[index] == null) return;
 
+        OcultarTodosLosPasos();
         pasosTutorial[index].SetActive(true); // Muestra el paso actual
         GameObject tutoActual = pasosTutorial[index];
 
-        if (TRADU.i.nIdioma == 1) //Esp
-        {  
-            tutoActual.transform.GetChild(0).gameObject.SetActive(true);
-        }
-        else if (TRADU.i.nIdioma == 2) //Ing
-        {
-            if (tutoActual.transform.GetChild(1) != null)
-            { tutoActual.transform.GetChild(1).gameObject.SetActive(true); }
-        }
+        MostrarPanelIdioma(tutoActual);
 
     }
 
     public void OmitirTutorial()
     {
-        tutorialActivo = false;
-        foreach (var paso in pasosTutorial)
-        {
-            paso.SetActive(false); // Oculta todos los pasos
-        }
+        FinalizarTutorial();
     }
     
     public void SalirDelJuego()
     {
         Application.Quit();
+    }
+
+    private bool TienePasosTutorial()
+    {
+        return pasosTutorial != null && pasosTutorial.Length > 0;
+    }
+
+    private bool IndicePasoValido(int index)
+    {
+        return index >= 0 && index < pasosTutorial.Length;
+    }
+
+    private void SetPasoActivo(int index, bool activo)
+    {
+        if (!IndicePasoValido(index)) return;
+        GameObject paso = pasosTutorial[index];
+        if (paso == null) return;
+        paso.SetActive(activo);
+    }
+
+    private void OcultarTodosLosPasos()
+    {
+        if (!TienePasosTutorial()) return;
+        for (int i = 0; i < pasosTutorial.Length; i++)
+        {
+            if (pasosTutorial[i] == null) continue;
+            pasosTutorial[i].SetActive(false);
+        }
+    }
+
+    private void MostrarPanelIdioma(GameObject paso)
+    {
+        if (paso == null) return;
+        int childCount = paso.transform.childCount;
+        if (childCount <= 0) return;
+
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
+        int childIdioma = idioma == 2 ? 1 : 0;
+
+        int totalPanelesIdioma = Mathf.Min(2, childCount);
+        for (int i = 0; i < totalPanelesIdioma; i++)
+        {
+            paso.transform.GetChild(i).gameObject.SetActive(i == childIdioma);
+        }
+
+        if (childIdioma >= totalPanelesIdioma && totalPanelesIdioma > 0)
+        {
+            paso.transform.GetChild(0).gameObject.SetActive(true);
+        }
+    }
+
+    private void ConfigurarVisualNodoTutorial(Nodo nodo, int tipoNodo, int visualId)
+    {
+        if (nodo == null) return;
+        nodo.tipoNodo = tipoNodo;
+        nodo.ActivarNodoVisual(visualId, false, true);
+    }
+
+    private void FinalizarTutorial()
+    {
+        tutorialActivo = false;
+        pasosUsadosPorEstablecer.Clear();
+        OcultarTodosLosPasos();
+        PlayerPrefs.SetInt(TutorialTerminadoKey, 1);
+        PlayerPrefs.Save();
     }
 }
 

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -65,7 +65,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void AplicarEfectosEnUI()
     {
-        // Volumen de la másica
+        // Volumen de la mÃ¡sica
         float volumenMusica = PlayerPrefs.GetFloat("Vol_Musica", 0.8f);
         if (volMusicaSlider.value > 0.9f)
         { volumenMusica = 0.9f; }
@@ -91,7 +91,12 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         else
         { EnglishToggle.SetIsOnWithoutNotify(true); }
 
-        //Pantalla y resolución
+        if (PanelControles != null && PanelControles.activeInHierarchy)
+        {
+            AplicarIdiomaPanelControles();
+        }
+
+        //Pantalla y resoluciÃ³n
         if (resolucionDropdown != null && resolucionesSoportadas.Count > 0)
         {
             int guardado = PlayerPrefs.GetInt("res_index", resolucionActualIndex);
@@ -118,7 +123,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         TraducirDropdownGraficos();
         TraducirDropdownDificultad();
 
-        int difGuardada = PlayerPrefs.GetInt("dificultad_index", 2); // 2 = Normal por defecto (índice dropdown)
+        int difGuardada = PlayerPrefs.GetInt("dificultad_index", 2); // 2 = Normal por defecto (Ã­ndice dropdown)
         difGuardada = Mathf.Clamp(difGuardada, 0, Mathf.Max(0, dificultadDropdown.options.Count - 1));
         dificultadDropdown.SetValueWithoutNotify(difGuardada);
 
@@ -133,7 +138,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void CambiarEfectos()
     {
-        // Volumen de la másica
+        // Volumen de la mÃ¡sica
         PlayerPrefs.SetFloat("Vol_Musica", volMusicaSlider.value);
         if (musicaFondo.GetComponent<MusicManager>() != null)
         {
@@ -153,18 +158,18 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             nIdioma = 1;
             PlayerPrefs.SetInt("nIdioma", nIdioma);
             if (TRADU.i != null) TRADU.i.nIdioma = nIdioma;
-            restartRequiredText.text = "Se requiere reiniciar para aplicar los cambios.";
+            SetRestartRequiredText("Se requiere reiniciar para aplicar los cambios.");
         }
         else if (EnglishToggle.isOn)
         {
             nIdioma = 2;
             PlayerPrefs.SetInt("nIdioma", nIdioma);
             if (TRADU.i != null) TRADU.i.nIdioma = nIdioma;
-            restartRequiredText.text = "Restart required to apply changes.";
+            SetRestartRequiredText("Restart required to apply changes.");
 
         }
 
-        // Resolución y pantalla completa
+        // ResoluciÃ³n y pantalla completa
 
         AplicarResolucion();
 
@@ -203,23 +208,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         PanelControles.SetActive(true);
         PanelGameplay.SetActive(false);
         PanelIdioma.SetActive(false);
-
-        int nidioma = TRADU.i.nIdioma;
-        if (nidioma == 1)
-        {
-            PanelControles.transform.GetChild(0).gameObject.SetActive(true); // Español
-            PanelControles.transform.GetChild(1).gameObject.SetActive(false); // Inglés
-
-        }
-        else if (nidioma == 2)
-        {
-            PanelControles.transform.GetChild(0).gameObject.SetActive(false); // Español
-            PanelControles.transform.GetChild(1).gameObject.SetActive(true); // Inglés
-        }
-        else
-        {
-
-        }
+        AplicarIdiomaPanelControles();
     }
 
     public void AbrirPanelGameplay()
@@ -263,7 +252,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         resolucionesSoportadas.Clear();
         resolucionDropdown.ClearOptions();
 
-        // Resoluciones típicas que queremos mostrar
+        // Resoluciones tÃ­picas que queremos mostrar
         List<Vector2Int> resolucionesDeseadas = new List<Vector2Int>()
     {
         new Vector2Int(1280, 720),
@@ -292,7 +281,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
                         opciones.Add(texto);
                         resolucionesSoportadas.Add(r);
 
-                        // Detectar resolución actual
+                        // Detectar resoluciÃ³n actual
                         if (r.width == Screen.currentResolution.width &&
                             r.height == Screen.currentResolution.height)
                         {
@@ -303,7 +292,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             }
         }
 
-        // Si no se encontró ninguna deseada, fallback: agregar la actual
+        // Si no se encontrÃ³ ninguna deseada, fallback: agregar la actual
         if (opciones.Count == 0)
         {
             string actual = $"{Screen.currentResolution.width} x {Screen.currentResolution.height}";
@@ -314,14 +303,14 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
         resolucionDropdown.AddOptions(opciones);
 
-        // Cargar índice guardado
+        // Cargar Ã­ndice guardado
         int guardado = PlayerPrefs.GetInt("res_index", indiceActualPorDefecto);
         guardado = Mathf.Clamp(guardado, 0, resolucionesSoportadas.Count - 1);
 
         resolucionActualIndex = guardado;
         resolucionDropdown.SetValueWithoutNotify(resolucionActualIndex);
 
-        // Aplicar resolución inicial
+        // Aplicar resoluciÃ³n inicial
         AplicarResolucion();
     }
 
@@ -337,9 +326,9 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
         bool full = fullscreenToggle.isOn;
 
-        // print($"Aplicando resolución {r.width}x{r.height} | Fullscreen = {full}");
+        // print($"Aplicando resoluciÃ³n {r.width}x{r.height} | Fullscreen = {full}");
 
-        // Aplicar TODO junto: resolución + fullscreen
+        // Aplicar TODO junto: resoluciÃ³n + fullscreen
         Screen.SetResolution(r.width, r.height, full);
 
         // Guardamos
@@ -352,11 +341,9 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     {
         int index = graficosDropdown.value;
         QualitySettings.SetQualityLevel(index, true);
-        print($"Aplicando calidad gráfica nivel {index}");
 
         PlayerPrefs.SetInt("graficos_index", index);
         PlayerPrefs.Save();
-        print($"playerprefs {PlayerPrefs.GetInt("graficos_index")}");
 
         AplicarPreferenciasSyncYFPS();
 
@@ -373,14 +360,19 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     void TraducirDropdownGraficos()
     {
-        if (TRADU.i.nIdioma == 1)
+        if (graficosDropdown == null || graficosDropdown.options.Count < 3)
+            return;
+
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : nIdioma;
+
+        if (idioma == 1)
         {
             graficosDropdown.options[0].text = "Baja";
             graficosDropdown.options[1].text = "Media";
             graficosDropdown.options[2].text = "Ultra";
             // graficosDropdown.options[3].text = "Ultra";
         }
-        else if (TRADU.i.nIdioma == 2)
+        else if (idioma == 2)
         {
             graficosDropdown.options[0].text = "Low";
             graficosDropdown.options[1].text = "Medium";
@@ -396,7 +388,9 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         if (dificultadDropdown == null || dificultadDropdown.options.Count < 5)
             return;
 
-        if (TRADU.i.nIdioma == 1)
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : nIdioma;
+
+        if (idioma == 1)
         {
             dificultadDropdown.options[0].text = "Muy Facil";
             dificultadDropdown.options[1].text = "Facil";
@@ -404,7 +398,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             dificultadDropdown.options[3].text = "Dificil";
             dificultadDropdown.options[4].text = "Muy Dificil";
         }
-        else if (TRADU.i.nIdioma == 2)
+        else if (idioma == 2)
         {
             dificultadDropdown.options[0].text = "Very Easy";
             dificultadDropdown.options[1].text = "Easy";
@@ -496,7 +490,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             "120 FPS",
             "144 FPS",
             "240 FPS",
-            "Sin límite"
+            "Sin lÃ­mite"
         });
     }
 
@@ -523,8 +517,39 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         return 4;
     }
 
+    private void AplicarIdiomaPanelControles()
+    {
+        if (PanelControles == null) return;
+        int childCount = PanelControles.transform.childCount;
+        if (childCount <= 0) return;
+
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : nIdioma;
+        int childIdioma = idioma == 2 ? 1 : 0;
+        int panelesIdioma = Mathf.Min(2, childCount);
+
+        for (int i = 0; i < panelesIdioma; i++)
+        {
+            PanelControles.transform.GetChild(i).gameObject.SetActive(i == childIdioma);
+        }
+
+        if (childIdioma >= panelesIdioma && panelesIdioma > 0)
+        {
+            PanelControles.transform.GetChild(0).gameObject.SetActive(true);
+        }
+    }
+
+    private void SetRestartRequiredText(string text)
+    {
+        if (restartRequiredText != null)
+        {
+            restartRequiredText.text = text;
+        }
+    }
+
 
 }
+
+
 
 
 

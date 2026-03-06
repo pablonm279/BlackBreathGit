@@ -21,7 +21,7 @@ public class HandbookManager : MonoBehaviour
     public bool esdeBatalla;
     public void AbrirSolapa(int ID)
     {
-        int nIdioma = TRADU.i.nIdioma;
+        int nIdioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
         CerrartodasSolapas();
 
         GameObject target = null;
@@ -37,18 +37,11 @@ public class HandbookManager : MonoBehaviour
             default: return;
         }
 
-        if (nIdioma == 1)
-        {
-            if (target.transform.childCount > 1)
-                target.transform.GetChild(1).gameObject.SetActive(true);
-        }
-        else if (nIdioma == 2)
-        {
-            if (target.transform.childCount > 2)
-                target.transform.GetChild(2).gameObject.SetActive(true);
-        }
+        if (target == null) return;
 
-        if (target != null && target.transform.childCount > 0)
+        ActivarContenidoPorIdioma(target, nIdioma);
+
+        if (target.transform.childCount > 0)
         {
             var tm = target.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
             if (tm != null) tm.color = Color.white;
@@ -89,12 +82,37 @@ public class HandbookManager : MonoBehaviour
             elOtroHandbook.SetActive(true);
             this.gameObject.SetActive(false);
 
-            elOtroHandbook.GetComponent<HandbookManager>().AbrirSolapa(1);
+            HandbookManager otro = elOtroHandbook.GetComponent<HandbookManager>();
+            if (otro != null)
+            {
+                otro.AbrirSolapa(1);
+            }
         }
     }
     
     public void cerrarHandbook()
     {
         transform.parent.gameObject.SetActive(false);
+    }
+
+    private static void ActivarContenidoPorIdioma(GameObject solapa, int nIdioma)
+    {
+        if (solapa == null) return;
+
+        // child 0: titulo de solapa; child 1: contenido ES; child 2: contenido EN
+        int childCount = solapa.transform.childCount;
+        int childIdioma = nIdioma == 2 ? 2 : 1;
+
+        if (childCount > childIdioma)
+        {
+            solapa.transform.GetChild(childIdioma).gameObject.SetActive(true);
+            return;
+        }
+
+        // Fallback si falta panel EN.
+        if (childCount > 1)
+        {
+            solapa.transform.GetChild(1).gameObject.SetActive(true);
+        }
     }
 }

@@ -23,6 +23,7 @@ public class MenuCiudadPuerto : MonoBehaviour
 
     public GameObject tituloEspaniol;
     public GameObject tituloIngles;
+    private bool recompensasFinalAplicadas;
 
     
      void OnEnable()
@@ -34,17 +35,25 @@ public class MenuCiudadPuerto : MonoBehaviour
     void CrearResumenPartida()
     {
         float valortrabajo = CampaignManager.Instance.GetCivilesActual() + (CampaignManager.Instance.GetOroActuales() / 10);
-        txtresumenPartida.text = TRADU.i.Traducir("El viaje ha durado ") + CampaignManager.Instance.logDeCampania.GetDiaActual() + TRADU.i.Traducir(" días enteros y han sobrevivido ") + CampaignManager.Instance.GetCivilesActual() + "" + TRADU.i.Traducir("civiles.\n\n");
+        txtresumenPartida.text = TRADU.i.Traducir("El viaje ha durado ") + CampaignManager.Instance.logDeCampania.GetDiaActual() + TRADU.i.Traducir(" días enteros y han sobrevivido ") + CampaignManager.Instance.GetCivilesActual() + " " + TRADU.i.Traducir("civiles.\n\n");
         txtresumenPartida.text += TRADU.i.Traducir("Además, el oro restante (") + CampaignManager.Instance.GetOroActuales() + TRADU.i.Traducir(") se ha donado a las arcas de la ciudad para ayudar a financiar la evacuación.\n\nLos Personajes sobrevivientes también se han unido al esfuerzo de evacuación para defender la ciudad.\n\n");
         txtresumenPartida.text += TRADU.i.Traducir("<b>Valor de Trabajo obtenido: ") + valortrabajo + "</b>";
 
         txtMisionesCantidad.text = MetaprogresionManager.Instance.MisionesSalvamento+"";
 
-        MusicManager.Instance.PausarMusica(true);
+        if (MusicManager.Instance != null)
+        {
+            MusicManager.Instance.PausarMusica(true);
+        }
 
 
 
-        MetaprogresionManager.Instance.ValordeTrabajoDisponible += (int)valortrabajo;
+        if (!recompensasFinalAplicadas)
+        {
+            MetaprogresionManager.Instance.ValordeTrabajoDisponible += (int)valortrabajo;
+            MetaprogresionManager.Instance.CantidadCiviles += (int)CampaignManager.Instance.GetCivilesActual();
+            recompensasFinalAplicadas = true;
+        }
 
         txtValorValorTrabajo.text = "" + MetaprogresionManager.Instance.ValordeTrabajoDisponible;
         txtValorCorrupcion.text = MetaprogresionManager.Instance.CorrupcionGlobal + "/" + MetaprogresionManager.Instance.CorrupcionMax;
@@ -68,20 +77,8 @@ public class MenuCiudadPuerto : MonoBehaviour
         }
         else { txtPeligroNedukazal.text = ""; }
 
-        MetaprogresionManager.Instance.CantidadCiviles += (int)CampaignManager.Instance.GetCivilesActual();
-
         ActualizarValores();
-
-        if (TRADU.i.nIdioma == 1) // Español
-        {
-            tituloEspaniol.SetActive(true);
-            tituloIngles.SetActive(false);
-        }
-        else if (TRADU.i.nIdioma == 2) // Inglés
-        {
-            tituloEspaniol.SetActive(false);
-            tituloIngles.SetActive(true);
-        }
+        AplicarIdiomaTitulo();
 
     }
 
@@ -109,8 +106,6 @@ public class MenuCiudadPuerto : MonoBehaviour
         menuMejorasValorTrabajo.SetActive(!menuMejorasValorTrabajo.activeInHierarchy);
 
         ActualizarValores();
-
-        MetaprogresionManager.Instance.ValordeTrabajoDisponible += 1000; // PARA TESTING
     }
 
 
@@ -196,133 +191,71 @@ public class MenuCiudadPuerto : MonoBehaviour
     public void HoverBotonMejora(int n)
     {
         ActualizarValores();
+        HoverBotonMejoraSalir();
 
-        if (n == 1)
-        {
-            tooltipMejoraBarcos.SetActive(true);
+        GameObject tooltip = ObtenerTooltipMejora(n);
+        if (tooltip == null) return;
 
-            if (TRADU.i.nIdioma == 1) // Español
-            {
-                tooltipMejoraBarcos.transform.GetChild(0).gameObject.SetActive(true);
-                tooltipMejoraBarcos.transform.GetChild(1).gameObject.SetActive(false);
-            }
-            else if (TRADU.i.nIdioma == 2) // Inglés
-            {
-                tooltipMejoraBarcos.transform.GetChild(0).gameObject.SetActive(false);
-                tooltipMejoraBarcos.transform.GetChild(1).gameObject.SetActive(true);
-            }
-
-        }
-        else if (n == 2)
-        {
-            tooltipMejoraPalacio.SetActive(true);
-
-            if (TRADU.i.nIdioma == 1) // Español
-            {
-                tooltipMejoraPalacio.transform.GetChild(0).gameObject.SetActive(true);
-                tooltipMejoraPalacio.transform.GetChild(1).gameObject.SetActive(false);
-            }
-            else if (TRADU.i.nIdioma == 2) // Inglés
-            {
-                tooltipMejoraPalacio.transform.GetChild(0).gameObject.SetActive(false);
-                tooltipMejoraPalacio.transform.GetChild(1).gameObject.SetActive(true);
-            }
-        }
-        else if (n == 3)
-        {
-            tooltipMejoraCuartel.SetActive(true);
-
-            if (TRADU.i.nIdioma == 1) // Español
-            {
-                tooltipMejoraCuartel.transform.GetChild(0).gameObject.SetActive(true);
-                tooltipMejoraCuartel.transform.GetChild(1).gameObject.SetActive(false);
-            }
-            else if (TRADU.i.nIdioma == 2) // Inglés
-            {
-                tooltipMejoraCuartel.transform.GetChild(0).gameObject.SetActive(false);
-                tooltipMejoraCuartel.transform.GetChild(1).gameObject.SetActive(true);
-            }
-        }
-        else if (n == 4)
-        {
-            tooltipMejoraTemplo.SetActive(true);
-
-            if (TRADU.i.nIdioma == 1) // Español
-            {
-                tooltipMejoraTemplo.transform.GetChild(0).gameObject.SetActive(true);
-                tooltipMejoraTemplo.transform.GetChild(1).gameObject.SetActive(false);
-            }
-            else if (TRADU.i.nIdioma == 2) // Inglés
-            {
-                tooltipMejoraTemplo.transform.GetChild(0).gameObject.SetActive(false);
-                tooltipMejoraTemplo.transform.GetChild(1).gameObject.SetActive(true);
-            }
-        }
-        else if (n == 5)
-        {
-            tooltipMejoraGranja.SetActive(true);
-
-
-            if (TRADU.i.nIdioma == 1) // Español
-            {
-                tooltipMejoraGranja.transform.GetChild(0).gameObject.SetActive(true);
-                tooltipMejoraGranja.transform.GetChild(1).gameObject.SetActive(false);
-            }
-            else if (TRADU.i.nIdioma == 2) // Inglés
-            {
-                tooltipMejoraGranja.transform.GetChild(0).gameObject.SetActive(false);
-                tooltipMejoraGranja.transform.GetChild(1).gameObject.SetActive(true);
-            }
-        }
-        else if (n == 6)
-        {
-            tooltipMejoraBarricada.SetActive(true);
-
-
-            if (TRADU.i.nIdioma == 1) // Español
-            {
-                tooltipMejoraBarricada.transform.GetChild(0).gameObject.SetActive(true);
-                tooltipMejoraBarricada.transform.GetChild(1).gameObject.SetActive(false);
-            }
-            else if (TRADU.i.nIdioma == 2) // Inglés
-            {
-                tooltipMejoraBarricada.transform.GetChild(0).gameObject.SetActive(false);
-                tooltipMejoraBarricada.transform.GetChild(1).gameObject.SetActive(true);
-            }
-        }
-        else if (n == 7)
-        {
-            tooltipMejoraAlmenara.SetActive(true);
-
-
-            if (TRADU.i.nIdioma == 1) // Español
-            {
-                tooltipMejoraAlmenara.transform.GetChild(0).gameObject.SetActive(true);
-                tooltipMejoraAlmenara.transform.GetChild(1).gameObject.SetActive(false);
-            }
-            else if (TRADU.i.nIdioma == 2) // Inglés
-            {
-                tooltipMejoraAlmenara.transform.GetChild(0).gameObject.SetActive(false);
-                tooltipMejoraAlmenara.transform.GetChild(1).gameObject.SetActive(true);
-            }
-
-        }
-
-
+        tooltip.SetActive(true);
+        ActivarContenidoTooltipPorIdioma(tooltip);
 
     }
 
     public void HoverBotonMejoraSalir()
     {
-        tooltipMejoraBarcos.SetActive(false);
-        tooltipMejoraPalacio.SetActive(false);
-        tooltipMejoraCuartel.SetActive(false);
-        tooltipMejoraTemplo.SetActive(false);
-        tooltipMejoraGranja.SetActive(false);
-        tooltipMejoraBarricada.SetActive(false);
-        tooltipMejoraAlmenara.SetActive(false);
+        if (tooltipMejoraBarcos != null) tooltipMejoraBarcos.SetActive(false);
+        if (tooltipMejoraPalacio != null) tooltipMejoraPalacio.SetActive(false);
+        if (tooltipMejoraCuartel != null) tooltipMejoraCuartel.SetActive(false);
+        if (tooltipMejoraTemplo != null) tooltipMejoraTemplo.SetActive(false);
+        if (tooltipMejoraGranja != null) tooltipMejoraGranja.SetActive(false);
+        if (tooltipMejoraBarricada != null) tooltipMejoraBarricada.SetActive(false);
+        if (tooltipMejoraAlmenara != null) tooltipMejoraAlmenara.SetActive(false);
 
 
+    }
+
+    private GameObject ObtenerTooltipMejora(int n)
+    {
+        switch (n)
+        {
+            case 1: return tooltipMejoraBarcos;
+            case 2: return tooltipMejoraPalacio;
+            case 3: return tooltipMejoraCuartel;
+            case 4: return tooltipMejoraTemplo;
+            case 5: return tooltipMejoraGranja;
+            case 6: return tooltipMejoraBarricada;
+            case 7: return tooltipMejoraAlmenara;
+            default: return null;
+        }
+    }
+
+    private void ActivarContenidoTooltipPorIdioma(GameObject tooltip)
+    {
+        if (tooltip == null) return;
+        int childCount = tooltip.transform.childCount;
+        if (childCount <= 0) return;
+
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
+        int childIdioma = idioma == 2 ? 1 : 0;
+        int panelesIdioma = Mathf.Min(2, childCount);
+
+        for (int i = 0; i < panelesIdioma; i++)
+        {
+            tooltip.transform.GetChild(i).gameObject.SetActive(i == childIdioma);
+        }
+
+        if (childIdioma >= panelesIdioma && panelesIdioma > 0)
+        {
+            tooltip.transform.GetChild(0).gameObject.SetActive(true);
+        }
+    }
+
+    private void AplicarIdiomaTitulo()
+    {
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
+        bool esIngles = idioma == 2;
+        if (tituloEspaniol != null) tituloEspaniol.SetActive(!esIngles);
+        if (tituloIngles != null) tituloIngles.SetActive(esIngles);
     }
     
      public void ClickBotonMejora(int n)

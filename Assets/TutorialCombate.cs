@@ -16,7 +16,7 @@ public class TutorialCombate : MonoBehaviour
 
     private void Start()
     {
-
+        OcultarTodosLosPasos();
     }
 
     /// <summary>
@@ -37,18 +37,19 @@ public class TutorialCombate : MonoBehaviour
     public void IniciarCombateDesdePaso(int paso)
     {
         if (tutorialManager != null && !tutorialManager.tutorialActivo) return;
-        if (pasosCombate == null || pasosCombate.Length == 0) return;
+        if (!TienePasosCombate()) return;
 
         tutorialCombateActivo = true;
         pasoActual = Mathf.Clamp(paso, 0, pasosCombate.Length - 1);
+        OcultarTodosLosPasos();
         MostrarPaso(pasoActual);
     }
 
     public void SiguientePasoCombate()
     {
 
-        if (!tutorialCombateActivo || pasosCombate == null || pasosCombate.Length == 0) return;
-        if (pasoActual < 0 || pasoActual >= pasosCombate.Length) return;
+        if (!tutorialCombateActivo || !TienePasosCombate()) return;
+        if (!IndicePasoValido(pasoActual)) return;
 
         if (pasosCombate[pasoActual] != null)
         {
@@ -68,7 +69,7 @@ public class TutorialCombate : MonoBehaviour
 
     public void PasoAnteriorCombate()
     {
-        if (!tutorialCombateActivo || pasosCombate == null || pasosCombate.Length == 0) return;
+        if (!tutorialCombateActivo || !TienePasosCombate()) return;
         if (pasoActual <= 0)
         {
             pasoActual = 0;
@@ -76,10 +77,7 @@ public class TutorialCombate : MonoBehaviour
             return;
         }
 
-        if (pasoActual < pasosCombate.Length && pasosCombate[pasoActual] != null)
-        {
-            pasosCombate[pasoActual].SetActive(false);
-        }
+        SetPasoActivo(pasoActual, false);
 
         pasoActual--;
         MostrarPaso(pasoActual);
@@ -91,17 +89,19 @@ public class TutorialCombate : MonoBehaviour
     }
     private void ComenzarTutorialCombate()
     {
-        if (pasosCombate == null || pasosCombate.Length == 0) return;
+        if (!TienePasosCombate()) return;
 
         tutorialCombateActivo = true;
         pasoActual = 0;
+        OcultarTodosLosPasos();
         MostrarPaso(pasoActual);
     }
 
     private void FinalizarTutorialCombate()
     {
         tutorialCombateActivo = false;
-        pasoActual = pasosCombate.Length - 1;
+        pasoActual = -1;
+        OcultarTodosLosPasos();
 
         gameObject.SetActive(false);
 
@@ -109,22 +109,19 @@ public class TutorialCombate : MonoBehaviour
 
     private void MostrarPaso(int index)
     {
-        if (pasosCombate == null || pasosCombate.Length == 0) return;
-        if (index < 0 || index >= pasosCombate.Length) return;
+        if (!TienePasosCombate()) return;
+        if (!IndicePasoValido(index)) return;
+
         for (int i = 0; i < pasosCombate.Length; i++)
         {
             if (pasosCombate[i] == null) { continue; }
             pasosCombate[i].SetActive(i == index);
         }
+
         GameObject tutoActual = pasosCombate[index];
-        if (TRADU.i.nIdioma == 1) //Esp
-        {
-            tutoActual.transform.GetChild(0).gameObject.SetActive(true);
-        }
-        else if (TRADU.i.nIdioma == 2) //Ing
-        {
-            tutoActual.transform.GetChild(1).gameObject.SetActive(true);
-        }
+        if (tutoActual == null) return;
+
+        MostrarPanelIdioma(tutoActual);
     }
     
     public int ObtenerPasoActual()
@@ -132,7 +129,53 @@ public class TutorialCombate : MonoBehaviour
         return pasoActual;
     }
 
-    
+    private bool TienePasosCombate()
+    {
+        return pasosCombate != null && pasosCombate.Length > 0;
+    }
+
+    private bool IndicePasoValido(int index)
+    {
+        return index >= 0 && index < pasosCombate.Length;
+    }
+
+    private void SetPasoActivo(int index, bool activo)
+    {
+        if (!IndicePasoValido(index)) return;
+        if (pasosCombate[index] == null) return;
+        pasosCombate[index].SetActive(activo);
+    }
+
+    private void OcultarTodosLosPasos()
+    {
+        if (!TienePasosCombate()) return;
+        for (int i = 0; i < pasosCombate.Length; i++)
+        {
+            if (pasosCombate[i] == null) continue;
+            pasosCombate[i].SetActive(false);
+        }
+    }
+
+    private void MostrarPanelIdioma(GameObject paso)
+    {
+        if (paso == null) return;
+        int childCount = paso.transform.childCount;
+        if (childCount <= 0) return;
+
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
+        int childIdioma = idioma == 2 ? 1 : 0;
+
+        int totalPanelesIdioma = Mathf.Min(2, childCount);
+        for (int i = 0; i < totalPanelesIdioma; i++)
+        {
+            paso.transform.GetChild(i).gameObject.SetActive(i == childIdioma);
+        }
+
+        if (childIdioma >= totalPanelesIdioma && totalPanelesIdioma > 0)
+        {
+            paso.transform.GetChild(0).gameObject.SetActive(true);
+        }
+    }
 }
 
 
