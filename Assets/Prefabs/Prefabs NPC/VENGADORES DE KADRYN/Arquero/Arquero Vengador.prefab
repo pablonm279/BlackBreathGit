@@ -230,8 +230,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.75, y: -13.562}
-  m_SizeDelta: {x: 22.077, y: 21.395}
+  m_AnchoredPosition: {x: -1.419, y: -12.378}
+  m_SizeDelta: {x: 23.062, y: 23.157}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1678664685221969079
 CanvasRenderer:
@@ -699,6 +699,7 @@ MonoBehaviour:
   mod_maxAccionP: 4
   AccionP_actual: 4
   AccionP_SeEsforzo: 0
+  scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
   ValentiaP_actual: 0
@@ -773,15 +774,29 @@ MonoBehaviour:
   bonusdam_arcano: 0
   bonusdam_necro: 2
   bonusdam_divino: 0
+  debuffsImpactoArma: []
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
+  penetracionArmaduraPlano: 0
+  penetracionArmaduraHabilidadActual: 0
   barreraDeDanio: 0
   tejidoCuracMagica: 0
   loMatoCorrompido: 0
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  apilarTextosFlotantes: 0
+  floatingTextSlotSpacing: 9
+  floatingTextSlotLifetimeFallback: 1.1
+  floatingTextMaxSlots: 4
+  floatingTextMinInterval: 0.05
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
+  goSANGRE: {fileID: 0}
   velocidadMovimiento: 2.8
   movimientoEnCurso: 0
   NoSonidoAlMover: 0
@@ -832,6 +847,14 @@ MonoBehaviour:
   PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 988559560477343625}
   barraVida: {fileID: 406985320704813745}
+  barraVidaDamageFill: {fileID: 0}
+  barraVidaDamageColor: {r: 0.75, g: 0.12, b: 0.12, a: 0.6}
+  barraVidaDamageDelay: 0.12
+  barraVidaDamageSpeed: 0.9
+  barraVidaHealFill: {fileID: 0}
+  barraVidaHealColor: {r: 1, g: 0.85, b: 0.2, a: 0.6}
+  barraVidaHealDelay: 0.08
+  barraVidaHealSpeed: 0.9
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 6551044582577236037}
 --- !u!114 &266884403653698581
@@ -870,11 +893,13 @@ MonoBehaviour:
   esMelee: 0
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  forzarPoseHabilidad: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
   tipoPorcentaje: 0
+  penetracionArmadura: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -1304,7 +1329,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2.51
+      value: 3.19
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

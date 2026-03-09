@@ -248,7 +248,6 @@ GameObject:
   - component: {fileID: 3896944432580804204}
   - component: {fileID: 6785794506644449284}
   - component: {fileID: 4360330532430467366}
-  - component: {fileID: 5702488755417843956}
   m_Layer: 7
   m_Name: Image
   m_TagString: Untagged
@@ -265,7 +264,7 @@ RectTransform:
   m_GameObject: {fileID: 4888557733310420769}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.0091}
-  m_LocalScale: {x: 0.8454566, y: 1.141116, z: 1}
+  m_LocalScale: {x: 1.2594767, y: 1.141116, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6134089325106238942}
@@ -274,8 +273,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.17, y: -14.27}
-  m_SizeDelta: {x: 20.21, y: 24.39}
+  m_AnchoredPosition: {x: 0.294, y: -13.698}
+  m_SizeDelta: {x: 21.296, y: 26.48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3896944432580804204
 CanvasRenderer:
@@ -328,24 +327,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &5702488755417843956
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4888557733310420769}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78c622ef554cfcc46bb7c697a1927037, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shrinkAmount: 0.1182
-  breathsPerSecond: 0.25
-  randomDelayRange: {x: 0, y: 1.5}
-  useUnscaledTime: 0
-  alsoAffectWidth: 0
-  widthFactor: 0.5
 --- !u!1 &6457740566277436106
 GameObject:
   m_ObjectHideFlags: 0
@@ -690,11 +671,13 @@ MonoBehaviour:
   esMelee: 0
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  forzarPoseHabilidad: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
   tipoPorcentaje: 0
+  penetracionArmadura: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -863,6 +846,14 @@ MonoBehaviour:
   bonusdam_arcano: 0
   bonusdam_necro: 0
   bonusdam_divino: 0
+  debuffsImpactoArma: []
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
+  penetracionArmaduraPlano: 0
+  penetracionArmaduraHabilidadActual: 0
   barreraDeDanio: 0
   tejidoCuracMagica: 0
   loMatoCorrompido: 0
@@ -1030,7 +1021,7 @@ Transform:
   m_GameObject: {fileID: 7090434514286393595}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.046, y: 0.939, z: -0.136}
+  m_LocalPosition: {x: -0.305, y: 1, z: -0.136}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1238,7 +1229,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2.8
+      value: 3.33
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

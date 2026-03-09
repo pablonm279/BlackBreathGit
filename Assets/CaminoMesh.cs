@@ -112,6 +112,11 @@ public class CaminoMesh : MonoBehaviour
         if (_mr != null) _mr.enabled = true;
     }
 
+    public void SetWidth(float newWidth)
+    {
+        width = Mathf.Max(0.05f, newWidth);
+    }
+
     // Opcional para setear material por código
     public void SetMaterial(Material m)
     {

@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 public class AullidoDeLaManada : IAHabilidad
 {
+    private const string NombreBuffAullido = "Aullido de la Manada";
+
     [SerializeField] public int pPrioridad;
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
@@ -49,6 +51,11 @@ public class AullidoDeLaManada : IAHabilidad
 
    public async override Task ActivarHabilidad()
    {
+    if (!PuedeUsarAullido())
+    {
+      return;
+    }
+
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
       hActualCooldown = hCooldownMax;
       
@@ -66,6 +73,11 @@ public class AullidoDeLaManada : IAHabilidad
     
      
    }
+
+    private bool PuedeUsarAullido()
+    {
+      return scEstaUnidad != null && !scEstaUnidad.TieneBuffNombre(NombreBuffAullido);
+    }
         void VFXAplicar(GameObject objetivo)
     {
       GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_AullidoManada");
@@ -179,7 +191,7 @@ public class AullidoDeLaManada : IAHabilidad
        /////////////////////////////////////////////
       //BUFF ---- Así se aplica un buff/debuff
       Buff buff = new Buff();
-       buff.buffNombre = "Aullido de la Manada";
+       buff.buffNombre = NombreBuffAullido;
        buff.boolfDebufftBuff = true;
        buff.DuracionBuffRondas = 3;
        buff.cantTsMental += 2;
@@ -200,6 +212,10 @@ public class AullidoDeLaManada : IAHabilidad
 
      public override List<object> ListaHayObjetivosAlAlcance() 
      {
+        if (!PuedeUsarAullido())
+        {
+          return new List<object>();
+        }
 
         List<object> lista = new List<object>();
         lista.Add(scEstaUnidad); //Esto es para que siempre haya objetivo y siempre sea usable la habilidad

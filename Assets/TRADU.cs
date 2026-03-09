@@ -110,6 +110,11 @@ public class TRADU : MonoBehaviour
              r = /*"Error tradu: " +*/txt; //para que al devolverlo en español, se sepa que linea falla
         }
 
+        if (!string.IsNullOrEmpty(txt) && (txt.StartsWith("Determinación ") || txt.StartsWith("DeterminaciÃ³n ")))
+        {
+            return "Determination " + txt.Substring(txt.IndexOf(' ') + 1);
+        }
+
         switch (txt)
         {
             case "Retraso Nocturno":
@@ -1238,8 +1243,8 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Crear Símbolo Arcano de Protección: </b></color><color=#d3d3d3><i>El Canalizador concentra energía arcana protectora en un símbolo que puede proteger a quien lo utilice.</color></i>\\n\\nCrea un Símbolo Arcano de Protección por día.":
                 r = "<color=#0cca74><b>Create Arcane Protection Symbol: </b></color><color=#d3d3d3><i>The Channeler concentrates protective arcane energy into a symbol that can protect its user.</color></i>\\n\\nCreates one Arcane Protection Symbol per day.";
                 break;
-            case "-El viaje por el camino escarpado ha demorado la caravana. +":
-                r = "-The journey along the steep path has delayed the caravan. +";
+            case "-El viaje por el camino sinuoso ha retrasado la caravana. +":
+                r = "-The journey along the winding path has delayed the caravan. +";
                 break;
             case " Avance del Aliento Negro":
                 r = " Black Breath advance";
@@ -4635,6 +4640,9 @@ public class TRADU : MonoBehaviour
                 break;
             case "Valor:":
                 r = "Valour:";
+                break;
+            case "Valor":
+                r = "Valour";
                 break;
             
              

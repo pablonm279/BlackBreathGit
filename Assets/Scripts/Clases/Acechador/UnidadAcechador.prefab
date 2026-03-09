@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 927086613118745473}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.287, y: 0.988, z: 0}
+  m_LocalPosition: {x: -0.303, y: 1.115, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -409,11 +409,13 @@ MonoBehaviour:
   esMelee: 0
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  forzarPoseHabilidad: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
   tipoPorcentaje: 0
+  penetracionArmadura: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -464,6 +466,14 @@ MonoBehaviour:
   PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 163307354936423189}
   barraVida: {fileID: 745865242487580205}
+  barraVidaDamageFill: {fileID: 0}
+  barraVidaDamageColor: {r: 0.75, g: 0.12, b: 0.12, a: 0.6}
+  barraVidaDamageDelay: 0.12
+  barraVidaDamageSpeed: 0.9
+  barraVidaHealFill: {fileID: 0}
+  barraVidaHealColor: {r: 1, g: 0.85, b: 0.2, a: 0.6}
+  barraVidaHealDelay: 0.08
+  barraVidaHealSpeed: 0.9
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 6131020686038377689}
 --- !u!114 &-4855694794881200728
@@ -499,6 +509,7 @@ MonoBehaviour:
   mod_maxAccionP: 0
   AccionP_actual: 0
   AccionP_SeEsforzo: 0
+  scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
   ValentiaP_actual: 0
@@ -573,12 +584,25 @@ MonoBehaviour:
   bonusdam_arcano: 0
   bonusdam_necro: 0
   bonusdam_divino: 0
+  debuffsImpactoArma: []
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
+  penetracionArmaduraPlano: 0
+  penetracionArmaduraHabilidadActual: 0
   barreraDeDanio: 0
   tejidoCuracMagica: 0
   loMatoCorrompido: 0
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  apilarTextosFlotantes: 0
+  floatingTextSlotSpacing: 9
+  floatingTextSlotLifetimeFallback: 1.1
+  floatingTextMaxSlots: 4
+  floatingTextMinInterval: 0.05
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
@@ -1065,7 +1089,7 @@ RectTransform:
   m_GameObject: {fileID: 8729342596116197782}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.0244}
-  m_LocalScale: {x: 0.95, y: 1.2, z: 1}
+  m_LocalScale: {x: 1.2461272, y: 1.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7964837631367932204}
@@ -1074,8 +1098,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.674, y: -14.759}
-  m_SizeDelta: {x: 19.519, y: 23.129}
+  m_AnchoredPosition: {x: 0.604, y: -12.855}
+  m_SizeDelta: {x: 20.008, y: 26.301}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3849023482659225804
 CanvasRenderer:
@@ -1206,7 +1230,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.72
+      value: 3.66
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

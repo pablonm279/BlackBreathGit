@@ -5260,7 +5260,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.1, y: -6.9}
+  m_AnchoredPosition: {x: 3.6, y: -8.9}
   m_SizeDelta: {x: 48.85, y: 44.22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7183569897580904577
@@ -5291,7 +5291,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e9fb91431f3fb994696e72a585907369, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 844c32d75af1f06439e7fe360e4c36fa, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5515,6 +5515,7 @@ MonoBehaviour:
   mod_maxAccionP: 3
   AccionP_actual: 3
   AccionP_SeEsforzo: 0
+  scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
   ValentiaP_actual: 0
@@ -5589,15 +5590,29 @@ MonoBehaviour:
   bonusdam_arcano: 0
   bonusdam_necro: 0
   bonusdam_divino: 0
+  debuffsImpactoArma: []
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
+  penetracionArmaduraPlano: 0
+  penetracionArmaduraHabilidadActual: 0
   barreraDeDanio: 0
   tejidoCuracMagica: 0
   loMatoCorrompido: 0
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  apilarTextosFlotantes: 0
+  floatingTextSlotSpacing: 9
+  floatingTextSlotLifetimeFallback: 1.1
+  floatingTextMaxSlots: 4
+  floatingTextMinInterval: 0.05
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
+  goSANGRE: {fileID: 0}
   velocidadMovimiento: 2.8
   movimientoEnCurso: 0
   NoSonidoAlMover: 0
@@ -5686,6 +5701,14 @@ MonoBehaviour:
   PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 946754659262308017}
   barraVida: {fileID: 377874694616861577}
+  barraVidaDamageFill: {fileID: 0}
+  barraVidaDamageColor: {r: 0.75, g: 0.12, b: 0.12, a: 0.6}
+  barraVidaDamageDelay: 0.12
+  barraVidaDamageSpeed: 0.9
+  barraVidaHealFill: {fileID: 0}
+  barraVidaHealColor: {r: 1, g: 0.85, b: 0.2, a: 0.6}
+  barraVidaHealDelay: 0.08
+  barraVidaHealSpeed: 0.9
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 6517378953652767101}
 --- !u!114 &4187163036656693747
@@ -5724,11 +5747,13 @@ MonoBehaviour:
   esMelee: 0
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  forzarPoseHabilidad: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
   tipoPorcentaje: 0
+  penetracionArmadura: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -5911,9 +5936,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetImage: {fileID: 3032909807885364115}
-  poseIdle: {fileID: 21300000, guid: e9fb91431f3fb994696e72a585907369, type: 3}
+  poseIdle: {fileID: 21300000, guid: 844c32d75af1f06439e7fe360e4c36fa, type: 3}
   poseMover: {fileID: 21300000, guid: 3d2dd53d96545ad4592e758d8d813a35, type: 3}
-  poseAtacar: {fileID: 21300000, guid: 142f1ff4326a45340a27974e4e3df9f0, type: 3}
+  poseAtacar: {fileID: 21300000, guid: e1c6c02960e7ae34baaae3f67ea04ac0, type: 3}
   poseHabilidad: {fileID: 21300000, guid: e1c6c02960e7ae34baaae3f67ea04ac0, type: 3}
   duracionPoseAtacar: 1
   duracionPoseDanyo: 1

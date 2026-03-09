@@ -186,6 +186,27 @@ public class Distraer : Habilidad
 
     }
   }
+
+  protected override float? CalcularProbabilidadEspecialSobreObjetivo(Unidad objetivo)
+  {
+    if (objetivo == null)
+    {
+      return null;
+    }
+
+    int dc = 12;
+    if (NIVEL > 1)
+    {
+      dc++;
+    }
+
+    return CalcularProbabilidadFallarTS(objetivo.mod_TSMental, dc);
+  }
+
+  protected override string ObtenerTextoProbabilidadSobreObjetivo(Unidad objetivo, float probabilidad)
+  {
+    return FormatearTextoProbabilidadExito(probabilidad);
+  }
     
     void VFXAplicar(GameObject objetivo)
     {

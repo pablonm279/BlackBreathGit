@@ -63542,14 +63542,14 @@ RectTransform:
   m_GameObject: {fileID: 164398248}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
+  m_LocalScale: {x: 1.0055695, y: 1.0055693, z: 1.0055693}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 856456132}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0.000045776367, y: -0.000061035156}
+  m_AnchoredPosition: {x: -0.000030517578, y: -0.000091552734}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &164398250
@@ -97832,7 +97832,7 @@ Transform:
   m_GameObject: {fileID: 268408334}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.16, y: 0, z: -5.69}
+  m_LocalPosition: {x: -0.16, y: 0, z: -6.96}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -157904,6 +157904,11 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 46d84ddedc019ab449e86ff9182a9072, type: 2}
   fader: {fileID: 139824694}
   fadeTime: 3
+  fadeEntradaBatalla: 0.45
+  esperaEntradaBatalla: 1.15
+  fadeSalidaBatalla: 0.55
+  esperaSalidaBatalla: 1.05
+  delayPostFinBatallaMs: 120
   VFXLluvia: {fileID: 14306373}
   VFXNieve: {fileID: 1590372870}
   VFXNiebla: {fileID: 1538775626}
@@ -171140,8 +171145,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 805.7068, y: -33.943}
-  m_SizeDelta: {x: 1718.609, y: 2219.347}
+  m_AnchoredPosition: {x: 805.7068, y: 19.522}
+  m_SizeDelta: {x: 1718.609, y: 2338.157}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &487622928
 MonoBehaviour:
@@ -199205,7 +199210,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6b677817055678f46a17ce1e9dbb482f, type: 2}
+  - {fileID: 2100000, guid: 2b9657b7f4ba1754192f3ebf7bbf230a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -299213,7 +299218,7 @@ RectTransform:
   m_GameObject: {fileID: 856456131}
   m_LocalRotation: {x: -0, y: -0, z: -0.004182807, w: 0.99999124}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.68, y: 0.68, z: 1.0793651}
+  m_LocalScale: {x: 0.87910396, y: 0.87910396, z: 1.3954031}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 164398249}
@@ -386337,7 +386342,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   txtLog: {fileID: 2092417980}
-  maxEntradas: 16
+  maxEntradas: 26
   diaActual: 1
   colorDia: '#2c81b9ff'
   colorActual: '#ffffffff'
@@ -449395,7 +449400,7 @@ Transform:
   m_GameObject: {fileID: 1197841625}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.34, y: 0, z: -8.07}
+  m_LocalPosition: {x: -0.34, y: 0, z: -9.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -451575,7 +451580,7 @@ Transform:
   m_GameObject: {fileID: 1215097795}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: -10.37}
+  m_LocalPosition: {x: 0, y: 0, z: -11.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -476803,7 +476808,7 @@ Transform:
   m_GameObject: {fileID: 1276472750}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: -4.14}
+  m_LocalPosition: {x: 0, y: 0, z: -5.41}
   m_LocalScale: {x: 1, y: 1.0652, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -478187,7 +478192,7 @@ Transform:
   m_GameObject: {fileID: 1291164591}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: -3}
+  m_LocalPosition: {x: 0, y: 0, z: -3.95}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -757637,8 +757642,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -757667,7 +757672,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 4
   m_wordSpacing: 0
-  m_lineSpacing: 20
+  m_lineSpacing: 16
   m_lineSpacingMax: 0
   m_paragraphSpacing: 15
   m_charWidthMaxAdj: 0
@@ -757693,7 +757698,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -5.3424377, y: -116.843414, z: -227.08536, w: -308.92624}
+  m_margin: {x: -5.3424377, y: -185.61166, z: -227.08536, w: -399.71262}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

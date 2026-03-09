@@ -53,6 +53,12 @@ public class Casilla : MonoBehaviour
 
   }
 
+  private bool TryGetUnidadActiva(out Unidad unidad)
+  {
+    unidad = BattleManager.Instance != null ? BattleManager.Instance.unidadActiva : null;
+    return unidad != null && unidad.CasillaPosicion != null;
+  }
+
   public void ActualizarSenialadores()
   {
     Invoke("ActualizarSenialadoresmetod", 0.05f);
@@ -60,8 +66,17 @@ public class Casilla : MonoBehaviour
 
   public void ActualizarSenialadoresmetod()
   { 
-     if (BattleManager.Instance.unidadActiva.CasillaPosicion != this || BattleManager.Instance.unidadActiva.GetComponent<IAUnidad>() != null)
-    { return; }
+     if (!TryGetUnidadActiva(out Unidad unidad))
+    {
+      DesactivarSenialadores();
+      return;
+    }
+
+     if (unidad.CasillaPosicion != this || unidad.GetComponent<IAUnidad>() != null)
+    {
+      DesactivarSenialadores();
+      return;
+    }
 
     ActualizarSenialadorDireccion(0, 1, MarcaMovX0Y1);
     ActualizarSenialadorDireccion(1, 1, MarcaMovX1Y1);
@@ -96,18 +111,22 @@ public class Casilla : MonoBehaviour
   private void ActualizarSenialadorDireccion(int deltaX, int deltaY, GameObject marca)
   {
     if (marca == null) { return; }
+    if (!TryGetUnidadActiva(out Unidad unidad))
+    {
+      marca.SetActive(false);
+      return;
+    }
 
     if (Mathf.Abs(deltaX) + Mathf.Abs(deltaY) > 1)
     {
-      var unidad = BattleManager.Instance.unidadActiva;
-      if (unidad != null && unidad.ObtenerAPActual() <= 1)
+      if (unidad.ObtenerAPActual() <= 1)
       {
          marca.SetActive(false);
         return;
       }
     }
 
-    if (BattleManager.Instance.unidadActiva.ObtenerAPActual() <= 0)
+    if (unidad.ObtenerAPActual() <= 0)
     { marca.SetActive(false);
       return;
    }
@@ -145,11 +164,11 @@ public class Casilla : MonoBehaviour
   public void MostrarAPparaMovimiento()
   {
     if (lado == 1) { return; } //Solo para aliados
+    if (BattleManager.Instance == null || BattleManager.Instance.bOcupado) { return; }
+    if (!TryGetUnidadActiva(out Unidad unidad)) { return; }
 
     //Unidad seleccionada - Movimiento
-    Unidad unidad = BattleManager.Instance.unidadActiva;
-
-    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
+    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
       int costoMovimientoTotal = costoMovimiento;
 
@@ -179,6 +198,11 @@ public class Casilla : MonoBehaviour
   }
   public async void OnMouseDown()
   {
+    if (BattleManager.Instance == null)
+    {
+      return;
+    }
+
     //----
     if(BattleManager.Instance.scTutorialCombate.tutorialCombateActivo && BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() < 6)
     {
@@ -194,14 +218,18 @@ public class Casilla : MonoBehaviour
     {
       BattleManager.Instance.scTutorialCombate.SiguientePasoCombate();
     }
-   
+
+    if (!TryGetUnidadActiva(out Unidad unidad))
+    {
+      return;
+    }
 
 
 
     // --- Cancelar habilidad activa si se hace clic en el campo ---
     if (BattleManager.Instance.HabilidadActiva != null)
     {
-      if (BattleManager.Instance.HabilidadActiva.esHostil && BattleManager.Instance.unidadActiva.CasillaPosicion.lado == this.lado)
+      if (BattleManager.Instance.HabilidadActiva.esHostil && unidad.CasillaPosicion.lado == this.lado)
       {
         // Cancela la selección de la habilidad al clikear casilla, solo si es hostil y es una casilla del mismo lado
         BattleManager.Instance.HabilidadActiva = null;
@@ -218,12 +246,10 @@ public class Casilla : MonoBehaviour
 
 
     //Unidad seleccionada - Movimiento
-    Unidad unidad = BattleManager.Instance.unidadActiva;
-
     //!!!
     unidad.CasillaPosicion.CalcularDistanciaACasilla(this, out int x, out int y, out bool lado);
     //!!!
-    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
+    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
       int costoMovimientoTotal = costoMovimiento;
 
@@ -246,7 +272,7 @@ public class Casilla : MonoBehaviour
       }
     }
     // Intercambio con aliado: mover a casilla ocupada por aliado y que el aliado vaya a la casilla original
-    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente != null && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
+    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente != null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
       Unidad aliado = Presente != null ? Presente.GetComponent<Unidad>() : null;
       if (aliado != null)
@@ -1608,6 +1634,7 @@ public class Casilla : MonoBehaviour
   {
     int res = 0;
     if (lado == 1) { return 0; } //Solo para aliados
+    if (BattleManager.Instance == null || BattleManager.Instance.bOcupado) { return 0; }
 
     //Unidad seleccionada - Movimiento
     Unidad unidad = BattleManager.Instance.unidadActiva;
@@ -1616,7 +1643,7 @@ public class Casilla : MonoBehaviour
     {
       return 0;
     }
-    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
+    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
       int costoMovimientoTotal = costoMovimiento;
 

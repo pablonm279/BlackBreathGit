@@ -52,10 +52,41 @@ public class AdministradorEscenas : MonoBehaviour
   [Header("UI")]
   [SerializeField] public CanvasGroup fader;        // Imagen negra con CanvasGroup
   [SerializeField] float fadeTime = 0.4f;
+  [Header("Ritmo Demo")]
+  [SerializeField] float fadeEntradaBatalla = 0.45f;
+  [SerializeField] float esperaEntradaBatalla = 1.15f;
+  [SerializeField] float fadeSalidaBatalla = 0.55f;
+  [SerializeField] float esperaSalidaBatalla = 1.05f;
+  [SerializeField] int delayPostFinBatallaMs = 120;
 
   // Bloqueo para mantener el fader negro (evita fade-outs concurrentes)
   bool faderHold = false;
+  bool cargandoBatalla = false;
+  bool cerrandoBatalla = false;
+  float CalcularEsperaCambioEscena(float fadeDuration, float holdDuration)
+  {
+    return Mathf.Max(fadeDuration + 0.05f, holdDuration);
+  }
 
+  async Task EsperarSegundosRealtime(float segundos)
+  {
+    int delayMs = Mathf.Max(0, Mathf.RoundToInt(segundos * 1000f));
+    if (delayMs <= 0) { return; }
+    await Task.Delay(delayMs);
+  }
+
+  async void EjecutarOperacionSegura(Task tarea, string contexto)
+  {
+    try
+    {
+      await tarea;
+    }
+    catch (System.Exception ex)
+    {
+      Debug.LogError($"[AdministradorEscenas] Error en {contexto}.");
+      Debug.LogException(ex, this);
+    }
+  }
   // (removido) UI de carga sutil
 
   IEnumerator Start()
@@ -144,8 +175,21 @@ public class AdministradorEscenas : MonoBehaviour
   int ultimoIDEncuentro;
   int tipoEmboscadaActual = 0;
 
-  public async void CargarBatalla(int IDEncuentro, int esEmboscada = 0, EncounterDefinition encuentro = null, bool usarRefuerzosAliadosCaravana = false)
+  public void CargarBatalla(int IDEncuentro, int esEmboscada = 0, EncounterDefinition encuentro = null, bool usarRefuerzosAliadosCaravana = false)
   {
+    EjecutarOperacionSegura(CargarBatallaAsync(IDEncuentro, esEmboscada, encuentro, usarRefuerzosAliadosCaravana), nameof(CargarBatalla));
+  }
+
+  private async Task CargarBatallaAsync(int IDEncuentro, int esEmboscada = 0, EncounterDefinition encuentro = null, bool usarRefuerzosAliadosCaravana = false)
+  {
+    if (cargandoBatalla || cerrandoBatalla)
+    {
+      return;
+    }
+
+    cargandoBatalla = true;
+    try
+    {
     ultimoIDEncuentro = IDEncuentro;
     encuentroGeneradoActual = encuentro;
     tipoEmboscadaActual = esEmboscada;
@@ -158,9 +202,16 @@ public class AdministradorEscenas : MonoBehaviour
     escenaActual = 1; //1 Batalla 0 Campaña
     CampaignManager.Instance.logDeCampania.LimpiarDesdeCampania();
     int idZona = CampaignManager.Instance.scAtributosZona.ID;
-    MusicManager.Instance.PlayBatalla(idZona);
-    CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(0.5f, 1.6f);
-    await Task.Delay(TimeSpan.FromSeconds(1.6f));
+    float fadeTransicion = Mathf.Max(0.05f, fadeEntradaBatalla);
+    float holdTransicion = Mathf.Max(0.1f, esperaEntradaBatalla);
+    float esperaCambioEscena = CalcularEsperaCambioEscena(fadeTransicion, holdTransicion);
+    if (MusicManager.Instance != null)
+    {
+      MusicManager.Instance.PausarMusica(false);
+      MusicManager.Instance.PlayBatalla(idZona);
+    }
+    CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(fadeTransicion, holdTransicion);
+    await EsperarSegundosRealtime(esperaCambioEscena);
     EscenaCampaign.SetActive(false);
     EscenaBatalla.SetActive(true);
     // Silenciar logs de combate durante la preparación (buffs/estados iniciales)
@@ -615,7 +666,6 @@ public class AdministradorEscenas : MonoBehaviour
           buff.buffNombre = "Oscuridad";
           buff.boolfDebufftBuff = false;
           buff.DuracionBuffRondas = -1;
-          buff.cantPMMax -= 1;
           buff.cantTsMental -= 2;
           buff.cantAtaque -= 1;
           buff.cantResNec -= 2;
@@ -676,36 +726,11 @@ public class AdministradorEscenas : MonoBehaviour
     }
     #endregion
     #region Objetos en Batalla
+    bool nodoIncendiadoActual = CampaignManager.Instance.scMapaManager.nodoActual.nodoIncendiado;
+
     //Fuego de Bosque Ardiente
-    if (CampaignManager.Instance.scMapaManager.nodoActual.nodoIncendiado)
+    if (nodoIncendiadoActual)
     {
-
-
-      int cantidadTrampas = UnityEngine.Random.Range(1, 6) + 2;
-      List<Casilla> casillasDisponiblesLadoA = BattleManager.Instance.ladoA.ObtenerCasillasDesocupadas();
-      List<Casilla> casillasDisponiblesLadoB = BattleManager.Instance.ladoB.ObtenerCasillasDesocupadas();
-
-
-
-      for (int i = 0; i < cantidadTrampas; i++)
-      {
-        if (casillasDisponiblesLadoA.Count > 0)
-        {
-          Casilla casilla = casillasDisponiblesLadoA[UnityEngine.Random.Range(0, casillasDisponiblesLadoA.Count)];
-          casillasDisponiblesLadoA.Remove(casilla);
-          TrampaFuego trampa = casilla.gameObject.AddComponent<TrampaFuego>();
-          trampa.Inicializar();
-        }
-
-        if (casillasDisponiblesLadoB.Count > 0)
-        {
-          Casilla casilla = casillasDisponiblesLadoB[UnityEngine.Random.Range(0, casillasDisponiblesLadoB.Count)];
-          casillasDisponiblesLadoB.Remove(casilla);
-          TrampaFuego trampa = casilla.gameObject.AddComponent<TrampaFuego>();
-          trampa.Inicializar();
-        }
-      }
-
       LadoManager ladodeEnemigos3 = BattleManager.Instance.ladoA; //Enemigos
       foreach (Unidad u in ladodeEnemigos3.unidadesLado)
       {
@@ -731,6 +756,11 @@ public class AdministradorEscenas : MonoBehaviour
         GenerarObstaculosGenericos();
       }
 
+    }
+
+    if (nodoIncendiadoActual)
+    {
+      GenerarFuegoNodoIncendiado();
     }
 
     #endregion
@@ -762,7 +792,11 @@ public class AdministradorEscenas : MonoBehaviour
     {
       BattleManager.Instance.ActivarModoRapido(false);
     }
-
+    }
+    finally
+    {
+      cargandoBatalla = false;
+    }
   }
 
   void GenerarObstaculosGenericos()
@@ -810,6 +844,54 @@ public class AdministradorEscenas : MonoBehaviour
       int cantidadBarro = UnityEngine.Random.Range(0, 3);
       if (climaLluvioso) { cantidadBarro += 4; }
       ColocarTrampasDeBarro(cantidadBarro, ladoAliado, ladoEnemigo);
+    }
+  }
+
+  void GenerarFuegoNodoIncendiado()
+  {
+    if (BattleManager.Instance == null)
+    {
+      return;
+    }
+
+    int cantidadTrampasPorLado = UnityEngine.Random.Range(1, 6) + 2;
+    ColocarTrampasDeFuegoNodoIncendiado(cantidadTrampasPorLado, BattleManager.Instance.ladoA);
+    ColocarTrampasDeFuegoNodoIncendiado(cantidadTrampasPorLado, BattleManager.Instance.ladoB);
+  }
+
+  void ColocarTrampasDeFuegoNodoIncendiado(int cantidad, LadoManager lado)
+  {
+    if (cantidad <= 0 || lado == null)
+    {
+      return;
+    }
+
+    lado.ActualizarListaDeCasillasEnLado();
+    List<Casilla> casillasDisponibles = new List<Casilla>();
+    foreach (Casilla casilla in lado.casillasLado)
+    {
+      if (casilla == null || casilla.Presente != null)
+      {
+        continue;
+      }
+
+      if (casilla.GetComponent<Trampa>() != null)
+      {
+        continue;
+      }
+
+      casillasDisponibles.Add(casilla);
+    }
+
+    int cantidadAColocar = Mathf.Min(cantidad, casillasDisponibles.Count);
+    for (int i = 0; i < cantidadAColocar; i++)
+    {
+      int indiceCasilla = UnityEngine.Random.Range(0, casillasDisponibles.Count);
+      Casilla casilla = casillasDisponibles[indiceCasilla];
+      casillasDisponibles.RemoveAt(indiceCasilla);
+
+      TrampaFuego trampa = casilla.gameObject.AddComponent<TrampaFuego>();
+      trampa.Inicializar();
     }
   }
 
@@ -1149,7 +1231,6 @@ public class AdministradorEscenas : MonoBehaviour
     {
       unidadPers4 = persUnidad.GetComponent<Unidad>();
     }
-
 
 
 
@@ -1946,9 +2027,6 @@ public class AdministradorEscenas : MonoBehaviour
       ColocarEnCasillaAleatoria(2, guerrero);
     }
     #endregion
-
-
-
 
 
 
@@ -3205,10 +3283,21 @@ public class AdministradorEscenas : MonoBehaviour
 
 
 
-  public async void FinDeBatalla(int resultado)
+  public void FinDeBatalla(int resultado)
   {
+    EjecutarOperacionSegura(FinDeBatallaAsync(resultado), nameof(FinDeBatalla));
+  }
 
+  private async Task FinDeBatallaAsync(int resultado)
+  {
+    if (cerrandoBatalla)
+    {
+      return;
+    }
 
+    cerrandoBatalla = true;
+    try
+    {
 
     PlasmarEfectosBatallaEnPersonajes();
     CampaignManager.Instance.logDeCampania.LimpiarDesdeBatalla();
@@ -3239,8 +3328,11 @@ public class AdministradorEscenas : MonoBehaviour
     BattleManager.Instance.indexTurno = 0;
 
 
-    CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(0.7f, 1.6f);
-    await Task.Delay(TimeSpan.FromSeconds(1.6f));
+    float fadeTransicion = Mathf.Max(0.05f, fadeSalidaBatalla);
+    float holdTransicion = Mathf.Max(0.1f, esperaSalidaBatalla);
+    float esperaCambioEscena = CalcularEsperaCambioEscena(fadeTransicion, holdTransicion);
+    CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(fadeTransicion, holdTransicion);
+    await EsperarSegundosRealtime(esperaCambioEscena);
 
     EscenaCampaign.SetActive(true);
     // Al volver a campaña, asegurar que los VFX de nodos reflejen su estado lógico
@@ -3259,14 +3351,21 @@ public class AdministradorEscenas : MonoBehaviour
       }
     }
 
-    MusicManager.Instance.VolverACampania();
+    if (MusicManager.Instance != null)
+    {
+      MusicManager.Instance.PausarMusica(false);
+      MusicManager.Instance.VolverACampania();
+    }
     escenaActual = 0;
     EscenaBatalla.SetActive(false);
 
     Time.timeScale = 1; //Vuelve el tiempo al normal(por si habia modo rapido), pero no cambia el estado de Modorapido
 
-    Task delayTask = Task.Delay(300);
-    await delayTask;
+    int delayFinal = Mathf.Max(0, delayPostFinBatallaMs);
+    if (delayFinal > 0)
+    {
+      await Task.Delay(delayFinal);
+    }
     if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 3)
     {
       CampaignManager.Instance.scTutorialManager.SiguientePaso();
@@ -3277,9 +3376,11 @@ public class AdministradorEscenas : MonoBehaviour
     Personaje2 = null;
     Personaje3 = null;
     Personaje4 = null;
-
-
-
+    }
+    finally
+    {
+      cerrandoBatalla = false;
+    }
   }
   public void EliminarTodosLosPresentes()
   {
@@ -3546,6 +3647,7 @@ public class AdministradorEscenas : MonoBehaviour
 
 
 }
+
 
 
 

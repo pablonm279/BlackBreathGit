@@ -262,6 +262,9 @@ public class Unidad : MonoBehaviour
   [SerializeField] private float floatingTextSlotLifetimeFallback = 1.1f;
   [SerializeField] private int floatingTextMaxSlots = 4;
   [SerializeField] private float floatingTextMinInterval = 0.05f;
+  [SerializeField] private int floatingTextCrowdThreshold = 3;
+  [SerializeField] private float floatingTextCrowdIntervalStep = 0.01f;
+  [SerializeField] private float floatingTextCrowdExtraIntervalMax = 0.03f;
   private float nextFloatingTextTime = -999f;
   private readonly List<float> floatingTextSlotExpiries = new List<float>();
   public
@@ -1456,6 +1459,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
   [Header("Sonidos")]
   public List<AudioClip> sonidosRecibirDanio = new List<AudioClip>();
+  private const float MultiplicadorVolumenSonidoArmadura = 0.75f;
   private AudioSource audioSource;
 
   /// <summary>
@@ -1564,7 +1568,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
     }
 
-    audioSource.PlayOneShot(clip);
+    audioSource.PlayOneShot(clip, MultiplicadorVolumenSonidoArmadura);
   }
 
   private int CalcularDanioBonusElemental(float Xddanio, int tipoDanio, out Color color)
@@ -3044,13 +3048,19 @@ public virtual void SumarValentia(int cant, string motivo = null)
     }
   }
 
-  if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
-  {
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
-  }
-
   if (BattleManager.Instance != null)
   {
+    UIInfoChar infoChar = BattleManager.Instance.scUIInfoChar;
+    if (infoChar != null)
+    {
+      bool mostrandoEstaUnidad = infoChar.unidadMostrada == this;
+      bool mostrandoActivoAutomatico = !infoChar.hayUnidadSeleccionadaParaInfo && BattleManager.Instance.unidadActiva == this;
+      if (mostrandoEstaUnidad || mostrandoActivoAutomatico)
+      {
+        infoChar.ActualizarInfoChar(this);
+      }
+    }
+
     BattleManager.Instance.NotificarCambioValourGlobal();
   }
 }
@@ -3175,6 +3185,7 @@ public virtual void AplicarMotivado()
       //BUFF ---- Así se aplica un buff/debuff
        Buff motivado = new Buff();
        motivado.buffNombre = "Motivado";
+       motivado.suprimeTextoFlotante = true;
        motivado.boolfDebufftBuff = true;
        motivado.DuracionBuffRondas = -1;
        motivado.cantTsMental += 2;
@@ -3190,6 +3201,7 @@ public virtual void AplicarDesmotivado()
       //BUFF ---- Así se aplica un buff/debuff
        Buff motivado = new Buff();
        motivado.buffNombre = "Desmotivado";
+       motivado.suprimeTextoFlotante = true;
        motivado.boolfDebufftBuff = false;
        motivado.DuracionBuffRondas = -1;
        motivado.cantTsMental -= 2;
@@ -3205,6 +3217,7 @@ public virtual void AplicarEuforico()
       //BUFF ---- Así se aplica un buff/debuff
        Buff motivado = new Buff();
        motivado.buffNombre = "Euforia";
+       motivado.suprimeTextoFlotante = true;
        motivado.boolfDebufftBuff = true;
        motivado.DuracionBuffRondas = -1;
        motivado.cantAtFue += 1;
@@ -3220,6 +3233,7 @@ public virtual void AplicarDesesperanzado()
       //BUFF ---- Así se aplica un buff/debuff
        Buff motivado = new Buff();
        motivado.buffNombre = "Desesperanzado";
+       motivado.suprimeTextoFlotante = true;
        motivado.boolfDebufftBuff = false;
        motivado.DuracionBuffRondas = -1;
        motivado.cantAtFue -= 1;
@@ -3279,6 +3293,26 @@ public virtual void AplicarDesesperanzado()
     return floatingTextSlotLifetimeFallback;
   }
 
+  private float CalcularIntervaloTextoFlotante(float now)
+  {
+    float baseInterval = Mathf.Max(0f, floatingTextMinInterval);
+    if (baseInterval <= 0f)
+    {
+      return 0f;
+    }
+
+    float tiempoPendiente = Mathf.Max(0f, nextFloatingTextTime - now);
+    int textosPendientes = Mathf.CeilToInt(tiempoPendiente / baseInterval);
+    if (textosPendientes < Mathf.Max(1, floatingTextCrowdThreshold))
+    {
+      return baseInterval;
+    }
+
+    float extra = (textosPendientes - floatingTextCrowdThreshold + 1) * Mathf.Max(0f, floatingTextCrowdIntervalStep);
+    extra = Mathf.Clamp(extra, 0f, Mathf.Max(0f, floatingTextCrowdExtraIntervalMax));
+    return baseInterval + extra;
+  }
+
   public async Task GenerarTextoFlotante(string txString, Color color, FloatingTextContext contexto = FloatingTextContext.Generic, TextMeshProUGUI overrideText = null)
   {
 
@@ -3287,11 +3321,12 @@ public virtual void AplicarDesesperanzado()
     if (floatingTextMinInterval > 0f)
     {
       float now = Time.time;
+      float intervaloActual = CalcularIntervaloTextoFlotante(now);
       if (now < nextFloatingTextTime)
       {
         delaySeconds = nextFloatingTextTime - now;
       }
-      nextFloatingTextTime = Mathf.Max(nextFloatingTextTime, now) + floatingTextMinInterval;
+      nextFloatingTextTime = Mathf.Max(nextFloatingTextTime, now) + intervaloActual;
     }
 
     if (delaySeconds > 0f)
@@ -3639,7 +3674,7 @@ public void Marcar(int n)
 
 }
 
-  public void MostrarProbabilidad(float? probabilidad)
+  public void MostrarProbabilidad(float? probabilidad, string textoPersonalizado = null)
   {
     if (scUnidadCanvas == null)
     {
@@ -3660,7 +3695,9 @@ public void Marcar(int n)
     if (scUnidadCanvas.txtProbabilidad != null)
     {
       float valor = Mathf.Clamp01(probabilidad.Value);
-      string texto = Mathf.RoundToInt(valor * 100f)+TRADU.i.Traducir(" % Chances");
+      string texto = string.IsNullOrEmpty(textoPersonalizado)
+        ? Mathf.RoundToInt(valor * 100f) + TRADU.i.Traducir(" % Chances")
+        : textoPersonalizado;
       if (scUnidadCanvas.txtProbabilidad.text != texto)
       {
         scUnidadCanvas.txtProbabilidad.text = texto;

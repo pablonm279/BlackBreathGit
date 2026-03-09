@@ -94,8 +94,12 @@ public class Estados : MonoBehaviour
 
     if (unidad.estado_armaduraModificador > 0)
     {
-      unidad.estado_armaduraModificador--;
-      BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre + TRADU.i.Traducir(" regenera ") + unidad.estado_regeneraarmadura + TRADU.i.Traducir(" Armadura.")));
+      int armaduraRecuperada = Mathf.Min(unidad.estado_armaduraModificador, unidad.estado_regeneraarmadura);
+      if (armaduraRecuperada > 0)
+      {
+        unidad.estado_armaduraModificador -= armaduraRecuperada;
+        BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre + TRADU.i.Traducir(" regenera ") + armaduraRecuperada + TRADU.i.Traducir(" Armadura.")));
+      }
     }
 
     BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
@@ -132,7 +136,8 @@ public class Estados : MonoBehaviour
     BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" recibe ") + (1*unidad.estado_veneno) + TRADU.i.Traducir(" daño veneno.")));
 
 
-   if(unidad.TiradaSalvacion(unidad.mod_TSFortaleza, 7+unidad.estado_veneno)) //Cada turno se puede salvar del veneno, pero si peirde se suma 1 stack
+   bool noSeSalva = unidad.TiradaSalvacion(unidad.mod_TSFortaleza, 7+unidad.estado_veneno);
+   if(!noSeSalva) //Cada turno se puede salvar del veneno; si falla, se suma 1 stack.
    {
      unidad.estado_veneno = 0; unidad.GenerarTextoFlotante("<s>" + TRADU.i.Traducir("Veneno") + "</s>", Color.green);
     BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" resiste totalmente al veneno.")));

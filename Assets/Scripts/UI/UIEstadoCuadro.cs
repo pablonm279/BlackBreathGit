@@ -8,7 +8,6 @@ using Unity.VisualScripting;
 
 public class UIEstadoCuadro : MonoBehaviour
 {
-
   public int indexEstadoRepresentado;
   private Image Retrato;
 
@@ -21,6 +20,14 @@ public class UIEstadoCuadro : MonoBehaviour
   {
     Retrato = gameObject.GetComponent<Image>();
 
+  }
+
+  private void AsegurarRetrato()
+  {
+    if (Retrato == null)
+    {
+      Retrato = gameObject.GetComponent<Image>();
+    }
   }
 
   public Sprite imArdiendo;
@@ -158,6 +165,7 @@ public class UIEstadoCuadro : MonoBehaviour
   }
   public void RepresentarBuff(Buff buff, bool desdeBarraVida = false, int stackCount = 1)
   {
+    AsegurarRetrato();
     debarravida = desdeBarraVida;
     if (textStacks != null)
     {
@@ -165,9 +173,21 @@ public class UIEstadoCuadro : MonoBehaviour
     }
 
     textTooltip.text = GenerarDescripcionBuff(buff); //Efectos del buff
-    if (Retrato != null && imBuff != null && imDebuff != null)
+    if (Retrato != null)
     {
-      if (buff.boolfDebufftBuff) { Retrato.sprite = imBuff; } else { Retrato.sprite = imDebuff; }
+      Sprite sprite = null;
+      if(buff.boolfDebufftBuff )
+      {
+        sprite = imBuff;
+      }
+       else
+      {
+        sprite = imDebuff;
+      }
+
+     
+        Retrato.sprite = sprite;
+      
     }
   }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using System.Data;
 using System;
+using System.Threading;
 using UnityEngine.UI;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
@@ -35,10 +36,7 @@ public class CampaignManager : MonoBehaviour
   public AudioClip sfxMovimientoCaravana;
   [Range(0f, 1f)] public float sfxMovimientoVolumen = 0.8f;
   private AudioSource sfxMovimientoSource;
-  private const float SfxDuracionFactorBase = 1.15f;
-  private const float SfxDuracionFactorTerrenoEspecial = 1.30f;
-  private const float SfxPitchBase = 1f / SfxDuracionFactorBase;
-  private const float SfxPitchTerrenoEspecial = 1f / SfxDuracionFactorTerrenoEspecial;
+  private Coroutine rutinaDesvanecerSfxMovimiento;
 
   public int sequitoHerrerosMantArmas;
   public int sequitoHerrerosMantArmaduras;
@@ -80,9 +78,12 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private float yStackOffset = 28f;            // desplazamiento vertical entre mensajes simultáneos
   [SerializeField] private float stackWindowSeconds = 1.2f;     // ventana donde consideramos mensajes "cercanos" al origen
   private readonly Queue<(string, Color)> colaTextos = new Queue<(string, Color)>();
+  private readonly SemaphoreSlim serializacionTextosRecursos = new SemaphoreSlim(1, 1);
   private bool procesandoCola;
   private float tiempoUltimoSpawn = -9999f;
   private readonly List<float> recentSpawnTimes = new List<float>();
+  private bool resolviendoJefeZona;
+  private bool abriendoCiudadPuerto;
   private void Awake()
   {
     if (Instance != null)
@@ -181,8 +182,6 @@ public class CampaignManager : MonoBehaviour
     {
       CrearAcechador();
     }
-  
-
     AjustarDificultad();
    
 
@@ -210,6 +209,19 @@ public class CampaignManager : MonoBehaviour
     MenuOpciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
   }
 
+  private async void EjecutarTareaSegura(Task tarea, string contexto)
+  {
+    try
+    {
+      await tarea;
+    }
+    catch (Exception ex)
+    {
+      Debug.LogError($"[CampaignManager] Error en {contexto}.");
+      Debug.LogException(ex, this);
+    }
+  }
+
   public void ForzarTiradaClima()
   {
     menuDescanso.GetComponent<MenuDescanso>().TiradaClima();
@@ -221,7 +233,6 @@ public class CampaignManager : MonoBehaviour
   {
 
     bool sePrevieneAvanceAliento = false;
-    bool terrenoDificil = destino != null && destino.costoMovimiento > 1;
     nodoDestinoActual = destino;
     sunController.OnTravelStart(); // duración en segundos
     animCaravana.SetBool("IsWalking", true);
@@ -235,8 +246,13 @@ public class CampaignManager : MonoBehaviour
         sfxMovimientoSource.playOnAwake = false;
         sfxMovimientoSource.loop = true;
       }
+      if (rutinaDesvanecerSfxMovimiento != null)
+      {
+        StopCoroutine(rutinaDesvanecerSfxMovimiento);
+        rutinaDesvanecerSfxMovimiento = null;
+      }
       sfxMovimientoSource.volume = sfxMovimientoVolumen;
-      sfxMovimientoSource.pitch = (terrenoDificil || viajeSubterraneo) ? SfxPitchTerrenoEspecial : SfxPitchBase;
+      sfxMovimientoSource.pitch = 1f;
       if (sfxMovimientoSource.clip != sfxMovimientoCaravana)
         sfxMovimientoSource.clip = sfxMovimientoCaravana;
       if (!sfxMovimientoSource.isPlaying)
@@ -274,7 +290,7 @@ public class CampaignManager : MonoBehaviour
     numeroTurno++;
     if (destino.costoMovimiento > 1)
     {
-      EscribirLog(TRADU.i.Traducir("-El viaje por el camino escarpado ha demorado la caravana. +") + destino.costoMovimiento + TRADU.i.Traducir(" Avance del Aliento Negro"));
+      EscribirLog(TRADU.i.Traducir("-El viaje por el camino sinuoso ha retrasado la caravana. +") + destino.costoMovimiento + TRADU.i.Traducir(" Avance del Aliento Negro"));
     }
 
     //Si Nieva, avanza 1 mas el élito
@@ -334,14 +350,66 @@ public class CampaignManager : MonoBehaviour
 
   public MenuBatallas scMenuBatallas;
   public GameObject goMenuBatallas;
+  public void DesvanecerSonidoMovimientoCaravana(float duracion)
+  {
+    if (sfxMovimientoSource == null || !sfxMovimientoSource.isPlaying)
+    {
+      return;
+    }
+
+    if (rutinaDesvanecerSfxMovimiento != null)
+    {
+      StopCoroutine(rutinaDesvanecerSfxMovimiento);
+    }
+
+    rutinaDesvanecerSfxMovimiento = StartCoroutine(DesvanecerSonidoMovimientoCaravanaCoroutine(Mathf.Max(0.05f, duracion)));
+  }
+
+  private IEnumerator DesvanecerSonidoMovimientoCaravanaCoroutine(float duracion)
+  {
+    if (sfxMovimientoSource == null)
+    {
+      rutinaDesvanecerSfxMovimiento = null;
+      yield break;
+    }
+
+    float volumenInicial = sfxMovimientoSource.volume;
+    float tiempo = 0f;
+
+    while (tiempo < duracion && sfxMovimientoSource != null && sfxMovimientoSource.isPlaying)
+    {
+      tiempo += Time.deltaTime;
+      float t = Mathf.Clamp01(tiempo / duracion);
+      sfxMovimientoSource.volume = Mathf.Lerp(volumenInicial, 0f, t);
+      yield return null;
+    }
+
+    if (sfxMovimientoSource != null)
+    {
+      sfxMovimientoSource.Stop();
+      sfxMovimientoSource.volume = sfxMovimientoVolumen;
+      sfxMovimientoSource.pitch = 1f;
+    }
+
+    rutinaDesvanecerSfxMovimiento = null;
+  }
+
   public void LlegarANodo(int ID, int posX, Nodo nodo)
   {
     
     // Detiene el sonido de movimiento al llegar al nodo
+    if (rutinaDesvanecerSfxMovimiento != null)
+    {
+      StopCoroutine(rutinaDesvanecerSfxMovimiento);
+      rutinaDesvanecerSfxMovimiento = null;
+    }
     if (sfxMovimientoSource != null && sfxMovimientoSource.isPlaying)
       sfxMovimientoSource.Stop();
     if (sfxMovimientoSource != null)
+    {
+      sfxMovimientoSource.volume = sfxMovimientoVolumen;
       sfxMovimientoSource.pitch = 1f;
+    }
 
     animCaravana.SetBool("IsWalking", false);
     
@@ -532,7 +600,7 @@ public class CampaignManager : MonoBehaviour
     }
 
 
-    BosqueArdienteMecanicaIncendio(50);
+    BosqueArdienteMecanicaIncendio(35);
     PasoVientoHeladoMecanicaRituales(30);
 
 
@@ -578,8 +646,21 @@ public class CampaignManager : MonoBehaviour
   }
 
   // Llamar desde el resultado de la Batalla Final (jefe derrotado)
-  public async void OnDerrotadoJefeZona()
+  public void OnDerrotadoJefeZona()
   {
+    EjecutarTareaSegura(OnDerrotadoJefeZonaAsync(), nameof(OnDerrotadoJefeZona));
+  }
+
+  private async Task OnDerrotadoJefeZonaAsync()
+  {
+    if (resolviendoJefeZona)
+    {
+      return;
+    }
+
+    resolviendoJefeZona = true;
+    try
+    {
     if (scAtributosZona.FASE < 3) //Zona completada pero no es la final
     {
 
@@ -597,17 +678,39 @@ public class CampaignManager : MonoBehaviour
     }
     else
     {
-      AbrirCiudadPuerto();
+      await AbrirCiudadPuertoAsync();
     }
-
+    }
+    finally
+    {
+      resolviendoJefeZona = false;
+    }
   }
 
-  public async void AbrirCiudadPuerto()
+  public void AbrirCiudadPuerto()
   {
-      goLogCampania.SetActive(false);
-      scAdministradorEscenas.PlayFadeInOut(1.2f, 2.0f);
-      await Task.Delay(2200);
-      goMenuPuerto.SetActive(true);
+    EjecutarTareaSegura(AbrirCiudadPuertoAsync(), nameof(AbrirCiudadPuerto));
+  }
+
+  private async Task AbrirCiudadPuertoAsync()
+  {
+      if (abriendoCiudadPuerto)
+      {
+        return;
+      }
+
+      abriendoCiudadPuerto = true;
+      try
+      {
+        goLogCampania.SetActive(false);
+        scAdministradorEscenas.PlayFadeInOut(1.2f, 2.0f);
+        await Task.Delay(2200);
+        goMenuPuerto.SetActive(true);
+      }
+      finally
+      {
+        abriendoCiudadPuerto = false;
+      }
   }
 
   public void ContinuarASiguienteZona()
@@ -692,11 +795,10 @@ public class CampaignManager : MonoBehaviour
       {
         int random = UnityEngine.Random.Range(1, 3);
         Nodo nodoRitual = ObtenerNodoFuturoAleatorio(random);
-        nodoRitual.tipoNodo = 15; // Nodo Ritual
-        nodoRitual.ActivarNodoVisual(15, false, true);
-
         if (nodoRitual != null && !nodoRitual.nodoRitual)
         {
+          nodoRitual.tipoNodo = 15; // Nodo Ritual
+          nodoRitual.ActivarNodoVisual(15, false, true);
           nodoRitual.ActivarRitual();
           CambiarEsperanzaActual(-5);
           EscribirLog(TRADU.i.Traducir("<color=#6A0DAD>-Un ritual Kale'Tav ha comenzado en un nodo cercano. La másica profana desalienta a la caravana. -5 Esperanza.</color>"));
@@ -1419,17 +1521,16 @@ public class CampaignManager : MonoBehaviour
   {
     return EsperanzaActual;
   }
-  public async void CambiarEsperanzaActual(int esperanza)
+  public void CambiarEsperanzaActual(int esperanza)
+  {
+    EjecutarTareaSegura(CambiarEsperanzaActualAsync(esperanza), nameof(CambiarEsperanzaActual));
+  }
+
+  private async Task CambiarEsperanzaActualAsync(int esperanza)
   {
     int esperanzaAnterior = EsperanzaActual;
-    EsperanzaActual += esperanza;
-    int esperanzaNueva = EsperanzaActual;
-    await GenerarTextoRecursos(esperanza, valueEsperanza.gameObject, false);
-
-
-
-    if (EsperanzaActual < 0) { EsperanzaActual = 0; }
-    if (EsperanzaActual > 100) { EsperanzaActual = 100; }
+    EsperanzaActual = Mathf.Clamp(EsperanzaActual + esperanza, 0, 100);
+    int esperanzaAplicada = EsperanzaActual - esperanzaAnterior;
 
     if (EsperanzaActual >= 0 && EsperanzaActual <= 10)
     {
@@ -1469,6 +1570,9 @@ public class CampaignManager : MonoBehaviour
 
     if (EsperanzaActual < 20) { alertaEsperanza.SetActive(true); }
     else { alertaEsperanza.SetActive(false); }
+
+    GameObject textoOrigen = valueEsperanza != null ? valueEsperanza.gameObject : null;
+    await GenerarTextoRecursos(esperanzaAplicada, textoOrigen, false);
   }
 
 
@@ -1480,13 +1584,16 @@ public class CampaignManager : MonoBehaviour
   {
     return civilesActuales;
   }
-  public async void CambiarCivilesActuales(int civiles)
+  public void CambiarCivilesActuales(int civiles)
   {
-    civilesActuales += civiles;
-    await GenerarTextoRecursos(civiles, valueCiviles.gameObject, true);
+    EjecutarTareaSegura(CambiarCivilesActualesAsync(civiles), nameof(CambiarCivilesActuales));
+  }
 
-
-    if (civilesActuales < 0) { civilesActuales = 0; }
+  private async Task CambiarCivilesActualesAsync(int civiles)
+  {
+    int civilesAnteriores = civilesActuales;
+    civilesActuales = Mathf.Max(0, civilesActuales + civiles);
+    int civilesAplicados = civilesActuales - civilesAnteriores;
     valueCiviles.text = "" + civilesActuales;
 
     GetMiliciasActual();
@@ -1499,6 +1606,8 @@ public class CampaignManager : MonoBehaviour
     scMapaManager.goCaravanafollower5.SetActive(civilesActuales > 140);
     scMapaManager.goCaravanafollower6.SetActive(civilesActuales > 180);
 
+    GameObject textoOrigen = valueCiviles != null ? valueCiviles.gameObject : null;
+    await GenerarTextoRecursos(civilesAplicados, textoOrigen, true);
   }
 
   //Milicias
@@ -1539,15 +1648,24 @@ public class CampaignManager : MonoBehaviour
 
   }
 
-  public async void CambiarBueyesActuales(int bueyes)
+  public void CambiarBueyesActuales(int bueyes)
   {
-    BueyesActuales += bueyes;
-    await GenerarTextoRecursos(bueyes, valueBueyes.gameObject, false);
+    EjecutarTareaSegura(CambiarBueyesActualesAsync(bueyes), nameof(CambiarBueyesActuales));
+  }
+
+  private async Task CambiarBueyesActualesAsync(int bueyes)
+  {
+    int bueyesAnteriores = BueyesActuales;
+    BueyesActuales = Mathf.Max(0, BueyesActuales + bueyes);
+    int bueyesAplicados = BueyesActuales - bueyesAnteriores;
 
     CargaMaxActual = GetCapacidadDeCargaActual();
     valueCargaMax.text = "/" + CargaMaxActual + ")";
     valueCargaLlevada.text = "(" + GetCargaLlevadaActual() + "";
     valueBueyes.text = "" + BueyesActuales;
+
+    GameObject textoOrigen = valueBueyes != null ? valueBueyes.gameObject : null;
+    await GenerarTextoRecursos(bueyesAplicados, textoOrigen, false);
   }
 
   public int GetCargaLlevadaActual()
@@ -1592,16 +1710,21 @@ public class CampaignManager : MonoBehaviour
   {
     return SuministrosActuales;
   }
-  public async void CambiarSuministrosActuales(int suministros)
+  public void CambiarSuministrosActuales(int suministros)
   {
-    SuministrosActuales += suministros;
-    await GenerarTextoRecursos(suministros, valueSuministros.gameObject, false);
+    EjecutarTareaSegura(CambiarSuministrosActualesAsync(suministros), nameof(CambiarSuministrosActuales));
+  }
 
+  private async Task CambiarSuministrosActualesAsync(int suministros)
+  {
+    int suministrosAnteriores = SuministrosActuales;
+    SuministrosActuales = Mathf.Max(0, SuministrosActuales + suministros);
+    int suministrosAplicados = SuministrosActuales - suministrosAnteriores;
     float consumo = GetCivilesActual() + GetBueyesActual() * 2;
     valueSuministros.text = "" + SuministrosActuales;
 
     // Calcula cuántos días alcanzan los suministros actuales
-    int diasSuministros = Mathf.FloorToInt(SuministrosActuales / consumo);
+    int diasSuministros = consumo > 0f ? Mathf.FloorToInt(SuministrosActuales / consumo) : 0;
 
 
     switch (TRADU.i.nIdioma)
@@ -1631,6 +1754,8 @@ public class CampaignManager : MonoBehaviour
     if (SuministrosActuales < GetCivilesActual()) { alertaSuministros.SetActive(true); }
     else { alertaSuministros.SetActive(false); }
 
+    GameObject textoOrigen = valueSuministros != null ? valueSuministros.gameObject : null;
+    await GenerarTextoRecursos(suministrosAplicados, textoOrigen, false);
   }
 
   public GameObject alertaSuministros;
@@ -1655,12 +1780,21 @@ public class CampaignManager : MonoBehaviour
   {
     return MaterialesActuales;
   }
-  public async void CambiarMaterialesActuales(int Materiales)
+  public void CambiarMaterialesActuales(int Materiales)
   {
-    MaterialesActuales += Materiales;
-    await GenerarTextoRecursos(Materiales, valueMateriales.gameObject, false);
+    EjecutarTareaSegura(CambiarMaterialesActualesAsync(Materiales), nameof(CambiarMaterialesActuales));
+  }
+
+  private async Task CambiarMaterialesActualesAsync(int Materiales)
+  {
+    int materialesAnteriores = MaterialesActuales;
+    MaterialesActuales = Mathf.Max(0, MaterialesActuales + Materiales);
+    int materialesAplicados = MaterialesActuales - materialesAnteriores;
     valueMateriales.text = "" + MaterialesActuales;
     GetCargaLlevadaActual();
+
+    GameObject textoOrigen = valueMateriales != null ? valueMateriales.gameObject : null;
+    await GenerarTextoRecursos(materialesAplicados, textoOrigen, false);
   }
   public void AbandonarMateriales()
   {
@@ -1681,19 +1815,34 @@ public class CampaignManager : MonoBehaviour
   {
     return OroActuales;
   }
-  public async void CambiarOroActual(int Oro)
+  public void CambiarOroActual(int Oro)
   {
-    OroActuales += Oro;
-    await GenerarTextoRecursos(Oro, valueOro.gameObject, true);
+    EjecutarTareaSegura(CambiarOroActualAsync(Oro), nameof(CambiarOroActual));
+  }
 
+  private async Task CambiarOroActualAsync(int Oro)
+  {
+    int oroAnterior = OroActuales;
+    OroActuales = Mathf.Max(0, OroActuales + Oro);
+    int oroAplicado = OroActuales - oroAnterior;
     valueOro.text = "" + OroActuales;
 
+    GameObject textoOrigen = valueOro != null ? valueOro.gameObject : null;
+    await GenerarTextoRecursos(oroAplicado, textoOrigen, true);
   }
   #endregion
 
 
   async Task GenerarTextoRecursos(int cantidad, GameObject textoOrigen, bool efectoRetraso)
   {
+    if (cantidad == 0 || prefabTextoRecursos == null || textoOrigen == null)
+    {
+      return;
+    }
+
+    await serializacionTextosRecursos.WaitAsync();
+    try
+    {
     // Encuentra todos los objetos existentes del prefab scUnidadCanvas.PrefabtxtDaño
     GameObject[] existingTextObjects = GameObject.FindGameObjectsWithTag(prefabTextoRecursos.tag);
 
@@ -1704,6 +1853,11 @@ public class CampaignManager : MonoBehaviour
 
     // Espera el tiempo calculado
     await Task.Delay(totalDelay);
+
+    if (this == null || prefabTextoRecursos == null || textoOrigen == null)
+    {
+      return;
+    }
 
     // Instancia el nuevo objeto
     GameObject goTextoFlotante = Instantiate(prefabTextoRecursos, textoOrigen.transform, false);
@@ -1727,8 +1881,11 @@ public class CampaignManager : MonoBehaviour
       txtMesh.text = "" + cantidad;
       txtMesh.color = new Color(0.7f, 0.1f, 0.2f); ;
     }
-
-
+    }
+    finally
+    {
+      serializacionTextosRecursos.Release();
+    }
   }
 
   #region Tooltips

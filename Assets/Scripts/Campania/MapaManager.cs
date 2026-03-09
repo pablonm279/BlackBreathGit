@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class MapaManager : MonoBehaviour
 {
-    
+    bool inicioCompletado;
+    bool generacionDiferidaPendiente;
+
     public ContenedorDeNodos scContenedordeNodos;
 
     public Nodo nodoActual;
@@ -18,7 +20,11 @@ public class MapaManager : MonoBehaviour
 
     void Start()
     {
-       GenerarNodos();
+       inicioCompletado = true;
+       if (!generacionDiferidaPendiente)
+       {
+           StartCoroutine(GenerarNodosDiferido());
+       }
     }
 
     
@@ -26,6 +32,18 @@ public class MapaManager : MonoBehaviour
 
   public void GenerarNodos()
   {
+       if (scContenedordeNodos == null) return;
+
+       if (!inicioCompletado)
+       {
+           if (!generacionDiferidaPendiente)
+           {
+               StartCoroutine(GenerarNodosDiferido());
+           }
+           return;
+       }
+
+       scContenedordeNodos.RecolectarNodos();
 
        int zonaId = -1;
        if (CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null)
@@ -34,15 +52,22 @@ public class MapaManager : MonoBehaviour
        }
 
        Nodo origen = scContenedordeNodos.ObtenerNodoSegunXY(0,0);
-        if (origen != null)
-        {
-            origen.DeterminarConexiones();
-            nodoActual = origen;
-            ForzarNodosObligatorios(zonaId);
-            DesactivarNodosSinUsar(zonaId);
+       if (origen == null) return;
+       if (origen.yatiroConexiones)
+       {
+           if (nodoActual == null)
+           {
+               nodoActual = origen;
+           }
+           return;
+       }
 
-            origen.PosicionarObjetoEnNodo(goCaravana);
-        }
+       PrepararNodosParaGeneracion();
+       origen.DeterminarConexiones();
+       nodoActual = origen;
+       ForzarNodosObligatorios(zonaId);
+       DesactivarNodosSinUsar(zonaId);
+       origen.PosicionarObjetoEnNodo(goCaravana);
   }
 
     // Reset total del mapa y regeneración para la siguiente zona
@@ -64,9 +89,23 @@ public class MapaManager : MonoBehaviour
         {
             Destroy(objeto);
         }
-        
+    }
 
+    IEnumerator GenerarNodosDiferido()
+    {
+        generacionDiferidaPendiente = true;
+        yield return null;
+        generacionDiferidaPendiente = false;
+        GenerarNodos();
+    }
 
+    void PrepararNodosParaGeneracion()
+    {
+        foreach (Nodo nodo in scContenedordeNodos.listTodosNodos)
+        {
+            if (nodo == null) continue;
+            nodo.PrepararCostoMovimientoParaGeneracion();
+        }
     }
 
     void DesactivarNodosSinUsar(int zonaId)

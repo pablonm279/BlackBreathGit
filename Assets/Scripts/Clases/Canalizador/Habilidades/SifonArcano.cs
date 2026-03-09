@@ -153,6 +153,27 @@ public class SifonArcano : Habilidad
       }
      
     }
+
+  protected override float? CalcularProbabilidadEspecialSobreObjetivo(Unidad objetivo)
+  {
+    if (objetivo == null || scEstaUnidad == null)
+    {
+      return null;
+    }
+
+    float dc = 8 + scEstaUnidad.mod_CarPoder;
+    if (NIVEL > 2)
+    {
+      dc += 1;
+    }
+
+    return CalcularProbabilidadFallarTS(objetivo.mod_TSFortaleza, dc);
+  }
+
+  protected override string ObtenerTextoProbabilidadSobreObjetivo(Unidad objetivo, float probabilidad)
+  {
+    return FormatearTextoProbabilidadExito(probabilidad);
+  }
     
        void VFXAplicar(GameObject objetivo)
   {

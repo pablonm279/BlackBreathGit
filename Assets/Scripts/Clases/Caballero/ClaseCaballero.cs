@@ -125,6 +125,7 @@ public class ClaseCaballero : Unidad
       //BUFF ---- Así se aplica un buff/debuff
        Buff motivado = new Buff();
        motivado.buffNombre = "Motivado";
+       motivado.suprimeTextoFlotante = true;
        motivado.boolfDebufftBuff = true;
        motivado.DuracionBuffRondas = -1;
        motivado.cantTsMental += 2;
@@ -146,6 +147,7 @@ public class ClaseCaballero : Unidad
       //BUFF ---- Así se aplica un buff/debuff
        Buff motivado = new Buff();
        motivado.buffNombre = "Euforia";
+       motivado.suprimeTextoFlotante = true;
        motivado.boolfDebufftBuff = true;
        motivado.DuracionBuffRondas = -1;
        motivado.cantAtFue += 1;

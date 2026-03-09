@@ -29,6 +29,8 @@ public class Nodo : MonoBehaviour
   public GameObject linePrefab;          // Debe traer LineRenderer
   public float lineWidth = 0.6f;         // Ancho de la cinta (CaminoMesh)
   public float lineHeightOffset = 0.02f; // Evitar z-fighting
+  const float CaminoAnchoBaseMultiplicador = 0.75f;
+  const float CaminoAnchoDificilMultiplicador = 0.62f;
 
   // Materiales
   public Material MaterialCaminoOriginal;
@@ -332,6 +334,7 @@ public class Nodo : MonoBehaviour
     if (DestinosPosibles.Contains(nodoB)) return;
 
     Nodo nodoA = this;
+    bool esCaminoDificil = !esPorAbajo && nodoB.costoMovimiento > 1;
     nodoA.DestinosPosibles.Add(nodoB);
     cantidadConexiones++;
 
@@ -369,6 +372,10 @@ public class Nodo : MonoBehaviour
       // atajo: curva notoria
       outward = UnityEngine.Random.Range(2.3f, 3.2f);
     }
+    else if (esCaminoDificil)
+    {
+      outward = UnityEngine.Random.Range(0.48f, 0.82f);
+    }
     else
     {
       // 30% de probabilidad de una curvatura más pronunciada también para no-atajo
@@ -380,7 +387,7 @@ public class Nodo : MonoBehaviour
 
     // Evitar que los primeros 2 ramos salgan muy curvos
     if (!esPorAbajo && cantidadConexiones < 2)
-      outward *= 0.75f;
+      outward *= esCaminoDificil ? 0.9f : 0.75f;
 
     float sideSign = UnityEngine.Random.value < 0.5f ? -1f : 1f;
 
@@ -396,7 +403,12 @@ public class Nodo : MonoBehaviour
     Vector3 p2 = p3 - dir * (dist * (1f - t2)) + perp * (sideSign * outward * (0.35f + 0.65f * Mathf.Abs(jitter2)));
 
     // Curva Bézier: SIEMPRE PLANA en Y (evita hundirse bajo el suelo)
-    int resolution = 20;
+    int resolution = esCaminoDificil ? 28 : 20;
+    float frecuenciaCaminoSinuoso = esCaminoDificil ? UnityEngine.Random.Range(1.7f, 2.25f) : 0f;
+    float amplitudCaminoSinuoso = esCaminoDificil ? Mathf.Min(dist * 0.055f, UnityEngine.Random.Range(0.14f, 0.24f)) : 0f;
+    float caosCaminoSinuoso = esCaminoDificil ? UnityEngine.Random.Range(0.018f, 0.055f) : 0f;
+    float faseCaminoSinuoso = esCaminoDificil ? UnityEngine.Random.Range(0f, Mathf.PI * 2f) : 0f;
+    float semillaCaosCaminoSinuoso = esCaminoDificil ? UnityEngine.Random.Range(0f, 100f) : 0f;
     lineRenderer.positionCount = resolution;
     for (int i = 0; i < resolution; i++)
     {
@@ -407,13 +419,19 @@ public class Nodo : MonoBehaviour
       float yPlano = Mathf.Lerp(p0.y, p3.y, t);
       point.y = yPlano; // <- clave: no hundimos ni subimos secciones
 
+      if (esCaminoDificil && i > 0 && i < resolution - 1)
+      {
+        point += perp * CalcularDesvioCaminoSinuoso(t, frecuenciaCaminoSinuoso, amplitudCaminoSinuoso, caosCaminoSinuoso, faseCaminoSinuoso, semillaCaosCaminoSinuoso);
+        point.y = yPlano;
+      }
+
       lineRenderer.SetPosition(i, point);
     }
 
     // Construir malla plana del camino
     var caminoMesh = lineObject.GetComponent<CaminoMesh>();
     if (caminoMesh == null) caminoMesh = lineObject.AddComponent<CaminoMesh>();
-    //  caminoMesh.width   = lineWidth;
+    caminoMesh.SetWidth(ObtenerAnchoVisualCamino(esCaminoDificil));
     // caminoMesh.yOffset = lineHeightOffset;                // 0.02 aprox
     caminoMesh.RebuildFromLine();
 
@@ -501,13 +519,6 @@ public class Nodo : MonoBehaviour
 
   public void MoverJugadorANodo(Nodo nodoOrigen, Nodo nodoDestino)
   {
-    velocidadMovimiento = 0.6f + 0.6f / nodoDestino.costoMovimiento;
-    int cansancio = CampaignManager.Instance.GetFatigaActual();
-
-
-    velocidadMovimiento -= cansancio * 0.07f; //Factor cansancio en velocidad
-
-
     if (nodoDestino == null || !nodoOrigen.DestinosPosibles.Contains(nodoDestino))
     {
       Debug.LogWarning("Nodo destino no vélido o no está en la lista de destinos posibles.");
@@ -515,6 +526,12 @@ public class Nodo : MonoBehaviour
     }
 
     // Buscar línea
+    const float multiplicadorVelocidadMinimaFatiga = 0.6f;
+    float velocidadBase = 0.75f + 0.6f / nodoDestino.costoMovimiento;
+    int cansancio = CampaignManager.Instance.GetFatigaActual();
+    float velocidadReducidaPorFatiga = velocidadBase - cansancio * 0.07f;
+    velocidadMovimiento = Mathf.Max(velocidadBase * multiplicadorVelocidadMinimaFatiga, velocidadReducidaPorFatiga);
+
     Transform lineaTransform = null;
     foreach (Transform child in nodoOrigen.transform)
     {
@@ -672,6 +689,46 @@ if (esLaLider)
     float tLocal = t * (resolution - 1) - indexA;
 
     return Vector3.Lerp(posicionA, posicionB, tLocal);
+  }
+
+  public void PrepararCostoMovimientoParaGeneracion()
+  {
+    costoMovimiento = 1;
+
+    if (posXNodo <= 1)
+    {
+      return;
+    }
+
+    if (UnityEngine.Random.Range(0, 100) < 20)
+    {
+      costoMovimiento = 2;
+    }
+  }
+
+  private float ObtenerAnchoVisualCamino(bool esCaminoDificil)
+  {
+    return lineWidth * (esCaminoDificil ? CaminoAnchoDificilMultiplicador : CaminoAnchoBaseMultiplicador);
+  }
+
+  private static float CalcularDesvioCaminoSinuoso(float t, float frecuencia, float amplitud, float caos, float fase, float semilla)
+  {
+    const float inicioSinuosidad = 0.20f;
+    const float finSinuosidad = 0.80f;
+    const float suavizadoBorde = 0.1f;
+
+    if (t <= inicioSinuosidad || t >= finSinuosidad)
+    {
+      return 0f;
+    }
+
+    float tNormalizado = Mathf.InverseLerp(inicioSinuosidad, finSinuosidad, t);
+    float entrada = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((t - inicioSinuosidad) / suavizadoBorde));
+    float salida = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((finSinuosidad - t) / suavizadoBorde));
+    float envolvente = entrada * salida;
+    float zigzag = Mathf.Sin((tNormalizado * frecuencia * Mathf.PI * 2f) + fase) * amplitud * envolvente;
+    float ruido = (Mathf.PerlinNoise(semilla, tNormalizado * 4.5f) - 0.5f) * 2f * caos * envolvente;
+    return zigzag + ruido;
   }
 
   // --- Helper materiales: aplica al LR y a la malla ---
@@ -1297,6 +1354,7 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
 
     float totalLen = cumLen[n - 1];
     if (totalLen <= 0.0001f) yield break;
+    float duracionDesvanecidoSonido = Mathf.Lerp(0.12f, 0.32f, Mathf.InverseLerp(2.5f, 9f, totalLen));
 
     // Gap desde el Inspector (no lo pises con un local)
     float gap = Mathf.Max(0.0001f, this.gapDist);
@@ -1352,6 +1410,7 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
 
     float elapsed = 0f;
     bool leaderArrived = false;
+    bool sonidoMovimientoDesvanecido = false;
     float speedFactorSmoothed = minSpeedFactor;
     const float speedSmooth = 10f; // subí a 12-16 si aún hay tirán
     
@@ -1361,6 +1420,7 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
       {
       float dt = Time.deltaTime;
       elapsed += dt;
+      bool leaderArrivedPrevio = leaderArrived;
 
       // Factor de aceleración inicial
       float easeIn = (easeInTime <= 0.0001f) ? 1f : Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / easeInTime));
@@ -1423,6 +1483,12 @@ float step = Mathf.Max(0f, velocidadMovimiento) * dt * speedFactorSmoothed;
           leaderS = totalLen;
           leaderArrived = true;
         }
+      }
+
+      if (leaderArrived && !leaderArrivedPrevio && !sonidoMovimientoDesvanecido && CampaignManager.Instance != null)
+      {
+        CampaignManager.Instance.DesvanecerSonidoMovimientoCaravana(duracionDesvanecidoSonido);
+        sonidoMovimientoDesvanecido = true;
       }
 
       Vector3 leaderPosCamino = PointAtDistance(pts, segLen, cumLen, leaderS);

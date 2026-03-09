@@ -40,6 +40,7 @@ public class MenuDescanso : MonoBehaviour
   public int chancesAtaqueACaravana;
   private int chancesExploracion;
   private int tareaCivilSeleccionada;
+  private bool descansoEnCurso;
 
   float valor = 0;
   public void SeleccionarActividadCivil(int n)
@@ -261,9 +262,34 @@ public class MenuDescanso : MonoBehaviour
 
   }
 
+  public void Descansar()
+  {
+    EjecutarDescansoSeguro();
+  }
 
+  private async void EjecutarDescansoSeguro()
+  {
+    if (descansoEnCurso)
+    {
+      return;
+    }
 
-  public async void Descansar()
+    descansoEnCurso = true;
+    try
+    {
+      await DescansarAsync();
+    }
+    catch (Exception ex)
+    {
+      Debug.LogException(ex, this);
+    }
+    finally
+    {
+      descansoEnCurso = false;
+    }
+  }
+
+  private async Task DescansarAsync()
   {
     bool enTutorial = CampaignManager.Instance.scTutorialManager != null &&
                       CampaignManager.Instance.scTutorialManager.tutorialActivo;
@@ -411,7 +437,7 @@ public class MenuDescanso : MonoBehaviour
 
 
     CampaignManager.Instance.BosqueArdienteMecanicaIncendio(30);
-    CampaignManager.Instance.BosqueArdienteMecanicaIncendio(40);
+    CampaignManager.Instance.BosqueArdienteMecanicaIncendio(20);
     CampaignManager.Instance.PasoVientoHeladoMecanicaRituales(30);
 
     int fatiga = CampaignManager.Instance.GetFatigaActual();
@@ -532,6 +558,7 @@ public class MenuDescanso : MonoBehaviour
 
     float randomEvento = UnityEngine.Random.Range(0, 100);
     float factorEventoBuenoMalo = 36 + CampaignManager.Instance.GetEsperanzaActual() / 3;
+    bool descansoEnNodoEvento = CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 2;
 
     CampaignManager.Instance.CambiarEsperanzaActual(CampaignManager.Instance.mejoraCaravanaTiendas * 5);
 
@@ -554,7 +581,7 @@ public class MenuDescanso : MonoBehaviour
       }
       else //no puede haber evento y emboscada
       {
-        if (!enTutorial)
+        if (!enTutorial && !descansoEnNodoEvento)
         {
           if (randomEvento < factorEventoBuenoMalo)
           {

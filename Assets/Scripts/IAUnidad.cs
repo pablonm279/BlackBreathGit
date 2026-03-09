@@ -25,6 +25,7 @@ public class IAUnidad : MonoBehaviour
    public List<IAHabilidad> HabPosibles = new List<IAHabilidad>();
    private const int MaxIntentosPorTurno = 8;
    private readonly List<Task> _habilidadesEnCurso = new List<Task>();
+   private bool _turnoIAEnCurso;
 
    private struct AITurnTimings
    {
@@ -59,8 +60,33 @@ public class IAUnidad : MonoBehaviour
       scUnidad = gameObject.GetComponent<Unidad>();
    
    }
-   public async void RealizarTurnoIA()
+   public void RealizarTurnoIA()
    {
+      EjecutarTurnoIASeguro();
+   }
+
+   private async void EjecutarTurnoIASeguro()
+   {
+      try
+      {
+         await RealizarTurnoIAAsync();
+      }
+      catch (Exception ex)
+      {
+         Debug.LogException(ex, this);
+      }
+   }
+
+   private async Task RealizarTurnoIAAsync()
+   {
+      if (_turnoIAEnCurso)
+      {
+         return;
+      }
+
+      _turnoIAEnCurso = true;
+      try
+      {
       if (scUnidad == null)
       {
          scUnidad = gameObject.GetComponent<Unidad>();
@@ -190,7 +216,6 @@ public class IAUnidad : MonoBehaviour
                else
                {
                   await ChequearCasillasAlrededorParaMover(destPosible, timings); // Intento alternativo para moverse
-                  scUnidad.CambiarAPActual(costoMovimientoAP); // Evita loops si no se mueve
                   turnoTerminado = await TerminarTurnoSeguro(false, timings, "sin casillas libres para moverse");
                   break;
                }
@@ -246,6 +271,11 @@ public class IAUnidad : MonoBehaviour
          {
             await TerminarTurnoSeguro(false, finTimings);
          }
+      }
+      }
+      finally
+      {
+         _turnoIAEnCurso = false;
       }
    }
 

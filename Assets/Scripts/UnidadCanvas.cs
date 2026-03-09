@@ -6,6 +6,8 @@ using TMPro;
 
 public class UnidadCanvas : MonoBehaviour
 {
+    private const string RutaFuenteTextoFlotanteDanio = "Fuentes/SpectralSC/TextoFlotanteDaño";
+    private const float EscalaTextoProbabilidad = 0.85f;
 
     public GameObject unidadCanvas;
     public TextMeshProUGUI txtDaño;
@@ -36,6 +38,7 @@ public class UnidadCanvas : MonoBehaviour
     private Coroutine barraVidaHealCoroutine;
     private RectTransform barraVidaFillRect;
     private Slider barraVidaSlider;
+    private TMP_FontAsset fuenteTextoProbabilidad;
 
     void Start()
     {
@@ -440,6 +443,7 @@ public class UnidadCanvas : MonoBehaviour
     {
         if (txtProbabilidad != null)
         {
+            ConfigurarTextoProbabilidad(txtProbabilidad);
             return;
         }
 
@@ -459,6 +463,7 @@ public class UnidadCanvas : MonoBehaviour
         }
 
         txtProbabilidad = goNuevo.GetComponent<TextMeshProUGUI>() ?? goNuevo.GetComponentInChildren<TextMeshProUGUI>();
+        ConfigurarTextoProbabilidad(txtProbabilidad);
 
         RectTransform rt = txtProbabilidad != null ? txtProbabilidad.GetComponent<RectTransform>() : null;
         if (rt != null)
@@ -469,6 +474,45 @@ public class UnidadCanvas : MonoBehaviour
         if (txtProbabilidad != null)
         {
             txtProbabilidad.gameObject.SetActive(false);
+        }
+    }
+
+    private void ConfigurarTextoProbabilidad(TextMeshProUGUI texto)
+    {
+        if (texto == null)
+        {
+            return;
+        }
+
+        TextMeshProUGUI textoReferencia = PrefabtxtDaño != null
+            ? (PrefabtxtDaño.GetComponent<TextMeshProUGUI>() ?? PrefabtxtDaño.GetComponentInChildren<TextMeshProUGUI>())
+            : null;
+
+        if (textoReferencia != null)
+        {
+            texto.font = textoReferencia.font;
+            texto.fontSharedMaterial = textoReferencia.fontSharedMaterial;
+            texto.fontSize = textoReferencia.fontSize * EscalaTextoProbabilidad;
+            texto.enableAutoSizing = textoReferencia.enableAutoSizing;
+            texto.fontSizeMin = textoReferencia.fontSizeMin * EscalaTextoProbabilidad;
+            texto.fontSizeMax = textoReferencia.fontSizeMax * EscalaTextoProbabilidad;
+            texto.fontStyle = textoReferencia.fontStyle;
+            texto.characterSpacing = textoReferencia.characterSpacing;
+            texto.wordSpacing = textoReferencia.wordSpacing;
+            texto.lineSpacing = textoReferencia.lineSpacing;
+            texto.alignment = textoReferencia.alignment;
+            return;
+        }
+
+        if (fuenteTextoProbabilidad == null)
+        {
+            fuenteTextoProbabilidad = Resources.Load<TMP_FontAsset>(RutaFuenteTextoFlotanteDanio);
+        }
+
+        if (fuenteTextoProbabilidad != null)
+        {
+            texto.font = fuenteTextoProbabilidad;
+            texto.fontSharedMaterial = fuenteTextoProbabilidad.material;
         }
     }
 

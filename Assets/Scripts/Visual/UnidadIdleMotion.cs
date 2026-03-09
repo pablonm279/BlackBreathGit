@@ -7,20 +7,23 @@ public class UnidadIdleMotion : MonoBehaviour
   [Header("Idle Motion")]
   [SerializeField] private bool habilitado = true;
   [SerializeField] private bool soloEnBatalla = true;
-  [SerializeField] private float amplitudX = 1.05f;
-  [SerializeField] private float amplitudY = 5.7f;
-  [SerializeField] private float amplitudRotacion = 0.55f;
-  [SerializeField] private float velocidad = 0.93f;
-  [SerializeField] private float suavizado = 7.5f;
-  [SerializeField] private float factorDuranteMovimiento = 0.2f;
-  [SerializeField] private float multiplicadorGlobal = 1.05f; // +5% general
-  [SerializeField] private float multiplicadorUnidadActivaJugador = 1.15f; // +15% adicional si es turno del jugador
+  [SerializeField] private float amplitudX = 0.28f;
+  [SerializeField] private float amplitudY = 3.2f;
+  [SerializeField] private float amplitudRotacion = 0.16f;
+  [SerializeField] private float velocidad = 0.6f;
+  [SerializeField] private float suavizado = 8.5f;
+  [SerializeField] private float factorDuranteMovimiento = 0.08f;
+  [SerializeField] private float multiplicadorGlobal = 1f;
+  [SerializeField] private float multiplicadorUnidadActivaJugador = 1.08f; // +8% adicional si es turno del jugador
 
   private Unidad unidad;
   private RectTransform rectImagen;
 
   private Vector2 offsetAplicado;
   private float rotacionAplicada;
+  private Vector2 posicionBase;
+  private float rotacionBase;
+  private bool baseInicializada;
   private float faseX;
   private float faseY;
   private float faseRot;
@@ -35,12 +38,24 @@ public class UnidadIdleMotion : MonoBehaviour
     faseRot = Random.Range(0f, Mathf.PI * 2f);
   }
 
+  void OnEnable()
+  {
+    if (!VincularRect())
+    {
+      return;
+    }
+
+    CapturarBaseActual();
+  }
+
   void LateUpdate()
   {
     if (!VincularRect())
     {
       return;
     }
+
+    SincronizarBaseConCambiosExternos();
 
     if (!DebeAnimar())
     {
@@ -57,11 +72,17 @@ public class UnidadIdleMotion : MonoBehaviour
     }
     factor *= factorGlobal;
 
-    Vector2 objetivoOffset = new Vector2(
-      Mathf.Sin(t + faseX) * amplitudX,
-      Mathf.Sin(t * 1.37f + faseY) * amplitudY) * factor;
+    float respiracionPrincipal = Mathf.Sin(t + faseY);
+    float respiracionSecundaria = Mathf.Sin(t * 2f + faseRot) * 0.18f;
+    float respiracionCompuesta = (respiracionPrincipal * 0.82f) + respiracionSecundaria;
+    float swayNormalizado = Mathf.Sin(t * 0.5f + faseX);
+    float sway = swayNormalizado * amplitudX * (0.55f + (0.45f * Mathf.Abs(respiracionPrincipal)));
 
-    float objetivoRot = Mathf.Sin(t * 0.87f + faseRot) * amplitudRotacion * factor;
+    Vector2 objetivoOffset = new Vector2(
+      sway,
+      respiracionCompuesta * amplitudY) * factor;
+
+    float objetivoRot = ((-respiracionPrincipal * 0.9f) + (swayNormalizado * 0.1f)) * amplitudRotacion * factor;
 
     bool suavizar = suavizado > 0.01f;
     AplicarOffset(objetivoOffset, objetivoRot, suavizar);
@@ -85,20 +106,18 @@ public class UnidadIdleMotion : MonoBehaviour
 
   void OnDisable()
   {
-    if (rectImagen == null)
+    if (rectImagen == null || !baseInicializada)
     {
       return;
     }
 
-    // Deshace el offset al desactivar para no dejar drift visual acumulado.
-    Vector2 basePos = rectImagen.anchoredPosition - offsetAplicado;
-    float baseRot = Mathf.DeltaAngle(0f, rectImagen.localEulerAngles.z) - rotacionAplicada;
+    SincronizarBaseConCambiosExternos();
     offsetAplicado = Vector2.zero;
     rotacionAplicada = 0f;
 
-    rectImagen.anchoredPosition = basePos;
+    rectImagen.anchoredPosition = posicionBase;
     Vector3 e = rectImagen.localEulerAngles;
-    e.z = baseRot;
+    e.z = rotacionBase;
     rectImagen.localEulerAngles = e;
   }
 
@@ -122,9 +141,52 @@ public class UnidadIdleMotion : MonoBehaviour
       }
 
       rectImagen = img.rectTransform;
+      baseInicializada = false;
     }
 
     return rectImagen != null;
+  }
+
+  private void CapturarBaseActual()
+  {
+    if (rectImagen == null)
+    {
+      return;
+    }
+
+    posicionBase = rectImagen.anchoredPosition;
+    rotacionBase = ObtenerRotacionActual();
+    offsetAplicado = Vector2.zero;
+    rotacionAplicada = 0f;
+    baseInicializada = true;
+  }
+
+  private void SincronizarBaseConCambiosExternos()
+  {
+    if (rectImagen == null)
+    {
+      return;
+    }
+
+    if (!baseInicializada)
+    {
+      CapturarBaseActual();
+      return;
+    }
+
+    Vector2 posicionEsperada = posicionBase + offsetAplicado;
+    Vector2 deltaPosicion = rectImagen.anchoredPosition - posicionEsperada;
+    if (deltaPosicion.sqrMagnitude > 0.0001f)
+    {
+      posicionBase += deltaPosicion;
+    }
+
+    float rotacionEsperada = rotacionBase + rotacionAplicada;
+    float deltaRotacion = Mathf.DeltaAngle(rotacionEsperada, ObtenerRotacionActual());
+    if (Mathf.Abs(deltaRotacion) > 0.001f)
+    {
+      rotacionBase += deltaRotacion;
+    }
   }
 
   private bool DebeAnimar()
@@ -166,9 +228,10 @@ public class UnidadIdleMotion : MonoBehaviour
 
   private void AplicarOffset(Vector2 objetivoOffset, float objetivoRot, bool suavizarMovimiento)
   {
-    Vector2 basePos = rectImagen.anchoredPosition - offsetAplicado;
-    float rotActual = Mathf.DeltaAngle(0f, rectImagen.localEulerAngles.z);
-    float baseRot = rotActual - rotacionAplicada;
+    if (!baseInicializada)
+    {
+      CapturarBaseActual();
+    }
 
     if (suavizarMovimiento)
     {
@@ -182,9 +245,14 @@ public class UnidadIdleMotion : MonoBehaviour
       rotacionAplicada = objetivoRot;
     }
 
-    rectImagen.anchoredPosition = basePos + offsetAplicado;
+    rectImagen.anchoredPosition = posicionBase + offsetAplicado;
     Vector3 e = rectImagen.localEulerAngles;
-    e.z = baseRot + rotacionAplicada;
+    e.z = rotacionBase + rotacionAplicada;
     rectImagen.localEulerAngles = e;
+  }
+
+  private float ObtenerRotacionActual()
+  {
+    return Mathf.DeltaAngle(0f, rectImagen.localEulerAngles.z);
   }
 }

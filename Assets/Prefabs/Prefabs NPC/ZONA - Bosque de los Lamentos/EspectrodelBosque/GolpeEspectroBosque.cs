@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Linq;
 using Unity.VisualScripting;
@@ -17,6 +18,11 @@ public class GolpeEspectroBosque : IAHabilidad
    
   void Awake()
    {
+      if (GetComponent<EspectroPlanoMaterialVisual>() == null)
+      {
+        gameObject.AddComponent<EspectroPlanoMaterialVisual>();
+      }
+
       nombre = "Golpe de Espectro";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
@@ -204,6 +210,149 @@ public override object EstablecerObjetivoPrioritario()
 
 
 
+}
+
+[DisallowMultipleComponent]
+public class EspectroPlanoMaterialVisual : MonoBehaviour
+{
+    [SerializeField] private string nombreBuffPlanoMaterial = "En plano material";
+    [SerializeField][Range(0f, 1f)] private float alphaEtereo = 0.48f;
+    [SerializeField][Range(0f, 1f)] private float alphaPlanoMaterial = 0.92f;
+    [SerializeField] private float duracionFlash = 0.08f;
+    [SerializeField] private float duracionTransicion = 0.18f;
+
+    private Unidad unidad;
+    private Image imagenUnidad;
+    private bool estadoInicializado;
+    private bool estabaEnPlanoMaterial;
+    private Coroutine rutinaTransicion;
+    private Color colorBase = Color.white;
+
+    void Awake()
+    {
+        VincularReferencias();
+    }
+
+    void OnEnable()
+    {
+        AplicarEstadoActual(true);
+    }
+
+    void Update()
+    {
+        AplicarEstadoActual(false);
+    }
+
+    private void VincularReferencias()
+    {
+        if (unidad == null)
+        {
+            unidad = GetComponent<Unidad>();
+        }
+
+        if (imagenUnidad == null && unidad != null)
+        {
+            imagenUnidad = unidad.uImage;
+            if (imagenUnidad != null)
+            {
+                colorBase = imagenUnidad.color;
+                colorBase.a = 1f;
+            }
+        }
+    }
+
+    private void AplicarEstadoActual(bool instantaneo)
+    {
+        VincularReferencias();
+        if (unidad == null || imagenUnidad == null)
+        {
+            return;
+        }
+
+        bool enPlanoMaterial = unidad.TieneBuffNombre(nombreBuffPlanoMaterial);
+        if (!estadoInicializado)
+        {
+            estadoInicializado = true;
+            estabaEnPlanoMaterial = enPlanoMaterial;
+            AplicarAlphaInstantaneo(AlphaObjetivo(enPlanoMaterial));
+            return;
+        }
+
+        if (estabaEnPlanoMaterial == enPlanoMaterial)
+        {
+            return;
+        }
+
+        estabaEnPlanoMaterial = enPlanoMaterial;
+        IniciarTransicion(instantaneo, AlphaObjetivo(enPlanoMaterial));
+    }
+
+    private float AlphaObjetivo(bool enPlanoMaterial)
+    {
+        return enPlanoMaterial ? alphaPlanoMaterial : alphaEtereo;
+    }
+
+    private void IniciarTransicion(bool instantaneo, float alphaObjetivo)
+    {
+        if (rutinaTransicion != null)
+        {
+            StopCoroutine(rutinaTransicion);
+            rutinaTransicion = null;
+        }
+
+        if (instantaneo || !gameObject.activeInHierarchy)
+        {
+            AplicarAlphaInstantaneo(alphaObjetivo);
+            return;
+        }
+
+        rutinaTransicion = StartCoroutine(AnimarCambio(alphaObjetivo));
+    }
+
+    private IEnumerator AnimarCambio(float alphaObjetivo)
+    {
+        float alphaInicial = imagenUnidad.color.a;
+        float alphaFlash = 1f;
+
+        if (duracionFlash > 0f)
+        {
+            float t = 0f;
+            while (t < duracionFlash)
+            {
+                t += Time.deltaTime;
+                float k = Mathf.Clamp01(t / duracionFlash);
+                AplicarAlphaInstantaneo(Mathf.Lerp(alphaInicial, alphaFlash, k));
+                yield return null;
+            }
+        }
+
+        if (duracionTransicion > 0f)
+        {
+            float t = 0f;
+            while (t < duracionTransicion)
+            {
+                t += Time.deltaTime;
+                float k = Mathf.Clamp01(t / duracionTransicion);
+                AplicarAlphaInstantaneo(Mathf.Lerp(alphaFlash, alphaObjetivo, k));
+                yield return null;
+            }
+        }
+
+        AplicarAlphaInstantaneo(alphaObjetivo);
+        rutinaTransicion = null;
+    }
+
+    private void AplicarAlphaInstantaneo(float alpha)
+    {
+        if (imagenUnidad == null)
+        {
+            return;
+        }
+
+        Color color = colorBase;
+        color.a = Mathf.Clamp01(alpha);
+        imagenUnidad.color = color;
+    }
 }
 
   

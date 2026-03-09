@@ -795,7 +795,8 @@ public abstract class Habilidad : MonoBehaviour
       }
 
       float? prob = CalcularProbabilidadSobreObjetivo(unidad);
-      unidad.MostrarProbabilidad(prob);
+      string textoProbabilidad = prob.HasValue ? ObtenerTextoProbabilidadSobreObjetivo(unidad, prob.Value) : null;
+      unidad.MostrarProbabilidad(prob, textoProbabilidad);
 
       nuevas.Add(unidad);
     }
@@ -829,6 +830,12 @@ public abstract class Habilidad : MonoBehaviour
       return null;
     }
 
+    float? probabilidadEspecial = CalcularProbabilidadEspecialSobreObjetivo(objetivo);
+    if (probabilidadEspecial.HasValue)
+    {
+      return Mathf.Clamp01(probabilidadEspecial.Value);
+    }
+
     switch (tipoPorcentaje)
     {
       case 1:
@@ -840,6 +847,37 @@ public abstract class Habilidad : MonoBehaviour
       default:
         return null;
     }
+  }
+
+  protected virtual float? CalcularProbabilidadEspecialSobreObjetivo(Unidad objetivo)
+  {
+    return null;
+  }
+
+  protected virtual string ObtenerTextoProbabilidadSobreObjetivo(Unidad objetivo, float probabilidad)
+  {
+    return null;
+  }
+
+  protected float CalcularProbabilidadFallarTS(float atributoDefiende, float dificultadSalvacion)
+  {
+    int exitos = 0;
+    for (int dado = 1; dado <= 20; dado++)
+    {
+      if (dificultadSalvacion > dado + atributoDefiende)
+      {
+        exitos++;
+      }
+    }
+
+    return exitos / 20f;
+  }
+
+  protected string FormatearTextoProbabilidadExito(float probabilidad)
+  {
+    int porcentaje = Mathf.RoundToInt(Mathf.Clamp01(probabilidad) * 100f);
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    return esIngles ? $"{porcentaje}% success chance" : $"{porcentaje}% chances de \u00e9xito";
   }
 
   private float CalcularProbAtaque(Unidad objetivo, int tipoAtaquePorcentaje)

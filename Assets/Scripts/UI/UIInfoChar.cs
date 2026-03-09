@@ -344,7 +344,7 @@ public class UIInfoChar : MonoBehaviour
     InicializarVisualMerito();
 
     int valorActual = Mathf.RoundToInt(unidad.ValentiaP_actual);
-    vMerito.text = valorActual.ToString();
+    vMerito.text = FormatearValorValentia(unidad, valorActual);
 
     if (unidadUltimoMerito != unidad)
     {
@@ -406,6 +406,47 @@ public class UIInfoChar : MonoBehaviour
     vMerito.color = vMeritoColorBase;
     vMerito.rectTransform.localScale = vMeritoEscalaBase;
     vMeritoPulseCoroutine = null;
+  }
+
+  private string FormatearValorValentia(Unidad unidad, int valorActual)
+  {
+    string estado = ObtenerEtiquetaEstadoValentia(unidad, valorActual);
+    if (string.IsNullOrEmpty(estado))
+    {
+      return valorActual.ToString();
+    }
+
+    return valorActual + " (" + estado + ")";
+  }
+
+  private string ObtenerEtiquetaEstadoValentia(Unidad unidad, int valorActual)
+  {
+    if (unidad == null)
+    {
+      return string.Empty;
+    }
+
+    if (valorActual >= 5)
+    {
+      return TRADU.i != null ? TRADU.i.Traducir("Euforia") : "Euforia";
+    }
+
+    if (valorActual >= 3)
+    {
+      return TRADU.i != null ? TRADU.i.Traducir("Motivado") : "Motivado";
+    }
+
+    if (valorActual <= -5)
+    {
+      return TRADU.i != null ? TRADU.i.Traducir("Desesperanzado") : "Desesperanzado";
+    }
+
+    if (valorActual <= -3)
+    {
+      return TRADU.i != null ? TRADU.i.Traducir("Desmotivado") : "Desmotivado";
+    }
+
+    return string.Empty;
   }
   
   public GameObject BotonSalir;

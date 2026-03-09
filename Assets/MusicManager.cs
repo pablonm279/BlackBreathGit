@@ -56,6 +56,31 @@ public class MusicManager : MonoBehaviour
     bool pausado = false;
     bool usandoListaAlientoNegro = false;
 
+    bool EsSolicitudYaActiva(int idZona, ModoMusica modo)
+    {
+        return zonaActual != null
+            && zonaActual.idZona == idZona
+            && modoActual == modo
+            && rutinaCiclo != null;
+    }
+
+    void DetenerCicloActual()
+    {
+        if (rutinaCiclo == null)
+        {
+            return;
+        }
+
+        StopCoroutine(rutinaCiclo);
+        rutinaCiclo = null;
+    }
+
+    void IniciarCiclo(bool conStinger = false)
+    {
+        DetenerCicloActual();
+        rutinaCiclo = StartCoroutine(Ciclo(conStinger));
+    }
+
     void Awake()
     {
         // Singleton persistente
@@ -85,12 +110,18 @@ public class MusicManager : MonoBehaviour
             Debug.LogWarning($"[MusicManager] Zona {idZona} no encontrada o sin listas.");
             return;
         }
+
+        if (EsSolicitudYaActiva(idZona, modo))
+        {
+            PausarMusica(false);
+            return;
+        }
+
         zonaActual = z;
         modoActual = modo;
+        PausarMusica(false);
 
-        // Reinicia ciclo
-        if (rutinaCiclo != null) StopCoroutine(rutinaCiclo);
-        rutinaCiclo = StartCoroutine(Ciclo());
+        IniciarCiclo();
     }
 
     /// Atajo: campaña en zona
@@ -102,11 +133,17 @@ public class MusicManager : MonoBehaviour
         var z = zonas.Find(x => x.idZona == idZona);
         if (z == null) { Debug.LogWarning($"[MusicManager] Zona {idZona} no encontrada."); return; }
 
+        if (EsSolicitudYaActiva(idZona, ModoMusica.Batalla))
+        {
+            PausarMusica(false);
+            return;
+        }
+
         zonaActual = z;
         modoActual = ModoMusica.Batalla;
+        PausarMusica(false);
 
-        if (rutinaCiclo != null) StopCoroutine(rutinaCiclo);
-        rutinaCiclo = StartCoroutine(Ciclo(true)); // true = intenta stinger
+        IniciarCiclo(true); // true = intenta stinger
     }
 
     /// Vuelve a campaña manteniendo la misma zona
@@ -134,8 +171,7 @@ public class MusicManager : MonoBehaviour
     /// Forzar siguiente tema dentro del modo actual
     public void SiguienteTema()
     {
-        if (rutinaCiclo != null) StopCoroutine(rutinaCiclo);
-        rutinaCiclo = StartCoroutine(Ciclo());
+        IniciarCiclo();
     }
 
     // --- Utilidades para pausar con fade y reanudar ---
@@ -147,11 +183,7 @@ public class MusicManager : MonoBehaviour
     IEnumerator FadeOutYPararCo(float tiempo)
     {
         // Detener el ciclo para que no cambie de tema durante el fade
-        if (rutinaCiclo != null)
-        {
-            StopCoroutine(rutinaCiclo);
-            rutinaCiclo = null;
-        }
+        DetenerCicloActual();
 
         // Hacer fade out de ambas fuentes por seguridad
         if (a.isPlaying) yield return StartCoroutine(FadeOut(a, Mathf.Max(0.01f, tiempo)));
@@ -166,8 +198,7 @@ public class MusicManager : MonoBehaviour
         // Si ya había una zona/mode establecidos, reinicia el ciclo normal
         if (zonaActual != null)
         {
-            if (rutinaCiclo != null) StopCoroutine(rutinaCiclo);
-            rutinaCiclo = StartCoroutine(Ciclo());
+            IniciarCiclo();
         }
     }
 
@@ -236,8 +267,10 @@ public class MusicManager : MonoBehaviour
 
     IEnumerator Ciclo(bool conStinger = false)
     {
-        while (zonaActual != null)
+        try
         {
+            while (zonaActual != null)
+            {
             bool usarAliento = modoActual == ModoMusica.Campania && DebeUsarMusicaAlientoNegro();
             if (usarAliento && (temasAlientoNegro == null || temasAlientoNegro.Count == 0))
             {
@@ -288,12 +321,13 @@ public class MusicManager : MonoBehaviour
             pasivo.Play();
 
             float crossFade = (usarAliento || playlistCambio) ? fadeCorto : fadeLargo;
+            float fadeSalida = Mathf.Max(0.05f, (usarAliento || playlistCambio) ? fadeCorto * 0.8f : fadeLargo * 0.8f);
             yield return StartCoroutine(CrossFade(pasivo, volumenBase, crossFade));
             SwapFuentes();
             usandoListaAlientoNegro = usarAliento;
 
-            // Esperar el tema menos el tiempo de fade
-            float restante = Mathf.Max(0f, clip.length - crossFade);
+            // Esperar el tema menos los fades ya consumidos, para no dejar huecos silenciosos.
+            float restante = Mathf.Max(0f, clip.length - crossFade - fadeSalida);
             float t = 0f;
             bool forzarCambio = false;
             while (t < restante)
@@ -315,9 +349,12 @@ public class MusicManager : MonoBehaviour
                 continue;
             }
 
-            // Fade out suave antes del siguiente
-            float fadeSalida = (usarAliento || playlistCambio) ? fadeCorto * 0.8f : fadeLargo * 0.8f;
-            yield return StartCoroutine(FadeOut(pasivo, Mathf.Max(0.05f, fadeSalida)));
+            yield return StartCoroutine(FadeOut(activo, fadeSalida));
+            }
+        }
+        finally
+        {
+            rutinaCiclo = null;
         }
     }
 

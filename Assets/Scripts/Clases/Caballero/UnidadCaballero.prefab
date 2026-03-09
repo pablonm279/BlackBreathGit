@@ -76,7 +76,6 @@ GameObject:
   - component: {fileID: 8974171338235392169}
   - component: {fileID: 5826135254095805491}
   - component: {fileID: 1201214986492673646}
-  - component: {fileID: 1844060870752076798}
   m_Layer: 7
   m_Name: Image
   m_TagString: Untagged
@@ -93,7 +92,7 @@ RectTransform:
   m_GameObject: {fileID: 2819805930132574834}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.4493741, y: 1.2, z: 1}
+  m_LocalScale: {x: 1.9851257, y: 1.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2044444096100727033}
@@ -102,8 +101,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.62, y: -16.44}
-  m_SizeDelta: {x: 17.721, y: 29.173}
+  m_AnchoredPosition: {x: -1.97, y: -16.271015}
+  m_SizeDelta: {x: 16.883, y: 30.23}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8974171338235392169
 CanvasRenderer:
@@ -156,24 +155,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &1844060870752076798
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2819805930132574834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78c622ef554cfcc46bb7c697a1927037, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shrinkAmount: 0.1182
-  breathsPerSecond: 0.25
-  randomDelayRange: {x: 0, y: 1.5}
-  useUnscaledTime: 0
-  alsoAffectWidth: 0
-  widthFactor: 0.5
 --- !u!1 &3086741291919830509
 GameObject:
   m_ObjectHideFlags: 0
@@ -419,6 +400,14 @@ MonoBehaviour:
   bonusdam_arcano: 0
   bonusdam_necro: 0
   bonusdam_divino: 0
+  debuffsImpactoArma: []
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
+  penetracionArmaduraPlano: 0
+  penetracionArmaduraHabilidadActual: 0
   barreraDeDanio: 0
   tejidoCuracMagica: 0
   loMatoCorrompido: 0
@@ -503,11 +492,13 @@ MonoBehaviour:
   esMelee: 0
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  forzarPoseHabilidad: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
   tipoPorcentaje: 0
+  penetracionArmadura: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0
@@ -1272,7 +1263,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 4.78
+      value: 3.59
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
