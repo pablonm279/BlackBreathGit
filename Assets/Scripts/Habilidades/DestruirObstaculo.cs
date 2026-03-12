@@ -105,6 +105,7 @@ public class DestruirObstaculo : Habilidad
       obstaculo.CasillaPosicion.Presente = null;
     }
 
+    obstaculo.ReproducirSonidoImpactoRoca();
     obstaculo.ForzarDestruccion();
     string nombreObstaculo = TRADU.i != null ? TRADU.i.Traducir(obstaculo.oName) : obstaculo.oName;
     BattleManager.Instance.EscribirLog(string.Format("{0} {1}", Traducir("Destruyes"), nombreObstaculo));

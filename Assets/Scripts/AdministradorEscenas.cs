@@ -58,7 +58,6 @@ public class AdministradorEscenas : MonoBehaviour
   [SerializeField] float fadeSalidaBatalla = 0.55f;
   [SerializeField] float esperaSalidaBatalla = 1.05f;
   [SerializeField] int delayPostFinBatallaMs = 120;
-
   // Bloqueo para mantener el fader negro (evita fade-outs concurrentes)
   bool faderHold = false;
   bool cargandoBatalla = false;
@@ -86,6 +85,64 @@ public class AdministradorEscenas : MonoBehaviour
       Debug.LogError($"[AdministradorEscenas] Error en {contexto}.");
       Debug.LogException(ex, this);
     }
+  }
+
+  void SetActiveSiExiste(GameObject go, bool activo)
+  {
+    if (go != null)
+    {
+      go.SetActive(activo);
+    }
+  }
+
+  bool ValidarDependenciasCambioABatalla(out CampaignManager campaignManager)
+  {
+    campaignManager = CampaignManager.Instance;
+    if (campaignManager == null)
+    {
+      Debug.LogError("[AdministradorEscenas] No se puede cargar batalla: CampaignManager no inicializado.");
+      return false;
+    }
+
+    if (campaignManager.scAtributosZona == null)
+    {
+      Debug.LogError("[AdministradorEscenas] No se puede cargar batalla: falta AtributosZona.");
+      return false;
+    }
+
+    if (EscenaCampaign == null || EscenaBatalla == null)
+    {
+      Debug.LogError("[AdministradorEscenas] No se puede cargar batalla: faltan referencias a EscenaCampaign/EscenaBatalla.");
+      return false;
+    }
+
+    return true;
+  }
+
+  bool ValidarDependenciasFinDeBatalla(out CampaignManager campaignManager, out BattleManager battleManager)
+  {
+    campaignManager = CampaignManager.Instance;
+    battleManager = BattleManager.Instance;
+
+    if (campaignManager == null)
+    {
+      Debug.LogError("[AdministradorEscenas] No se puede cerrar batalla: CampaignManager no inicializado.");
+      return false;
+    }
+
+    if (battleManager == null)
+    {
+      Debug.LogError("[AdministradorEscenas] No se puede cerrar batalla: BattleManager no inicializado.");
+      return false;
+    }
+
+    if (EscenaCampaign == null || EscenaBatalla == null)
+    {
+      Debug.LogError("[AdministradorEscenas] No se puede cerrar batalla: faltan referencias a EscenaCampaign/EscenaBatalla.");
+      return false;
+    }
+
+    return true;
   }
   // (removido) UI de carga sutil
 
@@ -174,6 +231,7 @@ public class AdministradorEscenas : MonoBehaviour
   EncounterDefinition encuentroGeneradoActual;
   int ultimoIDEncuentro;
   int tipoEmboscadaActual = 0;
+  private bool filtrandoUnicosEnComposicionInicial;
 
   public void CargarBatalla(int IDEncuentro, int esEmboscada = 0, EncounterDefinition encuentro = null, bool usarRefuerzosAliadosCaravana = false)
   {
@@ -190,18 +248,22 @@ public class AdministradorEscenas : MonoBehaviour
     cargandoBatalla = true;
     try
     {
+    if (!ValidarDependenciasCambioABatalla(out var campaignManager))
+    {
+      return;
+    }
     ultimoIDEncuentro = IDEncuentro;
     encuentroGeneradoActual = encuentro;
     tipoEmboscadaActual = esEmboscada;
 
-    VFXLluvia.SetActive(false);
-    VFXNieve.SetActive(false);
-    VFXNiebla.SetActive(false);
-    VFXAurora.SetActive(false);
+    SetActiveSiExiste(VFXLluvia, false);
+    SetActiveSiExiste(VFXNieve, false);
+    SetActiveSiExiste(VFXNiebla, false);
+    SetActiveSiExiste(VFXAurora, false);
 
     escenaActual = 1; //1 Batalla 0 Campaña
-    CampaignManager.Instance.logDeCampania.LimpiarDesdeCampania();
-    int idZona = CampaignManager.Instance.scAtributosZona.ID;
+    campaignManager.logDeCampania?.LimpiarDesdeCampania();
+    int idZona = campaignManager.scAtributosZona.ID;
     float fadeTransicion = Mathf.Max(0.05f, fadeEntradaBatalla);
     float holdTransicion = Mathf.Max(0.1f, esperaEntradaBatalla);
     float esperaCambioEscena = CalcularEsperaCambioEscena(fadeTransicion, holdTransicion);
@@ -210,31 +272,30 @@ public class AdministradorEscenas : MonoBehaviour
       MusicManager.Instance.PausarMusica(false);
       MusicManager.Instance.PlayBatalla(idZona);
     }
-    CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(fadeTransicion, holdTransicion);
+    campaignManager.scAdministradorEscenas.PlayFadeInOut(fadeTransicion, holdTransicion);
     await EsperarSegundosRealtime(esperaCambioEscena);
     EscenaCampaign.SetActive(false);
     EscenaBatalla.SetActive(true);
+    BattleManager battleManager = BattleManager.Instance;
+    if (battleManager == null)
+    {
+      Debug.LogError("[AdministradorEscenas] No se pudo cargar batalla: BattleManager no quedó disponible tras activar la escena.");
+      escenaActual = 0;
+      SetActiveSiExiste(EscenaBatalla, false);
+      SetActiveSiExiste(EscenaCampaign, true);
+      MusicManager.Instance?.VolverACampania();
+      return;
+    }
+    battleManager.RefrescarVfxClimaCalor(false);
     // Silenciar logs de combate durante la preparación (buffs/estados iniciales)
-    BattleManager.Instance.silenciarLogCombate = true;
-    BattleManager.Instance.ReiniciarEstadoRefuerzos();
+    battleManager.silenciarLogCombate = true;
+    battleManager.ReiniciarEstadoRefuerzos();
     bool esPrimerCombateTutorial = IDEncuentro == 700 && CampaignManager.Instance != null
       && CampaignManager.Instance.scTutorialManager != null
       && CampaignManager.Instance.scTutorialManager.tutorialActivo;
     bool esCombateFinalTutorial = IDEncuentro == 701 && CampaignManager.Instance != null
       && CampaignManager.Instance.scTutorialManager != null
       && CampaignManager.Instance.scTutorialManager.tutorialActivo;
-    if (esPrimerCombateTutorial && BattleManager.Instance.scTutorialCombate != null)
-    {
-      BattleManager.Instance.scTutorialCombate.IniciarPrimerCombate();
-    }
-    if (esCombateFinalTutorial && BattleManager.Instance.scTutorialCombate != null)
-    {
-      BattleManager.Instance.scTutorialCombate.IniciarCombateDesdePaso(12);
-    }
-
-
-
-
     if (esEmboscada == 3) //Si es defensa de caravana pone defensas
     {
       CrearDefensasCaravana();
@@ -476,13 +537,20 @@ public class AdministradorEscenas : MonoBehaviour
     int climaCampaña = CampaignManager.Instance.intTipoClima;
     if (EsEncuentroSubterraneo(IDEncuentro)) { climaCampaña = 0; }//Si es encuentro subterraneo no hay clima
 
+    if (BattleManager.Instance != null)
+    {
+      BattleManager.Instance.SetClimaUIVisible(climaCampaña >= 1 && climaCampaña <= 5);
+    }
+
     if (climaCampaña == 1)//Normal (soleado)
     {
       //--- 
+      BattleManager.Instance.RefrescarVfxClimaCalor(false);
       BattleManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_sol;
     }
     if (climaCampaña == 2)//Calor
     {
+      BattleManager.Instance.RefrescarVfxClimaCalor(true);
       List<Unidad> listaUnidades = new List<Unidad>(BattleManager.Instance.ladoB.unidadesLado);
       listaUnidades.AddRange(BattleManager.Instance.ladoA.unidadesLado);
       foreach (Unidad u in listaUnidades)
@@ -508,6 +576,7 @@ public class AdministradorEscenas : MonoBehaviour
     }
     if (climaCampaña == 3)//Lluvia
     {
+      BattleManager.Instance.RefrescarVfxClimaCalor(false);
       VFXLluvia.SetActive(true);
       List<Unidad> listaUnidades = new List<Unidad>(BattleManager.Instance.ladoB.unidadesLado);
       listaUnidades.AddRange(BattleManager.Instance.ladoA.unidadesLado);
@@ -533,6 +602,7 @@ public class AdministradorEscenas : MonoBehaviour
     }
     if (climaCampaña == 4)//Nieve
     {
+      BattleManager.Instance.RefrescarVfxClimaCalor(false);
       VFXNieve.SetActive(true);
       List<Unidad> listaUnidades = new List<Unidad>(BattleManager.Instance.ladoB.unidadesLado);
       listaUnidades.AddRange(BattleManager.Instance.ladoA.unidadesLado);
@@ -559,12 +629,14 @@ public class AdministradorEscenas : MonoBehaviour
     }
     if (climaCampaña == 5)//Niebla
     {
+      BattleManager.Instance.RefrescarVfxClimaCalor(false);
       VFXNiebla.SetActive(true);
       //---
       BattleManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_niebla;
     }
     if (climaCampaña == 7)//Aurora Boreal
     {
+      BattleManager.Instance.RefrescarVfxClimaCalor(false);
       if (CampaignManager.Instance.scAtributosZona.ID == 2) //Paso Viento Helado
       { VFXAurora.SetActive(true); }
 
@@ -751,7 +823,7 @@ public class AdministradorEscenas : MonoBehaviour
     //Obstaculos genericos
     if (ProbabilidadPorcentual(70))
     {
-      if (BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() == -1) //Si no es tutorial
+      if (!esPrimerCombateTutorial && !esCombateFinalTutorial) //Si no es tutorial
       {
         GenerarObstaculosGenericos();
       }
@@ -780,6 +852,18 @@ public class AdministradorEscenas : MonoBehaviour
     // RondaNueva() incrementa el contador, por eso se inicializa en 0 aquí.
     BattleManager.Instance.RondaNro = 0;
     BattleManager.Instance.RondaNueva();
+
+    if (BattleManager.Instance != null && BattleManager.Instance.scTutorialCombate != null)
+    {
+      if (esPrimerCombateTutorial)
+      {
+        BattleManager.Instance.scTutorialCombate.IniciarCombateDesdePaso(0);
+      }
+      else if (esCombateFinalTutorial)
+      {
+        BattleManager.Instance.scTutorialCombate.IniciarCombateDesdePaso(12);
+      }
+    }
 
     Invoke("ColocarunidadesEnCanvasUnidades", 0.3f);
 
@@ -1457,9 +1541,10 @@ public class AdministradorEscenas : MonoBehaviour
 
   void CrearEncuentroEnemigos(int IDEncuentro, EncounterDefinition encounterDefinition = null)  //Agregar en MenuBatallas "EfectosDeBatallaEnCampaña" las recompensas/penalizaciones por ganar/perder de cada encuentro nuevo
   {
-
     BattleManager.Instance.RondaNro = 1;
-
+    filtrandoUnicosEnComposicionInicial = true;
+    try
+    {
     if (encounterDefinition != null)
     {
       CrearEncuentroDinamico(encounterDefinition);
@@ -2573,6 +2658,11 @@ public class AdministradorEscenas : MonoBehaviour
 
 
     Invoke("ColocarunidadesEnCanvasUnidades", 0.3f);
+    }
+    finally
+    {
+      filtrandoUnicosEnComposicionInicial = false;
+    }
   }
 
   void ColocarunidadesEnCanvasUnidades()
@@ -2615,6 +2705,12 @@ public class AdministradorEscenas : MonoBehaviour
       }
 
       return false;
+    }
+
+    if (DebeOmitirPorUnicoEnCombate(iLado, GO))
+    {
+      Destroy(GO);
+      return;
     }
 
     LadoManager lado = iLado == 1 ? BattleManager.Instance.ladoB : BattleManager.Instance.ladoA;
@@ -2678,6 +2774,12 @@ public class AdministradorEscenas : MonoBehaviour
 
   void ColocarEnCasillaEspecifica(int iLado, GameObject GO, int X, int Y)
   {
+    if (DebeOmitirPorUnicoEnCombate(iLado, GO))
+    {
+      Destroy(GO);
+      return;
+    }
+
     LadoManager lado = null;
     if (iLado == 1)
     {
@@ -2687,6 +2789,51 @@ public class AdministradorEscenas : MonoBehaviour
 
     lado.ColocarEnCasilla(GO, X, Y);
 
+  }
+
+  private bool DebeOmitirPorUnicoEnCombate(int iLado, GameObject go)
+  {
+    if (!filtrandoUnicosEnComposicionInicial || iLado == 1 || go == null || BattleManager.Instance == null || BattleManager.Instance.ladoA == null)
+    {
+      return false;
+    }
+
+    IAUnidad iaUnidad = go.GetComponent<IAUnidad>();
+    if (iaUnidad == null || !iaUnidad.unicoEnCombate)
+    {
+      return false;
+    }
+
+    string clave = ObtenerClaveUnicoEnCombate(go);
+    if (string.IsNullOrEmpty(clave))
+    {
+      return false;
+    }
+
+    foreach (Unidad unidadExistente in BattleManager.Instance.ladoA.unidadesLado)
+    {
+      if (unidadExistente == null)
+      {
+        continue;
+      }
+
+      if (ObtenerClaveUnicoEnCombate(unidadExistente.gameObject) == clave)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private static string ObtenerClaveUnicoEnCombate(GameObject go)
+  {
+    if (go == null)
+    {
+      return string.Empty;
+    }
+
+    return go.name.Replace("(Clone)", string.Empty).Trim().ToLowerInvariant();
   }
 
   void AplicarEstadosCampaña(Personaje pers, GameObject GO)
@@ -3298,16 +3445,26 @@ public class AdministradorEscenas : MonoBehaviour
     cerrandoBatalla = true;
     try
     {
+    if (!ValidarDependenciasFinDeBatalla(out var campaignManager, out var battleManager))
+    {
+      return;
+    }
 
     PlasmarEfectosBatallaEnPersonajes();
-    CampaignManager.Instance.logDeCampania.LimpiarDesdeBatalla();
-    CampaignManager.Instance.scMenuBatallas.EfectosDeBatallaEnCampaña(resultado);
-    CampaignManager.Instance.scMenuBatallas.DejanEnListaParticipantesSolo();
-    CampaignManager.Instance.scMapaManager.nodoActual.nodoDespejado = true;
+    campaignManager.logDeCampania?.LimpiarDesdeBatalla();
+    if (campaignManager.scMenuBatallas != null)
+    {
+      campaignManager.scMenuBatallas.EfectosDeBatallaEnCampaña(resultado);
+      campaignManager.scMenuBatallas.DejanEnListaParticipantesSolo();
+    }
+    if (campaignManager.scMapaManager != null && campaignManager.scMapaManager.nodoActual != null)
+    {
+      campaignManager.scMapaManager.nodoActual.nodoDespejado = true;
+    }
 
    
 
-    BattleManager.Instance.ReiniciarEstadoRefuerzos();
+    battleManager.ReiniciarEstadoRefuerzos();
 
     if (unidadPers1 != null)
     { Destroy(unidadPers1); }
@@ -3322,22 +3479,22 @@ public class AdministradorEscenas : MonoBehaviour
     EliminarTodasLasTrampas();
     EliminarTodosLosPresentes();
 
-    BattleManager.Instance.RondaNro = 1;
+    battleManager.RondaNro = 1;
 
-    BattleManager.Instance.unidadActiva = null;
-    BattleManager.Instance.indexTurno = 0;
+    battleManager.unidadActiva = null;
+    battleManager.indexTurno = 0;
 
 
     float fadeTransicion = Mathf.Max(0.05f, fadeSalidaBatalla);
     float holdTransicion = Mathf.Max(0.1f, esperaSalidaBatalla);
     float esperaCambioEscena = CalcularEsperaCambioEscena(fadeTransicion, holdTransicion);
-    CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(fadeTransicion, holdTransicion);
+    campaignManager.scAdministradorEscenas.PlayFadeInOut(fadeTransicion, holdTransicion);
     await EsperarSegundosRealtime(esperaCambioEscena);
 
     EscenaCampaign.SetActive(true);
     // Al volver a campaña, asegurar que los VFX de nodos reflejen su estado lógico
-    var contNodos = CampaignManager.Instance != null && CampaignManager.Instance.scMapaManager != null
-      ? CampaignManager.Instance.scMapaManager.scContenedordeNodos
+    var contNodos = campaignManager.scMapaManager != null
+      ? campaignManager.scMapaManager.scContenedordeNodos
       : null;
     if (contNodos != null && contNodos.listTodosNodos != null)
     {
@@ -3366,9 +3523,11 @@ public class AdministradorEscenas : MonoBehaviour
     {
       await Task.Delay(delayFinal);
     }
-    if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 3)
+    if (campaignManager.scTutorialManager != null
+      && campaignManager.scTutorialManager.tutorialActivo
+      && campaignManager.scTutorialManager.pasoActual == 3)
     {
-      CampaignManager.Instance.scTutorialManager.SiguientePaso();
+      campaignManager.scTutorialManager.SiguientePaso();
       //Personaje1.RecibirExperiencia(100);
     }
     //Limpieza

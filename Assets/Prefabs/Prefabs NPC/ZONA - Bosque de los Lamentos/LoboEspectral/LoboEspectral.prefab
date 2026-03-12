@@ -239,8 +239,8 @@ MonoBehaviour:
   mod_ResNecro: 4
   at_ResDivino: 0
   mod_ResDivino: 0
-  at_Defensa: 15
-  mod_Defensa: 15
+  at_Defensa: 12
+  mod_Defensa: 12
   Defensa_AtaquesRepetidosRonda: 0
   Defensa_BonusPASinUsar: 0
   at_Ataque: 2
@@ -307,6 +307,9 @@ MonoBehaviour:
   floatingTextSlotLifetimeFallback: 1.1
   floatingTextMaxSlots: 4
   floatingTextMinInterval: 0.05
+  floatingTextCrowdThreshold: 3
+  floatingTextCrowdIntervalStep: 0.01
+  floatingTextCrowdExtraIntervalMax: 0.03
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
@@ -470,6 +473,11 @@ MonoBehaviour:
   barraVidaHealColor: {r: 1, g: 0.85, b: 0.2, a: 0.6}
   barraVidaHealDelay: 0.08
   barraVidaHealSpeed: 0.9
+  rotuloHabilidadOffset: {x: 0, y: 30}
+  rotuloHabilidadPadding: {x: 18, y: 8}
+  rotuloHabilidadDuracion: 0.95
+  rotuloHabilidadFondo: {r: 0.08, g: 0.03, b: 0.02, a: 0.85}
+  rotuloHabilidadBorde: {r: 0.82, g: 0.34, b: 0.18, a: 0.95}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 2711672040162215709}
 --- !u!114 &2732777772784433487
@@ -508,6 +516,7 @@ MonoBehaviour:
   esMelee: 0
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  forzarPoseHabilidad: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0

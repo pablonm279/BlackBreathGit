@@ -57,6 +57,19 @@ public class MapDecorator : MonoBehaviour
     [Header("Rendimiento (async)")]
     [SerializeField] int porFrame = 60;
 
+    [Header("Relieve procedural")]
+    [SerializeField] bool usarRelieveProcedural = true;
+    [SerializeField] MeshFilter planeMeshExtension;
+    [SerializeField] MeshCollider planeColliderExtension;
+    [SerializeField] float alturaRelieveBosque = 0.34f;
+    [SerializeField] float alturaRelievePasoHelado = 0.46f;
+    [SerializeField] float alturaRelieveNedukazal = 0.24f;
+    [SerializeField] float frecuenciaRelievePrincipal = 0.065f;
+    [SerializeField] float frecuenciaRelieveSecundaria = 0.16f;
+    [SerializeField] float frecuenciaWarpRelieve = 0.035f;
+    [SerializeField] float intensidadWarpRelieve = 1.1f;
+    [SerializeField] float distanciaMuestreoNormal = 0.32f;
+
     // ---- internos ----
     struct Segmento { public Vector3 a, b; public float halfWidth; }
     readonly List<Segmento> segmentos = new List<Segmento>();
@@ -93,6 +106,13 @@ public class MapDecorator : MonoBehaviour
     int currentNodeStamp = 1;
     float exclusionCellSize = 1f;
     float maxSegmentHalfWidth = 0f;
+    MeshCollider planeCollider;
+    Mesh runtimePlaneMesh;
+    Mesh runtimePlaneMeshExtension;
+    Vector3[] basePlaneVertices;
+    Vector3[] basePlaneExtensionVertices;
+    int relieveSeed;
+    float alturaRelieveActual;
 
     void Awake()
     {
@@ -101,6 +121,9 @@ public class MapDecorator : MonoBehaviour
             Debug.LogError("[MapDecorator] Asigná un MeshFilter vélido.");
             enabled = false; return;
         }
+
+        EnsureReliefTargets();
+        EnsureRuntimeTerrainMeshes();
 
         tPlane      = planeMesh.transform;
         localBounds = planeMesh.sharedMesh.bounds;
@@ -133,6 +156,79 @@ public class MapDecorator : MonoBehaviour
 
         if (transform.lossyScale != Vector3.one)
             Debug.LogWarning("[MapDecorator] Este GameObject deberáa estar en escala (1,1,1) para no heredar escalas raras.");
+    }
+
+    public void RegenerarRelieveParaZona(int zonaId, int fase)
+    {
+        if (!usarRelieveProcedural || planeMesh == null)
+            return;
+
+        EnsureReliefTargets();
+        EnsureRuntimeTerrainMeshes();
+
+        int varianteAleatoria = System.Guid.NewGuid().GetHashCode();
+        relieveSeed = (zonaId * 73856093) ^ varianteAleatoria ^ 0x2f6e2b1;
+        alturaRelieveActual = ObtenerAlturaRelieveParaZona(zonaId);
+
+        AplicarRelieveAPlano(planeMesh, runtimePlaneMesh, basePlaneVertices, planeCollider);
+        AplicarRelieveAPlano(planeMeshExtension, runtimePlaneMeshExtension, basePlaneExtensionVertices, planeColliderExtension);
+    }
+
+    public bool TrySampleSurface(Vector3 worldPos, out Vector3 surfacePos, out Vector3 surfaceNormal, float normalOffset = 0f)
+    {
+        surfacePos = worldPos;
+        surfaceNormal = Vector3.up;
+
+        if (!usarRelieveProcedural || planeMesh == null)
+            return false;
+
+        EnsureReliefTargets();
+
+        Ray ray = new Ray(worldPos + Vector3.up * 200f, Vector3.down);
+        int mask = 1 << planeMesh.gameObject.layer;
+        RaycastHit[] hits = Physics.RaycastAll(ray, 500f, mask, QueryTriggerInteraction.Ignore);
+
+        bool found = false;
+        float nearestDistance = float.PositiveInfinity;
+        RaycastHit nearestHit = default;
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider hitCollider = hits[i].collider;
+            if (hitCollider == null)
+                continue;
+
+            if (hitCollider != planeCollider && hitCollider != planeColliderExtension)
+                continue;
+
+            if (hits[i].distance < nearestDistance)
+            {
+                nearestDistance = hits[i].distance;
+                nearestHit = hits[i];
+                found = true;
+            }
+        }
+
+        if (found)
+        {
+            surfaceNormal = nearestHit.normal.sqrMagnitude > 0.0001f ? nearestHit.normal.normalized : Vector3.up;
+            surfacePos = nearestHit.point + surfaceNormal * normalOffset;
+            return true;
+        }
+
+        float surfaceY = planeMesh.transform.position.y + EvaluateReliefHeightOffsetWorld(worldPos);
+        surfaceNormal = CalculateReliefNormalWorld(worldPos);
+        surfacePos = new Vector3(worldPos.x, surfaceY, worldPos.z) + surfaceNormal * normalOffset;
+        return true;
+    }
+
+    public void AlinearTransformASuelo(Transform target, float normalOffset = 0f)
+    {
+        if (target == null)
+            return;
+
+        if (TrySampleSurface(target.position, out var surfacePos, out _, normalOffset))
+            target.position = surfacePos;
     }
 
     // ===================== API =====================
@@ -696,9 +792,139 @@ public class MapDecorator : MonoBehaviour
     }
 
     // ===================== Instanciación =====================
+    void EnsureReliefTargets()
+    {
+        if (planeMesh != null && planeCollider == null)
+            planeCollider = planeMesh.GetComponent<MeshCollider>();
+
+        if (planeMeshExtension == null)
+        {
+            var atributosZona = GetComponent<AtributosZona>();
+            if (atributosZona != null && atributosZona.TexturaTerrenoExtension != null)
+                planeMeshExtension = atributosZona.TexturaTerrenoExtension.GetComponent<MeshFilter>();
+        }
+
+        if (planeMeshExtension != null && planeColliderExtension == null)
+            planeColliderExtension = planeMeshExtension.GetComponent<MeshCollider>();
+    }
+
+    void EnsureRuntimeTerrainMeshes()
+    {
+        if (!usarRelieveProcedural)
+            return;
+
+        EnsureRuntimeTerrainMesh(planeMesh, ref runtimePlaneMesh, ref basePlaneVertices, planeCollider);
+        EnsureRuntimeTerrainMesh(planeMeshExtension, ref runtimePlaneMeshExtension, ref basePlaneExtensionVertices, planeColliderExtension);
+    }
+
+    void EnsureRuntimeTerrainMesh(MeshFilter filter, ref Mesh runtimeMesh, ref Vector3[] baseVertices, MeshCollider collider)
+    {
+        if (filter == null || filter.sharedMesh == null || runtimeMesh != null)
+            return;
+
+        runtimeMesh = Instantiate(filter.sharedMesh);
+        runtimeMesh.name = filter.sharedMesh.name + "_RuntimeRelief";
+        runtimeMesh.MarkDynamic();
+        filter.sharedMesh = runtimeMesh;
+        baseVertices = runtimeMesh.vertices;
+
+        if (collider != null)
+        {
+            collider.sharedMesh = null;
+            collider.sharedMesh = runtimeMesh;
+        }
+    }
+
+    void AplicarRelieveAPlano(MeshFilter filter, Mesh runtimeMesh, Vector3[] baseVertices, MeshCollider collider)
+    {
+        if (filter == null || runtimeMesh == null || baseVertices == null || baseVertices.Length == 0)
+            return;
+
+        Vector3[] verts = new Vector3[baseVertices.Length];
+        Transform tf = filter.transform;
+
+        for (int i = 0; i < baseVertices.Length; i++)
+        {
+            Vector3 world = tf.TransformPoint(baseVertices[i]);
+            world.y += EvaluateReliefHeightOffsetWorld(world);
+            verts[i] = tf.InverseTransformPoint(world);
+        }
+
+        runtimeMesh.vertices = verts;
+        runtimeMesh.RecalculateNormals();
+        runtimeMesh.RecalculateBounds();
+
+        if (collider != null)
+        {
+            collider.sharedMesh = null;
+            collider.sharedMesh = runtimeMesh;
+        }
+    }
+
+    float ObtenerAlturaRelieveParaZona(int zonaId)
+    {
+        switch (zonaId)
+        {
+            case 2:
+                return alturaRelievePasoHelado;
+            case 3:
+                return alturaRelieveNedukazal;
+            default:
+                return alturaRelieveBosque;
+        }
+    }
+
+    float EvaluateReliefHeightOffsetWorld(Vector3 worldPos)
+    {
+        if (!usarRelieveProcedural)
+            return 0f;
+
+        float seedA = relieveSeed * 0.00071f;
+        float seedB = relieveSeed * 0.00037f;
+
+        float warpX = SampleSignedPerlin(worldPos.x * frecuenciaWarpRelieve + seedA + 17.3f, worldPos.z * frecuenciaWarpRelieve - seedB + 91.7f) * intensidadWarpRelieve;
+        float warpZ = SampleSignedPerlin(worldPos.x * frecuenciaWarpRelieve - seedB + 47.1f, worldPos.z * frecuenciaWarpRelieve + seedA + 13.9f) * intensidadWarpRelieve;
+
+        float nx = worldPos.x + warpX;
+        float nz = worldPos.z + warpZ;
+
+        float principal = SampleSignedPerlin(nx * frecuenciaRelievePrincipal + seedA * 3.1f, nz * frecuenciaRelievePrincipal - seedB * 2.7f);
+        float secundario = SampleSignedPerlin(nx * frecuenciaRelieveSecundaria - 31.7f + seedB * 1.3f, nz * frecuenciaRelieveSecundaria + 18.8f - seedA * 1.7f);
+        float cresta = 1f - Mathf.Abs((Mathf.PerlinNoise(nx * (frecuenciaRelieveSecundaria * 0.72f) + 11.4f + seedA, nz * (frecuenciaRelieveSecundaria * 0.72f) - 23.6f + seedB) * 2f) - 1f);
+        cresta = (cresta - 0.5f) * 0.18f;
+
+        float combinado = principal * 0.74f + secundario * 0.26f + cresta;
+        return combinado * alturaRelieveActual;
+    }
+
+    Vector3 CalculateReliefNormalWorld(Vector3 worldPos)
+    {
+        float d = Mathf.Max(0.05f, distanciaMuestreoNormal);
+        Vector3 px = new Vector3(worldPos.x + d, worldPos.y, worldPos.z);
+        Vector3 nx = new Vector3(worldPos.x - d, worldPos.y, worldPos.z);
+        Vector3 pz = new Vector3(worldPos.x, worldPos.y, worldPos.z + d);
+        Vector3 nz = new Vector3(worldPos.x, worldPos.y, worldPos.z - d);
+
+        float hx = EvaluateReliefHeightOffsetWorld(px) - EvaluateReliefHeightOffsetWorld(nx);
+        float hz = EvaluateReliefHeightOffsetWorld(pz) - EvaluateReliefHeightOffsetWorld(nz);
+
+        Vector3 normal = new Vector3(-hx, d * 2f, -hz).normalized;
+        return normal.sqrMagnitude > 0.0001f ? normal : Vector3.up;
+    }
+
+    static float SampleSignedPerlin(float x, float y)
+    {
+        return (Mathf.PerlinNoise(x, y) - 0.5f) * 2f;
+    }
+
     void Instanciar(GameObject prefab, Vector3 posMundo)
     {
         Vector3 pos = posMundo;
+
+        if (usarRelieveProcedural && TrySampleSurface(posMundo, out var relievePos, out _, 0f))
+        {
+            pos = relievePos;
+        }
 
         if (ajustarAlturaConRaycast)
         {

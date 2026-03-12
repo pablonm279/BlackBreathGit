@@ -288,10 +288,18 @@ public class AtributosZona : MonoBehaviour
          distNodoOverride: 0.1f,
          rOverride: 0.78f,
          kOverride: 20);
+         
+       yield return scMapDecorator.GenerarAsyncCR(
+        BosqueAngustiante_ArbolQuemado1,
+        cantidad: 600,
+        distCaminoOverride: 0.16f,
+        distNodoOverride: 0.14f,
+        rOverride: 1.1f,
+        kOverride: 20);
 
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado2,
-         cantidad: 345,
+         cantidad: 445,
          distCaminoOverride: 0.12f,
          distNodoOverride: 0.12f,
          rOverride: 5.8f,
@@ -770,7 +778,18 @@ public class AtributosZona : MonoBehaviour
 
       }
 
+      if (scMapDecorator == null)
+      {
+         scMapDecorator = GetComponent<MapDecorator>();
+      }
+
+      if (scMapDecorator != null)
+      {
+         scMapDecorator.RegenerarRelieveParaZona(zona, FASE);
+      }
+
       CampaignManager.Instance.scMapaManager.GenerarNodos();
+      CampaignManager.Instance.BloquearOlaDeCalorEnSiguienteTiradaClima();
       CampaignManager.Instance.ForzarTiradaClima();
       CampaignManager.Instance.AplicarEfectosMejorasPuerto();
 

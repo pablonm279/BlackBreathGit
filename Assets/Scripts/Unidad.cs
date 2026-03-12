@@ -267,6 +267,11 @@ public class Unidad : MonoBehaviour
   [SerializeField] private float floatingTextCrowdExtraIntervalMax = 0.03f;
   private float nextFloatingTextTime = -999f;
   private readonly List<float> floatingTextSlotExpiries = new List<float>();
+  private readonly List<Renderer> renderersOcultosPorEscondido = new List<Renderer>();
+  private bool unidadCanvasOcultadoPorEscondido;
+  private bool imagenOcultadaPorEscondido;
+  private int ultimoEstadoVisualEscondido = int.MinValue;
+  private bool ultimoOcultamientoTotalPorEscondido;
   public
 
 
@@ -288,6 +293,14 @@ public class Unidad : MonoBehaviour
     {
       gameObject.AddComponent<UnidadIdleMotion>();
     }
+    if (GetComponent<UnidadStatusVfxController>() == null)
+    {
+      gameObject.AddComponent<UnidadStatusVfxController>();
+    }
+    if (GetComponent<UnidadHiddenVisualController>() == null)
+    {
+      gameObject.AddComponent<UnidadHiddenVisualController>();
+    }
     InicializarVueloVisual();
 
     ValentiaP_actual = 0;
@@ -300,6 +313,7 @@ public class Unidad : MonoBehaviour
     puntoSaliente = child4.GetChild(0);
     puntoEntrante = child4.GetChild(1);
   }
+  SincronizarVisualEscondido();
 }
 
   void InicializarVueloVisual()
@@ -1395,6 +1409,7 @@ public virtual void PerderEscondido()
   estaEscondido = 0;
   scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" ya no está escondido.")));
   gameObject.transform.GetChild(3).GetChild(1).GetChild(1).gameObject.SetActive(false);
+  SincronizarVisualEscondido();
   //aca agregar tratamientos de vfx de revelar etc.
 }
 public virtual void GanarEscondido(int n) // n es Tier de Escondido, 1 se va al recibir daño u atacar, 2 no se va al recibir daño ni atacar
@@ -1402,12 +1417,116 @@ public virtual void GanarEscondido(int n) // n es Tier de Escondido, 1 se va al 
   estaEscondido = n;
   scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" está escondido.")));
   gameObject.transform.GetChild(3).GetChild(1).GetChild(1).gameObject.SetActive(true);
+  SincronizarVisualEscondido();
   //aca agregar tratamientos de vfx de esconderse etc.
 }
 public int ObtenerEstaEscondido() // nes Tier de Escondido, 1 se va al recibir daño u atacar, 2 no se va al recibir daño ni atacar
 {
   return estaEscondido;
   //aca agregar tratamientos de vfx de esconderse etc.
+}
+
+public bool EsEnemigoParaJugador()
+{
+  return CasillaPosicion != null && CasillaPosicion.lado == 1;
+}
+
+public bool EstaOcultoVisualmenteParaJugador()
+{
+  return estaEscondido > 0 && EsEnemigoParaJugador();
+}
+
+public void SincronizarVisualEscondido()
+{
+  bool debeOcultarTotal = EstaOcultoVisualmenteParaJugador();
+  if (ultimoEstadoVisualEscondido == estaEscondido
+    && ultimoOcultamientoTotalPorEscondido == debeOcultarTotal)
+  {
+    return;
+  }
+
+  ultimoEstadoVisualEscondido = estaEscondido;
+  ultimoOcultamientoTotalPorEscondido = debeOcultarTotal;
+
+  if (debeOcultarTotal)
+  {
+    AplicarOcultamientoVisualTotalPorEscondido();
+    return;
+  }
+
+  RestaurarOcultamientoVisualTotalPorEscondido();
+}
+
+private void AplicarOcultamientoVisualTotalPorEscondido()
+{
+  if (scUnidadCanvas != null && scUnidadCanvas.unidadCanvas != null && scUnidadCanvas.unidadCanvas.activeSelf)
+  {
+    scUnidadCanvas.unidadCanvas.SetActive(false);
+    unidadCanvasOcultadoPorEscondido = true;
+  }
+
+  if ((scUnidadCanvas == null || scUnidadCanvas.unidadCanvas == null) && uImage != null && uImage.enabled)
+  {
+    uImage.enabled = false;
+    imagenOcultadaPorEscondido = true;
+  }
+
+  if (renderersOcultosPorEscondido.Count == 0)
+  {
+    foreach (Renderer renderer in GetComponentsInChildren<Renderer>(true))
+    {
+      if (renderer == null || !renderer.enabled)
+      {
+        continue;
+      }
+
+      renderer.enabled = false;
+      renderersOcultosPorEscondido.Add(renderer);
+    }
+  }
+
+  Marcar(0);
+  anterior = null;
+
+  BattleManager battleManager = BattleManager.Instance;
+  if (battleManager != null
+    && battleManager.scUIInfoChar != null
+    && battleManager.scUIInfoChar.unidadMostrada == this)
+  {
+    battleManager.scUIInfoChar.hayUnidadSeleccionadaParaInfo = false;
+    if (battleManager.unidadActiva != null)
+    {
+      battleManager.scUIInfoChar.ActualizarInfoChar(battleManager.unidadActiva);
+    }
+  }
+}
+
+private void RestaurarOcultamientoVisualTotalPorEscondido()
+{
+  if (unidadCanvasOcultadoPorEscondido && scUnidadCanvas != null && scUnidadCanvas.unidadCanvas != null)
+  {
+    scUnidadCanvas.unidadCanvas.SetActive(true);
+  }
+  unidadCanvasOcultadoPorEscondido = false;
+
+  if (imagenOcultadaPorEscondido && uImage != null)
+  {
+    uImage.enabled = true;
+  }
+  imagenOcultadaPorEscondido = false;
+
+  if (renderersOcultosPorEscondido.Count > 0)
+  {
+    foreach (Renderer renderer in renderersOcultosPorEscondido)
+    {
+      if (renderer != null)
+      {
+        renderer.enabled = true;
+      }
+    }
+
+    renderersOcultosPorEscondido.Clear();
+  }
 }
 
 public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool esCritico, float danio)
@@ -1999,7 +2118,6 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       //----
       if (danioFinal > 0)
       {
-
         ReproducirAnimacionRecibirDanio();
         ChequearCorrompidoVsCorrupto(uCausante, danioFinal);
         BajarVuelo();
@@ -2783,7 +2901,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       danioFinal = danioFinalInt;
       if (danioFinalInt > 0)
       {
-       /* ReproducirAnimacionRecibirDanio();*/ estado_evasion = 0;
+       estado_evasion = 0;
       }
 
       if (danioFinalInt > 0 && scUnidadCanvas.unidadCanvas != null)
@@ -3358,6 +3476,7 @@ public virtual void AplicarDesesperanzado()
 
     if (txtMesh != null)
     {
+      txtMesh.richText = true;
       txtMesh.text = txString;
       txtMesh.color = color;
     }
@@ -3397,6 +3516,24 @@ public virtual void AplicarDesesperanzado()
     {
       TextoFlotanteManager.Instance.GenerarTextoFlotante(txString, color, contexto);
     }
+  }
+
+  public void MostrarRotuloHabilidadIA(string txString, Color color, float duracion = 4f)
+  {
+    if (string.IsNullOrWhiteSpace(txString))
+    {
+      return;
+    }
+
+    string textoFormateado = txString.Trim().ToUpperInvariant();
+
+    if (scUnidadCanvas != null)
+    {
+      scUnidadCanvas.MostrarRotuloHabilidadIA(textoFormateado, color, duracion);
+      return;
+    }
+
+    _ = GenerarTextoFlotante("<b>" + textoFormateado + "</b>", color, FloatingTextContext.Generic);
   }
 
 
@@ -3733,6 +3870,10 @@ public void Marcar(int n)
 Unidad anterior = null;
 public void OnMouseEnter() 
 {
+    if (EstaOcultoVisualmenteParaJugador())
+    {
+      return;
+    }
  
     anterior = null;
     Marcar(1);
@@ -3751,6 +3892,11 @@ public void OnMouseEnter()
 }
 public void OnMouseExit() 
 {
+    if (EstaOcultoVisualmenteParaJugador())
+    {
+      return;
+    }
+
    
     if(anterior != null)
     {
@@ -3774,6 +3920,10 @@ public void OnMouseExit()
 }
 public async void OnMouseDown() 
 {
+    if (EstaOcultoVisualmenteParaJugador())
+    {
+      return;
+    }
 
     if (scBattleManager.lUnidadesPosiblesHabilidadActiva.Contains(this) && scBattleManager.SeleccionandoObjetivo)
     {
@@ -3832,8 +3982,6 @@ public async void OnMouseDown()
       {
         BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
         BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo = true;
-        if (gameObject.GetComponent<IAUnidad>())
-        { BattleManager.Instance.scUIInfoChar.infoEnemigos.SetActive(true); BattleManager.Instance.scUIInfoChar.mostrardesc = true; }
         Marcar(1); anterior = this;
       }
       else

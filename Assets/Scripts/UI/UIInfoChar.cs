@@ -9,6 +9,9 @@ public class UIInfoChar : MonoBehaviour
   [SerializeField] private Image ImagenFondo; 
   [SerializeField] private Slider barraVida;
   [SerializeField] private Image Retrato; 
+  [SerializeField] private Image vIndicadorBando;
+  [SerializeField] private Sprite vSpriteStatAliado;
+  [SerializeField] private Sprite vSpriteStatEnemigo;
   [SerializeField] private TextMeshProUGUI vNombre;
   [SerializeField] private TextMeshProUGUI vHP;
   [SerializeField] private TextMeshProUGUI vHPMax;
@@ -61,7 +64,7 @@ public class UIInfoChar : MonoBehaviour
     if(unidadMostrada != null){unidadMostrada.Marcar(0);}
     if(scUnidadMostrada != null)
     {
-     
+     bool cambioUnidad = unidadMostrada != scUnidadMostrada;
      unidadMostrada = scUnidadMostrada;
      //ActualizarColoresFondo();
      gameObject.SetActive(true);
@@ -85,27 +88,40 @@ public class UIInfoChar : MonoBehaviour
    vResNecro.text = ((int)scUnidadMostrada.ObtenerResistenciaA(6)) + "";
    vResDivino.text = ((int)scUnidadMostrada.ObtenerResistenciaA(7)) + "";
 
-     if(scUnidadMostrada.gameObject.GetComponent<IAUnidad>() != null)
+     bool esEnemigo = EsUnidadEnemiga(scUnidadMostrada);
+     if(esEnemigo)
      {
         vValentiaContenedor.SetActive(false);
         ResetearVisualMerito();
         unidadUltimoMerito = null;
         vDescEnemigo.text = ActualizarDescripcionAI(); 
-        vDescenemigoGO.SetActive(mostrardesc);
         btninfoEnemigos.SetActive(true);
      }
      else
      { 
+        mostrardesc = false;
         ActualizarVisualMerito(scUnidadMostrada);
         vValentiaContenedor.SetActive(true);
-        vDescenemigoGO.SetActive(false);
         btninfoEnemigos.SetActive(false);
        
      }
+
+     if (cambioUnidad && esEnemigo)
+     {
+       mostrardesc = false;
+     }
+
+     if (!hayUnidadSeleccionadaParaInfo)
+     {
+       mostrardesc = false;
+     }
+
+     ActualizarVisibilidadInfoEnemigos(esEnemigo && mostrardesc);
      
      barraVida.value = scUnidadMostrada.HP_actual / scUnidadMostrada.mod_maxHP;
 
      Retrato.sprite = scUnidadMostrada.uRetrato;
+     ActualizarSpriteIndicadorBando(scUnidadMostrada);
 
      //Estados
      foreach (Transform buttonEstado in contenedorCasillasEstados.transform)//Esto remueve los retratos anteriores antes de recalcular que retratos corresponden
@@ -297,6 +313,8 @@ public class UIInfoChar : MonoBehaviour
     }
     else
     { 
+        mostrardesc = false;
+        ActualizarVisibilidadInfoEnemigos(false);
         ResetearVisualMerito();
         unidadUltimoMerito = null;
         gameObject.SetActive(false);
@@ -453,7 +471,8 @@ public class UIInfoChar : MonoBehaviour
   public void botonSalirDeseleccionar()
   {
     hayUnidadSeleccionadaParaInfo = false;
-    infoEnemigos.SetActive(false);
+    mostrardesc = false;
+    ActualizarVisibilidadInfoEnemigos(false);
     ActualizarInfoChar(BattleManager.Instance.unidadActiva);
 
   }
@@ -482,6 +501,38 @@ public class UIInfoChar : MonoBehaviour
       }
     }
 
+  }
+
+  private void ActualizarSpriteIndicadorBando(Unidad unidad)
+  {
+    if (vIndicadorBando == null)
+    {
+      return;
+    }
+
+    bool esEnemigo = unidad != null && unidad.GetComponent<IAUnidad>() != null;
+    Sprite spriteObjetivo = esEnemigo ? vSpriteStatEnemigo : vSpriteStatAliado;
+
+    vIndicadorBando.sprite = spriteObjetivo;
+    vIndicadorBando.enabled = spriteObjetivo != null;
+  }
+
+  private bool EsUnidadEnemiga(Unidad unidad)
+  {
+    return unidad != null && unidad.GetComponent<IAUnidad>() != null;
+  }
+
+  private void ActualizarVisibilidadInfoEnemigos(bool mostrarPanel)
+  {
+    if (infoEnemigos != null)
+    {
+      infoEnemigos.SetActive(mostrarPanel);
+    }
+
+    if (vDescenemigoGO != null)
+    {
+      vDescenemigoGO.SetActive(mostrarPanel);
+    }
   }
 
 
@@ -652,13 +703,15 @@ public class UIInfoChar : MonoBehaviour
   public bool mostrardesc;
   public void BotonInfoenemigos()
   {
-    if(infoEnemigos.activeInHierarchy)
+    if (!EsUnidadEnemiga(unidadMostrada))
     {
       mostrardesc = false;
+      ActualizarVisibilidadInfoEnemigos(false);
+      return;
+    }
 
-    }else{  mostrardesc = true;}
-
-    ActualizarInfoChar(unidadMostrada);
+    mostrardesc = !mostrardesc;
+    ActualizarVisibilidadInfoEnemigos(mostrardesc);
   }
 }
 

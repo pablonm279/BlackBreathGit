@@ -6,6 +6,8 @@ using TMPro;
 
 public class Obstaculo : MonoBehaviour
 {
+  private const string RutaSonidoImpactoRoca = "rocahit";
+  private static AudioClip sfxImpactoRoca;
 
   public string oName;
   public float hpMax;
@@ -69,6 +71,7 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
     float danioFinal = danio - iDureza;
     if (danioFinal < 0) danioFinal = 0;
 
+    ReproducirSonidoImpactoRoca();
     hpCurr -= danioFinal;
 
     // Mostrar el daño recibido (también cuando el resultado es 0)
@@ -175,6 +178,29 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
     {
      Destroy(gameObject);
     
+    }
+
+    public void ReproducirSonidoImpactoRoca()
+    {
+      if (!EsRoca())
+      {
+        return;
+      }
+
+      if (sfxImpactoRoca == null)
+      {
+        sfxImpactoRoca = Resources.Load<AudioClip>(RutaSonidoImpactoRoca);
+      }
+
+      if (sfxImpactoRoca != null)
+      {
+        AudioSource.PlayClipAtPoint(sfxImpactoRoca, transform.position);
+      }
+    }
+
+    private bool EsRoca()
+    {
+      return !string.IsNullOrEmpty(oName) && oName.ToLowerInvariant().Contains("roca");
     }
 
 }

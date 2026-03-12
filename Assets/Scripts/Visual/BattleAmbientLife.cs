@@ -20,8 +20,8 @@ public class BattleAmbientLife : MonoBehaviour
 
   [Header("Particulas Ambiente")]
   [SerializeField] private bool habilitarParticulas = true;
-  [SerializeField] private int maxParticulasMotas = 90;
-  [SerializeField] private int maxParticulasBruma = 22;
+  [SerializeField] private int maxParticulasMotas = 81;
+  [SerializeField] private int maxParticulasBruma = 20;
 
   private Material materialFondoInstancia;
   private Color colorBaseFondo = Color.white;
@@ -242,8 +242,8 @@ public class BattleAmbientLife : MonoBehaviour
     renderer.sortMode = ParticleSystemSortMode.Distance;
     renderer.renderMode = ParticleSystemRenderMode.Billboard;
     renderer.alignment = ParticleSystemRenderSpace.View;
-    renderer.minParticleSize = 0.00085f; // -15%
-    renderer.maxParticleSize = 0.02975f; // -15%
+    renderer.minParticleSize = 0.000765f;
+    renderer.maxParticleSize = 0.026775f;
     renderer.sortingLayerName = "Default";
     renderer.sortingOrder = OrdenRenderParticulasFrente;
     renderer.sortingFudge = -80f;
@@ -379,12 +379,12 @@ public class BattleAmbientLife : MonoBehaviour
     main.maxParticles = Mathf.Max(8, maxParticulasMotas);
     main.startLifetime = new ParticleSystem.MinMaxCurve(6f, 10f);
     main.startSpeed = new ParticleSystem.MinMaxCurve(0.008f, 0.03f);
-    main.startSize = new ParticleSystem.MinMaxCurve(0.0112f, 0.03175f); // -15%
+    main.startSize = new ParticleSystem.MinMaxCurve(0.01008f, 0.028575f);
     main.startColor = new Color(color.r, color.g, color.b, 0.047f);
     main.gravityModifier = 0f;
 
     var emission = ps.emission;
-    emission.rateOverTime = subterraneoActual ? 5.4f : 3.8f;
+    emission.rateOverTime = subterraneoActual ? 4.86f : 3.42f;
 
     var shape = ps.shape;
     shape.enabled = true;
@@ -414,12 +414,12 @@ public class BattleAmbientLife : MonoBehaviour
     main.maxParticles = Mathf.Max(6, maxParticulasBruma);
     main.startLifetime = new ParticleSystem.MinMaxCurve(9f, 14f);
     main.startSpeed = new ParticleSystem.MinMaxCurve(0.005f, 0.018f);
-    main.startSize = new ParticleSystem.MinMaxCurve(0.03075f, 0.08375f); // -15%
+    main.startSize = new ParticleSystem.MinMaxCurve(0.027675f, 0.075375f);
     main.startColor = new Color(color.r, color.g, color.b, 0.025f);
     main.gravityModifier = 0f;
 
     var emission = ps.emission;
-    emission.rateOverTime = subterraneoActual ? 2.4f : 1.5f;
+    emission.rateOverTime = subterraneoActual ? 2.16f : 1.35f;
 
     var shape = ps.shape;
     shape.enabled = true;

@@ -66,19 +66,11 @@ public class GirarCaravana : MonoBehaviour
   private float CalcularAngulo(Vector3 origen, Vector3 destino)
   {
     Vector3 direccion = destino - origen;
-    Vector2 planoSeleccionado = SeleccionarPlano(direccion);
+    Vector2 planoSeleccionado = new Vector2(direccion.x, direccion.z);
     if (planoSeleccionado.sqrMagnitude <= 0.0001f)
       return 0f;
 
     return Mathf.Atan2(planoSeleccionado.y, planoSeleccionado.x) * Mathf.Rad2Deg;
-  }
-
-  private static Vector2 SeleccionarPlano(Vector3 direccion)
-  {
-    if (Mathf.Abs(direccion.y) >= Mathf.Abs(direccion.z))
-      return new Vector2(direccion.x, direccion.y);
-
-    return new Vector2(direccion.x, direccion.z);
   }
 
   private void AplicarMaterial(Material material)

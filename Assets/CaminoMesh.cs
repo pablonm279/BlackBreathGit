@@ -8,7 +8,10 @@ public class CaminoMesh : MonoBehaviour
     [Header("Ajustes visuales")]
     private float width = 0.45f;           // Ancho del camino
     private float yOffset = 0.02f;        // Altura para evitar z-fighting
-    private float uvTilesPerUnit = 0.35f; // Tiling a lo largo
+    private float uvTilesPerUnit = 0.42f; // Tiling a lo largo
+    private const float WidthEndScale = 0.74f;
+    private const float WidthCenterBoost = 0.04f;
+    private const float WidthTaperSpan = 0.14f;
 
     Mesh _mesh;
     MeshFilter _mf;
@@ -63,6 +66,8 @@ public class CaminoMesh : MonoBehaviour
         float accDist = 0f;
         for (int i = 0; i < n; i++)
         {
+            float t = n > 1 ? i / (float)(n - 1) : 0f;
+
             // Direcciones en LOCAL
             Vector3 forward;
             if (i == 0) forward = (ptsLocal[1] - ptsLocal[0]).normalized;
@@ -71,9 +76,10 @@ public class CaminoMesh : MonoBehaviour
 
             // Perpendicular en el plano XZ local
             Vector3 side = Vector3.Cross(Vector3.up, forward).normalized;
+            float widthScale = EvaluateWidthScale(t);
 
-            Vector3 left  = ptsLocal[i] - side * (width * 0.5f);
-            Vector3 right = ptsLocal[i] + side * (width * 0.5f);
+            Vector3 left  = ptsLocal[i] - side * (width * widthScale * 0.5f);
+            Vector3 right = ptsLocal[i] + side * (width * widthScale * 0.5f);
 
             int vi = i * 2;
             verts[vi] = left;
@@ -112,9 +118,22 @@ public class CaminoMesh : MonoBehaviour
         if (_mr != null) _mr.enabled = true;
     }
 
+    float EvaluateWidthScale(float t)
+    {
+        float taperIn = Mathf.SmoothStep(WidthEndScale, 1f, Mathf.Clamp01(t / WidthTaperSpan));
+        float taperOut = Mathf.SmoothStep(WidthEndScale, 1f, Mathf.Clamp01((1f - t) / WidthTaperSpan));
+        float centerBoost = 1f + Mathf.Sin(t * Mathf.PI) * WidthCenterBoost;
+        return Mathf.Min(taperIn, taperOut) * centerBoost;
+    }
+
     public void SetWidth(float newWidth)
     {
         width = Mathf.Max(0.05f, newWidth);
+    }
+
+    public void SetYOffset(float newYOffset)
+    {
+        yOffset = Mathf.Max(0f, newYOffset);
     }
 
     // Opcional para setear material por código

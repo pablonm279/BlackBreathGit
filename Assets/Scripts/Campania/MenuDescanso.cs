@@ -633,6 +633,25 @@ public class MenuDescanso : MonoBehaviour
       else
       { random = 1; } //Siempre sol en los primeros pasos del tutorial
     }
+
+    bool bloquearCalorPorInicioDeZona = CampaignManager.Instance != null
+      && CampaignManager.Instance.ConsumirBloqueoOlaDeCalorEnSiguienteTiradaClima();
+    if (bloquearCalorPorInicioDeZona)
+    {
+      int inicioRangoCalor = CampaignManager.Instance.scAtributosZona.Clima_chances_Sol;
+      int finRangoCalor = CampaignManager.Instance.scAtributosZona.Clima_chances_Calor;
+      int intentos = 0;
+      while (random >= inicioRangoCalor && random < finRangoCalor && intentos < 32)
+      {
+        random = UnityEngine.Random.Range(1, 101);
+        intentos++;
+      }
+
+      if (random >= inicioRangoCalor && random < finRangoCalor)
+      {
+        random = Mathf.Clamp(finRangoCalor, 1, 100);
+      }
+    }
    
     climaNieve.SetActive(false);
     climaLluvia.SetActive(false);
@@ -748,6 +767,11 @@ public class MenuDescanso : MonoBehaviour
 
 
 
+
+    if (CampaignManager.Instance != null)
+    {
+      CampaignManager.Instance.RefrescarVfxClimaCalor();
+    }
 
   }
 

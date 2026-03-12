@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using TMPro;
 
@@ -122,6 +124,8 @@ public class FloatingTextProfile
 
 public class FloatingTextAnimator : MonoBehaviour
 {
+    private static readonly Regex RegexTachadoSimple = new Regex(@"<s>(.*?)</s>", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+
     [Header("Perfiles por contexto")]
     [SerializeField] private FloatingTextProfile genericProfile = CreateGenericProfile();
     [SerializeField] private FloatingTextProfile damageProfile = CreateDamageProfile();
@@ -192,8 +196,11 @@ public class FloatingTextAnimator : MonoBehaviour
             return null;
         }
 
+        text = NormalizarTextoRichText(text);
+
         if (!isActiveAndEnabled)
         {
+            tmp.richText = true;
             tmp.text = text;
             tmp.color = color;
             rect.anchoredPosition = baseAnchoredPosition;
@@ -217,9 +224,12 @@ public class FloatingTextAnimator : MonoBehaviour
             yield break;
         }
 
+        text = NormalizarTextoRichText(text);
+
         FloatingTextProfile profile = ResolveProfile(context);
         profile.Validate();
 
+        tmp.richText = true;
         tmp.text = text;
         rect.anchoredPosition = baseAnchoredPosition;
         rect.localScale = Vector3.one;
@@ -315,6 +325,36 @@ public class FloatingTextAnimator : MonoBehaviour
     private static Color MultiplyColors(Color a, Color b)
     {
         return new Color(a.r * b.r, a.g * b.g, a.b * b.b, a.a * b.a);
+    }
+
+    public static string NormalizarTextoRichText(string texto)
+    {
+        if (string.IsNullOrEmpty(texto) || texto.IndexOf("<s>", StringComparison.OrdinalIgnoreCase) < 0)
+        {
+            return texto;
+        }
+
+        return RegexTachadoSimple.Replace(texto, match => AplicarTachadoUnicode(match.Groups[1].Value));
+    }
+
+    private static string AplicarTachadoUnicode(string texto)
+    {
+        if (string.IsNullOrEmpty(texto))
+        {
+            return texto;
+        }
+
+        var sb = new StringBuilder(texto.Length * 2);
+        foreach (char c in texto)
+        {
+            sb.Append(c);
+            if (!char.IsWhiteSpace(c))
+            {
+                sb.Append('\u0336');
+            }
+        }
+
+        return sb.ToString();
     }
 
     private static FloatingTextProfile CreateGenericProfile()

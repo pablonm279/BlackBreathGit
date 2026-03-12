@@ -20,19 +20,19 @@ MonoBehaviour:
     m_PointSize: 90
     m_Scale: 1
     m_UnitsPerEM: 1000
-    m_LineHeight: 160
-    m_AscentLine: 95.310005
-    m_CapLine: 60
-    m_MeanLine: 41
+    m_LineHeight: 193
+    m_AscentLine: 123.4
+    m_CapLine: 85.5
+    m_MeanLine: 83.2
     m_Baseline: 0
     m_DescentLine: -41.670002
-    m_SuperscriptOffset: 95.310005
+    m_SuperscriptOffset: 0
     m_SuperscriptSize: 0.5
-    m_SubscriptOffset: -41.670002
+    m_SubscriptOffset: 0
     m_SubscriptSize: 0.5
     m_UnderlineOffset: -7.17
     m_UnderlineThickness: 12
-    m_StrikethroughOffset: 28.5
+    m_StrikethroughOffset: 34.2
     m_StrikethroughThickness: 4.5
     m_TabWidth: 23
   m_Material: {fileID: 1369702316804459117}

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class TooltipNodos : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class TooltipNodos : MonoBehaviour
         Instance = this;
         if (tooltipObject == null) { return; }
 
+        ConfigurarTooltipSinRaycasts();
+
         tooltipAnim = UIFadeSlideUtility.Ensure(tooltipObject);
         if (tooltipAnim != null)
         {
@@ -27,6 +30,24 @@ public class TooltipNodos : MonoBehaviour
         else
         {
             tooltipObject.SetActive(false);
+        }
+    }
+
+    void ConfigurarTooltipSinRaycasts()
+    {
+        CanvasGroup canvasGroup = tooltipObject.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = tooltipObject.AddComponent<CanvasGroup>();
+        }
+
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.interactable = false;
+
+        Graphic[] graficos = tooltipObject.GetComponentsInChildren<Graphic>(true);
+        foreach (Graphic grafico in graficos)
+        {
+            grafico.raycastTarget = false;
         }
     }
 

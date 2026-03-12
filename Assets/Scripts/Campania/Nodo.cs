@@ -31,6 +31,9 @@ public class Nodo : MonoBehaviour
   public float lineHeightOffset = 0.02f; // Evitar z-fighting
   const float CaminoAnchoBaseMultiplicador = 0.75f;
   const float CaminoAnchoDificilMultiplicador = 0.62f;
+  const float CaminoAlturaMinimaSobreRelieve = 0.055f;
+  const float CaminoYOffsetMallaMinimo = 0.025f;
+  const float ToleranciaCoincidenciaCaminoXZ = 0.18f;
 
   // Materiales
   public Material MaterialCaminoOriginal;
@@ -38,6 +41,7 @@ public class Nodo : MonoBehaviour
   public Material MaterialCaminoUsado;
   public Material MaterialAtajo;
   public Material caminoLento;
+  private Material caminoLentoVisual;
 
   // Lógica movimiento
   public float velocidadMovimiento = 4f;
@@ -77,6 +81,7 @@ public class Nodo : MonoBehaviour
   void Start()
   {
     scContenedorNodos2 = CampaignManager.Instance.scMapaManager.scContenedordeNodos;
+    PrepararMaterialCaminoLento();
 
     int random = UnityEngine.Random.Range(0, 100);
     if (random < 20 && posXNodo > 1) //20% camino difícil
@@ -354,9 +359,11 @@ public class Nodo : MonoBehaviour
 
     Vector3 p0 = nodoA.transform.position;
     Vector3 p3 = nodoB.transform.position;
+    MapDecorator mapDecorator = ObtenerDecoradorMapa();
 
     // Dirección y perpendicular para "empujar" la curva
     Vector3 dir = (p3 - p0);
+    dir.y = 0f;
     float dist = dir.magnitude;
     if (dist < 0.001f) dist = 0.001f;
     dir /= dist;
@@ -374,26 +381,33 @@ public class Nodo : MonoBehaviour
     }
     else if (esCaminoDificil)
     {
-      outward = UnityEngine.Random.Range(0.48f, 0.82f);
+      outward = UnityEngine.Random.Range(0.36f, 0.67f);
     }
     else
     {
       // 30% de probabilidad de una curvatura más pronunciada también para no-atajo
-      if (UnityEngine.Random.value < 0.3f && cantidadConexiones < 2)
-        outward = UnityEngine.Random.Range(1.8f, 2.4f); // curvatura notable pero menor que un atajo
+      if (UnityEngine.Random.value < 0.24f && cantidadConexiones < 2 && dist > 7.5f)
+        outward = UnityEngine.Random.Range(0.9f, 1.35f); // curva visible pero controlada
       else
-        outward = UnityEngine.Random.Range(0.25f, 0.8f); // normal: leve
+        outward = UnityEngine.Random.Range(0.16f, 0.46f); // normal: leve
     }
 
     // Evitar que los primeros 2 ramos salgan muy curvos
     if (!esPorAbajo && cantidadConexiones < 2)
-      outward *= esCaminoDificil ? 0.9f : 0.75f;
+      outward *= esCaminoDificil ? 0.88f : 0.72f;
+
+    float outwardMaximo = esPorAbajo
+      ? Mathf.Max(2.2f, dist * 0.22f)
+      : esCaminoDificil
+        ? Mathf.Clamp(dist * 0.125f, 0.3f, 0.67f)
+        : Mathf.Clamp(dist * 0.075f, 0.18f, 0.62f);
+    outward = Mathf.Min(outward, outwardMaximo);
 
     float sideSign = UnityEngine.Random.value < 0.5f ? -1f : 1f;
 
     // Dónde colocar puntos de control
-    float t1 = UnityEngine.Random.Range(0.14f, 0.22f);
-    float t2 = UnityEngine.Random.Range(0.62f, 0.78f);
+    float t1 = UnityEngine.Random.Range(0.16f, 0.24f);
+    float t2 = UnityEngine.Random.Range(0.60f, 0.76f);
 
     // Pequeña variación lateral
     float jitter1 = UnityEngine.Random.Range(-0.5f, 0.5f);
@@ -403,12 +417,16 @@ public class Nodo : MonoBehaviour
     Vector3 p2 = p3 - dir * (dist * (1f - t2)) + perp * (sideSign * outward * (0.35f + 0.65f * Mathf.Abs(jitter2)));
 
     // Curva Bézier: SIEMPRE PLANA en Y (evita hundirse bajo el suelo)
-    int resolution = esCaminoDificil ? 28 : 20;
-    float frecuenciaCaminoSinuoso = esCaminoDificil ? UnityEngine.Random.Range(1.7f, 2.25f) : 0f;
-    float amplitudCaminoSinuoso = esCaminoDificil ? Mathf.Min(dist * 0.055f, UnityEngine.Random.Range(0.14f, 0.24f)) : 0f;
-    float caosCaminoSinuoso = esCaminoDificil ? UnityEngine.Random.Range(0.018f, 0.055f) : 0f;
+    int resolutionMinima = esCaminoDificil ? 30 : 22;
+    int resolutionMaxima = esCaminoDificil ? 54 : 42;
+    float densidadMuestreo = esCaminoDificil ? 10.5f : 8.5f;
+    int resolution = Mathf.Clamp(Mathf.RoundToInt(dist * densidadMuestreo), resolutionMinima, resolutionMaxima);
+    float frecuenciaCaminoSinuoso = esCaminoDificil ? UnityEngine.Random.Range(1.14f, 1.34f) : 0f;
+    float amplitudCaminoSinuoso = esCaminoDificil ? Mathf.Min(dist * 0.045f, UnityEngine.Random.Range(0.125f, 0.21f)) : 0f;
+    float caosCaminoSinuoso = esCaminoDificil ? UnityEngine.Random.Range(0.011f, 0.025f) : 0f;
     float faseCaminoSinuoso = esCaminoDificil ? UnityEngine.Random.Range(0f, Mathf.PI * 2f) : 0f;
     float semillaCaosCaminoSinuoso = esCaminoDificil ? UnityEngine.Random.Range(0f, 100f) : 0f;
+    float offsetCaminoSobreRelieve = Mathf.Max(CaminoAlturaMinimaSobreRelieve, lineHeightOffset * 3f);
     lineRenderer.positionCount = resolution;
     for (int i = 0; i < resolution; i++)
     {
@@ -416,13 +434,18 @@ public class Nodo : MonoBehaviour
       Vector3 point = BezierCurve.GetPoint(p0, p1, p2, p3, t);
 
       // Forzamos Y a la interpolación del tramo (plano) + leve offset si querés
-      float yPlano = Mathf.Lerp(p0.y, p3.y, t);
-      point.y = yPlano; // <- clave: no hundimos ni subimos secciones
-
       if (esCaminoDificil && i > 0 && i < resolution - 1)
       {
         point += perp * CalcularDesvioCaminoSinuoso(t, frecuenciaCaminoSinuoso, amplitudCaminoSinuoso, caosCaminoSinuoso, faseCaminoSinuoso, semillaCaosCaminoSinuoso);
-        point.y = yPlano;
+      }
+
+      if (mapDecorator != null && mapDecorator.TrySampleSurface(point, out var surfacePoint, out _, offsetCaminoSobreRelieve))
+      {
+        point.y = surfacePoint.y;
+      }
+      else
+      {
+        point.y = Mathf.Lerp(p0.y, p3.y, t);
       }
 
       lineRenderer.SetPosition(i, point);
@@ -432,7 +455,7 @@ public class Nodo : MonoBehaviour
     var caminoMesh = lineObject.GetComponent<CaminoMesh>();
     if (caminoMesh == null) caminoMesh = lineObject.AddComponent<CaminoMesh>();
     caminoMesh.SetWidth(ObtenerAnchoVisualCamino(esCaminoDificil));
-    // caminoMesh.yOffset = lineHeightOffset;                // 0.02 aprox
+    caminoMesh.SetYOffset(Mathf.Max(CaminoYOffsetMallaMinimo, lineHeightOffset));
     caminoMesh.RebuildFromLine();
 
     // Material según tipo (normal vs atajo)
@@ -537,7 +560,7 @@ public class Nodo : MonoBehaviour
     {
       if (!child.name.Contains("LineaCaminos")) continue;
       LineRenderer lr = child.GetComponent<LineRenderer>();
-      if (lr != null && lr.GetPosition(lr.positionCount - 1) == nodoDestino.transform.position)
+      if (CoincideExtremoLineaConPosicion(lr, nodoDestino.transform.position))
       {
         lineaTransform = child;
         break;
@@ -706,6 +729,50 @@ if (esLaLider)
     }
   }
 
+  private MapDecorator ObtenerDecoradorMapa()
+  {
+    if (CampaignManager.Instance == null || CampaignManager.Instance.scAtributosZona == null)
+    {
+      return null;
+    }
+
+    return CampaignManager.Instance.scAtributosZona.GetComponent<MapDecorator>();
+  }
+
+  private Quaternion CalcularRotacionConvoyPorRelieve(Vector3 posActual, Vector3 posFutura, bool viajeSubterraneo)
+  {
+    Vector3 forward = posFutura - posActual;
+    if (forward.sqrMagnitude <= 0.000001f)
+    {
+      return Quaternion.identity;
+    }
+
+    if (viajeSubterraneo)
+    {
+      forward.y = 0f;
+      return forward.sqrMagnitude > 0.000001f
+        ? Quaternion.LookRotation(forward.normalized, Vector3.up)
+        : Quaternion.identity;
+    }
+
+    MapDecorator mapDecorator = ObtenerDecoradorMapa();
+    Vector3 up = Vector3.up;
+    if (mapDecorator != null && mapDecorator.TrySampleSurface(posActual, out _, out var terrainNormal, 0f))
+    {
+      up = Vector3.RotateTowards(Vector3.up, terrainNormal.normalized, Mathf.Deg2Rad * 10f, 0f);
+    }
+
+    Vector3 forwardPlano = Vector3.ProjectOnPlane(forward, up);
+    if (forwardPlano.sqrMagnitude <= 0.000001f)
+    {
+      forwardPlano = new Vector3(forward.x, 0f, forward.z);
+    }
+
+    return forwardPlano.sqrMagnitude > 0.000001f
+      ? Quaternion.LookRotation(forwardPlano.normalized, up)
+      : Quaternion.identity;
+  }
+
   private float ObtenerAnchoVisualCamino(bool esCaminoDificil)
   {
     return lineWidth * (esCaminoDificil ? CaminoAnchoDificilMultiplicador : CaminoAnchoBaseMultiplicador);
@@ -713,9 +780,9 @@ if (esLaLider)
 
   private static float CalcularDesvioCaminoSinuoso(float t, float frecuencia, float amplitud, float caos, float fase, float semilla)
   {
-    const float inicioSinuosidad = 0.20f;
-    const float finSinuosidad = 0.80f;
-    const float suavizadoBorde = 0.1f;
+    const float inicioSinuosidad = 0.22f;
+    const float finSinuosidad = 0.78f;
+    const float suavizadoBorde = 0.11f;
 
     if (t <= inicioSinuosidad || t >= finSinuosidad)
     {
@@ -726,19 +793,77 @@ if (esLaLider)
     float entrada = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((t - inicioSinuosidad) / suavizadoBorde));
     float salida = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((finSinuosidad - t) / suavizadoBorde));
     float envolvente = entrada * salida;
-    float zigzag = Mathf.Sin((tNormalizado * frecuencia * Mathf.PI * 2f) + fase) * amplitud * envolvente;
-    float ruido = (Mathf.PerlinNoise(semilla, tNormalizado * 4.5f) - 0.5f) * 2f * caos * envolvente;
-    return zigzag + ruido;
+    float curvaPrincipal = Mathf.Sin(tNormalizado * Mathf.PI) * Mathf.Sin(tNormalizado * Mathf.PI * 2f) * amplitud;
+    float zigzagSuave = Mathf.Sin((tNormalizado * frecuencia * Mathf.PI * 2f) + fase) * (amplitud * 0.3f);
+    float ruido = (Mathf.PerlinNoise(semilla, tNormalizado * 3.3f) - 0.5f) * 2f * caos;
+    return (curvaPrincipal + zigzagSuave + ruido) * envolvente;
   }
 
   // --- Helper materiales: aplica al LR y a la malla ---
   private void SetMaterialCamino(Transform linea, Material mat)
   {
+    if (mat == caminoLento)
+    {
+      mat = ObtenerMaterialCaminoLentoVisual();
+    }
+
     var lr = linea.GetComponent<LineRenderer>();
     if (lr != null) lr.sharedMaterial = mat;
 
     var mr = linea.GetComponent<MeshRenderer>();
     if (mr != null) mr.sharedMaterial = mat;
+  }
+
+  private void PrepararMaterialCaminoLento()
+  {
+    if (caminoLento == null || caminoLentoVisual != null)
+    {
+      return;
+    }
+
+    caminoLentoVisual = new Material(caminoLento);
+
+    if (caminoLentoVisual.HasProperty("_Color"))
+    {
+      Color colorBase = caminoLento.color;
+      float brilloObjetivo = Mathf.Max(Mathf.Max(colorBase.r, colorBase.g), colorBase.b);
+      brilloObjetivo = Mathf.Max(brilloObjetivo, 0.66f);
+      Color colorGris = new Color(brilloObjetivo, brilloObjetivo, brilloObjetivo, colorBase.a);
+      caminoLentoVisual.color = Color.Lerp(colorBase, colorGris, 0.5f);
+    }
+  }
+
+  private Material ObtenerMaterialCaminoLentoVisual()
+  {
+    PrepararMaterialCaminoLento();
+    return caminoLentoVisual != null ? caminoLentoVisual : caminoLento;
+  }
+
+  private bool CoincideExtremoLineaConPosicion(LineRenderer lineRenderer, Vector3 posicionObjetivo)
+  {
+    if (lineRenderer == null || lineRenderer.positionCount <= 0)
+    {
+      return false;
+    }
+
+    return CoincidePosicionCamino(lineRenderer.GetPosition(lineRenderer.positionCount - 1), posicionObjetivo);
+  }
+
+  private bool CoincidePosicionCamino(Vector3 posicionA, Vector3 posicionB)
+  {
+    Vector2 aXZ = new Vector2(posicionA.x, posicionA.z);
+    Vector2 bXZ = new Vector2(posicionB.x, posicionB.z);
+    return (aXZ - bXZ).sqrMagnitude <= ToleranciaCoincidenciaCaminoXZ * ToleranciaCoincidenciaCaminoXZ;
+  }
+
+  private Nodo ObtenerDestinoSegunLinea(LineRenderer lineRenderer)
+  {
+    if (lineRenderer == null)
+    {
+      return null;
+    }
+
+    return DestinosPosibles.Find(n => n != null && CoincideExtremoLineaConPosicion(lineRenderer, n.transform.position));
   }
 
   void MarcarCaminosPosibles()
@@ -752,7 +877,7 @@ if (esLaLider)
         var lr = child.GetComponent<LineRenderer>();
         if (lr == null) continue;
 
-        if (lr.GetPosition(lr.positionCount - 1) == transform.position)
+        if (CoincideExtremoLineaConPosicion(lr, transform.position))
           SetMaterialCamino(child, MaterialCaminoUsado);
         else
           SetMaterialCamino(child, MaterialCaminoOriginal);
@@ -766,7 +891,7 @@ if (esLaLider)
       var lr = child.GetComponent<LineRenderer>();
       if (lr == null) continue;
 
-      Nodo nodoDestino = DestinosPosibles.Find(n => n.transform.position == lr.GetPosition(lr.positionCount - 1));
+      Nodo nodoDestino = ObtenerDestinoSegunLinea(lr);
       if (nodoDestino == null)
       {
         SetMaterialCamino(child, MaterialCaminoOriginal);
@@ -1279,7 +1404,8 @@ float gapDist = 0.66f;              // distancia entre vehículos
 private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = false)
 {
     // Ajustes de suavizado (si querés tunear, subilos a fields públicos)
-    float easeInTime = 0.2f;       // segundos para acelerar al inicio
+    const float tramoSuavizadoExtremos = 0.18f;
+    float easeInTime = 0.28f;       // segundos para acelerar al inicio
     float easeOutDist = 0.6f;       // metros antes del final para frenar líder
     float easeOutTailDist = 0.08f;   // "error" de cola para frenar al final
     float minSpeedFactor = 0.10f;   // piso para que no se quede "cerquita"
@@ -1325,6 +1451,7 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
     const float markerPulseAmp = 0.1f;
     const float tramoEntradaSalidaVisible = 0.18f;
     const float profundidadSubterraneaY = 1.2f;
+    const float pitchSubterraneoMax = 7f;
     const float overlayAlphaMax = 0.322f; // +15% más oscuro
     GameObject overlayGO = null;
     Image overlayImage = null;
@@ -1341,6 +1468,8 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
         pts[i] = lr.useWorldSpace ? p : lr.transform.TransformPoint(p);
     }
 
+    AjustarExtremosTrayectoConvoy(pts, convoy[0].go.transform.position, transform.position, tramoSuavizadoExtremos);
+
     // Longitudes acumuladas del tramo
     float[] segLen = new float[n - 1];
     float[] cumLen = new float[n];
@@ -1354,10 +1483,15 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
 
     float totalLen = cumLen[n - 1];
     if (totalLen <= 0.0001f) yield break;
-    float duracionDesvanecidoSonido = Mathf.Lerp(0.12f, 0.32f, Mathf.InverseLerp(2.5f, 9f, totalLen));
+    float duracionDesvanecidoSonido = Mathf.Lerp(0.08f, 0.2f, Mathf.InverseLerp(2.5f, 9f, totalLen));
 
     // Gap desde el Inspector (no lo pises con un local)
     float gap = Mathf.Max(0.0001f, this.gapDist);
+    easeInTime = Mathf.Lerp(0.24f, 0.4f, Mathf.InverseLerp(2.5f, 9f, totalLen));
+    easeOutDist = Mathf.Clamp(totalLen * 0.07f, 0.2f, 0.45f);
+    easeOutTailDist = Mathf.Clamp(gap * 0.28f, 0.04f, 0.12f);
+    minSpeedFactor = 0.18f;
+    snapEps = 0.05f;
 
     if (viajeSubterraneo)
     {
@@ -1411,7 +1545,7 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
     float elapsed = 0f;
     bool leaderArrived = false;
     bool sonidoMovimientoDesvanecido = false;
-    float speedFactorSmoothed = minSpeedFactor;
+    float speedFactorSmoothed = 0f;
     const float speedSmooth = 10f; // subí a 12-16 si aún hay tirán
     
     try
@@ -1466,6 +1600,8 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
       }
 
       float speedFactorTarget = Mathf.Max(minSpeedFactor, easeIn * easeOutFactor);
+      float speedFloor = Mathf.Lerp(0f, minSpeedFactor, easeIn);
+      speedFactorTarget = Mathf.Max(speedFloor, easeIn * easeOutFactor);
 
 // suavizado exponencial independiente del FPS
 float kSpeed = 1f - Mathf.Exp(-speedSmooth * dt);
@@ -1530,15 +1666,40 @@ float step = Mathf.Max(0f, velocidadMovimiento) * dt * speedFactorSmoothed;
       Quaternion leaderRot = Quaternion.identity;
       if (convoy[0].rot != null)
       {
+        float sAtras = Mathf.Max(leaderS - lookAheadDist, 0f);
         float sF = Mathf.Min(leaderS + lookAheadDist, totalLen);
+        Vector3 posAtras = PointAtDistance(pts, segLen, cumLen, sAtras);
         Vector3 posF = PointAtDistance(pts, segLen, cumLen, sF);
+        float pitchSubterraneo = 0f;
 
-        Vector3 fwd = posF - leaderPos;
-        fwd.y = 0f;
-
-        if (fwd.sqrMagnitude > 0.000001f)
+        if (viajeSubterraneo)
         {
-          Quaternion target = Quaternion.LookRotation(fwd.normalized, Vector3.up);
+          float progresoActual = totalLen <= 0.0001f ? 1f : Mathf.Clamp01(leaderS / totalLen);
+          float progresoAtras = totalLen <= 0.0001f ? 0f : Mathf.Clamp01(sAtras / totalLen);
+          float progresoFuturo = totalLen <= 0.0001f ? 1f : Mathf.Clamp01(sF / totalLen);
+
+          posAtras.y += CalcularOffsetYSubterraneo(progresoAtras, tramoEntradaSalidaVisible, profundidadSubterraneaY);
+          posF.y += CalcularOffsetYSubterraneo(progresoFuturo, tramoEntradaSalidaVisible, profundidadSubterraneaY);
+          pitchSubterraneo = CalcularPitchSubterraneo(progresoActual, tramoEntradaSalidaVisible, pitchSubterraneoMax);
+        }
+
+        Vector3 origenRotacion = leaderPos;
+        Vector3 destinoRotacion = posF;
+
+        if ((destinoRotacion - origenRotacion).sqrMagnitude <= 0.000001f)
+        {
+          origenRotacion = posAtras;
+          destinoRotacion = leaderPos;
+        }
+
+        Quaternion target = CalcularRotacionConvoyPorRelieve(origenRotacion, destinoRotacion, viajeSubterraneo);
+        if (viajeSubterraneo && target != Quaternion.identity)
+        {
+          target *= Quaternion.Euler(pitchSubterraneo, 0f, 0f);
+        }
+
+        if (target != Quaternion.identity)
+        {
           float k = 1f - Mathf.Exp(-rotSpeed * dt);
           convoy[0].rot.rotation = Quaternion.Slerp(convoy[0].rot.rotation, target, k);
         }
@@ -1628,6 +1789,43 @@ else
 }
 
 // Helper: proyecta posición al TRAIL (polilínea) y devuelve "s"
+private static void AjustarExtremosTrayectoConvoy(Vector3[] pts, Vector3 origenReal, Vector3 destinoReal, float tramoSuavizado)
+{
+    if (pts == null || pts.Length == 0)
+    {
+        return;
+    }
+
+    if (pts.Length == 1)
+    {
+        pts[0] = destinoReal;
+        return;
+    }
+
+    Vector3 offsetInicio = origenReal - pts[0];
+    Vector3 offsetFin = destinoReal - pts[pts.Length - 1];
+
+    if (offsetInicio.sqrMagnitude <= 0.000001f && offsetFin.sqrMagnitude <= 0.000001f)
+    {
+        return;
+    }
+
+    float blend = Mathf.Clamp01(tramoSuavizado);
+    float blendSeguro = Mathf.Max(0.0001f, blend);
+    int ultimo = pts.Length - 1;
+
+    for (int i = 0; i <= ultimo; i++)
+    {
+        float t = i / (float)ultimo;
+        float pesoInicio = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / blendSeguro));
+        float pesoFin = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((1f - t) / blendSeguro));
+        pts[i] += offsetInicio * pesoInicio + offsetFin * pesoFin;
+    }
+
+    pts[0] = origenReal;
+    pts[ultimo] = destinoReal;
+}
+
 private static float ProjectDistanceOnTrail(List<Vector3> trailPos, List<float> trailS, Vector3 worldPos)
 {
     Vector3 p = worldPos; p.y = 0f;
@@ -1801,6 +1999,28 @@ private static float CalcularOffsetYSubterraneo(float progreso, float tramoEntra
   }
 
   return -depth;
+}
+
+private static float CalcularPitchSubterraneo(float progreso, float tramoEntradaSalida, float pitchMax)
+{
+  if (tramoEntradaSalida <= 0.0001f || Mathf.Abs(pitchMax) <= 0.0001f) return 0f;
+
+  float maxPitch = Mathf.Abs(pitchMax);
+  float p = Mathf.Clamp01(progreso);
+
+  if (p <= tramoEntradaSalida)
+  {
+    float t = Mathf.Clamp01(p / tramoEntradaSalida);
+    return Mathf.Lerp(0f, maxPitch, t);
+  }
+
+  if (p >= 1f - tramoEntradaSalida)
+  {
+    float t = Mathf.Clamp01((p - (1f - tramoEntradaSalida)) / tramoEntradaSalida);
+    return Mathf.Lerp(-maxPitch, 0f, t);
+  }
+
+  return 0f;
 }
 
 private static float CalcularIntensidadSubterranea(float progreso, float tramoEntradaSalida)

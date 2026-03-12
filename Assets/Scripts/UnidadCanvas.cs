@@ -8,6 +8,7 @@ public class UnidadCanvas : MonoBehaviour
 {
     private const string RutaFuenteTextoFlotanteDanio = "Fuentes/SpectralSC/TextoFlotanteDaño";
     private const float EscalaTextoProbabilidad = 0.85f;
+    private const float DuracionMinimaRotuloHabilidadIA = 4f;
 
     public GameObject unidadCanvas;
     public TextMeshProUGUI txtDaño;
@@ -39,6 +40,18 @@ public class UnidadCanvas : MonoBehaviour
     private RectTransform barraVidaFillRect;
     private Slider barraVidaSlider;
     private TMP_FontAsset fuenteTextoProbabilidad;
+    [Header("Rotulo Habilidad IA")]
+    [SerializeField] private Vector2 rotuloHabilidadOffset = new Vector2(0f, 2.1f);
+    [SerializeField] private Vector2 rotuloHabilidadPadding = new Vector2(0.34f, 0.16f);
+    [SerializeField] private float rotuloHabilidadDuracion = 3.0f;
+    [SerializeField] private Color rotuloHabilidadFondo = new Color(0.09f, 0.012f, 0.012f, 0.82f);
+    [SerializeField] private Color rotuloHabilidadBorde = new Color(0.35f, 0.07f, 0.06f, 0.72f);
+    private RectTransform rotuloHabilidadRoot;
+    private TextMeshProUGUI txtRotuloHabilidadIA;
+    private Image imgRotuloHabilidadIA;
+    private Outline outlineRotuloHabilidadIA;
+    private CanvasGroup canvasGroupRotuloHabilidadIA;
+    private Coroutine rotuloHabilidadCoroutine;
 
     void Start()
     {
@@ -514,6 +527,236 @@ public class UnidadCanvas : MonoBehaviour
             texto.font = fuenteTextoProbabilidad;
             texto.fontSharedMaterial = fuenteTextoProbabilidad.material;
         }
+    }
+
+    public void MostrarRotuloHabilidadIA(string texto, Color color, float duracion = -1f)
+    {
+        if (string.IsNullOrWhiteSpace(texto))
+        {
+            return;
+        }
+
+        AsegurarRotuloHabilidadIA();
+        if (rotuloHabilidadRoot == null || txtRotuloHabilidadIA == null || canvasGroupRotuloHabilidadIA == null)
+        {
+            return;
+        }
+
+        if (rotuloHabilidadCoroutine != null)
+        {
+            StopCoroutine(rotuloHabilidadCoroutine);
+        }
+
+        Vector2 posicionBase = ObtenerPosicionBaseRotuloHabilidadIA();
+        rotuloHabilidadRoot.anchoredPosition = posicionBase;
+        rotuloHabilidadRoot.localScale = Vector3.one;
+        rotuloHabilidadRoot.SetAsLastSibling();
+        rotuloHabilidadRoot.gameObject.SetActive(true);
+
+        string textoFormateado = texto.Trim().ToUpperInvariant();
+        txtRotuloHabilidadIA.richText = true;
+        txtRotuloHabilidadIA.text = "<b>" + textoFormateado + "</b>";
+        txtRotuloHabilidadIA.color = color;
+
+        if (imgRotuloHabilidadIA != null)
+        {
+            imgRotuloHabilidadIA.color = rotuloHabilidadFondo;
+        }
+
+        if (outlineRotuloHabilidadIA != null)
+        {
+            outlineRotuloHabilidadIA.effectColor = rotuloHabilidadBorde;
+        }
+
+        AjustarTamanioRotuloHabilidadIA(posicionBase);
+
+        float duracionBase = duracion > 0f ? duracion : rotuloHabilidadDuracion;
+        float duracionFinal = Mathf.Max(DuracionMinimaRotuloHabilidadIA, duracionBase);
+        rotuloHabilidadCoroutine = StartCoroutine(AnimarRotuloHabilidadIA(duracionFinal, posicionBase));
+    }
+
+    private void AsegurarRotuloHabilidadIA()
+    {
+        if (rotuloHabilidadRoot != null && txtRotuloHabilidadIA != null && canvasGroupRotuloHabilidadIA != null)
+        {
+            return;
+        }
+
+        Transform parent = unidadCanvas != null ? unidadCanvas.transform : transform;
+        if (parent == null)
+        {
+            return;
+        }
+
+        GameObject root = new GameObject("RotuloHabilidadIA", typeof(RectTransform), typeof(CanvasGroup), typeof(Image), typeof(Outline));
+        root.transform.SetParent(parent, false);
+
+        rotuloHabilidadRoot = root.GetComponent<RectTransform>();
+        rotuloHabilidadRoot.anchorMin = new Vector2(0.5f, 0.5f);
+        rotuloHabilidadRoot.anchorMax = new Vector2(0.5f, 0.5f);
+        rotuloHabilidadRoot.pivot = new Vector2(0.5f, 0.5f);
+        rotuloHabilidadRoot.localScale = Vector3.one;
+
+        canvasGroupRotuloHabilidadIA = root.GetComponent<CanvasGroup>();
+        canvasGroupRotuloHabilidadIA.alpha = 0f;
+        canvasGroupRotuloHabilidadIA.interactable = false;
+        canvasGroupRotuloHabilidadIA.blocksRaycasts = false;
+
+        imgRotuloHabilidadIA = root.GetComponent<Image>();
+        imgRotuloHabilidadIA.color = rotuloHabilidadFondo;
+        imgRotuloHabilidadIA.raycastTarget = false;
+
+        outlineRotuloHabilidadIA = root.GetComponent<Outline>();
+        outlineRotuloHabilidadIA.effectColor = rotuloHabilidadBorde;
+        outlineRotuloHabilidadIA.effectDistance = new Vector2(0.25f, -0.25f);
+
+        GameObject textGO = new GameObject("Texto", typeof(RectTransform), typeof(TextMeshProUGUI));
+        textGO.transform.SetParent(root.transform, false);
+
+        RectTransform textRect = textGO.GetComponent<RectTransform>();
+        textRect.anchorMin = new Vector2(0.5f, 0.5f);
+        textRect.anchorMax = new Vector2(0.5f, 0.5f);
+        textRect.pivot = new Vector2(0.5f, 0.5f);
+        textRect.anchoredPosition = Vector2.zero;
+
+        txtRotuloHabilidadIA = textGO.GetComponent<TextMeshProUGUI>();
+        ConfigurarTextoRotuloHabilidadIA(txtRotuloHabilidadIA);
+
+        root.SetActive(false);
+    }
+
+    private void ConfigurarTextoRotuloHabilidadIA(TextMeshProUGUI texto)
+    {
+        if (texto == null)
+        {
+            return;
+        }
+
+        TextMeshProUGUI textoReferencia = PrefabtxtDaño != null
+            ? (PrefabtxtDaño.GetComponent<TextMeshProUGUI>() ?? PrefabtxtDaño.GetComponentInChildren<TextMeshProUGUI>())
+            : null;
+
+        if (textoReferencia != null)
+        {
+            texto.font = textoReferencia.font;
+            texto.fontSharedMaterial = textoReferencia.fontSharedMaterial;
+            texto.enableAutoSizing = true;
+            texto.fontSizeMin = Mathf.Max(1.36f, textoReferencia.fontSizeMin * 0.455f);
+            texto.fontSizeMax = Mathf.Max(texto.fontSizeMin, textoReferencia.fontSizeMax * 0.455f);
+            texto.fontStyle = FontStyles.Bold;
+            texto.characterSpacing = Mathf.Max(0.03f, textoReferencia.characterSpacing * 0.08f);
+            texto.wordSpacing = Mathf.Min(textoReferencia.wordSpacing, 0f);
+            texto.lineSpacing = textoReferencia.lineSpacing;
+        }
+        else
+        {
+            if (fuenteTextoProbabilidad == null)
+            {
+                fuenteTextoProbabilidad = Resources.Load<TMP_FontAsset>(RutaFuenteTextoFlotanteDanio);
+            }
+
+            if (fuenteTextoProbabilidad != null)
+            {
+                texto.font = fuenteTextoProbabilidad;
+                texto.fontSharedMaterial = fuenteTextoProbabilidad.material;
+            }
+
+            texto.enableAutoSizing = true;
+            texto.fontSizeMin = 1.42f;
+            texto.fontSizeMax = 1.98f;
+            texto.fontStyle = FontStyles.Bold;
+            texto.characterSpacing = 0.06f;
+        }
+
+        texto.alignment = TextAlignmentOptions.Center;
+        texto.richText = true;
+        texto.raycastTarget = false;
+        texto.overflowMode = TextOverflowModes.Overflow;
+        texto.horizontalMapping = TextureMappingOptions.Character;
+        texto.verticalMapping = TextureMappingOptions.Character;
+    }
+
+    private void AjustarTamanioRotuloHabilidadIA(Vector2 posicionBase)
+    {
+        if (rotuloHabilidadRoot == null || txtRotuloHabilidadIA == null)
+        {
+            return;
+        }
+
+        txtRotuloHabilidadIA.ForceMeshUpdate();
+        Vector2 textSize = new Vector2(
+            Mathf.Ceil(txtRotuloHabilidadIA.preferredWidth),
+            Mathf.Ceil(txtRotuloHabilidadIA.preferredHeight));
+        Vector2 cajaCompacta = new Vector2(
+            Mathf.Max(0.6f, textSize.x * 0.9f),
+            Mathf.Max(0.3f, textSize.y * 0.88f));
+
+        RectTransform textRect = txtRotuloHabilidadIA.rectTransform;
+        textRect.sizeDelta = cajaCompacta;
+        textRect.anchoredPosition = Vector2.zero;
+
+        rotuloHabilidadRoot.sizeDelta = cajaCompacta + rotuloHabilidadPadding;
+        rotuloHabilidadRoot.anchoredPosition = posicionBase;
+    }
+
+    private Vector2 ObtenerPosicionBaseRotuloHabilidadIA()
+    {
+        if (barraVida != null)
+        {
+            float offsetBarra = barraVida.rect.height * 0.5f;
+            return barraVida.anchoredPosition + new Vector2(0f, offsetBarra + rotuloHabilidadOffset.y);
+        }
+
+        return rotuloHabilidadOffset;
+    }
+
+    private IEnumerator AnimarRotuloHabilidadIA(float duracion, Vector2 posicionBase)
+    {
+        if (rotuloHabilidadRoot == null || canvasGroupRotuloHabilidadIA == null)
+        {
+            yield break;
+        }
+
+        float elapsed = 0f;
+        float fadeIn = Mathf.Min(0.16f, duracion * 0.3f);
+        float fadeOut = Mathf.Min(0.24f, duracion * 0.34f);
+        float fadeOutStart = Mathf.Max(fadeIn, duracion - fadeOut);
+
+        while (elapsed < duracion)
+        {
+            float alpha;
+            if (elapsed <= fadeIn)
+            {
+                alpha = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / Mathf.Max(0.0001f, fadeIn)));
+            }
+            else if (elapsed >= fadeOutStart)
+            {
+                alpha = Mathf.SmoothStep(1f, 0f, Mathf.Clamp01((elapsed - fadeOutStart) / Mathf.Max(0.0001f, duracion - fadeOutStart)));
+            }
+            else
+            {
+                alpha = 1f;
+            }
+
+            float progreso = Mathf.Clamp01(elapsed / Mathf.Max(0.0001f, duracion));
+            float rise = Mathf.Lerp(0f, 4f, progreso);
+            float scale = elapsed <= fadeIn
+                ? Mathf.Lerp(0.97f, 1f, Mathf.Clamp01(elapsed / Mathf.Max(0.0001f, fadeIn)))
+                : 1f;
+
+            canvasGroupRotuloHabilidadIA.alpha = alpha;
+            rotuloHabilidadRoot.anchoredPosition = posicionBase + Vector2.up * rise;
+            rotuloHabilidadRoot.localScale = Vector3.one * scale;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        canvasGroupRotuloHabilidadIA.alpha = 0f;
+        rotuloHabilidadRoot.anchoredPosition = posicionBase;
+        rotuloHabilidadRoot.localScale = Vector3.one;
+        rotuloHabilidadRoot.gameObject.SetActive(false);
+        rotuloHabilidadCoroutine = null;
     }
 
    void MostrarEstados(Unidad scUnidadMostrada)

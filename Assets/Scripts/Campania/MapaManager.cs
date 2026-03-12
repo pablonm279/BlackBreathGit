@@ -6,6 +6,8 @@ public class MapaManager : MonoBehaviour
 {
     bool inicioCompletado;
     bool generacionDiferidaPendiente;
+    const float OffsetNodoSobreRelieve = 0.08f;
+    const float OffsetConvoySobreRelieve = 0.03f;
 
     public ContenedorDeNodos scContenedordeNodos;
 
@@ -68,6 +70,7 @@ public class MapaManager : MonoBehaviour
        ForzarNodosObligatorios(zonaId);
        DesactivarNodosSinUsar(zonaId);
        origen.PosicionarObjetoEnNodo(goCaravana);
+       AlinearConvoyAlSuelo();
   }
 
     // Reset total del mapa y regeneración para la siguiente zona
@@ -101,11 +104,40 @@ public class MapaManager : MonoBehaviour
 
     void PrepararNodosParaGeneracion()
     {
+        MapDecorator mapDecorator = ObtenerMapDecorator();
+
         foreach (Nodo nodo in scContenedordeNodos.listTodosNodos)
         {
             if (nodo == null) continue;
             nodo.PrepararCostoMovimientoParaGeneracion();
+            if (mapDecorator != null)
+            {
+                mapDecorator.AlinearTransformASuelo(nodo.transform, OffsetNodoSobreRelieve);
+            }
         }
+    }
+
+    MapDecorator ObtenerMapDecorator()
+    {
+        if (CampaignManager.Instance == null || CampaignManager.Instance.scAtributosZona == null)
+            return null;
+
+        return CampaignManager.Instance.scAtributosZona.GetComponent<MapDecorator>();
+    }
+
+    void AlinearConvoyAlSuelo()
+    {
+        MapDecorator mapDecorator = ObtenerMapDecorator();
+        if (mapDecorator == null)
+            return;
+
+        mapDecorator.AlinearTransformASuelo(goCaravana != null ? goCaravana.transform : null, OffsetConvoySobreRelieve);
+        mapDecorator.AlinearTransformASuelo(goCaravanafollower1 != null ? goCaravanafollower1.transform : null, OffsetConvoySobreRelieve);
+        mapDecorator.AlinearTransformASuelo(goCaravanafollower2 != null ? goCaravanafollower2.transform : null, OffsetConvoySobreRelieve);
+        mapDecorator.AlinearTransformASuelo(goCaravanafollower3 != null ? goCaravanafollower3.transform : null, OffsetConvoySobreRelieve);
+        mapDecorator.AlinearTransformASuelo(goCaravanafollower4 != null ? goCaravanafollower4.transform : null, OffsetConvoySobreRelieve);
+        mapDecorator.AlinearTransformASuelo(goCaravanafollower5 != null ? goCaravanafollower5.transform : null, OffsetConvoySobreRelieve);
+        mapDecorator.AlinearTransformASuelo(goCaravanafollower6 != null ? goCaravanafollower6.transform : null, OffsetConvoySobreRelieve);
     }
 
     void DesactivarNodosSinUsar(int zonaId)

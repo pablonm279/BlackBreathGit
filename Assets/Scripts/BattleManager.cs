@@ -86,6 +86,39 @@ public class BattleManager : MonoBehaviour
   public GameObject nocheLienzo;
   private Coroutine coroutineTooltipValorDelay;
   private bool tooltipValorHoverActivo;
+
+  public void RefrescarVfxClimaCalor(bool activo)
+  {
+    Canvas canvasObjetivo = null;
+    if (widgetClima != null && widgetClima.canvas != null)
+    {
+      canvasObjetivo = widgetClima.canvas.rootCanvas != null ? widgetClima.canvas.rootCanvas : widgetClima.canvas;
+    }
+    else
+    {
+      canvasObjetivo = GetComponentInChildren<Canvas>(true);
+    }
+
+    HeatWaveScreenEffect heatWaveEffect = HeatWaveScreenEffect.Ensure(canvasObjetivo);
+    if (heatWaveEffect != null)
+    {
+      heatWaveEffect.SetEffectActive(activo);
+    }
+  }
+
+  public void SetClimaUIVisible(bool visible)
+  {
+    if (widgetClima != null)
+    {
+      widgetClima.gameObject.SetActive(visible);
+    }
+
+    if (!visible && climaTooltip != null)
+    {
+      UIFadeSlideUtility.Hide(climaTooltip);
+    }
+  }
+
   private void Awake()
   {
     if (Instance != null)
@@ -1864,6 +1897,15 @@ public class BattleManager : MonoBehaviour
 
   public void ActivartooltipClima(int n)
   {
+    if (widgetClima == null || !widgetClima.gameObject.activeInHierarchy)
+    {
+      if (climaTooltip != null)
+      {
+        UIFadeSlideUtility.Hide(climaTooltip);
+      }
+      return;
+    }
+
     if (n == 1)
     {
       UIFadeSlideUtility.Show(climaTooltip);

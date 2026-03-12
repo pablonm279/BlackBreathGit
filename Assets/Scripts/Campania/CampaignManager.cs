@@ -14,6 +14,10 @@ using UnityEditor;
 public class CampaignManager : MonoBehaviour
 {
   public static CampaignManager Instance { get; private set; }
+  private const bool DEBUG_FORZAR_OLA_DE_CALOR_AL_PLAY = false;
+  [Header("Debug Demo")]
+  [SerializeField] private bool debugSaltarTutorialAlIniciar = true;
+  [SerializeField] private int debugZonaInicial = 1; // 0 = aleatoria
 
   public GameObject prefabTextoRecursos;
   public Animator animCaravana;
@@ -35,6 +39,9 @@ public class CampaignManager : MonoBehaviour
   // Sonido de la caravana al moverse (asignar desde Inspector)
   public AudioClip sfxMovimientoCaravana;
   [Range(0f, 1f)] public float sfxMovimientoVolumen = 0.8f;
+  [Range(0.5f, 1.5f)] public float sfxMovimientoPitch = 0.85f;
+  [SerializeField] private float sfxMovimientoFadeIn = 0.35f;
+  [SerializeField] private float sfxMovimientoFadeOut = 0.4f;
   private AudioSource sfxMovimientoSource;
   private Coroutine rutinaDesvanecerSfxMovimiento;
 
@@ -58,6 +65,7 @@ public class CampaignManager : MonoBehaviour
   private bool logInicioCampaniaEscrito;
   public bool MoviendoCaravana = false;
   private bool transicionZonaEnCurso = false;
+  private bool bloquearOlaDeCalorEnSiguienteTiradaClima;
   public Nodo nodoDestinoActual;
 
   public GameObject prefabGOPersonaje;
@@ -103,9 +111,10 @@ public class CampaignManager : MonoBehaviour
     int yaPasotuto = PlayerPrefs.GetInt("Tutorial_Terminado");
   
 
-    //FORZAR TUTO O NO - DESCOMENTAR ABAJO
-   // yaPasotuto = 0;
-    //
+    if (debugSaltarTutorialAlIniciar)
+    {
+      yaPasotuto = 1;
+    }
 
     if (yaPasotuto == 1)
     {
@@ -118,13 +127,9 @@ public class CampaignManager : MonoBehaviour
 
 
     // Configurar el AudioSource para el SFX de movimiento de la caravana
-    if (sfxMovimientoSource == null)
-    {
-      sfxMovimientoSource = gameObject.AddComponent<AudioSource>();
-      sfxMovimientoSource.playOnAwake = false;
-      sfxMovimientoSource.loop = true;
-    }
+    AsegurarAudioMovimientoCaravana();
     sfxMovimientoSource.volume = sfxMovimientoVolumen;
+    sfxMovimientoSource.pitch = sfxMovimientoPitch;
 
     CambiarCivilesActuales(110);
     CambiarEsperanzaActual(75);
@@ -144,13 +149,12 @@ public class CampaignManager : MonoBehaviour
     CambiarOroActual(400);
     CambiarValorAlientoNegro(2);
 
-    int zona = 0; //Zona aleatoria
-   
-    if (scTutorialManager.tutorialActivo)
+    int zonaInicial = debugZonaInicial;
+    if (zonaInicial == 0 && scTutorialManager.tutorialActivo)
     {
-      zona = 1;
+      zonaInicial = 1;
     }
-    scAtributosZona.GenerarZona(1); //0 es aleatorio - 1 Demo en Bosque Ardiente
+    scAtributosZona.GenerarZona(zonaInicial);
 
 
     scMenuSequito.AgregarSequito(1);
@@ -163,7 +167,7 @@ public class CampaignManager : MonoBehaviour
     numeroTurno = 1;
     posicionCaravana = 1;
 
-    ForzarTiradaClima();
+    InicializarClimaAlIniciar();
 
 
 
@@ -207,6 +211,7 @@ public class CampaignManager : MonoBehaviour
     EscribirLogInicioCampania();
 
     MenuOpciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
+    RefrescarVfxClimaCalor();
   }
 
   private async void EjecutarTareaSegura(Task tarea, string contexto)
@@ -226,6 +231,64 @@ public class CampaignManager : MonoBehaviour
   {
     menuDescanso.GetComponent<MenuDescanso>().TiradaClima();
   }
+
+  public void BloquearOlaDeCalorEnSiguienteTiradaClima()
+  {
+    bloquearOlaDeCalorEnSiguienteTiradaClima = true;
+  }
+
+  public bool ConsumirBloqueoOlaDeCalorEnSiguienteTiradaClima()
+  {
+    bool bloquear = bloquearOlaDeCalorEnSiguienteTiradaClima;
+    bloquearOlaDeCalorEnSiguienteTiradaClima = false;
+    return bloquear;
+  }
+
+  private void InicializarClimaAlIniciar()
+  {
+#if UNITY_EDITOR
+    if (DEBUG_FORZAR_OLA_DE_CALOR_AL_PLAY)
+    {
+      intTipoClima = 2;
+      if (widgetClima != null)
+      {
+        widgetClima.sprite = clima_calor;
+      }
+
+      RefrescarVfxClimaCalor();
+      Debug.Log("[CampaignManager] Debug de clima activo: Ola de calor forzada al entrar en Play.");
+      return;
+    }
+#endif
+
+    RefrescarVfxClimaCalor();
+  }
+
+  public void RefrescarVfxClimaCalor()
+  {
+    Canvas canvasObjetivo = null;
+    if (widgetClima != null && widgetClima.canvas != null)
+    {
+      canvasObjetivo = widgetClima.canvas.rootCanvas != null ? widgetClima.canvas.rootCanvas : widgetClima.canvas;
+    }
+    else if (goCanvas != null)
+    {
+      canvasObjetivo = goCanvas.GetComponentInChildren<Canvas>(true);
+    }
+
+    HeatWaveScreenEffect heatWaveEffect = HeatWaveScreenEffect.Ensure(canvasObjetivo);
+    if (heatWaveEffect != null)
+    {
+      heatWaveEffect.SetEffectActive(intTipoClima == 2);
+    }
+
+    BurningForestScreenEffect burningForestEffect = BurningForestScreenEffect.Ensure(canvasObjetivo);
+    if (burningForestEffect != null)
+    {
+      bool zonaBosqueArdienteActiva = scAtributosZona != null && scAtributosZona.ID == 1;
+      burningForestEffect.SetEffectActive(zonaBosqueArdienteActiva);
+    }
+  }
   #region Nodos
   public SunController sunController;
 
@@ -238,26 +301,7 @@ public class CampaignManager : MonoBehaviour
     animCaravana.SetBool("IsWalking", true);
 
     // Inicia sonido de caravana en movimiento
-    if (sfxMovimientoCaravana != null)
-    {
-      if (sfxMovimientoSource == null)
-      {
-        sfxMovimientoSource = gameObject.AddComponent<AudioSource>();
-        sfxMovimientoSource.playOnAwake = false;
-        sfxMovimientoSource.loop = true;
-      }
-      if (rutinaDesvanecerSfxMovimiento != null)
-      {
-        StopCoroutine(rutinaDesvanecerSfxMovimiento);
-        rutinaDesvanecerSfxMovimiento = null;
-      }
-      sfxMovimientoSource.volume = sfxMovimientoVolumen;
-      sfxMovimientoSource.pitch = 1f;
-      if (sfxMovimientoSource.clip != sfxMovimientoCaravana)
-        sfxMovimientoSource.clip = sfxMovimientoCaravana;
-      if (!sfxMovimientoSource.isPlaying)
-        sfxMovimientoSource.Play();
-    }
+    IniciarSonidoMovimientoCaravana(Mathf.Max(0.05f, sfxMovimientoFadeIn));
 
     //Sequito de Clerigos 20% de prevenirlo
     int random2 = UnityEngine.Random.Range(0, 100);
@@ -350,6 +394,77 @@ public class CampaignManager : MonoBehaviour
 
   public MenuBatallas scMenuBatallas;
   public GameObject goMenuBatallas;
+  private void AsegurarAudioMovimientoCaravana()
+  {
+    if (sfxMovimientoSource == null)
+    {
+      sfxMovimientoSource = gameObject.AddComponent<AudioSource>();
+    }
+
+    sfxMovimientoSource.playOnAwake = false;
+    sfxMovimientoSource.loop = true;
+    sfxMovimientoSource.pitch = sfxMovimientoPitch;
+  }
+
+  private void IniciarSonidoMovimientoCaravana(float duracionFade)
+  {
+    if (sfxMovimientoCaravana == null)
+    {
+      return;
+    }
+
+    AsegurarAudioMovimientoCaravana();
+
+    if (rutinaDesvanecerSfxMovimiento != null)
+    {
+      StopCoroutine(rutinaDesvanecerSfxMovimiento);
+      rutinaDesvanecerSfxMovimiento = null;
+    }
+
+    if (sfxMovimientoSource.clip != sfxMovimientoCaravana)
+    {
+      sfxMovimientoSource.clip = sfxMovimientoCaravana;
+    }
+
+    rutinaDesvanecerSfxMovimiento = StartCoroutine(FadeInSonidoMovimientoCaravanaCoroutine(Mathf.Max(0.05f, duracionFade)));
+  }
+
+  private IEnumerator FadeInSonidoMovimientoCaravanaCoroutine(float duracion)
+  {
+    if (sfxMovimientoSource == null)
+    {
+      rutinaDesvanecerSfxMovimiento = null;
+      yield break;
+    }
+
+    sfxMovimientoSource.pitch = sfxMovimientoPitch;
+    sfxMovimientoSource.loop = true;
+    float volumenObjetivo = Mathf.Clamp01(sfxMovimientoVolumen);
+    float volumenInicial = sfxMovimientoSource.isPlaying ? sfxMovimientoSource.volume : 0f;
+    sfxMovimientoSource.volume = volumenInicial;
+
+    if (!sfxMovimientoSource.isPlaying)
+    {
+      sfxMovimientoSource.Play();
+    }
+
+    float tiempo = 0f;
+    while (tiempo < duracion && sfxMovimientoSource != null)
+    {
+      tiempo += Time.deltaTime;
+      float t = Mathf.Clamp01(tiempo / duracion);
+      sfxMovimientoSource.volume = Mathf.Lerp(volumenInicial, volumenObjetivo, t);
+      yield return null;
+    }
+
+    if (sfxMovimientoSource != null)
+    {
+      sfxMovimientoSource.volume = volumenObjetivo;
+    }
+
+    rutinaDesvanecerSfxMovimiento = null;
+  }
+
   public void DesvanecerSonidoMovimientoCaravana(float duracion)
   {
     if (sfxMovimientoSource == null || !sfxMovimientoSource.isPlaying)
@@ -388,7 +503,7 @@ public class CampaignManager : MonoBehaviour
     {
       sfxMovimientoSource.Stop();
       sfxMovimientoSource.volume = sfxMovimientoVolumen;
-      sfxMovimientoSource.pitch = 1f;
+      sfxMovimientoSource.pitch = sfxMovimientoPitch;
     }
 
     rutinaDesvanecerSfxMovimiento = null;
@@ -398,17 +513,9 @@ public class CampaignManager : MonoBehaviour
   {
     
     // Detiene el sonido de movimiento al llegar al nodo
-    if (rutinaDesvanecerSfxMovimiento != null)
+    if (sfxMovimientoSource != null && sfxMovimientoSource.isPlaying && rutinaDesvanecerSfxMovimiento == null)
     {
-      StopCoroutine(rutinaDesvanecerSfxMovimiento);
-      rutinaDesvanecerSfxMovimiento = null;
-    }
-    if (sfxMovimientoSource != null && sfxMovimientoSource.isPlaying)
-      sfxMovimientoSource.Stop();
-    if (sfxMovimientoSource != null)
-    {
-      sfxMovimientoSource.volume = sfxMovimientoVolumen;
-      sfxMovimientoSource.pitch = 1f;
+      DesvanecerSonidoMovimientoCaravana(Mathf.Max(0.05f, sfxMovimientoFadeOut));
     }
 
     animCaravana.SetBool("IsWalking", false);
@@ -609,7 +716,7 @@ public class CampaignManager : MonoBehaviour
       CambiarEsperanzaActual(-10);
       int nmuertos = UnityEngine.Random.Range(8, 16);
       CambiarCivilesActuales(-nmuertos);
-      EscribirLog(TRADU.i.Traducir("-La caravana ha llegado a un nodo incendiado. -10 Esperanza.  " + nmuertos + " Civiles Muertos."));
+      EscribirLog(TRADU.i.Traducir("-La caravana ha llegado a un nodo incendiado. -10 Esperanza.  ") + nmuertos + TRADU.i.Traducir(" Civiles Muertos."));
     }
 
   }
@@ -2075,8 +2182,10 @@ public class CampaignManager : MonoBehaviour
   {
     if (scTutorialManager.tutorialActivo && scTutorialManager.pasoActual < 24) { return; }
     if (scTutorialManager.tutorialActivo && scTutorialManager.pasoActual == 24) { scTutorialManager.SiguientePaso(); }
+    Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
+    bool puedeDescansar = nodoActual != null && nodoActual.nodoDespejado && !nodoActual.nodoIncendiado;
 
-    if (!menuDescanso.activeInHierarchy && scMapaManager.nodoActual.nodoDespejado && !scMapaManager.nodoActual.nodoIncendiado)
+    if (!menuDescanso.activeInHierarchy && puedeDescansar)
     {
       menuDescanso.GetComponent<MenuDescanso>().SeleccionarActividadCivil(1);
       menuDescanso.SetActive(true);
@@ -2086,7 +2195,7 @@ public class CampaignManager : MonoBehaviour
       menuDescanso.SetActive(false);
 
     }
-    if (!scMapaManager.nodoActual.nodoDespejado || scMapaManager.nodoActual.nodoIncendiado)
+    if (nodoActual != null && !puedeDescansar)
     { EscribirLog(TRADU.i.Traducir("<color=#FF6666>No puedes descansar aquí.</color>")); }
 
 
@@ -2178,11 +2287,13 @@ public class CampaignManager : MonoBehaviour
 
   void Update()
   {
-    if (scMapaManager.nodoActual.nodoDespejado)
+    Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
+    bool puedeDescansar = nodoActual != null && nodoActual.nodoDespejado;
+
+    if (botonDescansar != null)
     {
-      botonDescansar.sprite = campSi;
+      botonDescansar.sprite = puedeDescansar ? campSi : campNo;
     }
-    else { botonDescansar.sprite = campNo; }
 
 
     //HOTKEYS

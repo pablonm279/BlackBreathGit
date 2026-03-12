@@ -4644,7 +4644,12 @@ public class TRADU : MonoBehaviour
             case "Valor":
                 r = "Valour";
                 break;
-            
+            case "Encarnar":
+                r = "Incarnate";
+                break;
+             case "Pasivas":
+                r = "Passives";
+                break;
              
 
 

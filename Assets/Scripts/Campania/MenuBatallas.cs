@@ -895,7 +895,19 @@ public void DejanEnListaParticipantesSolo()
     }
 
     ActualizarLista();
-} public void EfectosDeBatallaEnCampaña(int resultado)
+}
+
+bool EsResultadoVictoria(int resultado)
+{
+   return resultado == 1;
+}
+
+bool EsResultadoDerrota(int resultado)
+{
+   return !EsResultadoVictoria(resultado);
+}
+
+public void EfectosDeBatallaEnCampaña(int resultado)
 {
    UIEmpezarBatalla.SetActive(false);
    UITerminarBatalla.SetActive(true);
@@ -903,7 +915,7 @@ public void DejanEnListaParticipantesSolo()
    bool fueBatallaFinalActual = esBatallaFinal;
    bool fueDefensaCaravana = encuentroTipoActual == BattleEncounterType.AtaqueCaravana || esEmboscadaEnemiga == 3;
 
-    if (resultado == 1)
+    if (EsResultadoVictoria(resultado))
     {
         txtVictoria.SetActive(true);
         txtDerrota.SetActive(false);
@@ -925,7 +937,7 @@ public void DejanEnListaParticipantesSolo()
         ProcesarEncuentroLegacy(resultado, ref aumentochancesitem);
     }
 
-   if (resultado == 1)
+   if (EsResultadoVictoria(resultado))
    {
       AplicarVictoriaRitualKaleTav();
       if (esBatallaFinal && CampaignManager.Instance != null)
@@ -938,12 +950,12 @@ public void DejanEnListaParticipantesSolo()
          CampaignManager.Instance.AbrirCiudadPuerto(); //fin tutorial
       }
    }
-    else if (resultado == 2 && CampaignManager.Instance != null)
+    else if (EsResultadoDerrota(resultado) && CampaignManager.Instance != null)
     {
         CampaignManager.Instance.EvaluarDerrotaPorResultadoBatalla(fueDefensaCaravana, fueBatallaFinalActual);
     }
     //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
-    if (resultado == 2) //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
+    if (EsResultadoDerrota(resultado)) //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
     {
         int rand =UnityEngine.Random.Range(1, 101);
         int prob = 50 - CampaignManager.Instance.mejoraCaravanaDefensas*10;
@@ -958,7 +970,7 @@ public void DejanEnListaParticipantesSolo()
     }
     
     //Al ganar puede tocar un item de la lista total del sequito de mercaderes al azar
-        if (resultado == 1) //Al ganar puede tocar un item de la lista total del sequito de mercaderes al azar
+        if (EsResultadoVictoria(resultado)) //Al ganar puede tocar un item de la lista total del sequito de mercaderes al azar
         {
             int rand =UnityEngine.Random.Range(1, 101);
             aumentochancesitem += CampaignManager.Instance.mejoraCaravanaCatalejos*5;

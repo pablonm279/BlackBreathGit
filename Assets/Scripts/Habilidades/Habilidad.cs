@@ -382,6 +382,10 @@ public abstract class Habilidad : MonoBehaviour
     LimpiarMarcasUnidadesPosibles();
     MeleeApproachMover acercamientoMelee = MeleeApproachMover.ObtenerOCrear(scEstaUnidad);
     bool hizoAproximacion = acercamientoMelee != null && await acercamientoMelee.PrepararAproximacionJugadorAsync(this, Objetivos);
+    if (esHostil && !esDiscreta && scEstaUnidad != null && scEstaUnidad.ObtenerEstaEscondido() > 0)
+    {
+      scEstaUnidad.PerderEscondido();
+    }
     // Animacion/pose:
     // - forzarPoseHabilidad: siempre usa pose de habilidad
     // - fuerzaPoseAtaque: siempre usa ataque

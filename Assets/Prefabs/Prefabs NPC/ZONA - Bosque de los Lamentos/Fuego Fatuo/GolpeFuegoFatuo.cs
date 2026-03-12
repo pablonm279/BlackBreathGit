@@ -17,7 +17,7 @@ public class GolpeFuegoFatuo : IAHabilidad
    
   void Awake()
    {
-      nombre = "Golpe de Fuego Fatuo";
+      nombre = "Encarnar";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 1;

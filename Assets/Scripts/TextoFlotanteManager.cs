@@ -50,6 +50,7 @@ public class TextoFlotanteManager : MonoBehaviour
     public void GenerarTextoFlotante(string texto, Color color, FloatingTextContext contexto)
     {  
          if(texto == "-0") { texto = ""; }
+        texto = FloatingTextAnimator.NormalizarTextoRichText(texto);
 
         colaTextos.Enqueue(new FloatingTextRequest(texto, color, contexto));
 
@@ -130,6 +131,7 @@ public class TextoFlotanteManager : MonoBehaviour
                 TextMeshProUGUI tmp = goTexto.GetComponent<TextMeshProUGUI>();
                 if (tmp != null)
                 {
+                    tmp.richText = true;
                     tmp.text = request.Texto;
                     tmp.color = request.Color;
                 }

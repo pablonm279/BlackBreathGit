@@ -667,17 +667,17 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
       }
 
       // Log de uso de habilidad de IA
+      string nombreHab = TRADU.i != null ? TRADU.i.Traducir(nombre) : nombre;
       if (BattleManager.Instance != null && scEstaUnidad != null)
       {
         string unidadNombre = TRADU.i != null ? TRADU.i.Traducir(scEstaUnidad.uNombre) : scEstaUnidad.uNombre;
         string verboUsa = TRADU.i != null ? TRADU.i.Traducir("usa ") : "usa ";
-        string nombreHab = TRADU.i != null ? TRADU.i.Traducir(nombre) : nombre;
         BattleManager.Instance.EscribirLog(unidadNombre + " " + verboUsa + nombreHab + ".");
       }
     unidadesNoParticipantes = new List<object>(BattleManager.Instance.lUnidadesTotal);
     unidadesNoParticipantes.Remove(scEstaUnidad);
 
-    scEstaUnidad.GenerarTextoFlotante("<i>" + TRADU.i.Traducir(nombre) + "</i>", Color.red);
+    scEstaUnidad.MostrarRotuloHabilidadIA(nombreHab, new Color(1f, 0.86f, 0.62f, 1f));
 
     if (objetivos != null && objetivos.Count > 0)
     {
