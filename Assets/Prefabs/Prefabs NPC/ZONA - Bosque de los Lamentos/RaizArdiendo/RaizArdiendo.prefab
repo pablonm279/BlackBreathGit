@@ -548,6 +548,7 @@ MonoBehaviour:
   mod_maxAccionP: 4
   AccionP_actual: 4
   AccionP_SeEsforzo: 0
+  scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
   ValentiaP_actual: 0
@@ -622,15 +623,32 @@ MonoBehaviour:
   bonusdam_arcano: 0
   bonusdam_necro: 0
   bonusdam_divino: 0
+  debuffsImpactoArma: []
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
+  penetracionArmaduraPlano: 0
+  penetracionArmaduraHabilidadActual: 0
   barreraDeDanio: 0
   tejidoCuracMagica: 0
   loMatoCorrompido: 0
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  apilarTextosFlotantes: 0
+  floatingTextSlotSpacing: 9
+  floatingTextSlotLifetimeFallback: 1.1
+  floatingTextMaxSlots: 4
+  floatingTextMinInterval: 0.05
+  floatingTextCrowdThreshold: 3
+  floatingTextCrowdIntervalStep: 0.01
+  floatingTextCrowdExtraIntervalMax: 0.03
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
+  goSANGRE: {fileID: 0}
   velocidadMovimiento: 3
   movimientoEnCurso: 0
   NoSonidoAlMover: 0
@@ -671,6 +689,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   esRango: 0
   bPuedeVerEscondidos: 1
+  unicoEnCombate: 1
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0
@@ -719,6 +738,19 @@ MonoBehaviour:
   PrefabtxtProbabilidad: {fileID: 0}
   txtVida: {fileID: 7346994934394902693}
   barraVida: {fileID: 7919636739563064733}
+  barraVidaDamageFill: {fileID: 0}
+  barraVidaDamageColor: {r: 0.75, g: 0.12, b: 0.12, a: 0.6}
+  barraVidaDamageDelay: 0.12
+  barraVidaDamageSpeed: 0.9
+  barraVidaHealFill: {fileID: 0}
+  barraVidaHealColor: {r: 1, g: 0.85, b: 0.2, a: 0.6}
+  barraVidaHealDelay: 0.08
+  barraVidaHealSpeed: 0.9
+  rotuloHabilidadOffset: {x: 0, y: 2.1}
+  rotuloHabilidadPadding: {x: 0.34, y: 0.16}
+  rotuloHabilidadDuracion: 3
+  rotuloHabilidadFondo: {r: 0.09, g: 0.012, b: 0.012, a: 0.82}
+  rotuloHabilidadBorde: {r: 0.35, g: 0.07, b: 0.06, a: 0.72}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 3649086744539811689}
 --- !u!114 &7600253876629954186
@@ -757,11 +789,13 @@ MonoBehaviour:
   esMelee: 0
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  forzarPoseHabilidad: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
   esDiscreta: 0
   tipoPorcentaje: 0
+  penetracionArmadura: 0
   seEsforzaria: 0
   yaRetraso: 0
   bonusAtaque: 0

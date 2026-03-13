@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,7 +15,7 @@ public class Asesinar : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
      ClaseAcechador claseAcechador;
      public override void  Awake()
     {
@@ -106,13 +106,13 @@ public class Asesinar : Habilidad
       cuerpo += "<b>Al matar:</b> gana Escondido (1), el cooldown de la habilidad se fija en 1";
       if (NIVEL == 4)
       {
-        cuerpo += ", +2 Valent√≠a";
+        cuerpo += ", +2 ValentÌa";
       }
     }
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})";
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
 
     txtDescripcion = ConstruirDescripcionEstandar(
       esIngles ? tituloEn : tituloEs,
@@ -139,7 +139,7 @@ public class Asesinar : Habilidad
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio plano.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 ataque si el objetivo esta aislado.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Valent√≠a al matar) u Opcion B (+3 de danio plano).</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 ValentÌa al matar) u Opcion B (+3 de danio plano).</color>"; }
     }
   }
 
@@ -167,18 +167,18 @@ public class Asesinar : Habilidad
         }
 
         int ms = Mathf.RoundToInt(Mathf.Max(0.1f, delay * 0.5f) * 1000f);
-        return Task.Delay(ms);
+        return BattleManager.DelayCombateAsync(ms);
     }
 
     protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
     {
-        return Task.Delay(250);
+        return BattleManager.DelayCombateAsync(250);
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
   {
 
-    if (obj is Unidad) //Ac√° van los efectos a Unidades.
+    if (obj is Unidad) //Ac· van los efectos a Unidades.
     {
       Unidad objetivo = (Unidad)obj;
       float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -186,13 +186,13 @@ public class Asesinar : Habilidad
 
       int danioMarca = 0;
 
-      if (NIVEL > 1) { damExtra += 2; } //A partir del nivel 2, +2 de da√±o extra
-      if (NIVEL == 5) { damExtra += 3; } //A Nv 5, +3 de da√±o extra
+      if (NIVEL > 1) { damExtra += 2; } //A partir del nivel 2, +2 de daÒo extra
+      if (NIVEL == 5) { damExtra += 3; } //A Nv 5, +3 de daÒo extra
 
       if (objetivo.ChequearEstaAislado(2))
       {
-        bonusAtaque += 2; //Si est√° aislado, +2 Ataque
-        if (NIVEL > 2) { bonusAtaque++; } //A partir del nivel 3, +3 Ataque si est√° aislado
+        bonusAtaque += 2; //Si est· aislado, +2 Ataque
+        if (NIVEL > 2) { bonusAtaque++; } //A partir del nivel 3, +3 Ataque si est· aislado
       }
 
       float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
@@ -225,12 +225,12 @@ public class Asesinar : Habilidad
 
         if (objetivo.TieneTag("Humanoide"))
         { 
-            danio += 2; //Si es humanoide, +2 de da√±o
+            danio += 2; //Si es humanoide, +2 de daÒo
         }
 
          if (objetivo.ChequearEstaAislado(2))
         {
-          danio *= 2; //Si est√° aislado, duplica el da√±o
+          danio *= 2; //Si est· aislado, duplica el daÒo
         }
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
@@ -244,12 +244,12 @@ public class Asesinar : Habilidad
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
         if (objetivo.TieneTag("Humanoide"))
         { 
-            danio += 2; //Si es humanoide, +2 de da√±o
+            danio += 2; //Si es humanoide, +2 de daÒo
         }
         
          if (objetivo.ChequearEstaAislado(2))
         {
-          danio *= 2; //Si est√° aislado, duplica el da√±o
+          danio *= 2; //Si est· aislado, duplica el daÒo
         }
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
@@ -266,12 +266,12 @@ public class Asesinar : Habilidad
 
         if (objetivo.TieneTag("Humanoide"))
         { 
-            danio += 2; //Si es humanoide, +2 de da√±o
+            danio += 2; //Si es humanoide, +2 de daÒo
         } 
         
         if (objetivo.ChequearEstaAislado(2))
         {
-          danio *= 2; //Si est√° aislado, duplica el da√±o
+          danio *= 2; //Si est· aislado, duplica el daÒo
         }
 
 
@@ -281,11 +281,11 @@ public class Asesinar : Habilidad
       }
 
       fueElObjetivoAsesinado = objetivo;
-      Invoke("ChequeoMuerteObjetivo", 3.0f); //Chequea si el objetivo muri√≥, y aplica efectos de ser as√≠.
+      Invoke("ChequeoMuerteObjetivo", 3.0f); //Chequea si el objetivo muriÛ, y aplica efectos de ser asÌ.
 
       objetivo.AplicarDebuffPorAtaquesreiterados(1);
     }
-    else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+    else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
     {
       Obstaculo objetivo = (Obstaculo)obj;
       //---
@@ -304,7 +304,7 @@ public class Asesinar : Habilidad
     if (fueElObjetivoAsesinado == null)
     {
       aplicarEfectos = true; //Si no existe se asume que murio
-    } //Si no hab√≠a objetivo, no hace nada
+    } //Si no habÌa objetivo, no hace nada
     else if (fueElObjetivoAsesinado.HP_actual < 1)
     {
       aplicarEfectos = true; //Si no tiene vida, murio
@@ -346,7 +346,7 @@ public class Asesinar : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si est√° en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si est· en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       
@@ -357,7 +357,7 @@ public class Asesinar : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambi√©n
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiÈn
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 

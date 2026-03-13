@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,10 +15,10 @@ public class TiroconArco : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
     private int hAlcance = 7;
-    private int hAncho = 1; //1 - adyancentes tambi√©n
+    private int hAncho = 1; //1 - adyancentes tambiÈn
     public override void Awake()
   {
     nombre = "Tiro con Arco";
@@ -76,7 +76,7 @@ public class TiroconArco : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})";
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
 
     txtDescripcion = ConstruirDescripcionEstandar(
       esIngles ? "Bow Shot" : "Tiro con Arco",
@@ -158,7 +158,7 @@ public class TiroconArco : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
-     if(obj is Unidad) //Ac√° van los efectos a Unidades.
+     if(obj is Unidad) //Ac· van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -169,11 +169,11 @@ public class TiroconArco : Habilidad
         float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
        //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para pr√≥ximas habilidades de da√±o del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prÛximas habilidades de daÒo del explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de da√±o solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % da√±o cr√≠tico.
+         danioMarca += 15; //Esto se suma al porcentaje de daÒo solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daÒo crÌtico.
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -238,7 +238,7 @@ public class TiroconArco : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -263,7 +263,7 @@ public class TiroconArco : Habilidad
 
     private async Task LanzarProyectilAsync(object objetivo)
     {
-        await Task.Delay(200);
+        await BattleManager.DelayCombateAsync(200);
 
     GameObject flechaPrefab = null;
     if (scEstaUnidad.bonusdam_fuego > 0)
@@ -300,7 +300,7 @@ public class TiroconArco : Habilidad
         }
         else
         {
-            await Task.Delay(150);
+            await BattleManager.DelayCombateAsync(150);
         }
     }
     void VFXAplicar(GameObject objetivo)

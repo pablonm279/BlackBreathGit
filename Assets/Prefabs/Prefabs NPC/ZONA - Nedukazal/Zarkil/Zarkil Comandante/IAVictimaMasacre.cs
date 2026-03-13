@@ -48,9 +48,9 @@ public class IAVictimaMasacre : IAHabilidad
     PrepararInicioAnimacion(null, objetivo);
     scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
 
-    await Task.Delay(450);
+    await BattleManager.DelayCombateAsync(450);
     AplicarEfectosHabilidad(objetivo);
-    await Task.Delay(650);
+    await BattleManager.DelayCombateAsync(650);
   }
 
   public override void AplicarEfectosHabilidad(object obj)

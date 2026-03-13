@@ -8,6 +8,9 @@ using Unity.VisualScripting;
 using TMPro;
 using UnityEngine.Rendering;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Threading;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 public class BattleManager : MonoBehaviour
 {
@@ -49,6 +52,8 @@ public class BattleManager : MonoBehaviour
   private const float UmbralValourMuyBajo = 15f;
   private const float ValourGlobalBasePct = 50f;
   private const float ValourGlobalPctPorPuntoPromedio = 8f;
+  private const float TimeScaleNormal = 1f;
+  private const float TimeScaleModoRapido = 1.35f;
   private const int DcValourBase = 15;
   private const int DcValourMin = 8;
   private const int DcValourMax = 22;
@@ -128,6 +133,21 @@ public class BattleManager : MonoBehaviour
     }
 
     Instance = this;
+  }
+
+  private void OnDestroy()
+  {
+    if (Instance != this)
+    {
+      return;
+    }
+
+    pausaPorLogActiva = false;
+    pausaManualCombateActiva = false;
+    ultimaVisibilidadLogActiva = false;
+    CancelarCambioEstadoPausaDelay();
+    AplicarEscalaTiempoCombate();
+    Instance = null;
   }
   public int indexTurno = 0;
 
@@ -282,6 +302,8 @@ public class BattleManager : MonoBehaviour
 
   private void ConfigurarMicroAnimacionesUI()
   {
+    ultimaVisibilidadLogActiva = goLog != null && goLog.activeInHierarchy;
+
     if (goLog != null)
     {
       UIFadeSlide animLog = UIFadeSlideUtility.Ensure(goLog);
@@ -1441,6 +1463,34 @@ public class BattleManager : MonoBehaviour
 
   private void Update()
   {
+    bool tutorialActivo = scTutorialCombate != null && scTutorialCombate.tutorialCombateActivo;
+    SincronizarPausaConVisibilidadLog();
+
+    if (pausaManualCombateActiva && (unidadActiva == null || unidadActiva.GetComponent<IAUnidad>() == null))
+    {
+      SetPausaManualCombate(false);
+    }
+
+    if (Input.GetKeyDown(KeyCode.Space))
+    {
+      if (!tutorialActivo && !pausaPorLogActiva && unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() != null)
+      {
+        TogglePausaManualCombate();
+        return;
+      }
+
+      if (unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() == null && tutorialActivo == false)
+      {
+        TerminarTurno();
+        return;
+      }
+    }
+
+    if (PausaCombateActiva)
+    {
+      return;
+    }
+
     // Si el jugador hace clic derecho o ESC mientras hay una habilidad activa, cancelarla
     if ((Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape)) && (unidadActiva != null && HabilidadActiva != null))
     {
@@ -1461,16 +1511,6 @@ public class BattleManager : MonoBehaviour
       ActivarModoRapido(!modoRapidoActivado);
     }
     ManejarHotkeysHabilidadesJugador();
-    if (Input.GetKeyDown(KeyCode.Space))
-    {
-      if (unidadActiva != null)
-      {
-        if (unidadActiva.GetComponent<IAUnidad>() == null && scTutorialCombate.tutorialCombateActivo == false)
-        {
-          TerminarTurno();
-        }
-      }
-    }
 
     if (unidadActiva != null && scUIBotonesHab != null && unidadActiva.GetComponent<IAUnidad>() == null)
     {
@@ -1650,6 +1690,11 @@ public class BattleManager : MonoBehaviour
 
   public void UIActivarCanvas0Jugadoro1AI(int value)
   {
+    if (value == 0 && pausaManualCombateActiva)
+    {
+      SetPausaManualCombate(false);
+    }
+
     if (value == 0) //Jugador
     {
       UICanvasTurnoJugador.SetActive(true);
@@ -1784,6 +1829,12 @@ public class BattleManager : MonoBehaviour
   [SerializeField] GameObject goLog;
   public List<string> lineas;
   [SerializeField] private LogDeCampania logDeCampania;
+  private bool pausaPorLogActiva;
+  private bool pausaManualCombateActiva;
+  private bool ultimaVisibilidadLogActiva;
+  private CancellationTokenSource cambioEstadoPausaDelayCts = new CancellationTokenSource();
+  private GameObject goTextoPausaCombate;
+  private TextMeshProUGUI txtPausaCombate;
 
   public void EscribirLog(string log)
   {
@@ -1885,10 +1936,13 @@ public class BattleManager : MonoBehaviour
     if (n == 1)
     {
       UIFadeSlideUtility.Show(goLog);
+      ultimaVisibilidadLogActiva = goLog != null && goLog.activeInHierarchy;
+      SetPausaPorLog(true);
     }
     else
     {
       UIFadeSlideUtility.Hide(goLog);
+      SetPausaPorLog(false);
     }
 
   }
@@ -2378,6 +2432,293 @@ public class BattleManager : MonoBehaviour
   public bool modoRapidoActivado = false;
   public GameObject btnModoRapido;
 
+  public bool PausaCombateActiva
+  {
+    get { return pausaPorLogActiva || pausaManualCombateActiva; }
+  }
+
+  public static async Task DelayCombateAsync(int milliseconds)
+  {
+    await DelayCombateAsync(TimeSpan.FromMilliseconds(Mathf.Max(0, milliseconds)));
+  }
+
+  public static async Task DelayCombateAsync(TimeSpan duration)
+  {
+    if (duration <= TimeSpan.Zero)
+    {
+      return;
+    }
+
+    BattleManager battleManager = Instance;
+    if (battleManager == null)
+    {
+      await Task.Delay(duration);
+      return;
+    }
+
+    double restanteMs = duration.TotalMilliseconds;
+
+    while (restanteMs > 0d)
+    {
+      battleManager = Instance;
+      if (battleManager == null)
+      {
+        await Task.Delay(TimeSpan.FromMilliseconds(restanteMs));
+        return;
+      }
+
+      while (battleManager.PausaCombateActiva)
+      {
+        CancellationToken tokenCambioEstadoPausa = battleManager.ObtenerTokenCambioEstadoPausa();
+        try
+        {
+          await Task.Delay(Timeout.InfiniteTimeSpan, tokenCambioEstadoPausa);
+        }
+        catch (TaskCanceledException)
+        {
+        }
+
+        battleManager = Instance;
+        if (battleManager == null)
+        {
+          await Task.Delay(TimeSpan.FromMilliseconds(restanteMs));
+          return;
+        }
+      }
+
+      CancellationToken tokenDelayActiva = battleManager.ObtenerTokenCambioEstadoPausa();
+      Stopwatch cronometro = Stopwatch.StartNew();
+      try
+      {
+        await Task.Delay(TimeSpan.FromMilliseconds(restanteMs), tokenDelayActiva);
+        return;
+      }
+      catch (TaskCanceledException)
+      {
+        restanteMs = Math.Max(0d, restanteMs - cronometro.Elapsed.TotalMilliseconds);
+      }
+    }
+  }
+
+  private void TogglePausaManualCombate()
+  {
+    SetPausaManualCombate(!pausaManualCombateActiva);
+  }
+
+  private void SetPausaPorLog(bool activa)
+  {
+    if (pausaPorLogActiva == activa)
+    {
+      return;
+    }
+
+    pausaPorLogActiva = activa;
+    NotificarCambioEstadoPausaCombate();
+    AplicarEscalaTiempoCombate();
+  }
+
+  private void SetPausaManualCombate(bool activa)
+  {
+    if (pausaManualCombateActiva == activa)
+    {
+      ActualizarIndicadorPausaCombate();
+      return;
+    }
+
+    pausaManualCombateActiva = activa;
+    NotificarCambioEstadoPausaCombate();
+    ActualizarIndicadorPausaCombate();
+    AplicarEscalaTiempoCombate();
+  }
+
+  private void SincronizarPausaConVisibilidadLog()
+  {
+    bool logActivo = goLog != null && goLog.activeInHierarchy;
+    if (logActivo == ultimaVisibilidadLogActiva)
+    {
+      return;
+    }
+
+    ultimaVisibilidadLogActiva = logActivo;
+
+    if (logActivo && !pausaPorLogActiva)
+    {
+      SetPausaPorLog(true);
+    }
+    else if (!logActivo && pausaPorLogActiva)
+    {
+      SetPausaPorLog(false);
+    }
+  }
+
+  private CancellationToken ObtenerTokenCambioEstadoPausa()
+  {
+    if (cambioEstadoPausaDelayCts == null)
+    {
+      cambioEstadoPausaDelayCts = new CancellationTokenSource();
+    }
+
+    return cambioEstadoPausaDelayCts.Token;
+  }
+
+  private void NotificarCambioEstadoPausaCombate()
+  {
+    CancellationTokenSource ctsAnterior = cambioEstadoPausaDelayCts;
+    cambioEstadoPausaDelayCts = new CancellationTokenSource();
+
+    if (ctsAnterior == null)
+    {
+      return;
+    }
+
+    try
+    {
+      ctsAnterior.Cancel();
+    }
+    catch (ObjectDisposedException)
+    {
+    }
+    finally
+    {
+      ctsAnterior.Dispose();
+    }
+  }
+
+  private void CancelarCambioEstadoPausaDelay()
+  {
+    if (cambioEstadoPausaDelayCts == null)
+    {
+      return;
+    }
+
+    try
+    {
+      cambioEstadoPausaDelayCts.Cancel();
+    }
+    catch (ObjectDisposedException)
+    {
+    }
+    finally
+    {
+      cambioEstadoPausaDelayCts.Dispose();
+      cambioEstadoPausaDelayCts = null;
+    }
+  }
+
+  private void ActualizarIndicadorPausaCombate()
+  {
+    EnsureTextoPausaCombate();
+    if (goTextoPausaCombate == null || txtPausaCombate == null)
+    {
+      return;
+    }
+
+    txtPausaCombate.text = ObtenerTextoPausa();
+
+    if (pausaManualCombateActiva)
+    {
+      UIFadeSlideUtility.Show(goTextoPausaCombate);
+    }
+    else
+    {
+      UIFadeSlideUtility.Hide(goTextoPausaCombate);
+    }
+  }
+
+  private void EnsureTextoPausaCombate()
+  {
+    if (goTextoPausaCombate != null)
+    {
+      return;
+    }
+
+    Canvas canvasObjetivo = null;
+    if (txtLog != null && txtLog.canvas != null)
+    {
+      canvasObjetivo = txtLog.canvas.rootCanvas != null ? txtLog.canvas.rootCanvas : txtLog.canvas;
+    }
+    else if (UICanvasTurnoJugador != null)
+    {
+      Canvas canvasJugador = UICanvasTurnoJugador.GetComponentInParent<Canvas>(true);
+      if (canvasJugador != null)
+      {
+        canvasObjetivo = canvasJugador.rootCanvas != null ? canvasJugador.rootCanvas : canvasJugador;
+      }
+    }
+    else
+    {
+      canvasObjetivo = GetComponentInChildren<Canvas>(true);
+    }
+
+    if (canvasObjetivo == null)
+    {
+      return;
+    }
+
+    goTextoPausaCombate = new GameObject("TextoPausaCombate", typeof(RectTransform), typeof(CanvasGroup), typeof(TextMeshProUGUI));
+    goTextoPausaCombate.transform.SetParent(canvasObjetivo.transform, false);
+
+    RectTransform rect = (RectTransform)goTextoPausaCombate.transform;
+    rect.anchorMin = new Vector2(0.5f, 0.5f);
+    rect.anchorMax = new Vector2(0.5f, 0.5f);
+    rect.pivot = new Vector2(0.5f, 0.5f);
+    rect.anchoredPosition = new Vector2(0f, 28f);
+    rect.sizeDelta = new Vector2(420f, 90f);
+
+    txtPausaCombate = goTextoPausaCombate.GetComponent<TextMeshProUGUI>();
+    txtPausaCombate.alignment = TextAlignmentOptions.Center;
+    txtPausaCombate.fontSize = 42f;
+    txtPausaCombate.fontStyle = FontStyles.SmallCaps;
+    txtPausaCombate.enableWordWrapping = false;
+    txtPausaCombate.raycastTarget = false;
+    txtPausaCombate.color = new Color(1f, 1f, 1f, 0.72f);
+    txtPausaCombate.text = "Pausa";
+
+    if (txtLog != null && txtLog.font != null)
+    {
+      txtPausaCombate.font = txtLog.font;
+    }
+    else if (rondaText != null && rondaText.font != null)
+    {
+      txtPausaCombate.font = rondaText.font;
+    }
+
+    UIFadeSlide anim = UIFadeSlideUtility.Ensure(goTextoPausaCombate);
+    if (anim != null)
+    {
+      anim.SetDurations(0.12f, 0.1f);
+      anim.SetOffsets(new Vector2(0f, 12f), new Vector2(0f, -12f));
+      anim.SetFollowMouse(false, Vector2.zero);
+    }
+
+    UIFadeSlideUtility.HideImmediate(goTextoPausaCombate);
+  }
+
+  private string ObtenerTextoPausa()
+  {
+    if (TRADU.i == null)
+    {
+      return "Pausa";
+    }
+
+    string traducido = TRADU.i.Traducir("Pausa");
+    if (TRADU.i.nIdioma == 2)
+    {
+      return string.IsNullOrWhiteSpace(traducido) || string.Equals(traducido, "Pausa", StringComparison.OrdinalIgnoreCase)
+        ? "Pause"
+        : traducido;
+    }
+
+    return string.IsNullOrWhiteSpace(traducido) ? "Pausa" : traducido;
+  }
+
+  private void AplicarEscalaTiempoCombate()
+  {
+    Time.timeScale = PausaCombateActiva
+      ? 0f
+      : (modoRapidoActivado ? TimeScaleModoRapido : TimeScaleNormal);
+  }
+
   public void btnCambiarEstadoModoRapido()
   {
     ActivarModoRapido(!modoRapidoActivado);
@@ -2387,7 +2728,6 @@ public class BattleManager : MonoBehaviour
     if (activar)
     {
       modoRapidoActivado = true;
-      Time.timeScale = 1.35f;
       PlayerPrefs.SetInt("modoRapido", modoRapidoActivado ? 1 : 0);
       PlayerPrefs.Save();
 
@@ -2398,7 +2738,6 @@ public class BattleManager : MonoBehaviour
     else
     {
       modoRapidoActivado = false;
-      Time.timeScale = 1f;
       PlayerPrefs.SetInt("modoRapido", modoRapidoActivado ? 1 : 0);
       PlayerPrefs.Save();
 
@@ -2406,6 +2745,7 @@ public class BattleManager : MonoBehaviour
       btnModoRapido.transform.GetChild(1).gameObject.SetActive(false);
     }
 
+    AplicarEscalaTiempoCombate();
 
   }
 

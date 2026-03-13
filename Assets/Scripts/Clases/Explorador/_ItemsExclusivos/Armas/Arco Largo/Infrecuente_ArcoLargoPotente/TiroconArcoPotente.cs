@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,10 +15,10 @@ public class TiroconArcoPotente : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
     private int hAlcance = 7;
-    private int hAncho = 1; //1 - adyancentes tambi√©n
+    private int hAncho = 1; //1 - adyancentes tambiÈn
   public override void Awake()
   {
     nombre = "Tiro con Arco Potente";
@@ -57,8 +57,8 @@ public class TiroconArcoPotente : Habilidad
     txtDescripcion = "<color=#5dade2><b>Tiro con Arco Potente</b></color>\n\n";
     txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
     txtDescripcion += "<i>Al golpear TS Fortaleza DC 11: si falla, empuja 1 casilla.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Da√±o: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valent√≠a: {costoPM} </color>";
+    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - DaÒo: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo ValentÌa: {costoPM} </color>";
     if (TRADU.i.nIdioma == 2)
     {
       txtDescripcion = "<color=#5dade2><b>Powerful Bow Shot</b></color>\n\n";
@@ -97,7 +97,7 @@ public class TiroconArcoPotente : Habilidad
     public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
-     if(obj is Unidad) //Ac√° van los efectos a Unidades.
+     if(obj is Unidad) //Ac· van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -107,15 +107,15 @@ public class TiroconArcoPotente : Habilidad
        Usuario.GetComponent<ClaseExplorador>().CambiarCantidadFlechas(-1);
        CrearProyectil(objetivo);
 
-       await Task.Delay(1300);
+       await BattleManager.DelayCombateAsync(1300);
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
        //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para pr√≥ximas habilidades de da√±o del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prÛximas habilidades de daÒo del explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de da√±o solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % da√±o cr√≠tico.
+         danioMarca += 15; //Esto se suma al porcentaje de daÒo solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daÒo crÌtico.
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -153,7 +153,7 @@ public class TiroconArcoPotente : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
         
-        AplicarEfectoPotente(objetivo); //Aplica el efecto de empujar si falla la tirada de salvaci√≥n
+        AplicarEfectoPotente(objetivo); //Aplica el efecto de empujar si falla la tirada de salvaciÛn
 
 
       }
@@ -166,7 +166,7 @@ public class TiroconArcoPotente : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
-        AplicarEfectoPotente(objetivo); //Aplica el efecto de empujar si falla la tirada de salvaci√≥n
+        AplicarEfectoPotente(objetivo); //Aplica el efecto de empujar si falla la tirada de salvaciÛn
 
       }
       else if (resultadoTirada == 3)
@@ -179,12 +179,12 @@ public class TiroconArcoPotente : Habilidad
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 
 
-        AplicarEfectoPotente(objetivo); //Aplica el efecto de empujar si falla la tirada de salvaci√≥n
+        AplicarEfectoPotente(objetivo); //Aplica el efecto de empujar si falla la tirada de salvaciÛn
       }
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -209,7 +209,7 @@ public class TiroconArcoPotente : Habilidad
     
     async Task CrearProyectil(object Objetivo)
   {
-    await Task.Delay(200);
+    await BattleManager.DelayCombateAsync(200);
     GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
     GameObject Proyectil = Instantiate(flechaPrefab);
     Proyectil.GetComponent<ArrowFlight>().startMarker = transform;

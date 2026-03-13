@@ -15,9 +15,13 @@ public class CampaignManager : MonoBehaviour
 {
   public static CampaignManager Instance { get; private set; }
   private const bool DEBUG_FORZAR_OLA_DE_CALOR_AL_PLAY = false;
+  private const bool DEBUG_FORZAR_MASACRE_NEDUKAZAL = false;
+  private const bool DEBUG_ABRIR_MENU_SERRIA_AL_INICIAR = false;
   [Header("Debug Demo")]
-  [SerializeField] private bool debugSaltarTutorialAlIniciar = true;
-  [SerializeField] private int debugZonaInicial = 1; // 0 = aleatoria
+  [SerializeField] private bool debugSaltarTutorialAlIniciar = false;
+  [SerializeField] private bool debugPermitirZonaBosque = false;
+  [SerializeField] private bool debugPermitirZonaPasoVientoHelado = false;
+  [SerializeField] private bool debugPermitirZonaNedukazal = false;
 
   public GameObject prefabTextoRecursos;
   public Animator animCaravana;
@@ -92,6 +96,8 @@ public class CampaignManager : MonoBehaviour
   private readonly List<float> recentSpawnTimes = new List<float>();
   private bool resolviendoJefeZona;
   private bool abriendoCiudadPuerto;
+  private bool campaniaInicializada;
+  private bool debeEscribirLogInicioEnStart;
   private void Awake()
   {
     if (Instance != null)
@@ -101,36 +107,138 @@ public class CampaignManager : MonoBehaviour
     }
 
     Instance = this;
+    PrepararEscenaCampania();
+
+    if (SaveGameService.TryConsumePendingLoad(out SaveFileData savePendiente))
+    {
+      if (!CargarCampaniaPendiente(savePendiente, out string error, true))
+      {
+        SaveGameService.ReportPendingLoadFailure(error);
+      }
+      return;
+    }
+
+    InicializarNuevaCampania();
+
+  }
+
+  private void PrepararEscenaCampania()
+  {
     if (goDerrota != null)
     {
       goDerrota.SetActive(false);
     }
 
+    AsegurarAudioMovimientoCaravana();
+    sfxMovimientoSource.volume = sfxMovimientoVolumen;
+    sfxMovimientoSource.pitch = sfxMovimientoPitch;
+  }
 
-    //Determinar si es Tuto o no
+  public void InicializarNuevaCampania()
+  {
+    if (campaniaInicializada)
+    {
+      return;
+    }
+
+    ResetearEstadoTransitorioCampania();
+    ConfigurarEstadoTutorialNuevaCampania();
+    InicializarRecursosNuevaCampania();
+    InicializarZonaNuevaCampania();
+    InicializarSequitosNuevaCampania();
+    InicializarProgresoNuevaCampania();
+    InicializarClimaAlIniciar();
+    InicializarPersonajesNuevaCampania();
+    AjustarDificultad();
+
+    debeEscribirLogInicioEnStart = true;
+    campaniaInicializada = true;
+  }
+
+  private bool CargarCampaniaPendiente(SaveFileData savePendiente, out string error, bool iniciarNuevaCampaniaSiFalla)
+  {
+    error = string.Empty;
+
+    if (savePendiente == null)
+    {
+      error = "El save pendiente es invalido.";
+      Debug.LogWarning("[CampaignManager] " + error);
+      if (iniciarNuevaCampaniaSiFalla)
+      {
+        InicializarNuevaCampania();
+      }
+      return false;
+    }
+
+    try
+    {
+      if (savePendiente.campaign == null || savePendiente.map == null || savePendiente.party == null || savePendiente.sequitos == null)
+      {
+        throw new InvalidOperationException("El save no contiene todos los bloques necesarios.");
+      }
+
+      if (scMapaManager != null)
+      {
+        scMapaManager.OmitirAutoGeneracionEnStart();
+      }
+
+      ResetearEstadoTransitorioCampania();
+      LimpiarEstadoActualParaCarga();
+      RestaurarMetaprogresionDesdeSave(savePendiente);
+      RestaurarTutorialDesdeSave(savePendiente.campaign);
+      AplicarEstadoBaseCampaniaDesdeSave(savePendiente.campaign);
+      RestaurarZonaDesdeSave(savePendiente);
+      RestaurarMapaDesdeSave(savePendiente);
+      RestaurarSequitosDesdeSave(savePendiente.sequitos);
+      RestaurarPartyDesdeSave(savePendiente.party, savePendiente.version);
+      RestaurarRecursosDesdeSave(savePendiente.campaign);
+      RestaurarSeleccionBatallaDesdeSave(savePendiente.party);
+      FinalizarCargaCampania(savePendiente);
+
+      debeEscribirLogInicioEnStart = false;
+      campaniaInicializada = true;
+      return true;
+    }
+    catch (Exception ex)
+    {
+      error = ex.Message;
+      Debug.LogError("[CampaignManager] Fallo la carga del save. " + error);
+      Debug.LogException(ex, this);
+      if (iniciarNuevaCampaniaSiFalla)
+      {
+        InicializarNuevaCampania();
+      }
+      return false;
+    }
+  }
+
+  private void ResetearEstadoTransitorioCampania()
+  {
+    logInicioCampaniaEscrito = false;
+    debeEscribirLogInicioEnStart = false;
+    MoviendoCaravana = false;
+    transicionZonaEnCurso = false;
+    bloquearOlaDeCalorEnSiguienteTiradaClima = false;
+    nodoDestinoActual = null;
+    BATALLA_EnCurso = 0;
+    resolviendoJefeZona = false;
+    abriendoCiudadPuerto = false;
+  }
+
+  private void ConfigurarEstadoTutorialNuevaCampania()
+  {
     int yaPasotuto = PlayerPrefs.GetInt("Tutorial_Terminado");
-  
 
     if (debugSaltarTutorialAlIniciar)
     {
       yaPasotuto = 1;
     }
 
-    if (yaPasotuto == 1)
-    {
-      scTutorialManager.tutorialActivo = false;
-    }
-    else
-    {
-      scTutorialManager.tutorialActivo = true;
-    }
+    scTutorialManager.tutorialActivo = yaPasotuto != 1;
+  }
 
-
-    // Configurar el AudioSource para el SFX de movimiento de la caravana
-    AsegurarAudioMovimientoCaravana();
-    sfxMovimientoSource.volume = sfxMovimientoVolumen;
-    sfxMovimientoSource.pitch = sfxMovimientoPitch;
-
+  private void InicializarRecursosNuevaCampania()
+  {
     CambiarCivilesActuales(110);
     CambiarEsperanzaActual(75);
     CambiarSuministrosActuales(300);
@@ -144,51 +252,73 @@ public class CampaignManager : MonoBehaviour
       CambiarSuministrosActuales(-100);
       CambiarCivilesActuales(-25);
     }
-   
-    
+
     CambiarOroActual(400);
     CambiarValorAlientoNegro(2);
+  }
 
-    int zonaInicial = debugZonaInicial;
+  private void InicializarZonaNuevaCampania()
+  {
+    int zonaInicial = ObtenerZonaInicialDebug();
     if (zonaInicial == 0 && scTutorialManager.tutorialActivo)
     {
       zonaInicial = 1;
     }
+
     scAtributosZona.GenerarZona(zonaInicial);
+  }
 
+  private int ObtenerZonaInicialDebug()
+  {
+    List<int> zonasHabilitadas = new List<int>();
 
+    if (debugPermitirZonaBosque)
+    {
+      zonasHabilitadas.Add(1);
+    }
+
+    if (debugPermitirZonaPasoVientoHelado)
+    {
+      zonasHabilitadas.Add(2);
+    }
+
+    if (debugPermitirZonaNedukazal)
+    {
+      zonasHabilitadas.Add(3);
+    }
+
+    if (zonasHabilitadas.Count == 0)
+    {
+      return 0;
+    }
+
+    return zonasHabilitadas[UnityEngine.Random.Range(0, zonasHabilitadas.Count)];
+  }
+
+  private void InicializarSequitosNuevaCampania()
+  {
     scMenuSequito.AgregarSequito(1);
     scMenuSequito.AgregarSequito(2);
     scMenuSequito.AgregarSequito(3);
+  }
 
-
-
-
+  private void InicializarProgresoNuevaCampania()
+  {
     numeroTurno = 1;
     posicionCaravana = 1;
+  }
 
-    InicializarClimaAlIniciar();
-
-
-
-
-
-
-
-    if (!scTutorialManager.tutorialActivo) //En tutorial son 4 de comienzo
+  private void InicializarPersonajesNuevaCampania()
+  {
+    if (!scTutorialManager.tutorialActivo)
     {
       AgregarHeroe(0);
       AgregarHeroe(0);
       AgregarHeroe(0);
-
+      return;
     }
-    else
-    {
-      CrearAcechador();
-    }
-    AjustarDificultad();
-   
 
+    CrearAcechador();
   }
 
 
@@ -208,10 +338,1764 @@ public class CampaignManager : MonoBehaviour
       logDeCampania.SetDiaActual(numeroTurno);
 
     TRADU.i.ActualizarIdioma();
-    EscribirLogInicioCampania();
+    if (debeEscribirLogInicioEnStart)
+    {
+      EscribirLogInicioCampania();
+      debeEscribirLogInicioEnStart = false;
+    }
 
     MenuOpciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
     RefrescarVfxClimaCalor();
+
+    if (SaveGameService.TryConsumePendingLoadFailure(out string loadFailureMessage))
+    {
+      NotificarResultadoGuardado("-No se pudo cargar la campania. " + loadFailureMessage, Color.red);
+    }
+
+    if (DEBUG_ABRIR_MENU_SERRIA_AL_INICIAR)
+    {
+      AbrirCiudadPuertoDirectoDebug();
+    }
+  }
+
+  [ContextMenu("Guardar Campania En Slot Default")]
+  private void GuardarCampaniaDesdeContextMenu()
+  {
+    if (TryGuardarCampania(out string error))
+    {
+      Debug.Log("[SaveGame] Campania guardada en slot default.");
+      return;
+    }
+
+    Debug.LogError("[SaveGame] No se pudo guardar la campania. " + error);
+  }
+
+  [ContextMenu("Cargar Campania Desde Slot Default")]
+  private void CargarCampaniaDesdeContextMenu()
+  {
+    if (TryCargarCampaniaDesdeArchivo(out string error))
+    {
+      Debug.Log("[SaveGame] Campania cargada desde slot default.");
+      return;
+    }
+
+    Debug.LogError("[SaveGame] No se pudo cargar la campania. " + error);
+  }
+
+  public bool PuedeGuardarCampania(out string motivo)
+  {
+    if (!campaniaInicializada)
+    {
+      motivo = "La campania aun no termino de inicializar.";
+      return false;
+    }
+
+    if (scAdministradorEscenas != null && scAdministradorEscenas.escenaActual != 0)
+    {
+      motivo = "Solo se puede guardar en campania.";
+      return false;
+    }
+
+    if (MoviendoCaravana)
+    {
+      motivo = "No se puede guardar mientras la caravana esta viajando.";
+      return false;
+    }
+
+    if (transicionZonaEnCurso)
+    {
+      motivo = "No se puede guardar durante una transicion de zona.";
+      return false;
+    }
+
+    if (scMapaManager == null || scMapaManager.nodoActual == null)
+    {
+      motivo = "No hay un nodo actual valido para guardar la campania.";
+      return false;
+    }
+
+    if (HayInteraccionTransitoriaActiva())
+    {
+      motivo = "No se puede guardar mientras hay una interaccion de nodo abierta.";
+      return false;
+    }
+
+    motivo = string.Empty;
+    return true;
+  }
+
+  private bool HayInteraccionTransitoriaActiva()
+  {
+    return EstaInteraccionActiva(menuDescanso)
+      || EstaInteraccionActiva(goMenuBatallas)
+      || EstaInteraccionActiva(UIEvetos)
+      || EstaInteraccionActiva(goUIComercioNodo)
+      || EstaInteraccionActiva(goUIPersonajeSequito)
+      || EstaInteraccionActiva(goUISantuario)
+      || EstaInteraccionActiva(goUIVictoriaZona)
+      || EstaInteraccionActiva(goMenuPuerto)
+      || EstaInteraccionActiva(goDerrota);
+  }
+
+  private bool EstaInteraccionActiva(GameObject go)
+  {
+    return go != null && go.activeInHierarchy;
+  }
+
+  public bool TryGuardarCampania(out string error, string path = null)
+  {
+    error = string.Empty;
+
+    if (!PuedeGuardarCampania(out string motivo))
+    {
+      error = motivo;
+      return false;
+    }
+
+    SaveFileData save = ConstruirSaveActual();
+    if (save == null)
+    {
+      error = "No se pudo construir el estado de guardado.";
+      return false;
+    }
+
+    if (!SaveGameService.TryWriteSaveFile(save, out error, path))
+    {
+      return false;
+    }
+
+    return true;
+  }
+
+  public void GuardarCampaniaManual()
+  {
+    if (TryGuardarCampania(out string error))
+    {
+      NotificarResultadoGuardado("-Campaña guardada.", Color.cyan);
+      return;
+    }
+
+    NotificarResultadoGuardado("-No se pudo guardar la campaña. " + error, Color.red);
+  }
+
+  public void CargarCampaniaManual()
+  {
+    if (TryCargarCampaniaDesdeArchivo(out string error))
+    {
+      NotificarResultadoGuardado("-Campaña cargada.", Color.cyan);
+      return;
+    }
+
+    NotificarResultadoGuardado("-No se pudo cargar la campaña. " + error, Color.red);
+  }
+
+  public bool TryAutosaveCampania(string origen, out string error)
+  {
+    if (TryGuardarCampania(out error))
+    {
+      Debug.Log("[SaveGame] Autosave de campania completado" + FormatearOrigenAutosave(origen) + ".");
+      return true;
+    }
+
+    Debug.LogWarning("[SaveGame] No se pudo completar el autosave" + FormatearOrigenAutosave(origen) + ". " + error);
+    return false;
+  }
+
+  public bool TryCargarCampaniaDesdeArchivo(out string error, string path = null)
+  {
+    error = string.Empty;
+    if (!SaveGameService.TryReadSaveFile(out SaveFileData save, out error, path))
+    {
+      return false;
+    }
+
+    return CargarCampaniaPendiente(save, out error, true);
+  }
+
+  public SaveFileData ConstruirSaveActual()
+  {
+    ItemDatabase itemDatabase = ItemSaveCatalog.GetRuntimeItemDatabase(this);
+    if (itemDatabase == null)
+    {
+      Debug.LogWarning("[SaveGame] No se encontro ItemDatabase runtime. El guardado de items podria quedar incompleto.");
+    }
+
+    SaveFileData save = new SaveFileData();
+    save.campaign = ConstruirCampaignSaveData();
+    save.map = ConstruirMapSaveData();
+    save.party = ConstruirPartySaveData(itemDatabase);
+    save.sequitos = ConstruirSequitosSaveData(itemDatabase);
+    save.metaprogresion = ConstruirMetaprogresionSaveData();
+    save.MarcarGuardadoAhora();
+    return save;
+  }
+
+  private CampaignSaveData ConstruirCampaignSaveData()
+  {
+    CampaignSaveData data = new CampaignSaveData();
+    data.zonaId = scAtributosZona != null ? scAtributosZona.ID : 0;
+    data.zonaFase = scAtributosZona != null ? scAtributosZona.FASE : 0;
+    MapDecorator mapDecorator = scAtributosZona != null ? scAtributosZona.GetComponent<MapDecorator>() : null;
+    data.reliefSeed = mapDecorator != null ? mapDecorator.GetReliefSeed() : 0;
+    data.pasoVientoHeladoFuerzaKaleTav = scAtributosZona != null ? scAtributosZona.PasoVientoHelado_FuerzaKaleTav : 0;
+    data.numeroTurno = numeroTurno;
+    data.posicionCaravana = posicionCaravana;
+    data.tipoClima = intTipoClima;
+    data.alientoNegro = GetValorAlientoNegro();
+    data.fatiga = GetFatigaActual();
+    data.esperanza = GetEsperanzaActual();
+    data.civiles = Mathf.RoundToInt(GetCivilesActual());
+    data.bueyes = GetBueyesActual();
+    data.suministros = GetSuministrosActuales();
+    data.materiales = GetMaterialesActuales();
+    data.oro = GetOroActuales();
+    data.mejoraCaravanaAntorchas = mejoraCaravanaAntorchas;
+    data.mejoraCaravanaAlforjas = mejoraCaravanaAlforjas;
+    data.mejoraCaravanaTiendas = mejoraCaravanaTiendas;
+    data.mejoraCaravanaCatalejos = mejoraCaravanaCatalejos;
+    data.mejoraCaravanaAlmacen = mejoraCaravanaAlmacen;
+    data.mejoraCaravanaDefensas = mejoraCaravanaDefensas;
+    data.sequitoHerrerosMantArmas = sequitoHerrerosMantArmas;
+    data.sequitoHerrerosMantArmaduras = sequitoHerrerosMantArmaduras;
+    data.sequitoMercaderesTier = sequitoMercaderesTier;
+    data.sequitoCuranderosMejoraCuracion = sequitoCuranderosMejoraCuracion;
+    data.miliciasMejoras = miliciasMejoras;
+    data.peligroZonaAnterior = peligrozonaanterior;
+    data.puestoComercialSuministrosDisp = pComercialSuministrosDisp;
+    data.puestoComercialMaterialesDisp = pComercialMaterialesDisp;
+    data.puestoComercialBueyesDisp = pComercialBueyesDisp;
+    data.tutorialActivo = scTutorialManager != null && scTutorialManager.tutorialActivo;
+    data.tutorialPasoActual = scTutorialManager != null ? scTutorialManager.pasoActual : 0;
+    if (scAtributosZona != null && scAtributosZona.ZonasEstado != null)
+    {
+      data.zonasEstado = new List<int>(scAtributosZona.ZonasEstado);
+    }
+    data.nodoActual = CrearReferenciaNodo(scMapaManager != null ? scMapaManager.nodoActual : null);
+    data.nodoDestinoActual = CrearReferenciaNodo(MoviendoCaravana ? nodoDestinoActual : null);
+    return data;
+  }
+
+  private MapSaveData ConstruirMapSaveData()
+  {
+    MapSaveData data = new MapSaveData();
+    if (scMapaManager == null || scMapaManager.scContenedordeNodos == null)
+    {
+      return data;
+    }
+
+    foreach (Nodo nodo in scMapaManager.scContenedordeNodos.GetComponentsInChildren<Nodo>(true))
+    {
+      if (nodo == null)
+      {
+        continue;
+      }
+
+      NodeSaveData nodoData = new NodeSaveData();
+      nodoData.x = nodo.posXNodo;
+      nodoData.y = nodo.posYNodo;
+      nodoData.activo = nodo.gameObject.activeSelf;
+      nodoData.tipoNodo = nodo.tipoNodo;
+      nodoData.nodoDespejado = nodo.nodoDespejado;
+      nodoData.costoMovimiento = nodo.costoMovimiento;
+      nodoData.revelado = nodo.revelado;
+      nodoData.yatiroConexiones = nodo.yatiroConexiones;
+      nodoData.nodoIncendiado = nodo.nodoIncendiado;
+      nodoData.nodoRitual = nodo.nodoRitual;
+      nodoData.visualCode = nodo.ObtenerVisualCodeActual();
+      nodoData.esMisterioso = nodo.ObtenerEstadoMisterioso();
+
+      if (nodo.DestinosPosibles != null)
+      {
+        foreach (Nodo destino in nodo.DestinosPosibles)
+        {
+          nodoData.destinos.Add(CrearReferenciaNodo(destino));
+        }
+      }
+
+      data.nodes.Add(nodoData);
+    }
+
+    return data;
+  }
+
+  private PartySaveData ConstruirPartySaveData(ItemDatabase itemDatabase)
+  {
+    PartySaveData data = new PartySaveData();
+    if (scMenuPersonajes == null)
+    {
+      return data;
+    }
+
+    foreach (Personaje personaje in scMenuPersonajes.listaPersonajes)
+    {
+      if (personaje == null)
+      {
+        continue;
+      }
+
+      data.characters.Add(ConstruirCharacterSaveData(personaje, itemDatabase));
+    }
+
+    if (scMenuPersonajes.scEquipo != null)
+    {
+      foreach (GameObject itemGo in scMenuPersonajes.scEquipo.listInventario)
+      {
+        if (itemGo == null)
+        {
+          continue;
+        }
+
+        Item item = itemGo.GetComponent<Item>();
+        if (item == null)
+        {
+          continue;
+        }
+
+        string itemId = ItemSaveCatalog.ResolveItemId(item, itemDatabase);
+        if (!string.IsNullOrWhiteSpace(itemId))
+        {
+          data.inventoryItemIds.Add(itemId);
+        }
+      }
+    }
+
+    AgregarSeleccionParticipante(scAdministradorEscenas != null ? scAdministradorEscenas.Personaje1 : null, data.selectedBattleCharacterIds);
+    AgregarSeleccionParticipante(scAdministradorEscenas != null ? scAdministradorEscenas.Personaje2 : null, data.selectedBattleCharacterIds);
+    AgregarSeleccionParticipante(scAdministradorEscenas != null ? scAdministradorEscenas.Personaje3 : null, data.selectedBattleCharacterIds);
+    AgregarSeleccionParticipante(scAdministradorEscenas != null ? scAdministradorEscenas.Personaje4 : null, data.selectedBattleCharacterIds);
+
+    return data;
+  }
+
+  private CharacterSaveData ConstruirCharacterSaveData(Personaje personaje, ItemDatabase itemDatabase)
+  {
+    CharacterSaveData data = new CharacterSaveData();
+    data.id = personaje.EnsurePersistentId();
+    data.nombre = personaje.sNombre;
+    data.idClase = personaje.IDClase;
+    data.idRetrato = personaje.idRetrato;
+    data.puestoDeseado = personaje.iPuestoDeseado;
+    data.vidaActual = personaje.fVidaActual;
+    data.vidaMaxima = personaje.fVidaMaxima;
+    data.experienciaActual = personaje.fExperienciaActual;
+    data.nivelActual = personaje.fNivelActual;
+    data.fuerza = personaje.iFuerza;
+    data.agi = personaje.iAgi;
+    data.poder = personaje.iPoder;
+    data.iniciativa = personaje.iIniciativa;
+    data.apMax = personaje.iApMax;
+    data.valMax = personaje.iValMax;
+    data.armadura = personaje.iArmadura;
+    data.defensa = personaje.iDefensa;
+    data.tsReflejo = personaje.iTSReflejo;
+    data.tsFortaleza = personaje.iTSFortaleza;
+    data.tsMental = personaje.iTSMental;
+    data.resFuego = personaje.iResFuego;
+    data.resRayo = personaje.iResRayo;
+    data.resHielo = personaje.iResHielo;
+    data.resArcano = personaje.iResArcano;
+    data.resAcido = personaje.iResAcido;
+    data.resNecro = personaje.iResNecro;
+    data.resDivino = personaje.iResDivino;
+    data.critRango = personaje.fCritRango;
+    data.critDanio = personaje.fCritDanio;
+    data.bonusAtaque = personaje.fBonusAtaque;
+    data.habilidades = CopiarHabilidadesPersonaje(personaje);
+    data.actividades = CopiarActividadesPersonaje(personaje);
+    data.actividadSeleccionada = personaje.ActividadSeleccionada;
+    data.nivelPuntoAtributo = personaje.NivelPuntoAtributo;
+    data.nivelPuntoTS = personaje.NivelPuntoTS;
+    data.nivelPuntoHabilidad = personaje.NivelPuntoHabilidad;
+    data.nivelNuevaHabilidadBase = personaje.NivelNuevaHabilidadBase;
+    data.campFatigado = personaje.Camp_Fatigado;
+    data.campBendecidoSequitoClerigos = personaje.Camp_Bendecido_SequitoClerigos;
+    data.campHerido = personaje.Camp_Herido;
+    data.campEnfermo = personaje.Camp_Enfermo;
+    data.campMoral = personaje.Camp_Moral;
+    data.campAvergonzado = personaje.Camp_Avergonzado;
+    data.campMuerto = personaje.Camp_Muerto;
+    data.campCorrupto = personaje.Camp_Corrupto;
+    data.rasgos = CopiarRasgosPersonaje(personaje);
+    data.equipment = ConstruirEquipmentSaveData(personaje, itemDatabase);
+    return data;
+  }
+
+  private EquipmentSaveData ConstruirEquipmentSaveData(Personaje personaje, ItemDatabase itemDatabase)
+  {
+    EquipmentSaveData data = new EquipmentSaveData();
+    data.armaItemId = ItemSaveCatalog.ResolveItemId(personaje.itemArma, itemDatabase);
+    data.armaduraItemId = ItemSaveCatalog.ResolveItemId(personaje.itemArmadura, itemDatabase);
+    data.accesorio1ItemId = ItemSaveCatalog.ResolveItemId(personaje.Accesorio1, itemDatabase);
+    data.accesorio2ItemId = ItemSaveCatalog.ResolveItemId(personaje.Accesorio2, itemDatabase);
+    data.consumible1ItemId = ItemSaveCatalog.ResolveItemId(personaje.Consumible1, itemDatabase);
+    data.consumible2ItemId = ItemSaveCatalog.ResolveItemId(personaje.Consumible2, itemDatabase);
+    return data;
+  }
+
+  private SequitosSaveData ConstruirSequitosSaveData(ItemDatabase itemDatabase)
+  {
+    SequitosSaveData data = new SequitosSaveData();
+
+    if (scMenuSequito != null && scMenuSequito.lstSequitos != null)
+    {
+      data.sequitosActivos.AddRange(scMenuSequito.lstSequitos);
+    }
+
+    if (scSequitoHerboristas != null)
+    {
+      data.herboristasVecesEnClaro = scSequitoHerboristas.vecesEnClaro;
+      data.herboristasCantBalsamoFort = scSequitoHerboristas.cantBalsamoFort;
+      data.herboristasCantBalsamoReflej = scSequitoHerboristas.cantBalsamoReflej;
+      data.herboristasCantBalsamoMental = scSequitoHerboristas.cantBalsamoMental;
+    }
+
+    if (scSequitoCronistas != null)
+    {
+      data.cronistasValorCambios = scSequitoCronistas.valorCambiosCronicas;
+      data.cronistasYaVendio = scSequitoCronistas.yaVendioCronica;
+    }
+
+    if (scSequitoMercaderes != null && scSequitoMercaderes.ItemsVendidos != null)
+    {
+      foreach (Item item in scSequitoMercaderes.ItemsVendidos)
+      {
+        string itemId = ItemSaveCatalog.ResolveItemId(item, itemDatabase);
+        if (!string.IsNullOrWhiteSpace(itemId))
+        {
+          data.mercaderesItemsVendidosIds.Add(itemId);
+        }
+      }
+    }
+
+    return data;
+  }
+
+  private MetaprogresionSaveData ConstruirMetaprogresionSaveData()
+  {
+    MetaprogresionSaveData data = new MetaprogresionSaveData();
+    MetaprogresionManager meta = MetaprogresionManager.Instance;
+    if (meta == null)
+    {
+      return data;
+    }
+
+    data.corrupcionGlobal = meta.CorrupcionGlobal;
+    data.cantidadCiviles = meta.CantidadCiviles;
+    data.valorTrabajoDisponible = meta.ValordeTrabajoDisponible;
+    data.misionesSalvamento = meta.MisionesSalvamento;
+    data.nivelPeligroBosqueArdiente = meta.NivelPeligroBosqueArdiente;
+    data.nivelPeligroPasoVientohelado = meta.NivelPeligroPasoVientohelado;
+    data.nivelPeligroNedukazal = meta.NivelPeligroNedukazal;
+    data.serriaTierBarcos = meta.SerriaTierBarcos;
+    data.serriaTierAlmenaras = meta.SerriaTierAlmenaras;
+    data.serriaTierPalacio = meta.SerriaTierPalacio;
+    data.serriaTierCuartel = meta.SerriaTierCuartel;
+    data.serriaTierGranjas = meta.SerriaTierGranjas;
+    data.serriaTierBarricadas = meta.SerriaTierBarricadas;
+    data.serriaTierTemplo = meta.SerriaTierTemplo;
+    data.serriaPuntosAlmacenadosBarcos = meta.SerriaPuntosAlmacenadosBarcos;
+    data.serriaPuntosAlmacenadosAlmenaras = meta.SerriaPuntosAlmacenadosAlmenaras;
+    data.serriaPuntosAlmacenadosPalacio = meta.SerriaPuntosAlmacenadosPalacio;
+    data.serriaPuntosAlmacenadosCuartel = meta.SerriaPuntosAlmacenadosCuartel;
+    data.serriaPuntosAlmacenadosGranjas = meta.SerriaPuntosAlmacenadosGranjas;
+    data.serriaPuntosAlmacenadosBarricadas = meta.SerriaPuntosAlmacenadosBarricadas;
+    data.serriaPuntosAlmacenadosTemplo = meta.SerriaPuntosAlmacenadosTemplo;
+    return data;
+  }
+
+  private NodeReferenceSaveData CrearReferenciaNodo(Nodo nodo)
+  {
+    NodeReferenceSaveData data = new NodeReferenceSaveData();
+    if (nodo == null)
+    {
+      return data;
+    }
+
+    data.x = nodo.posXNodo;
+    data.y = nodo.posYNodo;
+    return data;
+  }
+
+  private int[] CopiarHabilidadesPersonaje(Personaje personaje)
+  {
+    return new int[]
+    {
+      personaje.Habilidad_1,
+      personaje.Habilidad_2,
+      personaje.Habilidad_3,
+      personaje.Habilidad_4,
+      personaje.Habilidad_5,
+      personaje.Habilidad_6,
+      personaje.Habilidad_7,
+      personaje.Habilidad_8,
+      personaje.Habilidad_9,
+      personaje.Habilidad_10
+    };
+  }
+
+  private int[] CopiarActividadesPersonaje(Personaje personaje)
+  {
+    return new int[]
+    {
+      personaje.Actividad_1,
+      personaje.Actividad_2,
+      personaje.Actividad_3
+    };
+  }
+
+  private int[] CopiarRasgosPersonaje(Personaje personaje)
+  {
+    if (personaje.aRasgos == null)
+    {
+      return Array.Empty<int>();
+    }
+
+    int[] copia = new int[personaje.aRasgos.Length];
+    Array.Copy(personaje.aRasgos, copia, personaje.aRasgos.Length);
+    return copia;
+  }
+
+  private void AgregarSeleccionParticipante(Personaje personaje, List<string> seleccion)
+  {
+    if (personaje == null || seleccion == null)
+    {
+      return;
+    }
+
+    string id = personaje.EnsurePersistentId();
+    if (!seleccion.Contains(id))
+    {
+      seleccion.Add(id);
+    }
+  }
+
+  private void LimpiarEstadoActualParaCarga()
+  {
+    LimpiarSeleccionBatallaParaCarga();
+    LimpiarInventarioParaCarga();
+    LimpiarPersonajesParaCarga();
+    LimpiarSequitosParaCarga();
+  }
+
+  private void LimpiarSeleccionBatallaParaCarga()
+  {
+    if (scAdministradorEscenas == null)
+    {
+      return;
+    }
+
+    scAdministradorEscenas.Personaje1 = null;
+    scAdministradorEscenas.Personaje2 = null;
+    scAdministradorEscenas.Personaje3 = null;
+    scAdministradorEscenas.Personaje4 = null;
+  }
+
+  private void LimpiarPersonajesParaCarga()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    foreach (Personaje personaje in scMenuPersonajes.listaPersonajes)
+    {
+      if (personaje != null)
+      {
+        if (personaje.itemArma != null) Destroy(personaje.itemArma.gameObject);
+        if (personaje.itemArmadura != null) Destroy(personaje.itemArmadura.gameObject);
+        if (personaje.Accesorio1 != null) Destroy(personaje.Accesorio1.gameObject);
+        if (personaje.Accesorio2 != null) Destroy(personaje.Accesorio2.gameObject);
+        if (personaje.Consumible1 != null) Destroy(personaje.Consumible1.gameObject);
+        if (personaje.Consumible2 != null) Destroy(personaje.Consumible2.gameObject);
+        Destroy(personaje.gameObject);
+      }
+    }
+
+    scMenuPersonajes.listaPersonajes.Clear();
+    scMenuPersonajes.pSel = null;
+  }
+
+  private void LimpiarInventarioParaCarga()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.scEquipo == null || scMenuPersonajes.scEquipo.listInventario == null)
+    {
+      return;
+    }
+
+    foreach (GameObject itemGo in scMenuPersonajes.scEquipo.listInventario)
+    {
+      if (itemGo != null)
+      {
+        Destroy(itemGo);
+      }
+    }
+
+    scMenuPersonajes.scEquipo.listInventario.Clear();
+  }
+
+  private void LimpiarSequitosParaCarga()
+  {
+    if (scMenuSequito != null)
+    {
+      Transform contenedorInstancias = scMenuSequito.transform.childCount > 2 ? scMenuSequito.transform.GetChild(2) : null;
+      if (contenedorInstancias != null)
+      {
+        foreach (Transform child in contenedorInstancias)
+        {
+          Destroy(child.gameObject);
+        }
+      }
+
+      if (scMenuSequito.lstSequitos != null)
+      {
+        scMenuSequito.lstSequitos.Clear();
+      }
+    }
+
+    scSequitoMercaderes = null;
+    scSequitoArtistas = null;
+    scSequitoHerboristas = null;
+    scSequitoDesertores = null;
+    scSequitoCronistas = null;
+    scSequitoRefugiados = null;
+    scSequitoNobles = null;
+    scSequitoClerigos = null;
+    scSequitoEsclavos = null;
+  }
+
+  private void RestaurarTutorialDesdeSave(CampaignSaveData data)
+  {
+    if (data == null || scTutorialManager == null)
+    {
+      return;
+    }
+
+    scTutorialManager.tutorialActivo = data.tutorialActivo;
+    scTutorialManager.pasoActual = data.tutorialPasoActual;
+  }
+
+  private void RestaurarMetaprogresionDesdeSave(SaveFileData saveFileData)
+  {
+    if (saveFileData == null || saveFileData.version < 3 || saveFileData.metaprogresion == null || MetaprogresionManager.Instance == null)
+    {
+      return;
+    }
+
+    MetaprogresionSaveData data = saveFileData.metaprogresion;
+    MetaprogresionManager meta = MetaprogresionManager.Instance;
+    meta.CorrupcionGlobal = Mathf.Max(0, data.corrupcionGlobal);
+    meta.CantidadCiviles = Mathf.Max(0, data.cantidadCiviles);
+    meta.ValordeTrabajoDisponible = Mathf.Max(0, data.valorTrabajoDisponible);
+
+    if (data.misionesSalvamento >= 0) meta.MisionesSalvamento = data.misionesSalvamento;
+    if (data.nivelPeligroBosqueArdiente >= 0) meta.NivelPeligroBosqueArdiente = data.nivelPeligroBosqueArdiente;
+    if (data.nivelPeligroPasoVientohelado >= 0) meta.NivelPeligroPasoVientohelado = data.nivelPeligroPasoVientohelado;
+    if (data.nivelPeligroNedukazal >= 0) meta.NivelPeligroNedukazal = data.nivelPeligroNedukazal;
+    if (data.serriaTierBarcos >= 0) meta.SerriaTierBarcos = data.serriaTierBarcos;
+    if (data.serriaTierAlmenaras >= 0) meta.SerriaTierAlmenaras = data.serriaTierAlmenaras;
+    if (data.serriaTierPalacio >= 0) meta.SerriaTierPalacio = data.serriaTierPalacio;
+    if (data.serriaTierCuartel >= 0) meta.SerriaTierCuartel = data.serriaTierCuartel;
+    if (data.serriaTierGranjas >= 0) meta.SerriaTierGranjas = data.serriaTierGranjas;
+    if (data.serriaTierBarricadas >= 0) meta.SerriaTierBarricadas = data.serriaTierBarricadas;
+    if (data.serriaTierTemplo >= 0) meta.SerriaTierTemplo = data.serriaTierTemplo;
+
+    meta.SerriaPuntosAlmacenadosBarcos = Mathf.Max(0, data.serriaPuntosAlmacenadosBarcos);
+    meta.SerriaPuntosAlmacenadosAlmenaras = Mathf.Max(0, data.serriaPuntosAlmacenadosAlmenaras);
+    meta.SerriaPuntosAlmacenadosPalacio = Mathf.Max(0, data.serriaPuntosAlmacenadosPalacio);
+    meta.SerriaPuntosAlmacenadosCuartel = Mathf.Max(0, data.serriaPuntosAlmacenadosCuartel);
+    meta.SerriaPuntosAlmacenadosGranjas = Mathf.Max(0, data.serriaPuntosAlmacenadosGranjas);
+    meta.SerriaPuntosAlmacenadosBarricadas = Mathf.Max(0, data.serriaPuntosAlmacenadosBarricadas);
+    meta.SerriaPuntosAlmacenadosTemplo = Mathf.Max(0, data.serriaPuntosAlmacenadosTemplo);
+  }
+
+  private void AplicarEstadoBaseCampaniaDesdeSave(CampaignSaveData data)
+  {
+    if (data == null)
+    {
+      return;
+    }
+
+    numeroTurno = Mathf.Max(1, data.numeroTurno);
+    posicionCaravana = Mathf.Max(0, data.posicionCaravana);
+    mejoraCaravanaAntorchas = data.mejoraCaravanaAntorchas;
+    mejoraCaravanaAlforjas = data.mejoraCaravanaAlforjas;
+    mejoraCaravanaTiendas = data.mejoraCaravanaTiendas;
+    mejoraCaravanaCatalejos = data.mejoraCaravanaCatalejos;
+    mejoraCaravanaAlmacen = data.mejoraCaravanaAlmacen;
+    mejoraCaravanaDefensas = data.mejoraCaravanaDefensas;
+    sequitoHerrerosMantArmas = data.sequitoHerrerosMantArmas;
+    sequitoHerrerosMantArmaduras = data.sequitoHerrerosMantArmaduras;
+    sequitoMercaderesTier = data.sequitoMercaderesTier;
+    sequitoCuranderosMejoraCuracion = data.sequitoCuranderosMejoraCuracion;
+    miliciasMejoras = data.miliciasMejoras;
+    peligrozonaanterior = data.peligroZonaAnterior;
+    pComercialSuministrosDisp = data.puestoComercialSuministrosDisp;
+    pComercialMaterialesDisp = data.puestoComercialMaterialesDisp;
+    pComercialBueyesDisp = data.puestoComercialBueyesDisp;
+    MoviendoCaravana = false;
+    nodoDestinoActual = null;
+    transicionZonaEnCurso = false;
+    BATALLA_EnCurso = 0;
+  }
+
+  private void RestaurarZonaDesdeSave(SaveFileData saveFileData)
+  {
+    CampaignSaveData data = saveFileData != null ? saveFileData.campaign : null;
+    if (data == null || scAtributosZona == null)
+    {
+      return;
+    }
+
+    int? reliefSeedGuardado = saveFileData != null && saveFileData.version >= 4 ? data.reliefSeed : null;
+    scAtributosZona.RestaurarZonaDesdeSave(data.zonaId, data.zonaFase, data.zonasEstado, reliefSeedGuardado);
+    scAtributosZona.PasoVientoHelado_FuerzaKaleTav = data.pasoVientoHeladoFuerzaKaleTav;
+    scAtributosZona.ActualizarLuzNedukazal();
+  }
+
+  private void RestaurarMapaDesdeSave(SaveFileData saveFileData)
+  {
+    if (saveFileData == null || saveFileData.map == null || scMapaManager == null || scMapaManager.scContenedordeNodos == null)
+    {
+      return;
+    }
+
+    scMapaManager.ResetearYGenerarSiguienteZona();
+    scMapaManager.AlinearNodosAlSueloActual();
+    scMapaManager.scContenedordeNodos.RecolectarNodos();
+
+    Dictionary<string, Nodo> nodosPorClave = new Dictionary<string, Nodo>();
+    foreach (Nodo nodo in scMapaManager.scContenedordeNodos.listTodosNodos)
+    {
+      if (nodo == null)
+      {
+        continue;
+      }
+
+      nodosPorClave[BuildNodeKey(nodo.posXNodo, nodo.posYNodo)] = nodo;
+    }
+
+    Dictionary<string, NodeSaveData> savePorClave = new Dictionary<string, NodeSaveData>();
+    if (saveFileData.map != null && saveFileData.map.nodes != null)
+    {
+      foreach (NodeSaveData nodeData in saveFileData.map.nodes)
+      {
+        if (nodeData == null)
+        {
+          continue;
+        }
+
+        savePorClave[BuildNodeKey(nodeData.x, nodeData.y)] = nodeData;
+      }
+    }
+
+    foreach (KeyValuePair<string, Nodo> entry in nodosPorClave)
+    {
+      if (savePorClave.TryGetValue(entry.Key, out NodeSaveData nodeData))
+      {
+        entry.Value.RestaurarDesdeSave(nodeData);
+      }
+      else
+      {
+        entry.Value.gameObject.SetActive(false);
+      }
+    }
+
+    if (saveFileData.map.nodes != null)
+    {
+      foreach (NodeSaveData nodeData in saveFileData.map.nodes)
+      {
+        if (nodeData == null || !nodeData.activo)
+        {
+          continue;
+        }
+
+        Nodo origen = BuscarNodoDesdeReferencia(new NodeReferenceSaveData { x = nodeData.x, y = nodeData.y }, nodosPorClave);
+        if (origen == null || nodeData.destinos == null)
+        {
+          continue;
+        }
+
+        foreach (NodeReferenceSaveData destinoRef in nodeData.destinos)
+        {
+          Nodo destino = BuscarNodoDesdeReferencia(destinoRef, nodosPorClave);
+          if (destino == null)
+          {
+            continue;
+          }
+
+          bool esAtajo = destino.posXNodo - origen.posXNodo > 1;
+          origen.ConectarConNodo(destino, esAtajo, false, true);
+        }
+      }
+    }
+
+    scMapaManager.scContenedordeNodos.RecolectarNodos();
+    scMapaManager.nodoActual = BuscarNodoDesdeReferencia(saveFileData.campaign != null ? saveFileData.campaign.nodoActual : null, nodosPorClave);
+    if (scMapaManager.nodoActual == null)
+    {
+      scMapaManager.nodoActual = BuscarNodoDesdeReferencia(new NodeReferenceSaveData { x = 0, y = 0 }, nodosPorClave);
+    }
+
+    scMapaManager.PosicionarCaravanaEnNodoActual();
+    if (scMapaManager.nodoActual != null)
+    {
+      scMapaManager.nodoActual.RefrescarCaminosMarcadosDesdeEstadoActual();
+    }
+  }
+
+  private string BuildNodeKey(int x, int y)
+  {
+    return x + "_" + y;
+  }
+
+  private Nodo BuscarNodoDesdeReferencia(NodeReferenceSaveData referencia, Dictionary<string, Nodo> nodosPorClave)
+  {
+    if (referencia == null || referencia.x < 0 || referencia.y < 0 || nodosPorClave == null)
+    {
+      return null;
+    }
+
+    nodosPorClave.TryGetValue(BuildNodeKey(referencia.x, referencia.y), out Nodo nodo);
+    return nodo;
+  }
+
+  private void RestaurarSequitosDesdeSave(SequitosSaveData data)
+  {
+    if (data == null || scMenuSequito == null)
+    {
+      return;
+    }
+
+    if (data.sequitosActivos != null)
+    {
+      foreach (int sequitoId in data.sequitosActivos)
+      {
+        scMenuSequito.AgregarSequito(sequitoId, false);
+      }
+    }
+
+    if (scSequitoHerboristas != null)
+    {
+      scSequitoHerboristas.vecesEnClaro = data.herboristasVecesEnClaro;
+      scSequitoHerboristas.cantBalsamoFort = data.herboristasCantBalsamoFort;
+      scSequitoHerboristas.cantBalsamoReflej = data.herboristasCantBalsamoReflej;
+      scSequitoHerboristas.cantBalsamoMental = data.herboristasCantBalsamoMental;
+      scSequitoHerboristas.Actualizar();
+    }
+
+    if (scSequitoCronistas != null)
+    {
+      scSequitoCronistas.valorCambiosCronicas = data.cronistasValorCambios;
+      scSequitoCronistas.yaVendioCronica = data.cronistasYaVendio;
+      scSequitoCronistas.Actualizar();
+    }
+
+    RestaurarMercaderesDesdeSave(data);
+
+    SequitoCuranderos curanderos = scMenuSequito.GetComponentInChildren<SequitoCuranderos>(true);
+    if (curanderos != null)
+    {
+      curanderos.Actualizar();
+    }
+  }
+
+  private void RestaurarMercaderesDesdeSave(SequitosSaveData data)
+  {
+    if (scSequitoMercaderes == null || data == null)
+    {
+      return;
+    }
+
+    scSequitoMercaderes.MarcarRestauradoDesdeSave();
+
+    ItemDatabase itemDatabase = ItemSaveCatalog.GetRuntimeItemDatabase(this);
+    foreach (Item itemExistente in scSequitoMercaderes.ItemsVendidos)
+    {
+      if (itemExistente != null)
+      {
+        Destroy(itemExistente.gameObject);
+      }
+    }
+
+    scSequitoMercaderes.ItemsVendidos.Clear();
+
+    if (data.mercaderesItemsVendidosIds != null)
+    {
+      foreach (string itemId in data.mercaderesItemsVendidosIds)
+      {
+        Item item = ItemSaveCatalog.InstantiateItemById(itemId, itemDatabase);
+        if (item != null)
+        {
+          scSequitoMercaderes.ItemsVendidos.Add(item);
+        }
+      }
+    }
+
+    scSequitoMercaderes.Actualizar();
+    scSequitoMercaderes.MostrarInventarioVenta();
+  }
+
+  private void RestaurarPartyDesdeSave(PartySaveData data, int saveVersion)
+  {
+    if (data == null || scMenuPersonajes == null)
+    {
+      return;
+    }
+
+    ItemDatabase itemDatabase = ItemSaveCatalog.GetRuntimeItemDatabase(this);
+    if (data.characters != null)
+    {
+      foreach (CharacterSaveData characterData in data.characters)
+      {
+        if (characterData == null)
+        {
+          continue;
+        }
+
+        Personaje personaje = CrearPersonajeDesdeSave(characterData, itemDatabase, saveVersion);
+        if (personaje != null)
+        {
+          scMenuPersonajes.listaPersonajes.Add(personaje);
+        }
+      }
+    }
+
+    RestaurarInventarioDesdeSave(data.inventoryItemIds, itemDatabase);
+
+    if (scMenuPersonajes.listaPersonajes.Count > 0)
+    {
+      Personaje personajeInicial = scMenuPersonajes.listaPersonajes.Find(p => p != null && !p.Camp_Muerto);
+      scMenuPersonajes.pSel = personajeInicial != null ? personajeInicial : scMenuPersonajes.listaPersonajes[0];
+      scMenuPersonajes.ActualizarLista();
+    }
+  }
+
+  private void RestaurarInventarioDesdeSave(List<string> inventoryItemIds, ItemDatabase itemDatabase)
+  {
+    if (inventoryItemIds == null || scMenuPersonajes == null || scMenuPersonajes.scEquipo == null)
+    {
+      return;
+    }
+
+    foreach (string itemId in inventoryItemIds)
+    {
+      Item item = ItemSaveCatalog.InstantiateItemById(itemId, itemDatabase);
+      if (item != null)
+      {
+        scMenuPersonajes.scEquipo.listInventario.Add(item.gameObject);
+      }
+    }
+  }
+
+  private Personaje CrearPersonajeDesdeSave(CharacterSaveData data, ItemDatabase itemDatabase, int saveVersion)
+  {
+    if (data == null || prefabGOPersonaje == null)
+    {
+      return null;
+    }
+
+    GameObject personajeGo = Instantiate(prefabGOPersonaje);
+    Personaje personaje = personajeGo.GetComponent<Personaje>();
+    if (personaje == null)
+    {
+      Destroy(personajeGo);
+      return null;
+    }
+
+    int[] habilidadesGuardadas = data.habilidades ?? Array.Empty<int>();
+    int[] actividadesGuardadas = data.actividades ?? Array.Empty<int>();
+
+    AplicarDatosBasePersonajeDesdeSave(personaje, data, habilidadesGuardadas, actividadesGuardadas);
+    AgregarHabilidadesIntrinsecasDeClase(personaje);
+    AgregarActividadesBase(personaje);
+
+    for (int i = 0; i < habilidadesGuardadas.Length; i++)
+    {
+      if (habilidadesGuardadas[i] > 0)
+      {
+        AgregarHabilidadDeClaseSegunSlot(personaje, i + 1, habilidadesGuardadas[i]);
+      }
+    }
+
+    for (int i = 0; i < actividadesGuardadas.Length; i++)
+    {
+      if (actividadesGuardadas[i] > 0)
+      {
+        AgregarActividadDeClaseSegunSlot(personaje, i + 1);
+      }
+    }
+
+    RestaurarEquipmentDesdeSave(personaje, data.equipment, itemDatabase, saveVersion);
+    if (scMenuPersonajes != null && scMenuPersonajes.scEquipo != null)
+    {
+      scMenuPersonajes.scEquipo.ActualizarEquipo(personaje);
+    }
+
+    return personaje;
+  }
+
+  private void AplicarDatosBasePersonajeDesdeSave(Personaje personaje, CharacterSaveData data, int[] habilidadesGuardadas, int[] actividadesGuardadas)
+  {
+    personaje.SetPersistentId(string.IsNullOrWhiteSpace(data.id) ? Guid.NewGuid().ToString("N") : data.id);
+    personaje.sNombre = data.nombre;
+    personaje.IDClase = data.idClase;
+    personaje.idRetrato = data.idRetrato;
+    personaje.iPuestoDeseado = data.puestoDeseado;
+    personaje.fVidaActual = data.vidaActual;
+    personaje.fVidaMaxima = data.vidaMaxima;
+    personaje.fExperienciaActual = data.experienciaActual;
+    personaje.fNivelActual = data.nivelActual;
+    personaje.iFuerza = data.fuerza;
+    personaje.iAgi = data.agi;
+    personaje.iPoder = data.poder;
+    personaje.iIniciativa = data.iniciativa;
+    personaje.iApMax = data.apMax;
+    personaje.iValMax = data.valMax;
+    personaje.iArmadura = data.armadura;
+    personaje.iDefensa = data.defensa;
+    personaje.iTSReflejo = data.tsReflejo;
+    personaje.iTSFortaleza = data.tsFortaleza;
+    personaje.iTSMental = data.tsMental;
+    personaje.iResFuego = data.resFuego;
+    personaje.iResRayo = data.resRayo;
+    personaje.iResHielo = data.resHielo;
+    personaje.iResArcano = data.resArcano;
+    personaje.iResAcido = data.resAcido;
+    personaje.iResNecro = data.resNecro;
+    personaje.iResDivino = data.resDivino;
+    personaje.fCritRango = data.critRango;
+    personaje.fCritDanio = data.critDanio;
+    personaje.fBonusAtaque = data.bonusAtaque;
+    personaje.Habilidad_1 = habilidadesGuardadas.Length > 0 ? habilidadesGuardadas[0] : 0;
+    personaje.Habilidad_2 = habilidadesGuardadas.Length > 1 ? habilidadesGuardadas[1] : 0;
+    personaje.Habilidad_3 = habilidadesGuardadas.Length > 2 ? habilidadesGuardadas[2] : 0;
+    personaje.Habilidad_4 = habilidadesGuardadas.Length > 3 ? habilidadesGuardadas[3] : 0;
+    personaje.Habilidad_5 = habilidadesGuardadas.Length > 4 ? habilidadesGuardadas[4] : 0;
+    personaje.Habilidad_6 = habilidadesGuardadas.Length > 5 ? habilidadesGuardadas[5] : 0;
+    personaje.Habilidad_7 = habilidadesGuardadas.Length > 6 ? habilidadesGuardadas[6] : 0;
+    personaje.Habilidad_8 = habilidadesGuardadas.Length > 7 ? habilidadesGuardadas[7] : 0;
+    personaje.Habilidad_9 = habilidadesGuardadas.Length > 8 ? habilidadesGuardadas[8] : 0;
+    personaje.Habilidad_10 = habilidadesGuardadas.Length > 9 ? habilidadesGuardadas[9] : 0;
+    personaje.Actividad_1 = actividadesGuardadas.Length > 0 ? actividadesGuardadas[0] : 0;
+    personaje.Actividad_2 = actividadesGuardadas.Length > 1 ? actividadesGuardadas[1] : 0;
+    personaje.Actividad_3 = actividadesGuardadas.Length > 2 ? actividadesGuardadas[2] : 0;
+    personaje.ActividadSeleccionada = data.actividadSeleccionada;
+    personaje.NivelPuntoAtributo = data.nivelPuntoAtributo;
+    personaje.NivelPuntoTS = data.nivelPuntoTS;
+    personaje.NivelPuntoHabilidad = data.nivelPuntoHabilidad;
+    personaje.NivelNuevaHabilidadBase = data.nivelNuevaHabilidadBase;
+    personaje.NormalizarPuntosPendientesPorNivelActual();
+    personaje.Camp_Fatigado = data.campFatigado;
+    personaje.Camp_Bendecido_SequitoClerigos = data.campBendecidoSequitoClerigos;
+    personaje.Camp_Herido = data.campHerido;
+    personaje.Camp_Enfermo = data.campEnfermo;
+    personaje.Camp_Moral = data.campMoral;
+    personaje.Camp_Avergonzado = data.campAvergonzado;
+    personaje.Camp_Muerto = data.campMuerto;
+    personaje.Camp_Corrupto = data.campCorrupto;
+    personaje.aRasgos = new int[Mathf.Max(300, data.rasgos != null ? data.rasgos.Length : 300)];
+    if (data.rasgos != null)
+    {
+      Array.Copy(data.rasgos, personaje.aRasgos, Mathf.Min(personaje.aRasgos.Length, data.rasgos.Length));
+    }
+
+    personaje.spRetrato = ObtenerRetratoCampaniaPorId(data.idRetrato, data.idClase);
+    personaje.InicializarEscaladoDefensaPorAgilidadSiHaceFalta();
+    personaje.InicializarEscaladoResElementalPorPoderSiHaceFalta();
+  }
+
+  private void RestaurarEquipmentDesdeSave(Personaje personaje, EquipmentSaveData equipment, ItemDatabase itemDatabase, int saveVersion)
+  {
+    if (personaje == null)
+    {
+      return;
+    }
+
+    if (equipment != null)
+    {
+      personaje.itemArma = ItemSaveCatalog.InstantiateItemById(equipment.armaItemId, itemDatabase) as Arma;
+      personaje.itemArmadura = ItemSaveCatalog.InstantiateItemById(equipment.armaduraItemId, itemDatabase) as Armadura;
+      personaje.Accesorio1 = ItemSaveCatalog.InstantiateItemById(equipment.accesorio1ItemId, itemDatabase) as Accesorio;
+      personaje.Accesorio2 = ItemSaveCatalog.InstantiateItemById(equipment.accesorio2ItemId, itemDatabase) as Accesorio;
+      personaje.Consumible1 = ItemSaveCatalog.InstantiateItemById(equipment.consumible1ItemId, itemDatabase) as Consumible;
+      personaje.Consumible2 = ItemSaveCatalog.InstantiateItemById(equipment.consumible2ItemId, itemDatabase) as Consumible;
+    }
+
+    if (saveVersion < 5)
+    {
+      RestaurarEquipoInicialLegacySiFalta(personaje, equipment, itemDatabase);
+    }
+  }
+
+  private void RestaurarEquipoInicialLegacySiFalta(Personaje personaje, EquipmentSaveData equipment, ItemDatabase itemDatabase)
+  {
+    if (personaje == null || scContprefab == null)
+    {
+      return;
+    }
+
+    bool faltaArma = personaje.itemArma == null && (equipment == null || string.IsNullOrWhiteSpace(equipment.armaItemId));
+    bool faltaArmadura = personaje.itemArmadura == null && (equipment == null || string.IsNullOrWhiteSpace(equipment.armaduraItemId));
+    if (!faltaArma && !faltaArmadura)
+    {
+      return;
+    }
+
+    switch (personaje.IDClase)
+    {
+      case 1:
+        if (faltaArma && scContprefab.armaMandoble != null)
+        {
+          personaje.itemArma = Instantiate(scContprefab.armaMandoble);
+        }
+
+        if (faltaArmadura && scContprefab.Coraza != null)
+        {
+          personaje.itemArmadura = Instantiate(scContprefab.Coraza);
+        }
+        break;
+      case 2:
+        if (faltaArma && scContprefab.armaArcoLargo != null)
+        {
+          personaje.itemArma = Instantiate(scContprefab.armaArcoLargo);
+        }
+
+        if (faltaArmadura && scContprefab.ArmaduraCuero != null)
+        {
+          personaje.itemArmadura = Instantiate(scContprefab.ArmaduraCuero);
+        }
+        break;
+      case 3:
+        if (faltaArma && scContprefab.armaBaculoPurificador != null)
+        {
+          personaje.itemArma = Instantiate(scContprefab.armaBaculoPurificador);
+        }
+        break;
+      case 4:
+        if (faltaArma && scContprefab.armaEspadaCorta != null)
+        {
+          personaje.itemArma = Instantiate(scContprefab.armaEspadaCorta);
+        }
+
+        if (faltaArmadura && scContprefab.ArmaduraCueroReforzado != null)
+        {
+          personaje.itemArmadura = Instantiate(scContprefab.ArmaduraCueroReforzado);
+        }
+        break;
+    }
+
+    AsignarPersistentItemIdSiExiste(personaje.itemArma, itemDatabase);
+    AsignarPersistentItemIdSiExiste(personaje.itemArmadura, itemDatabase);
+  }
+
+  private void AsignarPersistentItemIdSiExiste(Item item, ItemDatabase itemDatabase)
+  {
+    if (item == null)
+    {
+      return;
+    }
+
+    ItemSaveCatalog.ResolveItemId(item, itemDatabase);
+  }
+
+  private void RestaurarSeleccionBatallaDesdeSave(PartySaveData data)
+  {
+    LimpiarSeleccionBatallaParaCarga();
+
+    if (data == null || scAdministradorEscenas == null || data.selectedBattleCharacterIds == null || scMenuPersonajes == null)
+    {
+      return;
+    }
+
+    List<Personaje> seleccion = new List<Personaje>();
+    foreach (string id in data.selectedBattleCharacterIds)
+    {
+      if (string.IsNullOrWhiteSpace(id))
+      {
+        continue;
+      }
+
+      Personaje personaje = scMenuPersonajes.listaPersonajes.Find(p => p != null && p.GetPersistentId() == id);
+      if (personaje != null && !seleccion.Contains(personaje))
+      {
+        seleccion.Add(personaje);
+      }
+    }
+
+    scAdministradorEscenas.Personaje1 = seleccion.Count > 0 ? seleccion[0] : null;
+    scAdministradorEscenas.Personaje2 = seleccion.Count > 1 ? seleccion[1] : null;
+    scAdministradorEscenas.Personaje3 = seleccion.Count > 2 ? seleccion[2] : null;
+    scAdministradorEscenas.Personaje4 = seleccion.Count > 3 ? seleccion[3] : null;
+  }
+
+  private void FinalizarCargaCampania(SaveFileData saveFileData)
+  {
+    if (saveFileData == null)
+    {
+      return;
+    }
+
+    AplicarSpriteClimaDesdeEstadoActual();
+    RecalcularPreciosPuestoComercialDesdeEstadoActual();
+    ActualizarDescripcionesPuestoComercialDesdeEstadoActual();
+    ActualizarPuestoComercial();
+
+    if (scMenuPersonajes != null && scMenuPersonajes.listaPersonajes.Count > 0)
+    {
+      scMenuPersonajes.pSel = scMenuPersonajes.pSel != null ? scMenuPersonajes.pSel : scMenuPersonajes.listaPersonajes[0];
+      scMenuPersonajes.ActualizarLista();
+      scMenuPersonajes.ActualizarInfo();
+    }
+
+    if (scMapaManager != null && scMapaManager.nodoActual != null)
+    {
+      scMapaManager.PosicionarCaravanaEnNodoActual();
+      scMapaManager.nodoActual.RefrescarCaminosMarcadosDesdeEstadoActual();
+    }
+
+    if (logDeCampania != null)
+    {
+      logDeCampania.SetDiaActual(numeroTurno);
+    }
+
+    if (scAtributosZona != null)
+    {
+      scAtributosZona.ActualizarLuzNedukazal();
+    }
+
+    RefrescarVfxClimaCalor();
+    RefrescarUiSequitosTrasCarga();
+    AjustarDificultad();
+  }
+
+  private void RefrescarUiSequitosTrasCarga()
+  {
+    if (scSequitoHerboristas != null)
+    {
+      scSequitoHerboristas.Actualizar();
+    }
+
+    if (scSequitoCronistas != null)
+    {
+      scSequitoCronistas.Actualizar();
+    }
+
+    if (scSequitoMercaderes != null)
+    {
+      scSequitoMercaderes.Actualizar();
+      scSequitoMercaderes.MostrarInventarioVenta();
+    }
+
+    if (scMenuSequito != null)
+    {
+      SequitoCuranderos curanderos = scMenuSequito.GetComponentInChildren<SequitoCuranderos>(true);
+      if (curanderos != null)
+      {
+        curanderos.Actualizar();
+      }
+    }
+  }
+
+  private Sprite ObtenerRetratoCampaniaPorId(int idRetrato, int idClase)
+  {
+    if (scMenuPersonajes == null)
+    {
+      return null;
+    }
+
+    switch (idRetrato)
+    {
+      case 1: return scMenuPersonajes.Male001;
+      case 5: return scMenuPersonajes.Male003;
+      case 6: return scMenuPersonajes.Female001;
+      case 7: return scMenuPersonajes.Male004;
+      case 8: return scMenuPersonajes.Male005;
+    }
+
+    switch (idClase)
+    {
+      case 1: return scMenuPersonajes.Male001;
+      case 2: return scMenuPersonajes.Male003;
+      case 3: return scMenuPersonajes.Female001;
+      case 4: return scMenuPersonajes.Male004;
+      case 5: return scMenuPersonajes.Male005;
+      default: return scMenuPersonajes.Male001;
+    }
+  }
+
+  private void AgregarHabilidadesIntrinsecasDeClase(Personaje personaje)
+  {
+    if (personaje == null)
+    {
+      return;
+    }
+
+    switch (personaje.IDClase)
+    {
+      case 1:
+        AsignarNivelHabilidad(AgregarComponenteSiFalta(personaje.gameObject, typeof(REPRESENTACIONCorajeInquebrantable)) as Habilidad, -1);
+        break;
+      case 2:
+        AsignarNivelHabilidad(AgregarComponenteSiFalta(personaje.gameObject, typeof(REPRESENTACIONPasoCauteloso)) as Habilidad, -1);
+        AsignarNivelHabilidad(AgregarComponenteSiFalta(personaje.gameObject, typeof(ImprovisarFlechas)) as Habilidad, 1);
+        AgregarComponenteSiFalta(personaje.gameObject, typeof(CorteDaga));
+        break;
+      case 3:
+        AsignarNivelHabilidad(AgregarComponenteSiFalta(personaje.gameObject, typeof(REPRESENTACIONAlmaEndeble)) as Habilidad, -1);
+        AsignarNivelHabilidad(AgregarComponenteSiFalta(personaje.gameObject, typeof(REPRESENTACIONFervorConjunto)) as Habilidad, -1);
+        break;
+      case 4:
+        AgregarComponenteSiFalta(personaje.gameObject, typeof(REPRESENTACIONSueldo));
+        AgregarComponenteSiFalta(personaje.gameObject, typeof(REPRESENTACIONSigiloso));
+        AgregarComponenteSiFalta(personaje.gameObject, typeof(TiroBallestaDeMano));
+        break;
+      case 5:
+        AgregarComponenteSiFalta(personaje.gameObject, typeof(REPRESENTACIONSobrecarga));
+        AgregarComponenteSiFalta(personaje.gameObject, typeof(AcumularEnergia));
+        AgregarComponenteSiFalta(personaje.gameObject, typeof(DescargaArcana));
+        break;
+    }
+  }
+
+  private void AgregarHabilidadDeClaseSegunSlot(Personaje personaje, int slot, int nivel)
+  {
+    Type tipo = ResolverTipoHabilidadDeClase(personaje != null ? personaje.IDClase : 0, slot);
+    Habilidad habilidad = AgregarComponenteSiFalta(personaje != null ? personaje.gameObject : null, tipo) as Habilidad;
+    AsignarNivelHabilidad(habilidad, nivel);
+  }
+
+  private Type ResolverTipoHabilidadDeClase(int idClase, int slot)
+  {
+    switch (idClase)
+    {
+      case 1:
+        switch (slot)
+        {
+          case 1: return typeof(REPRESENTACIONAcorazado);
+          case 2: return typeof(GritoMotivador);
+          case 3: return typeof(CorteHorizontal);
+          case 4: return typeof(PrimerosAuxilios);
+          case 5: return typeof(REPRESENTACIONDeterminacion);
+          case 6: return typeof(Partir);
+          case 7: return typeof(PosturaDefensiva);
+          case 8: return typeof(SiguesTu);
+        }
+        break;
+      case 2:
+        switch (slot)
+        {
+          case 1: return typeof(REPRESENTACIONVistaLejana);
+          case 2: return typeof(DisparoPotente);
+          case 3: return typeof(REPRESENTACIONAcrobatico);
+          case 4: return typeof(MarcarPresa);
+          case 5: return typeof(Acechar);
+          case 6: return typeof(Vigilancia);
+          case 7: return typeof(Fogata);
+        }
+        break;
+      case 3:
+        switch (slot)
+        {
+          case 1: return typeof(REPRESENTACIONAuraSagrada);
+          case 2: return typeof(REPRESENTACIONEcosDivinos);
+          case 3: return typeof(SalmoPurificador);
+          case 4: return typeof(LlamaDivina);
+          case 5: return typeof(Enmendar);
+          case 6: return typeof(LuzCegadora);
+          case 7: return typeof(PilaresDeLuz);
+          case 8: return typeof(CastigaraLosMalvados);
+        }
+        break;
+      case 4:
+        switch (slot)
+        {
+          case 1: return typeof(REPRESENTACIONMaestriaBallesta);
+          case 2: return typeof(REPRESENTACIONMaestriaEspadaCorta);
+          case 3: return typeof(DisparoEnvenenado);
+          case 4: return typeof(CorteIncapacitante);
+          case 5: return typeof(BombaDeHumo);
+          case 6: return typeof(Asesinar);
+          case 7: return typeof(Distraer);
+          case 8: return typeof(ArrojarAbrojos);
+        }
+        break;
+      case 5:
+        switch (slot)
+        {
+          case 1: return typeof(REPRESENTACIONAcumulacionProtegida);
+          case 2: return typeof(REPRESENTACIONExcesoDePoder);
+          case 3: return typeof(DescargaDePoder);
+          case 4: return typeof(Instatransporte);
+          case 5: return typeof(AcumulacionInestable);
+          case 6: return typeof(HojaDeEnergia);
+          case 7: return typeof(EscudoEnergetico);
+          case 8: return typeof(SifonArcano);
+        }
+        break;
+    }
+
+    return null;
+  }
+
+  private void AgregarActividadesBase(Personaje personaje)
+  {
+    if (personaje == null)
+    {
+      return;
+    }
+
+    AgregarComponenteSiFalta(personaje.gameObject, typeof(Actividad_Descansar));
+    AgregarComponenteSiFalta(personaje.gameObject, typeof(Actividad_Entrenar));
+    AgregarComponenteSiFalta(personaje.gameObject, typeof(Actividad_Guardia));
+  }
+
+  private void AgregarActividadDeClaseSegunSlot(Personaje personaje, int slot)
+  {
+    Type tipo = ResolverTipoActividadDeClase(personaje != null ? personaje.IDClase : 0, slot);
+    AgregarComponenteSiFalta(personaje != null ? personaje.gameObject : null, tipo);
+  }
+
+  private Type ResolverTipoActividadDeClase(int idClase, int slot)
+  {
+    switch (idClase)
+    {
+      case 1:
+        switch (slot)
+        {
+          case 1: return typeof(Actividad_RelatosDeBatalla);
+          case 2: return typeof(Actividad_MantenerArmadura);
+          case 3: return typeof(Actividad_Vigilar);
+        }
+        break;
+      case 2:
+        switch (slot)
+        {
+          case 1: return typeof(Actividad_CazaNocturna);
+          case 2: return typeof(Actividad_Exploracion);
+          case 3: return typeof(Actividad_PrepararFlechas);
+        }
+        break;
+      case 3:
+        switch (slot)
+        {
+          case 1: return typeof(Actividad_RitualDeLimpieza);
+          case 2: return typeof(Actividad_ColaborarConLosCuranderos);
+          case 3: return typeof(Actividad_AyudarDesamparados);
+        }
+        break;
+      case 4:
+        switch (slot)
+        {
+          case 1: return typeof(Actividad_AfilarArmas);
+          case 2: return typeof(Actividad_VigilarDesdeLasSombras);
+          case 3: return typeof(Actividad_Coercion);
+        }
+        break;
+      case 5:
+        switch (slot)
+        {
+          case 1: return typeof(Actividad_ConcentracionArcana);
+          case 2: return typeof(Actividad_Telekinesis);
+          case 3: return typeof(Actividad_CrearSimboloArcanoProteccion);
+        }
+        break;
+    }
+
+    return null;
+  }
+
+  private Component AgregarComponenteSiFalta(GameObject gameObjectObjetivo, Type componentType)
+  {
+    if (gameObjectObjetivo == null || componentType == null)
+    {
+      return null;
+    }
+
+    Component componenteExistente = gameObjectObjetivo.GetComponent(componentType);
+    if (componenteExistente != null)
+    {
+      return componenteExistente;
+    }
+
+    return gameObjectObjetivo.AddComponent(componentType);
+  }
+
+  private void AsignarNivelHabilidad(Habilidad habilidad, int nivel)
+  {
+    if (habilidad != null)
+    {
+      habilidad.NIVEL = nivel;
+    }
+  }
+
+  private void RestaurarRecursosDesdeSave(CampaignSaveData data)
+  {
+    if (data == null)
+    {
+      return;
+    }
+
+    intTipoClima = data.tipoClima;
+    EstadoAlientoNegro = Mathf.Max(0f, data.alientoNegro);
+    FatigaActual = data.fatiga;
+    EsperanzaActual = Mathf.Clamp(data.esperanza, 0, 100);
+    civilesActuales = Mathf.Max(0, data.civiles);
+    BueyesActuales = Mathf.Max(0, data.bueyes);
+    SuministrosActuales = Mathf.Max(0, data.suministros);
+    MaterialesActuales = Mathf.Max(0, data.materiales);
+    OroActuales = Mathf.Max(0, data.oro);
+
+    ActualizarUIEsperanzaDesdeEstadoActual();
+    ActualizarUICivilesDesdeEstadoActual();
+    ActualizarUISuministrosDesdeEstadoActual();
+    ActualizarUIMaterialesDesdeEstadoActual();
+    ActualizarUIBueyesDesdeEstadoActual();
+    ActualizarUIFatigaDesdeEstadoActual();
+    ActualizarUIOroDesdeEstadoActual();
+    ActualizarUIAlientoNegroDesdeEstadoActual();
+    AplicarSpriteClimaDesdeEstadoActual();
+  }
+
+  private void ActualizarUIEsperanzaDesdeEstadoActual()
+  {
+    if (valueEsperanza == null)
+    {
+      return;
+    }
+
+    valueEsperanza.text = "" + EsperanzaActual;
+
+    if (EsperanzaActual <= 10)
+    {
+      valueEsperanza.color = new Color(0.8f, 0.1f, 0.4f);
+    }
+    else if (EsperanzaActual <= 20)
+    {
+      valueEsperanza.color = new Color(0.6f, 0.2f, 0.4f);
+    }
+    else if (EsperanzaActual <= 40)
+    {
+      valueEsperanza.color = new Color(0.25f, 0.5f, 0.3f);
+    }
+    else if (EsperanzaActual <= 60)
+    {
+      valueEsperanza.color = new Color(0.45f, 0.55f, 0.3f);
+    }
+    else if (EsperanzaActual <= 80)
+    {
+      valueEsperanza.color = new Color(0.25f, 0.75f, 0.3f);
+    }
+    else if (EsperanzaActual <= 90)
+    {
+      valueEsperanza.color = new Color(0.15f, 0.75f, 0.45f);
+    }
+    else
+    {
+      valueEsperanza.color = new Color(0.05f, 0.85f, 0.55f);
+    }
+
+    if (alertaEsperanza != null)
+    {
+      alertaEsperanza.SetActive(EsperanzaActual < 20);
+    }
+  }
+
+  private void ActualizarUICivilesDesdeEstadoActual()
+  {
+    if (valueCiviles != null)
+    {
+      valueCiviles.text = "" + civilesActuales;
+    }
+
+    GetMiliciasActual();
+
+    if (scMapaManager != null)
+    {
+      if (scMapaManager.goCaravanafollower1 != null) scMapaManager.goCaravanafollower1.SetActive(civilesActuales > 40);
+      if (scMapaManager.goCaravanafollower2 != null) scMapaManager.goCaravanafollower2.SetActive(civilesActuales > 60);
+      if (scMapaManager.goCaravanafollower3 != null) scMapaManager.goCaravanafollower3.SetActive(civilesActuales > 95);
+      if (scMapaManager.goCaravanafollower4 != null) scMapaManager.goCaravanafollower4.SetActive(civilesActuales > 120);
+      if (scMapaManager.goCaravanafollower5 != null) scMapaManager.goCaravanafollower5.SetActive(civilesActuales > 140);
+      if (scMapaManager.goCaravanafollower6 != null) scMapaManager.goCaravanafollower6.SetActive(civilesActuales > 180);
+    }
+  }
+
+  private void ActualizarUISuministrosDesdeEstadoActual()
+  {
+    if (valueSuministros != null)
+    {
+      valueSuministros.text = "" + SuministrosActuales;
+    }
+
+    float consumo = GetCivilesActual() + GetBueyesActual() * 2;
+    int diasSuministros = consumo > 0f ? Mathf.FloorToInt(SuministrosActuales / consumo) : 0;
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
+    if (valueCantdescansos != null)
+    {
+      switch (idioma)
+      {
+        case 2:
+          valueCantdescansos.text = diasSuministros == 1 ? "<i>1 rest</i>" : $"<i>{diasSuministros} rests</i>";
+          break;
+        default:
+          valueCantdescansos.text = diasSuministros == 1 ? "<i>1 descanso</i>" : $"<i>{diasSuministros} descansos</i>";
+          break;
+      }
+    }
+
+    GetCargaLlevadaActual();
+
+    if (alertaSuministros != null)
+    {
+      alertaSuministros.SetActive(SuministrosActuales < GetCivilesActual());
+    }
+  }
+
+  private void ActualizarUIMaterialesDesdeEstadoActual()
+  {
+    if (valueMateriales != null)
+    {
+      valueMateriales.text = "" + MaterialesActuales;
+    }
+
+    GetCargaLlevadaActual();
+  }
+
+  private void ActualizarUIBueyesDesdeEstadoActual()
+  {
+    CargaMaxActual = GetCapacidadDeCargaActual();
+    if (valueCargaMax != null)
+    {
+      valueCargaMax.text = "/" + CargaMaxActual + ")";
+    }
+    if (valueCargaLlevada != null)
+    {
+      valueCargaLlevada.text = "(" + GetCargaLlevadaActual();
+    }
+    if (valueBueyes != null)
+    {
+      valueBueyes.text = "" + BueyesActuales;
+    }
+  }
+
+  private void ActualizarUIFatigaDesdeEstadoActual()
+  {
+    if (valueFatiga == null)
+    {
+      return;
+    }
+
+    switch (FatigaActual)
+    {
+      case < 0:
+        valueFatiga.text = TraducirDuranteCarga("Enérgicos(0)");
+        valueFatiga.color = new Color(0.1f, 0.95f, 0.2f);
+        break;
+      case 0:
+        valueFatiga.text = TraducirDuranteCarga("Descansados(1)");
+        valueFatiga.color = new Color(0.1f, 0.9f, 0.3f);
+        break;
+      case 1:
+        valueFatiga.text = TraducirDuranteCarga("Frescos(2)");
+        valueFatiga.color = new Color(0.1f, 0.7f, 0.3f);
+        break;
+      case 2:
+        valueFatiga.text = TraducirDuranteCarga("En Marcha(3)");
+        valueFatiga.color = new Color(0.25f, 0.6f, 0.3f);
+        break;
+      case 3:
+        valueFatiga.text = TraducirDuranteCarga("Agitados(4)");
+        valueFatiga.color = new Color(0.55f, 0.5f, 0.2f);
+        break;
+      case 4:
+        valueFatiga.text = TraducirDuranteCarga("Cansados(5)");
+        valueFatiga.color = new Color(0.75f, 0.3f, 0.25f);
+        break;
+      default:
+        valueFatiga.text = TraducirDuranteCarga("Exhaustos(6)");
+        valueFatiga.color = new Color(0.8f, 0.15f, 0.45f);
+        break;
+    }
+
+    if (alertaFatiga != null)
+    {
+      alertaFatiga.SetActive(FatigaActual > 3);
+    }
+  }
+
+  private void ActualizarUIOroDesdeEstadoActual()
+  {
+    if (valueOro != null)
+    {
+      valueOro.text = "" + OroActuales;
+    }
+  }
+
+  private void ActualizarUIAlientoNegroDesdeEstadoActual()
+  {
+    if (sliderAlientoNegro != null)
+    {
+      sliderAlientoNegro.value = Mathf.InverseLerp(0f, 20f, EstadoAlientoNegro);
+    }
+
+    ActualizarTierAlientoNegro();
+  }
+
+  private void AplicarSpriteClimaDesdeEstadoActual()
+  {
+    if (widgetClima == null)
+    {
+      return;
+    }
+
+    switch (intTipoClima)
+    {
+      case 1: widgetClima.sprite = clima_sol; break;
+      case 2: widgetClima.sprite = clima_calor; break;
+      case 3: widgetClima.sprite = clima_lluvia; break;
+      case 4: widgetClima.sprite = clima_nieve; break;
+      case 5: widgetClima.sprite = clima_niebla; break;
+      case 6: widgetClima.sprite = clima_almasDanzantes; break;
+      case 7: widgetClima.sprite = clima_auroraboreal; break;
+      case 8: widgetClima.sprite = clima_NedukazalNormal; break;
+      case 9: widgetClima.sprite = clima_NedukazalMasacre; break;
+      default: widgetClima.sprite = clima_sol; break;
+    }
+  }
+
+  private void RecalcularPreciosPuestoComercialDesdeEstadoActual()
+  {
+    precio10Suministros = 15 - sequitoMercaderesTier;
+    precio1Material = 18 - sequitoMercaderesTier;
+    precio1Buey = 20 - sequitoMercaderesTier;
+
+    int tierPalacio = MetaprogresionManager.Instance != null ? MetaprogresionManager.Instance.SerriaTierPalacio : 0;
+    float descuento = Mathf.Max(0f, 1f - 0.1f * tierPalacio);
+    precio10Suministros *= descuento;
+    precio1Material *= descuento;
+    precio1Buey *= descuento;
+  }
+
+  private void ActualizarDescripcionesPuestoComercialDesdeEstadoActual()
+  {
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
+
+    if (idioma == 2)
+    {
+      if (txtDescSum != null) txtDescSum.text = $"<Color=#F26B70>Sell: {(int)precio10Suministros / 2} Gold</color>    x10   <Color=#5ABD46>Buy: {(int)precio10Suministros} Gold</color>";
+      if (txtDescMat != null) txtDescMat.text = $"<Color=#F26B70>Sell: {(int)precio1Material / 2} Gold</color>    x1   <Color=#5ABD46>Buy: {(int)precio1Material} Gold</color>";
+      if (txtDescBuey != null) txtDescBuey.text = $"<Color=#F26B70>Sell: {(int)precio1Buey / 2}  Gold</color>    x1   <Color=#5ABD46>Buy: {(int)precio1Buey} Gold</color>";
+      return;
+    }
+
+    if (txtDescSum != null) txtDescSum.text = $"<Color=#F26B70>Venta: {(int)precio10Suministros / 2} Oro</color>    x10   <Color=#5ABD46>Compra: {(int)precio10Suministros} Oro</color>";
+    if (txtDescMat != null) txtDescMat.text = $"<Color=#F26B70>Venta: {(int)precio1Material / 2} Oro</color>    x1   <Color=#5ABD46>Compra: {(int)precio1Material} Oro</color>";
+    if (txtDescBuey != null) txtDescBuey.text = $"<Color=#F26B70>Venta: {(int)precio1Buey / 2}  Oro</color>    x1   <Color=#5ABD46>Compra: {(int)precio1Buey} Oro</color>";
+  }
+
+  private string TraducirDuranteCarga(string texto)
+  {
+    return TRADU.i != null ? TRADU.i.Traducir(texto) : texto;
   }
 
   private async void EjecutarTareaSegura(Task tarea, string contexto)
@@ -232,6 +2116,31 @@ public class CampaignManager : MonoBehaviour
     menuDescanso.GetComponent<MenuDescanso>().TiradaClima();
   }
 
+  public bool EstaActivoDebugForzarMasacreNedukazal()
+  {
+#if UNITY_EDITOR
+    return DEBUG_FORZAR_MASACRE_NEDUKAZAL;
+#else
+    return false;
+#endif
+  }
+
+  public void AplicarClimaMasacreNedukazalForzada(bool escribirLogDebug = false)
+  {
+    intTipoClima = 9;
+    if (widgetClima != null)
+    {
+      widgetClima.sprite = clima_NedukazalMasacre;
+    }
+
+    RefrescarVfxClimaCalor();
+
+    if (escribirLogDebug)
+    {
+      Debug.Log("[CampaignManager] Debug de clima activo: Masacre de Nedukazal forzada.");
+    }
+  }
+
   public void BloquearOlaDeCalorEnSiguienteTiradaClima()
   {
     bloquearOlaDeCalorEnSiguienteTiradaClima = true;
@@ -247,6 +2156,12 @@ public class CampaignManager : MonoBehaviour
   private void InicializarClimaAlIniciar()
   {
 #if UNITY_EDITOR
+    if (EstaActivoDebugForzarMasacreNedukazal() && scAtributosZona != null && scAtributosZona.ID == 3)
+    {
+      AplicarClimaMasacreNedukazalForzada(true);
+      return;
+    }
+
     if (DEBUG_FORZAR_OLA_DE_CALOR_AL_PLAY)
     {
       intTipoClima = 2;
@@ -799,6 +2714,21 @@ public class CampaignManager : MonoBehaviour
     EjecutarTareaSegura(AbrirCiudadPuertoAsync(), nameof(AbrirCiudadPuerto));
   }
 
+  void AbrirCiudadPuertoDirectoDebug()
+  {
+    if (goLogCampania != null)
+    {
+      goLogCampania.SetActive(false);
+    }
+
+    if (goMenuPuerto != null)
+    {
+      goMenuPuerto.SetActive(true);
+    }
+
+    Debug.Log("[CampaignManager] Debug activo: menu de Serria abierto al iniciar.");
+  }
+
   private async Task AbrirCiudadPuertoAsync()
   {
       if (abriendoCiudadPuerto)
@@ -811,7 +2741,7 @@ public class CampaignManager : MonoBehaviour
       {
         goLogCampania.SetActive(false);
         scAdministradorEscenas.PlayFadeInOut(1.2f, 2.0f);
-        await Task.Delay(2200);
+        await BattleManager.DelayCombateAsync(2200);
         goMenuPuerto.SetActive(true);
       }
       finally
@@ -1959,7 +3889,7 @@ public class CampaignManager : MonoBehaviour
     int totalDelay = delayPerObject * existingTextObjects.Length;
 
     // Espera el tiempo calculado
-    await Task.Delay(totalDelay);
+    await BattleManager.DelayCombateAsync(totalDelay);
 
     if (this == null || prefabTextoRecursos == null || textoOrigen == null)
     {
@@ -2285,6 +4215,28 @@ public class CampaignManager : MonoBehaviour
     MenuOpciones.SetActive(!MenuOpciones.activeInHierarchy);
   }
 
+  private void NotificarResultadoGuardado(string mensaje, Color color)
+  {
+    if (logDeCampania != null && numeroTurno > 1)
+    {
+      logDeCampania.SetDiaActual(numeroTurno);
+      logDeCampania.Escribir(mensaje);
+    }
+
+    GenerarTextoFlotanteCampaña(TRADU.i.Traducir(mensaje), color);
+    Debug.Log("[SaveGame] " + mensaje);
+  }
+
+  private string FormatearOrigenAutosave(string origen)
+  {
+    if (string.IsNullOrWhiteSpace(origen))
+    {
+      return string.Empty;
+    }
+
+    return " (" + origen + ")";
+  }
+
   void Update()
   {
     Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
@@ -2317,6 +4269,14 @@ public class CampaignManager : MonoBehaviour
     {
        if(scTutorialManager.tutorialActivo) {EscribirLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       scMenuCaravana.AbrirMenuSequitos();
+    }
+    if (Input.GetKeyDown(KeyCode.F5))
+    {
+      GuardarCampaniaManual();
+    }
+    if (Input.GetKeyDown(KeyCode.F9))
+    {
+      CargarCampaniaManual();
     }
     if (Input.GetKeyDown(KeyCode.Escape))
     {

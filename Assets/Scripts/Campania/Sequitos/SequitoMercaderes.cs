@@ -27,6 +27,7 @@ public class SequitoMercaderes : MonoBehaviour
 
     public GameObject prefabBtnItemVendido;
     public List<Item> ItemsVendidos = new List<Item>();
+    bool restauradoDesdeSave;
 
     public int intItemsaVender = 5;
 
@@ -36,8 +37,20 @@ public class SequitoMercaderes : MonoBehaviour
     void Start()
     {
         AsegurarReferenciaDatabase();
-        GenerarItemsVendidos();
+        if (!restauradoDesdeSave && (ItemsVendidos == null || ItemsVendidos.Count == 0))
+        {
+            GenerarItemsVendidos();
+        }
+        else
+        {
+            MostrarInventarioVenta();
+        }
 
+    }
+
+    public void MarcarRestauradoDesdeSave()
+    {
+        restauradoDesdeSave = true;
     }
 
 #if UNITY_EDITOR
@@ -65,6 +78,12 @@ public class SequitoMercaderes : MonoBehaviour
         {
             Debug.LogWarning("[Items] SequitoMercaderes no tiene ItemDatabase asignada. Se usaran listas legacy.");
         }
+    }
+
+    public ItemDatabase GetItemDatabase()
+    {
+        AsegurarReferenciaDatabase();
+        return itemDatabase;
     }
 
     public void Actualizar()

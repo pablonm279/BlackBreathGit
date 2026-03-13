@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
@@ -58,7 +58,7 @@ public class TrampaPrimerGolpeAlabardero : Trampa
 
       unidadCreadora.ReproducirAnimacionAtaque();
 
-      await Task.Delay(200);
+      await BattleManager.DelayCombateAsync(200);
 
       tiroArco.AplicarEfectosHabilidad(objetivo);
 
@@ -75,7 +75,7 @@ public class TrampaPrimerGolpeAlabardero : Trampa
   {
     prefabModelo = scBattleManager.contenedorPrefabs.TrampaPrimerGolpeAlabardero;
     GOvfx = Instantiate(prefabModelo, transform.position, transform.rotation) as GameObject;
-    // Ajusta la posición en el eje Y
+    // Ajusta la posici�n en el eje Y
     Vector3 newPosition = GOvfx.transform.position;
     newPosition.y += 0.015f;
     GOvfx.transform.position = newPosition;

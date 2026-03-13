@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 //using UnityEditor.SearchService;
 using UnityEngine;
@@ -20,7 +20,7 @@ public class ReaccionPosturaDefensiva : Reaccion
 
     if (TRADU.i.nIdioma == 1)
     {
-      descripcion = $"Reacci√≥n: El caballero atacar√° a cualquier enemigo que falle un ataque cuerpo a cuerpo contra √©l.";
+      descripcion = $"ReacciÛn: El caballero atacar· a cualquier enemigo que falle un ataque cuerpo a cuerpo contra Èl.";
     }
     if (TRADU.i.nIdioma == 2)
     {
@@ -45,7 +45,7 @@ public class ReaccionPosturaDefensiva : Reaccion
         }
 
         int ms = Mathf.RoundToInt(Mathf.Max(0.1f, delay * 0.5f) * 1000f);
-        await Task.Delay(ms);
+        await BattleManager.DelayCombateAsync(ms);
 
         int tirada =  UnityEngine.Random.Range(1,21);
         corteVertical.AplicarEfectosHabilidad(uTriggerer, tirada, null);

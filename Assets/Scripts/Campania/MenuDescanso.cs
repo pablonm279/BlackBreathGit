@@ -293,6 +293,7 @@ public class MenuDescanso : MonoBehaviour
   {
     bool enTutorial = CampaignManager.Instance.scTutorialManager != null &&
                       CampaignManager.Instance.scTutorialManager.tutorialActivo;
+    bool autosavePendienteTrasDescanso = true;
 
     // Audio: al presionar Descansar, cortar másica con fade, reproducir SFX y reanudar.
     IniciarAudioDescansoSimple();
@@ -303,7 +304,7 @@ public class MenuDescanso : MonoBehaviour
     gameObject.SetActive(false);
 
     CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(1.2f, 4.0f);
-    await Task.Delay(TimeSpan.FromSeconds(6.0f));
+    await BattleManager.DelayCombateAsync(TimeSpan.FromSeconds(6.0f));
 
     if (tareaCivilSeleccionada == 1)
     {
@@ -577,6 +578,7 @@ public class MenuDescanso : MonoBehaviour
         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La caravana han sufrido un Ataque durante el descanso. Probabilidades ") + chancesAtaqueACaravana + TRADU.i.Traducir("% - Tirada: 1d100 = ") + randomEmboscada);
 
         CampaignManager.Instance.scMenuBatallas.EventoBatallaCaravana(0, 3);
+        autosavePendienteTrasDescanso = false;
         // (Audio) Ignorado: la másica de batalla se maneja en AdministradorEscenas
       }
       else //no puede haber evento y emboscada
@@ -586,10 +588,21 @@ public class MenuDescanso : MonoBehaviour
           if (randomEvento < factorEventoBuenoMalo)
           {
             if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 4) //En Claros no hay eventos negativos.
-            { CampaignManager.Instance.EmpezarEventoBueno(); }
-            else { CampaignManager.Instance.EmpezarEventoMalo(); } //evento negativo de nodo normal
+            {
+              CampaignManager.Instance.EmpezarEventoBueno();
+              autosavePendienteTrasDescanso = false;
+            }
+            else
+            {
+              CampaignManager.Instance.EmpezarEventoMalo();
+              autosavePendienteTrasDescanso = false;
+            } //evento negativo de nodo normal
           }
-          else { CampaignManager.Instance.EmpezarEventoBueno(); }
+          else
+          {
+            CampaignManager.Instance.EmpezarEventoBueno();
+            autosavePendienteTrasDescanso = false;
+          }
         }
 
         // (Audio) Ya se reanudó desde MusicManager tras terminar el SFX
@@ -601,6 +614,7 @@ public class MenuDescanso : MonoBehaviour
       if (!enTutorial)
       {
         CampaignManager.Instance.EmpezarEvento(404); //Evento de Mision de Rescate
+        autosavePendienteTrasDescanso = false;
         MetaprogresionManager.Instance.MisionesSalvamento--;
       }
     }
@@ -608,6 +622,11 @@ public class MenuDescanso : MonoBehaviour
     if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 26)
     { CampaignManager.Instance.scTutorialManager.SiguientePaso(); }
     goMenuMisiones.SetActive(false);
+
+    if (autosavePendienteTrasDescanso)
+    {
+      CampaignManager.Instance.TryAutosaveCampania("descanso", out _);
+    }
   }
 
   public GameObject climaNieve;
@@ -616,8 +635,45 @@ public class MenuDescanso : MonoBehaviour
   public GameObject climaAlmasDanzantes;
   public GameObject climaAuroraBoreal;
   public GameObject climaMasacre;
+
+  void ResetearVisualesClima()
+  {
+    climaNieve.SetActive(false);
+    climaLluvia.SetActive(false);
+    climaNiebla.SetActive(false);
+    climaAuroraBoreal.SetActive(false);
+    climaMasacre.SetActive(false);
+    climaAlmasDanzantes.SetActive(false);
+  }
+
+  bool IntentarAplicarMasacreNedukazalDebug()
+  {
+    if (CampaignManager.Instance == null
+      || !CampaignManager.Instance.EstaActivoDebugForzarMasacreNedukazal()
+      || CampaignManager.Instance.scAtributosZona == null
+      || CampaignManager.Instance.scAtributosZona.ID != 3)
+    {
+      return false;
+    }
+
+    ResetearVisualesClima();
+    if (climaMasacre != null)
+    {
+      climaMasacre.SetActive(true);
+    }
+
+    CampaignManager.Instance.AplicarClimaMasacreNedukazalForzada();
+    CampaignManager.Instance.CambiarEsperanzaActual(-10);
+    return true;
+  }
+
   public void TiradaClima()
   {
+    if (IntentarAplicarMasacreNedukazalDebug())
+    {
+      return;
+    }
+
     int random = UnityEngine.Random.Range(1, 101);
     if (CampaignManager.Instance.scTutorialManager.tutorialActivo)
     {
@@ -653,12 +709,7 @@ public class MenuDescanso : MonoBehaviour
       }
     }
    
-    climaNieve.SetActive(false);
-    climaLluvia.SetActive(false);
-    climaNiebla.SetActive(false);
-    climaAuroraBoreal.SetActive(false);
-    climaMasacre.SetActive(false);
-    climaAlmasDanzantes.SetActive(false);
+    ResetearVisualesClima();
 
 
 

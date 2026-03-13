@@ -1,16 +1,16 @@
-Ôªøusing System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 /// <summary>
-/// Mueve temporalmente el GameObject de la unidad hacia el objetivo melee (con ligero zoom de c√°mara) y luego lo devuelve.
-/// Solo afecta lo visual; no toca casillas ni estado l√≥gico.
+/// Mueve temporalmente el GameObject de la unidad hacia el objetivo melee (con ligero zoom de c·mara) y luego lo devuelve.
+/// Solo afecta lo visual; no toca casillas ni estado lÛgico.
 /// </summary>
 public class MeleeApproachMover : MonoBehaviour
 {
   [Header("Movimiento visual melee")]
   [SerializeField] private float duracionIdaBase = 0.4f;
   [SerializeField] private float duracionVueltaBase = 0.3f;
-  [SerializeField] private float offsetAtras = 0.55f; // metros detr√°s del objetivo
+  [SerializeField] private float offsetAtras = 0.55f; // metros detr·s del objetivo
   [SerializeField] private Vector3 offsetAdicional = Vector3.zero;
   [SerializeField] private float demoraAntesDeVolver = 0.2f;
   [SerializeField] private float pausaTrasLlegar = 0.15f;
@@ -76,7 +76,7 @@ public class MeleeApproachMover : MonoBehaviour
     if (!posicionRetorno.HasValue || unidad == null) { posicionRetorno = null; camaraRetorno = null; adelantado = false; mantenerAdelante = false; RestaurarPose(); LiberarLock(); return; }
     if (mantenerAdelante && !forzar) return;
 
-    await Task.Delay(Mathf.Max(0, Mathf.RoundToInt(demoraAntesDeVolver * 1000f)));
+    await BattleManager.DelayCombateAsync(Mathf.Max(0, Mathf.RoundToInt(demoraAntesDeVolver * 1000f)));
 
     Vector3 origen = unidad.transform.position;
     Vector3 destino = posicionRetorno.Value;
@@ -150,7 +150,7 @@ public class MeleeApproachMover : MonoBehaviour
       if (pausaTrasLlegar > 0f)
       {
         int esperaMs = Mathf.RoundToInt(pausaTrasLlegar * 1000f);
-        await Task.Delay(Mathf.Max(0, esperaMs));
+        await BattleManager.DelayCombateAsync(Mathf.Max(0, esperaMs));
       }
       exito = true;
       return exito;

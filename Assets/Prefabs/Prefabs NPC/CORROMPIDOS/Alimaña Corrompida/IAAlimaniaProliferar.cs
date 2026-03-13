@@ -71,7 +71,7 @@ public class IAAlimaniaProliferar : IAHabilidad
       hActualCooldown = hCooldownMax;
        
     
-      await Task.Delay(800);
+      await BattleManager.DelayCombateAsync(800);
       //Esto es cuando el objetivo es uno solo,
       AplicarEfectosHabilidad(scEstaUnidad);
      

@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -14,13 +14,13 @@ public class IADebatirTacticas : IAHabilidad
   [SerializeField] private int bonusAtaque;
   [SerializeField] private int XdDanio;
   [SerializeField] private int daniodX;
-  [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+  [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
 
 
   void Awake()
   {
-    nombre = "Discutir T√°cticas";
+    nombre = "Discutir T·cticas";
     Usuario = this.gameObject;
     scEstaUnidad = Usuario.GetComponent<Unidad>();
     hAncho = 1;
@@ -62,17 +62,17 @@ public class IADebatirTacticas : IAHabilidad
     Objetivo = scEstaUnidad;
     PrepararInicioAnimacion(null, Objetivo);//Despues de establecer objetivo
 
-    await Task.Delay(450);
+    await BattleManager.DelayCombateAsync(450);
     hActualCooldown = hCooldownMax;
     VFXAplicar(this.gameObject);
 
 
 
-    await Task.Delay(3000);
+    await BattleManager.DelayCombateAsync(3000);
     //Esto es cuando el objetivo es uno solo,
     AplicarEfectosHabilidad(Objetivo);
 
-    await Task.Delay(2300);
+    await BattleManager.DelayCombateAsync(2300);
 
   }
 
@@ -103,7 +103,7 @@ public class IADebatirTacticas : IAHabilidad
 
       if (tactica == 1)
       {
-        // BUFF ---- As√≠ se aplica un buff/debuff
+        // BUFF ---- AsÌ se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Enfoque Defensivo";
         buff.boolfDebufftBuff = true;
@@ -112,13 +112,13 @@ public class IADebatirTacticas : IAHabilidad
         buff.cantDefensa += 3;
         buff.cantDanioPorcentaje -= 10;
         buff.AplicarBuff(objetivo);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
-        BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir("Gulek y Gul discuten t√°cticas, y resuelven adoptar un enfoque defensivo."));
+        BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir("Gulek y Gul discuten t·cticas, y resuelven adoptar un enfoque defensivo."));
       }
       else if (tactica == 2)
       {
-        // BUFF ---- As√≠ se aplica un buff/debuff
+        // BUFF ---- AsÌ se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Enfoque Agresivo";
         buff.boolfDebufftBuff = true;
@@ -127,9 +127,9 @@ public class IADebatirTacticas : IAHabilidad
         buff.cantAtaque += 3;
         buff.cantDefensa -= 1;
         buff.AplicarBuff(objetivo);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
-        BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir("Gulek y Gul discuten t√°cticas, y resuelven adoptar un enfoque agresivo."));
+        BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir("Gulek y Gul discuten t·cticas, y resuelven adoptar un enfoque agresivo."));
       }
       else if (tactica == 3)
       {
@@ -137,7 +137,7 @@ public class IADebatirTacticas : IAHabilidad
 
         if (objetivo.GetComponent<Unidad>().HP_actual < 150)
         {
-          // BUFF ---- As√≠ se aplica un buff/debuff
+          // BUFF ---- AsÌ se aplica un buff/debuff
           Buff buff = new Buff();
           buff.buffNombre = "Descansando";
           buff.boolfDebufftBuff = true;
@@ -146,13 +146,13 @@ public class IADebatirTacticas : IAHabilidad
           buff.AplicarBuff(objetivo);
 
           objetivo.GetComponent<Unidad>().RecibirCuracion(75, false);
-          // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
+          // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
           Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
-          BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir("Gulek y Gul discuten t√°cticas, y resuelven descansar para recuperar fuerzas."));
+          BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir("Gulek y Gul discuten t·cticas, y resuelven descansar para recuperar fuerzas."));
         }
         else
         { 
-            // BUFF ---- As√≠ se aplica un buff/debuff
+            // BUFF ---- AsÌ se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Enfoque Agresivo";
         buff.boolfDebufftBuff = true;
@@ -162,9 +162,9 @@ public class IADebatirTacticas : IAHabilidad
         buff.cantAtaque += 3;
         buff.cantDefensa -= 1;
         buff.AplicarBuff(objetivo);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
-        BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir("Gulek y Gul discuten t√°cticas, y resuelven adoptar un enfoque agresivo."));
+        BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir("Gulek y Gul discuten t·cticas, y resuelven adoptar un enfoque agresivo."));
  
 
 

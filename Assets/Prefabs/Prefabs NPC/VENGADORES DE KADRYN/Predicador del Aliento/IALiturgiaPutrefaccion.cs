@@ -1,4 +1,4 @@
-ï»¿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,7 +27,7 @@ public class IALiturgiaPutrefaccion : IAHabilidad
 
   void Awake()
   {
-    nombre = "Liturgia de la PutrefacciÃ³n";
+    nombre = "Liturgia de la Putrefacción";
     Usuario = gameObject;
     scEstaUnidad = Usuario.GetComponent<Unidad>();
     hAncho = 2;
@@ -64,12 +64,12 @@ public class IALiturgiaPutrefaccion : IAHabilidad
     scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
     PrepararInicioAnimacion(null, objetivo);
 
-    await Task.Delay(600);
+    await BattleManager.DelayCombateAsync(600);
 
     hActualCooldown = hCooldownMax;
     AplicarEfectosHabilidad(objetivo);
 
-    await Task.Delay(250);
+    await BattleManager.DelayCombateAsync(250);
   }
 
   public override void AplicarEfectosHabilidad(object obj)
@@ -93,7 +93,7 @@ public class IALiturgiaPutrefaccion : IAHabilidad
 
     Buff putrefaccion = new Buff
     {
-      buffNombre = "PutrefacciÃ³n",
+      buffNombre = "Putrefacción",
    //   buffDescr = TRADU.i.Traducir("Sus defensas se corroen por el Aliento Negro."),
       boolfDebufftBuff = false,
       cantDefensa = -ReduccionDefensa,
@@ -109,7 +109,7 @@ public class IALiturgiaPutrefaccion : IAHabilidad
     Buff copia = ComponentCopier.CopyComponent(putrefaccion, objetivo.gameObject);
     copia.esStackeable = false;
 
-    BattleManager.Instance?.EscribirLog($"{objetivo.uNombre} {TRADU.i.Traducir("es presa de la PutrefacciÃ³n.")}");
+    BattleManager.Instance?.EscribirLog($"{objetivo.uNombre} {TRADU.i.Traducir("es presa de la Putrefacción.")}");
   }
 
   public override object EstablecerObjetivoPrioritario()

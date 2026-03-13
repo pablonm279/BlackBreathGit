@@ -1,4 +1,4 @@
-ï»¿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -74,7 +74,7 @@ public class IALlamaDaZarkil : IAHabilidad
     PrepararInicioAnimacion(null, null);
     VFXAplicar(scEstaUnidad.gameObject);
  //   scEstaUnidad?.ReproducirAnimacionHabilidadNoHostil();
-    await Task.Delay(450);
+    await BattleManager.DelayCombateAsync(450);
     
     AplicarEfectosEnZonaEnemiga();
     AplicarEfectosEnZonaAliada();
@@ -119,14 +119,14 @@ public class IALlamaDaZarkil : IAHabilidad
           if (obj.TieneTag("Zarkil") && obj != scEstaUnidad)
           {
 
-            // BUFF ---- AsÃ­ se aplica un buff/debuff
+            // BUFF ---- Así se aplica un buff/debuff
             Buff buff = new Buff();
             buff.buffNombre = "Orden Recibida";
             buff.boolfDebufftBuff = true;
             buff.DuracionBuffRondas = 1;
             buff.cantAPMax += 2;
             buff.AplicarBuff(obj);
-            // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
+            // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, obj.gameObject);
           }
           

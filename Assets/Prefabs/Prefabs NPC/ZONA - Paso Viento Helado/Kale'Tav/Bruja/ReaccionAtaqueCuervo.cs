@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 //using UnityEditor.SearchService;
 using UnityEngine;
@@ -20,7 +20,7 @@ public class ReaccionAtaqueCuervo : Reaccion
 
     if (TRADU.i.nIdioma == 1)
     {
-      descripcion = $"Reacci√≥n: El cuervo atacar√° los ojos de quien lastime a su maestra.";
+      descripcion = $"ReacciÛn: El cuervo atacar· los ojos de quien lastime a su maestra.";
     }
     if (TRADU.i.nIdioma == 2)
     {
@@ -38,7 +38,7 @@ public class ReaccionAtaqueCuervo : Reaccion
        
 
         int ms = Mathf.RoundToInt(Mathf.Max(0.2f, delay * 0.5f) * 1000f);
-        await Task.Delay(ms);
+        await BattleManager.DelayCombateAsync(ms);
          EnemigoUnidadBrujaKaleTav scEstaBruja = scEstaUnidad.GetComponent<EnemigoUnidadBrujaKaleTav>();
          scEstaBruja.MostrarImagenSinCuervoPorTresSegundos();
        

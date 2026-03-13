@@ -71,7 +71,7 @@ public class AdministradorEscenas : MonoBehaviour
   {
     int delayMs = Mathf.Max(0, Mathf.RoundToInt(segundos * 1000f));
     if (delayMs <= 0) { return; }
-    await Task.Delay(delayMs);
+    await BattleManager.DelayCombateAsync(delayMs);
   }
 
   async void EjecutarOperacionSegura(Task tarea, string contexto)
@@ -2661,6 +2661,11 @@ public class AdministradorEscenas : MonoBehaviour
     }
     finally
     {
+      FiltrarRefuerzosUnicosEnCombate();
+      if (BattleManager.Instance != null)
+      {
+        BattleManager.Instance.ActualizarRefuerzosUI();
+      }
       filtrandoUnicosEnComposicionInicial = false;
     }
   }
@@ -2810,6 +2815,8 @@ public class AdministradorEscenas : MonoBehaviour
       return false;
     }
 
+    BattleManager.Instance.ladoA.ActualizarListaDeUnidadesEnLado();
+
     foreach (Unidad unidadExistente in BattleManager.Instance.ladoA.unidadesLado)
     {
       if (unidadExistente == null)
@@ -2824,6 +2831,73 @@ public class AdministradorEscenas : MonoBehaviour
     }
 
     return false;
+  }
+
+  private void FiltrarRefuerzosUnicosEnCombate()
+  {
+    if (BattleManager.Instance == null || BattleManager.Instance.enemigosRefuerzos == null)
+    {
+      return;
+    }
+
+    HashSet<string> clavesRegistradas = new HashSet<string>();
+
+    if (BattleManager.Instance.ladoA != null)
+    {
+      BattleManager.Instance.ladoA.ActualizarListaDeUnidadesEnLado();
+      foreach (Unidad unidadExistente in BattleManager.Instance.ladoA.unidadesLado)
+      {
+        if (unidadExistente == null)
+        {
+          continue;
+        }
+
+        IAUnidad iaUnidadExistente = unidadExistente.GetComponent<IAUnidad>();
+        if (iaUnidadExistente == null || !iaUnidadExistente.unicoEnCombate)
+        {
+          continue;
+        }
+
+        string claveExistente = ObtenerClaveUnicoEnCombate(unidadExistente.gameObject);
+        if (!string.IsNullOrEmpty(claveExistente))
+        {
+          clavesRegistradas.Add(claveExistente);
+        }
+      }
+    }
+
+    for (int i = 0; i < BattleManager.Instance.enemigosRefuerzos.Count;)
+    {
+      GameObject refuerzo = BattleManager.Instance.enemigosRefuerzos[i];
+      if (refuerzo == null)
+      {
+        BattleManager.Instance.enemigosRefuerzos.RemoveAt(i);
+        continue;
+      }
+
+      IAUnidad iaRefuerzo = refuerzo.GetComponent<IAUnidad>();
+      if (iaRefuerzo == null || !iaRefuerzo.unicoEnCombate)
+      {
+        i++;
+        continue;
+      }
+
+      string claveRefuerzo = ObtenerClaveUnicoEnCombate(refuerzo);
+      if (string.IsNullOrEmpty(claveRefuerzo))
+      {
+        i++;
+        continue;
+      }
+
+      if (!clavesRegistradas.Add(claveRefuerzo))
+      {
+        Destroy(refuerzo);
+        BattleManager.Instance.enemigosRefuerzos.RemoveAt(i);
+        continue;
+      }
+
+      i++;
+    }
   }
 
   private static string ObtenerClaveUnicoEnCombate(GameObject go)
@@ -3521,7 +3595,7 @@ public class AdministradorEscenas : MonoBehaviour
     int delayFinal = Mathf.Max(0, delayPostFinBatallaMs);
     if (delayFinal > 0)
     {
-      await Task.Delay(delayFinal);
+      await BattleManager.DelayCombateAsync(delayFinal);
     }
     if (campaignManager.scTutorialManager != null
       && campaignManager.scTutorialManager.tutorialActivo

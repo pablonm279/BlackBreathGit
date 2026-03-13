@@ -51,6 +51,14 @@ public static class EncounterGenerator
 {
    const int MaxInitialUnits = 6;
 
+   enum CompositionArchetype
+   {
+      Balanced,
+      Swarm,
+      FewStrong,
+      Reinforced
+   }
+
    public static bool TryGenerateEncounter(
       AtributosZona atributosZona,
       EncounterZoneType zoneType,
@@ -114,19 +122,15 @@ public static class EncounterGenerator
       {
          return false;
       }
+      int highestTierAvailable = GetHighestTierAvailable(chosenFaction, maxTierAllowed);
       int baseBudget = GetBaseBudget(battleType);
       int randomBonus = RollBudgetBonus(battleType, faseClamped);
       int totalBudget = baseBudget * faseClamped + randomBonus;
       totalBudget += Sistema.HandicapDificultad.AjustePuntosEnemigos;
-      int minBudgetFloor = GetMinBudgetFloor(battleType, faseClamped, cheapestTier, minUnits);
+      int minBudgetFloor = GetMinBudgetFloor(battleType, faseClamped, cheapestTier, minUnits, highestTierAvailable);
       totalBudget = Mathf.Max(Mathf.Max(cheapestTier * minUnits, minBudgetFloor), totalBudget);
-      int initialCap = Mathf.Min(MaxInitialUnits, Mathf.Max(1, faseClamped) * 5);
-      int reinforcementDelay = Mathf.Clamp(2 + faseClamped, 3, 6);
-      int maxUnitsPossible = Mathf.Max(minUnits, totalBudget / Mathf.Max(1, cheapestTier));
-      int targetUnits = ElegirCantidadObjetivo(minUnits, maxUnitsPossible);
-      float highTierBias = (maxUnitsPossible > minUnits)
-         ? 1f - Mathf.Clamp01((float)(targetUnits - minUnits) / (float)(maxUnitsPossible - minUnits))
-         : 0.5f;
+      int initialCap = GetInitialUnitCap(battleType, faseClamped);
+      int reinforcementDelay = 0;
 
       var generated = new EncounterDefinition
       {
@@ -142,9 +146,14 @@ public static class EncounterGenerator
          reinforcementDelay = reinforcementDelay,
       };
 
-      FillUnits(generated, chosenFaction, totalBudget, initialCap, maxTierAllowed, minUnits, targetUnits, maxUnitsPossible, highTierBias);
+      FillUnits(generated, chosenFaction, totalBudget, initialCap, maxTierAllowed, minUnits);
       EnforceMinimumComposition(generated, chosenFaction, battleType, maxTierAllowed, minUnits);
-      generated.totalBudget = Mathf.Max(generated.totalBudget, CalcularCostoTotal(generated));
+      EnsureMandatoryReinforcements(generated, chosenFaction, maxTierAllowed);
+      MarkReinforcements(generated, initialCap);
+      generated.totalBudget = CalcularCostoTotal(generated);
+      generated.reinforcementDelay = HasReinforcements(generated)
+         ? GetReinforcementDelay(battleType, faseClamped)
+         : 0;
 
       // Garantizar al menos una unidad inicial si es posible
       if (generated.units.Count == 0)
@@ -165,129 +174,569 @@ public static class EncounterGenerator
       return encounter != null;
    }
 
-   static int ElegirCantidadObjetivo(int minUnits, int maxUnitsPossible)
+   static void FillUnits(EncounterDefinition definition, EnemyFactionConfig faction, int budget, int initialCap, int maxTierAllowedParam, int minUnitsParam)
    {
-      if (maxUnitsPossible <= minUnits)
-      {
-         return minUnits;
-      }
-
-      int modo = UnityEngine.Random.Range(0, 3); // 0 pocas, 1 muchas, 2 intermedio
-      if (modo == 0) return minUnits;
-      if (modo == 1) return maxUnitsPossible;
-      return UnityEngine.Random.Range(minUnits, maxUnitsPossible + 1);
-   }
-
-   static void FillUnits(EncounterDefinition definition, EnemyFactionConfig faction, int budget, int initialCap, int maxTierAllowedParam, int minUnitsParam, int targetUnits = -1, int maxUnitsPossible = -1, float highTierBias = 0.5f)
-   {
-      if (faction == null)
+      if (definition == null || faction == null)
       {
          return;
       }
 
-      int remaining = budget;
-      int initialCount = 0;
-      int safetyCounter = 0;
       int maxTierAllowed = Mathf.Max(1, maxTierAllowedParam);
       int minUnits = Mathf.Max(1, minUnitsParam);
-      int maxUnits = maxUnitsPossible > 0 ? maxUnitsPossible : minUnits;
-      int targetCount = targetUnits > 0 ? targetUnits : minUnits;
-      int allowedInitial = Mathf.Min(initialCap, MaxInitialUnits);
       int cheapestTier = GetCheapestTierAvailable(faction, maxTierAllowed);
       if (cheapestTier == 0)
       {
          return;
       }
-      targetCount = Mathf.Clamp(targetCount, minUnits, Mathf.Max(minUnits, maxUnits));
+      int highestTier = GetHighestTierAvailable(faction, maxTierAllowed);
+      int maxUnitsPossible = Mathf.Max(minUnits, budget / Mathf.Max(1, cheapestTier));
+      int maxUnits = GetSoftMaxUnits(definition.battleType, definition.fase, budget, cheapestTier, minUnits, maxUnitsPossible);
+      CompositionArchetype archetype = ChooseCompositionArchetype(definition.battleType, budget, cheapestTier, highestTier, minUnits, maxUnits);
+      int targetCount = ChooseTargetUnitCount(definition.battleType, archetype, budget, cheapestTier, highestTier, minUnits, maxUnits);
+      int remaining = budget;
+      int safetyCounter = 0;
+      Dictionary<GameObject, int> prefabUsage = new Dictionary<GameObject, int>();
 
-      while (remaining > 0 && safetyCounter < 200 && targetCount > 0)
+      while (definition.units.Count < targetCount && safetyCounter < 200)
       {
          safetyCounter++;
-         var availableTiers = GetAvailableTiers(faction, remaining, maxTierAllowed);
-         if (availableTiers.Count == 0)
+         int unitsLeft = Mathf.Max(1, targetCount - definition.units.Count);
+         int maxCostNow = remaining - cheapestTier * Mathf.Max(0, unitsLeft - 1);
+         int selectedTier = ChooseTierForSlot(faction, definition.battleType, archetype, remaining, unitsLeft, Mathf.Max(cheapestTier, maxCostNow), maxTierAllowed);
+         if (selectedTier == 0)
          {
             break;
          }
 
-         int slotsRestantes = targetCount - definition.units.Count;
-         var viables = new List<int>();
-         foreach (var tier in availableTiers)
-         {
-            if (remaining - tier >= (slotsRestantes - 1) * cheapestTier)
-            {
-               viables.Add(tier);
-            }
-         }
-         if (viables.Count == 0)
-         {
-            viables = availableTiers;
-         }
-
-         // Favorecer tiers altos cuando el objetivo es "pocas unidades fuertes"
-         viables.Sort();
-         int selectedTier = cheapestTier;
-         if (viables.Count > 0)
-         {
-            bool usarAltos = UnityEngine.Random.value < Mathf.Clamp01(highTierBias);
-            if (usarAltos)
-            {
-               int start = Mathf.Max(0, viables.Count - Mathf.Max(1, viables.Count / 2));
-               selectedTier = viables[UnityEngine.Random.Range(start, viables.Count)];
-            }
-            else
-            {
-               selectedTier = viables[UnityEngine.Random.Range(0, viables.Count)];
-            }
-         }
-
-         var tierList = GetTierList(faction, selectedTier);
-         if (tierList == null || tierList.Count == 0)
-         {
-            continue;
-         }
-
-         var prefab = tierList[UnityEngine.Random.Range(0, tierList.Count)];
-         bool spawnAsReinforcement = initialCount >= allowedInitial;
-
-         definition.units.Add(new EncounterUnitSlot
-         {
-            prefab = prefab,
-            tierCost = selectedTier,
-            spawnAsReinforcement = spawnAsReinforcement
-         });
-
-         if (!spawnAsReinforcement)
-         {
-            initialCount++;
-         }
-
-         remaining -= selectedTier;
-         targetCount--;
-      }
-
-      // Guardia final: si quedaron por debajo del piso de unidades, sumar del tier más barato
-      while (definition.units.Count < minUnits && safetyCounter < 400)
-      {
-         safetyCounter++;
-         var prefab = GetPrefabFromTier(faction, cheapestTier);
+         GameObject prefab = PickPrefabFromTierWithVariety(faction, selectedTier, prefabUsage);
          if (prefab == null)
          {
             break;
          }
 
-         bool spawnAsReinforcement = initialCount >= allowedInitial;
          definition.units.Add(new EncounterUnitSlot
          {
             prefab = prefab,
-            tierCost = cheapestTier,
-            spawnAsReinforcement = spawnAsReinforcement
+            tierCost = selectedTier,
+            spawnAsReinforcement = false
          });
+         RegistrarUsoPrefab(prefabUsage, prefab, 1);
+         remaining -= selectedTier;
+      }
 
-         if (!spawnAsReinforcement)
+      SpendRemainingBudget(definition, faction, definition.battleType, archetype, maxTierAllowed, maxUnits, ref remaining, prefabUsage);
+   }
+
+   static CompositionArchetype ChooseCompositionArchetype(BattleEncounterType battleType, int budget, int cheapestTier, int highestTier, int minUnits, int maxUnits)
+   {
+      bool canFewStrong = highestTier >= 3 && budget >= Mathf.Max(highestTier + cheapestTier * Mathf.Max(1, minUnits - 1), minUnits * 2);
+      bool canSwarm = cheapestTier == 1 && maxUnits >= minUnits + 2;
+
+      float balancedWeight = 4f;
+      float swarmWeight = canSwarm ? 1f : 0f;
+      float fewStrongWeight = canFewStrong ? 1f : 0f;
+      float reinforcedWeight = 0.4f;
+
+      switch (battleType)
+      {
+         case BattleEncounterType.Elite:
+            balancedWeight = 2.5f;
+            swarmWeight *= 0.3f;
+            fewStrongWeight *= 2.8f;
+            reinforcedWeight = 0.2f;
+            break;
+         case BattleEncounterType.AtaqueCaravana:
+            balancedWeight = 2.8f;
+            swarmWeight += canSwarm ? 1.2f : 0f;
+            fewStrongWeight *= 0.9f;
+            reinforcedWeight = 3.1f;
+            break;
+         case BattleEncounterType.Subterraneo:
+            balancedWeight = 3.4f;
+            swarmWeight += canSwarm ? 0.5f : 0f;
+            fewStrongWeight *= 1.4f;
+            reinforcedWeight = 0.8f;
+            break;
+         case BattleEncounterType.Normal:
+         default:
+            balancedWeight = 4.4f;
+            swarmWeight += canSwarm ? 0.9f : 0f;
+            fewStrongWeight *= 1.4f;
+            reinforcedWeight = 0.3f;
+            break;
+      }
+
+      float total = balancedWeight + swarmWeight + fewStrongWeight + reinforcedWeight;
+      float roll = UnityEngine.Random.Range(0f, total);
+
+      if (roll < balancedWeight)
+      {
+         return CompositionArchetype.Balanced;
+      }
+
+      roll -= balancedWeight;
+      if (roll < swarmWeight)
+      {
+         return CompositionArchetype.Swarm;
+      }
+
+      roll -= swarmWeight;
+      if (roll < fewStrongWeight)
+      {
+         return CompositionArchetype.FewStrong;
+      }
+
+      return CompositionArchetype.Reinforced;
+   }
+
+   static int ChooseTargetUnitCount(BattleEncounterType battleType, CompositionArchetype archetype, int budget, int cheapestTier, int highestTier, int minUnits, int maxUnits)
+   {
+      int center;
+      switch (archetype)
+      {
+         case CompositionArchetype.FewStrong:
+            center = Mathf.RoundToInt(budget / Mathf.Clamp(highestTier - 0.15f, 2f, 3.75f));
+            center = Mathf.Min(center, Mathf.Max(minUnits, maxUnits - 1));
+            break;
+         case CompositionArchetype.Swarm:
+            center = Mathf.RoundToInt(budget / 1.35f);
+            break;
+         case CompositionArchetype.Reinforced:
+            center = Mathf.RoundToInt(budget / 1.7f);
+            break;
+         case CompositionArchetype.Balanced:
+         default:
+            center = Mathf.RoundToInt(budget / 1.9f);
+            break;
+      }
+
+      if (battleType == BattleEncounterType.Elite)
+      {
+         center = Mathf.Min(center, Mathf.Max(minUnits, maxUnits - 1));
+      }
+
+      center = Mathf.Clamp(center, minUnits, maxUnits);
+      int jitter = maxUnits > minUnits ? 1 : 0;
+      if (archetype == CompositionArchetype.FewStrong && highestTier >= 4)
+      {
+         jitter = 0;
+      }
+
+      int minBand = Mathf.Clamp(center - jitter, minUnits, maxUnits);
+      int maxBand = Mathf.Clamp(center + jitter, minUnits, maxUnits);
+      return UnityEngine.Random.Range(minBand, maxBand + 1);
+   }
+
+   static int ChooseTierForSlot(EnemyFactionConfig faction, BattleEncounterType battleType, CompositionArchetype archetype, int remainingBudget, int unitsLeft, int maxAffordableTierBudget, int maxTierAllowed)
+   {
+      int capBudget = Mathf.Max(1, maxAffordableTierBudget);
+      var availableTiers = GetAvailableTiers(faction, capBudget, maxTierAllowed);
+      if (availableTiers.Count == 0)
+      {
+         return 0;
+      }
+
+      int cheapestTier = availableTiers[0];
+      int highestTier = availableTiers[availableTiers.Count - 1];
+      float budgetPerUnit = unitsLeft > 0 ? (float)remainingBudget / unitsLeft : remainingBudget;
+      int preferredTier = Mathf.Clamp(Mathf.RoundToInt(budgetPerUnit), cheapestTier, highestTier);
+
+      switch (archetype)
+      {
+         case CompositionArchetype.FewStrong:
+            preferredTier = Mathf.Clamp(preferredTier + 1, Mathf.Min(2, highestTier), highestTier);
+            break;
+         case CompositionArchetype.Swarm:
+            preferredTier = Mathf.Clamp(preferredTier - 1, cheapestTier, highestTier);
+            break;
+         case CompositionArchetype.Reinforced:
+            preferredTier = Mathf.Clamp(preferredTier, cheapestTier, highestTier);
+            break;
+      }
+
+      if (battleType == BattleEncounterType.Elite)
+      {
+         preferredTier = Mathf.Clamp(preferredTier + 1, Mathf.Min(2, highestTier), highestTier);
+      }
+
+      float totalWeight = 0f;
+      List<float> weights = new List<float>(availableTiers.Count);
+      foreach (int tier in availableTiers)
+      {
+         float weight = 1f / (1f + Mathf.Abs(tier - preferredTier));
+
+         switch (archetype)
          {
-            initialCount++;
+            case CompositionArchetype.FewStrong:
+               weight *= 0.8f + tier * 0.85f;
+               break;
+            case CompositionArchetype.Swarm:
+               weight *= 0.9f + (highestTier - tier + 1) * 0.7f;
+               break;
+            case CompositionArchetype.Reinforced:
+               weight *= 1f + Mathf.Max(0, tier - cheapestTier) * 0.35f;
+               break;
+            case CompositionArchetype.Balanced:
+            default:
+               weight *= tier == preferredTier ? 1.6f : 1f;
+               break;
+         }
+
+         if (battleType == BattleEncounterType.Elite)
+         {
+            weight *= tier >= 2 ? 1.8f : 0.25f;
+         }
+
+         if (unitsLeft == 1)
+         {
+            weight *= 1f + tier * 0.35f;
+         }
+
+         totalWeight += weight;
+         weights.Add(weight);
+      }
+
+      float roll = UnityEngine.Random.Range(0f, totalWeight);
+      for (int i = 0; i < availableTiers.Count; i++)
+      {
+         roll -= weights[i];
+         if (roll <= 0f)
+         {
+            return availableTiers[i];
          }
       }
+
+      return availableTiers[availableTiers.Count - 1];
+   }
+
+   static GameObject PickPrefabFromTierWithVariety(EnemyFactionConfig faction, int tier, Dictionary<GameObject, int> prefabUsage)
+   {
+      var tierList = GetTierList(faction, tier);
+      if (tierList == null || tierList.Count == 0)
+      {
+         return null;
+      }
+
+      int minUsage = int.MaxValue;
+      List<GameObject> candidates = new List<GameObject>();
+      foreach (GameObject prefab in tierList)
+      {
+         if (prefab == null)
+         {
+            continue;
+         }
+
+         int usage = 0;
+         prefabUsage.TryGetValue(prefab, out usage);
+         if (usage < minUsage)
+         {
+            minUsage = usage;
+            candidates.Clear();
+            candidates.Add(prefab);
+         }
+         else if (usage == minUsage)
+         {
+            candidates.Add(prefab);
+         }
+      }
+
+      if (candidates.Count == 0)
+      {
+         return null;
+      }
+
+      return candidates[UnityEngine.Random.Range(0, candidates.Count)];
+   }
+
+   static void RegistrarUsoPrefab(Dictionary<GameObject, int> prefabUsage, GameObject prefab, int delta)
+   {
+      if (prefab == null || prefabUsage == null || delta == 0)
+      {
+         return;
+      }
+
+      int current = 0;
+      prefabUsage.TryGetValue(prefab, out current);
+      current = Mathf.Max(0, current + delta);
+      prefabUsage[prefab] = current;
+   }
+
+   static void SpendRemainingBudget(EncounterDefinition definition, EnemyFactionConfig faction, BattleEncounterType battleType, CompositionArchetype archetype, int maxTierAllowed, int maxUnits, ref int remainingBudget, Dictionary<GameObject, int> prefabUsage)
+   {
+      int cheapestTier = GetCheapestTierAvailable(faction, maxTierAllowed);
+      if (cheapestTier == 0)
+      {
+         return;
+      }
+
+      int safetyCounter = 0;
+      while (remainingBudget >= cheapestTier && safetyCounter < 80)
+      {
+         safetyCounter++;
+         bool preferUpgrade = archetype == CompositionArchetype.FewStrong
+            || definition.units.Count >= maxUnits
+            || remainingBudget < cheapestTier * 2;
+
+         bool changed = preferUpgrade
+            ? TryUpgradeExistingUnit(definition, faction, archetype, maxTierAllowed, ref remainingBudget, prefabUsage)
+            : TryAddExtraUnit(definition, faction, battleType, archetype, maxTierAllowed, maxUnits, ref remainingBudget, prefabUsage);
+
+         if (!changed)
+         {
+            changed = preferUpgrade
+               ? TryAddExtraUnit(definition, faction, battleType, archetype, maxTierAllowed, maxUnits, ref remainingBudget, prefabUsage)
+               : TryUpgradeExistingUnit(definition, faction, archetype, maxTierAllowed, ref remainingBudget, prefabUsage);
+         }
+
+         if (!changed)
+         {
+            break;
+         }
+      }
+   }
+
+   static bool TryAddExtraUnit(EncounterDefinition definition, EnemyFactionConfig faction, BattleEncounterType battleType, CompositionArchetype archetype, int maxTierAllowed, int maxUnits, ref int remainingBudget, Dictionary<GameObject, int> prefabUsage)
+   {
+      if (definition == null || definition.units.Count >= maxUnits)
+      {
+         return false;
+      }
+
+      int selectedTier = ChooseTierForSlot(faction, battleType, archetype, remainingBudget, 1, remainingBudget, maxTierAllowed);
+      if (selectedTier == 0)
+      {
+         return false;
+      }
+
+      GameObject prefab = PickPrefabFromTierWithVariety(faction, selectedTier, prefabUsage);
+      if (prefab == null)
+      {
+         return false;
+      }
+
+      definition.units.Add(new EncounterUnitSlot
+      {
+         prefab = prefab,
+         tierCost = selectedTier,
+         spawnAsReinforcement = false
+      });
+      RegistrarUsoPrefab(prefabUsage, prefab, 1);
+      remainingBudget -= selectedTier;
+      return true;
+   }
+
+   static bool TryUpgradeExistingUnit(EncounterDefinition definition, EnemyFactionConfig faction, CompositionArchetype archetype, int maxTierAllowed, ref int remainingBudget, Dictionary<GameObject, int> prefabUsage)
+   {
+      if (definition == null || definition.units == null || definition.units.Count == 0)
+      {
+         return false;
+      }
+
+      int bestIndex = -1;
+      int bestTier = 0;
+      int bestDelta = 0;
+      int bestScore = int.MinValue;
+
+      for (int i = 0; i < definition.units.Count; i++)
+      {
+         var slot = definition.units[i];
+         if (slot == null)
+         {
+            continue;
+         }
+
+         for (int tier = maxTierAllowed; tier > slot.tierCost; tier--)
+         {
+            if (!HasTier(faction, tier))
+            {
+               continue;
+            }
+
+            int delta = tier - slot.tierCost;
+            if (delta > remainingBudget)
+            {
+               continue;
+            }
+
+            int score = delta * 10 - slot.tierCost * 2;
+            if (archetype == CompositionArchetype.FewStrong)
+            {
+               score += tier * 6;
+            }
+            else if (archetype == CompositionArchetype.Swarm)
+            {
+               score += slot.tierCost <= 2 ? 4 : 0;
+            }
+
+            if (score > bestScore)
+            {
+               bestScore = score;
+               bestIndex = i;
+               bestTier = tier;
+               bestDelta = delta;
+            }
+         }
+      }
+
+      if (bestIndex < 0 || bestTier == 0)
+      {
+         return false;
+      }
+
+      GameObject nuevoPrefab = PickPrefabFromTierWithVariety(faction, bestTier, prefabUsage);
+      if (nuevoPrefab == null)
+      {
+         return false;
+      }
+
+      RegistrarUsoPrefab(prefabUsage, definition.units[bestIndex].prefab, -1);
+      definition.units[bestIndex].prefab = nuevoPrefab;
+      definition.units[bestIndex].tierCost = bestTier;
+      RegistrarUsoPrefab(prefabUsage, nuevoPrefab, 1);
+      remainingBudget -= bestDelta;
+      return true;
+   }
+
+   static void MarkReinforcements(EncounterDefinition definition, int initialCap)
+   {
+      if (definition == null || definition.units == null || definition.units.Count == 0)
+      {
+         return;
+      }
+
+      int desiredInitialUnits = GetDesiredInitialUnits(definition.battleType, definition.fase, definition.units.Count, initialCap);
+      desiredInitialUnits = Mathf.Clamp(desiredInitialUnits, 1, Mathf.Min(initialCap, definition.units.Count));
+
+      List<int> indicesOrdenados = new List<int>();
+      for (int i = 0; i < definition.units.Count; i++)
+      {
+         indicesOrdenados.Add(i);
+      }
+
+      indicesOrdenados.Sort((a, b) =>
+      {
+         var slotA = definition.units[a];
+         var slotB = definition.units[b];
+         int tierCompare = slotB.tierCost.CompareTo(slotA.tierCost);
+         if (tierCompare != 0)
+         {
+            return tierCompare;
+         }
+
+         string nombreA = slotA != null && slotA.prefab != null ? slotA.prefab.name : string.Empty;
+         string nombreB = slotB != null && slotB.prefab != null ? slotB.prefab.name : string.Empty;
+         return string.CompareOrdinal(nombreA, nombreB);
+      });
+
+      bool[] mantenerInicial = new bool[definition.units.Count];
+      for (int i = 0; i < desiredInitialUnits && i < indicesOrdenados.Count; i++)
+      {
+         mantenerInicial[indicesOrdenados[i]] = true;
+      }
+
+      for (int i = 0; i < definition.units.Count; i++)
+      {
+         if (definition.units[i] == null)
+         {
+            continue;
+         }
+
+         definition.units[i].spawnAsReinforcement = !mantenerInicial[i];
+      }
+   }
+
+   static bool HasReinforcements(EncounterDefinition definition)
+   {
+      if (definition == null || definition.units == null)
+      {
+         return false;
+      }
+
+      foreach (var slot in definition.units)
+      {
+         if (slot != null && slot.spawnAsReinforcement)
+         {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+   static int GetDesiredInitialUnits(BattleEncounterType battleType, int fase, int totalUnits, int initialCap)
+   {
+      int desired;
+      switch (battleType)
+      {
+         case BattleEncounterType.Elite:
+            desired = 4;
+            break;
+         case BattleEncounterType.AtaqueCaravana:
+            desired = 4 + Mathf.Clamp(fase - 1, 0, 2);
+            break;
+         case BattleEncounterType.Subterraneo:
+            desired = 4;
+            break;
+         case BattleEncounterType.Normal:
+         default:
+            desired = 4 + Mathf.Clamp((fase - 1) / 2, 0, 1);
+            break;
+      }
+
+      return Mathf.Clamp(desired, 1, Mathf.Min(initialCap, totalUnits));
+   }
+
+   static int GetInitialUnitCap(BattleEncounterType battleType, int fase)
+   {
+      int cap;
+      switch (battleType)
+      {
+         case BattleEncounterType.Elite:
+            cap = 4;
+            break;
+         case BattleEncounterType.AtaqueCaravana:
+            cap = 6;
+            break;
+         case BattleEncounterType.Subterraneo:
+            cap = 5;
+            break;
+         case BattleEncounterType.Normal:
+         default:
+            cap = 5;
+            break;
+      }
+
+      cap += Mathf.Clamp((fase - 1) / 3, 0, 1);
+      return Mathf.Clamp(cap, 3, MaxInitialUnits);
+   }
+
+   static int GetSoftMaxUnits(BattleEncounterType battleType, int fase, int budget, int cheapestTier, int minUnits, int maxUnitsPossible)
+   {
+      int maxUnits;
+      switch (battleType)
+      {
+         case BattleEncounterType.Elite:
+            maxUnits = 4;
+            break;
+         case BattleEncounterType.AtaqueCaravana:
+            maxUnits = 6;
+            break;
+         case BattleEncounterType.Subterraneo:
+            maxUnits = 5;
+            break;
+         case BattleEncounterType.Normal:
+         default:
+            maxUnits = 5;
+            break;
+      }
+
+      maxUnits += Mathf.Clamp((fase - 1) / 2, 0, 2);
+      if (budget >= cheapestTier * (minUnits + 3))
+      {
+         maxUnits++;
+      }
+
+      return Mathf.Clamp(maxUnits, minUnits, Mathf.Max(minUnits, maxUnitsPossible));
    }
 
    static bool TryGetDebugEncounter(
@@ -398,6 +847,24 @@ public static class EncounterGenerator
       }
 
       for (int tier = 1; tier <= Mathf.Max(1, maxTierAllowed); tier++)
+      {
+         if (HasTier(faction, tier))
+         {
+            return tier;
+         }
+      }
+
+      return 0;
+   }
+
+   static int GetHighestTierAvailable(EnemyFactionConfig faction, int maxTierAllowed)
+   {
+      if (faction == null)
+      {
+         return 0;
+      }
+
+      for (int tier = Mathf.Clamp(maxTierAllowed, 1, 5); tier >= 1; tier--)
       {
          if (HasTier(faction, tier))
          {
@@ -520,20 +987,25 @@ public static class EncounterGenerator
       }
    }
 
-   static int GetMinBudgetFloor(BattleEncounterType battleType, int fase, int cheapestTier, int minUnits)
+   static int GetMinBudgetFloor(BattleEncounterType battleType, int fase, int cheapestTier, int minUnits, int highestTierAvailable)
    {
-      int baseFloor = Mathf.Max(1, cheapestTier) * Mathf.Max(1, minUnits);
+      int safeCheapestTier = Mathf.Max(1, cheapestTier);
+      int safeMinUnits = Mathf.Max(1, minUnits);
+      int safeHighestTier = Mathf.Max(safeCheapestTier, highestTierAvailable);
+      int baseFloor = safeCheapestTier * safeMinUnits;
+      int strongFloor = safeCheapestTier * Mathf.Max(0, safeMinUnits - 1) + safeHighestTier;
+
       switch (battleType)
       {
          case BattleEncounterType.Elite:
-            return baseFloor + Mathf.Max(1, fase);
+            return Mathf.Max(baseFloor + 2 + Mathf.Max(1, fase), strongFloor + 2);
          case BattleEncounterType.AtaqueCaravana:
-            return baseFloor + 2 + Mathf.Max(0, fase - 1);
+            return Mathf.Max(baseFloor + 3 + Mathf.Clamp(fase, 0, 3), strongFloor + 1);
          case BattleEncounterType.Subterraneo:
-            return baseFloor + (fase >= 2 ? 1 : 0);
+            return Mathf.Max(baseFloor + 1 + Mathf.Clamp((fase - 1) / 2, 0, 2), strongFloor);
          case BattleEncounterType.Normal:
          default:
-            return baseFloor + (fase >= 2 ? 1 : 0);
+            return Mathf.Max(baseFloor + 1 + Mathf.Clamp((fase - 1) / 2, 0, 2), strongFloor);
       }
    }
 
@@ -653,6 +1125,45 @@ public static class EncounterGenerator
       }
    }
 
+   static void EnsureMandatoryReinforcements(EncounterDefinition definition, EnemyFactionConfig faction, int maxTierAllowed)
+   {
+      if (definition == null || faction == null || definition.battleType != BattleEncounterType.AtaqueCaravana)
+      {
+         return;
+      }
+
+      int cheapestTier = GetCheapestTierAvailable(faction, maxTierAllowed);
+      if (cheapestTier == 0)
+      {
+         return;
+      }
+
+      int desiredInitialUnits = GetDesiredInitialUnits(
+         definition.battleType,
+         definition.fase,
+         Mathf.Max(1, definition.units.Count),
+         definition.initialCap);
+      int requiredTotalUnits = Mathf.Max(5, desiredInitialUnits + 1);
+      int safetyCounter = 0;
+
+      while (definition.units.Count < requiredTotalUnits && safetyCounter < 8)
+      {
+         safetyCounter++;
+         var prefab = GetPrefabFromTier(faction, cheapestTier);
+         if (prefab == null)
+         {
+            break;
+         }
+
+         definition.units.Add(new EncounterUnitSlot
+         {
+            prefab = prefab,
+            tierCost = cheapestTier,
+            spawnAsReinforcement = false
+         });
+      }
+   }
+
    static int GetLowestAvailableTierFrom(EnemyFactionConfig faction, int minTier, int maxTierAllowed)
    {
       int start = Mathf.Clamp(minTier, 1, 5);
@@ -687,54 +1198,65 @@ public static class EncounterGenerator
       return total;
    }
 
+   static int GetReinforcementDelay(BattleEncounterType battleType, int fase)
+   {
+      int minDelay;
+      int maxDelay;
+
+      switch (battleType)
+      {
+         case BattleEncounterType.Elite:
+            minDelay = 2;
+            maxDelay = 3;
+            break;
+         case BattleEncounterType.AtaqueCaravana:
+            minDelay = 1;
+            maxDelay = fase >= 3 ? 2 : 3;
+            break;
+         case BattleEncounterType.Subterraneo:
+            minDelay = 1;
+            maxDelay = 2;
+            break;
+         case BattleEncounterType.Normal:
+         default:
+            minDelay = 1;
+            maxDelay = 3;
+            break;
+      }
+
+      return UnityEngine.Random.Range(minDelay, maxDelay + 1);
+   }
+
    static int RollBudgetBonus(BattleEncounterType battleType, int fase)
    {
-      int baseSwing;
-      int spikeSwing;
-      float spikeChance;
+      int negativeSwing;
+      int positiveSwing;
 
       switch (battleType)
       {
          case BattleEncounterType.AtaqueCaravana:
-            baseSwing = 4;
-            spikeSwing = 8;
-            spikeChance = 0.15f;
+            negativeSwing = 2;
+            positiveSwing = 4;
             break;
          case BattleEncounterType.Elite:
-            baseSwing = 3;
-            spikeSwing = 5;
-            spikeChance = 0.12f;
+            negativeSwing = 1;
+            positiveSwing = 3;
             break;
          case BattleEncounterType.Subterraneo:
-            baseSwing = 3;
-            spikeSwing = 4;
-            spikeChance = 0.12f;
+            negativeSwing = 2;
+            positiveSwing = 2;
             break;
          case BattleEncounterType.Normal:
          default:
-            baseSwing = 3;
-            spikeSwing = 4;
-            spikeChance = 0.1f;
+            negativeSwing = 2;
+            positiveSwing = 2;
             break;
       }
 
-      int faseBonus = Mathf.Clamp(fase / 3, 0, 4);
-      baseSwing += faseBonus;
-      spikeSwing += faseBonus;
-
-      int bonus = UnityEngine.Random.Range(-baseSwing, baseSwing + 1);
-
-      if (UnityEngine.Random.value < spikeChance)
-      {
-         int spike = UnityEngine.Random.Range(baseSwing + 1, baseSwing + spikeSwing + 1);
-         if (UnityEngine.Random.value < 0.5f)
-         {
-            spike = -spike;
-         }
-         bonus += spike;
-      }
-
-      return bonus;
+      int faseBias = Mathf.Clamp((fase - 1) / 2, 0, 2);
+      int rollA = UnityEngine.Random.Range(-negativeSwing, positiveSwing + 1);
+      int rollB = UnityEngine.Random.Range(-1, 2);
+      return rollA + rollB + faseBias;
    }
 }
 

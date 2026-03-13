@@ -1,4 +1,4 @@
-ï»¿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ public class IARayoNecrotico : IAHabilidad
 
   void Awake()
   {
-    nombre = "Rayo NecrÃ­tico";
+    nombre = "Rayo Necrítico";
     Usuario = gameObject;
     scEstaUnidad = Usuario.GetComponent<Unidad>();
     hAncho = 2;
@@ -60,11 +60,11 @@ public class IARayoNecrotico : IAHabilidad
 
     PrepararInicioAnimacion(null, objetivo);
 
-    await Task.Delay(450);
+    await BattleManager.DelayCombateAsync(450);
 
     AplicarEfectosHabilidad(objetivo);
 
-    await Task.Delay(250);
+    await BattleManager.DelayCombateAsync(250);
   }
 
   public override void AplicarEfectosHabilidad(object obj)
@@ -83,7 +83,7 @@ public class IARayoNecrotico : IAHabilidad
     unidadObjetivo.AplicarDebuffPorAtaquesreiterados(1);
 
     BattleManager.Instance?.EscribirLog(
-      $"{scEstaUnidad.uNombre} {TRADU.i.Traducir("desata un rayo necrÃ³tico sobre")} {unidadObjetivo.uNombre}.");
+      $"{scEstaUnidad.uNombre} {TRADU.i.Traducir("desata un rayo necrótico sobre")} {unidadObjetivo.uNombre}.");
   }
 
   public override object EstablecerObjetivoPrioritario()

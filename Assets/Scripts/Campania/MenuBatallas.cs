@@ -36,6 +36,9 @@ public class MenuBatallas : MonoBehaviour
  [Header("Generador de encuentros")]
  [SerializeField] List<string> corruptFactionIds = new List<string>() { "Corruptos" };
  [SerializeField] float corruptChancePerAliento = 4f;
+ [Header("Debug de encuentros")]
+ [SerializeField] bool debugRestringirEncuentrosProcedurales = false;
+ [SerializeField] List<string> debugEncounterFactionIds = new List<string>() { "Corruptos", "Bandidos", "Vengadores de Kadryn" };
  [SerializeField] List<BattleRewardProfile> rewardProfiles = new List<BattleRewardProfile>();
  [SerializeField] BattleRewardTuning defaultRewardTuning = new BattleRewardTuning();
  const string KaleTavFactionId = "Kale'Tav";
@@ -167,7 +170,19 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
     }
 
    int fase = faseOverride > 0 ? faseOverride : Mathf.Max(1, atributosZona.FASE);
-  return EncounterGenerator.TryGenerateEncounter(atributosZona, zona, tipo, fase, out definition, factionFilter);
+   Predicate<EnemyFactionConfig> filtroEfectivo = CombinarFiltroFacciones(factionFilter);
+
+   if (EstaActivoDebugFaccionesCombate() && tipo == BattleEncounterType.Subterraneo)
+   {
+      if (EncounterGenerator.TryGenerateEncounter(atributosZona, EncounterZoneType.Generico, BattleEncounterType.Normal, fase, out definition, filtroEfectivo))
+      {
+         definition.zoneType = EncounterZoneType.Subterraneo;
+         definition.battleType = BattleEncounterType.Subterraneo;
+         return true;
+      }
+   }
+
+  return EncounterGenerator.TryGenerateEncounter(atributosZona, zona, tipo, fase, out definition, filtroEfectivo);
 }
 
  bool EsNodoActualRitualKaleTav()
@@ -213,6 +228,31 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
        }
     }
     return false;
+ }
+
+ bool EstaActivoDebugFaccionesCombate()
+ {
+    return debugRestringirEncuentrosProcedurales
+       && debugEncounterFactionIds != null
+       && debugEncounterFactionIds.Count > 0;
+ }
+
+ Predicate<EnemyFactionConfig> CombinarFiltroFacciones(Predicate<EnemyFactionConfig> factionFilter)
+ {
+    if (!EstaActivoDebugFaccionesCombate())
+    {
+       return factionFilter;
+    }
+
+    return faction =>
+    {
+       if (!EsFaccionDeLista(faction, debugEncounterFactionIds))
+       {
+          return false;
+       }
+
+       return factionFilter == null || factionFilter(faction);
+    };
  }
 
  bool DeberiaGenerarBatallaCorrupta()
@@ -592,7 +632,7 @@ public void DejanEnListaParticipantesSolo()
             bool generado = false;
             float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
 
-            if (DeberiaGenerarBatallaCorrupta())
+            if (!EstaActivoDebugFaccionesCombate() && DeberiaGenerarBatallaCorrupta())
             {
                 generado = TryGenerarEncuentro(BattleEncounterType.Normal, EncounterZoneType.Generico, f => EsFaccionDeLista(f, corruptFactionIds), out encuentroGeneradoActual);
                 if (generado)
@@ -823,7 +863,7 @@ public void DejanEnListaParticipantesSolo()
             bool generado = false;
             float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
 
-            if (DeberiaGenerarBatallaCorrupta())
+            if (!EstaActivoDebugFaccionesCombate() && DeberiaGenerarBatallaCorrupta())
             {
                 generado = TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, EncounterZoneType.Generico, f => EsFaccionDeLista(f, corruptFactionIds), out encuentroGeneradoActual);
                 if (generado)
@@ -1104,6 +1144,11 @@ public void EfectosDeBatallaEnCampaña(int resultado)
         bool debeResolverTransicionJefeZona = transicionJefeZonaPendiente;
         transicionJefeZonaPendiente = false;
         gameObject.SetActive(false);
+
+        if (!debeResolverTransicionJefeZona && CampaignManager.Instance != null)
+        {
+          CampaignManager.Instance.TryAutosaveCampania("post-batalla", out _);
+        }
 
         if (debeResolverTransicionJefeZona && CampaignManager.Instance != null)
         {

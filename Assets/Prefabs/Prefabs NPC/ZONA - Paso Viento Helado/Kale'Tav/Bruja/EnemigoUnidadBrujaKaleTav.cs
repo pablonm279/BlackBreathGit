@@ -16,7 +16,7 @@ public class EnemigoUnidadBrujaKaleTav : Unidad
         public async Task MostrarImagenSinCuervoPorTresSegundos()
         {
             uImage.sprite = imagenSinCuervo;
-            await Task.Delay(3000);
+            await BattleManager.DelayCombateAsync(3000);
             uImage.sprite = imagenConCuervo;
         }
 

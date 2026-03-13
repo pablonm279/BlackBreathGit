@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -14,7 +14,7 @@ public class IAAtaqueCuervo : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
 
     
@@ -67,11 +67,11 @@ public class IAAtaqueCuervo : IAHabilidad
     EnemigoUnidadBrujaKaleTav scEstaBruja = scEstaUnidad.GetComponent<EnemigoUnidadBrujaKaleTav>();
     scEstaBruja.MostrarImagenSinCuervoPorTresSegundos();
 
-    await Task.Delay(1200);
+    await BattleManager.DelayCombateAsync(1200);
     //Esto es cuando el objetivo es uno solo,
     AplicarEfectosHabilidad(Objetivo);
       
-    await Task.Delay(1000);
+    await BattleManager.DelayCombateAsync(1000);
       
    }
 
@@ -93,7 +93,7 @@ public class IAAtaqueCuervo : IAHabilidad
         objetivo.RecibirDanio(danio, 1, false, scEstaUnidad);
 
         /////////////////////////////////////////////
-        //BUFF ---- As√≠ se aplica un buff/debuff
+        //BUFF ---- AsÌ se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Ciego";
         buff.boolfDebufftBuff = false;
@@ -102,7 +102,7 @@ public class IAAtaqueCuervo : IAHabilidad
         buff.cantDefensa -= 2;
         buff.cantTsReflejos -= 1;
         buff.AplicarBuff(objetivo);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
       }
       
@@ -123,16 +123,16 @@ public class IAAtaqueCuervo : IAHabilidad
    RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
 
     }
-    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun l√≥gica
+    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lÛgica
    {
     
-    // Obtener la unidad due√±a
-    Unidad unidadDue√±a = gameObject.GetComponent<Unidad>();
-    if (unidadDue√±a == null) return null;
+    // Obtener la unidad dueÒa
+    Unidad unidadDueÒa = gameObject.GetComponent<Unidad>();
+    if (unidadDueÒa == null) return null;
   
     var unidades = objPosibles.OfType<Unidad>().ToList();
   
-  // Remover las unidades inm√≥viles recorriendo de atr√°s hacia adelante
+  // Remover las unidades inmÛviles recorriendo de atr·s hacia adelante
     for (int i = unidades.Count - 1; i >= 0; i--)
     {
       if (unidades[i].estado_inmovil > 0)
@@ -143,7 +143,7 @@ public class IAAtaqueCuervo : IAHabilidad
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderBy(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDue√±a.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueÒa.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la ultima (la mas cercana)

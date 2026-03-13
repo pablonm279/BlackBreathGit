@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -13,7 +13,7 @@ public abstract class Trampa : MonoBehaviour
     public bool esTrampaFavorable = false; //true si es una trampa favorable, false si es desfavorable
     public int intUsos;
     public int intDuracionTurnos;   //duracion de la trampa en turnos, si es persistente se aplica cada turno
-    public bool esPersistente; //persistente significa que aplica sus efectos cada turno a quien est√° arriba o solo cuando lo pisan
+    public bool esPersistente; //persistente significa que aplica sus efectos cada turno a quien est· arriba o solo cuando lo pisan
    
 
     public Unidad unidadCreadora { get; private set; }
@@ -85,7 +85,7 @@ public abstract class Trampa : MonoBehaviour
 
     private async void StartCanvasSorting()
     {
-        await Task.Delay(100); // Delay m√≠nimo de 100ms
+        await BattleManager.DelayCombateAsync(100); // Delay mÌnimo de 100ms
 
         var canvas = GetComponentInChildren<Canvas>();
         var casilla = GetComponent<Casilla>();

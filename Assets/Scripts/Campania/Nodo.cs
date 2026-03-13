@@ -496,8 +496,61 @@ public class Nodo : MonoBehaviour
     gameObject.SetActive(true);
   }
 
+  public void RestaurarDesdeSave(NodeSaveData data)
+  {
+    if (data == null)
+    {
+      return;
+    }
+
+    gameObject.SetActive(true);
+    tipoNodo = data.tipoNodo;
+    nodoDespejado = data.nodoDespejado;
+    cantidadConexiones = 0;
+    costoMovimiento = data.costoMovimiento;
+    revelado = data.revelado;
+    yatiroConexiones = data.yatiroConexiones;
+    nodoIncendiado = data.nodoIncendiado;
+    nodoRitual = data.nodoRitual;
+    DestinosPosibles.Clear();
+    vieneDeNodo = null;
+    AplicarVisualGuardado(data.visualCode, data.esMisterioso);
+    SincronizarVFXPersistentes();
+    gameObject.SetActive(data.activo);
+  }
+
+  public void AplicarVisualGuardado(int visualCode, bool estadoMisterioso)
+  {
+    DesactivarGraficosNodo();
+    esMisterioso = estadoMisterioso;
+    numVisualActual = visualCode;
+
+    int codigoAAplicar = numVisualActual > 0 ? numVisualActual : tipoNodo;
+    if (codigoAAplicar <= 0)
+    {
+      ActivarVisualBaseNoRevelado();
+      return;
+    }
+
+    if (!ActivarVisualPorCodigo(codigoAAplicar))
+    {
+      numVisualActual = -1;
+      ActivarVisualBaseNoRevelado();
+    }
+  }
+
+  public void RefrescarCaminosMarcadosDesdeEstadoActual()
+  {
+    MarcarCaminosPosibles();
+  }
+
   public void PosicionarObjetoEnNodo(GameObject go)
   {
+    if (go == null)
+    {
+      return;
+    }
+
     go.transform.position = transform.position;
   }
 
@@ -1086,10 +1139,11 @@ if (esLaLider)
       {
         if (!yaAvisoLog)
         {
+          string textoTirada = TRADU.i.Traducir("Tirada: ");
           if (!string.IsNullOrEmpty(actividadExploradorON))
-            CampaignManager.Instance.EscribirLog("<color=#7ED6F7>-" + actividadExploradorON + TRADU.i.Traducir(" ha Explorado con Éxito el camino adelante.</color>") + $"(Tirada: {tirada} < {cappedChance})");
+            CampaignManager.Instance.EscribirLog("<color=#7ED6F7>-" + actividadExploradorON + TRADU.i.Traducir(" ha Explorado con Éxito el camino adelante.</color>") + $"({textoTirada}{tirada} < {cappedChance})");
           else
-            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("<color=#7ED6F7>-Durante el Descanso, se ha Explorado con Éxito el camino adelante.</color>") + $"(Tirada: {tirada} < {cappedChance})");
+            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("<color=#7ED6F7>-Durante el Descanso, se ha Explorado con Éxito el camino adelante.</color>") + $"({textoTirada}{tirada} < {cappedChance})");
 
           yaAvisoLog = true;
         }
@@ -1207,7 +1261,11 @@ if (esLaLider)
     Invoke("SincronizarVFXPersistentes", 0.1f);
 
     int codigoAAplicar = numVisualActual > 0 ? numVisualActual : tipoNodo;
-    if (codigoAAplicar <= 0) return;
+    if (codigoAAplicar <= 0)
+    {
+      ActivarVisualBaseNoRevelado();
+      return;
+    }
     DesactivarGraficosNodo();
 
     bool visualActivado = ActivarVisualPorCodigo(codigoAAplicar);
@@ -1222,7 +1280,11 @@ if (esLaLider)
         numVisualActual = tipoNodo;
     }
 
-    if (!visualActivado) return;
+    if (!visualActivado)
+    {
+      ActivarVisualBaseNoRevelado();
+      return;
+    }
 
     if (CampaignManager.Instance != null &&
         CampaignManager.Instance.scMapaManager != null &&
@@ -1336,6 +1398,33 @@ if (esLaLider)
         child.gameObject.SetActive(nodoRitual);
       }
     }
+  }
+
+  void ActivarVisualBaseNoRevelado()
+  {
+    if (transform.childCount == 0)
+    {
+      return;
+    }
+
+    Transform visualBase = transform.GetChild(0);
+    if (visualBase == null)
+    {
+      return;
+    }
+
+    visualBase.gameObject.SetActive(true);
+
+    if (visualBase.childCount == 0)
+    {
+      return;
+    }
+
+    bool mostrarSubVisual = CampaignManager.Instance == null
+      || CampaignManager.Instance.scAtributosZona == null
+      || CampaignManager.Instance.scAtributosZona.ID != 3;
+
+    visualBase.GetChild(0).gameObject.SetActive(mostrarSubVisual);
   }
 
   bool EstaPermitidoEnZona(Nodo nodo, int zonaId)
@@ -2021,6 +2110,16 @@ private static float CalcularPitchSubterraneo(float progreso, float tramoEntrada
   }
 
   return 0f;
+}
+
+public int ObtenerVisualCodeActual()
+{
+  return numVisualActual;
+}
+
+public bool ObtenerEstadoMisterioso()
+{
+  return esMisterioso;
 }
 
 private static float CalcularIntensidadSubterranea(float progreso, float tramoEntradaSalida)

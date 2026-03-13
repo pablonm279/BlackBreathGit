@@ -114,7 +114,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
         // Calidad grafica
         int calidadIndex = PlayerPrefs.GetInt("graficos_index", QualitySettings.GetQualityLevel());
-//        print($"Obteniendo calidad grafica nivel {calidadIndex}");
+        //        print($"Obteniendo calidad grafica nivel {calidadIndex}");
 
         QualitySettings.SetQualityLevel(calidadIndex, true);
         PlayerPrefs.SetInt("graficos_index", calidadIndex); // asegura persistencia inmediata
@@ -144,8 +144,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         {
             musicaFondo.GetComponent<MusicManager>().SetVolumen(volMusicaSlider.value);
         }
-        else {    musicaFondo.volume = volMusicaSlider.value;}
-     
+        else { musicaFondo.volume = volMusicaSlider.value; }
+
 
         // Sonido en segundo plano
         PlayerPrefs.SetInt("Background_Sound", musicInBackgroundToggle.isOn ? 1 : 0);
@@ -355,7 +355,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         PlayerPrefs.SetInt("dificultad_index", index);
         PlayerPrefs.Save();
 
-        if (CampaignManager.Instance != null) {CampaignManager.Instance.AjustarDificultad(); }
+        if (CampaignManager.Instance != null) { CampaignManager.Instance.AjustarDificultad(); }
     }
 
     void TraducirDropdownGraficos()
@@ -545,6 +545,29 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             restartRequiredText.text = text;
         }
     }
+
+
+    public GameObject confirmarSalir;
+
+
+    public void btnSalir()
+    {
+        if (confirmarSalir != null)
+        {
+            confirmarSalir.SetActive(true);
+        }
+        else
+        {
+            OnSalir();
+        }
+    }
+
+    public void noSalir()
+    {
+
+        confirmarSalir.SetActive(false);
+    }    
+       
 
 
 }

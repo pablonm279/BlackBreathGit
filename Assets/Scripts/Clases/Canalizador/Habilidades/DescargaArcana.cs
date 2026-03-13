@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,10 +15,10 @@ public class DescargaArcana : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
     private int hAlcance = 4;
-    private int hAncho = 1; //1 - adyancentes tambi√©n
+    private int hAncho = 1; //1 - adyancentes tambiÈn
      public override void  Awake()
     {
       nombre = "Descarga Arcana";
@@ -95,7 +95,7 @@ public class DescargaArcana : Habilidad
         cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}){bonusTexto} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
         cuerpo += $"<b>Danio:</b> 1d10 + 1 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Arcano";
 
-        string costos = $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM} ";
+        string costos = $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM} ";
 
         txtDescripcion = ConstruirDescripcionEstandar(
           "Descarga Arcana",
@@ -155,7 +155,7 @@ public class DescargaArcana : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
-     if(obj is Unidad) //Ac√° van los efectos a Unidades.
+     if(obj is Unidad) //Ac· van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -215,7 +215,7 @@ public class DescargaArcana : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -239,7 +239,7 @@ public class DescargaArcana : Habilidad
 
     private async Task LanzarProyectilAsync(object objetivo)
     {
-        await Task.Delay(50);
+        await BattleManager.DelayCombateAsync(50);
 
         GameObject proyectilPrefab = BattleManager.Instance.contenedorPrefabs.DescargaArcana;
         if (proyectilPrefab == null)
@@ -267,7 +267,7 @@ public class DescargaArcana : Habilidad
         }
         else
         {
-            await Task.Delay(200);
+            await BattleManager.DelayCombateAsync(200);
         }
     }
 

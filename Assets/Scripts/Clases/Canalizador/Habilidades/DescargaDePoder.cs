@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class DescargaDePoder : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
    
     public override void  Awake()
@@ -99,7 +99,7 @@ public class DescargaDePoder : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})";
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : tituloEs,
@@ -110,7 +110,7 @@ public class DescargaDePoder : Habilidad
         costos,
         "#5dade2");
 
-      bool mostrarProximoNivel = EsEscenaCampa√±a() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      bool mostrarProximoNivel = EsEscenaCampaÒa() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)
       {
         return;
@@ -180,7 +180,7 @@ public class DescargaDePoder : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Ac√° van los efectos a Unidades.
+     if(obj is Unidad) //Ac· van los efectos a Unidades.
      { 
       
         Unidad objetivo = (Unidad)obj;
@@ -254,7 +254,7 @@ public class DescargaDePoder : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -289,7 +289,7 @@ public class DescargaDePoder : Habilidad
 
     private async Task LanzarProyectilFilaAsync(Casilla casillaClick)
     {
-        await Task.Delay(10);
+        await BattleManager.DelayCombateAsync(10);
 
         int filaY = casillaClick.posY;
         int ladoRef = casillaClick.lado;
@@ -360,7 +360,7 @@ public class DescargaDePoder : Habilidad
         }
         else
         {
-            await Task.Delay(400);
+            await BattleManager.DelayCombateAsync(400);
         }
     }
 

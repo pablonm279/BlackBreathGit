@@ -26,73 +26,34 @@ public class btnItemInventario : MonoBehaviour
 
        if (itemRepresentado.GetComponent<Arma>() != null)
       {
-
-
-        if (itemRepresentado.GetComponent<Arma>().requisitoAgi > scMenuPersonajes.pSel.iAgi) { return; }
-        if (itemRepresentado.GetComponent<Arma>().requisitoFue > scMenuPersonajes.pSel.iFuerza) { return; }
-        if (itemRepresentado.GetComponent<Arma>().requisitoPoder > scMenuPersonajes.pSel.iPoder) { return; }
-
-        scMenuPersonajes.pSel.itemArma = (Arma)itemRepresentado;
-
-        scMenuPersonajes.scEquipo.listInventario.Remove(itemRepresentado.gameObject);
+        if (!scMenuPersonajes.EquiparArmaDesdeInventario((Arma)itemRepresentado)) { return; }
         scMenuPersonajes.scEquipo.CerrarInventario();
         Invoke("ActualizarInfoDelay", 0.1f);
-
+        return;
       }
 
          if(itemRepresentado.GetComponent<Armadura>() != null)
         {
-         
-         if(itemRepresentado.GetComponent<Armadura>().requisitoAgi > scMenuPersonajes.pSel.iAgi){ return;}
-         if(itemRepresentado.GetComponent<Armadura>().requisitoFue > scMenuPersonajes.pSel.iFuerza){ return;}
-         if(itemRepresentado.GetComponent<Armadura>().requisitoPoder > scMenuPersonajes.pSel.iPoder){ return;}
-          
-          scMenuPersonajes.pSel.itemArmadura = (Armadura)itemRepresentado;
-            
-          scMenuPersonajes.scEquipo.listInventario.Remove(itemRepresentado.gameObject);
+          if (!scMenuPersonajes.EquiparArmaduraDesdeInventario((Armadura)itemRepresentado)) { return; }
           scMenuPersonajes.scEquipo.CerrarInventario();
           Invoke("ActualizarInfoDelay", 0.1f);
-            
+          return;
         }
 
          if(itemRepresentado.GetComponent<Accesorio>() != null)
         {
-         
-         if(itemRepresentado.GetComponent<Accesorio>().requisitoAgi > scMenuPersonajes.pSel.iAgi){ return;}
-         if(itemRepresentado.GetComponent<Accesorio>().requisitoFue > scMenuPersonajes.pSel.iFuerza){ return;}
-         if(itemRepresentado.GetComponent<Accesorio>().requisitoPoder > scMenuPersonajes.pSel.iPoder){ return;}
-          
-          if(transform.parent.parent.gameObject.GetComponent<Equipo>().accesorioACambiar == 1)
-          {
-            scMenuPersonajes.pSel.Accesorio1 = (Accesorio)itemRepresentado;
-          }
-          if(transform.parent.parent.gameObject.GetComponent<Equipo>().accesorioACambiar == 2)
-          {
-            scMenuPersonajes.pSel.Accesorio2 = (Accesorio)itemRepresentado;
-          }
-            
-          scMenuPersonajes.scEquipo.listInventario.Remove(itemRepresentado.gameObject);
+          if (!scMenuPersonajes.EquiparAccesorioDesdeInventario((Accesorio)itemRepresentado)) { return; }
           scMenuPersonajes.scEquipo.CerrarInventario();
           Invoke("ActualizarInfoDelay", 0.1f);
-            
+          return;
         }
 
          if(itemRepresentado.GetComponent<Consumible>() != null)
         {
-          
-          if(transform.parent.parent.gameObject.GetComponent<Equipo>().consumibleACambiar == 1)
-          {
-            scMenuPersonajes.pSel.Consumible1 = (Consumible)itemRepresentado;
-          }
-         if(transform.parent.parent.gameObject.GetComponent<Equipo>().consumibleACambiar == 2)
-          {
-            scMenuPersonajes.pSel.Consumible2 = (Consumible)itemRepresentado;
-          }
-            
-          scMenuPersonajes.scEquipo.listInventario.Remove(itemRepresentado.gameObject);
+          if (!scMenuPersonajes.EquiparConsumibleDesdeInventario((Consumible)itemRepresentado)) { return; }
           scMenuPersonajes.scEquipo.CerrarInventario();
           Invoke("ActualizarInfoDelay", 0.1f);
-            
+          return;
         }
 
       

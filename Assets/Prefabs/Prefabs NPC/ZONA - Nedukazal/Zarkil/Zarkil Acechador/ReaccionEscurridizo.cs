@@ -43,7 +43,7 @@ public class ReaccionEscurridizo : Reaccion
     {
       int indiceAleatorio = Random.Range(0, casillasAdyacentesLibres.Count);
       Casilla casillaDestino = casillasAdyacentesLibres[indiceAleatorio];
-      await Task.Delay(200); //pequeña espera para que no se vea tan brusco el movimiento
+      await BattleManager.DelayCombateAsync(200); //pequeña espera para que no se vea tan brusco el movimiento
       scEstaUnidad.CasillaForzadoaMover = casillaDestino;
     }
         

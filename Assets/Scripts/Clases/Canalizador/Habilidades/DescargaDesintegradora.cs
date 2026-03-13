@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class DescargaDesintegradora : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
    
     public override void  Awake()
@@ -45,7 +45,7 @@ public class DescargaDesintegradora : Habilidad
       imHab = Resources.Load<Sprite>("imHab/Canalizador_DescargaDesintegradora");
       
 
-      requiereRecurso = 2; //Requiere tener 2 Tier energ√≠a 
+      requiereRecurso = 2; //Requiere tener 2 Tier energÌa 
 
     }
 
@@ -113,7 +113,7 @@ public class DescargaDesintegradora : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})\n- Requires Energy Tier: {energiaRequerida}+"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})\n- Requiere Nivel de Energia: {energiaRequerida}+";
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})\n- Requiere Nivel de Energia: {energiaRequerida}+";
 
     txtDescripcion = ConstruirDescripcionEstandar(
       esIngles ? tituloEn : tituloEs,
@@ -124,7 +124,7 @@ public class DescargaDesintegradora : Habilidad
       costos,
       "#e67e22");
 
-    bool mostrarProximoNivel = EsEscenaCampa√±a() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    bool mostrarProximoNivel = EsEscenaCampaÒa() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)
     {
       return;
@@ -159,7 +159,7 @@ public class DescargaDesintegradora : Habilidad
 
   public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
   {
-    // El log de uso ahora est√° centralizado en Habilidad.Resolver
+    // El log de uso ahora est· centralizado en Habilidad.Resolver
   await  base.Resolver(Objetivos);
 
     if (NIVEL != 4) { scEstaUnidad.estado_aturdido+=1; print(6565); }
@@ -176,7 +176,7 @@ public class DescargaDesintegradora : Habilidad
         }
 
         int ms = Mathf.RoundToInt(Mathf.Max(0.1f, delay) * 1000f);
-        return Task.Delay(ms);
+        return BattleManager.DelayCombateAsync(ms);
     }
 
     protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
@@ -187,7 +187,7 @@ public class DescargaDesintegradora : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Ac√° van los efectos a Unidades.
+     if(obj is Unidad) //Ac· van los efectos a Unidades.
      { 
       
         Unidad objetivo = (Unidad)obj;       
@@ -261,7 +261,7 @@ public class DescargaDesintegradora : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---

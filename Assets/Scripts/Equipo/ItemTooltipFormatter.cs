@@ -726,6 +726,17 @@ public static class ItemTooltipFormatter
             return string.Empty;
         }
 
+        if (tipo.StartsWith("REPRESENTACION"))
+        {
+            string tituloDescripcion = ObtenerTituloDescripcionHabilidad(habilidad);
+            if (!string.IsNullOrWhiteSpace(tituloDescripcion))
+            {
+                return tituloDescripcion;
+            }
+
+            tipo = tipo.Substring("REPRESENTACION".Length);
+        }
+
         StringBuilder sb = new StringBuilder(tipo.Length + 8);
         for (int i = 0; i < tipo.Length; i++)
         {
@@ -738,6 +749,43 @@ public static class ItemTooltipFormatter
         }
 
         return sb.ToString();
+    }
+
+    private static string ObtenerTituloDescripcionHabilidad(Habilidad habilidad)
+    {
+        string descripcion = habilidad.txtDescripcion;
+        if (string.IsNullOrWhiteSpace(descripcion))
+        {
+            try
+            {
+                habilidad.ActualizarDescripcion();
+                descripcion = habilidad.txtDescripcion;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(descripcion))
+        {
+            return string.Empty;
+        }
+
+        int inicioTitulo = descripcion.IndexOf("<b>");
+        if (inicioTitulo < 0)
+        {
+            return string.Empty;
+        }
+
+        inicioTitulo += 3;
+        int finTitulo = descripcion.IndexOf("</b>", inicioTitulo);
+        if (finTitulo <= inicioTitulo)
+        {
+            return string.Empty;
+        }
+
+        return descripcion.Substring(inicioTitulo, finTitulo - inicioTitulo).Trim();
     }
 
     private static string Traducir(string txt)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class Equipo : MonoBehaviour
 {
@@ -28,6 +29,49 @@ public class Equipo : MonoBehaviour
 
  public int accesorioACambiar;
  public int consumibleACambiar;
+
+ public void ConfigurarClickDerechoSlots(MenuPersonajes menuPersonajes)
+ {
+    ConfigurarClickDerechoSlot(imItemArma, menuPersonajes, EquipoSlotPointerHandler.TipoSlot.Arma);
+    ConfigurarClickDerechoSlot(imItemArmadura, menuPersonajes, EquipoSlotPointerHandler.TipoSlot.Armadura);
+    ConfigurarClickDerechoSlot(imItemAccesorio1, menuPersonajes, EquipoSlotPointerHandler.TipoSlot.Accesorio1);
+    ConfigurarClickDerechoSlot(imItemAccesorio2, menuPersonajes, EquipoSlotPointerHandler.TipoSlot.Accesorio2);
+    ConfigurarClickDerechoSlot(imItemConsumible1, menuPersonajes, EquipoSlotPointerHandler.TipoSlot.Consumible1);
+    ConfigurarClickDerechoSlot(imItemConsumible2, menuPersonajes, EquipoSlotPointerHandler.TipoSlot.Consumible2);
+ }
+
+ private static Transform ObtenerRaizSlotInteractivo(Transform origen)
+ {
+    Transform actual = origen;
+    while (actual != null)
+    {
+      if (actual.GetComponent<EventTrigger>() != null || actual.GetComponent<Button>() != null)
+      {
+        return actual;
+      }
+
+      actual = actual.parent;
+    }
+
+    return origen;
+ }
+
+ private static void ConfigurarClickDerechoSlot(Image imagenSlot, MenuPersonajes menuPersonajes, EquipoSlotPointerHandler.TipoSlot tipoSlot)
+ {
+    if (imagenSlot == null || menuPersonajes == null)
+    {
+      return;
+    }
+
+    Transform raizSlot = ObtenerRaizSlotInteractivo(imagenSlot.transform);
+    EquipoSlotPointerHandler handler = raizSlot.GetComponent<EquipoSlotPointerHandler>();
+    if (handler == null)
+    {
+      handler = raizSlot.gameObject.AddComponent<EquipoSlotPointerHandler>();
+    }
+
+    handler.Configurar(menuPersonajes, tipoSlot);
+ }
 
  private bool PuedeMostrarPorClase(Item item)
  {

@@ -374,7 +374,8 @@ public void RemoverBuff(Unidad unidad)
     }
     
     bool suprimirPorInicioCombate = (BattleManager.Instance != null && BattleManager.Instance.silenciarLogCombate);
-    if (!suprimeTextoFlotante && (!suprimirPorInicioCombate || forzarTextoFlotanteInicioCombate))
+    bool suprimirTextoFinBuff = !string.IsNullOrEmpty(buffNombre) && buffNombre.StartsWith("Vista Lejana");
+    if (!suprimeTextoFlotante && !suprimirTextoFinBuff && (!suprimirPorInicioCombate || forzarTextoFlotanteInicioCombate))
     {
         unidad.GenerarTextoFlotante("<s>" +  TRADU.i.Traducir(buffNombre) + "</s>", Color.cyan, FloatingTextContext.BuffEnd);
     }

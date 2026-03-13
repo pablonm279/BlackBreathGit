@@ -17,9 +17,9 @@ public class MenuSequitos : MonoBehaviour
    public GameObject Sequito010Clerigos;
    public GameObject Sequito011Esclavos;
    public List<int> lstSequitos = new List<int>();
-   public void AgregarSequito(int ID) //Agregarlos tmb en MenuNodoPersonaje!!
+   public void AgregarSequito(int ID, bool aplicarEfectosEntrada = true) //Agregarlos tmb en MenuNodoPersonaje!!
    {
-      if (ID == 1)
+      if (ID == 1 && !CampaignManager.Instance.scMenuSequito.TieneSequito(1))
       {
          GameObject goSequito = Instantiate(Sequito001Herreros, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
@@ -28,7 +28,7 @@ public class MenuSequitos : MonoBehaviour
          lstSequitos.Add(1);
       }
 
-      if (ID == 2)
+      if (ID == 2 && !CampaignManager.Instance.scMenuSequito.TieneSequito(2))
       {
          GameObject goSequito = Instantiate(Sequito002Curanderos, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
@@ -36,7 +36,7 @@ public class MenuSequitos : MonoBehaviour
          scSequito.txtNombre.text =  TRADU.i.Traducir("Séquito de Curanderos");
          lstSequitos.Add(2);
       }
-      if (ID == 3)
+      if (ID == 3 && !CampaignManager.Instance.scMenuSequito.TieneSequito(3))
       {
          GameObject goSequito = Instantiate(Sequito003Mercaderes, transform.GetChild(2).gameObject.transform);
          Sequito scSequito = goSequito.GetComponent<Sequito>();
@@ -54,9 +54,12 @@ public class MenuSequitos : MonoBehaviour
          scSequito.txtNombre.text = TRADU.i.Traducir("Séquito de Artistas");
          lstSequitos.Add(4);
 
-         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Se ha unido el Séquito de Artistas a la caravana. +25 Civiles"));
-         CampaignManager.Instance.CambiarCivilesActuales(25);
-         CampaignManager.Instance.CambiarEsperanzaActual(+15);
+         if (aplicarEfectosEntrada)
+         {
+            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Se ha unido el Séquito de Artistas a la caravana. +25 Civiles"));
+            CampaignManager.Instance.CambiarCivilesActuales(25);
+            CampaignManager.Instance.CambiarEsperanzaActual(+15);
+         }
 
       }
       if (ID == 5 && !CampaignManager.Instance.scMenuSequito.TieneSequito(5))
@@ -68,8 +71,11 @@ public class MenuSequitos : MonoBehaviour
          scSequito.txtNombre.text = TRADU.i.Traducir("Séquito de Herboristas");
          lstSequitos.Add(5);
 
-         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Se ha unido el Séquito de Herboristas a la caravana. +10 Civiles"));
-         CampaignManager.Instance.CambiarCivilesActuales(10);
+         if (aplicarEfectosEntrada)
+         {
+            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Se ha unido el Séquito de Herboristas a la caravana. +10 Civiles"));
+            CampaignManager.Instance.CambiarCivilesActuales(10);
+         }
       }
       if (ID == 6 && !CampaignManager.Instance.scMenuSequito.TieneSequito(6))
       {
@@ -80,9 +86,12 @@ public class MenuSequitos : MonoBehaviour
          scSequito.txtNombre.text = TRADU.i.Traducir("Séquito de Desertores");
          lstSequitos.Add(6);
 
-         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Desertores se han unido a la Caravana. +15 Civiles -8 Esperanza"));
-         CampaignManager.Instance.CambiarCivilesActuales(15);
-         CampaignManager.Instance.CambiarEsperanzaActual(-8);
+         if (aplicarEfectosEntrada)
+         {
+            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Desertores se han unido a la Caravana. +15 Civiles -8 Esperanza"));
+            CampaignManager.Instance.CambiarCivilesActuales(15);
+            CampaignManager.Instance.CambiarEsperanzaActual(-8);
+         }
       }
       if (ID == 7 && !CampaignManager.Instance.scMenuSequito.TieneSequito(7))
       {
@@ -93,8 +102,11 @@ public class MenuSequitos : MonoBehaviour
          scSequito.txtNombre.text = TRADU.i.Traducir("Séquito de Cronistas");
          lstSequitos.Add(7);
 
-         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas se han unido a la Caravana. +10 Civiles"));
-         CampaignManager.Instance.CambiarCivilesActuales(10);
+         if (aplicarEfectosEntrada)
+         {
+            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Cronistas se han unido a la Caravana. +10 Civiles"));
+            CampaignManager.Instance.CambiarCivilesActuales(10);
+         }
       }
       if (ID == 8 && !CampaignManager.Instance.scMenuSequito.TieneSequito(8))
       {
@@ -105,9 +117,12 @@ public class MenuSequitos : MonoBehaviour
          scSequito.txtNombre.text = TRADU.i.Traducir("Séquito de Refugiados");
          lstSequitos.Add(8);
 
-         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Refugiados se han unido a la Caravana. +35 Civiles  +30 Esperanza"));
-         CampaignManager.Instance.CambiarCivilesActuales(35);
-         CampaignManager.Instance.CambiarEsperanzaActual(30);
+         if (aplicarEfectosEntrada)
+         {
+            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Refugiados se han unido a la Caravana. +35 Civiles  +30 Esperanza"));
+            CampaignManager.Instance.CambiarCivilesActuales(35);
+            CampaignManager.Instance.CambiarEsperanzaActual(30);
+         }
       }
       if (ID == 9 && !CampaignManager.Instance.scMenuSequito.TieneSequito(9))
       {
@@ -118,8 +133,11 @@ public class MenuSequitos : MonoBehaviour
          scSequito.txtNombre.text = TRADU.i.Traducir("Séquito de Nobles");
          lstSequitos.Add(9);
 
-         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Nobles se han unido a la Caravana. +25 Civiles"));
-         CampaignManager.Instance.CambiarCivilesActuales(25);
+         if (aplicarEfectosEntrada)
+         {
+            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Nobles se han unido a la Caravana. +25 Civiles"));
+            CampaignManager.Instance.CambiarCivilesActuales(25);
+         }
       }
       if (ID == 10 && !CampaignManager.Instance.scMenuSequito.TieneSequito(10))
       {
@@ -130,9 +148,12 @@ public class MenuSequitos : MonoBehaviour
          scSequito.txtNombre.text = TRADU.i.Traducir("Séquito de Clérigos");
          lstSequitos.Add(10);
 
-         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Clérigos del Sol Purificador se han unido a la Caravana. +20 Civiles +15 Esperanza"));
-         CampaignManager.Instance.CambiarCivilesActuales(20);
-         CampaignManager.Instance.CambiarEsperanzaActual(15);
+         if (aplicarEfectosEntrada)
+         {
+            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Clérigos del Sol Purificador se han unido a la Caravana. +20 Civiles +15 Esperanza"));
+            CampaignManager.Instance.CambiarCivilesActuales(20);
+            CampaignManager.Instance.CambiarEsperanzaActual(15);
+         }
       }
       if (ID == 11 && !CampaignManager.Instance.scMenuSequito.TieneSequito(11))
       {
@@ -143,9 +164,12 @@ public class MenuSequitos : MonoBehaviour
          scSequito.txtNombre.text = TRADU.i.Traducir("Séquito de Esclavos");
          lstSequitos.Add(11);
 
-         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Esclavos se han unido a la Caravana. +30 Civiles"));
-         CampaignManager.Instance.CambiarCivilesActuales(30);
-         CampaignManager.Instance.CambiarBueyesActuales(0); // Actualiza la capacidad de carga al liberar esclavos, 0 porque no cambia nada
+         if (aplicarEfectosEntrada)
+         {
+            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Esclavos se han unido a la Caravana. +30 Civiles"));
+            CampaignManager.Instance.CambiarCivilesActuales(30);
+            CampaignManager.Instance.CambiarBueyesActuales(0); // Actualiza la capacidad de carga al liberar esclavos, 0 porque no cambia nada
+         }
 
 
       }

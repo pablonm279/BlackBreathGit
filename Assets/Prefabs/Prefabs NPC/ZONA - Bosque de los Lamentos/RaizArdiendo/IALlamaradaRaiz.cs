@@ -72,11 +72,11 @@ public class IALlamaradaRaiz : IAHabilidad
 
     PrepararInicioAnimacion(null, objetivo);
 
-    await Task.Delay(450);
+    await BattleManager.DelayCombateAsync(450);
 
     AplicarEfectosHabilidad(objetivo);
 
-    await Task.Delay(250);
+    await BattleManager.DelayCombateAsync(250);
   }
 
   public override void AplicarEfectosHabilidad(object obj)

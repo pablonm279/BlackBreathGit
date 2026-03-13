@@ -925,6 +925,9 @@ public class TRADU : MonoBehaviour
             case "% - Tirada: 1d100 = ":
                 r = "% - Roll: 1d100 = ";
                 break;
+            case "Tirada: ":
+                r = "Roll: ";
+                break;
             case "-La caravana han sufrido un Ataque durante el descanso. Probabilidades ":
                 r = "-The caravan suffered an attack during rest. Chances ";
                 break;
@@ -3817,7 +3820,7 @@ public class TRADU : MonoBehaviour
             case "Reflejos":
                 r = "Reflexes";
                 break;
-              case "":
+            case "":
                 r = "";
                 break;
             case "Mental":
@@ -3832,7 +3835,7 @@ public class TRADU : MonoBehaviour
             case "Defender":
                 r = "Defend";
                 break;
-              case "Huir":
+            case "Huir":
                 r = "Flee";
                 break;
             case "Asentamiento":
@@ -3847,7 +3850,7 @@ public class TRADU : MonoBehaviour
             case "Derrota: ":
                 r = "Defeat: ";
                 break;
-              case "-Victoria contra ":
+            case "-Victoria contra ":
                 r = "-Victory against ";
                 break;
             case "-Derrota frente a ":
@@ -3862,7 +3865,7 @@ public class TRADU : MonoBehaviour
             case "Torpe: +1 Rango Pifias":
                 r = "Clumsy: +1 Range Miss.";
                 break;
-              case "Poción de Curación Media":
+            case "Poción de Curación Media":
                 r = "Medium Healing Potion";
                 break;
             case "objetivo":
@@ -3877,7 +3880,7 @@ public class TRADU : MonoBehaviour
             case "Bonus daño elemental Acido.":
                 r = "Acid Elemental Damage Bonus.";
                 break;
-              case "Bonus daño elemental Arcano.":
+            case "Bonus daño elemental Arcano.":
                 r = "Arcane Elemental Damage Bonus.";
                 break;
             case "Bonus daño elemental Fuego.":
@@ -4216,130 +4219,130 @@ public class TRADU : MonoBehaviour
             case "Mandoble Caótico":
                 r = "Chaotic Greatsword";
                 break;
-             case "Impacto Caótico":
+            case "Impacto Caótico":
                 r = "Chaotic Impact";
                 break;
             case "Guantelete de Llamas":
                 r = "Flame Gauntlet";
                 break;
-             case "Guantelete Estrella":
+            case "Guantelete Estrella":
                 r = "Star Gauntlet";
                 break;
-             case "Grieta Arcana":
+            case "Grieta Arcana":
                 r = "Arcane Rift";
-               break;
-           /*  case "Este séquito está constituido por varios mercaderes que han tenido que abandonar sus tiendas, pero que no han renunciado a su mercadería. Están dispuestos a comercial a precios rebajados pero sin renunciar al menos a una mínima ganancia.":
-                r = "This retinue is made up of several merchants who have had to abandon their shops, but have not given up on their merchandise. They are willing to trade at discounted prices but without giving up at least a minimal profit.";
-                break;*/
-           /*  case "El Séquito de Curanderos se encarga de atender a los heridos y enfermos de la Caravana. Pese a las circunstancias del viaje mismo, logran mantenerse en funcionamiento y brindan un servicio escencial para la supervivencia de quienes lo necesiten.":
-                r = "The Healers' Retinue is responsible for attending to the wounded and sick of the Caravan. Despite the circumstances of the journey itself, they manage to remain operational and provide an essential service for the survival of those who need it.";
-                break;*/
+                break;
+            /*  case "Este séquito está constituido por varios mercaderes que han tenido que abandonar sus tiendas, pero que no han renunciado a su mercadería. Están dispuestos a comercial a precios rebajados pero sin renunciar al menos a una mínima ganancia.":
+                 r = "This retinue is made up of several merchants who have had to abandon their shops, but have not given up on their merchandise. They are willing to trade at discounted prices but without giving up at least a minimal profit.";
+                 break;*/
+            /*  case "El Séquito de Curanderos se encarga de atender a los heridos y enfermos de la Caravana. Pese a las circunstancias del viaje mismo, logran mantenerse en funcionamiento y brindan un servicio escencial para la supervivencia de quienes lo necesiten.":
+                 r = "The Healers' Retinue is responsible for attending to the wounded and sick of the Caravan. Despite the circumstances of the journey itself, they manage to remain operational and provide an essential service for the survival of those who need it.";
+                 break;*/
             case "El séquito de Herreros se encarga del mantenimiento y manufactura de las armas y armaduras de la Caravana. Su carro es especialmente pesado ya que, montado ingeniosamente, carga con todas las necesidades básicas de un herrero.":
                 r = "The Blacksmith Retinue handles weapon and armor maintenance for the Caravan. Their cart is heavy, but it carries all the essentials of a working forge.";
                 break;
             /* case "Aumentar el tamaño de las tiendas incrementa la cantidad de objetos ofrecidos.":
                 r = "Increasing the size of the shops increases the number of items offered.";
                 break;*/
-             case "Amuleto de Hueso Liso":
+            case "Amuleto de Hueso Liso":
                 r = "Sharp Bone Amulet";
                 break;
-             case "Amuleto de Segunda Piel":
+            case "Amuleto de Segunda Piel":
                 r = "Second Skin Amulet";
                 break;
-             case "Ancla de la Ultima Linea":
+            case "Ancla de la Ultima Linea":
                 r = "Last Line Anchor";
                 break;
-             case "Anillo de Destrucción":
+            case "Anillo de Destrucción":
                 r = "Destruction Ring";
                 break;
-             case "Anillo de Filo Interno":
+            case "Anillo de Filo Interno":
                 r = "Inner Edge Ring";
                 break;
-             case "Anillo de Inteligencia":
+            case "Anillo de Inteligencia":
                 r = "Intelligence Ring";
                 break;
-             case "Anillo de Resistencia al Ácido":
+            case "Anillo de Resistencia al Ácido":
                 r = "Acid Resistance Ring";
                 break;
-             case "Anillo de Tormenta Quieta":
+            case "Anillo de Tormenta Quieta":
                 r = "Calm Storm Ring";
                 break;
-             case "Anillo del Vigia":
+            case "Anillo del Vigia":
                 r = "Warden's Ring";
                 break;
-             case "Broche Runico de Bronce":
+            case "Broche Runico de Bronce":
                 r = "Bronze Runic Brooch";
                 break;
-             case "Cinta de Enfoque":
+            case "Cinta de Enfoque":
                 r = "Focus Ribbon";
                 break;
-             case "Collar de Mente Clara":
+            case "Collar de Mente Clara":
                 r = "Clear Mind Collar";
                 break;
-             case "Corazon de Bastion":
+            case "Corazon de Bastion":
                 r = "Bastion Heart";
                 break;
-             case "Corazon de Tormenta Primigenia":
+            case "Corazon de Tormenta Primigenia":
                 r = "Primordial Storm Heart";
                 break;
-             case "Corona del Eclipse":
+            case "Corona del Eclipse":
                 r = "Eclipse Crown";
                 break;
-             case "Estandarte del Baluarte Inmortal":
+            case "Estandarte del Baluarte Inmortal":
                 r = "Immortal Bastion Banner";
                 break;
-             case "Insignia del Duelista":
+            case "Insignia del Duelista":
                 r = "Duelist's Insignia";
                 break;
-             case "Juramento del Inquebrantable":
+            case "Juramento del Inquebrantable":
                 r = "Oath of the Unbreakable";
                 break;
-             case "Medalla de Guardia":
+            case "Medalla de Guardia":
                 r = "Guardian's Medal";
                 break;
-             case "Nucleo del Eclipse Arcano":
+            case "Nucleo del Eclipse Arcano":
                 r = "Arcane Eclipse Core";
                 break;
-             case "Ojo del Acecho":
+            case "Ojo del Acecho":
                 r = "Stalkers Eye";
                 break;
-             case "Ojo del Veredicto":
+            case "Ojo del Veredicto":
                 r = "Verdict Eye";
                 break;
-             case "Piedra de Sangre Calma":
+            case "Piedra de Sangre Calma":
                 r = "Calm Bloodstone";
                 break;
-             case "Reliquia del Trono Vacio":
+            case "Reliquia del Trono Vacio":
                 r = "Empty Throne Relic";
                 break;
-             case "Reliquia del Umbral Arcano":
+            case "Reliquia del Umbral Arcano":
                 r = "Arcane Threshold Relic";
                 break;
-             case "Rosario del Alba":
+            case "Rosario del Alba":
                 r = "Dawn Locket";
                 break;
-             case "Sello de Sangre Fria":
+            case "Sello de Sangre Fria":
                 r = "Cold Blood Seal";
                 break;
-             case "Sello del Caminante":
+            case "Sello del Caminante":
                 r = "Walker's Seal";
                 break;
-             case "Sello del Rastreador Nocturno":
+            case "Sello del Rastreador Nocturno":
                 r = "Nocturnal Tracker's Seal";
                 break;
-             case "Talisman de Escarcha Viva":
+            case "Talisman de Escarcha Viva":
                 r = "Living Frost Talisman";
                 break;
-             case "Talisman del Muro Espinado":
+            case "Talisman del Muro Espinado":
                 r = "Thorn Wall Talisman";
                 break;
-             case "Cristal de Escarcha Fracta":
+            case "Cristal de Escarcha Fracta":
                 r = "Fractured Frost Crystal";
                 break;
-             case "Escarcha Cortante":
+            case "Escarcha Cortante":
                 r = "Cutting Frost";
                 break;
-             case "Extraños en el camino":
+            case "Extraños en el camino":
                 r = "Strangers on the Path";
                 break;
             case "Séquito":
@@ -4348,13 +4351,13 @@ public class TRADU : MonoBehaviour
             case "Personaje":
                 r = "Character";
                 break;
-             case "Elige una Clase":
+            case "Elige una Clase":
                 r = "Choose a Class";
                 break;
-             case "Día":
+            case "Día":
                 r = "Day";
                 break;
-             case "-La caravana ha llegado a un nodo incendiado. -10 Esperanza.  ":
+            case "-La caravana ha llegado a un nodo incendiado. -10 Esperanza.  ":
                 r = "The caravan has arrived at a burned node. -10 Hope.";
                 break;
             case " Civiles Muertos.":
@@ -4636,7 +4639,7 @@ public class TRADU : MonoBehaviour
                 r = "Steel Edge";
                 break;
             case "La caravana ha sido destruida y todos sus miembros han muerto. El Aliento Negro es implacable.":
-                r = "The caravan has been destroyed and all its members have died. The Aliento Negro is relentless.";
+                r = "The caravan has been destroyed and all its members have died. The Black Breath is relentless.";
                 break;
             case "Valor:":
                 r = "Valour:";
@@ -4647,8 +4650,29 @@ public class TRADU : MonoBehaviour
             case "Encarnar":
                 r = "Incarnate";
                 break;
-             case "Pasivas":
+            case "Pasivas":
                 r = "Passives";
+                break;
+            case "-Campaña guardada.":
+                r = "-Campaign saved.";
+                break;
+            case "-No se pudo guardar la campaña. ":
+                r = "-Failed to save the campaign. ";
+                break;
+            case "Si sales de la partida se perderán todos los cambios no guardados. ¿Continuar?":
+                r = "If you leave the game, all unsaved changes will be lost. Continue?";
+                break;
+            case "Cancelar":
+                r = "Cancel";
+                break;
+            case "Reproducir música al minimizar":
+                r = "Play music when minimized";
+                break;
+            case "Este séquito está constituído por varios mercaderes que han tenido que abandonar sus tiendas, pero que no han renunciado a su mercadería. Están dispuestos a comercial a precios rebajados pero sin renunciar al menos a una mínima ganancia.":
+                r = "This retinue is composed of several merchants who have had to abandon their shops, but who have not given up their merchandise. They are willing to trade at reduced prices but without giving up at least a minimal profit.";
+                break;
+            case "El Espectro acaba de atacar, haciéndolo vulnerable en el plano material.":
+                r = "The Specter has just attacked, making it vulnerable in the material plane.";
                 break;
              
 

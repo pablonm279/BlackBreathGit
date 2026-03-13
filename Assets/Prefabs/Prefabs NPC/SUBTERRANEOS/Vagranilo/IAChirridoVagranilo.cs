@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -14,7 +14,7 @@ public class IAChirridoVagranilo : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano
 
 
     
@@ -67,7 +67,7 @@ public class IAChirridoVagranilo : IAHabilidad
 
      
     
-      await Task.Delay(1300);
+      await BattleManager.DelayCombateAsync(1300);
       //Esto es cuando el objetivo es uno solo,
       AplicarEfectosHabilidad(Objetivo);
      
@@ -83,7 +83,7 @@ public class IAChirridoVagranilo : IAHabilidad
         VFXAplicar(objetivo.gameObject);
          if(objetivo.TiradaSalvacion(objetivo.mod_TSMental, 11))
           {
-            //Si falla, se aturde y hace 2d4 daño verdadero
+            //Si falla, se aturde y hace 2d4 da�o verdadero
             objetivo.estado_aturdido = 1;
             objetivo.RecibirDanio(TiradaDeDados.TirarDados(2,4), 10, false,scEstaUnidad);
 
@@ -104,16 +104,16 @@ public class IAChirridoVagranilo : IAHabilidad
    RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
 
     }
-    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
+    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun l�gica
    {
     
-    // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+    // Obtener la unidad due�a
+    Unidad unidadDue�a = gameObject.GetComponent<Unidad>();
+    if (unidadDue�a == null) return null;
   
     var unidades = objPosibles.OfType<Unidad>().ToList();
   
-  // Remover las unidades inmóviles recorriendo de atrás hacia adelante
+  // Remover las unidades inm�viles recorriendo de atr�s hacia adelante
     for (int i = unidades.Count - 1; i >= 0; i--)
     {
       if (unidades[i].estado_inmovil > 0)
@@ -124,7 +124,7 @@ public class IAChirridoVagranilo : IAHabilidad
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderBy(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDue�a.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la ultima (la mas cercana)

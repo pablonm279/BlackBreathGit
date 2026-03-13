@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -14,7 +14,7 @@ public class BallestaMiliciano : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
   void Awake()
   {
@@ -74,7 +74,7 @@ public class BallestaMiliciano : IAHabilidad
 
     private async Task LanzarProyectilAsync(object objetivo)
     {
-        await Task.Delay(50);
+        await BattleManager.DelayCombateAsync(50);
 
         GameObject proyectilPrefab = BattleManager.Instance.contenedorPrefabs.ViroteBallestadeMano;
         if (proyectilPrefab == null)
@@ -102,7 +102,7 @@ public class BallestaMiliciano : IAHabilidad
         }
         else
         {
-            await Task.Delay(200);
+            await BattleManager.DelayCombateAsync(200);
         }
     }
     public override void AplicarEfectosHabilidad(object obj)
@@ -179,10 +179,10 @@ public class BallestaMiliciano : IAHabilidad
     }
 
    
-    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun l√≥gica
+    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lÛgica
    {
     
-      // Obtener la unidad due√±a
+      // Obtener la unidad dueÒa
     Unidad unidadDuena = gameObject.GetComponent<Unidad>();
     if (unidadDuena == null) return null;
    
@@ -192,7 +192,7 @@ public class BallestaMiliciano : IAHabilidad
     
     var unidades = objPosibles.OfType<Unidad>().ToList();
     print("Sel obj unidades cant: "+unidades.Count);
-    // Filtrar los obst√°culos
+    // Filtrar los obst·culos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
      print("Sel obj obstaculos cant: "+obstaculos.Count);
 
@@ -210,7 +210,7 @@ public class BallestaMiliciano : IAHabilidad
         return unidadesOrdenadas.FirstOrDefault();
     }else{print("lista unidades vacia");}
 
-    // Si no hay unidades, devolver el obst√°culo
+    // Si no hay unidades, devolver el obst·culo
      if (obstaculos.Any())
      {
        var obstaculo = obstaculos.FirstOrDefault();

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -13,7 +13,7 @@ public class IAGarraZarkilever : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano - 9: Necro
    
   void Awake()
    {
@@ -58,7 +58,7 @@ public class IAGarraZarkilever : IAHabilidad
             object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
                 PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 
-      await Task.Delay(450);
+      await BattleManager.DelayCombateAsync(450);
       AplicarEfectosHabilidad(Objetivo);
      
    }
@@ -160,10 +160,10 @@ public class IAGarraZarkilever : IAHabilidad
     if (objetivo.TieneBuffNombre("Saboreado"))
     {
      
-        objetivo.RecibirDanio(15, 2, false, scEstaUnidad); //Daño de 5 puntos de tipo Arcano
+        objetivo.RecibirDanio(15, 2, false, scEstaUnidad); //Da�o de 5 puntos de tipo Arcano
         scEstaUnidad.RecibirCuracion(14, false); //Cura de 5 puntos de vida
 
-        CampaignManager.Instance.EscribirLog(objetivo.uNombre+ TRADU.i.Traducir(" sufre el efecto de Saboreado, recibiendo 15 de daño extra y curando al Zarkilever por 14 puntos de vida."));
+        CampaignManager.Instance.EscribirLog(objetivo.uNombre+ TRADU.i.Traducir(" sufre el efecto de Saboreado, recibiendo 15 de da�o extra y curando al Zarkilever por 14 puntos de vida."));
 
         scEstaUnidad.GenerarTextoFlotante(TRADU.i.Traducir("Saboreando!"), Color.green);
 
@@ -175,19 +175,19 @@ public class IAGarraZarkilever : IAHabilidad
 
 public override object EstablecerObjetivoPrioritario()
   {
-    // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+    // Obtener la unidad due�a
+    Unidad unidadDue�a = gameObject.GetComponent<Unidad>();
+    if (unidadDue�a == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obstáculos
+    // Filtrar los obst�culos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderByDescending(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDue�a.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -196,7 +196,7 @@ public override object EstablecerObjetivoPrioritario()
       return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obst�culo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
   }

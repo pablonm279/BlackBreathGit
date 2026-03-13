@@ -24,7 +24,7 @@ public class SequitoCronistas : MonoBehaviour
         Actualizar();
     }
 
-    void Actualizar()
+    public void Actualizar()
     {
 
         progresoCronica = 150 + (1 * CampaignManager.Instance.GetEsperanzaActual()) + valorCambiosCronicas;

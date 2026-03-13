@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -13,7 +13,7 @@ public class IAMordiscoFaagdan : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano - 9: Necro
    
   void Awake()
    {
@@ -58,7 +58,7 @@ public class IAMordiscoFaagdan : IAHabilidad
             object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
                 PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 
-      await Task.Delay(450);
+      await BattleManager.DelayCombateAsync(450);
       AplicarEfectosHabilidad(Objetivo);
      
    }
@@ -159,33 +159,33 @@ public class IAMordiscoFaagdan : IAHabilidad
     {
       if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 9+intensidad))
       {
-        // BUFF ---- As√≠ se aplica un buff/debuff
+        // BUFF ---- AsÌ se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Armadura masticada";
         buff.boolfDebufftBuff = false;
         buff.DuracionBuffRondas = -1;
         buff.cantArmadura -= 3;
         buff.AplicarBuff(objetivo);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
       }
     }
 
 public override object EstablecerObjetivoPrioritario()
   {
-    // Obtener la unidad due√±a
-    Unidad unidadDue√±a = gameObject.GetComponent<Unidad>();
-    if (unidadDue√±a == null) return null;
+    // Obtener la unidad dueÒa
+    Unidad unidadDueÒa = gameObject.GetComponent<Unidad>();
+    if (unidadDueÒa == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obst√°culos
+    // Filtrar los obst·culos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderByDescending(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDue√±a.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueÒa.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -194,7 +194,7 @@ public override object EstablecerObjetivoPrioritario()
       return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obst√°culo
+    // Si no hay unidades, devolver el obst·culo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
   }

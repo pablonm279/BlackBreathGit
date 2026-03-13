@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -14,7 +14,7 @@ public class AullidoDeLaManada : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano - 9: Necro
     
     int bonusdadocrit;
   void Awake()
@@ -66,7 +66,7 @@ public class AullidoDeLaManada : IAHabilidad
       PrepararInicioAnimacion(unidadesEnZona,null);//Despues de establecer objetivo
 
       
-      await Task.Delay(1500);
+      await BattleManager.DelayCombateAsync(1500);
       ResolverHabilidad(); 
 
     
@@ -189,16 +189,16 @@ public class AullidoDeLaManada : IAHabilidad
        Unidad objetivo = (Unidad)obj;
        VFXAplicar(objetivo.gameObject);
        /////////////////////////////////////////////
-      //BUFF ---- As√≠ se aplica un buff/debuff
+      //BUFF ---- AsÌ se aplica un buff/debuff
       Buff buff = new Buff();
        buff.buffNombre = NombreBuffAullido;
        buff.boolfDebufftBuff = true;
        buff.DuracionBuffRondas = 3;
        buff.cantTsMental += 2;
-       buff.percCritDa√±o += 10;
+       buff.percCritDaÒo += 10;
        buff.cantAtaque += 1;
        buff.AplicarBuff(objetivo);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
      }
      

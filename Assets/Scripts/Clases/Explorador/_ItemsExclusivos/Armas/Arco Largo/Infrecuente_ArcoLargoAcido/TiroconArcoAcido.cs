@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,10 +15,10 @@ public class TiroconArcoAcido : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
     private int hAlcance = 7;
-    private int hAncho = 1; //1 - adyancentes tambi√©n
+    private int hAncho = 1; //1 - adyancentes tambiÈn
   public override void Awake()
   {
     nombre = "Tiro con Arco Acido";
@@ -53,11 +53,11 @@ public class TiroconArcoAcido : Habilidad
 
     imHab = Resources.Load<Sprite>("imHab/Explorador_Tiroconarco");
 
-    txtDescripcion = "<color=#5dade2><b>Tiro con Arco √Åcido</b></color>\n\n";
+    txtDescripcion = "<color=#5dade2><b>Tiro con Arco ¡cido</b></color>\n\n";
     txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
-    txtDescripcion += "<i>+1d6 da√±o √Åcido.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Da√±o: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valent√≠a: {costoPM} </color>";
+    txtDescripcion += "<i>+1d6 daÒo ¡cido.</i>\n\n";
+    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - DaÒo: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo ValentÌa: {costoPM} </color>";
       
       if(TRADU.i.nIdioma == 2)
       {
@@ -93,7 +93,7 @@ public class TiroconArcoAcido : Habilidad
     public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
-     if(obj is Unidad) //Ac√° van los efectos a Unidades.
+     if(obj is Unidad) //Ac· van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -103,15 +103,15 @@ public class TiroconArcoAcido : Habilidad
        Usuario.GetComponent<ClaseExplorador>().CambiarCantidadFlechas(-1);
        CrearProyectil(objetivo);
 
-       await Task.Delay(1300);
+       await BattleManager.DelayCombateAsync(1300);
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
        //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para pr√≥ximas habilidades de da√±o del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prÛximas habilidades de daÒo del explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de da√±o solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % da√±o cr√≠tico.
+         danioMarca += 15; //Esto se suma al porcentaje de daÒo solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daÒo crÌtico.
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -149,7 +149,7 @@ public class TiroconArcoAcido : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
-        float danioAcido = TiradaDeDados.TirarDados(1, 2); //1d2 de da√±o √Åcido
+        float danioAcido = TiradaDeDados.TirarDados(1, 2); //1d2 de daÒo ¡cido
         objetivo.RecibirDanio(danioAcido, 7, false, scEstaUnidad);
 
 
@@ -164,7 +164,7 @@ public class TiroconArcoAcido : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
-        float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de da√±o √Åcido
+        float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de daÒo ¡cido
         objetivo.RecibirDanio(danioAcido, 7, false, scEstaUnidad);
 
       }
@@ -177,14 +177,14 @@ public class TiroconArcoAcido : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 
-        float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de da√±o √Åcido
+        float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de daÒo ¡cido
         objetivo.RecibirDanio(danioAcido, 7, true, scEstaUnidad);
 
       }
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -201,7 +201,7 @@ public class TiroconArcoAcido : Habilidad
     
     async Task CrearProyectil(object Objetivo)
   {
-    await Task.Delay(200);
+    await BattleManager.DelayCombateAsync(200);
     GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
     GameObject Proyectil = Instantiate(flechaPrefab);
     Proyectil.GetComponent<ArrowFlight>().startMarker = transform;

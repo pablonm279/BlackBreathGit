@@ -1,4 +1,4 @@
-ï»¿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -62,12 +62,12 @@ public class IARayoZarkilComandante : IAHabilidad
     PrepararInicioAnimacion(null, objetivo);
 
 
-    await Task.Delay(450);
+    await BattleManager.DelayCombateAsync(450);
    scEstaUnidad.GetComponent<AudioSource>().PlayOneShot(rayosonido);
 
     AplicarEfectosHabilidad(objetivo);
 
-    await Task.Delay(250);
+    await BattleManager.DelayCombateAsync(250);
   }
 
   public override void AplicarEfectosHabilidad(object obj)
@@ -87,7 +87,7 @@ public class IARayoZarkilComandante : IAHabilidad
 
     if(unidadObjetivo.TiradaSalvacion(unidadObjetivo.mod_TSFortaleza, 13))
     { 
-      // BUFF ---- AsÃ­ se aplica un buff/debuff
+      // BUFF ---- Así se aplica un buff/debuff
       Buff buff = new Buff();
       buff.buffNombre = "Debilitado";
       buff.boolfDebufftBuff = false;
@@ -95,7 +95,7 @@ public class IARayoZarkilComandante : IAHabilidad
       buff.cantDanioPorcentaje -= 15;
       buff.cantAtaque -= 2;
       buff.AplicarBuff(unidadObjetivo);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
+      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
       Buff buffComponent = ComponentCopier.CopyComponent(buff, unidadObjetivo.gameObject);
 
     }

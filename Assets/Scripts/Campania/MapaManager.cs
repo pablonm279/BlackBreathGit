@@ -6,6 +6,7 @@ public class MapaManager : MonoBehaviour
 {
     bool inicioCompletado;
     bool generacionDiferidaPendiente;
+    bool omitirAutoGeneracionEnStart;
     const float OffsetNodoSobreRelieve = 0.08f;
     const float OffsetConvoySobreRelieve = 0.03f;
 
@@ -23,6 +24,12 @@ public class MapaManager : MonoBehaviour
     void Start()
     {
        inicioCompletado = true;
+       if (omitirAutoGeneracionEnStart)
+       {
+           generacionDiferidaPendiente = false;
+           return;
+       }
+
        if (!generacionDiferidaPendiente)
        {
            StartCoroutine(GenerarNodosDiferido());
@@ -102,6 +109,16 @@ public class MapaManager : MonoBehaviour
         GenerarNodos();
     }
 
+    public void OmitirAutoGeneracionEnStart()
+    {
+        omitirAutoGeneracionEnStart = true;
+    }
+
+    public void RehabilitarAutoGeneracionEnStart()
+    {
+        omitirAutoGeneracionEnStart = false;
+    }
+
     void PrepararNodosParaGeneracion()
     {
         MapDecorator mapDecorator = ObtenerMapDecorator();
@@ -114,6 +131,25 @@ public class MapaManager : MonoBehaviour
             {
                 mapDecorator.AlinearTransformASuelo(nodo.transform, OffsetNodoSobreRelieve);
             }
+        }
+    }
+
+    public void AlinearNodosAlSueloActual()
+    {
+        if (scContenedordeNodos == null)
+            return;
+
+        scContenedordeNodos.RecolectarNodos();
+        MapDecorator mapDecorator = ObtenerMapDecorator();
+        if (mapDecorator == null)
+            return;
+
+        foreach (Nodo nodo in scContenedordeNodos.listTodosNodos)
+        {
+            if (nodo == null)
+                continue;
+
+            mapDecorator.AlinearTransformASuelo(nodo.transform, OffsetNodoSobreRelieve);
         }
     }
 
@@ -138,6 +174,16 @@ public class MapaManager : MonoBehaviour
         mapDecorator.AlinearTransformASuelo(goCaravanafollower4 != null ? goCaravanafollower4.transform : null, OffsetConvoySobreRelieve);
         mapDecorator.AlinearTransformASuelo(goCaravanafollower5 != null ? goCaravanafollower5.transform : null, OffsetConvoySobreRelieve);
         mapDecorator.AlinearTransformASuelo(goCaravanafollower6 != null ? goCaravanafollower6.transform : null, OffsetConvoySobreRelieve);
+    }
+
+    public void PosicionarCaravanaEnNodoActual()
+    {
+        if (nodoActual != null && goCaravana != null)
+        {
+            nodoActual.PosicionarObjetoEnNodo(goCaravana);
+        }
+
+        AlinearConvoyAlSuelo();
     }
 
     void DesactivarNodosSinUsar(int zonaId)

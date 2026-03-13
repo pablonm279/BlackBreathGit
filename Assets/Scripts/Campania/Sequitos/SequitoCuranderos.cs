@@ -31,7 +31,7 @@ public class SequitoCuranderos : MonoBehaviour
 
   
   
-   void Actualizar()
+   public void Actualizar()
    {
     if (txtDescMejoraCuracion != null)
     {

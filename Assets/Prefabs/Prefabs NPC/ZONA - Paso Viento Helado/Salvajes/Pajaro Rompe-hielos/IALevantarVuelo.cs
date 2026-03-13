@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -14,7 +14,7 @@ public class IALevantarVuelo : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
 
     
@@ -67,11 +67,11 @@ public class IALevantarVuelo : IAHabilidad
 
 
 
-    await Task.Delay(1300);
+    await BattleManager.DelayCombateAsync(1300);
     //Esto es cuando el objetivo es uno solo,
     AplicarEfectosHabilidad(Objetivo);
       
-    await Task.Delay(1300);
+    await BattleManager.DelayCombateAsync(1300);
      
    }
 
@@ -101,7 +101,7 @@ public class IALevantarVuelo : IAHabilidad
        // VFXAplicar(objetivo.gameObject);
      
        /////////////////////////////////////////////
-      //BUFF ---- As√≠ se aplica un buff/debuff
+      //BUFF ---- AsÌ se aplica un buff/debuff
       Buff buff = new Buff();
        buff.buffNombre = "Vuelo Alto"; 
        buff.boolfDebufftBuff = true;
@@ -109,7 +109,7 @@ public class IALevantarVuelo : IAHabilidad
        buff.cantAtaque += 2;
        buff.cantDefensa += 2;
        buff.AplicarBuff(objetivo);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
       
      }

@@ -61,6 +61,7 @@ public class EncounterZoneConfig
 
 public class AtributosZona : MonoBehaviour
 {
+   bool restaurandoDesdeSave;
    public string Nombre;
    public int ID; //1 Bosque Ardiente, 2 Paso Vientohelado, 3 Nedukazal
 
@@ -214,6 +215,26 @@ public class AtributosZona : MonoBehaviour
    public GameObject Pasovientohelado_Descripcion;
    public GameObject Nedukazal_Descripcion;
 
+   void ActualizarDescripcionZonaVisible(bool mostrarBosque, bool mostrarPaso, bool mostrarNedukazal)
+   {
+      bool mostrarDescripciones = !restaurandoDesdeSave;
+
+      if (BosqueArdiente_Descripcion != null)
+      {
+         BosqueArdiente_Descripcion.SetActive(mostrarDescripciones && mostrarBosque);
+      }
+
+      if (Pasovientohelado_Descripcion != null)
+      {
+         Pasovientohelado_Descripcion.SetActive(mostrarDescripciones && mostrarPaso);
+      }
+
+      if (Nedukazal_Descripcion != null)
+      {
+         Nedukazal_Descripcion.SetActive(mostrarDescripciones && mostrarNedukazal);
+      }
+   }
+
    public void ConstruirZonaBosqueAngustiante(int iFASE)
    {
       Nombre = "Bosque Angustiante"; //dejar asi por ahora
@@ -224,7 +245,10 @@ public class AtributosZona : MonoBehaviour
       modChanceEmboscada = 15;
 
 
-      Invoke("AumentarDifconDelayPorPeligroBosqueArdiente", 1.5f);
+      if (!restaurandoDesdeSave)
+      {
+         Invoke("AumentarDifconDelayPorPeligroBosqueArdiente", 1.5f);
+      }
 
       modChanceExploracion = 5;
 
@@ -240,10 +264,12 @@ public class AtributosZona : MonoBehaviour
       if (TRADU.i != null)
       { txtNombreZona.text = TRADU.i.Traducir("El Bosque Ardiente"); }
 
-      BosqueArdiente_Descripcion.SetActive(true);
-      Pasovientohelado_Descripcion.SetActive(false);
+      ActualizarDescripcionZonaVisible(true, false, false);
 
-      CampaignManager.Instance.BosqueArdienteMecanicaIncendio(100);
+      if (!restaurandoDesdeSave)
+      {
+         CampaignManager.Instance.BosqueArdienteMecanicaIncendio(100);
+      }
 
 
       Invoke("PlayMusic", 0.2f);
@@ -366,7 +392,10 @@ public class AtributosZona : MonoBehaviour
 
       modChanceExploracion = -10;
 
-      Invoke("AumentarDifconDelayPorPeligroPasoVientoHelado", 1.5f);
+      if (!restaurandoDesdeSave)
+      {
+         Invoke("AumentarDifconDelayPorPeligroPasoVientoHelado", 1.5f);
+      }
 
       Clima_chances_Sol = 40;
       Clima_chances_Calor = 40;
@@ -377,8 +406,7 @@ public class AtributosZona : MonoBehaviour
 
 
 
-      Pasovientohelado_Descripcion.SetActive(true);
-      BosqueArdiente_Descripcion.SetActive(false);
+      ActualizarDescripcionZonaVisible(false, true, false);
 
       txtNombreZona.text = TRADU.i.Traducir(Nombre);
 
@@ -550,7 +578,10 @@ public class AtributosZona : MonoBehaviour
       modChanceExploracion = -25;
 
 
-      Invoke("AumentarDifconDelayPorPeligroNedukazal", 1.5f);
+      if (!restaurandoDesdeSave)
+      {
+         Invoke("AumentarDifconDelayPorPeligroNedukazal", 1.5f);
+      }
 
 
       Clima_chances_Sol = 00;
@@ -563,9 +594,7 @@ public class AtributosZona : MonoBehaviour
 
 
 
-      Pasovientohelado_Descripcion.SetActive(false);
-      BosqueArdiente_Descripcion.SetActive(false);
-      Nedukazal_Descripcion.SetActive(true);
+      ActualizarDescripcionZonaVisible(false, false, true);
 
       txtNombreZona.text = TRADU.i.Traducir(Nombre);
 
@@ -793,6 +822,48 @@ public class AtributosZona : MonoBehaviour
       CampaignManager.Instance.ForzarTiradaClima();
       CampaignManager.Instance.AplicarEfectosMejorasPuerto();
 
+   }
+
+   public void RestaurarZonaDesdeSave(int zonaId, int fase, List<int> zonasEstadoGuardadas = null, int? reliefSeedGuardado = null)
+   {
+      if (zonasEstadoGuardadas != null && zonasEstadoGuardadas.Count > 0)
+      {
+         ZonasEstado = new List<int>(zonasEstadoGuardadas);
+      }
+
+      restaurandoDesdeSave = true;
+      try
+      {
+         switch (zonaId)
+         {
+            case 1:
+               ConstruirZonaBosqueAngustiante(fase);
+               break;
+            case 2:
+               ConstruirZonaPasoVientoHelado(fase);
+               break;
+            case 3:
+               ConstruirZonaNedukazal(fase);
+               break;
+            default:
+               Debug.LogWarning($"[SaveGame] Zona {zonaId} no reconocida al restaurar campania.");
+               return;
+         }
+
+         if (scMapDecorator == null)
+         {
+            scMapDecorator = GetComponent<MapDecorator>();
+         }
+
+         if (scMapDecorator != null)
+         {
+            scMapDecorator.RegenerarRelieveParaZona(zonaId, fase, reliefSeedGuardado);
+         }
+      }
+      finally
+      {
+         restaurandoDesdeSave = false;
+      }
    }
 
 

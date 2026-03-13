@@ -62,14 +62,14 @@ public class IACondenaRaices : IAHabilidad
     PrepararInicioAnimacion(null, objetivos[0]);
     scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
 
-    await Task.Delay(450);
+    await BattleManager.DelayCombateAsync(450);
 
     hActualCooldown = hCooldownMax;
 
     foreach (Unidad objetivo in objetivos)
     {
       AplicarEfectosHabilidad(objetivo);
-      await Task.Delay(120);
+      await BattleManager.DelayCombateAsync(120);
     }
   }
 

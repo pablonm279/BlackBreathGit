@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -93,12 +93,12 @@ public class IAEnterrarRaizFuego : IAHabilidad
     AudioSource  audioSource = gameObject.AddComponent<AudioSource>();
     audioSource.PlayOneShot(enterrarSFX);
 
-    await Task.Delay(350);
+    await BattleManager.DelayCombateAsync(350);
 
     AplicarEfectosHabilidad(scEstaUnidad);
 
 
-    await Task.Delay(250);
+    await BattleManager.DelayCombateAsync(250);
   }
 
   public override void AplicarEfectosHabilidad(object obj)
@@ -117,7 +117,7 @@ public class IAEnterrarRaizFuego : IAHabilidad
     ladoOriginal = casillaOrigenAlEnterrar != null ? casillaOrigenAlEnterrar.lado : 1;
     unidad.GenerarTextoFlotante(TRADU.i.Traducir("Enterrado"), Color.cyan);
 
-    await Task.Delay(200);
+    await BattleManager.DelayCombateAsync(200);
 
     if (casillaOrigenAlEnterrar != null && casillaOrigenAlEnterrar.Presente == unidad.gameObject)
     {
@@ -257,7 +257,7 @@ public class IAEnterrarRaizFuego : IAHabilidad
     int curacion = UnityEngine.Random.Range(CuracionMin, CuracionMaxExclusive);
     scEstaUnidad.RecibirCuracion(curacion, false);
 
-    // BUFF ---- AsÃ­ se aplica un buff/debuff
+    // BUFF ---- Así se aplica un buff/debuff
     Buff buff = new Buff();
     buff.buffNombre = "Emergida";
     buff.boolfDebufftBuff = true;
@@ -265,7 +265,7 @@ public class IAEnterrarRaizFuego : IAHabilidad
     buff.cantDanioPorcentaje += 15;
     buff.cantAtaque += 15;
     buff.AplicarBuff(scEstaUnidad);
-    // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
+    // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
     Buff buffComponent = ComponentCopier.CopyComponent(buff, scEstaUnidad.gameObject);
 
     string textoEmerger = TRADU.i.Traducir("emerge de vuelta.");

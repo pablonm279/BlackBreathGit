@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,13 +15,13 @@ public class Rafaga : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
     private int hAlcance = 7;
-    private int hAncho = 3; //1 - adyancentes tambi√©n
+    private int hAncho = 3; //1 - adyancentes tambiÈn
       public override void  Awake()
     {
-      nombre = "R√°faga";
+      nombre = "R·faga";
       IDenClase = 10; // Termina turno
       costoAP = 0;
       costoPM = 2;
@@ -105,7 +105,7 @@ public class Rafaga : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: variable (1 per shot)\n- Valour Cost: {costoPM}"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: variable (1 por disparo)\n- Costo Valent√≠a: {costoPM}";
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: variable (1 por disparo)\n- Costo ValentÌa: {costoPM}";
 
     txtDescripcion = ConstruirDescripcionEstandar(
       esIngles ? tituloEn : tituloEs,
@@ -129,7 +129,7 @@ public class Rafaga : Habilidad
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valent√≠a) u Opcion B (+2 al bono de ataque).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de ValentÌa) u Opcion B (+2 al bono de ataque).</color>"; }
       }
     }
 
@@ -188,7 +188,7 @@ public class Rafaga : Habilidad
       scEstaUnidad.CambiarAPActual(-1);  //Gasta 1 AP por cada ataque
           int tir = UnityEngine.Random.Range(1,21); 
           await Atacar(objetivo, tir);
-          await Task.Delay(800);
+          await BattleManager.DelayCombateAsync(800);
 
           if(objetivo.HP_actual < 1)
           {
@@ -219,7 +219,7 @@ public class Rafaga : Habilidad
     async Task Atacar(object obj, int tirada)
     {
       
-     if(obj is Unidad) //Ac√° van los efectos a Unidades.
+     if(obj is Unidad) //Ac· van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -236,16 +236,16 @@ public class Rafaga : Habilidad
       }
       else
       {
-        await Task.Delay(200);
+        await BattleManager.DelayCombateAsync(200);
       }
       float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
        //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para pr√≥ximas habilidades de da√±o del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prÛximas habilidades de daÒo del explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de da√±o solamente al ser golpe critico, ver mas abajo. Ya que esta amrca agrega % da√±o cr√≠tico.
+         danioMarca += 15; //Esto se suma al porcentaje de daÒo solamente al ser golpe critico, ver mas abajo. Ya que esta amrca agrega % daÒo crÌtico.
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -310,7 +310,7 @@ public class Rafaga : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -339,7 +339,7 @@ public class Rafaga : Habilidad
 
     private async Task LanzarProyectilAsync(object objetivo)
     {
-        await Task.Delay(200);
+        await BattleManager.DelayCombateAsync(200);
 
         GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
         if (flechaPrefab == null)
@@ -367,7 +367,7 @@ public class Rafaga : Habilidad
         }
         else
         {
-            await Task.Delay(150);
+            await BattleManager.DelayCombateAsync(150);
         }
     }
 

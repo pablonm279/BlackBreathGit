@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -16,10 +16,10 @@ public class DisparoEnvenenado : Habilidad
   [SerializeField] private int XdDanio;
   [SerializeField] private int daniodX;
   [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-  [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+  [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
   private int hAlcance = 3;
-  private int hAncho = 1; //1 - adyancentes tambi√©n
+  private int hAncho = 1; //1 - adyancentes tambiÈn
   ClaseAcechador claseAcechador;
     public override void  Awake()
     {
@@ -73,7 +73,7 @@ public class DisparoEnvenenado : Habilidad
       damExtra += 2;
 
       if (TRADU.i.nIdioma == 1)
-      { txtDescripcion += "\n\n<i>Maestr√≠a con Ballesta de Mano agrega: +1 Ataque +2 Da√±o.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>MaestrÌa con Ballesta de Mano agrega: +1 Ataque +2 DaÒo.</i>\n\n"; }
       if (TRADU.i.nIdioma == 2)
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage.</i>\n\n"; }
 
@@ -84,7 +84,7 @@ public class DisparoEnvenenado : Habilidad
       damExtra += 2;
       criticoRangoHab = 1;
       if (TRADU.i.nIdioma == 1)
-      { txtDescripcion += "\n\n<i>Maestr√≠a con Ballesta de Mano agrega: +1 Ataque +2 Da√±o +1 Rango Cr√≠tico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>MaestrÌa con Ballesta de Mano agrega: +1 Ataque +2 DaÒo +1 Rango CrÌtico.</i>\n\n"; }
       if (TRADU.i.nIdioma == 2)
       {  txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
 
@@ -96,7 +96,7 @@ public class DisparoEnvenenado : Habilidad
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
       if(TRADU.i.nIdioma== 1)
-      { txtDescripcion += "\n\n<i>Maestr√≠a con Ballesta de Mano agrega: +1 Ataque +2 Da√±o +1 Rango Cr√≠tico, -1 AP.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>MaestrÌa con Ballesta de Mano agrega: +1 Ataque +2 DaÒo +1 Rango CrÌtico, -1 AP.</i>\n\n"; }
       if(TRADU.i.nIdioma== 2)
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +1 Critical Range, -1 AP.</i>\n\n"; }
 
@@ -110,7 +110,7 @@ public class DisparoEnvenenado : Habilidad
       costoAP -= 1; //costo AP -1
       hAlcance += 1; //Alcance +1
       if(TRADU.i.nIdioma== 1)
-      { txtDescripcion += "\n\n<i>Maestr√≠a con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Da√±o +1 Rango Cr√≠tico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>MaestrÌa con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 DaÒo +1 Rango CrÌtico.</i>\n\n"; }
       if(TRADU.i.nIdioma== 2)
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Range +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
 
@@ -124,7 +124,7 @@ public class DisparoEnvenenado : Habilidad
       costoAP -= 1; //costo AP -1
       cooldownActual = 0;
       if(TRADU.i.nIdioma== 1)
-      { txtDescripcion += "\n\n<i>Maestr√≠a con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 Da√±o +1 Rango Cr√≠tico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>MaestrÌa con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 DaÒo +1 Rango CrÌtico.</i>\n\n"; }
       if(TRADU.i.nIdioma== 2)
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: Removes Cooldown, +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
 
@@ -191,7 +191,7 @@ public class DisparoEnvenenado : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})";
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
 
     txtDescripcion = ConstruirDescripcionEstandar(
       esIngles ? tituloEn : tituloEs,
@@ -270,7 +270,7 @@ public class DisparoEnvenenado : Habilidad
   public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
   {
 
-    if (obj is Unidad) //Ac√° van los efectos a Unidades.
+    if (obj is Unidad) //Ac· van los efectos a Unidades.
     {
       Unidad objetivo = (Unidad)obj;
       float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -336,7 +336,7 @@ public class DisparoEnvenenado : Habilidad
 
       objetivo.AplicarDebuffPorAtaquesreiterados(1);
     }
-    else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+    else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
     {
       Obstaculo objetivo = (Obstaculo)obj;
       //---
@@ -360,7 +360,7 @@ public class DisparoEnvenenado : Habilidad
 
     private async Task LanzarProyectilAsync(object objetivo)
     {
-        await Task.Delay(100);
+        await BattleManager.DelayCombateAsync(100);
 
         GameObject proyPrefab = BattleManager.Instance.contenedorPrefabs.ViroteBallestadeManoVeneno;
         if (proyPrefab == null)
@@ -388,7 +388,7 @@ public class DisparoEnvenenado : Habilidad
         }
         else
         {
-            await Task.Delay(200);
+            await BattleManager.DelayCombateAsync(200);
         }
     }
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -11,7 +11,7 @@ public class IAOracionKadryn : IAHabilidad
 
   void Awake()
   {
-    nombre = "Oración de Kadryn";
+    nombre = "Oraci�n de Kadryn";
     Usuario = gameObject;
     scEstaUnidad = Usuario.GetComponent<Unidad>();
     hAncho = 1;
@@ -48,13 +48,13 @@ public class IAOracionKadryn : IAHabilidad
 
     PrepararInicioAnimacion(null, scEstaUnidad);
 
-    await Task.Delay(600);
+    await BattleManager.DelayCombateAsync(600);
 
     hActualCooldown = hCooldownMax;
 
     AplicarEfectosHabilidad(scEstaUnidad);
 
-    await Task.Delay(600);
+    await BattleManager.DelayCombateAsync(600);
   }
 
   public override void AplicarEfectosHabilidad(object objetivo)

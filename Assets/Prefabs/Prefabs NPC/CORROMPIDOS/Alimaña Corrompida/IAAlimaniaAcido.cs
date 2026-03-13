@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -14,12 +14,12 @@ public class IAAlimaniaAcido : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano
 
 
   void Awake()
    {
-      nombre = "Arrojar Corrosión";
+      nombre = "Arrojar Corrosi�n";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 2;
@@ -38,7 +38,7 @@ public class IAAlimaniaAcido : IAHabilidad
       bonusAtaque = 0;
       XdDanio = 2;
       daniodX = 6; //2d8+4
-      tipoDanio = 7; //Ácido
+      tipoDanio = 7; //�cido
    }
 
     void Start()
@@ -78,7 +78,7 @@ public class IAAlimaniaAcido : IAHabilidad
 
     private async Task LanzarProyectilAsync(object objetivo)
     {
-        await Task.Delay(50);
+        await BattleManager.DelayCombateAsync(50);
 
         GameObject proyectilPrefab = BattleManager.Instance.contenedorPrefabs.ArrojarCorrosion;
         if (proyectilPrefab == null)
@@ -106,7 +106,7 @@ public class IAAlimaniaAcido : IAHabilidad
         }
         else
         {
-            await Task.Delay(200);
+            await BattleManager.DelayCombateAsync(200);
         }
     }
     public override void AplicarEfectosHabilidad(object obj)
@@ -203,12 +203,12 @@ public class IAAlimaniaAcido : IAHabilidad
     }
 
   }
-    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
+    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun l�gica
    {
     
-      // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+      // Obtener la unidad due�a
+    Unidad unidadDue�a = gameObject.GetComponent<Unidad>();
+    if (unidadDue�a == null) return null;
    
     // Filtrar las unidades
      print("Sel objPosibles "+objPosibles.Count);
@@ -216,7 +216,7 @@ public class IAAlimaniaAcido : IAHabilidad
     
     var unidades = objPosibles.OfType<Unidad>().ToList();
     print("Sel obj unidades cant: "+unidades.Count);
-    // Filtrar los obstáculos
+    // Filtrar los obst�culos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
      print("Sel obj obstaculos cant: "+obstaculos.Count);
 
@@ -224,7 +224,7 @@ public class IAAlimaniaAcido : IAHabilidad
    
     var unidadesOrdenadas = unidades
         .OrderBy(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDue�a.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -234,7 +234,7 @@ public class IAAlimaniaAcido : IAHabilidad
         return unidadesOrdenadas.FirstOrDefault();
     }else{print("lista unidades vacia");}
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obst�culo
      if (obstaculos.Any())
      {
        var obstaculo = obstaculos.FirstOrDefault();

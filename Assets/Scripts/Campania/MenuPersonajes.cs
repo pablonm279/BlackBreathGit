@@ -73,6 +73,10 @@ public class MenuPersonajes : MonoBehaviour
     }
 
     pSel = personajeInicial != null ? personajeInicial : listaPersonajes[0];
+    if (scEquipo != null)
+    {
+      scEquipo.ConfigurarClickDerechoSlots(this);
+    }
     ActualizarLista();
     CancelInvoke("ActualizarInfo");
     ActualizarInfo();
@@ -163,6 +167,7 @@ public class MenuPersonajes : MonoBehaviour
 
   public void ActualizarInfo()
   {
+    pSel.NormalizarPuntosPendientesPorNivelActual();
     SelPos(pSel.iPuestoDeseado);
     //Clase
     switch (pSel.IDClase)
@@ -191,13 +196,14 @@ public class MenuPersonajes : MonoBehaviour
 
     //Info
     txtNombre.text = pSel.sNombre;
-    txtExperiencia.text = $"" + pSel.fExperienciaActual + "/" + (100 + (pSel.fNivelActual * 25));
+    float experienciaNecesaria = pSel.ObtenerExperienciaNecesariaParaProximoNivel();
+    txtExperiencia.text = $"" + pSel.fExperienciaActual + "/" + experienciaNecesaria;
     txtNivel.text = "" + pSel.fNivelActual;
     float vidaActualEscalada = pSel.ObtenerVidaActualConFuerza(scEquipo.BuffTOTALEQUIPOhpMax, scEquipo.BuffTOTALEQUIPOFuerza);
     float vidaMaxEscalada = pSel.ObtenerVidaMaximaConFuerza(scEquipo.BuffTOTALEQUIPOhpMax, scEquipo.BuffTOTALEQUIPOFuerza);
     imCorazon.fillAmount = Mathf.Clamp01(vidaActualEscalada / vidaMaxEscalada);
     txtHP.text = "" + (int)vidaActualEscalada + "/" + (int)vidaMaxEscalada;
-    imMedalla.fillAmount = Mathf.Clamp01((float)pSel.fExperienciaActual / (100 + (pSel.fNivelActual*25)));
+    imMedalla.fillAmount = Mathf.Clamp01((float)pSel.fExperienciaActual / experienciaNecesaria);
     txtFuerza.text = TRADU.i.Traducir("Fuerza: ") + (pSel.iFuerza + scEquipo.BuffTOTALEQUIPOFuerza);
     txtAgi.text = TRADU.i.Traducir("Agilidad: ") + (pSel.iAgi + scEquipo.BuffTOTALEQUIPOAgi);
     txtPoder.text = TRADU.i.Traducir("Poder: ") + (pSel.iPoder + scEquipo.BuffTOTALEQUIPOPoder);
@@ -366,6 +372,8 @@ public class MenuPersonajes : MonoBehaviour
   }
 
   public TextMeshProUGUI itemDesc;
+  private bool ignorarClickIzquierdoPorClickDerechoEquipo;
+  private float tiempoBloqueoClickDerechoEquipoHasta;
 
   public void OnClickCofre()
   {
@@ -378,37 +386,24 @@ public class MenuPersonajes : MonoBehaviour
 
   }
   public void OnClickArma()
-  {  TooltipItems.Instance.HideTooltip();
-    if (pSel.itemArma != null) //quita arma actual
+  {
+    if (DebeIgnorarClickSlotPorBloqueoDerecho())
     {
-      GameObject armaaQuitar = pSel.itemArma.gameObject;
-      pSel.QuitarArma(pSel.itemArma);
-      scEquipo.listInventario.Add(armaaQuitar);
+      return;
+    }
 
-      Invoke("ActualizarInfo", 0.05f);
-    }
-    else if (!scEquipo.goInventario.activeInHierarchy)
-    {
-      scEquipo.MostrarInventario(1);
-    }
-    else { scEquipo.goInventario.SetActive(false); }
+    TooltipItems.Instance.HideTooltip();
+    AbrirInventarioDeEquipo(1);
   }
   public void OnClickArmadura()
-  {  TooltipItems.Instance.HideTooltip();
-    if (pSel.itemArmadura != null) //quita armadura actual
+  {
+    if (DebeIgnorarClickSlotPorBloqueoDerecho())
     {
-
-      GameObject armaaQuitar = pSel.itemArmadura.gameObject;
-      pSel.QuitarArmadura(pSel.itemArmadura);
-      scEquipo.listInventario.Add(armaaQuitar);
-
-      Invoke("ActualizarInfo", 0.05f);
+      return;
     }
-    else if (!scEquipo.goInventario.activeInHierarchy)
-    {
-      scEquipo.MostrarInventario(2);
-    }
-    else { scEquipo.goInventario.SetActive(false); }
+
+    TooltipItems.Instance.HideTooltip();
+    AbrirInventarioDeEquipo(2);
   }
 
 
@@ -441,23 +436,15 @@ public class MenuPersonajes : MonoBehaviour
 
 
   public void OnClickAccesorio1()
-  {  TooltipItems.Instance.HideTooltip();
+  {
+    if (DebeIgnorarClickSlotPorBloqueoDerecho())
+    {
+      return;
+    }
+
+    TooltipItems.Instance.HideTooltip();
     scEquipo.accesorioACambiar = 1;
-    if (pSel.Accesorio1 != null) //quita acc1 actual
-    {
-
-      GameObject armaaQuitar = pSel.Accesorio1.gameObject;
-      pSel.QuitarAccesorio1(pSel.Accesorio1);
-      scEquipo.listInventario.Add(armaaQuitar);
-
-      Invoke("ActualizarInfo", 0.05f);
-
-    }
-    else if (!scEquipo.goInventario.activeInHierarchy)
-    {
-      scEquipo.MostrarInventario(3);
-    }
-    else { scEquipo.goInventario.SetActive(false); }
+    AbrirInventarioDeEquipo(3);
   }
 
   public void OnHoverAccesorio1()
@@ -473,23 +460,15 @@ public class MenuPersonajes : MonoBehaviour
   }
 
   public void OnClickAccesorio2()
-  { TooltipItems.Instance.HideTooltip();
+  {
+    if (DebeIgnorarClickSlotPorBloqueoDerecho())
+    {
+      return;
+    }
+
+    TooltipItems.Instance.HideTooltip();
     scEquipo.accesorioACambiar = 2;
-    if (pSel.Accesorio2 != null) //quita acc1 actual
-    {
-
-      GameObject armaaQuitar = pSel.Accesorio2.gameObject;
-      pSel.QuitarAccesorio2(pSel.Accesorio2);
-      scEquipo.listInventario.Add(armaaQuitar);
-
-      Invoke("ActualizarInfo", 0.05f);
-
-    }
-    else if (!scEquipo.goInventario.activeInHierarchy)
-    {
-      scEquipo.MostrarInventario(3);
-    }
-    else { scEquipo.goInventario.SetActive(false); }
+    AbrirInventarioDeEquipo(3);
   }
 
   public void OnHoverAccesorio2()
@@ -506,23 +485,15 @@ public class MenuPersonajes : MonoBehaviour
 
 
   public void OnClickConsumible1()
-  { TooltipItems.Instance.HideTooltip();
+  {
+    if (DebeIgnorarClickSlotPorBloqueoDerecho())
+    {
+      return;
+    }
+
+    TooltipItems.Instance.HideTooltip();
     scEquipo.consumibleACambiar = 1;
-    if (pSel.Consumible1 != null) //quita c1 actual
-    {
-
-      GameObject armaaQuitar = pSel.Consumible1.gameObject;
-      pSel.QuitarConsumible1(pSel.Consumible1);
-      scEquipo.listInventario.Add(armaaQuitar);
-
-      Invoke("ActualizarInfo", 0.05f);
-
-    }
-    else if (!scEquipo.goInventario.activeInHierarchy)
-    {
-      scEquipo.MostrarInventario(4);
-    }
-    else { scEquipo.goInventario.SetActive(false); }
+    AbrirInventarioDeEquipo(4);
   }
 
   public void OnHoverConsumible1()
@@ -538,23 +509,15 @@ public class MenuPersonajes : MonoBehaviour
   }
 
   public void OnClickConsumible2()
-  { TooltipItems.Instance.HideTooltip();
+  {
+    if (DebeIgnorarClickSlotPorBloqueoDerecho())
+    {
+      return;
+    }
+
+    TooltipItems.Instance.HideTooltip();
     scEquipo.consumibleACambiar = 2;
-    if (pSel.Consumible2 != null) //quita c1 actual
-    {
-
-      GameObject armaaQuitar = pSel.Consumible2.gameObject;
-      pSel.QuitarConsumible2(pSel.Consumible2);
-      scEquipo.listInventario.Add(armaaQuitar);
-
-      Invoke("ActualizarInfo", 0.05f);
-
-    }
-    else if (!scEquipo.goInventario.activeInHierarchy)
-    {
-      scEquipo.MostrarInventario(4);
-    }
-    else { scEquipo.goInventario.SetActive(false); }
+    AbrirInventarioDeEquipo(4);
   }
 
   public void OnHoverConsumible2()
@@ -567,6 +530,286 @@ public class MenuPersonajes : MonoBehaviour
       TooltipItems.Instance.ShowTooltip(total, pos);
 
     }
+  }
+
+  public void RegistrarClickDerechoEnSlotEquipo()
+  {
+    ignorarClickIzquierdoPorClickDerechoEquipo = true;
+    tiempoBloqueoClickDerechoEquipoHasta = Time.unscaledTime + 0.25f;
+  }
+
+  public void LimpiarBloqueoClickDerechoEnSlotEquipo()
+  {
+    StartCoroutine(LimpiarBloqueoClickDerechoEnSlotEquipoDelay());
+  }
+
+  private IEnumerator LimpiarBloqueoClickDerechoEnSlotEquipoDelay()
+  {
+    yield return null;
+    ignorarClickIzquierdoPorClickDerechoEquipo = false;
+    tiempoBloqueoClickDerechoEquipoHasta = 0f;
+  }
+
+  private bool DebeIgnorarClickSlotPorBloqueoDerecho()
+  {
+    if (!ignorarClickIzquierdoPorClickDerechoEquipo)
+    {
+      return false;
+    }
+
+    if (Time.unscaledTime > tiempoBloqueoClickDerechoEquipoHasta)
+    {
+      ignorarClickIzquierdoPorClickDerechoEquipo = false;
+      tiempoBloqueoClickDerechoEquipoHasta = 0f;
+      return false;
+    }
+
+    return true;
+  }
+
+  private void AbrirInventarioDeEquipo(int tipo)
+  {
+    if (scEquipo == null)
+    {
+      return;
+    }
+
+    scEquipo.MostrarInventario(tipo);
+  }
+
+  private void RefrescarInventarioDeEquipoSiEstaAbierto(int tipo)
+  {
+    if (scEquipo != null && scEquipo.goInventario != null && scEquipo.goInventario.activeInHierarchy)
+    {
+      scEquipo.MostrarInventario(tipo);
+    }
+  }
+
+  private void AgregarAlInventarioSiHaceFalta(GameObject itemGO)
+  {
+    if (itemGO == null || scEquipo == null)
+    {
+      return;
+    }
+
+    if (!scEquipo.listInventario.Contains(itemGO))
+    {
+      scEquipo.listInventario.Add(itemGO);
+    }
+  }
+
+  public bool EquiparArmaDesdeInventario(Arma nuevaArma)
+  {
+    if (nuevaArma == null || pSel == null)
+    {
+      return false;
+    }
+
+    if (!nuevaArma.PuedeUsarClase(pSel.IDClase)) { return false; }
+    if (nuevaArma.requisitoAgi > pSel.iAgi) { return false; }
+    if (nuevaArma.requisitoFue > pSel.iFuerza) { return false; }
+    if (nuevaArma.requisitoPoder > pSel.iPoder) { return false; }
+
+    Arma armaAnterior = pSel.itemArma;
+    if (armaAnterior != null)
+    {
+      pSel.QuitarArma(armaAnterior);
+      AgregarAlInventarioSiHaceFalta(armaAnterior.gameObject);
+    }
+
+    pSel.itemArma = nuevaArma;
+    scEquipo.listInventario.Remove(nuevaArma.gameObject);
+    return true;
+  }
+
+  public bool EquiparArmaduraDesdeInventario(Armadura nuevaArmadura)
+  {
+    if (nuevaArmadura == null || pSel == null)
+    {
+      return false;
+    }
+
+    if (!nuevaArmadura.PuedeUsarClase(pSel.IDClase)) { return false; }
+    if (nuevaArmadura.requisitoAgi > pSel.iAgi) { return false; }
+    if (nuevaArmadura.requisitoFue > pSel.iFuerza) { return false; }
+    if (nuevaArmadura.requisitoPoder > pSel.iPoder) { return false; }
+
+    Armadura armaduraAnterior = pSel.itemArmadura;
+    if (armaduraAnterior != null)
+    {
+      pSel.QuitarArmadura(armaduraAnterior);
+      AgregarAlInventarioSiHaceFalta(armaduraAnterior.gameObject);
+    }
+
+    pSel.itemArmadura = nuevaArmadura;
+    scEquipo.listInventario.Remove(nuevaArmadura.gameObject);
+    return true;
+  }
+
+  public bool EquiparAccesorioDesdeInventario(Accesorio nuevoAccesorio)
+  {
+    if (nuevoAccesorio == null || pSel == null)
+    {
+      return false;
+    }
+
+    if (!nuevoAccesorio.PuedeUsarClase(pSel.IDClase)) { return false; }
+    if (nuevoAccesorio.requisitoAgi > pSel.iAgi) { return false; }
+    if (nuevoAccesorio.requisitoFue > pSel.iFuerza) { return false; }
+    if (nuevoAccesorio.requisitoPoder > pSel.iPoder) { return false; }
+
+    bool cambiarSlot2 = scEquipo != null && scEquipo.accesorioACambiar == 2;
+    if (cambiarSlot2)
+    {
+      Accesorio accesorioAnterior = pSel.Accesorio2;
+      if (accesorioAnterior != null)
+      {
+        pSel.QuitarAccesorio2(accesorioAnterior);
+        AgregarAlInventarioSiHaceFalta(accesorioAnterior.gameObject);
+      }
+
+      pSel.Accesorio2 = nuevoAccesorio;
+    }
+    else
+    {
+      Accesorio accesorioAnterior = pSel.Accesorio1;
+      if (accesorioAnterior != null)
+      {
+        pSel.QuitarAccesorio1(accesorioAnterior);
+        AgregarAlInventarioSiHaceFalta(accesorioAnterior.gameObject);
+      }
+
+      pSel.Accesorio1 = nuevoAccesorio;
+    }
+
+    scEquipo.listInventario.Remove(nuevoAccesorio.gameObject);
+    return true;
+  }
+
+  public bool EquiparConsumibleDesdeInventario(Consumible nuevoConsumible)
+  {
+    if (nuevoConsumible == null || pSel == null)
+    {
+      return false;
+    }
+
+    if (!nuevoConsumible.PuedeUsarClase(pSel.IDClase)) { return false; }
+    bool cambiarSlot2 = scEquipo != null && scEquipo.consumibleACambiar == 2;
+    if (cambiarSlot2)
+    {
+      Consumible consumibleAnterior = pSel.Consumible2;
+      if (consumibleAnterior != null)
+      {
+        pSel.QuitarConsumible2(consumibleAnterior);
+        AgregarAlInventarioSiHaceFalta(consumibleAnterior.gameObject);
+      }
+
+      pSel.Consumible2 = nuevoConsumible;
+    }
+    else
+    {
+      Consumible consumibleAnterior = pSel.Consumible1;
+      if (consumibleAnterior != null)
+      {
+        pSel.QuitarConsumible1(consumibleAnterior);
+        AgregarAlInventarioSiHaceFalta(consumibleAnterior.gameObject);
+      }
+
+      pSel.Consumible1 = nuevoConsumible;
+    }
+
+    scEquipo.listInventario.Remove(nuevoConsumible.gameObject);
+    return true;
+  }
+
+  public void OnRightClickArma()
+  {
+    TooltipItems.Instance.HideTooltip();
+    if (pSel == null || pSel.itemArma == null)
+    {
+      return;
+    }
+
+    Arma armaAQuitar = pSel.itemArma;
+    pSel.QuitarArma(armaAQuitar);
+    AgregarAlInventarioSiHaceFalta(armaAQuitar.gameObject);
+    RefrescarInventarioDeEquipoSiEstaAbierto(1);
+    Invoke("ActualizarInfo", 0.05f);
+  }
+
+  public void OnRightClickArmadura()
+  {
+    TooltipItems.Instance.HideTooltip();
+    if (pSel == null || pSel.itemArmadura == null)
+    {
+      return;
+    }
+
+    Armadura armaduraAQuitar = pSel.itemArmadura;
+    pSel.QuitarArmadura(armaduraAQuitar);
+    AgregarAlInventarioSiHaceFalta(armaduraAQuitar.gameObject);
+    RefrescarInventarioDeEquipoSiEstaAbierto(2);
+    Invoke("ActualizarInfo", 0.05f);
+  }
+
+  public void OnRightClickAccesorio1()
+  {
+    TooltipItems.Instance.HideTooltip();
+    if (pSel == null || pSel.Accesorio1 == null)
+    {
+      return;
+    }
+
+    Accesorio accesorioAQuitar = pSel.Accesorio1;
+    pSel.QuitarAccesorio1(accesorioAQuitar);
+    AgregarAlInventarioSiHaceFalta(accesorioAQuitar.gameObject);
+    RefrescarInventarioDeEquipoSiEstaAbierto(3);
+    Invoke("ActualizarInfo", 0.05f);
+  }
+
+  public void OnRightClickAccesorio2()
+  {
+    TooltipItems.Instance.HideTooltip();
+    if (pSel == null || pSel.Accesorio2 == null)
+    {
+      return;
+    }
+
+    Accesorio accesorioAQuitar = pSel.Accesorio2;
+    pSel.QuitarAccesorio2(accesorioAQuitar);
+    AgregarAlInventarioSiHaceFalta(accesorioAQuitar.gameObject);
+    RefrescarInventarioDeEquipoSiEstaAbierto(3);
+    Invoke("ActualizarInfo", 0.05f);
+  }
+
+  public void OnRightClickConsumible1()
+  {
+    TooltipItems.Instance.HideTooltip();
+    if (pSel == null || pSel.Consumible1 == null)
+    {
+      return;
+    }
+
+    Consumible consumibleAQuitar = pSel.Consumible1;
+    pSel.QuitarConsumible1(consumibleAQuitar);
+    AgregarAlInventarioSiHaceFalta(consumibleAQuitar.gameObject);
+    RefrescarInventarioDeEquipoSiEstaAbierto(4);
+    Invoke("ActualizarInfo", 0.05f);
+  }
+
+  public void OnRightClickConsumible2()
+  {
+    TooltipItems.Instance.HideTooltip();
+    if (pSel == null || pSel.Consumible2 == null)
+    {
+      return;
+    }
+
+    Consumible consumibleAQuitar = pSel.Consumible2;
+    pSel.QuitarConsumible2(consumibleAQuitar);
+    AgregarAlInventarioSiHaceFalta(consumibleAQuitar.gameObject);
+    RefrescarInventarioDeEquipoSiEstaAbierto(4);
+    Invoke("ActualizarInfo", 0.05f);
   }
 
   [SerializeField] GameObject SubirNivelAtributo;

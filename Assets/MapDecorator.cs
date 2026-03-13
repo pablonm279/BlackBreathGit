@@ -160,18 +160,35 @@ public class MapDecorator : MonoBehaviour
 
     public void RegenerarRelieveParaZona(int zonaId, int fase)
     {
+        RegenerarRelieveParaZona(zonaId, fase, null);
+    }
+
+    public void RegenerarRelieveParaZona(int zonaId, int fase, int? reliefSeedOverride)
+    {
         if (!usarRelieveProcedural || planeMesh == null)
             return;
 
         EnsureReliefTargets();
         EnsureRuntimeTerrainMeshes();
 
-        int varianteAleatoria = System.Guid.NewGuid().GetHashCode();
-        relieveSeed = (zonaId * 73856093) ^ varianteAleatoria ^ 0x2f6e2b1;
+        if (reliefSeedOverride.HasValue)
+        {
+            relieveSeed = reliefSeedOverride.Value;
+        }
+        else
+        {
+            int varianteAleatoria = System.Guid.NewGuid().GetHashCode();
+            relieveSeed = (zonaId * 73856093) ^ varianteAleatoria ^ 0x2f6e2b1;
+        }
         alturaRelieveActual = ObtenerAlturaRelieveParaZona(zonaId);
 
         AplicarRelieveAPlano(planeMesh, runtimePlaneMesh, basePlaneVertices, planeCollider);
         AplicarRelieveAPlano(planeMeshExtension, runtimePlaneMeshExtension, basePlaneExtensionVertices, planeColliderExtension);
+    }
+
+    public int GetReliefSeed()
+    {
+        return relieveSeed;
     }
 
     public bool TrySampleSurface(Vector3 worldPos, out Vector3 surfacePos, out Vector3 surfaceNormal, float normalOffset = 0f)

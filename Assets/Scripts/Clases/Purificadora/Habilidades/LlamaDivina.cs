@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,7 +15,7 @@ public class LlamaDivina : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
     private int hAlcance = 5;
     private int hAncho = 1; //1 - Adyacentes
@@ -116,7 +116,7 @@ public class LlamaDivina : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})";
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : tituloEs,
@@ -127,7 +127,7 @@ public class LlamaDivina : Habilidad
         costos,
         "#5dade2");
 
-      bool mostrarProximoNivel = EsEscenaCampa√±a()
+      bool mostrarProximoNivel = EsEscenaCampaÒa()
         && CampaignManager.Instance != null
         && CampaignManager.Instance.scMenuPersonajes != null
         && CampaignManager.Instance.scMenuPersonajes.pSel != null
@@ -197,7 +197,7 @@ public class LlamaDivina : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     { 
     
-     if(obj is Unidad) //Ac√° van los efectos a Unidades.
+     if(obj is Unidad) //Ac· van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
@@ -267,7 +267,7 @@ public class LlamaDivina : Habilidad
 
 
        }   
-     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -313,12 +313,12 @@ public class LlamaDivina : Habilidad
 
     private async Task LanzarProyectilAsync(object objetivo)
     {
-        await Task.Delay(200);
+        await BattleManager.DelayCombateAsync(200);
 
         GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.LlamaDivina;
         if (flechaPrefab == null)
         {
-            await Task.Delay(200);
+            await BattleManager.DelayCombateAsync(200);
             return;
         }
 
@@ -342,7 +342,7 @@ public class LlamaDivina : Habilidad
         }
         else
         {
-            await Task.Delay(200);
+            await BattleManager.DelayCombateAsync(200);
         }
     }
     void EfectoAdicional(Unidad objetivo)

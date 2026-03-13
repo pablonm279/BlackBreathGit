@@ -1,0 +1,187 @@
+using System;
+using System.IO;
+using UnityEngine;
+
+public static class SaveGameService
+{
+  private const string DefaultFileName = "campaign_save.json";
+
+  private static SaveFileData pendingLoadData;
+  private static string pendingLoadFailureMessage;
+
+  public static string GetDefaultSavePath()
+  {
+    return Path.Combine(Application.persistentDataPath, DefaultFileName);
+  }
+
+  public static bool HasPendingLoad()
+  {
+    return pendingLoadData != null;
+  }
+
+  public static void QueuePendingLoad(SaveFileData saveFileData)
+  {
+    pendingLoadData = saveFileData;
+  }
+
+  public static void ClearPendingLoad()
+  {
+    pendingLoadData = null;
+  }
+
+  public static void ReportPendingLoadFailure(string message)
+  {
+    pendingLoadFailureMessage = message;
+  }
+
+  public static bool TryConsumePendingLoadFailure(out string message)
+  {
+    message = pendingLoadFailureMessage;
+    pendingLoadFailureMessage = null;
+    return !string.IsNullOrWhiteSpace(message);
+  }
+
+  public static bool TryConsumePendingLoad(out SaveFileData saveFileData)
+  {
+    saveFileData = pendingLoadData;
+    pendingLoadData = null;
+    return saveFileData != null;
+  }
+
+  public static bool HasSaveFile(string path = null)
+  {
+    string resolvedPath = ResolvePath(path);
+    return File.Exists(resolvedPath);
+  }
+
+  public static bool TryWriteSaveFile(SaveFileData saveFileData, out string error, string path = null)
+  {
+    error = string.Empty;
+    if (saveFileData == null)
+    {
+      error = "SaveFileData nulo.";
+      return false;
+    }
+
+    try
+    {
+      saveFileData.MarcarGuardadoAhora();
+      string resolvedPath = ResolvePath(path);
+      string directory = Path.GetDirectoryName(resolvedPath);
+      if (!string.IsNullOrWhiteSpace(directory))
+      {
+        Directory.CreateDirectory(directory);
+      }
+
+      string json = JsonUtility.ToJson(saveFileData, true);
+      File.WriteAllText(resolvedPath, json);
+      return true;
+    }
+    catch (Exception ex)
+    {
+      error = ex.Message;
+      return false;
+    }
+  }
+
+  public static bool TryReadSaveFile(out SaveFileData saveFileData, out string error, string path = null)
+  {
+    saveFileData = null;
+    error = string.Empty;
+
+    try
+    {
+      string resolvedPath = ResolvePath(path);
+      if (!File.Exists(resolvedPath))
+      {
+        error = "No existe el archivo de guardado.";
+        return false;
+      }
+
+      string json = File.ReadAllText(resolvedPath);
+      if (string.IsNullOrWhiteSpace(json))
+      {
+        error = "El archivo de guardado esta vacio.";
+        return false;
+      }
+
+      saveFileData = JsonUtility.FromJson<SaveFileData>(json);
+      if (saveFileData == null)
+      {
+        error = "No se pudo deserializar el archivo de guardado.";
+        return false;
+      }
+
+      Normalizar(saveFileData);
+      return true;
+    }
+    catch (Exception ex)
+    {
+      error = ex.Message;
+      return false;
+    }
+  }
+
+  public static bool TryQueuePendingLoadFromFile(out string error, string path = null)
+  {
+    error = string.Empty;
+    if (!TryReadSaveFile(out SaveFileData saveFileData, out error, path))
+    {
+      return false;
+    }
+
+    QueuePendingLoad(saveFileData);
+    return true;
+  }
+
+  public static bool DeleteSaveFile(out string error, string path = null)
+  {
+    error = string.Empty;
+
+    try
+    {
+      string resolvedPath = ResolvePath(path);
+      if (!File.Exists(resolvedPath))
+      {
+        return true;
+      }
+
+      File.Delete(resolvedPath);
+      return true;
+    }
+    catch (Exception ex)
+    {
+      error = ex.Message;
+      return false;
+    }
+  }
+
+  private static string ResolvePath(string path)
+  {
+    return string.IsNullOrWhiteSpace(path) ? GetDefaultSavePath() : path;
+  }
+
+  private static void Normalizar(SaveFileData saveFileData)
+  {
+    if (saveFileData.campaign == null)
+    {
+      saveFileData.campaign = new CampaignSaveData();
+    }
+    if (saveFileData.map == null)
+    {
+      saveFileData.map = new MapSaveData();
+    }
+    if (saveFileData.party == null)
+    {
+      saveFileData.party = new PartySaveData();
+    }
+    if (saveFileData.sequitos == null)
+    {
+      saveFileData.sequitos = new SequitosSaveData();
+    }
+    if (saveFileData.metaprogresion == null)
+    {
+      saveFileData.metaprogresion = new MetaprogresionSaveData();
+    }
+  }
+}

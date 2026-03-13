@@ -67,7 +67,7 @@ public class CariciadelBosque : IAHabilidad
 
      
     
-      await Task.Delay(1300);
+      await BattleManager.DelayCombateAsync(1300);
       //Esto es cuando el objetivo es uno solo,
       AplicarEfectosHabilidad(Objetivo);
      

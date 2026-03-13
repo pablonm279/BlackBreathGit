@@ -22,7 +22,7 @@ public class Estados : MonoBehaviour
      unidad.CambiarAPActual(-1);
 
       // Retraso de 1.15 segundos
-      await Task.Delay(1150);
+      await BattleManager.DelayCombateAsync(1150);
 
       unidad.GenerarTextoFlotante(TRADU.i.Traducir("Apagando!"), Color.red);
       BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" gasta 1 PA para apagar el fuego.")));

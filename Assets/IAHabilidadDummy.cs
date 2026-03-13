@@ -37,7 +37,7 @@ public class IAHabilidadDummy : IAHabilidad
 
     // Consume all remaining AP to force the AI to end its turn.
     scEstaUnidad.EstablecerAPActualA(0);
-    await Task.Delay(150);
+    await BattleManager.DelayCombateAsync(150);
     BattleManager.Instance.TerminarTurno();
   }
 

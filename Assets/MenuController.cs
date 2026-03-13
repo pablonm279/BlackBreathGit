@@ -1,24 +1,27 @@
-﻿using System.Collections;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour
 {
+    private const string TutorialTerminadoKey = "Tutorial_Terminado";
     [Header("Escenas")]
     [SerializeField] string escenaJuego = "ES-Campaña";
 
     [Header("UI")]
-    [SerializeField] CanvasGroup fader;        // Imagen negra con CanvasGroup
+    [SerializeField] CanvasGroup fader;
     [SerializeField] float fadeTime = 0.4f;
-    [SerializeField] GameObject panelOpciones; // Opcional
+    [SerializeField] GameObject panelOpciones;
 
     public GameObject logoIngles;
     public GameObject logoEspaniol;
     public GameObject disclaimerIngles;
     public GameObject disclaimerEspaniol;
     public GameObject Opciones;
-  
+
+    private readonly List<Button> botonesCargarPartida = new List<Button>();
 
     void Awake()
     {
@@ -44,7 +47,8 @@ public class MenuController : MonoBehaviour
             TRADU.i.ActualizarIdioma();
         }
 
-
+        RecolectarBotonesCargarPartida();
+        RefrescarBotonesCargarPartida();
 
         if (TRADU.i.nIdioma == 1)
         {
@@ -61,36 +65,49 @@ public class MenuController : MonoBehaviour
             disclaimerEspaniol.SetActive(false);
         }
 
+        Opciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
+    }
 
-       Opciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
-
-
+    void OnEnable()
+    {
+        RefrescarBotonesCargarPartida();
     }
 
     IEnumerator Start()
     {
-        // Fade-in al entrar al menú
         yield return FadeTo(0f, fadeTime);
     }
 
-
     public void CambiarIdioma(int n)
-    { 
-     //   if (n != 1 && n != 2) return;
-
-       // TRADU.i.nIdioma = n;
-      //  PlayerPrefs.SetInt("nIdioma", n);
-      //  PlayerPrefs.Save();
-
-       
-
+    {
     }
+
     public void OnNuevaPartida()
     {
+        MarcarTutorialComoCompletado();
+        SaveGameService.ClearPendingLoad();
         StartCoroutine(CargarJuego());
-
-      
     }
+
+    public void OnNuevaPartidaTutorial()
+    {
+        ReiniciarTutorial();
+        SaveGameService.ClearPendingLoad();
+        StartCoroutine(CargarJuego());
+    }
+
+    public void OnContinuarPartida()
+    {
+        if (!SaveGameService.TryQueuePendingLoadFromFile(out string error))
+        {
+            Debug.LogWarning("[SaveGame] No se pudo preparar la carga de la campaña. " + error);
+            RefrescarBotonesCargarPartida();
+            return;
+        }
+
+        StartCoroutine(CargarJuego());
+    }
+
     public void abriropciones()
     {
         if (Opciones == null) { return; }
@@ -104,7 +121,7 @@ public class MenuController : MonoBehaviour
             UIFadeSlideUtility.Show(Opciones);
         }
     }
-   
+
     public void OnSalir()
     {
     #if UNITY_EDITOR
@@ -119,10 +136,41 @@ public class MenuController : MonoBehaviour
         Application.OpenURL("https://forms.gle/JBSKDkpa9MSfQx8k6");
     }
 
+    void RecolectarBotonesCargarPartida()
+    {
+        botonesCargarPartida.Clear();
+        Button[] botones = GetComponentsInChildren<Button>(true);
+        foreach (Button boton in botones)
+        {
+            if (boton != null && boton.name == "bt_CargarPartida")
+            {
+                botonesCargarPartida.Add(boton);
+            }
+        }
+    }
+
+    void RefrescarBotonesCargarPartida()
+    {
+        bool haySave = SaveGameService.HasSaveFile();
+        if (botonesCargarPartida.Count == 0)
+        {
+            RecolectarBotonesCargarPartida();
+        }
+
+        foreach (Button boton in botonesCargarPartida)
+        {
+            if (boton == null)
+            {
+                continue;
+            }
+
+            boton.interactable = haySave;
+        }
+    }
+
     IEnumerator CargarJuego()
     {
         yield return FadeTo(1f, fadeTime);
-        // Carga directa (simple y estable)
         SceneManager.LoadScene(escenaJuego, LoadSceneMode.Single);
     }
 
@@ -139,7 +187,16 @@ public class MenuController : MonoBehaviour
         }
         fader.alpha = target;
     }
+
+    void MarcarTutorialComoCompletado()
+    {
+        PlayerPrefs.SetInt(TutorialTerminadoKey, 1);
+        PlayerPrefs.Save();
+    }
+
+    void ReiniciarTutorial()
+    {
+        PlayerPrefs.DeleteKey(TutorialTerminadoKey);
+        PlayerPrefs.Save();
+    }
 }
-
-
-

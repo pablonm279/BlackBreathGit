@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,10 +15,10 @@ public class TiroconArcoRalentizante : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
     private int hAlcance = 7;
-    private int hAncho = 1; //1 - adyancentes tambi√©n
+    private int hAncho = 1; //1 - adyancentes tambiÈn
   public override void Awake()
   {
     nombre = "Tiro con Arco Ralentizante";
@@ -57,8 +57,8 @@ public class TiroconArcoRalentizante : Habilidad
     txtDescripcion = "<color=#5dade2><b>Tiro con Arco Ralentizante</b></color>\n\n";
     txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
     txtDescripcion += "<i>Al golpear TS Fortaleza DC 11: si falla, Ralentiza 2 turnos.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Da√±o: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valent√≠a: {costoPM} </color>";
+    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - DaÒo: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo ValentÌa: {costoPM} </color>";
      if (TRADU.i.nIdioma == 2)
     {
       txtDescripcion = "<color=#5dade2><b>Slowing Bow Shot</b></color>\n\n";
@@ -93,7 +93,7 @@ public class TiroconArcoRalentizante : Habilidad
     public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
-     if(obj is Unidad) //Ac√° van los efectos a Unidades.
+     if(obj is Unidad) //Ac· van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -103,15 +103,15 @@ public class TiroconArcoRalentizante : Habilidad
        Usuario.GetComponent<ClaseExplorador>().CambiarCantidadFlechas(-1);
        CrearProyectil(objetivo);
 
-       await Task.Delay(1300);
+       await BattleManager.DelayCombateAsync(1300);
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
        //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para pr√≥ximas habilidades de da√±o del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prÛximas habilidades de daÒo del explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de da√±o solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % da√±o cr√≠tico.
+         danioMarca += 15; //Esto se suma al porcentaje de daÒo solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daÒo crÌtico.
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -180,7 +180,7 @@ public class TiroconArcoRalentizante : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -198,7 +198,7 @@ public class TiroconArcoRalentizante : Habilidad
     if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza,12))
     {
          /////////////////////////////////////////////
-        //BUFF ---- As√≠ se aplica un buff/debuff
+        //BUFF ---- AsÌ se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Ralentizado";
         buff.boolfDebufftBuff = false;
@@ -208,7 +208,7 @@ public class TiroconArcoRalentizante : Habilidad
         buff.cantDefensa -= 1;
         buff.cantAtaque -= 1;
         buff.AplicarBuff(objetivo);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
 
@@ -217,7 +217,7 @@ public class TiroconArcoRalentizante : Habilidad
     
     async Task CrearProyectil(object Objetivo)
   {
-    await Task.Delay(200);
+    await BattleManager.DelayCombateAsync(200);
     GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
     GameObject Proyectil = Instantiate(flechaPrefab);
     Proyectil.GetComponent<ArrowFlight>().startMarker = transform;

@@ -48,7 +48,7 @@ public class IALenguetazo : IAHabilidad
         PrepararInicioAnimacion(null, objetivo);//Despues de establecer objetivo
     
         scEstaUnidad.ReproducirAnimacionAtaque();
-        await Task.Delay(2000);
+        await BattleManager.DelayCombateAsync(2000);
 
         AplicarEfectosHabilidad(objetivo);
         hActualCooldown = hCooldownMax;

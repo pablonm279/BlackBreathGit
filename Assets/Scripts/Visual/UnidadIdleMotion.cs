@@ -1154,10 +1154,12 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     overlayEscudadoArcoB.preserveAspect = false;
     overlayEscudadoBrillo.preserveAspect = true;
     overlayEscudadoPorcentaje = CrearTextoEstado(overlayEscudadoRoot, "PorcentajeEscudado");
+    overlayEscudadoPorcentaje.fontStyle = FontStyle.Normal;
     Outline outlinePorcentaje = overlayEscudadoPorcentaje.GetComponent<Outline>();
     if (outlinePorcentaje != null)
     {
-      outlinePorcentaje.effectColor = new Color(0.08f, 0.11f, 0.16f, 0.86f);
+      outlinePorcentaje.effectColor = new Color(0.08f, 0.11f, 0.16f, 0.46f);
+      outlinePorcentaje.effectDistance = new Vector2(0.45f, -0.45f);
     }
 
     SincronizarRootEscudado();
@@ -2348,12 +2350,12 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
       -10f);
 
     RectTransform contadorRect = overlayEscudadoPorcentaje.rectTransform;
-    contadorRect.anchoredPosition = new Vector2(0f, alto * 0.12f);
-    contadorRect.sizeDelta = new Vector2(Mathf.Max(14f, ancho * 0.34f), Mathf.Max(10f, alto * 0.14f));
+    contadorRect.anchoredPosition = new Vector2(0f, alto * 0.1f);
+    contadorRect.sizeDelta = new Vector2(Mathf.Max(12f, ancho * 0.28f), Mathf.Max(8f, alto * 0.11f));
     contadorRect.localEulerAngles = Vector3.zero;
     contadorRect.localScale = Vector3.one;
-    overlayEscudadoPorcentaje.fontSize = Mathf.Clamp(Mathf.RoundToInt(ancho * 0.11f), 6, 8);
-    overlayEscudadoPorcentaje.color = new Color(0.9f, 0.95f, 1f, visibilidadEscudado * Mathf.Lerp(0.58f, 0.74f, carga));
+    overlayEscudadoPorcentaje.fontSize = Mathf.Clamp(Mathf.RoundToInt(ancho * 0.085f), 4, 6);
+    overlayEscudadoPorcentaje.color = new Color(0.86f, 0.91f, 0.97f, visibilidadEscudado * Mathf.Lerp(0.26f, 0.42f, carga));
     overlayEscudadoPorcentaje.text = porcentajeParada.ToString() + "%";
   }
 

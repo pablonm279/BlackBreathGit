@@ -123,6 +123,7 @@ public class DebuffImpactoArmaData
 
 public abstract class Item : MonoBehaviour
 {
+     [SerializeField] private string persistentItemId;
      public Sprite imItem;
      public string sNombreItem;
      public int IDEfectoEspecial; //Solamente a las que son necesarias referenciar en AdministradorEscenas, como las armaduras con efectos especiales
@@ -186,6 +187,16 @@ public abstract class Item : MonoBehaviour
          }
 
          return IDClasesQuePuedenUsarEsteItem.Contains(idClase);
+     }
+
+     public string GetPersistentItemId()
+     {
+         return persistentItemId;
+     }
+
+     public void SetPersistentItemId(string itemId)
+     {
+         persistentItemId = itemId;
      }
 }
 

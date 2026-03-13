@@ -283,7 +283,7 @@ public class IAUnidad : MonoBehaviour
 
    private static Task DelayIA(int milliseconds)
    {
-      return Task.Delay(Mathf.Max(0, milliseconds));
+      return BattleManager.DelayCombateAsync(Mathf.Max(0, milliseconds));
    }
 
    private AITurnTimings ObtenerTimingsActuales()
@@ -765,7 +765,7 @@ public class IAUnidad : MonoBehaviour
         scUnidad.CasillaDeseadaMov = casillaObjetivo;
         scUnidad.CambiarAPActual(-costoMovimientoAP);
         // Simulacion de un retraso de movimiento
-        await Task.Delay(450);
+        await BattleManager.DelayCombateAsync(450);
 
         scUnidad.CasillaPosicion =  scUnidad.CasillaDeseadaMov;
         scUnidad.CasillaDeseadaMov = null;

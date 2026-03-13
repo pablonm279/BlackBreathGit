@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -13,7 +13,7 @@ public class IAGarraGuerreroCorrompido : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano - 9: Necro
 
   
   void Awake()
@@ -64,7 +64,7 @@ public class IAGarraGuerreroCorrompido : IAHabilidad
      unidadesEnZona.Add(Objetivo);
      PrepararInicioAnimacion(unidadesEnZona,null);//Despues de establecer objetivo
 
-    await Task.Delay(450);
+    await BattleManager.DelayCombateAsync(450);
 
     AplicarEfectosHabilidad(Objetivo);
     AplicarEfectosEnZona(ObtenerAfectadosZonaObjetivo(Objetivo)); //aca se determina la zona del Ataque relativo al objetivo
@@ -93,7 +93,7 @@ public class IAGarraGuerreroCorrompido : IAHabilidad
      foreach(Casilla cas in casillas)
      {
         //-----
-        //Ac√° aplicar efectos visuales a la casilla si corresponde
+        //Ac· aplicar efectos visuales a la casilla si corresponde
         //-----
        
       if(cas.Presente != null)
@@ -229,19 +229,19 @@ public class IAGarraGuerreroCorrompido : IAHabilidad
 
   public override object EstablecerObjetivoPrioritario()
   {
-    // Obtener la unidad due√±a
-    Unidad unidadDue√±a = gameObject.GetComponent<Unidad>();
-    if (unidadDue√±a == null) return null;
+    // Obtener la unidad dueÒa
+    Unidad unidadDueÒa = gameObject.GetComponent<Unidad>();
+    if (unidadDueÒa == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obst√°culos
+    // Filtrar los obst·culos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderByDescending(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDue√±a.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueÒa.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -250,7 +250,7 @@ public class IAGarraGuerreroCorrompido : IAHabilidad
       return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obst√°culo
+    // Si no hay unidades, devolver el obst·culo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
   }

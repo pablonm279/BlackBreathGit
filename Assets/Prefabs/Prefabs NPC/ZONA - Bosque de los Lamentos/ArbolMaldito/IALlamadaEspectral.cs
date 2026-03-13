@@ -74,7 +74,7 @@ public class IALlamadaEspectral : IAHabilidad
     PrepararInicioAnimacion(null, null);
     VFXAplicar(scEstaUnidad.gameObject);
  //   scEstaUnidad?.ReproducirAnimacionHabilidadNoHostil();
-    await Task.Delay(450);
+    await BattleManager.DelayCombateAsync(450);
     
    
     for (int i = 0; i < CantidadRefuerzos; i++)

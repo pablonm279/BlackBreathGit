@@ -1,4 +1,4 @@
-ï»¿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -61,7 +61,7 @@ public class IAEmbestidaFaagdan : IAHabilidad
       PrepararInicioAnimacion(null, objetivoPrincipal);
     }
       
-    await Task.Delay(1500);
+    await BattleManager.DelayCombateAsync(1500);
 
     AplicarEfectosEnFila(unidadesObjetivo);
   }
@@ -141,7 +141,7 @@ public class IAEmbestidaFaagdan : IAHabilidad
     if (noSeSalva)
     {
       EmpujarVerticalAleatorioAsync(objetivo);
-       // BUFF ---- AsÃ­ se aplica un buff/debuff
+       // BUFF ---- Así se aplica un buff/debuff
       Buff buff = new Buff();
       buff.buffNombre = "Derribado";
       buff.boolfDebufftBuff = false;
@@ -149,7 +149,7 @@ public class IAEmbestidaFaagdan : IAHabilidad
       buff.cantAPMax -= 2;
       buff.cantDefensa -= 2;
       buff.AplicarBuff(objetivo);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
+      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
       Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
     }
@@ -175,7 +175,7 @@ public class IAEmbestidaFaagdan : IAHabilidad
 
   private async Task EmpujarVerticalAleatorioAsync(Unidad objetivo)
   {
-    await Task.Delay(600);
+    await BattleManager.DelayCombateAsync(600);
 
     Casilla origen = objetivo.CasillaPosicion;
     if (origen == null || origen.ladoGO == null)

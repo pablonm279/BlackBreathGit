@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -14,7 +14,7 @@ public class IABolaDeFuego : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
    [SerializeField] private int zonaX; 
    [SerializeField] private  int zonaY;
@@ -65,7 +65,7 @@ public class IABolaDeFuego : IAHabilidad
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
     
     ReproducirAnimacionSegunTipo();
-    await Task.Delay(2000);
+    await BattleManager.DelayCombateAsync(2000);
     object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
     
     AplicarEfectosEnZona(ObtenerAfectadosZonaObjetivo(zonaX, zonaY, Objetivo)); //aca se determina la zona del Ataque relativo al objetivo
@@ -79,7 +79,7 @@ public class IABolaDeFuego : IAHabilidad
      foreach(Casilla cas in casillas)
      {
         //-----
-        //Ac√° aplicar efectos visuales a la casilla si corresponde
+        //Ac· aplicar efectos visuales a la casilla si corresponde
         //-----
        
 
@@ -161,7 +161,7 @@ public class IABolaDeFuego : IAHabilidad
 
           int resultadoTirada = TiradaAtaque(defensaObjetivo, scEstaUnidad.mod_CarAgilidad, bonusAtaque, scEstaUnidad.mod_CriticoRangoDado, obj) ;
      
-         if (resultadoTirada < 3 ) //Se subscriben alternativas menores (fallo, pifia) ya que es en zona pega si o si, puede ser cr√≠tico
+         if (resultadoTirada < 3 ) //Se subscriben alternativas menores (fallo, pifia) ya que es en zona pega si o si, puede ser crÌtico
          {
            float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
             danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
@@ -190,24 +190,24 @@ public class IABolaDeFuego : IAHabilidad
     
 
 
-   public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun l√≥gica
+   public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lÛgica
    {
     
   
 
-    // Obtener la unidad due√±a
-    Unidad unidadDue√±a = gameObject.GetComponent<Unidad>();
-    if (unidadDue√±a == null) return null;
+    // Obtener la unidad dueÒa
+    Unidad unidadDueÒa = gameObject.GetComponent<Unidad>();
+    if (unidadDueÒa == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obst√°culos
+    // Filtrar los obst·culos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderBy(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDue√±a.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueÒa.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -216,7 +216,7 @@ public class IABolaDeFuego : IAHabilidad
         return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obst√°culo
+    // Si no hay unidades, devolver el obst·culo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
 

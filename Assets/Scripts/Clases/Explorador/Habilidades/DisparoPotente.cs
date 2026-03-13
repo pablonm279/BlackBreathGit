@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class DisparoPotente : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
    
    public override void  Awake()
@@ -95,7 +95,7 @@ public class DisparoPotente : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})";
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : tituloEs,
@@ -122,7 +122,7 @@ public class DisparoPotente : Habilidad
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valent√≠a) u Opcion B (+2 al bono de ataque).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de ValentÌa) u Opcion B (+2 al bono de ataque).</color>"; }
       }
 
       if (CampaignManager.Instance != null && CampaignManager.Instance.gameObject != null && CampaignManager.Instance.gameObject.transform.parent != null && CampaignManager.Instance.gameObject.transform.parent.parent != null)
@@ -175,7 +175,7 @@ public class DisparoPotente : Habilidad
         impactoFilaPendiente = CrearProyectilFila(referencia);
         if (impactoFilaPendiente == null)
         {
-            return Task.Delay(300);
+            return BattleManager.DelayCombateAsync(300);
         }
 
         return impactoFilaPendiente;
@@ -189,7 +189,7 @@ public class DisparoPotente : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Ac√° van los efectos a Unidades.
+     if(obj is Unidad) //Ac· van los efectos a Unidades.
      { 
       
         Unidad objetivo = (Unidad)obj;
@@ -204,11 +204,11 @@ public class DisparoPotente : Habilidad
        print("Resultado tirada "+resultadoTirada);
        
         //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para pr√≥ximas habilidades de da√±o del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prÛximas habilidades de daÒo del explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de da√±o solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % da√±o cr√≠tico.
+         danioMarca += 15; //Esto se suma al porcentaje de daÒo solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daÒo crÌtico.
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -275,7 +275,7 @@ public class DisparoPotente : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -300,7 +300,7 @@ public class DisparoPotente : Habilidad
 
     private async Task LanzarProyectilAsync(object objetivo)
     {
-        await Task.Delay(80);
+        await BattleManager.DelayCombateAsync(80);
 
         GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
         if (flechaPrefab == null)
@@ -332,7 +332,7 @@ public class DisparoPotente : Habilidad
         }
         else
         {
-            await Task.Delay(200);
+            await BattleManager.DelayCombateAsync(200);
         }
     }
     private Task CrearProyectilFila(Casilla casillaClick)
@@ -347,7 +347,7 @@ public class DisparoPotente : Habilidad
 
     private async Task LanzarProyectilFilaAsync(Casilla casillaClick)
     {
-        await Task.Delay(10);
+        await BattleManager.DelayCombateAsync(10);
 
         int filaY = casillaClick.posY;
         List<Casilla> filaFull = new List<Casilla>();
@@ -418,7 +418,7 @@ public class DisparoPotente : Habilidad
         }
         else
         {
-            await Task.Delay(450);
+            await BattleManager.DelayCombateAsync(450);
         }
     }
     void VFXAplicar(GameObject objetivo)

@@ -723,7 +723,7 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     bool seAproximo = await IntentarAproximarVisualMeleeAsync(objetivoVisual, mantenerAdelantePorCadena);
     if (seAproximo && PausaPostAproximacionMs > 0)
     {
-      await Task.Delay(PausaPostAproximacionMs);
+      await BattleManager.DelayCombateAsync(PausaPostAproximacionMs);
     }
 
     ReproducirAnimacionSegunTipo(true);
@@ -740,12 +740,12 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     {
       if (PausaEntreMeleesEncadenadosMs > 0)
       {
-        await Task.Delay(PausaEntreMeleesEncadenadosMs);
+        await BattleManager.DelayCombateAsync(PausaEntreMeleesEncadenadosMs);
       }
     }
     else if (PausaAntesVolverMs > 0)
     {
-      await Task.Delay(PausaAntesVolverMs);
+      await BattleManager.DelayCombateAsync(PausaAntesVolverMs);
     }
     await VolverTrasAproximacionVisualAsync(seAproximo, !mantenerAdelantePorCadena);
 

@@ -1591,7 +1591,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
   // Reproduce un sonido específico según el tipo de daño antes del await
   if (BattleManager.Instance != null && BattleManager.Instance.contenedorPrefabs != null)
   {
-     await Task.Delay(20);
+     await BattleManager.DelayCombateAsync(20);
     AudioClip clip = null;
     switch (tipodanio)
     {
@@ -1643,7 +1643,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     }
   }
 
-    await Task.Delay(450);
+    await BattleManager.DelayCombateAsync(450);
     if (sonidosRecibirDanio != null && sonidosRecibirDanio.Count > 0)
     {
       if (audioSource == null)
@@ -1905,7 +1905,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
   public async virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
   {
-    await Task.Delay(delayEfectos); //Delay para que se vea el efecto de daño en la unidad antes de aplicar el daño
+    await BattleManager.DelayCombateAsync(delayEfectos); //Delay para que se vea el efecto de daño en la unidad antes de aplicar el daño
     float danioFinal = 0;
     bool textoDanioMostrado = false;
     bool absorbioPorArmadura = false;
@@ -2346,7 +2346,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         SumarValentia(-1, motivoCritRecibido);
       }
       
-      await Task.Delay(100);
+      await BattleManager.DelayCombateAsync(100);
       if (danioTotal > 0)
       {
         string detalleCalculoDanio = ConstruirDetalleCalculoDanio(
@@ -2914,7 +2914,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           scUnidadCanvas.txtDaño.text = "";
         }
       }
-      await Task.Delay(150);
+      await BattleManager.DelayCombateAsync(150);
       HP_actual -= danioFinalInt;
       string textoDanioElemental = "-" + danioFinalInt;
       Color colorDanioElementalFinal = colorDanioElemental;
@@ -3450,7 +3450,7 @@ public virtual void AplicarDesesperanzado()
     if (delaySeconds > 0f)
     {
       int delayMs = Mathf.CeilToInt(delaySeconds * 1000f);
-      await Task.Delay(delayMs);
+      await BattleManager.DelayCombateAsync(delayMs);
     }
 
     // Instancia el nuevo objeto
@@ -3639,14 +3639,15 @@ public void UnidadMuere()
    Invoke("DesactivarGOconDelay", 1.4f); 
 
 
+    string nombreUnidadLog = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;
     if(CasillaPosicion.lado == 1)
     {
-          scBattleManager.EscribirLog(CombatLogFormatter.EventoMuerte($"<color=#d92b08>"+uNombre+TRADU.i.Traducir(" muere.")+"</color>"));
+          scBattleManager.EscribirLog(CombatLogFormatter.EventoMuerte($"<color=#d92b08>{nombreUnidadLog}{TRADU.i.Traducir(" muere.")}</color>"));
 
     }
     else
     {
-          scBattleManager.EscribirLog(CombatLogFormatter.EventoMuerte($""+uNombre+TRADU.i.Traducir(" muere.")+""));
+          scBattleManager.EscribirLog(CombatLogFormatter.EventoMuerte($"{nombreUnidadLog}{TRADU.i.Traducir(" muere.")}"));
     }
 
 
