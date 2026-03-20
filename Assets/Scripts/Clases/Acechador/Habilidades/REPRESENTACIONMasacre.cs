@@ -145,6 +145,68 @@ public class REPRESENTACIONMasacre : Habilidad
           txtDescripcion += "<i>(Passive) When killing an enemy, the character gains +3 AP and +15% damage for the turn. Additionally, enemies must pass a Mental Saving Throw vs DC 6+Agility or be Terrified.</i>\n\n";
         }
       }
+      if (TRADU.i.nIdioma == 3)
+      {
+        if (NIVEL < 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Massacre I</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Ao matar um inimigo, o personagem ganha +2 AP e +10% de dano no turno. Alem disso, os inimigos devem passar em um teste Mental vs CD 5+Agilidade ou ficarem Aterrorizados.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 CD</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Massacre II</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Ao matar um inimigo, o personagem ganha +2 AP e +10% de dano no turno. Alem disso, os inimigos devem passar em um teste Mental vs CD 6+Agilidade ou ficarem Aterrorizados.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +5% de Dano no Turno</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Massacre III</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Ao matar um inimigo, o personagem ganha +2 AP e +15% de dano no turno. Alem disso, os inimigos devem passar em um teste Mental vs CD 6+Agilidade ou ficarem Aterrorizados.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Opcao A: -2 AP aos inimigos quando Aterrorizados.</color>\n\n";
+                txtDescripcion += $"<color=#dfea02>-Opcao B: Ganha +1 AP ao matar um inimigo.</color>\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Massacre IVa</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Ao matar um inimigo, o personagem ganha +2 AP e +15% de dano no turno. Alem disso, os inimigos devem passar em um teste Mental vs CD 6+Agilidade ou ficarem Aterrorizados II.</i>\n\n";
+        }
+        if (NIVEL == 5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Massacre IVb</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Ao matar um inimigo, o personagem ganha +3 AP e +15% de dano no turno. Alem disso, os inimigos devem passar em um teste Mental vs CD 6+Agilidade ou ficarem Aterrorizados.</i>\n\n";
+        }
+      }
 
     }
 

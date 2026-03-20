@@ -82,6 +82,7 @@ public class BattleManager : MonoBehaviour
   [Header("Tooltip Valour Global")]
   public GameObject tooltipValorES;
   public GameObject tooltipValorEN;
+  public GameObject tooltipValorPO;
   [SerializeField] private float tooltipValorHoverDelay = 0.25f;
   public TextMeshProUGUI rondaText;
 
@@ -328,6 +329,7 @@ public class BattleManager : MonoBehaviour
 
     ConfigurarAnimTooltipValour(tooltipValorES);
     ConfigurarAnimTooltipValour(tooltipValorEN);
+    ConfigurarAnimTooltipValour(tooltipValorPO);
   }
 
   private void ConfigurarAnimTooltipValour(GameObject tooltip)
@@ -1210,6 +1212,40 @@ public class BattleManager : MonoBehaviour
     NotificarCambioValourGlobal();
   }
 
+  public bool RemoverUnidadDeOrdenTurno(Unidad unidad)
+  {
+    if (unidad == null || lUnidadesTotal == null)
+    {
+      return false;
+    }
+
+    int indiceUnidad = lUnidadesTotal.IndexOf(unidad);
+    if (indiceUnidad < 0)
+    {
+      return false;
+    }
+
+    lUnidadesTotal.RemoveAt(indiceUnidad);
+
+    // Si se elimina una unidad ubicada antes del prÃ³ximo turno, el Ã­ndice debe retroceder
+    // para no saltear al siguiente combatiente.
+    if (indiceUnidad < indexTurno)
+    {
+      indexTurno--;
+    }
+
+    if (indexTurno < 0)
+    {
+      indexTurno = 0;
+    }
+    else if (indexTurno > lUnidadesTotal.Count)
+    {
+      indexTurno = lUnidadesTotal.Count;
+    }
+
+    return true;
+  }
+
   void AcelerarRefuerzosSiLadoSinUnidades()
   {
     if (ladoA != null && ladoA.unidadesLado.Count < 1 && enemigosRefuerzos != null && enemigosRefuerzos.Count > 0)
@@ -2012,6 +2048,11 @@ public class BattleManager : MonoBehaviour
     {
       UIFadeSlideUtility.Hide(tooltipValorEN);
     }
+
+    if (tooltipValorPO != null)
+    {
+      UIFadeSlideUtility.Hide(tooltipValorPO);
+    }
   }
 
   private IEnumerator AbrirTooltipValorConDelay()
@@ -2038,8 +2079,29 @@ public class BattleManager : MonoBehaviour
       UIFadeSlideUtility.Hide(tooltipValorEN);
     }
 
-    bool idiomaEs = TRADU.i != null && TRADU.i.nIdioma == 1;
-    GameObject tooltipSeleccionado = idiomaEs ? tooltipValorES : tooltipValorEN;
+    if (tooltipValorPO != null)
+    {
+      UIFadeSlideUtility.Hide(tooltipValorPO);
+    }
+
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
+    GameObject tooltipSeleccionado = null;
+    switch (idioma)
+    {
+      case 1: // Español
+        tooltipSeleccionado = tooltipValorES;
+        break;
+      case 2: // Inglés
+        tooltipSeleccionado = tooltipValorEN;
+        break;
+      case 3: // Portugués
+        tooltipSeleccionado = tooltipValorPO;
+        break;
+      default:
+        tooltipSeleccionado = tooltipValorES;
+        break;
+    }
+
     if (tooltipSeleccionado != null)
     {
       UIFadeSlideUtility.Show(tooltipSeleccionado);

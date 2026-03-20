@@ -36,9 +36,10 @@ public class SalmoPurificador : Habilidad
      
 
     }
-    public override void ActualizarDescripcion()
+  public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
     int debuffsPorUnidad = 1;
     if (NIVEL > 1) { debuffsPorUnidad += 1; }
@@ -47,10 +48,15 @@ public class SalmoPurificador : Habilidad
 
     string tituloEs = "Salmo Purificador I";
     string tituloEn = "Purifying Psalm I";
+    string tituloPt = "Salmo Purificador I";
     if (NIVEL == 2) { tituloEs = "Salmo Purificador II"; tituloEn = "Purifying Psalm II"; }
     if (NIVEL == 3) { tituloEs = "Salmo Purificador III"; tituloEn = "Purifying Psalm III"; }
     if (NIVEL == 4) { tituloEs = "Salmo Purificador IV a"; tituloEn = "Purifying Psalm IV a"; }
     if (NIVEL == 5) { tituloEs = "Salmo Purificador IV b"; tituloEn = "Purifying Psalm IV b"; }
+    if (NIVEL == 2) { tituloPt = "Salmo Purificador II"; }
+    if (NIVEL == 3) { tituloPt = "Salmo Purificador III"; }
+    if (NIVEL == 4) { tituloPt = "Salmo Purificador IV a"; }
+    if (NIVEL == 5) { tituloPt = "Salmo Purificador IV b"; }
 
     string cuerpo = "";
     if (esIngles)
@@ -65,6 +71,19 @@ public class SalmoPurificador : Habilidad
       }
       cuerpo += "<b>Requirement:</b> Needs at least 1 Fervor to activate\n";
       cuerpo += "<b>On cast:</b> Does not consume Fervor";
+    }
+    else if (esPortugues)
+    {
+      cuerpo += "<b>Tipo:</b> Alcance (4 de alcance)\n";
+      cuerpo += "<b>Alvo:</b> 1 unidade no alcance\n";
+      cuerpo += "<b>Area:</b> Alvo + unidades adjacentes\n";
+      cuerpo += $"<b>Efeito:</b> Remove ate {debuffsPorUnidad} Debuffs removiveis de cada unidade afetada\n";
+      if (daValentia)
+      {
+        cuerpo += "<b>Extra IV b:</b> +1 Valentia para cada unidade afetada por Debuff removido\n";
+      }
+      cuerpo += "<b>Requisito:</b> Precisa de pelo menos 1 Fervor para ativar\n";
+      cuerpo += "<b>Ao usar:</b> Nao consome Fervor";
     }
     else
     {
@@ -82,12 +101,16 @@ public class SalmoPurificador : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
       : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
         ? "A cleansing chant that removes hostile effects from a small cluster."
+        : esPortugues
+          ? "Um canto de limpeza que remove efeitos negativos de um pequeno grupo."
         : "Un canto de limpieza que remueve efectos negativos en un pequeno grupo.",
       cuerpo,
       costos,
@@ -108,6 +131,12 @@ public class SalmoPurificador : Habilidad
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: removes +1 Debuff per unit.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 cooldown.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 removed Debuff) or Option B (+1 Valour per removed Debuff).</color>"; }
+    }
+    else if (esPortugues)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: remove +1 Debuff por unidade.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 recarga.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 Debuff removido) ou Opcao B (+1 Valentia por Debuff removido).</color>"; }
     }
     else
     {
@@ -190,7 +219,7 @@ public class SalmoPurificador : Habilidad
                 string nombreBuff = TRADU.i != null ? TRADU.i.Traducir(buff.buffNombre) : buff.buffNombre;
                 string nombreAliado = TRADU.i != null ? TRADU.i.Traducir(aliado.uNombre) : aliado.uNombre;
                 string verboRemueve = TRADU.i != null ? TRADU.i.Traducir(" remueve ") : " remueve ";
-                string conector = (TRADU.i != null && TRADU.i.nIdioma == 2) ? " from " : " de ";
+                string conector = (TRADU.i != null && TRADU.i.nIdioma == 2) ? " from " : (TRADU.i != null && TRADU.i.nIdioma == 3) ? " de " : " de ";
                 BattleManager.Instance.EscribirLog(nombreLanzador + verboRemueve + nombreBuff + conector + nombreAliado + ".");
                 buff.RemoverBuff(aliado);
                

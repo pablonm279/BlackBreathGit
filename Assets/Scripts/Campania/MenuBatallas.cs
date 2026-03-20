@@ -35,6 +35,7 @@ public class MenuBatallas : MonoBehaviour
 
  [Header("Generador de encuentros")]
  [SerializeField] List<string> corruptFactionIds = new List<string>() { "Corruptos" };
+ [SerializeField] List<string> banditFactionIds = new List<string>() { "Bandidos" };
  [SerializeField] float corruptChancePerAliento = 4f;
  [Header("Debug de encuentros")]
  [SerializeField] bool debugRestringirEncuentrosProcedurales = false;
@@ -42,6 +43,7 @@ public class MenuBatallas : MonoBehaviour
  [SerializeField] List<BattleRewardProfile> rewardProfiles = new List<BattleRewardProfile>();
  [SerializeField] BattleRewardTuning defaultRewardTuning = new BattleRewardTuning();
  const string KaleTavFactionId = "Kale'Tav";
+ const int EventoEspecialDefenderCivilesBandidos = -206;
 
   EncounterDefinition encuentroGeneradoActual;
   EncounterZoneType encuentroZonaActual;
@@ -66,8 +68,8 @@ public class MenuBatallas : MonoBehaviour
     SetBotonComenzarInteractable(true);
  }
 
- void SetBotonComenzarInteractable(bool interactable)
- {
+  void SetBotonComenzarInteractable(bool interactable)
+  {
     if (btnComenzar == null)
     {
       return;
@@ -78,10 +80,22 @@ public class MenuBatallas : MonoBehaviour
     {
       btn.interactable = interactable;
     }
- }
+  }
 
- void Awake()
- {
+  static bool EsGuardiaParaCaravana(Personaje personaje)
+  {
+    if (personaje == null)
+    {
+      return false;
+    }
+
+    return personaje.ActividadSeleccionada == 3
+      || personaje.ActividadSeleccionada == 6
+      || personaje.ActividadSeleccionada == 14;
+  }
+
+  void Awake()
+  {
     EnsureRewardProfiles();
  }
 
@@ -265,6 +279,12 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
     float aliento = CampaignManager.Instance != null ? CampaignManager.Instance.GetValorAlientoNegro() : 0f;
     float chance = Mathf.Clamp(aliento * corruptChancePerAliento, 0f, 100f);
     return UnityEngine.Random.Range(0f, 100f) < chance;
+ }
+
+ int ObtenerEncuentroBandidoFallback()
+ {
+    int[] encountersBandidos = { 500, 501, 502, 503 };
+    return encountersBandidos[UnityEngine.Random.Range(0, encountersBandidos.Length)];
  }
 
  int ObtenerJefeIdAleatorio(EncounterZoneType zona, int fase)
@@ -457,7 +477,7 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
             {
                 if (!pers.Camp_Muerto && pers.fVidaActual > 1) //Si no está muerto y tiene vida
                 {
-                    if ((/*Base: Guardia*/pers.ActividadSeleccionada == 3) || (/*Caballero: Vigilar*/pers.ActividadSeleccionada == 6))
+                    if (EsGuardiaParaCaravana(pers))
                     {
                         GameObject btnPers = Instantiate(prefabBtnPersonaje, contenedorUIPersonajes.transform);
                         btnPers.GetComponent<Image>().sprite = pers.spRetrato;
@@ -543,24 +563,28 @@ public void DejanEnListaParticipantesSolo()
     if (scAdministradorEscenas.Personaje1 == pers)
     {
         scAdministradorEscenas.Personaje1 = null;
+        RuntimeAnalytics.TrackDesign("battle", "party_deselect", RuntimeAnalytics.ClassToken(pers));
         ActualizarLista();
         return;
     }
     if (scAdministradorEscenas.Personaje2 == pers)
     {
         scAdministradorEscenas.Personaje2 = null;
+        RuntimeAnalytics.TrackDesign("battle", "party_deselect", RuntimeAnalytics.ClassToken(pers));
         ActualizarLista();
         return;
     }
     if (scAdministradorEscenas.Personaje3 == pers)
     {
         scAdministradorEscenas.Personaje3 = null;
+        RuntimeAnalytics.TrackDesign("battle", "party_deselect", RuntimeAnalytics.ClassToken(pers));
         ActualizarLista();
         return;
     }
     if (scAdministradorEscenas.Personaje4 == pers)
     {
         scAdministradorEscenas.Personaje4 = null;
+        RuntimeAnalytics.TrackDesign("battle", "party_deselect", RuntimeAnalytics.ClassToken(pers));
         ActualizarLista();
         return;
     }
@@ -597,6 +621,7 @@ public void DejanEnListaParticipantesSolo()
     }
 
     ActualizarLista();
+    RuntimeAnalytics.TrackDesign("battle", "party_select", RuntimeAnalytics.ClassToken(pers));
 
    
 
@@ -627,12 +652,33 @@ public void DejanEnListaParticipantesSolo()
         EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
         encuentroZonaActual = zonaActual;
 
-        if (n == 0)
+        bool forzarBandidos = n == EventoEspecialDefenderCivilesBandidos;
+        if (n == 0 || forzarBandidos)
         {
             bool generado = false;
             float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
+            Predicate<EnemyFactionConfig> filtroBandidos = forzarBandidos ? (f => EsFaccionDeLista(f, banditFactionIds)) : null;
 
-            if (!EstaActivoDebugFaccionesCombate() && DeberiaGenerarBatallaCorrupta())
+            if (forzarBandidos)
+            {
+                generado = TryGenerarEncuentro(BattleEncounterType.Normal, zonaActual, filtroBandidos, out encuentroGeneradoActual);
+                if (generado)
+                {
+                    encuentroZonaActual = zonaActual;
+                }
+                else if (TryGenerarEncuentro(BattleEncounterType.Normal, EncounterZoneType.Generico, filtroBandidos, out encuentroGeneradoActual))
+                {
+                    encuentroZonaActual = EncounterZoneType.Generico;
+                    generado = true;
+                }
+
+                if (!generado)
+                {
+                    EventoBatallaID = ObtenerEncuentroBandidoFallback();
+                    encuentroGeneradoActual = null;
+                }
+            }
+            else if (!EstaActivoDebugFaccionesCombate() && DeberiaGenerarBatallaCorrupta())
             {
                 generado = TryGenerarEncuentro(BattleEncounterType.Normal, EncounterZoneType.Generico, f => EsFaccionDeLista(f, corruptFactionIds), out encuentroGeneradoActual);
                 if (generado)
@@ -641,7 +687,7 @@ public void DejanEnListaParticipantesSolo()
                 }
             }
 
-            if (!generado && UnityEngine.Random.Range(0f, 100f) < chanceEncuentroPropio)
+            if (!forzarBandidos && !generado && UnityEngine.Random.Range(0f, 100f) < chanceEncuentroPropio)
             {
                 generado = TryGenerarEncuentro(BattleEncounterType.Normal, zonaActual, null, out encuentroGeneradoActual);
                 if (generado)
@@ -650,7 +696,7 @@ public void DejanEnListaParticipantesSolo()
                 }
             }
 
-            if (!generado)
+            if (!forzarBandidos && !generado)
             {
                 generado = TryGenerarEncuentro(BattleEncounterType.Normal, EncounterZoneType.Generico, null, out encuentroGeneradoActual);
                 if (generado)
@@ -659,7 +705,7 @@ public void DejanEnListaParticipantesSolo()
                 }
             }
 
-            if (!generado)
+            if (!forzarBandidos && !generado)
             {
                 TryGenerarEncuentro(BattleEncounterType.Normal, zonaActual, null, out encuentroGeneradoActual);
                 encuentroZonaActual = zonaActual;
@@ -775,6 +821,42 @@ public void DejanEnListaParticipantesSolo()
 
         ActualizarLista();
     }
+
+    public void EventoBatallaEliteCorruptos(int esEmboscada = 0)
+    {
+        esBatallaFinal = false;
+        esEmboscadaEnemiga = esEmboscada;
+        cantidadAliadosComienzo = 3;
+        AjustarSeleccionAlMaximo();
+        gameObject.SetActive(true);
+        UIEmpezarBatalla.SetActive(true);
+        UIEmpezarBatallaACaravana.SetActive(false);
+        UITerminarBatalla.SetActive(false);
+
+        encuentroGeneradoActual = null;
+        encuentroTipoActual = BattleEncounterType.Elite;
+        EventoBatallaID = 0;
+
+        var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+        EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
+        encuentroZonaActual = zonaActual;
+
+        Predicate<EnemyFactionConfig> corruptosFilter = faction => EsFaccionDeLista(faction, corruptFactionIds);
+        bool generado = TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, corruptosFilter, out encuentroGeneradoActual);
+        if (!generado && TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, corruptosFilter, out encuentroGeneradoActual))
+        {
+            encuentroZonaActual = EncounterZoneType.Generico;
+            generado = true;
+        }
+
+        if (!generado)
+        {
+            Debug.LogWarning("[MenuBatallas] No se pudo generar una batalla elite de Corruptos.");
+        }
+
+        ActualizarLista();
+    }
+
     public void EventoBatallaFinal(int n, int esEmboscada = 0)
     {
         esBatallaFinal = true;
@@ -841,7 +923,7 @@ public void DejanEnListaParticipantesSolo()
             if (pers == null) continue;
             if (pers.Camp_Muerto) continue;
             if (pers.fVidaActual <= 1) continue;
-            if (!((pers.ActividadSeleccionada == 3) || (pers.ActividadSeleccionada == 6))) continue;
+            if (!EsGuardiaParaCaravana(pers)) continue;
 
             asignados++;
             if (asignados == 1) scAdministradorEscenas.Personaje1 = pers;
@@ -942,6 +1024,26 @@ bool EsResultadoVictoria(int resultado)
    return resultado == 1;
 }
 
+string ObtenerAnalyticsEncounterToken()
+{
+   if (encuentroGeneradoActual != null)
+   {
+      if (!string.IsNullOrWhiteSpace(encuentroGeneradoActual.factionId))
+      {
+         return "gen_" + RuntimeAnalytics.SanitizeToken(encuentroGeneradoActual.factionId);
+      }
+
+      return "generated";
+   }
+
+   if (EventoBatallaID > 0)
+   {
+      return "legacy_" + EventoBatallaID;
+   }
+
+   return "procedural";
+}
+
 bool EsResultadoDerrota(int resultado)
 {
    return !EsResultadoVictoria(resultado);
@@ -954,6 +1056,17 @@ public void EfectosDeBatallaEnCampaña(int resultado)
    transicionJefeZonaPendiente = false;
    bool fueBatallaFinalActual = esBatallaFinal;
    bool fueDefensaCaravana = encuentroTipoActual == BattleEncounterType.AtaqueCaravana || esEmboscadaEnemiga == 3;
+   string battleTypeToken = RuntimeAnalytics.SanitizeToken(encuentroTipoActual.ToString());
+   string encounterToken = ObtenerAnalyticsEncounterToken();
+
+    if (EsResultadoVictoria(resultado))
+    {
+        RuntimeAnalytics.TrackProgressionComplete("battle", battleTypeToken, encounterToken);
+    }
+    else
+    {
+        RuntimeAnalytics.TrackProgressionFail("battle", battleTypeToken, encounterToken);
+    }
 
     if (EsResultadoVictoria(resultado))
     {
@@ -986,6 +1099,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
       }
       else if (CampaignManager.Instance.scTutorialManager.tutorialActivo && EventoBatallaID == 701)
       {
+         RuntimeAnalytics.TrackProgressionComplete("tutorial", "campaign", "intro");
          CampaignManager.Instance.scTutorialManager.SiguientePaso();
          CampaignManager.Instance.AbrirCiudadPuerto(); //fin tutorial
       }
@@ -1177,6 +1291,15 @@ public void EfectosDeBatallaEnCampaña(int resultado)
     if (UIEmpezarBatallaACaravana != null && UIEmpezarBatallaACaravana.activeInHierarchy)
     {
         esEmboscadaEnemiga = 3; // Marcar tipo Ataque a Caravana
+        if (scAdministradorEscenas.PersonajesSorprendidosInicioCaravana == null)
+        {
+            scAdministradorEscenas.PersonajesSorprendidosInicioCaravana = new List<Personaje>();
+        }
+        else
+        {
+            scAdministradorEscenas.PersonajesSorprendidosInicioCaravana.Clear();
+        }
+
         // Reunir seleccionados actuales
         HashSet<Personaje> seleccionados = new HashSet<Personaje>();
         if (scAdministradorEscenas.Personaje1 != null) seleccionados.Add(scAdministradorEscenas.Personaje1);
@@ -1205,9 +1328,14 @@ public void EfectosDeBatallaEnCampaña(int resultado)
                 return cmp;
             });
 
-            if (scAdministradorEscenas.PersonajesSorprendidosInicioCaravana == null)
+            void AgregarSorprendidoSiCorresponde(Personaje personaje)
             {
-                scAdministradorEscenas.PersonajesSorprendidosInicioCaravana = new List<Personaje>();
+                if (personaje == null) return;
+                if (EsGuardiaParaCaravana(personaje)) return;
+                if (!scAdministradorEscenas.PersonajesSorprendidosInicioCaravana.Contains(personaje))
+                {
+                    scAdministradorEscenas.PersonajesSorprendidosInicioCaravana.Add(personaje);
+                }
             }
 
             // Rellenar huecos en orden 1..4 respetando el límite
@@ -1215,30 +1343,34 @@ public void EfectosDeBatallaEnCampaña(int resultado)
             {
                 var p = candidatos[0]; candidatos.RemoveAt(0);
                 scAdministradorEscenas.Personaje1 = p;
-                scAdministradorEscenas.PersonajesSorprendidosInicioCaravana.Add(p);
+                AgregarSorprendidoSiCorresponde(p);
             }
             if (maxAliadosPermitidos >= 2 && scAdministradorEscenas.Personaje2 == null && candidatos.Count > 0)
             {
                 var p = candidatos[0]; candidatos.RemoveAt(0);
                 scAdministradorEscenas.Personaje2 = p;
-                scAdministradorEscenas.PersonajesSorprendidosInicioCaravana.Add(p);
+                AgregarSorprendidoSiCorresponde(p);
             }
             if (maxAliadosPermitidos >= 3 && scAdministradorEscenas.Personaje3 == null && candidatos.Count > 0)
             {
                 var p = candidatos[0]; candidatos.RemoveAt(0);
                 scAdministradorEscenas.Personaje3 = p;
-                scAdministradorEscenas.PersonajesSorprendidosInicioCaravana.Add(p);
+                AgregarSorprendidoSiCorresponde(p);
             }
             if (maxAliadosPermitidos >= 4 && scAdministradorEscenas.Personaje4 == null && candidatos.Count > 0)
             {
                 var p = candidatos[0]; candidatos.RemoveAt(0);
                 scAdministradorEscenas.Personaje4 = p;
-                scAdministradorEscenas.PersonajesSorprendidosInicioCaravana.Add(p);
+                AgregarSorprendidoSiCorresponde(p);
             }
         }
     }
 
     bool usarRefuerzosAliadosCaravana = esBatallaFinal;
+    RuntimeAnalytics.TrackProgressionStart(
+      "battle",
+      RuntimeAnalytics.SanitizeToken(encuentroTipoActual.ToString()),
+      ObtenerAnalyticsEncounterToken());
     if (encuentroGeneradoActual != null)
     {
         scAdministradorEscenas.CargarBatalla(EventoBatallaID, esEmboscadaEnemiga, encuentroGeneradoActual, usarRefuerzosAliadosCaravana);
@@ -1272,6 +1404,8 @@ public void EfectosDeBatallaEnCampaña(int resultado)
         if (materiales != 0) CampaignManager.Instance.CambiarMaterialesActuales(materiales);
         if (exp > 0) DarExperiencia(exp);
         if (hopeBonus != 0) CampaignManager.Instance.CambiarEsperanzaActual(hopeBonus);
+        if (oro > 0) RuntimeAnalytics.TrackResourceSource("gold", oro, "battle_reward", RuntimeAnalytics.SanitizeToken(encuentroTipoActual.ToString()));
+        if (materiales > 0) RuntimeAnalytics.TrackResourceSource("materials", materiales, "battle_reward", RuntimeAnalytics.SanitizeToken(encuentroTipoActual.ToString()));
 
         if (txtRecompensa != null)
         {

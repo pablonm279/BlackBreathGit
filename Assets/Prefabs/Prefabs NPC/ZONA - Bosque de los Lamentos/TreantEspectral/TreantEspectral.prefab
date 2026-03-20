@@ -345,6 +345,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   esRango: 0
   bPuedeVerEscondidos: 0
+  unicoEnCombate: 0
+  tierEnemigo: 2
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0

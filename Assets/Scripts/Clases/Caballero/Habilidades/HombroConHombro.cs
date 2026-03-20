@@ -40,6 +40,7 @@ public class HombroConHombro : Habilidad
     public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
       int bonoDefensa = 2 + (NIVEL > 1 ? 1 : 0);
       int bonoAtaque = 2 + (NIVEL > 2 ? 1 : 0);
@@ -48,10 +49,15 @@ public class HombroConHombro : Habilidad
 
       string tituloEs = "Hombro con Hombro I";
       string tituloEn = "Shoulder to Shoulder I";
+      string tituloPt = "Ombro a Ombro I";
       if (NIVEL == 2) { tituloEs = "Hombro con Hombro II"; tituloEn = "Shoulder to Shoulder II"; }
       if (NIVEL == 3) { tituloEs = "Hombro con Hombro III"; tituloEn = "Shoulder to Shoulder III"; }
       if (NIVEL == 4) { tituloEs = "Hombro con Hombro IV a"; tituloEn = "Shoulder to Shoulder IV a"; }
       if (NIVEL == 5) { tituloEs = "Hombro con Hombro IV b"; tituloEn = "Shoulder to Shoulder IV b"; }
+      if (NIVEL == 2) { tituloPt = "Ombro a Ombro II"; }
+      if (NIVEL == 3) { tituloPt = "Ombro a Ombro III"; }
+      if (NIVEL == 4) { tituloPt = "Ombro a Ombro IV a"; }
+      if (NIVEL == 5) { tituloPt = "Ombro a Ombro IV b"; }
 
       string cuerpo = "";
       if (esIngles)
@@ -69,6 +75,22 @@ public class HombroConHombro : Habilidad
           cuerpo += "<b>Additional:</b> +1 Max AP for 3 turns\n";
         }
         cuerpo += "<b>Save:</b> None";
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Suporte\n";
+        cuerpo += "<b>Alvo:</b> O usuario e aliados adjacentes na mesma coluna\n";
+        cuerpo += $"<b>Buff (3 turnos):</b> +{bonoDefensa} Defesa, +{bonoAtaque} Ataque\n";
+        cuerpo += "<b>Por aliado afetado:</b> +1 Valentia\n";
+        if (daInvulnerable)
+        {
+          cuerpo += "<b>Adicional:</b> Invulneravel por 1 turno\n";
+        }
+        if (daApMax)
+        {
+          cuerpo += "<b>Adicional:</b> +1 AP Max por 3 turnos\n";
+        }
+        cuerpo += "<b>Resistencia:</b> Nao se aplica";
       }
       else
       {
@@ -89,12 +111,16 @@ public class HombroConHombro : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
         : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "The Knight forms a compact frontline stance and boosts nearby allies."
+          : esPortugues
+            ? "O Cavaleiro forma uma linha compacta e fortalece aliados proximos."
           : "El Caballero forma una linea cerrada y potencia a sus aliados cercanos.",
         cuerpo,
         costos,
@@ -111,6 +137,12 @@ public class HombroConHombro : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Defense buff.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Attack buff.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (Invulnerable 1 turn) or Option B (+1 Max AP).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no buff de Defesa.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no buff de Ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (Invulneravel 1 turno) ou Opcao B (+1 AP Max).</color>"; }
       }
       else
       {

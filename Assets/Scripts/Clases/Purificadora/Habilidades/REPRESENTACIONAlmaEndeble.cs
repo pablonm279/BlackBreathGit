@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,10 +22,15 @@ public class REPRESENTACIONAlmaEndeble : Habilidad
      
         txtDescripcion = "<color=#5dade2><b>Alma Endeble</b></color>\n\n"; 
         txtDescripcion += "<i>(Pasiva) La Purificadora sufre Aflicciones de combate en proporción a la intensidad del Aliento Negro.</i>\n\n";
-        if (TRADU.i.nIdioma == 2) // agrega la traducción a inglés
+        if (TRADU.i.nIdioma == 2) // agrega la traduccion a ingles
         {
             txtDescripcion = "<color=#5dade2><b>Fragile Soul</b></color>\n\n";
             txtDescripcion += "<i>(Passive) The Purifier suffers combat Afflictions in proportion to the intensity of the Black Breath.</i>\n\n";
+        }
+        else if (TRADU.i.nIdioma == 3)
+        {
+            txtDescripcion = "<color=#5dade2><b>Alma Fragil</b></color>\n\n";
+            txtDescripcion += "<i>(Passiva) A Purificadora sofre Aflicoes de combate em proporcao a intensidade do Alento Negro.</i>\n\n";
         }
     }
 
@@ -44,6 +49,7 @@ public class REPRESENTACIONAlmaEndeble : Habilidad
 
 
 }
+
 
 
 

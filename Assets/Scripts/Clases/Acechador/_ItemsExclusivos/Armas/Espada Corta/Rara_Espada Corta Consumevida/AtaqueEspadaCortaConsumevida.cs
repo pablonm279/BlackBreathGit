@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
      ClaseAcechador claseAcechador;
   public override void Awake()
   {
@@ -50,9 +50,9 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
     imHab = Resources.Load<Sprite>("imHab/Acechador_EspadaCorta");
 
     txtDescripcion = "<color=#5dade2><b>Corte de Espada corta Consumevida</b></color>\n\n";
-    txtDescripcion += "<i>Con su mano h√°bil, el Acechador asesta un golpe con la espada corta.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza + {bonusAtaque}</color> - Da√±o: Cortante 1d6+2-</color>\nAl impactar a un enemigo se gana +10% Da√±o por 2 turnos.\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valent√≠a: {costoPM} </color>";
+    txtDescripcion += "<i>Con su mano h·bil, el Acechador asesta un golpe con la espada corta.</i>\n\n";
+    txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza + {bonusAtaque}</color> - DaÒo: Cortante 1d6+2-</color>\nAl impactar a un enemigo se gana +10% DaÒo por 2 turnos.\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo ValentÌa: {costoPM} </color>";
        
     if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
     {
@@ -61,6 +61,14 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
       txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength + {bonusAtaque}</color> - Damage: Slashing 1d6+2-</color>\nOn hit, gain +10% Damage for 2 turns.\n";
       txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valour Cost: {costoPM} </color>";
      }
+    else if (TRADU.i.nIdioma == 3)
+    {
+      nombre = "Corte de Espada Curta Consomevida";
+      txtDescripcion = "<color=#5dade2><b>Corte de Espada Curta Consomevida</b></color>\n\n";
+      txtDescripcion += "<i>Com mao habilidosa, o Acechador desfere um golpe com a espada curta.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Forca + {bonusAtaque}</color> - Dano: Cortante 1d6+2-</color>\nAo acertar um inimigo, ganha +10% de Dano por 2 turnos.\n";
+      txtDescripcion += $"<color=#44d3ec>- Recarga: {cooldownMax} \n- Custo AP: {costoAP} \n- Custo Valentia: {costoPM} </color>";
+    }
     }
     
    void Start()
@@ -93,7 +101,10 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
     {
       bonusAtaque = 1;
       damExtra += 2;
-      txtDescripcion += "\n\n<i>Maestr√≠a con Espada Corta agrega: +1 Ataque +2 Da√±o.</i>\n\n";
+      if (TRADU.i.nIdioma == 3)
+      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano.</i>\n\n"; }
+      else
+      { txtDescripcion += "\n\n<i>MaestrÌa con Espada Corta agrega: +1 Ataque +2 DaÒo.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 2)
@@ -101,7 +112,10 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
       bonusAtaque = 1;
       damExtra += 2;
       criticoRangoHab = 1;
-      txtDescripcion += "\n\n<i>Maestr√≠a con Espada Corta agrega: +1 Ataque +2 Da√±o +1 Rango Cr√≠tico.</i>\n\n";
+      if (TRADU.i.nIdioma == 3)
+      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano +1 Alcance Critico.</i>\n\n"; }
+      else
+      { txtDescripcion += "\n\n<i>MaestrÌa con Espada Corta agrega: +1 Ataque +2 DaÒo +1 Rango CrÌtico.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 3)
@@ -110,7 +124,10 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
       damExtra += 2;
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestr√≠a con Espada Corta agrega: +1 Ataque +2 Da√±o +1 Rango Cr√≠tico, -1 AP.</i>\n\n";
+      if (TRADU.i.nIdioma == 3)
+      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano +1 Alcance Critico, -1 AP.</i>\n\n"; }
+      else
+      { txtDescripcion += "\n\n<i>MaestrÌa con Espada Corta agrega: +1 Ataque +2 DaÒo +1 Rango CrÌtico, -1 AP.</i>\n\n"; }
 
 
     }
@@ -120,7 +137,10 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
       damExtra += 4;
       criticoRangoHab = 2;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestr√≠a con Espada Corta agrega: +1 Ataque +4 Da√±o +2 Rango Cr√≠tico.</i>\n\n";
+      if (TRADU.i.nIdioma == 3)
+      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +4 Dano +2 Alcance Critico.</i>\n\n"; }
+      else
+      { txtDescripcion += "\n\n<i>MaestrÌa con Espada Corta agrega: +1 Ataque +4 DaÒo +2 Rango CrÌtico.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 5)
@@ -129,7 +149,10 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
       damExtra += 4;
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestr√≠a con Espada Corta agrega: +2 Ataque +4 Da√±o +1 Rango Cr√≠tico.</i>\n\n";
+      if (TRADU.i.nIdioma == 3)
+      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +2 Ataque +4 Dano +1 Alcance Critico.</i>\n\n"; }
+      else
+      { txtDescripcion += "\n\n<i>MaestrÌa con Espada Corta agrega: +2 Ataque +4 DaÒo +1 Rango CrÌtico.</i>\n\n"; }
 
     }
     
@@ -139,7 +162,7 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
   {
 
-    if (obj is Unidad) //Ac√° van los efectos a Unidades.
+    if (obj is Unidad) //Ac· van los efectos a Unidades.
     {
       Unidad objetivo = (Unidad)obj;
       float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -206,7 +229,7 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
 
       objetivo.AplicarDebuffPorAtaquesreiterados(1);
     }
-    else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+    else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
     {
       Obstaculo objetivo = (Obstaculo)obj;
       //---
@@ -223,14 +246,14 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
   void AplicarBuffConsumevida()
   { 
        /////////////////////////////////////////////
-       //BUFF ---- As√≠ se aplica un buff/debuff
+       //BUFF ---- AsÌ se aplica un buff/debuff
        Buff buff = new Buff();
        buff.buffNombre = "Consumevida";
        buff.boolfDebufftBuff = true;
        buff.DuracionBuffRondas = 2;
        buff.cantDanioPorcentaje += 10;
        buff.AplicarBuff(scEstaUnidad);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, scEstaUnidad.gameObject);
 
   }
@@ -251,7 +274,7 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si est√° en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si est· en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -273,7 +296,7 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambi√©n
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiÈn
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -373,10 +396,10 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
         
       }
 
-       //Se fija si las 3 casillas de la columna 1 est√°n vacias
+       //Se fija si las 3 casillas de la columna 1 est·n vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //si alguna de las 3 tiene algo, no aumenta el rango melee
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //si alguna de las 3 tiene algo, no aumenta el rango melee
           {
             return 0;
           }
@@ -390,7 +413,7 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
 
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna2) 
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //y si alguna de las 3 tiene algo, aumenta solo en 1 
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //y si alguna de las 3 tiene algo, aumenta solo en 1 
           {
             return 1;
           }

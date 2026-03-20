@@ -81,6 +81,10 @@ public class btnPersonaje : MonoBehaviour
         {
           txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>Lv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
         }
+         if (TRADU.i.nIdioma == 3) //Poertu
+        {
+          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>Nv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
+        }
 
 
 

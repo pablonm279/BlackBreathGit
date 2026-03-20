@@ -15,7 +15,7 @@ public class LlamaDivina : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
 
     private int hAlcance = 5;
     private int hAncho = 1; //1 - Adyacentes
@@ -66,8 +66,8 @@ public class LlamaDivina : Habilidad
           public override void ActualizarDescripcion()
      {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
       var statsUI = ObtenerStatsDescripcionUI();
-
       int poderActual = statsUI.Poder;
       int ataqueActual = statsUI.Ataque;
       int criticoMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
@@ -75,29 +75,40 @@ public class LlamaDivina : Habilidad
       int quemadura = NIVEL == 5 ? 5 : 3;
       int danioFijoActual = NIVEL > 2 ? 7 : 4;
       bool ganaFervorAlMatar = NIVEL == 4;
-
       string tituloEs = "Llama Divina I";
       string tituloEn = "Divine Flame I";
-      if (NIVEL == 2) { tituloEs = "Llama Divina II"; tituloEn = "Divine Flame II"; }
-      if (NIVEL == 3) { tituloEs = "Llama Divina III"; tituloEn = "Divine Flame III"; }
-      if (NIVEL == 4) { tituloEs = "Llama Divina IV a"; tituloEn = "Divine Flame IV a"; }
-      if (NIVEL == 5) { tituloEs = "Llama Divina IV b"; tituloEn = "Divine Flame IV b"; }
-
+      string tituloPt = "Chama Divina I";
+      if (NIVEL == 2) { tituloEs = "Llama Divina II"; tituloEn = "Divine Flame II"; tituloPt = "Chama Divina II"; }
+      if (NIVEL == 3) { tituloEs = "Llama Divina III"; tituloEn = "Divine Flame III"; tituloPt = "Chama Divina III"; }
+      if (NIVEL == 4) { tituloEs = "Llama Divina IV a"; tituloEn = "Divine Flame IV a"; tituloPt = "Chama Divina IV a"; }
+      if (NIVEL == 5) { tituloEs = "Llama Divina IV b"; tituloEn = "Divine Flame IV b"; tituloPt = "Chama Divina IV b"; }
       string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual);
       string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual);
-
       string cuerpo = "";
       if (esIngles)
       {
         cuerpo += "<b>Type:</b> Ranged (5 range)\n";
         cuerpo += "<b>Target:</b> 1 unit in range\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</colo r>  vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
+        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color> + Attack ({ataqueActual}) vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
         cuerpo += $"<b>Damage:</b> 3d6 + {danioFijoActual} + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Divine\n";
         cuerpo += lineaSalvacionEn + "\n";
         cuerpo += $"<b>On failed save:</b> Burning {quemadura}. Undead and Ethereal are instantly killed";
         if (ganaFervorAlMatar)
         {
           cuerpo += "\n<b>IV a Extra:</b> On kill, gain +1 Fervor";
+        }
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Alcance (5 de alcance)\n";
+        cuerpo += "<b>Alvo:</b> 1 unidade no alcance\n";
+        cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}) vs Defesa. Falha critica: 1. Critico: {criticoMin}-20\n";
+        cuerpo += $"<b>Dano:</b> 3d6 + {danioFijoActual} + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Divino\n";
+        cuerpo += lineaSalvacionEs + "\n";
+        cuerpo += $"<b>Se falhar na resistencia:</b> Queimando {quemadura}. Morto-vivo e Etereo morrem instantaneamente";
+        if (ganaFervorAlMatar)
+        {
+          cuerpo += "\n<b>Extra IV a:</b> Ao matar, ganha +1 Fervor";
         }
       }
       else
@@ -113,21 +124,22 @@ public class LlamaDivina : Habilidad
           cuerpo += "\n<b>Extra IV a:</b> Al matar, gana +1 Fervor";
         }
       }
-
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
-
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
+          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentia: {costoPM}\n- Esforzable: Si ({esforzable})";
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "A divine projectile that tests endurance and burns impure targets."
-          : "Un proyectil divino que pone a prueba la resistencia y quema objetivos impuros.",
+          : esPortugues
+            ? "Um projetil divino que testa a resistencia e queima alvos impuros."
+            : "Un proyectil divino que pone a prueba la resistencia y quema objetivos impuros.",
         cuerpo,
         costos,
         "#5dade2");
-
-      bool mostrarProximoNivel = EsEscenaCampaÒa()
+      bool mostrarProximoNivel = EsEscenaCampa√±a()
         && CampaignManager.Instance != null
         && CampaignManager.Instance.scMenuPersonajes != null
         && CampaignManager.Instance.scMenuPersonajes.pSel != null
@@ -136,12 +148,17 @@ public class LlamaDivina : Habilidad
       {
         return;
       }
-
       if (esIngles)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +3 base damage.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 Fervor on kill) or Option B (+2 Burning).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 CD de resistencia.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +3 de dano base.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 Fervor ao matar) ou Opcao B (+2 Queimando).</color>"; }
       }
       else
       {
@@ -197,7 +214,7 @@ public class LlamaDivina : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     { 
     
-     if(obj is Unidad) //Ac· van los efectos a Unidades.
+     if(obj is Unidad) //Ac√° van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
@@ -267,7 +284,7 @@ public class LlamaDivina : Habilidad
 
 
        }   
-     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---

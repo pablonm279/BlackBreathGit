@@ -16,7 +16,7 @@ public class Personaje : MonoBehaviour
     public float fVidaMaxima;
     public string sNombre;
 
-    public int IDClase; //1: Caballero - 2: Explorador - 3: Purificadora  -  4: Acechador  -  5: Canalizador 
+    public int IDClase; //1: Caballero - 2: Explorador - 3: Purificadora  -  4: Acechador  -  5: Canalizador  - 6: Duelista
 
     public float fExperienciaActual;
     public float fNivelActual;

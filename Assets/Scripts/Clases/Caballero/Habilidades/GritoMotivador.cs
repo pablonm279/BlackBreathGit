@@ -38,6 +38,7 @@ public class GritoMotivador : Habilidad
     public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
       int buffDanio = NIVEL > 1 ? 15 : 10;
       int valorAliados = 1;
@@ -46,10 +47,15 @@ public class GritoMotivador : Habilidad
 
       string tituloEs = "Grito Motivador I";
       string tituloEn = "War Cry I";
+      string tituloPt = "Grito Motivador I";
       if (NIVEL == 2) { tituloEs = "Grito Motivador II"; tituloEn = "War Cry II"; }
       if (NIVEL == 3) { tituloEs = "Grito Motivador III"; tituloEn = "War Cry III"; }
       if (NIVEL == 4) { tituloEs = "Grito Motivador IV a"; tituloEn = "War Cry IV a"; }
       if (NIVEL == 5) { tituloEs = "Grito Motivador IV b"; tituloEn = "War Cry IV b"; }
+      if (NIVEL == 2) { tituloPt = "Grito Motivador II"; }
+      if (NIVEL == 3) { tituloPt = "Grito Motivador III"; }
+      if (NIVEL == 4) { tituloPt = "Grito Motivador IV a"; }
+      if (NIVEL == 5) { tituloPt = "Grito Motivador IV b"; }
 
       string cuerpo = "";
       if (esIngles)
@@ -68,6 +74,24 @@ public class GritoMotivador : Habilidad
         if (afectaEnemigos)
         {
           cuerpo += "<b>Enemy effect:</b> -10% Damage for 1 turn (no save)";
+        }
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Suporte\n";
+        cuerpo += "<b>Alvo:</b> Todas as unidades aliadas do seu lado\n";
+        cuerpo += $"<b>Buff em aliados:</b> +{buffDanio}% Dano por 3 turnos\n";
+        if (valorAliados > 0)
+        {
+          cuerpo += $"<b>Bonus em aliados:</b> +{valorAliados} Valentia para os outros aliados\n";
+        }
+        if (NIVEL == 4)
+        {
+          cuerpo += "<b>Bonus proprio:</b> +2 Valentia por aliado afetado\n";
+        }
+        if (afectaEnemigos)
+        {
+          cuerpo += $"<b>Efeito em inimigos:</b> -10% Dano por {duracionDebuffEnemigos} turno (sem resistencia)";
         }
       }
       else
@@ -91,12 +115,16 @@ public class GritoMotivador : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
         : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "A commanding shout that empowers allies and, at mastery, weakens enemies."
+          : esPortugues
+            ? "Um grito de comando que fortalece aliados e, no dominio total, enfraquece inimigos."
           : "Un grito de mando que potencia aliados y, al dominarlo, debilita enemigos.",
         cuerpo,
         costos,
@@ -113,6 +141,12 @@ public class GritoMotivador : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% allied damage buff.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: improved progression toward IV specialization.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 Valour per ally to self) or Option B (enemy damage debuff).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% no buff de dano aliado.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: melhora a progressao para a especializacao de nivel IV.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 Valentia por aliado para o Cavaleiro) ou Opcao B (debuff de dano em inimigos).</color>"; }
       }
       else
       {
@@ -200,6 +234,8 @@ public class GritoMotivador : Habilidad
         string nombreObjetivo = TRADU.i != null ? TRADU.i.Traducir(objetivo.uNombre) : objetivo.uNombre;
         string motivoValentia = enIngles
           ? nombreObjetivo + " is emboldened by War Cry"
+          : (TRADU.i != null && TRADU.i.nIdioma == 3)
+            ? nombreObjetivo + " se encoraja com Grito Motivador"
           : nombreObjetivo + " se envalentona por Grito Motivador";
         objetivo.SumarValentia(1, motivoValentia);
        }

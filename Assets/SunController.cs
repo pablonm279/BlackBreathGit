@@ -104,11 +104,16 @@ public class SunController : MonoBehaviour
     // Resetea gradualmente a la rotación e intensidad iniciales
     public void ResetSun()
     {
-        StopAllCoroutines();
-        StartCoroutine(ResetRoutine());
+        ResetSun(resetDuration);
     }
 
-    IEnumerator ResetRoutine()
+    public void ResetSun(float duracionOverride)
+    {
+        StopAllCoroutines();
+        StartCoroutine(ResetRoutine(duracionOverride));
+    }
+
+    IEnumerator ResetRoutine(float duracionOverride)
     {
         Quaternion startRot = transform.localRotation;
         Quaternion targetRot = _initialLocalRotation;
@@ -120,7 +125,7 @@ public class SunController : MonoBehaviour
         Color targetCol = ownLight ? _initialColor : Color.white;
 
         float t = 0f;
-        float dur = Mathf.Max(0.0001f, resetDuration);
+        float dur = Mathf.Max(0.0001f, duracionOverride);
         while (t < 1f)
         {
             t += Time.deltaTime / dur;

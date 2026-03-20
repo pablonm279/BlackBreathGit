@@ -85,7 +85,7 @@ public class CampaignManager : MonoBehaviour
   public AdministradorEscenas scAdministradorEscenas;
 
   // Cola de textos flotantes para evitar solapamientos (mínimo 0.5s entre spawns)
-  [SerializeField] private float gapEntreMensajes = 0.5f;
+  [SerializeField] private float gapEntreMensajes = 0.55f;
   [SerializeField] private bool usarTextoFlotanteManager = false;
   [SerializeField] private float yStackOffset = 28f;            // desplazamiento vertical entre mensajes simultáneos
   [SerializeField] private float stackWindowSeconds = 1.2f;     // ventana donde consideramos mensajes "cercanos" al origen
@@ -94,10 +94,34 @@ public class CampaignManager : MonoBehaviour
   private bool procesandoCola;
   private float tiempoUltimoSpawn = -9999f;
   private readonly List<float> recentSpawnTimes = new List<float>();
+  private readonly Dictionary<TextMeshProUGUI, string> textosOriginalesDerrotaTMP = new Dictionary<TextMeshProUGUI, string>();
+  private readonly Dictionary<Text, string> textosOriginalesDerrotaLegacy = new Dictionary<Text, string>();
+  private bool textosDerrotaCacheados;
   private bool resolviendoJefeZona;
   private bool abriendoCiudadPuerto;
   private bool campaniaInicializada;
   private bool debeEscribirLogInicioEnStart;
+  [SerializeField] private AsentamientoManager asentamientoManager;
+
+#if UNITY_EDITOR
+  private void OnValidate()
+  {
+    if (Application.isPlaying)
+    {
+      return;
+    }
+
+    AsentamientoManager encontrado = BuscarAsentamientoManagerEnEscena();
+    if (encontrado == null || asentamientoManager == encontrado)
+    {
+      return;
+    }
+
+    asentamientoManager = encontrado;
+    EditorUtility.SetDirty(this);
+  }
+#endif
+
   private void Awake()
   {
     if (Instance != null)
@@ -127,11 +151,63 @@ public class CampaignManager : MonoBehaviour
     if (goDerrota != null)
     {
       goDerrota.SetActive(false);
+      CachearTextosOriginalesDerrota();
     }
 
     AsegurarAudioMovimientoCaravana();
     sfxMovimientoSource.volume = sfxMovimientoVolumen;
     sfxMovimientoSource.pitch = sfxMovimientoPitch;
+    AsegurarAsentamientoManager();
+  }
+
+  private void AsegurarAsentamientoManager()
+  {
+    if (asentamientoManager == null)
+    {
+      asentamientoManager = GetComponent<AsentamientoManager>();
+    }
+
+    if (asentamientoManager == null)
+    {
+      asentamientoManager = BuscarAsentamientoManagerEnEscena();
+    }
+
+    if (asentamientoManager == null)
+    {
+      asentamientoManager = gameObject.AddComponent<AsentamientoManager>();
+    }
+  }
+
+  private AsentamientoManager BuscarAsentamientoManagerEnEscena()
+  {
+    AsentamientoManager encontradoEnEscena = null;
+    AsentamientoManager[] managers = Resources.FindObjectsOfTypeAll<AsentamientoManager>();
+    for (int i = 0; i < managers.Length; i++)
+    {
+      AsentamientoManager candidato = managers[i];
+      if (candidato == null || !candidato.gameObject.scene.IsValid())
+      {
+        continue;
+      }
+
+      if (candidato.gameObject.name == "UIAsentamiento")
+      {
+        return candidato;
+      }
+
+      if (encontradoEnEscena == null)
+      {
+        encontradoEnEscena = candidato;
+      }
+    }
+
+    return encontradoEnEscena;
+  }
+
+  public AsentamientoManager ObtenerAsentamientoManager()
+  {
+    AsegurarAsentamientoManager();
+    return asentamientoManager;
   }
 
   public void InicializarNuevaCampania()
@@ -315,6 +391,7 @@ public class CampaignManager : MonoBehaviour
       AgregarHeroe(0);
       AgregarHeroe(0);
       AgregarHeroe(0);
+      AgregarHeroe(0);
       return;
     }
 
@@ -429,6 +506,7 @@ public class CampaignManager : MonoBehaviour
     return EstaInteraccionActiva(menuDescanso)
       || EstaInteraccionActiva(goMenuBatallas)
       || EstaInteraccionActiva(UIEvetos)
+      || (asentamientoManager != null && asentamientoManager.TieneInteraccionActiva)
       || EstaInteraccionActiva(goUIComercioNodo)
       || EstaInteraccionActiva(goUIPersonajeSequito)
       || EstaInteraccionActiva(goUISantuario)
@@ -572,6 +650,8 @@ public class CampaignManager : MonoBehaviour
     }
     data.nodoActual = CrearReferenciaNodo(scMapaManager != null ? scMapaManager.nodoActual : null);
     data.nodoDestinoActual = CrearReferenciaNodo(MoviendoCaravana ? nodoDestinoActual : null);
+    data.settlementOpen = asentamientoManager != null && asentamientoManager.DebeGuardarseComoAbierto;
+    data.settlementActionsRemaining = asentamientoManager != null ? asentamientoManager.AccionesRestantes : 3;
     return data;
   }
 
@@ -603,6 +683,7 @@ public class CampaignManager : MonoBehaviour
       nodoData.nodoRitual = nodo.nodoRitual;
       nodoData.visualCode = nodo.ObtenerVisualCodeActual();
       nodoData.esMisterioso = nodo.ObtenerEstadoMisterioso();
+      nodoData.atajoSubterraneoPendiente = nodo.ObtenerAtajoSubterraneoPendiente();
 
       if (nodo.DestinosPosibles != null)
       {
@@ -613,6 +694,12 @@ public class CampaignManager : MonoBehaviour
       }
 
       data.nodes.Add(nodoData);
+    }
+
+    if (scMapaManager != null)
+    {
+      data.emboscadasSubterraneasZona = scMapaManager.ObtenerEmboscadasSubterraneasZona();
+      data.viajesDesdeUltimaEmboscadaSubterranea = scMapaManager.ObtenerViajesDesdeUltimaEmboscadaSubterranea();
     }
 
     return data;
@@ -1130,6 +1217,7 @@ public class CampaignManager : MonoBehaviour
     }
 
     scMapaManager.scContenedordeNodos.RecolectarNodos();
+    scMapaManager.RestaurarEstadoVariedadDesdeSave(saveFileData.map);
     scMapaManager.nodoActual = BuscarNodoDesdeReferencia(saveFileData.campaign != null ? saveFileData.campaign.nodoActual : null, nodosPorClave);
     if (scMapaManager.nodoActual == null)
     {
@@ -1566,6 +1654,12 @@ public class CampaignManager : MonoBehaviour
     RefrescarVfxClimaCalor();
     RefrescarUiSequitosTrasCarga();
     AjustarDificultad();
+    AsegurarAsentamientoManager();
+
+    if (asentamientoManager != null)
+    {
+      asentamientoManager.RestaurarEstadoDesdeSave(saveFileData.campaign);
+    }
   }
 
   private void RefrescarUiSequitosTrasCarga()
@@ -2203,6 +2297,29 @@ public class CampaignManager : MonoBehaviour
       bool zonaBosqueArdienteActiva = scAtributosZona != null && scAtributosZona.ID == 1;
       burningForestEffect.SetEffectActive(zonaBosqueArdienteActiva);
     }
+
+    BlackBreathInsideScreenEffect blackBreathEffect = BlackBreathInsideScreenEffect.Ensure(canvasObjetivo);
+    if (blackBreathEffect != null)
+    {
+      blackBreathEffect.SetEffectActive(EstaDentroDelAlientoNegro());
+    }
+  }
+
+  private bool EstaDentroDelAlientoNegro()
+  {
+    if (scAtributosZona == null || scAtributosZona.ID == 3)
+    {
+      return false;
+    }
+
+    // Reutiliza el mismo umbral que el estado "Dentro" del tooltip (tier 3+).
+    float cercaniaAliento = -(posicionCaravana - EstadoAlientoNegro);
+    return cercaniaAliento >= 7f;
+  }
+
+  public bool EstaDentroOpeorDelAlientoNegro()
+  {
+    return EstaDentroDelAlientoNegro();
   }
   #region Nodos
   public SunController sunController;
@@ -2514,10 +2631,17 @@ public class CampaignManager : MonoBehaviour
         EscribirLog(TRADU.i.Traducir("-El Séquito de Herboristas ha visitado un Claro y recolectado hierbas curativas."));
       }
     }
-    if (ID == 4) //Posada
+    if (ID == 4) //Asentamiento
     {
-      EmpezarEvento(402);
-      scMapaManager.nodoActual.nodoDespejado = true;
+      if (ObtenerAsentamientoManager() != null)
+      {
+        asentamientoManager.AbrirAlLlegar();
+      }
+      else
+      {
+        EmpezarEvento(402);
+        scMapaManager.nodoActual.nodoDespejado = true;
+      }
     }
     if (ID == 5) //Recursos
     {
@@ -2664,7 +2788,72 @@ public class CampaignManager : MonoBehaviour
       return;
     }
 
+    AplicarTraduccionPanelDerrota();
     goDerrota.SetActive(true);
+  }
+
+  private void CachearTextosOriginalesDerrota()
+  {
+    if (goDerrota == null || textosDerrotaCacheados)
+    {
+      return;
+    }
+
+    textosOriginalesDerrotaTMP.Clear();
+    TextMeshProUGUI[] tmps = goDerrota.GetComponentsInChildren<TextMeshProUGUI>(true);
+    foreach (TextMeshProUGUI tmp in tmps)
+    {
+      if (tmp == null || string.IsNullOrWhiteSpace(tmp.text))
+      {
+        continue;
+      }
+
+      textosOriginalesDerrotaTMP[tmp] = tmp.text;
+    }
+
+    textosOriginalesDerrotaLegacy.Clear();
+    Text[] textos = goDerrota.GetComponentsInChildren<Text>(true);
+    foreach (Text txt in textos)
+    {
+      if (txt == null || string.IsNullOrWhiteSpace(txt.text))
+      {
+        continue;
+      }
+
+      textosOriginalesDerrotaLegacy[txt] = txt.text;
+    }
+
+    textosDerrotaCacheados = true;
+  }
+
+  private void AplicarTraduccionPanelDerrota()
+  {
+    if (goDerrota == null || TRADU.i == null)
+    {
+      return;
+    }
+
+    CachearTextosOriginalesDerrota();
+
+    foreach (KeyValuePair<TextMeshProUGUI, string> entrada in textosOriginalesDerrotaTMP)
+    {
+      if (entrada.Key == null)
+      {
+        continue;
+      }
+
+      entrada.Key.text = TRADU.i.Traducir(entrada.Value);
+    }
+
+    foreach (KeyValuePair<Text, string> entrada in textosOriginalesDerrotaLegacy)
+    {
+      if (entrada.Key == null)
+      {
+        continue;
+      }
+
+      entrada.Key.text = TRADU.i.Traducir(entrada.Value);
+    }
   }
 
   // Llamar desde el resultado de la Batalla Final (jefe derrotado)
@@ -2786,29 +2975,54 @@ public class CampaignManager : MonoBehaviour
     transicionZonaEnCurso = false;
   }
 
-  public void BosqueArdienteMecanicaIncendio(int probabilidad)
+  public bool DesactivarIncendiosPorLluvia(bool escribirAvisoLog)
   {
-    if (scTutorialManager.tutorialActivo) {  return;  }
-    if (scAtributosZona.ID == 1) //Solo en Bosque Ardiente
+    if (scMapaManager == null || scMapaManager.scContenedordeNodos == null || scMapaManager.scContenedordeNodos.listTodosNodos == null)
     {
-      int randomIncendio = UnityEngine.Random.Range(1, 101);
-      if (posicionCaravana < 9 && randomIncendio <= probabilidad)
+      return false;
+    }
+
+    bool habiaIncendiosActivos = false;
+    foreach (Nodo nodo in scMapaManager.scContenedordeNodos.listTodosNodos)
+    {
+      if (nodo == null || !nodo.nodoIncendiado)
       {
-        int random = UnityEngine.Random.Range(1, 3);
-        Nodo nodoAIncendiar = ObtenerNodoFuturoAleatorio(random);
-        if (nodoAIncendiar != null && !nodoAIncendiar.nodoIncendiado)
-        {
-          nodoAIncendiar.ActivarIncendio();
-          EscribirLog(TRADU.i.Traducir("<color=#FF3D00>-El incendio ha envuelto un nodo cercano al camino de la caravana.</color>"));
-
-
-
-
-        }
+        continue;
       }
 
+      nodo.DesactivarIncendio();
+      habiaIncendiosActivos = true;
+    }
 
+    if (habiaIncendiosActivos && escribirAvisoLog)
+    {
+      EscribirLog("<color=#00c8ff>" + TRADU.i.Traducir("La lluvia apaga los focos de incendio actuales.") + "</color>");
+    }
 
+    return habiaIncendiosActivos;
+  }
+
+  public void BosqueArdienteMecanicaIncendio(int probabilidad)
+  {
+    if (scTutorialManager != null && scTutorialManager.tutorialActivo) { return; }
+    if (scAtributosZona == null || scAtributosZona.ID != 1) { return; } // Solo en Bosque Ardiente
+
+    if (intTipoClima == 3) // Lluvia: desactiva la mecanica y apaga incendios existentes
+    {
+      DesactivarIncendiosPorLluvia(false);
+      return;
+    }
+
+    int randomIncendio = UnityEngine.Random.Range(1, 101);
+    if (posicionCaravana < 9 && randomIncendio <= probabilidad)
+    {
+      int random = UnityEngine.Random.Range(1, 3);
+      Nodo nodoAIncendiar = ObtenerNodoFuturoAleatorio(random);
+      if (nodoAIncendiar != null && !nodoAIncendiar.nodoIncendiado)
+      {
+        nodoAIncendiar.ActivarIncendio();
+        EscribirLog(TRADU.i.Traducir("<color=#FF3D00>-El incendio ha envuelto un nodo cercano al camino de la caravana.</color>"));
+      }
     }
   }
 
@@ -3202,6 +3416,11 @@ public class CampaignManager : MonoBehaviour
   public void cerrarPuestoComercial()
   {
     goUIComercioNodo.SetActive(false);
+
+    if (asentamientoManager != null)
+    {
+      asentamientoManager.OnPuestoComercialCerrado();
+    }
   }
 
 
@@ -3213,10 +3432,34 @@ public class CampaignManager : MonoBehaviour
 
   public int CuantosPersonajesHacenTalActividad(int IDActividad)
   {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return 0;
+    }
+
     int cant = 0;
     foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
     {
-      if (pers.ActividadSeleccionada == IDActividad)
+      if (pers != null && !pers.Camp_Muerto && pers.ActividadSeleccionada == IDActividad)
+      {
+        cant++;
+      }
+    }
+
+    return cant;
+  }
+
+  public int CuantosPersonajesActivos()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return 0;
+    }
+
+    int cant = 0;
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers != null && !pers.Camp_Muerto)
       {
         cant++;
       }
@@ -3227,16 +3470,71 @@ public class CampaignManager : MonoBehaviour
 
   public int CuantosPersonajesSonDeTalClase(int IdClase)
   {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return 0;
+    }
+
     int cant = 0;
     foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
     {
-      if (pers.IDClase == IdClase)
+      if (pers != null && !pers.Camp_Muerto && pers.IDClase == IdClase)
       {
         cant++;
       }
     }
 
     return cant;
+  }
+
+  public int ObtenerCapacidadMaximaPersonajes()
+  {
+    return 4 + Mathf.Max(0, mejoraCaravanaTiendas);
+  }
+
+  private void ActualizarEstadoPersonajesTrasPasoDeDia()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null || pers.Camp_Muerto)
+      {
+        continue;
+      }
+
+      if (pers.Camp_Enfermo > 0)
+      {
+        pers.Camp_Enfermo -= 1;
+      }
+
+      if (pers.Camp_Moral > 0)
+      {
+        pers.Camp_Moral -= 1;
+      }
+      else if (pers.Camp_Moral < 0)
+      {
+        pers.Camp_Moral += 1;
+      }
+    }
+  }
+
+  public void ProcesarPasoDeDiaEnAsentamiento(float multiplicadorCuracionDescanso = 1.1f, bool aplicarActividades = true, bool aplicarEfectosSequitos = true)
+  {
+    ActualizarEstadoPersonajesTrasPasoDeDia();
+
+    if (aplicarActividades)
+    {
+      EfectosdeActividades(multiplicadorCuracionDescanso);
+    }
+
+    if (aplicarEfectosSequitos)
+    {
+      EfectosdeSequitos();
+    }
   }
 
   void EfectosdeSequitos()
@@ -3261,7 +3559,7 @@ public class CampaignManager : MonoBehaviour
 
 
   }
-  void EfectosdeActividades()
+  void EfectosdeActividades(float multiplicadorCuracionDescanso = 1f)
   {
 
     foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
@@ -3280,7 +3578,7 @@ public class CampaignManager : MonoBehaviour
 
         float curacionFinalSequito = sequitoCuranderosMejoraCuracion + (cantPurificadorasColaborando * 0.05f) + cantHerboristasVecesClaro; //5% por cada Purificadora colaborando
 
-        float porcentajeVidaMax = pers.fVidaMaxima * curacionFinalSequito;
+        float porcentajeVidaMax = pers.fVidaMaxima * curacionFinalSequito * Mathf.Max(0f, multiplicadorCuracionDescanso);
         if (pers.fVidaMaxima > pers.fVidaActual)
         {
           EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" se cura ") + (int)porcentajeVidaMax + TRADU.i.Traducir(" PV por su Actividad de <b>Descanso</b>."));
@@ -3487,6 +3785,8 @@ public class CampaignManager : MonoBehaviour
       //  handleSliderCalavera.color = new Color(0.75f, 0.2f, 0.6f);
 
     }
+
+    RefrescarVfxClimaCalor();
 
   }
   #endregion
@@ -4112,7 +4412,14 @@ public class CampaignManager : MonoBehaviour
   {
     if (scTutorialManager.tutorialActivo && scTutorialManager.pasoActual < 24) { return; }
     if (scTutorialManager.tutorialActivo && scTutorialManager.pasoActual == 24) { scTutorialManager.SiguientePaso(); }
+    if (asentamientoManager != null && asentamientoManager.TieneInteraccionActiva) { return; }
     Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
+    if (nodoActual != null && nodoActual.tipoNodo == 4)
+    {
+      EscribirLog(TRADU.i.Traducir("<color=#FF6666>En los Asentamientos debes usar las acciones propias del asentamiento.</color>"));
+      return;
+    }
+
     bool puedeDescansar = nodoActual != null && nodoActual.nodoDespejado && !nodoActual.nodoIncendiado;
 
     if (!menuDescanso.activeInHierarchy && puedeDescansar)
@@ -4241,6 +4548,7 @@ public class CampaignManager : MonoBehaviour
   {
     Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
     bool puedeDescansar = nodoActual != null && nodoActual.nodoDespejado;
+    bool asentamientoActivo = asentamientoManager != null && asentamientoManager.TieneInteraccionActiva;
 
     if (botonDescansar != null)
     {
@@ -4253,21 +4561,25 @@ public class CampaignManager : MonoBehaviour
     if (Input.GetKeyDown(KeyCode.R))
     {
       if(scTutorialManager.tutorialActivo) {EscribirLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
+      if (asentamientoActivo) { return; }
       AbrirMenuDescanso();
     }
     if (Input.GetKeyDown(KeyCode.C))
     {
        if(scTutorialManager.tutorialActivo) {EscribirLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
+      if (asentamientoActivo) { return; }
       scMenuCaravana.AbrirMenuPersonajes();
     }
     if (Input.GetKeyDown(KeyCode.I))
     {
        if(scTutorialManager.tutorialActivo) {EscribirLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
+      if (asentamientoActivo) { return; }
       scMenuCaravana.AbrirMenuMejoras();
     }
     if (Input.GetKeyDown(KeyCode.M))
     {
        if(scTutorialManager.tutorialActivo) {EscribirLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
+      if (asentamientoActivo) { return; }
       scMenuCaravana.AbrirMenuSequitos();
     }
     if (Input.GetKeyDown(KeyCode.F5))
@@ -4280,6 +4592,7 @@ public class CampaignManager : MonoBehaviour
     }
     if (Input.GetKeyDown(KeyCode.Escape))
     {
+      if (asentamientoActivo) { return; }
       if (!scMenuCaravana.SeApretoESC()) //Si se apreto escape se cierran menus, si no habia ningun abierto abre opciones
       {
         if (menuDescanso.activeInHierarchy)
@@ -4330,10 +4643,10 @@ public class CampaignManager : MonoBehaviour
     logDeCampania.Escribir(logInicio);
     logInicioCampaniaEscrito = true;
   }
-  public void EscribirLog(string log)
+  public void EscribirLog(string log, bool forzarAunqueNumeroTurno1 = false)
   {
     if (logDeCampania == null) return;
-    if (numeroTurno <= 1) return;
+    if (!forzarAunqueNumeroTurno1 && numeroTurno <= 1) return;
 
     // Asegura que el logger sabe el día actual
     logDeCampania.SetDiaActual(numeroTurno);
@@ -4444,7 +4757,7 @@ public class CampaignManager : MonoBehaviour
     pers1.fVidaMaxima = 60 + UnityEngine.Random.Range(1, 7);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
-    pers1.iFuerza = 3 + UnityEngine.Random.Range(0, 3);
+    pers1.iFuerza = 3 + UnityEngine.Random.Range(0, 2);
     pers1.iAgi = 2 + UnityEngine.Random.Range(0, 2);
     pers1.iPoder = 0 + UnityEngine.Random.Range(0, 1);
     pers1.InicializarEscaladoResElementalPorPoderSiHaceFalta();
@@ -4503,7 +4816,7 @@ public class CampaignManager : MonoBehaviour
 
     }
 
-    pers1.ActividadSeleccionada = 1;
+    pers1.ActividadSeleccionada = 3;
     pers1.AddComponent<Actividad_Descansar>();
     pers1.AddComponent<Actividad_Entrenar>();
     pers1.AddComponent<Actividad_Guardia>();
@@ -4548,7 +4861,7 @@ public class CampaignManager : MonoBehaviour
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 3 + UnityEngine.Random.Range(0, 2);
-    pers1.iAgi = 5 + UnityEngine.Random.Range(0, 3);
+    pers1.iAgi = 5 + UnityEngine.Random.Range(0, 2);
     pers1.iPoder = 1 + UnityEngine.Random.Range(0, 1);
     pers1.InicializarEscaladoResElementalPorPoderSiHaceFalta();
 
@@ -4615,7 +4928,7 @@ public class CampaignManager : MonoBehaviour
     
     
 
-    pers1.ActividadSeleccionada = 1;
+    pers1.ActividadSeleccionada = 3;
     pers1.AddComponent<Actividad_Descansar>();
     pers1.AddComponent<Actividad_Entrenar>();
     pers1.AddComponent<Actividad_Guardia>();
@@ -4661,7 +4974,7 @@ public class CampaignManager : MonoBehaviour
 
     pers1.iFuerza = 1 + UnityEngine.Random.Range(0, 2);
     pers1.iAgi = 2 + UnityEngine.Random.Range(0, 2);
-    pers1.iPoder = 4 + UnityEngine.Random.Range(0, 3);
+    pers1.iPoder = 4 + UnityEngine.Random.Range(0, 2);
     pers1.InicializarEscaladoResElementalPorPoderSiHaceFalta();
 
     pers1.iDefensa = 11;
@@ -4717,7 +5030,7 @@ public class CampaignManager : MonoBehaviour
 
 
 
-    pers1.ActividadSeleccionada = 1;
+    pers1.ActividadSeleccionada = 3;
     pers1.AddComponent<Actividad_Descansar>();
     pers1.AddComponent<Actividad_Entrenar>();
     pers1.AddComponent<Actividad_Guardia>();
@@ -4763,8 +5076,8 @@ public class CampaignManager : MonoBehaviour
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 4 + UnityEngine.Random.Range(0, 2);
-    pers1.iAgi = 5 + UnityEngine.Random.Range(0, 3);
-    pers1.iPoder = 4 + UnityEngine.Random.Range(0, 1);
+    pers1.iAgi = 5 + UnityEngine.Random.Range(0, 2);
+    pers1.iPoder = 2 + UnityEngine.Random.Range(0, 2);
     pers1.InicializarEscaladoResElementalPorPoderSiHaceFalta();
 
     pers1.iDefensa = 13;
@@ -4829,7 +5142,7 @@ public class CampaignManager : MonoBehaviour
     }
 
     //Habilidades de Actividad
-    pers1.ActividadSeleccionada = 1;
+    pers1.ActividadSeleccionada = 3;
     pers1.AddComponent<Actividad_Descansar>();
     pers1.AddComponent<Actividad_Entrenar>();
     pers1.AddComponent<Actividad_Guardia>();
@@ -4873,7 +5186,7 @@ public class CampaignManager : MonoBehaviour
 
     pers1.iFuerza = 2 + UnityEngine.Random.Range(0, 2);
     pers1.iAgi = 2 + UnityEngine.Random.Range(0, 2);
-    pers1.iPoder = 4 + UnityEngine.Random.Range(0, 3);
+    pers1.iPoder = 4 + UnityEngine.Random.Range(0, 2);
     pers1.InicializarEscaladoResElementalPorPoderSiHaceFalta();
 
     pers1.iDefensa = 11;
@@ -4927,7 +5240,7 @@ public class CampaignManager : MonoBehaviour
     }
 
     //Habilidades de Actividad
-    pers1.ActividadSeleccionada = 1;
+    pers1.ActividadSeleccionada = 3;
     pers1.AddComponent<Actividad_Descansar>();
     pers1.AddComponent<Actividad_Entrenar>();
     pers1.AddComponent<Actividad_Guardia>();
@@ -4947,6 +5260,61 @@ public class CampaignManager : MonoBehaviour
 
   }
 
+   public void CrearDuelista()
+  {
+
+    GameObject caballero = Instantiate(prefabGOPersonaje);
+
+    Personaje pers1 = caballero.GetComponent<Personaje>();
+    pers1.sNombre = CrearNombreMujerAzar();
+    pers1.fNivelActual = 1;
+    pers1.fExperienciaActual = 0;
+    pers1.IDClase = 6;
+    pers1.idRetrato = 9;
+    pers1.iPuestoDeseado = 3;
+
+    pers1.fVidaMaxima = 51 + UnityEngine.Random.Range(1, 6);
+    pers1.fVidaActual = pers1.fVidaMaxima;
+
+    pers1.iFuerza = 3 + UnityEngine.Random.Range(0, 2);
+    pers1.iAgi = 4 + UnityEngine.Random.Range(0, 2);
+    pers1.iPoder = 0 + UnityEngine.Random.Range(0, 1);
+    pers1.InicializarEscaladoResElementalPorPoderSiHaceFalta();
+
+    pers1.iDefensa = 14;
+    pers1.InicializarEscaladoDefensaPorAgilidadSiHaceFalta();
+    pers1.iArmadura = 0; //lo da la armadura
+    pers1.iApMax = 4;
+    pers1.iValMax = 3;
+    pers1.iIniciativa = 3 + UnityEngine.Random.Range(0, 2); ;
+
+    pers1.iTSFortaleza = 2 + UnityEngine.Random.Range(0, 2);
+    pers1.iTSReflejo = 5 + UnityEngine.Random.Range(0, 2);
+    pers1.iTSMental = 4 + UnityEngine.Random.Range(0, 2);
+
+    pers1.iResAcido = 0;
+    pers1.iResArcano = 0;
+    pers1.iResFuego = 0;
+    pers1.iResHielo = 0;
+    pers1.iResNecro = 0;
+    pers1.iResRayo = 0;
+    pers1.iResDivino = 0;
+
+
+    SortearRasgos(pers1); //Método vacío!!
+
+   
+
+    pers1.spRetrato = scMenuPersonajes.Female002;
+
+    scMenuPersonajes.listaPersonajes.Add(pers1);
+
+    scMenuPersonajes.scEquipo.ActualizarEquipo(pers1);
+
+
+
+
+  }
 
 
 
@@ -5051,8 +5419,24 @@ public class CampaignManager : MonoBehaviour
 
   #endregion
 
-  public void AgregarHeroe(int n)
+  public bool AgregarHeroe(int n)
   {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      Debug.LogWarning("[CampaignManager] No se pudo agregar un personaje porque la lista de personajes no esta disponible.");
+      return false;
+    }
+
+    if (CuantosPersonajesActivos() >= ObtenerCapacidadMaximaPersonajes())
+    {
+      string mensajeSinCupo = TRADU.i != null
+        ? TRADU.i.Traducir("La caravana no tiene más tiendas para otro personaje.")
+        : "La caravana no tiene más tiendas para otro personaje.";
+      EscribirLog("<color=#ff9e9e>" + mensajeSinCupo + "</color>", true);
+      return false;
+    }
+
+    int cantidadAntes = scMenuPersonajes.listaPersonajes.Count;
     int claseElegida;
     if (n == 0) //Es heroe al azar
     {
@@ -5078,6 +5462,7 @@ public class CampaignManager : MonoBehaviour
       claseElegida = n;
     }
 
+    bool claseValida = true;
     switch (claseElegida)
     {
       case 1: CrearCaballero(); break;
@@ -5085,8 +5470,26 @@ public class CampaignManager : MonoBehaviour
       case 3: CrearPurificadora(); break;
       case 4: CrearAcechador(); break;
       case 5: CrearCanalizador(); break;
+      default:
+        claseValida = false;
+        break;
     }
-    EscribirLog(TRADU.i.Traducir("-Un nuevo personaje se ha unido a la caravana: ") + scMenuPersonajes.listaPersonajes[scMenuPersonajes.listaPersonajes.Count - 1].sNombre + ".");
+
+    if (!claseValida)
+    {
+      return false;
+    }
+
+    if (scMenuPersonajes.listaPersonajes.Count <= cantidadAntes)
+    {
+      Debug.LogWarning("[CampaignManager] No se pudo agregar el personaje solicitado.");
+      return false;
+    }
+    string mensajeNuevoHeroe = TRADU.i != null
+      ? TRADU.i.Traducir("-Un nuevo personaje se ha unido a la caravana: ")
+      : "-Un nuevo personaje se ha unido a la caravana: ";
+    EscribirLog(mensajeNuevoHeroe + scMenuPersonajes.listaPersonajes[scMenuPersonajes.listaPersonajes.Count - 1].sNombre + ".");
+    return true;
   }
 
 
@@ -5186,6 +5589,3 @@ public class CampaignManager : MonoBehaviour
 
   }
 }
-
-
-

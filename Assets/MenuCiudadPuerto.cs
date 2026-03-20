@@ -23,6 +23,7 @@ public class MenuCiudadPuerto : MonoBehaviour
 
     public GameObject tituloEspaniol;
     public GameObject tituloIngles;
+    public GameObject tituloPortugues;
     private bool recompensasFinalAplicadas;
 
     
@@ -236,8 +237,17 @@ public class MenuCiudadPuerto : MonoBehaviour
         if (childCount <= 0) return;
 
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
-        int childIdioma = idioma == 2 ? 1 : 0;
-        int panelesIdioma = Mathf.Min(2, childCount);
+        int childIdioma = 0;
+        if (idioma == TRADU.IdiomaIngles && childCount > 1)
+        {
+            childIdioma = 1;
+        }
+        else if (idioma == TRADU.IdiomaPortugues && childCount > 2)
+        {
+            childIdioma = 2;
+        }
+
+        int panelesIdioma = Mathf.Min(3, childCount);
 
         for (int i = 0; i < panelesIdioma; i++)
         {
@@ -253,9 +263,11 @@ public class MenuCiudadPuerto : MonoBehaviour
     private void AplicarIdiomaTitulo()
     {
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
-        bool esIngles = idioma == 2;
-        if (tituloEspaniol != null) tituloEspaniol.SetActive(!esIngles);
+        bool esIngles = idioma == TRADU.IdiomaIngles;
+        bool esPortugues = idioma == TRADU.IdiomaPortugues;
+        if (tituloEspaniol != null) tituloEspaniol.SetActive(!esIngles && (!esPortugues || tituloPortugues == null));
         if (tituloIngles != null) tituloIngles.SetActive(esIngles);
+        if (tituloPortugues != null) tituloPortugues.SetActive(esPortugues);
     }
     
      public void ClickBotonMejora(int n)

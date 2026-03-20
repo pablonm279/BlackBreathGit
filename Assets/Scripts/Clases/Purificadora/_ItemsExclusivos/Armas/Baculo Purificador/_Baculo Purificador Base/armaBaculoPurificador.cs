@@ -33,6 +33,11 @@ public class armaBaculoPurificador : Arma
             sNombreItem = "Purifying Staff " + nmejora;
             itemDescripcion = "A staff that radiates purifying energy.\n\nAttack ability: Staff Strike.";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Bastao Purificador " + nmejora;
+            itemDescripcion = "Um bastao que irradia energia purificadora.\n\nHabilidade de ataque: Golpe de Bastao.";
+         }
       }
       //Si hay variantes especiales, se ponen aca abajo
 

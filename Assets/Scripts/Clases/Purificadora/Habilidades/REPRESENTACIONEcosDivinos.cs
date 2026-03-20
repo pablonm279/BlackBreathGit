@@ -160,6 +160,77 @@ public class REPRESENTACIONEcosDivinos : Habilidad
           txtDescripcion += "<i>To enemies: Deals 1d10+9 Divine damage.</i>\n\n";
         }
       }
+      if (TRADU.i.nIdioma == 3) // Portuguese translation
+      {
+        if (NIVEL < 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Ecos Divinos I</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) A cada turno gera um Eco divino em qualquer lado da batalha, causando dano aos inimigos ou curando aliados que o tocam.</i>\n\n";
+          txtDescripcion += "<i>Em aliados: Cura 1d10 e soma +1 Valentia. Se for a Purificadora, ganha 1 Fervor. Cura magica.</i>\n\n";
+          txtDescripcion += "<i>Em inimigos: Causa 1d10 de dano Divino.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +2 Dano e Cura</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Ecos Divinos II</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) A cada turno gera um Eco divino em qualquer lado da batalha, causando dano aos inimigos ou curando aliados que o tocam.</i>\n\n";
+          txtDescripcion += "<i>Em aliados: Cura 1d10+2 e soma +1 Valentia. Se for a Purificadora, ganha 1 Fervor. Cura magica.</i>\n\n";
+          txtDescripcion += "<i>Em inimigos: Causa 1d10+2 de dano Divino.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +2 Dano e Cura</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Ecos Divinos III</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) A cada turno gera um Eco divino em qualquer lado da batalha, causando dano aos inimigos ou curando aliados que o tocam.</i>\n\n";
+          txtDescripcion += "<i>Em aliados: Cura 1d10+4 e soma +1 Valentia. Se for a Purificadora, ganha 1 Fervor. Cura magica.</i>\n\n";
+          txtDescripcion += "<i>Em inimigos: Causa 1d10+4 de dano Divino.</i>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Opcao A: +5 Cura.</color>\n\n";
+                txtDescripcion += $"<color=#dfea02>-Opcao B: +5 Dano.</color>\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Ecos Divinos IV a</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) A cada turno gera um Eco divino em qualquer lado da batalha, causando dano aos inimigos ou curando aliados que o tocam.</i>\n\n";
+          txtDescripcion += "<i>Em aliados: Cura 1d10+9 e soma +1 Valentia. Se for a Purificadora, ganha 1 Fervor. Cura magica.</i>\n\n";
+          txtDescripcion += "<i>Em inimigos: Causa 1d10+4 de dano Divino.</i>\n\n";
+        }
+        if (NIVEL == 5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Ecos Divinos IV b</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) A cada turno gera um Eco divino em qualquer lado da batalha, causando dano aos inimigos ou curando aliados que o tocam.</i>\n\n";
+          txtDescripcion += "<i>Em aliados: Cura 1d10+4 e soma +1 Valentia. Se for a Purificadora, ganha 1 Fervor. Cura magica.</i>\n\n";
+          txtDescripcion += "<i>Em inimigos: Causa 1d10+9 de dano Divino.</i>\n\n";
+        }
+      }
       }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}

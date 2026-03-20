@@ -41,16 +41,22 @@ public class HaciaLasSombras : Habilidad
   public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
     int evasionGanada = NIVEL > 2 ? 3 : 2;
     bool terminaTurno = NIVEL != 4;
 
     string tituloEs = "Hacia Las Sombras I";
     string tituloEn = "Into the Shadows I";
+    string tituloPt = "Para as Sombras I";
     if (NIVEL == 2) { tituloEs = "Hacia Las Sombras II"; tituloEn = "Into the Shadows II"; }
     if (NIVEL == 3) { tituloEs = "Hacia Las Sombras III"; tituloEn = "Into the Shadows III"; }
     if (NIVEL == 4) { tituloEs = "Hacia Las Sombras IV a"; tituloEn = "Into the Shadows IV a"; }
     if (NIVEL == 5) { tituloEs = "Hacia Las Sombras IV b"; tituloEn = "Into the Shadows IV b"; }
+    if (NIVEL == 2) { tituloPt = "Para as Sombras II"; }
+    if (NIVEL == 3) { tituloPt = "Para as Sombras III"; }
+    if (NIVEL == 4) { tituloPt = "Para as Sombras IV a"; }
+    if (NIVEL == 5) { tituloPt = "Para as Sombras IV b"; }
 
     string cuerpo = "";
     if (esIngles)
@@ -63,6 +69,17 @@ public class HaciaLasSombras : Habilidad
       cuerpo += terminaTurno
         ? "<b>Turn flow:</b> ends turn"
         : "<b>Turn flow:</b> does not end turn";
+    }
+    else if (esPortugues)
+    {
+      cuerpo += "<b>Tipo:</b> Utilidade de Mobilidade\n";
+      cuerpo += "<b>Alvo:</b> Qualquer celula vazia do proprio lado\n";
+      cuerpo += "<b>Rolagem/Resistencia:</b> nao tem\n";
+      cuerpo += "<b>Ao usar:</b> teleporta para a celula alvo\n";
+      cuerpo += $"<b>Efeitos proprios:</b> ganha Escondido (2), Evasao ({evasionGanada}), remove debuffs\n";
+      cuerpo += terminaTurno
+        ? "<b>Fluxo de turno:</b> termina o turno"
+        : "<b>Fluxo de turno:</b> nao termina o turno";
     }
     else
     {
@@ -78,12 +95,16 @@ public class HaciaLasSombras : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
         ? "A defensive reset that repositions, cleanses and re-enters stealth."
+        : esPortugues
+          ? "Um reset defensivo que reposiciona, remove estados e retorna a furtividade."
         : "Un reset defensivo que reposiciona, limpia estados y vuelve al sigilo.",
       cuerpo,
       costos,
@@ -100,6 +121,12 @@ public class HaciaLasSombras : Habilidad
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 cooldown.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Evasion gained.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (does not end turn) or Option B (-1 Valour Cost).</color>"; }
+    }
+    else if (esPortugues)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 recarga.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Evasao ganha.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (nao termina o turno) ou Opcao B (-1 custo de Valentia).</color>"; }
     }
     else
     {

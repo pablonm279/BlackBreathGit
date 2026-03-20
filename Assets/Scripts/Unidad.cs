@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using UnityEngine.Analytics;
 using System.Linq;
+using System.Reflection;
 
 public class Unidad : MonoBehaviour
 {
@@ -22,9 +23,10 @@ public class Unidad : MonoBehaviour
    public Casilla CasillaPosicion;
    public Casilla CasillaDeseadaMov;
 
-   public Casilla CasillaForzadoaMover;
-   // Marca si hay un desplazamiento forzado en curso para evitar reordenarlo cada frame
+  public Casilla CasillaForzadoaMover;
+  // Marca si hay un desplazamiento forzado en curso para evitar reordenarlo cada frame
   private bool movimientoForzadoPendiente;
+  private bool forzarSiguienteMovimientoForzadoInmediato;
   
 
    public Habilidad estaCargando; //la habilidad que está cargando el personaje para lanzar en un turno próximo
@@ -565,8 +567,9 @@ float critRangoDado, float critDañoBonus, float Ataque, float TSReflejos, float
       case 4: uRetrato = scBattleManager.contenedorPrefabs.char4; break;
       case 5: uRetrato = scBattleManager.contenedorPrefabs.explorador1; break;
       case 6: uRetrato = scBattleManager.contenedorPrefabs.purificadora1; break;
-      case 7: uRetrato = scBattleManager.contenedorPrefabs.acechador1;break;
-      case 8: uRetrato = scBattleManager.contenedorPrefabs.canalizador1;break;
+      case 7: uRetrato = scBattleManager.contenedorPrefabs.acechador1; break;
+      case 8: uRetrato = scBattleManager.contenedorPrefabs.canalizador1; break;
+      case 9: uRetrato = scBattleManager.contenedorPrefabs.duelista1; break;
   }
  
   //Pone Atributos
@@ -876,7 +879,8 @@ public bool movimientoEnCurso = false;
 
     if (CasillaForzadoaMover != null)
     {
-      if ((CasillaPosicion != CasillaForzadoaMover) && (scBattleManager.unidadActiva != this))
+      bool puedeMoverForzadoAhora = (scBattleManager.unidadActiva != this) || forzarSiguienteMovimientoForzadoInmediato;
+      if ((CasillaPosicion != CasillaForzadoaMover) && puedeMoverForzadoAhora)
       {
         movimientoForzadoPendiente = true;
         if (!movimientoEnCurso)
@@ -912,6 +916,7 @@ public bool movimientoEnCurso = false;
           CasillaForzadoaMover = null;
           CasillaDeseadaMov = null;
           movimientoForzadoPendiente = false;
+          forzarSiguienteMovimientoForzadoInmediato = false;
           movimientoEnCurso = false;
           casillaOrigenEnMovimiento = null;
           if (poseController != null) { poseController.OnStopMove(); }
@@ -922,6 +927,7 @@ public bool movimientoEnCurso = false;
     else if (movimientoForzadoPendiente)
     {
       movimientoForzadoPendiente = false;
+      forzarSiguienteMovimientoForzadoInmediato = false;
     }
 
 
@@ -1401,8 +1407,11 @@ private void ActivarHabilidadCargada()
 
 private void OnDestroy() 
 {
-    scBattleManager.OnRondaNueva  -= BattleManager_OnRondaNueva;
-    scBattleManager.lUnidadesTotal.Remove(this); 
+    if (scBattleManager != null)
+    {
+      scBattleManager.OnRondaNueva -= BattleManager_OnRondaNueva;
+      scBattleManager.RemoverUnidadDeOrdenTurno(this);
+    }
 }
 public virtual void PerderEscondido()
 {
@@ -2081,7 +2090,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           {
             if (barreraAntes > 0 && barreraDeDanio <= 0)
             {
-              GenerarTextoFlotante("(<s>" + TRADU.i.Traducir("Barrera") + "</s>)", Color.cyan, FloatingTextContext.Damage);
+              // No mostrar texto flotante cuando la barrera se rompe.
             }
             else
             {
@@ -2383,6 +2392,8 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
       if (uCausante != null)
       {
+
+
         uCausante.AcabaDeHacerDañoA(this);
       }
       //Chequear si muere
@@ -3049,6 +3060,7 @@ public virtual void AcabaDeMatarUnidad(Unidad uVictima)
     ? nombreAsesino + " defeats " + nombreVictima
     : nombreAsesino + " derrota a " + nombreVictima;
   SumarValentia(2, motivoAsesino);
+  OtorgarExperienciaPorBajaSiCorresponde(uVictima, nombreAsesino, nombreVictima, enIngles);
 
   LadoManager ladoAliado = null;
   if (BattleManager.Instance != null && CasillaPosicion != null)
@@ -3082,6 +3094,72 @@ public virtual void AcabaDeMatarUnidad(Unidad uVictima)
     aliado.SumarValentia(1, motivoAliado);
   }
 }
+
+private void OtorgarExperienciaPorBajaSiCorresponde(Unidad victima, string nombreAsesino, string nombreVictima, bool enIngles)
+{
+  if (victima == null || CasillaPosicion == null || CasillaPosicion.lado != 2)
+  {
+    return;
+  }
+
+  CampaignManager camp = CampaignManager.Instance;
+  AdministradorEscenas admin = camp != null ? camp.scAdministradorEscenas : null;
+  if (admin == null)
+  {
+    return;
+  }
+
+  Personaje personajeAsesino = admin.ObtenerPersonajeDesdeUnidad(this);
+  if (personajeAsesino == null)
+  {
+    return;
+  }
+
+  int tierVictima = ObtenerTierUnidadEnemiga(victima);
+  int expGanada = Mathf.Max(0, tierVictima * 12);
+  if (expGanada <= 0)
+  {
+    return;
+  }
+
+  personajeAsesino.RecibirExperiencia(expGanada);
+
+  if (BattleManager.Instance != null)
+  {
+    string logExp = enIngles
+      ? $"{nombreAsesino} gains {expGanada} EXP for defeating {nombreVictima} (Tier {tierVictima})."
+      : $"{nombreAsesino} gana {expGanada} EXP por derrotar a {nombreVictima} (Tier {tierVictima}).";
+    BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoCuracion(logExp));
+  }
+}
+
+private int ObtenerTierUnidadEnemiga(Unidad victima)
+{
+  if (victima == null)
+  {
+    return 1;
+  }
+
+  IAUnidad ia = victima.GetComponent<IAUnidad>();
+  if (ia == null)
+  {
+    return 1;
+  }
+
+  // Compatibilidad: usa "tierunidad" si existe y esta cargado.
+  FieldInfo campoTierUnidad = ia.GetType().GetField("tierunidad", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+  if (campoTierUnidad != null)
+  {
+    object valor = campoTierUnidad.GetValue(ia);
+    if (valor is int tierUnidad && tierUnidad > 0)
+    {
+      return tierUnidad;
+    }
+  }
+
+  return Mathf.Max(1, ia.tierEnemigo);
+}
+
   public virtual void AcabaDeHacerDañoA(Unidad uVictima)
   {
      RemoverBuffNombre("Escondido Por Humo");
@@ -3592,8 +3670,7 @@ public void UnidadMuere()
    GenerarTextoFlotante(TRADU.i.Traducir("Muerto"), new Color(0.35f, 0.35f, 0.35f), FloatingTextContext.Resist);
 
    scBattleManager.OnRondaNueva  -= BattleManager_OnRondaNueva;
-   int posicionUnidad =  BattleManager.Instance.lUnidadesTotal.IndexOf(this)+1;
-   scBattleManager.lUnidadesTotal.Remove(this); 
+   scBattleManager.RemoverUnidadDeOrdenTurno(this);
    CasillaPosicion.ladoGO.GetComponent<LadoManager>().unidadesLado.Remove(this);
    AccionP_actual = 0;
    
@@ -3602,10 +3679,6 @@ public void UnidadMuere()
 
    BattleManager.Instance.scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
   
-   if(posicionUnidad >= BattleManager.Instance.indexTurno && BattleManager.Instance.unidadActiva == this)
-   {
-     BattleManager.Instance.indexTurno--;
-   }
    if(BattleManager.Instance.unidadActiva == this && gameObject.GetComponent<IAUnidad>() == null)
    {
     BattleManager.Instance.TerminarTurno(); //termina el turno del personaje no IA que muera
@@ -3678,7 +3751,7 @@ public bool RetirarseDeBatallaPorMoral()
   if (scBattleManager != null)
   {
     scBattleManager.OnRondaNueva -= BattleManager_OnRondaNueva;
-    scBattleManager.lUnidadesTotal.Remove(this);
+    scBattleManager.RemoverUnidadDeOrdenTurno(this);
   }
 
   if (CasillaPosicion != null && CasillaPosicion.ladoGO != null)
@@ -3709,13 +3782,21 @@ public bool RetirarseDeBatallaPorMoral()
 
 void DesactivarGOconDelay()
 {
-   scBattleManager.lUnidadesTotal.Remove(this); 
-   
-  BattleManager.Instance.scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
+  if (scBattleManager != null)
+  {
+    scBattleManager.RemoverUnidadDeOrdenTurno(this);
+  }
+
+  if (BattleManager.Instance != null && BattleManager.Instance.scUIBarraOrdenTurno != null)
+  {
+    BattleManager.Instance.scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
+  }
   gameObject.SetActive(false);
 
-  
-  BattleManager.Instance.ChequearFinBatalla();
+  if (BattleManager.Instance != null)
+  {
+    BattleManager.Instance.ChequearFinBatalla();
+  }
 }
 
 public void AplicarDebuffPorAtaquesreiterados(int cant)
@@ -4137,6 +4218,11 @@ public async void OnMouseDown()
     CasillaForzadoaMover = destino;
     CasillaDeseadaMov = null;
     movimientoForzadoPendiente = true;
+  }
+
+  public void ForzarSiguienteMovimientoForzadoInmediato()
+  {
+    forzarSiguienteMovimientoForzadoInmediato = true;
   }
 
   public void JalarUnidad(int cantidad)

@@ -20,6 +20,11 @@ public class REPRESENTACIONCorajeInquebrantable : Habilidad
           txtDescripcion = "<color=#5dade2><b>Unbreakable Valour</b></color>\n\n";
           txtDescripcion += "<i>(Passive)Fights with valour, even in the darkest moments.\nTheir Valour points cannot be less than 0.</i>\n\n";
       }
+      if (TRADU.i.nIdioma == 3)
+      {
+          txtDescripcion = "<color=#5dade2><b>Coragem Inquebravel</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva)Luta com valentia, mesmo nos momentos mais sombrios.\nSeus pontos de Valentia nao podem ficar abaixo de 0.</i>\n\n";
+      }
 
     }
 

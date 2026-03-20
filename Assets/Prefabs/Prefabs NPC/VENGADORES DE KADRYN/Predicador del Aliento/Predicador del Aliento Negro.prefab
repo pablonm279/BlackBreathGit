@@ -663,6 +663,7 @@ MonoBehaviour:
   esRango: 1
   bPuedeVerEscondidos: 0
   unicoEnCombate: 1
+  tierEnemigo: 3
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0

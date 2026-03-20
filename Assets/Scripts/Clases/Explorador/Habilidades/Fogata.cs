@@ -38,9 +38,10 @@ public class Fogata : Habilidad
       imHab = Resources.Load<Sprite>("imHab/Explorador_Fogata");
       ActualizarDescripcion();
     }
-    public override void ActualizarDescripcion()
+  public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
     int trampaUsos = NIVEL > 1 ? 4 : 3;
     int duracionTrampaTurnos = NIVEL > 1 ? 5 : 4;
@@ -48,10 +49,15 @@ public class Fogata : Habilidad
 
     string tituloEs = "Fogata I";
     string tituloEn = "Campfire I";
+    string tituloPt = "Fogueira I";
     if (NIVEL == 2) { tituloEs = "Fogata II"; tituloEn = "Campfire II"; }
     if (NIVEL == 3) { tituloEs = "Fogata III"; tituloEn = "Campfire III"; }
     if (NIVEL == 4) { tituloEs = "Fogata IV a"; tituloEn = "Campfire IV a"; }
     if (NIVEL == 5) { tituloEs = "Fogata IV b"; tituloEn = "Campfire IV b"; }
+    if (NIVEL == 2) { tituloPt = "Fogueira II"; }
+    if (NIVEL == 3) { tituloPt = "Fogueira III"; }
+    if (NIVEL == 4) { tituloPt = "Fogueira IV a"; }
+    if (NIVEL == 5) { tituloPt = "Fogueira IV b"; }
 
     string cuerpo = "";
     if (esIngles)
@@ -61,6 +67,14 @@ public class Fogata : Habilidad
       cuerpo += $"<b>Campfire trap:</b> {duracionTrampaTurnos} turns, {trampaUsos} uses\n";
       cuerpo += "<b>Trap trigger:</b> 1d3 fire damage (persistent)\n";
       cuerpo += $"<b>Adjacency buff:</b> while adjacent to a campfire, gains fire arrows (+{dadoFuego} fire damage on attacks)";
+    }
+    else if (esPortugues)
+    {
+      cuerpo += "<b>Tipo:</b> Armadilha de Utilidade\n";
+      cuerpo += "<b>Alvo:</b> Casa adjacente (inclui a propria casa)\n";
+      cuerpo += $"<b>Armadilha fogueira:</b> {duracionTrampaTurnos} turnos, {trampaUsos} usos\n";
+      cuerpo += "<b>Ativacao da armadilha:</b> 1d3 dano de fogo (persistente)\n";
+      cuerpo += $"<b>Buff por adjacencia:</b> enquanto estiver adjacente a uma fogueira, ganha flechas de fogo (+{dadoFuego} dano de fogo em ataques)";
     }
     else
     {
@@ -73,12 +87,16 @@ public class Fogata : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
         ? "Sets battlefield control and empowers shots near the fire."
+        : esPortugues
+          ? "Planta controle no terreno e fortalece disparos perto do fogo."
         : "Planta control en el terreno y potencia disparos cerca del fuego.",
       cuerpo,
       costos,
@@ -95,6 +113,12 @@ public class Fogata : Habilidad
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 trap use and +1 trap duration turn.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 AP cost.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1d3 fire-arrow bonus) or Option B (-1 AP cost).</color>"; }
+    }
+    else if (esPortugues)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 uso de armadilha e +1 turno de duracao da armadilha.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 custo AP.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1d3 no bonus de flechas de fogo) ou Opcao B (-1 custo AP).</color>"; }
     }
     else
     {

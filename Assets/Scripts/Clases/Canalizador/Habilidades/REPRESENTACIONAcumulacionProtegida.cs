@@ -153,6 +153,74 @@ if(NIVEL==5)
             txtDescripcion += "<color=#c8c8c8>If Charging is successfully completed, gains <b>+1 AP</b> that turn.</color>\n";
         }
     }
+    if (TRADU.i.nIdioma == 3)
+    {
+        if (NIVEL < 2)
+        {
+            txtDescripcion = "<color=#5dade2><b>Acumulacao Protegida I</b></color>\n\n";
+            txtDescripcion += "<i>(Passiva) O Canalizador recobre o corpo com energia protetora ao Acumular poder.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>Ao Acumular Energia, ganha <b>1 + Poder + 3 x Energia</b> de Barreira e <b>+1 em TS Mental</b> ate o proximo turno.</color>\n\n";
+
+            if (EsEscenaCampaña())
+            {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+                {
+                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                    {
+                        txtDescripcion += $"<color=#dfea02>- Proximo Nivel: +2 Barreira ao Acumular Energia.</color>\n\n";
+                    }
+                }
+            }
+        }
+        if (NIVEL == 2)
+        {
+            txtDescripcion = "<color=#5dade2><b>Acumulacao Protegida II</b></color>\n\n";
+            txtDescripcion += "<i>(Passiva) O Canalizador recobre o corpo com energia protetora ao Acumular poder.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>Ao Acumular Energia, ganha <b>1 + Poder + 3 x Energia +2</b> de Barreira e <b>+1 em TS Mental</b> ate o proximo turno.</color>\n\n";
+
+            if (EsEscenaCampaña())
+            {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+                {
+                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                    {
+                        txtDescripcion += $"<color=#dfea02>- Proximo Nivel: +1 TS Mental adicional.</color>\n\n";
+                    }
+                }
+            }
+        }
+        if (NIVEL == 3)
+        {
+            txtDescripcion = "<color=#5dade2><b>Acumulacao Protegida III</b></color>\n\n";
+            txtDescripcion += "<i>(Passiva) O Canalizador recobre o corpo com energia protetora ao Acumular poder.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>Ao Acumular Energia, ganha <b>1 + Poder + 3 x Energia +2</b> de Barreira e <b>+2 em TS Mental</b> ate o proximo turno.</color>\n\n";
+
+            if (EsEscenaCampaña())
+            {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+                {
+                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                    {
+                        txtDescripcion += $"<color=#dfea02>- Opcao A: Se passar na TS Mental de concentracao, o atacante recebe 1d10 dano Arcano.</color>\n";
+                        txtDescripcion += $"<color=#dfea02>- Opcao B: Se concluir a acumulacao com sucesso, ganha +1 AP nesse turno.</color>\n";
+                    }
+                }
+            }
+        }
+        if (NIVEL == 4)
+        {
+            txtDescripcion = "<color=#5dade2><b>Acumulacao Protegida IV a</b></color>\n\n";
+            txtDescripcion += "<i>(Passiva) O Canalizador recobre o corpo com energia protetora ao Acumular poder.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>Ao Acumular Energia, ganha <b>1 + Poder + 3 x Energia +6</b> de Barreira e <b>+2 em TS Mental</b> ate o proximo turno.</color>\n\n";
+        }
+        if (NIVEL == 5)
+        {
+            txtDescripcion = "<color=#5dade2><b>Acumulacao Protegida IV b</b></color>\n\n";
+            txtDescripcion += "<i>(Passiva) O Canalizador recobre o corpo com energia protetora ao Acumular poder.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>Ao Acumular Energia, ganha <b>1 + Poder + 3 x Energia +2</b> de Barreira e <b>+2 em TS Mental</b> ate o proximo turno.</color>\n\n";
+            txtDescripcion += "<color=#c8c8c8>Se concluir a acumulacao com sucesso, ganha <b>+1 AP</b> nesse turno.</color>\n";
+        }
+    }
 
     }
 

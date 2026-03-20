@@ -33,16 +33,22 @@ public class EscudoEnergetico : Habilidad
     }
 
 
-        public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
     {
         bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+        bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
         string tituloEs = "Escudo Energetico I";
         string tituloEn = "Energy Shield I";
+        string tituloPt = "Escudo Energetico I";
         if (NIVEL == 2) { tituloEs = "Escudo Energetico II"; tituloEn = "Energy Shield II"; }
         if (NIVEL == 3) { tituloEs = "Escudo Energetico III"; tituloEn = "Energy Shield III"; }
         if (NIVEL == 4) { tituloEs = "Escudo Energetico IV a"; tituloEn = "Energy Shield IV a"; }
         if (NIVEL == 5) { tituloEs = "Escudo Energetico IV b"; tituloEn = "Energy Shield IV b"; }
+        if (NIVEL == 2) { tituloPt = "Escudo Energetico II"; }
+        if (NIVEL == 3) { tituloPt = "Escudo Energetico III"; }
+        if (NIVEL == 4) { tituloPt = "Escudo Energetico IV a"; }
+        if (NIVEL == 5) { tituloPt = "Escudo Energetico IV b"; }
 
         int defensaBase = NIVEL > 1 ? 2 : 1;
         int bonusAtaqueReaccion = NIVEL > 2 ? 1 : 0;
@@ -66,6 +72,22 @@ public class EscudoEnergetico : Habilidad
                 ? "<b>Condition:</b> Shield is removed if user takes damage"
                 : "<b>Condition:</b> Shield is not removed by incoming damage";
         }
+        else if (esPortugues)
+        {
+            cuerpo += "<b>Tipo:</b> Propria\n";
+            cuerpo += "<b>Alvo:</b> O proprio usuario\n";
+            cuerpo += $"<b>Buff de Defesa:</b> {defensaBase} + Nivel de Energia atual (2 rodadas)\n";
+            cuerpo += $"<b>Reacao:</b> Contra projetil inimigo falho, contra-ataca com Descarga Arcana";
+            if (bonusAtaqueReaccion > 0)
+            {
+                cuerpo += $" (+{bonusAtaqueReaccion} na rolagem de ataque)";
+            }
+            cuerpo += " e gera 1 Residuo Energetico proximo\n";
+            cuerpo += $"<b>Usos da reacao por uso:</b> {usosReaccion}\n";
+            cuerpo += seCancelaConDanio
+                ? "<b>Condicao:</b> O escudo e removido ao receber dano"
+                : "<b>Condicao:</b> O escudo nao e removido ao receber dano";
+        }
         else
         {
             cuerpo += "<b>Tipo:</b> Propia\n";
@@ -85,12 +107,16 @@ public class EscudoEnergetico : Habilidad
 
         string costos = esIngles
             ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Valour Cost: {costoPM}"
-            : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentía: {costoPM}";
+            : esPortugues
+                ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP} (termina turno)\n- Custo Valentia: {costoPM}"
+                : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentía: {costoPM}";
 
         txtDescripcion = ConstruirDescripcionEstandar(
-            esIngles ? tituloEn : tituloEs,
+            esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
             esIngles
                 ? "The Channeler forms a reactive barrier that reinforces defense and punishes ranged pressure."
+                : esPortugues
+                    ? "O Canalizador forma uma barreira reativa que reforca a defesa e pune pressao a distancia."
                 : "El Canalizador forma una barrera reactiva que refuerza defensa y castiga la presion a distancia.",
             cuerpo,
             costos,
@@ -107,6 +133,12 @@ public class EscudoEnergetico : Habilidad
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 defense base.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack roll on counter discharge.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (no cancel on damage) or Option B (+1 reaction use).</color>"; }
+        }
+        else if (esPortugues)
+        {
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 defesa base.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na rolagem de ataque da descarga de reacao.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (nao remove com dano) ou Opcao B (+1 uso de reacao).</color>"; }
         }
         else
         {

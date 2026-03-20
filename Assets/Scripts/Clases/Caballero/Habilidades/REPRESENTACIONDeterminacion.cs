@@ -159,6 +159,76 @@ public class REPRESENTACIONDeterminacion : Habilidad
         txtDescripcion += "<i>When Euphoric gains +1 Attack.\n";  
       }
     }
+    if (TRADU.i.nIdioma == 3) // Portugues
+    {
+      if(NIVEL<2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Determinacao I</b></color>\n\n"; 
+        txtDescripcion += "<i>(Passiva)Seu compromisso com a causa e inquebravel.\n +5% de dano causado por cada Ponto de Valentia.</i>\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Proximo Nivel: ao estar Motivado +1 Resistencia extra</color>\n\n";
+            }
+          }
+        }
+      }
+      if(NIVEL==2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Determinacao II</b></color>\n\n"; 
+        txtDescripcion += "<i>(Passiva)Seu compromisso com a causa e inquebravel.\n +5% de dano causado por cada Ponto de Valentia.</i>\n\n";
+        txtDescripcion += "<i>Ao estar Motivado ganha +1 em Resistencias.\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Proximo Nivel: ao estar Euforico +1 Ataque</color>\n\n";
+            }
+          }
+        }
+      }
+      if(NIVEL==3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Determinacao III</b></color>\n\n"; 
+        txtDescripcion += "<i>(Passiva)Seu compromisso com a causa e inquebravel.\n +5% de dano causado por cada Ponto de Valentia.</i>\n\n";
+        txtDescripcion += "<i>Ao estar Motivado ganha +1 em Resistencias.\n\n";
+        txtDescripcion += "<i>Ao estar Euforico ganha +1 de Ataque.\n\n";
+
+        if (EsEscenaCampaña())
+        {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Opcao A: Comeca a batalha com 5 Pontos de Valentia</color>\n";
+              txtDescripcion += $"<color=#dfea02>-Opcao B: +7% de dano causado por cada Ponto de Valentia</color>\n";
+            }
+          }
+        }
+      }
+      if(NIVEL==4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Determinacao IV a</b></color>\n\n"; 
+        txtDescripcion += "<i>(Passiva)Seu compromisso com a causa e inquebravel.\n +5% de dano causado por cada Ponto de Valentia.</i>\n\n";
+        txtDescripcion += "<i>Ao estar Motivado ganha +1 em Resistencias.\n";
+        txtDescripcion += "<i>Ao estar Euforico ganha +1 de Ataque.\n";  
+        txtDescripcion += "<i>Comeca a batalha com 5 P. de Valentia.\n";    
+      }
+      if(NIVEL==5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Determinacao IV b</b></color>\n\n"; 
+        txtDescripcion += "<i>(Passiva)Seu compromisso com a causa e inquebravel.\n +7% de dano causado por cada Ponto de Valentia.</i>\n\n";
+        txtDescripcion += "<i>Ao estar Motivado ganha +1 em Resistencias.\n";
+        txtDescripcion += "<i>Ao estar Euforico ganha +1 de Ataque.\n";  
+      }
+    }
   }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}

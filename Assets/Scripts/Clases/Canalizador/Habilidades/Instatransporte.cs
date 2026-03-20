@@ -37,16 +37,22 @@ public class Instatransporte : Habilidad
 
   }
 
-    public override void ActualizarDescripcion()
+  public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
     string tituloEs = "Instatransporte I";
     string tituloEn = "Instatransport I";
+    string tituloPt = "Instatransporte I";
     if (NIVEL == 2) { tituloEs = "Instatransporte II"; tituloEn = "Instatransport II"; }
     if (NIVEL == 3) { tituloEs = "Instatransporte III"; tituloEn = "Instatransport III"; }
     if (NIVEL == 4) { tituloEs = "Instatransporte IV a"; tituloEn = "Instatransport IV a"; }
     if (NIVEL == 5) { tituloEs = "Instatransporte IV b"; tituloEn = "Instatransport IV b"; }
+    if (NIVEL == 2) { tituloPt = "Instatransporte II"; }
+    if (NIVEL == 3) { tituloPt = "Instatransporte III"; }
+    if (NIVEL == 4) { tituloPt = "Instatransporte IV a"; }
+    if (NIVEL == 5) { tituloPt = "Instatransporte IV b"; }
 
     int alcance = NIVEL > 2 ? 4 : 3;
     int bonusEvasion = NIVEL == 5 ? 2 : 1;
@@ -56,6 +62,9 @@ public class Instatransporte : Habilidad
     string residuosEn = NIVEL == 4
       ? "Generates Energy Residues all around the destination."
       : "Generates Energy Residues in an adjacent cross at destination.";
+    string residuosPt = NIVEL == 4
+      ? "Gera Residuos Energeticos em volta de todo o destino."
+      : "Gera Residuos Energeticos em cruz adjacente ao destino.";
 
     string cuerpo = "";
     if (esIngles)
@@ -66,6 +75,15 @@ public class Instatransporte : Habilidad
       cuerpo += "<b>On arrival:</b> Destroys traps on destination tile\n";
       cuerpo += $"<b>Extra:</b> {residuosEn}\n";
       cuerpo += $"<b>Self buff:</b> +{bonusEvasion} Evasion";
+    }
+    else if (esPortugues)
+    {
+      cuerpo += $"<b>Tipo:</b> Distancia ({alcance} alcance)\n";
+      cuerpo += "<b>Alvo:</b> 1 casa vazia em alcance\n";
+      cuerpo += "<b>Efeito:</b> Teletransporte instantaneo para a casa alvo\n";
+      cuerpo += "<b>Ao chegar:</b> Destroi armadilhas na casa de destino\n";
+      cuerpo += $"<b>Extra:</b> {residuosPt}\n";
+      cuerpo += $"<b>Buff proprio:</b> +{bonusEvasion} Evasao";
     }
     else
     {
@@ -79,12 +97,16 @@ public class Instatransporte : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
         ? "The Channeler blinks through arcane space and leaves unstable residue behind."
+        : esPortugues
+          ? "O Canalizador se desloca pelo espaco arcano e deixa residuos instaveis para tras."
         : "El Canalizador se desplaza por el espacio arcano y deja residuo inestable atras.",
       cuerpo,
       costos,
@@ -101,6 +123,12 @@ public class Instatransporte : Habilidad
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 cooldown.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 range.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (residues all around) or Option B (+1 Evasion).</color>"; }
+    }
+    else if (esPortugues)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 recarga.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 alcance.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (residuos em toda volta) ou Opcao B (+1 Evasao).</color>"; }
     }
     else
     {

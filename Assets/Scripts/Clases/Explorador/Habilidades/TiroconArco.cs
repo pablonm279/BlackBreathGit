@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,10 +15,10 @@ public class TiroconArco : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Acido - 8: Arcano
 
     private int hAlcance = 7;
-    private int hAncho = 1; //1 - adyancentes también
+    private int hAncho = 2; //1 - adyancentes tambien
     public override void Awake()
   {
     nombre = "Tiro con Arco";
@@ -37,7 +37,7 @@ public class TiroconArco : Habilidad
 
     bonusAtaque = 0;
     XdDanio = 1;
-    daniodX = 10; //1d10
+    daniodX = 8; //1d10
     tipoDanio = 2; //Cortante
     criticoRangoHab = 0;
 
@@ -47,9 +47,10 @@ public class TiroconArco : Habilidad
     imHab = Resources.Load<Sprite>("imHab/Explorador_Tiroconarco");
     ActualizarDescripcion();
   }
-    public override void ActualizarDescripcion()
+  public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int agilidadActual = statsUI.Agilidad;
@@ -65,6 +66,14 @@ public class TiroconArco : Habilidad
       cuerpo += $"<b>Damage:</b> 1d10 + 1 + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Slashing\n";
       cuerpo += "<b>Resource:</b> consumes 1 Arrow on shot\n";
     }
+    else if (esPortugues)
+    {
+      cuerpo += $"<b>Tipo:</b> Distancia ({hAlcance} alcance)\n";
+      cuerpo += "<b>Alvo:</b> 1 inimigo em alcance\n";
+      cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Agilidade ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Dano:</b> 1d10 + 1 + <color=#ea0606>Agilidade ({agilidadActual})</color> | <b>Tipo:</b> Cortante\n";
+      cuerpo += "<b>Recurso:</b> consome 1 Flecha por disparo\n";
+    }
     else
     {
       cuerpo += $"<b>Tipo:</b> Rango ({hAlcance} alcance)\n";
@@ -76,13 +85,17 @@ public class TiroconArco : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
+      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentia: {costoPM}\n- Esforzable: Si ({esforzable})";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? "Bow Shot" : "Tiro con Arco",
+      esIngles ? "Bow Shot" : esPortugues ? "Tiro com Arco" : "Tiro con Arco",
       esIngles
         ? "A reliable single-target shot that spends one arrow."
-        : "Un disparo de objetivo unico confiable que gasta una flecha.",
+        : esPortugues
+          ? "Um disparo confiavel de alvo unico que gasta uma flecha."
+          : "Un disparo de objetivo unico confiable que gasta una flecha.",
       cuerpo,
       costos,
       "#5dade2");
@@ -158,7 +171,7 @@ public class TiroconArco : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
-     if(obj is Unidad) //Acá van los efectos a Unidades.
+     if(obj is Unidad) //Aca van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -169,11 +182,11 @@ public class TiroconArco : Habilidad
         float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
        //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para próximas habilidades de daño del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para proximas habilidades de danio del explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de daño solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daño crítico.
+         danioMarca += 15; //Esto se suma al porcentaje de danio solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % danio critico.
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -238,7 +251,7 @@ public class TiroconArco : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Aca van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -393,6 +406,8 @@ public class TiroconArco : Habilidad
     }
  
 }
+
+
 
 
 

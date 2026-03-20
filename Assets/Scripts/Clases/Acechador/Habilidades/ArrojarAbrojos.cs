@@ -42,6 +42,7 @@ public class ArrojarAbrojos : Habilidad
     public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
       int dcBase = NIVEL > 2 ? 12 : 11;
       int bleedAplicado = 2 + (NIVEL == 4 ? 1 : 0);
@@ -50,10 +51,15 @@ public class ArrojarAbrojos : Habilidad
 
       string tituloEs = "Arrojar Abrojos I";
       string tituloEn = "Throw Caltrops I";
+      string tituloPt = "Lancar Abrolhos I";
       if (NIVEL == 2) { tituloEs = "Arrojar Abrojos II"; tituloEn = "Throw Caltrops II"; }
       if (NIVEL == 3) { tituloEs = "Arrojar Abrojos III"; tituloEn = "Throw Caltrops III"; }
       if (NIVEL == 4) { tituloEs = "Arrojar Abrojos IV a"; tituloEn = "Throw Caltrops IV a"; }
       if (NIVEL == 5) { tituloEs = "Arrojar Abrojos IV b"; tituloEn = "Throw Caltrops IV b"; }
+      if (NIVEL == 2) { tituloPt = "Lancar Abrolhos II"; }
+      if (NIVEL == 3) { tituloPt = "Lancar Abrolhos III"; }
+      if (NIVEL == 4) { tituloPt = "Lancar Abrolhos IV a"; }
+      if (NIVEL == 5) { tituloPt = "Lancar Abrolhos IV b"; }
 
       string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Reflejos, dcBase);
 
@@ -73,6 +79,21 @@ public class ArrojarAbrojos : Habilidad
         }
         cuerpo += "\n<b>Stealth interaction:</b> Discreet (does not reveal the caster)";
       }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Alcance (3 de alcance)\n";
+        cuerpo += "<b>Alvo:</b> 1 celula (mais diagonais vazias ao redor)\n";
+        cuerpo += "<b>Ao usar:</b> coloca armadilhas de abrolhos na celula alvo e diagonais validas (mesmo lado)\n";
+        cuerpo += "<b>Perfil da armadilha:</b> 1 uso, 10 turnos de duracao\n";
+        cuerpo += $"<b>Dano ao ativar armadilha:</b> {danioBase} | <b>Tipo:</b> Perfurante\n";
+        cuerpo += lineaSalvacion + "\n";
+        cuerpo += $"<b>Se falhar no teste:</b> dano x2, +{bleedAplicado} Sangramento";
+        if (drenaAp)
+        {
+          cuerpo += ", -1 AP";
+        }
+        cuerpo += "\n<b>Interacao com furtividade:</b> Discreta (nao revela o lancador)";
+      }
       else
       {
         cuerpo += "<b>Tipo:</b> Rango (3 alcance)\n";
@@ -91,12 +112,16 @@ public class ArrojarAbrojos : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
+          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "Seeds a movement denial zone with high punishment on failed reflex saves."
+          : esPortugues
+            ? "Cria uma zona de negacao de movimento com alto castigo ao falhar em Reflexos."
           : "Siembra una zona de negacion de movimiento con alto castigo al fallar Reflejos.",
         cuerpo,
         costos,
@@ -113,6 +138,12 @@ public class ArrojarAbrojos : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 trap damage.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC base.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 Bleed) or Option B (-1 AP on failed save).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 dano da armadilha.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na CD base da resistencia.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 Sangramento) ou Opcao B (-1 AP ao falhar na resistencia).</color>"; }
       }
       else
       {

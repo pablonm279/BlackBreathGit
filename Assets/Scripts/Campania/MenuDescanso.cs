@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 public class MenuDescanso : MonoBehaviour
 {
+  const int TipoNodoClaro = 3;
+  const int TipoNodoAsentamiento = 4;
+  const int TipoNodoRecursos = 5;
 
 
   public TextMeshProUGUI tareaCivilDescripcion;
@@ -252,6 +255,11 @@ public class MenuDescanso : MonoBehaviour
     {
       chancesAtaqueACaravana = 0;
     }
+    if (CampaignManager.Instance.scMapaManager.nodoActual != null &&
+        CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoAsentamiento)
+    {
+      chancesAtaqueACaravana = 0;
+    }
 
     chancesAtaqueACaravana = Mathf.Clamp(chancesAtaqueACaravana, 0, 100);
 
@@ -264,6 +272,16 @@ public class MenuDescanso : MonoBehaviour
 
   public void Descansar()
   {
+    if (CampaignManager.Instance != null &&
+        CampaignManager.Instance.scMapaManager != null &&
+        CampaignManager.Instance.scMapaManager.nodoActual != null &&
+        CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoAsentamiento)
+    {
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("<color=#FF6666>El descanso normal no está disponible dentro de un Asentamiento.</color>"));
+      gameObject.SetActive(false);
+      return;
+    }
+
     EjecutarDescansoSeguro();
   }
 
@@ -397,9 +415,9 @@ public class MenuDescanso : MonoBehaviour
 
 
 
-      if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 4) //Bonus descansar en claro
+      if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoClaro) //Bonus descansar en claro
       { porcentajeVidaMax = porcentajeVidaMax * 1.1f; }
-      if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 5) //Bonus descansar en Asentamiento
+      if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoRecursos) //Bonus descansar en nodo de recursos
       { porcentajeVidaMax = porcentajeVidaMax * 1.2f; }
 
       if (pers.fVidaMaxima > pers.fVidaActual)
@@ -543,7 +561,7 @@ public class MenuDescanso : MonoBehaviour
 
     if (!sePrevieneAvanceAliento)
     {
-      if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 4) //Bonus descansar en claro
+      if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoClaro) //Bonus descansar en claro
       {
         CampaignManager.Instance.CambiarValorAlientoNegro(1);
         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Durante el descanso en el Claro, el Aliento Negro ha avanzado 1."));
@@ -560,6 +578,8 @@ public class MenuDescanso : MonoBehaviour
     float randomEvento = UnityEngine.Random.Range(0, 100);
     float factorEventoBuenoMalo = 36 + CampaignManager.Instance.GetEsperanzaActual() / 3;
     bool descansoEnNodoEvento = CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 2;
+    bool descansoEnAsentamiento = CampaignManager.Instance.scMapaManager.nodoActual != null &&
+                                  CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoAsentamiento;
 
     CampaignManager.Instance.CambiarEsperanzaActual(CampaignManager.Instance.mejoraCaravanaTiendas * 5);
 
@@ -573,7 +593,7 @@ public class MenuDescanso : MonoBehaviour
       int randomEmboscada = UnityEngine.Random.Range(1, 101);
       if (enTutorial) { randomEmboscada += 100; } //no hay emboscada en el tutorial
 
-      if (!enTutorial && randomEmboscada <= chancesAtaqueACaravana)
+      if (!enTutorial && !descansoEnAsentamiento && randomEmboscada <= chancesAtaqueACaravana)
       {
         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La caravana han sufrido un Ataque durante el descanso. Probabilidades ") + chancesAtaqueACaravana + TRADU.i.Traducir("% - Tirada: 1d100 = ") + randomEmboscada);
 
@@ -587,7 +607,7 @@ public class MenuDescanso : MonoBehaviour
         {
           if (randomEvento < factorEventoBuenoMalo)
           {
-            if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 4) //En Claros no hay eventos negativos.
+            if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoClaro) //En Claros no hay eventos negativos.
             {
               CampaignManager.Instance.EmpezarEventoBueno();
               autosavePendienteTrasDescanso = false;
@@ -741,19 +761,8 @@ public class MenuDescanso : MonoBehaviour
       CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Lluvia hace el viaje más difícil. -5 Esperanza."));
       CampaignManager.Instance.CambiarEsperanzaActual(-5);
 
-      bool logLluviaIncendios = false;
-      foreach (Nodo nodo in CampaignManager.Instance.scMapaManager.scContenedordeNodos.listTodosNodos)
-      {
-        if (nodo.nodoIncendiado)
-        {
-          nodo.DesactivarIncendio();
-          if (!logLluviaIncendios)
-          {
-            CampaignManager.Instance.EscribirLog("<color=#00c8ff>" + TRADU.i.Traducir("La lluvia ha apagado los incendios en el área temporalmente.") + "</color>");
-            logLluviaIncendios = true;
-          }
-        }
-      }
+      CampaignManager.Instance.DesactivarIncendiosPorLluvia(true);
+
     }
     else if (random < CampaignManager.Instance.scAtributosZona.Clima_chances_Nieve)
     {
@@ -875,7 +884,3 @@ public class MenuDescanso : MonoBehaviour
 
 
 }
-
-
-
-

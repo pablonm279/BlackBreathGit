@@ -33,6 +33,11 @@ public class armaMandoble : Arma
             sNombreItem = "Greatsword " + nmejora;
             itemDescripcion = "A huge sword that requires great strength to be used.\n\nAttack ability: Vertical Cut.";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Montante " + nmejora;
+            itemDescripcion = "Uma espada enorme que exige grande forca para ser usada.\n\nHabilidade de ataque: Corte Vertical.";
+         }
       }
 
 
@@ -49,6 +54,11 @@ public class armaMandoble : Arma
             sNombreItem = "Frozen Greatsword " + nmejora;
             itemDescripcion = "A huge sword made of ice-steel, capable of harming enemies with its extreme cold.\n\nAttack ability: Frozen Vertical Slash.";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Montante Congelado " + nmejora;
+            itemDescripcion = "Uma espada enorme feita de aco gelido, capaz de ferir os inimigos com seu frio extremo.\n\nHabilidade de ataque: Corte Vertical Congelado.";
+         }
       }
       //---
       if (sNombreItem == "Mandoble Sagrado")
@@ -63,6 +73,11 @@ public class armaMandoble : Arma
             sNombreItem = "Sacred Greatsword " + nmejora;
             itemDescripcion = "A huge sword blessed by the Purifiers and the sacred light.\n\nAttack ability: Sacred Vertical Slash.";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Montante Sagrado " + nmejora;
+            itemDescripcion = "Uma espada enorme abencoada pelos Purificadores e pela luz sagrada.\n\nHabilidade de ataque: Corte Vertical Sagrado.";
+         }
       }
       //---
       if (sNombreItem == "Mandoble Sediento")
@@ -76,6 +91,11 @@ public class armaMandoble : Arma
          {
             sNombreItem = "Thirsty Greatsword " + nmejora;
             itemDescripcion = "A huge sword that is deadlier if the enemy is wounded.\n\nAttack ability: Thirsty Vertical Slash.";
+         }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Montante Sedento " + nmejora;
+            itemDescripcion = "Uma espada enorme que e mais letal quando o inimigo esta ferido.\n\nHabilidade de ataque: Corte Vertical Sedento.";
          }
       }
       

@@ -145,6 +145,68 @@ public class REPRESENTACIONMaestriaEspadaCorta : Habilidad
           txtDescripcion += "<i>(Passive) Adds +2 Attack, +1 Critical Range and +4 Slashing Damage to Short Sword attacks. Also costs 1 less AP.</i>\n\n";
         }
       }
+      if (TRADU.i.nIdioma == 3)
+      {
+        if (NIVEL < 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Maestria com Espada Curta I</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque e +2 Dano Cortante aos ataques com Espada Curta.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 Faixa de Critico</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Maestria com Espada Curta II</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque, +1 Faixa de Critico e +2 Dano Cortante aos ataques com Espada Curta.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: -1 Custo AP</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Maestria com Espada Curta III</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque, +1 Faixa de Critico e +2 Dano Cortante aos ataques com Espada Curta. Alem disso custa 1 AP a menos.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Opcao A: +1 Faixa de Critico +2 Dano</color>\n\n";
+                txtDescripcion += $"<color=#dfea02>-Opcao B: +1 Ataque +2 Dano</color>\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Maestria com Espada Curta IVa</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque, +2 Faixa de Critico e +4 Dano Cortante aos ataques com Espada Curta. Alem disso custa 1 AP a menos.</i>\n\n";
+        }
+        if (NIVEL == 5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Maestria com Espada Curta IVb</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Adiciona +2 Ataque, +1 Faixa de Critico e +4 Dano Cortante aos ataques com Espada Curta. Alem disso custa 1 AP a menos.</i>\n\n";
+        }
+      }
 
     }
 

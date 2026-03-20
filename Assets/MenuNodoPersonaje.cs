@@ -17,20 +17,26 @@ public class MenuNodoPersonaje : MonoBehaviour
 
     public void ElegirBoton(int boton)
     {
+        bool seAgregoPersonaje = false;
         switch (boton)
         {
             case 1:
-                CampaignManager.Instance.AgregarHeroe(IDClase1);
+                seAgregoPersonaje = CampaignManager.Instance != null && CampaignManager.Instance.AgregarHeroe(IDClase1);
                 break;
             case 2:
-                CampaignManager.Instance.AgregarHeroe(IDClase2);
+                seAgregoPersonaje = CampaignManager.Instance != null && CampaignManager.Instance.AgregarHeroe(IDClase2);
                 break;
             case 3:
-                CampaignManager.Instance.AgregarHeroe(IDClase3);
+                seAgregoPersonaje = CampaignManager.Instance != null && CampaignManager.Instance.AgregarHeroe(IDClase3);
                 break;
             default:
                 Debug.LogError("Botón no vélido: " + boton);
                 break;
+        }
+
+        if (!seAgregoPersonaje)
+        {
+            return;
         }
 
         goMenuPersonaje.SetActive(false);
@@ -39,17 +45,7 @@ public class MenuNodoPersonaje : MonoBehaviour
 
     void OnEnable()
     {
-        List<int> ids = new List<int> { 1, 2, 3, 4, 5 };
-        for (int i = 0; i < ids.Count; i++)
-        {
-            int rnd =UnityEngine.Random.Range(i, ids.Count);
-            int temp = ids[i];
-            ids[i] = ids[rnd];
-            ids[rnd] = temp;
-        }
-        IDClase1 = ids[0];
-        IDClase2 = ids[1];
-        IDClase3 = ids[2];
+        ConfigurarClasesBotones();
 
         ActualizarTextoBoton(Claseboton1, IDClase1);
         ActualizarTextoBoton(Claseboton2, IDClase2);
@@ -58,6 +54,62 @@ public class MenuNodoPersonaje : MonoBehaviour
         //----
         GenerarSequitoPropuesto();
 
+    }
+
+    void ConfigurarClasesBotones()
+    {
+        List<int> ids = new List<int> { 1, 2, 3, 4, 5 };
+        int clasePrioritaria = ObtenerClaseFaltanteAleatoria(ids);
+        if (clasePrioritaria != -1)
+        {
+            IDClase1 = clasePrioritaria;
+            ids.Remove(clasePrioritaria);
+        }
+        else
+        {
+            MezclarLista(ids);
+            IDClase1 = ids[0];
+            ids.RemoveAt(0);
+        }
+
+        MezclarLista(ids);
+        IDClase2 = ids[0];
+        IDClase3 = ids[1];
+    }
+
+    int ObtenerClaseFaltanteAleatoria(List<int> idsDisponibles)
+    {
+        if (CampaignManager.Instance == null || CampaignManager.Instance.scMenuPersonajes == null)
+        {
+            return -1;
+        }
+
+        List<int> clasesFaltantes = new List<int>();
+        foreach (int id in idsDisponibles)
+        {
+            if (CampaignManager.Instance.CuantosPersonajesSonDeTalClase(id) == 0)
+            {
+                clasesFaltantes.Add(id);
+            }
+        }
+
+        if (clasesFaltantes.Count == 0)
+        {
+            return -1;
+        }
+
+        return clasesFaltantes[UnityEngine.Random.Range(0, clasesFaltantes.Count)];
+    }
+
+    void MezclarLista(List<int> lista)
+    {
+        for (int i = 0; i < lista.Count; i++)
+        {
+            int rnd = UnityEngine.Random.Range(i, lista.Count);
+            int temp = lista[i];
+            lista[i] = lista[rnd];
+            lista[rnd] = temp;
+        }
     }
 
     void ActualizarTextoBoton(TextMeshProUGUI txt, int ID)

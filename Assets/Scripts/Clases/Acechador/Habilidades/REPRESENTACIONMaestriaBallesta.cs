@@ -144,6 +144,68 @@ public class REPRESENTACIONMaestriaBallesta : Habilidad
           txtDescripcion += "<i>(Passive) Adds +1 Attack, +1 Critical Range and +2 Piercing Damage to Hand Crossbow attacks. Also costs 1 less AP and has no Cooldown.</i>\n\n";
         }
       }
+      if (TRADU.i.nIdioma == 3)
+      {
+        if (NIVEL < 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Maestria com Besta de Mao I</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque e +2 Dano Perfurante aos ataques com Besta de Mao.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 Faixa de Critico</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Maestria com Besta de Mao II</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque, +1 Faixa de Critico e +2 Dano Perfurante aos ataques com Besta de Mao.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: -1 Custo AP</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Maestria com Besta de Mao III</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque, +1 Faixa de Critico e +2 Dano Perfurante aos ataques com Besta de Mao. Alem disso custa 1 AP a menos.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Opcao A: +1 Alcance</color>\n\n";
+                txtDescripcion += $"<color=#dfea02>-Opcao B: Remove Recarga</color>\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Maestria com Besta de Mao IVa</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Adiciona +1 Alcance, +1 Ataque, +1 Faixa de Critico e +2 Dano Perfurante aos ataques com Besta de Mao. Alem disso custa 1 AP a menos.</i>\n\n";
+        }
+        if (NIVEL == 5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Maestria com Besta de Mao IVb</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque, +1 Faixa de Critico e +2 Dano Perfurante aos ataques com Besta de Mao. Alem disso custa 1 AP a menos e nao tem Recarga.</i>\n\n";
+        }
+      }
 
     }
 

@@ -99,9 +99,17 @@ public class HandbookManager : MonoBehaviour
     {
         if (solapa == null) return;
 
-        // child 0: titulo de solapa; child 1: contenido ES; child 2: contenido EN
         int childCount = solapa.transform.childCount;
-        int childIdioma = nIdioma == 2 ? 2 : 1;
+        int childIdioma = 1;
+
+        if (nIdioma == TRADU.IdiomaIngles && childCount > 2)
+        {
+            childIdioma = 2;
+        }
+        else if (nIdioma == TRADU.IdiomaPortugues && childCount > 3)
+        {
+            childIdioma = 3;
+        }
 
         if (childCount > childIdioma)
         {
@@ -109,7 +117,6 @@ public class HandbookManager : MonoBehaviour
             return;
         }
 
-        // Fallback si falta panel EN.
         if (childCount > 1)
         {
             solapa.transform.GetChild(1).gameObject.SetActive(true);

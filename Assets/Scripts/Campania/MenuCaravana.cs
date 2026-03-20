@@ -106,11 +106,15 @@ public class MenuCaravana : MonoBehaviour
         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 15)
         { CampaignManager.Instance.scTutorialManager.SiguientePaso(); }
 
-
+        bool abrir = !MenuMejoras.activeInHierarchy;
         ActualizarMejoras();
         MenuPersonajes.SetActive(false);
         MenuSequitos.SetActive(false);
-        MenuMejoras.SetActive(!MenuMejoras.activeInHierarchy);
+        MenuMejoras.SetActive(abrir);
+        if (abrir)
+        {
+            RuntimeAnalytics.TrackDesign("ui", "caravan", "open_upgrades");
+        }
 
     }
     public void AbrirMenuSequitos()
@@ -123,7 +127,12 @@ public class MenuCaravana : MonoBehaviour
 
         MenuPersonajes.SetActive(false);
         MenuMejoras.SetActive(false);
-        MenuSequitos.SetActive(!MenuSequitos.activeInHierarchy);
+        bool abrir = !MenuSequitos.activeInHierarchy;
+        MenuSequitos.SetActive(abrir);
+        if (abrir)
+        {
+            RuntimeAnalytics.TrackDesign("ui", "caravan", "open_followers");
+        }
       
         
         
@@ -151,12 +160,20 @@ public class MenuCaravana : MonoBehaviour
         MenuPersonajes.SetActive(abrir);
         if (!abrir) return;
 
+        RuntimeAnalytics.TrackDesign("ui", "caravan", "open_characters");
+
         var scMenuPersonajes = MenuPersonajes.GetComponent<MenuPersonajes>();
         if (scMenuPersonajes == null) return;
 
         Personaje personajeInicial = null;
         if (scMenuPersonajes.listaPersonajes != null && scMenuPersonajes.listaPersonajes.Count > 0)
-            personajeInicial = scMenuPersonajes.listaPersonajes[0];
+        {
+            personajeInicial = scMenuPersonajes.listaPersonajes.Find(p => p != null && !p.Camp_Muerto);
+            if (personajeInicial == null)
+            {
+                personajeInicial = scMenuPersonajes.listaPersonajes[0];
+            }
+        }
 
         scMenuPersonajes.PrepararYAbrirMenu(personajeInicial);
         scMenuPersonajes.itemDesc.text = "";
@@ -183,7 +200,7 @@ public class MenuCaravana : MonoBehaviour
         if (CampaignManager.Instance.mejoraCaravanaAlforjas == 3) { btMejoraAlforjas.SetActive(false); }
 
         //Tiendas
-        costoMejorarTiendas = 45 + (15 * CampaignManager.Instance.mejoraCaravanaTiendas);
+        costoMejorarTiendas = Mathf.CeilToInt((45 + (15 * CampaignManager.Instance.mejoraCaravanaTiendas)) * 1.15f);
         txtTierMejoraTiendas.text = "Tier " + CampaignManager.Instance.mejoraCaravanaTiendas;
         txtCostoMejoraTiendas.text = "" + costoMejorarTiendas + TRADU.i.Traducir(" Materiales");
         ActualizarColorCosto(txtCostoMejoraTiendas, costoMejorarTiendas, colorCostoTiendasNormal);
@@ -218,6 +235,8 @@ public class MenuCaravana : MonoBehaviour
        {
         CampaignManager.Instance.mejoraCaravanaAntorchas += 1;
         CampaignManager.Instance.CambiarMaterialesActuales(-costoMejorarAntorchas);
+        RuntimeAnalytics.TrackResourceSink("materials", costoMejorarAntorchas, "caravan_upgrade", "antorchas");
+        RuntimeAnalytics.TrackDesign("campaign", "caravan_upgrade", "antorchas");
        }
 
         ActualizarMejoras();
@@ -229,6 +248,8 @@ public class MenuCaravana : MonoBehaviour
        {
         CampaignManager.Instance.mejoraCaravanaAlforjas += 1;
         CampaignManager.Instance.CambiarMaterialesActuales(-costoMejorarAlforjas);
+        RuntimeAnalytics.TrackResourceSink("materials", costoMejorarAlforjas, "caravan_upgrade", "alforjas");
+        RuntimeAnalytics.TrackDesign("campaign", "caravan_upgrade", "alforjas");
        }
        if(CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 16)
        {
@@ -246,6 +267,8 @@ public class MenuCaravana : MonoBehaviour
        {
         CampaignManager.Instance.mejoraCaravanaTiendas += 1;
         CampaignManager.Instance.CambiarMaterialesActuales(-costoMejorarTiendas);
+        RuntimeAnalytics.TrackResourceSink("materials", costoMejorarTiendas, "caravan_upgrade", "tiendas");
+        RuntimeAnalytics.TrackDesign("campaign", "caravan_upgrade", "tiendas");
        }
 
         ActualizarMejoras();
@@ -258,6 +281,8 @@ public class MenuCaravana : MonoBehaviour
        {
         CampaignManager.Instance.mejoraCaravanaCatalejos += 1;
         CampaignManager.Instance.CambiarMaterialesActuales(-costoMejorarCatalejos);
+        RuntimeAnalytics.TrackResourceSink("materials", costoMejorarCatalejos, "caravan_upgrade", "catalejos");
+        RuntimeAnalytics.TrackDesign("campaign", "caravan_upgrade", "catalejos");
        }
 
         ActualizarMejoras();
@@ -270,6 +295,8 @@ public class MenuCaravana : MonoBehaviour
        {
         CampaignManager.Instance.mejoraCaravanaAlmacen += 1;
         CampaignManager.Instance.CambiarMaterialesActuales(-costoMejorarAlmacen);
+        RuntimeAnalytics.TrackResourceSink("materials", costoMejorarAlmacen, "caravan_upgrade", "almacen");
+        RuntimeAnalytics.TrackDesign("campaign", "caravan_upgrade", "almacen");
        }
 
         ActualizarMejoras();
@@ -282,6 +309,8 @@ public class MenuCaravana : MonoBehaviour
        {
         CampaignManager.Instance.mejoraCaravanaDefensas += 1;
         CampaignManager.Instance.CambiarMaterialesActuales(-costoMejorarDefensas);
+        RuntimeAnalytics.TrackResourceSink("materials", costoMejorarDefensas, "caravan_upgrade", "defensas");
+        RuntimeAnalytics.TrackDesign("campaign", "caravan_upgrade", "defensas");
        }
 
         ActualizarMejoras();

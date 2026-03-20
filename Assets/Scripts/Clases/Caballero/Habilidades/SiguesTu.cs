@@ -36,6 +36,7 @@ public class SiguesTu : Habilidad
    public override void ActualizarDescripcion()
    {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
       int duracionMarca = 3;
       int bonusDanioMarca = NIVEL > 2 ? 10 : 8;
@@ -48,10 +49,15 @@ public class SiguesTu : Habilidad
 
       string tituloEs = "Sigues Tu I";
       string tituloEn = "You Are Next I";
+      string tituloPt = "Voce e o Proximo I";
       if (NIVEL == 2) { tituloEs = "Sigues Tu II"; tituloEn = "You Are Next II"; }
       if (NIVEL == 3) { tituloEs = "Sigues Tu III"; tituloEn = "You Are Next III"; }
       if (NIVEL == 4) { tituloEs = "Sigues Tu IV a"; tituloEn = "You Are Next IV a"; }
       if (NIVEL == 5) { tituloEs = "Sigues Tu IV b"; tituloEn = "You Are Next IV b"; }
+      if (NIVEL == 2) { tituloPt = "Voce e o Proximo II"; }
+      if (NIVEL == 3) { tituloPt = "Voce e o Proximo III"; }
+      if (NIVEL == 4) { tituloPt = "Voce e o Proximo IV a"; }
+      if (NIVEL == 5) { tituloPt = "Voce e o Proximo IV b"; }
 
       string cuerpo = "";
       if (esIngles)
@@ -74,6 +80,28 @@ public class SiguesTu : Habilidad
         {
           cuerpo += $"{lineaSalvacionEn}\n";
           cuerpo += $"<b>On failed save:</b> -2 Attack for {durDebuff} turns";
+        }
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Marca + Debuff\n";
+        cuerpo += "<b>Alvo:</b> 1 unidade inimiga\n";
+        cuerpo += $"<b>Marca ({duracionMarca} turnos):</b> habilita bonus apenas para Corte Vertical e Partir\n";
+        cuerpo += $"<b>Bonus no marcado:</b> +5 ataque, +{bonusDanioMarca} dano";
+        if (bonusCritMarca > 0)
+        {
+          cuerpo += $", +{bonusCritMarca} faixa de critico";
+        }
+        cuerpo += "\n";
+        cuerpo += "<b>Consumo da marca:</b> consumida na primeira tentativa de Corte Vertical/Partir\n";
+        if (sinSalvacion)
+        {
+          cuerpo += $"<b>Debuff:</b> -2 Ataque por {durDebuff} turnos (sem resistencia)";
+        }
+        else
+        {
+          cuerpo += $"{lineaSalvacionEs}\n";
+          cuerpo += $"<b>Se falhar na resistencia:</b> -2 Ataque por {durDebuff} turnos";
         }
       }
       else
@@ -101,12 +129,16 @@ public class SiguesTu : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
         : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "A lethal threat mark that sets up your single-target finishers."
+          : esPortugues
+            ? "Uma marca de ameaca letal que prepara seus finalizadores de alvo unico."
           : "Una marca de amenaza letal que prepara tus remates de objetivo unico.",
         cuerpo,
         costos,
@@ -123,6 +155,12 @@ public class SiguesTu : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 crit range bonus on marked target.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 marked bonus damage.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (debuff has no save) or Option B (+2 debuff duration).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de faixa de critico sobre o marcado.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de dano extra no marcado.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (debuff sem resistencia) ou Opcao B (+2 turnos de debuff).</color>"; }
       }
       else
       {

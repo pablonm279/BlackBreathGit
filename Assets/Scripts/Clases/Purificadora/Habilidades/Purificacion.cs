@@ -51,9 +51,10 @@ public class Purificacion : Habilidad
       
     }
 
-        public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int poderActual = statsUI.Poder;
@@ -67,10 +68,15 @@ public class Purificacion : Habilidad
 
       string tituloEs = "Purificacion I";
       string tituloEn = "Purification I";
+      string tituloPt = "Purificacao I";
       if (NIVEL == 2) { tituloEs = "Purificacion II"; tituloEn = "Purification II"; }
       if (NIVEL == 3) { tituloEs = "Purificacion III"; tituloEn = "Purification III"; }
       if (NIVEL == 4) { tituloEs = "Purificacion IV a"; tituloEn = "Purification IV a"; }
       if (NIVEL == 5) { tituloEs = "Purificacion IV b"; tituloEn = "Purification IV b"; }
+      if (NIVEL == 2) { tituloPt = "Purificacao II"; }
+      if (NIVEL == 3) { tituloPt = "Purificacao III"; }
+      if (NIVEL == 4) { tituloPt = "Purificacao IV a"; }
+      if (NIVEL == 5) { tituloPt = "Purificacao IV b"; }
 
       string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Reflejos, 9, "Poder", "Power", poderActual);
       string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Reflejos, 9, "Poder", "Power", poderActual);
@@ -86,6 +92,16 @@ public class Purificacion : Habilidad
         cuerpo += "<b>On failed save:</b> Burning 2 and double damage\n";
         cuerpo += "<b>On cast:</b> Fervor is set to 0";
       }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Area (10 de alcance)\n";
+        cuerpo += "<b>Alvo:</b> Todos os inimigos da area selecionada\n";
+        cuerpo += lineaSalvacionEs + "\n";
+        cuerpo += $"<b>Dano:</b> (2 + 1d5 + Poder ({poderActual}) / 2) x (1 + Fervor ({fervorActual})) | <b>Tipo:</b> Divino\n";
+        cuerpo += $"<b>Faixa atual com Fervor:</b> {danioMinConFervor}-{danioMaxConFervor} (se passar na resistencia), {danioMinConFervor * 2}-{danioMaxConFervor * 2} (se falhar na resistencia)\n";
+        cuerpo += "<b>Se falhar na resistencia:</b> Queimando 2 e dano dobrado\n";
+        cuerpo += "<b>Ao usar:</b> Fervor vai para 0";
+      }
       else
       {
         cuerpo += "<b>Tipo:</b> Area (10 alcance)\n";
@@ -99,12 +115,16 @@ public class Purificacion : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
         : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "A wide divine purge fueled by current Fervor."
+          : esPortugues
+            ? "Uma purga divina ampla alimentada pelo Fervor atual."
           : "Una purga divina masiva alimentada por el Fervor actual.",
         cuerpo,
         costos,

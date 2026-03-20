@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class CorteVerticalCongelado : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
       public override void  Awake()
     {
       nombre = "Corte Vertical Congelado";
@@ -49,18 +49,26 @@ public class CorteVerticalCongelado : Habilidad
       if (TRADU.i.nIdioma == 1)
       {
         txtDescripcion = "<color=#5dade2><b>Corte Vertical Congelado</b></color>\n\n";
-        txtDescripcion += "<i>Con el mandoble, el Caballero efect√∫a un ataque de arriba hacia abajo, lento, pero capaz de provocar grandes da√±os.</i>\n\n";
-        txtDescripcion += "<i>+1d10 Da√±o Fr√≠o - si es Golpe Cr√≠tico, hace 1d6 a enemigos Adyacentes al objetivo.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Da√±o: Cortante 2d8- </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valent√≠a: {costoPM} </color>";
+        txtDescripcion += "<i>Con el mandoble, el Caballero efect˙a un ataque de arriba hacia abajo, lento, pero capaz de provocar grandes daÒos.</i>\n\n";
+        txtDescripcion += "<i>+1d10 DaÒo FrÌo - si es Golpe CrÌtico, hace 1d6 a enemigos Adyacentes al objetivo.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - DaÒo: Cortante 2d8- </color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo ValentÌa: {costoPM} </color>";
       }
-      if (TRADU.i.nIdioma == 2) //Ingl√©s
+      if (TRADU.i.nIdioma == 2) //InglÈs
       {
         txtDescripcion = "<color=#5dade2><b>Frozen Vertical Slash</b></color>\n\n";
         txtDescripcion += "<i>With the greatsword, the Knight performs a slow downward attack, capable of inflicting great damage.</i>\n\n";
         txtDescripcion += "<i>+1d10 Cold Damage - if Critical Hit, deals 1d6 to enemies adjacent to the target.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +{bonusAtaque}</color> - Damage: Slashing 2d8- </color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valour Cost: {costoPM} </color>";
+      }
+      if (TRADU.i.nIdioma == 3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Corte Vertical Congelado</b></color>\n\n";
+        txtDescripcion += "<i>Com o montante, o Cavaleiro executa um ataque de cima para baixo, lento, mas capaz de causar grandes danos.</i>\n\n";
+        txtDescripcion += "<i>+1d10 Dano de Gelo - se for Acerto Critico, causa 1d6 aos inimigos adjacentes ao alvo.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Forca +{bonusAtaque}</color> - Dano: Cortante 2d8- </color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Recarga: {cooldownMax} \n- Custo AP: {costoAP} \n- Custo Valentia: {costoPM} </color>";
       }
        
     }
@@ -85,7 +93,7 @@ public class CorteVerticalCongelado : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Ac√° van los efectos a Unidades.
+     if(obj is Unidad) //Ac· van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -140,7 +148,7 @@ public class CorteVerticalCongelado : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
-        float danioFrio = TiradaDeDados.TirarDados(1, 5); //1d5 de da√±o fr√≠o
+        float danioFrio = TiradaDeDados.TirarDados(1, 5); //1d5 de daÒo frÌo
         objetivo.RecibirDanio(danioFrio, 5, false, scEstaUnidad);
 
 
@@ -160,7 +168,7 @@ public class CorteVerticalCongelado : Habilidad
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
 
-        float danioFrio = TiradaDeDados.TirarDados(1, 10); //1d10 de da√±o fr√≠o
+        float danioFrio = TiradaDeDados.TirarDados(1, 10); //1d10 de daÒo frÌo
         objetivo.RecibirDanio(danioFrio, 5, false, scEstaUnidad);
 
 
@@ -175,7 +183,7 @@ public class CorteVerticalCongelado : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 
-        float danioFrio = TiradaDeDados.TirarDados(1, 10); //1d10 de da√±o fr√≠o
+        float danioFrio = TiradaDeDados.TirarDados(1, 10); //1d10 de daÒo frÌo
         objetivo.RecibirDanio(danioFrio, 5, true, scEstaUnidad);
 
         foreach (Casilla cas in objetivo.CasillaPosicion.ObtenerCasillasAlrededor(1))
@@ -201,7 +209,7 @@ public class CorteVerticalCongelado : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -240,7 +248,7 @@ public class CorteVerticalCongelado : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si est√° en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si est· en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -262,7 +270,7 @@ public class CorteVerticalCongelado : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambi√©n
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiÈn
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -362,10 +370,10 @@ public class CorteVerticalCongelado : Habilidad
         
       }
 
-       //Se fija si las 3 casillas de la columna 1 est√°n vacias
+       //Se fija si las 3 casillas de la columna 1 est·n vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //si alguna de las 3 tiene algo, no aumenta el rango melee
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //si alguna de las 3 tiene algo, no aumenta el rango melee
           {
             return 0;
           }
@@ -379,7 +387,7 @@ public class CorteVerticalCongelado : Habilidad
 
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna2) 
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //y si alguna de las 3 tiene algo, aumenta solo en 1 
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //y si alguna de las 3 tiene algo, aumenta solo en 1 
           {
             return 1;
           }

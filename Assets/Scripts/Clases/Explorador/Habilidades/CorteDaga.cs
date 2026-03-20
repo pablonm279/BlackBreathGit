@@ -43,6 +43,7 @@ public class CorteDaga : Habilidad
     public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int fuerzaActual = statsUI.Fuerza;
@@ -57,6 +58,13 @@ public class CorteDaga : Habilidad
         cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color>   + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
         cuerpo += $"<b>Damage:</b> 1d6 + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
       }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Melee\n";
+        cuerpo += "<b>Alvo:</b> 1 inimigo em alcance frontal\n";
+        cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Forca ({fuerzaActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Dano:</b> 1d6 + <color=#ea0606>Forca ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+      }
       else
       {
         cuerpo += "<b>Tipo:</b> Melee\n";
@@ -67,13 +75,17 @@ public class CorteDaga : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
         : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? "Dagger Slash" : "Corte Daga",
+        esIngles ? "Dagger Slash" : esPortugues ? "Corte de Adaga" : "Corte Daga",
         esIngles
           ? "A quick melee cut for efficient close combat pressure."
-          : "Un corte melee rapido para mantener presion en combate cercano.",
+          : esPortugues
+            ? "Um corte melee rapido para manter pressao em combate corpo a corpo."
+            : "Un corte melee rapido para mantener presion en combate cercano.",
         cuerpo,
         costos,
         "#5dade2");
@@ -348,7 +360,7 @@ public class CorteDaga : Habilidad
        //Se fija si las 3 casillas de la columna 1 están vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //si alguna de las 3 tiene algo, no aumenta el rango melee
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //si alguna de las 3 tiene algo, no aumenta el rango melee
           {
             return 0;
           }
@@ -362,7 +374,7 @@ public class CorteDaga : Habilidad
 
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna2) 
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //y si alguna de las 3 tiene algo, aumenta solo en 1 
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //y si alguna de las 3 tiene algo, aumenta solo en 1 
           {
             return 1;
           }
@@ -432,6 +444,7 @@ public class CorteDaga : Habilidad
       return false;
     }
 }
+
 
 
 

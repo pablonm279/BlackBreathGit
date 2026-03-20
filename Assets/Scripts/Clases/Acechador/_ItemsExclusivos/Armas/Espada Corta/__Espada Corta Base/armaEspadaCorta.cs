@@ -33,6 +33,11 @@ public class armaEspadaCorta : Arma
             sNombreItem = "Shortsword " + nmejora;
             itemDescripcion = "A short-bladed sword, very versatile.\n\nAttack ability: Shortsword Slash.";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Espada Curta " + nmejora;
+            itemDescripcion = "Uma espada de lamina curta, muito versatil.\n\nHabilidade de ataque: Corte de Espada Curta.";
+         }
       }
 
 
@@ -49,6 +54,11 @@ public class armaEspadaCorta : Arma
             sNombreItem = "Arcane Shortsword " + nmejora;
             itemDescripcion = "A short-bladed sword, very versatile.\n\nAttack ability: Arcane Shortsword Slash.";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Espada Curta Arcana " + nmejora;
+            itemDescripcion = "Uma espada de lamina curta, muito versatil.\n\nHabilidade de ataque: Corte de Espada Curta Arcana.";
+         }
       }
       //---
       if (sNombreItem == "Espada Corta Filonegro")
@@ -63,6 +73,11 @@ public class armaEspadaCorta : Arma
             sNombreItem = "Blacksteel Shortsword " + nmejora;
             itemDescripcion = "A short-bladed sword, very versatile.\n\nAttack ability: Blacksteel Shortsword Slash.";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Espada Curta Fio Negro " + nmejora;
+            itemDescripcion = "Uma espada de lamina curta, muito versatil.\n\nHabilidade de ataque: Corte de Espada Curta Fio Negro.";
+         }
       }
       //---
       if (sNombreItem == "Espada Corta Consumevida")
@@ -76,6 +91,11 @@ public class armaEspadaCorta : Arma
          {
             sNombreItem = "Life-consuming Shortsword " + nmejora;
             itemDescripcion = "A short-bladed sword, very versatile.\n\nAttack ability: Life-consuming Shortsword Slash.";
+         }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Espada Curta Consomevida " + nmejora;
+            itemDescripcion = "Uma espada de lamina curta, muito versatil.\n\nHabilidade de ataque: Corte de Espada Curta Consomevida.";
          }
       }
 

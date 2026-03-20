@@ -15,10 +15,10 @@ public class DescargaArcana : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
 
     private int hAlcance = 4;
-    private int hAncho = 1; //1 - adyancentes tambiÈn
+    private int hAncho = 1; //1 - adyancentes tambi√©n
      public override void  Awake()
     {
       nombre = "Descarga Arcana";
@@ -86,6 +86,25 @@ public class DescargaArcana : Habilidad
           "#5dade2");
         return;
       }
+      if (TRADU.i != null && TRADU.i.nIdioma == 3)
+      {
+        string cuerpo = "";
+        cuerpo += lineaTipoEs.Replace("Rango", "Distancia") + "\n";
+        cuerpo += "<b>Alvo:</b> 1 inimigo em alcance\n";
+        cuerpo += $"<b>Largura:</b> {hAncho} ({(hAncho == 0 ? "apenas fila alvo" : "fila alvo + adjacentes")})\n";
+        cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}){bonusTexto} vs Defesa. Falha critica: 1. Critico: {criticoMin}-20\n";
+        cuerpo += $"<b>Dano:</b> 1d10 + 1 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Arcano";
+
+        string costos = $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM} ";
+
+        txtDescripcion = ConstruirDescripcionEstandar(
+          "Descarga Arcana",
+          "O canalizador lanca uma descarga de energia em um inimigo, causando dano arcano.",
+          cuerpo,
+          costos,
+          "#5dade2");
+        return;
+      }
 
       {
         string cuerpo = "";
@@ -95,7 +114,7 @@ public class DescargaArcana : Habilidad
         cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}){bonusTexto} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
         cuerpo += $"<b>Danio:</b> 1d10 + 1 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Arcano";
 
-        string costos = $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM} ";
+        string costos = $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM} ";
 
         txtDescripcion = ConstruirDescripcionEstandar(
           "Descarga Arcana",
@@ -155,7 +174,7 @@ public class DescargaArcana : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
-     if(obj is Unidad) //Ac· van los efectos a Unidades.
+     if(obj is Unidad) //Ac√° van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -215,7 +234,7 @@ public class DescargaArcana : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---

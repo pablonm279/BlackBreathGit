@@ -1,0 +1,50 @@
+#!/bin/sh
+set -eu
+
+files="$(git diff --cached --name-only --diff-filter=ACMR)"
+if [ -z "${files}" ]; then
+  exit 0
+fi
+
+has_issue=0
+mojibake_regex='Ã[[:print:]]|ÃƒÂ.|Â¿|Â¡|â€|â€™|â€œ|â€|�'
+tmp_list="$(mktemp)"
+printf '%s\n' "${files}" > "${tmp_list}"
+
+while IFS= read -r file; do
+  case "$file" in
+    *.cs|*.txt|*.md|*.json|*.xml|*.yml|*.yaml|*.csv|*.shader|*.cginc|*.hlsl|*.compute|*.uss|*.uxml|*.asmdef|*.asmref|*.meta) ;;
+    *) continue ;;
+  esac
+
+  content="$(git show ":$file" 2>/dev/null || true)"
+  if [ -z "${content}" ]; then
+    continue
+  fi
+
+  if command -v iconv >/dev/null 2>&1; then
+    if ! printf '%s' "${content}" | iconv -f UTF-8 -t UTF-8 >/dev/null 2>&1; then
+      echo "[pre-commit] Archivo no UTF-8 valido: $file"
+      has_issue=1
+      continue
+    fi
+  fi
+
+  if printf '%s' "${content}" | grep -nE "${mojibake_regex}" >/dev/null 2>&1; then
+    echo "[pre-commit] Mojibake sospechoso en: $file"
+    printf '%s' "${content}" | grep -nE "${mojibake_regex}" | head -n 8 || true
+    has_issue=1
+  fi
+done < "${tmp_list}"
+
+rm -f "${tmp_list}"
+
+if [ "${has_issue}" -ne 0 ]; then
+  cat <<'EOF'
+[pre-commit] Commit bloqueado por problemas de encoding.
+Revisa los reemplazos tipicos (ej. Ã¡ -> á, Ã© -> é, Â¿ -> ¿, Â¡ -> ¡).
+EOF
+  exit 1
+fi
+
+exit 0

@@ -14,7 +14,7 @@ public class CorteHorizontal : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
 
 
   public override void Awake()
@@ -55,6 +55,7 @@ public class CorteHorizontal : Habilidad
     public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int fuerzaActual = statsUI.Fuerza;
@@ -70,10 +71,15 @@ public class CorteHorizontal : Habilidad
 
       string tituloEs = "Corte Horizontal I";
       string tituloEn = "Horizontal Slash I";
+      string tituloPt = "Corte Horizontal I";
       if (NIVEL == 2) { tituloEs = "Corte Horizontal II"; tituloEn = "Horizontal Slash II"; }
       if (NIVEL == 3) { tituloEs = "Corte Horizontal III"; tituloEn = "Horizontal Slash III"; }
       if (NIVEL == 4) { tituloEs = "Corte Horizontal IV a"; tituloEn = "Horizontal Slash IV a"; }
       if (NIVEL == 5) { tituloEs = "Corte Horizontal IV b"; tituloEn = "Horizontal Slash IV b"; }
+      if (NIVEL == 2) { tituloPt = "Corte Horizontal II"; }
+      if (NIVEL == 3) { tituloPt = "Corte Horizontal III"; }
+      if (NIVEL == 4) { tituloPt = "Corte Horizontal IV a"; }
+      if (NIVEL == 5) { tituloPt = "Corte Horizontal IV b"; }
 
       string cuerpo = "";
       if (esIngles)
@@ -86,6 +92,17 @@ public class CorteHorizontal : Habilidad
           : $"<b>Damage:</b> 2d6 + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
         cuerpo += $"{lineaSalvacionEn}\n";
         cuerpo += $"<b>On failed save:</b> +{sangradoAplicado} Bleed";
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Corpo a corpo\n";
+        cuerpo += "<b>Alvo:</b> Area frontal (3 de largura)\n";
+        cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Forca ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defesa. Falha critica: 1-2. Critico: {criticoMin}-20\n";
+        cuerpo += danioFijo > 0
+          ? $"<b>Dano:</b> 2d6 + {danioFijo} + <color=#ea0606>Forca ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n"
+          : $"<b>Dano:</b> 2d6 + <color=#ea0606>Forca ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += $"{lineaSalvacionEs}\n";
+        cuerpo += $"<b>Se falhar na resistencia:</b> +{sangradoAplicado} Sangramento";
       }
       else
       {
@@ -101,12 +118,16 @@ public class CorteHorizontal : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "The Knight sweeps the greatsword through the front line."
+          : esPortugues
+            ? "O Cavaleiro varre a linha frontal com a espada montante."
           : "El Caballero barre la linea frontal con el mandoble.",
         cuerpo,
         costos,
@@ -124,11 +145,17 @@ public class CorteHorizontal : Habilidad
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack roll bonus.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Valour Cost) or Option B (+1 Save DC and +1 Bleed).</color>"; }
       }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de dano.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 custo de Valentia) ou Opcao B (+1 CD e +1 Sangramento).</color>"; }
+      }
       else
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de ValentÌa) u Opcion B (+1 DC y +1 Sangrado).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valent√≠a) u Opcion B (+1 DC y +1 Sangrado).</color>"; }
       }
     }
 
@@ -148,7 +175,7 @@ public class CorteHorizontal : Habilidad
     
    public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
    {
-    // El log de uso ahora est· centralizado en Habilidad.Resolver
+    // El log de uso ahora est√° centralizado en Habilidad.Resolver
      VFXAplicarOrigen(Usuario.gameObject);
    await base.Resolver(Objetivos);
    
@@ -175,7 +202,7 @@ public class CorteHorizontal : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaObjetivo)
     {
     
-     if(obj is Unidad) //Ac· van los efectos a Unidades.
+     if(obj is Unidad) //Ac√° van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -245,7 +272,7 @@ public class CorteHorizontal : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -311,7 +338,7 @@ public class CorteHorizontal : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si est· en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si est√° en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -333,7 +360,7 @@ public class CorteHorizontal : Habilidad
        lCasillasafectadas.Add(c);
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiÈn
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambi√©n
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -433,10 +460,10 @@ public class CorteHorizontal : Habilidad
         
       }
 
-       //Se fija si las 3 casillas de la columna 1 est·n vacias
+       //Se fija si las 3 casillas de la columna 1 est√°n vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //si alguna de las 3 tiene algo, no aumenta el rango melee
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //si alguna de las 3 tiene algo, no aumenta el rango melee
           {
             return 0;
           }
@@ -450,7 +477,7 @@ public class CorteHorizontal : Habilidad
 
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna2) 
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //y si alguna de las 3 tiene algo, aumenta solo en 1 
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //y si alguna de las 3 tiene algo, aumenta solo en 1 
           {
             return 1;
           }

@@ -42,16 +42,22 @@ public class AcumulacionInestable : Habilidad
      if (NIVEL != 4 ) { cooldownActual = cooldownMax; }
 
   }
-    public override void ActualizarDescripcion()
+  public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
     string tituloEs = "Acumulacion Inestable I";
     string tituloEn = "Unstable Gathering I";
+    string tituloPt = "Acumulacao Instavel I";
     if (NIVEL == 2) { tituloEs = "Acumulacion Inestable II"; tituloEn = "Unstable Gathering II"; }
     if (NIVEL == 3) { tituloEs = "Acumulacion Inestable III"; tituloEn = "Unstable Gathering III"; }
     if (NIVEL == 4) { tituloEs = "Acumulacion Inestable IV a"; tituloEn = "Unstable Gathering IV a"; }
     if (NIVEL == 5) { tituloEs = "Acumulacion Inestable IV b"; tituloEn = "Unstable Gathering IV b"; }
+    if (NIVEL == 2) { tituloPt = "Acumulacao Instavel II"; }
+    if (NIVEL == 3) { tituloPt = "Acumulacao Instavel III"; }
+    if (NIVEL == 4) { tituloPt = "Acumulacao Instavel IV a"; }
+    if (NIVEL == 5) { tituloPt = "Acumulacao Instavel IV b"; }
 
     int bonusDanioArcano = NIVEL > 2 ? 7 : 5;
     bool arrancaEnCooldown = NIVEL != 4;
@@ -68,6 +74,16 @@ public class AcumulacionInestable : Habilidad
         ? "<b>Backlash:</b> Takes 1d6 Arcane damage on cast"
         : "<b>Backlash:</b> No self damage on cast";
     }
+    else if (esPortugues)
+    {
+      cuerpo += "<b>Tipo:</b> Propria\n";
+      cuerpo += "<b>Alvo:</b> O proprio usuario\n";
+      cuerpo += "<b>Efeito instantaneo:</b> +1 Nivel de Energia\n";
+      cuerpo += $"<b>Buff (neste turno):</b> +{bonusDanioArcano} de dano Arcano\n";
+      cuerpo += recibeDanioPropio
+        ? "<b>Contragolpe:</b> Recebe 1d6 de dano Arcano ao usar"
+        : "<b>Contragolpe:</b> Nao recebe dano ao usar";
+    }
     else
     {
       cuerpo += "<b>Tipo:</b> Propia\n";
@@ -81,16 +97,22 @@ public class AcumulacionInestable : Habilidad
 
     string notaInicioCooldown = esIngles
       ? (arrancaEnCooldown ? "Starts on cooldown." : "Does not start on cooldown.")
+      : esPortugues
+        ? (arrancaEnCooldown ? "Comeca em recarga." : "Nao comeca em recarga.")
       : (arrancaEnCooldown ? "Arranca en enfriamiento." : "No arranca en enfriamiento.");
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- {notaInicioCooldown}"
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- {notaInicioCooldown}"
       : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- {notaInicioCooldown}";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
         ? "The Channeler overloads their core to gain immediate power at a personal cost."
+        : esPortugues
+          ? "O Canalizador sobrecarrega o nucleo para ganhar poder imediato com custo pessoal."
         : "El Canalizador sobrecarga su nucleo para ganar poder inmediato a costa de su propio cuerpo.",
       cuerpo,
       costos,
@@ -107,6 +129,12 @@ public class AcumulacionInestable : Habilidad
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 cooldown.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 Arcane bonus damage.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (no starting cooldown) or Option B (no self damage).</color>"; }
+    }
+    else if (esPortugues)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 recarga.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de bonus de dano Arcano.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (nao comeca em recarga) ou Opcao B (sem autodano).</color>"; }
     }
     else
     {

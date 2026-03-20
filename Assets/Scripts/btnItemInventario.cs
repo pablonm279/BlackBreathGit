@@ -27,6 +27,7 @@ public class btnItemInventario : MonoBehaviour
        if (itemRepresentado.GetComponent<Arma>() != null)
       {
         if (!scMenuPersonajes.EquiparArmaDesdeInventario((Arma)itemRepresentado)) { return; }
+        RuntimeAnalytics.TrackDesign("characters", "equip", RuntimeAnalytics.ItemToken(itemRepresentado));
         scMenuPersonajes.scEquipo.CerrarInventario();
         Invoke("ActualizarInfoDelay", 0.1f);
         return;
@@ -35,6 +36,7 @@ public class btnItemInventario : MonoBehaviour
          if(itemRepresentado.GetComponent<Armadura>() != null)
         {
           if (!scMenuPersonajes.EquiparArmaduraDesdeInventario((Armadura)itemRepresentado)) { return; }
+          RuntimeAnalytics.TrackDesign("characters", "equip", RuntimeAnalytics.ItemToken(itemRepresentado));
           scMenuPersonajes.scEquipo.CerrarInventario();
           Invoke("ActualizarInfoDelay", 0.1f);
           return;
@@ -43,6 +45,7 @@ public class btnItemInventario : MonoBehaviour
          if(itemRepresentado.GetComponent<Accesorio>() != null)
         {
           if (!scMenuPersonajes.EquiparAccesorioDesdeInventario((Accesorio)itemRepresentado)) { return; }
+          RuntimeAnalytics.TrackDesign("characters", "equip", RuntimeAnalytics.ItemToken(itemRepresentado));
           scMenuPersonajes.scEquipo.CerrarInventario();
           Invoke("ActualizarInfoDelay", 0.1f);
           return;
@@ -51,6 +54,7 @@ public class btnItemInventario : MonoBehaviour
          if(itemRepresentado.GetComponent<Consumible>() != null)
         {
           if (!scMenuPersonajes.EquiparConsumibleDesdeInventario((Consumible)itemRepresentado)) { return; }
+          RuntimeAnalytics.TrackDesign("characters", "equip", RuntimeAnalytics.ItemToken(itemRepresentado));
           scMenuPersonajes.scEquipo.CerrarInventario();
           Invoke("ActualizarInfoDelay", 0.1f);
           return;

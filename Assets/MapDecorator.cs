@@ -447,6 +447,13 @@ public class MapDecorator : MonoBehaviour
     // ===================== Primer punto =====================
     bool TryPrimerPunto(out Vector3 p0)
     {
+        Vector3 centro = CentroTerrenoMundo();
+        if (PasaExclusiones(centro) && PasaPoisson(centro))
+        {
+            p0 = centro;
+            return true;
+        }
+
         for (int i = 0; i < 400; i++)
         {
             var cand = RandomPointInsideRect();
@@ -757,6 +764,13 @@ public class MapDecorator : MonoBehaviour
         float rx = Mathf.Lerp(safeMinX, safeMaxX, (float)rng.NextDouble());
         float rz = Mathf.Lerp(safeMinZ, safeMaxZ, (float)rng.NextDouble());
         return tPlane.TransformPoint(new Vector3(rx, yLocalPlano, rz));
+    }
+
+    Vector3 CentroTerrenoMundo()
+    {
+        float cx = 0.5f * (safeMinX + safeMaxX);
+        float cz = 0.5f * (safeMinZ + safeMaxZ);
+        return tPlane.TransformPoint(new Vector3(cx, yLocalPlano, cz));
     }
 
     Vector3 MoverEnPlano(Vector3 baseWorld, Vector2 dir, float dist)

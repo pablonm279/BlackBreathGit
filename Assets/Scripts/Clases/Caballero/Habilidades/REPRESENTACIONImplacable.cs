@@ -147,6 +147,70 @@ public class REPRESENTACIONImplacable : Habilidad
         txtDescripcion += "<i>If Valour is at Maximum: +2 AP, +4 Strength, +1 Critical Range, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts  Turns. 1 time.</i>\n\n";
       }
     }
+    if (TRADU.i.nIdioma == 3) // Portugues
+    {
+      if(NIVEL<2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Implacavel I</b></color>\n\n"; 
+        txtDescripcion += "<i>(Passiva) +2 Valentia Maxima.</i>\n\n";
+        txtDescripcion += "<i>Se estiver com Valentia Maxima: +2 AP, +3 Forca, +20% Dano, +3 Resistencia Mental. Dura 2 turnos. 1 vez.</i>\n\n";
+        if (EsEscenaCampaña())
+        {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 Forca e +2 Resistencia de Fortitude no efeito</color>\n\n";
+            }
+          }
+        }
+      }
+      if(NIVEL==2)
+      {
+        txtDescripcion = "<color=#5dade2><b>Implacavel II</b></color>\n\n"; 
+        txtDescripcion += "<i>(Passiva) +2 Valentia Maxima.</i>\n\n";
+        txtDescripcion += "<i>Se estiver com Valentia Maxima: +2 AP, +4 Forca, +20% Dano, +3 Resistencia Mental, +3 Resistencia de Fortitude. Dura 2 turnos. 1 vez.</i>\n\n";
+        if (EsEscenaCampaña())
+        {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 Faixa de Critico</color>\n\n";
+            }
+          }
+        }
+      }
+      if(NIVEL==3)
+      {
+        txtDescripcion = "<color=#5dade2><b>Implacavel III</b></color>\n\n"; 
+        txtDescripcion += "<i>(Passiva) +2 Valentia Maxima.</i>\n\n";
+        txtDescripcion += "<i>Se estiver com Valentia Maxima: +2 AP, +4 Forca, +1 Faixa de Critico, +20% Dano, +3 Resistencia Mental, +3 Resistencia de Fortitude. Dura 2 turnos. 1 vez.</i>\n\n";
+        if (EsEscenaCampaña())
+        {
+          if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
+          {
+            if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+            {
+              txtDescripcion += $"<color=#dfea02>-Opcao A: -1 Valentia Maxima e +1 Uso da habilidade</color>\n";
+              txtDescripcion += $"<color=#dfea02>-Opcao B: +1 turno de duracao</color>\n";
+            }
+          }
+        }
+      }
+      if(NIVEL==4)
+      {
+        txtDescripcion = "<color=#5dade2><b>Implacavel IV a</b></color>\n\n"; 
+        txtDescripcion += "<i>(Passiva) +1 Valentia Maxima.</i>\n\n";
+        txtDescripcion += "<i>Se estiver com Valentia Maxima: +2 AP, +4 Forca, +1 Faixa de Critico, +20% Dano, +3 Resistencia Mental, +3 Resistencia de Fortitude. Dura 2 turnos. 2 vezes.</i>\n\n";
+      }
+      if(NIVEL==5)
+      {
+        txtDescripcion = "<color=#5dade2><b>Implacavel IV b</b></color>\n\n"; 
+        txtDescripcion += "<i>(Passiva) +2 Valentia Maxima.</i>\n\n";
+        txtDescripcion += "<i>Se estiver com Valentia Maxima: +2 AP, +4 Forca, +1 Faixa de Critico, +20% Dano, +3 Resistencia Mental, +3 Resistencia de Fortitude. Dura  turnos. 1 vez.</i>\n\n";
+      }
+    }
   }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}

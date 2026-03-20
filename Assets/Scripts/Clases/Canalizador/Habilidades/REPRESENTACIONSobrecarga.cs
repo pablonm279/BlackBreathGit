@@ -28,6 +28,11 @@ public class REPRESENTACIONSobrecarga : Habilidad
               txtDescripcion = "<color=#5dade2><b>Overload</b></color>\n\n";
               txtDescripcion += "<i>(Passive) At the end of each combat, the character receives 15% of their Maximum Health as damage for each accumulated Energy Level. This damage cannot be fatal, but will increase the character's recovery time in Campaign.</i>\n\n";
           }
+          else if (TRADU.i.nIdioma == 3)
+          {
+              txtDescripcion = "<color=#5dade2><b>Sobrecarga</b></color>\n\n";
+              txtDescripcion += "<i>(Passiva) No fim de cada combate, o personagem recebe 15% da Vida Maxima como dano para cada Nivel de Energia acumulado. Esse dano nao pode ser fatal, mas aumenta o tempo de recuperacao do personagem na Campanha.</i>\n\n";
+          }
 
     }
 

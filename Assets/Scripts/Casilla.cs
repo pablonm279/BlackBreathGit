@@ -268,6 +268,7 @@ public class Casilla : MonoBehaviour
         unidad.CambiarAPActual(-costoMovimientoTotal);
         BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
         unidad.CasillaDeseadaMov = this;
+        RuntimeAnalytics.TrackDesign("combat", "move_confirmed", "step");
         await unidad.GenerarTextoFlotante("<size=70%>-" + costoMovimientoTotal + " " + TRADU.i.Traducir(" PA") + "</size>", new Color(1.0f, 0.5f, 0.0f)); // Naranja
       }
     }
@@ -322,6 +323,7 @@ public class Casilla : MonoBehaviour
 
             // Mover la unidad activa a esta casilla
             unidad.CasillaDeseadaMov = this;
+            RuntimeAnalytics.TrackDesign("combat", "move_confirmed", "swap");
           }
           else
           {
@@ -837,24 +839,33 @@ public class Casilla : MonoBehaviour
 
   public bool bTieneUnidadoObstaculoParaMelee()
   {
+    // Compatibilidad: conserva el comportamiento previo (obstaculo siempre bloquea)
+    // evaluando contra su propia fila.
+    return BloqueaAvanceMeleeDesdeFila(posY);
+  }
+
+  // Regla central de avance melee:
+  // - Las unidades visibles/no volando siempre bloquean.
+  // - Los obstaculos solo bloquean si estan en la misma fila (posY) que el origen.
+  public bool BloqueaAvanceMeleeDesdeFila(int posYorigen)
+  {
     if (Presente == null)
     {
       return false;
     }
 
-    if (Presente.GetComponent<Unidad>() != null)
+    Unidad unidad = Presente.GetComponent<Unidad>();
+    if (unidad != null)
     {
-      if (Presente.GetComponent<Unidad>().ObtenerEstaEscondido() == 0 && !Presente.GetComponent<Unidad>().estado_Volando)
-      { return true; } //Si la unidad no está escondida, la toma como que hay algo
-      else
-      { return false; }//Si la unidad está escondida o volando la toma como que no hay nada
+      return unidad.ObtenerEstaEscondido() == 0 && !unidad.estado_Volando;
     }
-    else if (Presente.GetComponent<Obstaculo>() != null)
-    {
-      return true;
-    }
-    else { return false; }
 
+    if (Presente.GetComponent<Obstaculo>() != null)
+    {
+      return posY == posYorigen;
+    }
+
+    return false;
   }
 
   public void ActivarCapaColorRojo()

@@ -16,6 +16,8 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   private const string PrefDoF = "gfx_dof_enabled";
   private const string PrefVsync = "gfx_vsync";
   private const string PrefFpsLimit = "gfx_fps_limit";
+  private const string PrefBrightness = "gfx_brightness";
+  private const string PrefContrast = "gfx_contrast";
 
   [SerializeField] private bool rebalanceQualityAtRuntime = true;
   [SerializeField] private int postProcessLayerIndex = 12; // Bit 4096 in current scenes.
@@ -32,6 +34,10 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   [SerializeField] private bool defaultDoFEnabled = false;
   [SerializeField] private bool defaultVsyncEnabled = true;
   [SerializeField] private int defaultFpsLimit = 60;
+  [SerializeField] [Range(0f, 1f)] private float defaultBrightness = 0.5f;
+  [SerializeField] [Range(0.25f, 2.5f)] private float brightnessExposureRange = 1.32f;
+  [SerializeField] [Range(0.5f, 1.5f)] private float defaultContrast = 1f;
+  [SerializeField] [Range(20f, 120f)] private float contrastOffsetRange = 85f;
 
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
   private static void Boot()
@@ -41,6 +47,19 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     GameObject go = new GameObject("VisualPolishRuntime");
     instance = go.AddComponent<VisualPolishRuntime>();
     DontDestroyOnLoad(go);
+  }
+
+  public static void ApplyPostProcessingPrefsNow()
+  {
+#if UNITY_POST_PROCESSING_STACK_V2
+    if (instance == null) { return; }
+    Scene scene = SceneManager.GetActiveScene();
+    instance.ApplyCameraPostFxAA(scene);
+    if (instance.ensureSceneGlobalPostFxVolume)
+    {
+      instance.EnsureSceneGlobalVolume(scene);
+    }
+#endif
   }
 
   private void Awake()
@@ -213,6 +232,11 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     bool postFxEnabled = PrefBool(PrefPostFx, defaultPostFxEnabled);
     bool bloomEnabled = PrefBool(PrefBloom, defaultBloomEnabled);
     bool dofEnabled = PrefBool(PrefDoF, defaultDoFEnabled);
+    float brightness = PrefFloat(PrefBrightness, defaultBrightness);
+    float brightnessExposureOffset = (Mathf.Clamp01(brightness) - 0.5f) * 2f * brightnessExposureRange;
+    float contrast = Mathf.Clamp(PrefFloat(PrefContrast, defaultContrast), 0.5f, 1.5f);
+    float contrastDelta = contrast - 1f;
+    float contrastOffset = -Mathf.Sign(contrastDelta) * Mathf.Pow(Mathf.Abs(contrastDelta) * 2f, 1.2f) * (contrastOffsetRange * 0.5f);
 
     PostProcessVolume[] volumes = FindObjectsOfType<PostProcessVolume>(true);
     PostProcessVolume runtimeVolume = null;
@@ -255,46 +279,56 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     runtimeVolume.isGlobal = true;
     runtimeVolume.weight = postFxEnabled ? 1f : 0f;
     runtimeVolume.priority = 100f;
-    runtimeVolume.sharedProfile = BuildSceneProfile(isMenu, isCampaign, isBattle, bloomEnabled, dofEnabled);
+
+    PostProcessProfile profile = runtimeVolume.sharedProfile;
+    if (profile == null)
+    {
+      profile = ScriptableObject.CreateInstance<PostProcessProfile>();
+      profile.name = "PostFX Runtime Profile";
+      runtimeVolume.sharedProfile = profile;
+    }
+
+    BuildSceneProfile(profile, isMenu, isCampaign, isBattle, bloomEnabled, dofEnabled, brightnessExposureOffset, contrastOffset);
   }
 
-  private static PostProcessProfile BuildSceneProfile(bool isMenu, bool isCampaign, bool isBattle, bool bloomEnabled, bool dofEnabled)
+  private static void BuildSceneProfile(PostProcessProfile profile, bool isMenu, bool isCampaign, bool isBattle, bool bloomEnabled, bool dofEnabled, float brightnessExposureOffset, float contrastOffset)
   {
-    PostProcessProfile profile = ScriptableObject.CreateInstance<PostProcessProfile>();
-
-    ColorGrading color = profile.AddSettings<ColorGrading>();
+    ColorGrading color = GetOrAddSetting<ColorGrading>(profile);
     color.enabled.Override(true);
     color.gradingMode.Override(GradingMode.HighDefinitionRange);
+
+    float baseExposure = 0f;
+    float baseContrast = 0f;
     if (isMenu)
     {
       // Keep menu visuals neutral to avoid a darker main menu.
       color.temperature.Override(0f);
       color.saturation.Override(0f);
-      color.postExposure.Override(0f);
-      color.contrast.Override(0f);
     }
     else if (isCampaign)
     {
       color.temperature.Override(-9f);
       color.saturation.Override(-5f);
-      color.postExposure.Override(0.12f);
-      color.contrast.Override(14f);
+      baseExposure = 0.12f;
+      baseContrast = 14f;
     }
     else if (isBattle)
     {
       color.temperature.Override(-6f);
       color.saturation.Override(-2f);
-      color.postExposure.Override(0.06f);
-      color.contrast.Override(10f);
+      baseExposure = 0.06f;
+      baseContrast = 10f;
     }
+    color.postExposure.Override(baseExposure + brightnessExposureOffset);
+    color.contrast.Override(Mathf.Clamp(baseContrast + contrastOffset, -100f, 100f));
 
-    Bloom bloom = profile.AddSettings<Bloom>();
+    Bloom bloom = GetOrAddSetting<Bloom>(profile);
     bloom.enabled.Override(bloomEnabled);
     bloom.intensity.Override(isBattle ? 0.14f : 0.22f);
     bloom.threshold.Override(isBattle ? 1.22f : 1.15f);
     bloom.softKnee.Override(0.25f);
 
-    Vignette vignette = profile.AddSettings<Vignette>();
+    Vignette vignette = GetOrAddSetting<Vignette>(profile);
     vignette.enabled.Override(!isMenu);
     if (!isMenu)
     {
@@ -302,7 +336,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
       vignette.smoothness.Override(isBattle ? 0.28f : 0.32f);
     }
 
-    AmbientOcclusion ao = profile.AddSettings<AmbientOcclusion>();
+    AmbientOcclusion ao = GetOrAddSetting<AmbientOcclusion>(profile);
     ao.enabled.Override(!isMenu);
     if (!isMenu)
     {
@@ -310,13 +344,21 @@ public sealed class VisualPolishRuntime : MonoBehaviour
       ao.mode.Override(AmbientOcclusionMode.MultiScaleVolumetricObscurance);
     }
 
-    DepthOfField dof = profile.AddSettings<DepthOfField>();
+    DepthOfField dof = GetOrAddSetting<DepthOfField>(profile);
     dof.enabled.Override(dofEnabled && !isBattle);
     dof.focusDistance.Override(isCampaign ? 4f : 3f);
     dof.aperture.Override(isCampaign ? 18f : 20f);
     dof.kernelSize.Override(KernelSize.Medium);
+  }
 
-    return profile;
+  private static T GetOrAddSetting<T>(PostProcessProfile profile) where T : PostProcessEffectSettings
+  {
+    if (!profile.TryGetSettings(out T setting))
+    {
+      setting = profile.AddSettings<T>();
+    }
+
+    return setting;
   }
 
   private static bool PrefBool(string key, bool defaultValue)
@@ -328,6 +370,11 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   private static int PrefInt(string key, int defaultValue)
   {
     return PlayerPrefs.GetInt(key, defaultValue);
+  }
+
+  private static float PrefFloat(string key, float defaultValue)
+  {
+    return PlayerPrefs.GetFloat(key, defaultValue);
   }
 #endif
 }

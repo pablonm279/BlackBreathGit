@@ -39,6 +39,7 @@ public class ImprovisarFlechas : Habilidad
         public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
       int flechasFijas = (NIVEL > 1 ? 1 : 0) + (NIVEL == 4 ? 1 : 0);
       int buffCrit = 1 + (NIVEL > 2 ? 1 : 0);
@@ -48,10 +49,15 @@ public class ImprovisarFlechas : Habilidad
 
       string tituloEs = "Improvisar Flechas I";
       string tituloEn = "Improvise Arrows I";
+      string tituloPt = "Improvisar Flechas I";
       if (NIVEL == 2) { tituloEs = "Improvisar Flechas II"; tituloEn = "Improvise Arrows II"; }
       if (NIVEL == 3) { tituloEs = "Improvisar Flechas III"; tituloEn = "Improvise Arrows III"; }
       if (NIVEL == 4) { tituloEs = "Improvisar Flechas IV a"; tituloEn = "Improvise Arrows IV a"; }
       if (NIVEL == 5) { tituloEs = "Improvisar Flechas IV b"; tituloEn = "Improvise Arrows IV b"; }
+      if (NIVEL == 2) { tituloPt = "Improvisar Flechas II"; }
+      if (NIVEL == 3) { tituloPt = "Improvisar Flechas III"; }
+      if (NIVEL == 4) { tituloPt = "Improvisar Flechas IV a"; }
+      if (NIVEL == 5) { tituloPt = "Improvisar Flechas IV b"; }
 
       string cuerpo = "";
       if (esIngles)
@@ -71,6 +77,25 @@ public class ImprovisarFlechas : Habilidad
         if (sumaDanioNivel5)
         {
           cuerpo += ", +15% Damage";
+        }
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Utilidade\n";
+        cuerpo += "<b>Alvo:</b> Si mesmo\n";
+        if (flechasFijas > 0)
+        {
+          cuerpo += $"<b>Flechas ganhas:</b> AP atuais + {flechasFijas}\n";
+        }
+        else
+        {
+          cuerpo += "<b>Flechas ganhas:</b> AP atuais\n";
+        }
+        cuerpo += "<b>Ao usar:</b> zera os AP atuais\n";
+        cuerpo += $"<b>Buff ({duracionBuff} turnos):</b> +{buffCrit} faixa de critico, +{buffPenetracion} Penetracao de armadura";
+        if (sumaDanioNivel5)
+        {
+          cuerpo += ", +15% Dano";
         }
       }
       else
@@ -95,12 +120,16 @@ public class ImprovisarFlechas : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
+          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "Converts tempo into ammo and primes your next attacks."
+          : esPortugues
+            ? "Converte ritmo em municao e prepara seus proximos ataques."
           : "Convierte tempo en municion y prepara tus siguientes ataques.",
         cuerpo,
         costos,
@@ -117,6 +146,12 @@ public class ImprovisarFlechas : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 fixed arrow.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 crit range in the buff.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 fixed arrow) or Option B (+15% damage in the buff).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 flecha fixa.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 faixa de critico no buff.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 flecha fixa) ou Opcao B (+15% dano no buff).</color>"; }
       }
       else
       {

@@ -20,6 +20,11 @@ public class REPRESENTACIONArmaduraLimitante : Habilidad
           txtDescripcion = "<color=#cb5000><b>Limiting Armor</b></color>\n\n";
           txtDescripcion += "<i>(Weakness) The knight wears extremely heavy armor all over the body, so is more likely to lose balance when acting. +1 Fumble range.</i>\n\n";
       }
+      if (TRADU.i.nIdioma == 3)
+      {
+          txtDescripcion = "<color=#cb5000><b>Armadura Limitante</b></color>\n\n";
+          txtDescripcion += "<i>(Fraqueza) O cavaleiro usa uma armadura extremamente pesada em todo o corpo, ficando mais propenso a perder o equilibrio ao agir. +1 faixa de falha critica.</i>\n\n";
+      }
 
 
     }

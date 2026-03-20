@@ -51,9 +51,10 @@ public class LuzCegadora : Habilidad
       
     }
 
-        public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int poderActual = statsUI.Poder;
@@ -63,10 +64,15 @@ public class LuzCegadora : Habilidad
 
       string tituloEs = "Luz Cegadora I";
       string tituloEn = "Blinding Light I";
+      string tituloPt = "Luz Cegante I";
       if (NIVEL == 2) { tituloEs = "Luz Cegadora II"; tituloEn = "Blinding Light II"; }
       if (NIVEL == 3) { tituloEs = "Luz Cegadora III"; tituloEn = "Blinding Light III"; }
       if (NIVEL == 4) { tituloEs = "Luz Cegadora IV a"; tituloEn = "Blinding Light IV a"; }
       if (NIVEL == 5) { tituloEs = "Luz Cegadora IV b"; tituloEn = "Blinding Light IV b"; }
+      if (NIVEL == 2) { tituloPt = "Luz Cegante II"; }
+      if (NIVEL == 3) { tituloPt = "Luz Cegante III"; }
+      if (NIVEL == 4) { tituloPt = "Luz Cegante IV a"; }
+      if (NIVEL == 5) { tituloPt = "Luz Cegante IV b"; }
 
       string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Reflejos, dcBase, "Poder", "Power", poderActual);
       string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Reflejos, dcBase, "Poder", "Power", poderActual);
@@ -77,6 +83,9 @@ public class LuzCegadora : Habilidad
       string danioPrincipalEn = agregaD6Divino
         ? $"1d10 + 1 + 1d6 + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Divine"
         : $"1d10 + 1 + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Divine";
+      string danioPrincipalPt = agregaD6Divino
+        ? $"1d10 + 1 + 1d6 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Divino"
+        : $"1d10 + 1 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Divino";
 
       string cuerpo = "";
       if (esIngles)
@@ -89,6 +98,18 @@ public class LuzCegadora : Habilidad
         if (afectaOtrosEnemigos)
         {
           cuerpo += "\n<b>Other enemies:</b> receive 1/3 of the rolled Divine damage";
+        }
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Alcance (3 de alcance)\n";
+        cuerpo += "<b>Alvo:</b> Area frontal (2 de largura)\n";
+        cuerpo += lineaSalvacionEs + "\n";
+        cuerpo += "<b>Se falhar na resistencia e nao for imune a Cegueira:</b> Cego por 2 rodadas (-3 Ataque, -2 Defesa, -1 Reflexos)\n";
+        cuerpo += $"<b>Dano vs Morto-vivo/Etereo:</b> {danioPrincipalPt}";
+        if (afectaOtrosEnemigos)
+        {
+          cuerpo += "\n<b>Outros inimigos:</b> recebem 1/3 do dano Divino rolado";
         }
       }
       else
@@ -106,12 +127,16 @@ public class LuzCegadora : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
         : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "The Purifier unleashes divine radiance that hinders enemies and burns impure targets."
+          : esPortugues
+            ? "A Purificadora libera uma radiancia divina que enfraquece inimigos e queima alvos impuros."
           : "La Purificadora desata una radiancia divina que debilita enemigos y quema objetivos impuros.",
         cuerpo,
         costos,
@@ -128,6 +153,12 @@ public class LuzCegadora : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1d6 Divine damage vs Undead/Ethereal.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Valour Cost) or Option B (1/3 damage to other enemies).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 CD de resistencia.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1d6 de dano Divino vs Morto-vivo/Etereo.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 custo de Valentia) ou Opcao B (1/3 de dano para outros inimigos).</color>"; }
       }
       else
       {

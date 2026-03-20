@@ -16,10 +16,10 @@ public class DisparoEnvenenado : Habilidad
   [SerializeField] private int XdDanio;
   [SerializeField] private int daniodX;
   [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-  [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
+  [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
 
   private int hAlcance = 3;
-  private int hAncho = 1; //1 - adyancentes tambiÈn
+  private int hAncho = 1; //1 - adyancentes tambi√©n
   ClaseAcechador claseAcechador;
     public override void  Awake()
     {
@@ -73,9 +73,11 @@ public class DisparoEnvenenado : Habilidad
       damExtra += 2;
 
       if (TRADU.i.nIdioma == 1)
-      { txtDescripcion += "\n\n<i>MaestrÌa con Ballesta de Mano agrega: +1 Ataque +2 DaÒo.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestr√≠a con Ballesta de Mano agrega: +1 Ataque +2 Da√±o.</i>\n\n"; }
       if (TRADU.i.nIdioma == 2)
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage.</i>\n\n"; }
+      if (TRADU.i.nIdioma == 3)
+      { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Ataque +2 Dano.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 2)
@@ -84,9 +86,11 @@ public class DisparoEnvenenado : Habilidad
       damExtra += 2;
       criticoRangoHab = 1;
       if (TRADU.i.nIdioma == 1)
-      { txtDescripcion += "\n\n<i>MaestrÌa con Ballesta de Mano agrega: +1 Ataque +2 DaÒo +1 Rango CrÌtico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestr√≠a con Ballesta de Mano agrega: +1 Ataque +2 Da√±o +1 Rango Cr√≠tico.</i>\n\n"; }
       if (TRADU.i.nIdioma == 2)
       {  txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
+      if (TRADU.i.nIdioma == 3)
+      {  txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Ataque +2 Dano +1 Faixa de Critico.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 3)
@@ -96,9 +100,11 @@ public class DisparoEnvenenado : Habilidad
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
       if(TRADU.i.nIdioma== 1)
-      { txtDescripcion += "\n\n<i>MaestrÌa con Ballesta de Mano agrega: +1 Ataque +2 DaÒo +1 Rango CrÌtico, -1 AP.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestr√≠a con Ballesta de Mano agrega: +1 Ataque +2 Da√±o +1 Rango Cr√≠tico, -1 AP.</i>\n\n"; }
       if(TRADU.i.nIdioma== 2)
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +1 Critical Range, -1 AP.</i>\n\n"; }
+      if(TRADU.i.nIdioma== 3)
+      { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Ataque +2 Dano +1 Faixa de Critico, -1 AP.</i>\n\n"; }
 
 
     }
@@ -110,9 +116,11 @@ public class DisparoEnvenenado : Habilidad
       costoAP -= 1; //costo AP -1
       hAlcance += 1; //Alcance +1
       if(TRADU.i.nIdioma== 1)
-      { txtDescripcion += "\n\n<i>MaestrÌa con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 DaÒo +1 Rango CrÌtico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestr√≠a con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Da√±o +1 Rango Cr√≠tico.</i>\n\n"; }
       if(TRADU.i.nIdioma== 2)
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Range +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
+      if(TRADU.i.nIdioma== 3)
+      { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Alcance +1 Ataque +2 Dano +1 Faixa de Critico.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 5)
@@ -124,9 +132,11 @@ public class DisparoEnvenenado : Habilidad
       costoAP -= 1; //costo AP -1
       cooldownActual = 0;
       if(TRADU.i.nIdioma== 1)
-      { txtDescripcion += "\n\n<i>MaestrÌa con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 DaÒo +1 Rango CrÌtico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestr√≠a con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 Da√±o +1 Rango Cr√≠tico.</i>\n\n"; }
       if(TRADU.i.nIdioma== 2)
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: Removes Cooldown, +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
+      if(TRADU.i.nIdioma== 3)
+      { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: Remove Recarga, +1 Ataque +2 Dano +1 Faixa de Critico.</i>\n\n"; }
 
     }
 
@@ -142,6 +152,7 @@ public class DisparoEnvenenado : Habilidad
   public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int agilidadActual = statsUI.Agilidad;
@@ -154,10 +165,15 @@ public class DisparoEnvenenado : Habilidad
 
     string tituloEs = "Disparo Envenenado I";
     string tituloEn = "Poison Shot I";
+    string tituloPt = "Disparo Envenenado I";
     if (NIVEL == 2) { tituloEs = "Disparo Envenenado II"; tituloEn = "Poison Shot II"; }
     if (NIVEL == 3) { tituloEs = "Disparo Envenenado III"; tituloEn = "Poison Shot III"; }
     if (NIVEL == 4) { tituloEs = "Disparo Envenenado IV a"; tituloEn = "Poison Shot IV a"; }
     if (NIVEL == 5) { tituloEs = "Disparo Envenenado IV b"; tituloEn = "Poison Shot IV b"; }
+    if (NIVEL == 2) { tituloPt = "Disparo Envenenado II"; }
+    if (NIVEL == 3) { tituloPt = "Disparo Envenenado III"; }
+    if (NIVEL == 4) { tituloPt = "Disparo Envenenado IV a"; }
+    if (NIVEL == 5) { tituloPt = "Disparo Envenenado IV b"; }
 
     string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Fortaleza, dcBase);
 
@@ -173,6 +189,19 @@ public class DisparoEnvenenado : Habilidad
       if (nivelMaestria > 0)
       {
         cuerpo += $"\n<b>Passive applied:</b> Hand Crossbow Mastery (Tier {nivelMaestria})";
+      }
+    }
+    else if (esPortugues)
+    {
+      cuerpo += $"<b>Tipo:</b> Alcance ({hAlcance} de alcance)\n";
+      cuerpo += "<b>Alvo:</b> 1 inimigo no alcance\n";
+      cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Agilidade ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Dano:</b> 3d4 + {damExtra} + <color=#ea0606>Agilidade ({agilidadActual})</color> | <b>Tipo:</b> Perfurante\n";
+      cuerpo += lineaSalvacion + "\n";
+      cuerpo += $"<b>Se falhar na resistencia:</b> aplica {venenoAplicado} Veneno";
+      if (nivelMaestria > 0)
+      {
+        cuerpo += $"\n<b>Passiva aplicada:</b> Maestria com Besta de Mao (Tier {nivelMaestria})";
       }
     }
     else
@@ -191,12 +220,16 @@ public class DisparoEnvenenado : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
         ? "A control shot that layers poison through a Fortitude save check."
+        : esPortugues
+          ? "Um disparo de controle que acumula veneno por teste de resistencia de Fortitude."
         : "Un disparo de control que acumula veneno mediante chequeo de TS Fortaleza.",
       cuerpo,
       costos,
@@ -213,6 +246,12 @@ public class DisparoEnvenenado : Habilidad
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Poison on failed save.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC base.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 Poison) or Option B (-1 cooldown).</color>"; }
+    }
+    else if (esPortugues)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Veneno se falhar na resistencia.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na CD base da resistencia.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 Veneno) ou Opcao B (-1 recarga).</color>"; }
     }
     else
     {
@@ -270,7 +309,7 @@ public class DisparoEnvenenado : Habilidad
   public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
   {
 
-    if (obj is Unidad) //Ac· van los efectos a Unidades.
+    if (obj is Unidad) //Ac√° van los efectos a Unidades.
     {
       Unidad objetivo = (Unidad)obj;
       float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -336,7 +375,7 @@ public class DisparoEnvenenado : Habilidad
 
       objetivo.AplicarDebuffPorAtaquesreiterados(1);
     }
-    else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
+    else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
     {
       Obstaculo objetivo = (Obstaculo)obj;
       //---

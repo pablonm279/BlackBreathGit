@@ -181,6 +181,86 @@ public class REPRESENTACIONExcesoDePoder : Habilidad
             txtDescripcion += "<color=#c8c8c8>- Upon making a critical, receives 1d4-2 Arcane damage.</color>\n\n";
         }
     }
+    if (TRADU.i.nIdioma == 3)
+    {
+        if (NIVEL < 2)
+        {
+            txtDescripcion = "<color=#5dade2><b>Excesso de Poder I</b></color>\n\n";
+            txtDescripcion += "<i>A energia transbordante do Canalizador gera instabilidade a cada golpe certeiro, deixando rastros do excesso.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>- Sempre que faz um <b>Critico</b>, cria 1 Residuo Energetico.</color>\n";
+            txtDescripcion += "<color=#c8c8c8>- Ganha +1 Dado Critico permanente.</color>\n";
+            txtDescripcion += "<color=#c8c8c8>- Ao realizar um critico, recebe 1d4 de dano Arcano.</color>\n\n";
+
+            if (EsEscenaCampaña())
+            {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+                {
+                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                    {
+                        txtDescripcion += "<color=#dfea02>- Proximo Nivel: -1 dano recebido no critico</color>\n\n";
+                    }
+                }
+            }
+        }
+
+        if (NIVEL == 2)
+        {
+            txtDescripcion = "<color=#5dade2><b>Excesso de Poder II</b></color>\n\n";
+            txtDescripcion += "<i>A energia transbordante do Canalizador gera instabilidade a cada golpe certeiro, deixando rastros do excesso.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>- Sempre que faz um <b>Critico</b>, cria 1 Residuo Energetico.</color>\n";
+            txtDescripcion += "<color=#c8c8c8>- Ganha +1 Dado Critico permanente.</color>\n";
+            txtDescripcion += "<color=#c8c8c8>- Ao realizar um critico, recebe 1d4-1 de dano Arcano.</color>\n\n";
+
+            if (EsEscenaCampaña())
+            {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+                {
+                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                    {
+                        txtDescripcion += "<color=#dfea02>- Proximo Nivel: -1 dano recebido no critico (acumulativo)</color>\n\n";
+                    }
+                }
+            }
+        }
+
+        if (NIVEL == 3)
+        {
+            txtDescripcion = "<color=#5dade2><b>Excesso de Poder III</b></color>\n\n";
+            txtDescripcion += "<i>A energia transbordante do Canalizador gera instabilidade a cada golpe certeiro, deixando rastros do excesso.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>- Sempre que faz um <b>Critico</b>, cria 1 Residuo Energetico.</color>\n";
+            txtDescripcion += "<color=#c8c8c8>- Ganha +1 Dado Critico permanente.</color>\n";
+            txtDescripcion += "<color=#c8c8c8>- Ao realizar um critico, recebe 1d4-2 de dano Arcano.</color>\n\n";
+
+            if (EsEscenaCampaña())
+            {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+                {
+                    if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                    {
+                        txtDescripcion += "<color=#dfea02>- Proximo Nivel:\nOpcao A: +1 Residuo por critico\nOpcao B: +1 Dado Critico adicional</color>\n\n";
+                    }
+                }
+            }
+        }
+
+        if (NIVEL == 4)
+        {
+            txtDescripcion = "<color=#5dade2><b>Excesso de Poder IV a</b></color>\n\n";
+            txtDescripcion += "<i>A energia transbordante do Canalizador gera instabilidade a cada golpe certeiro, deixando rastros do excesso.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>- Sempre que faz um <b>Critico</b>, cria 2 Residuos Energeticos.</color>\n";
+            txtDescripcion += "<color=#c8c8c8>- Ganha +1 Dado Critico permanente.</color>\n";
+            txtDescripcion += "<color=#c8c8c8>- Ao realizar um critico, recebe 1d4-2 de dano Arcano.</color>\n\n";
+        }
+
+        if (NIVEL == 5)
+        {
+            txtDescripcion = "<color=#5dade2><b>Excesso de Poder IV b</b></color>\n\n";
+            txtDescripcion += "<i>A energia transbordante do Canalizador gera instabilidade a cada golpe certeiro, deixando rastros do excesso.</i>\n\n";
+            txtDescripcion += "<color=#c8c8c8>- Sempre que faz um <b>Critico</b>, cria 1 Residuo Energetico.</color>\n";
+            txtDescripcion += "<color=#c8c8c8>- Ganha +2 Dados Criticos permanentes.</color>\n";
+            txtDescripcion += "<color=#c8c8c8>- Ao realizar um critico, recebe 1d4-2 de dano Arcano.</color>\n\n";
+        }
+    }
 
 
     }

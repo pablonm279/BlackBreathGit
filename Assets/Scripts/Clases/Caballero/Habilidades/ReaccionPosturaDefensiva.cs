@@ -20,11 +20,15 @@ public class ReaccionPosturaDefensiva : Reaccion
 
     if (TRADU.i.nIdioma == 1)
     {
-      descripcion = $"ReacciÛn: El caballero atacar· a cualquier enemigo que falle un ataque cuerpo a cuerpo contra Èl.";
+      descripcion = $"Reacci√≥n: El caballero atacar√° a cualquier enemigo que falle un ataque cuerpo a cuerpo contra √©l.";
     }
     if (TRADU.i.nIdioma == 2)
     {
       descripcion = $"Reaction: The knight will attack any enemy that misses a melee attack against him.";
+    }
+    if (TRADU.i.nIdioma == 3)
+    {
+      descripcion = $"Reacao: O cavaleiro atacara qualquer inimigo que errar um ataque corpo a corpo contra ele.";
     }
 
    }

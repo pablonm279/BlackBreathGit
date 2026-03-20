@@ -108,22 +108,22 @@ public class TutorialCombate : MonoBehaviour
 
     }
 
-    private void MostrarPaso(int index)
+  private void MostrarPaso(int index)
+{
+    if (!TienePasosCombate()) return;
+    if (!IndicePasoValido(index)) return;
+
+    for (int i = 0; i < pasosCombate.Length; i++)
     {
-        if (!TienePasosCombate()) return;
-        if (!IndicePasoValido(index)) return;
-
-        for (int i = 0; i < pasosCombate.Length; i++)
-        {
-            if (pasosCombate[i] == null) { continue; }
-            pasosCombate[i].SetActive(i == index);
-        }
-
-        GameObject tutoActual = pasosCombate[index];
-        if (tutoActual == null) return;
-
-        MostrarPanelIdioma(tutoActual);
+        if (pasosCombate[i] == null) continue;
+        pasosCombate[i].SetActive(i == index);
     }
+
+    GameObject tutoActual = pasosCombate[index];
+    if (tutoActual == null) return;
+
+    MostrarPanelIdioma(tutoActual);
+}
     
     public int ObtenerPasoActual()
     {
@@ -198,26 +198,48 @@ public class TutorialCombate : MonoBehaviour
         coroutineForzarPaso = null;
     }
 
-    private void MostrarPanelIdioma(GameObject paso)
+  private void MostrarPanelIdioma(GameObject paso)
+{
+    if (paso == null) return;
+
+    Transform t = paso.transform;
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+
+    int childIdioma = idioma - 1;
+    int indiceTexto = 0;
+    bool algunoActivo = false;
+
+    for (int i = 0; i < t.childCount; i++)
     {
-        if (paso == null) return;
-        int childCount = paso.transform.childCount;
-        if (childCount <= 0) return;
+        Transform child = t.GetChild(i);
 
-        int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
-        int childIdioma = idioma == 2 ? 1 : 0;
+        if (!child.name.Contains("TEXTO"))
+            continue;
 
-        int totalPanelesIdioma = Mathf.Min(2, childCount);
-        for (int i = 0; i < totalPanelesIdioma; i++)
+        bool activar = indiceTexto == childIdioma;
+        child.gameObject.SetActive(activar);
+
+        if (activar)
+            algunoActivo = true;
+
+        indiceTexto++;
+    }
+
+    // Fallback: si no existe ese idioma, activa el primer TEXTO
+    if (!algunoActivo)
+    {
+        for (int i = 0; i < t.childCount; i++)
         {
-            paso.transform.GetChild(i).gameObject.SetActive(i == childIdioma);
-        }
+            Transform child = t.GetChild(i);
 
-        if (childIdioma >= totalPanelesIdioma && totalPanelesIdioma > 0)
-        {
-            paso.transform.GetChild(0).gameObject.SetActive(true);
+            if (!child.name.Contains("TEXTO"))
+                continue;
+
+            child.gameObject.SetActive(true);
+            break;
         }
     }
+}
 }
 
 

@@ -17,7 +17,7 @@ public class IAUnidad : MonoBehaviour
    public bool bPuedeVerEscondidos = false; //Si puede ver unidades escondidas, si no, no las ataca
    [Header("Composicion")]
    public bool unicoEnCombate = false; // Si esta activo, no puede haber mas de 1 en la composicion inicial enemiga.
-   
+   public int tierEnemigo = 1;
 
    public int costoMovimientoAP = 1; //Cuanto gasta de AP al moverse 
 

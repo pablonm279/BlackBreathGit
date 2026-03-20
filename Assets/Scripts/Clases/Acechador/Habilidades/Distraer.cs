@@ -59,6 +59,7 @@ public class Distraer : Habilidad
    public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
     int dcBase = NIVEL > 1 ? 13 : 12;
     int apPenalty = -2;
@@ -69,10 +70,15 @@ public class Distraer : Habilidad
 
     string tituloEs = "Distraer I";
     string tituloEn = "Distract I";
+    string tituloPt = "Distrair I";
     if (NIVEL == 2) { tituloEs = "Distraer II"; tituloEn = "Distract II"; }
     if (NIVEL == 3) { tituloEs = "Distraer III"; tituloEn = "Distract III"; }
     if (NIVEL == 4) { tituloEs = "Distraer IV a"; tituloEn = "Distract IV a"; }
     if (NIVEL == 5) { tituloEs = "Distraer IV b"; tituloEn = "Distract IV b"; }
+    if (NIVEL == 2) { tituloPt = "Distrair II"; }
+    if (NIVEL == 3) { tituloPt = "Distrair III"; }
+    if (NIVEL == 4) { tituloPt = "Distrair IV a"; }
+    if (NIVEL == 5) { tituloPt = "Distrair IV b"; }
 
     string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Mental, dcBase);
 
@@ -87,6 +93,16 @@ public class Distraer : Habilidad
       cuerpo += $"<b>If target is isolated:</b> gain Hidden ({escondidoGanado})\n";
       cuerpo += "<b>Stealth interaction:</b> Discreet (does not reveal the caster)";
     }
+    else if (esPortugues)
+    {
+      cuerpo += "<b>Tipo:</b> Alcance (5 de alcance)\n";
+      cuerpo += "<b>Alvo:</b> 1 inimigo\n";
+      cuerpo += "<b>Rolagem/Resistencia:</b> sem rolagem de ataque\n";
+      cuerpo += lineaSalvacion + "\n";
+      cuerpo += $"<b>Se falhar na resistencia:</b> Distraido (2 turnos): {apPenalty} AP max, {defPenalty} Defesa\n";
+      cuerpo += $"<b>Se o alvo estiver isolado:</b> ganha Escondido ({escondidoGanado})\n";
+      cuerpo += "<b>Interacao com furtividade:</b> Discreta (nao revela o lancador)";
+    }
     else
     {
       cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
@@ -100,13 +116,17 @@ public class Distraer : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
-        ? "A stealth-safe control tool that opens windows by draining enemy action economy."
-        : "Una herramienta de control discreta que abre ventanas drenando economia de acciones enemiga.",
+        ? "The Stalker uses a trick to distract the enemy and leave them vulnerable."
+        : esPortugues
+          ? "O Espreitador usa um truque para distrair o inimigo e deixa-lo vulneravel."
+        : "El Acechador utiliza un truco para distraer al enemigo y dejarlo vulnerable.",
       cuerpo,
       costos,
       "#5dade2");
@@ -122,6 +142,12 @@ public class Distraer : Habilidad
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC base.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 max AP in Distracted debuff.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 max AP reduction and +1 Defense reduction) or Option B (gain Hidden II if isolated).</color>"; }
+    }
+    else if (esPortugues)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na CD base da resistencia.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 AP max no debuff Distraido.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 reducao de AP max e +1 reducao de Defesa) ou Opcao B (ganhar Escondido II se estiver isolado).</color>"; }
     }
     else
     {

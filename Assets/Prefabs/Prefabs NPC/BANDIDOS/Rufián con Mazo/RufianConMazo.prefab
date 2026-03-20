@@ -671,9 +671,9 @@ MonoBehaviour:
   mod_iniciativa: 1
   iniciativa_actual: 0
   esEtereo: 0
-  at_maxHP: 35
-  mod_maxHP: 35
-  HP_actual: 35
+  at_maxHP: 38
+  mod_maxHP: 38
+  HP_actual: 38
   at_maxAccionP: 3
   esInmobil: 0
   mod_maxAccionP: 3
@@ -705,8 +705,8 @@ MonoBehaviour:
   mod_ResNecro: 0
   at_ResDivino: 0
   mod_ResDivino: 0
-  at_Defensa: 12
-  mod_Defensa: 12
+  at_Defensa: 13
+  mod_Defensa: 13
   Defensa_AtaquesRepetidosRonda: 0
   Defensa_BonusPASinUsar: 0
   at_Ataque: 3
@@ -773,6 +773,9 @@ MonoBehaviour:
   floatingTextSlotLifetimeFallback: 1.1
   floatingTextMaxSlots: 4
   floatingTextMinInterval: 0.05
+  floatingTextCrowdThreshold: 3
+  floatingTextCrowdIntervalStep: 0.01
+  floatingTextCrowdExtraIntervalMax: 0.03
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
@@ -798,6 +801,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   esRango: 0
   bPuedeVerEscondidos: 0
+  unicoEnCombate: 0
+  tierEnemigo: 2
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0
@@ -854,6 +859,11 @@ MonoBehaviour:
   barraVidaHealColor: {r: 1, g: 0.85, b: 0.2, a: 0.6}
   barraVidaHealDelay: 0.08
   barraVidaHealSpeed: 0.9
+  rotuloHabilidadOffset: {x: 0, y: 2.1}
+  rotuloHabilidadPadding: {x: 0.34, y: 0.16}
+  rotuloHabilidadDuracion: 3
+  rotuloHabilidadFondo: {r: 0.09, g: 0.012, b: 0.012, a: 0.82}
+  rotuloHabilidadBorde: {r: 0.35, g: 0.07, b: 0.06, a: 0.72}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 6551044582577236037}
 --- !u!114 &266884403653698581

@@ -15,13 +15,13 @@ public class Rafaga : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
 
     private int hAlcance = 7;
-    private int hAncho = 3; //1 - adyancentes tambiÈn
+    private int hAncho = 3; //1 - adyancentes tambi√©n
       public override void  Awake()
     {
-      nombre = "R·faga";
+      nombre = "R√°faga";
       IDenClase = 10; // Termina turno
       costoAP = 0;
       costoPM = 2;
@@ -63,9 +63,10 @@ public class Rafaga : Habilidad
     }
 
 
-    public override void ActualizarDescripcion()
+  public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int agilidadActual = statsUI.Agilidad;
@@ -74,10 +75,15 @@ public class Rafaga : Habilidad
 
     string tituloEs = "Rafaga I";
     string tituloEn = "Barrage I";
+    string tituloPt = "Rajada I";
     if (NIVEL == 2) { tituloEs = "Rafaga II"; tituloEn = "Barrage II"; }
     if (NIVEL == 3) { tituloEs = "Rafaga III"; tituloEn = "Barrage III"; }
     if (NIVEL == 4) { tituloEs = "Rafaga IV a"; tituloEn = "Barrage IV a"; }
     if (NIVEL == 5) { tituloEs = "Rafaga IV b"; tituloEn = "Barrage IV b"; }
+    if (NIVEL == 2) { tituloPt = "Rajada II"; }
+    if (NIVEL == 3) { tituloPt = "Rajada III"; }
+    if (NIVEL == 4) { tituloPt = "Rajada IV a"; }
+    if (NIVEL == 5) { tituloPt = "Rajada IV b"; }
 
     int bonusAtaqueNivel = bonusAtaque;
 
@@ -92,6 +98,16 @@ public class Rafaga : Habilidad
       cuerpo += "<b>Resource:</b> consumes 1 Arrow and 1 AP per shot\n";
       cuerpo += "<b>Turn flow:</b> using this skill ends your turn";
     }
+    else if (esPortugues)
+    {
+      cuerpo += $"<b>Tipo:</b> Distancia ({hAlcance} alcance)\n";
+      cuerpo += "<b>Alvo:</b> 1 inimigo em alcance amplo (largura 3). Se morrer, continua no proximo inimigo da lista\n";
+      cuerpo += "<b>Loop:</b> repete disparos ate que seus AP atuais cheguem a 0 ou acabem as flechas\n";
+      cuerpo += $"<b>Rolagem (por disparo):</b> 1d20 + <color=#ea0606>Agilidade ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaqueNivel} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Dano (por disparo):</b> 1d10 + 1 + <color=#ea0606>Agilidade ({agilidadActual})</color> | <b>Tipo:</b> Perfurante\n";
+      cuerpo += "<b>Recurso:</b> consome 1 Flecha e 1 AP por disparo\n";
+      cuerpo += "<b>Fluxo de turno:</b> usar esta habilidade termina seu turno";
+    }
     else
     {
       cuerpo += $"<b>Tipo:</b> Rango ({hAlcance} alcance)\n";
@@ -105,12 +121,16 @@ public class Rafaga : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: variable (1 per shot)\n- Valour Cost: {costoPM}"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: variable (1 por disparo)\n- Costo ValentÌa: {costoPM}";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: variavel (1 por disparo)\n- Custo Valentia: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: variable (1 por disparo)\n- Costo Valent√≠a: {costoPM}";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
         ? "A sustained arrow sequence that drains your current action economy."
+        : esPortugues
+          ? "Uma sequencia sustentada de flechas que esgota sua economia atual de acoes."
         : "Una secuencia sostenida de flechas que vacia tu economia de acciones actual.",
       cuerpo,
       costos,
@@ -125,11 +145,17 @@ public class Rafaga : Habilidad
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 cooldown.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Valour Cost) or Option B (+2 attack bonus).</color>"; }
       }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de ataque.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 recarga.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 custo de Valentia) ou Opcao B (+2 no bonus de ataque).</color>"; }
+      }
       else
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de ValentÌa) u Opcion B (+2 al bono de ataque).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valent√≠a) u Opcion B (+2 al bono de ataque).</color>"; }
       }
     }
 
@@ -219,7 +245,7 @@ public class Rafaga : Habilidad
     async Task Atacar(object obj, int tirada)
     {
       
-     if(obj is Unidad) //Ac· van los efectos a Unidades.
+     if(obj is Unidad) //Ac√° van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -241,11 +267,11 @@ public class Rafaga : Habilidad
       float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
        //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prÛximas habilidades de daÒo del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para pr√≥ximas habilidades de da√±o del explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de daÒo solamente al ser golpe critico, ver mas abajo. Ya que esta amrca agrega % daÒo crÌtico.
+         danioMarca += 15; //Esto se suma al porcentaje de da√±o solamente al ser golpe critico, ver mas abajo. Ya que esta amrca agrega % da√±o cr√≠tico.
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -310,7 +336,7 @@ public class Rafaga : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---

@@ -13,7 +13,7 @@ public class IAMordidaVagranilo : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano - 9: Necro
    
   void Awake()
    {
@@ -26,7 +26,7 @@ public class IAMordidaVagranilo : IAHabilidad
       hCooldownMax = 0;
       esHostil = true;
       prioridad = 0;
-      costoAP = 1;
+      costoAP = 2;
       afectaObstaculos = true;
       
 
@@ -145,19 +145,19 @@ public class IAMordidaVagranilo : IAHabilidad
 
 public override object EstablecerObjetivoPrioritario() 
 {
-    // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+    // Obtener la unidad dueï¿½a
+    Unidad unidadDueÃ±a = gameObject.GetComponent<Unidad>();
+    if (unidadDueÃ±a == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obstáculos
+    // Filtrar los obstï¿½culos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderByDescending(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueÃ±a.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -166,7 +166,7 @@ public override object EstablecerObjetivoPrioritario()
         return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obstï¿½culo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
 }
@@ -191,7 +191,7 @@ void AplicaSangradoTirada(Unidad unidad, int extraDC)
         unidad.estado_sangrado = 1;
 
         /////////////////////////////////////////////
-        //BUFF ---- Así se aplica un buff/debuff
+        //BUFF ---- Asï¿½ se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Sangre Contaminada";
         buff.boolfDebufftBuff = false;
@@ -200,7 +200,7 @@ void AplicaSangradoTirada(Unidad unidad, int extraDC)
         buff.cantDanioPorcentaje -= 5;
         buff.cantTsFortaleza -= 1;
         buff.AplicarBuff(unidad);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuraciï¿½n del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, unidad.gameObject);
 
 

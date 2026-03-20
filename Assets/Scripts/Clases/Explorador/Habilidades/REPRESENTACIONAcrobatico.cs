@@ -142,6 +142,67 @@ public class REPRESENTACIONAcrobatico : Habilidad
           txtDescripcion += "<i>(Passive) Gains 3 Evasion and 1 Reflex at the start of each combat. Evasion is added to Defense and is lost when taking damage.</i>\n\n";
         }
       }
+      if (TRADU.i.nIdioma == 3)
+      {
+        if (NIVEL < 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Acrobatico I</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Recebe 1 Evasao no inicio de cada combate. A evasao soma na Defesa e e perdida ao receber dano.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 TS Reflexos</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Acrobatico II</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Recebe 1 Evasao e 1 Reflexos no inicio de cada combate. A evasao soma na Defesa e e perdida ao receber dano.</i>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 Evasao</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Acrobatico III</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Recebe 2 Evasao e 1 Reflexos no inicio de cada combate. A evasao soma na Defesa e e perdida ao receber dano.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Opcao A: +1 Evasao</color>\n\n";
+                txtDescripcion += "<i>(Passiva) Recebe 1 Evasao no inicio de cada combate.</i>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 4)
+        {
+          txtDescripcion += $"<color=#dfea02>-Opcao A: +1 Evasao</color>\n\n";
+          txtDescripcion += "<i>(Passiva) Recebe 3 Evasao e 1 Reflexos no inicio de cada combate. A evasao soma na Defesa e e perdida ao receber dano.</i>\n\n";
+        }
+        if (NIVEL == 5)
+        {
+          txtDescripcion += $"<color=#dfea02>-Opcao B: +1 Evasao</color>\n\n";
+          txtDescripcion += "<i>(Passiva) Recebe 3 Evasao e 1 Reflexos no inicio de cada combate. A evasao soma na Defesa e e perdida ao receber dano.</i>\n\n";
+        }
+      }
 
     }
 

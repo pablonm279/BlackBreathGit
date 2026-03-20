@@ -109,7 +109,8 @@ public class DestruirObstaculo : Habilidad
     obstaculo.ForzarDestruccion();
     string nombreObstaculo = TRADU.i != null ? TRADU.i.Traducir(obstaculo.oName) : obstaculo.oName;
     BattleManager.Instance.EscribirLog(string.Format("{0} {1}", Traducir("Destruyes"), nombreObstaculo));
-    BattleManager.Instance.SincronizarHabilidadDestruirObstaculo(scEstaUnidad);
+    // Importante: no sincronizar (agregar/quitar componente) en medio del Resolver.
+    // BattleManager ya lo hace en Update y evita destruir esta habilidad mientras se ejecuta.
     BattleManager.Instance.CalcularCasillasAMovimiento();
   }
 

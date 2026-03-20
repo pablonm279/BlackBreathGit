@@ -166,6 +166,78 @@ public class REPRESENTACIONReconocimiento : Habilidad
             txtDescripcion += "<i>Delays enemy reinforcements by 2 turns</i>\n";
           }
         }
+        if (TRADU.i.nIdioma == 3)
+        {
+          if (NIVEL < 2)
+          {
+            txtDescripcion = "<color=#5dade2><b>Reconhecimento I</b></color>\n\n";
+            txtDescripcion += "<i>(Passiva) O Explorador concede vantagens de terreno aos aliados.</i>\n\n";
+            txtDescripcion += "<i>+1 AP no primeiro turno.</i>\n";
+            txtDescripcion += "<i>Atrasa reforcos inimigos em 1 turno</i>\n";
+
+            if (EsEscenaCampaña())
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+              {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                {
+                  txtDescripcion += $"<color=#dfea02>-Proximo Nivel: Buff em aliados: +1 Iniciativa</color>\n\n";
+                }
+              }
+            }
+          }
+          if (NIVEL == 2)
+          {
+            txtDescripcion = "<color=#5dade2><b>Reconhecimento II</b></color>\n\n";
+            txtDescripcion += "<i>(Passiva) O Explorador concede vantagens de terreno aos aliados.</i>\n\n";
+            txtDescripcion += "<i>+1 AP e +1 Iniciativa no primeiro turno.</i>\n";
+            txtDescripcion += "<i>Atrasa reforcos inimigos em 1 turno</i>\n";
+
+            if (EsEscenaCampaña())
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+              {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                {
+                  txtDescripcion += $"<color=#dfea02>-Proximo Nivel: Buff em aliados: +1 Iniciativa</color>\n\n";
+                }
+              }
+            }
+          }
+          if (NIVEL == 3)
+          {
+            txtDescripcion = "<color=#5dade2><b>Reconhecimento III</b></color>\n\n";
+            txtDescripcion += "<i>(Passiva) O Explorador concede vantagens de terreno aos aliados.</i>\n\n";
+            txtDescripcion += "<i>+1 AP e +2 Iniciativa no primeiro turno.</i>\n";
+            txtDescripcion += "<i>Atrasa reforcos inimigos em 1 turno</i>\n";
+
+            if (EsEscenaCampaña())
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+              {
+                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+                {
+                  txtDescripcion += $"<color=#dfea02>-Opcao A: Buff em aliados: +1 AP extra</color>\n\n";
+                  txtDescripcion += $"<color=#dfea02>-Opcao B: +1 atraso extra em reforcos inimigos</color>\n";
+                }
+              }
+            }
+          }
+          if (NIVEL == 4)
+          {
+            txtDescripcion = "<color=#5dade2><b>Reconhecimento IV a</b></color>\n\n";
+            txtDescripcion += "<i>(Passiva) O Explorador concede vantagens de terreno aos aliados.</i>\n\n";
+            txtDescripcion += "<i>+2 AP e +2 Iniciativa no primeiro turno.</i>\n";
+            txtDescripcion += "<i>Atrasa reforcos inimigos em 1 turno</i>\n";
+          }
+          if (NIVEL == 5)
+          {
+            txtDescripcion = "<color=#5dade2><b>Reconhecimento IV b</b></color>\n\n";
+            txtDescripcion += "<i>(Passiva) O Explorador concede vantagens de terreno aos aliados.</i>\n\n";
+            txtDescripcion += "<i>+1 AP e +2 Iniciativa no primeiro turno.</i>\n";
+            txtDescripcion += "<i>Atrasa reforcos inimigos em 2 turnos</i>\n";
+          }
+        }
 
     }
 

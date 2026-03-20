@@ -634,9 +634,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   oName: Roca Menor
-  hpMax: 12
-  hpCurr: 12
-  iDureza: 3
+  hpMax: 8
+  hpCurr: 8
+  iDureza: 0
   destruiblePorMismoLado: 1
   intDuracionTurnos: 100
   bPermiteAtacarDetras: 0

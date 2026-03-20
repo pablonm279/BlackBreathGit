@@ -30,6 +30,8 @@ public class MenuPersonajes : MonoBehaviour
   public Sprite Male005; //Canalizador
 
   public Sprite Female001; //Purificadora
+  public Sprite Female002; //Duelista
+
 
   public Personaje pSel;
 
@@ -59,12 +61,21 @@ public class MenuPersonajes : MonoBehaviour
   [SerializeField] TextMeshProUGUI txtResDivino;
 
   [SerializeField] TextMeshProUGUI txtContenedorRasgos;
+  [SerializeField] TextMeshProUGUI txtCapacidadPersonajes;
 
   [SerializeField] Image imCorazon;
   [SerializeField] Image imMedalla;
 
+  private void Awake()
+  {
+    AsegurarTextoCapacidadPersonajes();
+  }
+
   public void PrepararYAbrirMenu(Personaje personajeInicial = null)
   {
+    AsegurarTextoCapacidadPersonajes();
+    ActualizarTextoCapacidadPersonajes();
+
     if (listaPersonajes.Count == 0)
     {
       ActualizarLista();
@@ -72,15 +83,73 @@ public class MenuPersonajes : MonoBehaviour
       return;
     }
 
-    pSel = personajeInicial != null ? personajeInicial : listaPersonajes[0];
+    Personaje personajeBase = personajeInicial != null && !personajeInicial.Camp_Muerto
+      ? personajeInicial
+      : listaPersonajes.Find(p => p != null && !p.Camp_Muerto);
+    pSel = personajeBase != null ? personajeBase : listaPersonajes[0];
     if (scEquipo != null)
     {
       scEquipo.ConfigurarClickDerechoSlots(this);
     }
     ActualizarLista();
+    ActualizarTextoCapacidadPersonajes();
     CancelInvoke("ActualizarInfo");
     ActualizarInfo();
     ForzarRebuildInmediato();
+  }
+
+  private void AsegurarTextoCapacidadPersonajes()
+  {
+    if (txtCapacidadPersonajes != null || txtNombre == null)
+    {
+      return;
+    }
+
+    Transform parent = txtNombre.transform.parent;
+    if (parent == null)
+    {
+      return;
+    }
+
+    GameObject goCapacidad = Instantiate(txtNombre.gameObject, parent);
+    goCapacidad.name = "txtCapacidadPersonajes";
+    txtCapacidadPersonajes = goCapacidad.GetComponent<TextMeshProUGUI>();
+    if (txtCapacidadPersonajes == null)
+    {
+      return;
+    }
+
+    RectTransform rt = txtCapacidadPersonajes.rectTransform;
+    if (rt != null)
+    {
+      rt.anchorMin = new Vector2(1f, 1f);
+      rt.anchorMax = new Vector2(1f, 1f);
+      rt.pivot = new Vector2(1f, 1f);
+      rt.anchoredPosition = new Vector2(-12f, -12f);
+      rt.sizeDelta = new Vector2(120f, rt.sizeDelta.y);
+    }
+
+    txtCapacidadPersonajes.alignment = TextAlignmentOptions.TopRight;
+    txtCapacidadPersonajes.fontSize = txtNombre.fontSize * 0.8f;
+    txtCapacidadPersonajes.raycastTarget = false;
+    txtCapacidadPersonajes.text = string.Empty;
+  }
+
+  private void ActualizarTextoCapacidadPersonajes()
+  {
+    if (txtCapacidadPersonajes == null)
+    {
+      AsegurarTextoCapacidadPersonajes();
+    }
+
+    if (txtCapacidadPersonajes == null)
+    {
+      return;
+    }
+
+    int actuales = CampaignManager.Instance != null ? CampaignManager.Instance.CuantosPersonajesActivos() : 0;
+    int maximos = CampaignManager.Instance != null ? CampaignManager.Instance.ObtenerCapacidadMaximaPersonajes() : 4;
+    txtCapacidadPersonajes.text = actuales + "/" + maximos;
   }
 
   public void ActualizarLista()
@@ -144,6 +213,8 @@ public class MenuPersonajes : MonoBehaviour
       }
     }
 
+    ActualizarTextoCapacidadPersonajes();
+
 
   }
 
@@ -153,6 +224,7 @@ public class MenuPersonajes : MonoBehaviour
     if (pers == null) return;
 
     pSel = pers;
+    RuntimeAnalytics.TrackDesign("characters", "select", RuntimeAnalytics.ClassToken(pSel));
     ActualizarLista();
     if (btnPers != null && btnPers.transform.childCount > 0)
     { btnPers.transform.GetChild(12).gameObject.SetActive(true); }
@@ -379,6 +451,7 @@ public class MenuPersonajes : MonoBehaviour
   {
     if (!scEquipo.goInventario.activeInHierarchy)
     {
+      RuntimeAnalytics.TrackDesign("characters", "inventory_open", "backpack");
       scEquipo.MostrarInventario(5);
     }
     else { scEquipo.goInventario.SetActive(false); }
@@ -393,6 +466,7 @@ public class MenuPersonajes : MonoBehaviour
     }
 
     TooltipItems.Instance.HideTooltip();
+    RuntimeAnalytics.TrackDesign("characters", "inventory_open", "weapon");
     AbrirInventarioDeEquipo(1);
   }
   public void OnClickArmadura()
@@ -403,6 +477,7 @@ public class MenuPersonajes : MonoBehaviour
     }
 
     TooltipItems.Instance.HideTooltip();
+    RuntimeAnalytics.TrackDesign("characters", "inventory_open", "armor");
     AbrirInventarioDeEquipo(2);
   }
 
@@ -444,6 +519,7 @@ public class MenuPersonajes : MonoBehaviour
 
     TooltipItems.Instance.HideTooltip();
     scEquipo.accesorioACambiar = 1;
+    RuntimeAnalytics.TrackDesign("characters", "inventory_open", "accessory_1");
     AbrirInventarioDeEquipo(3);
   }
 
@@ -468,6 +544,7 @@ public class MenuPersonajes : MonoBehaviour
 
     TooltipItems.Instance.HideTooltip();
     scEquipo.accesorioACambiar = 2;
+    RuntimeAnalytics.TrackDesign("characters", "inventory_open", "accessory_2");
     AbrirInventarioDeEquipo(3);
   }
 
@@ -493,6 +570,7 @@ public class MenuPersonajes : MonoBehaviour
 
     TooltipItems.Instance.HideTooltip();
     scEquipo.consumibleACambiar = 1;
+    RuntimeAnalytics.TrackDesign("characters", "inventory_open", "consumable_1");
     AbrirInventarioDeEquipo(4);
   }
 
@@ -517,6 +595,7 @@ public class MenuPersonajes : MonoBehaviour
 
     TooltipItems.Instance.HideTooltip();
     scEquipo.consumibleACambiar = 2;
+    RuntimeAnalytics.TrackDesign("characters", "inventory_open", "consumable_2");
     AbrirInventarioDeEquipo(4);
   }
 
@@ -1093,23 +1172,32 @@ public class MenuPersonajes : MonoBehaviour
 
   public void SubirAtributo(int i)
   {
+    string atributoAnalytics = null;
     if (i == 1)//1-Fuerza
     {
       pSel.iFuerza++;
       pSel.NivelPuntoAtributo--;
       ActualizarInfo();
+      atributoAnalytics = "fuerza";
     }
     if (i == 2)//2-Agiliadd
     {
       pSel.iAgi++;
       pSel.NivelPuntoAtributo--;
       ActualizarInfo();
+      atributoAnalytics = "agilidad";
     }
     if (i == 3)//3-Poder
     {
       pSel.iPoder++;
       pSel.NivelPuntoAtributo--;
       ActualizarInfo();
+      atributoAnalytics = "poder";
+    }
+
+    if (!string.IsNullOrEmpty(atributoAnalytics))
+    {
+      RuntimeAnalytics.TrackDesign("characters", "stat_up", atributoAnalytics);
     }
 
     if (CampaignManager.Instance.scTutorialManager.tutorialActivo) { CampaignManager.Instance.scTutorialManager.SiguientePaso(); }
@@ -1118,23 +1206,32 @@ public class MenuPersonajes : MonoBehaviour
 
   public void SubirTiradaSalvacion(int i)
   {
+    string tsAnalytics = null;
     if (i == 1)//1-Fuerza
     {
       pSel.iTSFortaleza++;
       pSel.NivelPuntoTS--;
       ActualizarInfo();
+      tsAnalytics = "fortaleza";
     }
     if (i == 2)//2-Agiliadd
     {
       pSel.iTSReflejo++;
       pSel.NivelPuntoTS--;
       ActualizarInfo();
+      tsAnalytics = "reflejos";
     }
     if (i == 3)//3-Poder
     {
       pSel.iTSMental++;
       pSel.NivelPuntoTS--;
       ActualizarInfo();
+      tsAnalytics = "mental";
+    }
+
+    if (!string.IsNullOrEmpty(tsAnalytics))
+    {
+      RuntimeAnalytics.TrackDesign("characters", "save_up", tsAnalytics);
     }
 
   }

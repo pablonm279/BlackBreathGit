@@ -15,12 +15,12 @@ public class HojaDeEnergia : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
 
    
      public override void  Awake()
     {
-      nombre = "Hoja de EnergÌa";
+      nombre = "Hoja de Energ√≠a";
       IDenClase = 5;
       costoAP = 3;
       costoPM = 1;
@@ -50,9 +50,10 @@ public class HojaDeEnergia : Habilidad
       
     }
 
-    public override void ActualizarDescripcion()
+  public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int fuerzaActual = statsUI.Fuerza;
@@ -68,10 +69,15 @@ public class HojaDeEnergia : Habilidad
 
     string tituloEs = "Hoja Energetica I";
     string tituloEn = "Energy Blade I";
+    string tituloPt = "Lamina Energetica I";
     if (NIVEL == 2) { tituloEs = "Hoja Energetica II"; tituloEn = "Energy Blade II"; }
     if (NIVEL == 3) { tituloEs = "Hoja Energetica III"; tituloEn = "Energy Blade III"; }
     if (NIVEL == 4) { tituloEs = "Hoja Energetica IV a"; tituloEn = "Energy Blade IV a"; }
     if (NIVEL == 5) { tituloEs = "Hoja Energetica IV b"; tituloEn = "Energy Blade IV b"; }
+    if (NIVEL == 2) { tituloPt = "Lamina Energetica II"; }
+    if (NIVEL == 3) { tituloPt = "Lamina Energetica III"; }
+    if (NIVEL == 4) { tituloPt = "Lamina Energetica IV a"; }
+    if (NIVEL == 5) { tituloPt = "Lamina Energetica IV b"; }
 
     string bonusAtaqueEs = bonusAtaqueNivel >= 0 ? $" + {bonusAtaqueNivel}" : $" - {Mathf.Abs(bonusAtaqueNivel)}";
     string bonusAtaqueEn = bonusAtaqueNivel >= 0 ? $" + {bonusAtaqueNivel}" : $" - {Mathf.Abs(bonusAtaqueNivel)}";
@@ -93,6 +99,15 @@ public class HojaDeEnergia : Habilidad
       cuerpo += lineaSalvacionEn + "\n";
       cuerpo += $"<b>On failed save:</b> +{sangrado} Bleed and -{reduccionRes} to all Resistances";
     }
+    else if (esPortugues)
+    {
+      cuerpo += "<b>Tipo:</b> Melee\n";
+      cuerpo += $"<b>Alvo:</b> Area frontal ({ancho} de largura)\n";
+      cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Forca ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defesa. Falha critica: 1. Critico: {criticoMin}-20\n";
+      cuerpo += $"<b>Dano:</b> {danioEs} | <b>Tipo:</b> Verdadeiro\n";
+      cuerpo += $"{ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, 12)}\n";
+      cuerpo += $"<b>Se falhar TS:</b> +{sangrado} Sangramento e -{reduccionRes} em todas as Resistencias";
+    }
     else
     {
       cuerpo += "<b>Tipo:</b> Melee\n";
@@ -105,18 +120,22 @@ public class HojaDeEnergia : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
         ? "A condensed arcane blade cuts through the front line with true damage."
+        : esPortugues
+          ? "Uma lamina arcana condensada atravessa a linha de frente com dano verdadeiro."
         : "Una hoja arcana condensada atraviesa la primera linea con danio verdadero.",
       cuerpo,
       costos,
       "#5dade2");
 
-    bool mostrarProximoNivel = EsEscenaCampaÒa() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    bool mostrarProximoNivel = EsEscenaCampa√±a() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)
     {
       return;
@@ -127,6 +146,12 @@ public class HojaDeEnergia : Habilidad
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 damage.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack roll bonus.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 width) or Option B (+1 Bleed and -2 Resistances).</color>"; }
+    }
+    else if (esPortugues)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de dano.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de ataque.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 largura) ou Opcao B (+1 Sangramento e -2 Resistencias).</color>"; }
     }
     else
     {
@@ -173,7 +198,7 @@ public class HojaDeEnergia : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaObjetivo)
     {
     
-     if(obj is Unidad) //Ac· van los efectos a Unidades.
+     if(obj is Unidad) //Ac√° van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -240,7 +265,7 @@ public class HojaDeEnergia : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -290,7 +315,7 @@ public class HojaDeEnergia : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si est· en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si est√° en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -312,7 +337,7 @@ public class HojaDeEnergia : Habilidad
 
       lCasillasafectadas.Add(c);
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiÈn
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambi√©n
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -412,10 +437,10 @@ public class HojaDeEnergia : Habilidad
         
       }
 
-       //Se fija si las 3 casillas de la columna 1 est·n vacias
+       //Se fija si las 3 casillas de la columna 1 est√°n vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //si alguna de las 3 tiene algo, no aumenta el rango melee
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //si alguna de las 3 tiene algo, no aumenta el rango melee
           {
             return 0;
           }
@@ -429,7 +454,7 @@ public class HojaDeEnergia : Habilidad
 
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna2) 
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //y si alguna de las 3 tiene algo, aumenta solo en 1 
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //y si alguna de las 3 tiene algo, aumenta solo en 1 
           {
             return 1;
           }

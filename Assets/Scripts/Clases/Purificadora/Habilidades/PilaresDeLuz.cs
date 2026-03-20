@@ -39,9 +39,10 @@ public class PilaresDeLuz : Habilidad
       imHab = Resources.Load<Sprite>("imHab/Purificadora_PilaresDeLuz");
       ActualizarDescripcion();
     }
-        public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int poderActual = statsUI.Poder;
@@ -53,10 +54,15 @@ public class PilaresDeLuz : Habilidad
 
       string tituloEs = "Pilares de Luz I";
       string tituloEn = "Pillars of Light I";
+      string tituloPt = "Pilares de Luz I";
       if (NIVEL == 2) { tituloEs = "Pilares de Luz II"; tituloEn = "Pillars of Light II"; }
       if (NIVEL == 3) { tituloEs = "Pilares de Luz III"; tituloEn = "Pillars of Light III"; }
       if (NIVEL == 4) { tituloEs = "Pilares de Luz IV a"; tituloEn = "Pillars of Light IV a"; }
       if (NIVEL == 5) { tituloEs = "Pilares de Luz IV b"; tituloEn = "Pillars of Light IV b"; }
+      if (NIVEL == 2) { tituloPt = "Pilares de Luz II"; }
+      if (NIVEL == 3) { tituloPt = "Pilares de Luz III"; }
+      if (NIVEL == 4) { tituloPt = "Pilares de Luz IV a"; }
+      if (NIVEL == 5) { tituloPt = "Pilares de Luz IV b"; }
 
       string danioPilarEs = bonusDanio > 0
         ? $"1d6 + {bonusDanio} + <color=#ea0606>Poder ({poderActual})</color>"
@@ -64,6 +70,9 @@ public class PilaresDeLuz : Habilidad
       string danioPilarEn = bonusDanio > 0
         ? $"1d6 + {bonusDanio} + <color=#ea0606>Power ({poderActual})</color>"
         : $"1d6 + <color=#ea0606>Power ({poderActual})</color>";
+      string danioPilarPt = bonusDanio > 0
+        ? $"1d6 + {bonusDanio} + <color=#ea0606>Poder ({poderActual})</color>"
+        : $"1d6 + <color=#ea0606>Poder ({poderActual})</color>";
 
       string cuerpo = "";
       if (esIngles)
@@ -79,6 +88,20 @@ public class PilaresDeLuz : Habilidad
         cuerpo += "\n";
         cuerpo += $"<b>Retaliation:</b> {danioPilarEn} | <b>Type:</b> Divine (x2 vs Undead/Ethereal)\n";
         cuerpo += $"<b>Duration:</b> {duracionTurnos} turns";
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Alcance (3 de alcance)\n";
+        cuerpo += "<b>Alvo:</b> 1 celula no alcance\n";
+        cuerpo += $"<b>Invocacao:</b> {cantidadPilares} pilares (celula selecionada e celulas adjacentes na mesma coluna se estiverem livres)\n";
+        cuerpo += $"<b>Status do pilar:</b> Vida {vidaPilar}";
+        if (resistenciaDanio > 0)
+        {
+          cuerpo += $", Resistencia a dano {resistenciaDanio}";
+        }
+        cuerpo += "\n";
+        cuerpo += $"<b>Contra-ataque:</b> {danioPilarPt} | <b>Tipo:</b> Divino (x2 vs Morto-vivo/Etereo)\n";
+        cuerpo += $"<b>Duracao:</b> {duracionTurnos} turnos";
       }
       else
       {
@@ -97,12 +120,16 @@ public class PilaresDeLuz : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
         : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "Creates holy obstacles that punish attackers with divine retaliation."
+          : esPortugues
+            ? "Cria obstaculos sagrados que punem agressores com represalia divina."
           : "Crea obstaculos sagrados que castigan a quienes los ataquen con represalia divina.",
         cuerpo,
         costos,
@@ -123,6 +150,12 @@ public class PilaresDeLuz : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5 pillar HP.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +3 pillar retaliation damage.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+3 Damage Resistance) or Option B (+1 pillar).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5 Vida do pilar.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +3 de dano no contra-ataque do pilar.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+3 Resistencia a dano) ou Opcao B (+1 pilar).</color>"; }
       }
       else
       {

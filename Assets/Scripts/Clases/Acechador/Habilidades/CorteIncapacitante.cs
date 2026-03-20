@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,7 +15,7 @@ public class CorteIncapacitante : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
      ClaseAcechador claseAcechador;
      public override void  Awake()
     {
@@ -63,6 +63,7 @@ public class CorteIncapacitante : Habilidad
    public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int fuerzaActual = statsUI.Fuerza;
@@ -77,10 +78,15 @@ public class CorteIncapacitante : Habilidad
 
     string tituloEs = "Corte Incapacitante I";
     string tituloEn = "Crippling Slash I";
+    string tituloPt = "Corte Incapacitante I";
     if (NIVEL == 2) { tituloEs = "Corte Incapacitante II"; tituloEn = "Crippling Slash II"; }
     if (NIVEL == 3) { tituloEs = "Corte Incapacitante III"; tituloEn = "Crippling Slash III"; }
     if (NIVEL == 4) { tituloEs = "Corte Incapacitante IV a"; tituloEn = "Crippling Slash IV a"; }
     if (NIVEL == 5) { tituloEs = "Corte Incapacitante IV b"; tituloEn = "Crippling Slash IV b"; }
+    if (NIVEL == 2) { tituloPt = "Corte Incapacitante II"; }
+    if (NIVEL == 3) { tituloPt = "Corte Incapacitante III"; }
+    if (NIVEL == 4) { tituloPt = "Corte Incapacitante IV a"; }
+    if (NIVEL == 5) { tituloPt = "Corte Incapacitante IV b"; }
 
     string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Fortaleza, dcBase, "Agilidad", "Agility", agilidadActual);
 
@@ -100,6 +106,23 @@ public class CorteIncapacitante : Habilidad
       if (nivelMaestria > 0)
       {
         cuerpo += $"\n<b>Passive applied:</b> Short Sword Mastery (Tier {nivelMaestria})";
+      }
+    }
+    else if (esPortugues)
+    {
+      cuerpo += "<b>Tipo:</b> Corpo a corpo\n";
+      cuerpo += "<b>Alvo:</b> 1 inimigo no alcance frontal corpo a corpo\n";
+      cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Forca ({fuerzaActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Dano:</b> 2d6 + {danioFijo} + <color=#ea0606>Forca ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+      cuerpo += lineaSalvacion + "\n";
+      cuerpo += $"<b>Se falhar na resistencia:</b> Incapacitado ({duracion} turnos): Imovel, -20% Dano, -2 Ataque";
+      if (NIVEL == 4)
+      {
+        cuerpo += ", +3 Sangramento";
+      }
+      if (nivelMaestria > 0)
+      {
+        cuerpo += $"\n<b>Passiva aplicada:</b> Maestria com Espada Curta (Tier {nivelMaestria})";
       }
     }
     else
@@ -122,12 +145,16 @@ public class CorteIncapacitante : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
         ? "A control slash that can lock enemy movement after a save check."
+        : esPortugues
+          ? "Um corte de controle que pode travar o movimento inimigo apos teste de resistencia."
         : "Un corte de control que puede bloquear movimiento enemigo tras TS.",
       cuerpo,
       costos,
@@ -144,6 +171,12 @@ public class CorteIncapacitante : Habilidad
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack bonus.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC base.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+3 Bleed) or Option B (+1 turn duration).</color>"; }
+    }
+    else if (esPortugues)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de ataque.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na CD base da resistencia.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+3 Sangramento) ou Opcao B (+1 turno de duracao).</color>"; }
     }
     else
     {
@@ -176,7 +209,7 @@ public class CorteIncapacitante : Habilidad
     {
       bonusAtaque = 1;
       damExtra += 2;
-      txtDescripcion += "\n\n<i>Maestr√≠a con Espada Corta agrega: +1 Ataque +2 Da√±o.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÌa con Espada Corta agrega: +1 Ataque +2 DaÒo.</i>\n\n";
 
     }
     else if (NivelMaestria == 2)
@@ -184,7 +217,7 @@ public class CorteIncapacitante : Habilidad
       bonusAtaque = 1;
       damExtra += 2;
       criticoRangoHab = 1;
-      txtDescripcion += "\n\n<i>Maestr√≠a con Espada Corta agrega: +1 Ataque +2 Da√±o +1 Rango Cr√≠tico.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÌa con Espada Corta agrega: +1 Ataque +2 DaÒo +1 Rango CrÌtico.</i>\n\n";
 
     }
     else if (NivelMaestria == 3)
@@ -193,7 +226,7 @@ public class CorteIncapacitante : Habilidad
       damExtra += 2;
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestr√≠a con Espada Corta agrega: +1 Ataque +2 Da√±o +1 Rango Cr√≠tico, -1 AP.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÌa con Espada Corta agrega: +1 Ataque +2 DaÒo +1 Rango CrÌtico, -1 AP.</i>\n\n";
 
 
     }
@@ -203,7 +236,7 @@ public class CorteIncapacitante : Habilidad
       damExtra += 4;
       criticoRangoHab = 2;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestr√≠a con Espada Corta agrega: +1 Ataque +4 Da√±o +2 Rango Cr√≠tico.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÌa con Espada Corta agrega: +1 Ataque +4 DaÒo +2 Rango CrÌtico.</i>\n\n";
 
     }
     else if (NivelMaestria == 5)
@@ -212,7 +245,7 @@ public class CorteIncapacitante : Habilidad
       damExtra += 4;
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestr√≠a con Espada Corta agrega: Remueve Cooldown, +2 Ataque +4 Da√±o +1 Rango Cr√≠tico.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÌa con Espada Corta agrega: Remueve Cooldown, +2 Ataque +4 DaÒo +1 Rango CrÌtico.</i>\n\n";
 
     }
 
@@ -224,7 +257,7 @@ public class CorteIncapacitante : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
   {
 
-    if (obj is Unidad) //Ac√° van los efectos a Unidades.
+    if (obj is Unidad) //Ac· van los efectos a Unidades.
     {
       Unidad objetivo = (Unidad)obj;
       float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -293,7 +326,7 @@ public class CorteIncapacitante : Habilidad
 
       objetivo.AplicarDebuffPorAtaquesreiterados(1);
     }
-    else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+    else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
     {
       Obstaculo objetivo = (Obstaculo)obj;
       //---
@@ -322,7 +355,7 @@ public class CorteIncapacitante : Habilidad
   void EfectoAdicional(Unidad objetivo)
   {
 
-    int DC = 7 + (int)scEstaUnidad.mod_CarAgilidad; //DC de la tirada de salvaci√≥n
+    int DC = 7 + (int)scEstaUnidad.mod_CarAgilidad; //DC de la tirada de salvaciÛn
 
     if (NIVEL > 2) { DC++; }
 
@@ -332,10 +365,10 @@ public class CorteIncapacitante : Habilidad
       int duracion = 2;
       if (NIVEL == 5) { duracion++; }
        /////////////////////////////////////////////
-      //BUFF ---- As√≠ se aplica un buff/debuff
+      //BUFF ---- AsÌ se aplica un buff/debuff
       Buff buff = new Buff();
        buff.buffNombre = "Incapacitado";
-       buff.buffDescr = "Inm√≥vil, Melee solo adyacente.";
+       buff.buffDescr = "InmÛvil, Melee solo adyacente.";
        buff.boolfDebufftBuff = false;
        buff.DuracionBuffRondas = duracion;
        buff.cantDanioPorcentaje -= 20;
@@ -343,7 +376,7 @@ public class CorteIncapacitante : Habilidad
        buff.cantAtAgi -= 2;
        buff.AplicarBuff(objetivo);
        objetivo.estado_inmovil = duracion;
-       // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
 
@@ -361,7 +394,7 @@ public class CorteIncapacitante : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si est√° en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si est· en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -383,7 +416,7 @@ public class CorteIncapacitante : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambi√©n
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiÈn
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -483,10 +516,10 @@ public class CorteIncapacitante : Habilidad
         
       }
 
-       //Se fija si las 3 casillas de la columna 1 est√°n vacias
+       //Se fija si las 3 casillas de la columna 1 est·n vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //si alguna de las 3 tiene algo, no aumenta el rango melee
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //si alguna de las 3 tiene algo, no aumenta el rango melee
           {
             return 0;
           }
@@ -500,7 +533,7 @@ public class CorteIncapacitante : Habilidad
 
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna2) 
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //y si alguna de las 3 tiene algo, aumenta solo en 1 
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //y si alguna de las 3 tiene algo, aumenta solo en 1 
           {
             return 1;
           }

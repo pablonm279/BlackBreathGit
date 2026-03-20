@@ -37,9 +37,10 @@ public class Enmendar : Habilidad
       requiereRecurso = 1; //esto es para que el boton no se active al apretar si no tiene X recursos (ej Flecha). Ver en BotonHabilidad.
       if(NIVEL == 4){requiereRecurso = 0;}
     }
-        public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int poderActual = statsUI.Poder;
@@ -55,10 +56,15 @@ public class Enmendar : Habilidad
 
       string tituloEs = "Enmendar I";
       string tituloEn = "Mend I";
+      string tituloPt = "Remendar I";
       if (NIVEL == 2) { tituloEs = "Enmendar II"; tituloEn = "Mend II"; }
       if (NIVEL == 3) { tituloEs = "Enmendar III"; tituloEn = "Mend III"; }
       if (NIVEL == 4) { tituloEs = "Enmendar IV a"; tituloEn = "Mend IV a"; }
       if (NIVEL == 5) { tituloEs = "Enmendar IV b"; tituloEn = "Mend IV b"; }
+      if (NIVEL == 2) { tituloPt = "Remendar II"; }
+      if (NIVEL == 3) { tituloPt = "Remendar III"; }
+      if (NIVEL == 4) { tituloPt = "Remendar IV a"; }
+      if (NIVEL == 5) { tituloPt = "Remendar IV b"; }
 
       string bonusPlanoTexto = bonusPlano > 0 ? $" + {bonusPlano}" : "";
       string cuerpo = "";
@@ -72,6 +78,17 @@ public class Enmendar : Habilidad
         cuerpo += consumeFervor
           ? "<b>On cast:</b> Consumes 1 Fervor"
           : "<b>On cast:</b> Does not consume Fervor";
+      }
+      else if (esPortugues)
+      {
+        cuerpo += $"<b>Tipo:</b> Alcance ({alcance} de alcance)\n";
+        cuerpo += "<b>Alvo:</b> 1 unidade no alcance\n";
+        cuerpo += $"<b>Cura:</b> Aleatorio 4-18{bonusPlanoTexto} + <color=#ea0606>Poder ({poderActual})</color> + Fervor ({fervorActual})\n";
+        cuerpo += "<b>Tipo de cura:</b> Cura magica\n";
+        cuerpo += "<b>Requisito:</b> Precisa de pelo menos 1 Fervor para ativar\n";
+        cuerpo += consumeFervor
+          ? "<b>Ao usar:</b> Consome 1 Fervor"
+          : "<b>Ao usar:</b> Nao consome Fervor";
       }
       else
       {
@@ -87,12 +104,16 @@ public class Enmendar : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
         : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "A restorative spell that scales with current Fervor and Power."
+          : esPortugues
+            ? "Uma magia restauradora que escala com o Fervor atual e o Poder."
           : "Un hechizo restaurador que escala con el Fervor actual y el Poder.",
         cuerpo,
         costos,
@@ -109,6 +130,12 @@ public class Enmendar : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 flat healing.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 flat healing.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (no Fervor consumption) or Option B (keeps Fervor consumption).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 cura plana.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 cura plana.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (sem consumo de Fervor) ou Opcao B (mantem consumo de Fervor).</color>"; }
       }
       else
       {

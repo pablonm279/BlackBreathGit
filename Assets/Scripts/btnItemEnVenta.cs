@@ -30,6 +30,8 @@ public class btnItemEnVenta : MonoBehaviour
         scSequitoMercaderes.MostrarInventarioVenta();
 
         CampaignManager.Instance.CambiarOroActual(-itemRepresentado.iPrecio);
+        RuntimeAnalytics.TrackResourceSink("gold", itemRepresentado.iPrecio, "merchant_item", RuntimeAnalytics.ItemToken(itemRepresentado));
+        RuntimeAnalytics.TrackDesign("merchant", "buy", RuntimeAnalytics.ItemToken(itemRepresentado));
       }
 
     }

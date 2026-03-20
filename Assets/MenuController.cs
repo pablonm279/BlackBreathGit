@@ -17,8 +17,10 @@ public class MenuController : MonoBehaviour
 
     public GameObject logoIngles;
     public GameObject logoEspaniol;
+    public GameObject logoPortugues;
     public GameObject disclaimerIngles;
     public GameObject disclaimerEspaniol;
+    public GameObject disclaimerPortugues;
     public GameObject Opciones;
 
     private readonly List<Button> botonesCargarPartida = new List<Button>();
@@ -50,20 +52,7 @@ public class MenuController : MonoBehaviour
         RecolectarBotonesCargarPartida();
         RefrescarBotonesCargarPartida();
 
-        if (TRADU.i.nIdioma == 1)
-        {
-            logoEspaniol.SetActive(true);
-            logoIngles.SetActive(false);
-            disclaimerIngles.SetActive(false);
-            disclaimerEspaniol.SetActive(true);
-        }
-        else if (TRADU.i.nIdioma == 2)
-        {
-            logoEspaniol.SetActive(false);
-            logoIngles.SetActive(true);
-            disclaimerIngles.SetActive(true);
-            disclaimerEspaniol.SetActive(false);
-        }
+        AplicarVersionesIdioma();
 
         Opciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
     }
@@ -80,10 +69,40 @@ public class MenuController : MonoBehaviour
 
     public void CambiarIdioma(int n)
     {
+        int idioma = (n == TRADU.IdiomaPortugues) ? TRADU.IdiomaPortugues
+            : (n == TRADU.IdiomaIngles ? TRADU.IdiomaIngles : TRADU.IdiomaEspanol);
+            print("cambiar idioma "+idioma);
+        PlayerPrefs.SetInt("nIdioma", idioma);
+        PlayerPrefs.Save();
+
+        if (TRADU.i != null)
+        {
+            TRADU.i.nIdioma = idioma;
+            TRADU.i.ActualizarIdioma();
+        }
+
+        AplicarVersionesIdioma();
+    }
+
+    private void AplicarVersionesIdioma()
+    {
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaEspanol);
+        bool usarIngles = idioma == TRADU.IdiomaIngles;
+        bool usarPortugues = idioma == TRADU.IdiomaPortugues;
+
+        if (logoEspaniol != null) { logoEspaniol.SetActive(!usarIngles && (!usarPortugues || logoPortugues == null)); }
+        if (logoIngles != null) { logoIngles.SetActive(usarIngles); }
+        if (logoPortugues != null) { logoPortugues.SetActive(usarPortugues); }
+
+        if (disclaimerEspaniol != null) { disclaimerEspaniol.SetActive(!usarIngles && (!usarPortugues || disclaimerPortugues == null)); }
+        if (disclaimerIngles != null) { disclaimerIngles.SetActive(usarIngles); }
+        if (disclaimerPortugues != null) { disclaimerPortugues.SetActive(usarPortugues); }
     }
 
     public void OnNuevaPartida()
     {
+        RuntimeAnalytics.TrackDesign("ui", "main_menu", "new_game");
+        RuntimeAnalytics.TrackProgressionStart("campaign", "new_game");
         MarcarTutorialComoCompletado();
         SaveGameService.ClearPendingLoad();
         StartCoroutine(CargarJuego());
@@ -91,6 +110,8 @@ public class MenuController : MonoBehaviour
 
     public void OnNuevaPartidaTutorial()
     {
+        RuntimeAnalytics.TrackDesign("ui", "main_menu", "new_game_tutorial");
+        RuntimeAnalytics.TrackProgressionStart("tutorial", "campaign", "intro");
         ReiniciarTutorial();
         SaveGameService.ClearPendingLoad();
         StartCoroutine(CargarJuego());
@@ -105,6 +126,7 @@ public class MenuController : MonoBehaviour
             return;
         }
 
+        RuntimeAnalytics.TrackDesign("ui", "main_menu", "continue_game");
         StartCoroutine(CargarJuego());
     }
 
@@ -118,6 +140,7 @@ public class MenuController : MonoBehaviour
         }
         else
         {
+            RuntimeAnalytics.TrackDesign("ui", "main_menu", "options_open");
             UIFadeSlideUtility.Show(Opciones);
         }
     }
@@ -133,6 +156,7 @@ public class MenuController : MonoBehaviour
 
     public void OnFeedback()
     {
+        RuntimeAnalytics.TrackDesign("ui", "main_menu", "feedback_open");
         Application.OpenURL("https://forms.gle/JBSKDkpa9MSfQx8k6");
     }
 

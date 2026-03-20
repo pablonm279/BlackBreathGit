@@ -96,7 +96,7 @@ public abstract class Arma : Item
             if (buffResAcido != 0)
                 itemDescripcion += $"\nRes. Ácido: {(buffResAcido > 0 ? "+" : "")}{buffResAcido}";
             if (buffResNecro != 0)
-                itemDescripcion += $"\nRes. Necrítico: {(buffResNecro > 0 ? "+" : "")}{buffResNecro}";
+                itemDescripcion += $"\nRes. necrótico: {(buffResNecro > 0 ? "+" : "")}{buffResNecro}";
             if (buffResDivino != 0)
                 itemDescripcion += $"\nRes. Divino: {(buffResDivino > 0 ? "+" : "")}{buffResDivino}";
         }

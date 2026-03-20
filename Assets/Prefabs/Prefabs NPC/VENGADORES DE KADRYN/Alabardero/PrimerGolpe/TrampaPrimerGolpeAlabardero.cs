@@ -47,22 +47,23 @@ public class TrampaPrimerGolpeAlabardero : Trampa
     VerificarCreadorSigueActivo();
   }
 
-  public async override void AplicarEfectosTrampa(Unidad objetivo)
+  public override void AplicarEfectosTrampa(Unidad objetivo)
   {
     if (activa != true)
     {
       return;
     }
-    if (unidadCreadora != null)
+    if (unidadCreadora != null && tiroArco != null && objetivo != null)
     {
 
       unidadCreadora.ReproducirAnimacionAtaque();
 
-      await BattleManager.DelayCombateAsync(200);
-
       tiroArco.AplicarEfectosHabilidad(objetivo);
 
-      BattleManager.Instance.EscribirLog(unidadCreadora.uNombre + TRADU.i.Traducir(" reacciona con Primer Golpe."));
+      if (BattleManager.Instance != null && TRADU.i != null)
+      {
+        BattleManager.Instance.EscribirLog(unidadCreadora.uNombre + TRADU.i.Traducir(" reacciona con Primer Golpe."));
+      }
 
       //--------------------------
 

@@ -12,6 +12,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     private const string PrefDoF = "gfx_dof_enabled";
     private const string PrefVsync = "gfx_vsync";
     private const string PrefFpsLimit = "gfx_fps_limit";
+    private const string PrefBrightness = "gfx_brightness";
+    private const float DefaultBrightness = 0.5f;
 
     public Slider volMusicaSlider;
     public AudioSource musicaFondo;
@@ -20,6 +22,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public Toggle EspaniolToggle;
 
     public Toggle EnglishToggle;
+    public Toggle PortuguesToggle;
     public TextMeshProUGUI restartRequiredText;
 
     bool musicInBackground = true;
@@ -49,54 +52,87 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public Toggle vSyncToggle;
     public TMP_Dropdown fpsLimitDropdown;
 
+    [Header("Brillo")]
+    public Slider brilloSlider;
+    public TextMeshProUGUI brilloLabel;
+    
 
     void Start()
     {
-
+        InicializarCalibracionVisualPorDefecto();
+       
         LlenarDropdownResoluciones();
         AplicarEfectosEnUI();
 
     }
     void OnEnable()
     {
+        InicializarCalibracionVisualPorDefecto();
+        
         AplicarEfectosEnUI();
+    }
+
+    private void InicializarCalibracionVisualPorDefecto()
+    {
+        if (PlayerPrefs.HasKey(PrefBrightness)) { return; }
+
+        float brilloGuardado = PlayerPrefs.GetFloat("brillo", DefaultBrightness);
+        PlayerPrefs.SetFloat(PrefBrightness, brilloGuardado);
+        if (PlayerPrefs.HasKey("brillo"))
+        {
+            PlayerPrefs.DeleteKey("brillo");
+        }
+        PlayerPrefs.Save();
     }
 
 
     public void AplicarEfectosEnUI()
     {
-        // Volumen de la mÃ¡sica
+        // Volumen de la másica
         float volumenMusica = PlayerPrefs.GetFloat("Vol_Musica", 0.8f);
-        if (volMusicaSlider.value > 0.9f)
+        if (volumenMusica > 0.9f)
         { volumenMusica = 0.9f; }
-        volMusicaSlider.value = volumenMusica;
-        musicaFondo.volume = volumenMusica;
+        if (volMusicaSlider != null)
+        {
+            volMusicaSlider.SetValueWithoutNotify(volumenMusica);
+        }
+        if (musicaFondo != null)
+        {
+            musicaFondo.volume = volumenMusica;
+        }
 
         // Sonido en segundo plano
         musicInBackground = PlayerPrefs.GetInt("Background_Sound", 1) == 1;
-        musicInBackgroundToggle.isOn = musicInBackground;
+        if (musicInBackgroundToggle != null)
+        {
+            musicInBackgroundToggle.SetIsOnWithoutNotify(musicInBackground);
+        }
 
 
         //Idioma
-        nIdioma = PlayerPrefs.GetInt("nIdioma", 1);
+        nIdioma = PlayerPrefs.GetInt("nIdioma", 2);
 
 
         EspaniolToggle.SetIsOnWithoutNotify(false);
         EnglishToggle.SetIsOnWithoutNotify(false);
+        PortuguesToggle.SetIsOnWithoutNotify(false); 
 
-        if (nIdioma == 1)
+        if (nIdioma == TRADU.IdiomaEspanol)
         { EspaniolToggle.SetIsOnWithoutNotify(true); }
-        else if (nIdioma == 2)
+        else if (nIdioma == TRADU.IdiomaIngles)
         { EnglishToggle.SetIsOnWithoutNotify(true); }
+        else if (nIdioma == TRADU.IdiomaPortugues )
+        { PortuguesToggle.SetIsOnWithoutNotify(true); }
         else
-        { EnglishToggle.SetIsOnWithoutNotify(true); }
+        { EspaniolToggle.SetIsOnWithoutNotify(true);}
+        ActualizarEtiquetaBrillo();
 
         if (PanelControles != null && PanelControles.activeInHierarchy)
         {
             AplicarIdiomaPanelControles();
         }
 
-        //Pantalla y resoluciÃ³n
+        //Pantalla y resolución
         if (resolucionDropdown != null && resolucionesSoportadas.Count > 0)
         {
             int guardado = PlayerPrefs.GetInt("res_index", resolucionActualIndex);
@@ -116,6 +152,14 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         int calidadIndex = PlayerPrefs.GetInt("graficos_index", QualitySettings.GetQualityLevel());
         //        print($"Obteniendo calidad grafica nivel {calidadIndex}");
 
+        // Brillo
+        float brillo = Mathf.Clamp01(PlayerPrefs.GetFloat(PrefBrightness, DefaultBrightness));
+        if (brilloSlider != null)
+        {
+            brilloSlider.SetValueWithoutNotify(brillo);
+        }
+        VisualPolishRuntime.ApplyPostProcessingPrefsNow();
+
         QualitySettings.SetQualityLevel(calidadIndex, true);
         PlayerPrefs.SetInt("graficos_index", calidadIndex); // asegura persistencia inmediata
         PlayerPrefs.Save();
@@ -123,7 +167,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         TraducirDropdownGraficos();
         TraducirDropdownDificultad();
 
-        int difGuardada = PlayerPrefs.GetInt("dificultad_index", 2); // 2 = Normal por defecto (Ã­ndice dropdown)
+        int difGuardada = PlayerPrefs.GetInt("dificultad_index", 2); // 2 = Normal por defecto (í­ndice dropdown)
         difGuardada = Mathf.Clamp(difGuardada, 0, Mathf.Max(0, dificultadDropdown.options.Count - 1));
         dificultadDropdown.SetValueWithoutNotify(difGuardada);
 
@@ -138,7 +182,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void CambiarEfectos()
     {
-        // Volumen de la mÃ¡sica
+        // Volumen de la másica
         PlayerPrefs.SetFloat("Vol_Musica", volMusicaSlider.value);
         if (musicaFondo.GetComponent<MusicManager>() != null)
         {
@@ -146,30 +190,26 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         }
         else { musicaFondo.volume = volMusicaSlider.value; }
 
-
+        // Brillo
+        if (brilloSlider != null)
+        {
+            PlayerPrefs.SetFloat(PrefBrightness, Mathf.Clamp01(brilloSlider.value));
+            VisualPolishRuntime.ApplyPostProcessingPrefsNow();
+        }
+      
         // Sonido en segundo plano
         PlayerPrefs.SetInt("Background_Sound", musicInBackgroundToggle.isOn ? 1 : 0);
         Application.runInBackground = musicInBackgroundToggle.isOn;
 
 
         // Idioma
-        if (EspaniolToggle.isOn)
-        {
-            nIdioma = 1;
-            PlayerPrefs.SetInt("nIdioma", nIdioma);
-            if (TRADU.i != null) TRADU.i.nIdioma = nIdioma;
-            SetRestartRequiredText("Se requiere reiniciar para aplicar los cambios.");
-        }
-        else if (EnglishToggle.isOn)
-        {
-            nIdioma = 2;
-            PlayerPrefs.SetInt("nIdioma", nIdioma);
-            if (TRADU.i != null) TRADU.i.nIdioma = nIdioma;
-            SetRestartRequiredText("Restart required to apply changes.");
+       /* nIdioma = ObtenerIdiomaSeleccionado();
+        print("Obtener Idioma seleccionado: " + nIdioma);
+        PlayerPrefs.SetInt("nIdioma", nIdioma);
+        if (TRADU.i != null) TRADU.i.nIdioma = nIdioma;*/
+        SetRestartRequiredText(ObtenerTextoReinicio(nIdioma));
 
-        }
-
-        // ResoluciÃ³n y pantalla completa
+        // Resolución y pantalla completa
 
         AplicarResolucion();
 
@@ -185,6 +225,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void AbrirPanelAudio()
     {
+        RuntimeAnalytics.TrackDesign("ui", "options", "audio_panel");
         PanelAudio.SetActive(true);
         PanelGraficos.SetActive(false);
         PanelControles.SetActive(false);
@@ -194,15 +235,18 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void AbrirPanelGraficos()
     {
+        RuntimeAnalytics.TrackDesign("ui", "options", "graphics_panel");
         PanelAudio.SetActive(false);
         PanelGraficos.SetActive(true);
         PanelControles.SetActive(false);
         PanelGameplay.SetActive(false);
         PanelIdioma.SetActive(false);
+       
     }
 
     public void AbrirPanelControles()
     {
+        RuntimeAnalytics.TrackDesign("ui", "options", "controls_panel");
         PanelAudio.SetActive(false);
         PanelGraficos.SetActive(false);
         PanelControles.SetActive(true);
@@ -213,6 +257,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void AbrirPanelGameplay()
     {
+        RuntimeAnalytics.TrackDesign("ui", "options", "gameplay_panel");
         PanelAudio.SetActive(false);
         PanelGraficos.SetActive(false);
         PanelControles.SetActive(false);
@@ -221,6 +266,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     }
     public void AbrirPanelIdioma()
     {
+        RuntimeAnalytics.TrackDesign("ui", "options", "language_panel");
         PanelAudio.SetActive(false);
         PanelGraficos.SetActive(false);
         PanelControles.SetActive(false);
@@ -240,6 +286,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void cerrarOpciones()
     {
+         CambiarEfectos();
         this.gameObject.SetActive(false);
 
     }
@@ -252,7 +299,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         resolucionesSoportadas.Clear();
         resolucionDropdown.ClearOptions();
 
-        // Resoluciones tÃ­picas que queremos mostrar
+        // Resoluciones tí­picas que queremos mostrar
         List<Vector2Int> resolucionesDeseadas = new List<Vector2Int>()
     {
         new Vector2Int(1280, 720),
@@ -281,7 +328,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
                         opciones.Add(texto);
                         resolucionesSoportadas.Add(r);
 
-                        // Detectar resoluciÃ³n actual
+                        // Detectar resolución actual
                         if (r.width == Screen.currentResolution.width &&
                             r.height == Screen.currentResolution.height)
                         {
@@ -292,7 +339,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             }
         }
 
-        // Si no se encontrÃ³ ninguna deseada, fallback: agregar la actual
+        // Si no se encontró ninguna deseada, fallback: agregar la actual
         if (opciones.Count == 0)
         {
             string actual = $"{Screen.currentResolution.width} x {Screen.currentResolution.height}";
@@ -303,14 +350,14 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
         resolucionDropdown.AddOptions(opciones);
 
-        // Cargar Ã­ndice guardado
+        // Cargar í­ndice guardado
         int guardado = PlayerPrefs.GetInt("res_index", indiceActualPorDefecto);
         guardado = Mathf.Clamp(guardado, 0, resolucionesSoportadas.Count - 1);
 
         resolucionActualIndex = guardado;
         resolucionDropdown.SetValueWithoutNotify(resolucionActualIndex);
 
-        // Aplicar resoluciÃ³n inicial
+        // Aplicar resolución inicial
         AplicarResolucion();
     }
 
@@ -326,9 +373,9 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
         bool full = fullscreenToggle.isOn;
 
-        // print($"Aplicando resoluciÃ³n {r.width}x{r.height} | Fullscreen = {full}");
+        // print($"Aplicando resolución {r.width}x{r.height} | Fullscreen = {full}");
 
-        // Aplicar TODO junto: resoluciÃ³n + fullscreen
+        // Aplicar TODO junto: resolución + fullscreen
         Screen.SetResolution(r.width, r.height, full);
 
         // Guardamos
@@ -354,6 +401,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         int index = dificultadDropdown.value;
         PlayerPrefs.SetInt("dificultad_index", index);
         PlayerPrefs.Save();
+        RuntimeAnalytics.TrackDesign("ui", "options", "difficulty_" + index);
 
         if (CampaignManager.Instance != null) { CampaignManager.Instance.AjustarDificultad(); }
     }
@@ -378,6 +426,12 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             graficosDropdown.options[1].text = "Medium";
             graficosDropdown.options[2].text = "Ultra";
             //   graficosDropdown.options[3].text = "Ultra";
+        }
+        else if (idioma == TRADU.IdiomaPortugues)
+        {
+            graficosDropdown.options[0].text = "Baixa";
+            graficosDropdown.options[1].text = "Media";
+            graficosDropdown.options[2].text = "Ultra";
         }
 
 
@@ -406,6 +460,14 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             dificultadDropdown.options[3].text = "Hard";
             dificultadDropdown.options[4].text = "Very Hard";
         }
+        else if (idioma == TRADU.IdiomaPortugues)
+        {
+            dificultadDropdown.options[0].text = "Muito Facil";
+            dificultadDropdown.options[1].text = "Facil";
+            dificultadDropdown.options[2].text = "Normal";
+            dificultadDropdown.options[3].text = "Dificil";
+            dificultadDropdown.options[4].text = "Muito Dificil";
+        }
     }
 
     public void AplicarModoRapido()
@@ -413,6 +475,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         bool modorapido = modorapidoToggle.isOn;
         PlayerPrefs.SetInt("modoRapido", modorapido ? 1 : 0);
         PlayerPrefs.Save();
+        RuntimeAnalytics.TrackDesign("ui", "options", "fast_mode_" + RuntimeAnalytics.BoolToken(modorapido));
 
     }
 
@@ -422,6 +485,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public void AplicarDoFToggle() { GuardarOpcionesVisuales(); PlayerPrefs.Save(); }
     public void AplicarVSyncToggle() { GuardarOpcionesVisuales(); AplicarPreferenciasSyncYFPS(); PlayerPrefs.Save(); }
     public void AplicarFPSLimit() { GuardarOpcionesVisuales(); AplicarPreferenciasSyncYFPS(); PlayerPrefs.Save(); }
+
 
     private void CargarOpcionesVisuales()
     {
@@ -443,6 +507,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             InicializarDropdownFPS();
             fpsLimitDropdown.SetValueWithoutNotify(MapearFPSAIndice(fpsLimit));
         }
+
+       
     }
 
     private void GuardarOpcionesVisuales()
@@ -458,6 +524,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             int fps = MapearIndiceAFPS(fpsLimitDropdown.value);
             PlayerPrefs.SetInt(PrefFpsLimit, fps);
         }
+
+      
     }
 
     private void AplicarPreferenciasSyncYFPS()
@@ -490,7 +558,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             "120 FPS",
             "144 FPS",
             "240 FPS",
-            "Sin lÃ­mite"
+            "Sin lí­mite"
         });
     }
 
@@ -524,8 +592,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         if (childCount <= 0) return;
 
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : nIdioma;
-        int childIdioma = idioma == 2 ? 1 : 0;
-        int panelesIdioma = Mathf.Min(2, childCount);
+        int childIdioma = ObtenerIndicePanelIdioma(idioma, childCount);
+        int panelesIdioma = Mathf.Min(3, childCount);
 
         for (int i = 0; i < panelesIdioma; i++)
         {
@@ -538,11 +606,172 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         }
     }
 
+    private int ObtenerIdiomaSeleccionado()
+    {
+        Debug.Log("PT: " + (PortuguesToggle != null && PortuguesToggle.isOn));
+        Debug.Log("EN: " + (EnglishToggle != null && EnglishToggle.isOn));
+        Debug.Log("ES: " + (EspaniolToggle != null && EspaniolToggle.isOn));
+
+        if (PortuguesToggle != null && PortuguesToggle.isOn)
+            return TRADU.IdiomaPortugues;
+
+        if (EnglishToggle != null && EnglishToggle.isOn)
+            return TRADU.IdiomaIngles;
+
+        return TRADU.IdiomaEspanol;
+    }
+
+public void OnEspanolToggle(bool isOn)
+{
+    if (!isOn) return;
+    CambiarIdioma(TRADU.IdiomaEspanol);
+}
+
+public void OnEnglishToggle(bool isOn)
+{
+    if (!isOn) return;
+    CambiarIdioma(TRADU.IdiomaIngles);
+}
+
+    public void OnPortuguesToggle(bool isOn)
+    {
+        if (!isOn) return;
+        CambiarIdioma(TRADU.IdiomaPortugues);
+    }
+
+public void CambiarIdioma(int idioma)
+{
+    Debug.Log("ANTES de guardar nIdioma pref = " + PlayerPrefs.GetInt("nIdioma", -999));
+
+    nIdioma = idioma;
+    PlayerPrefs.SetInt("nIdioma", nIdioma);
+    PlayerPrefs.Save();
+
+    Debug.Log("DESPUES de guardar nIdioma variable = " + nIdioma);
+    Debug.Log("DESPUES de guardar nIdioma pref = " + PlayerPrefs.GetInt("nIdioma", -999));
+   
+
+    /*if (TRADU.i != null)
+    {
+        TRADU.i.nIdioma = nIdioma;
+        TRADU.i.ActualizarIdioma();
+    }*/
+}
+
+    private static int ObtenerIndicePanelIdioma(int idioma, int childCount)
+    {
+        if (idioma == TRADU.IdiomaIngles && childCount > 1)
+        {
+            return 1;
+        }
+
+        if (idioma == TRADU.IdiomaPortugues && childCount > 2)
+        {
+            return 2;
+        }
+
+    
+
+        return 0;
+    }
+
+    private static string ObtenerTextoReinicio(int idioma)
+    {
+        if (idioma == TRADU.IdiomaIngles)
+        {
+            return "Restart required to apply changes.";
+        }
+
+        if (idioma == TRADU.IdiomaPortugues)
+        {
+            return "E preciso reiniciar para aplicar as alteracoes.";
+        }
+
+        return "Se requiere reiniciar para aplicar los cambios.";
+    }
+
     private void SetRestartRequiredText(string text)
     {
         if (restartRequiredText != null)
         {
             restartRequiredText.text = text;
+        }
+    }
+
+   
+
+    
+
+  
+
+
+    private static void ReposicionarSliderDebajo(RectTransform sliderRect)
+    {
+        if (sliderRect == null) { return; }
+        RectTransform parent = sliderRect.parent as RectTransform;
+        if (parent == null) { return; }
+
+        float minY = float.MaxValue;
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            RectTransform child = parent.GetChild(i) as RectTransform;
+            if (child == null || child == sliderRect) { continue; }
+            minY = Mathf.Min(minY, child.anchoredPosition.y);
+        }
+
+        if (minY == float.MaxValue) { minY = -140f; }
+
+        Vector2 nuevaPos = sliderRect.anchoredPosition;
+        nuevaPos.y = minY - 95f;
+        sliderRect.anchoredPosition = nuevaPos;
+    }
+
+    private static TextMeshProUGUI ResolverEtiquetaSlider(Transform root)
+    {
+        if (root == null) { return null; }
+
+        TextMeshProUGUI[] textos = root.GetComponentsInChildren<TextMeshProUGUI>(true);
+        if (textos == null || textos.Length == 0) { return null; }
+
+        for (int i = 0; i < textos.Length; i++)
+        {
+            TextMeshProUGUI t = textos[i];
+            if (t == null) { continue; }
+
+            string n = t.name.ToLowerInvariant();
+            string contenido = t.text.ToLowerInvariant();
+            if (n.Contains("music") || n.Contains("vol") || contenido.Contains("volumen") || contenido.Contains("volume"))
+            {
+                return t;
+            }
+        }
+
+        return textos[0];
+    }
+
+    
+
+    private void ActualizarEtiquetaBrillo()
+    {
+        if (brilloLabel == null && brilloSlider != null)
+        {
+            brilloLabel = ResolverEtiquetaSlider(brilloSlider.transform);
+        }
+
+        if (brilloLabel == null) { return; }
+
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : nIdioma;
+        if (idioma == TRADU.IdiomaIngles)
+        {
+            brilloLabel.text = "Brightness";
+        }
+        else if (idioma == TRADU.IdiomaPortugues)
+        {
+            brilloLabel.text = "Brilho";
+        }
+        else
+        {
+            brilloLabel.text = "Brillo";
         }
     }
 
@@ -552,6 +781,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void btnSalir()
     {
+        RuntimeAnalytics.TrackDesign("ui", "options", "quit_button");
         if (confirmarSalir != null)
         {
             confirmarSalir.SetActive(true);

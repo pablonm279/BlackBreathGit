@@ -616,7 +616,7 @@ MonoBehaviour:
   inmunidad_Ceguera: 1
   inmunidad_Oscuridad: 0
   inmunidad_Trampas: 0
-  bonusdam_fuego: 0
+  bonusdam_fuego: 3
   bonusdam_hielo: 0
   bonusdam_rayo: 0
   bonusdam_acido: 0
@@ -690,6 +690,7 @@ MonoBehaviour:
   esRango: 0
   bPuedeVerEscondidos: 1
   unicoEnCombate: 1
+  tierEnemigo: 3
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0

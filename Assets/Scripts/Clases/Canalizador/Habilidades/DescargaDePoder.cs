@@ -14,7 +14,7 @@ public class DescargaDePoder : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
 
    
     public override void  Awake()
@@ -52,9 +52,10 @@ public class DescargaDePoder : Habilidad
       
     }
    
-        public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int poderActual = statsUI.Poder;
@@ -66,10 +67,15 @@ public class DescargaDePoder : Habilidad
 
       string tituloEs = "Descarga de Poder I";
       string tituloEn = "Power Discharge I";
+      string tituloPt = "Descarga de Poder I";
       if (NIVEL == 2) { tituloEs = "Descarga de Poder II"; tituloEn = "Power Discharge II"; }
       if (NIVEL == 3) { tituloEs = "Descarga de Poder III"; tituloEn = "Power Discharge III"; }
       if (NIVEL == 4) { tituloEs = "Descarga de Poder IV a"; tituloEn = "Power Discharge IV a"; }
       if (NIVEL == 5) { tituloEs = "Descarga de Poder IV b"; tituloEn = "Power Discharge IV b"; }
+      if (NIVEL == 2) { tituloPt = "Descarga de Poder II"; }
+      if (NIVEL == 3) { tituloPt = "Descarga de Poder III"; }
+      if (NIVEL == 4) { tituloPt = "Descarga de Poder IV a"; }
+      if (NIVEL == 5) { tituloPt = "Descarga de Poder IV b"; }
 
       string bonusAtaqueEs = bonusAtaqueNivel != 0 ? $" + {bonusAtaqueNivel}" : "";
       string bonusAtaqueEn = bonusAtaqueNivel != 0 ? $" + {bonusAtaqueNivel}" : "";
@@ -89,6 +95,13 @@ public class DescargaDePoder : Habilidad
         cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color>  {bonusAtaqueEn} vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
         cuerpo += $"<b>Damage:</b> {danioEn} | <b>Type:</b> Arcane";
       }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Distancia (5 alcance)\n";
+        cuerpo += "<b>Alvo:</b> Area em T (3 horizontal + 2 no fundo)\n";
+        cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defesa. Falha critica: 1. Critico: {criticoMin}-20\n";
+        cuerpo += $"<b>Dano:</b> {danioEs} | <b>Tipo:</b> Arcano";
+      }
       else
       {
         cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
@@ -99,18 +112,22 @@ public class DescargaDePoder : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
+          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "The Channeler releases a concentrated shockwave that sweeps enemies in a T pattern."
+          : esPortugues
+            ? "O Canalizador libera uma descarga concentrada que varre inimigos em padrao de T."
           : "El Canalizador libera una descarga concentrada que barre enemigos en patron de T.",
         cuerpo,
         costos,
         "#5dade2");
 
-      bool mostrarProximoNivel = EsEscenaCampaÒa() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+      bool mostrarProximoNivel = EsEscenaCampa√±a() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)
       {
         return;
@@ -121,6 +138,12 @@ public class DescargaDePoder : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5 damage.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack roll bonus.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 AP) or Option B (-1 cooldown).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5 de dano.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 AP) ou Opcao B (-1 recarga).</color>"; }
       }
       else
       {
@@ -180,7 +203,7 @@ public class DescargaDePoder : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Ac· van los efectos a Unidades.
+     if(obj is Unidad) //Ac√° van los efectos a Unidades.
      { 
       
         Unidad objetivo = (Unidad)obj;
@@ -254,7 +277,7 @@ public class DescargaDePoder : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---

@@ -8,6 +8,7 @@ public class TextoInicialManager : MonoBehaviour
 
     public GameObject versionEspañol;
     public GameObject versionIngles;
+    public GameObject versionPortugues;
 
 
     void Start()
@@ -18,30 +19,33 @@ public class TextoInicialManager : MonoBehaviour
             Invoke("Continuar", 0.5f);
         }
       
-        if (TRADU.i.nIdioma == 1)
-        {
-            versionEspañol.SetActive(true);
-            versionIngles.SetActive(false);
-        }
-        if (TRADU.i.nIdioma == 2)
-        {
-            versionEspañol.SetActive(false);
-            versionIngles.SetActive(true);
-        }
+        AplicarVersionPorIdioma();
     }
 
 
 
     public void Continuar()
     {
+      
         gameObject.SetActive(false);
         CampaignManager.Instance.scTutorialManager.ComenzarTutorial();
     }
 
-     public void ContinuarZonaNueva()
+    public void ContinuarZonaNueva()
     {
         gameObject.SetActive(false);
         CampaignManager.Instance.ContinuarASiguienteZona();
+    }
+
+    private void AplicarVersionPorIdioma()
+    {
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+        bool usarIngles = idioma == TRADU.IdiomaIngles;
+        bool usarPortugues = idioma == TRADU.IdiomaPortugues;
+
+        if (versionEspañol != null) { versionEspañol.SetActive(!usarIngles && (!usarPortugues || versionPortugues == null)); }
+        if (versionIngles != null) { versionIngles.SetActive(usarIngles); }
+        if (versionPortugues != null) { versionPortugues.SetActive(usarPortugues); }
     }
 
 }

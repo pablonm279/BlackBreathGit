@@ -15,10 +15,10 @@ public class TiroconArcoPotente : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ido - 8: Arcano
 
     private int hAlcance = 7;
-    private int hAncho = 1; //1 - adyancentes también
+    private int hAncho = 2; //1 - adyancentes t
   public override void Awake()
   {
     nombre = "Tiro con Arco Potente";
@@ -57,8 +57,8 @@ public class TiroconArcoPotente : Habilidad
     txtDescripcion = "<color=#5dade2><b>Tiro con Arco Potente</b></color>\n\n";
     txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
     txtDescripcion += "<i>Al golpear TS Fortaleza DC 11: si falla, empuja 1 casilla.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
+    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - DaÃ±o: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo ValentÃ­a: {costoPM} </color>";
     if (TRADU.i.nIdioma == 2)
     {
       txtDescripcion = "<color=#5dade2><b>Powerful Bow Shot</b></color>\n\n";
@@ -68,6 +68,15 @@ public class TiroconArcoPotente : Habilidad
       txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valour Cost: {costoPM} </color>";
 
 
+    }
+    else if (TRADU.i.nIdioma == 3)
+    {
+      nombre = "Tiro com Arco Potente";
+      txtDescripcion = "<color=#5dade2><b>Tiro com Arco Potente</b></color>\n\n";
+      txtDescripcion += "<i>O explorador ataca o inimigo com seu arco.</i>\n\n";
+      txtDescripcion += "<i>Ao acertar, TS Fortaleza CD 11: se falhar, empurra 1 casa.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidade +{bonusAtaque}</color> - Dano: Perfurante 1d10+1- Requer 1 Flecha</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Recarga: {cooldownMax} \n- Custo AP: {costoAP} \n- Custo Valentia: {costoPM} </color>";
     }
     
 
@@ -97,7 +106,7 @@ public class TiroconArcoPotente : Habilidad
     public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
-     if(obj is Unidad) //Acá van los efectos a Unidades.
+     if(obj is Unidad) //A van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -111,11 +120,11 @@ public class TiroconArcoPotente : Habilidad
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
        //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para próximas habilidades de daño del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prximas habilidades de dao del explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de daño solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daño crítico.
+         danioMarca += 15; //Esto se suma al porcentaje de d solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % 
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -153,7 +162,7 @@ public class TiroconArcoPotente : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
         
-        AplicarEfectoPotente(objetivo); //Aplica el efecto de empujar si falla la tirada de salvación
+        AplicarEfectoPotente(objetivo); //Aplica el efecto de empujar si falla la tirada de salvaci
 
 
       }
@@ -166,7 +175,7 @@ public class TiroconArcoPotente : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
-        AplicarEfectoPotente(objetivo); //Aplica el efecto de empujar si falla la tirada de salvación
+        AplicarEfectoPotente(objetivo); //Aplica el efecto de empujar si falla la tirada de sal
 
       }
       else if (resultadoTirada == 3)
@@ -179,12 +188,12 @@ public class TiroconArcoPotente : Habilidad
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 
 
-        AplicarEfectoPotente(objetivo); //Aplica el efecto de empujar si falla la tirada de salvación
+        AplicarEfectoPotente(objetivo); //Aplica el efecto de empujar si falla la tirada de sa
       }
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
+     else if (obj is Obstaculo) // van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---

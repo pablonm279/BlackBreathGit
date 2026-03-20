@@ -18,7 +18,7 @@ public class ContenedorPrefabs : MonoBehaviour
     public Sprite purificadora1;
     public Sprite acechador1;
     public Sprite canalizador1;
-
+    public Sprite duelista1;
 
     [Header("Cuerpos")]
 
@@ -29,6 +29,7 @@ public class ContenedorPrefabs : MonoBehaviour
     public Sprite PurificadoraCuerpo1;
     public Sprite AcechadorCuerpo1;
     public Sprite CanalizadorCuerpo1;
+    public Sprite DuelistaCuerpo1;  
 
 
     [Header("Obstaculos")]

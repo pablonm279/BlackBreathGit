@@ -42,16 +42,22 @@ public class BombaDeHumo : Habilidad
     public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
       int radioZona = NIVEL == 5 ? 2 : 1;
       int duracionHumo = NIVEL == 4 ? 3 : 2;
 
       string tituloEs = "Bomba de Humo I";
       string tituloEn = "Smoke Bomb I";
+      string tituloPt = "Bomba de Fumaca I";
       if (NIVEL == 2) { tituloEs = "Bomba de Humo II"; tituloEn = "Smoke Bomb II"; }
       if (NIVEL == 3) { tituloEs = "Bomba de Humo III"; tituloEn = "Smoke Bomb III"; }
       if (NIVEL == 4) { tituloEs = "Bomba de Humo IV a"; tituloEn = "Smoke Bomb IV a"; }
       if (NIVEL == 5) { tituloEs = "Bomba de Humo IV b"; tituloEn = "Smoke Bomb IV b"; }
+      if (NIVEL == 2) { tituloPt = "Bomba de Fumaca II"; }
+      if (NIVEL == 3) { tituloPt = "Bomba de Fumaca III"; }
+      if (NIVEL == 4) { tituloPt = "Bomba de Fumaca IV a"; }
+      if (NIVEL == 5) { tituloPt = "Bomba de Fumaca IV b"; }
 
       string cuerpo = "";
       if (esIngles)
@@ -63,6 +69,16 @@ public class BombaDeHumo : Habilidad
         cuerpo += $"<b>Smoke trap profile:</b> 30 uses, {duracionHumo} turns duration, persistent\n";
         cuerpo += "<b>On trap trigger (any unit):</b> grants Hidden (1) if not hidden\n";
         cuerpo += "<b>Extra buff for non-Stalker units:</b> 2 turns, +2 Attack, +1 crit range";
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Armadilha de Utilidade (4 de alcance)\n";
+        cuerpo += "<b>Alvo:</b> 1 celula no alcance\n";
+        cuerpo += "<b>Rolagem/Resistencia:</b> nao tem\n";
+        cuerpo += $"<b>Ao usar:</b> cria armadilhas de fumaca em area de raio {radioZona} ao redor da celula alvo\n";
+        cuerpo += $"<b>Perfil da armadilha de fumaca:</b> 30 usos, {duracionHumo} turnos de duracao, persistente\n";
+        cuerpo += "<b>Ao ativar armadilha (qualquer unidade):</b> concede Escondido (1) se nao estava escondido\n";
+        cuerpo += "<b>Buff extra para unidades que nao sao Acechador:</b> 2 turnos, +2 Ataque, +1 faixa de critico";
       }
       else
       {
@@ -77,12 +93,16 @@ public class BombaDeHumo : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
+          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "Creates a smoke field that restores stealth and buffs allies moving through it."
+          : esPortugues
+            ? "Cria um campo de fumaca que restaura furtividade e fortalece aliados que passam por ele."
           : "Crea un campo de humo que restaura sigilo y buffea aliados que lo atraviesan.",
         cuerpo,
         costos,
@@ -99,6 +119,12 @@ public class BombaDeHumo : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 cooldown.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 AP cost.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 turn smoke duration) or Option B (radius 2 area).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 recarga.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 custo AP.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 turno de duracao da fumaca) ou Opcao B (area de raio 2).</color>"; }
       }
       else
       {

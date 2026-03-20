@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -38,11 +38,14 @@ public class AcumularEnergia : Habilidad
         public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
-      string titulo = esIngles ? "Gather Energy" : "Acumular Energia";
+      string titulo = esIngles ? "Gather Energy" : esPortugues ? "Acumular Energia" : "Acumular Energia";
       string subtitulo = esIngles
         ? "The Channeler enters concentration to increase their Energy tier at the start of the next turn."
-        : "El Canalizador entra en concentracion para aumentar su Nivel de Energia al inicio de su siguiente turno.";
+        : esPortugues
+          ? "O Canalizador entra em concentracao para aumentar seu Nivel de Energia no inicio do proximo turno."
+          : "El Canalizador entra en concentracion para aumentar su Nivel de Energia al inicio de su siguiente turno.";
 
       string cuerpo = "";
       if (esIngles)
@@ -54,6 +57,16 @@ public class AcumularEnergia : Habilidad
         cuerpo += "<b>Energy I:</b> +10% Damage, +1 Critical Die, -1 Arcane Resistance\n";
         cuerpo += "<b>Energy II:</b> +15% Damage, +1 Max AP, -5 Arcane Resistance\n";
         cuerpo += "<b>Energy III:</b> +15% Damage, +1 Max AP, +1 Critical Die, -8 Arcane Resistance";
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Propria\n";
+        cuerpo += "<b>Alvo:</b> O proprio usuario\n";
+        cuerpo += "<b>Efeito ao ativar:</b> Aplica buff <b>Acumulando</b> (2 rodadas)\n";
+        cuerpo += "<b>Se mantiver a concentracao:</b> +1 Nivel de Energia no proximo turno\n";
+        cuerpo += "<b>Energia I:</b> +10% Dano, +1 Dado Critico, -1 Resistencia Arcana\n";
+        cuerpo += "<b>Energia II:</b> +15% Dano, +1 AP Maximo, -5 Resistencia Arcana\n";
+        cuerpo += "<b>Energia III:</b> +15% Dano, +1 AP Maximo, +1 Dado Critico, -8 Resistencia Arcana";
       }
       else
       {
@@ -68,7 +81,9 @@ public class AcumularEnergia : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Valour Cost: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentía: {costoPM}";
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP} (termina turno)\n- Custo Valentia: {costoPM}"
+          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentia: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(titulo, subtitulo, cuerpo, costos, "#5dade2");
     }
@@ -219,6 +234,7 @@ public class AcumularEnergia : Habilidad
     }
  
 }
+
 
 
 

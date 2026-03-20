@@ -15,10 +15,10 @@ public class TiroconArcoAcido : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7:ido - 8: Arcano
 
     private int hAlcance = 7;
-    private int hAncho = 1; //1 - adyancentes tambiÈn
+    private int hAncho = 2; //1 - adyancentes tamb
   public override void Awake()
   {
     nombre = "Tiro con Arco Acido";
@@ -53,11 +53,11 @@ public class TiroconArcoAcido : Habilidad
 
     imHab = Resources.Load<Sprite>("imHab/Explorador_Tiroconarco");
 
-    txtDescripcion = "<color=#5dade2><b>Tiro con Arco ¡cido</b></color>\n\n";
+    txtDescripcion = "<color=#5dade2><b>Tiro con Arco √Åcido</b></color>\n\n";
     txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
-    txtDescripcion += "<i>+1d6 daÒo ¡cido.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - DaÒo: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo ValentÌa: {costoPM} </color>";
+    txtDescripcion += "<i>+1d6 da√±o √°cido.</i>\n\n";
+    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Da√±o: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valent√≠a: {costoPM} </color>";
       
       if(TRADU.i.nIdioma == 2)
       {
@@ -67,6 +67,15 @@ public class TiroconArcoAcido : Habilidad
         txtDescripcion += "<i>+1d6 Acid damage.</i>\n\n";
         txtDescripcion += $"<color=#c8c8c8><b>Range: 7</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Piercing 1d10+1- Requires 1 Arrow</color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valour Cost: {costoPM} </color>";
+      }
+      else if(TRADU.i.nIdioma == 3)
+      {
+        nombre = "Tiro com Arco Acido";
+        txtDescripcion = "<color=#5dade2><b>Tiro com Arco Acido</b></color>\n\n";
+        txtDescripcion += "<i>O explorador ataca o inimigo com seu arco.</i>\n\n";
+        txtDescripcion += "<i>+1d6 de dano acido.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidade +{bonusAtaque}</color> - Dano: Perfurante 1d10+1- Requer 1 Flecha</color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Recarga: {cooldownMax} \n- Custo AP: {costoAP} \n- Custo Valentia: {costoPM} </color>";
       }
        
     }
@@ -93,7 +102,7 @@ public class TiroconArcoAcido : Habilidad
     public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
-     if(obj is Unidad) //Ac· van los efectos a Unidades.
+     if(obj is Unidad) // van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -107,12 +116,11 @@ public class TiroconArcoAcido : Habilidad
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
        //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prÛximas habilidades de daÒo del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para pas habilidades dedel explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de daÒo solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daÒo crÌtico.
-
+         danioMarca += 15; //Esto se suma al porcentaje de do solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % do cr
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 2)
@@ -149,7 +157,7 @@ public class TiroconArcoAcido : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
-        float danioAcido = TiradaDeDados.TirarDados(1, 2); //1d2 de daÒo ¡cido
+        float danioAcido = TiradaDeDados.TirarDados(1, 2); //1d2 de
         objetivo.RecibirDanio(danioAcido, 7, false, scEstaUnidad);
 
 
@@ -164,7 +172,7 @@ public class TiroconArcoAcido : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
-        float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de daÒo ¡cido
+        float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de
         objetivo.RecibirDanio(danioAcido, 7, false, scEstaUnidad);
 
       }
@@ -177,14 +185,14 @@ public class TiroconArcoAcido : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 
-        float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de daÒo ¡cido
+        float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de 
         objetivo.RecibirDanio(danioAcido, 7, true, scEstaUnidad);
 
       }
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
+     else if (obj is Obstaculo) //A van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---

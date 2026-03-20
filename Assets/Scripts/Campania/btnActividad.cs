@@ -35,6 +35,10 @@ public class btnActividad : MonoBehaviour
    {
       personajeSeleccionado.ActividadSeleccionada = actividadRepresentada.IDActividad;
       scActividades.ActualizarRecuadros();
+      RuntimeAnalytics.TrackDesign(
+        "campaign",
+        "activity_selected",
+        RuntimeAnalytics.ActivityToken(actividadRepresentada) + "_" + RuntimeAnalytics.ClassToken(personajeSeleccionado));
 
       
    }

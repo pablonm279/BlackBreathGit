@@ -104,6 +104,7 @@ public class IAPrimerGolpeAlabardero : IAHabilidad
       bool unidadEmpujada = false;
       if (unidadEnCasilla != null)
       {
+        unidadEnCasilla.ForzarSiguienteMovimientoForzadoInmediato();
         unidadEnCasilla.EmpujarUnidad(1);
         unidadEmpujada = true;
       }

@@ -124,17 +124,21 @@ public abstract class Habilidad : MonoBehaviour
   {
     string tipoEs = "Fortaleza";
     string tipoEn = "Fortitude";
+    string tipoPt = "Fortitude";
     if (tipo == TipoSalvacionDescripcion.Reflejos)
     {
       tipoEs = "Reflejos";
       tipoEn = "Reflex";
+      tipoPt = "Reflexos";
     }
     else if (tipo == TipoSalvacionDescripcion.Mental)
     {
       tipoEs = "Mental";
       tipoEn = "Mental";
+      tipoPt = "Mental";
     }
 
+    bool esPortugues = !esIngles && TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaPortugues;
     bool usaEscalado = !string.IsNullOrEmpty(atributoEscalaEs) && !string.IsNullOrEmpty(atributoEscalaEn);
     if (usaEscalado)
     {
@@ -144,12 +148,22 @@ public abstract class Habilidad : MonoBehaviour
         return $"<b>Save:</b> {tipoEn}. Target rolls 1d20 + {tipoEn} vs DC {dcBase} + {atributoEscalaEn} ({valorAtributoEscala}) = {dcTotal}";
       }
 
+      if (esPortugues)
+      {
+        return $"<b>Resistencia:</b> {tipoPt}. O alvo rola 1d20 + {tipoPt} vs CD {dcBase} + {atributoEscalaEs} ({valorAtributoEscala}) = {dcTotal}";
+      }
+
       return $"<b>TS:</b> {tipoEs}. El objetivo tira 1d20 + {tipoEs} vs DC {dcBase} + {atributoEscalaEs} ({valorAtributoEscala}) = {dcTotal}";
     }
 
     if (esIngles)
     {
       return $"<b>Save:</b> {tipoEn}. Target rolls 1d20 + {tipoEn} vs DC {dcBase}";
+    }
+
+    if (esPortugues)
+    {
+      return $"<b>Resistencia:</b> {tipoPt}. O alvo rola 1d20 + {tipoPt} vs CD {dcBase}";
     }
 
     return $"<b>TS:</b> {tipoEs}. El objetivo tira 1d20 + {tipoEs} vs DC {dcBase}";
@@ -881,7 +895,18 @@ public abstract class Habilidad : MonoBehaviour
   {
     int porcentaje = Mathf.RoundToInt(Mathf.Clamp01(probabilidad) * 100f);
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
-    return esIngles ? $"{porcentaje}% success chance" : $"{porcentaje}% chances de \u00e9xito";
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaPortugues;
+    if (esIngles)
+    {
+      return $"{porcentaje}% success chance";
+    }
+
+    if (esPortugues)
+    {
+      return $"{porcentaje}% chance de sucesso";
+    }
+
+    return $"{porcentaje}% chances de \u00e9xito";
   }
 
   private float CalcularProbAtaque(Unidad objetivo, int tipoAtaquePorcentaje)

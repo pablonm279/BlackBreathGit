@@ -24,6 +24,11 @@ public class REPRESENTACIONFervorConjunto : Habilidad
             txtDescripcion = "<color=#5dade2><b>Joint Fervor</b></color>\n\n";
             txtDescripcion += "<i>(Passive) The caravan's Hope grants Fervor to the Purifier, a resource with various uses in combat.</i>\n\nEach Fervor charge grants +1 Divine Damage Bonus and 1 Barrier.";
         }
+        else if (TRADU.i.nIdioma == 3)
+        {
+            txtDescripcion = "<color=#5dade2><b>Fervor Conjunto</b></color>\n\n";
+            txtDescripcion += "<i>(Passiva) A Esperanca da caravana concede Fervor a Purificadora, um recurso com varios usos em combate.</i>\n\nCada carga de Fervor concede +1 Bonus de Dano Divino e 1 de Barreira.";
+        }
         else // Default (Spanish)
         {
             txtDescripcion = "<color=#5dade2><b>Fervor Conjunto</b></color>\n\n"; 

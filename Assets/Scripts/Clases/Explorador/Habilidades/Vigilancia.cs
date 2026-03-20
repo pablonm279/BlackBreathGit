@@ -47,9 +47,10 @@ public class Vigilancia : Habilidad
   }
 
 
-    public override void ActualizarDescripcion()
+  public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int agilidadActual = statsUI.Agilidad;
@@ -61,10 +62,15 @@ public class Vigilancia : Habilidad
 
     string tituloEs = "Vigilancia I";
     string tituloEn = "Vigilance I";
+    string tituloPt = "Vigilancia I";
     if (NIVEL == 2) { tituloEs = "Vigilancia II"; tituloEn = "Vigilance II"; }
     if (NIVEL == 3) { tituloEs = "Vigilancia III"; tituloEn = "Vigilance III"; }
     if (NIVEL == 4) { tituloEs = "Vigilancia IV a"; tituloEn = "Vigilance IV a"; }
     if (NIVEL == 5) { tituloEs = "Vigilancia IV b"; tituloEn = "Vigilance IV b"; }
+    if (NIVEL == 2) { tituloPt = "Vigilancia II"; }
+    if (NIVEL == 3) { tituloPt = "Vigilancia III"; }
+    if (NIVEL == 4) { tituloPt = "Vigilancia IV a"; }
+    if (NIVEL == 5) { tituloPt = "Vigilancia IV b"; }
 
     string cuerpo = "";
     if (esIngles)
@@ -77,6 +83,17 @@ public class Vigilancia : Habilidad
       cuerpo += "<b>Reaction damage:</b> same as Bow Shot (1d10 + 1 + Agility) | <b>Type:</b> Slashing\n";
       cuerpo += $"<b>Resource:</b> needs at least {requiereRecurso} Arrows to activate, consumes 1 Arrow per reaction shot\n";
       cuerpo += "<b>Turn flow:</b> using this skill ends your turn";
+    }
+    else if (esPortugues)
+    {
+      cuerpo += "<b>Tipo:</b> Distancia Reativa (6 alcance)\n";
+      cuerpo += "<b>Alvo:</b> 1 inimigo em alcance para criar uma zona de vigilancia 3x3 centrada nessa casa\n";
+      cuerpo += "<b>Rolagem/TS:</b> sem teste de resistencia ao usar\n";
+      cuerpo += $"<b>Preparacao:</b> coloca armadilhas em casas vazias dessa area 3x3 (1 turno, 1 uso cada), ate {disparosPorUso} disparos reativos no total\n";
+      cuerpo += $"<b>Disparo reativo:</b> usa a rolagem de Tiro com Arco com +{bonoTiradaReaccion} no resultado do d20. Rolagem base exibida: 1d20 + <color=#ea0606>Agilidade ({agilidadActual})</color> + Ataque ({ataqueActual}) vs Defesa. Critico base: {criticoBaseMin}-20\n";
+      cuerpo += "<b>Dano reativo:</b> igual ao Tiro com Arco (1d10 + 1 + Agilidade) | <b>Tipo:</b> Cortante\n";
+      cuerpo += $"<b>Recurso:</b> requer ao menos {requiereRecurso} Flechas para ativar, consome 1 Flecha por disparo reativo\n";
+      cuerpo += "<b>Fluxo de turno:</b> usar esta habilidade termina seu turno";
     }
     else
     {
@@ -92,12 +109,16 @@ public class Vigilancia : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Valour Cost: {costoPM}"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentía: {costoPM}";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP} (termina turno)\n- Custo Valentia: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentía: {costoPM}";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
         ? "Controls space with reaction fire over a short zone window."
+        : esPortugues
+          ? "Controla espaco com fogo de reacao durante uma janela curta de zona."
         : "Controla espacio con fuego de reaccion durante una ventana corta.",
       cuerpo,
       costos,
@@ -111,6 +132,12 @@ public class Vigilancia : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 reaction attack roll.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 reaction attack roll.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Valour Cost) or Option B (+1 reaction shot and +1 required Arrow).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na rolagem de ataque reativa.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na rolagem de ataque reativa.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 custo de Valentia) ou Opcao B (+1 disparo reativo e +1 Flecha requerida).</color>"; }
       }
       else
       {

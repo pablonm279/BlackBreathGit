@@ -1,4 +1,4 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class Partir : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de crpitico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
 
  
 
@@ -50,6 +50,7 @@ public class Partir : Habilidad
     public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int fuerzaActual = statsUI.Fuerza;
@@ -65,10 +66,15 @@ public class Partir : Habilidad
 
       string tituloEs = "Partir I";
       string tituloEn = "Cleave I";
+      string tituloPt = "Partir I";
       if (NIVEL == 2) { tituloEs = "Partir II"; tituloEn = "Cleave II"; }
       if (NIVEL == 3) { tituloEs = "Partir III"; tituloEn = "Cleave III"; }
       if (NIVEL == 4) { tituloEs = "Partir IV a"; tituloEn = "Cleave IV a"; }
       if (NIVEL == 5) { tituloEs = "Partir IV b"; tituloEn = "Cleave IV b"; }
+      if (NIVEL == 2) { tituloPt = "Partir II"; }
+      if (NIVEL == 3) { tituloPt = "Partir III"; }
+      if (NIVEL == 4) { tituloPt = "Partir IV a"; }
+      if (NIVEL == 5) { tituloPt = "Partir IV b"; }
 
       string cuerpo = "";
       if (esIngles)
@@ -81,6 +87,17 @@ public class Partir : Habilidad
         cuerpo += "<b>On kill:</b> All enemies roll save\n";
         cuerpo += $"{lineaSalvacionEn}\n";
         cuerpo += "<b>On failed save:</b> Terrified for 2 turns (-2 Attack, -1 Max AP, -2 Mental Save)";
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Corpo a corpo\n";
+        cuerpo += "<b>Alvo:</b> 1 inimigo no alcance frontal\n";
+        cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Forca ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defesa. Falha critica: 1-2. Critico: {criticoMin}-20\n";
+        cuerpo += $"<b>Dano:</b> 2d10 + {danioBaseFijo} + <color=#ea0606>Forca ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += $"<b>Penetracao de armadura:</b> {penetracionArmadura}\n";
+        cuerpo += "<b>Se matar o alvo:</b> todos os inimigos fazem resistencia\n";
+        cuerpo += $"{lineaSalvacionEs}\n";
+        cuerpo += "<b>Se falhar na resistencia:</b> Aterrorizado por 2 turnos (-2 Ataque, -1 AP Max, -2 Resistencia Mental)";
       }
       else
       {
@@ -96,12 +113,16 @@ public class Partir : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})";
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "A crushing execution cut that can panic the entire enemy side on kill."
+          : esPortugues
+            ? "Um corte de execucao brutal que pode causar panico no lado inimigo ao matar."
           : "Un corte de ejecucion brutal que puede entrar en panico al lado enemigo al matar.",
         cuerpo,
         costos,
@@ -118,6 +139,12 @@ public class Partir : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +4 damage.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 attack roll bonus.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 save DC on kill) or Option B (+1 crit range).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +4 de dano.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 no bonus de ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 CD do efeito ao matar) ou Opcao B (+1 faixa de critico).</color>"; }
       }
       else
       {
@@ -145,7 +172,7 @@ public class Partir : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Ac√° van los efectos a Unidades.
+     if(obj is Unidad) //Ac· van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
 
@@ -239,7 +266,7 @@ public class Partir : Habilidad
     
 
        fueElObjetivoAsesinado = objetivo;
-      Invoke("ChequeoMuerteObjetivo", 3.0f); //Chequea si el objetivo muri√≥, y aplica efectos de ser as√≠.
+      Invoke("ChequeoMuerteObjetivo", 3.0f); //Chequea si el objetivo muriÛ, y aplica efectos de ser asÌ.
 
 
 
@@ -247,7 +274,7 @@ public class Partir : Habilidad
 
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -294,7 +321,7 @@ public class Partir : Habilidad
     if (fueElObjetivoAsesinado == null)
     {
       aplicarEfectos = true; //Si no existe se asume que murio
-    } //Si no hab√≠a objetivo, no hace nada
+    } //Si no habÌa objetivo, no hace nada
     else if (fueElObjetivoAsesinado.HP_actual < 1)
     {
       aplicarEfectos = true; //Si no tiene vida, murio
@@ -311,7 +338,7 @@ public class Partir : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si est√° en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si est· en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -333,7 +360,7 @@ public class Partir : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambi√©n
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiÈn
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -445,10 +472,10 @@ public class Partir : Habilidad
 
     }
 
-    //Se fija si las 3 casillas de la columna 1 est√°n vacias
+    //Se fija si las 3 casillas de la columna 1 est·n vacias
     foreach (Casilla cas in casillasAdyacentesyFrenteColumna1)
     {
-      if (cas.bTieneUnidadoObstaculoParaMelee()) //si alguna de las 3 tiene algo, no aumenta el rango melee
+      if (cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //si alguna de las 3 tiene algo, no aumenta el rango melee
       {
         return 0;
       }
@@ -462,7 +489,7 @@ public class Partir : Habilidad
 
     foreach (Casilla cas in casillasAdyacentesyFrenteColumna2)
     {
-      if (cas.bTieneUnidadoObstaculoParaMelee()) //y si alguna de las 3 tiene algo, aumenta solo en 1 
+      if (cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //y si alguna de las 3 tiene algo, aumenta solo en 1 
       {
         return 1;
       }
@@ -539,7 +566,7 @@ public class Partir : Habilidad
                 if(uni.TiradaSalvacion(uni.mod_TSMental, nDif))
                 {
                     /////////////////////////////////////////////
-                    //BUFF ---- As√≠ se aplica un buff/debuff
+                    //BUFF ---- AsÌ se aplica un buff/debuff
                     Buff buff = new Buff();
                     buff.buffNombre = "Aterrorizado";
                     buff.boolfDebufftBuff = false;
@@ -548,7 +575,7 @@ public class Partir : Habilidad
                     buff.cantAPMax -= 1;
                     buff.cantTsMental -= 2;
                     buff.AplicarBuff(uni);
-                    // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
+                    // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
                     Buff buffComponent = ComponentCopier.CopyComponent(buff, uni.gameObject);
                     
                     VFXAplicarEnemigo(uni.gameObject);

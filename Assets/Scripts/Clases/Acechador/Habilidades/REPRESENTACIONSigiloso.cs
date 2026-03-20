@@ -26,6 +26,11 @@ public class REPRESENTACIONSigiloso : Habilidad
       txtDescripcion = "<color=#5dade2><b>Stealthy</b></color>\n\n";
       txtDescripcion += "<i>(Passive) The Stalker starts hidden in every combat that is not an enemy ambush.</i>\n\nWhile hidden, gains 'Stalking' which grants +2 Attack, +1 Critical Die, and 10% damage. Also, is not penalized in night combats.";
     }
+    if (TRADU.i.nIdioma == 3)
+    {
+      txtDescripcion = "<color=#5dade2><b>Furtivo</b></color>\n\n";
+      txtDescripcion += "<i>(Passiva) O Acechador comeca escondido em todo combate que nao seja emboscada inimiga.</i>\n\nEnquanto esta escondido, ganha 'A Espreita', que concede +2 Ataque, +1 Dado Critico e 10% de dano. Alem disso, nao sofre penalidade em combates noturnos.";
+    }
 
   }
 

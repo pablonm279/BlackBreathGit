@@ -85,6 +85,36 @@ public class SifonArcano : Habilidad
       }
       return;
     }
+    if (TRADU.i != null && TRADU.i.nIdioma == 3)
+    {
+      string corpo = "";
+      corpo += "<b>Tipo:</b> Distancia (5 alcance)\n";
+      corpo += "<b>Alvo:</b> 1 unidade inimiga do lado oposto\n";
+      corpo += $"{ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual)}\n";
+      corpo += $"<b>Se falhar TS:</b> aplica Sifao Arcano por {duracionTurnos} turnos\n";
+      corpo += (bonusDanioBase > 0
+        ? $"<b>Dano por turno:</b> (1d10 + {bonusDanioBase}) x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano"
+        : "<b>Dano por turno:</b> 1d10 x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano");
+      corpo += "\n";
+      corpo += "<b>Se matar com este efeito:</b> +1 AP max permanente, +10% Dano e +1 Energia";
+
+      string costos = $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM} ";
+
+      txtDescripcion = ConstruirDescripcionEstandar(
+        "Sifao Arcano",
+        "Marca o alvo com um vinculo instavel que drena vitalidade por turnos, amplificado por Residuos Energeticos.",
+        corpo,
+        costos,
+        "#5dade2");
+
+      if (EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no dano base por turno.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 CD.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A ou Opcao B (melhorias IV).</color>"; }
+      }
+      return;
+    }
 
     {
       string cuerpo = "";

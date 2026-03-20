@@ -1,0 +1,24 @@
+# Text defaults
+* text=auto
+
+# Keep hook scripts in LF so Git can execute them reliably on Windows.
+.githooks/* text eol=lf working-tree-encoding=UTF-8
+
+# Encoding guardrails for source/config/text files that often include accents.
+*.cs text working-tree-encoding=UTF-8
+*.txt text working-tree-encoding=UTF-8
+*.md text working-tree-encoding=UTF-8
+*.json text working-tree-encoding=UTF-8
+*.xml text working-tree-encoding=UTF-8
+*.yml text working-tree-encoding=UTF-8
+*.yaml text working-tree-encoding=UTF-8
+*.csv text working-tree-encoding=UTF-8
+*.shader text working-tree-encoding=UTF-8
+*.cginc text working-tree-encoding=UTF-8
+*.hlsl text working-tree-encoding=UTF-8
+*.compute text working-tree-encoding=UTF-8
+*.uss text working-tree-encoding=UTF-8
+*.uxml text working-tree-encoding=UTF-8
+*.asmdef text working-tree-encoding=UTF-8
+*.asmref text working-tree-encoding=UTF-8
+*.meta text working-tree-encoding=UTF-8

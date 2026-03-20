@@ -294,6 +294,7 @@ public class BotonHabilidad : MonoBehaviour
 
         scUiBotonesHabilidades.UIDesactivarHabilidades(HabilidadRepresentada.esHostil);
         HabilidadRepresentada.Activar();
+        RuntimeAnalytics.TrackDesign("combat", "ability_selected", RuntimeAnalytics.AbilityToken(HabilidadRepresentada));
         VisualBotonActivo(1);
         // BattleManager.Instance.OpacarCasillasMelee();
         BotonActivo = true;
@@ -531,23 +532,35 @@ public class BotonHabilidad : MonoBehaviour
     public void SubirHabDeNivel(int n)
     {
         scMenuPersonajes = CampaignManager.Instance.scMenuPersonajes;
+        bool nivelado = false;
         if (n == 0) //0 - Subida Normal
         {
             scMenuPersonajes.pSel.NivelPuntoHabilidad--;
             HabilidadRepresentada.NIVEL++;
             scMenuPersonajes.ActualizarInfo();
+            nivelado = true;
         }
         if (n == 4) //4 - Subida a 4a
         {
             scMenuPersonajes.pSel.NivelPuntoHabilidad--;
             HabilidadRepresentada.NIVEL = 4;
             scMenuPersonajes.ActualizarInfo();
+            nivelado = true;
         }
         if (n == 5) //5 - Subida a 4b
         {
             scMenuPersonajes.pSel.NivelPuntoHabilidad--;
             HabilidadRepresentada.NIVEL = 5;
             scMenuPersonajes.ActualizarInfo();
+            nivelado = true;
+        }
+
+        if (nivelado)
+        {
+            RuntimeAnalytics.TrackDesign(
+                "characters",
+                "skill_up",
+                RuntimeAnalytics.AbilityToken(HabilidadRepresentada) + "_tier_" + HabilidadRepresentada.NIVEL);
         }
     }
 
@@ -585,6 +598,7 @@ public class BotonHabilidad : MonoBehaviour
             scMenuPersonajes.yaTiroHabRand = false;
             scMenuPersonajes.ActualizarInfo();
             scMenuPersonajes.LimpiarComponentesHab();
+            RuntimeAnalytics.TrackDesign("characters", "new_skill", RuntimeAnalytics.AbilityToken(nuevaHabilidad));
         }
     }
 

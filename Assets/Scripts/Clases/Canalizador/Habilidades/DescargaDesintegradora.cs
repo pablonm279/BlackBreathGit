@@ -14,7 +14,7 @@ public class DescargaDesintegradora : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
 
    
     public override void  Awake()
@@ -45,13 +45,14 @@ public class DescargaDesintegradora : Habilidad
       imHab = Resources.Load<Sprite>("imHab/Canalizador_DescargaDesintegradora");
       
 
-      requiereRecurso = 2; //Requiere tener 2 Tier energÌa 
+      requiereRecurso = 2; //Requiere tener 2 Tier energ√≠a 
 
     }
 
-    public override void ActualizarDescripcion()
+  public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int poderActual = statsUI.Poder;
@@ -67,10 +68,15 @@ public class DescargaDesintegradora : Habilidad
 
     string tituloEs = "Descarga Desintegradora I";
     string tituloEn = "Disintegrating Discharge I";
+    string tituloPt = "Descarga Desintegradora I";
     if (NIVEL == 2) { tituloEs = "Descarga Desintegradora II"; tituloEn = "Disintegrating Discharge II"; }
     if (NIVEL == 3) { tituloEs = "Descarga Desintegradora III"; tituloEn = "Disintegrating Discharge III"; }
     if (NIVEL == 4) { tituloEs = "Descarga Desintegradora IV a"; tituloEn = "Disintegrating Discharge IV a"; }
     if (NIVEL == 5) { tituloEs = "Descarga Desintegradora IV b"; tituloEn = "Disintegrating Discharge IV b"; }
+    if (NIVEL == 2) { tituloPt = "Descarga Desintegradora II"; }
+    if (NIVEL == 3) { tituloPt = "Descarga Desintegradora III"; }
+    if (NIVEL == 4) { tituloPt = "Descarga Desintegradora IV a"; }
+    if (NIVEL == 5) { tituloPt = "Descarga Desintegradora IV b"; }
 
     string danioEs = danioFijo > 0
       ? $"3d12 + {danioFijo} + <color=#ea0606>Poder ({poderActual})</color>"
@@ -95,6 +101,21 @@ public class DescargaDesintegradora : Habilidad
         ? "<b>Cast Drawback:</b> User is Stunned for 1 turn"
         : "<b>Cast Drawback:</b> Does not Stun the user";
     }
+    else if (esPortugues)
+    {
+      cuerpo += "<b>Tipo:</b> Distancia (5 alcance)\n";
+      cuerpo += "<b>Alvo:</b> Area em piramide\n";
+      cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}) + 5 vs Defesa. Falha critica: 1. Critico: {criticoMin}-20\n";
+      cuerpo += $"<b>Dano:</b> {danioEs} | <b>Tipo:</b> Arcano\n";
+      cuerpo += $"{ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcDesintegracion)}. Se falhar TS: desintegrado (morte instantanea)\n";
+      cuerpo += consumeEnergia
+        ? "<b>Custo ao usar:</b> -1 Nivel de Energia"
+        : "<b>Custo ao usar:</b> Nao consome Nivel de Energia";
+      cuerpo += "\n";
+      cuerpo += aturdeCaster
+        ? "<b>Custo ao usar:</b> O usuario fica Atordoado por 1 turno"
+        : "<b>Custo ao usar:</b> Nao atordoa o usuario";
+    }
     else
     {
       cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
@@ -113,18 +134,22 @@ public class DescargaDesintegradora : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})\n- Requires Energy Tier: {energiaRequerida}+"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})\n- Requiere Nivel de Energia: {energiaRequerida}+";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})\n- Requer Nivel de Energia: {energiaRequerida}+"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})\n- Requiere Nivel de Energia: {energiaRequerida}+";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
         ? "At peak charge, the Channeler unleashes a high-risk detonation that can erase targets outright."
+        : esPortugues
+          ? "No auge da energia, o Canalizador libera uma detonacao de alto risco capaz de apagar alvos."
         : "Con la energia al maximo, el Canalizador libera una detonacion de alto riesgo capaz de borrar objetivos.",
       cuerpo,
       costos,
       "#e67e22");
 
-    bool mostrarProximoNivel = EsEscenaCampaÒa() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+    bool mostrarProximoNivel = EsEscenaCampa√±a() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)
     {
       return;
@@ -135,6 +160,12 @@ public class DescargaDesintegradora : Habilidad
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +8 damage.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (no stun) or Option B (no Energy loss).</color>"; }
+    }
+    else if (esPortugues)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +8 de dano.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 CD de resistencia.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (sem atordoamento) ou Opcao B (sem perda de Energia).</color>"; }
     }
     else
     {
@@ -159,7 +190,7 @@ public class DescargaDesintegradora : Habilidad
 
   public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
   {
-    // El log de uso ahora est· centralizado en Habilidad.Resolver
+    // El log de uso ahora est√° centralizado en Habilidad.Resolver
   await  base.Resolver(Objetivos);
 
     if (NIVEL != 4) { scEstaUnidad.estado_aturdido+=1; print(6565); }
@@ -187,7 +218,7 @@ public class DescargaDesintegradora : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Ac· van los efectos a Unidades.
+     if(obj is Unidad) //Ac√° van los efectos a Unidades.
      { 
       
         Unidad objetivo = (Unidad)obj;       
@@ -261,7 +292,7 @@ public class DescargaDesintegradora : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---

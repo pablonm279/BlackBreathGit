@@ -27,6 +27,11 @@ public class REPRESENTACIONPasoCauteloso : Habilidad
       txtDescripcion = "<color=#5dade2><b>Cautious Step</b></color>\n\n";
       txtDescripcion += "<i>(Passive) Once per turn, when entering a tile affected by a hostile effect, the Explorer manages to evade it.</i>\n\n";
     }
+    else if (TRADU.i.nIdioma == 3)
+    {
+      txtDescripcion = "<color=#5dade2><b>Passo Cauteloso</b></color>\n\n";
+      txtDescripcion += "<i>(Passiva) Uma vez por turno, ao entrar em uma casa afetada por um efeito hostil, o Explorador consegue evita-lo.</i>\n\n";
+    }
   }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}

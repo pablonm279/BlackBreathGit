@@ -36,13 +36,19 @@ public class MarcarPresa : Habilidad
         public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
     string tituloEs = "Marcar Presa I";
     string tituloEn = "Mark Prey I";
+    string tituloPt = "Marcar Presa I";
     if (NIVEL == 2) { tituloEs = "Marcar Presa II"; tituloEn = "Mark Prey II"; }
     if (NIVEL == 3) { tituloEs = "Marcar Presa III"; tituloEn = "Mark Prey III"; }
     if (NIVEL == 4) { tituloEs = "Marcar Presa IV a"; tituloEn = "Mark Prey IV a"; }
     if (NIVEL == 5) { tituloEs = "Marcar Presa IV b"; tituloEn = "Mark Prey IV b"; }
+    if (NIVEL == 2) { tituloPt = "Marcar Presa II"; }
+    if (NIVEL == 3) { tituloPt = "Marcar Presa III"; }
+    if (NIVEL == 4) { tituloPt = "Marcar Presa IV a"; }
+    if (NIVEL == 5) { tituloPt = "Marcar Presa IV b"; }
 
     int bonoAtaqueMarca = NIVEL == 4 ? 2 : 4;
     int bonoCritRangoMarca = 1 + (NIVEL > 2 ? 1 : 0);
@@ -67,6 +73,18 @@ public class MarcarPresa : Habilidad
         : "<b>Self effect on cast:</b> no attack penalty against non-marked targets\n";
       cuerpo += $"<b>On marked kill:</b> +{recompensaVal} Valour, +{recompensaApMax} max AP and +{recompensaTsMental} Mental Save for 3 turns";
     }
+    else if (esPortugues)
+    {
+      cuerpo += "<b>Tipo:</b> Marca\n";
+      cuerpo += "<b>Alvo:</b> 1 inimigo do lado oposto\n";
+      cuerpo += "<b>Rolagem/TS:</b> nao tem (aplicacao direta)\n";
+      cuerpo += "<b>Duracao da marca:</b> 3 turnos\n";
+      cuerpo += $"<b>Bonus contra marcado:</b> +{bonoAtaqueMarca} ataque, +{bonoCritRangoMarca} faixa de critico, +{bonoCritDanioMarca}% dano critico\n";
+      cuerpo += aplicaDebuffPropio
+        ? "<b>Efeito proprio ao usar:</b> -2 Ataque por 2 turnos (apenas contra alvos nao marcados)\n"
+        : "<b>Efeito proprio ao usar:</b> sem penalidade de ataque contra alvos nao marcados\n";
+      cuerpo += $"<b>Ao matar o marcado:</b> +{recompensaVal} Valentia, +{recompensaApMax} AP max e +{recompensaTsMental} TS Mental por 3 turnos";
+    }
     else
     {
       cuerpo += "<b>Tipo:</b> Marca\n";
@@ -82,12 +100,16 @@ public class MarcarPresa : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
         ? "Paints a priority target and shifts your full damage profile into hunting it."
+        : esPortugues
+          ? "Marca um alvo prioritario e redireciona seu perfil ofensivo para cacar esse alvo."
         : "Marca un objetivo prioritario y redirige tu perfil ofensivo a cazarlo.",
       cuerpo,
       costos,
@@ -104,6 +126,12 @@ public class MarcarPresa : Habilidad
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% crit damage on marked target.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 crit range on marked target.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A removes self attack penalty; Option B improves kill reward (+1 Valour, +1 max AP, +1 Mental Save).</color>"; }
+    }
+    else if (esPortugues)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% de dano critico contra marcado.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na faixa de critico contra marcado.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A remove a penalidade propria de ataque; Opcao B melhora a recompensa por morte (+1 Valentia, +1 AP max, +1 TS Mental).</color>"; }
     }
     else
     {

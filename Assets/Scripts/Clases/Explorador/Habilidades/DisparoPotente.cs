@@ -14,7 +14,7 @@ public class DisparoPotente : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
 
    
    public override void  Awake()
@@ -58,6 +58,7 @@ public class DisparoPotente : Habilidad
         public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int agilidadActual = statsUI.Agilidad;
@@ -68,10 +69,15 @@ public class DisparoPotente : Habilidad
 
       string tituloEs = "Tiro Potente I";
       string tituloEn = "Powerful Shot I";
+      string tituloPt = "Tiro Potente I";
       if (NIVEL == 2) { tituloEs = "Tiro Potente II"; tituloEn = "Powerful Shot II"; }
       if (NIVEL == 3) { tituloEs = "Tiro Potente III"; tituloEn = "Powerful Shot III"; }
       if (NIVEL == 4) { tituloEs = "Tiro Potente IV a"; tituloEn = "Powerful Shot IV a"; }
       if (NIVEL == 5) { tituloEs = "Tiro Potente IV b"; tituloEn = "Powerful Shot IV b"; }
+      if (NIVEL == 2) { tituloPt = "Tiro Potente II"; }
+      if (NIVEL == 3) { tituloPt = "Tiro Potente III"; }
+      if (NIVEL == 4) { tituloPt = "Tiro Potente IV a"; }
+      if (NIVEL == 5) { tituloPt = "Tiro Potente IV b"; }
 
       string cuerpo = "";
       if (esIngles)
@@ -82,6 +88,15 @@ public class DisparoPotente : Habilidad
         cuerpo += $"<b>Damage:</b> 1d10 + {danioFijo} + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Slashing\n";
         cuerpo += $"<b>Armor Penetration:</b> {penetracionArmadura}\n";
         cuerpo += "<b>Resource:</b> consumes 2 Arrows\n";
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Distancia (linha)\n";
+        cuerpo += "<b>Alvo:</b> Inimigos na mesma fila\n";
+        cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Agilidade ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonoAtaqueNivel} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Dano:</b> 1d10 + {danioFijo} + <color=#ea0606>Agilidade ({agilidadActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += $"<b>Penetracao de armadura:</b> {penetracionArmadura}\n";
+        cuerpo += "<b>Recurso:</b> consome 2 Flechas\n";
       }
       else
       {
@@ -95,12 +110,16 @@ public class DisparoPotente : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo ValentÌa: {costoPM}\n- Esforzable: Si ({esforzable})";
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
+          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent√≠a: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "A heavy line shot that pierces a full row at high AP cost."
+          : esPortugues
+            ? "Um disparo pesado em linha que atravessa a fila inteira com alto custo de AP."
           : "Un disparo de linea pesado que barre una fila entera con alto costo de AP.",
         cuerpo,
         costos,
@@ -118,11 +137,17 @@ public class DisparoPotente : Habilidad
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack roll bonus.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Valour Cost) or Option B (+2 attack roll bonus).</color>"; }
       }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de dano.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 custo de Valentia) ou Opcao B (+2 no bonus de ataque).</color>"; }
+      }
       else
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de ValentÌa) u Opcion B (+2 al bono de ataque).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valent√≠a) u Opcion B (+2 al bono de ataque).</color>"; }
       }
 
       if (CampaignManager.Instance != null && CampaignManager.Instance.gameObject != null && CampaignManager.Instance.gameObject.transform.parent != null && CampaignManager.Instance.gameObject.transform.parent.parent != null)
@@ -189,7 +214,7 @@ public class DisparoPotente : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Ac· van los efectos a Unidades.
+     if(obj is Unidad) //Ac√° van los efectos a Unidades.
      { 
       
         Unidad objetivo = (Unidad)obj;
@@ -204,11 +229,11 @@ public class DisparoPotente : Habilidad
        print("Resultado tirada "+resultadoTirada);
        
         //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prÛximas habilidades de daÒo del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para pr√≥ximas habilidades de da√±o del explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de daÒo solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daÒo crÌtico.
+         danioMarca += 15; //Esto se suma al porcentaje de da√±o solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % da√±o cr√≠tico.
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -275,7 +300,7 @@ public class DisparoPotente : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac· van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac√° van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---

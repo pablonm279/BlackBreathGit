@@ -142,6 +142,67 @@ public class REPRESENTACIONVistaLejana : Habilidad
           txtDescripcion += "<i>(Passive) If the Explorer starts their turn in the last column, they gain +2 Attack, +1 Defense and +15% Damage.</i>\n\n";
         }
       }
+      if (TRADU.i.nIdioma == 3)
+      {
+        if (NIVEL < 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Visao Distante I</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Se o Explorador comecar o turno na ultima coluna, recebe +1 Ataque e +10% Dano.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +5% Dano</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Visao Distante II</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Se o Explorador comecar o turno na ultima coluna, recebe +1 Ataque e +15% Dano.</i>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 Ataque</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Visao Distante III</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Se o Explorador comecar o turno na ultima coluna, recebe +2 Ataque e +15% Dano.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Opcao A: +1 Faixa de Dado Critico</color>\n\n";
+                txtDescripcion += $"<color=#dfea02>-Opcao B: +1 Defesa</color>\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Visao Distante IV a</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Se o Explorador comecar o turno na ultima coluna, recebe +2 Ataque, +1 Faixa de Dado Critico e +15% Dano.</i>\n\n";
+        }
+        if (NIVEL == 5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Visao Distante IV b</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva) Se o Explorador comecar o turno na ultima coluna, recebe +2 Ataque, +1 Defesa e +15% Dano.</i>\n\n";
+        }
+      }
 
     }
 

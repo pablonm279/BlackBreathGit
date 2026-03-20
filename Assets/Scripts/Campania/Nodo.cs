@@ -53,6 +53,12 @@ public class Nodo : MonoBehaviour
   public bool nodoIncendiado = false;
   public bool nodoRitual = false;
   int numVisualActual = -1;
+  const int CodigoSettlement = 4;
+  const int IndiceVisualSettlement = 4;
+  const float MultiplicadorEscalaSettlement = 1.18f;
+  bool escalaSettlementInicializada = false;
+  Vector3 escalaSettlementOriginal = Vector3.one;
+  bool atajoSubterraneoPendiente = false;
   private static GameObject undergroundTravelMarker;
 
   private class UndergroundAudioFxState
@@ -94,6 +100,10 @@ public class Nodo : MonoBehaviour
   {
     CampaignManager.Instance.MoviendoCaravana = false;
     scMapaManager.nodoActual = this;
+    if (scMapaManager != null)
+    {
+      scMapaManager.NotificarFinViajeCaravana();
+    }
 
     // Apagar animaciones con un retraso aleatorio hasta 0.25s por cada follower
     if (scMapaManager != null)
@@ -160,7 +170,7 @@ public class Nodo : MonoBehaviour
 
     CampaignManager.Instance.CambiarFatigaActual(fatigaSuma);
     CampaignManager.Instance.CambiarEsperanzaActual(esperanzaSuma);
-    CampaignManager.Instance.LlegarANodo(tipoNodo, posXNodo, this);
+    CampaignManager.Instance.LlegarANodo(ObtenerTipoNodoAlLlegar(), posXNodo, this);
 
     MarcarCaminosPosibles();
   }
@@ -479,6 +489,7 @@ public class Nodo : MonoBehaviour
     nodoRitual = false;
     esMisterioso = false;
     numVisualActual = -1;
+    atajoSubterraneoPendiente = false;
     vieneDeNodo = null;
 
     var destruir = new List<GameObject>();
@@ -489,6 +500,7 @@ public class Nodo : MonoBehaviour
     }
     foreach (var go in destruir) Destroy(go);
 
+    AplicarEstiloVisualSettlement(false);
     transform.GetChild(0).gameObject.SetActive(true);
     transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
     SincronizarVFXPersistentes();
@@ -512,6 +524,7 @@ public class Nodo : MonoBehaviour
     yatiroConexiones = data.yatiroConexiones;
     nodoIncendiado = data.nodoIncendiado;
     nodoRitual = data.nodoRitual;
+    atajoSubterraneoPendiente = data.atajoSubterraneoPendiente;
     DestinosPosibles.Clear();
     vieneDeNodo = null;
     AplicarVisualGuardado(data.visualCode, data.esMisterioso);
@@ -539,6 +552,54 @@ public class Nodo : MonoBehaviour
     }
   }
 
+  public void ForzarSettlement(bool mostrarVisualDesdeInicio)
+  {
+    tipoNodo = CodigoSettlement;
+    esMisterioso = false;
+    atajoSubterraneoPendiente = false;
+
+    if (mostrarVisualDesdeInicio)
+    {
+      revelado = true;
+      ActivarNodoVisual(CodigoSettlement, false, true);
+      return;
+    }
+
+    revelado = false;
+    numVisualActual = -1;
+    DesactivarGraficosNodo();
+    ActivarVisualBaseNoRevelado();
+  }
+
+  int ObtenerTipoNodoAlLlegar()
+  {
+    bool llegoPorAtajo = vieneDeNodo != null && (posXNodo - vieneDeNodo.posXNodo > 1);
+    int tipoNodoLlegada = tipoNodo;
+
+    if (llegoPorAtajo && atajoSubterraneoPendiente)
+    {
+      atajoSubterraneoPendiente = false;
+      tipoNodoLlegada = 12;
+    }
+
+    return tipoNodoLlegada;
+  }
+
+  void ConfigurarResultadoAtajoSubterraneo()
+  {
+    atajoSubterraneoPendiente = false;
+
+    if (!revelado || scMapaManager == null)
+    {
+      return;
+    }
+
+    if (scMapaManager.TirarEmboscadaSubterraneaAtajo(this))
+    {
+      atajoSubterraneoPendiente = true;
+    }
+  }
+
   public void RefrescarCaminosMarcadosDesdeEstadoActual()
   {
     MarcarCaminosPosibles();
@@ -556,6 +617,15 @@ public class Nodo : MonoBehaviour
 
   private void OnMouseDown()
   {
+    if (CampaignManager.Instance != null)
+    {
+      AsentamientoManager asentamientoManager = CampaignManager.Instance.ObtenerAsentamientoManager();
+      if (asentamientoManager != null && asentamientoManager.TieneInteraccionActiva)
+      {
+        return;
+      }
+    }
+
     var tm = CampaignManager.Instance != null ? CampaignManager.Instance.scTutorialManager : null;
     if (tm != null && tm.tutorialActivo)
     {
@@ -579,6 +649,10 @@ public class Nodo : MonoBehaviour
       }
 
       CampaignManager.Instance.MoviendoCaravana = true;
+      RuntimeAnalytics.TrackDesign(
+        "campaign",
+        "node_selected",
+        RuntimeAnalytics.SanitizeToken("type_" + tipoNodo + "_x" + posXNodo + "_y" + posYNodo));
       MoverJugadorANodo(scMapaManager.nodoActual, this);
 
       if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 7)
@@ -968,7 +1042,9 @@ if (esLaLider)
   {
     bool estabaRevelado = revelado;
     revelado = true;
-
+    //1 Batalla - 2 Evento - 3 Claro - 4 Asentamiento (NO) - 5 Recurso
+    // 6 Comercio - 7 Sequito -8 Elite -11 Emboscada - 14 Santuario
+   
     if (tipoNodo == 0)
     {
       int rand = UnityEngine.Random.Range(1, 8);
@@ -977,6 +1053,7 @@ if (esLaLider)
       {
         switch (rand)
         {
+          
           case 1: tipoNodo = 1; break;
           case 2: tipoNodo = 1; break;
           case 3: tipoNodo = 2; break;
@@ -986,19 +1063,23 @@ if (esLaLider)
           case 7: tipoNodo = 1; break;
         }
       }
+      //1 Batalla - 2 Evento - 3 Claro - 4 Asentamiento (NO) - 5 Recurso
+    // 6 Comercio - 7 Sequito -8 Elite -11 Emboscada - 14 Santuario
       if (posXNodo == 2)
       {
         switch (rand)
         {
           case 1: tipoNodo = 1; break;
           case 2: tipoNodo = 1; break;
-          case 3: tipoNodo = 14; break;
+          case 3: tipoNodo = 7; break;
           case 4: tipoNodo = 2; break;
           case 5: tipoNodo = 5; break;
           case 6: tipoNodo = 6; break;
           case 7: tipoNodo = 8; break;
         }
       }
+      //1 Batalla - 2 Evento - 3 Claro - 4 Asentamiento (NO) - 5 Recurso
+    // 6 Comercio - 7 Sequito -8 Elite -11 Emboscada - 14 Santuario
       if (posXNodo == 3)
       {
         switch (rand)
@@ -1012,6 +1093,8 @@ if (esLaLider)
           case 7: tipoNodo = 3; break;
         }
       }
+      //1 Batalla - 2 Evento - 3 Claro - 4 Asentamiento (NO) - 5 Recurso
+    // 6 Comercio - 7 Sequito -8 Elite -11 Emboscada - 14 Santuario
       if (posXNodo == 4)
       {
         switch (rand)
@@ -1021,23 +1104,27 @@ if (esLaLider)
           case 3: tipoNodo = 8; break;
           case 4: tipoNodo = 11; break;
           case 5: tipoNodo = 5; break;
-          case 6: tipoNodo = 14; break;
-          case 7: tipoNodo = 2; break;
+          case 6: tipoNodo = 1; break;
+          case 7: tipoNodo = 6; break;
         }
       }
+      //1 Batalla - 2 Evento - 3 Claro - 4 Asentamiento (NO) - 5 Recurso
+    // 6 Comercio - 7 Sequito -8 Elite -11 Emboscada - 14 Santuario
       if (posXNodo == 5)
       {
         switch (rand)
         {
           case 1: tipoNodo = 3; break;
           case 2: tipoNodo = 3; break;
-          case 3: tipoNodo = 4; break;
+          case 3: tipoNodo = 3; break;
           case 4: tipoNodo = 14; break;
-          case 5: tipoNodo = 4; break;
+          case 5: tipoNodo = 5; break;
           case 6: tipoNodo = 7; break;
           case 7: tipoNodo = 5; break;
         }
       }
+      //1 Batalla - 2 Evento - 3 Claro - 4 Asentamiento (NO) - 5 Recurso
+    // 6 Comercio - 7 Sequito -8 Elite -11 Emboscada - 14 Santuario
       if (posXNodo == 6)
       {
         switch (rand)
@@ -1046,24 +1133,28 @@ if (esLaLider)
           case 2: tipoNodo = 1; break;
           case 3: tipoNodo = 8; break;
           case 4: tipoNodo = 2; break;
-          case 5: tipoNodo = 5; break;
+          case 5: tipoNodo = 8; break;
           case 6: tipoNodo = 11; break;
           case 7: tipoNodo = 1; break;
         }
       }
+      //1 Batalla - 2 Evento - 3 Claro - 4 Asentamiento (NO) - 5 Recurso
+    // 6 Comercio - 7 Sequito -8 Elite -11 Emboscada - 14 Santuario
       if (posXNodo == 7)
       {
         switch (rand)
         {
           case 1: tipoNodo = 1; break;
           case 2: tipoNodo = 1; break;
-          case 3: tipoNodo = 4; break;
+          case 3: tipoNodo = 3; break;
           case 4: tipoNodo = 2; break;
-          case 5: tipoNodo = 5; break;
+          case 5: tipoNodo = 1; break;
           case 6: tipoNodo = 6; break;
           case 7: tipoNodo = 3; break;
         }
       }
+      //1 Batalla - 2 Evento - 3 Claro - 4 Asentamiento (NO) - 5 Recurso
+    // 6 Comercio - 7 Sequito -8 Elite -11 Emboscada - 14 Santuario
       if (posXNodo == 8)
       {
         switch (rand)
@@ -1077,6 +1168,8 @@ if (esLaLider)
           case 7: tipoNodo = 1; break;
         }
       }
+      //1 Batalla - 2 Evento - 3 Claro - 4 Asentamiento (NO) - 5 Recurso
+    // 6 Comercio - 7 Sequito -8 Elite -11 Emboscada - 14 Santuario
       if (posXNodo == 9)
       {
         switch (rand)
@@ -1085,21 +1178,23 @@ if (esLaLider)
           case 2: tipoNodo = 8; break;
           case 3: tipoNodo = 2; break;
           case 4: tipoNodo = 8; break;
-          case 5: tipoNodo = 1; break;
-          case 6: tipoNodo = 14; break;
+          case 5: tipoNodo = 11; break;
+          case 6: tipoNodo = 6; break;
           case 7: tipoNodo = 1; break;
         }
       }
+      //1 Batalla - 2 Evento - 3 Claro - 4 Asentamiento (NO) - 5 Recurso
+    // 6 Comercio - 7 Sequito -8 Elite -11 Emboscada - 14 Santuario
       if (posXNodo == 10)
       {
         switch (rand)
         {
           case 1: tipoNodo = 1; break;
-          case 2: tipoNodo = 4; break;
+          case 2: tipoNodo = 3; break;
           case 3: tipoNodo = 2; break;
           case 4: tipoNodo = 14; break;
           case 5: tipoNodo = 3; break;
-          case 6: tipoNodo = 4; break;
+          case 6: tipoNodo = 3; break;
           case 7: tipoNodo = 3; break;
         }
       }
@@ -1115,10 +1210,9 @@ if (esLaLider)
 
     ActivarNodoVisual(tipoNodo, esAtajo, estabaRevelado);
 
-    int chancesAtaqueSubterraneo = 20;
-    if (esAtajo && UnityEngine.Random.Range(0, 100) < chancesAtaqueSubterraneo)
+    if (esAtajo)
     {
-      tipoNodo = 12; // batalla subterránea
+      ConfigurarResultadoAtajoSubterraneo();
     }
   }
 
@@ -1174,6 +1268,7 @@ if (esLaLider)
   {
 
     int indice = -1;
+    AplicarEstiloVisualSettlement(codigo == CodigoSettlement);
     switch (codigo)
     {
       case 1: indice = 1; break;  // 1: Combate directo (batalla normal)
@@ -1197,6 +1292,29 @@ if (esLaLider)
     if (indice < 0 || indice >= transform.childCount) return false;
     transform.GetChild(indice).gameObject.SetActive(true);
     return true;
+  }
+
+  void AplicarEstiloVisualSettlement(bool destacar)
+  {
+    if (IndiceVisualSettlement < 0 || IndiceVisualSettlement >= transform.childCount)
+    {
+      return;
+    }
+
+    Transform visualSettlement = transform.GetChild(IndiceVisualSettlement);
+    if (visualSettlement == null)
+    {
+      return;
+    }
+
+    if (!escalaSettlementInicializada)
+    {
+      escalaSettlementOriginal = visualSettlement.localScale;
+      escalaSettlementInicializada = true;
+    }
+
+    float multiplicador = destacar ? MultiplicadorEscalaSettlement : 1f;
+    visualSettlement.localScale = escalaSettlementOriginal * multiplicador;
   }
 
   public void ActivarNodoVisual(int num, bool esAtajo, bool estabaRevelado)
@@ -1249,6 +1367,16 @@ if (esLaLider)
       } // vfx de revelado (no inmediatos)
     }
 
+  }
+
+  public void ActivarVfxDescubrimiento()
+  {
+    if (!gameObject.activeInHierarchy || tipoNodo == 16 || transform.childCount <= 13)
+    {
+      return;
+    }
+
+    transform.GetChild(13).gameObject.SetActive(true);
   }
 
   public string descripcion;
@@ -1402,6 +1530,8 @@ if (esLaLider)
 
   void ActivarVisualBaseNoRevelado()
   {
+    AplicarEstiloVisualSettlement(false);
+
     if (transform.childCount == 0)
     {
       return;
@@ -2120,6 +2250,11 @@ public int ObtenerVisualCodeActual()
 public bool ObtenerEstadoMisterioso()
 {
   return esMisterioso;
+}
+
+public bool ObtenerAtajoSubterraneoPendiente()
+{
+  return atajoSubterraneoPendiente;
 }
 
 private static float CalcularIntensidadSubterranea(float progreso, float tramoEntradaSalida)

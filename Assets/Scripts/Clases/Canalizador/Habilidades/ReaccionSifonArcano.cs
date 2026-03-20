@@ -26,6 +26,10 @@ public class ReaccionSifonArcano : Reaccion
     {
       descripcion = "Reaction: At the end of each turn, receives arcane damage increased by the number of Energy Residues present.";
     }
+    else if (TRADU.i.nIdioma == 3)
+    {
+      descripcion = "Reacao: No fim de cada turno, recebe dano arcano aumentado pela quantidade de Residuos de Energia presentes.";
+    }
 
   }
 

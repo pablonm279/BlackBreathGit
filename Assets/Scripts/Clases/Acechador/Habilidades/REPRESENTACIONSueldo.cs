@@ -28,6 +28,11 @@ public class REPRESENTACIONSueldo : Habilidad
          txtDescripcion = "<color=#5dade2><b>Salary</b></color>\n\n";
          txtDescripcion += "<i>(Passive) No matter how complex the situation, Stalkers still demand a salary of 20 Gold Coins at each rest.</i>\n\n-If Hope is greater than 70, they will not demand payment.";
       }
+      if (TRADU.i.nIdioma == 3)
+      {
+         txtDescripcion = "<color=#5dade2><b>Salario</b></color>\n\n";
+         txtDescripcion += "<i>(Passiva) Nao importa quao complexa seja a situacao, os Acechadores continuam exigindo um salario de 20 Moedas de Ouro em cada descanso.</i>\n\n-Se a Esperanca for maior que 70, nao exigirao pagamento.";
+      }
    
     }
 

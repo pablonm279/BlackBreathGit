@@ -39,6 +39,7 @@ public class Acechar : Habilidad
   public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
     int buffAtaque = 2 + (NIVEL > 1 ? 1 : 0);
     int buffCrit = NIVEL > 2 ? 1 : 0;
     if (NIVEL == 4) { buffCrit += 2; }
@@ -47,10 +48,15 @@ public class Acechar : Habilidad
 
     string tituloEs = "Acechar I";
     string tituloEn = "Hide I";
+    string tituloPt = "Espreitar I";
     if (NIVEL == 2) { tituloEs = "Acechar II"; tituloEn = "Hide II"; }
     if (NIVEL == 3) { tituloEs = "Acechar III"; tituloEn = "Hide III"; }
     if (NIVEL == 4) { tituloEs = "Acechar IV a"; tituloEn = "Hide IV a"; }
     if (NIVEL == 5) { tituloEs = "Acechar IV b"; tituloEn = "Hide IV b"; }
+    if (NIVEL == 2) { tituloPt = "Espreitar II"; }
+    if (NIVEL == 3) { tituloPt = "Espreitar III"; }
+    if (NIVEL == 4) { tituloPt = "Espreitar IV a"; }
+    if (NIVEL == 5) { tituloPt = "Espreitar IV b"; }
 
     string cuerpo = "";
     if (esIngles)
@@ -67,6 +73,21 @@ public class Acechar : Habilidad
       cuerpo += seRemueveAlDanar
         ? "<b>Buff removal:</b> removed after dealing damage"
         : "<b>Buff removal:</b> does not get removed after dealing damage";
+    }
+    else if (esPortugues)
+    {
+      cuerpo += "<b>Tipo:</b> Auto Buff\n";
+      cuerpo += "<b>Alvo:</b> Si mesmo\n";
+      cuerpo += "<b>Ao usar:</b> ganha Escondido (1)\n";
+      cuerpo += $"<b>Buff ({duracionTurnos} turnos):</b> +15% Dano, +{buffAtaque} Ataque";
+      if (buffCrit > 0)
+      {
+        cuerpo += $", +{buffCrit} faixa de critico";
+      }
+      cuerpo += "\n";
+      cuerpo += seRemueveAlDanar
+        ? "<b>Remocao do buff:</b> remove ao causar dano"
+        : "<b>Remocao do buff:</b> nao remove ao causar dano";
     }
     else
     {
@@ -86,12 +107,16 @@ public class Acechar : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Valour Cost: {costoPM}"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentía: {costoPM}";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP} (termina turno)\n- Custo Valentia: {costoPM}"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentía: {costoPM}";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : tituloEs,
+      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
         ? "The Explorer vanishes from sight and primes a short offensive spike."
+        : esPortugues
+          ? "O Explorador se oculta e prepara um pico ofensivo curto."
         : "El Explorador se oculta y prepara una subida ofensiva breve.",
       cuerpo,
       costos,
@@ -108,6 +133,12 @@ public class Acechar : Habilidad
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack buff.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 crit range buff.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 crit range) or Option B (buff persists after damage).</color>"; }
+    }
+    else if (esPortugues)
+    {
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no buff de Ataque.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no buff de faixa de critico.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 faixa de critico) ou Opcao B (o buff persiste ao causar dano).</color>"; }
     }
     else
     {

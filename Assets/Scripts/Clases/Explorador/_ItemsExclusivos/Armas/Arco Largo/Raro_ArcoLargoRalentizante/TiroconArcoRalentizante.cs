@@ -15,10 +15,10 @@ public class TiroconArcoRalentizante : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7cido - 8: Arcano
 
     private int hAlcance = 7;
-    private int hAncho = 1; //1 - adyancentes también
+    private int hAncho = 2; //1 - adyancentes tam
   public override void Awake()
   {
     nombre = "Tiro con Arco Ralentizante";
@@ -57,8 +57,8 @@ public class TiroconArcoRalentizante : Habilidad
     txtDescripcion = "<color=#5dade2><b>Tiro con Arco Ralentizante</b></color>\n\n";
     txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
     txtDescripcion += "<i>Al golpear TS Fortaleza DC 11: si falla, Ralentiza 2 turnos.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
+    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - DaÃ±o: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo ValentÃ­a: {costoPM} </color>";
      if (TRADU.i.nIdioma == 2)
     {
       txtDescripcion = "<color=#5dade2><b>Slowing Bow Shot</b></color>\n\n";
@@ -66,6 +66,15 @@ public class TiroconArcoRalentizante : Habilidad
       txtDescripcion += "<i>On hit, Fortitude Save DC 11: if failed, Slowed for 2 turns.</i>\n\n";
       txtDescripcion += $"<color=#c8c8c8><b>Range: 7</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Piercing 1d10+1- Requires 1 Arrow</color>\n\n";
       txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valour Cost: {costoPM} </color>";
+    }
+    else if (TRADU.i.nIdioma == 3)
+    {
+      nombre = "Tiro com Arco Ralentizante";
+      txtDescripcion = "<color=#5dade2><b>Tiro com Arco Ralentizante</b></color>\n\n";
+      txtDescripcion += "<i>O explorador ataca o inimigo com seu arco.</i>\n\n";
+      txtDescripcion += "<i>Ao acertar, TS Fortaleza CD 11: se falhar, fica Lento por 2 turnos.</i>\n\n";
+      txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidade +{bonusAtaque}</color> - Dano: Perfurante 1d10+1- Requer 1 Flecha</color>\n\n";
+      txtDescripcion += $"<color=#44d3ec>- Recarga: {cooldownMax} \n- Custo AP: {costoAP} \n- Custo Valentia: {costoPM} </color>";
     }
        
     }
@@ -93,7 +102,7 @@ public class TiroconArcoRalentizante : Habilidad
     public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
-     if(obj is Unidad) //Acá van los efectos a Unidades.
+     if(obj is Unidad) //A van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -107,11 +116,11 @@ public class TiroconArcoRalentizante : Habilidad
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        
        //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para próximas habilidades de daño del explorador
+       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para prdel explorador
        {
          bonusAtaque += 4;
          criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de daño solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daño crítico.
+         danioMarca += 15; //Esto se suma al porcentaje de dao solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega %co.
 
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
          {  danioMarca += 5;   }
@@ -180,7 +189,7 @@ public class TiroconArcoRalentizante : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Ac van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -198,7 +207,7 @@ public class TiroconArcoRalentizante : Habilidad
     if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza,12))
     {
          /////////////////////////////////////////////
-        //BUFF ---- Así se aplica un buff/debuff
+        //BUFF ---- As se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Ralentizado";
         buff.boolfDebufftBuff = false;
@@ -208,7 +217,7 @@ public class TiroconArcoRalentizante : Habilidad
         buff.cantDefensa -= 1;
         buff.cantAtaque -= 1;
         buff.AplicarBuff(objetivo);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuracin del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
 

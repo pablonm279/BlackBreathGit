@@ -37,6 +37,7 @@ public class PosturaDefensiva : Habilidad
     public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
       int bonoDefensa = 1 + (NIVEL > 1 ? 1 : 0);
       int bonoAtaque = NIVEL > 2 ? 1 : 0;
@@ -45,10 +46,15 @@ public class PosturaDefensiva : Habilidad
 
       string tituloEs = "Postura Defensiva I";
       string tituloEn = "Defensive Stance I";
+      string tituloPt = "Postura Defensiva I";
       if (NIVEL == 2) { tituloEs = "Postura Defensiva II"; tituloEn = "Defensive Stance II"; }
       if (NIVEL == 3) { tituloEs = "Postura Defensiva III"; tituloEn = "Defensive Stance III"; }
       if (NIVEL == 4) { tituloEs = "Postura Defensiva IV a"; tituloEn = "Defensive Stance IV a"; }
       if (NIVEL == 5) { tituloEs = "Postura Defensiva IV b"; tituloEn = "Defensive Stance IV b"; }
+      if (NIVEL == 2) { tituloPt = "Postura Defensiva II"; }
+      if (NIVEL == 3) { tituloPt = "Postura Defensiva III"; }
+      if (NIVEL == 4) { tituloPt = "Postura Defensiva IV a"; }
+      if (NIVEL == 5) { tituloPt = "Postura Defensiva IV b"; }
 
       string cuerpo = "";
       if (esIngles)
@@ -65,6 +71,21 @@ public class PosturaDefensiva : Habilidad
         cuerpo += seCancelaAlRecibirDanio
           ? "<b>Reaction cancel:</b> removed when taking damage"
           : "<b>Reaction cancel:</b> does not get removed when taking damage";
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Auto Buff + Reacao\n";
+        cuerpo += "<b>Alvo:</b> O proprio usuario\n";
+        cuerpo += $"<b>Buff (2 turnos):</b> +{bonoDefensa} Defesa";
+        if (bonoAtaque > 0)
+        {
+          cuerpo += $", +{bonoAtaque} Ataque";
+        }
+        cuerpo += "\n";
+        cuerpo += $"<b>Reacao:</b> contra-ataca com Corte Vertical quando um inimigo erra um ataque corpo a corpo ({usosReaccion} uso/s)\n";
+        cuerpo += seCancelaAlRecibirDanio
+          ? "<b>Cancelamento da reacao:</b> removida ao receber dano"
+          : "<b>Cancelamento da reacao:</b> nao e removida ao receber dano";
       }
       else
       {
@@ -84,12 +105,16 @@ public class PosturaDefensiva : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Valour Cost: {costoPM}"
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP} (termina turno)\n- Custo Valentia: {costoPM}"
         : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "The Knight braces for incoming melee and answers with punishing counters."
+          : esPortugues
+            ? "O Cavaleiro se prepara para receber ataques corpo a corpo e responde com contra-ataques."
           : "El Caballero se planta para recibir melee y responder con contraataques.",
         cuerpo,
         costos,
@@ -106,6 +131,12 @@ public class PosturaDefensiva : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Defense buff.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Attack buff during stance.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (no cancel on hit) or Option B (+1 reaction use).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no buff de Defesa.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no buff de Ataque durante a postura.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (nao cancela ao receber golpe) ou Opcao B (+1 uso de reacao).</color>"; }
       }
       else
       {

@@ -33,6 +33,11 @@ public class armaArcoLargo : Arma
             sNombreItem = "Longbow " + nmejora;
             itemDescripcion = "A large bow, ideal for long-range shots.\n\nAttack ability: Bow Shot.";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Arco Longo " + nmejora;
+            itemDescripcion = "Um arco de grande porte, ideal para disparos de longa distancia.\n\nHabilidade de ataque: Tiro com Arco.";
+         }
       }
 
 
@@ -49,6 +54,11 @@ public class armaArcoLargo : Arma
             sNombreItem = "Acid Longbow " + nmejora;
             itemDescripcion = "A large bow, ideal for long-range shots.\n\nAttack ability: Acid Bow Shot.";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Arco Longo Acido " + nmejora;
+            itemDescripcion = "Um arco de grande porte, ideal para disparos de longa distancia.\n\nHabilidade de ataque: Tiro com Arco Acido.";
+         }
       }
       //---
       if (sNombreItem == "Arco Largo Potente")
@@ -63,6 +73,11 @@ public class armaArcoLargo : Arma
             sNombreItem = "Powerful Longbow " + nmejora;
             itemDescripcion = "A large bow, ideal for long-range shots.\n\nAttack ability: Powerful Bow Shot.";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Arco Longo Potente " + nmejora;
+            itemDescripcion = "Um arco de grande porte, ideal para disparos de longa distancia.\n\nHabilidade de ataque: Tiro com Arco Potente.";
+         }
       }
       //---
       if (sNombreItem == "Arco Largo Ralentizante")
@@ -76,6 +91,11 @@ public class armaArcoLargo : Arma
          {
             sNombreItem = "Slowing Longbow " + nmejora;
             itemDescripcion = "A large bow, ideal for long-range shots.\n\nAttack ability: Slowing Bow Shot.";
+         }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Arco Longo Ralentizante " + nmejora;
+            itemDescripcion = "Um arco de grande porte, ideal para disparos de longa distancia.\n\nHabilidade de ataque: Tiro com Arco Ralentizante.";
          }
       }
 

@@ -15,10 +15,10 @@ public class TiroBallestaDeMano : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano
 
     private int hAlcance = 3;
-    private int hAncho = 1; //1 - adyancentes también
+    private int hAncho = 1; //1 - adyancentes tambiï¿½n
     ClaseAcechador claseAcechador;
      public override void  Awake()
     {
@@ -63,7 +63,7 @@ public class TiroBallestaDeMano : Habilidad
     {
       bonusAtaque = 1;
       damExtra += 2;
-      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÃ­a con Ballesta de Mano agrega: +1 Ataque +2 DaÃ±o.</i>\n\n";
 
     }
     else if (NivelMaestria == 2)
@@ -71,7 +71,7 @@ public class TiroBallestaDeMano : Habilidad
       bonusAtaque = 1;
       damExtra += 2;
       criticoRangoHab = 1;
-      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÃ­a con Ballesta de Mano agrega: +1 Ataque +2 DaÃ±o +1 Rango CrÃ­ticoco.</i>\n\n";
 
     }
     else if (NivelMaestria == 3)
@@ -80,7 +80,7 @@ public class TiroBallestaDeMano : Habilidad
       damExtra += 2;
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÃ­a con Ballesta de Mano agrega: +1 Ataque +2 DaÃ±o +1 Rango CrÃ­ticoco, -1 AP.</i>\n\n";
 
 
     }
@@ -91,7 +91,7 @@ public class TiroBallestaDeMano : Habilidad
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
       hAlcance += 1; //Alcance +1
-      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÃ­a con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 DaÃ±o +1 Rango CrÃ­ticoco.</i>\n\n";
 
     }
     else if (NivelMaestria == 5)
@@ -102,7 +102,7 @@ public class TiroBallestaDeMano : Habilidad
       cooldownMax -= 1; //Cooldown -1
       costoAP -= 1; //costo AP -1
       cooldownActual = 0;
-      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÃ­a con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 DaÃ±o +1 Rango CrÃ­ticoco.</i>\n\n";
 
     }
 
@@ -118,6 +118,7 @@ public class TiroBallestaDeMano : Habilidad
      public override void ActualizarDescripcion()
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int agilidadActual = statsUI.Agilidad;
@@ -129,12 +130,23 @@ public class TiroBallestaDeMano : Habilidad
     if (esIngles)
     {
       cuerpo += $"<b>Type:</b> Ranged ({hAlcance} range)\n";
-      cuerpo += "<b>Target:</b> 1 enemy in range\n"; 
+      cuerpo += "<b>Target:</b> 1 enemy in range\n";
       cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
       cuerpo += $"<b>Damage:</b> 1d10 + {damExtra} + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Piercing";
       if (nivelMaestria > 0)
       {
         cuerpo += $"\n<b>Passive applied:</b> Hand Crossbow Mastery (Tier {nivelMaestria})";
+      }
+    }
+    else if (esPortugues)
+    {
+      cuerpo += $"<b>Tipo:</b> Alcance ({hAlcance} de alcance)\n";
+      cuerpo += "<b>Alvo:</b> 1 inimigo no alcance\n";
+      cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Agilidade ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Dano:</b> 1d10 + {damExtra} + <color=#ea0606>Agilidade ({agilidadActual})</color> | <b>Tipo:</b> Perfurante";
+      if (nivelMaestria > 0)
+      {
+        cuerpo += $"\n<b>Passiva aplicada:</b> Maestria com Besta de Mao (Tier {nivelMaestria})";
       }
     }
     else
@@ -151,17 +163,22 @@ public class TiroBallestaDeMano : Habilidad
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
+      : esPortugues
+        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentia: {costoPM}\n- Esforzable: Si ({esforzable})";
 
     txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? "Hand Crossbow Shot" : "Tiro Ballesta de Mano",
+      esIngles ? "Hand Crossbow Shot" : esPortugues ? "Tiro de Besta de Mao" : "Tiro Ballesta de Mano",
       esIngles
         ? "A short-range precision shot that scales with hand crossbow mastery."
-        : "Un disparo de precision a corto alcance que escala con maestria de ballesta de mano.",
+        : esPortugues
+          ? "Um disparo preciso de curto alcance que escala com a maestria de besta de mao."
+          : "Un disparo de precision a corto alcance que escala con maestria de ballesta de mano.",
       cuerpo,
       costos,
       "#5dade2");
   }
+
     Casilla Origen;
     public override void Activar()
     {
@@ -210,7 +227,7 @@ public class TiroBallestaDeMano : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
-     if(obj is Unidad) //Acá van los efectos a Unidades.
+     if(obj is Unidad) //Acï¿½ van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -270,7 +287,7 @@ public class TiroBallestaDeMano : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Acï¿½ van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---

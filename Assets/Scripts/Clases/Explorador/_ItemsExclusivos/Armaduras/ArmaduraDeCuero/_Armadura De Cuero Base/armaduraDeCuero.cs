@@ -34,6 +34,11 @@ public class armaduraDeCuero : Armadura
             sNombreItem = "Reinforced Leather Armor " + nmejora;
             itemDescripcion = "A lightweight armor made of reinforced leather.";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Armadura de Couro Reforcado " + nmejora;
+            itemDescripcion = "Uma armadura leve feita de couro reforcado.";
+         }
       }
       //Si hay variantes especiales, se ponen aca abajo
       if (sNombreItem == "Armadura de Cuero Reforzado de Ligereza")
@@ -48,6 +53,11 @@ public class armaduraDeCuero : Armadura
             sNombreItem = "Lightweight Reinforced Leather Armor";
             itemDescripcion = "A lightweight armor made of reinforced leather.\n\n+2 Evasion at the start of combat.";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Armadura de Couro Reforcado de Leveza";
+            itemDescripcion = "Uma armadura extremamente leve feita de couro reforcado.\n\n+2 Evasao no inicio do combate.";
+         }
       }
       //------
       if (sNombreItem == "Armadura de Cuero Reforzado de Velo")
@@ -61,6 +71,11 @@ public class armaduraDeCuero : Armadura
          {
             sNombreItem = "Reinforced Leather Armor of Veil";
             itemDescripcion = "A lightweight armor made of reinforced leather.\n\nWhen receiving critical damage, gain Hidden I.";
+         }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Armadura de Couro Reforcado do Veu";
+            itemDescripcion = "Uma armadura feita de couro reforcado.\n\nAo receber dano critico, ganha Escondido I.";
          }
       }
       //------
@@ -82,6 +97,11 @@ public class armaduraDeCuero : Armadura
             sNombreItem = "Leather Armor" + nmejora;
             itemDescripcion = "A lightweight armor made of leather.";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Armadura de Couro" + nmejora;
+            itemDescripcion = "Uma armadura leve feita de couro.";
+         }
       }
       //Si hay variantes especiales, se ponen aca abajo
       if (sNombreItem == "Armadura de Cuero de Fortaleza")
@@ -95,6 +115,11 @@ public class armaduraDeCuero : Armadura
          {
             sNombreItem = "Leather Armor of Fortitude";
             itemDescripcion = "A lightweight armor made of leather.\n\n+1 Fortitude.";
+         }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Armadura de Couro da Fortaleza";
+            itemDescripcion = "Uma armadura feita de couro.\n\n+1 TS Fortaleza.";
          }
       }
       //------
@@ -111,6 +136,11 @@ public class armaduraDeCuero : Armadura
             sNombreItem = "Necrotic-leather Armor";
             itemDescripcion = "A lightweight armor made of necrotic leather.\n\n";
          }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Armadura de Couro Necrotico";
+            itemDescripcion = "Uma armadura leve feita de couro necrotico.\n\n";
+         }
       }
       //------
       //Si hay variantes especiales, se ponen aca abajo
@@ -125,6 +155,11 @@ public class armaduraDeCuero : Armadura
          {
             sNombreItem = "Blurred Leather Armor";
             itemDescripcion = "A lightweight armor made of blurred leather.\n\n+3 Evasion at the start of combat.";
+         }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Armadura de Couro Turva";
+            itemDescripcion = "Uma armadura feita de couro turvo.\n\n+3 Evasao no inicio do combate.";
          }
       }
       //------

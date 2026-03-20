@@ -38,9 +38,10 @@ public class EscudodeFe : Habilidad
       
 
     }
-        public override void ActualizarDescripcion()
+    public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
       ClasePurificadora scPurificadora = Usuario != null ? Usuario.GetComponent<ClasePurificadora>() : null;
       int fervorActual = scPurificadora != null ? scPurificadora.ObtenerFervor() : 0;
 
@@ -52,10 +53,15 @@ public class EscudodeFe : Habilidad
 
       string tituloEs = "Escudo de Fe I";
       string tituloEn = "Shield of Faith I";
+      string tituloPt = "Escudo da Fe I";
       if (NIVEL == 2) { tituloEs = "Escudo de Fe II"; tituloEn = "Shield of Faith II"; }
       if (NIVEL == 3) { tituloEs = "Escudo de Fe III"; tituloEn = "Shield of Faith III"; }
       if (NIVEL == 4) { tituloEs = "Escudo de Fe IV a"; tituloEn = "Shield of Faith IV a"; }
       if (NIVEL == 5) { tituloEs = "Escudo de Fe IV b"; tituloEn = "Shield of Faith IV b"; }
+      if (NIVEL == 2) { tituloPt = "Escudo da Fe II"; }
+      if (NIVEL == 3) { tituloPt = "Escudo da Fe III"; }
+      if (NIVEL == 4) { tituloPt = "Escudo da Fe IV a"; }
+      if (NIVEL == 5) { tituloPt = "Escudo da Fe IV b"; }
 
       string cuerpo = "";
       if (esIngles)
@@ -75,6 +81,24 @@ public class EscudodeFe : Habilidad
         }
         cuerpo += "\n<b>Requirement:</b> Needs at least 1 Fervor to activate\n";
         cuerpo += "<b>On cast:</b> Does not consume Fervor";
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Alcance (8 de alcance)\n";
+        cuerpo += "<b>Alvo:</b> 1 celula no alcance\n";
+        cuerpo += "<b>Area:</b> Celula selecionada + celulas adjacentes\n";
+        cuerpo += $"<b>Duracao da armadilha:</b> {duracionTurnos} turnos\n";
+        cuerpo += $"<b>Ao ativar:</b> Concede +{bonusBarrera} Barreira e +{bonusTS} em Fortitude/Reflexos/Mental (com base no Fervor {fervorActual} ao usar)";
+        if (agregaDefensa)
+        {
+          cuerpo += ", +1 Defesa";
+        }
+        if (agregaCuracion)
+        {
+          cuerpo += ", cura 2d6";
+        }
+        cuerpo += "\n<b>Requisito:</b> Precisa de pelo menos 1 Fervor para ativar\n";
+        cuerpo += "<b>Ao usar:</b> Nao consome Fervor";
       }
       else
       {
@@ -97,12 +121,16 @@ public class EscudodeFe : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
         : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "Places sacred ward tiles that protect allies using current Fervor."
+          : esPortugues
+            ? "Coloca zonas sagradas que protegem aliados usando o Fervor atual."
           : "Coloca zonas sagradas que protegen aliados usando el Fervor actual.",
         cuerpo,
         costos,
@@ -123,6 +151,12 @@ public class EscudodeFe : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 Valour Cost.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Defense on trigger buff.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 turn duration) or Option B (+2d6 healing on trigger).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 custo de Valentia.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Defesa no buff ao ativar.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 turno de duracao) ou Opcao B (+2d6 de cura ao ativar).</color>"; }
       }
       else
       {

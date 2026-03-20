@@ -632,10 +632,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc3ffb38192c474428cf4162ef12c3e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  oName: Roca Menor
-  hpMax: 12
-  hpCurr: 12
-  iDureza: 3
+  oName: Roca Mayor
+  hpMax: 14
+  hpCurr: 14
+  iDureza: 0
   destruiblePorMismoLado: 1
   intDuracionTurnos: 100
   bPermiteAtacarDetras: 0

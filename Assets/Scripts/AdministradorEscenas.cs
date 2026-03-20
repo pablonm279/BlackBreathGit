@@ -144,6 +144,25 @@ public class AdministradorEscenas : MonoBehaviour
 
     return true;
   }
+
+  bool EsActividadGuardiaBaseOCaballero(Personaje personaje)
+  {
+    if (personaje == null) { return false; }
+    return personaje.ActividadSeleccionada == 3 || personaje.ActividadSeleccionada == 6;
+  }
+
+  bool EsActividadGuardiaParaCaravana(Personaje personaje)
+  {
+    if (personaje == null) { return false; }
+    return EsActividadGuardiaBaseOCaballero(personaje) || personaje.ActividadSeleccionada == 14;
+  }
+
+  void AplicarSigiloInicialCaravana(Personaje personaje, Unidad unidad)
+  {
+    if (personaje == null || unidad == null) { return; }
+    if (personaje.ActividadSeleccionada != 14) { return; }
+    unidad.GanarEscondido(1);
+  }
   // (removido) UI de carga sutil
 
   IEnumerator Start()
@@ -416,8 +435,7 @@ public class AdministradorEscenas : MonoBehaviour
 
       bool EstaEnGuardiaOVigilanciaCaballero(Personaje personaje)
       {
-        if (personaje == null) { return false; }
-        return personaje.ActividadSeleccionada == 3 || personaje.ActividadSeleccionada == 6;
+        return EsActividadGuardiaBaseOCaballero(personaje);
       }
 
       LadoManager ladoBueno = BattleManager.Instance.ladoB; //Buenos
@@ -475,6 +493,12 @@ public class AdministradorEscenas : MonoBehaviour
         }
       }
 
+      // Acechador en "Vigilar Desde las Sombras": inicia oculto en Ataque a Caravana.
+      AplicarSigiloInicialCaravana(Personaje1, unidadPers1);
+      AplicarSigiloInicialCaravana(Personaje2, unidadPers2);
+      AplicarSigiloInicialCaravana(Personaje3, unidadPers3);
+      AplicarSigiloInicialCaravana(Personaje4, unidadPers4);
+
       // Aplicar "Sorprendido" (4 rondas) solo a los que fueron forzados a desplegar
       if (PersonajesSorprendidosInicioCaravana != null && PersonajesSorprendidosInicioCaravana.Count > 0)
       {
@@ -482,6 +506,7 @@ public class AdministradorEscenas : MonoBehaviour
         void AplicarSorprendidoSiCorresponde(Personaje pers, Unidad uni)
         {
           if (pers == null || uni == null) return;
+          if (EsActividadGuardiaParaCaravana(pers)) return;
           if (!PersonajesSorprendidosInicioCaravana.Contains(pers)) return;
 
           // Remover ocultamiento si lo tuviera
@@ -3828,7 +3853,7 @@ public class AdministradorEscenas : MonoBehaviour
       }
       if (!pers.Camp_Muerto && pers.fVidaActual > 1) //Si no está muerto y tiene vida
       {
-        if (!filtrarPorActividadGuardia || (!(/*Base: Guardia*/pers.ActividadSeleccionada == 3) && !(/*Caballero: Vigilar*/pers.ActividadSeleccionada == 6)))
+        if (!filtrarPorActividadGuardia || !EsActividadGuardiaParaCaravana(pers))
         {
           cantRefuerzoAliadoHeroe++;
           //Si no está haciendo guardia, lo agrega como refuerzo, pero no lo muestra

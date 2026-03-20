@@ -59,6 +59,14 @@ public class GolpeBaston : Habilidad
         txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +{bonusAtaque}</color> - Damage: Bludgeoning 1d6- </color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valour Cost: {costoPM} </color>";
       }
+      else if (TRADU.i.nIdioma == 3)
+      {
+        nombre = "Golpe de Cajado";
+        txtDescripcion = "<color=#5dade2><b>Golpe de Cajado</b></color>\n\n";
+        txtDescripcion += "<i>Com o cajado de purificacao, a personagem desfere um golpe no inimigo.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Forca +{bonusAtaque}</color> - Dano: Contundente 1d6- </color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Recarga: {cooldownMax} \n- Custo AP: {costoAP} \n- Custo Valentia: {costoPM} </color>";
+      }
        
     }
 
@@ -297,7 +305,7 @@ public class GolpeBaston : Habilidad
        //Se fija si las 3 casillas de la columna 1 están vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //si alguna de las 3 tiene algo, no aumenta el rango melee
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //si alguna de las 3 tiene algo, no aumenta el rango melee
           {
             return 0;
           }
@@ -311,7 +319,7 @@ public class GolpeBaston : Habilidad
 
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna2) 
        {
-          if(cas.bTieneUnidadoObstaculoParaMelee()) //y si alguna de las 3 tiene algo, aumenta solo en 1 
+          if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //y si alguna de las 3 tiene algo, aumenta solo en 1 
           {
             return 1;
           }

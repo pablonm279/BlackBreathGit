@@ -39,6 +39,7 @@ public class PrimerosAuxilios : Habilidad
     public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
       string dadoCuracion = NIVEL == 1 ? "1d4" : "1d6";
       int usos = NIVEL > 2 ? 3 : 2;
@@ -47,10 +48,15 @@ public class PrimerosAuxilios : Habilidad
 
       string tituloEs = "Primeros Auxilios I";
       string tituloEn = "First Aid I";
+      string tituloPt = "Primeiros Socorros I";
       if (NIVEL == 2) { tituloEs = "Primeros Auxilios II"; tituloEn = "First Aid II"; }
       if (NIVEL == 3) { tituloEs = "Primeros Auxilios III"; tituloEn = "First Aid III"; }
       if (NIVEL == 4) { tituloEs = "Primeros Auxilios IV a"; tituloEn = "First Aid IV a"; }
       if (NIVEL == 5) { tituloEs = "Primeros Auxilios IV b"; tituloEn = "First Aid IV b"; }
+      if (NIVEL == 2) { tituloPt = "Primeiros Socorros II"; }
+      if (NIVEL == 3) { tituloPt = "Primeiros Socorros III"; }
+      if (NIVEL == 4) { tituloPt = "Primeiros Socorros IV a"; }
+      if (NIVEL == 5) { tituloPt = "Primeiros Socorros IV b"; }
 
       string cuerpo = "";
       if (esIngles)
@@ -64,6 +70,19 @@ public class PrimerosAuxilios : Habilidad
         if (trasladaCampania)
         {
           cuerpo += "\n<b>Campaign:</b> this upgrade enables campaign transfer effect";
+        }
+      }
+      else if (esPortugues)
+      {
+        cuerpo += "<b>Tipo:</b> Cura\n";
+        cuerpo += "<b>Alvo:</b> O proprio usuario ou aliado em alcance 1\n";
+        cuerpo += $"<b>Cura:</b> 1 + ({dadoCuracion} x AP atuais)\n";
+        cuerpo += "<b>Adicional:</b> remove Sangramento e Veneno\n";
+        cuerpo += $"<b>Bonus em resguardo:</b> +{bonoResguardo}% de cura se houver outro aliado em coluna mais frontal\n";
+        cuerpo += "<b>Ao usar:</b> consome todo AP atual";
+        if (trasladaCampania)
+        {
+          cuerpo += "\n<b>Campanha:</b> esta melhoria habilita o efeito de traslado para campanha";
         }
       }
       else
@@ -82,12 +101,16 @@ public class PrimerosAuxilios : Habilidad
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Uses per battle: {usos}"
+        : esPortugues
+          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Usos por batalha: {usos}"
         : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Usos por batalla: {usos}";
 
       txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : tituloEs,
+        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
           ? "Field treatment that scales with the AP you are willing to spend right now."
+          : esPortugues
+            ? "Tratamento de campo que escala com o AP que voce decidir gastar agora."
           : "Atencion de campo que escala segun los AP que decidas gastar en ese momento.",
         cuerpo,
         costos,
@@ -104,6 +127,12 @@ public class PrimerosAuxilios : Habilidad
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: healing die changes from 1d4 to 1d6 per AP.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 use per battle.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+40% cover bonus) or Option B (campaign transfer upgrade).</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: o dado de cura passa de 1d4 para 1d6 por AP.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 uso por batalha.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+40% em resguardo) ou Opcao B (melhoria de traslado para campanha).</color>"; }
       }
       else
       {

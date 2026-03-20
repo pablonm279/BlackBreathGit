@@ -190,7 +190,7 @@ public class AtributosZona : MonoBehaviour
    public GameObject BosqueAngustiante_ArbolQuemado1;
    public GameObject BosqueAngustiante_ArbolQuemado2;
    public GameObject BosqueAngustiante_ArbolQuemado3;
-
+   public GameObject BosqueAngustiante_Raices;
    public GameObject BosqueAngustiante_ManchaCeniza1;
    public GameObject BosqueAngustiante_Maleza1;
    public GameObject BosqueAngustiante_Piedra1;
@@ -309,27 +309,43 @@ public class AtributosZona : MonoBehaviour
       // Async sin congelar: replicamos las llamadas Generar pero con yield
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado1,
-         cantidad: 2850,
-         distCaminoOverride: 0.08f,
-         distNodoOverride: 0.1f,
-         rOverride: 0.78f,
+         cantidad: 3650,
+         distCaminoOverride: 0.07f,
+         distNodoOverride: 0.13f,
+         rOverride: 0.65f,
          kOverride: 20);
          
        yield return scMapDecorator.GenerarAsyncCR(
         BosqueAngustiante_ArbolQuemado1,
-        cantidad: 600,
+        cantidad: 800,
         distCaminoOverride: 0.16f,
         distNodoOverride: 0.14f,
-        rOverride: 1.1f,
+        rOverride: 1.3f,
         kOverride: 20);
 
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado2,
-         cantidad: 445,
-         distCaminoOverride: 0.12f,
-         distNodoOverride: 0.12f,
+         cantidad: 645,
+         distCaminoOverride: 0.14f,
+         distNodoOverride: 0.145f,
          rOverride: 5.8f,
          kOverride: 20);
+         
+       yield return scMapDecorator.GenerarAsyncCR(
+        BosqueAngustiante_ArbolQuemado3,
+        cantidad: 100,
+        distCaminoOverride: 0.18f,
+        distNodoOverride: 0.18f,
+        rOverride:6.8f,
+        kOverride: 20);
+        
+       yield return scMapDecorator.GenerarAsyncCR(
+        BosqueAngustiante_Raices,
+        cantidad: 100,
+        distCaminoOverride: 0.15f,
+        distNodoOverride: 0.15f,
+        rOverride: 4.8f,
+        kOverride: 20);
 
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ManchaCeniza1,
@@ -355,13 +371,6 @@ public class AtributosZona : MonoBehaviour
          rOverride: 11.0f,
          kOverride: 20);
 
-      yield return scMapDecorator.GenerarAsyncCR(
-         BosqueAngustiante_Maleza1,
-         cantidad: 200,
-         distCaminoOverride: 0.2f,
-         distNodoOverride: 0.8f,
-         rOverride: 4.0f,
-         kOverride: 20);
 
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_Llama,

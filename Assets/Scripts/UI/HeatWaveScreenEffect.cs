@@ -489,3 +489,247 @@ public class BurningForestScreenEffect : MonoBehaviour
     return color;
   }
 }
+
+[DisallowMultipleComponent]
+public class BlackBreathInsideScreenEffect : MonoBehaviour
+{
+  private const string OverlayName = "BlackBreathInsideOverlay";
+  private const int TextureSize = 128;
+
+  // Cian/verde sutil para inmersion cuando la caravana esta dentro del aliento.
+  private static readonly Color ColorVignettePrimaryBase = new Color(0.12f, 0.78f, 0.67f, 0.009f);
+  private static readonly Color ColorVignetteSecondaryBase = new Color(0.24f, 0.88f, 0.72f, 0.006f);
+
+  private Canvas overlayCanvas;
+  private CanvasGroup canvasGroup;
+  private RectTransform rectTransform;
+  private Image vignettePrimaryImage;
+  private Image vignetteSecondaryImage;
+
+  private Texture2D vignettePrimaryTexture;
+  private Texture2D vignetteSecondaryTexture;
+  private Sprite vignettePrimarySprite;
+  private Sprite vignetteSecondarySprite;
+
+  private bool effectActive;
+  private float animationSeed;
+
+  public static BlackBreathInsideScreenEffect Ensure(Canvas sourceCanvas)
+  {
+    if (sourceCanvas == null)
+    {
+      return null;
+    }
+
+    Canvas rootCanvas = sourceCanvas.rootCanvas != null ? sourceCanvas.rootCanvas : sourceCanvas;
+    Transform existing = rootCanvas.transform.Find(OverlayName);
+    if (existing != null)
+    {
+      BlackBreathInsideScreenEffect existingEffect = existing.GetComponent<BlackBreathInsideScreenEffect>();
+      if (existingEffect != null)
+      {
+        existingEffect.EnsureVisualTree();
+        return existingEffect;
+      }
+    }
+
+    GameObject overlayGO = new GameObject(OverlayName, typeof(RectTransform), typeof(Canvas), typeof(CanvasGroup), typeof(BlackBreathInsideScreenEffect));
+    RectTransform overlayRect = overlayGO.GetComponent<RectTransform>();
+    overlayRect.SetParent(rootCanvas.transform, false);
+    overlayRect.anchorMin = Vector2.zero;
+    overlayRect.anchorMax = Vector2.one;
+    overlayRect.offsetMin = Vector2.zero;
+    overlayRect.offsetMax = Vector2.zero;
+
+    BlackBreathInsideScreenEffect effect = overlayGO.GetComponent<BlackBreathInsideScreenEffect>();
+    effect.EnsureVisualTree();
+    effect.SetEffectActive(false);
+    return effect;
+  }
+
+  private void Awake()
+  {
+    EnsureVisualTree();
+    SetEffectActive(false);
+  }
+
+  private void OnDestroy()
+  {
+    if (vignettePrimarySprite != null) { Destroy(vignettePrimarySprite); }
+    if (vignetteSecondarySprite != null) { Destroy(vignetteSecondarySprite); }
+
+    if (vignettePrimaryTexture != null) { Destroy(vignettePrimaryTexture); }
+    if (vignetteSecondaryTexture != null) { Destroy(vignetteSecondaryTexture); }
+  }
+
+  private void Update()
+  {
+    if (!effectActive)
+    {
+      return;
+    }
+
+    float t = Time.unscaledTime * 0.52f + animationSeed;
+    float pulseA = 0.5f + 0.5f * Mathf.Sin(t);
+    float pulseB = 0.5f + 0.5f * Mathf.Sin((t * 1.21f) + 1.1f);
+
+    vignettePrimaryImage.color = WithAlpha(ColorVignettePrimaryBase, ColorVignettePrimaryBase.a + (pulseA * 0.0035f));
+    vignetteSecondaryImage.color = WithAlpha(ColorVignetteSecondaryBase, ColorVignetteSecondaryBase.a + (pulseB * 0.0028f));
+
+    vignetteSecondaryImage.rectTransform.localScale = Vector3.one * (1.01f + (pulseA * 0.025f));
+    vignetteSecondaryImage.rectTransform.anchoredPosition = new Vector2(
+      Mathf.Sin(t * 0.37f) * 10f,
+      Mathf.Cos(t * 0.33f) * 7f);
+  }
+
+  public void SetEffectActive(bool active)
+  {
+    EnsureVisualTree();
+
+    bool cambioEstado = effectActive != active;
+    effectActive = active;
+    if (cambioEstado && active)
+    {
+      animationSeed = Random.Range(0f, 100f);
+    }
+
+    canvasGroup.alpha = active ? 1f : 0f;
+    enabled = active;
+
+    if (active)
+    {
+      Update();
+    }
+  }
+
+  private void EnsureVisualTree()
+  {
+    if (canvasGroup == null)
+    {
+      canvasGroup = GetComponent<CanvasGroup>();
+      canvasGroup.interactable = false;
+      canvasGroup.blocksRaycasts = false;
+    }
+
+    if (overlayCanvas == null)
+    {
+      overlayCanvas = GetComponent<Canvas>();
+    }
+
+    if (overlayCanvas != null)
+    {
+      Canvas parentCanvas = GetComponentInParent<Canvas>();
+      overlayCanvas.overrideSorting = true;
+      overlayCanvas.sortingOrder = parentCanvas != null ? parentCanvas.sortingOrder - 3 : -3;
+    }
+
+    if (rectTransform == null)
+    {
+      rectTransform = GetComponent<RectTransform>();
+      rectTransform.anchorMin = Vector2.zero;
+      rectTransform.anchorMax = Vector2.one;
+      rectTransform.offsetMin = Vector2.zero;
+      rectTransform.offsetMax = Vector2.zero;
+    }
+
+    EnsureSprites();
+
+    if (vignettePrimaryImage == null)
+    {
+      vignettePrimaryImage = CreateLayer("VignettePrimary", vignettePrimarySprite);
+      vignettePrimaryImage.color = ColorVignettePrimaryBase;
+    }
+
+    if (vignetteSecondaryImage == null)
+    {
+      vignetteSecondaryImage = CreateLayer("VignetteSecondary", vignetteSecondarySprite);
+      vignetteSecondaryImage.color = ColorVignetteSecondaryBase;
+      vignetteSecondaryImage.rectTransform.localScale = Vector3.one * 1.01f;
+    }
+  }
+
+  private void EnsureSprites()
+  {
+    if (vignettePrimarySprite == null)
+    {
+      // Anillo externo: deja el centro limpio.
+      vignettePrimaryTexture = CreateRadialTexture(0.8f, 1f, true);
+      vignettePrimarySprite = CreateSprite(vignettePrimaryTexture);
+    }
+
+    if (vignetteSecondarySprite == null)
+    {
+      // Segunda capa suave para dar vida sin tapar el centro.
+      vignetteSecondaryTexture = CreateRadialTexture(0.74f, 1f, true);
+      vignetteSecondarySprite = CreateSprite(vignetteSecondaryTexture);
+    }
+  }
+
+  private Image CreateLayer(string layerName, Sprite sprite)
+  {
+    Transform existing = transform.Find(layerName);
+    Image image = existing != null ? existing.GetComponent<Image>() : null;
+    if (image != null)
+    {
+      image.sprite = sprite;
+      return image;
+    }
+
+    GameObject layerGO = new GameObject(layerName, typeof(RectTransform), typeof(Image));
+    layerGO.transform.SetParent(transform, false);
+
+    RectTransform layerRect = layerGO.GetComponent<RectTransform>();
+    layerRect.anchorMin = Vector2.zero;
+    layerRect.anchorMax = Vector2.one;
+    layerRect.offsetMin = Vector2.zero;
+    layerRect.offsetMax = Vector2.zero;
+
+    image = layerGO.GetComponent<Image>();
+    image.sprite = sprite;
+    image.raycastTarget = false;
+    image.preserveAspect = false;
+    return image;
+  }
+
+  private static Texture2D CreateRadialTexture(float innerRadius, float outerRadius, bool invert)
+  {
+    Texture2D texture = new Texture2D(TextureSize, TextureSize, TextureFormat.ARGB32, false);
+    texture.wrapMode = TextureWrapMode.Clamp;
+    texture.filterMode = FilterMode.Bilinear;
+
+    Color[] pixels = new Color[TextureSize * TextureSize];
+    Vector2 center = new Vector2((TextureSize - 1) * 0.5f, (TextureSize - 1) * 0.5f);
+    float maxRadius = TextureSize * 0.5f;
+
+    for (int y = 0; y < TextureSize; y++)
+    {
+      for (int x = 0; x < TextureSize; x++)
+      {
+        float distance = Vector2.Distance(new Vector2(x, y), center) / maxRadius;
+        float normalized = Mathf.InverseLerp(innerRadius, outerRadius, distance);
+        float alpha = invert ? normalized : 1f - normalized;
+        alpha = Mathf.Clamp01(alpha);
+        pixels[(y * TextureSize) + x] = new Color(1f, 1f, 1f, alpha);
+      }
+    }
+
+    texture.SetPixels(pixels);
+    texture.Apply();
+    return texture;
+  }
+
+  private static Sprite CreateSprite(Texture2D texture)
+  {
+    return Sprite.Create(
+      texture,
+      new Rect(0f, 0f, texture.width, texture.height),
+      new Vector2(0.5f, 0.5f),
+      100f);
+  }
+
+  private static Color WithAlpha(Color color, float alpha)
+  {
+    color.a = Mathf.Clamp01(alpha);
+    return color;
+  }
+}

@@ -136,6 +136,67 @@ public class REPRESENTACIONAcorazado : Habilidad
           txtDescripcion += "<i>(Passive)His heavy armor resists enemy blows more than usual.\nMust receive 6 or more damage for his armor to be reduced when hit and cannot drop below half of its initial value.</i>\n\n";
         }
       }
+      if (TRADU.i.nIdioma == 3) // Portugues
+      {
+        if (NIVEL < 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Encouracado I</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva)Sua armadura pesada resiste golpes inimigos mais do que o normal.\nPrecisa receber 4 ou mais de dano para que a Armadura reduza ao ser atingido.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: Perde apenas 1 de Armadura se o dano fisico recebido for maior que 5</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 2)
+        {
+          txtDescripcion = "<color=#5dade2><b>Encouracado II</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva)Sua armadura pesada resiste golpes inimigos mais do que o normal.\nPrecisa receber 5 ou mais de dano para que a Armadura reduza ao ser atingido.</i>\n\n";
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: Perde apenas 1 de Armadura se o dano fisico recebido for maior que 6</color>\n\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 3)
+        {
+          txtDescripcion = "<color=#5dade2><b>Encouracado III</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva)Sua armadura pesada resiste golpes inimigos mais do que o normal.\nPrecisa receber 6 ou mais de dano para que a Armadura reduza ao ser atingido.</i>\n\n";
+
+          if (EsEscenaCampaña())
+          {
+            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
+            {
+              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+              {
+                txtDescripcion += $"<color=#dfea02>-Opcao A: Perde apenas 1 de Armadura se o dano fisico recebido for maior que 8</color>\n\n";
+                txtDescripcion += $"<color=#dfea02>-Opcao B: A Armadura nao pode cair abaixo da metade do valor inicial</color>\n";
+              }
+            }
+          }
+        }
+        if (NIVEL == 4)
+        {
+          txtDescripcion = "<color=#5dade2><b>Encouracado IV a</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva)Sua armadura pesada resiste golpes inimigos mais do que o normal.\nPrecisa receber 8 ou mais de dano para que a Armadura reduza ao ser atingido.</i>\n\n";
+        }
+        if (NIVEL == 5)
+        {
+          txtDescripcion = "<color=#5dade2><b>Encouracado IV b</b></color>\n\n";
+          txtDescripcion += "<i>(Passiva)Sua armadura pesada resiste golpes inimigos mais do que o normal.\nPrecisa receber 6 ou mais de dano para que a Armadura reduza ao ser atingido e nao pode cair abaixo da metade do valor inicial.</i>\n\n";
+        }
+      }
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}
