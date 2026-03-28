@@ -188,16 +188,7 @@ public void AplicarPosesion(Unidad objetivo)
       scEstaUnidad.estado_invulnerable = 2;
       scEstaUnidad.estado_aturdido = 2;
 
-      // BUFF ---- Así se aplica un buff/debuff
-      Buff buff = new Buff();
-      buff.buffNombre = "Encarnado en Enemigo";
-      buff.buffDescr = "Actualmente encarnado en un enemigo, invulnerable.";
-      buff.boolfDebufftBuff = true;
-      buff.DuracionBuffRondas = 2;
-      buff.AplicarBuff(objetivo);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-      Buff buffComponent = ComponentCopier.CopyComponent(buff, scEstaUnidad.gameObject);
-
+        Invoke("delayEncarnartext", 3.05f);
       BattleManager.Instance.EscribirLog(objetivo.uNombre + TRADU.i.Traducir(" fue Encarnado por Fuego Fatuo"));
       
 
@@ -208,8 +199,21 @@ public void AplicarPosesion(Unidad objetivo)
 
 }    
 
-public override object EstablecerObjetivoPrioritario() 
+void delayEncarnartext()
 {
+    // BUFF ---- Así se aplica un buff/debuff
+      Buff buff = new Buff();
+      buff.buffNombre = "Encarnado en Enemigo";
+      buff.buffDescr = "Actualmente encarnado en un enemigo, invulnerable.";
+      buff.boolfDebufftBuff = true;
+      buff.DuracionBuffRondas = 2;
+      buff.AplicarBuff(objetivo);
+      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+      Buff buffComponent = ComponentCopier.CopyComponent(buff, scEstaUnidad.gameObject);
+
+}
+public override object EstablecerObjetivoPrioritario()
+  {
     // Obtener la unidad dueña
     Unidad unidadDueña = gameObject.GetComponent<Unidad>();
     if (unidadDueña == null) return null;
@@ -228,13 +232,13 @@ public override object EstablecerObjetivoPrioritario()
     // Si hay unidades disponibles, devolver la primera
     if (unidadesOrdenadas.Any())
     {
-        return unidadesOrdenadas.FirstOrDefault();
+      return unidadesOrdenadas.FirstOrDefault();
     }
 
     // Si no hay unidades, devolver el obstáculo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
-}
+  }
 
 
 

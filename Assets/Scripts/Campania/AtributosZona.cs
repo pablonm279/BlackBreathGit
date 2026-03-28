@@ -309,26 +309,26 @@ public class AtributosZona : MonoBehaviour
       // Async sin congelar: replicamos las llamadas Generar pero con yield
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado1,
-         cantidad: 3650,
+         cantidad: 3050,
          distCaminoOverride: 0.07f,
          distNodoOverride: 0.13f,
-         rOverride: 0.65f,
+         rOverride: 0.51f,
          kOverride: 20);
          
        yield return scMapDecorator.GenerarAsyncCR(
         BosqueAngustiante_ArbolQuemado1,
-        cantidad: 800,
+        cantidad: 650,
         distCaminoOverride: 0.16f,
         distNodoOverride: 0.14f,
-        rOverride: 1.3f,
+        rOverride: 1.18f,
         kOverride: 20);
 
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado2,
-         cantidad: 645,
+         cantidad: 445,
          distCaminoOverride: 0.14f,
          distNodoOverride: 0.145f,
-         rOverride: 5.8f,
+         rOverride: 3.9f,
          kOverride: 20);
          
        yield return scMapDecorator.GenerarAsyncCR(
@@ -774,6 +774,11 @@ public class AtributosZona : MonoBehaviour
 
    public void GenerarZona(int ID = 0)
    {
+      if (CampaignManager.Instance != null)
+      {
+         CampaignManager.Instance.ResetearEventosAleatoriosUsadosMapa();
+      }
+
       int zona = ID;
 
       FASE++;

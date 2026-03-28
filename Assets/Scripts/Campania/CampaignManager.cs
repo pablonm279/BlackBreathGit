@@ -9,7 +9,9 @@ using UnityEngine.UI;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 public class CampaignManager : MonoBehaviour
 {
@@ -22,6 +24,7 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private bool debugPermitirZonaBosque = false;
   [SerializeField] private bool debugPermitirZonaPasoVientoHelado = false;
   [SerializeField] private bool debugPermitirZonaNedukazal = false;
+  [SerializeField] private bool debugIniciarConEstadosCaravana = false;
 
   public GameObject prefabTextoRecursos;
   public Animator animCaravana;
@@ -63,6 +66,7 @@ public class CampaignManager : MonoBehaviour
   public SequitoEsclavos scSequitoEsclavos;
 
   public float sequitoCuranderosMejoraCuracion;
+  public EstadosCaravana estadosCaravana = new EstadosCaravana();
 
   public int numeroTurno;
   private const string TEXTO_LOG_INICIO_CAMPANIA = "El viaje de la caravana ha comenzado.";
@@ -71,6 +75,8 @@ public class CampaignManager : MonoBehaviour
   private bool transicionZonaEnCurso = false;
   private bool bloquearOlaDeCalorEnSiguienteTiradaClima;
   public Nodo nodoDestinoActual;
+  private readonly List<int> eventosAleatoriosUsadosMapa = new List<int>();
+  private float multiplicadorVelocidadVisualViajeActual = 1f;
 
   public GameObject prefabGOPersonaje;
 
@@ -85,15 +91,16 @@ public class CampaignManager : MonoBehaviour
   public AdministradorEscenas scAdministradorEscenas;
 
   // Cola de textos flotantes para evitar solapamientos (mínimo 0.5s entre spawns)
-  [SerializeField] private float gapEntreMensajes = 0.55f;
+  [SerializeField] private float gapEntreMensajes = 0.5f;
   [SerializeField] private bool usarTextoFlotanteManager = false;
   [SerializeField] private float yStackOffset = 28f;            // desplazamiento vertical entre mensajes simultáneos
   [SerializeField] private float stackWindowSeconds = 1.2f;     // ventana donde consideramos mensajes "cercanos" al origen
   private readonly Queue<(string, Color)> colaTextos = new Queue<(string, Color)>();
   private readonly SemaphoreSlim serializacionTextosRecursos = new SemaphoreSlim(1, 1);
   private bool procesandoCola;
-  private float tiempoUltimoSpawn = -9999f;
+  private float tiempoUltimoSpawnTiempoReal = float.NegativeInfinity;
   private readonly List<float> recentSpawnTimes = new List<float>();
+  private Coroutine rutinaTextoFlotanteCampania;
   private readonly Dictionary<TextMeshProUGUI, string> textosOriginalesDerrotaTMP = new Dictionary<TextMeshProUGUI, string>();
   private readonly Dictionary<Text, string> textosOriginalesDerrotaLegacy = new Dictionary<Text, string>();
   private bool textosDerrotaCacheados;
@@ -156,7 +163,7 @@ public class CampaignManager : MonoBehaviour
 
     AsegurarAudioMovimientoCaravana();
     sfxMovimientoSource.volume = sfxMovimientoVolumen;
-    sfxMovimientoSource.pitch = sfxMovimientoPitch;
+    sfxMovimientoSource.pitch = sfxMovimientoPitch * Mathf.Max(0.5f, multiplicadorVelocidadVisualViajeActual);
     AsegurarAsentamientoManager();
   }
 
@@ -382,6 +389,31 @@ public class CampaignManager : MonoBehaviour
   {
     numeroTurno = 1;
     posicionCaravana = 1;
+    if (estadosCaravana == null)
+    {
+      estadosCaravana = new EstadosCaravana();
+    }
+    else
+    {
+      estadosCaravana.RestaurarDesdeSave(null);
+    }
+
+    if (debugIniciarConEstadosCaravana)
+    {
+      AgregarEstadosCaravanaDebugIniciales();
+    }
+  }
+
+  private void AgregarEstadosCaravanaDebugIniciales()
+  {
+    AgregarEstadoCaravana(TipoEstadoCaravana.Inspiracion, 3);
+    AgregarEstadoCaravana(TipoEstadoCaravana.Presteza, 3);
+    AgregarEstadoCaravana(TipoEstadoCaravana.Compromiso, 3);
+    AgregarEstadoCaravana(TipoEstadoCaravana.Vigilante, 3);
+    AgregarEstadoCaravana(TipoEstadoCaravana.Acobardados, 3);
+    AgregarEstadoCaravana(TipoEstadoCaravana.Aletargados, 3);
+    AgregarEstadoCaravana(TipoEstadoCaravana.Desmotivacion, 3);
+    AgregarEstadoCaravana(TipoEstadoCaravana.Descuidados, 3);
   }
 
   private void InicializarPersonajesNuevaCampania()
@@ -406,7 +438,16 @@ public class CampaignManager : MonoBehaviour
 
   private void OnDisable()
   {
+    if (rutinaTextoFlotanteCampania != null)
+    {
+      StopCoroutine(rutinaTextoFlotanteCampania);
+      rutinaTextoFlotanteCampania = null;
+    }
+
     procesandoCola = false;
+    colaTextos.Clear();
+    recentSpawnTimes.Clear();
+    tiempoUltimoSpawnTiempoReal = float.NegativeInfinity;
   }
 
   private void Start()
@@ -595,7 +636,7 @@ public class CampaignManager : MonoBehaviour
     ItemDatabase itemDatabase = ItemSaveCatalog.GetRuntimeItemDatabase(this);
     if (itemDatabase == null)
     {
-      Debug.LogWarning("[SaveGame] No se encontro ItemDatabase runtime. El guardado de items podria quedar incompleto.");
+      Debug.LogWarning("[SaveGame] No se encontro ItemDatabase runtime. El guardado de items podría quedar incompleto.");
     }
 
     SaveFileData save = new SaveFileData();
@@ -650,6 +691,8 @@ public class CampaignManager : MonoBehaviour
     }
     data.nodoActual = CrearReferenciaNodo(scMapaManager != null ? scMapaManager.nodoActual : null);
     data.nodoDestinoActual = CrearReferenciaNodo(MoviendoCaravana ? nodoDestinoActual : null);
+    data.eventosAleatoriosUsadosMapa = new List<int>(eventosAleatoriosUsadosMapa);
+    data.estadosCaravana = estadosCaravana != null ? estadosCaravana.ConstruirSaveData() : new EstadosCaravanaSaveData();
     data.settlementOpen = asentamientoManager != null && asentamientoManager.DebeGuardarseComoAbierto;
     data.settlementActionsRemaining = asentamientoManager != null ? asentamientoManager.AccionesRestantes : 3;
     return data;
@@ -1121,6 +1164,12 @@ public class CampaignManager : MonoBehaviour
     pComercialBueyesDisp = data.puestoComercialBueyesDisp;
     MoviendoCaravana = false;
     nodoDestinoActual = null;
+    multiplicadorVelocidadVisualViajeActual = 1f;
+    if (estadosCaravana == null)
+    {
+      estadosCaravana = new EstadosCaravana();
+    }
+    estadosCaravana.RestaurarDesdeSave(data.estadosCaravana);
     transicionZonaEnCurso = false;
     BATALLA_EnCurso = 0;
   }
@@ -1133,10 +1182,51 @@ public class CampaignManager : MonoBehaviour
       return;
     }
 
+    RestaurarEventosAleatoriosUsadosMapaDesdeSave(data);
+
     int? reliefSeedGuardado = saveFileData != null && saveFileData.version >= 4 ? data.reliefSeed : null;
     scAtributosZona.RestaurarZonaDesdeSave(data.zonaId, data.zonaFase, data.zonasEstado, reliefSeedGuardado);
     scAtributosZona.PasoVientoHelado_FuerzaKaleTav = data.pasoVientoHeladoFuerzaKaleTav;
     scAtributosZona.ActualizarLuzNedukazal();
+  }
+
+  void RestaurarEventosAleatoriosUsadosMapaDesdeSave(CampaignSaveData data)
+  {
+    eventosAleatoriosUsadosMapa.Clear();
+    if (data == null || data.eventosAleatoriosUsadosMapa == null)
+    {
+      return;
+    }
+
+    foreach (int idEvento in data.eventosAleatoriosUsadosMapa)
+    {
+      if (idEvento <= 0 || eventosAleatoriosUsadosMapa.Contains(idEvento))
+      {
+        continue;
+      }
+
+      eventosAleatoriosUsadosMapa.Add(idEvento);
+    }
+  }
+
+  public List<int> ObtenerEventosAleatoriosUsadosMapa()
+  {
+    return new List<int>(eventosAleatoriosUsadosMapa);
+  }
+
+  public void RegistrarEventoAleatorioUsadoEnMapa(int idEvento)
+  {
+    if (idEvento <= 0 || eventosAleatoriosUsadosMapa.Contains(idEvento))
+    {
+      return;
+    }
+
+    eventosAleatoriosUsadosMapa.Add(idEvento);
+  }
+
+  public void ResetearEventosAleatoriosUsadosMapa()
+  {
+    eventosAleatoriosUsadosMapa.Clear();
   }
 
   private void RestaurarMapaDesdeSave(SaveFileData saveFileData)
@@ -2113,7 +2203,7 @@ public class CampaignManager : MonoBehaviour
 
     if (alertaFatiga != null)
     {
-      alertaFatiga.SetActive(FatigaActual > 3);
+      alertaFatiga.SetActive(FatigaActual > 2);
     }
   }
 
@@ -2164,7 +2254,7 @@ public class CampaignManager : MonoBehaviour
     precio1Buey = 20 - sequitoMercaderesTier;
 
     int tierPalacio = MetaprogresionManager.Instance != null ? MetaprogresionManager.Instance.SerriaTierPalacio : 0;
-    float descuento = Mathf.Max(0f, 1f - 0.1f * tierPalacio);
+    float descuento = Mathf.Max(0f, 1f - 0.1f * tierPalacio) * MULTIPLICADOR_PRECIO_PUESTO_COMERCIAL_ASENTAMIENTO;
     precio10Suministros *= descuento;
     precio1Material *= descuento;
     precio1Buey *= descuento;
@@ -2326,11 +2416,18 @@ public class CampaignManager : MonoBehaviour
 
   public void ViajeIniciado(Nodo destino, bool viajeSubterraneo = false)
   {
+    EfectosViajeCaravana efectosViajeCaravana = estadosCaravana != null
+      ? estadosCaravana.IniciarViajeActual()
+      : default;
 
     bool sePrevieneAvanceAliento = false;
     nodoDestinoActual = destino;
     sunController.OnTravelStart(); // duración en segundos
     animCaravana.SetBool("IsWalking", true);
+    multiplicadorVelocidadVisualViajeActual = efectosViajeCaravana.multiplicadorVelocidadVisual <= 0f
+      ? 1f
+      : efectosViajeCaravana.multiplicadorVelocidadVisual;
+    animCaravana.speed = multiplicadorVelocidadVisualViajeActual;
 
     // Inicia sonido de caravana en movimiento
     IniciarSonidoMovimientoCaravana(Mathf.Max(0.05f, sfxMovimientoFadeIn));
@@ -2357,6 +2454,12 @@ public class CampaignManager : MonoBehaviour
       //Aca solamente va esa actividad! las demas van mas abajo
     }
 
+    if (efectosViajeCaravana.previeneAvanceAliento)
+    {
+      sePrevieneAvanceAliento = true;
+      EscribirLog(TRADU.i.Traducir("-La Presteza de la Caravana ha evitado el avance del Aliento Negro durante el viaje."));
+    }
+
     if (!sePrevieneAvanceAliento)
     {
       CambiarValorAlientoNegro(destino.costoMovimiento); //Avance Aliento Negro por día, si no es prevenido por Purificadora o Clérigos
@@ -2364,7 +2467,7 @@ public class CampaignManager : MonoBehaviour
 
 
     numeroTurno++;
-    if (destino.costoMovimiento > 1)
+    if (destino.costoMovimiento > 1 && !sePrevieneAvanceAliento)
     {
       EscribirLog(TRADU.i.Traducir("-El viaje por el camino sinuoso ha retrasado la caravana. +") + destino.costoMovimiento + TRADU.i.Traducir(" Avance del Aliento Negro"));
     }
@@ -2372,8 +2475,17 @@ public class CampaignManager : MonoBehaviour
     //Si Nieva, avanza 1 mas el élito
     if (intTipoClima == 4)
     {
-      EscribirLog(TRADU.i.Traducir("-La nieve a retrasado el viaje. +1 Avance del Aliento Negro"));
-      CambiarValorAlientoNegro(1);
+      if (!sePrevieneAvanceAliento)
+      {
+        EscribirLog(TRADU.i.Traducir("-La nieve a retrasado el viaje. +1 Avance del Aliento Negro"));
+        CambiarValorAlientoNegro(1);
+      }
+    }
+
+    if (efectosViajeCaravana.avanceAlientoExtra > 0)
+    {
+      EscribirLog(TRADU.i.Traducir("-La Caravana se mueve con Aletargamiento. +1 Avance del Aliento Negro."));
+      CambiarValorAlientoNegro(efectosViajeCaravana.avanceAlientoExtra);
     }
 
     if (intTipoClima == 6)
@@ -2551,6 +2663,12 @@ public class CampaignManager : MonoBehaviour
     }
 
     animCaravana.SetBool("IsWalking", false);
+    animCaravana.speed = 1f;
+    int modEmboscadaViajeActual = estadosCaravana != null ? estadosCaravana.ObtenerModificadorEmboscadaDuranteViajeActual() : 0;
+    if (estadosCaravana != null)
+    {
+      estadosCaravana.FinalizarViajeActual();
+    }
     
     if (scTutorialManager.pasoActual == 18) { scTutorialManager.SiguientePaso(); CambiarValorAlientoNegro(2); }
     if (scTutorialManager.pasoActual == 31) { scTutorialManager.SiguientePaso();  }
@@ -2569,7 +2687,7 @@ public class CampaignManager : MonoBehaviour
       //Probabilidad emboscada
       int randomEmboscada = UnityEngine.Random.Range(1, 101);
 
-      int chancesemboscada = scAtributosZona.modChanceEmboscada;
+      int chancesemboscada = scAtributosZona.modChanceEmboscada + modEmboscadaViajeActual;
       chancesemboscada -= CuantosPersonajesHacenTalActividad(14) * 5; //-5% por cada Acechador Actividad Vigilar Desde Sombras
 
       if (scMenuSequito.TieneSequito(9))
@@ -2612,10 +2730,10 @@ public class CampaignManager : MonoBehaviour
 
       if (randomEvento < factorEventoBuenoMalo)
       {
-        EmpezarEventoBueno();
+        EmpezarEventoBueno(TipoOrigenEventoCampania.Nodo);
 
       }
-      else { EmpezarEventoMalo(); }
+      else { EmpezarEventoMalo(TipoOrigenEventoCampania.Nodo); }
 
 
       scMapaManager.nodoActual.nodoDespejado = true;
@@ -2623,7 +2741,7 @@ public class CampaignManager : MonoBehaviour
     }
     if (ID == 3) //Claro
     {
-      EmpezarEvento(401);
+      EmpezarEvento(IdsEventoCampania.Claro);
       scMapaManager.nodoActual.nodoDespejado = true;
       if (scMenuSequito.TieneSequito(5))
       {
@@ -2639,23 +2757,18 @@ public class CampaignManager : MonoBehaviour
       }
       else
       {
-        EmpezarEvento(402);
+        EmpezarEvento(IdsEventoCampania.Asentamiento);
         scMapaManager.nodoActual.nodoDespejado = true;
       }
     }
     if (ID == 5) //Recursos
     {
-      EmpezarEvento(403);
+      EmpezarEvento(IdsEventoCampania.Recursos);
       scMapaManager.nodoActual.nodoDespejado = true;
     }
     if (ID == 6) //Puesto Comercial
     {
-      goUIComercioNodo.SetActive(true);
-      txtDescripcionPuestoComercial.text = TRADU.i.Traducir("Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\n\nTu Séquito de Mercaderes ha actualizado su Inventario.");
-
-      ResetearPuestoComercial();
-      scSequitoMercaderes.GenerarItemsVendidos();
-      EscribirLog(TRADU.i.Traducir("El Séquito de Mercaderes ha actualizado su inventario en el Puesto Comercial."));
+      AbrirPuestoComercial();
       scMapaManager.nodoActual.nodoDespejado = true;
     }
     if (ID == 7) //Personaje / Séquito
@@ -2718,7 +2831,7 @@ public class CampaignManager : MonoBehaviour
     }
     if (ID == 16) //Mision Salvamento
     {
-      EmpezarEvento(405);
+      EmpezarEvento(IdsEventoCampania.EncuentroEsperado);
       scMapaManager.nodoActual.nodoDespejado = true;
     }
 
@@ -3016,9 +3129,22 @@ public class CampaignManager : MonoBehaviour
     int randomIncendio = UnityEngine.Random.Range(1, 101);
     if (posicionCaravana < 9 && randomIncendio <= probabilidad)
     {
-      int random = UnityEngine.Random.Range(1, 3);
-      Nodo nodoAIncendiar = ObtenerNodoFuturoAleatorio(random);
-      if (nodoAIncendiar != null && !nodoAIncendiar.nodoIncendiado)
+      const int codigoAsentamiento = 4;
+      Nodo nodoAIncendiar = null;
+
+      // Evita incendiar asentamientos por la mecanica del Bosque Ardiente.
+      for (int intento = 0; intento < 6; intento++)
+      {
+        int random = UnityEngine.Random.Range(1, 3);
+        Nodo candidato = ObtenerNodoFuturoAleatorio(random);
+        if (candidato == null) { continue; }
+        if (candidato.nodoIncendiado) { continue; }
+        if (candidato.tipoNodo == codigoAsentamiento) { continue; }
+        nodoAIncendiar = candidato;
+        break;
+      }
+
+      if (nodoAIncendiar != null)
       {
         nodoAIncendiar.ActivarIncendio();
         EscribirLog(TRADU.i.Traducir("<color=#FF3D00>-El incendio ha envuelto un nodo cercano al camino de la caravana.</color>"));
@@ -3269,23 +3395,26 @@ public class CampaignManager : MonoBehaviour
   public int pComercialMaterialesDisp;
   public int pComercialBueyesDisp;
 
+  const float MULTIPLICADOR_STOCK_PUESTO_COMERCIAL_ASENTAMIENTO = 1.2f;
+  const float MULTIPLICADOR_PRECIO_PUESTO_COMERCIAL_ASENTAMIENTO = 0.9f;
+
   float precio10Suministros;
   float precio1Material;
   float precio1Buey;
 
   public void ResetearPuestoComercial()
   {
-    pComercialSuministrosDisp = UnityEngine.Random.Range(15, 30);
+    pComercialSuministrosDisp = Mathf.RoundToInt(UnityEngine.Random.Range(15, 30) * MULTIPLICADOR_STOCK_PUESTO_COMERCIAL_ASENTAMIENTO);
     pComercialSuministrosDisp *= 10;
-    pComercialMaterialesDisp = UnityEngine.Random.Range(15, 30);
-    pComercialBueyesDisp = UnityEngine.Random.Range(5, 15);
+    pComercialMaterialesDisp = Mathf.RoundToInt(UnityEngine.Random.Range(15, 30) * MULTIPLICADOR_STOCK_PUESTO_COMERCIAL_ASENTAMIENTO);
+    pComercialBueyesDisp = Mathf.RoundToInt(UnityEngine.Random.Range(5, 15) * MULTIPLICADOR_STOCK_PUESTO_COMERCIAL_ASENTAMIENTO);
 
     precio10Suministros = 15 - sequitoMercaderesTier;
     precio1Material = 18 - sequitoMercaderesTier;
     precio1Buey = 20 - sequitoMercaderesTier;
 
     int tierPalacio = MetaprogresionManager.Instance.SerriaTierPalacio;
-    float descuento = Mathf.Max(0f, 1f - 0.1f * tierPalacio); // cada tier baja 10% los precios
+    float descuento = Mathf.Max(0f, 1f - 0.1f * tierPalacio) * MULTIPLICADOR_PRECIO_PUESTO_COMERCIAL_ASENTAMIENTO; // cada tier baja 10% los precios
     precio10Suministros *= descuento;
     precio1Material *= descuento;
     precio1Buey *= descuento;
@@ -3423,6 +3552,25 @@ public class CampaignManager : MonoBehaviour
     }
   }
 
+  public void AbrirPuestoComercial()
+  {
+    if (goUIComercioNodo == null)
+    {
+      return;
+    }
+
+    goUIComercioNodo.SetActive(true);
+    txtDescripcionPuestoComercial.text = TRADU.i.Traducir("Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\n\nTu Séquito de Mercaderes ha actualizado su Inventario.");
+
+    ResetearPuestoComercial();
+    if (scSequitoMercaderes != null)
+    {
+      scSequitoMercaderes.GenerarItemsVendidos();
+    }
+
+    //EscribirLog(TRADU.i.Traducir("El Séquito de Mercaderes ha actualizado su inventario en el Puesto Comercial."));
+  }
+
 
 
   #endregion
@@ -3490,6 +3638,61 @@ public class CampaignManager : MonoBehaviour
   public int ObtenerCapacidadMaximaPersonajes()
   {
     return 4 + Mathf.Max(0, mejoraCaravanaTiendas);
+  }
+
+  public bool TieneCapacidadDisponibleParaHeroe()
+  {
+    return CuantosPersonajesActivos() < ObtenerCapacidadMaximaPersonajes();
+  }
+
+  public bool HayMisionSalvamentoActivaEnMapa()
+  {
+    if (scMapaManager == null || scMapaManager.scContenedordeNodos == null)
+    {
+      return false;
+    }
+
+    scMapaManager.scContenedordeNodos.RecolectarNodos();
+    foreach (Nodo nodo in scMapaManager.scContenedordeNodos.listTodosNodos)
+    {
+      if (nodo != null && nodo.gameObject.activeInHierarchy && nodo.tipoNodo == 16)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public bool IntentarCrearMisionSalvamentoEnMapa()
+  {
+    if (HayMisionSalvamentoActivaEnMapa())
+    {
+      return false;
+    }
+
+    Nodo nodoFuturo = ObtenerNodoFuturoAleatorio(2);
+    if (nodoFuturo == null)
+    {
+      return false;
+    }
+
+    nodoFuturo.nodoIncendiado = false;
+    nodoFuturo.DesactivarRitual();
+    if (nodoFuturo.transform.childCount > 14)
+    {
+      nodoFuturo.transform.GetChild(14).gameObject.SetActive(false);
+    }
+
+    if (nodoFuturo.transform.childCount > 15)
+    {
+      nodoFuturo.transform.GetChild(15).gameObject.SetActive(false);
+    }
+
+    nodoFuturo.DesactivarGraficosNodo();
+    nodoFuturo.tipoNodo = 16;
+    nodoFuturo.ActivarNodoVisual(16, false, true);
+    return true;
   }
 
   private void ActualizarEstadoPersonajesTrasPasoDeDia()
@@ -3753,6 +3956,75 @@ public class CampaignManager : MonoBehaviour
   }
 
   public int posicionCaravana; //1-12 la posicion de la caravana en los nodos
+
+  public void AgregarEstadoCaravana(TipoEstadoCaravana tipo, int stacks = 1)
+  {
+    if (estadosCaravana == null)
+    {
+      estadosCaravana = new EstadosCaravana();
+    }
+
+    estadosCaravana.AgregarEstado(tipo, stacks);
+  }
+
+  public TipoEstadoCaravana AgregarEstadoCaravanaPositivoAleatorio(int stacks = 1)
+  {
+    TipoEstadoCaravana estado = EstadosCaravana.ObtenerEstadoPositivoAleatorio();
+    AgregarEstadoCaravana(estado, stacks);
+    return estado;
+  }
+
+  private string ObtenerLogAlmenarasSerria(int tierAlmenaras, TipoEstadoCaravana estado)
+  {
+    int esperanza = tierAlmenaras * 5;
+    string nombreEstadoEs = EstadosCaravana.ObtenerNombreVisible(estado);
+    string stackEs = tierAlmenaras == 1 ? "stack" : "stacks";
+    string stackPt = tierAlmenaras == 1 ? "acúmulo" : "acúmulos";
+
+    if (TRADU.i == null || TRADU.i.nIdioma == TRADU.IdiomaEspanol)
+    {
+      return "-Las almenaras de Serria se divisan a lo lejos sobre las montañas, brillando con fuerza y marcando el destino de la caravana: "
+        + esperanza + " Esperanza, +" + tierAlmenaras + " " + stackEs + " de " + nombreEstadoEs + ".";
+    }
+
+    if (TRADU.i.nIdioma == TRADU.IdiomaIngles)
+    {
+      string nombreEstadoEn = estado switch
+      {
+        TipoEstadoCaravana.Inspiracion => "Inspiration",
+        TipoEstadoCaravana.Presteza => "Swiftness",
+        TipoEstadoCaravana.Compromiso => "Commitment",
+        _ => "Vigilant"
+      };
+
+      return "-The beacons of Serria can be seen in the distance over the mountains, shining brightly and marking the caravan's destination: "
+        + esperanza + " Hope, +" + tierAlmenaras + " " + stackEs + " of " + nombreEstadoEn + ".";
+    }
+
+    string nombreEstadoPt = estado switch
+    {
+      TipoEstadoCaravana.Inspiracion => "Inspiração",
+      TipoEstadoCaravana.Presteza => "Presteza",
+      TipoEstadoCaravana.Compromiso => "Compromisso",
+      _ => "Vigilante"
+    };
+
+    return "-As almenaras de Serria podem ser vistas ao longe sobre as montanhas, brilhando com força e marcando o destino da caravana: "
+      + esperanza + " Esperança, +" + tierAlmenaras + " " + stackPt + " de " + nombreEstadoPt + ".";
+  }
+
+  public int ObtenerModificadorValentiaEstadosCaravanaCombateActual()
+  {
+    return estadosCaravana != null ? estadosCaravana.ObtenerModificadorValentiaCombateActual() : 0;
+  }
+
+  public float AplicarMultiplicadorExperienciaEstadosCaravana(float experienciaBase)
+  {
+    return estadosCaravana != null
+      ? estadosCaravana.AplicarMultiplicadorExperienciaCombateActual(experienciaBase)
+      : experienciaBase;
+  }
+
   void ActualizarTierAlientoNegro()
   {
     Image handleSliderCalavera = sliderAlientoNegro.gameObject.transform.GetChild(2).GetChild(0).gameObject.GetComponent<Image>();
@@ -3820,7 +4092,7 @@ public class CampaignManager : MonoBehaviour
       case > 4: EventoFatiga(fatigaAnterior, fatigaNueva); valueFatiga.text = TRADU.i.Traducir("Exhaustos(6)"); valueFatiga.color = new Color(0.8f, 0.15f, 0.45f); break;
     }
 
-    if (FatigaActual > 3) { alertaFatiga.SetActive(true); }
+    if (FatigaActual > 2) { alertaFatiga.SetActive(true); }
     else { alertaFatiga.SetActive(false); }
   }
   void EventoFatiga(int fatigaAnterior, int fatigaAhora)
@@ -4348,7 +4620,7 @@ public class CampaignManager : MonoBehaviour
         case 0: text += TRADU.i.Traducir("Actualmente estan Descansados(1), no habrá penalizaciones por viajar.\n\n"); break;
         case 1: text += TRADU.i.Traducir("Actualmente estan Frescos(2), no habrá penalizaciones por viajar."); break;
         case 2: text += TRADU.i.Traducir("Actualmente estan En Marcha(3), no habrá penalizaciones por viajar."); break;
-        case 3: text += TRADU.i.Traducir("Actualmente estan Agitados(4), -10 Esperanza, pocos Bueyes podráan morir si viajas."); break;
+        case 3: text += TRADU.i.Traducir("Actualmente estan Agitados(4), -10 Esperanza, pocos Bueyes podrán morir si viajas."); break;
         case 4: text += TRADU.i.Traducir("Actualmente estan Cansados(5), -15 Esperanza y algunos Bueyes podrán morir si viajas."); break;
         case > 4: text += TRADU.i.Traducir("Actualmente estan Exhaustos(6), -20 Esperanza y varios Bueyes podrán morir si viajas."); break;
       }
@@ -4374,7 +4646,7 @@ public class CampaignManager : MonoBehaviour
       }
       if (scAtributosZona.ID == 3) //Nedukazal
       {
-        text.text = TRADU.i.Traducir("Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será mas propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Pie</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta zona.");
+        text.text = TRADU.i.Traducir("Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será más propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Pie</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta zona.");
       }
 
 
@@ -4499,15 +4771,42 @@ public class CampaignManager : MonoBehaviour
     UIEvetos.SetActive(true);
     UIEvetos.GetComponent<EventosAdmin>().EmpezarEvento(ID);
   }
-  public void EmpezarEventoMalo()
+
+  public bool EmpezarEventoMalo(TipoOrigenEventoCampania origen = TipoOrigenEventoCampania.Nodo)
   {
-    UIEvetos.SetActive(true);
-    UIEvetos.GetComponent<EventosAdmin>().TirarEventoMalo();
+    return EmpezarEventoAleatorio(origen, TipoResultadoEventoCampania.Malo);
   }
-  public void EmpezarEventoBueno()
+
+  public bool EmpezarEventoBueno(TipoOrigenEventoCampania origen = TipoOrigenEventoCampania.Nodo)
   {
+    return EmpezarEventoAleatorio(origen, TipoResultadoEventoCampania.Bueno);
+  }
+
+  bool EmpezarEventoAleatorio(TipoOrigenEventoCampania origen, TipoResultadoEventoCampania resultado)
+  {
+    if (UIEvetos == null)
+    {
+      return false;
+    }
+
+    EventosAdmin eventosAdmin = UIEvetos.GetComponent<EventosAdmin>();
+    if (eventosAdmin == null)
+    {
+      return false;
+    }
+
     UIEvetos.SetActive(true);
-    UIEvetos.GetComponent<EventosAdmin>().TirarEventoBueno();
+
+    bool eventoIniciado = resultado == TipoResultadoEventoCampania.Bueno
+      ? eventosAdmin.TirarEventoBueno(origen)
+      : eventosAdmin.TirarEventoMalo(origen);
+
+    if (!eventoIniciado)
+    {
+      UIEvetos.SetActive(false);
+    }
+
+    return eventoIniciado;
   }
 
   #endregion
@@ -4659,7 +4958,6 @@ public class CampaignManager : MonoBehaviour
 
   public GameObject prefabTextoCampaña;
   [SerializeField] GameObject puntoPantalla;
-  private static int delayAcumulado = 0;
 
   private void TryProcesarColaTextoFlotante()
   {
@@ -4667,7 +4965,7 @@ public class CampaignManager : MonoBehaviour
       return;
 
     procesandoCola = true;
-    StartCoroutine(ProcesarColaTextoFlotante());
+    rutinaTextoFlotanteCampania = StartCoroutine(ProcesarColaTextoFlotante());
   }
 
   // Serializa los textos a través de una cola para que no se pisen.
@@ -4677,6 +4975,10 @@ public class CampaignManager : MonoBehaviour
     if (puntoPantalla == null || prefabTextoCampaña == null)
       return Task.CompletedTask;
 
+    if (string.IsNullOrWhiteSpace(txString))
+      return Task.CompletedTask;
+
+    txString = FloatingTextAnimator.NormalizarTextoRichText(txString);
     colaTextos.Enqueue((txString, color));
     TryProcesarColaTextoFlotante();
 
@@ -4688,9 +4990,10 @@ public class CampaignManager : MonoBehaviour
     while (colaTextos.Count > 0)
     {
       // Respeta separación mínima desde el último spawn
-      float elapsed = Time.time - tiempoUltimoSpawn;
-      if (elapsed < gapEntreMensajes)
-        yield return new WaitForSeconds(gapEntreMensajes - elapsed);
+      float pausaEntreMensajes = Mathf.Max(0.5f, gapEntreMensajes);
+      float elapsed = Time.unscaledTime - tiempoUltimoSpawnTiempoReal;
+      if (elapsed < pausaEntreMensajes)
+        yield return new WaitForSecondsRealtime(pausaEntreMensajes - elapsed);
 
       var (tx, col) = colaTextos.Dequeue();
 
@@ -4705,7 +5008,8 @@ public class CampaignManager : MonoBehaviour
         GameObject goTextoFlotante = Instantiate(prefabTextoCampaña, puntoPantalla.transform, false);
 
         // Calcula desplazamiento vertical según cuántos spawns recientes hay aún cerca del origen
-        recentSpawnTimes.RemoveAll(t => Time.time - t > stackWindowSeconds);
+        float tiempoActual = Time.unscaledTime;
+        recentSpawnTimes.RemoveAll(t => tiempoActual - t > stackWindowSeconds);
         int stackIndex = recentSpawnTimes.Count; // 0 para el primero, 1 para el segundo, etc.
         var rt = goTextoFlotante.GetComponent<RectTransform>();
         if (rt != null && stackIndex > 0)
@@ -4721,12 +5025,12 @@ public class CampaignManager : MonoBehaviour
         }
       }
 
-      tiempoUltimoSpawn = Time.time;
-      recentSpawnTimes.Add(tiempoUltimoSpawn);
+      tiempoUltimoSpawnTiempoReal = Time.unscaledTime;
+      recentSpawnTimes.Add(tiempoUltimoSpawnTiempoReal);
     }
     procesandoCola = false;
+    rutinaTextoFlotanteCampania = null;
   }
-
 
   public void BorrarLog()
   {
@@ -5580,12 +5884,20 @@ public class CampaignManager : MonoBehaviour
     //---
     //Almenaras
     int almenaras = MetaprogresionManager.Instance.SerriaTierAlmenaras;
+    if (almenaras > 0)
+    {
+      TipoEstadoCaravana estadoAlmenaras = AgregarEstadoCaravanaPositivoAleatorio(almenaras);
 
+      if (scAtributosZona.ID != 3) //no en Nedukazal
+      {
+        string logAlmenaras = ObtenerLogAlmenarasSerria(almenaras, estadoAlmenaras);
+        EscribirLog(logAlmenaras);
+      }
 
-    if (almenaras > 0 && scAtributosZona.ID != 3) //no en Nedukazal
-    { EscribirLog(TRADU.i.Traducir("-Las almenaras de Serria se divisan a lo lejos sobre las montañas, brillando con fuerza y marcando el destino de la caravana: " + almenaras * 5 + " Esperanza")); }
-    CambiarEsperanzaActual(almenaras * 5);
+      CambiarEsperanzaActual(almenaras * 5);
+    }
     //---
 
   }
 }
+

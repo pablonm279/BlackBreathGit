@@ -10,6 +10,8 @@ public class btnItemInventario : MonoBehaviour
     public Item itemRepresentado;
 
     public Image imageMuestraItem;
+    [SerializeField] private Color colorItemNormal = Color.white;
+    [SerializeField] private Color colorItemOscurecido = new Color(0.55f, 0.55f, 0.55f, 1f);
 
     public MenuPersonajes scMenuPersonajes;
 
@@ -18,6 +20,17 @@ public class btnItemInventario : MonoBehaviour
     {
         scMenuPersonajes = CampaignManager.Instance.scMenuPersonajes;
     }
+
+    public void SetOscurecido(bool oscurecido)
+    {
+      if (imageMuestraItem == null)
+      {
+        return;
+      }
+
+      imageMuestraItem.color = oscurecido ? colorItemOscurecido : colorItemNormal;
+    }
+
     public void ClickearItem()
     {
        TooltipItems.Instance.HideTooltip();

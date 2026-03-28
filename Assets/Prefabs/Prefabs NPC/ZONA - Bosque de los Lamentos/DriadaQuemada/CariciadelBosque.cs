@@ -85,7 +85,7 @@ public class CariciadelBosque : IAHabilidad
 
         VFXAplicar(objetivo.gameObject);
 
-        int cura = 5+UnityEngine.Random.Range(1,20);
+        int cura = 5+UnityEngine.Random.Range(1,15);
         objetivo.RecibirCuracion(cura, true);    
    
 

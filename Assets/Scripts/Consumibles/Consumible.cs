@@ -496,6 +496,7 @@ public class Consumible : Item
         destino.esRemovible = origen.esRemovible;
         destino.esStackeable = origen.esStackeable;
         destino.CustomEffectInicioTurnoID = origen.CustomEffectInicioTurnoID;
+        destino.seConsumeAlRecibirAtaque = origen.seConsumeAlRecibirAtaque;
         destino.unidadOrigen = origen.unidadOrigen;
     }
 

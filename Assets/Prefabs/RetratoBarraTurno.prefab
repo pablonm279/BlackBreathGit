@@ -11,8 +11,10 @@ GameObject:
   - component: {fileID: 9104958312160229880}
   - component: {fileID: 2629562539124275255}
   - component: {fileID: 2821653074547796129}
+  - component: {fileID: 9216247484834199682}
+  - component: {fileID: 564277813180767817}
   m_Layer: 5
-  m_Name: Retrato
+  m_Name: "Retrato - L\xF3gica, dejar poschild"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59,7 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -75,6 +77,86 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &9216247484834199682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2170490217270502743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 564277813180767817}
+          m_TargetAssemblyTypeName: UITarjetaBarraOrdenTurno, Assembly-CSharp
+          m_MethodName: MarcarUnidadRepresentada
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 564277813180767817}
+          m_TargetAssemblyTypeName: UITarjetaBarraOrdenTurno, Assembly-CSharp
+          m_MethodName: MarcarUnidadRepresentada
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 564277813180767817}
+          m_TargetAssemblyTypeName: UITarjetaBarraOrdenTurno, Assembly-CSharp
+          m_MethodName: ClickMarcarUnidadRepresentada
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &564277813180767817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2170490217270502743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12079b32e48a29b4493f91a6babff714, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BarraVida: {fileID: 7551651553316582736}
+  Retrato: {fileID: 2821653074547796129}
+  scUnidad: {fileID: 0}
+  scUInfochar: {fileID: 0}
+  seleccionado: {fileID: 5884793844093343529}
+  Actual: {fileID: 7112038369052290803}
+  oscurecedor: {fileID: 5843593508066394531}
 --- !u!1 &3033935949090271023
 GameObject:
   m_ObjectHideFlags: 0
@@ -278,7 +360,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5240652639189349820
 RectTransform:
   m_ObjectHideFlags: 0
@@ -288,15 +370,15 @@ RectTransform:
   m_GameObject: {fileID: 5884793844093343529}
   m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.95, y: 0.95, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.96, y: 0.96, z: 1.0105263}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1176736272211727658}
   m_LocalEulerAnglesHint: {x: 180, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -0.7939, y: 6.5102}
+  m_SizeDelta: {x: 92.4618, y: 105.8612}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2328943481884943741
 CanvasRenderer:
@@ -319,14 +401,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.754717, g: 0.7332148, b: 0.15307939, a: 1}
+  m_Color: {r: 0.9433962, g: 0.93051964, b: 0.56514776, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b302db0f853444a49b18bc5672cb4345, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9c65325256f4ecd41a7935d324be03d6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -605,8 +687,6 @@ GameObject:
   - component: {fileID: 1176736272211727658}
   - component: {fileID: 6745905994362675818}
   - component: {fileID: 473257205799754518}
-  - component: {fileID: 5999621020417636403}
-  - component: {fileID: 3535576368702887201}
   m_Layer: 5
   m_Name: RetratoBarraTurno
   m_TagString: Untagged
@@ -676,82 +756,3 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5999621020417636403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7765255335654201196}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12079b32e48a29b4493f91a6babff714, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BarraVida: {fileID: 7551651553316582736}
-  Retrato: {fileID: 2821653074547796129}
-  scUnidad: {fileID: 0}
-  scUInfochar: {fileID: 0}
-  seleccionado: {fileID: 5884793844093343529}
-  oscurecedor: {fileID: 5843593508066394531}
---- !u!114 &3535576368702887201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7765255335654201196}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 5999621020417636403}
-          m_TargetAssemblyTypeName: UITarjetaBarraOrdenTurno, Assembly-CSharp
-          m_MethodName: MarcarUnidadRepresentada
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 1
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 5999621020417636403}
-          m_TargetAssemblyTypeName: UITarjetaBarraOrdenTurno, Assembly-CSharp
-          m_MethodName: MarcarUnidadRepresentada
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 4
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 5999621020417636403}
-          m_TargetAssemblyTypeName: UITarjetaBarraOrdenTurno, Assembly-CSharp
-          m_MethodName: ClickMarcarUnidadRepresentada
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2

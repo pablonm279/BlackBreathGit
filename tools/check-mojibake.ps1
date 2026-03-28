@@ -12,19 +12,19 @@ $extensions = @(
 $charReplacement = [char]0xFFFD # �
 
 $suspectTokens = @(
-    [string]::Concat([char]0x00C3, [char]0x00A1), # Ã¡
-    [string]::Concat([char]0x00C3, [char]0x00A9), # Ã©
-    [string]::Concat([char]0x00C3, [char]0x00AD), # Ã­
-    [string]::Concat([char]0x00C3, [char]0x00B3), # Ã³
-    [string]::Concat([char]0x00C3, [char]0x00BA), # Ãº
-    [string]::Concat([char]0x00C3, [char]0x00B1), # Ã±
-    [string]::Concat([char]0x00C3, [char]0x0081), # Ã
-    [string]::Concat([char]0x00C3, [char]0x0089), # Ã‰
-    [string]::Concat([char]0x00C3, [char]0x0093), # Ã“
-    [string]::Concat([char]0x00C3, [char]0x009A), # Ãš
-    [string]::Concat([char]0x00C3, [char]0x0091), # Ã‘
-    [string]::Concat([char]0x00C2, [char]0x00BF), # Â¿
-    [string]::Concat([char]0x00C2, [char]0x00A1), # Â¡
+    [string]::Concat([char]0x00C3, [char]0x00A1), # á
+    [string]::Concat([char]0x00C3, [char]0x00A9), # é
+    [string]::Concat([char]0x00C3, [char]0x00AD), # í
+    [string]::Concat([char]0x00C3, [char]0x00B3), # ó
+    [string]::Concat([char]0x00C3, [char]0x00BA), # ú
+    [string]::Concat([char]0x00C3, [char]0x00B1), # ñ
+    [string]::Concat([char]0x00C3, [char]0x0081), # Á
+    [string]::Concat([char]0x00C3, [char]0x0089), # É
+    [string]::Concat([char]0x00C3, [char]0x0093), # Ó
+    [string]::Concat([char]0x00C3, [char]0x009A), # Ú
+    [string]::Concat([char]0x00C3, [char]0x0091), # Ñ
+    [string]::Concat([char]0x00C2, [char]0x00BF), # ¿
+    [string]::Concat([char]0x00C2, [char]0x00A1), # ¡
     [string]::Concat([char]0x00C3, [char]0x0192, [char]0x00C2), # ÃƒÂ
     [string]::Concat([char]0x00E2, [char]0x20AC) # â€
 )

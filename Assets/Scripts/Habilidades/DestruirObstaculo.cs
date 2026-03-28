@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -78,7 +79,7 @@ public class DestruirObstaculo : Habilidad
 
   public override void ActualizarDescripcion()
   {
-    txtDescripcion = Traducir("Gasta 3 PA, para destruir un obstaculo adyacente de tu mismo lado si lo permite.");
+    txtDescripcion = Traducir("Gasta 3 PA para destruir un obstaculo adyacente de tu mismo lado si lo permite. Termina tu turno.");
   }
 
   public override void AplicarEfectosHabilidad(object objetivo, int tirada, Casilla casillaOrigenTrampa)
@@ -109,9 +110,36 @@ public class DestruirObstaculo : Habilidad
     obstaculo.ForzarDestruccion();
     string nombreObstaculo = TRADU.i != null ? TRADU.i.Traducir(obstaculo.oName) : obstaculo.oName;
     BattleManager.Instance.EscribirLog(string.Format("{0} {1}", Traducir("Destruyes"), nombreObstaculo));
-    // Importante: no sincronizar (agregar/quitar componente) en medio del Resolver.
-    // BattleManager ya lo hace en Update y evita destruir esta habilidad mientras se ejecuta.
+    // Refresca movimiento al salir del modo de selección para que las casillas
+    // recién liberadas no queden deshabilitadas hasta otra interacción.
+    StartCoroutine(RefrescarMovimientoTrasDestruirObstaculo());
+
+    if (BattleManager.Instance != null
+      && BattleManager.Instance.unidadActiva == scEstaUnidad
+      && scEstaUnidad.GetComponent<IAUnidad>() == null)
+    {
+      BattleManager.Instance.TerminarTurno();
+    }
+  }
+
+  private IEnumerator RefrescarMovimientoTrasDestruirObstaculo()
+  {
+    yield return null;
+    yield return null;
+
+    if (BattleManager.Instance == null || scEstaUnidad == null)
+    {
+      yield break;
+    }
+
+    if (BattleManager.Instance.unidadActiva != scEstaUnidad)
+    {
+      yield break;
+    }
+
     BattleManager.Instance.CalcularCasillasAMovimiento();
+    BattleManager.Instance.ActualizarCasillasMelee();
+    scEstaUnidad.CasillaPosicion?.ActualizarSenialadores();
   }
 
   private string Traducir(string texto)

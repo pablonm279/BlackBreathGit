@@ -11,6 +11,24 @@ using Unity.VisualScripting.FullSerializer;
 public class IAUnidad : MonoBehaviour
 {
    Unidad scUnidad;
+   private static readonly Vector2Int[] DireccionesOrtogonales =
+   {
+      new Vector2Int(1, 0),
+      new Vector2Int(0, 1),
+      new Vector2Int(0, -1),
+      new Vector2Int(-1, 0)
+   };
+   private static readonly Vector2Int[] DireccionesConDiagonales =
+   {
+      new Vector2Int(1, 0),
+      new Vector2Int(0, 1),
+      new Vector2Int(0, -1),
+      new Vector2Int(-1, 0),
+      new Vector2Int(1, 1),
+      new Vector2Int(1, -1),
+      new Vector2Int(-1, 1),
+      new Vector2Int(-1, -1)
+   };
   
 
    public bool esRango; //Tiende a mantenerse atras
@@ -109,6 +127,7 @@ public class IAUnidad : MonoBehaviour
       int contadorIteraciones = MaxIntentosPorTurno;
       bool turnoTerminado = false;
       bool forzarFinalPorHabilidad = false;
+      bool realizoAccion = false;
 
       while (scUnidad.ObtenerAPActual() > 0 && contadorIteraciones > 0 && !turnoTerminado)
       {
@@ -128,8 +147,8 @@ public class IAUnidad : MonoBehaviour
 
             if (scUnidad.esInmobil)
             {
-               scUnidad.CambiarAPActual(-(int)scUnidad.ObtenerAPActual()); // Agota AP restante
-               turnoTerminado = await TerminarTurnoSeguro(false, timings, "unidad inamovible sin acciones disponibles");
+               tendenciaMovX = 0;
+               tendenciaMovY = 0;
                break;
             }
 
@@ -218,8 +237,7 @@ public class IAUnidad : MonoBehaviour
                else
                {
                   await ChequearCasillasAlrededorParaMover(destPosible, timings); // Intento alternativo para moverse
-                  turnoTerminado = await TerminarTurnoSeguro(false, timings, "sin casillas libres para moverse");
-                  break;
+                  continue;
                }
             }
             else
@@ -242,11 +260,27 @@ public class IAUnidad : MonoBehaviour
                forzarFinalPorHabilidad = true;
                turnoTerminado = await TerminarTurnoSeguro(false, timings, "no se pudo ejecutar ninguna habilidad disponible");
             }
+            else
+            {
+               realizoAccion = true;
+            }
          }
          else
          {
             break;
          }
+      }
+
+      if (!realizoAccion && BattleManager.Instance != null && BattleManager.Instance.unidadActiva == scUnidad)
+      {
+         AITurnTimings timingsFinales = ObtenerTimingsActuales();
+         if (await IntentarDestruirObstaculoComoFallback(timingsFinales))
+         {
+            return;
+         }
+
+         await TerminarTurnoSeguro(false, timingsFinales, "sin acciones valiosas; no se pudo destruir obstaculo");
+         return;
       }
 
       if (turnoTerminado || BattleManager.Instance == null)
@@ -284,6 +318,208 @@ public class IAUnidad : MonoBehaviour
    private static Task DelayIA(int milliseconds)
    {
       return BattleManager.DelayCombateAsync(Mathf.Max(0, milliseconds));
+   }
+
+   private async Task<bool> IntentarDestruirObstaculoComoFallback(AITurnTimings timings)
+   {
+      if (scUnidad == null || scUnidad.CasillaPosicion == null || BattleManager.Instance == null)
+      {
+         return false;
+      }
+
+      int vecinosMismoLado = ContarVecinosMismoLadoParaDestruirObstaculo();
+      if (vecinosMismoLado < 2)
+      {
+         return false;
+      }
+
+      List<Obstaculo> obstaculosAdyacentes = ObtenerObstaculosAdyacentesOrtogonales();
+      Obstaculo objetivo = ObtenerObstaculoDestruiblePreferido(obstaculosAdyacentes);
+      if (objetivo == null)
+      {
+         return false;
+      }
+
+      string nombreHabilidad = TraducirTexto("Destruir Obstaculo");
+      string nombreUnidad = NombreUnidadParaLogLocal(scUnidad);
+
+      scUnidad.MostrarRotuloHabilidadIA(nombreHabilidad, new Color(1f, 0.86f, 0.62f, 1f));
+      BattleManager.Instance.EscribirLog($"{nombreUnidad} {TraducirTexto("usa ")}{nombreHabilidad}.");
+
+      scUnidad.ReproducirAnimacionAtaque(true);
+      await DelayIA(250);
+
+      if (objetivo.CasillaPosicion != null && objetivo.CasillaPosicion.Presente == objetivo.gameObject)
+      {
+         objetivo.CasillaPosicion.Presente = null;
+      }
+
+      objetivo.ReproducirSonidoImpactoRoca();
+      objetivo.ForzarDestruccion();
+
+      string nombreObstaculo = TRADU.i != null ? TRADU.i.Traducir(objetivo.oName) : objetivo.oName;
+      BattleManager.Instance.EscribirLog($"{TraducirTexto("Destruyes")} {nombreObstaculo}.");
+      BattleManager.Instance.CalcularCasillasAMovimiento();
+
+      await TerminarTurnoSeguro(true, timings, "fallback de destruccion de obstaculo");
+      return true;
+   }
+
+   private int ContarVecinosMismoLadoParaDestruirObstaculo()
+   {
+      if (scUnidad == null || scUnidad.CasillaPosicion == null)
+      {
+         return 0;
+      }
+
+      LadoManager lado = ObtenerLadoActual();
+      if (lado == null)
+      {
+         return 0;
+      }
+
+      int cantidad = 0;
+      foreach (Vector2Int direccion in DireccionesConDiagonales)
+      {
+         Casilla casillaVecina = ObtenerCasillaVecina(lado, direccion);
+         if (!EsVecinoMismoLadoContabilizable(casillaVecina))
+         {
+            continue;
+         }
+
+         cantidad++;
+      }
+
+      return cantidad;
+   }
+
+   private List<Obstaculo> ObtenerObstaculosAdyacentesOrtogonales()
+   {
+      List<Obstaculo> obstaculos = new List<Obstaculo>();
+      if (scUnidad == null || scUnidad.CasillaPosicion == null)
+      {
+         return obstaculos;
+      }
+
+      LadoManager lado = ObtenerLadoActual();
+      if (lado == null)
+      {
+         return obstaculos;
+      }
+
+      foreach (Vector2Int direccion in DireccionesOrtogonales)
+      {
+         Casilla casillaVecina = ObtenerCasillaVecina(lado, direccion);
+         if (casillaVecina == null || casillaVecina.Presente == null)
+         {
+            continue;
+         }
+
+         Obstaculo obstaculo = casillaVecina.Presente.GetComponent<Obstaculo>();
+         if (obstaculo == null)
+         {
+            continue;
+         }
+
+         if (obstaculo.CasillaPosicion == null || obstaculo.CasillaPosicion.lado != scUnidad.CasillaPosicion.lado)
+         {
+            continue;
+         }
+
+         if (!obstaculo.destruiblePorMismoLado)
+         {
+            continue;
+         }
+
+         obstaculos.Add(obstaculo);
+      }
+
+      return obstaculos;
+   }
+
+   private LadoManager ObtenerLadoActual()
+   {
+      if (scUnidad == null || scUnidad.CasillaPosicion == null || scUnidad.CasillaPosicion.ladoGO == null)
+      {
+         return null;
+      }
+
+      return scUnidad.CasillaPosicion.ladoGO.GetComponent<LadoManager>();
+   }
+
+   private Casilla ObtenerCasillaVecina(LadoManager lado, Vector2Int direccion)
+   {
+      if (lado == null || scUnidad == null || scUnidad.CasillaPosicion == null)
+      {
+         return null;
+      }
+
+      int nx = scUnidad.CasillaPosicion.posX + direccion.x;
+      int ny = scUnidad.CasillaPosicion.posY + direccion.y;
+      if (nx < 1 || nx > 3 || ny < 1 || ny > 5)
+      {
+         return null;
+      }
+
+      return lado.ObtenerCasillaPorIndex(nx, ny);
+   }
+
+   private bool EsVecinoMismoLadoContabilizable(Casilla casillaVecina)
+   {
+      if (casillaVecina == null || casillaVecina.Presente == null || scUnidad == null || scUnidad.CasillaPosicion == null)
+      {
+         return false;
+      }
+
+      Obstaculo obstaculo = casillaVecina.Presente.GetComponent<Obstaculo>();
+      if (obstaculo != null)
+      {
+         return obstaculo.CasillaPosicion != null
+            && obstaculo.CasillaPosicion.lado == scUnidad.CasillaPosicion.lado;
+      }
+
+      Unidad unidad = casillaVecina.Presente.GetComponent<Unidad>();
+      if (unidad != null && unidad != scUnidad)
+      {
+         return unidad.HP_actual > 0
+            && unidad.CasillaPosicion != null
+            && unidad.CasillaPosicion.lado == scUnidad.CasillaPosicion.lado;
+      }
+
+      return false;
+   }
+
+   private static Obstaculo ObtenerObstaculoDestruiblePreferido(List<Obstaculo> obstaculos)
+   {
+      if (obstaculos == null || obstaculos.Count == 0)
+      {
+         return null;
+      }
+
+      return obstaculos
+         .Where(obstaculo => obstaculo != null && obstaculo.destruiblePorMismoLado)
+         .OrderByDescending(obstaculo => obstaculo.CasillaPosicion != null ? obstaculo.CasillaPosicion.posX : int.MinValue)
+         .FirstOrDefault();
+   }
+
+   private string TraducirTexto(string texto)
+   {
+      if (TRADU.i != null)
+      {
+         return TRADU.i.Traducir(texto);
+      }
+
+      return texto;
+   }
+
+   private string NombreUnidadParaLogLocal(Unidad unidad)
+   {
+      if (unidad == null)
+      {
+         return string.Empty;
+      }
+
+      return TRADU.i != null ? TRADU.i.Traducir(unidad.uNombre) : unidad.uNombre;
    }
 
    private AITurnTimings ObtenerTimingsActuales()
@@ -337,7 +573,7 @@ public class IAUnidad : MonoBehaviour
       }
    }
    
-   async Task ChequearCasillasAlrededorParaMover(Casilla casilla, AITurnTimings timings)
+   async Task<bool> ChequearCasillasAlrededorParaMover(Casilla casilla, AITurnTimings timings)
    {
        LadoManager lado;
        if(scUnidad.CasillaPosicion.lado == 1)
@@ -349,7 +585,7 @@ public class IAUnidad : MonoBehaviour
        if (casillaActual == null)
        {
          await DelayIA(timings.DelaySinObjetivosMs);
-         return;
+          return false;
        }
 
        Casilla mejorOpcion = null;
@@ -399,11 +635,12 @@ public class IAUnidad : MonoBehaviour
 
        if (mejorOpcion != null && scUnidad.ObtenerAPActual() >= costoMovimientoAP)
        {
-         await MoverACasilla(mejorOpcion);
+         return await MoverACasilla(mejorOpcion);
        }
 
-       await DelayIA(timings.DelayPostAccionMs);
-   }
+        await DelayIA(timings.DelayPostAccionMs);
+        return false;
+    }
 
    private Casilla BuscarReposicionLateralGenerica(LadoManager lado, Casilla casillaActual)
    {
@@ -580,6 +817,11 @@ public class IAUnidad : MonoBehaviour
           continue;
         }
 
+        if (hab is DestruirObstaculo)
+        {
+          continue;
+        }
+
         if(hab.hActualCooldown > 0){continue;}
         if(hab.costoAP > scUnidad.ObtenerAPActual()+1){continue;} //Si no tiene AP suficiente, no se agrega
 
@@ -741,11 +983,11 @@ public class IAUnidad : MonoBehaviour
       }
    }
 
-   public async Task MoverACasilla(Casilla casillaObjetivo)
+   public async Task<bool> MoverACasilla(Casilla casillaObjetivo)
     {
         if (casillaObjetivo == null || scUnidad.CasillaPosicion == null)
         {
-            return;
+            return false;
         }
 
         int deltaX = Math.Abs(casillaObjetivo.posX - scUnidad.CasillaPosicion.posX);
@@ -754,12 +996,12 @@ public class IAUnidad : MonoBehaviour
         if (deltaX + deltaY != 1)
         {
             Debug.LogWarning($"{scUnidad.uNombre} intento moverse a una casilla no adyacente.");
-            return;
+            return false;
         }
 
         if (scUnidad.ObtenerAPActual() < costoMovimientoAP)
         {
-            return;
+            return false;
         }
 
         scUnidad.CasillaDeseadaMov = casillaObjetivo;
@@ -769,8 +1011,7 @@ public class IAUnidad : MonoBehaviour
 
         scUnidad.CasillaPosicion =  scUnidad.CasillaDeseadaMov;
         scUnidad.CasillaDeseadaMov = null;
-
-
+        return true;
     }
 
 

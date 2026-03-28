@@ -1,0 +1,140 @@
+-
+ + 
+ <i>(TS Mental actual: 
+ <i>(TS Reflejos actual: 
+ dirigio un repaso de maniobras util (1d20: 
+ leyo el rastro a tiempo (1d20: 
+ no logro encender a todos con su arenga (1d20: 
+ no logro leer bien el rastro (1d20: 
+ no logro ordenar bien el repaso de maniobras. +1 Fatiga.
+ sostuvo la arenga bajo la lluvia (1d20: 
+ vs DC 
+), pero la Caravana sostuvo el animo. +2 Esperanza.
+). +1 Fatiga.
+). +30 Experiencia e Inspiracion para el proximo combate.
+). +30 Experiencia y Vigilante por 1 viaje.
+). +35 Experiencia y Compromiso.
+).</i> Si la supera, +2 Esperanza. Si falla, la Caravana obtendra Acobardados.</color>\n\n
+).</i> Si la supera, la Caravana obtendra Compromiso y ganara 35 Experiencia. Si falla, la Caravana ganara +1 Fatiga.</color>\n\n
+).</i> Si la supera, la Caravana obtendra Inspiracion para el proximo combate y ganara 30 Experiencia. Si falla, solo obtendra +2 Esperanza.</color>\n\n
+).</i> Si la supera, la Caravana obtendra Vigilante por 1 viaje y ganara 30 Experiencia. Si falla, la Caravana ganara +1 Fatiga.</color>\n\n
+).</i> Si la supera, la Caravana obtendra Vigilante y ganara 30 Experiencia. Si falla, la Caravana ganara +1 Fatiga.</color>\n\n
+</color></b> puede dirigir el repaso.\n\n
+</color></b> puede intentar levantar a la Caravana.\n\n
+</color></b> puede leer el rastro y ordenar a tiempo la vigilancia.\n\n
+</color></b> puede romper el malestar antes de que prenda.\n\n
+</color></b> puede trepar y vigilar desde arriba.\n\n
+<b><color=#d1006f>
+<color=#a0e812><b>La Caravana obtiene Inspiracion para el proximo combate. +2 VAL a todos.</b></color>
+<color=#a0e812><b>La Caravana obtiene Presteza. El Aliento Negro no avanzara en el proximo viaje.</b></color>
+<color=#a0e812><b>La Caravana obtiene Vigilante por 1 viaje. +10% Exploracion y -10% emboscadas.</b></color>
+<color=#a0e812>-Si aceptas el juramento, la Caravana obtendra Compromiso. Ganara 20% mas Experiencia en el proximo combate.</color>\n\n
+<color=#a0e812>-Si aprovechas el ritmo que da el terreno, la Caravana obtendra Presteza. El Aliento Negro no avanzara en el proximo viaje.</color>\n\n
+<color=#a0e812>-Si decides no detener la marcha, +3 Esperanza.</color>\n\n
+<color=#a0e812>-Si decides no detenerte, +2 Esperanza.</color>\n\n
+<color=#a0e812>-Si decides no exponer a nadie, +2 Esperanza.</color>\n\n
+<color=#a0e812>-Si dejas una respuesta para quienes pasen despues, la Caravana obtendra Inspiracion.</color>\n\n
+<color=#a0e812>-Si la aprovechas, la Caravana obtendra Presteza.</color>\n\n
+<color=#a0e812>-Si les pides reservar fuerzas y seguir, +4 Esperanza.</color>\n\n
+<color=#a0e812>-Si lo intentas, un Heroe hara una Tirada de Salvacion de Reflejos DC 10. Si la supera, la Caravana obtendra Vigilante.</color>\n\n
+<color=#a0e812>-Si lo intentas, un Heroe hara una Tirada de Salvacion Mental DC 11. Si la supera, la Caravana obtendra Inspiracion y ese Heroe ganara 30 Experiencia.</color>\n\n
+<color=#a0e812>-Si lo intentas, un Heroe hara una Tirada de Salvacion Mental DC 12. Si la supera, la Caravana obtendra Compromiso.</color>\n\n
+<color=#a0e812>-Si prefieres cruzar con maxima cautela, +3 Esperanza.</color>\n\n
+<color=#a0e812>-Si prefieres descansar de inmediato, +2 Esperanza.</color>\n\n
+<color=#a0e812>-Si prefieres revisar bien los bordes del camino, +3 Esperanza.</color>\n\n
+<color=#a0e812>-Si sigues la senal y la tomas como ejemplo, la Caravana obtendra Compromiso.</color>\n\n
+<color=#a0e812>-Tirada de Salvacion: TS Mental DC 
+<color=#a0e812>-Tirada de Salvacion: TS Reflejos DC 
+<color=#ba3fef><b>La Caravana obtiene Acobardados para el proximo combate. -2 VAL a todos.</b></color>
+<color=#ba3fef><b>La Caravana obtiene Aletargados. El Aliento Negro avanzara +1 en el proximo viaje y la marcha se vera mas lenta.</b></color>
+<color=#ba3fef><b>La Caravana obtiene Descuidados por 1 viaje. -10% Exploracion y +10% emboscadas.</b></color>
+<color=#ba3fef>-Si cortas la charla y apagas el fuego, la Caravana perdera 3 Esperanza.</color>\n\n
+<color=#ba3fef>-Si decides avanzar igual, la Caravana obtendra Aletargados.</color>\n\n
+<color=#ba3fef>-Si decides frenar para revisar, el Aliento Negro avanzara.</color>\n\n
+<color=#ba3fef>-Si decides seguir sin detenerte, la Caravana obtendra Desmotivacion. Ganara 20% menos Experiencia en el proximo combate.</color>\n\n
+<color=#ba3fef>-Si decides seguir sin mirarlos, la Caravana obtendra Acobardados.</color>\n\n
+<color=#ba3fef>-Si dejas que se descarguen, la Caravana obtendra Desmotivacion. Ganara 20% menos Experiencia en el proximo combate.</color>\n\n
+<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendra Aletargados. El Aliento Negro avanzara +1 en el proximo viaje y la marcha se vera mas lenta.</color>\n\n
+<color=#ba3fef>-Si haces una breve parada para ordenar el paso, el Aliento Negro avanzara.</color>\n\n
+<color=#ba3fef>-Si haces una parada corta hasta que abra el aire, el Aliento Negro avanzara.</color>\n\n
+<color=#ba3fef>-Si impones una marcha mas cerrada y cauta, la Caravana ganara +1 Fatiga.</color>\n\n
+<color=#ba3fef>-Si lo intentas, un Heroe hara una Tirada de Salvacion Mental DC 11. Si falla, la Caravana obtendra Acobardados.</color>\n\n
+<color=#ba3fef>-Si no dices nada, la Caravana obtendra Descuidados por 1 viaje. -10% Exploracion y +10% emboscadas.</color>\n\n
+<color=#ba3fef>-Si ordenas avanzar sin mirar atras, la Caravana obtendra Descuidados por 1 viaje.</color>\n\n
+<color=#ba3fef>-Si ordenas cerrar filas y seguir, la Caravana obtendra Acobardados para el proximo combate. -2 VAL a todos.</color>\n\n
+<color=#ba3fef>-Si ordenas reacomodar la marcha, la Caravana ganara +1 Fatiga.</color>\n\n
+<color=#ba3fef>-Si reorganizas puestos y ritmo, la Caravana ganara +1 Fatiga.</color>\n\n
+<color=#ba3fef>-Tirada de Salvacion: TS Mental DC 
+Aceptar
+Al costado del camino, varias siluetas se mueven entre la maleza justo fuera del alcance de la vista. Nadie logra confirmar si hay una amenaza real o solo imaginacion agotada.\n\n
+Alguien empieza a contar una historia vieja junto al fuego. Otra voz corrige un detalle, otra suma un recuerdo, y pronto media Caravana esta escuchando con una sonrisa cansada.\n\n
+Antes de dormir, un Heroe propone repasar senales, posiciones y respuestas rapidas junto al fuego. No cambia el cansancio, pero podria dejar a todos mejor parados para el proximo choque.\n\n
+Antes de retomar la marcha, dos Heroes se ofrecen a formalizar delante de la Caravana un juramento sencillo: no ceder terreno mientras quede alguien a quien proteger.\n\n
+Aprovechar
+Aprovecharlo
+Apurar
+Arenga en la Lluvia
+Avanzar
+Barro que Retiene
+Camino a Favor
+Campamento Ligero
+Cautela
+Cerrar filas
+Circulo de Historias
+Continuar
+Cortarlas
+Cuervos del Paso
+Dejarla
+Descansar
+Descanso Incompleto
+Detenerse
+Durante la noche, gritos ahogados despiertan a medio campamento. Al amanecer nadie logra explicar bien lo que soño, pero el miedo queda flotando igual entre las tiendas.\n\n
+Eco Bajo los Pies
+El campamento queda armado demasiado disperso. Las fogatas no se cubren entre si, los llamados tardan en llegar y cuesta saber quien esta atento y quien no.\n\n
+El suelo es incomodo, el viento no afloja y los carros crujen toda la noche. Nadie descansa de verdad, y la Caravana se levanta con la sensacion de haber dormido a medias.\n\n
+En el Bosque Ardiente, el humo cambia de direccion de golpe y se mete bajo telas, capuchas y lonas. La Caravana avanza entre toses y ojos llorosos, cada vez mas lenta.\n\n
+En Nedukazal, un golpeteo hueco sube desde abajo de la tierra y vuelve a cortarse antes de que alguien lo ubique. La reaccion inmediata es apurar el paso, pero no todos conservan la disciplina al hacerlo.\n\n
+En una pared semiderruida aparecen marcas recientes: no son de Zarkil ni de viejas rutas, sino senales de gente que todavia resiste y se niega a entregar el reino.\n\n
+Encuentran un punto de espera abandonado: una manta, un fogon apagado y una senal vieja que promete ayuda que nunca llego. La escena cae pesado sobre la Caravana.\n\n
+Escucharlas
+Esperar
+Fogatas Demasiado Lejos
+Forzar
+Guardias Relevados
+Hablar
+Humo Inquieto
+Juramento de la Escolta
+La Caravana encuentra un tramo de camino firme, bien orientado y sorprendentemente limpio. No durara mucho, pero alcanza para ordenar la columna y pensar en un proximo avance veloz.\n\n
+La marcha se sostiene bajo una lluvia pesada y muda. Los Civiles avanzan con la cabeza gacha, hasta que alguien propone decir unas palabras antes de que el desaliento se vuelva costumbre.\n\n
+Leer el rastro
+Lo que empieza como murmullo termina recorriendo el campamento entero: cansancio, dudas, comparaciones con dias mejores. No hay gritos ni desbande, solo una erosion lenta del animo.\n\n
+Los rumores corren rapido entre los carros y varios Civiles ya esperan un ataque inminente.\n\n
+Los turnos de guardia salen mejor de lo esperado. Nadie queda de mas, nadie llega tarde y el campamento entero se siente mas atento sin perder descanso.\n\n
+No subir
+Ordenar
+Pesadillas Compartidas
+Promesa Incumplida
+Quejas en Voz Baja
+Rastro Sospechoso
+Reacomodar
+Repasar
+Repaso de Maniobras
+Reservarse
+Responder
+Revisar
+Romper el clima
+Rutina Floja
+Seguir
+Seguirla
+Senal de los Resistentes
+Siluetas entre los Arboles
+Sin que nadie lo ordene demasiado, el campamento se arma con lo justo y queda listo para levantarse en minutos. Hay una sensacion compartida de que manana convendra moverse rapido.\n\n
+Subir
+Tras varias horas sin sobresaltos, parte de la Caravana empieza a moverse por pura costumbre. Se aflojan formaciones, cambian relevos tarde y mas de uno deja de mirar el terreno con atencion.\n\n
+Un circulo de cuervos se posa cerca del camino y no se mueve aunque la Caravana se acerque. Su quietud resulta peor que cualquier graznido, y el presagio corre rapido entre los Civiles.\n\n
+Un filo de roca y hielo ofrece un punto de vista raro en el Paso. Desde ahi, un ojo atento podria leer mejor el terreno y ordenar la marcha antes de que llegue el peligro.\n\n
+Un tramo de barro pegajoso se agarra a ruedas, botas y arreos. Cada metro parece costar el doble, y la columna entera empieza a moverse con una pesadez desesperante.\n\n
+Una veta de resina endurecida marca un paso firme entre raices y tierra negra. La ruta apenas se sostiene, pero si la toman bien podria regalarle a la Caravana una salida rapida del sector.\n\n
+Unas marcas recientes junto al camino sugieren que alguien o algo estuvo siguiendo la columna desde hace rato. La noticia corre rapido entre quienes van en los carros traseros.\n\n
+Veta de Resina
+Vigia del Hielo

@@ -26,14 +26,14 @@ public class GolpeFuegoFatuo : IAHabilidad
       hCooldownMax = 0;
       esHostil = true;
       prioridad = 1;
-      costoAP = 1;
+      costoAP = 2;
       afectaObstaculos = true;
       
 
 
       hActualCooldown = hCooldownMax;
 
-      bonusAtaque = 1;
+      bonusAtaque = 0;
       XdDanio = 1;
       daniodX = 10; //1d6+1
       tipoDanio = 4; //Fuego

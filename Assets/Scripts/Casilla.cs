@@ -5,7 +5,6 @@ using UnityEngine;
 using System;
 using UnityEngine.Analytics;
 using System.Linq;
-using NUnit.Framework.Constraints;
 
 
 public class Casilla : MonoBehaviour
@@ -57,6 +56,60 @@ public class Casilla : MonoBehaviour
   {
     unidad = BattleManager.Instance != null ? BattleManager.Instance.unidadActiva : null;
     return unidad != null && unidad.CasillaPosicion != null;
+  }
+
+  public bool PuedeIntercambiarConUnidadActiva()
+  {
+    if (BattleManager.Instance == null || BattleManager.Instance.bOcupado)
+    {
+      return false;
+    }
+
+    if (!BattleManager.Instance.lCasillasMovimiento.Contains(this))
+    {
+      return false;
+    }
+
+    if (!TryGetUnidadActiva(out Unidad unidadActiva))
+    {
+      return false;
+    }
+
+    if (unidadActiva.movimientoEnCurso || BattleManager.Instance.SeleccionandoObjetivo || unidadActiva.estado_inmovil > 0)
+    {
+      return false;
+    }
+
+    if (Presente == null)
+    {
+      return false;
+    }
+
+    Unidad unidadPresente = Presente.GetComponent<Unidad>();
+    if (unidadPresente == null || unidadPresente.CasillaPosicion == null)
+    {
+      return false;
+    }
+
+    if (unidadPresente.CasillaPosicion.lado != unidadActiva.CasillaPosicion.lado)
+    {
+      return false;
+    }
+
+    if (unidadPresente.estado_inmovil > 0 || unidadPresente.TieneBuffNombre("Desplazado"))
+    {
+      return false;
+    }
+
+    int costoMovimientoTotal = costoMovimiento;
+    int diferenciaX = Mathf.Abs(unidadActiva.CasillaPosicion.posX - posX);
+    int diferenciaY = Mathf.Abs(unidadActiva.CasillaPosicion.posY - posY);
+    if (diferenciaX == 1 && diferenciaY == 1)
+    {
+      costoMovimientoTotal++;
+    }
+
+    return unidadActiva.ObtenerAPActual() >= costoMovimientoTotal;
   }
 
   public void ActualizarSenialadores()
@@ -161,6 +214,63 @@ public class Casilla : MonoBehaviour
   }
 
   public TooltipBatalla scTooltipBatalla;
+  private bool EsMovimientoDiagonal(Unidad unidad)
+  {
+    if (unidad == null || unidad.CasillaPosicion == null)
+    {
+      return false;
+    }
+
+    int diferenciaX = Mathf.Abs(unidad.CasillaPosicion.posX - posX);
+    int diferenciaY = Mathf.Abs(unidad.CasillaPosicion.posY - posY);
+    return diferenciaX == 1 && diferenciaY == 1;
+  }
+
+  private bool DebeSumarCostoBarroAlEntrar(Unidad unidad)
+  {
+    if (unidad == null)
+    {
+      return false;
+    }
+
+    Trampa trampa = GetComponent<Trampa>();
+    if (trampa is not TrampaBarro trampaBarro)
+    {
+      return false;
+    }
+
+    if (unidad.inmunidad_Trampas && !trampaBarro.esTrampaFavorable)
+    {
+      return false;
+    }
+
+    REPRESENTACIONPasoCauteloso pasoCauteloso = unidad.GetComponent<REPRESENTACIONPasoCauteloso>();
+    if (pasoCauteloso != null && !pasoCauteloso.seusoEsteTurno)
+    {
+      return false;
+    }
+
+    return true;
+  }
+
+  private int ObtenerCostoMovimientoTotal(Unidad unidad)
+  {
+    int costoMovimientoTotal = costoMovimiento;
+    if (EsMovimientoDiagonal(unidad))
+    {
+      costoMovimientoTotal++;
+    }
+    if (DebeSumarCostoBarroAlEntrar(unidad))
+    {
+      costoMovimientoTotal += 2;
+    }
+    return costoMovimientoTotal;
+  }
+
+  private string ObtenerTextoCostoMovimiento(Unidad unidad)
+  {
+    return TRADU.i.Traducir("Coste: ") + ObtenerCostoMovimientoTotal(unidad) + " " + TRADU.i.Traducir("PA");
+  }
   public void MostrarAPparaMovimiento()
   {
     if (lado == 1) { return; } //Solo para aliados
@@ -170,25 +280,15 @@ public class Casilla : MonoBehaviour
     //Unidad seleccionada - Movimiento
     if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
-      int costoMovimientoTotal = costoMovimiento;
-
-      int diferenciaX = Mathf.Abs(unidad.CasillaPosicion.posX - posX);
-      int diferenciaY = Mathf.Abs(unidad.CasillaPosicion.posY - posY);
-
-      // Comprueba si las casillas están en posiciones diagonales
-      if (diferenciaX == 1 && diferenciaY == 1)
-      {
-        costoMovimientoTotal++;
-      }
-
+      int costoMovimientoTotal = ObtenerCostoMovimientoTotal(unidad);
       if (unidad.ObtenerAPActual() >= costoMovimientoTotal)
       {
-        string text = "" + TRADU.i.Traducir("Coste: ") + costoMovimientoTotal + " " + TRADU.i.Traducir("PA");
+        string text = ObtenerTextoCostoMovimiento(unidad);
         scTooltipBatalla.ShowTooltipTextSinAnim(text);
       }
       else
       {
-        string text = "<color=red>" + TRADU.i.Traducir("Coste: ") + costoMovimientoTotal + " " + TRADU.i.Traducir("PA") + "</color>";
+        string text = "<color=red>" + ObtenerTextoCostoMovimiento(unidad) + "</color>";
         scTooltipBatalla.ShowTooltipTextSinAnim(text);
 
       }
@@ -196,6 +296,15 @@ public class Casilla : MonoBehaviour
 
 
   }
+
+  public void MostrarTooltipIntercambiar()
+  {
+    if (scTooltipBatalla == null) { return; }
+
+    string texto = TRADU.i != null ? TRADU.i.Traducir("Intercambiar") : "Intercambiar";
+    scTooltipBatalla.ShowTooltipTextSinAnim(texto);
+  }
+
   public async void OnMouseDown()
   {
     if (BattleManager.Instance == null)
@@ -251,17 +360,7 @@ public class Casilla : MonoBehaviour
     //!!!
     if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
-      int costoMovimientoTotal = costoMovimiento;
-
-      int diferenciaX = Mathf.Abs(unidad.CasillaPosicion.posX - posX);
-      int diferenciaY = Mathf.Abs(unidad.CasillaPosicion.posY - posY);
-
-      // Comprueba si las casillas están en posiciones diagonales
-      if (diferenciaX == 1 && diferenciaY == 1)
-      {
-        costoMovimientoTotal++;
-      }
-
+      int costoMovimientoTotal = ObtenerCostoMovimientoTotal(unidad);
       if (unidad.ObtenerAPActual() >= costoMovimientoTotal)
       {
 
@@ -932,6 +1031,10 @@ public class Casilla : MonoBehaviour
     {
        text += "" + TRADU.i.Traducir("Melee disponible");
       scTooltipBatalla.ShowTooltipTextSinAnim(text);
+    }
+    else if (BattleManager.Instance != null && !BattleManager.Instance.SeleccionandoObjetivo && BattleManager.Instance.HabilidadActiva == null && PuedeIntercambiarConUnidadActiva())
+    {
+      MostrarTooltipIntercambiar();
     }
     //Controlar se esta haciendo hablidad en Area, marca las casillas en la zona de alcance y en el area
       if (BattleManager.Instance.HabilidadActiva != null)
@@ -1656,16 +1759,7 @@ public class Casilla : MonoBehaviour
     }
     if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
-      int costoMovimientoTotal = costoMovimiento;
-
-      int diferenciaX = Mathf.Abs(unidad.CasillaPosicion.posX - posX);
-      int diferenciaY = Mathf.Abs(unidad.CasillaPosicion.posY - posY);
-
-      // Comprueba si las casillas están en posiciones diagonales
-      if (diferenciaX == 1 && diferenciaY == 1)
-      {
-        costoMovimientoTotal++;
-      }
+      int costoMovimientoTotal = ObtenerCostoMovimientoTotal(unidad);
       if (unidad.ObtenerAPActual() < costoMovimientoTotal)
       {
         res = 0;
@@ -1712,6 +1806,11 @@ public class Casilla : MonoBehaviour
   }
 
 }
+
+
+
+
+
 
 
 

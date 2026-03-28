@@ -522,7 +522,10 @@ public abstract class Habilidad : MonoBehaviour
     {
       scEstaUnidad.CambiarAPActual(-costoAP);
     }
-    scEstaUnidad.AccionP_SeEsforzo = seEsforzaria;
+    if (seEsforzaria > 0)
+    {
+      AplicarDebuffEsfuerzo(seEsforzaria);
+    }
 
 
     cooldownActual = cooldownMax;
@@ -582,6 +585,26 @@ public abstract class Habilidad : MonoBehaviour
     return true;
 
 
+  }
+
+  protected virtual void AplicarDebuffEsfuerzo(int esfuerzo)
+  {
+    if (scEstaUnidad == null || esfuerzo <= 0)
+    {
+      return;
+    }
+
+    Buff buffEsfuerzo = new Buff();
+    buffEsfuerzo.buffNombre = "Esfuerzo";
+    buffEsfuerzo.buffDescr = "La unidad se ha esforzado. -1 PA máximo y -2 Defensa por stack.";
+    buffEsfuerzo.boolfDebufftBuff = false;
+    buffEsfuerzo.DuracionBuffRondas = 2;
+    buffEsfuerzo.suprimeTextoFlotante = true;
+    buffEsfuerzo.cantAPMax -= esfuerzo;
+    buffEsfuerzo.cantDefensa -= 2 * esfuerzo;
+    buffEsfuerzo.esStackeable = true;
+    buffEsfuerzo.AplicarBuff(scEstaUnidad);
+    ComponentCopier.CopyComponent(buffEsfuerzo, scEstaUnidad.gameObject);
   }
 
   //Ataque vs Defensa convencional
@@ -652,6 +675,7 @@ public abstract class Habilidad : MonoBehaviour
           umbralPifia,
           Mathf.RoundToInt(umbralCritico),
           deltaClima));
+      unidadAtacada?.NotificarAtaqueRecibido();
       return -1;
     }
 
@@ -675,6 +699,7 @@ public abstract class Habilidad : MonoBehaviour
           Mathf.RoundToInt(umbralCritico),
           deltaClima,
           TRADU.i.Traducir("Impacto crítico")));
+      unidadAtacada?.NotificarAtaqueRecibido();
       return 3;
     }
 
@@ -721,6 +746,7 @@ public abstract class Habilidad : MonoBehaviour
     if (resultado < 2 && BattleManager.Instance.HabilidadActiva.esMelee)
     { AudioSource.PlayClipAtPoint(BattleManager.Instance.contenedorPrefabs.sonidoErrar, transform.position); }
 
+    unidadAtacada?.NotificarAtaqueRecibido();
     return resultado;
   }
 

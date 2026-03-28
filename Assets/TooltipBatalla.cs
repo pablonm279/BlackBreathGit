@@ -9,12 +9,26 @@ public class TooltipBatalla : MonoBehaviour
 
     public GameObject tooltipObject;
     public TextMeshProUGUI tooltipText;
+    [SerializeField] private RectTransform backgroundRectTransform;
+    [SerializeField] private Vector2 backgroundPadding = new Vector2(26f, 18f);
+    [SerializeField] private Vector2 backgroundMinSize = new Vector2(140f, 48f);
+    [SerializeField] private float preferredTextMaxWidth = 260f;
     private UIFadeSlide tooltipAnim;
 
+    public bool tooltipFade = false;
     void Awake()
     {
         Instance = this;
         if (tooltipObject == null) { return; }
+
+        if (backgroundRectTransform == null)
+        {
+            Transform fondo = tooltipObject.transform.Find("FondoTooltip");
+            if (fondo != null)
+            {
+                backgroundRectTransform = fondo as RectTransform;
+            }
+        }
 
         tooltipAnim = UIFadeSlideUtility.Ensure(tooltipObject);
         if (tooltipAnim != null)
@@ -38,6 +52,12 @@ public class TooltipBatalla : MonoBehaviour
 
         UIFadeSlideUtility.ShowAt(tooltipObject, Input.mousePosition);
         tooltipText.text = TRADU.i.Traducir(ObtenerContenidoTooltip(tipo));
+        AjustarTamanoTooltip();
+
+        if (tooltipFade)
+        {
+            Invoke("HideTooltip", 3f);
+        }
     }
 
     bool desdeBarraVida = false;
@@ -49,6 +69,7 @@ public class TooltipBatalla : MonoBehaviour
         desdeBarraVida = true;
         UIFadeSlideUtility.ShowAt(tooltipObject, Input.mousePosition);
         tooltipText.text = TRADU.i.Traducir(txt);
+        AjustarTamanoTooltip();
     }
 
     public void ShowTooltipTextSinAnim(string txt)
@@ -58,6 +79,40 @@ public class TooltipBatalla : MonoBehaviour
         desdeBarraVida = false;
         UIFadeSlideUtility.ShowAtImmediate(tooltipObject, Input.mousePosition);
         tooltipText.text = TRADU.i.Traducir(txt);
+        AjustarTamanoTooltip();
+    }
+
+    public void ShowTooltipTextSinAnimDirecto(string txt)
+    {
+        if (tooltipObject == null) { return; }
+
+        desdeBarraVida = false;
+        UIFadeSlideUtility.ShowAtImmediate(tooltipObject, Input.mousePosition);
+        tooltipText.text = txt;
+        AjustarTamanoTooltip();
+    }
+
+    private void AjustarTamanoTooltip()
+    {
+        if (tooltipText == null)
+        {
+            return;
+        }
+
+        tooltipText.enableWordWrapping = true;
+        tooltipText.ForceMeshUpdate();
+
+        Vector2 tamanoTexto = tooltipText.GetPreferredValues(tooltipText.text, preferredTextMaxWidth, Mathf.Infinity);
+        Vector2 tamanoFondo = new Vector2(
+            Mathf.Max(backgroundMinSize.x, tamanoTexto.x + backgroundPadding.x),
+            Mathf.Max(backgroundMinSize.y, tamanoTexto.y + backgroundPadding.y)
+        );
+
+        RectTransform rectFondo = backgroundRectTransform != null ? backgroundRectTransform : tooltipObject.GetComponent<RectTransform>();
+        if (rectFondo != null)
+        {
+            rectFondo.sizeDelta = tamanoFondo;
+        }
     }
 
     private string ObtenerContenidoTooltip(int tipo)

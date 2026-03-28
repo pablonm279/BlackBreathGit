@@ -89,10 +89,7 @@ public class Unidad : MonoBehaviour
     BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
 
   }
-  public float AccionP_SeEsforzo;
-  
-
-   public Alcambiarvalorflash scTextoArmaduraFlash; 
+  public Alcambiarvalorflash scTextoArmaduraFlash;
 
   //Atributo - PM -------- Puntos de Mérito
   [SerializeField] private float at_maxMeritoP; 
@@ -1001,17 +998,11 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
         //-------------------------------Defensa_AtaquesRepetidosRonda
         Defensa_AtaquesRepetidosRonda = 0;
         //---
-        //-------------------------------Defensa_BonusPASinUsar
-        Defensa_BonusPASinUsar = 0;
-        //---
-        //-------------------------------Descuenta Esfuerzo a AP y restaura AP
+        //-------------------------------Restaura AP segun maximo actual y modificadores temporales
         AccionP_actual = mod_maxAccionP;
-        AccionP_actual -= AccionP_SeEsforzo;
         AccionP_actual += estado_APModificador;
 
         BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
-
-        AccionP_SeEsforzo = 0;
 
 
         //Estados -----------------
@@ -1116,14 +1107,14 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
 
         if (!unidadEncarnadaEnTurno)
         {
-          GenerarTextoFlotante(TRADU.i.Traducir("Activa!"), Color.red);
+        //  GenerarTextoFlotante(TRADU.i.Traducir("Activa!"), Color.red);
         }
       }
       else 
       {
         if (!unidadEncarnadaEnTurno)
         {
-          GenerarTextoFlotante(TRADU.i.Traducir("Activa!"), Color.cyan);
+      //    GenerarTextoFlotante(TRADU.i.Traducir("Activa!"), Color.cyan);
         }
       }
     }
@@ -1296,23 +1287,19 @@ void ActivarEfectosCustomBuffsInicioTurno()
   }
 
 }
-  public void TerminaTurnoEstaUnidad()
+  public void TerminaTurnoEstaUnidad(bool fueManualConBotonTerminarTurno = false)
   {
-
-    //-------------------------------Defensa_BonusPASinUsar
-    if (AccionP_actual > 0 && gameObject.GetComponent<RetrasarTurno>().yaRetraso == false && gameObject.GetComponent<IAUnidad>() == null)
-    {
-      if (AccionP_actual > 2) { AccionP_actual = 2; }
-
-      Defensa_BonusPASinUsar += (int)AccionP_actual;
-    }
-    //---
+    bool terminaDescansado = AccionP_actual >= mod_maxAccionP
+      && gameObject.GetComponent<RetrasarTurno>().yaRetraso == false
+      && estaCargando == null
+      && !ChequearTieneReaccionesTipo(-1);
 
     LlamarReacciones(5, this, false); //Reacciones al terminar turno
 
     ReducirDuracionBuffs(); //Se reduce duracion de buffs/debuffs al terminar el turno
 
     ControlarSiEsDescanso();
+    ControlarSiEsAtento(terminaDescansado, fueManualConBotonTerminarTurno);
     
     CasillaPosicion.DesactivarSenialadores();
 
@@ -1330,6 +1317,7 @@ void ControlarSiEsDescanso()
      Descansado.buffNombre = "Descansado";
      Descansado.boolfDebufftBuff = true;
      Descansado.DuracionBuffRondas = 1;
+     Descansado.suprimeTextoFlotante = true;
      Descansado.cantIniciativa += 3;
      Descansado.cantAPMax += 1;
      Descansado.AplicarBuff(this);
@@ -1345,6 +1333,44 @@ void ControlarSiEsDescanso()
   }
 
 }
+
+void ControlarSiEsAtento(bool terminaDescansado, bool fueManualConBotonTerminarTurno)
+{
+  //Atento: si termina el turno con AP disponible, gana defensa contra el proximo ataque recibido.
+  if (terminaDescansado)
+  {
+    ForzarTopeBuffNombre("Atento", 3);
+    return;
+  }
+
+  if (!fueManualConBotonTerminarTurno)
+  {
+    return;
+  }
+
+  if (AccionP_actual >= 1 && gameObject.GetComponent<RetrasarTurno>().yaRetraso == false && gameObject.GetComponent<IAUnidad>() == null)
+  {
+    if (CantidadBuffNombre("Atento") >= 3)
+    {
+      ForzarTopeBuffNombre("Atento", 3);
+      return;
+    }
+
+    Buff Atento = new Buff();
+    Atento.buffNombre = "Atento";
+    Atento.buffDescr = "Terminó turno con AP disponible, aumenta defensa vs próximo golpe.";
+    Atento.boolfDebufftBuff = true;
+    Atento.DuracionBuffRondas = -1;
+    Atento.suprimeTextoFlotante = true;
+    Atento.cantDefensa += Mathf.RoundToInt(AccionP_actual);
+    Atento.seConsumeAlRecibirAtaque = true;
+    Atento.esStackeable = true;
+    Atento.AplicarBuff(this);
+    Buff buffComponent = ComponentCopier.CopyComponent(Atento, gameObject);
+    ForzarTopeBuffNombre("Atento", 3);
+  }
+}
+
 private void ResolverCargarHabilidades()
 {
   if(estaCargando != null)
@@ -1443,6 +1469,11 @@ public bool EsEnemigoParaJugador()
 public bool EstaOcultoVisualmenteParaJugador()
 {
   return estaEscondido > 0 && EsEnemigoParaJugador();
+}
+
+private bool DebeSuprimirTextoFlotantePorEscondidoIA()
+{
+  return ObtenerEstaEscondido() > 0 && GetComponent<IAUnidad>() != null;
 }
 
 public void SincronizarVisualEscondido()
@@ -1569,6 +1600,60 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
     }
 
+  }
+
+  public void NotificarAtaqueRecibido()
+  {
+    Buff[] buffs = this.GetComponents<Buff>();
+    foreach (Buff buff in buffs)
+    {
+      buff.activarCustomEffectAlRecibirAtaque();
+    }
+  }
+
+  public int CantidadBuffNombre(string nombreBuff)
+  {
+    int cantidad = 0;
+    Buff[] buffs = this.GetComponents<Buff>();
+    foreach (Buff buff in buffs)
+    {
+      if (buff.buffNombre == nombreBuff)
+      {
+        cantidad++;
+      }
+    }
+    return cantidad;
+  }
+
+  public void ForzarTopeBuffNombre(string nombreBuff, int maxStacks)
+  {
+    if (maxStacks < 0)
+    {
+      return;
+    }
+
+    List<Buff> encontrados = new List<Buff>();
+    Buff[] buffs = this.GetComponents<Buff>();
+    foreach (Buff buff in buffs)
+    {
+      if (buff.buffNombre == nombreBuff)
+      {
+        encontrados.Add(buff);
+      }
+    }
+
+    for (int i = encontrados.Count - 1; i >= maxStacks; i--)
+    {
+      Buff exceso = encontrados[i];
+      if (exceso == null)
+      {
+        continue;
+      }
+
+      exceso.suprimeTextoFlotante = true;
+      exceso.suprimeLogCombate = true;
+      exceso.RemoverBuff(this);
+    }
   }
 
   public bool TieneBuffNombre(string nombreBuff)
@@ -3027,6 +3112,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
        Herida.buffNombre = "Herida";
        Herida.boolfDebufftBuff = false;
        Herida.DuracionBuffRondas = -1;
+       Herida.ocultarEnBarraVida = true;
        Herida.cantAtFue -= 1;
        Herida.cantAtAgi -= 1;
        Herida.cantAtPod -= 1;
@@ -3382,6 +3468,7 @@ public virtual void AplicarMotivado()
        Buff motivado = new Buff();
        motivado.buffNombre = "Motivado";
        motivado.suprimeTextoFlotante = true;
+       motivado.ocultarEnBarraVida = true;
        motivado.boolfDebufftBuff = true;
        motivado.DuracionBuffRondas = -1;
        motivado.cantTsMental += 2;
@@ -3398,6 +3485,7 @@ public virtual void AplicarDesmotivado()
        Buff motivado = new Buff();
        motivado.buffNombre = "Desmotivado";
        motivado.suprimeTextoFlotante = true;
+       motivado.ocultarEnBarraVida = true;
        motivado.boolfDebufftBuff = false;
        motivado.DuracionBuffRondas = -1;
        motivado.cantTsMental -= 2;
@@ -3414,6 +3502,7 @@ public virtual void AplicarEuforico()
        Buff motivado = new Buff();
        motivado.buffNombre = "Euforia";
        motivado.suprimeTextoFlotante = true;
+       motivado.ocultarEnBarraVida = true;
        motivado.boolfDebufftBuff = true;
        motivado.DuracionBuffRondas = -1;
        motivado.cantAtFue += 1;
@@ -3430,6 +3519,7 @@ public virtual void AplicarDesesperanzado()
        Buff motivado = new Buff();
        motivado.buffNombre = "Desesperanzado";
        motivado.suprimeTextoFlotante = true;
+       motivado.ocultarEnBarraVida = true;
        motivado.boolfDebufftBuff = false;
        motivado.DuracionBuffRondas = -1;
        motivado.cantAtFue -= 1;
@@ -3488,7 +3578,6 @@ public virtual void AplicarDesesperanzado()
 
     return floatingTextSlotLifetimeFallback;
   }
-
   private float CalcularIntervaloTextoFlotante(float now)
   {
     float baseInterval = Mathf.Max(0f, floatingTextMinInterval);
@@ -3511,6 +3600,10 @@ public virtual void AplicarDesesperanzado()
 
   public async Task GenerarTextoFlotante(string txString, Color color, FloatingTextContext contexto = FloatingTextContext.Generic, TextMeshProUGUI overrideText = null)
   {
+    if (DebeSuprimirTextoFlotantePorEscondidoIA())
+    {
+      return;
+    }
 
     // Pequena espera para escalonar textos y evitar solapamientos
     float delaySeconds = 0f;
@@ -3598,7 +3691,7 @@ public virtual void AplicarDesesperanzado()
 
   public void MostrarRotuloHabilidadIA(string txString, Color color, float duracion = 4f)
   {
-    if (string.IsNullOrWhiteSpace(txString))
+    if (string.IsNullOrWhiteSpace(txString) || DebeSuprimirTextoFlotantePorEscondidoIA())
     {
       return;
     }
@@ -3810,7 +3903,7 @@ public void AplicarDebuffPorAtaquesreiterados(int cant)
 public float ObtenerdefensaActual()
 {
   SincronizarEscaladosPorAtributos();
-  float defensa = mod_Defensa - Defensa_AtaquesRepetidosRonda + Defensa_BonusPASinUsar - AccionP_SeEsforzo + estado_evasion;
+  float defensa = mod_Defensa - Defensa_AtaquesRepetidosRonda + estado_evasion;
   
   if(estado_aturdido  > 0){ defensa -=5; defensa -= estado_evasion;}
   if(estado_congelado > 0){ defensa -=2; defensa -= estado_evasion;}
@@ -3956,6 +4049,11 @@ public void OnMouseEnter()
     {
       return;
     }
+
+    if (!scBattleManager.SeleccionandoObjetivo)
+    {
+      TooltipBatalla.Instance?.HideTooltipSinAnim();
+    }
  
     anterior = null;
     Marcar(1);
@@ -4070,12 +4168,6 @@ public async void OnMouseDown()
       {
         BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo = false;
         Marcar(0); anterior = null;
-      }
-
-      if (CasillaPosicion.lado == 2 && scBattleManager.unidadActiva!= this && !scBattleManager.SeleccionandoObjetivo)
-      { 
-        CasillaPosicion.OnMouseDown();
-
       }
 
   }

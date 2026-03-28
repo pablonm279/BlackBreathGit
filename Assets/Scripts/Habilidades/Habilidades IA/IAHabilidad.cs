@@ -509,6 +509,7 @@ public abstract class IAHabilidad : MonoBehaviour
           CombatLogFormatter.CombatOutcome.Pifia,
           umbralPifia,
           Mathf.RoundToInt(umbralCritico)));
+      unidadAtacada?.NotificarAtaqueRecibido();
 
       return -1;
     }
@@ -533,6 +534,7 @@ public abstract class IAHabilidad : MonoBehaviour
           Mathf.RoundToInt(umbralCritico),
           0f,
           TRADU.i.Traducir("Impacto crítico")));
+      unidadAtacada?.NotificarAtaqueRecibido();
       return 3; //Golpe crítico
     }
 
@@ -581,6 +583,7 @@ public abstract class IAHabilidad : MonoBehaviour
       AudioSource.PlayClipAtPoint(BattleManager.Instance.contenedorPrefabs.sonidoErrar, pos);
     }
 
+    unidadAtacada?.NotificarAtaqueRecibido();
     return resultado;
   }
 

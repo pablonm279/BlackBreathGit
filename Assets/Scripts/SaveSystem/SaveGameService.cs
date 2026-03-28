@@ -167,6 +167,10 @@ public static class SaveGameService
     {
       saveFileData.campaign = new CampaignSaveData();
     }
+    if (saveFileData.campaign.estadosCaravana == null)
+    {
+      saveFileData.campaign.estadosCaravana = new EstadosCaravanaSaveData();
+    }
     if (saveFileData.map == null)
     {
       saveFileData.map = new MapSaveData();

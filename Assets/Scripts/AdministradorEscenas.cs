@@ -251,6 +251,9 @@ public class AdministradorEscenas : MonoBehaviour
   int ultimoIDEncuentro;
   int tipoEmboscadaActual = 0;
   private bool filtrandoUnicosEnComposicionInicial;
+  private readonly HashSet<int> filasAliadasInicialesReservadas = new HashSet<int>();
+  private readonly List<int> filasAliadasInicialesSeleccionadas = new List<int>();
+  private int totalAliadosInicialesAColocar;
 
   public void CargarBatalla(int IDEncuentro, int esEmboscada = 0, EncounterDefinition encuentro = null, bool usarRefuerzosAliadosCaravana = false)
   {
@@ -309,13 +312,20 @@ public class AdministradorEscenas : MonoBehaviour
     // Silenciar logs de combate durante la preparación (buffs/estados iniciales)
     battleManager.silenciarLogCombate = true;
     battleManager.ReiniciarEstadoRefuerzos();
+    filasAliadasInicialesReservadas.Clear();
+    filasAliadasInicialesSeleccionadas.Clear();
+    totalAliadosInicialesAColocar = 0;
+    if (Personaje1 != null) { totalAliadosInicialesAColocar++; }
+    if (Personaje2 != null) { totalAliadosInicialesAColocar++; }
+    if (Personaje3 != null) { totalAliadosInicialesAColocar++; }
+    if (Personaje4 != null) { totalAliadosInicialesAColocar++; }
     bool esPrimerCombateTutorial = IDEncuentro == 700 && CampaignManager.Instance != null
       && CampaignManager.Instance.scTutorialManager != null
       && CampaignManager.Instance.scTutorialManager.tutorialActivo;
     bool esCombateFinalTutorial = IDEncuentro == 701 && CampaignManager.Instance != null
       && CampaignManager.Instance.scTutorialManager != null
       && CampaignManager.Instance.scTutorialManager.tutorialActivo;
-    if (esEmboscada == 3) //Si es defensa de caravana pone defensas
+    if (esEmboscada == 3) // Debe ocurrir antes de colocar unidades y objetos aleatorios para reservar esas casillas.
     {
       CrearDefensasCaravana();
     }
@@ -456,6 +466,7 @@ public class AdministradorEscenas : MonoBehaviour
         Buff buff = new Buff();
         buff.buffNombre = "Sorprendido";
         buff.forzarTextoFlotanteInicioCombate = true;
+        buff.ocultarEnBarraVida = true;
         buff.boolfDebufftBuff = false;
         buff.DuracionBuffRondas = 4;
         buff.cantIniciativa -= 3;
@@ -979,12 +990,7 @@ public class AdministradorEscenas : MonoBehaviour
     List<Casilla> casillasDisponibles = new List<Casilla>();
     foreach (Casilla casilla in lado.casillasLado)
     {
-      if (casilla == null || casilla.Presente != null)
-      {
-        continue;
-      }
-
-      if (casilla.GetComponent<Trampa>() != null)
+      if (!CasillaEstaDisponibleParaSpawn(casilla))
       {
         continue;
       }
@@ -1020,7 +1026,8 @@ public class AdministradorEscenas : MonoBehaviour
         Debug.LogWarning("[AdministradorEscenas] No hay casillas disponibles para colocar obstaculos.");
         break;
       }
-      if (casilla.Presente == null)
+
+      if (CasillaEstaDisponibleParaSpawn(casilla))
       {
         GameObject obst5 = Instantiate(prefab);
         casilla.PonerObjetoEnCasilla(obst5);
@@ -1061,7 +1068,7 @@ public class AdministradorEscenas : MonoBehaviour
     List<Casilla> casillasLibres = new List<Casilla>();
     foreach (Casilla casilla in ladoEnemigo.casillasLado)
     {
-      if (casilla == null || casilla.Presente != null)
+      if (!CasillaEstaDisponibleParaSpawn(casilla))
       {
         continue;
       }
@@ -1106,16 +1113,48 @@ public class AdministradorEscenas : MonoBehaviour
     }
   }
 
+  bool CasillaEstaDisponibleParaSpawn(Casilla casilla)
+  {
+    // Las trampas de caravana y ambientales viven en la Casilla, no en Presente.
+    return casilla != null && casilla.Presente == null && casilla.GetComponent<Trampa>() == null;
+  }
+
+  Casilla ObtenerCasillaAleatoriaDisponibleEnLado(LadoManager lado)
+  {
+    if (lado == null)
+    {
+      return null;
+    }
+
+    lado.ActualizarListaDeCasillasEnLado();
+    List<Casilla> casillasDisponibles = new List<Casilla>();
+
+    foreach (Casilla casilla in lado.casillasLado)
+    {
+      if (CasillaEstaDisponibleParaSpawn(casilla))
+      {
+        casillasDisponibles.Add(casilla);
+      }
+    }
+
+    if (casillasDisponibles.Count < 1)
+    {
+      return null;
+    }
+
+    return casillasDisponibles[UnityEngine.Random.Range(0, casillasDisponibles.Count)];
+  }
+
   Casilla ObtenerCasillaAleatoriaDisponible(LadoManager ladoAliado, LadoManager ladoEnemigo)
   {
     bool aliadosPrimero = UnityEngine.Random.Range(0, 2) == 0;
     LadoManager preferido = aliadosPrimero ? ladoAliado : ladoEnemigo;
     LadoManager alternativo = aliadosPrimero ? ladoEnemigo : ladoAliado;
 
-    Casilla casilla = preferido != null ? preferido.ObtenerCasillaAleatoria(true) : null;
+    Casilla casilla = ObtenerCasillaAleatoriaDisponibleEnLado(preferido);
     if (casilla == null && alternativo != null)
     {
-      casilla = alternativo.ObtenerCasillaAleatoria(true);
+      casilla = ObtenerCasillaAleatoriaDisponibleEnLado(alternativo);
     }
 
     return casilla;
@@ -1355,6 +1394,7 @@ public class AdministradorEscenas : MonoBehaviour
 
     int esperanzaActual = CampaignManager.Instance.GetEsperanzaActual();
     int ajusteValentia = (esperanzaActual - 50) / 20;
+    ajusteValentia += CampaignManager.Instance.ObtenerModificadorValentiaEstadosCaravanaCombateActual();
     if (ajusteValentia == 0)
     {
       return;
@@ -2725,6 +2765,13 @@ public class AdministradorEscenas : MonoBehaviour
           ? UnityEngine.Random.Range(1, 4)
           : columnasPreferidas[UnityEngine.Random.Range(0, columnasPreferidas.Count)];
         int fila = UnityEngine.Random.Range(1, 6);
+        Casilla casillaObjetivo = ladoObjetivo.ObtenerCasillaPorIndex(columna, fila);
+
+        if (!CasillaEstaDisponibleParaSpawn(casillaObjetivo))
+        {
+          intentos++;
+          continue;
+        }
 
         if (ladoObjetivo.ColocarEnCasilla(unidad, columna, fila))
         {
@@ -2779,18 +2826,76 @@ public class AdministradorEscenas : MonoBehaviour
       lado = BattleManager.Instance.ladoA; //Enemigos
     }
 
+    List<int> filasCandidatas = new List<int>();
+    for (int fila = 1; fila <= 5; fila++)
+    {
+      if (iLado == 1 && !filasAliadasInicialesReservadas.Contains(fila))
+      {
+        if (FilaAliadaMantieneDistribucionValida(fila))
+        {
+          filasCandidatas.Add(fila);
+        }
+      }
+    }
+
+    if (filasCandidatas.Count < 1)
+    {
+      for (int fila = 1; fila <= 5; fila++)
+      {
+        if (iLado != 1 || !filasAliadasInicialesReservadas.Contains(fila))
+        {
+          filasCandidatas.Add(fila);
+        }
+      }
+    }
+
+    if (filasCandidatas.Count < 1)
+    {
+      for (int fila = 1; fila <= 5; fila++)
+      {
+        filasCandidatas.Add(fila);
+      }
+    }
+
     int intentos = 0; // Para limitar los intentos de colocar la unidad
     bool colocado = false;
 
-    // columna es la Y (de 1 a 5 normalmente)
+    // columna representa la posX preferida del personaje.
     while (!colocado && intentos < 100) // Limitar los intentos para evitar bucles infinitos
     {
-      int rX = UnityEngine.Random.Range(1, 6);  // Rango de x (filas) de 1 a 5 inclusive
-      int rY = columna; // Usar la columna indicada
+      int indiceFila = UnityEngine.Random.Range(0, filasCandidatas.Count);
+      int fila = filasCandidatas[indiceFila];
+      int posX = columna;
+      int posY = fila;
+      Casilla casillaObjetivo = lado.ObtenerCasillaPorIndex(posX, posY);
 
-      if (lado.ColocarEnCasilla(GO, rY, rX))
+      if (!CasillaEstaDisponibleParaSpawn(casillaObjetivo))
       {
+        filasCandidatas.RemoveAt(indiceFila);
+        if (filasCandidatas.Count < 1)
+        {
+          break;
+        }
+        intentos++;
+        continue;
+      }
+
+      if (lado.ColocarEnCasilla(GO, posX, posY))
+      {
+        if (iLado == 1)
+        {
+          filasAliadasInicialesReservadas.Add(posY);
+          filasAliadasInicialesSeleccionadas.Add(posY);
+        }
         colocado = true; // Si fue colocado con Éxito, salir del bucle
+      }
+      else
+      {
+        filasCandidatas.RemoveAt(indiceFila);
+        if (filasCandidatas.Count < 1)
+        {
+          break;
+        }
       }
 
       intentos++;
@@ -2800,6 +2905,99 @@ public class AdministradorEscenas : MonoBehaviour
     {
       Debug.LogError("No se pudo colocar el objeto en la columna " + columna + " después de 100 intentos.");
     }
+  }
+
+  bool FilaAliadaMantieneDistribucionValida(int filaCandidata)
+  {
+    if (totalAliadosInicialesAColocar <= 2)
+    {
+      return true;
+    }
+
+    List<int> filasActuales = new List<int>(filasAliadasInicialesSeleccionadas);
+    if (filasActuales.Contains(filaCandidata))
+    {
+      return false;
+    }
+
+    filasActuales.Add(filaCandidata);
+    int faltantes = totalAliadosInicialesAColocar - filasActuales.Count;
+    if (faltantes <= 0)
+    {
+      return ExisteFilaNoAdyacenteATodas(filasActuales);
+    }
+
+    List<int> disponibles = new List<int>();
+    for (int fila = 1; fila <= 5; fila++)
+    {
+      if (!filasActuales.Contains(fila))
+      {
+        disponibles.Add(fila);
+      }
+    }
+
+    return ExisteCombinacionFilasValida(filasActuales, disponibles, faltantes);
+  }
+
+  bool ExisteCombinacionFilasValida(List<int> elegidas, List<int> disponibles, int faltantes)
+  {
+    if (faltantes <= 0)
+    {
+      return ExisteFilaNoAdyacenteATodas(elegidas);
+    }
+
+    if (disponibles == null || disponibles.Count < faltantes)
+    {
+      return false;
+    }
+
+    for (int i = 0; i < disponibles.Count; i++)
+    {
+      int fila = disponibles[i];
+      List<int> nuevasElegidas = new List<int>(elegidas) { fila };
+      List<int> nuevosDisponibles = new List<int>(disponibles);
+      nuevosDisponibles.RemoveAt(i);
+
+      if (ExisteCombinacionFilasValida(nuevasElegidas, nuevosDisponibles, faltantes - 1))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool ExisteFilaNoAdyacenteATodas(List<int> filas)
+  {
+    if (filas == null || filas.Count < 1)
+    {
+      return false;
+    }
+
+    foreach (int filaBase in filas)
+    {
+      bool esNoAdyacenteATodas = true;
+      foreach (int otraFila in filas)
+      {
+        if (filaBase == otraFila)
+        {
+          continue;
+        }
+
+        if (Mathf.Abs(filaBase - otraFila) <= 1)
+        {
+          esNoAdyacenteATodas = false;
+          break;
+        }
+      }
+
+      if (esNoAdyacenteATodas)
+      {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   void ColocarEnCasillaEspecifica(int iLado, GameObject GO, int X, int Y)
@@ -2816,6 +3014,20 @@ public class AdministradorEscenas : MonoBehaviour
       lado = BattleManager.Instance.ladoB; //Player
     }
     else { lado = BattleManager.Instance.ladoA; } //Enemigos
+
+    Casilla casillaObjetivo = lado.ObtenerCasillaPorIndex(X, Y);
+    if (!CasillaEstaDisponibleParaSpawn(casillaObjetivo))
+    {
+      if (GO != null && GO.GetComponent<IAUnidad>() != null)
+      {
+        Debug.LogWarning("[AdministradorEscenas] Casilla reservada para defensa u ocupada. Se recoloca enemigo en una casilla valida.");
+        ColocarEnCasillaAleatoria(iLado, GO);
+        return;
+      }
+
+      Debug.LogWarning("[AdministradorEscenas] Casilla reservada para defensa u ocupada. No se coloca el objeto en esa posicion.");
+      return;
+    }
 
     lado.ColocarEnCasilla(GO, X, Y);
 
@@ -2979,6 +3191,7 @@ public class AdministradorEscenas : MonoBehaviour
       Herido.buffNombre = "Herido";
       Herido.boolfDebufftBuff = false;
       Herido.DuracionBuffRondas = -1;
+      Herido.ocultarEnBarraVida = true;
       Herido.cantAtFue -= 1;
       Herido.cantAtAgi -= 1;
       Herido.cantAtPod -= 1;

@@ -231,6 +231,10 @@ public class MenuPersonajes : MonoBehaviour
 
     CancelInvoke("ActualizarInfo");
     ActualizarInfo();
+    if (scEquipo != null)
+    {
+      scEquipo.RefrescarInventarioSiAbierto();
+    }
     ForzarRebuildInmediato();
 
   }

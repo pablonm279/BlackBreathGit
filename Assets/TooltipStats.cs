@@ -38,6 +38,14 @@ public class TooltipStats: MonoBehaviour
         UIFadeSlideUtility.ShowAt(tooltipObject, position);
     }
 
+    public void ShowTooltipRaw(string content, Vector3 position)
+    {
+        if (tooltipObject == null) { return; }
+
+        tooltipText.text = content;
+        UIFadeSlideUtility.ShowAt(tooltipObject, position);
+    }
+
     public void HideTooltip()
     {
         UIFadeSlideUtility.Hide(tooltipObject);

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -96,6 +95,7 @@ public class Buff : MonoBehaviour
   public GameObject goVFX;
 
   public bool esBuffVisibleUI = true;   //Si el buff se muestra en la UI de buffs del jugador, por defecto true.
+  public bool ocultarEnBarraVida = false; //Si true, sigue visible en InfoChar pero no en la barra de vida.
 
   public bool esRemovible = true; //Si el buff se puede remover, o es permanente. Por defecto es true.
   public bool esStackeable = true; //Si el buff se puede tener varias veces. Por defecto es true.
@@ -373,9 +373,10 @@ public void RemoverBuff(Unidad unidad)
         if (unidad.espinasDanioPorcentaje < 0) { unidad.espinasDanioPorcentaje = 0; }
     }
     
+    bool quedaOtroBuffConMismoNombre = QuedaOtroBuffConMismoNombre(unidad);
     bool suprimirPorInicioCombate = (BattleManager.Instance != null && BattleManager.Instance.silenciarLogCombate);
     bool suprimirTextoFinBuff = !string.IsNullOrEmpty(buffNombre) && buffNombre.StartsWith("Vista Lejana");
-    if (!suprimeTextoFlotante && !suprimirTextoFinBuff && (!suprimirPorInicioCombate || forzarTextoFlotanteInicioCombate))
+    if (!quedaOtroBuffConMismoNombre && !suprimeTextoFlotante && !suprimirTextoFinBuff && (!suprimirPorInicioCombate || forzarTextoFlotanteInicioCombate))
     {
         unidad.GenerarTextoFlotante("<s>" +  TRADU.i.Traducir(buffNombre) + "</s>", Color.cyan, FloatingTextContext.BuffEnd);
     }
@@ -398,7 +399,7 @@ public void RemoverBuff(Unidad unidad)
        unidadOrigen.transform.GetChild(3).GetChild(1).gameObject.SetActive(true);
     }
     
-    if (!suprimeLogCombate && BattleManager.Instance != null)
+    if (!quedaOtroBuffConMismoNombre && !suprimeLogCombate && BattleManager.Instance != null)
     {
         BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoBuff(sBuff, boolfDebufftBuff));
     }
@@ -414,10 +415,30 @@ public void RemoverBuff(Unidad unidad)
 
     
 }
+
+private bool QuedaOtroBuffConMismoNombre(Unidad unidad)
+{
+    if (unidad == null || string.IsNullOrEmpty(buffNombre))
+    {
+        return false;
+    }
+
+    Buff[] buffs = unidad.GetComponents<Buff>();
+    foreach (Buff buff in buffs)
+    {
+        if (buff != null && !ReferenceEquals(buff, this) && buff.buffNombre == buffNombre)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
   
 //Efectos custom
 public int CustomEffectInicioTurnoID;
 public Unidad unidadOrigen;
+public bool seConsumeAlRecibirAtaque;
 
 public void activarCustomEffectInicioTurno()
 { //Efectos propios de un buff con efectos custom, que se llaman al iniciar el turno.
@@ -430,6 +451,22 @@ Unidad scEstaUnidad =  gameObject.GetComponent<Unidad>();
       scEstaUnidad.RecibirDanio(4,4,false,unidadOrigen);
       scEstaUnidad.RecibirDanio(4,9,false,unidadOrigen);
       unidadOrigen.RecibirCuracion(4, false);
+    }
+}
+
+public void activarCustomEffectAlRecibirAtaque()
+{
+    if (!seConsumeAlRecibirAtaque)
+    {
+        return;
+    }
+
+    Unidad scEstaUnidad = gameObject.GetComponent<Unidad>();
+    if (scEstaUnidad != null)
+    {
+        suprimeTextoFlotante = true;
+        suprimeLogCombate = true;
+        RemoverBuff(scEstaUnidad);
     }
 }
 

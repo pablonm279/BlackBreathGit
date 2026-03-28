@@ -85,6 +85,7 @@ public class BattleManager : MonoBehaviour
   public GameObject tooltipValorPO;
   [SerializeField] private float tooltipValorHoverDelay = 0.25f;
   public TextMeshProUGUI rondaText;
+  public TextMeshProUGUI apDisponible;
 
   public GameObject txtSeleccionaobj;
   public bool bOcupado; //Variable de control de flujo de batalla
@@ -433,11 +434,16 @@ public class BattleManager : MonoBehaviour
 
 
 
-  public void TerminarTurno() //Termina el turno de la unidad activa
+  public void TerminarTurnoManual()
+  {
+    TerminarTurno(true);
+  }
+
+  public void TerminarTurno(bool fueManualConBoton = false) //Termina el turno de la unidad activa
   {
     scUIBotonesHab.UIDesactivarBotones();
 
-    unidadActiva.TerminaTurnoEstaUnidad();
+    unidadActiva.TerminaTurnoEstaUnidad(fueManualConBoton);
 
     if (indexTurno >= 0 && indexTurno < lUnidadesTotal.Count)
     {
@@ -476,6 +482,7 @@ public class BattleManager : MonoBehaviour
 
     AdministrarListas();
     AcelerarRefuerzosSiLadoSinUnidades();
+
     AplicarReglasValourGlobalInicioRonda();
     AdministrarListas();
 
@@ -1027,9 +1034,12 @@ public class BattleManager : MonoBehaviour
 
     Buff buff = new Buff();
     buff.buffNombre = nombreBuff;
-    buff.esBuffVisibleUI = true;
+    // Los efectos de Valentia Global se explican en la UI de la barra global;
+    // no deben aparecer como buffs individuales en la UI de unidad.
+    buff.esBuffVisibleUI = false;
     buff.suprimeTextoFlotante = true;
     buff.suprimeLogCombate = true;
+    buff.ocultarEnBarraVida = true;
     configurarBuff(buff);
     buff.AplicarBuff(unidad);
     Buff buffComponent = ComponentCopier.CopyComponent(buff, unidad.gameObject);
@@ -1107,6 +1117,8 @@ public class BattleManager : MonoBehaviour
     dudando.buffNombre = "Dudando";
     dudando.buffDescr = "La moral flaquea por la presión del combate.";
     dudando.esBuffVisibleUI = true;
+    dudando.suprimeTextoFlotante = true;
+    dudando.ocultarEnBarraVida = true;
     dudando.boolfDebufftBuff = false;
     dudando.DuracionBuffRondas = 1;
     dudando.cantDanioPorcentaje -= 10;
@@ -1227,7 +1239,7 @@ public class BattleManager : MonoBehaviour
 
     lUnidadesTotal.RemoveAt(indiceUnidad);
 
-    // Si se elimina una unidad ubicada antes del prÃ³ximo turno, el Ã­ndice debe retroceder
+    // Si se elimina una unidad ubicada antes del próximo turno, el índice debe retroceder
     // para no saltear al siguiente combatiente.
     if (indiceUnidad < indexTurno)
     {
@@ -1558,6 +1570,29 @@ public class BattleManager : MonoBehaviour
         scUIBotonesHab.ActualizarBotonesHabilidad();
       }
     }
+
+    // Mostrar AP y avisar si la habilidad activa exige esfuerzo.
+    if (apDisponible != null && unidadActiva != null)
+    {
+      string textoEsfuerzo = string.Empty;
+      if (HabilidadActiva != null && HabilidadActiva.seEsforzaria > 0)
+      {
+        if (TRADU.i == null || TRADU.i.nIdioma == TRADU.IdiomaEspanol)
+        {
+          textoEsfuerzo = " -¡Esfuerzo!";
+        }
+        else
+        {
+          textoEsfuerzo = " -" + TRADU.i.Traducir("Esfuerzo") + "!";
+        }
+      }
+
+      apDisponible.text = $"{(int)unidadActiva.ObtenerAPActual()}/{(int)unidadActiva.mod_maxAccionP}{textoEsfuerzo}";
+    }
+    else if (apDisponible != null)
+    {
+      apDisponible.text = string.Empty;
+    }
   }
 
   private void LateUpdate()
@@ -1847,15 +1882,17 @@ public class BattleManager : MonoBehaviour
     ladoB.ActualizarListaDeUnidadesEnLado();
     AcelerarRefuerzosSiLadoSinUnidades();
 
+    bool enemigosSinUnidades = ladoA.unidadesLado.Count < 1 && enemigosRefuerzos.Count < 1;
+    bool aliadosSinUnidades = ladoB.unidadesLado.Count < 1 && aliadosRefuerzos.Count < 1;
+
     //Lado Enemigos
-    if (ladoA.unidadesLado.Count < 1 && enemigosRefuerzos.Count < 1)
+    if (aliadosSinUnidades)
+    {
+      transform.parent.parent.gameObject.GetComponent<AdministradorEscenas>().FinDeBatalla(0); //Perdió jugador
+    }
+    else if (enemigosSinUnidades)
     {
       transform.parent.parent.gameObject.GetComponent<AdministradorEscenas>().FinDeBatalla(1); //Ganó jugador
-    }
-    else if (ladoB.unidadesLado.Count < 1 && aliadosRefuerzos.Count < 1)
-    {
-      //Lado Jugador
-      transform.parent.parent.gameObject.GetComponent<AdministradorEscenas>().FinDeBatalla(0); //Perdió jugador
     }
 
 

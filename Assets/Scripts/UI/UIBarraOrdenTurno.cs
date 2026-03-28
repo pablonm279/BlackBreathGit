@@ -25,7 +25,7 @@ public class UIBarraOrdenTurno : MonoBehaviour
         foreach (Unidad unidad in lUnidades)
         {
             GameObject GTarjeta = Instantiate(prefabTarjetaBarraOrdenTurno, transform);
-            UITarjetaBarraOrdenTurno scTarjeta = GTarjeta.GetComponent<UITarjetaBarraOrdenTurno>();
+            UITarjetaBarraOrdenTurno scTarjeta = GTarjeta.transform.GetChild(3).gameObject.GetComponent<UITarjetaBarraOrdenTurno>();
 
             scTarjeta.scUnidad = unidad;
             scTarjeta.ActualizarInfo();

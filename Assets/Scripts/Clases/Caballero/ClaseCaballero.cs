@@ -52,6 +52,8 @@ public class ClaseCaballero : Unidad
         //BUFF ---- Así se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Implacable";
+        buff.suprimeTextoFlotante = true;
+        buff.ocultarEnBarraVida = true;
         buff.boolfDebufftBuff = true;
         buff.DuracionBuffRondas = 2;
         buff.cantAtFue += 3;
@@ -103,6 +105,8 @@ public class ClaseCaballero : Unidad
       //BUFF ---- Así se aplica un buff/debuff
        Buff buffDet = new Buff();
        buffDet.buffNombre = "Determinación "+ValentiaP_actual;
+       buffDet.suprimeTextoFlotante = true;
+       buffDet.ocultarEnBarraVida = true;
        buffDet.boolfDebufftBuff = true;
        buffDet.DuracionBuffRondas = 1; 
        buffDet.cantDanioPorcentaje = 5*ValentiaP_actual;
@@ -126,6 +130,7 @@ public class ClaseCaballero : Unidad
        Buff motivado = new Buff();
        motivado.buffNombre = "Motivado";
        motivado.suprimeTextoFlotante = true;
+       motivado.ocultarEnBarraVida = true;
        motivado.boolfDebufftBuff = true;
        motivado.DuracionBuffRondas = -1;
        motivado.cantTsMental += 2;
@@ -148,6 +153,7 @@ public class ClaseCaballero : Unidad
        Buff motivado = new Buff();
        motivado.buffNombre = "Euforia";
        motivado.suprimeTextoFlotante = true;
+       motivado.ocultarEnBarraVida = true;
        motivado.boolfDebufftBuff = true;
        motivado.DuracionBuffRondas = -1;
        motivado.cantAtFue += 1;

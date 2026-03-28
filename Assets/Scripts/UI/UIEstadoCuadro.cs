@@ -331,6 +331,7 @@ public class UIEstadoCuadro : MonoBehaviour
 
     if (buff.DuracionBuffRondas > 0) descripcion += TRADU.i.Traducir("Duración: ") + buff.DuracionBuffRondas + TRADU.i.Traducir(" rondas\n");
     else if (buff.DuracionBuffRondas < 0) descripcion += TRADU.i.Traducir("Duración: Permanente\n");
+    if (buff.seConsumeAlRecibirAtaque) descripcion += TRADU.i.Traducir("Se consume al recibir el próximo ataque.") + "\n";
 
     return descripcion;
   }

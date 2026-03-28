@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class SequitoMercaderes : MonoBehaviour
 {
@@ -26,10 +27,14 @@ public class SequitoMercaderes : MonoBehaviour
     [SerializeField] GameObject btnMejorarTiendas;
 
     public GameObject prefabBtnItemVendido;
+    public Sprite Pin;
     public List<Item> ItemsVendidos = new List<Item>();
     bool restauradoDesdeSave;
 
     public int intItemsaVender = 5;
+
+    private Item itemPineado;
+    private string itemPineadoId = string.Empty;
 
 
     public Transform listaItemsVenta;
@@ -130,10 +135,21 @@ public class SequitoMercaderes : MonoBehaviour
     public void GenerarItemsVendidos()
     {
         intItemsaVender = 6 + (3 * CampaignManager.Instance.sequitoMercaderesTier);
+        Item itemPineadoActual = itemPineado;
+        string itemPineadoIdActual = itemPineadoId;
+        bool hayItemPineado = itemPineadoActual != null && itemPineadoActual.gameObject != null;
+
+        if (hayItemPineado)
+        {
+            ItemsVendidos.Remove(itemPineadoActual);
+        }
         // Destruir todas las instancias previas de ItemsVendidos
         foreach (Item item in ItemsVendidos)
         {
-            Destroy(item.gameObject); // Destruir el GameObject asociado al item
+            if (item != null)
+            {
+                Destroy(item.gameObject); // Destruir el GameObject asociado al item
+            }
         }
 
         // Limpiar la lista de ItemsVendidos antes de agregar nuevos elementos
@@ -160,8 +176,17 @@ public class SequitoMercaderes : MonoBehaviour
         }
 
         // Determinar cuántos items agregar de cada lista
-        int cantidadPorLista = intItemsaVender / 4;
-        int restante = intItemsaVender % 4; // Resto en caso de que no sea divisible exactamente
+        if (hayItemPineado)
+        {
+            EliminarItemPineadoDePools(armasDisponibles, itemPineadoActual, itemPineadoIdActual);
+            EliminarItemPineadoDePools(armadurasDisponibles, itemPineadoActual, itemPineadoIdActual);
+            EliminarItemPineadoDePools(accesoriosDisponibles, itemPineadoActual, itemPineadoIdActual);
+            EliminarItemPineadoDePools(consumiblesDisponibles, itemPineadoActual, itemPineadoIdActual);
+        }
+
+        int cantidadObjetivo = intItemsaVender - (hayItemPineado ? 1 : 0);
+        int cantidadPorLista = cantidadObjetivo / 4;
+        int restante = cantidadObjetivo % 4; // Resto en caso de que no sea divisible exactamente
 
         // Crear una instancia de Random para seleccionar aleatoriamente
         System.Random random = new System.Random();
@@ -201,6 +226,10 @@ public class SequitoMercaderes : MonoBehaviour
             accesoriosDisponibles,
             consumiblesDisponibles,
             random);
+        if (hayItemPineado)
+        {
+            ItemsVendidos.Add(itemPineadoActual);
+        }
         MostrarInventarioVenta();
     }
 
@@ -455,6 +484,7 @@ public class SequitoMercaderes : MonoBehaviour
 
             scBtnItem.imageMuestraItem.sprite = goItem.GetComponent<Item>().imItem;
             scBtnItem.itemRepresentado = goItem.GetComponent<Item>();
+            scBtnItem.ConfigurarPin(Pin, EsItemPineado(goItem.GetComponent<Item>()));
 
 
 
@@ -462,6 +492,125 @@ public class SequitoMercaderes : MonoBehaviour
 
 
 
+    }
+
+    public bool IntentarPinearItem(Item item)
+    {
+        if (item == null)
+        {
+            return false;
+        }
+
+        if (EsItemPineado(item))
+        {
+            DespinearItem(item);
+            MostrarInventarioVenta();
+            return false;
+        }
+
+        itemPineado = item;
+        itemPineadoId = ObtenerIdItem(item);
+        MostrarInventarioVenta();
+        return true;
+    }
+
+    public void DespinearItem(Item item)
+    {
+        if (item == null)
+        {
+            return;
+        }
+
+        if (!EsItemPineado(item))
+        {
+            return;
+        }
+
+        itemPineado = null;
+        itemPineadoId = string.Empty;
+    }
+
+    public bool EsItemPineado(Item item)
+    {
+        if (item == null || itemPineado == null)
+        {
+            return false;
+        }
+
+        if (item == itemPineado)
+        {
+            return true;
+        }
+
+        if (!string.IsNullOrWhiteSpace(itemPineadoId))
+        {
+            string currentId = ObtenerIdItem(item);
+            if (!string.IsNullOrWhiteSpace(currentId) && currentId == itemPineadoId)
+            {
+                return true;
+            }
+        }
+
+        return ItemsSonEquivalentes(item, itemPineado);
+    }
+
+    private string ObtenerIdItem(Item item)
+    {
+        if (item == null)
+        {
+            return string.Empty;
+        }
+
+        ItemDatabase database = GetItemDatabase();
+        string id = ItemSaveCatalog.ResolveItemId(item, database);
+        return id ?? string.Empty;
+    }
+
+    private void EliminarItemPineadoDePools<T>(List<T> pool, Item itemPineadoActual, string itemPineadoIdActual) where T : Item
+    {
+        if (pool == null || itemPineadoActual == null)
+        {
+            return;
+        }
+
+        for (int i = pool.Count - 1; i >= 0; i--)
+        {
+            T candidato = pool[i];
+            if (candidato == null)
+            {
+                continue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(itemPineadoIdActual))
+            {
+                string candidatoId = ObtenerIdItem(candidato);
+                if (!string.IsNullOrWhiteSpace(candidatoId) && candidatoId == itemPineadoIdActual)
+                {
+                    pool.RemoveAt(i);
+                    continue;
+                }
+            }
+
+            if (ItemsSonEquivalentes(candidato, itemPineadoActual))
+            {
+                pool.RemoveAt(i);
+            }
+        }
+    }
+
+    private bool ItemsSonEquivalentes(Item a, Item b)
+    {
+        if (a == null || b == null)
+        {
+            return false;
+        }
+
+        return a.GetType() == b.GetType()
+            && a.sNombreItem == b.sNombreItem
+            && a.iPrecio == b.iPrecio
+            && a.iRareza == b.iRareza
+            && a.nivelMejora == b.nivelMejora
+            && a.IDEfectoEspecial == b.IDEfectoEspecial;
     }
 
     bool TryBuildPoolsFromDatabase(

@@ -341,7 +341,7 @@ public class UnidadCanvas : MonoBehaviour
         }
 
         // Mostrar Buffs
-        List<BuffUIHelper.BuffStack> buffStacks = BuffUIHelper.GetVisibleBuffStacks(scUnidadMostrada);
+        List<BuffUIHelper.BuffStack> buffStacks = BuffUIHelper.GetVisibleBuffStacks(scUnidadMostrada, true);
         foreach (BuffUIHelper.BuffStack stack in buffStacks)
         {
             if (!stack.AggregatedBuff.esRemovible) { continue; }
@@ -410,7 +410,7 @@ public class UnidadCanvas : MonoBehaviour
             h = MezclarHash(h, unidad.estado_Escudado);
 
             // Buffs visibles en barra (mismo filtro de render)
-            List<BuffUIHelper.BuffStack> buffStacks = BuffUIHelper.GetVisibleBuffStacks(unidad);
+            List<BuffUIHelper.BuffStack> buffStacks = BuffUIHelper.GetVisibleBuffStacks(unidad, true);
             int visibles = 0;
             for (int i = 0; i < buffStacks.Count; i++)
             {

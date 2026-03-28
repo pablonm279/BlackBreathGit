@@ -495,10 +495,11 @@ public class BlackBreathInsideScreenEffect : MonoBehaviour
 {
   private const string OverlayName = "BlackBreathInsideOverlay";
   private const int TextureSize = 128;
+  private const float FadeDuration = 0.24f;
 
   // Cian/verde sutil para inmersion cuando la caravana esta dentro del aliento.
-  private static readonly Color ColorVignettePrimaryBase = new Color(0.12f, 0.78f, 0.67f, 0.009f);
-  private static readonly Color ColorVignetteSecondaryBase = new Color(0.24f, 0.88f, 0.72f, 0.006f);
+  private static readonly Color ColorVignettePrimaryBase = new Color(0.11f, 0.62f, 0.55f, 0.0045f);
+  private static readonly Color ColorVignetteSecondaryBase = new Color(0.18f, 0.7f, 0.58f, 0.003f);
 
   private Canvas overlayCanvas;
   private CanvasGroup canvasGroup;
@@ -513,6 +514,7 @@ public class BlackBreathInsideScreenEffect : MonoBehaviour
 
   private bool effectActive;
   private float animationSeed;
+  private float targetAlpha;
 
   public static BlackBreathInsideScreenEffect Ensure(Canvas sourceCanvas)
   {
@@ -564,8 +566,22 @@ public class BlackBreathInsideScreenEffect : MonoBehaviour
 
   private void Update()
   {
+    float alphaActual = canvasGroup != null ? canvasGroup.alpha : 0f;
+    float velocidadFade = FadeDuration > 0f ? (1f / FadeDuration) : 999f;
+    float alphaNuevo = Mathf.MoveTowards(alphaActual, targetAlpha, Time.unscaledDeltaTime * velocidadFade);
+
+    if (canvasGroup != null)
+    {
+      canvasGroup.alpha = alphaNuevo;
+    }
+
     if (!effectActive)
     {
+      if (Mathf.Approximately(alphaNuevo, targetAlpha))
+      {
+        enabled = false;
+      }
+
       return;
     }
 
@@ -573,13 +589,13 @@ public class BlackBreathInsideScreenEffect : MonoBehaviour
     float pulseA = 0.5f + 0.5f * Mathf.Sin(t);
     float pulseB = 0.5f + 0.5f * Mathf.Sin((t * 1.21f) + 1.1f);
 
-    vignettePrimaryImage.color = WithAlpha(ColorVignettePrimaryBase, ColorVignettePrimaryBase.a + (pulseA * 0.0035f));
-    vignetteSecondaryImage.color = WithAlpha(ColorVignetteSecondaryBase, ColorVignetteSecondaryBase.a + (pulseB * 0.0028f));
+    vignettePrimaryImage.color = WithAlpha(ColorVignettePrimaryBase, ColorVignettePrimaryBase.a + (pulseA * 0.00175f));
+    vignetteSecondaryImage.color = WithAlpha(ColorVignetteSecondaryBase, ColorVignetteSecondaryBase.a + (pulseB * 0.0014f));
 
-    vignetteSecondaryImage.rectTransform.localScale = Vector3.one * (1.01f + (pulseA * 0.025f));
+    vignetteSecondaryImage.rectTransform.localScale = Vector3.one * (1.005f + (pulseA * 0.0125f));
     vignetteSecondaryImage.rectTransform.anchoredPosition = new Vector2(
-      Mathf.Sin(t * 0.37f) * 10f,
-      Mathf.Cos(t * 0.33f) * 7f);
+      Mathf.Sin(t * 0.37f) * 5f,
+      Mathf.Cos(t * 0.33f) * 3.5f);
   }
 
   public void SetEffectActive(bool active)
@@ -593,8 +609,8 @@ public class BlackBreathInsideScreenEffect : MonoBehaviour
       animationSeed = Random.Range(0f, 100f);
     }
 
-    canvasGroup.alpha = active ? 1f : 0f;
-    enabled = active;
+    targetAlpha = active ? 1f : 0f;
+    enabled = true;
 
     if (active)
     {
@@ -644,7 +660,7 @@ public class BlackBreathInsideScreenEffect : MonoBehaviour
     {
       vignetteSecondaryImage = CreateLayer("VignetteSecondary", vignetteSecondarySprite);
       vignetteSecondaryImage.color = ColorVignetteSecondaryBase;
-      vignetteSecondaryImage.rectTransform.localScale = Vector3.one * 1.01f;
+      vignetteSecondaryImage.rectTransform.localScale = Vector3.one * 1.005f;
     }
   }
 

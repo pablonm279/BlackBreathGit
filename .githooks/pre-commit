@@ -7,7 +7,7 @@ if [ -z "${files}" ]; then
 fi
 
 has_issue=0
-mojibake_regex='Ã[[:print:]]|ÃƒÂ.|Â¿|Â¡|â€|â€™|â€œ|â€|�'
+mojibake_regex='Ã[[:print:]]|ÃƒÂ.|¿|¡|â€|â€™|â€œ|â€|�'
 tmp_list="$(mktemp)"
 printf '%s\n' "${files}" > "${tmp_list}"
 
@@ -42,7 +42,7 @@ rm -f "${tmp_list}"
 if [ "${has_issue}" -ne 0 ]; then
   cat <<'EOF'
 [pre-commit] Commit bloqueado por problemas de encoding.
-Revisa los reemplazos tipicos (ej. Ã¡ -> á, Ã© -> é, Â¿ -> ¿, Â¡ -> ¡).
+Revisa los reemplazos tipicos (ej. á -> á, é -> é, ¿ -> ¿, ¡ -> ¡).
 EOF
   exit 1
 fi

@@ -84,7 +84,7 @@ public class CariciadelBosque : IAHabilidad
         Unidad objetivo = (Unidad)obj;
      
   
-        int cura = 5+UnityEngine.Random.Range(1,20);
+        int cura = 5+UnityEngine.Random.Range(1,15);
         objetivo.RecibirCuracion(cura, true);    
    
 

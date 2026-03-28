@@ -11,6 +11,11 @@ public static class BuffUIHelper
 
     public static List<BuffStack> GetVisibleBuffStacks(Unidad unidad)
     {
+        return GetVisibleBuffStacks(unidad, false);
+    }
+
+    public static List<BuffStack> GetVisibleBuffStacks(Unidad unidad, bool paraBarraVida)
+    {
         var result = new List<BuffStack>();
         if (unidad == null) { return result; }
 
@@ -23,6 +28,7 @@ public static class BuffUIHelper
             if (buff == null) { continue; }
             if (buff.DuracionBuffRondas == 0) { continue; }
             if (!buff.esBuffVisibleUI) { continue; }
+            if (paraBarraVida && buff.ocultarEnBarraVida) { continue; }
 
             string key = string.IsNullOrWhiteSpace(buff.buffNombre)
                 ? "__buff_sin_nombre_" + buff.GetInstanceID()

@@ -233,6 +233,7 @@ public override void AcabaDeMatarUnidad(Unidad uVictima)
         buff.buffNombre = "Vista Lejana I";
         buff.boolfDebufftBuff = true;
         buff.DuracionBuffRondas = 1;
+        buff.suprimeTextoFlotante = true;
         buff.cantAtaque = 1;
         buff.cantDanioPorcentaje = 10;
         buff.AplicarBuff(this);
@@ -246,6 +247,7 @@ public override void AcabaDeMatarUnidad(Unidad uVictima)
         Buff buff = new Buff();
         buff.buffNombre = "Vista Lejana II";
         buff.boolfDebufftBuff = true;
+        buff.suprimeTextoFlotante = true;
         buff.DuracionBuffRondas = 1;
         buff.cantAtaque = 1;
         buff.cantDanioPorcentaje = 15;
@@ -260,6 +262,7 @@ public override void AcabaDeMatarUnidad(Unidad uVictima)
         Buff buff = new Buff();
         buff.buffNombre = "Vista Lejana III";
         buff.boolfDebufftBuff = true;
+        buff.suprimeTextoFlotante = true;
         buff.DuracionBuffRondas = 1;
         buff.cantAtaque = 2;
         buff.cantDanioPorcentaje = 15;
@@ -274,6 +277,7 @@ public override void AcabaDeMatarUnidad(Unidad uVictima)
         Buff buff = new Buff();
         buff.buffNombre = "Vista Lejana IVa";
         buff.boolfDebufftBuff = true;
+        buff.suprimeTextoFlotante = true;
         buff.DuracionBuffRondas = 1;
         buff.cantAtaque = 2;
         buff.cantDanioPorcentaje = 15;
@@ -290,6 +294,7 @@ public override void AcabaDeMatarUnidad(Unidad uVictima)
         buff.buffNombre = "Vista Lejana IVb";
         buff.boolfDebufftBuff = true;
         buff.DuracionBuffRondas = 1;
+        buff.suprimeTextoFlotante = true;
         buff.cantAtaque = 2;
         buff.cantDanioPorcentaje = 15;
         buff.cantDefensa = 1;

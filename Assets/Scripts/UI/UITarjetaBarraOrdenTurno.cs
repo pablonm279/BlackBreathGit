@@ -16,9 +16,11 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
     public Unidad scUnidad;
     public UIInfoChar scUInfochar;
     public GameObject seleccionado;
+    public GameObject Actual;
+
     public void Start()
     {
-        
+
         Habilidad.OnUsarHabilidad += Habilidad_OnUsarHabilidad;
         BattleManager.Instance.OnTurnoNuevo += BattleManager_OnTurnoNuevo;
 
@@ -27,6 +29,7 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
     }
 
     public GameObject oscurecedor;
+
     void Update()
     {
         if (scUInfochar.hayUnidadSeleccionadaParaInfo)
@@ -61,7 +64,7 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
     }
     public void ActualizarColores()
     {
-        if (this == null || gameObject == null)
+     /*   if (this == null || gameObject == null)
         {
             return;
         }
@@ -110,7 +113,7 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
         if (marcadorSeleccion != null)
         {
             marcadorSeleccion.SetActive(false);
-        }
+        }*/
     }
     public void ActualizarInfo()
     {
@@ -137,12 +140,15 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
 
    public void MarcarTurnoActual()
     {
-      if(gameObject== null)
-      { return;}
-
-      if(gameObject.GetComponent<Image>()== null)
-      { return;}
-
+      
+        if (BattleManager.Instance.unidadActiva == scUnidad)
+        {
+            Actual.SetActive(true);
+        }
+        else
+        {
+            Actual.SetActive(false);
+        }
     
 
     

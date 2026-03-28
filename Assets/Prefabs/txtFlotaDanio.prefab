@@ -95,12 +95,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 3.5
+  m_fontSize: 3.3
   m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 3.2
-  m_fontSizeMax: 3.7
+  m_fontSizeMin: 3.25
+  m_fontSizeMax: 3.3
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 4096
@@ -1143,16 +1143,16 @@ MonoBehaviour:
     vibrationAmplitude: {x: 0, y: 0}
     vibrationFrequency: 0
   buffEndProfile:
-    lifetime: 2.5
-    initialOffset: {x: 0, y: -4}
-    verticalSpeed: -3.5
+    lifetime: 3
+    initialOffset: {x: 0, y: -5}
+    verticalSpeed: -3
     horizontalSpeed: 0
     scaleCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0
-        value: 1.02
+        time: -0.018096924
+        value: 1.0046649
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -1160,8 +1160,8 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.2
-        value: 1.06
+        time: 0.29362792
+        value: 1.01092
         inSlope: 0
         outSlope: 0
         tangentMode: 0

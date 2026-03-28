@@ -27,6 +27,13 @@ public class BattleRewardProfile
 
 public class MenuBatallas : MonoBehaviour
 {
+ static readonly TipoEstadoCaravana[] EstadosNegativosDerrotaBatalla =
+ {
+    TipoEstadoCaravana.Acobardados,
+    TipoEstadoCaravana.Aletargados,
+    TipoEstadoCaravana.Desmotivacion,
+    TipoEstadoCaravana.Descuidados
+ };
   
  
  public GameObject prefabBtnPersonaje; 
@@ -1049,6 +1056,36 @@ bool EsResultadoDerrota(int resultado)
    return !EsResultadoVictoria(resultado);
 }
 
+bool DebeOtorgarEstadoNegativoPorDerrota()
+{
+   return encuentroTipoActual == BattleEncounterType.Normal || encuentroTipoActual == BattleEncounterType.Elite;
+}
+
+void OtorgarEstadoNegativoPorDerrota()
+{
+   if (CampaignManager.Instance == null)
+   {
+      return;
+   }
+
+   TipoEstadoCaravana estado = EstadosNegativosDerrotaBatalla[UnityEngine.Random.Range(0, EstadosNegativosDerrotaBatalla.Length)];
+   CampaignManager.Instance.AgregarEstadoCaravana(estado, 1);
+
+   string log = estado switch
+   {
+      TipoEstadoCaravana.Acobardados => "-La derrota dejó a la Caravana con Acobardados.",
+      TipoEstadoCaravana.Aletargados => "-La derrota dejó a la Caravana con Aletargados.",
+      TipoEstadoCaravana.Desmotivacion => "-La derrota dejó a la Caravana con Desmotivación.",
+      TipoEstadoCaravana.Descuidados => "-La derrota dejó a la Caravana con Descuidados.",
+      _ => string.Empty
+   };
+
+   if (!string.IsNullOrEmpty(log))
+   {
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir(log));
+   }
+}
+
 public void EfectosDeBatallaEnCampaña(int resultado)
 {
    UIEmpezarBatalla.SetActive(false);
@@ -1107,6 +1144,10 @@ public void EfectosDeBatallaEnCampaña(int resultado)
     else if (EsResultadoDerrota(resultado) && CampaignManager.Instance != null)
     {
         CampaignManager.Instance.EvaluarDerrotaPorResultadoBatalla(fueDefensaCaravana, fueBatallaFinalActual);
+        if (DebeOtorgarEstadoNegativoPorDerrota())
+        {
+            OtorgarEstadoNegativoPorDerrota();
+        }
     }
     //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
     if (EsResultadoDerrota(resultado)) //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
@@ -1264,11 +1305,16 @@ public void EfectosDeBatallaEnCampaña(int resultado)
           CampaignManager.Instance.TryAutosaveCampania("post-batalla", out _);
         }
 
-        if (debeResolverTransicionJefeZona && CampaignManager.Instance != null)
-        {
-          CampaignManager.Instance.OnDerrotadoJefeZona();
-        }
+    if (debeResolverTransicionJefeZona && CampaignManager.Instance != null)
+    {
+      CampaignManager.Instance.OnDerrotadoJefeZona();
     }
+
+    if (CampaignManager.Instance != null && CampaignManager.Instance.estadosCaravana != null)
+    {
+      CampaignManager.Instance.estadosCaravana.FinalizarCombateActual();
+    }
+ }
  public void ComenzarBatalla()
  {
     if (bloqueoComenzarBatalla)
@@ -1287,6 +1333,10 @@ public void EfectosDeBatallaEnCampaña(int resultado)
     }
 
     AjustarSeleccionAlMaximo();
+    if (CampaignManager.Instance != null && CampaignManager.Instance.estadosCaravana != null)
+    {
+      CampaignManager.Instance.estadosCaravana.IniciarCombateActual();
+    }
     // Autorelleno para Ataque a Caravana: prioriza personajes con m1s vida
     if (UIEmpezarBatallaACaravana != null && UIEmpezarBatallaACaravana.activeInHierarchy)
     {

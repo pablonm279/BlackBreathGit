@@ -25,6 +25,17 @@ public class AsentamientoManager : MonoBehaviour
     private const float CuracionPosada = 0.25f;
     private const float DuracionFadePanelSegundos = 0.2f;
     private const string ColorSinAcciones = "#ff4d4d";
+    private static readonly TipoEstadoCaravana[] EstadosCaravanaPosada =
+    {
+        TipoEstadoCaravana.Inspiracion,
+        TipoEstadoCaravana.Presteza,
+        TipoEstadoCaravana.Compromiso,
+        TipoEstadoCaravana.Vigilante,
+        TipoEstadoCaravana.Acobardados,
+        TipoEstadoCaravana.Aletargados,
+        TipoEstadoCaravana.Desmotivacion,
+        TipoEstadoCaravana.Descuidados
+    };
 
     [Header("UI Opcional")]
     [SerializeField] private GameObject uiRoot;
@@ -456,10 +467,16 @@ public class AsentamientoManager : MonoBehaviour
         }
 
         campaign.CambiarEsperanzaActual(5);
+        TipoEstadoCaravana estadoGanado = EstadosCaravanaPosada[UnityEngine.Random.Range(0, EstadosCaravanaPosada.Length)];
+        campaign.AgregarEstadoCaravana(estadoGanado, 1);
         campaign.EscribirLog(Loc(
             "-La caravana descansa en la posada. -50 Oro, Fatiga a 0, +5 Esperanza.",
             "-The caravan rests at the inn. -50 Gold, Fatigue reset to 0, +5 Hope.",
             "-A caravana descansa na hospedaria. -50 Ouro, Fadiga zerada, +5 Esperanca."));
+        campaign.EscribirLog(Loc(
+            "-La posada deja a la Caravana con 1 estado de caravana al azar.",
+            "-The inn leaves the Caravan with 1 random caravan state.",
+            "-A hospedaria deixa a Caravana com 1 estado de caravana aleatorio."));
 
     }
 
@@ -487,7 +504,7 @@ public class AsentamientoManager : MonoBehaviour
         if (campaign.CuantosPersonajesActivos() >= campaign.ObtenerCapacidadMaximaPersonajes())
         {
             motivo = Loc(
-                "La caravana no tiene mas tiendas para otro personaje.",
+                "La caravana no tiene más tiendas para otro personaje.",
                 "The caravan has no spare tents for another character.",
                 "A caravana nao tem mais tendas para outro personagem.");
             return false;
@@ -741,9 +758,9 @@ public class AsentamientoManager : MonoBehaviour
 
             case AccionAsentamiento.Posada:
                 return Loc(
-                    "Costo: 50 Oro. La caravana se dedicará a descansar. Todos los personajes recuperan 25% de su vida maxima, la Fatiga volverá a 0 y la caravana ganará 5 Esperanza.\n\n" + estadoAcciones,
-                    "Cost: 50 Gold. The caravan focuses on resting. All characters recover 25% of their maximum health, Fatigue is reset to 0, and the caravan gains 5 Hope.\n\n" + estadoAcciones,
-                    "Custo: 50 Ouro. A caravana dedica-se a descansar. Todos os personagens recuperam 25% da vida maxima, a Fadiga voltará a 0 e a caravana ganhará 5 Esperanca.\n\n" + estadoAcciones);
+                    "Costo: 50 Oro. La caravana se dedicará a descansar. Todos los personajes recuperan 25% de su vida maxima, la Fatiga volverá a 0, la caravana ganará 5 Esperanza y obtendrá 1 estado de caravana al azar.\n\n" + estadoAcciones,
+                    "Cost: 50 Gold. The caravan focuses on resting. All characters recover 25% of their maximum health, Fatigue is reset to 0, the caravan gains 5 Hope, and it obtains 1 random caravan state.\n\n" + estadoAcciones,
+                    "Custo: 50 Ouro. A caravana dedica-se a descansar. Todos os personagens recuperam 25% da vida maxima, a Fadiga voltará a 0, a caravana ganhará 5 Esperanca e obterá 1 estado de caravana aleatorio.\n\n" + estadoAcciones);
 
             case AccionAsentamiento.Marcharse:
                 return Loc(

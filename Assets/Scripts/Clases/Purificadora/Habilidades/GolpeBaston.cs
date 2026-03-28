@@ -17,7 +17,7 @@ public class GolpeBaston : Habilidad
     [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
   public override void Awake()
   {
-    nombre = "Corte Vertical";
+    nombre = "Golpe de Bastón";
     costoAP = 2;
     costoPM = 0;
     Usuario = this.gameObject;

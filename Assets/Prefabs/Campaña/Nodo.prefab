@@ -40332,7 +40332,7 @@ GameObject:
   - component: {fileID: 7306117994871302220}
   - component: {fileID: 3947308504439884803}
   m_Layer: 14
-  m_Name: '!!14-Incendiado_BosqueArdiente'
+  m_Name: '!!14-NodoIncendiado_BosqueArdiente'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

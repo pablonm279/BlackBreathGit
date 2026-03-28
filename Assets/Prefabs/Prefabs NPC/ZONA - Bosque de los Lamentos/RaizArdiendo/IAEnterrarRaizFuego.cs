@@ -36,7 +36,7 @@ public class IAEnterrarRaizFuego : IAHabilidad
     hAncho = 1;
     esMelee = false;
     hAlcance = 1;
-    hCooldownMax = 5;
+    hCooldownMax = 7;
     esHostil = false;
     prioridad = 15;
     costoAP = 4;
@@ -257,7 +257,7 @@ public class IAEnterrarRaizFuego : IAHabilidad
     int curacion = UnityEngine.Random.Range(CuracionMin, CuracionMaxExclusive);
     scEstaUnidad.RecibirCuracion(curacion, false);
 
-    // BUFF ---- Así se aplica un buff/debuff
+    // BUFF ---- Asï¿½ se aplica un buff/debuff
     Buff buff = new Buff();
     buff.buffNombre = "Emergida";
     buff.boolfDebufftBuff = true;
@@ -265,7 +265,7 @@ public class IAEnterrarRaizFuego : IAHabilidad
     buff.cantDanioPorcentaje += 15;
     buff.cantAtaque += 15;
     buff.AplicarBuff(scEstaUnidad);
-    // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+    // Agrega el componente Buff al objeto objetivo y asigna la configuraciï¿½n del buff
     Buff buffComponent = ComponentCopier.CopyComponent(buff, scEstaUnidad.gameObject);
 
     string textoEmerger = TRADU.i.Traducir("emerge de vuelta.");

@@ -310,6 +310,11 @@ public class Personaje : MonoBehaviour
         return;
       }
 
+      if (CampaignManager.Instance != null)
+      {
+        cant = CampaignManager.Instance.AplicarMultiplicadorExperienciaEstadosCaravana(cant);
+      }
+
       fExperienciaActual += cant;
 
       while (fExperienciaActual >= ObtenerExperienciaNecesariaParaProximoNivel())
@@ -618,7 +623,6 @@ public class Personaje : MonoBehaviour
       }
     }
 }
-
 
 
 

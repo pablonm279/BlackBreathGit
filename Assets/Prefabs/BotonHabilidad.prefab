@@ -176,9 +176,9 @@ MonoBehaviour:
   background: {fileID: 6988876765770943579}
   paddingRect: {fileID: 6872524274027338711}
   text: {fileID: 4047022207269566032}
-  fixedWidth: 380
-  minHeight: 45
-  maxHeight: 400
+  fixedWidth: 385
+  minHeight: 55
+  maxHeight: 620
   fadeInOnEnable: 1
   fadeInDuration: 0.12
   fadeInDelay: 0
@@ -522,8 +522,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278191818
-  m_fontColor: {r: 0.7924528, g: 0.02304065, b: 0, a: 1}
+    rgba: 4282044145
+  m_fontColor: {r: 0.9433962, g: 0.8085875, b: 0.22694907, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -669,7 +669,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -60, y: -50}
+  m_SizeDelta: {x: -64, y: -56}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3329573827171856954
 GameObject:
@@ -2134,8 +2134,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 11
-  m_fontSizeBase: 11
+  m_fontSize: 13
+  m_fontSizeBase: 13
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 8
@@ -2146,7 +2146,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: -5
+  m_lineSpacing: -8
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0

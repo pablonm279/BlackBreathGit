@@ -9954,6 +9954,7 @@ MonoBehaviour:
   maxAlpha: 1
   pulseSpeed: 0.3
   syncWithOthers: 1
+  activo: 0
 --- !u!82 &4826744289889275782
 AudioSource:
   m_ObjectHideFlags: 0
@@ -11474,7 +11475,7 @@ ParticleSystem:
         key0: {r: 0.8962264, g: 0.23911543, b: 0.063412234, a: 1}
         key1: {r: 1, g: 0.7812411, b: 0, a: 0.8862745}
         key2: {r: 1, g: 0.41543218, b: 0.07058823, a: 0.5803922}
-        key3: {r: 0.9339623, g: 0, b: 0.04433394, a: 0}
+        key3: {r: 0.9568628, g: 0.21960786, b: 0.08627451, a: 0}
         key4: {r: 1, g: 1, b: 1, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
         key6: {r: 0, g: 0, b: 0, a: 0}

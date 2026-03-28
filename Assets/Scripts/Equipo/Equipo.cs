@@ -22,8 +22,9 @@ public class Equipo : MonoBehaviour
 
 
  public GameObject goInventario;
- public GameObject prefabNtnInventario; 
- public Transform listaItems;
+  public GameObject prefabNtnInventario;
+  public Transform listaItems;
+  private int tipoInventarioAbierto = 5;
 
 
 
@@ -56,8 +57,8 @@ public class Equipo : MonoBehaviour
     return origen;
  }
 
- private static void ConfigurarClickDerechoSlot(Image imagenSlot, MenuPersonajes menuPersonajes, EquipoSlotPointerHandler.TipoSlot tipoSlot)
- {
+  private static void ConfigurarClickDerechoSlot(Image imagenSlot, MenuPersonajes menuPersonajes, EquipoSlotPointerHandler.TipoSlot tipoSlot)
+  {
     if (imagenSlot == null || menuPersonajes == null)
     {
       return;
@@ -71,10 +72,63 @@ public class Equipo : MonoBehaviour
     }
 
     handler.Configurar(menuPersonajes, tipoSlot);
- }
+  }
 
- private bool PuedeMostrarPorClase(Item item)
- {
+  private void CrearBotonInventario(Item item, bool oscurecido)
+  {
+    if (item == null)
+    {
+      return;
+    }
+
+    GameObject btnItem = Instantiate(prefabNtnInventario, listaItems);
+    btnItemInventario scBtnItem = btnItem.GetComponent<btnItemInventario>();
+    if (scBtnItem == null)
+    {
+      return;
+    }
+
+    scBtnItem.imageMuestraItem.sprite = item.imItem;
+    scBtnItem.itemRepresentado = item;
+    scBtnItem.SetOscurecido(oscurecido);
+  }
+
+  private void MostrarItemsOrdenadosPorUsabilidad<T>() where T : Item
+  {
+    List<T> itemsUsables = new List<T>();
+    List<T> itemsNoUsables = new List<T>();
+
+    foreach (GameObject goItem in listInventario)
+    {
+      T item = goItem != null ? goItem.GetComponent<T>() : null;
+      if (item == null)
+      {
+        continue;
+      }
+
+      if (PuedeMostrarPorClase(item))
+      {
+        itemsUsables.Add(item);
+      }
+      else
+      {
+        itemsNoUsables.Add(item);
+      }
+    }
+
+    foreach (T item in itemsUsables)
+    {
+      CrearBotonInventario(item, false);
+    }
+
+    foreach (T item in itemsNoUsables)
+    {
+      CrearBotonInventario(item, true);
+    }
+  }
+
+  private bool PuedeMostrarPorClase(Item item)
+  {
     if (item == null)
     {
       return false;
@@ -90,8 +144,9 @@ public class Equipo : MonoBehaviour
     return item.PuedeUsarClase(personajeSeleccionado.IDClase);
  }
 
- public void MostrarInventario(int tipo) //1 Armas
- {
+  public void MostrarInventario(int tipo) //1 Armas
+  {
+    tipoInventarioAbierto = tipo;
 
     foreach (Transform transform in listaItems)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
     {
@@ -103,107 +158,42 @@ public class Equipo : MonoBehaviour
 
     if(tipo==1)
     {
-        foreach (GameObject goItem in listInventario)
-        {
-            Arma arma = goItem != null ? goItem.GetComponent<Arma>() : null;
-            if(arma != null && PuedeMostrarPorClase(arma))
-            {
-               
-                GameObject btnItem =  Instantiate(prefabNtnInventario,listaItems);
-                btnItemInventario scBtnItem = btnItem.GetComponent<btnItemInventario>();
-
-                scBtnItem.imageMuestraItem.sprite = arma.imItem;
-                scBtnItem.itemRepresentado = arma;
-
-            }
-
-            
-        }
+        MostrarItemsOrdenadosPorUsabilidad<Arma>();
 
     }
      if(tipo==2)
     {
-        foreach (GameObject goItem in listInventario)
-        {
-            Armadura armadura = goItem != null ? goItem.GetComponent<Armadura>() : null;
-            if(armadura != null && PuedeMostrarPorClase(armadura))
-            {
-                GameObject btnItem =  Instantiate(prefabNtnInventario,listaItems);
-                btnItemInventario scBtnItem = btnItem.GetComponent<btnItemInventario>();
-
-                scBtnItem.imageMuestraItem.sprite = armadura.imItem;
-                scBtnItem.itemRepresentado = armadura;
-
-            }
-
-            
-        }
+        MostrarItemsOrdenadosPorUsabilidad<Armadura>();
 
     }
     if(tipo==3)
     {
-        foreach (GameObject goItem in listInventario)
-        {
-            Accesorio accesorio = goItem != null ? goItem.GetComponent<Accesorio>() : null;
-            if(accesorio != null && PuedeMostrarPorClase(accesorio))
-            {
-                GameObject btnItem =  Instantiate(prefabNtnInventario,listaItems);
-                btnItemInventario scBtnItem = btnItem.GetComponent<btnItemInventario>();
-
-                scBtnItem.imageMuestraItem.sprite = accesorio.imItem;
-                scBtnItem.itemRepresentado = accesorio;
-
-            }
-
-            
-        }
+        MostrarItemsOrdenadosPorUsabilidad<Accesorio>();
 
     }
     if(tipo==4)
     {
-        foreach (GameObject goItem in listInventario)
-        {
-            Consumible consumible = goItem != null ? goItem.GetComponent<Consumible>() : null;
-            if(consumible != null && PuedeMostrarPorClase(consumible))
-            {
-                GameObject btnItem =  Instantiate(prefabNtnInventario,listaItems);
-                btnItemInventario scBtnItem = btnItem.GetComponent<btnItemInventario>();
-
-                scBtnItem.imageMuestraItem.sprite = consumible.imItem;
-                scBtnItem.itemRepresentado = consumible;
-
-            }
-
-            
-        }
+        MostrarItemsOrdenadosPorUsabilidad<Consumible>();
 
     }
     if(tipo==5) //todos
     {
-        foreach (GameObject goItem in listInventario)
-        {
-                Item item = goItem != null ? goItem.GetComponent<Item>() : null;
-                if (item == null || !PuedeMostrarPorClase(item))
-                {
-                    continue;
-                }
-
-                GameObject btnItem =  Instantiate(prefabNtnInventario,listaItems);
-                btnItemInventario scBtnItem = btnItem.GetComponent<btnItemInventario>();
-
-                scBtnItem.imageMuestraItem.sprite = item.imItem;
-                scBtnItem.itemRepresentado = item;
-
-           
-            
-        }
+        MostrarItemsOrdenadosPorUsabilidad<Item>();
 
     }
 
- }
+  }
 
- public void CerrarInventario()
- {
+  public void RefrescarInventarioSiAbierto()
+  {
+    if (goInventario != null && goInventario.activeInHierarchy)
+    {
+      MostrarInventario(tipoInventarioAbierto);
+    }
+  }
+
+  public void CerrarInventario()
+  {
     goInventario.SetActive(false);
 
  }

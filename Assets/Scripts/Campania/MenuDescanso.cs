@@ -242,6 +242,12 @@ public class MenuDescanso : MonoBehaviour
 
     chancesExploracion += CampaignManager.Instance.ExploracionSumadaPorActividades();
 
+    if (CampaignManager.Instance != null && CampaignManager.Instance.estadosCaravana != null)
+    {
+      chancesExploracion += CampaignManager.Instance.estadosCaravana.ObtenerModificadorExploracionPendiente();
+      chancesAtaqueACaravana += CampaignManager.Instance.estadosCaravana.ObtenerModificadorEmboscadaDescansoPendiente();
+    }
+
     if (CampaignManager.Instance.intTipoClima == 6) //Almas Danzantes
     {
       chancesAtaqueACaravana = 0;
@@ -605,22 +611,15 @@ public class MenuDescanso : MonoBehaviour
       {
         if (!enTutorial && !descansoEnNodoEvento)
         {
-          if (randomEvento < factorEventoBuenoMalo)
+          bool eventoBueno = randomEvento < factorEventoBuenoMalo
+            || CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoClaro;
+
+          bool eventoIniciado = eventoBueno
+            ? CampaignManager.Instance.EmpezarEventoBueno(TipoOrigenEventoCampania.Descanso)
+            : CampaignManager.Instance.EmpezarEventoMalo(TipoOrigenEventoCampania.Descanso);
+
+          if (eventoIniciado)
           {
-            if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoClaro) //En Claros no hay eventos negativos.
-            {
-              CampaignManager.Instance.EmpezarEventoBueno();
-              autosavePendienteTrasDescanso = false;
-            }
-            else
-            {
-              CampaignManager.Instance.EmpezarEventoMalo();
-              autosavePendienteTrasDescanso = false;
-            } //evento negativo de nodo normal
-          }
-          else
-          {
-            CampaignManager.Instance.EmpezarEventoBueno();
             autosavePendienteTrasDescanso = false;
           }
         }
@@ -633,7 +632,7 @@ public class MenuDescanso : MonoBehaviour
     {
       if (!enTutorial)
       {
-        CampaignManager.Instance.EmpezarEvento(404); //Evento de Mision de Rescate
+        CampaignManager.Instance.EmpezarEvento(IdsEventoCampania.MisionSalvamento); //Evento de Mision de Rescate
         autosavePendienteTrasDescanso = false;
         MetaprogresionManager.Instance.MisionesSalvamento--;
       }

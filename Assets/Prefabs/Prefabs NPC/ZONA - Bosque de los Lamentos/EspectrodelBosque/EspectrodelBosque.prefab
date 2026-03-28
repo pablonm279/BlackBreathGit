@@ -5350,7 +5350,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5193793747634204484
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5514,7 +5514,6 @@ MonoBehaviour:
   esInmobil: 0
   mod_maxAccionP: 3
   AccionP_actual: 3
-  AccionP_SeEsforzo: 0
   scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
