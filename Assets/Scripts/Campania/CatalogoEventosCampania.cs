@@ -281,7 +281,7 @@ public static class CatalogoEventosCampania
 
         // Eventos de nodo buenos genericos
         DefinicionEventoAleatorioCampania.CrearGenerico(IdsEventoCampania.DestelloEsperanzador, "Destello Esperanzador", TipoOrigenEventoCampania.Nodo, TipoResultadoEventoCampania.Bueno, IdsZonaCampania.Nedukazal),
-        DefinicionEventoAleatorioCampania.CrearGenerico(IdsEventoCampania.RisotadasEnLaCaravana, "Risotadas en la Caravana", TipoOrigenEventoCampania.Nodo, TipoResultadoEventoCampania.Bueno),
+        DefinicionEventoAleatorioCampania.CrearGenerico(IdsEventoCampania.RisotadasEnLaCaravana, "Risotadas en la Caravana", TipoOrigenEventoCampania.Descanso, TipoResultadoEventoCampania.Bueno),
         DefinicionEventoAleatorioCampania.CrearGenerico(IdsEventoCampania.CaravanaPerdida, "Caravana Perdida", TipoOrigenEventoCampania.Nodo, TipoResultadoEventoCampania.Bueno),
         DefinicionEventoAleatorioCampania.CrearGenerico(IdsEventoCampania.AserraderoAbandonado, "Aserradero Abandonado", TipoOrigenEventoCampania.Nodo, TipoResultadoEventoCampania.Bueno),
         DefinicionEventoAleatorioCampania.CrearGenerico(IdsEventoCampania.ManadaDeBueyes, "Manada de Bueyes", TipoOrigenEventoCampania.Nodo, TipoResultadoEventoCampania.Bueno, IdsZonaCampania.Nedukazal),

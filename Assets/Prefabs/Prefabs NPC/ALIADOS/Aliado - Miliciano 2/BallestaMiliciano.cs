@@ -14,16 +14,16 @@ public class BallestaMiliciano : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano
 
   void Awake()
   {
       nombre = "Tiro de Ballesta";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
-      hAncho = 1;
+      hAncho = 2;
       esMelee = false;
-      hAlcance = 4;
+      hAlcance = 5;
       hCooldownMax = 0;
       esHostil = true;
       prioridad = pPrioridad;
@@ -179,10 +179,10 @@ public class BallestaMiliciano : IAHabilidad
     }
 
    
-    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
+    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lï¿½gica
    {
     
-      // Obtener la unidad dueña
+      // Obtener la unidad dueï¿½a
     Unidad unidadDuena = gameObject.GetComponent<Unidad>();
     if (unidadDuena == null) return null;
    
@@ -192,7 +192,7 @@ public class BallestaMiliciano : IAHabilidad
     
     var unidades = objPosibles.OfType<Unidad>().ToList();
     print("Sel obj unidades cant: "+unidades.Count);
-    // Filtrar los obstáculos
+    // Filtrar los obstï¿½culos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
      print("Sel obj obstaculos cant: "+obstaculos.Count);
 
@@ -210,7 +210,7 @@ public class BallestaMiliciano : IAHabilidad
         return unidadesOrdenadas.FirstOrDefault();
     }else{print("lista unidades vacia");}
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obstï¿½culo
      if (obstaculos.Any())
      {
        var obstaculo = obstaculos.FirstOrDefault();

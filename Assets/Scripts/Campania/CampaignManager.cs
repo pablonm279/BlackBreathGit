@@ -108,6 +108,10 @@ public class CampaignManager : MonoBehaviour
   private bool abriendoCiudadPuerto;
   private bool campaniaInicializada;
   private bool debeEscribirLogInicioEnStart;
+  private const string RutaCursorAlertaCampania = "Imagenes/Cursoralert";
+  private Texture2D texturaCursorAlertaCampania;
+  private bool cursorCampaniaInicializado;
+  private bool cursorCampaniaMostrandoAlerta;
   [SerializeField] private AsentamientoManager asentamientoManager;
 
 #if UNITY_EDITOR
@@ -165,6 +169,8 @@ public class CampaignManager : MonoBehaviour
     sfxMovimientoSource.volume = sfxMovimientoVolumen;
     sfxMovimientoSource.pitch = sfxMovimientoPitch * Mathf.Max(0.5f, multiplicadorVelocidadVisualViajeActual);
     AsegurarAsentamientoManager();
+    AsegurarCursorCampania();
+    ActualizarCursorCampania(true);
   }
 
   private void AsegurarAsentamientoManager()
@@ -415,9 +421,9 @@ public class CampaignManager : MonoBehaviour
     AgregarEstadoCaravana(TipoEstadoCaravana.Desmotivacion, 3);
     AgregarEstadoCaravana(TipoEstadoCaravana.Descuidados, 3);
   }
-
+ 
   private void InicializarPersonajesNuevaCampania()
-  {
+  { CrearDuelista();//!!!
     if (!scTutorialManager.tutorialActivo)
     {
       AgregarHeroe(0);
@@ -434,6 +440,7 @@ public class CampaignManager : MonoBehaviour
   private void OnEnable()
   {
     TryProcesarColaTextoFlotante();
+    ActualizarCursorCampania(true);
   }
 
   private void OnDisable()
@@ -448,6 +455,7 @@ public class CampaignManager : MonoBehaviour
     colaTextos.Clear();
     recentSpawnTimes.Clear();
     tiempoUltimoSpawnTiempoReal = float.NegativeInfinity;
+    RestaurarCursorCampaniaPredeterminado();
   }
 
   private void Start()
@@ -547,6 +555,7 @@ public class CampaignManager : MonoBehaviour
     return EstaInteraccionActiva(menuDescanso)
       || EstaInteraccionActiva(goMenuBatallas)
       || EstaInteraccionActiva(UIEvetos)
+      || (scMenuCaravana != null && scMenuCaravana.TieneMenuAbierto)
       || (asentamientoManager != null && asentamientoManager.TieneInteraccionActiva)
       || EstaInteraccionActiva(goUIComercioNodo)
       || EstaInteraccionActiva(goUIPersonajeSequito)
@@ -1794,6 +1803,7 @@ public class CampaignManager : MonoBehaviour
       case 6: return scMenuPersonajes.Female001;
       case 7: return scMenuPersonajes.Male004;
       case 8: return scMenuPersonajes.Male005;
+      case 9: return scMenuPersonajes.Female002;
     }
 
     switch (idClase)
@@ -1803,6 +1813,7 @@ public class CampaignManager : MonoBehaviour
       case 3: return scMenuPersonajes.Female001;
       case 4: return scMenuPersonajes.Male004;
       case 5: return scMenuPersonajes.Male005;
+      case 6: return scMenuPersonajes.Female002;
       default: return scMenuPersonajes.Male001;
     }
   }
@@ -1837,6 +1848,11 @@ public class CampaignManager : MonoBehaviour
         AgregarComponenteSiFalta(personaje.gameObject, typeof(REPRESENTACIONSobrecarga));
         AgregarComponenteSiFalta(personaje.gameObject, typeof(AcumularEnergia));
         AgregarComponenteSiFalta(personaje.gameObject, typeof(DescargaArcana));
+        break;
+      case 6:
+        AgregarComponenteSiFalta(personaje.gameObject, typeof(REPRESENTACIONPasoLigero));
+        AgregarComponenteSiFalta(personaje.gameObject, typeof(REPRESENTACIONPosturaDemandante));
+        AgregarComponenteSiFalta(personaje.gameObject, typeof(Estocada));
         break;
     }
   }
@@ -1914,6 +1930,16 @@ public class CampaignManager : MonoBehaviour
           case 6: return typeof(HojaDeEnergia);
           case 7: return typeof(EscudoEnergetico);
           case 8: return typeof(SifonArcano);
+        }
+        break;
+      case 6:
+        switch (slot)
+        {
+          case 1: return typeof(REPRESENTACIONAtaquesReveladores);
+          case 2: return typeof(REPRESENTACIONEvasionMaestra);
+          case 3: return typeof(CargaDeEstoque);
+          case 4: return typeof(Riposte);
+          case 5: return typeof(AFondo);
         }
         break;
     }
@@ -4845,6 +4871,8 @@ public class CampaignManager : MonoBehaviour
 
   void Update()
   {
+    ActualizarCursorCampania();
+
     Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
     bool puedeDescansar = nodoActual != null && nodoActual.nodoDespejado;
     bool asentamientoActivo = asentamientoManager != null && asentamientoManager.TieneInteraccionActiva;
@@ -4910,6 +4938,82 @@ public class CampaignManager : MonoBehaviour
     }
 
 
+  }
+
+  private void AsegurarCursorCampania()
+  {
+    if (cursorCampaniaInicializado)
+    {
+      return;
+    }
+
+    texturaCursorAlertaCampania = CargarTexturaCursorDesdeResources(RutaCursorAlertaCampania);
+    cursorCampaniaInicializado = true;
+  }
+
+  private static Texture2D CargarTexturaCursorDesdeResources(string ruta)
+  {
+    Texture2D textura = Resources.Load<Texture2D>(ruta);
+    if (textura != null)
+    {
+      return textura;
+    }
+
+    Sprite sprite = Resources.Load<Sprite>(ruta);
+    return sprite != null ? sprite.texture : null;
+  }
+
+  private void ActualizarCursorCampania(bool forzar = false)
+  {
+    AsegurarCursorCampania();
+
+    bool debeMostrarCursorAlerta = DebeMostrarCursorAlertaCampania();
+    if (!forzar && debeMostrarCursorAlerta == cursorCampaniaMostrandoAlerta)
+    {
+      return;
+    }
+
+    cursorCampaniaMostrandoAlerta = debeMostrarCursorAlerta;
+
+    if (debeMostrarCursorAlerta && texturaCursorAlertaCampania != null)
+    {
+      Cursor.SetCursor(texturaCursorAlertaCampania, Vector2.zero, CursorMode.Auto);
+      return;
+    }
+
+    Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+  }
+
+  private bool DebeMostrarCursorAlertaCampania()
+  {
+    if (!isActiveAndEnabled)
+    {
+      return false;
+    }
+
+    if (scAdministradorEscenas != null && scAdministradorEscenas.escenaActual != 0)
+    {
+      return false;
+    }
+
+    if (HayInteraccionTransitoriaActiva())
+    {
+      return false;
+    }
+
+    return EstaActiva(alertaFatiga)
+      || EstaActiva(alertaCarga);
+  }
+
+  private static bool EstaActiva(GameObject alerta)
+  {
+    return alerta != null && alerta.activeInHierarchy;
+  }
+
+  private void RestaurarCursorCampaniaPredeterminado()
+  {
+    cursorCampaniaMostrandoAlerta = false;
+    Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
   }
 
 
@@ -5273,7 +5377,7 @@ public class CampaignManager : MonoBehaviour
     pers1.idRetrato = 6;
     pers1.iPuestoDeseado = 1;
 
-    pers1.fVidaMaxima = 35 + UnityEngine.Random.Range(1, 5);
+    pers1.fVidaMaxima = 37 + UnityEngine.Random.Range(1, 5);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 1 + UnityEngine.Random.Range(0, 2);
@@ -5564,7 +5668,7 @@ public class CampaignManager : MonoBehaviour
 
   }
 
-   public void CrearDuelista()
+  public void CrearDuelista()
   {
 
     GameObject caballero = Instantiate(prefabGOPersonaje);
@@ -5608,6 +5712,53 @@ public class CampaignManager : MonoBehaviour
     SortearRasgos(pers1); //Método vacío!!
 
    
+
+     //Habilidades Intrinsecas
+    pers1.AddComponent<REPRESENTACIONPasoLigero>();
+    pers1.GetComponent<REPRESENTACIONPasoLigero>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
+    pers1.AddComponent<REPRESENTACIONPosturaDemandante>();
+    pers1.GetComponent<REPRESENTACIONPosturaDemandante>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
+    pers1.AddComponent<REPRESENTACIONEvasionMaestra>();
+    pers1.GetComponent<REPRESENTACIONEvasionMaestra>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
+    pers1.AddComponent<Estocada>(); //Agregarla luego con el estoque
+    pers1.GetComponent<Estocada>().NIVEL = -1;
+
+
+
+    pers1.AddComponent<CargaDeEstoque>(); 
+    pers1.GetComponent<CargaDeEstoque>().NIVEL = 1;
+    pers1.AddComponent<Riposte>(); 
+    pers1.GetComponent<Riposte>().NIVEL = 1;
+    pers1.AddComponent<AFondo>(); 
+    pers1.GetComponent<AFondo>().NIVEL = 1;
+
+    //Habilidades Base
+    int randHabPot1 = UnityEngine.Random.Range(1, 5);
+    switch (randHabPot1)
+    {
+      case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONEvasionMaestra>(); pers1.GetComponent<REPRESENTACIONEvasionMaestra>().NIVEL = 1; break;
+      case 2: pers1.Habilidad_3 = 1; pers1.AddComponent<CargaDeEstoque>(); pers1.GetComponent<CargaDeEstoque>().NIVEL = 1; break;
+      case 3: pers1.Habilidad_4 = 1; pers1.AddComponent<Riposte>(); pers1.GetComponent<Riposte>().NIVEL = 1; break;
+      case 4: pers1.Habilidad_5 = 1; pers1.AddComponent<AFondo>(); pers1.GetComponent<AFondo>().NIVEL = 1; break;
+      /*case 2: pers1.Habilidad_2 = 1; pers1.AddComponent<REPRESENTACIONEcosDivinos>(); pers1.GetComponent<REPRESENTACIONEcosDivinos>().NIVEL = 1; break;
+      case 3: pers1.Habilidad_3 = 1; pers1.AddComponent<SalmoPurificador>(); pers1.GetComponent<SalmoPurificador>().NIVEL = 1; break;
+      case 4: pers1.Habilidad_4 = 1; pers1.AddComponent<LlamaDivina>(); pers1.GetComponent<LlamaDivina>().NIVEL = 1; break;*/
+    }
+
+    int randHabPot2 = UnityEngine.Random.Range(1, 2);
+    switch (randHabPot2)
+    {
+      /*case 1: pers1.Habilidad_5 = 1; pers1.AddComponent<REPRESENTACIONEvasionMaestra>(); pers1.GetComponent<REPRESENTACIONEvasionMaestra>().NIVEL = 1; break;
+      case 2: pers1.Habilidad_6 = 1; pers1.AddComponent<LuzCegadora>(); pers1.GetComponent<LuzCegadora>().NIVEL = 1; break;
+      case 3: pers1.Habilidad_7 = 1; pers1.AddComponent<PilaresDeLuz>(); pers1.GetComponent<PilaresDeLuz>().NIVEL = 1; break;
+      case 4: pers1.Habilidad_8 = 1; pers1.AddComponent<CastigaraLosMalvados>(); pers1.GetComponent<CastigaraLosMalvados>().NIVEL = 1; break;*/
+    }
+
+
+
+
+
+
 
     pers1.spRetrato = scMenuPersonajes.Female002;
 
@@ -5697,7 +5848,7 @@ public class CampaignManager : MonoBehaviour
 
   private List<string> nombresMujerDisponibles = new List<string>
   {
-    "Maguie", "Bellezia", "Ava", "Lira", "Joakia", "Sanna", "Robin", "Prisia", "Gillia", "Cadia","Zafira", "Elara", "Fiora", "Lyra", "Nerina", "Selene", "Thalia", "Vespera", "Ysolde", "Zinnia",
+    "Maguie", "Bellezia", "Ava", "Lira", "Joakia", "Sanna", "Robin", "Prisia", "Gillia", "Cadia","Zafira", "Elara", "Fiorella", "Lyra", "Nerina", "Selene", "Thalia", "Vespera", "Ysolde", "Zinnia",
     "Althea", "Briony", "Cressida", "Dahlia", "Elysia", "Fiora", "Ginevra", "Helena", "Isolde", "Jasmine","Kassandra", "Lysandra", "Mirabel", "Nerissa", "Ophelia", "Persephone", "Quintessa", "Rowena", "Seraphina", "Tamsin", "Ursula",
     "Vespera", "Wisteria", "Xanthe", "Yara", "Zara", "Ariadne", "Brielle", "Celestia", "Daphne", "Evangeline",
   };
@@ -5744,7 +5895,8 @@ public class CampaignManager : MonoBehaviour
     int claseElegida;
     if (n == 0) //Es heroe al azar
     {
-      // IDs de clase: 1-Caballero, 2-Explorador, 3-Purificadora, 4-Acechador, 5-Canalizador
+      // Pool aleatorio actual: 1-Caballero, 2-Explorador, 3-Purificadora, 4-Acechador, 5-Canalizador.
+      // Duelista queda fuera hasta que tenga su kit de clase completo.
       List<int> clasesFaltantes = new List<int>();
       for (int i = 1; i <= 5; i++)
       {
@@ -5774,6 +5926,7 @@ public class CampaignManager : MonoBehaviour
       case 3: CrearPurificadora(); break;
       case 4: CrearAcechador(); break;
       case 5: CrearCanalizador(); break;
+      case 6: CrearDuelista(); break;
       default:
         claseValida = false;
         break;

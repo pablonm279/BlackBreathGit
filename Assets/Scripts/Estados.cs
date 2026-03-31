@@ -279,6 +279,26 @@ public class Estados : MonoBehaviour
 
 
 
+  public static void Aplicar_MovimientoAbaratado(Unidad unidad, int stacks, Unidad origen = null)
+  {
+    if (unidad == null || stacks == 0)
+    {
+      return;
+    }
+
+    unidad.estado_MovimientoAbaratado += stacks;
+    if (unidad.estado_MovimientoAbaratado < 0)
+    {
+      unidad.estado_MovimientoAbaratado = 0;
+    }
+
+    if (stacks > 0)
+    {
+      unidad.GenerarTextoFlotante("+" + stacks + " " + TRADU.i.Traducir("impulso"), new Color(0.2f, 0.95f, 1f));
+    }
+
+    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+  }
 }
 
 

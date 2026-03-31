@@ -472,6 +472,14 @@ public abstract class IAHabilidad : MonoBehaviour
       scEstaUnidad.PerderEscondido();
     }
 
+    bool objetivoUnitario = esMelee && unidadAtacada != null;
+    if (unidadAtacada != null)
+    {
+      ReaccionRiposte.TryPrepararIntercepcion(scEstaUnidad, unidadAtacada, esMelee, objetivoUnitario, out Unidad objetivoIntercepcion, out float defensaIntercepcion);
+      unidadAtacada = objetivoIntercepcion;
+      defensaObjetivo = defensaIntercepcion;
+    }
+
     int resultado = 0;
     float iTiradaAtaque = 0;
     float tiradaBase = tiradaAtaque;

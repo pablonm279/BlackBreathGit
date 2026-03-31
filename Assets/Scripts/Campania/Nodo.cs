@@ -61,6 +61,38 @@ public class Nodo : MonoBehaviour
   bool atajoSubterraneoPendiente = false;
   private static GameObject undergroundTravelMarker;
 
+  bool EsSettlement()
+  {
+    return tipoNodo == CodigoSettlement;
+  }
+
+  bool PuedeTenerIncendioPersistente()
+  {
+    return !EsSettlement();
+  }
+
+  bool PuedeTenerRitualPersistente()
+  {
+    return !EsSettlement();
+  }
+
+  void LimpiarEstadosPersistentesNoValidos()
+  {
+    bool tutorialActivo = CampaignManager.Instance != null &&
+                          CampaignManager.Instance.scTutorialManager != null &&
+                          CampaignManager.Instance.scTutorialManager.tutorialActivo;
+
+    if (tutorialActivo || !PuedeTenerIncendioPersistente())
+    {
+      nodoIncendiado = false;
+    }
+
+    if (tutorialActivo || !PuedeTenerRitualPersistente())
+    {
+      nodoRitual = false;
+    }
+  }
+
   private class UndergroundAudioFxState
   {
     public AudioReverbFilter reverb;
@@ -527,6 +559,7 @@ public class Nodo : MonoBehaviour
     atajoSubterraneoPendiente = data.atajoSubterraneoPendiente;
     DestinosPosibles.Clear();
     vieneDeNodo = null;
+    LimpiarEstadosPersistentesNoValidos();
     AplicarVisualGuardado(data.visualCode, data.esMisterioso);
     SincronizarVFXPersistentes();
     gameObject.SetActive(data.activo);
@@ -557,6 +590,9 @@ public class Nodo : MonoBehaviour
     tipoNodo = CodigoSettlement;
     esMisterioso = false;
     atajoSubterraneoPendiente = false;
+    nodoIncendiado = false;
+    nodoRitual = false;
+    SincronizarVFXPersistentes();
 
     if (mostrarVisualDesdeInicio)
     {
@@ -1464,6 +1500,14 @@ if (esLaLider)
 
   public void ActivarIncendio()
   {
+    if (!PuedeTenerIncendioPersistente())
+    {
+      nodoIncendiado = false;
+      if (transform.childCount > 14)
+        transform.GetChild(14).gameObject.SetActive(false);
+      return;
+    }
+
     print("ActivarIncendio called");
     nodoIncendiado = true;
     if (transform.childCount > 14)
@@ -1481,6 +1525,14 @@ if (esLaLider)
 
   public void ActivarRitual()
   {
+    if (!PuedeTenerRitualPersistente())
+    {
+      nodoRitual = false;
+      if (transform.childCount > 15)
+        transform.GetChild(15).gameObject.SetActive(false);
+      return;
+    }
+
     print("ActivarRitual called");
     nodoRitual = true;
     if (transform.childCount > 15)
@@ -1498,13 +1550,7 @@ if (esLaLider)
   public void SincronizarVFXPersistentes()
   {
     // En tutorial nunca deberáan quedar incendios/rituales activos
-    if (CampaignManager.Instance != null &&
-        CampaignManager.Instance.scTutorialManager != null &&
-        CampaignManager.Instance.scTutorialManager.tutorialActivo)
-    {
-      nodoIncendiado = false;
-      nodoRitual = false;
-    }
+    LimpiarEstadosPersistentesNoValidos();
 
     // Fallback por índice (prefab original)
     if (transform.childCount > 14)
@@ -1517,11 +1563,11 @@ if (esLaLider)
     {
       var child = transform.GetChild(i);
       string name = child.name.ToLowerInvariant();
-      if (name.Contains("incendiado") || name.Contains("fuego") || name.Contains("llama"))
+      if (name.Contains("nodoincendiado"))
       {
         child.gameObject.SetActive(nodoIncendiado);
       }
-      else if (name.Contains("ritual"))
+      else if (name.Contains("nodoritual"))
       {
         child.gameObject.SetActive(nodoRitual);
       }

@@ -64,6 +64,7 @@ public class UIEstadoCuadro : MonoBehaviour
   public Sprite imVolador;
   public Sprite imCondena;
   public Sprite imEscudado;
+  public Sprite imMovimientoAbaratado;
   public Sprite imTierEnergia; //Canalizador
   public void RepresentarEstado(int index, int stacks, bool desdeBarraVida = false)
   {
@@ -104,6 +105,7 @@ public class UIEstadoCuadro : MonoBehaviour
     //27 - Corrupto
     //28 - Volando
     //29 - Condena
+    //31 - Movimiento Abaratado
     indexEstadoRepresentado = index;
     if (Retrato == null) { return; }
     if (textTooltip == null) { return; }
@@ -139,6 +141,7 @@ public class UIEstadoCuadro : MonoBehaviour
       case 28: Retrato.sprite = ResolverSprite(imVolador, "Imagenes/estado_volando"); textTooltip.text = TRADU.i.Traducir("Volador: Esta unidad no puede ser alcanzada por ataques melee, puede perder el vuelo al ser dañado o fallar un ataque."); break;
       case 29: Retrato.sprite = ResolverSprite(imCondena, "Imagenes/Estado_condena"); textTooltip.text = TRADU.i.Traducir("Condena: En X cantidad de turnos recibirá daño verdadero igual al 10% de su vida máxima por turno con el efecto."); break;
       case 30: Retrato.sprite = ResolverSprite(imEscudado, "Imagenes/Estado_escudado"); textTooltip.text = TRADU.i.Traducir("Escudado: 10% chances por stack de evitar un ataque físico. Al evitar uno, pierde un stack."); break;
+      case 31: Retrato.sprite = ResolverSprite(imMovimientoAbaratado, "Imagenes/Estado_movimientoabaratado"); textTooltip.text = TRADU.i.Traducir("Impulso: el próximo movimiento a casilla o intercambio cuesta 1 PA menos y consume 1 stack."); break;
 
     }
   }
@@ -303,9 +306,11 @@ public class UIEstadoCuadro : MonoBehaviour
     if (buff.cantDanioPorcentaje != 0) descripcion += TRADU.i.Traducir("Daño: ") + "<color=" + (buff.cantDanioPorcentaje > 0 ? "green" : "red") + ">" + buff.cantDanioPorcentaje + "%" + "</color>\n";
 
     if (buff.cantCritDado != 0) descripcion += TRADU.i.Traducir("Crítico Dado: ") + "<color=" + (buff.cantCritDado > 0 ? "green" : "red") + ">" + buff.cantCritDado + "</color>\n";
+    if (buff.cantCritDadoRecibido != 0) descripcion += EtiquetaBilingue("Critico recibido: ", "Incoming crit range: ") + "<color=" + (buff.cantCritDadoRecibido > 0 ? "green" : "red") + ">" + buff.cantCritDadoRecibido + "</color>\n";
     if (buff.cantPenetracionArmadura != 0) descripcion += EtiquetaBilingue("Penetracion armadura: ", "Armor Penetration: ") + "<color=" + (buff.cantPenetracionArmadura > 0 ? "green" : "red") + ">" + buff.cantPenetracionArmadura + "</color>\n";
     if (buff.cantReduccionDanioRecibidoPorcentaje != 0) descripcion += EtiquetaBilingue("Reduccion dano recibido: ", "Damage reduction: ") + "<color=" + (buff.cantReduccionDanioRecibidoPorcentaje > 0 ? "green" : "red") + ">" + buff.cantReduccionDanioRecibidoPorcentaje + "%" + "</color>\n";
     if (buff.cantReduccionDanioCriticoRecibidoPorcentaje != 0) descripcion += EtiquetaBilingue("Reduccion dano critico recibido: ", "Critical damage reduction: ") + "<color=" + (buff.cantReduccionDanioCriticoRecibidoPorcentaje > 0 ? "green" : "red") + ">" + buff.cantReduccionDanioCriticoRecibidoPorcentaje + "%" + "</color>\n";
+    if (buff.cantAumentoDanioCriticoRecibidoPorcentaje != 0) descripcion += EtiquetaBilingue("Danio critico recibido: ", "Incoming critical damage: ") + "<color=" + (buff.cantAumentoDanioCriticoRecibidoPorcentaje > 0 ? "green" : "red") + ">" + buff.cantAumentoDanioCriticoRecibidoPorcentaje + "%" + "</color>\n";
     if (buff.cantResistenciaEstadosPorcentaje != 0) descripcion += EtiquetaBilingue("Resistencia estados: ", "Status resistance: ") + "<color=" + (buff.cantResistenciaEstadosPorcentaje > 0 ? "green" : "red") + ">" + buff.cantResistenciaEstadosPorcentaje + "%" + "</color>\n";
     if (buff.cantEspinasDanioPlano != 0) descripcion += EtiquetaBilingue("Espinas dano plano: ", "Flat thorns damage: ") + "<color=" + (buff.cantEspinasDanioPlano > 0 ? "green" : "red") + ">" + buff.cantEspinasDanioPlano + "</color>\n";
     if (buff.cantEspinasDanioPorcentaje != 0) descripcion += EtiquetaBilingue("Espinas dano %: ", "Thorns damage %: ") + "<color=" + (buff.cantEspinasDanioPorcentaje > 0 ? "green" : "red") + ">" + buff.cantEspinasDanioPorcentaje + "%" + "</color>\n";

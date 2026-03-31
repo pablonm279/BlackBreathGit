@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -101,15 +101,7 @@ public class Casilla : MonoBehaviour
       return false;
     }
 
-    int costoMovimientoTotal = costoMovimiento;
-    int diferenciaX = Mathf.Abs(unidadActiva.CasillaPosicion.posX - posX);
-    int diferenciaY = Mathf.Abs(unidadActiva.CasillaPosicion.posY - posY);
-    if (diferenciaX == 1 && diferenciaY == 1)
-    {
-      costoMovimientoTotal++;
-    }
-
-    return unidadActiva.ObtenerAPActual() >= costoMovimientoTotal;
+    return unidadActiva.ObtenerAPActual() >= ObtenerCostoMovimientoTotal(unidadActiva, true);
   }
 
   public void ActualizarSenialadores()
@@ -170,20 +162,6 @@ public class Casilla : MonoBehaviour
       return;
     }
 
-    if (Mathf.Abs(deltaX) + Mathf.Abs(deltaY) > 1)
-    {
-      if (unidad.ObtenerAPActual() <= 1)
-      {
-         marca.SetActive(false);
-        return;
-      }
-    }
-
-    if (unidad.ObtenerAPActual() <= 0)
-    { marca.SetActive(false);
-      return;
-   }
-
     Casilla destino = EncontrarCasillaEnPosicion(posX + deltaX, posY + deltaY);
     bool puedeMover = false;
 
@@ -204,9 +182,20 @@ public class Casilla : MonoBehaviour
           Unidad unidadDestino = destino.Presente.GetComponent<Unidad>();
           if (unidadDestino != null && !unidadDestino.TieneBuffNombre("Desplazado"))
           {
-            puedeMover = true;
+            bool esIntercambioAliado = unidadDestino.CasillaPosicion != null
+              && unidad.CasillaPosicion != null
+              && unidadDestino.CasillaPosicion.lado == unidad.CasillaPosicion.lado
+              && unidadDestino.estado_inmovil < 1;
+            if (esIntercambioAliado)
+            {
+              puedeMover = unidad.ObtenerAPActual() >= destino.ObtenerCostoMovimientoTotal(unidad, true);
+            }
           }
         }
+      }
+      if (destino.Presente == null)
+      {
+        puedeMover = unidad.ObtenerAPActual() >= destino.ObtenerCostoMovimientoTotal(unidad);
       }
     }
 
@@ -253,7 +242,7 @@ public class Casilla : MonoBehaviour
     return true;
   }
 
-  private int ObtenerCostoMovimientoTotal(Unidad unidad)
+  private int ObtenerCostoMovimientoTotal(Unidad unidad, bool esIntercambioConAliado = false)
   {
     int costoMovimientoTotal = costoMovimiento;
     if (EsMovimientoDiagonal(unidad))
@@ -264,7 +253,70 @@ public class Casilla : MonoBehaviour
     {
       costoMovimientoTotal += 2;
     }
+    if (DebeAplicarsePasoLigero(unidad, esIntercambioConAliado))
+    {
+      costoMovimientoTotal = Mathf.Max(0, costoMovimientoTotal - 1);
+    }
+    if (DebeAplicarseMovimientoAbaratado(unidad))
+    {
+      costoMovimientoTotal = Mathf.Max(0, costoMovimientoTotal - 1);
+    }
     return costoMovimientoTotal;
+  }
+
+  private bool DebeAplicarseMovimientoAbaratado(Unidad unidad)
+  {
+    return unidad != null && unidad.estado_MovimientoAbaratado > 0;
+  }
+
+  private bool DebeAplicarsePasoLigero(Unidad unidad, bool esIntercambioConAliado)
+  {
+    if (unidad == null)
+    {
+      return false;
+    }
+
+    bool esMovimientoElegible = esIntercambioConAliado || EsMovimientoDiagonal(unidad);
+    if (!esMovimientoElegible)
+    {
+      return false;
+    }
+
+    ClaseDuelista duelista = unidad.GetComponent<ClaseDuelista>();
+    return duelista != null && duelista.PuedeUsarPasoLigero();
+  }
+
+  private void ConsumirPasoLigeroSiCorresponde(Unidad unidad, bool esIntercambioConAliado)
+  {
+    if (unidad == null)
+    {
+      return;
+    }
+
+    bool esMovimientoElegible = esIntercambioConAliado || EsMovimientoDiagonal(unidad);
+    if (!esMovimientoElegible)
+    {
+      return;
+    }
+
+    ClaseDuelista duelista = unidad.GetComponent<ClaseDuelista>();
+    duelista?.ConsumirPasoLigero();
+  }
+
+  private void ConsumirMovimientoAbaratadoSiCorresponde(Unidad unidad)
+  {
+    if (!DebeAplicarseMovimientoAbaratado(unidad))
+    {
+      return;
+    }
+
+    unidad.estado_MovimientoAbaratado--;
+    if (unidad.estado_MovimientoAbaratado < 0)
+    {
+      unidad.estado_MovimientoAbaratado = 0;
+    }
+
+    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
   }
 
   private string ObtenerTextoCostoMovimiento(Unidad unidad)
@@ -340,13 +392,13 @@ public class Casilla : MonoBehaviour
     {
       if (BattleManager.Instance.HabilidadActiva.esHostil && unidad.CasillaPosicion.lado == this.lado)
       {
-        // Cancela la selección de la habilidad al clikear casilla, solo si es hostil y es una casilla del mismo lado
+        // Cancela la selecciÃ³n de la habilidad al clikear casilla, solo si es hostil y es una casilla del mismo lado
         BattleManager.Instance.HabilidadActiva = null;
         BattleManager.Instance.SeleccionandoObjetivo = false;
         BattleManager.Instance.LimpiarCapasCasillas();
         BattleManager.Instance.scUIContadorAP.ResetearCirculos();
         BattleManager.Instance.scUIBotonesHab.DeseleccionarTodas();
-        // return; // Sale sin ejecutar nada más
+        // return; // Sale sin ejecutar nada mÃ¡s
       }
     }
 
@@ -364,6 +416,8 @@ public class Casilla : MonoBehaviour
       if (unidad.ObtenerAPActual() >= costoMovimientoTotal)
       {
 
+        ConsumirPasoLigeroSiCorresponde(unidad, false);
+        ConsumirMovimientoAbaratadoSiCorresponde(unidad);
         unidad.CambiarAPActual(-costoMovimientoTotal);
         BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
         unidad.CasillaDeseadaMov = this;
@@ -389,19 +443,18 @@ public class Casilla : MonoBehaviour
         }
         else if (aliado.TieneBuffNombre("Desplazado"))
         {
-          BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con una unidad que ya está Desplazada."));
+          BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con una unidad que ya estÃ¡ Desplazada."));
           return;
         }
         else
         {
 
-          int costoMovimientoTotal = costoMovimiento;
-          int diferenciaX = Mathf.Abs(unidad.CasillaPosicion.posX - posX);
-          int diferenciaY = Mathf.Abs(unidad.CasillaPosicion.posY - posY);
-          if (diferenciaX == 1 && diferenciaY == 1) { costoMovimientoTotal++; }
+          int costoMovimientoTotal = ObtenerCostoMovimientoTotal(unidad, true);
 
           if (unidad.ObtenerAPActual() >= costoMovimientoTotal)
           {
+            ConsumirPasoLigeroSiCorresponde(unidad, true);
+            ConsumirMovimientoAbaratadoSiCorresponde(unidad);
             unidad.CambiarAPActual(-costoMovimientoTotal);
             BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
 
@@ -413,7 +466,7 @@ public class Casilla : MonoBehaviour
             // Aplicar Debuff Desplazado (-1 AP max por 1 turno)
             Buff desplazado = new Buff();
             desplazado.buffNombre = "Desplazado";
-            desplazado.buffDescr = "AP máx -1 por 1 turno";
+            desplazado.buffDescr = "AP mÃ¡x -1 por 1 turno";
             desplazado.boolfDebufftBuff = false;
             desplazado.cantAPMax = -1;
             desplazado.DuracionBuffRondas = 1;
@@ -432,19 +485,19 @@ public class Casilla : MonoBehaviour
       }
       else
       {
-        BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con obstáculos."));
+        BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con obstÃ¡culos."));
       }
 
     }
 
-    //Para habilidades en área
+    //Para habilidades en Ã¡rea
     if (BattleManager.Instance.HabilidadActiva != null && !BattleManager.Instance.bOcupado)
     {
 
       if (BattleManager.Instance.HabilidadActiva.enArea > 0 || BattleManager.Instance.HabilidadActiva.targetEspecial > 0 && BattleManager.Instance.SeleccionandoObjetivo)
       {
 
-        if (!BattleManager.Instance.HabilidadActiva.lCasillasafectadas.Contains(this)) { return; } //Si no está en el área, no hace nada
+        if (!BattleManager.Instance.HabilidadActiva.lCasillasafectadas.Contains(this)) { return; } //Si no estÃ¡ en el Ã¡rea, no hace nada
 
 
         List<Unidad> lUnidadesEnArea = new List<Unidad>();
@@ -607,7 +660,7 @@ public class Casilla : MonoBehaviour
     // Asignar el objeto como presente en la casilla
     NuevoObjetoPresenteEnCasilla(GO);
 
-    // Si es una Unidad u Obstáculo, actualizar su casilla de posición
+    // Si es una Unidad u ObstÃ¡culo, actualizar su casilla de posiciÃ³n
     if (GO.GetComponent<Unidad>() != null)
     {
       GO.GetComponent<Unidad>().CasillaPosicion = this;
@@ -624,10 +677,10 @@ public class Casilla : MonoBehaviour
   {
     if (lado == 2)//Enemigos
     {
-      Vector3 posicionFinal = transform.position; // Posición de la casilla
-      Vector3 posicionInicial = posicionFinal + new Vector3(3f, 0, 0); // Posición inicial (desplazada a la derecha)
+      Vector3 posicionFinal = transform.position; // PosiciÃ³n de la casilla
+      Vector3 posicionInicial = posicionFinal + new Vector3(3f, 0, 0); // PosiciÃ³n inicial (desplazada a la derecha)
 
-      float duracion = 0.7f; // Duración del movimiento
+      float duracion = 0.7f; // DuraciÃ³n del movimiento
       float tiempo = 0;
 
       while (tiempo < duracion)
@@ -635,21 +688,21 @@ public class Casilla : MonoBehaviour
         tiempo += Time.deltaTime;
         float t = Mathf.Clamp01(tiempo / duracion); // Normalizar el tiempo (0 a 1)
 
-        // Interpolar la posición entre la inicial y la final
+        // Interpolar la posiciÃ³n entre la inicial y la final
         GO.transform.position = Vector3.Lerp(posicionInicial, posicionFinal, t);
 
         yield return null; // Esperar al siguiente frame
       }
 
-      // Asegurarse de que el objeto está exactamente en la posición final
+      // Asegurarse de que el objeto estÃ¡ exactamente en la posiciÃ³n final
       GO.transform.position = posicionFinal;
     }
     else if (lado == 1) //Aliados
     {
-      Vector3 posicionFinal = transform.position; // Posición de la casilla
-      Vector3 posicionInicial = posicionFinal + new Vector3(-3f, 0, 0); // Posición inicial (desplazada a la izquierda)
+      Vector3 posicionFinal = transform.position; // PosiciÃ³n de la casilla
+      Vector3 posicionInicial = posicionFinal + new Vector3(-3f, 0, 0); // PosiciÃ³n inicial (desplazada a la izquierda)
 
-      float duracion = 0.7f; // Duración del movimiento
+      float duracion = 0.7f; // DuraciÃ³n del movimiento
       float tiempo = 0;
 
       while (tiempo < duracion)
@@ -657,13 +710,13 @@ public class Casilla : MonoBehaviour
         tiempo += Time.deltaTime;
         float t = Mathf.Clamp01(tiempo / duracion); // Normalizar el tiempo (0 a 1)
 
-        // Interpolar la posición entre la inicial y la final
+        // Interpolar la posiciÃ³n entre la inicial y la final
         GO.transform.position = Vector3.Lerp(posicionInicial, posicionFinal, t);
 
         yield return null; // Esperar al siguiente frame
       }
 
-      // Asegurarse de que el objeto está exactamente en la posición final
+      // Asegurarse de que el objeto estÃ¡ exactamente en la posiciÃ³n final
       GO.transform.position = posicionFinal;
     }
   }
@@ -675,7 +728,7 @@ public class Casilla : MonoBehaviour
   {
     List<Casilla> lCasillas = new List<Casilla>();
 
-    // Obtén la casilla actual
+    // ObtÃ©n la casilla actual
     int posXActual = this.posX;
     int posYActual = this.posY;
 
@@ -688,10 +741,10 @@ public class Casilla : MonoBehaviour
         int xVecina = posXActual + i;
         int yVecina = posYActual + j;
 
-        // Verifica si la casilla vecina está dentro del rango especificado (distancia x)
+        // Verifica si la casilla vecina estÃ¡ dentro del rango especificado (distancia x)
         if (Mathf.Abs(xVecina - posXActual) + Mathf.Abs(yVecina - posYActual) <= x)
         {
-          // Asegúrate de no agregar la casilla actual a la lista
+          // AsegÃºrate de no agregar la casilla actual a la lista
           if (xVecina == posXActual && yVecina == posYActual)
             continue;
 
@@ -832,7 +885,7 @@ public class Casilla : MonoBehaviour
   {
     List<Casilla> lCasillas = new List<Casilla>();
 
-    // Obtén la casilla actual
+    // ObtÃ©n la casilla actual
     int posXActual = this.posX;
     int posYActual = this.posY;
 
@@ -841,7 +894,7 @@ public class Casilla : MonoBehaviour
     {
       for (int j = -1; j <= 1; j++)
       {
-        // Asegúrate de no agregar la casilla actual a la lista
+        // AsegÃºrate de no agregar la casilla actual a la lista
         if (i == 0 && j == 0)
           continue;
 
@@ -849,10 +902,10 @@ public class Casilla : MonoBehaviour
         int xVecina = posXActual + i;
         int yVecina = posYActual + j;
 
-        // Agrega la casilla vecina a la lista si está dentro del rango especificado (distancia x)
+        // Agrega la casilla vecina a la lista si estÃ¡ dentro del rango especificado (distancia x)
         if (Mathf.Abs(xVecina - posXActual) <= 1 && Mathf.Abs(yVecina - posYActual) <= 1)
         {
-          // Encuentra la casilla vecina en la posición (xVecina, yVecina) y agrégala a la lista
+          // Encuentra la casilla vecina en la posiciÃ³n (xVecina, yVecina) y agrÃ©gala a la lista
           Casilla casillaVecina = EncontrarCasillaEnPosicion(xVecina, yVecina);
           if (casillaVecina != null)
           {
@@ -864,12 +917,12 @@ public class Casilla : MonoBehaviour
 
     return lCasillas;
   }
-  public List<Casilla> ObtenerCasillasRango(int alcance, int ancho/*0 es en la misma fila, 1 tmb en adyacentes*/) //Segun la posicion en su lado obtiene hasta que casillas del lado opuesto llega la habilidad según el alcance
+  public List<Casilla> ObtenerCasillasRango(int alcance, int ancho/*0 es en la misma fila, 1 tmb en adyacentes*/) //Segun la posicion en su lado obtiene hasta que casillas del lado opuesto llega la habilidad segÃºn el alcance
   {
 
     List<Casilla> lCasillas = new List<Casilla>();
 
-    // Obtén la casilla actual
+    // ObtÃ©n la casilla actual
     int posXActual = this.posX;
     int posYActual = this.posY;
 
@@ -883,7 +936,7 @@ public class Casilla : MonoBehaviour
 
   private Casilla EncontrarCasillaEnPosicion(int posX, int posY)
   {
-    // Obtenemos el transform del padre de las casillas (supongamos que todas las casillas están en el mismo padre)
+    // Obtenemos el transform del padre de las casillas (supongamos que todas las casillas estÃ¡n en el mismo padre)
     Transform padreDeCasillas = transform.parent;
 
     // Recorremos todos los objetos hijos del padre
@@ -902,7 +955,7 @@ public class Casilla : MonoBehaviour
       }
     }
 
-    // Si no se encontró ninguna casilla en la posición dada, devolvemos null
+    // Si no se encontrÃ³ ninguna casilla en la posiciÃ³n dada, devolvemos null
     return null;
   }
 
@@ -978,7 +1031,7 @@ public class Casilla : MonoBehaviour
   }
   public void ActivarCapaColorNegro()
   {
-    transform.GetChild(1).gameObject.SetActive(false); //desactiva la capa roja también
+    transform.GetChild(1).gameObject.SetActive(false); //desactiva la capa roja tambiÃ©n
     GetComponent<MeshRenderer>().enabled = false; //desactiva la casilla en si
     transform.GetChild(2).gameObject.SetActive(true);
     if (MarcaMeleeAtraviesa != null)
@@ -1240,7 +1293,7 @@ public class Casilla : MonoBehaviour
           }
           MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
         }
-        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 5) //Target Especial 5: Dos Casillas (Atrás)
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 5) //Target Especial 5: Dos Casillas (AtrÃ¡s)
         {
           foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
           {
@@ -1447,9 +1500,9 @@ public class Casilla : MonoBehaviour
           MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
 
         }
-        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 9) //Target Especial 9: Pirámide invertida
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 9) //Target Especial 9: PirÃ¡mide invertida
         {
-          // Casilla de origen (punta de la pirámide)
+          // Casilla de origen (punta de la pirÃ¡mide)
           casAlre.Add(this);
 
           // 3 casillas en la columna siguiente (posX + 1)
@@ -1462,7 +1515,7 @@ public class Casilla : MonoBehaviour
             }
           }
 
-          // 5 casillas en la éltima columna (posX + 2)
+          // 5 casillas en la Ã©ltima columna (posX + 2)
           foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
           {
             if (cas.lado == lado && cas.posX == posX - 2 &&
@@ -1500,6 +1553,47 @@ public class Casilla : MonoBehaviour
               }
             }
           }
+          MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
+        }
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 10) //Target Especial 10: V atras (dos diagonales)
+        {
+          foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
+          {
+            if (((cas.posY == posY + 1 && cas.posX == posX - 1) || (cas.posY == posY - 1 && cas.posX == posX - 1)) && (cas.lado == lado))
+            {
+              casAlre.Add(cas);
+            }
+          }
+
+          foreach (Casilla cas in casAlre)
+          {
+            if (cas.Presente != null)
+            {
+              if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  continue;
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+              }
+              else
+              {
+                if (cas.Presente.GetComponent<Obstaculo>() != null)
+                {
+                  obstaculosEnCasAzul.Add(cas.Presente.GetComponent<Obstaculo>());
+                }
+                if (cas.Presente.GetComponent<Unidad>() != null)
+                {
+                  unidadesEnCasAzul.Add(cas.Presente.GetComponent<Unidad>());
+                }
+              }
+            }
+          }
+
           MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
         }
 
@@ -1545,7 +1639,7 @@ public class Casilla : MonoBehaviour
     }
 
 
-    foreach (Casilla cas in casAlre) //Marca casillas alrededor si la central está en la zona de la habilidad
+    foreach (Casilla cas in casAlre) //Marca casillas alrededor si la central estÃ¡ en la zona de la habilidad
     {
       if (casillasZonahab.Contains(this))
       {
@@ -1766,7 +1860,7 @@ public class Casilla : MonoBehaviour
       }
       else
       {
-        res = costoMovimientoTotal;
+        res = Mathf.Max(1, costoMovimientoTotal);
 
       }
     }
@@ -1806,6 +1900,7 @@ public class Casilla : MonoBehaviour
   }
 
 }
+
 
 
 

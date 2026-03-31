@@ -5,6 +5,14 @@ using UnityEngine.UI;
 // Controlador generico de poses por sprite para unidades (jugador o IA)
 public class UnidadPoseController : MonoBehaviour
 {
+    public enum TipoPoseActual
+    {
+        Idle,
+        Mover,
+        Atacar,
+        Habilidad
+    }
+
     [Header("Destino")]
     public Image targetImage; // Si es null, se usa Unidad.uImage
 
@@ -23,6 +31,7 @@ public class UnidadPoseController : MonoBehaviour
     Unidad unidad;
     Coroutine revertCoroutine;
     bool mantenerPoseHabilidad = false;
+    TipoPoseActual poseActual = TipoPoseActual.Idle;
 
     void Awake()
     {
@@ -62,11 +71,13 @@ public class UnidadPoseController : MonoBehaviour
             return;
         }
 
+        poseActual = TipoPoseActual.Idle;
         SetSprite(poseIdle);
     }
 
     public void OnStartMove()
     {
+        poseActual = TipoPoseActual.Mover;
         SetSprite(poseMover);
     }
 
@@ -82,6 +93,7 @@ public class UnidadPoseController : MonoBehaviour
             return; // Mantener pose de habilidad tiene prioridad
         }
 
+        poseActual = TipoPoseActual.Atacar;
         SetSprite(poseAtacar);
         IniciarReversion(duracionPoseAtacar);
     }
@@ -96,10 +108,12 @@ public class UnidadPoseController : MonoBehaviour
                 revertCoroutine = null;
             }
 
+            poseActual = TipoPoseActual.Habilidad;
             SetSprite(poseHabilidad);
             return;
         }
 
+        poseActual = TipoPoseActual.Habilidad;
         SetSprite(poseHabilidad);
         IniciarReversion(duracionPoseHabilidad);
     }
@@ -114,6 +128,7 @@ public class UnidadPoseController : MonoBehaviour
             revertCoroutine = null;
         }
 
+        poseActual = TipoPoseActual.Habilidad;
         SetSprite(poseHabilidad);
     }
 
@@ -128,6 +143,43 @@ public class UnidadPoseController : MonoBehaviour
         }
 
         SetIdle();
+    }
+
+    public void ConfigurarPoses(Sprite idle, Sprite mover, Sprite atacar, Sprite habilidad, bool refrescarPoseActual = true)
+    {
+        poseIdle = idle;
+        poseMover = mover;
+        poseAtacar = atacar;
+        poseHabilidad = habilidad;
+
+        if (refrescarPoseActual)
+        {
+            RefrescarPoseActual();
+        }
+    }
+
+    public void RefrescarPoseActual()
+    {
+        if (mantenerPoseHabilidad)
+        {
+            poseActual = TipoPoseActual.Habilidad;
+        }
+
+        switch (poseActual)
+        {
+            case TipoPoseActual.Mover:
+                SetSprite(poseMover != null ? poseMover : poseIdle);
+                break;
+            case TipoPoseActual.Atacar:
+                SetSprite(poseAtacar != null ? poseAtacar : poseIdle);
+                break;
+            case TipoPoseActual.Habilidad:
+                SetSprite(poseHabilidad != null ? poseHabilidad : poseIdle);
+                break;
+            default:
+                SetSprite(poseIdle);
+                break;
+        }
     }
 
     void IniciarReversion(float delay)

@@ -5260,7 +5260,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.6, y: -8.9}
+  m_AnchoredPosition: {x: 3.03, y: -11.88}
   m_SizeDelta: {x: 48.85, y: 44.22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7183569897580904577
@@ -5321,14 +5321,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4725468778746984210}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff72c05bc90d2c14db4bdbf07a15b21a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   glowColor: {r: 0.16887684, g: 0.6048494, b: 0.6509434, a: 1}
-  minAlpha: 0
-  maxAlpha: 0.9
+  minAlpha: 1
+  maxAlpha: 1
   pulseSpeed: 0.5
   syncWithOthers: 0
   activo: 1
@@ -5435,7 +5435,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8698142746885420110}
   - component: {fileID: 4856822827959170399}
-  - component: {fileID: 7919826936545306068}
+  - component: {fileID: 7398868208212192446}
   - component: {fileID: 3998581773644378637}
   - component: {fileID: 2678417726393746191}
   - component: {fileID: 7848840761880253532}
@@ -5480,7 +5480,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5537953111248832586}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &7919826936545306068
+--- !u!114 &7398868208212192446
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5489,7 +5489,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5537953111248832586}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ccde46cb00d75a40a72c0bc28e8bda3, type: 3}
+  m_Script: {fileID: 11500000, guid: fcef93495e81f824c915cf061bd918da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CasillaPosicion: {fileID: 0}
@@ -5518,14 +5518,14 @@ MonoBehaviour:
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
   ValentiaP_actual: 0
-  at_CarFuerza: 0
-  mod_CarFuerza: 0
+  at_CarFuerza: 2
+  mod_CarFuerza: 2
   at_CarAgilidad: 2
   mod_CarAgilidad: 2
   at_CarPoder: 5
   mod_CarPoder: 5
-  at_Armadura: 100
-  mod_Armadura: 100
+  at_Armadura: 0
+  mod_Armadura: 0
   at_ResFuego: -2
   mod_ResFuego: -2
   at_ResHielo: 0
@@ -5544,8 +5544,8 @@ MonoBehaviour:
   mod_Defensa: 14
   Defensa_AtaquesRepetidosRonda: 0
   Defensa_BonusPASinUsar: 0
-  at_Ataque: 4
-  mod_Ataque: 4
+  at_Ataque: 0
+  mod_Ataque: 0
   mod_DanioPorcentaje: 0
   at_CriticoRangoDado: 0
   mod_CriticoRangoDado: 0
@@ -5615,11 +5615,17 @@ MonoBehaviour:
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
   goSANGRE: {fileID: 0}
-  velocidadMovimiento: 2.8
+  velocidadMovimiento: 2.7
   movimientoEnCurso: 0
   NoSonidoAlMover: 0
   sonidosRecibirDanio:
   - {fileID: 8300000, guid: d9e150713a5e87944b60d0e9b8b61634, type: 3}
+  IDLEimagenEtereo: {fileID: 21300000, guid: a0b91ab3c7b090f488731299107488d8, type: 3}
+  IDLEimagenPlanofisico: {fileID: 21300000, guid: 844c32d75af1f06439e7fe360e4c36fa, type: 3}
+  HABimagenEtereo: {fileID: 21300000, guid: 1bd7f643041c0824dbe5dbac4403a4bf, type: 3}
+  HABimagenPlanofisico: {fileID: 21300000, guid: e1c6c02960e7ae34baaae3f67ea04ac0, type: 3}
+  MOVimagenEtereo: {fileID: 21300000, guid: 2a7230aa74724fb4ca638b478fa505f4, type: 3}
+  MOVimagenPlanofisico: {fileID: 21300000, guid: 3d2dd53d96545ad4592e758d8d813a35, type: 3}
 --- !u!65 &3998581773644378637
 BoxCollider:
   m_ObjectHideFlags: 0

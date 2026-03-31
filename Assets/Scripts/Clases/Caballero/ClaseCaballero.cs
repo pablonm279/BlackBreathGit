@@ -22,9 +22,9 @@ public class ClaseCaballero : Unidad
     AplicarPasivasValentiaCaballero();
   }
 
-  public override void AjustarValentiaInicialSinLog(int cant)
+  public override void AjustarValentiaInicialSinLog(int cant, bool notificarValourGlobal = true)
   {
-    base.AjustarValentiaInicialSinLog(cant);
+    base.AjustarValentiaInicialSinLog(cant, notificarValourGlobal);
     AplicarPasivasValentiaCaballero();
   }
 

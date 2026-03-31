@@ -18,6 +18,9 @@ public class Unidad : MonoBehaviour
   private static readonly Color ColorDanioFuego = new Color(1f, 0.65f, 0.25f, 1f);
   private static readonly Color ColorValentiaGanada = new Color(0.27f, 0.94f, 0.58f, 1f);
   private static readonly Color ColorValentiaPerdida = new Color(1f, 0.36f, 0.36f, 1f);
+  private static Unidad redireccionAtaqueAtacante;
+  private static Unidad redireccionAtaqueObjetivoOriginal;
+  private static Unidad redireccionAtaqueObjetivoReal;
 
    [Header ("Lógica")]
    public Casilla CasillaPosicion;
@@ -80,14 +83,26 @@ public class Unidad : MonoBehaviour
   public void CambiarAPActual(int n)
   {
     AccionP_actual += n;
-    BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
+    RefrescarUIAPSiUnidadActiva();
 
   }
    public void EstablecerAPActualA(int n)
   {
     AccionP_actual = n;
-    BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
+    RefrescarUIAPSiUnidadActiva();
 
+  }
+  void RefrescarUIAPSiUnidadActiva()
+  {
+    if (BattleManager.Instance == null || BattleManager.Instance.unidadActiva != this)
+    {
+      return;
+    }
+
+    if (BattleManager.Instance.scUIContadorAP != null)
+    {
+      BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
+    }
   }
   public Alcambiarvalorflash scTextoArmaduraFlash;
 
@@ -153,6 +168,7 @@ public class Unidad : MonoBehaviour
   //Atributo - Critico Dado Tirada
   [SerializeField] private float at_CriticoRangoDado; 
   public float mod_CriticoRangoDado; 
+  public float bonusCritDadoRecibido;
 
   //Atributo - Critico daño bonus
   [SerializeField] private float at_CriticoDañoBonus; 
@@ -198,6 +214,7 @@ public class Unidad : MonoBehaviour
  public int estado_Condenado; //En (stacks) turnos. Al llegar a 0 inflige 5% de HP max por cada turno consecutivo que estuvo activo.
  [HideInInspector] public int estado_CondenadoTurnosSeguidos; //Cuenta turnos seguidos con la condena activa para el danio acumulado.
  public int estado_Escudado; //10% por stack de prevenir un ataque de daño fisico. Pierde 1 stack.
+ public int estado_MovimientoAbaratado; //Ligereza -El próximo movimiento a casilla o intercambio cuesta 1 PA menos y consume 1 stack.
  public bool estado_Corrupto;
  public bool unidadVoladora;
  public bool estado_Volando;
@@ -222,6 +239,7 @@ public class Unidad : MonoBehaviour
  [Header("Defensa de equipo")]
  public int reduccionDanioRecibidoPorcentaje;
  public int reduccionDanioCriticoRecibidoPorcentaje;
+ public int aumentoDanioCriticoRecibidoPorcentaje;
  public int resistenciaEstadosPorcentaje;
  public int espinasDanioPlano;
  public int espinasDanioPorcentaje;
@@ -1289,17 +1307,11 @@ void ActivarEfectosCustomBuffsInicioTurno()
 }
   public void TerminaTurnoEstaUnidad(bool fueManualConBotonTerminarTurno = false)
   {
-    bool terminaDescansado = AccionP_actual >= mod_maxAccionP
-      && gameObject.GetComponent<RetrasarTurno>().yaRetraso == false
-      && estaCargando == null
-      && !ChequearTieneReaccionesTipo(-1);
-
     LlamarReacciones(5, this, false); //Reacciones al terminar turno
 
     ReducirDuracionBuffs(); //Se reduce duracion de buffs/debuffs al terminar el turno
 
     ControlarSiEsDescanso();
-    ControlarSiEsAtento(terminaDescansado, fueManualConBotonTerminarTurno);
     
     CasillaPosicion.DesactivarSenialadores();
 
@@ -1332,43 +1344,6 @@ void ControlarSiEsDescanso()
      SumarValentia(2, motivoDescanso);
   }
 
-}
-
-void ControlarSiEsAtento(bool terminaDescansado, bool fueManualConBotonTerminarTurno)
-{
-  //Atento: si termina el turno con AP disponible, gana defensa contra el proximo ataque recibido.
-  if (terminaDescansado)
-  {
-    ForzarTopeBuffNombre("Atento", 3);
-    return;
-  }
-
-  if (!fueManualConBotonTerminarTurno)
-  {
-    return;
-  }
-
-  if (AccionP_actual >= 1 && gameObject.GetComponent<RetrasarTurno>().yaRetraso == false && gameObject.GetComponent<IAUnidad>() == null)
-  {
-    if (CantidadBuffNombre("Atento") >= 3)
-    {
-      ForzarTopeBuffNombre("Atento", 3);
-      return;
-    }
-
-    Buff Atento = new Buff();
-    Atento.buffNombre = "Atento";
-    Atento.buffDescr = "Terminó turno con AP disponible, aumenta defensa vs próximo golpe.";
-    Atento.boolfDebufftBuff = true;
-    Atento.DuracionBuffRondas = -1;
-    Atento.suprimeTextoFlotante = true;
-    Atento.cantDefensa += Mathf.RoundToInt(AccionP_actual);
-    Atento.seConsumeAlRecibirAtaque = true;
-    Atento.esStackeable = true;
-    Atento.AplicarBuff(this);
-    Buff buffComponent = ComponentCopier.CopyComponent(Atento, gameObject);
-    ForzarTopeBuffNombre("Atento", 3);
-  }
 }
 
 private void ResolverCargarHabilidades()
@@ -1604,6 +1579,13 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
   public void NotificarAtaqueRecibido()
   {
+    Unidad unidadRedirigida = ObtenerObjetivoRedirigidoSiCorresponde(null, this);
+    if (unidadRedirigida != null && unidadRedirigida != this)
+    {
+      unidadRedirigida.NotificarAtaqueRecibido();
+      return;
+    }
+
     Buff[] buffs = this.GetComponents<Buff>();
     foreach (Buff buff in buffs)
     {
@@ -1999,6 +1981,13 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
   public async virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
   {
+    Unidad unidadRedirigida = ObtenerObjetivoRedirigidoSiCorresponde(uCausante, this);
+    if (unidadRedirigida != null && unidadRedirigida != this)
+    {
+      unidadRedirigida.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos);
+      return;
+    }
+
     await BattleManager.DelayCombateAsync(delayEfectos); //Delay para que se vea el efecto de daño en la unidad antes de aplicar el daño
     float danioFinal = 0;
     bool textoDanioMostrado = false;
@@ -2366,7 +2355,13 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         ReproducirSonidoArmadura();
         if (danioTotal <= 0)
         {
-          GenerarTextoFlotante(TRADU.i.Traducir("Armadura"), Color.yellow, FloatingTextContext.Resist);
+          IAUnidadEspectroBosque espectroBosque = GetComponent<IAUnidadEspectroBosque>();
+          bool espectroEtereo = espectroBosque != null && espectroBosque.EstaEnPlanoEtereo();
+          string textoResiste = espectroEtereo
+            ? TRADU.i.Traducir("Invulnerable")
+            : TRADU.i.Traducir("Armadura");
+          Color colorResiste = espectroEtereo ? Color.gray : Color.yellow;
+          GenerarTextoFlotante(textoResiste, colorResiste, FloatingTextContext.Resist);
         }
       }
 
@@ -2761,6 +2756,16 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     if (tipoDanio == 10)
     {
       return;
+    }
+
+    int aumentoCrit = Mathf.Max(0, aumentoDanioCriticoRecibidoPorcentaje);
+    if (esCritico && aumentoCrit > 0)
+    {
+      int danioAumentadoCrit = Mathf.RoundToInt(danioTotal * (aumentoCrit / 100f));
+      if (danioAumentadoCrit > 0)
+      {
+        danioTotal += danioAumentadoCrit;
+      }
     }
 
     int reduccionCrit = Mathf.Clamp(reduccionDanioCriticoRecibidoPorcentaje, 0, 95);
@@ -3254,6 +3259,13 @@ private int ObtenerTierUnidadEnemiga(Unidad victima)
 
 public virtual void FalloAtaqueRecibido(Unidad uOrigen, bool melee)
 {
+ Unidad unidadRedirigida = ObtenerObjetivoRedirigidoSiCorresponde(uOrigen, this);
+ if (unidadRedirigida != null && unidadRedirigida != this)
+ {
+   unidadRedirigida.FalloAtaqueRecibido(uOrigen, melee);
+   return;
+ }
+
  ReproducirAnimacionMiss();
  LlamarReacciones(1, uOrigen, melee);
 }
@@ -3347,7 +3359,7 @@ public virtual void SumarValentia(int cant, string motivo = null)
   }
 }
 
-public virtual void AjustarValentiaInicialSinLog(int cant)
+public virtual void AjustarValentiaInicialSinLog(int cant, bool notificarValourGlobal = true)
 {
   if (GetComponent<IAUnidad>() != null || cant == 0)
   {
@@ -3372,7 +3384,10 @@ public virtual void AjustarValentiaInicialSinLog(int cant)
 
   if (BattleManager.Instance != null)
   {
-    BattleManager.Instance.NotificarCambioValourGlobal();
+    if (notificarValourGlobal)
+    {
+      BattleManager.Instance.NotificarCambioValourGlobal();
+    }
   }
 }
 public virtual void ChequearBuffsDeValentia(float inicial, float cambio)
@@ -3894,10 +3909,51 @@ void DesactivarGOconDelay()
 
 public void AplicarDebuffPorAtaquesreiterados(int cant)
 {
+     Unidad unidadRedirigida = ObtenerObjetivoRedirigidoSiCorresponde(null, this);
+     if (unidadRedirigida != null && unidadRedirigida != this)
+     {
+       unidadRedirigida.AplicarDebuffPorAtaquesreiterados(cant);
+       return;
+     }
+
      if(Defensa_AtaquesRepetidosRonda < 3) //Aplica el debuff al objetivo, que al ser atacado pierde 1 defensa por la ronda 
      {
        Defensa_AtaquesRepetidosRonda += cant;
      }
+}
+
+public static void RegistrarRedireccionAtaque(Unidad atacante, Unidad objetivoOriginal, Unidad objetivoReal)
+{
+  redireccionAtaqueAtacante = atacante;
+  redireccionAtaqueObjetivoOriginal = objetivoOriginal;
+  redireccionAtaqueObjetivoReal = objetivoReal;
+}
+
+public static void LimpiarRedireccionAtaque()
+{
+  redireccionAtaqueAtacante = null;
+  redireccionAtaqueObjetivoOriginal = null;
+  redireccionAtaqueObjetivoReal = null;
+}
+
+public static Unidad ObtenerObjetivoRedirigidoSiCorresponde(Unidad atacante, Unidad objetivoInvocado)
+{
+  if (objetivoInvocado == null || redireccionAtaqueObjetivoOriginal == null || redireccionAtaqueObjetivoReal == null)
+  {
+    return null;
+  }
+
+  if (objetivoInvocado != redireccionAtaqueObjetivoOriginal)
+  {
+    return null;
+  }
+
+  if (atacante != null && redireccionAtaqueAtacante != null && atacante != redireccionAtaqueAtacante)
+  {
+    return null;
+  }
+
+  return redireccionAtaqueObjetivoReal;
 }
 
 public float ObtenerdefensaActual()
@@ -4007,6 +4063,7 @@ public void Marcar(int n)
     if (scUnidadCanvas.txtProbabilidad != null)
     {
       float valor = Mathf.Clamp01(probabilidad.Value);
+      bool textoInvulnerable = !string.IsNullOrEmpty(textoPersonalizado) && textoPersonalizado == TRADU.i.Traducir("Invulnerable");
       string texto = string.IsNullOrEmpty(textoPersonalizado)
         ? Mathf.RoundToInt(valor * 100f) + TRADU.i.Traducir(" % Chances")
         : textoPersonalizado;
@@ -4016,7 +4073,11 @@ public void Marcar(int n)
       }
       // Color: rojo (<50%), amarillo (~50%) a verde (>=75%)
       Color col;
-      if (valor < 0.6f)
+      if (textoInvulnerable)
+      {
+        col = Color.gray;
+      }
+      else if (valor < 0.6f)
       {
         col = Color.Lerp(new Color(0.8f, 0f, 0f), new Color(1f, 0.9f, 0f), valor / 0.6f);
       }
@@ -4042,6 +4103,7 @@ public void Marcar(int n)
       scUnidadCanvas.txtProbabilidad.gameObject.SetActive(false);
     }
   }
+
 Unidad anterior = null;
 public void OnMouseEnter() 
 {
@@ -4757,14 +4819,3 @@ void AcomodarSortingLayer()
        
   }
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -159,8 +159,11 @@ public class GolpeEspectroBosque : IAHabilidad
 void AplicarPerdidaEtereo()
 {
  
-      if(gameObject.GetComponent<Unidad>().mod_Armadura > 80)
+      Unidad unidadEspectro = gameObject.GetComponent<Unidad>();
+      if (unidadEspectro == null)
       {
+        return;
+      }
         /////////////////////////////////////////////
         //BUFF ---- Así se aplica un buff/debuff
         Buff buff = new Buff();
@@ -171,11 +174,10 @@ void AplicarPerdidaEtereo()
         buff.cantArmadura -= 100;
         buff.unidadOrigen = scEstaUnidad;
         
-        buff.AplicarBuff(gameObject.GetComponent<Unidad>());
+        unidadEspectro.RemoverBuffNombre("En plano material");
+        buff.AplicarBuff(unidadEspectro);
         // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-        Buff buffComponent = ComponentCopier.CopyComponent(buff, gameObject.GetComponent<Unidad>().gameObject);
-
-      }
+        ComponentCopier.CopyComponent(buff, unidadEspectro.gameObject);
 
 }
 public GameObject VFXEstadoPrefab;
@@ -218,11 +220,14 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
     [SerializeField] private string nombreBuffPlanoMaterial = "En plano material";
     [SerializeField][Range(0f, 1f)] private float alphaEtereo = 0.48f;
     [SerializeField][Range(0f, 1f)] private float alphaPlanoMaterial = 0.92f;
+    [SerializeField] private Color colorFlashEntradaPlanoMaterial = new Color(0.72f, 1f, 0.93f, 1f);
     [SerializeField] private float duracionFlash = 0.08f;
     [SerializeField] private float duracionTransicion = 0.18f;
 
     private Unidad unidad;
     private Image imagenUnidad;
+    private UnidadPoseController poseController;
+    private IAUnidadEspectroBosque configSprites;
     private bool estadoInicializado;
     private bool estabaEnPlanoMaterial;
     private Coroutine rutinaTransicion;
@@ -250,6 +255,16 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
             unidad = GetComponent<Unidad>();
         }
 
+        if (poseController == null)
+        {
+            poseController = GetComponent<UnidadPoseController>();
+        }
+
+        if (configSprites == null)
+        {
+            configSprites = GetComponent<IAUnidadEspectroBosque>();
+        }
+
         if (imagenUnidad == null && unidad != null)
         {
             imagenUnidad = unidad.uImage;
@@ -274,6 +289,7 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
         {
             estadoInicializado = true;
             estabaEnPlanoMaterial = enPlanoMaterial;
+            AplicarSpritesSegunPlano(enPlanoMaterial);
             AplicarAlphaInstantaneo(AlphaObjetivo(enPlanoMaterial));
             return;
         }
@@ -283,8 +299,10 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
             return;
         }
 
+        bool entrarPlanoMaterial = enPlanoMaterial && !estabaEnPlanoMaterial;
+        AplicarSpritesSegunPlano(enPlanoMaterial);
         estabaEnPlanoMaterial = enPlanoMaterial;
-        IniciarTransicion(instantaneo, AlphaObjetivo(enPlanoMaterial));
+        IniciarTransicion(instantaneo, AlphaObjetivo(enPlanoMaterial), entrarPlanoMaterial);
     }
 
     private float AlphaObjetivo(bool enPlanoMaterial)
@@ -292,7 +310,31 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
         return enPlanoMaterial ? alphaPlanoMaterial : alphaEtereo;
     }
 
-    private void IniciarTransicion(bool instantaneo, float alphaObjetivo)
+    private void AplicarSpritesSegunPlano(bool enPlanoMaterial)
+    {
+        if (poseController == null || configSprites == null)
+        {
+            return;
+        }
+
+        if (enPlanoMaterial)
+        {
+            poseController.ConfigurarPoses(
+                configSprites.IDLEimagenPlanofisico,
+                configSprites.MOVimagenPlanofisico,
+                poseController.poseAtacar,
+                configSprites.HABimagenPlanofisico);
+            return;
+        }
+
+        poseController.ConfigurarPoses(
+            configSprites.IDLEimagenEtereo,
+            configSprites.MOVimagenEtereo,
+            poseController.poseAtacar,
+            configSprites.HABimagenEtereo);
+    }
+
+    private void IniciarTransicion(bool instantaneo, float alphaObjetivo, bool flashEntradaPlanoMaterial)
     {
         if (rutinaTransicion != null)
         {
@@ -306,13 +348,15 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
             return;
         }
 
-        rutinaTransicion = StartCoroutine(AnimarCambio(alphaObjetivo));
+        rutinaTransicion = StartCoroutine(AnimarCambio(alphaObjetivo, flashEntradaPlanoMaterial));
     }
 
-    private IEnumerator AnimarCambio(float alphaObjetivo)
+    private IEnumerator AnimarCambio(float alphaObjetivo, bool flashEntradaPlanoMaterial)
     {
         float alphaInicial = imagenUnidad.color.a;
         float alphaFlash = 1f;
+        Color colorInicial = imagenUnidad.color;
+        Color colorFlash = flashEntradaPlanoMaterial ? colorFlashEntradaPlanoMaterial : colorBase;
 
         if (duracionFlash > 0f)
         {
@@ -321,7 +365,7 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
             {
                 t += Time.deltaTime;
                 float k = Mathf.Clamp01(t / duracionFlash);
-                AplicarAlphaInstantaneo(Mathf.Lerp(alphaInicial, alphaFlash, k));
+                AplicarColorInstantaneo(Color.Lerp(colorInicial, colorFlash, k), Mathf.Lerp(alphaInicial, alphaFlash, k));
                 yield return null;
             }
         }
@@ -333,7 +377,7 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
             {
                 t += Time.deltaTime;
                 float k = Mathf.Clamp01(t / duracionTransicion);
-                AplicarAlphaInstantaneo(Mathf.Lerp(alphaFlash, alphaObjetivo, k));
+                AplicarColorInstantaneo(Color.Lerp(colorFlash, colorBase, k), Mathf.Lerp(alphaFlash, alphaObjetivo, k));
                 yield return null;
             }
         }
@@ -342,16 +386,21 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
         rutinaTransicion = null;
     }
 
-    private void AplicarAlphaInstantaneo(float alpha)
+    private void AplicarColorInstantaneo(Color colorObjetivo, float alpha)
     {
         if (imagenUnidad == null)
         {
             return;
         }
 
-        Color color = colorBase;
+        Color color = colorObjetivo;
         color.a = Mathf.Clamp01(alpha);
         imagenUnidad.color = color;
+    }
+
+    private void AplicarAlphaInstantaneo(float alpha)
+    {
+        AplicarColorInstantaneo(colorBase, alpha);
     }
 }
 

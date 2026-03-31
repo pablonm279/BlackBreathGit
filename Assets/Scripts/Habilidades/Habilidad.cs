@@ -37,6 +37,7 @@ public abstract class Habilidad : MonoBehaviour
   //TARGETEO ESPECIAL - 1: Misma Fila  - 2: Misma Columna - 3: Dos Casillas (Vertical) - 4: Tres Casillas (Vertical) - 5: Dos Casillas (Atrás)
   public int targetEspecial = 0;  //1: Misma fila  2: Misma Columna 3: Dos Casillas (Vert) 4: Tres Casillas (Vert)5: Dos Casillas (Atras) 
                                   //6: 3 casillas Vertical y las de atras
+                                  //10: V atras (dos diagonales)
   public int enArea = 0; //Si este valor es mayor a 0, permite tarjetear celdas, afectando a unidades alrededor. 1, cruz, 2 cuadrado, 3 todo
   public int esforzable; //Hasta cuantos AP de su costo permite "deber"
   public bool esCargable; //Si no alcanzan los AP del turno, se castea otro turno cuando se paguen todos.
@@ -618,6 +619,14 @@ public abstract class Habilidad : MonoBehaviour
 
     int resultado = 0;
 
+    bool objetivoUnitario = !esZonal && enArea == 0 && targetEspecial == 0;
+    if (unidadAtacada != null)
+    {
+      ReaccionRiposte.TryPrepararIntercepcion(scEstaUnidad, unidadAtacada, esMelee, objetivoUnitario, out Unidad objetivoIntercepcion, out float defensaIntercepcion);
+      unidadAtacada = objetivoIntercepcion;
+      defensaObjetivo = defensaIntercepcion;
+    }
+
     float tiradaBase = tirada;
     float iTiradaAtaque = tirada;
     float iDadoSolo = tirada;
@@ -637,7 +646,8 @@ public abstract class Habilidad : MonoBehaviour
 
     string objetivoNombre = unidadAtacada != null ? unidadAtacada.uNombre : TRADU.i.Traducir("objetivo");
     int umbralPifia = 1 + sumaPifia;
-    float umbralCritico = 19 - modificadorDadoCritico;
+    float bonusCriticoRecibido = unidadAtacada != null ? unidadAtacada.bonusCritDadoRecibido : 0f;
+    float umbralCritico = 19 - modificadorDadoCritico - bonusCriticoRecibido;
     string textoResultado;
     CombatLogFormatter.CombatOutcome outcome;
 
@@ -838,6 +848,13 @@ public abstract class Habilidad : MonoBehaviour
         unidad.Marcar(1);
       }
 
+      if (DebeMostrarInvulnerableEnProbabilidad(unidad))
+      {
+        unidad.MostrarProbabilidad(0f, TRADU.i.Traducir("Invulnerable"));
+        nuevas.Add(unidad);
+        continue;
+      }
+
       float? prob = CalcularProbabilidadSobreObjetivo(unidad);
       string textoProbabilidad = prob.HasValue ? ObtenerTextoProbabilidadSobreObjetivo(unidad, prob.Value) : null;
       unidad.MostrarProbabilidad(prob, textoProbabilidad);
@@ -933,6 +950,18 @@ public abstract class Habilidad : MonoBehaviour
     }
 
     return $"{porcentaje}% chances de \u00e9xito";
+  }
+
+  private bool DebeMostrarInvulnerableEnProbabilidad(Unidad objetivo)
+  {
+    if (objetivo == null)
+    {
+      return false;
+    }
+
+    bool ataqueFisico = tipoPorcentaje == 1 || tipoPorcentaje == 2;
+    IAUnidadEspectroBosque espectroBosque = objetivo.GetComponent<IAUnidadEspectroBosque>();
+    return ataqueFisico && espectroBosque != null && espectroBosque.EstaEnPlanoEtereo();
   }
 
   private float CalcularProbAtaque(Unidad objetivo, int tipoAtaquePorcentaje)

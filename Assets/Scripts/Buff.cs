@@ -64,6 +64,7 @@ public class Buff : MonoBehaviour
 
   public int cantReduccionDanioRecibidoPorcentaje;
   public int cantReduccionDanioCriticoRecibidoPorcentaje;
+  public int cantAumentoDanioCriticoRecibidoPorcentaje;
   public int cantResistenciaEstadosPorcentaje;
   public int cantEspinasDanioPlano;
   public int cantEspinasDanioPorcentaje;
@@ -77,6 +78,7 @@ public class Buff : MonoBehaviour
   public float cantDanioPorcentaje; //Para buffs estilo +10% daño, no se usaráan +2 de daño por ejemplo. Tiene mas sentido en porcentaje.
 
   public float cantCritDado;
+  public float cantCritDadoRecibido;
   
   public float percCritDaño;
   public float cantCritDaño;
@@ -168,6 +170,11 @@ public class Buff : MonoBehaviour
             unidad.reduccionDanioCriticoRecibidoPorcentaje += cantReduccionDanioCriticoRecibidoPorcentaje;
             unidad.reduccionDanioCriticoRecibidoPorcentaje = Mathf.Clamp(unidad.reduccionDanioCriticoRecibidoPorcentaje, 0, 95);
         }
+        if (cantAumentoDanioCriticoRecibidoPorcentaje != 0)
+        {
+            unidad.aumentoDanioCriticoRecibidoPorcentaje += cantAumentoDanioCriticoRecibidoPorcentaje;
+            if (unidad.aumentoDanioCriticoRecibidoPorcentaje < 0) { unidad.aumentoDanioCriticoRecibidoPorcentaje = 0; }
+        }
         if (cantResistenciaEstadosPorcentaje != 0)
         {
             unidad.resistenciaEstadosPorcentaje += cantResistenciaEstadosPorcentaje;
@@ -198,6 +205,7 @@ public class Buff : MonoBehaviour
         if (cantDanioPorcentaje != 0) { unidad.mod_DanioPorcentaje += cantDanioPorcentaje; }
 
         if (cantCritDado != 0) { unidad.mod_CriticoRangoDado += cantCritDado; }
+        if (cantCritDadoRecibido != 0) { unidad.bonusCritDadoRecibido += cantCritDadoRecibido; }
 
         if (percCritDaño != 0) { unidad.mod_CriticoDañoBonus *= 1 + percCritDaño / 100; }
         if (cantCritDaño != 0) { unidad.mod_CriticoDañoBonus += cantCritDaño; }
@@ -318,6 +326,7 @@ public void RemoverBuff(Unidad unidad)
     if (cantDanioPorcentaje != 0) { unidad.mod_DanioPorcentaje -= cantDanioPorcentaje; }
 
     if (cantCritDado != 0) { unidad.mod_CriticoRangoDado -= cantCritDado; }
+    if (cantCritDadoRecibido != 0) { unidad.bonusCritDadoRecibido -= cantCritDadoRecibido; }
     
     if (percCritDaño != 0) { unidad.mod_CriticoDañoBonus /= 1 + percCritDaño / 100; }
     if (cantCritDaño != 0) { unidad.mod_CriticoDañoBonus -= cantCritDaño; }
@@ -356,6 +365,11 @@ public void RemoverBuff(Unidad unidad)
     {
         unidad.reduccionDanioCriticoRecibidoPorcentaje -= cantReduccionDanioCriticoRecibidoPorcentaje;
         unidad.reduccionDanioCriticoRecibidoPorcentaje = Mathf.Clamp(unidad.reduccionDanioCriticoRecibidoPorcentaje, 0, 95);
+    }
+    if (cantAumentoDanioCriticoRecibidoPorcentaje != 0)
+    {
+        unidad.aumentoDanioCriticoRecibidoPorcentaje -= cantAumentoDanioCriticoRecibidoPorcentaje;
+        if (unidad.aumentoDanioCriticoRecibidoPorcentaje < 0) { unidad.aumentoDanioCriticoRecibidoPorcentaje = 0; }
     }
     if (cantResistenciaEstadosPorcentaje != 0)
     {

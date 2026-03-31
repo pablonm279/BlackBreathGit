@@ -93,7 +93,7 @@ public class IAAlimaniaProliferar : IAHabilidad
     {
       // Filtrar casillas que no tengan ningún componente de tipo Trampa
       var casillasLibres = casillas
-        .Where(c => c.GetComponents<Trampa>().Length == 0)
+        .Where(c => c != null && c.Presente == null && c.GetComponent<Trampa>() == null)
         .OrderBy(x => UnityEngine.Random.value)
         .Take(3)
         .ToList();

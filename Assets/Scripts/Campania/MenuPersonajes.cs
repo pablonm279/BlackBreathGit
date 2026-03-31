@@ -253,6 +253,7 @@ public class MenuPersonajes : MonoBehaviour
       case 3: txtClase.text = TRADU.i.Traducir("Purificadora"); break;
       case 4: txtClase.text = TRADU.i.Traducir("Acechador"); break;
       case 5: txtClase.text = TRADU.i.Traducir("Canalizador"); break;
+      case 6: txtClase.text = TRADU.i.Traducir("Duelista"); break;
         //----
 
 
@@ -1131,6 +1132,29 @@ public class MenuPersonajes : MonoBehaviour
           }
 
         }
+        if (pSel.IDClase == 6) //Duelista
+        {
+          if (pSel.Habilidad_1 == 0 && pSel.GetComponent<REPRESENTACIONAtaquesReveladores>() == null)
+          {
+            ListaElegirHabilidad.AddComponent<REPRESENTACIONAtaquesReveladores>();
+          }
+          if (pSel.Habilidad_2 == 0 && pSel.GetComponent<REPRESENTACIONEvasionMaestra>() == null)
+          {
+            ListaElegirHabilidad.AddComponent<REPRESENTACIONEvasionMaestra>();
+          }
+          if (pSel.Habilidad_3 == 0 && pSel.GetComponent<CargaDeEstoque>() == null)
+          {
+            ListaElegirHabilidad.AddComponent<CargaDeEstoque>();
+          }
+          if (pSel.Habilidad_4 == 0 && pSel.GetComponent<Riposte>() == null)
+          {
+            ListaElegirHabilidad.AddComponent<Riposte>();
+          }
+          if (pSel.Habilidad_5 == 0 && pSel.GetComponent<AFondo>() == null)
+          {
+            ListaElegirHabilidad.AddComponent<AFondo>();
+          }
+        }
 
 
 
@@ -1139,6 +1163,12 @@ public class MenuPersonajes : MonoBehaviour
 
           poolSortear.Add(habilidad);
 
+        }
+        if (poolSortear.Count == 0)
+        {
+          HabilidadBaseNueva.SetActive(false);
+          yaTiroHabRand = false;
+          return;
         }
         // Verificar si hay más de 3 habilidades en la lista
         if (poolSortear.Count > 3)

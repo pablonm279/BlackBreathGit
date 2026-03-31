@@ -18,6 +18,11 @@ public class MenuCaravana : MonoBehaviour
     [SerializeField] GameObject MenuSequitos;
     [SerializeField] GameObject MenuPersonajes;
 
+    public bool TieneMenuAbierto =>
+        (MenuMejoras != null && MenuMejoras.activeInHierarchy)
+        || (MenuSequitos != null && MenuSequitos.activeInHierarchy)
+        || (MenuPersonajes != null && MenuPersonajes.activeInHierarchy);
+
      //Antorchas de Pie
     [SerializeField] TextMeshProUGUI txtTierMejoraAntorchas;
     [SerializeField] TextMeshProUGUI txtCostoMejoraAntorchas;
@@ -58,7 +63,7 @@ public class MenuCaravana : MonoBehaviour
 
     public bool SeApretoESC()
     { 
-        bool habiaalgoabierto = MenuMejoras.activeInHierarchy || MenuSequitos.activeInHierarchy || MenuPersonajes.activeInHierarchy;
+        bool habiaalgoabierto = TieneMenuAbierto;
         
         MenuMejoras.SetActive(false);
         MenuSequitos.SetActive(false);

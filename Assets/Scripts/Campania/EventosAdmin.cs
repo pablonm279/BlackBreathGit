@@ -17,7 +17,7 @@ public class EventosAdmin : MonoBehaviour
    const int DificultadCarroEncajado = 13;
    const int DificultadMarcasDelCorreo = 10;
    const int DificultadPulsoDeMando = 11;
-   const int DificultadHombrosFirmes = 12;
+   const int DificultadHombrosFirmes = 13;
    const int DificultadManoCierta = 13;
    const int DificultadDosMiradas = 9;
    const int DificultadArengaEnLaLluvia = 11;
@@ -689,7 +689,7 @@ public class EventosAdmin : MonoBehaviour
             retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
 
             txtDescripcion.text = TRADU.i.Traducir("Durante la noche, <b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> y <b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b> junto con algunos Civiles comienzan a contar chistes y anécdotas divertidas, riendo y disfrutando del momento.\n");
-            txtDescripcion.text += TRADU.i.Traducir("La atmásfera se vuelve más ligera y optimista, y por un breve instante, el peso de la situación parece desvanecerse.\n\n\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("La atmósfera se vuelve más ligera y optimista, y por un breve instante, el peso de la situación parece desvanecerse.\n\n\n\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>+5 Esperanza</b>\n\n</color>");
@@ -885,23 +885,23 @@ public class EventosAdmin : MonoBehaviour
 
             participanteEvento1 = CampaignManager.Instance.ObtenerPersonajeAleatorio();
             retratoParticipante1.SetActive(participanteEvento1 != null);
-            txtDescripcion.text = TRADU.i.Traducir("Un Civil agotado se desploma justo cuando la fila empieza a recuperar ritmo. Si nadie lo asiste, el grupo volverá a frenarse y crecerá el malhumor.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Un Civil agotado se desploma en el camino. Nadie parece notarlo, o darle importancia alguna y pasan a su lado como si nada.\n\n");
             if (participanteEvento1 != null)
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
-                txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede cargarlo y sostener el paso hasta la próxima pausa.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Tirada de Salvación: TS Fortaleza DC ") + DificultadHombrosFirmes + TRADU.i.Traducir(" <i>(TS Fortaleza actual: ") + ObtenerTSFortalezaTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, ganará 35 Experiencia y la Caravana obtendrá -1 Fatiga. Si falla, la Caravana ganará +1 Fatiga.</color>\n\n");
+                txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> se ofrece a levantarlo y cargarlo. Pero puedes optar por ordenarle que guarde sus fuerzas para futuros peligros del camino.\n\n");
+                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Tirada de Salvación: TS Fortaleza DC ") + DificultadHombrosFirmes + TRADU.i.Traducir(" <i>(TS Fortaleza actual: ") + ObtenerTSFortalezaTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, ganará 50 Experiencia y la Caravana obtendrá +5 Esperanza. Si falla, obtendrá Fatigado.</color>\n\n");
             }
             else
             {
-                txtDescripcion.text += TRADU.i.Traducir("Uno de los Héroes puede cargarlo y sostener el paso hasta la próxima pausa.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si lo intentas, hará una Tirada de Salvación: TS Fortaleza DC 12. Si la supera, ganará 35 Experiencia y la Caravana obtendrá -1 Fatiga. Si falla, la Caravana ganará +1 Fatiga.</color>\n\n");
+                txtDescripcion.text += TRADU.i.Traducir("Uno de los Héroes se ofrece a levantarlo y cargarlo. Pero puedes optar por ordenarle que guarde sus fuerzas para futuros peligros del camino.\n\n");
+                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si lo intentas, hará una Tirada de Salvación: TS Fortaleza DC 13. Si la supera, ganará 50 Experiencia y la Caravana obtendrá +5 Esperanza. Si falla, obtendrá Fatigado.</color>\n\n");
             }
 
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides relevarlo entre varios, +2 Esperanza.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides dejar al Civil, -5 Esperanza. -1 Civil.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Cargarlo");
-            textBotonB.text = TRADU.i.Traducir("Relevarlo");
+            textBotonB.text = TRADU.i.Traducir("Dejarlo");
         }
         if (ID == 214) // Mano Cierta
         {
@@ -937,7 +937,7 @@ public class EventosAdmin : MonoBehaviour
             participanteEvento2 = CampaignManager.Instance.ObtenerPersonajeAleatorio(participanteEvento1 != null ? new List<Personaje> { participanteEvento1 } : null);
             retratoParticipante1.SetActive(participanteEvento1 != null);
             retratoParticipante2.SetActive(participanteEvento2 != null);
-            txtDescripcion.text = TRADU.i.Traducir("La ruta se abre en varias direcciones parecidas y las pocas señales útiles parecen haberse cruzado unas con otras. No es un gran misterio, pero sí uno de esos momentos en los que una lectura fina puede ahorrar problemas más adelante.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("La ruta se abre en varias direcciones parecidas y las pocas señales útiles parecen haberse cruzado unas con otras. Dos miembros de la caravana parecen tener opiniones encontradas. ¿A quién escucharás?\n\n");
             if (participanteEvento1 != null)
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
@@ -2796,23 +2796,23 @@ public class EventosAdmin : MonoBehaviour
         if (eventoActual == 213)
         {
             int tirada = UnityEngine.Random.Range(1, 21);
-            int tsFortaleza = ObtenerTSFortalezaTotal(participanteEvento1);
+            int tsFortaleza = participanteEvento1 != null ? ObtenerTSFortalezaTotal(participanteEvento1) : 0;
             int resultado = tirada + tsFortaleza;
 
             if (resultado >= DificultadHombrosFirmes && participanteEvento1 != null)
             {
-                participanteEvento1.RecibirExperiencia(35);
-                CampaignManager.Instance.CambiarFatigaActual(-1);
+                participanteEvento1.RecibirExperiencia(50);
+                CampaignManager.Instance.CambiarEsperanzaActual(5);
                 CampaignManager.Instance.EscribirLog(
                     TRADU.i.Traducir("-") + participanteEvento1.sNombre
                     + TRADU.i.Traducir(" superó su Tirada de Salvación de Fortaleza (1d20: ")
                     + tirada + TRADU.i.Traducir(" + ")
                     + tsFortaleza + TRADU.i.Traducir(" vs DC ")
-                    + DificultadHombrosFirmes + TRADU.i.Traducir("), sostuvo el paso de la Caravana y alivió su cansancio. +35 Experiencia, -1 Fatiga."));
+                    + DificultadHombrosFirmes + TRADU.i.Traducir("), cargó al Civil durante la marcha. +50 Experiencia, +5 Esperanza."));
             }
-            else
+            else if (participanteEvento1 != null)
             {
-                CampaignManager.Instance.CambiarFatigaActual(1);
+                participanteEvento1.Camp_Fatigado = true;
             }
             gameObject.SetActive(false);
         }
@@ -3486,7 +3486,8 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 213)
         {
-            CampaignManager.Instance.CambiarEsperanzaActual(2);
+            CampaignManager.Instance.CambiarEsperanzaActual(-5);
+            CampaignManager.Instance.CambiarCivilesActuales(-1);
             gameObject.SetActive(false);
         }
         if (eventoActual == 214)

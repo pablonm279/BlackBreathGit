@@ -21,6 +21,7 @@ public class BattleManager : MonoBehaviour
   public GameObject prefabUnidadPurificadora;
   public GameObject prefabUnidadAcechador;
   public GameObject prefabUnidadCanalizador;
+  public GameObject prefabUnidadDuelista;
   public GameObject prefabOstaculo;
   public GameObject prefabUnidadEnemiga;
 
@@ -476,7 +477,7 @@ public class BattleManager : MonoBehaviour
     string rondaInicio = (TRADU.i != null)
       ? TRADU.i.Traducir("==== Ronda ") + RondaNro + TRADU.i.Traducir(" comienza ====")
       : "==== Ronda " + RondaNro + " comienza ====";
-    EscribirLog(rondaInicio);
+    EscribirLog(rondaInicio, false);
 
     OnRondaNueva?.Invoke(this, EventArgs.Empty);
 
@@ -701,7 +702,6 @@ public class BattleManager : MonoBehaviour
     {
       enemigo.SetActive(true);
       ladoA.c1x3.PonerObjetoEnCasillaAnimado(enemigo, 2);
-      scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
       unidadRefuerzo.EstablecerAPActualA(0);
       seColoco = true;
     }
@@ -709,7 +709,6 @@ public class BattleManager : MonoBehaviour
     {
       enemigo.SetActive(true);
       ladoA.c1x2.PonerObjetoEnCasillaAnimado(enemigo, 2);
-      scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
       unidadRefuerzo.EstablecerAPActualA(0);
       seColoco = true;
     }
@@ -717,7 +716,6 @@ public class BattleManager : MonoBehaviour
     {
       enemigo.SetActive(true);
       ladoA.c1x4.PonerObjetoEnCasillaAnimado(enemigo, 2);
-      scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
       unidadRefuerzo.EstablecerAPActualA(0);
       seColoco = true;
     }
@@ -725,7 +723,6 @@ public class BattleManager : MonoBehaviour
     {
       enemigo.SetActive(true);
       ladoA.c1x5.PonerObjetoEnCasillaAnimado(enemigo, 2);
-      scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
       unidadRefuerzo.EstablecerAPActualA(0);
       seColoco = true;
     }
@@ -733,7 +730,6 @@ public class BattleManager : MonoBehaviour
     {
       enemigo.SetActive(true);
       ladoA.c1x1.PonerObjetoEnCasillaAnimado(enemigo, 2);
-      scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
       unidadRefuerzo.EstablecerAPActualA(0);
       seColoco = true;
     }
@@ -743,13 +739,12 @@ public class BattleManager : MonoBehaviour
       return false;
     }
 
-    string nombreRefuerzoEnemigo = TRADU.i != null ? TRADU.i.Traducir(unidadRefuerzo.uNombre) : unidadRefuerzo.uNombre;
+    string nombreRefuerzoEnemigo = ObtenerNombreTraducidoParaLog(unidadRefuerzo.uNombre);
     string txtSeUnio = TRADU.i != null ? TRADU.i.Traducir(" se ha unido a la batalla. Quedan ") : " se ha unido a la batalla. Quedan ";
     string txtRefuerzosRestantes = TRADU.i != null ? TRADU.i.Traducir(" refuerzos.</color> ") : " refuerzos.</color> ";
-    EscribirLog("<color=#d92b08>" + nombreRefuerzoEnemigo + txtSeUnio + (enemigosRefuerzos.Count() - 1) + txtRefuerzosRestantes);
+    EscribirLog("<color=#d92b08>" + nombreRefuerzoEnemigo + txtSeUnio + (enemigosRefuerzos.Count() - 1) + txtRefuerzosRestantes, false);
     AplicarImpactoValentiaPorRefuerzo(true, unidadRefuerzo);
     AplicarEfectosInicioCombate(unidadRefuerzo);
-    scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
     return true;
   }
   bool MandarRefuerzoAliado(GameObject enemigo)
@@ -767,7 +762,6 @@ public class BattleManager : MonoBehaviour
     {
       enemigo.SetActive(true);
       ladoB.c1x3.PonerObjetoEnCasillaAnimado(enemigo, 1);
-      scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
       unidadRefuerzo.EstablecerAPActualA(0);
       seColoco = true;
     }
@@ -775,7 +769,6 @@ public class BattleManager : MonoBehaviour
     {
       enemigo.SetActive(true);
       ladoB.c1x2.PonerObjetoEnCasillaAnimado(enemigo, 1);
-      scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
       unidadRefuerzo.EstablecerAPActualA(0);
       seColoco = true;
     }
@@ -783,7 +776,6 @@ public class BattleManager : MonoBehaviour
     {
       enemigo.SetActive(true);
       ladoB.c1x4.PonerObjetoEnCasillaAnimado(enemigo, 1);
-      scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
       unidadRefuerzo.EstablecerAPActualA(0);
       seColoco = true;
     }
@@ -791,7 +783,6 @@ public class BattleManager : MonoBehaviour
     {
       enemigo.SetActive(true);
       ladoB.c1x5.PonerObjetoEnCasillaAnimado(enemigo, 1);
-      scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
       unidadRefuerzo.EstablecerAPActualA(0);
       seColoco = true;
     }
@@ -799,7 +790,6 @@ public class BattleManager : MonoBehaviour
     {
       enemigo.SetActive(true);
       ladoB.c1x1.PonerObjetoEnCasillaAnimado(enemigo, 1);
-      scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
       unidadRefuerzo.EstablecerAPActualA(0);
       seColoco = true;
     }
@@ -810,12 +800,11 @@ public class BattleManager : MonoBehaviour
     }
 
     AplicarEfectosInicioCombate(unidadRefuerzo);
-    string nombreRefuerzoAliado = TRADU.i != null ? TRADU.i.Traducir(unidadRefuerzo.uNombre) : unidadRefuerzo.uNombre;
+    string nombreRefuerzoAliado = ObtenerNombreTraducidoParaLog(unidadRefuerzo.uNombre);
     string txtSeUnio = TRADU.i != null ? TRADU.i.Traducir(" se ha unido a la batalla. Quedan ") : " se ha unido a la batalla. Quedan ";
     string txtRefuerzosRestantes = TRADU.i != null ? TRADU.i.Traducir(" refuerzos.</color> ") : " refuerzos.</color> ";
-    EscribirLog("<color=#d92b08>" + nombreRefuerzoAliado + txtSeUnio + (aliadosRefuerzos.Count() - 1) + txtRefuerzosRestantes);
+    EscribirLog("<color=#d92b08>" + nombreRefuerzoAliado + txtSeUnio + (aliadosRefuerzos.Count() - 1) + txtRefuerzosRestantes, false);
     AplicarImpactoValentiaPorRefuerzo(false, unidadRefuerzo);
-    scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
     return true;
   }
 
@@ -826,8 +815,10 @@ public class BattleManager : MonoBehaviour
       return;
     }
 
-    string nombreRefuerzo = (TRADU.i != null && refuerzo != null) ? TRADU.i.Traducir(refuerzo.uNombre) : (refuerzo != null ? refuerzo.uNombre : "");
+    string nombreRefuerzo = refuerzo != null ? ObtenerNombreTraducidoParaLog(refuerzo.uNombre) : "";
     bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    int cambioValentia = esRefuerzoEnemigo ? -1 : 1;
+    bool huboImpacto = false;
 
     foreach (Unidad aliado in ladoB.unidadesLado)
     {
@@ -836,22 +827,46 @@ public class BattleManager : MonoBehaviour
         continue;
       }
 
-      string nombreAliado = TRADU.i != null ? TRADU.i.Traducir(aliado.uNombre) : aliado.uNombre;
-      if (esRefuerzoEnemigo)
+      aliado.AjustarValentiaInicialSinLog(cambioValentia, false);
+      huboImpacto = true;
+    }
+
+    if (!huboImpacto)
+    {
+      return;
+    }
+
+    string mensajeValentia = esRefuerzoEnemigo
+      ? (enIngles
+        ? "Enemy reinforcement " + nombreRefuerzo + " lowers allied valour (-1 VAL)."
+        : "El refuerzo enemigo " + nombreRefuerzo + " reduce la Valentía aliada (-1 VAL).")
+      : (enIngles
+        ? "Allied reinforcement " + nombreRefuerzo + " boosts allied valour (+1 VAL)."
+        : "El refuerzo aliado " + nombreRefuerzo + " aumenta la Valentía aliada (+1 VAL).");
+    EscribirLog(CombatLogFormatter.EventoValour(mensajeValentia), false);
+
+    if (scUIInfoChar != null)
+    {
+      Unidad unidadInfo = scUIInfoChar.unidadMostrada;
+      bool debeRefrescarUnidadMostrada = unidadInfo != null
+        && ladoB.unidadesLado.Contains(unidadInfo)
+        && unidadInfo.HP_actual > 0;
+      bool debeRefrescarActivaAutomatica = !scUIInfoChar.hayUnidadSeleccionadaParaInfo
+        && unidadActiva != null
+        && ladoB.unidadesLado.Contains(unidadActiva)
+        && unidadActiva.HP_actual > 0;
+
+      if (debeRefrescarUnidadMostrada)
       {
-        string motivoNegativo = enIngles
-          ? nombreAliado + " is shaken by enemy reinforcement " + nombreRefuerzo
-          : nombreAliado + " se desmoraliza por el refuerzo enemigo " + nombreRefuerzo;
-        aliado.SumarValentia(-1, motivoNegativo);
+        scUIInfoChar.ActualizarInfoChar(unidadInfo);
       }
-      else
+      else if (debeRefrescarActivaAutomatica)
       {
-        string motivoPositivo = enIngles
-          ? nombreAliado + " is encouraged by allied reinforcement " + nombreRefuerzo
-          : nombreAliado + " se anima con el refuerzo aliado " + nombreRefuerzo;
-        aliado.SumarValentia(1, motivoPositivo);
+        scUIInfoChar.ActualizarInfoChar(unidadActiva);
       }
     }
+
+    NotificarCambioValourGlobal();
   }
 
   public float ObtenerValourGlobalAliadosPctActual()
@@ -1611,6 +1626,11 @@ public class BattleManager : MonoBehaviour
       return;
     }
 
+    if (HabilidadActiva is CargaDeEstoque)
+    {
+      return;
+    }
+
     if (!DebeRestringirMeleePorInmovilizacion(unidadActiva, HabilidadActiva.esMelee))
     {
       return;
@@ -1908,21 +1928,59 @@ public class BattleManager : MonoBehaviour
   private CancellationTokenSource cambioEstadoPausaDelayCts = new CancellationTokenSource();
   private GameObject goTextoPausaCombate;
   private TextMeshProUGUI txtPausaCombate;
+  private readonly Dictionary<string, string> cacheNombresTraducidosLog = new Dictionary<string, string>();
+  private int idiomaCacheNombresTraducidosLog = int.MinValue;
 
-  public void EscribirLog(string log)
+  public void EscribirLog(string log, bool normalizarNombresActores = true)
   {
     if (logDeCampania == null) return;
 
-    string logNormalizado = TraducirNombresActoresEnLog(log);
+    string logNormalizado = normalizarNombresActores
+      ? TraducirNombresActoresEnLog(log)
+      : log;
 
     // Asegura que el logger sabe el dia actual
     logDeCampania.SetDiaActual(RondaNro);
     logDeCampania.Escribir(logNormalizado, true);
   }
 
+  private string ObtenerNombreTraducidoParaLog(string nombreOriginal)
+  {
+    if (string.IsNullOrWhiteSpace(nombreOriginal) || TRADU.i == null)
+    {
+      return nombreOriginal;
+    }
+
+    int idiomaActual = TRADU.i.nIdioma;
+    if (idiomaActual == TRADU.IdiomaEspanol)
+    {
+      return nombreOriginal;
+    }
+
+    if (idiomaCacheNombresTraducidosLog != idiomaActual)
+    {
+      cacheNombresTraducidosLog.Clear();
+      idiomaCacheNombresTraducidosLog = idiomaActual;
+    }
+
+    if (cacheNombresTraducidosLog.TryGetValue(nombreOriginal, out string nombreTraducido))
+    {
+      return nombreTraducido;
+    }
+
+    nombreTraducido = TRADU.i.Traducir(nombreOriginal);
+    if (string.IsNullOrWhiteSpace(nombreTraducido))
+    {
+      nombreTraducido = nombreOriginal;
+    }
+
+    cacheNombresTraducidosLog[nombreOriginal] = nombreTraducido;
+    return nombreTraducido;
+  }
+
   private string TraducirNombresActoresEnLog(string log)
   {
-    if (string.IsNullOrEmpty(log) || TRADU.i == null)
+    if (string.IsNullOrEmpty(log) || TRADU.i == null || TRADU.i.nIdioma == TRADU.IdiomaEspanol)
     {
       return log;
     }
@@ -1936,7 +1994,7 @@ public class BattleManager : MonoBehaviour
         return;
       }
 
-      string nombreTraducido = TRADU.i.Traducir(nombreOriginal);
+      string nombreTraducido = ObtenerNombreTraducidoParaLog(nombreOriginal);
       if (string.IsNullOrWhiteSpace(nombreTraducido) || nombreTraducido == nombreOriginal)
       {
         return;
@@ -2226,6 +2284,29 @@ public class BattleManager : MonoBehaviour
 
     int ordenFinal = CalcularOrdenDuranteOscurecedor(posY, esParticipante, ordenOscurecedor);
     RenderOrderHelper.AplicarOrdenBase(objetivo, ordenFinal, "UI3D");
+  }
+
+  public void MarcarUnidadComoParticipanteDuranteOscurecedor(Unidad unidad)
+  {
+    if (unidad == null || oscurecedor == null || !oscurecedor.activeInHierarchy)
+    {
+      return;
+    }
+
+    Transform oscurecedorTransform = oscurecedor.transform;
+    int posY = unidad.CasillaPosicion != null ? unidad.CasillaPosicion.posY : 0;
+    int ordenOscurecedor = ObtenerOrdenOscurecedor(oscurecedorTransform);
+    AplicarOrdenDuranteOscurecedor(unidad.gameObject, posY, true, ordenOscurecedor);
+
+    Transform sombra = unidad.gameObject.transform.GetChild(3).GetChild(1).GetChild(1);
+    sombra.gameObject.SetActive(false);
+    if (sombra.childCount > 0)
+    {
+      sombra.GetChild(0).gameObject.SetActive(true);
+    }
+
+    unidad.gameObject.transform.GetChild(3).GetChild(0).gameObject.SetActive(true);
+    AjustarOrdenRespectoOscurecedor(unidad.transform, oscurecedorTransform, false);
   }
 
   private void ReordenarTodoPorY()

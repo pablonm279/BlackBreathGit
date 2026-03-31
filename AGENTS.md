@@ -51,3 +51,12 @@
 - Priorizar cambios en C# antes que ediciones manuales sobre prefabs o escenas.
 - Cuando un cambio afecte UI o contenido serializado, validar primero el script fuente relacionado.
 - Si aparece una referencia duplicada entre `Assets/...` y `GDD - Untitled/Assets/...`, tomar `Assets/...` como fuente primaria salvo evidencia en contra.
+
+## Flujo para cambios chicos
+
+- Para pedidos puntuales y chicos, aplicar parche minimo sobre el bloque exacto.
+- No hacer refactors, limpiezas, renombres, reordenamientos ni mover codigo salvo pedido explicito.
+- Si el archivo ya tiene cambios previos, tocar solo las lineas necesarias para la tarea. Evitar reescrituras amplias.
+- Si la tarea queda resuelta quitando una llamada, condicion o valor puntual, preferir eso antes que una limpieza estructural.
+- Despues de editar, revisar el cambio puntual con `git diff -- <archivo>`.
+- Si existe una validacion rapida aplicable, correr solo una verificacion acotada antes de cerrar.

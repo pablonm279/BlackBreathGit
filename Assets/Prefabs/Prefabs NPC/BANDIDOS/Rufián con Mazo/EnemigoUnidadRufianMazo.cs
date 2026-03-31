@@ -25,7 +25,7 @@ public class EnemigoUnidadRufianMazo : Unidad
 
             // BUFF ---- Así se aplica un buff/debuff
             Buff buff = new Buff();
-            buff.buffNombre = "<b>¿Enfurecido!</b>";
+            buff.buffNombre = "<b>¡Enfurecido!</b>";
             buff.boolfDebufftBuff = true;
             buff.DuracionBuffRondas = 2;
             buff.cantDanioPorcentaje += 15;

@@ -167,6 +167,12 @@ public class BotonHabilidad : MonoBehaviour
         if (HabilidadRepresentada.cooldownActual > 0)
         { return; } //Control extra para que no se puedan activar habilidades en cooldown
 
+        if (HabilidadRepresentada is CargaDeEstoque cargaDeEstoque && !cargaDeEstoque.PuedeActivarseDesdePosicionActual(out string motivoCarga))
+        {
+            BattleManager.Instance.unidadActiva?.GenerarTextoFlotante(TRADU.i.Traducir(motivoCarga), Color.gray, FloatingTextContext.Generic);
+            return;
+        }
+
         if (HabilidadRepresentada.esMelee && !PuedeUsarHabilidadMelee())
         {
             Unidad unidadActiva = BattleManager.Instance.unidadActiva;
@@ -470,6 +476,11 @@ public class BotonHabilidad : MonoBehaviour
         if (HabilidadRepresentada == null || !HabilidadRepresentada.esMelee)
         {
             return true;
+        }
+
+        if (HabilidadRepresentada is CargaDeEstoque cargaDeEstoque)
+        {
+            return cargaDeEstoque.PuedeActivarseDesdePosicionActual(out _);
         }
 
         if (HabilidadRepresentada.nombre.Contains("Destruir Obstaculo"))

@@ -246,6 +246,7 @@ public static class ItemTooltipFormatter
             case 3: return "Purificadora";
             case 4: return "Acechador";
             case 5: return "Canalizador";
+            case 6: return "Duelista";
             default: return string.Empty;
         }
     }
@@ -821,6 +822,7 @@ public static class ItemTooltipFormatter
             if (txt == "Purificadora") { return "Purifier"; }
             if (txt == "Acechador") { return "Stalker"; }
             if (txt == "Canalizador") { return "Channeler"; }
+            if (txt == "Duelista") { return "Duelist"; }
             if (txt == "Rareza: ") { return "Rarity: "; }
             if (txt == "Común") { return "Common"; }
             if (txt == "Infrecuente") { return "Uncommon"; }

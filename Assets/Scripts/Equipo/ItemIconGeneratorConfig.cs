@@ -34,6 +34,7 @@ public class ItemIconGeneratorConfig : ScriptableObject
     public Sprite iconoArmaduraPurificadora;
     public Sprite iconoArmaduraAcechador;
     public Sprite iconoArmaduraCanalizador;
+    public Sprite iconoArmaduraDuelista;
 
     [Header("Overlays Otros")]
     public Sprite iconoAccesorioAnillo;

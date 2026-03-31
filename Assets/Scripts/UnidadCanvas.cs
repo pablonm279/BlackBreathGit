@@ -8,6 +8,7 @@ public class UnidadCanvas : MonoBehaviour
 {
     private const string RutaFuenteTextoFlotanteDanio = "Fuentes/SpectralSC/TextoFlotanteDaño";
     private const float EscalaTextoProbabilidad = 0.85f;
+    private const float OffsetYTextoProbabilidad = 12f;
     private const float DuracionMinimaRotuloHabilidadIA = 4f;
 
     public GameObject unidadCanvas;
@@ -408,6 +409,7 @@ public class UnidadCanvas : MonoBehaviour
             h = MezclarHash(h, unidad.estado_Volando ? 1 : 0);
             h = MezclarHash(h, unidad.estado_Condenado);
             h = MezclarHash(h, unidad.estado_Escudado);
+            h = MezclarHash(h, unidad.estado_MovimientoAbaratado);
 
             // Buffs visibles en barra (mismo filtro de render)
             List<BuffUIHelper.BuffStack> buffStacks = BuffUIHelper.GetVisibleBuffStacks(unidad, true);
@@ -478,12 +480,6 @@ public class UnidadCanvas : MonoBehaviour
         txtProbabilidad = goNuevo.GetComponent<TextMeshProUGUI>() ?? goNuevo.GetComponentInChildren<TextMeshProUGUI>();
         ConfigurarTextoProbabilidad(txtProbabilidad);
 
-        RectTransform rt = txtProbabilidad != null ? txtProbabilidad.GetComponent<RectTransform>() : null;
-        if (rt != null)
-        {
-            rt.anchoredPosition = new Vector2(0f, 18f);
-        }
-
         if (txtProbabilidad != null)
         {
             txtProbabilidad.gameObject.SetActive(false);
@@ -495,6 +491,13 @@ public class UnidadCanvas : MonoBehaviour
         if (texto == null)
         {
             return;
+        }
+
+        texto.raycastTarget = false;
+        RectTransform rectTransform = texto.rectTransform;
+        if (rectTransform != null)
+        {
+            rectTransform.anchoredPosition = new Vector2(0f, OffsetYTextoProbabilidad);
         }
 
         TextMeshProUGUI textoReferencia = PrefabtxtDaño != null
@@ -914,6 +917,11 @@ public class UnidadCanvas : MonoBehaviour
       {
          GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
          GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(30, -1, true);
+      }
+      if (scUnidadMostrada.estado_MovimientoAbaratado > 0)
+      {
+         GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
+         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(31, -1, true);
       }
     }
 

@@ -9,59 +9,100 @@ using Unity.VisualScripting;
 
 public class UITarjetaBarraOrdenTurno : MonoBehaviour
 {
-
-
     public Slider BarraVida;
-    public Image Retrato; 
+    public Image Retrato;
     public Unidad scUnidad;
     public UIInfoChar scUInfochar;
     public GameObject seleccionado;
     public GameObject Actual;
+    public GameObject oscurecedor;
 
-    public void Start()
+    private BattleManager battleManager;
+    private int ordenIndex = -1;
+    private bool eventosRegistrados;
+
+    private void Awake()
     {
-
-        Habilidad.OnUsarHabilidad += Habilidad_OnUsarHabilidad;
-        BattleManager.Instance.OnTurnoNuevo += BattleManager_OnTurnoNuevo;
-
-        scUInfochar = BattleManager.Instance.scUIInfoChar;
-
+        ActualizarReferencias();
     }
 
-    public GameObject oscurecedor;
+    private void OnEnable()
+    {
+        ActualizarReferencias();
+        SuscribirEventos();
+        RefrescarVisuales();
+    }
+
+    private void OnDisable()
+    {
+        DesuscribirEventos();
+    }
 
     void Update()
     {
-        if (scUInfochar.hayUnidadSeleccionadaParaInfo)
+        if (scUnidad == null || scUInfochar == null)
         {
-            if (scUInfochar.unidadMostrada != null)
-            {
-                if (scUInfochar.unidadMostrada == scUnidad)
-                {
-                    seleccionado.SetActive(true);
+            return;
+        }
 
-                }
-                else
-                { seleccionado.SetActive(false); }
-            }
-            else
-            { seleccionado.SetActive(false); }
-        }
-        else { seleccionado.SetActive(false); }
-        
-          int indexunidad = BattleManager.Instance.lUnidadesTotal.IndexOf(scUnidad);
-         int indexTurno = BattleManager.Instance.indexTurno-1;
-
-          if (indexunidad < indexTurno)
-        {
-            oscurecedor.SetActive(true);
-        }
-        else
-        {
-            oscurecedor.SetActive(false);
-        }
-       
+        ActualizarSeleccionado();
+        ActualizarOscurecedor();
     }
+
+    private void ActualizarReferencias()
+    {
+        if (battleManager == null)
+        {
+            battleManager = BattleManager.Instance;
+        }
+
+        if (scUInfochar == null && battleManager != null)
+        {
+            scUInfochar = battleManager.scUIInfoChar;
+        }
+    }
+
+    private void SuscribirEventos()
+    {
+        if (eventosRegistrados)
+        {
+            return;
+        }
+
+        Habilidad.OnUsarHabilidad += Habilidad_OnUsarHabilidad;
+        if (battleManager != null)
+        {
+            battleManager.OnTurnoNuevo += BattleManager_OnTurnoNuevo;
+        }
+
+        eventosRegistrados = true;
+    }
+
+    private void DesuscribirEventos()
+    {
+        if (!eventosRegistrados)
+        {
+            return;
+        }
+
+        Habilidad.OnUsarHabilidad -= Habilidad_OnUsarHabilidad;
+        if (battleManager != null)
+        {
+            battleManager.OnTurnoNuevo -= BattleManager_OnTurnoNuevo;
+        }
+
+        eventosRegistrados = false;
+    }
+
+    public void Configurar(Unidad unidad, int indiceOrden)
+    {
+        scUnidad = unidad;
+        ordenIndex = indiceOrden;
+        ActualizarReferencias();
+        ActualizarInfo();
+        RefrescarVisuales();
+    }
+
     public void ActualizarColores()
     {
      /*   if (this == null || gameObject == null)
@@ -115,80 +156,131 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
             marcadorSeleccion.SetActive(false);
         }*/
     }
+
     public void ActualizarInfo()
     {
-      
-        BarraVida.value = scUnidad.HP_actual / scUnidad.mod_maxHP;
+        if (scUnidad == null)
+        {
+            return;
+        }
 
-        Retrato.sprite = scUnidad.uRetrato;
-        
-       
-     
+        if (BarraVida != null)
+        {
+            BarraVida.value = scUnidad.mod_maxHP > 0 ? scUnidad.HP_actual / scUnidad.mod_maxHP : 0f;
+        }
+
+        if (Retrato != null)
+        {
+            Retrato.sprite = scUnidad.uRetrato;
+        }
+
         ActualizarColores();
     }
 
     private void Habilidad_OnUsarHabilidad(object sender, EventArgs empty)
     {
-        ActualizarInfo(); 
+        if (!isActiveAndEnabled)
+        {
+            return;
+        }
+
+        ActualizarInfo();
     }
 
      private void BattleManager_OnTurnoNuevo(object sender, EventArgs empty)
     {
-        MarcarTurnoActual();
-         ActualizarColores();
+        RefrescarVisuales();
+        ActualizarColores();
     }
 
    public void MarcarTurnoActual()
     {
-      
-        if (BattleManager.Instance.unidadActiva == scUnidad)
+        bool mostrarActual = battleManager != null && battleManager.unidadActiva == scUnidad;
+        if (Actual != null)
         {
-            Actual.SetActive(true);
+            Actual.SetActive(mostrarActual);
         }
-        else
-        {
-            Actual.SetActive(false);
-        }
-    
-
-    
-
     }
+
+    private void ActualizarSeleccionado()
+    {
+        bool mostrarSeleccionado = scUInfochar.hayUnidadSeleccionadaParaInfo
+            && scUInfochar.unidadMostrada != null
+            && scUInfochar.unidadMostrada == scUnidad;
+
+        if (seleccionado != null)
+        {
+            seleccionado.SetActive(mostrarSeleccionado);
+        }
+    }
+
+    private void ActualizarOscurecedor()
+    {
+        if (battleManager == null || scUnidad == null)
+        {
+            return;
+        }
+
+        int indiceUnidad = ordenIndex;
+        if (indiceUnidad < 0)
+        {
+            indiceUnidad = battleManager.lUnidadesTotal.IndexOf(scUnidad);
+        }
+
+        int indexTurno = battleManager.indexTurno - 1;
+        bool mostrarOscurecedor = indiceUnidad >= 0 && indiceUnidad < indexTurno;
+        if (oscurecedor != null)
+        {
+            oscurecedor.SetActive(mostrarOscurecedor);
+        }
+    }
+
+    private void RefrescarVisuales()
+    {
+        ActualizarSeleccionado();
+        MarcarTurnoActual();
+        ActualizarOscurecedor();
+    }
+
     Unidad anterior = null;
     public void MarcarUnidadRepresentada(int n) //1 es entra mouse, 0 es sale
     {
-   
+        if (scUnidad == null)
+        {
+            return;
+        }
+
         if(n == 1) //entra mouse
-        { 
-          scUnidad.OnMouseEnter(); 
+        {
+          scUnidad.OnMouseEnter();
         }
         else if(n == 0) //sale mouse
         {
-          scUnidad.OnMouseExit();  
+          scUnidad.OnMouseExit();
         }
     }
 
     public void ClickMarcarUnidadRepresentada(int n)
-    {     
-       
-          if(anterior == null)
-          {
-          anterior = scUnidad;  
-          }
-          else{anterior = null; }
+    {
+        if (scUnidad == null)
+        {
+            return;
+        }
 
-          scUnidad.OnMouseDown();
-         
+        if(anterior == null)
+        {
+          anterior = scUnidad;
+        }
+        else
+        {
+            anterior = null;
+        }
+
+        scUnidad.OnMouseDown();
     }
-
 
     private void OnDestroy()
     {
-        
-        BattleManager.Instance.OnTurnoNuevo -= BattleManager_OnTurnoNuevo;
-        
+        DesuscribirEventos();
     }
-   
-    
-
 }

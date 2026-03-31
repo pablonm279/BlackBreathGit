@@ -13,6 +13,7 @@ public class UIInfoChar : MonoBehaviour
   [SerializeField] private Sprite vSpriteStatAliado;
   [SerializeField] private Sprite vSpriteStatEnemigo;
   [SerializeField] private TextMeshProUGUI vNombre;
+  [SerializeField] private TextMeshProUGUI vTags;
   [SerializeField] private TextMeshProUGUI vHP;
   [SerializeField] private TextMeshProUGUI vHPMax;
   [SerializeField] private TextMeshProUGUI vDefensa;
@@ -89,6 +90,7 @@ public class UIInfoChar : MonoBehaviour
    vResDivino.text = ((int)scUnidadMostrada.ObtenerResistenciaA(7)) + "";
 
      bool esEnemigo = EsUnidadEnemiga(scUnidadMostrada);
+     ActualizarTags(scUnidadMostrada, esEnemigo);
      if(esEnemigo)
      {
         vValentiaContenedor.SetActive(false);
@@ -280,6 +282,11 @@ public class UIInfoChar : MonoBehaviour
         GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(30,scUnidadMostrada.estado_Escudado);
      }
+     if(scUnidadMostrada.estado_MovimientoAbaratado > 0)
+     {
+        GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
+        GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(31,scUnidadMostrada.estado_MovimientoAbaratado);
+     }
          //AGREGAR LOS NUEVOS TMB EN UNIDADCANVAS PARA QUE APAREZCAN EN LA BARRA DE VIDA----!! 
          //Y en stacks poner -1 para que no muestre numero en la barra de vida.
          //Y que el parametro desdeBarraVida sea true.
@@ -313,6 +320,7 @@ public class UIInfoChar : MonoBehaviour
     }
     else
     { 
+        ActualizarTags(null, false);
         mostrardesc = false;
         ActualizarVisibilidadInfoEnemigos(false);
         ResetearVisualMerito();
@@ -320,6 +328,57 @@ public class UIInfoChar : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+  }
+
+  private void ActualizarTags(Unidad unidad, bool esUnidadEnemiga)
+  {
+    if (vTags == null)
+    {
+      return;
+    }
+
+    bool mostrarTags = esUnidadEnemiga && (EsTurnoEnemigo() || hayUnidadSeleccionadaParaInfo || EsUnidadMostradaPorHover(unidad));
+    vTags.gameObject.SetActive(mostrarTags);
+
+    if (!mostrarTags || unidad == null || unidad.tags == null || unidad.tags.Count == 0)
+    {
+      vTags.text = string.Empty;
+      return;
+    }
+
+    List<string> tagsTraducidos = new List<string>();
+    foreach (string tag in unidad.tags)
+    {
+      if (string.IsNullOrWhiteSpace(tag))
+      {
+        continue;
+      }
+
+      tagsTraducidos.Add(TRADU.i != null ? TRADU.i.Traducir(tag) : tag);
+    }
+
+    vTags.text = string.Join(", ", tagsTraducidos);
+  }
+
+  private bool EsTurnoEnemigo()
+  {
+    if (BattleManager.Instance == null || BattleManager.Instance.unidadActiva == null)
+    {
+      return false;
+    }
+
+    Unidad unidadActiva = BattleManager.Instance.unidadActiva;
+    return unidadActiva.CasillaPosicion != null && unidadActiva.CasillaPosicion.lado == 1;
+  }
+
+  private bool EsUnidadMostradaPorHover(Unidad unidad)
+  {
+    if (BattleManager.Instance == null || BattleManager.Instance.unidadActiva == null || unidad == null)
+    {
+      return false;
+    }
+
+    return unidadMostrada == unidad && unidad != BattleManager.Instance.unidadActiva;
   }
 
   private void InicializarVisualMerito()

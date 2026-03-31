@@ -1,16 +1,16 @@
-using System.Collections.Generic;
+Ôªøusing System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 /// <summary>
-/// Mueve temporalmente el GameObject de la unidad hacia el objetivo melee (con ligero zoom de c·mara) y luego lo devuelve.
-/// Solo afecta lo visual; no toca casillas ni estado lÛgico.
+/// Mueve temporalmente el GameObject de la unidad hacia el objetivo melee (con ligero zoom de c√°mara) y luego lo devuelve.
+/// Solo afecta lo visual; no toca casillas ni estado l√≥gico.
 /// </summary>
 public class MeleeApproachMover : MonoBehaviour
 {
   [Header("Movimiento visual melee")]
   [SerializeField] private float duracionIdaBase = 0.4f;
   [SerializeField] private float duracionVueltaBase = 0.3f;
-  [SerializeField] private float offsetAtras = 0.55f; // metros detr·s del objetivo
+  [SerializeField] private float offsetAtras = 0.55f; // metros detr√°s del objetivo
   [SerializeField] private Vector3 offsetAdicional = Vector3.zero;
   [SerializeField] private float demoraAntesDeVolver = 0.2f;
   [SerializeField] private float pausaTrasLlegar = 0.15f;
@@ -45,12 +45,55 @@ public class MeleeApproachMover : MonoBehaviour
   {
     if (habilidad == null || objetivos == null || objetivos.Count == 0) return Task.FromResult(false);
     if (!habilidad.esMelee || habilidad.esZonal || habilidad.enArea > 0) return Task.FromResult(false);
-    object objetivo = ElegirObjetivoVisual(objetivos);
+
+    object objetivo = ElegirObjetivoVisualParaHabilidad(habilidad, objetivos);
     if (!TryObtenerDatosObjetivo(objetivo, out Transform objetivoTransform, out int posX))
     {
       return Task.FromResult(false);
     }
     return MoverHaciaObjetivoAsync(objetivoTransform, posX, false);
+  }
+
+  object ElegirObjetivoVisualParaHabilidad(Habilidad habilidad, List<object> objetivos)
+  {
+    if (habilidad != null && habilidad.targetEspecial == 10 && BattleManager.Instance != null)
+    {
+      Casilla casillaCentro = BattleManager.Instance.casillaClickHabilidad;
+      if (casillaCentro != null && casillaCentro.Presente != null)
+      {
+        Unidad unidadCentro = casillaCentro.Presente.GetComponent<Unidad>();
+        if (unidadCentro != null && ContieneObjetivo(objetivos, unidadCentro))
+        {
+          return unidadCentro;
+        }
+
+        Obstaculo obstaculoCentro = casillaCentro.Presente.GetComponent<Obstaculo>();
+        if (obstaculoCentro != null && ContieneObjetivo(objetivos, obstaculoCentro))
+        {
+          return obstaculoCentro;
+        }
+      }
+    }
+
+    return ElegirObjetivoVisual(objetivos);
+  }
+
+  bool ContieneObjetivo(IEnumerable<object> objetivos, object buscado)
+  {
+    if (objetivos == null || buscado == null)
+    {
+      return false;
+    }
+
+    foreach (object obj in objetivos)
+    {
+      if (ReferenceEquals(obj, buscado))
+      {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   public Task<bool> PrepararAproximacionIAAsync(bool esMelee, int ancho, object objetivo, bool mantenerAdelanteDespues)

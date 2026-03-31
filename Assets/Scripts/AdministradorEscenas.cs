@@ -974,7 +974,7 @@ public class AdministradorEscenas : MonoBehaviour
       return;
     }
 
-    int cantidadTrampasPorLado = UnityEngine.Random.Range(1, 6) + 2;
+    int cantidadTrampasPorLado = UnityEngine.Random.Range(1, 5) + 1;
     ColocarTrampasDeFuegoNodoIncendiado(cantidadTrampasPorLado, BattleManager.Instance.ladoA);
     ColocarTrampasDeFuegoNodoIncendiado(cantidadTrampasPorLado, BattleManager.Instance.ladoB);
   }
@@ -1278,7 +1278,20 @@ public class AdministradorEscenas : MonoBehaviour
       case 3: prefabClase = BattleManager.Instance.prefabUnidadPurificadora; break;
       case 4: prefabClase = BattleManager.Instance.prefabUnidadAcechador; break;
       case 5: prefabClase = BattleManager.Instance.prefabUnidadCanalizador; break;
+      case 6: prefabClase = BattleManager.Instance.prefabUnidadDuelista; break;
         //-----
+    }
+
+    if (prefabClase == null)
+    {
+      prefabClase = BattleManager.Instance.prefabUnidad;
+      if (prefabClase == null)
+      {
+        Debug.LogError($"[AdministradorEscenas] No hay prefab de batalla configurado para la clase {pers.IDClase}.");
+        return;
+      }
+
+      Debug.LogWarning($"[AdministradorEscenas] Falta prefab específico para la clase {pers.IDClase}. Se usará el prefab genérico.");
     }
 
    
@@ -1290,6 +1303,7 @@ public class AdministradorEscenas : MonoBehaviour
       case 3: persUnidad.GetComponent<Unidad>().uImage.sprite = ContenedorPrefabsBatalla.PurificadoraCuerpo1; break;
       case 4: persUnidad.GetComponent<Unidad>().uImage.sprite = ContenedorPrefabsBatalla.AcechadorCuerpo1; break;
       case 5: persUnidad.GetComponent<Unidad>().uImage.sprite = ContenedorPrefabsBatalla.CanalizadorCuerpo1; break;
+      case 6: persUnidad.GetComponent<Unidad>().uImage.sprite = ContenedorPrefabsBatalla.DuelistaCuerpo1; break;
 
         //-----
     }
@@ -3724,6 +3738,21 @@ public class AdministradorEscenas : MonoBehaviour
             persUnidad.GetComponent<ClaseCanalizador>().PASIVA_ExcesoDePoder = habilidad.NIVEL;
           }
 
+        }
+        if (persUnidad.GetComponent<ClaseDuelista>() != null)
+        {
+          if (habilidad.GetType().Name.Contains("REPRESENTACIONPasoLigero") || habilidad.GetType().Name.Contains("REPRESENTACIONPosturaDemandante"))
+          {
+            //Intrinseca (ya programada en el código de la clase)
+          }
+          else if (habilidad.GetType().Name.Contains("REPRESENTACIONAtaquesReveladores"))
+          {
+            persUnidad.GetComponent<ClaseDuelista>().PASIVA_AtaquesReveladores = habilidad.NIVEL;
+          }
+          else if (habilidad.GetType().Name.Contains("REPRESENTACIONEvasionMaestra"))
+          {
+            persUnidad.GetComponent<ClaseDuelista>().PASIVA_EvasionMaestra = habilidad.NIVEL;
+          }
         }
       }
 
