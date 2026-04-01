@@ -3,9 +3,17 @@ using UnityEngine;
 
 public class ClaseDuelista : Unidad
 {
+    private const string BuffNombreEnGarde = "En Garde";
+
     public int PASIVA_AtaquesReveladores;
     public int PASIVA_EvasionMaestra;
     private int usosEvasionMaestraEsteTurno;
+    private int bonusEvasionEnGardeAplicado;
+    private bool poseEnGardeActiva;
+    private Sprite poseIdleOriginal;
+    private UnidadPoseController poseController;
+
+    public Sprite Pose_Engarde;
 
     public override void ComienzoBatallaClase()
     {
@@ -13,6 +21,7 @@ public class ClaseDuelista : Unidad
         ResetearPasoLigero();
         ResetearPosturaDemandante();
         ResetearEvasionMaestra();
+        SincronizarEnGardeSegunBuffActual();
     }
 
     public override void ActualizarClaseComienzoTurno()
@@ -21,21 +30,36 @@ public class ClaseDuelista : Unidad
         ResetearPasoLigero();
         ResetearPosturaDemandante();
         ResetearEvasionMaestra();
+        SincronizarEnGardeSegunBuffActual();
     }
 
     public override async void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
     {
         float maxHpAlRecibir = mod_maxHP;
         bool eraSuTurnoAlRecibir = BattleManager.Instance != null && BattleManager.Instance.unidadActiva == this;
-        bool activaPosturaDemandante = DebeActivarsePosturaDemandante(danio, tipoDanio, uCausante);
-        if (activaPosturaDemandante)
-        {
-            ConsumirPosturaDemandante();
-        }
+        bool puedeDispararPosturaDemandante = DebeActivarsePosturaDemandante();
+        float porcentajeUmbralPosturaDemandante = ObtenerUmbralPosturaDemandante(TieneBuffNombre(BuffNombreEnGarde));
 
         float hpAntes = HP_actual;
         base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos);
+        await EsperarResolucionDanioAsync(hpAntes, delayEfectos);
+        float danioRecibido = hpAntes - HP_actual;
+        if (danioRecibido > 0f && TieneBuffNombre(BuffNombreEnGarde))
+        {
+            RemoverBuffNombre(BuffNombreEnGarde);
+            NotificarFinEnGarde();
+        }
         ProcesarRiposteAlRecibirDanio(hpAntes);
+
+        bool activaPosturaDemandante = false;
+        if (puedeDispararPosturaDemandante)
+        {
+            float umbralPosturaDemandante = maxHpAlRecibir * porcentajeUmbralPosturaDemandante;
+            if (danioRecibido > umbralPosturaDemandante)
+            {
+                activaPosturaDemandante = ConsumirPosturaDemandante();
+            }
+        }
 
         if (!activaPosturaDemandante)
         {
@@ -49,13 +73,24 @@ public class ClaseDuelista : Unidad
             return;
         }
 
-        float danioRecibido = hpAntes - HP_actual;
-        if (danioRecibido <= maxHpAlRecibir * 0.2f)
-        {
-            return;
-        }
-
         AplicarTambaleando(eraSuTurnoAlRecibir);
+    }
+
+    private async Task EsperarResolucionDanioAsync(float hpAntes, int delayEfectos)
+    {
+        int esperaMaximaMs = Mathf.Max(80, delayEfectos + 80);
+        int esperaAcumuladaMs = 0;
+
+        while (esperaAcumuladaMs < esperaMaximaMs)
+        {
+            if (HP_actual < hpAntes || HP_actual <= 0f)
+            {
+                return;
+            }
+
+            await BattleManager.DelayCombateAsync(20);
+            esperaAcumuladaMs += 20;
+        }
     }
 
     public override void FalloAtaqueRecibido(Unidad uOrigen, bool melee)
@@ -363,24 +398,131 @@ public class ClaseDuelista : Unidad
         }
     }
 
-    private bool DebeActivarsePosturaDemandante(float danio, int tipoDanio, Unidad uCausante)
+    private bool DebeActivarsePosturaDemandante()
     {
-        if (tipoDanio < 1 || tipoDanio > 3)
-        {
-            return false;
-        }
-
         if (!PuedeUsarPosturaDemandante())
         {
             return false;
         }
 
-        if (uCausante == null || BattleManager.Instance == null || BattleManager.Instance.HabilidadActiva == null)
+        return true;
+    }
+
+    public void NotificarInicioEnGarde()
+    {
+        AplicarBonusEvasionEnGarde();
+        ActualizarPoseEnGarde(true);
+    }
+
+    public void NotificarFinEnGarde()
+    {
+        RemoverBonusEvasionEnGarde();
+        ActualizarPoseEnGarde(false);
+    }
+
+    private void SincronizarEnGardeSegunBuffActual()
+    {
+        if (TieneBuffNombre(BuffNombreEnGarde))
         {
-            return false;
+            NotificarInicioEnGarde();
+            return;
         }
 
-        return BattleManager.Instance.HabilidadActiva.scEstaUnidad == uCausante && BattleManager.Instance.HabilidadActiva.esMelee && danio > mod_maxHP * 0.2f;
+        NotificarFinEnGarde();
+    }
+
+    private float ObtenerUmbralPosturaDemandante(bool teniaEnGarde)
+    {
+        if (!teniaEnGarde)
+        {
+            return 0.2f;
+        }
+
+        EnGarde enGarde = GetComponent<EnGarde>();
+        if (enGarde != null && enGarde.NIVEL == 4)
+        {
+            return 0.10f;
+        }
+
+        return 0.05f;
+    }
+
+    private int ObtenerBonusEvasionEnGarde()
+    {
+        int bonus = 2;
+        EnGarde enGarde = GetComponent<EnGarde>();
+        if (enGarde != null && enGarde.NIVEL > 1)
+        {
+            bonus += 1;
+        }
+
+        return bonus;
+    }
+
+    private void AplicarBonusEvasionEnGarde()
+    {
+        RemoverBonusEvasionEnGarde();
+
+        bonusEvasionEnGardeAplicado = ObtenerBonusEvasionEnGarde();
+        if (bonusEvasionEnGardeAplicado <= 0)
+        {
+            return;
+        }
+
+        estado_evasion += bonusEvasionEnGardeAplicado;
+        if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
+        {
+            BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+        }
+    }
+
+    private void RemoverBonusEvasionEnGarde()
+    {
+        if (bonusEvasionEnGardeAplicado <= 0)
+        {
+            return;
+        }
+
+        estado_evasion = Mathf.Max(0, estado_evasion - bonusEvasionEnGardeAplicado);
+        bonusEvasionEnGardeAplicado = 0;
+        if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
+        {
+            BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+        }
+    }
+
+    private void ActualizarPoseEnGarde(bool activar)
+    {
+        if (poseController == null)
+        {
+            poseController = GetComponent<UnidadPoseController>();
+        }
+
+        if (poseController == null || Pose_Engarde == null)
+        {
+            return;
+        }
+
+        if (activar)
+        {
+            if (!poseEnGardeActiva)
+            {
+                poseIdleOriginal = poseController.poseIdle;
+            }
+
+            poseController.poseIdle = Pose_Engarde;
+            poseEnGardeActiva = true;
+            poseController.SetIdle();
+            return;
+        }
+
+        if (poseEnGardeActiva && poseIdleOriginal != null)
+        {
+            poseController.poseIdle = poseIdleOriginal;
+            poseController.RefrescarPoseActual();
+        }
+
+        poseEnGardeActiva = false;
     }
 
     private void AplicarTambaleando(bool eraSuTurnoAlRecibir)

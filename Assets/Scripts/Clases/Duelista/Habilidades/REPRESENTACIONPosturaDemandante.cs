@@ -44,19 +44,19 @@ public class REPRESENTACIONPosturaDemandante : Habilidad
         if (esIngles)
         {
             txtDescripcion = "<color=#5dade2><b>Demanding Stance</b></color>\n\n";
-            txtDescripcion += "<i>(Passive) Once per turn, when the Duelist receives physical melee damage above 20% of max HP, gain " + nombreTambaleando + " for 1 turn: -1 max AP, -2 Defense.</i>";
+            txtDescripcion += "<i>(Passive) Once per turn, when the Duelist receives damage above 20% of max HP, gain " + nombreTambaleando + " for 1 turn: -1 max AP, -2 Defense.</i>";
             return;
         }
 
         if (esPortugues)
         {
             txtDescripcion = "<color=#5dade2><b>Postura Demandante</b></color>\n\n";
-            txtDescripcion += "<i>(Passiva) Uma vez por turno, ao receber dano fisico corpo a corpo acima de 20% da vida maxima, ganha " + nombreTambaleando + " por 1 turno: -1 AP max, -2 Defesa.</i>";
+            txtDescripcion += "<i>(Passiva) Uma vez por turno, ao receber dano acima de 20% da vida maxima, ganha " + nombreTambaleando + " por 1 turno: -1 AP max, -2 Defesa.</i>";
             return;
         }
 
         txtDescripcion = "<color=#5dade2><b>Postura Demandante</b></color>\n\n";
-        txtDescripcion += "<i>(Pasivo) Una vez por turno: al recibir daño físico melee de mas de 20% de su vida maxima, obtiene " + nombreTambaleando + " por 1 turno: -1 AP maximo, -2 Defensa.</i>";
+        txtDescripcion += "<i>(Pasivo) Una vez por turno: al recibir dano de mas de 20% de su vida maxima, obtiene " + nombreTambaleando + " por 1 turno: -1 AP maximo, -2 Defensa.</i>";
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada) { }

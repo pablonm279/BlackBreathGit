@@ -410,6 +410,7 @@ public class UnidadCanvas : MonoBehaviour
             h = MezclarHash(h, unidad.estado_Condenado);
             h = MezclarHash(h, unidad.estado_Escudado);
             h = MezclarHash(h, unidad.estado_MovimientoAbaratado);
+            h = MezclarHash(h, unidad.TieneBuffNombre(Unidad.BuffNombreProvocado) ? 1 : 0);
 
             // Buffs visibles en barra (mismo filtro de render)
             List<BuffUIHelper.BuffStack> buffStacks = BuffUIHelper.GetVisibleBuffStacks(unidad, true);
@@ -922,6 +923,11 @@ public class UnidadCanvas : MonoBehaviour
       {
          GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
          GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(31, -1, true);
+      }
+      if (scUnidadMostrada.TieneBuffNombre(Unidad.BuffNombreProvocado))
+      {
+         GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
+         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(32, -1, true);
       }
     }
 

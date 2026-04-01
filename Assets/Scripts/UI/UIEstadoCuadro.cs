@@ -65,6 +65,7 @@ public class UIEstadoCuadro : MonoBehaviour
   public Sprite imCondena;
   public Sprite imEscudado;
   public Sprite imMovimientoAbaratado;
+  public Sprite imProvocado;
   public Sprite imTierEnergia; //Canalizador
   public void RepresentarEstado(int index, int stacks, bool desdeBarraVida = false)
   {
@@ -106,6 +107,7 @@ public class UIEstadoCuadro : MonoBehaviour
     //28 - Volando
     //29 - Condena
     //31 - Movimiento Abaratado
+    //32 - Provocado
     indexEstadoRepresentado = index;
     if (Retrato == null) { return; }
     if (textTooltip == null) { return; }
@@ -142,6 +144,7 @@ public class UIEstadoCuadro : MonoBehaviour
       case 29: Retrato.sprite = ResolverSprite(imCondena, "Imagenes/Estado_condena"); textTooltip.text = TRADU.i.Traducir("Condena: En X cantidad de turnos recibirá daño verdadero igual al 10% de su vida máxima por turno con el efecto."); break;
       case 30: Retrato.sprite = ResolverSprite(imEscudado, "Imagenes/Estado_escudado"); textTooltip.text = TRADU.i.Traducir("Escudado: 10% chances por stack de evitar un ataque físico. Al evitar uno, pierde un stack."); break;
       case 31: Retrato.sprite = ResolverSprite(imMovimientoAbaratado, "Imagenes/Estado_movimientoabaratado"); textTooltip.text = TRADU.i.Traducir("Impulso: el próximo movimiento a casilla o intercambio cuesta 1 PA menos y consume 1 stack."); break;
+      case 32: Retrato.sprite = ResolverSprite(imProvocado, "Imagenes/Estado_Provocado"); textTooltip.text = TRADU.i.Traducir("Provocado: solo puede usar acciones hostiles contra quien aplicó este estado."); break;
 
     }
   }

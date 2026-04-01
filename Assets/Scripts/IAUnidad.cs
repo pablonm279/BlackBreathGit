@@ -43,6 +43,7 @@ public class IAUnidad : MonoBehaviour
    public int tendenciaMovX;
 
    public List<IAHabilidad> HabPosibles = new List<IAHabilidad>();
+   public IAHabilidad HabilidadIAEnEjecucion { get; private set; }
    private const int MaxIntentosPorTurno = 8;
    private readonly List<Task> _habilidadesEnCurso = new List<Task>();
    private bool _turnoIAEnCurso;
@@ -825,6 +826,12 @@ public class IAUnidad : MonoBehaviour
         if(hab.hActualCooldown > 0){continue;}
         if(hab.costoAP > scUnidad.ObtenerAPActual()+1){continue;} //Si no tiene AP suficiente, no se agrega
 
+        if (!AplicarRestriccionProvocadoAHabilidad(hab, obj))
+        {
+          continue;
+        }
+        obj = hab.objPosibles;
+
         if (!hab.afectaObstaculos)
       { if (!obj.OfType<Unidad>().Any()) { obj.Clear(); } }
 
@@ -846,6 +853,49 @@ public class IAUnidad : MonoBehaviour
 
    }
 
+   private bool AplicarRestriccionProvocadoAHabilidad(IAHabilidad habilidad, List<object> objetivosOriginales)
+   {
+      if (habilidad == null)
+      {
+         return false;
+      }
+
+      List<object> objetivosBase = objetivosOriginales ?? habilidad.objPosibles;
+      if (BattleManager.Instance == null)
+      {
+         return SincronizarObjetivosHabilidad(habilidad, objetivosBase);
+      }
+
+      if (!BattleManager.Instance.TryFiltrarObjetivosHostilesPorProvocacion(scUnidad, habilidad.esHostil, objetivosBase, out List<object> objetivosFiltrados))
+      {
+         habilidad.objPosibles.Clear();
+         return false;
+      }
+
+      return SincronizarObjetivosHabilidad(habilidad, objetivosFiltrados);
+   }
+
+   private static bool SincronizarObjetivosHabilidad(IAHabilidad habilidad, List<object> objetivos)
+   {
+      if (habilidad == null)
+      {
+         return false;
+      }
+
+      if (ReferenceEquals(habilidad.objPosibles, objetivos))
+      {
+         return habilidad.objPosibles != null && habilidad.objPosibles.Count > 0;
+      }
+
+      habilidad.objPosibles.Clear();
+      if (objetivos != null && objetivos.Count > 0)
+      {
+         habilidad.objPosibles.AddRange(objetivos);
+      }
+
+      return habilidad.objPosibles.Count > 0;
+   }
+
 
    async Task<bool> EjecutarHabilidadConSalvaguarda(List<IAHabilidad> habilidadesDisponibles, AITurnTimings timings)
    {
@@ -863,9 +913,11 @@ public class IAUnidad : MonoBehaviour
             continue;
          }
 
+         Task habilidadTask = null;
          try
          {
-            Task habilidadTask = habilidad.ActivarHabilidad();
+            HabilidadIAEnEjecucion = habilidad;
+            habilidadTask = habilidad.ActivarHabilidad();
 
             if (habilidadTask == null)
             {
@@ -899,9 +951,44 @@ public class IAUnidad : MonoBehaviour
          {
             Debug.LogError($"[IAUnidad] Error ejecutando {habilidad?.nombre} para {scUnidad.uNombre}: {ex.Message}");
          }
+         finally
+         {
+            if (habilidadTask == null || habilidadTask.IsCompleted)
+            {
+               if (ReferenceEquals(HabilidadIAEnEjecucion, habilidad))
+               {
+                  HabilidadIAEnEjecucion = null;
+               }
+            }
+            else
+            {
+               _ = LimpiarHabilidadIAEnEjecucionCuandoFinalizeAsync(habilidad, habilidadTask);
+            }
+         }
       }
 
       return false;
+   }
+
+   private async Task LimpiarHabilidadIAEnEjecucionCuandoFinalizeAsync(IAHabilidad habilidad, Task habilidadTask)
+   {
+      if (habilidadTask == null)
+      {
+         return;
+      }
+
+      try
+      {
+         await habilidadTask;
+      }
+      catch
+      {
+      }
+
+      if (ReferenceEquals(HabilidadIAEnEjecucion, habilidad))
+      {
+         HabilidadIAEnEjecucion = null;
+      }
    }
 
    private async Task EsperarSecuenciaVisualAsync(IAHabilidad habilidad, AITurnTimings timings)

@@ -999,7 +999,7 @@ public class Casilla : MonoBehaviour
   // Regla central de avance melee:
   // - Las unidades visibles/no volando siempre bloquean.
   // - Los obstaculos solo bloquean si estan en la misma fila (posY) que el origen.
-  public bool BloqueaAvanceMeleeDesdeFila(int posYorigen)
+  public bool BloqueaAvanceMeleeDesdeFila(int posYorigen, Unidad atacante = null)
   {
     if (Presente == null)
     {
@@ -1009,7 +1009,22 @@ public class Casilla : MonoBehaviour
     Unidad unidad = Presente.GetComponent<Unidad>();
     if (unidad != null)
     {
-      return unidad.ObtenerEstaEscondido() == 0 && !unidad.estado_Volando;
+      if (unidad.ObtenerEstaEscondido() != 0 || unidad.estado_Volando)
+      {
+        return false;
+      }
+
+      if (atacante != null && atacante.CasillaPosicion != null && unidad.CasillaPosicion != null)
+      {
+        Unidad provocador = atacante.ObtenerProvocadorVigente();
+        bool esUnidadEnemiga = unidad.CasillaPosicion.lado != atacante.CasillaPosicion.lado;
+        if (provocador != null && esUnidadEnemiga && unidad != provocador)
+        {
+          return false;
+        }
+      }
+
+      return true;
     }
 
     if (Presente.GetComponent<Obstaculo>() != null)

@@ -1154,6 +1154,14 @@ public class MenuPersonajes : MonoBehaviour
           {
             ListaElegirHabilidad.AddComponent<AFondo>();
           }
+          if (pSel.Habilidad_6 == 0 && pSel.GetComponent<EnGarde>() == null)
+          {
+            ListaElegirHabilidad.AddComponent<EnGarde>();
+          }
+          if (pSel.Habilidad_7 == 0 && pSel.GetComponent<PuntaHiriente>() == null)
+          {
+            ListaElegirHabilidad.AddComponent<PuntaHiriente>();
+          }
         }
 
 

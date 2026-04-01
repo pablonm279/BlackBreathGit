@@ -383,6 +383,14 @@ public abstract class Habilidad : MonoBehaviour
   {
     if (BattleManager.Instance != null)
     {
+      if (!BattleManager.Instance.TryFiltrarObjetivosHostilesPorProvocacion(scEstaUnidad, esHostil, Objetivos, out List<object> objetivosFiltradosProvocacion))
+      {
+        scEstaUnidad?.GenerarTextoFlotante(TRADU.i.Traducir("Provocado: objetivo fuera de alcance."), Color.gray, FloatingTextContext.Generic);
+        return;
+      }
+
+      Objetivos = objetivosFiltradosProvocacion;
+
       if (!BattleManager.Instance.TryFiltrarObjetivosMeleePorInmovilizacion(scEstaUnidad, esMelee, Objetivos, out List<object> objetivosFiltrados))
       {
         scEstaUnidad?.GenerarTextoFlotante(TRADU.i.Traducir("Inmóvil, Melee solo adyacente."), Color.gray, FloatingTextContext.Generic);

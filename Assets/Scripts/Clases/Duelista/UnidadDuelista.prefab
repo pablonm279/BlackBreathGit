@@ -624,6 +624,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 95e80de557012634e87436031b93fef4, type: 3}
   PASIVA_AtaquesReveladores: 0
   PASIVA_EvasionMaestra: 0
+  Pose_Engarde: {fileID: 21300000, guid: 3232262e74ba17042a71adbcfcf28820, type: 3}
 --- !u!114 &3516291864437776501
 MonoBehaviour:
   m_ObjectHideFlags: 0

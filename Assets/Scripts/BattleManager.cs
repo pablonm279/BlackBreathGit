@@ -1508,6 +1508,40 @@ public class BattleManager : MonoBehaviour
 
     return objetivosFiltrados.Count > 0;
   }
+
+  public bool TryFiltrarObjetivosHostilesPorProvocacion(Unidad atacante, bool habilidadEsHostil, List<object> objetivosOriginales, out List<object> objetivosFiltrados)
+  {
+    if (!habilidadEsHostil || atacante == null)
+    {
+      objetivosFiltrados = objetivosOriginales;
+      return true;
+    }
+
+    Unidad provocador = atacante.ObtenerProvocadorVigente();
+    if (provocador == null)
+    {
+      objetivosFiltrados = objetivosOriginales;
+      return true;
+    }
+
+    if (objetivosOriginales == null || objetivosOriginales.Count == 0)
+    {
+      objetivosFiltrados = objetivosOriginales;
+      return false;
+    }
+
+    objetivosFiltrados = new List<object>(1);
+    foreach (object objetivo in objetivosOriginales)
+    {
+      if (objetivo is Unidad unidadObjetivo && unidadObjetivo == provocador)
+      {
+        objetivosFiltrados.Add(unidadObjetivo);
+        break;
+      }
+    }
+
+    return objetivosFiltrados.Count > 0;
+  }
   // Casilla clickeada para resolver la habilidad (para VFX con referencia de clic)
   public Casilla casillaClickHabilidad;
   private static readonly KeyCode[] _habilidadHotkeys = new[]
@@ -1612,11 +1646,42 @@ public class BattleManager : MonoBehaviour
 
   private void LateUpdate()
   {
+    FiltrarObjetivosActivosPorProvocacion();
+
     FiltrarObjetivosActivosMeleePorInmovilizacion();
 
     SincronizarMarcasHabilidadActiva();
 
     ActualizarTextoSeleccionObjetivo();
+  }
+
+  private void FiltrarObjetivosActivosPorProvocacion()
+  {
+    if (!SeleccionandoObjetivo || HabilidadActiva == null || unidadActiva == null)
+    {
+      return;
+    }
+
+    if (!HabilidadActiva.esHostil)
+    {
+      return;
+    }
+
+    Unidad provocador = unidadActiva.ObtenerProvocadorVigente();
+    if (provocador == null)
+    {
+      return;
+    }
+
+    if (lUnidadesPosiblesHabilidadActiva != null)
+    {
+      lUnidadesPosiblesHabilidadActiva.RemoveAll(unidadObjetivo => unidadObjetivo != provocador);
+    }
+
+    if (lObstaculosPosiblesHabilidadActiva != null)
+    {
+      lObstaculosPosiblesHabilidadActiva.Clear();
+    }
   }
 
   private void FiltrarObjetivosActivosMeleePorInmovilizacion()
@@ -1673,7 +1738,16 @@ public class BattleManager : MonoBehaviour
       {
         if (tmp != null)
         {
-          tmp.text = TRADU.i.Traducir("No hay objetivos al alcance.");
+          Unidad provocador = unidadActiva != null ? unidadActiva.ObtenerProvocadorVigente() : null;
+          if (provocador != null)
+          {
+            string nombreProvocador = TRADU.i != null ? TRADU.i.Traducir(provocador.uNombre) : provocador.uNombre;
+            tmp.text = TRADU.i.Traducir("Provocado: solo puedes atacar a ") + nombreProvocador + ".";
+          }
+          else
+          {
+            tmp.text = TRADU.i.Traducir("No hay objetivos al alcance.");
+          }
           tmp.color = Color.red;
         }
       }

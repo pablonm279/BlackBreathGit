@@ -18,6 +18,7 @@ public class Unidad : MonoBehaviour
   private static readonly Color ColorDanioFuego = new Color(1f, 0.65f, 0.25f, 1f);
   private static readonly Color ColorValentiaGanada = new Color(0.27f, 0.94f, 0.58f, 1f);
   private static readonly Color ColorValentiaPerdida = new Color(1f, 0.36f, 0.36f, 1f);
+  public const string BuffNombreProvocado = "Provocado";
   private static Unidad redireccionAtaqueAtacante;
   private static Unidad redireccionAtaqueObjetivoOriginal;
   private static Unidad redireccionAtaqueObjetivoReal;
@@ -1650,6 +1651,48 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
     }
     return false;
+  }
+
+  public Unidad ObtenerProvocadorVigente()
+  {
+    if (CasillaPosicion == null)
+    {
+      return null;
+    }
+
+    Buff[] buffs = GetComponents<Buff>();
+    foreach (Buff buff in buffs)
+    {
+      if (buff == null || buff.buffNombre != BuffNombreProvocado)
+      {
+        continue;
+      }
+
+      Unidad provocador = buff.unidadOrigen;
+      if (!EsProvocadorValido(provocador))
+      {
+        continue;
+      }
+
+      return provocador;
+    }
+
+    return null;
+  }
+
+  private bool EsProvocadorValido(Unidad provocador)
+  {
+    if (provocador == null || provocador == this || provocador.HP_actual <= 0)
+    {
+      return false;
+    }
+
+    if (provocador.CasillaPosicion == null || CasillaPosicion == null)
+    {
+      return false;
+    }
+
+    return provocador.CasillaPosicion.lado != CasillaPosicion.lado;
   }
 
   [Header("Sonidos")]

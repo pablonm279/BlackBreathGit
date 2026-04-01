@@ -4157,6 +4157,15 @@ public class TRADU : MonoBehaviour
             case "Tambaleando":
                   r = "Staggered";
                   break;
+            case "Provocado":
+                  r = "Provoked";
+                  break;
+            case "Adolorido":
+                  r = "Wounded";
+                  break;
+            case "Provocado: solo puede usar acciones hostiles contra quien aplicó este estado.":
+                  r = "Provoked: can only use hostile actions against the unit that applied this status.";
+                  break;
             case "Vulnerabilidad Expuesta":
                   r = "Exposed Vulnerability";
                   break;
@@ -10825,6 +10834,15 @@ public class TRADU : MonoBehaviour
                 break;
             case "Tambaleando":
                   r = "Cambaleando";
+                  break;
+            case "Provocado":
+                  r = "Provocado";
+                  break;
+            case "Adolorido":
+                  r = "Ferido";
+                  break;
+            case "Provocado: solo puede usar acciones hostiles contra quien aplicó este estado.":
+                  r = "Provocado: so pode usar ações hostis contra quem aplicou este estado.";
                   break;
             case "Vulnerabilidad Expuesta":
                   r = "Vulnerabilidade Exposta";

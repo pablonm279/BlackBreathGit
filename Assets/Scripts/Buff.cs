@@ -105,6 +105,7 @@ public class Buff : MonoBehaviour
     {
         esRemovible = removible; // Si se puede remover con habilidades, etc.
         if (unidad.TieneBuffNombre(buffNombre) && !esStackeable) { return; } // Si no es stackeable y ya lo tiene, no hace nada.
+        unidadOrigen = Origen;
 
         if (percHPMax != 0) { unidad.mod_maxHP *= 1 + percHPMax / 100; }
         if (cantHPMax != 0) { unidad.mod_maxHP += cantHPMax; }
@@ -422,6 +423,10 @@ public void RemoverBuff(Unidad unidad)
     {
         var poseCtrl = unidad.GetComponent<UnidadPoseController>();
         if (poseCtrl != null) { poseCtrl.ExitPoseHold(); }
+    }
+    if (buffNombre == "En Garde" && unidad is ClaseDuelista duelista)
+    {
+        duelista.NotificarFinEnGarde();
     }
     Destroy(this);
 

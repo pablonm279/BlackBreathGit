@@ -1940,6 +1940,8 @@ public class CampaignManager : MonoBehaviour
           case 3: return typeof(CargaDeEstoque);
           case 4: return typeof(Riposte);
           case 5: return typeof(AFondo);
+          case 6: return typeof(EnGarde);
+          case 7: return typeof(PuntaHiriente);
         }
         break;
     }
@@ -5725,21 +5727,25 @@ public class CampaignManager : MonoBehaviour
 
 
 
-    pers1.AddComponent<CargaDeEstoque>(); 
-    pers1.GetComponent<CargaDeEstoque>().NIVEL = 1;
-    pers1.AddComponent<Riposte>(); 
-    pers1.GetComponent<Riposte>().NIVEL = 1;
+    //pers1.AddComponent<CargaDeEstoque>();
+    //pers1.GetComponent<CargaDeEstoque>().NIVEL = 1;
+    pers1.AddComponent<PuntaHiriente>(); 
+    pers1.GetComponent<PuntaHiriente>().NIVEL = 1;
     pers1.AddComponent<AFondo>(); 
     pers1.GetComponent<AFondo>().NIVEL = 1;
+    pers1.AddComponent<EnGarde>();
+    pers1.GetComponent<EnGarde>().NIVEL = 1;
 
     //Habilidades Base
-    int randHabPot1 = UnityEngine.Random.Range(1, 5);
+    int randHabPot1 = UnityEngine.Random.Range(1, 7);
     switch (randHabPot1)
     {
       case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONEvasionMaestra>(); pers1.GetComponent<REPRESENTACIONEvasionMaestra>().NIVEL = 1; break;
       case 2: pers1.Habilidad_3 = 1; pers1.AddComponent<CargaDeEstoque>(); pers1.GetComponent<CargaDeEstoque>().NIVEL = 1; break;
       case 3: pers1.Habilidad_4 = 1; pers1.AddComponent<Riposte>(); pers1.GetComponent<Riposte>().NIVEL = 1; break;
       case 4: pers1.Habilidad_5 = 1; pers1.AddComponent<AFondo>(); pers1.GetComponent<AFondo>().NIVEL = 1; break;
+      case 5: pers1.Habilidad_6 = 1; pers1.AddComponent<EnGarde>(); pers1.GetComponent<EnGarde>().NIVEL = 1; break;
+      case 6: pers1.Habilidad_7 = 1; pers1.AddComponent<PuntaHiriente>(); pers1.GetComponent<PuntaHiriente>().NIVEL = 1; break;
       /*case 2: pers1.Habilidad_2 = 1; pers1.AddComponent<REPRESENTACIONEcosDivinos>(); pers1.GetComponent<REPRESENTACIONEcosDivinos>().NIVEL = 1; break;
       case 3: pers1.Habilidad_3 = 1; pers1.AddComponent<SalmoPurificador>(); pers1.GetComponent<SalmoPurificador>().NIVEL = 1; break;
       case 4: pers1.Habilidad_4 = 1; pers1.AddComponent<LlamaDivina>(); pers1.GetComponent<LlamaDivina>().NIVEL = 1; break;*/
