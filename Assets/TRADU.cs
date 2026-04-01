@@ -785,6 +785,42 @@ public class TRADU : MonoBehaviour
 
         switch (txt)
         {
+            case "Danza del Estoque":
+                r = "Sword Dance";
+                break;
+            case "Danzando":
+                r = "Dancing";
+                break;
+            case "Encadena bajas por este turno: +1 Ataque y +15% Danio.":
+                r = "Chains kills this turn: +1 Attack and +15% Damage.";
+                break;
+            case "Encadena bajas por este turno: +1 Ataque, +15% Danio y +1 rango critico.":
+                r = "Chains kills this turn: +1 Attack, +15% Damage and +1 Crit Range.";
+                break;
+            case "Presencia Provocadora":
+                r = "Provoking Presence";
+                break;
+            case "Distra\u00EDdo":
+                r = "Distracted";
+                break;
+            case "Pierde foco: -2 Defensa y -3 Armadura.":
+                r = "Loses focus: -2 Defense and -3 Armor.";
+                break;
+            case "Pierde foco: -2 Defensa y -4 Armadura.":
+                r = "Loses focus: -2 Defense and -4 Armor.";
+                break;
+            case "Recuperando Aire":
+                r = "Catching Breath";
+                break;
+            case "Descansa para el turno siguiente: +3 PA maximo, -4 Defensa.":
+                r = "Rests for the next turn: +3 Max AP, -4 Defense.";
+                break;
+            case "Descansa para el turno siguiente: +3 PA maximo, -3 Defensa.":
+                r = "Rests for the next turn: +3 Max AP, -3 Defense.";
+                break;
+            case "Solo en columna trasera.":
+                r = "Rear column only.";
+                break;
             case "Retraso Nocturno":
                 r = "Nighttime Delay";
                 break;
@@ -7462,6 +7498,42 @@ public class TRADU : MonoBehaviour
         // Tabla PT en preparacion: por ahora conserva el texto base hasta cargar cada caso.
         switch (txt)
         {
+           case "Danza del Estoque":
+                r = "Danca do Estoque";
+                break;
+            case "Danzando":
+                r = "Dancando";
+                break;
+            case "Encadena bajas por este turno: +1 Ataque y +15% Danio.":
+                r = "Encadeia baixas neste turno: +1 Ataque e +15% Dano.";
+                break;
+            case "Encadena bajas por este turno: +1 Ataque, +15% Danio y +1 rango critico.":
+                r = "Encadeia baixas neste turno: +1 Ataque, +15% Dano e +1 faixa critica.";
+                break;
+           case "Presencia Provocadora":
+                r = "Presenca Provocadora";
+                break;
+            case "Distra\u00EDdo":
+                r = "Distraido";
+                break;
+            case "Pierde foco: -2 Defensa y -3 Armadura.":
+                r = "Perde o foco: -2 Defesa e -3 Armadura.";
+                break;
+            case "Pierde foco: -2 Defensa y -4 Armadura.":
+                r = "Perde o foco: -2 Defesa e -4 Armadura.";
+                break;
+           case "Recuperando Aire":
+                r = "Recuperando Folego";
+                break;
+            case "Descansa para el turno siguiente: +3 PA maximo, -4 Defensa.":
+                r = "Descansa para o proximo turno: +3 AP maximo, -4 Defesa.";
+                break;
+            case "Descansa para el turno siguiente: +3 PA maximo, -3 Defensa.":
+                r = "Descansa para o proximo turno: +3 AP maximo, -3 Defesa.";
+                break;
+            case "Solo en columna trasera.":
+                r = "Apenas na coluna traseira.";
+                break;
            case "Retraso Nocturno":
                 r = "Atraso Noturno";
                 break;

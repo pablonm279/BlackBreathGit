@@ -173,6 +173,12 @@ public class BotonHabilidad : MonoBehaviour
             return;
         }
 
+        if (HabilidadRepresentada is RecuperarAire recuperarAire && !recuperarAire.PuedeActivarseDesdePosicionActual(out string motivoRecuperarAire))
+        {
+            BattleManager.Instance.unidadActiva?.GenerarTextoFlotante(TRADU.i.Traducir(motivoRecuperarAire), Color.gray, FloatingTextContext.Generic);
+            return;
+        }
+
         if (HabilidadRepresentada.esMelee && !PuedeUsarHabilidadMelee())
         {
             Unidad unidadActiva = BattleManager.Instance.unidadActiva;

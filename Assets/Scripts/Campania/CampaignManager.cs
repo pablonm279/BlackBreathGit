@@ -1942,6 +1942,9 @@ public class CampaignManager : MonoBehaviour
           case 5: return typeof(AFondo);
           case 6: return typeof(EnGarde);
           case 7: return typeof(PuntaHiriente);
+          case 8: return typeof(RecuperarAire);
+          case 9: return typeof(PresenciaProvocadora);
+          case 10: return typeof(REPRESENTACIONDanzaDelEstoque);
         }
         break;
     }
@@ -5720,47 +5723,36 @@ public class CampaignManager : MonoBehaviour
     pers1.GetComponent<REPRESENTACIONPasoLigero>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
     pers1.AddComponent<REPRESENTACIONPosturaDemandante>();
     pers1.GetComponent<REPRESENTACIONPosturaDemandante>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
-    pers1.AddComponent<REPRESENTACIONEvasionMaestra>();
-    pers1.GetComponent<REPRESENTACIONEvasionMaestra>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
+   
     pers1.AddComponent<Estocada>(); //Agregarla luego con el estoque
     pers1.GetComponent<Estocada>().NIVEL = -1;
 
 
-
-    //pers1.AddComponent<CargaDeEstoque>();
-    //pers1.GetComponent<CargaDeEstoque>().NIVEL = 1;
-    pers1.AddComponent<PuntaHiriente>(); 
-    pers1.GetComponent<PuntaHiriente>().NIVEL = 1;
-    pers1.AddComponent<AFondo>(); 
-    pers1.GetComponent<AFondo>().NIVEL = 1;
-    pers1.AddComponent<EnGarde>();
-    pers1.GetComponent<EnGarde>().NIVEL = 1;
+    //Debug
+    pers1.AddComponent<PresenciaProvocadora>();
+    pers1.GetComponent<PresenciaProvocadora>().NIVEL = 1;
 
     //Habilidades Base
-    int randHabPot1 = UnityEngine.Random.Range(1, 7);
+    int randHabPot1 = UnityEngine.Random.Range(1, 8);
     switch (randHabPot1)
     {
       case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONEvasionMaestra>(); pers1.GetComponent<REPRESENTACIONEvasionMaestra>().NIVEL = 1; break;
       case 2: pers1.Habilidad_3 = 1; pers1.AddComponent<CargaDeEstoque>(); pers1.GetComponent<CargaDeEstoque>().NIVEL = 1; break;
       case 3: pers1.Habilidad_4 = 1; pers1.AddComponent<Riposte>(); pers1.GetComponent<Riposte>().NIVEL = 1; break;
       case 4: pers1.Habilidad_5 = 1; pers1.AddComponent<AFondo>(); pers1.GetComponent<AFondo>().NIVEL = 1; break;
-      case 5: pers1.Habilidad_6 = 1; pers1.AddComponent<EnGarde>(); pers1.GetComponent<EnGarde>().NIVEL = 1; break;
-      case 6: pers1.Habilidad_7 = 1; pers1.AddComponent<PuntaHiriente>(); pers1.GetComponent<PuntaHiriente>().NIVEL = 1; break;
-      /*case 2: pers1.Habilidad_2 = 1; pers1.AddComponent<REPRESENTACIONEcosDivinos>(); pers1.GetComponent<REPRESENTACIONEcosDivinos>().NIVEL = 1; break;
-      case 3: pers1.Habilidad_3 = 1; pers1.AddComponent<SalmoPurificador>(); pers1.GetComponent<SalmoPurificador>().NIVEL = 1; break;
-      case 4: pers1.Habilidad_4 = 1; pers1.AddComponent<LlamaDivina>(); pers1.GetComponent<LlamaDivina>().NIVEL = 1; break;*/
+     
+     
     }
 
     int randHabPot2 = UnityEngine.Random.Range(1, 2);
     switch (randHabPot2)
     {
-      /*case 1: pers1.Habilidad_5 = 1; pers1.AddComponent<REPRESENTACIONEvasionMaestra>(); pers1.GetComponent<REPRESENTACIONEvasionMaestra>().NIVEL = 1; break;
-      case 2: pers1.Habilidad_6 = 1; pers1.AddComponent<LuzCegadora>(); pers1.GetComponent<LuzCegadora>().NIVEL = 1; break;
-      case 3: pers1.Habilidad_7 = 1; pers1.AddComponent<PilaresDeLuz>(); pers1.GetComponent<PilaresDeLuz>().NIVEL = 1; break;
-      case 4: pers1.Habilidad_8 = 1; pers1.AddComponent<CastigaraLosMalvados>(); pers1.GetComponent<CastigaraLosMalvados>().NIVEL = 1; break;*/
+      case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONAtaquesReveladores>(); pers1.GetComponent<REPRESENTACIONAtaquesReveladores>().NIVEL = 1; break;
+      case 2: pers1.Habilidad_3 = 1; pers1.AddComponent<PuntaHiriente>(); pers1.GetComponent<PuntaHiriente>().NIVEL = 1; break;
+      case 3: pers1.Habilidad_4 = 1; pers1.AddComponent<EnGarde>(); pers1.GetComponent<EnGarde>().NIVEL = 1; break;
+      case 4: pers1.Habilidad_5 = 1; pers1.AddComponent<RecuperarAire>(); pers1.GetComponent<RecuperarAire>().NIVEL = 1; break;
+     
     }
-
-
 
 
 

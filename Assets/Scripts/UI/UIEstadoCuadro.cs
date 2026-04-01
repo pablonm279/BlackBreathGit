@@ -225,7 +225,7 @@ public class UIEstadoCuadro : MonoBehaviour
   public void RepresentarReaccion(Reaccion buff, bool desdeBarraVida = false)
   {
     debarravida = desdeBarraVida;
-    textStacks.text = "" + buff.usos;
+    textStacks.text = buff.usos < 0 ? "" : "" + buff.usos;
 
      if (desdeBarraVida) { textStacks.text = ""; }
 

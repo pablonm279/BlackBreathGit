@@ -1162,6 +1162,10 @@ public class MenuPersonajes : MonoBehaviour
           {
             ListaElegirHabilidad.AddComponent<PuntaHiriente>();
           }
+          if (pSel.Habilidad_8 == 0 && pSel.GetComponent<RecuperarAire>() == null)
+          {
+            ListaElegirHabilidad.AddComponent<RecuperarAire>();
+          }
         }
 
 

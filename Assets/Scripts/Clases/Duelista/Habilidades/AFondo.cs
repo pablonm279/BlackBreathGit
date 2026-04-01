@@ -202,8 +202,10 @@ public class AFondo : Habilidad
         else
         {
             float hpAntes = objetivo.HP_actual;
+            ClaseDuelista duelista = scEstaUnidad as ClaseDuelista;
+            int bonusDanioPorcentajeDanza = duelista != null ? duelista.ObtenerBonusDanioPorcentajeDanzaDelEstoque(objetivo) : 0;
             float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + bonusDanioPlano;
-            danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+            danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje + bonusDanioPorcentajeDanza);
 
             if (resultadoTirada == 1)
             {
@@ -314,7 +316,7 @@ public class AFondo : Habilidad
 
     private void VFXAplicar(GameObject objetivo)
     {
-        VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_AtaqueDaga");
+        VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_Estocada");
         if (VFXenObjetivo == null)
         {
             return;

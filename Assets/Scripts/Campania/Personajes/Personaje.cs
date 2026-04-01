@@ -620,10 +620,47 @@ public class Personaje : MonoBehaviour
           Habilidad habilidad = gameObject.AddComponent<ManifestacionArcana>();
           habilidad.NIVEL = 1;
         }
+        return;
+      }
+
+      if (IDClase == 6)
+      {
+        bool tienePresenciaProvocadora = GetComponent<PresenciaProvocadora>() != null;
+        bool tieneDanzaDelEstoque = GetComponent<REPRESENTACIONDanzaDelEstoque>() != null;
+
+        if (!tienePresenciaProvocadora && !tieneDanzaDelEstoque)
+        {
+          if (rand == 1)
+          {
+            Habilidad habilidad = gameObject.AddComponent<PresenciaProvocadora>();
+            habilidad.NIVEL = 1;
+            Habilidad_9 = 1;
+            return;
+          }
+
+          Habilidad habilidadDanza = gameObject.AddComponent<REPRESENTACIONDanzaDelEstoque>();
+          habilidadDanza.NIVEL = 1;
+          Habilidad_10 = 1;
+          return;
+        }
+
+        if (!tienePresenciaProvocadora)
+        {
+          Habilidad habilidad = gameObject.AddComponent<PresenciaProvocadora>();
+          habilidad.NIVEL = 1;
+          Habilidad_9 = 1;
+          return;
+        }
+
+        if (!tieneDanzaDelEstoque)
+        {
+          Habilidad habilidad = gameObject.AddComponent<REPRESENTACIONDanzaDelEstoque>();
+          habilidad.NIVEL = 1;
+          Habilidad_10 = 1;
+        }
       }
     }
 }
-
 
 
 

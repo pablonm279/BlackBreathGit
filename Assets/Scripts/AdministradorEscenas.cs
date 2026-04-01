@@ -3753,6 +3753,10 @@ public class AdministradorEscenas : MonoBehaviour
           {
             persUnidad.GetComponent<ClaseDuelista>().PASIVA_EvasionMaestra = habilidad.NIVEL;
           }
+          else if (habilidad.GetType().Name.Contains("REPRESENTACIONDanzaDelEstoque"))
+          {
+            persUnidad.GetComponent<ClaseDuelista>().PASIVA_DanzaDelEstoque = habilidad.NIVEL;
+          }
         }
       }
 

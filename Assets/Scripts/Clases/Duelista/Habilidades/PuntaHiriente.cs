@@ -193,8 +193,10 @@ public class PuntaHiriente : Habilidad
         }
         else
         {
+            ClaseDuelista duelista = scEstaUnidad as ClaseDuelista;
+            int bonusDanioPorcentajeDanza = duelista != null ? duelista.ObtenerBonusDanioPorcentajeDanzaDelEstoque(objetivo) : 0;
             float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + 2;
-            danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+            danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje + bonusDanioPorcentajeDanza);
 
             if (resultadoTirada == 1)
             {
@@ -450,7 +452,7 @@ public class PuntaHiriente : Habilidad
 
     private void VFXAplicar(GameObject objetivo)
     {
-        VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_AtaqueDaga");
+        VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_PuntaHiriente");
         if (VFXenObjetivo == null)
         {
             return;

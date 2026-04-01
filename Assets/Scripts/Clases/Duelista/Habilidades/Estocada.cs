@@ -158,7 +158,7 @@ public class Estocada : Habilidad
 
     void VFXAplicar(GameObject objetivo)
     {
-        VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_AtaqueDaga");
+        VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_Estocada");
         if (VFXenObjetivo == null)
         {
             return;
@@ -293,6 +293,8 @@ public class Estocada : Habilidad
             return;
         }
 
+        ClaseDuelista duelista = scEstaUnidad as ClaseDuelista;
+        int bonusDanioPorcentajeDanza = duelista != null ? duelista.ObtenerBonusDanioPorcentajeDanzaDelEstoque(objetivo) : 0;
         int atributoMixto = ObtenerAtributoMixtoActual();
         float defensaObjetivo = objetivo.ObtenerdefensaActual();
         float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
@@ -316,7 +318,7 @@ public class Estocada : Habilidad
         {
             print("Roce");
             float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + atributoMixto + bonusDanioPlano;
-            danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+            danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje + bonusDanioPorcentajeDanza);
             danio -= danio / 2;
 
             objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
@@ -326,7 +328,7 @@ public class Estocada : Habilidad
         {
             print("Golpe");
             float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + atributoMixto + bonusDanioPlano;
-            danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+            danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje + bonusDanioPorcentajeDanza);
 
             objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
             VFXAplicar(objetivo.gameObject);
@@ -335,7 +337,7 @@ public class Estocada : Habilidad
         {
             print("Critico");
             float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + atributoMixto + bonusDanioPlano;
-            danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+            danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje + bonusDanioPorcentajeDanza);
 
             objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
             VFXAplicar(objetivo.gameObject);

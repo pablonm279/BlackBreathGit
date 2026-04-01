@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CargaDeEstoque : Habilidad
 {
+    [SerializeField] private GameObject VFXenObjetivo;
     [SerializeField] private int bonusAtaqueBase;
     [SerializeField] private int bonusAtaquePorCasilla;
     [SerializeField] private int XdDanio;
@@ -290,6 +291,20 @@ public class CargaDeEstoque : Habilidad
         return Task.CompletedTask;
     }
 
+     void VFXAplicar(GameObject objetivo)
+    {
+        VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_CargaDeEstoque");
+        if (VFXenObjetivo == null)
+        {
+            return;
+        }
+
+        GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity);
+        vfx.transform.parent = objetivo.transform;
+
+        Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+        RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);
+    }
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
         if (obj is not Unidad objetivo)
@@ -313,13 +328,15 @@ public class CargaDeEstoque : Habilidad
         }
         else
         {
+            ClaseDuelista duelista = scEstaUnidad as ClaseDuelista;
+            int bonusDanioPorcentajeDanza = duelista != null ? duelista.ObtenerBonusDanioPorcentajeDanzaDelEstoque(objetivo) : 0;
             float danio = TiradaDeDados.TirarDados(XdDanio, daniodX)
               + bonusDanioBase
               + bonusDanioNivel2
               + scEstaUnidad.mod_CarAgilidad
               + (bonusDanioPorCasilla + bonusDanioPorCasillaNivel5) * casillasAvanzadasUltimoUso;
 
-            danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+            danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje + bonusDanioPorcentajeDanza);
 
             if (resultadoTirada == 1)
             {
@@ -334,6 +351,8 @@ public class CargaDeEstoque : Habilidad
             {
                 objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
             }
+
+                VFXAplicar(objetivo.gameObject);
         }
 
         objetivo.AplicarDebuffPorAtaquesreiterados(1);

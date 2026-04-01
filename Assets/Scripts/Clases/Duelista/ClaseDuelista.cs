@@ -4,14 +4,16 @@ using UnityEngine;
 public class ClaseDuelista : Unidad
 {
     private const string BuffNombreEnGarde = "En Garde";
+    private const string BuffNombreDanzando = "Danzando";
 
     public int PASIVA_AtaquesReveladores;
     public int PASIVA_EvasionMaestra;
+    public int PASIVA_DanzaDelEstoque;
     private int usosEvasionMaestraEsteTurno;
     private int bonusEvasionEnGardeAplicado;
     private bool poseEnGardeActiva;
     private Sprite poseIdleOriginal;
-    private UnidadPoseController poseController;
+    private UnidadPoseController poseControllerDuelista;
 
     public Sprite Pose_Engarde;
 
@@ -147,6 +149,19 @@ public class ClaseDuelista : Unidad
         AplicarVulnerabilidadExpuesta(victima);
     }
 
+    public override void AcabaDeMatarUnidad(Unidad uVictima)
+    {
+        base.AcabaDeMatarUnidad(uVictima);
+
+        if (!DebeActivarDanzaDelEstoqueAlMatar(uVictima))
+        {
+            return;
+        }
+
+        CambiarAPActual(ObtenerApGanadosDanzaDelEstoque());
+        AplicarDanzando();
+    }
+
     private void ResetearPasoLigero()
     {
         REPRESENTACIONPasoLigero pasoLigero = GetComponent<REPRESENTACIONPasoLigero>();
@@ -239,6 +254,23 @@ public class ClaseDuelista : Unidad
 
         REPRESENTACIONEvasionMaestra representacion = GetComponent<REPRESENTACIONEvasionMaestra>();
         return representacion != null ? representacion.NIVEL : 0;
+    }
+
+    public int ObtenerBonusDanioPorcentajeDanzaDelEstoque(Unidad objetivo)
+    {
+        int nivel = ObtenerNivelDanzaDelEstoque();
+        if (nivel <= 0 || !ObjetivoEstaEnUmbralDanzaDelEstoque(objetivo))
+        {
+            return 0;
+        }
+
+        int bonus = 25;
+        if (nivel > 2)
+        {
+            bonus += 5;
+        }
+
+        return bonus;
     }
 
     private bool EsAtaqueMeleeParaEvasionMaestra(Unidad atacante, bool melee)
@@ -493,12 +525,12 @@ public class ClaseDuelista : Unidad
 
     private void ActualizarPoseEnGarde(bool activar)
     {
-        if (poseController == null)
+        if (poseControllerDuelista == null)
         {
-            poseController = GetComponent<UnidadPoseController>();
+            poseControllerDuelista = GetComponent<UnidadPoseController>();
         }
 
-        if (poseController == null || Pose_Engarde == null)
+        if (poseControllerDuelista == null || Pose_Engarde == null)
         {
             return;
         }
@@ -507,19 +539,19 @@ public class ClaseDuelista : Unidad
         {
             if (!poseEnGardeActiva)
             {
-                poseIdleOriginal = poseController.poseIdle;
+                poseIdleOriginal = poseControllerDuelista.poseIdle;
             }
 
-            poseController.poseIdle = Pose_Engarde;
+            poseControllerDuelista.poseIdle = Pose_Engarde;
             poseEnGardeActiva = true;
-            poseController.SetIdle();
+            poseControllerDuelista.SetIdle();
             return;
         }
 
         if (poseEnGardeActiva && poseIdleOriginal != null)
         {
-            poseController.poseIdle = poseIdleOriginal;
-            poseController.RefrescarPoseActual();
+            poseControllerDuelista.poseIdle = poseIdleOriginal;
+            poseControllerDuelista.RefrescarPoseActual();
         }
 
         poseEnGardeActiva = false;
@@ -601,5 +633,84 @@ public class ClaseDuelista : Unidad
             bonus += 15;
         }
         return bonus;
+    }
+
+    private int ObtenerNivelDanzaDelEstoque()
+    {
+        if (PASIVA_DanzaDelEstoque > 0)
+        {
+            return PASIVA_DanzaDelEstoque;
+        }
+
+        REPRESENTACIONDanzaDelEstoque representacion = GetComponent<REPRESENTACIONDanzaDelEstoque>();
+        return representacion != null ? representacion.NIVEL : 0;
+    }
+
+    private bool ObjetivoEstaEnUmbralDanzaDelEstoque(Unidad objetivo)
+    {
+        if (objetivo == null || objetivo.HP_actual <= 0f || objetivo.mod_maxHP <= 0f)
+        {
+            return false;
+        }
+
+        return objetivo.HP_actual <= objetivo.mod_maxHP * ObtenerUmbralDanzaDelEstoque();
+    }
+
+    private float ObtenerUmbralDanzaDelEstoque()
+    {
+        float umbral = 0.20f;
+        if (ObtenerNivelDanzaDelEstoque() > 1)
+        {
+            umbral += 0.05f;
+        }
+
+        return umbral;
+    }
+
+    private bool DebeActivarDanzaDelEstoqueAlMatar(Unidad victima)
+    {
+        if (victima == null || ObtenerNivelDanzaDelEstoque() <= 0 || BattleManager.Instance == null || BattleManager.Instance.unidadActiva != this)
+        {
+            return false;
+        }
+
+        return CasillaPosicion != null
+            && victima.CasillaPosicion != null
+            && CasillaPosicion.lado != victima.CasillaPosicion.lado;
+    }
+
+    private int ObtenerApGanadosDanzaDelEstoque()
+    {
+        return ObtenerNivelDanzaDelEstoque() == 4 ? 4 : 3;
+    }
+
+    private void AplicarDanzando()
+    {
+        Buff buff = new Buff();
+        buff.buffNombre = BuffNombreDanzando;
+        buff.buffDescr = ObtenerDescripcionBuffDanzando();
+        buff.boolfDebufftBuff = true;
+        buff.esStackeable = true;
+        buff.DuracionBuffRondas = 1;
+        buff.cantAtaque = 1;
+        buff.cantDanioPorcentaje = 15;
+
+        if (ObtenerNivelDanzaDelEstoque() == 5)
+        {
+            buff.cantCritDado = 1;
+        }
+
+        buff.AplicarBuff(this);
+        ComponentCopier.CopyComponent(buff, gameObject);
+    }
+
+    private string ObtenerDescripcionBuffDanzando()
+    {
+        if (ObtenerNivelDanzaDelEstoque() == 5)
+        {
+            return "Encadena bajas por este turno: +1 Ataque, +15% Danio y +1 rango critico.";
+        }
+
+        return "Encadena bajas por este turno: +1 Ataque y +15% Danio.";
     }
 }
