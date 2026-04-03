@@ -33,7 +33,15 @@ public class btnActividad : MonoBehaviour
 
    public void OnClick()
    {
+      int actividadAnterior = personajeSeleccionado.ActividadSeleccionada;
       personajeSeleccionado.ActividadSeleccionada = actividadRepresentada.IDActividad;
+
+      if (actividadAnterior != actividadRepresentada.IDActividad
+        && personajeSeleccionado.TieneRasgo(PersonajeTraitCatalog.TraitDesganado))
+      {
+        personajeSeleccionado.Camp_Moral = Mathf.Min(personajeSeleccionado.Camp_Moral, -2);
+      }
+
       scActividades.ActualizarRecuadros();
       RuntimeAnalytics.TrackDesign(
         "campaign",

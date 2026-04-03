@@ -333,6 +333,7 @@ public static class ItemIconGeneratorTools
             case 3: return config.iconoArmaduraPurificadora;
             case 4: return config.iconoArmaduraAcechador;
             case 5: return config.iconoArmaduraCanalizador;
+            case 6: return config.iconoArmaduraDuelista;
             default:
                 if (!permitirFallbackCadena)
                 {
@@ -344,6 +345,7 @@ public static class ItemIconGeneratorTools
                     ?? config.iconoArmaduraExplorador
                     ?? config.iconoArmaduraPurificadora
                     ?? config.iconoArmaduraCanalizador
+                    ?? config.iconoArmaduraDuelista
                     ?? config.iconoFallback;
         }
     }
@@ -357,6 +359,7 @@ public static class ItemIconGeneratorTools
             case 3: return config.iconoArmaBaculo != null ? config.iconoArmaBaculo : config.iconoFallback;
             case 4: return config.iconoArmaEspadaCorta != null ? config.iconoArmaEspadaCorta : config.iconoFallback;
             case 5: return config.iconoArmaGuantelete != null ? config.iconoArmaGuantelete : config.iconoFallback;
+            case 6: return config.iconoEstoque != null ? config.iconoEstoque : config.iconoFallback;
             default: return null;
         }
     }
@@ -368,6 +371,7 @@ public static class ItemIconGeneratorTools
         if (n.Contains("guantelete")) { return config.iconoArmaGuantelete != null ? config.iconoArmaGuantelete : config.iconoFallback; }
         if (n.Contains("bast")) { return config.iconoArmaBaculo != null ? config.iconoArmaBaculo : config.iconoFallback; }
         if (n.Contains("arco")) { return config.iconoArmaArco != null ? config.iconoArmaArco : config.iconoFallback; }
+        if (n.Contains("estoque")) { return config.iconoEstoque != null ? config.iconoEstoque : config.iconoFallback; }
         if (n.Contains("espada")) { return config.iconoArmaEspadaCorta != null ? config.iconoArmaEspadaCorta : config.iconoFallback; }
         return config.iconoFallback;
     }
@@ -439,7 +443,7 @@ public static class ItemIconGeneratorTools
         for (int i = 0; i < item.IDClasesQuePuedenUsarEsteItem.Count; i++)
         {
             int id = item.IDClasesQuePuedenUsarEsteItem[i];
-            if (id >= 1 && id <= 5)
+            if (id >= 1 && id <= 6)
             {
                 return id;
             }

@@ -236,11 +236,13 @@ public class MenuDescanso : MonoBehaviour
 
 
     if (CampaignManager.Instance.scMenuSequito.TieneSequito(5)) { chancesAtaqueACaravana += 2; } //Herboristas, aumentan chances 2%
+    chancesAtaqueACaravana += CampaignManager.Instance.ObtenerModificadorChanceEmboscadaTraits();
 
     chancesAtaqueACaravana -= CampaignManager.Instance.mejoraCaravanaAntorchas * 5;
     chancesExploracion += CampaignManager.Instance.mejoraCaravanaCatalejos * 5;
 
     chancesExploracion += CampaignManager.Instance.ExploracionSumadaPorActividades();
+    chancesExploracion += CampaignManager.Instance.ObtenerModificadorChanceExploracionTraits();
 
     if (CampaignManager.Instance != null && CampaignManager.Instance.estadosCaravana != null)
     {
@@ -410,6 +412,32 @@ public class MenuDescanso : MonoBehaviour
         pers.Camp_Moral += 1;
       }
 
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitDulcesSuenos))
+      {
+        pers.Camp_Moral = Mathf.Max(pers.Camp_Moral, 2);
+        int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+        string mensajeDulcesSuenos = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " sleeps peacefully. Gains High Morale for 2 days.",
+          TRADU.IdiomaPortugues => pers.sNombre + " dorme em paz. Recebe Alta Moral por 2 dias.",
+          _ => pers.sNombre + " duerme plácidamente. Obtiene Alta Moral por 2 días."
+        };
+        CampaignManager.Instance.EscribirLog("-" + mensajeDulcesSuenos);
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitPesadillasRecurrentes))
+      {
+        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -1);
+        int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+        string mensajePesadillas = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " suffers recurring nightmares. Gains Low Morale for 1 day.",
+          TRADU.IdiomaPortugues => pers.sNombre + " sofre pesadelos recorrentes. Recebe Moral Baixa por 1 dia.",
+          _ => pers.sNombre + " sufre pesadillas recurrentes. Obtiene Baja Moral por 1 día."
+        };
+        CampaignManager.Instance.EscribirLog("-" + mensajePesadillas);
+      }
+
 
 
       //Curacion General por descansar
@@ -418,6 +446,7 @@ public class MenuDescanso : MonoBehaviour
       int cantPurificadorasColaborando = CampaignManager.Instance.CuantosPersonajesHacenTalActividad(12); //Colaborar con los Curanderos
 
       float porcentajeVidaMax = pers.fVidaMaxima * (CampaignManager.Instance.sequitoCuranderosMejoraCuracion + (cantPurificadorasColaborando * 0.05f)); //5% por cada Purificadora colaborando
+      porcentajeVidaMax = pers.AplicarMultiplicadorCuracionCampaniaTraits(porcentajeVidaMax);
 
 
 
@@ -533,6 +562,7 @@ public class MenuDescanso : MonoBehaviour
     }
 
     TiradaClima();
+    CampaignManager.Instance.AplicarTraitsMoraleAmbientales();
     CampaignManager.Instance.sunController.ResetSun();
 
     #region Acechadores Sueldo
@@ -582,7 +612,8 @@ public class MenuDescanso : MonoBehaviour
     #endregion
 
     float randomEvento = UnityEngine.Random.Range(0, 100);
-    float factorEventoBuenoMalo = 36 + CampaignManager.Instance.GetEsperanzaActual() / 3;
+    float factorEventoBuenoMalo = 36 + CampaignManager.Instance.GetEsperanzaActual() / 3 + CampaignManager.Instance.ObtenerModificadorChanceEventoTraits();
+    factorEventoBuenoMalo = Mathf.Clamp(factorEventoBuenoMalo, 0f, 100f);
     bool descansoEnNodoEvento = CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 2;
     bool descansoEnAsentamiento = CampaignManager.Instance.scMapaManager.nodoActual != null &&
                                   CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoAsentamiento;

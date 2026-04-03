@@ -29,11 +29,13 @@ MonoBehaviour:
   iconoArmaBaculo: {fileID: 21300000, guid: c615d1f96a9adb149874b3ec4f2e0ac4, type: 3}
   iconoArmaArco: {fileID: 21300000, guid: 51982b8ba9e90fb48b889f68fbc74ca1, type: 3}
   iconoArmaEspadaCorta: {fileID: 21300000, guid: 29f2883edeccd324a99eeb85dc11b634, type: 3}
+  iconoEstoque: {fileID: 21300000, guid: 185642744e7e96c4f8faefbb841de200, type: 3}
   iconoArmaduraCaballero: {fileID: 21300000, guid: abcc2a36ce10cdf4ea60c83df6f67843, type: 3}
   iconoArmaduraExplorador: {fileID: 21300000, guid: ff64e844999491a459d043138fcd1142, type: 3}
   iconoArmaduraPurificadora: {fileID: 21300000, guid: c12e8b93f50acec4099077496f5b2a69, type: 3}
   iconoArmaduraAcechador: {fileID: 21300000, guid: 80bb16f765a5e0b44a15d42582b9cba1, type: 3}
   iconoArmaduraCanalizador: {fileID: 21300000, guid: 7cefd35872889da4d9895eabeb933f5b, type: 3}
+  iconoArmaduraDuelista: {fileID: 21300000, guid: 249b0c6406164fa7af4bd2ef52cd5857, type: 3}
   iconoAccesorioAnillo: {fileID: 21300000, guid: 24d596b9b0d4fd5439609153e8165512, type: 3}
   iconoConsumible: {fileID: 21300000, guid: 7cefd35872889da4d9895eabeb933f5b, type: 3}
   iconoFallback: {fileID: 21300000, guid: 24d596b9b0d4fd5439609153e8165512, type: 3}

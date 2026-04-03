@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Personaje : MonoBehaviour
 {
+    public const int CantidadMaximaRasgos = 300;
     [SerializeField] private string persistentId;
     private const float PorcentajeVidaPorPuntoFuerza = 0.03f;
     public int iDefensaBaseSinAgilidad;
@@ -91,14 +92,22 @@ public class Personaje : MonoBehaviour
 
     public bool Camp_Muerto;
     public bool Camp_Corrupto;
-   
+    public bool TraitHeroeLocalCivilesOtorgados;
+    public bool TraitHeroeLocalPenalidadMuerteAplicada;
+    public bool TraitEjemploASeguirAplicado;
+    [System.NonSerialized] public bool TraitDuroDeMatarActivadoEnCombate;
+    [System.NonSerialized] public bool TraitVengativoActivadoEnCombate;
+    [System.NonSerialized] public bool TraitColaborativoUsadoEnCombate;
+    [System.NonSerialized] public bool TraitImpulsivoCansadoAplicadoEnCombate;
+    [System.NonSerialized] public bool TraitPacienteAplicadoEnCombate;
 
 
   
-    public int[] aRasgos = new int[300];
+    public int[] aRasgos = new int[CantidadMaximaRasgos];
 
   void Start()
   {
+    AsegurarCapacidadRasgos();
     if (ActividadSeleccionada == 0)
     {
       ActividadSeleccionada = 3; //Guardia
@@ -123,6 +132,184 @@ public class Personaje : MonoBehaviour
     public void SetPersistentId(string id)
     {
         persistentId = id;
+    }
+
+    public void AsegurarCapacidadRasgos()
+    {
+        if (aRasgos != null && aRasgos.Length >= CantidadMaximaRasgos)
+        {
+            return;
+        }
+
+        int[] rasgosNuevos = new int[CantidadMaximaRasgos];
+        if (aRasgos != null)
+        {
+            System.Array.Copy(aRasgos, rasgosNuevos, Mathf.Min(aRasgos.Length, rasgosNuevos.Length));
+        }
+
+        aRasgos = rasgosNuevos;
+    }
+
+    public void LimpiarRasgos()
+    {
+        AsegurarCapacidadRasgos();
+        System.Array.Clear(aRasgos, 0, aRasgos.Length);
+    }
+
+    public bool TieneRasgo(int rasgoId)
+    {
+        AsegurarCapacidadRasgos();
+        return rasgoId > 0 && rasgoId < aRasgos.Length && aRasgos[rasgoId] == 1;
+    }
+
+    public bool AgregarRasgo(int rasgoId)
+    {
+        if (rasgoId <= 0 || rasgoId >= CantidadMaximaRasgos)
+        {
+            return false;
+        }
+
+        AsegurarCapacidadRasgos();
+        foreach (int rasgoActivo in EnumerarRasgosActivos())
+        {
+            if (!PersonajeTraitCatalog.SonCompatibles(rasgoId, rasgoActivo))
+            {
+                return false;
+            }
+        }
+
+        aRasgos[rasgoId] = 1;
+        return true;
+    }
+
+    public IEnumerable<int> EnumerarRasgosActivos()
+    {
+        AsegurarCapacidadRasgos();
+        for (int i = 1; i < aRasgos.Length; i++)
+        {
+            if (aRasgos[i] == 1)
+            {
+                yield return i;
+            }
+        }
+    }
+
+    public void ResetearEstadoTraitsCombate()
+    {
+        TraitDuroDeMatarActivadoEnCombate = false;
+        TraitVengativoActivadoEnCombate = false;
+        TraitColaborativoUsadoEnCombate = false;
+        TraitImpulsivoCansadoAplicadoEnCombate = false;
+        TraitPacienteAplicadoEnCombate = false;
+    }
+
+    public bool PuedeRealizarActividades()
+    {
+        return !TieneRasgo(PersonajeTraitCatalog.TraitHolgazan);
+    }
+
+    public float AplicarMultiplicadorExperienciaTraits(float cantidadBase)
+    {
+        float cantidadAjustada = cantidadBase;
+
+        if (TieneRasgo(PersonajeTraitCatalog.TraitInteligente))
+        {
+            cantidadAjustada *= 1.15f;
+        }
+
+        if (TieneRasgo(PersonajeTraitCatalog.TraitIngenuo))
+        {
+            cantidadAjustada *= 0.85f;
+        }
+
+        return cantidadAjustada;
+    }
+
+    public float AplicarMultiplicadorCuracionCampaniaTraits(float cantidadBase)
+    {
+        float cantidadAjustada = cantidadBase;
+
+        if (TieneRasgo(PersonajeTraitCatalog.TraitSano))
+        {
+            cantidadAjustada *= 1.15f;
+        }
+
+        if (TieneRasgo(PersonajeTraitCatalog.TraitEnfermizo))
+        {
+            cantidadAjustada *= 0.85f;
+        }
+
+        return cantidadAjustada;
+    }
+
+    public void AplicarTraitExpertoInicial()
+    {
+        if (!TieneRasgo(PersonajeTraitCatalog.TraitExperto))
+        {
+            return;
+        }
+
+        bool TieneHabilidadDeClaseActiva(int idEnClase)
+        {
+            return idEnClase switch
+            {
+                1 => Habilidad_1 > 0,
+                2 => Habilidad_2 > 0,
+                3 => Habilidad_3 > 0,
+                4 => Habilidad_4 > 0,
+                5 => Habilidad_5 > 0,
+                6 => Habilidad_6 > 0,
+                7 => Habilidad_7 > 0,
+                8 => Habilidad_8 > 0,
+                9 => Habilidad_9 > 0,
+                10 => Habilidad_10 > 0,
+                _ => false
+            };
+        }
+
+        List<Habilidad> habilidadesCandidatas = new List<Habilidad>();
+        foreach (Habilidad habilidad in GetComponents<Habilidad>())
+        {
+            if (habilidad == null
+                || habilidad.NIVEL <= 0
+                || habilidad.agregaDesdeArmaUI != null
+                || habilidad.IDenClase <= 0
+                || !TieneHabilidadDeClaseActiva(habilidad.IDenClase))
+            {
+                continue;
+            }
+
+            habilidadesCandidatas.Add(habilidad);
+        }
+
+        if (habilidadesCandidatas.Count == 0)
+        {
+            return;
+        }
+
+        Habilidad habilidadElegida = habilidadesCandidatas[UnityEngine.Random.Range(0, habilidadesCandidatas.Count)];
+        if (habilidadElegida != null)
+        {
+            habilidadElegida.NIVEL = Mathf.Max(habilidadElegida.NIVEL, 3);
+        }
+    }
+
+    public int ObtenerTSFortalezaTotalCampania()
+    {
+        int total = iTSFortaleza;
+
+        if (itemArma != null) total += itemArma.buffTSFortaleza;
+        if (itemArmadura != null) total += itemArmadura.buffTSFortaleza;
+        if (Accesorio1 != null) total += Accesorio1.buffTSFortaleza;
+        if (Accesorio2 != null) total += Accesorio2.buffTSFortaleza;
+
+        return total;
+    }
+
+    public bool FalloTiradaSalvacionFortalezaCampania(int dc)
+    {
+        int tirada = UnityEngine.Random.Range(1, 21);
+        return dc > tirada + ObtenerTSFortalezaTotalCampania();
     }
 
     public void QuitarArma(Arma iArma)
@@ -309,6 +496,8 @@ public class Personaje : MonoBehaviour
       {
         return;
       }
+
+      cant = AplicarMultiplicadorExperienciaTraits(cant);
 
       if (CampaignManager.Instance != null)
       {
@@ -662,13 +851,1121 @@ public class Personaje : MonoBehaviour
     }
 }
 
+public sealed class PersonajeTraitDefinition
+{
+    public int Id { get; }
+    public string Codigo { get; }
+    public bool DisponibleAlCrear { get; }
 
+    private readonly string nombreEs;
+    private readonly string descripcionEs;
+    private readonly string nombreEn;
+    private readonly string descripcionEn;
+    private readonly string nombrePtBr;
+    private readonly string descripcionPtBr;
+    private readonly HashSet<int> antagonicos;
 
+    public PersonajeTraitDefinition(
+        int id,
+        string codigo,
+        bool disponibleAlCrear,
+        string nombreEs,
+        string descripcionEs,
+        string nombreEn,
+        string descripcionEn,
+        string nombrePtBr,
+        string descripcionPtBr,
+        params int[] antagonicos)
+    {
+        Id = id;
+        Codigo = codigo;
+        DisponibleAlCrear = disponibleAlCrear;
+        this.nombreEs = nombreEs;
+        this.descripcionEs = descripcionEs;
+        this.nombreEn = nombreEn;
+        this.descripcionEn = descripcionEn;
+        this.nombrePtBr = nombrePtBr;
+        this.descripcionPtBr = descripcionPtBr;
+        this.antagonicos = antagonicos != null && antagonicos.Length > 0
+            ? new HashSet<int>(antagonicos)
+            : new HashSet<int>();
+    }
 
+    public string ObtenerNombre(int idioma)
+    {
+        return idioma switch
+        {
+            TRADU.IdiomaIngles => string.IsNullOrWhiteSpace(nombreEn) ? nombreEs : nombreEn,
+            TRADU.IdiomaPortugues => string.IsNullOrWhiteSpace(nombrePtBr) ? nombreEs : nombrePtBr,
+            _ => nombreEs
+        };
+    }
 
+    public string ObtenerDescripcion(int idioma)
+    {
+        return idioma switch
+        {
+            TRADU.IdiomaIngles => string.IsNullOrWhiteSpace(descripcionEn) ? descripcionEs : descripcionEn,
+            TRADU.IdiomaPortugues => string.IsNullOrWhiteSpace(descripcionPtBr) ? descripcionEs : descripcionPtBr,
+            _ => descripcionEs
+        };
+    }
 
+    public string ObtenerTextoCompleto(int idioma)
+    {
+        string nombre = ObtenerNombre(idioma);
+        string descripcion = ObtenerDescripcion(idioma);
+        return string.IsNullOrWhiteSpace(descripcion) ? nombre : nombre + ":  " + descripcion;
+    }
 
+    public bool EsAntagonicoCon(int traitId)
+    {
+        return antagonicos.Contains(traitId);
+    }
+}
 
+public static class PersonajeTraitCatalog
+{
+    public const int TraitDulcesSuenos = 1;
+    public const int TraitPesadillasRecurrentes = 2;
+    public const int TraitValiente = 3;
+    public const int TraitCobarde = 4;
+    public const int TraitAvispado = 5;
+    public const int TraitDistraido = 6;
+    public const int TraitInteligente = 7;
+    public const int TraitIngenuo = 8;
+    public const int TraitIncansable = 9;
+    public const int TraitFlojo = 10;
+    public const int TraitOptimista = 11;
+    public const int TraitPesimista = 12;
+    public const int TraitCuidadoso = 13;
+    public const int TraitRudioso = 14;
+    public const int TraitResistente = 15;
+    public const int TraitEndeble = 16;
+    public const int TraitHombrosFirmes = 17;
+    public const int TraitSano = 18;
+    public const int TraitEnfermizo = 19;
+    public const int TraitOdiaLaLluvia = 20;
+    public const int TraitExperto = 21;
+    public const int TraitDesganado = 22;
+    public const int TraitOrganizado = 23;
+    public const int TraitAlmaFuerte = 24;
+    public const int TraitAlmaDebil = 25;
+    public const int TraitTemeCorruptos = 26;
+    public const int TraitTemeNomuertos = 27;
+    public const int TraitTemeBestias = 28;
+    public const int TraitTemeCriaturas = 29;
+    public const int TraitTemeDemonios = 30;
+    public const int TraitOdiaCorruptos = 31;
+    public const int TraitOdiaNomuertos = 32;
+    public const int TraitOdiaBestias = 33;
+    public const int TraitOdiaCriaturas = 34;
+    public const int TraitOdiaDemonios = 35;
+    public const int TraitDuroDeMatar = 36;
+    public const int TraitVengativo = 37;
+    public const int TraitIndividualista = 38;
+    public const int TraitColaborativo = 39;
+    public const int TraitImpulsivo = 40;
+    public const int TraitPaciente = 41;
+    public const int TraitEspirituAlegre = 42;
+    public const int TraitEspirituNegativo = 43;
+    public const int TraitCoordinado = 44;
+    public const int TraitTorpe = 45;
+    public const int TraitBrutal = 46;
+    public const int TraitClinico = 47;
+    public const int TraitLoboSolitario = 48;
+    public const int TraitTrabajoEnEquipo = 49;
+    public const int TraitPuertasDeLaMuerte = 50;
+    public const int TraitFragil = 51;
+    public const int TraitProtector = 52;
+    public const int TraitBajoPresion = 53;
+    public const int TraitProtagonista = 54;
+    public const int TraitPerfilBajo = 55;
+    public const int TraitAhorrista = 56;
+    public const int TraitDespilfarrador = 57;
+    public const int TraitFeInquebrantable = 58;
+    public const int TraitPagano = 59;
+    public const int TraitAventurero = 60;
+    public const int TraitArrastrado = 61;
+    public const int TraitConoceBosqueArdiente = 62;
+    public const int TraitDetestaBosqueArdiente = 63;
+    public const int TraitConocePasoVientohelado = 64;
+    public const int TraitDetestaPasoVientohelado = 65;
+    public const int TraitConoceNedukazal = 66;
+    public const int TraitDetestaNedukazal = 67;
+    public const int TraitEsforzado = 68;
+    public const int TraitMinimoEsfuerzo = 69;
+    public const int TraitHolgazan = 70;
+    public const int TraitTrabajador = 71;
+    public const int TraitBeodo = 72;
+    public const int TraitConvincente = 73;
+    public const int TraitHeroeLocal = 74;
+    public const int TraitAdmirado = 75;
+    public const int TraitMalaReputacion = 76;
+    public const int TraitBuenaReputacion = 77;
+    public const int TraitHermitano = 78;
+    public const int TraitCitadino = 79;
+    public const int TraitEjemploASeguir = 80;
 
+    private const string ColorNombre = "#f2e6c9";
+    private const string ColorDescripcion = "#d7cfbf";
 
+    private static readonly List<PersonajeTraitDefinition> definiciones = new List<PersonajeTraitDefinition>
+    {
+        new PersonajeTraitDefinition(
+            TraitDulcesSuenos,
+            "sweet_dreams",
+            true,
+            "Dulces Sueños",
+            "Obtiene Alta Moral por dos días al descansar.",
+            "Sweet Dreams",
+            "Gains High Morale for two days when resting.",
+            "Bons Sonhos",
+            "Recebe Alta Moral por dois dias ao descansar.",
+            TraitPesadillasRecurrentes),
+        new PersonajeTraitDefinition(
+            TraitPesadillasRecurrentes,
+            "recurring_nightmares",
+            true,
+            "Pesadillas Recurrentes",
+            "Obtiene Baja Moral por un día al descansar.",
+            "Recurring Nightmares",
+            "Gains Low Morale for one day when resting.",
+            "Pesadelos Recorrentes",
+            "Recebe Moral Baixa por um dia ao descansar.",
+            TraitDulcesSuenos),
+        new PersonajeTraitDefinition(
+            TraitValiente,
+            "brave",
+            true,
+            "Valiente",
+            "Arranca los combates con +2 Val.",
+            "Brave",
+            "Starts battles with +2 Valour.",
+            "Corajoso",
+            "Começa os combates com +2 de Valentia.",
+            TraitCobarde),
+        new PersonajeTraitDefinition(
+            TraitCobarde,
+            "cowardly",
+            true,
+            "Cobarde",
+            "Si falla TSMental (DC 12) al empezar combate, -2 Val.",
+            "Cowardly",
+            "If they fail a Mental Save (DC 12) at the start of combat, they get -2 Valour.",
+            "Covarde",
+            "Se falhar no Teste Mental (DC 12) no começo do combate, recebe -2 de Valentia.",
+            TraitValiente),
+        new PersonajeTraitDefinition(
+            TraitAvispado,
+            "sharp_witted",
+            true,
+            "Avispado",
+            "No puede ser sorprendido por emboscadas enemigas.",
+            "Sharp-Witted",
+            "Cannot be surprised by enemy ambushes.",
+            "Esperto",
+            "Nao pode ser surpreendido por emboscadas inimigas.",
+            TraitDistraido),
+        new PersonajeTraitDefinition(
+            TraitDistraido,
+            "distracted",
+            true,
+            "Distraído",
+            "Si falla TSMental (DC 11) al empezar combate, arranca Sorprendido.",
+            "Distracted",
+            "If they fail a Mental Save (DC 11) at the start of combat, they start Surprised.",
+            "Distraído",
+            "Se falhar no Teste Mental (DC 11) no começo do combate, começa Surpreendido.",
+            TraitAvispado),
+        new PersonajeTraitDefinition(
+            TraitInteligente,
+            "intelligent",
+            true,
+            "Inteligente",
+            "+15% Experiencia obtenida.",
+            "Intelligent",
+            "+15% Experience gained.",
+            "Inteligente",
+            "+15% de Experiência obtida.",
+            TraitIngenuo),
+        new PersonajeTraitDefinition(
+            TraitIngenuo,
+            "naive",
+            true,
+            "Ingenuo",
+            "-15% Experiencia obtenida.",
+            "Naive",
+            "-15% Experience gained.",
+            "Ingênuo",
+            "-15% de Experiência obtida.",
+            TraitInteligente),
+        new PersonajeTraitDefinition(
+            TraitIncansable,
+            "tireless",
+            true,
+            "Incansable",
+            "No se Fatiga en combates largos.",
+            "Tireless",
+            "Does not become Fatigued in long battles.",
+            "Incansável",
+            "Nao fica Fatigado em combates longos.",
+            TraitFlojo),
+        new PersonajeTraitDefinition(
+            TraitFlojo,
+            "lazy",
+            true,
+            "Flojo",
+            "Gana Fatiga cuando la caravana llega a Fatiga 4.",
+            "Lazy",
+            "Gains Fatigue when caravan fatigue reaches 4.",
+            "Preguiçoso",
+            "Recebe Fadiga quando a caravana chega à Fadiga 4.",
+            TraitIncansable),
+        new PersonajeTraitDefinition(
+            TraitOptimista,
+            "optimistic",
+            true,
+            "Optimista",
+            "+5% chances de que los Eventos que toquen sean Positivos.",
+            "Optimistic",
+            "+5% chance for triggered Events to be Positive.",
+            "Otimista",
+            "+5% de chance de que os Eventos acionados sejam Positivos.",
+            TraitPesimista),
+        new PersonajeTraitDefinition(
+            TraitPesimista,
+            "pessimistic",
+            true,
+            "Pesimista",
+            "+5% chances de que los Eventos que toquen sean Negativos.",
+            "Pessimistic",
+            "+5% chance for triggered Events to be Negative.",
+            "Pessimista",
+            "+5% de chance de que os Eventos acionados sejam Negativos.",
+            TraitOptimista),
+        new PersonajeTraitDefinition(
+            TraitCuidadoso,
+            "careful",
+            true,
+            "Cuidadoso",
+            "-3% chances de emboscada.",
+            "Careful",
+            "-3% ambush chance.",
+            "Cuidadoso",
+            "-3% de chance de emboscada.",
+            TraitRudioso),
+        new PersonajeTraitDefinition(
+            TraitRudioso,
+            "noisy",
+            true,
+            "Rudioso",
+            "+3% chances de emboscada.",
+            "Noisy",
+            "+3% ambush chance.",
+            "Barulhento",
+            "+3% de chance de emboscada.",
+            TraitCuidadoso),
+        new PersonajeTraitDefinition(
+            TraitResistente,
+            "resilient",
+            true,
+            "Resistente",
+            "Si supera TSFortitud (DC 13) tras una pelea, se cura Herida.",
+            "Resilient",
+            "If they pass a Fortitude Save (DC 13) after a battle, they remove Wound.",
+            "Resistente",
+            "Se passar em um Teste de Fortitude (DC 13) após uma batalha, remove Ferida.",
+            TraitEndeble),
+        new PersonajeTraitDefinition(
+            TraitEndeble,
+            "frail",
+            true,
+            "Endeble",
+            "Si falla TSFortitud (DC 11) al caer en combate, muere permanentemente.",
+            "Frail",
+            "If they fail a Fortitude Save (DC 11) when downed in combat, they die permanently.",
+            "Frágil",
+            "Se falhar em um Teste de Fortitude (DC 11) ao cair em combate, morre permanentemente.",
+            TraitResistente),
+        new PersonajeTraitDefinition(
+            TraitHombrosFirmes,
+            "strong_shoulders",
+            true,
+            "Hombros Firmes",
+            "Aumenta 15 la capacidad de carga.",
+            "Strong Shoulders",
+            "Increases carrying capacity by 15.",
+            "Ombros Firmes",
+            "Aumenta a capacidade de carga em 15."),
+        new PersonajeTraitDefinition(
+            TraitSano,
+            "healthy",
+            true,
+            "Sano",
+            "Se cura un 15% más rápido en campaña.",
+            "Healthy",
+            "Heals 15% faster in campaign.",
+            "Saudável",
+            "Se cura 15% mais rápido na campanha.",
+            TraitEnfermizo),
+        new PersonajeTraitDefinition(
+            TraitEnfermizo,
+            "sickly",
+            true,
+            "Enfermizo",
+            "Se cura un 15% más lento en campaña.",
+            "Sickly",
+            "Heals 15% slower in campaign.",
+            "Enfermico",
+            "Se cura 15% mais devagar na campanha.",
+            TraitSano),
+        new PersonajeTraitDefinition(
+            TraitOdiaLaLluvia,
+            "hates_rain",
+            true,
+            "Odia la Lluvia",
+            "Obtiene Baja Moral mientras llueva o neve.",
+            "Hates Rain",
+            "Gains Low Morale while it rains or snows.",
+            "Odeia a Chuva",
+            "Recebe Moral Baixa enquanto chove ou neva."),
+        new PersonajeTraitDefinition(
+            TraitExperto,
+            "expert",
+            true,
+            "Experto",
+            "Maneja con maestría una de sus habilidades. Arranca nivel 3.",
+            "Expert",
+            "Masters one of their skills. Starts at level 3.",
+            "Especialista",
+            "Domina uma de suas habilidades. Começa no nível 3."),
+        new PersonajeTraitDefinition(
+            TraitDesganado,
+            "listless",
+            true,
+            "Desganado",
+            "Al cambiar de actividad obtiene Baja Moral por 2 días.",
+            "Listless",
+            "When changing activity, gains Low Morale for 2 days.",
+            "Desanimado",
+            "Ao mudar de atividade, recebe Moral Baixa por 2 dias."),
+        new PersonajeTraitDefinition(
+            TraitOrganizado,
+            "organized",
+            true,
+            "Organizado",
+            "Las mejoras de caravana valen un 5% menos.",
+            "Organized",
+            "Caravan upgrades cost 5% less.",
+            "Organizado",
+            "As melhorias da caravana custam 5% menos."),
+        new PersonajeTraitDefinition(
+            TraitAlmaFuerte,
+            "strong_soul",
+            true,
+            "Alma Fuerte",
+            "Si está dentro del Aliento Negro, se fortalece en batalla.",
+            "Strong Soul",
+            "If inside the Black Breath, becomes stronger in battle.",
+            "Alma Forte",
+            "Se estiver sob o Sopro Negro, fica mais forte em batalha.",
+            TraitAlmaDebil),
+        new PersonajeTraitDefinition(
+            TraitAlmaDebil,
+            "weak_soul",
+            true,
+            "Alma Débil",
+            "Si está dentro del Aliento Negro, obtiene Baja Moral.",
+            "Weak Soul",
+            "If inside the Black Breath, gains Low Morale.",
+            "Alma Fraca",
+            "Se estiver sob o Sopro Negro, recebe Moral Baixa.",
+            TraitAlmaFuerte),
+        new PersonajeTraitDefinition(
+            TraitTemeCorruptos,
+            "fears_corrupted",
+            true,
+            "Teme a Corruptos",
+            "Si hay Corruptos en el roster enemigo, arranca el combate con -2 Val.",
+            "Fears the Corrupted",
+            "If the enemy roster contains Corrupted foes, starts combat with -2 Valour.",
+            "Teme os Corrompidos",
+            "Se houver Corrompidos no elenco inimigo, começa o combate com -2 de Valentia.",
+            TraitOdiaCorruptos),
+        new PersonajeTraitDefinition(
+            TraitTemeNomuertos,
+            "fears_undead",
+            true,
+            "Teme a Nomuertos",
+            "Si hay Nomuertos en el roster enemigo, arranca el combate con -2 Val.",
+            "Fears the Undead",
+            "If the enemy roster contains Undead foes, starts combat with -2 Valour.",
+            "Teme os Mortos-vivos",
+            "Se houver Mortos-vivos no elenco inimigo, começa o combate com -2 de Valentia.",
+            TraitOdiaNomuertos),
+        new PersonajeTraitDefinition(
+            TraitTemeBestias,
+            "fears_beasts",
+            true,
+            "Teme a Bestias",
+            "Si hay Bestias en el roster enemigo, arranca el combate con -2 Val.",
+            "Fears Beasts",
+            "If the enemy roster contains Beasts, starts combat with -2 Valour.",
+            "Teme as Bestas",
+            "Se houver Bestas no elenco inimigo, começa o combate com -2 de Valentia.",
+            TraitOdiaBestias),
+        new PersonajeTraitDefinition(
+            TraitTemeCriaturas,
+            "fears_creatures",
+            true,
+            "Teme a Criaturas",
+            "Si hay Criaturas en el roster enemigo, arranca el combate con -2 Val.",
+            "Fears Creatures",
+            "If the enemy roster contains Creatures, starts combat with -2 Valour.",
+            "Teme as Criaturas",
+            "Se houver Criaturas no elenco inimigo, começa o combate com -2 de Valentia.",
+            TraitOdiaCriaturas),
+        new PersonajeTraitDefinition(
+            TraitTemeDemonios,
+            "fears_demons",
+            true,
+            "Teme a Demonios",
+            "Si hay Demonios en el roster enemigo, arranca el combate con -2 Val.",
+            "Fears Demons",
+            "If the enemy roster contains Demons, starts combat with -2 Valour.",
+            "Teme os Demônios",
+            "Se houver Demônios no elenco inimigo, começa o combate com -2 de Valentia.",
+            TraitOdiaDemonios),
+        new PersonajeTraitDefinition(
+            TraitOdiaCorruptos,
+            "hates_corrupted",
+            true,
+            "Odia a Corruptos",
+            "Si hay Corruptos en el roster enemigo, obtiene +10% daño y +1 Ataque.",
+            "Hates the Corrupted",
+            "If the enemy roster contains Corrupted foes, gains +10% damage and +1 Attack.",
+            "Odeia os Corrompidos",
+            "Se houver Corrompidos no elenco inimigo, recebe +10% de dano e +1 de Ataque.",
+            TraitTemeCorruptos),
+        new PersonajeTraitDefinition(
+            TraitOdiaNomuertos,
+            "hates_undead",
+            true,
+            "Odia a Nomuertos",
+            "Si hay Nomuertos en el roster enemigo, obtiene +10% daño y +1 Ataque.",
+            "Hates the Undead",
+            "If the enemy roster contains Undead foes, gains +10% damage and +1 Attack.",
+            "Odeia os Mortos-vivos",
+            "Se houver Mortos-vivos no elenco inimigo, recebe +10% de dano e +1 de Ataque.",
+            TraitTemeNomuertos),
+        new PersonajeTraitDefinition(
+            TraitOdiaBestias,
+            "hates_beasts",
+            true,
+            "Odia a Bestias",
+            "Si hay Bestias en el roster enemigo, obtiene +10% daño y +1 Ataque.",
+            "Hates Beasts",
+            "If the enemy roster contains Beasts, gains +10% damage and +1 Attack.",
+            "Odeia as Bestas",
+            "Se houver Bestas no elenco inimigo, recebe +10% de dano e +1 de Ataque.",
+            TraitTemeBestias),
+        new PersonajeTraitDefinition(
+            TraitOdiaCriaturas,
+            "hates_creatures",
+            true,
+            "Odia a Criaturas",
+            "Si hay Criaturas en el roster enemigo, obtiene +10% daño y +1 Ataque.",
+            "Hates Creatures",
+            "If the enemy roster contains Creatures, gains +10% damage and +1 Attack.",
+            "Odeia as Criaturas",
+            "Se houver Criaturas no elenco inimigo, recebe +10% de dano e +1 de Ataque.",
+            TraitTemeCriaturas),
+        new PersonajeTraitDefinition(
+            TraitOdiaDemonios,
+            "hates_demons",
+            true,
+            "Odia a Demonios",
+            "Si hay Demonios en el roster enemigo, obtiene +10% daño y +1 Ataque.",
+            "Hates Demons",
+            "If the enemy roster contains Demons, gains +10% damage and +1 Attack.",
+            "Odeia os Demônios",
+            "Se houver Demônios no elenco inimigo, recebe +10% de dano e +1 de Ataque.",
+            TraitTemeDemonios),
+        new PersonajeTraitDefinition(
+            TraitDuroDeMatar,
+            "hard_to_kill",
+            true,
+            "Duro de Matar",
+            "Si su vida baja a menos del 20%, obtiene +2 Defensa permanente en la pelea.",
+            "Hard to Kill",
+            "If Health drops below 20%, gains +2 Defense permanently for the battle.",
+            "Duro de Matar",
+            "Se a Vida cair abaixo de 20%, recebe +2 de Defesa permanente na batalha."),
+        new PersonajeTraitDefinition(
+            TraitVengativo,
+            "vengeful",
+            true,
+            "Vengativo",
+            "Si un aliado no IA cae en combate, obtiene Furia.",
+            "Vengeful",
+            "If a non-AI ally falls in combat, gains Fury.",
+            "Vingativo",
+            "Se um aliado sem IA cair em combate, recebe Fúria."),
+        new PersonajeTraitDefinition(
+            TraitIndividualista,
+            "individualistic",
+            true,
+            "Individualista",
+            "No permite intercambiar posiciones en combate.",
+            "Individualistic",
+            "Does not allow position swapping in combat.",
+            "Individualista",
+            "Nao permite trocar de posição em combate.",
+            TraitColaborativo),
+        new PersonajeTraitDefinition(
+            TraitColaborativo,
+            "collaborative",
+            true,
+            "Colaborativo",
+            "Intercambiar posiciones con este personaje es gratis una vez por batalla.",
+            "Collaborative",
+            "Swapping positions with this character is free once per battle.",
+            "Colaborativo",
+            "Trocar de posição com este personagem é grátis uma vez por batalha.",
+            TraitIndividualista),
+        new PersonajeTraitDefinition(
+            TraitImpulsivo,
+            "impulsive",
+            true,
+            "Impuslivo",
+            "Empieza fuerte, pero luego se cansa en combate.",
+            "Impulsive",
+            "Starts strong, but becomes tired later in combat.",
+            "Impulsivo",
+            "Começa forte, mas depois se cansa em combate.",
+            TraitPaciente),
+        new PersonajeTraitDefinition(
+            TraitPaciente,
+            "patient",
+            true,
+            "Paciente",
+            "Obtiene bonificaciones de combate a partir de la ronda 3.",
+            "Patient",
+            "Gains combat bonuses starting on round 3.",
+            "Paciente",
+            "Recebe bônus de combate a partir da rodada 3.",
+            TraitImpulsivo),
+        new PersonajeTraitDefinition(
+            TraitEspirituAlegre,
+            "joyful_spirit",
+            true,
+            "Espíritu Alegre",
+            "Si arranca combate con Alta Moral, se la contagia a aliados.",
+            "Joyful Spirit",
+            "If combat starts with High Morale, spreads it to allies.",
+            "Espírito Alegre",
+            "Se começar o combate com Moral Alta, espalha isso aos aliados.",
+            TraitEspirituNegativo),
+        new PersonajeTraitDefinition(
+            TraitEspirituNegativo,
+            "negative_spirit",
+            true,
+            "Espíritu Negativo",
+            "Si arranca combate con Baja Moral, se la contagia a aliados.",
+            "Negative Spirit",
+            "If combat starts with Low Morale, spreads it to allies.",
+            "Espírito Negativo",
+            "Se começar o combate com Moral Baixa, espalha isso aos aliados.",
+            TraitEspirituAlegre),
+        new PersonajeTraitDefinition(
+            TraitCoordinado,
+            "coordinated",
+            true,
+            "Coordinado",
+            "No puede Pifiar en batalla.",
+            "Coordinated",
+            "Cannot fumble in battle.",
+            "Coordenado",
+            "Nao pode sofrer Falha Crítica em batalha.",
+            TraitTorpe),
+        new PersonajeTraitDefinition(
+            TraitTorpe,
+            "clumsy",
+            true,
+            "Torpe",
+            "+1 Rango de Pifia en batalla.",
+            "Clumsy",
+            "+1 Fumble range in battle.",
+            "Desastrado",
+            "+1 de faixa de Falha Crítica em batalha.",
+            TraitCoordinado),
+        new PersonajeTraitDefinition(
+            TraitBrutal,
+            "brutal",
+            true,
+            "Brutal",
+            "-1 Ataque y +2 Rango crítico.",
+            "Brutal",
+            "-1 Attack and +2 Critical range.",
+            "Brutal",
+            "-1 de Ataque e +2 de faixa crítica.",
+            TraitClinico),
+        new PersonajeTraitDefinition(
+            TraitClinico,
+            "clinical",
+            true,
+            "Clínico",
+            "+2 Ataque y -10% daño.",
+            "Clinical",
+            "+2 Attack and -10% damage.",
+            "Clínico",
+            "+2 de Ataque e -10% de dano.",
+            TraitBrutal),
+        new PersonajeTraitDefinition(
+            TraitLoboSolitario,
+            "lone_wolf",
+            true,
+            "Lobo Solitario",
+            "Si está solo en combate obtiene bonificaciones y no lo afecta el valor grupal.",
+            "Lone Wolf",
+            "If alone in combat, gains bonuses and ignores group valour effects.",
+            "Lobo Solitário",
+            "Se estiver sozinho em combate, recebe bônus e ignora os efeitos de valentia do grupo.",
+            TraitTrabajoEnEquipo),
+        new PersonajeTraitDefinition(
+            TraitTrabajoEnEquipo,
+            "teamwork",
+            true,
+            "Trabajo en Equipo",
+            "Obtiene Claridad: +1 TS Mental por cada aliado no IA vivo.",
+            "Teamwork",
+            "Gains Clarity: +1 Mental Save per living non-AI ally.",
+            "Trabalho em Equipe",
+            "Recebe Clareza: +1 Teste Mental por cada aliado sem IA vivo.",
+            TraitLoboSolitario),
+        new PersonajeTraitDefinition(
+            TraitPuertasDeLaMuerte,
+            "deaths_door",
+            true,
+            "Puertas de la Muerte",
+            "Al recibir un golpe mortal, queda con 5% de vida e Invulnerable por 1 turno.",
+            "Death's Door",
+            "When taking a killing blow, remains at 5% Health and gains Invulnerable for 1 turn.",
+            "Às Portas da Morte",
+            "Ao receber um golpe mortal, fica com 5% de Vida e Invulnerável por 1 turno."),
+        new PersonajeTraitDefinition(
+            TraitFragil,
+            "fragile",
+            true,
+            "Frágil",
+            "+5% daño recibido.",
+            "Fragile",
+            "+5% damage taken.",
+            "Frágil",
+            "+5% de dano recebido."),
+        new PersonajeTraitDefinition(
+            TraitProtector,
+            "protector",
+            true,
+            "Protector",
+            "En ataques a la caravana obtiene bonificaciones de combate.",
+            "Protector",
+            "Gains combat bonuses during caravan defense battles.",
+            "Protetor",
+            "Recebe bônus de combate em defesas da caravana.",
+            TraitBajoPresion),
+        new PersonajeTraitDefinition(
+            TraitBajoPresion,
+            "under_pressure",
+            true,
+            "Bajo Presión",
+            "En ataques a la caravana arranca con -2 Val.",
+            "Under Pressure",
+            "Starts caravan defense battles with -2 Valour.",
+            "Sob Pressão",
+            "Começa defesas da caravana com -2 de Valentia.",
+            TraitProtector),
+        new PersonajeTraitDefinition(
+            TraitProtagonista,
+            "protagonist",
+            true,
+            "Protagonista",
+            "Mayor chance de participar en Eventos de personaje.",
+            "Protagonist",
+            "More likely to participate in character events.",
+            "Protagonista",
+            "Tem mais chance de participar de Eventos de personagem.",
+            TraitPerfilBajo),
+        new PersonajeTraitDefinition(
+            TraitPerfilBajo,
+            "low_profile",
+            true,
+            "Perfil Bajo",
+            "Menor chance de participar en Eventos de personaje.",
+            "Low Profile",
+            "Less likely to participate in character events.",
+            "Perfil Baixo",
+            "Tem menos chance de participar de Eventos de personagem.",
+            TraitProtagonista),
+        new PersonajeTraitDefinition(
+            TraitAhorrista,
+            "frugal",
+            true,
+            "Ahorrista",
+            "La caravana obtiene 50-100 Oro al visitar un Puesto Comercial.",
+            "Frugal",
+            "The caravan gains 50-100 Gold when visiting a Trading Post.",
+            "Poupador",
+            "A caravana recebe 50-100 de Ouro ao visitar um Posto Comercial.",
+            TraitDespilfarrador),
+        new PersonajeTraitDefinition(
+            TraitDespilfarrador,
+            "spendthrift",
+            true,
+            "Despilfarrador",
+            "La caravana pierde 20-50 Oro al visitar un Puesto Comercial.",
+            "Spendthrift",
+            "The caravan loses 20-50 Gold when visiting a Trading Post.",
+            "Esbanjador",
+            "A caravana perde 20-50 de Ouro ao visitar um Posto Comercial.",
+            TraitAhorrista),
+        new PersonajeTraitDefinition(
+            TraitFeInquebrantable,
+            "unyielding_faith",
+            true,
+            "Fe Inquebrantable",
+            "Obtiene Alta Moral por 4 días al visitar un Santuario.",
+            "Unyielding Faith",
+            "Gains High Morale for 4 days when visiting a Sanctuary.",
+            "Fé Inabalável",
+            "Recebe Moral Alta por 4 dias ao visitar um Santuário.",
+            TraitPagano),
+        new PersonajeTraitDefinition(
+            TraitPagano,
+            "pagan",
+            true,
+            "Pagano",
+            "Obtiene Baja Moral por 3 días al visitar un Santuario.",
+            "Pagan",
+            "Gains Low Morale for 3 days when visiting a Sanctuary.",
+            "Pagão",
+            "Recebe Moral Baixa por 3 dias ao visitar um Santuário.",
+            TraitFeInquebrantable),
+        new PersonajeTraitDefinition(
+            TraitAventurero,
+            "adventurous",
+            true,
+            "Aventurero",
+            "Obtiene Alta Moral por 4 días al comenzar una Zona nueva.",
+            "Adventurous",
+            "Gains High Morale for 4 days when a new Zone begins.",
+            "Aventureiro",
+            "Recebe Moral Alta por 4 dias ao começar uma nova Zona.",
+            TraitArrastrado),
+        new PersonajeTraitDefinition(
+            TraitArrastrado,
+            "dragged_along",
+            true,
+            "Arrastrado",
+            "Obtiene Baja Moral por 3 días al comenzar una Zona nueva.",
+            "Dragged Along",
+            "Gains Low Morale for 3 days when a new Zone begins.",
+            "Arrastado",
+            "Recebe Moral Baixa por 3 dias ao começar uma nova Zona.",
+            TraitAventurero),
+        new PersonajeTraitDefinition(
+            TraitConoceBosqueArdiente,
+            "knows_burning_forest",
+            true,
+            "Conoce Bosque Ardiente",
+            "+5% Exploración y -3% Emboscadas en Bosque Ardiente.",
+            "Knows the Burning Forest",
+            "+5% Exploration and -3% Ambush chance in the Burning Forest.",
+            "Conhece a Floresta Ardente",
+            "+5% de Exploração e -3% de Emboscadas na Floresta Ardente.",
+            TraitDetestaBosqueArdiente),
+        new PersonajeTraitDefinition(
+            TraitDetestaBosqueArdiente,
+            "hates_burning_forest",
+            true,
+            "Detesta Bosque Ardiente",
+            "Obtiene Baja Moral por 6 días al comenzar Bosque Ardiente.",
+            "Hates the Burning Forest",
+            "Gains Low Morale for 6 days when the Burning Forest begins.",
+            "Detesta a Floresta Ardente",
+            "Recebe Moral Baixa por 6 dias ao começar a Floresta Ardente.",
+            TraitConoceBosqueArdiente),
+        new PersonajeTraitDefinition(
+            TraitConocePasoVientohelado,
+            "knows_frozen_pass",
+            true,
+            "Conoce Paso de Vientohelado",
+            "+5% Exploración y -3% Emboscadas en Paso de Vientohelado.",
+            "Knows the Windfrost Pass",
+            "+5% Exploration and -3% Ambush chance in the Windfrost Pass.",
+            "Conhece o Passo do Vento Gélido",
+            "+5% de Exploração e -3% de Emboscadas no Passo do Vento Gélido.",
+            TraitDetestaPasoVientohelado),
+        new PersonajeTraitDefinition(
+            TraitDetestaPasoVientohelado,
+            "hates_frozen_pass",
+            true,
+            "Detesta Paso de Vientohelado",
+            "Obtiene Baja Moral por 6 días al comenzar Paso de Vientohelado.",
+            "Hates the Windfrost Pass",
+            "Gains Low Morale for 6 days when the Windfrost Pass begins.",
+            "Detesta o Passo do Vento Gélido",
+            "Recebe Moral Baixa por 6 dias ao começar o Passo do Vento Gélido.",
+            TraitConocePasoVientohelado),
+        new PersonajeTraitDefinition(
+            TraitConoceNedukazal,
+            "knows_nedukazal",
+            true,
+            "Conoce Nedukazal",
+            "+5% Exploración y -3% Emboscadas en Nedukazal.",
+            "Knows Nedukazal",
+            "+5% Exploration and -3% Ambush chance in Nedukazal.",
+            "Conhece Nedukazal",
+            "+5% de Exploração e -3% de Emboscadas em Nedukazal.",
+            TraitDetestaNedukazal),
+        new PersonajeTraitDefinition(
+            TraitDetestaNedukazal,
+            "hates_nedukazal",
+            true,
+            "Detesta Nedukazal",
+            "Obtiene Baja Moral por 6 días al comenzar Nedukazal.",
+            "Hates Nedukazal",
+            "Gains Low Morale for 6 days when Nedukazal begins.",
+            "Detesta Nedukazal",
+            "Recebe Moral Baixa por 6 dias ao começar Nedukazal.",
+            TraitConoceNedukazal),
+        new PersonajeTraitDefinition(
+            TraitEsforzado,
+            "driven",
+            true,
+            "Esforzado",
+            "Esforzarse en combate no le aplica el debuff.",
+            "Driven",
+            "Using Strain in battle does not apply its debuff.",
+            "Esforçado",
+            "Esforçar-se em combate nao aplica o debuff.",
+            TraitMinimoEsfuerzo),
+        new PersonajeTraitDefinition(
+            TraitMinimoEsfuerzo,
+            "minimal_effort",
+            true,
+            "Mínimo Esfuerzo",
+            "No puede Esforzarse en combate.",
+            "Minimal Effort",
+            "Cannot use Strain in battle.",
+            "Esforço Mínimo",
+            "Nao pode se Esforçar em combate.",
+            TraitEsforzado),
+        new PersonajeTraitDefinition(
+            TraitHolgazan,
+            "slacker",
+            true,
+            "Holgazán",
+            "No realiza Actividades de campaña.",
+            "Slacker",
+            "Does not perform campaign Activities.",
+            "Preguiçoso",
+            "Nao realiza Atividades de campanha."),
+        new PersonajeTraitDefinition(
+            TraitTrabajador,
+            "hard_worker",
+            true,
+            "Trabajador",
+            "Obtiene 150-200 Oro al llegar a un Asentamiento.",
+            "Hard Worker",
+            "Gains 150-200 Gold upon reaching a Settlement.",
+            "Trabalhador",
+            "Recebe 150-200 de Ouro ao chegar a um Assentamento.",
+            TraitBeodo),
+        new PersonajeTraitDefinition(
+            TraitBeodo,
+            "drunkard",
+            true,
+            "Beodo",
+            "Al llegar a un Asentamiento obtiene Fatiga y gasta 10 Oro.",
+            "Drunkard",
+            "Upon reaching a Settlement gains Fatigue and spends 10 Gold.",
+            "Bêbado",
+            "Ao chegar a um Assentamento recebe Fadiga e gasta 10 de Ouro.",
+            TraitTrabajador),
+        new PersonajeTraitDefinition(
+            TraitConvincente,
+            "persuasive",
+            true,
+            "Convincente",
+            "Obtiene 5 Civiles al llegar a un Asentamiento.",
+            "Persuasive",
+            "Gains 5 Civilians upon reaching a Settlement.",
+            "Convincente",
+            "Recebe 5 Civis ao chegar a um Assentamento."),
+        new PersonajeTraitDefinition(
+            TraitHeroeLocal,
+            "local_hero",
+            true,
+            "Héroe Local",
+            "Suma 15 Civiles a la Caravana. Si muere permanentemente, -20 Esperanza.",
+            "Local Hero",
+            "Adds 15 Civilians to the Caravan. If permanently killed, -20 Hope.",
+            "Herói Local",
+            "Adiciona 15 Civis à Caravana. Se morrer permanentemente, -20 Esperança.",
+            TraitAdmirado),
+        new PersonajeTraitDefinition(
+            TraitAdmirado,
+            "admired",
+            true,
+            "Admirado",
+            "Obtiene +10 Esperanza al ganar un combate y -10 si cae en combate.",
+            "Admired",
+            "Gains +10 Hope upon winning a battle and -10 when falling in battle.",
+            "Admirado",
+            "Recebe +10 de Esperança ao vencer uma batalha e -10 ao cair em combate.",
+            TraitHeroeLocal),
+        new PersonajeTraitDefinition(
+            TraitMalaReputacion,
+            "bad_reputation",
+            true,
+            "Mala Reputación",
+            "-2 Civiles reclutados en Asentamientos.",
+            "Bad Reputation",
+            "-2 Civilians recruited in Settlements.",
+            "Má Reputação",
+            "-2 Civis recrutados em Assentamentos.",
+            TraitBuenaReputacion),
+        new PersonajeTraitDefinition(
+            TraitBuenaReputacion,
+            "good_reputation",
+            true,
+            "Buena Reputación",
+            "+2 Civiles reclutados en Asentamientos.",
+            "Good Reputation",
+            "+2 Civilians recruited in Settlements.",
+            "Boa Reputação",
+            "+2 Civis recrutados em Assentamentos.",
+            TraitMalaReputacion),
+        new PersonajeTraitDefinition(
+            TraitHermitano,
+            "hermit",
+            true,
+            "Hermitaño",
+            "Obtiene Baja Moral por 2 días al llegar a un Asentamiento.",
+            "Hermit",
+            "Gains Low Morale for 2 days upon reaching a Settlement.",
+            "Eremita",
+            "Recebe Moral Baixa por 2 dias ao chegar a um Assentamento.",
+            TraitCitadino),
+        new PersonajeTraitDefinition(
+            TraitCitadino,
+            "city_dweller",
+            true,
+            "Citadino",
+            "Obtiene Alta Moral por 3 días al llegar a un Asentamiento.",
+            "City Dweller",
+            "Gains High Morale for 3 days upon reaching a Settlement.",
+            "Citadino",
+            "Recebe Moral Alta por 3 dias ao chegar a um Assentamento.",
+            TraitHermitano),
+        new PersonajeTraitDefinition(
+            TraitEjemploASeguir,
+            "role_model",
+            true,
+            "Ejemplo a Seguir",
+            "Al llegar al Puerto de Serria se obtienen +25 Valor de Trabajo.",
+            "Role Model",
+            "Upon reaching the Port of Serria, grants +25 Work Value.",
+            "Exemplo a Seguir",
+            "Ao chegar ao Porto de Serria, concede +25 de Valor de Trabalho.")
+    };
 
+    private static readonly Dictionary<int, PersonajeTraitDefinition> definicionesPorId = CrearIndicePorId();
+
+    public static int ObtenerIdiomaActual()
+    {
+        return TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    }
+
+    public static string FormatearParaUi(PersonajeTraitDefinition definicion, int idioma)
+    {
+        if (definicion == null)
+        {
+            return string.Empty;
+        }
+
+        string nombre = definicion.ObtenerNombre(idioma);
+        string descripcion = definicion.ObtenerDescripcion(idioma);
+        if (string.IsNullOrWhiteSpace(nombre))
+        {
+            return string.Empty;
+        }
+
+        if (string.IsNullOrWhiteSpace(descripcion))
+        {
+            return "<color=" + ColorNombre + "><b>" + nombre + ":</b></color>";
+        }
+
+        return "<color=" + ColorNombre + "><b>" + nombre + ":</b></color><color=" + ColorDescripcion + "><size=85%>" + descripcion + "</size></color>";
+    }
+
+    public static bool TryGet(int id, out PersonajeTraitDefinition definicion)
+    {
+        return definicionesPorId.TryGetValue(id, out definicion);
+    }
+
+    public static bool SonCompatibles(int traitA, int traitB)
+    {
+        if (traitA <= 0 || traitB <= 0)
+        {
+            return true;
+        }
+
+        if (traitA == traitB)
+        {
+            return false;
+        }
+
+        bool existeA = TryGet(traitA, out PersonajeTraitDefinition definicionA);
+        bool existeB = TryGet(traitB, out PersonajeTraitDefinition definicionB);
+        if (!existeA || !existeB)
+        {
+            return true;
+        }
+
+        return !definicionA.EsAntagonicoCon(traitB) && !definicionB.EsAntagonicoCon(traitA);
+    }
+
+    public static List<PersonajeTraitDefinition> ObtenerTraitsDisponiblesAlCrear()
+    {
+        List<PersonajeTraitDefinition> disponibles = new List<PersonajeTraitDefinition>();
+        for (int i = 0; i < definiciones.Count; i++)
+        {
+            if (definiciones[i].DisponibleAlCrear)
+            {
+                disponibles.Add(definiciones[i]);
+            }
+        }
+
+        return disponibles;
+    }
+
+    private static Dictionary<int, PersonajeTraitDefinition> CrearIndicePorId()
+    {
+        Dictionary<int, PersonajeTraitDefinition> indice = new Dictionary<int, PersonajeTraitDefinition>();
+        for (int i = 0; i < definiciones.Count; i++)
+        {
+            PersonajeTraitDefinition definicion = definiciones[i];
+            if (definicion == null || indice.ContainsKey(definicion.Id))
+            {
+                continue;
+            }
+
+            indice.Add(definicion.Id, definicion);
+        }
+
+        return indice;
+    }
+}

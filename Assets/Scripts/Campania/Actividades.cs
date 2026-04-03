@@ -32,6 +32,27 @@ public class Actividades : MonoBehaviour
    public Sprite spriteActConcArcana;
    public Sprite spriteActTelekinesis;
    public Sprite spriteActSimboloArcanoProt;
+   public Sprite spriteActDuelistaSiempreAlerta;
+   public Sprite spriteActDuelistaSocializar;
+   public Sprite spriteActDuelistaConsuelo;
+
+  void Awake()
+  {
+    if (spriteActDuelistaSiempreAlerta == null)
+    {
+      spriteActDuelistaSiempreAlerta = Resources.Load<Sprite>("Imagenes/actividades_siemprealerta");
+    }
+
+    if (spriteActDuelistaSocializar == null)
+    {
+      spriteActDuelistaSocializar = Resources.Load<Sprite>("Imagenes/actividades_socializar");
+    }
+
+    if (spriteActDuelistaConsuelo == null)
+    {
+      spriteActDuelistaConsuelo = Resources.Load<Sprite>("Imagenes/actividades_consuelo");
+    }
+  }
 
   public void ActualizarActividades()
   {
@@ -39,6 +60,30 @@ public class Actividades : MonoBehaviour
     {
       Destroy(transform.gameObject);
     }
+
+    if (scMenuPersonajes == null || scMenuPersonajes.pSel == null)
+    {
+      return;
+    }
+
+    if (!scMenuPersonajes.pSel.PuedeRealizarActividades())
+    {
+      scMenuPersonajes.pSel.ActividadSeleccionada = 0;
+      if (textdesc != null)
+      {
+        textdesc.text = TRADU.i != null
+          ? TRADU.i.Traducir("Este personaje no realiza Actividades.")
+          : "Este personaje no realiza Actividades.";
+      }
+
+      if (CampaignManager.Instance != null)
+      {
+        CampaignManager.Instance.GetCapacidadDeCargaActual();
+        CampaignManager.Instance.CambiarBueyesActuales(0);
+      }
+      return;
+    }
+
     foreach (Actividad act in scMenuPersonajes.pSel.gameObject.GetComponents<Actividad>())
     {
       GameObject btnPers = Instantiate(prefabBtnActividad, listaActividades);
@@ -65,6 +110,9 @@ public class Actividades : MonoBehaviour
         case 16: btnPers.GetComponent<btnActividad>().actImage.sprite = spriteActConcArcana; break; //Canalizador: Concentración Arcana
         case 17: btnPers.GetComponent<btnActividad>().actImage.sprite = spriteActTelekinesis; break; //Canalizador: Telekinesis
         case 18: btnPers.GetComponent<btnActividad>().actImage.sprite = spriteActSimboloArcanoProt; break; //Canalizador: Crear Símbolo de Proteccion Arcano
+        case 19: btnPers.GetComponent<btnActividad>().actImage.sprite = spriteActDuelistaSiempreAlerta ?? spriteActGuardia; break; //Duelista: Siempre Alerta
+        case 20: btnPers.GetComponent<btnActividad>().actImage.sprite = spriteActDuelistaSocializar ?? spriteActGuardia; break; //Duelista: Socializar
+        case 21: btnPers.GetComponent<btnActividad>().actImage.sprite = spriteActDuelistaConsuelo ?? spriteActGuardia; break; //Duelista: Consuelo
       }
 
     }

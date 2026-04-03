@@ -2409,7 +2409,17 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
 
       bool muereConDanio = HP_actual - danioTotal < 1;
+      CampaignManager campTraitVida = CampaignManager.Instance;
+      AdministradorEscenas adminTraitVida = campTraitVida != null ? campTraitVida.scAdministradorEscenas : null;
+      danioTotal = adminTraitVida != null ? adminTraitVida.AjustarDanioRecibidoPorTraits(this, danioTotal) : danioTotal;
+      muereConDanio = HP_actual - danioTotal < 1;
       HP_actual -= danioTotal;
+      bool muertePrevenida = adminTraitVida != null && adminTraitVida.ProcesarTraitPuertasDeLaMuerteSiCorresponde(this);
+      if (muertePrevenida)
+      {
+        muereConDanio = false;
+      }
+      adminTraitVida?.ProcesarTraitDuroDeMatarSiCorresponde(this);
       AplicarEspinasAlAtacanteSiCorresponde(uCausante, tipoDanio, danioTotal);
       if (esCritico && !muereConDanio)
       {
@@ -3042,6 +3052,9 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       if (danioFinal < 0) { danioFinal = 0; }
       int danioFinalInt = Mathf.RoundToInt(danioFinal);
       AplicarMitigacionDefensivaAlDanioRecibido(tipoDanio, false, ref danioFinalInt, out reduccionCritAplicada, out reduccionGlobalAplicada);
+      CampaignManager campTraitVida = CampaignManager.Instance;
+      AdministradorEscenas adminTraitVida = campTraitVida != null ? campTraitVida.scAdministradorEscenas : null;
+      danioFinalInt = adminTraitVida != null ? adminTraitVida.AjustarDanioRecibidoPorTraits(this, danioFinalInt) : danioFinalInt;
       danioFinal = danioFinalInt;
       if (danioFinalInt > 0)
       {
@@ -3060,6 +3073,8 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
       await BattleManager.DelayCombateAsync(150);
       HP_actual -= danioFinalInt;
+      adminTraitVida?.ProcesarTraitPuertasDeLaMuerteSiCorresponde(this);
+      adminTraitVida?.ProcesarTraitDuroDeMatarSiCorresponde(this);
       string textoDanioElemental = "-" + danioFinalInt;
       Color colorDanioElementalFinal = colorDanioElemental;
 
@@ -3857,6 +3872,24 @@ public void UnidadMuere()
          : nombreAliado + " pierde ánimo al caer " + nombreCaido;
        aliado.SumarValentia(perdidaValentia, motivo);
      }
+
+     CampaignManager campTraits = CampaignManager.Instance;
+     AdministradorEscenas adminTraits = campTraits != null ? campTraits.scAdministradorEscenas : null;
+     Personaje personajeCaido = adminTraits != null ? adminTraits.ObtenerPersonajeAliadoSeleccionadoPorUnidad(this) : null;
+     if (campTraits != null && !caidoEraIAAliada && personajeCaido != null && personajeCaido.TieneRasgo(PersonajeTraitCatalog.TraitAdmirado))
+     {
+       campTraits.CambiarEsperanzaActual(-10);
+       int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+       string mensajeAdmirado = idiomaTrait switch
+       {
+         TRADU.IdiomaIngles => personajeCaido.sNombre + " falls in battle. -10 Hope.",
+         TRADU.IdiomaPortugues => personajeCaido.sNombre + " cai em batalha. -10 de Esperança.",
+         _ => personajeCaido.sNombre + " cae en combate. -10 Esperanza."
+       };
+       campTraits.EscribirLog("-" + mensajeAdmirado);
+     }
+     adminTraits?.ProcesarTraitVengativoPorAliadoCaido(this);
+     adminTraits?.RefrescarTraitsComposicionAliada();
    }
    
    CasillaPosicion.Presente = null;

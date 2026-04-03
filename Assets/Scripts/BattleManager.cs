@@ -480,6 +480,7 @@ public class BattleManager : MonoBehaviour
     EscribirLog(rondaInicio, false);
 
     OnRondaNueva?.Invoke(this, EventArgs.Empty);
+    ObtenerAdministradorEscenasActual()?.ProcesarTraitsInicioRonda();
 
     AdministrarListas();
     AcelerarRefuerzosSiLadoSinUnidades();
@@ -992,11 +993,21 @@ public class BattleManager : MonoBehaviour
     return Mathf.Clamp(pct, 0f, 100f);
   }
 
+  bool DebeIgnorarValorGrupalPorTraits(Unidad unidad)
+  {
+    if (unidad == null || CampaignManager.Instance == null || CampaignManager.Instance.scAdministradorEscenas == null)
+    {
+      return false;
+    }
+
+    return CampaignManager.Instance.scAdministradorEscenas.DebeIgnorarValorGrupalPorLoboSolitario(unidad);
+  }
+
   void AplicarBuffGlobalValourDanio(List<Unidad> aliadosJugador)
   {
     foreach (Unidad aliado in aliadosJugador)
     {
-      if (aliado == null) { continue; }
+      if (aliado == null || DebeIgnorarValorGrupalPorTraits(aliado)) { continue; }
 
       RefrescarBuffTemporalValour(aliado, "Valentía Global Muy Alta", buff =>
       {
@@ -1012,7 +1023,7 @@ public class BattleManager : MonoBehaviour
   {
     foreach (Unidad aliado in aliadosJugador)
     {
-      if (aliado == null) { continue; }
+      if (aliado == null || DebeIgnorarValorGrupalPorTraits(aliado)) { continue; }
 
       RefrescarBuffTemporalValour(aliado, "Valentía Global Alta", buff =>
       {
@@ -1070,7 +1081,7 @@ public class BattleManager : MonoBehaviour
     List<Unidad> aliadosSnapshot = new List<Unidad>(aliadosJugador);
     foreach (Unidad aliado in aliadosSnapshot)
     {
-      if (aliado == null || aliado.HP_actual <= 0 || !aliado.gameObject.activeInHierarchy)
+      if (aliado == null || aliado.HP_actual <= 0 || !aliado.gameObject.activeInHierarchy || DebeIgnorarValorGrupalPorTraits(aliado))
       {
         continue;
       }

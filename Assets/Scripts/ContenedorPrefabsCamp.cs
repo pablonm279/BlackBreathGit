@@ -37,6 +37,10 @@ public class ContenedorPrefabsCamp : MonoBehaviour
     public Arma armaEspadaCortaArcana;
     public Arma armaEspadaCortaFilonegro;
     public Arma armaEspadaCortaConsumevida;
+    public Arma armaEstoque;
+    public Arma armaEstoque1; //+1
+    public Arma armaEstoque2; //+2
+    public Arma armaEstoque3; //+3
 
 
 
@@ -61,6 +65,10 @@ public class ContenedorPrefabsCamp : MonoBehaviour
     public Armadura ArmaduraCueroReforzado1; //+1
     public Armadura ArmaduraCueroReforzado2; //+2
     public Armadura ArmaduraCueroReforzado3; //+3
+    public Armadura ArmaduraGambeson;
+    public Armadura ArmaduraGambeson1; //+1
+    public Armadura ArmaduraGambeson2; //+2
+    public Armadura ArmaduraGambeson3; //+3
     public Armadura ArmaduraDeCueroReforzadoDeLigereza;
     public Armadura ArmaduraDeCueroReforzadoDeProteccionElemental;
     public Armadura ArmaduraDeCueroReforzadoDeVelo;

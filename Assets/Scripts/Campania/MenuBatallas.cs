@@ -34,8 +34,6 @@ public class MenuBatallas : MonoBehaviour
     TipoEstadoCaravana.Desmotivacion,
     TipoEstadoCaravana.Descuidados
  };
-  
- 
  public GameObject prefabBtnPersonaje; 
  public GameObject contenedorUIPersonajes; 
  public AdministradorEscenas scAdministradorEscenas;
@@ -91,7 +89,7 @@ public class MenuBatallas : MonoBehaviour
 
   static bool EsGuardiaParaCaravana(Personaje personaje)
   {
-    if (personaje == null)
+    if (personaje == null || !personaje.PuedeRealizarActividades())
     {
       return false;
     }
@@ -99,6 +97,40 @@ public class MenuBatallas : MonoBehaviour
     return personaje.ActividadSeleccionada == 3
       || personaje.ActividadSeleccionada == 6
       || personaje.ActividadSeleccionada == 14;
+  }
+
+  void AplicarTraitsVictoriaParticipantes()
+  {
+    if (CampaignManager.Instance == null)
+    {
+      return;
+    }
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    HashSet<Personaje> participantes = new HashSet<Personaje>()
+    {
+      scAdministradorEscenas != null ? scAdministradorEscenas.Personaje1 : null,
+      scAdministradorEscenas != null ? scAdministradorEscenas.Personaje2 : null,
+      scAdministradorEscenas != null ? scAdministradorEscenas.Personaje3 : null,
+      scAdministradorEscenas != null ? scAdministradorEscenas.Personaje4 : null
+    };
+
+    foreach (Personaje pers in participantes)
+    {
+      if (pers == null || pers.Camp_Muerto || !pers.TieneRasgo(PersonajeTraitCatalog.TraitAdmirado))
+      {
+        continue;
+      }
+
+      CampaignManager.Instance.CambiarEsperanzaActual(10);
+      string mensajeAdmirado = idiomaTrait switch
+      {
+        TRADU.IdiomaIngles => pers.sNombre + " turns victory into a rallying cry. +10 Hope.",
+        TRADU.IdiomaPortugues => pers.sNombre + " transforma a vitória em inspiração. +10 de Esperança.",
+        _ => pers.sNombre + " convierte la victoria en inspiración. +10 Esperanza."
+      };
+      CampaignManager.Instance.EscribirLog("-" + mensajeAdmirado);
+    }
   }
 
   void Awake()
@@ -1129,6 +1161,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
 
    if (EsResultadoVictoria(resultado))
    {
+      AplicarTraitsVictoriaParticipantes();
       AplicarVictoriaRitualKaleTav();
       if (esBatallaFinal && CampaignManager.Instance != null)
       {
@@ -1230,17 +1263,42 @@ public void EfectosDeBatallaEnCampaña(int resultado)
         {
             if (pers.fVidaActual < 1)
             {
-                if (pers.Camp_Herido) //Si ya estaba herido
+                if (pers.TieneRasgo(PersonajeTraitCatalog.TraitEndeble))
+                {
+                    bool fallaFortitud = uni != null
+                        ? uni.TiradaSalvacion(uni.mod_TSFortaleza, 11f)
+                        : pers.FalloTiradaSalvacionFortalezaCampania(11);
+
+                    if (fallaFortitud)
+                    {
+                        pers.Camp_Muerto = true;
+                        CampaignManager.Instance.AplicarTraitHeroeLocalMuerteSiCorresponde(pers);
+
+                        int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+                        string mensajeEndeble = idiomaTrait switch
+                        {
+                            TRADU.IdiomaIngles => pers.sNombre + " fails to endure the fall and dies permanently.",
+                            TRADU.IdiomaPortugues => pers.sNombre + " nao resiste à queda e morre permanentemente.",
+                            _ => pers.sNombre + " no resiste la caída y muere permanentemente."
+                        };
+                        CampaignManager.Instance.EscribirLog("-" + mensajeEndeble);
+                    }
+                }
+
+                if (!pers.Camp_Muerto && pers.Camp_Herido) //Si ya estaba herido
                 {
                     //muere
                     pers.Camp_Muerto = true;
+                    CampaignManager.Instance.AplicarTraitHeroeLocalMuerteSiCorresponde(pers);
                 }
-                else //Si no estaba herido, hiere
+                else if (!pers.Camp_Muerto) //Si no estaba herido, hiere
                 {
                     pers.Camp_Herido = true;
                     pers.fVidaActual = 5;
                 }
 
+                if (!pers.Camp_Muerto && uni != null)
+                {
                 if (uni.loMatoCorrompido) //Si lo mató un corrupto, se marca como corrupto
                 {
 
@@ -1248,6 +1306,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
                     {
                          //muere
                          pers.Camp_Muerto = true;
+                         CampaignManager.Instance.AplicarTraitHeroeLocalMuerteSiCorresponde(pers);
 
                     }
                     else
@@ -1260,7 +1319,29 @@ public void EfectosDeBatallaEnCampaña(int resultado)
                    
                     
                 }
+                }
 
+            }
+
+            if (!pers.Camp_Muerto && pers.Camp_Herido && pers.TieneRasgo(PersonajeTraitCatalog.TraitResistente))
+            {
+                bool fallaFortitud = uni != null
+                    ? uni.TiradaSalvacion(uni.mod_TSFortaleza, 13f)
+                    : pers.FalloTiradaSalvacionFortalezaCampania(13);
+
+                if (!fallaFortitud)
+                {
+                    pers.Camp_Herido = false;
+
+                    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+                    string mensajeResistente = idiomaTrait switch
+                    {
+                        TRADU.IdiomaIngles => pers.sNombre + " withstands the aftermath of battle and removes Wound.",
+                        TRADU.IdiomaPortugues => pers.sNombre + " aguenta as sequelas da batalha e remove Ferida.",
+                        _ => pers.sNombre + " resiste las secuelas de la pelea y se cura Herida."
+                    };
+                    CampaignManager.Instance.EscribirLog("-" + mensajeResistente);
+                }
             }
 
         

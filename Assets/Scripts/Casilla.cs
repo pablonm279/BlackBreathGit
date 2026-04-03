@@ -101,6 +101,17 @@ public class Casilla : MonoBehaviour
       return false;
     }
 
+    AdministradorEscenas admin = CampaignManager.Instance != null ? CampaignManager.Instance.scAdministradorEscenas : null;
+    if (admin != null && admin.DebeBloquearIntercambioPorIndividualista(unidadActiva, unidadPresente, out _))
+    {
+      return false;
+    }
+
+    if (admin != null && admin.TieneIntercambioGratisColaborativoDisponible(unidadActiva, unidadPresente))
+    {
+      return true;
+    }
+
     return unidadActiva.ObtenerAPActual() >= ObtenerCostoMovimientoTotal(unidadActiva, true);
   }
 
@@ -448,14 +459,32 @@ public class Casilla : MonoBehaviour
         }
         else
         {
-
           int costoMovimientoTotal = ObtenerCostoMovimientoTotal(unidad, true);
+          AdministradorEscenas admin = CampaignManager.Instance != null ? CampaignManager.Instance.scAdministradorEscenas : null;
+          if (admin != null && admin.DebeBloquearIntercambioPorIndividualista(unidad, aliado, out Unidad unidadTextoBloqueo))
+          {
+            admin.MostrarTextoIntercambioBloqueadoIndividualista(unidadTextoBloqueo);
+            return;
+          }
+
+          bool intercambioGratisColaborativo = admin != null && admin.TieneIntercambioGratisColaborativoDisponible(unidad, aliado);
+          if (intercambioGratisColaborativo)
+          {
+            costoMovimientoTotal = 0;
+          }
 
           if (unidad.ObtenerAPActual() >= costoMovimientoTotal)
           {
-            ConsumirPasoLigeroSiCorresponde(unidad, true);
-            ConsumirMovimientoAbaratadoSiCorresponde(unidad);
+            if (!intercambioGratisColaborativo)
+            {
+              ConsumirPasoLigeroSiCorresponde(unidad, true);
+              ConsumirMovimientoAbaratadoSiCorresponde(unidad);
+            }
             unidad.CambiarAPActual(-costoMovimientoTotal);
+            if (intercambioGratisColaborativo)
+            {
+              admin?.TryConsumirIntercambioGratisColaborativo(unidad, aliado);
+            }
             BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
 
             Casilla origen = unidad.CasillaPosicion;

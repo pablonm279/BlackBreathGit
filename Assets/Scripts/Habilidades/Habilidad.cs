@@ -573,6 +573,16 @@ public abstract class Habilidad : MonoBehaviour
 
 
   public int seEsforzaria;
+  Personaje ObtenerPersonajeTraitsUsuario()
+  {
+    if (scEstaUnidad == null || CampaignManager.Instance == null || CampaignManager.Instance.scAdministradorEscenas == null)
+    {
+      return null;
+    }
+
+    return CampaignManager.Instance.scAdministradorEscenas.ObtenerPersonajeAliadoSeleccionadoPorUnidad(scEstaUnidad);
+  }
+
   public bool tieneAPSuficientes(out int esforzo)
   {
     seEsforzaria = 0;
@@ -584,6 +594,11 @@ public abstract class Habilidad : MonoBehaviour
 
     if (indexAPyEsfuerzo < esforzable && esforzable > 0)
     { //Esto significa que para hacer la habilidad, se Esfuerza (debe AP para la siguiente ronda)
+      Personaje personajeTraits = ObtenerPersonajeTraitsUsuario();
+      if (personajeTraits != null && personajeTraits.TieneRasgo(PersonajeTraitCatalog.TraitMinimoEsfuerzo))
+      {
+        return false;
+      }
 
       seEsforzaria = esforzable - indexAPyEsfuerzo;
       esforzo = seEsforzaria;
@@ -599,6 +614,12 @@ public abstract class Habilidad : MonoBehaviour
   protected virtual void AplicarDebuffEsfuerzo(int esfuerzo)
   {
     if (scEstaUnidad == null || esfuerzo <= 0)
+    {
+      return;
+    }
+
+    Personaje personajeTraits = ObtenerPersonajeTraitsUsuario();
+    if (personajeTraits != null && personajeTraits.TieneRasgo(PersonajeTraitCatalog.TraitEsforzado))
     {
       return;
     }
@@ -653,7 +674,12 @@ public abstract class Habilidad : MonoBehaviour
 
 
     string objetivoNombre = unidadAtacada != null ? unidadAtacada.uNombre : TRADU.i.Traducir("objetivo");
-    int umbralPifia = 1 + sumaPifia;
+    CampaignManager campaignTraits = CampaignManager.Instance;
+    AdministradorEscenas adminTraits = campaignTraits != null ? campaignTraits.scAdministradorEscenas : null;
+    Personaje personajeTraits = adminTraits != null ? adminTraits.ObtenerPersonajeAliadoSeleccionadoPorUnidad(scEstaUnidad) : null;
+    int extraPifiaTraits = personajeTraits != null && personajeTraits.TieneRasgo(PersonajeTraitCatalog.TraitTorpe) ? 1 : 0;
+    bool noPuedePifiar = personajeTraits != null && personajeTraits.TieneRasgo(PersonajeTraitCatalog.TraitCoordinado);
+    int umbralPifia = noPuedePifiar ? 0 : 1 + sumaPifia + extraPifiaTraits;
     float bonusCriticoRecibido = unidadAtacada != null ? unidadAtacada.bonusCritDadoRecibido : 0f;
     float umbralCritico = 19 - modificadorDadoCritico - bonusCriticoRecibido;
     string textoResultado;

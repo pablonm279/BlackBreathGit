@@ -525,7 +525,12 @@ public abstract class IAHabilidad : MonoBehaviour
     float iResultadoAtaque = iTiradaAtaque + atributoAtaca + modificadorHabilidadaAtaque;
 
     string objetivoNombre = unidadAtacada != null ? unidadAtacada.uNombre : TRADU.i.Traducir("objetivo");
-    float limitePifia = 2 + rangoPifiaExtra;
+    CampaignManager campaignTraits = CampaignManager.Instance;
+    AdministradorEscenas adminTraits = campaignTraits != null ? campaignTraits.scAdministradorEscenas : null;
+    Personaje personajeTraits = adminTraits != null ? adminTraits.ObtenerPersonajeAliadoSeleccionadoPorUnidad(scEstaUnidad) : null;
+    int extraPifiaTraits = personajeTraits != null && personajeTraits.TieneRasgo(PersonajeTraitCatalog.TraitTorpe) ? 1 : 0;
+    bool noPuedePifiar = personajeTraits != null && personajeTraits.TieneRasgo(PersonajeTraitCatalog.TraitCoordinado);
+    float limitePifia = noPuedePifiar ? 1f : 2 + rangoPifiaExtra + extraPifiaTraits;
     int umbralPifia = Mathf.RoundToInt(limitePifia - 1);
     float umbralCritico = 19 - modificadorDadoCritico;
     string textoResultado;

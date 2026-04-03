@@ -151,6 +151,7 @@ public static class ItemTooltipFormatter
             case 3: return "Baculo";
             case 4: return "Espada Corta";
             case 5: return "Guantelete";
+            case 6: return "Estoque";
         }
 
         string nombre = item != null && !string.IsNullOrWhiteSpace(item.sNombreItem)
@@ -161,6 +162,7 @@ public static class ItemTooltipFormatter
         if (nombre.Contains("guantelete")) { return "Guantelete"; }
         if (nombre.Contains("bast") || nombre.Contains("baculo")) { return "Baculo"; }
         if (nombre.Contains("arco")) { return "Arco"; }
+        if (nombre.Contains("estoque")) { return "Estoque"; }
         if (nombre.Contains("espada")) { return "Espada Corta"; }
         return "Arma";
     }
@@ -176,6 +178,11 @@ public static class ItemTooltipFormatter
             return "Coraza";
         }
 
+        if (nombre.Contains("gamb"))
+        {
+            return "Gambeson";
+        }
+
         if (nombre.Contains("vestidura"))
         {
             return "Vestidura";
@@ -183,6 +190,7 @@ public static class ItemTooltipFormatter
 
         int clase = ObtenerClasePrincipal(item);
         if (clase == 1) { return "Coraza"; }
+        if (clase == 6) { return "Gambeson"; }
         if (clase == 3) { return "Vestidura"; }
         return "Armadura";
     }
@@ -197,7 +205,7 @@ public static class ItemTooltipFormatter
         for (int i = 0; i < item.IDClasesQuePuedenUsarEsteItem.Count; i++)
         {
             int id = item.IDClasesQuePuedenUsarEsteItem[i];
-            if (id >= 1 && id <= 5)
+            if (id >= 1 && id <= 6)
             {
                 return id;
             }
@@ -217,7 +225,7 @@ public static class ItemTooltipFormatter
         for (int i = 0; i < item.IDClasesQuePuedenUsarEsteItem.Count; i++)
         {
             int id = item.IDClasesQuePuedenUsarEsteItem[i];
-            if (id < 1 || id > 5)
+            if (id < 1 || id > 6)
             {
                 continue;
             }
@@ -814,8 +822,10 @@ public static class ItemTooltipFormatter
             if (txt == "Baculo") { return "Staff"; }
             if (txt == "Báculo") { return "Staff"; }
             if (txt == "Arco") { return "Bow"; }
+            if (txt == "Estoque") { return "Estoc"; }
             if (txt == "Espada Corta") { return "Short Sword"; }
             if (txt == "Coraza") { return "Cuirass"; }
+            if (txt == "Gambeson") { return "Gambeson"; }
             if (txt == "Vestidura") { return "Vestment"; }
             if (txt == "Caballero") { return "Knight"; }
             if (txt == "Explorador") { return "Explorer"; }

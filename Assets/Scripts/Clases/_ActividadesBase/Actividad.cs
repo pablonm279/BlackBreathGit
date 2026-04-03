@@ -24,6 +24,9 @@ public abstract class Actividad : MonoBehaviour
    //16 - Canalizador: Concentración Arcana
    //17 - Canalizador: Telekinesis
    //18 - Canalizador: Crear Símbolo Arcano de Protección
+   //19 - Duelista: Siempre Alerta
+   //20 - Duelista: Socializar
+   //21 - Duelista: Consuelo
 
 
 

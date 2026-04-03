@@ -96703,6 +96703,10 @@ MonoBehaviour:
   armaEspadaCortaArcana: {fileID: -7845728578984888629, guid: 46695edd3c66c3541bc29a8d7d7ca48e, type: 3}
   armaEspadaCortaFilonegro: {fileID: -7845728578984888629, guid: c13d10dc5b9c4394484841f359c1511f, type: 3}
   armaEspadaCortaConsumevida: {fileID: -7845728578984888629, guid: 28b76ec29d9dbc84b9ccdb43125bb216, type: 3}
+  armaEstoque: {fileID: -7845728578984888629, guid: e5782a12784e4f4797892065e4882518, type: 3}
+  armaEstoque1: {fileID: -7845728578984888629, guid: a98096e34a0a453084a63a50d35e0ca8, type: 3}
+  armaEstoque2: {fileID: -7845728578984888629, guid: 341e46b3c57244acb70bc6e5aca54bed, type: 3}
+  armaEstoque3: {fileID: -7845728578984888629, guid: cb3d16a084df4f0a9b5a54ca71a6b90e, type: 3}
   Coraza: {fileID: 8699174448954785113, guid: e49d74027cbd0304b90a36130067f376, type: 3}
   Coraza1: {fileID: 8699174448954785113, guid: 928f8eca73de78d4f91c253dfca1a488, type: 3}
   Coraza2: {fileID: 8699174448954785113, guid: 84dded725592bf24a9357678dfbf07a8, type: 3}
@@ -96721,6 +96725,10 @@ MonoBehaviour:
   ArmaduraCueroReforzado1: {fileID: 554627427726029727, guid: 1effc8a0af8942f478bbe1f526612f87, type: 3}
   ArmaduraCueroReforzado2: {fileID: 554627427726029727, guid: b3f9e5daee5a8464f93a5b94191a08da, type: 3}
   ArmaduraCueroReforzado3: {fileID: 554627427726029727, guid: f09ed62adf9c8c34eaf72fcfc0baabca, type: 3}
+  ArmaduraGambeson: {fileID: 554627427726029727, guid: a7c8aff9d5b44613a362f907c7f4d498, type: 3}
+  ArmaduraGambeson1: {fileID: 9114552496750484229, guid: 867f5f0d10fc4360b614702a61e8a0ea, type: 3}
+  ArmaduraGambeson2: {fileID: 3372764810285443771, guid: fd479afdbe354dd4bd6cc4743a3de211, type: 3}
+  ArmaduraGambeson3: {fileID: 3609171456802955548, guid: d574a9b21e9c46cc947609f61b81c05e, type: 3}
   ArmaduraDeCueroReforzadoDeLigereza: {fileID: 554627427726029727, guid: 50d70cad8d23b4a42b974449a0ff4137, type: 3}
   ArmaduraDeCueroReforzadoDeProteccionElemental: {fileID: 554627427726029727, guid: 9b1a20f58a2713a41b39aa99b1400659, type: 3}
   ArmaduraDeCueroReforzadoDeVelo: {fileID: 554627427726029727, guid: 31f09f6301cdf1a48a200cc02f80b8ed, type: 3}
@@ -237718,6 +237726,9 @@ MonoBehaviour:
   spriteActConcArcana: {fileID: 21300000, guid: 689f2c2ff3eb4b24094295c4c84476ca, type: 3}
   spriteActTelekinesis: {fileID: 21300000, guid: 4029668574b05544aa9a326c427ab3fe, type: 3}
   spriteActSimboloArcanoProt: {fileID: 21300000, guid: 022527d9fd50d8c4ba306d2255196739, type: 3}
+  spriteActDuelistaSiempreAlerta: {fileID: 21300000, guid: 9804e5d6ca9aabb4b8c9868e00f1f6bc, type: 3}
+  spriteActDuelistaSocializar: {fileID: 21300000, guid: 03fc97b65f121f841a44da3602456758, type: 3}
+  spriteActDuelistaConsuelo: {fileID: 21300000, guid: c9bcf597cda8fe54583522a954693dda, type: 3}
 --- !u!1 &695312870
 GameObject:
   m_ObjectHideFlags: 0

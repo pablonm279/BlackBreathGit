@@ -788,6 +788,33 @@ public class TRADU : MonoBehaviour
             case "Danza del Estoque":
                 r = "Sword Dance";
                 break;
+            case "Estoque del Primer Sangre":
+                r = "First Blood Estoc";
+                break;
+            case "Estoque de Veloz Replica":
+                r = "Swift Riposte Estoc";
+                break;
+            case "Estoque de la Rosa Negra":
+                r = "Black Rose Estoc";
+                break;
+            case "Gambeson de Esgrima Ligera":
+                r = "Light Fencing Gambeson";
+                break;
+            case "Gambeson del Temple":
+                r = "Gambeson of Composure";
+                break;
+            case "Gambeson del Ultimo Paso":
+                r = "Last Step Gambeson";
+                break;
+            case "Blanco Medido":
+                r = "Measured Target";
+                break;
+            case "Rosa Negra":
+                r = "Black Rose";
+                break;
+            case "Ultimo Paso":
+                r = "Last Step";
+                break;
             case "Danzando":
                 r = "Dancing";
                 break;
@@ -3304,6 +3331,30 @@ public class TRADU : MonoBehaviour
                 break;
             case " realiza su actividad <b>Ayudar a los Desamparados</b> y la esperanza aumenta en ":
                 r = " performs their activity <b>Help the Hopeless</b> and hope increases by ";
+                break;
+            case "-Consuelo reduce la pérdida de Esperanza en ":
+                r = "-Solace reduces the Hope loss by ";
+                break;
+            case " socializa con la caravana. Beneficiados: ":
+                r = " socializes with the caravan. High Morale: ";
+                break;
+            case "nadie":
+                r = "no one";
+                break;
+            case " socializa con la caravana. Sus compañeros realizan una TS Mental DC ":
+                r = " socializes with the caravan. Their companions make a Mental Save DC ";
+                break;
+            case " supera la TS Mental (1d20: ":
+                r = " succeeds on the Mental Save (1d20: ";
+                break;
+            case " falla la TS Mental (1d20: ":
+                r = " fails the Mental Save (1d20: ";
+                break;
+            case ") gracias a <b>Socializar</b> y obtiene Alta Moral por 1 día.":
+                r = ") thanks to <b>Socialize</b> and gains High Morale for 1 day.";
+                break;
+            case ") pese a <b>Socializar</b> y no obtiene Alta Moral.":
+                r = ") despite <b>Socialize</b> and does not gain High Morale.";
                 break;
             case " de Oro de los Mercaderes de la Caravana, que fueron coercionados para que donen a la causa. -1 Esperanza":
                 r = " Gold from the Caravan Merchants, who were coerced into donating to the cause. -1 Hope";
@@ -7048,6 +7099,15 @@ public class TRADU : MonoBehaviour
             case "El trayecto esta bloqueado":
             r = "The route is blocked";
             break;
+            case"<color=#0cca74><b>Siempre Alerta: </b></color><color=#d3d3d3><i>La Duelista se mantiene lista para actuar con rapidez si se presenta una batalla.</color></i>\\n\\n+5 Iniciativa en combate. Si no es emboscada, gana 2 Impulso al comenzar la batalla.":
+            r="<color=#0cca74><b>Always Alert: </b></color><color=#d3d3d3><i>The Duelist stays ready to act quickly if a battle arises.</color></i>\\n\\n+5 Initiative in combat. If not ambushed, gains 2 Impulse at the start of battle.";
+            break;
+            case "<color=#0cca74><b>Socializar: </b></color><color=#d3d3d3><i>La Duelista dedica tiempo a conversar, bromear y sostener el ánimo de la caravana.</color></i>\\n\\nCada día, sus compañeros realizan una TS Mental DC 13. Quienes la superan obtienen Alta Moral por 1 día.":
+            r = "<color=#0cca74><b>Socialize: </b></color><color=#d3d3d3><i>The Duelist spends time talking, joking, and keeping the caravan's spirits up.</color></i>\\n\\nEach day, her companions make a Mental Save DC 13. Those who succeed gain High Morale for 1 day.";
+            break;
+            case "<color=#0cca74><b>Consuelo: </b></color><color=#d3d3d3><i>La Duelista contiene el desánimo de la caravana cuando llegan malas noticias o tiempos difíciles.</color></i>\\n\\nSiempre que se pierda Esperanza por cualquier motivo, se pierde 2 menos.":
+            r = "<color=#0cca74><b>Solace: </b></color><color=#d3d3d3><i>The Duelist helps contain the caravan's discouragement when bad news or hard times arrive.</color></i>\\n\\nWhenever Hope would be lost for any reason, 2 less is lost.";
+            break;
              
              
 
@@ -7500,6 +7560,33 @@ public class TRADU : MonoBehaviour
         {
            case "Danza del Estoque":
                 r = "Danca do Estoque";
+                break;
+            case "Estoque del Primer Sangre":
+                r = "Estoque do Primeiro Sangue";
+                break;
+            case "Estoque de Veloz Replica":
+                r = "Estoque de Replica Veloz";
+                break;
+            case "Estoque de la Rosa Negra":
+                r = "Estoque da Rosa Negra";
+                break;
+            case "Gambeson de Esgrima Ligera":
+                r = "Gambeson de Esgrima Leve";
+                break;
+            case "Gambeson del Temple":
+                r = "Gambeson do Temple";
+                break;
+            case "Gambeson del Ultimo Paso":
+                r = "Gambeson do Ultimo Passo";
+                break;
+            case "Blanco Medido":
+                r = "Alvo Medido";
+                break;
+            case "Rosa Negra":
+                r = "Rosa Negra";
+                break;
+            case "Ultimo Paso":
+                r = "Ultimo Passo";
                 break;
             case "Danzando":
                 r = "Dancando";
@@ -10018,6 +10105,30 @@ public class TRADU : MonoBehaviour
                 break;
             case " realiza su actividad <b>Ayudar a los Desamparados</b> y la esperanza aumenta en ":
                 r = " realiza sua atividade <b>Ajudar os Desamparados</b> e a esperança aumenta em ";
+                break;
+            case "-Consuelo reduce la pérdida de Esperanza en ":
+                r = "-Consolo reduz a perda de Esperança em ";
+                break;
+            case " socializa con la caravana. Beneficiados: ":
+                r = " socializa com a caravana. Beneficiados: ";
+                break;
+            case "nadie":
+                r = "ninguém";
+                break;
+            case " socializa con la caravana. Sus compañeros realizan una TS Mental DC ":
+                r = " socializa com a caravana. Seus companheiros fazem um Teste Mental CD ";
+                break;
+            case " supera la TS Mental (1d20: ":
+                r = " supera o Teste Mental (1d20: ";
+                break;
+            case " falla la TS Mental (1d20: ":
+                r = " falha no Teste Mental (1d20: ";
+                break;
+            case ") gracias a <b>Socializar</b> y obtiene Alta Moral por 1 día.":
+                r = ") graças a <b>Socializar</b> e ganha Alta Moral por 1 dia.";
+                break;
+            case ") pese a <b>Socializar</b> y no obtiene Alta Moral.":
+                r = ") apesar de <b>Socializar</b> e não ganha Alta Moral.";
                 break;
             case " de Oro de los Mercaderes de la Caravana, que fueron coercionados para que donen a la causa. -1 Esperanza":
                 r = " de Ouro dos Mercadores da Caravana, que foram coagidos a doar para a causa. -1 Esperança";
@@ -13761,6 +13872,15 @@ public class TRADU : MonoBehaviour
             break;
         case "El trayecto esta bloqueado":
             r = "O trajeto está bloqueado";
+            break;
+         case"<color=#0cca74><b>Siempre Alerta: </b></color><color=#d3d3d3><i>La Duelista se mantiene lista para actuar con rapidez si se presenta una batalla.</color></i>\\n\\n+5 Iniciativa en combate. Si no es emboscada, gana 2 Impulso al comenzar la batalla.":
+            r="<color=#0cca74><b>Sempre Alerta: </b></color><color=#d3d3d3><i>A Duelista se mantém pronta para agir rapidamente se uma batalha ocorrer.</color></i>\\n\\n+5 Iniciativa em combate. Se não for emboscada, ganha 2 Impulso ao começar a batalha.";
+            break;
+         case "<color=#0cca74><b>Socializar: </b></color><color=#d3d3d3><i>La Duelista dedica tiempo a conversar, bromear y sostener el ánimo de la caravana.</color></i>\\n\\nCada día, sus compañeros realizan una TS Mental DC 13. Quienes la superan obtienen Alta Moral por 1 día.":
+            r = "<color=#0cca74><b>Socializar: </b></color><color=#d3d3d3><i>A Duelista dedica tempo a conversar, brincar e sustentar o ânimo da caravana.</color></i>\\n\\nA cada dia, seus companheiros fazem um Teste Mental CD 13. Quem passar ganha Alta Moral por 1 dia.";
+            break;
+         case "<color=#0cca74><b>Consuelo: </b></color><color=#d3d3d3><i>La Duelista contiene el desánimo de la caravana cuando llegan malas noticias o tiempos difíciles.</color></i>\\n\\nSiempre que se pierda Esperanza por cualquier motivo, se pierde 2 menos.":
+            r = "<color=#0cca74><b>Consolo: </b></color><color=#d3d3d3><i>A Duelista contém o desânimo da caravana quando chegam más notícias ou tempos difíceis.</color></i>\\n\\nSempre que se perder Esperança por qualquer motivo, perdem-se 2 a menos.";
             break;
            
              

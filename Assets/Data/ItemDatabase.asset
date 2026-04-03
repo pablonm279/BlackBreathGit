@@ -7455,6 +7455,605 @@ MonoBehaviour:
     tags: []
     activo: 1
     excluirDeTiendas: 0
+  - listaTitulo: Arma - Estoque
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMAS_ESTOQUE_ESTOQUE_BASE_ARMAESTOQUE
+    prefab: {fileID: -7845728578984888629, guid: e5782a12784e4f4797892065e4882518, type: 3}
+    nombre: Estoque
+    descripcion: Estoque ligero y preciso para duelos cuerpo a cuerpo.
+    categoria: Arma
+    rareza: 0
+    icono: {fileID: 21300000, guid: c2df977af82c4d144b0a65b40e1efd48, type: 3}
+    precio: 45
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma: []
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 670376592415151795, guid: e5782a12784e4f4797892065e4882518, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Estoque
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMAS_ESTOQUE_ESTOQUE_BASE_ARMAESTOQUE_1
+    prefab: {fileID: -7845728578984888629, guid: a98096e34a0a453084a63a50d35e0ca8, type: 3}
+    nombre: Estoque
+    descripcion: Estoque ligero y preciso para duelos cuerpo a cuerpo.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: 2dd49f35e3c5e4e458fab7723e81ca08, type: 3}
+    precio: 85
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma: []
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 670376592415151795, guid: a98096e34a0a453084a63a50d35e0ca8, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Estoque
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMAS_ESTOQUE_ESTOQUE_BASE_ARMAESTOQUE_2
+    prefab: {fileID: -7845728578984888629, guid: 341e46b3c57244acb70bc6e5aca54bed, type: 3}
+    nombre: Estoque
+    descripcion: Estoque ligero y preciso para duelos cuerpo a cuerpo.
+    categoria: Arma
+    rareza: 2
+    icono: {fileID: 21300000, guid: 7cd143c7490efe64aa07468a3053bdfa, type: 3}
+    precio: 198
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma: []
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 670376592415151795, guid: 341e46b3c57244acb70bc6e5aca54bed, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Estoque
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMAS_ESTOQUE_ESTOQUE_BASE_ARMAESTOQUE_3
+    prefab: {fileID: -7845728578984888629, guid: cb3d16a084df4f0a9b5a54ca71a6b90e, type: 3}
+    nombre: Estoque
+    descripcion: Estoque ligero y preciso para duelos cuerpo a cuerpo.
+    categoria: Arma
+    rareza: 3
+    icono: {fileID: 21300000, guid: 4f2bf7230dabb504c81bd2ae04db7125, type: 3}
+    precio: 485
+    nivelMejora: 3
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma: []
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 670376592415151795, guid: cb3d16a084df4f0a9b5a54ca71a6b90e, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Estoque Astral
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMAS_ESTOQUE_RARO_ESTOQUEASTRAL_ARMAESTOQUEASTRAL
+    prefab: {fileID: -7845728578984888629, guid: e6d8a055df694a3396e30bc431ffb4e1, type: 3}
+    nombre: Estoque Astral
+    descripcion: Estoque grabado con runas astrales que marca al objetivo.
+    categoria: Arma
+    rareza: 2
+    icono: {fileID: 21300000, guid: cee29903206b43d0b0c42448d8e73bc9, type: 3}
+    precio: 360
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma:
+    - activo: 1
+      nombreDebuff: Marca Astral
+      probabilidadAplicar: 100
+      duracionRondas: 2
+      requiereTiradaSalvacion: 1
+      tipoTiradaSalvacion: 3
+      dificultadSalvacion: 12
+      modFuerza: 0
+      modAgilidad: 0
+      modPoder: 0
+      modIniciativa: 0
+      modAtaque: 0
+      modDefensa: -1
+      modArmadura: 0
+      modDanioPorcentaje: 0
+      modTSReflejos: 0
+      modTSFortaleza: 0
+      modTSMental: -2
+      modResFuego: 0
+      modResHielo: 0
+      modResRayo: 0
+      modResAcido: 0
+      modResArcano: -10
+      modResNecro: 0
+      modResDivino: 0
+      modCritDado: 0
+      modCritDanioPorcentaje: 0
+      stacksSangrado: 0
+      stacksArdiendo: 0
+      stacksCongelado: 0
+      stacksAcido: 0
+      stacksAturdido: 0
+      reduccionAPPorTurno: 0
+      reduccionResistencias: 0
+      stacksCondenado: 0
+      ignorarArmaduraPlano: 0
+      roboVidaPorcentaje: 0
+      empujeCasillas: 0
+      jalonCasillas: 0
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 670376592415151795, guid: e6d8a055df694a3396e30bc431ffb4e1, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
   - listaTitulo: Armadura - Armadura de Cuero
     id: ITEM_SCRIPTS_CLASES_EXPLORADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURADECUERO_ARMADURA_DE_CUERO_BASE_ARMADURADECUERO_1
     prefab: {fileID: 9114552496750484229, guid: 2c0df8a3033c09b49ab4b9f410b1b266, type: 3}
@@ -10364,6 +10963,1204 @@ MonoBehaviour:
         cantEspinasDanioPorcentaje: 0
     habilidadAtaque: {fileID: 0}
     habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Estoque del Primer Sangre
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMAS_ESTOQUE_INFRECUENTE_ESTOQUEDELPRIMERSANGRE_ARMAESTOQUEDELPRIMERSANGRE
+    prefab: {fileID: -7845728578984888629, guid: 26088e518f254ebba16d5b3d79a10039, type: 3}
+    nombre: Estoque del Primer Sangre
+    descripcion: Un estoque pensado para abrir el duelo con una ventaja brutal.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: b6bfb75146174f399eeae7a858c28ef2, type: 3}
+    precio: 180
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma: []
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 670376592415151795, guid: 26088e518f254ebba16d5b3d79a10039, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Estoque de Veloz Replica
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMAS_ESTOQUE_INFRECUENTE_ESTOQUEDEVELOZREPLICA_ARMAESTOQUEDEVELOZREPLICA
+    prefab: {fileID: -7845728578984888629, guid: a2f773cac38d4994bc1be21e2bb8bcb5, type: 3}
+    nombre: Estoque de Veloz Replica
+    descripcion: Un estoque agil, pensado para presionar con ritmo y precision.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: 836698352c02496eb4b4094c1d5eae7f, type: 3}
+    precio: 175
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 1
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma:
+    - activo: 1
+      nombreDebuff: Blanco Medido
+      probabilidadAplicar: 100
+      duracionRondas: 1
+      requiereTiradaSalvacion: 0
+      tipoTiradaSalvacion: 1
+      dificultadSalvacion: 12
+      modFuerza: 0
+      modAgilidad: 0
+      modPoder: 0
+      modIniciativa: 0
+      modAtaque: 0
+      modDefensa: -1
+      modArmadura: 0
+      modDanioPorcentaje: 0
+      modTSReflejos: 0
+      modTSFortaleza: 0
+      modTSMental: 0
+      modResFuego: 0
+      modResHielo: 0
+      modResRayo: 0
+      modResAcido: 0
+      modResArcano: 0
+      modResNecro: 0
+      modResDivino: 0
+      modCritDado: 0
+      modCritDanioPorcentaje: 0
+      stacksSangrado: 0
+      stacksArdiendo: 0
+      stacksCongelado: 0
+      stacksAcido: 0
+      stacksAturdido: 0
+      reduccionAPPorTurno: 0
+      reduccionResistencias: 0
+      stacksCondenado: 0
+      ignorarArmaduraPlano: 0
+      roboVidaPorcentaje: 0
+      empujeCasillas: 0
+      jalonCasillas: 0
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 670376592415151795, guid: a2f773cac38d4994bc1be21e2bb8bcb5, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Estoque de la Rosa Negra
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMAS_ESTOQUE_RARA_ESTOQUEDELAROSANEGRA_ARMAESTOQUEDELAROSANEGRA
+    prefab: {fileID: -7845728578984888629, guid: c11b6a7feca646be9053378a70fae17c, type: 3}
+    nombre: Estoque de la Rosa Negra
+    descripcion: Un estoque elegante y cruel, hecho para dejar una herida que no cierra.
+    categoria: Arma
+    rareza: 2
+    icono: {fileID: 21300000, guid: a379fa69f853433f81f29a29d9af444d, type: 3}
+    precio: 345
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma:
+    - activo: 1
+      nombreDebuff: Rosa Negra
+      probabilidadAplicar: 100
+      duracionRondas: 2
+      requiereTiradaSalvacion: 1
+      tipoTiradaSalvacion: 1
+      dificultadSalvacion: 12
+      modFuerza: 0
+      modAgilidad: 0
+      modPoder: 0
+      modIniciativa: 0
+      modAtaque: 0
+      modDefensa: 0
+      modArmadura: 0
+      modDanioPorcentaje: 0
+      modTSReflejos: 0
+      modTSFortaleza: 0
+      modTSMental: 0
+      modResFuego: 0
+      modResHielo: 0
+      modResRayo: 0
+      modResAcido: 0
+      modResArcano: 0
+      modResNecro: 0
+      modResDivino: 0
+      modCritDado: 0
+      modCritDanioPorcentaje: 0
+      stacksSangrado: 1
+      stacksArdiendo: 0
+      stacksCongelado: 0
+      stacksAcido: 0
+      stacksAturdido: 0
+      reduccionAPPorTurno: 0
+      reduccionResistencias: 0
+      stacksCondenado: 0
+      ignorarArmaduraPlano: 0
+      roboVidaPorcentaje: 0
+      empujeCasillas: 0
+      jalonCasillas: 0
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 670376592415151795, guid: c11b6a7feca646be9053378a70fae17c, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Gambeson
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMADURAS_GAMBESON_GAMBESON_BASE_ARMADURAGAMBESON_1
+    prefab: {fileID: 9114552496750484229, guid: 867f5f0d10fc4360b614702a61e8a0ea, type: 3}
+    nombre: Gambeson
+    descripcion: Gambeson acolchado y liviano para mantener la movilidad en el duelo.
+    categoria: Armadura
+    rareza: 1
+    icono: {fileID: 21300000, guid: 66cf9502ded5468aa5d76037b4aed781, type: 3}
+    precio: 135
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 3
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma: []
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Gambeson
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMADURAS_GAMBESON_GAMBESON_BASE_ARMADURAGAMBESON_2
+    prefab: {fileID: 3372764810285443771, guid: fd479afdbe354dd4bd6cc4743a3de211, type: 3}
+    nombre: Gambeson
+    descripcion: Gambeson acolchado y liviano para mantener la movilidad en el duelo.
+    categoria: Armadura
+    rareza: 2
+    icono: {fileID: 21300000, guid: 477cb507ed594e6b975f41a7c21f9b55, type: 3}
+    precio: 220
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 4
+      buffDefensa: 1
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma: []
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Gambeson
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMADURAS_GAMBESON_GAMBESON_BASE_ARMADURAGAMBESON_3
+    prefab: {fileID: 3609171456802955548, guid: d574a9b21e9c46cc947609f61b81c05e, type: 3}
+    nombre: Gambeson
+    descripcion: Gambeson acolchado y liviano para mantener la movilidad en el duelo.
+    categoria: Armadura
+    rareza: 3
+    icono: {fileID: 21300000, guid: 12da7a0547dd4643987f8d8ed156a04d, type: 3}
+    precio: 490
+    nivelMejora: 3
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 6
+      buffDefensa: 1
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma: []
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Gambeson
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMADURAS_GAMBESON_GAMBESON_BASE_ARMADURAGAMBESON
+    prefab: {fileID: 554627427726029727, guid: a7c8aff9d5b44613a362f907c7f4d498, type: 3}
+    nombre: Gambeson
+    descripcion: Gambeson acolchado y liviano para mantener la movilidad en el duelo.
+    categoria: Armadura
+    rareza: 0
+    icono: {fileID: 21300000, guid: 249b0c6406164fa7af4bd2ef52cd5857, type: 3}
+    precio: 45
+    nivelMejora: 0
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 1
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma: []
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Gambeson de Esgrima Ligera
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMADURAS_GAMBESON_INFRECUENTE_GAMBESONDEESGRIMALIGERA_ARMADURAGAMBESONDEESGRIMALIGERA
+    prefab: {fileID: 9114552496750484229, guid: 61915dfbcd7645a2b1705812330649ec, type: 3}
+    nombre: Gambeson de Esgrima Ligera
+    descripcion: Un gambeson flexible para duelistas que prefieren entrar al combate ya perfiladas.
+    categoria: Armadura
+    rareza: 1
+    icono: {fileID: 21300000, guid: 55e801f22f014f5fa804e1a6c7483926, type: 3}
+    precio: 185
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 3
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 2
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma: []
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Gambeson del Temple
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMADURAS_GAMBESON_INFRECUENTE_GAMBESONDELTEMPLE_ARMADURAGAMBESONDELTEMPLE
+    prefab: {fileID: 9114552496750484229, guid: f428f6fed753441294557be0441c8bef, type: 3}
+    nombre: Gambeson del Temple
+    descripcion: Un gambeson sobrio, reforzado para mantener la mente y el cuerpo firmes bajo presion.
+    categoria: Armadura
+    rareza: 1
+    icono: {fileID: 21300000, guid: cce5876128174aa5985e8a708eb254c3, type: 3}
+    precio: 180
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 3
+      buffDefensa: 0
+      buffTSReflejo: 1
+      buffTSFortaleza: 0
+      buffTSMental: 1
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma: []
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Armadura - Gambeson del Ultimo Paso
+    id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMADURAS_GAMBESON_RARA_GAMBESONDELULTIMOPASO_ARMADURAGAMBESONDELULTIMOPASO
+    prefab: {fileID: 3372764810285443771, guid: 04cdf50b43854ae08179ce94debac4b5, type: 3}
+    nombre: Gambeson del Ultimo Paso
+    descripcion: Un gambeson cosido para sobrevivir al momento mas peligroso del duelo.
+    categoria: Armadura
+    rareza: 2
+    icono: {fileID: 21300000, guid: 57e9476d54fc4ccbb92a3a8713f978bf, type: 3}
+    precio: 285
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 06000000
+    requisitoFue: 0
+    requisitoAgi: 3
+    requisitoPoder: 0
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 0
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 4
+      buffDefensa: 1
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma: []
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 0}
+    habilidadExtra1: {fileID: 5396806420807064732, guid: 04cdf50b43854ae08179ce94debac4b5, type: 3}
     habilidadExtra2: {fileID: 0}
     tags: []
     activo: 1

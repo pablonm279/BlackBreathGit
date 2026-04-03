@@ -191,42 +191,42 @@ public class MenuCaravana : MonoBehaviour
         InicializarColoresCostoSiHaceFalta();
 
         //Antorchas
-        costoMejorarAntorchas = 30 + (10 * CampaignManager.Instance.mejoraCaravanaAntorchas);
+        costoMejorarAntorchas = CampaignManager.Instance.AplicarCostoMejoraCaravanaTraits(30 + (10 * CampaignManager.Instance.mejoraCaravanaAntorchas));
         txtTierMejoraAntorchas.text = "Tier " + CampaignManager.Instance.mejoraCaravanaAntorchas;
         txtCostoMejoraAntorchas.text = "" + costoMejorarAntorchas + TRADU.i.Traducir(" Materiales");
         ActualizarColorCosto(txtCostoMejoraAntorchas, costoMejorarAntorchas, colorCostoAntorchasNormal);
         if (CampaignManager.Instance.mejoraCaravanaAntorchas == 3) { btMejoraAntorchas.SetActive(false); }
 
         //Alforjas
-        costoMejorarAlforjas = 25 + (9 * CampaignManager.Instance.mejoraCaravanaAlforjas);
+        costoMejorarAlforjas = CampaignManager.Instance.AplicarCostoMejoraCaravanaTraits(25 + (9 * CampaignManager.Instance.mejoraCaravanaAlforjas));
         txtTierMejoraAlforjas.text = "Tier " + CampaignManager.Instance.mejoraCaravanaAlforjas;
         txtCostoMejoraAlforjas.text = "" + costoMejorarAlforjas + TRADU.i.Traducir(" Materiales");
         ActualizarColorCosto(txtCostoMejoraAlforjas, costoMejorarAlforjas, colorCostoAlforjasNormal);
         if (CampaignManager.Instance.mejoraCaravanaAlforjas == 3) { btMejoraAlforjas.SetActive(false); }
 
         //Tiendas
-        costoMejorarTiendas = Mathf.CeilToInt((45 + (15 * CampaignManager.Instance.mejoraCaravanaTiendas)) * 1.15f);
+        costoMejorarTiendas = CampaignManager.Instance.AplicarCostoMejoraCaravanaTraits(Mathf.CeilToInt((45 + (15 * CampaignManager.Instance.mejoraCaravanaTiendas)) * 1.15f));
         txtTierMejoraTiendas.text = "Tier " + CampaignManager.Instance.mejoraCaravanaTiendas;
         txtCostoMejoraTiendas.text = "" + costoMejorarTiendas + TRADU.i.Traducir(" Materiales");
         ActualizarColorCosto(txtCostoMejoraTiendas, costoMejorarTiendas, colorCostoTiendasNormal);
         if (CampaignManager.Instance.mejoraCaravanaTiendas == 3) { btMejoraTiendas.SetActive(false); }
 
         //Catalejos
-        costoMejorarCatalejos = 35 + (11 * CampaignManager.Instance.mejoraCaravanaCatalejos);
+        costoMejorarCatalejos = CampaignManager.Instance.AplicarCostoMejoraCaravanaTraits(35 + (11 * CampaignManager.Instance.mejoraCaravanaCatalejos));
         txtTierMejoraCatalejos.text = "Tier " + CampaignManager.Instance.mejoraCaravanaCatalejos;
         txtCostoMejoraCatalejos.text = "" + costoMejorarCatalejos + TRADU.i.Traducir(" Materiales");
         ActualizarColorCosto(txtCostoMejoraCatalejos, costoMejorarCatalejos, colorCostoCatalejosNormal);
         if (CampaignManager.Instance.mejoraCaravanaCatalejos == 3) { btMejoraCatalejos.SetActive(false); }
 
         //Almacen
-        costoMejorarAlmacen = 35 + (11 * CampaignManager.Instance.mejoraCaravanaAlmacen);
+        costoMejorarAlmacen = CampaignManager.Instance.AplicarCostoMejoraCaravanaTraits(35 + (11 * CampaignManager.Instance.mejoraCaravanaAlmacen));
         txtTierMejoraAlmacen.text = "Tier " + CampaignManager.Instance.mejoraCaravanaAlmacen;
         txtCostoMejoraAlmacen.text = "" + costoMejorarAlmacen + TRADU.i.Traducir(" Materiales");
         ActualizarColorCosto(txtCostoMejoraAlmacen, costoMejorarAlmacen, colorCostoAlmacenNormal);
         if (CampaignManager.Instance.mejoraCaravanaAlmacen == 3) { btMejoraAlmacen.SetActive(false); }
         
         //Defensas
-        costoMejorarDefensas = 25 + (11 * CampaignManager.Instance.mejoraCaravanaDefensas);
+        costoMejorarDefensas = CampaignManager.Instance.AplicarCostoMejoraCaravanaTraits(25 + (11 * CampaignManager.Instance.mejoraCaravanaDefensas));
         txtTierMejoraDefensas.text = "Tier " + CampaignManager.Instance.mejoraCaravanaDefensas;
         txtCostoMejoraDefensas.text = "" + costoMejorarDefensas + TRADU.i.Traducir(" Materiales");
         ActualizarColorCosto(txtCostoMejoraDefensas, costoMejorarDefensas, colorCostoDefensasNormal);

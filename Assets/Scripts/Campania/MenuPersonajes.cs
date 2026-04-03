@@ -8,11 +8,6 @@ using Unity.VisualScripting;
 
 public class MenuPersonajes : MonoBehaviour
 {
-  private const string COLOR_RASGO_TEMP_NEG = "#ff9e9e";
-  private const string COLOR_RASGO_TEMP_POS = "#a8ff9e";
-  private const string COLOR_RASGO_LEGACY_NEG = "#d80404";
-  private const string COLOR_RASGO_LEGACY_POS = "#2a9c71";
-
   public List<Personaje> listaPersonajes = new List<Personaje>(); //La lista que posee los personajes activos
 
 
@@ -306,95 +301,23 @@ public class MenuPersonajes : MonoBehaviour
 
   void RepresentarRasgos()
   {
-    txtContenedorRasgos.text = "";
-    //Rasgos
-    for (int i = 0; i < 300; i++)
+    if (txtContenedorRasgos == null || pSel == null)
     {
-      if (pSel.aRasgos[i] == 1)
+      return;
+    }
+
+    List<string> lineas = new List<string>();
+    int idioma = PersonajeTraitCatalog.ObtenerIdiomaActual();
+
+    foreach (int rasgoId in pSel.EnumerarRasgosActivos())
+    {
+      if (PersonajeTraitCatalog.TryGet(rasgoId, out PersonajeTraitDefinition definicion))
       {
-        txtContenedorRasgos.text += DevolverRasgo(i);
-        txtContenedorRasgos.text += "\n";
-
+        lineas.Add(PersonajeTraitCatalog.FormatearParaUi(definicion, idioma));
       }
-
-
     }
 
-
-    //Estados Campaña
-    if (pSel.Camp_Fatigado)
-    {
-      string fatigado = TRADU.i.Traducir("<color=#2a9c71>\n\nFatigado: -1 Atributos hasa próximo descanso. </color>");
-      txtContenedorRasgos.text += RecolorEstadoTemporal(fatigado, false);
-    }
-
-    if (pSel.Camp_Bendecido_SequitoClerigos)
-    {
-      string bendecido = "<color=#2a9c71>\n\n" + TRADU.i.Traducir("Bendecido por Plegaria: +1 Ataque +1 Defensa +5 Res.Necro +2 TSMental.</color>");
-      txtContenedorRasgos.text += RecolorEstadoTemporal(bendecido, true);
-    }
-
-    if (pSel.Camp_Herido)
-    {
-      string herido = TRADU.i.Traducir("<color=#d80404>\n\nHerido:-1 Atributos. Si cae en combate, muere. </color>");
-      txtContenedorRasgos.text += RecolorEstadoTemporal(herido, false);
-    }
-
-    if (pSel.Camp_Corrupto)
-    {
-      string corrupto = TRADU.i.Traducir("<color=#d80404>\n\nCorrupto: Los enemigos corrompidos se curan al atacarlo, le infligen mas daño, y si lo derriban en combate, muere. </color>");
-      txtContenedorRasgos.text += RecolorEstadoTemporal(corrupto, false);
-    }
-
-    if (pSel.Camp_Enfermo > 0)
-    {
-      string enfermo = TRADU.i.Traducir("<color=#d80404>\n\nEnfermo por ") + pSel.Camp_Enfermo + TRADU.i.Traducir(" días. -15% daño, -3 TS Fortaleza, -1 PA </color>");
-      txtContenedorRasgos.text += RecolorEstadoTemporal(enfermo, false);
-    }
-
-    if (pSel.Camp_Moral < 0)
-    {
-      string bajaMoral = TRADU.i.Traducir("<color=#d80404>\n\nBaja Moral por ") + -pSel.Camp_Moral + TRADU.i.Traducir(" días. -1 Ataque y Defensa, -3 TS Mental, -2 Valentía Inicial</color>");
-      txtContenedorRasgos.text += RecolorEstadoTemporal(bajaMoral, false);
-    }
-
-    if (pSel.Camp_Moral > 0)
-    {
-      string altaMoral = TRADU.i.Traducir("<color=#d80404>\n\nAlta Moral por ") + pSel.Camp_Moral + TRADU.i.Traducir(" días. +1 Ataque, +2 TS Mental, +2 Valentía Inicial</color>");
-      txtContenedorRasgos.text += RecolorEstadoTemporal(altaMoral, true);
-    }
-
-    if (pSel.Camp_Avergonzado)
-    {
-      bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
-      string avergonzado = enIngles
-        ? "<color=#d80404>\n\nAshamed: -2 Mental Save, -10% max HP. Removed on zone change.</color>"
-        : "<color=#d80404>\n\nAvergonzado: -2 TS Mental, -10% HP máxima. Se limpia al cambiar de zona.</color>";
-      txtContenedorRasgos.text += RecolorEstadoTemporal(avergonzado, false);
-    }
-  }
-
-  private static string RecolorEstadoTemporal(string texto, bool positivo)
-  {
-    if (string.IsNullOrEmpty(texto)) { return texto; }
-
-    string colorObjetivo = positivo ? COLOR_RASGO_TEMP_POS : COLOR_RASGO_TEMP_NEG;
-    return texto
-      .Replace(COLOR_RASGO_LEGACY_NEG, colorObjetivo)
-      .Replace(COLOR_RASGO_LEGACY_POS, colorObjetivo);
-  }
-
-  string DevolverRasgo(int id)
-  {
-    string rasgoDesc = "";
-
-    if (id == 1) { rasgoDesc = TRADU.i.Traducir("Torpe: +1 Rango Pifias"); }
-    if (id == 2) { rasgoDesc = TRADU.i.Traducir("Valiente: +2 Valentía Máxima."); }
-    if (id == 3) { rasgoDesc = TRADU.i.Traducir("Alegre: +2 Esperanza al Descansar."); }
-    //.....
-
-
-    return rasgoDesc;
+    txtContenedorRasgos.text = string.Join("\n", lineas);
   }
 
   public Transform listaHab;

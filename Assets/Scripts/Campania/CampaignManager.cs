@@ -238,6 +238,7 @@ public class CampaignManager : MonoBehaviour
     InicializarProgresoNuevaCampania();
     InicializarClimaAlIniciar();
     InicializarPersonajesNuevaCampania();
+    AplicarTraitsInicioNuevaZona();
     AjustarDificultad();
 
     debeEscribirLogInicioEnStart = true;
@@ -423,7 +424,7 @@ public class CampaignManager : MonoBehaviour
   }
  
   private void InicializarPersonajesNuevaCampania()
-  { CrearDuelista();//!!!
+  { CrearDuelista();CrearDuelista();CrearDuelista();//!!!
     if (!scTutorialManager.tutorialActivo)
     {
       AgregarHeroe(0);
@@ -854,6 +855,9 @@ public class CampaignManager : MonoBehaviour
     data.campAvergonzado = personaje.Camp_Avergonzado;
     data.campMuerto = personaje.Camp_Muerto;
     data.campCorrupto = personaje.Camp_Corrupto;
+    data.traitHeroeLocalCivilesOtorgados = personaje.TraitHeroeLocalCivilesOtorgados;
+    data.traitHeroeLocalPenalidadMuerteAplicada = personaje.TraitHeroeLocalPenalidadMuerteAplicada;
+    data.traitEjemploASeguirAplicado = personaje.TraitEjemploASeguirAplicado;
     data.rasgos = CopiarRasgosPersonaje(personaje);
     data.equipment = ConstruirEquipmentSaveData(personaje, itemDatabase);
     return data;
@@ -1580,6 +1584,9 @@ public class CampaignManager : MonoBehaviour
     personaje.Camp_Avergonzado = data.campAvergonzado;
     personaje.Camp_Muerto = data.campMuerto;
     personaje.Camp_Corrupto = data.campCorrupto;
+    personaje.TraitHeroeLocalCivilesOtorgados = data.traitHeroeLocalCivilesOtorgados;
+    personaje.TraitHeroeLocalPenalidadMuerteAplicada = data.traitHeroeLocalPenalidadMuerteAplicada;
+    personaje.TraitEjemploASeguirAplicado = data.traitEjemploASeguirAplicado;
     personaje.aRasgos = new int[Mathf.Max(300, data.rasgos != null ? data.rasgos.Length : 300)];
     if (data.rasgos != null)
     {
@@ -1667,6 +1674,17 @@ public class CampaignManager : MonoBehaviour
         if (faltaArmadura && scContprefab.ArmaduraCueroReforzado != null)
         {
           personaje.itemArmadura = Instantiate(scContprefab.ArmaduraCueroReforzado);
+        }
+        break;
+      case 6:
+        if (faltaArma && scContprefab.armaEstoque != null)
+        {
+          personaje.itemArma = Instantiate(scContprefab.armaEstoque);
+        }
+
+        if (faltaArmadura && scContprefab.ArmaduraGambeson != null)
+        {
+          personaje.itemArmadura = Instantiate(scContprefab.ArmaduraGambeson);
         }
         break;
     }
@@ -1852,7 +1870,6 @@ public class CampaignManager : MonoBehaviour
       case 6:
         AgregarComponenteSiFalta(personaje.gameObject, typeof(REPRESENTACIONPasoLigero));
         AgregarComponenteSiFalta(personaje.gameObject, typeof(REPRESENTACIONPosturaDemandante));
-        AgregarComponenteSiFalta(personaje.gameObject, typeof(Estocada));
         break;
     }
   }
@@ -2012,6 +2029,14 @@ public class CampaignManager : MonoBehaviour
           case 1: return typeof(Actividad_ConcentracionArcana);
           case 2: return typeof(Actividad_Telekinesis);
           case 3: return typeof(Actividad_CrearSimboloArcanoProteccion);
+        }
+        break;
+      case 6:
+        switch (slot)
+        {
+          case 1: return typeof(Actividad_SiempreAlerta);
+          case 2: return typeof(Actividad_Socializar);
+          case 3: return typeof(Actividad_Consuelo);
         }
         break;
     }
@@ -2557,6 +2582,8 @@ public class CampaignManager : MonoBehaviour
       EscribirLog(TRADU.i.Traducir("-La presencia de Aliento Negro en el aire es fatal para los Civiles. -7 Esperanza -") + random + TRADU.i.Traducir(" Civiles"));
     }
 
+    AplicarTraitsMoraleAmbientales();
+
     if (sequitoHerrerosMantArmaduras > 0) { sequitoHerrerosMantArmaduras--; }
     if (sequitoHerrerosMantArmas > 0) { sequitoHerrerosMantArmas--; }
 
@@ -2720,6 +2747,7 @@ public class CampaignManager : MonoBehaviour
 
       int chancesemboscada = scAtributosZona.modChanceEmboscada + modEmboscadaViajeActual;
       chancesemboscada -= CuantosPersonajesHacenTalActividad(14) * 5; //-5% por cada Acechador Actividad Vigilar Desde Sombras
+      chancesemboscada += ObtenerModificadorChanceEmboscadaTraits();
 
       if (scMenuSequito.TieneSequito(9))
       {
@@ -2756,7 +2784,8 @@ public class CampaignManager : MonoBehaviour
     if (ID == 2) //Evento
     {
 
-      float factorEventoBuenoMalo = 40 + Instance.GetEsperanzaActual() / 3;
+      float factorEventoBuenoMalo = 40 + Instance.GetEsperanzaActual() / 3 + ObtenerModificadorChanceEventoTraits();
+      factorEventoBuenoMalo = Mathf.Clamp(factorEventoBuenoMalo, 0f, 100f);
       float randomEvento = UnityEngine.Random.Range(0, 100);
 
       if (randomEvento < factorEventoBuenoMalo)
@@ -2846,9 +2875,12 @@ public class CampaignManager : MonoBehaviour
           EscribirLog(TRADU.i.Traducir("-Como Purificadora,") + pers.sNombre + TRADU.i.Traducir(" gana 60 Experiencia por la visita al santuario."));
         }
         float curacion = pers.fVidaMaxima * 0.15f;
+        curacion = pers.AplicarMultiplicadorCuracionCampaniaTraits(curacion);
         pers.RecibirCuracion(curacion);
 
       }
+
+      AplicarTraitsVisitaSantuario();
 
       scMapaManager.nodoActual.nodoDespejado = true;
 
@@ -3054,6 +3086,8 @@ public class CampaignManager : MonoBehaviour
       goLogCampania.SetActive(false);
     }
 
+    AplicarTraitsLlegadaPuertoSerria();
+
     if (goMenuPuerto != null)
     {
       goMenuPuerto.SetActive(true);
@@ -3075,6 +3109,7 @@ public class CampaignManager : MonoBehaviour
         goLogCampania.SetActive(false);
         scAdministradorEscenas.PlayFadeInOut(1.2f, 2.0f);
         await BattleManager.DelayCombateAsync(2200);
+        AplicarTraitsLlegadaPuertoSerria();
         goMenuPuerto.SetActive(true);
       }
       finally
@@ -3116,6 +3151,7 @@ public class CampaignManager : MonoBehaviour
     scMapaManager.ResetearYGenerarSiguienteZona();
     ResetearAlientoNegro();
     scAtributosZona.GenerarZona(0); //0 es aleatorio
+    AplicarTraitsInicioNuevaZona();
     transicionZonaEnCurso = false;
   }
 
@@ -3594,6 +3630,7 @@ public class CampaignManager : MonoBehaviour
     txtDescripcionPuestoComercial.text = TRADU.i.Traducir("Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\n\nTu Séquito de Mercaderes ha actualizado su Inventario.");
 
     ResetearPuestoComercial();
+    AplicarTraitsVisitaPuestoComercial();
     if (scSequitoMercaderes != null)
     {
       scSequitoMercaderes.GenerarItemsVendidos();
@@ -3619,13 +3656,30 @@ public class CampaignManager : MonoBehaviour
     int cant = 0;
     foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
     {
-      if (pers != null && !pers.Camp_Muerto && pers.ActividadSeleccionada == IDActividad)
+      if (pers != null && !pers.Camp_Muerto && pers.PuedeRealizarActividades() && pers.ActividadSeleccionada == IDActividad)
       {
         cant++;
       }
     }
 
     return cant;
+  }
+
+  private int ObtenerTSMentalTotalCampania(Personaje personaje)
+  {
+    if (personaje == null)
+    {
+      return 0;
+    }
+
+    int total = personaje.iTSMental;
+
+    if (personaje.itemArma != null) total += personaje.itemArma.buffTSMental;
+    if (personaje.itemArmadura != null) total += personaje.itemArmadura.buffTSMental;
+    if (personaje.Accesorio1 != null) total += personaje.Accesorio1.buffTSMental;
+    if (personaje.Accesorio2 != null) total += personaje.Accesorio2.buffTSMental;
+
+    return total;
   }
 
   public int CuantosPersonajesActivos()
@@ -3664,6 +3718,548 @@ public class CampaignManager : MonoBehaviour
     }
 
     return cant;
+  }
+
+  public int ObtenerModificadorChanceEventoTraits()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return 0;
+    }
+
+    int modificador = 0;
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null || pers.Camp_Muerto)
+      {
+        continue;
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitOptimista))
+      {
+        modificador += 5;
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitPesimista))
+      {
+        modificador -= 5;
+      }
+    }
+
+    return modificador;
+  }
+
+  public int ObtenerModificadorChanceEmboscadaTraits()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return 0;
+    }
+
+    int modificador = 0;
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null || pers.Camp_Muerto)
+      {
+        continue;
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitCuidadoso))
+      {
+        modificador -= 3;
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitRudioso))
+      {
+        modificador += 3;
+      }
+
+      if (TieneTraitConocimientoZonaActual(pers))
+      {
+        modificador -= 3;
+      }
+    }
+
+    return modificador;
+  }
+
+  public int ObtenerModificadorChanceExploracionTraits()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return 0;
+    }
+
+    int modificador = 0;
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null || pers.Camp_Muerto)
+      {
+        continue;
+      }
+
+      if (TieneTraitConocimientoZonaActual(pers))
+      {
+        modificador += 5;
+      }
+    }
+
+    return modificador;
+  }
+
+  bool TieneTraitConocimientoZonaActual(Personaje pers)
+  {
+    if (pers == null || scAtributosZona == null)
+    {
+      return false;
+    }
+
+    return scAtributosZona.ID switch
+    {
+      1 => pers.TieneRasgo(PersonajeTraitCatalog.TraitConoceBosqueArdiente),
+      2 => pers.TieneRasgo(PersonajeTraitCatalog.TraitConocePasoVientohelado),
+      3 => pers.TieneRasgo(PersonajeTraitCatalog.TraitConoceNedukazal),
+      _ => false
+    };
+  }
+
+  bool TieneTraitDetestaZonaActual(Personaje pers)
+  {
+    if (pers == null || scAtributosZona == null)
+    {
+      return false;
+    }
+
+    return scAtributosZona.ID switch
+    {
+      1 => pers.TieneRasgo(PersonajeTraitCatalog.TraitDetestaBosqueArdiente),
+      2 => pers.TieneRasgo(PersonajeTraitCatalog.TraitDetestaPasoVientohelado),
+      3 => pers.TieneRasgo(PersonajeTraitCatalog.TraitDetestaNedukazal),
+      _ => false
+    };
+  }
+
+  float ObtenerPesoParticipacionEventoTraits(Personaje pers)
+  {
+    if (pers == null || pers.Camp_Muerto)
+    {
+      return 0f;
+    }
+
+    float peso = 1f;
+    if (pers.TieneRasgo(PersonajeTraitCatalog.TraitProtagonista))
+    {
+      peso *= 2f;
+    }
+
+    if (pers.TieneRasgo(PersonajeTraitCatalog.TraitPerfilBajo))
+    {
+      peso *= 0.5f;
+    }
+
+    return Mathf.Max(0.01f, peso);
+  }
+
+  public void AplicarTraitsVisitaPuestoComercial()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null || pers.Camp_Muerto)
+      {
+        continue;
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitAhorrista))
+      {
+        int oroGanado = UnityEngine.Random.Range(50, 101);
+        CambiarOroActual(oroGanado);
+        string mensajeAhorrista = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " finds a good deal at the Trading Post. +" + oroGanado + " Gold.",
+          TRADU.IdiomaPortugues => pers.sNombre + " encontra um bom negócio no Posto Comercial. +" + oroGanado + " de Ouro.",
+          _ => pers.sNombre + " consigue un gran trato en el Puesto Comercial. +" + oroGanado + " Oro."
+        };
+        EscribirLog("-" + mensajeAhorrista);
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitDespilfarrador))
+      {
+        int oroPerdido = UnityEngine.Random.Range(20, 51);
+        CambiarOroActual(-oroPerdido);
+        string mensajeDespilfarrador = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " wastes coin at the Trading Post. -" + oroPerdido + " Gold.",
+          TRADU.IdiomaPortugues => pers.sNombre + " desperdiça moedas no Posto Comercial. -" + oroPerdido + " de Ouro.",
+          _ => pers.sNombre + " despilfarra en el Puesto Comercial. -" + oroPerdido + " Oro."
+        };
+        EscribirLog("-" + mensajeDespilfarrador);
+      }
+    }
+  }
+
+  public void AplicarTraitsVisitaSantuario()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null || pers.Camp_Muerto)
+      {
+        continue;
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitFeInquebrantable))
+      {
+        pers.Camp_Moral = Mathf.Max(pers.Camp_Moral, 4);
+        string mensajeFe = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " is uplifted by the Sanctuary. Gains High Morale for 4 days.",
+          TRADU.IdiomaPortugues => pers.sNombre + " se fortalece no Santuário. Recebe Moral Alta por 4 dias.",
+          _ => pers.sNombre + " se fortalece en el Santuario. Obtiene Alta Moral por 4 días."
+        };
+        EscribirLog("-" + mensajeFe);
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitPagano))
+      {
+        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -3);
+        string mensajePagano = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " rejects the Sanctuary. Gains Low Morale for 3 days.",
+          TRADU.IdiomaPortugues => pers.sNombre + " rejeita o Santuário. Recebe Moral Baixa por 3 dias.",
+          _ => pers.sNombre + " rechaza el Santuario. Obtiene Baja Moral por 3 días."
+        };
+        EscribirLog("-" + mensajePagano);
+      }
+    }
+  }
+
+  public void AplicarTraitsInicioNuevaZona()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null || scAtributosZona == null)
+    {
+      return;
+    }
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    string nombreZona = scAtributosZona.ID switch
+    {
+      1 => idiomaTrait switch
+      {
+        TRADU.IdiomaIngles => "the Burning Forest",
+        TRADU.IdiomaPortugues => "a Floresta Ardente",
+        _ => "Bosque Ardiente"
+      },
+      2 => idiomaTrait switch
+      {
+        TRADU.IdiomaIngles => "the Windfrost Pass",
+        TRADU.IdiomaPortugues => "o Paso de Vientohelado",
+        _ => "Paso de Vientohelado"
+      },
+      3 => "Nedukazal",
+      _ => scAtributosZona.Nombre
+    };
+
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null || pers.Camp_Muerto)
+      {
+        continue;
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitAventurero))
+      {
+        pers.Camp_Moral = Mathf.Max(pers.Camp_Moral, 4);
+        string mensajeAventurero = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " embraces the new zone. Gains High Morale for 4 days.",
+          TRADU.IdiomaPortugues => pers.sNombre + " abraça a nova zona. Recebe Moral Alta por 4 dias.",
+          _ => pers.sNombre + " abraza la nueva zona. Obtiene Alta Moral por 4 días."
+        };
+        EscribirLog("-" + mensajeAventurero);
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitArrastrado))
+      {
+        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -3);
+        string mensajeArrastrado = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " dreads the new zone. Gains Low Morale for 3 days.",
+          TRADU.IdiomaPortugues => pers.sNombre + " teme a nova zona. Recebe Moral Baixa por 3 dias.",
+          _ => pers.sNombre + " teme la nueva zona. Obtiene Baja Moral por 3 días."
+        };
+        EscribirLog("-" + mensajeArrastrado);
+      }
+
+      if (TieneTraitDetestaZonaActual(pers))
+      {
+        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -6);
+        string mensajeDetesta = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " dreads " + nombreZona + ". Gains Low Morale for 6 days.",
+          TRADU.IdiomaPortugues => pers.sNombre + " detesta " + nombreZona + ". Recebe Moral Baixa por 6 dias.",
+          _ => pers.sNombre + " detesta " + nombreZona + ". Obtiene Baja Moral por 6 días."
+        };
+        EscribirLog("-" + mensajeDetesta);
+      }
+    }
+  }
+
+  public void AplicarTraitsLlegadaAsentamiento()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null || pers.Camp_Muerto)
+      {
+        continue;
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitTrabajador))
+      {
+        int oroGanado = UnityEngine.Random.Range(150, 201);
+        CambiarOroActual(oroGanado);
+        string mensajeTrabajador = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " profits from the settlement. +" + oroGanado + " Gold.",
+          TRADU.IdiomaPortugues => pers.sNombre + " aproveita o assentamento. +" + oroGanado + " de Ouro.",
+          _ => pers.sNombre + " saca provecho del asentamiento. +" + oroGanado + " Oro."
+        };
+        EscribirLog("-" + mensajeTrabajador);
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitBeodo))
+      {
+        CambiarFatigaActual(1);
+        CambiarOroActual(-10);
+        string mensajeBeodo = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " drinks away the stop. Gains Fatigue and spends 10 Gold.",
+          TRADU.IdiomaPortugues => pers.sNombre + " bebe demais na parada. Recebe Fadiga e gasta 10 de Ouro.",
+          _ => pers.sNombre + " se entrega a la bebida en la parada. Obtiene Fatiga y gasta 10 Oro."
+        };
+        EscribirLog("-" + mensajeBeodo);
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitConvincente))
+      {
+        CambiarCivilesActuales(5);
+        string mensajeConvincente = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " wins over the locals. +5 Civilians.",
+          TRADU.IdiomaPortugues => pers.sNombre + " convence os moradores. +5 Civis.",
+          _ => pers.sNombre + " convence a los lugareños. +5 Civiles."
+        };
+        EscribirLog("-" + mensajeConvincente);
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitHermitano))
+      {
+        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -2);
+        string mensajeHermitano = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " withdraws from settlement life. Gains Low Morale for 2 days.",
+          TRADU.IdiomaPortugues => pers.sNombre + " se retrai da vida no assentamento. Recebe Moral Baixa por 2 dias.",
+          _ => pers.sNombre + " se incomoda con la vida del asentamiento. Obtiene Baja Moral por 2 días."
+        };
+        EscribirLog("-" + mensajeHermitano);
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitCitadino))
+      {
+        pers.Camp_Moral = Mathf.Max(pers.Camp_Moral, 3);
+        string mensajeCitadino = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " thrives in the settlement. Gains High Morale for 3 days.",
+          TRADU.IdiomaPortugues => pers.sNombre + " se anima no assentamento. Recebe Moral Alta por 3 dias.",
+          _ => pers.sNombre + " se siente en casa en el asentamiento. Obtiene Alta Moral por 3 días."
+        };
+        EscribirLog("-" + mensajeCitadino);
+      }
+    }
+  }
+
+  public int ObtenerModificadorCivilesPlazaAsentamiento()
+  {
+    int modificador = 0;
+    modificador += CuantosPersonajesTienenTraitActivo(PersonajeTraitCatalog.TraitBuenaReputacion) * 2;
+    modificador -= CuantosPersonajesTienenTraitActivo(PersonajeTraitCatalog.TraitMalaReputacion) * 2;
+    return modificador;
+  }
+
+  public void AplicarTraitHeroeLocalInicialSiCorresponde(Personaje pers)
+  {
+    if (pers == null || !pers.TieneRasgo(PersonajeTraitCatalog.TraitHeroeLocal) || pers.TraitHeroeLocalCivilesOtorgados)
+    {
+      return;
+    }
+
+    pers.TraitHeroeLocalCivilesOtorgados = true;
+    CambiarCivilesActuales(15);
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    string mensajeHeroeLocal = idiomaTrait switch
+    {
+      TRADU.IdiomaIngles => pers.sNombre + " is already known by the people. +15 Civilians join the Caravan.",
+      TRADU.IdiomaPortugues => pers.sNombre + " ja e conhecido pelo povo. +15 Civis se juntam à Caravana.",
+      _ => pers.sNombre + " ya es conocido por la gente. +15 Civiles se suman a la Caravana."
+    };
+    EscribirLog("-" + mensajeHeroeLocal);
+  }
+
+  public void AplicarTraitHeroeLocalMuerteSiCorresponde(Personaje pers)
+  {
+    if (pers == null || !pers.Camp_Muerto || !pers.TieneRasgo(PersonajeTraitCatalog.TraitHeroeLocal) || pers.TraitHeroeLocalPenalidadMuerteAplicada)
+    {
+      return;
+    }
+
+    pers.TraitHeroeLocalPenalidadMuerteAplicada = true;
+    CambiarEsperanzaActual(-20);
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    string mensajeHeroeLocal = idiomaTrait switch
+    {
+      TRADU.IdiomaIngles => pers.sNombre + " dies for good. -20 Hope.",
+      TRADU.IdiomaPortugues => pers.sNombre + " morre de vez. -20 de Esperança.",
+      _ => pers.sNombre + " muere para siempre. -20 Esperanza."
+    };
+    EscribirLog("-" + mensajeHeroeLocal);
+  }
+
+  public void AplicarTraitsLlegadaPuertoSerria()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null || MetaprogresionManager.Instance == null)
+    {
+      return;
+    }
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null || pers.Camp_Muerto || !pers.TieneRasgo(PersonajeTraitCatalog.TraitEjemploASeguir) || pers.TraitEjemploASeguirAplicado)
+      {
+        continue;
+      }
+
+      pers.TraitEjemploASeguirAplicado = true;
+      MetaprogresionManager.Instance.ValordeTrabajoDisponible += 25;
+
+      string mensajeEjemplo = idiomaTrait switch
+      {
+        TRADU.IdiomaIngles => pers.sNombre + " inspires Serria. +25 Work Value.",
+        TRADU.IdiomaPortugues => pers.sNombre + " inspira Serria. +25 de Valor de Trabalho.",
+        _ => pers.sNombre + " inspira a Serria. +25 Valor de Trabajo."
+      };
+      EscribirLog("-" + mensajeEjemplo);
+    }
+  }
+
+  void AplicarTraitFlojoSiCorresponde(int fatigaAnterior, int fatigaAhora)
+  {
+    if (fatigaAnterior >= 4 || fatigaAhora < 4 || scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null || pers.Camp_Muerto || !pers.TieneRasgo(PersonajeTraitCatalog.TraitFlojo))
+      {
+        continue;
+      }
+
+      pers.Camp_Fatigado = true;
+
+      string mensajeFlojo = idiomaTrait switch
+      {
+        TRADU.IdiomaIngles => pers.sNombre + " grows sluggish as caravan fatigue reaches 4. Gains Fatigue.",
+        TRADU.IdiomaPortugues => pers.sNombre + " fica abatido quando a fadiga da caravana chega a 4. Recebe Fadiga.",
+        _ => pers.sNombre + " se viene abajo cuando la fatiga de la caravana llega a 4. Obtiene Fatiga."
+      };
+      EscribirLog("-" + mensajeFlojo);
+    }
+  }
+
+  public int CuantosPersonajesTienenTraitActivo(int traitId)
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return 0;
+    }
+
+    int cant = 0;
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers != null && !pers.Camp_Muerto && pers.TieneRasgo(traitId))
+      {
+        cant++;
+      }
+    }
+
+    return cant;
+  }
+
+  public int AplicarCostoMejoraCaravanaTraits(int costoBase)
+  {
+    int cantidadOrganizados = CuantosPersonajesTienenTraitActivo(PersonajeTraitCatalog.TraitOrganizado);
+    float multiplicador = Mathf.Max(0f, 1f - (cantidadOrganizados * 0.05f));
+    return Mathf.Max(1, Mathf.CeilToInt(costoBase * multiplicador));
+  }
+
+  public bool HayClimaLluviosoONevado()
+  {
+    return intTipoClima == 3 || intTipoClima == 4;
+  }
+
+  public bool HayAlientoNegroIntenso()
+  {
+    return GetTierAlientoNegro() >= 3f;
+  }
+
+  public void AplicarTraitsMoraleAmbientales()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    bool climaHostil = HayClimaLluviosoONevado();
+    bool alientoIntenso = HayAlientoNegroIntenso();
+
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null || pers.Camp_Muerto)
+      {
+        continue;
+      }
+
+      if (climaHostil && pers.TieneRasgo(PersonajeTraitCatalog.TraitOdiaLaLluvia))
+      {
+        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -1);
+      }
+
+      if (alientoIntenso && pers.TieneRasgo(PersonajeTraitCatalog.TraitAlmaDebil))
+      {
+        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -1);
+      }
+    }
   }
 
   public int ObtenerCapacidadMaximaPersonajes()
@@ -3798,6 +4394,11 @@ public class CampaignManager : MonoBehaviour
 
     foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
     {
+      if (pers == null || pers.Camp_Muerto || !pers.PuedeRealizarActividades())
+      {
+        continue;
+      }
+
       if (pers.ActividadSeleccionada == 1) //Descanso
       {
 
@@ -3813,6 +4414,7 @@ public class CampaignManager : MonoBehaviour
         float curacionFinalSequito = sequitoCuranderosMejoraCuracion + (cantPurificadorasColaborando * 0.05f) + cantHerboristasVecesClaro; //5% por cada Purificadora colaborando
 
         float porcentajeVidaMax = pers.fVidaMaxima * curacionFinalSequito * Mathf.Max(0f, multiplicadorCuracionDescanso);
+        porcentajeVidaMax = pers.AplicarMultiplicadorCuracionCampaniaTraits(porcentajeVidaMax);
         if (pers.fVidaMaxima > pers.fVidaActual)
         {
           EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" se cura ") + (int)porcentajeVidaMax + TRADU.i.Traducir(" PV por su Actividad de <b>Descanso</b>."));
@@ -3874,6 +4476,36 @@ public class CampaignManager : MonoBehaviour
         EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha creado un Símbolo de Protección Arcano."));
 
       }
+      if (pers.ActividadSeleccionada == 20) //Duelista: Socializar
+      {
+        const int dificultad = 13;
+        List<string> beneficiados = new List<string>();
+
+        foreach (Personaje pers2 in scMenuPersonajes.listaPersonajes)
+        {
+          if (pers2 == null || pers2 == pers || pers2.Camp_Muerto)
+          {
+            continue;
+          }
+
+          int tsMental = ObtenerTSMentalTotalCampania(pers2);
+          int tirada = UnityEngine.Random.Range(1, 21);
+          int resultado = tirada + tsMental;
+
+          if (resultado >= dificultad)
+          {
+            // Se fija en 2 para que al llegar al próximo nodo siga quedando 1 día visible.
+            pers2.Camp_Moral = Mathf.Max(pers2.Camp_Moral, 2);
+            beneficiados.Add(pers2.sNombre);
+          }
+        }
+
+        string resumenBeneficiados = beneficiados.Count > 0
+          ? string.Join(", ", beneficiados)
+          : TRADU.i.Traducir("nadie");
+
+        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" socializa con la caravana. Beneficiados: ") + resumenBeneficiados + ".");
+      }
     }
 
 
@@ -3885,6 +4517,11 @@ public class CampaignManager : MonoBehaviour
     int valor = 0;
     foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
     {
+      if (pers == null || pers.Camp_Muerto || !pers.PuedeRealizarActividades())
+      {
+        continue;
+      }
+
       if (pers.ActividadSeleccionada == 3) //Guardia
       {
         valor += 3;
@@ -4130,6 +4767,8 @@ public class CampaignManager : MonoBehaviour
   {
     if (fatigaAnterior < fatigaAhora) //Solamente si se gano fatiga
     {
+      AplicarTraitFlojoSiCorresponde(fatigaAnterior, fatigaAhora);
+
       switch (fatigaAhora)
       {
         case 4: CambiarEsperanzaActual(-10); int rand = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand); if (rand < 0) { EscribirLog(TRADU.i.Traducir("-La fatiga ha provocado la muerte de algunos Bueyes.") + " -" + rand + TRADU.i.Traducir(" Bueyes")); } break;    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -4168,6 +4807,14 @@ public class CampaignManager : MonoBehaviour
 
   private async Task CambiarEsperanzaActualAsync(int esperanza)
   {
+    int mitigacionConsuelo = 0;
+    if (esperanza < 0)
+    {
+      int cantidadConsuelos = CuantosPersonajesHacenTalActividad(21);
+      mitigacionConsuelo = Mathf.Min(-esperanza, cantidadConsuelos * 2);
+      esperanza += mitigacionConsuelo;
+    }
+
     int esperanzaAnterior = EsperanzaActual;
     EsperanzaActual = Mathf.Clamp(EsperanzaActual + esperanza, 0, 100);
     int esperanzaAplicada = EsperanzaActual - esperanzaAnterior;
@@ -4213,6 +4860,11 @@ public class CampaignManager : MonoBehaviour
 
     GameObject textoOrigen = valueEsperanza != null ? valueEsperanza.gameObject : null;
     await GenerarTextoRecursos(esperanzaAplicada, textoOrigen, false);
+
+    if (mitigacionConsuelo > 0)
+    {
+      EscribirLog(TRADU.i.Traducir("-Consuelo reduce la pérdida de Esperanza en ") + mitigacionConsuelo + ".");
+    }
   }
 
 
@@ -4276,6 +4928,7 @@ public class CampaignManager : MonoBehaviour
     int cargaPorBuey = 25 + mejoraCaravanaAlforjas;
     CargaMaxActual = BueyesActuales * cargaPorBuey;
     CargaMaxActual += CuantosPersonajesHacenTalActividad(17) * 20; //Canalizador: Telekinesis
+    CargaMaxActual += CuantosPersonajesTienenTraitActivo(PersonajeTraitCatalog.TraitHombrosFirmes) * 15;
     if (scMenuSequito.TieneSequito(11)) //Esclavos
     {
       CargaMaxActual += 50; //Bonus de carga por los esclavos
@@ -5724,19 +6377,11 @@ public class CampaignManager : MonoBehaviour
     pers1.AddComponent<REPRESENTACIONPosturaDemandante>();
     pers1.GetComponent<REPRESENTACIONPosturaDemandante>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
    
-    pers1.AddComponent<Estocada>(); //Agregarla luego con el estoque
-    pers1.GetComponent<Estocada>().NIVEL = -1;
-
-
-    //Debug
-    pers1.AddComponent<PresenciaProvocadora>();
-    pers1.GetComponent<PresenciaProvocadora>().NIVEL = 1;
-
     //Habilidades Base
-    int randHabPot1 = UnityEngine.Random.Range(1, 8);
+    int randHabPot1 = UnityEngine.Random.Range(1, 5);
     switch (randHabPot1)
     {
-      case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONEvasionMaestra>(); pers1.GetComponent<REPRESENTACIONEvasionMaestra>().NIVEL = 1; break;
+      case 1: pers1.Habilidad_2 = 1; pers1.AddComponent<REPRESENTACIONEvasionMaestra>(); pers1.GetComponent<REPRESENTACIONEvasionMaestra>().NIVEL = 1; break;
       case 2: pers1.Habilidad_3 = 1; pers1.AddComponent<CargaDeEstoque>(); pers1.GetComponent<CargaDeEstoque>().NIVEL = 1; break;
       case 3: pers1.Habilidad_4 = 1; pers1.AddComponent<Riposte>(); pers1.GetComponent<Riposte>().NIVEL = 1; break;
       case 4: pers1.Habilidad_5 = 1; pers1.AddComponent<AFondo>(); pers1.GetComponent<AFondo>().NIVEL = 1; break;
@@ -5744,20 +6389,35 @@ public class CampaignManager : MonoBehaviour
      
     }
 
-    int randHabPot2 = UnityEngine.Random.Range(1, 2);
+    int randHabPot2 = UnityEngine.Random.Range(1, 5);
     switch (randHabPot2)
     {
       case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONAtaquesReveladores>(); pers1.GetComponent<REPRESENTACIONAtaquesReveladores>().NIVEL = 1; break;
-      case 2: pers1.Habilidad_3 = 1; pers1.AddComponent<PuntaHiriente>(); pers1.GetComponent<PuntaHiriente>().NIVEL = 1; break;
-      case 3: pers1.Habilidad_4 = 1; pers1.AddComponent<EnGarde>(); pers1.GetComponent<EnGarde>().NIVEL = 1; break;
-      case 4: pers1.Habilidad_5 = 1; pers1.AddComponent<RecuperarAire>(); pers1.GetComponent<RecuperarAire>().NIVEL = 1; break;
+      case 2: pers1.Habilidad_7 = 1; pers1.AddComponent<PuntaHiriente>(); pers1.GetComponent<PuntaHiriente>().NIVEL = 1; break;
+      case 3: pers1.Habilidad_6 = 1; pers1.AddComponent<EnGarde>(); pers1.GetComponent<EnGarde>().NIVEL = 1; break;
+      case 4: pers1.Habilidad_8 = 1; pers1.AddComponent<RecuperarAire>(); pers1.GetComponent<RecuperarAire>().NIVEL = 1; break;
      
     }
 
 
+    //Habilidades de Actividad
+    pers1.ActividadSeleccionada = 3;
+    pers1.AddComponent<Actividad_Descansar>();
+    pers1.AddComponent<Actividad_Entrenar>();
+    pers1.AddComponent<Actividad_Guardia>();
+
+    int randAct = UnityEngine.Random.Range(1, 4); //de las 3 de clase, nacen con 2
+    switch (randAct)
+    {
+      case 1: pers1.Actividad_1 = 1; pers1.AddComponent<Actividad_SiempreAlerta>(); pers1.Actividad_2 = 1; pers1.AddComponent<Actividad_Socializar>(); break;
+      case 2: pers1.Actividad_1 = 1; pers1.AddComponent<Actividad_SiempreAlerta>(); pers1.Actividad_3 = 1; pers1.AddComponent<Actividad_Consuelo>(); break;
+      case 3: pers1.Actividad_2 = 1; pers1.AddComponent<Actividad_Socializar>(); pers1.Actividad_3 = 1; pers1.AddComponent<Actividad_Consuelo>(); break;
+
+    }
 
 
-
+    pers1.itemArma = Instantiate(scContprefab.armaEstoque);
+    pers1.itemArmadura = Instantiate(scContprefab.ArmaduraGambeson);
     pers1.spRetrato = scMenuPersonajes.Female002;
 
     scMenuPersonajes.listaPersonajes.Add(pers1);
@@ -5864,7 +6524,68 @@ public class CampaignManager : MonoBehaviour
 
   void SortearRasgos(Personaje pers)
   {
+    if (pers == null)
+    {
+      return;
+    }
 
+    pers.LimpiarRasgos();
+
+    List<PersonajeTraitDefinition> disponibles = PersonajeTraitCatalog.ObtenerTraitsDisponiblesAlCrear();
+    if (disponibles.Count == 0)
+    {
+      return;
+    }
+
+    int cantidadARollear = UnityEngine.Random.Range(0, Mathf.Min(3, disponibles.Count) + 1);
+    for (int i = 0; i < cantidadARollear; i++)
+    {
+      List<PersonajeTraitDefinition> compatibles = new List<PersonajeTraitDefinition>();
+      for (int j = 0; j < disponibles.Count; j++)
+      {
+        PersonajeTraitDefinition candidata = disponibles[j];
+        if (candidata == null)
+        {
+          continue;
+        }
+
+        bool compatible = true;
+        foreach (int rasgoActivo in pers.EnumerarRasgosActivos())
+        {
+          if (!PersonajeTraitCatalog.SonCompatibles(candidata.Id, rasgoActivo))
+          {
+            compatible = false;
+            break;
+          }
+        }
+
+        if (compatible)
+        {
+          compatibles.Add(candidata);
+        }
+      }
+
+      if (compatibles.Count == 0)
+      {
+        break;
+      }
+
+      int index = UnityEngine.Random.Range(0, compatibles.Count);
+      PersonajeTraitDefinition definicion = compatibles[index];
+      disponibles.Remove(definicion);
+
+      if (definicion != null)
+      {
+        pers.AgregarRasgo(definicion.Id);
+      }
+    }
+
+    pers.AplicarTraitExpertoInicial();
+    if (!pers.PuedeRealizarActividades())
+    {
+      pers.ActividadSeleccionada = 0;
+    }
+    AplicarTraitHeroeLocalInicialSiCorresponde(pers);
   }
 
 
@@ -5893,10 +6614,9 @@ public class CampaignManager : MonoBehaviour
     int claseElegida;
     if (n == 0) //Es heroe al azar
     {
-      // Pool aleatorio actual: 1-Caballero, 2-Explorador, 3-Purificadora, 4-Acechador, 5-Canalizador.
-      // Duelista queda fuera hasta que tenga su kit de clase completo.
+      // Pool aleatorio actual: 1-Caballero, 2-Explorador, 3-Purificadora, 4-Acechador, 5-Canalizador, 6-Duelista.
       List<int> clasesFaltantes = new List<int>();
-      for (int i = 1; i <= 5; i++)
+      for (int i = 1; i <= 6; i++)
       {
         if (CuantosPersonajesSonDeTalClase(i) == 0)
           clasesFaltantes.Add(i);
@@ -5908,7 +6628,7 @@ public class CampaignManager : MonoBehaviour
       }
       else
       {
-        claseElegida = UnityEngine.Random.Range(1, 6);
+        claseElegida = UnityEngine.Random.Range(1, 7);
       }
     }
     else //Es heroe de clase elegida
@@ -5955,7 +6675,7 @@ public class CampaignManager : MonoBehaviour
       throw new InvalidOperationException("No hay personajes disponibles.");
     }
 
-    List<Personaje> personajesDisponibles = scMenuPersonajes.listaPersonajes;
+    List<Personaje> personajesDisponibles = scMenuPersonajes.listaPersonajes.FindAll(p => p != null && !p.Camp_Muerto);
 
     if (excluidos != null && excluidos.Count > 0)
     {
@@ -5977,8 +6697,30 @@ public class CampaignManager : MonoBehaviour
       throw new InvalidOperationException("No hay personajes disponibles.");
     }
 
-    int index = UnityEngine.Random.Range(0, personajesDisponibles.Count);
-    return personajesDisponibles[index];
+    float pesoTotal = 0f;
+    foreach (Personaje personaje in personajesDisponibles)
+    {
+      pesoTotal += ObtenerPesoParticipacionEventoTraits(personaje);
+    }
+
+    if (pesoTotal <= 0f)
+    {
+      int indexFallback = UnityEngine.Random.Range(0, personajesDisponibles.Count);
+      return personajesDisponibles[indexFallback];
+    }
+
+    float tirada = UnityEngine.Random.Range(0f, pesoTotal);
+    float acumulado = 0f;
+    foreach (Personaje personaje in personajesDisponibles)
+    {
+      acumulado += ObtenerPesoParticipacionEventoTraits(personaje);
+      if (tirada <= acumulado)
+      {
+        return personaje;
+      }
+    }
+
+    return personajesDisponibles[personajesDisponibles.Count - 1];
   }
 
   public void AjustarDificultad()

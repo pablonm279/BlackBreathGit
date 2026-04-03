@@ -130,6 +130,7 @@ public class AsentamientoManager : MonoBehaviour
             "-La caravana llega a un asentamiento aislado. +5 Esperanza.",
             "-The caravan reaches an isolated settlement. +5 Hope.",
             "-A caravana chega a um assentamento isolado. +5 Esperanca."));
+        campaign.AplicarTraitsLlegadaAsentamiento();
        /* campaign.EscribirLog(Loc(
             "-El sequito de mercaderes actualiza su oferta en el asentamiento.",
             "-The merchants entourage refreshes its stock in the settlement.",
@@ -353,6 +354,7 @@ public class AsentamientoManager : MonoBehaviour
         RestaurarInterfazCampaniaTrasTransicion();
         volverAlAsentamientoTrasPuesto = true;
         PrepararDescripcionPuestoComercial();
+        campaign.AplicarTraitsVisitaPuestoComercial();
 
         if (campaign.goUIComercioNodo != null)
         {
@@ -413,6 +415,7 @@ public class AsentamientoManager : MonoBehaviour
         }
 
         int civiles = UnityEngine.Random.Range(12, 24);
+        civiles = Mathf.Max(0, civiles + campaign.ObtenerModificadorCivilesPlazaAsentamiento());
         int suministros = civiles * 2;
         int materiales = civiles;
 

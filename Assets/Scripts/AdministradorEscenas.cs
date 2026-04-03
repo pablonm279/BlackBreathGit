@@ -147,13 +147,13 @@ public class AdministradorEscenas : MonoBehaviour
 
   bool EsActividadGuardiaBaseOCaballero(Personaje personaje)
   {
-    if (personaje == null) { return false; }
+    if (personaje == null || !personaje.PuedeRealizarActividades()) { return false; }
     return personaje.ActividadSeleccionada == 3 || personaje.ActividadSeleccionada == 6;
   }
 
   bool EsActividadGuardiaParaCaravana(Personaje personaje)
   {
-    if (personaje == null) { return false; }
+    if (personaje == null || !personaje.PuedeRealizarActividades()) { return false; }
     return EsActividadGuardiaBaseOCaballero(personaje) || personaje.ActividadSeleccionada == 14;
   }
 
@@ -162,6 +162,696 @@ public class AdministradorEscenas : MonoBehaviour
     if (personaje == null || unidad == null) { return; }
     if (personaje.ActividadSeleccionada != 14) { return; }
     unidad.GanarEscondido(1);
+  }
+
+  bool TieneTrait(Personaje personaje, int traitId)
+  {
+    return personaje != null && personaje.TieneRasgo(traitId);
+  }
+
+  bool PuedeSerSorprendidoPorEmboscada(Personaje personaje)
+  {
+    return !TieneTrait(personaje, PersonajeTraitCatalog.TraitAvispado);
+  }
+
+  bool EsDefensaCaravanaActual()
+  {
+    return tipoEmboscadaActual == 3
+      || (encuentroGeneradoActual != null && encuentroGeneradoActual.battleType == BattleEncounterType.AtaqueCaravana);
+  }
+
+  public Personaje ObtenerPersonajeAliadoSeleccionadoPorUnidad(Unidad unidad)
+  {
+    if (unidad == null)
+    {
+      return null;
+    }
+
+    if (unidad == unidadPers1) return Personaje1;
+    if (unidad == unidadPers2) return Personaje2;
+    if (unidad == unidadPers3) return Personaje3;
+    if (unidad == unidadPers4) return Personaje4;
+    return null;
+  }
+
+  public Unidad ObtenerUnidadAliadaSeleccionadaPorPersonaje(Personaje personaje)
+  {
+    if (personaje == null)
+    {
+      return null;
+    }
+
+    if (personaje == Personaje1) return unidadPers1;
+    if (personaje == Personaje2) return unidadPers2;
+    if (personaje == Personaje3) return unidadPers3;
+    if (personaje == Personaje4) return unidadPers4;
+    return null;
+  }
+
+  void ResetearEstadoTraitsCombateParticipantes()
+  {
+    Personaje1?.ResetearEstadoTraitsCombate();
+    Personaje2?.ResetearEstadoTraitsCombate();
+    Personaje3?.ResetearEstadoTraitsCombate();
+    Personaje4?.ResetearEstadoTraitsCombate();
+  }
+
+  void AplicarBuffSiNoExiste(
+    Unidad unidad,
+    string nombreBuff,
+    bool esBuff,
+    int duracion,
+    float cantAtaque = 0f,
+    float cantDefensa = 0f,
+    float cantDanioPorcentaje = 0f,
+    float cantCritDado = 0f,
+    float cantIniciativa = 0f,
+    float cantAPMax = 0f,
+    float cantTsMental = 0f)
+  {
+    if (unidad == null || string.IsNullOrWhiteSpace(nombreBuff) || unidad.TieneBuffNombre(nombreBuff))
+    {
+      return;
+    }
+
+    Buff buff = new Buff();
+    buff.buffNombre = nombreBuff;
+    buff.boolfDebufftBuff = esBuff;
+    buff.DuracionBuffRondas = duracion;
+    buff.esStackeable = false;
+    buff.cantAtaque += cantAtaque;
+    buff.cantDefensa += cantDefensa;
+    buff.cantDanioPorcentaje += cantDanioPorcentaje;
+    buff.cantCritDado += cantCritDado;
+    buff.cantIniciativa += cantIniciativa;
+    buff.cantAPMax += cantAPMax;
+    buff.cantTsMental += cantTsMental;
+    buff.AplicarBuff(unidad);
+    ComponentCopier.CopyComponent(buff, unidad.gameObject);
+  }
+
+  int ContarAliadosSeleccionadosNoIAVivos()
+  {
+    int cantidad = 0;
+    Unidad[] aliados = { unidadPers1, unidadPers2, unidadPers3, unidadPers4 };
+    for (int i = 0; i < aliados.Length; i++)
+    {
+      Unidad aliado = aliados[i];
+      if (aliado == null || aliado.HP_actual <= 0f || !aliado.gameObject.activeInHierarchy || aliado.GetComponent<IAUnidad>() != null)
+      {
+        continue;
+      }
+
+      cantidad++;
+    }
+
+    return cantidad;
+  }
+
+  void RemoverBuffsValorGrupal(Unidad unidad)
+  {
+    if (unidad == null)
+    {
+      return;
+    }
+
+    unidad.RemoverBuffNombre("Valentía Global Alta");
+    unidad.RemoverBuffNombre("Valentia Global Alta");
+    unidad.RemoverBuffNombre("ValentÃ­a Global Alta");
+    unidad.RemoverBuffNombre("Valour Global Alto");
+    unidad.RemoverBuffNombre("Valentía Global Muy Alta");
+    unidad.RemoverBuffNombre("Valentia Global Muy Alta");
+    unidad.RemoverBuffNombre("ValentÃ­a Global Muy Alta");
+    unidad.RemoverBuffNombre("Valour Global Muy Alto");
+  }
+
+  public bool DebeIgnorarValorGrupalPorLoboSolitario(Unidad unidad)
+  {
+    Personaje pers = ObtenerPersonajeAliadoSeleccionadoPorUnidad(unidad);
+    return pers != null && pers.TieneRasgo(PersonajeTraitCatalog.TraitLoboSolitario);
+  }
+
+  public void RefrescarTraitsComposicionAliada()
+  {
+    int aliadosVivos = ContarAliadosSeleccionadosNoIAVivos();
+    Personaje[] personajes = { Personaje1, Personaje2, Personaje3, Personaje4 };
+    Unidad[] unidades = { unidadPers1, unidadPers2, unidadPers3, unidadPers4 };
+
+    for (int i = 0; i < personajes.Length; i++)
+    {
+      Personaje pers = personajes[i];
+      Unidad unidad = unidades[i];
+      if (pers == null || unidad == null)
+      {
+        continue;
+      }
+
+      unidad.RemoverBuffNombre("Lobo Solitario");
+      unidad.RemoverBuffNombre("Claridad");
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitLoboSolitario))
+      {
+        RemoverBuffsValorGrupal(unidad);
+
+        if (aliadosVivos == 1 && unidad.HP_actual > 0f && unidad.gameObject.activeInHierarchy)
+        {
+          AplicarBuffSiNoExiste(unidad, "Lobo Solitario", true, -1, cantAtaque: 2f, cantDefensa: 1f, cantDanioPorcentaje: 15f, cantAPMax: 2f, cantTsMental: 1f);
+        }
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitTrabajoEnEquipo)
+        && unidad.HP_actual > 0f
+        && unidad.gameObject.activeInHierarchy)
+      {
+        int companerosVivos = Mathf.Max(0, aliadosVivos - 1);
+        if (companerosVivos > 0)
+        {
+          AplicarBuffSiNoExiste(unidad, "Claridad", true, -1, cantTsMental: companerosVivos);
+        }
+      }
+    }
+  }
+
+  public int AjustarDanioRecibidoPorTraits(Unidad unidad, int danioBase)
+  {
+    if (unidad == null || danioBase <= 0)
+    {
+      return danioBase;
+    }
+
+    Personaje pers = ObtenerPersonajeAliadoSeleccionadoPorUnidad(unidad);
+    if (pers != null && pers.TieneRasgo(PersonajeTraitCatalog.TraitFragil))
+    {
+      return Mathf.Max(0, Mathf.RoundToInt(danioBase * 1.05f));
+    }
+
+    return danioBase;
+  }
+
+  public bool ProcesarTraitPuertasDeLaMuerteSiCorresponde(Unidad unidad)
+  {
+    if (unidad == null || unidad.HP_actual >= 1f || unidad.mod_maxHP <= 0f)
+    {
+      return false;
+    }
+
+    Personaje pers = ObtenerPersonajeAliadoSeleccionadoPorUnidad(unidad);
+    if (pers == null || !pers.TieneRasgo(PersonajeTraitCatalog.TraitPuertasDeLaMuerte))
+    {
+      return false;
+    }
+
+    unidad.HP_actual = Mathf.Max(1f, unidad.mod_maxHP * 0.05f);
+    unidad.estado_invulnerable = Mathf.Max(unidad.estado_invulnerable, 1);
+    AplicarBuffSiNoExiste(unidad, "Invulnerable", true, 1);
+    return true;
+  }
+
+  void AplicarAltaOMoralBajaContagiada(Unidad unidadObjetivo, bool altaMoral)
+  {
+    if (unidadObjetivo == null || unidadObjetivo.HP_actual <= 0f)
+    {
+      return;
+    }
+
+    if (unidadObjetivo.TieneBuffNombre("Alta Moral") || unidadObjetivo.TieneBuffNombre("Baja Moral"))
+    {
+      return;
+    }
+
+    if (altaMoral)
+    {
+      AplicarBuffSiNoExiste(unidadObjetivo, "Alta Moral", true, -1, cantAtaque: 1f, cantTsMental: 2f);
+      unidadObjetivo.SumarValentia(2);
+      return;
+    }
+
+    AplicarBuffSiNoExiste(unidadObjetivo, "Baja Moral", false, -1, cantAtaque: -1f, cantDefensa: -1f, cantTsMental: -3f);
+    unidadObjetivo.SumarValentia(-2);
+  }
+
+  void PropagarEspirituSiCorresponde(Personaje pers, Unidad unidad)
+  {
+    if (pers == null || unidad == null)
+    {
+      return;
+    }
+
+    bool propagaAlta = TieneTrait(pers, PersonajeTraitCatalog.TraitEspirituAlegre) && pers.Camp_Moral > 0;
+    bool propagaBaja = TieneTrait(pers, PersonajeTraitCatalog.TraitEspirituNegativo) && pers.Camp_Moral < 0;
+    if (!propagaAlta && !propagaBaja)
+    {
+      return;
+    }
+
+    Unidad[] aliados = { unidadPers1, unidadPers2, unidadPers3, unidadPers4 };
+    for (int i = 0; i < aliados.Length; i++)
+    {
+      Unidad aliado = aliados[i];
+      if (aliado == null || aliado == unidad || aliado.GetComponent<IAUnidad>() != null)
+      {
+        continue;
+      }
+
+      AplicarAltaOMoralBajaContagiada(aliado, propagaAlta);
+    }
+  }
+
+  public void ProcesarTraitDuroDeMatarSiCorresponde(Unidad unidad)
+  {
+    if (unidad == null || unidad.HP_actual <= 0f || unidad.mod_maxHP <= 0f)
+    {
+      return;
+    }
+
+    Personaje pers = ObtenerPersonajeAliadoSeleccionadoPorUnidad(unidad);
+    if (pers == null || pers.TraitDuroDeMatarActivadoEnCombate || !pers.TieneRasgo(PersonajeTraitCatalog.TraitDuroDeMatar))
+    {
+      return;
+    }
+
+    if (unidad.HP_actual >= unidad.mod_maxHP * 0.20f)
+    {
+      return;
+    }
+
+    pers.TraitDuroDeMatarActivadoEnCombate = true;
+    AplicarBuffSiNoExiste(unidad, "Duro de Matar", true, -1, cantDefensa: 2f);
+  }
+
+  public void ProcesarTraitVengativoPorAliadoCaido(Unidad unidadCaida)
+  {
+    if (unidadCaida == null || unidadCaida.GetComponent<IAUnidad>() != null)
+    {
+      return;
+    }
+
+    Personaje persCaido = ObtenerPersonajeAliadoSeleccionadoPorUnidad(unidadCaida);
+    if (persCaido == null)
+    {
+      return;
+    }
+
+    Personaje[] personajes = { Personaje1, Personaje2, Personaje3, Personaje4 };
+    Unidad[] unidades = { unidadPers1, unidadPers2, unidadPers3, unidadPers4 };
+    for (int i = 0; i < personajes.Length; i++)
+    {
+      Personaje pers = personajes[i];
+      Unidad unidad = unidades[i];
+      if (pers == null || unidad == null || pers == persCaido || unidad.HP_actual <= 0f)
+      {
+        continue;
+      }
+
+      if (!pers.TieneRasgo(PersonajeTraitCatalog.TraitVengativo) || pers.TraitVengativoActivadoEnCombate)
+      {
+        continue;
+      }
+
+      pers.TraitVengativoActivadoEnCombate = true;
+      AplicarBuffSiNoExiste(unidad, "Furia", true, -1, cantDanioPorcentaje: 15f, cantDefensa: -1f);
+    }
+
+    RefrescarTraitsComposicionAliada();
+  }
+
+  public void ProcesarTraitsInicioRonda()
+  {
+    if (BattleManager.Instance == null)
+    {
+      return;
+    }
+
+    RefrescarTraitsComposicionAliada();
+
+    Personaje[] personajes = { Personaje1, Personaje2, Personaje3, Personaje4 };
+    Unidad[] unidades = { unidadPers1, unidadPers2, unidadPers3, unidadPers4 };
+    for (int i = 0; i < personajes.Length; i++)
+    {
+      Personaje pers = personajes[i];
+      Unidad unidad = unidades[i];
+      if (pers == null || unidad == null || unidad.HP_actual <= 0f)
+      {
+        continue;
+      }
+
+      if (BattleManager.Instance.RondaNro < 3)
+      {
+        continue;
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitPaciente) && !pers.TraitPacienteAplicadoEnCombate)
+      {
+        pers.TraitPacienteAplicadoEnCombate = true;
+        AplicarBuffSiNoExiste(unidad, "Paciente", true, -1, cantAtaque: 1f, cantDefensa: 1f, cantDanioPorcentaje: 10f);
+      }
+
+      if (pers.TieneRasgo(PersonajeTraitCatalog.TraitImpulsivo) && !pers.TraitImpulsivoCansadoAplicadoEnCombate)
+      {
+        pers.TraitImpulsivoCansadoAplicadoEnCombate = true;
+        AplicarBuffSiNoExiste(unidad, "Cansado", false, -1, cantAtaque: -1f, cantDanioPorcentaje: -10f);
+      }
+    }
+  }
+
+  public bool DebeBloquearIntercambioPorIndividualista(Unidad unidadActiva, Unidad unidadObjetivo, out Unidad unidadTexto)
+  {
+    unidadTexto = null;
+
+    Personaje persActiva = ObtenerPersonajeAliadoSeleccionadoPorUnidad(unidadActiva);
+    if (persActiva != null && persActiva.TieneRasgo(PersonajeTraitCatalog.TraitIndividualista))
+    {
+      unidadTexto = unidadActiva;
+      return true;
+    }
+
+    Personaje persObjetivo = ObtenerPersonajeAliadoSeleccionadoPorUnidad(unidadObjetivo);
+    if (persObjetivo != null && persObjetivo.TieneRasgo(PersonajeTraitCatalog.TraitIndividualista))
+    {
+      unidadTexto = unidadActiva != null ? unidadActiva : unidadObjetivo;
+      return true;
+    }
+
+    return false;
+  }
+
+  public void MostrarTextoIntercambioBloqueadoIndividualista(Unidad unidadTexto)
+  {
+    if (unidadTexto == null)
+    {
+      return;
+    }
+
+    _ = unidadTexto.GenerarTextoFlotante(TRADU.i != null ? TRADU.i.Traducir("Prohibido: Individualista") : "Prohibido: Individualista", Color.gray, FloatingTextContext.Resist);
+  }
+
+  public bool TryConsumirIntercambioGratisColaborativo(Unidad unidadActiva, Unidad unidadObjetivo)
+  {
+    Personaje persActiva = ObtenerPersonajeAliadoSeleccionadoPorUnidad(unidadActiva);
+    if (persActiva != null && persActiva.TieneRasgo(PersonajeTraitCatalog.TraitColaborativo) && !persActiva.TraitColaborativoUsadoEnCombate)
+    {
+      persActiva.TraitColaborativoUsadoEnCombate = true;
+      return true;
+    }
+
+    Personaje persObjetivo = ObtenerPersonajeAliadoSeleccionadoPorUnidad(unidadObjetivo);
+    if (persObjetivo != null && persObjetivo.TieneRasgo(PersonajeTraitCatalog.TraitColaborativo) && !persObjetivo.TraitColaborativoUsadoEnCombate)
+    {
+      persObjetivo.TraitColaborativoUsadoEnCombate = true;
+      return true;
+    }
+
+    return false;
+  }
+
+  public bool TieneIntercambioGratisColaborativoDisponible(Unidad unidadActiva, Unidad unidadObjetivo)
+  {
+    Personaje persActiva = ObtenerPersonajeAliadoSeleccionadoPorUnidad(unidadActiva);
+    if (persActiva != null && persActiva.TieneRasgo(PersonajeTraitCatalog.TraitColaborativo) && !persActiva.TraitColaborativoUsadoEnCombate)
+    {
+      return true;
+    }
+
+    Personaje persObjetivo = ObtenerPersonajeAliadoSeleccionadoPorUnidad(unidadObjetivo);
+    return persObjetivo != null && persObjetivo.TieneRasgo(PersonajeTraitCatalog.TraitColaborativo) && !persObjetivo.TraitColaborativoUsadoEnCombate;
+  }
+
+  bool RosterEnemigoTieneTag(string tagBuscado)
+  {
+    if (string.IsNullOrWhiteSpace(tagBuscado) || BattleManager.Instance == null)
+    {
+      return false;
+    }
+
+    if (BattleManager.Instance.ladoA != null && BattleManager.Instance.ladoA.unidadesLado != null)
+    {
+      foreach (Unidad enemigo in BattleManager.Instance.ladoA.unidadesLado)
+      {
+        if (enemigo != null && enemigo.TieneTag(tagBuscado))
+        {
+          return true;
+        }
+      }
+    }
+
+    if (BattleManager.Instance.enemigosRefuerzos != null)
+    {
+      foreach (GameObject refuerzo in BattleManager.Instance.enemigosRefuerzos)
+      {
+        Unidad unidadRefuerzo = refuerzo != null ? refuerzo.GetComponent<Unidad>() : null;
+        if (unidadRefuerzo != null && unidadRefuerzo.TieneTag(tagBuscado))
+        {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  string ObtenerNombreCategoriaTagTrait(string tagBuscado, int idioma)
+  {
+    return tagBuscado switch
+    {
+      "Corrupto" => idioma switch
+      {
+        TRADU.IdiomaIngles => "Corrupted",
+        TRADU.IdiomaPortugues => "Corrompidos",
+        _ => "Corruptos"
+      },
+      "Nomuerto" => idioma switch
+      {
+        TRADU.IdiomaIngles => "Undead",
+        TRADU.IdiomaPortugues => "Mortos-vivos",
+        _ => "Nomuertos"
+      },
+      "Bestia" => idioma switch
+      {
+        TRADU.IdiomaIngles => "Beasts",
+        TRADU.IdiomaPortugues => "Bestas",
+        _ => "Bestias"
+      },
+      "Criatura" => idioma switch
+      {
+        TRADU.IdiomaIngles => "Creatures",
+        TRADU.IdiomaPortugues => "Criaturas",
+        _ => "Criaturas"
+      },
+      "Demonio" => idioma switch
+      {
+        TRADU.IdiomaIngles => "Demons",
+        TRADU.IdiomaPortugues => "Demônios",
+        _ => "Demonios"
+      },
+      _ => tagBuscado
+    };
+  }
+
+  string ObtenerNombreBuffOdioTag(string tagBuscado, int idioma)
+  {
+    return tagBuscado switch
+    {
+      "Corrupto" => idioma switch
+      {
+        TRADU.IdiomaIngles => "Hatred of the Corrupted",
+        TRADU.IdiomaPortugues => "Ódio aos Corrompidos",
+        _ => "Odia a Corruptos"
+      },
+      "Nomuerto" => idioma switch
+      {
+        TRADU.IdiomaIngles => "Hatred of the Undead",
+        TRADU.IdiomaPortugues => "Ódio aos Mortos-vivos",
+        _ => "Odia a Nomuertos"
+      },
+      "Bestia" => idioma switch
+      {
+        TRADU.IdiomaIngles => "Hatred of Beasts",
+        TRADU.IdiomaPortugues => "Ódio às Bestas",
+        _ => "Odia a Bestias"
+      },
+      "Criatura" => idioma switch
+      {
+        TRADU.IdiomaIngles => "Hatred of Creatures",
+        TRADU.IdiomaPortugues => "Ódio às Criaturas",
+        _ => "Odia a Criaturas"
+      },
+      "Demonio" => idioma switch
+      {
+        TRADU.IdiomaIngles => "Hatred of Demons",
+        TRADU.IdiomaPortugues => "Ódio aos Demônios",
+        _ => "Odia a Demonios"
+      },
+      _ => tagBuscado
+    };
+  }
+
+  void AplicarTraitMiedoTag(Personaje pers, Unidad unidad, int traitId, string tagBuscado)
+  {
+    if (!TieneTrait(pers, traitId) || !RosterEnemigoTieneTag(tagBuscado))
+    {
+      return;
+    }
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    string categoria = ObtenerNombreCategoriaTagTrait(tagBuscado, idiomaTrait);
+    string motivo = idiomaTrait switch
+    {
+      TRADU.IdiomaIngles => pers.sNombre + " is shaken by the sight of " + categoria + ".",
+      TRADU.IdiomaPortugues => pers.sNombre + " se abala ao encarar " + categoria + ".",
+      _ => pers.sNombre + " se estremece ante " + categoria + "."
+    };
+
+    unidad.SumarValentia(-2, motivo);
+  }
+
+  void AplicarTraitOdioTag(Personaje pers, Unidad unidad, int traitId, string tagBuscado)
+  {
+    if (!TieneTrait(pers, traitId) || !RosterEnemigoTieneTag(tagBuscado))
+    {
+      return;
+    }
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    string nombreBuff = ObtenerNombreBuffOdioTag(tagBuscado, idiomaTrait);
+    if (unidad.TieneBuffNombre(nombreBuff))
+    {
+      return;
+    }
+
+    Buff buff = new Buff();
+    buff.buffNombre = nombreBuff;
+    buff.boolfDebufftBuff = true;
+    buff.DuracionBuffRondas = -1;
+    buff.esStackeable = false;
+    buff.cantDanioPorcentaje += 10;
+    buff.cantAtaque += 1;
+    buff.AplicarBuff(unidad);
+    ComponentCopier.CopyComponent(buff, unidad.gameObject);
+  }
+
+  void AplicarSorprendidoInicioCombate(Unidad unidad, int penalizacionIniciativa = 3, int duracionRondas = 4)
+  {
+    if (unidad == null || unidad.TieneBuffNombre("Sorprendido"))
+    {
+      return;
+    }
+
+    unidad.PerderEscondido();
+
+    Buff buff = new Buff();
+    buff.buffNombre = "Sorprendido";
+    buff.forzarTextoFlotanteInicioCombate = true;
+    buff.ocultarEnBarraVida = true;
+    buff.boolfDebufftBuff = false;
+    buff.DuracionBuffRondas = duracionRondas;
+    buff.cantIniciativa -= penalizacionIniciativa;
+    buff.cantAPMax -= 2;
+    buff.cantDefensa -= 2;
+    buff.AplicarBuff(unidad);
+    ComponentCopier.CopyComponent(buff, unidad.gameObject);
+  }
+
+  void AplicarRasgosInicioCombate(Personaje pers, Unidad unidad)
+  {
+    if (pers == null || unidad == null)
+    {
+      return;
+    }
+
+    if (TieneTrait(pers, PersonajeTraitCatalog.TraitValiente))
+    {
+      int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+      string motivoValiente = idiomaTrait switch
+      {
+        TRADU.IdiomaIngles => pers.sNombre + " enters battle emboldened.",
+        TRADU.IdiomaPortugues => pers.sNombre + " entra no combate encorajado.",
+        _ => pers.sNombre + " entra al combate envalentonado."
+      };
+      unidad.SumarValentia(2, motivoValiente);
+    }
+
+    if (TieneTrait(pers, PersonajeTraitCatalog.TraitCobarde))
+    {
+      bool fallaSalvacion = unidad.TiradaSalvacion(unidad.mod_TSMental, 12f);
+      if (fallaSalvacion)
+      {
+        int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+        string motivoCobarde = idiomaTrait switch
+        {
+          TRADU.IdiomaIngles => pers.sNombre + " falters at the start of battle.",
+          TRADU.IdiomaPortugues => pers.sNombre + " vacila no começo do combate.",
+          _ => pers.sNombre + " vacila al comenzar el combate."
+        };
+        unidad.SumarValentia(-2, motivoCobarde);
+      }
+    }
+
+    if (TieneTrait(pers, PersonajeTraitCatalog.TraitDistraido))
+    {
+      bool fallaSalvacion = unidad.TiradaSalvacion(unidad.mod_TSMental, 11f);
+      if (fallaSalvacion)
+      {
+        AplicarSorprendidoInicioCombate(unidad);
+      }
+    }
+
+    if (TieneTrait(pers, PersonajeTraitCatalog.TraitAlmaFuerte)
+      && CampaignManager.Instance != null
+      && CampaignManager.Instance.HayAlientoNegroIntenso()
+      && !unidad.TieneBuffNombre("Alma Fuerte"))
+    {
+      Buff buff = new Buff();
+      buff.buffNombre = "Alma Fuerte";
+      buff.boolfDebufftBuff = true;
+      buff.DuracionBuffRondas = -1;
+      buff.cantDanioPorcentaje += 15;
+      buff.cantTsMental += 2;
+      buff.AplicarBuff(unidad);
+      ComponentCopier.CopyComponent(buff, unidad.gameObject);
+    }
+
+    if (TieneTrait(pers, PersonajeTraitCatalog.TraitImpulsivo))
+    {
+      AplicarBuffSiNoExiste(unidad, "Impulsivo", true, 2, cantAtaque: 2f, cantDanioPorcentaje: 15f, cantIniciativa: 3f, cantAPMax: 1f);
+    }
+
+    if (EsDefensaCaravanaActual())
+    {
+      if (TieneTrait(pers, PersonajeTraitCatalog.TraitProtector))
+      {
+        AplicarBuffSiNoExiste(unidad, "Protector de la caravana", true, -1, cantDefensa: 1f, cantDanioPorcentaje: 10f, cantAPMax: 1f, cantTsMental: 2f);
+        unidad.SumarValentia(2);
+      }
+
+      if (TieneTrait(pers, PersonajeTraitCatalog.TraitBajoPresion))
+      {
+        unidad.SumarValentia(-2);
+      }
+    }
+
+    if (TieneTrait(pers, PersonajeTraitCatalog.TraitBrutal))
+    {
+      AplicarBuffSiNoExiste(unidad, "Brutal", true, -1, cantAtaque: -1f, cantCritDado: 2f);
+    }
+
+    if (TieneTrait(pers, PersonajeTraitCatalog.TraitClinico))
+    {
+      AplicarBuffSiNoExiste(unidad, "Clínico", true, -1, cantAtaque: 2f, cantDanioPorcentaje: -10f);
+    }
+
+    AplicarTraitMiedoTag(pers, unidad, PersonajeTraitCatalog.TraitTemeCorruptos, "Corrupto");
+    AplicarTraitMiedoTag(pers, unidad, PersonajeTraitCatalog.TraitTemeNomuertos, "Nomuerto");
+    AplicarTraitMiedoTag(pers, unidad, PersonajeTraitCatalog.TraitTemeBestias, "Bestia");
+    AplicarTraitMiedoTag(pers, unidad, PersonajeTraitCatalog.TraitTemeCriaturas, "Criatura");
+    AplicarTraitMiedoTag(pers, unidad, PersonajeTraitCatalog.TraitTemeDemonios, "Demonio");
+
+    AplicarTraitOdioTag(pers, unidad, PersonajeTraitCatalog.TraitOdiaCorruptos, "Corrupto");
+    AplicarTraitOdioTag(pers, unidad, PersonajeTraitCatalog.TraitOdiaNomuertos, "Nomuerto");
+    AplicarTraitOdioTag(pers, unidad, PersonajeTraitCatalog.TraitOdiaBestias, "Bestia");
+    AplicarTraitOdioTag(pers, unidad, PersonajeTraitCatalog.TraitOdiaCriaturas, "Criatura");
+    AplicarTraitOdioTag(pers, unidad, PersonajeTraitCatalog.TraitOdiaDemonios, "Demonio");
+
+    PropagarEspirituSiCorresponde(pers, unidad);
   }
   // (removido) UI de carga sutil
 
@@ -277,6 +967,7 @@ public class AdministradorEscenas : MonoBehaviour
     ultimoIDEncuentro = IDEncuentro;
     encuentroGeneradoActual = encuentro;
     tipoEmboscadaActual = esEmboscada;
+    ResetearEstadoTraitsCombateParticipantes();
 
     SetActiveSiExiste(VFXLluvia, false);
     SetActiveSiExiste(VFXNieve, false);
@@ -463,6 +1154,11 @@ public class AdministradorEscenas : MonoBehaviour
           continue;
         }
 
+        if (!PuedeSerSorprendidoPorEmboscada(personajeAliado))
+        {
+          continue;
+        }
+
         Buff buff = new Buff();
         buff.buffNombre = "Sorprendido";
         buff.forzarTextoFlotanteInicioCombate = true;
@@ -518,6 +1214,7 @@ public class AdministradorEscenas : MonoBehaviour
         {
           if (pers == null || uni == null) return;
           if (EsActividadGuardiaParaCaravana(pers)) return;
+          if (!PuedeSerSorprendidoPorEmboscada(pers)) return;
           if (!PersonajesSorprendidosInicioCaravana.Contains(pers)) return;
 
           // Remover ocultamiento si lo tuviera
@@ -560,6 +1257,12 @@ public class AdministradorEscenas : MonoBehaviour
       }
 
     }
+
+    AplicarRasgosInicioCombate(Personaje1, unidadPers1);
+    AplicarRasgosInicioCombate(Personaje2, unidadPers2);
+    AplicarRasgosInicioCombate(Personaje3, unidadPers3);
+    AplicarRasgosInicioCombate(Personaje4, unidadPers4);
+    RefrescarTraitsComposicionAliada();
     //Efectos ambientales de Batalla
       #region Clima en Batalla
 
@@ -3367,6 +4070,23 @@ public class AdministradorEscenas : MonoBehaviour
       }
     }
 
+    if (pers.ActividadSeleccionada == 19) //Duelista: Siempre Alerta
+    {
+      Buff siempreAlerta = new Buff();
+      siempreAlerta.buffNombre = "Siempre Alerta";
+      siempreAlerta.forzarTextoFlotanteInicioCombate = true;
+      siempreAlerta.boolfDebufftBuff = true;
+      siempreAlerta.DuracionBuffRondas = -1;
+      siempreAlerta.cantIniciativa += 5;
+      siempreAlerta.AplicarBuff(unidad);
+      ComponentCopier.CopyComponent(siempreAlerta, GO.gameObject);
+
+      if (tipoEmboscadaActual == 0)
+      {
+        Estados.Aplicar_MovimientoAbaratado(unidad, 2, unidad);
+      }
+    }
+
     //Aplicar efectos de items equipados
     if (pers.itemArma != null)  //ARMA
     {
@@ -3964,7 +4684,7 @@ public class AdministradorEscenas : MonoBehaviour
 
       CanalizadorPasivaSobrecarga(Personaje1, unidadPers1);
 
-      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga) { Personaje1.Camp_Fatigado = true; } //Batalla de mas de 5 turnos, fatiga.
+      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje1, PersonajeTraitCatalog.TraitIncansable)) { Personaje1.Camp_Fatigado = true; } //Batalla de mas de 5 turnos, fatiga.
     }
     if (Personaje2 != null)
     {
@@ -3975,7 +4695,7 @@ public class AdministradorEscenas : MonoBehaviour
       CanalizadorPasivaSobrecarga(Personaje2, unidadPers2);
 
 
-      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga) { Personaje2.Camp_Fatigado = true; } //Batalla de mas de 7 turnos, fatiga.
+      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje2, PersonajeTraitCatalog.TraitIncansable)) { Personaje2.Camp_Fatigado = true; } //Batalla de mas de 7 turnos, fatiga.
     }
     if (Personaje3 != null)
     {
@@ -3986,7 +4706,7 @@ public class AdministradorEscenas : MonoBehaviour
       CanalizadorPasivaSobrecarga(Personaje3, unidadPers3);
 
 
-      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga) { Personaje3.Camp_Fatigado = true; } //Batalla de mas de 7 turnos, fatiga.
+      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje3, PersonajeTraitCatalog.TraitIncansable)) { Personaje3.Camp_Fatigado = true; } //Batalla de mas de 7 turnos, fatiga.
     }
     if (Personaje4 != null)
     {
@@ -3996,7 +4716,7 @@ public class AdministradorEscenas : MonoBehaviour
 
       CanalizadorPasivaSobrecarga(Personaje4, unidadPers4);
 
-      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga) { Personaje4.Camp_Fatigado = true; } //Batalla de mas de 7 turnos, fatiga.
+      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje4, PersonajeTraitCatalog.TraitIncansable)) { Personaje4.Camp_Fatigado = true; } //Batalla de mas de 7 turnos, fatiga.
     }
 
     // Plasmar efectos de los refuerzos aliados (no milicianos) 
@@ -4031,7 +4751,7 @@ public class AdministradorEscenas : MonoBehaviour
           CanalizadorPasivaSobrecarga(pers, unidadRefuerzo);
           CampaignManager.Instance.scMenuBatallas.AdministrarHeridas(pers, unidadRefuerzo);
 
-          if (BattleManager.Instance.RondaNro > longitudBatallaFatiga)
+          if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(pers, PersonajeTraitCatalog.TraitIncansable))
           {
             pers.Camp_Fatigado = true;
           }

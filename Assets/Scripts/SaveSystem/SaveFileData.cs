@@ -167,6 +167,9 @@ public class CharacterSaveData
   public bool campAvergonzado;
   public bool campMuerto;
   public bool campCorrupto;
+  public bool traitHeroeLocalCivilesOtorgados;
+  public bool traitHeroeLocalPenalidadMuerteAplicada;
+  public bool traitEjemploASeguirAplicado;
 
   public int[] rasgos = Array.Empty<int>();
   public EquipmentSaveData equipment = new EquipmentSaveData();

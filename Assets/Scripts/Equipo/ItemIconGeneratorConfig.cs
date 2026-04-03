@@ -27,6 +27,7 @@ public class ItemIconGeneratorConfig : ScriptableObject
     public Sprite iconoArmaBaculo;
     public Sprite iconoArmaArco;
     public Sprite iconoArmaEspadaCorta;
+    public Sprite iconoEstoque;
 
     [Header("Overlays Armaduras (por clase permitida)")]
     public Sprite iconoArmaduraCaballero;
