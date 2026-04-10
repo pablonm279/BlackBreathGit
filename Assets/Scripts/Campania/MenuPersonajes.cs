@@ -847,6 +847,13 @@ public class MenuPersonajes : MonoBehaviour
     }
     else { SubirNivelHabilidad.SetActive(false); }
 
+    if (pSel.NivelPuntoHabilidad > 0)
+    {
+      HabilidadBaseNueva.SetActive(false);
+      yaTiroHabRand = false;
+      return;
+    }
+
     //Habilidad Base Nueva
     if (pSel.NivelNuevaHabilidadBase > 0)
     {

@@ -1298,11 +1298,12 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     overlayCondenadoParticulaA.preserveAspect = true;
     overlayCondenadoParticulaB.preserveAspect = true;
     overlayCondenadoContador = CrearTextoEstado(overlayCondenadoRoot, "ContadorCondenado");
+    overlayCondenadoContador.fontStyle = FontStyle.Normal;
     Outline outlineContadorCondenado = overlayCondenadoContador.GetComponent<Outline>();
     if (outlineContadorCondenado != null)
     {
-      outlineContadorCondenado.effectColor = new Color(0.1f, 0.02f, 0.12f, 0.98f);
-      outlineContadorCondenado.effectDistance = new Vector2(0.85f, -0.85f);
+      outlineContadorCondenado.effectColor = new Color(0.08f, 0.02f, 0.1f, 0.72f);
+      outlineContadorCondenado.effectDistance = new Vector2(0.35f, -0.35f);
     }
 
     SincronizarRootCondenado();
@@ -2566,10 +2567,10 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
 
     RectTransform contadorRect = overlayCondenadoContador.rectTransform;
     contadorRect.anchoredPosition = new Vector2(ancho * 0.44f, alto * 0.31f);
-    contadorRect.sizeDelta = new Vector2(Mathf.Max(26f, ancho * 0.28f), Mathf.Max(18f, alto * 0.22f));
+    contadorRect.sizeDelta = new Vector2(Mathf.Max(18f, ancho * 0.18f), Mathf.Max(12f, alto * 0.16f));
     contadorRect.localEulerAngles = Vector3.zero;
     contadorRect.localScale = new Vector3(-1f, 1f, 1f);
-    overlayCondenadoContador.fontSize = Mathf.Clamp(Mathf.RoundToInt(ancho * 0.18f), 10, 18);
+    overlayCondenadoContador.fontSize = Mathf.Clamp(Mathf.RoundToInt(ancho * 0.11f), 7, 12);
     overlayCondenadoContador.color = new Color(1f, 0.96f, 1f, visibilidadCondenado);
     overlayCondenadoContador.text = turnosAcumulados.ToString();
     overlayCondenadoContador.enabled = turnosRestantes > 0;

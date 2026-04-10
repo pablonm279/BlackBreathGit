@@ -51,6 +51,7 @@
 - Priorizar cambios en C# antes que ediciones manuales sobre prefabs o escenas.
 - Cuando un cambio afecte UI o contenido serializado, validar primero el script fuente relacionado.
 - Si aparece una referencia duplicada entre `Assets/...` y `GDD - Untitled/Assets/...`, tomar `Assets/...` como fuente primaria salvo evidencia en contra.
+- `Assets/TRADU.cs` queda off-limits salvo pedido explicito del usuario. Si una solucion requiere tocar traducciones, avisarlo primero en chat con clave original + propuesta en ingles + propuesta en portugues BR, y esperar confirmacion antes de editar.
 
 ## Flujo para cambios chicos
 

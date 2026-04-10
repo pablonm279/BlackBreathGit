@@ -2515,9 +2515,9 @@ public class TRADU : MonoBehaviour
             case "<color=#ba3fef>-Puedes ordenar a la Caravana que saqueen los Suministros.</color> +21-35 Suministros, +5-11 Materiales, +15-35 Oro, -5 Esperanza.</i> \n\n":
                 r = "<color=#ba3fef>-You can order the Caravan to loot the Supplies.</color> +21-35 Supplies, +5-11 Materials, +15-35 Gold, -5 Hope.</i> \n\n";
                 break;
-          /*  case "La Caravana se detiene en un aserradero abandonado, algunos árboles han sido talados y la madera está apilada en desorden.\n":
-                r = "The Caravan stops at an abandoned sawmill, some trees have been felled and the wood is piled up in disarray.\n";
-                break;*/
+            /*  case "La Caravana se detiene en un aserradero abandonado, algunos árboles han sido talados y la madera está apilada en desorden.\n":
+                  r = "The Caravan stops at an abandoned sawmill, some trees have been felled and the wood is piled up in disarray.\n";
+                  break;*/
             case "<color=#ba3fef>-Puedes ordenar a la Caravana que junten toda la madera.</color> +65-90 Materiales, +1 Fatiga, +1 Avance del Aliento Negro.</i> \n\n":
                 r = "<color=#ba3fef>-You can order the Caravan to gather all the wood.</color> +65-90 Materials, +1 Fatigue, +1 Progress of the Black Breath.</i> \n\n";
                 break;
@@ -5035,6 +5035,9 @@ public class TRADU : MonoBehaviour
             case "Alabardero Vengador de Kadryn":
                 r = "Halberdier Avenger of Kadryn";
                 break;
+            case "Estocada":
+                r = "Thrust";
+                break;
             case "Estocada Alabarda":
                 r = "Halberd Thrust";
                 break;
@@ -7050,9 +7053,9 @@ public class TRADU : MonoBehaviour
             case "Reproducir música al minimizar":
                 r = "Play music when minimized";
                 break;
-          /*  case "Este séquito está constituído por varios mercaderes que han tenido que abandonar sus tiendas, pero que no han renunciado a su mercadería. Están dispuestos a comerciar a precios rebajados pero sin renunciar al menos a una mínima ganancia.":
-                r = "This retinue is composed of several merchants who have had to abandon their shops, but who have not given up their merchandise. They are willing to trade at reduced prices but without giving up at least a minimal profit.";
-                break;*/
+            /*  case "Este séquito está constituído por varios mercaderes que han tenido que abandonar sus tiendas, pero que no han renunciado a su mercadería. Están dispuestos a comerciar a precios rebajados pero sin renunciar al menos a una mínima ganancia.":
+                  r = "This retinue is composed of several merchants who have had to abandon their shops, but who have not given up their merchandise. They are willing to trade at reduced prices but without giving up at least a minimal profit.";
+                  break;*/
             case "El Espectro acaba de atacar, haciéndolo vulnerable en el plano material.":
                 r = "The Specter has just attacked, making it vulnerable in the material plane.";
                 break;
@@ -7126,17 +7129,20 @@ public class TRADU : MonoBehaviour
                 r = "Always Alert";
                 break;
             case "Impulsivo":
-            r = "Impulsive";
-            break;
+                r = "Impulsive";
+                break;
             case "Cansado":
-            r = "Tired";
-            break;
+                r = "Tired";
+                break;
             case " es ejecutado por la Condena.":
-            r= " is executed by Condemnation.";
-            break;
+                r = " is executed by Condemnation.";
+                break;
             case "Guardar Partida":
-            r="Save Game";
-            break;
+                r = "Save Game";
+                break;
+            case "Al realizar la ofrenda, el Aliento Negro retrocederá en 3 y un personaje con Corrupción al azar será curado.":
+            r = "When performing the offering, the Black Breath will retreat by 3 and a random character with Corruption will be healed.";
+                break;
             
              
 
@@ -11822,10 +11828,10 @@ public class TRADU : MonoBehaviour
                 r = "Extasiado pelo Alento Negro";
                 break;
             case "Restos de Aliento: Potencia y cura a los Vengadores de Kadryn.":
-                r = "Resí­duos de Alento: fortalecem e curam os Vingadores de Kadryn.";
+                r = "Resíduos de Alento: fortalecem e curam os Vingadores de Kadryn.";
                 break;
             case "Reacción: Al morir genera restos de Aliento Negro en el campo de batalla.":
-                r = "Reaçío: ao morrer, gera resí­duos de Alento Negro no campo de batalha.";
+                r = "Reaçío: ao morrer, gera resíduos de Alento Negro no campo de batalha.";
                 break;
             case "Soldado Vengador de Kadryn":
                 r = "Soldado Vingador de Kadryn";
@@ -11838,6 +11844,9 @@ public class TRADU : MonoBehaviour
                 break;
             case "Alabardero Vengador de Kadryn":
                 r = "Alabardeiro Vingador de Kadryn";
+                break;
+            case "Estocada":
+                r = "Estocada";
                 break;
             case "Estocada Alabarda":
                 r = "Estocada de Alabarda";
@@ -11879,7 +11888,7 @@ public class TRADU : MonoBehaviour
                 r = "desencadeia um raio necrótico sobre";
                 break;
             case "Sus defensas se corroen por el Aliento Negro.":
-                r = "Suas defesas sío corroí­das pelo Alento Negro.";
+                r = "Suas defesas sío corroídas pelo Alento Negro.";
                 break;
             case "Castigar a los Malvados":
                 r = "Punir os Malvados";
@@ -11888,7 +11897,7 @@ public class TRADU : MonoBehaviour
                 r = "Marca: ";
                 break;
             case " posee bonificaciones de daño y ataque con ataques individuales contra este enemigo.":
-                r = " recebe bÃ´nus de dano e ataque com ataques individuais contra este inimigo.";
+                r = " recebe bonus de dano e ataque com ataques individuais contra este inimigo.";
                 break;
             case "Ninfa Ardiendo":
                 r = "Ninfa Ardente";
@@ -13941,7 +13950,10 @@ public class TRADU : MonoBehaviour
         case "Guardar Partida":
             r="Salvar jogo";
             break;
-
+        case "Al realizar la ofrenda, el Aliento Negro retrocederá en 3 y un personaje con Corrupción al azar será curado.":
+         r = "Ao fazer a oferenda, o Respiro Negro recuará em 3 e um personagem aleatório com Corrupção será curado.";
+                break;
+            
     
            
              

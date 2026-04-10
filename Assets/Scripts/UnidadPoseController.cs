@@ -83,6 +83,7 @@ public class UnidadPoseController : MonoBehaviour
 
     public void OnStopMove()
     {
+        poseActual = TipoPoseActual.Idle;
         SetSprite(poseIdle);
     }
 

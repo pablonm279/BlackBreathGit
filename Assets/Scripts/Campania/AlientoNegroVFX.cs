@@ -41,17 +41,31 @@ public class AlientoNegroVFX : MonoBehaviour
     [SerializeField] bool ajustarEmisionSegunProgreso = false;
     [SerializeField] float emissionRateMin = 10f;
     [SerializeField] float emissionRateMax = 60f;
+    [Header("Audio")]
+    [SerializeField] AudioSource audioMovimiento;
+    [SerializeField] bool reproducirAudioDuranteMovimiento = true;
+    [SerializeField] bool forzarAudio3D = true;
+    [SerializeField] float audioSilencioInicialMapa = 7f;
+    [SerializeField] float audioRetrasoInicio = 4f;
+    [SerializeField] float audioDuracionGarantizada = 4f;
+    [SerializeField] float audioFadeInDuracion = 0.4f;
+    [SerializeField] float audioFadeOutDuracion = 0.8f;
 
     Coroutine moverCoroutine;
     Coroutine detenerParticulasCoroutine;
+    Coroutine audioCoroutine;
     float progresoActual;
     float valorActualVisual;
     bool emissionDefaultEnabled = true;
+    float audioVolumenBase = 1f;
+    float audioFinSilencioInicial = 0f;
     readonly Dictionary<int, Transform> puntosPosicionPorValor = new Dictionary<int, Transform>();
 
     void Awake()
     {
         InicializarObjetivo();
+        InicializarAudio();
+        audioFinSilencioInicial = Time.time + Mathf.Max(0f, audioSilencioInicialMapa);
         ReconstruirPuntosPosicion();
         ActualizarPosicionesDesdeAnclas();
         if (alientoNegroParticulas != null)
@@ -68,6 +82,7 @@ public class AlientoNegroVFX : MonoBehaviour
     void OnValidate()
     {
         InicializarObjetivo();
+        InicializarAudio();
         ReconstruirPuntosPosicion();
         valorMaximo = Mathf.Max(valorMinimo, valorMaximo);
         duracionMinima = Mathf.Max(0f, duracionMinima);
@@ -75,6 +90,11 @@ public class AlientoNegroVFX : MonoBehaviour
         duracionBase = Mathf.Clamp(duracionBase, duracionMinima, duracionMaxima);
         duracionPorPaso = Mathf.Max(0f, duracionPorPaso);
         detenerParticulasDelay = Mathf.Max(0f, detenerParticulasDelay);
+        audioSilencioInicialMapa = Mathf.Max(0f, audioSilencioInicialMapa);
+        audioRetrasoInicio = Mathf.Max(0f, audioRetrasoInicio);
+        audioDuracionGarantizada = Mathf.Max(0f, audioDuracionGarantizada);
+        audioFadeInDuracion = Mathf.Max(0f, audioFadeInDuracion);
+        audioFadeOutDuracion = Mathf.Max(0f, audioFadeOutDuracion);
         ActualizarPosicionesDesdeAnclas();
 
         if (!Application.isPlaying && objetivoMovimiento)
@@ -112,6 +132,7 @@ public class AlientoNegroVFX : MonoBehaviour
     IEnumerator Mover(float valorDestino, Vector3 destinoFinal, float destinoProgreso, float duracionTotal)
     {
         ActivarParticulas();
+        ActivarAudio();
 
         List<Vector3> ruta = ConstruirRutaHastaValor(valorDestino);
         if (ruta.Count == 0)
@@ -319,6 +340,177 @@ public class AlientoNegroVFX : MonoBehaviour
             objetivoMovimiento = transform;
     }
 
+    void InicializarAudio()
+    {
+        if (audioMovimiento == null)
+            audioMovimiento = GetComponent<AudioSource>();
+
+        if (audioMovimiento == null)
+            return;
+
+        audioMovimiento.playOnAwake = false;
+        audioMovimiento.loop = true;
+        audioVolumenBase = Mathf.Max(0f, audioMovimiento.volume);
+
+        if (forzarAudio3D)
+        {
+            audioMovimiento.spatialBlend = 1f;
+        }
+    }
+
+    void ActivarAudio()
+    {
+        if (!reproducirAudioDuranteMovimiento || audioMovimiento == null || audioMovimiento.clip == null)
+            return;
+
+        if (DebeSilenciarAudioPorCaravanaDentro())
+        {
+            DetenerAudioInmediato();
+            return;
+        }
+
+        DetenerAudioInmediato();
+        audioCoroutine = StartCoroutine(ReproducirSecuenciaAudio());
+    }
+
+    void DetenerAudioInmediato()
+    {
+        if (audioCoroutine != null)
+        {
+            StopCoroutine(audioCoroutine);
+            audioCoroutine = null;
+        }
+
+        if (audioMovimiento == null)
+            return;
+
+        audioMovimiento.volume = audioVolumenBase;
+        if (audioMovimiento.isPlaying)
+        {
+            audioMovimiento.Stop();
+        }
+    }
+
+    bool DebeSilenciarAudioPorCaravanaDentro()
+    {
+        return CampaignManager.Instance != null && CampaignManager.Instance.HayAlientoNegroIntenso();
+    }
+
+    bool DebeSilenciarAudioPorInicioDeMapa()
+    {
+        return Time.time < audioFinSilencioInicial;
+    }
+
+    IEnumerator ReproducirSecuenciaAudio()
+    {
+        float tiempo = 0f;
+        while (tiempo < audioRetrasoInicio)
+        {
+            if (DebeSilenciarAudioPorCaravanaDentro() || DebeSilenciarAudioPorInicioDeMapa())
+            {
+                DetenerAudioInmediato();
+                yield break;
+            }
+
+            tiempo += Time.deltaTime;
+            yield return null;
+        }
+
+        if (DebeSilenciarAudioPorCaravanaDentro() || DebeSilenciarAudioPorInicioDeMapa())
+        {
+            DetenerAudioInmediato();
+            yield break;
+        }
+
+        float duracionTotal = audioDuracionGarantizada;
+        float fadeIn = Mathf.Min(audioFadeInDuracion, duracionTotal);
+        float fadeOut = Mathf.Min(audioFadeOutDuracion, Mathf.Max(0f, duracionTotal - fadeIn));
+        float sustain = Mathf.Max(0f, duracionTotal - fadeIn - fadeOut);
+
+        audioMovimiento.volume = 0f;
+        audioMovimiento.Play();
+
+        tiempo = 0f;
+        while (tiempo < fadeIn)
+        {
+            if (DebeSilenciarAudioPorCaravanaDentro())
+            {
+                yield return FadeOutAudioDesdeVolumenActual();
+                yield break;
+            }
+
+            tiempo += Time.deltaTime;
+            float t = fadeIn > 0f ? Mathf.Clamp01(tiempo / fadeIn) : 1f;
+            audioMovimiento.volume = Mathf.Lerp(0f, audioVolumenBase, t);
+            yield return null;
+        }
+
+        audioMovimiento.volume = audioVolumenBase;
+        tiempo = 0f;
+        while (tiempo < sustain)
+        {
+            if (DebeSilenciarAudioPorCaravanaDentro())
+            {
+                yield return FadeOutAudioDesdeVolumenActual();
+                yield break;
+            }
+
+            tiempo += Time.deltaTime;
+            yield return null;
+        }
+
+        tiempo = 0f;
+        while (tiempo < fadeOut)
+        {
+            if (DebeSilenciarAudioPorCaravanaDentro())
+            {
+                yield return FadeOutAudioDesdeVolumenActual();
+                yield break;
+            }
+
+            tiempo += Time.deltaTime;
+            float t = fadeOut > 0f ? Mathf.Clamp01(tiempo / fadeOut) : 1f;
+            audioMovimiento.volume = Mathf.Lerp(audioVolumenBase, 0f, t);
+            yield return null;
+        }
+
+        audioMovimiento.volume = 0f;
+        if (audioMovimiento.isPlaying)
+        {
+            audioMovimiento.Stop();
+        }
+
+        audioMovimiento.volume = audioVolumenBase;
+        audioCoroutine = null;
+    }
+
+    IEnumerator FadeOutAudioDesdeVolumenActual()
+    {
+        float volumenInicial = audioMovimiento != null ? audioMovimiento.volume : 0f;
+        float tiempo = 0f;
+
+        while (tiempo < audioFadeOutDuracion)
+        {
+            tiempo += Time.deltaTime;
+            float t = audioFadeOutDuracion > 0f ? Mathf.Clamp01(tiempo / audioFadeOutDuracion) : 1f;
+            audioMovimiento.volume = Mathf.Lerp(volumenInicial, 0f, t);
+            yield return null;
+        }
+
+        if (audioMovimiento != null)
+        {
+            audioMovimiento.volume = 0f;
+            if (audioMovimiento.isPlaying)
+            {
+                audioMovimiento.Stop();
+            }
+
+            audioMovimiento.volume = audioVolumenBase;
+        }
+
+        audioCoroutine = null;
+    }
+
     void ReconstruirPuntosPosicion()
     {
         puntosPosicionPorValor.Clear();
@@ -450,6 +642,8 @@ public class AlientoNegroVFX : MonoBehaviour
             SetEmissionEnabled(emissionDefaultEnabled);
             alientoNegroParticulas.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
+
+        DetenerAudioInmediato();
     }
 }
 

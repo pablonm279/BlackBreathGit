@@ -10134,7 +10134,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: v 0.65 Early Access
+  m_text: v 0.7 Early Access
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -10705,16 +10705,16 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '--Demo Early Access-- v0.65
+  m_text: '--Demo Early Access-- v0.7
 
 
-    Welcome to the Early Access demo of
-    "Black Breath". This game is in an early stage of development and will feature
-    bugs, placeholder assets, and lack of content.
+    Welcome to the Early Access demo of "Black
+    Breath". This game is in an early stage of development and will feature bugs,
+    placeholder assets, and lack of content.
 
 
-    This Demo will showcase
-    a complete basic gameplay loop in one of the campaign zones "The Burning Forest".
+    This Demo will showcase a complete
+    basic gameplay loop in one of the campaign zones "The Burning Forest".
 
 
     Please,
@@ -12615,7 +12615,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "--Demo de Acesso Antecipado-- v0.65\n\nBem-vindo \xE0 demo de acesso antecipado
+  m_text: "--Demo de Acesso Antecipado-- v0.7\n\nBem-vindo \xE0 demo de acesso antecipado
     de \"Black Breath\". Este jogo ainda est\xE1 em um est\xE1gio inicial de desenvolvimento
     e pode conter bugs, assets tempor\xE1rios e falta de conte\xFAdo.\n\nEsta demo
     apresenta um ciclo b\xE1sico completo de jogabilidade em uma das zonas da campanha:
@@ -49840,12 +49840,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "--Demo Early Access--   v0.65\n\nBienvenido a la demo Early Access de
-    \"El Aliento Negro\".\nEste juego est\xE1 en una fase temprana del desarrollo
-    y se encontrar\xE1n bugs, assets provisorios y falta de contenido.\n\nEsta Demo
-    mostrar\xE1 un ciclo completo de juego b\xE1sico en una de las zonas de la campa\xF1a
-    \"El Bosque Ardiente\".\n\n\nRecuerda darnos tu Feedback a trav\xE9s de este
-    bot\xF3n para poder mejorar."
+  m_text: "--Demo Early Access--   v0.7\n\nBienvenido a la demo Early Access de \"El
+    Aliento Negro\".\nEste juego est\xE1 en una fase temprana del desarrollo y se
+    encontrar\xE1n bugs, assets provisorios y falta de contenido.\n\nEsta Demo mostrar\xE1
+    un ciclo completo de juego b\xE1sico en una de las zonas de la campa\xF1a \"El
+    Bosque Ardiente\".\n\n\nRecuerda darnos tu Feedback a trav\xE9s de este bot\xF3n
+    para poder mejorar."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
   m_sharedMaterial: {fileID: -4687675609486072877, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}

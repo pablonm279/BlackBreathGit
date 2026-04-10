@@ -923,7 +923,7 @@ public class EventosAdmin : MonoBehaviour
                 txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si lo intentas, hará una Tirada de Salvación: TS Reflejos DC 13. Si la supera, se revelarán nodos cercanos, ganará 35 Experiencia y la Caravana obtendrá +4 Esperanza. Si falla, obtendrá Herida.</color>\n\n");
             }
 
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides dejarla ir, -3 Esperanza.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides dejarla ir, -4 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Recuperarla");
             textBotonB.text = TRADU.i.Traducir("Dejarla ir");
