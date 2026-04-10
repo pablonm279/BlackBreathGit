@@ -45,7 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e99dc1172874d2e83ffb61933b41560, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: b6bfb75146174f399eeae7a858c28ef2, type: 3}
+  persistentItemId: 
+  imItem: {fileID: 21300000, guid: 2b09430b53c9a8a46a3927a24c7149f0, type: 3}
   sNombreItem: Estoque del Primer Sangre
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 06000000

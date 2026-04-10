@@ -45,12 +45,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e99dc1172874d2e83ffb61933b41560, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: a379fa69f853433f81f29a29d9af444d, type: 3}
+  persistentItemId: 
+  imItem: {fileID: 21300000, guid: 3dac2bbeba46259499b2ead35f82b466, type: 3}
   sNombreItem: Estoque de la Rosa Negra
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 06000000
   iPrecio: 345
-  itemDescripcion: Un estoque elegante y cruel, hecho para dejar una herida que no cierra.
+  itemDescripcion: Un estoque elegante y cruel, hecho para dejar una herida que no
+    cierra.
   iRareza: 2
   nivelMejora: 2
   barreraInicioCombate: 0

@@ -117,9 +117,10 @@ public class ClaseAcechador : Unidad
 
 
     public bool tieneArmaduradeVelo; //esto se pone TRUE al inicio del combate en AdministradorEscenas "AplicarEfectosItemsEspecificos"
-    public override void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
+    public override void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignorarEscudo = false)
     {
-        base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos);
+       
+        base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos, ignorarEscudo);
         // Aquí puedes agregar lógica adicional que quieras ejecutar cuando el Acechador recibe daño
 
 

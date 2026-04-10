@@ -195,6 +195,7 @@ public class MenuController : MonoBehaviour
     IEnumerator CargarJuego()
     {
         yield return FadeTo(1f, fadeTime);
+        AdministradorEscenas.SolicitarFaderNegroEnProximaCargaCampania();
         SceneManager.LoadScene(escenaJuego, LoadSceneMode.Single);
     }
 

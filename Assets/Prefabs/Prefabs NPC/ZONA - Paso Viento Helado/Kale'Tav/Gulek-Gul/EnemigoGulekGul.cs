@@ -10,9 +10,9 @@ public class EnemigoGulekGul : Unidad
 
 
 
-    public override void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
+    public override void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignorarEscudo = false)
     {
-        base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos);
+        base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos, ignorarEscudo);
 
 
         if (TieneBuffNombre("Martillo Listo"))

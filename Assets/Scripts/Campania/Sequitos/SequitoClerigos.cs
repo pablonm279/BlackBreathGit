@@ -62,7 +62,7 @@ public class SequitoClerigos : MonoBehaviour
 
             foreach (Personaje personaje in personajes)
             {
-                personaje.Camp_Bendecido_SequitoClerigos = true;
+                personaje.AgregarCampBendecido(1);
             }
              seHizoPlegaria = true;
         }

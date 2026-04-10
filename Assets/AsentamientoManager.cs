@@ -450,7 +450,7 @@ public class AsentamientoManager : MonoBehaviour
                 continue;
             }
 
-            pers.Camp_Fatigado = false;
+            pers.SetCampFatigado(false);
 
             float curacion = pers.fVidaMaxima * CuracionPosada;
             if (pers.fVidaActual < pers.fVidaMaxima)

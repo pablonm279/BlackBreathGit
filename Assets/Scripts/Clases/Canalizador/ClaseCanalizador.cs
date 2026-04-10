@@ -13,9 +13,9 @@ public class ClaseCanalizador : Unidad
     public int PASIVA_ExcesoDePoder; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ? 5 nv 4b
 
 
-    public async override void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
+    public async override void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayefectos = 0, bool ignorarEscudo = false)
     {
-        base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos);
+        base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayefectos, ignorarEscudo);
 
 
         ChequearResisteAcumulandoEnergia(danio);
@@ -161,6 +161,7 @@ public class ClaseCanalizador : Unidad
             Buff buff = new Buff();
             buff.buffNombre = "Energizado";
             buff.boolfDebufftBuff = true;
+            buff.DuracionBuffRondas = -1;
             buff.cantDanioPorcentaje += 10;
             buff.cantCritDado += 1;
             buff.cantResArc -= 1;
@@ -176,6 +177,7 @@ public class ClaseCanalizador : Unidad
             buff.buffNombre = "Energizado";
             buff.boolfDebufftBuff = true;
             buff.cantDanioPorcentaje += 25;
+             buff.DuracionBuffRondas = -1;
             buff.cantCritDado += 1;
             buff.cantAPMax += 1;
             buff.cantResArc -= 6;
@@ -191,6 +193,7 @@ public class ClaseCanalizador : Unidad
             buff.buffNombre = "Energizado";
             buff.boolfDebufftBuff = true;
             buff.cantDanioPorcentaje += 40;
+             buff.DuracionBuffRondas = -1;
             buff.cantCritDado += 2;
             buff.cantAPMax += 2;
             buff.cantResArc -= 14;

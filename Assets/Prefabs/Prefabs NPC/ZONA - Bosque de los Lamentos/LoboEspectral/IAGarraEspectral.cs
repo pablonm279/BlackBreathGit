@@ -13,7 +13,7 @@ public class IAGarraEspectral : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano - 9: Necro
    
   void Awake()
    {
@@ -35,7 +35,7 @@ public class IAGarraEspectral : IAHabilidad
 
       bonusAtaque = 0;
       XdDanio = 1;
-      daniodX = 2; //1d6
+      daniodX = 8; //1d8
       tipoDanio = 2; //Cortante
 
 
@@ -155,19 +155,19 @@ public class IAGarraEspectral : IAHabilidad
 
 public override object EstablecerObjetivoPrioritario() 
 {
-    // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+    // Obtener la unidad DueÃ±a
+    Unidad unidadDueÃ±a = gameObject.GetComponent<Unidad>();
+    if (unidadDueÃ±a == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obstáculos
+    // Filtrar los obstï¿½culos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderByDescending(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueÃ±a.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -176,7 +176,7 @@ public override object EstablecerObjetivoPrioritario()
         return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obstï¿½culo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
 }

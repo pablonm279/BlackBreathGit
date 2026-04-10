@@ -724,6 +724,7 @@ MonoBehaviour:
   mod_DanioPorcentaje: 0
   at_CriticoRangoDado: 0
   mod_CriticoRangoDado: 0
+  bonusCritDadoRecibido: 0
   "at_CriticoDa\xF1oBonus": 0
   "mod_CriticoDa\xF1oBonus": 0
   at_TSReflejos: 2
@@ -751,6 +752,7 @@ MonoBehaviour:
   estado_Condenado: 0
   estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
+  estado_MovimientoAbaratado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
   estado_Volando: 0
@@ -767,6 +769,7 @@ MonoBehaviour:
   debuffsImpactoArma: []
   reduccionDanioRecibidoPorcentaje: 0
   reduccionDanioCriticoRecibidoPorcentaje: 0
+  aumentoDanioCriticoRecibidoPorcentaje: 0
   resistenciaEstadosPorcentaje: 0
   espinasDanioPlano: 0
   espinasDanioPorcentaje: 0
@@ -790,7 +793,7 @@ MonoBehaviour:
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
   goSANGRE: {fileID: 0}
-  velocidadMovimiento: 2
+  velocidadMovimiento: 3
   movimientoEnCurso: 0
   NoSonidoAlMover: 0
   sonidosRecibirDanio:

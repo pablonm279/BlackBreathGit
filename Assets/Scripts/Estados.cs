@@ -7,6 +7,7 @@ using TMPro;
 
 public class Estados : MonoBehaviour
 {
+  private const int TurnosCondenadoParaEjecucion = 10;
 
   public async static void Efecto_Ardiendo(Unidad unidad)
   {
@@ -73,7 +74,24 @@ public class Estados : MonoBehaviour
   }
   public static void Efecto_Condenado(Unidad unidad) //Cuando stacks llegue a 0 recibe 5% hpmax por turno activo (danio verdadero)
   {
+    if (unidad == null || unidad.HP_actual <= 0)
+    {
+      return;
+    }
+
     unidad.estado_CondenadoTurnosSeguidos++;
+
+    if (unidad.estado_CondenadoTurnosSeguidos >= TurnosCondenadoParaEjecucion)
+    {
+      unidad.estado_Condenado = 0;
+      float danioEjecucion = Mathf.Max(unidad.HP_actual + 1f, unidad.mod_maxHP * 10f);
+      unidad.RecibirDanio(danioEjecucion, 10, false, null, 400);
+      BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre + TRADU.i.Traducir(" es ejecutado por la Condena.")));
+      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+      unidad.estado_CondenadoTurnosSeguidos = 0;
+      return;
+    }
+
     unidad.estado_Condenado--;
     if (unidad.estado_Condenado < 1)
     {

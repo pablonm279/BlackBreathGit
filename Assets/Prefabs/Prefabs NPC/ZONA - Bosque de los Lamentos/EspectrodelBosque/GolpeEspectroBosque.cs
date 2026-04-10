@@ -170,6 +170,7 @@ void AplicarPerdidaEtereo()
         buff.buffNombre = "En plano material";
         buff.buffDescr = "El Espectro acaba de atacar, haciéndolo vulnerable en el plano material.";
         buff.boolfDebufftBuff = false;
+        buff.suprimeTextoFlotante = true;
         buff.DuracionBuffRondas = 2;
         buff.cantArmadura -= 100;
         buff.unidadOrigen = scEstaUnidad;

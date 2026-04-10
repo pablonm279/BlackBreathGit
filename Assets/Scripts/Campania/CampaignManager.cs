@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using System.Data;
 using System;
+using System.Text;
 using System.Threading;
 using UnityEngine.UI;
 using System.Threading.Tasks;
@@ -424,7 +425,7 @@ public class CampaignManager : MonoBehaviour
   }
  
   private void InicializarPersonajesNuevaCampania()
-  { CrearDuelista();CrearDuelista();CrearDuelista();//!!!
+  { CrearDuelista();//!!! sacar
     if (!scTutorialManager.tutorialActivo)
     {
       AgregarHeroe(0);
@@ -842,13 +843,14 @@ public class CampaignManager : MonoBehaviour
     data.bonusAtaque = personaje.fBonusAtaque;
     data.habilidades = CopiarHabilidadesPersonaje(personaje);
     data.actividades = CopiarActividadesPersonaje(personaje);
-    data.actividadSeleccionada = personaje.ActividadSeleccionada;
+    data.actividadSeleccionada = personaje.PuedeRealizarActividades() ? personaje.ActividadSeleccionada : 0;
     data.nivelPuntoAtributo = personaje.NivelPuntoAtributo;
     data.nivelPuntoTS = personaje.NivelPuntoTS;
     data.nivelPuntoHabilidad = personaje.NivelPuntoHabilidad;
     data.nivelNuevaHabilidadBase = personaje.NivelNuevaHabilidadBase;
     data.campFatigado = personaje.Camp_Fatigado;
-    data.campBendecidoSequitoClerigos = personaje.Camp_Bendecido_SequitoClerigos;
+    data.campBendecidoSequitoClerigos = personaje.TieneCampBendecido();
+    data.campBendecidoDias = personaje.Camp_Bendecido;
     data.campHerido = personaje.Camp_Herido;
     data.campEnfermo = personaje.Camp_Enfermo;
     data.campMoral = personaje.Camp_Moral;
@@ -1576,8 +1578,8 @@ public class CampaignManager : MonoBehaviour
     personaje.NivelPuntoHabilidad = data.nivelPuntoHabilidad;
     personaje.NivelNuevaHabilidadBase = data.nivelNuevaHabilidadBase;
     personaje.NormalizarPuntosPendientesPorNivelActual();
-    personaje.Camp_Fatigado = data.campFatigado;
-    personaje.Camp_Bendecido_SequitoClerigos = data.campBendecidoSequitoClerigos;
+    personaje.SetCampFatigado(data.campFatigado);
+    personaje.SetCampBendecido(data.campBendecidoDias > 0 ? data.campBendecidoDias : (data.campBendecidoSequitoClerigos ? 1 : 0));
     personaje.Camp_Herido = data.campHerido;
     personaje.Camp_Enfermo = data.campEnfermo;
     personaje.Camp_Moral = data.campMoral;
@@ -1591,6 +1593,11 @@ public class CampaignManager : MonoBehaviour
     if (data.rasgos != null)
     {
       Array.Copy(data.rasgos, personaje.aRasgos, Mathf.Min(personaje.aRasgos.Length, data.rasgos.Length));
+    }
+
+    if (!personaje.PuedeRealizarActividades())
+    {
+      personaje.ActividadSeleccionada = 1; //descansa
     }
 
     personaje.spRetrato = ObtenerRetratoCampaniaPorId(data.idRetrato, data.idClase);
@@ -2278,6 +2285,11 @@ public class CampaignManager : MonoBehaviour
       sliderAlientoNegro.value = Mathf.InverseLerp(0f, 20f, EstadoAlientoNegro);
     }
 
+    if (scAlientoNegroVFX != null)
+    {
+      scAlientoNegroVFX.AvanzarAlientoNegro(0);
+    }
+
     ActualizarTierAlientoNegro();
   }
 
@@ -2500,7 +2512,7 @@ public class CampaignManager : MonoBehaviour
     foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
     {
       int random = UnityEngine.Random.Range(0, 100);
-      if (pers.ActividadSeleccionada == 10 && random < 15 && !sePrevieneAvanceAliento) //Ritual de Limpieza
+      if (pers.PuedeRealizarActividades() && pers.ActividadSeleccionada == 10 && random < 15 && !sePrevieneAvanceAliento) //Ritual de Limpieza
       {
         sePrevieneAvanceAliento = true;
         EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha realizado con Éxito un Ritual de Limpieza, previniendo el avance del Aliento Negro."));
@@ -3382,7 +3394,8 @@ public class CampaignManager : MonoBehaviour
 
     CambiarOroActual(-200);
     CambiarValorAlientoNegro(-3);
-    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se ha gastado 200 de oro."));
+    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3, se ha gastado 200 de oro y todos los personajes obtienen Bendecido por 3 días."));
+    BendecirPersonajesSantuario(3);
 
     // Buscar personajes corruptos
     var corruptos = scMenuPersonajes.listaPersonajes.FindAll(p => p.Camp_Corrupto);
@@ -3415,7 +3428,8 @@ public class CampaignManager : MonoBehaviour
 
     CambiarBueyesActuales(-3);
     CambiarValorAlientoNegro(-3);
-    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se han sacrificado 3 bueyes."));
+    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3, se han sacrificado 3 bueyes y todos los personajes obtienen Bendecido por 3 días."));
+    BendecirPersonajesSantuario(3);
 
     // Buscar personajes corruptos
     var corruptos = scMenuPersonajes.listaPersonajes.FindAll(p => p.Camp_Corrupto);
@@ -3436,6 +3450,25 @@ public class CampaignManager : MonoBehaviour
 
   }
   #endregion
+
+  private void BendecirPersonajesSantuario(int dias)
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    foreach (Personaje personaje in scMenuPersonajes.listaPersonajes)
+    {
+      if (personaje == null || personaje.Camp_Muerto)
+      {
+        continue;
+      }
+
+      personaje.AgregarCampBendecido(dias);
+    }
+  }
+
   #region Puesto Comercial
   public GameObject goUIComercioNodo;
   public GameObject goUISantuario;
@@ -3678,6 +3711,7 @@ public class CampaignManager : MonoBehaviour
     if (personaje.itemArmadura != null) total += personaje.itemArmadura.buffTSMental;
     if (personaje.Accesorio1 != null) total += personaje.Accesorio1.buffTSMental;
     if (personaje.Accesorio2 != null) total += personaje.Accesorio2.buffTSMental;
+    if (personaje.TieneCampBendecido()) total += 3;
 
     return total;
   }
@@ -4185,7 +4219,7 @@ public class CampaignManager : MonoBehaviour
         continue;
       }
 
-      pers.Camp_Fatigado = true;
+      pers.SetCampFatigado(true);
 
       string mensajeFlojo = idiomaTrait switch
       {
@@ -4394,7 +4428,7 @@ public class CampaignManager : MonoBehaviour
 
     foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
     {
-      if (pers == null || pers.Camp_Muerto || !pers.PuedeRealizarActividades())
+      if (pers == null || pers.Camp_Muerto)
       {
         continue;
       }
@@ -4422,6 +4456,13 @@ public class CampaignManager : MonoBehaviour
         pers.RecibirCuracion(porcentajeVidaMax);
 
       }
+
+      if (!pers.PuedeRealizarActividades())
+      {
+        continue;
+      }
+   
+   
       if (pers.ActividadSeleccionada == 2) //Entrenar
       {
         int exp = 20;
@@ -4699,20 +4740,20 @@ public class CampaignManager : MonoBehaviour
 
     float cercaniaAliento = -(posicionCaravana - EstadoAlientoNegro);
 
-    if (cercaniaAliento < 3)
+    if (cercaniaAliento < 4)
     {
       TierAlientoNegro = 1;
 
       //  handleSliderCalavera.color = new Color(0.15f, 0.15f, 0.15f);
 
     }
-    else if (cercaniaAliento >= 4 && cercaniaAliento < 6)
+    else if (cercaniaAliento < 7)
     {
       TierAlientoNegro = 2;
 
       //  handleSliderCalavera.color = new Color(0.15f, 0.12f, 0.12f);
     }
-    else if (cercaniaAliento >= 7 && cercaniaAliento < 9)
+    else if (cercaniaAliento < 10)
     {
       TierAlientoNegro = 3;
 
@@ -4785,7 +4826,7 @@ public class CampaignManager : MonoBehaviour
       {
         foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
         {
-          pers.Camp_Fatigado = true;
+          pers.SetCampFatigado(true);
         }
         EscribirLog(TRADU.i.Traducir("-Tus personajes están fatigados. Afectará su rendimiento en batalla."));
 
@@ -5882,6 +5923,7 @@ public class CampaignManager : MonoBehaviour
 
     }
 
+    pers1.AplicarTraitExpertoInicial();
     pers1.ActividadSeleccionada = 3;
     pers1.AddComponent<Actividad_Descansar>();
     pers1.AddComponent<Actividad_Entrenar>();
@@ -5993,7 +6035,7 @@ public class CampaignManager : MonoBehaviour
     }
     
     
-
+    pers1.AplicarTraitExpertoInicial();
     pers1.ActividadSeleccionada = 3;
     pers1.AddComponent<Actividad_Descansar>();
     pers1.AddComponent<Actividad_Entrenar>();
@@ -6095,6 +6137,7 @@ public class CampaignManager : MonoBehaviour
     }
 
 
+    pers1.AplicarTraitExpertoInicial();
 
     pers1.ActividadSeleccionada = 3;
     pers1.AddComponent<Actividad_Descansar>();
@@ -6172,10 +6215,11 @@ public class CampaignManager : MonoBehaviour
 
 
 
+   
     //Habilidades Intrinsecas
-    pers1.AddComponent<REPRESENTACIONSueldo>();
-    pers1.AddComponent<REPRESENTACIONSigiloso>();
-    pers1.AddComponent<TiroBallestaDeMano>();
+    pers1.AddComponent<REPRESENTACIONSueldo>(); pers1.GetComponent<REPRESENTACIONSueldo>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
+    pers1.AddComponent<REPRESENTACIONSigiloso>(); pers1.GetComponent<REPRESENTACIONSigiloso>().NIVEL = -1;
+    pers1.AddComponent<TiroBallestaDeMano>(); pers1.GetComponent<TiroBallestaDeMano>().NIVEL = -1;
 
 
     //Habilidades Base
@@ -6207,6 +6251,7 @@ public class CampaignManager : MonoBehaviour
        pers1.AddComponent<Distraer>(); pers1.GetComponent<Distraer>().NIVEL = 1;
     }
 
+    pers1.AplicarTraitExpertoInicial();
     //Habilidades de Actividad
     pers1.ActividadSeleccionada = 3;
     pers1.AddComponent<Actividad_Descansar>();
@@ -6279,10 +6324,10 @@ public class CampaignManager : MonoBehaviour
 
     SortearRasgos(pers1); //Método vacío!!
 
-    //Intrinsecas
-    pers1.AddComponent<REPRESENTACIONSobrecarga>();
-    pers1.AddComponent<AcumularEnergia>();
-    pers1.AddComponent<DescargaArcana>();
+    //Intrinsecas 
+    pers1.AddComponent<REPRESENTACIONSobrecarga>();  pers1.GetComponent<REPRESENTACIONSobrecarga>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
+    pers1.AddComponent<AcumularEnergia>();  pers1.GetComponent<AcumularEnergia>().NIVEL = -1;
+    pers1.AddComponent<DescargaArcana>();  pers1.GetComponent<DescargaArcana>().NIVEL = -1;
 
 
     //Habilidades Base
@@ -6305,6 +6350,7 @@ public class CampaignManager : MonoBehaviour
 
     }
 
+    pers1.AplicarTraitExpertoInicial();
     //Habilidades de Actividad
     pers1.ActividadSeleccionada = 3;
     pers1.AddComponent<Actividad_Descansar>();
@@ -6400,6 +6446,7 @@ public class CampaignManager : MonoBehaviour
     }
 
 
+    pers1.AplicarTraitExpertoInicial();
     //Habilidades de Actividad
     pers1.ActividadSeleccionada = 3;
     pers1.AddComponent<Actividad_Descansar>();
@@ -6537,7 +6584,7 @@ public class CampaignManager : MonoBehaviour
       return;
     }
 
-    int cantidadARollear = UnityEngine.Random.Range(0, Mathf.Min(3, disponibles.Count) + 1);
+    int cantidadARollear = UnityEngine.Random.Range(1, Mathf.Min(3, disponibles.Count) + 1);
     for (int i = 0; i < cantidadARollear; i++)
     {
       List<PersonajeTraitDefinition> compatibles = new List<PersonajeTraitDefinition>();
@@ -6580,10 +6627,9 @@ public class CampaignManager : MonoBehaviour
       }
     }
 
-    pers.AplicarTraitExpertoInicial();
     if (!pers.PuedeRealizarActividades())
     {
-      pers.ActividadSeleccionada = 0;
+      pers.ActividadSeleccionada = 1;
     }
     AplicarTraitHeroeLocalInicialSiCorresponde(pers);
   }

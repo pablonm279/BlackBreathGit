@@ -411,7 +411,11 @@ public void RemoverBuff(Unidad unidad)
 
     if(CustomEffectInicioTurnoID == 1 && unidadOrigen != null)
     { //Al remover buff, fuego fatuo encarnando a la unidad se vuelve a ver
-       unidadOrigen.transform.GetChild(3).GetChild(1).gameObject.SetActive(true);
+       GameObject imagenUnidad = unidadOrigen.ObtenerImagenUnidadGO();
+       if (imagenUnidad != null)
+       {
+         imagenUnidad.SetActive(true);
+       }
     }
     
     if (!quedaOtroBuffConMismoNombre && !suprimeLogCombate && BattleManager.Instance != null)

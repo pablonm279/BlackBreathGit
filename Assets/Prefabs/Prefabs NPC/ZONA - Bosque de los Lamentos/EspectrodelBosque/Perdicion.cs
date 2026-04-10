@@ -26,7 +26,7 @@ public class Perdicion : IAHabilidad
       hAncho = 1;
       esMelee = false;
       hAlcance = 3;
-      hCooldownMax = 3;
+      hCooldownMax = 4;
       esHostil = true;
       prioridad = pPrioridad;
       costoAP = 2;
@@ -49,7 +49,7 @@ public class Perdicion : IAHabilidad
 
     void Start()
     {
-    hActualCooldown = UnityEngine.Random.Range(0,3);
+    hActualCooldown = UnityEngine.Random.Range(0,4);
       prioridad = 55;
     }
 
@@ -89,7 +89,7 @@ public class Perdicion : IAHabilidad
             /////////////////////////////////////////////
             //BUFF ---- As� se aplica un buff/debuff
             Buff buff = new Buff();
-            buff.buffNombre = "Perdici�n";
+            buff.buffNombre = "Perdición";
             buff.boolfDebufftBuff = false;
             buff.DuracionBuffRondas = 3;
             buff.cantAPMax -= 1;

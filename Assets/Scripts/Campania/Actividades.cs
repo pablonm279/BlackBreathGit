@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -68,12 +68,12 @@ public class Actividades : MonoBehaviour
 
     if (!scMenuPersonajes.pSel.PuedeRealizarActividades())
     {
-      scMenuPersonajes.pSel.ActividadSeleccionada = 0;
+      scMenuPersonajes.pSel.ActividadSeleccionada = 1;
       if (textdesc != null)
       {
         textdesc.text = TRADU.i != null
-          ? TRADU.i.Traducir("Este personaje no realiza Actividades.")
-          : "Este personaje no realiza Actividades.";
+          ? TRADU.i.Traducir("Este personaje no puede realizar actividades ahora. Descansa.")
+          : "Este personaje no puede realizar actividades ahora. Descansa.";
       }
 
       if (CampaignManager.Instance != null)

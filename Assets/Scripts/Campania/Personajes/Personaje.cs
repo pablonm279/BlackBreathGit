@@ -84,7 +84,7 @@ public class Personaje : MonoBehaviour
 
     //Estados de Campaña AGREGAR EN MenuPersonaje  "//Estados Campaña" para que se vean
     public bool Camp_Fatigado;
-    public bool Camp_Bendecido_SequitoClerigos;
+    public int Camp_Bendecido;
     public bool Camp_Herido;
     public int Camp_Enfermo; //es int porque al descender a 0 se va, -1 por viaje.
     public int Camp_Moral; //positiva buena, negativa mala tiende a cero cada dia
@@ -96,6 +96,7 @@ public class Personaje : MonoBehaviour
     public bool TraitHeroeLocalPenalidadMuerteAplicada;
     public bool TraitEjemploASeguirAplicado;
     [System.NonSerialized] public bool TraitDuroDeMatarActivadoEnCombate;
+    [System.NonSerialized] public bool TraitPuertasDeLaMuerteActivadoEnCombate;
     [System.NonSerialized] public bool TraitVengativoActivadoEnCombate;
     [System.NonSerialized] public bool TraitColaborativoUsadoEnCombate;
     [System.NonSerialized] public bool TraitImpulsivoCansadoAplicadoEnCombate;
@@ -108,7 +109,7 @@ public class Personaje : MonoBehaviour
   void Start()
   {
     AsegurarCapacidadRasgos();
-    if (ActividadSeleccionada == 0)
+    if (ActividadSeleccionada == 0 && PuedeRealizarActividades())
     {
       ActividadSeleccionada = 3; //Guardia
     }
@@ -197,6 +198,7 @@ public class Personaje : MonoBehaviour
     public void ResetearEstadoTraitsCombate()
     {
         TraitDuroDeMatarActivadoEnCombate = false;
+        TraitPuertasDeLaMuerteActivadoEnCombate = false;
         TraitVengativoActivadoEnCombate = false;
         TraitColaborativoUsadoEnCombate = false;
         TraitImpulsivoCansadoAplicadoEnCombate = false;
@@ -205,7 +207,47 @@ public class Personaje : MonoBehaviour
 
     public bool PuedeRealizarActividades()
     {
-        return !TieneRasgo(PersonajeTraitCatalog.TraitHolgazan);
+        return /*!Camp_Fatigado && */!TieneRasgo(PersonajeTraitCatalog.TraitHolgazan);
+    }
+
+    public void SetCampBendecido(int dias)
+    {
+        Camp_Bendecido = Mathf.Max(0, dias);
+    }
+
+    public void AgregarCampBendecido(int dias)
+    {
+        if (dias <= 0)
+        {
+            return;
+        }
+
+        Camp_Bendecido = Mathf.Max(Camp_Bendecido, dias);
+    }
+
+    public void ReducirCampBendecido(int dias = 1)
+    {
+        if (Camp_Bendecido <= 0 || dias <= 0)
+        {
+            return;
+        }
+
+        Camp_Bendecido = Mathf.Max(0, Camp_Bendecido - dias);
+    }
+
+    public bool TieneCampBendecido()
+    {
+        return Camp_Bendecido > 0;
+    }
+
+    public void SetCampFatigado(bool fatigado)
+    {
+        Camp_Fatigado = fatigado;
+
+        if (fatigado)
+        {
+            ActividadSeleccionada = 1;
+        }
     }
 
     public float AplicarMultiplicadorExperienciaTraits(float cantidadBase)
@@ -249,32 +291,12 @@ public class Personaje : MonoBehaviour
             return;
         }
 
-        bool TieneHabilidadDeClaseActiva(int idEnClase)
-        {
-            return idEnClase switch
-            {
-                1 => Habilidad_1 > 0,
-                2 => Habilidad_2 > 0,
-                3 => Habilidad_3 > 0,
-                4 => Habilidad_4 > 0,
-                5 => Habilidad_5 > 0,
-                6 => Habilidad_6 > 0,
-                7 => Habilidad_7 > 0,
-                8 => Habilidad_8 > 0,
-                9 => Habilidad_9 > 0,
-                10 => Habilidad_10 > 0,
-                _ => false
-            };
-        }
-
         List<Habilidad> habilidadesCandidatas = new List<Habilidad>();
         foreach (Habilidad habilidad in GetComponents<Habilidad>())
         {
             if (habilidad == null
                 || habilidad.NIVEL <= 0
-                || habilidad.agregaDesdeArmaUI != null
-                || habilidad.IDenClase <= 0
-                || !TieneHabilidadDeClaseActiva(habilidad.IDenClase))
+                || habilidad.agregaDesdeArmaUI != null)
             {
                 continue;
             }
@@ -302,6 +324,7 @@ public class Personaje : MonoBehaviour
         if (itemArmadura != null) total += itemArmadura.buffTSFortaleza;
         if (Accesorio1 != null) total += Accesorio1.buffTSFortaleza;
         if (Accesorio2 != null) total += Accesorio2.buffTSFortaleza;
+        if (TieneCampBendecido()) total += 3;
 
         return total;
     }
@@ -915,7 +938,7 @@ public sealed class PersonajeTraitDefinition
     {
         string nombre = ObtenerNombre(idioma);
         string descripcion = ObtenerDescripcion(idioma);
-        return string.IsNullOrWhiteSpace(descripcion) ? nombre : nombre + ":  " + descripcion;
+        return string.IsNullOrWhiteSpace(descripcion) ? nombre : nombre + ":       " + descripcion;
     }
 
     public bool EsAntagonicoCon(int traitId)
@@ -1269,7 +1292,7 @@ public static class PersonajeTraitCatalog
             "Strong Soul",
             "If inside the Black Breath, becomes stronger in battle.",
             "Alma Forte",
-            "Se estiver sob o Sopro Negro, fica mais forte em batalha.",
+            "Se estiver sob o Respiro Negro, fica mais forte em batalha.",
             TraitAlmaDebil),
         new PersonajeTraitDefinition(
             TraitAlmaDebil,
@@ -1280,7 +1303,7 @@ public static class PersonajeTraitCatalog
             "Weak Soul",
             "If inside the Black Breath, gains Low Morale.",
             "Alma Fraca",
-            "Se estiver sob o Sopro Negro, recebe Moral Baixa.",
+            "Se estiver sob o Respiro Negro, recebe Moral Baixa.",
             TraitAlmaFuerte),
         new PersonajeTraitDefinition(
             TraitTemeCorruptos,
@@ -1747,7 +1770,7 @@ public static class PersonajeTraitCatalog
             "Esforzado",
             "Esforzarse en combate no le aplica el debuff.",
             "Driven",
-            "Using Strain in battle does not apply its debuff.",
+            "Using Effort in battle does not apply its debuff.",
             "Esforçado",
             "Esforçar-se em combate nao aplica o debuff.",
             TraitMinimoEsfuerzo),
@@ -1758,7 +1781,7 @@ public static class PersonajeTraitCatalog
             "Mínimo Esfuerzo",
             "No puede Esforzarse en combate.",
             "Minimal Effort",
-            "Cannot use Strain in battle.",
+            "Cannot use Effort in battle.",
             "Esforço Mínimo",
             "Nao pode se Esforçar em combate.",
             TraitEsforzado),
@@ -1908,7 +1931,7 @@ public static class PersonajeTraitCatalog
             return "<color=" + ColorNombre + "><b>" + nombre + ":</b></color>";
         }
 
-        return "<color=" + ColorNombre + "><b>" + nombre + ":</b></color><color=" + ColorDescripcion + "><size=85%>" + descripcion + "</size></color>";
+        return "<color=" + ColorNombre + "><b>" + nombre + ":</b></color> <color=" + ColorDescripcion + "><size=85%>" + descripcion + "</size></color>";
     }
 
     public static bool TryGet(int id, out PersonajeTraitDefinition definicion)

@@ -27,7 +27,7 @@ public class IALiturgiaPutrefaccion : IAHabilidad
 
   void Awake()
   {
-    nombre = "Liturgia de la Putrefacción";
+    nombre = "Liturgia de la Putrefacciï¿½n";
     Usuario = gameObject;
     scEstaUnidad = Usuario.GetComponent<Unidad>();
     hAncho = 2;
@@ -93,7 +93,7 @@ public class IALiturgiaPutrefaccion : IAHabilidad
 
     Buff putrefaccion = new Buff
     {
-      buffNombre = "Putrefacción",
+      buffNombre = "PutrefacciÃ³n",
    //   buffDescr = TRADU.i.Traducir("Sus defensas se corroen por el Aliento Negro."),
       boolfDebufftBuff = false,
       cantDefensa = -ReduccionDefensa,
@@ -109,7 +109,7 @@ public class IALiturgiaPutrefaccion : IAHabilidad
     Buff copia = ComponentCopier.CopyComponent(putrefaccion, objetivo.gameObject);
     copia.esStackeable = false;
 
-    BattleManager.Instance?.EscribirLog($"{objetivo.uNombre} {TRADU.i.Traducir("es presa de la Putrefacción.")}");
+    BattleManager.Instance?.EscribirLog($"{objetivo.uNombre} {TRADU.i.Traducir("es presa de la Putrefacciï¿½n.")}");
   }
 
   public override object EstablecerObjetivoPrioritario()

@@ -193,7 +193,7 @@ public class HombroConHombro : Habilidad
 
        objetivo.Marcar(0);
 
-       objetivo.SumarValentia(1);
+       objetivo.SumarValentia(1, mostrarTextoFlotante: false);
      }
     
     

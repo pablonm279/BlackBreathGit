@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 public class AdministradorEscenas : MonoBehaviour
 {
+  private static bool mantenerFaderNegroEnProximaCargaCampania;
 
   public GameObject EscenaCampaign;
   public GameObject EscenaBatalla;
@@ -160,6 +161,7 @@ public class AdministradorEscenas : MonoBehaviour
   void AplicarSigiloInicialCaravana(Personaje personaje, Unidad unidad)
   {
     if (personaje == null || unidad == null) { return; }
+    if (!personaje.PuedeRealizarActividades()) { return; }
     if (personaje.ActividadSeleccionada != 14) { return; }
     unidad.GanarEscondido(1);
   }
@@ -227,7 +229,7 @@ public class AdministradorEscenas : MonoBehaviour
     float cantCritDado = 0f,
     float cantIniciativa = 0f,
     float cantAPMax = 0f,
-    float cantTsMental = 0f)
+    float cantTsMental = 0f, bool seVeBarraVida = true)
   {
     if (unidad == null || string.IsNullOrWhiteSpace(nombreBuff) || unidad.TieneBuffNombre(nombreBuff))
     {
@@ -246,7 +248,9 @@ public class AdministradorEscenas : MonoBehaviour
     buff.cantIniciativa += cantIniciativa;
     buff.cantAPMax += cantAPMax;
     buff.cantTsMental += cantTsMental;
+    buff.ocultarEnBarraVida = !seVeBarraVida;
     buff.AplicarBuff(unidad);
+    
     ComponentCopier.CopyComponent(buff, unidad.gameObject);
   }
 
@@ -257,7 +261,7 @@ public class AdministradorEscenas : MonoBehaviour
     for (int i = 0; i < aliados.Length; i++)
     {
       Unidad aliado = aliados[i];
-      if (aliado == null || aliado.HP_actual <= 0f || !aliado.gameObject.activeInHierarchy || aliado.GetComponent<IAUnidad>() != null)
+      if (aliado == null || aliado.HP_actual <= 0f || aliado.GetComponent<IAUnidad>() != null)
       {
         continue;
       }
@@ -313,15 +317,14 @@ public class AdministradorEscenas : MonoBehaviour
       {
         RemoverBuffsValorGrupal(unidad);
 
-        if (aliadosVivos == 1 && unidad.HP_actual > 0f && unidad.gameObject.activeInHierarchy)
+        if (aliadosVivos == 1 && unidad.HP_actual > 0f)
         {
           AplicarBuffSiNoExiste(unidad, "Lobo Solitario", true, -1, cantAtaque: 2f, cantDefensa: 1f, cantDanioPorcentaje: 15f, cantAPMax: 2f, cantTsMental: 1f);
         }
       }
 
       if (pers.TieneRasgo(PersonajeTraitCatalog.TraitTrabajoEnEquipo)
-        && unidad.HP_actual > 0f
-        && unidad.gameObject.activeInHierarchy)
+        && unidad.HP_actual > 0f)
       {
         int companerosVivos = Mathf.Max(0, aliadosVivos - 1);
         if (companerosVivos > 0)
@@ -356,11 +359,14 @@ public class AdministradorEscenas : MonoBehaviour
     }
 
     Personaje pers = ObtenerPersonajeAliadoSeleccionadoPorUnidad(unidad);
-    if (pers == null || !pers.TieneRasgo(PersonajeTraitCatalog.TraitPuertasDeLaMuerte))
+    if (pers == null
+      || !pers.TieneRasgo(PersonajeTraitCatalog.TraitPuertasDeLaMuerte)
+      || pers.TraitPuertasDeLaMuerteActivadoEnCombate)
     {
       return false;
     }
 
+    pers.TraitPuertasDeLaMuerteActivadoEnCombate = true;
     unidad.HP_actual = Mathf.Max(1f, unidad.mod_maxHP * 0.05f);
     unidad.estado_invulnerable = Mathf.Max(unidad.estado_invulnerable, 1);
     AplicarBuffSiNoExiste(unidad, "Invulnerable", true, 1);
@@ -382,12 +388,12 @@ public class AdministradorEscenas : MonoBehaviour
     if (altaMoral)
     {
       AplicarBuffSiNoExiste(unidadObjetivo, "Alta Moral", true, -1, cantAtaque: 1f, cantTsMental: 2f);
-      unidadObjetivo.SumarValentia(2);
+      unidadObjetivo.SumarValentia(2, mostrarTextoFlotante: false);
       return;
     }
 
     AplicarBuffSiNoExiste(unidadObjetivo, "Baja Moral", false, -1, cantAtaque: -1f, cantDefensa: -1f, cantTsMental: -3f);
-    unidadObjetivo.SumarValentia(-2);
+    unidadObjetivo.SumarValentia(-2, mostrarTextoFlotante: false);
   }
 
   void PropagarEspirituSiCorresponde(Personaje pers, Unidad unidad)
@@ -472,7 +478,6 @@ public class AdministradorEscenas : MonoBehaviour
       AplicarBuffSiNoExiste(unidad, "Furia", true, -1, cantDanioPorcentaje: 15f, cantDefensa: -1f);
     }
 
-    RefrescarTraitsComposicionAliada();
   }
 
   public void ProcesarTraitsInicioRonda()
@@ -481,8 +486,6 @@ public class AdministradorEscenas : MonoBehaviour
     {
       return;
     }
-
-    RefrescarTraitsComposicionAliada();
 
     Personaje[] personajes = { Personaje1, Personaje2, Personaje3, Personaje4 };
     Unidad[] unidades = { unidadPers1, unidadPers2, unidadPers3, unidadPers4 };
@@ -831,12 +834,12 @@ public class AdministradorEscenas : MonoBehaviour
 
     if (TieneTrait(pers, PersonajeTraitCatalog.TraitBrutal))
     {
-      AplicarBuffSiNoExiste(unidad, "Brutal", true, -1, cantAtaque: -1f, cantCritDado: 2f);
+      AplicarBuffSiNoExiste(unidad, "Brutal", true, -1, cantAtaque: -1f, cantCritDado: 2f, seVeBarraVida: false);
     }
 
     if (TieneTrait(pers, PersonajeTraitCatalog.TraitClinico))
     {
-      AplicarBuffSiNoExiste(unidad, "Clínico", true, -1, cantAtaque: 2f, cantDanioPorcentaje: -10f);
+      AplicarBuffSiNoExiste(unidad, "Clínico", true, -1, cantAtaque: 2f, cantDanioPorcentaje: -10f, seVeBarraVida: false);
     }
 
     AplicarTraitMiedoTag(pers, unidad, PersonajeTraitCatalog.TraitTemeCorruptos, "Corrupto");
@@ -857,8 +860,20 @@ public class AdministradorEscenas : MonoBehaviour
 
   IEnumerator Start()
   {
+    if (mantenerFaderNegroEnProximaCargaCampania)
+    {
+      mantenerFaderNegroEnProximaCargaCampania = false;
+      SetFaderHold(true);
+      yield break;
+    }
+
     // Fade-in al entrar al menú
     yield return FadeTo(0f, fadeTime);
+  }
+
+  public static void SolicitarFaderNegroEnProximaCargaCampania()
+  {
+    mantenerFaderNegroEnProximaCargaCampania = true;
   }
 
   public void PlayFadeInOut(float fadeDuration, float holdDuration)
@@ -3868,7 +3883,7 @@ public class AdministradorEscenas : MonoBehaviour
   {
     Unidad unidad = GO.GetComponent<Unidad>();
 
-    if (pers.Camp_Fatigado || pers.ActividadSeleccionada == 2) //FATIGADO
+    if (pers.Camp_Fatigado || (pers.PuedeRealizarActividades() && pers.ActividadSeleccionada == 2)) //FATIGADO
     {
       //BUFF ---- Así se aplica un buff/debuff
       Buff Fatigado = new Buff();
@@ -3884,15 +3899,15 @@ public class AdministradorEscenas : MonoBehaviour
       //--------------------------------------
 
     }
-    if (pers.Camp_Bendecido_SequitoClerigos) //BENDECIDO 
+    if (pers.TieneCampBendecido()) //BENDECIDO 
     {
       //BUFF ---- Así se aplica un buff/debuff
       Buff Bendecido = new Buff();
-      Bendecido.buffNombre = "Bendecido por Plegaria";
+      Bendecido.buffNombre = "Bendecido";
       Bendecido.boolfDebufftBuff = true;
-      Bendecido.cantTsMental += 2;
-      Bendecido.cantAtaque += 1;
-      Bendecido.cantDefensa += 1;
+      Bendecido.cantTsMental += 3;
+      Bendecido.cantTsReflejos += 3;
+      Bendecido.cantTsFortaleza += 3;
       Bendecido.cantResNec += 5;
       Bendecido.DuracionBuffRondas = -1;
       Bendecido.AplicarBuff(unidad);
@@ -3989,101 +4004,89 @@ public class AdministradorEscenas : MonoBehaviour
       unidad.estado_Corrupto = true;
 
     }
-    if (pers.ActividadSeleccionada == 5) //Caballero: Mantener Armadura
+    if (pers.PuedeRealizarActividades())
     {
-      //BUFF ---- Así se aplica un buff/debuff
-      Buff Herido = new Buff();
-      Herido.buffNombre = "Armadura Cuidada";
-      Herido.boolfDebufftBuff = true;
-      Herido.DuracionBuffRondas = -1;
-      Herido.cantArmadura += 3;
-      Herido.AplicarBuff(unidad);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-      Buff buffComponent = ComponentCopier.CopyComponent(Herido, GO.gameObject);
-      //--------------------------------------
-    }
-    if (pers.ActividadSeleccionada == 1 && tipoEmboscadaActual == 0) //Base: Descansar (no aplica en emboscadas)
-    {
-      //BUFF ---- Así se aplica un buff/debuff
-      Buff Herido = new Buff();
-      Herido.buffNombre = "Fresco";
-      Herido.forzarTextoFlotanteInicioCombate = true;
-      Herido.boolfDebufftBuff = true;
-      Herido.DuracionBuffRondas = 2;
-      Herido.cantIniciativa += 3;
-      Herido.cantAPMax += 1;
-      Herido.AplicarBuff(unidad);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-      Buff buffComponent = ComponentCopier.CopyComponent(Herido, GO.gameObject);
-      //--------------------------------------
-    }
-    if (pers.ActividadSeleccionada == 8) //Explorador: Preparar Flechas
-    {
-      //BUFF ---- Así se aplica un buff/debuff
-      Buff Herido = new Buff();
-      Herido.buffNombre = "Flechas Preparadas";
-      Herido.boolfDebufftBuff = true;
-      Herido.cantDanioPorcentaje += 5;
-      unidad.GetComponent<ClaseExplorador>().PrepararFlechasDelay();
-      Herido.AplicarBuff(unidad);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-      Buff buffComponent = ComponentCopier.CopyComponent(Herido, GO.gameObject);
-      //--------------------------------------
-    }
-    if (pers.ActividadSeleccionada == 9) //Explorador: Exploración
-    {
-      //BUFF ---- Así se aplica un buff/debuff
-      Buff Fatigado = new Buff();
-      Fatigado.buffNombre = "Fatigado por Explorar";
-      Fatigado.boolfDebufftBuff = false;
-      Fatigado.DuracionBuffRondas = -1;
-      Fatigado.cantAPMax -= 1;
-      Fatigado.AplicarBuff(unidad);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-      Buff buffComponent = ComponentCopier.CopyComponent(Fatigado, GO.gameObject);
-      //--------------------------------------
-    }
-    if (pers.ActividadSeleccionada == 13) //Acechador: Afilar Armas
-    {
-      //BUFF ---- Así se aplica un buff/debuff
-      Buff Herido = new Buff();
-      Herido.buffNombre = "Arma Afilada";
-      Herido.boolfDebufftBuff = true;
-      Herido.DuracionBuffRondas = -1;
-      Herido.cantDanioPorcentaje += 10;
-      Herido.AplicarBuff(unidad);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-      Buff buffComponent = ComponentCopier.CopyComponent(Herido, GO.gameObject);
-      //--------------------------------------
-    }
-    if (pers.ActividadSeleccionada == 11) //Purificadora: Ayudar a los Desamparados
-    {
-      ClasePurificadora clasePurificadora = unidad.GetComponent<ClasePurificadora>();
-      clasePurificadora.CambiarFervor(1); //Aumenta fervor
-
-    }
-    if (pers.ActividadSeleccionada == 16) //Canalizador: Concentración Arcana
-    {
-      if (unidad is ClaseCanalizador cana)
+      if (pers.ActividadSeleccionada == 5) //Caballero: Mantener Armadura
       {
-        cana.CambiarEnergia(1);
+        Buff Herido = new Buff();
+        Herido.buffNombre = "Armadura Cuidada";
+        Herido.boolfDebufftBuff = true;
+        Herido.DuracionBuffRondas = -1;
+        Herido.cantArmadura += 3;
+        Herido.AplicarBuff(unidad);
+        Buff buffComponent = ComponentCopier.CopyComponent(Herido, GO.gameObject);
       }
-    }
-
-    if (pers.ActividadSeleccionada == 19) //Duelista: Siempre Alerta
-    {
-      Buff siempreAlerta = new Buff();
-      siempreAlerta.buffNombre = "Siempre Alerta";
-      siempreAlerta.forzarTextoFlotanteInicioCombate = true;
-      siempreAlerta.boolfDebufftBuff = true;
-      siempreAlerta.DuracionBuffRondas = -1;
-      siempreAlerta.cantIniciativa += 5;
-      siempreAlerta.AplicarBuff(unidad);
-      ComponentCopier.CopyComponent(siempreAlerta, GO.gameObject);
-
-      if (tipoEmboscadaActual == 0)
+      if (pers.ActividadSeleccionada == 1 && tipoEmboscadaActual == 0) //Base: Descansar (no aplica en emboscadas)
       {
-        Estados.Aplicar_MovimientoAbaratado(unidad, 2, unidad);
+        Buff Herido = new Buff();
+        Herido.buffNombre = "Fresco";
+        Herido.forzarTextoFlotanteInicioCombate = true;
+        Herido.boolfDebufftBuff = true;
+        Herido.DuracionBuffRondas = 2;
+        Herido.cantIniciativa += 3;
+        Herido.cantAPMax += 1;
+        Herido.AplicarBuff(unidad);
+        Buff buffComponent = ComponentCopier.CopyComponent(Herido, GO.gameObject);
+      }
+      if (pers.ActividadSeleccionada == 8) //Explorador: Preparar Flechas
+      {
+        Buff Herido = new Buff();
+        Herido.buffNombre = "Flechas Preparadas";
+        Herido.boolfDebufftBuff = true;
+        Herido.cantDanioPorcentaje += 5;
+        unidad.GetComponent<ClaseExplorador>().PrepararFlechasDelay();
+        Herido.AplicarBuff(unidad);
+        Buff buffComponent = ComponentCopier.CopyComponent(Herido, GO.gameObject);
+      }
+      if (pers.ActividadSeleccionada == 9) //Explorador: Exploración
+      {
+        Buff Fatigado = new Buff();
+        Fatigado.buffNombre = "Fatigado por Explorar";
+        Fatigado.boolfDebufftBuff = false;
+        Fatigado.DuracionBuffRondas = -1;
+        Fatigado.cantAPMax -= 1;
+        Fatigado.AplicarBuff(unidad);
+        Buff buffComponent = ComponentCopier.CopyComponent(Fatigado, GO.gameObject);
+      }
+      if (pers.ActividadSeleccionada == 13) //Acechador: Afilar Armas
+      {
+        Buff Herido = new Buff();
+        Herido.buffNombre = "Arma Afilada";
+        Herido.boolfDebufftBuff = true;
+        Herido.DuracionBuffRondas = -1;
+        Herido.cantDanioPorcentaje += 10;
+        Herido.AplicarBuff(unidad);
+        Buff buffComponent = ComponentCopier.CopyComponent(Herido, GO.gameObject);
+      }
+      if (pers.ActividadSeleccionada == 11) //Purificadora: Ayudar a los Desamparados
+      {
+        ClasePurificadora clasePurificadora = unidad.GetComponent<ClasePurificadora>();
+        clasePurificadora.CambiarFervor(1); //Aumenta fervor
+      }
+      if (pers.ActividadSeleccionada == 16) //Canalizador: Concentración Arcana
+      {
+        if (unidad is ClaseCanalizador cana)
+        {
+          cana.CambiarEnergia(1);
+        }
+      }
+
+      if (pers.ActividadSeleccionada == 19) //Duelista: Siempre Alerta
+      {
+        Buff siempreAlerta = new Buff();
+        siempreAlerta.buffNombre = "Siempre Alerta";
+        siempreAlerta.forzarTextoFlotanteInicioCombate = true;
+        siempreAlerta.boolfDebufftBuff = true;
+        siempreAlerta.DuracionBuffRondas = -1;
+        siempreAlerta.ocultarEnBarraVida = true;
+        siempreAlerta.cantIniciativa += 5;
+        siempreAlerta.AplicarBuff(unidad);
+        ComponentCopier.CopyComponent(siempreAlerta, GO.gameObject);
+
+        if (tipoEmboscadaActual == 0)
+        {
+          Estados.Aplicar_MovimientoAbaratado(unidad, 2, unidad);
+        }
       }
     }
 
@@ -4684,7 +4687,7 @@ public class AdministradorEscenas : MonoBehaviour
 
       CanalizadorPasivaSobrecarga(Personaje1, unidadPers1);
 
-      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje1, PersonajeTraitCatalog.TraitIncansable)) { Personaje1.Camp_Fatigado = true; } //Batalla de mas de 5 turnos, fatiga.
+      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje1, PersonajeTraitCatalog.TraitIncansable)) { Personaje1.SetCampFatigado(true); } //Batalla de mas de 5 turnos, fatiga.
     }
     if (Personaje2 != null)
     {
@@ -4695,7 +4698,7 @@ public class AdministradorEscenas : MonoBehaviour
       CanalizadorPasivaSobrecarga(Personaje2, unidadPers2);
 
 
-      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje2, PersonajeTraitCatalog.TraitIncansable)) { Personaje2.Camp_Fatigado = true; } //Batalla de mas de 7 turnos, fatiga.
+      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje2, PersonajeTraitCatalog.TraitIncansable)) { Personaje2.SetCampFatigado(true); } //Batalla de mas de 7 turnos, fatiga.
     }
     if (Personaje3 != null)
     {
@@ -4706,7 +4709,7 @@ public class AdministradorEscenas : MonoBehaviour
       CanalizadorPasivaSobrecarga(Personaje3, unidadPers3);
 
 
-      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje3, PersonajeTraitCatalog.TraitIncansable)) { Personaje3.Camp_Fatigado = true; } //Batalla de mas de 7 turnos, fatiga.
+      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje3, PersonajeTraitCatalog.TraitIncansable)) { Personaje3.SetCampFatigado(true); } //Batalla de mas de 7 turnos, fatiga.
     }
     if (Personaje4 != null)
     {
@@ -4716,7 +4719,7 @@ public class AdministradorEscenas : MonoBehaviour
 
       CanalizadorPasivaSobrecarga(Personaje4, unidadPers4);
 
-      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje4, PersonajeTraitCatalog.TraitIncansable)) { Personaje4.Camp_Fatigado = true; } //Batalla de mas de 7 turnos, fatiga.
+      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje4, PersonajeTraitCatalog.TraitIncansable)) { Personaje4.SetCampFatigado(true); } //Batalla de mas de 7 turnos, fatiga.
     }
 
     // Plasmar efectos de los refuerzos aliados (no milicianos) 
@@ -4753,7 +4756,7 @@ public class AdministradorEscenas : MonoBehaviour
 
           if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(pers, PersonajeTraitCatalog.TraitIncansable))
           {
-            pers.Camp_Fatigado = true;
+            pers.SetCampFatigado(true);
           }
           encontrado = true;
           break;

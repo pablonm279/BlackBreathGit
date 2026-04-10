@@ -96,10 +96,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         {
             volMusicaSlider.SetValueWithoutNotify(volumenMusica);
         }
-        if (musicaFondo != null)
-        {
-            musicaFondo.volume = volumenMusica;
-        }
+        AplicarVolumenMusica(volumenMusica);
 
         // Sonido en segundo plano
         musicInBackground = PlayerPrefs.GetInt("Background_Sound", 1) == 1;
@@ -184,11 +181,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     {
         // Volumen de la másica
         PlayerPrefs.SetFloat("Vol_Musica", volMusicaSlider.value);
-        if (musicaFondo.GetComponent<MusicManager>() != null)
-        {
-            musicaFondo.GetComponent<MusicManager>().SetVolumen(volMusicaSlider.value);
-        }
-        else { musicaFondo.volume = volMusicaSlider.value; }
+        AplicarVolumenMusica(volMusicaSlider.value);
 
         // Brillo
         if (brilloSlider != null)
@@ -219,6 +212,31 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
         //---
         PlayerPrefs.Save();
+    }
+
+    private void AplicarVolumenMusica(float volumenMusica)
+    {
+        MusicManager managerMusica = null;
+        if (musicaFondo != null)
+        {
+            managerMusica = musicaFondo.GetComponent<MusicManager>();
+        }
+
+        if (managerMusica == null)
+        {
+            managerMusica = MusicManager.Instance;
+        }
+
+        if (managerMusica != null)
+        {
+            managerMusica.SetVolumen(volumenMusica);
+            return;
+        }
+
+        if (musicaFondo != null)
+        {
+            musicaFondo.volume = volumenMusica;
+        }
     }
 
 

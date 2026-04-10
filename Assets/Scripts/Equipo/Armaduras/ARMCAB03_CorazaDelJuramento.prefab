@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8efdf8c3b29d9aa48aed97ab0e9c803b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  persistentItemId: 
   imItem: {fileID: 21300000, guid: 9ba894cab3d90104ea265d5329e32b41, type: 3}
   sNombreItem: Coraza del Juramento
   IDEfectoEspecial: 0
@@ -69,10 +70,10 @@ MonoBehaviour:
   resistenciaEstadosPorcentaje: 0
   espinasDanioPlano: 0
   espinasDanioPorcentaje: 0
-  requisitoFue: 4
+  requisitoFue: 0
   requisitoAgi: 0
   requisitoPoder: 0
-  habilidadExtra1: {fileID: 0}
+  habilidadExtra1: {fileID: 5396806420807064732}
   habilidadExtra2: {fileID: 0}
   buffFuerza: 0
   buffAgi: 0
@@ -161,6 +162,7 @@ MonoBehaviour:
   esMelee: 0
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  forzarPoseHabilidad: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0

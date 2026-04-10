@@ -15,6 +15,8 @@ public class UnidadIdleMotion : MonoBehaviour
   [SerializeField] private float factorDuranteMovimiento = 0.08f;
   [SerializeField] private float multiplicadorGlobal = 1f;
   [SerializeField] private float multiplicadorUnidadActivaJugador = 1.08f; // +8% adicional si es turno del jugador
+  [SerializeField] private float amplitudReboteTurnoNuevoY = 5.6f;
+  [SerializeField] private float duracionReboteTurnoNuevo = 0.44f;
 
   private Unidad unidad;
   private RectTransform rectImagen;
@@ -27,6 +29,7 @@ public class UnidadIdleMotion : MonoBehaviour
   private float faseX;
   private float faseY;
   private float faseRot;
+  private float progresoReboteTurnoNuevo = -1f;
 
   void Awake()
   {
@@ -81,6 +84,9 @@ public class UnidadIdleMotion : MonoBehaviour
     Vector2 objetivoOffset = new Vector2(
       sway,
       respiracionCompuesta * amplitudY) * factor;
+
+    Vector2 offsetReboteTurnoNuevo = CalcularOffsetReboteTurnoNuevo();
+    objetivoOffset += offsetReboteTurnoNuevo;
 
     float objetivoRot = ((-respiracionPrincipal * 0.9f) + (swayNormalizado * 0.1f)) * amplitudRotacion * factor;
 
@@ -226,6 +232,17 @@ public class UnidadIdleMotion : MonoBehaviour
     return true;
   }
 
+  public void ReproducirReboteTurnoNuevo()
+  {
+    if (!VincularRect())
+    {
+      return;
+    }
+
+    SincronizarBaseConCambiosExternos();
+    progresoReboteTurnoNuevo = 0f;
+  }
+
   private void AplicarOffset(Vector2 objetivoOffset, float objetivoRot, bool suavizarMovimiento)
   {
     if (!baseInicializada)
@@ -254,6 +271,26 @@ public class UnidadIdleMotion : MonoBehaviour
   private float ObtenerRotacionActual()
   {
     return Mathf.DeltaAngle(0f, rectImagen.localEulerAngles.z);
+  }
+
+  private Vector2 CalcularOffsetReboteTurnoNuevo()
+  {
+    if (progresoReboteTurnoNuevo < 0f)
+    {
+      return Vector2.zero;
+    }
+
+    float duracion = Mathf.Max(0.01f, duracionReboteTurnoNuevo);
+    progresoReboteTurnoNuevo += Time.deltaTime / duracion;
+    float progresoClamped = Mathf.Clamp01(progresoReboteTurnoNuevo);
+    float desplazamientoY = Mathf.Sin(progresoClamped * Mathf.PI) * amplitudReboteTurnoNuevoY;
+
+    if (progresoReboteTurnoNuevo >= 1f)
+    {
+      progresoReboteTurnoNuevo = -1f;
+    }
+
+    return Vector2.up * desplazamientoY;
   }
 }
 
@@ -2529,10 +2566,10 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
 
     RectTransform contadorRect = overlayCondenadoContador.rectTransform;
     contadorRect.anchoredPosition = new Vector2(ancho * 0.44f, alto * 0.31f);
-    contadorRect.sizeDelta = new Vector2(Mathf.Max(6f, ancho * 0.1f), Mathf.Max(6f, alto * 0.08f));
+    contadorRect.sizeDelta = new Vector2(Mathf.Max(26f, ancho * 0.28f), Mathf.Max(18f, alto * 0.22f));
     contadorRect.localEulerAngles = Vector3.zero;
     contadorRect.localScale = new Vector3(-1f, 1f, 1f);
-    overlayCondenadoContador.fontSize = Mathf.Clamp(Mathf.RoundToInt(ancho * 0.036f), 3, 4);
+    overlayCondenadoContador.fontSize = Mathf.Clamp(Mathf.RoundToInt(ancho * 0.18f), 10, 18);
     overlayCondenadoContador.color = new Color(1f, 0.96f, 1f, visibilidadCondenado);
     overlayCondenadoContador.text = turnosAcumulados.ToString();
     overlayCondenadoContador.enabled = turnosRestantes > 0;

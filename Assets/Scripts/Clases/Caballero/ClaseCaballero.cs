@@ -16,9 +16,9 @@ public class ClaseCaballero : Unidad
 
 
 
-  public override void SumarValentia(int cant, string motivo = null)
+  public override void SumarValentia(int cant, string motivo = null, bool mostrarTextoFlotante = true)
   {
-    base.SumarValentia(cant, motivo); //hace todo lo mismo que el metodo original, y agrega lo de abajo al final
+    base.SumarValentia(cant, motivo, mostrarTextoFlotante); //hace todo lo mismo que el metodo original, y agrega lo de abajo al final
     AplicarPasivasValentiaCaballero();
   }
 
@@ -77,11 +77,11 @@ public class ClaseCaballero : Unidad
    {
       case 0: if(danioFinal > 0){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //No tiene la pasiva
       //-----------------------------------------------------//
-      case 1: if(danioFinal > 3){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //Nv 1  4 daño o mas para reducir armadura
-      case 2: if(danioFinal > 4){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //Nv 2  5 daño o mas para reducir armadura
-      case 3: if(danioFinal > 5){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //Nv 3  6 daño o mas para reducir armadura
-      case 4: if(danioFinal > 7){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //Nv 4a  8 daño o mas para reducir armadura
-      case 5: if(danioFinal > 5 && (ObtenerArmaduraActual() > mod_Armadura/2)) //Nv 4b 6 daño o mas, y no se puede reducir a menos de la mitad de la armadura inicial.
+      case 1: if(danioFinal > 5){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //Nv 1  6 daño o mas para reducir armadura
+      case 2: if(danioFinal > 6){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //Nv 2  7 daño o mas para reducir armadura
+      case 3: if(danioFinal > 7){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //Nv 3  8 daño o mas para reducir armadura
+      case 4: if(danioFinal > 9){estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break; //Nv 4a  10 daño o mas para reducir armadura
+      case 5: if(danioFinal > 7 && (ObtenerArmaduraActual() > mod_Armadura/2)) //Nv 4b 8 daño o mas, y no se puede reducir a menos de la mitad de la armadura inicial.
       {estado_armaduraModificador++; scTextoArmaduraFlash.Flash();} break;
    }
 
@@ -200,9 +200,9 @@ public class ClaseCaballero : Unidad
 
     public bool tieneCorazaDeLlamas; //esto se pone TRUE al inicio del combate en AdministradorEscenas "AplicarEfectosItemsEspecificos"
 
-  public async override void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayefectos = 0)
+  public async override void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayefectos = 0, bool ignorarEscudo = false)
   {
-    base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayefectos);
+    base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayefectos, ignorarEscudo);
     //------------------------------------------------------------
 
     //Reaccion Postura Defensiva

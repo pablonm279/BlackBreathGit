@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [Serializable]
 public class SaveFileData
 {
-  public const int CurrentVersion = 9;
+  public const int CurrentVersion = 10;
 
   public int version = CurrentVersion;
   public string savedAtUtc;
@@ -161,6 +161,7 @@ public class CharacterSaveData
 
   public bool campFatigado;
   public bool campBendecidoSequitoClerigos;
+  public int campBendecidoDias;
   public bool campHerido;
   public int campEnfermo;
   public int campMoral;

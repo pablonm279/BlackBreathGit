@@ -18,7 +18,7 @@ public class GolpeBaston : Habilidad
   public override void Awake()
   {
     nombre = "Golpe de Bastón";
-    costoAP = 2;
+    costoAP = 3;
     costoPM = 0;
     Usuario = this.gameObject;
     scEstaUnidad = Usuario.GetComponent<Unidad>();

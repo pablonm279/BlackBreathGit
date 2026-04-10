@@ -32,7 +32,7 @@ public class Abrojo : Trampa
   {
      
          
-      int rand =UnityEngine.Random.Range(1, 9);
+      int rand =UnityEngine.Random.Range(1, 12);
       if(NIVEL > 1){rand+=1;}
      
       int DC = 11;
@@ -42,7 +42,7 @@ public class Abrojo : Trampa
     if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, DC))
     {
       rand *= 2;
-      objetivo.estado_sangrado += 2;
+      objetivo.estado_sangrado += 4;
       if(NIVEL == 5){ objetivo.CambiarAPActual(-1); }
       if (NIVEL == 4) { objetivo.estado_sangrado += 1; }
 

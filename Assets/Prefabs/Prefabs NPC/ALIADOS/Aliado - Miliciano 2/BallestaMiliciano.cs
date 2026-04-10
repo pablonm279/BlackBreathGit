@@ -182,7 +182,7 @@ public class BallestaMiliciano : IAHabilidad
     public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun l�gica
    {
     
-      // Obtener la unidad due�a
+      // Obtener la unidad Dueña
     Unidad unidadDuena = gameObject.GetComponent<Unidad>();
     if (unidadDuena == null) return null;
    

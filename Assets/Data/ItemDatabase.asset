@@ -10974,7 +10974,7 @@ MonoBehaviour:
     descripcion: Un estoque pensado para abrir el duelo con una ventaja brutal.
     categoria: Arma
     rareza: 1
-    icono: {fileID: 21300000, guid: b6bfb75146174f399eeae7a858c28ef2, type: 3}
+    icono: {fileID: 21300000, guid: 2b09430b53c9a8a46a3927a24c7149f0, type: 3}
     precio: 180
     nivelMejora: 1
     idEfectoEspecial: 0
@@ -11086,7 +11086,7 @@ MonoBehaviour:
     descripcion: Un estoque agil, pensado para presionar con ritmo y precision.
     categoria: Arma
     rareza: 1
-    icono: {fileID: 21300000, guid: 836698352c02496eb4b4094c1d5eae7f, type: 3}
+    icono: {fileID: 21300000, guid: adf7a52bd181c4744a2bd5f7d8de4cea, type: 3}
     precio: 175
     nivelMejora: 1
     idEfectoEspecial: 0
@@ -11234,10 +11234,11 @@ MonoBehaviour:
     id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMAS_ESTOQUE_RARA_ESTOQUEDELAROSANEGRA_ARMAESTOQUEDELAROSANEGRA
     prefab: {fileID: -7845728578984888629, guid: c11b6a7feca646be9053378a70fae17c, type: 3}
     nombre: Estoque de la Rosa Negra
-    descripcion: Un estoque elegante y cruel, hecho para dejar una herida que no cierra.
+    descripcion: Un estoque elegante y cruel, hecho para dejar una herida que no
+      cierra.
     categoria: Arma
     rareza: 2
-    icono: {fileID: 21300000, guid: a379fa69f853433f81f29a29d9af444d, type: 3}
+    icono: {fileID: 21300000, guid: 3dac2bbeba46259499b2ead35f82b466, type: 3}
     precio: 345
     nivelMejora: 2
     idEfectoEspecial: 0
@@ -11833,7 +11834,8 @@ MonoBehaviour:
     id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMADURAS_GAMBESON_INFRECUENTE_GAMBESONDEESGRIMALIGERA_ARMADURAGAMBESONDEESGRIMALIGERA
     prefab: {fileID: 9114552496750484229, guid: 61915dfbcd7645a2b1705812330649ec, type: 3}
     nombre: Gambeson de Esgrima Ligera
-    descripcion: Un gambeson flexible para duelistas que prefieren entrar al combate ya perfiladas.
+    descripcion: Un gambeson flexible para duelistas que prefieren entrar al combate
+      ya perfiladas.
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: 55e801f22f014f5fa804e1a6c7483926, type: 3}
@@ -11945,7 +11947,8 @@ MonoBehaviour:
     id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMADURAS_GAMBESON_INFRECUENTE_GAMBESONDELTEMPLE_ARMADURAGAMBESONDELTEMPLE
     prefab: {fileID: 9114552496750484229, guid: f428f6fed753441294557be0441c8bef, type: 3}
     nombre: Gambeson del Temple
-    descripcion: Un gambeson sobrio, reforzado para mantener la mente y el cuerpo firmes bajo presion.
+    descripcion: Un gambeson sobrio, reforzado para mantener la mente y el cuerpo
+      firmes bajo presion.
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: cce5876128174aa5985e8a708eb254c3, type: 3}
@@ -12057,7 +12060,8 @@ MonoBehaviour:
     id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMADURAS_GAMBESON_RARA_GAMBESONDELULTIMOPASO_ARMADURAGAMBESONDELULTIMOPASO
     prefab: {fileID: 3372764810285443771, guid: 04cdf50b43854ae08179ce94debac4b5, type: 3}
     nombre: Gambeson del Ultimo Paso
-    descripcion: Un gambeson cosido para sobrevivir al momento mas peligroso del duelo.
+    descripcion: Un gambeson cosido para sobrevivir al momento mas peligroso del
+      duelo.
     categoria: Armadura
     rareza: 2
     icono: {fileID: 21300000, guid: 57e9476d54fc4ccbb92a3a8713f978bf, type: 3}

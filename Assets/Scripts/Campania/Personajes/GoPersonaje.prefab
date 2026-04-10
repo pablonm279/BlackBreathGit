@@ -99,7 +99,7 @@ MonoBehaviour:
   Consumible1: {fileID: 0}
   Consumible2: {fileID: 0}
   Camp_Fatigado: 0
-  Camp_Bendecido_SequitoClerigos: 0
+  Camp_Bendecido: 0
   Camp_Herido: 0
   Camp_Enfermo: 0
   Camp_Moral: 0

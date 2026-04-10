@@ -41,9 +41,9 @@ public class PrimerosAuxilios : Habilidad
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
-      string dadoCuracion = NIVEL == 1 ? "1d4" : "1d6";
+      string dadoCuracion = NIVEL == 1 ? "1d8" : "1d12";
       int usos = NIVEL > 2 ? 3 : 2;
-      int bonoResguardo = NIVEL == 4 ? 40 : 30;
+      int bonoResguardo = NIVEL == 4 ? 50 : 400;
       bool trasladaCampania = NIVEL == 5;
 
       string tituloEs = "Primeros Auxilios I";
@@ -186,7 +186,7 @@ public class PrimerosAuxilios : Habilidad
       {
         for (int veces = 0; veces < APusados; veces++)
         {
-            curacion += UnityEngine.Random.Range(1,5);
+            curacion += UnityEngine.Random.Range(1,9);
 
         }
       }
@@ -194,7 +194,7 @@ public class PrimerosAuxilios : Habilidad
       {
         for (int veces = 0; veces < APusados; veces++)
         {
-            curacion += UnityEngine.Random.Range(1,7);
+            curacion += UnityEngine.Random.Range(1,13);
 
         }
 

@@ -163,8 +163,9 @@ public class Nodo : MonoBehaviour
     string hayExploracionExplorador = "";
     foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
     {
-      if (pers.ActividadSeleccionada == 9) hayExploracionExplorador = pers.sNombre;
+      if (pers.PuedeRealizarActividades() && pers.ActividadSeleccionada == 9) hayExploracionExplorador = pers.sNombre;
       if (pers.Camp_Enfermo > 0) pers.Camp_Enfermo -= 1;
+      pers.ReducirCampBendecido();
       if (pers.Camp_Moral > 0) pers.Camp_Moral -= 1;
       if (pers.Camp_Moral < 0) pers.Camp_Moral += 1;
     }

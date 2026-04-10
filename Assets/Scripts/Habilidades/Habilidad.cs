@@ -265,7 +265,7 @@ public abstract class Habilidad : MonoBehaviour
       stats.CriticoRango = Mathf.RoundToInt(personaje.fCritRango);
 
       // Replica estados de campaña que alteran atributos/ataque en batalla.
-      if (personaje.Camp_Fatigado || personaje.ActividadSeleccionada == 2)
+      if (personaje.Camp_Fatigado || (personaje.PuedeRealizarActividades() && personaje.ActividadSeleccionada == 2))
       {
         stats.Fuerza -= 1;
         stats.Agilidad -= 1;
@@ -276,10 +276,6 @@ public abstract class Habilidad : MonoBehaviour
         stats.Fuerza -= 1;
         stats.Agilidad -= 1;
         stats.Poder -= 1;
-      }
-      if (personaje.Camp_Bendecido_SequitoClerigos)
-      {
-        stats.Ataque += 1;
       }
       if (personaje.Camp_Moral > 0)
       {
@@ -693,7 +689,9 @@ public abstract class Habilidad : MonoBehaviour
 
     if (iDadoSolo <= umbralPifia)//Pifia
     {
-      scEstaUnidad.GenerarTextoFlotante(TRADU.i.Traducir("<b>Pifia</b>"), Color.red);
+      Unidad unidadTextoPifia = unidadAtacada != null ? unidadAtacada : scEstaUnidad;
+      unidadTextoPifia?.GenerarTextoFlotante(TRADU.i.Traducir("<b>Pifia</b>"), Color.red, FloatingTextContext.Miss);
+      scEstaUnidad?.ReproducirFlashPifiaLeveRapido();
       string nombreAtacante = TRADU.i != null ? TRADU.i.Traducir(scEstaUnidad.uNombre) : scEstaUnidad.uNombre;
       string nombreObjetivoValentia = unidadAtacada != null
         ? (TRADU.i != null ? TRADU.i.Traducir(unidadAtacada.uNombre) : unidadAtacada.uNombre)
@@ -719,6 +717,10 @@ public abstract class Habilidad : MonoBehaviour
           umbralPifia,
           Mathf.RoundToInt(umbralCritico),
           deltaClima));
+      if (BattleManager.Instance != null && BattleManager.Instance.HabilidadActiva != null && BattleManager.Instance.HabilidadActiva.esMelee)
+      {
+        AudioSource.PlayClipAtPoint(BattleManager.Instance.contenedorPrefabs.sonidoErrar, transform.position);
+      }
       unidadAtacada?.NotificarAtaqueRecibido();
       return -1;
     }

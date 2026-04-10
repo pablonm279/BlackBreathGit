@@ -30,27 +30,27 @@ public override void ComienzoBatallaClase()
   #region Pasiva_Acrobatico
    if (PASIVA_Acrobatico == 1)
    {
-     estado_evasion = 1;
+     estado_evasion += 1;
      
    }
    else if (PASIVA_Acrobatico == 2)
    {
-     estado_evasion = 1;
+     estado_evasion += 1;
      mod_TSReflejos++;
    }
    else if (PASIVA_Acrobatico == 3)
    {
-     estado_evasion = 2;
+     estado_evasion += 2;
      mod_TSReflejos++;
    }
    else if (PASIVA_Acrobatico == 4)
    {
-     estado_evasion = 3;
+     estado_evasion += 3;
      mod_TSReflejos++;
    }
    else if (PASIVA_Acrobatico == 5)
    {
-     estado_evasion = 3;
+     estado_evasion += 3;
      mod_TSReflejos++;
    }
 #endregion

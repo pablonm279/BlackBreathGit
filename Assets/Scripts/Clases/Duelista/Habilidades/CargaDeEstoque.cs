@@ -175,7 +175,7 @@ public class CargaDeEstoque : Habilidad
 
         if (!HayEnemigosEnFilaActual())
         {
-            motivo = "No hay enemigos en esa fila";
+            motivo = "No hay enemigos en la fila";
             return false;
         }
 

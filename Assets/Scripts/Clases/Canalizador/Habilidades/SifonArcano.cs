@@ -38,9 +38,9 @@ public class SifonArcano : Habilidad
     var statsUI = ObtenerStatsDescripcionUI();
     int poderActual = statsUI.Poder;
     int bonusDCNivel = NIVEL > 2 ? 1 : 0;
-    int dcBase = 8 + bonusDCNivel;
+    int dcBase = 10 + bonusDCNivel;
     int duracionTurnos = NIVEL == 5 ? 4 : 3;
-    int bonusDanioBase = NIVEL > 1 ? 1 : 0;
+    int bonusDanioBase = NIVEL > 1 ? 5 : 3;
     string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual);
     string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual);
 

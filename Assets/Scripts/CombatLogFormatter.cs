@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 using UnityEngine;
 
@@ -203,12 +202,12 @@ public static class CombatLogFormatter
 
   private static string FormatearNumero(float valor)
   {
-    return Math.Abs(valor % 1) < 0.01f ? valor.ToString("0") : valor.ToString("0.##");
+    return Mathf.RoundToInt(valor).ToString();
   }
 
   private static string FormatearNumeroConSigno(float valor)
   {
-    return Math.Abs(valor % 1) < 0.01f ? valor.ToString("+0;-0;+0") : valor.ToString("+0.##;-0.##;+0.##");
+    return Mathf.RoundToInt(valor).ToString("+0;-0;+0");
   }
 }
 

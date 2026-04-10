@@ -6,13 +6,6 @@ public class EstocadaPrimerSangre : Estocada
     private const int BonusDanioPlanoPrimerSangre = 2;
     private const int BonusCriticoPrimerSangre = 1;
 
-    [SerializeField] private GameObject VFXenObjetivo;
-    [SerializeField] private int bonusAtaque;
-    [SerializeField] private int XdDanio;
-    [SerializeField] private int daniodX;
-    [SerializeField] private int criticoRangoHab;
-    [SerializeField] private int tipoDanio;
-
     public override void Awake()
     {
         base.Awake();

@@ -168,7 +168,7 @@ public class BattleManager : MonoBehaviour
     RondaNro = 1;
 
     if (logDeCampania != null)
-      logDeCampania.SetDiaActual(RondaNro);
+      logDeCampania.SetDiaActual(RondaNro, true);
 
     //OBSTACULOS---------
     #region 
@@ -1930,31 +1930,82 @@ public class BattleManager : MonoBehaviour
   public GameObject goCamara;
 
   public bool seTilteo = false;
+  private Quaternion rotacionOrigenCamaraLocal = Quaternion.identity;
+  private bool rotacionOrigenCamaraInicializada;
+  private Coroutine corrutinaTiltCamara;
   public void TiltearCamaraLadoEnemigo(bool cBool)
   {
-    if (seTilteo != cBool)
+    if (goCamara == null)
     {
-
-      seTilteo = cBool;
-      float targetAngle = cBool ? 3.5f : -3.5f;
-      StartCoroutine(RotateCameraSmoothly(targetAngle));
+      return;
     }
+
+    InicializarRotacionOrigenCamaraSiHaceFalta();
+
+    if (cBool)
+    {
+      if (seTilteo || !EstaCamaraEnRotacionOrigen())
+      {
+        return;
+      }
+
+      seTilteo = true;
+      Quaternion rotacionObjetivo = rotacionOrigenCamaraLocal * Quaternion.Euler(0f, 3.5f, 0f);
+      IniciarTiltCamara(rotacionObjetivo, 0f);
+      return;
+    }
+
+    if (!seTilteo && EstaCamaraEnRotacionOrigen())
+    {
+      return;
+    }
+
+    seTilteo = false;
+    IniciarTiltCamara(rotacionOrigenCamaraLocal, 0.35f);
   }
 
-  private IEnumerator RotateCameraSmoothly(float targetAngle)
+  private void InicializarRotacionOrigenCamaraSiHaceFalta()
   {
-    float duration = 0.12f; // Duración del efecto en segundos
-    float delay = targetAngle < 0 ? 0.35f : 0f; // Retardo adicional si el ángulo es negativo!!
+    if (rotacionOrigenCamaraInicializada || goCamara == null)
+    {
+      return;
+    }
+
+    rotacionOrigenCamaraLocal = goCamara.transform.localRotation;
+    rotacionOrigenCamaraInicializada = true;
+  }
+
+  private bool EstaCamaraEnRotacionOrigen()
+  {
+    if (!rotacionOrigenCamaraInicializada || goCamara == null)
+    {
+      return false;
+    }
+
+    return Quaternion.Angle(goCamara.transform.localRotation, rotacionOrigenCamaraLocal) <= 0.08f;
+  }
+
+  private void IniciarTiltCamara(Quaternion rotacionObjetivo, float delay)
+  {
+    if (corrutinaTiltCamara != null)
+    {
+      StopCoroutine(corrutinaTiltCamara);
+    }
+
+    corrutinaTiltCamara = StartCoroutine(RotateCameraSmoothly(rotacionObjetivo, delay));
+  }
+
+  private IEnumerator RotateCameraSmoothly(Quaternion targetRotation, float delay)
+  {
+    float duration = 0.12f; // Duracion del efecto en segundos
     float elapsedTime = 0f;
 
-    // Pausa inicial si el ángulo es negativo
     if (delay > 0)
     {
       yield return new WaitForSeconds(delay);
     }
 
     Quaternion initialRotation = goCamara.transform.localRotation;
-    Quaternion targetRotation = initialRotation * Quaternion.Euler(0, targetAngle, 0);
 
     while (elapsedTime < duration)
     {
@@ -1963,7 +2014,8 @@ public class BattleManager : MonoBehaviour
       yield return null;
     }
 
-    goCamara.transform.localRotation = targetRotation; // Asegúrate de que la rotación final sea exacta
+    goCamara.transform.localRotation = targetRotation; // Asegura que la rotacion final sea exacta
+    corrutinaTiltCamara = null;
   }
 
   public void DesmarcarTodasLasUnidades()
@@ -2025,7 +2077,7 @@ public class BattleManager : MonoBehaviour
       : log;
 
     // Asegura que el logger sabe el dia actual
-    logDeCampania.SetDiaActual(RondaNro);
+    logDeCampania.SetDiaActual(RondaNro, true);
     logDeCampania.Escribir(logNormalizado, true);
   }
 
@@ -2305,12 +2357,7 @@ public class BattleManager : MonoBehaviour
       if (esNoParticipante)
       {
         // Sombrear y poner por encima del oscurecedor
-        uni.gameObject.transform.GetChild(3).GetChild(1).GetChild(1).gameObject.SetActive(true); // Sombrear
-        if (uni.gameObject.transform.GetChild(3).GetChild(1).GetChild(1).GetChild(0) != null)
-        {
-          uni.gameObject.transform.GetChild(3).GetChild(1).GetChild(1).GetChild(0).gameObject.SetActive(false); // ojo
-        }
-        uni.gameObject.transform.GetChild(3).GetChild(0).gameObject.SetActive(false); // barra
+        ConfigurarOscurecidoVisualUnidad(uni, true);
 
         // Poner por encima del oscurecedor en la jerarquía
         if (unidadTransform.parent == oscurecedorTransform.parent)
@@ -2371,6 +2418,32 @@ public class BattleManager : MonoBehaviour
     RenderOrderHelper.AplicarOrdenBase(objetivo, ordenFinal, "UI3D");
   }
 
+  private static void ConfigurarOscurecidoVisualUnidad(Unidad unidad, bool sombrear)
+  {
+    if (unidad == null)
+    {
+      return;
+    }
+
+    GameObject overlayEscondido = unidad.ObtenerOverlayEscondidoGO();
+    if (overlayEscondido != null)
+    {
+      overlayEscondido.SetActive(sombrear);
+    }
+
+    GameObject ojoEscondido = unidad.ObtenerOjoEscondidoGO();
+    if (ojoEscondido != null)
+    {
+      ojoEscondido.SetActive(!sombrear);
+    }
+
+    GameObject barraVida = unidad.ObtenerBarraVidaGO();
+    if (barraVida != null)
+    {
+      barraVida.SetActive(!sombrear);
+    }
+  }
+
   public void MarcarUnidadComoParticipanteDuranteOscurecedor(Unidad unidad)
   {
     if (unidad == null || oscurecedor == null || !oscurecedor.activeInHierarchy)
@@ -2382,15 +2455,7 @@ public class BattleManager : MonoBehaviour
     int posY = unidad.CasillaPosicion != null ? unidad.CasillaPosicion.posY : 0;
     int ordenOscurecedor = ObtenerOrdenOscurecedor(oscurecedorTransform);
     AplicarOrdenDuranteOscurecedor(unidad.gameObject, posY, true, ordenOscurecedor);
-
-    Transform sombra = unidad.gameObject.transform.GetChild(3).GetChild(1).GetChild(1);
-    sombra.gameObject.SetActive(false);
-    if (sombra.childCount > 0)
-    {
-      sombra.GetChild(0).gameObject.SetActive(true);
-    }
-
-    unidad.gameObject.transform.GetChild(3).GetChild(0).gameObject.SetActive(true);
+    ConfigurarOscurecidoVisualUnidad(unidad, false);
     AjustarOrdenRespectoOscurecedor(unidad.transform, oscurecedorTransform, false);
   }
 
@@ -2429,11 +2494,7 @@ public class BattleManager : MonoBehaviour
     {
       if (unidad is Unidad)
       {
-        ((Unidad)unidad).gameObject.transform.GetChild(3).GetChild(1).GetChild(1).gameObject.SetActive(false); //Desombrear
-        if (((Unidad)unidad).gameObject.transform.GetChild(3).GetChild(1).GetChild(1).GetChild(0) != null)
-        { ((Unidad)unidad).gameObject.transform.GetChild(3).GetChild(1).GetChild(1).GetChild(0).gameObject.SetActive(true); } //ojo 
-      ((Unidad)unidad).gameObject.transform.GetChild(3).GetChild(0).gameObject.SetActive(true); //barra
-
+        ConfigurarOscurecidoVisualUnidad((Unidad)unidad, false);
       }
       else if (unidad is Obstaculo)
       {
@@ -3126,6 +3187,7 @@ public class BattleManager : MonoBehaviour
  
 
 }
+
 
 
 

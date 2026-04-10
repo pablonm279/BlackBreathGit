@@ -250,6 +250,7 @@ MonoBehaviour:
   endMarker: {fileID: 0}
   parabola: 0
   velocidad: 0
+  alturaMinimaParabola: 0.05
 --- !u!1 &7435397058753712318
 GameObject:
   m_ObjectHideFlags: 0

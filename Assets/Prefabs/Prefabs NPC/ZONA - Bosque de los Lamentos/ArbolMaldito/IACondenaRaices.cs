@@ -89,7 +89,7 @@ public class IACondenaRaices : IAHabilidad
     if (noSeSalva)
     {    objetivo.RecibirDanio(danio, TipoDanioNecrotico, false, scEstaUnidad);
 
-      objetivo.estado_Condenado += Mathf.Max(objetivo.estado_Condenado, TurnosCondena);
+      objetivo.estado_Condenado = Mathf.Min(3, objetivo.estado_Condenado + Mathf.Max(objetivo.estado_Condenado, TurnosCondena));
       objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Condenado"), new Color(0.4f, 0.24f, 0.5f));
       BattleManager.Instance?.EscribirLog($"{objetivo.uNombre} {TRADU.i.Traducir("es condenado por")} {TurnosCondena} {TRADU.i.Traducir("turnos.")}");
     }

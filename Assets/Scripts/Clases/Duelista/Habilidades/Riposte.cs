@@ -97,6 +97,25 @@ public class Riposte : Habilidad
             cuerpo,
             costos,
             "#5dade2");
+
+        if (esIngles)
+        {
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Defense on intercepted hit.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: counterattack removes its -1 Attack penalty.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (no longer canceled when taking damage) or Option B (+1 use per turn).</color>"; }
+        }
+        else if (esPortugues)
+        {
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Defesa no golpe interceptado.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: o contra-ataque remove a penalidade de -1 Ataque.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (nao e mais cancelada ao receber dano) ou Opcao B (+1 uso por turno).</color>"; }
+        }
+        else
+        {
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Defensa en el golpe interceptado.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: el contraataque elimina su penalidad de -1 Ataque.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (ya no se cancela al recibir danio) u Opcion B (+1 uso por turno).</color>"; }
+        }
     }
 
     public override void Activar()

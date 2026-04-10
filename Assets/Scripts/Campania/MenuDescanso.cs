@@ -220,6 +220,11 @@ public class MenuDescanso : MonoBehaviour
     //Actividades que toquen emboscada y exploracion van aca 
     foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
     {
+      if (pers == null || !pers.PuedeRealizarActividades())
+      {
+        continue;
+      }
+
       if (pers.ActividadSeleccionada == 7) //Explorador: Caza Nocturna
       {
         chancesAtaqueACaravana += 3;
@@ -380,11 +385,10 @@ public class MenuDescanso : MonoBehaviour
     foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
     {
       //Saca Fatiga de campaña
-      pers.Camp_Fatigado = false;
-      //Saca Bendicion Plegaria
-      pers.Camp_Bendecido_SequitoClerigos = false;
+      pers.SetCampFatigado(false);
+      pers.ReducirCampBendecido();
 
-      if (pers.ActividadSeleccionada == 4) //Caballero: Relatos de Batalla
+      if (pers.PuedeRealizarActividades() && pers.ActividadSeleccionada == 4) //Caballero: Relatos de Batalla
       {
         CampaignManager.Instance.CambiarEsperanzaActual(4);
         CampaignManager.Instance.EscribirLog($"-" + pers.sNombre + TRADU.i.Traducir(" comparte sus historias de batalla con los civiles. +4 Esperanza"));
@@ -445,7 +449,7 @@ public class MenuDescanso : MonoBehaviour
 
       int cantPurificadorasColaborando = CampaignManager.Instance.CuantosPersonajesHacenTalActividad(12); //Colaborar con los Curanderos
 
-      float porcentajeVidaMax = pers.fVidaMaxima * (CampaignManager.Instance.sequitoCuranderosMejoraCuracion + (cantPurificadorasColaborando * 0.05f)); //5% por cada Purificadora colaborando
+      float porcentajeVidaMax = pers.fVidaMaxima * (0.15f+CampaignManager.Instance.sequitoCuranderosMejoraCuracion + (cantPurificadorasColaborando * 0.05f)); //5% por cada Purificadora colaborando
       porcentajeVidaMax = pers.AplicarMultiplicadorCuracionCampaniaTraits(porcentajeVidaMax);
 
 
@@ -586,6 +590,11 @@ public class MenuDescanso : MonoBehaviour
     bool sePrevieneAvanceAliento = false;
     foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
     {
+      if (pers == null || !pers.PuedeRealizarActividades())
+      {
+        continue;
+      }
+
       int random = UnityEngine.Random.Range(0, 100);
       if (pers.ActividadSeleccionada == 10 && random < 25) //Purificadora: Ritual de Limpieza 
       {

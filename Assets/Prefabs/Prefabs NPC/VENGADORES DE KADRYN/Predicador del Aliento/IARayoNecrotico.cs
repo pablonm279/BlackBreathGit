@@ -22,7 +22,7 @@ public class IARayoNecrotico : IAHabilidad
 
   void Awake()
   {
-    nombre = "Rayo Necrítico";
+    nombre = "Rayo NecrÃ³tico";
     Usuario = gameObject;
     scEstaUnidad = Usuario.GetComponent<Unidad>();
     hAncho = 2;
@@ -83,7 +83,7 @@ public class IARayoNecrotico : IAHabilidad
     unidadObjetivo.AplicarDebuffPorAtaquesreiterados(1);
 
     BattleManager.Instance?.EscribirLog(
-      $"{scEstaUnidad.uNombre} {TRADU.i.Traducir("desata un rayo necrótico sobre")} {unidadObjetivo.uNombre}.");
+      $"{scEstaUnidad.uNombre} {TRADU.i.Traducir("desata un rayo necrÃ³tico sobre")} {unidadObjetivo.uNombre}.");
   }
 
   public override object EstablecerObjetivoPrioritario()

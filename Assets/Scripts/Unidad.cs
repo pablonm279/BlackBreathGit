@@ -269,9 +269,14 @@ public class Unidad : MonoBehaviour
   private Vector2 uImagePosVuelo;
   private Vector2 uImagePosSuelo;
   private Coroutine animacionVueloCoroutine;
+  private Coroutine animacionTurnoNuevoCoroutine;
+  private Coroutine flashPifiaCoroutine;
   private bool uImagePosInicializada;
   [SerializeField] private float offsetVueloY = 13f;
   [SerializeField] private float duracionAnimacionVuelo = 0.4f;
+  [SerializeField] private float desplazamientoAnimacionTurnoNuevoY = 1.7f;
+  [SerializeField] private float duracionSubidaAnimacionTurnoNuevo = 0.12f;
+  [SerializeField] private float duracionBajadaAnimacionTurnoNuevo = 0.12f;
   
 
   UnidadCanvas scUnidadCanvas;
@@ -319,6 +324,10 @@ public class Unidad : MonoBehaviour
     {
       gameObject.AddComponent<UnidadHiddenVisualController>();
     }
+    if (GetComponent<UnidadTurnStartLightFx>() == null)
+    {
+      gameObject.AddComponent<UnidadTurnStartLightFx>();
+    }
     InicializarVueloVisual();
 
     ValentiaP_actual = 0;
@@ -333,6 +342,45 @@ public class Unidad : MonoBehaviour
   }
   SincronizarVisualEscondido();
 }
+
+  public GameObject ObtenerOverlayEscondidoGO()
+  {
+    if (uImage == null)
+    {
+      return null;
+    }
+
+    Transform overlayEscondido = uImage.transform.Find("Escondido");
+    return overlayEscondido != null ? overlayEscondido.gameObject : null;
+  }
+
+  public GameObject ObtenerOjoEscondidoGO()
+  {
+    if (uImage == null)
+    {
+      return null;
+    }
+
+    Transform ojoEscondido = uImage.transform.Find("Escondido/Ojo");
+    return ojoEscondido != null ? ojoEscondido.gameObject : null;
+  }
+
+  public GameObject ObtenerBarraVidaGO()
+  {
+    if (scUnidadCanvas == null)
+    {
+      scUnidadCanvas = GetComponentInChildren<UnidadCanvas>();
+    }
+
+    return scUnidadCanvas != null && scUnidadCanvas.barraVida != null
+      ? scUnidadCanvas.barraVida.gameObject
+      : null;
+  }
+
+  public GameObject ObtenerImagenUnidadGO()
+  {
+    return uImage != null ? uImage.gameObject : null;
+  }
 
   void InicializarVueloVisual()
   {
@@ -371,7 +419,7 @@ public class Unidad : MonoBehaviour
     Invoke("ResetearEvitarRepeticionAnimacion", 2.5f);
   }
 
-   public void ReproducirAnimacionMiss(bool forzar = false)
+  public void ReproducirAnimacionMiss(bool forzar = false)
   {
     if (suprimirAnimacionIA && !forzar)
     {
@@ -389,6 +437,44 @@ public class Unidad : MonoBehaviour
     }
   
   }
+
+  public void ReproducirFlashPifiaLeveRapido()
+  {
+    if (!gameObject.activeInHierarchy || uImage == null)
+    {
+      return;
+    }
+
+    if (flashPifiaCoroutine != null)
+    {
+      StopCoroutine(flashPifiaCoroutine);
+      flashPifiaCoroutine = null;
+    }
+
+    flashPifiaCoroutine = StartCoroutine(CorutinaFlashPifiaLeveRapido());
+  }
+
+  IEnumerator CorutinaFlashPifiaLeveRapido()
+  {
+    if (uImage == null)
+    {
+      flashPifiaCoroutine = null;
+      yield break;
+    }
+
+    Color colorBase = uImage.color;
+    Color colorFlash = Color.Lerp(colorBase, new Color(1f, 0.35f, 0.35f, colorBase.a), 0.35f);
+    uImage.color = colorFlash;
+
+    yield return new WaitForSeconds(0.08f);
+
+    if (uImage != null)
+    {
+      uImage.color = colorBase;
+    }
+
+    flashPifiaCoroutine = null;
+  }
   
   void ResetearEvitarRepeticionAnimacion()
   {
@@ -396,11 +482,36 @@ public class Unidad : MonoBehaviour
   }
   public void ReproducirAnimacionTurnoNuevo()
   {
+    if (uImage == null || animacionVueloCoroutine != null)
+    {
+      return;
+    }
+
+    UnidadTurnStartLightFx turnStartLightFx = GetComponent<UnidadTurnStartLightFx>();
+    if (turnStartLightFx != null)
+    {
+      turnStartLightFx.Reproducir();
+    }
+
+    UnidadIdleMotion idleMotion = GetComponent<UnidadIdleMotion>();
+    if (idleMotion != null)
+    {
+      idleMotion.ReproducirReboteTurnoNuevo();
+      return;
+    }
+
+    if (animacionTurnoNuevoCoroutine != null)
+    {
+      StopCoroutine(animacionTurnoNuevoCoroutine);
+      animacionTurnoNuevoCoroutine = null;
+    }
+
     if (animator != null)
     {
-      animator.SetTrigger("Trigger_TurnoNuevo");
-
+      animator.ResetTrigger("Trigger_TurnoNuevo");
     }
+
+    animacionTurnoNuevoCoroutine = StartCoroutine(AnimarTurnoNuevoRelativo());
   }
   
   public GameObject goSANGRE;
@@ -479,6 +590,7 @@ public class Unidad : MonoBehaviour
 private void Update()
 {
   SincronizarEscaladosPorAtributos();
+  estado_Condenado = Mathf.Clamp(estado_Condenado, 0, 3);
 
  if(BattleManager.Instance.unidadActiva == this)
  {
@@ -533,6 +645,63 @@ private void Update()
 
     rectTransform.anchoredPosition = destino;
     animacionVueloCoroutine = null;
+  }
+
+  IEnumerator AnimarTurnoNuevoRelativo()
+  {
+    if (uImage == null)
+    {
+      animacionTurnoNuevoCoroutine = null;
+      yield break;
+    }
+
+    RectTransform rectTransform = uImage.rectTransform;
+    Vector2 origen = rectTransform.anchoredPosition;
+    Vector2 pico = origen + Vector2.up * desplazamientoAnimacionTurnoNuevoY;
+
+    yield return InterpolarPosicionRect(rectTransform, origen, pico, duracionSubidaAnimacionTurnoNuevo);
+    yield return InterpolarPosicionRect(rectTransform, pico, origen, duracionBajadaAnimacionTurnoNuevo);
+
+    if (rectTransform != null)
+    {
+      rectTransform.anchoredPosition = origen;
+    }
+
+    animacionTurnoNuevoCoroutine = null;
+  }
+
+  IEnumerator InterpolarPosicionRect(RectTransform rectTransform, Vector2 origen, Vector2 destino, float duracion)
+  {
+    if (rectTransform == null)
+    {
+      yield break;
+    }
+
+    if (duracion <= 0f)
+    {
+      rectTransform.anchoredPosition = destino;
+      yield break;
+    }
+
+    float tiempo = 0f;
+    while (tiempo < duracion)
+    {
+      if (rectTransform == null)
+      {
+        yield break;
+      }
+
+      tiempo += Time.deltaTime;
+      float t = Mathf.Clamp01(tiempo / duracion);
+      t = t * t * (3f - (2f * t));
+      rectTransform.anchoredPosition = Vector2.LerpUnclamped(origen, destino, t);
+      yield return null;
+    }
+
+    if (rectTransform != null)
+    {
+      rectTransform.anchoredPosition = destino;
+    }
   }
 
   public void LevantarVuelo(bool instantaneo = false)
@@ -1124,17 +1293,11 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
       {
         GetComponent<IAUnidad>().RealizarTurnoIA();
 
-        if (!unidadEncarnadaEnTurno)
-        {
-        //  GenerarTextoFlotante(TRADU.i.Traducir("Activa!"), Color.red);
-        }
+      
       }
       else 
       {
-        if (!unidadEncarnadaEnTurno)
-        {
-      //    GenerarTextoFlotante(TRADU.i.Traducir("Activa!"), Color.cyan);
-        }
+        
       }
     }
 
@@ -1419,7 +1582,11 @@ public virtual void PerderEscondido()
 {
   estaEscondido = 0;
   scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" ya no está escondido.")));
-  gameObject.transform.GetChild(3).GetChild(1).GetChild(1).gameObject.SetActive(false);
+  GameObject overlayEscondido = ObtenerOverlayEscondidoGO();
+  if (overlayEscondido != null)
+  {
+    overlayEscondido.SetActive(false);
+  }
   SincronizarVisualEscondido();
   //aca agregar tratamientos de vfx de revelar etc.
 }
@@ -1427,7 +1594,11 @@ public virtual void GanarEscondido(int n) // n es Tier de Escondido, 1 se va al 
 {
   estaEscondido = n;
   scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" está escondido.")));
-  gameObject.transform.GetChild(3).GetChild(1).GetChild(1).gameObject.SetActive(true);
+  GameObject overlayEscondido = ObtenerOverlayEscondidoGO();
+  if (overlayEscondido != null)
+  {
+    overlayEscondido.SetActive(true);
+  }
   SincronizarVisualEscondido();
   //aca agregar tratamientos de vfx de esconderse etc.
 }
@@ -1911,7 +2082,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
   }
   private static string FormatearNumeroLogDanio(float valor)
   {
-    return Mathf.Abs(valor % 1f) < 0.01f ? valor.ToString("0") : valor.ToString("0.##");
+    return Mathf.RoundToInt(valor).ToString();
   }
 
   private string ConstruirDetalleCalculoDanio(
@@ -1944,11 +2115,11 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     {
       if (penetracionTotal > 0)
       {
-        partes.Add("arm " + FormatearNumeroLogDanio(armaduraEfectiva) + " (pen " + penetracionTotal + ")");
+        partes.Add("arm " + FormatearNumeroLogDanio(-armaduraEfectiva) + " (pen " + penetracionTotal + ")");
       }
       else
       {
-        partes.Add("arm " + FormatearNumeroLogDanio(armaduraEfectiva));
+        partes.Add("arm " + FormatearNumeroLogDanio(-armaduraEfectiva));
       }
     }
 
@@ -2022,12 +2193,12 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio(mensaje));
   }
 
-  public async virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
+  public async virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignoraArmadura = false)
   {
     Unidad unidadRedirigida = ObtenerObjetivoRedirigidoSiCorresponde(uCausante, this);
     if (unidadRedirigida != null && unidadRedirigida != this)
     {
-      unidadRedirigida.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos);
+      unidadRedirigida.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos, ignoraArmadura);
       return;
     }
 
@@ -2060,7 +2231,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         penetracionTotalContraAtaque = penetracionEquipo + penetracionHabilidad;
       }
       float armaduraEfectivaContraAtaque = armaduraBaseContraAtaque - penetracionTotalContraAtaque;
-      if (armaduraEfectivaContraAtaque < 0f)
+      if (armaduraEfectivaContraAtaque < 0f || ignoraArmadura)
       {
         armaduraEfectivaContraAtaque = 0f;
       }
@@ -3240,7 +3411,7 @@ public virtual void AcabaDeMatarUnidad(Unidad uVictima)
     string motivoAliado = enIngles
       ? nombreAliado + " is inspired by " + nombreAsesino + "'s kill"
       : nombreAliado + " se inspira con la baja de " + nombreVictima;
-    aliado.SumarValentia(1, motivoAliado);
+    aliado.SumarValentia(1, motivoAliado, mostrarTextoFlotante: false);
   }
 }
 
@@ -3342,7 +3513,7 @@ private string NombreUnidadParaLog(Unidad unidad)
   return TRADU.i != null ? TRADU.i.Traducir(unidad.uNombre) : unidad.uNombre;
 }
 
-public virtual void SumarValentia(int cant, string motivo = null)
+public virtual void SumarValentia(int cant, string motivo = null, bool mostrarTextoFlotante = true)
 {
   if (GetComponent<IAUnidad>() != null || cant == 0)
   {
@@ -3372,7 +3543,10 @@ public virtual void SumarValentia(int cant, string motivo = null)
   Color colorTextoValentia = esGanancia ? ColorValentiaGanada : ColorValentiaPerdida;
   FloatingTextContext contextoTextoValentia = esGanancia ? FloatingTextContext.ValourGain : FloatingTextContext.ValourLoss;
 
-  _ = GenerarTextoFlotante("<b>" + textoCambioValentia + "</b>", colorTextoValentia, contextoTextoValentia);
+  if (mostrarTextoFlotante)
+  {
+    _ = GenerarTextoFlotante("<b>" + textoCambioValentia + "</b>", colorTextoValentia, contextoTextoValentia);
+  }
 
   if (scBattleManager != null)
   {
@@ -3870,7 +4044,7 @@ public void UnidadMuere()
        string motivo = enIngles
          ? nombreAliado + " loses morale after " + nombreCaido + " falls"
          : nombreAliado + " pierde ánimo al caer " + nombreCaido;
-       aliado.SumarValentia(perdidaValentia, motivo);
+       aliado.SumarValentia(perdidaValentia, motivo, mostrarTextoFlotante: false);
      }
 
      CampaignManager campTraits = CampaignManager.Instance;

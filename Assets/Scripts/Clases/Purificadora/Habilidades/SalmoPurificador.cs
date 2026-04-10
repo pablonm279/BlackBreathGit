@@ -210,7 +210,7 @@ public class SalmoPurificador : Habilidad
               {
                 break;
               }
-               if(NIVEL == 5){aliado.SumarValentia(1);}
+               if(NIVEL == 5){aliado.SumarValentia(1, mostrarTextoFlotante: false);}
               buffsremover--;
 
               if(buff != null)

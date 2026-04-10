@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   persistentItemId: 
-  imItem: {fileID: 21300000, guid: 836698352c02496eb4b4094c1d5eae7f, type: 3}
+  imItem: {fileID: 21300000, guid: adf7a52bd181c4744a2bd5f7d8de4cea, type: 3}
   sNombreItem: Estoque de Veloz Replica
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 06000000

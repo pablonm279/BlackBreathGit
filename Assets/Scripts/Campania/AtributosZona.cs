@@ -312,7 +312,7 @@ public class AtributosZona : MonoBehaviour
          cantidad: 2850,
          distCaminoOverride: 0.07f,
          distNodoOverride: 0.13f,
-         rOverride: 0.54f,
+         rOverride: 0.57f,
          kOverride: 20);
          
        yield return scMapDecorator.GenerarAsyncCR(
@@ -320,7 +320,7 @@ public class AtributosZona : MonoBehaviour
         cantidad: 550,
         distCaminoOverride: 0.16f,
         distNodoOverride: 0.14f,
-        rOverride: 1.2f,
+        rOverride: 1.25f,
         kOverride: 20);
 
       yield return scMapDecorator.GenerarAsyncCR(

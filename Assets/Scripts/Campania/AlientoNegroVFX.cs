@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 #if UNITY_EDITOR
@@ -12,6 +13,8 @@ public class AlientoNegroVFX : MonoBehaviour
     [SerializeField] Slider sliderAlientoNegro;
     [SerializeField] ParticleSystem alientoNegroParticulas;
     [SerializeField] Transform objetivoMovimiento;
+    [SerializeField] GameObject goPuntosPosAliento;
+
 
     [Header("Rango de valores")]
     [SerializeField] float valorMinimo = 0f;
@@ -42,11 +45,14 @@ public class AlientoNegroVFX : MonoBehaviour
     Coroutine moverCoroutine;
     Coroutine detenerParticulasCoroutine;
     float progresoActual;
+    float valorActualVisual;
     bool emissionDefaultEnabled = true;
+    readonly Dictionary<int, Transform> puntosPosicionPorValor = new Dictionary<int, Transform>();
 
     void Awake()
     {
         InicializarObjetivo();
+        ReconstruirPuntosPosicion();
         ActualizarPosicionesDesdeAnclas();
         if (alientoNegroParticulas != null)
         {
@@ -62,6 +68,7 @@ public class AlientoNegroVFX : MonoBehaviour
     void OnValidate()
     {
         InicializarObjetivo();
+        ReconstruirPuntosPosicion();
         valorMaximo = Mathf.Max(valorMinimo, valorMaximo);
         duracionMinima = Mathf.Max(0f, duracionMinima);
         duracionMaxima = Mathf.Max(duracionMinima, duracionMaxima);
@@ -72,7 +79,7 @@ public class AlientoNegroVFX : MonoBehaviour
 
         if (!Application.isPlaying && objetivoMovimiento)
         {
-            AplicarEstadoInstantaneo(CalcularDestino(progresoActual), progresoActual);
+            AplicarEstadoInstantaneo(CalcularDestinoParaValor(valorActualVisual, progresoActual), progresoActual, valorActualVisual);
         }
     }
 
@@ -80,18 +87,18 @@ public class AlientoNegroVFX : MonoBehaviour
     {
         float valorActual = ObtenerValorAlientoNegro();
         float nuevoProgreso = CalcularProgreso(valorActual);
-        Vector3 destino = CalcularDestino(nuevoProgreso);
+        Vector3 destino = CalcularDestinoParaValor(valorActual, nuevoProgreso);
         float duracion = CalcularDuracionMovimiento(Mathf.Abs(cant));
 
-        if (Mathf.Approximately(nuevoProgreso, progresoActual))
+        if (Mathf.Approximately(valorActual, valorActualVisual))
         {
-            AplicarEstadoInstantaneo(destino, nuevoProgreso);
+            AplicarEstadoInstantaneo(destino, nuevoProgreso, valorActual);
             return;
         }
 
         if (!isActiveAndEnabled)
         {
-            AplicarEstadoInstantaneo(destino, nuevoProgreso);
+            AplicarEstadoInstantaneo(destino, nuevoProgreso, valorActual);
             return;
         }
 
@@ -99,46 +106,73 @@ public class AlientoNegroVFX : MonoBehaviour
         {
             StopCoroutine(moverCoroutine);
         }
-        moverCoroutine = StartCoroutine(Mover(destino, nuevoProgreso, duracion));
+        moverCoroutine = StartCoroutine(Mover(valorActual, destino, nuevoProgreso, duracion));
     }
 
-    IEnumerator Mover(Vector3 destino, float destinoProgreso, float duracion)
+    IEnumerator Mover(float valorDestino, Vector3 destinoFinal, float destinoProgreso, float duracionTotal)
     {
-        Vector3 origen = ObtenerPosicionActual();
-        float progresoInicial = progresoActual;
-        float tiempo = 0f;
-
         ActivarParticulas();
 
-        while (tiempo < duracion)
+        List<Vector3> ruta = ConstruirRutaHastaValor(valorDestino);
+        if (ruta.Count == 0)
         {
-            tiempo += Time.deltaTime;
-            float t = duracion > 0f ? Mathf.Clamp01(tiempo / duracion) : 1f;
-            float curvaT = curvaMovimiento.Evaluate(t);
-
-            EstablecerPosicion(Vector3.LerpUnclamped(origen, destino, curvaT));
-            float progresoInterpolado = Mathf.Lerp(progresoInicial, destinoProgreso, curvaT);
-            ActualizarUIYParticulas(progresoInterpolado);
-
-            yield return null;
+            ruta.Add(destinoFinal);
         }
 
-        AplicarEstadoInstantaneo(destino, destinoProgreso);
+        float progresoInicialTotal = progresoActual;
+        float valorInicialTotal = valorActualVisual;
+        Vector3 origenSegmento = ObtenerPosicionActual();
+        float progresoSegmentoInicial = progresoInicialTotal;
+        float valorSegmentoInicial = valorInicialTotal;
+        int totalSegmentos = ruta.Count;
+
+        for (int i = 0; i < totalSegmentos; i++)
+        {
+            Vector3 destinoSegmento = ruta[i];
+            float progresoSegmentoFinal = Mathf.Lerp(progresoInicialTotal, destinoProgreso, (i + 1f) / totalSegmentos);
+            float valorSegmentoFinal = Mathf.Lerp(valorInicialTotal, valorDestino, (i + 1f) / totalSegmentos);
+            float duracionSegmento = totalSegmentos > 0 ? duracionTotal / totalSegmentos : 0f;
+            float tiempo = 0f;
+
+            while (tiempo < duracionSegmento)
+            {
+                tiempo += Time.deltaTime;
+                float t = duracionSegmento > 0f ? Mathf.Clamp01(tiempo / duracionSegmento) : 1f;
+                float curvaT = curvaMovimiento.Evaluate(t);
+
+                EstablecerPosicion(Vector3.LerpUnclamped(origenSegmento, destinoSegmento, curvaT));
+                float progresoInterpolado = Mathf.Lerp(progresoSegmentoInicial, progresoSegmentoFinal, curvaT);
+                float valorInterpolado = Mathf.Lerp(valorSegmentoInicial, valorSegmentoFinal, curvaT);
+                ActualizarUIYParticulas(progresoInterpolado, valorInterpolado);
+
+                yield return null;
+            }
+
+            EstablecerPosicion(destinoSegmento);
+            ActualizarUIYParticulas(progresoSegmentoFinal, valorSegmentoFinal);
+            origenSegmento = destinoSegmento;
+            progresoSegmentoInicial = progresoSegmentoFinal;
+            valorSegmentoInicial = valorSegmentoFinal;
+        }
+
+        AplicarEstadoInstantaneo(destinoFinal, destinoProgreso, valorDestino);
         moverCoroutine = null;
         //ProgramarDetencionParticulas();
     }
 
-    void AplicarEstadoInstantaneo(Vector3 destino, float progreso)
+    void AplicarEstadoInstantaneo(Vector3 destino, float progreso, float valorVisual)
     {
         EstablecerPosicion(destino);
-        ActualizarUIYParticulas(progreso);
+        ActualizarUIYParticulas(progreso, valorVisual);
         progresoActual = progreso;
+        valorActualVisual = valorVisual;
     }
 
-    void ActualizarUIYParticulas(float progreso)
+    void ActualizarUIYParticulas(float progreso, float valorVisual)
     {
         progreso = Mathf.Clamp01(progreso);
         progresoActual = progreso;
+        valorActualVisual = valorVisual;
 
         if (sliderAlientoNegro != null)
         {
@@ -232,6 +266,40 @@ public class AlientoNegroVFX : MonoBehaviour
         return Vector3.Lerp(posicionMinima, posicionMaxima, progreso);
     }
 
+    Vector3 CalcularDestinoParaValor(float valor, float progresoFallback)
+    {
+        if (TryObtenerPosicionPunto(Mathf.RoundToInt(valor), out Vector3 posicionPunto))
+        {
+            return posicionPunto;
+        }
+
+        return CalcularDestino(progresoFallback);
+    }
+
+    List<Vector3> ConstruirRutaHastaValor(float valorDestino)
+    {
+        var ruta = new List<Vector3>();
+        int valorObjetivo = Mathf.RoundToInt(valorDestino);
+        int valorVisualActualRedondeado = Mathf.RoundToInt(valorActualVisual);
+        int direccion = valorObjetivo.CompareTo(valorVisualActualRedondeado);
+
+        if (direccion == 0)
+        {
+            return ruta;
+        }
+
+        int valorBase = direccion > 0
+            ? Mathf.FloorToInt(valorActualVisual)
+            : Mathf.CeilToInt(valorActualVisual);
+
+        for (int valor = valorBase + direccion; direccion > 0 ? valor <= valorObjetivo : valor >= valorObjetivo; valor += direccion)
+        {
+            ruta.Add(CalcularDestinoParaValor(valor, CalcularProgreso(valor)));
+        }
+
+        return ruta;
+    }
+
     Vector3 ObtenerPosicionActual()
     {
         return usarEspacioLocal ? objetivoMovimiento.localPosition : objetivoMovimiento.position;
@@ -251,6 +319,51 @@ public class AlientoNegroVFX : MonoBehaviour
             objetivoMovimiento = transform;
     }
 
+    void ReconstruirPuntosPosicion()
+    {
+        puntosPosicionPorValor.Clear();
+
+        if (goPuntosPosAliento == null)
+            return;
+
+        Transform raizPuntos = goPuntosPosAliento.transform;
+        for (int i = 0; i < raizPuntos.childCount; i++)
+        {
+            Transform punto = raizPuntos.GetChild(i);
+            if (!int.TryParse(punto.name, out int valor))
+                continue;
+
+            puntosPosicionPorValor[valor] = punto;
+        }
+    }
+
+    bool TryObtenerPosicionPunto(int valor, out Vector3 posicion)
+    {
+        if (puntosPosicionPorValor.Count == 0)
+        {
+            ReconstruirPuntosPosicion();
+        }
+
+        if (puntosPosicionPorValor.TryGetValue(valor, out Transform punto) && punto != null)
+        {
+            if (usarEspacioLocal)
+            {
+                Transform parentObjetivo = objetivoMovimiento != null ? objetivoMovimiento.parent : null;
+                posicion = parentObjetivo != null
+                    ? parentObjetivo.InverseTransformPoint(punto.position)
+                    : punto.position;
+            }
+            else
+            {
+                posicion = punto.position;
+            }
+            return true;
+        }
+
+        posicion = default;
+        return false;
+    }
+
     void ActualizarPosicionesDesdeAnclas()
     {
         if (puntoMinimoReferencia != null)
@@ -268,7 +381,7 @@ public class AlientoNegroVFX : MonoBehaviour
     {
         float valor = ObtenerValorAlientoNegro();
         float progreso = CalcularProgreso(valor);
-        AplicarEstadoInstantaneo(CalcularDestino(progreso), progreso);
+        AplicarEstadoInstantaneo(CalcularDestinoParaValor(valor, progreso), progreso, valor);
     }
 
 #if UNITY_EDITOR
@@ -278,7 +391,7 @@ public class AlientoNegroVFX : MonoBehaviour
         {
             if (Application.isPlaying && CampaignManager.Instance != null)
                 return CampaignManager.Instance.GetValorAlientoNegro();
-            return Mathf.Lerp(valorMinimo, valorMaximo, progresoActual);
+            return valorActualVisual;
         }
     }
 
@@ -295,7 +408,7 @@ public class AlientoNegroVFX : MonoBehaviour
 
         float nuevo = Mathf.Clamp(DebugValorActual + delta, valorMinimo, valorMaximo);
         float progreso = CalcularProgreso(nuevo);
-        AplicarEstadoInstantaneo(CalcularDestino(progreso), progreso);
+        AplicarEstadoInstantaneo(CalcularDestinoParaValor(nuevo, progreso), progreso, nuevo);
     }
 
     public void DebugSetValor(int valor)
@@ -314,7 +427,7 @@ public class AlientoNegroVFX : MonoBehaviour
         }
 
         float progreso = CalcularProgreso(clamped);
-        AplicarEstadoInstantaneo(CalcularDestino(progreso), progreso);
+        AplicarEstadoInstantaneo(CalcularDestinoParaValor(clamped, progreso), progreso, clamped);
     }
 #endif
 

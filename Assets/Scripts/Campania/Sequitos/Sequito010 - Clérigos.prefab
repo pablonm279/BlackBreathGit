@@ -1710,9 +1710,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "La Plegaria retrasar\xE1 1 el H\xE1lito Negro, bendericr\xE1 a los personajes
-    hasta el pr\xF3ximo descanso con:  +1 Ataque +1 Defensa +5 Resistencia Da\xF1o
-    Necr\xF3tico +2 TS Mental y aumentar\xE1 en 10 la Esperanza."
+  m_text: "La Plegaria retrasar\xE1 1 el H\xE1lito Negro, bendecir\xE1 a los personajes
+    por 1 d\xEDa con: +3 TS +5 Resistencia Da\xF1o Necr\xF3tico y aumentar\xE1
+    en 10 la Esperanza."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}

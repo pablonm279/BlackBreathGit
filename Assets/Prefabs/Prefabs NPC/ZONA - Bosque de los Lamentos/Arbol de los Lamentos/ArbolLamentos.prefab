@@ -724,7 +724,6 @@ MonoBehaviour:
   esInmobil: 1
   mod_maxAccionP: 3
   AccionP_actual: 3
-  AccionP_SeEsforzo: 0
   scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
@@ -760,6 +759,7 @@ MonoBehaviour:
   mod_DanioPorcentaje: 0
   at_CriticoRangoDado: 0
   mod_CriticoRangoDado: 0
+  bonusCritDadoRecibido: 0
   "at_CriticoDa\xF1oBonus": 0
   "mod_CriticoDa\xF1oBonus": 0
   at_TSReflejos: 1
@@ -787,6 +787,7 @@ MonoBehaviour:
   estado_Condenado: 0
   estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
+  estado_MovimientoAbaratado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
   estado_Volando: 0
@@ -803,6 +804,7 @@ MonoBehaviour:
   debuffsImpactoArma: []
   reduccionDanioRecibidoPorcentaje: 0
   reduccionDanioCriticoRecibidoPorcentaje: 0
+  aumentoDanioCriticoRecibidoPorcentaje: 0
   resistenciaEstadosPorcentaje: 0
   espinasDanioPlano: 0
   espinasDanioPorcentaje: 0

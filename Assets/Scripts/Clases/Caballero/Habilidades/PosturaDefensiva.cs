@@ -16,7 +16,7 @@ public class PosturaDefensiva : Habilidad
     {
       nombre = "Postura Defensiva";
       IDenClase = 7;
-      costoAP = 2; //Termina turno
+      costoAP = 1; //Termina turno
       costoPM = 0;
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();

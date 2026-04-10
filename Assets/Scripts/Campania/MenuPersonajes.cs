@@ -173,37 +173,12 @@ public class MenuPersonajes : MonoBehaviour
 
       if (btn != null) // Asegúrate de que el componente btnPersonaje exista
       {
-        btn.representarVida();
-        if (btn.personajeRepresentado.Camp_Herido)
+        btn.RepresentarTodo();
+
+        Transform seleccionado = btn.transform.Find("Seleccionado");
+        if (seleccionado != null)
         {
-          child.GetChild(3).gameObject.SetActive(true);
-        }
-        else { child.GetChild(3).gameObject.SetActive(false); }
-
-        if (btn.personajeRepresentado.Camp_Corrupto)
-        {
-          child.GetChild(5).gameObject.SetActive(true);
-        }
-        else { child.GetChild(5).gameObject.SetActive(false); }
-
-         if (btn.personajeRepresentado.Camp_Fatigado)
-        {
-          child.GetChild(10).gameObject.SetActive(true);
-        }
-        else { child.GetChild(10).gameObject.SetActive(false); }
-
-
-
-
-
-        if (pSel == btn.personajeRepresentado)
-        {
-          btn.transform.GetChild(12).gameObject.SetActive(true);
-
-        }
-        else
-        {
-          btn.transform.GetChild(12).gameObject.SetActive(false);
+          seleccionado.gameObject.SetActive(pSel == btn.personajeRepresentado);
         }
       }
     }
@@ -221,8 +196,14 @@ public class MenuPersonajes : MonoBehaviour
     pSel = pers;
     RuntimeAnalytics.TrackDesign("characters", "select", RuntimeAnalytics.ClassToken(pSel));
     ActualizarLista();
-    if (btnPers != null && btnPers.transform.childCount > 0)
-    { btnPers.transform.GetChild(12).gameObject.SetActive(true); }
+    if (btnPers != null)
+    {
+      Transform seleccionado = btnPers.transform.Find("Seleccionado");
+      if (seleccionado != null)
+      {
+        seleccionado.gameObject.SetActive(true);
+      }
+    }
 
     CancelInvoke("ActualizarInfo");
     ActualizarInfo();

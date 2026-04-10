@@ -35,7 +35,7 @@ public class ClaseDuelista : Unidad
         SincronizarEnGardeSegunBuffActual();
     }
 
-    public override async void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
+    public override async void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignorarEscudo = false)
     {
         float maxHpAlRecibir = mod_maxHP;
         bool eraSuTurnoAlRecibir = BattleManager.Instance != null && BattleManager.Instance.unidadActiva == this;
@@ -43,39 +43,43 @@ public class ClaseDuelista : Unidad
         float porcentajeUmbralPosturaDemandante = ObtenerUmbralPosturaDemandante(TieneBuffNombre(BuffNombreEnGarde));
 
         float hpAntes = HP_actual;
-        base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos);
+        base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos, ignorarEscudo);
+       
+        
         await EsperarResolucionDanioAsync(hpAntes, delayEfectos);
-        float danioRecibido = hpAntes - HP_actual;
-        if (danioRecibido > 0f && TieneBuffNombre(BuffNombreEnGarde))
+        
+        
+        await Task.Delay(1500); // Asegura que cualquier cambio de HP se haya procesado antes de continuar
+             float danioRecibido = hpAntes - HP_actual;
+         if (danioRecibido > 0f && TieneBuffNombre(BuffNombreEnGarde))
         {
             RemoverBuffNombre(BuffNombreEnGarde);
             NotificarFinEnGarde();
         }
-        ProcesarRiposteAlRecibirDanio(hpAntes);
+             ProcesarRiposteAlRecibirDanio(hpAntes);
 
-        bool activaPosturaDemandante = false;
-        if (puedeDispararPosturaDemandante)
-        {
-            float umbralPosturaDemandante = maxHpAlRecibir * porcentajeUmbralPosturaDemandante;
-            if (danioRecibido > umbralPosturaDemandante)
-            {
+             bool activaPosturaDemandante = false;
+             if (puedeDispararPosturaDemandante)
+             {    
+
+                 float umbralPosturaDemandante = maxHpAlRecibir * porcentajeUmbralPosturaDemandante;
+                 if (danioRecibido > umbralPosturaDemandante)
+               {
                 activaPosturaDemandante = ConsumirPosturaDemandante();
-            }
-        }
+               }
+             }
 
-        if (!activaPosturaDemandante)
-        {
-            return;
-        }
+             if (!activaPosturaDemandante)
+             {
+                 return;
+             }
 
-        await BattleManager.DelayCombateAsync(Mathf.Max(20, delayEfectos + 20));
+             if (HP_actual <= 0)
+             {
+                 return;
+             }
 
-        if (HP_actual <= 0)
-        {
-            return;
-        }
-
-        AplicarTambaleando(eraSuTurnoAlRecibir);
+             AplicarTambaleando(eraSuTurnoAlRecibir);
     }
 
     private async Task EsperarResolucionDanioAsync(float hpAntes, int delayEfectos)
@@ -405,12 +409,16 @@ public class ClaseDuelista : Unidad
 
     private void AplicarBonosEvasionMaestra(int nivel, Unidad atacante)
     {
-        if (nivel > 1)
+        if (nivel > 0)
         {
             Estados.Aplicar_MovimientoAbaratado(this, 1, this);
+              if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
+            {
+                BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+            }
         }
 
-        if (nivel > 2)
+        if (nivel > 1)
         {
             estado_evasion += 1;
             if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
@@ -573,6 +581,7 @@ public class ClaseDuelista : Unidad
         buff.cantDefensa -= 2;
         buff.AplicarBuff(this);
         ComponentCopier.CopyComponent(buff, gameObject);
+        RefrescarEstadoTambaleando();
     }
 
     private void AplicarTambaleandoEvasionMaestra(Unidad objetivo)
@@ -591,6 +600,24 @@ public class ClaseDuelista : Unidad
         buff.cantDefensa -= 2;
         buff.AplicarBuff(objetivo);
         ComponentCopier.CopyComponent(buff, objetivo.gameObject);
+    }
+
+    private void RefrescarEstadoTambaleando()
+    {
+        if (BattleManager.Instance == null)
+        {
+            return;
+        }
+
+        if (BattleManager.Instance.unidadActiva == this && ObtenerAPActual() > mod_maxAccionP)
+        {
+            EstablecerAPActualA(Mathf.FloorToInt(mod_maxAccionP));
+        }
+
+        if (BattleManager.Instance.scUIInfoChar != null)
+        {
+            BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+        }
     }
 
     private void AplicarVulnerabilidadExpuesta(Unidad objetivo)

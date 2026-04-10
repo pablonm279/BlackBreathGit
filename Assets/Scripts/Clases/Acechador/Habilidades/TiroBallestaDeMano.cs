@@ -334,7 +334,7 @@ public class TiroBallestaDeMano : Habilidad
 
         if (flight != null && destino != null)
         {
-            flight.Configure(transform, destino, 0.12f, 5.0f);
+            flight.Configure(transform, destino, 0.12f, 5.6f);
             await flight.EsperarImpactoAsync();
         }
         else

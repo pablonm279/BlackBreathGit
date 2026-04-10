@@ -237,7 +237,7 @@ public class GritoMotivador : Habilidad
           : (TRADU.i != null && TRADU.i.nIdioma == 3)
             ? nombreObjetivo + " se encoraja com Grito Motivador"
           : nombreObjetivo + " se envalentona por Grito Motivador";
-        objetivo.SumarValentia(1, motivoValentia);
+        objetivo.SumarValentia(1, motivoValentia, mostrarTextoFlotante: false);
        }
 
        if(NIVEL == 4)

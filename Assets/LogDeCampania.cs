@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 [DisallowMultipleComponent]
 public class LogDeCampania : MonoBehaviour
@@ -14,170 +14,195 @@ public class LogDeCampania : MonoBehaviour
     [Tooltip("Máxima cantidad de entradas (eventos). Se recorta por FIFO.")]
     [SerializeField] private int maxEntradas = 80;
 
-    [Tooltip("Día actual (se puede setear desde CampaignManager).")]
+    [Tooltip("Día actual de campaña (se puede setear desde CampaignManager).")]
     [SerializeField] private int diaActual = 1;
 
+    private int rondaActual = 1;
+
     [Header("Estilos")]
-    [SerializeField] private string colorDia = "#2c81b9ff";     // Encabezado de día (prefijo de línea)
-    [SerializeField] private string colorActual = "#ffffffff";  // Texto día actual
-    [SerializeField] private string colorPasado = "#d4d4d4ff";  // Texto días previos
-    [SerializeField] private int sizeActualPct = 115;         // % tamaño día actual
-    [SerializeField] private int sizePasadoPct = 80;          // % tamaño días pasados
+    [SerializeField] private string colorDia = "#2c81b9ff";
+    [SerializeField] private string colorActual = "#ffffffff";
+    [SerializeField] private string colorPasado = "#d4d4d4ff";
+    [SerializeField] private int sizeActualPct = 115;
+    [SerializeField] private int sizePasadoPct = 80;
 
-    private readonly List<EntradaLog> _entradas = new();
+    private readonly List<EntradaLog> entradasCampania = new();
+    private readonly List<EntradaLog> entradasBatalla = new();
+    private bool mostrandoCombate;
 
-    // Permite tags básicos (b, i, color, size, mark) y remueve el resto para evitar anidaciones peligrosas.
-    private static readonly Regex _regexTagsNoPermitidos =
+    private static readonly Regex regexTagsNoPermitidos =
         new Regex(@"</?(?!\s*(?:b|i|color|size|mark)\b)[^>]+>",
                   RegexOptions.IgnoreCase | RegexOptions.Compiled);
-    // Si el mensaje ya empieza con "-", lo quitamos para evitar "Día X - -Texto".
-    private static readonly Regex _regexGuionInicial =
+
+    private static readonly Regex regexGuionInicial =
         new Regex(@"^((?:\s*<[^>]+>\s*)*)-\s*", RegexOptions.Compiled);
 
     private struct EntradaLog
     {
         public int Dia;
-        public string Texto; // Siempre sin tags
+        public string Texto;
     }
 
-    // --- API pública ---
-
-    /// <summary>Actualiza el día actual (p.ej., al avanzar nodo/viaje).</summary>
-    public void SetDiaActual(int numeroTurno)
+    public void SetDiaActual(int numeroTurno, bool esCombate = false)
     {
+        if (esCombate)
+        {
+            rondaActual = numeroTurno;
+            if (mostrandoCombate)
+            {
+                ReconstruirTextoAjustado(true);
+            }
+            return;
+        }
+
         diaActual = numeroTurno;
-        ReconstruirTextoAjustado();
+        if (!mostrandoCombate)
+        {
+            ReconstruirTextoAjustado(false);
+        }
     }
+
     public int GetDiaActual()
     {
         return diaActual;
     }
 
-    /// <summary>Agrega una entrada y refresca el texto.</summary>
     public void Escribir(string mensaje, bool esCombate = false)
     {
-        if (txtLog == null) return;
-        // Si estamos en combate y el BattleManager pide silenciar logs (preparación), no escribir
-        if (esCombate && BattleManager.Instance != null && BattleManager.Instance.silenciarLogCombate)
+        if (txtLog == null)
+        {
             return;
+        }
 
-        var limpia = Sanitizar(mensaje);
+        if (esCombate && BattleManager.Instance != null && BattleManager.Instance.silenciarLogCombate)
+        {
+            return;
+        }
 
-        _entradas.Add(new EntradaLog { Dia = diaActual, Texto = limpia });
+        string limpia = Sanitizar(mensaje);
+        List<EntradaLog> entradasObjetivo = ObtenerEntradas(esCombate);
+        int diaEntrada = esCombate ? rondaActual : diaActual;
 
+        entradasObjetivo.Add(new EntradaLog { Dia = diaEntrada, Texto = limpia });
+        mostrandoCombate = esCombate;
 
-        RecortarSiExcede();
+        RecortarSiExcede(entradasObjetivo);
         ReconstruirTextoAjustado(esCombate);
     }
 
-    string _textoCampañaAnterior = "";
-
-    /// <summary>Limpia todo el log (opcional).</summary>
     public void Limpiar()
     {
-        _entradas.Clear();
-        txtLog.text = "";
+        entradasCampania.Clear();
+        entradasBatalla.Clear();
+        mostrandoCombate = false;
+        if (txtLog != null)
+        {
+            txtLog.text = "";
+        }
     }
 
     public void LimpiarDesdeCampania()
     {
-        _textoCampañaAnterior = txtLog.text;
-        _entradas.Clear();
-        txtLog.text = "";
+        entradasBatalla.Clear();
+        mostrandoCombate = true;
+        if (txtLog != null)
+        {
+            txtLog.text = "";
+        }
     }
 
     public void LimpiarDesdeBatalla()
     {
-        _textoCampañaAnterior = "";
-        _entradas.Clear();
-        txtLog.text = _textoCampañaAnterior;
+        entradasBatalla.Clear();
+        mostrandoCombate = false;
+        ReconstruirTextoAjustado(false);
     }
 
-    // --- Internos ---
-
-    private void RecortarSiExcede()
+    private List<EntradaLog> ObtenerEntradas(bool esCombate)
     {
-        if (_entradas.Count <= maxEntradas) return;
-
-        int removeCount = _entradas.Count - maxEntradas;
-        _entradas.RemoveRange(0, removeCount);
+        return esCombate ? entradasBatalla : entradasCampania;
     }
 
-   private void ReconstruirTextoAjustado(bool esCombate = false)
-{
-    if (txtLog == null) return;
-
-    // 1) Construir una versión completa del texto (sin recortar)
-    string RenderizarEntradas(List<EntradaLog> entradas)
+    private void RecortarSiExcede(List<EntradaLog> entradas)
     {
-        var sb = new StringBuilder(entradas.Count * 64);
-        for (int i = 0; i < entradas.Count; i++)
+        if (entradas.Count <= maxEntradas)
         {
-            var e = entradas[i];
-                string mensajeRender = NormalizarMensajeRender(e.Texto);
-                string prefijoDia;
-                if (esCombate)
+            return;
+        }
+
+        int removeCount = entradas.Count - maxEntradas;
+        entradas.RemoveRange(0, removeCount);
+    }
+
+    private void ReconstruirTextoAjustado(bool esCombate = false)
+    {
+        if (txtLog == null)
+        {
+            return;
+        }
+
+        List<EntradaLog> entradasActivas = ObtenerEntradas(esCombate);
+        int diaActualContexto = esCombate ? rondaActual : diaActual;
+
+        string RenderizarEntradas(List<EntradaLog> entradas)
+        {
+            var sb = new StringBuilder(entradas.Count * 64);
+            for (int i = 0; i < entradas.Count; i++)
+            {
+                EntradaLog entrada = entradas[i];
+                string mensajeRender = NormalizarMensajeRender(entrada.Texto);
+                string etiqueta = esCombate
+                    ? (TRADU.i != null ? TRADU.i.Traducir("Ronda") : "Ronda")
+                    : (TRADU.i != null ? TRADU.i.Traducir("Día") : "Día");
+                string prefijoDia = $"<color={colorDia}>- {etiqueta} {entrada.Dia}</color>";
+
+                if (entrada.Dia == diaActualContexto)
                 {
-                     string etiquetaRonda = TRADU.i != null ? TRADU.i.Traducir("Ronda") : "Ronda";
-                     prefijoDia = $"<color={colorDia}>- {etiquetaRonda} {e.Dia}</color>";
+                    sb.Append("<size=").Append(sizeActualPct).Append("%>")
+                      .Append("<color=").Append(colorActual).Append(">")
+                      .Append(prefijoDia).Append(" - ").Append(mensajeRender)
+                      .Append("</color></size>");
                 }
                 else
                 {
-                     string etiquetaDia = TRADU.i != null ? TRADU.i.Traducir("Día") : "Día";
-                     prefijoDia = $"<color={colorDia}>- {etiquetaDia} {e.Dia}</color>";
+                    sb.Append("<i>")
+                      .Append("<size=").Append(sizePasadoPct).Append("%>")
+                      .Append("<color=").Append(colorPasado).Append(">")
+                      .Append(prefijoDia).Append(" - ").Append(mensajeRender)
+                      .Append("</color></size>")
+                      .Append("</i>");
                 }
 
-            if (e.Dia == diaActual)
-            {
-                sb.Append("<size=").Append(sizeActualPct).Append("%>")
-                  .Append("<color=").Append(colorActual).Append(">")
-                  .Append(prefijoDia).Append(" - ").Append(mensajeRender)
-                  .Append("</color></size>");
+                if (i < entradas.Count - 1)
+                {
+                    sb.Append('\n');
+                }
             }
-            else
-            {
-                sb.Append("<i>")
-                  .Append("<size=").Append(sizePasadoPct).Append("%>")
-                  .Append("<color=").Append(colorPasado).Append(">")
-                  .Append(prefijoDia).Append(" - ").Append(mensajeRender)
-                  .Append("</color></size>")
-                  .Append("</i>");
-            }
-            if (i < entradas.Count - 1) sb.Append('\n');
+
+            return sb.ToString();
         }
-        return sb.ToString();
-    }
 
-    // 2) Intentar con todas las entradas y medir
-    txtLog.enableWordWrapping = true;                       // que haga wrap
-    txtLog.richText = true;                                 // usamos tags
-    txtLog.overflowMode = TextOverflowModes.Truncate;       // por si acaso
-    txtLog.enableAutoSizing = false;                        // fuente fija
+        txtLog.enableWordWrapping = true;
+        txtLog.richText = true;
+        txtLog.overflowMode = TextOverflowModes.Truncate;
+        txtLog.enableAutoSizing = false;
 
-    // Rect visible del TMP
-    var rt = (RectTransform)txtLog.transform;
-    float maxWidth  = rt.rect.width;
-    float maxHeight = rt.rect.height;
+        var rt = (RectTransform)txtLog.transform;
+        float maxWidth = rt.rect.width;
+        float maxHeight = rt.rect.height;
 
-    // Construcción inicial
-    string texto = RenderizarEntradas(_entradas);
-    txtLog.text = texto;
+        string texto = RenderizarEntradas(entradasActivas);
+        txtLog.text = texto;
 
-    // 3) Medir altura preferida; si excede, vamos borrando lo más viejo
-    //    (FIFO) hasta que entre por completo.
-    //    Para medir: GetPreferredValues(con width acotado) devuelve la altura real que necesita.
-    Vector2 pref = txtLog.GetPreferredValues(txtLog.text, maxWidth, 0);
+        Vector2 pref = txtLog.GetPreferredValues(txtLog.text, maxWidth, 0);
+        const float margen = 2f;
 
-    // margen de seguridad para que no "respire" al pixel
-    const float margen = 2f;
+        if (pref.y <= maxHeight - margen)
+        {
+            return;
+        }
 
-    if (pref.y > maxHeight - margen)
-    {
-        // Copia de trabajo
-        var tmpLista = new List<EntradaLog>(_entradas);
-
-        // Vamos quitando del principio hasta que entre
-        // (quitamos la entrada 0 que es la más vieja).
+        var tmpLista = new List<EntradaLog>(entradasActivas);
         while (tmpLista.Count > 0)
         {
             tmpLista.RemoveAt(0);
@@ -187,32 +212,32 @@ public class LogDeCampania : MonoBehaviour
 
             if (pref.y <= maxHeight - margen)
             {
-                // Aplicamos el recorte definitivo al estado
-                _entradas.Clear();
-                _entradas.AddRange(tmpLista);
+                entradasActivas.Clear();
+                entradasActivas.AddRange(tmpLista);
                 break;
             }
         }
     }
-}
-
 
     private static string Sanitizar(string s)
     {
-        if (string.IsNullOrWhiteSpace(s)) return string.Empty;
-        // Quita etiquetas no permitidas pero conserva color/size/b/i/mark
-        string limpio = _regexTagsNoPermitidos.Replace(s, string.Empty);
-        // Normalizar saltos de línea a una sola línea (log = 1 evento por línea)
+        if (string.IsNullOrWhiteSpace(s))
+        {
+            return string.Empty;
+        }
+
+        string limpio = regexTagsNoPermitidos.Replace(s, string.Empty);
         limpio = limpio.Replace("\r\n", " ").Replace('\n', ' ').Trim();
         return limpio;
     }
 
     private static string NormalizarMensajeRender(string s)
     {
-        if (string.IsNullOrWhiteSpace(s)) return string.Empty;
-        return _regexGuionInicial.Replace(s, "$1");
+        if (string.IsNullOrWhiteSpace(s))
+        {
+            return string.Empty;
+        }
+
+        return regexGuionInicial.Replace(s, "$1");
     }
 }
-
-
-

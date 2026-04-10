@@ -8,9 +8,9 @@ using System.Data.Common;
 public class EnemigoUnidadRufianMazo : Unidad
 {
     bool yaEnfurecio = false;
-    public async override void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
+    public async override void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayefectos = 0, bool ignorarEscudo = false)
     {
-        base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos);
+        base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayefectos, ignorarEscudo);
 
         Invoke("EnfurecerRufian", 1.5f);
 

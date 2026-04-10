@@ -14,7 +14,7 @@ public class Lamentodelbosque : IAHabilidad
   [SerializeField] private int bonusAtaque;
   [SerializeField] private int XdDanio;
   [SerializeField] private int daniodX;
-  [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+  [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano
 
   [SerializeField] private int zonaX;
   [SerializeField] private int zonaY;
@@ -94,7 +94,7 @@ public class Lamentodelbosque : IAHabilidad
     foreach (Casilla cas in casillas)
     {
       //-----
-      //Acá aplicar efectos visuales a la casilla si corresponde
+      //Acï¿½ aplicar efectos visuales a la casilla si corresponde
       //-----
 
 
@@ -176,7 +176,7 @@ public class Lamentodelbosque : IAHabilidad
       if (obj.TiradaSalvacion(obj.mod_TSMental, 15))
       {
         /////////////////////////////////////////////
-        //BUFF ---- Así se aplica un buff/debuff
+        //BUFF ---- Asï¿½ se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Atemorizado";
         buff.boolfDebufftBuff = false;
@@ -189,7 +189,7 @@ public class Lamentodelbosque : IAHabilidad
         buff.AplicarBuff(obj);
 
 
-        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuraciï¿½n del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, obj.gameObject);
 
 
@@ -217,33 +217,33 @@ public class Lamentodelbosque : IAHabilidad
     }
 
 
-  public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
+  public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lï¿½gica
   {
 
 
 
-    // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+    // Obtener la unidad dueï¿½a
+    Unidad unidadDueÃ±a = gameObject.GetComponent<Unidad>();
+    if (unidadDueÃ±a == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obstáculos
+    // Filtrar los obstï¿½culos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderBy(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueÃ±a.CasillaPosicion.posY))
         .ToList();
 
-    // Si hay unidades disponibles, devolver la primera
+    // Si hay unidades disponibles, devolver la primeraasdassd
     if (unidadesOrdenadas.Any())
     {
       return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obstï¿½culo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
 

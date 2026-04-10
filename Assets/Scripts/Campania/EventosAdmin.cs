@@ -903,10 +903,10 @@ public class EventosAdmin : MonoBehaviour
             textBotonA.text = TRADU.i.Traducir("Cargarlo");
             textBotonB.text = TRADU.i.Traducir("Dejarlo");
         }
-        if (ID == 214) // Mano Cierta
+        if (ID == 214) // Manos Certeras
         {
             imRetrato.sprite = Evento209;
-            txtTitulo.text = TRADU.i.Traducir("Mano Cierta");
+            txtTitulo.text = TRADU.i.Traducir("Manos Certeras");
 
             participanteEvento1 = CampaignManager.Instance.ObtenerPersonajeAleatorio();
             retratoParticipante1.SetActive(participanteEvento1 != null);
@@ -923,7 +923,7 @@ public class EventosAdmin : MonoBehaviour
                 txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si lo intentas, hará una Tirada de Salvación: TS Reflejos DC 13. Si la supera, se revelarán nodos cercanos, ganará 35 Experiencia y la Caravana obtendrá +4 Esperanza. Si falla, obtendrá Herida.</color>\n\n");
             }
 
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides dejarla ir, +3 Esperanza.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides dejarla ir, -3 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Recuperarla");
             textBotonB.text = TRADU.i.Traducir("Dejarla ir");
@@ -2199,6 +2199,7 @@ public class EventosAdmin : MonoBehaviour
         if (personaje.itemArmadura != null) total += personaje.itemArmadura.buffTSReflejo;
         if (personaje.Accesorio1 != null) total += personaje.Accesorio1.buffTSReflejo;
         if (personaje.Accesorio2 != null) total += personaje.Accesorio2.buffTSReflejo;
+        if (personaje.TieneCampBendecido()) total += 3;
 
         return total;
     }
@@ -2216,6 +2217,7 @@ public class EventosAdmin : MonoBehaviour
         if (personaje.itemArmadura != null) total += personaje.itemArmadura.buffTSFortaleza;
         if (personaje.Accesorio1 != null) total += personaje.Accesorio1.buffTSFortaleza;
         if (personaje.Accesorio2 != null) total += personaje.Accesorio2.buffTSFortaleza;
+        if (personaje.TieneCampBendecido()) total += 3;
 
         return total;
     }
@@ -2233,6 +2235,7 @@ public class EventosAdmin : MonoBehaviour
         if (personaje.itemArmadura != null) total += personaje.itemArmadura.buffTSMental;
         if (personaje.Accesorio1 != null) total += personaje.Accesorio1.buffTSMental;
         if (personaje.Accesorio2 != null) total += personaje.Accesorio2.buffTSMental;
+        if (personaje.TieneCampBendecido()) total += 3;
 
         return total;
     }
@@ -2812,7 +2815,7 @@ public class EventosAdmin : MonoBehaviour
             }
             else if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Fatigado = true;
+                participanteEvento1.SetCampFatigado(true);
             }
             gameObject.SetActive(false);
         }
@@ -2837,6 +2840,14 @@ public class EventosAdmin : MonoBehaviour
             else if (participanteEvento1 != null)
             {
                 participanteEvento1.Camp_Herido = true;
+
+                 CampaignManager.Instance.EscribirLog(
+                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
+                    + TRADU.i.Traducir(" falló su Tirada de Salvación de Reflejos (1d20: ")
+                    + tirada + TRADU.i.Traducir(" + ")
+                    + tsReflejos + TRADU.i.Traducir(" vs DC ")
+                    + DificultadManoCierta + TRADU.i.Traducir("), y ha sufrido una herida."));
+            
             }
             gameObject.SetActive(false);
         }
@@ -3492,7 +3503,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 214)
         {
-            CampaignManager.Instance.CambiarEsperanzaActual(3);
+            CampaignManager.Instance.CambiarEsperanzaActual(-4);
             gameObject.SetActive(false);
         }
         if (eventoActual == 215)

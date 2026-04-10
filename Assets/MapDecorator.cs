@@ -113,6 +113,7 @@ public class MapDecorator : MonoBehaviour
     Vector3[] basePlaneExtensionVertices;
     int relieveSeed;
     float alturaRelieveActual;
+    int decorBatchCounter;
 
     void Awake()
     {
@@ -180,6 +181,8 @@ public class MapDecorator : MonoBehaviour
             int varianteAleatoria = System.Guid.NewGuid().GetHashCode();
             relieveSeed = (zonaId * 73856093) ^ varianteAleatoria ^ 0x2f6e2b1;
         }
+
+        ReiniciarSesionDecoracion();
         alturaRelieveActual = ObtenerAlturaRelieveParaZona(zonaId);
 
         AplicarRelieveAPlano(planeMesh, runtimePlaneMesh, basePlaneVertices, planeCollider);
@@ -253,6 +256,8 @@ public class MapDecorator : MonoBehaviour
     {
         for (int i = transform.childCount - 1; i >= 0; i--)
             DestroyImmediate(transform.GetChild(i).gameObject);
+
+        ReiniciarSesionDecoracion();
     }
 
     // Firma compatible con tu llamada previa
@@ -299,8 +304,13 @@ public class MapDecorator : MonoBehaviour
     {
         if (prefab == null) { Debug.LogError("[MapDecorator] Prefab nulo."); return; }
 
-        if (usarSemillaAleatoria) semilla = System.Guid.NewGuid().GetHashCode();
-        rng = new System.Random(semilla);
+        int batchSeedBase = relieveSeed != 0
+            ? relieveSeed
+            : (usarSemillaAleatoria ? System.Guid.NewGuid().GetHashCode() : semilla);
+        int prefabSeed = prefab.name != null ? prefab.name.GetHashCode() : 0;
+        int batchIndex = decorBatchCounter++;
+        int batchSeed = unchecked((batchSeedBase * 397) ^ prefabSeed ^ (batchIndex * 486187739) ^ semilla);
+        rng = new System.Random(batchSeed);
 
         this.distCamino = distCaminoOverride;
         this.distNodo   = distNodoOverride;
@@ -448,6 +458,22 @@ public class MapDecorator : MonoBehaviour
     bool TryPrimerPunto(out Vector3 p0)
     {
         Vector3 centro = CentroTerrenoMundo();
+        float radioCentro = Mathf.Max(0.6f, radioPoisson * 0.35f);
+
+        for (int i = 0; i < 6; i++)
+        {
+            float distancia = radioCentro * (0.25f + (float)rng.NextDouble() * 0.75f);
+            Vector3 candidatoCentrico = MoverEnPlano(centro, RandomUnit(), distancia);
+            if (!DentroDelRect(candidatoCentrico))
+                continue;
+
+            if (PasaExclusiones(candidatoCentrico) && PasaPoisson(candidatoCentrico))
+            {
+                p0 = candidatoCentrico;
+                return true;
+            }
+        }
+
         if (PasaExclusiones(centro) && PasaPoisson(centro))
         {
             p0 = centro;
@@ -759,6 +785,11 @@ public class MapDecorator : MonoBehaviour
     }
 
     // ===================== Util geométricas =====================
+    void ReiniciarSesionDecoracion()
+    {
+        decorBatchCounter = 0;
+    }
+
     Vector3 RandomPointInsideRect()
     {
         float rx = Mathf.Lerp(safeMinX, safeMaxX, (float)rng.NextDouble());

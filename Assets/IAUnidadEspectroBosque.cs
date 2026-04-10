@@ -29,7 +29,7 @@ public class IAUnidadEspectroBosque : Unidad
         return EstaEnPlanoEtereo() && tipoDanio >= 1 && tipoDanio <= 3;
     }
 
-    public override async void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0)
+    public override async void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignorarEscudo = false)
     {
         if (EsInvulnerableAFisico(tipoDanio) && estado_invulnerable == 0 && HP_actual > 0)
         {
@@ -38,7 +38,7 @@ public class IAUnidadEspectroBosque : Unidad
             return;
         }
 
-        base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos);
+        base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos, ignorarEscudo);
     }
 
     public override void RecibirDanioBonusElemental(float Xddanio, int tipoDanio, Unidad uCausante)

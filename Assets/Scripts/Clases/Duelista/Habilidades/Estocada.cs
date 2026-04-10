@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class Estocada : Habilidad
 {
-    [SerializeField] private GameObject VFXenObjetivo;
-    [SerializeField] private int bonusAtaque;
-    [SerializeField] private int XdDanio;
-    [SerializeField] private int daniodX;
-    [SerializeField] private int criticoRangoHab;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente
+    [SerializeField] protected GameObject VFXenObjetivo;
+    [SerializeField] protected int bonusAtaque;
+    [SerializeField] protected int XdDanio;
+    [SerializeField] protected int daniodX;
+    [SerializeField] protected int criticoRangoHab;
+    [SerializeField] protected int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente
 
     Casilla Origen;
     private List<Unidad> lObjetivosPosibles = new List<Unidad>();

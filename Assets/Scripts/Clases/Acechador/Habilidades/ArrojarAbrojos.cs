@@ -45,9 +45,9 @@ public class ArrojarAbrojos : Habilidad
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
       int dcBase = NIVEL > 2 ? 12 : 11;
-      int bleedAplicado = 2 + (NIVEL == 4 ? 1 : 0);
+      int bleedAplicado = 4 + (NIVEL == 4 ? 1 : 0);
       bool drenaAp = NIVEL == 5;
-      string danioBase = NIVEL > 1 ? "1d8 + 1" : "1d8";
+      string danioBase = NIVEL > 1 ? "1d12 + 1" : "1d12";
 
       string tituloEs = "Arrojar Abrojos I";
       string tituloEn = "Throw Caltrops I";

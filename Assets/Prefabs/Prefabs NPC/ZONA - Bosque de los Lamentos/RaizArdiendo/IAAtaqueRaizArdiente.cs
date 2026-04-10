@@ -157,7 +157,7 @@ public class IAAtaqueRaizArdiente : IAHabilidad
 
 public override object EstablecerObjetivoPrioritario() 
 {
-    // Obtener la unidad due�a
+    // Obtener la unidad Dueña
     Unidad unidadDueña = gameObject.GetComponent<Unidad>();
     if (unidadDueña == null) return null;
 

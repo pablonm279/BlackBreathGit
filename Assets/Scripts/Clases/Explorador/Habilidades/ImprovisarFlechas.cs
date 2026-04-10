@@ -27,7 +27,7 @@ public class ImprovisarFlechas : Habilidad
       esCargable = false;
       esMelee = false;
       esHostil = false;
-      cooldownMax = 4;
+      cooldownMax = 1;
       bAfectaObstaculos = false;
       
      
@@ -41,7 +41,7 @@ public class ImprovisarFlechas : Habilidad
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
-      int flechasFijas = (NIVEL > 1 ? 1 : 0) + (NIVEL == 4 ? 1 : 0);
+      int flechasFijas = (NIVEL > 1 ? 2 : 1) + (NIVEL == 4 ? 1 : 0);
       int buffCrit = 1 + (NIVEL > 2 ? 1 : 0);
       int buffPenetracion = 1;
       int duracionBuff = 2;
@@ -186,7 +186,7 @@ public class ImprovisarFlechas : Habilidad
        BattleManager.Instance.EscribirLog(TRADU.i.Traducir(scEstaUnidad.uNombre) + " " + TRADU.i.Traducir("usa ") + TRADU.i.Traducir(nombre) + ".");
 
        int APusados = (int)scEstaUnidad.ObtenerAPActual();
-       int flechasCreadas = 0;
+       int flechasCreadas = 1;
       
         for (int veces = 0; veces < APusados; veces++)
         {

@@ -149,6 +149,7 @@ public static class EncounterGenerator
       FillUnits(generated, chosenFaction, totalBudget, initialCap, maxTierAllowed, minUnits);
       EnforceMinimumComposition(generated, chosenFaction, battleType, maxTierAllowed, minUnits);
       EnsureMandatoryReinforcements(generated, chosenFaction, maxTierAllowed);
+      EnforceUniqueUnits(generated, chosenFaction, battleType, maxTierAllowed, minUnits);
       MarkReinforcements(generated, initialCap);
       generated.totalBudget = CalcularCostoTotal(generated);
       generated.reinforcementDelay = HasReinforcements(generated)
@@ -196,22 +197,31 @@ public static class EncounterGenerator
       int remaining = budget;
       int safetyCounter = 0;
       Dictionary<GameObject, int> prefabUsage = new Dictionary<GameObject, int>();
+      Dictionary<string, int> uniqueUsage = new Dictionary<string, int>();
 
       while (definition.units.Count < targetCount && safetyCounter < 200)
       {
          safetyCounter++;
          int unitsLeft = Mathf.Max(1, targetCount - definition.units.Count);
          int maxCostNow = remaining - cheapestTier * Mathf.Max(0, unitsLeft - 1);
-         int selectedTier = ChooseTierForSlot(faction, definition.battleType, archetype, remaining, unitsLeft, Mathf.Max(cheapestTier, maxCostNow), maxTierAllowed);
+         int selectedTier = ChooseTierForSlot(
+            faction,
+            definition.battleType,
+            archetype,
+            remaining,
+            unitsLeft,
+            Mathf.Max(cheapestTier, maxCostNow),
+            maxTierAllowed,
+            uniqueUsage);
          if (selectedTier == 0)
          {
             break;
          }
 
-         GameObject prefab = PickPrefabFromTierWithVariety(faction, selectedTier, prefabUsage);
+         GameObject prefab = PickPrefabFromTierWithVariety(faction, selectedTier, prefabUsage, uniqueUsage);
          if (prefab == null)
          {
-            break;
+            continue;
          }
 
          definition.units.Add(new EncounterUnitSlot
@@ -221,10 +231,11 @@ public static class EncounterGenerator
             spawnAsReinforcement = false
          });
          RegistrarUsoPrefab(prefabUsage, prefab, 1);
+         RegistrarUsoUnico(uniqueUsage, prefab, 1);
          remaining -= selectedTier;
       }
 
-      SpendRemainingBudget(definition, faction, definition.battleType, archetype, maxTierAllowed, maxUnits, ref remaining, prefabUsage);
+      SpendRemainingBudget(definition, faction, definition.battleType, archetype, maxTierAllowed, maxUnits, ref remaining, prefabUsage, uniqueUsage);
    }
 
    static CompositionArchetype ChooseCompositionArchetype(BattleEncounterType battleType, int budget, int cheapestTier, int highestTier, int minUnits, int maxUnits)
@@ -261,7 +272,7 @@ public static class EncounterGenerator
          default:
             balancedWeight = 4.4f;
             swarmWeight += canSwarm ? 0.9f : 0f;
-            fewStrongWeight *= 1.4f;
+            fewStrongWeight *= 0.12f;
             reinforcedWeight = 0.3f;
             break;
       }
@@ -327,10 +338,18 @@ public static class EncounterGenerator
       return UnityEngine.Random.Range(minBand, maxBand + 1);
    }
 
-   static int ChooseTierForSlot(EnemyFactionConfig faction, BattleEncounterType battleType, CompositionArchetype archetype, int remainingBudget, int unitsLeft, int maxAffordableTierBudget, int maxTierAllowed)
+   static int ChooseTierForSlot(
+      EnemyFactionConfig faction,
+      BattleEncounterType battleType,
+      CompositionArchetype archetype,
+      int remainingBudget,
+      int unitsLeft,
+      int maxAffordableTierBudget,
+      int maxTierAllowed,
+      Dictionary<string, int> uniqueUsage)
    {
       int capBudget = Mathf.Max(1, maxAffordableTierBudget);
-      var availableTiers = GetAvailableTiers(faction, capBudget, maxTierAllowed);
+      var availableTiers = GetAvailableTiers(faction, capBudget, maxTierAllowed, uniqueUsage);
       if (availableTiers.Count == 0)
       {
          return 0;
@@ -409,9 +428,14 @@ public static class EncounterGenerator
       return availableTiers[availableTiers.Count - 1];
    }
 
-   static GameObject PickPrefabFromTierWithVariety(EnemyFactionConfig faction, int tier, Dictionary<GameObject, int> prefabUsage)
+   static GameObject PickPrefabFromTierWithVariety(
+      EnemyFactionConfig faction,
+      int tier,
+      Dictionary<GameObject, int> prefabUsage,
+      Dictionary<string, int> uniqueUsage,
+      string ignoreUniqueKey = null)
    {
-      var tierList = GetTierList(faction, tier);
+      var tierList = GetEligibleTierList(faction, tier, uniqueUsage, ignoreUniqueKey);
       if (tierList == null || tierList.Count == 0)
       {
          return null;
@@ -461,7 +485,42 @@ public static class EncounterGenerator
       prefabUsage[prefab] = current;
    }
 
-   static void SpendRemainingBudget(EncounterDefinition definition, EnemyFactionConfig faction, BattleEncounterType battleType, CompositionArchetype archetype, int maxTierAllowed, int maxUnits, ref int remainingBudget, Dictionary<GameObject, int> prefabUsage)
+   static void RegistrarUsoUnico(Dictionary<string, int> uniqueUsage, GameObject prefab, int delta)
+   {
+      if (uniqueUsage == null || prefab == null || delta == 0)
+      {
+         return;
+      }
+
+      string uniqueKey = GetUniqueEncounterKey(prefab);
+      if (string.IsNullOrEmpty(uniqueKey))
+      {
+         return;
+      }
+
+      int current = 0;
+      uniqueUsage.TryGetValue(uniqueKey, out current);
+      current = Mathf.Max(0, current + delta);
+      if (current == 0)
+      {
+         uniqueUsage.Remove(uniqueKey);
+      }
+      else
+      {
+         uniqueUsage[uniqueKey] = current;
+      }
+   }
+
+   static void SpendRemainingBudget(
+      EncounterDefinition definition,
+      EnemyFactionConfig faction,
+      BattleEncounterType battleType,
+      CompositionArchetype archetype,
+      int maxTierAllowed,
+      int maxUnits,
+      ref int remainingBudget,
+      Dictionary<GameObject, int> prefabUsage,
+      Dictionary<string, int> uniqueUsage)
    {
       int cheapestTier = GetCheapestTierAvailable(faction, maxTierAllowed);
       if (cheapestTier == 0)
@@ -478,14 +537,14 @@ public static class EncounterGenerator
             || remainingBudget < cheapestTier * 2;
 
          bool changed = preferUpgrade
-            ? TryUpgradeExistingUnit(definition, faction, archetype, maxTierAllowed, ref remainingBudget, prefabUsage)
-            : TryAddExtraUnit(definition, faction, battleType, archetype, maxTierAllowed, maxUnits, ref remainingBudget, prefabUsage);
+            ? TryUpgradeExistingUnit(definition, faction, archetype, maxTierAllowed, ref remainingBudget, prefabUsage, uniqueUsage)
+            : TryAddExtraUnit(definition, faction, battleType, archetype, maxTierAllowed, maxUnits, ref remainingBudget, prefabUsage, uniqueUsage);
 
          if (!changed)
          {
             changed = preferUpgrade
-               ? TryAddExtraUnit(definition, faction, battleType, archetype, maxTierAllowed, maxUnits, ref remainingBudget, prefabUsage)
-               : TryUpgradeExistingUnit(definition, faction, archetype, maxTierAllowed, ref remainingBudget, prefabUsage);
+               ? TryAddExtraUnit(definition, faction, battleType, archetype, maxTierAllowed, maxUnits, ref remainingBudget, prefabUsage, uniqueUsage)
+               : TryUpgradeExistingUnit(definition, faction, archetype, maxTierAllowed, ref remainingBudget, prefabUsage, uniqueUsage);
          }
 
          if (!changed)
@@ -495,20 +554,29 @@ public static class EncounterGenerator
       }
    }
 
-   static bool TryAddExtraUnit(EncounterDefinition definition, EnemyFactionConfig faction, BattleEncounterType battleType, CompositionArchetype archetype, int maxTierAllowed, int maxUnits, ref int remainingBudget, Dictionary<GameObject, int> prefabUsage)
+   static bool TryAddExtraUnit(
+      EncounterDefinition definition,
+      EnemyFactionConfig faction,
+      BattleEncounterType battleType,
+      CompositionArchetype archetype,
+      int maxTierAllowed,
+      int maxUnits,
+      ref int remainingBudget,
+      Dictionary<GameObject, int> prefabUsage,
+      Dictionary<string, int> uniqueUsage)
    {
       if (definition == null || definition.units.Count >= maxUnits)
       {
          return false;
       }
 
-      int selectedTier = ChooseTierForSlot(faction, battleType, archetype, remainingBudget, 1, remainingBudget, maxTierAllowed);
+      int selectedTier = ChooseTierForSlot(faction, battleType, archetype, remainingBudget, 1, remainingBudget, maxTierAllowed, uniqueUsage);
       if (selectedTier == 0)
       {
          return false;
       }
 
-      GameObject prefab = PickPrefabFromTierWithVariety(faction, selectedTier, prefabUsage);
+      GameObject prefab = PickPrefabFromTierWithVariety(faction, selectedTier, prefabUsage, uniqueUsage);
       if (prefab == null)
       {
          return false;
@@ -521,11 +589,19 @@ public static class EncounterGenerator
          spawnAsReinforcement = false
       });
       RegistrarUsoPrefab(prefabUsage, prefab, 1);
+      RegistrarUsoUnico(uniqueUsage, prefab, 1);
       remainingBudget -= selectedTier;
       return true;
    }
 
-   static bool TryUpgradeExistingUnit(EncounterDefinition definition, EnemyFactionConfig faction, CompositionArchetype archetype, int maxTierAllowed, ref int remainingBudget, Dictionary<GameObject, int> prefabUsage)
+   static bool TryUpgradeExistingUnit(
+      EncounterDefinition definition,
+      EnemyFactionConfig faction,
+      CompositionArchetype archetype,
+      int maxTierAllowed,
+      ref int remainingBudget,
+      Dictionary<GameObject, int> prefabUsage,
+      Dictionary<string, int> uniqueUsage)
    {
       if (definition == null || definition.units == null || definition.units.Count == 0)
       {
@@ -547,7 +623,8 @@ public static class EncounterGenerator
 
          for (int tier = maxTierAllowed; tier > slot.tierCost; tier--)
          {
-            if (!HasTier(faction, tier))
+            string uniqueKeyActual = GetUniqueEncounterKey(slot.prefab);
+            if (!HasEligibleTier(faction, tier, uniqueUsage, uniqueKeyActual))
             {
                continue;
             }
@@ -583,16 +660,19 @@ public static class EncounterGenerator
          return false;
       }
 
-      GameObject nuevoPrefab = PickPrefabFromTierWithVariety(faction, bestTier, prefabUsage);
+      string uniqueKeyAnterior = GetUniqueEncounterKey(definition.units[bestIndex].prefab);
+      GameObject nuevoPrefab = PickPrefabFromTierWithVariety(faction, bestTier, prefabUsage, uniqueUsage, uniqueKeyAnterior);
       if (nuevoPrefab == null)
       {
          return false;
       }
 
       RegistrarUsoPrefab(prefabUsage, definition.units[bestIndex].prefab, -1);
+      RegistrarUsoUnico(uniqueUsage, definition.units[bestIndex].prefab, -1);
       definition.units[bestIndex].prefab = nuevoPrefab;
       definition.units[bestIndex].tierCost = bestTier;
       RegistrarUsoPrefab(prefabUsage, nuevoPrefab, 1);
+      RegistrarUsoUnico(uniqueUsage, nuevoPrefab, 1);
       remainingBudget -= bestDelta;
       return true;
    }
@@ -805,27 +885,27 @@ public static class EncounterGenerator
       return true;
    }
 
-   static List<int> GetAvailableTiers(EnemyFactionConfig faction, int remainingBudget, int maxTierAllowed)
+   static List<int> GetAvailableTiers(EnemyFactionConfig faction, int remainingBudget, int maxTierAllowed, Dictionary<string, int> uniqueUsage, string ignoreUniqueKey = null)
    {
       var tiers = new List<int>();
 
-      if (HasTier(faction, 1) && remainingBudget >= 1)
+      if (HasEligibleTier(faction, 1, uniqueUsage, ignoreUniqueKey) && remainingBudget >= 1)
       {
          tiers.Add(1);
       }
-      if (maxTierAllowed >= 2 && HasTier(faction, 2) && remainingBudget >= 2)
+      if (maxTierAllowed >= 2 && HasEligibleTier(faction, 2, uniqueUsage, ignoreUniqueKey) && remainingBudget >= 2)
       {
          tiers.Add(2);
       }
-      if (maxTierAllowed >= 3 && HasTier(faction, 3) && remainingBudget >= 3)
+      if (maxTierAllowed >= 3 && HasEligibleTier(faction, 3, uniqueUsage, ignoreUniqueKey) && remainingBudget >= 3)
       {
          tiers.Add(3);
       }
-      if (maxTierAllowed >= 4 && HasTier(faction, 4) && remainingBudget >= 4)
+      if (maxTierAllowed >= 4 && HasEligibleTier(faction, 4, uniqueUsage, ignoreUniqueKey) && remainingBudget >= 4)
       {
          tiers.Add(4);
       }
-      if (maxTierAllowed >= 5 && HasTier(faction, 5) && remainingBudget >= 5)
+      if (maxTierAllowed >= 5 && HasEligibleTier(faction, 5, uniqueUsage, ignoreUniqueKey) && remainingBudget >= 5)
       {
          tiers.Add(5);
       }
@@ -836,6 +916,12 @@ public static class EncounterGenerator
    static bool HasTier(EnemyFactionConfig faction, int tier)
    {
       var list = GetTierList(faction, tier);
+      return list != null && list.Count > 0;
+   }
+
+   static bool HasEligibleTier(EnemyFactionConfig faction, int tier, Dictionary<string, int> uniqueUsage, string ignoreUniqueKey = null)
+   {
+      var list = GetEligibleTierList(faction, tier, uniqueUsage, ignoreUniqueKey);
       return list != null && list.Count > 0;
    }
 
@@ -899,6 +985,26 @@ public static class EncounterGenerator
       }
    }
 
+   static List<GameObject> GetEligibleTierList(EnemyFactionConfig faction, int tier, Dictionary<string, int> uniqueUsage, string ignoreUniqueKey = null)
+   {
+      var tierList = GetTierList(faction, tier);
+      if (tierList == null || tierList.Count == 0)
+      {
+         return null;
+      }
+
+      List<GameObject> elegibles = new List<GameObject>();
+      foreach (GameObject prefab in tierList)
+      {
+         if (PrefabEsElegibleSegunUnicos(prefab, uniqueUsage, ignoreUniqueKey))
+         {
+            elegibles.Add(prefab);
+         }
+      }
+
+      return elegibles;
+   }
+
    static bool FactionHasPrefabs(EnemyFactionConfig faction)
    {
       if (faction == null || faction.tiers == null)
@@ -944,9 +1050,9 @@ public static class EncounterGenerator
       return null;
    }
 
-   static GameObject GetPrefabFromTier(EnemyFactionConfig faction, int tier)
+   static GameObject GetPrefabFromTier(EnemyFactionConfig faction, int tier, Dictionary<string, int> uniqueUsage = null, string ignoreUniqueKey = null)
    {
-      var tierList = GetTierList(faction, tier);
+      var tierList = GetEligibleTierList(faction, tier, uniqueUsage, ignoreUniqueKey);
       if (tierList == null || tierList.Count == 0)
       {
          return null;
@@ -983,7 +1089,7 @@ public static class EncounterGenerator
             return fase >= 2 ? 3 : 2;
          case BattleEncounterType.Normal:
          default:
-            return fase >= 2 ? 3 : 2;
+            return fase >= 3 ? 4 : 3;
       }
    }
 
@@ -1027,6 +1133,9 @@ public static class EncounterGenerator
          return;
       }
 
+      Dictionary<GameObject, int> prefabUsage = BuildPrefabUsage(definition);
+      Dictionary<string, int> uniqueUsage = BuildUniqueUsage(definition);
+
       int allowedInitial = Mathf.Min(definition.initialCap, MaxInitialUnits);
       int initialCount = 0;
       foreach (var slot in definition.units)
@@ -1039,7 +1148,7 @@ public static class EncounterGenerator
 
       while (definition.units.Count < minUnits)
       {
-         var prefab = GetPrefabFromTier(faction, cheapestTier);
+         var prefab = GetPrefabFromTier(faction, cheapestTier, uniqueUsage);
          if (prefab == null)
          {
             break;
@@ -1052,6 +1161,8 @@ public static class EncounterGenerator
             tierCost = cheapestTier,
             spawnAsReinforcement = spawnAsReinforcement
          });
+         RegistrarUsoPrefab(prefabUsage, prefab, 1);
+         RegistrarUsoUnico(uniqueUsage, prefab, 1);
 
          if (!spawnAsReinforcement)
          {
@@ -1064,7 +1175,7 @@ public static class EncounterGenerator
          return;
       }
 
-      int eliteTier = GetLowestAvailableTierFrom(faction, 2, maxTierAllowed);
+      int eliteTier = GetLowestAvailableTierFrom(faction, 2, maxTierAllowed, uniqueUsage);
       if (eliteTier == 0)
       {
          return;
@@ -1081,12 +1192,6 @@ public static class EncounterGenerator
       }
 
       if (hasEliteUnit)
-      {
-         return;
-      }
-
-      var elitePrefab = GetPrefabFromTier(faction, eliteTier);
-      if (elitePrefab == null)
       {
          return;
       }
@@ -1108,10 +1213,21 @@ public static class EncounterGenerator
          }
       }
 
+      string uniqueKeyReemplazo = replaceIndex >= 0 ? GetUniqueEncounterKey(definition.units[replaceIndex].prefab) : null;
+      var elitePrefab = GetPrefabFromTier(faction, eliteTier, uniqueUsage, uniqueKeyReemplazo);
+      if (elitePrefab == null)
+      {
+         return;
+      }
+
       if (replaceIndex >= 0)
       {
+         RegistrarUsoPrefab(prefabUsage, definition.units[replaceIndex].prefab, -1);
+         RegistrarUsoUnico(uniqueUsage, definition.units[replaceIndex].prefab, -1);
          definition.units[replaceIndex].prefab = elitePrefab;
          definition.units[replaceIndex].tierCost = eliteTier;
+         RegistrarUsoPrefab(prefabUsage, elitePrefab, 1);
+         RegistrarUsoUnico(uniqueUsage, elitePrefab, 1);
       }
       else
       {
@@ -1122,6 +1238,8 @@ public static class EncounterGenerator
             tierCost = eliteTier,
             spawnAsReinforcement = spawnAsReinforcement
          });
+         RegistrarUsoPrefab(prefabUsage, elitePrefab, 1);
+         RegistrarUsoUnico(uniqueUsage, elitePrefab, 1);
       }
    }
 
@@ -1138,6 +1256,9 @@ public static class EncounterGenerator
          return;
       }
 
+      Dictionary<GameObject, int> prefabUsage = BuildPrefabUsage(definition);
+      Dictionary<string, int> uniqueUsage = BuildUniqueUsage(definition);
+
       int desiredInitialUnits = GetDesiredInitialUnits(
          definition.battleType,
          definition.fase,
@@ -1149,7 +1270,7 @@ public static class EncounterGenerator
       while (definition.units.Count < requiredTotalUnits && safetyCounter < 8)
       {
          safetyCounter++;
-         var prefab = GetPrefabFromTier(faction, cheapestTier);
+         var prefab = GetPrefabFromTier(faction, cheapestTier, uniqueUsage);
          if (prefab == null)
          {
             break;
@@ -1161,22 +1282,227 @@ public static class EncounterGenerator
             tierCost = cheapestTier,
             spawnAsReinforcement = false
          });
+         RegistrarUsoPrefab(prefabUsage, prefab, 1);
+         RegistrarUsoUnico(uniqueUsage, prefab, 1);
       }
    }
 
-   static int GetLowestAvailableTierFrom(EnemyFactionConfig faction, int minTier, int maxTierAllowed)
+   static int GetLowestAvailableTierFrom(EnemyFactionConfig faction, int minTier, int maxTierAllowed, Dictionary<string, int> uniqueUsage = null, string ignoreUniqueKey = null)
    {
       int start = Mathf.Clamp(minTier, 1, 5);
       int end = Mathf.Clamp(maxTierAllowed, 1, 5);
       for (int tier = start; tier <= end; tier++)
       {
-         if (HasTier(faction, tier))
+         if (HasEligibleTier(faction, tier, uniqueUsage, ignoreUniqueKey))
          {
             return tier;
          }
       }
 
       return 0;
+   }
+
+   static void EnforceUniqueUnits(EncounterDefinition definition, EnemyFactionConfig faction, BattleEncounterType battleType, int maxTierAllowed, int minUnits)
+   {
+      if (definition == null || definition.units == null || faction == null)
+      {
+         return;
+      }
+
+      Dictionary<GameObject, int> prefabUsage = BuildPrefabUsage(definition);
+      Dictionary<string, int> uniqueUsage = BuildUniqueUsage(definition);
+
+      for (int i = 0; i < definition.units.Count; i++)
+      {
+        var slot = definition.units[i];
+        if (slot == null || slot.prefab == null)
+        {
+           continue;
+        }
+
+        string uniqueKey = GetUniqueEncounterKey(slot.prefab);
+        if (string.IsNullOrEmpty(uniqueKey))
+        {
+           continue;
+        }
+
+        int usos = 0;
+        uniqueUsage.TryGetValue(uniqueKey, out usos);
+        if (usos <= 1)
+        {
+           continue;
+        }
+
+        RegistrarUsoPrefab(prefabUsage, slot.prefab, -1);
+        RegistrarUsoUnico(uniqueUsage, slot.prefab, -1);
+
+        GameObject reemplazo = BuscarReemplazoParaDuplicadoUnico(faction, slot.tierCost, maxTierAllowed, prefabUsage, uniqueUsage);
+        if (reemplazo != null)
+        {
+           slot.prefab = reemplazo;
+           slot.tierCost = ObtenerTierDelPrefab(faction, reemplazo);
+           RegistrarUsoPrefab(prefabUsage, reemplazo, 1);
+           RegistrarUsoUnico(uniqueUsage, reemplazo, 1);
+           continue;
+        }
+
+        definition.units.RemoveAt(i);
+        i--;
+      }
+
+      EnforceMinimumComposition(definition, faction, battleType, maxTierAllowed, minUnits);
+      EnsureMandatoryReinforcements(definition, faction, maxTierAllowed);
+   }
+
+   static GameObject BuscarReemplazoParaDuplicadoUnico(
+      EnemyFactionConfig faction,
+      int tierActual,
+      int maxTierAllowed,
+      Dictionary<GameObject, int> prefabUsage,
+      Dictionary<string, int> uniqueUsage)
+   {
+      if (faction == null)
+      {
+         return null;
+      }
+
+      List<int> ordenTiers = new List<int>();
+      int tierBase = Mathf.Clamp(tierActual, 1, 5);
+      if (tierBase <= maxTierAllowed)
+      {
+         ordenTiers.Add(tierBase);
+      }
+
+      for (int delta = 1; delta <= 4; delta++)
+      {
+         int abajo = tierBase - delta;
+         int arriba = tierBase + delta;
+         if (abajo >= 1 && !ordenTiers.Contains(abajo))
+         {
+            ordenTiers.Add(abajo);
+         }
+
+         if (arriba <= maxTierAllowed && !ordenTiers.Contains(arriba))
+         {
+            ordenTiers.Add(arriba);
+         }
+      }
+
+      foreach (int tier in ordenTiers)
+      {
+         GameObject candidato = PickPrefabFromTierWithVariety(faction, tier, prefabUsage, uniqueUsage);
+         if (candidato != null)
+         {
+            return candidato;
+         }
+      }
+
+      return null;
+   }
+
+   static int ObtenerTierDelPrefab(EnemyFactionConfig faction, GameObject prefab)
+   {
+      if (faction == null || prefab == null)
+      {
+         return 0;
+      }
+
+      for (int tier = 1; tier <= 5; tier++)
+      {
+         var tierList = GetTierList(faction, tier);
+         if (tierList != null && tierList.Contains(prefab))
+         {
+            return tier;
+         }
+      }
+
+      return 0;
+   }
+
+   static Dictionary<GameObject, int> BuildPrefabUsage(EncounterDefinition definition)
+   {
+      Dictionary<GameObject, int> usage = new Dictionary<GameObject, int>();
+      if (definition == null || definition.units == null)
+      {
+         return usage;
+      }
+
+      foreach (var slot in definition.units)
+      {
+         if (slot == null || slot.prefab == null)
+         {
+            continue;
+         }
+
+         RegistrarUsoPrefab(usage, slot.prefab, 1);
+      }
+
+      return usage;
+   }
+
+   static Dictionary<string, int> BuildUniqueUsage(EncounterDefinition definition)
+   {
+      Dictionary<string, int> usage = new Dictionary<string, int>();
+      if (definition == null || definition.units == null)
+      {
+         return usage;
+      }
+
+      foreach (var slot in definition.units)
+      {
+         if (slot == null || slot.prefab == null)
+         {
+            continue;
+         }
+
+         RegistrarUsoUnico(usage, slot.prefab, 1);
+      }
+
+      return usage;
+   }
+
+   static bool PrefabEsElegibleSegunUnicos(GameObject prefab, Dictionary<string, int> uniqueUsage, string ignoreUniqueKey = null)
+   {
+      if (prefab == null)
+      {
+         return false;
+      }
+
+      string uniqueKey = GetUniqueEncounterKey(prefab);
+      if (string.IsNullOrEmpty(uniqueKey))
+      {
+         return true;
+      }
+
+      if (!string.IsNullOrEmpty(ignoreUniqueKey) && uniqueKey == ignoreUniqueKey)
+      {
+         return true;
+      }
+
+      if (uniqueUsage == null)
+      {
+         return true;
+      }
+
+      int usos = 0;
+      uniqueUsage.TryGetValue(uniqueKey, out usos);
+      return usos < 1;
+   }
+
+   static string GetUniqueEncounterKey(GameObject prefab)
+   {
+      if (prefab == null)
+      {
+         return string.Empty;
+      }
+
+      IAUnidad iaUnidad = prefab.GetComponent<IAUnidad>();
+      if (iaUnidad == null || !iaUnidad.unicoEnCombate)
+      {
+         return string.Empty;
+      }
+
+      return prefab.name.Trim().ToLowerInvariant();
    }
 
    static int CalcularCostoTotal(EncounterDefinition definition)

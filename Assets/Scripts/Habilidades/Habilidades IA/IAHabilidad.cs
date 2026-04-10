@@ -370,12 +370,6 @@ public abstract class IAHabilidad : MonoBehaviour
       return false;
     }
 
-    // Si el obstaculo permite atacar detras, no se considera "protector".
-    if (obstaculo.bPermiteAtacarDetras)
-    {
-      return false;
-    }
-
     Casilla casillaObstaculo = obstaculo.CasillaPosicion;
     if (casillaObstaculo.lado == casillaOrigen.lado)
     {
@@ -538,7 +532,9 @@ public abstract class IAHabilidad : MonoBehaviour
 
     if (iTiradaAtaque < limitePifia)//Pifia
     {
-      scEstaUnidad.GenerarTextoFlotante(TRADU.i.Traducir("Pifia"), Color.red);
+      Unidad unidadTextoPifia = unidadAtacada != null ? unidadAtacada : scEstaUnidad;
+      unidadTextoPifia?.GenerarTextoFlotante(TRADU.i.Traducir("Pifia"), Color.red, FloatingTextContext.Miss);
+      scEstaUnidad?.ReproducirFlashPifiaLeveRapido();
       textoResultado = TRADU.i.Traducir("Pifia");
       BattleManager.Instance.EscribirLog(
         CombatLogFormatter.FormatearAtaque(
@@ -554,6 +550,11 @@ public abstract class IAHabilidad : MonoBehaviour
           CombatLogFormatter.CombatOutcome.Pifia,
           umbralPifia,
           Mathf.RoundToInt(umbralCritico)));
+      if (esMelee)
+      {
+        Vector3 pos = scEstaUnidad != null ? scEstaUnidad.transform.position : transform.position;
+        AudioSource.PlayClipAtPoint(BattleManager.Instance.contenedorPrefabs.sonidoErrar, pos);
+      }
       unidadAtacada?.NotificarAtaqueRecibido();
 
       return -1;
