@@ -125,9 +125,9 @@ public class UIEstadoPersonajeCamp : MonoBehaviour, IPointerEnterHandler, IPoint
       case TipoEstadoCampania.Herido:
         nombre = TextoPorIdioma("Herido", "Injured", "Ferido");
         descripcion = TextoPorIdioma(
-          "-1 Atributos. Si cae en combate muere.",
-          "-1 Attributes. If falls in combat, dies.",
-          "-1 Atributos. Se cair em combate, morre.");
+          "-1 Atributos. Si cae en combate muere. Curación diaria reducida.",
+          "-1 Attributes. If falls in combat, dies. Reduced daily healing.",
+          "-1 Atributos. Se cair em combate, morre. Cura diária reduzida.");
         break;
 
       case TipoEstadoCampania.Corrupto:
@@ -169,9 +169,9 @@ public class UIEstadoPersonajeCamp : MonoBehaviour, IPointerEnterHandler, IPoint
       case TipoEstadoCampania.Fatigado:
         nombre = TextoPorIdioma("Fatigado", "Fatigued", "Fatigado");
         descripcion = TextoPorIdioma(
-          "-1 Atributos. En campaña impide realizar actividades. Se limpia al descansar.",
-          "-1 Attributes. In campaign it prevents activities. Removed by resting.",
-          "-1 Atributos. Na campanha impede realizar atividades. É removido ao descansar.");
+          "-1 Atributos. Se limpia al descansar.",
+          "-1 Attributes. Removed by resting.",
+          "-1 Atributos. É removido ao descansar.");
         break;
 
       case TipoEstadoCampania.Bendecido:

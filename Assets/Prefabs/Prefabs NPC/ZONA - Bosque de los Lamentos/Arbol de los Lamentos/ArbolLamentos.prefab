@@ -709,7 +709,7 @@ MonoBehaviour:
   valorCargando: 0
   uRetrato: {fileID: 21300000, guid: e3cbc11b0d70ee74d8f7f90ebc760f60, type: 3}
   uImage: {fileID: 6716137752687118849}
-  uNombre: Arbol de los Lamentos
+  uNombre: "\xC1rbol de los Lamentos"
   tags:
   - Planta
   - Jefe
@@ -717,9 +717,9 @@ MonoBehaviour:
   mod_iniciativa: 0
   iniciativa_actual: 0
   esEtereo: 0
-  at_maxHP: 260
-  mod_maxHP: 260
-  HP_actual: 260
+  at_maxHP: 220
+  mod_maxHP: 220
+  HP_actual: 220
   at_maxAccionP: 3
   esInmobil: 1
   mod_maxAccionP: 3
@@ -750,8 +750,8 @@ MonoBehaviour:
   mod_ResNecro: 3
   at_ResDivino: 0
   mod_ResDivino: 0
-  at_Defensa: 12
-  mod_Defensa: 12
+  at_Defensa: 10
+  mod_Defensa: 10
   Defensa_AtaquesRepetidosRonda: 0
   Defensa_BonusPASinUsar: 0
   at_Ataque: 3
@@ -816,6 +816,9 @@ MonoBehaviour:
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  desplazamientoAnimacionTurnoNuevoY: 1.7
+  duracionSubidaAnimacionTurnoNuevo: 0.12
+  duracionBajadaAnimacionTurnoNuevo: 0.12
   apilarTextosFlotantes: 0
   floatingTextSlotSpacing: 9
   floatingTextSlotLifetimeFallback: 1.1
@@ -1283,8 +1286,8 @@ RectTransform:
   m_GameObject: {fileID: 8607029267525624676}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.1514413, y: 1.7792875, z: 0.8192369}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1.1215614, y: 1.7792875, z: 0.8192369}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4173311401586582042}
   - {fileID: 1186958633882235480}

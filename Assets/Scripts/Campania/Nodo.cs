@@ -1425,6 +1425,11 @@ if (esLaLider)
     SincronizarVFXPersistentes();
     Invoke("SincronizarVFXPersistentes", 0.1f);
 
+    if (tipoNodo == 15 && nodoRitual && numVisualActual == 16)
+    {
+      numVisualActual = 15;
+    }
+
     int codigoAAplicar = numVisualActual > 0 ? numVisualActual : tipoNodo;
     if (codigoAAplicar <= 0)
     {

@@ -181,20 +181,28 @@ public class DisparoPotente : Habilidad
     
     protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
     {
-        if (objetivos == null || objetivos.Count == 0)
+        Casilla referencia = casillaOrigenTrampas;
+
+        if (objetivos != null && objetivos.Count > 0)
         {
-            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
+            if (objetivos[0] is Unidad unidadObjetivo)
+            {
+                referencia = unidadObjetivo.CasillaPosicion;
+            }
+            else if (objetivos[0] is Obstaculo obstaculoObjetivo)
+            {
+                referencia = obstaculoObjetivo.CasillaPosicion;
+            }
         }
 
-        Casilla referencia = null;
-        if (objetivos[0] is Unidad unidadObjetivo)
+        if (referencia == null && BattleManager.Instance.casillaClickHabilidad != null)
         {
-            referencia = unidadObjetivo.CasillaPosicion;
+            referencia = BattleManager.Instance.casillaClickHabilidad;
         }
 
         if (referencia == null)
         {
-            referencia = casillaOrigenTrampas;
+            referencia = Origen;
         }
 
         impactoFilaPendiente = CrearProyectilFila(referencia);

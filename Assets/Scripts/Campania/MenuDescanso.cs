@@ -495,7 +495,7 @@ public class MenuDescanso : MonoBehaviour
 
 
     CampaignManager.Instance.BosqueArdienteMecanicaIncendio(30);
-    CampaignManager.Instance.BosqueArdienteMecanicaIncendio(20);
+    CampaignManager.Instance.BosqueArdienteMecanicaIncendio(10);
     CampaignManager.Instance.PasoVientoHeladoMecanicaRituales(30);
 
     int fatiga = CampaignManager.Instance.GetFatigaActual();

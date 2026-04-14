@@ -143,27 +143,59 @@ void ActualizarFervor()
 
 void CrearTrampaEcosDivinos()
 {
-  int ladoRandom =UnityEngine.Random.Range(1, 3);
-   Casilla cas = null;
-
-  if(ladoRandom == 1) //Aliados
+  if (BattleManager.Instance == null || CasillaPosicion == null)
   {
-     cas = BattleManager.Instance.ladoB.ObtenerCasillaAleatoria(true);
-     cas.AddComponent<EcosDivinos>();
-     cas.GetComponent<EcosDivinos>().InicializarCreador(this);
-     cas.GetComponent<EcosDivinos>().NIVEL = PASIVA_EcosDivinos;
+    return;
   }
 
-  if(ladoRandom == 2) //Enemigos
+  LadoManager ladoAliado = CasillaPosicion.ladoGO != null
+    ? CasillaPosicion.ladoGO.GetComponent<LadoManager>()
+    : (CasillaPosicion.lado == 1 ? BattleManager.Instance.ladoA : BattleManager.Instance.ladoB);
+  LadoManager ladoEnemigo = ladoAliado != null && ladoAliado.ladoOpuesto != null
+    ? ladoAliado.ladoOpuesto
+    : (CasillaPosicion.lado == 1 ? BattleManager.Instance.ladoB : BattleManager.Instance.ladoA);
+
+  if (ladoAliado == null || ladoEnemigo == null)
   {
-     cas = BattleManager.Instance.ladoA.ObtenerCasillaAleatoria(true);
-     cas.AddComponent<EcosDivinos>();
-     cas.GetComponent<EcosDivinos>().InicializarCreador(this);
-     cas.GetComponent<EcosDivinos>().NIVEL = PASIVA_EcosDivinos;
+    return;
   }
- 
-  
-  
+
+  bool generarEnAliados = UnityEngine.Random.Range(0, 2) == 0;
+  LadoManager ladoPreferido = generarEnAliados ? ladoAliado : ladoEnemigo;
+  LadoManager ladoAlternativo = generarEnAliados ? ladoEnemigo : ladoAliado;
+
+  Casilla cas = ObtenerCasillaDisponibleParaEcoDivino(ladoPreferido);
+  if (cas == null)
+  {
+    cas = ObtenerCasillaDisponibleParaEcoDivino(ladoAlternativo);
+  }
+
+  if (cas == null || cas.GetComponent<EcosDivinos>() != null)
+  {
+    return;
+  }
+
+  EcosDivinos eco = cas.AddComponent<EcosDivinos>();
+  eco.InicializarCreador(this);
+  eco.NIVEL = PASIVA_EcosDivinos;
+}
+
+Casilla ObtenerCasillaDisponibleParaEcoDivino(LadoManager lado)
+{
+  if (lado == null)
+  {
+    return null;
+  }
+
+  lado.ActualizarListaDeCasillasEnLado();
+  List<Casilla> casillasDisponibles = lado.casillasLado.FindAll(c => c != null && c.Presente == null && c.GetComponent<Trampa>() == null);
+  if (casillasDisponibles.Count == 0)
+  {
+    return null;
+  }
+
+  int indice = UnityEngine.Random.Range(0, casillasDisponibles.Count);
+  return casillasDisponibles[indice];
 }
 int otorgoEstoBarrerraAaliadosPorAuraSagrada = 0;
 void ActualizarAuraSagrada()

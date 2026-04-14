@@ -26,6 +26,7 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private bool debugPermitirZonaPasoVientoHelado = false;
   [SerializeField] private bool debugPermitirZonaNedukazal = false;
   [SerializeField] private bool debugIniciarConEstadosCaravana = false;
+  [SerializeField] private bool debugForzarCombateFinalBosqueAlIniciar = false;
 
   public GameObject prefabTextoRecursos;
   public Animator animCaravana;
@@ -114,6 +115,8 @@ public class CampaignManager : MonoBehaviour
   private bool cursorCampaniaInicializado;
   private bool cursorCampaniaMostrandoAlerta;
   [SerializeField] private AsentamientoManager asentamientoManager;
+  private const string NombreTextoCargaCampania = "Cargando";
+  private const string TextoCargaCampania = "Cargando...";
 
 #if UNITY_EDITOR
   private void OnValidate()
@@ -160,6 +163,8 @@ public class CampaignManager : MonoBehaviour
 
   private void PrepararEscenaCampania()
   {
+    AplicarTraduccionTextoCargaInicial();
+
     if (goDerrota != null)
     {
       goDerrota.SetActive(false);
@@ -172,6 +177,46 @@ public class CampaignManager : MonoBehaviour
     AsegurarAsentamientoManager();
     AsegurarCursorCampania();
     ActualizarCursorCampania(true);
+  }
+
+  private void AplicarTraduccionTextoCargaInicial()
+  {
+    string textoCargaTraducido = ObtenerTextoCargaInicialSegunIdioma();
+    TextMeshProUGUI[] textos = Resources.FindObjectsOfTypeAll<TextMeshProUGUI>();
+    for (int i = 0; i < textos.Length; i++)
+    {
+      TextMeshProUGUI texto = textos[i];
+      if (texto == null || texto.gameObject == null || texto.gameObject.name != NombreTextoCargaCampania)
+      {
+        continue;
+      }
+
+      if (!texto.gameObject.scene.IsValid())
+      {
+        continue;
+      }
+
+      texto.text = textoCargaTraducido;
+    }
+  }
+
+  private string ObtenerTextoCargaInicialSegunIdioma()
+  {
+    if (TRADU.i != null)
+    {
+      return TRADU.i.Traducir(TextoCargaCampania);
+    }
+
+    int idiomaGuardado = PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaIngles);
+    switch (idiomaGuardado)
+    {
+      case TRADU.IdiomaEspanol:
+        return TextoCargaCampania;
+      case TRADU.IdiomaPortugues:
+        return "Carregando...";
+      default:
+        return "Loading...";
+    }
   }
 
   private void AsegurarAsentamientoManager()
@@ -425,7 +470,7 @@ public class CampaignManager : MonoBehaviour
   }
  
   private void InicializarPersonajesNuevaCampania()
-  { CrearDuelista();//!!! sacar
+  { 
     if (!scTutorialManager.tutorialActivo)
     {
       AgregarHeroe(0);
@@ -483,6 +528,36 @@ public class CampaignManager : MonoBehaviour
     if (DEBUG_ABRIR_MENU_SERRIA_AL_INICIAR)
     {
       AbrirCiudadPuertoDirectoDebug();
+    }
+
+    if (debugForzarCombateFinalBosqueAlIniciar)
+    {
+      ForzarCombateFinalBosqueDebug();
+    }
+  }
+
+  [ContextMenu("Debug/Forzar Combate Final Bosque")]
+  public void ForzarCombateFinalBosqueDebug()
+  {
+    if (scTutorialManager != null)
+    {
+      scTutorialManager.tutorialActivo = false;
+    }
+
+    if (scAtributosZona != null)
+    {
+      scAtributosZona.GenerarZona(IdsZonaCampania.BosqueAngustiante);
+      scAtributosZona.FASE = 1;
+    }
+
+    if (goMenuBatallas != null)
+    {
+      goMenuBatallas.SetActive(true);
+    }
+
+    if (scMenuBatallas != null)
+    {
+      scMenuBatallas.EventoBatallaFinal(11);
     }
   }
 
@@ -3067,11 +3142,6 @@ public class CampaignManager : MonoBehaviour
 
       goUIVictoriaZona.SetActive(true);
 
-      foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
-      {
-        pers.RecibirCuracion(2000);
-        pers.Camp_Herido = false;
-      }
       CambiarSuministrosActuales(120);
       CambiarMaterialesActuales(40);
     }
@@ -3156,15 +3226,43 @@ public class CampaignManager : MonoBehaviour
 
     posicionCaravana = 1;
     scAtributosZona.ActualizarEstadoZona(scAtributosZona.ID, 1); //Zona completada
-    if (scAdministradorEscenas != null)
-    {
-      scAdministradorEscenas.LimpiarAvergonzadoPorCambioZona();
-    }
+    LimpiarPersonajesPorCambioZona();
     scMapaManager.ResetearYGenerarSiguienteZona();
     ResetearAlientoNegro();
     scAtributosZona.GenerarZona(0); //0 es aleatorio
     AplicarTraitsInicioNuevaZona();
     transicionZonaEnCurso = false;
+  }
+
+  void LimpiarPersonajesPorCambioZona()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null)
+      {
+        continue;
+      }
+
+      pers.ResetearEstadoTraitsCombate();
+      pers.SetCampFatigado(false);
+      pers.SetCampBendecido(0);
+      pers.Camp_Herido = false;
+      pers.Camp_Enfermo = 0;
+      pers.Camp_Moral = 0;
+      pers.Camp_Avergonzado = false;
+
+      if (pers.Camp_Muerto)
+      {
+        continue;
+      }
+
+      pers.fVidaActual = pers.fVidaMaxima;
+    }
   }
 
   public bool DesactivarIncendiosPorLluvia(bool escribirAvisoLog)

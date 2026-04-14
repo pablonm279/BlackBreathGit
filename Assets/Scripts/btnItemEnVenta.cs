@@ -83,11 +83,6 @@ public class btnItemEnVenta : MonoBehaviour, IPointerClickHandler
     }
     public void ClickearItem()
     {
-      if (!Input.GetMouseButtonDown(0) && !Input.GetMouseButton(0))
-      {
-        return;
-      }
-
       if(CampaignManager.Instance.GetOroActuales() >= itemRepresentado.iPrecio)
       {
         scSequitoMercaderes.DespinearItem(itemRepresentado);

@@ -18,6 +18,8 @@ public class Unidad : MonoBehaviour
   private static readonly Color ColorDanioFuego = new Color(1f, 0.65f, 0.25f, 1f);
   private static readonly Color ColorValentiaGanada = new Color(0.27f, 0.94f, 0.58f, 1f);
   private static readonly Color ColorValentiaPerdida = new Color(1f, 0.36f, 0.36f, 1f);
+  private const int DelayResolucionEfectoDaninoInicioTurnoMs = 450;
+  private const int DelayResolucionTrampaPersistenteInicioTurnoMs = 180;
   public const string BuffNombreProvocado = "Provocado";
   private static Unidad redireccionAtaqueAtacante;
   private static Unidad redireccionAtaqueObjetivoOriginal;
@@ -212,8 +214,9 @@ public class Unidad : MonoBehaviour
  public int estado_regeneraarmadura;
  public int estado_APModificador;
  public int estado_ResistenciasReducidas;
- public int estado_Condenado; //En (stacks) turnos. Al llegar a 0 inflige 5% de HP max por cada turno consecutivo que estuvo activo.
+ public int estado_Condenado; //En (stacks) turnos. Al llegar a 0 inflige 10% de HP max por cada turno consecutivo que estuvo activo.
  [HideInInspector] public int estado_CondenadoTurnosSeguidos; //Cuenta turnos seguidos con la condena activa para el danio acumulado.
+ [HideInInspector] public Unidad ultimaUnidadQueLeHizoDanio;
  public int estado_Escudado; //10% por stack de prevenir un ataque de daño fisico. Pierde 1 stack.
  public int estado_MovimientoAbaratado; //Ligereza -El próximo movimiento a casilla o intercambio cuesta 1 PA menos y consume 1 stack.
  public bool estado_Corrupto;
@@ -1165,7 +1168,7 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
     cas.ActualizarSenialadores();
 }
 
-  public void ArrancaTurnoEstaUnidad()
+  public async void ArrancaTurnoEstaUnidad()
   {
     Invoke("AcomodarSortingLayer", 1.15f); //Para que el sprite quede bien en el orden de sorting layer
     bonusAcercamientoValentiaAplicadoTurno = false;
@@ -1198,7 +1201,11 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
 
 
         //Ardiendo
-        if (estado_ardiendo > 0 && !TieneTag("Etereo")) { Estados.Efecto_Ardiendo(this); }
+        if (estado_ardiendo > 0 && !TieneTag("Etereo"))
+        {
+          Estados.Efecto_Ardiendo(this);
+          if (await EsperarYAbortarSiUnidadNoPuedeActuarPorInicioTurnoAsync(DelayResolucionEfectoDaninoInicioTurnoMs)) { return; }
+        }
 
         //Congelado
         if (estado_congelado > 0) { Estados.Efecto_Congelado(this); }
@@ -1210,10 +1217,18 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
         if (estado_inmovil > 0) { Estados.Efecto_Inmovil(this); }
 
         //Sangrado
-        if (estado_sangrado > 0 && !TieneTag("Etereo") && !TieneTag("Nomuerto")) { Estados.Efecto_Sangrado(this); }
+        if (estado_sangrado > 0 && !TieneTag("Etereo") && !TieneTag("Nomuerto"))
+        {
+          Estados.Efecto_Sangrado(this);
+          if (await EsperarYAbortarSiUnidadNoPuedeActuarPorInicioTurnoAsync(DelayResolucionEfectoDaninoInicioTurnoMs)) { return; }
+        }
 
         //Veneno
-        if (estado_veneno > 0 && !TieneTag("Etereo") && !TieneTag("Nomuerto")) { Estados.Efecto_Veneno(this); }
+        if (estado_veneno > 0 && !TieneTag("Etereo") && !TieneTag("Nomuerto"))
+        {
+          Estados.Efecto_Veneno(this);
+          if (await EsperarYAbortarSiUnidadNoPuedeActuarPorInicioTurnoAsync(DelayResolucionEfectoDaninoInicioTurnoMs)) { return; }
+        }
 
         //Volando
         if (unidadVoladora)
@@ -1234,6 +1249,7 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
         if (estado_Condenado > 0)
         {
           Estados.Efecto_Condenado(this);
+          if (await EsperarYAbortarSiUnidadNoPuedeActuarPorInicioTurnoAsync(DelayResolucionEfectoDaninoInicioTurnoMs)) { return; }
         }
         else
         {
@@ -1245,6 +1261,7 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
 
         //Ejecuta efectos custom de Buffs al inicio del turno
         ActivarEfectosCustomBuffsInicioTurno();
+        if (AbortarArranqueSiUnidadNoPuedeActuar()) { return; }
         unidadEncarnadaEnTurno = TieneBuffNombre("Encarnado");
         if (unidadEncarnadaEnTurno)
         {
@@ -1253,6 +1270,7 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
 
         //Exclusivo Clase
         ActualizarClaseComienzoTurno();//va antes
+        if (AbortarArranqueSiUnidadNoPuedeActuar()) { return; }
 
         //Buff / Debuff
         //ReducirDuracionBuffs();
@@ -1266,6 +1284,7 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
 
         //Cargar habilidades
         ResolverCargarHabilidades();
+        if (AbortarArranqueSiUnidadNoPuedeActuar()) { return; }
 
         //Remover Reacciones no permanentes
         RemoverReacciones();
@@ -1275,6 +1294,10 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
 
         //Chequear Trampas Persistentes en su casilla
         Invoke("ChequearTrampaPersistenteenCasilla", 0.1f); //Se invoca con un delay para que se aplique después de los efectos de inicio de turno
+        if (TieneTrampaPersistenteActivaEnCasilla())
+        {
+          if (await EsperarYAbortarSiUnidadNoPuedeActuarPorInicioTurnoAsync(DelayResolucionTrampaPersistenteInicioTurnoMs)) { return; }
+        }
 
         //Activar resaltar lado
         Invoke("ResaltarLado", 0.1f);
@@ -1291,6 +1314,7 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
       //Si es IA, se manda a comenzar su turno.
       if (GetComponent<IAUnidad>() != null)
       {
+        if (AbortarArranqueSiUnidadNoPuedeActuar()) { return; }
         GetComponent<IAUnidad>().RealizarTurnoIA();
 
       
@@ -1301,6 +1325,60 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
       }
     }
 
+  }
+
+  private async Task<bool> EsperarYAbortarSiUnidadNoPuedeActuarPorInicioTurnoAsync(int delayMs)
+  {
+    await BattleManager.DelayCombateAsync(delayMs);
+    return AbortarArranqueSiUnidadNoPuedeActuar();
+  }
+
+  private bool AbortarArranqueSiUnidadNoPuedeActuar()
+  {
+    BattleManager battleManager = BattleManager.Instance;
+    if (battleManager == null)
+    {
+      return true;
+    }
+
+    if (battleManager.unidadActiva != this)
+    {
+      return true;
+    }
+
+    if (gameObject.activeInHierarchy && HP_actual > 0)
+    {
+      return false;
+    }
+
+    battleManager.TerminarTurno();
+    return true;
+  }
+
+  private bool TieneTrampaPersistenteActivaEnCasilla()
+  {
+    if (CasillaPosicion == null)
+    {
+      return false;
+    }
+
+    Trampa[] trampas = CasillaPosicion.transform.GetComponentsInChildren<Trampa>();
+    foreach (Trampa trampa in trampas)
+    {
+      if (trampa == null || !trampa.esPersistente)
+      {
+        continue;
+      }
+
+      if (inmunidad_Trampas && !trampa.esTrampaFavorable)
+      {
+        continue;
+      }
+
+      return true;
+    }
+
+    return false;
   }
 
   private void EscribirCabeceraTurnoEnLog()
@@ -2641,6 +2719,10 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
       if (danioTotal > 0)
       {
+        if (uCausante != null && uCausante != this)
+        {
+          ultimaUnidadQueLeHizoDanio = uCausante;
+        }
         await GenerarTextoFlotante(textoDanio, colorDanioFinal, esCritico ? FloatingTextContext.CriticalDamage : FloatingTextContext.Damage, scUnidadCanvas.txtDaño);
       }
       else if (scUnidadCanvas.txtDaño != null)

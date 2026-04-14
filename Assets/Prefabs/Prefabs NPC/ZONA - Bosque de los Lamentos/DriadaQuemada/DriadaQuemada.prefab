@@ -548,7 +548,6 @@ MonoBehaviour:
   esInmobil: 0
   mod_maxAccionP: 3
   AccionP_actual: 3
-  AccionP_SeEsforzo: 0
   scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
@@ -584,6 +583,7 @@ MonoBehaviour:
   mod_DanioPorcentaje: 0
   at_CriticoRangoDado: 0
   mod_CriticoRangoDado: 0
+  bonusCritDadoRecibido: 0
   "at_CriticoDa\xF1oBonus": 0
   "mod_CriticoDa\xF1oBonus": 0
   at_TSReflejos: 3
@@ -611,6 +611,7 @@ MonoBehaviour:
   estado_Condenado: 0
   estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
+  estado_MovimientoAbaratado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
   estado_Volando: 0
@@ -627,6 +628,7 @@ MonoBehaviour:
   debuffsImpactoArma: []
   reduccionDanioRecibidoPorcentaje: 0
   reduccionDanioCriticoRecibidoPorcentaje: 0
+  aumentoDanioCriticoRecibidoPorcentaje: 0
   resistenciaEstadosPorcentaje: 0
   espinasDanioPlano: 0
   espinasDanioPorcentaje: 0
@@ -638,6 +640,9 @@ MonoBehaviour:
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  desplazamientoAnimacionTurnoNuevoY: 1.7
+  duracionSubidaAnimacionTurnoNuevo: 0.12
+  duracionBajadaAnimacionTurnoNuevo: 0.12
   apilarTextosFlotantes: 0
   floatingTextSlotSpacing: 9
   floatingTextSlotLifetimeFallback: 1.1
@@ -691,7 +696,7 @@ MonoBehaviour:
   esRango: 1
   bPuedeVerEscondidos: 0
   unicoEnCombate: 0
-  tierEnemigo: 2
+  tierEnemigo: 1
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0

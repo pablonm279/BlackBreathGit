@@ -73643,8 +73643,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -73711,7 +73711,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.9586096, y: -57.5}
+  m_AnchoredPosition: {x: -1.9586096, y: -51.923744}
   m_SizeDelta: {x: 49.8034, y: 19.1445}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &189254956
@@ -95832,8 +95832,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -95900,7 +95900,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.9458394, y: -39.549587}
+  m_AnchoredPosition: {x: -0.9458394, y: -34.625294}
   m_SizeDelta: {x: 49.8034, y: 19.1445}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &264641552
@@ -123698,7 +123698,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 0e9e8c9533d072141b8add1a98d8b74f, type: 3}
   m_Resource: {fileID: 8300000, guid: 0e9e8c9533d072141b8add1a98d8b74f, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.743
+  m_Volume: 0.835
   m_Pitch: 0.46
   Loop: 1
   Mute: 0
@@ -123707,7 +123707,7 @@ AudioSource:
   Priority: 55
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 30
+  MaxDistance: 40
   Pan2D: 0.706
   rolloffMode: 2
   BypassEffects: 0
@@ -123735,8 +123735,8 @@ AudioSource:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.12454428
-      value: 0.13677979
+      time: 0.16190542
+      value: 0.14324951
       inSlope: -1.8757496
       outSlope: -1.8757496
       tangentMode: 0
@@ -219693,7 +219693,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -180}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -1.2, y: -350.4}
+  m_AnchoredPosition: {x: -1.2, y: -333.8}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &620167284
@@ -324356,8 +324356,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -324424,7 +324424,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4.4, y: -38.5}
+  m_AnchoredPosition: {x: -4.4, y: -33}
   m_SizeDelta: {x: 49.8034, y: 19.1445}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &946117615
@@ -351126,7 +351126,7 @@ MonoBehaviour:
     danioPorcFlat: 0
   presetSeleccionado: 3
   usarPresets: 1
-  puntosExtraEnemigos: -9
+  puntosExtraEnemigos: -10
 --- !u!114 &1009579543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378709,7 +378709,8 @@ MonoBehaviour:
   debugPermitirZonaBosque: 1
   debugPermitirZonaPasoVientoHelado: 0
   debugPermitirZonaNedukazal: 0
-  debugIniciarConEstadosCaravana: 1
+  debugIniciarConEstadosCaravana: 0
+  debugForzarCombateFinalBosqueAlIniciar: 0
   prefabTextoRecursos: {fileID: 6392197955437058786, guid: 60dbcfb63ddbc7e439d2a0e808c9f29b, type: 3}
   animCaravana: {fileID: 4442090406299805440}
   goCanvas: {fileID: 314276520}
@@ -443086,7 +443087,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.2364354, y: -37.68473}
+  m_AnchoredPosition: {x: -1.2364354, y: -32.686302}
   m_SizeDelta: {x: 49.8034, y: 19.1445}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1183255488
@@ -443136,8 +443137,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -466742,7 +466743,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1264264202
 RectTransform:
   m_ObjectHideFlags: 0
@@ -526216,8 +526217,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -526284,7 +526285,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -3.2684612, y: -74.413605}
+  m_AnchoredPosition: {x: -3.2684612, y: -64.92449}
   m_SizeDelta: {x: 49.803, y: 19.145}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1487303913
@@ -552612,14 +552613,12 @@ MonoBehaviour:
         tiers:
           tier1:
           - {fileID: 5180685758418028099, guid: f6351d7c914add6478e1db7108b47448, type: 3}
-          - {fileID: 3855863790156444218, guid: 4f35cc89f1c186a4abc107dd136dbab4, type: 3}
-          - {fileID: 1216717484583080327, guid: f1813b0e70c692d4cb23171196f8f08d, type: 3}
+          - {fileID: 918802445406618680, guid: e15f6c1490ce406408d9694cfb2b03ed, type: 3}
           - {fileID: 918802445406618680, guid: e15f6c1490ce406408d9694cfb2b03ed, type: 3}
           tier2:
-          - {fileID: 5537953111248832586, guid: afffc68c80c26454a98631d9e199a658, type: 3}
+          - {fileID: 5180685758418028099, guid: 07be93c964f1e6142b095418598d2438, type: 3}
           tier3:
           - {fileID: 5180685758418028099, guid: c298bc56deeb7c34e9d2f88f44883927, type: 3}
-          - {fileID: 5662508880646372543, guid: dddffb558636386438bf0bfb6b79687e, type: 3}
           tier4: []
           tier5: []
       - factionId: Criaturas del Bosque
@@ -552627,11 +552626,12 @@ MonoBehaviour:
         tiers:
           tier1:
           - {fileID: 5180685758418028099, guid: f6351d7c914add6478e1db7108b47448, type: 3}
-          - {fileID: 5180685758418028099, guid: f6351d7c914add6478e1db7108b47448, type: 3}
+          - {fileID: 1216717484583080327, guid: f1813b0e70c692d4cb23171196f8f08d, type: 3}
           - {fileID: 1216717484583080327, guid: f1813b0e70c692d4cb23171196f8f08d, type: 3}
           - {fileID: 918802445406618680, guid: e15f6c1490ce406408d9694cfb2b03ed, type: 3}
           tier2:
           - {fileID: 9004922787472980425, guid: 5b904140978f8da49a66d32b082ca024, type: 3}
+          - {fileID: 5180685758418028099, guid: 07be93c964f1e6142b095418598d2438, type: 3}
           tier3:
           - {fileID: 5662508880646372543, guid: dddffb558636386438bf0bfb6b79687e, type: 3}
           - {fileID: 5662508880646372543, guid: dddffb558636386438bf0bfb6b79687e, type: 3}
@@ -552647,7 +552647,9 @@ MonoBehaviour:
           - {fileID: 1216717484583080327, guid: f1813b0e70c692d4cb23171196f8f08d, type: 3}
           - {fileID: 918802445406618680, guid: e15f6c1490ce406408d9694cfb2b03ed, type: 3}
           tier2:
+          - {fileID: 9004922787472980425, guid: 5b904140978f8da49a66d32b082ca024, type: 3}
           - {fileID: 5537953111248832586, guid: afffc68c80c26454a98631d9e199a658, type: 3}
+          - {fileID: 5180685758418028099, guid: 07be93c964f1e6142b095418598d2438, type: 3}
           tier3:
           - {fileID: 5180685758418028099, guid: c298bc56deeb7c34e9d2f88f44883927, type: 3}
           tier4: []
@@ -661333,8 +661335,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13
-  m_fontSizeBase: 13
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -661401,7 +661403,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.085493, y: -79.95011}
+  m_AnchoredPosition: {x: 3.085493, y: -70.461}
   m_SizeDelta: {x: 49.803, y: 19.145}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1797669813

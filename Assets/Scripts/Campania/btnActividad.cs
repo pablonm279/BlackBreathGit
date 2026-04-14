@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class btnActividad : MonoBehaviour, IPointerClickHandler
+public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
    public Image actImage;
    public Actividad actividadRepresentada;
@@ -23,13 +23,24 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler
 
    public void OnHover(int n)
    {
-      if(n ==1)
+      if (n == 1)
       {
-        scActividades.textdesc.text = actividadRepresentada.desc;
+        MostrarDescripcionHover();
       }
-      else{  scActividades.ActualizarRecuadros();}
-     
-     
+      else
+      {
+        RestaurarDescripcionSeleccionada();
+      }
+   }
+
+   public void OnPointerEnter(PointerEventData eventData)
+   {
+      MostrarDescripcionHover();
+   }
+
+   public void OnPointerExit(PointerEventData eventData)
+   {
+      RestaurarDescripcionSeleccionada();
    }
 
    public void OnClick()
@@ -110,6 +121,26 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler
         && (actividadRepresentada.IDActividad == 1
         || actividadRepresentada.IDActividad == 2
         || actividadRepresentada.IDActividad == 3);
+   }
+
+   private void MostrarDescripcionHover()
+   {
+      if (scActividades == null || scActividades.textdesc == null || actividadRepresentada == null)
+      {
+        return;
+      }
+
+      scActividades.textdesc.text = actividadRepresentada.desc;
+   }
+
+   private void RestaurarDescripcionSeleccionada()
+   {
+      if (scActividades == null)
+      {
+        return;
+      }
+
+      scActividades.ActualizarRecuadros();
    }
 
 

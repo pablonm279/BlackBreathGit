@@ -759,6 +759,18 @@ public class UIInfoChar : MonoBehaviour
    {
       desc = TRADU.i.Traducir("<i>Estas criaturas aladas habitan en las regiones más frías del Paso. Son conocidas por ser muy territoriales y por su aliento gélido.</i>\n\n<color=#199F10>-Vuelo.\n-Aliento gélido en zona.\n-Regenera armadura.</color>\n<color=#EE0000>-Débil al fuego.</color>");
    }
+   if (unidadMostrada.uNombre == "Raíz Maldita")
+   {
+      desc = TRADU.i.Traducir("<i>El Árbol de los Lamentos extiende sus raices de forma amenazante por sobre la superficie para atacar a sus enemigos y protegerse. </i>\n\n<color=#EE0000>-Débil al fuego.</color>");
+   }
+   if (unidadMostrada.uNombre == "Árbol de los Lamentos")
+   {
+      desc = TRADU.i.Traducir("<i>Este gigante árbol maldito bloquea la salida del Bosque Ardiente, poseído por los espíritus caídos en el bosque, buscará impedir el escape de los intrusos.</i>\n\n<color=#199F10>Crea Enredaderas.\n-Ataques de rango que atraen.\n-Regenera armadura.</color><color=#EE0000>-Débil al fuego.</color>");
+   }
+   if (unidadMostrada.uNombre == "Bruja Quemada")
+   {
+      desc = TRADU.i.Traducir("<i>Esta bruja ha sido deformada por las llamas y corrompida la presencia del Aliento Negro. </i>\n\n<color=#199F10>Crea Enredaderas.\n-Ataque de rango que no falla.\n-Estertor Mortal.</color><color=#EE0000>-Poco resistente.</color>");
+   }
    
   
    return desc;

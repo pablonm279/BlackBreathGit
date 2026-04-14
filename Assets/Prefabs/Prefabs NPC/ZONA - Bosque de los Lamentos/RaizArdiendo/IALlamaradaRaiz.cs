@@ -9,21 +9,24 @@ public class IALlamaradaRaiz : IAHabilidad
   [SerializeField] Transform puntoDisparo;
 
   const int TipoDanioFuego = 4;
-  const int DadosCantidad = 3;
+  const int TipoDanioNecrotico = 9;
+  const int DadosCantidad = 2;
   const int DadosCaras = 6;
   const int BonificacionDanio = 3;
  
-  const float DuracionLinea = 0.35f;
-  const float AnchoLinea = 0.08f;
+  const float DuracionLinea = 0.32f;
+  const float AnchoLinea = 0.04f;
   const int SegmentosLinea = 6;
 
   static Material materialLlamarada;
   static AnimationCurve curvaAnchoLlamarada;
   static readonly GradientColorKey[] colorKeysLlamarada = new GradientColorKey[]
   {
-    new GradientColorKey(new Color(1.8f, 1.1f, 0.55f), 0.35f),
-    new GradientColorKey(new Color(1.7f, 0.65f, 0.18f), 0.45f),
-    new GradientColorKey(new Color(0.95f, 0.28f, 0.05f), 1f)
+    new GradientColorKey(new Color(1.8f, 1.08f, 0.5f), 0.12f),
+    new GradientColorKey(new Color(0.78f, 1.22f, 0.62f), 0.34f),
+    new GradientColorKey(new Color(1.5f, 0.36f, 0.12f), 0.58f),
+    new GradientColorKey(new Color(0.56f, 1.05f, 0.48f), 0.82f),
+    new GradientColorKey(new Color(0.95f, 0.24f, 0.08f), 1f)
   };
   static readonly GradientAlphaKey[] alphaKeysBaseLlamarada = new GradientAlphaKey[]
   {
@@ -40,18 +43,28 @@ public class IALlamaradaRaiz : IAHabilidad
     hAncho = 2;
     esMelee = false;
     hAlcance = 5;
-    hCooldownMax = 3;
+    hCooldownMax = 2;
     esHostil = true;
     prioridad = 0;
     costoAP = 3;
     afectaObstaculos = false;
 
-    hActualCooldown = 0;
+    hActualCooldown = ObtenerCooldownInicialReducido();
   }
 
   void Start()
   {
     prioridad = 0;
+  }
+
+  int ObtenerCooldownInicialReducido()
+  {
+    if (hCooldownMax <= 1)
+    {
+      return 0;
+    }
+
+    return UnityEngine.Random.Range(0, hCooldownMax);
   }
 
   public async override Task ActivarHabilidad()
@@ -88,10 +101,15 @@ public class IALlamaradaRaiz : IAHabilidad
 
     DibujarRayo(unidadObjetivo);
 
-    float danio = TiradaDeDados.TirarDados(DadosCantidad, DadosCaras) + BonificacionDanio;
-    danio = danio / 100f * (100 + scEstaUnidad.mod_DanioPorcentaje);
+    float danioTotal = TiradaDeDados.TirarDados(DadosCantidad, DadosCaras) + BonificacionDanio;
+    danioTotal = danioTotal / 100f * (100 + scEstaUnidad.mod_DanioPorcentaje);
 
-    unidadObjetivo.RecibirDanio(danio, TipoDanioFuego, false, scEstaUnidad);
+    float danioFuego = Mathf.Ceil(danioTotal * 0.5f);
+    //float danioNecrotico = Mathf.Max(1f, danioTotal - danioFuego);
+
+    unidadObjetivo.RecibirDanio(danioFuego, TipoDanioFuego, false, scEstaUnidad);
+   
+
     bool noSeSalva = unidadObjetivo.TiradaSalvacion(unidadObjetivo.mod_TSReflejos, 10);
     if (noSeSalva)
     {
@@ -101,7 +119,7 @@ public class IALlamaradaRaiz : IAHabilidad
     unidadObjetivo.AplicarDebuffPorAtaquesreiterados(1);
 
     BattleManager.Instance?.EscribirLog(
-      $"{scEstaUnidad.uNombre} {TRADU.i.Traducir("desata una llamarada ardiente sobre")} {unidadObjetivo.uNombre}.");
+      $"{scEstaUnidad.uNombre} {TRADU.i.Traducir("desata una llamarada necrotica y ardiente sobre")} {unidadObjetivo.uNombre}.");
   }
 
   public override object EstablecerObjetivoPrioritario()
@@ -190,18 +208,18 @@ public class IALlamaradaRaiz : IAHabilidad
 
       if (materialLlamarada.HasProperty("_TintColor"))
       {
-        materialLlamarada.SetColor("_TintColor", new Color(1.3f, 0.75f, 0.2f, 1f));
+        materialLlamarada.SetColor("_TintColor", new Color(1.1f, 0.92f, 0.42f, 1f));
       }
 
       if (materialLlamarada.HasProperty("_Color"))
       {
-        materialLlamarada.SetColor("_Color", new Color(1.3f, 0.75f, 0.2f, 1f));
+        materialLlamarada.SetColor("_Color", new Color(1.1f, 0.92f, 0.42f, 1f));
       }
 
       if (materialLlamarada.HasProperty("_EmissionColor"))
       {
         materialLlamarada.EnableKeyword("_EMISSION");
-        materialLlamarada.SetColor("_EmissionColor", new Color(1.6f, 0.55f, 0.08f) * 6.5f);
+        materialLlamarada.SetColor("_EmissionColor", new Color(0.95f, 1.15f, 0.42f) * 6.5f);
       }
     }
     return materialLlamarada;

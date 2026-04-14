@@ -407,7 +407,6 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
   private Image overlayCondenadoRunaB;
   private Image overlayCondenadoParticulaA;
   private Image overlayCondenadoParticulaB;
-  private Text overlayCondenadoContador;
   private RectTransform overlayAturdidoRoot;
   private CanvasGroup overlayAturdidoGroup;
   private Image overlayAturdidoGlow;
@@ -1297,15 +1296,6 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     overlayCondenadoRunaB.preserveAspect = true;
     overlayCondenadoParticulaA.preserveAspect = true;
     overlayCondenadoParticulaB.preserveAspect = true;
-    overlayCondenadoContador = CrearTextoEstado(overlayCondenadoRoot, "ContadorCondenado");
-    overlayCondenadoContador.fontStyle = FontStyle.Normal;
-    Outline outlineContadorCondenado = overlayCondenadoContador.GetComponent<Outline>();
-    if (outlineContadorCondenado != null)
-    {
-      outlineContadorCondenado.effectColor = new Color(0.08f, 0.02f, 0.1f, 0.72f);
-      outlineContadorCondenado.effectDistance = new Vector2(0.35f, -0.35f);
-    }
-
     SincronizarRootCondenado();
     overlayCondenadoRoot.gameObject.SetActive(false);
   }
@@ -1435,7 +1425,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     rect.pivot = new Vector2(0.5f, 0.5f);
 
     Text text = go.GetComponent<Text>();
-    text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+    text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
     text.fontStyle = FontStyle.Bold;
     text.alignment = TextAnchor.MiddleCenter;
     text.horizontalOverflow = HorizontalWrapMode.Overflow;
@@ -2475,8 +2465,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
       || overlayCondenadoRunaA == null
       || overlayCondenadoRunaB == null
       || overlayCondenadoParticulaA == null
-      || overlayCondenadoParticulaB == null
-      || overlayCondenadoContador == null)
+      || overlayCondenadoParticulaB == null)
     {
       return;
     }
@@ -2565,15 +2554,6 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
       Vector2.one * (tamParticula * 0.72f * Mathf.Lerp(0.44f, 0.72f, visParticulaB) * intensidad),
       new Color(0.46f, 0.18f, 0.62f, Mathf.Lerp(0f, 0.1f, visParticulaB) * (0.82f + (progresoCondena * 0.08f))));
 
-    RectTransform contadorRect = overlayCondenadoContador.rectTransform;
-    contadorRect.anchoredPosition = new Vector2(ancho * 0.44f, alto * 0.31f);
-    contadorRect.sizeDelta = new Vector2(Mathf.Max(18f, ancho * 0.18f), Mathf.Max(12f, alto * 0.16f));
-    contadorRect.localEulerAngles = Vector3.zero;
-    contadorRect.localScale = new Vector3(-1f, 1f, 1f);
-    overlayCondenadoContador.fontSize = Mathf.Clamp(Mathf.RoundToInt(ancho * 0.11f), 7, 12);
-    overlayCondenadoContador.color = new Color(1f, 0.96f, 1f, visibilidadCondenado);
-    overlayCondenadoContador.text = turnosAcumulados.ToString();
-    overlayCondenadoContador.enabled = turnosRestantes > 0;
   }
 
   private void ActualizarVisualAturdido(int stacks)
@@ -2882,7 +2862,6 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     overlayCondenadoRunaB = null;
     overlayCondenadoParticulaA = null;
     overlayCondenadoParticulaB = null;
-    overlayCondenadoContador = null;
     visibilidadCondenado = 0f;
   }
 

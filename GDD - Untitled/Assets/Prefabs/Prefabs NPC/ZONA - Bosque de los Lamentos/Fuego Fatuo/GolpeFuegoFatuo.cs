@@ -34,8 +34,8 @@ public class GolpeFuegoFatuo : IAHabilidad
       hActualCooldown = hCooldownMax;
 
       bonusAtaque = 1;
-      XdDanio = 1;
-      daniodX = 10; //1d6+1
+      XdDanio = 2;
+      daniodX = 6; //1d6+1
       tipoDanio = 4; //Fuego
 
 

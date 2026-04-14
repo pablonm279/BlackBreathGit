@@ -5540,8 +5540,8 @@ MonoBehaviour:
   mod_ResNecro: 8
   at_ResDivino: -4
   mod_ResDivino: -4
-  at_Defensa: 14
-  mod_Defensa: 14
+  at_Defensa: 13
+  mod_Defensa: 13
   Defensa_AtaquesRepetidosRonda: 0
   Defensa_BonusPASinUsar: 0
   at_Ataque: 0
@@ -5549,6 +5549,7 @@ MonoBehaviour:
   mod_DanioPorcentaje: 0
   at_CriticoRangoDado: 0
   mod_CriticoRangoDado: 0
+  bonusCritDadoRecibido: 0
   "at_CriticoDa\xF1oBonus": 0
   "mod_CriticoDa\xF1oBonus": 0
   at_TSReflejos: 3
@@ -5576,6 +5577,7 @@ MonoBehaviour:
   estado_Condenado: 0
   estado_CondenadoTurnosSeguidos: 0
   estado_Escudado: 0
+  estado_MovimientoAbaratado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
   estado_Volando: 0
@@ -5592,6 +5594,7 @@ MonoBehaviour:
   debuffsImpactoArma: []
   reduccionDanioRecibidoPorcentaje: 0
   reduccionDanioCriticoRecibidoPorcentaje: 0
+  aumentoDanioCriticoRecibidoPorcentaje: 0
   resistenciaEstadosPorcentaje: 0
   espinasDanioPlano: 0
   espinasDanioPorcentaje: 0
@@ -5603,6 +5606,9 @@ MonoBehaviour:
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  desplazamientoAnimacionTurnoNuevoY: 1.7
+  duracionSubidaAnimacionTurnoNuevo: 0.12
+  duracionBajadaAnimacionTurnoNuevo: 0.12
   apilarTextosFlotantes: 0
   floatingTextSlotSpacing: 9
   floatingTextSlotLifetimeFallback: 1.1

@@ -72,7 +72,7 @@ public class Estados : MonoBehaviour
     BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
 
   }
-  public static void Efecto_Condenado(Unidad unidad) //Cuando stacks llegue a 0 recibe 5% hpmax por turno activo (danio verdadero)
+  public static void Efecto_Condenado(Unidad unidad) //Cuando stacks llegue a 0 recibe 10% hpmax por turno activo (danio verdadero)
   {
     if (unidad == null || unidad.HP_actual <= 0)
     {
@@ -95,7 +95,7 @@ public class Estados : MonoBehaviour
     unidad.estado_Condenado--;
     if (unidad.estado_Condenado < 1)
     {
-      float porcentajeAcumulado = 0.05f * unidad.estado_CondenadoTurnosSeguidos;
+      float porcentajeAcumulado = 0.10f * unidad.estado_CondenadoTurnosSeguidos;
       unidad.RecibirDanio(unidad.mod_maxHP * porcentajeAcumulado, 10, false, null,400);
       BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre + TRADU.i.Traducir(" es dañado por la Condena.")));
       BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);

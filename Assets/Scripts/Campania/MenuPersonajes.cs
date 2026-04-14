@@ -66,6 +66,14 @@ public class MenuPersonajes : MonoBehaviour
     AsegurarTextoCapacidadPersonajes();
   }
 
+  private void OnDisable()
+  {
+    if (scEquipo != null)
+    {
+      scEquipo.CerrarInventario();
+    }
+  }
+
   public void PrepararYAbrirMenu(Personaje personajeInicial = null)
   {
     AsegurarTextoCapacidadPersonajes();

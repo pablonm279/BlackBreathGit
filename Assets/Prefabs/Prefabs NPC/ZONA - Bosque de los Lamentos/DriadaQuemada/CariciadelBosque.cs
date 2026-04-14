@@ -26,7 +26,7 @@ public class CariciadelBosque : IAHabilidad
       hAncho = 3;
       esMelee = false;
       hAlcance = 6;
-      hCooldownMax = 3;
+      hCooldownMax = 5;
       esHostil = false;
       prioridad = pPrioridad;
       costoAP = 2;

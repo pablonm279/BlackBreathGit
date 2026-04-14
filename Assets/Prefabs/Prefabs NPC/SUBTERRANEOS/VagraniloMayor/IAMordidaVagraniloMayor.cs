@@ -26,7 +26,7 @@ public class IAMordidaVagraniloMayor : IAHabilidad
       hCooldownMax = 0;
       esHostil = true;
       prioridad = 1;
-      costoAP = 2;
+      costoAP = 3;
       afectaObstaculos = true;
       
 
@@ -35,7 +35,7 @@ public class IAMordidaVagraniloMayor : IAHabilidad
 
       bonusAtaque = 0;
       XdDanio = 2;
-      daniodX = 6; //2d8+4
+      daniodX = 8; //2d8+4
       tipoDanio = 2; //Cortante
 
 
