@@ -79,6 +79,11 @@ public class AlientoNegroVFX : MonoBehaviour
         SincronizarConEstadoActual();
     }
 
+    void OnEnable()
+    {
+        AjustesAudio.VolumenSfxCambiado += OnVolumenSfxCambiado;
+    }
+
     void OnValidate()
     {
         InicializarObjetivo();
@@ -351,11 +356,17 @@ public class AlientoNegroVFX : MonoBehaviour
         audioMovimiento.playOnAwake = false;
         audioMovimiento.loop = true;
         audioVolumenBase = Mathf.Max(0f, audioMovimiento.volume);
+        AjustesAudio.AplicarVolumenSfx(audioMovimiento, audioVolumenBase);
 
         if (forzarAudio3D)
         {
             audioMovimiento.spatialBlend = 1f;
         }
+    }
+
+    float ObtenerVolumenAudioObjetivo()
+    {
+        return Mathf.Clamp01(AjustesAudio.EscalarVolumenSfx(audioVolumenBase));
     }
 
     void ActivarAudio()
@@ -384,7 +395,7 @@ public class AlientoNegroVFX : MonoBehaviour
         if (audioMovimiento == null)
             return;
 
-        audioMovimiento.volume = audioVolumenBase;
+        AjustesAudio.AplicarVolumenSfx(audioMovimiento, audioVolumenBase);
         if (audioMovimiento.isPlaying)
         {
             audioMovimiento.Stop();
@@ -427,6 +438,7 @@ public class AlientoNegroVFX : MonoBehaviour
         float fadeOut = Mathf.Min(audioFadeOutDuracion, Mathf.Max(0f, duracionTotal - fadeIn));
         float sustain = Mathf.Max(0f, duracionTotal - fadeIn - fadeOut);
 
+        float volumenObjetivo = ObtenerVolumenAudioObjetivo();
         audioMovimiento.volume = 0f;
         audioMovimiento.Play();
 
@@ -441,11 +453,12 @@ public class AlientoNegroVFX : MonoBehaviour
 
             tiempo += Time.deltaTime;
             float t = fadeIn > 0f ? Mathf.Clamp01(tiempo / fadeIn) : 1f;
-            audioMovimiento.volume = Mathf.Lerp(0f, audioVolumenBase, t);
+            volumenObjetivo = ObtenerVolumenAudioObjetivo();
+            audioMovimiento.volume = Mathf.Lerp(0f, volumenObjetivo, t);
             yield return null;
         }
 
-        audioMovimiento.volume = audioVolumenBase;
+        audioMovimiento.volume = volumenObjetivo;
         tiempo = 0f;
         while (tiempo < sustain)
         {
@@ -470,7 +483,8 @@ public class AlientoNegroVFX : MonoBehaviour
 
             tiempo += Time.deltaTime;
             float t = fadeOut > 0f ? Mathf.Clamp01(tiempo / fadeOut) : 1f;
-            audioMovimiento.volume = Mathf.Lerp(audioVolumenBase, 0f, t);
+            volumenObjetivo = ObtenerVolumenAudioObjetivo();
+            audioMovimiento.volume = Mathf.Lerp(volumenObjetivo, 0f, t);
             yield return null;
         }
 
@@ -480,7 +494,7 @@ public class AlientoNegroVFX : MonoBehaviour
             audioMovimiento.Stop();
         }
 
-        audioMovimiento.volume = audioVolumenBase;
+        AjustesAudio.AplicarVolumenSfx(audioMovimiento, audioVolumenBase);
         audioCoroutine = null;
     }
 
@@ -505,10 +519,26 @@ public class AlientoNegroVFX : MonoBehaviour
                 audioMovimiento.Stop();
             }
 
-            audioMovimiento.volume = audioVolumenBase;
+            AjustesAudio.AplicarVolumenSfx(audioMovimiento, audioVolumenBase);
         }
 
         audioCoroutine = null;
+    }
+
+    void OnVolumenSfxCambiado(float _)
+    {
+        if (audioMovimiento == null)
+        {
+            return;
+        }
+
+        if (audioMovimiento.isPlaying)
+        {
+            audioMovimiento.volume = ObtenerVolumenAudioObjetivo();
+            return;
+        }
+
+        AjustesAudio.AplicarVolumenSfx(audioMovimiento, audioVolumenBase);
     }
 
     void ReconstruirPuntosPosicion()
@@ -625,6 +655,7 @@ public class AlientoNegroVFX : MonoBehaviour
 
     void OnDisable()
     {
+        AjustesAudio.VolumenSfxCambiado -= OnVolumenSfxCambiado;
         if (moverCoroutine != null)
         {
             StopCoroutine(moverCoroutine);
@@ -693,6 +724,5 @@ class AlientoNegroVFXEditor : Editor
     }
 }
 #endif
-
 
 

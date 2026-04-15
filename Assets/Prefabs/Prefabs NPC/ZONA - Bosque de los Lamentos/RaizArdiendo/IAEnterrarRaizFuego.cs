@@ -90,7 +90,9 @@ public class IAEnterrarRaizFuego : IAHabilidad
     hActualCooldown = hCooldownMax;
 
     PrepararInicioAnimacion(null, scEstaUnidad);
-    AudioSource  audioSource = gameObject.AddComponent<AudioSource>();
+    AudioSource audioSource = null;
+    AjustesAudio.ObtenerOAgregarAudioSource(gameObject, ref audioSource);
+    AjustesAudio.AplicarVolumenSfx(audioSource);
     audioSource.PlayOneShot(enterrarSFX);
 
     await BattleManager.DelayCombateAsync(350);
@@ -215,7 +217,9 @@ public class IAEnterrarRaizFuego : IAHabilidad
     DesuscribirEventos();
     RemoverUnidadEnterrada(scEstaUnidad);
 
-     AudioSource  audioSource = gameObject.AddComponent<AudioSource>();
+    AudioSource audioSource = null;
+    AjustesAudio.ObtenerOAgregarAudioSource(gameObject, ref audioSource);
+    AjustesAudio.AplicarVolumenSfx(audioSource);
     audioSource.PlayOneShot(enterrarSFX);
 
     if (buffEnterradoActivo != null)
@@ -351,6 +355,5 @@ public class IAEnterrarRaizFuego : IAHabilidad
     }
   }
 }
-
 
 

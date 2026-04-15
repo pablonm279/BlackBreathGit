@@ -553,7 +553,7 @@ public abstract class IAHabilidad : MonoBehaviour
       if (esMelee)
       {
         Vector3 pos = scEstaUnidad != null ? scEstaUnidad.transform.position : transform.position;
-        AudioSource.PlayClipAtPoint(BattleManager.Instance.contenedorPrefabs.sonidoErrar, pos);
+        AjustesAudio.ReproducirClipEnPunto(BattleManager.Instance.contenedorPrefabs.sonidoErrar, pos);
       }
       unidadAtacada?.NotificarAtaqueRecibido();
 
@@ -626,7 +626,7 @@ public abstract class IAHabilidad : MonoBehaviour
     if (resultado < 2 && esMelee)
     {
       Vector3 pos = scEstaUnidad != null ? scEstaUnidad.transform.position : transform.position;
-      AudioSource.PlayClipAtPoint(BattleManager.Instance.contenedorPrefabs.sonidoErrar, pos);
+      AjustesAudio.ReproducirClipEnPunto(BattleManager.Instance.contenedorPrefabs.sonidoErrar, pos);
     }
 
     unidadAtacada?.NotificarAtaqueRecibido();

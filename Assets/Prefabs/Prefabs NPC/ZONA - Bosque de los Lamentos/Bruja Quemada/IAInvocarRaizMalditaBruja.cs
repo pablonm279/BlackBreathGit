@@ -169,7 +169,7 @@ public class IAInvocarRaizMalditaBruja : IAHabilidad
     Vector3 posicion = scEstaUnidad != null && scEstaUnidad.puntoEntrante != null
       ? scEstaUnidad.puntoEntrante.position
       : transform.position;
-    AudioSource.PlayClipAtPoint(sfxInvocarRaizMaldita, posicion, Mathf.Clamp01(volumenSfxInvocarRaizMaldita));
+    AjustesAudio.ReproducirClipEnPunto(sfxInvocarRaizMaldita, posicion, Mathf.Clamp01(volumenSfxInvocarRaizMaldita));
   }
 
   private void RegistrarUnidadInvocada(Unidad unidadInvocada)

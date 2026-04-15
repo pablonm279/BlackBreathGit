@@ -719,7 +719,7 @@ public abstract class Habilidad : MonoBehaviour
           deltaClima));
       if (BattleManager.Instance != null && BattleManager.Instance.HabilidadActiva != null && BattleManager.Instance.HabilidadActiva.esMelee)
       {
-        AudioSource.PlayClipAtPoint(BattleManager.Instance.contenedorPrefabs.sonidoErrar, transform.position);
+        AjustesAudio.ReproducirClipEnPunto(BattleManager.Instance.contenedorPrefabs.sonidoErrar, transform.position);
       }
       unidadAtacada?.NotificarAtaqueRecibido();
       return -1;
@@ -790,7 +790,7 @@ public abstract class Habilidad : MonoBehaviour
 
 
     if (resultado < 2 && BattleManager.Instance.HabilidadActiva.esMelee)
-    { AudioSource.PlayClipAtPoint(BattleManager.Instance.contenedorPrefabs.sonidoErrar, transform.position); }
+    { AjustesAudio.ReproducirClipEnPunto(BattleManager.Instance.contenedorPrefabs.sonidoErrar, transform.position); }
 
     unidadAtacada?.NotificarAtaqueRecibido();
     return resultado;

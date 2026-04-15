@@ -1004,8 +1004,25 @@ public bool movimientoEnCurso = false;
   private Casilla casillaOrigenEnMovimiento;
   private bool bonusAcercamientoValentiaAplicadoTurno;
 
+  void OnEnable()
+  {
+    AjustesAudio.VolumenSfxCambiado += OnVolumenSfxCambiado;
+  }
+
+  void OnDisable()
+  {
+    AjustesAudio.VolumenSfxCambiado -= OnVolumenSfxCambiado;
+  }
+
   void Start()
   {
+    audioSource = GetComponent<AudioSource>();
+    if (audioSource != null)
+    {
+      AjustesAudio.RegistrarAudioSource(audioSource);
+      AjustesAudio.AplicarVolumenSfx(audioSource);
+    }
+
     Invoke("AcomodarSortingLayer", 1.15f); //Para que el sprite quede bien en el orden de sorting layer
     if (unidadVoladora)
     {
@@ -1018,6 +1035,16 @@ public bool movimientoEnCurso = false;
     }
       scTextoArmaduraFlash = scUnidadCanvas.barraVida.GetChild(4).GetChild(0).gameObject.GetComponent<Alcambiarvalorflash>();
   } 
+
+  private void OnVolumenSfxCambiado(float _)
+  {
+    audioSource = GetComponent<AudioSource>();
+    if (audioSource != null)
+    {
+      AjustesAudio.AplicarVolumenSfx(audioSource);
+    }
+  }
+
   public bool NoSonidoAlMover;
     private void FixedUpdate()
   {
@@ -1030,7 +1057,7 @@ public bool movimientoEnCurso = false;
         {
           if (poseController != null) { poseController.OnStartMove(); }
 
-          if (!NoSonidoAlMover) { AudioSource.PlayClipAtPoint(BattleManager.Instance.contenedorPrefabs.sonidoMovimientoLigero, transform.position); }
+          if (!NoSonidoAlMover) { AjustesAudio.ReproducirClipEnPunto(BattleManager.Instance.contenedorPrefabs.sonidoMovimientoLigero, transform.position); }
 
           // Guardar casilla origen y limpiar Presente una sola vez
           casillaOrigenEnMovimiento = CasillaPosicion;
@@ -1999,14 +2026,8 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     }
     if (clip != null)
     {
-      if (audioSource == null)
-      {
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-          audioSource = gameObject.AddComponent<AudioSource>();
-        }
-      }
+      AjustesAudio.ObtenerOAgregarAudioSource(gameObject, ref audioSource);
+      AjustesAudio.AplicarVolumenSfx(audioSource);
       audioSource.PlayOneShot(clip);
     }
   }
@@ -2014,14 +2035,8 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     await BattleManager.DelayCombateAsync(450);
     if (sonidosRecibirDanio != null && sonidosRecibirDanio.Count > 0)
     {
-      if (audioSource == null)
-      {
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-          audioSource = gameObject.AddComponent<AudioSource>();
-        }
-      }
+      AjustesAudio.ObtenerOAgregarAudioSource(gameObject, ref audioSource);
+      AjustesAudio.AplicarVolumenSfx(audioSource);
       int index;
       do
       {
@@ -2048,13 +2063,10 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
     if (audioSource == null)
     {
-      audioSource = GetComponent<AudioSource>();
-      if (audioSource == null)
-      {
-        audioSource = gameObject.AddComponent<AudioSource>();
-      }
+      AjustesAudio.ObtenerOAgregarAudioSource(gameObject, ref audioSource);
     }
 
+    AjustesAudio.AplicarVolumenSfx(audioSource);
     audioSource.PlayOneShot(clip, MultiplicadorVolumenSonidoArmadura);
   }
 

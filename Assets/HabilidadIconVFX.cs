@@ -222,6 +222,7 @@ public class HabilidadIconVFX : MonoBehaviour
             _audio = GetComponent<AudioSource>();
             if (_audio == null) _audio = gameObject.AddComponent<AudioSource>();
             _audio.playOnAwake = false;
+            AjustesAudio.AplicarVolumenSfx(_audio, 1f);
         }
 
         if (materialFloatOverTime && _img.material != null)
@@ -335,8 +336,8 @@ public class HabilidadIconVFX : MonoBehaviour
             _audio = gameObject.AddComponent<AudioSource>();
             _audio.playOnAwake = false;
         }
-        _audio.volume = sfxVolume;
-        _audio.PlayOneShot(sfxClip);
+        AjustesAudio.AplicarVolumenSfx(_audio, 1f);
+        _audio.PlayOneShot(sfxClip, Mathf.Max(0f, sfxVolume));
     }
 
     // -----------------------------

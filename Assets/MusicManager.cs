@@ -95,6 +95,7 @@ public class MusicManager : MonoBehaviour
         a.playOnAwake = false; b.playOnAwake = false;
         a.volume = 0f; b.volume = 0f;
         sfx.loop = false; sfx.playOnAwake = false; sfx.spatialBlend = 0f; sfx.volume = 1f;
+        AjustesAudio.AplicarVolumenSfx(sfx, 1f);
 
         activo = a; pasivo = b;
     }
@@ -231,8 +232,8 @@ public class MusicManager : MonoBehaviour
         PausarMusica(true);
 
         // Play SFX
-        sfx.volume = Mathf.Clamp01(volumen);
-        sfx.PlayOneShot(clip, sfx.volume);
+        AjustesAudio.AplicarVolumenSfx(sfx, 1f);
+        sfx.PlayOneShot(clip, Mathf.Max(0f, volumen));
 
         // Esperar duración del clip
         t = 0f;

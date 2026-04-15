@@ -377,7 +377,7 @@ public class IACondenaFerozBruja : IAHabilidad
     Vector3 posicion = scEstaUnidad != null
       ? ObtenerPosicionVisual(scEstaUnidad)
       : transform.position;
-    AudioSource.PlayClipAtPoint(sfxCondenaFeroz, posicion, Mathf.Clamp01(volumenSfxCondenaFeroz));
+    AjustesAudio.ReproducirClipEnPunto(sfxCondenaFeroz, posicion, Mathf.Clamp01(volumenSfxCondenaFeroz));
   }
 
   private static Material ObtenerMaterial()

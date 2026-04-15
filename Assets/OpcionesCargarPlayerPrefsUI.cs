@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -14,9 +15,13 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     private const string PrefFpsLimit = "gfx_fps_limit";
     private const string PrefBrightness = "gfx_brightness";
     private const float DefaultBrightness = 0.5f;
+    private const float AudioSfxOffsetY = -60.7f;
 
     public Slider volMusicaSlider;
+    [NonSerialized] private Slider volSfxSlider;
     public AudioSource musicaFondo;
+    private TextMeshProUGUI etiquetaVolMusica;
+    private TextMeshProUGUI etiquetaVolSfx;
 
     public int nIdioma;
     public Toggle EspaniolToggle;
@@ -60,6 +65,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     void Start()
     {
         InicializarCalibracionVisualPorDefecto();
+        AsegurarControlesAudioSfx();
        
         LlenarDropdownResoluciones();
         AplicarEfectosEnUI();
@@ -68,6 +74,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     void OnEnable()
     {
         InicializarCalibracionVisualPorDefecto();
+        AsegurarControlesAudioSfx();
         
         AplicarEfectosEnUI();
     }
@@ -88,8 +95,10 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void AplicarEfectosEnUI()
     {
+        AsegurarControlesAudioSfx();
+
         // Volumen de la másica
-        float volumenMusica = PlayerPrefs.GetFloat("Vol_Musica", 0.8f);
+        float volumenMusica = AjustesAudio.ObtenerVolumenMusica();
         if (volumenMusica > 0.9f)
         { volumenMusica = 0.9f; }
         if (volMusicaSlider != null)
@@ -97,6 +106,13 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             volMusicaSlider.SetValueWithoutNotify(volumenMusica);
         }
         AplicarVolumenMusica(volumenMusica);
+
+        float volumenSfx = AjustesAudio.ObtenerVolumenSfx();
+        if (volSfxSlider != null)
+        {
+            volSfxSlider.SetValueWithoutNotify(volumenSfx);
+        }
+        AplicarVolumenSfx(volumenSfx);
 
         // Sonido en segundo plano
         musicInBackground = PlayerPrefs.GetInt("Background_Sound", 1) == 1;
@@ -122,6 +138,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         { PortuguesToggle.SetIsOnWithoutNotify(true); }
         else
         { EspaniolToggle.SetIsOnWithoutNotify(true);}
+        ActualizarEtiquetasAudio();
         ActualizarEtiquetaBrillo();
 
         if (PanelControles != null && PanelControles.activeInHierarchy)
@@ -180,8 +197,17 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public void CambiarEfectos()
     {
         // Volumen de la másica
-        PlayerPrefs.SetFloat("Vol_Musica", volMusicaSlider.value);
-        AplicarVolumenMusica(volMusicaSlider.value);
+        if (volMusicaSlider != null)
+        {
+            AjustesAudio.EstablecerVolumenMusica(volMusicaSlider.value);
+            AplicarVolumenMusica(volMusicaSlider.value);
+        }
+
+        if (volSfxSlider != null)
+        {
+            AjustesAudio.EstablecerVolumenSfx(volSfxSlider.value);
+            AplicarVolumenSfx(volSfxSlider.value);
+        }
 
         // Brillo
         if (brilloSlider != null)
@@ -237,6 +263,12 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         {
             musicaFondo.volume = volumenMusica;
         }
+    }
+
+    private void AplicarVolumenSfx(float volumenSfx)
+    {
+        AjustesAudio.EstablecerVolumenSfx(volumenSfx);
+        AjustesAudio.AplicarVolumenSfxEnEscena(musicaFondo);
     }
 
 
@@ -716,12 +748,179 @@ public void CambiarIdioma(int idioma)
         }
     }
 
-   
+    private void AsegurarControlesAudioSfx()
+    {
+        if (PanelAudio == null || volMusicaSlider == null)
+        {
+            return;
+        }
 
-    
+        if (etiquetaVolMusica == null)
+        {
+            etiquetaVolMusica = BuscarEtiquetaEnPanelAudio("txtMusicVolume", "music", "musica");
+        }
 
-  
+        if (volSfxSlider == null)
+        {
+            Transform sliderExistente = PanelAudio.transform.Find("SliderSFX");
+            if (sliderExistente != null)
+            {
+                volSfxSlider = sliderExistente.GetComponent<Slider>();
+            }
+        }
 
+        if (etiquetaVolSfx == null)
+        {
+            Transform etiquetaExistente = PanelAudio.transform.Find("txtSfxVolume");
+            if (etiquetaExistente != null)
+            {
+                etiquetaVolSfx = etiquetaExistente.GetComponent<TextMeshProUGUI>();
+            }
+        }
+
+        if (etiquetaVolMusica == null)
+        {
+            return;
+        }
+
+        if (etiquetaVolSfx == null)
+        {
+            etiquetaVolSfx = CrearEtiquetaSfx();
+        }
+
+        if (volSfxSlider == null)
+        {
+            volSfxSlider = CrearSliderSfx();
+        }
+
+        RectTransform rectEtiquetaMusica = etiquetaVolMusica.transform as RectTransform;
+        RectTransform rectSliderMusica = volMusicaSlider.transform as RectTransform;
+
+        if (etiquetaVolSfx != null && rectEtiquetaMusica != null)
+        {
+            RectTransform rectEtiquetaSfx = etiquetaVolSfx.transform as RectTransform;
+            if (rectEtiquetaSfx != null)
+            {
+                Vector2 posEtiqueta = rectEtiquetaSfx.anchoredPosition;
+                posEtiqueta.y = rectEtiquetaMusica.anchoredPosition.y + AudioSfxOffsetY;
+                rectEtiquetaSfx.anchoredPosition = posEtiqueta;
+            }
+        }
+
+        if (volSfxSlider != null && rectSliderMusica != null)
+        {
+            RectTransform rectSliderSfx = volSfxSlider.transform as RectTransform;
+            if (rectSliderSfx != null)
+            {
+                Vector2 posSlider = rectSliderSfx.anchoredPosition;
+                posSlider.y = rectSliderMusica.anchoredPosition.y + AudioSfxOffsetY;
+                rectSliderSfx.anchoredPosition = posSlider;
+            }
+        }
+    }
+
+    private TextMeshProUGUI CrearEtiquetaSfx()
+    {
+        if (etiquetaVolMusica == null)
+        {
+            return null;
+        }
+
+        GameObject clon = Instantiate(etiquetaVolMusica.gameObject, etiquetaVolMusica.transform.parent);
+        clon.name = "txtSfxVolume";
+        return clon.GetComponent<TextMeshProUGUI>();
+    }
+
+    private Slider CrearSliderSfx()
+    {
+        if (volMusicaSlider == null)
+        {
+            return null;
+        }
+
+        GameObject clon = Instantiate(volMusicaSlider.gameObject, volMusicaSlider.transform.parent);
+        clon.name = "SliderSFX";
+        return clon.GetComponent<Slider>();
+    }
+
+    private TextMeshProUGUI BuscarEtiquetaEnPanelAudio(string nombrePreferido, params string[] patrones)
+    {
+        if (PanelAudio == null)
+        {
+            return null;
+        }
+
+        Transform hijoDirecto = PanelAudio.transform.Find(nombrePreferido);
+        if (hijoDirecto != null)
+        {
+            TextMeshProUGUI textoDirecto = hijoDirecto.GetComponent<TextMeshProUGUI>();
+            if (textoDirecto != null)
+            {
+                return textoDirecto;
+            }
+        }
+
+        TextMeshProUGUI[] textos = PanelAudio.GetComponentsInChildren<TextMeshProUGUI>(true);
+        for (int i = 0; i < textos.Length; i++)
+        {
+            TextMeshProUGUI texto = textos[i];
+            if (texto == null)
+            {
+                continue;
+            }
+
+            string nombre = texto.name.ToLowerInvariant();
+            string contenido = texto.text.ToLowerInvariant();
+            for (int j = 0; j < patrones.Length; j++)
+            {
+                string patron = patrones[j];
+                if (nombre.Contains(patron) || contenido.Contains(patron))
+                {
+                    return texto;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private void ActualizarEtiquetasAudio()
+    {
+        if (etiquetaVolMusica == null)
+        {
+            etiquetaVolMusica = BuscarEtiquetaEnPanelAudio("txtMusicVolume", "music", "musica");
+        }
+
+        if (etiquetaVolSfx == null)
+        {
+            etiquetaVolSfx = BuscarEtiquetaEnPanelAudio("txtSfxVolume", "sfx", "efect");
+        }
+
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : nIdioma;
+        string textoMusica = "Volumen de la Musica";
+        string textoSfx = "Volumen de Efectos";
+
+        if (idioma == TRADU.IdiomaIngles)
+        {
+            textoMusica = "Music Volume";
+            textoSfx = "SFX Volume";
+        }
+        else if (idioma == TRADU.IdiomaPortugues)
+        {
+            textoMusica = "Volume da Musica";
+            textoSfx = "Volume de Efeitos";
+        }
+
+        if (etiquetaVolMusica != null)
+        {
+            etiquetaVolMusica.text = textoMusica;
+        }
+
+        if (etiquetaVolSfx != null)
+        {
+            etiquetaVolSfx.text = textoSfx;
+        }
+    }
 
     private static void ReposicionarSliderDebajo(RectTransform sliderRect)
     {
@@ -818,6 +1017,190 @@ public void CambiarIdioma(int idioma)
        
 
 
+}
+
+public static class AjustesAudio
+{
+    public const string PrefVolMusica = "Vol_Musica";
+    public const string PrefVolSfx = "Vol_SFX";
+    public const float VolumenMusicaPorDefecto = 0.8f;
+    public const float VolumenSfxPorDefecto = 0.8f;
+
+    static readonly Dictionary<int, float> volumenesBaseAudioSource = new Dictionary<int, float>();
+    static float? volumenSfxCache;
+
+    public static event Action<float> VolumenSfxCambiado;
+
+    public static float ObtenerVolumenMusica()
+    {
+        return Mathf.Clamp01(PlayerPrefs.GetFloat(PrefVolMusica, VolumenMusicaPorDefecto));
+    }
+
+    public static void EstablecerVolumenMusica(float volumen)
+    {
+        PlayerPrefs.SetFloat(PrefVolMusica, Mathf.Clamp01(volumen));
+    }
+
+    public static float ObtenerVolumenSfx()
+    {
+        if (!volumenSfxCache.HasValue)
+        {
+            volumenSfxCache = Mathf.Clamp01(PlayerPrefs.GetFloat(PrefVolSfx, VolumenSfxPorDefecto));
+        }
+
+        return volumenSfxCache.Value;
+    }
+
+    public static void EstablecerVolumenSfx(float volumen)
+    {
+        float volumenClamped = Mathf.Clamp01(volumen);
+        bool cambio = !volumenSfxCache.HasValue || !Mathf.Approximately(volumenSfxCache.Value, volumenClamped);
+        volumenSfxCache = volumenClamped;
+        PlayerPrefs.SetFloat(PrefVolSfx, volumenClamped);
+
+        if (cambio)
+        {
+            VolumenSfxCambiado?.Invoke(volumenClamped);
+        }
+    }
+
+    public static float EscalarVolumenSfx(float volumenBase = 1f)
+    {
+        return Mathf.Max(0f, volumenBase) * ObtenerVolumenSfx();
+    }
+
+    public static void RegistrarAudioSource(AudioSource audioSource)
+    {
+        if (audioSource == null)
+        {
+            return;
+        }
+
+        int id = audioSource.GetInstanceID();
+        if (!volumenesBaseAudioSource.ContainsKey(id))
+        {
+            volumenesBaseAudioSource[id] = Mathf.Max(0f, audioSource.volume);
+        }
+    }
+
+    public static void EstablecerVolumenBase(AudioSource audioSource, float volumenBase)
+    {
+        if (audioSource == null)
+        {
+            return;
+        }
+
+        volumenesBaseAudioSource[audioSource.GetInstanceID()] = Mathf.Max(0f, volumenBase);
+    }
+
+    public static float ObtenerVolumenBase(AudioSource audioSource)
+    {
+        if (audioSource == null)
+        {
+            return 1f;
+        }
+
+        RegistrarAudioSource(audioSource);
+        return volumenesBaseAudioSource[audioSource.GetInstanceID()];
+    }
+
+    public static void AplicarVolumenSfx(AudioSource audioSource)
+    {
+        if (audioSource == null)
+        {
+            return;
+        }
+
+        float volumenBase = ObtenerVolumenBase(audioSource);
+        audioSource.volume = Mathf.Clamp01(EscalarVolumenSfx(volumenBase));
+    }
+
+    public static void AplicarVolumenSfx(AudioSource audioSource, float volumenBase)
+    {
+        if (audioSource == null)
+        {
+            return;
+        }
+
+        EstablecerVolumenBase(audioSource, volumenBase);
+        audioSource.volume = Mathf.Clamp01(EscalarVolumenSfx(volumenBase));
+    }
+
+    public static AudioSource ObtenerOAgregarAudioSource(GameObject owner, ref AudioSource audioSource)
+    {
+        if (audioSource == null && owner != null)
+        {
+            audioSource = owner.GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = owner.AddComponent<AudioSource>();
+            }
+        }
+
+        RegistrarAudioSource(audioSource);
+        return audioSource;
+    }
+
+    public static void ReproducirClipEnPunto(AudioClip clip, Vector3 posicion, float volumenBase = 1f)
+    {
+        if (clip == null)
+        {
+            return;
+        }
+
+        GameObject tempAudio = new GameObject("TempSFX");
+        tempAudio.transform.position = posicion;
+
+        AudioSource audioSource = tempAudio.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 1f;
+        audioSource.clip = clip;
+        AplicarVolumenSfx(audioSource, volumenBase);
+        audioSource.Play();
+
+        UnityEngine.Object.Destroy(tempAudio, clip.length + 0.1f);
+    }
+
+    public static void AplicarVolumenSfxEnEscena(params AudioSource[] audiosExcluidos)
+    {
+        HashSet<int> idsExcluidos = new HashSet<int>();
+        if (audiosExcluidos != null)
+        {
+            for (int i = 0; i < audiosExcluidos.Length; i++)
+            {
+                AudioSource audioExcluido = audiosExcluidos[i];
+                if (audioExcluido != null)
+                {
+                    idsExcluidos.Add(audioExcluido.GetInstanceID());
+                }
+            }
+        }
+
+        if (MusicManager.Instance != null)
+        {
+            AudioSource[] audioSourcesMusica = MusicManager.Instance.GetComponents<AudioSource>();
+            for (int i = 0; i < audioSourcesMusica.Length; i++)
+            {
+                AudioSource audioMusica = audioSourcesMusica[i];
+                if (audioMusica != null)
+                {
+                    idsExcluidos.Add(audioMusica.GetInstanceID());
+                }
+            }
+        }
+
+        AudioSource[] audioSources = UnityEngine.Object.FindObjectsByType<AudioSource>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < audioSources.Length; i++)
+        {
+            AudioSource audioSource = audioSources[i];
+            if (audioSource == null || idsExcluidos.Contains(audioSource.GetInstanceID()))
+            {
+                continue;
+            }
+
+            AplicarVolumenSfx(audioSource);
+        }
+    }
 }
 
 

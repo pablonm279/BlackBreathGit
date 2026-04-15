@@ -194,7 +194,7 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
 
       if (sfxImpactoRoca != null)
       {
-        AudioSource.PlayClipAtPoint(sfxImpactoRoca, transform.position);
+        AjustesAudio.ReproducirClipEnPunto(sfxImpactoRoca, transform.position);
       }
     }
 

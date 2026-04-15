@@ -172,7 +172,7 @@ public class CampaignManager : MonoBehaviour
     }
 
     AsegurarAudioMovimientoCaravana();
-    sfxMovimientoSource.volume = sfxMovimientoVolumen;
+    AjustesAudio.AplicarVolumenSfx(sfxMovimientoSource, sfxMovimientoVolumen);
     sfxMovimientoSource.pitch = sfxMovimientoPitch * Mathf.Max(0.5f, multiplicadorVelocidadVisualViajeActual);
     AsegurarAsentamientoManager();
     AsegurarCursorCampania();
@@ -486,12 +486,14 @@ public class CampaignManager : MonoBehaviour
 
   private void OnEnable()
   {
+    AjustesAudio.VolumenSfxCambiado += ActualizarVolumenSfxMovimientoCaravana;
     TryProcesarColaTextoFlotante();
     ActualizarCursorCampania(true);
   }
 
   private void OnDisable()
   {
+    AjustesAudio.VolumenSfxCambiado -= ActualizarVolumenSfxMovimientoCaravana;
     if (rutinaTextoFlotanteCampania != null)
     {
       StopCoroutine(rutinaTextoFlotanteCampania);
@@ -2693,6 +2695,17 @@ public class CampaignManager : MonoBehaviour
     sfxMovimientoSource.playOnAwake = false;
     sfxMovimientoSource.loop = true;
     sfxMovimientoSource.pitch = sfxMovimientoPitch;
+    AjustesAudio.AplicarVolumenSfx(sfxMovimientoSource, sfxMovimientoVolumen);
+  }
+
+  private void ActualizarVolumenSfxMovimientoCaravana(float _ = -1f)
+  {
+    if (sfxMovimientoSource == null || rutinaDesvanecerSfxMovimiento != null)
+    {
+      return;
+    }
+
+    AjustesAudio.AplicarVolumenSfx(sfxMovimientoSource, sfxMovimientoVolumen);
   }
 
   private void IniciarSonidoMovimientoCaravana(float duracionFade)
@@ -2728,7 +2741,7 @@ public class CampaignManager : MonoBehaviour
 
     sfxMovimientoSource.pitch = sfxMovimientoPitch;
     sfxMovimientoSource.loop = true;
-    float volumenObjetivo = Mathf.Clamp01(sfxMovimientoVolumen);
+    float volumenObjetivo = Mathf.Clamp01(AjustesAudio.EscalarVolumenSfx(sfxMovimientoVolumen));
     float volumenInicial = sfxMovimientoSource.isPlaying ? sfxMovimientoSource.volume : 0f;
     sfxMovimientoSource.volume = volumenInicial;
 
@@ -2742,13 +2755,14 @@ public class CampaignManager : MonoBehaviour
     {
       tiempo += Time.deltaTime;
       float t = Mathf.Clamp01(tiempo / duracion);
+      volumenObjetivo = Mathf.Clamp01(AjustesAudio.EscalarVolumenSfx(sfxMovimientoVolumen));
       sfxMovimientoSource.volume = Mathf.Lerp(volumenInicial, volumenObjetivo, t);
       yield return null;
     }
 
     if (sfxMovimientoSource != null)
     {
-      sfxMovimientoSource.volume = volumenObjetivo;
+      AjustesAudio.AplicarVolumenSfx(sfxMovimientoSource, sfxMovimientoVolumen);
     }
 
     rutinaDesvanecerSfxMovimiento = null;
@@ -2791,7 +2805,7 @@ public class CampaignManager : MonoBehaviour
     if (sfxMovimientoSource != null)
     {
       sfxMovimientoSource.Stop();
-      sfxMovimientoSource.volume = sfxMovimientoVolumen;
+      AjustesAudio.AplicarVolumenSfx(sfxMovimientoSource, sfxMovimientoVolumen);
       sfxMovimientoSource.pitch = sfxMovimientoPitch;
     }
 

@@ -222,6 +222,13 @@ public class IAUnidad : MonoBehaviour
                   continue;
                }
 
+               Casilla intercambioLateral = BuscarIntercambioLateralGenerico(lado, scUnidad.CasillaPosicion);
+               if (intercambioLateral != null && await IntentarIntercambioLateralConAliado(intercambioLateral))
+               {
+                  await DelayIA(timings.DelayMovimientoFallbackMs);
+                  continue;
+               }
+
                tendenciaMovX = 0;
                tendenciaMovY = 0;
                await DelayIA(timings.DelayMovimientoFallbackMs);
@@ -589,6 +596,11 @@ public class IAUnidad : MonoBehaviour
           return false;
        }
 
+       if (await IntentarIntercambioLateralConAliado(casilla))
+       {
+         return true;
+       }
+
        Casilla mejorOpcion = null;
        int mejorDistancia = int.MaxValue;
        int mejorPrioridadEmpate = int.MaxValue;
@@ -678,6 +690,35 @@ public class IAUnidad : MonoBehaviour
       return ObtenerCasillaLateralDisponible(lado, casillaActual, -1);
    }
 
+   private Casilla BuscarIntercambioLateralGenerico(LadoManager lado, Casilla casillaActual)
+   {
+      if (lado == null || casillaActual == null || scUnidad == null)
+      {
+         return null;
+      }
+
+      if (!scUnidad.EsEnemigoParaJugador() || !HayBloqueoFrontal(lado, casillaActual))
+      {
+         return null;
+      }
+
+      int direccionPreferida = ObtenerDireccionFilaHaciaEnemigo(casillaActual);
+      int[] intentos = direccionPreferida != 0
+         ? new int[] { direccionPreferida, -direccionPreferida }
+         : new int[] { 1, -1 };
+
+      foreach (int dy in intentos)
+      {
+         Casilla candidata = ObtenerCasillaLateralConAliadoIntercambiable(lado, casillaActual, dy);
+         if (candidata != null)
+         {
+            return candidata;
+         }
+      }
+
+      return null;
+   }
+
    private Casilla ObtenerCasillaLateralDisponible(LadoManager lado, Casilla origen, int deltaY)
    {
       if (lado == null || origen == null || deltaY == 0)
@@ -698,6 +739,104 @@ public class IAUnidad : MonoBehaviour
       }
 
       return candidata;
+   }
+
+   private Casilla ObtenerCasillaLateralConAliadoIntercambiable(LadoManager lado, Casilla origen, int deltaY)
+   {
+      if (lado == null || origen == null || deltaY == 0)
+      {
+         return null;
+      }
+
+      int nuevoY = origen.posY + deltaY;
+      if (nuevoY < 1 || nuevoY > 5)
+      {
+         return null;
+      }
+
+      Casilla candidata = lado.ObtenerCasillaPorIndex(origen.posX, nuevoY);
+      return ObtenerAliadoIntercambiableParaIntercambioLateral(candidata) != null ? candidata : null;
+   }
+
+   private async Task<bool> IntentarIntercambioLateralConAliado(Casilla casillaObjetivo)
+   {
+      if (casillaObjetivo == null || scUnidad == null || scUnidad.CasillaPosicion == null)
+      {
+         return false;
+      }
+
+      if (!scUnidad.EsEnemigoParaJugador())
+      {
+         return false;
+      }
+
+      if (casillaObjetivo.posX != scUnidad.CasillaPosicion.posX)
+      {
+         return false;
+      }
+
+      if (Math.Abs(casillaObjetivo.posY - scUnidad.CasillaPosicion.posY) != 1)
+      {
+         return false;
+      }
+
+      Unidad aliado = ObtenerAliadoIntercambiableParaIntercambioLateral(casillaObjetivo);
+      if (aliado == null)
+      {
+         return false;
+      }
+
+      if (scUnidad.ObtenerAPActual() < costoMovimientoAP)
+      {
+         return false;
+      }
+
+      Casilla origen = scUnidad.CasillaPosicion;
+      aliado.CasillaDeseadaMov = null;
+      aliado.CasillaForzadoaMover = origen;
+      scUnidad.CasillaDeseadaMov = casillaObjetivo;
+      scUnidad.CambiarAPActual(-costoMovimientoAP);
+
+      await BattleManager.DelayCombateAsync(450);
+
+      if (scUnidad.CasillaDeseadaMov != null)
+      {
+         scUnidad.CasillaPosicion = scUnidad.CasillaDeseadaMov;
+         scUnidad.CasillaDeseadaMov = null;
+      }
+
+      return true;
+   }
+
+   private Unidad ObtenerAliadoIntercambiableParaIntercambioLateral(Casilla casillaObjetivo)
+   {
+      if (casillaObjetivo == null || casillaObjetivo.Presente == null || scUnidad == null || scUnidad.CasillaPosicion == null)
+      {
+         return null;
+      }
+
+      Unidad aliado = casillaObjetivo.Presente.GetComponent<Unidad>();
+      if (aliado == null || aliado == scUnidad)
+      {
+         return null;
+      }
+
+      if (aliado.CasillaPosicion == null || aliado.CasillaPosicion.lado != scUnidad.CasillaPosicion.lado)
+      {
+         return null;
+      }
+
+      if (aliado.estado_inmovil > 0 || aliado.esInmobil)
+      {
+         return null;
+      }
+
+      if (aliado.movimientoEnCurso || aliado.CasillaForzadoaMover != null || aliado.CasillaDeseadaMov != null)
+      {
+         return null;
+      }
+
+      return aliado.HP_actual > 0f ? aliado : null;
    }
 
    private int ObtenerDireccionFilaHaciaEnemigo(Casilla casillaActual)
