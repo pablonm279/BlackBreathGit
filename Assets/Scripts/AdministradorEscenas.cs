@@ -2179,6 +2179,7 @@ public class AdministradorEscenas : MonoBehaviour
     }
 
     pers.Camp_Avergonzado = true;
+    pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -2);
     return true;
   }
 
@@ -3990,8 +3991,10 @@ public class AdministradorEscenas : MonoBehaviour
       avergonzado.boolfDebufftBuff = false;
       avergonzado.DuracionBuffRondas = -1;
       avergonzado.cantTsMental -= 2;
-      avergonzado.percHPMax -= 10;
+      //avergonzado.percHPMax -= 10;
       avergonzado.AplicarBuff(unidad);
+      unidad.SumarValentia(-2);
+      
       Buff buffComponent = ComponentCopier.CopyComponent(avergonzado, GO.gameObject);
 
       if (unidad.HP_actual > unidad.mod_maxHP)

@@ -135,6 +135,13 @@ public class IAUnidad : MonoBehaviour
          AITurnTimings timings = ObtenerTimingsActuales();
          contadorIteraciones--;
 
+         if (await IntentarEscaparSiDisponible(timings))
+         {
+            realizoAccion = true;
+            turnoTerminado = true;
+            break;
+         }
+
          List<IAHabilidad> habilidadesDisponibles = HayHabilidadesPosibles();
          if (BattleManager.Instance.unidadActiva != scUnidad)
          {
@@ -326,6 +333,30 @@ public class IAUnidad : MonoBehaviour
    private static Task DelayIA(int milliseconds)
    {
       return BattleManager.DelayCombateAsync(Mathf.Max(0, milliseconds));
+   }
+
+   private async Task<bool> IntentarEscaparSiDisponible(AITurnTimings timings)
+   {
+      if (scUnidad == null || BattleManager.Instance == null || BattleManager.Instance.unidadActiva != scUnidad)
+      {
+         return false;
+      }
+
+      Escapar habilidadEscape = scUnidad.GetComponent<Escapar>();
+      if (habilidadEscape == null || scUnidad.CasillaPosicion == null || scUnidad.CasillaPosicion.lado != 2)
+      {
+         return false;
+      }
+
+      if (scUnidad.ObtenerAPActual() < habilidadEscape.costoAP)
+      {
+         return false;
+      }
+
+      await DelayIA(timings.DelayPreAccionMs);
+      await habilidadEscape.Resolver(new List<object> { scUnidad });
+      await DelayIA(timings.DelayPostAccionMs);
+      return true;
    }
 
    private async Task<bool> IntentarDestruirObstaculoComoFallback(AITurnTimings timings)

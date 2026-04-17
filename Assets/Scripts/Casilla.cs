@@ -1761,7 +1761,7 @@ public class Casilla : MonoBehaviour
 
         if (obj.GetComponent<REPRESENTACIONPasoCauteloso>() != null)
         {
-          if (!obj.GetComponent<REPRESENTACIONPasoCauteloso>().seusoEsteTurno)
+          if (!obj.GetComponent<REPRESENTACIONPasoCauteloso>().seusoEsteTurno && !scTramp.esTrampaFavorable )
           {
             obj.GetComponent<REPRESENTACIONPasoCauteloso>().seusoEsteTurno = true;
             seEvadeEfecto = true;

@@ -46,6 +46,7 @@ public abstract class Habilidad : MonoBehaviour
   [Header("Animacion")]
   [SerializeField] public bool fuerzaPoseAtaque = false;
   [SerializeField] public bool forzarPoseHabilidad = false;
+  [SerializeField] public bool omitirAnimacionDeUso = false;
 
   public bool poneTrampas; //Si la habilidad pone trampas 
   public bool poneObstaculo; //Si la habilidad pone obstaculo 
@@ -411,14 +412,17 @@ public abstract class Habilidad : MonoBehaviour
     // - Canalizador hostil: usa ataque
     // - Hostil melee: usa ataque
     // - Resto: usa pose de habilidad
-    bool usarAtaque = !forzarPoseHabilidad && (fuerzaPoseAtaque || (scEstaUnidad is ClaseCanalizador && esHostil) || (esHostil && esMelee));
-    if (usarAtaque)
+    if (!omitirAnimacionDeUso)
     {
-      scEstaUnidad.ReproducirAnimacionAtaque();
-    }
-    else
-    {
-      scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
+      bool usarAtaque = !forzarPoseHabilidad && (fuerzaPoseAtaque || (scEstaUnidad is ClaseCanalizador && esHostil) || (esHostil && esMelee));
+      if (usarAtaque)
+      {
+        scEstaUnidad.ReproducirAnimacionAtaque();
+      }
+      else
+      {
+        scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
+      }
     }
     // Log de uso de habilidad
     if (BattleManager.Instance != null && scEstaUnidad != null)

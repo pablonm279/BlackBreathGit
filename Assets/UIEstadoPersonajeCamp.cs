@@ -189,9 +189,9 @@ public class UIEstadoPersonajeCamp : MonoBehaviour, IPointerEnterHandler, IPoint
       case TipoEstadoCampania.Avergonzado:
         nombre = TextoPorIdioma("Avergonzado", "Ashamed", "Envergonhado");
         descripcion = TextoPorIdioma(
-          "En batalla: -2 TS Mental y -10% HP máximo.",
-          "In battle: -2 Mental Save and -10% max HP.",
-          "Em batalha: -2 TS Mental e -10% HP máximo.");
+          "En batalla: -2 TS Mental y -2 Val.",
+          "In battle: -2 Mental Save and -2 Valour.",
+          "Em batalha: -2 TS Mental e -2 Valentia.");
         break;
 
       default:

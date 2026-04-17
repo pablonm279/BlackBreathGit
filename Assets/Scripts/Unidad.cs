@@ -20,6 +20,8 @@ public class Unidad : MonoBehaviour
   private static readonly Color ColorValentiaPerdida = new Color(1f, 0.36f, 0.36f, 1f);
   private const int DelayResolucionEfectoDaninoInicioTurnoMs = 450;
   private const int DelayResolucionTrampaPersistenteInicioTurnoMs = 180;
+  private const float DistanciaRetiradaPorMoralX = 3f;
+  private const float DuracionRetiradaPorMoral = 0.805f;
   public const string BuffNombreProvocado = "Provocado";
   private static Unidad redireccionAtaqueAtacante;
   private static Unidad redireccionAtaqueObjetivoOriginal;
@@ -266,6 +268,7 @@ public class Unidad : MonoBehaviour
   //Animaciones
   private Animator animator;
   private UnidadPoseController poseController;
+  private Coroutine retiradaPorMoralCoroutine;
   private bool suprimirAnimacionIA;
   private float ultimoAtaqueAnimTime = -999f;
   private float ultimoHabilidadAnimTime = -999f;
@@ -1081,6 +1084,7 @@ public bool movimientoEnCurso = false;
         {
           LlegoACasilla(CasillaDeseadaMov);
           CasillaPosicion = CasillaDeseadaMov;
+          scBattleManager?.SincronizarHabilidadEscapar(this);
           CasillaPosicion.NuevoObjetoPresenteEnCasilla(gameObject);
           scBattleManager.CalcularCasillasAMovimiento();
           ChequearSeMovio();
@@ -1124,6 +1128,7 @@ public bool movimientoEnCurso = false;
           // Llegó a casilla forzada
           LlegoACasilla(CasillaForzadoaMover);
           CasillaPosicion = CasillaForzadoaMover;
+          scBattleManager?.SincronizarHabilidadEscapar(this);
           CasillaPosicion.NuevoObjetoPresenteEnCasilla(gameObject);
           scBattleManager.CalcularCasillasAMovimiento();
           ChequearSeMovio();
@@ -4198,7 +4203,11 @@ public bool RetirarseDeBatallaPorMoral()
     return false;
   }
 
+  Casilla casillaRetirada = CasillaPosicion;
   yaSeRetiro = true;
+  movimientoEnCurso = false;
+  CasillaDeseadaMov = null;
+  CasillaForzadoaMover = null;
 
   if (scBattleManager != null)
   {
@@ -4206,19 +4215,21 @@ public bool RetirarseDeBatallaPorMoral()
     scBattleManager.RemoverUnidadDeOrdenTurno(this);
   }
 
-  if (CasillaPosicion != null && CasillaPosicion.ladoGO != null)
+  if (casillaRetirada != null && casillaRetirada.ladoGO != null)
   {
-    LadoManager lado = CasillaPosicion.ladoGO.GetComponent<LadoManager>();
+    LadoManager lado = casillaRetirada.ladoGO.GetComponent<LadoManager>();
     if (lado != null)
     {
       lado.unidadesLado.Remove(this);
     }
 
-    CasillaPosicion.Presente = null;
+    casillaRetirada.Presente = null;
   }
 
+  CasillaPosicion = null;
+  casillaOrigenEnMovimiento = null;
+
   AccionP_actual = 0;
-  gameObject.SetActive(false);
 
   if (BattleManager.Instance != null)
   {
@@ -4226,10 +4237,110 @@ public bool RetirarseDeBatallaPorMoral()
     {
       BattleManager.Instance.scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
     }
-    BattleManager.Instance.ChequearFinBatalla();
   }
 
+  if (retiradaPorMoralCoroutine != null)
+  {
+    StopCoroutine(retiradaPorMoralCoroutine);
+  }
+
+  retiradaPorMoralCoroutine = StartCoroutine(AnimarRetiradaPorMoral(casillaRetirada));
+
   return true;
+}
+
+IEnumerator AnimarRetiradaPorMoral(Casilla casillaRetirada)
+{
+  Vector3 posicionInicial = transform.position;
+  int ladoRetirada = casillaRetirada != null ? casillaRetirada.lado : 0;
+  float direccionX = ladoRetirada == 1 ? DistanciaRetiradaPorMoralX : -DistanciaRetiradaPorMoralX;
+  Vector3 posicionFinal = posicionInicial + new Vector3(direccionX, 0f, 0f);
+
+  RectTransform rectTransformImagen = uImage != null ? uImage.rectTransform : null;
+  Vector3 escalaOriginalImagen = rectTransformImagen != null ? rectTransformImagen.localScale : Vector3.one;
+  Color colorOriginalImagen = uImage != null ? uImage.color : Color.white;
+  LookAtCamera lookAtCamera = uImage != null ? uImage.GetComponentInParent<LookAtCamera>() : null;
+  LookAtCameraNOX lookAtCameraNOX = uImage != null ? uImage.GetComponentInParent<LookAtCameraNOX>() : null;
+  bool usaBillboard = lookAtCamera != null || lookAtCameraNOX != null;
+  bool invertOriginalLookAt = lookAtCamera != null && lookAtCamera.invert;
+  bool invertOriginalLookAtNOX = lookAtCameraNOX != null && lookAtCameraNOX.invert;
+
+  if (poseController != null)
+  {
+    poseController.OnStartMove();
+  }
+
+  if (lookAtCamera != null)
+  {
+    lookAtCamera.invert = !invertOriginalLookAt;
+  }
+
+  if (lookAtCameraNOX != null)
+  {
+    lookAtCameraNOX.invert = !invertOriginalLookAtNOX;
+  }
+
+  if (rectTransformImagen != null)
+  {
+    rectTransformImagen.localScale = new Vector3(
+      usaBillboard ? escalaOriginalImagen.x : Mathf.Abs(escalaOriginalImagen.x) * (direccionX < 0f ? -1f : 1f),
+      escalaOriginalImagen.y,
+      escalaOriginalImagen.z);
+  }
+
+  float tiempo = 0f;
+  while (tiempo < DuracionRetiradaPorMoral)
+  {
+    tiempo += Time.deltaTime;
+    float progreso = Mathf.Clamp01(tiempo / DuracionRetiradaPorMoral);
+    float suavizado = Mathf.SmoothStep(0f, 1f, progreso);
+
+    transform.position = Vector3.Lerp(posicionInicial, posicionFinal, suavizado);
+
+    if (uImage != null)
+    {
+      Color color = colorOriginalImagen;
+      color.a = Mathf.Lerp(colorOriginalImagen.a, 0f, Mathf.Clamp01((progreso - 0.35f) / 0.65f));
+      uImage.color = color;
+    }
+
+    yield return null;
+  }
+
+  transform.position = posicionFinal;
+
+  if (poseController != null)
+  {
+    poseController.OnStopMove();
+  }
+
+  if (rectTransformImagen != null)
+  {
+    rectTransformImagen.localScale = escalaOriginalImagen;
+  }
+
+  if (lookAtCamera != null)
+  {
+    lookAtCamera.invert = invertOriginalLookAt;
+  }
+
+  if (lookAtCameraNOX != null)
+  {
+    lookAtCameraNOX.invert = invertOriginalLookAtNOX;
+  }
+
+  if (uImage != null)
+  {
+    uImage.color = colorOriginalImagen;
+  }
+
+  retiradaPorMoralCoroutine = null;
+  gameObject.SetActive(false);
+
+  if (BattleManager.Instance != null)
+  {
+    BattleManager.Instance.ChequearFinBatalla();
+  }
 }
 
 void DesactivarGOconDelay()

@@ -373,6 +373,7 @@ public class BattleManager : MonoBehaviour
 
       /*---*/
       SincronizarHabilidadDestruirObstaculo(unidadActiva);
+      SincronizarHabilidadEscapar(unidadActiva);
       ActualizarlistaHabilidades();//dejar aca y abajo, se llama 2 veces
 
       OnTurnoNuevo?.Invoke(this, EventArgs.Empty);
@@ -381,6 +382,7 @@ public class BattleManager : MonoBehaviour
       scUIInfoChar.ActualizarInfoChar(unidadActiva);
       /*---*/
       SincronizarHabilidadDestruirObstaculo(unidadActiva);
+      SincronizarHabilidadEscapar(unidadActiva);
       ActualizarlistaHabilidades();//dejar aca y arriba, se llama 2 veces
 
       indexTurno++;
@@ -481,6 +483,7 @@ public class BattleManager : MonoBehaviour
 
     OnRondaNueva?.Invoke(this, EventArgs.Empty);
     ObtenerAdministradorEscenasActual()?.ProcesarTraitsInicioRonda();
+    GenerarViasEscapeRondaTres();
 
     AdministrarListas();
     AcelerarRefuerzosSiLadoSinUnidades();
@@ -515,7 +518,7 @@ public class BattleManager : MonoBehaviour
 
     ArrancarTurno();
 
-    if (RondaNro > delayRefuerzo)
+    if (RondaNro > ObtenerDelayRefuerzosEnemigosConTraits())
     {
       AdministrarRefuerzosEnemigos();
     }
@@ -559,9 +562,114 @@ public class BattleManager : MonoBehaviour
       }
     }
   }
+
+  void GenerarViasEscapeRondaTres()
+  {
+    if (RondaNro != ObtenerRondaAparicionViasEscape() || ladoB == null || ladoB.casillasLado == null)
+    {
+      return;
+    }
+
+    List<Casilla> casillasLibres = new List<Casilla>();
+    List<Casilla> casillasConPersonaje = new List<Casilla>();
+    int viasGeneradas = 0;
+
+    foreach (Casilla casilla in ladoB.casillasLado)
+    {
+      if (!EsCasillaValidaParaViaEscape(casilla, out bool tienePersonaje))
+      {
+        continue;
+      }
+
+      if (tienePersonaje)
+      {
+        casillasConPersonaje.Add(casilla);
+      }
+      else
+      {
+        casillasLibres.Add(casilla);
+      }
+    }
+
+    for (int i = 0; i < 2; i++)
+    {
+      Casilla destino = ExtraerCasillaAleatoria(casillasLibres);
+      if (destino == null)
+      {
+        destino = ExtraerCasillaAleatoria(casillasConPersonaje);
+      }
+
+      if (destino == null)
+      {
+        continue;
+      }
+
+      TrampaEscape trampa = destino.gameObject.AddComponent<TrampaEscape>();
+      trampa.Inicializar();
+      viasGeneradas++;
+    }
+
+    if (viasGeneradas > 0)
+    {
+      string mensaje = TRADU.i != null
+        ? TRADU.i.Traducir(viasGeneradas == 1
+          ? "Se abre 1 vía de escape en la retaguardia aliada."
+          : "Se abren 2 vías de escape en la retaguardia aliada.")
+        : (viasGeneradas == 1
+          ? "Se abre 1 vía de escape en la retaguardia aliada."
+          : "Se abren 2 vías de escape en la retaguardia aliada.");
+      EscribirLog(mensaje, false);
+    }
+  }
+
+  bool EsCasillaValidaParaViaEscape(Casilla casilla, out bool tienePersonaje)
+  {
+    tienePersonaje = false;
+    if (casilla == null || casilla.posX != 1)
+    {
+      return false;
+    }
+
+    if (casilla.GetComponent<Trampa>() != null)
+    {
+      return false;
+    }
+
+    if (casilla.Presente == null)
+    {
+      return true;
+    }
+
+    if (casilla.Presente.GetComponent<Obstaculo>() != null)
+    {
+      return false;
+    }
+
+    if (casilla.Presente.GetComponent<Unidad>() != null)
+    {
+      tienePersonaje = true;
+      return true;
+    }
+
+    return false;
+  }
+
+  Casilla ExtraerCasillaAleatoria(List<Casilla> casillas)
+  {
+    if (casillas == null || casillas.Count < 1)
+    {
+      return null;
+    }
+
+    int indice = UnityEngine.Random.Range(0, casillas.Count);
+    Casilla seleccionada = casillas[indice];
+    casillas.RemoveAt(indice);
+    return seleccionada;
+  }
+
   public void ActualizarRefuerzosUI()
   {
-    int tiempoRestante = delayRefuerzo - RondaNro + 1;
+    int tiempoRestante = ObtenerDelayRefuerzosEnemigosConTraits() - RondaNro + 1;
     if (tiempoRestante < 0) { tiempoRestante = 0; }
     txtRefuerzosContador.text = "" + enemigosRefuerzos.Count();
 
@@ -1109,6 +1217,19 @@ public class BattleManager : MonoBehaviour
       return false;
     }
 
+    if (UnidadTieneTrait(aliado, PersonajeTraitCatalog.TraitTenaz))
+    {
+      bool enInglesTenaz = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool enPortuguesTenaz = TRADU.i != null && TRADU.i.nIdioma == 3;
+      string nombreAliadoTenaz = TRADU.i != null ? TRADU.i.Traducir(aliado.uNombre) : aliado.uNombre;
+      EscribirLog(CombatLogFormatter.EventoValour(enInglesTenaz
+        ? nombreAliadoTenaz + " fails Mental Save (DC " + dc + ") but refuses to flee."
+        : enPortuguesTenaz
+          ? nombreAliadoTenaz + " falha no TS Mental (DC " + dc + "), mas se recusa a fugir."
+          : nombreAliadoTenaz + " falla la TS Mental (DC " + dc + "), pero se rehusa a huir."));
+      return false;
+    }
+
     if (!aliado.RetirarseDeBatallaPorMoral())
     {
       return false;
@@ -1396,6 +1517,84 @@ public class BattleManager : MonoBehaviour
     return false;
   }
 
+  private bool DebeTenerHabilidadEscapar(Unidad unidad)
+  {
+    if (unidad == null || unidad.CasillaPosicion == null)
+    {
+      return false;
+    }
+
+    if (unidad.CasillaPosicion.lado != 2)
+    {
+      return false;
+    }
+
+    if (UnidadTieneTrait(unidad, PersonajeTraitCatalog.TraitTenaz))
+    {
+      return false;
+    }
+
+    return unidad.CasillaPosicion.GetComponent<TrampaEscape>() != null;
+  }
+
+  bool UnidadTieneTrait(Unidad unidad, int traitId)
+  {
+    if (unidad == null)
+    {
+      return false;
+    }
+
+    AdministradorEscenas admin = ObtenerAdministradorEscenasActual();
+    if (admin == null)
+    {
+      return false;
+    }
+
+    Personaje personaje = admin.ObtenerPersonajeAliadoSeleccionadoPorUnidad(unidad);
+    return personaje != null && personaje.TieneRasgo(traitId);
+  }
+
+  int ObtenerRondaAparicionViasEscape()
+  {
+    int rondaBase = 3;
+    if (AliadosTienenTrait(PersonajeTraitCatalog.TraitTactico))
+    {
+      return Mathf.Max(1, rondaBase - 1);
+    }
+
+    return rondaBase;
+  }
+
+  int ObtenerDelayRefuerzosEnemigosConTraits()
+  {
+    int delayAjustado = delayRefuerzo;
+    if (AliadosTienenTrait(PersonajeTraitCatalog.TraitTactico))
+    {
+      delayAjustado += 1;
+    }
+
+    return delayAjustado;
+  }
+
+  bool AliadosTienenTrait(int traitId)
+  {
+    AdministradorEscenas admin = ObtenerAdministradorEscenasActual();
+    if (admin == null)
+    {
+      return false;
+    }
+
+    return PersonajeTieneTraitAliadoEnCombate(admin.Personaje1, traitId)
+      || PersonajeTieneTraitAliadoEnCombate(admin.Personaje2, traitId)
+      || PersonajeTieneTraitAliadoEnCombate(admin.Personaje3, traitId)
+      || PersonajeTieneTraitAliadoEnCombate(admin.Personaje4, traitId);
+  }
+
+  bool PersonajeTieneTraitAliadoEnCombate(Personaje personaje, int traitId)
+  {
+    return personaje != null && !personaje.Camp_Muerto && personaje.TieneRasgo(traitId);
+  }
+
   public void SincronizarHabilidadDestruirObstaculo(Unidad unidad)
   {
     if (unidad == null)
@@ -1420,6 +1619,49 @@ public class BattleManager : MonoBehaviour
       }
       Destroy(habilidad);
       SolicitarActualizarBotones();
+    }
+  }
+
+  public void SincronizarHabilidadEscapar(Unidad unidad)
+  {
+    if (unidad == null)
+    {
+      return;
+    }
+
+    Escapar habilidad = unidad.GetComponent<Escapar>();
+    bool requiere = DebeTenerHabilidadEscapar(unidad);
+
+    if (requiere && habilidad == null)
+    {
+      habilidad = unidad.gameObject.AddComponent<Escapar>();
+      habilidad.NIVEL = Mathf.Max(1, habilidad.NIVEL);
+      if (unidad == unidadActiva && scUIBotonesHab != null)
+      {
+        scUIBotonesHab.ActualizarBotonesHabilidad();
+        _requiereActualizarBotones = false;
+      }
+      else
+      {
+        SolicitarActualizarBotones();
+      }
+    }
+    else if (!requiere && habilidad != null)
+    {
+      if (HabilidadActiva == habilidad)
+      {
+        CancelarHabilidadActiva();
+      }
+      Destroy(habilidad);
+      if (unidad == unidadActiva && scUIBotonesHab != null)
+      {
+        scUIBotonesHab.ActualizarBotonesHabilidad();
+        _requiereActualizarBotones = false;
+      }
+      else
+      {
+        SolicitarActualizarBotones();
+      }
     }
   }
   public void LimpiarCapasCasillas()
@@ -1628,6 +1870,20 @@ public class BattleManager : MonoBehaviour
       {
         SincronizarHabilidadDestruirObstaculo(unidadActiva);
         scUIBotonesHab.ActualizarBotonesHabilidad();
+      }
+    }
+
+    if (unidadActiva != null && scUIBotonesHab != null)
+    {
+      bool requiereEscape = DebeTenerHabilidadEscapar(unidadActiva);
+      bool tieneEscape = unidadActiva.GetComponent<Escapar>() != null;
+      if (!requiereEscape && tieneEscape)
+      {
+        SincronizarHabilidadEscapar(unidadActiva);
+        if (unidadActiva.GetComponent<IAUnidad>() == null)
+        {
+          scUIBotonesHab.ActualizarBotonesHabilidad();
+        }
       }
     }
 

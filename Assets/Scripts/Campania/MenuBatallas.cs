@@ -62,10 +62,42 @@ public class MenuBatallas : MonoBehaviour
  public GameObject txtVictoria;
  public GameObject txtDerrota;
  public TextMeshProUGUI txtRecompensa;
+ public TextMeshProUGUI faccionBatalla;
+
  public TextMeshProUGUI txtMilicianosDisponibles;
 
  [SerializeField] GameObject btnComenzar;
  bool bloqueoComenzarBatalla = false;
+
+ static readonly Dictionary<string, string> TraduccionesFaccionEn = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+ {
+    { "Bandidos", "Bandits" },
+    { "Corruptos", "Corrupted" },
+    { "Criaturas del Bosque", "Forest Creatures" },
+    { "Criaturas del Paso", "Pass Creatures" },
+    { "Etereos", "Ethereals" },
+    { "Kale'Tav", "Kale'Tav" },
+    { "Lobos del Bosque", "Forest Wolves" },
+    { "Vagranilo", "Vagranilo" },
+    { "Vagranilos", "Vagranilos" },
+    { "Vengadores de Kadryn", "Kadryn Avengers" },
+    { "Zarkil", "Zarkil" }
+ };
+
+ static readonly Dictionary<string, string> TraduccionesFaccionPtBr = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+ {
+    { "Bandidos", "Bandidos" },
+    { "Corruptos", "Corrompidos" },
+    { "Criaturas del Bosque", "Criaturas da Floresta" },
+    { "Criaturas del Paso", "Criaturas do Paso" },
+    { "Etereos", "Etéreos" },
+    { "Kale'Tav", "Kale'Tav" },
+    { "Lobos del Bosque", "Lobos da Floresta" },
+    { "Vagranilo", "Vagranilo" },
+    { "Vagranilos", "Vagranilos" },
+    { "Vengadores de Kadryn", "Vingadores de Kadryn" },
+    { "Zarkil", "Zarkil" }
+ };
 
  void OnEnable()
  {
@@ -565,9 +597,143 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
 
         }
    
-   
 
+    ActualizarTextoFaccionBatalla();
 
+ }
+
+ void ActualizarTextoFaccionBatalla()
+ {
+    if (faccionBatalla == null)
+    {
+       return;
+    }
+
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+
+    if (esEmboscadaEnemiga == 1)
+    {
+       faccionBatalla.text = ObtenerTextoEmboscadaEnemigaPorIdioma(idioma);
+       faccionBatalla.gameObject.SetActive(true);
+       return;
+    }
+
+    if (encuentroGeneradoActual == null)
+    {
+       faccionBatalla.text = string.Empty;
+       faccionBatalla.gameObject.SetActive(false);
+       return;
+    }
+
+    string nombreFaccion = ObtenerNombreFaccionTraducido(encuentroGeneradoActual.factionId, encuentroGeneradoActual.factionName);
+    if (string.IsNullOrWhiteSpace(nombreFaccion))
+    {
+       faccionBatalla.text = string.Empty;
+       faccionBatalla.gameObject.SetActive(false);
+       return;
+    }
+
+    if (esEmboscadaEnemiga == 2)
+    {
+       faccionBatalla.text = ObtenerPrefijoEmboscadaAliadaPorIdioma(idioma) + nombreFaccion;
+       faccionBatalla.gameObject.SetActive(true);
+       return;
+    }
+
+    faccionBatalla.text = ObtenerPrefijoFaccionPorIdioma(idioma) + nombreFaccion;
+    faccionBatalla.gameObject.SetActive(true);
+ }
+
+ string ObtenerNombreFaccionTraducido(string factionId, string factionName)
+ {
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    string nombreBase = !string.IsNullOrWhiteSpace(factionName) ? factionName : factionId;
+    if (string.IsNullOrWhiteSpace(nombreBase))
+    {
+       return string.Empty;
+    }
+
+    string traducido = TraducirFaccionPorIdioma(nombreBase, idioma);
+    if (!string.Equals(traducido, nombreBase, StringComparison.OrdinalIgnoreCase))
+    {
+       return traducido;
+    }
+
+    if (!string.IsNullOrWhiteSpace(factionId) && !string.Equals(factionId, nombreBase, StringComparison.OrdinalIgnoreCase))
+    {
+       string traducidoPorId = TraducirFaccionPorIdioma(factionId, idioma);
+       if (!string.Equals(traducidoPorId, factionId, StringComparison.OrdinalIgnoreCase))
+       {
+          return traducidoPorId;
+       }
+    }
+
+    return nombreBase;
+ }
+
+ string TraducirFaccionPorIdioma(string nombreBase, int idioma)
+ {
+    if (string.IsNullOrWhiteSpace(nombreBase))
+    {
+       return nombreBase;
+    }
+
+    if (idioma == TRADU.IdiomaIngles && TraduccionesFaccionEn.TryGetValue(nombreBase, out string traduccionEn))
+    {
+       return traduccionEn;
+    }
+
+    if (idioma == TRADU.IdiomaPortugues && TraduccionesFaccionPtBr.TryGetValue(nombreBase, out string traduccionPt))
+    {
+       return traduccionPt;
+    }
+
+    return nombreBase;
+ }
+
+ string ObtenerPrefijoFaccionPorIdioma(int idioma)
+ {
+    if (idioma == TRADU.IdiomaIngles)
+   {
+       return "Enemy faction: ";
+    }
+
+    if (idioma == TRADU.IdiomaPortugues)
+    {
+       return "Facção inimiga: ";
+    }
+
+    return "Facción enemiga: ";
+ }
+
+ string ObtenerTextoEmboscadaEnemigaPorIdioma(int idioma)
+ {
+    if (idioma == TRADU.IdiomaIngles)
+    {
+       return "The caravan has been ambushed!";
+    }
+
+    if (idioma == TRADU.IdiomaPortugues)
+    {
+       return "A caravana foi emboscada!";
+    }
+
+    return "La caravana ha sido emboscada!";
+ }
+
+ string ObtenerPrefijoEmboscadaAliadaPorIdioma(int idioma)
+ {
+    if (idioma == TRADU.IdiomaIngles)
+    {
+       return "You ambushed the enemies: ";
+    }
+
+    if (idioma == TRADU.IdiomaPortugues)
+    {
+       return "Você emboscou os inimigos: ";
+    }
+
+    return "Has emboscado a los enemigos: ";
  }
  
 public void DejanEnListaParticipantesSolo()

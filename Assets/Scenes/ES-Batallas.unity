@@ -6716,6 +6716,7 @@ MonoBehaviour:
   Flecha: {fileID: 5526768415156377565, guid: 9cc170d4ce5332648a8f8c94a3886cfa, type: 3}
   VFX_sangre: {fileID: 2515684766903673082, guid: 5cbf94741e75ccd4781f72215bf495c4, type: 3}
   TrampaFuego: {fileID: 5045894620138190777, guid: 9f2f630771ed18e4887c043886931448, type: 3}
+  TrampaEscape: {fileID: 5045894620138190777, guid: c43c033479499dc46a4be3fa47c6b783, type: 3}
 --- !u!114 &1559286286 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1935200707120666703, guid: eb0a7c08ff758444db133d30f8837d37, type: 3}

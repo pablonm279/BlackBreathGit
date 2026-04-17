@@ -1029,6 +1029,9 @@ public static class PersonajeTraitCatalog
     public const int TraitHermitano = 78;
     public const int TraitCitadino = 79;
     public const int TraitEjemploASeguir = 80;
+    public const int TraitFugaz = 81;
+    public const int TraitTenaz = 82;
+    public const int TraitTactico = 83;
 
     private const string ColorNombre = "#f2e6c9";
     private const string ColorDescripcion = "#d7cfbf";
@@ -1902,7 +1905,39 @@ public static class PersonajeTraitCatalog
             "Role Model",
             "Upon reaching the Port of Serria, grants +25 Work Value.",
             "Exemplo a Seguir",
-            "Ao chegar ao Porto de Serria, concede +25 de Valor de Trabalho.")
+            "Ao chegar ao Porto de Serria, concede +25 de Valor de Trabalho."),
+        new PersonajeTraitDefinition(
+            TraitFugaz,
+            "fugacious",
+            true,
+            "Fugaz",
+            "Escapar solo consume 1 AP.",
+            "Fugacious",
+            "Fleeing only costs 1 AP.",
+            "Fugaz",
+            "Fugir consome apenas 1 AP.",
+            TraitTenaz),
+        new PersonajeTraitDefinition(
+            TraitTenaz,
+            "tenacious",
+            true,
+            "Tenaz",
+            "Se rehusa a huir de batalla (no obtiene Escapar).",
+            "Tenacious",
+            "Refuses to flee from battle (does not gain Escape).",
+            "Tenaz",
+            "Recusa fugir da batalha (nao recebe Escapar).",
+            TraitFugaz),
+        new PersonajeTraitDefinition(
+            TraitTactico,
+            "tactical",
+            true,
+            "Táctico",
+            "Las vías de escape llegan 1 turno antes y los refuerzos enemigos se retrasan 1 turno.",
+            "Tactical",
+            "Escape routes arrive 1 turn earlier and enemy reinforcements are delayed by 1 turn.",
+            "Tático",
+            "As vias de escape chegam 1 turno antes e os reforcos inimigos atrasam 1 turno.")
     };
 
     private static readonly Dictionary<int, PersonajeTraitDefinition> definicionesPorId = CrearIndicePorId();

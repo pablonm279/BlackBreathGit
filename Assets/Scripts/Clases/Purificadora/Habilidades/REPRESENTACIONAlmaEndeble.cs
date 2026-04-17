@@ -30,7 +30,7 @@ public class REPRESENTACIONAlmaEndeble : Habilidad
         else if (TRADU.i.nIdioma == 3)
         {
             txtDescripcion = "<color=#5dade2><b>Alma Fragil</b></color>\n\n";
-            txtDescripcion += "<i>(Passiva) A Purificadora sofre Aflicoes de combate em proporcao a intensidade do Alento Negro.</i>\n\n";
+            txtDescripcion += "<i>(Passiva) A Purificadora sofre Aflicoes de combate em proporcao a intensidade do Respiro Negro.</i>\n\n";
         }
     }
 

@@ -7066,6 +7066,9 @@ public class TRADU : MonoBehaviour
             case "Echar.":
                 r = "Expel.";
                 break;
+            case "Echar":
+                r = "Expel";
+                break;
             case "La caravana no tiene más tiendas para otro personaje.":
                 r = "The caravan has no more tents for another character.";
                 break;
@@ -7174,7 +7177,9 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
             case "), eligió bien la ruta y el Aliento Negro retrocedió 1. +25 Experiencia.":
              r ="), chose the right path and the Black Breath retreated 1. +25 Experience.";
               break;
-
+        case "Escape: los personajes podrán escapar desde esta casilla.":
+            r="Escape: characters can flee the battle from this tile.";
+            break;
 
 
 
@@ -7407,7 +7412,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
         }
         if (txt.StartsWith("<color=#ba3fef>-Si decides no arriesgar el cruce"))
         {
-            traduccion = "<color=#ba3fef>-Se decidir não arriscar a travessia, o desvio fará o Alento Negro avançar.</color>\n\n";
+            traduccion = "<color=#ba3fef>-Se decidir não arriscar a travessia, o desvio fará o Respiro Negro avançar.</color>\n\n";
             return true;
         }
 
@@ -7591,7 +7596,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
         }
         if (txt.StartsWith(").</i> Si supera la tirada, ganar") && txt.Contains("25 Experiencia") && txt.Contains("retroced"))
         {
-            traduccion = ").</i> Se passar no teste, ganhará 25 de Experiência e o Alento Negro recuará 1. Se falhar, a Caravana ganhará +1 Fadiga.</color>\n\n";
+            traduccion = ").</i> Se passar no teste, ganhará 25 de Experiência e o Respiro Negro recuará 1. Se falhar, a Caravana ganhará +1 Fadiga.</color>\n\n";
             return true;
         }
         if (txt.StartsWith("<color=#a0e812>-Si decides mantener la ruta"))
@@ -8009,7 +8014,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "+2 VAL para toda a Caravana no próximo combate.";
                 break;
             case "El Aliento Negro no avanza en el próximo viaje.":
-                r = "O Alento Negro não avança na próxima viagem.";
+                r = "O Respiro Negro não avança na próxima viagem.";
                 break;
             case "+20% Experiencia en el próximo combate.":
                 r = "+20% Experiência no próximo combate.";
@@ -8021,10 +8026,10 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "-2 VAL para toda a Caravana no próximo combate.";
                 break;
             case "+1 avance del Aliento Negro en el próximo viaje.":
-                r = "+1 avanço do Alento Negro na próxima viagem.";
+                r = "+1 avanço do Respiro Negro na próxima viagem.";
                 break;
             case "+1 avance del Aliento Negro en el próximo viaje y marcha visual más lenta.":
-                r = "+1 avanço do Alento Negro na próxima viagem e marcha visual mais lenta.";
+                r = "+1 avanço do Respiro Negro na próxima viagem e marcha visual mais lenta.";
                 break;
             case "-20% Experiencia en el próximo combate.":
                 r = "-20% Experiência no próximo combate.";
@@ -8174,7 +8179,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "-A resposta deixada em Nedukazal inspirou a Caravana.";
                 break;
             case "-La Presteza de la Caravana ha evitado el avance del Aliento Negro durante el viaje.":
-                r = "-A Presteza da Caravana evitou o avanço do Alento Negro durante a viagem.";
+                r = "-A Presteza da Caravana evitou o avanço do Respiro Negro durante a viagem.";
                 break;
             case "-La derrota dejó a la Caravana con Acobardados.":
                 r = "-A derrota deixou a Caravana com Acovardados.";
@@ -8192,7 +8197,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "+2 VAL para toda a Caravana no próximo combate. Consome 1 acúmulo ao iniciar um combate.";
                 break;
             case "El Aliento Negro no avanza en el próximo viaje. Consume 1 acumulación al iniciar un viaje.":
-                r = "O Alento Negro não avança na próxima viagem. Consome 1 acúmulo ao iniciar uma viagem.";
+                r = "O Respiro Negro não avança na próxima viagem. Consome 1 acúmulo ao iniciar uma viagem.";
                 break;
             case "+20% Experiencia en el próximo combate. Consume 1 acumulación al iniciar un combate.":
                 r = "+20% Experiência no próximo combate. Consome 1 acúmulo ao iniciar um combate.";
@@ -8204,7 +8209,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "-2 VAL para toda a Caravana no próximo combate. Consome 1 acúmulo ao iniciar um combate.";
                 break;
             case "+1 avance del Aliento Negro en el próximo viaje y marcha visual más lenta. Consume 1 acumulación al iniciar un viaje.":
-                r = "+1 avanço do Alento Negro na próxima viagem e marcha visual mais lenta. Consome 1 acúmulo ao iniciar uma viagem.";
+                r = "+1 avanço do Respiro Negro na próxima viagem e marcha visual mais lenta. Consome 1 acúmulo ao iniciar uma viagem.";
                 break;
             case "-20% Experiencia en el próximo combate. Consume 1 acumulación al iniciar un combate.":
                 r = "-20% Experiência no próximo combate. Consome 1 acúmulo ao iniciar um combate.";
@@ -8240,13 +8245,13 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "<color=#ba3fef>-Se você ordenar fechar fileiras e seguir, a Caravana obterá Acovardados para o próximo combate. -2 VAL para todos.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si decides frenar para revisar, el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-Se você decidir parar para verificar, o Alento Negro avançará.</color>\n\n";
+                r = "<color=#ba3fef>-Se você decidir parar para verificar, o Respiro Negro avançará.</color>\n\n";
                 break;
             case "Un tramo de barro pegajoso se agarra a ruedas, botas y arreos. Cada metro parece costar el doble, y la columna entera empieza a moverse con una pesadez desesperante.\n\n":
                 r = "Um trecho de barro pegajoso se agarra a rodas, botas e arreios. Cada metro parece custar o dobro, e a coluna inteira começa a se mover com um peso desesperador.\n\n";
                 break;
             case "<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendra Aletargados. El Aliento Negro avanzara +1 en el proximo viaje y la marcha se vera mas lenta.</color>\n\n":
-                r = "<color=#ba3fef>-Se você forçar a marcha mesmo assim, a Caravana obterá Letargia. O Alento Negro avançará +1 na próxima viagem e a marcha parecerá mais lenta.</color>\n\n";
+                r = "<color=#ba3fef>-Se você forçar a marcha mesmo assim, a Caravana obterá Letargia. O Respiro Negro avançará +1 na próxima viagem e a marcha parecerá mais lenta.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si ordenas reacomodar la marcha, la Caravana ganara +1 Fatiga.</color>\n\n":
                 r = "<color=#ba3fef>-Se você ordenar reorganizar a marcha, a Caravana ganhará +1 Fadiga.</color>\n\n";
@@ -8261,7 +8266,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "<color=#ba3fef>-Se você decidir seguir sem parar, a Caravana obterá Desmotivação. Ganhará 20% menos Experiência no próximo combate.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si haces una breve parada para ordenar el paso, el Aliento Negro avanzara.</color>\n\n":
-                r = "<color=#ba3fef>-Se você fizer uma breve parada para organizar a marcha, o Alento Negro avançará.</color>\n\n";
+                r = "<color=#ba3fef>-Se você fizer uma breve parada para organizar a marcha, o Respiro Negro avançará.</color>\n\n";
                 break;
             case "Tras varias horas sin sobresaltos, parte de la Caravana empieza a moverse por pura costumbre. Se aflojan formaciones, cambian relevos tarde y mas de uno deja de mirar el terreno con atencion.\n\n":
                 r = "Depois de várias horas sem sobressaltos, parte da Caravana começa a se mover por puro hábito. As formações se afrouxam, as trocas de turno se atrasam e mais de um deixa de observar o terreno com atenção.\n\n";
@@ -8282,7 +8287,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "O chão é desconfortável, o vento não cede e as carroças rangem a noite toda. Ninguém descansa de verdade, e a Caravana se levanta com a sensação de ter dormido pela metade.\n\n";
                 break;
             case "<color=#ba3fef><b>La Caravana obtiene Aletargados. El Aliento Negro avanzara +1 en el proximo viaje y la marcha se vera mas lenta.</b></color>":
-                r = "<color=#ba3fef><b>A Caravana obtém Letargia. O Alento Negro avançará +1 na próxima viagem e a marcha parecerá mais lenta.</b></color>";
+                r = "<color=#ba3fef><b>A Caravana obtém Letargia. O Respiro Negro avançará +1 na próxima viagem e a marcha parecerá mais lenta.</b></color>";
                 break;
             case "Lo que empieza como murmullo termina recorriendo el campamento entero: cansancio, dudas, comparaciones con dias mejores. No hay gritos ni desbande, solo una erosion lenta del animo.\n\n":
                 r = "O que começa como um murmúrio acaba percorrendo o acampamento inteiro: cansaço, dúvidas, comparações com dias melhores. Não há gritos nem debandada, só uma erosão lenta do ânimo.\n\n";
@@ -8327,7 +8332,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "A Caravana encontra um trecho de caminho firme, bem orientado e surpreendentemente limpo. Não vai durar muito, mas é suficiente para organizar a coluna e pensar em um avanço rápido em seguida.\n\n";
                 break;
             case "<color=#a0e812>-Si aprovechas el ritmo que da el terreno, la Caravana obtendra Presteza. El Aliento Negro no avanzara en el proximo viaje.</color>\n\n":
-                r = "<color=#a0e812>-Se você aproveitar o ritmo que o terreno oferece, a Caravana obterá Presteza. O Alento Negro não avançará na próxima viagem.</color>\n\n";
+                r = "<color=#a0e812>-Se você aproveitar o ritmo que o terreno oferece, a Caravana obterá Presteza. O Respiro Negro não avançará na próxima viagem.</color>\n\n";
                 break;
             case "<color=#a0e812>-Si prefieres revisar bien los bordes del camino, +3 Esperanza.</color>\n\n":
                 r = "<color=#a0e812>-Se você preferir revisar bem as margens do caminho, +3 Esperança.</color>\n\n";
@@ -8369,7 +8374,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Sem que ninguém precise mandar muito, o acampamento é montado com o essencial e fica pronto para ser desmontado em minutos. Há uma sensação compartilhada de que hoje vai valer a pena se mover rápido.\n\n";
                 break;
             case "<color=#a0e812><b>La Caravana obtiene Presteza. El Aliento Negro no avanzara en el proximo viaje.</b></color>":
-                r = "<color=#a0e812><b>A Caravana obtém Presteza. O Alento Negro não avançará na próxima viagem.</b></color>";
+                r = "<color=#a0e812><b>A Caravana obtém Presteza. O Respiro Negro não avançará na próxima viagem.</b></color>";
                 break;
             case "Antes de dormir, un Heroe propone repasar senales, posiciones y respuestas rapidas junto al fuego. No cambia el cansancio, pero podria dejar a todos mejor parados para el proximo choque.\n\n":
                 r = "Antes de dormir, um Herói propõe revisar sinais, posições e respostas rápidas junto ao fogo. Isso não muda o cansaço, mas pode deixar todos melhor preparados para o próximo choque.\n\n";
@@ -8396,7 +8401,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "<color=#ba3fef>-Se você decidir avançar mesmo assim, a Caravana obterá Letargia.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si haces una parada corta hasta que abra el aire, el Aliento Negro avanzara.</color>\n\n":
-                r = "<color=#ba3fef>-Se você fizer uma parada curta até o ar abrir, o Alento Negro avançará.</color>\n\n";
+                r = "<color=#ba3fef>-Se você fizer uma parada curta até o ar abrir, o Respiro Negro avançará.</color>\n\n";
                 break;
             case "Un circulo de cuervos se posa cerca del camino y no se mueve aunque la Caravana se acerque. Su quietud resulta peor que cualquier graznido, y el presagio corre rapido entre los Civiles.\n\n":
                 r = "Um círculo de corvos pousa perto do caminho e não se move mesmo quando a Caravana se aproxima. A quietude deles é pior do que qualquer grasnado, e o presságio corre rápido entre os Civis.\n\n";
@@ -8742,13 +8747,13 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
             case "La Caravana encuentra un río con buen caudal y agua que parece decente. Varios civiles entusiasmados comienzan a dirigirse hacia él con la intención de recrearse y refrescarse.\n\n":
                 r = "A Caravana encontra um rio com bom fluxo e água que parece aceitável. Vários civis, animados, começam a ir até lá com a intençío de descansar e se refrescar.\n\n"; break;
             case "El agua podría estar contaminada por el Aliento Negro. Puedes negarle a los Civiles el acceso al agua o dejarlos a su propia suerte.\n\n":
-                r = "A água pode estar contaminada pelo Alento Negro. Você pode negar aos Civis o acesso á água ou deixá-los á própria sorte.\n\n"; break;
+                r = "A água pode estar contaminada pelo Respiro Negro. Você pode negar aos Civis o acesso á água ou deixá-los á própria sorte.\n\n"; break;
             case "<color=#ba3fef>-Si les niegas el acceso perderás 15 de Esperanza.</color>\n\n":
                 r = "<color=#ba3fef>-Se negar o acesso, você perderá 15 de Esperança.</color>\n\n"; break;
             case "<color=#ba3fef>-Si los dejas ir, hay un %":
                 r = "<color=#ba3fef>-Se você deixá-los ir, há %"; break;
             case "<i>(Determinado por Aliento Negro)</i> de que se contaminen y mueran 25 Civiles. Si no está contaminada descansarán (-1 Fatiga).</color>\n\n":
-                r = " <i>(Determinado pelo Alento Negro)</i> de chance de que se contaminem e 25 Civis morram. Se nío estiver contaminada, eles descansarío (-1 Fadiga).</color>\n\n"; break;
+                r = " <i>(Determinado pelo Respiro Negro)</i> de chance de que se contaminem e 25 Civis morram. Se nío estiver contaminada, eles descansarío (-1 Fadiga).</color>\n\n"; break;
             case "\nAparentemente tuvieron un incidente durante un entrenamiento leve que se dispusieron a realizar y en el cual ambos se lastimaron levemente.\n\n":
                 r = "\nAparentemente, eles tiveram um incidente durante um treino leve que decidiram fazer, no qual ambos se machucaram levemente.\n\n"; break;
             case "La tensión sube y los demás caravaneros miran con incomodidad. Ambos reclaman tener la razón y esperan tu juicio.\n\n":
@@ -8768,7 +8773,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
             case "Puedes ordenar hacer una breve parada hasta que el aire se despeje o forzar la marcha para no perder tiempo.\n\n":
                 r = "Você pode ordenar uma breve parada até que o ar se limpe ou forçar a marcha para não perder tempo.\n\n"; break;
             case "<color=#ba3fef>-Si decides esperar, el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir esperar, o Alento Negro avançará.</color>\n\n"; break;
+                r = "<color=#ba3fef>-Se decidir esperar, o Respiro Negro avançará.</color>\n\n"; break;
             case "<color=#ba3fef>-Si decides seguir, las cenizas incomodarán a los Civiles. -5 Esperanza, +1 Fatiga.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir seguir, as cinzas vão incomodar os Civis. -5 Esperança, +1 Fadiga.</color>\n\n"; break;
             case "Un grupo de bestias enloquecidas por el humo y el fuego irrumpe cerca del camino, cruzando entre los árboles calcinados con una violencia desesperada.\n\n":
@@ -8786,7 +8791,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
             case "Si lo logra, ganará 40 Experiencia. Si falla, la Caravana perderá 2 Bueyes.\n\n":
                 r = "Se conseguir, ganhará 40 de Experiência. Se falhar, a Caravana perderá 2 Bois.\n\n"; break;
             case "<color=#ba3fef>-Si decides apartarte y ceder el paso, el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir se afastar e ceder passagem, o Alento Negro avançará.</color>\n\n"; break;
+                r = "<color=#ba3fef>-Se decidir se afastar e ceder passagem, o Respiro Negro avançará.</color>\n\n"; break;
             case "Entre los troncos calcinados y la tierra ennegrecida, algunos Civiles descubren un pequeño brote verde abriéndose paso entre las brasas frías.\n\n":
                 r = "Entre os troncos carbonizados e a terra escurecida, alguns Civis descobrem um pequeno broto verde abrindo caminho entre as brasas frias.\n\n"; break;
             case "La visión recorre rápidamente la Caravana. Por un instante, el Bosque Ardiente deja de parecer un lugar completamente perdido.\n\n":
@@ -8798,7 +8803,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
             case "Algunos Civiles sugieren detenerse para separar lo útil antes de seguir adelante. Tomará algo de tiempo, pero podría reforzar las reservas de Materiales.\n\n":
                 r = "Alguns Civis sugerem parar para separar o que ainda serve antes de seguir em frente. Vai levar algum tempo, mas pode reforçar as reservas de Materiais.\n\n"; break;
             case "<color=#ba3fef>-Si decides recolectar, obtendrás 15-30 Materiales, pero el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir recolher, você obterá 15-30 Materiais, mas o Alento Negro avançará.</color>\n\n"; break;
+                r = "<color=#ba3fef>-Se decidir recolher, você obterá 15-30 Materiais, mas o Respiro Negro avançará.</color>\n\n"; break;
             case "<color=#ba3fef>-Si decides dejarlo, evitarás el retraso. +3 Esperanza.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir deixá-lo, evitará o atraso. +3 Esperança.</color>\n\n"; break;
             case "Un foco de incendio vuelve a encenderse detrás de la Caravana y el viento empuja las llamas hacia la retaguardia.\n\n":
@@ -8822,13 +8827,13 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
             case "<color=#ba3fef>-Si decides doblar guardia, varios caravaneros descansarán peor. +1 Fatiga.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir reforçar a guarda, vários caravanistas vão descansar pior. +1 Fadiga.</color>\n\n"; break;
             case "<color=#ba3fef>-Si decides dejarlos dormir, la salida será más lenta. +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir deixá-los dormir, a saída será mais lenta. +1 Avanço do Alento Negro.</color>\n\n"; break;
+                r = "<color=#ba3fef>-Se decidir deixá-los dormir, a saída será mais lenta. +1 Avanço do Respiro Negro.</color>\n\n"; break;
             case "Durante la noche se filtró agua en uno de los carros de comida y parte de las raciones quedó inutilizable.\n\n":
                 r = "Durante a noite entrou água em uma das carroças de comida e parte das rações ficou inutilizável.\n\n"; break;
             case "Puedes extender lo salvable junto al fuego antes de partir o desecharlo y seguir adelante.\n\n":
                 r = "Você pode espalhar o que ainda dá para salvar perto do fogo antes de partir ou descartar tudo e seguir em frente.\n\n"; break;
             case "<color=#ba3fef>-Si decides secarlas, partirán más tarde. +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir secá-las, vocês vão partir mais tarde. +1 Avanço do Alento Negro.</color>\n\n"; break;
+                r = "<color=#ba3fef>-Se decidir secá-las, vocês vão partir mais tarde. +1 Avanço do Respiro Negro.</color>\n\n"; break;
             case "<color=#ba3fef>-Si decides desecharlas, perderás 18 Suministros.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir descartá-las, perderá 18 Suprimentos.</color>\n\n"; break;
             case "Una discusión menor cerca de la fogata fue subiendo de tono y terminó dejando al campamento entero de mal humor.\n\n":
@@ -8842,7 +8847,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
             case "Puedes ordenar una búsqueda rápida o reemplazarlas con lo que quede en reserva.\n\n":
                 r = "Você pode ordenar uma busca rápida ou substituí-las com o que restar na reserva.\n\n"; break;
             case "<color=#ba3fef>-Si decides buscarlas, partirán más tarde. +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir procurá-las, vocês vão partir mais tarde. +1 Avanço do Alento Negro.</color>\n\n"; break;
+                r = "<color=#ba3fef>-Se decidir procurá-las, vocês vão partir mais tarde. +1 Avanço do Respiro Negro.</color>\n\n"; break;
             case "<color=#ba3fef>-Si decides reemplazarlas, perderás 12 Materiales.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir substituí-las, perderá 12 Materiais.</color>\n\n"; break;
             case "Por una noche, el campamento se mantiene en calma. No hay sobresaltos, no hay discusiones y hasta el aire parece más liviano.\n\n":
@@ -8985,7 +8990,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
             case "<color=#ba3fef>-Luchar con los Bandidos.</color>\n\n":
                 r = "<color=#ba3fef>-Lutar contra os Bandidos.</color>\n\n"; break;
             case "<color=#ba3fef>-2 al Avance del Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-2 no Avanço do Alento Negro.</color>\n\n"; break;
+                r = "<color=#ba3fef>-2 no Avanço do Respiro Negro.</color>\n\n"; break;
             // Logs (segments for concatenation)
             case "-Has encontrado al ladrón y recuperado el oro robado, pero has tenido que desterrar al ladrón. -5 Esperanza -1 Civil.":
                 r = "-Você encontrou o ladrío e recuperou o ouro roubado, mas teve de bani-lo. -5 Esperança -1 Civil."; break;
@@ -9050,7 +9055,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "<color=#a0e812><b>+15 Esperança</b></color>";
                 break;
             case "<color=#ba3fef><b>Pasan las Horas: +1 Avance Aliento Negro</b></color>":
-                r = "<color=#ba3fef><b>As Horas Passam: +1 Avanço do Alento Negro</b></color>";
+                r = "<color=#ba3fef><b>As Horas Passam: +1 Avanço do Respiro Negro</b></color>";
                 break;
             case "\n<b><color=#d1006f>":
                 r = "\n<b><color=#d1006f>";
@@ -9130,13 +9135,13 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = " recebe 60 de Experiência pela visita ao santuário.";
                 break;
             case "<color=#8708a4><b>                  El Aliento Negro</b></color>\n\n\n":
-                r = "<color=#8708a4><b>                  O Alento Negro</b></color>\n\n\n";
+                r = "<color=#8708a4><b>                  O Respiro Negro</b></color>\n\n\n";
                 break;
             case "<color=#ebdeef>Al morir el Liche, liberó un último estertor de muerte y putrefacción que se expande por cientos de kilómetros alrededor.</color>":
                 r = "<color=#ebdeef>Ao morrer, o Lich liberou um último estertor de morte e putrefaçío que se espalha por centenas de quilÃ´metros ao redor.</color>";
                 break;
             case "\n\nLlamado el Aliento Negro, esta ola de peste y podredumbre lentamente está envolviendo a los seres vivos que no logran escapar, provocándoles la muerte, o peor. </color>\n\n\n\n":
-                r = "\n\nChamado de Alento Negro, essa onda de peste e podridío está lentamente envolvendo os seres vivos que nío conseguem escapar, causando-lhes a morte, ou algo pior. </color>\n\n\n\n";
+                r = "\n\nChamado de Respiro Negro, essa onda de peste e podridío está lentamente envolvendo os seres vivos que nío conseguem escapar, causando-lhes a morte, ou algo pior. </color>\n\n\n\n";
                 break;
             case "<color=#bae895><b>Estado: Distante</b> (":
                 r = "<color=#bae895><b>Estado: Distante</b> (";
@@ -9319,7 +9324,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Um dos bois da caravana adoeceu e nío pode continuar. Você recebe recomendações de alguns especialistas em gado que aconselham examinar os outros bois para evitar a propagaçío da doença.\n\n\n\n";
                 break;
             case "<color=#ba3fef>-Si decides revisarlos tomará unas horas: +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir examiná-los, isso levará algumas horas: +1 Avanço do Alento Negro.</color>\n\n";
+                r = "<color=#ba3fef>-Se decidir examiná-los, isso levará algumas horas: +1 Avanço do Respiro Negro.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si decides ignorar las advertencias: 1-3 Bueyes mas morirán.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir ignorar os avisos: mais 1-3 Bois morrerío.</color>\n\n";
@@ -9361,7 +9366,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                  r = "A Caravana para em uma serraria abandonada, algumas árvores foram derrubadas e a madeira está empilhada em desordem.\n";
                  break;*/
             case "<color=#ba3fef>-Puedes ordenar a la Caravana que junten toda la madera.</color> +65-90 Materiales, +1 Fatiga, +1 Avance del Aliento Negro.</i> \n\n":
-                r = "<color=#ba3fef>-Você pode ordenar que a Caravana recolha toda a madeira.</color> +65-90 Materiais, +1 Fadiga, +1 Avanço do Alento Negro.</i> \n\n";
+                r = "<color=#ba3fef>-Você pode ordenar que a Caravana recolha toda a madeira.</color> +65-90 Materiais, +1 Fadiga, +1 Avanço do Respiro Negro.</i> \n\n";
                 break;
             case "<color=#ba3fef>-Puedes optar por dejarlo cazar, o directamente domesticar a un puñado para que se sumen a la Caravana. +2-3 Bueyes</i> \n\n":
                 r = "<color=#ba3fef>-Você pode optar por deixá-lo caçar, ou domesticar alguns diretamente para que se juntem á Caravana. +2-3 Bois</i> \n\n";
@@ -9391,7 +9396,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Um homem idoso aparece ao lado do caminho fazendo sinais com as míos para a Caravana. De perto, você percebe que esse homem vive na regiío há muitos anos e a conhece perfeitamente.\n";
                 break;
             case "'Aliento Negro o no, mis días ya están contados. Pero puedo transmitirles mis conocimientos sobre esta tierra, como último acto de bien.'- dice\n\n":
-                r = "'Alento Negro ou nío, meus dias já estío contados. Mas posso transmitir a vocês meu conhecimento sobre esta terra, como último ato de bondade.'- diz\n\n";
+                r = "'Respiro Negro ou nío, meus dias já estío contados. Mas posso transmitir a vocês meu conhecimento sobre esta terra, como último ato de bondade.'- diz\n\n";
                 break;
             case "<color=#ba3fef>Preguntas: -'¿Conoce algún atajo que nos aleje del peligro inminente al menos por unos kilómetros?'</color> Efectos: Si es posible se generará un Atajo subterráneo. \n\n":
                 r = "<color=#ba3fef>Você pergunta: -'Conhece algum atalho que nos afaste do perigo iminente por pelo menos alguns quilÃ´metros?'</color> Efeitos: Se possí­vel, será gerado um Atalho subterrâneo. \n\n";
@@ -9415,10 +9420,10 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "É um excelente lugar para descansar e recuperar as forças.\n\n\n\n\n";
                 break;
             case "<color=#a0e812><b>+5 Esperanza.\n\nDescansar en este lugar tendrá también beneficios adicionales:\n-El Aliento Negro avanzará solo 1.\n-+10% curación recibida.\n-El evento será positivo.</b></color>":
-                r = "<color=#a0e812><b>+5 Esperança.\n\nDescansar neste lugar também terá benefí­cios adicionais:\n-O Alento Negro avançará apenas 1.\n-+10% de cura recebida.\n-O evento será positivo.</b></color>";
+                r = "<color=#a0e812><b>+5 Esperança.\n\nDescansar neste lugar também terá benefí­cios adicionais:\n-O Respiro Negro avançará apenas 1.\n-+10% de cura recebida.\n-O evento será positivo.</b></color>";
                 break;
             case "Has llegado a un pequeño asentamiento. Notas que los civiles están desorganizados y necesitan liderazgo para sobrevivir al Aliento Negro.":
-                r = "Você chegou a um pequeno assentamento. Você nota que os civis estío desorganizados e precisam de liderança para sobreviver ao Alento Negro.";
+                r = "Você chegou a um pequeno assentamento. Você nota que os civis estío desorganizados e precisam de liderança para sobreviver ao Respiro Negro.";
                 break;
             case "\nDe 15-25 Civiles se unirán a la Caravana y brindarán 50-60 Suministros, 6-8 Materiales, 2-4 Bueyes y 60-70 Oro.":
                 r = "\n15-25 Civis se juntarío á Caravana e fornecerío 50-60 Suprimentos, 6-8 Materiais, 2-4 Bois e 60-70 Ouro.";
@@ -9484,7 +9489,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Faça sua oferenda";
                 break;
             case "Al realizar la ofrenda, el Aliento Negro retrocederá en 3, todos los personajes obtendrán Bendecido por 3 días y un personaje con Corrupción al azar será curado.":
-                r = "Ao fazer a oferenda, o Alento Negro recuará em 3, todos os personagens receberão Abençoado por 3 dias e um personagem aleatório com Corrupção será curado.";
+                r = "Ao fazer a oferenda, o Respiro Negro recuará em 3, todos os personagens receberão Abençoado por 3 dias e um personagem aleatório com Corrupção será curado.";
                 break;
             case "Sacrificar ":
                 r = "Sacrificar ";
@@ -9504,7 +9509,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
             case "Aceptarlos":
                 r = "Aceitá-los";
                 break;
-            case "Defensas: Cada Tier mejora las defensas de la Caravana en ataques directos y reduce 10% las chances de perder un Séquito. ":
+            case "Defensas: Cada Tier mejora las defensas de la Caravana en ataques directos y reduce 10% las chances de perder un Séquito.":
                 r = "Defesas: Cada Tier melhora as defesas da Caravana em ataques diretos e reduz em 10% as chances de perder um Séquito. ";
                 break;
             case "30 Materiales":
@@ -9613,13 +9618,13 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "-A caravana sofreu um Ataque durante o descanso. Probabilidades ";
                 break;
             case "-Durante el descanso, el Aliento Negro ha avanzado 2.":
-                r = "-Durante o descanso, o Alento Negro avançou 2.";
+                r = "-Durante o descanso, o Respiro Negro avançou 2.";
                 break;
             case "-Durante el descanso en el Claro, el Aliento Negro ha avanzado 1.":
-                r = "-Durante o descanso na Clareira, o Alento Negro avançou 1.";
+                r = "-Durante o descanso na Clareira, o Respiro Negro avançou 1.";
                 break;
             case " ha realizado con Éxito un Ritual de Limpieza durante el descanso, previniendo el avance del Aliento Negro.":
-                r = " realizou com Sucesso um Ritual de Limpeza durante o descanso, impedindo o avanço do Alento Negro.";
+                r = " realizou com Sucesso um Ritual de Limpeza durante o descanso, impedindo o avanço do Respiro Negro.";
                 break;
             case "-Debido a la alta Esperanza, los Acechadores han decidido no cobrar su sueldo esta vez.":
                 r = "-Devido á alta Esperança, os Espreitadores decidiram nío cobrar seu salário desta vez.";
@@ -9919,7 +9924,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "<color=#0cca74><b>Relatos de Batalha: </b></color><color=#d3d3d3><i>O personagem compartilhará os relatos de seus feitos com quem quiser ouvi-los.</color></i>\\n\\n+10 de Experiência por dia para personagens de ní­vel inferior. +4 Esperança ao descansar.";
                 break;
             case "<color=#0cca74><b>Ritual de Limpieza: </b></color><color=#d3d3d3><i>La Purificadora realizará rituales de protección para combatir el Aliento Negro.</color></i>\\n\\nProbabilidad de evitar avance del Aliento Negro: 25% al descansar, 15% por día.":
-                r = "<color=#0cca74><b>Ritual de Limpeza: </b></color><color=#d3d3d3><i>A Purificadora realizará rituais de proteçío para combater o Alento Negro.</color></i>\\n\\nProbabilidade de evitar o avanço do Alento Negro: 25% ao descansar, 15% por dia.";
+                r = "<color=#0cca74><b>Ritual de Limpeza: </b></color><color=#d3d3d3><i>A Purificadora realizará rituais de proteçío para combater o Respiro Negro.</color></i>\\n\\nProbabilidade de evitar o avanço do Respiro Negro: 25% ao descansar, 15% por dia.";
                 break;
             case "<color=#0cca74><b>Ayudar a los Desamparados: </b></color><color=#d3d3d3><i>La Purificadora usará su tiempo para ayudar a los rezagados y más débiles de la caravana.</color></i>\\n\\n+1d3 Esperanza diaria. +1 Fervor en combate.":
                 r = "<color=#0cca74><b>Ajudar os Desamparados: </b></color><color=#d3d3d3><i>A Purificadora usará seu tempo para ajudar os mais atrasados e frágeis da caravana.</color></i>\\n\\n+1d3 de Esperança por dia. +1 Fervor em combate.";
@@ -9940,22 +9945,22 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "-A viagem pelo caminho sinuoso atrasou a caravana. +";
                 break;
             case " Avance del Aliento Negro":
-                r = " de Avanço do Alento Negro";
+                r = " de Avanço do Respiro Negro";
                 break;
             case "-La nieve a retrasado el viaje. +1 Avance del Aliento Negro":
-                r = "-A neve atrasou a viagem. +1 de Avanço do Alento Negro";
+                r = "-A neve atrasou a viagem. +1 de Avanço do Respiro Negro";
                 break;
             case "-La ausencia de Aliento Negro al viajar, inspira a la Caravana. +2 Esperanza":
-                r = "-A ausência do Alento Negro durante a viagem inspira a Caravana. +2 Esperança";
+                r = "-A ausência do Respiro Negro durante a viagem inspira a Caravana. +2 Esperança";
                 break;
             case "-La presencia notable del Aliento Negro al viajar, provoca incertidumbre en la Caravana. -3 Esperanza":
-                r = "-A presença perceptí­vel do Alento Negro durante a viagem provoca incerteza na Caravana. -3 Esperança";
+                r = "-A presença perceptí­vel do Respiro Negro durante a viagem provoca incerteza na Caravana. -3 Esperança";
                 break;
             case "-La gran presencia de Aliento Negro en el aire, provoca temor en la Caravana. -5 Esperanza":
-                r = "-A forte presença do Alento Negro no ar provoca medo na Caravana. -5 Esperança";
+                r = "-A forte presença do Respiro Negro no ar provoca medo na Caravana. -5 Esperança";
                 break;
             case "-La presencia de Aliento Negro en el aire es fatal para los Civiles. -7 Esperanza -":
-                r = "-A presença do Alento Negro no ar é fatal para os Civis. -7 Esperança -";
+                r = "-A presença do Respiro Negro no ar é fatal para os Civis. -7 Esperança -";
                 break;
             case " Civiles":
                 r = " Civis";
@@ -9964,10 +9969,10 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "-O Séquito de Herboristas visitou uma Clareira e coletou ervas curativas.";
                 break;
             case " ha realizado con Éxito un Ritual de Limpieza, previniendo el avance del Aliento Negro.":
-                r = " realizou com Úxito um Ritual de Limpeza, impedindo o avanço do Alento Negro.";
+                r = " realizou com Úxito um Ritual de Limpeza, impedindo o avanço do Respiro Negro.";
                 break;
             case "-Los rezos constantes del Séquito de Clérigos han logrado frenar el avance del Aliento Negro.":
-                r = "-As orações constantes do Séquito de Clérigos conseguiram frear o avanço do Alento Negro.";
+                r = "-As orações constantes do Séquito de Clérigos conseguiram frear o avanço do Respiro Negro.";
                 break;
             case "-Un nuevo personaje se ha unido a la caravana: ":
                 r = "-Um novo personagem se juntou á caravana: ";
@@ -10135,7 +10140,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "-Os Civis se sentem culpados pela presença dos Escravos. -2 Esperança.";
                 break;
             case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3, se ha gastado 200 de oro y todos los personajes obtienen Bendecido por 3 días.":
-                r = "-Você realizou um ritual no santuário. O Alento Negro recua em 3, 200 de ouro foram gastos e todos os personagens recebem Abençoado por 3 dias.";
+                r = "-Você realizou um ritual no santuário. O Respiro Negro recua em 3, 200 de ouro foram gastos e todos os personagens recebem Abençoado por 3 dias.";
                 break;
             case " ha sido purificado de la corrupción.":
                 r = " foi purificado da corrupçío.";
@@ -10147,7 +10152,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "-Você nío tem bois suficientes para realizar o ritual no santuário.";
                 break;
             case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3, se han sacrificado 3 bueyes y todos los personajes obtienen Bendecido por 3 días.":
-                r = "-Você realizou um ritual no santuário. O Alento Negro recua em 3, 3 bois foram sacrificados e todos os personagens recebem Abençoado por 3 dias.";
+                r = "-Você realizou um ritual no santuário. O Respiro Negro recua em 3, 3 bois foram sacrificados e todos os personagens recebem Abençoado por 3 dias.";
                 break;
             case "-El Séquito de Artistas ha tenido un festán y despilfarrado suministros: ":
                 r = "-O Séquito de Artistas fez um banquete e desperdiçou suprimentos: ";
@@ -10396,10 +10401,10 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "EFEITOS PASSIVOS:\n\n-A cada dia, doam Ouro equivalente a 1/3 da Esperança.\n\n-Perdem-se 2 de Esperança ao viajar com fadiga 4 ou maior.";
                 break;
             case "Los Clérigos del Sol Radiante Purificador participaron como apoyo en el combate contra el Liche. La mayoría murieron en la onda expansiva en ese momento, pero todaví­a quedan algunos grupos tratando de llegar al puerto y sobrevivir mientras luchan por retrasar al Aliento Negro.\n\n":
-                r = "Os Clérigos do Sol Radiante Purificador participaram como apoio no combate contra o Lich. A maioria morreu na onda de choque naquele momento, mas ainda restam alguns grupos tentando chegar ao porto e sobreviver enquanto lutam para atrasar o Alento Negro.\n\n";
+                r = "Os Clérigos do Sol Radiante Purificador participaram como apoio no combate contra o Lich. A maioria morreu na onda de choque naquele momento, mas ainda restam alguns grupos tentando chegar ao porto e sobreviver enquanto lutam para atrasar o Respiro Negro.\n\n";
                 break;
             case "EFECTOS PASIVOS:\n\n-Otorgan 15 Esperanza al unirse a la Caravana, -20 Esperanza al perderse.\n\n-20% probabilidades de Retrasar el Aliento Negro en cada viaje.\n\n-Si el Aliento Negro llega a nivel superior a 16, los Clérigos mueren.":
-                r = "EFEITOS PASSIVOS:\n\n-Concedem 15 de Esperança ao se juntar á Caravana, -20 de Esperança ao serem perdidos.\n\n-20% de probabilidade de atrasar o Alento Negro em cada viagem.\n\n-Se o Alento Negro chegar a um ní­vel superior a 16, os Clérigos morrem.";
+                r = "EFEITOS PASSIVOS:\n\n-Concedem 15 de Esperança ao se juntar á Caravana, -20 de Esperança ao serem perdidos.\n\n-20% de probabilidade de atrasar o Respiro Negro em cada viagem.\n\n-Se o Respiro Negro chegar a um ní­vel superior a 16, os Clérigos morrem.";
                 break;
             case "<color=red>La plegaria ya fue realizada.</color>":
                 r = "<color=red>A prece já foi realizada.</color>";
@@ -10591,16 +10596,16 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Frio";
                 break;
             case "Aliento Negro: Débil":
-                r = "Alento Negro: Fraco";
+                r = "Respiro Negro: Fraco";
                 break;
             case "Aliento Negro: Presente":
-                r = "Alento Negro: Presente";
+                r = "Respiro Negro: Presente";
                 break;
             case "Aliento Negro: Fuerte":
-                r = "Alento Negro: Forte";
+                r = "Respiro Negro: Forte";
                 break;
             case "Aliento Negro: Empoderante":
-                r = "Alento Negro: Fortalecedor";
+                r = "Respiro Negro: Fortalecedor";
                 break;
             case "Oscuridad":
                 r = "Escuridío";
@@ -11647,13 +11652,13 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Devorador Corrompido";
                 break;
             case "<i>Otrora un habitante de las tierras, ahora corrompido por el Aliento Negro, deformado y hambriento.</i>\n\n<color=#A020F0>-Corrupto.</color>\n<color=#199F10>-Puede debilitar.\n-Absorbe vida de Personajes Corruptos.</color>\n<color=#EE0000>-Relativamente débil.</color>":
-                r = "<i>Antes um habitante destas terras, agora corrompido pelo Alento Negro, deformado e faminto.</i>\n\n<color=#A020F0>-Corrompido.</color>\n<color=#199F10>-Pode enfraquecer.\n-Absorve vida de Personagens Corrompidos.</color>\n<color=#EE0000>-Relativamente fraco.</color>";
+                r = "<i>Antes um habitante destas terras, agora corrompido pelo Respiro Negro, deformado e faminto.</i>\n\n<color=#A020F0>-Corrompido.</color>\n<color=#199F10>-Pode enfraquecer.\n-Absorve vida de Personagens Corrompidos.</color>\n<color=#EE0000>-Relativamente fraco.</color>";
                 break;
             case "Guerrero Corrompido":
                 r = "Guerreiro Corrompido";
                 break;
             case "<i>Otrora un habitante de las tierras, ahora corrompido por el Aliento Negro, deformado y hambriento.</i>\n\n<color=#A020F0>-Corrupto.</color>\n<color=#199F10>-Fuerte.\n-Golpea en zona.</color>\n<color=#EE0000>-Posee sólo un tipo de ataque.</color>":
-                r = "<i>Antes um habitante destas terras, agora corrompido pelo Alento Negro, deformado e faminto.</i>\n\n<color=#A020F0>-Corrompido.</color>\n<color=#199F10>-Forte.\n-Atinge em área.</color>\n<color=#EE0000>-Possui apenas um tipo de ataque.</color>";
+                r = "<i>Antes um habitante destas terras, agora corrompido pelo Respiro Negro, deformado e faminto.</i>\n\n<color=#A020F0>-Corrompido.</color>\n<color=#199F10>-Forte.\n-Atinge em área.</color>\n<color=#EE0000>-Possui apenas um tipo de ataque.</color>";
                 break;
             case "Alimaña Corrompida":
                 r = "Alimária Corrompida";
@@ -11854,16 +11859,16 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Golpe de Maça";
                 break;
             case "<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Unidad Escudada.\n-Buena Armadura.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Movimiento limitado.</color>":
-                r = "<i>Organizaçío de mercenários humanos que faziam parte do exército derrotado do Lich Kadryn. Agora buscam vingança, tentando garantir que ninguém escape do Alento Negro de seu mestre.</i>\n\n<color=#199F10>-Unidade Escudada.\n-Boa Armadura.\n-Ao morrer, deixa uma nuvem de Alento Negro.</color>\n<color=#EE0000>-Movimento limitado.</color>";
+                r = "<i>Organizaçío de mercenários humanos que faziam parte do exército derrotado do Lich Kadryn. Agora buscam vingança, tentando garantir que ninguém escape do Respiro Negro de seu mestre.</i>\n\n<color=#199F10>-Unidade Escudada.\n-Boa Armadura.\n-Ao morrer, deixa uma nuvem de Respiro Negro.</color>\n<color=#EE0000>-Movimento limitado.</color>";
                 break;
             case "Extasiado por Aliento Negro":
-                r = "Extasiado pelo Alento Negro";
+                r = "Extasiado pelo Respiro Negro";
                 break;
             case "Restos de Aliento: Potencia y cura a los Vengadores de Kadryn.":
                 r = "Resíduos de Alento: fortalecem e curam os Vingadores de Kadryn.";
                 break;
             case "Reacción: Al morir genera restos de Aliento Negro en el campo de batalla.":
-                r = "Reaçío: ao morrer, gera resíduos de Alento Negro no campo de batalha.";
+                r = "Reaçío: ao morrer, gera resíduos de Respiro Negro no campo de batalha.";
                 break;
             case "Soldado Vengador de Kadryn":
                 r = "Soldado Vingador de Kadryn";
@@ -11884,7 +11889,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Estocada de Alabarda";
                 break;
             case "<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Buen ataque.\n-Flecha envenenada.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Poco resistente.</color>":
-                r = "<i>Organizaçío de mercenários humanos que faziam parte do exército derrotado do Lich Kadryn. Agora buscam vingança, tentando garantir que ninguém escape do Alento Negro de seu mestre.</i>\n\n<color=#199F10>-Bom ataque.\n-Flecha envenenada.\n-Ao morrer, deixa uma nuvem de Alento Negro.</color>\n<color=#EE0000>-Pouco resistente.</color>";
+                r = "<i>Organizaçío de mercenários humanos que faziam parte do exército derrotado do Lich Kadryn. Agora buscam vingança, tentando garantir que ninguém escape do Respiro Negro de seu mestre.</i>\n\n<color=#199F10>-Bom ataque.\n-Flecha envenenada.\n-Ao morrer, deixa uma nuvem de Respiro Negro.</color>\n<color=#EE0000>-Pouco resistente.</color>";
                 break;
             case "Tiro con Arco":
                 r = "Disparo de Arco";
@@ -11893,10 +11898,10 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Primeiro Golpe";
                 break;
             case "Predicador del Aliento Negro":
-                r = "Pregador do Alento Negro";
+                r = "Pregador do Respiro Negro";
                 break;
             case "<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Ataque de rango infalible.\n-Potencia Aliados.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Poco resistente.</color>":
-                r = "<i>Organizaçío de mercenários humanos que faziam parte do exército derrotado do Lich Kadryn. Agora buscam vingança, tentando garantir que ninguém escape do Alento Negro de seu mestre.</i>\n\n<color=#199F10>-Ataque á distância infalí­vel.\n-Fortalece Aliados.\n-Ao morrer, deixa uma nuvem de Alento Negro.</color>\n<color=#EE0000>-Pouco resistente.</color>";
+                r = "<i>Organizaçío de mercenários humanos que faziam parte do exército derrotado do Lich Kadryn. Agora buscam vingança, tentando garantir que ninguém escape do Respiro Negro de seu mestre.</i>\n\n<color=#199F10>-Ataque á distância infalí­vel.\n-Fortalece Aliados.\n-Ao morrer, deixa uma nuvem de Respiro Negro.</color>\n<color=#EE0000>-Pouco resistente.</color>";
                 break;
             case "Oración de Kadryn":
                 r = "Oraçío de Kadryn";
@@ -11914,13 +11919,13 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Putrefaçío";
                 break;
             case "El Aliento Negro se expande por el campo enemigo.":
-                r = "O Alento Negro se espalha pelo campo inimigo.";
+                r = "O Respiro Negro se espalha pelo campo inimigo.";
                 break;
             case "desata un rayo necrótico sobre":
                 r = "desencadeia um raio necrótico sobre";
                 break;
             case "Sus defensas se corroen por el Aliento Negro.":
-                r = "Suas defesas sío corroídas pelo Alento Negro.";
+                r = "Suas defesas sío corroídas pelo Respiro Negro.";
                 break;
             case "Castigar a los Malvados":
                 r = "Punir os Malvados";
@@ -11977,7 +11982,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Milicianos disponí­veis: ";
                 break;
             case "<i>Organización de mercenarios humanos que eran parte del ejército derrotado del Liche Kadryn. Ahora buscan venganza tratando de que nadie escape al Aliento Negro de su amo.</i>\n\n<color=#199F10>-Ataque de oportunidad.\n-Buena Armadura.\n-Al morir deja una nube de aliento negro.</color>\n<color=#EE0000>-Movimiento limitado.</color>":
-                r = "<i>Organizaçío de mercenários humanos que faziam parte do exército derrotado do Lich Kadryn. Agora buscam vingança, tentando garantir que ninguém escape do Alento Negro de seu mestre.</i>\n\n<color=#199F10>-Ataque de oportunidade.\n-Boa Armadura.\n-Ao morrer, deixa uma nuvem de Alento Negro.</color>\n<color=#EE0000>-Movimento limitado.</color>";
+                r = "<i>Organizaçío de mercenários humanos que faziam parte do exército derrotado do Lich Kadryn. Agora buscam vingança, tentando garantir que ninguém escape do Respiro Negro de seu mestre.</i>\n\n<color=#199F10>-Ataque de oportunidade.\n-Boa Armadura.\n-Ao morrer, deixa uma nuvem de Respiro Negro.</color>\n<color=#EE0000>-Movimento limitado.</color>";
                 break;
             case "Refuerzos":
                 r = "Reforços";
@@ -12025,7 +12030,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Lama: reduz 2 PA das unidades que entrarem na casa.";
                 break;
             case "La tribu Kale'Tav está realizando rituales en el área, preparándose para el Aliento Negro.\n\nAl escuchar sus tambores a lo lejos sabrás dónde se encuentran.\nPor cada Ritual completado, sus combatientes recibirán bonificaciones en batalla.\n\nPara interrumpir un ritual debes aproximarte a los nodos marcados y derrotarlos.\n\nFuerza Kale'Tav: ":
-                r = "A tribo Kale'Tav está realizando rituais na área, preparando-se para o Alento Negro.\n\nAo ouvir seus tambores ao longe, você saberá onde eles estío.\nPara cada Ritual concluí­do, seus combatentes receberío bÃ´nus em batalha.\n\nPara interromper um ritual, você deve se aproximar dos nós marcados e derrotá-los.\n\nForça Kale'Tav: ";
+                r = "A tribo Kale'Tav está realizando rituais na área, preparando-se para o Respiro Negro.\n\nAo ouvir seus tambores ao longe, você saberá onde eles estío.\nPara cada Ritual concluí­do, seus combatentes receberío bÃ´nus em batalha.\n\nPara interromper um ritual, você deve se aproximar dos nós marcados e derrotá-los.\n\nForça Kale'Tav: ";
                 break;
             case "<color=#6A0DAD>-Un ritual Kale'Tav ha comenzado en un nodo cercano. La másica profana desalienta a la caravana. -5 Esperanza.</color>":
                 r = "<color=#6A0DAD>-Um ritual Kale'Tav começou em um nó próximo. A música profana desencoraja a caravana. -5 Esperança.</color>";
@@ -12178,7 +12183,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Modo Rápido";
                 break;
             case "Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será mas propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Pie</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta zona.":
-                r = "Devido á invasío, Nedukazal está envolta em caos e escuridío, portanto a caravana nío conseguirá ver claramente o caminho á frente.\n\nPor depender da própria luz, será mais propensa a sofrer emboscadas (+20%).\n\nMelhore as <b>Tochas de Pé</b> para aumentar o alcance da visío.\n\nO Alento Negro nío será uma preocupaçío nesta zona.";
+                r = "Devido á invasío, Nedukazal está envolta em caos e escuridío, portanto a caravana nío conseguirá ver claramente o caminho á frente.\n\nPor depender da própria luz, será mais propensa a sofrer emboscadas (+20%).\n\nMelhore as <b>Tochas de Pé</b> para aumentar o alcance da visío.\n\nO Respiro Negro nío será uma preocupaçío nesta zona.";
                 break;
             case "\nSe conseguirán de 25-40 Materiales y 60-85 Suministros.":
                 r = "\nSerío obtidos 25-40 Materiais e 60-85 Suprimentos.";
@@ -12442,7 +12447,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Viagem concluí­da!";
                 break;
             case "Finalmente la caravana ha llegado a la Ciudad Puerto de Serria, donde la población civil se prepara para embarcar y así­ escapar del Aliento Negro.":
-                r = "Finalmente, a caravana chegou á Cidade Portuária de Serria, onde a populaçío civil se prepara para embarcar e assim escapar do Alento Negro.";
+                r = "Finalmente, a caravana chegou á Cidade Portuária de Serria, onde a populaçío civil se prepara para embarcar e assim escapar do Respiro Negro.";
                 break;
             case "El viaje ha durado ":
                 r = "A viagem durou ";
@@ -12583,7 +12588,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "<color=#ba3fef>-Se tentar, fará um Teste de Resistência: TS Reflexos CD 12. Se passar, ganhará 40 Experiência. Se falhar, obterá Ferida.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si decides rodear el tramo, el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir contornar o trecho, o Alento Negro avançará.</color>\n\n";
+                r = "<color=#ba3fef>-Se decidir contornar o trecho, o Respiro Negro avançará.</color>\n\n";
                 break;
             case "A los costados del camino aparecen varias efigies Kale'Tav clavadas en la nieve, adornadas con huesos, plumas y telas endurecidas por el hielo.\n\n":
                 r = "Ã€s margens do caminho surgem várias efígies Kale'Tav fincadas na neve, adornadas com ossos, penas e tecidos endurecidos pelo gelo.\n\n";
@@ -12679,7 +12684,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "A Caravana consegue avançar com melhor ritmo e um pouco mais de segurança.\n\n";
                 break;
             case "<color=#a0e812><b>-1 Avance Aliento Negro</b></color>":
-                r = "<color=#a0e812><b>-1 Avanço do Alento Negro</b></color>";
+                r = "<color=#a0e812><b>-1 Avanço do Respiro Negro</b></color>";
                 break;
             case "Antes del amanecer, unos cánticos graves atraviesan el Paso y llegan al campamento mezclados con el viento.\n\n":
                 r = "Antes do amanhecer, cânticos graves atravessam a Passagem e chegam ao acampamento misturados ao vento.\n\n";
@@ -12694,7 +12699,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Não parece um ataque fracassado. Parece mais uma mensagem. Você pode inspecionar bem o perímetro ou manter a calma e evitar que o rumor se espalhe entre os Civis.\n\n";
                 break;
             case "<color=#ba3fef>-Si decides revisar, partirán más tarde. +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir inspecionar, partirão mais tarde. +1 Avanço do Alento Negro.</color>\n\n";
+                r = "<color=#ba3fef>-Se decidir inspecionar, partirão mais tarde. +1 Avanço do Respiro Negro.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si decides mantener la calma, los rumores igual harán mella. -3 Esperanza.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir manter a calma, os rumores ainda assim vão pesar. -3 Esperança.</color>\n\n";
@@ -12973,7 +12978,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = " suprimentos. +25 Esperança. +20 Materiais e 200 Ouro, e um novo personagem se junta á caravana</b></color>";
                 break;
             case "-Las oraciones de los Purificadores del Templo de Serria merman el avance del Aliento Negro en: ":
-                r = "-As orações dos Purificadores do Templo de Serria reduzem o avanço do Alento Negro em: ";
+                r = "-As orações dos Purificadores do Templo de Serria reduzem o avanço do Respiro Negro em: ";
                 break;
             case " Esperanza":
                 r = " Esperança";
@@ -13414,7 +13419,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "A viagem da caravana começou.";
                 break;
             case "-El Séquito de Clérigos ha perecido, ya que el Aliento Negro ha alcanzado un nivel crítico. -20 Esperanza":
-                r = "-O Séquito de Clérigos pereceu, pois o Alento Negro atingiu um ní­vel crítico. -20 Esperança";
+                r = "-O Séquito de Clérigos pereceu, pois o Respiro Negro atingiu um ní­vel crítico. -20 Esperança";
                 break;
             case " ahora Maneja un Nivel ":
                 r = " agora possui um Ní­vel ";
@@ -13866,7 +13871,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "Fio de Aço";
                 break;
             case "La caravana ha sido destruida y todos sus miembros han muerto. El Aliento Negro es implacable.":
-                r = "A caravana foi destruí­da e todos os seus membros morreram. O Alento Negro é implacável.";
+                r = "A caravana foi destruí­da e todos os seus membros morreram. O Respiro Negro é implacável.";
                 break;
             case "Valor:":
                 r = "Bravura:";
@@ -13902,6 +13907,9 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "O Espectro acabou de atacar, tornando-se vulnerável no plano material.";
                 break;
             case "Echar.":
+                r = "Lançar";
+                break;
+            case "Echar":
                 r = "Lançar";
                 break;
             case "La caravana no tiene más tiendas para otro personaje.":
@@ -14012,6 +14020,9 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
              case "), eligió bien la ruta y el Aliento Negro retrocedió 1. +25 Experiencia.":
              r ="), escolheu o caminho certo e o Respiro Negro recuou 1. +25 de experiência.";
               break;
+            case "Escape: los personajes podrán escapar desde esta casilla.":
+            r="Escape: os personagens podem escapar deste quadrado.";
+            break;
 
 
 

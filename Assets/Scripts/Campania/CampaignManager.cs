@@ -2178,6 +2178,7 @@ public class CampaignManager : MonoBehaviour
     ActualizarUIOroDesdeEstadoActual();
     ActualizarUIAlientoNegroDesdeEstadoActual();
     AplicarSpriteClimaDesdeEstadoActual();
+    EvaluarDerrotaPorEstadoCaravana();
   }
 
   private void ActualizarUIEsperanzaDesdeEstadoActual()
@@ -2861,15 +2862,27 @@ public class CampaignManager : MonoBehaviour
       if (scTutorialManager.tutorialActivo)
       { chancesemboscada = 0; } //No emboscadas en tutorial
 
+      int chanceEmboscadaNormalizada = Mathf.Clamp(chancesemboscada, 0, 100);
+      bool emboscadaEnemiga = randomEmboscada <= chanceEmboscadaNormalizada;
+      bool emboscadaAliada = !emboscadaEnemiga && (randomEmboscada - chanceEmboscadaNormalizada) >= 30;
 
-      if (randomEmboscada <= chancesemboscada)
+      if (emboscadaEnemiga)
       {
+        EscribirLog(FormatearLogTiradaEmboscada(true, chanceEmboscadaNormalizada, randomEmboscada));
         scMenuBatallas.EventoBatallaNormal(0, 1); //Emboscada
 
       }
       else
       {
-        scMenuBatallas.EventoBatallaNormal(0, 0); //No emboscada
+        if (emboscadaAliada)
+        {
+          EscribirLog(FormatearLogTiradaEmboscada(false, chanceEmboscadaNormalizada, randomEmboscada));
+          scMenuBatallas.EventoBatallaNormal(0, 2); //Emboscada a favor de la caravana
+        }
+        else
+        {
+          scMenuBatallas.EventoBatallaNormal(0, 0); //No emboscada
+        }
 
       }
 
@@ -3067,6 +3080,41 @@ public class CampaignManager : MonoBehaviour
 
     AplicarTraduccionPanelDerrota();
     goDerrota.SetActive(true);
+  }
+
+  private void EvaluarDerrotaPorEstadoCaravana()
+  {
+    if (EsperanzaActual <= 0 || civilesActuales <= 0)
+    {
+      ActivarDerrota();
+    }
+  }
+
+  string FormatearLogTiradaEmboscada(bool emboscadaEnemiga, int chanceEmboscada, int tirada)
+  {
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    string color = emboscadaEnemiga ? "#ff9a9a" : "#8ad8ff";
+
+    if (idioma == TRADU.IdiomaIngles)
+    {
+      string textoEn = emboscadaEnemiga
+        ? "-The caravan was ambushed."
+        : "-You ambushed the enemies.";
+      return $"<color={color}>{textoEn} Ambush roll: {chanceEmboscada}% - 1d100: {tirada}.</color>";
+    }
+
+    if (idioma == TRADU.IdiomaPortugues)
+    {
+      string textoPt = emboscadaEnemiga
+        ? "-A caravana sofreu uma emboscada."
+        : "-Você emboscou os inimigos.";
+      return $"<color={color}>{textoPt} Rolagem de emboscada: {chanceEmboscada}% - 1d100: {tirada}.</color>";
+    }
+
+    string textoEs = emboscadaEnemiga
+      ? "-La caravana ha sido emboscada."
+      : "-Has emboscado a los enemigos.";
+    return $"<color={color}>{textoEs} Tirada de emboscada: {chanceEmboscada}% - 1d100: {tirada}.</color>";
   }
 
   private void CachearTextosOriginalesDerrota()
@@ -5013,6 +5061,7 @@ public class CampaignManager : MonoBehaviour
 
     GameObject textoOrigen = valueEsperanza != null ? valueEsperanza.gameObject : null;
     await GenerarTextoRecursos(esperanzaAplicada, textoOrigen, false);
+    EvaluarDerrotaPorEstadoCaravana();
 
     if (mitigacionConsuelo > 0)
     {
@@ -5053,6 +5102,7 @@ public class CampaignManager : MonoBehaviour
 
     GameObject textoOrigen = valueCiviles != null ? valueCiviles.gameObject : null;
     await GenerarTextoRecursos(civilesAplicados, textoOrigen, true);
+    EvaluarDerrotaPorEstadoCaravana();
   }
 
   //Milicias
