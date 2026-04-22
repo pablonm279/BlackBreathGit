@@ -50,7 +50,7 @@ MonoBehaviour:
   sNombreItem: Estoque
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 06000000
-  iPrecio: 198
+  iPrecio: 240
   itemDescripcion: Estoque ligero y preciso para duelos cuerpo a cuerpo.
   iRareza: 2
   nivelMejora: 2

@@ -74,6 +74,7 @@ public class CargaDeEstoque : Habilidad
         int ataqueActual = statsUI.Ataque;
         int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
         int danioPorCasillaActual = bonusDanioPorCasilla + bonusDanioPorCasillaNivel5;
+        string rangoDanioEs = FormatearRangoDados(1, 8, bonusDanioBase + bonusDanioNivel2);
 
         string tituloEs = "Carga de Estoque I";
         string tituloEn = "Estoc Charge I";
@@ -114,8 +115,8 @@ public class CargaDeEstoque : Habilidad
             cuerpo += NIVEL > 2
               ? "<b>Regla de casteo:</b> no puede atravesar obstaculos. Puede atravesar aliados.\n"
               : "<b>Regla de casteo:</b> no puede atravesar obstaculos ni aliados.\n";
-            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaqueBase} + {bonusAtaquePorCasilla} por casilla avanzada vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Danio:</b> 1d8 + {bonusDanioBase + bonusDanioNivel2} + <color=#ea0606>Agilidad ({agilidadActual})</color> + {danioPorCasillaActual} por casilla avanzada | <b>Tipo:</b> Perforante\n";
+            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agi ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaqueBase} + {bonusAtaquePorCasilla} por casilla avanzada vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+            cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Agi ({agilidadActual})</color> + {danioPorCasillaActual} por casilla avanzada | <b>Tipo:</b> Perforante\n";
         }
 
         string costos = esIngles

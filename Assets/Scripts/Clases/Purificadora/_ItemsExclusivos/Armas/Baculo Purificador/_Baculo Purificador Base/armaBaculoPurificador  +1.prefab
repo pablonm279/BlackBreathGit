@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Baculo Purificador
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 03000000
-  iPrecio: 74
+  iPrecio: 145
   itemDescripcion: Baculo purificador que canaliza energia sagrada.
   iRareza: 1
   nivelMejora: 1

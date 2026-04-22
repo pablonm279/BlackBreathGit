@@ -64,6 +64,7 @@ public class CorteHorizontal : Habilidad
       int danioFijo = NIVEL > 1 ? 2 : 0;
       int dcSangrado = NIVEL == 5 ? 13 : 12;
       int sangradoAplicado = NIVEL == 5 ? 4 : 3;
+      string rangoDanio = FormatearRangoDados(XdDanio, daniodX, danioFijo);
 
       string bonusAtaqueTxt = bonusAtaque >= 0 ? $" + {bonusAtaque}" : $" - {Mathf.Abs(bonusAtaque)}";
       string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcSangrado);
@@ -108,10 +109,8 @@ public class CorteHorizontal : Habilidad
       {
         cuerpo += "<b>Tipo:</b> Melee\n";
         cuerpo += "<b>Objetivo:</b> Area frontal (3 de ancho)\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Critico: {criticoMin}-20\n";
-        cuerpo += danioFijo > 0
-          ? $"<b>Danio:</b> 2d6 + {danioFijo} + <color=#ea0606>Fuerza ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n"
-          : $"<b>Danio:</b> 2d6 + <color=#ea0606>Fuerza ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Critico: {criticoMin}-20\n";
+        cuerpo += $"<b>Danio:</b> {rangoDanio} + <color=#ea0606>Fue ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
         cuerpo += $"{lineaSalvacionEs}\n";
         cuerpo += $"<b>Si falla TS:</b> +{sangradoAplicado} Sangrado";
       }

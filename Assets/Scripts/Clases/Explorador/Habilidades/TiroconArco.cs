@@ -56,6 +56,7 @@ public class TiroconArco : Habilidad
     int agilidadActual = statsUI.Agilidad;
     int ataqueActual = statsUI.Ataque;
     int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+    string rangoDanioEs = FormatearRangoDados(1, 10, 1);
 
     string cuerpo = "";
     if (esIngles)
@@ -78,8 +79,8 @@ public class TiroconArco : Habilidad
     {
       cuerpo += $"<b>Tipo:</b> Rango ({hAlcance} alcance)\n";
       cuerpo += "<b>Objetivo:</b> 1 enemigo en rango\n";
-      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Danio:</b> 1d10 + 1 + <color=#ea0606>Agilidad ({agilidadActual})</color> | <b>Tipo:</b> Cortante\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agi ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Agi ({agilidadActual})</color> | <b>Tipo:</b> Cortante\n";
       cuerpo += "<b>Recurso:</b> consume 1 Flecha por disparo\n";
     }
 

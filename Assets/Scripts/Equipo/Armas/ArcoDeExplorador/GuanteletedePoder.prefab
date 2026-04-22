@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Guantelete de Poder
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 05000000
-  iPrecio: 475
+  iPrecio: 620
   itemDescripcion: 
   iRareza: 4
   nivelMejora: 2

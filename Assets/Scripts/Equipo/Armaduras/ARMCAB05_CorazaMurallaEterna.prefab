@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Coraza Muralla Eterna
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 01000000
-  iPrecio: 330
+  iPrecio: 360
   itemDescripcion: Version de elite para tanquear la primera linea.
   iRareza: 3
   nivelMejora: 3

@@ -44,6 +44,7 @@ public class CastigaraLosMalvados : Habilidad
       int dcBase = NIVEL > 1 ? 11 : 10;
       int usos = NIVEL == 4 ? 3 : 2;
       string fraccionDanio = NIVEL == 5 ? "1/2" : "1/3";
+      string rangoDanioEs = FormatearRangoDados(1, 6);
 
       string tituloEs = "Castigar a los Malvados I";
       string tituloEn = "Punish the Wicked I";
@@ -57,7 +58,7 @@ public class CastigaraLosMalvados : Habilidad
       if (NIVEL == 4) { tituloPt = "Castigar os Malvados IV a"; }
       if (NIVEL == 5) { tituloPt = "Castigar os Malvados IV b"; }
 
-      string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Mental, dcBase, "Poder", "Power", poderActual);
+      string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Mental, dcBase, "Pod", "Power", poderActual, "Poder");
       string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Mental, dcBase, "Poder", "Power", poderActual);
 
       string cuerpo = "";
@@ -85,7 +86,7 @@ public class CastigaraLosMalvados : Habilidad
         cuerpo += "<b>Objetivo:</b> 1 unidad enemiga del lado opuesto\n";
         cuerpo += "<b>Disparo:</b> Cada vez que la unidad marcada dana a un aliado tuyo\n";
         cuerpo += lineaSalvacionEs + "\n";
-        cuerpo += $"<b>Si falla TS:</b> Pierde todo su AP restante y recibe 1d6 + <color=#ea0606>Poder ({poderActual})</color> + {fraccionDanio} del dano infligido | <b>Tipo:</b> Divino\n";
+        cuerpo += $"<b>Si falla TS:</b> Pierde todo su AP restante y recibe {rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color> + {fraccionDanio} del dano infligido | <b>Tipo:</b> Divino\n";
         cuerpo += $"<b>Duracion:</b> Hasta {usos} fallos de TS, o termina antes si el objetivo supera la TS";
       }
 

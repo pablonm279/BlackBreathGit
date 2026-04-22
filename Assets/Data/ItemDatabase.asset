@@ -125,6 +125,269 @@ MonoBehaviour:
     tags: []
     activo: 1
     excluirDeTiendas: 0
+  - listaTitulo: Arma - Baculo de Llama Sacra
+    id: ITEM_SCRIPTS_CLASES_PURIFICADORA_ITEMSEXCLUSIVOS_ARMAS_BACULO_PURIFICADOR_RARO_BACULODELLAMASACRA_ARMABACULOLLAMASACRA
+    prefab: {fileID: 6300747339089710755, guid: 9ba8037532084b38af57782ff8dfc812, type: 3}
+    nombre: Baculo de Llama Sacra
+    descripcion: Baculo encendido con fuego sacro para castigar a los impuros.
+    categoria: Arma
+    rareza: 2
+    icono: {fileID: 21300000, guid: be4bb99b087ac194890e299969de42e1, type: 3}
+    precio: 305
+    nivelMejora: 2
+    idEfectoEspecial: 0
+    clasesPermitidas: 03000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 4
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 1
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 0
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 1
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 1
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 0
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma: []
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 2369216239339639149, guid: 9ba8037532084b38af57782ff8dfc812, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
+  - listaTitulo: Arma - Baculo del Ultimo Rito
+    id: ITEM_SCRIPTS_CLASES_PURIFICADORA_ITEMSEXCLUSIVOS_ARMAS_BACULO_PURIFICADOR_INFRECUENTE_BACULODELULTIMORITO_ARMABACULODELULTIMORITO
+    prefab: {fileID: 6300747339089710755, guid: edaf869d3a874dc7b5ab92a3144dd4f4, type: 3}
+    nombre: Baculo del Ultimo Rito
+    descripcion: Baculo funerario que resquebraja el alma del enemigo al impactar.
+    categoria: Arma
+    rareza: 1
+    icono: {fileID: 21300000, guid: 462175349608e4d4e84796d9bf0f6247, type: 3}
+    precio: 175
+    nivelMejora: 1
+    idEfectoEspecial: 0
+    clasesPermitidas: 03000000
+    requisitoFue: 0
+    requisitoAgi: 0
+    requisitoPoder: 3
+    buffs:
+      buffFuerza: 0
+      buffAgi: 0
+      buffPoder: 1
+      buffIniciativa: 0
+      buffApMax: 0
+      buffValMax: 0
+      buffhpMax: 0
+      buffArmadura: 0
+      buffDefensa: 0
+      buffTSReflejo: 0
+      buffTSFortaleza: 0
+      buffTSMental: 1
+      buffResFuego: 0
+      buffResRayo: 0
+      buffResHielo: 0
+      buffResArcano: 0
+      buffResAcido: 0
+      buffResNecro: 0
+      buffResDivino: 0
+      barreraInicioCombate: 0
+      evasionInicioCombate: 0
+      bonusDanioFuegoInicioCombate: 0
+      bonusDanioHieloInicioCombate: 0
+      bonusDanioRayoInicioCombate: 0
+      bonusDanioAcidoInicioCombate: 0
+      bonusDanioArcanoInicioCombate: 0
+      bonusDanioNecroInicioCombate: 0
+      bonusDanioDivinoInicioCombate: 0
+      regeneracionVidaInicioCombate: 0
+      regeneracionArmaduraInicioCombate: 0
+      reduccionDanioRecibidoPorcentaje: 0
+      reduccionDanioCriticoRecibidoPorcentaje: 0
+      resistenciaEstadosPorcentaje: 10
+      espinasDanioPlano: 0
+      espinasDanioPorcentaje: 0
+    debuffsImpactoArma:
+    - activo: 1
+      nombreDebuff: Alma Quebrada
+      probabilidadAplicar: 100
+      duracionRondas: 2
+      requiereTiradaSalvacion: 1
+      tipoTiradaSalvacion: 3
+      dificultadSalvacion: 12
+      modFuerza: 0
+      modAgilidad: 0
+      modPoder: 0
+      modIniciativa: 0
+      modAtaque: 0
+      modDefensa: 0
+      modArmadura: 0
+      modDanioPorcentaje: 0
+      modTSReflejos: 0
+      modTSFortaleza: 0
+      modTSMental: -2
+      modResFuego: 0
+      modResHielo: 0
+      modResRayo: 0
+      modResAcido: 0
+      modResArcano: 0
+      modResNecro: -8
+      modResDivino: -8
+      modCritDado: 0
+      modCritDanioPorcentaje: 0
+      stacksSangrado: 0
+      stacksArdiendo: 0
+      stacksCongelado: 0
+      stacksAcido: 0
+      stacksAturdido: 0
+      reduccionAPPorTurno: 0
+      reduccionResistencias: 0
+      stacksCondenado: 0
+      ignorarArmaduraPlano: 0
+      roboVidaPorcentaje: 0
+      empujeCasillas: 0
+      jalonCasillas: 0
+    efectoConsumible:
+      curacionBase: 0
+      curacionDadosCantidad: 0
+      curacionDadosCaras: 0
+      curacionPorcentajeHPMax: 0
+      removerDebuffs: 0
+      removerBuffs: 0
+      removerEstadosNegativos: 0
+      modificarRegeneracionVida: 0
+      modificarRegeneracionArmadura: 0
+      modificarEvasion: 0
+      aplicarBuff: 1
+      nombreBuff: Efecto de consumible
+      buffEsBeneficio: 1
+      duracionBuffRondas: -1
+      buffReferencia: {fileID: 0}
+      buff:
+        cantAtFue: 0
+        cantAtAgi: 0
+        cantAtPod: 0
+        cantIniciativa: 0
+        cantAPMax: 0
+        cantPMMax: 0
+        cantHPMax: 0
+        cantArmadura: 0
+        cantDefensa: 0
+        cantAtaque: 0
+        cantDanioPorcentaje: 0
+        cantCritDado: 0
+        cantCritDanio: 0
+        cantTsReflejos: 0
+        cantTsFortaleza: 0
+        cantTsMental: 0
+        cantResFue: 0
+        cantResHie: 0
+        cantResRay: 0
+        cantResAci: 0
+        cantResArc: 0
+        cantResNec: 0
+        cantResDiv: 0
+        cantBarrera: 0
+        cantDamBonusElementalFue: 0
+        cantDamBonusElementalHie: 0
+        cantDamBonusElementalRay: 0
+        cantDamBonusElementalAci: 0
+        cantDamBonusElementalArc: 0
+        cantDamBonusElementalNec: 0
+        cantDamBonusElementalDiv: 0
+        cantPenetracionArmadura: 0
+        cantReduccionDanioRecibidoPorcentaje: 0
+        cantReduccionDanioCriticoRecibidoPorcentaje: 0
+        cantResistenciaEstadosPorcentaje: 0
+        cantEspinasDanioPlano: 0
+        cantEspinasDanioPorcentaje: 0
+    habilidadAtaque: {fileID: 2369216239339639149, guid: edaf869d3a874dc7b5ab92a3144dd4f4, type: 3}
+    habilidadExtra1: {fileID: 0}
+    habilidadExtra2: {fileID: 0}
+    tags: []
+    activo: 1
+    excluirDeTiendas: 0
   - listaTitulo: Accesorio - Amuleto de Segunda Piel
     id: ITEM_SCRIPTS_EQUIPO_ACCESORIOS_ACC09_ACC09_AMULETODESEGUNDAPIEL
     prefab: {fileID: 7134741394859233719, guid: 46fda1f48eb149068f8826fb8ad73f12, type: 3}
@@ -357,7 +620,7 @@ MonoBehaviour:
     categoria: Accesorio
     rareza: 0
     icono: {fileID: 21300000, guid: 74fb983f4e655c84c96154b2b28e1d82, type: 3}
-    precio: 800
+    precio: 240
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -581,7 +844,7 @@ MonoBehaviour:
     categoria: Accesorio
     rareza: 0
     icono: {fileID: 21300000, guid: bcafd933db532c045bec844c8f251047, type: 3}
-    precio: 210
+    precio: 195
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -693,7 +956,7 @@ MonoBehaviour:
     categoria: Accesorio
     rareza: 1
     icono: {fileID: 21300000, guid: f29791f77b2116a4f9fcefd85120e65d, type: 3}
-    precio: 135
+    precio: 225
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -1477,7 +1740,7 @@ MonoBehaviour:
     categoria: Accesorio
     rareza: 5
     icono: {fileID: 21300000, guid: 6cc24805797433941ba0bafb320ca690, type: 3}
-    precio: 1580
+    precio: 1495
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -1701,7 +1964,7 @@ MonoBehaviour:
     categoria: Accesorio
     rareza: 4
     icono: {fileID: 21300000, guid: 887cde7c43bef714ca0020f1718c8af7, type: 3}
-    precio: 1180
+    precio: 1155
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -1813,7 +2076,7 @@ MonoBehaviour:
     categoria: Accesorio
     rareza: 2
     icono: {fileID: 21300000, guid: 6896f276fb5330e4f819f9a48a1ca5cc, type: 3}
-    precio: 450
+    precio: 445
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -2037,7 +2300,7 @@ MonoBehaviour:
     categoria: Accesorio
     rareza: 1
     icono: {fileID: 21300000, guid: 17d187390f0f51d418c430d234ebceb5, type: 3}
-    precio: 280
+    precio: 285
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -2149,7 +2412,7 @@ MonoBehaviour:
     categoria: Accesorio
     rareza: 5
     icono: {fileID: 21300000, guid: db72ca4df75b8e444985c32007492ada, type: 3}
-    precio: 1550
+    precio: 1375
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -2261,7 +2524,7 @@ MonoBehaviour:
     categoria: Accesorio
     rareza: 3
     icono: {fileID: 21300000, guid: ded5758bdfb6cd5479766b1a11cfa449, type: 3}
-    precio: 740
+    precio: 730
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -2373,7 +2636,7 @@ MonoBehaviour:
     categoria: Accesorio
     rareza: 4
     icono: {fileID: 21300000, guid: 76ed05e0d38b0d744adaa4baf1ed4054, type: 3}
-    precio: 1150
+    precio: 1070
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -2485,7 +2748,7 @@ MonoBehaviour:
     categoria: Accesorio
     rareza: 4
     icono: {fileID: 21300000, guid: d2962e93ec44332438665261850ffb4d, type: 3}
-    precio: 1120
+    precio: 1025
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -3157,7 +3420,7 @@ MonoBehaviour:
     categoria: Accesorio
     rareza: 4
     icono: {fileID: 21300000, guid: 84db3190d3853bd4f8612e504fe5301d, type: 3}
-    precio: 1160
+    precio: 1110
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -3269,7 +3532,7 @@ MonoBehaviour:
     categoria: Accesorio
     rareza: 1
     icono: {fileID: 21300000, guid: 419766cf0b561bd4098568e87166dd23, type: 3}
-    precio: 250
+    precio: 255
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -3493,7 +3756,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 0
     icono: {fileID: 21300000, guid: d6e2a2f7de1d6954e97549b371fabdb5, type: 3}
-    precio: 100
+    precio: 90
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -3605,7 +3868,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 0
     icono: {fileID: 21300000, guid: 7eada477925b0374292ef574e1af71da, type: 3}
-    precio: 40
+    precio: 45
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -3717,7 +3980,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 2
     icono: {fileID: 21300000, guid: e961dd31b591f524ba4d8560bf18d2c1, type: 3}
-    precio: 210
+    precio: 235
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -3829,7 +4092,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 1
     icono: {fileID: 21300000, guid: 07df2cef04cb8c24eaf76459233c670d, type: 3}
-    precio: 75
+    precio: 125
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -3941,7 +4204,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 3
     icono: {fileID: 21300000, guid: 2d3c625adef84f54486008c2c923a5aa, type: 3}
-    precio: 450
+    precio: 470
     nivelMejora: 3
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -4204,7 +4467,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 1
     icono: {fileID: 21300000, guid: 2c737e3ee90266f4a8357cc7963b8ece, type: 3}
-    precio: 177
+    precio: 190
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -4316,7 +4579,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 2
     icono: {fileID: 21300000, guid: 56c6d97549a78174abb6a65dfa41625d, type: 3}
-    precio: 350
+    precio: 365
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -4428,7 +4691,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 1
     icono: {fileID: 21300000, guid: 3624020f833c4714a9bf84e6aa9b7aef, type: 3}
-    precio: 74
+    precio: 145
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 03000000
@@ -4540,7 +4803,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 2
     icono: {fileID: 21300000, guid: 3df4c1bd92bff3b4094cfa3be785888d, type: 3}
-    precio: 135
+    precio: 255
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 03000000
@@ -4652,7 +4915,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 3
     icono: {fileID: 21300000, guid: 8fe13e5453dbe524393c322f4b0cb595, type: 3}
-    precio: 260
+    precio: 470
     nivelMejora: 3
     idEfectoEspecial: 0
     clasesPermitidas: 03000000
@@ -4764,7 +5027,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 0
     icono: {fileID: 21300000, guid: 44902c678d45f784e90c1829a75b3639, type: 3}
-    precio: 20
+    precio: 55
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 03000000
@@ -4876,7 +5139,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 0
     icono: {fileID: 21300000, guid: 10a261364bfbc214ebeb390d9cd9d9ca, type: 3}
-    precio: 65
+    precio: 75
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 03000000
@@ -4988,7 +5251,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 0
     icono: {fileID: 21300000, guid: fa2e854561498574d881e37b2754d074, type: 3}
-    precio: 45
+    precio: 50
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -5100,7 +5363,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 3
     icono: {fileID: 21300000, guid: 4ce5db601c81aa14fa8b3bd110dcb602, type: 3}
-    precio: 485
+    precio: 470
     nivelMejora: 3
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -5212,7 +5475,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 2
     icono: {fileID: 21300000, guid: 093ef8cb166b7f142ab1147a02cc617b, type: 3}
-    precio: 198
+    precio: 240
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -5324,7 +5587,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 1
     icono: {fileID: 21300000, guid: b706ec18805cdc34b9a86f95ecea7f36, type: 3}
-    precio: 85
+    precio: 130
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -5436,7 +5699,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 1
     icono: {fileID: 21300000, guid: 581051361c2d7784394e2800a92b7f52, type: 3}
-    precio: 145
+    precio: 165
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -5551,7 +5814,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 2
     icono: {fileID: 21300000, guid: 931cb235d9b53d642a802e27262fda08, type: 3}
-    precio: 340
+    precio: 320
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -5664,7 +5927,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 0
     icono: {fileID: 21300000, guid: 05adbe4c9b3d2d944b8f67d2647255c2, type: 3}
-    precio: 70
+    precio: 80
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -5776,7 +6039,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 1
     icono: {fileID: 21300000, guid: d9f8539a12cb106489ef0d78ea8da7bc, type: 3}
-    precio: 170
+    precio: 175
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -5888,7 +6151,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 1
     icono: {fileID: 21300000, guid: eb7be1b8f65457644b9f8c93cd350334, type: 3}
-    precio: 130
+    precio: 155
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 05000000
@@ -6000,7 +6263,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 4
     icono: {fileID: 21300000, guid: 5c478d7e18fccdd43a977496afc1fead, type: 3}
-    precio: 475
+    precio: 620
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 05000000
@@ -6151,7 +6414,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 3
     icono: {fileID: 21300000, guid: 871bd3686e82c59448c0eaac56c7ce4f, type: 3}
-    precio: 230
+    precio: 520
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 05000000
@@ -6263,7 +6526,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 3
     icono: {fileID: 21300000, guid: 3d5062fc777037e4a903382730e68847, type: 3}
-    precio: 650
+    precio: 470
     nivelMejora: 3
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -6489,7 +6752,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 0
     icono: {fileID: 21300000, guid: e2f5d92cf8cd0504fbb1801342d14403, type: 3}
-    precio: 45
+    precio: 55
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -6601,7 +6864,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 1
     icono: {fileID: 21300000, guid: 3a45ff7a529cff6498436c5931d58f8e, type: 3}
-    precio: 110
+    precio: 145
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -6713,7 +6976,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 4
     icono: {fileID: 21300000, guid: 19eca93c5e86fb548a55bc79b891eacc, type: 3}
-    precio: 320
+    precio: 475
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -6976,7 +7239,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 0
     icono: {fileID: 21300000, guid: 0a06e438ef54e5e43b7ee8418ec7a22a, type: 3}
-    precio: 120
+    precio: 95
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -7088,7 +7351,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 0
     icono: {fileID: 21300000, guid: 670e754138cde4243a30aafdfa641e6a, type: 3}
-    precio: 145
+    precio: 100
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -7239,7 +7502,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 1
     icono: {fileID: 21300000, guid: 7c96a3e91d2592845a13d94bd366ff11, type: 3}
-    precio: 220
+    precio: 210
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -7463,7 +7726,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 0
     icono: {fileID: 21300000, guid: c2df977af82c4d144b0a65b40e1efd48, type: 3}
-    precio: 45
+    precio: 50
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 06000000
@@ -7575,7 +7838,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 1
     icono: {fileID: 21300000, guid: 2dd49f35e3c5e4e458fab7723e81ca08, type: 3}
-    precio: 85
+    precio: 130
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 06000000
@@ -7687,7 +7950,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 2
     icono: {fileID: 21300000, guid: 7cd143c7490efe64aa07468a3053bdfa, type: 3}
-    precio: 198
+    precio: 240
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 06000000
@@ -7799,7 +8062,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 3
     icono: {fileID: 21300000, guid: 4f2bf7230dabb504c81bd2ae04db7125, type: 3}
-    precio: 485
+    precio: 470
     nivelMejora: 3
     idEfectoEspecial: 0
     clasesPermitidas: 06000000
@@ -7910,8 +8173,8 @@ MonoBehaviour:
     descripcion: Estoque grabado con runas astrales que marca al objetivo.
     categoria: Arma
     rareza: 2
-    icono: {fileID: 21300000, guid: cee29903206b43d0b0c42448d8e73bc9, type: 3}
-    precio: 360
+    icono: {fileID: 21300000, guid: 574909e0188e02c4f962d1e8cdb5de60, type: 3}
+    precio: 385
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 06000000
@@ -8174,7 +8437,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 2
     icono: {fileID: 21300000, guid: 131ac8dca38715b4f9c0e48e72bc5365, type: 3}
-    precio: 220
+    precio: 235
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -8286,7 +8549,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 3
     icono: {fileID: 21300000, guid: dd5e508f0555c0a49b724ad4182d1af8, type: 3}
-    precio: 490
+    precio: 330
     nivelMejora: 3
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -8510,7 +8773,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 2
     icono: {fileID: 21300000, guid: 96dd487916b49d94db4be9429a3fe126, type: 3}
-    precio: 225
+    precio: 240
     nivelMejora: 2
     idEfectoEspecial: 4
     clasesPermitidas: 02000000
@@ -8622,7 +8885,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: 417d7c35726474b49b01134c75d95783, type: 3}
-    precio: 190
+    precio: 210
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -8734,7 +8997,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: 0c49333aeae4a6b4faf6610650a4919a, type: 3}
-    precio: 155
+    precio: 170
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -8958,7 +9221,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 0
     icono: {fileID: 21300000, guid: f7a68ea00b05e4741bf4745e980a95f2, type: 3}
-    precio: 85
+    precio: 100
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -9070,7 +9333,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: 9ef7b89bebfb5b049bf84c92e7ae5b0b, type: 3}
-    precio: 225
+    precio: 220
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -9182,7 +9445,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 0
     icono: {fileID: 21300000, guid: 71ecba2d67f330c45a684fc87870a672, type: 3}
-    precio: 85
+    precio: 90
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -9294,7 +9557,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: 5f84fb13b70d1a345ade656291478a25, type: 3}
-    precio: 110
+    precio: 165
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -9406,7 +9669,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 2
     icono: {fileID: 21300000, guid: 4d6a8678fc494874ab9da15e72fcc358, type: 3}
-    precio: 256
+    precio: 235
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -9518,7 +9781,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 3
     icono: {fileID: 21300000, guid: 15ceaccd6d738584fa88f1a1bc61776e, type: 3}
-    precio: 520
+    precio: 330
     nivelMejora: 3
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -9631,7 +9894,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 0
     icono: {fileID: 21300000, guid: 5c3a502370a68524fb9cafecea64120b, type: 3}
-    precio: 47
+    precio: 85
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -9743,7 +10006,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: ef3257d81c5ffaa47837221059667f01, type: 3}
-    precio: 190
+    precio: 205
     nivelMejora: 1
     idEfectoEspecial: 1
     clasesPermitidas: 04000000
@@ -9855,7 +10118,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: 737e051cffbe33c4b8ce96d2bd8ffd1a, type: 3}
-    precio: 178
+    precio: 190
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -9967,7 +10230,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 2
     icono: {fileID: 21300000, guid: ec419d5f4bef54c4cb790fa10dd7a2a9, type: 3}
-    precio: 270
+    precio: 280
     nivelMejora: 2
     idEfectoEspecial: 2
     clasesPermitidas: 04000000
@@ -10079,7 +10342,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 2
     icono: {fileID: 21300000, guid: 179f6cc0751c8c548b9342f88dccbf47, type: 3}
-    precio: 220
+    precio: 230
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -10191,7 +10454,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: 3844a5e6ff2162c48b4404a852720a6b, type: 3}
-    precio: 140
+    precio: 150
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 02000000
@@ -10415,7 +10678,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: a554e2e7faf1ddd48a1fdcf38e2de81c, type: 3}
-    precio: 145
+    precio: 155
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -10527,7 +10790,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 0
     icono: {fileID: 21300000, guid: ffe319a2ebf27ee45b0b50bdfcaa293b, type: 3}
-    precio: 90
+    precio: 110
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -10639,7 +10902,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: aabf4f53c721222438f147f8c0b823f8, type: 3}
-    precio: 165
+    precio: 175
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -10751,7 +11014,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 3
     icono: {fileID: 21300000, guid: 939ab2f8d4ffff84b854b88326830dc7, type: 3}
-    precio: 325
+    precio: 340
     nivelMejora: 3
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -10863,7 +11126,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 2
     icono: {fileID: 21300000, guid: 966d71af1e8b6be4cbbec316c825c514, type: 3}
-    precio: 235
+    precio: 260
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 04000000
@@ -10975,7 +11238,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 1
     icono: {fileID: 21300000, guid: 2b09430b53c9a8a46a3927a24c7149f0, type: 3}
-    precio: 180
+    precio: 195
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 06000000
@@ -11087,7 +11350,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 1
     icono: {fileID: 21300000, guid: adf7a52bd181c4744a2bd5f7d8de4cea, type: 3}
-    precio: 175
+    precio: 180
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 06000000
@@ -11239,7 +11502,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 2
     icono: {fileID: 21300000, guid: 3dac2bbeba46259499b2ead35f82b466, type: 3}
-    precio: 345
+    precio: 340
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 06000000
@@ -11389,7 +11652,7 @@ MonoBehaviour:
     descripcion: Gambeson acolchado y liviano para mantener la movilidad en el duelo.
     categoria: Armadura
     rareza: 1
-    icono: {fileID: 21300000, guid: 66cf9502ded5468aa5d76037b4aed781, type: 3}
+    icono: {fileID: 21300000, guid: 9489d787ec515604c834ad1ecc3380e3, type: 3}
     precio: 135
     nivelMejora: 1
     idEfectoEspecial: 0
@@ -11501,8 +11764,8 @@ MonoBehaviour:
     descripcion: Gambeson acolchado y liviano para mantener la movilidad en el duelo.
     categoria: Armadura
     rareza: 2
-    icono: {fileID: 21300000, guid: 477cb507ed594e6b975f41a7c21f9b55, type: 3}
-    precio: 220
+    icono: {fileID: 21300000, guid: be285026ef65f42459782429a5a139b8, type: 3}
+    precio: 235
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 06000000
@@ -11613,8 +11876,8 @@ MonoBehaviour:
     descripcion: Gambeson acolchado y liviano para mantener la movilidad en el duelo.
     categoria: Armadura
     rareza: 3
-    icono: {fileID: 21300000, guid: 12da7a0547dd4643987f8d8ed156a04d, type: 3}
-    precio: 490
+    icono: {fileID: 21300000, guid: c2508c3bce076254a9251e2ab81b13b4, type: 3}
+    precio: 330
     nivelMejora: 3
     idEfectoEspecial: 0
     clasesPermitidas: 06000000
@@ -11725,7 +11988,7 @@ MonoBehaviour:
     descripcion: Gambeson acolchado y liviano para mantener la movilidad en el duelo.
     categoria: Armadura
     rareza: 0
-    icono: {fileID: 21300000, guid: 249b0c6406164fa7af4bd2ef52cd5857, type: 3}
+    icono: {fileID: 21300000, guid: 5b0001d33c7f8874eb23e8538363eeca, type: 3}
     precio: 45
     nivelMejora: 0
     idEfectoEspecial: 0
@@ -11838,8 +12101,8 @@ MonoBehaviour:
       ya perfiladas.
     categoria: Armadura
     rareza: 1
-    icono: {fileID: 21300000, guid: 55e801f22f014f5fa804e1a6c7483926, type: 3}
-    precio: 185
+    icono: {fileID: 21300000, guid: c4f3460f0024eea41977d7a2cd57b46d, type: 3}
+    precio: 200
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 06000000
@@ -11951,8 +12214,8 @@ MonoBehaviour:
       firmes bajo presion.
     categoria: Armadura
     rareza: 1
-    icono: {fileID: 21300000, guid: cce5876128174aa5985e8a708eb254c3, type: 3}
-    precio: 180
+    icono: {fileID: 21300000, guid: 36537600b33984c4891523024dc1b4f1, type: 3}
+    precio: 195
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 06000000
@@ -12064,8 +12327,8 @@ MonoBehaviour:
       duelo.
     categoria: Armadura
     rareza: 2
-    icono: {fileID: 21300000, guid: 57e9476d54fc4ccbb92a3a8713f978bf, type: 3}
-    precio: 285
+    icono: {fileID: 21300000, guid: d1a6160014e43a44bb8cb486bc4c7735, type: 3}
+    precio: 290
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 06000000
@@ -12177,7 +12440,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: b53b86bcb3e165a42b508790e4a318b2, type: 3}
-    precio: 550
+    precio: 235
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -12289,7 +12552,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: 9ed20ba673fa6ee428daa2768519d842, type: 3}
-    precio: 340
+    precio: 200
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -12401,7 +12664,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: 1f82a8502a06fd445819d73cd1a7b14c, type: 3}
-    precio: 208
+    precio: 165
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -12513,7 +12776,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 0
     icono: {fileID: 21300000, guid: 87000c29ff173a8498c14105f0d30881, type: 3}
-    precio: 50
+    precio: 85
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -12625,7 +12888,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 2
     icono: {fileID: 21300000, guid: 7ca9976e8a0b4a149839cfc619a531dd, type: 3}
-    precio: 610
+    precio: 295
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -12737,7 +13000,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: b5ea8461e8ce57d469bfcb420187d130, type: 3}
-    precio: 150
+    precio: 170
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -12849,7 +13112,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: fccf2b6300b23b54b9cee9848c967bcf, type: 3}
-    precio: 315
+    precio: 220
     nivelMejora: 1
     idEfectoEspecial: 3
     clasesPermitidas: 01000000
@@ -13073,7 +13336,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: 9ba894cab3d90104ea265d5329e32b41, type: 3}
-    precio: 165
+    precio: 180
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -13185,7 +13448,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 2
     icono: {fileID: 21300000, guid: c9ac1cf043ab939409453d8fff60cb43, type: 3}
-    precio: 230
+    precio: 250
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -13409,7 +13672,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 3
     icono: {fileID: 21300000, guid: ebeea2106fae2b54ba6a4c4317e87441, type: 3}
-    precio: 330
+    precio: 360
     nivelMejora: 3
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -13633,7 +13896,7 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: e5e2ab88ced10db4d816adf4a37a1ac9, type: 3}
-    precio: 145
+    precio: 150
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 03000000
@@ -14193,7 +14456,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 1
     icono: {fileID: 21300000, guid: d5ef45456de2a2f488190902d3a1ac56, type: 3}
-    precio: 95
+    precio: 90
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -14305,7 +14568,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 0
     icono: {fileID: 21300000, guid: 602f703cf0deaa84d8ca1727ec40e77a, type: 3}
-    precio: 50
+    precio: 65
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -14417,7 +14680,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 0
     icono: {fileID: 21300000, guid: 5af57aa0ba8c01840be2d583477bd9f0, type: 3}
-    precio: 50
+    precio: 65
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -14529,7 +14792,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 0
     icono: {fileID: 21300000, guid: 0e6d4492ae3d87a4bae626bbeb4c6727, type: 3}
-    precio: 50
+    precio: 60
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: 
@@ -14753,7 +15016,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 2
     icono: {fileID: 21300000, guid: 64e8245d6f391ea4196d5147dc4b6173, type: 3}
-    precio: 180
+    precio: 175
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -14978,7 +15241,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 0
     icono: {fileID: 21300000, guid: 991a2151e081c7e47b0869d6a434781a, type: 3}
-    precio: 45
+    precio: 55
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -15091,7 +15354,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 0
     icono: {fileID: 21300000, guid: 5927bc19556937248a37fcbe6ef2e9cb, type: 3}
-    precio: 45
+    precio: 50
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -15204,7 +15467,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 0
     icono: {fileID: 21300000, guid: 89b023d5a9feb0145b6d185f535119cd, type: 3}
-    precio: 45
+    precio: 55
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -15317,7 +15580,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 0
     icono: {fileID: 21300000, guid: ae71299eda30e5640b26419ed60676bb, type: 3}
-    precio: 45
+    precio: 60
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -15653,7 +15916,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 0
     icono: {fileID: 21300000, guid: 62624d5a753a22342860b746fcc22ae4, type: 3}
-    precio: 55
+    precio: 70
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -15765,7 +16028,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 0
     icono: {fileID: 21300000, guid: a9f10edf60d49944a9e0422df73d0450, type: 3}
-    precio: 60
+    precio: 75
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -16330,7 +16593,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 0
     icono: {fileID: 21300000, guid: 0a0c1e7ee34568e45b0f25e899525aed, type: 3}
-    precio: 78
+    precio: 75
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -16443,7 +16706,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 0
     icono: {fileID: 21300000, guid: 4381db9a8e21bb3408d137825fa5244f, type: 3}
-    precio: 55
+    precio: 70
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -16556,7 +16819,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 0
     icono: {fileID: 21300000, guid: 6efb6ad1cd6328c41aaf40950397380e, type: 3}
-    precio: 20
+    precio: 50
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -17004,7 +17267,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 2
     icono: {fileID: 21300000, guid: 93fa52e02d7c6b942a26d83714da9616, type: 3}
-    precio: 165
+    precio: 170
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -17116,7 +17379,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 0
     icono: {fileID: 21300000, guid: f34506612bdbd004ea5da277506466ef, type: 3}
-    precio: 0
+    precio: 45
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -17340,7 +17603,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 3
     icono: {fileID: 21300000, guid: 06caa501c7e45c14389c60b972d3c5fb, type: 3}
-    precio: 270
+    precio: 275
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff
@@ -17676,7 +17939,7 @@ MonoBehaviour:
     categoria: Consumible
     rareza: 2
     icono: {fileID: 21300000, guid: b18713a6ef555674e98650eec467b15a, type: 3}
-    precio: 160
+    precio: 165
     nivelMejora: 0
     idEfectoEspecial: 0
     clasesPermitidas: ffffffff

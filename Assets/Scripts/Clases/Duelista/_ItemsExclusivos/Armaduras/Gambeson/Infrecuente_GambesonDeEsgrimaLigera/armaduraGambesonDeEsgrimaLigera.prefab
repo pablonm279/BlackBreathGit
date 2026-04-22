@@ -45,12 +45,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb3a3fc570234ea68b6175681b52d889, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: 55e801f22f014f5fa804e1a6c7483926, type: 3}
+  persistentItemId: 
+  imItem: {fileID: 21300000, guid: c4f3460f0024eea41977d7a2cd57b46d, type: 3}
   sNombreItem: Gambeson de Esgrima Ligera
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 06000000
-  iPrecio: 185
-  itemDescripcion: Un gambeson flexible para duelistas que prefieren entrar al combate ya perfiladas.
+  iPrecio: 200
+  itemDescripcion: Un gambeson flexible para duelistas que prefieren entrar al combate
+    ya perfiladas.
   iRareza: 1
   nivelMejora: 1
   barreraInicioCombate: 0

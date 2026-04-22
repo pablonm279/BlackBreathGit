@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -312,7 +312,7 @@ public override void AcabaDeMatarUnidad(Unidad uVictima)
       RemoverBuffNombre("Vista Lejana IVb");
     }
 
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+    BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(this);
   }
 
   public void ChequeartieneFogataCerca()
@@ -360,7 +360,7 @@ public override void AcabaDeMatarUnidad(Unidad uVictima)
         }
       }
     }
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+    BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(this);
 
   }
 
@@ -385,6 +385,7 @@ public override void AcabaDeMatarUnidad(Unidad uVictima)
   }
   
 }
+
 
 
 

@@ -57,6 +57,7 @@ public class DescargaArcana : Habilidad
       int ataqueActual = statsUI.Ataque;
       int criticoBonusUnidad = statsUI.CriticoRango;
       string bonusTexto = bonusAtaque != 0 ? $" + {bonusAtaque}" : "";
+      string rangoDanioEs = FormatearRangoDados(1, 10, 1);
       int criticoMin = 19 - (criticoBonusUnidad + criticoRangoHab);
       criticoMin = Mathf.Clamp(criticoMin, 2, 20);
 
@@ -111,8 +112,8 @@ public class DescargaArcana : Habilidad
         cuerpo += lineaTipoEs + "\n";
         cuerpo += "<b>Objetivo:</b> 1 enemigo en rango\n";
         cuerpo += $"<b>Ancho:</b> {hAncho} ({anchoDetalleEs})\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}){bonusTexto} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
-        cuerpo += $"<b>Danio:</b> 1d10 + 1 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Arcano";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Pod ({poderActual})</color> + Ataque ({ataqueActual}){bonusTexto} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
+        cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color> | <b>Tipo:</b> Arcano";
 
         string costos = $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM} ";
 

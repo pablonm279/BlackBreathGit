@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: "Poci\xF3n de Curaci\xF3n Mayor"
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: ffffffff
-  iPrecio: 78
+  iPrecio: 75
   itemDescripcion: "Esta poci\xF3n puede ser consumida para sanar heridas superficiales
     en un instante.\n\nConsumible: Cura 20+2d8 Vida."
   iRareza: 0

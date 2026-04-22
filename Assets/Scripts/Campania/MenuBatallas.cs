@@ -1806,8 +1806,8 @@ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
 
     if (civilLoss > 0)
     {
-        partesEs.Add(civilLoss + " Civiles");
-        partesEn.Add(civilLoss + " Civilians");
+        partesEs.Add("-" + civilLoss + " Civiles");
+        partesEn.Add("-" + civilLoss + " Civilians");
     }
     if (hopeLoss > 0)
     {

@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Coraza
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 01000000
-  iPrecio: 340
+  iPrecio: 200
   itemDescripcion: Coraza de caballero para defensa frontal solida.
   iRareza: 1
   nivelMejora: 1

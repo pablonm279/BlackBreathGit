@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Sello del Rastreador Nocturno
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 1160
+  iPrecio: 1110
   itemDescripcion: Facilita abrir combate con iniciativa y precision.
   iRareza: 4
   nivelMejora: 0

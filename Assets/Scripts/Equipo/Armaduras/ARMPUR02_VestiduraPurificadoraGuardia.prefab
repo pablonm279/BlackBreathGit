@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Vestidura Purificadora de Guardia
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 03000000
-  iPrecio: 145
+  iPrecio: 150
   itemDescripcion: Tejido liturgico para sostener al grupo.
   iRareza: 1
   nivelMejora: 1

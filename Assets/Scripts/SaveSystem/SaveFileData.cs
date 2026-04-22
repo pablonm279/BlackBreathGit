@@ -171,6 +171,7 @@ public class CharacterSaveData
   public bool traitHeroeLocalCivilesOtorgados;
   public bool traitHeroeLocalPenalidadMuerteAplicada;
   public bool traitEjemploASeguirAplicado;
+  public bool traitHerenciaItemOtorgado;
 
   public int[] rasgos = Array.Empty<int>();
   public EquipmentSaveData equipment = new EquipmentSaveData();

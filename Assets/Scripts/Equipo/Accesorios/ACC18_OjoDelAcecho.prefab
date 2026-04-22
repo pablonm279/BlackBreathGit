@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Ojo del Acecho
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 740
+  iPrecio: 730
   itemDescripcion: Mejora anticipacion y velocidad de ejecucion.
   iRareza: 3
   nivelMejora: 0

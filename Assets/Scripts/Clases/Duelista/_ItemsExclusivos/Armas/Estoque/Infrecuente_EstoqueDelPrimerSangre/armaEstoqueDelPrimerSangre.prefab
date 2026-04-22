@@ -50,7 +50,7 @@ MonoBehaviour:
   sNombreItem: Estoque del Primer Sangre
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 06000000
-  iPrecio: 180
+  iPrecio: 195
   itemDescripcion: Un estoque pensado para abrir el duelo con una ventaja brutal.
   iRareza: 1
   nivelMejora: 1

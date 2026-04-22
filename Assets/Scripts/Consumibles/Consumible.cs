@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -317,7 +317,7 @@ public class Consumible : Item
 
         if (aplicoAlgo && BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
         {
-            BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+            BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
         }
     }
 
@@ -571,6 +571,7 @@ public class Consumible : Item
         return data;
     }
 }
+
 
 
 

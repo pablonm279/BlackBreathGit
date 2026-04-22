@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Cristal de Escarcha Fracta
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: ffffffff
-  iPrecio: 180
+  iPrecio: 175
   itemDescripcion: Aumenta dano de hielo en los siguientes turnos.
   iRareza: 2
   nivelMejora: 0

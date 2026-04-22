@@ -71,6 +71,7 @@ public class Asesinar : Habilidad
 
     int danioFijo = 2 + (NIVEL > 1 ? 2 : 0) + (NIVEL == 5 ? 3 : 0);
     int bonoAtaqueAislado = 2 + (NIVEL > 2 ? 1 : 0);
+    string rangoDanioEs = FormatearRangoDados(2, 8, danioFijo);
 
     string tituloEs = "Asesinar I";
     string tituloEn = "Assassinate I";
@@ -120,8 +121,8 @@ public class Asesinar : Habilidad
       cuerpo += "<b>Tipo:</b> Rango (4 alcance)\n";
       cuerpo += "<b>Objetivo:</b> 1 enemigo\n";
       cuerpo += "<b>Requisito:</b> Escondido (1)\n";
-      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Danio:</b> 2d8 + {danioFijo} + <color=#ea0606>Agilidad ({agilidadActual})</color> | <b>Tipo:</b> Perforante\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agi ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Agi ({agilidadActual})</color> | <b>Tipo:</b> Perforante\n";
       cuerpo += "<b>Bono contra humanoides:</b> +2 danio plano\n";
       cuerpo += $"<b>Si esta aislado:</b> +{bonoAtaqueAislado} ataque y x2 al danio final\n";
       cuerpo += "<b>Al matar:</b> gana Escondido (1), el cooldown de la habilidad se fija en 1";

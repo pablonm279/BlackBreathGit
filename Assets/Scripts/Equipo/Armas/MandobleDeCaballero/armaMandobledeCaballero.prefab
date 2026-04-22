@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Mandoble De Caballero
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 01000000
-  iPrecio: 120
+  iPrecio: 95
   itemDescripcion: Mandoble pesado del caballero, potente en combate frontal.
   iRareza: 0
   nivelMejora: 0

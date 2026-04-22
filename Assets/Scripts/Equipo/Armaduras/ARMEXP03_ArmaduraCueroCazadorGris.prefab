@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Armadura de Cuero del Cazador Gris
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 02000000
-  iPrecio: 155
+  iPrecio: 170
   itemDescripcion: Proteccion ligera para combates de media distancia.
   iRareza: 1
   nivelMejora: 1

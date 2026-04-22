@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Coraza de Guardia Roja
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 01000000
-  iPrecio: 150
+  iPrecio: 170
   itemDescripcion: Placas reforzadas para sostener la linea.
   iRareza: 1
   nivelMejora: 1

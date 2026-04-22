@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Frasco de Corteza
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: ffffffff
-  iPrecio: 60
+  iPrecio: 75
   itemDescripcion: Refuerza la armadura por unos turnos.
   iRareza: 0
   nivelMejora: 0

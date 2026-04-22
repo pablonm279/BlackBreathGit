@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Piedra de Sangre Calma
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 1120
+  iPrecio: 1025
   itemDescripcion: Compensa riesgo ofensivo con regeneracion y estabilidad.
   iRareza: 4
   nivelMejora: 0

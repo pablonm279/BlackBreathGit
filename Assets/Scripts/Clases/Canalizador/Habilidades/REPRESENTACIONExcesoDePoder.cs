@@ -25,7 +25,7 @@ public class REPRESENTACIONExcesoDePoder : Habilidad
             txtDescripcion += "<i>La energía desbordante del Canalizador provoca inestabilidad en cada golpe certero, dejando rastros de su exceso.</i>\n\n";
             txtDescripcion += "<color=#c8c8c8>- Cada vez que realiza un <b>Crítico</b>, crea 1 Residuo Energético.</color>\n";
             txtDescripcion += "<color=#c8c8c8>- Obtiene +1 Dado Crítico permanente.</color>\n";
-            txtDescripcion += "<color=#c8c8c8>- Al realizar un crítico, recibe 1d4 daño Arcano.</color>\n\n";
+            txtDescripcion += "<color=#c8c8c8>- Al realizar un crítico, recibe 1-4 daño Arcano.</color>\n\n";
 
             if (EsEscenaCampaña())
             {
@@ -45,7 +45,7 @@ public class REPRESENTACIONExcesoDePoder : Habilidad
             txtDescripcion += "<i>La energía desbordante del Canalizador provoca inestabilidad en cada golpe certero, dejando rastros de su exceso.</i>\n\n";
             txtDescripcion += "<color=#c8c8c8>- Cada vez que realiza un <b>Crítico</b>, crea 1 Residuo Energético.</color>\n";
             txtDescripcion += "<color=#c8c8c8>- Obtiene +1 Dado Crítico permanente.</color>\n";
-            txtDescripcion += "<color=#c8c8c8>- Al realizar un crítico, recibe 1d4-1 daño Arcano.</color>\n\n";
+            txtDescripcion += "<color=#c8c8c8>- Al realizar un crítico, recibe 0-3 daño Arcano.</color>\n\n";
 
             if (EsEscenaCampaña())
             {
@@ -65,7 +65,7 @@ public class REPRESENTACIONExcesoDePoder : Habilidad
             txtDescripcion += "<i>La energía desbordante del Canalizador provoca inestabilidad en cada golpe certero, dejando rastros de su exceso.</i>\n\n";
             txtDescripcion += "<color=#c8c8c8>- Cada vez que realiza un <b>Crítico</b>, crea 1 Residuo Energético.</color>\n";
             txtDescripcion += "<color=#c8c8c8>- Obtiene +1 Dado Crítico permanente.</color>\n";
-            txtDescripcion += "<color=#c8c8c8>- Al realizar un crítico, recibe 1d4-2 daño Arcano.</color>\n\n";
+            txtDescripcion += "<color=#c8c8c8>- Al realizar un crítico, recibe -1-2 daño Arcano.</color>\n\n";
 
             if (EsEscenaCampaña())
             {
@@ -86,7 +86,7 @@ public class REPRESENTACIONExcesoDePoder : Habilidad
             txtDescripcion += "<i>La energía desbordante del Canalizador provoca inestabilidad en cada golpe certero, dejando rastros de su exceso.</i>\n\n";
             txtDescripcion += "<color=#c8c8c8>- Cada vez que realiza un <b>Crítico</b>, crea 2 Residuos Energéticos.</color>\n";
             txtDescripcion += "<color=#c8c8c8>- Obtiene +1 Dado Crítico permanente.</color>\n";
-            txtDescripcion += "<color=#c8c8c8>- Al realizar un crítico, recibe 1d4-2 daño Arcano.</color>\n\n";
+            txtDescripcion += "<color=#c8c8c8>- Al realizar un crítico, recibe -1-2 daño Arcano.</color>\n\n";
         }
 
         if (NIVEL == 5)
@@ -96,7 +96,7 @@ public class REPRESENTACIONExcesoDePoder : Habilidad
             txtDescripcion += "<i>La energía desbordante del Canalizador provoca inestabilidad en cada golpe certero, dejando rastros de su exceso.</i>\n\n";
             txtDescripcion += "<color=#c8c8c8>- Cada vez que realiza un <b>Crítico</b>, crea 1 Residuo Energético.</color>\n";
             txtDescripcion += "<color=#c8c8c8>- Obtiene +2 Dados Críticos permanentes.</color>\n";
-            txtDescripcion += "<color=#c8c8c8>- Al realizar un crítico, recibe 1d4-2 daño Arcano.</color>\n\n";
+            txtDescripcion += "<color=#c8c8c8>- Al realizar un crítico, recibe -1-2 daño Arcano.</color>\n\n";
         }
 
     if (TRADU.i.nIdioma == 2) // English translation

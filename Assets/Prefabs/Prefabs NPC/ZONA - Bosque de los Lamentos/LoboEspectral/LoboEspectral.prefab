@@ -323,7 +323,8 @@ MonoBehaviour:
   velocidadMovimiento: 3.5
   movimientoEnCurso: 0
   NoSonidoAlMover: 0
-  sonidosRecibirDanio: []
+  sonidosRecibirDanio:
+  - {fileID: 8300000, guid: 6209314b037f3eb438644d48ffa51458, type: 3}
 --- !u!65 &246849736186351410
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -525,6 +526,7 @@ MonoBehaviour:
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
   forzarPoseHabilidad: 0
+  omitirAnimacionDeUso: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
@@ -571,8 +573,8 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
+  m_Volume: 0.908
+  m_Pitch: 1.17
   Loop: 0
   Mute: 0
   Spatialize: 0

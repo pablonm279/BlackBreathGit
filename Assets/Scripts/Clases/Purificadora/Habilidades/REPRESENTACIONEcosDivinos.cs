@@ -23,8 +23,8 @@ public class REPRESENTACIONEcosDivinos : Habilidad
     {
       txtDescripcion = "<color=#5dade2><b>Ecos Divinos I</b></color>\n\n";
       txtDescripcion += "<i>(Pasiva) Cada turno genera un Eco divino en cualquier lado de la batalla, dañando a los enemigos o curando a aliados que los tocan.</i>\n\n";
-      txtDescripcion += "<i>A aliados: Cura 1d10 y suma +1 Valentía. Si es la Purificadora, gana 1 Fervor. Curación mágica.</i>\n\n";
-      txtDescripcion += "<i>A enemigos: Causa 1d10 daño Divino.</i>\n\n";
+      txtDescripcion += "<i>A aliados: Cura 1-10 y suma +1 Valentía. Si es la Purificadora, gana 1 Fervor. Curación mágica.</i>\n\n";
+      txtDescripcion += "<i>A enemigos: Causa 1-10 daño Divino.</i>\n\n";
 
       if (EsEscenaCampaña())
       {
@@ -42,8 +42,8 @@ public class REPRESENTACIONEcosDivinos : Habilidad
     {
       txtDescripcion = "<color=#5dade2><b>Ecos Divinos II</b></color>\n\n";
       txtDescripcion += "<i>(Pasiva) Cada turno genera un Eco divino en cualquier lado de la batalla, dañando a los enemigos o curando a aliados que los tocan.</i>\n\n";
-      txtDescripcion += "<i>A aliados: Cura 1d10+2 y suma +1 Valentía. Si es la Purificadora, gana 1 Fervor. Curación mágica.</i>\n\n";
-      txtDescripcion += "<i>A enemigos: Causa 1d10+2 daño Divino.</i>\n\n";
+      txtDescripcion += "<i>A aliados: Cura 3-12 y suma +1 Valentía. Si es la Purificadora, gana 1 Fervor. Curación mágica.</i>\n\n";
+      txtDescripcion += "<i>A enemigos: Causa 3-12 daño Divino.</i>\n\n";
 
       if (EsEscenaCampaña())
       {
@@ -60,8 +60,8 @@ public class REPRESENTACIONEcosDivinos : Habilidad
     {
       txtDescripcion = "<color=#5dade2><b>Ecos Divinos III</b></color>\n\n";
       txtDescripcion += "<i>(Pasiva) Cada turno genera un Eco divino en cualquier lado de la batalla, dañando a los enemigos o curando a aliados que los tocan.</i>\n\n";
-      txtDescripcion += "<i>A aliados: Cura 1d10+4 y suma +1 Valentía. Si es la Purificadora, gana 1 Fervor. Curación mágica.</i>\n\n";
-      txtDescripcion += "<i>A enemigos: Causa 1d10+4 daño Divino.</i>\n\n";
+      txtDescripcion += "<i>A aliados: Cura 5-14 y suma +1 Valentía. Si es la Purificadora, gana 1 Fervor. Curación mágica.</i>\n\n";
+      txtDescripcion += "<i>A enemigos: Causa 5-14 daño Divino.</i>\n\n";
       if (EsEscenaCampaña())
       {
         if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
@@ -78,15 +78,15 @@ public class REPRESENTACIONEcosDivinos : Habilidad
     {
       txtDescripcion = "<color=#5dade2><b>Ecos Divinos IV a</b></color>\n\n";
       txtDescripcion += "<i>(Pasiva) Cada turno genera un Eco divino en cualquier lado de la batalla, dañando a los enemigos o curando a aliados que los tocan.</i>\n\n";
-      txtDescripcion += "<i>A aliados: Cura 1d10+9 y suma +1 Valentía. Si es la Purificadora, gana 1 Fervor. Curación mágica.</i>\n\n";
-      txtDescripcion += "<i>A enemigos: Causa 1d10+4 daño Divino.</i>\n\n";
+      txtDescripcion += "<i>A aliados: Cura 10-19 y suma +1 Valentía. Si es la Purificadora, gana 1 Fervor. Curación mágica.</i>\n\n";
+      txtDescripcion += "<i>A enemigos: Causa 5-14 daño Divino.</i>\n\n";
     }
     if (NIVEL == 5)
     {
       txtDescripcion = "<color=#5dade2><b>Ecos Divinos IV b</b></color>\n\n";
       txtDescripcion += "<i>(Pasiva) Cada turno genera un Eco divino en cualquier lado de la batalla, dañando a los enemigos o curando a aliados que los tocan.</i>\n\n";
-      txtDescripcion += "<i>A aliados: Cura 1d10+4 y suma +1 Valentía. Si es la Purificadora, gana 1 Fervor. Curación mágica.</i>\n\n";
-      txtDescripcion += "<i>A enemigos: Causa 1d10+9 daño Divino.</i>\n\n";
+      txtDescripcion += "<i>A aliados: Cura 5-14 y suma +1 Valentía. Si es la Purificadora, gana 1 Fervor. Curación mágica.</i>\n\n";
+      txtDescripcion += "<i>A enemigos: Causa 10-19 daño Divino.</i>\n\n";
     }
        
       if (TRADU.i.nIdioma == 2) // English translation

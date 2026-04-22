@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,10 +29,11 @@ public class Cons_BalsamoClaridad : Consumible
     Buff buffComponent = ComponentCopier.CopyComponent(buff, unidad.gameObject);
 
     // Actualiza la información del personaje en la interfaz de usuario
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+    BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
   }
 
 }
+
 
 
 

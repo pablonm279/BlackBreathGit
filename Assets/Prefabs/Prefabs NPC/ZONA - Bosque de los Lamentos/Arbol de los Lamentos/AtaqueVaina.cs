@@ -206,7 +206,11 @@ public class AtaqueVaina : IAHabilidad
 
    void AplicaAtraerVaina(Unidad unidad)
    {
-    
+    if (unidad == null || unidad.HP_actual <= 0f || !unidad.gameObject.activeInHierarchy)
+    {
+      return;
+    }
+
     if(unidad.TiradaSalvacion(unidad.mod_TSFortaleza, 14))
     {
       unidad.ForzarMoverAPrimeraFila();

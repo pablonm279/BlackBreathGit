@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -30,7 +30,7 @@ public class BattleManager : MonoBehaviour
   public static BattleManager Instance { get; private set; }
   public int RondaNro;
   public Unidad unidadActiva;
-  // Silencia logs de combate durante preparación (buffs/estados iniciales)
+  // Silencia logs de combate durante preparaciÃ³n (buffs/estados iniciales)
   public bool silenciarLogCombate = false;
 
   public GameObject PantallaNegraAcciones;
@@ -379,7 +379,7 @@ public class BattleManager : MonoBehaviour
       OnTurnoNuevo?.Invoke(this, EventArgs.Empty);
 
       unidadActiva.ArrancaTurnoEstaUnidad();
-      scUIInfoChar.ActualizarInfoChar(unidadActiva);
+      scUIInfoChar.RefrescarSegunEstadoActual();
       /*---*/
       SincronizarHabilidadDestruirObstaculo(unidadActiva);
       SincronizarHabilidadEscapar(unidadActiva);
@@ -470,7 +470,7 @@ public class BattleManager : MonoBehaviour
     }
 
   }
-  public void RondaNueva() //Finaliza la ronda y se reordenan las unidades según iniciativa
+  public void RondaNueva() //Finaliza la ronda y se reordenan las unidades segÃºn iniciativa
   {
 
     RondaNro++;
@@ -613,11 +613,11 @@ public class BattleManager : MonoBehaviour
     {
       string mensaje = TRADU.i != null
         ? TRADU.i.Traducir(viasGeneradas == 1
-          ? "Se abre 1 vía de escape en la retaguardia aliada."
-          : "Se abren 2 vías de escape en la retaguardia aliada.")
+          ? "Se abre 1 vÃ­a de escape en la retaguardia aliada."
+          : "Se abren 2 vÃ­as de escape en la retaguardia aliada.")
         : (viasGeneradas == 1
-          ? "Se abre 1 vía de escape en la retaguardia aliada."
-          : "Se abren 2 vías de escape en la retaguardia aliada.");
+          ? "Se abre 1 vÃ­a de escape en la retaguardia aliada."
+          : "Se abren 2 vÃ­as de escape en la retaguardia aliada.");
       EscribirLog(mensaje, false);
     }
   }
@@ -743,10 +743,10 @@ public class BattleManager : MonoBehaviour
     {
       delayRefuerzo += 1;
       ActualizarRefuerzosUI();
-      return; // No mandar refuerzos si hay más de 6 enemigos
+      return; // No mandar refuerzos si hay mÃ¡s de 6 enemigos
     }
 
-    // Si hay más de 3 enemigos en la lista de refuerzos
+    // Si hay mÃ¡s de 3 enemigos en la lista de refuerzos
     int cantidadAEnviar = enemigosRefuerzos.Count > 3 ? 2 : 1;
     for (int i = 0; i < cantidadAEnviar && enemigosRefuerzos.Count > 0; i++)
     {
@@ -778,7 +778,7 @@ public class BattleManager : MonoBehaviour
     {
       delayAliados += 1;
       ActualizarAliadosRefUI();
-      return; // No mandar refuerzos si hay más de 5 aliados
+      return; // No mandar refuerzos si hay mÃ¡s de 5 aliados
     }
 
     if (aliadosRefuerzos.Count > 0) // Si hay 3 o menos
@@ -948,31 +948,15 @@ public class BattleManager : MonoBehaviour
     string mensajeValentia = esRefuerzoEnemigo
       ? (enIngles
         ? "Enemy reinforcement " + nombreRefuerzo + " lowers allied valour (-1 VAL)."
-        : "El refuerzo enemigo " + nombreRefuerzo + " reduce la Valentía aliada (-1 VAL).")
+        : "El refuerzo enemigo " + nombreRefuerzo + " reduce la ValentÃ­a aliada (-1 VAL).")
       : (enIngles
         ? "Allied reinforcement " + nombreRefuerzo + " boosts allied valour (+1 VAL)."
-        : "El refuerzo aliado " + nombreRefuerzo + " aumenta la Valentía aliada (+1 VAL).");
+        : "El refuerzo aliado " + nombreRefuerzo + " aumenta la ValentÃ­a aliada (+1 VAL).");
     EscribirLog(CombatLogFormatter.EventoValour(mensajeValentia), false);
 
     if (scUIInfoChar != null)
     {
-      Unidad unidadInfo = scUIInfoChar.unidadMostrada;
-      bool debeRefrescarUnidadMostrada = unidadInfo != null
-        && ladoB.unidadesLado.Contains(unidadInfo)
-        && unidadInfo.HP_actual > 0;
-      bool debeRefrescarActivaAutomatica = !scUIInfoChar.hayUnidadSeleccionadaParaInfo
-        && unidadActiva != null
-        && ladoB.unidadesLado.Contains(unidadActiva)
-        && unidadActiva.HP_actual > 0;
-
-      if (debeRefrescarUnidadMostrada)
-      {
-        scUIInfoChar.ActualizarInfoChar(unidadInfo);
-      }
-      else if (debeRefrescarActivaAutomatica)
-      {
-        scUIInfoChar.ActualizarInfoChar(unidadActiva);
-      }
+      scUIInfoChar.RefrescarSegunEstadoActual();
     }
 
     NotificarCambioValourGlobal();
@@ -1017,7 +1001,7 @@ public class BattleManager : MonoBehaviour
     {
       EscribirLog(CombatLogFormatter.EventoValour(enIngles
         ? "Global Valour Very High (" + valourMostrado + "%): allies gain +15% damage and +1 AP this round."
-        : "Valentía global Muy Alta (" + valourMostrado + "%): los aliados ganan +15% daño y +1 AP esta ronda."));
+        : "ValentÃ­a global Muy Alta (" + valourMostrado + "%): los aliados ganan +15% daÃ±o y +1 AP esta ronda."));
       AplicarBuffGlobalValourDanio(aliadosJugador);
       AplicarBuffGlobalValourAP(aliadosJugador);
       return;
@@ -1027,7 +1011,7 @@ public class BattleManager : MonoBehaviour
     {
       EscribirLog(CombatLogFormatter.EventoValour(enIngles
         ? "Global Valour High (" + valourMostrado + "%): allies gain +1 AP this round."
-        : "Valentía global Alta (" + valourMostrado + "%): los aliados ganan +1 AP esta ronda."));
+        : "ValentÃ­a global Alta (" + valourMostrado + "%): los aliados ganan +1 AP esta ronda."));
       AplicarBuffGlobalValourAP(aliadosJugador);
       return;
     }
@@ -1036,7 +1020,7 @@ public class BattleManager : MonoBehaviour
     {
       EscribirLog(CombatLogFormatter.EventoValour(enIngles
         ? "Global Valour Very Low (" + valourMostrado + "%): all allies roll Mental Save (DC 15 - current VAL, min 8 max 22). On fail: flee in shame (max 1 per round)."
-        : "Valentía global Muy Baja (" + valourMostrado + "%): todos los aliados tiran TS Mental (DC 15 - VAL actual, mín 8 máx 22). Si fallan: huyen avergonzados (máx 1 por ronda)."));
+        : "ValentÃ­a global Muy Baja (" + valourMostrado + "%): todos los aliados tiran TS Mental (DC 15 - VAL actual, mÃ­n 8 mÃ¡x 22). Si fallan: huyen avergonzados (mÃ¡x 1 por ronda)."));
       AplicarChequeoMoralGlobal(aliadosJugador, true);
       return;
     }
@@ -1045,7 +1029,7 @@ public class BattleManager : MonoBehaviour
     {
       EscribirLog(CombatLogFormatter.EventoValour(enIngles
         ? "Global Valour Low (" + valourMostrado + "%): all allies roll Mental Save (DC 15 - current VAL, min 8 max 22). On fail: Doubting 1 round (-10% damage, -1 Defense)."
-        : "Valentía global Baja (" + valourMostrado + "%): todos los aliados tiran TS Mental (DC 15 - VAL actual, mín 8 máx 22). Si fallan: Dudando 1 ronda (-10% daño, -1 Defensa)."));
+        : "ValentÃ­a global Baja (" + valourMostrado + "%): todos los aliados tiran TS Mental (DC 15 - VAL actual, mÃ­n 8 mÃ¡x 22). Si fallan: Dudando 1 ronda (-10% daÃ±o, -1 Defensa)."));
       AplicarChequeoMoralGlobal(aliadosJugador, false);
     }
   }
@@ -1117,10 +1101,10 @@ public class BattleManager : MonoBehaviour
     {
       if (aliado == null || DebeIgnorarValorGrupalPorTraits(aliado)) { continue; }
 
-      RefrescarBuffTemporalValour(aliado, "Valentía Global Muy Alta", buff =>
+      RefrescarBuffTemporalValour(aliado, "ValentÃ­a Global Muy Alta", buff =>
       {
         buff.boolfDebufftBuff = true;
-        buff.buffDescr = "La moral colectiva desborda. +15% daño y +1 PA máximo esta ronda.";
+        buff.buffDescr = "La moral colectiva desborda. +15% daÃ±o y +1 PA mÃ¡ximo esta ronda.";
         buff.DuracionBuffRondas = 1;
         buff.cantDanioPorcentaje += 15;
       });
@@ -1133,10 +1117,10 @@ public class BattleManager : MonoBehaviour
     {
       if (aliado == null || DebeIgnorarValorGrupalPorTraits(aliado)) { continue; }
 
-      RefrescarBuffTemporalValour(aliado, "Valentía Global Alta", buff =>
+      RefrescarBuffTemporalValour(aliado, "ValentÃ­a Global Alta", buff =>
       {
         buff.boolfDebufftBuff = true;
-        buff.buffDescr = "La moral colectiva impulsa al grupo. +1 PA máximo esta ronda.";
+        buff.buffDescr = "La moral colectiva impulsa al grupo. +1 PA mÃ¡ximo esta ronda.";
         buff.DuracionBuffRondas = 1;
         buff.cantAPMax += 1;
       });
@@ -1151,16 +1135,16 @@ public class BattleManager : MonoBehaviour
     }
 
     // Compat: limpia alias viejos/nuevos para evitar duplicados por cambio de nombre.
-    if (nombreBuff == "Valentía Global Alta" || nombreBuff == "Valentia Global Alta" || nombreBuff == "Valour Global Alto")
+    if (nombreBuff == "ValentÃ­a Global Alta" || nombreBuff == "Valentia Global Alta" || nombreBuff == "Valour Global Alto")
     {
       unidad.RemoverBuffNombre("Valour Global Alto");
-      unidad.RemoverBuffNombre("Valentía Global Alta");
+      unidad.RemoverBuffNombre("ValentÃ­a Global Alta");
       unidad.RemoverBuffNombre("Valentia Global Alta");
     }
-    else if (nombreBuff == "Valentía Global Muy Alta" || nombreBuff == "Valentia Global Muy Alta" || nombreBuff == "Valour Global Muy Alto")
+    else if (nombreBuff == "ValentÃ­a Global Muy Alta" || nombreBuff == "Valentia Global Muy Alta" || nombreBuff == "Valour Global Muy Alto")
     {
       unidad.RemoverBuffNombre("Valour Global Muy Alto");
-      unidad.RemoverBuffNombre("Valentía Global Muy Alta");
+      unidad.RemoverBuffNombre("ValentÃ­a Global Muy Alta");
       unidad.RemoverBuffNombre("Valentia Global Muy Alta");
     }
 
@@ -1262,7 +1246,7 @@ public class BattleManager : MonoBehaviour
 
     Buff dudando = new Buff();
     dudando.buffNombre = "Dudando";
-    dudando.buffDescr = "La moral flaquea por la presión del combate.";
+    dudando.buffDescr = "La moral flaquea por la presiÃ³n del combate.";
     dudando.esBuffVisibleUI = true;
     dudando.suprimeTextoFlotante = true;
     dudando.ocultarEnBarraVida = true;
@@ -1279,13 +1263,13 @@ public class BattleManager : MonoBehaviour
     {
       EscribirLog(CombatLogFormatter.EventoValour(enIngles
         ? nombreAliado + " fails Mental Save (DC " + dc + "). Doubting applied for 1 round (-10% damage, -1 Defense). Flee limit reached this round."
-        : nombreAliado + " falla la TS Mental (DC " + dc + "). Se aplica Dudando por 1 ronda (-10% daño, -1 Defensa). Se alcanzó el límite de huida en esta ronda."));
+        : nombreAliado + " falla la TS Mental (DC " + dc + "). Se aplica Dudando por 1 ronda (-10% daÃ±o, -1 Defensa). Se alcanzÃ³ el lÃ­mite de huida en esta ronda."));
     }
     else
     {
       EscribirLog(CombatLogFormatter.EventoValour(enIngles
         ? nombreAliado + " fails Mental Save (DC " + dc + ") and becomes Doubting for 1 round (-10% damage, -1 Defense)."
-        : nombreAliado + " falla la TS Mental (DC " + dc + ") y entra en Dudando por 1 ronda (-10% daño, -1 Defensa)."));
+        : nombreAliado + " falla la TS Mental (DC " + dc + ") y entra en Dudando por 1 ronda (-10% daÃ±o, -1 Defensa)."));
     }
   }
 
@@ -1308,7 +1292,7 @@ public class BattleManager : MonoBehaviour
     {
       if (u.TieneTag("Kale'Tav") && CampaignManager.Instance.scAtributosZona.ID == 2)
       {
-        // BUFF ---- Así se aplica un buff/debuff
+        // BUFF ---- AsÃ­ se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Fuerza Kale'Tav";
         buff.boolfDebufftBuff = true;
@@ -1318,7 +1302,7 @@ public class BattleManager : MonoBehaviour
         buff.cantTsMental += 1;
         buff.cantTsFortaleza += 1;
         buff.AplicarBuff(u);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, u.gameObject);
       }
     }
@@ -1326,7 +1310,7 @@ public class BattleManager : MonoBehaviour
     //Zarkil Masacre
     if (u.TieneTag("Zarkil") && CampaignManager.Instance.scAtributosZona.ID == 3 && CampaignManager.Instance.intTipoClima == 9)
     {
-      // BUFF ---- Así se aplica un buff/debuff
+      // BUFF ---- AsÃ­ se aplica un buff/debuff
       Buff buff = new Buff();
       buff.buffNombre = "Masacre Zarkil";
       buff.boolfDebufftBuff = true;
@@ -1334,7 +1318,7 @@ public class BattleManager : MonoBehaviour
       buff.cantCritDado += 2;
       buff.percCritDaño += 20;
       buff.AplicarBuff(u);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+      // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
       Buff buffComponent = ComponentCopier.CopyComponent(buff, u.gameObject);
     }
 
@@ -1386,7 +1370,7 @@ public class BattleManager : MonoBehaviour
 
     lUnidadesTotal.RemoveAt(indiceUnidad);
 
-    // Si se elimina una unidad ubicada antes del próximo turno, el índice debe retroceder
+    // Si se elimina una unidad ubicada antes del prÃ³ximo turno, el Ã­ndice debe retroceder
     // para no saltear al siguiente combatiente.
     if (indiceUnidad < indexTurno)
     {
@@ -1466,7 +1450,7 @@ public class BattleManager : MonoBehaviour
   }
 
   private bool _requiereActualizarBotones;
-  // Cache para restaurar estado de render de obstáculos tras sombrear
+  // Cache para restaurar estado de render de obstÃ¡culos tras sombrear
   private readonly Dictionary<Renderer, (int sortingLayerId, int sortingOrder)> _renderOriginalObstaculos = new Dictionary<Renderer, (int sortingLayerId, int sortingOrder)>();
   private readonly Dictionary<SortingGroup, (int sortingLayerId, int sortingOrder)> _sortingGroupOriginalObstaculos = new Dictionary<SortingGroup, (int sortingLayerId, int sortingOrder)>();
   private readonly Dictionary<Canvas, (bool overrideSorting, int sortingOrder)> _canvasOriginalObstaculos = new Dictionary<Canvas, (bool overrideSorting, int sortingOrder)>();
@@ -1895,7 +1879,7 @@ public class BattleManager : MonoBehaviour
       {
         if (TRADU.i == null || TRADU.i.nIdioma == TRADU.IdiomaEspanol)
         {
-          textoEsfuerzo = " -¡Esfuerzo!";
+          textoEsfuerzo = " -Â¡Esfuerzo!";
         }
         else
         {
@@ -2290,7 +2274,7 @@ public class BattleManager : MonoBehaviour
 
     // Asegurar listas actualizadas antes de chequear victoria/derrota
     // Esto cubre el caso donde entran refuerzos en la misma ronda
-    // y aún no se actualizó la lista de unidades del lado.
+    // y aÃºn no se actualizÃ³ la lista de unidades del lado.
     ladoA.ActualizarListaDeUnidadesEnLado();
     ladoB.ActualizarListaDeUnidadesEnLado();
     AcelerarRefuerzosSiLadoSinUnidades();
@@ -2301,11 +2285,11 @@ public class BattleManager : MonoBehaviour
     //Lado Enemigos
     if (aliadosSinUnidades)
     {
-      transform.parent.parent.gameObject.GetComponent<AdministradorEscenas>().FinDeBatalla(0); //Perdió jugador
+      transform.parent.parent.gameObject.GetComponent<AdministradorEscenas>().FinDeBatalla(0); //PerdiÃ³ jugador
     }
     else if (enemigosSinUnidades)
     {
-      transform.parent.parent.gameObject.GetComponent<AdministradorEscenas>().FinDeBatalla(1); //Ganó jugador
+      transform.parent.parent.gameObject.GetComponent<AdministradorEscenas>().FinDeBatalla(1); //GanÃ³ jugador
     }
 
 
@@ -2493,7 +2477,7 @@ public class BattleManager : MonoBehaviour
         case 1: textClimaTooltip.text = TRADU.i.Traducir("Clima normal."); break;
         case 2: textClimaTooltip.text = TRADU.i.Traducir("Calor: todas las unidades obtienen 'Acalorado'."); break;
         case 3: textClimaTooltip.text = TRADU.i.Traducir("Lluvia: todas las unidades obtienen 'Mojado'."); break;
-        case 4: textClimaTooltip.text = TRADU.i.Traducir("Nieve: todas las unidades obtienen 'Frío'."); break;
+        case 4: textClimaTooltip.text = TRADU.i.Traducir("Nieve: todas las unidades obtienen 'FrÃ­o'."); break;
         case 5: textClimaTooltip.text = TRADU.i.Traducir("Niebla: -1 Ataque a habilidades de rango."); break;
       }
 
@@ -2576,13 +2560,13 @@ public class BattleManager : MonoBehaviour
     GameObject tooltipSeleccionado = null;
     switch (idioma)
     {
-      case 1: // Español
+      case 1: // EspaÃ±ol
         tooltipSeleccionado = tooltipValorES;
         break;
-      case 2: // Inglés
+      case 2: // InglÃ©s
         tooltipSeleccionado = tooltipValorEN;
         break;
-      case 3: // Portugués
+      case 3: // PortuguÃ©s
         tooltipSeleccionado = tooltipValorPO;
         break;
       default:
@@ -2600,7 +2584,7 @@ public class BattleManager : MonoBehaviour
   {
     oscurecedor.SetActive(true);
 
-    // Primero, asegúrate que el oscurecedor está en el lugar correcto en la jerarquía
+    // Primero, asegÃºrate que el oscurecedor estÃ¡ en el lugar correcto en la jerarquÃ­a
     Transform oscurecedorTransform = oscurecedor.transform;
     HashSet<object> unidadesSet = (unidades != null) ? new HashSet<object>(unidades) : new HashSet<object>();
     int ordenOscurecedor = ObtenerOrdenOscurecedor(oscurecedorTransform);
@@ -2615,7 +2599,7 @@ public class BattleManager : MonoBehaviour
         // Sombrear y poner por encima del oscurecedor
         ConfigurarOscurecidoVisualUnidad(uni, true);
 
-        // Poner por encima del oscurecedor en la jerarquía
+        // Poner por encima del oscurecedor en la jerarquÃ­a
         if (unidadTransform.parent == oscurecedorTransform.parent)
         {
           int oscurecedorIndex = oscurecedorTransform.GetSiblingIndex();
@@ -2628,7 +2612,7 @@ public class BattleManager : MonoBehaviour
       }
       else
       {
-        // Poner por debajo del oscurecedor en la jerarquía
+        // Poner por debajo del oscurecedor en la jerarquÃ­a
         if (unidadTransform.parent == oscurecedorTransform.parent)
         {
           int oscurecedorIndex = oscurecedorTransform.GetSiblingIndex();
@@ -2769,7 +2753,7 @@ public class BattleManager : MonoBehaviour
     RestaurarTodosLosObstaculosTrasDesombrear();
     ReordenarTodoPorY();
 
-    // Poner el oscurecedor como primer hijo en la jerarquía
+    // Poner el oscurecedor como primer hijo en la jerarquÃ­a
     oscurecedor.transform.SetAsFirstSibling();
   }
 
@@ -3367,9 +3351,9 @@ public class BattleManager : MonoBehaviour
     { return; }
 
 
-    // Marcar solo casillas vacías que sean atacables en melee.
+    // Marcar solo casillas vacÃ­as que sean atacables en melee.
     // Regla: columna 3 siempre atacable; columna 2 atacable solo si la casilla delante contiene
-    // un obstáculo que permite atacar por detrás o una unidad
+    // un obstÃ¡culo que permite atacar por detrÃ¡s o una unidad
 
     Casilla casillaActual = unidadActiva.CasillaPosicion;
     if (casillaActual == null || casillaActual.Presente != unidadActiva.gameObject)
@@ -3382,7 +3366,7 @@ public class BattleManager : MonoBehaviour
     }
 
     if (EstaEnPosMelee(casillaActual, true))
-    { return; } //Si ya está en melee no marcar nada
+    { return; } //Si ya estÃ¡ en melee no marcar nada
 
     foreach (Casilla casilla in ladoB.casillasLado)
     {
@@ -3443,6 +3427,7 @@ public class BattleManager : MonoBehaviour
  
 
 }
+
 
 
 

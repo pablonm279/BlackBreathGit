@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Armadura de Cuero Borrosa
   IDEfectoEspecial: 4
   IDClasesQuePuedenUsarEsteItem: 02000000
-  iPrecio: 225
+  iPrecio: 240
   itemDescripcion: Armadura de cuero ligera orientada a evasion.
   iRareza: 2
   nivelMejora: 2

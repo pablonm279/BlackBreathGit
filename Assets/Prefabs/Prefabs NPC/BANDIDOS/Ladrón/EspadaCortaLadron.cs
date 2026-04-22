@@ -17,7 +17,7 @@ public class EspadaCortaLadron : IAHabilidad
    
   void Awake()
    {
-      nombre = "Espada Corta Ladr�n";
+      nombre = "Espada Corta Ladrón";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 1;

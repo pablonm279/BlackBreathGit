@@ -22,7 +22,7 @@ public class REPRESENTACIONMasacre : Habilidad
     if (NIVEL < 2)
     {
       txtDescripcion = "<color=#5dade2><b>Masacre I</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +2 AP y +10% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 5+Agilidad o ser Aterrorizados.</i>\n\n";
+      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +2 AP y +10% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 5+Agi o ser Aterrorizados.</i>\n\n";
 
       if (EsEscenaCampaña())
       {
@@ -39,7 +39,7 @@ public class REPRESENTACIONMasacre : Habilidad
     if (NIVEL == 2)
     {
       txtDescripcion = "<color=#5dade2><b>Masacre II</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +2 AP y +10% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 6+Agilidad o ser Aterrorizados.</i>\n\n";
+      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +2 AP y +10% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 6+Agi o ser Aterrorizados.</i>\n\n";
 
       if (EsEscenaCampaña())
       {
@@ -55,7 +55,7 @@ public class REPRESENTACIONMasacre : Habilidad
     if (NIVEL == 3)
     {
       txtDescripcion = "<color=#5dade2><b>Masacre III</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +2 AP y +15% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 6+Agilidad o ser Aterrorizados.</i>\n\n";
+      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +2 AP y +15% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 6+Agi o ser Aterrorizados.</i>\n\n";
 
 
 
@@ -74,12 +74,12 @@ public class REPRESENTACIONMasacre : Habilidad
     if (NIVEL == 4)
     {
       txtDescripcion = "<color=#5dade2><b>Masacre IVa</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +2 AP y +15% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 6+Agilidad o ser Aterrorizados II.</i>\n\n";
+      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +2 AP y +15% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 6+Agi o ser Aterrorizados II.</i>\n\n";
     }
     if (NIVEL == 5)
     {
       txtDescripcion = "<color=#5dade2><b>Masacre IVb</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +3 AP y +15% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 6+Agilidad o ser Aterrorizados.</i>\n\n";
+      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +3 AP y +15% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 6+Agi o ser Aterrorizados.</i>\n\n";
     }
        
 

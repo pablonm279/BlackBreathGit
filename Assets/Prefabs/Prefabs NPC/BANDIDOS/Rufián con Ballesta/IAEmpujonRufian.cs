@@ -116,7 +116,7 @@ public class IAEmpujonRufian : IAHabilidad
         objetivo.RecibirDanio(danio + 4, tipoDanio, false, scEstaUnidad);
         if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 14))
         {
-          objetivo.EmpujarUnidad(2);
+          IntentarEmpujarObjetivo(objetivo, 2);
           /////////////////////////////////////////////
           //BUFF ---- Así se aplica un buff/debuff
           Buff buff = new Buff();
@@ -146,7 +146,7 @@ public class IAEmpujonRufian : IAHabilidad
         objetivo.RecibirDanio(danio + 6, tipoDanio, true, scEstaUnidad);
          if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 15))
         {
-          objetivo.EmpujarUnidad(2);
+          IntentarEmpujarObjetivo(objetivo, 2);
           /////////////////////////////////////////////
           //BUFF ---- Así se aplica un buff/debuff
           Buff buff = new Buff();
@@ -174,6 +174,14 @@ public class IAEmpujonRufian : IAHabilidad
           objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
      }
     }
+  void IntentarEmpujarObjetivo(Unidad objetivo, int cantidad)
+   {
+     if (objetivo == null || objetivo.HP_actual <= 0f || !objetivo.gameObject.activeInHierarchy)
+     {
+       return;
+     }
+     objetivo.EmpujarUnidad(cantidad);
+   }
    void VFXAplicar(GameObject objetivo)
     {
       GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_HombroRufian");

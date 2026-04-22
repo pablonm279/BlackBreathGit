@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Arco Largo Potente
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 02000000
-  iPrecio: 177
+  iPrecio: 190
   itemDescripcion: Arco largo reforzado para disparos de alto impacto.
   iRareza: 1
   nivelMejora: 1

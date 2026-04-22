@@ -53,6 +53,7 @@ public class Cortevertical : Habilidad
       int ataqueActual = statsUI.Ataque;
       int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
       string bonusAtaqueTxt = bonusAtaque >= 0 ? $" + {bonusAtaque}" : $" - {Mathf.Abs(bonusAtaque)}";
+      string rangoDanio = FormatearRangoDados(XdDanio, daniodX);
 
       string cuerpo = "";
       if (esIngles)
@@ -73,8 +74,8 @@ public class Cortevertical : Habilidad
       {
         cuerpo += "<b>Tipo:</b> Melee\n";
         cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance frontal\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Critico: {criticoBaseMin}-20\n";
-        cuerpo += $"<b>Danio:</b> 2d8 + <color=#ea0606>Fuerza ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Critico: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Danio:</b> {rangoDanio} + <color=#ea0606>Fue ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
       }
 
       string costos = esIngles

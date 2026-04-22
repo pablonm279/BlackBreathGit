@@ -94,7 +94,7 @@ public class Enmendar : Habilidad
       {
         cuerpo += $"<b>Tipo:</b> Rango ({alcance} alcance)\n";
         cuerpo += "<b>Objetivo:</b> 1 unidad en rango\n";
-        cuerpo += $"<b>Curacion:</b> Aleatorio 4-18{bonusPlanoTexto} + <color=#ea0606>Poder ({poderActual})</color> + Fervor ({fervorActual})\n";
+        cuerpo += $"<b>Curacion:</b> Aleatorio 4-18{bonusPlanoTexto} + <color=#ea0606>Pod ({poderActual})</color> + Fervor ({fervorActual})\n";
         cuerpo += "<b>Tipo de curacion:</b> Curacion magica\n";
         cuerpo += "<b>Requisito:</b> Necesita al menos 1 Fervor para activarse\n";
         cuerpo += consumeFervor

@@ -79,13 +79,15 @@ public class DescargaDePoder : Habilidad
 
       string bonusAtaqueEs = bonusAtaqueNivel != 0 ? $" + {bonusAtaqueNivel}" : "";
       string bonusAtaqueEn = bonusAtaqueNivel != 0 ? $" + {bonusAtaqueNivel}" : "";
+      string rangoDanioEs = FormatearRangoDados(3, 6, danioFijo);
 
-      string danioEs = danioFijo > 0
-        ? $"3d6 + {danioFijo} + <color=#ea0606>Poder ({poderActual})</color>"
-        : $"3d6 + <color=#ea0606>Poder ({poderActual})</color>";
+      string danioEs = $"{rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color>";
       string danioEn = danioFijo > 0
         ? $"3d6 + {danioFijo} + <color=#ea0606>Power ({poderActual})</color>"
         : $"3d6 + <color=#ea0606>Power ({poderActual})</color>";
+      string danioPt = danioFijo > 0
+        ? $"3d6 + {danioFijo} + <color=#ea0606>Poder ({poderActual})</color>"
+        : $"3d6 + <color=#ea0606>Poder ({poderActual})</color>";
 
       string cuerpo = "";
       if (esIngles)
@@ -100,13 +102,13 @@ public class DescargaDePoder : Habilidad
         cuerpo += "<b>Tipo:</b> Distancia (5 alcance)\n";
         cuerpo += "<b>Alvo:</b> Area em T (3 horizontal + 2 no fundo)\n";
         cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defesa. Falha critica: 1. Critico: {criticoMin}-20\n";
-        cuerpo += $"<b>Dano:</b> {danioEs} | <b>Tipo:</b> Arcano";
+        cuerpo += $"<b>Dano:</b> {danioPt} | <b>Tipo:</b> Arcano";
       }
       else
       {
         cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
         cuerpo += "<b>Objetivo:</b> Area en T (3 horizontal + 2 al fondo)\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Pod ({poderActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
         cuerpo += $"<b>Danio:</b> {danioEs} | <b>Tipo:</b> Arcano";
       }
 

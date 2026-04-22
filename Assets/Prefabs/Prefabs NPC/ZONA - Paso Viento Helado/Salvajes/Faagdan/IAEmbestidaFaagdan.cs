@@ -177,6 +177,11 @@ public class IAEmbestidaFaagdan : IAHabilidad
   {
     await BattleManager.DelayCombateAsync(600);
 
+    if (objetivo == null || objetivo.HP_actual <= 0f || !objetivo.gameObject.activeInHierarchy)
+    {
+      return;
+    }
+
     Casilla origen = objetivo.CasillaPosicion;
     if (origen == null || origen.ladoGO == null)
     {
@@ -212,7 +217,7 @@ public class IAEmbestidaFaagdan : IAHabilidad
       ? candidatos[0]
       : candidatos[UnityEngine.Random.value < 0.5f ? 0 : 1];
 
-    objetivo.CasillaForzadoaMover = destino;
+    objetivo.IntentarProgramarMovimientoForzado(destino);
   }
 
   public override object EstablecerObjetivoPrioritario()

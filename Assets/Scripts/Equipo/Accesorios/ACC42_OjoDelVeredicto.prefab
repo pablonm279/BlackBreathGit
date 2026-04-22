@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Ojo del Veredicto
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 1150
+  iPrecio: 1070
   itemDescripcion: Lente ritual que mejora precision y dano inicial divino.
   iRareza: 4
   nivelMejora: 0

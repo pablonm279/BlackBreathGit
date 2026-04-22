@@ -65,6 +65,7 @@ public class AFondo : Habilidad
         int atributoMixtoActual = ObtenerAtributoMixto(statsUI.Fuerza, statsUI.Agilidad);
         int ataqueActual = statsUI.Ataque;
         int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+        string rangoDanioEs = FormatearRangoDados(1, 10, bonusDanioPlano);
 
         string tituloEs = "A Fondo I";
         string tituloEn = "All In I";
@@ -99,8 +100,8 @@ public class AFondo : Habilidad
         {
             cuerpo += "<b>Tipo:</b> Melee\n";
             cuerpo += "<b>Objetivo:</b> Casilla enemiga elegida y las 2 diagonales de atras\n";
-            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza/Agilidad ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Danio:</b> 1d10 + {bonusDanioPlano} | <b>Tipo:</b> Perforante\n";
+            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue/Agi ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+            cuerpo += $"<b>Danio:</b> {rangoDanioEs} | <b>Tipo:</b> Perforante\n";
             cuerpo += $"<b>Penetracion de armadura:</b> {penetracionArmadura}\n";
             cuerpo += $"{ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcFortitud)}\n";
             cuerpo += $"<b>Si falla TS (si recibe danio):</b> +{sangradoAplicado} Sangrado";

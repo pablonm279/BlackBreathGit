@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Guantelete de Llamas
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 05000000
-  iPrecio: 130
+  iPrecio: 155
   itemDescripcion: 
   iRareza: 1
   nivelMejora: 0

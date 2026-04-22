@@ -122,7 +122,8 @@ public abstract class Habilidad : MonoBehaviour
     int dcBase,
     string atributoEscalaEs = null,
     string atributoEscalaEn = null,
-    int valorAtributoEscala = 0)
+    int valorAtributoEscala = 0,
+    string atributoEscalaPt = null)
   {
     string tipoEs = "Fortaleza";
     string tipoEn = "Fortitude";
@@ -152,7 +153,8 @@ public abstract class Habilidad : MonoBehaviour
 
       if (esPortugues)
       {
-        return $"<b>Resistencia:</b> {tipoPt}. O alvo rola 1d20 + {tipoPt} vs CD {dcBase} + {atributoEscalaEs} ({valorAtributoEscala}) = {dcTotal}";
+        string atributoPortugues = string.IsNullOrEmpty(atributoEscalaPt) ? atributoEscalaEs : atributoEscalaPt;
+        return $"<b>Resistencia:</b> {tipoPt}. O alvo rola 1d20 + {tipoPt} vs CD {dcBase} + {atributoPortugues} ({valorAtributoEscala}) = {dcTotal}";
       }
 
       return $"<b>TS:</b> {tipoEs}. El objetivo tira 1d20 + {tipoEs} vs DC {dcBase} + {atributoEscalaEs} ({valorAtributoEscala}) = {dcTotal}";
@@ -169,6 +171,13 @@ public abstract class Habilidad : MonoBehaviour
     }
 
     return $"<b>TS:</b> {tipoEs}. El objetivo tira 1d20 + {tipoEs} vs DC {dcBase}";
+  }
+
+  protected string FormatearRangoDados(int cantidadDados, int caras, int bonoFijo = 0)
+  {
+    int minimo = cantidadDados + bonoFijo;
+    int maximo = (cantidadDados * caras) + bonoFijo;
+    return $"{minimo}-{maximo}";
   }
 
   public static string LimpiarCostoValentiaDescripcion(string descripcion)

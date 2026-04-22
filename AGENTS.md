@@ -55,6 +55,7 @@
 
 ## Flujo para cambios chicos
 
+- Trabajar en modo clinico: tocar lo minimo indispensable para resolver el pedido.
 - Para pedidos puntuales y chicos, aplicar parche minimo sobre el bloque exacto.
 - No hacer refactors, limpiezas, renombres, reordenamientos ni mover codigo salvo pedido explicito.
 - Si el archivo ya tiene cambios previos, tocar solo las lineas necesarias para la tarea. Evitar reescrituras amplias.

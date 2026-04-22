@@ -63,6 +63,7 @@ public class DescargaDesintegradora : Habilidad
     int energiaRequerida = NIVEL == 5 ? 1 : 2;
     bool consumeEnergia = NIVEL != 5;
     bool aturdeCaster = NIVEL != 4;
+    string rangoDanioEs = FormatearRangoDados(3, 12, danioFijo);
     string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcDesintegracion);
     string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, dcDesintegracion);
 
@@ -78,12 +79,13 @@ public class DescargaDesintegradora : Habilidad
     if (NIVEL == 4) { tituloPt = "Descarga Desintegradora IV a"; }
     if (NIVEL == 5) { tituloPt = "Descarga Desintegradora IV b"; }
 
-    string danioEs = danioFijo > 0
-      ? $"3d12 + {danioFijo} + <color=#ea0606>Poder ({poderActual})</color>"
-      : $"3d12 + <color=#ea0606>Poder ({poderActual})</color>";
+    string danioEs = $"{rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color>";
     string danioEn = danioFijo > 0
       ? $"3d12 + {danioFijo} + <color=#ea0606>Power ({poderActual})</color>"
       : $"3d12 + <color=#ea0606>Power ({poderActual})</color>";
+    string danioPt = danioFijo > 0
+      ? $"3d12 + {danioFijo} + <color=#ea0606>Poder ({poderActual})</color>"
+      : $"3d12 + <color=#ea0606>Poder ({poderActual})</color>";
 
     string cuerpo = "";
     if (esIngles)
@@ -106,7 +108,7 @@ public class DescargaDesintegradora : Habilidad
       cuerpo += "<b>Tipo:</b> Distancia (5 alcance)\n";
       cuerpo += "<b>Alvo:</b> Area em piramide\n";
       cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}) + 5 vs Defesa. Falha critica: 1. Critico: {criticoMin}-20\n";
-      cuerpo += $"<b>Dano:</b> {danioEs} | <b>Tipo:</b> Arcano\n";
+      cuerpo += $"<b>Dano:</b> {danioPt} | <b>Tipo:</b> Arcano\n";
       cuerpo += $"{ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcDesintegracion)}. Se falhar TS: desintegrado (morte instantanea)\n";
       cuerpo += consumeEnergia
         ? "<b>Custo ao usar:</b> -1 Nivel de Energia"
@@ -120,7 +122,7 @@ public class DescargaDesintegradora : Habilidad
     {
       cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
       cuerpo += "<b>Objetivo:</b> Area en piramide\n";
-      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}) + 5 vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Pod ({poderActual})</color> + Ataque ({ataqueActual}) + 5 vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
       cuerpo += $"<b>Danio:</b> {danioEs} | <b>Tipo:</b> Arcano\n";
       cuerpo += $"{lineaSalvacionEs}. Si falla TS: desintegrado (muerte instantanea)\n";
       cuerpo += consumeEnergia

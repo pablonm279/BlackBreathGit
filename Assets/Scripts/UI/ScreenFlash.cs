@@ -34,6 +34,17 @@ public class ScreenFlash : MonoBehaviour
     instance.Flash(instance.criticalColor, instance.criticalAlpha, instance.criticalFadeIn, instance.criticalFadeOut, instance.criticalDelay);
   }
 
+  public static void FlashImpact(Color color, float peakAlpha = 0.04f, float fadeIn = 0.014f, float fadeOut = 0.07f, float delay = 0f)
+  {
+    ScreenFlash instance = GetOrCreate();
+    if (instance == null)
+    {
+      return;
+    }
+
+    instance.Flash(color, Mathf.Clamp01(peakAlpha), Mathf.Max(0f, fadeIn), Mathf.Max(0f, fadeOut), Mathf.Max(0f, delay));
+  }
+
   private static ScreenFlash GetOrCreate()
   {
     if (Instance != null)

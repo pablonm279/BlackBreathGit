@@ -44,8 +44,10 @@ public class Fogata : Habilidad
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
     int trampaUsos = NIVEL > 1 ? 4 : 3;
+    string danoTrampaEs = FormatearRangoDados(1, 3);
     int duracionTrampaTurnos = NIVEL > 1 ? 5 : 4;
     string dadoFuego = NIVEL == 4 ? "1d9" : "1d6";
+    string dadoFuegoEs = NIVEL == 4 ? FormatearRangoDados(1, 9) : FormatearRangoDados(1, 6);
 
     string tituloEs = "Fogata I";
     string tituloEn = "Campfire I";
@@ -81,8 +83,8 @@ public class Fogata : Habilidad
       cuerpo += "<b>Tipo:</b> Trampa de Utilidad\n";
       cuerpo += "<b>Objetivo:</b> Casilla adyacente (incluye tu propia casilla)\n";
       cuerpo += $"<b>Trampa fogata:</b> {duracionTrampaTurnos} turnos, {trampaUsos} usos\n";
-      cuerpo += "<b>Activacion de trampa:</b> 1d3 danio de fuego (persistente)\n";
-      cuerpo += $"<b>Buff por adyacencia:</b> mientras estas adyacente a una fogata, ganas flechas de fuego (+{dadoFuego} danio de fuego en ataques)";
+      cuerpo += $"<b>Activacion de trampa:</b> {danoTrampaEs} danio de fuego (persistente)\n";
+      cuerpo += $"<b>Buff por adyacencia:</b> mientras estas adyacente a una fogata, ganas flechas de fuego (+{dadoFuegoEs} danio de fuego en ataques)";
     }
 
     string costos = esIngles
@@ -124,7 +126,7 @@ public class Fogata : Habilidad
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 uso de trampa y +1 turno de duracion de trampa.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 costo AP.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1d3 al bono de flechas de fuego) u Opcion B (-1 costo AP).</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1-3 al bono de flechas de fuego) u Opcion B (-1 costo AP).</color>"; }
     }
   }
     void Start()

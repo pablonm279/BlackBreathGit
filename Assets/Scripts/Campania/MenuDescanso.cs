@@ -441,6 +441,8 @@ public class MenuDescanso : MonoBehaviour
         CampaignManager.Instance.EscribirLog("-" + mensajePesadillas);
       }
 
+      CampaignManager.Instance.ProcesarTraitContratoSiCorresponde(pers);
+
 
 
       //Curacion General por descansar

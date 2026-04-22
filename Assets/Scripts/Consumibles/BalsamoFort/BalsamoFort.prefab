@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: "B\xE1lsamo de Resistencia"
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 50
+  iPrecio: 65
   itemDescripcion: Balsamo que refuerza la fortaleza y la resistencia por un combate.
   iRareza: 0
   nivelMejora: 0

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -327,7 +327,7 @@ public class Casilla : MonoBehaviour
       unidad.estado_MovimientoAbaratado = 0;
     }
 
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+    BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
   }
 
   private string ObtenerTextoCostoMovimiento(Unidad unidad)
@@ -403,13 +403,13 @@ public class Casilla : MonoBehaviour
     {
       if (BattleManager.Instance.HabilidadActiva.esHostil && unidad.CasillaPosicion.lado == this.lado)
       {
-        // Cancela la selecciÃ³n de la habilidad al clikear casilla, solo si es hostil y es una casilla del mismo lado
+        // Cancela la selección de la habilidad al clikear casilla, solo si es hostil y es una casilla del mismo lado
         BattleManager.Instance.HabilidadActiva = null;
         BattleManager.Instance.SeleccionandoObjetivo = false;
         BattleManager.Instance.LimpiarCapasCasillas();
         BattleManager.Instance.scUIContadorAP.ResetearCirculos();
         BattleManager.Instance.scUIBotonesHab.DeseleccionarTodas();
-        // return; // Sale sin ejecutar nada mÃ¡s
+        // return; // Sale sin ejecutar nada más
       }
     }
 
@@ -454,7 +454,7 @@ public class Casilla : MonoBehaviour
         }
         else if (aliado.TieneBuffNombre("Desplazado"))
         {
-          BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con una unidad que ya estÃ¡ Desplazada."));
+          BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con una unidad que ya está Desplazada."));
           return;
         }
         else
@@ -495,7 +495,7 @@ public class Casilla : MonoBehaviour
             // Aplicar Debuff Desplazado (-1 AP max por 1 turno)
             Buff desplazado = new Buff();
             desplazado.buffNombre = "Desplazado";
-            desplazado.buffDescr = "AP mÃ¡x -1 por 1 turno";
+            desplazado.buffDescr = "AP máx -1 por 1 turno";
             desplazado.boolfDebufftBuff = false;
             desplazado.cantAPMax = -1;
             desplazado.DuracionBuffRondas = 1;
@@ -514,19 +514,19 @@ public class Casilla : MonoBehaviour
       }
       else
       {
-        BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con obstÃ¡culos."));
+        BattleManager.Instance.EscribirLog(TRADU.i.Traducir("No puedes intercambiar con obstáculos."));
       }
 
     }
 
-    //Para habilidades en Ã¡rea
+    //Para habilidades en área
     if (BattleManager.Instance.HabilidadActiva != null && !BattleManager.Instance.bOcupado)
     {
 
       if (BattleManager.Instance.HabilidadActiva.enArea > 0 || BattleManager.Instance.HabilidadActiva.targetEspecial > 0 && BattleManager.Instance.SeleccionandoObjetivo)
       {
 
-        if (!BattleManager.Instance.HabilidadActiva.lCasillasafectadas.Contains(this)) { return; } //Si no estÃ¡ en el Ã¡rea, no hace nada
+        if (!BattleManager.Instance.HabilidadActiva.lCasillasafectadas.Contains(this)) { return; } //Si no está en el área, no hace nada
 
 
         List<Unidad> lUnidadesEnArea = new List<Unidad>();
@@ -689,7 +689,7 @@ public class Casilla : MonoBehaviour
     // Asignar el objeto como presente en la casilla
     NuevoObjetoPresenteEnCasilla(GO);
 
-    // Si es una Unidad u ObstÃ¡culo, actualizar su casilla de posiciÃ³n
+    // Si es una Unidad u Obstáculo, actualizar su casilla de posición
     if (GO.GetComponent<Unidad>() != null)
     {
       GO.GetComponent<Unidad>().CasillaPosicion = this;
@@ -706,10 +706,10 @@ public class Casilla : MonoBehaviour
   {
     if (lado == 2)//Enemigos
     {
-      Vector3 posicionFinal = transform.position; // PosiciÃ³n de la casilla
-      Vector3 posicionInicial = posicionFinal + new Vector3(3f, 0, 0); // PosiciÃ³n inicial (desplazada a la derecha)
+      Vector3 posicionFinal = transform.position; // Posición de la casilla
+      Vector3 posicionInicial = posicionFinal + new Vector3(3f, 0, 0); // Posición inicial (desplazada a la derecha)
 
-      float duracion = 0.7f; // DuraciÃ³n del movimiento
+      float duracion = 0.7f; // Duración del movimiento
       float tiempo = 0;
 
       while (tiempo < duracion)
@@ -717,21 +717,21 @@ public class Casilla : MonoBehaviour
         tiempo += Time.deltaTime;
         float t = Mathf.Clamp01(tiempo / duracion); // Normalizar el tiempo (0 a 1)
 
-        // Interpolar la posiciÃ³n entre la inicial y la final
+        // Interpolar la posición entre la inicial y la final
         GO.transform.position = Vector3.Lerp(posicionInicial, posicionFinal, t);
 
         yield return null; // Esperar al siguiente frame
       }
 
-      // Asegurarse de que el objeto estÃ¡ exactamente en la posiciÃ³n final
+      // Asegurarse de que el objeto está exactamente en la posición final
       GO.transform.position = posicionFinal;
     }
     else if (lado == 1) //Aliados
     {
-      Vector3 posicionFinal = transform.position; // PosiciÃ³n de la casilla
-      Vector3 posicionInicial = posicionFinal + new Vector3(-3f, 0, 0); // PosiciÃ³n inicial (desplazada a la izquierda)
+      Vector3 posicionFinal = transform.position; // Posición de la casilla
+      Vector3 posicionInicial = posicionFinal + new Vector3(-3f, 0, 0); // Posición inicial (desplazada a la izquierda)
 
-      float duracion = 0.7f; // DuraciÃ³n del movimiento
+      float duracion = 0.7f; // Duración del movimiento
       float tiempo = 0;
 
       while (tiempo < duracion)
@@ -739,13 +739,13 @@ public class Casilla : MonoBehaviour
         tiempo += Time.deltaTime;
         float t = Mathf.Clamp01(tiempo / duracion); // Normalizar el tiempo (0 a 1)
 
-        // Interpolar la posiciÃ³n entre la inicial y la final
+        // Interpolar la posición entre la inicial y la final
         GO.transform.position = Vector3.Lerp(posicionInicial, posicionFinal, t);
 
         yield return null; // Esperar al siguiente frame
       }
 
-      // Asegurarse de que el objeto estÃ¡ exactamente en la posiciÃ³n final
+      // Asegurarse de que el objeto está exactamente en la posición final
       GO.transform.position = posicionFinal;
     }
   }
@@ -757,7 +757,7 @@ public class Casilla : MonoBehaviour
   {
     List<Casilla> lCasillas = new List<Casilla>();
 
-    // ObtÃ©n la casilla actual
+    // Obtén la casilla actual
     int posXActual = this.posX;
     int posYActual = this.posY;
 
@@ -770,10 +770,10 @@ public class Casilla : MonoBehaviour
         int xVecina = posXActual + i;
         int yVecina = posYActual + j;
 
-        // Verifica si la casilla vecina estÃ¡ dentro del rango especificado (distancia x)
+        // Verifica si la casilla vecina está dentro del rango especificado (distancia x)
         if (Mathf.Abs(xVecina - posXActual) + Mathf.Abs(yVecina - posYActual) <= x)
         {
-          // AsegÃºrate de no agregar la casilla actual a la lista
+          // Asegúrate de no agregar la casilla actual a la lista
           if (xVecina == posXActual && yVecina == posYActual)
             continue;
 
@@ -914,7 +914,7 @@ public class Casilla : MonoBehaviour
   {
     List<Casilla> lCasillas = new List<Casilla>();
 
-    // ObtÃ©n la casilla actual
+    // Obtén la casilla actual
     int posXActual = this.posX;
     int posYActual = this.posY;
 
@@ -923,7 +923,7 @@ public class Casilla : MonoBehaviour
     {
       for (int j = -1; j <= 1; j++)
       {
-        // AsegÃºrate de no agregar la casilla actual a la lista
+        // Asegúrate de no agregar la casilla actual a la lista
         if (i == 0 && j == 0)
           continue;
 
@@ -931,10 +931,10 @@ public class Casilla : MonoBehaviour
         int xVecina = posXActual + i;
         int yVecina = posYActual + j;
 
-        // Agrega la casilla vecina a la lista si estÃ¡ dentro del rango especificado (distancia x)
+        // Agrega la casilla vecina a la lista si está dentro del rango especificado (distancia x)
         if (Mathf.Abs(xVecina - posXActual) <= 1 && Mathf.Abs(yVecina - posYActual) <= 1)
         {
-          // Encuentra la casilla vecina en la posiciÃ³n (xVecina, yVecina) y agrÃ©gala a la lista
+          // Encuentra la casilla vecina en la posición (xVecina, yVecina) y agrégala a la lista
           Casilla casillaVecina = EncontrarCasillaEnPosicion(xVecina, yVecina);
           if (casillaVecina != null)
           {
@@ -946,12 +946,12 @@ public class Casilla : MonoBehaviour
 
     return lCasillas;
   }
-  public List<Casilla> ObtenerCasillasRango(int alcance, int ancho/*0 es en la misma fila, 1 tmb en adyacentes*/) //Segun la posicion en su lado obtiene hasta que casillas del lado opuesto llega la habilidad segÃºn el alcance
+  public List<Casilla> ObtenerCasillasRango(int alcance, int ancho/*0 es en la misma fila, 1 tmb en adyacentes*/) //Segun la posicion en su lado obtiene hasta que casillas del lado opuesto llega la habilidad según el alcance
   {
 
     List<Casilla> lCasillas = new List<Casilla>();
 
-    // ObtÃ©n la casilla actual
+    // Obtén la casilla actual
     int posXActual = this.posX;
     int posYActual = this.posY;
 
@@ -965,7 +965,7 @@ public class Casilla : MonoBehaviour
 
   private Casilla EncontrarCasillaEnPosicion(int posX, int posY)
   {
-    // Obtenemos el transform del padre de las casillas (supongamos que todas las casillas estÃ¡n en el mismo padre)
+    // Obtenemos el transform del padre de las casillas (supongamos que todas las casillas están en el mismo padre)
     Transform padreDeCasillas = transform.parent;
 
     // Recorremos todos los objetos hijos del padre
@@ -984,7 +984,7 @@ public class Casilla : MonoBehaviour
       }
     }
 
-    // Si no se encontrÃ³ ninguna casilla en la posiciÃ³n dada, devolvemos null
+    // Si no se encontró ninguna casilla en la posición dada, devolvemos null
     return null;
   }
 
@@ -1075,7 +1075,7 @@ public class Casilla : MonoBehaviour
   }
   public void ActivarCapaColorNegro()
   {
-    transform.GetChild(1).gameObject.SetActive(false); //desactiva la capa roja tambiÃ©n
+    transform.GetChild(1).gameObject.SetActive(false); //desactiva la capa roja también
     GetComponent<MeshRenderer>().enabled = false; //desactiva la casilla en si
     transform.GetChild(2).gameObject.SetActive(true);
     if (MarcaMeleeAtraviesa != null)
@@ -1337,7 +1337,7 @@ public class Casilla : MonoBehaviour
           }
           MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
         }
-        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 5) //Target Especial 5: Dos Casillas (AtrÃ¡s)
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 5) //Target Especial 5: Dos Casillas (Atrás)
         {
           foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
           {
@@ -1544,9 +1544,9 @@ public class Casilla : MonoBehaviour
           MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
 
         }
-        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 9) //Target Especial 9: PirÃ¡mide invertida
+        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 9) //Target Especial 9: Pirámide invertida
         {
-          // Casilla de origen (punta de la pirÃ¡mide)
+          // Casilla de origen (punta de la pirámide)
           casAlre.Add(this);
 
           // 3 casillas en la columna siguiente (posX + 1)
@@ -1559,7 +1559,7 @@ public class Casilla : MonoBehaviour
             }
           }
 
-          // 5 casillas en la Ã©ltima columna (posX + 2)
+          // 5 casillas en la éltima columna (posX + 2)
           foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
           {
             if (cas.lado == lado && cas.posX == posX - 2 &&
@@ -1683,7 +1683,7 @@ public class Casilla : MonoBehaviour
     }
 
 
-    foreach (Casilla cas in casAlre) //Marca casillas alrededor si la central estÃ¡ en la zona de la habilidad
+    foreach (Casilla cas in casAlre) //Marca casillas alrededor si la central está en la zona de la habilidad
     {
       if (casillasZonahab.Contains(this))
       {
@@ -1944,6 +1944,8 @@ public class Casilla : MonoBehaviour
   }
 
 }
+
+
 
 
 

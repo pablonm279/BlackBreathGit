@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Vela Arcana Bendita
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: ffffffff
-  iPrecio: 160
+  iPrecio: 165
   itemDescripcion: Refuerza resistencias arcana y divina.
   iRareza: 2
   nivelMejora: 0

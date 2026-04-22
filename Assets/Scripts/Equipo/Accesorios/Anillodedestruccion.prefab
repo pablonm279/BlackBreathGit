@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: "Anillo de Destrucci\xF3n"
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 800
+  iPrecio: 240
   itemDescripcion: Anillo orientado al dano ofensivo y al impacto magico.
   iRareza: 0
   nivelMejora: 0

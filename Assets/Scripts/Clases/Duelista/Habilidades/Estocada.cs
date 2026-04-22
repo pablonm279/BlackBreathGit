@@ -59,6 +59,7 @@ public class Estocada : Habilidad
         int atributoMixtoActual = ObtenerAtributoMixto(fuerzaActual, agilidadActual);
         int ataqueActual = statsUI.Ataque;
         int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+        string rangoDanioEs = FormatearRangoDados(1, 8);
 
         string cuerpo = "";
         if (esIngles)
@@ -83,10 +84,10 @@ public class Estocada : Habilidad
         {
             cuerpo += "<b>Tipo:</b> Melee\n";
             cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance frontal\n";
-            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza/Agilidad ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Danio:</b> 1d8 + <color=#ea0606>Fuerza/Agilidad ({atributoMixtoActual})</color> | <b>Tipo:</b> Perforante\n";
+            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue/Agi ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+            cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Fue/Agi ({atributoMixtoActual})</color> | <b>Tipo:</b> Perforante\n";
             cuerpo += $"<b>Penetracion de armadura:</b> {penetracionArmadura}\n";
-            cuerpo += "<b>Escala:</b> usa mitad Fuerza y mitad Agilidad, redondeando hacia arriba\n";
+            cuerpo += "<b>Escala:</b> usa mitad Fue y mitad Agi, redondeando hacia arriba\n";
         }
 
         string costos = esIngles

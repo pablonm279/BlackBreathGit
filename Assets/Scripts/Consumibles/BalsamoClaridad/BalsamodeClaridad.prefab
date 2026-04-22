@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: "B\xE1lsamo de Claridad"
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 50
+  iPrecio: 65
   itemDescripcion: Balsamo que mejora la mente y la concentracion por un combate.
   iRareza: 0
   nivelMejora: 0

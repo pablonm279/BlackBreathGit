@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Arco Largo
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 02000000
-  iPrecio: 75
+  iPrecio: 125
   itemDescripcion: Arco largo versatil para combate a distancia.
   iRareza: 1
   nivelMejora: 1

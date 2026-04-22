@@ -64,6 +64,7 @@ public class AtaqueEspadaCorta : Habilidad
       int ataqueActual = statsUI.Ataque;
       int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
       int danioFijo = 2 + damExtra;
+      string rangoDanioEs = FormatearRangoDados(1, 6, danioFijo);
 
       int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConEspadacorta : 0;
 
@@ -94,8 +95,8 @@ public class AtaqueEspadaCorta : Habilidad
       {
         cuerpo += "<b>Tipo:</b> Melee\n";
         cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance melee frontal\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza ({fuerzaActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-        cuerpo += $"<b>Danio:</b> 1d6 + {danioFijo} + <color=#ea0606>Fuerza ({fuerzaActual})</color> | <b>Tipo:</b> Cortante";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Fue ({fuerzaActual})</color> | <b>Tipo:</b> Cortante";
         if (nivelMaestria > 0)
         {
           cuerpo += $"\n<b>Pasiva aplicada:</b> Maestria con Espada Corta (Tier {nivelMaestria})";

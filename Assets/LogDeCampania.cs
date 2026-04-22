@@ -12,7 +12,7 @@ public class LogDeCampania : MonoBehaviour
 
     [Header("Comportamiento")]
     [Tooltip("Máxima cantidad de entradas (eventos). Se recorta por FIFO.")]
-    [SerializeField] private int maxEntradas = 80;
+    [SerializeField] private int maxEntradas = 90;
 
     [Tooltip("Día actual de campaña (se puede setear desde CampaignManager).")]
     [SerializeField] private int diaActual = 1;

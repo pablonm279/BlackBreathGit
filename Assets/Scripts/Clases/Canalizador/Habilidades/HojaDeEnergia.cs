@@ -81,13 +81,15 @@ public class HojaDeEnergia : Habilidad
 
     string bonusAtaqueEs = bonusAtaqueNivel >= 0 ? $" + {bonusAtaqueNivel}" : $" - {Mathf.Abs(bonusAtaqueNivel)}";
     string bonusAtaqueEn = bonusAtaqueNivel >= 0 ? $" + {bonusAtaqueNivel}" : $" - {Mathf.Abs(bonusAtaqueNivel)}";
+    string rangoDanioEs = FormatearRangoDados(2, 6, bonusDanioNivel);
 
-    string danioEs = bonusDanioNivel > 0
-      ? $"2d6 + {bonusDanioNivel} + <color=#ea0606>Fuerza ({fuerzaActual})</color>"
-      : $"2d6 + <color=#ea0606>Fuerza ({fuerzaActual})</color>";
+    string danioEs = $"{rangoDanioEs} + <color=#ea0606>Fue ({fuerzaActual})</color>";
     string danioEn = bonusDanioNivel > 0
       ? $"2d6 + {bonusDanioNivel} + <color=#ea0606>Strength ({fuerzaActual})</color>"
       : $"2d6 + <color=#ea0606>Strength ({fuerzaActual})</color>";
+    string danioPt = bonusDanioNivel > 0
+      ? $"2d6 + {bonusDanioNivel} + <color=#ea0606>Forca ({fuerzaActual})</color>"
+      : $"2d6 + <color=#ea0606>Forca ({fuerzaActual})</color>";
 
     string cuerpo = "";
     if (esIngles)
@@ -104,7 +106,7 @@ public class HojaDeEnergia : Habilidad
       cuerpo += "<b>Tipo:</b> Melee\n";
       cuerpo += $"<b>Alvo:</b> Area frontal ({ancho} de largura)\n";
       cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Forca ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defesa. Falha critica: 1. Critico: {criticoMin}-20\n";
-      cuerpo += $"<b>Dano:</b> {danioEs} | <b>Tipo:</b> Verdadeiro\n";
+      cuerpo += $"<b>Dano:</b> {danioPt} | <b>Tipo:</b> Verdadeiro\n";
       cuerpo += $"{ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, 12)}\n";
       cuerpo += $"<b>Se falhar TS:</b> +{sangrado} Sangramento e -{reduccionRes} em todas as Resistencias";
     }
@@ -112,7 +114,7 @@ public class HojaDeEnergia : Habilidad
     {
       cuerpo += "<b>Tipo:</b> Melee\n";
       cuerpo += $"<b>Objetivo:</b> Area frontal ({ancho} de ancho)\n";
-      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
       cuerpo += $"<b>Danio:</b> {danioEs} | <b>Tipo:</b> Verdadero\n";
       cuerpo += lineaSalvacionEs + "\n";
       cuerpo += $"<b>Si falla TS:</b> +{sangrado} Sangrado y -{reduccionRes} a todas las Resistencias";

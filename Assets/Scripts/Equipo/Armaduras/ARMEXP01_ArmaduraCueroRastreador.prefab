@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Armadura de Cuero del Rastreador
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 02000000
-  iPrecio: 85
+  iPrecio: 100
   itemDescripcion: Cuero flexible para rutas largas y sigilo.
   iRareza: 0
   nivelMejora: 0

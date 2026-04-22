@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Armadura de Cuero Reforzado
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 04000000
-  iPrecio: 85
+  iPrecio: 90
   itemDescripcion: Armadura de Cuero Reforzado de acechador
   iRareza: 0
   nivelMejora: 0

@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Armadura de Cuero Sombria
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 02000000
-  iPrecio: 220
+  iPrecio: 230
   itemDescripcion: "Dise\xC3\xB1o oscuro para entrar y salir de foco enemigo."
   iRareza: 2
   nivelMejora: 2

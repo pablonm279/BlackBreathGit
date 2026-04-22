@@ -45,7 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb3a3fc570234ea68b6175681b52d889, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: 66cf9502ded5468aa5d76037b4aed781, type: 3}
+  persistentItemId: 
+  imItem: {fileID: 21300000, guid: 9489d787ec515604c834ad1ecc3380e3, type: 3}
   sNombreItem: Gambeson
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 06000000

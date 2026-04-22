@@ -50,7 +50,7 @@ MonoBehaviour:
   sNombreItem: Estoque de Veloz Replica
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 06000000
-  iPrecio: 175
+  iPrecio: 180
   itemDescripcion: Un estoque agil, pensado para presionar con ritmo y precision.
   iRareza: 1
   nivelMejora: 1

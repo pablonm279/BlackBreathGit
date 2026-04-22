@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Medalla de Guardia
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 280
+  iPrecio: 285
   itemDescripcion: Insignia defensiva para aguantar mejor los impactos.
   iRareza: 1
   nivelMejora: 0

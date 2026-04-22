@@ -75,6 +75,7 @@ public class CorteIncapacitante : Habilidad
     int dcBase = NIVEL > 2 ? 8 : 7;
     int duracion = NIVEL == 5 ? 3 : 2;
     int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConEspadacorta : 0;
+    string rangoDanioEs = FormatearRangoDados(2, 6, danioFijo);
 
     string tituloEs = "Corte Incapacitante I";
     string tituloEn = "Crippling Slash I";
@@ -88,7 +89,7 @@ public class CorteIncapacitante : Habilidad
     if (NIVEL == 4) { tituloPt = "Corte Incapacitante IV a"; }
     if (NIVEL == 5) { tituloPt = "Corte Incapacitante IV b"; }
 
-    string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Fortaleza, dcBase, "Agilidad", "Agility", agilidadActual);
+    string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Fortaleza, dcBase, "Agi", "Agility", agilidadActual, "Agilidade");
 
     string cuerpo = "";
     if (esIngles)
@@ -129,8 +130,8 @@ public class CorteIncapacitante : Habilidad
     {
       cuerpo += "<b>Tipo:</b> Melee\n";
       cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance melee frontal\n";
-      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza ({fuerzaActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Danio:</b> 2d6 + {danioFijo} + <color=#ea0606>Fuerza ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Fue ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
       cuerpo += lineaSalvacion + "\n";
       cuerpo += $"<b>Si falla TS:</b> Incapacitado ({duracion} turnos): Inmovil, -20% Danio, -2 Ataque";
       if (NIVEL == 4)

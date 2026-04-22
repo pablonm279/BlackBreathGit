@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Espada Corta Filonegro
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 04000000
-  iPrecio: 170
+  iPrecio: 175
   itemDescripcion: Espada corta de filo oscuro y dano certero.
   iRareza: 1
   nivelMejora: 1

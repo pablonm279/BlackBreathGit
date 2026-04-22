@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Armadura de Cuero Reforzado de Ligereza
   IDEfectoEspecial: 1
   IDClasesQuePuedenUsarEsteItem: 04000000
-  iPrecio: 190
+  iPrecio: 205
   itemDescripcion: Armadura reforzada que prioriza movilidad.
   iRareza: 1
   nivelMejora: 1

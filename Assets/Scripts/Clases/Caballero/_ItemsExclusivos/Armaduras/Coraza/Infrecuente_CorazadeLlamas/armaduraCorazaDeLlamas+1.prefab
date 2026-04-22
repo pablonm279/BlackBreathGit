@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Coraza de Llamas
   IDEfectoEspecial: 3
   IDClasesQuePuedenUsarEsteItem: 01000000
-  iPrecio: 315
+  iPrecio: 220
   itemDescripcion: Coraza templada para contraataques de fuego.
   iRareza: 1
   nivelMejora: 1

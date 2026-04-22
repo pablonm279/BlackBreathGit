@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Espada Corta Consumevida
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 04000000
-  iPrecio: 340
+  iPrecio: 320
   itemDescripcion: "<i>Esta espada corta consume energ\xEDa vital de sus victimas
     y se la transfiere al portador.</i>\n<b>Otorga: Ataque Espada Corta Consumevida</b>\n\nMejora
     +2: +2 Ataque +10% Da\xF1o (afecta tambi\xE9n a la Ballesta de Mano)\nEfecto:

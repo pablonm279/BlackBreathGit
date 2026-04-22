@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: "Anillo de Resistencia al \xC1cido"
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 135
+  iPrecio: 225
   itemDescripcion: "Este anillo otorga una significante resistencia al da\xF1o \xE1cido."
   iRareza: 1
   nivelMejora: 0

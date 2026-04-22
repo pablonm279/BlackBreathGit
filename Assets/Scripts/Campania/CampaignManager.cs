@@ -470,10 +470,12 @@ public class CampaignManager : MonoBehaviour
   }
  
   private void InicializarPersonajesNuevaCampania()
-  { 
+  {
+    CrearCaballero();//!!
     if (!scTutorialManager.tutorialActivo)
     {
-      AgregarHeroe(0);
+      int claseInicialAleatoria = UnityEngine.Random.value < 0.5f ? 5 : 3;
+      AgregarHeroe(claseInicialAleatoria); //Canalizador o Purificadora
       AgregarHeroe(0);
       AgregarHeroe(0);
       AgregarHeroe(0);
@@ -937,6 +939,7 @@ public class CampaignManager : MonoBehaviour
     data.traitHeroeLocalCivilesOtorgados = personaje.TraitHeroeLocalCivilesOtorgados;
     data.traitHeroeLocalPenalidadMuerteAplicada = personaje.TraitHeroeLocalPenalidadMuerteAplicada;
     data.traitEjemploASeguirAplicado = personaje.TraitEjemploASeguirAplicado;
+    data.traitHerenciaItemOtorgado = personaje.TraitHerenciaItemOtorgado;
     data.rasgos = CopiarRasgosPersonaje(personaje);
     data.equipment = ConstruirEquipmentSaveData(personaje, itemDatabase);
     return data;
@@ -1666,6 +1669,7 @@ public class CampaignManager : MonoBehaviour
     personaje.TraitHeroeLocalCivilesOtorgados = data.traitHeroeLocalCivilesOtorgados;
     personaje.TraitHeroeLocalPenalidadMuerteAplicada = data.traitHeroeLocalPenalidadMuerteAplicada;
     personaje.TraitEjemploASeguirAplicado = data.traitEjemploASeguirAplicado;
+    personaje.TraitHerenciaItemOtorgado = data.traitHerenciaItemOtorgado;
     personaje.aRasgos = new int[Mathf.Max(300, data.rasgos != null ? data.rasgos.Length : 300)];
     if (data.rasgos != null)
     {
@@ -4316,6 +4320,162 @@ public class CampaignManager : MonoBehaviour
     EscribirLog("-" + mensajeHeroeLocal);
   }
 
+  private Item ObtenerItemHerenciaBase(Personaje pers)
+  {
+    if (pers == null)
+    {
+      return null;
+    }
+
+    List<Item> candidatos = new List<Item>(2);
+    if (pers.itemArma != null)
+    {
+      candidatos.Add(pers.itemArma);
+    }
+
+    if (pers.itemArmadura != null)
+    {
+      candidatos.Add(pers.itemArmadura);
+    }
+
+    if (candidatos.Count == 0)
+    {
+      return null;
+    }
+
+    return candidatos[UnityEngine.Random.Range(0, candidatos.Count)];
+  }
+
+  private Consumible CrearConsumibleAleatorioHerencia(ItemDatabase itemDatabase)
+  {
+    List<ItemDatabaseEntry> candidatos = new List<ItemDatabaseEntry>();
+    if (itemDatabase != null && itemDatabase.items != null)
+    {
+      for (int i = 0; i < itemDatabase.items.Count; i++)
+      {
+        ItemDatabaseEntry entry = itemDatabase.items[i];
+        if (entry == null || !entry.activo || entry.prefab == null || !(entry.prefab is Consumible))
+        {
+          continue;
+        }
+
+        candidatos.Add(entry);
+      }
+    }
+
+    if (candidatos.Count > 0)
+    {
+      ItemDatabaseEntry entry = candidatos[UnityEngine.Random.Range(0, candidatos.Count)];
+      return ItemSaveCatalog.InstantiateItemById(entry.id, itemDatabase) as Consumible;
+    }
+
+    if (scContprefab != null && scContprefab.pocioncuracion != null)
+    {
+      Consumible consumible = Instantiate(scContprefab.pocioncuracion);
+      return consumible;
+    }
+
+    return null;
+  }
+
+  private void AplicarNivelMejoraHerencia(Item item, int nivelMejora)
+  {
+    if (item == null || nivelMejora <= 0)
+    {
+      return;
+    }
+
+    item.nivelMejora = nivelMejora;
+    if (string.IsNullOrWhiteSpace(item.sNombreItem))
+    {
+      return;
+    }
+
+    string sufijo = " +" + nivelMejora;
+    if (item.sNombreItem.EndsWith(sufijo, StringComparison.Ordinal))
+    {
+      return;
+    }
+
+    int indiceSufijoAnterior = item.sNombreItem.LastIndexOf(" +", StringComparison.Ordinal);
+    if (indiceSufijoAnterior >= 0)
+    {
+      string posibleNivel = item.sNombreItem.Substring(indiceSufijoAnterior + 2);
+      if (int.TryParse(posibleNivel, out _))
+      {
+        item.sNombreItem = item.sNombreItem.Substring(0, indiceSufijoAnterior);
+      }
+    }
+
+    item.sNombreItem += sufijo;
+  }
+
+  public void AplicarTraitHerenciaInicialSiCorresponde(Personaje pers)
+  {
+    if (pers == null || !pers.TieneRasgo(PersonajeTraitCatalog.TraitHerencia) || pers.TraitHerenciaItemOtorgado)
+    {
+      return;
+    }
+
+    ItemDatabase itemDatabase = ItemSaveCatalog.GetRuntimeItemDatabase(this);
+    Item itemBase = ObtenerItemHerenciaBase(pers);
+    string nombreItem = string.Empty;
+    bool entregoConsumible = false;
+
+    if (itemBase != null)
+    {
+      AplicarNivelMejoraHerencia(itemBase, UnityEngine.Random.Range(1, 3));
+      if (itemDatabase != null)
+      {
+        ItemSaveCatalog.ResolveItemId(itemBase, itemDatabase);
+      }
+
+      nombreItem = itemBase.sNombreItem;
+    }
+    else
+    {
+      Consumible consumibleAleatorio = CrearConsumibleAleatorioHerencia(itemDatabase);
+      if (consumibleAleatorio == null)
+      {
+        return;
+      }
+
+      if (pers.Consumible1 == null)
+      {
+        pers.Consumible1 = consumibleAleatorio;
+      }
+      else if (pers.Consumible2 == null)
+      {
+        pers.Consumible2 = consumibleAleatorio;
+      }
+      else
+      {
+        pers.Consumible1 = consumibleAleatorio;
+      }
+
+      nombreItem = consumibleAleatorio.sNombreItem;
+      entregoConsumible = true;
+    }
+
+    pers.TraitHerenciaItemOtorgado = true;
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    string mensajeHerencia = entregoConsumible
+      ? idiomaTrait switch
+      {
+        TRADU.IdiomaIngles => pers.sNombre + " receives a random consumable: " + nombreItem + ".",
+        TRADU.IdiomaPortugues => pers.sNombre + " recebe um consumível aleatório: " + nombreItem + ".",
+        _ => pers.sNombre + " recibe un consumible aleatorio: " + nombreItem + "."
+      }
+      : idiomaTrait switch
+      {
+        TRADU.IdiomaIngles => pers.sNombre + " inherits " + nombreItem + ".",
+        TRADU.IdiomaPortugues => pers.sNombre + " herda " + nombreItem + ".",
+        _ => pers.sNombre + " hereda " + nombreItem + "."
+      };
+    EscribirLog("-" + mensajeHerencia);
+  }
+
   public void AplicarTraitHeroeLocalMuerteSiCorresponde(Personaje pers)
   {
     if (pers == null || !pers.Camp_Muerto || !pers.TieneRasgo(PersonajeTraitCatalog.TraitHeroeLocal) || pers.TraitHeroeLocalPenalidadMuerteAplicada)
@@ -4334,6 +4494,37 @@ public class CampaignManager : MonoBehaviour
       _ => pers.sNombre + " muere para siempre. -20 Esperanza."
     };
     EscribirLog("-" + mensajeHeroeLocal);
+  }
+
+  public void ProcesarTraitContratoSiCorresponde(Personaje pers)
+  {
+    if (pers == null || pers.Camp_Muerto || !pers.TieneRasgo(PersonajeTraitCatalog.TraitContrato))
+    {
+      return;
+    }
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    if (GetOroActuales() >= 50)
+    {
+      CambiarOroActual(-50);
+      string mensajeContrato = idiomaTrait switch
+      {
+        TRADU.IdiomaIngles => pers.sNombre + " collects 50 Gold from the caravan contract.",
+        TRADU.IdiomaPortugues => pers.sNombre + " recebe 50 de Ouro pelo contrato com a caravana.",
+        _ => pers.sNombre + " cobra 50 de Oro por su contrato con la caravana."
+      };
+      EscribirLog("-" + mensajeContrato);
+      return;
+    }
+
+    pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -3);
+    string mensajeSinOro = idiomaTrait switch
+    {
+      TRADU.IdiomaIngles => pers.sNombre + " cannot be paid. Gains Low Morale for 3 days.",
+      TRADU.IdiomaPortugues => pers.sNombre + " não pode ser pago. Recebe Moral Baixa por 3 dias.",
+      _ => pers.sNombre + " no puede cobrar. Obtiene Baja Moral por 3 días."
+    };
+    EscribirLog("-" + mensajeSinOro);
   }
 
   public void AplicarTraitsLlegadaPuertoSerria()
@@ -6103,6 +6294,7 @@ public class CampaignManager : MonoBehaviour
 
     pers1.itemArma = Instantiate(scContprefab.armaMandoble);
     pers1.itemArmadura = Instantiate(scContprefab.Coraza);
+    AplicarTraitHerenciaInicialSiCorresponde(pers1);
 
     pers1.spRetrato = scMenuPersonajes.Male001;
 
@@ -6220,6 +6412,7 @@ public class CampaignManager : MonoBehaviour
 
     pers1.itemArma = Instantiate(scContprefab.armaArcoLargo);
     pers1.itemArmadura = Instantiate(scContprefab.ArmaduraCuero);
+    AplicarTraitHerenciaInicialSiCorresponde(pers1);
     pers1.spRetrato = scMenuPersonajes.Male003;
     scMenuPersonajes.listaPersonajes.Add(pers1);
     scMenuPersonajes.scEquipo.ActualizarEquipo(pers1);
@@ -6323,6 +6516,7 @@ public class CampaignManager : MonoBehaviour
 
 
     pers1.itemArma = Instantiate(scContprefab.armaBaculoPurificador);
+    AplicarTraitHerenciaInicialSiCorresponde(pers1);
     pers1.spRetrato = scMenuPersonajes.Female001;
     scMenuPersonajes.listaPersonajes.Add(pers1);
     scMenuPersonajes.scEquipo.ActualizarEquipo(pers1);
@@ -6433,6 +6627,7 @@ public class CampaignManager : MonoBehaviour
 
     pers1.itemArma = Instantiate(scContprefab.armaEspadaCorta);
     pers1.itemArmadura = Instantiate(scContprefab.ArmaduraCueroReforzado);
+    AplicarTraitHerenciaInicialSiCorresponde(pers1);
     pers1.spRetrato = scMenuPersonajes.Male004;
     scMenuPersonajes.listaPersonajes.Add(pers1);
     scMenuPersonajes.scEquipo.ActualizarEquipo(pers1);
@@ -6528,6 +6723,7 @@ public class CampaignManager : MonoBehaviour
       case 3: pers1.Actividad_2 = 1; pers1.AddComponent<Actividad_Telekinesis>(); pers1.Actividad_3 = 1; pers1.AddComponent<Actividad_CrearSimboloArcanoProteccion>(); break;
 
     }
+    AplicarTraitHerenciaInicialSiCorresponde(pers1);
     pers1.spRetrato = scMenuPersonajes.Male005;
     scMenuPersonajes.listaPersonajes.Add(pers1);
     scMenuPersonajes.scEquipo.ActualizarEquipo(pers1);
@@ -6627,6 +6823,7 @@ public class CampaignManager : MonoBehaviour
 
     pers1.itemArma = Instantiate(scContprefab.armaEstoque);
     pers1.itemArmadura = Instantiate(scContprefab.ArmaduraGambeson);
+    AplicarTraitHerenciaInicialSiCorresponde(pers1);
     pers1.spRetrato = scMenuPersonajes.Female002;
 
     scMenuPersonajes.listaPersonajes.Add(pers1);

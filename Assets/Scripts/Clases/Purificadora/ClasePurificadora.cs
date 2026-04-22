@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -260,7 +260,7 @@ public void CambiarFervor(int n)
 {
   Cantidad_Fervor += n;
     if (Cantidad_Fervor < 0) { Cantidad_Fervor = 0; }
-  BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+  BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(this);
 
 }
 public int ObtenerFervor()
@@ -272,6 +272,7 @@ public int ObtenerFervor()
 
 
 }
+
 
 
 

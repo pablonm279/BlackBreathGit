@@ -15,7 +15,7 @@ public class Estados : MonoBehaviour
 
     Aplicar_Ardiendo(unidad, -1);
     if (unidad.estado_ardiendo < 0) { unidad.estado_ardiendo = 0; }
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+    BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
     
        /* while(unidad.ObtenerAPActual() > 0 && unidad.estado_ardiendo > 0)
   {
@@ -31,7 +31,7 @@ public class Estados : MonoBehaviour
 
 
       if(  unidad.estado_ardiendo < 0) {  unidad.estado_ardiendo = 0;}
-      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+      BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
   }*/
   }
 
@@ -53,7 +53,7 @@ public class Estados : MonoBehaviour
 
 
      }
-     BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+     BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
   }
 
   public static void  Efecto_Aturdido(Unidad unidad)
@@ -63,13 +63,13 @@ public class Estados : MonoBehaviour
     unidad.GenerarTextoFlotante(TRADU.i.Traducir("Aturdido!"), Color.yellow);
      BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" está aturdido.")));
 
-     BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+     BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
   }
    public static void  Efecto_RegeneraVida(Unidad unidad) //Regenera X Vida por turno
   {
 
     unidad.RecibirCuracion(unidad.estado_regeneravida, false);
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+    BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
 
   }
   public static void Efecto_Condenado(Unidad unidad) //Cuando stacks llegue a 0 recibe 10% hpmax por turno activo (danio verdadero)
@@ -87,7 +87,7 @@ public class Estados : MonoBehaviour
       float danioEjecucion = Mathf.Max(unidad.HP_actual + 1f, unidad.mod_maxHP * 10f);
       unidad.RecibirDanio(danioEjecucion, 10, false, null, 400);
       BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre + TRADU.i.Traducir(" es ejecutado por la Condena.")));
-      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+      BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
       unidad.estado_CondenadoTurnosSeguidos = 0;
       return;
     }
@@ -98,7 +98,7 @@ public class Estados : MonoBehaviour
       float porcentajeAcumulado = 0.10f * unidad.estado_CondenadoTurnosSeguidos;
       unidad.RecibirDanio(unidad.mod_maxHP * porcentajeAcumulado, 10, false, null,400);
       BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre + TRADU.i.Traducir(" es dañado por la Condena.")));
-      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+      BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
 
       unidad.estado_Condenado = 0;
       unidad.estado_CondenadoTurnosSeguidos = 0;
@@ -120,7 +120,7 @@ public class Estados : MonoBehaviour
       }
     }
 
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+    BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
   }
   public static void  Efecto_Inmovil(Unidad unidad)
   {
@@ -129,7 +129,7 @@ public class Estados : MonoBehaviour
 
      BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" está inmovilizado.")));
 
-     BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+     BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
   }
 
   public static void  Efecto_Sangrado(Unidad unidad)
@@ -145,7 +145,7 @@ public class Estados : MonoBehaviour
     unidad.estado_sangrado--;
 
 
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+    BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
   }
 
   public static void  Efecto_Veneno(Unidad unidad)
@@ -169,7 +169,7 @@ public class Estados : MonoBehaviour
    }
    
     
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+    BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
   }
 
   public static void  Aplicar_Ardiendo(Unidad unidad, int stacks, Unidad origen = null)
@@ -187,7 +187,7 @@ public class Estados : MonoBehaviour
         unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" arde"), Color.red);
       
 
-       BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+       BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
@@ -202,7 +202,7 @@ public class Estados : MonoBehaviour
      {
        unidad.estado_veneno += stacks;
        unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" veneno"), Color.green);
-       BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+       BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
@@ -218,7 +218,7 @@ public class Estados : MonoBehaviour
       unidad.estado_congelado += stacks;
       unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" frio"), Color.cyan);
 
-      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+      BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
@@ -237,7 +237,7 @@ public class Estados : MonoBehaviour
         unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" aturde"), Color.yellow);
       }
 
-      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+      BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
   public static void  Aplicar_Inmovil(Unidad unidad, int stacks, Unidad origen = null)
@@ -255,7 +255,7 @@ public class Estados : MonoBehaviour
         unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" inmóvil"), Color.yellow);
       }
 
-      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+      BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
@@ -273,7 +273,7 @@ public class Estados : MonoBehaviour
        unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" sangrado"), Color.red);
      
 
-      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+      BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
     } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
@@ -290,7 +290,7 @@ public class Estados : MonoBehaviour
        unidad.estado_acido += stacks;
        unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" acido"), Color.green);
 
-     BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+     BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
     } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
@@ -315,9 +315,11 @@ public class Estados : MonoBehaviour
       unidad.GenerarTextoFlotante("+" + stacks + " " + TRADU.i.Traducir("impulso"), new Color(0.2f, 0.95f, 1f));
     }
 
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+    BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
   }
 }
+
+
 
 
 

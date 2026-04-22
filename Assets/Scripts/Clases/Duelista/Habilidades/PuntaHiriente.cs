@@ -69,6 +69,7 @@ public class PuntaHiriente : Habilidad
         int duracionAdolorido = NIVEL == 5 ? 3 : 2;
         int dcBase = 7 + (NIVEL > 2 ? 1 : 0);
         int penetracion = 5 + (NIVEL == 4 ? 3 : 0);
+        string rangoDanioEs = FormatearRangoDados(1, 10, 2);
 
         string tituloEs = "Punta Hiriente I";
         string tituloEn = "Wounding Thrust I";
@@ -78,7 +79,7 @@ public class PuntaHiriente : Habilidad
         if (NIVEL == 4) { tituloEs = "Punta Hiriente IV a"; tituloEn = "Wounding Thrust IV a"; tituloPt = "Ponta Feridora IV a"; }
         if (NIVEL == 5) { tituloEs = "Punta Hiriente IV b"; tituloEn = "Wounding Thrust IV b"; tituloPt = "Ponta Feridora IV b"; }
 
-        string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Fortaleza, dcBase, "Agilidad", "Agility", agilidadActual);
+        string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Fortaleza, dcBase, "Agi", "Agility", agilidadActual, "Agilidade");
 
         string cuerpo = "";
         if (esIngles)
@@ -107,8 +108,8 @@ public class PuntaHiriente : Habilidad
         {
             cuerpo += "<b>Tipo:</b> Melee\n";
             cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance melee\n";
-            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza/Agilidad ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Danio:</b> 1d10 + 2 | <b>Tipo:</b> Perforante\n";
+            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue/Agi ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+            cuerpo += $"<b>Danio:</b> {rangoDanioEs} | <b>Tipo:</b> Perforante\n";
             cuerpo += $"<b>Penetracion de armadura:</b> {penetracion}\n";
             cuerpo += "<b>Al impactar:</b> aplica un estado por 2 turnos\n";
             cuerpo += $"{lineaSalvacion}\n";

@@ -162,6 +162,7 @@ public class DisparoEnvenenado : Habilidad
     int dcBase = NIVEL > 2 ? 13 : 12;
     int venenoAplicado = 2 + (NIVEL > 1 ? 1 : 0) + (NIVEL == 4 ? 2 : 0);
     int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConBallestaMano : 0;
+    string rangoDanioEs = FormatearRangoDados(3, 4, damExtra);
 
     string tituloEs = "Disparo Envenenado I";
     string tituloEn = "Poison Shot I";
@@ -208,8 +209,8 @@ public class DisparoEnvenenado : Habilidad
     {
       cuerpo += $"<b>Tipo:</b> Rango ({hAlcance} alcance)\n";
       cuerpo += "<b>Objetivo:</b> 1 enemigo en rango\n";
-      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Danio:</b> 3d4 + {damExtra} + <color=#ea0606>Agilidad ({agilidadActual})</color> | <b>Tipo:</b> Perforante\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agi ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Agi ({agilidadActual})</color> | <b>Tipo:</b> Perforante\n";
       cuerpo += lineaSalvacion + "\n";
       cuerpo += $"<b>Si falla TS:</b> aplica {venenoAplicado} Veneno";
       if (nivelMaestria > 0)

@@ -61,6 +61,8 @@ public class LuzCegadora : Habilidad
       int dcBase = NIVEL > 1 ? 10 : 9;
       bool agregaD6Divino = NIVEL > 2;
       bool afectaOtrosEnemigos = NIVEL == 5;
+      string rangoDanioBaseEs = FormatearRangoDados(1, 10, 1);
+      string rangoDanioExtraEs = FormatearRangoDados(1, 6);
 
       string tituloEs = "Luz Cegadora I";
       string tituloEn = "Blinding Light I";
@@ -74,12 +76,12 @@ public class LuzCegadora : Habilidad
       if (NIVEL == 4) { tituloPt = "Luz Cegante IV a"; }
       if (NIVEL == 5) { tituloPt = "Luz Cegante IV b"; }
 
-      string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Reflejos, dcBase, "Poder", "Power", poderActual);
+      string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Reflejos, dcBase, "Pod", "Power", poderActual, "Poder");
       string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Reflejos, dcBase, "Poder", "Power", poderActual);
 
       string danioPrincipalEs = agregaD6Divino
-        ? $"1d10 + 1 + 1d6 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Divino"
-        : $"1d10 + 1 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Divino";
+        ? $"{rangoDanioBaseEs} + {rangoDanioExtraEs} + <color=#ea0606>Pod ({poderActual})</color> | <b>Tipo:</b> Divino"
+        : $"{rangoDanioBaseEs} + <color=#ea0606>Pod ({poderActual})</color> | <b>Tipo:</b> Divino";
       string danioPrincipalEn = agregaD6Divino
         ? $"1d10 + 1 + 1d6 + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Divine"
         : $"1d10 + 1 + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Divine";
@@ -163,7 +165,7 @@ public class LuzCegadora : Habilidad
       else
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC de salvacion.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1d6 de danio Divino vs Nomuerto/Etereo.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1-6 de danio Divino vs Nomuerto/Etereo.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valentía) u Opcion B (1/3 de danio a otros enemigos).</color>"; }
       }
     }

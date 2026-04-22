@@ -208,6 +208,11 @@ public class TiroconArcoPotente : Habilidad
 
   void AplicarEfectoPotente(Unidad objetivo)
   {
+    if (objetivo == null || objetivo.HP_actual <= 0f || !objetivo.gameObject.activeInHierarchy)
+    {
+      return;
+    }
+
     if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza,11))
     {
       objetivo.EmpujarUnidad(1);

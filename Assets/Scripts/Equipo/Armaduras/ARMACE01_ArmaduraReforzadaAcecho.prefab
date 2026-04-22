@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Armadura Reforzada del Acecho
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 04000000
-  iPrecio: 90
+  iPrecio: 110
   itemDescripcion: Cuero reforzado para golpear y retirarse rapido.
   iRareza: 0
   nivelMejora: 0

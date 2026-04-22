@@ -91,7 +91,7 @@ public class AcumulacionInestable : Habilidad
       cuerpo += "<b>Efecto instantaneo:</b> +1 Nivel de Energia\n";
       cuerpo += $"<b>Buff (este turno):</b> +{bonusDanioArcano} de danio Arcano\n";
       cuerpo += recibeDanioPropio
-        ? "<b>Contragolpe:</b> Recibe 1d6 de danio Arcano al usarla"
+        ? "<b>Contragolpe:</b> Recibe 1-6 de danio Arcano al usarla"
         : "<b>Contragolpe:</b> No recibe danio al usarla";
     }
 

@@ -96,6 +96,59 @@ public class AdministradorEscenas : MonoBehaviour
     }
   }
 
+  void ResolverReferenciasVfxAlientoNegroBatalla()
+  {
+    if (EscenaBatalla == null) { return; }
+    Transform raizClimas = EscenaBatalla.transform.Find("Climas");
+    if (raizClimas == null) { return; }
+
+    if (VFXAlientoLeve == null)
+    {
+      Transform alientoLeve = raizClimas.Find("Clima_AlientoLeve");
+      if (alientoLeve != null) { VFXAlientoLeve = alientoLeve.gameObject; }
+    }
+
+    if (VFXAlientoMedio == null)
+    {
+      Transform alientoMedio = raizClimas.Find("Clima_AlientoMedio");
+      if (alientoMedio != null) { VFXAlientoMedio = alientoMedio.gameObject; }
+    }
+
+    if (VFXAlientoGrande == null)
+    {
+      Transform alientoGrande = raizClimas.Find("Clima_AlientoGrande");
+      if (alientoGrande != null) { VFXAlientoGrande = alientoGrande.gameObject; }
+    }
+  }
+
+  void RefrescarVfxAlientoNegroBatalla(bool desactivarTodo = false)
+  {
+    ResolverReferenciasVfxAlientoNegroBatalla();
+
+    SetActiveSiExiste(VFXAlientoLeve, false);
+    SetActiveSiExiste(VFXAlientoMedio, false);
+    SetActiveSiExiste(VFXAlientoGrande, false);
+
+    if (desactivarTodo || CampaignManager.Instance == null)
+    {
+      return;
+    }
+
+    int tierAlientoNegro = (int)CampaignManager.Instance.GetTierAlientoNegro();
+    if (tierAlientoNegro == 2)
+    {
+      SetActiveSiExiste(VFXAlientoLeve, true);
+    }
+    else if (tierAlientoNegro == 3)
+    {
+      SetActiveSiExiste(VFXAlientoMedio, true);
+    }
+    else if (tierAlientoNegro >= 4)
+    {
+      SetActiveSiExiste(VFXAlientoGrande, true);
+    }
+  }
+
   bool ValidarDependenciasCambioABatalla(out CampaignManager campaignManager)
   {
     campaignManager = CampaignManager.Instance;
@@ -952,6 +1005,10 @@ public class AdministradorEscenas : MonoBehaviour
   public GameObject VFXNieve;
   public GameObject VFXNiebla;
   public GameObject VFXAurora;
+  [Header("VFX Aliento Negro (Batalla)")]
+  public GameObject VFXAlientoLeve;
+  public GameObject VFXAlientoMedio;
+  public GameObject VFXAlientoGrande;
   EncounterDefinition encuentroGeneradoActual;
   int ultimoIDEncuentro;
   int tipoEmboscadaActual = 0;
@@ -988,6 +1045,7 @@ public class AdministradorEscenas : MonoBehaviour
     SetActiveSiExiste(VFXNieve, false);
     SetActiveSiExiste(VFXNiebla, false);
     SetActiveSiExiste(VFXAurora, false);
+    RefrescarVfxAlientoNegroBatalla(desactivarTodo: true);
 
     escenaActual = 1; //1 Batalla 0 Campaña
     campaignManager.logDeCampania?.LimpiarDesdeCampania();
@@ -1188,6 +1246,16 @@ public class AdministradorEscenas : MonoBehaviour
         Buff buffComponent = ComponentCopier.CopyComponent(buff, u.gameObject);
       }
 
+    }
+    else if (esEmboscada == 2)
+    {
+      // Emboscada a favor de la caravana: los enemigos inician sorprendidos
+      LadoManager ladoEnemigoEmboscada = BattleManager.Instance.ladoA;
+      foreach (Unidad u in ladoEnemigoEmboscada.unidadesLado)
+      {
+        if (u == null) { continue; }
+        AplicarSorprendidoInicioCombate(u);
+      }
     }
 
     if (esEmboscada == 3)//Ataque a Caravana
@@ -1395,6 +1463,7 @@ public class AdministradorEscenas : MonoBehaviour
       { VFXAurora.SetActive(true); }
 
     }
+    RefrescarVfxAlientoNegroBatalla();
     #endregion
     #region Corrupcion
     LadoManager ladodeEnemigo = BattleManager.Instance.ladoA; //Enemigos
@@ -1730,6 +1799,7 @@ public class AdministradorEscenas : MonoBehaviour
 
   void ColocarObstaculos(GameObject prefab, int cantidad, LadoManager ladoAliado, LadoManager ladoEnemigo)
   {
+    const int maxRocasPorLado = 6;
 
     if (prefab == null || cantidad <= 0)
     {
@@ -1738,27 +1808,99 @@ public class AdministradorEscenas : MonoBehaviour
 
     for (int i = 0; i < cantidad; i++)
     {
-      Casilla casilla = ObtenerCasillaAleatoriaDisponible(ladoAliado, ladoEnemigo);
+      int rocasAliadas = ContarRocasEnLado(ladoAliado);
+      int rocasEnemigas = ContarRocasEnLado(ladoEnemigo);
+      bool aliadoConCupo = rocasAliadas < maxRocasPorLado;
+      bool enemigoConCupo = rocasEnemigas < maxRocasPorLado;
+
+      if (!aliadoConCupo && !enemigoConCupo)
+      {
+        break;
+      }
+
+      Casilla casilla = null;
+      if (aliadoConCupo && enemigoConCupo)
+      {
+        bool aliadosPrimero = UnityEngine.Random.Range(0, 2) == 0;
+        LadoManager preferido = aliadosPrimero ? ladoAliado : ladoEnemigo;
+        LadoManager alternativo = aliadosPrimero ? ladoEnemigo : ladoAliado;
+        casilla = ObtenerCasillaAleatoriaDisponibleEnLado(preferido);
+        if (casilla == null)
+        {
+          casilla = ObtenerCasillaAleatoriaDisponibleEnLado(alternativo);
+        }
+      }
+      else if (aliadoConCupo)
+      {
+        casilla = ObtenerCasillaAleatoriaDisponibleEnLado(ladoAliado);
+      }
+      else
+      {
+        casilla = ObtenerCasillaAleatoriaDisponibleEnLado(ladoEnemigo);
+      }
+
       if (casilla == null)
       {
         Debug.LogWarning("[AdministradorEscenas] No hay casillas disponibles para colocar obstaculos.");
         break;
       }
 
-      if (CasillaEstaDisponibleParaSpawn(casilla))
-      {
-        GameObject obst5 = Instantiate(prefab);
-        casilla.PonerObjetoEnCasilla(obst5);
-      }
+      GameObject obst5 = Instantiate(prefab);
+      casilla.PonerObjetoEnCasilla(obst5);
+    }
+  }
 
-
+  int ContarRocasEnLado(LadoManager lado)
+  {
+    if (lado == null)
+    {
+      return 0;
     }
 
+    lado.ActualizarListaDeCasillasEnLado();
+    int cantidad = 0;
+    foreach (Casilla casilla in lado.casillasLado)
+    {
+      if (casilla == null || casilla.Presente == null)
+      {
+        continue;
+      }
 
+      Obstaculo obstaculo = casilla.Presente.GetComponent<Obstaculo>();
+      if (obstaculo == null)
+      {
+        continue;
+      }
+
+      if (EsObstaculoRoca(obstaculo))
+      {
+        cantidad++;
+      }
+    }
+
+    return cantidad;
+  }
+
+  bool EsObstaculoRoca(Obstaculo obstaculo)
+  {
+    if (obstaculo == null)
+    {
+      return false;
+    }
+
+    if (!string.IsNullOrEmpty(obstaculo.oName) && obstaculo.oName.ToLowerInvariant().Contains("roca"))
+    {
+      return true;
+    }
+
+    string nombreGO = obstaculo.gameObject != null ? obstaculo.gameObject.name : string.Empty;
+    return !string.IsNullOrEmpty(nombreGO) && nombreGO.ToLowerInvariant().Contains("roca");
   }
 
   void ColocarPiedrasVariadasEnLadoEnemigo(int cantidad)
   {
+    const int maxRocasPorLado = 6;
+
     if (cantidad <= 0 || BattleManager.Instance == null || BattleManager.Instance.ladoA == null || ContenedorPrefabsBatalla == null)
     {
       return;
@@ -1794,7 +1936,8 @@ public class AdministradorEscenas : MonoBehaviour
       casillasLibres.Add(casilla);
     }
 
-    int cantidadAColocar = Mathf.Min(cantidad, casillasLibres.Count);
+    int cupoDisponible = Mathf.Max(0, maxRocasPorLado - ContarRocasEnLado(ladoEnemigo));
+    int cantidadAColocar = Mathf.Min(cantidad, Mathf.Min(casillasLibres.Count, cupoDisponible));
     int indicePrefab = 0;
     for (int i = 0; i < cantidadAColocar; i++)
     {
@@ -4139,7 +4282,7 @@ public class AdministradorEscenas : MonoBehaviour
     AplicarAtributosInicioCombateDeItems(pers, unidad);
 
     //---
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+    BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
 
   }
   void AplicarAtributosInicioCombateDeItems(Personaje pers, Unidad unidad)
@@ -4877,6 +5020,8 @@ public class AdministradorEscenas : MonoBehaviour
 
 
 }
+
+
 
 
 

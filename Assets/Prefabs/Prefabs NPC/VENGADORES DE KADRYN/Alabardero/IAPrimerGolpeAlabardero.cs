@@ -104,6 +104,11 @@ public class IAPrimerGolpeAlabardero : IAHabilidad
       bool unidadEmpujada = false;
       if (unidadEnCasilla != null)
       {
+        if (unidadEnCasilla.HP_actual <= 0f || !unidadEnCasilla.gameObject.activeInHierarchy)
+        {
+          continue;
+        }
+
         unidadEnCasilla.ForzarSiguienteMovimientoForzadoInmediato();
         unidadEnCasilla.EmpujarUnidad(1);
         unidadEmpujada = true;

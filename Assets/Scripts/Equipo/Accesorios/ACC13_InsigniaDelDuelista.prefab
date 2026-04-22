@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Insignia del Duelista
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 450
+  iPrecio: 445
   itemDescripcion: Favorece el ritmo de combate y la postura ofensiva.
   iRareza: 2
   nivelMejora: 0

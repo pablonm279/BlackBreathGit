@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Armadura Reforzada de Niebla
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 04000000
-  iPrecio: 145
+  iPrecio: 155
   itemDescripcion: Material tratado para cubrir avances de flanco.
   iRareza: 1
   nivelMejora: 1

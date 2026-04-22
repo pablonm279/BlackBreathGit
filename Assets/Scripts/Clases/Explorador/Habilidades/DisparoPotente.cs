@@ -66,6 +66,7 @@ public class DisparoPotente : Habilidad
       int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
       int bonoAtaqueNivel = bonusAtaque;
       int danioFijo = 2 + (NIVEL > 1 ? 2 : 0);
+      string rangoDanioEs = FormatearRangoDados(1, 10, danioFijo);
 
       string tituloEs = "Tiro Potente I";
       string tituloEn = "Powerful Shot I";
@@ -102,8 +103,8 @@ public class DisparoPotente : Habilidad
       {
         cuerpo += "<b>Tipo:</b> Rango (linea)\n";
         cuerpo += "<b>Objetivo:</b> Enemigos en la misma fila\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonoAtaqueNivel} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-        cuerpo += $"<b>Danio:</b> 1d10 + {danioFijo} + <color=#ea0606>Agilidad ({agilidadActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agi ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonoAtaqueNivel} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+        cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Agi ({agilidadActual})</color> | <b>Tipo:</b> Cortante\n";
         cuerpo += $"<b>Penetracion de armadura:</b> {penetracionArmadura}\n";
         cuerpo += "<b>Recurso:</b> consume 2 Flechas\n";
       }

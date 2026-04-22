@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Sello de Ceniza Negra
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: ffffffff
-  iPrecio: 165
+  iPrecio: 170
   itemDescripcion: Refuerza mente y resistencia necrotica.
   iRareza: 2
   nivelMejora: 0

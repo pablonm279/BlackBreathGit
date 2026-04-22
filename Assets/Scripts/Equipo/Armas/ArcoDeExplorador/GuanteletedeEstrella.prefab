@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Guantelete Estrella
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 05000000
-  iPrecio: 230
+  iPrecio: 520
   itemDescripcion: 
   iRareza: 3
   nivelMejora: 1

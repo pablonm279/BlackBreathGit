@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,7 +27,7 @@ public class Unidad : MonoBehaviour
   private static Unidad redireccionAtaqueObjetivoOriginal;
   private static Unidad redireccionAtaqueObjetivoReal;
 
-   [Header ("Lógica")]
+   [Header ("LÃ³gica")]
    public Casilla CasillaPosicion;
    public Casilla CasillaDeseadaMov;
 
@@ -37,7 +37,7 @@ public class Unidad : MonoBehaviour
   private bool forzarSiguienteMovimientoForzadoInmediato;
   
 
-   public Habilidad estaCargando; //la habilidad que está cargando el personaje para lanzar en un turno próximo
+   public Habilidad estaCargando; //la habilidad que estÃ¡ cargando el personaje para lanzar en un turno prÃ³ximo
    public int valorCargando; //la cantidad de AP que le falta para terminar la habilidad
 
 
@@ -75,7 +75,7 @@ public class Unidad : MonoBehaviour
   private float ultimaAgilidadSincronizada;
   private float ultimoPoderSincronizado;
 
-  //Atributo - AP -------- Puntos de Acción
+  //Atributo - AP -------- Puntos de AcciÃ³n
   [SerializeField] private float at_maxAccionP; 
   public bool esInmobil;
   public float mod_maxAccionP; 
@@ -111,20 +111,20 @@ public class Unidad : MonoBehaviour
   }
   public Alcambiarvalorflash scTextoArmaduraFlash;
 
-  //Atributo - PM -------- Puntos de Mérito
+  //Atributo - PM -------- Puntos de MÃ©rito
   [SerializeField] private float at_maxMeritoP; 
   public float mod_maxValentiaP; 
   public float ValentiaP_actual; 
 
-  //Atributo - Car_Fuerza --------- Característica: Fuerza
+  //Atributo - Car_Fuerza --------- CaracterÃ­stica: Fuerza
   [SerializeField] private float at_CarFuerza; 
   public float mod_CarFuerza; 
 
-  //Atributo - Car_Agilidad --------- Característica: Agilidad
+  //Atributo - Car_Agilidad --------- CaracterÃ­stica: Agilidad
   [SerializeField] private float at_CarAgilidad; 
   public float mod_CarAgilidad; 
   
-  //Atributo - Car_Fuerza --------- Característica: Poder
+  //Atributo - Car_Fuerza --------- CaracterÃ­stica: Poder
   [SerializeField] private float at_CarPoder; 
   public float mod_CarPoder; 
 
@@ -144,7 +144,7 @@ public class Unidad : MonoBehaviour
   [SerializeField] private float at_ResRayo; 
   public float mod_ResRayo; 
 
-  //Atributo - ResArcano--------- Res: Ácido
+  //Atributo - ResArcano--------- Res: Ãcido
   [SerializeField] private float at_ResAcido; 
   public float mod_ResAcido; 
   //Atributo - ResArcano--------- Res: Arcano
@@ -162,8 +162,8 @@ public class Unidad : MonoBehaviour
   //Atributo - Defensa
   [SerializeField] private float at_Defensa; 
   public float mod_Defensa; 
-  public int Defensa_AtaquesRepetidosRonda; //Cada vez que ataquen a un mismo objetivo en el mismo turno, su defensa baja -1, (máximo -3). 
-  public int Defensa_BonusPASinUsar; //Si se terminó el turno con PA sin usar, se suman a la defensa hasta el próximo turno (Máximo 2).
+  public int Defensa_AtaquesRepetidosRonda; //Cada vez que ataquen a un mismo objetivo en el mismo turno, su defensa baja -1, (mÃ¡ximo -3). 
+  public int Defensa_BonusPASinUsar; //Si se terminÃ³ el turno con PA sin usar, se suman a la defensa hasta el prÃ³ximo turno (MÃ¡ximo 2).
   //Atributo - Ataque
   [SerializeField] private float at_Ataque; 
   public float mod_Ataque; 
@@ -175,19 +175,19 @@ public class Unidad : MonoBehaviour
   public float mod_CriticoRangoDado; 
   public float bonusCritDadoRecibido;
 
-  //Atributo - Critico daño bonus
+  //Atributo - Critico daÃ±o bonus
   [SerializeField] private float at_CriticoDañoBonus; 
   public float mod_CriticoDañoBonus; 
 
-  //Atributo - Suministrosación: Reflejos
+  //Atributo - SuministrosaciÃ³n: Reflejos
   [SerializeField] private float at_TSReflejos; 
   public float mod_TSReflejos; 
 
-  //Atributo - Tirada salvación: Fortaleza
+  //Atributo - Tirada salvaciÃ³n: Fortaleza
   [SerializeField] private float at_TSFortaleza; 
   public float mod_TSFortaleza; 
 
-  //Atributo - Tirada salvación: Mental
+  //Atributo - Tirada salvaciÃ³n: Mental
   [SerializeField] private float at_TSMental; 
   public float mod_TSMental; 
 
@@ -205,7 +205,7 @@ public class Unidad : MonoBehaviour
  public int estado_ardiendo;
  public int estado_congelado;
  public int estado_aturdido;
- public int estado_evasion; //Cada uno aumenta en 1 la Defensa, se va al recibir daño.
+ public int estado_evasion; //Cada uno aumenta en 1 la Defensa, se va al recibir daÃ±o.
  public int estado_inmovil;
  public int estado_armaduraModificador; //Es lo que le resta a la armadura por golpes que va recibiendo, debe ser psoitivo
  public int estado_acido;
@@ -219,8 +219,8 @@ public class Unidad : MonoBehaviour
  public int estado_Condenado; //En (stacks) turnos. Al llegar a 0 inflige 10% de HP max por cada turno consecutivo que estuvo activo.
  [HideInInspector] public int estado_CondenadoTurnosSeguidos; //Cuenta turnos seguidos con la condena activa para el danio acumulado.
  [HideInInspector] public Unidad ultimaUnidadQueLeHizoDanio;
- public int estado_Escudado; //10% por stack de prevenir un ataque de daño fisico. Pierde 1 stack.
- public int estado_MovimientoAbaratado; //Ligereza -El próximo movimiento a casilla o intercambio cuesta 1 PA menos y consume 1 stack.
+ public int estado_Escudado; //10% por stack de prevenir un ataque de daÃ±o fisico. Pierde 1 stack.
+ public int estado_MovimientoAbaratado; //Ligereza -El prÃ³ximo movimiento a casilla o intercambio cuesta 1 PA menos y consume 1 stack.
  public bool estado_Corrupto;
  public bool unidadVoladora;
  public bool estado_Volando;
@@ -259,7 +259,7 @@ public class Unidad : MonoBehaviour
  public bool loMatoCorrompido = false; //Si la unidad fue muerta por un enemigo corrupto, queda registrado aca
 
 //Escondido
-  int estaEscondido; //0 no, 1 si y sale al recibir daño o atacar, 2 si y no sale al recibir daño ni atacar
+  int estaEscondido; //0 no, 1 si y sale al recibir daÃ±o o atacar, 2 si y no sale al recibir daÃ±o ni atacar
   public bool entroComoAliado = false;
   
  #endregion
@@ -333,6 +333,10 @@ public class Unidad : MonoBehaviour
     if (GetComponent<UnidadTurnStartLightFx>() == null)
     {
       gameObject.AddComponent<UnidadTurnStartLightFx>();
+    }
+    if (GetComponent<UnidadCombatFeedbackFx>() == null)
+    {
+      gameObject.AddComponent<UnidadCombatFeedbackFx>();
     }
     InicializarVueloVisual();
 
@@ -725,7 +729,7 @@ private void Update()
     InicializarVueloVisual();
     if (!unidadVoladora) { return; }
 
-    // BUFF ---- Así se aplica un buff/debuff
+    // BUFF ---- AsÃ­ se aplica un buff/debuff
     Buff buff = new Buff();
     buff.buffNombre = "Derribado";
     buff.boolfDebufftBuff = false;
@@ -733,7 +737,7 @@ private void Update()
     buff.cantAPMax -= 2;
     buff.cantDefensa -= 3;
     buff.AplicarBuff(this);
-    // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+    // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
     Buff buffComponent = ComponentCopier.CopyComponent(buff, this.gameObject);
 
     ActualizarAnimacionVuelo(uImagePosSuelo, instantaneo);
@@ -1049,8 +1053,72 @@ public bool movimientoEnCurso = false;
   }
 
   public bool NoSonidoAlMover;
+  private bool EstaFueraDeCombate()
+  {
+    return yaMurio || yaSeRetiro || HP_actual <= 0f || !gameObject.activeInHierarchy;
+  }
+
+  private bool PuedeResolverMovimientoPendiente()
+  {
+    return !EstaFueraDeCombate() && CasillaPosicion != null;
+  }
+
+  private Casilla ObtenerCasillaReferenciaMovimientoForzado()
+  {
+    return movimientoForzadoPendiente && CasillaForzadoaMover != null
+      ? CasillaForzadoaMover
+      : CasillaPosicion;
+  }
+
+  private void CancelarMovimientoPendiente()
+  {
+    movimientoEnCurso = false;
+    movimientoForzadoPendiente = false;
+    forzarSiguienteMovimientoForzadoInmediato = false;
+    CasillaDeseadaMov = null;
+    CasillaForzadoaMover = null;
+    casillaOrigenEnMovimiento = null;
+
+    if (poseController != null)
+    {
+      poseController.OnStopMove();
+    }
+  }
+
+  public bool IntentarProgramarMovimientoForzado(Casilla destino)
+  {
+    Casilla casillaOrigen = ObtenerCasillaReferenciaMovimientoForzado();
+    if (EstaFueraDeCombate() || casillaOrigen == null || casillaOrigen.ladoGO == null || destino == null)
+    {
+      return false;
+    }
+
+    if (destino.Presente != null && destino.Presente != gameObject)
+    {
+      return false;
+    }
+
+    if (destino == casillaOrigen || destino == CasillaPosicion || destino == CasillaForzadoaMover)
+    {
+      return false;
+    }
+
+    CasillaForzadoaMover = destino;
+    CasillaDeseadaMov = null;
+    movimientoForzadoPendiente = true;
+    return true;
+  }
+
     private void FixedUpdate()
   {
+    if (!PuedeResolverMovimientoPendiente())
+    {
+      if (movimientoEnCurso || movimientoForzadoPendiente || CasillaDeseadaMov != null || CasillaForzadoaMover != null || forzarSiguienteMovimientoForzadoInmediato)
+      {
+        CancelarMovimientoPendiente();
+      }
+      return;
+    }
 
     if (CasillaDeseadaMov != null)
     {
@@ -1070,22 +1138,40 @@ public bool movimientoEnCurso = false;
           }
         }
         movimientoEnCurso = true;
-        // Calcula la dirección hacia la casilla deseada
+        // Calcula la direcciÃ³n hacia la casilla deseada
         Vector3 direccion = CasillaDeseadaMov.transform.position - transform.position;
 
-        // Calcula la nueva posición interpolando suavemente
+        // Calcula la nueva posiciÃ³n interpolando suavemente
         Vector3 nuevaPosicion = transform.position + direccion.normalized * velocidadMovimiento * Time.fixedDeltaTime;
 
-        // Establece la nueva posición
+        // Establece la nueva posiciÃ³n
         transform.position = nuevaPosicion;
 
         // Comprueba si el objeto ha llegado a la casilla deseada
         if (Vector3.Distance(transform.position, CasillaDeseadaMov.transform.position) < 0.045f)
         {
-          LlegoACasilla(CasillaDeseadaMov);
-          CasillaPosicion = CasillaDeseadaMov;
+          Casilla destinoMovimiento = CasillaDeseadaMov;
+          if (destinoMovimiento == null || EstaFueraDeCombate())
+          {
+            CancelarMovimientoPendiente();
+            return;
+          }
+
+          LlegoACasilla(destinoMovimiento);
+          if (EstaFueraDeCombate())
+          {
+            CancelarMovimientoPendiente();
+            return;
+          }
+
+          CasillaPosicion = destinoMovimiento;
           scBattleManager?.SincronizarHabilidadEscapar(this);
           CasillaPosicion.NuevoObjetoPresenteEnCasilla(gameObject);
+          if (EstaFueraDeCombate() || CasillaPosicion == null)
+          {
+            CancelarMovimientoPendiente();
+            return;
+          }
           scBattleManager.CalcularCasillasAMovimiento();
           ChequearSeMovio();
           movimientoEnCurso = false;
@@ -1113,26 +1199,43 @@ public bool movimientoEnCurso = false;
           }
         }
         movimientoEnCurso = true;
-        // Calcula la dirección hacia la casilla deseada
+        // Calcula la direcciÃ³n hacia la casilla deseada
         Vector3 direccion = CasillaForzadoaMover.transform.position - transform.position;
 
-        // Calcula la nueva posición interpolando suavemente
+        // Calcula la nueva posiciÃ³n interpolando suavemente
         Vector3 nuevaPosicion = transform.position + direccion.normalized * velocidadMovimiento * Time.fixedDeltaTime;
 
-        // Establece la nueva posición
+        // Establece la nueva posiciÃ³n
         transform.position = nuevaPosicion;
 
         // Comprueba si el objeto ha llegado a la casilla deseada
         if (Vector3.Distance(transform.position, CasillaForzadoaMover.transform.position) < 0.035f)
         {
-          // Llegó a casilla forzada
-          LlegoACasilla(CasillaForzadoaMover);
-          CasillaPosicion = CasillaForzadoaMover;
+          // LlegÃ³ a casilla forzada
+          Casilla destinoMovimientoForzado = CasillaForzadoaMover;
+          if (destinoMovimientoForzado == null || EstaFueraDeCombate())
+          {
+            CancelarMovimientoPendiente();
+            return;
+          }
+
+          LlegoACasilla(destinoMovimientoForzado);
+          if (EstaFueraDeCombate())
+          {
+            CancelarMovimientoPendiente();
+            return;
+          }
+
+          CasillaPosicion = destinoMovimientoForzado;
           scBattleManager?.SincronizarHabilidadEscapar(this);
           CasillaPosicion.NuevoObjetoPresenteEnCasilla(gameObject);
+          if (EstaFueraDeCombate() || CasillaPosicion == null)
+          {
+            CancelarMovimientoPendiente();
+            return;
+          }
           scBattleManager.CalcularCasillasAMovimiento();
           ChequearSeMovio();
-          CasillaPosicion.Presente = this.gameObject;
           CasillaForzadoaMover = null;
           CasillaDeseadaMov = null;
           movimientoForzadoPendiente = false;
@@ -1172,10 +1275,10 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
    
 
 
-    //--Cada enemigo que lo necesite deberá heredar de Unidad    
+    //--Cada enemigo que lo necesite deberÃ¡ heredar de Unidad    
 
   }
-  void LlegoACasilla(Casilla cas) //Método que se llama cada vez que una unidad llega a una casilla, se puede sobreescribir en las subclases
+  void LlegoACasilla(Casilla cas) //MÃ©todo que se llama cada vez que una unidad llega a una casilla, se puede sobreescribir en las subclases
   {
     if (cas != null)
     {
@@ -1212,9 +1315,9 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
       bool unidadEncarnadaEnTurno = TieneBuffNombre("Encarnado");
 
       if (gameObject.GetComponent<RetrasarTurno>().yaRetraso == false)
-      {//Aplica los efectos de turno nuevo solo cuando no retrasí el turno, ya que si retrasa su turno y le vuelve a tocar despues, se aplicaria todo 2 veces.
+      {//Aplica los efectos de turno nuevo solo cuando no retrasÃ­ el turno, ya que si retrasa su turno y le vuelve a tocar despues, se aplicaria todo 2 veces.
 
-        if (GetComponent<IAUnidad>() == null) { ReproducirAnimacionTurnoNuevo(); } //Las unidades no IA, tienen esa pequeña animación
+        if (GetComponent<IAUnidad>() == null) { ReproducirAnimacionTurnoNuevo(); } //Las unidades no IA, tienen esa pequeÃ±a animaciÃ³n
 
         BattleManager.Instance.ReducirDuracionTrampasDeUnidad(this);
 
@@ -1325,7 +1428,7 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
         ReducirDuracionMarcas();
 
         //Chequear Trampas Persistentes en su casilla
-        Invoke("ChequearTrampaPersistenteenCasilla", 0.1f); //Se invoca con un delay para que se aplique después de los efectos de inicio de turno
+        Invoke("ChequearTrampaPersistenteenCasilla", 0.1f); //Se invoca con un delay para que se aplique despuÃ©s de los efectos de inicio de turno
         if (TieneTrampaPersistenteActivaEnCasilla())
         {
           if (await EsperarYAbortarSiUnidadNoPuedeActuarPorInicioTurnoAsync(DelayResolucionTrampaPersistenteInicioTurnoMs)) { return; }
@@ -1334,7 +1437,7 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
         //Activar resaltar lado
         Invoke("ResaltarLado", 0.1f);
 
-        //Señaladores direcciones
+        //SeÃ±aladores direcciones
         CasillaPosicion.ActualizarSenialadores();
 
       }
@@ -1442,8 +1545,8 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
 
     string nombreUnidad = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;
     string mensaje = TRADU.i != null
-      ? TRADU.i.Traducir(" está encarnado y no puede actuar este turno.")
-      : " está encarnado y no puede actuar este turno.";
+      ? TRADU.i.Traducir(" estÃ¡ encarnado y no puede actuar este turno.")
+      : " estÃ¡ encarnado y no puede actuar este turno.";
     scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(nombreUnidad + mensaje));
   }
 
@@ -1594,11 +1697,11 @@ void ActivarEfectosCustomBuffsInicioTurno()
 void ControlarSiEsDescanso()
 {
   //Controlar si es descanso
-  //Descanso: si termina el turno con todos los AP, el próximo turno gana el buff Descansado (+1AP +3 Iniciativa)
+  //Descanso: si termina el turno con todos los AP, el prÃ³ximo turno gana el buff Descansado (+1AP +3 Iniciativa)
   if(AccionP_actual >= mod_maxAccionP && gameObject.GetComponent<RetrasarTurno>().yaRetraso == false && estaCargando == null && !ChequearTieneReaccionesTipo(-1))
   {
     /////////////////////////////////////////////
-    //BUFF ---- Así se aplica un buff/debuff
+    //BUFF ---- AsÃ­ se aplica un buff/debuff
      Buff Descansado = new Buff();
      Descansado.buffNombre = "Descansado";
      Descansado.boolfDebufftBuff = true;
@@ -1607,7 +1710,7 @@ void ControlarSiEsDescanso()
      Descansado.cantIniciativa += 3;
      Descansado.cantAPMax += 1;
      Descansado.AplicarBuff(this);
-     // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+     // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
      Buff buffComponent = ComponentCopier.CopyComponent(Descansado, gameObject);
 
      string nombreUnidad = NombreUnidadParaLog(this);
@@ -1625,7 +1728,7 @@ private void ResolverCargarHabilidades()
   if(estaCargando != null)
   {
    
-    if( AccionP_actual < valorCargando) //Si todavía no le alcanzan los AP carga 1 turno mas
+    if( AccionP_actual < valorCargando) //Si todavÃ­a no le alcanzan los AP carga 1 turno mas
     {
        valorCargando -= (int)AccionP_actual;
 
@@ -1691,7 +1794,7 @@ private void OnDestroy()
 public virtual void PerderEscondido()
 {
   estaEscondido = 0;
-  scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" ya no está escondido.")));
+  scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" ya no estÃ¡ escondido.")));
   GameObject overlayEscondido = ObtenerOverlayEscondidoGO();
   if (overlayEscondido != null)
   {
@@ -1700,10 +1803,10 @@ public virtual void PerderEscondido()
   SincronizarVisualEscondido();
   //aca agregar tratamientos de vfx de revelar etc.
 }
-public virtual void GanarEscondido(int n) // n es Tier de Escondido, 1 se va al recibir daño u atacar, 2 no se va al recibir daño ni atacar
+public virtual void GanarEscondido(int n) // n es Tier de Escondido, 1 se va al recibir daÃ±o u atacar, 2 no se va al recibir daÃ±o ni atacar
 {
   estaEscondido = n;
-  scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" está escondido.")));
+  scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" estÃ¡ escondido.")));
   GameObject overlayEscondido = ObtenerOverlayEscondidoGO();
   if (overlayEscondido != null)
   {
@@ -1712,7 +1815,7 @@ public virtual void GanarEscondido(int n) // n es Tier de Escondido, 1 se va al 
   SincronizarVisualEscondido();
   //aca agregar tratamientos de vfx de esconderse etc.
 }
-public int ObtenerEstaEscondido() // nes Tier de Escondido, 1 se va al recibir daño u atacar, 2 no se va al recibir daño ni atacar
+public int ObtenerEstaEscondido() // nes Tier de Escondido, 1 se va al recibir daÃ±o u atacar, 2 no se va al recibir daÃ±o ni atacar
 {
   return estaEscondido;
   //aca agregar tratamientos de vfx de esconderse etc.
@@ -1783,18 +1886,13 @@ private void AplicarOcultamientoVisualTotalPorEscondido()
   }
 
   Marcar(0);
-  anterior = null;
 
   BattleManager battleManager = BattleManager.Instance;
   if (battleManager != null
     && battleManager.scUIInfoChar != null
     && battleManager.scUIInfoChar.unidadMostrada == this)
   {
-    battleManager.scUIInfoChar.hayUnidadSeleccionadaParaInfo = false;
-    if (battleManager.unidadActiva != null)
-    {
-      battleManager.scUIInfoChar.ActualizarInfoChar(battleManager.unidadActiva);
-    }
+    battleManager.scUIInfoChar.RefrescarSegunEstadoActual();
   }
 }
 
@@ -1838,7 +1936,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     bool enIngles = IdiomaInglesActivo();
     string motivoCritico = enIngles
       ? nombreAtacante + " lands a critical hit on " + nombreVictima
-      : nombreAtacante + " asesta un golpe crítico a " + nombreVictima;
+      : nombreAtacante + " asesta un golpe crÃ­tico a " + nombreVictima;
     SumarValentia(1, motivoCritico);
   }
 
@@ -1848,7 +1946,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
   public virtual void RemoverBuffNombre(string nombreBuff)
   {
     Buff[] buffs = this.GetComponents<Buff>();
-    // Recorre cada buff y realiza una acción
+    // Recorre cada buff y realiza una acciÃ³n
     foreach (Buff buff in buffs)
     {
       if (buff.buffNombre == nombreBuff)
@@ -1923,7 +2021,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
   public bool TieneBuffNombre(string nombreBuff)
   {
     Buff[] buffs = this.GetComponents<Buff>();
-    // Recorre cada buff y realiza una acción
+    // Recorre cada buff y realiza una acciÃ³n
     foreach (Buff buff in buffs)
     {
       if (buff.buffNombre == nombreBuff)
@@ -1982,13 +2080,13 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
   private AudioSource audioSource;
 
   /// <summary>
-  /// Reproduce un sonido aleatorio de la lista de sonidos de recibir daño.
+  /// Reproduce un sonido aleatorio de la lista de sonidos de recibir daÃ±o.
   /// </summary>
   private int ultimoSonidoDanioIndex = -1;
   public async Task ReproducirSonidoRecibirDanio(int tipodanio)
   {
    
-  // Reproduce un sonido específico según el tipo de daño antes del await
+  // Reproduce un sonido especÃ­fico segÃºn el tipo de daÃ±o antes del await
   if (BattleManager.Instance != null && BattleManager.Instance.contenedorPrefabs != null)
   {
      await BattleManager.DelayCombateAsync(20);
@@ -2013,7 +2111,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       case 6: // Rayo
         clip = BattleManager.Instance.contenedorPrefabs.sonidoElectrico;
         break;
-      case 7: // Ácido
+      case 7: // Ãcido
         clip = BattleManager.Instance.contenedorPrefabs.sonidoAcido;
         break;
       case 8: // Arcano
@@ -2267,7 +2365,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     {
       mensaje = esIngles
         ? $"<color=#d92b08>{nombreLog} takes {danio} {tipoDanioTexto} extra damage.</color>"
-        : $"<color=#d92b08>{nombreLog} recibe {danio} de daño elemental extra {tipoDanioTexto}.</color>";
+        : $"<color=#d92b08>{nombreLog} recibe {danio} de daÃ±o elemental extra {tipoDanioTexto}.</color>";
     }
     else if (esIngles)
     {
@@ -2277,7 +2375,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     else
     {
       string bonusLogEs = bonusElemental > 0 ? $" (+{bonusElemental} bonus elemental)" : string.Empty;
-      mensaje = $"<color=#d92b08>{nombreLog} recibe {danio} de daño {tipoDanioTexto}{bonusLogEs}.</color>";
+      mensaje = $"<color=#d92b08>{nombreLog} recibe {danio} de daÃ±o {tipoDanioTexto}{bonusLogEs}.</color>";
     }
 
     if (!string.IsNullOrWhiteSpace(detalleCalculo))
@@ -2297,23 +2395,24 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       return;
     }
 
-    await BattleManager.DelayCombateAsync(delayEfectos); //Delay para que se vea el efecto de daño en la unidad antes de aplicar el daño
+    await BattleManager.DelayCombateAsync(delayEfectos); //Delay para que se vea el efecto de daÃ±o en la unidad antes de aplicar el daÃ±o
     float danioFinal = 0;
     bool textoDanioMostrado = false;
     bool absorbioPorArmadura = false;
+    UnidadCombatFeedbackFx combatFeedbackFx = GetComponent<UnidadCombatFeedbackFx>();
     string nombreLog = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;
     if (estado_invulnerable == 0)
     {
-      if (estaEscondido == 1) //Si esta escondido "1" (el escondido 2 perdura igual) y recibe daño, pierde el "escondido"
+      if (estaEscondido == 1) //Si esta escondido "1" (el escondido 2 perdura igual) y recibe daÃ±o, pierde el "escondido"
       { PerderEscondido(); }
 
-      if (estado_congelado > 0 && tipoDanio != 5) //Reduce estado congelado cada vez que es golpeado por daño no frío
+      if (estado_congelado > 0 && tipoDanio != 5) //Reduce estado congelado cada vez que es golpeado por daÃ±o no frÃ­o
       {
         estado_congelado--;
-        if (tipoDanio == 4) { estado_congelado = 0; } //Si recibe daño fuego, remueve congelado.
+        if (tipoDanio == 4) { estado_congelado = 0; } //Si recibe daÃ±o fuego, remueve congelado.
       }
 
-      if (estado_ardiendo > 0 && tipoDanio == 5) { estado_ardiendo = 0; } //Si recibe daño hielo y está ardiendo, remueve fuego.
+      if (estado_ardiendo > 0 && tipoDanio == 5) { estado_ardiendo = 0; } //Si recibe daÃ±o hielo y estÃ¡ ardiendo, remueve fuego.
 
 
       Color colorDanio = Color.white;
@@ -2347,7 +2446,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       bool aplicarAPModCrit = false;
       bool intentarCondenadoCrit = false;
 
-      if (esCritico) //Al ser crítico el daño se aplican los efectos segun tipo de daño
+      if (esCritico) //Al ser crÃ­tico el daÃ±o se aplican los efectos segun tipo de daÃ±o
       {
 
         switch (tipoDanio)
@@ -2434,7 +2533,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           case 1: usoArmaduraMitigacion = true; danioFinal = danio - armaduraEfectivaContraAtaque; colorDanio = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Cortante
           case 2: usoArmaduraMitigacion = true; danioFinal = danio - armaduraEfectivaContraAtaque; colorDanio = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Perforante
           case 3: usoArmaduraMitigacion = true; danioFinal = danio - armaduraEfectivaContraAtaque; colorDanio = Color.red; ReducirArmaduraPorGolpe(danioFinal);  break; //Contundente
-                                                                                                      //Los 3 primeros tipos de daño (físico) al ser golpeado y dañado, reduce en 1 la armadura.
+                                                                                                      //Los 3 primeros tipos de daÃ±o (fÃ­sico) al ser golpeado y daÃ±ado, reduce en 1 la armadura.
           case 4: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(1); danioFinal = danio - resistenciaAplicada; colorDanio = ColorDanioFuego; break; //Fuego
           case 5: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(2); danioFinal = danio - resistenciaAplicada; colorDanio = Color.cyan; break;//Hielo
           case 6: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(3); danioFinal = danio - resistenciaAplicada; colorDanio = Color.yellow; break; //Rayo
@@ -2455,18 +2554,18 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
 
       float barreraAntes = barreraDeDanio;
-      float danioBloqueado = Mathf.Min(danioFinal, barreraDeDanio); // Daño que la barrera absorbe
+      float danioBloqueado = Mathf.Min(danioFinal, barreraDeDanio); // DaÃ±o que la barrera absorbe
       if (danioBloqueado > 0)
       {
         barreraDeDanio -= danioBloqueado; // Reducimos la barrera
-        danioFinal -= danioBloqueado; // Reducimos el daño que pasará a la unidad
+        danioFinal -= danioBloqueado; // Reducimos el daÃ±o que pasarÃ¡ a la unidad
 
         // Aseguramos que la barrera no quede en valores negativos
         if (barreraDeDanio < 0) barreraDeDanio = 0;
 
         if (danioBloqueado > 0)
         {
-          BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(TRADU.i.Traducir("La Barrera de ") + uNombre + TRADU.i.Traducir(" absorbió ") + danioBloqueado + TRADU.i.Traducir(" de daño.")));
+          BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(TRADU.i.Traducir("La Barrera de ") + uNombre + TRADU.i.Traducir(" absorbiÃ³ ") + danioBloqueado + TRADU.i.Traducir(" de daÃ±o.")));
 
           int barreraMostrada = Mathf.RoundToInt(danioBloqueado);
           if (barreraMostrada > 0)
@@ -2488,7 +2587,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
       if (danioFinal < 0) { danioFinal = 0; }
 
-      //ESTADO ESCUDADO: 10% de bloquear todo el daño por cada stack de escudo
+      //ESTADO ESCUDADO: 10% de bloquear todo el daÃ±o por cada stack de escudo
       if (estado_Escudado > 0 && uCausante != null)
       {
         int chances = 10 * estado_Escudado;
@@ -2496,8 +2595,9 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         if (random <= chances)
         {
           danioFinal = 0;
-          scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" bloquea el daño con su escudo.")));
+          scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" bloquea el daÃ±o con su escudo.")));
           GenerarTextoFlotante(TRADU.i.Traducir("Bloqueado"), Color.cyan, FloatingTextContext.Block);
+          combatFeedbackFx?.PlayGuardImpact(Color.cyan);
           estado_Escudado--;
           textoDanioMostrado = true;
         }
@@ -2511,13 +2611,14 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       if (danioFinal > 0)
       {
         ReproducirAnimacionRecibirDanio();
+        combatFeedbackFx?.PlayDamageImpact(colorDanio, esCritico, tipoDanio);
         ChequearCorrompidoVsCorrupto(uCausante, danioFinal);
         BajarVuelo();
         estado_evasion = 0;
         if (uCausante != null)
         {
-          uCausante.OcasionoDanioaEnemigo(this, tipoDanio, esCritico, danioFinal); //se le avisa al causante que le hizo daño a la unidad, para lo que sea.
-          LlamarReacciones(2, uCausante, false, danio, tipoDanio); //Llama a las reacciones de la unidad que recibe el daño.
+          uCausante.OcasionoDanioaEnemigo(this, tipoDanio, esCritico, danioFinal); //se le avisa al causante que le hizo daÃ±o a la unidad, para lo que sea.
+          LlamarReacciones(2, uCausante, false, danio, tipoDanio); //Llama a las reacciones de la unidad que recibe el daÃ±o.
         }
         if (danioFinal > 2)
         {
@@ -2657,6 +2758,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
    
       if (absorbioPorArmadura)
       {
+        combatFeedbackFx?.PlayGuardImpact(new Color(1f, 0.9f, 0.2f, 1f));
         if (scTextoArmaduraFlash != null)
         {
           scTextoArmaduraFlash.Flash(new Color(1f, 0.9f, 0.2f, 1f));
@@ -2744,7 +2846,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
       else if (scUnidadCanvas.txtDaño != null)
       {
-        // No mostrar texto si el daño es 0
+        // No mostrar texto si el daÃ±o es 0
         scUnidadCanvas.txtDaño.text = "";
       }
 
@@ -2754,7 +2856,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         bool enIngles = IdiomaInglesActivo();
         string motivoCritRecibido = enIngles
           ? nombreUnidad + " receives a critical hit"
-          : nombreUnidad + " recibe un golpe crítico";
+          : nombreUnidad + " recibe un golpe crÃ­tico";
         SumarValentia(-1, motivoCritRecibido);
       }
       
@@ -3233,8 +3335,8 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     {
       if (estado_Corrupto)
       {
-        // Aplicar efectos de corrupción
-        float danioCorrupto = danio * 0.15f; // Ejemplo: 15% de daño adicional
+        // Aplicar efectos de corrupciÃ³n
+        float danioCorrupto = danio * 0.15f; // Ejemplo: 15% de daÃ±o adicional
 
         RecibirDanioBonusElemental(danioCorrupto, 9, this);
         causante.RecibirCuracion(danioCorrupto, false);
@@ -3246,21 +3348,21 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
   {
     float danioFinal = 0;
     int danio = UnityEngine.Random.Range(1, (int)Xddanio + 1);
-    //el daño del buff elemental es 1d(buff elemental), o sea si tiene 3 de buff, el daño es 1d3.
+    //el daÃ±o del buff elemental es 1d(buff elemental), o sea si tiene 3 de buff, el daÃ±o es 1d3.
     string nombreLog = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;
 
     if (estado_invulnerable == 0 && HP_actual > 0)
     {
-      if (estaEscondido == 1) //Si esta escondido "1" (el escondido 2 perdura igual) y recibe daño, pierde el "escondido"
+      if (estaEscondido == 1) //Si esta escondido "1" (el escondido 2 perdura igual) y recibe daÃ±o, pierde el "escondido"
       { PerderEscondido(); }
 
-      if (estado_congelado > 0 && tipoDanio != 5) //Reduce estado congelado cada vez que es golpeado por daño no frío
+      if (estado_congelado > 0 && tipoDanio != 5) //Reduce estado congelado cada vez que es golpeado por daÃ±o no frÃ­o
       {
         estado_congelado--;
-        if (tipoDanio == 4) { estado_congelado = 0; } //Si recibe daño fuego, remueve congelado.
+        if (tipoDanio == 4) { estado_congelado = 0; } //Si recibe daÃ±o fuego, remueve congelado.
       }
 
-      if (estado_ardiendo > 0 && tipoDanio == 5) { estado_ardiendo = 0; } //Si recibe daño hielo y está ardiendo, remueve fuego.
+      if (estado_ardiendo > 0 && tipoDanio == 5) { estado_ardiendo = 0; } //Si recibe daÃ±o hielo y estÃ¡ ardiendo, remueve fuego.
 
 
       Color colorDanioElemental = Color.white;
@@ -3292,7 +3394,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         case 1: usoArmaduraMitigacion = true; danioFinal = danio - armaduraEfectivaContraAtaque; colorDanioElemental = Color.red; break; //Cortante
         case 2: usoArmaduraMitigacion = true; danioFinal = danio - armaduraEfectivaContraAtaque; colorDanioElemental = Color.red; break; //Perforante
         case 3: usoArmaduraMitigacion = true; danioFinal = danio - armaduraEfectivaContraAtaque; colorDanioElemental = Color.red; break; //Contundente
-        //Los 3 primeros tipos de daño (físico) al ser golpeado y dañado, reduce en 1 la armadura.
+        //Los 3 primeros tipos de daÃ±o (fÃ­sico) al ser golpeado y daÃ±ado, reduce en 1 la armadura.
         case 4: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(1); danioFinal = danio - resistenciaAplicada; colorDanioElemental = ColorDanioFuego; break; //Fuego
         case 5: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(2); danioFinal = danio - resistenciaAplicada; colorDanioElemental = Color.cyan; break;//Hielo
         case 6: usoResistenciaMitigacion = true; resistenciaAplicada = ObtenerResistenciaA(3); danioFinal = danio - resistenciaAplicada; colorDanioElemental = Color.yellow; break; //Rayo
@@ -3354,7 +3456,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
       else if (scUnidadCanvas.txtDaño != null)
       {
-        // No mostrar texto si el daño es 0
+        // No mostrar texto si el daÃ±o es 0
         scUnidadCanvas.txtDaño.text = "";
       }
       if (danioFinalInt > 0)
@@ -3440,7 +3542,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
    if(!yaEstaHerido && !TieneTag("Etereo") && !TieneTag("Nomuerto"))
     {
     
-      //BUFF ---- Así se aplica un buff/debuff
+      //BUFF ---- AsÃ­ se aplica un buff/debuff
        Buff Herida = new Buff();
        Herida.buffNombre = "Herida";
        Herida.boolfDebufftBuff = false;
@@ -3450,7 +3552,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
        Herida.cantAtAgi -= 1;
        Herida.cantAtPod -= 1;
        Herida.AplicarBuff(this);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
        Buff buffComponent = ComponentCopier.CopyComponent(Herida, gameObject);
        //--------------------------------------
 
@@ -3594,6 +3696,7 @@ public virtual void FalloAtaqueRecibido(Unidad uOrigen, bool melee)
    return;
  }
 
+ GetComponent<UnidadCombatFeedbackFx>()?.PlayMissGlint();
  ReproducirAnimacionMiss();
  LlamarReacciones(1, uOrigen, melee);
 }
@@ -3667,7 +3770,7 @@ public virtual void SumarValentia(int cant, string motivo = null, bool mostrarTe
       string verbo = TRADU.i != null
         ? TRADU.i.Traducir(esGanancia ? " gana " : " pierde ")
         : (esGanancia ? " gana " : " pierde ");
-      string sufijoValentia = TRADU.i != null ? TRADU.i.Traducir(" de Valentía.") : " de Valentía.";
+      string sufijoValentia = TRADU.i != null ? TRADU.i.Traducir(" de ValentÃ­a.") : " de ValentÃ­a.";
       scBattleManager.EscribirLog(
         CombatLogFormatter.EventoValour(nombreUnidad + verbo + cambioAbs + sufijoValentia));
     }
@@ -3678,12 +3781,7 @@ public virtual void SumarValentia(int cant, string motivo = null, bool mostrarTe
     UIInfoChar infoChar = BattleManager.Instance.scUIInfoChar;
     if (infoChar != null)
     {
-      bool mostrandoEstaUnidad = infoChar.unidadMostrada == this;
-      bool mostrandoActivoAutomatico = !infoChar.hayUnidadSeleccionadaParaInfo && BattleManager.Instance.unidadActiva == this;
-      if (mostrandoEstaUnidad || mostrandoActivoAutomatico)
-      {
-        infoChar.ActualizarInfoChar(this);
-      }
+      infoChar.RefrescarSiVisible(this);
     }
 
     BattleManager.Instance.NotificarCambioValourGlobal();
@@ -3749,7 +3847,7 @@ public virtual void ChequearBuffsDeValentia(float inicial, float cambio)
   }
   //Motivado fin--------
 
-  //Eufórico--------
+  //EufÃ³rico--------
   if(valorInicial < 5 && valorFinal >= 5) //Chequea si tiene 5 o mas valentia al haber tenido menos antes
   {
     AplicarEuforico();
@@ -3810,7 +3908,7 @@ public virtual void ChequearBuffsDeValentia(float inicial, float cambio)
 public virtual void AplicarMotivado()
 {
  /////////////////////////////////////////////
-      //BUFF ---- Así se aplica un buff/debuff
+      //BUFF ---- AsÃ­ se aplica un buff/debuff
        Buff motivado = new Buff();
        motivado.buffNombre = "Motivado";
        motivado.suprimeTextoFlotante = true;
@@ -3821,13 +3919,13 @@ public virtual void AplicarMotivado()
        motivado.cantTsFortaleza += 1;
        motivado.cantTsReflejos += 1;
        motivado.AplicarBuff(this);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
        Buff buffComponent = ComponentCopier.CopyComponent(motivado, gameObject);
 }
 public virtual void AplicarDesmotivado()
 {
    /////////////////////////////////////////////
-      //BUFF ---- Así se aplica un buff/debuff
+      //BUFF ---- AsÃ­ se aplica un buff/debuff
        Buff motivado = new Buff();
        motivado.buffNombre = "Desmotivado";
        motivado.suprimeTextoFlotante = true;
@@ -3838,13 +3936,13 @@ public virtual void AplicarDesmotivado()
        motivado.cantTsFortaleza -= 1;
        motivado.cantTsReflejos -= 1;
        motivado.AplicarBuff(this);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
        Buff buffComponent = ComponentCopier.CopyComponent(motivado, gameObject);
 }
 public virtual void AplicarEuforico()
 {
    /////////////////////////////////////////////
-      //BUFF ---- Así se aplica un buff/debuff
+      //BUFF ---- AsÃ­ se aplica un buff/debuff
        Buff motivado = new Buff();
        motivado.buffNombre = "Euforia";
        motivado.suprimeTextoFlotante = true;
@@ -3855,13 +3953,13 @@ public virtual void AplicarEuforico()
        motivado.cantAtPod += 1;
        motivado.cantAtAgi += 1;
        motivado.AplicarBuff(this);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
        Buff buffComponent = ComponentCopier.CopyComponent(motivado, gameObject);
 }
 public virtual void AplicarDesesperanzado()
 {
       /////////////////////////////////////////////
-      //BUFF ---- Así se aplica un buff/debuff
+      //BUFF ---- AsÃ­ se aplica un buff/debuff
        Buff motivado = new Buff();
        motivado.buffNombre = "Desesperanzado";
        motivado.suprimeTextoFlotante = true;
@@ -3872,7 +3970,7 @@ public virtual void AplicarDesesperanzado()
        motivado.cantAtPod -= 1;
        motivado.cantAtAgi -= 1;
        motivado.AplicarBuff(this);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+      // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
       Buff buffComponent = ComponentCopier.CopyComponent(motivado, gameObject);
 }
 
@@ -4057,10 +4155,10 @@ public virtual void AplicarDesesperanzado()
 public void RecibirCuracion(float curacion, bool magica)
 {
   
- //Cada stack de sangrado previene 2 de curación y se elimina
+ //Cada stack de sangrado previene 2 de curaciÃ³n y se elimina
  float curaFinal = curacion;
  curaFinal -= estado_sangrado*2;
- curaFinal -= tejidoCuracMagica; //Resta el tejido curativo mágico
+ curaFinal -= tejidoCuracMagica; //Resta el tejido curativo mÃ¡gico
  if(curaFinal < 0 ){ curaFinal = 0;}
 
  estado_sangrado -= (int)(curacion/2);
@@ -4072,9 +4170,9 @@ public void RecibirCuracion(float curacion, bool magica)
   HP_actual += (int)curaFinal;
  if(HP_actual > mod_maxHP){HP_actual = mod_maxHP; }
   GenerarTextoFlotante(TRADU.i.Traducir("Cura ")+(int)curaFinal, Color.green, FloatingTextContext.Heal);
-  scBattleManager.EscribirLog(CombatLogFormatter.EventoCuracion(uNombre+TRADU.i.Traducir(" recibe <color=#11c66b>") +curaFinal+TRADU.i.Traducir("</color> de curación.")));
+  scBattleManager.EscribirLog(CombatLogFormatter.EventoCuracion(uNombre+TRADU.i.Traducir(" recibe <color=#11c66b>") +curaFinal+TRADU.i.Traducir("</color> de curaciÃ³n.")));
 
-  if(magica){ tejidoCuracMagica += (int)curaFinal/5;} //Cada 5 curación mágica se suma 1 de residuo tejido curativo que previene 1 de futuras curaciones.
+  if(magica){ tejidoCuracMagica += (int)curaFinal/5;} //Cada 5 curaciÃ³n mÃ¡gica se suma 1 de residuo tejido curativo que previene 1 de futuras curaciones.
  }
 
  ActualizarBarraVidaPropia();
@@ -4093,7 +4191,7 @@ public void RecibirCuracion(float curacion, bool magica)
 
     if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
     {
-      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+      BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(this);
     }
   
     
@@ -4105,27 +4203,38 @@ public void UnidadMuere()
 {  
   if(!yaMurio)
   {
+   Casilla casillaMuerte = CasillaPosicion;
    yaMurio = true;
+   CancelarMovimientoPendiente();
    GenerarTextoFlotante(TRADU.i.Traducir("Muerto"), new Color(0.35f, 0.35f, 0.35f), FloatingTextContext.Resist);
 
-   scBattleManager.OnRondaNueva  -= BattleManager_OnRondaNueva;
-   scBattleManager.RemoverUnidadDeOrdenTurno(this);
-   CasillaPosicion.ladoGO.GetComponent<LadoManager>().unidadesLado.Remove(this);
+   if (scBattleManager != null)
+   {
+     scBattleManager.OnRondaNueva  -= BattleManager_OnRondaNueva;
+     scBattleManager.RemoverUnidadDeOrdenTurno(this);
+   }
+   if (casillaMuerte != null && casillaMuerte.ladoGO != null)
+   {
+     casillaMuerte.ladoGO.GetComponent<LadoManager>().unidadesLado.Remove(this);
+   }
    AccionP_actual = 0;
    
    LlamarReacciones(3,this, false); //Reacciones al morir
    
 
-   BattleManager.Instance.scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
+   if (BattleManager.Instance != null && BattleManager.Instance.scUIBarraOrdenTurno != null)
+   {
+     BattleManager.Instance.scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
+   }
   
-   if(BattleManager.Instance.unidadActiva == this && gameObject.GetComponent<IAUnidad>() == null)
+   if(BattleManager.Instance != null && BattleManager.Instance.unidadActiva == this && gameObject.GetComponent<IAUnidad>() == null)
    {
     BattleManager.Instance.TerminarTurno(); //termina el turno del personaje no IA que muera
    }
    
    ReproducirAnimacionMorir();
    
-   if (CasillaPosicion != null && CasillaPosicion.lado == 2) // Penaliza valentía de aliados del jugador al caer un aliado.
+   if (casillaMuerte != null && casillaMuerte.lado == 2) // Penaliza valentÃ­a de aliados del jugador al caer un aliado.
    {
      bool caidoEraIAAliada = GetComponent<IAUnidad>() != null;
      int perdidaValentia = caidoEraIAAliada ? -1 : -3;
@@ -4142,7 +4251,7 @@ public void UnidadMuere()
        string nombreAliado = NombreUnidadParaLog(aliado);
        string motivo = enIngles
          ? nombreAliado + " loses morale after " + nombreCaido + " falls"
-         : nombreAliado + " pierde ánimo al caer " + nombreCaido;
+         : nombreAliado + " pierde Ã¡nimo al caer " + nombreCaido;
        aliado.SumarValentia(perdidaValentia, motivo, mostrarTextoFlotante: false);
      }
 
@@ -4156,7 +4265,7 @@ public void UnidadMuere()
        string mensajeAdmirado = idiomaTrait switch
        {
          TRADU.IdiomaIngles => personajeCaido.sNombre + " falls in battle. -10 Hope.",
-         TRADU.IdiomaPortugues => personajeCaido.sNombre + " cai em batalha. -10 de Esperança.",
+         TRADU.IdiomaPortugues => personajeCaido.sNombre + " cai em batalha. -10 de EsperanÃ§a.",
          _ => personajeCaido.sNombre + " cae en combate. -10 Esperanza."
        };
        campTraits.EscribirLog("-" + mensajeAdmirado);
@@ -4165,12 +4274,15 @@ public void UnidadMuere()
      adminTraits?.RefrescarTraitsComposicionAliada();
    }
    
-   CasillaPosicion.Presente = null;
+   if (casillaMuerte != null && casillaMuerte.Presente == gameObject)
+   {
+     casillaMuerte.Presente = null;
+   }
    Invoke("DesactivarGOconDelay", 1.4f); 
 
 
     string nombreUnidadLog = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;
-    if(CasillaPosicion.lado == 1)
+    if(casillaMuerte != null && casillaMuerte.lado == 1)
     {
           scBattleManager.EscribirLog(CombatLogFormatter.EventoMuerte($"<color=#d92b08>{nombreUnidadLog}{TRADU.i.Traducir(" muere.")}</color>"));
 
@@ -4205,9 +4317,7 @@ public bool RetirarseDeBatallaPorMoral()
 
   Casilla casillaRetirada = CasillaPosicion;
   yaSeRetiro = true;
-  movimientoEnCurso = false;
-  CasillaDeseadaMov = null;
-  CasillaForzadoaMover = null;
+  CancelarMovimientoPendiente();
 
   if (scBattleManager != null)
   {
@@ -4350,6 +4460,11 @@ void DesactivarGOconDelay()
     scBattleManager.RemoverUnidadDeOrdenTurno(this);
   }
 
+  if (CasillaPosicion != null && CasillaPosicion.Presente == gameObject)
+  {
+    CasillaPosicion.Presente = null;
+  }
+
   if (BattleManager.Instance != null && BattleManager.Instance.scUIBarraOrdenTurno != null)
   {
     BattleManager.Instance.scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
@@ -4466,7 +4581,7 @@ public float ObtenerResistenciaA(int tipo)
      case 1: res = mod_ResFuego; break; //Fuego
      case 2: res = mod_ResHielo; break; //Hielo
      case 3: res = mod_ResRayo; break; //Rayo
-     case 4: res = mod_ResAcido; break; //Ácido
+     case 4: res = mod_ResAcido; break; //Ãcido
      case 5: res = mod_ResArcano; break; //Arcano
      case 6: res = mod_ResNecro; break; //Necro
      case 7: res = mod_ResDivino; break; //Divino
@@ -4559,7 +4674,6 @@ public void Marcar(int n)
     }
   }
 
-Unidad anterior = null;
 public void OnMouseEnter() 
 {
     if (EstaOcultoVisualmenteParaJugador())
@@ -4571,14 +4685,11 @@ public void OnMouseEnter()
     {
       TooltipBatalla.Instance?.HideTooltipSinAnim();
     }
- 
-    anterior = null;
-    Marcar(1);
 
-    if(BattleManager.Instance.scUIInfoChar.unidadMostrada != BattleManager.Instance.unidadActiva)
-    {anterior = BattleManager.Instance.scUIInfoChar.unidadMostrada; }
-    
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+    if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
+    {
+      BattleManager.Instance.scUIInfoChar.MostrarHover(this);
+    }
 
      if(scBattleManager.SeleccionandoObjetivo)
      {
@@ -4594,19 +4705,9 @@ public void OnMouseExit()
       return;
     }
 
-   
-    if(anterior != null)
+    if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
     {
-        BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(anterior);
-       if(anterior != BattleManager.Instance.unidadActiva)
-        {anterior.Marcar(1);}
-
-     
-    }
-    else
-    { 
-      BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(BattleManager.Instance.unidadActiva);
-     
+      BattleManager.Instance.scUIInfoChar.LimpiarHover(this);
     }
 
       if(scBattleManager.SeleccionandoObjetivo)
@@ -4663,33 +4764,14 @@ public async void OnMouseDown()
         {
           List<object> listaUno = new List<object> { this };
           await scBattleManager.HabilidadActiva.Resolver(listaUno);
-          BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(anterior);
+          BattleManager.Instance.scUIInfoChar.RefrescarSegunEstadoActual();
         }
       }
     }
-    else
+    else if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
     {
-      if (anterior == this)
-      {
-        BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo = false;
-        BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(anterior);
-        Marcar(0); anterior = null;
-      }
-      else if (BattleManager.Instance.scUIInfoChar.unidadMostrada != this || BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo == false || anterior != null)
-      {
-        BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
-        BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo = true;
-        Marcar(1); anterior = this;
-      }
-      else
-      {
-        BattleManager.Instance.scUIInfoChar.hayUnidadSeleccionadaParaInfo = false;
-        Marcar(0); anterior = null;
-      }
-
-  }
-
- 
+      BattleManager.Instance.scUIInfoChar.ToggleFijado(this);
+    }
 }
 
   public virtual bool TiradaSalvacion(float atributoDefiende, float dificultadHabilidada, bool porValourGlobal = false) //TRUE no se salva FALSE se salva (xd)
@@ -4735,11 +4817,9 @@ public async void OnMouseDown()
   
   public void ForzarMoverAPrimeraFila()
   {
-    Casilla casillaOrigen = movimientoForzadoPendiente && CasillaForzadoaMover != null
-      ? CasillaForzadoaMover
-      : CasillaPosicion;
+    Casilla casillaOrigen = ObtenerCasillaReferenciaMovimientoForzado();
 
-    if (casillaOrigen == null || casillaOrigen.ladoGO == null)
+    if (EstaFueraDeCombate() || casillaOrigen == null || casillaOrigen.ladoGO == null)
     {
       return;
     }
@@ -4766,26 +4846,17 @@ public async void OnMouseDown()
       }
     }
 
-    if (destino == null || destino == CasillaPosicion || destino == CasillaForzadoaMover)
-    {
-      return;
-    }
-
-    CasillaForzadoaMover = destino;
-    CasillaDeseadaMov = null;
-    movimientoForzadoPendiente = true;
+    IntentarProgramarMovimientoForzado(destino);
   }
 
   public void EmpujarUnidad(int cantidad)
   {
-    if (cantidad <= 0)
+    if (cantidad <= 0 || EstaFueraDeCombate())
     {
       return;
     }
 
-    Casilla casillaOrigen = movimientoForzadoPendiente && CasillaForzadoaMover != null
-      ? CasillaForzadoaMover
-      : CasillaPosicion;
+    Casilla casillaOrigen = ObtenerCasillaReferenciaMovimientoForzado();
 
     if (casillaOrigen == null || casillaOrigen.ladoGO == null)
     {
@@ -4819,31 +4890,27 @@ public async void OnMouseDown()
       destino = casillaAtras;
     }
 
-    if (destino == null || destino == CasillaPosicion || destino == CasillaForzadoaMover)
-    {
-      return;
-    }
-
-    CasillaForzadoaMover = destino;
-    CasillaDeseadaMov = null;
-    movimientoForzadoPendiente = true;
+    IntentarProgramarMovimientoForzado(destino);
   }
 
   public void ForzarSiguienteMovimientoForzadoInmediato()
   {
+    if (EstaFueraDeCombate())
+    {
+      return;
+    }
+
     forzarSiguienteMovimientoForzadoInmediato = true;
   }
 
   public void JalarUnidad(int cantidad)
   {
-    if (cantidad <= 0)
+    if (cantidad <= 0 || EstaFueraDeCombate())
     {
       return;
     }
 
-    Casilla casillaOrigen = movimientoForzadoPendiente && CasillaForzadoaMover != null
-      ? CasillaForzadoaMover
-      : CasillaPosicion;
+    Casilla casillaOrigen = ObtenerCasillaReferenciaMovimientoForzado();
 
     if (casillaOrigen == null || casillaOrigen.ladoGO == null)
     {
@@ -4883,23 +4950,16 @@ public async void OnMouseDown()
       destino = casillaAdelante;
     }
 
-    if (destino == null || destino == CasillaPosicion || destino == CasillaForzadoaMover)
-    {
-      return;
-    }
-
-    CasillaForzadoaMover = destino;
-    CasillaDeseadaMov = null;
-    movimientoForzadoPendiente = true;
+    IntentarProgramarMovimientoForzado(destino);
   }
 
-  public virtual void ActualizarClaseComienzoTurno() //Método vacío que se llama cada vez que arranca turno de la unidad
+  public virtual void ActualizarClaseComienzoTurno() //MÃ©todo vacÃ­o que se llama cada vez que arranca turno de la unidad
   {
     //---
     //VACIO
-    //Cada clase lo usará para determinar ciertos efectos en cada turno
+    //Cada clase lo usarÃ¡ para determinar ciertos efectos en cada turno
   }
-  public virtual void ComienzoBatallaClase() //Método vacío que se llama al comenzar la batalla
+  public virtual void ComienzoBatallaClase() //MÃ©todo vacÃ­o que se llama al comenzar la batalla
   {
     // Seguridad: recalcula por si la unidad llega con stats seteados por otra via.
     RecalcularVidaPorFuerza(true);
@@ -4918,14 +4978,14 @@ public async void OnMouseDown()
 void AcomodarSortingLayer()
 {
     
-    // 1) Encontrar el/los canvas aunque están desactivados
+    // 1) Encontrar el/los canvas aunque estÃ¡n desactivados
     var canvases = GetComponentsInChildren<Canvas>(true);
     if (canvases == null || canvases.Length == 0)
     {
-        print($"{name}: no encontró Canvas en hijos");
+        print($"{name}: no encontrÃ³ Canvas en hijos");
     }
 
-    // 2) Orden por Y de la casilla (fallback por posición mundial)
+    // 2) Orden por Y de la casilla (fallback por posiciÃ³n mundial)
     int y = (CasillaPosicion != null) ? CasillaPosicion.posY
                                       : 0;
     int orden = RenderOrderHelper.CalcularOrdenPorY(y);
@@ -4934,12 +4994,12 @@ void AcomodarSortingLayer()
     {
       foreach (var c in canvases)
       {
-          // Recomendado: World Space (o Screen Space - Camera con tu cámara de batalla)
+          // Recomendado: World Space (o Screen Space - Camera con tu cÃ¡mara de batalla)
           if (c.renderMode == RenderMode.ScreenSpaceOverlay)
               c.renderMode = RenderMode.WorldSpace;
 
           // (Opcional) si usas ScreenSpace-Camera:
-          // c.worldCamera = Camera.main; // o tu cámara de batalla
+          // c.worldCamera = Camera.main; // o tu cÃ¡mara de batalla
       }
     }
 
@@ -4948,7 +5008,7 @@ void AcomodarSortingLayer()
     Canvas.ForceUpdateCanvases();
 
 }
-  public void LlamarReacciones(int tipo, Unidad unidadtercero, bool melee, float variableFlexible1 = 0,  float variableFlexible2 = 0)  //tipo de Trigger de la reaccion en cuestión
+  public void LlamarReacciones(int tipo, Unidad unidadtercero, bool melee, float variableFlexible1 = 0,  float variableFlexible2 = 0)  //tipo de Trigger de la reaccion en cuestiÃ³n
   {
     foreach(Reaccion reaccion in gameObject.GetComponents<Reaccion>())
     {
@@ -4963,7 +5023,7 @@ void AcomodarSortingLayer()
   {
     foreach(Reaccion reaccion in gameObject.GetComponents<Reaccion>())
     {
-      if(tipo == -1){return true;} //Si encuentra alguna reacción y el tipo buscado es -1 (cualquiera) devuelve true
+      if(tipo == -1){return true;} //Si encuentra alguna reacciÃ³n y el tipo buscado es -1 (cualquiera) devuelve true
       if(reaccion.TipoTrigger == tipo)
       {
         return true;
@@ -5079,7 +5139,7 @@ void AcomodarSortingLayer()
       string nombreAliado = NombreUnidadParaLog(aliadoBajaVal);
       string motivo = enIngles
         ? nombreUnidad + " moves next to low-valour ally " + nombreAliado
-        : nombreUnidad + " se acerca al aliado de valentía baja " + nombreAliado;
+        : nombreUnidad + " se acerca al aliado de valentÃ­a baja " + nombreAliado;
       SumarValentia(-1, motivo);
       bonusAcercamientoValentiaAplicadoTurno = true;
       return;
@@ -5092,7 +5152,7 @@ void AcomodarSortingLayer()
       string nombreAliado = NombreUnidadParaLog(aliadoAltaVal);
       string motivo = enIngles
         ? nombreUnidad + " moves next to high-valour ally " + nombreAliado
-        : nombreUnidad + " se acerca al aliado de valentía alta " + nombreAliado;
+        : nombreUnidad + " se acerca al aliado de valentÃ­a alta " + nombreAliado;
       SumarValentia(1, motivo);
       bonusAcercamientoValentiaAplicadoTurno = true;
     }
@@ -5140,7 +5200,7 @@ void AcomodarSortingLayer()
 
   void ChequearHayBarricadaAdelante()
   { 
-     // Si la casilla de adelante en el eje X tiene un obstáculo llamado "Barricada", gana un buff
+     // Si la casilla de adelante en el eje X tiene un obstÃ¡culo llamado "Barricada", gana un buff
     if (CasillaPosicion != null)
     {
       // Obtener la casilla de adelante (eje X +1)
@@ -5148,7 +5208,7 @@ void AcomodarSortingLayer()
       if (casillaAdelante != null && casillaAdelante.Presente != null)
       {
         GameObject obstaculo = casillaAdelante.Presente;
-        if (obstaculo.GetComponent<Obstaculo>() == null) { return; } // Si no es un obstáculo, no hacemos nada
+        if (obstaculo.GetComponent<Obstaculo>() == null) { return; } // Si no es un obstÃ¡culo, no hacemos nada
         if (obstaculo.GetComponent<Obstaculo>().oName.Contains("Barricada"))
         {
           // Aplica el buff "Cobertura de Barricada" si no lo tiene
@@ -5171,7 +5231,7 @@ void AcomodarSortingLayer()
       }
       else
       {
-        // Si no hay casilla adelante o no hay obstáculo, remueve el buff si lo tiene
+        // Si no hay casilla adelante o no hay obstÃ¡culo, remueve el buff si lo tiene
         RemoverBuffNombre("Cobertura de Barricada");
       }
     }
@@ -5274,3 +5334,4 @@ void AcomodarSortingLayer()
        
   }
 }
+

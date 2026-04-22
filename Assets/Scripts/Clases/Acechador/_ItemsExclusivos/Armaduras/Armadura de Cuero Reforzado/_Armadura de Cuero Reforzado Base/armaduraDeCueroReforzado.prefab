@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Armadura de Cuero Reforzado
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 04000000
-  iPrecio: 47
+  iPrecio: 85
   itemDescripcion: "<i>Una Armadura de Cuero que brinda una decente protecci\xF3n
     al Acechador mientras le permite moverse con sigilo.</i>\n\n+3 Armadura"
   iRareza: 0

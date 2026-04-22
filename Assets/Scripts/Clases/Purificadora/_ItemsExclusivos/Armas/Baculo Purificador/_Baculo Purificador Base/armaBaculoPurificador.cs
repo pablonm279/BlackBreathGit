@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+
 public class armaBaculoPurificador : Arma
 {
-
-
    void Awake()
    {
       string nmejora = "";
@@ -14,11 +13,6 @@ public class armaBaculoPurificador : Arma
       {
          nmejora = "+" + nivelMejora;
       }
-      else
-      {
-         nmejora = "";
-      }
-
 
       //Aca se pone la variante basica de cada item, luego se traduce y se le agrega el +1,+2,+3,+4,+5 si es que tiene mejora
       if (sNombreItem == "Baculo Purificador")
@@ -26,7 +20,7 @@ public class armaBaculoPurificador : Arma
          if (TRADU.i.nIdioma == 1)
          {
             sNombreItem = "Báculo Purificador " + nmejora;
-            itemDescripcion = "Un báculo que irradia energía purificadora.\n\nHabilidad de ataque: Golpe bastón.";
+            itemDescripcion = "Un báculo que irradia energía purificadora.\n\nHabilidad de ataque: Golpe de Bastón.";
          }
          else if (TRADU.i.nIdioma == 2)
          {
@@ -39,16 +33,44 @@ public class armaBaculoPurificador : Arma
             itemDescripcion = "Um bastao que irradia energia purificadora.\n\nHabilidade de ataque: Golpe de Bastao.";
          }
       }
-      //Si hay variantes especiales, se ponen aca abajo
+      else if (sNombreItem == "Baculo de Llama Sacra")
+      {
+         if (TRADU.i.nIdioma == 1)
+         {
+            sNombreItem = "Báculo de Llama Sacra " + nmejora;
+            itemDescripcion = "Un báculo encendido con fuego sagrado para castigar a los impuros.\n\nHabilidad de ataque: Llama Sacra.\nAplica Ardiendo y causa daño extra a Etéreos, Nomuertos y Corruptos.";
+         }
+         else if (TRADU.i.nIdioma == 2)
+         {
+            sNombreItem = "Staff of Sacred Flame " + nmejora;
+            itemDescripcion = "A staff kindled with sacred fire to punish the impure.\n\nAttack ability: Sacred Flame.\nApplies Burning and deals extra damage to Ethereal, Undead, and Corrupted targets.";
+         }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Cajado da Chama Sagrada " + nmejora;
+            itemDescripcion = "Um cajado aceso com fogo sagrado para punir os impuros.\n\nHabilidade de ataque: Chama Sagrada.\nAplica Ardendo e causa dano extra a Etereo, Nomuerto e Corrupto.";
+         }
+      }
+      else if (sNombreItem == "Baculo del Ultimo Rito")
+      {
+         if (TRADU.i.nIdioma == 1)
+         {
+            sNombreItem = "Báculo del Último Rito " + nmejora;
+            itemDescripcion = "Un báculo funerario que resquebraja el alma del enemigo al impactar.\n\nHabilidad de ataque: Golpe de Bastón.\nEfecto del arma: Alma Quebrada (-TS Mental, -Res Divino, -Res Necro).";
+         }
+         else if (TRADU.i.nIdioma == 2)
+         {
+            sNombreItem = "Staff of the Final Rite " + nmejora;
+            itemDescripcion = "A funerary staff that splinters the enemy's soul on impact.\n\nAttack ability: Staff Strike.\nWeapon effect: Shattered Soul (-Mental Save, -Divine Res, -Necro Res).";
+         }
+         else if (TRADU.i.nIdioma == 3)
+         {
+            sNombreItem = "Cajado do Ultimo Rito " + nmejora;
+            itemDescripcion = "Um cajado funerario que estilhaca a alma do inimigo ao impactar.\n\nHabilidade de ataque: Golpe de Bastao.\nEfeito da arma: Alma Quebrada (-TS Mental, -Res Divino, -Res Necro).";
+         }
+      }
 
-
-
-
-
-       //------
+      //------
       AgregarStatsArmaaDescripcion();
    }
-   
 }
-
-

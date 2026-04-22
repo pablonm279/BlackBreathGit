@@ -205,8 +205,8 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
     private void ActualizarSeleccionado()
     {
         bool mostrarSeleccionado = scUInfochar.hayUnidadSeleccionadaParaInfo
-            && scUInfochar.unidadMostrada != null
-            && scUInfochar.unidadMostrada == scUnidad;
+            && scUInfochar.unidadFijadaActual != null
+            && scUInfochar.unidadFijadaActual == scUnidad;
 
         if (seleccionado != null)
         {
@@ -242,7 +242,6 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
         ActualizarOscurecedor();
     }
 
-    Unidad anterior = null;
     public void MarcarUnidadRepresentada(int n) //1 es entra mouse, 0 es sale
     {
         if (scUnidad == null)
@@ -250,13 +249,31 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
             return;
         }
 
+        ActualizarReferencias();
+        if (scUInfochar == null)
+        {
+            return;
+        }
+
         if(n == 1) //entra mouse
         {
-          scUnidad.OnMouseEnter();
+          scUInfochar.MostrarHover(scUnidad);
+          if (battleManager != null && battleManager.SeleccionandoObjetivo && scUnidad.CasillaPosicion != null)
+          {
+              scUnidad.CasillaPosicion.OnMouseOver();
+          }
+          else
+          {
+              TooltipBatalla.Instance?.HideTooltipSinAnim();
+          }
         }
         else if(n == 0) //sale mouse
         {
-          scUnidad.OnMouseExit();
+          scUInfochar.LimpiarHover(scUnidad);
+          if (battleManager != null && battleManager.SeleccionandoObjetivo && scUnidad.CasillaPosicion != null)
+          {
+              scUnidad.CasillaPosicion.OnMouseExit();
+          }
         }
     }
 
@@ -267,16 +284,17 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
             return;
         }
 
-        if(anterior == null)
+        ActualizarReferencias();
+        if (battleManager != null && battleManager.SeleccionandoObjetivo)
         {
-          anterior = scUnidad;
-        }
-        else
-        {
-            anterior = null;
+            scUnidad.OnMouseDown();
+            return;
         }
 
-        scUnidad.OnMouseDown();
+        if (scUInfochar != null)
+        {
+            scUInfochar.ToggleFijado(scUnidad);
+        }
     }
 
     private void OnDestroy()

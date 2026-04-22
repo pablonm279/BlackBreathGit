@@ -95,6 +95,7 @@ public class Personaje : MonoBehaviour
     public bool TraitHeroeLocalCivilesOtorgados;
     public bool TraitHeroeLocalPenalidadMuerteAplicada;
     public bool TraitEjemploASeguirAplicado;
+    public bool TraitHerenciaItemOtorgado;
     [System.NonSerialized] public bool TraitDuroDeMatarActivadoEnCombate;
     [System.NonSerialized] public bool TraitPuertasDeLaMuerteActivadoEnCombate;
     [System.NonSerialized] public bool TraitVengativoActivadoEnCombate;
@@ -1032,6 +1033,8 @@ public static class PersonajeTraitCatalog
     public const int TraitFugaz = 81;
     public const int TraitTenaz = 82;
     public const int TraitTactico = 83;
+    public const int TraitHerencia = 84;
+    public const int TraitContrato = 85;
 
     private const string ColorNombre = "#f2e6c9";
     private const string ColorDescripcion = "#d7cfbf";
@@ -1937,7 +1940,27 @@ public static class PersonajeTraitCatalog
             "Tactical",
             "Escape routes arrive 1 turn earlier and enemy reinforcements are delayed by 1 turn.",
             "Tático",
-            "As vias de escape chegam 1 turno antes e os reforcos inimigos atrasam 1 turno.")
+            "As vias de escape chegam 1 turno antes e os reforcos inimigos atrasam 1 turno."),
+        new PersonajeTraitDefinition(
+            TraitHerencia,
+            "inheritance",
+            true,
+            "Herencia",
+            "Nace con un arma o armadura de su clase, mejorada a +1 o +2. Si su clase no tiene, recibe un consumible aleatorio.",
+            "Inheritance",
+            "Starts with their class weapon or armor at +1 or +2. If their class has none, they receive a random consumable.",
+            "Herança",
+            "Começa com a arma ou armadura da sua classe em +1 ou +2. Se a classe não tiver, recebe um consumível aleatório."),
+        new PersonajeTraitDefinition(
+            TraitContrato,
+            "contract",
+            true,
+            "Contrato",
+            "Trabaja con la caravana por contrato, así que cobra. En cada descanso se le pagan 50 de Oro automáticamente. Si no es posible, obtiene Baja Moral por 3 días.",
+            "Contract",
+            "Works with the caravan on contract, so they get paid. Each rest, 50 Gold is paid automatically. If that is not possible, they gain Low Morale for 3 days.",
+            "Contrato",
+            "Trabalha com a caravana por contrato, portanto recebe pagamento. A cada descanso, 50 de Ouro são pagos automaticamente. Se não for possível, recebe Moral Baixa por 3 dias.")
     };
 
     private static readonly Dictionary<int, PersonajeTraitDefinition> definicionesPorId = CrearIndicePorId();

@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Arco de Explorador
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 02000000
-  iPrecio: 100
+  iPrecio: 90
   itemDescripcion: Arco estandar del explorador, fiable para ataques a distancia.
   iRareza: 0
   nivelMejora: 0

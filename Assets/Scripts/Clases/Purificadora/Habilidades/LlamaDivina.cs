@@ -75,6 +75,7 @@ public class LlamaDivina : Habilidad
       int quemadura = NIVEL == 5 ? 5 : 3;
       int danioFijoActual = NIVEL > 2 ? 7 : 4;
       bool ganaFervorAlMatar = NIVEL == 4;
+      string rangoDanioEs = FormatearRangoDados(3, 6, danioFijoActual);
       string tituloEs = "Llama Divina I";
       string tituloEn = "Divine Flame I";
       string tituloPt = "Chama Divina I";
@@ -82,7 +83,7 @@ public class LlamaDivina : Habilidad
       if (NIVEL == 3) { tituloEs = "Llama Divina III"; tituloEn = "Divine Flame III"; tituloPt = "Chama Divina III"; }
       if (NIVEL == 4) { tituloEs = "Llama Divina IV a"; tituloEn = "Divine Flame IV a"; tituloPt = "Chama Divina IV a"; }
       if (NIVEL == 5) { tituloEs = "Llama Divina IV b"; tituloEn = "Divine Flame IV b"; tituloPt = "Chama Divina IV b"; }
-      string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual);
+      string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcBase, "Pod", "Power", poderActual, "Poder");
       string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual);
       string cuerpo = "";
       if (esIngles)
@@ -115,8 +116,8 @@ public class LlamaDivina : Habilidad
       {
         cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
         cuerpo += "<b>Objetivo:</b> 1 unidad en rango\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}) vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
-        cuerpo += $"<b>Danio:</b> 3d6 + {danioFijoActual} + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Divino\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Pod ({poderActual})</color> + Ataque ({ataqueActual}) vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
+        cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color> | <b>Tipo:</b> Divino\n";
         cuerpo += lineaSalvacionEs + "\n";
         cuerpo += $"<b>Si falla TS:</b> Ardiendo {quemadura}. Nomuerto y Etereo mueren instantaneamente";
         if (ganaFervorAlMatar)

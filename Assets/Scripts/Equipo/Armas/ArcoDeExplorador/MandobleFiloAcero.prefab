@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Mandoble Filonegro
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 01000000
-  iPrecio: 145
+  iPrecio: 100
   itemDescripcion: 
   iRareza: 0
   nivelMejora: 1

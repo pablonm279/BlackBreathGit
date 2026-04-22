@@ -49,7 +49,7 @@ public class GolpeBaston : Habilidad
 
     txtDescripcion = "<color=#5dade2><b>Golpe de Bastón</b></color>\n\n";
     txtDescripcion += "<i>Con el bastón de purificación, el personaje asesta un golpe a su enemigo.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Daño: Contundente 1d6- </color>\n\n";
+    txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fue +{bonusAtaque}</color> - Daño: Contundente 1-6- </color>\n\n";
     txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
       if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
       {

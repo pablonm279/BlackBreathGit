@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: "Bast\xF3n de Purificadora"
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 03000000
-  iPrecio: 65
+  iPrecio: 75
   itemDescripcion: Baston de purificadora para canalizar energia y golpear en melee.
   iRareza: 0
   nivelMejora: 0

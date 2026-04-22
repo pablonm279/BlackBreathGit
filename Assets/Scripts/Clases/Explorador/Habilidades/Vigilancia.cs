@@ -59,6 +59,7 @@ public class Vigilancia : Habilidad
 
     int disparosPorUso = NIVEL == 5 ? 3 : 2;
     int bonoTiradaReaccion = (NIVEL > 1 ? 1 : 0) + (NIVEL > 2 ? 1 : 0);
+    string rangoDanioReaccionEs = FormatearRangoDados(1, 10, 1);
 
     string tituloEs = "Vigilancia I";
     string tituloEn = "Vigilance I";
@@ -101,8 +102,8 @@ public class Vigilancia : Habilidad
       cuerpo += "<b>Objetivo:</b> 1 enemigo en rango para colocar una zona de vigilancia 3x3 centrada en esa casilla\n";
       cuerpo += "<b>Tirada/TS:</b> no tiene TS al lanzar\n";
       cuerpo += $"<b>Preparacion:</b> coloca trampas en casillas vacias de esa area 3x3 (1 turno, 1 uso cada una), hasta {disparosPorUso} disparos reactivos en total\n";
-      cuerpo += $"<b>Disparo reactivo:</b> usa la tirada de Tiro con Arco con +{bonoTiradaReaccion} al resultado del d20. Tirada base mostrada: 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) vs Defensa. Critico base: {criticoBaseMin}-20\n";
-      cuerpo += "<b>Danio reactivo:</b> igual a Tiro con Arco (1d10 + 1 + Agilidad) | <b>Tipo:</b> Cortante\n";
+      cuerpo += $"<b>Disparo reactivo:</b> usa la tirada de Tiro con Arco con +{bonoTiradaReaccion} al resultado del d20. Tirada base mostrada: 1d20 + <color=#ea0606>Agi ({agilidadActual})</color> + Ataque ({ataqueActual}) vs Defensa. Critico base: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Danio reactivo:</b> igual a Tiro con Arco ({rangoDanioReaccionEs} + Agi) | <b>Tipo:</b> Cortante\n";
       cuerpo += $"<b>Recurso:</b> requiere al menos {requiereRecurso} Flechas para activar, consume 1 Flecha por disparo reactivo\n";
       cuerpo += "<b>Flujo de turno:</b> usar esta habilidad termina tu turno";
     }

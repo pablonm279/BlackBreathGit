@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Estandarte del Baluarte Inmortal
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 1180
+  iPrecio: 1155
   itemDescripcion: Estandarte reliquia para resistir ofensivas prolongadas.
   iRareza: 4
   nivelMejora: 0

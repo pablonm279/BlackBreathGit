@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,10 +27,11 @@ public class Cons_BalsamoFort : Consumible
     buff.AplicarBuff(unidad);
     // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
     Buff buffComponent = ComponentCopier.CopyComponent(buff, unidad.gameObject);
-    BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(unidad);
+    BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
     }
 
 }
+
 
 
 

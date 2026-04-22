@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Anillo de Inteligencia
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 210
+  iPrecio: 195
   itemDescripcion: 'Anillo orientado al enfoque mental y control arcano. '
   iRareza: 0
   nivelMejora: 0

@@ -51,6 +51,7 @@ public class PilaresDeLuz : Habilidad
       int cantidadPilares = NIVEL == 5 ? 3 : 2;
       int duracionTurnos = NIVEL == 5 ? 4 : 3;
       int bonusDanio = NIVEL > 2 ? 3 : 0;
+      string rangoDanioPilarEs = FormatearRangoDados(1, 6, bonusDanio);
 
       string tituloEs = "Pilares de Luz I";
       string tituloEn = "Pillars of Light I";
@@ -65,8 +66,8 @@ public class PilaresDeLuz : Habilidad
       if (NIVEL == 5) { tituloPt = "Pilares de Luz IV b"; }
 
       string danioPilarEs = bonusDanio > 0
-        ? $"1d6 + {bonusDanio} + <color=#ea0606>Poder ({poderActual})</color>"
-        : $"1d6 + <color=#ea0606>Poder ({poderActual})</color>";
+        ? $"{rangoDanioPilarEs} + <color=#ea0606>Pod ({poderActual})</color>"
+        : $"{rangoDanioPilarEs} + <color=#ea0606>Pod ({poderActual})</color>";
       string danioPilarEn = bonusDanio > 0
         ? $"1d6 + {bonusDanio} + <color=#ea0606>Power ({poderActual})</color>"
         : $"1d6 + <color=#ea0606>Power ({poderActual})</color>";

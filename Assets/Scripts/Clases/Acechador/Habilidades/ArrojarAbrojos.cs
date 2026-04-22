@@ -48,6 +48,7 @@ public class ArrojarAbrojos : Habilidad
       int bleedAplicado = 4 + (NIVEL == 4 ? 1 : 0);
       bool drenaAp = NIVEL == 5;
       string danioBase = NIVEL > 1 ? "1d12 + 1" : "1d12";
+      string danioBaseEs = NIVEL > 1 ? FormatearRangoDados(1, 12, 1) : FormatearRangoDados(1, 12);
 
       string tituloEs = "Arrojar Abrojos I";
       string tituloEn = "Throw Caltrops I";
@@ -100,7 +101,7 @@ public class ArrojarAbrojos : Habilidad
         cuerpo += "<b>Objetivo:</b> 1 casilla (mas diagonales vacias alrededor)\n";
         cuerpo += "<b>Al lanzarla:</b> coloca trampas de abrojos en la casilla objetivo y diagonales validas (mismo lado)\n";
         cuerpo += "<b>Perfil de trampa:</b> 1 uso, 10 turnos de duracion\n";
-        cuerpo += $"<b>Danio al activar trampa:</b> {danioBase} | <b>Tipo:</b> Perforante\n";
+        cuerpo += $"<b>Danio al activar trampa:</b> {danioBaseEs} | <b>Tipo:</b> Perforante\n";
         cuerpo += lineaSalvacion + "\n";
         cuerpo += $"<b>Si falla TS:</b> danio x2, +{bleedAplicado} Sangrado";
         if (drenaAp)

@@ -78,7 +78,7 @@ public class Purificacion : Habilidad
       if (NIVEL == 4) { tituloPt = "Purificacao IV a"; }
       if (NIVEL == 5) { tituloPt = "Purificacao IV b"; }
 
-      string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Reflejos, 9, "Poder", "Power", poderActual);
+      string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Reflejos, 9, "Pod", "Power", poderActual, "Poder");
       string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Reflejos, 9, "Poder", "Power", poderActual);
 
       string cuerpo = "";
@@ -107,7 +107,7 @@ public class Purificacion : Habilidad
         cuerpo += "<b>Tipo:</b> Area (10 alcance)\n";
         cuerpo += "<b>Objetivo:</b> Todos los enemigos del area seleccionada\n";
         cuerpo += lineaSalvacionEs + "\n";
-        cuerpo += $"<b>Danio:</b> (2 + 1d5 + Poder ({poderActual}) / 2) x (1 + Fervor ({fervorActual})) | <b>Tipo:</b> Divino\n";
+        cuerpo += $"<b>Danio:</b> (2 + 1-5 + Pod ({poderActual}) / 2) x (1 + Fervor ({fervorActual})) | <b>Tipo:</b> Divino\n";
         cuerpo += $"<b>Rango actual con Fervor:</b> {danioMinConFervor}-{danioMaxConFervor} (si supera TS), {danioMinConFervor * 2}-{danioMaxConFervor * 2} (si falla TS)\n";
         cuerpo += "<b>Si falla TS:</b> Ardiendo 2 y danio duplicado\n";
         cuerpo += "<b>Al lanzar:</b> Fervor queda en 0";

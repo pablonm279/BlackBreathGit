@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: "B\xE1lsamo Energizante"
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 50
+  iPrecio: 60
   itemDescripcion: Balsamo que acelera reflejos y reaccion por un combate.
   iRareza: 0
   nivelMejora: 0

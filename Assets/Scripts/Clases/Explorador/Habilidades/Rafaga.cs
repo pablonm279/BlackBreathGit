@@ -86,6 +86,7 @@ public class Rafaga : Habilidad
     if (NIVEL == 5) { tituloPt = "Rajada IV b"; }
 
     int bonusAtaqueNivel = bonusAtaque;
+    string rangoDanioEs = FormatearRangoDados(1, 10, 1);
 
     string cuerpo = "";
     if (esIngles)
@@ -113,8 +114,8 @@ public class Rafaga : Habilidad
       cuerpo += $"<b>Tipo:</b> Rango ({hAlcance} alcance)\n";
       cuerpo += "<b>Objetivo:</b> 1 enemigo en rango amplio (ancho 3). Si muere, continua sobre el siguiente enemigo de la lista\n";
       cuerpo += "<b>Bucle:</b> repite disparos hasta que tus AP actuales lleguen a 0 o te quedes sin flechas\n";
-      cuerpo += $"<b>Tirada (por disparo):</b> 1d20 + <color=#ea0606>Agilidad ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaqueNivel} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Danio (por disparo):</b> 1d10 + 1 + <color=#ea0606>Agilidad ({agilidadActual})</color> | <b>Tipo:</b> Perforante\n";
+      cuerpo += $"<b>Tirada (por disparo):</b> 1d20 + <color=#ea0606>Agi ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaqueNivel} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
+      cuerpo += $"<b>Danio (por disparo):</b> {rangoDanioEs} + <color=#ea0606>Agi ({agilidadActual})</color> | <b>Tipo:</b> Perforante\n";
       cuerpo += "<b>Recurso:</b> consume 1 Flecha y 1 AP por disparo\n";
       cuerpo += "<b>Flujo de turno:</b> usar esta habilidad termina tu turno";
     }
@@ -208,7 +209,7 @@ public class Rafaga : Habilidad
       while(scEstaUnidad.ObtenerAPActual() > 0 && scEstaUnidadExp.ObtenerCantidadFlechas() > 0)
       {
 
-          BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(scEstaUnidad);
+          BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(scEstaUnidad);
           BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();
 
       scEstaUnidad.CambiarAPActual(-1);  //Gasta 1 AP por cada ataque
@@ -489,6 +490,8 @@ public class Rafaga : Habilidad
    
  
 }
+
+
 
 
 

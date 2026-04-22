@@ -7,16 +7,16 @@ public class UnidadIdleMotion : MonoBehaviour
   [Header("Idle Motion")]
   [SerializeField] private bool habilitado = true;
   [SerializeField] private bool soloEnBatalla = true;
-  [SerializeField] private float amplitudX = 0.28f;
-  [SerializeField] private float amplitudY = 3.8f;
-  [SerializeField] private float amplitudRotacion = 0.16f;
-  [SerializeField] private float velocidad = 0.95f;
-  [SerializeField] private float suavizado = 8.5f;
+  [SerializeField] private float amplitudX = 0.08f;
+  [SerializeField] private float amplitudY = 3.35f;
+  [SerializeField] private float amplitudRotacion = 0.06f;
+  [SerializeField] private float velocidad = 0.62f;
+  [SerializeField] private float suavizado = 10f;
   [SerializeField] private float factorDuranteMovimiento = 0.08f;
   [SerializeField] private float multiplicadorGlobal = 1f;
   [SerializeField] private float multiplicadorUnidadActivaJugador = 1.08f; // +8% adicional si es turno del jugador
-  [SerializeField] private float amplitudReboteTurnoNuevoY = 5.6f;
-  [SerializeField] private float duracionReboteTurnoNuevo = 0.44f;
+  [SerializeField] private float amplitudReboteTurnoNuevoY = 4.2f;
+  [SerializeField] private float duracionReboteTurnoNuevo = 0.36f;
 
   private Unidad unidad;
   private RectTransform rectImagen;
@@ -76,10 +76,10 @@ public class UnidadIdleMotion : MonoBehaviour
     factor *= factorGlobal;
 
     float respiracionPrincipal = Mathf.Sin(t + faseY);
-    float respiracionSecundaria = Mathf.Sin(t * 2f + faseRot) * 0.18f;
-    float respiracionCompuesta = (respiracionPrincipal * 0.82f) + respiracionSecundaria;
-    float swayNormalizado = Mathf.Sin(t * 0.5f + faseX);
-    float sway = swayNormalizado * amplitudX * (0.55f + (0.45f * Mathf.Abs(respiracionPrincipal)));
+    float respiracionSecundaria = Mathf.Sin((t * 1.35f) + faseRot) * 0.06f;
+    float respiracionCompuesta = (respiracionPrincipal * 0.94f) + respiracionSecundaria;
+    float swayNormalizado = Mathf.Sin((t * 0.45f) + faseX);
+    float sway = swayNormalizado * amplitudX * 0.22f;
 
     Vector2 objetivoOffset = new Vector2(
       sway,
@@ -88,7 +88,7 @@ public class UnidadIdleMotion : MonoBehaviour
     Vector2 offsetReboteTurnoNuevo = CalcularOffsetReboteTurnoNuevo();
     objetivoOffset += offsetReboteTurnoNuevo;
 
-    float objetivoRot = ((-respiracionPrincipal * 0.9f) + (swayNormalizado * 0.1f)) * amplitudRotacion * factor;
+    float objetivoRot = (-respiracionPrincipal * 0.45f) * amplitudRotacion * factor;
 
     bool suavizar = suavizado > 0.01f;
     AplicarOffset(objetivoOffset, objetivoRot, suavizar);

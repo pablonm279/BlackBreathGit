@@ -48,7 +48,7 @@ MonoBehaviour:
   sNombreItem: Elixir de Resistencia al Fuego
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: ffffffff
-  iPrecio: 45
+  iPrecio: 55
   itemDescripcion: "Al ser consumido, este Elixir brinda protecci\xF3n al Fuego.\n\nConsumible:
     +5 Resistencia al Fuego por toda la batalla."
   iRareza: 0

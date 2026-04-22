@@ -414,7 +414,7 @@ public class ClaseDuelista : Unidad
             Estados.Aplicar_MovimientoAbaratado(this, 1, this);
               if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
             {
-                BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+                BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(this);
             }
         }
 
@@ -423,7 +423,7 @@ public class ClaseDuelista : Unidad
             estado_evasion += 1;
             if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
             {
-                BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+                BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(this);
             }
         }
 
@@ -512,7 +512,7 @@ public class ClaseDuelista : Unidad
         estado_evasion += bonusEvasionEnGardeAplicado;
         if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
         {
-            BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+            BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(this);
         }
     }
 
@@ -527,7 +527,7 @@ public class ClaseDuelista : Unidad
         bonusEvasionEnGardeAplicado = 0;
         if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
         {
-            BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+            BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(this);
         }
     }
 
@@ -616,7 +616,7 @@ public class ClaseDuelista : Unidad
 
         if (BattleManager.Instance.scUIInfoChar != null)
         {
-            BattleManager.Instance.scUIInfoChar.ActualizarInfoChar(this);
+            BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(this);
         }
     }
 
@@ -741,3 +741,4 @@ public class ClaseDuelista : Unidad
         return "Encadena bajas por este turno: +1 Ataque y +15% Danio.";
     }
 }
+

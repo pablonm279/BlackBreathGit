@@ -41,8 +41,9 @@ public class SifonArcano : Habilidad
     int dcBase = 10 + bonusDCNivel;
     int duracionTurnos = NIVEL == 5 ? 4 : 3;
     int bonusDanioBase = NIVEL > 1 ? 5 : 3;
-    string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual);
-    string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual);
+    string rangoDanioEs = FormatearRangoDados(1, 10, bonusDanioBase);
+    string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcBase, "Pod", "Power", poderActual, "Poder");
+    string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, dcBase, "Pod", "Power", poderActual, "Poder");
 
     string tituloEs = "Sifon Arcano I";
     string tituloEn = "Arcane Siphon I";
@@ -52,8 +53,8 @@ public class SifonArcano : Habilidad
     if (NIVEL == 5) { tituloEs = "Sifon Arcano IV b"; tituloEn = "Arcane Siphon IV b"; }
 
     string lineaDanioEs = bonusDanioBase > 0
-      ? $"<b>Danio por turno:</b> (1d10 + {bonusDanioBase}) x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano"
-      : "<b>Danio por turno:</b> 1d10 x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano";
+      ? $"<b>Danio por turno:</b> ({rangoDanioEs}) x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano"
+      : "<b>Danio por turno:</b> 1-10 x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano";
     string lineaDanioEn = bonusDanioBase > 0
       ? $"<b>Turn Damage:</b> (1d10 + {bonusDanioBase}) x (1 + Energy Residues) | <b>Type:</b> Arcane"
       : "<b>Turn Damage:</b> 1d10 x (1 + Energy Residues) | <b>Type:</b> Arcane";

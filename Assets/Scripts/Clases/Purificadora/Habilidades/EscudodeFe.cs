@@ -113,7 +113,7 @@ public class EscudodeFe : Habilidad
         }
         if (agregaCuracion)
         {
-          cuerpo += ", cura 2d6";
+          cuerpo += ", cura 2-12";
         }
         cuerpo += "\n<b>Requisito:</b> Necesita al menos 1 Fervor para activarse\n";
         cuerpo += "<b>Al lanzar:</b> No consume Fervor";
@@ -162,7 +162,7 @@ public class EscudodeFe : Habilidad
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 costo de Valentía.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Defensa en el buff al activarse.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 turno de duracion) u Opcion B (+2d6 curacion al activarse).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 turno de duracion) u Opcion B (+2-12 curacion al activarse).</color>"; }
       }
     }
     void Start()

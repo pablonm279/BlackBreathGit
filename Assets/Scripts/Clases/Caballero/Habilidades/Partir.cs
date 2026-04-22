@@ -60,6 +60,7 @@ public class Partir : Habilidad
       int criticoMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab + bonusCritNivel), 2, 20);
       int danioBaseFijo = 5 + (NIVEL > 1 ? 4 : 0);
       int dcMiedo = NIVEL == 4 ? 15 : 13;
+      string rangoDanio = FormatearRangoDados(XdDanio, daniodX, danioBaseFijo);
       string bonusAtaqueTxt = bonusAtaqueNivel >= 0 ? $" + {bonusAtaqueNivel}" : $" - {Mathf.Abs(bonusAtaqueNivel)}";
       string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Mental, dcMiedo);
       string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Mental, dcMiedo);
@@ -103,8 +104,8 @@ public class Partir : Habilidad
       {
         cuerpo += "<b>Tipo:</b> Melee\n";
         cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance frontal\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Critico: {criticoMin}-20\n";
-        cuerpo += $"<b>Danio:</b> 2d10 + {danioBaseFijo} + <color=#ea0606>Fuerza ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Critico: {criticoMin}-20\n";
+        cuerpo += $"<b>Danio:</b> {rangoDanio} + <color=#ea0606>Fue ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
         cuerpo += $"<b>Penetracion de armadura:</b> {penetracionArmadura}\n";
         cuerpo += "<b>Si mata al objetivo:</b> todos los enemigos hacen TS\n";
         cuerpo += $"{lineaSalvacionEs}\n";

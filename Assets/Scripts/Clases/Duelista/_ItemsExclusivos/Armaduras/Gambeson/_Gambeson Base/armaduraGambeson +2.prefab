@@ -45,11 +45,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb3a3fc570234ea68b6175681b52d889, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: 477cb507ed594e6b975f41a7c21f9b55, type: 3}
+  persistentItemId: 
+  imItem: {fileID: 21300000, guid: be285026ef65f42459782429a5a139b8, type: 3}
   sNombreItem: Gambeson
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 06000000
-  iPrecio: 220
+  iPrecio: 235
   itemDescripcion: Gambeson liviano para duelos y desplazamientos rapidos.
   iRareza: 2
   nivelMejora: 2

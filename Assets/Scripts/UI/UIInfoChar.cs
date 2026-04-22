@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -51,18 +51,87 @@ public class UIInfoChar : MonoBehaviour
   private int valorUltimoMerito;
 
 
-  
+
 
   public bool hayUnidadSeleccionadaParaInfo;
   public Unidad unidadMostrada;
+  private Unidad unidadHover;
+  private Unidad unidadFijadaInterna;
+  private Unidad unidadMarcadaPrioritaria;
+
+  public Unidad unidadFijadaActual => unidadFijadaInterna;
   private void Awake()
   {
     InicializarVisualMerito();
+    gameObject.SetActive(false);
+  }
+
+  public void MostrarHover(Unidad unidad)
+  {
+    unidadHover = EstaUnidadValidaParaInfo(unidad) ? unidad : null;
+    RefrescarSegunEstadoActual();
+  }
+
+  public void LimpiarHover(Unidad unidad)
+  {
+    if (unidad == null || unidadHover == unidad)
+    {
+      unidadHover = null;
+      RefrescarSegunEstadoActual();
+    }
+  }
+
+  public void ToggleFijado(Unidad unidad)
+  {
+    if (!EstaUnidadValidaParaInfo(unidad))
+    {
+      return;
+    }
+
+    unidadFijadaInterna = unidadFijadaInterna == unidad ? null : unidad;
+    hayUnidadSeleccionadaParaInfo = unidadFijadaInterna != null;
+
+    if (!hayUnidadSeleccionadaParaInfo)
+    {
+      mostrardesc = false;
+    }
+
+    RefrescarSegunEstadoActual();
+  }
+
+  public void Desfijar()
+  {
+    unidadFijadaInterna = null;
+    hayUnidadSeleccionadaParaInfo = false;
+    mostrardesc = false;
+    RefrescarSegunEstadoActual();
+  }
+
+  public void RefrescarSiVisible(Unidad unidad)
+  {
+    if (unidad == null)
+    {
+      return;
+    }
+
+    if (unidad == unidadMostrada || unidad == unidadHover || unidad == unidadFijadaInterna)
+    {
+      RefrescarSegunEstadoActual();
+    }
+  }
+
+  public void RefrescarSegunEstadoActual()
+  {
+    LimpiarReferenciasInvalidas();
+    hayUnidadSeleccionadaParaInfo = unidadFijadaInterna != null;
+
+    Unidad unidadObjetivo = unidadHover ?? unidadFijadaInterna;
+    SincronizarMarcadoPrioritario(unidadObjetivo);
+    ActualizarInfoChar(unidadObjetivo);
   }
 
   public void ActualizarInfoChar(Unidad scUnidadMostrada)
   {
-    if(unidadMostrada != null){unidadMostrada.Marcar(0);}
     if(scUnidadMostrada != null)
     {
      bool cambioUnidad = unidadMostrada != scUnidadMostrada;
@@ -70,8 +139,11 @@ public class UIInfoChar : MonoBehaviour
      //ActualizarColoresFondo();
      gameObject.SetActive(true);
 
-    
-     BotonSalir.SetActive(hayUnidadSeleccionadaParaInfo);
+
+     if (BotonSalir != null)
+     {
+       BotonSalir.SetActive(hayUnidadSeleccionadaParaInfo);
+     }
     
    vNombre.text = TRADU.i.Traducir(scUnidadMostrada.uNombre);
    vHP.text = ((int)scUnidadMostrada.HP_actual) + "/";
@@ -325,6 +397,7 @@ public class UIInfoChar : MonoBehaviour
     }
     else
     { 
+        unidadMostrada = null;
         ActualizarTags(null, false);
         mostrardesc = false;
         ActualizarVisibilidadInfoEnemigos(false);
@@ -378,12 +451,49 @@ public class UIInfoChar : MonoBehaviour
 
   private bool EsUnidadMostradaPorHover(Unidad unidad)
   {
-    if (BattleManager.Instance == null || BattleManager.Instance.unidadActiva == null || unidad == null)
+    if (unidad == null)
     {
       return false;
     }
 
-    return unidadMostrada == unidad && unidad != BattleManager.Instance.unidadActiva;
+    return unidadHover == unidad && unidadMostrada == unidad;
+  }
+
+  private void LimpiarReferenciasInvalidas()
+  {
+    if (!EstaUnidadValidaParaInfo(unidadHover))
+    {
+      unidadHover = null;
+    }
+
+    if (!EstaUnidadValidaParaInfo(unidadFijadaInterna))
+    {
+      unidadFijadaInterna = null;
+    }
+  }
+
+  private bool EstaUnidadValidaParaInfo(Unidad unidad)
+  {
+    return unidad != null
+      && unidad.gameObject != null
+      && unidad.gameObject.activeInHierarchy
+      && unidad.HP_actual > 0
+      && !unidad.EstaOcultoVisualmenteParaJugador();
+  }
+
+  private void SincronizarMarcadoPrioritario(Unidad unidadObjetivo)
+  {
+    if (unidadMarcadaPrioritaria != null && unidadMarcadaPrioritaria != unidadObjetivo)
+    {
+      unidadMarcadaPrioritaria.Marcar(0);
+    }
+
+    unidadMarcadaPrioritaria = unidadObjetivo;
+
+    if (unidadMarcadaPrioritaria != null)
+    {
+      unidadMarcadaPrioritaria.Marcar(1);
+    }
   }
 
   private void InicializarVisualMerito()
@@ -534,11 +644,7 @@ public class UIInfoChar : MonoBehaviour
   public GameObject BotonSalir;
   public void botonSalirDeseleccionar()
   {
-    hayUnidadSeleccionadaParaInfo = false;
-    mostrardesc = false;
-    ActualizarVisibilidadInfoEnemigos(false);
-    ActualizarInfoChar(BattleManager.Instance.unidadActiva);
-
+    Desfijar();
   }
   public void ActualizarColoresFondo()
   { 

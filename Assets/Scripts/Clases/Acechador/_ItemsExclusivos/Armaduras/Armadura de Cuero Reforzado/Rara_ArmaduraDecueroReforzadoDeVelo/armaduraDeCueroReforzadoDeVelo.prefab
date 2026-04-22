@@ -49,7 +49,7 @@ MonoBehaviour:
   sNombreItem: Armadura de Cuero Reforzado de Velo
   IDEfectoEspecial: 2
   IDClasesQuePuedenUsarEsteItem: 04000000
-  iPrecio: 270
+  iPrecio: 280
   itemDescripcion: Armadura reforzada pensada para sigilo y evasiones.
   iRareza: 2
   nivelMejora: 2
