@@ -2273,8 +2273,8 @@ public class TRADU : MonoBehaviour
                 r = "<color=#d6c304>true</color>"; break; //Verdadero
             case "<color=#d6c304>divino</color>":
                 r = "<color=#d6c304>divine</color>"; break; //Divino
-            case "Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\n\nTu Séquito de Mercaderes ha actualizado su Inventario.":
-                r = "You have arrived at an improvised Trading Post, they offer basic survival Supplies to travelers.\nThe Tier of your Merchant Retinue will help lower prices.\n\n\nYour Merchant Retinue has updated its inventory.";
+            case "Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\nTu Séquito de Mercaderes ha actualizado su Inventario.":
+                r = "You have arrived at an improvised Trading Post, they offer basic survival Supplies to travelers.\nThe Tier of your Merchant Retinue will help lower prices.\n\nYour Merchant Retinue has updated its inventory.";
                 break;
             case "El Séquito de Mercaderes ha actualizado su inventario en el Puesto Comercial.":
                 r = "The Merchant Retinue has updated its inventory at the Trading Post.";
@@ -5603,7 +5603,7 @@ public class TRADU : MonoBehaviour
             case "¡Viaje completado!":
                 r = "Travel completed!";
                 break;
-            case "Finalmente la caravana ha llegado a la Ciudad Puerto de Serria, donde la población civil se prepara para embarcar y así­ escapar del Aliento Negro.":
+            case "Finalmente la caravana ha llegado a la Ciudad Puerto de Serria, donde la población civil se prepara para embarcar y así escapar del Aliento Negro.":
                 r = "At last, the caravan has arrived at the Port City of Serria, where the civilian population is preparing to embark and escape the Black Breath.";
                 break;
             case "El viaje ha durado ":
@@ -7179,6 +7179,9 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
               break;
         case "Escape: los personajes podrán escapar desde esta casilla.":
             r="Escape: characters can flee the battle from this tile.";
+            break;
+          case "Paciente":
+            r="Patient";
             break;
 
 
@@ -9116,7 +9119,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "<color=#d6c304>verdadeiro</color>"; break; //Verdadero
             case "<color=#d6c304>divino</color>":
                 r = "<color=#d6c304>divino</color>"; break; //Divino
-            case "Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\n\nTu Séquito de Mercaderes ha actualizado su Inventario.":
+            case "Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\nTu Séquito de Mercaderes ha actualizado su Inventario.":
                 r = "Você chegou a um Posto Comercial improvisado, onde oferecem Suprimentos básicos de sobrevivência aos viajantes.\nO Ní­vel do seu Séquito de Mercadores ajudará a reduzir os preços.\n\n\nSeu Séquito de Mercadores atualizou o Inventário.";
                 break;
             case "El Séquito de Mercaderes ha actualizado su inventario en el Puesto Comercial.":
@@ -14022,6 +14025,9 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
               break;
             case "Escape: los personajes podrán escapar desde esta casilla.":
             r="Escape: os personagens podem escapar deste quadrado.";
+            break;
+             case "Paciente":
+            r="Paciente";
             break;
 
 

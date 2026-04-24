@@ -10,6 +10,10 @@ public class MeleeApproachMover : MonoBehaviour
   [Header("Movimiento visual melee")]
   [SerializeField] private float duracionIdaBase = 0.4f;
   [SerializeField] private float duracionVueltaBase = 0.3f;
+  [SerializeField] private float velocidadIda = 4.5f; // m/s aprox para mantener ritmo visual constante
+  [SerializeField] private float velocidadVuelta = 5f;
+  [SerializeField] private Vector2 rangoDuracionIda = new Vector2(0.18f, 0.75f);
+  [SerializeField] private Vector2 rangoDuracionVuelta = new Vector2(0.15f, 0.6f);
   [SerializeField] private float offsetAtras = 0.55f; // metros detrás del objetivo
   [SerializeField] private Vector3 offsetAdicional = Vector3.zero;
   [SerializeField] private float demoraAntesDeVolver = 0.2f;
@@ -47,11 +51,11 @@ public class MeleeApproachMover : MonoBehaviour
     if (!habilidad.esMelee || habilidad.esZonal || habilidad.enArea > 0) return Task.FromResult(false);
 
     object objetivo = ElegirObjetivoVisualParaHabilidad(habilidad, objetivos);
-    if (!TryObtenerDatosObjetivo(objetivo, out Transform objetivoTransform, out int posX))
+    if (!TryObtenerDatosObjetivo(objetivo, out Transform objetivoTransform))
     {
       return Task.FromResult(false);
     }
-    return MoverHaciaObjetivoAsync(objetivoTransform, posX, false);
+    return MoverHaciaObjetivoAsync(objetivoTransform, false);
   }
 
   object ElegirObjetivoVisualParaHabilidad(Habilidad habilidad, List<object> objetivos)
@@ -107,11 +111,11 @@ public class MeleeApproachMover : MonoBehaviour
       return Task.FromResult(true);
     }
 
-    if (!TryObtenerDatosObjetivo(objetivo, out Transform objetivoTransform, out int posX))
+    if (!TryObtenerDatosObjetivo(objetivo, out Transform objetivoTransform))
     {
       return Task.FromResult(false);
     }
-    return MoverHaciaObjetivoAsync(objetivoTransform, posX, mantenerAdelanteDespues);
+    return MoverHaciaObjetivoAsync(objetivoTransform, mantenerAdelanteDespues);
   }
 
   public async Task VolverAPosicionInicialAsync(bool forzar = false)
@@ -129,6 +133,9 @@ public class MeleeApproachMover : MonoBehaviour
     Vector3 camOrigen = cam != null ? cam.position : Vector3.zero;
     Vector3 camDestino = camaraRetorno ?? camOrigen;
     camaraRetorno = null;
+
+    unidad.FinalizarPoseAtaqueSostenida(false);
+    AplicarPoseMovimiento();
 
     if (cam != null)
     {
@@ -148,7 +155,7 @@ public class MeleeApproachMover : MonoBehaviour
     LiberarLock();
   }
 
-  async Task<bool> MoverHaciaObjetivoAsync(Transform objetivoTransform, int objetivoPosX, bool mantenerLuego)
+  async Task<bool> MoverHaciaObjetivoAsync(Transform objetivoTransform, bool mantenerLuego)
   {
     if (unidad == null || objetivoTransform == null) return false;
     await lockMovimiento.WaitAsync();
@@ -166,8 +173,9 @@ public class MeleeApproachMover : MonoBehaviour
     try
     {
       Vector3 destino = destinoBase - dir.normalized * offsetAtras + offsetAdicional;
-      float durIda = DuracionSegunPosX(objetivoPosX, duracionIdaBase);
-      ultimaDuracionVuelta = DuracionSegunPosX(objetivoPosX, duracionVueltaBase);
+      float distancia = Vector3.Distance(origen, destino);
+      float durIda = DuracionSegunDistancia(distancia, velocidadIda, rangoDuracionIda, duracionIdaBase);
+      ultimaDuracionVuelta = DuracionSegunDistancia(distancia, velocidadVuelta, rangoDuracionVuelta, duracionVueltaBase);
 
       posicionRetorno = origen;
       mantenerAdelante = mantenerLuego;
@@ -220,33 +228,36 @@ public class MeleeApproachMover : MonoBehaviour
     return null;
   }
 
-  bool TryObtenerDatosObjetivo(object objetivo, out Transform objetivoTransform, out int objetivoPosX)
+  bool TryObtenerDatosObjetivo(object objetivo, out Transform objetivoTransform)
   {
     objetivoTransform = null;
-    objetivoPosX = 2;
     if (objetivo is Unidad unidadObjetivo)
     {
       objetivoTransform = unidadObjetivo.transform;
-      objetivoPosX = unidadObjetivo.CasillaPosicion != null ? unidadObjetivo.CasillaPosicion.posX : 2;
       return true;
     }
     if (objetivo is Obstaculo obstaculoObjetivo)
     {
       objetivoTransform = obstaculoObjetivo.transform;
-      objetivoPosX = obstaculoObjetivo.CasillaPosicion != null ? obstaculoObjetivo.CasillaPosicion.posX : 2;
       return true;
     }
     return false;
   }
 
-  float DuracionSegunPosX(int posX, float baseDuracion)
+  float DuracionSegunDistancia(float distancia, float velocidad, Vector2 rangoDuracion, float duracionFallback)
   {
-    switch (posX)
+    if (distancia <= 0.0001f)
     {
-      case 3: return 0.25f;
-      case 2: return 0.5f;
-      default: return 0.75f;
+      return Mathf.Max(0.01f, duracionFallback);
     }
+
+    float velocidadUsar = velocidad > 0.0001f
+      ? velocidad
+      : distancia / Mathf.Max(0.01f, duracionFallback);
+
+    float minimo = Mathf.Min(rangoDuracion.x, rangoDuracion.y);
+    float maximo = Mathf.Max(rangoDuracion.x, rangoDuracion.y);
+    return Mathf.Clamp(distancia / velocidadUsar, minimo, maximo);
   }
 
   async Task AnimarWorld(Transform t, Vector3 origen, Vector3 destino, float duracion)

@@ -31,6 +31,7 @@ public class UnidadPoseController : MonoBehaviour
     Unidad unidad;
     Coroutine revertCoroutine;
     bool mantenerPoseHabilidad = false;
+    bool mantenerPoseAtaque = false;
     TipoPoseActual poseActual = TipoPoseActual.Idle;
 
     void Awake()
@@ -66,30 +67,33 @@ public class UnidadPoseController : MonoBehaviour
 
     public void SetIdle()
     {
-        if (mantenerPoseHabilidad)
+        if (mantenerPoseHabilidad || mantenerPoseAtaque)
         {
             return;
         }
 
+        CancelarReversionAutomatica();
         poseActual = TipoPoseActual.Idle;
         SetSprite(poseIdle);
     }
 
     public void OnStartMove()
     {
+        CancelarReversionAutomatica();
         poseActual = TipoPoseActual.Mover;
         SetSprite(poseMover);
     }
 
     public void OnStopMove()
     {
+        CancelarReversionAutomatica();
         poseActual = TipoPoseActual.Idle;
         SetSprite(poseIdle);
     }
 
     public void PlayAttackPose()
     {
-        if (mantenerPoseHabilidad)
+        if (mantenerPoseHabilidad || mantenerPoseAtaque)
         {
             return; // Mantener pose de habilidad tiene prioridad
         }
@@ -103,11 +107,7 @@ public class UnidadPoseController : MonoBehaviour
     {
         if (mantenerPoseHabilidad)
         {
-            if (revertCoroutine != null)
-            {
-                StopCoroutine(revertCoroutine);
-                revertCoroutine = null;
-            }
+            CancelarReversionAutomatica();
 
             poseActual = TipoPoseActual.Habilidad;
             SetSprite(poseHabilidad);
@@ -123,11 +123,7 @@ public class UnidadPoseController : MonoBehaviour
     public void EnterSkillPoseHold()
     {
         mantenerPoseHabilidad = true;
-        if (revertCoroutine != null)
-        {
-            StopCoroutine(revertCoroutine);
-            revertCoroutine = null;
-        }
+        CancelarReversionAutomatica();
 
         poseActual = TipoPoseActual.Habilidad;
         SetSprite(poseHabilidad);
@@ -137,13 +133,29 @@ public class UnidadPoseController : MonoBehaviour
     public void ExitPoseHold()
     {
         mantenerPoseHabilidad = false;
-        if (revertCoroutine != null)
-        {
-            StopCoroutine(revertCoroutine);
-            revertCoroutine = null;
-        }
+        CancelarReversionAutomatica();
 
         SetIdle();
+    }
+
+    public void EnterAttackPoseHold()
+    {
+        mantenerPoseAtaque = true;
+        CancelarReversionAutomatica();
+
+        poseActual = TipoPoseActual.Atacar;
+        SetSprite(poseAtacar);
+    }
+
+    public void ExitAttackPoseHold(bool restaurarIdle = true)
+    {
+        mantenerPoseAtaque = false;
+        CancelarReversionAutomatica();
+
+        if (restaurarIdle)
+        {
+            SetIdle();
+        }
     }
 
     public void ConfigurarPoses(Sprite idle, Sprite mover, Sprite atacar, Sprite habilidad, bool refrescarPoseActual = true)
@@ -164,6 +176,10 @@ public class UnidadPoseController : MonoBehaviour
         if (mantenerPoseHabilidad)
         {
             poseActual = TipoPoseActual.Habilidad;
+        }
+        else if (mantenerPoseAtaque)
+        {
+            poseActual = TipoPoseActual.Atacar;
         }
 
         switch (poseActual)
@@ -191,6 +207,15 @@ public class UnidadPoseController : MonoBehaviour
         }
 
         revertCoroutine = StartCoroutine(RevertirTras(delay));
+    }
+
+    void CancelarReversionAutomatica()
+    {
+        if (revertCoroutine != null)
+        {
+            StopCoroutine(revertCoroutine);
+            revertCoroutine = null;
+        }
     }
 
     IEnumerator RevertirTras(float seg)

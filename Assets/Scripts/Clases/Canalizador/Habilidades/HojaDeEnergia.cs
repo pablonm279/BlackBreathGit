@@ -181,20 +181,12 @@ public class HojaDeEnergia : Habilidad
 
     protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
     {
-        float delay = 0.5f;
-        var pose = scEstaUnidad.GetComponent<UnidadPoseController>();
-        if (pose != null)
-        {
-            delay = pose.duracionPoseAtacar;
-        }
-
-        int ms = Mathf.RoundToInt(Mathf.Max(0.1f, delay * 0.5f) * 1000f);
-        return BattleManager.DelayCombateAsync(ms);
+        return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
     }
 
     protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
     {
-        return Task.CompletedTask;
+        return base.EsperarPostImpactoAsync(objetivos, casillaOrigenTrampas);
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaObjetivo)

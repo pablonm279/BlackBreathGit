@@ -221,7 +221,7 @@ RectTransform:
   m_GameObject: {fileID: 2383047622823427081}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7645379, y: 1.3437338, z: 1}
+  m_LocalScale: {x: 1.240643, y: 1.3437338, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6721434453643647482}
@@ -230,8 +230,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.95, y: -14.963}
-  m_SizeDelta: {x: 21.672, y: 21.002}
+  m_AnchoredPosition: {x: 0.98999, y: -15.3}
+  m_SizeDelta: {x: 22.598, y: 21.66}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1678664685221969079
 CanvasRenderer:
@@ -592,6 +592,7 @@ GameObject:
   - component: {fileID: 994210918134778236}
   - component: {fileID: 6001306523907041898}
   - component: {fileID: 58928294571301770}
+  - component: {fileID: 3126837053981280019}
   m_Layer: 7
   m_Name: Bruja Kale'Tav
   m_TagString: Unidad
@@ -764,6 +765,7 @@ MonoBehaviour:
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
   forzarPoseHabilidad: 0
+  omitirAnimacionDeUso: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
@@ -907,7 +909,6 @@ MonoBehaviour:
   esInmobil: 0
   mod_maxAccionP: 4
   AccionP_actual: 4
-  AccionP_SeEsforzo: 0
   scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
@@ -943,6 +944,7 @@ MonoBehaviour:
   mod_DanioPorcentaje: 0
   at_CriticoRangoDado: 0
   mod_CriticoRangoDado: 0
+  bonusCritDadoRecibido: 0
   "at_CriticoDa\xF1oBonus": 0
   "mod_CriticoDa\xF1oBonus": 0
   at_TSReflejos: 1
@@ -969,7 +971,9 @@ MonoBehaviour:
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
   estado_CondenadoTurnosSeguidos: 0
+  ultimaUnidadQueLeHizoDanio: {fileID: 0}
   estado_Escudado: 0
+  estado_MovimientoAbaratado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
   estado_Volando: 0
@@ -986,6 +990,7 @@ MonoBehaviour:
   debuffsImpactoArma: []
   reduccionDanioRecibidoPorcentaje: 0
   reduccionDanioCriticoRecibidoPorcentaje: 0
+  aumentoDanioCriticoRecibidoPorcentaje: 0
   resistenciaEstadosPorcentaje: 0
   espinasDanioPlano: 0
   espinasDanioPorcentaje: 0
@@ -997,6 +1002,9 @@ MonoBehaviour:
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  desplazamientoAnimacionTurnoNuevoY: 1.7
+  duracionSubidaAnimacionTurnoNuevo: 0.12
+  duracionBajadaAnimacionTurnoNuevo: 0.12
   apilarTextosFlotantes: 0
   floatingTextSlotSpacing: 9
   floatingTextSlotLifetimeFallback: 1.1
@@ -1167,6 +1175,26 @@ MonoBehaviour:
   daniodX: 0
   tipoDanio: 0
   VFXEstadoPrefab: {fileID: 0}
+--- !u!114 &3126837053981280019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5662508880646372543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 7996714464312373375}
+  poseIdle: {fileID: 21300000, guid: ea27c407b255de34b89a3bebcc7a2c8a, type: 3}
+  poseMover: {fileID: 21300000, guid: 3e26b861f9ceb194485c3e0fe3070fb3, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 75fe27fff07517a45a380f2b86bab745, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: 75fe27fff07517a45a380f2b86bab745, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &5939473797897287989
 GameObject:
   m_ObjectHideFlags: 0
@@ -1223,7 +1251,7 @@ Transform:
   m_GameObject: {fileID: 6560708669317152596}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.318, y: 0.982, z: 0}
+  m_LocalPosition: {x: -0.305, y: 1.084, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1404,7 +1432,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.18
+      value: 1.43
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

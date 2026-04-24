@@ -141,8 +141,8 @@ RectTransform:
   m_GameObject: {fileID: 2420411746238950538}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2856, y: 1.3872, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.2, y: 1.2948352, z: 0.93341637}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6988876765770943579}
   - {fileID: 7949953516183880947}
@@ -150,7 +150,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -2.0239868, y: 75.4}
+  m_AnchoredPosition: {x: -2.0239868, y: 97.1}
   m_SizeDelta: {x: 380, y: 247.2598}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &4168930409016298131
@@ -1620,7 +1620,7 @@ MonoBehaviour:
   BotonActivo: 0
   goDesc: {fileID: 2420411746238950538}
   txtDescHab: {fileID: 4047022207269566032}
-  hoverDelay: 0.45
+  hoverDelay: 0.6
   prefabCirculoAccion: {fileID: 3314831447237412656, guid: c7d4b4f7c9a1efe439dd6721d83c81ea, type: 3}
   contenedorCirculosAccion: {fileID: 8904033607636641587}
   txtHotkey: {fileID: 5993629050623384347}

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class IAInvocarRaizMalditaBruja : IAHabilidad
 {
+  private const string RutaSfxInvocarRaizMaldita = "Sonidos/Efectos/Hurt/ArbolLamentos_dolor1";
   private const int CooldownInvocacion = 5;
   private const int PrioridadInvocacion = 12;
   private static readonly int[] ColumnasPrioridad = { 3, 2, 1 };
@@ -161,6 +162,11 @@ public class IAInvocarRaizMalditaBruja : IAHabilidad
 
   private void ReproducirSfxInvocacion()
   {
+    if (sfxInvocarRaizMaldita == null)
+    {
+      sfxInvocarRaizMaldita = Resources.Load<AudioClip>(RutaSfxInvocarRaizMaldita);
+    }
+
     if (sfxInvocarRaizMaldita == null)
     {
       return;

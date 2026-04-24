@@ -84,14 +84,28 @@ public abstract class Habilidad : MonoBehaviour
 
   protected virtual int DelayPreImpactoMs => 1000;
   protected virtual int DelayPostImpactoMs => 700;
+  protected virtual bool UsaTimingMeleeCentralizado => esHostil && esMelee && !omitirAnimacionDeUso;
+  protected virtual int DelayPreImpactoMeleeMs => MeleeTimingUtility.CalcularPreImpactoMs(scEstaUnidad != null ? scEstaUnidad.GetComponent<UnidadPoseController>() : null);
+  protected virtual int DelayPostImpactoMeleeMs => MeleeTimingUtility.CalcularPostImpactoMs();
+  protected virtual bool UsaPoseAtaqueMeleeSostenida => esHostil && esMelee && !omitirAnimacionDeUso;
 
   protected virtual Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
   {
+    if (UsaTimingMeleeCentralizado)
+    {
+      return DelayPreImpactoMeleeMs > 0 ? BattleManager.DelayCombateAsync(DelayPreImpactoMeleeMs) : Task.CompletedTask;
+    }
+
     return DelayPreImpactoMs > 0 ? BattleManager.DelayCombateAsync(DelayPreImpactoMs) : Task.CompletedTask;
   }
 
   protected virtual Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
   {
+    if (UsaTimingMeleeCentralizado)
+    {
+      return DelayPostImpactoMeleeMs > 0 ? BattleManager.DelayCombateAsync(DelayPostImpactoMeleeMs) : Task.CompletedTask;
+    }
+
     return DelayPostImpactoMs > 0 ? BattleManager.DelayCombateAsync(DelayPostImpactoMs) : Task.CompletedTask;
   }
 
@@ -411,6 +425,8 @@ public abstract class Habilidad : MonoBehaviour
     LimpiarMarcasUnidadesPosibles();
     MeleeApproachMover acercamientoMelee = MeleeApproachMover.ObtenerOCrear(scEstaUnidad);
     bool hizoAproximacion = acercamientoMelee != null && await acercamientoMelee.PrepararAproximacionJugadorAsync(this, Objetivos);
+    bool usarTimingMeleeCentralizado = UsaTimingMeleeCentralizado;
+    bool poseAtaqueSostenidaActiva = false;
     if (esHostil && !esDiscreta && scEstaUnidad != null && scEstaUnidad.ObtenerEstaEscondido() > 0)
     {
       scEstaUnidad.PerderEscondido();
@@ -426,7 +442,15 @@ public abstract class Habilidad : MonoBehaviour
       bool usarAtaque = !forzarPoseHabilidad && (fuerzaPoseAtaque || (scEstaUnidad is ClaseCanalizador && esHostil) || (esHostil && esMelee));
       if (usarAtaque)
       {
-        scEstaUnidad.ReproducirAnimacionAtaque();
+        if (UsaPoseAtaqueMeleeSostenida)
+        {
+          scEstaUnidad.IniciarPoseAtaqueSostenida();
+          poseAtaqueSostenidaActiva = true;
+        }
+        else
+        {
+          scEstaUnidad.ReproducirAnimacionAtaque();
+        }
       }
       else
       {
@@ -480,7 +504,11 @@ public abstract class Habilidad : MonoBehaviour
 
     try
     {
-      await BattleManager.DelayCombateAsync(250);
+      if (!usarTimingMeleeCentralizado)
+      {
+        await BattleManager.DelayCombateAsync(250);
+      }
+
       await EsperarPreImpactoAsync(Objetivos, casillaOrigenTrampas);
 
       int tirada = UnityEngine.Random.Range(1, 21); //la tirada es la misma para toda la habilidad, no para cada objetivo
@@ -509,6 +537,11 @@ public abstract class Habilidad : MonoBehaviour
     if (hizoAproximacion && acercamientoMelee != null)
     {
       await acercamientoMelee.VolverAPosicionInicialAsync();
+    }
+    else if (poseAtaqueSostenidaActiva && scEstaUnidad != null)
+    {
+      scEstaUnidad.FinalizarPoseAtaqueSostenida();
+      poseAtaqueSostenidaActiva = false;
     }
     if (Objetivos != null)
     {
@@ -564,6 +597,11 @@ public abstract class Habilidad : MonoBehaviour
                await BattleManager.DelayCombateAsync(1500);
                 BattleManager.Instance.scTutorialCombate.SiguientePasoCombate();
             }
+    }
+
+    if (poseAtaqueSostenidaActiva && scEstaUnidad != null)
+    {
+      scEstaUnidad.FinalizarPoseAtaqueSostenida();
     }
   }
 
@@ -734,6 +772,10 @@ public abstract class Habilidad : MonoBehaviour
       {
         AjustesAudio.ReproducirClipEnPunto(BattleManager.Instance.contenedorPrefabs.sonidoErrar, transform.position);
       }
+      if (esMelee && unidadAtacada != null)
+      {
+        unidadAtacada.AnticiparFalloAtaqueRecibido(scEstaUnidad, true);
+      }
       unidadAtacada?.NotificarAtaqueRecibido();
       return -1;
     }
@@ -783,6 +825,10 @@ public abstract class Habilidad : MonoBehaviour
       outcome = CombatLogFormatter.CombatOutcome.Fallo;
       textoResultado = TRADU.i.Traducir("Fallo");
       unidadAtacada.GenerarTextoFlotante(TRADU.i.Traducir("Fallo"), new Color(0.8f, 0.8f, 0.8f), FloatingTextContext.Miss);
+      if (esMelee && unidadAtacada != null)
+      {
+        unidadAtacada.AnticiparFalloAtaqueRecibido(scEstaUnidad, true);
+      }
     }
 
     BattleManager.Instance.EscribirLog(
@@ -1085,6 +1131,39 @@ public abstract class Habilidad : MonoBehaviour
     return 0f;
   }
 
+}
+
+static class MeleeTimingUtility
+{
+  const float FraccionPosePreImpactoBase = 0.35f;
+  const float FallbackPreImpactoSeg = 0.22f;
+  const float MinPreImpactoSeg = 0.08f;
+  const float MaxPreImpactoSeg = 0.42f;
+  const float PostImpactoSegBase = 0.16f;
+  const float MinPostImpactoSeg = 0.05f;
+  const float MaxPostImpactoSeg = 0.3f;
+
+  public static int CalcularPreImpactoMs(
+    UnidadPoseController poseController,
+    float fraccionPose = FraccionPosePreImpactoBase,
+    float fallbackSeg = FallbackPreImpactoSeg,
+    float minimoSeg = MinPreImpactoSeg,
+    float maximoSeg = MaxPreImpactoSeg)
+  {
+    float duracionPose = poseController != null ? poseController.duracionPoseAtacar : fallbackSeg;
+    float preImpactoSeg = duracionPose > 0.01f ? duracionPose * fraccionPose : fallbackSeg;
+    preImpactoSeg = Mathf.Clamp(preImpactoSeg, minimoSeg, maximoSeg);
+    return Mathf.Max(0, Mathf.RoundToInt(preImpactoSeg * 1000f));
+  }
+
+  public static int CalcularPostImpactoMs(
+    float postImpactoSeg = PostImpactoSegBase,
+    float minimoSeg = MinPostImpactoSeg,
+    float maximoSeg = MaxPostImpactoSeg)
+  {
+    float clamped = Mathf.Clamp(postImpactoSeg, minimoSeg, maximoSeg);
+    return Mathf.Max(0, Mathf.RoundToInt(clamped * 1000f));
+  }
 }
 
 

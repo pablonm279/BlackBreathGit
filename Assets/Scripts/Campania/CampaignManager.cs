@@ -5,7 +5,6 @@ using TMPro;
 using System.Data;
 using System;
 using System.Text;
-using System.Threading;
 using UnityEngine.UI;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
@@ -29,6 +28,9 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private bool debugForzarCombateFinalBosqueAlIniciar = false;
 
   public GameObject prefabTextoRecursos;
+  [SerializeField] private float recursoTextoStackOffsetY = 16f;
+  [SerializeField] private float recursoTextoStackOffsetX = 10f;
+  [SerializeField] private int recursoTextoMaxStackVisual = 4;
   public Animator animCaravana;
   public GameObject goCanvas;
   public MapaManager scMapaManager;
@@ -98,14 +100,16 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private float yStackOffset = 28f;            // desplazamiento vertical entre mensajes simultáneos
   [SerializeField] private float stackWindowSeconds = 1.2f;     // ventana donde consideramos mensajes "cercanos" al origen
   private readonly Queue<(string, Color)> colaTextos = new Queue<(string, Color)>();
-  private readonly SemaphoreSlim serializacionTextosRecursos = new SemaphoreSlim(1, 1);
+  private readonly Queue<(string, Color)> colaTextosSuspendidosCampania = new Queue<(string, Color)>();
   private bool procesandoCola;
+  private int bloqueoTextosFlotantesCampania;
   private float tiempoUltimoSpawnTiempoReal = float.NegativeInfinity;
   private readonly List<float> recentSpawnTimes = new List<float>();
   private Coroutine rutinaTextoFlotanteCampania;
   private readonly Dictionary<TextMeshProUGUI, string> textosOriginalesDerrotaTMP = new Dictionary<TextMeshProUGUI, string>();
   private readonly Dictionary<Text, string> textosOriginalesDerrotaLegacy = new Dictionary<Text, string>();
   private bool textosDerrotaCacheados;
+  private bool inicializandoNuevaCampania;
   private bool resolviendoJefeZona;
   private bool abriendoCiudadPuerto;
   private bool campaniaInicializada;
@@ -276,19 +280,27 @@ public class CampaignManager : MonoBehaviour
       return;
     }
 
-    ResetearEstadoTransitorioCampania();
-    ConfigurarEstadoTutorialNuevaCampania();
-    InicializarRecursosNuevaCampania();
-    InicializarZonaNuevaCampania();
-    InicializarSequitosNuevaCampania();
-    InicializarProgresoNuevaCampania();
-    InicializarClimaAlIniciar();
-    InicializarPersonajesNuevaCampania();
-    AplicarTraitsInicioNuevaZona();
-    AjustarDificultad();
+    inicializandoNuevaCampania = true;
+    try
+    {
+      ResetearEstadoTransitorioCampania();
+      ConfigurarEstadoTutorialNuevaCampania();
+      InicializarRecursosNuevaCampania();
+      InicializarZonaNuevaCampania();
+      InicializarSequitosNuevaCampania();
+      InicializarProgresoNuevaCampania();
+      InicializarClimaAlIniciar();
+      InicializarPersonajesNuevaCampania();
+      AplicarTraitsInicioNuevaZona();
+      AjustarDificultad();
 
-    debeEscribirLogInicioEnStart = true;
-    campaniaInicializada = true;
+      debeEscribirLogInicioEnStart = true;
+      campaniaInicializada = true;
+    }
+    finally
+    {
+      inicializandoNuevaCampania = false;
+    }
   }
 
   private bool CargarCampaniaPendiente(SaveFileData savePendiente, out string error, bool iniciarNuevaCampaniaSiFalla)
@@ -471,7 +483,7 @@ public class CampaignManager : MonoBehaviour
  
   private void InicializarPersonajesNuevaCampania()
   {
-    CrearCaballero();//!!
+
     if (!scTutorialManager.tutorialActivo)
     {
       int claseInicialAleatoria = UnityEngine.Random.value < 0.5f ? 5 : 3;
@@ -3088,6 +3100,11 @@ public class CampaignManager : MonoBehaviour
 
   private void EvaluarDerrotaPorEstadoCaravana()
   {
+    if (inicializandoNuevaCampania)
+    {
+      return;
+    }
+
     if (EsperanzaActual <= 0 || civilesActuales <= 0)
     {
       ActivarDerrota();
@@ -3098,13 +3115,14 @@ public class CampaignManager : MonoBehaviour
   {
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
     string color = emboscadaEnemiga ? "#ff9a9a" : "#8ad8ff";
+    int umbralEmboscadaAliada = Mathf.Clamp(chanceEmboscada + 30, 1, 100);
 
     if (idioma == TRADU.IdiomaIngles)
     {
       string textoEn = emboscadaEnemiga
         ? "-The caravan was ambushed."
         : "-You ambushed the enemies.";
-      return $"<color={color}>{textoEn} Ambush roll: {chanceEmboscada}% - 1d100: {tirada}.</color>";
+      return $"<color={color}>{textoEn} Enemy ambush chance: {chanceEmboscada}% (roll <= {chanceEmboscada}) | Ally ambush if roll >= {umbralEmboscadaAliada} - 1d100: {tirada}.</color>";
     }
 
     if (idioma == TRADU.IdiomaPortugues)
@@ -3112,13 +3130,13 @@ public class CampaignManager : MonoBehaviour
       string textoPt = emboscadaEnemiga
         ? "-A caravana sofreu uma emboscada."
         : "-Você emboscou os inimigos.";
-      return $"<color={color}>{textoPt} Rolagem de emboscada: {chanceEmboscada}% - 1d100: {tirada}.</color>";
+      return $"<color={color}>{textoPt} Chance de emboscada inimiga: {chanceEmboscada}% (rolagem <= {chanceEmboscada}) | Emboscada aliada se rolagem >= {umbralEmboscadaAliada} - 1d100: {tirada}.</color>";
     }
 
     string textoEs = emboscadaEnemiga
       ? "-La caravana ha sido emboscada."
       : "-Has emboscado a los enemigos.";
-    return $"<color={color}>{textoEs} Tirada de emboscada: {chanceEmboscada}% - 1d100: {tirada}.</color>";
+    return $"<color={color}>{textoEs} Chance de emboscada enemiga: {chanceEmboscada}% (tirada <= {chanceEmboscada}) | Emboscada aliada si tirada >= {umbralEmboscadaAliada} - 1d100: {tirada}.</color>";
   }
 
   private void CachearTextosOriginalesDerrota()
@@ -3824,7 +3842,7 @@ public class CampaignManager : MonoBehaviour
     }
 
     goUIComercioNodo.SetActive(true);
-    txtDescripcionPuestoComercial.text = TRADU.i.Traducir("Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\n\nTu Séquito de Mercaderes ha actualizado su Inventario.");
+    txtDescripcionPuestoComercial.text = TRADU.i.Traducir("Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\nTu Séquito de Mercaderes ha actualizado su Inventario.");
 
     ResetearPuestoComercial();
     AplicarTraitsVisitaPuestoComercial();
@@ -5520,37 +5538,35 @@ public class CampaignManager : MonoBehaviour
   #endregion
 
 
-  async Task GenerarTextoRecursos(int cantidad, GameObject textoOrigen, bool efectoRetraso)
+  Task GenerarTextoRecursos(int cantidad, GameObject textoOrigen, bool efectoRetraso)
   {
     if (cantidad == 0 || prefabTextoRecursos == null || textoOrigen == null)
     {
-      return;
+      return Task.CompletedTask;
     }
 
-    await serializacionTextosRecursos.WaitAsync();
-    try
+    if (!isActiveAndEnabled)
     {
-    // Encuentra todos los objetos existentes del prefab scUnidadCanvas.PrefabtxtDaño
-    GameObject[] existingTextObjects = GameObject.FindGameObjectsWithTag(prefabTextoRecursos.tag);
-
-    // Calcula el retraso total en milisegundos
-    int delayPerObject = 100;
-    if (!efectoRetraso) { delayPerObject = 80; }
-    int totalDelay = delayPerObject * existingTextObjects.Length;
-
-    // Espera el tiempo calculado
-    await BattleManager.DelayCombateAsync(totalDelay);
-
-    if (this == null || prefabTextoRecursos == null || textoOrigen == null)
-    {
-      return;
+      return Task.CompletedTask;
     }
 
     // Instancia el nuevo objeto
+    int stackIndex = ObtenerIndiceStackTextoRecurso(textoOrigen.transform);
     GameObject goTextoFlotante = Instantiate(prefabTextoRecursos, textoOrigen.transform, false);
+    RectTransform rt = goTextoFlotante.GetComponent<RectTransform>();
+    if (rt != null && stackIndex > 0)
+    {
+      float side = (stackIndex % 2 == 0) ? 1f : -1f;
+      float lateralStep = Mathf.Ceil(stackIndex * 0.5f);
+      rt.anchoredPosition += new Vector2(recursoTextoStackOffsetX * side * lateralStep, -recursoTextoStackOffsetY * stackIndex);
+    }
 
 
     TextMeshProUGUI txtMesh = goTextoFlotante.GetComponent<TextMeshProUGUI>();
+    if (txtMesh == null)
+    {
+      return Task.CompletedTask;
+    }
 
 
     // Configura el texto y el color
@@ -5568,11 +5584,37 @@ public class CampaignManager : MonoBehaviour
       txtMesh.text = "" + cantidad;
       txtMesh.color = new Color(0.7f, 0.1f, 0.2f); ;
     }
-    }
-    finally
+
+    _ = efectoRetraso;
+    return Task.CompletedTask;
+  }
+
+  private int ObtenerIndiceStackTextoRecurso(Transform origen)
+  {
+    if (origen == null || prefabTextoRecursos == null)
     {
-      serializacionTextosRecursos.Release();
+      return 0;
     }
+
+    int textosActivos = 0;
+    string tagTexto = prefabTextoRecursos.tag;
+    int maxStackVisual = Mathf.Max(1, recursoTextoMaxStackVisual);
+    for (int i = 0; i < origen.childCount; i++)
+    {
+      Transform child = origen.GetChild(i);
+      if (child == null)
+      {
+        continue;
+      }
+
+      GameObject childObject = child.gameObject;
+      if (childObject.activeInHierarchy && childObject.CompareTag(tagTexto))
+      {
+        textosActivos++;
+      }
+    }
+
+    return Mathf.Clamp(textosActivos, 0, maxStackVisual - 1);
   }
 
   #region Tooltips
@@ -6107,9 +6149,42 @@ public class CampaignManager : MonoBehaviour
     logDeCampania.SetDiaActual(numeroTurno);
     logDeCampania.Escribir(log);
 
+    if (bloqueoTextosFlotantesCampania > 0)
+    {
+      colaTextosSuspendidosCampania.Enqueue((log, Color.cyan));
+      return;
+    }
+
     GenerarTextoFlotanteCampaña(log, Color.cyan);
 
 
+  }
+
+  public void ComenzarBufferTextosFlotantesCampania()
+  {
+    bloqueoTextosFlotantesCampania++;
+  }
+
+  public List<(string texto, Color color)> FinalizarBufferTextosFlotantesCampania()
+  {
+    if (bloqueoTextosFlotantesCampania > 0)
+    {
+      bloqueoTextosFlotantesCampania--;
+    }
+
+    List<(string texto, Color color)> textosBufferizados = new List<(string texto, Color color)>();
+    if (bloqueoTextosFlotantesCampania > 0)
+    {
+      return textosBufferizados;
+    }
+
+    while (colaTextosSuspendidosCampania.Count > 0)
+    {
+      var (texto, color) = colaTextosSuspendidosCampania.Dequeue();
+      textosBufferizados.Add((texto, color));
+    }
+
+    return textosBufferizados;
   }
 
   public GameObject prefabTextoCampaña;

@@ -22,10 +22,13 @@ public class Unidad : MonoBehaviour
   private const int DelayResolucionTrampaPersistenteInicioTurnoMs = 180;
   private const float DistanciaRetiradaPorMoralX = 3f;
   private const float DuracionRetiradaPorMoral = 0.805f;
+  private const float VentanaAnticipacionMissSegundos = 0.35f;
   public const string BuffNombreProvocado = "Provocado";
   private static Unidad redireccionAtaqueAtacante;
   private static Unidad redireccionAtaqueObjetivoOriginal;
   private static Unidad redireccionAtaqueObjetivoReal;
+  private bool omitirSiguienteVisualMiss;
+  private float omitirVisualMissHasta;
 
    [Header ("LÃ³gica")]
    public Casilla CasillaPosicion;
@@ -448,6 +451,34 @@ public class Unidad : MonoBehaviour
   
   }
 
+  public virtual void AnticiparFalloAtaqueRecibido(Unidad uOrigen, bool melee)
+  {
+    Unidad unidadRedirigida = ObtenerObjetivoRedirigidoSiCorresponde(uOrigen, this);
+    if (unidadRedirigida != null && unidadRedirigida != this)
+    {
+      unidadRedirigida.AnticiparFalloAtaqueRecibido(uOrigen, melee);
+      return;
+    }
+
+    omitirSiguienteVisualMiss = true;
+    omitirVisualMissHasta = Time.unscaledTime + VentanaAnticipacionMissSegundos;
+    GetComponent<UnidadCombatFeedbackFx>()?.PlayMissGlint();
+    ReproducirAnimacionMiss();
+  }
+
+  private bool ConsumirVisualMissAnticipada()
+  {
+    if (!omitirSiguienteVisualMiss)
+    {
+      return false;
+    }
+
+    bool vigente = Time.unscaledTime <= omitirVisualMissHasta;
+    omitirSiguienteVisualMiss = false;
+    omitirVisualMissHasta = 0f;
+    return vigente;
+  }
+
   public void ReproducirFlashPifiaLeveRapido()
   {
     if (!gameObject.activeInHierarchy || uImage == null)
@@ -538,6 +569,41 @@ public class Unidad : MonoBehaviour
     if (goSANGRE != null)
     {
       Instantiate(goSANGRE, puntoEntrante.position, Quaternion.identity);
+    }
+  }
+
+  public void IniciarPoseAtaqueSostenida(bool forzar = false)
+  {
+    if (suprimirAnimacionIA && !forzar)
+    {
+      return;
+    }
+
+    ultimoAtaqueAnimTime = Time.time;
+    if (poseController != null)
+    {
+      poseController.EnterAttackPoseHold();
+    }
+
+    if (evitarRepeticion)
+    {
+      return;
+    }
+
+    if (animator != null)
+    {
+      animator.SetTrigger("Trigger_Ataque");
+    }
+
+    evitarRepeticion = true;
+    Invoke("ResetearEvitarRepeticionAnimacion", 2.5f);
+  }
+
+  public void FinalizarPoseAtaqueSostenida(bool restaurarIdle = true)
+  {
+    if (poseController != null)
+    {
+      poseController.ExitAttackPoseHold(restaurarIdle);
     }
   }
 
@@ -2388,14 +2454,24 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
   public async virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignoraArmadura = false)
   {
+    Task impactoProyectilPendiente = ArrowFlight.ObtenerImpactoPendienteAsync(uCausante, this);
+    if (impactoProyectilPendiente != null)
+    {
+      await impactoProyectilPendiente;
+      delayEfectos = 0;
+    }
+    else if (delayEfectos > 0)
+    {
+      await BattleManager.DelayCombateAsync(delayEfectos);
+    }
+
     Unidad unidadRedirigida = ObtenerObjetivoRedirigidoSiCorresponde(uCausante, this);
     if (unidadRedirigida != null && unidadRedirigida != this)
     {
-      unidadRedirigida.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos, ignoraArmadura);
+      unidadRedirigida.RecibirDanio(danio, tipoDanio, esCritico, uCausante, 0, ignoraArmadura);
       return;
     }
 
-    await BattleManager.DelayCombateAsync(delayEfectos); //Delay para que se vea el efecto de daÃ±o en la unidad antes de aplicar el daÃ±o
     float danioFinal = 0;
     bool textoDanioMostrado = false;
     bool absorbioPorArmadura = false;
@@ -3696,8 +3772,11 @@ public virtual void FalloAtaqueRecibido(Unidad uOrigen, bool melee)
    return;
  }
 
- GetComponent<UnidadCombatFeedbackFx>()?.PlayMissGlint();
- ReproducirAnimacionMiss();
+ if (!ConsumirVisualMissAnticipada())
+ {
+   GetComponent<UnidadCombatFeedbackFx>()?.PlayMissGlint();
+   ReproducirAnimacionMiss();
+ }
  LlamarReacciones(1, uOrigen, melee);
 }
 private bool IdiomaInglesActivo()

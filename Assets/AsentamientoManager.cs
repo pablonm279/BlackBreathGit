@@ -21,6 +21,7 @@ public class AsentamientoManager : MonoBehaviour
     private const int CostoTaverna = 100;
     private const int CostoPosada = 50;
     private const float DuracionAccionSegundos = 4f;
+    private const float RetrasoEntreLogsAccionSegundos = 0.9f;
     private const float MultiplicadorCuracionViajeAsentamiento = 1.1f;
     private const float CuracionPosada = 0.25f;
     private const float DuracionFadePanelSegundos = 0.2f;
@@ -285,6 +286,7 @@ public class AsentamientoManager : MonoBehaviour
         accionHoverActual = accion;
         MostrarUiEnTransicion();
         ActualizarInterfaz();
+        campaign.ComenzarBufferTextosFlotantesCampania();
 
         if (campaign.sunController != null)
         {
@@ -301,20 +303,18 @@ public class AsentamientoManager : MonoBehaviour
             }
         }
 
+        bool esPosada = accion == AccionAsentamiento.Posada;
+        yield return new WaitForSeconds(DuracionAccionSegundos);
         campaign.numeroTurno++;
         campaign.CambiarValorAlientoNegro(1);
        /*campaign.EscribirLog(Loc(
             "-El tiempo pasa en el asentamiento. El Aliento Negro avanza 1.",
             "-Time passes in the settlement. The Black Breath advances by 1.",
             "-O tempo passa no assentamento. O Halito Negro avanca 1."));*/
-
-        bool esPosada = accion == AccionAsentamiento.Posada;
         campaign.ProcesarPasoDeDiaEnAsentamiento(
             MultiplicadorCuracionViajeAsentamiento,
             !esPosada,
             !esPosada);
-
-        yield return new WaitForSeconds(DuracionAccionSegundos);
 
         switch (accion)
         {
@@ -332,7 +332,15 @@ public class AsentamientoManager : MonoBehaviour
                 break;
         }
 
+        System.Collections.Generic.List<(string texto, Color color)> textosBufferizados = campaign.FinalizarBufferTextosFlotantesCampania();
         accionEnCurso = false;
+        RestaurarInterfazCampaniaTrasTransicion();
+        yield return null;
+
+        if (textosBufferizados.Count > 0)
+        {
+            yield return ReproducirTextosAccionAsentamiento(campaign, textosBufferizados);
+        }
 
         if (accion == AccionAsentamiento.PuestoComercial)
         {
@@ -341,6 +349,25 @@ public class AsentamientoManager : MonoBehaviour
 
         MostrarPanelAsentamiento();
         ActualizarInterfaz();
+    }
+
+    private IEnumerator ReproducirTextosAccionAsentamiento(CampaignManager campaign, System.Collections.Generic.List<(string texto, Color color)> textosBufferizados)
+    {
+        if (campaign == null || textosBufferizados == null || textosBufferizados.Count == 0)
+        {
+            yield break;
+        }
+
+        for (int i = 0; i < textosBufferizados.Count; i++)
+        {
+            (string texto, Color color) = textosBufferizados[i];
+            campaign.GenerarTextoFlotanteCampaña(texto, color);
+
+            if (i < textosBufferizados.Count - 1)
+            {
+                yield return new WaitForSecondsRealtime(RetrasoEntreLogsAccionSegundos);
+            }
+        }
     }
 
     private void EjecutarResultadoPuestoComercial()

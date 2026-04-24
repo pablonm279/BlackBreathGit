@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -16,6 +17,13 @@ public class ArrowFlight : MonoBehaviour
 
     TaskCompletionSource<bool> impactoTcs;
     bool configurado;
+    bool impactoCompletado;
+    bool registrado;
+    Unidad unidadOrigen;
+    Unidad unidadDestino;
+    Obstaculo obstaculoDestino;
+
+    static readonly List<ArrowFlight> vuelosActivos = new List<ArrowFlight>();
 
     void Awake()
     {
@@ -27,6 +35,7 @@ public class ArrowFlight : MonoBehaviour
     {
         startMarker = ResolvePuntoSalida(inicio);
         endMarker = ResolvePuntoEntrada(destino);
+        SincronizarParticipantes();
         parabolaBase = alturaParabola;
         parabola = AjustarParabolaPorDistancia(parabolaBase, startMarker, endMarker);
         velocidad = velocidadVuelo;
@@ -45,6 +54,8 @@ public class ArrowFlight : MonoBehaviour
         {
             transform.LookAt(GetEndPosition());
         }
+
+        RegistrarVueloActivo();
     }
 
     void Start()
@@ -64,12 +75,14 @@ public class ArrowFlight : MonoBehaviour
 
     void Destruir()
     {
+        impactoCompletado = true;
         impactoTcs.TrySetResult(true);
         Destroy(gameObject);
     }
 
     void OnDestroy()
     {
+        DesregistrarVueloActivo();
         impactoTcs?.TrySetResult(true);
     }
 
@@ -113,10 +126,95 @@ public class ArrowFlight : MonoBehaviour
 
         float remainingDistance = Vector3.Distance(nextPosition, destino);
 
-        if (remainingDistance <= 0.12f || fracJourney >= 0.999f)
+        if (remainingDistance <= 0.03f || fracJourney >= 0.999f)
         {
+            transform.position = destino;
             Destruir();
         }
+    }
+
+    public static Task ObtenerImpactoPendienteAsync(Unidad origen, Unidad destino)
+    {
+        ArrowFlight vuelo = BuscarVueloActivo(origen, destino, null);
+        return vuelo != null ? vuelo.EsperarImpactoAsync() : null;
+    }
+
+    public static Task ObtenerImpactoPendienteAsync(Unidad origen, Obstaculo destino)
+    {
+        ArrowFlight vuelo = BuscarVueloActivo(origen, null, destino);
+        return vuelo != null ? vuelo.EsperarImpactoAsync() : null;
+    }
+
+    static ArrowFlight BuscarVueloActivo(Unidad origen, Unidad unidadObjetivo, Obstaculo obstaculoObjetivo)
+    {
+        if (origen == null || (unidadObjetivo == null && obstaculoObjetivo == null))
+        {
+            return null;
+        }
+
+        ArrowFlight mejor = null;
+        for (int i = vuelosActivos.Count - 1; i >= 0; i--)
+        {
+            ArrowFlight vuelo = vuelosActivos[i];
+            if (vuelo == null)
+            {
+                vuelosActivos.RemoveAt(i);
+                continue;
+            }
+
+            vuelo.SincronizarParticipantes();
+            if (vuelo.impactoCompletado || vuelo.unidadOrigen != origen)
+            {
+                continue;
+            }
+
+            bool coincideDestino = unidadObjetivo != null
+                ? vuelo.unidadDestino == unidadObjetivo
+                : vuelo.obstaculoDestino == obstaculoObjetivo;
+            if (!coincideDestino)
+            {
+                continue;
+            }
+
+            if (mejor == null || vuelo.startTime < mejor.startTime)
+            {
+                mejor = vuelo;
+            }
+        }
+
+        return mejor;
+    }
+
+    void RegistrarVueloActivo()
+    {
+        if (registrado)
+        {
+            return;
+        }
+
+        registrado = true;
+        if (!vuelosActivos.Contains(this))
+        {
+            vuelosActivos.Add(this);
+        }
+    }
+
+    void DesregistrarVueloActivo()
+    {
+        if (!registrado)
+        {
+            return;
+        }
+
+        registrado = false;
+        vuelosActivos.Remove(this);
+    }
+
+    void SincronizarParticipantes()
+    {
+        unidadOrigen = startMarker != null ? startMarker.GetComponentInParent<Unidad>() : null;
+        unidadDestino = endMarker != null ? endMarker.GetComponentInParent<Unidad>() : null;
+        obstaculoDestino = unidadDestino == null && endMarker != null ? endMarker.GetComponentInParent<Obstaculo>() : null;
     }
 
     Vector3 GetStartPosition()

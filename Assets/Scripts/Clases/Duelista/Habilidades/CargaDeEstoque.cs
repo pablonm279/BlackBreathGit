@@ -38,7 +38,7 @@ public class CargaDeEstoque : Habilidad
         esCargable = false;
         esMelee = true;
         esHostil = true;
-        cooldownMax = 0; //2
+        cooldownMax = 2; //2
         bAfectaObstaculos = false;
         targetEspecial = 1;
         fuerzaPoseAtaque = true;
@@ -276,20 +276,15 @@ public class CargaDeEstoque : Habilidad
 
     protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
     {
-        float delay = 0.5f;
         var pose = scEstaUnidad != null ? scEstaUnidad.GetComponent<UnidadPoseController>() : null;
-        if (pose != null)
-        {
-            delay = pose.duracionPoseAtacar;
-        }
-
-        int ms = Mathf.RoundToInt(Mathf.Max(0.1f, delay * 0.5f) * 1000f);
-        return BattleManager.DelayCombateAsync(ms);
+        int ms = MeleeTimingUtility.CalcularPreImpactoMs(pose);
+        return ms > 0 ? BattleManager.DelayCombateAsync(ms) : Task.CompletedTask;
     }
 
     protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
     {
-        return Task.CompletedTask;
+        int ms = MeleeTimingUtility.CalcularPostImpactoMs();
+        return ms > 0 ? BattleManager.DelayCombateAsync(ms) : Task.CompletedTask;
     }
 
      void VFXAplicar(GameObject objetivo)

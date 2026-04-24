@@ -44137,7 +44137,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6603774, g: 0.5900857, b: 0.5825027, a: 1}
+  m_Color: {r: 0.9150943, g: 0.81286186, b: 0.80718225, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -86761,7 +86761,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &223524391
 Transform:
   m_ObjectHideFlags: 0
@@ -99778,8 +99778,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 40, y: 493}
-  m_SizeDelta: {x: 97.9244, y: 66.317}
+  m_AnchoredPosition: {x: 40, y: 485.5863}
+  m_SizeDelta: {x: 97.9244, y: 74.7082}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &259346250
 MonoBehaviour:
@@ -123689,7 +123689,7 @@ Transform:
   m_GameObject: {fileID: 339375771}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.11999, y: 0.0000097658485, z: -0.00000065974587}
+  m_LocalPosition: {x: 5.960002, y: 0.0000097658485, z: -0.00000065974587}
   m_LocalScale: {x: 0.942087, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -128602,7 +128602,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 0e9e8c9533d072141b8add1a98d8b74f, type: 3}
   m_Resource: {fileID: 8300000, guid: 0e9e8c9533d072141b8add1a98d8b74f, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 6.058631e-17
+  m_Volume: 2.0981829e-11
   m_Pitch: 0.46
   Loop: 1
   Mute: 0
@@ -129368,8 +129368,8 @@ RectTransform:
   m_GameObject: {fileID: 346634826}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.91129726, y: 1.8404678, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.95000005, y: 1.9186324, z: 1.04247}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 412616398}
   - {fileID: 723055593}
@@ -129382,7 +129382,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -142.7, y: 46.4}
+  m_AnchoredPosition: {x: -142.7, y: 58}
   m_SizeDelta: {x: 432.199, y: 67.6684}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &346634828
@@ -129398,7 +129398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3233258, g: 0.3962264, b: 0.28595585, a: 1}
+  m_Color: {r: 0.42627335, g: 0.509434, b: 0.38688147, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -131249,7 +131249,7 @@ RectTransform:
   m_GameObject: {fileID: 360835773}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2308298, y: 1, z: 1}
+  m_LocalScale: {x: 1.2048193, y: 0.9788675, z: 0.9788675}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 576932361}
@@ -131263,7 +131263,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.87246704, y: 30}
+  m_AnchoredPosition: {x: -0.85401344, y: 46.985687}
   m_SizeDelta: {x: 437.7879, y: 277.339}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &360835775
@@ -194229,7 +194229,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &511894724
 RectTransform:
   m_ObjectHideFlags: 0
@@ -245825,8 +245825,8 @@ RectTransform:
   m_GameObject: {fileID: 723055592}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.0973368, y: 0.54334015, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 0.4951444, z: 0.91129726}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 681370887}
   - {fileID: 982171771}
@@ -245837,7 +245837,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -535, y: 255.20474}
+  m_AnchoredPosition: {x: -630, y: 217.6}
   m_SizeDelta: {x: 976.3555, y: 891.5358}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &723055594
@@ -253792,7 +253792,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &752488723
 Transform:
   m_ObjectHideFlags: 0
@@ -268535,7 +268535,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &796239986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280341,7 +280341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.735849, g: 0.735849, b: 0.735849, a: 1}
+  m_Color: {r: 0.8867924, g: 0.8867924, b: 0.8867924, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -281339,9 +281339,9 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 814831319}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.75002, y: 1, z: 1}
+  m_LocalScale: {x: 0.73417026, y: 0.9788675, z: 0.9788675}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1116375302}
@@ -281349,7 +281349,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4.5, y: -308.9}
+  m_AnchoredPosition: {x: -4.4049206, y: -284.75256}
   m_SizeDelta: {x: 303.9811, y: 80.2643}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &814831321
@@ -287507,8 +287507,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 586.6, y: -411.3029}
-  m_SizeDelta: {x: 47.794, y: 97.7223}
+  m_AnchoredPosition: {x: 740.0987, y: -384.6}
+  m_SizeDelta: {x: 59.1926, y: 97.7223}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &829631373
 MonoBehaviour:
@@ -345338,14 +345338,14 @@ RectTransform:
   m_GameObject: {fileID: 999120158}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.8595972, y: 0.98857045, z: 1}
+  m_LocalScale: {x: 0.84143174, y: 0.96767944, z: 0.9788675}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1504680381}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 259, y: 284.8}
+  m_AnchoredPosition: {x: 226, y: 280}
   m_SizeDelta: {x: 200, y: 20.9563}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &999120160
@@ -345377,8 +345377,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4286743170
-  m_fontColor: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
+    rgba: 4292598747
+  m_fontColor: {r: 0.8584906, g: 0.8584906, b: 0.8584906, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -383757,6 +383757,9 @@ MonoBehaviour:
   debugIniciarConEstadosCaravana: 0
   debugForzarCombateFinalBosqueAlIniciar: 0
   prefabTextoRecursos: {fileID: 6392197955437058786, guid: 60dbcfb63ddbc7e439d2a0e808c9f29b, type: 3}
+  recursoTextoStackOffsetY: 16
+  recursoTextoStackOffsetX: 10
+  recursoTextoMaxStackVisual: 4
   animCaravana: {fileID: 4442090406299805440}
   goCanvas: {fileID: 314276520}
   scMapaManager: {fileID: 1544762546}
@@ -389754,7 +389757,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1044268674
 Transform:
   m_ObjectHideFlags: 0
@@ -454616,8 +454619,8 @@ RectTransform:
   m_GameObject: {fileID: 1202174231}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 9.566645, y: 2.924792, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 10, y: 3.0572813, z: 1.0452987}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 117155689}
   - {fileID: 2129819878}
@@ -454632,7 +454635,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.94900006}
   m_AnchorMax: {x: 0.6672917, y: 1}
-  m_AnchoredPosition: {x: 308, y: 7.199707}
+  m_AnchoredPosition: {x: 332, y: -4}
   m_SizeDelta: {x: -1161.5928, y: 51.8579}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1202174233
@@ -455081,12 +455084,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Neste menu, voc\xEA pode ver as informa\xE7\xF5es de cada <b>Personagem</b>:
-    atributos de combate, tra\xE7os, estados tempor\xE1rios e muito mais.\n\n<i>Atualmente</i>,
-    existem <b>5 Classes</b> de <b>Personagens</b>, cada uma com mec\xE2nicas e estilos
-    de jogo diferentes.\n\nOs <b>Personagens</b> s\xE3o gerados de forma <b>procedural</b>:
-    come\xE7am com habilidades iniciais <b>aleat\xF3rias</b> dentro de sua <b>Classe</b>
-    e aprender\xE3o novas habilidades ao subir certos <b>N\xEDveis</b>."
+  m_text: "Tu <b>Perseguidor</b> subiu para o <b>N\xEDvel 2</b> e agora tem <b>1
+    Ponto de Atributo</b> e <b>1 Ponto de Habilidade</b> para distribuir.\n\nClique
+    na <b>cruz amarela</b> \xE0 direita do atributo que quiser aumentar. Para o <b>Perseguidor</b>,
+    o mais recomendado costuma ser <b>For\xE7a</b> ou <b>Agilidade</b>.\n\nVoc\xEA
+    tamb\xE9m poder\xE1 melhorar a habilidade <b>\"Distrair\"</b>."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -455665,7 +455667,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Arma                '
+  m_text: Arma
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
   m_sharedMaterial: {fileID: -4687675609486072877, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
@@ -517067,7 +517069,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1406719701
 Transform:
   m_ObjectHideFlags: 0
@@ -526912,14 +526914,14 @@ RectTransform:
   m_GameObject: {fileID: 1449622744}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2308298, y: 1, z: 1}
+  m_LocalScale: {x: 1.2048193, y: 0.9788675, z: 0.9788675}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1504680381}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.4907459, y: 0.91800004}
   m_AnchorMax: {x: 0.4907459, y: 0.91800004}
-  m_AnchoredPosition: {x: 2.169098, y: -26.400024}
+  m_AnchoredPosition: {x: 2.2288647, y: -13.735348}
   m_SizeDelta: {x: 312.2946, y: 33.4736}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1449622746
@@ -543234,8 +543236,8 @@ RectTransform:
   m_GameObject: {fileID: 1504680380}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.81246, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.8299999, y: 1.0215887, z: 1.0215887}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 360835774}
   - {fileID: 1449622745}
@@ -543249,7 +543251,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.56100005, y: 0.42422223}
   m_AnchorMax: {x: 0.84000003, y: 1}
-  m_AnchoredPosition: {x: -397, y: -50}
+  m_AnchoredPosition: {x: -397, y: -68}
   m_SizeDelta: {x: 4.620201, y: 2.2565002}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1504680382
@@ -543265,7 +543267,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8867924, g: 0.8867924, b: 0.8867924, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -549017,9 +549019,9 @@ Transform:
   m_GameObject: {fileID: 1510520950}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.47, y: 0, z: 0}
-  m_LocalScale: {x: 0.65, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 5.34, y: 0, z: -0}
+  m_LocalScale: {x: 0.62, y: 0.9538462, z: 0.9538462}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2058063367}
   - {fileID: 1229090664}
@@ -549603,7 +549605,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1523188456
 Transform:
   m_ObjectHideFlags: 0
@@ -567867,7 +567869,9 @@ MonoBehaviour:
           tier3: []
           tier4: []
           tier5: []
-  debugEncounterUnits: []
+  debugEncounterUnits:
+  - {fileID: 5662508880646372543, guid: ea2274b5c45db8e4cae52fe867ce0628, type: 3}
+  - {fileID: 5662508880646372543, guid: ea2274b5c45db8e4cae52fe867ce0628, type: 3}
   TexturaTerreno: {fileID: 286012191}
   TexturaTerrenoExtension: {fileID: 1224879409}
   TexturaBordeMapa: {fileID: 234129381}
@@ -588898,8 +588902,8 @@ RectTransform:
   m_GameObject: {fileID: 1598983466}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3.3378, z: 3}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 3.3000002, y: 3.67158, z: 3.3000002}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 461816509}
   - {fileID: 2011940439}
@@ -588910,7 +588914,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.026296299}
   m_AnchorMax: {x: 0, y: 0.026296299}
-  m_AnchoredPosition: {x: 246.5, y: 14.615}
+  m_AnchoredPosition: {x: 246.5, y: 15}
   m_SizeDelta: {x: 160, y: 19.6495}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1598983468
@@ -597870,16 +597874,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1622313921}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.97886753, y: 0.9788675, z: 0.9788675}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1504680381}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -48.64099, y: -234.14694}
+  m_AnchoredPosition: {x: -47.61311, y: -211.57922}
   m_SizeDelta: {x: 421.1179, y: 22.609}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1622313923
@@ -642486,7 +642490,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.47970372}
   m_AnchorMax: {x: 1, y: 0.50648147}
-  m_AnchoredPosition: {x: -488.2, y: 497.3}
+  m_AnchoredPosition: {x: -486, y: 485}
   m_SizeDelta: {x: 56.445618, y: 36.693787}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1711439854
@@ -677466,16 +677470,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1808114982}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.97886753, y: 0.9788675, z: 0.9788675}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1504680381}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -48.64099, y: -255.5}
+  m_AnchoredPosition: {x: -47.61311, y: -232.48106}
   m_SizeDelta: {x: 421.1179, y: 22.609}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1808114984
@@ -716527,7 +716531,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.47970372}
   m_AnchorMax: {x: 1, y: 0.50648147}
-  m_AnchoredPosition: {x: -1409.9, y: 496.2}
+  m_AnchoredPosition: {x: -1409.9, y: 484}
   m_SizeDelta: {x: 56.4456, y: 36.5084}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1889812257
@@ -732525,9 +732529,9 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1981928162}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.97886753, y: 0.9788675, z: 0.9788675}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1878717249}
@@ -732536,7 +732540,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 151.212, y: -289}
+  m_AnchoredPosition: {x: 148.01645, y: -265.27307}
   m_SizeDelta: {x: 118.694, y: 22.609}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1981928164
@@ -750792,14 +750796,14 @@ RectTransform:
   m_GameObject: {fileID: 2053910301}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2308298, y: 1, z: 1}
+  m_LocalScale: {x: 1.2048193, y: 0.9788675, z: 0.9788675}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1504680381}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0009842995, y: -159.50046}
+  m_AnchoredPosition: {x: -0.0009813309, y: -138.5102}
   m_SizeDelta: {x: 438.97, y: 305.093}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2053910303
@@ -771519,12 +771523,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Seu <b>Stalker</b> alcan\xE7ou o <b>N\xEDvel 2</b> e agora possui <b>1
-    Ponto de Atributo</b> e <b>1 Ponto de Habilidade</b> para distribuir.\n\nClique
-    no <b>mais amarelo</b> \xE0 direita do atributo que deseja aumentar. Para o <b>Stalker</b>,
-    as melhores op\xE7\xF5es geralmente s\xE3o <b>For\xE7a</b> ou <b>Agilidade</b>,
-    dependendo do seu estilo de jogo.\n\nVoc\xEA tamb\xE9m pode aumentar o n\xEDvel
-    da habilidade <b>Distrair</b>, aprimorando seus efeitos."
+  m_text: 'Your <b>Stalker</b> reached <b>Level 2</b> and now has <b>1 Attribute
+    Point</b> and <b>1 Skill Point</b> to assign.
+
+
+    Click the <b>yellow cross</b>
+    to the right of the attribute you want to increase. For the <b>Stalker</b>, the
+    most recommended choices are usually <b>Strength</b> or <b>Agility</b>.
+
+
+    You
+    will also be able to level up the skill <b>"Distract"</b>.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -775135,7 +775144,7 @@ Transform:
   m_GameObject: {fileID: 7737523776082601963}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0028609708, y: -0.0014733713, z: 0.0007445699, w: 0.9999946}
-  m_LocalPosition: {x: 0.098, y: 2.303, z: -0.567}
+  m_LocalPosition: {x: 0.098, y: 2.31, z: -0.46}
   m_LocalScale: {x: 0.015074383, y: 0.035457995, z: 4.5852056}
   m_ConstrainProportionsScale: 0
   m_Children:

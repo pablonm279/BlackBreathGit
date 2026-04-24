@@ -29,8 +29,8 @@ RectTransform:
   m_GameObject: {fileID: 7145071996389104864}
   m_LocalRotation: {x: -0, y: -0, z: -0.023449013, w: 0.99972504}
   m_LocalPosition: {x: 0, y: 0, z: -0.026}
-  m_LocalScale: {x: 0.31914032, y: 0.5323993, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.27118528, y: 0.4523993, z: 0.84973687}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3171658858133098337}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -2.687}
@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.8235294}
+  m_Color: {r: 0.7830189, g: 0.2696244, b: 0.2696244, a: 0.8235294}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -137,7 +137,7 @@ MonoBehaviour:
   extraPulseGlow: 1
   glowColor: {r: 1, g: 0, b: 0, a: 1}
   glowIntensity: 0.96
-  glowScaleMax: 1.214
+  glowScaleMax: 1.295
   extraShake: 0
   shakeAmplitude: 0.35
   shakeFrequency: 1.1
@@ -401,7 +401,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0.618}
+  m_AnchoredPosition: {x: 0, y: 0.563}
   m_SizeDelta: {x: 32.1086, y: 12.3468}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &4828603321568421321
@@ -525,4 +525,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a31d3ac91f917984b871f7571057cb78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delayautodestruir: 0.6
+  delayautodestruir: 0.4

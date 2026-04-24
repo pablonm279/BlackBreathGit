@@ -39,6 +39,8 @@ public abstract class IAHabilidad : MonoBehaviour
   private const int PausaEntreMeleesEncadenadosMs = 250;
   private const float VentanaAnimacionDuplicada = 1.1f;
   private float inicioSecuenciaVisual = -999f;
+  protected virtual int DelayPreImpactoMeleeMs => MeleeTimingUtility.CalcularPreImpactoMs(scEstaUnidad != null ? scEstaUnidad.GetComponent<UnidadPoseController>() : null);
+  protected virtual int DelayPostImpactoMeleeMs => MeleeTimingUtility.CalcularPostImpactoMs();
 
   public List<object> objPosibles = new List<object>(); //Esta variable guarda los objetivos posibles de la habilidad
 
@@ -844,11 +846,40 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
   {
     bool mantenerReal = mantenerAdelante || DebeMantenerAdelanteParaEncadenarMelee();
     bool seAproximo = await IntentarAproximarVisualMeleeAsync(objetivo, mantenerReal);
-    if (resolver != null)
+    bool poseAtaqueSostenidaActiva = false;
+
+    try
     {
-      await resolver();
+      if (scEstaUnidad != null)
+      {
+        scEstaUnidad.IniciarPoseAtaqueSostenida(true);
+        poseAtaqueSostenidaActiva = true;
+      }
+
+      if (DelayPreImpactoMeleeMs > 0)
+      {
+        await BattleManager.DelayCombateAsync(DelayPreImpactoMeleeMs);
+      }
+
+      if (resolver != null)
+      {
+        await resolver();
+      }
+
+      if (DelayPostImpactoMeleeMs > 0)
+      {
+        await BattleManager.DelayCombateAsync(DelayPostImpactoMeleeMs);
+      }
     }
-    await VolverTrasAproximacionVisualAsync(seAproximo, forzarRetornoDespues || !mantenerReal);
+    finally
+    {
+      await VolverTrasAproximacionVisualAsync(seAproximo, forzarRetornoDespues || !mantenerReal);
+
+      if (poseAtaqueSostenidaActiva && !seAproximo && scEstaUnidad != null)
+      {
+        scEstaUnidad.FinalizarPoseAtaqueSostenida();
+      }
+    }
   }
 
   protected bool DebeMantenerAdelanteParaEncadenarMelee()
