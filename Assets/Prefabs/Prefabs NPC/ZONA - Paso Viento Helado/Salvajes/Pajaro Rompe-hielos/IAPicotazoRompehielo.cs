@@ -9,12 +9,14 @@ using System.Data.Common;
 
 public class IAPicotazoRompehielo : IAHabilidad
 {
+    private bool bajarVueloTrasRetorno;
+    private bool terminarTurnoTrasRetorno;
 
     [SerializeField] public int pPrioridad;
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano - 9: Necro
 
 
   void Awake()
@@ -28,16 +30,16 @@ public class IAPicotazoRompehielo : IAHabilidad
     hCooldownMax = 0;
     esHostil = true;
     prioridad = 0;
-    costoAP = 2;
+    costoAP = 3;
     afectaObstaculos = true;
 
 
 
     hActualCooldown = 0;
 
-    bonusAtaque = -1;
-    XdDanio = 1;
-    daniodX = 10; //
+    bonusAtaque = 0;
+    XdDanio = 2;
+    daniodX = 8; //
     tipoDanio = 2; //Perf
     
 
@@ -56,6 +58,8 @@ public class IAPicotazoRompehielo : IAHabilidad
    {
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
       hActualCooldown = hCooldownMax;
+      bajarVueloTrasRetorno = false;
+      terminarTurnoTrasRetorno = false;
       
       scEstaUnidad.ReproducirAnimacionAtaque();
             object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
@@ -63,6 +67,21 @@ public class IAPicotazoRompehielo : IAHabilidad
 
       await BattleManager.DelayCombateAsync(450);
       AplicarEfectosHabilidad(Objetivo);
+
+      if (bajarVueloTrasRetorno || terminarTurnoTrasRetorno)
+      {
+        await EsperarSecuenciaVisualAsync();
+
+        if (bajarVueloTrasRetorno)
+        {
+          scEstaUnidad.BajarVuelo(false, 2);
+        }
+
+        if (terminarTurnoTrasRetorno)
+        {
+          scEstaUnidad.TerminaTurnoEstaUnidad();
+        }
+      }
      
    }
    
@@ -96,8 +115,8 @@ public class IAPicotazoRompehielo : IAHabilidad
         objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
         //BattleManager.Instance.TerminarTurno(); //Al ser Pifia, termina el turno.
         scEstaUnidad.EstablecerAPActualA(0);
-        scEstaUnidad.BajarVuelo();//Importante
-        scEstaUnidad.TerminaTurnoEstaUnidad();
+        bajarVueloTrasRetorno = true;
+        terminarTurnoTrasRetorno = true;
 
       }
       else if (resultadoTirada == 0)
@@ -105,8 +124,8 @@ public class IAPicotazoRompehielo : IAHabilidad
        // print("Fallo");
 
         objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
-        scEstaUnidad.BajarVuelo();//Importante
-        scEstaUnidad.TerminaTurnoEstaUnidad();
+        bajarVueloTrasRetorno = true;
+        terminarTurnoTrasRetorno = true;
 
       }
       else if (resultadoTirada == 1)
@@ -169,19 +188,19 @@ public class IAPicotazoRompehielo : IAHabilidad
 
 public override object EstablecerObjetivoPrioritario() 
 {
-    // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+    // Obtener la unidad duea
+    Unidad unidadDueÃ±a = gameObject.GetComponent<Unidad>();
+    if (unidadDueÃ±a == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obstáculos
+    // Filtrar los obstï¿½culos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderByDescending(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueÃ±a.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -190,7 +209,7 @@ public override object EstablecerObjetivoPrioritario()
         return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obstculo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
 }
@@ -200,7 +219,7 @@ public override object EstablecerObjetivoPrioritario()
       if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, 8+intensidad))
       {
         
-        // BUFF ---- Así se aplica un buff/debuff
+        // BUFF ---- As se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Defensa vencida";
         buff.boolfDebufftBuff = false;
@@ -208,7 +227,7 @@ public override object EstablecerObjetivoPrioritario()
         buff.cantDefensa -= 2;
         buff.esStackeable = false;
         buff.AplicarBuff(objetivo);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
       }
     }

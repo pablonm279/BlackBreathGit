@@ -13,7 +13,7 @@ public class IACorteHozEfigie : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano - 9: Necro
    
   void Awake()
    {
@@ -26,7 +26,7 @@ public class IACorteHozEfigie : IAHabilidad
       hCooldownMax = 0;
       esHostil = true;
       prioridad = 0;
-      costoAP = 2;
+      costoAP = 3;
       afectaObstaculos = true;
       
 
@@ -35,7 +35,7 @@ public class IACorteHozEfigie : IAHabilidad
 
       bonusAtaque = 0;
       XdDanio = 1;
-      daniodX = 8; //1d6+2
+      daniodX = 10; //1d6+2
       tipoDanio = 1; //Cortante
 
 
@@ -162,19 +162,19 @@ public class IACorteHozEfigie : IAHabilidad
 
 public override object EstablecerObjetivoPrioritario() 
 {
-    // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+    // Obtener la unidad duea
+    Unidad unidadDueÃ±a = gameObject.GetComponent<Unidad>();
+    if (unidadDueÃ±a == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obstáculos
+    // Filtrar los obstculos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderByDescending(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueÃ±a.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -183,7 +183,7 @@ public override object EstablecerObjetivoPrioritario()
         return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obstculo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
 }

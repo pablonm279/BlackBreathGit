@@ -73,6 +73,7 @@ public class IADebatirTacticas : IAHabilidad
     AplicarEfectosHabilidad(Objetivo);
 
     await BattleManager.DelayCombateAsync(2300);
+    await BattleManager.DelayCombateAsync(600);
 
   }
 

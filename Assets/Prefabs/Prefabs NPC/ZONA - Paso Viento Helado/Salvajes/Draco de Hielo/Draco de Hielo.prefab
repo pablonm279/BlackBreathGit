@@ -144,7 +144,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 1.4341}
+  m_AnchoredPosition: {x: 0, y: 1.584}
   m_SizeDelta: {x: 32.1086, y: 12.3468}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &1582576802849150213
@@ -366,7 +366,7 @@ Transform:
   m_GameObject: {fileID: 1585331561465203825}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.677, y: 1.45, z: 0.054}
+  m_LocalPosition: {x: 0.677, y: 1.557, z: 0.054}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -476,6 +476,7 @@ GameObject:
   - component: {fileID: -2368153877597377738}
   - component: {fileID: 6901033256121011797}
   - component: {fileID: 7487312520829168715}
+  - component: {fileID: 5009404516111820597}
   m_Layer: 7
   m_Name: Draco de Hielo
   m_TagString: Unidad
@@ -546,7 +547,6 @@ MonoBehaviour:
   esInmobil: 0
   mod_maxAccionP: 4
   AccionP_actual: 4
-  AccionP_SeEsforzo: 0
   scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
@@ -582,6 +582,7 @@ MonoBehaviour:
   mod_DanioPorcentaje: 0
   at_CriticoRangoDado: 0
   mod_CriticoRangoDado: 0
+  bonusCritDadoRecibido: 0
   "at_CriticoDa\xF1oBonus": 0
   "mod_CriticoDa\xF1oBonus": 0
   at_TSReflejos: 8
@@ -608,7 +609,9 @@ MonoBehaviour:
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
   estado_CondenadoTurnosSeguidos: 0
+  ultimaUnidadQueLeHizoDanio: {fileID: 0}
   estado_Escudado: 0
+  estado_MovimientoAbaratado: 0
   estado_Corrupto: 0
   unidadVoladora: 1
   estado_Volando: 0
@@ -625,6 +628,7 @@ MonoBehaviour:
   debuffsImpactoArma: []
   reduccionDanioRecibidoPorcentaje: 0
   reduccionDanioCriticoRecibidoPorcentaje: 0
+  aumentoDanioCriticoRecibidoPorcentaje: 0
   resistenciaEstadosPorcentaje: 0
   espinasDanioPlano: 0
   espinasDanioPorcentaje: 0
@@ -636,6 +640,9 @@ MonoBehaviour:
   entroComoAliado: 0
   offsetVueloY: 25
   duracionAnimacionVuelo: 0.6
+  desplazamientoAnimacionTurnoNuevoY: 1.7
+  duracionSubidaAnimacionTurnoNuevo: 0.12
+  duracionBajadaAnimacionTurnoNuevo: 0.12
   apilarTextosFlotantes: 0
   floatingTextSlotSpacing: 9
   floatingTextSlotLifetimeFallback: 1.1
@@ -790,6 +797,7 @@ MonoBehaviour:
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
   forzarPoseHabilidad: 0
+  omitirAnimacionDeUso: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
@@ -919,6 +927,7 @@ MonoBehaviour:
   esMelee: 0
   afectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 0
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -950,6 +959,7 @@ MonoBehaviour:
   esMelee: 0
   afectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 0
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -962,6 +972,26 @@ MonoBehaviour:
   XdDanio: 0
   daniodX: 0
   tipoDanio: 0
+--- !u!114 &5009404516111820597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3855863790156444218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 1689448787243993455}
+  poseIdle: {fileID: 21300000, guid: a7826d998ee1c9744adbff40e04d57af, type: 3}
+  poseMover: {fileID: 21300000, guid: c5bc5f853e3118c4b90c417eb8d9b326, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 12d3f0a9bf1efc64aa5ddba2dd1be7a3, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: b5d853fb01a7c1d419bfafab7f7f3fe3, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &4225752100268397624
 GameObject:
   m_ObjectHideFlags: 0
@@ -990,8 +1020,8 @@ RectTransform:
   m_GameObject: {fileID: 4225752100268397624}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.6398748, y: 2.4061804, z: 2.3949418}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.7443928, y: 2.160678, z: 2.150586}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5388793553552137983}
   - {fileID: 8991053014116075953}
@@ -999,7 +1029,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.5, y: -2.4}
+  m_AnchoredPosition: {x: 0.5, y: 2.8}
   m_SizeDelta: {x: 25.9, y: 16.68}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2707832116491439208
@@ -1320,7 +1350,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 20.5
+      value: 17.6
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

@@ -281,6 +281,7 @@ public class Unidad : MonoBehaviour
   private Coroutine animacionTurnoNuevoCoroutine;
   private Coroutine flashPifiaCoroutine;
   private bool uImagePosInicializada;
+  private bool bloquearAnimacionVuelo;
   [SerializeField] private float offsetVueloY = 13f;
   [SerializeField] private float duracionAnimacionVuelo = 0.4f;
   [SerializeField] private float desplazamientoAnimacionTurnoNuevoY = 1.7f;
@@ -618,6 +619,15 @@ public class Unidad : MonoBehaviour
     if(poseController != null){ poseController.PlaySkillPose(); }
   }
 
+  public void SetBloquearAnimacionVuelo(bool bloquear)
+  {
+    bloquearAnimacionVuelo = bloquear;
+    if (animator != null && unidadVoladora)
+    {
+      animator.enabled = estado_Volando && !bloquearAnimacionVuelo;
+    }
+  }
+
   public void SetSuprimirAnimacionIA(bool estado)
   {
     suprimirAnimacionIA = estado;
@@ -677,9 +687,9 @@ private void Update()
 
     if (animator != null && unidadVoladora)
     {
-      animator.enabled = estado_Volando;
+      animator.enabled = estado_Volando && !bloquearAnimacionVuelo;
+        
        
-      
     }
 }
 
@@ -789,7 +799,7 @@ private void Update()
     ActualizarAnimacionVuelo(uImagePosVuelo, instantaneo);
   }
 
-  public void BajarVuelo(bool instantaneo = false)
+  public void BajarVuelo(bool instantaneo = false, int dur = 1) //dur es 2 cuando pasa en su propio turno, asi dura 1 turno env verdad
   {
     estado_Volando = false;
     InicializarVueloVisual();
@@ -799,7 +809,7 @@ private void Update()
     Buff buff = new Buff();
     buff.buffNombre = "Derribado";
     buff.boolfDebufftBuff = false;
-    buff.DuracionBuffRondas = 1;
+    buff.DuracionBuffRondas = dur;
     buff.cantAPMax -= 2;
     buff.cantDefensa -= 3;
     buff.AplicarBuff(this);

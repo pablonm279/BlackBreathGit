@@ -20,7 +20,7 @@ public class IAAlientoHelado : IAHabilidad
     Usuario = gameObject;
     scEstaUnidad = Usuario.GetComponent<Unidad>();
     hAncho = 0;
-    esMelee = true;
+    esMelee = false;
     hAlcance = 0;
     hCooldownMax = 3;
     hActualCooldown = 0;
@@ -43,15 +43,23 @@ public class IAAlientoHelado : IAHabilidad
     List<Unidad> objetivos = ObtenerUnidadesEnPiramide();
     List<object> objetivosComoObjetos = objetivos.Cast<object>().ToList();
 
-    PrepararInicioAnimacion(objetivosComoObjetos, null);
-    scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
-    
-    await BattleManager.DelayCombateAsync(450);
-    CrearVfx();
-     await BattleManager.DelayCombateAsync(450);
-    foreach (Unidad objetivo in objetivos)
+    scEstaUnidad.SetBloquearAnimacionVuelo(true);
+    try
     {
-      AplicarEfectosHabilidad(objetivo);
+      PrepararInicioAnimacion(objetivosComoObjetos, null);
+      scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
+
+      await BattleManager.DelayCombateAsync(450);
+      CrearVfx();
+      await BattleManager.DelayCombateAsync(450);
+      foreach (Unidad objetivo in objetivos)
+      {
+        AplicarEfectosHabilidad(objetivo);
+      }
+    }
+    finally
+    {
+      scEstaUnidad.SetBloquearAnimacionVuelo(false);
     }
   }
 

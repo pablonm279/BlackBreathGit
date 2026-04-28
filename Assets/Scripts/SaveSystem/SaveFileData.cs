@@ -93,6 +93,7 @@ public class NodeSaveData
   public bool yatiroConexiones;
   public bool nodoIncendiado;
   public bool nodoRitual;
+  public int tipoNodoOriginalRitual;
   public int visualCode;
   public bool esMisterioso;
   public bool atajoSubterraneoPendiente;

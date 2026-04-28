@@ -278,7 +278,8 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
        return false;
     }
 
-    return manager.scMapaManager.nodoActual.tipoNodo == 15;
+    return manager.scMapaManager.nodoActual.tipoNodo == 15 &&
+           manager.scMapaManager.nodoActual.nodoRitual;
  }
 
  bool EsFaccionCorrupta(string factionId)
@@ -1863,16 +1864,12 @@ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
     }
 
     var nodoActual = manager.scMapaManager.nodoActual;
-    if (nodoActual == null || nodoActual.tipoNodo != 15)
+    if (nodoActual == null || nodoActual.tipoNodo != 15 || !nodoActual.nodoRitual)
     {
         return;
     }
 
-    if (nodoActual.nodoRitual)
-    {
-        nodoActual.DesactivarRitual();
-    }
-    nodoActual.nodoRitual = false;
+    nodoActual.DesactivarRitual();
 
     manager.CambiarEsperanzaActual(10);
     manager.EscribirLog(TRADU.i.Traducir("-El ritual Kale'Tav ha sido detenido. +10 Esperanza."));

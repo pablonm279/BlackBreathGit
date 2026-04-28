@@ -128602,7 +128602,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 0e9e8c9533d072141b8add1a98d8b74f, type: 3}
   m_Resource: {fileID: 8300000, guid: 0e9e8c9533d072141b8add1a98d8b74f, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 2.0981829e-11
+  m_Volume: 9.213668e-23
   m_Pitch: 0.46
   Loop: 1
   Mute: 0
@@ -201617,7 +201617,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1e0396336ea1a994c991abb4052bef03, type: 2}
+  - {fileID: 2100000, guid: d402f350158745043972b925afc7c291, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -268535,7 +268535,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &796239986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383751,8 +383751,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugSaltarTutorialAlIniciar: 1
-  debugPermitirZonaBosque: 1
-  debugPermitirZonaPasoVientoHelado: 0
+  debugPermitirZonaBosque: 0
+  debugPermitirZonaPasoVientoHelado: 1
   debugPermitirZonaNedukazal: 0
   debugIniciarConEstadosCaravana: 0
   debugForzarCombateFinalBosqueAlIniciar: 0
@@ -567869,9 +567869,7 @@ MonoBehaviour:
           tier3: []
           tier4: []
           tier5: []
-  debugEncounterUnits:
-  - {fileID: 5662508880646372543, guid: ea2274b5c45db8e4cae52fe867ce0628, type: 3}
-  - {fileID: 5662508880646372543, guid: ea2274b5c45db8e4cae52fe867ce0628, type: 3}
+  debugEncounterUnits: []
   TexturaTerreno: {fileID: 286012191}
   TexturaTerrenoExtension: {fileID: 1224879409}
   TexturaBordeMapa: {fileID: 234129381}

@@ -221,7 +221,7 @@ RectTransform:
   m_GameObject: {fileID: 2383047622823427081}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.77444303, y: 1.3437338, z: 1}
+  m_LocalScale: {x: 1.3266212, y: 1.3437338, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6721434453643647482}
@@ -230,8 +230,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.95, y: -14.373}
-  m_SizeDelta: {x: 21.672, y: 21.881}
+  m_AnchoredPosition: {x: 0.62, y: -14.763}
+  m_SizeDelta: {x: 21.672, y: 22.577}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1678664685221969079
 CanvasRenderer:
@@ -587,9 +587,9 @@ GameObject:
   - component: {fileID: 266884403653698581}
   - component: {fileID: 661614142842777680}
   - component: {fileID: 7344838979347550153}
-  - component: {fileID: 2904322580597297402}
   - component: {fileID: -7321110876982754646}
   - component: {fileID: 7774742299947792949}
+  - component: {fileID: 1773858033102478985}
   m_Layer: 7
   m_Name: Lancero Kale'Tav
   m_TagString: Unidad
@@ -762,6 +762,7 @@ MonoBehaviour:
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
   forzarPoseHabilidad: 0
+  omitirAnimacionDeUso: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
@@ -905,7 +906,6 @@ MonoBehaviour:
   esInmobil: 0
   mod_maxAccionP: 4
   AccionP_actual: 0
-  AccionP_SeEsforzo: 0
   scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
@@ -941,6 +941,7 @@ MonoBehaviour:
   mod_DanioPorcentaje: 0
   at_CriticoRangoDado: 0
   mod_CriticoRangoDado: 0
+  bonusCritDadoRecibido: 0
   "at_CriticoDa\xF1oBonus": 0
   "mod_CriticoDa\xF1oBonus": 0
   at_TSReflejos: 3
@@ -967,7 +968,9 @@ MonoBehaviour:
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
   estado_CondenadoTurnosSeguidos: 0
+  ultimaUnidadQueLeHizoDanio: {fileID: 0}
   estado_Escudado: 0
+  estado_MovimientoAbaratado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
   estado_Volando: 0
@@ -984,6 +987,7 @@ MonoBehaviour:
   debuffsImpactoArma: []
   reduccionDanioRecibidoPorcentaje: 0
   reduccionDanioCriticoRecibidoPorcentaje: 0
+  aumentoDanioCriticoRecibidoPorcentaje: 0
   resistenciaEstadosPorcentaje: 0
   espinasDanioPlano: 0
   espinasDanioPorcentaje: 0
@@ -995,6 +999,9 @@ MonoBehaviour:
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  desplazamientoAnimacionTurnoNuevoY: 1.7
+  duracionSubidaAnimacionTurnoNuevo: 0.12
+  duracionBajadaAnimacionTurnoNuevo: 0.12
   apilarTextosFlotantes: 0
   floatingTextSlotSpacing: 9
   floatingTextSlotLifetimeFallback: 1.1
@@ -1011,39 +1018,6 @@ MonoBehaviour:
   movimientoEnCurso: 0
   NoSonidoAlMover: 0
   sonidosRecibirDanio: []
---- !u!114 &2904322580597297402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5662508880646372543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 465a7720fd671a14f84ede6713b9bc11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nombre: 
-  vfxImpacto: {fileID: 0}
-  vfxCasteo: {fileID: 0}
-  hAncho: 1
-  hAlcance: 1
-  esMelee: 1
-  afectaObstaculos: 0
-  fuerzaPoseAtaque: 0
-  hCooldownMax: 0
-  hActualCooldown: 0
-  Usuario: {fileID: 0}
-  scEstaUnidad: {fileID: 0}
-  esHostil: 1
-  prioridad: 0
-  costoAP: 3
-  pPrioridad: 0
-  bonusAtaque: 0
-  XdDanio: 0
-  daniodX: 0
-  tipoDanio: 0
-  VFXEstadoPrefab: {fileID: 0}
 --- !u!114 &-7321110876982754646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1064,6 +1038,7 @@ MonoBehaviour:
   esMelee: 0
   afectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 0
   hCooldownMax: 2
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -1096,6 +1071,7 @@ MonoBehaviour:
   esMelee: 0
   afectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 0
   hCooldownMax: 4
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -1109,6 +1085,26 @@ MonoBehaviour:
   daniodX: 0
   tipoDanio: 0
   VFXEstadoPrefab: {fileID: 0}
+--- !u!114 &1773858033102478985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5662508880646372543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 7996714464312373375}
+  poseIdle: {fileID: 21300000, guid: 48d10325bd410784798640666593a8f9, type: 3}
+  poseMover: {fileID: 21300000, guid: 014f4ea884f92244c9e4e1faf5cf70b5, type: 3}
+  poseAtacar: {fileID: 21300000, guid: ba865fd8a2c931445b41ca36ebb06fa5, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: 54bf14621fca46c4e8b93aa2082255d5, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 3
 --- !u!1 &5939473797897287989
 GameObject:
   m_ObjectHideFlags: 0
@@ -1165,7 +1161,7 @@ Transform:
   m_GameObject: {fileID: 6560708669317152596}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.17, y: 1.353, z: 0}
+  m_LocalPosition: {x: -0.24, y: 1.094, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1346,7 +1342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.51
+      value: 1.56
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

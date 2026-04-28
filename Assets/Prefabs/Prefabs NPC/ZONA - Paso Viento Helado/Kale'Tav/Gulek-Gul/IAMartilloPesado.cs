@@ -14,7 +14,7 @@ public class IAMartilloPesado : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano - 9: Necro
 
    
   void Awake()
@@ -68,6 +68,7 @@ public class IAMartilloPesado : IAHabilidad
 
       await BattleManager.DelayCombateAsync(450);
       AplicarEfectosHabilidad(Objetivo);
+      await BattleManager.DelayCombateAsync(600);
      
    }
    
@@ -196,7 +197,7 @@ public class IAMartilloPesado : IAHabilidad
         { 
           Unidad unidadObjetivo = casilla.Presente.GetComponent<Unidad>();
 
-          float danio = TiradaDeDados.TirarDados(XdDanio, daniodX)/2; //Daño reducido en un 50% a unidades cercanas
+          float danio = TiradaDeDados.TirarDados(XdDanio, daniodX)/2; //Daï¿½o reducido en un 50% a unidades cercanas
           danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
 
           unidadObjetivo.RecibirDanio(danio , tipoDanio, false, scEstaUnidad); 
@@ -214,19 +215,19 @@ public class IAMartilloPesado : IAHabilidad
 
 public override object EstablecerObjetivoPrioritario()
   {
-    // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+    // Obtener la unidad dueï¿½a
+    Unidad unidadDueÃ±a = gameObject.GetComponent<Unidad>();
+    if (unidadDueÃ±a == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obstáculos
+    // Filtrar los obstï¿½culos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderByDescending(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueÃ±a.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -235,7 +236,7 @@ public override object EstablecerObjetivoPrioritario()
       return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obstï¿½culo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
   }

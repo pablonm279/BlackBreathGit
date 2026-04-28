@@ -7,8 +7,53 @@ using System.Data.Common;
 
 public class EnemigoGulekGul : Unidad
 {
+    private UnidadPoseController poseControllerGulek;
+    private bool poseMartilloLevantadoActiva;
+    private Sprite poseIdleBaseGulek;
+    private Sprite poseIdleMartilloGulek;
 
+    void LateUpdate()
+    {
+        ActualizarPoseMartillo();
+    }
 
+    private void ActualizarPoseMartillo(bool forzar = false)
+    {
+        if (poseControllerGulek == null)
+        {
+            poseControllerGulek = GetComponent<UnidadPoseController>();
+        }
+
+        if (poseControllerGulek == null)
+        {
+            return;
+        }
+
+        if (poseIdleBaseGulek == null)
+        {
+            poseIdleBaseGulek = poseControllerGulek.poseIdle;
+        }
+
+        if (poseIdleMartilloGulek == null)
+        {
+            poseIdleMartilloGulek = poseControllerGulek.poseHabilidad;
+        }
+
+        bool debeMantenerPoseMartilloLevantado = TieneBuffNombre("Martillo Listo");
+        if (!forzar && poseMartilloLevantadoActiva == debeMantenerPoseMartilloLevantado)
+        {
+            return;
+        }
+
+        poseMartilloLevantadoActiva = debeMantenerPoseMartilloLevantado;
+        Sprite idleActual = poseMartilloLevantadoActiva && poseIdleMartilloGulek != null
+            ? poseIdleMartilloGulek
+            : poseIdleBaseGulek;
+
+        poseControllerGulek.poseIdle = idleActual;
+        poseControllerGulek.poseHabilidad = idleActual;
+        poseControllerGulek.RefrescarPoseActual();
+    }
 
     public override void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignorarEscudo = false)
     {
@@ -25,6 +70,7 @@ public class EnemigoGulekGul : Unidad
                 RemoverBuffNombre("Martillo Listo");
                 gameObject.GetComponent<IALevantarMartillo>().hActualCooldown = 0;
                 gameObject.GetComponent<IAMartilloPesado>().hActualCooldown = 1;
+                ActualizarPoseMartillo(true);
                 BattleManager.Instance.EscribirLog("Gulek Gul pierde el buff 'Martillo Listo' tras recibir daño y no podrá utilizarlo.");
 
             }
@@ -65,7 +111,11 @@ public class EnemigoGulekGul : Unidad
             BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" obtiene un intento adicional de Tirada de Salvación."));
         }
      }
-        if (atributoDefiende == 3 && resultado) { RemoverBuffNombre("Martillo Listo"); } //Si pierde una tirada de voluntad, deja el martillo
+        if (atributoDefiende == 3 && resultado)
+        {
+            RemoverBuffNombre("Martillo Listo");
+            ActualizarPoseMartillo(true);
+        } //Si pierde una tirada de voluntad, deja el martillo
      return resultado;
   }
   

@@ -7183,6 +7183,9 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
           case "Paciente":
             r="Patient";
             break;
+            case "Defensa vencida":
+            r="Broken defense";
+            break;
 
 
 
@@ -9126,7 +9129,7 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
                 r = "O Séquito de Mercadores atualizou seu inventário no Posto Comercial.";
                 break;
             case "Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n\n. ":
-                r = "Você chegou a um Santuário dos Purificadores; vários foram construí­dos na regiío para oferecer apoio e preces aos valentes que combateram o Lich.\nHoje, embora esteja abandonado, ele mantém sua aura de tranquilidade, e você pode depositar oferendas para realizar uma prece de purificaçío.\n\n\n. ";
+                r = "Você chegou a um Santuário dos Purificadores; vários foram construídos na regiío para oferecer apoio e preces aos valentes que combateram o Lich.\nHoje, embora esteja abandonado, ele mantém sua aura de tranquilidade, e você pode depositar oferendas para realizar uma prece de purificaçío.\n\n\n. ";
                 break;
             case "-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza.":
                 r = "A caravana chegou a um Santuário dos Purificadores. Os personagens se curaram em 15%. +10 Esperança.";
@@ -14028,6 +14031,9 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
             break;
              case "Paciente":
             r="Paciente";
+            break;
+            case "Defensa vencida":
+            r="Defesa derrotada";
             break;
 
 

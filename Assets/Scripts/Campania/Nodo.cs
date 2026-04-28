@@ -52,6 +52,7 @@ public class Nodo : MonoBehaviour
   bool esMisterioso = false; // Nodo no revelado visualmente
   public bool nodoIncendiado = false;
   public bool nodoRitual = false;
+  public int tipoNodoOriginalRitual = 0;
   int numVisualActual = -1;
   const int CodigoSettlement = 4;
   const int IndiceVisualSettlement = 4;
@@ -512,6 +513,7 @@ public class Nodo : MonoBehaviour
   public void ResetearParaNuevaZona()
   {
     tipoNodo = 0;
+    tipoNodoOriginalRitual = 0;
     nodoDespejado = false;
     cantidadConexiones = 0;
     costoMovimiento = 1;
@@ -550,6 +552,7 @@ public class Nodo : MonoBehaviour
 
     gameObject.SetActive(true);
     tipoNodo = data.tipoNodo;
+    tipoNodoOriginalRitual = data.tipoNodoOriginalRitual;
     nodoDespejado = data.nodoDespejado;
     cantidadConexiones = 0;
     costoMovimiento = data.costoMovimiento;
@@ -560,6 +563,11 @@ public class Nodo : MonoBehaviour
     atajoSubterraneoPendiente = data.atajoSubterraneoPendiente;
     DestinosPosibles.Clear();
     vieneDeNodo = null;
+    if (tipoNodo == 15 && !nodoRitual && tipoNodoOriginalRitual > 0)
+    {
+      tipoNodo = tipoNodoOriginalRitual;
+      tipoNodoOriginalRitual = 0;
+    }
     LimpiarEstadosPersistentesNoValidos();
     AplicarVisualGuardado(data.visualCode, data.esMisterioso);
     SincronizarVFXPersistentes();
@@ -589,6 +597,7 @@ public class Nodo : MonoBehaviour
   public void ForzarSettlement(bool mostrarVisualDesdeInicio)
   {
     tipoNodo = CodigoSettlement;
+    tipoNodoOriginalRitual = 0;
     esMisterioso = false;
     atajoSubterraneoPendiente = false;
     nodoIncendiado = false;
@@ -1551,6 +1560,19 @@ if (esLaLider)
     nodoRitual = false;
     if (transform.childCount > 15)
       transform.GetChild(15).gameObject.SetActive(false);
+    RestaurarTipoOriginalTrasRitual();
+  }
+
+  void RestaurarTipoOriginalTrasRitual()
+  {
+    if (tipoNodo != 15 || tipoNodoOriginalRitual <= 0)
+    {
+      return;
+    }
+
+    tipoNodo = tipoNodoOriginalRitual;
+    tipoNodoOriginalRitual = 0;
+    AplicarVisualGuardado(tipoNodo, false);
   }
 
   public void SincronizarVFXPersistentes()

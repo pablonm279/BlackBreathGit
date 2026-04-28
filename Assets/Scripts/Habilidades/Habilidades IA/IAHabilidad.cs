@@ -18,6 +18,7 @@ public abstract class IAHabilidad : MonoBehaviour
   public bool afectaObstaculos; //Aumenta el rango si esta en la columna del frente
   [Header("Animacion")]
   [SerializeField] public bool fuerzaPoseAtaque = false;
+  [SerializeField] public bool omitirAnimacionDeUso = false;
 
   public int hCooldownMax;
   public int hActualCooldown;
@@ -62,6 +63,11 @@ public abstract class IAHabilidad : MonoBehaviour
     }
 
     if (scEstaUnidad == null)
+    {
+      return;
+    }
+
+    if (omitirAnimacionDeUso)
     {
       return;
     }

@@ -569,8 +569,8 @@ GameObject:
   - component: {fileID: -4689695489565511032}
   - component: {fileID: 7422435923458954531}
   - component: {fileID: 1086095695144954598}
-  - component: {fileID: 8203303545460430511}
   - component: {fileID: 2812188617297170847}
+  - component: {fileID: 6360104834290905865}
   m_Layer: 7
   m_Name: Gulek-Gul
   m_TagString: Unidad
@@ -662,7 +662,6 @@ MonoBehaviour:
   esInmobil: 0
   mod_maxAccionP: 4
   AccionP_actual: 4
-  AccionP_SeEsforzo: 0
   scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
@@ -698,6 +697,7 @@ MonoBehaviour:
   mod_DanioPorcentaje: 15
   at_CriticoRangoDado: 0
   mod_CriticoRangoDado: 0
+  bonusCritDadoRecibido: 0
   "at_CriticoDa\xF1oBonus": 0
   "mod_CriticoDa\xF1oBonus": 0
   at_TSReflejos: 1
@@ -724,7 +724,9 @@ MonoBehaviour:
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
   estado_CondenadoTurnosSeguidos: 0
+  ultimaUnidadQueLeHizoDanio: {fileID: 0}
   estado_Escudado: 0
+  estado_MovimientoAbaratado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
   estado_Volando: 0
@@ -741,6 +743,7 @@ MonoBehaviour:
   debuffsImpactoArma: []
   reduccionDanioRecibidoPorcentaje: 0
   reduccionDanioCriticoRecibidoPorcentaje: 0
+  aumentoDanioCriticoRecibidoPorcentaje: 0
   resistenciaEstadosPorcentaje: 0
   espinasDanioPlano: 0
   espinasDanioPorcentaje: 0
@@ -752,6 +755,9 @@ MonoBehaviour:
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  desplazamientoAnimacionTurnoNuevoY: 1.7
+  duracionSubidaAnimacionTurnoNuevo: 0.12
+  duracionBajadaAnimacionTurnoNuevo: 0.12
   apilarTextosFlotantes: 0
   floatingTextSlotSpacing: 9
   floatingTextSlotLifetimeFallback: 1.1
@@ -886,6 +892,7 @@ MonoBehaviour:
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
   forzarPoseHabilidad: 0
+  omitirAnimacionDeUso: 0
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
@@ -1015,6 +1022,7 @@ MonoBehaviour:
   esMelee: 0
   afectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 1
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -1048,39 +1056,7 @@ MonoBehaviour:
   esMelee: 0
   afectaObstaculos: 0
   fuerzaPoseAtaque: 0
-  hCooldownMax: 0
-  hActualCooldown: 0
-  Usuario: {fileID: 0}
-  scEstaUnidad: {fileID: 0}
-  esHostil: 0
-  prioridad: 0
-  costoAP: 0
-  pPrioridad: 0
-  bonusAtaque: 0
-  XdDanio: 0
-  daniodX: 0
-  tipoDanio: 0
-  VFXEstadoPrefab: {fileID: 0}
---- !u!114 &8203303545460430511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6817527822529779511}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72abf1baf648feb46a31224ece0ac9bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nombre: 
-  vfxImpacto: {fileID: 0}
-  vfxCasteo: {fileID: 0}
-  hAncho: 0
-  hAlcance: 0
-  esMelee: 0
-  afectaObstaculos: 0
-  fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 0
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -1114,6 +1090,7 @@ MonoBehaviour:
   esMelee: 0
   afectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 1
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -1127,6 +1104,26 @@ MonoBehaviour:
   daniodX: 0
   tipoDanio: 0
   VFXEstadoPrefab: {fileID: 0}
+--- !u!114 &6360104834290905865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6817527822529779511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53eeeee566b4d244b8ab35ea968659c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 6716137752687118849}
+  poseIdle: {fileID: 21300000, guid: 5d5614cd1a7426f4ba097fd82219387a, type: 3}
+  poseMover: {fileID: 21300000, guid: 038d4a87bbe92484e99f1b302a056ff0, type: 3}
+  poseAtacar: {fileID: 21300000, guid: 9954424e9b7048144b64735cc92fb033, type: 3}
+  poseHabilidad: {fileID: 21300000, guid: f6be5a82570aa0b4db647990ebeebbef, type: 3}
+  duracionPoseAtacar: 1
+  duracionPoseDanyo: 1
+  duracionPoseHabilidad: 1
 --- !u!1 &8187723404973685532
 GameObject:
   m_ObjectHideFlags: 0
@@ -1231,7 +1228,7 @@ RectTransform:
   m_GameObject: {fileID: 8607029267525624676}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.38}
-  m_LocalScale: {x: 0.6029794, y: 1.7968378, z: 1}
+  m_LocalScale: {x: 0.91616696, y: 1.7968378, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4173311401586582042}
@@ -1240,8 +1237,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.9}
-  m_SizeDelta: {x: 65.9, y: 32.55}
+  m_AnchoredPosition: {x: 1.9, y: 0.77}
+  m_SizeDelta: {x: 65.9, y: 34.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6439364340457022924
 CanvasRenderer:

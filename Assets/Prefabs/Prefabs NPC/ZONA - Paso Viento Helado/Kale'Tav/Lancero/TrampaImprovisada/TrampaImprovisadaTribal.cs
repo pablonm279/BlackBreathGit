@@ -21,12 +21,12 @@ public class TrampaImprovisadaTribal : Trampa
   public override void  AplicarEfectosTrampa(Unidad objetivo)
   {
     
-         int danio =UnityEngine.Random.Range(1,8)+2;
+         int danio =UnityEngine.Random.Range(1,10)+2;
          objetivo.RecibirDanio(danio,2,false, null);
 
     if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, 12))
     {
-      objetivo.RecibirDanio(danio, 2, false, null);
+    
 
       // BUFF ---- Así se aplica un buff/debuff
       Buff buff = new Buff();
@@ -58,6 +58,14 @@ public class TrampaImprovisadaTribal : Trampa
       float posY = gameObject.GetComponent<Casilla>().posY;
       canvas.sortingOrder = 60 - Mathf.RoundToInt(10 * posY) + 2;
     }
+
+    TrampaSpawnLightFx flashAparicion = GOvfx.GetComponent<TrampaSpawnLightFx>();
+    if (flashAparicion == null)
+    {
+      flashAparicion = GOvfx.AddComponent<TrampaSpawnLightFx>();
+    }
+
+    flashAparicion.Reproducir();
   }
 
 }

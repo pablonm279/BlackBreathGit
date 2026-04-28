@@ -13,11 +13,11 @@ public class GarraCanibalKaleTav : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano - 9: Necro
    
   void Awake()
    {
-      nombre = "Garra Caníbal";
+      nombre = "Garra Canï¿½bal";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 1;
@@ -168,16 +168,16 @@ public class GarraCanibalKaleTav : IAHabilidad
       {
         return;
       }
-       // BUFF ---- Así se aplica un buff/debuff
+       // BUFF ---- As se aplica un buff/debuff
        Buff buff = new Buff();
        buff.buffNombre = "Tentado por Sangre";
        buff.boolfDebufftBuff = true;
        buff.DuracionBuffRondas = 2;
        buff.cantCritDado += 2;
-       buff.percCritDaño += 15;
+       buff.percCritDaÃ±o += 15;
        buff.cantDefensa -= 2;
-       buff.AplicarBuff(objetivo);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+       buff.AplicarBuff(scEstaUnidad);
+       // Agrega el componente Buff al objeto objetivo y asigna la configuracin del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, scEstaUnidad.gameObject); 
 
 
@@ -189,19 +189,19 @@ public class GarraCanibalKaleTav : IAHabilidad
   }
   public override object EstablecerObjetivoPrioritario()
   {
-    // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+    // Obtener la unidad duea
+    Unidad unidadDueÃ±a = gameObject.GetComponent<Unidad>();
+    if (unidadDueÃ±a == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obstáculos
+    // Filtrar los obstculos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderByDescending(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueÃ±a.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -210,7 +210,7 @@ public class GarraCanibalKaleTav : IAHabilidad
       return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obstculo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
   }

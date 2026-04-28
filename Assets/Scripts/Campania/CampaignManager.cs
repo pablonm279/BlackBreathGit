@@ -826,6 +826,7 @@ public class CampaignManager : MonoBehaviour
       nodoData.yatiroConexiones = nodo.yatiroConexiones;
       nodoData.nodoIncendiado = nodo.nodoIncendiado;
       nodoData.nodoRitual = nodo.nodoRitual;
+      nodoData.tipoNodoOriginalRitual = nodo.tipoNodoOriginalRitual;
       nodoData.visualCode = nodo.ObtenerVisualCodeActual();
       nodoData.esMisterioso = nodo.ObtenerEstadoMisterioso();
       nodoData.atajoSubterraneoPendiente = nodo.ObtenerAtajoSubterraneoPendiente();
@@ -3019,7 +3020,10 @@ public class CampaignManager : MonoBehaviour
     {
 
       goMenuBatallas.SetActive(true);
-      scMenuBatallas.EventoBatallaElite(0, 0, true); //0 es Random
+      bool esRitualActivo = scMapaManager != null &&
+                            scMapaManager.nodoActual != null &&
+                            scMapaManager.nodoActual.nodoRitual;
+      scMenuBatallas.EventoBatallaElite(0, 0, esRitualActivo); //0 es Random
 
     }
     if (ID == 16) //Mision Salvamento
@@ -3431,10 +3435,23 @@ public class CampaignManager : MonoBehaviour
       int randomritual = UnityEngine.Random.Range(1, 101);
       if (posicionCaravana < 11 && randomritual <= probabilidad && !yaHayRitual)
       {
-        int random = UnityEngine.Random.Range(1, 3);
-        Nodo nodoRitual = ObtenerNodoFuturoAleatorio(random);
-        if (nodoRitual != null && !nodoRitual.nodoRitual)
+        Nodo nodoRitual = null;
+        for (int intento = 0; intento < 6; intento++)
         {
+          int random = UnityEngine.Random.Range(1, 3);
+          Nodo candidato = ObtenerNodoFuturoAleatorio(random);
+          if (!EsNodoValidoParaRitualKaleTav(candidato))
+          {
+            continue;
+          }
+
+          nodoRitual = candidato;
+          break;
+        }
+
+        if (nodoRitual != null)
+        {
+          nodoRitual.tipoNodoOriginalRitual = nodoRitual.tipoNodo;
           nodoRitual.tipoNodo = 15; // Nodo Ritual
           nodoRitual.ActivarNodoVisual(15, false, true);
           nodoRitual.ActivarRitual();
@@ -3468,6 +3485,32 @@ public class CampaignManager : MonoBehaviour
 
     }
   }
+
+  bool EsNodoValidoParaRitualKaleTav(Nodo nodo)
+  {
+    if (nodo == null || !nodo.gameObject.activeInHierarchy)
+    {
+      return false;
+    }
+
+    if (nodo.nodoRitual || nodo.nodoIncendiado)
+    {
+      return false;
+    }
+
+    switch (nodo.tipoNodo)
+    {
+      case 4:
+      case 10:
+      case 14:
+      case 15:
+      case 16:
+        return false;
+      default:
+        return true;
+    }
+  }
+
   public Nodo ObtenerNodoFuturoAleatorio(int distancia = 0)
   {
     if (scMapaManager == null || scMapaManager.nodoActual == null)
