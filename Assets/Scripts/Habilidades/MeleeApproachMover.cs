@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 /// <summary>
-/// Mueve temporalmente el GameObject de la unidad hacia el objetivo melee (con ligero zoom de cámara) y luego lo devuelve.
+/// Mueve temporalmente el GameObject de la unidad hacia el objetivo melee y luego lo devuelve.
 /// Solo afecta lo visual; no toca casillas ni estado lógico.
 /// </summary>
 public class MeleeApproachMover : MonoBehaviour
@@ -18,11 +18,9 @@ public class MeleeApproachMover : MonoBehaviour
   [SerializeField] private Vector3 offsetAdicional = Vector3.zero;
   [SerializeField] private float demoraAntesDeVolver = 0.2f;
   [SerializeField] private float pausaTrasLlegar = 0.15f;
-  [SerializeField] private float zoomCamaraFactor = 0.03f; // 3% por Y hacia el objetivo
 
   private Unidad unidad;
   private Vector3? posicionRetorno;
-  private Vector3? camaraRetorno;
   private bool mantenerAdelante;
   private bool adelantado;
   private float ultimaDuracionVuelta;
@@ -120,7 +118,7 @@ public class MeleeApproachMover : MonoBehaviour
 
   public async Task VolverAPosicionInicialAsync(bool forzar = false)
   {
-    if (!posicionRetorno.HasValue || unidad == null) { posicionRetorno = null; camaraRetorno = null; adelantado = false; mantenerAdelante = false; RestaurarPose(); LiberarLock(); return; }
+    if (!posicionRetorno.HasValue || unidad == null) { posicionRetorno = null; adelantado = false; mantenerAdelante = false; RestaurarPose(); LiberarLock(); return; }
     if (mantenerAdelante && !forzar) return;
 
     await BattleManager.DelayCombateAsync(Mathf.Max(0, Mathf.RoundToInt(demoraAntesDeVolver * 1000f)));
@@ -129,25 +127,10 @@ public class MeleeApproachMover : MonoBehaviour
     Vector3 destino = posicionRetorno.Value;
     posicionRetorno = null;
 
-    Transform cam = ObtenerCamaraBatalla();
-    Vector3 camOrigen = cam != null ? cam.position : Vector3.zero;
-    Vector3 camDestino = camaraRetorno ?? camOrigen;
-    camaraRetorno = null;
-
     unidad.FinalizarPoseAtaqueSostenida(false);
     AplicarPoseMovimiento();
 
-    if (cam != null)
-    {
-      await Task.WhenAll(
-        AnimarWorld(unidad.transform, origen, destino, ultimaDuracionVuelta),
-        AnimarWorld(cam, camOrigen, camDestino, ultimaDuracionVuelta)
-      );
-    }
-    else
-    {
-      await AnimarWorld(unidad.transform, origen, destino, ultimaDuracionVuelta);
-    }
+    await AnimarWorld(unidad.transform, origen, destino, ultimaDuracionVuelta);
 
     adelantado = false;
     mantenerAdelante = false;
@@ -183,20 +166,7 @@ public class MeleeApproachMover : MonoBehaviour
 
       AplicarPoseMovimiento();
 
-      Transform cam = ObtenerCamaraBatalla();
-      if (cam != null)
-      {
-        camaraRetorno = cam.position;
-        Vector3 camDestino = cam.position + (destinoBase - cam.position) * zoomCamaraFactor;
-        await Task.WhenAll(
-          AnimarWorld(tOrigen, origen, destino, durIda),
-          AnimarWorld(cam, cam.position, camDestino, durIda)
-        );
-      }
-      else
-      {
-        await AnimarWorld(tOrigen, origen, destino, durIda);
-      }
+      await AnimarWorld(tOrigen, origen, destino, durIda);
 
       if (pausaTrasLlegar > 0f)
       {
@@ -304,15 +274,6 @@ public class MeleeApproachMover : MonoBehaviour
       lockTomado = false;
       lockMovimiento.Release();
     }
-  }
-
-  Transform ObtenerCamaraBatalla()
-  {
-    if (BattleManager.Instance != null && BattleManager.Instance.goCamara != null)
-    {
-      return BattleManager.Instance.goCamara.transform;
-    }
-    return Camera.main != null ? Camera.main.transform : null;
   }
 }
 

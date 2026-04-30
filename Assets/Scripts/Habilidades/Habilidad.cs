@@ -47,6 +47,11 @@ public abstract class Habilidad : MonoBehaviour
   [SerializeField] public bool fuerzaPoseAtaque = false;
   [SerializeField] public bool forzarPoseHabilidad = false;
   [SerializeField] public bool omitirAnimacionDeUso = false;
+  [Header("Camara")]
+  [SerializeField, Tooltip("Si esta activo, esta habilidad no dispara el zoom/paneo de camara al resolverse.")]
+  public bool omitirFocoCamara = false;
+  [SerializeField, Range(0.15f, 2f), Tooltip("Multiplicador del foco de camara para esta habilidad. 1 usa el valor global; menor es mas sutil; mayor es mas dramatico.")]
+  public float intensidadFocoCamara = 1f;
 
   public bool poneTrampas; //Si la habilidad pone trampas 
   public bool poneObstaculo; //Si la habilidad pone obstaculo 
@@ -495,6 +500,7 @@ public abstract class Habilidad : MonoBehaviour
 
     int penetracionAnteriorHabilidad = 0;
     bool restituirPenetracionHabilidad = false;
+    bool focoCamaraAplicado = false;
     if (scEstaUnidad != null)
     {
       penetracionAnteriorHabilidad = scEstaUnidad.penetracionArmaduraHabilidadActual;
@@ -504,6 +510,13 @@ public abstract class Habilidad : MonoBehaviour
 
     try
     {
+      if (!omitirFocoCamara && BattleManager.Instance != null)
+      {
+        bool focoEsArea = esZonal || enArea > 0 || (Objetivos != null && Objetivos.Count > 1);
+        BattleManager.Instance.EnfocarCamaraHabilidad(scEstaUnidad, Objetivos, esHostil, false, intensidadFocoCamara, esMelee, focoEsArea);
+        focoCamaraAplicado = true;
+      }
+
       if (!usarTimingMeleeCentralizado)
       {
         await BattleManager.DelayCombateAsync(250);
@@ -532,6 +545,11 @@ public abstract class Habilidad : MonoBehaviour
       if (restituirPenetracionHabilidad && scEstaUnidad != null)
       {
         scEstaUnidad.penetracionArmaduraHabilidadActual = penetracionAnteriorHabilidad;
+      }
+
+      if (focoCamaraAplicado && BattleManager.Instance != null)
+      {
+        BattleManager.Instance.RestaurarCamaraHabilidad();
       }
     }
     if (hizoAproximacion && acercamientoMelee != null)

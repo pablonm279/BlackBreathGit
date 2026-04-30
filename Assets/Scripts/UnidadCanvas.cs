@@ -33,6 +33,9 @@ public class UnidadCanvas : MonoBehaviour
     [SerializeField] private Color barraVidaHealColor = new Color(1f, 0.85f, 0.2f, 0.6f);
     [SerializeField] private float barraVidaHealDelay = 0.08f;
     [SerializeField] private float barraVidaHealSpeed = 0.9f;
+    [SerializeField] private Color barraVidaColorVidaBaja = new Color(0.42f, 0.02f, 0.02f, 1f);
+    [SerializeField] private float barraVidaRatioInicioRojo = 0.2f;
+    [SerializeField] private float barraVidaOscurecerTurnoPasado = 0.72f;
     private float barraVidaLastRatio = -1f;
     private float barraVidaDamageRatio = -1f;
     private float barraVidaHealRatio = -1f;
@@ -40,6 +43,9 @@ public class UnidadCanvas : MonoBehaviour
     private Coroutine barraVidaHealCoroutine;
     private RectTransform barraVidaFillRect;
     private Slider barraVidaSlider;
+    private Image barraVidaFillImage;
+    private Color barraVidaFillColorBase = Color.white;
+    private bool barraVidaFillColorBaseInicializado;
     private TMP_FontAsset fuenteTextoProbabilidad;
     [Header("Rotulo Habilidad IA")]
     [SerializeField] private Vector2 rotuloHabilidadOffset = new Vector2(0f, 2.1f);
@@ -90,21 +96,30 @@ public class UnidadCanvas : MonoBehaviour
         }
         if (barraVida != null)
         {
-            barraVida.gameObject.GetComponent<Slider>().value = unidad.HP_actual / unidad.mod_maxHP * 100;
+            float ratioVida = unidad.mod_maxHP > 0f ? Mathf.Clamp01(unidad.HP_actual / unidad.mod_maxHP) : 0f;
+            barraVida.gameObject.GetComponent<Slider>().value = ratioVida * 100f;
             
-            int posEstaUnidad = BattleManager.Instance.lUnidadesTotal.IndexOf(unidad);
-            int indexTurno = BattleManager.Instance.indexTurno;
-            bool yapasosuturno = indexTurno > posEstaUnidad+1;
-
-
-            Image barraFillImage = barraVida.gameObject.transform.GetChild(2).GetChild(0).GetComponentInChildren<Image>();
-            if (yapasosuturno)
+            Image barraFillImage = ObtenerImagenFillBarraVida();
+            if (barraFillImage != null)
             {
-                barraFillImage.color = new Color(barraFillImage.color.r, barraFillImage.color.g, barraFillImage.color.b, 0.45f); // oscurecer (alpha 0.5)
-            }
-            else
-            {
-                barraFillImage.color = new Color(barraFillImage.color.r, barraFillImage.color.g, barraFillImage.color.b, 1f); // normal (alpha 1)
+                if (!barraVidaFillColorBaseInicializado)
+                {
+                    barraVidaFillColorBase = barraFillImage.color;
+                    barraVidaFillColorBaseInicializado = true;
+                }
+
+                float tVidaBaja = barraVidaRatioInicioRojo > 0f ? Mathf.Clamp01(ratioVida / barraVidaRatioInicioRojo) : 1f;
+                Color colorFill = Color.Lerp(barraVidaColorVidaBaja, barraVidaFillColorBase, tVidaBaja);
+                int posEstaUnidad = BattleManager.Instance.lUnidadesTotal.IndexOf(unidad);
+                bool yapasosuturno = BattleManager.Instance.indexTurno > posEstaUnidad + 1;
+                if (yapasosuturno)
+                {
+                    colorFill.r *= barraVidaOscurecerTurnoPasado;
+                    colorFill.g *= barraVidaOscurecerTurnoPasado;
+                    colorFill.b *= barraVidaOscurecerTurnoPasado;
+                }
+                colorFill.a = 1f;
+                barraFillImage.color = colorFill;
             }
         }
         ActualizarBarraDanio(unidad);
@@ -128,6 +143,12 @@ public class UnidadCanvas : MonoBehaviour
         if (parent == null) { return; }
 
         Image fillImg = barraVidaFillRect.GetComponent<Image>();
+        if (fillImg != null && !barraVidaFillColorBaseInicializado)
+        {
+            barraVidaFillImage = fillImg;
+            barraVidaFillColorBase = fillImg.color;
+            barraVidaFillColorBaseInicializado = true;
+        }
 
         if (barraVidaDamageFill == null)
         {
@@ -166,6 +187,32 @@ public class UnidadCanvas : MonoBehaviour
             barraVidaHealFill.color = new Color(barraVidaHealColor.r, barraVidaHealColor.g, barraVidaHealColor.b, 0f);
             barraVidaHealFill.gameObject.SetActive(false);
         }
+    }
+
+    Image ObtenerImagenFillBarraVida()
+    {
+        if (barraVidaFillImage != null) { return barraVidaFillImage; }
+
+        if (barraVidaSlider == null && barraVida != null)
+        {
+            barraVidaSlider = barraVida.GetComponent<Slider>();
+        }
+
+        if (barraVidaSlider != null && barraVidaSlider.fillRect != null)
+        {
+            barraVidaFillImage = barraVidaSlider.fillRect.GetComponent<Image>();
+        }
+
+        if (barraVidaFillImage == null && barraVida != null)
+        {
+            Transform barraTransform = barraVida.gameObject.transform;
+            if (barraTransform.childCount > 2 && barraTransform.GetChild(2).childCount > 0)
+            {
+                barraVidaFillImage = barraTransform.GetChild(2).GetChild(0).GetComponentInChildren<Image>();
+            }
+        }
+
+        return barraVidaFillImage;
     }
 
     void ActualizarBarraDanio(Unidad unidad)

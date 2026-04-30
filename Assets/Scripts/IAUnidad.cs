@@ -151,6 +151,7 @@ public class IAUnidad : MonoBehaviour
 
          if (habilidadesDisponibles.Count == 0) // No hay habilidades posibles
          {
+            BattleManager.Instance.RestaurarCamaraHabilidad();
             await DelayIA(timings.DelaySinObjetivosMs);
 
             if (scUnidad.esInmobil)
@@ -1206,6 +1207,7 @@ public class IAUnidad : MonoBehaviour
 
       await EsperarHabilidadesPendientes(timings.GraciaHabilidadMs);
       await ForzarRetornoMeleeVisualSiCorresponde();
+      BattleManager.Instance.RestaurarCamaraHabilidad();
       await DelayIA(timings.DelayFinTurnoMs);
 
       if (BattleManager.Instance.unidadActiva == scUnidad)

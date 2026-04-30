@@ -6,11 +6,18 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
 {
   private const string OverlayRootName = "CombatFeedbackFx";
   private const float EscalaImpacto = 0.9f;
+  private const int SalvacionFortaleza = 1;
+  private const int SalvacionReflejos = 2;
+  private const int SalvacionMental = 3;
 
   [Header("Impacto")]
   [SerializeField] private float duracionImpacto = 0.18f;
   [SerializeField] private float duracionImpactoCritico = 0.24f;
   [SerializeField] private float duracionMissGlint = 0.14f;
+  [SerializeField] private float duracionSalvacionMental = 0.58f;
+  [SerializeField] private float duracionSalvacionReflejos = 0.26f;
+  [SerializeField] private float duracionSalvacionFortaleza = 0.48f;
+  [SerializeField] private float duracionSalvacionFallida = 0.16f;
 
   private Unidad unidad;
   private RectTransform imagenUnidad;
@@ -19,14 +26,24 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
   private Image impactoAnillo;
   private Image impactoDestello;
   private Image missGlint;
+  private Image salvacionGlow;
+  private Image salvacionAro;
+  private Image salvacionMarcaA;
+  private Image salvacionMarcaB;
+  private Image salvacionMarcaC;
 
   private float tiempoImpactoRestante = -1f;
   private float tiempoMissGlintRestante = -1f;
+  private float tiempoSalvacionRestante = -1f;
   private float duracionImpactoActual;
+  private float duracionSalvacionActual;
   private Color colorImpacto = Color.white;
   private bool impactoCritico;
   private bool impactoGuardia;
+  private bool impactoSalvacionFallida;
   private int tipoImpacto;
+  private int tipoSalvacion;
+  private float faseSalvacion;
 
   private static Texture2D texturaSuave;
   private static Sprite spriteSuave;
@@ -65,12 +82,14 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     ActualizarOverlayBase();
     ActualizarImpacto();
     ActualizarMissGlint();
+    ActualizarSalvacion();
   }
 
   private void OnDisable()
   {
     tiempoImpactoRestante = -1f;
     tiempoMissGlintRestante = -1f;
+    tiempoSalvacionRestante = -1f;
     OcultarOverlay();
   }
 
@@ -87,6 +106,7 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     colorImpacto = AjustarColorImpacto(color, tipoDanio, false);
     impactoCritico = critico;
     impactoGuardia = false;
+    impactoSalvacionFallida = false;
     tipoImpacto = tipoDanio;
     duracionImpactoActual = critico ? duracionImpactoCritico : duracionImpacto;
     tiempoImpactoRestante = duracionImpactoActual;
@@ -106,10 +126,44 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     colorImpacto = AjustarColorImpacto(color, 0, true);
     impactoCritico = false;
     impactoGuardia = true;
+    impactoSalvacionFallida = false;
     tipoImpacto = 0;
     duracionImpactoActual = duracionImpacto * 0.85f;
     tiempoImpactoRestante = duracionImpactoActual;
     ScreenFlash.FlashImpact(colorImpacto, 0.012f, 0.008f, 0.05f, 0f);
+  }
+
+  public void PlaySaveSuccess(int tipo)
+  {
+    tipoSalvacion = Mathf.Clamp(tipo, SalvacionFortaleza, SalvacionMental);
+    faseSalvacion = Random.Range(0f, Mathf.PI * 2f);
+
+    switch (tipoSalvacion)
+    {
+      case SalvacionReflejos:
+        duracionSalvacionActual = Mathf.Max(0.01f, duracionSalvacionReflejos);
+        break;
+      case SalvacionMental:
+        duracionSalvacionActual = Mathf.Max(0.01f, duracionSalvacionMental);
+        break;
+      case SalvacionFortaleza:
+      default:
+        duracionSalvacionActual = Mathf.Max(0.01f, duracionSalvacionFortaleza);
+        break;
+    }
+
+    tiempoSalvacionRestante = duracionSalvacionActual;
+  }
+
+  public void PlaySaveFailureImpact()
+  {
+    colorImpacto = new Color(0.74f, 0.7f, 0.82f, 1f);
+    impactoCritico = false;
+    impactoGuardia = false;
+    impactoSalvacionFallida = true;
+    tipoImpacto = 0;
+    duracionImpactoActual = Mathf.Max(0.01f, duracionSalvacionFallida);
+    tiempoImpactoRestante = duracionImpactoActual;
   }
 
   public void PlayMissGlint()
@@ -179,6 +233,11 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     impactoAnillo = CrearImagen("ImpactAnillo", overlayRoot, spriteAnillo);
     impactoDestello = CrearImagen("ImpactDestello", overlayRoot, spriteSuave);
     missGlint = CrearImagen("MissGlint", overlayRoot, spriteGlint);
+    salvacionGlow = CrearImagen("SalvacionGlow", overlayRoot, spriteSuave);
+    salvacionAro = CrearImagen("SalvacionAro", overlayRoot, spriteAnillo);
+    salvacionMarcaA = CrearImagen("SalvacionMarcaA", overlayRoot, spriteGlint);
+    salvacionMarcaB = CrearImagen("SalvacionMarcaB", overlayRoot, spriteGlint);
+    salvacionMarcaC = CrearImagen("SalvacionMarcaC", overlayRoot, spriteSuave);
 
     overlayRoot.gameObject.SetActive(false);
   }
@@ -224,23 +283,25 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     float fade = 1f - Mathf.SmoothStep(0f, 1f, n);
     Vector2 tamano = ObtenerTamanoUnidad();
 
-    float anchoBase = tamano.x * (impactoGuardia ? 0.3536f : (impactoCritico ? 0.468f : 0.4056f)) * EscalaImpacto;
-    float altoBase = tamano.y * (impactoGuardia ? 0.2808f : (impactoCritico ? 0.4368f : 0.3536f)) * EscalaImpacto;
-    float expansion = impactoGuardia ? 0.08f : (impactoCritico ? 0.14f : 0.1f);
-    float giro = impactoGuardia ? 0f : (tipoImpacto <= 3 ? -10f : 0f);
+    float anchoBase = tamano.x * (impactoSalvacionFallida ? 0.32f : (impactoGuardia ? 0.3536f : (impactoCritico ? 0.468f : 0.4056f))) * EscalaImpacto;
+    float altoBase = tamano.y * (impactoSalvacionFallida ? 0.26f : (impactoGuardia ? 0.2808f : (impactoCritico ? 0.4368f : 0.3536f))) * EscalaImpacto;
+    float expansion = impactoSalvacionFallida ? 0.055f : (impactoGuardia ? 0.08f : (impactoCritico ? 0.14f : 0.1f));
+    float giro = (impactoGuardia || impactoSalvacionFallida) ? 0f : (tipoImpacto <= 3 ? -10f : 0f);
+    float alphaAnillo = impactoSalvacionFallida ? 0.053f : (impactoGuardia ? 0.102f : (impactoCritico ? 0.153f : 0.095625f));
+    float alphaDestello = impactoSalvacionFallida ? 0.067f : (impactoGuardia ? 0.11475f : (impactoCritico ? 0.19125f : 0.1275f));
 
     ConfigurarImagen(
       impactoAnillo,
       Vector2.zero,
       new Vector2(anchoBase * (1f + (n * expansion)), altoBase * (1f + (n * expansion))),
-      WithAlpha(colorImpacto, fade * (impactoGuardia ? 0.102f : (impactoCritico ? 0.153f : 0.095625f))));
+      WithAlpha(colorImpacto, fade * alphaAnillo));
     impactoAnillo.rectTransform.localEulerAngles = new Vector3(0f, 0f, giro);
 
     ConfigurarImagen(
       impactoDestello,
       Vector2.zero,
-      new Vector2(tamano.x * (impactoGuardia ? 0.26f : (impactoCritico ? 0.3536f : 0.3016f)) * EscalaImpacto, tamano.y * (impactoGuardia ? 0.2288f : (impactoCritico ? 0.3328f : 0.2704f)) * EscalaImpacto),
-      WithAlpha(Color.Lerp(colorImpacto, Color.white, impactoCritico ? 0.28f : 0.14f), fade * (impactoGuardia ? 0.11475f : (impactoCritico ? 0.19125f : 0.1275f))));
+      new Vector2(tamano.x * (impactoSalvacionFallida ? 0.23f : (impactoGuardia ? 0.26f : (impactoCritico ? 0.3536f : 0.3016f))) * EscalaImpacto, tamano.y * (impactoSalvacionFallida ? 0.2f : (impactoGuardia ? 0.2288f : (impactoCritico ? 0.3328f : 0.2704f))) * EscalaImpacto),
+      WithAlpha(Color.Lerp(colorImpacto, Color.white, impactoCritico ? 0.28f : 0.14f), fade * alphaDestello));
   }
 
   private void ActualizarMissGlint()
@@ -268,6 +329,179 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
       new Vector2(tamano.x * 0.24f, tamano.y * 0.4f),
       WithAlpha(new Color(0.97f, 0.98f, 1f, 1f), fade * 0.34f));
     missGlint.rectTransform.localEulerAngles = new Vector3(0f, 0f, -32f);
+  }
+
+  private void ActualizarSalvacion()
+  {
+    if (salvacionGlow == null
+      || salvacionAro == null
+      || salvacionMarcaA == null
+      || salvacionMarcaB == null
+      || salvacionMarcaC == null)
+    {
+      return;
+    }
+
+    if (tiempoSalvacionRestante <= 0f)
+    {
+      OcultarImagen(salvacionGlow);
+      OcultarImagen(salvacionAro);
+      OcultarImagen(salvacionMarcaA);
+      OcultarImagen(salvacionMarcaB);
+      OcultarImagen(salvacionMarcaC);
+      return;
+    }
+
+    tiempoSalvacionRestante = Mathf.Max(0f, tiempoSalvacionRestante - Time.unscaledDeltaTime);
+    float duracion = Mathf.Max(0.01f, duracionSalvacionActual);
+    float n = 1f - (tiempoSalvacionRestante / duracion);
+
+    switch (tipoSalvacion)
+    {
+      case SalvacionReflejos:
+        ActualizarSalvacionReflejos(n);
+        break;
+      case SalvacionMental:
+        ActualizarSalvacionMental(n);
+        break;
+      case SalvacionFortaleza:
+      default:
+        ActualizarSalvacionFortaleza(n);
+        break;
+    }
+  }
+
+  private void ActualizarSalvacionMental(float n)
+  {
+    Vector2 tamano = ObtenerTamanoUnidad();
+    Vector2 centro = ObtenerPosicionSalvacionLocal();
+    float ancho = Mathf.Max(24f, tamano.x * 0.5f) * 0.8f;
+    float alto = Mathf.Max(8f, tamano.y * 0.14f);
+    float fade = 1f - SmoothStep01(0.08f, 1f, n);
+    float disolver = 1f + (n * 0.34f);
+    float t = Time.unscaledTime;
+    float pulso = Mathf.Abs(Mathf.Sin((t * 8.2f) + faseSalvacion));
+    float orbitaX = ancho * Mathf.Lerp(0.16f, 0.34f, n);
+    float orbitaY = alto * Mathf.Lerp(0.45f, 0.82f, n);
+    Color baseColor = new Color(0.65f, 0.9f, 1f, 1f);
+    Color auraColor = new Color(0.58f, 0.48f, 1f, 1f);
+
+    ConfigurarImagen(
+      salvacionGlow,
+      centro + new Vector2(0f, 1.4f + (n * 4f)),
+      new Vector2(ancho * 1.22f, alto * 1.82f) * disolver,
+      WithAlpha(auraColor, fade * Mathf.Lerp(0.12f, 0.05f, n)));
+
+    ConfigurarImagen(
+      salvacionAro,
+      centro,
+      new Vector2(ancho, alto) * (0.92f + (pulso * 0.05f) + (n * 0.2f)),
+      WithAlpha(baseColor, fade * Mathf.Lerp(0.48f, 0.12f, n)));
+    salvacionAro.rectTransform.localEulerAngles = new Vector3(0f, 0f, 0f);
+
+    ConfigurarImagen(
+      salvacionMarcaA,
+      centro + new Vector2(Mathf.Cos(faseSalvacion + (n * 4.4f)) * orbitaX, Mathf.Sin(faseSalvacion + (n * 4.4f)) * orbitaY),
+      new Vector2(ancho * 0.18f, alto * 0.9f),
+      WithAlpha(new Color(0.82f, 0.97f, 1f, 1f), fade * 0.34f));
+    salvacionMarcaA.rectTransform.localEulerAngles = new Vector3(0f, 0f, -26f);
+
+    ConfigurarImagen(
+      salvacionMarcaB,
+      centro + new Vector2(Mathf.Cos(faseSalvacion + 2.2f + (n * 3.7f)) * (orbitaX * 0.84f), Mathf.Sin(faseSalvacion + 2.2f + (n * 3.7f)) * (orbitaY * 0.92f)),
+      new Vector2(ancho * 0.14f, alto * 0.72f),
+      WithAlpha(new Color(0.72f, 0.8f, 1f, 1f), fade * 0.28f));
+    salvacionMarcaB.rectTransform.localEulerAngles = new Vector3(0f, 0f, 24f);
+
+    ConfigurarImagen(
+      salvacionMarcaC,
+      centro + new Vector2(Mathf.Cos(faseSalvacion + 4.1f + (n * 3.2f)) * (orbitaX * 0.72f), Mathf.Sin(faseSalvacion + 4.1f + (n * 3.2f)) * (orbitaY * 0.82f)),
+      Vector2.one * Mathf.Max(4f, tamano.x * 0.05f) * (1f + (n * 0.2f)),
+      WithAlpha(new Color(0.95f, 0.98f, 1f, 1f), fade * 0.26f));
+  }
+
+  private void ActualizarSalvacionReflejos(float n)
+  {
+    Vector2 tamano = ObtenerTamanoUnidad();
+    Vector2 centro = ObtenerPosicionSalvacionLocal();
+    float fade = 1f - SmoothStep01(0.18f, 1f, n);
+    float ancho = Mathf.Max(20f, tamano.x * 0.36f);
+    float alto = Mathf.Max(12f, tamano.y * 0.2f);
+    Color colorPrincipal = new Color(0.2f, 1f, 0.82f, 1f);
+
+    ConfigurarImagen(
+      salvacionGlow,
+      centro + new Vector2(ancho * Mathf.Lerp(-0.12f, 0.16f, n), 0f),
+      new Vector2(ancho * 0.72f, alto * 0.66f),
+      WithAlpha(colorPrincipal, fade * 0.12f));
+
+    OcultarImagen(salvacionAro);
+
+    ConfigurarImagen(
+      salvacionMarcaA,
+      centro + new Vector2(Mathf.Lerp(-ancho * 0.32f, ancho * 0.22f, n), Mathf.Lerp(-alto * 0.08f, alto * 0.08f, n)),
+      new Vector2(ancho * 0.88f, alto * 0.2f),
+      WithAlpha(colorPrincipal, fade * 0.46f));
+    salvacionMarcaA.rectTransform.localEulerAngles = new Vector3(0f, 0f, -24f);
+
+    ConfigurarImagen(
+      salvacionMarcaB,
+      centro + new Vector2(Mathf.Lerp(ancho * 0.24f, -ancho * 0.12f, n), Mathf.Lerp(alto * 0.12f, -alto * 0.1f, n)),
+      new Vector2(ancho * 0.62f, alto * 0.16f),
+      WithAlpha(new Color(0.86f, 1f, 0.94f, 1f), fade * 0.34f));
+    salvacionMarcaB.rectTransform.localEulerAngles = new Vector3(0f, 0f, 28f);
+
+    ConfigurarImagen(
+      salvacionMarcaC,
+      centro + new Vector2(ancho * Mathf.Lerp(0.06f, 0.28f, n), alto * Mathf.Lerp(-0.06f, 0.1f, n)),
+      Vector2.one * Mathf.Max(3f, tamano.x * 0.035f),
+      WithAlpha(new Color(0.78f, 1f, 0.92f, 1f), fade * 0.28f));
+  }
+
+  private void ActualizarSalvacionFortaleza(float n)
+  {
+    Vector2 tamano = ObtenerTamanoUnidad();
+    Vector2 centro = ObtenerPosicionSalvacionLocal();
+    float fadeIn = SmoothStep01(0f, 0.22f, n);
+    float fadeOut = 1f - SmoothStep01(0.42f, 1f, n);
+    float fade = fadeIn * fadeOut;
+    float ancho = Mathf.Max(15.4f, tamano.x * 0.294f) * 0.65f;
+    float alto = Mathf.Max(7f, tamano.y * 0.112f) * 0.65f;
+    Color colorPrincipal = new Color(0.7f, 1f, 0.58f, 1f);
+    Color colorSecundario = new Color(1f, 0.88f, 0.42f, 1f);
+
+    ConfigurarImagen(
+      salvacionGlow,
+      centro + new Vector2(0f, alto * 0.02f),
+      new Vector2(ancho * 1.05f, alto * 1.24f) * (0.9f + (n * 0.14f)),
+      WithAlpha(colorPrincipal, fade * 0.12f));
+
+    ConfigurarImagen(
+      salvacionAro,
+      centro,
+      new Vector2(ancho, alto) * (0.86f + (n * 0.12f)),
+      WithAlpha(Color.Lerp(colorPrincipal, colorSecundario, 0.34f), fade * 0.36f));
+    salvacionAro.rectTransform.localEulerAngles = new Vector3(0f, 0f, 0f);
+
+    ConfigurarImagen(
+      salvacionMarcaA,
+      centro + new Vector2(-ancho * 0.18f, alto * 0.02f),
+      new Vector2(ancho * 0.32f, alto * 0.12f),
+      WithAlpha(colorSecundario, fade * 0.28f));
+    salvacionMarcaA.rectTransform.localEulerAngles = new Vector3(0f, 0f, -42f);
+
+    ConfigurarImagen(
+      salvacionMarcaB,
+      centro + new Vector2(ancho * 0.18f, alto * 0.02f),
+      new Vector2(ancho * 0.32f, alto * 0.12f),
+      WithAlpha(colorSecundario, fade * 0.28f));
+    salvacionMarcaB.rectTransform.localEulerAngles = new Vector3(0f, 0f, 42f);
+
+    ConfigurarImagen(
+      salvacionMarcaC,
+      centro,
+      Vector2.one * Mathf.Max(4f, tamano.x * 0.045f) * 0.65f * (0.8f + (n * 0.12f)),
+      WithAlpha(new Color(0.92f, 1f, 0.76f, 1f), fade * 0.22f));
   }
 
   private void OcultarOverlay()
@@ -326,6 +560,18 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     }
 
     return imagenUnidad.anchoredPosition;
+  }
+
+  private Vector2 ObtenerPosicionSalvacionLocal()
+  {
+    Vector2 tamano = ObtenerTamanoUnidad();
+    if (imagenUnidad == null || overlayRoot == null)
+    {
+      return new Vector2(0f, tamano.y * 0.58f);
+    }
+
+    Vector2 posicionCabeza = imagenUnidad.anchoredPosition + new Vector2(0f, tamano.y * 0.58f);
+    return posicionCabeza - overlayRoot.anchoredPosition;
   }
 
   private static Camera ObtenerCanvasCamera(Canvas canvas)
@@ -411,6 +657,14 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     rect.anchoredPosition = posicion;
     rect.sizeDelta = tamano;
     image.color = color;
+  }
+
+  private static void OcultarImagen(Image image)
+  {
+    if (image != null)
+    {
+      image.color = WithAlpha(image.color, 0f);
+    }
   }
 
   private static Texture2D CrearTexturaRadial(int size, float innerRadius, float outerRadius, bool invert)
@@ -503,5 +757,10 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
   {
     color.a = Mathf.Clamp01(alpha);
     return color;
+  }
+
+  private static float SmoothStep01(float desde, float hasta, float valor)
+  {
+    return Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(desde, hasta, valor));
   }
 }

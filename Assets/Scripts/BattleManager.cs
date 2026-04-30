@@ -14,6 +14,9 @@ using Stopwatch = System.Diagnostics.Stopwatch;
 
 public class BattleManager : MonoBehaviour
 {
+  [Header("Ajustes visuales de batalla")]
+  [SerializeField] public float TAMANIO_UNIDADES = 1f;
+
   public TutorialCombate scTutorialCombate;
   public GameObject prefabUnidad;
   public GameObject prefabUnidadCaballero;
@@ -94,6 +97,7 @@ public class BattleManager : MonoBehaviour
   public GameObject nocheLienzo;
   private Coroutine coroutineTooltipValorDelay;
   private bool tooltipValorHoverActivo;
+  private readonly Dictionary<int, Vector3> escalaBaseUnidadesBatalla = new Dictionary<int, Vector3>();
 
   public void RefrescarVfxClimaCalor(bool activo)
   {
@@ -136,6 +140,7 @@ public class BattleManager : MonoBehaviour
     }
 
     Instance = this;
+    tiltCamaraSeleccionHabilidadActivo = true;
   }
 
   private void OnDestroy()
@@ -298,9 +303,54 @@ public class BattleManager : MonoBehaviour
      #endregion*/
 
     ReordenarTodoPorY();
+    AplicarTamanioUnidadesEnBatalla();
     ActualizarAliadosRefUI();
     //  RondaNueva();
 
+  }
+
+  public void AplicarTamanioUnidadBatalla(Unidad unidad)
+  {
+    if (unidad == null)
+    {
+      return;
+    }
+
+    int id = unidad.GetInstanceID();
+    if (!escalaBaseUnidadesBatalla.ContainsKey(id))
+    {
+      escalaBaseUnidadesBatalla[id] = unidad.transform.localScale;
+    }
+
+    float multiplicador = Mathf.Max(0.01f, TAMANIO_UNIDADES);
+    unidad.transform.localScale = escalaBaseUnidadesBatalla[id] * multiplicador;
+  }
+
+  private void AplicarTamanioUnidadesEnBatalla()
+  {
+    if (lUnidadesTotal != null)
+    {
+      foreach (Unidad unidad in lUnidadesTotal)
+      {
+        AplicarTamanioUnidadBatalla(unidad);
+      }
+    }
+
+    if (lCasillasTotal == null)
+    {
+      return;
+    }
+
+    foreach (Casilla casilla in lCasillasTotal)
+    {
+      if (casilla == null || casilla.Presente == null)
+      {
+        continue;
+      }
+
+      Unidad unidad = casilla.Presente.GetComponent<Unidad>();
+      AplicarTamanioUnidadBatalla(unidad);
+    }
   }
 
   private void ConfigurarMicroAnimacionesUI()
@@ -848,6 +898,7 @@ public class BattleManager : MonoBehaviour
       return false;
     }
 
+    AplicarTamanioUnidadBatalla(unidadRefuerzo);
     string nombreRefuerzoEnemigo = ObtenerNombreTraducidoParaLog(unidadRefuerzo.uNombre);
     string txtSeUnio = TRADU.i != null ? TRADU.i.Traducir(" se ha unido a la batalla. Quedan ") : " se ha unido a la batalla. Quedan ";
     string txtRefuerzosRestantes = TRADU.i != null ? TRADU.i.Traducir(" refuerzos.</color> ") : " refuerzos.</color> ";
@@ -908,6 +959,7 @@ public class BattleManager : MonoBehaviour
       return false;
     }
 
+    AplicarTamanioUnidadBatalla(unidadRefuerzo);
     AplicarEfectosInicioCombate(unidadRefuerzo);
     string nombreRefuerzoAliado = ObtenerNombreTraducidoParaLog(unidadRefuerzo.uNombre);
     string txtSeUnio = TRADU.i != null ? TRADU.i.Traducir(" se ha unido a la batalla. Quedan ") : " se ha unido a la batalla. Quedan ";
@@ -1352,6 +1404,7 @@ public class BattleManager : MonoBehaviour
     lUnidadesTotal.Clear();
     lUnidadesTotal.AddRange(ladoA.GetComponent<LadoManager>().unidadesLado);
     lUnidadesTotal.AddRange(ladoB.GetComponent<LadoManager>().unidadesLado);
+    AplicarTamanioUnidadesEnBatalla();
     NotificarCambioValourGlobal();
   }
 
@@ -2170,9 +2223,80 @@ public class BattleManager : MonoBehaviour
   public GameObject goCamara;
 
   public bool seTilteo = false;
+  [Header("Camara - seleccion de habilidades")]
+  [SerializeField, Tooltip("Activa el giro sutil de la camara hacia el lado enemigo al seleccionar un boton de habilidad hostil.")]
+  private bool tiltCamaraSeleccionHabilidadActivo = true;
+  [SerializeField, Tooltip("Angulo en grados del giro lateral al seleccionar una habilidad hostil. Valores chicos evitan bamboleo.")]
+  private float tiltCamaraSeleccionAngulo = 2.4f;
+  [SerializeField, Tooltip("Duracion en segundos para entrar al tilt de seleccion.")]
+  private float tiltCamaraSeleccionEntradaDuracion = 0.22f;
+  [SerializeField, Tooltip("Duracion en segundos para volver del tilt cuando no hay zoom de habilidad integrando la salida.")]
+  private float tiltCamaraSeleccionSalidaDuracion = 0.34f;
+  [Header("Camara - foco de habilidades")]
+  [SerializeField, Tooltip("Activa el zoom/paneo sutil al resolver habilidades.")]
+  private bool focoCamaraHabilidadesActivo = true;
+  [SerializeField, Tooltip("Si esta activo, las habilidades de IA tambien usan el foco de camara.")]
+  private bool focoCamaraIncluyeIA = true;
+  [SerializeField, Tooltip("Si esta activo, solo las habilidades hostiles disparan el foco de camara.")]
+  private bool focoCamaraSoloHostiles = false;
+  [SerializeField, Tooltip("Cambio de Field of View durante el foco. Negativo acerca la camara; positivo la aleja.")]
+  private float focoCamaraFovDelta = -2f;
+  [SerializeField, Tooltip("Desplazamiento hacia adelante en direccion de la camara durante el foco. Mantener bajo para que sea sutil.")]
+  private float focoCamaraAvanceLocal = 0.08f;
+  [SerializeField, Tooltip("Cuanto acompania la camara el centro entre usuario y objetivos. 0 no panea; valores altos siguen mas al objetivo.")]
+  private float focoCamaraSeguimientoObjetivo = 0.16f;
+  [SerializeField, Tooltip("Limite maximo del desplazamiento lateral/vertical del foco, para que la escena no se pierda.")]
+  private float focoCamaraDesplazamientoMax = 0.18f;
+  [SerializeField, Tooltip("Limite maximo del desplazamiento vertical del foco. Baja este valor si la camara cae demasiado en eje Y.")]
+  private float focoCamaraDesplazamientoVerticalMax = 0.1f;
+  [SerializeField, Tooltip("Zoom extra por cada columna de distancia en Y entre caster y foco. Valor positivo: suma zoom haciendo el FOV mas negativo.")]
+  private float focoCamaraFovDeltaPorDistanciaY = 0.3f;
+  [SerializeField, Range(0.2f, 1.5f), Tooltip("Multiplicador de intensidad para habilidades melee. 1 usa el foco base.")]
+  private float focoCamaraMeleeMultiplicador = 1f;
+  [SerializeField, Range(0.2f, 0.8f), Tooltip("En habilidades de rango, peso del objetivo en el punto de foco. 0.5 enfoca entre caster y objetivo; menor mantiene mas visible al caster.")]
+  private float focoCamaraRangoPesoObjetivo = 0.45f;
+  [SerializeField, Range(0.2f, 1f), Tooltip("Multiplicador de intensidad para habilidades de rango. Reduce zoom y paneo respecto de melee.")]
+  private float focoCamaraRangoMultiplicador = 0.65f;
+  [SerializeField, Range(0.2f, 1f), Tooltip("Multiplicador de intensidad para habilidades de area. Valores menores abren mas el encuadre.")]
+  private float focoCamaraAreaMultiplicador = 0.55f;
+  [SerializeField, Range(0.1f, 1f), Tooltip("Multiplicador de intensidad para habilidades de soporte, buffs o curaciones.")]
+  private float focoCamaraSoporteMultiplicador = 0.45f;
+  [SerializeField, Range(0f, 0.25f), Tooltip("Reduccion extra de intensidad por cada objetivo adicional. Ayuda a que multiples objetivos no queden fuera de pantalla.")]
+  private float focoCamaraReduccionPorObjetivoExtra = 0.08f;
+  [SerializeField, Range(0.2f, 1f), Tooltip("Limite minimo del multiplicador aplicado por cantidad de objetivos.")]
+  private float focoCamaraMultiplesObjetivosMin = 0.55f;
+  [SerializeField, Tooltip("Duracion en segundos de la entrada al foco de habilidad.")]
+  private float focoCamaraEntradaDuracion = 0.34f;
+  [SerializeField, Tooltip("Duracion en segundos de la vuelta al estado original. Tambien integra la vuelta del tilt si corresponde.")]
+  private float focoCamaraSalidaDuracion = 0.42f;
+  [SerializeField, Tooltip("Espera en segundos antes de iniciar la vuelta del foco al terminar la habilidad.")]
+  private float focoCamaraDelayRetorno = 0f;
+  [SerializeField, Tooltip("Activa un refuerzo breve del zoom cuando un impacto critico o muerte ocurre durante el foco.")]
+  private bool focoCamaraImpactosImportantesActivo = true;
+  [SerializeField, Tooltip("Zoom extra por impacto critico durante el foco. Negativo acerca la camara.")]
+  private float focoCamaraCriticoFovDelta = -0.7f;
+  [SerializeField, Tooltip("Zoom extra por muerte durante el foco. Negativo acerca la camara.")]
+  private float focoCamaraMuerteFovDelta = -1f;
+  [SerializeField, Tooltip("Avance extra breve de la camara en criticos o muertes.")]
+  private float focoCamaraImpactoAvanceLocal = 0.035f;
+  [SerializeField, Tooltip("Duracion en segundos del refuerzo de zoom por critico o muerte.")]
+  private float focoCamaraImpactoDuracion = 0.12f;
+  [SerializeField, Tooltip("Tiempo minimo entre refuerzos de zoom por impactos importantes.")]
+  private float focoCamaraImpactoCooldown = 0.08f;
   private Quaternion rotacionOrigenCamaraLocal = Quaternion.identity;
   private bool rotacionOrigenCamaraInicializada;
   private Coroutine corrutinaTiltCamara;
+  private bool retornoTiltCamaraIntegradoEnCurso;
+  private Camera componenteCamaraBatalla;
+  private Oscilacioncamara oscilacionCamaraBatalla;
+  private Vector3 posicionOrigenFocoCamara;
+  private float fovOrigenFocoCamara;
+  private bool focoCamaraInicializado;
+  private bool focoCamaraEnUso;
+  private bool retornoFocoCamaraEnCurso;
+  private float ultimoRefuerzoImpactoCamara = -999f;
+  private int versionFocoCamara;
+  private Coroutine corrutinaFocoCamara;
   public void TiltearCamaraLadoEnemigo(bool cBool)
   {
     if (goCamara == null)
@@ -2182,16 +2306,38 @@ public class BattleManager : MonoBehaviour
 
     InicializarRotacionOrigenCamaraSiHaceFalta();
 
+    if (!tiltCamaraSeleccionHabilidadActivo)
+    {
+      if (corrutinaTiltCamara != null)
+      {
+        StopCoroutine(corrutinaTiltCamara);
+        corrutinaTiltCamara = null;
+      }
+
+      seTilteo = false;
+      if (!cBool && !EstaCamaraEnRotacionOrigen())
+      {
+        goCamara.transform.localRotation = rotacionOrigenCamaraLocal;
+      }
+      return;
+    }
+
     if (cBool)
     {
-      if (seTilteo || !EstaCamaraEnRotacionOrigen())
+      retornoTiltCamaraIntegradoEnCurso = false;
+      if (seTilteo)
       {
         return;
       }
 
       seTilteo = true;
-      Quaternion rotacionObjetivo = rotacionOrigenCamaraLocal * Quaternion.Euler(0f, 3.5f, 0f);
-      IniciarTiltCamara(rotacionObjetivo, 0f);
+      Quaternion rotacionObjetivo = rotacionOrigenCamaraLocal * Quaternion.Euler(0f, tiltCamaraSeleccionAngulo, 0f);
+      IniciarTiltCamara(rotacionObjetivo, 0f, tiltCamaraSeleccionEntradaDuracion);
+      return;
+    }
+
+    if (retornoTiltCamaraIntegradoEnCurso)
+    {
       return;
     }
 
@@ -2201,7 +2347,7 @@ public class BattleManager : MonoBehaviour
     }
 
     seTilteo = false;
-    IniciarTiltCamara(rotacionOrigenCamaraLocal, 0.35f);
+    IniciarTiltCamara(rotacionOrigenCamaraLocal, 0f, tiltCamaraSeleccionSalidaDuracion);
   }
 
   private void InicializarRotacionOrigenCamaraSiHaceFalta()
@@ -2225,20 +2371,20 @@ public class BattleManager : MonoBehaviour
     return Quaternion.Angle(goCamara.transform.localRotation, rotacionOrigenCamaraLocal) <= 0.08f;
   }
 
-  private void IniciarTiltCamara(Quaternion rotacionObjetivo, float delay)
+  private void IniciarTiltCamara(Quaternion rotacionObjetivo, float delay, float duracion)
   {
     if (corrutinaTiltCamara != null)
     {
       StopCoroutine(corrutinaTiltCamara);
     }
 
-    corrutinaTiltCamara = StartCoroutine(RotateCameraSmoothly(rotacionObjetivo, delay));
+    corrutinaTiltCamara = StartCoroutine(RotateCameraSmoothly(rotacionObjetivo, delay, duracion));
   }
 
-  private IEnumerator RotateCameraSmoothly(Quaternion targetRotation, float delay)
+  private IEnumerator RotateCameraSmoothly(Quaternion targetRotation, float delay, float duration)
   {
-    float duration = 0.12f; // Duracion del efecto en segundos
     float elapsedTime = 0f;
+    duration = Mathf.Max(0.01f, duration);
 
     if (delay > 0)
     {
@@ -2249,13 +2395,474 @@ public class BattleManager : MonoBehaviour
 
     while (elapsedTime < duration)
     {
-      goCamara.transform.localRotation = Quaternion.Slerp(initialRotation, targetRotation, elapsedTime / duration);
+      float t = SuavizadoFocoCamara(elapsedTime / duration);
+      goCamara.transform.localRotation = Quaternion.Slerp(initialRotation, targetRotation, t);
       elapsedTime += Time.deltaTime;
       yield return null;
     }
 
     goCamara.transform.localRotation = targetRotation; // Asegura que la rotacion final sea exacta
     corrutinaTiltCamara = null;
+  }
+
+  public void EnfocarCamaraHabilidad(Unidad usuario, List<object> objetivos, bool esHostil, bool desdeIA, float intensidad = 1f, bool esMelee = false, bool esArea = false)
+  {
+    if (!focoCamaraHabilidadesActivo || goCamara == null)
+    {
+      return;
+    }
+
+    if (desdeIA && !focoCamaraIncluyeIA)
+    {
+      return;
+    }
+
+    if (focoCamaraSoloHostiles && !esHostil)
+    {
+      return;
+    }
+
+    InicializarRotacionOrigenCamaraSiHaceFalta();
+    InicializarFocoCamaraSiHaceFalta();
+    if (componenteCamaraBatalla == null)
+    {
+      return;
+    }
+
+    int cantidadObjetivos = ContarObjetivosFoco(objetivos);
+    TipoFocoCamaraHabilidad tipoFoco = DeterminarTipoFocoCamara(esHostil, esMelee, esArea, cantidadObjetivos);
+    intensidad = Mathf.Clamp(intensidad, 0.15f, 2f) * ObtenerMultiplicadorTipoFoco(tipoFoco);
+    if (cantidadObjetivos > 1)
+    {
+      float multiplicadorMultiples = Mathf.Max(focoCamaraMultiplesObjetivosMin, 1f - ((cantidadObjetivos - 1) * focoCamaraReduccionPorObjetivoExtra));
+      intensidad *= multiplicadorMultiples;
+    }
+
+    Vector3 centro = CalcularCentroFocoHabilidad(usuario, objetivos, tipoFoco);
+    float distanciaYFoco = CalcularDistanciaYFoco(usuario, objetivos);
+    Transform camaraTransform = goCamara.transform;
+    Vector3 direccionCentro = centro - posicionOrigenFocoCamara;
+    Vector3 paneo = Vector3.ProjectOnPlane(direccionCentro, camaraTransform.forward);
+    float paneoMagnitud = Mathf.Min(paneo.magnitude * focoCamaraSeguimientoObjetivo * intensidad, focoCamaraDesplazamientoMax * intensidad);
+    Vector3 offsetPaneo = paneo.sqrMagnitude > 0.0001f ? paneo.normalized * paneoMagnitud : Vector3.zero;
+    Vector3 offsetAvance = camaraTransform.forward * focoCamaraAvanceLocal * intensidad;
+    Vector3 offsetObjetivo = offsetPaneo + offsetAvance;
+    float limiteVertical = focoCamaraDesplazamientoVerticalMax * intensidad;
+    offsetObjetivo.y = Mathf.Clamp(offsetObjetivo.y, -limiteVertical, limiteVertical);
+    float fovDeltaAjustado = focoCamaraFovDelta - (distanciaYFoco * focoCamaraFovDeltaPorDistanciaY);
+    float fovObjetivo = Mathf.Clamp(fovOrigenFocoCamara + (fovDeltaAjustado * intensidad), 25f, 80f);
+
+    focoCamaraEnUso = true;
+    retornoFocoCamaraEnCurso = false;
+    IniciarFocoCamara(offsetObjetivo, fovObjetivo, focoCamaraEntradaDuracion, 0f, false);
+  }
+
+  public void ReforzarFocoCamaraImpacto(Unidad causante, Unidad objetivo, bool esCritico, bool causaMuerte)
+  {
+    if (!focoCamaraImpactosImportantesActivo || !focoCamaraInicializado || !focoCamaraEnUso || goCamara == null || componenteCamaraBatalla == null)
+    {
+      return;
+    }
+
+    if (!esCritico && !causaMuerte)
+    {
+      return;
+    }
+
+    if (Time.time - ultimoRefuerzoImpactoCamara < focoCamaraImpactoCooldown)
+    {
+      return;
+    }
+
+    ultimoRefuerzoImpactoCamara = Time.time;
+    float fovDelta = 0f;
+    if (esCritico)
+    {
+      fovDelta += focoCamaraCriticoFovDelta;
+    }
+    if (causaMuerte)
+    {
+      fovDelta += focoCamaraMuerteFovDelta;
+    }
+
+    float intensidadAvance = (esCritico ? 1f : 0f) + (causaMuerte ? 1.25f : 0f);
+    Vector3 offsetObjetivo = ObtenerOffsetFocoCamaraActual() + (goCamara.transform.forward * focoCamaraImpactoAvanceLocal * intensidadAvance);
+    float fovMinimo = Mathf.Max(25f, fovOrigenFocoCamara + focoCamaraFovDelta - 2.5f);
+    float fovObjetivo = Mathf.Clamp(componenteCamaraBatalla.fieldOfView + fovDelta, fovMinimo, 80f);
+
+    retornoFocoCamaraEnCurso = false;
+    IniciarFocoCamara(offsetObjetivo, fovObjetivo, focoCamaraImpactoDuracion, 0f, false);
+  }
+
+  public void RestaurarCamaraHabilidad()
+  {
+    if (!focoCamaraInicializado || goCamara == null)
+    {
+      return;
+    }
+
+    if (!focoCamaraEnUso && EstaFocoCamaraEnOrigen())
+    {
+      return;
+    }
+
+    if (retornoFocoCamaraEnCurso)
+    {
+      return;
+    }
+
+    bool integrarRetornoTilt = tiltCamaraSeleccionHabilidadActivo && rotacionOrigenCamaraInicializada && (seTilteo || !EstaCamaraEnRotacionOrigen());
+    if (integrarRetornoTilt)
+    {
+      if (corrutinaTiltCamara != null)
+      {
+        StopCoroutine(corrutinaTiltCamara);
+        corrutinaTiltCamara = null;
+      }
+
+      seTilteo = false;
+    }
+
+    focoCamaraEnUso = false;
+    retornoFocoCamaraEnCurso = true;
+    IniciarFocoCamara(Vector3.zero, fovOrigenFocoCamara, focoCamaraSalidaDuracion, focoCamaraDelayRetorno, integrarRetornoTilt);
+  }
+
+  private void InicializarFocoCamaraSiHaceFalta()
+  {
+    if (focoCamaraInicializado || goCamara == null)
+    {
+      return;
+    }
+
+    componenteCamaraBatalla = goCamara.GetComponent<Camera>();
+    oscilacionCamaraBatalla = goCamara.GetComponent<Oscilacioncamara>();
+    posicionOrigenFocoCamara = oscilacionCamaraBatalla != null ? oscilacionCamaraBatalla.PosicionBase : goCamara.transform.position;
+    fovOrigenFocoCamara = componenteCamaraBatalla != null ? componenteCamaraBatalla.fieldOfView : 52f;
+    focoCamaraInicializado = true;
+  }
+
+  private enum TipoFocoCamaraHabilidad
+  {
+    Melee,
+    Rango,
+    Area,
+    Soporte
+  }
+
+  private TipoFocoCamaraHabilidad DeterminarTipoFocoCamara(bool esHostil, bool esMelee, bool esArea, int cantidadObjetivos)
+  {
+    if (!esHostil)
+    {
+      return TipoFocoCamaraHabilidad.Soporte;
+    }
+
+    if (esArea || cantidadObjetivos > 1)
+    {
+      return TipoFocoCamaraHabilidad.Area;
+    }
+
+    return esMelee ? TipoFocoCamaraHabilidad.Melee : TipoFocoCamaraHabilidad.Rango;
+  }
+
+  private float ObtenerMultiplicadorTipoFoco(TipoFocoCamaraHabilidad tipoFoco)
+  {
+    switch (tipoFoco)
+    {
+      case TipoFocoCamaraHabilidad.Melee:
+        return focoCamaraMeleeMultiplicador;
+      case TipoFocoCamaraHabilidad.Area:
+        return focoCamaraAreaMultiplicador;
+      case TipoFocoCamaraHabilidad.Soporte:
+        return focoCamaraSoporteMultiplicador;
+      default:
+        return focoCamaraRangoMultiplicador;
+    }
+  }
+
+  private int ContarObjetivosFoco(List<object> objetivos)
+  {
+    if (objetivos == null)
+    {
+      return 0;
+    }
+
+    int cantidad = 0;
+    foreach (object objetivo in objetivos)
+    {
+      if (TryObtenerPosicionFoco(objetivo, out _))
+      {
+        cantidad++;
+      }
+    }
+
+    return cantidad;
+  }
+
+  private float CalcularDistanciaYFoco(Unidad usuario, List<object> objetivos)
+  {
+    if (usuario == null || usuario.CasillaPosicion == null || objetivos == null)
+    {
+      return 0f;
+    }
+
+    int usuarioY = usuario.CasillaPosicion.posY;
+    int cantidad = 0;
+    float distanciaAcumulada = 0f;
+
+    foreach (object objetivo in objetivos)
+    {
+      if (TryObtenerPosYFoco(objetivo, out int objetivoY))
+      {
+        distanciaAcumulada += Mathf.Abs(objetivoY - usuarioY);
+        cantidad++;
+      }
+    }
+
+    return cantidad > 0 ? distanciaAcumulada / cantidad : 0f;
+  }
+
+  private Vector3 CalcularCentroFocoHabilidad(Unidad usuario, List<object> objetivos, TipoFocoCamaraHabilidad tipoFoco)
+  {
+    Vector3 acumulado = Vector3.zero;
+    int cantidad = 0;
+    Vector3 objetivosAcumulado = Vector3.zero;
+    int cantidadObjetivos = 0;
+
+    if (usuario != null)
+    {
+      acumulado += usuario.transform.position;
+      cantidad++;
+    }
+
+    if (objetivos != null)
+    {
+      foreach (object objetivo in objetivos)
+      {
+        if (TryObtenerPosicionFoco(objetivo, out Vector3 posicion))
+        {
+          acumulado += posicion;
+          cantidad++;
+          objetivosAcumulado += posicion;
+          cantidadObjetivos++;
+        }
+      }
+    }
+
+    if (tipoFoco == TipoFocoCamaraHabilidad.Rango && usuario != null && cantidadObjetivos > 0)
+    {
+      Vector3 centroObjetivos = objetivosAcumulado / cantidadObjetivos;
+      return Vector3.Lerp(usuario.transform.position, centroObjetivos, focoCamaraRangoPesoObjetivo);
+    }
+
+    if (tipoFoco == TipoFocoCamaraHabilidad.Area && cantidadObjetivos > 0)
+    {
+      return objetivosAcumulado / cantidadObjetivos;
+    }
+
+    return cantidad > 0 ? acumulado / cantidad : posicionOrigenFocoCamara;
+  }
+
+  private bool TryObtenerPosicionFoco(object objetivo, out Vector3 posicion)
+  {
+    if (objetivo is Unidad unidad)
+    {
+      posicion = unidad.transform.position;
+      return true;
+    }
+
+    if (objetivo is Obstaculo obstaculo)
+    {
+      posicion = obstaculo.transform.position;
+      return true;
+    }
+
+    if (objetivo is Casilla casilla)
+    {
+      posicion = casilla.transform.position;
+      return true;
+    }
+
+    if (objetivo is UnityEngine.Component componente)
+    {
+      posicion = componente.transform.position;
+      return true;
+    }
+
+    if (objetivo is GameObject gameObjectObjetivo)
+    {
+      posicion = gameObjectObjetivo.transform.position;
+      return true;
+    }
+
+    posicion = Vector3.zero;
+    return false;
+  }
+
+  private bool TryObtenerPosYFoco(object objetivo, out int posY)
+  {
+    if (objetivo is Unidad unidad && unidad.CasillaPosicion != null)
+    {
+      posY = unidad.CasillaPosicion.posY;
+      return true;
+    }
+
+    if (objetivo is Casilla casilla)
+    {
+      posY = casilla.posY;
+      return true;
+    }
+
+    if (objetivo is UnityEngine.Component componente)
+    {
+      Unidad unidadComponente = componente.GetComponent<Unidad>();
+      if (unidadComponente != null && unidadComponente.CasillaPosicion != null)
+      {
+        posY = unidadComponente.CasillaPosicion.posY;
+        return true;
+      }
+
+      Casilla casillaComponente = componente.GetComponent<Casilla>();
+      if (casillaComponente != null)
+      {
+        posY = casillaComponente.posY;
+        return true;
+      }
+    }
+
+    if (objetivo is GameObject gameObjectObjetivo)
+    {
+      Unidad unidadGameObject = gameObjectObjetivo.GetComponent<Unidad>();
+      if (unidadGameObject != null && unidadGameObject.CasillaPosicion != null)
+      {
+        posY = unidadGameObject.CasillaPosicion.posY;
+        return true;
+      }
+
+      Casilla casillaGameObject = gameObjectObjetivo.GetComponent<Casilla>();
+      if (casillaGameObject != null)
+      {
+        posY = casillaGameObject.posY;
+        return true;
+      }
+    }
+
+    posY = 0;
+    return false;
+  }
+
+  private void IniciarFocoCamara(Vector3 offsetObjetivo, float fovObjetivo, float duracion, float delay, bool integrarRetornoTilt)
+  {
+    int version = ++versionFocoCamara;
+    retornoTiltCamaraIntegradoEnCurso = integrarRetornoTilt;
+
+    if (corrutinaFocoCamara != null)
+    {
+      StopCoroutine(corrutinaFocoCamara);
+    }
+
+    corrutinaFocoCamara = StartCoroutine(AnimarFocoCamara(offsetObjetivo, fovObjetivo, duracion, delay, version, integrarRetornoTilt));
+  }
+
+  private IEnumerator AnimarFocoCamara(Vector3 offsetObjetivo, float fovObjetivo, float duracion, float delay, int version, bool integrarRetornoTilt)
+  {
+    if (delay > 0f)
+    {
+      yield return new WaitForSeconds(delay);
+    }
+
+    if (version != versionFocoCamara)
+    {
+      yield break;
+    }
+
+    Vector3 offsetInicial = ObtenerOffsetFocoCamaraActual();
+    float fovInicial = componenteCamaraBatalla != null ? componenteCamaraBatalla.fieldOfView : fovObjetivo;
+    Quaternion rotacionInicial = goCamara != null ? goCamara.transform.localRotation : Quaternion.identity;
+    float elapsedTime = 0f;
+    duracion = Mathf.Max(0.01f, duracion);
+
+    while (elapsedTime < duracion)
+    {
+      if (version != versionFocoCamara)
+      {
+        yield break;
+      }
+
+      float t = SuavizadoFocoCamara(elapsedTime / duracion);
+      AplicarOffsetFocoCamara(Vector3.Lerp(offsetInicial, offsetObjetivo, t));
+      if (componenteCamaraBatalla != null)
+      {
+        componenteCamaraBatalla.fieldOfView = Mathf.Lerp(fovInicial, fovObjetivo, t);
+      }
+      if (integrarRetornoTilt && goCamara != null)
+      {
+        goCamara.transform.localRotation = Quaternion.Slerp(rotacionInicial, rotacionOrigenCamaraLocal, t);
+      }
+
+      elapsedTime += Time.deltaTime;
+      yield return null;
+    }
+
+    if (version != versionFocoCamara)
+    {
+      yield break;
+    }
+
+    AplicarOffsetFocoCamara(offsetObjetivo);
+    if (componenteCamaraBatalla != null)
+    {
+      componenteCamaraBatalla.fieldOfView = fovObjetivo;
+    }
+    if (integrarRetornoTilt && goCamara != null)
+    {
+      goCamara.transform.localRotation = rotacionOrigenCamaraLocal;
+      retornoTiltCamaraIntegradoEnCurso = false;
+    }
+
+    if (offsetObjetivo == Vector3.zero && componenteCamaraBatalla != null && Mathf.Abs(fovObjetivo - fovOrigenFocoCamara) <= 0.01f)
+    {
+      retornoFocoCamaraEnCurso = false;
+    }
+
+    corrutinaFocoCamara = null;
+  }
+
+  private static float SuavizadoFocoCamara(float t)
+  {
+    t = Mathf.Clamp01(t);
+    return t * t * t * (t * (6f * t - 15f) + 10f);
+  }
+
+  private bool EstaFocoCamaraEnOrigen()
+  {
+    bool offsetEnOrigen = ObtenerOffsetFocoCamaraActual().sqrMagnitude <= 0.0004f;
+    bool fovEnOrigen = componenteCamaraBatalla == null || Mathf.Abs(componenteCamaraBatalla.fieldOfView - fovOrigenFocoCamara) <= 0.05f;
+    return offsetEnOrigen && fovEnOrigen;
+  }
+
+  private Vector3 ObtenerOffsetFocoCamaraActual()
+  {
+    if (oscilacionCamaraBatalla != null)
+    {
+      return oscilacionCamaraBatalla.OffsetExterno;
+    }
+
+    return goCamara != null ? goCamara.transform.position - posicionOrigenFocoCamara : Vector3.zero;
+  }
+
+  private void AplicarOffsetFocoCamara(Vector3 offset)
+  {
+    if (oscilacionCamaraBatalla != null)
+    {
+      oscilacionCamaraBatalla.EstablecerOffsetExterno(offset);
+      return;
+    }
+
+    if (goCamara != null)
+    {
+      goCamara.transform.position = posicionOrigenFocoCamara + offset;
+    }
   }
 
   public void DesmarcarTodasLasUnidades()
@@ -2582,6 +3189,12 @@ public class BattleManager : MonoBehaviour
 
   public void SombrearANoParticipantesHabilidad(List<object> unidades)
   {
+    if (oscurecedor == null)
+    {
+      return;
+    }
+
+    AjustarOscurecedorPantalla();
     oscurecedor.SetActive(true);
 
     // Primero, asegÃºrate que el oscurecedor estÃ¡ en el lugar correcto en la jerarquÃ­a
@@ -2637,8 +3250,33 @@ public class BattleManager : MonoBehaviour
   }
 
   public GameObject oscurecedor;
+  [SerializeField] private float margenExtraOscurecedor = 360f;
   private const int OffsetOscurecedorParticipante = 200;
   private const int OffsetOscurecedorNoParticipante = -200;
+
+  private void AjustarOscurecedorPantalla()
+  {
+    RectTransform rect = oscurecedor != null ? oscurecedor.GetComponent<RectTransform>() : null;
+    if (rect == null || rect.parent == null)
+    {
+      return;
+    }
+
+    float margen = Mathf.Max(0f, margenExtraOscurecedor);
+    float zLocal = rect.localPosition.z;
+
+    rect.anchorMin = Vector2.zero;
+    rect.anchorMax = Vector2.one;
+    rect.pivot = new Vector2(0.5f, 0.5f);
+    rect.offsetMin = new Vector2(-margen, -margen);
+    rect.offsetMax = new Vector2(margen, margen);
+    rect.localScale = Vector3.one;
+    rect.localRotation = Quaternion.identity;
+
+    Vector3 posicionLocal = rect.localPosition;
+    posicionLocal.z = zLocal;
+    rect.localPosition = posicionLocal;
+  }
 
   private int CalcularOrdenDuranteOscurecedor(int posY, bool esParticipante, int ordenOscurecedor)
   {
@@ -2726,26 +3364,33 @@ public class BattleManager : MonoBehaviour
   }
   public void DesombrearANoParticipantesHabilidad(List<object> unidades)
   {
+    if (oscurecedor == null)
+    {
+      return;
+    }
 
     oscurecedor.SetActive(false);
 
 
-    foreach (var unidad in unidades)
+    if (unidades != null)
     {
-      if (unidad is Unidad)
+      foreach (var unidad in unidades)
       {
-        ConfigurarOscurecidoVisualUnidad((Unidad)unidad, false);
-      }
-      else if (unidad is Obstaculo)
-      {
-        RestaurarObstaculoTrasDesombrear((Obstaculo)unidad);
-      }
-      else if (unidad is GameObject && ((GameObject)unidad).CompareTag("Obstaculo"))
-      {
-        Obstaculo obstaculo = ((GameObject)unidad).GetComponent<Obstaculo>();
-        if (obstaculo != null)
+        if (unidad is Unidad)
         {
-          RestaurarObstaculoTrasDesombrear(obstaculo);
+          ConfigurarOscurecidoVisualUnidad((Unidad)unidad, false);
+        }
+        else if (unidad is Obstaculo)
+        {
+          RestaurarObstaculoTrasDesombrear((Obstaculo)unidad);
+        }
+        else if (unidad is GameObject && ((GameObject)unidad).CompareTag("Obstaculo"))
+        {
+          Obstaculo obstaculo = ((GameObject)unidad).GetComponent<Obstaculo>();
+          if (obstaculo != null)
+          {
+            RestaurarObstaculoTrasDesombrear(obstaculo);
+          }
         }
       }
     }

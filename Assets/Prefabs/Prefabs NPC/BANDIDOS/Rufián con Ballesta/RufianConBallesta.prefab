@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2267341276981241871
 RectTransform:
   m_ObjectHideFlags: 0
@@ -250,7 +250,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2383047622823427081}
-  m_LocalRotation: {x: 0, y: 0, z: -0.0015863501, w: 0.99999875}
+  m_LocalRotation: {x: 0, y: 0, z: -0.0019665675, w: 0.9999981}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.249951, y: 1.3437338, z: 1}
   m_ConstrainProportionsScale: 0
@@ -261,7 +261,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.26636243, y: -10.048715}
+  m_AnchoredPosition: {x: -0.3, y: -13.8}
   m_SizeDelta: {x: 20.99, y: 20.613}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1678664685221969079
@@ -425,7 +425,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8775609431354661570
 RectTransform:
   m_ObjectHideFlags: 0
@@ -794,6 +794,8 @@ MonoBehaviour:
   fuerzaPoseAtaque: 0
   forzarPoseHabilidad: 0
   omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
@@ -975,6 +977,8 @@ MonoBehaviour:
   afectaObstaculos: 0
   fuerzaPoseAtaque: 0
   omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -1009,6 +1013,8 @@ MonoBehaviour:
   afectaObstaculos: 0
   fuerzaPoseAtaque: 0
   omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}

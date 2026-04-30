@@ -7186,6 +7186,10 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
             case "Defensa vencida":
             r="Broken defense";
             break;
+            case "Fortitud":
+            r="Fortitude";
+            break;
+            
 
 
 
@@ -14035,6 +14039,10 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
             case "Defensa vencida":
             r="Defesa derrotada";
             break;
+            case "Fortitud":
+            r="Fortitude";
+            break;
+           
 
 
 

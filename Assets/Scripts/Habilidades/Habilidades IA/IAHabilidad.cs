@@ -19,6 +19,11 @@ public abstract class IAHabilidad : MonoBehaviour
   [Header("Animacion")]
   [SerializeField] public bool fuerzaPoseAtaque = false;
   [SerializeField] public bool omitirAnimacionDeUso = false;
+  [Header("Camara")]
+  [SerializeField, Tooltip("Si esta activo, esta habilidad de IA no dispara el zoom/paneo de camara al resolverse.")]
+  public bool omitirFocoCamara = false;
+  [SerializeField, Range(0.15f, 2f), Tooltip("Multiplicador del foco de camara para esta habilidad de IA. 1 usa el valor global; menor es mas sutil; mayor es mas dramatico.")]
+  public float intensidadFocoCamara = 1f;
 
   public int hCooldownMax;
   public int hActualCooldown;
@@ -705,6 +710,8 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
   protected async void PrepararInicioAnimacion(List<object> objetivos, object solo)
   {
     TaskCompletionSource<bool> visualTcs = new TaskCompletionSource<bool>();
+    bool focoCamaraAplicado = false;
+    bool mantenerFocoCamaraPorCadena = false;
     lock (secuenciaVisualLock)
     {
       secuenciaVisualEnCurso = visualTcs.Task;
@@ -721,6 +728,23 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
       if (scEstaUnidad != null)
       {
         scEstaUnidad.SetSuprimirAnimacionIA(true);
+      }
+
+      if (!omitirFocoCamara && BattleManager.Instance != null)
+      {
+        List<object> objetivosCamara = new List<object>();
+        if (objetivos != null)
+        {
+          objetivosCamara.AddRange(objetivos);
+        }
+        if (solo != null)
+        {
+          objetivosCamara.Add(solo);
+        }
+
+        bool focoEsArea = hAncho > 1 || objetivosCamara.Count > 1;
+        BattleManager.Instance.EnfocarCamaraHabilidad(scEstaUnidad, objetivosCamara, esHostil, true, intensidadFocoCamara, esMelee, focoEsArea);
+        focoCamaraAplicado = true;
       }
 
       // Log de uso de habilidad de IA
@@ -776,6 +800,7 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
 
     // Aproximación visual si es melee; usa primer objetivo o "solo"
     bool mantenerAdelantePorCadena = DebeMantenerAdelanteParaEncadenarMelee();
+    mantenerFocoCamaraPorCadena = focoCamaraAplicado && mantenerAdelantePorCadena;
     object objetivoVisual = solo ?? (objetivos != null && objetivos.Count > 0 ? objetivos[0] : null);
     bool seAproximo = await IntentarAproximarVisualMeleeAsync(objetivoVisual, mantenerAdelantePorCadena);
     if (seAproximo && PausaPostAproximacionMs > 0)
@@ -817,6 +842,11 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
       if (scEstaUnidad != null)
       {
         scEstaUnidad.SetSuprimirAnimacionIA(false);
+      }
+
+      if (focoCamaraAplicado && !mantenerFocoCamaraPorCadena && BattleManager.Instance != null)
+      {
+        BattleManager.Instance.RestaurarCamaraHabilidad();
       }
 
       visualTcs.TrySetResult(true);

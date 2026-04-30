@@ -23,6 +23,10 @@ public class Unidad : MonoBehaviour
   private const float DistanciaRetiradaPorMoralX = 3f;
   private const float DuracionRetiradaPorMoral = 0.805f;
   private const float VentanaAnticipacionMissSegundos = 0.35f;
+  private const int TipoSalvacionDesconocida = 0;
+  private const int TipoSalvacionFortaleza = 1;
+  private const int TipoSalvacionReflejos = 2;
+  private const int TipoSalvacionMental = 3;
   public const string BuffNombreProvocado = "Provocado";
   private static Unidad redireccionAtaqueAtacante;
   private static Unidad redireccionAtaqueObjetivoOriginal;
@@ -341,6 +345,10 @@ public class Unidad : MonoBehaviour
     if (GetComponent<UnidadCombatFeedbackFx>() == null)
     {
       gameObject.AddComponent<UnidadCombatFeedbackFx>();
+    }
+    if (GetComponent<UnidadLowHealthFx>() == null)
+    {
+      gameObject.AddComponent<UnidadLowHealthFx>();
     }
     InicializarVueloVisual();
 
@@ -1080,6 +1088,7 @@ public void ConfigurarDebuffsImpactoArma(Arma arma)
     debuffsImpactoArma.Add(copia);
   }
 }
+
 
 public float velocidadMovimiento = 2.8f; 
 public bool movimientoEnCurso = false;
@@ -2872,6 +2881,10 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       if (muertePrevenida)
       {
         muereConDanio = false;
+      }
+      if (danioTotal > 0)
+      {
+        BattleManager.Instance?.ReforzarFocoCamaraImpacto(uCausante, this, esCritico, muereConDanio);
       }
       adminTraitVida?.ProcesarTraitDuroDeMatarSiCorresponde(this);
       AplicarEspinasAlAtacanteSiCorresponde(uCausante, tipoDanio, danioTotal);
@@ -4871,7 +4884,8 @@ public async void OnMouseDown()
 
     bool noSeSalva = iResultadoAtaque > iResultadoDefensa;
 
-    string tipoTS = InferirTipoSalvacion(atributoDefiende);
+    int tipoSalvacion = InferirTipoSalvacionIndice(atributoDefiende);
+    string tipoTS = ObtenerNombreTipoSalvacionLog(tipoSalvacion);
     string textoResultado = noSeSalva ? TRADU.i.Traducir("No se salva") : TRADU.i.Traducir("Se salva");
     CombatLogFormatter.CombatOutcome outcome = noSeSalva ? CombatLogFormatter.CombatOutcome.Fallo : CombatLogFormatter.CombatOutcome.Exito;
 
@@ -4886,21 +4900,50 @@ public async void OnMouseDown()
         outcome,
         !porValourGlobal));
 
+    UnidadCombatFeedbackFx feedbackFx = GetComponent<UnidadCombatFeedbackFx>();
     if (!noSeSalva) //NegativoSeSalva
     {
       Color colorResist = (CasillaPosicion != null && CasillaPosicion.lado == 1) ? new Color(0.75f, 0f, 0f) : new Color(0f, 0.75f, 0f);
-      GenerarTextoFlotante(TRADU.i.Traducir("Resiste"), colorResist, FloatingTextContext.Resist);
+      string textoResiste = TRADU.i.Traducir("Resiste") + " " + ObtenerNombreTipoSalvacionTextoFlotante(tipoSalvacion);
+      GenerarTextoFlotante(textoResiste, colorResist, FloatingTextContext.Resist);
+      feedbackFx?.PlaySaveSuccess(tipoSalvacion);
+    }
+    else
+    {
+      feedbackFx?.PlaySaveFailureImpact();
     }
 
     return noSeSalva;
   }
 
-  private string InferirTipoSalvacion(float atributoDefiende)
+  private int InferirTipoSalvacionIndice(float atributoDefiende)
   {
-    if (Mathf.Approximately(atributoDefiende, mod_TSFortaleza)) { return TRADU.i.Traducir("Fortaleza"); }
-    if (Mathf.Approximately(atributoDefiende, mod_TSReflejos)) { return TRADU.i.Traducir("Reflejos"); }
-    if (Mathf.Approximately(atributoDefiende, mod_TSMental)) { return TRADU.i.Traducir("Mental"); }
-    return TRADU.i.Traducir("TS");
+    if (Mathf.Approximately(atributoDefiende, mod_TSFortaleza)) { return TipoSalvacionFortaleza; }
+    if (Mathf.Approximately(atributoDefiende, mod_TSReflejos)) { return TipoSalvacionReflejos; }
+    if (Mathf.Approximately(atributoDefiende, mod_TSMental)) { return TipoSalvacionMental; }
+    return TipoSalvacionDesconocida;
+  }
+
+  private string ObtenerNombreTipoSalvacionLog(int tipoSalvacion)
+  {
+    switch (tipoSalvacion)
+    {
+      case TipoSalvacionFortaleza: return TRADU.i.Traducir("Fortaleza");
+      case TipoSalvacionReflejos: return TRADU.i.Traducir("Reflejos");
+      case TipoSalvacionMental: return TRADU.i.Traducir("Mental");
+      default: return TRADU.i.Traducir("TS");
+    }
+  }
+
+  private string ObtenerNombreTipoSalvacionTextoFlotante(int tipoSalvacion)
+  {
+    switch (tipoSalvacion)
+    {
+      case TipoSalvacionFortaleza: return TRADU.i.Traducir("Fortitud");
+      case TipoSalvacionReflejos: return TRADU.i.Traducir("Reflejos");
+      case TipoSalvacionMental: return TRADU.i.Traducir("Mental");
+      default: return TRADU.i.Traducir("TS");
+    }
   }
 
   
@@ -5423,4 +5466,3 @@ void AcomodarSortingLayer()
        
   }
 }
-

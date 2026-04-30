@@ -670,6 +670,10 @@ public class Casilla : MonoBehaviour
     //---
     // Reduce the scale of the object to 87% of its original size
     GO.transform.localScale = new Vector3(GO.transform.localScale.x * 0.9f, GO.transform.localScale.y * 0.9f, GO.transform.localScale.z * 0.9f);
+    if (BattleManager.Instance != null)
+    {
+      BattleManager.Instance.AplicarTamanioUnidadBatalla(GO.GetComponent<Unidad>());
+    }
     return true;
 
   }
@@ -700,6 +704,10 @@ public class Casilla : MonoBehaviour
     }
     // Reduce the scale of the object to 87% of its original size
     GO.transform.localScale = new Vector3(GO.transform.localScale.x * 0.9f, GO.transform.localScale.y * 0.9f, GO.transform.localScale.z * 0.9f);
+    if (BattleManager.Instance != null)
+    {
+      BattleManager.Instance.AplicarTamanioUnidadBatalla(GO.GetComponent<Unidad>());
+    }
   }
 
   IEnumerator MoverObjetoAnimado(GameObject GO, int lado)
@@ -1944,7 +1952,6 @@ public class Casilla : MonoBehaviour
   }
 
 }
-
 
 
 
