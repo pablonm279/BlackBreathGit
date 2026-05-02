@@ -151,6 +151,67 @@ public class DescargaDesintegradora : Habilidad
       costos,
       "#e67e22");
 
+    int pifiaPorcentaje = 5;
+    int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+    int modificadorAtaqueExtra = ataqueActual + 5;
+    string ataqueTxt = modificadorAtaqueExtra == 0
+      ? string.Empty
+      : modificadorAtaqueExtra > 0 ? $" + {modificadorAtaqueExtra}" : $" - {Mathf.Abs(modificadorAtaqueExtra)}";
+    string colorEncabezado = "#44d3ec";
+    string colorValor = "#ffffff";
+    string colorPoder = "#2aa6c8";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string iconoEnergia = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_acumularenergia\"></voffset></size><space=-0.35em>";
+    string iconoDebuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_debuff\"></voffset></size><space=-0.35em>";
+    string iconoAturdido = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_aturdido\"></voffset></size><space=-0.35em>";
+    string costoSuperior = cooldownMax > 0
+      ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+      : $"{costoAP} {iconoAP}";
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    string subtituloFormato = esIngles
+      ? "High-damage pyramid attack; failed save kills the target."
+      : esPortugues
+        ? "Ataque em piramide de alto dano; falha na resistencia mata o alvo."
+        : "Ataque en piramide de alto daño; fallar la TS mata al objetivo.";
+    string cuerpoFormato = "";
+    if (esIngles)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged attack (5 range)</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>Pyramid area</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Requirement:</b></color> <color={colorValor}>{iconoEnergia} Energy Tier {energiaRequerida}+</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Power ({poderActual})</color>{ataqueTxt} vs Defense. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Power ({poderActual})</color>. Type: Arcane</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Fortitude vs DC {dcDesintegracion}; on failed save: {iconoDebuff} instant kill</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Cast cost:</b></color> <color={colorValor}>{(consumeEnergia ? $"{iconoEnergia} -1 Energy Tier" : "No Energy loss")}, {(aturdeCaster ? $"{iconoAturdido} user Stunned 1 turn" : "no self Stun")}</color>";
+    }
+    else if (esPortugues)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia (5 alcance)</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Area em piramide</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>{iconoEnergia} Nivel de Energia {energiaRequerida}+</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defesa. Falha critica: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Poder ({poderActual})</color>. Tipo: Arcano</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Fortitude vs CD {dcDesintegracion}; se falhar: {iconoDebuff} morte instantanea</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Custo ao usar:</b></color> <color={colorValor}>{(consumeEnergia ? $"{iconoEnergia} -1 Nivel de Energia" : "Sem perda de Energia")}, {(aturdeCaster ? $"{iconoAturdido} usuario Atordoado 1 turno" : "sem auto Atordoar")}</color>";
+    }
+    else
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia (5 alcance)</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Area en piramide</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>{iconoEnergia} Nivel de Energia {energiaRequerida}+</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Poder ({poderActual})</color>. Tipo: Arcano</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Fortaleza vs DC {dcDesintegracion}; si falla: {iconoDebuff} muerte instantanea</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Costo al lanzar:</b></color> <color={colorValor}>{(consumeEnergia ? $"{iconoEnergia} -1 Nivel de Energia" : "Sin perdida de Energia")}, {(aturdeCaster ? $"{iconoAturdido} usuario Aturdido 1 turno" : "sin auto Aturdir")}</color>";
+    }
+
+    txtDescripcion =
+      $"<size=115%><color=#e67e22><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+      $"<color=#8f8f8f><i>{subtituloFormato}</i></color>\n\n" +
+      "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+      cuerpoFormato;
+
     bool mostrarProximoNivel = EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)
     {

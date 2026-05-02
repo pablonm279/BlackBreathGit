@@ -72,6 +72,7 @@ public class Rafaga : Habilidad
     int agilidadActual = statsUI.Agilidad;
     int ataqueActual = statsUI.Ataque;
     int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+    int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
 
     string tituloEs = "Rafaga I";
     string tituloEn = "Barrage I";
@@ -86,77 +87,90 @@ public class Rafaga : Habilidad
     if (NIVEL == 5) { tituloPt = "Rajada IV b"; }
 
     int bonusAtaqueNivel = bonusAtaque;
-    string rangoDanioEs = FormatearRangoDados(1, 10, 1);
+    string rangoDanio = FormatearRangoDados(1, 10, 1);
+    string colorTitulo = "#5dade2";
+    string colorEncabezado = "#44d3ec";
+    string colorAgilidad = "#7fa35a";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
+    string atributo = esIngles
+      ? $"<color={colorAgilidad}>Agility ({agilidadActual})</color>"
+      : esPortugues
+        ? $"<color={colorAgilidad}>Agilidade ({agilidadActual})</color>"
+        : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
+    string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaqueNivel);
 
     string cuerpo = "";
     if (esIngles)
     {
-      cuerpo += $"<b>Type:</b> Ranged ({hAlcance} range)\n";
-      cuerpo += "<b>Target:</b> 1 enemy in wide range (3-width). If it dies, continues on the next enemy in list\n";
-      cuerpo += "<b>Loop:</b> repeats shots until current AP reaches 0 or arrows reach 0\n";
-      cuerpo += $"<b>Roll (per shot):</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color>   + {bonusAtaqueNivel} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Damage (per shot):</b> 1d10 + 1 + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Piercing\n";
-      cuerpo += "<b>Resource:</b> consumes 1 Arrow and 1 AP per shot\n";
-      cuerpo += "<b>Turn flow:</b> using this skill ends your turn";
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Ranged attack ({hAlcance} range, width {hAncho})\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy; continues to the next enemy if target dies\n";
+      cuerpo += $"<color={colorEncabezado}><b>Cost:</b></color> {costoPM} Valour; requires 1 Arrow\n";
+      cuerpo += $"<color={colorEncabezado}><b>Loop:</b></color> repeats while current AP and Arrows are above 0\n";
+      cuerpo += $"<color={colorEncabezado}><b>Per shot:</b></color> consumes 1 AP and 1 Arrow\n";
+      cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> 1d20 + {atributo}{bonusTirada} vs Defense\n";
+      cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Type:</b></color> Piercing\n";
+      cuerpo += $"<color={colorEncabezado}><b>Turn flow:</b></color> ends turn";
     }
     else if (esPortugues)
     {
-      cuerpo += $"<b>Tipo:</b> Distancia ({hAlcance} alcance)\n";
-      cuerpo += "<b>Alvo:</b> 1 inimigo em alcance amplo (largura 3). Se morrer, continua no proximo inimigo da lista\n";
-      cuerpo += "<b>Loop:</b> repete disparos ate que seus AP atuais cheguem a 0 ou acabem as flechas\n";
-      cuerpo += $"<b>Rolagem (por disparo):</b> 1d20 + <color=#ea0606>Agilidade ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaqueNivel} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Dano (por disparo):</b> 1d10 + 1 + <color=#ea0606>Agilidade ({agilidadActual})</color> | <b>Tipo:</b> Perfurante\n";
-      cuerpo += "<b>Recurso:</b> consome 1 Flecha e 1 AP por disparo\n";
-      cuerpo += "<b>Fluxo de turno:</b> usar esta habilidade termina seu turno";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia ({hAlcance} alcance, largura {hAncho})\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo; continua no proximo inimigo se o alvo morrer\n";
+      cuerpo += $"<color={colorEncabezado}><b>Custo:</b></color> {costoPM} Valentia; requer 1 Flecha\n";
+      cuerpo += $"<color={colorEncabezado}><b>Loop:</b></color> repete enquanto AP atuais e Flechas forem maiores que 0\n";
+      cuerpo += $"<color={colorEncabezado}><b>Por disparo:</b></color> consome 1 AP e 1 Flecha\n";
+      cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> 1d20 + {atributo}{bonusTirada} vs Defesa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perfurante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Fluxo de turno:</b></color> termina turno";
     }
     else
     {
-      cuerpo += $"<b>Tipo:</b> Rango ({hAlcance} alcance)\n";
-      cuerpo += "<b>Objetivo:</b> 1 enemigo en rango amplio (ancho 3). Si muere, continua sobre el siguiente enemigo de la lista\n";
-      cuerpo += "<b>Bucle:</b> repite disparos hasta que tus AP actuales lleguen a 0 o te quedes sin flechas\n";
-      cuerpo += $"<b>Tirada (por disparo):</b> 1d20 + <color=#ea0606>Agi ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaqueNivel} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Danio (por disparo):</b> {rangoDanioEs} + <color=#ea0606>Agi ({agilidadActual})</color> | <b>Tipo:</b> Perforante\n";
-      cuerpo += "<b>Recurso:</b> consume 1 Flecha y 1 AP por disparo\n";
-      cuerpo += "<b>Flujo de turno:</b> usar esta habilidad termina tu turno";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia ({hAlcance} alcance, ancho {hAncho})\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo; continua al siguiente enemigo si el objetivo muere\n";
+      cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentia; requiere 1 Flecha\n";
+      cuerpo += $"<color={colorEncabezado}><b>Bucle:</b></color> repite mientras AP actuales y Flechas sean mayores que 0\n";
+      cuerpo += $"<color={colorEncabezado}><b>Por disparo:</b></color> consume 1 AP y 1 Flecha\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Flujo de turno:</b></color> termina turno";
     }
 
-    string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: variable (1 per shot)\n- Valour Cost: {costoPM}"
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    string subtitulo = esIngles
+      ? "Spend current AP and Arrows on repeated shots."
       : esPortugues
-        ? $"- Recarga: {cooldownMax}\n- Custo AP: variavel (1 por disparo)\n- Custo Valentia: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: variable (1 por disparo)\n- Costo Valentía: {costoPM}";
+        ? "Gasta AP atuais e Flechas em disparos repetidos."
+        : "Gasta AP actuales y Flechas en disparos repetidos.";
 
-    txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-      esIngles
-        ? "A sustained arrow sequence that drains your current action economy."
-        : esPortugues
-          ? "Uma sequencia sustentada de flechas que esgota sua economia atual de acoes."
-        : "Una secuencia sostenida de flechas que vacia tu economia de acciones actual.",
-      cuerpo,
-      costos,
-      "#5dade2");
+    txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += cuerpo;
 
     bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (mostrarProximoNivel)
     {
       if (esIngles)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack bonus.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 roll bonus.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 cooldown.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Valour Cost) or Option B (+2 attack bonus).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Valour Cost) or Option B (+2 roll bonus).</color>"; }
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de ataque.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de rolagem.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 recarga.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 custo de Valentia) ou Opcao B (+2 no bonus de ataque).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 custo de Valentia) ou Opcao B (+2 no bonus de rolagem).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bonus de tirada.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valentía) u Opcion B (+2 al bono de ataque).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valentia) u Opcion B (+2 al bonus de tirada).</color>"; }
       }
     }
 
@@ -174,6 +188,12 @@ public class Rafaga : Habilidad
     }
   }
 
+  private string TextoModificadorDescripcion(int valor)
+  {
+    if (valor > 0) { return $" + {valor}"; }
+    if (valor < 0) { return $" - {Mathf.Abs(valor)}"; }
+    return "";
+  }
     Casilla Origen;
     public override void Activar()
     {

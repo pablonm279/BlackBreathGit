@@ -40,23 +40,43 @@ public class REPRESENTACIONPosturaDemandante : Habilidad
         bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
         string nombreTambaleando = TRADU.i != null ? TRADU.i.Traducir("Tambaleando") : "Tambaleando";
+        string colorTitulo = "#5dade2";
+        string colorEncabezado = "#44d3ec";
 
+        string titulo = esIngles ? "Demanding Stance" : esPortugues ? "Postura Demandante" : "Postura Demandante";
+        string subtitulo = esIngles
+            ? "Heavy hits leave the Duelist staggered for a turn."
+            : esPortugues
+                ? "Golpes pesados deixam a Duelista cambaleando por um turno."
+                : "Los golpes fuertes dejan a la Duelista tambaleando por un turno.";
+
+        string cuerpo = "";
         if (esIngles)
         {
-            txtDescripcion = "<color=#5dade2><b>Demanding Stance</b></color>\n\n";
-            txtDescripcion += "<i>(Passive) Once per turn, when the Duelist receives damage above 20% of max HP, gain " + nombreTambaleando + " for 1 turn: -1 max AP, -2 Defense.</i>";
-            return;
+            cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Passive\n";
+            cuerpo += $"<color={colorEncabezado}><b>Uses:</b></color> once per turn\n";
+            cuerpo += $"<color={colorEncabezado}><b>Trigger:</b></color> receives damage above 20% of max HP\n";
+            cuerpo += $"<color={colorEncabezado}><b>Effect:</b></color> gains {nombreTambaleando} for 1 turn (-1 max AP, -2 Defense)";
         }
-
-        if (esPortugues)
+        else if (esPortugues)
         {
-            txtDescripcion = "<color=#5dade2><b>Postura Demandante</b></color>\n\n";
-            txtDescripcion += "<i>(Passiva) Uma vez por turno, ao receber dano acima de 20% da vida maxima, ganha " + nombreTambaleando + " por 1 turno: -1 AP max, -2 Defesa.</i>";
-            return;
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Passiva\n";
+            cuerpo += $"<color={colorEncabezado}><b>Usos:</b></color> uma vez por turno\n";
+            cuerpo += $"<color={colorEncabezado}><b>Gatilho:</b></color> recebe dano acima de 20% da vida maxima\n";
+            cuerpo += $"<color={colorEncabezado}><b>Efeito:</b></color> ganha {nombreTambaleando} por 1 turno (-1 AP max, -2 Defesa)";
+        }
+        else
+        {
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n";
+            cuerpo += $"<color={colorEncabezado}><b>Usos:</b></color> una vez por turno\n";
+            cuerpo += $"<color={colorEncabezado}><b>Disparo:</b></color> recibe danio mayor a 20% de su HP maximo\n";
+            cuerpo += $"<color={colorEncabezado}><b>Efecto:</b></color> gana {nombreTambaleando} por 1 turno (-1 AP max, -2 Defensa)";
         }
 
-        txtDescripcion = "<color=#5dade2><b>Postura Demandante</b></color>\n\n";
-        txtDescripcion += "<i>(Pasivo) Una vez por turno: al recibir dano de mas de 20% de su vida maxima, obtiene " + nombreTambaleando + " por 1 turno: -1 AP maximo, -2 Defensa.</i>";
+        txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size>\n\n";
+        txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+        txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+        txtDescripcion += cuerpo;
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada) { }

@@ -43,6 +43,7 @@ public class REPRESENTACIONDanzaDelEstoque : Habilidad
         int bonusDanio = NIVEL > 2 ? 30 : 25;
         int apAlMatar = NIVEL == 4 ? 4 : 3;
         bool buffCritico = NIVEL == 5;
+        int bonusCritPorcentaje = buffCritico ? 5 : 0;
 
         string sufijoNivel = "I";
         if (NIVEL == 2) { sufijoNivel = "II"; }
@@ -50,76 +51,66 @@ public class REPRESENTACIONDanzaDelEstoque : Habilidad
         else if (NIVEL == 4) { sufijoNivel = "IV a"; }
         else if (NIVEL == 5) { sufijoNivel = "IV b"; }
 
-        string buffLineaEn = $"<b>{nombreBuff} (1 turn, stackable):</b> +1 Attack, +15% Damage";
-        string buffLineaPt = $"<b>{nombreBuff} (1 turno, acumulavel):</b> +1 Ataque, +15% Dano";
-        string buffLineaEs = $"<b>{nombreBuff} (1 turno, acumulable):</b> +1 Ataque, +15% Danio";
-        if (buffCritico)
-        {
-            buffLineaEn += ", +1 Crit Range";
-            buffLineaPt += ", +1 Faixa Critica";
-            buffLineaEs += ", +1 Rango Critico";
-        }
-
+        string colorTitulo = "#5dade2";
+        string colorEncabezado = "#44d3ec";
         string cuerpo = "";
         if (esIngles)
         {
-            cuerpo += "<b>Type:</b> Passive\n";
-            cuerpo += $"<b>Execution:</b> +{bonusDanio}% damage against enemies at {umbralVida}% max HP or less\n";
-            cuerpo += $"<b>On kill:</b> during her own turn, gains +{apAlMatar} AP immediately\n";
-            cuerpo += buffLineaEn + "\n";
+            cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Passive\n";
+            cuerpo += $"<color={colorEncabezado}><b>Execution:</b></color> +{bonusDanio}% damage against enemies at {umbralVida}% max HP or less\n";
+            cuerpo += $"<color={colorEncabezado}><b>On kill:</b></color> during own turn, gains +{apAlMatar} AP immediately\n";
+            cuerpo += $"<color={colorEncabezado}><b>{nombreBuff}:</b></color> 1 turn, stackable, +1, +15% Damage";
+            if (bonusCritPorcentaje > 0) { cuerpo += $", +{bonusCritPorcentaje}% Crit"; }
         }
         else if (esPortugues)
         {
-            cuerpo += "<b>Tipo:</b> Passiva\n";
-            cuerpo += $"<b>Execucao:</b> +{bonusDanio}% de dano contra inimigos com {umbralVida}% da vida maxima ou menos\n";
-            cuerpo += $"<b>Ao matar:</b> no proprio turno, ganha +{apAlMatar} AP imediatamente\n";
-            cuerpo += buffLineaPt + "\n";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Passiva\n";
+            cuerpo += $"<color={colorEncabezado}><b>Execucao:</b></color> +{bonusDanio}% de dano contra inimigos com {umbralVida}% da vida maxima ou menos\n";
+            cuerpo += $"<color={colorEncabezado}><b>Ao matar:</b></color> no proprio turno, ganha +{apAlMatar} AP imediatamente\n";
+            cuerpo += $"<color={colorEncabezado}><b>{nombreBuff}:</b></color> 1 turno, acumulavel, +1, +15% Dano";
+            if (bonusCritPorcentaje > 0) { cuerpo += $", +{bonusCritPorcentaje}% Critico"; }
         }
         else
         {
-            cuerpo += "<b>Tipo:</b> Pasiva\n";
-            cuerpo += $"<b>Ejecucion:</b> +{bonusDanio}% de danio contra enemigos con {umbralVida}% de hp maximo o menos\n";
-            cuerpo += $"<b>Al matar:</b> en su propio turno, gana +{apAlMatar} AP inmediatamente\n";
-            cuerpo += buffLineaEs + "\n";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n";
+            cuerpo += $"<color={colorEncabezado}><b>Ejecucion:</b></color> +{bonusDanio}% de danio contra enemigos con {umbralVida}% de HP maximo o menos\n";
+            cuerpo += $"<color={colorEncabezado}><b>Al matar:</b></color> en su propio turno, gana +{apAlMatar} AP inmediatamente\n";
+            cuerpo += $"<color={colorEncabezado}><b>{nombreBuff}:</b></color> 1 turno, acumulable, +1, +15% Danio";
+            if (bonusCritPorcentaje > 0) { cuerpo += $", +{bonusCritPorcentaje}% Critico"; }
         }
 
-        txtDescripcion = ConstruirDescripcionEstandar(
-            esIngles ? "Sword Dance " + sufijoNivel : esPortugues ? "Danca do Estoque " + sufijoNivel : "Danza del Estoque " + sufijoNivel,
-            esIngles
-                ? "The Duelist accelerates her finishers and keeps chaining attacks after each clean kill."
-                : esPortugues
-                    ? "A Duelista acelera suas execucoes e encadeia ataques depois de cada baixa limpa."
-                    : "La Duelista acelera sus ejecuciones y encadena ataques despues de cada baja limpia.",
-            cuerpo,
-            "",
-            "#5dade2");
+        string titulo = esIngles ? "Sword Dance " + sufijoNivel : esPortugues ? "Danca do Estoque " + sufijoNivel : "Danza del Estoque " + sufijoNivel;
+        string subtitulo = esIngles
+            ? "Finish low-health enemies and chain AP on kills."
+            : esPortugues
+                ? "Finaliza inimigos feridos e encadeia AP ao matar."
+                : "Remata enemigos heridos y encadena AP al matar.";
 
-        bool mostrarProximoNivel = CampaignManager.Instance != null
-            && CampaignManager.Instance.scMenuPersonajes != null
-            && CampaignManager.Instance.scMenuPersonajes.pSel != null
-            && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
-        if (!mostrarProximoNivel)
-        {
-            return;
-        }
+        txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size>\n\n";
+        txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+        txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+        txtDescripcion += cuerpo;
+
+        bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+        if (!mostrarProximoNivel) { return; }
 
         if (esIngles)
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% max HP threshold.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% damage against targets in threshold.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 AP on kill) or Option B (+1 Crit Range to Dancing).</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 AP on kill) or Option B (+5% Crit to Dancing).</color>"; }
         }
         else if (esPortugues)
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% de limiar de vida maxima.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% de dano contra alvos no limiar.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 AP ao matar) ou Opcao B (+1 faixa critica em Dancando).</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 AP ao matar) ou Opcao B (+5% Critico em Dancando).</color>"; }
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% al umbral de hp maximo enemigo.</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% al umbral de HP maximo enemigo.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% danio contra unidades en el umbral.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 AP al matar) u Opcion B (+1 rango critico a Danzando).</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 AP al matar) u Opcion B (+5% Critico a Danzando).</color>"; }
         }
     }
 

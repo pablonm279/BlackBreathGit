@@ -1,231 +1,118 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class REPRESENTACIONMasacre : Habilidad
 {
-   
-
-    
     public override void  Awake()
     {
       imHab = Resources.Load<Sprite>("imHab/Acechador_Masacre");
       ActualizarDescripcion();
       IDenClase = 10;
-      
     }
-
 
   public override void ActualizarDescripcion()
   {
+    string colorAgilidad = "#7fa35a";
+    int apGanado = NIVEL == 5 ? 3 : 2;
+    int danio = NIVEL > 2 ? 15 : 10;
+    int dcBase = NIVEL > 1 ? 6 : 5;
+    int apMaxAterrorizado = NIVEL == 4 ? -2 : -1;
+    string sufijo = SufijoNivel();
+    string titulo = $"Masacre {sufijo}";
+    string bajada = "Al matar, gana AP y daño; los enemigos cercanos pueden quedar aterrorizados.";
+    string tipo = "Pasiva";
+    string disparador = "Al matar a un enemigo";
+    string tirada = $"TS Mental vs DC {dcBase} + <color={colorAgilidad}>Agilidad</color>";
+    string efectoPropio = $"+{apGanado} AP, +{danio}% daño este turno";
+    string efectoEnemigo = $"Aterrorizado: -2 Ataque, {apMaxAterrorizado} AP Max, -2 TS Mental";
+    string proximo = ProximoNivel();
 
-    if (NIVEL < 2)
+    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
     {
-      txtDescripcion = "<color=#5dade2><b>Masacre I</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +2 AP y +10% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 5+Agi o ser Aterrorizados.</i>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 DC</color>\n\n";
-          }
-        }
-      }
-
+      titulo = $"Massacre {sufijo}";
+      bajada = "On kill, gains AP and damage; nearby enemies may become terrified.";
+      tipo = "Passive";
+      disparador = "When killing an enemy";
+      tirada = $"Mental Save vs DC {dcBase} + <color={colorAgilidad}>Agility</color>";
+      efectoPropio = $"+{apGanado} AP, +{danio}% damage this turn";
+      efectoEnemigo = $"Terrified: -2 Attack, {apMaxAterrorizado} Max AP, -2 Mental Save";
+      proximo = ProximoNivelIngles();
     }
-    if (NIVEL == 2)
+    if (TRADU.i.nIdioma == 3)
     {
-      txtDescripcion = "<color=#5dade2><b>Masacre II</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +2 AP y +10% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 6+Agi o ser Aterrorizados.</i>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +5% Daño por el Turno</color>\n\n";
-          }
-        }
-      }
+      titulo = $"Massacre {sufijo}";
+      bajada = "Ao matar, ganha AP e dano; inimigos proximos podem ficar aterrorizados.";
+      tipo = "Passiva";
+      disparador = "Ao matar um inimigo";
+      tirada = $"Teste Mental vs CD {dcBase} + <color={colorAgilidad}>Agilidade</color>";
+      efectoPropio = $"+{apGanado} AP, +{danio}% de dano neste turno";
+      efectoEnemigo = $"Aterrorizado: -2 Ataque, {apMaxAterrorizado} AP Max, -2 Teste Mental";
+      proximo = ProximoNivelPortugues();
     }
-    if (NIVEL == 3)
+
+    txtDescripcion = $"<size=115%><color=#5dade2><b>{titulo}</b></color></size>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{bajada}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += $"<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>{tipo}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>Disparador:</b></color> <color=#ffffff>{disparador}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>{efectoPropio}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>Tirada enemiga:</b></color> <color=#ffffff>{tirada}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>Fallo:</b></color> <color=#ffffff>{efectoEnemigo}</color>";
+
+    if (!string.IsNullOrEmpty(proximo))
     {
-      txtDescripcion = "<color=#5dade2><b>Masacre III</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +2 AP y +15% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 6+Agi o ser Aterrorizados.</i>\n\n";
-
-
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: -2 AP a Enemigos por Aterrorizado.</color>\n\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: Gana +1 AP al matar a un enemigo.</color>\n";
-          }
-        }
-      }
+      txtDescripcion += $"\n\n<color=#dfea02>{proximo}</color>";
     }
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Masacre IVa</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +2 AP y +15% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 6+Agi o ser Aterrorizados II.</i>\n\n";
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Masacre IVb</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Al matar a un enemigo el personaje obtiene +3 AP y +15% daño por el turno. Además los enemigos deben superar una TS Mental vs DC 6+Agi o ser Aterrorizados.</i>\n\n";
-    }
-       
+  }
 
-      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-      {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Massacre I</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) When killing an enemy, the character gains +2 AP and +10% damage for the turn. Additionally, enemies must pass a Mental Saving Throw vs DC 5+Agility or be Terrified.</i>\n\n";
+  string SufijoNivel()
+  {
+    if (NIVEL < 2) return "I";
+    if (NIVEL == 2) return "II";
+    if (NIVEL == 3) return "III";
+    if (NIVEL == 4) return "IVa";
+    return "IVb";
+  }
 
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 DC</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Massacre II</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) When killing an enemy, the character gains +2 AP and +10% damage for the turn. Additionally, enemies must pass a Mental Saving Throw vs DC 6+Agility or be Terrified.</i>\n\n";
+  bool PuedeMostrarProximoNivel()
+  {
+    return EsEscenaCampaña()
+      && CampaignManager.Instance != null
+      && CampaignManager.Instance.scMenuPersonajes != null
+      && CampaignManager.Instance.scMenuPersonajes.pSel != null
+      && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+  }
 
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +5% Damage for the Turn</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Massacre III</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) When killing an enemy, the character gains +2 AP and +15% damage for the turn. Additionally, enemies must pass a Mental Saving Throw vs DC 6+Agility or be Terrified.</i>\n\n";
+  string ProximoNivel()
+  {
+    if (!PuedeMostrarProximoNivel()) return "";
+    if (NIVEL < 2) return "- Próximo Nivel: +1 DC";
+    if (NIVEL == 2) return "- Próximo Nivel: +5% daño este turno";
+    if (NIVEL == 3) return "- Opción A: Aterrorizado aplica -2 AP Max\n- Opción B: +1 AP al matar";
+    return "";
+  }
 
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: -2 AP to Enemies when Terrified.</color>\n\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: Gain +1 AP when killing an enemy.</color>\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Massacre IVa</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) When killing an enemy, the character gains +2 AP and +15% damage for the turn. Additionally, enemies must pass a Mental Saving Throw vs DC 6+Agility or be Terrified II.</i>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Massacre IVb</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) When killing an enemy, the character gains +3 AP and +15% damage for the turn. Additionally, enemies must pass a Mental Saving Throw vs DC 6+Agility or be Terrified.</i>\n\n";
-        }
-      }
-      if (TRADU.i.nIdioma == 3)
-      {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Massacre I</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Ao matar um inimigo, o personagem ganha +2 AP e +10% de dano no turno. Alem disso, os inimigos devem passar em um teste Mental vs CD 5+Agilidade ou ficarem Aterrorizados.</i>\n\n";
+  string ProximoNivelIngles()
+  {
+    if (!PuedeMostrarProximoNivel()) return "";
+    if (NIVEL < 2) return "- Next Level: +1 DC";
+    if (NIVEL == 2) return "- Next Level: +5% damage this turn";
+    if (NIVEL == 3) return "- Option A: Terrified applies -2 Max AP\n- Option B: +1 AP on kill";
+    return "";
+  }
 
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 CD</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Massacre II</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Ao matar um inimigo, o personagem ganha +2 AP e +10% de dano no turno. Alem disso, os inimigos devem passar em um teste Mental vs CD 6+Agilidade ou ficarem Aterrorizados.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +5% de Dano no Turno</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Massacre III</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Ao matar um inimigo, o personagem ganha +2 AP e +15% de dano no turno. Alem disso, os inimigos devem passar em um teste Mental vs CD 6+Agilidade ou ficarem Aterrorizados.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Opcao A: -2 AP aos inimigos quando Aterrorizados.</color>\n\n";
-                txtDescripcion += $"<color=#dfea02>-Opcao B: Ganha +1 AP ao matar um inimigo.</color>\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Massacre IVa</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Ao matar um inimigo, o personagem ganha +2 AP e +15% de dano no turno. Alem disso, os inimigos devem passar em um teste Mental vs CD 6+Agilidade ou ficarem Aterrorizados II.</i>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Massacre IVb</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Ao matar um inimigo, o personagem ganha +3 AP e +15% de dano no turno. Alem disso, os inimigos devem passar em um teste Mental vs CD 6+Agilidade ou ficarem Aterrorizados.</i>\n\n";
-        }
-      }
-
-    }
-
+  string ProximoNivelPortugues()
+  {
+    if (!PuedeMostrarProximoNivel()) return "";
+    if (NIVEL < 2) return "- Proximo Nivel: +1 CD";
+    if (NIVEL == 2) return "- Proximo Nivel: +5% de dano neste turno";
+    if (NIVEL == 3) return "- Opcao A: Aterrorizado aplica -2 AP Max\n- Opcao B: +1 AP ao matar";
+    return "";
+  }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}
     public override void Activar()
     {
-       
-
-      
-       
-        
     }
-    
-
-
-
-
 }
-
-
-

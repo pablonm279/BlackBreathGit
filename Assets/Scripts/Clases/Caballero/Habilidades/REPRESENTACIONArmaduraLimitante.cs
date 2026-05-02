@@ -10,21 +10,7 @@ public class REPRESENTACIONArmaduraLimitante : Habilidad
    public override void  Awake()
     {
       imHab = Resources.Load<Sprite>("imHab/Caballero_ArmaduraLimitante");
-      if (TRADU.i.nIdioma == 1)
-      {
-          txtDescripcion = "<color=#cb5000><b>Armadura Limitante</b></color>\n\n";
-          txtDescripcion += "<i>(Debilidad) El caballero carga con una armadura extremadamente pesada en todo el cuerpo, por lo tanto es más propenso a perder el balance al actuar. +1 Rango pifias.</i>\n\n";
-      }
-      if (TRADU.i.nIdioma == 2)
-      {
-          txtDescripcion = "<color=#cb5000><b>Limiting Armor</b></color>\n\n";
-          txtDescripcion += "<i>(Weakness) The knight wears extremely heavy armor all over the body, so is more likely to lose balance when acting. +1 Fumble range.</i>\n\n";
-      }
-      if (TRADU.i.nIdioma == 3)
-      {
-          txtDescripcion = "<color=#cb5000><b>Armadura Limitante</b></color>\n\n";
-          txtDescripcion += "<i>(Fraqueza) O cavaleiro usa uma armadura extremamente pesada em todo o corpo, ficando mais propenso a perder o equilibrio ao agir. +1 faixa de falha critica.</i>\n\n";
-      }
+      ActualizarDescripcion();
 
 
     }
@@ -40,7 +26,31 @@ public class REPRESENTACIONArmaduraLimitante : Habilidad
        
         
     }
-    public override void ActualizarDescripcion(){}
+    public override void ActualizarDescripcion()
+    {
+      string iconoDebuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_debuff\"></voffset></size><space=-0.35em>";
+      string titulo = "Armadura Limitante";
+      string subtitulo = "<color=#4f5552>Debilidad: +5% Pifia.</color>";
+      string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Debilidad " + iconoDebuff + "</color>\n" +
+                      "<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>+5% Pifia.</color>";
+
+      if (TRADU.i.nIdioma == 2)
+      {
+        titulo = "Limiting Armor";
+        subtitulo = "<color=#4f5552>Weakness: +5% Fumble.</color>";
+        cuerpo = "<color=#44d3ec><b>Type:</b></color> <color=#ffffff>Weakness " + iconoDebuff + "</color>\n" +
+                 "<color=#44d3ec><b>Effect:</b></color> <color=#ffffff>+5% Fumble.</color>";
+      }
+      else if (TRADU.i.nIdioma == 3)
+      {
+        titulo = "Armadura Limitante";
+        subtitulo = "<color=#4f5552>Fraqueza: +5% Falha critica.</color>";
+        cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Fraqueza " + iconoDebuff + "</color>\n" +
+                 "<color=#44d3ec><b>Efeito:</b></color> <color=#ffffff>+5% Falha critica.</color>";
+      }
+
+      txtDescripcion = ConstruirDescripcionEstandar($"<size=115%>{titulo}</size>", subtitulo, cuerpo, "", "#cb5000");
+    }
 
 
 

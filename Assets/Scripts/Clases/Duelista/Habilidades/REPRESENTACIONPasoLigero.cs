@@ -39,23 +39,40 @@ public class REPRESENTACIONPasoLigero : Habilidad
     {
         bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+        string colorTitulo = "#5dade2";
+        string colorEncabezado = "#44d3ec";
 
+        string titulo = esIngles ? "Light Step" : esPortugues ? "Passo Leve" : "Paso Ligero";
+        string subtitulo = esIngles
+            ? "Discount one diagonal move or ally swap each turn."
+            : esPortugues
+                ? "Reduz o custo de um movimento diagonal ou troca por turno."
+                : "Reduce el costo de un movimiento diagonal o intercambio por turno.";
+
+        string cuerpo = "";
         if (esIngles)
         {
-            txtDescripcion = "<color=#5dade2><b>Light Step</b></color>\n\n";
-            txtDescripcion += "<i>(Passive) Once per turn, moving diagonally or swapping position with an ally costs -1 AP.</i>";
-            return;
+            cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Passive\n";
+            cuerpo += $"<color={colorEncabezado}><b>Uses:</b></color> once per turn\n";
+            cuerpo += $"<color={colorEncabezado}><b>Effect:</b></color> diagonal movement or swapping position with an ally costs -1 AP";
         }
-
-        if (esPortugues)
+        else if (esPortugues)
         {
-            txtDescripcion = "<color=#5dade2><b>Passo Leve</b></color>\n\n";
-            txtDescripcion += "<i>(Passiva) Uma vez por turno, mover-se na diagonal ou trocar de posicao com aliados custa -1 AP.</i>";
-            return;
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Passiva\n";
+            cuerpo += $"<color={colorEncabezado}><b>Usos:</b></color> uma vez por turno\n";
+            cuerpo += $"<color={colorEncabezado}><b>Efeito:</b></color> mover-se na diagonal ou trocar posicao com um aliado custa -1 AP";
+        }
+        else
+        {
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n";
+            cuerpo += $"<color={colorEncabezado}><b>Usos:</b></color> una vez por turno\n";
+            cuerpo += $"<color={colorEncabezado}><b>Efecto:</b></color> moverse en diagonal o intercambiar posicion con un aliado cuesta -1 AP";
         }
 
-        txtDescripcion = "<color=#5dade2><b>Paso Ligero</b></color>\n\n";
-        txtDescripcion += "<i>(Pasivo) Una vez por turno: moverse diagonalmente o intercambiar posicion con aliados consume -1 AP.</i>";
+        txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size>\n\n";
+        txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+        txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+        txtDescripcion += cuerpo;
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada) { }

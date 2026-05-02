@@ -56,50 +56,60 @@ public class TiroconArco : Habilidad
     int agilidadActual = statsUI.Agilidad;
     int ataqueActual = statsUI.Ataque;
     int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
-    string rangoDanioEs = FormatearRangoDados(1, 10, 1);
+    string rangoDanio = FormatearRangoDados(1, 10, 1);
+    int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
+    string colorTitulo = "#5dade2";
+    string colorEncabezado = "#44d3ec";
+    string colorAgilidad = "#7fa35a";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string costoSuperior = $"{costoAP} {iconoAP}";
+    string atributo = esIngles
+      ? $"<color={colorAgilidad}>Agility ({agilidadActual})</color>"
+      : esPortugues
+        ? $"<color={colorAgilidad}>Agilidade ({agilidadActual})</color>"
+        : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
+    string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
     string cuerpo = "";
     if (esIngles)
     {
-      cuerpo += $"<b>Type:</b> Ranged ({hAlcance} range)\n";
-      cuerpo += "<b>Target:</b> 1 enemy in range\n";
-      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color>   + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Damage:</b> 1d10 + 1 + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Slashing\n";
-      cuerpo += "<b>Resource:</b> consumes 1 Arrow on shot\n";
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Ranged attack ({hAlcance} range)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy or obstacle in range\n";
+      cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> 1d20 + {atributo}{bonusTirada} vs Defense\n";
+      cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Type:</b></color> Slashing\n";
+      cuerpo += $"<color={colorEncabezado}><b>Resource:</b></color> consumes 1 Arrow on shot\n";
     }
     else if (esPortugues)
     {
-      cuerpo += $"<b>Tipo:</b> Distancia ({hAlcance} alcance)\n";
-      cuerpo += "<b>Alvo:</b> 1 inimigo em alcance\n";
-      cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Agilidade ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Dano:</b> 1d10 + 1 + <color=#ea0606>Agilidade ({agilidadActual})</color> | <b>Tipo:</b> Cortante\n";
-      cuerpo += "<b>Recurso:</b> consome 1 Flecha por disparo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia ({hAlcance} alcance)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo ou obstaculo em alcance\n";
+      cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> 1d20 + {atributo}{bonusTirada} vs Defesa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Recurso:</b></color> consome 1 Flecha por disparo\n";
     }
     else
     {
-      cuerpo += $"<b>Tipo:</b> Rango ({hAlcance} alcance)\n";
-      cuerpo += "<b>Objetivo:</b> 1 enemigo en rango\n";
-      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agi ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Agi ({agilidadActual})</color> | <b>Tipo:</b> Cortante\n";
-      cuerpo += "<b>Recurso:</b> consume 1 Flecha por disparo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia ({hAlcance} alcance)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstaculo en rango\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Recurso:</b></color> consume 1 Flecha por disparo\n";
     }
 
-    string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+    string titulo = esIngles ? "Bow Shot" : esPortugues ? "Tiro com Arco" : "Tiro con Arco";
+    string subtitulo = esIngles
+      ? "Single-target bow attack; spends 1 Arrow."
       : esPortugues
-        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-      : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentia: {costoPM}\n- Esforzable: Si ({esforzable})";
+        ? "Ataque de arco contra um alvo; gasta 1 Flecha."
+        : "Ataque con arco a un objetivo; gasta 1 Flecha.";
 
-    txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? "Bow Shot" : esPortugues ? "Tiro com Arco" : "Tiro con Arco",
-      esIngles
-        ? "A reliable single-target shot that spends one arrow."
-        : esPortugues
-          ? "Um disparo confiavel de alvo unico que gasta uma flecha."
-          : "Un disparo de objetivo unico confiable que gasta una flecha.",
-      cuerpo,
-      costos,
-      "#5dade2");
+    txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += cuerpo;
 
     if (CampaignManager.Instance != null && CampaignManager.Instance.gameObject != null)
     {
@@ -116,6 +126,12 @@ public class TiroconArco : Habilidad
         }
       }
     }
+  }
+  private string TextoModificadorDescripcion(int valor)
+  {
+    if (valor > 0) { return $" + {valor}"; }
+    if (valor < 0) { return $" - {Mathf.Abs(valor)}"; }
+    return "";
   }
     Casilla Origen;
     public override void Activar()

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -44,10 +44,9 @@ public class Fogata : Habilidad
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
     int trampaUsos = NIVEL > 1 ? 4 : 3;
-    string danoTrampaEs = FormatearRangoDados(1, 3);
+    string danoTrampa = FormatearRangoDados(1, 3);
     int duracionTrampaTurnos = NIVEL > 1 ? 5 : 4;
-    string dadoFuego = NIVEL == 4 ? "1d9" : "1d6";
-    string dadoFuegoEs = NIVEL == 4 ? FormatearRangoDados(1, 9) : FormatearRangoDados(1, 6);
+    string danoFuego = NIVEL == 4 ? FormatearRangoDados(1, 9) : FormatearRangoDados(1, 6);
 
     string tituloEs = "Fogata I";
     string tituloEn = "Campfire I";
@@ -61,72 +60,73 @@ public class Fogata : Habilidad
     if (NIVEL == 4) { tituloPt = "Fogueira IV a"; }
     if (NIVEL == 5) { tituloPt = "Fogueira IV b"; }
 
+    string colorTitulo = "#5dade2";
+    string colorEncabezado = "#44d3ec";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
+
     string cuerpo = "";
     if (esIngles)
     {
-      cuerpo += "<b>Type:</b> Utility Trap\n";
-      cuerpo += "<b>Target:</b> Adjacent tile (including own tile)\n";
-      cuerpo += $"<b>Campfire trap:</b> {duracionTrampaTurnos} turns, {trampaUsos} uses\n";
-      cuerpo += "<b>Trap trigger:</b> 1d3 fire damage (persistent)\n";
-      cuerpo += $"<b>Adjacency buff:</b> while adjacent to a campfire, gains fire arrows (+{dadoFuego} fire damage on attacks)";
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Utility trap\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Adjacent tile, including own tile\n";
+      cuerpo += $"<color={colorEncabezado}><b>Campfire profile:</b></color> {trampaUsos} uses, {duracionTrampaTurnos} turns duration, persistent\n";
+      cuerpo += $"<color={colorEncabezado}><b>On trap trigger:</b></color> {danoTrampa} fire damage\n";
+      cuerpo += $"<color={colorEncabezado}><b>Adjacent allies:</b></color> attacks gain +{danoFuego} fire damage\n";
+      cuerpo += $"<color={colorEncabezado}><b>Effortable:</b></color> yes ({esforzable})";
     }
     else if (esPortugues)
     {
-      cuerpo += "<b>Tipo:</b> Armadilha de Utilidade\n";
-      cuerpo += "<b>Alvo:</b> Casa adjacente (inclui a propria casa)\n";
-      cuerpo += $"<b>Armadilha fogueira:</b> {duracionTrampaTurnos} turnos, {trampaUsos} usos\n";
-      cuerpo += "<b>Ativacao da armadilha:</b> 1d3 dano de fogo (persistente)\n";
-      cuerpo += $"<b>Buff por adjacencia:</b> enquanto estiver adjacente a uma fogueira, ganha flechas de fogo (+{dadoFuego} dano de fogo em ataques)";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Armadilha de utilidade\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Casa adjacente, incluindo a propria casa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Perfil da fogueira:</b></color> {trampaUsos} usos, {duracionTrampaTurnos} turnos de duracao, persistente\n";
+      cuerpo += $"<color={colorEncabezado}><b>Ao ativar:</b></color> {danoTrampa} dano de fogo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Aliados adjacentes:</b></color> ataques ganham +{danoFuego} dano de fogo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Esforcavel:</b></color> sim ({esforzable})";
     }
     else
     {
-      cuerpo += "<b>Tipo:</b> Trampa de Utilidad\n";
-      cuerpo += "<b>Objetivo:</b> Casilla adyacente (incluye tu propia casilla)\n";
-      cuerpo += $"<b>Trampa fogata:</b> {duracionTrampaTurnos} turnos, {trampaUsos} usos\n";
-      cuerpo += $"<b>Activacion de trampa:</b> {danoTrampaEs} danio de fuego (persistente)\n";
-      cuerpo += $"<b>Buff por adyacencia:</b> mientras estas adyacente a una fogata, ganas flechas de fuego (+{dadoFuegoEs} danio de fuego en ataques)";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Trampa de utilidad\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Casilla adyacente, incluida tu propia casilla\n";
+      cuerpo += $"<color={colorEncabezado}><b>Perfil de fogata:</b></color> {trampaUsos} usos, {duracionTrampaTurnos} turnos de duracion, persistente\n";
+      cuerpo += $"<color={colorEncabezado}><b>Al activarse:</b></color> {danoTrampa} danio de fuego\n";
+      cuerpo += $"<color={colorEncabezado}><b>Aliados adyacentes:</b></color> ataques ganan +{danoFuego} danio de fuego\n";
+      cuerpo += $"<color={colorEncabezado}><b>Esforzable:</b></color> si ({esforzable})";
     }
 
-    string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    string subtitulo = esIngles
+      ? "Places a campfire trap and empowers nearby attacks."
       : esPortugues
-        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
+        ? "Coloca uma fogueira e fortalece ataques proximos."
+        : "Coloca una fogata y potencia ataques cercanos.";
 
-    txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-      esIngles
-        ? "Sets battlefield control and empowers shots near the fire."
-        : esPortugues
-          ? "Planta controle no terreno e fortalece disparos perto do fogo."
-        : "Planta control en el terreno y potencia disparos cerca del fuego.",
-      cuerpo,
-      costos,
-      "#5dade2");
+    txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += cuerpo;
 
     bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
-    if (!mostrarProximoNivel)
-    {
-      return;
-    }
+    if (!mostrarProximoNivel) { return; }
 
     if (esIngles)
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 trap use and +1 trap duration turn.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 AP cost.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1d3 fire-arrow bonus) or Option B (-1 AP cost).</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1-3 fire damage bonus) or Option B (-1 AP cost).</color>"; }
     }
     else if (esPortugues)
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 uso de armadilha e +1 turno de duracao da armadilha.</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 uso de armadilha e +1 turno de duracao.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 custo AP.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1d3 no bonus de flechas de fogo) ou Opcao B (-1 custo AP).</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1-3 dano de fogo bonus) ou Opcao B (-1 custo AP).</color>"; }
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 uso de trampa y +1 turno de duracion de trampa.</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 uso de trampa y +1 turno de duracion.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 costo AP.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1-3 al bono de flechas de fuego) u Opcion B (-1 costo AP).</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1-3 danio de fuego bonus) u Opcion B (-1 costo AP).</color>"; }
     }
   }
     void Start()

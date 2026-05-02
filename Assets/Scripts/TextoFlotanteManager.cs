@@ -52,7 +52,25 @@ public class TextoFlotanteManager : MonoBehaviour
          if(texto == "-0") { texto = ""; }
         texto = FloatingTextAnimator.NormalizarTextoRichText(texto);
 
-        colaTextos.Enqueue(new FloatingTextRequest(texto, color, contexto));
+        colaTextos.Enqueue(new FloatingTextRequest(texto, color, contexto, false));
+
+        if (!procesandoCola)
+        {
+            StartCoroutine(ProcesarCola());
+        }
+    }
+
+    public void GenerarTextoFlotanteConFondo(string texto, Color color)
+    {
+        GenerarTextoFlotanteConFondo(texto, color, FloatingTextContext.Generic);
+    }
+
+    public void GenerarTextoFlotanteConFondo(string texto, Color color, FloatingTextContext contexto)
+    {
+        if (texto == "-0") { texto = ""; }
+        texto = FloatingTextAnimator.NormalizarTextoRichText(texto);
+
+        colaTextos.Enqueue(new FloatingTextRequest(texto, color, contexto, true));
 
         if (!procesandoCola)
         {
@@ -108,6 +126,12 @@ public class TextoFlotanteManager : MonoBehaviour
         GameObject goTexto = Instantiate(prefabTexto, contenedor, false);
         try
         {
+            TextMeshProUGUI tmpFondo = request.UsarFondo ? goTexto.GetComponentInChildren<TextMeshProUGUI>() : null;
+            if (tmpFondo != null)
+            {
+                FloatingTextBackground.Attach(tmpFondo);
+            }
+
             FloatingTextAnimator animator = goTexto.GetComponent<FloatingTextAnimator>();
             RectTransform rect = goTexto.GetComponent<RectTransform>();
             if (rect != null)
@@ -173,12 +197,14 @@ public class TextoFlotanteManager : MonoBehaviour
         public string Texto { get; }
         public Color Color { get; }
         public FloatingTextContext Contexto { get; }
+        public bool UsarFondo { get; }
 
-        public FloatingTextRequest(string texto, Color color, FloatingTextContext contexto)
+        public FloatingTextRequest(string texto, Color color, FloatingTextContext contexto, bool usarFondo)
         {
             Texto = texto;
             Color = color;
             Contexto = contexto;
+            UsarFondo = usarFondo;
         }
     }
 }

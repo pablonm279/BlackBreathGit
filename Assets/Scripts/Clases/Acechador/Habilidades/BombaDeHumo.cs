@@ -46,6 +46,11 @@ public class BombaDeHumo : Habilidad
 
       int radioZona = NIVEL == 5 ? 2 : 1;
       int duracionHumo = NIVEL == 4 ? 3 : 2;
+      string colorTitulo = "#5dade2";
+      string colorEncabezado = "#44d3ec";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
 
       string tituloEs = "Bomba de Humo I";
       string tituloEn = "Smoke Bomb I";
@@ -62,51 +67,48 @@ public class BombaDeHumo : Habilidad
       string cuerpo = "";
       if (esIngles)
       {
-        cuerpo += "<b>Type:</b> Utility Trap (4 range)\n";
-        cuerpo += "<b>Target:</b> 1 tile in range\n";
-        cuerpo += "<b>Roll/Save:</b> none\n";
-        cuerpo += $"<b>On cast:</b> creates smoke traps in area radius {radioZona} around target\n";
-        cuerpo += $"<b>Smoke trap profile:</b> 30 uses, {duracionHumo} turns duration, persistent\n";
-        cuerpo += "<b>On trap trigger (any unit):</b> grants Hidden (1) if not hidden\n";
-        cuerpo += "<b>Extra buff for non-Stalker units:</b> 2 turns, +2 Attack, +1 crit range";
+        cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Utility trap (4 range)\n";
+        cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 tile in range\n";
+        cuerpo += $"<color={colorEncabezado}><b>Roll/Save:</b></color> none\n";
+        cuerpo += $"<color={colorEncabezado}><b>Valour cost:</b></color> {costoPM}\n";
+        cuerpo += $"<color={colorEncabezado}><b>On cast:</b></color> creates smoke traps in area radius {radioZona} around target\n";
+        cuerpo += $"<color={colorEncabezado}><b>Smoke trap:</b></color> 30 uses, {duracionHumo} turns duration, persistent\n";
+        cuerpo += $"<color={colorEncabezado}><b>On trigger (any unit):</b></color> grants Hidden (1) if not hidden\n";
+        cuerpo += $"<color={colorEncabezado}><b>Non-Stalker units:</b></color> 2 turns, +2 Attack, +5% Crit";
       }
       else if (esPortugues)
       {
-        cuerpo += "<b>Tipo:</b> Armadilha de Utilidade (4 de alcance)\n";
-        cuerpo += "<b>Alvo:</b> 1 celula no alcance\n";
-        cuerpo += "<b>Rolagem/Resistencia:</b> nao tem\n";
-        cuerpo += $"<b>Ao usar:</b> cria armadilhas de fumaca em area de raio {radioZona} ao redor da celula alvo\n";
-        cuerpo += $"<b>Perfil da armadilha de fumaca:</b> 30 usos, {duracionHumo} turnos de duracao, persistente\n";
-        cuerpo += "<b>Ao ativar armadilha (qualquer unidade):</b> concede Escondido (1) se nao estava escondido\n";
-        cuerpo += "<b>Buff extra para unidades que nao sao Acechador:</b> 2 turnos, +2 Ataque, +1 faixa de critico";
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Armadilha de utilidade (4 de alcance)\n";
+        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 celula no alcance\n";
+        cuerpo += $"<color={colorEncabezado}><b>Rolagem/Resistencia:</b></color> nao tem\n";
+        cuerpo += $"<color={colorEncabezado}><b>Custo Valentia:</b></color> {costoPM}\n";
+        cuerpo += $"<color={colorEncabezado}><b>Ao usar:</b></color> cria armadilhas de fumaca em area de raio {radioZona} ao redor da celula alvo\n";
+        cuerpo += $"<color={colorEncabezado}><b>Armadilha de fumaca:</b></color> 30 usos, {duracionHumo} turnos de duracao, persistente\n";
+        cuerpo += $"<color={colorEncabezado}><b>Ao ativar (qualquer unidade):</b></color> concede Escondido (1) se nao estava escondido\n";
+        cuerpo += $"<color={colorEncabezado}><b>Unidades que nao sao Acechador:</b></color> 2 turnos, +2 Ataque, +5% Critico";
       }
       else
       {
-        cuerpo += "<b>Tipo:</b> Trampa de Utilidad (4 alcance)\n";
-        cuerpo += "<b>Objetivo:</b> 1 casilla en rango\n";
-        cuerpo += "<b>Tirada/TS:</b> no tiene\n";
-        cuerpo += $"<b>Al lanzarla:</b> crea trampas de humo en area de radio {radioZona} alrededor de la casilla objetivo\n";
-        cuerpo += $"<b>Perfil de trampa de humo:</b> 30 usos, {duracionHumo} turnos de duracion, persistente\n";
-        cuerpo += "<b>Al activar trampa (cualquier unidad):</b> otorga Escondido (1) si no estaba escondido\n";
-        cuerpo += "<b>Buff extra para unidades no Acechador:</b> 2 turnos, +2 Ataque, +1 rango critico";
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Trampa de utilidad (4 alcance)\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 casilla en rango\n";
+        cuerpo += $"<color={colorEncabezado}><b>Tirada/TS:</b></color> no tiene\n";
+        cuerpo += $"<color={colorEncabezado}><b>Costo Valentia:</b></color> {costoPM}\n";
+        cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> crea trampas de humo en area de radio {radioZona} alrededor de la casilla objetivo\n";
+        cuerpo += $"<color={colorEncabezado}><b>Trampa de humo:</b></color> 30 usos, {duracionHumo} turnos de duracion, persistente\n";
+        cuerpo += $"<color={colorEncabezado}><b>Al activar (cualquier unidad):</b></color> otorga Escondido (1) si no estaba escondido\n";
+        cuerpo += $"<color={colorEncabezado}><b>Unidades no Acechador:</b></color> 2 turnos, +2 Ataque, +5% Critico";
       }
 
-      string costos = esIngles
-        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+      string subtitulo = esIngles
+        ? "Creates smoke traps that grant Hidden and support non-Stalker units."
         : esPortugues
-          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
-          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
+          ? "Cria armadilhas de fumaca que concedem Escondido e apoiam unidades que nao sao Acechador."
+          : "Crea trampas de humo que otorgan Escondido y apoyan a unidades no Acechador.";
 
-      txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-        esIngles
-          ? "Creates a smoke field that restores stealth and buffs allies moving through it."
-          : esPortugues
-            ? "Cria um campo de fumaca que restaura furtividade e fortalece aliados que passam por ele."
-          : "Crea un campo de humo que restaura sigilo y buffea aliados que lo atraviesan.",
-        cuerpo,
-        costos,
-        "#5dade2");
+      txtDescripcion = $"<size=115%><color={colorTitulo}><b>{(esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs)}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+      txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+      txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+      txtDescripcion += cuerpo;
 
       bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)

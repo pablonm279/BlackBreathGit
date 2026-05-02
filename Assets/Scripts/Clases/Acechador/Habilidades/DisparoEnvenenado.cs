@@ -86,11 +86,11 @@ public class DisparoEnvenenado : Habilidad
       damExtra += 2;
       criticoRangoHab = 1;
       if (TRADU.i.nIdioma == 1)
-      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +5% Critico.</i>\n\n"; }
       if (TRADU.i.nIdioma == 2)
-      {  txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
+      {  txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +5% Critical.</i>\n\n"; }
       if (TRADU.i.nIdioma == 3)
-      {  txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Ataque +2 Dano +1 Faixa de Critico.</i>\n\n"; }
+      {  txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Ataque +2 Dano +5% Critico.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 3)
@@ -100,11 +100,11 @@ public class DisparoEnvenenado : Habilidad
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
       if(TRADU.i.nIdioma== 1)
-      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +5% Critico, -1 AP.</i>\n\n"; }
       if(TRADU.i.nIdioma== 2)
-      { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +1 Critical Range, -1 AP.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +5% Critical, -1 AP.</i>\n\n"; }
       if(TRADU.i.nIdioma== 3)
-      { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Ataque +2 Dano +1 Faixa de Critico, -1 AP.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Ataque +2 Dano +5% Critico, -1 AP.</i>\n\n"; }
 
 
     }
@@ -116,11 +116,11 @@ public class DisparoEnvenenado : Habilidad
       costoAP -= 1; //costo AP -1
       hAlcance += 1; //Alcance +1
       if(TRADU.i.nIdioma== 1)
-      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Daño +5% Critico.</i>\n\n"; }
       if(TRADU.i.nIdioma== 2)
-      { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Range +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Range +1 Attack +2 Damage +5% Critical.</i>\n\n"; }
       if(TRADU.i.nIdioma== 3)
-      { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Alcance +1 Ataque +2 Dano +1 Faixa de Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Alcance +1 Ataque +2 Dano +5% Critico.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 5)
@@ -132,11 +132,11 @@ public class DisparoEnvenenado : Habilidad
       costoAP -= 1; //costo AP -1
       cooldownActual = 0;
       if(TRADU.i.nIdioma== 1)
-      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: Remueve Cooldown, +1 Ataque +2 Daño +5% Critico.</i>\n\n"; }
       if(TRADU.i.nIdioma== 2)
-      { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: Removes Cooldown, +1 Attack +2 Damage +1 Critical Range.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: Removes Cooldown, +1 Attack +2 Damage +5% Critical.</i>\n\n"; }
       if(TRADU.i.nIdioma== 3)
-      { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: Remove Recarga, +1 Ataque +2 Dano +1 Faixa de Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: Remove Recarga, +1 Ataque +2 Dano +5% Critico.</i>\n\n"; }
 
     }
 
@@ -162,7 +162,20 @@ public class DisparoEnvenenado : Habilidad
     int dcBase = NIVEL > 2 ? 13 : 12;
     int venenoAplicado = 2 + (NIVEL > 1 ? 1 : 0) + (NIVEL == 4 ? 2 : 0);
     int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConBallestaMano : 0;
-    string rangoDanioEs = FormatearRangoDados(3, 4, damExtra);
+    string rangoDanio = FormatearRangoDados(3, 4, damExtra);
+    int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
+    string colorTitulo = "#5dade2";
+    string colorEncabezado = "#44d3ec";
+    string colorAgilidad = "#7fa35a";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
+    string atributo = esIngles
+      ? $"<color={colorAgilidad}>Agility ({agilidadActual})</color>"
+      : esPortugues
+        ? $"<color={colorAgilidad}>Agilidade ({agilidadActual})</color>"
+        : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
+    string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
     string tituloEs = "Disparo Envenenado I";
     string tituloEn = "Poison Shot I";
@@ -176,65 +189,60 @@ public class DisparoEnvenenado : Habilidad
     if (NIVEL == 4) { tituloPt = "Disparo Envenenado IV a"; }
     if (NIVEL == 5) { tituloPt = "Disparo Envenenado IV b"; }
 
-    string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Fortaleza, dcBase);
-
     string cuerpo = "";
     if (esIngles)
     {
-      cuerpo += $"<b>Type:</b> Ranged ({hAlcance} range)\n";
-      cuerpo += "<b>Target:</b> 1 enemy in range\n"; 
-      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Damage:</b> 3d4 + {damExtra} + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Piercing\n";
-      cuerpo += lineaSalvacion + "\n";
-      cuerpo += $"<b>On failed save:</b> applies {venenoAplicado} Poison";
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Ranged attack ({hAlcance} range)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy or obstacle in range\n";
+      cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> 1d20 + {atributo}{bonusTirada} vs Defense\n";
+      cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Type:</b></color> Piercing\n";
+      cuerpo += $"<color={colorEncabezado}><b>Save:</b></color> Fortitude vs DC {dcBase}\n";
+      cuerpo += $"<color={colorEncabezado}><b>On failed save:</b></color> applies {venenoAplicado} Poison";
       if (nivelMaestria > 0)
       {
-        cuerpo += $"\n<b>Passive applied:</b> Hand Crossbow Mastery (Tier {nivelMaestria})";
+        cuerpo += $"\n<color={colorEncabezado}><b>Passive:</b></color> Hand Crossbow Mastery (Tier {nivelMaestria})";
       }
     }
     else if (esPortugues)
     {
-      cuerpo += $"<b>Tipo:</b> Alcance ({hAlcance} de alcance)\n";
-      cuerpo += "<b>Alvo:</b> 1 inimigo no alcance\n";
-      cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Agilidade ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Dano:</b> 3d4 + {damExtra} + <color=#ea0606>Agilidade ({agilidadActual})</color> | <b>Tipo:</b> Perfurante\n";
-      cuerpo += lineaSalvacion + "\n";
-      cuerpo += $"<b>Se falhar na resistencia:</b> aplica {venenoAplicado} Veneno";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia ({hAlcance} de alcance)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo ou obstaculo no alcance\n";
+      cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> 1d20 + {atributo}{bonusTirada} vs Defesa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perfurante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Resistencia:</b></color> Fortitude vs CD {dcBase}\n";
+      cuerpo += $"<color={colorEncabezado}><b>Se falhar:</b></color> aplica {venenoAplicado} Veneno";
       if (nivelMaestria > 0)
       {
-        cuerpo += $"\n<b>Passiva aplicada:</b> Maestria com Besta de Mao (Tier {nivelMaestria})";
+        cuerpo += $"\n<color={colorEncabezado}><b>Passiva:</b></color> Maestria com Besta de Mao (Tier {nivelMaestria})";
       }
     }
     else
     {
-      cuerpo += $"<b>Tipo:</b> Rango ({hAlcance} alcance)\n";
-      cuerpo += "<b>Objetivo:</b> 1 enemigo en rango\n";
-      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agi ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Agi ({agilidadActual})</color> | <b>Tipo:</b> Perforante\n";
-      cuerpo += lineaSalvacion + "\n";
-      cuerpo += $"<b>Si falla TS:</b> aplica {venenoAplicado} Veneno";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia ({hAlcance} alcance)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstaculo en rango\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+      cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Fortaleza vs DC {dcBase}\n";
+      cuerpo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> aplica {venenoAplicado} Veneno";
       if (nivelMaestria > 0)
       {
-        cuerpo += $"\n<b>Pasiva aplicada:</b> Maestria con Ballesta de Mano (Tier {nivelMaestria})";
+        cuerpo += $"\n<color={colorEncabezado}><b>Pasiva:</b></color> Maestria con Ballesta de Mano (Tier {nivelMaestria})";
       }
     }
 
-    string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+    string subtitulo = esIngles
+      ? "Ranged attack that applies Poison on failed save."
       : esPortugues
-        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
-
-    txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-      esIngles
-        ? "A control shot that layers poison through a Fortitude save check."
-        : esPortugues
-          ? "Um disparo de controle que acumula veneno por teste de resistencia de Fortitude."
-        : "Un disparo de control que acumula veneno mediante chequeo de TS Fortaleza.",
-      cuerpo,
-      costos,
-      "#5dade2");
+        ? "Ataque a distancia que aplica Veneno se falhar na resistencia."
+        : "Ataque a distancia que aplica Veneno si falla TS.";
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += cuerpo;
 
     bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)
@@ -260,6 +268,13 @@ public class DisparoEnvenenado : Habilidad
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al DC base de TS.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Veneno) u Opcion B (-1 enfriamiento).</color>"; }
     }
+  }
+
+  private string TextoModificadorDescripcion(int valor)
+  {
+    if (valor > 0) { return $" + {valor}"; }
+    if (valor < 0) { return $" - {Mathf.Abs(valor)}"; }
+    return "";
   }
 
   Casilla Origen;

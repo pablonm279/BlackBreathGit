@@ -7,6 +7,7 @@ using System;
 using Unity.VisualScripting;
 using TMPro;
 using UnityEngine.Rendering;
+using UnityEngine.EventSystems;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Threading;
@@ -16,6 +17,14 @@ public class BattleManager : MonoBehaviour
 {
   [Header("Ajustes visuales de batalla")]
   [SerializeField] public float TAMANIO_UNIDADES = 1f;
+  [Header("Compensacion de perspectiva")]
+  [SerializeField] private bool compensarPerspectivaPorPosY = true;
+  [SerializeField] private float escalaUnidadBaseEnY1 = 1f;
+  [SerializeField] private float escalaUnidadPorPasoY = 0.12f;
+  [SerializeField] private float escalaUnidadMaximaPorPosY = 1.35f;
+  [Header("Debug mouse")]
+  [SerializeField] private KeyCode teclaDebugBajoMouse = KeyCode.F10;
+  [SerializeField] private int maxHitsDebugBajoMouse = 12;
 
   public TutorialCombate scTutorialCombate;
   public GameObject prefabUnidad;
@@ -98,6 +107,27 @@ public class BattleManager : MonoBehaviour
   private Coroutine coroutineTooltipValorDelay;
   private bool tooltipValorHoverActivo;
   private readonly Dictionary<int, Vector3> escalaBaseUnidadesBatalla = new Dictionary<int, Vector3>();
+
+  private void OnValidate()
+  {
+    if (!Application.isPlaying)
+    {
+      return;
+    }
+
+    AplicarTamanioUnidadesEnBatalla();
+  }
+
+  public float ObtenerMultiplicadorEscalaPerspectivaUnidad(int posY)
+  {
+    if (!compensarPerspectivaPorPosY)
+    {
+      return 1f;
+    }
+
+    float multiplicador = escalaUnidadBaseEnY1 + (Mathf.Max(0, posY - 1) * escalaUnidadPorPasoY);
+    return Mathf.Min(multiplicador, escalaUnidadMaximaPorPosY);
+  }
 
   public void RefrescarVfxClimaCalor(bool activo)
   {
@@ -324,6 +354,7 @@ public class BattleManager : MonoBehaviour
 
     float multiplicador = Mathf.Max(0.01f, TAMANIO_UNIDADES);
     unidad.transform.localScale = escalaBaseUnidadesBatalla[id] * multiplicador;
+    unidad.CasillaPosicion?.AplicarEscalaPerspectivaUnidad(unidad.gameObject);
   }
 
   private void AplicarTamanioUnidadesEnBatalla()
@@ -1853,6 +1884,11 @@ public class BattleManager : MonoBehaviour
     bool tutorialActivo = scTutorialCombate != null && scTutorialCombate.tutorialCombateActivo;
     SincronizarPausaConVisibilidadLog();
 
+    if (Input.GetKeyDown(teclaDebugBajoMouse))
+    {
+      DebugObjetosBajoMouse();
+    }
+
     if (pausaManualCombateActiva && (unidadActiva == null || unidadActiva.GetComponent<IAUnidad>() == null))
     {
       SetPausaManualCombate(false);
@@ -1957,6 +1993,92 @@ public class BattleManager : MonoBehaviour
     SincronizarMarcasHabilidadActiva();
 
     ActualizarTextoSeleccionObjetivo();
+  }
+
+  private void DebugObjetosBajoMouse()
+  {
+    List<string> lineasDebug = new List<string>();
+    Vector3 mousePos = Input.mousePosition;
+    lineasDebug.Add("[MouseDebug] Posicion mouse: " + mousePos);
+
+    if (EventSystem.current != null)
+    {
+      PointerEventData pointerData = new PointerEventData(EventSystem.current)
+      {
+        position = mousePos
+      };
+
+      List<RaycastResult> resultadosUI = new List<RaycastResult>();
+      EventSystem.current.RaycastAll(pointerData, resultadosUI);
+      lineasDebug.Add("[MouseDebug] UI hits: " + resultadosUI.Count + " | IsPointerOverGameObject: " + EventSystem.current.IsPointerOverGameObject());
+
+      for (int i = 0; i < resultadosUI.Count && i < maxHitsDebugBajoMouse; i++)
+      {
+        RaycastResult hit = resultadosUI[i];
+        lineasDebug.Add("  UI[" + i + "] " + DescribirJerarquia(hit.gameObject) + " | dist=" + hit.distance.ToString("0.###") + " | sort=" + hit.sortingOrder + " | layer=" + LayerMask.LayerToName(hit.gameObject.layer));
+      }
+    }
+    else
+    {
+      lineasDebug.Add("[MouseDebug] Sin EventSystem activo.");
+    }
+
+    Camera cam = Camera.main;
+    if (cam == null)
+    {
+      cam = Camera.allCameras.FirstOrDefault(c => c != null && c.enabled);
+    }
+
+    if (cam == null)
+    {
+      lineasDebug.Add("[MouseDebug] Sin camara activa para raycast 3D.");
+      Debug.Log(string.Join("\n", lineasDebug));
+      return;
+    }
+
+    Ray ray = cam.ScreenPointToRay(mousePos);
+    RaycastHit[] hits3D = Physics.RaycastAll(ray, 500f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide)
+      .OrderBy(h => h.distance)
+      .ToArray();
+
+    lineasDebug.Add("[MouseDebug] 3D hits: " + hits3D.Length + " | camara: " + cam.name);
+    for (int i = 0; i < hits3D.Length && i < maxHitsDebugBajoMouse; i++)
+    {
+      RaycastHit hit = hits3D[i];
+      GameObject go = hit.collider != null ? hit.collider.gameObject : null;
+      if (go == null)
+      {
+        continue;
+      }
+
+      lineasDebug.Add(
+        "  3D[" + i + "] " + DescribirJerarquia(go)
+        + " | collider=" + hit.collider.GetType().Name
+        + " | dist=" + hit.distance.ToString("0.###")
+        + " | layer=" + LayerMask.LayerToName(go.layer)
+        + " | tag=" + go.tag);
+    }
+
+    Debug.Log(string.Join("\n", lineasDebug));
+  }
+
+  private static string DescribirJerarquia(GameObject go)
+  {
+    if (go == null)
+    {
+      return "(null)";
+    }
+
+    List<string> nombres = new List<string>();
+    Transform actual = go.transform;
+    while (actual != null)
+    {
+      nombres.Add(actual.name);
+      actual = actual.parent;
+    }
+
+    nombres.Reverse();
+    return string.Join("/", nombres);
   }
 
   private void FiltrarObjetivosActivosPorProvocacion()
@@ -2906,6 +3028,7 @@ public class BattleManager : MonoBehaviour
   [SerializeField] GameObject goLog;
   public List<string> lineas;
   [SerializeField] private LogDeCampania logDeCampania;
+  public TMP_SpriteAsset SpriteAssetCombate => logDeCampania != null ? logDeCampania.SpriteAssetCombate : null;
   private bool pausaPorLogActiva;
   private bool pausaManualCombateActiva;
   private bool ultimaVisibilidadLogActiva;

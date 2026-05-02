@@ -65,6 +65,15 @@ public class Instatransporte : Habilidad
     string residuosPt = NIVEL == 4
       ? "Gera Residuos Energeticos em volta de todo o destino."
       : "Gera Residuos Energeticos em cruz adjacente ao destino.";
+    string colorEncabezado = "#44d3ec";
+    string colorValor = "#ffffff";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string iconoEvasion = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_evasion\"></voffset></size><space=-0.35em>";
+    string iconoEnergia = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_acumularenergia\"></voffset></size><space=-0.35em>";
+    string costoSuperior = cooldownMax > 0
+      ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+      : $"{costoAP} {iconoAP}";
 
     string cuerpo = "";
     if (esIngles)
@@ -111,6 +120,53 @@ public class Instatransporte : Habilidad
       cuerpo,
       costos,
       "#5dade2");
+
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    string subtitulo = esIngles
+      ? $"Teleport to an empty tile and leave {iconoEnergia} Energy Residues."
+      : esPortugues
+        ? $"Teletransporta para uma casa vazia e deixa {iconoEnergia} Resíduos Energéticos."
+        : $"Teletransporta a una casilla vacía y deja {iconoEnergia} Residuos Energéticos.";
+    string residuosFormato = esIngles
+      ? (NIVEL == 4 ? "All around the destination" : "Adjacent cross at destination")
+      : esPortugues
+        ? (NIVEL == 4 ? "Ao redor de todo o destino" : "Em cruz adjacente ao destino")
+        : (NIVEL == 4 ? "Alrededor de todo el destino" : "En cruz adyacente al destino");
+
+    string cuerpoFormato = "";
+    if (esIngles)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Mobility ({alcance} range)</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 empty tile in range</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Effect:</b></color> <color={colorValor}>Teleport to target tile</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>On arrival:</b></color> <color={colorValor}>Destroys traps on destination tile</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Residues:</b></color> <color={colorValor}>{iconoEnergia} {residuosFormato}</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Self buff:</b></color> <color={colorValor}>{iconoEvasion} +{bonusEvasion} Evasion</color>";
+    }
+    else if (esPortugues)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Mobilidade ({alcance} alcance)</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 casa vazia em alcance</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Efeito:</b></color> <color={colorValor}>Teletransporte para a casa alvo</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Ao chegar:</b></color> <color={colorValor}>Destrói armadilhas na casa de destino</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Resíduos:</b></color> <color={colorValor}>{iconoEnergia} {residuosFormato}</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Buff próprio:</b></color> <color={colorValor}>{iconoEvasion} +{bonusEvasion} Evasão</color>";
+    }
+    else
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Movilidad ({alcance} alcance)</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 casilla vacía en rango</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Efecto:</b></color> <color={colorValor}>Teletransporte a la casilla objetivo</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Al llegar:</b></color> <color={colorValor}>Destruye trampas en la casilla destino</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Residuos:</b></color> <color={colorValor}>{iconoEnergia} {residuosFormato}</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Buff propio:</b></color> <color={colorValor}>{iconoEvasion} +{bonusEvasion} Evasión</color>";
+    }
+
+    txtDescripcion =
+      $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+      $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+      "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+      cuerpoFormato;
 
     bool mostrarProximoNivel = EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)

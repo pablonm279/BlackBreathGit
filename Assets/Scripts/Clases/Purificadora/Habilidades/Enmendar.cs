@@ -119,6 +119,53 @@ public class Enmendar : Habilidad
         costos,
         "#5dade2");
 
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string colorPoder = "#2aa6c8";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string costoSuperior = cooldownMax > 0
+        ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+        : $"{costoAP} {iconoAP}";
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "Heals one ally, scaling with Power and current Fervor."
+        : esPortugues
+          ? "Cura um aliado, escalando com Poder e Fervor atual."
+          : "Cura a un aliado, escalando con Poder y Fervor actual.";
+      string curacion = $"4-18{bonusPlanoTexto} + <color={colorPoder}>{(esIngles ? "Power" : esPortugues ? "Poder" : "Poder")} ({poderActual})</color> + Fervor ({fervorActual})";
+      string cuerpoNuevo = "";
+      if (esIngles)
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged heal ({alcance} range)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 unit in range</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Heal:</b></color> <color={colorValor}>{curacion}. Type: Magical healing</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Requirement:</b></color> <color={colorValor}>{(consumeFervor ? "Requires 1+ Fervor." : "No Fervor required.")}</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>On cast:</b></color> <color={colorValor}>{(consumeFervor ? "Consumes 1 Fervor." : "Does not consume Fervor.")}</color>";
+      }
+      else if (esPortugues)
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Cura a alcance ({alcance} de alcance)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 unidade no alcance</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Cura:</b></color> <color={colorValor}>{curacion}. Tipo: Cura magica</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>{(consumeFervor ? "Requer 1+ Fervor." : "Nao requer Fervor.")}</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Ao usar:</b></color> <color={colorValor}>{(consumeFervor ? "Consome 1 Fervor." : "Nao consome Fervor.")}</color>";
+      }
+      else
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Curacion a rango ({alcance} alcance)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 unidad en rango</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Curacion:</b></color> <color={colorValor}>{curacion}. Tipo: Curacion magica</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>{(consumeFervor ? "Requiere 1+ Fervor." : "No requiere Fervor.")}</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Al lanzar:</b></color> <color={colorValor}>{(consumeFervor ? "Consume 1 Fervor." : "No consume Fervor.")}</color>";
+      }
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpoNuevo;
+
       bool mostrarProximoNivel = EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)
       {

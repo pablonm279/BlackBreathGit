@@ -7,11 +7,18 @@ public class LookAtCamera : MonoBehaviour
     public bool invert;
     private Transform cameraTransform;
 
-    private void Awake() 
+    private void Start() 
     {
-        cameraTransform = Camera.main.transform;
-
-        
+        if  (Camera.main == null)
+        {return; }
+        if (Camera.main.transform.childCount > 0)
+        {
+            cameraTransform = Camera.main.transform.GetChild(0); // Asumimos que la cámara está en el primer hijo de Main Camera
+        }
+        else
+        {
+            cameraTransform =  Camera.main.transform;
+        }
     }
 
   private void LateUpdate() // para que lo haga último en el frame

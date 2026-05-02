@@ -116,6 +116,51 @@ public class SalmoPurificador : Habilidad
       costos,
       "#5dade2");
 
+    string colorEncabezado = "#44d3ec";
+    string colorValor = "#ffffff";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string costoSuperior = cooldownMax > 0
+      ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+      : $"{costoAP} {iconoAP}";
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    string subtitulo = esIngles
+      ? "Cleanses removable debuffs from a small allied cluster."
+      : esPortugues
+        ? "Remove debuffs removiveis de um pequeno grupo aliado."
+        : "Remueve debuffs removibles de un pequeno grupo aliado.";
+    string cuerpoNuevo = "";
+    if (esIngles)
+    {
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged cleanse (4 range)</color>\n";
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 unit and adjacent units</color>\n";
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Effect:</b></color> <color={colorValor}>Removes up to {debuffsPorUnidad} removable debuffs per affected unit</color>\n";
+      if (daValentia) { cuerpoNuevo += $"<color={colorEncabezado}><b>Extra:</b></color> <color={colorValor}>+1 Valour per removed debuff.</color>\n"; }
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Requirement:</b></color> <color={colorValor}>Requires 1+ Fervor; does not consume it.</color>";
+    }
+    else if (esPortugues)
+    {
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Purificacao a alcance (4 de alcance)</color>\n";
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 unidade e unidades adjacentes</color>\n";
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Efeito:</b></color> <color={colorValor}>Remove ate {debuffsPorUnidad} debuffs removiveis por unidade afetada</color>\n";
+      if (daValentia) { cuerpoNuevo += $"<color={colorEncabezado}><b>Extra:</b></color> <color={colorValor}>+1 Valentia por debuff removido.</color>\n"; }
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>Requer 1+ Fervor; nao consome.</color>";
+    }
+    else
+    {
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Purificacion a rango (4 alcance)</color>\n";
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 unidad y unidades adyacentes</color>\n";
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Efecto:</b></color> <color={colorValor}>Remueve hasta {debuffsPorUnidad} debuffs removibles por unidad afectada</color>\n";
+      if (daValentia) { cuerpoNuevo += $"<color={colorEncabezado}><b>Extra:</b></color> <color={colorValor}>+1 Valentia por debuff removido.</color>\n"; }
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>Requiere 1+ Fervor; no lo consume.</color>";
+    }
+
+    txtDescripcion =
+      $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+      $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+      "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+      cuerpoNuevo;
+
     bool mostrarProximoNivel = EsEscenaCampaña()
       && CampaignManager.Instance != null
       && CampaignManager.Instance.scMenuPersonajes != null

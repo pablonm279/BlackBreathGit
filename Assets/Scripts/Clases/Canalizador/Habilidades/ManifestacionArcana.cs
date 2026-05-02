@@ -114,6 +114,72 @@ public class ManifestacionArcana : Habilidad
       costos,
       "#ab47bc");
 
+    string colorEncabezado = "#44d3ec";
+    string colorValor = "#ffffff";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string iconoEnergia = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_acumularenergia\"></voffset></size><space=-0.35em>";
+    string iconoBuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_buff\"></voffset></size><space=-0.35em>";
+    string costoSuperior = cooldownMax > 0
+      ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+      : $"{costoAP} {iconoAP}";
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    string subtituloFormato = esIngles
+      ? "Summons an Arcane Manifestation and absorbs all Energy Residues."
+      : esPortugues
+        ? "Invoca uma Manifestacao Arcana e absorve todos os Residuos Energeticos."
+        : "Invoca una Manifestacion Arcana y absorbe todos los Residuos Energeticos.";
+    string bonusBase = "";
+    if (bonusAtaqueBase > 0) { bonusBase += $"+{bonusAtaqueBase} Attack"; }
+    if (bonusDefensaBase > 0) { bonusBase += (bonusBase.Length > 0 ? ", " : "") + $"+{bonusDefensaBase} Defense"; }
+    if (bonusAPMax > 0) { bonusBase += (bonusBase.Length > 0 ? ", " : "") + $"+{bonusAPMax} Max AP"; }
+    string bonusBasePt = "";
+    if (bonusAtaqueBase > 0) { bonusBasePt += $"+{bonusAtaqueBase} Ataque"; }
+    if (bonusDefensaBase > 0) { bonusBasePt += (bonusBasePt.Length > 0 ? ", " : "") + $"+{bonusDefensaBase} Defesa"; }
+    if (bonusAPMax > 0) { bonusBasePt += (bonusBasePt.Length > 0 ? ", " : "") + $"+{bonusAPMax} AP Maximo"; }
+    string bonusBaseEs = "";
+    if (bonusAtaqueBase > 0) { bonusBaseEs += $"+{bonusAtaqueBase} Ataque"; }
+    if (bonusDefensaBase > 0) { bonusBaseEs += (bonusBaseEs.Length > 0 ? ", " : "") + $"+{bonusDefensaBase} Defensa"; }
+    if (bonusAPMax > 0) { bonusBaseEs += (bonusBaseEs.Length > 0 ? ", " : "") + $"+{bonusAPMax} AP Maximo"; }
+
+    string cuerpoFormato = "";
+    if (esIngles)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Summon</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 tile in 4 range</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Requirement:</b></color> <color={colorValor}>{iconoEnergia} Energy Tier {energiaRequerida}+</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>On summon:</b></color> <color={colorValor}>Creates 1 Arcane Manifestation and absorbs all {iconoEnergia} Energy Residues</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Per residue:</b></color> <color={colorValor}>{iconoBuff} +5% Damage, +6 Max HP</color>\n";
+      if (bonusBase.Length > 0) { cuerpoFormato += $"<color={colorEncabezado}><b>Base bonus:</b></color> <color={colorValor}>{iconoBuff} {bonusBase}</color>\n"; }
+      cuerpoFormato += $"<color={colorEncabezado}><b>Summon turn:</b></color> <color={colorValor}>Starts with 0 AP</color>";
+    }
+    else if (esPortugues)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Invocacao</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 casa em 4 de alcance</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>{iconoEnergia} Nivel de Energia {energiaRequerida}+</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Ao invocar:</b></color> <color={colorValor}>Cria 1 Manifestacao Arcana e absorve todos os {iconoEnergia} Residuos Energeticos</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Por residuo:</b></color> <color={colorValor}>{iconoBuff} +5% Dano, +6 Vida Maxima</color>\n";
+      if (bonusBasePt.Length > 0) { cuerpoFormato += $"<color={colorEncabezado}><b>Bonus base:</b></color> <color={colorValor}>{iconoBuff} {bonusBasePt}</color>\n"; }
+      cuerpoFormato += $"<color={colorEncabezado}><b>Turno da invocacao:</b></color> <color={colorValor}>Surge com 0 AP</color>";
+    }
+    else
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Invocacion</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 casilla en 4 de alcance</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>{iconoEnergia} Nivel de Energia {energiaRequerida}+</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Al invocar:</b></color> <color={colorValor}>Crea 1 Manifestacion Arcana y absorbe todos los {iconoEnergia} Residuos Energeticos</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Por residuo:</b></color> <color={colorValor}>{iconoBuff} +5% Daño, +6 Vida Maxima</color>\n";
+      if (bonusBaseEs.Length > 0) { cuerpoFormato += $"<color={colorEncabezado}><b>Bonus base:</b></color> <color={colorValor}>{iconoBuff} {bonusBaseEs}</color>\n"; }
+      cuerpoFormato += $"<color={colorEncabezado}><b>Turno de invocacion:</b></color> <color={colorValor}>Aparece con 0 AP</color>";
+    }
+
+    txtDescripcion =
+      $"<size=115%><color=#ab47bc><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+      $"<color=#8f8f8f><i>{subtituloFormato}</i></color>\n\n" +
+      "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+      cuerpoFormato;
+
     bool mostrarProximoNivel = EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)
     {

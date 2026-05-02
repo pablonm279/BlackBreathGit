@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -42,7 +42,7 @@ public class ImprovisarFlechas : Habilidad
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
       int flechasFijas = (NIVEL > 1 ? 2 : 1) + (NIVEL == 4 ? 1 : 0);
-      int buffCrit = 1 + (NIVEL > 2 ? 1 : 0);
+      int criticoPorcentaje = (1 + (NIVEL > 2 ? 1 : 0)) * 5;
       int buffPenetracion = 1;
       int duracionBuff = 2;
       bool sumaDanioNivel5 = NIVEL == 5;
@@ -59,105 +59,77 @@ public class ImprovisarFlechas : Habilidad
       if (NIVEL == 4) { tituloPt = "Improvisar Flechas IV a"; }
       if (NIVEL == 5) { tituloPt = "Improvisar Flechas IV b"; }
 
+      string colorTitulo = "#5dade2";
+      string colorEncabezado = "#44d3ec";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
+
+      string flechasGanadasEn = flechasFijas > 0 ? $"current AP + {flechasFijas}" : "current AP";
+      string flechasGanadasPt = flechasFijas > 0 ? $"AP atuais + {flechasFijas}" : "AP atuais";
+      string flechasGanadasEs = flechasFijas > 0 ? $"AP actuales + {flechasFijas}" : "AP actuales";
+
       string cuerpo = "";
       if (esIngles)
       {
-        cuerpo += "<b>Type:</b> Utility\n";
-        cuerpo += "<b>Target:</b> Self\n";
-        if (flechasFijas > 0)
-        {
-          cuerpo += $"<b>Arrows gained:</b> current AP + {flechasFijas}\n";
-        }
-        else
-        {
-          cuerpo += "<b>Arrows gained:</b> current AP\n";
-        }
-        cuerpo += "<b>On cast:</b> sets current AP to 0\n";
-        cuerpo += $"<b>Buff ({duracionBuff} turns):</b> +{buffCrit} crit range, +{buffPenetracion} Armor Penetration";
-        if (sumaDanioNivel5)
-        {
-          cuerpo += ", +15% Damage";
-        }
+        cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Utility\n";
+        cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Self\n";
+        cuerpo += $"<color={colorEncabezado}><b>Arrows gained:</b></color> {flechasGanadasEn}\n";
+        cuerpo += $"<color={colorEncabezado}><b>On cast:</b></color> sets current AP to 0\n";
+        cuerpo += $"<color={colorEncabezado}><b>Effect ({duracionBuff} turns):</b></color> +{criticoPorcentaje}% Crit, +{buffPenetracion} Armor Penetration";
+        if (sumaDanioNivel5) { cuerpo += ", +15% Damage"; }
       }
       else if (esPortugues)
       {
-        cuerpo += "<b>Tipo:</b> Utilidade\n";
-        cuerpo += "<b>Alvo:</b> Si mesmo\n";
-        if (flechasFijas > 0)
-        {
-          cuerpo += $"<b>Flechas ganhas:</b> AP atuais + {flechasFijas}\n";
-        }
-        else
-        {
-          cuerpo += "<b>Flechas ganhas:</b> AP atuais\n";
-        }
-        cuerpo += "<b>Ao usar:</b> zera os AP atuais\n";
-        cuerpo += $"<b>Buff ({duracionBuff} turnos):</b> +{buffCrit} faixa de critico, +{buffPenetracion} Penetracao de armadura";
-        if (sumaDanioNivel5)
-        {
-          cuerpo += ", +15% Dano";
-        }
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Utilidade\n";
+        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Si mesmo\n";
+        cuerpo += $"<color={colorEncabezado}><b>Flechas ganhas:</b></color> {flechasGanadasPt}\n";
+        cuerpo += $"<color={colorEncabezado}><b>Ao usar:</b></color> zera os AP atuais\n";
+        cuerpo += $"<color={colorEncabezado}><b>Efeito ({duracionBuff} turnos):</b></color> +{criticoPorcentaje}% Critico, +{buffPenetracion} Penetracao de armadura";
+        if (sumaDanioNivel5) { cuerpo += ", +15% Dano"; }
       }
       else
       {
-        cuerpo += "<b>Tipo:</b> Utilidad\n";
-        cuerpo += "<b>Objetivo:</b> Uno mismo\n";
-        if (flechasFijas > 0)
-        {
-          cuerpo += $"<b>Flechas ganadas:</b> AP actuales + {flechasFijas}\n";
-        }
-        else
-        {
-          cuerpo += "<b>Flechas ganadas:</b> AP actuales\n";
-        }
-        cuerpo += "<b>Al lanzarla:</b> deja los AP actuales en 0\n";
-        cuerpo += $"<b>Buff ({duracionBuff} turnos):</b> +{buffCrit} rango critico, +{buffPenetracion} Penetracion de armadura";
-        if (sumaDanioNivel5)
-        {
-          cuerpo += ", +15% Danio";
-        }
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Utilidad\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Uno mismo\n";
+        cuerpo += $"<color={colorEncabezado}><b>Flechas ganadas:</b></color> {flechasGanadasEs}\n";
+        cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> deja los AP actuales en 0\n";
+        cuerpo += $"<color={colorEncabezado}><b>Efecto ({duracionBuff} turnos):</b></color> +{criticoPorcentaje}% Critico, +{buffPenetracion} Penetracion de armadura";
+        if (sumaDanioNivel5) { cuerpo += ", +15% Danio"; }
       }
 
-      string costos = esIngles
-        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "Convert current AP into arrows and a short attack boost."
         : esPortugues
-          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
-          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
+          ? "Converte AP atuais em flechas e um impulso ofensivo curto."
+          : "Convierte AP actuales en flechas y una mejora ofensiva breve.";
 
-      txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-        esIngles
-          ? "Converts tempo into ammo and primes your next attacks."
-          : esPortugues
-            ? "Converte ritmo em municao e prepara seus proximos ataques."
-          : "Convierte tempo en municion y prepara tus siguientes ataques.",
-        cuerpo,
-        costos,
-        "#5dade2");
+      txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+      txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+      txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+      txtDescripcion += cuerpo;
 
       bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
-      if (!mostrarProximoNivel)
-      {
-        return;
-      }
+      if (!mostrarProximoNivel) { return; }
 
       if (esIngles)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 fixed arrow.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 crit range in the buff.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 fixed arrow) or Option B (+15% damage in the buff).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 fixed Arrow.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% Crit in the effect.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1 fixed Arrow) or Option B (+15% Damage in the effect).</color>"; }
       }
       else if (esPortugues)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 flecha fixa.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 faixa de critico no buff.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 flecha fixa) ou Opcao B (+15% dano no buff).</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico no efeito.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 flecha fixa) ou Opcao B (+15% Dano no efeito).</color>"; }
       }
       else
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 flecha fija.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 rango critico en el buff.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 flecha fija) u Opcion B (+15% danio en el buff).</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico en el efecto.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 flecha fija) u Opcion B (+15% Danio en el efecto).</color>"; }
       }
 
     }

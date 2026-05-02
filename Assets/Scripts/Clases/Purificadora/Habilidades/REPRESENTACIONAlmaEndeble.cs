@@ -19,19 +19,30 @@ public class REPRESENTACIONAlmaEndeble : Habilidad
 
     public override void  ActualizarDescripcion()
     {
-     
-        txtDescripcion = "<color=#5dade2><b>Alma Endeble</b></color>\n\n"; 
-        txtDescripcion += "<i>(Pasiva) La Purificadora sufre Aflicciones de combate en proporción a la intensidad del Aliento Negro.</i>\n\n";
-        if (TRADU.i.nIdioma == 2) // agrega la traduccion a ingles
+        string titulo = "Alma Endeble";
+        string subtitulo = "<color=#4f5552>Debilidad: recibe Aflicciones segun el Aliento Negro.</color>";
+        string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Debilidad</color>\n" +
+                        "<color=#44d3ec><b>Fuente:</b></color> <color=#ffffff>Aliento Negro.</color>\n" +
+                        "<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>Las Aflicciones de combate escalan con su intensidad.</color>";
+
+        if (TRADU.i.nIdioma == 2)
         {
-            txtDescripcion = "<color=#5dade2><b>Fragile Soul</b></color>\n\n";
-            txtDescripcion += "<i>(Passive) The Purifier suffers combat Afflictions in proportion to the intensity of the Black Breath.</i>\n\n";
+            titulo = "Fragile Soul";
+            subtitulo = "<color=#4f5552>Weakness: suffers Afflictions based on Black Breath.</color>";
+            cuerpo = "<color=#44d3ec><b>Type:</b></color> <color=#ffffff>Weakness</color>\n" +
+                     "<color=#44d3ec><b>Source:</b></color> <color=#ffffff>Black Breath.</color>\n" +
+                     "<color=#44d3ec><b>Effect:</b></color> <color=#ffffff>Combat Afflictions scale with its intensity.</color>";
         }
         else if (TRADU.i.nIdioma == 3)
         {
-            txtDescripcion = "<color=#5dade2><b>Alma Fragil</b></color>\n\n";
-            txtDescripcion += "<i>(Passiva) A Purificadora sofre Aflicoes de combate em proporcao a intensidade do Respiro Negro.</i>\n\n";
+            titulo = "Alma Fragil";
+            subtitulo = "<color=#4f5552>Fraqueza: sofre Aflicoes conforme o Respiro Negro.</color>";
+            cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Fraqueza</color>\n" +
+                     "<color=#44d3ec><b>Fonte:</b></color> <color=#ffffff>Respiro Negro.</color>\n" +
+                     "<color=#44d3ec><b>Efeito:</b></color> <color=#ffffff>Aflicoes de combate escalam com sua intensidade.</color>";
         }
+
+        txtDescripcion = ConstruirDescripcionEstandar($"<size=115%>{titulo}</size>", subtitulo, cuerpo, "", "#cb5000");
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}

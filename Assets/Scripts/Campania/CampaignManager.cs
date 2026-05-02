@@ -483,7 +483,8 @@ public class CampaignManager : MonoBehaviour
  
   private void InicializarPersonajesNuevaCampania()
   {
-
+    CrearPurificadora(); //debug
+   
     if (!scTutorialManager.tutorialActivo)
     {
       int claseInicialAleatoria = UnityEngine.Random.value < 0.5f ? 5 : 3;
@@ -6253,6 +6254,8 @@ public class CampaignManager : MonoBehaviour
       return Task.CompletedTask;
 
     txString = FloatingTextAnimator.NormalizarTextoRichText(txString);
+    TMP_SpriteAsset spriteAssetRecursos = logDeCampania != null ? logDeCampania.SpriteAssetRecursos : null;
+    txString = TextoRecursosCampania.FormatearRecursos(txString, spriteAssetRecursos != null);
     colaTextos.Enqueue((txString, color));
     TryProcesarColaTextoFlotante();
 
@@ -6274,7 +6277,7 @@ public class CampaignManager : MonoBehaviour
       if (usarTextoFlotanteManager && TextoFlotanteManager.Instance != null)
       {
         // Delega al manager externo la creación del texto
-        TextoFlotanteManager.Instance.GenerarTextoFlotante(tx, col);
+        TextoFlotanteManager.Instance.GenerarTextoFlotanteConFondo(tx, col);
       }
       else
       {
@@ -6294,8 +6297,15 @@ public class CampaignManager : MonoBehaviour
         TextMeshProUGUI txtMesh = goTextoFlotante.GetComponentInChildren<TextMeshProUGUI>();
         if (txtMesh != null)
         {
+          TMP_SpriteAsset spriteAssetRecursos = logDeCampania != null ? logDeCampania.SpriteAssetRecursos : null;
+          if (spriteAssetRecursos != null)
+          {
+            txtMesh.spriteAsset = spriteAssetRecursos;
+          }
+
           txtMesh.text = tx;
           txtMesh.color = col;
+          FloatingTextBackground.Attach(txtMesh);
         }
       }
 
@@ -6369,6 +6379,12 @@ public class CampaignManager : MonoBehaviour
                                                                          //pers1.AddComponent<Cortevertical>(); AGREGADO POR MANDOBLE
                                                                          //Habilidades Base
 
+
+
+    
+     
+
+
     if (!scTutorialManager.tutorialActivo)
     {
       int randHabPot1 = UnityEngine.Random.Range(1, 5);
@@ -6389,7 +6405,7 @@ public class CampaignManager : MonoBehaviour
       }
     }
     else
-    { 
+    {
       pers1.AddComponent<GritoMotivador>(); pers1.GetComponent<GritoMotivador>().NIVEL = 1;
 
     }
@@ -6803,6 +6819,7 @@ public class CampaignManager : MonoBehaviour
     pers1.AddComponent<REPRESENTACIONSobrecarga>();  pers1.GetComponent<REPRESENTACIONSobrecarga>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
     pers1.AddComponent<AcumularEnergia>();  pers1.GetComponent<AcumularEnergia>().NIVEL = -1;
     pers1.AddComponent<DescargaArcana>();  pers1.GetComponent<DescargaArcana>().NIVEL = -1;
+
 
 
     //Habilidades Base

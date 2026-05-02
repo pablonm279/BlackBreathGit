@@ -18,22 +18,30 @@ public class REPRESENTACIONFervorConjunto : Habilidad
 
     public override void  ActualizarDescripcion()
     {
-     
-        if (TRADU.i.nIdioma == 2) // English translation
+        string titulo = "Fervor Conjunto";
+        string subtitulo = "<color=#4f5552>Pasiva: la Esperanza genera Fervor para la Purificadora.</color>";
+        string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +
+                        "<color=#44d3ec><b>Fuente:</b></color> <color=#ffffff>Esperanza de la caravana.</color>\n" +
+                        "<color=#44d3ec><b>Por Fervor:</b></color> <color=#ffffff>+1 danio Divino y 1 Barrera.</color>";
+
+        if (TRADU.i.nIdioma == 2)
         {
-            txtDescripcion = "<color=#5dade2><b>Joint Fervor</b></color>\n\n";
-            txtDescripcion += "<i>(Passive) The caravan's Hope grants Fervor to the Purifier, a resource with various uses in combat.</i>\n\nEach Fervor charge grants +1 Divine Damage Bonus and 1 Barrier.";
+            titulo = "Joint Fervor";
+            subtitulo = "<color=#4f5552>Passive: Hope generates Fervor for the Purifier.</color>";
+            cuerpo = "<color=#44d3ec><b>Type:</b></color> <color=#ffffff>Passive</color>\n" +
+                     "<color=#44d3ec><b>Source:</b></color> <color=#ffffff>Caravan Hope.</color>\n" +
+                     "<color=#44d3ec><b>Per Fervor:</b></color> <color=#ffffff>+1 Divine damage and 1 Barrier.</color>";
         }
         else if (TRADU.i.nIdioma == 3)
         {
-            txtDescripcion = "<color=#5dade2><b>Fervor Conjunto</b></color>\n\n";
-            txtDescripcion += "<i>(Passiva) A Esperanca da caravana concede Fervor a Purificadora, um recurso com varios usos em combate.</i>\n\nCada carga de Fervor concede +1 Bonus de Dano Divino e 1 de Barreira.";
+            titulo = "Fervor Conjunto";
+            subtitulo = "<color=#4f5552>Passiva: Esperanca gera Fervor para a Purificadora.</color>";
+            cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Passiva</color>\n" +
+                     "<color=#44d3ec><b>Fonte:</b></color> <color=#ffffff>Esperanca da caravana.</color>\n" +
+                     "<color=#44d3ec><b>Por Fervor:</b></color> <color=#ffffff>+1 dano Divino e 1 Barreira.</color>";
         }
-        else // Default (Spanish)
-        {
-            txtDescripcion = "<color=#5dade2><b>Fervor Conjunto</b></color>\n\n"; 
-            txtDescripcion += "<i>(Pasiva) La Esperanza de la caravana le otorga Fervor a la Purificadora, recurso con varios usos para el combate.</i>\n\nCada carga de Fervor le otorga +1 Bonus Daño Divino y 1 de Barrera.";
-        }
+
+        txtDescripcion = ConstruirDescripcionEstandar($"<size=115%>{titulo}</size>", subtitulo, cuerpo, "", "#5dade2");
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}

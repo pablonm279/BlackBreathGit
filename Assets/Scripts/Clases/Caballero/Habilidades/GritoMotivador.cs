@@ -57,6 +57,16 @@ public class GritoMotivador : Habilidad
       if (NIVEL == 4) { tituloPt = "Grito Motivador IV a"; }
       if (NIVEL == 5) { tituloPt = "Grito Motivador IV b"; }
 
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string iconoBuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_buff\"></voffset></size><space=-0.35em>";
+      string iconoDebuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_debuff\"></voffset></size><space=-0.35em>";
+      string costoSuperior = cooldownMax > 0
+        ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+        : $"{costoAP} {iconoAP}";
+
       string cuerpo = "";
       if (esIngles)
       {
@@ -129,6 +139,66 @@ public class GritoMotivador : Habilidad
         cuerpo,
         costos,
         "#5dade2");
+
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "Boosts allied damage and Valour; at mastery, weakens enemy damage."
+        : esPortugues
+          ? "Aumenta dano e Valentia aliados; no dominio, reduz dano inimigo."
+          : "Aumenta danio y Valentia aliada; al dominarla, reduce danio enemigo.";
+
+      string cuerpoFormato = "";
+      if (esIngles)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Support</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>All allied units on your side{(afectaEnemigos ? " and enemies on the opposite side" : string.Empty)}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Allies:</b></color> <color={colorValor}>{iconoBuff} +{buffDanio}% Damage for 3 turns</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Other allies:</b></color> <color={colorValor}>+{valorAliados} Valour</color>";
+        if (NIVEL == 4)
+        {
+          cuerpoFormato += $"\n<color={colorEncabezado}><b>Self:</b></color> <color={colorValor}>+2 Valour per affected ally</color>";
+        }
+        if (afectaEnemigos)
+        {
+          cuerpoFormato += $"\n<color={colorEncabezado}><b>Enemies:</b></color> <color={colorValor}>{iconoDebuff} -10% Damage for {duracionDebuffEnemigos} turn, no save</color>";
+        }
+      }
+      else if (esPortugues)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Suporte</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Todas as unidades aliadas do seu lado{(afectaEnemigos ? " e inimigos do lado oposto" : string.Empty)}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Aliados:</b></color> <color={colorValor}>{iconoBuff} +{buffDanio}% Dano por 3 turnos</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Outros aliados:</b></color> <color={colorValor}>+{valorAliados} Valentia</color>";
+        if (NIVEL == 4)
+        {
+          cuerpoFormato += $"\n<color={colorEncabezado}><b>Proprio:</b></color> <color={colorValor}>+2 Valentia por aliado afetado</color>";
+        }
+        if (afectaEnemigos)
+        {
+          cuerpoFormato += $"\n<color={colorEncabezado}><b>Inimigos:</b></color> <color={colorValor}>{iconoDebuff} -10% Dano por {duracionDebuffEnemigos} turno, sem resistencia</color>";
+        }
+      }
+      else
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Soporte</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Todas las unidades aliadas de tu lado{(afectaEnemigos ? " y enemigos del lado opuesto" : string.Empty)}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Aliados:</b></color> <color={colorValor}>{iconoBuff} +{buffDanio}% Danio por 3 turnos</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Demas aliados:</b></color> <color={colorValor}>+{valorAliados} Valentia</color>";
+        if (NIVEL == 4)
+        {
+          cuerpoFormato += $"\n<color={colorEncabezado}><b>Propio:</b></color> <color={colorValor}>+2 Valentia por aliado afectado</color>";
+        }
+        if (afectaEnemigos)
+        {
+          cuerpoFormato += $"\n<color={colorEncabezado}><b>Enemigos:</b></color> <color={colorValor}>{iconoDebuff} -10% Danio por {duracionDebuffEnemigos} turno, sin TS</color>";
+        }
+      }
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpoFormato;
 
       bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)

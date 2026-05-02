@@ -14,7 +14,7 @@ public class Partir : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de crpitico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
 
  
 
@@ -77,6 +77,22 @@ public class Partir : Habilidad
       if (NIVEL == 4) { tituloPt = "Partir IV a"; }
       if (NIVEL == 5) { tituloPt = "Partir IV b"; }
 
+      int pifiaPorcentaje = 10;
+      int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+      int modificadorAtaqueExtra = ataqueActual + bonusAtaqueNivel;
+      string ataqueTxt = modificadorAtaqueExtra == 0
+        ? string.Empty
+        : modificadorAtaqueExtra > 0 ? $" + {modificadorAtaqueExtra}" : $" - {Mathf.Abs(modificadorAtaqueExtra)}";
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string colorFuerza = "#d9822b";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string iconoDebuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_debuff\"></voffset></size><space=-0.35em>";
+      string costoSuperior = cooldownMax > 0
+        ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+        : $"{costoAP} {iconoAP}";
+
       string cuerpo = "";
       if (esIngles)
       {
@@ -116,7 +132,7 @@ public class Partir : Habilidad
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
         : esPortugues
           ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valent�a: {costoPM}\n- Esforzable: Si ({esforzable})";
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
 
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
@@ -129,6 +145,60 @@ public class Partir : Habilidad
         costos,
         "#5dade2");
 
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "High-damage melee attack; on kill, may terrify all enemies."
+        : esPortugues
+          ? "Ataque corpo a corpo de alto dano; ao matar, pode aterrorizar todos os inimigos."
+          : "Ataque melee de alto daño; al matar, puede aterrorizar a todos los enemigos.";
+
+      string cuerpoFormato = "";
+      if (esIngles)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Melee attack</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy or obstacle in front range</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Strength ({fuerzaActual})</color>{ataqueTxt} vs Defense. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Strength ({fuerzaActual})</color>. Type: Slashing</color>\n";
+        if (penetracionArmadura > 0)
+        {
+          cuerpoFormato += $"<color={colorEncabezado}><b>Armor penetration:</b></color> <color={colorValor}>{penetracionArmadura}</color>\n";
+        }
+        cuerpoFormato += $"<color={colorEncabezado}><b>On kill:</b></color> <color={colorValor}>All enemies roll Mental save vs DC {dcMiedo}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>On failed save:</b></color> <color={colorValor}>{iconoDebuff} Terrified for 2 turns: -2 Attack, -1 Max AP, -2 Mental Save</color>";
+      }
+      else if (esPortugues)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque corpo a corpo</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo ou obstáculo no alcance frontal</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Força ({fuerzaActual})</color>{ataqueTxt} vs Defesa. Falha crítica: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Força ({fuerzaActual})</color>. Tipo: Cortante</color>\n";
+        if (penetracionArmadura > 0)
+        {
+          cuerpoFormato += $"<color={colorEncabezado}><b>Penetração de armadura:</b></color> <color={colorValor}>{penetracionArmadura}</color>\n";
+        }
+        cuerpoFormato += $"<color={colorEncabezado}><b>Ao matar:</b></color> <color={colorValor}>Todos os inimigos fazem resistência Mental vs CD {dcMiedo}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoDebuff} Aterrorizado por 2 turnos: -2 Ataque, -1 AP Max, -2 Resistência Mental</color>";
+      }
+      else
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstáculo en alcance frontal</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>. Tipo: Cortante</color>\n";
+        if (penetracionArmadura > 0)
+        {
+          cuerpoFormato += $"<color={colorEncabezado}><b>Penetración de armadura:</b></color> <color={colorValor}>{penetracionArmadura}</color>\n";
+        }
+        cuerpoFormato += $"<color={colorEncabezado}><b>Si mata:</b></color> <color={colorValor}>Todos los enemigos hacen TS Mental vs DC {dcMiedo}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoDebuff} Aterrorizado por 2 turnos: -2 Ataque, -1 AP Max, -2 TS Mental</color>";
+      }
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpoFormato;
+
       bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)
       {
@@ -139,19 +209,19 @@ public class Partir : Habilidad
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +4 damage.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 attack roll bonus.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 save DC on kill) or Option B (+1 crit range).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 save DC on kill) or Option B (+5% Crit).</color>"; }
       }
       else if (esPortugues)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +4 de dano.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 no bonus de ataque.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 CD do efeito ao matar) ou Opcao B (+1 faixa de critico).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 CD do efeito ao matar) ou Opcao B (+5% Critico).</color>"; }
       }
       else
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +4 de danio.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 al bono de ataque.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 DC del efecto al matar) u Opcion B (+1 rango critico).</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 DC del efecto al matar) u Opcion B (+5% Critico).</color>"; }
       }
     }
 
@@ -173,7 +243,7 @@ public class Partir : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Ac� van los efectos a Unidades.
+     if(obj is Unidad) //Acá van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
 
@@ -267,7 +337,7 @@ public class Partir : Habilidad
     
 
        fueElObjetivoAsesinado = objetivo;
-      Invoke("ChequeoMuerteObjetivo", 3.0f); //Chequea si el objetivo muri�, y aplica efectos de ser as�.
+      Invoke("ChequeoMuerteObjetivo", 3.0f); //Chequea si el objetivo murió, y aplica efectos de ser así.
 
 
 
@@ -275,7 +345,7 @@ public class Partir : Habilidad
 
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac� van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -322,7 +392,7 @@ public class Partir : Habilidad
     if (fueElObjetivoAsesinado == null)
     {
       aplicarEfectos = true; //Si no existe se asume que murio
-    } //Si no hab�a objetivo, no hace nada
+    } //Si no había objetivo, no hace nada
     else if (fueElObjetivoAsesinado.HP_actual < 1)
     {
       aplicarEfectos = true; //Si no tiene vida, murio
@@ -339,7 +409,7 @@ public class Partir : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si est� en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si está en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -361,7 +431,7 @@ public class Partir : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambi�n
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras también
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -473,7 +543,7 @@ public class Partir : Habilidad
 
     }
 
-    //Se fija si las 3 casillas de la columna 1 est�n vacias
+    //Se fija si las 3 casillas de la columna 1 están vacias
     foreach (Casilla cas in casillasAdyacentesyFrenteColumna1)
     {
       if (cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //si alguna de las 3 tiene algo, no aumenta el rango melee
@@ -567,7 +637,7 @@ public class Partir : Habilidad
                 if(uni.TiradaSalvacion(uni.mod_TSMental, nDif))
                 {
                     /////////////////////////////////////////////
-                    //BUFF ---- As� se aplica un buff/debuff
+                    //BUFF ---- Así se aplica un buff/debuff
                     Buff buff = new Buff();
                     buff.buffNombre = "Aterrorizado";
                     buff.boolfDebufftBuff = false;
@@ -576,7 +646,7 @@ public class Partir : Habilidad
                     buff.cantAPMax -= 1;
                     buff.cantTsMental -= 2;
                     buff.AplicarBuff(uni);
-                    // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
+                    // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
                     Buff buffComponent = ComponentCopier.CopyComponent(buff, uni.gameObject);
                     
                     VFXAplicarEnemigo(uni.gameObject);

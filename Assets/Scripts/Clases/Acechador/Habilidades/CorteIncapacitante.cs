@@ -15,7 +15,7 @@ public class CorteIncapacitante : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ãcido - 8: Arcano
      ClaseAcechador claseAcechador;
      public override void  Awake()
     {
@@ -75,7 +75,27 @@ public class CorteIncapacitante : Habilidad
     int dcBase = NIVEL > 2 ? 8 : 7;
     int duracion = NIVEL == 5 ? 3 : 2;
     int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConEspadacorta : 0;
-    string rangoDanioEs = FormatearRangoDados(2, 6, danioFijo);
+    string rangoDanio = FormatearRangoDados(2, 6, danioFijo);
+    int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
+    int dcTotal = dcBase + agilidadActual;
+    string colorTitulo = "#5dade2";
+    string colorEncabezado = "#44d3ec";
+    string colorFuerza = "#d9822b";
+    string colorAgilidad = "#7fa35a";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
+    string atributoAtaque = esIngles
+      ? $"<color={colorFuerza}>Strength ({fuerzaActual})</color>"
+      : esPortugues
+        ? $"<color={colorFuerza}>Forca ({fuerzaActual})</color>"
+        : $"<color={colorFuerza}>Fuerza ({fuerzaActual})</color>";
+    string atributoTS = esIngles
+      ? $"<color={colorAgilidad}>Agility ({agilidadActual})</color>"
+      : esPortugues
+        ? $"<color={colorAgilidad}>Agilidade ({agilidadActual})</color>"
+        : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
+    string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
     string tituloEs = "Corte Incapacitante I";
     string tituloEn = "Crippling Slash I";
@@ -89,77 +109,72 @@ public class CorteIncapacitante : Habilidad
     if (NIVEL == 4) { tituloPt = "Corte Incapacitante IV a"; }
     if (NIVEL == 5) { tituloPt = "Corte Incapacitante IV b"; }
 
-    string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Fortaleza, dcBase, "Agi", "Agility", agilidadActual, "Agilidade");
-
     string cuerpo = "";
     if (esIngles)
     {
-      cuerpo += "<b>Type:</b> Melee\n";
-      cuerpo += "<b>Target:</b> 1 enemy in front melee range\n";
-      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color>   + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Damage:</b> 2d6 + {danioFijo} + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
-      cuerpo += lineaSalvacion + "\n";
-      cuerpo += $"<b>On failed save:</b> Crippled ({duracion} turns): Immobile, -20% Damage, -2 Attack";
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Melee attack\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy or obstacle in frontal melee range\n";
+      cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> 1d20 + {atributoAtaque}{bonusTirada} vs Defense\n";
+      cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> {rangoDanio} + {atributoAtaque}. <color={colorEncabezado}><b>Type:</b></color> Slashing\n";
+      cuerpo += $"<color={colorEncabezado}><b>Save:</b></color> Fortitude vs DC {dcBase} + {atributoTS} = {dcTotal}\n";
+      cuerpo += $"<color={colorEncabezado}><b>On failed save:</b></color> Crippled ({duracion} turns): Immobile, -20% Damage, -2 Attack";
       if (NIVEL == 4)
       {
         cuerpo += ", +3 Bleed";
       }
       if (nivelMaestria > 0)
       {
-        cuerpo += $"\n<b>Passive applied:</b> Short Sword Mastery (Tier {nivelMaestria})";
+        cuerpo += $"\n<color={colorEncabezado}><b>Passive:</b></color> Short Sword Mastery (Tier {nivelMaestria})";
       }
     }
     else if (esPortugues)
     {
-      cuerpo += "<b>Tipo:</b> Corpo a corpo\n";
-      cuerpo += "<b>Alvo:</b> 1 inimigo no alcance frontal corpo a corpo\n";
-      cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Forca ({fuerzaActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Dano:</b> 2d6 + {danioFijo} + <color=#ea0606>Forca ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
-      cuerpo += lineaSalvacion + "\n";
-      cuerpo += $"<b>Se falhar na resistencia:</b> Incapacitado ({duracion} turnos): Imovel, -20% Dano, -2 Ataque";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque corpo a corpo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo ou obstaculo no alcance frontal corpo a corpo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> 1d20 + {atributoAtaque}{bonusTirada} vs Defesa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> {rangoDanio} + {atributoAtaque}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Resistencia:</b></color> Fortitude vs CD {dcBase} + {atributoTS} = {dcTotal}\n";
+      cuerpo += $"<color={colorEncabezado}><b>Se falhar:</b></color> Incapacitado ({duracion} turnos): Imovel, -20% Dano, -2 Ataque";
       if (NIVEL == 4)
       {
         cuerpo += ", +3 Sangramento";
       }
       if (nivelMaestria > 0)
       {
-        cuerpo += $"\n<b>Passiva aplicada:</b> Maestria com Espada Curta (Tier {nivelMaestria})";
+        cuerpo += $"\n<color={colorEncabezado}><b>Passiva:</b></color> Maestria com Espada Curta (Tier {nivelMaestria})";
       }
     }
     else
     {
-      cuerpo += "<b>Tipo:</b> Melee\n";
-      cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance melee frontal\n";
-      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Fue ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
-      cuerpo += lineaSalvacion + "\n";
-      cuerpo += $"<b>Si falla TS:</b> Incapacitado ({duracion} turnos): Inmovil, -20% Danio, -2 Ataque";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstaculo en alcance melee frontal\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributoAtaque}{bonusTirada} vs Defensa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributoAtaque}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
+      cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Fortaleza vs DC {dcBase} + {atributoTS} = {dcTotal}\n";
+      cuerpo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> Incapacitado ({duracion} turnos): Inmovil, -20% Danio, -2 Ataque";
       if (NIVEL == 4)
       {
         cuerpo += ", +3 Sangrado";
       }
       if (nivelMaestria > 0)
       {
-        cuerpo += $"\n<b>Pasiva aplicada:</b> Maestria con Espada Corta (Tier {nivelMaestria})";
+        cuerpo += $"\n<color={colorEncabezado}><b>Pasiva:</b></color> Maestria con Espada Corta (Tier {nivelMaestria})";
       }
     }
 
-    string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+    string subtitulo = esIngles
+      ? "Melee attack that can cripple the target."
       : esPortugues
-        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
-
-    txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-      esIngles
-        ? "A control slash that can lock enemy movement after a save check."
-        : esPortugues
-          ? "Um corte de controle que pode travar o movimento inimigo apos teste de resistencia."
-        : "Un corte de control que puede bloquear movimiento enemigo tras TS.",
-      cuerpo,
-      costos,
-      "#5dade2");
+        ? "Ataque corpo a corpo que pode incapacitar o alvo."
+        : "Ataque melee que puede incapacitar al objetivo.";
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += cuerpo;
 
     bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)
@@ -187,6 +202,13 @@ public class CorteIncapacitante : Habilidad
     }
   }
 
+  private string TextoModificadorDescripcion(int valor)
+  {
+    if (valor > 0) { return $" + {valor}"; }
+    if (valor < 0) { return $" - {Mathf.Abs(valor)}"; }
+    return "";
+  }
+
   int damExtra;
       Casilla Origen;
     public override void Activar()
@@ -210,7 +232,7 @@ public class CorteIncapacitante : Habilidad
     {
       bonusAtaque = 1;
       damExtra += 2;
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÃ­a con Espada Corta agrega: +1 Ataque +2 DaÃ±o.</i>\n\n";
 
     }
     else if (NivelMaestria == 2)
@@ -218,7 +240,7 @@ public class CorteIncapacitante : Habilidad
       bonusAtaque = 1;
       damExtra += 2;
       criticoRangoHab = 1;
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÃ­a con Espada Corta agrega: +1 Ataque +2 DaÃ±o +5% Critico.</i>\n\n";
 
     }
     else if (NivelMaestria == 3)
@@ -227,7 +249,7 @@ public class CorteIncapacitante : Habilidad
       damExtra += 2;
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÃ­a con Espada Corta agrega: +1 Ataque +2 DaÃ±o +5% Critico, -1 AP.</i>\n\n";
 
 
     }
@@ -237,7 +259,7 @@ public class CorteIncapacitante : Habilidad
       damExtra += 4;
       criticoRangoHab = 2;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +2 Rango Crítico.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÃ­a con Espada Corta agrega: +1 Ataque +4 DaÃ±o +10% Critico.</i>\n\n";
 
     }
     else if (NivelMaestria == 5)
@@ -246,7 +268,7 @@ public class CorteIncapacitante : Habilidad
       damExtra += 4;
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: Remueve Cooldown, +2 Ataque +4 Daño +1 Rango Crítico.</i>\n\n";
+      txtDescripcion += "\n\n<i>MaestrÃ­a con Espada Corta agrega: Remueve Cooldown, +2 Ataque +4 DaÃ±o +5% Critico.</i>\n\n";
 
     }
 
@@ -258,7 +280,7 @@ public class CorteIncapacitante : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
   {
 
-    if (obj is Unidad) //Acá van los efectos a Unidades.
+    if (obj is Unidad) //AcÃ¡ van los efectos a Unidades.
     {
       Unidad objetivo = (Unidad)obj;
       float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -327,7 +349,7 @@ public class CorteIncapacitante : Habilidad
 
       objetivo.AplicarDebuffPorAtaquesreiterados(1);
     }
-    else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
+    else if (obj is Obstaculo) //AcÃ¡ van los efectos a Obstaculos
     {
       Obstaculo objetivo = (Obstaculo)obj;
       //---
@@ -356,7 +378,7 @@ public class CorteIncapacitante : Habilidad
   void EfectoAdicional(Unidad objetivo)
   {
 
-    int DC = 7 + (int)scEstaUnidad.mod_CarAgilidad; //DC de la tirada de salvación
+    int DC = 7 + (int)scEstaUnidad.mod_CarAgilidad; //DC de la tirada de salvaciÃ³n
 
     if (NIVEL > 2) { DC++; }
 
@@ -366,10 +388,10 @@ public class CorteIncapacitante : Habilidad
       int duracion = 2;
       if (NIVEL == 5) { duracion++; }
        /////////////////////////////////////////////
-      //BUFF ---- Así se aplica un buff/debuff
+      //BUFF ---- AsÃ­ se aplica un buff/debuff
       Buff buff = new Buff();
        buff.buffNombre = "Incapacitado";
-       buff.buffDescr = "Inmóvil, Melee solo adyacente.";
+       buff.buffDescr = "InmÃ³vil, Melee solo adyacente.";
        buff.boolfDebufftBuff = false;
        buff.DuracionBuffRondas = duracion;
        buff.cantDanioPorcentaje -= 20;
@@ -377,7 +399,7 @@ public class CorteIncapacitante : Habilidad
        buff.cantAtAgi -= 2;
        buff.AplicarBuff(objetivo);
        objetivo.estado_inmovil = duracion;
-       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
 
@@ -395,7 +417,7 @@ public class CorteIncapacitante : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si está en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si estÃ¡ en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -417,7 +439,7 @@ public class CorteIncapacitante : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras también
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiÃ©n
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -517,7 +539,7 @@ public class CorteIncapacitante : Habilidad
         
       }
 
-       //Se fija si las 3 casillas de la columna 1 están vacias
+       //Se fija si las 3 casillas de la columna 1 estÃ¡n vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
           if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //si alguna de las 3 tiene algo, no aumenta el rango melee

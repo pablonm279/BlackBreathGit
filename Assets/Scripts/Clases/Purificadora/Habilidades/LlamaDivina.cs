@@ -140,6 +140,64 @@ public class LlamaDivina : Habilidad
         cuerpo,
         costos,
         "#5dade2");
+
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string colorPoder = "#2aa6c8";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string iconoArdiendo = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_ardiendo\"></voffset></size><space=-0.35em>";
+      string iconoBuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_buff\"></voffset></size><space=-0.35em>";
+      string costoSuperior = cooldownMax > 0
+        ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+        : $"{costoAP} {iconoAP}";
+      int pifiaPorcentaje = 5;
+      int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+      string ataqueTxt = ataqueActual == 0 ? string.Empty : ataqueActual > 0 ? $" + {ataqueActual}" : $" - {Mathf.Abs(ataqueActual)}";
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "Ranged Divine attack that can burn or destroy impure targets."
+        : esPortugues
+          ? "Ataque Divino a distancia que pode queimar ou destruir alvos impuros."
+          : "Ataque Divino a distancia que puede quemar o destruir objetivos impuros.";
+      string dano = $"{rangoDanioEs} + <color={colorPoder}>{(esIngles ? "Power" : esPortugues ? "Poder" : "Poder")} ({poderActual})</color>";
+      string cuerpoNuevo = "";
+      if (esIngles)
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged attack (5 range)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 unit or obstacle in range</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Power ({poderActual})</color>{ataqueTxt} vs Defense. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{dano}. Type: Divine</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Fortitude vs DC {dcBase} + <color={colorPoder}>Power ({poderActual})</color></color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Failed save:</b></color> <color={colorValor}>{iconoArdiendo} Burning {quemadura}; Undead/Ethereal die instantly.</color>";
+        if (ganaFervorAlMatar) { cuerpoNuevo += $"\n<color={colorEncabezado}><b>On kill:</b></color> <color={colorValor}>{iconoBuff} +1 Fervor.</color>"; }
+      }
+      else if (esPortugues)
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia (5 de alcance)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 unidade ou obstaculo no alcance</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defesa. Falha critica: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{dano}. Tipo: Divino</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Fortitude vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoArdiendo} Queimando {quemadura}; Morto-vivo/Etereo morrem instantaneamente.</color>";
+        if (ganaFervorAlMatar) { cuerpoNuevo += $"\n<color={colorEncabezado}><b>Ao matar:</b></color> <color={colorValor}>{iconoBuff} +1 Fervor.</color>"; }
+      }
+      else
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia (5 alcance)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 unidad u obstaculo en rango</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Danio:</b></color> <color={colorValor}>{dano}. Tipo: Divino</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Fortaleza vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoArdiendo} Ardiendo {quemadura}; Nomuerto/Etereo mueren instantaneamente.</color>";
+        if (ganaFervorAlMatar) { cuerpoNuevo += $"\n<color={colorEncabezado}><b>Al matar:</b></color> <color={colorValor}>{iconoBuff} +1 Fervor.</color>"; }
+      }
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpoNuevo;
       bool mostrarProximoNivel = EsEscenaCampaña()
         && CampaignManager.Instance != null
         && CampaignManager.Instance.scMenuPersonajes != null

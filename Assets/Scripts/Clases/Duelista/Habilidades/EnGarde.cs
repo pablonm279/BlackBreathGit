@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnGarde : Habilidad
@@ -40,7 +40,7 @@ public class EnGarde : Habilidad
         int bonusEvasion = ObtenerBonusEvasion();
         int bonusDanio = ObtenerBonusDanio();
         int bonusAtaque = 2;
-        int bonusCritico = 1;
+        int bonusCriticoPorcentaje = 5;
         int enfriamiento = NIVEL == 5 ? 4 : 5;
         int umbralPosturaDemandante = NIVEL == 4 ? 10 : 5;
 
@@ -50,60 +50,52 @@ public class EnGarde : Habilidad
         else if (NIVEL == 4) { sufijoNivel = "IV a"; }
         else if (NIVEL == 5) { sufijoNivel = "IV b"; }
 
-        string cuerpo;
+        string colorTitulo = "#5dade2";
+        string colorEncabezado = "#44d3ec";
+        string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+        string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+        string costoSuperior = $"{costoAP} {iconoAP}  {enfriamiento} {iconoCooldown}";
+
+        string cuerpo = "";
         if (esIngles)
         {
-            cuerpo =
-                "<b>Type:</b> Self Buff\n" +
-                "<b>Target:</b> Self\n" +
-                $"<b>Buff (max 3 turns):</b> +{bonusEvasion} Evasion, +{bonusDanio}% Damage, +{bonusCritico} Crit Range, +{bonusAtaque} Attack\n" +
-                "<b>Cancel:</b> removed when taking damage\n" +
-                $"<color=#ff4d4d><b>Demanding Stance:</b> trigger threshold lowered to {umbralPosturaDemandante}% max HP while active</color>";
+            cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Self buff\n";
+            cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Self\n";
+            cuerpo += $"<color={colorEncabezado}><b>Effect:</b></color> max 3 turns, +{bonusEvasion} Evasion, +{bonusDanio}% Damage, +{bonusCriticoPorcentaje}% Crit, +{bonusAtaque}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Cancel:</b></color> removed when taking damage\n";
+            cuerpo += $"<color={colorEncabezado}><b>Demanding Stance:</b></color> trigger threshold becomes {umbralPosturaDemandante}% max HP while active";
         }
         else if (esPortugues)
         {
-            cuerpo =
-                "<b>Tipo:</b> Auto Buff\n" +
-                "<b>Alvo:</b> O proprio usuario\n" +
-                $"<b>Buff (maximo 3 turnos):</b> +{bonusEvasion} Evasao, +{bonusDanio}% Dano, +{bonusCritico} Faixa Critica, +{bonusAtaque} Ataque\n" +
-                "<b>Cancelamento:</b> removido ao receber dano\n" +
-                $"<color=#ff4d4d><b>Postura Exigente:</b> limiar de disparo reduzido para {umbralPosturaDemandante}% da vida maxima enquanto ativo</color>";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Auto buff\n";
+            cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Si mesmo\n";
+            cuerpo += $"<color={colorEncabezado}><b>Efeito:</b></color> maximo 3 turnos, +{bonusEvasion} Evasao, +{bonusDanio}% Dano, +{bonusCriticoPorcentaje}% Critico, +{bonusAtaque}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Cancelamento:</b></color> removido ao receber dano\n";
+            cuerpo += $"<color={colorEncabezado}><b>Postura Demandante:</b></color> limiar vira {umbralPosturaDemandante}% da vida maxima enquanto ativo";
         }
         else
         {
-            cuerpo =
-                "<b>Tipo:</b> Auto Buff\n" +
-                "<b>Objetivo:</b> Uno mismo\n" +
-                $"<b>Buff (mÃ¡ximo 3 turnos):</b> +{bonusEvasion} EvasiÃ³n, +{bonusDanio}% DaÃ±o, +{bonusCritico} Rango CrÃ­tico, +{bonusAtaque} Ataque\n" +
-                "<b>CancelaciÃ³n:</b> se elimina al recibir daÃ±oo\n" +
-                $"<color=#ff4d4d><b>Postura Demandante:</b> el umbral del disparo baja a {umbralPosturaDemandante}% de la vida maxima mientras esta activo</color>";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Auto buff\n";
+            cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Uno mismo\n";
+            cuerpo += $"<color={colorEncabezado}><b>Efecto:</b></color> maximo 3 turnos, +{bonusEvasion} Evasion, +{bonusDanio}% Danio, +{bonusCriticoPorcentaje}% Critico, +{bonusAtaque}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Cancelacion:</b></color> se elimina al recibir danio\n";
+            cuerpo += $"<color={colorEncabezado}><b>Postura Demandante:</b></color> umbral pasa a {umbralPosturaDemandante}% de HP maximo mientras esta activo";
         }
 
-        string costos = esIngles
-            ? $"- Cooldown: {enfriamiento}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: No"
+        string titulo = esIngles ? "En Garde " + sufijoNivel : esPortugues ? "Em Guarda " + sufijoNivel : "En Garde " + sufijoNivel;
+        string subtitulo = esIngles
+            ? "Enter a short guard stance for offense and evasion."
             : esPortugues
-                ? $"- Recarga: {enfriamiento}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Nao"
-                : $"- Enfriamiento: {enfriamiento}\n- Costo AP: {costoAP}\n- Costo Valentia: {costoPM}\n- Esforzable: No";
+                ? "Entra em guarda curta para ofensiva e evasao."
+                : "Entra en guardia breve para ofensiva y evasion.";
 
-        txtDescripcion = ConstruirDescripcionEstandar(
-            esIngles ? "En Garde " + sufijoNivel : esPortugues ? "Em Guarda " + sufijoNivel : "En Garde " + sufijoNivel,
-            esIngles
-                ? "The Duelist enters a prepared guard stance that sharpens offense and evasive posture."
-                : esPortugues
-                    ? "A Duelista entra em uma guarda preparada que amplia ofensiva e evasao."
-                    : "La Duelista entra en una guardia preparada que potencia su ofensiva y evasiva.",
-            cuerpo,
-            costos,
-            "#5dade2");
+        txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+        txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+        txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+        txtDescripcion += cuerpo;
 
-        bool mostrarProximoNivel = CampaignManager.Instance != null
-            && CampaignManager.Instance.scMenuPersonajes != null
-            && CampaignManager.Instance.scMenuPersonajes.pSel != null
-            && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
-        if (!mostrarProximoNivel)
-        {
-            return;
-        }
+        bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+        if (!mostrarProximoNivel) { return; }
 
         if (esIngles)
         {
@@ -115,7 +107,7 @@ public class EnGarde : Habilidad
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Evasao.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Dano.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (Postura Exigente em 10%) ou Opcao B (-1 recarga).</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (Postura Demandante em 10%) ou Opcao B (-1 recarga).</color>"; }
         }
         else
         {

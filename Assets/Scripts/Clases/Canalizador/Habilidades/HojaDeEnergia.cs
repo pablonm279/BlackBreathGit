@@ -137,6 +137,63 @@ public class HojaDeEnergia : Habilidad
       costos,
       "#5dade2");
 
+    int pifiaPorcentaje = 5;
+    int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+    int modificadorAtaqueExtra = ataqueActual + bonusAtaqueNivel;
+    string ataqueTxt = modificadorAtaqueExtra == 0
+      ? string.Empty
+      : modificadorAtaqueExtra > 0 ? $" + {modificadorAtaqueExtra}" : $" - {Mathf.Abs(modificadorAtaqueExtra)}";
+    string colorEncabezado = "#44d3ec";
+    string colorValor = "#ffffff";
+    string colorFuerza = "#d9822b";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string iconoSangrado = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_sangrano\"></voffset></size><space=-0.35em>";
+    string iconoDebuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_debuff\"></voffset></size><space=-0.35em>";
+    string costoSuperior = cooldownMax > 0
+      ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+      : $"{costoAP} {iconoAP}";
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    string subtituloFormato = esIngles
+      ? $"Melee true-damage attack against a frontal {ancho}-tile area."
+      : esPortugues
+        ? $"Ataque melee de dano verdadeiro em area frontal de {ancho} casas."
+        : $"Ataque melee de daño verdadero en area frontal de {ancho} casillas.";
+    string cuerpoFormato = "";
+    if (esIngles)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Melee attack</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>Frontal area ({ancho} width)</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Strength ({fuerzaActual})</color>{ataqueTxt} vs Defense. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorFuerza}>Strength ({fuerzaActual})</color>. Type: True</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Fortitude vs DC 12</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>On failed save:</b></color> <color={colorValor}>{iconoSangrado} +{sangrado} Bleed, {iconoDebuff} -{reduccionRes} all Resistances</color>";
+    }
+    else if (esPortugues)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Area frontal ({ancho} largura)</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Forca ({fuerzaActual})</color>{ataqueTxt} vs Defesa. Falha critica: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorFuerza}>Forca ({fuerzaActual})</color>. Tipo: Verdadeiro</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Fortitude vs CD 12</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoSangrado} +{sangrado} Sangramento, {iconoDebuff} -{reduccionRes} todas as Resistencias</color>";
+    }
+    else
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Area frontal ({ancho} ancho)</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>. Tipo: Verdadero</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Fortaleza vs DC 12</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoSangrado} +{sangrado} Sangrado, {iconoDebuff} -{reduccionRes} todas las Resistencias</color>";
+    }
+
+    txtDescripcion =
+      $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+      $"<color=#8f8f8f><i>{subtituloFormato}</i></color>\n\n" +
+      "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+      cuerpoFormato;
+
     bool mostrarProximoNivel = EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)
     {

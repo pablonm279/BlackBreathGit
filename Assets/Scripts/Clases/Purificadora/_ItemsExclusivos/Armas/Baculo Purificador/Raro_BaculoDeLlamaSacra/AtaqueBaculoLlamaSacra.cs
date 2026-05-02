@@ -58,9 +58,58 @@ public class AtaqueBaculoLlamaSacra : GolpeBaston
     txtDescripcion += "<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Poder +1</color> - Daño: Fuego 1d8 + Divino 1d4- </color>\n";
     txtDescripcion += "<color=#c8c8c8><b>Efecto del arma:</b> Ardiendo 1. Contra Etereo, Nomuerto o Corrupto: +1d6 de daño Divino.</color>\n\n";
     txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
+    ActualizarDescripcion();
   }
+  public override void ActualizarDescripcion()
+  {
+    bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    StatsDescripcionUI stats = ObtenerStatsDescripcionUI();
+    int criticoMin = Mathf.Clamp(19 - stats.CriticoRango, 2, 20);
+    int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+    string bonusTirada = FormatoModificadorDescripcion(stats.Ataque) + FormatoModificadorDescripcion(BonusAtaqueBase);
+    string colorEncabezado = "#44d3ec";
+    string colorValor = "#ffffff";
+    string colorPoder = "#2aa6c8";
+    string atributo = esIngles
+      ? $"<color={colorPoder}>Power ({stats.Poder})</color>"
+      : esPortugues
+        ? $"<color={colorPoder}>Poder ({stats.Poder})</color>"
+        : $"<color={colorPoder}>Poder ({stats.Poder})</color>";
+    string titulo = esIngles ? "Sacred Flame" : esPortugues ? "Chama Sagrada" : "Llama Sacra";
+    string subtitulo = esIngles
+      ? "Melee staff attack with Fire and Divine damage."
+      : esPortugues
+        ? "Ataque corpo a corpo de cajado com dano de Fogo e Divino."
+        : "Ataque melee de baculo con dano de Fuego y Divino.";
+    string cuerpo = "";
+    if (esIngles)
+    {
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Melee attack</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy or obstacle in frontal melee range</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defense. Fumble: 5%. Crit: {criticoPorcentaje}%</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>1-8 Fire + {atributo}; 1-4 Divine + half {atributo}. Type: Fire/Divine</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Weapon effect:</b></color> <color={colorValor}>Burning 1. Against Ethereal, Undead, or Corrupted: +1-6 Divine</color>";
+    }
+    else if (esPortugues)
+    {
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque corpo a corpo</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo ou obstaculo no alcance frontal corpo a corpo</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defesa. Falha critica: 5%. Critico: {criticoPorcentaje}%</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>1-8 Fogo + {atributo}; 1-4 Divino + metade de {atributo}. Tipo: Fogo/Divino</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Efeito da arma:</b></color> <color={colorValor}>Ardendo 1. Contra Etereo, Morto-vivo ou Corrupto: +1-6 Divino</color>";
+    }
+    else
+    {
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstaculo en alcance melee frontal</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defensa. Pifia: 5%. Critico: {criticoPorcentaje}%</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>1-8 Fuego + {atributo}; 1-4 Divino + mitad de {atributo}. Tipo: Fuego/Divino</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Efecto del arma:</b></color> <color={colorValor}>Ardiendo 1. Contra Etereo, Nomuerto o Corrupto: +1-6 Divino</color>";
+    }
 
-  public override void ActualizarDescripcion() { }
+    txtDescripcion = ConstruirDescripcionTooltipNueva(titulo, subtitulo, cuerpo);
+  }
 
   public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
   {

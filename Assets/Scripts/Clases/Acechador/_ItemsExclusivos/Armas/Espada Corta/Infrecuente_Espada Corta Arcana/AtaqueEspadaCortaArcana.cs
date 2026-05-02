@@ -14,7 +14,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano
      ClaseAcechador claseAcechador;
   public override void Awake()
   {
@@ -51,9 +51,9 @@ public class AtaqueEspadaCortaArcana : Habilidad
     imHab = Resources.Load<Sprite>("imHab/Acechador_EspadaCorta");
 
     txtDescripcion = "<color=#5dade2><b>Corte de Espada corta Arcana</b></color>\n\n";
-    txtDescripcion += "<i>Con su mano hábil, el Acechador asesta un golpe con la espada corta.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza + {bonusAtaque}</color> - Daño: Cortante 1d6+2  +1d4 Arcano- </color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
+    txtDescripcion += "<i>Con su mano hï¿½bil, el Acechador asesta un golpe con la espada corta.</i>\n\n";
+    txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza + {bonusAtaque}</color> - Daï¿½o: Cortante 1d6+2  +1d4 Arcano- </color>\n\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentï¿½a: {costoPM} </color>";
 
     if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
     {
@@ -70,8 +70,8 @@ public class AtaqueEspadaCortaArcana : Habilidad
       txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Forca + {bonusAtaque}</color> - Dano: Cortante 1d6+2  +1d4 Arcano- </color>\n\n";
       txtDescripcion += $"<color=#44d3ec>- Recarga: {cooldownMax} \n- Custo AP: {costoAP} \n- Custo Valentia: {costoPM} </color>";
     }
-       
-    }
+    ActualizarDescripcion();
+  }
     
    void Start()
    {
@@ -80,7 +80,57 @@ public class AtaqueEspadaCortaArcana : Habilidad
    }
 
    int damExtra;
-     public override void ActualizarDescripcion() { }
+     public override void ActualizarDescripcion()
+    {
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      StatsDescripcionUI stats = ObtenerStatsDescripcionUI();
+      int criticoMin = Mathf.Clamp(19 - (stats.CriticoRango + criticoRangoHab), 2, 20);
+      int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+      string rangoDanio = FormatearRangoDados(XdDanio, daniodX, 2 + damExtra);
+      string bonusTirada = FormatoModificadorDescripcion(stats.Ataque) + FormatoModificadorDescripcion(bonusAtaque);
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string colorFuerza = "#d9822b";
+      string atributo = esIngles
+        ? $"<color={colorFuerza}>Strength ({stats.Fuerza})</color>"
+        : esPortugues
+          ? $"<color={colorFuerza}>Forca ({stats.Fuerza})</color>"
+          : $"<color={colorFuerza}>Fuerza ({stats.Fuerza})</color>";
+      int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConEspadacorta : 0;
+      string titulo = esIngles ? "Arcane Short Sword Slash" : esPortugues ? "Corte de Espada Curta Arcana" : "Corte de Espada Corta Arcana";
+      string subtitulo = esIngles ? "Melee cut with extra Arcane damage." : esPortugues ? "Corte corpo a corpo com dano Arcano extra." : "Corte melee con dano Arcano extra.";
+      string cuerpo = "";
+      if (esIngles)
+      {
+        cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Melee attack</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy or obstacle in frontal melee range</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defense. Fumble: 5%. Crit: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Type: Slashing</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Extra damage:</b></color> <color={colorValor}>1-4 Arcane; on critical 1-8 Arcane</color>";
+        if (nivelMaestria > 0) { cuerpo += $"\n<color={colorEncabezado}><b>Passive:</b></color> <color={colorValor}>Short Sword Mastery Tier {nivelMaestria}</color>"; }
+      }
+      else if (esPortugues)
+      {
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque corpo a corpo</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo ou obstaculo no alcance frontal corpo a corpo</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defesa. Falha critica: 5%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Cortante</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano extra:</b></color> <color={colorValor}>1-4 Arcano; em critico 1-8 Arcano</color>";
+        if (nivelMaestria > 0) { cuerpo += $"\n<color={colorEncabezado}><b>Passiva:</b></color> <color={colorValor}>Maestria com Espada Curta Tier {nivelMaestria}</color>"; }
+      }
+      else
+      {
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstaculo en alcance melee frontal</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defensa. Pifia: 5%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Cortante</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano extra:</b></color> <color={colorValor}>1-4 Arcano; en critico 1-8 Arcano</color>";
+        if (nivelMaestria > 0) { cuerpo += $"\n<color={colorEncabezado}><b>Pasiva:</b></color> <color={colorValor}>Maestria con Espada Corta Tier {nivelMaestria}</color>"; }
+      }
+
+      txtDescripcion = ConstruirDescripcionTooltipNueva(titulo, subtitulo, cuerpo);
+    }
     Casilla Origen;
     public override void Activar()
     {
@@ -106,7 +156,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
       if (TRADU.i.nIdioma == 3)
       { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano.</i>\n\n"; }
       else
-      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestrï¿½a con Espada Corta agrega: +1 Ataque +2 Daï¿½o.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 2)
@@ -115,9 +165,9 @@ public class AtaqueEspadaCortaArcana : Habilidad
       damExtra += 2;
       criticoRangoHab = 1;
       if (TRADU.i.nIdioma == 3)
-      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano +1 Alcance Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano +5% Critico.</i>\n\n"; }
       else
-      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestrï¿½a con Espada Corta agrega: +1 Ataque +2 Daï¿½o +5% Critico.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 3)
@@ -127,9 +177,9 @@ public class AtaqueEspadaCortaArcana : Habilidad
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
       if (TRADU.i.nIdioma == 3)
-      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano +1 Alcance Critico, -1 AP.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano +5% Critico, -1 AP.</i>\n\n"; }
       else
-      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +1 Rango Crítico, -1 AP.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestrï¿½a con Espada Corta agrega: +1 Ataque +2 Daï¿½o +5% Critico, -1 AP.</i>\n\n"; }
 
 
     }
@@ -140,9 +190,9 @@ public class AtaqueEspadaCortaArcana : Habilidad
       criticoRangoHab = 2;
       costoAP -= 1; //costo AP -1
       if (TRADU.i.nIdioma == 3)
-      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +4 Dano +2 Alcance Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +4 Dano +10% Critico.</i>\n\n"; }
       else
-      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +2 Rango Crítico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestrï¿½a con Espada Corta agrega: +1 Ataque +4 Daï¿½o +10% Critico.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 5)
@@ -152,19 +202,19 @@ public class AtaqueEspadaCortaArcana : Habilidad
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
       if (TRADU.i.nIdioma == 3)
-      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +2 Ataque +4 Dano +1 Alcance Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +2 Ataque +4 Dano +5% Critico.</i>\n\n"; }
       else
-      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +2 Ataque +4 Daño +1 Rango Crítico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestrï¿½a con Espada Corta agrega: +2 Ataque +4 Daï¿½o +5% Critico.</i>\n\n"; }
 
     }
-    
+      ActualizarDescripcion();
   }
     
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
   {
 
-    if (obj is Unidad) //Acá van los efectos a Unidades.
+    if (obj is Unidad) //Acï¿½ van los efectos a Unidades.
     {
       Unidad objetivo = (Unidad)obj;
       float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -239,7 +289,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
 
       objetivo.AplicarDebuffPorAtaquesreiterados(1);
     }
-    else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
+    else if (obj is Obstaculo) //Acï¿½ van los efectos a Obstaculos
     {
       Obstaculo objetivo = (Obstaculo)obj;
       //---
@@ -271,7 +321,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si está en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si estï¿½ en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -293,7 +343,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras también
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiï¿½n
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -393,7 +443,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
         
       }
 
-       //Se fija si las 3 casillas de la columna 1 están vacias
+       //Se fija si las 3 casillas de la columna 1 estï¿½n vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
           if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //si alguna de las 3 tiene algo, no aumenta el rango melee

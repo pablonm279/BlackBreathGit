@@ -229,6 +229,89 @@ public class REPRESENTACIONDeterminacion : Habilidad
         txtDescripcion += "<i>Ao estar Euforico ganha +1 de Ataque.\n";  
       }
     }
+    AplicarDescripcionEstandar();
+  }
+
+  private void AplicarDescripcionEstandar()
+  {
+    string iconoBuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_buff\"></voffset></size><space=-0.35em>";
+    int danoPorValentia = NIVEL == 5 ? 7 : 5;
+    string titulo = $"Determinacion {SufijoNivel()}";
+    string subtitulo = $"<color=#4f5552>Pasiva: +{danoPorValentia}% dano por punto de Valentia.</color>";
+    string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +
+                    $"<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>+{danoPorValentia}% dano por cada punto de Valentia.</color>";
+
+    if (NIVEL >= 2) { cuerpo += "\n<color=#44d3ec><b>Motivado:</b></color> <color=#ffffff>" + iconoBuff + " +1 Tiradas de Salvacion.</color>"; }
+    if (NIVEL >= 3) { cuerpo += "\n<color=#44d3ec><b>Euforico:</b></color> <color=#ffffff>" + iconoBuff + " +1 Ataque.</color>"; }
+    if (NIVEL == 4) { cuerpo += "\n<color=#44d3ec><b>Inicio:</b></color> <color=#ffffff>Comienza la batalla con 5 Valentia.</color>"; }
+
+    string proximo = TextoProximoNivel();
+    if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+
+    if (TRADU.i.nIdioma == 2)
+    {
+      titulo = $"Determination {SufijoNivel()}";
+      subtitulo = $"<color=#4f5552>Passive: +{danoPorValentia}% damage per Valour point.</color>";
+      cuerpo = "<color=#44d3ec><b>Type:</b></color> <color=#ffffff>Passive</color>\n" +
+               $"<color=#44d3ec><b>Effect:</b></color> <color=#ffffff>+{danoPorValentia}% damage per Valour point.</color>";
+      if (NIVEL >= 2) { cuerpo += "\n<color=#44d3ec><b>Motivated:</b></color> <color=#ffffff>" + iconoBuff + " +1 Saving Throws.</color>"; }
+      if (NIVEL >= 3) { cuerpo += "\n<color=#44d3ec><b>Euphoric:</b></color> <color=#ffffff>" + iconoBuff + " +1 Attack.</color>"; }
+      if (NIVEL == 4) { cuerpo += "\n<color=#44d3ec><b>Start:</b></color> <color=#ffffff>Starts battle with 5 Valour.</color>"; }
+      proximo = TextoProximoNivel();
+      if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+    }
+    else if (TRADU.i.nIdioma == 3)
+    {
+      titulo = $"Determinacao {SufijoNivel()}";
+      subtitulo = $"<color=#4f5552>Passiva: +{danoPorValentia}% dano por ponto de Valentia.</color>";
+      cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Passiva</color>\n" +
+               $"<color=#44d3ec><b>Efeito:</b></color> <color=#ffffff>+{danoPorValentia}% dano por ponto de Valentia.</color>";
+      if (NIVEL >= 2) { cuerpo += "\n<color=#44d3ec><b>Motivado:</b></color> <color=#ffffff>" + iconoBuff + " +1 Resistencias.</color>"; }
+      if (NIVEL >= 3) { cuerpo += "\n<color=#44d3ec><b>Euforico:</b></color> <color=#ffffff>" + iconoBuff + " +1 Ataque.</color>"; }
+      if (NIVEL == 4) { cuerpo += "\n<color=#44d3ec><b>Inicio:</b></color> <color=#ffffff>Comeca a batalha com 5 Valentia.</color>"; }
+      proximo = TextoProximoNivel();
+      if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+    }
+
+    txtDescripcion = ConstruirDescripcionEstandar($"<size=115%>{titulo}</size>", subtitulo, cuerpo, "", "#5dade2");
+  }
+
+  private string SufijoNivel()
+  {
+    if (NIVEL < 2) { return "I"; }
+    if (NIVEL == 2) { return "II"; }
+    if (NIVEL == 3) { return "III"; }
+    if (NIVEL == 4) { return "IV a"; }
+    return "IV b";
+  }
+
+  private string TextoProximoNivel()
+  {
+    if (!EsEscenaCampaña() || CampaignManager.Instance.scMenuPersonajes.pSel == null || CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad <= 0)
+    {
+      return "";
+    }
+
+    if (TRADU.i.nIdioma == 2)
+    {
+      if (NIVEL < 2) { return "<color=#dfea02>Next Level: Motivated also grants +1 Saving Throws.</color>"; }
+      if (NIVEL == 2) { return "<color=#dfea02>Next Level: Euphoric also grants +1 Attack.</color>"; }
+      if (NIVEL == 3) { return "<color=#dfea02>Option A: start battle with 5 Valour.\nOption B: +7% damage per Valour point.</color>"; }
+    }
+    else if (TRADU.i.nIdioma == 3)
+    {
+      if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: Motivado tambem concede +1 Resistencias.</color>"; }
+      if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: Euforico tambem concede +1 Ataque.</color>"; }
+      if (NIVEL == 3) { return "<color=#dfea02>Opcao A: comeca a batalha com 5 Valentia.\nOpcao B: +7% dano por ponto de Valentia.</color>"; }
+    }
+    else
+    {
+      if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: Motivado tambien da +1 Tiradas de Salvacion.</color>"; }
+      if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: Euforico tambien da +1 Ataque.</color>"; }
+      if (NIVEL == 3) { return "<color=#dfea02>Opcion A: comienza la batalla con 5 Valentia.\nOpcion B: +7% dano por punto de Valentia.</color>"; }
+    }
+
+    return "";
   }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}

@@ -1252,6 +1252,7 @@ public bool movimientoEnCurso = false;
           CasillaPosicion = destinoMovimiento;
           scBattleManager?.SincronizarHabilidadEscapar(this);
           CasillaPosicion.NuevoObjetoPresenteEnCasilla(gameObject);
+          scBattleManager?.AplicarTamanioUnidadBatalla(this);
           if (EstaFueraDeCombate() || CasillaPosicion == null)
           {
             CancelarMovimientoPendiente();
@@ -1314,6 +1315,7 @@ public bool movimientoEnCurso = false;
           CasillaPosicion = destinoMovimientoForzado;
           scBattleManager?.SincronizarHabilidadEscapar(this);
           CasillaPosicion.NuevoObjetoPresenteEnCasilla(gameObject);
+          scBattleManager?.AplicarTamanioUnidadBatalla(this);
           if (EstaFueraDeCombate() || CasillaPosicion == null)
           {
             CancelarMovimientoPendiente();
@@ -2471,6 +2473,27 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     scBattleManager.EscribirLog(CombatLogFormatter.EventoDanio(mensaje));
   }
 
+  private static bool HaySpriteAssetCombateDisponible()
+  {
+    return BattleManager.Instance != null && BattleManager.Instance.SpriteAssetCombate != null;
+  }
+
+  private static string IconoDanioFlotante(int tipoDanio)
+  {
+    return TextoIconosCombate.FormatearIconoDanioInline(tipoDanio, HaySpriteAssetCombateDisponible());
+  }
+
+  private static string ConstruirBonusDanioFlotante(int bonus, int tipoDanio, Color color)
+  {
+    if (bonus <= 0)
+    {
+      return string.Empty;
+    }
+
+    string bonusHex = ColorUtility.ToHtmlStringRGB(color);
+    return "<size=80%><color=#" + bonusHex + ">(+" + bonus + IconoDanioFlotante(tipoDanio) + ")</color></size>";
+  }
+
   public async virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignoraArmadura = false)
   {
     Task impactoProyectilPendiente = ArrowFlight.ObtenerImpactoPendienteAsync(uCausante, this);
@@ -2737,8 +2760,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
             bonusTotal += bonus;
             if (!bonusMismoTipo)
             {
-              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
-              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              bonusTexto += ConstruirBonusDanioFlotante(bonus, 7, col);
               if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
             }
           }
@@ -2752,8 +2774,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
             bonusTotal += bonus;
             if (!bonusMismoTipo)
             {
-              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
-              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              bonusTexto += ConstruirBonusDanioFlotante(bonus, 8, col);
               if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
             }
           }
@@ -2767,8 +2788,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
             bonusTotal += bonus;
             if (!bonusMismoTipo)
             {
-              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
-              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              bonusTexto += ConstruirBonusDanioFlotante(bonus, 4, col);
               if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
             }
           }
@@ -2782,8 +2802,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
             bonusTotal += bonus;
             if (!bonusMismoTipo)
             {
-              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
-              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              bonusTexto += ConstruirBonusDanioFlotante(bonus, 5, col);
               if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
             }
           }
@@ -2797,8 +2816,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
             bonusTotal += bonus;
             if (!bonusMismoTipo)
             {
-              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
-              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              bonusTexto += ConstruirBonusDanioFlotante(bonus, 9, col);
               if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
             }
           }
@@ -2812,8 +2830,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
             bonusTotal += bonus;
             if (!bonusMismoTipo)
             {
-              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
-              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              bonusTexto += ConstruirBonusDanioFlotante(bonus, 6, col);
               if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
             }
           }
@@ -2827,8 +2844,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
             bonusTotal += bonus;
             if (!bonusMismoTipo)
             {
-              string bonusHex = ColorUtility.ToHtmlStringRGB(col);
-              bonusTexto += "<size=80%><color=#" + bonusHex + ">(+" + bonus + ")</color></size>";
+              bonusTexto += ConstruirBonusDanioFlotante(bonus, 11, col);
               if (!bonusColorAsignado) { bonusColorPrimario = col; bonusColorAsignado = true; }
             }
           }
@@ -2928,7 +2944,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
             break;
         }
       }
-      string textoDanio = "-" + danioTotal;
+      string textoDanio = "-" + danioTotal + IconoDanioFlotante(tipoDanio);
       if (!(danioFinal <= 0 && bonusTotal > 0))
       {
         textoDanio += bonusTexto;
@@ -3546,7 +3562,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       HP_actual -= danioFinalInt;
       adminTraitVida?.ProcesarTraitPuertasDeLaMuerteSiCorresponde(this);
       adminTraitVida?.ProcesarTraitDuroDeMatarSiCorresponde(this);
-      string textoDanioElemental = "-" + danioFinalInt;
+      string textoDanioElemental = "-" + danioFinalInt + IconoDanioFlotante(tipoDanio);
       Color colorDanioElementalFinal = colorDanioElemental;
 
       if (danioFinalInt > 0)
@@ -4194,6 +4210,11 @@ public virtual void AplicarDesesperanzado()
     if (txtMesh != null)
     {
       txtMesh.richText = true;
+      if (txString.Contains("<sprite") && BattleManager.Instance != null && BattleManager.Instance.SpriteAssetCombate != null)
+      {
+        txtMesh.spriteAsset = BattleManager.Instance.SpriteAssetCombate;
+      }
+
       txtMesh.text = txString;
       txtMesh.color = color;
     }

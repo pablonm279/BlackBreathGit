@@ -65,6 +65,21 @@ public class CorteHorizontal : Habilidad
       int dcSangrado = NIVEL == 5 ? 13 : 12;
       int sangradoAplicado = NIVEL == 5 ? 4 : 3;
       string rangoDanio = FormatearRangoDados(XdDanio, daniodX, danioFijo);
+      int pifiaPorcentaje = 10;
+      int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+      int modificadorAtaqueExtra = ataqueActual + bonusAtaque;
+      string ataqueTxt = modificadorAtaqueExtra == 0
+        ? string.Empty
+        : modificadorAtaqueExtra > 0 ? $" + {modificadorAtaqueExtra}" : $" - {Mathf.Abs(modificadorAtaqueExtra)}";
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string colorFuerza = "#d9822b";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string iconoSangrado = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_sangrano\"></voffset></size><space=-0.35em>";
+      string costoSuperior = cooldownMax > 0
+        ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+        : $"{costoAP} {iconoAP}";
 
       string bonusAtaqueTxt = bonusAtaque >= 0 ? $" + {bonusAtaque}" : $" - {Mathf.Abs(bonusAtaque)}";
       string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcSangrado);
@@ -132,6 +147,48 @@ public class CorteHorizontal : Habilidad
         costos,
         "#5dade2");
 
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "Melee sweep that hits the front area and can apply bleed."
+        : esPortugues
+          ? "Varredura corpo a corpo que atinge a área frontal e pode aplicar sangramento."
+          : "Barrido melee que golpea el área frontal y puede aplicar sangrado.";
+
+      string cuerpoFormato = "";
+      if (esIngles)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Melee area attack</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>Front area, 3 tiles wide</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Strength ({fuerzaActual})</color>{ataqueTxt} vs Defense. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Strength ({fuerzaActual})</color>. Type: Slashing</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Fortitude vs DC {dcSangrado}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>On failed save:</b></color> <color={colorValor}>{iconoSangrado} +{sangradoAplicado} Bleed</color>";
+      }
+      else if (esPortugues)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque corpo a corpo em área</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Área frontal, 3 casas de largura</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Força ({fuerzaActual})</color>{ataqueTxt} vs Defesa. Falha crítica: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Força ({fuerzaActual})</color>. Tipo: Cortante</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Resistência:</b></color> <color={colorValor}>Fortaleza vs CD {dcSangrado}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoSangrado} +{sangradoAplicado} Sangramento</color>";
+      }
+      else
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee en área</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Área frontal, 3 casillas de ancho</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>. Tipo: Cortante</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Fortaleza vs DC {dcSangrado}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoSangrado} +{sangradoAplicado} Sangrado</color>";
+      }
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpoFormato;
+
       bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)
       {
@@ -146,15 +203,15 @@ public class CorteHorizontal : Habilidad
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de dano.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de ataque.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 custo de Valentia) ou Opcao B (+1 CD e +1 Sangramento).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nível: +2 de dano.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nível: +1 no bônus de ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nível: Opção A (-1 custo de Valentia) ou Opção B (+1 CD e +1 Sangramento).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valentía) u Opcion B (+1 DC y +1 Sangrado).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +2 de daño.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al bono de ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (-1 costo de Valentía) u Opción B (+1 DC y +1 Sangrado).</color>"; }
       }
     }
 

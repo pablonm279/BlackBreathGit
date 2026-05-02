@@ -136,6 +136,54 @@ public class EscudodeFe : Habilidad
         costos,
         "#5dade2");
 
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string costoSuperior = cooldownMax > 0
+        ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+        : $"{costoAP} {iconoAP}";
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "Places ward tiles that protect allies using current Fervor."
+        : esPortugues
+          ? "Coloca protecoes que defendem aliados usando o Fervor atual."
+          : "Coloca zonas protectoras que defienden aliados usando el Fervor actual.";
+      string efecto = $"+{bonusBarrera} {(esIngles ? "Barrier" : esPortugues ? "Barreira" : "Barrera")}, +{bonusTS} Fortitude/Reflex/Mental";
+      if (agregaDefensa) { efecto += esIngles ? ", +1 Defense" : esPortugues ? ", +1 Defesa" : ", +1 Defensa"; }
+      if (agregaCuracion) { efecto += esIngles ? ", heals 2-12" : esPortugues ? ", cura 2-12" : ", cura 2-12"; }
+      string cuerpoNuevo = "";
+      if (esIngles)
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged ward trap (8 range)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 tile in range; affects it and adjacent tiles</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Duration:</b></color> <color={colorValor}>{duracionTurnos} turns</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>On trigger:</b></color> <color={colorValor}>{efecto} (Fervor {fervorActual} at cast)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Requirement:</b></color> <color={colorValor}>Requires 1+ Fervor; does not consume it.</color>";
+      }
+      else if (esPortugues)
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Armadilha protetora a alcance (8 de alcance)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 celula no alcance; afeta ela e adjacentes</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Duracao:</b></color> <color={colorValor}>{duracionTurnos} turnos</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Ao ativar:</b></color> <color={colorValor}>{efecto} (Fervor {fervorActual} ao usar)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>Requer 1+ Fervor; nao consome.</color>";
+      }
+      else
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Trampa protectora a rango (8 alcance)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 casilla en rango; afecta esa y adyacentes</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Duracion:</b></color> <color={colorValor}>{duracionTurnos} turnos</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Al activarse:</b></color> <color={colorValor}>{efecto} (Fervor {fervorActual} al lanzar)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>Requiere 1+ Fervor; no lo consume.</color>";
+      }
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpoNuevo;
+
       bool mostrarProximoNivel = EsEscenaCampaña()
         && CampaignManager.Instance != null
         && CampaignManager.Instance.scMenuPersonajes != null

@@ -222,6 +222,60 @@ if(NIVEL==5)
         }
     }
 
+    bool esInglesFormato = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortuguesFormato = TRADU.i != null && TRADU.i.nIdioma == 3;
+    string colorEncabezado = "#44d3ec";
+    string colorValor = "#ffffff";
+    string colorPoder = "#2aa6c8";
+    string iconoEnergia = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_acumularenergia\"></voffset></size><space=-0.35em>";
+    string tituloFormato = esInglesFormato ? "Protected Gathering" : esPortuguesFormato ? "Acumulacao Protegida" : "Acumulacion Protegida";
+    if (NIVEL < 2) { tituloFormato += " I"; }
+    else if (NIVEL == 2) { tituloFormato += " II"; }
+    else if (NIVEL == 3) { tituloFormato += " III"; }
+    else if (NIVEL == 4) { tituloFormato += " IV a"; }
+    else if (NIVEL == 5) { tituloFormato += " IV b"; }
+    int barreraExtra = NIVEL == 4 ? 6 : NIVEL > 1 ? 2 : 0;
+    int tsMental = NIVEL > 2 ? 2 : 1;
+    string formulaBarrera = barreraExtra > 0
+      ? $"1 + <color={colorPoder}>Power/Poder</color> + 3 x {iconoEnergia} Energy + {barreraExtra}"
+      : $"1 + <color={colorPoder}>Power/Poder</color> + 3 x {iconoEnergia} Energy";
+    string subtituloFormato = esInglesFormato
+      ? "Gain Barrier and Mental Save when gathering Energy."
+      : esPortuguesFormato
+        ? "Ganha Barreira e Resistencia Mental ao acumular Energia."
+        : "Gana Barrera y TS Mental al acumular Energia.";
+    string cuerpoFormato = "";
+    if (esInglesFormato)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Passive buff</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Trigger:</b></color> <color={colorValor}>When using Gather Energy</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Barrier:</b></color> <color={colorValor}>{formulaBarrera} until next turn</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Mental Save:</b></color> <color={colorValor}>+{tsMental} until next turn</color>";
+      if (NIVEL == 5) { cuerpoFormato += $"\n<color={colorEncabezado}><b>On completed gathering:</b></color> <color={colorValor}>+1 AP that turn</color>"; }
+    }
+    else if (esPortuguesFormato)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Buff passivo</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Ativa:</b></color> <color={colorValor}>Ao usar Acumular Energia</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Barreira:</b></color> <color={colorValor}>{formulaBarrera} ate o proximo turno</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Resistencia Mental:</b></color> <color={colorValor}>+{tsMental} ate o proximo turno</color>";
+      if (NIVEL == 5) { cuerpoFormato += $"\n<color={colorEncabezado}><b>Ao completar acumulacao:</b></color> <color={colorValor}>+1 AP nesse turno</color>"; }
+    }
+    else
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Buff pasivo</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Activa:</b></color> <color={colorValor}>Al usar Acumular Energia</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Barrera:</b></color> <color={colorValor}>{formulaBarrera} hasta el proximo turno</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>TS Mental:</b></color> <color={colorValor}>+{tsMental} hasta el proximo turno</color>";
+      if (NIVEL == 5) { cuerpoFormato += $"\n<color={colorEncabezado}><b>Al completar acumulacion:</b></color> <color={colorValor}>+1 AP ese turno</color>"; }
+    }
+
+    txtDescripcion =
+      $"<size=115%><color=#5dade2><b>{tituloFormato}</b></color></size>\n\n" +
+      $"<color=#8f8f8f><i>{subtituloFormato}</i></color>\n\n" +
+      "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+      cuerpoFormato;
+
     }
 
 

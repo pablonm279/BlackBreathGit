@@ -52,30 +52,49 @@ public class Cortevertical : Habilidad
       int fuerzaActual = statsUI.Fuerza;
       int ataqueActual = statsUI.Ataque;
       int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+      int pifiaPorcentaje = 10;
+      int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
       string bonusAtaqueTxt = bonusAtaque >= 0 ? $" + {bonusAtaque}" : $" - {Mathf.Abs(bonusAtaque)}";
       string rangoDanio = FormatearRangoDados(XdDanio, daniodX);
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string colorFuerza = "#d9822b";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string costoSuperior = cooldownMax > 0
+        ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+        : $"{costoAP} {iconoAP}";
+      string ataqueTxt = ataqueActual == 0
+        ? string.Empty
+        : ataqueActual > 0 ? $" + {ataqueActual}" : $" - {Mathf.Abs(ataqueActual)}";
+      string titulo = esIngles ? "Vertical Cut" : esPortugues ? "Corte Vertical" : "Corte Vertical";
+      string subtitulo = esIngles
+        ? "High-damage frontal melee attack against one target."
+        : esPortugues
+          ? "Ataque corpo a corpo frontal de alto dano contra um alvo."
+          : "Golpe melee frontal de alto danio contra un objetivo.";
 
       string cuerpo = "";
       if (esIngles)
       {
-        cuerpo += "<b>Type:</b> Melee\n";
-        cuerpo += "<b>Target:</b> 1 enemy in front range\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color>  {bonusAtaqueTxt} vs Defense. Fumble: 1-2. Crit: {criticoBaseMin}-20\n";
-        cuerpo += $"<b>Damage:</b> 2d8 + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
+        cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Melee attack</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy or obstacle in front range</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Strength ({fuerzaActual})</color>{ataqueTxt}{bonusAtaqueTxt} vs Defense. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Strength ({fuerzaActual})</color>. Type: Slashing</color>";
       }
       else if (esPortugues)
       {
-        cuerpo += "<b>Tipo:</b> Corpo a corpo\n";
-        cuerpo += "<b>Alvo:</b> 1 inimigo no alcance frontal\n";
-        cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Forca ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defesa. Falha critica: 1-2. Critico: {criticoBaseMin}-20\n";
-        cuerpo += $"<b>Dano:</b> 2d8 + <color=#ea0606>Forca ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque corpo a corpo</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo ou obstaculo no alcance frontal</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Forca ({fuerzaActual})</color>{ataqueTxt}{bonusAtaqueTxt} vs Defesa. Falha critica: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Forca ({fuerzaActual})</color>. Tipo: Cortante</color>";
       }
       else
       {
-        cuerpo += "<b>Tipo:</b> Melee\n";
-        cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance frontal\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Critico: {criticoBaseMin}-20\n";
-        cuerpo += $"<b>Danio:</b> {rangoDanio} + <color=#ea0606>Fue ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstaculo en alcance frontal</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>{ataqueTxt}{bonusAtaqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>. Tipo: Cortante</color>";
       }
 
       string costos = esIngles
@@ -94,6 +113,12 @@ public class Cortevertical : Habilidad
         cuerpo,
         costos,
         "#5dade2");
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpo;
     }
     Casilla Origen;
     public override void Activar()

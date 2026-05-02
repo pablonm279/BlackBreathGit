@@ -129,6 +129,62 @@ public class Purificacion : Habilidad
         cuerpo,
         costos,
         "#5dade2");
+
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string colorPoder = "#2aa6c8";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string iconoArdiendo = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_ardiendo\"></voffset></size><space=-0.35em>";
+      string costoSuperior = cooldownMax > 0
+        ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+        : $"{costoAP} {iconoAP}";
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "Area Divine purge powered by current Fervor."
+        : esPortugues
+          ? "Purga Divina em area alimentada pelo Fervor atual."
+          : "Purga Divina en area alimentada por el Fervor actual.";
+      string formula = $"3-7 + <color={colorPoder}>{(esIngles ? "Power" : esPortugues ? "Poder" : "Poder")} ({poderActual})</color> / 2, x (1 + Fervor {fervorActual})";
+      string rangoActual = $"{danioMinConFervor}-{danioMaxConFervor}";
+      string rangoFalla = $"{danioMinConFervor * 2}-{danioMaxConFervor * 2}";
+      string cuerpoNuevo = "";
+      if (esIngles)
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Area attack (10 range)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>All enemies in selected area</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Reflex vs DC 9 + <color={colorPoder}>Power ({poderActual})</color></color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{formula}. Type: Divine</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Current range:</b></color> <color={colorValor}>{rangoActual}; failed save: {rangoFalla}</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Failed save:</b></color> <color={colorValor}>{iconoArdiendo} Burning 2 and double damage.</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>On cast:</b></color> <color={colorValor}>Fervor becomes 0.</color>";
+      }
+      else if (esPortugues)
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque em area (10 de alcance)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Todos os inimigos da area selecionada</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Reflexos vs DC 9 + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{formula}. Tipo: Divino</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Faixa atual:</b></color> <color={colorValor}>{rangoActual}; se falhar: {rangoFalla}</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoArdiendo} Queimando 2 e dano dobrado.</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Ao usar:</b></color> <color={colorValor}>Fervor vai para 0.</color>";
+      }
+      else
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque en area (10 alcance)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Todos los enemigos del area seleccionada</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Reflejos vs DC 9 + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Danio:</b></color> <color={colorValor}>{formula}. Tipo: Divino</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Rango actual:</b></color> <color={colorValor}>{rangoActual}; si falla TS: {rangoFalla}</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> <color={colorValor}>{iconoArdiendo} Ardiendo 2 y danio duplicado.</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Al lanzar:</b></color> <color={colorValor}>Fervor queda en 0.</color>";
+      }
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpoNuevo;
     }
 
     Casilla Origen;

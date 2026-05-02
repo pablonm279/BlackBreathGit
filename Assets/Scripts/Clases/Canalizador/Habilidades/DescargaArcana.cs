@@ -60,6 +60,17 @@ public class DescargaArcana : Habilidad
       string rangoDanioEs = FormatearRangoDados(1, 10, 1);
       int criticoMin = 19 - (criticoBonusUnidad + criticoRangoHab);
       criticoMin = Mathf.Clamp(criticoMin, 2, 20);
+      int pifiaPorcentaje = 5;
+      int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+      int modificadorAtaqueExtra = ataqueActual + bonusAtaque;
+      string ataqueTxt = modificadorAtaqueExtra == 0
+        ? string.Empty
+        : modificadorAtaqueExtra > 0 ? $" + {modificadorAtaqueExtra}" : $" - {Mathf.Abs(modificadorAtaqueExtra)}";
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string colorPoder = "#2aa6c8";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string costoSuperior = $"{costoAP} {iconoAP}";
 
       // Valor visible para la descripcion: nunca mostrar mas de 5.
       int alcanceVisible = Mathf.Clamp(hAlcance + 1, 1, 5);
@@ -67,6 +78,37 @@ public class DescargaArcana : Habilidad
       string lineaTipoEn = esMelee ? "<b>Type:</b> Melee" : $"<b>Type:</b> Ranged ({alcanceVisible} range)";
       string anchoDetalleEs = hAncho == 0 ? "solo fila objetivo" : "fila objetivo + adyacentes";
       string anchoDetalleEn = hAncho == 0 ? "target row only" : "target row + adjacent";
+      string titulo = TRADU.i != null && TRADU.i.nIdioma == 2 ? "Arcane Discharge" : "Descarga Arcana";
+      string subtitulo = TRADU.i != null && TRADU.i.nIdioma == 2
+        ? "Ranged arcane attack against one enemy."
+        : TRADU.i != null && TRADU.i.nIdioma == 3
+          ? "Ataque arcano à distância contra um inimigo."
+          : "Ataque arcano a distancia contra un enemigo.";
+      string cuerpoFormato = "";
+      if (TRADU.i != null && TRADU.i.nIdioma == 2)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged attack ({alcanceVisible} range)</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy in range</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Width:</b></color> <color={colorValor}>{hAncho} ({anchoDetalleEn})</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Power ({poderActual})</color>{ataqueTxt} vs Defense. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Power ({poderActual})</color>. Type: Arcane</color>";
+      }
+      else if (TRADU.i != null && TRADU.i.nIdioma == 3)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque à distância ({alcanceVisible} alcance)</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo em alcance</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Largura:</b></color> <color={colorValor}>{hAncho} ({(hAncho == 0 ? "apenas fila alvo" : "fila alvo + adjacentes")})</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defesa. Falha crítica: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Poder ({poderActual})</color>. Tipo: Arcano</color>";
+      }
+      else
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia ({alcanceVisible} alcance)</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo en rango</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Ancho:</b></color> <color={colorValor}>{hAncho} ({anchoDetalleEs})</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Poder ({poderActual})</color>. Tipo: Arcano</color>";
+      }
 
       if (TRADU.i != null && TRADU.i.nIdioma == 2)
       {
@@ -85,6 +127,11 @@ public class DescargaArcana : Habilidad
           cuerpo,
           costos,
           "#5dade2");
+        txtDescripcion =
+          $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+          $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+          "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+          cuerpoFormato;
         return;
       }
       if (TRADU.i != null && TRADU.i.nIdioma == 3)
@@ -104,6 +151,11 @@ public class DescargaArcana : Habilidad
           cuerpo,
           costos,
           "#5dade2");
+        txtDescripcion =
+          $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+          $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+          "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+          cuerpoFormato;
         return;
       }
 
@@ -123,6 +175,11 @@ public class DescargaArcana : Habilidad
           cuerpo,
           costos,
           "#5dade2");
+        txtDescripcion =
+          $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+          $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+          "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+          cuerpoFormato;
       }
     }
 

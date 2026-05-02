@@ -1,231 +1,122 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class REPRESENTACIONMaestriaEspadaCorta : Habilidad
 {
-   
-
-    
      public override void  Awake()
     {
       imHab = Resources.Load<Sprite>("imHab/Acechador_MaestriaEspadaCorta");
       ActualizarDescripcion();
       IDenClase = 2;
-      
     }
-
 
   public override void ActualizarDescripcion()
   {
+    int ataque = NIVEL == 5 ? 2 : 1;
+    int critico = NIVEL == 4 ? 10 : NIVEL > 1 ? 5 : 0;
+    int danio = NIVEL >= 4 ? 4 : 2;
+    bool reduceAp = NIVEL >= 3;
+    string sufijo = SufijoNivel();
+    string titulo = $"Maestría con Espada Corta {sufijo}";
+    string bajada = "Mejora los ataques hechos con espada corta.";
+    string tipo = "Pasiva";
+    string aplica = "Ataques con espada corta";
+    string bonificador = $"+{ataque} Ataque, +{danio} daño Cortante";
+    string extra = reduceAp ? "-1 costo AP" : "";
+    string proximo = ProximoNivel();
 
-    if (NIVEL < 2)
+    if (critico > 0)
     {
-      txtDescripcion = "<color=#5dade2><b>Maestría con Espada Corta I</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Agrega +1 Ataque y +2 Daño Cortante a los ataques con la Espada Corta.</i>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Rango Crítico</color>\n\n";
-          }
-        }
-      }
-
+      bonificador += $", +{critico}% Critico";
     }
-    if (NIVEL == 2)
+
+    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
     {
-      txtDescripcion = "<color=#5dade2><b>Maestría con Espada Corta II</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Agrega +1 Ataque, +1 Rango crítico y +2 Daño Cortante a los ataques con la Espada Corta.</i>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 Costo AP/color>\n\n";
-          }
-        }
-      }
+      titulo = $"Short Sword Mastery {sufijo}";
+      bajada = "Improves attacks made with a short sword.";
+      tipo = "Passive";
+      aplica = "Short sword attacks";
+      bonificador = $"+{ataque} Attack, +{danio} Slashing damage";
+      if (critico > 0) bonificador += $", +{critico}% Critical";
+      extra = reduceAp ? "-1 AP cost" : "";
+      proximo = ProximoNivelIngles();
     }
-    if (NIVEL == 3)
+    if (TRADU.i.nIdioma == 3)
     {
-      txtDescripcion = "<color=#5dade2><b>Maestría con Espada Corta III</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Agrega +1 Ataque, +1 Rango crítico y +2 Daño Cortante a los ataques con la Espada Corta. Además cuestan 1 AP menos.</i>\n\n";
-
-
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: +1 Rango Crítico +2 Daño</color>\n\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: +1 Ataque +2 Daño</color>\n";
-          }
-        }
-      }
+      titulo = $"Maestria com Espada Curta {sufijo}";
+      bajada = "Melhora ataques feitos com espada curta.";
+      tipo = "Passiva";
+      aplica = "Ataques com espada curta";
+      bonificador = $"+{ataque} Ataque, +{danio} de dano Cortante";
+      if (critico > 0) bonificador += $", +{critico}% Critico";
+      extra = reduceAp ? "-1 custo AP" : "";
+      proximo = ProximoNivelPortugues();
     }
-    if (NIVEL == 4)
+
+    txtDescripcion = $"<size=115%><color=#5dade2><b>{titulo}</b></color></size>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{bajada}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += $"<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>{tipo}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>Aplica a:</b></color> <color=#ffffff>{aplica}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>Bonus:</b></color> <color=#ffffff>{bonificador}</color>";
+    if (!string.IsNullOrEmpty(extra))
     {
-      txtDescripcion = "<color=#5dade2><b>Maestría con Espada Corta IVa</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Agrega +1 Ataque, +2 Rango crítico y +4 Daño Cortante a los ataques con la Espada Corta. Además cuestan 1 AP menos.</i>\n\n";
+      txtDescripcion += $"\n<color=#44d3ec><b>Extra:</b></color> <color=#ffffff>{extra}</color>";
     }
-    if (NIVEL == 5)
+    if (!string.IsNullOrEmpty(proximo))
     {
-      txtDescripcion = "<color=#5dade2><b>Maestría con Espada Corta IVb</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Agrega +2 Ataque, +1 Rango crítico y +4 Daño Cortante a los ataques con la Espada Corta. Además cuestan 1 AP menos.</i>\n\n";
+      txtDescripcion += $"\n\n<color=#dfea02>{proximo}</color>";
     }
-       
+  }
 
-      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-      {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Short Sword Mastery I</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) Adds +1 Attack and +2 Slashing Damage to Short Sword attacks.</i>\n\n";
+  string SufijoNivel()
+  {
+    if (NIVEL < 2) return "I";
+    if (NIVEL == 2) return "II";
+    if (NIVEL == 3) return "III";
+    if (NIVEL == 4) return "IVa";
+    return "IVb";
+  }
 
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Critical Range</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Short Sword Mastery II</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) Adds +1 Attack, +1 Critical Range and +2 Slashing Damage to Short Sword attacks.</i>\n\n";
+  bool PuedeMostrarProximoNivel()
+  {
+    return EsEscenaCampaña()
+      && CampaignManager.Instance != null
+      && CampaignManager.Instance.scMenuPersonajes != null
+      && CampaignManager.Instance.scMenuPersonajes.pSel != null
+      && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+  }
 
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: -1 AP Cost</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Short Sword Mastery III</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) Adds +1 Attack, +1 Critical Range and +2 Slashing Damage to Short Sword attacks. Also costs 1 less AP.</i>\n\n";
+  string ProximoNivel()
+  {
+    if (!PuedeMostrarProximoNivel()) return "";
+    if (NIVEL < 2) return "- Próximo Nivel: +5% Critico";
+    if (NIVEL == 2) return "- Próximo Nivel: -1 costo AP";
+    if (NIVEL == 3) return "- Opción A: +5% Critico, +2 daño\n- Opción B: +1 Ataque, +2 daño";
+    return "";
+  }
 
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: +1 Critical Range +2 Damage</color>\n\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: +1 Attack +2 Damage</color>\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Short Sword Mastery IVa</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) Adds +1 Attack, +2 Critical Range and +4 Slashing Damage to Short Sword attacks. Also costs 1 less AP.</i>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Short Sword Mastery IVb</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) Adds +2 Attack, +1 Critical Range and +4 Slashing Damage to Short Sword attacks. Also costs 1 less AP.</i>\n\n";
-        }
-      }
-      if (TRADU.i.nIdioma == 3)
-      {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Maestria com Espada Curta I</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque e +2 Dano Cortante aos ataques com Espada Curta.</i>\n\n";
+  string ProximoNivelIngles()
+  {
+    if (!PuedeMostrarProximoNivel()) return "";
+    if (NIVEL < 2) return "- Next Level: +5% Critical";
+    if (NIVEL == 2) return "- Next Level: -1 AP cost";
+    if (NIVEL == 3) return "- Option A: +5% Critical, +2 damage\n- Option B: +1 Attack, +2 damage";
+    return "";
+  }
 
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 Faixa de Critico</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Maestria com Espada Curta II</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque, +1 Faixa de Critico e +2 Dano Cortante aos ataques com Espada Curta.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: -1 Custo AP</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Maestria com Espada Curta III</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque, +1 Faixa de Critico e +2 Dano Cortante aos ataques com Espada Curta. Alem disso custa 1 AP a menos.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Opcao A: +1 Faixa de Critico +2 Dano</color>\n\n";
-                txtDescripcion += $"<color=#dfea02>-Opcao B: +1 Ataque +2 Dano</color>\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Maestria com Espada Curta IVa</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque, +2 Faixa de Critico e +4 Dano Cortante aos ataques com Espada Curta. Alem disso custa 1 AP a menos.</i>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Maestria com Espada Curta IVb</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Adiciona +2 Ataque, +1 Faixa de Critico e +4 Dano Cortante aos ataques com Espada Curta. Alem disso custa 1 AP a menos.</i>\n\n";
-        }
-      }
-
-    }
-
+  string ProximoNivelPortugues()
+  {
+    if (!PuedeMostrarProximoNivel()) return "";
+    if (NIVEL < 2) return "- Proximo Nivel: +5% Critico";
+    if (NIVEL == 2) return "- Proximo Nivel: -1 custo AP";
+    if (NIVEL == 3) return "- Opcao A: +5% Critico, +2 dano\n- Opcao B: +1 Ataque, +2 dano";
+    return "";
+  }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}
     public override void Activar()
     {
-       
-
-      
-       
-        
     }
-    
-
-
-
-
 }
-
-
-

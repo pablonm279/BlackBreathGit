@@ -10,21 +10,7 @@ public class REPRESENTACIONCorajeInquebrantable : Habilidad
      public override void  Awake()
     {
       imHab = Resources.Load<Sprite>("imHab/Caballero_CorajeInquebrantable");
-      if (TRADU.i.nIdioma == 1)
-      {
-          txtDescripcion = "<color=#5dade2><b>Coraje Inquebrantable</b></color>\n\n"; 
-          txtDescripcion += "<i>(Pasiva)Pelea con coraje, incluso en los momentos mas oscuros.\nSus puntos de valentía no pueden ser menores a 0.</i>\n\n";
-      }
-      if (TRADU.i.nIdioma == 2)
-      {
-          txtDescripcion = "<color=#5dade2><b>Unbreakable Valour</b></color>\n\n";
-          txtDescripcion += "<i>(Passive)Fights with valour, even in the darkest moments.\nTheir Valour points cannot be less than 0.</i>\n\n";
-      }
-      if (TRADU.i.nIdioma == 3)
-      {
-          txtDescripcion = "<color=#5dade2><b>Coragem Inquebravel</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva)Luta com valentia, mesmo nos momentos mais sombrios.\nSeus pontos de Valentia nao podem ficar abaixo de 0.</i>\n\n";
-      }
+      ActualizarDescripcion();
 
     }
 
@@ -40,7 +26,30 @@ public class REPRESENTACIONCorajeInquebrantable : Habilidad
         
     }
     
-    public override void ActualizarDescripcion(){}
+    public override void ActualizarDescripcion()
+    {
+      string titulo = "Coraje Inquebrantable";
+      string subtitulo = "<color=#4f5552>Pasiva: la Valentia no baja de 0.</color>";
+      string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +
+                      "<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>Los puntos de Valentia nunca quedan por debajo de 0.</color>";
+
+      if (TRADU.i.nIdioma == 2)
+      {
+        titulo = "Unbreakable Valour";
+        subtitulo = "<color=#4f5552>Passive: Valour cannot drop below 0.</color>";
+        cuerpo = "<color=#44d3ec><b>Type:</b></color> <color=#ffffff>Passive</color>\n" +
+                 "<color=#44d3ec><b>Effect:</b></color> <color=#ffffff>Valour points never stay below 0.</color>";
+      }
+      else if (TRADU.i.nIdioma == 3)
+      {
+        titulo = "Coragem Inquebravel";
+        subtitulo = "<color=#4f5552>Passiva: Valentia nao baixa de 0.</color>";
+        cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Passiva</color>\n" +
+                 "<color=#44d3ec><b>Efeito:</b></color> <color=#ffffff>Os pontos de Valentia nunca ficam abaixo de 0.</color>";
+      }
+
+      txtDescripcion = ConstruirDescripcionEstandar($"<size=115%>{titulo}</size>", subtitulo, cuerpo, "", "#5dade2");
+    }
 
 
 

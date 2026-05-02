@@ -107,6 +107,58 @@ public class CastigaraLosMalvados : Habilidad
         costos,
         "#5dade2");
 
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string colorPoder = "#2aa6c8";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string iconoReaccion = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_reaccion\"></voffset></size><space=-0.35em>";
+      string iconoDebuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_debuff\"></voffset></size><space=-0.35em>";
+      string costoSuperior = cooldownMax > 0
+        ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+        : $"{costoAP} {iconoAP}";
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "Marks an enemy; damaging allies triggers Divine punishment."
+        : esPortugues
+          ? "Marca um inimigo; causar dano a aliados ativa punicao Divina."
+          : "Marca a un enemigo; daniar aliados activa castigo Divino.";
+      string danio = $"{rangoDanioEs} + <color={colorPoder}>{(esIngles ? "Power" : esPortugues ? "Poder" : "Poder")} ({poderActual})</color> + {fraccionDanio}";
+      string cuerpoNuevo = "";
+      if (esIngles)
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Reactive mark {iconoReaccion}</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy on the opposite side</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Trigger:</b></color> <color={colorValor}>When the marked unit damages an ally</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Mental vs DC {dcBase} + <color={colorPoder}>Power ({poderActual})</color></color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Failed save:</b></color> <color={colorValor}>{iconoDebuff} loses all remaining AP; {danio} of damage dealt. Type: Divine</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Duration:</b></color> <color={colorValor}>{usos} failed saves, or ends if target succeeds.</color>";
+      }
+      else if (esPortugues)
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Marca reativa {iconoReaccion}</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo do lado oposto</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Gatilho:</b></color> <color={colorValor}>Quando a unidade marcada causa dano a um aliado</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Mental vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoDebuff} perde todo AP restante; {danio} do dano causado. Tipo: Divino</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Duracao:</b></color> <color={colorValor}>{usos} falhas, ou termina se o alvo passar.</color>";
+      }
+      else
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Marca reactiva {iconoReaccion}</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo del lado opuesto</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Disparo:</b></color> <color={colorValor}>Cuando la unidad marcada dania a un aliado</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Mental vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoDebuff} pierde todo AP restante; {danio} del danio infligido. Tipo: Divino</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Duracion:</b></color> <color={colorValor}>{usos} fallos de TS, o termina si el objetivo supera la TS.</color>";
+      }
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpoNuevo;
+
       bool mostrarProximoNivel = EsEscenaCampaña()
         && CampaignManager.Instance != null
         && CampaignManager.Instance.scMenuPersonajes != null

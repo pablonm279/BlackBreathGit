@@ -14,7 +14,7 @@ public class CorteVerticalCongelado : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano
       public override void  Awake()
     {
       nombre = "Corte Vertical Congelado";
@@ -49,12 +49,12 @@ public class CorteVerticalCongelado : Habilidad
       if (TRADU.i.nIdioma == 1)
       {
         txtDescripcion = "<color=#5dade2><b>Corte Vertical Congelado</b></color>\n\n";
-        txtDescripcion += "<i>Con el mandoble, el Caballero efectúa un ataque de arriba hacia abajo, lento, pero capaz de provocar grandes daños.</i>\n\n";
-        txtDescripcion += "<i>+1d10 Daño Frío - si es Golpe Crítico, hace 1d6 a enemigos Adyacentes al objetivo.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Daño: Cortante 2d8- </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
+        txtDescripcion += "<i>Con el mandoble, el Caballero efectï¿½a un ataque de arriba hacia abajo, lento, pero capaz de provocar grandes daï¿½os.</i>\n\n";
+        txtDescripcion += "<i>+1d10 Daï¿½o Frï¿½o - si es Golpe Crï¿½tico, hace 1d6 a enemigos Adyacentes al objetivo.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Daï¿½o: Cortante 2d8- </color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentï¿½a: {costoPM} </color>";
       }
-      if (TRADU.i.nIdioma == 2) //Inglés
+      if (TRADU.i.nIdioma == 2) //Inglï¿½s
       {
         txtDescripcion = "<color=#5dade2><b>Frozen Vertical Slash</b></color>\n\n";
         txtDescripcion += "<i>With the greatsword, the Knight performs a slow downward attack, capable of inflicting great damage.</i>\n\n";
@@ -70,11 +70,56 @@ public class CorteVerticalCongelado : Habilidad
         txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Forca +{bonusAtaque}</color> - Dano: Cortante 2d8- </color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Recarga: {cooldownMax} \n- Custo AP: {costoAP} \n- Custo Valentia: {costoPM} </color>";
       }
-       
+      ActualizarDescripcion();
     }
+     public override void ActualizarDescripcion()
+    {
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      StatsDescripcionUI stats = ObtenerStatsDescripcionUI();
+      int criticoMin = Mathf.Clamp(19 - (stats.CriticoRango + criticoRangoHab), 2, 20);
+      int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+      string rangoDanio = FormatearRangoDados(XdDanio, daniodX);
+      string bonusTirada = FormatoModificadorDescripcion(stats.Ataque) + FormatoModificadorDescripcion(bonusAtaque);
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string colorFuerza = "#d9822b";
+      string atributo = esIngles
+        ? $"<color={colorFuerza}>Strength ({stats.Fuerza})</color>"
+        : esPortugues
+          ? $"<color={colorFuerza}>Forca ({stats.Fuerza})</color>"
+          : $"<color={colorFuerza}>Fuerza ({stats.Fuerza})</color>";
+      string titulo = esIngles ? "Frozen Vertical Slash" : esPortugues ? "Corte Vertical Congelado" : "Corte Vertical Congelado";
+      string subtitulo = esIngles ? "Heavy melee attack with extra Cold damage." : esPortugues ? "Ataque corpo a corpo pesado com dano de Gelo extra." : "Ataque melee pesado con dano Frio extra.";
+      string efecto = esIngles ? "Extra damage: 1-10 Cold; on critical, 1-6 Cold to adjacent enemies" : esPortugues ? "Dano extra: 1-10 Gelo; em critico, 1-6 Gelo a inimigos adjacentes" : "Dano extra: 1-10 Frio; en critico, 1-6 Frio a enemigos adyacentes";
+      string cuerpo = "";
+      if (esIngles)
+      {
+        cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Melee attack</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy or obstacle in frontal melee range</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defense. Fumble: 10%. Crit: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Type: Slashing</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Weapon effect:</b></color> <color={colorValor}>{efecto}</color>";
+      }
+      else if (esPortugues)
+      {
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque corpo a corpo</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo ou obstaculo no alcance frontal corpo a corpo</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defesa. Falha critica: 10%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Cortante</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Efeito da arma:</b></color> <color={colorValor}>{efecto}</color>";
+      }
+      else
+      {
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstaculo en alcance melee frontal</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defensa. Pifia: 10%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Cortante</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Efecto del arma:</b></color> <color={colorValor}>{efecto}</color>";
+      }
 
-   
-     public override void ActualizarDescripcion(){}
+      txtDescripcion = ConstruirDescripcionTooltipNueva(titulo, subtitulo, cuerpo);
+    }
     Casilla Origen;
     public override void Activar()
     {
@@ -93,7 +138,7 @@ public class CorteVerticalCongelado : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Acá van los efectos a Unidades.
+     if(obj is Unidad) //Acï¿½ van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -148,7 +193,7 @@ public class CorteVerticalCongelado : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
-        float danioFrio = TiradaDeDados.TirarDados(1, 5); //1d5 de daño frío
+        float danioFrio = TiradaDeDados.TirarDados(1, 5); //1d5 de daï¿½o frï¿½o
         objetivo.RecibirDanio(danioFrio, 5, false, scEstaUnidad);
 
 
@@ -168,7 +213,7 @@ public class CorteVerticalCongelado : Habilidad
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
 
-        float danioFrio = TiradaDeDados.TirarDados(1, 10); //1d10 de daño frío
+        float danioFrio = TiradaDeDados.TirarDados(1, 10); //1d10 de daï¿½o frï¿½o
         objetivo.RecibirDanio(danioFrio, 5, false, scEstaUnidad);
 
 
@@ -183,7 +228,7 @@ public class CorteVerticalCongelado : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 
-        float danioFrio = TiradaDeDados.TirarDados(1, 10); //1d10 de daño frío
+        float danioFrio = TiradaDeDados.TirarDados(1, 10); //1d10 de daï¿½o frï¿½o
         objetivo.RecibirDanio(danioFrio, 5, true, scEstaUnidad);
 
         foreach (Casilla cas in objetivo.CasillaPosicion.ObtenerCasillasAlrededor(1))
@@ -209,7 +254,7 @@ public class CorteVerticalCongelado : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Acï¿½ van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -248,7 +293,7 @@ public class CorteVerticalCongelado : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si está en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si estï¿½ en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -270,7 +315,7 @@ public class CorteVerticalCongelado : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras también
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambiï¿½n
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -370,7 +415,7 @@ public class CorteVerticalCongelado : Habilidad
         
       }
 
-       //Se fija si las 3 casillas de la columna 1 están vacias
+       //Se fija si las 3 casillas de la columna 1 estï¿½n vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
           if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen)) //si alguna de las 3 tiene algo, no aumenta el rango melee

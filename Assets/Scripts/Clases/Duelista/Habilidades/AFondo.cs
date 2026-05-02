@@ -62,10 +62,13 @@ public class AFondo : Habilidad
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
         var statsUI = ObtenerStatsDescripcionUI();
 
-        int atributoMixtoActual = ObtenerAtributoMixto(statsUI.Fuerza, statsUI.Agilidad);
+        int fuerzaActual = statsUI.Fuerza;
+        int agilidadActual = statsUI.Agilidad;
+        int atributoMixtoActual = ObtenerAtributoMixto(fuerzaActual, agilidadActual);
         int ataqueActual = statsUI.Ataque;
         int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
-        string rangoDanioEs = FormatearRangoDados(1, 10, bonusDanioPlano);
+        int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
+        string rangoDanio = FormatearRangoDados(1, 10, bonusDanioPlano);
 
         string tituloEs = "A Fondo I";
         string tituloEn = "All In I";
@@ -75,84 +78,100 @@ public class AFondo : Habilidad
         if (NIVEL == 4) { tituloEs = "A Fondo IV a"; tituloEn = "All In IV a"; tituloPt = "A Fondo IV a"; }
         if (NIVEL == 5) { tituloEs = "A Fondo IV b"; tituloEn = "All In IV b"; tituloPt = "A Fondo IV b"; }
 
+        string colorTitulo = "#5dade2";
+        string colorEncabezado = "#44d3ec";
+        string colorFuerza = "#d9822b";
+        string colorAgilidad = "#7fa35a";
+        string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+        string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+        string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
+        string atributo = esIngles
+            ? $"<color={colorFuerza}>Strength</color>/<color={colorAgilidad}>Agility</color> ({atributoMixtoActual})"
+            : esPortugues
+                ? $"<color={colorFuerza}>Forca</color>/<color={colorAgilidad}>Agilidade</color> ({atributoMixtoActual})"
+                : $"<color={colorFuerza}>Fuerza</color>/<color={colorAgilidad}>Agilidad</color> ({atributoMixtoActual})";
+        string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
+
         string cuerpo = "";
         if (esIngles)
         {
-            cuerpo += "<b>Type:</b> Melee\n";
-            cuerpo += "<b>Target:</b> Selected enemy tile and the 2 rear diagonal tiles\n";
-            cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Str/Agi ({atributoMixtoActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Damage:</b> 1d10 + {bonusDanioPlano} | <b>Type:</b> Piercing\n";
-            cuerpo += $"<b>Armor Penetration:</b> {penetracionArmadura}\n";
-            cuerpo += $"{ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, dcFortitud)}\n";
-            cuerpo += $"<b>On failed save (if damaged):</b> +{sangradoAplicado} Bleed";
+            cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Melee attack\n";
+            cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> selected enemy tile and the 2 rear diagonal tiles\n";
+            cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> 1d20 + {atributo}{bonusTirada} vs Defense\n";
+            cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> {rangoDanio}. <color={colorEncabezado}><b>Type:</b></color> Piercing\n";
+            cuerpo += $"<color={colorEncabezado}><b>Armor Penetration:</b></color> {penetracionArmadura}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Save:</b></color> Fortitude vs DC {dcFortitud}\n";
+            cuerpo += $"<color={colorEncabezado}><b>On failed save:</b></color> if damaged, +{sangradoAplicado} Bleed\n";
+            cuerpo += $"<color={colorEncabezado}><b>Effortable:</b></color> yes ({esforzable})";
         }
         else if (esPortugues)
         {
-            cuerpo += "<b>Tipo:</b> Corpo a corpo\n";
-            cuerpo += "<b>Alvo:</b> Casa inimiga escolhida e as 2 diagonais de tras\n";
-            cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Forca/Agilidade ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Dano:</b> 1d10 + {bonusDanioPlano} | <b>Tipo:</b> Perfurante\n";
-            cuerpo += $"<b>Penetracao de armadura:</b> {penetracionArmadura}\n";
-            cuerpo += $"{ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcFortitud)}\n";
-            cuerpo += $"<b>Se falhar na resistencia (se causar dano):</b> +{sangradoAplicado} Sangramento";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
+            cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> casa inimiga escolhida e as 2 diagonais de tras\n";
+            cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> 1d20 + {atributo}{bonusTirada} vs Defesa\n";
+            cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> {rangoDanio}. <color={colorEncabezado}><b>Tipo:</b></color> Perfurante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Penetracao de armadura:</b></color> {penetracionArmadura}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Resistencia:</b></color> Fortitude vs CD {dcFortitud}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Se falhar:</b></color> se causou dano, +{sangradoAplicado} Sangramento\n";
+            cuerpo += $"<color={colorEncabezado}><b>Esforcavel:</b></color> sim ({esforzable})";
         }
         else
         {
-            cuerpo += "<b>Tipo:</b> Melee\n";
-            cuerpo += "<b>Objetivo:</b> Casilla enemiga elegida y las 2 diagonales de atras\n";
-            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue/Agi ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Danio:</b> {rangoDanioEs} | <b>Tipo:</b> Perforante\n";
-            cuerpo += $"<b>Penetracion de armadura:</b> {penetracionArmadura}\n";
-            cuerpo += $"{ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcFortitud)}\n";
-            cuerpo += $"<b>Si falla TS (si recibe danio):</b> +{sangradoAplicado} Sangrado";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
+            cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> casilla enemiga elegida y las 2 diagonales de atras\n";
+            cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
+            cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Penetracion de armadura:</b></color> {penetracionArmadura}\n";
+            cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Fortaleza vs DC {dcFortitud}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Si falla:</b></color> si recibio danio, +{sangradoAplicado} Sangrado\n";
+            cuerpo += $"<color={colorEncabezado}><b>Esforzable:</b></color> si ({esforzable})";
         }
 
-        string costos = esIngles
-          ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-          : esPortugues
-            ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-            : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentia: {costoPM}\n- Esforzable: Si ({esforzable})";
-
-        txtDescripcion = ConstruirDescripcionEstandar(
-          esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-          esIngles
-            ? "A committed thrust that pierces the target and threatens the rear diagonals."
+        string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+        string subtitulo = esIngles
+            ? "Thrust through the target and rear diagonals; can inflict Bleed."
             : esPortugues
-              ? "Uma estocada comprometida que perfura o alvo e pressiona as diagonais de tras."
-              : "Una estocada comprometida que perfora el objetivo y amenaza las diagonales traseras.",
-          cuerpo,
-          costos,
-          "#5dade2");
+                ? "Atravessa o alvo e diagonais traseiras; pode causar Sangramento."
+                : "Atraviesa el objetivo y diagonales traseras; puede causar Sangrado.";
 
-        bool mostrarProximoNivel = CampaignManager.Instance != null
-          && CampaignManager.Instance.scMenuPersonajes != null
-          && CampaignManager.Instance.scMenuPersonajes.pSel != null
-          && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
-        if (!mostrarProximoNivel)
-        {
-            return;
-        }
+        txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+        txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+        txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+        txtDescripcion += cuerpo;
+
+        bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+        if (!mostrarProximoNivel) { return; }
 
         if (esIngles)
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 damage.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 armor penetration.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 Bleed) or Option B (+1 crit range).</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Armor Penetration.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 Bleed) or Option B (+5% Crit).</color>"; }
         }
         else if (esPortugues)
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de dano.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 de penetracao de armadura.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 Sangramento) ou Opcao B (+1 faixa de critico).</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 de Penetracao de armadura.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 Sangramento) ou Opcao B (+5% Critico).</color>"; }
         }
         else
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 de penetracion de armadura.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Sangrado) u Opcion B (+1 rango critico).</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 de Penetracion de armadura.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Sangrado) u Opcion B (+5% Critico).</color>"; }
         }
     }
 
+
+    private string TextoModificadorDescripcion(int valor)
+    {
+        if (valor > 0) { return $" + {valor}"; }
+        if (valor < 0) { return $" - {Mathf.Abs(valor)}"; }
+        return "";
+    }
     public override void Activar()
     {
         origen = Usuario.GetComponent<Unidad>().CasillaPosicion;

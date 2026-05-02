@@ -34,7 +34,7 @@ public class UIContadorAP : MonoBehaviour
       for (int i = 0; i < unidadSeleccionada.ObtenerAPActual(); i++)
       {
         GameObject circuloAP = Instantiate(circuloAPprefab, transform);
-          circuloAP.GetComponent<Image>().color = new Color(0.7f, 0.0f, 0.0f); // Rojo oscuro
+          //circuloAP.GetComponent<Image>().color = new Color(0.7f, 0.0f, 0.0f); // Rojo oscuro
         
        }
       }
@@ -65,7 +65,7 @@ public class UIContadorAP : MonoBehaviour
       Image circuloImage = circuloTransform.GetComponent<Image>();
 
       // Cambia el color a azul (puedes ajustar esto según tus necesidades)
-      circuloImage.color = new Color(0.15f, 0.15f, 0.7f); // Azul 
+      circuloImage.color = new Color(1.5f, 0.0f, 0.0f); // Azul 
     }
    
   }
@@ -82,7 +82,7 @@ public class UIContadorAP : MonoBehaviour
         Image circuloImage = circuloTransform.GetComponent<Image>();
 
         // Restablece el color a rojo
-        circuloImage.color = new Color(0.7f, 0.0f, 0.0f); // Rojo oscuro
+        circuloImage.color = new Color(1f, 1f, 1f); 
     }
   }
 

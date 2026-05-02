@@ -46,32 +46,70 @@ public class GolpeBaston : Habilidad
 
 
     imHab = Resources.Load<Sprite>("imHab/Purificadora_GolpeBaston");
-
-    txtDescripcion = "<color=#5dade2><b>Golpe de Bastón</b></color>\n\n";
-    txtDescripcion += "<i>Con el bastón de purificación, el personaje asesta un golpe a su enemigo.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fue +{bonusAtaque}</color> - Daño: Contundente 1-6- </color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
-      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-      {
-        nombre = "Staff Strike";
-        txtDescripcion = "<color=#5dade2><b>Staff Strike</b></color>\n\n";
-        txtDescripcion += "<i>With the purification staff, the character delivers a blow to their enemy.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Strength +{bonusAtaque}</color> - Damage: Bludgeoning 1d6- </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valour Cost: {costoPM} </color>";
-      }
-      else if (TRADU.i.nIdioma == 3)
-      {
-        nombre = "Golpe de Cajado";
-        txtDescripcion = "<color=#5dade2><b>Golpe de Cajado</b></color>\n\n";
-        txtDescripcion += "<i>Com o cajado de purificacao, a personagem desfere um golpe no inimigo.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Forca +{bonusAtaque}</color> - Dano: Contundente 1d6- </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Recarga: {cooldownMax} \n- Custo AP: {costoAP} \n- Custo Valentia: {costoPM} </color>";
-      }
+    ActualizarDescripcion();
        
     }
 
    
-     public override void ActualizarDescripcion(){}
+     public override void ActualizarDescripcion()
+     {
+        bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+        bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+        var statsUI = ObtenerStatsDescripcionUI();
+
+        int fuerzaActual = statsUI.Fuerza;
+        int ataqueActual = statsUI.Ataque;
+        int criticoMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+        int pifiaPorcentaje = 5;
+        int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+        string ataqueTxt = ataqueActual == 0 ? string.Empty : ataqueActual > 0 ? $" + {ataqueActual}" : $" - {Mathf.Abs(ataqueActual)}";
+        string bonusAtaqueTxt = bonusAtaque == 0 ? string.Empty : bonusAtaque > 0 ? $" + {bonusAtaque}" : $" - {Mathf.Abs(bonusAtaque)}";
+        string rangoDanio = FormatearRangoDados(XdDanio, daniodX);
+        string colorEncabezado = "#44d3ec";
+        string colorValor = "#ffffff";
+        string colorFuerza = "#d9822b";
+        string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+        string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+        string costoSuperior = cooldownMax > 0
+          ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+          : $"{costoAP} {iconoAP}";
+        string titulo = esIngles ? "Staff Strike" : esPortugues ? "Golpe de Cajado" : "Golpe de Baston";
+        nombre = titulo;
+        string subtitulo = esIngles
+          ? "Basic melee staff attack."
+          : esPortugues
+            ? "Ataque corpo a corpo basico com cajado."
+            : "Ataque melee basico con baston.";
+
+        string cuerpo = "";
+        if (esIngles)
+        {
+          cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Melee attack</color>\n";
+          cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy or obstacle in melee range</color>\n";
+          cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Strength ({fuerzaActual})</color>{ataqueTxt}{bonusAtaqueTxt} vs Defense. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%</color>\n";
+          cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Strength ({fuerzaActual})</color>. Type: Bludgeoning</color>";
+        }
+        else if (esPortugues)
+        {
+          cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque corpo a corpo</color>\n";
+          cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo ou obstaculo em alcance corpo a corpo</color>\n";
+          cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Forca ({fuerzaActual})</color>{ataqueTxt}{bonusAtaqueTxt} vs Defesa. Falha critica: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+          cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Forca ({fuerzaActual})</color>. Tipo: Contundente</color>";
+        }
+        else
+        {
+          cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
+          cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstaculo en alcance melee</color>\n";
+          cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>{ataqueTxt}{bonusAtaqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+          cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>. Tipo: Contundente</color>";
+        }
+
+        txtDescripcion =
+          $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+          $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+          "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+          cuerpo;
+     }
     Casilla Origen;
     public override void Activar()
     {

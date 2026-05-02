@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -43,6 +43,7 @@ public class Acechar : Habilidad
     int buffAtaque = 2 + (NIVEL > 1 ? 1 : 0);
     int buffCrit = NIVEL > 2 ? 1 : 0;
     if (NIVEL == 4) { buffCrit += 2; }
+    int buffCritPorcentaje = buffCrit * 5;
     int duracionTurnos = 2;
     bool seRemueveAlDanar = NIVEL != 5;
 
@@ -58,69 +59,70 @@ public class Acechar : Habilidad
     if (NIVEL == 4) { tituloPt = "Espreitar IV a"; }
     if (NIVEL == 5) { tituloPt = "Espreitar IV b"; }
 
+    string colorTitulo = "#5dade2";
+    string colorEncabezado = "#44d3ec";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
+
     string cuerpo = "";
     if (esIngles)
     {
-      cuerpo += "<b>Type:</b> Self Buff\n";
-      cuerpo += "<b>Target:</b> Self\n";
-      cuerpo += "<b>On cast:</b> gains Hidden (1)\n";
-      cuerpo += $"<b>Buff ({duracionTurnos} turns):</b> +15% Damage, +{buffAtaque} Attack";
-      if (buffCrit > 0)
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Self buff\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Self\n";
+      cuerpo += $"<color={colorEncabezado}><b>On cast:</b></color> gains Hidden (1); ends turn\n";
+      cuerpo += $"<color={colorEncabezado}><b>Effect ({duracionTurnos} turns):</b></color> +15% Damage, +{buffAtaque}";
+      if (buffCritPorcentaje > 0)
       {
-        cuerpo += $", +{buffCrit} crit range";
+        cuerpo += $", +{buffCritPorcentaje}% Crit";
       }
       cuerpo += "\n";
       cuerpo += seRemueveAlDanar
-        ? "<b>Buff removal:</b> removed after dealing damage"
-        : "<b>Buff removal:</b> does not get removed after dealing damage";
+        ? $"<color={colorEncabezado}><b>Removal:</b></color> removed after dealing damage"
+        : $"<color={colorEncabezado}><b>Removal:</b></color> not removed after dealing damage";
     }
     else if (esPortugues)
     {
-      cuerpo += "<b>Tipo:</b> Auto Buff\n";
-      cuerpo += "<b>Alvo:</b> Si mesmo\n";
-      cuerpo += "<b>Ao usar:</b> ganha Escondido (1)\n";
-      cuerpo += $"<b>Buff ({duracionTurnos} turnos):</b> +15% Dano, +{buffAtaque} Ataque";
-      if (buffCrit > 0)
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Auto buff\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Si mesmo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Ao usar:</b></color> ganha Escondido (1); termina turno\n";
+      cuerpo += $"<color={colorEncabezado}><b>Efeito ({duracionTurnos} turnos):</b></color> +15% Dano, +{buffAtaque}";
+      if (buffCritPorcentaje > 0)
       {
-        cuerpo += $", +{buffCrit} faixa de critico";
+        cuerpo += $", +{buffCritPorcentaje}% Critico";
       }
       cuerpo += "\n";
       cuerpo += seRemueveAlDanar
-        ? "<b>Remocao do buff:</b> remove ao causar dano"
-        : "<b>Remocao do buff:</b> nao remove ao causar dano";
+        ? $"<color={colorEncabezado}><b>Remocao:</b></color> remove ao causar dano"
+        : $"<color={colorEncabezado}><b>Remocao:</b></color> nao remove ao causar dano";
     }
     else
     {
-      cuerpo += "<b>Tipo:</b> Auto Buff\n";
-      cuerpo += "<b>Objetivo:</b> Uno mismo\n";
-      cuerpo += "<b>Al lanzarla:</b> gana Escondido (1)\n";
-      cuerpo += $"<b>Buff ({duracionTurnos} turnos):</b> +15% Danio, +{buffAtaque} Ataque";
-      if (buffCrit > 0)
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Auto buff\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Uno mismo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> gana Escondido (1); termina turno\n";
+      cuerpo += $"<color={colorEncabezado}><b>Efecto ({duracionTurnos} turnos):</b></color> +15% Danio, +{buffAtaque}";
+      if (buffCritPorcentaje > 0)
       {
-        cuerpo += $", +{buffCrit} rango critico";
+        cuerpo += $", +{buffCritPorcentaje}% Critico";
       }
       cuerpo += "\n";
       cuerpo += seRemueveAlDanar
-        ? "<b>Remocion del buff:</b> se elimina al hacer danio"
-        : "<b>Remocion del buff:</b> no se elimina al hacer danio";
+        ? $"<color={colorEncabezado}><b>Remocion:</b></color> se elimina al hacer danio"
+        : $"<color={colorEncabezado}><b>Remocion:</b></color> no se elimina al hacer danio";
     }
 
-    string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Valour Cost: {costoPM}"
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    string subtitulo = esIngles
+      ? "Gain Hidden and improve your next attacks."
       : esPortugues
-        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP} (termina turno)\n- Custo Valentia: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentía: {costoPM}";
+        ? "Ganha Escondido e melhora seus proximos ataques."
+        : "Gana Escondido y mejora tus proximos ataques.";
 
-    txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-      esIngles
-        ? "The Explorer vanishes from sight and primes a short offensive spike."
-        : esPortugues
-          ? "O Explorador se oculta e prepara um pico ofensivo curto."
-        : "El Explorador se oculta y prepara una subida ofensiva breve.",
-      cuerpo,
-      costos,
-      "#5dade2");
+    txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += cuerpo;
 
     bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)
@@ -130,21 +132,21 @@ public class Acechar : Habilidad
 
     if (esIngles)
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack buff.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 crit range buff.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 crit range) or Option B (buff persists after damage).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 to the roll bonus.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% Crit.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+10% Crit) or Option B (effect persists after damage).</color>"; }
     }
     else if (esPortugues)
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no buff de Ataque.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no buff de faixa de critico.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 faixa de critico) ou Opcao B (o buff persiste ao causar dano).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de rolagem.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+10% Critico) ou Opcao B (o efeito persiste ao causar dano).</color>"; }
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al buff de Ataque.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al buff de rango critico.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 rango critico) u Opcion B (el buff persiste al danar).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bonus de tirada.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+10% Critico) u Opcion B (el efecto persiste al danar).</color>"; }
     }
   }
   public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log

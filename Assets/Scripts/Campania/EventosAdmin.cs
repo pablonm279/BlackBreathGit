@@ -28,6 +28,7 @@ public class EventosAdmin : MonoBehaviour
    const string ItemIdBolsaOlvidada = "ITEM_SCRIPTS_CONSUMIBLES_GENERADOS_CONS12_AMPOLLAAISLANTE";
    [SerializeField] TextMeshProUGUI txtTitulo;
    [SerializeField] TextMeshProUGUI txtDescripcion;
+   [SerializeField] private TMP_SpriteAsset spriteAssetRecursos;
    [SerializeField] Image imRetrato;
    [SerializeField] GameObject botonA;
    [SerializeField] GameObject botonB;
@@ -2178,10 +2179,67 @@ public class EventosAdmin : MonoBehaviour
             textBotonB.text = TRADU.i.Traducir("Responder");
         }
 
-        
+        AplicarIconosAConsecuencias();
 
         
    }
+
+    private void Awake()
+    {
+        AplicarSpriteAssetRecursos();
+    }
+
+    private void OnValidate()
+    {
+        AplicarSpriteAssetRecursos();
+    }
+
+    private void AplicarSpriteAssetRecursos()
+    {
+        if (txtDescripcion != null && spriteAssetRecursos != null)
+        {
+            txtDescripcion.spriteAsset = spriteAssetRecursos;
+        }
+    }
+
+    private void AplicarIconosAConsecuencias()
+    {
+        if (txtDescripcion == null || spriteAssetRecursos == null || string.IsNullOrEmpty(txtDescripcion.text))
+        {
+            return;
+        }
+
+        AplicarSpriteAssetRecursos();
+
+        string texto = txtDescripcion.text;
+        int inicioConsecuencias = ObtenerInicioConsecuencias(texto);
+        if (inicioConsecuencias < 0)
+        {
+            return;
+        }
+
+        string introduccion = texto.Substring(0, inicioConsecuencias);
+        string consecuencias = texto.Substring(inicioConsecuencias);
+        txtDescripcion.text = introduccion + TextoRecursosCampania.FormatearRecursos(consecuencias, true);
+    }
+
+    private static int ObtenerInicioConsecuencias(string texto)
+    {
+        int inicioNegativo = texto.IndexOf("<color=#ba3fef", System.StringComparison.OrdinalIgnoreCase);
+        int inicioPositivo = texto.IndexOf("<color=#a0e812", System.StringComparison.OrdinalIgnoreCase);
+
+        if (inicioNegativo < 0)
+        {
+            return inicioPositivo;
+        }
+
+        if (inicioPositivo < 0)
+        {
+            return inicioNegativo;
+        }
+
+        return Mathf.Min(inicioNegativo, inicioPositivo);
+    }
 
     Personaje participanteEvento1;
     Personaje participanteEvento2;

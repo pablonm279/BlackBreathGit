@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -56,10 +56,10 @@ public class Vigilancia : Habilidad
     int agilidadActual = statsUI.Agilidad;
     int ataqueActual = statsUI.Ataque;
     int criticoBaseMin = Mathf.Clamp(19 - statsUI.CriticoRango, 2, 20);
-
+    int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
     int disparosPorUso = NIVEL == 5 ? 3 : 2;
     int bonoTiradaReaccion = (NIVEL > 1 ? 1 : 0) + (NIVEL > 2 ? 1 : 0);
-    string rangoDanioReaccionEs = FormatearRangoDados(1, 10, 1);
+    string rangoDanioReaccion = FormatearRangoDados(1, 10, 1);
 
     string tituloEs = "Vigilancia I";
     string tituloEn = "Vigilance I";
@@ -73,78 +73,89 @@ public class Vigilancia : Habilidad
     if (NIVEL == 4) { tituloPt = "Vigilancia IV a"; }
     if (NIVEL == 5) { tituloPt = "Vigilancia IV b"; }
 
+    string colorTitulo = "#5dade2";
+    string colorEncabezado = "#44d3ec";
+    string colorAgilidad = "#7fa35a";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
+    string atributo = esIngles
+      ? $"<color={colorAgilidad}>Agility ({agilidadActual})</color>"
+      : esPortugues
+        ? $"<color={colorAgilidad}>Agilidade ({agilidadActual})</color>"
+        : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
+    string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonoTiradaReaccion);
+
     string cuerpo = "";
     if (esIngles)
     {
-      cuerpo += "<b>Type:</b> Reactive Ranged (6 range)\n";
-      cuerpo += "<b>Target:</b> 1 enemy in range to place a 3x3 watch zone centered on that tile\n";
-      cuerpo += "<b>Roll/Save:</b> no save check on cast\n";
-      cuerpo += $"<b>Watch setup:</b> places traps on empty tiles of that 3x3 area (1 turn, 1 use each), up to {disparosPorUso} reaction shots total\n";
-      cuerpo += $"<b>Reaction shot:</b> uses Bow Shot roll with +{bonoTiradaReaccion} to the d20 result. Base roll shown in UI: 1d20 + <color=#ea0606>Agility ({agilidadActual})</color>  vs Defense. Base crit: {criticoBaseMin}-20\n";
-      cuerpo += "<b>Reaction damage:</b> same as Bow Shot (1d10 + 1 + Agility) | <b>Type:</b> Slashing\n";
-      cuerpo += $"<b>Resource:</b> needs at least {requiereRecurso} Arrows to activate, consumes 1 Arrow per reaction shot\n";
-      cuerpo += "<b>Turn flow:</b> using this skill ends your turn";
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Reactive ranged setup ({6} range)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy; creates a 3x3 watch zone centered on its tile\n";
+      cuerpo += $"<color={colorEncabezado}><b>Cost:</b></color> {costoPM} Valour; requires {requiereRecurso} Arrows\n";
+      cuerpo += $"<color={colorEncabezado}><b>Setup:</b></color> empty tiles in the zone become 1-turn traps, 1 use each\n";
+      cuerpo += $"<color={colorEncabezado}><b>Reaction limit:</b></color> up to {disparosPorUso} shots total; consumes 1 Arrow per shot\n";
+      cuerpo += $"<color={colorEncabezado}><b>Reaction roll:</b></color> 1d20 + {atributo}{bonusTirada} vs Defense\n";
+      cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Reaction damage:</b></color> {rangoDanioReaccion} + {atributo}. <color={colorEncabezado}><b>Type:</b></color> Slashing\n";
+      cuerpo += $"<color={colorEncabezado}><b>Turn flow:</b></color> ends turn";
     }
     else if (esPortugues)
     {
-      cuerpo += "<b>Tipo:</b> Distancia Reativa (6 alcance)\n";
-      cuerpo += "<b>Alvo:</b> 1 inimigo em alcance para criar uma zona de vigilancia 3x3 centrada nessa casa\n";
-      cuerpo += "<b>Rolagem/TS:</b> sem teste de resistencia ao usar\n";
-      cuerpo += $"<b>Preparacao:</b> coloca armadilhas em casas vazias dessa area 3x3 (1 turno, 1 uso cada), ate {disparosPorUso} disparos reativos no total\n";
-      cuerpo += $"<b>Disparo reativo:</b> usa a rolagem de Tiro com Arco com +{bonoTiradaReaccion} no resultado do d20. Rolagem base exibida: 1d20 + <color=#ea0606>Agilidade ({agilidadActual})</color> + Ataque ({ataqueActual}) vs Defesa. Critico base: {criticoBaseMin}-20\n";
-      cuerpo += "<b>Dano reativo:</b> igual ao Tiro com Arco (1d10 + 1 + Agilidade) | <b>Tipo:</b> Cortante\n";
-      cuerpo += $"<b>Recurso:</b> requer ao menos {requiereRecurso} Flechas para ativar, consome 1 Flecha por disparo reativo\n";
-      cuerpo += "<b>Fluxo de turno:</b> usar esta habilidade termina seu turno";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Preparacao reativa a distancia ({6} alcance)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo; cria uma zona 3x3 centrada na casa dele\n";
+      cuerpo += $"<color={colorEncabezado}><b>Custo:</b></color> {costoPM} Valentia; requer {requiereRecurso} Flechas\n";
+      cuerpo += $"<color={colorEncabezado}><b>Preparacao:</b></color> casas vazias da zona viram armadilhas de 1 turno, 1 uso cada\n";
+      cuerpo += $"<color={colorEncabezado}><b>Limite reativo:</b></color> ate {disparosPorUso} disparos no total; consome 1 Flecha por disparo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Rolagem reativa:</b></color> 1d20 + {atributo}{bonusTirada} vs Defesa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Dano reativo:</b></color> {rangoDanioReaccion} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Fluxo de turno:</b></color> termina turno";
     }
     else
     {
-      cuerpo += "<b>Tipo:</b> Rango Reactivo (6 alcance)\n";
-      cuerpo += "<b>Objetivo:</b> 1 enemigo en rango para colocar una zona de vigilancia 3x3 centrada en esa casilla\n";
-      cuerpo += "<b>Tirada/TS:</b> no tiene TS al lanzar\n";
-      cuerpo += $"<b>Preparacion:</b> coloca trampas en casillas vacias de esa area 3x3 (1 turno, 1 uso cada una), hasta {disparosPorUso} disparos reactivos en total\n";
-      cuerpo += $"<b>Disparo reactivo:</b> usa la tirada de Tiro con Arco con +{bonoTiradaReaccion} al resultado del d20. Tirada base mostrada: 1d20 + <color=#ea0606>Agi ({agilidadActual})</color> + Ataque ({ataqueActual}) vs Defensa. Critico base: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Danio reactivo:</b> igual a Tiro con Arco ({rangoDanioReaccionEs} + Agi) | <b>Tipo:</b> Cortante\n";
-      cuerpo += $"<b>Recurso:</b> requiere al menos {requiereRecurso} Flechas para activar, consume 1 Flecha por disparo reactivo\n";
-      cuerpo += "<b>Flujo de turno:</b> usar esta habilidad termina tu turno";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Preparacion reactiva a distancia ({6} alcance)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo; crea una zona 3x3 centrada en su casilla\n";
+      cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentia; requiere {requiereRecurso} Flechas\n";
+      cuerpo += $"<color={colorEncabezado}><b>Preparacion:</b></color> casillas vacias de la zona se vuelven trampas de 1 turno, 1 uso cada una\n";
+      cuerpo += $"<color={colorEncabezado}><b>Limite reactivo:</b></color> hasta {disparosPorUso} disparos en total; consume 1 Flecha por disparo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tirada reactiva:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Danio reactivo:</b></color> {rangoDanioReaccion} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Flujo de turno:</b></color> termina turno";
     }
 
-    string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Valour Cost: {costoPM}"
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    string subtitulo = esIngles
+      ? "Set a short watch zone that fires reaction shots."
       : esPortugues
-        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP} (termina turno)\n- Custo Valentia: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentía: {costoPM}";
+        ? "Cria uma zona curta que dispara reacoes."
+        : "Crea una zona breve que dispara reacciones.";
 
-    txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-      esIngles
-        ? "Controls space with reaction fire over a short zone window."
-        : esPortugues
-          ? "Controla espaco com fogo de reacao durante uma janela curta de zona."
-        : "Controla espacio con fuego de reaccion durante una ventana corta.",
-      cuerpo,
-      costos,
-      "#5dade2");
+    txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += cuerpo;
 
     bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (mostrarProximoNivel)
     {
       if (esIngles)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 reaction attack roll.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 reaction attack roll.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 reaction roll bonus.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 reaction roll bonus.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 Valour Cost) or Option B (+1 reaction shot and +1 required Arrow).</color>"; }
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na rolagem de ataque reativa.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na rolagem de ataque reativa.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus da rolagem reativa.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus da rolagem reativa.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 custo de Valentia) ou Opcao B (+1 disparo reativo e +1 Flecha requerida).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 a la tirada de ataque reactiva.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 a la tirada de ataque reactiva.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valentía) u Opcion B (+1 disparo reactivo y +1 Flecha requerida).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bonus de tirada reactiva.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bonus de tirada reactiva.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valentia) u Opcion B (+1 disparo reactivo y +1 Flecha requerida).</color>"; }
       }
     }
 
@@ -162,6 +173,12 @@ public class Vigilancia : Habilidad
     }
   }
 
+  private string TextoModificadorDescripcion(int valor)
+  {
+    if (valor > 0) { return $" + {valor}"; }
+    if (valor < 0) { return $" - {Mathf.Abs(valor)}"; }
+    return "";
+  }
     Casilla Origen;
     public override void Activar()
     {

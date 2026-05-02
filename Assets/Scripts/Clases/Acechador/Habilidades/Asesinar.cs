@@ -71,7 +71,20 @@ public class Asesinar : Habilidad
 
     int danioFijo = 2 + (NIVEL > 1 ? 2 : 0) + (NIVEL == 5 ? 3 : 0);
     int bonoAtaqueAislado = 2 + (NIVEL > 2 ? 1 : 0);
-    string rangoDanioEs = FormatearRangoDados(2, 8, danioFijo);
+    string rangoDanio = FormatearRangoDados(2, 8, danioFijo);
+    int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
+    string colorTitulo = "#5dade2";
+    string colorEncabezado = "#44d3ec";
+    string colorAgilidad = "#7fa35a";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
+    string atributo = esIngles
+      ? $"<color={colorAgilidad}>Agility ({agilidadActual})</color>"
+      : esPortugues
+        ? $"<color={colorAgilidad}>Agilidade ({agilidadActual})</color>"
+        : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
+    string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
     string tituloEs = "Asesinar I";
     string tituloEn = "Assassinate I";
@@ -88,14 +101,15 @@ public class Asesinar : Habilidad
     string cuerpo = "";
     if (esIngles)
     {
-      cuerpo += "<b>Type:</b> Ranged (4 range)\n";
-      cuerpo += "<b>Target:</b> 1 enemy\n";
-      cuerpo += "<b>Requirement:</b> Hidden (1)\n";
-      cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color>   + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Damage:</b> 2d8 + {danioFijo} + <color=#ea0606>Agility ({agilidadActual})</color> | <b>Type:</b> Piercing\n";
-      cuerpo += "<b>Humanoid bonus:</b> +2 flat damage\n";
-      cuerpo += $"<b>If isolated:</b> +{bonoAtaqueAislado} attack and x2 final damage\n";
-      cuerpo += "<b>On kill:</b> gains Hidden (1), skill cooldown is set to 1";
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Ranged attack (4 range)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy\n";
+      cuerpo += $"<color={colorEncabezado}><b>Requirement:</b></color> Hidden (1)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> 1d20 + {atributo}{bonusTirada} vs Defense\n";
+      cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Type:</b></color> Piercing\n";
+      cuerpo += $"<color={colorEncabezado}><b>Humanoid:</b></color> +2 flat damage\n";
+      cuerpo += $"<color={colorEncabezado}><b>If isolated:</b></color> +{bonoAtaqueAislado} and x2 final damage\n";
+      cuerpo += $"<color={colorEncabezado}><b>On kill:</b></color> gains Hidden (1), skill cooldown becomes 1";
       if (NIVEL == 4)
       {
         cuerpo += ", +2 Valour";
@@ -103,14 +117,15 @@ public class Asesinar : Habilidad
     }
     else if (esPortugues)
     {
-      cuerpo += "<b>Tipo:</b> Alcance (4 de alcance)\n";
-      cuerpo += "<b>Alvo:</b> 1 inimigo\n";
-      cuerpo += "<b>Requisito:</b> Escondido (1)\n";
-      cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Agilidade ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Dano:</b> 2d8 + {danioFijo} + <color=#ea0606>Agilidade ({agilidadActual})</color> | <b>Tipo:</b> Perfurante\n";
-      cuerpo += "<b>Bono contra humanoides:</b> +2 dano fixo\n";
-      cuerpo += $"<b>Se estiver isolado:</b> +{bonoAtaqueAislado} ataque e x2 no dano final\n";
-      cuerpo += "<b>Ao matar:</b> ganha Escondido (1), o cooldown da habilidade fica em 1";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia (4 de alcance)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Requisito:</b></color> Escondido (1)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> 1d20 + {atributo}{bonusTirada} vs Defesa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perfurante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Humanoide:</b></color> +2 dano fixo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Se estiver isolado:</b></color> +{bonoAtaqueAislado} e x2 no dano final\n";
+      cuerpo += $"<color={colorEncabezado}><b>Ao matar:</b></color> ganha Escondido (1), o cooldown da habilidade fica em 1";
       if (NIVEL == 4)
       {
         cuerpo += ", +2 Valentia";
@@ -118,36 +133,37 @@ public class Asesinar : Habilidad
     }
     else
     {
-      cuerpo += "<b>Tipo:</b> Rango (4 alcance)\n";
-      cuerpo += "<b>Objetivo:</b> 1 enemigo\n";
-      cuerpo += "<b>Requisito:</b> Escondido (1)\n";
-      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agi ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-      cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Agi ({agilidadActual})</color> | <b>Tipo:</b> Perforante\n";
-      cuerpo += "<b>Bono contra humanoides:</b> +2 danio plano\n";
-      cuerpo += $"<b>Si esta aislado:</b> +{bonoAtaqueAislado} ataque y x2 al danio final\n";
-      cuerpo += "<b>Al matar:</b> gana Escondido (1), el cooldown de la habilidad se fija en 1";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia (4 alcance)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Requisito:</b></color> Escondido (1)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Humanoide:</b></color> +2 danio plano\n";
+      cuerpo += $"<color={colorEncabezado}><b>Si esta aislado:</b></color> +{bonoAtaqueAislado} y x2 al danio final\n";
+      cuerpo += $"<color={colorEncabezado}><b>Al matar:</b></color> gana Escondido (1), el cooldown de la habilidad se fija en 1";
       if (NIVEL == 4)
       {
-        cuerpo += ", +2 Valentía";
+        cuerpo += ", +2 Valentia";
       }
     }
 
-    string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+    string subtitulo = esIngles
+      ? "High-damage stealth attack; stronger against isolated targets."
       : esPortugues
-        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
+        ? "Ataque de furtividade de alto dano; mais forte contra alvos isolados."
+        : "Ataque desde sigilo de alto danio; mas fuerte contra objetivos aislados.";
+    string costoValor = esIngles
+      ? $"<color={colorEncabezado}><b>Valour cost:</b></color> {costoPM}"
+      : esPortugues
+        ? $"<color={colorEncabezado}><b>Custo Valentia:</b></color> {costoPM}"
+        : $"<color={colorEncabezado}><b>Costo Valentia:</b></color> {costoPM}";
 
-    txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-      esIngles
-        ? "A burst finisher from stealth that spikes hard on isolated targets."
-        : esPortugues
-          ? "Um finalizador explosivo em furtividade que causa muito dano em alvos isolados."
-        : "Un remate explosivo desde sigilo que pega muy fuerte a objetivos aislados.",
-      cuerpo,
-      costos,
-      "#5dade2");
+    txtDescripcion = $"<size=115%><color={colorTitulo}><b>{(esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs)}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += cuerpo + "\n";
+    txtDescripcion += costoValor;
 
     bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)
@@ -173,6 +189,13 @@ public class Asesinar : Habilidad
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 ataque si el objetivo esta aislado.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Valentía al matar) u Opcion B (+3 de danio plano).</color>"; }
     }
+  }
+
+  private string TextoModificadorDescripcion(int valor)
+  {
+    if (valor > 0) { return $" + {valor}"; }
+    if (valor < 0) { return $" - {Mathf.Abs(valor)}"; }
+    return "";
   }
 
   int damExtra;

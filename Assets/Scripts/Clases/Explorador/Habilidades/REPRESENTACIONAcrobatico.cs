@@ -1,226 +1,105 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class REPRESENTACIONAcrobatico : Habilidad
 {
-   
-
-    
-    public override void  Awake()
+    public override void Awake()
     {
       imHab = Resources.Load<Sprite>("imHab/Explorador_Acrobatico");
       ActualizarDescripcion();
 
       IDenClase = 2;
-      
     }
 
     public bool seusoEsteTurno = false;
 
-  public override void ActualizarDescripcion()
-  {
-
-    if (NIVEL < 2)
+    public override void ActualizarDescripcion()
     {
-      txtDescripcion = "<color=#5dade2><b>Acrobatico I</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Recibe 1 Evasión al comienzo de cada combate. La evasión se suma a la Defensa y se va al recibir daño.</i>\n\n";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      string colorTitulo = "#5dade2";
+      string colorEncabezado = "#44d3ec";
 
-      if (EsEscenaCampaña())
+      int evasion = NIVEL < 3 ? 1 : NIVEL < 4 ? 2 : 3;
+      int reflejos = NIVEL > 1 ? 1 : 0;
+
+      string titulo = $"Acrobatico {SufijoNivel()}";
+      string subtitulo = "Gana Evasion al comienzo de cada combate.";
+      string cuerpo = $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n" +
+                      $"<color={colorEncabezado}><b>Activacion:</b></color> Comienzo de combate\n" +
+                      $"<color={colorEncabezado}><b>Efecto:</b></color> +{evasion} Evasion" +
+                      (reflejos > 0 ? $", +{reflejos} Reflejos" : "") + "\n" +
+                      $"<color={colorEncabezado}><b>Evasion:</b></color> Se suma a Defensa y se pierde al recibir danio";
+
+      if (esIngles)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel:+1 TS Reflejos</color>\n\n";
-          }
-        }
+        titulo = $"Acrobatic {SufijoNivel()}";
+        subtitulo = "Gains Evasion at the start of each combat.";
+        cuerpo = $"<color={colorEncabezado}><b>Type:</b></color> Passive\n" +
+                 $"<color={colorEncabezado}><b>Trigger:</b></color> Start of combat\n" +
+                 $"<color={colorEncabezado}><b>Effect:</b></color> +{evasion} Evasion" +
+                 (reflejos > 0 ? $", +{reflejos} Reflex" : "") + "\n" +
+                 $"<color={colorEncabezado}><b>Evasion:</b></color> Adds to Defense and is lost when taking damage";
+      }
+      else if (esPortugues)
+      {
+        titulo = $"Acrobatico {SufijoNivel()}";
+        subtitulo = "Recebe Evasao no inicio de cada combate.";
+        cuerpo = $"<color={colorEncabezado}><b>Tipo:</b></color> Passiva\n" +
+                 $"<color={colorEncabezado}><b>Ativacao:</b></color> Inicio de combate\n" +
+                 $"<color={colorEncabezado}><b>Efeito:</b></color> +{evasion} Evasao" +
+                 (reflejos > 0 ? $", +{reflejos} Reflexos" : "") + "\n" +
+                 $"<color={colorEncabezado}><b>Evasao:</b></color> Soma na Defesa e e perdida ao receber dano";
       }
 
+      string proximo = TextoProximoNivel(esIngles, esPortugues);
+      if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+
+      txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size>\n\n";
+      txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+      txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+      txtDescripcion += cuerpo;
     }
-    if (NIVEL == 2)
+
+    private string SufijoNivel()
     {
-      txtDescripcion = "<color=#5dade2><b>Acrobatico II</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Recibe 1 Evasión y 1 Reflejos al comienzo de cada combate. La evasión se suma a la Defensa y se va al recibir daño.</i>\n\n";
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Evasión</color>\n\n";
-          }
-        }
-      }
+      if (NIVEL < 2) { return "I"; }
+      if (NIVEL == 2) { return "II"; }
+      if (NIVEL == 3) { return "III"; }
+      if (NIVEL == 4) { return "IV a"; }
+      return "IV b";
     }
-    if (NIVEL == 3)
+
+    private string TextoProximoNivel(bool esIngles, bool esPortugues)
     {
-      txtDescripcion = "<color=#5dade2><b>Acrobatico III</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Recibe 2 Evasión y 1 Reflejos al comienzo de cada combate. La evasión se suma a la Defensa y se va al recibir daño.</i>\n\n";
-
-      if (EsEscenaCampaña())
+      if (!EsEscenaCampaña() || CampaignManager.Instance.scMenuPersonajes.pSel == null || CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad <= 0)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: +1 Evasión</color>\n\n";
-            txtDescripcion += "<i>(Pasiva) Recibe 1 Evasión al comienzo de cada combate.</i>\n\n";
-          }
-        }
-      }
-    }
-    if (NIVEL == 4)
-    {
-      txtDescripcion += $"<color=#dfea02>-Opción A: +1 Evasión</color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Recibe 3 Evasión y 1 Reflejos al comienzo de cada combate. La evasión se suma a la Defensa y se va al recibir daño.</i>\n\n";
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion += $"<color=#dfea02>-Opción B: +1 Evasión</color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Recibe 3 Evasión y 1 Reflejos al comienzo de cada combate. La evasión se suma a la Defensa y se va al recibir daño.</i>\n\n";
-    }
-       
-      if (TRADU.i.nIdioma == 2) // agrega la traducción a inglés
-      {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Acrobatic I</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) Gains 1 Evasion at the start of each combat. Evasion is added to Defense and is lost when taking damage.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Reflex Save</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Acrobatic II</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) Gains 1 Evasion and 1 Reflex at the start of each combat. Evasion is added to Defense and is lost when taking damage.</i>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Evasion</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Acrobatic III</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) Gains 2 Evasion and 1 Reflex at the start of each combat. Evasion is added to Defense and is lost when taking damage.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: +1 Evasion</color>\n\n";
-                txtDescripcion += "<i>(Passive) Gains 1 Evasion at the start of each combat.</i>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion += $"<color=#dfea02>-Option A: +1 Evasion</color>\n\n";
-          txtDescripcion += "<i>(Passive) Gains 3 Evasion and 1 Reflex at the start of each combat. Evasion is added to Defense and is lost when taking damage.</i>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion += $"<color=#dfea02>-Option B: +1 Evasion</color>\n\n";
-          txtDescripcion += "<i>(Passive) Gains 3 Evasion and 1 Reflex at the start of each combat. Evasion is added to Defense and is lost when taking damage.</i>\n\n";
-        }
-      }
-      if (TRADU.i.nIdioma == 3)
-      {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Acrobatico I</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Recebe 1 Evasao no inicio de cada combate. A evasao soma na Defesa e e perdida ao receber dano.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 TS Reflexos</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Acrobatico II</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Recebe 1 Evasao e 1 Reflexos no inicio de cada combate. A evasao soma na Defesa e e perdida ao receber dano.</i>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 Evasao</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Acrobatico III</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Recebe 2 Evasao e 1 Reflexos no inicio de cada combate. A evasao soma na Defesa e e perdida ao receber dano.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Opcao A: +1 Evasao</color>\n\n";
-                txtDescripcion += "<i>(Passiva) Recebe 1 Evasao no inicio de cada combate.</i>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion += $"<color=#dfea02>-Opcao A: +1 Evasao</color>\n\n";
-          txtDescripcion += "<i>(Passiva) Recebe 3 Evasao e 1 Reflexos no inicio de cada combate. A evasao soma na Defesa e e perdida ao receber dano.</i>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion += $"<color=#dfea02>-Opcao B: +1 Evasao</color>\n\n";
-          txtDescripcion += "<i>(Passiva) Recebe 3 Evasao e 1 Reflexos no inicio de cada combate. A evasao soma na Defesa e e perdida ao receber dano.</i>\n\n";
-        }
+        return "";
       }
 
+      if (esIngles)
+      {
+        if (NIVEL < 2) { return "<color=#dfea02>Next Level: +1 Reflex Save.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Next Level: +1 Evasion.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Option A/B: +1 Evasion.</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: +1 TS Reflexos.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +1 Evasao.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opcao A/B: +1 Evasao.</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: +1 TS Reflejos.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +1 Evasion.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opcion A/B: +1 Evasion.</color>"; }
+      }
+
+      return "";
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}
-    public override void Activar()
-    {
-       
-
-      
-       
-        
-    }
-    
-
-
-
-
+    public override void Activar(){}
 }
-
-
-

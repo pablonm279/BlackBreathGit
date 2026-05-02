@@ -45,6 +45,11 @@ public class HaciaLasSombras : Habilidad
 
     int evasionGanada = NIVEL > 2 ? 3 : 2;
     bool terminaTurno = NIVEL != 4;
+    string colorTitulo = "#5dade2";
+    string colorEncabezado = "#44d3ec";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
 
     string tituloEs = "Hacia Las Sombras I";
     string tituloEn = "Into the Shadows I";
@@ -61,54 +66,51 @@ public class HaciaLasSombras : Habilidad
     string cuerpo = "";
     if (esIngles)
     {
-      cuerpo += "<b>Type:</b> Mobility Utility\n";
-      cuerpo += "<b>Target:</b> Any empty tile on own side\n";
-      cuerpo += "<b>Roll/Save:</b> none\n";
-      cuerpo += "<b>On cast:</b> teleports to target tile\n";
-      cuerpo += $"<b>Self effects:</b> gains Hidden (2), Evasion ({evasionGanada}), removes debuffs\n";
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Mobility utility\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Any empty tile on own side\n";
+      cuerpo += $"<color={colorEncabezado}><b>Roll/Save:</b></color> none\n";
+      cuerpo += $"<color={colorEncabezado}><b>Valour cost:</b></color> {costoPM}\n";
+      cuerpo += $"<color={colorEncabezado}><b>On cast:</b></color> teleports to target tile\n";
+      cuerpo += $"<color={colorEncabezado}><b>Self:</b></color> gains Hidden (2), Evasion ({evasionGanada}), removes debuffs\n";
       cuerpo += terminaTurno
-        ? "<b>Turn flow:</b> ends turn"
-        : "<b>Turn flow:</b> does not end turn";
+        ? $"<color={colorEncabezado}><b>Turn flow:</b></color> ends turn"
+        : $"<color={colorEncabezado}><b>Turn flow:</b></color> does not end turn";
     }
     else if (esPortugues)
     {
-      cuerpo += "<b>Tipo:</b> Utilidade de Mobilidade\n";
-      cuerpo += "<b>Alvo:</b> Qualquer celula vazia do proprio lado\n";
-      cuerpo += "<b>Rolagem/Resistencia:</b> nao tem\n";
-      cuerpo += "<b>Ao usar:</b> teleporta para a celula alvo\n";
-      cuerpo += $"<b>Efeitos proprios:</b> ganha Escondido (2), Evasao ({evasionGanada}), remove debuffs\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Utilidade de mobilidade\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Qualquer celula vazia do proprio lado\n";
+      cuerpo += $"<color={colorEncabezado}><b>Rolagem/Resistencia:</b></color> nao tem\n";
+      cuerpo += $"<color={colorEncabezado}><b>Custo Valentia:</b></color> {costoPM}\n";
+      cuerpo += $"<color={colorEncabezado}><b>Ao usar:</b></color> teleporta para a celula alvo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Proprio:</b></color> ganha Escondido (2), Evasao ({evasionGanada}), remove debuffs\n";
       cuerpo += terminaTurno
-        ? "<b>Fluxo de turno:</b> termina o turno"
-        : "<b>Fluxo de turno:</b> nao termina o turno";
+        ? $"<color={colorEncabezado}><b>Fluxo de turno:</b></color> termina o turno"
+        : $"<color={colorEncabezado}><b>Fluxo de turno:</b></color> nao termina o turno";
     }
     else
     {
-      cuerpo += "<b>Tipo:</b> Utilidad de Movilidad\n";
-      cuerpo += "<b>Objetivo:</b> Cualquier casilla vacia de tu lado\n";
-      cuerpo += "<b>Tirada/TS:</b> no tiene\n";
-      cuerpo += "<b>Al lanzarla:</b> se teletransporta a la casilla objetivo\n";
-      cuerpo += $"<b>Efectos propios:</b> gana Escondido (2), Evasion ({evasionGanada}), remueve debuffs\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Utilidad de movilidad\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Cualquier casilla vacia de tu lado\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tirada/TS:</b></color> no tiene\n";
+      cuerpo += $"<color={colorEncabezado}><b>Costo Valentia:</b></color> {costoPM}\n";
+      cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> se teletransporta a la casilla objetivo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Propio:</b></color> gana Escondido (2), Evasion ({evasionGanada}), remueve debuffs\n";
       cuerpo += terminaTurno
-        ? "<b>Flujo de turno:</b> termina turno"
-        : "<b>Flujo de turno:</b> no termina turno";
+        ? $"<color={colorEncabezado}><b>Flujo de turno:</b></color> termina turno"
+        : $"<color={colorEncabezado}><b>Flujo de turno:</b></color> no termina turno";
     }
 
-    string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+    string subtitulo = esIngles
+      ? "Teleports, removes debuffs and returns to stealth."
       : esPortugues
-        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
-
-    txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-      esIngles
-        ? "A defensive reset that repositions, cleanses and re-enters stealth."
-        : esPortugues
-          ? "Um reset defensivo que reposiciona, remove estados e retorna a furtividade."
-        : "Un reset defensivo que reposiciona, limpia estados y vuelve al sigilo.",
-      cuerpo,
-      costos,
-      "#5dade2");
+        ? "Teleporta, remove debuffs e volta a furtividade."
+        : "Teletransporta, remueve debuffs y vuelve al sigilo.";
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += cuerpo;
 
     bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)

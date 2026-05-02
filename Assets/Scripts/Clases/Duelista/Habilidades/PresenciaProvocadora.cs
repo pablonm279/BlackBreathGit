@@ -49,7 +49,6 @@ public class PresenciaProvocadora : Habilidad
         int reduccionArmadura = ObtenerPenalidadArmadura();
         int bonusAtaqueContra = ObtenerBonusAtaqueContraataque();
         int bonusDanioContra = ObtenerBonusDanioContraataque();
-        string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Mental, dcMental);
 
         string tituloEs = "Presencia Provocadora I";
         string tituloEn = "Provoking Presence I";
@@ -59,88 +58,99 @@ public class PresenciaProvocadora : Habilidad
         if (NIVEL == 4) { tituloEs = "Presencia Provocadora IV a"; tituloEn = "Provoking Presence IV a"; tituloPt = "Presenca Provocadora IV a"; }
         if (NIVEL == 5) { tituloEs = "Presencia Provocadora IV b"; tituloEn = "Provoking Presence IV b"; tituloPt = "Presenca Provocadora IV b"; }
 
-        string cuerpo;
+        string colorTitulo = "#5dade2";
+        string colorEncabezado = "#44d3ec";
+        string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+        string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+        string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
+        string contraataque = ConstruirTextoContraataque(bonusAtaqueContra, bonusDanioContra, esIngles, esPortugues);
+
+        string cuerpo = "";
         if (esIngles)
         {
-            cuerpo =
-                "<b>Type:</b> Self Debuff Aura + Reaction\n" +
-                "<b>Target:</b> Self\n" +
-                "<b>On cast:</b> affects all enemies on the opposite side\n" +
-                $"{lineaSalvacion}\n" +
-                $"<b>On failed save:</b> {nombreProvocado} (2 turns) and {nombreDistraido} (2 turns): {reduccionDefensa} Defense, {reduccionArmadura} Armor\n" +
-                $"<b>Reaction (1 turn):</b> when an enemy misses a melee attack against her, counterattacks with base Thrust ({bonusAtaqueContra:+#;-#;0} Attack, {bonusDanioContra:+#;-#;0} Damage)\n" +
-                "<b>Reaction uses:</b> unlimited until your next turn\n" +
-                "<b>Turn flow:</b> using this skill ends your turn";
+            cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Self aura + reaction\n";
+            cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Self\n";
+            cuerpo += $"<color={colorEncabezado}><b>On cast:</b></color> affects all enemies on the opposite side; ends turn\n";
+            cuerpo += $"<color={colorEncabezado}><b>Save:</b></color> Mental vs DC {dcMental}\n";
+            cuerpo += $"<color={colorEncabezado}><b>On failed save:</b></color> {nombreProvocado} and {nombreDistraido} for 2 turns: {reduccionDefensa} Defense, {reduccionArmadura} Armor\n";
+            cuerpo += $"<color={colorEncabezado}><b>Reaction (1 turn):</b></color> when an enemy misses a melee attack against her, counterattacks with base Thrust{contraataque}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Reaction uses:</b></color> unlimited until next turn\n";
+            cuerpo += $"<color={colorEncabezado}><b>Effortable:</b></color> yes ({esforzable})";
         }
         else if (esPortugues)
         {
-            cuerpo =
-                "<b>Tipo:</b> Auto Debuff em area + Reacao\n" +
-                "<b>Alvo:</b> A propria Duelista\n" +
-                "<b>Ao usar:</b> afeta todos os inimigos do lado oposto\n" +
-                $"{lineaSalvacion}\n" +
-                $"<b>Se falhar na resistencia:</b> {nombreProvocado} (2 turnos) e {nombreDistraido} (2 turnos): {reduccionDefensa} Defesa, {reduccionArmadura} Armadura\n" +
-                $"<b>Reacao (1 turno):</b> quando um inimigo erra um ataque corpo a corpo contra ela, contra-ataca com Estocada base ({bonusAtaqueContra:+#;-#;0} Ataque, {bonusDanioContra:+#;-#;0} Dano)\n" +
-                "<b>Usos da reacao:</b> ilimitados ate o proximo turno\n" +
-                "<b>Fluxo de turno:</b> usar esta habilidade termina seu turno";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Aura propria + reacao\n";
+            cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Si mesmo\n";
+            cuerpo += $"<color={colorEncabezado}><b>Ao usar:</b></color> afeta todos os inimigos do lado oposto; termina turno\n";
+            cuerpo += $"<color={colorEncabezado}><b>Resistencia:</b></color> Mental vs CD {dcMental}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Se falhar:</b></color> {nombreProvocado} e {nombreDistraido} por 2 turnos: {reduccionDefensa} Defesa, {reduccionArmadura} Armadura\n";
+            cuerpo += $"<color={colorEncabezado}><b>Reacao (1 turno):</b></color> quando um inimigo erra ataque melee contra ela, contra-ataca com Estocada base{contraataque}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Usos da reacao:</b></color> ilimitados ate o proximo turno\n";
+            cuerpo += $"<color={colorEncabezado}><b>Esforcavel:</b></color> sim ({esforzable})";
         }
         else
         {
-            cuerpo =
-                "<b>Tipo:</b> Auto Debuff en area + Reaccion\n" +
-                "<b>Objetivo:</b> La propia Duelista\n" +
-                "<b>Al usar:</b> afecta a todos los enemigos del lado opuesto\n" +
-                $"{lineaSalvacion}\n" +
-                $"<b>Si falla TS:</b> {nombreProvocado} (2 turnos) y {nombreDistraido} (2 turnos): {reduccionDefensa} Defensa, {reduccionArmadura} Armadura\n" +
-                $"<b>Reaccion (1 turno):</b> cuando un enemigo falla un ataque melee contra ella, contraataca con Estocada base ({bonusAtaqueContra:+#;-#;0} Ataque, {bonusDanioContra:+#;-#;0} Danio)\n" +
-                "<b>Usos de reaccion:</b> ilimitados hasta tu proximo turno\n" +
-                "<b>Flujo de turno:</b> usar esta habilidad termina tu turno";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Aura propia + reaccion\n";
+            cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Uno mismo\n";
+            cuerpo += $"<color={colorEncabezado}><b>Al usar:</b></color> afecta a todos los enemigos del lado opuesto; termina turno\n";
+            cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Mental vs DC {dcMental}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Si falla:</b></color> {nombreProvocado} y {nombreDistraido} por 2 turnos: {reduccionDefensa} Defensa, {reduccionArmadura} Armadura\n";
+            cuerpo += $"<color={colorEncabezado}><b>Reaccion (1 turno):</b></color> cuando un enemigo falla ataque melee contra ella, contraataca con Estocada base{contraataque}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Usos de reaccion:</b></color> ilimitados hasta el proximo turno\n";
+            cuerpo += $"<color={colorEncabezado}><b>Esforzable:</b></color> si ({esforzable})";
         }
 
-        string costos = esIngles
-            ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+        string subtitulo = esIngles
+            ? "Provokes enemies and punishes missed melee attacks."
             : esPortugues
-                ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP} (termina turno)\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-                : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentia: {costoPM}\n- Esforzable: Si ({esforzable})";
+                ? "Provoca inimigos e pune ataques melee errados."
+                : "Provoca enemigos y castiga ataques melee fallidos.";
 
-        txtDescripcion = ConstruirDescripcionEstandar(
-            esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-            esIngles
-                ? "The Duelist drags enemy attention to herself and punishes every failed melee attack with a precise reply."
-                : esPortugues
-                    ? "A Duelista puxa a atencao dos inimigos para si e pune cada erro corpo a corpo com uma resposta precisa."
-                    : "La Duelista arrastra la atencion enemiga hacia si y castiga cada fallo melee con una respuesta precisa.",
-            cuerpo,
-            costos,
-            "#5dade2");
+        txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+        txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+        txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+        txtDescripcion += cuerpo;
 
-        bool mostrarProximoNivel = CampaignManager.Instance != null
-            && CampaignManager.Instance.scMenuPersonajes != null
-            && CampaignManager.Instance.scMenuPersonajes.pSel != null
-            && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
-        if (!mostrarProximoNivel)
-        {
-            return;
-        }
+        bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+        if (!mostrarProximoNivel) { return; }
 
         if (esIngles)
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Distracted applies -1 extra Armor.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (counterattack loses its penalties) or Option B (-1 AP cost).</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (counterattack loses penalties) or Option B (-1 AP cost).</color>"; }
         }
         else if (esPortugues)
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na CD da resistencia.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Distraido aplica -1 Armadura extra.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (o contra-ataque perde as penalidades) ou Opcao B (-1 custo AP).</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (contra-ataque perde penalidades) ou Opcao B (-1 custo AP).</color>"; }
         }
         else
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al DC de la TS.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Distraido aplica -1 Armadura extra.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (el contraataque pierde sus penalidades) u Opcion B (-1 costo AP).</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (contraataque pierde penalidades) u Opcion B (-1 costo AP).</color>"; }
         }
+    }
+
+    private string ConstruirTextoContraataque(int bonusAtaqueContra, int bonusDanioContra, bool esIngles, bool esPortugues)
+    {
+        string texto = "";
+        if (bonusAtaqueContra != 0)
+        {
+            texto += $", {bonusAtaqueContra:+#;-#;0}";
+        }
+        if (bonusDanioContra != 0)
+        {
+            texto += esIngles
+                ? $", {bonusDanioContra:+#;-#;0} Damage"
+                : esPortugues
+                    ? $", {bonusDanioContra:+#;-#;0} Dano"
+                    : $", {bonusDanioContra:+#;-#;0} Danio";
+        }
+        return texto;
     }
 
     public override void Activar()

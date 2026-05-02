@@ -67,6 +67,11 @@ public class Distraer : Habilidad
     if (NIVEL > 2) { apPenalty -= 1; }
     if (NIVEL == 4) { apPenalty -= 1; defPenalty -= 1; }
     int escondidoGanado = NIVEL == 5 ? 2 : 1;
+    string colorTitulo = "#5dade2";
+    string colorEncabezado = "#44d3ec";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
 
     string tituloEs = "Distraer I";
     string tituloEn = "Distract I";
@@ -80,56 +85,48 @@ public class Distraer : Habilidad
     if (NIVEL == 4) { tituloPt = "Distrair IV a"; }
     if (NIVEL == 5) { tituloPt = "Distrair IV b"; }
 
-    string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Mental, dcBase);
-
     string cuerpo = "";
     if (esIngles)
     {
-      cuerpo += "<b>Type:</b> Ranged (5 range)\n";
-      cuerpo += "<b>Target:</b> 1 enemy\n";
-      cuerpo += "<b>Roll/Save:</b> no attack roll\n";
-      cuerpo += lineaSalvacion + "\n";
-      cuerpo += $"<b>On failed save:</b> Distracted (2 turns): {apPenalty} max AP, {defPenalty} Defense\n";
-      cuerpo += $"<b>If target is isolated:</b> gain Hidden ({escondidoGanado})\n";
-      cuerpo += "<b>Stealth interaction:</b> Discreet (does not reveal the caster)";
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Ranged control (5 range)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy\n";
+      cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> no attack roll\n";
+      cuerpo += $"<color={colorEncabezado}><b>Save:</b></color> Mental vs DC {dcBase}\n";
+      cuerpo += $"<color={colorEncabezado}><b>On failed save:</b></color> Distracted (2 turns): {apPenalty} max AP, {defPenalty} Defense\n";
+      cuerpo += $"<color={colorEncabezado}><b>If isolated:</b></color> gain Hidden ({escondidoGanado})\n";
+      cuerpo += $"<color={colorEncabezado}><b>Stealth:</b></color> Discreet; does not reveal the caster";
     }
     else if (esPortugues)
     {
-      cuerpo += "<b>Tipo:</b> Alcance (5 de alcance)\n";
-      cuerpo += "<b>Alvo:</b> 1 inimigo\n";
-      cuerpo += "<b>Rolagem/Resistencia:</b> sem rolagem de ataque\n";
-      cuerpo += lineaSalvacion + "\n";
-      cuerpo += $"<b>Se falhar na resistencia:</b> Distraido (2 turnos): {apPenalty} AP max, {defPenalty} Defesa\n";
-      cuerpo += $"<b>Se o alvo estiver isolado:</b> ganha Escondido ({escondidoGanado})\n";
-      cuerpo += "<b>Interacao com furtividade:</b> Discreta (nao revela o lancador)";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Controle a distancia (5 de alcance)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> sem rolagem de ataque\n";
+      cuerpo += $"<color={colorEncabezado}><b>Resistencia:</b></color> Mental vs CD {dcBase}\n";
+      cuerpo += $"<color={colorEncabezado}><b>Se falhar:</b></color> Distraido (2 turnos): {apPenalty} AP max, {defPenalty} Defesa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Se estiver isolado:</b></color> ganha Escondido ({escondidoGanado})\n";
+      cuerpo += $"<color={colorEncabezado}><b>Furtividade:</b></color> Discreta; nao revela o lancador";
     }
     else
     {
-      cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
-      cuerpo += "<b>Objetivo:</b> 1 enemigo\n";
-      cuerpo += "<b>Tirada/TS:</b> no tiene tirada de ataque\n";
-      cuerpo += lineaSalvacion + "\n";
-      cuerpo += $"<b>Si falla TS:</b> Distraido (2 turnos): {apPenalty} AP max, {defPenalty} Defensa\n";
-      cuerpo += $"<b>Si el objetivo esta aislado:</b> ganas Escondido ({escondidoGanado})\n";
-      cuerpo += "<b>Interaccion con sigilo:</b> Discreta (no revela al lanzador)";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Control a distancia (5 alcance)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> no tiene tirada de ataque\n";
+      cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Mental vs DC {dcBase}\n";
+      cuerpo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> Distraido (2 turnos): {apPenalty} AP max, {defPenalty} Defensa\n";
+      cuerpo += $"<color={colorEncabezado}><b>Si esta aislado:</b></color> ganas Escondido ({escondidoGanado})\n";
+      cuerpo += $"<color={colorEncabezado}><b>Sigilo:</b></color> Discreta; no revela al lanzador";
     }
 
-    string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+    string subtitulo = esIngles
+      ? "Distracts one enemy and can restore Hidden."
       : esPortugues
-        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
-
-    txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-      esIngles
-        ? "The Stalker uses a trick to distract the enemy and leave them vulnerable."
-        : esPortugues
-          ? "O Espreitador usa um truque para distrair o inimigo e deixa-lo vulneravel."
-        : "El Acechador utiliza un truco para distraer al enemigo y dejarlo vulnerable.",
-      cuerpo,
-      costos,
-      "#5dade2");
+        ? "Distrai um inimigo e pode recuperar Escondido."
+        : "Distrae a un enemigo y puede recuperar Escondido.";
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += cuerpo;
 
     bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)

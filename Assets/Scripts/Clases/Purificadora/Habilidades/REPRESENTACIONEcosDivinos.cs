@@ -231,7 +231,100 @@ public class REPRESENTACIONEcosDivinos : Habilidad
           txtDescripcion += "<i>Em inimigos: Causa 1d10+9 de dano Divino.</i>\n\n";
         }
       }
+      AplicarDescripcionEstandar();
       }
+
+    private void AplicarDescripcionEstandar()
+    {
+      string rangoAliados = RangoAliados();
+      string rangoEnemigos = RangoEnemigos();
+
+      string titulo = $"Ecos Divinos {SufijoNivel()}";
+      string subtitulo = "<color=#4f5552>Pasiva: crea un eco por turno.</color>";
+      string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +
+                      "<color=#44d3ec><b>Frecuencia:</b></color> <color=#ffffff>1 eco por turno.</color>\n" +
+                      $"<color=#44d3ec><b>Aliados:</b></color> <color=#ffffff>cura {rangoAliados}, +1 Valentia; si es la Purificadora, +1 Fervor.</color>\n" +
+                      $"<color=#44d3ec><b>Enemigos:</b></color> <color=#ffffff>{rangoEnemigos} danio Divino.</color>";
+
+      string proximo = TextoProximoNivel();
+      if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+
+      if (TRADU.i.nIdioma == 2)
+      {
+        titulo = $"Divine Echoes {SufijoNivel()}";
+        subtitulo = "<color=#4f5552>Passive: creates one echo each turn.</color>";
+        cuerpo = "<color=#44d3ec><b>Type:</b></color> <color=#ffffff>Passive</color>\n" +
+                 "<color=#44d3ec><b>Frequency:</b></color> <color=#ffffff>1 echo each turn.</color>\n" +
+                 $"<color=#44d3ec><b>Allies:</b></color> <color=#ffffff>heals {rangoAliados}, +1 Valour; if it is the Purifier, +1 Fervor.</color>\n" +
+                 $"<color=#44d3ec><b>Enemies:</b></color> <color=#ffffff>{rangoEnemigos} Divine damage.</color>";
+        proximo = TextoProximoNivel();
+        if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+      }
+      else if (TRADU.i.nIdioma == 3)
+      {
+        titulo = $"Ecos Divinos {SufijoNivel()}";
+        subtitulo = "<color=#4f5552>Passiva: cria um eco por turno.</color>";
+        cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Passiva</color>\n" +
+                 "<color=#44d3ec><b>Frequencia:</b></color> <color=#ffffff>1 eco por turno.</color>\n" +
+                 $"<color=#44d3ec><b>Aliados:</b></color> <color=#ffffff>cura {rangoAliados}, +1 Valentia; se for a Purificadora, +1 Fervor.</color>\n" +
+                 $"<color=#44d3ec><b>Inimigos:</b></color> <color=#ffffff>{rangoEnemigos} dano Divino.</color>";
+        proximo = TextoProximoNivel();
+        if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+      }
+
+      txtDescripcion = ConstruirDescripcionEstandar($"<size=115%>{titulo}</size>", subtitulo, cuerpo, "", "#5dade2");
+    }
+
+    private string RangoAliados()
+    {
+      if (NIVEL < 2) { return "1-10"; }
+      if (NIVEL == 2) { return "3-12"; }
+      if (NIVEL == 4) { return "10-19"; }
+      return "5-14";
+    }
+
+    private string RangoEnemigos()
+    {
+      if (NIVEL < 2) { return "1-10"; }
+      if (NIVEL == 2) { return "3-12"; }
+      if (NIVEL == 5) { return "10-19"; }
+      return "5-14";
+    }
+
+    private string SufijoNivel()
+    {
+      if (NIVEL < 2) { return "I"; }
+      if (NIVEL == 2) { return "II"; }
+      if (NIVEL == 3) { return "III"; }
+      if (NIVEL == 4) { return "IV a"; }
+      return "IV b";
+    }
+
+    private string TextoProximoNivel()
+    {
+      if (!EsEscenaCampaña() || CampaignManager.Instance.scMenuPersonajes.pSel == null || CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad <= 0)
+      {
+        return "";
+      }
+
+      if (TRADU.i.nIdioma == 2)
+      {
+        if (NIVEL < 2 || NIVEL == 2) { return "<color=#dfea02>Next Level: +2 damage and healing.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Option A: +5 healing.\nOption B: +5 damage.</color>"; }
+      }
+      else if (TRADU.i.nIdioma == 3)
+      {
+        if (NIVEL < 2 || NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +2 dano e cura.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opcao A: +5 cura.\nOpcao B: +5 dano.</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2 || NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +2 danio y curacion.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opcion A: +5 curacion.\nOpcion B: +5 danio.</color>"; }
+      }
+
+      return "";
+    }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}
     public override void Activar()

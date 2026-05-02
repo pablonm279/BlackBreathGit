@@ -39,26 +39,14 @@ public class REPRESENTACIONAtaquesReveladores : Habilidad
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
         string nombreDebuff = TRADU.i != null ? TRADU.i.Traducir("Vulnerabilidad Expuesta") : "Vulnerabilidad Expuesta";
 
-        int bonusCrit = 1;
+        int bonusCritPorcentaje = 5;
         int bonusDanioCritico = 0;
         int duracion = 2;
 
-        if (NIVEL > 1)
-        {
-            bonusDanioCritico += 10;
-        }
-        if (NIVEL > 2)
-        {
-            bonusCrit += 1;
-        }
-        if (NIVEL == 4)
-        {
-            bonusDanioCritico += 15;
-        }
-        if (NIVEL == 5)
-        {
-            duracion += 1;
-        }
+        if (NIVEL > 1) { bonusDanioCritico += 10; }
+        if (NIVEL > 2) { bonusCritPorcentaje += 5; }
+        if (NIVEL == 4) { bonusDanioCritico += 15; }
+        if (NIVEL == 5) { duracion += 1; }
 
         string sufijoNivel = "I";
         if (NIVEL == 2) { sufijoNivel = "II"; }
@@ -66,75 +54,66 @@ public class REPRESENTACIONAtaquesReveladores : Habilidad
         else if (NIVEL == 4) { sufijoNivel = "IV a"; }
         else if (NIVEL == 5) { sufijoNivel = "IV b"; }
 
+        string colorTitulo = "#5dade2";
+        string colorEncabezado = "#44d3ec";
         string cuerpo = "";
         if (esIngles)
         {
-            cuerpo += "<b>Type:</b> Passive\n";
-            cuerpo += $"<b>Effect:</b> when the Duelist deals damage, applies {nombreDebuff} for {duracion} turns\n";
-            cuerpo += $"<b>{nombreDebuff}:</b> attackers gain +{bonusCrit} crit range against that target";
-            if (bonusDanioCritico > 0)
-            {
-                cuerpo += $", and critical hits deal +{bonusDanioCritico}% damage";
-            }
-            cuerpo += "\n";
+            cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Passive\n";
+            cuerpo += $"<color={colorEncabezado}><b>Trigger:</b></color> when the Duelist deals damage\n";
+            cuerpo += $"<color={colorEncabezado}><b>Effect:</b></color> applies {nombreDebuff} for {duracion} turns\n";
+            cuerpo += $"<color={colorEncabezado}><b>{nombreDebuff}:</b></color> attacks against that target gain +{bonusCritPorcentaje}% Crit";
+            if (bonusDanioCritico > 0) { cuerpo += $", critical hits deal +{bonusDanioCritico}% damage"; }
         }
         else if (esPortugues)
         {
-            cuerpo += "<b>Tipo:</b> Passiva\n";
-            cuerpo += $"<b>Efeito:</b> ao causar dano, aplica {nombreDebuff} por {duracion} turnos\n";
-            cuerpo += $"<b>{nombreDebuff}:</b> atacantes ganham +{bonusCrit} de faixa de critico contra esse alvo";
-            if (bonusDanioCritico > 0)
-            {
-                cuerpo += $", e acertos criticos causam +{bonusDanioCritico}% de dano";
-            }
-            cuerpo += "\n";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Passiva\n";
+            cuerpo += $"<color={colorEncabezado}><b>Gatilho:</b></color> ao causar dano\n";
+            cuerpo += $"<color={colorEncabezado}><b>Efeito:</b></color> aplica {nombreDebuff} por {duracion} turnos\n";
+            cuerpo += $"<color={colorEncabezado}><b>{nombreDebuff}:</b></color> ataques contra esse alvo ganham +{bonusCritPorcentaje}% Critico";
+            if (bonusDanioCritico > 0) { cuerpo += $", criticos causam +{bonusDanioCritico}% de dano"; }
         }
         else
         {
-            cuerpo += "<b>Tipo:</b> Pasiva\n";
-            cuerpo += $"<b>Efecto:</b> al danar, aplica {nombreDebuff} por {duracion} turnos\n";
-            cuerpo += $"<b>{nombreDebuff}:</b> quienes ataquen a ese objetivo ganan +{bonusCrit} rango critico";
-            if (bonusDanioCritico > 0)
-            {
-                cuerpo += $", y los criticos le causan +{bonusDanioCritico}% de danio";
-            }
-            cuerpo += "\n";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n";
+            cuerpo += $"<color={colorEncabezado}><b>Disparo:</b></color> al causar danio\n";
+            cuerpo += $"<color={colorEncabezado}><b>Efecto:</b></color> aplica {nombreDebuff} por {duracion} turnos\n";
+            cuerpo += $"<color={colorEncabezado}><b>{nombreDebuff}:</b></color> ataques contra ese objetivo ganan +{bonusCritPorcentaje}% Critico";
+            if (bonusDanioCritico > 0) { cuerpo += $", criticos causan +{bonusDanioCritico}% de danio"; }
         }
 
-        txtDescripcion = ConstruirDescripcionEstandar(
-          esIngles ? "Revealing Attacks " + sufijoNivel : "Ataques Reveladores " + sufijoNivel,
-          esIngles
-            ? "Each damaging hit exposes the target and makes follow-up critical strikes easier."
+        string titulo = esIngles ? "Revealing Attacks " + sufijoNivel : esPortugues ? "Ataques Reveladores " + sufijoNivel : "Ataques Reveladores " + sufijoNivel;
+        string subtitulo = esIngles
+            ? "Damaging hits expose the target to critical follow-up."
             : esPortugues
-              ? "Cada golpe que causa dano expoe o alvo e facilita os proximos acertos criticos."
-              : "Cada golpe que hace dano expone al objetivo y facilita los siguientes golpes criticos.",
-          cuerpo,
-          "",
-          "#5dade2");
+                ? "Golpes com dano expoem o alvo a criticos posteriores."
+                : "Los golpes con danio exponen al objetivo a criticos posteriores.";
+
+        txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size>\n\n";
+        txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+        txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+        txtDescripcion += cuerpo;
 
         bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
-        if (!mostrarProximoNivel)
-        {
-            return;
-        }
+        if (!mostrarProximoNivel) { return; }
 
         if (esIngles)
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +10% critical damage taken.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 extra crit range.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% Crit against exposed targets.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+15% critical damage taken) or Option B (+1 duration).</color>"; }
         }
         else if (esPortugues)
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +10% de dano critico recebido.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 faixa de critico extra.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico contra alvos expostos.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+15% de dano critico recebido) ou Opcao B (+1 duracao).</color>"; }
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +10% dano critico recibido.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 rango critico extra.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+15% dano critico recibido) u Opcion B (+1 duracion).</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +10% danio critico recibido.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico contra objetivos expuestos.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+15% danio critico recibido) u Opcion B (+1 duracion).</color>"; }
         }
     }
 

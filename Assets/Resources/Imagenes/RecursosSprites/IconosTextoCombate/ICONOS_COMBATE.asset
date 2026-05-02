@@ -1,0 +1,151 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &-5925196496618642985
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: dano_acido Material
+  m_Shader: {fileID: 4800000, guid: cf81c85f95fe47e1a27f6ae460cf182c, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 3c5f18ca995fe734fbb61d4275dfb79e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _CullMode: 0
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UseUIAlphaClip: 0
+    m_Colors:
+    - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84a92b25f83d49b9bc132d206b370281, type: 3}
+  m_Name: ICONOS_COMBATE
+  m_EditorClassIdentifier: 
+  m_Version: 1.1.0
+  m_FaceInfo:
+    m_FaceIndex: 0
+    m_FamilyName: 
+    m_StyleName: 
+    m_PointSize: 0
+    m_Scale: 0
+    m_UnitsPerEM: 0
+    m_LineHeight: 0
+    m_AscentLine: 0
+    m_CapLine: 0
+    m_MeanLine: 0
+    m_Baseline: 0
+    m_DescentLine: 0
+    m_SuperscriptOffset: 0
+    m_SuperscriptSize: 0
+    m_SubscriptOffset: 0
+    m_SubscriptSize: 0
+    m_UnderlineOffset: 0
+    m_UnderlineThickness: 0
+    m_StrikethroughOffset: 0
+    m_StrikethroughThickness: 0
+    m_TabWidth: 0
+  m_Material: {fileID: -5925196496618642985}
+  spriteSheet: {fileID: 2800000, guid: 3c5f18ca995fe734fbb61d4275dfb79e, type: 3}
+  m_SpriteCharacterTable:
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 0
+    m_Scale: 1
+    m_Name: dano_acido
+  m_GlyphTable:
+  - m_Index: 0
+    m_Metrics:
+      m_Width: 343
+      m_Height: 361
+      m_HorizontalBearingX: -171.5
+      m_HorizontalBearingY: 180.5
+      m_HorizontalAdvance: 343
+    m_GlyphRect:
+      m_X: 0
+      m_Y: 0
+      m_Width: 343
+      m_Height: 361
+    m_Scale: 1
+    m_AtlasIndex: 0
+    m_ClassDefinitionType: 0
+    sprite: {fileID: 21300000, guid: 3c5f18ca995fe734fbb61d4275dfb79e, type: 3}
+  spriteInfoList: []
+  fallbackSpriteAssets:
+  - {fileID: 11400000, guid: 6f8d010d5dd90a14790ea8dcf51f394d, type: 2}
+  - {fileID: 11400000, guid: c8cf4ceb69d09244fb8581793a23cc77, type: 2}
+  - {fileID: 11400000, guid: 25c8ef60ba08b6b4089c98a8fd483536, type: 2}
+  - {fileID: 11400000, guid: b98b49b05d29cb445848c79256b0f04e, type: 2}
+  - {fileID: 11400000, guid: 2dcd0f5b1dc79d54496935b2df5aad5d, type: 2}
+  - {fileID: 11400000, guid: 0dd9731661f871246b1e40db0517d48c, type: 2}
+  - {fileID: 11400000, guid: 633310c896c642f4e985b4185b0236fa, type: 2}
+  - {fileID: 11400000, guid: 58b13448e57b171439c631113e1fc337, type: 2}
+  - {fileID: 11400000, guid: cc3e8db612616074eaccb5eafa1b5c61, type: 2}
+  - {fileID: 11400000, guid: 4cee1a41f1743c347890810171fb1d72, type: 2}
+  - {fileID: 11400000, guid: 1e40de8d9b0dbec49a7485ee2b7ab311, type: 2}
+  - {fileID: 11400000, guid: e69e85ed3d8182d4db0a4daa81612ef3, type: 2}
+  - {fileID: 11400000, guid: dd61ffdced020bf4db5524134c823269, type: 2}
+  - {fileID: 11400000, guid: c561d08f317338544b2b0b8b29ac0dfc, type: 2}
+  - {fileID: 11400000, guid: 9f86e649e232e7e409f9551c4efe4ad8, type: 2}
+  - {fileID: 11400000, guid: 2b04a543433105f4291cbb29b02af0bc, type: 2}
+  - {fileID: 11400000, guid: 306e2e252418851409e846aacd7f4f70, type: 2}
+  - {fileID: 11400000, guid: 94bc167101cf823448086d49fd093aab, type: 2}
+  - {fileID: 11400000, guid: 8a1d772e53965a54c80939b6464b5b0a, type: 2}
+  - {fileID: 11400000, guid: 954d2aca01c69f341a81d44627a27944, type: 2}
+  - {fileID: 11400000, guid: 4345b569a140bf44a9fb24d8a6205697, type: 2}
+  - {fileID: 11400000, guid: f8c64ebc8c553c245b5eb4246dbf7904, type: 2}
+  - {fileID: 11400000, guid: 096401350d8c4b3409d3f0dfe7ba26ba, type: 2}
+  - {fileID: 11400000, guid: bc9a1e135fa655e49bb523536b692f40, type: 2}
+  - {fileID: 11400000, guid: 4d805bf4d2411be4d9403e3d5531cd26, type: 2}
+  - {fileID: 11400000, guid: eac54bbcdf948e049a5cfa9c97189e6d, type: 2}
+  - {fileID: 11400000, guid: 31cc00b301e974d40b2f6ccb5f9a92a7, type: 2}
+  - {fileID: 11400000, guid: 28011c9d46daabf46a00c9cd6fe7ec95, type: 2}
+  - {fileID: 11400000, guid: b9d9c876b6210c446bd29ef282ba2df3, type: 2}
+  - {fileID: 11400000, guid: ec16bd2ef4c010c49b13d4d1b474c394, type: 2}
+  - {fileID: 11400000, guid: 1ef25739f4d1b6844a0ba2ef03de8d55, type: 2}
+  - {fileID: 11400000, guid: 297d8d18f34484649a36456e5cc27b74, type: 2}
+  - {fileID: 11400000, guid: db8c7d52677b90b4db0c5bfede37bcc6, type: 2}
+  - {fileID: 11400000, guid: 29f3106083ea73748af6b43b3e8bccb9, type: 2}
+  - {fileID: 11400000, guid: 61d890bdbd1377e498216b87a5b99923, type: 2}
+  - {fileID: 11400000, guid: ca7d28e3192d3794186f0f6e838ef854, type: 2}
+  - {fileID: 11400000, guid: a8fd3bc6e13c4424aaf379f060f4f1cc, type: 2}
+  - {fileID: 11400000, guid: 6d236940aec50cf46afc9695f1852927, type: 2}
+  - {fileID: 11400000, guid: 3205747e1df0d0348a7d847aa8d4933e, type: 2}
+  - {fileID: 11400000, guid: a2a2b026fed67c24ab6c6a47c89fdd36, type: 2}
+  - {fileID: 11400000, guid: 4e03d3732c8249647909c3d5365402a9, type: 2}
+  - {fileID: 11400000, guid: 2fe368faca5c27c4e9bfa4b2df5a2da2, type: 2}
+  - {fileID: 11400000, guid: d0daf9563c9a0f64283de1b3ed714acf, type: 2}
+  - {fileID: 11400000, guid: 8de82cbfb03f4e54a96a540230c96c09, type: 2}
+  - {fileID: 11400000, guid: 1714ee0558d10644ba8a97dfb28f0dde, type: 2}

@@ -43,6 +43,12 @@ public class PosturaDefensiva : Habilidad
       int bonoAtaque = NIVEL > 2 ? 1 : 0;
       int usosReaccion = NIVEL == 5 ? 2 : 1;
       bool seCancelaAlRecibirDanio = NIVEL != 4;
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoBuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_buff\"></voffset></size><space=-0.35em>";
+      string iconoReaccion = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_reaccion\"></voffset></size><space=-0.35em>";
+      string costoSuperior = $"{costoAP} {iconoAP}";
 
       string tituloEs = "Postura Defensiva I";
       string tituloEn = "Defensive Stance I";
@@ -119,6 +125,48 @@ public class PosturaDefensiva : Habilidad
         cuerpo,
         costos,
         "#5dade2");
+
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "Defensive buff; ends turn and prepares a melee counter."
+        : esPortugues
+          ? "Buff defensivo; encerra o turno e prepara um contra-ataque melee."
+          : "Buff defensivo; termina el turno y prepara un contraataque melee.";
+      string ataqueBuff = bonoAtaque > 0
+        ? esIngles ? $", +{bonoAtaque} Attack" : esPortugues ? $", +{bonoAtaque} Ataque" : $", +{bonoAtaque} Ataque"
+        : string.Empty;
+
+      string cuerpoFormato = "";
+      if (esIngles)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Self buff + Reaction</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>Self</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Buff:</b></color> <color={colorValor}>{iconoBuff} 2 turns: +{bonoDefensa} Defense{ataqueBuff}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Reaction:</b></color> <color={colorValor}>{iconoReaccion} Counterattack with Vertical Cut when an enemy misses a melee attack. Uses: {usosReaccion}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Cancel:</b></color> <color={colorValor}>{(seCancelaAlRecibirDanio ? "Removed when taking damage" : "Not removed when taking damage")}</color>";
+      }
+      else if (esPortugues)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff + Reação</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>O próprio usuário</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Buff:</b></color> <color={colorValor}>{iconoBuff} 2 turnos: +{bonoDefensa} Defesa{ataqueBuff}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Reação:</b></color> <color={colorValor}>{iconoReaccion} Contra-ataca com Corte Vertical quando um inimigo erra um ataque melee. Usos: {usosReaccion}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Cancelamento:</b></color> <color={colorValor}>{(seCancelaAlRecibirDanio ? "Removida ao receber dano" : "Não é removida ao receber dano")}</color>";
+      }
+      else
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff + Reacción</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Uno mismo</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Buff:</b></color> <color={colorValor}>{iconoBuff} 2 turnos: +{bonoDefensa} Defensa{ataqueBuff}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Reacción:</b></color> <color={colorValor}>{iconoReaccion} Contraataca con Corte Vertical cuando un enemigo falla un ataque melee. Usos: {usosReaccion}</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Cancelación:</b></color> <color={colorValor}>{(seCancelaAlRecibirDanio ? "Se elimina al recibir daño" : "No se elimina al recibir daño")}</color>";
+      }
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpoFormato;
 
       bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)

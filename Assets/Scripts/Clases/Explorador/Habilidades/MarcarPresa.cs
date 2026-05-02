@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -51,69 +51,71 @@ public class MarcarPresa : Habilidad
     if (NIVEL == 5) { tituloPt = "Marcar Presa IV b"; }
 
     int bonoAtaqueMarca = NIVEL == 4 ? 2 : 4;
-    int bonoCritRangoMarca = 1 + (NIVEL > 2 ? 1 : 0);
+    int bonoCritPorcentajeMarca = (1 + (NIVEL > 2 ? 1 : 0)) * 5;
     int bonoCritDanioMarca = 15 + (NIVEL > 1 ? 5 : 0);
-
     int recompensaVal = NIVEL == 5 ? 2 : 1;
     int recompensaApMax = NIVEL == 5 ? 2 : 1;
     int recompensaTsMental = NIVEL == 5 ? 3 : 2;
+    bool aplicaPenalidadPropia = NIVEL != 4;
 
-    bool aplicaDebuffPropio = NIVEL != 4;
+    string colorTitulo = "#5dade2";
+    string colorEncabezado = "#44d3ec";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
 
     string cuerpo = "";
     if (esIngles)
     {
-      cuerpo += "<b>Type:</b> Mark\n";
-      cuerpo += "<b>Target:</b> 1 enemy on opposite side\n";
-      cuerpo += "<b>Roll/Save:</b> none (direct application)\n";
-      cuerpo += "<b>Mark duration:</b> 3 turns\n";
-      cuerpo += $"<b>Bonuses vs marked target:</b> +{bonoAtaqueMarca} attack, +{bonoCritRangoMarca} crit range, +{bonoCritDanioMarca}% crit damage\n";
-      cuerpo += aplicaDebuffPropio
-        ? "<b>Self effect on cast:</b> -2 Attack for 2 turns (only against non-marked targets)\n"
-        : "<b>Self effect on cast:</b> no attack penalty against non-marked targets\n";
-      cuerpo += $"<b>On marked kill:</b> +{recompensaVal} Valour, +{recompensaApMax} max AP and +{recompensaTsMental} Mental Save for 3 turns";
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Mark\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy on opposite side\n";
+      cuerpo += $"<color={colorEncabezado}><b>Roll/Save:</b></color> none\n";
+      cuerpo += $"<color={colorEncabezado}><b>Cost:</b></color> {costoPM} Valour\n";
+      cuerpo += $"<color={colorEncabezado}><b>Mark duration:</b></color> 3 turns\n";
+      cuerpo += $"<color={colorEncabezado}><b>Against marked target:</b></color> roll +{bonoAtaqueMarca}, +{bonoCritPorcentajeMarca}% Crit, +{bonoCritDanioMarca}% crit damage\n";
+      cuerpo += aplicaPenalidadPropia
+        ? $"<color={colorEncabezado}><b>After cast:</b></color> -2 on rolls against non-marked targets for 2 turns\n"
+        : $"<color={colorEncabezado}><b>After cast:</b></color> no penalty against non-marked targets\n";
+      cuerpo += $"<color={colorEncabezado}><b>On marked kill:</b></color> +{recompensaVal} Valour, +{recompensaApMax} max AP, +{recompensaTsMental} Mental Save for 3 turns";
     }
     else if (esPortugues)
     {
-      cuerpo += "<b>Tipo:</b> Marca\n";
-      cuerpo += "<b>Alvo:</b> 1 inimigo do lado oposto\n";
-      cuerpo += "<b>Rolagem/TS:</b> nao tem (aplicacao direta)\n";
-      cuerpo += "<b>Duracao da marca:</b> 3 turnos\n";
-      cuerpo += $"<b>Bonus contra marcado:</b> +{bonoAtaqueMarca} ataque, +{bonoCritRangoMarca} faixa de critico, +{bonoCritDanioMarca}% dano critico\n";
-      cuerpo += aplicaDebuffPropio
-        ? "<b>Efeito proprio ao usar:</b> -2 Ataque por 2 turnos (apenas contra alvos nao marcados)\n"
-        : "<b>Efeito proprio ao usar:</b> sem penalidade de ataque contra alvos nao marcados\n";
-      cuerpo += $"<b>Ao matar o marcado:</b> +{recompensaVal} Valentia, +{recompensaApMax} AP max e +{recompensaTsMental} TS Mental por 3 turnos";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Marca\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo do lado oposto\n";
+      cuerpo += $"<color={colorEncabezado}><b>Rolagem/TS:</b></color> nao tem\n";
+      cuerpo += $"<color={colorEncabezado}><b>Custo:</b></color> {costoPM} Valentia\n";
+      cuerpo += $"<color={colorEncabezado}><b>Duracao da marca:</b></color> 3 turnos\n";
+      cuerpo += $"<color={colorEncabezado}><b>Contra marcado:</b></color> rolagem +{bonoAtaqueMarca}, +{bonoCritPorcentajeMarca}% Critico, +{bonoCritDanioMarca}% dano critico\n";
+      cuerpo += aplicaPenalidadPropia
+        ? $"<color={colorEncabezado}><b>Depois de usar:</b></color> -2 em rolagens contra alvos nao marcados por 2 turnos\n"
+        : $"<color={colorEncabezado}><b>Depois de usar:</b></color> sem penalidade contra alvos nao marcados\n";
+      cuerpo += $"<color={colorEncabezado}><b>Ao matar o marcado:</b></color> +{recompensaVal} Valentia, +{recompensaApMax} AP max, +{recompensaTsMental} TS Mental por 3 turnos";
     }
     else
     {
-      cuerpo += "<b>Tipo:</b> Marca\n";
-      cuerpo += "<b>Objetivo:</b> 1 enemigo del lado opuesto\n";
-      cuerpo += "<b>Tirada/TS:</b> no tiene (aplicacion directa)\n";
-      cuerpo += "<b>Duracion de marca:</b> 3 turnos\n";
-      cuerpo += $"<b>Bonos contra marcado:</b> +{bonoAtaqueMarca} ataque, +{bonoCritRangoMarca} rango critico, +{bonoCritDanioMarca}% danio critico\n";
-      cuerpo += aplicaDebuffPropio
-        ? "<b>Efecto propio al lanzar:</b> -2 Ataque por 2 turnos (solo contra objetivos no marcados)\n"
-        : "<b>Efecto propio al lanzar:</b> sin penalidad de ataque contra objetivos no marcados\n";
-      cuerpo += $"<b>Al matar al marcado:</b> +{recompensaVal} Valentía, +{recompensaApMax} AP max y +{recompensaTsMental} TS Mental por 3 turnos";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Marca\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo del lado opuesto\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tirada/TS:</b></color> no tiene\n";
+      cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentia\n";
+      cuerpo += $"<color={colorEncabezado}><b>Duracion de marca:</b></color> 3 turnos\n";
+      cuerpo += $"<color={colorEncabezado}><b>Contra marcado:</b></color> tirada +{bonoAtaqueMarca}, +{bonoCritPorcentajeMarca}% Critico, +{bonoCritDanioMarca}% danio critico\n";
+      cuerpo += aplicaPenalidadPropia
+        ? $"<color={colorEncabezado}><b>Despues de lanzar:</b></color> -2 en tiradas contra no marcados por 2 turnos\n"
+        : $"<color={colorEncabezado}><b>Despues de lanzar:</b></color> sin penalidad contra no marcados\n";
+      cuerpo += $"<color={colorEncabezado}><b>Al matar al marcado:</b></color> +{recompensaVal} Valentia, +{recompensaApMax} AP max, +{recompensaTsMental} TS Mental por 3 turnos";
     }
 
-    string costos = esIngles
-      ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}"
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    string subtitulo = esIngles
+      ? "Marks one enemy and improves your attacks against it."
       : esPortugues
-        ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}";
+        ? "Marca um inimigo e melhora seus ataques contra ele."
+        : "Marca un enemigo y mejora tus ataques contra el.";
 
-    txtDescripcion = ConstruirDescripcionEstandar(
-      esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-      esIngles
-        ? "Paints a priority target and shifts your full damage profile into hunting it."
-        : esPortugues
-          ? "Marca um alvo prioritario e redireciona seu perfil ofensivo para cacar esse alvo."
-        : "Marca un objetivo prioritario y redirige tu perfil ofensivo a cazarlo.",
-      cuerpo,
-      costos,
-      "#5dade2");
+    txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += cuerpo;
 
     bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)
@@ -123,21 +125,21 @@ public class MarcarPresa : Habilidad
 
     if (esIngles)
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% crit damage on marked target.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 crit range on marked target.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A removes self attack penalty; Option B improves kill reward (+1 Valour, +1 max AP, +1 Mental Save).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% crit damage against marked target.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% Crit against marked target.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A removes the self penalty; Option B improves kill reward (+1 Valour, +1 max AP, +1 Mental Save).</color>"; }
     }
     else if (esPortugues)
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% de dano critico contra marcado.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na faixa de critico contra marcado.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A remove a penalidade propria de ataque; Opcao B melhora a recompensa por morte (+1 Valentia, +1 AP max, +1 TS Mental).</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico contra marcado.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A remove a penalidade propria; Opcao B melhora a recompensa por morte (+1 Valentia, +1 AP max, +1 TS Mental).</color>"; }
     }
     else
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% al danio critico contra marcado.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al rango critico contra marcado.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A elimina la penalidad propia de ataque; Opcion B mejora la recompensa por muerte (+1 Valentía, +1 AP max, +1 TS Mental).</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico contra marcado.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A elimina la penalidad propia; Opcion B mejora la recompensa por muerte (+1 Valentia, +1 AP max, +1 TS Mental).</color>"; }
     }
   }
 

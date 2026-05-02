@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -48,7 +48,7 @@ public class REPRESENTACIONImplacable : Habilidad
           {
             if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
             {
-              txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Rango Crítico</color>\n\n";
+              txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +5% Critico</color>\n\n";
             }
           }
         }
@@ -57,7 +57,7 @@ public class REPRESENTACIONImplacable : Habilidad
       {
         txtDescripcion = "<color=#5dade2><b>Implacable III</b></color>\n\n"; 
         txtDescripcion += "<i>(Pasiva) +2 Valentía Máxima.</i>\n\n";
-        txtDescripcion += "<i>Si posee la Valentía al Máximo se obtiene: +2 AP, +4 Fue, +1 Rango Crítico, +20% Daño, +3 TS Mental, +3 TS Fortaleza. Dura 2 Turnos. 1 vez.</i>\n\n";
+        txtDescripcion += "<i>Si posee la Valentía al Máximo se obtiene: +2 AP, +4 Fue, +5% Critico, +20% Daño, +3 TS Mental, +3 TS Fortaleza. Dura 2 Turnos. 1 vez.</i>\n\n";
         if (EsEscenaCampaña())
         {
           if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
@@ -74,13 +74,13 @@ public class REPRESENTACIONImplacable : Habilidad
       {
         txtDescripcion = "<color=#5dade2><b>Implacable IV a</b></color>\n\n"; 
         txtDescripcion += "<i>(Pasiva) +1 Valentía Máxima.</i>\n\n";
-        txtDescripcion += "<i>Si posee la Valentía al Máximo se obtiene: +2 AP, +4 Fue, +1 Rango Crítico, +20% Daño, +3 TS Mental, +3 TS Fortaleza. Dura 2 Turnos. 2 veces.</i>\n\n";
+        txtDescripcion += "<i>Si posee la Valentía al Máximo se obtiene: +2 AP, +4 Fue, +5% Critico, +20% Daño, +3 TS Mental, +3 TS Fortaleza. Dura 2 Turnos. 2 veces.</i>\n\n";
       }
       if(NIVEL==5)
       {
         txtDescripcion = "<color=#5dade2><b>Implacable IV b</b></color>\n\n"; 
         txtDescripcion += "<i>(Pasiva) +2 Valentía Máxima.</i>\n\n";
-        txtDescripcion += "<i>Si posee la Valentía al Máximo se obtiene: +2 AP, +4 Fue, +1 Rango Crítico, +20% Daño, +3 TS Mental, +3 TS Fortaleza. Dura  Turnos. 1 vez.</i>\n\n";
+        txtDescripcion += "<i>Si posee la Valentía al Máximo se obtiene: +2 AP, +4 Fue, +5% Critico, +20% Daño, +3 TS Mental, +3 TS Fortaleza. Dura  Turnos. 1 vez.</i>\n\n";
       }
     }
     if (TRADU.i.nIdioma == 2) // Inglés
@@ -112,7 +112,7 @@ public class REPRESENTACIONImplacable : Habilidad
           {
             if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
             {
-              txtDescripcion += $"<color=#dfea02>-Next Level: +1 Critical Range</color>\n\n";
+              txtDescripcion += $"<color=#dfea02>-Next Level: +5% Critical</color>\n\n";
             }
           }
         }
@@ -121,7 +121,7 @@ public class REPRESENTACIONImplacable : Habilidad
       {
         txtDescripcion = "<color=#5dade2><b>Relentless III</b></color>\n\n"; 
         txtDescripcion += "<i>(Passive) +2 Maximum Valour.</i>\n\n";
-        txtDescripcion += "<i>If Valour is at Maximum: +2 AP, +4 Strength, +1 Critical Range, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts 2 Turns. 1 time.</i>\n\n";
+        txtDescripcion += "<i>If Valour is at Maximum: +2 AP, +4 Strength, +5% Critical, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts 2 Turns. 1 time.</i>\n\n";
         if (EsEscenaCampaña())
         {
           if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
@@ -138,13 +138,13 @@ public class REPRESENTACIONImplacable : Habilidad
       {
         txtDescripcion = "<color=#5dade2><b>Relentless IV a</b></color>\n\n"; 
         txtDescripcion += "<i>(Passive) +1 Maximum Valour.</i>\n\n";
-        txtDescripcion += "<i>If Valour is at Maximum: +2 AP, +4 Strength, +1 Critical Range, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts 2 Turns. 2 times.</i>\n\n";
+        txtDescripcion += "<i>If Valour is at Maximum: +2 AP, +4 Strength, +5% Critical, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts 2 Turns. 2 times.</i>\n\n";
       }
       if(NIVEL==5)
       {
         txtDescripcion = "<color=#5dade2><b>Relentless IV b</b></color>\n\n"; 
         txtDescripcion += "<i>(Passive) +2 Maximum Valour.</i>\n\n";
-        txtDescripcion += "<i>If Valour is at Maximum: +2 AP, +4 Strength, +1 Critical Range, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts  Turns. 1 time.</i>\n\n";
+        txtDescripcion += "<i>If Valour is at Maximum: +2 AP, +4 Strength, +5% Critical, +20% Damage, +3 Mental Save, +3 Fortitude Save. Lasts  Turns. 1 time.</i>\n\n";
       }
     }
     if (TRADU.i.nIdioma == 3) // Portugues
@@ -176,7 +176,7 @@ public class REPRESENTACIONImplacable : Habilidad
           {
             if(CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
             {
-              txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 Faixa de Critico</color>\n\n";
+              txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +5% Critico</color>\n\n";
             }
           }
         }
@@ -185,7 +185,7 @@ public class REPRESENTACIONImplacable : Habilidad
       {
         txtDescripcion = "<color=#5dade2><b>Implacavel III</b></color>\n\n"; 
         txtDescripcion += "<i>(Passiva) +2 Valentia Maxima.</i>\n\n";
-        txtDescripcion += "<i>Se estiver com Valentia Maxima: +2 AP, +4 Forca, +1 Faixa de Critico, +20% Dano, +3 Resistencia Mental, +3 Resistencia de Fortitude. Dura 2 turnos. 1 vez.</i>\n\n";
+        txtDescripcion += "<i>Se estiver com Valentia Maxima: +2 AP, +4 Forca, +5% Critico, +20% Dano, +3 Resistencia Mental, +3 Resistencia de Fortitude. Dura 2 turnos. 1 vez.</i>\n\n";
         if (EsEscenaCampaña())
         {
           if(CampaignManager.Instance.scMenuPersonajes.pSel!= null)
@@ -202,15 +202,109 @@ public class REPRESENTACIONImplacable : Habilidad
       {
         txtDescripcion = "<color=#5dade2><b>Implacavel IV a</b></color>\n\n"; 
         txtDescripcion += "<i>(Passiva) +1 Valentia Maxima.</i>\n\n";
-        txtDescripcion += "<i>Se estiver com Valentia Maxima: +2 AP, +4 Forca, +1 Faixa de Critico, +20% Dano, +3 Resistencia Mental, +3 Resistencia de Fortitude. Dura 2 turnos. 2 vezes.</i>\n\n";
+        txtDescripcion += "<i>Se estiver com Valentia Maxima: +2 AP, +4 Forca, +5% Critico, +20% Dano, +3 Resistencia Mental, +3 Resistencia de Fortitude. Dura 2 turnos. 2 vezes.</i>\n\n";
       }
       if(NIVEL==5)
       {
         txtDescripcion = "<color=#5dade2><b>Implacavel IV b</b></color>\n\n"; 
         txtDescripcion += "<i>(Passiva) +2 Valentia Maxima.</i>\n\n";
-        txtDescripcion += "<i>Se estiver com Valentia Maxima: +2 AP, +4 Forca, +1 Faixa de Critico, +20% Dano, +3 Resistencia Mental, +3 Resistencia de Fortitude. Dura  turnos. 1 vez.</i>\n\n";
+        txtDescripcion += "<i>Se estiver com Valentia Maxima: +2 AP, +4 Forca, +5% Critico, +20% Dano, +3 Resistencia Mental, +3 Resistencia de Fortitude. Dura  turnos. 1 vez.</i>\n\n";
       }
     }
+    AplicarDescripcionEstandar();
+  }
+
+  private void AplicarDescripcionEstandar()
+  {
+    int valentiaMaxima = NIVEL == 4 ? 1 : 2;
+    int fuerza = NIVEL > 1 ? 4 : 3;
+    int duracion = NIVEL == 5 ? 3 : 2;
+    int usos = NIVEL == 4 ? 2 : 1;
+
+    string titulo = $"Implacable {SufijoNivel()}";
+    string subtitulo = $"<color=#4f5552>Pasiva: +{valentiaMaxima} Valentia Maxima; con Valentia al maximo gana un buff.</color>";
+    string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +
+                    $"<color=#44d3ec><b>Base:</b></color> <color=#ffffff>+{valentiaMaxima} Valentia Maxima.</color>\n" +
+                    $"<color=#44d3ec><b>Al maximo:</b></color> <color=#ffffff>+2 AP Max, <color=#d9822b>+{fuerza} Fuerza</color>, +20% Dano, +3 TS Mental";
+    if (NIVEL > 1) { cuerpo += ", +2 TS Fortaleza"; }
+    if (NIVEL > 2) { cuerpo += ", +5% Critico"; }
+    cuerpo += $". {duracion} turnos, {usos} vez";
+    if (usos > 1) { cuerpo += "es"; }
+    cuerpo += ".</color>";
+
+    string proximo = TextoProximoNivel();
+    if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+
+    if (TRADU.i.nIdioma == 2)
+    {
+      titulo = $"Relentless {SufijoNivel()}";
+      subtitulo = $"<color=#4f5552>Passive: +{valentiaMaxima} Maximum Valour; at maximum Valour gains a buff.</color>";
+      cuerpo = "<color=#44d3ec><b>Type:</b></color> <color=#ffffff>Passive</color>\n" +
+               $"<color=#44d3ec><b>Base:</b></color> <color=#ffffff>+{valentiaMaxima} Maximum Valour.</color>\n" +
+               $"<color=#44d3ec><b>At maximum:</b></color> <color=#ffffff>+2 Max AP, <color=#d9822b>+{fuerza} Strength</color>, +20% Damage, +3 Mental Save";
+      if (NIVEL > 1) { cuerpo += ", +2 Fortitude Save"; }
+      if (NIVEL > 2) { cuerpo += ", +5% Critical"; }
+      cuerpo += $". {duracion} turns, {usos} use";
+      if (usos > 1) { cuerpo += "s"; }
+      cuerpo += ".</color>";
+      proximo = TextoProximoNivel();
+      if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+    }
+    else if (TRADU.i.nIdioma == 3)
+    {
+      titulo = $"Implacavel {SufijoNivel()}";
+      subtitulo = $"<color=#4f5552>Passiva: +{valentiaMaxima} Valentia Maxima; com Valentia no maximo ganha um buff.</color>";
+      cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Passiva</color>\n" +
+               $"<color=#44d3ec><b>Base:</b></color> <color=#ffffff>+{valentiaMaxima} Valentia Maxima.</color>\n" +
+               $"<color=#44d3ec><b>No maximo:</b></color> <color=#ffffff>+2 AP Max, <color=#d9822b>+{fuerza} Forca</color>, +20% Dano, +3 Resistencia Mental";
+      if (NIVEL > 1) { cuerpo += ", +2 Resistencia de Fortitude"; }
+      if (NIVEL > 2) { cuerpo += ", +5% Critico"; }
+      cuerpo += $". {duracion} turnos, {usos} uso";
+      if (usos > 1) { cuerpo += "s"; }
+      cuerpo += ".</color>";
+      proximo = TextoProximoNivel();
+      if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+    }
+
+    txtDescripcion = ConstruirDescripcionEstandar($"<size=115%>{titulo}</size>", subtitulo, cuerpo, "", "#5dade2");
+  }
+
+  private string SufijoNivel()
+  {
+    if (NIVEL < 2) { return "I"; }
+    if (NIVEL == 2) { return "II"; }
+    if (NIVEL == 3) { return "III"; }
+    if (NIVEL == 4) { return "IV a"; }
+    return "IV b";
+  }
+
+  private string TextoProximoNivel()
+  {
+    if (!EsEscenaCampaña() || CampaignManager.Instance.scMenuPersonajes.pSel == null || CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad <= 0)
+    {
+      return "";
+    }
+
+    if (TRADU.i.nIdioma == 2)
+    {
+      if (NIVEL < 2) { return "<color=#dfea02>Next Level: +1 Strength and +2 Fortitude Save in the buff.</color>"; }
+      if (NIVEL == 2) { return "<color=#dfea02>Next Level: +5% Critical in the buff.</color>"; }
+      if (NIVEL == 3) { return "<color=#dfea02>Option A: -1 Maximum Valour, +1 use.\nOption B: +1 turn duration.</color>"; }
+    }
+    else if (TRADU.i.nIdioma == 3)
+    {
+      if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: +1 Forca e +2 Resistencia de Fortitude no buff.</color>"; }
+      if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +5% Critico no buff.</color>"; }
+      if (NIVEL == 3) { return "<color=#dfea02>Opcao A: -1 Valentia Maxima, +1 uso.\nOpcao B: +1 turno de duracao.</color>"; }
+    }
+    else
+    {
+      if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: +1 Fuerza y +2 TS Fortaleza en el buff.</color>"; }
+      if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +5% Critico en el buff.</color>"; }
+      if (NIVEL == 3) { return "<color=#dfea02>Opcion A: -1 Valentia Maxima, +1 uso.\nOpcion B: +1 turno de duracion.</color>"; }
+    }
+
+    return "";
   }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}

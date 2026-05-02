@@ -144,6 +144,59 @@ public class LuzCegadora : Habilidad
         costos,
         "#5dade2");
 
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string colorPoder = "#2aa6c8";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string iconoDebuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_debuff\"></voffset></size><space=-0.35em>";
+      string costoSuperior = cooldownMax > 0
+        ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+        : $"{costoAP} {iconoAP}";
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "Frontal flash that blinds enemies and damages impure targets."
+        : esPortugues
+          ? "Clarão frontal que cega inimigos e causa dano a alvos impuros."
+          : "Destello frontal que ciega enemigos y dania objetivos impuros.";
+      string danioVsImpuro = agregaD6Divino
+        ? $"{rangoDanioBaseEs} + {rangoDanioExtraEs} + <color={colorPoder}>{(esIngles ? "Power" : esPortugues ? "Poder" : "Poder")} ({poderActual})</color>"
+        : $"{rangoDanioBaseEs} + <color={colorPoder}>{(esIngles ? "Power" : esPortugues ? "Poder" : "Poder")} ({poderActual})</color>";
+      string cuerpoNuevo = "";
+      if (esIngles)
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Frontal area (3 range, 2 width)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>Enemies in area</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Reflex vs DC {dcBase} + <color={colorPoder}>Power ({poderActual})</color></color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Failed save:</b></color> <color={colorValor}>{iconoDebuff} Blinded 2 rounds: -3 Attack, -2 Defense, -1 Reflex</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Undead/Ethereal:</b></color> <color={colorValor}>{danioVsImpuro}. Type: Divine</color>";
+        if (afectaOtrosEnemigos) { cuerpoNuevo += $"\n<color={colorEncabezado}><b>Other enemies:</b></color> <color={colorValor}>1/3 of rolled Divine damage.</color>"; }
+      }
+      else if (esPortugues)
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Area frontal (3 de alcance, 2 de largura)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Inimigos na area</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Reflexos vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoDebuff} Cego 2 rodadas: -3 Ataque, -2 Defesa, -1 Reflexos</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Morto-vivo/Etereo:</b></color> <color={colorValor}>{danioVsImpuro}. Tipo: Divino</color>";
+        if (afectaOtrosEnemigos) { cuerpoNuevo += $"\n<color={colorEncabezado}><b>Outros inimigos:</b></color> <color={colorValor}>1/3 do dano Divino rolado.</color>"; }
+      }
+      else
+      {
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Area frontal (3 alcance, 2 ancho)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Enemigos en el area</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Reflejos vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoDebuff} Ciego 2 rondas: -3 Ataque, -2 Defensa, -1 Reflejos</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Nomuerto/Etereo:</b></color> <color={colorValor}>{danioVsImpuro}. Tipo: Divino</color>";
+        if (afectaOtrosEnemigos) { cuerpoNuevo += $"\n<color={colorEncabezado}><b>Otros enemigos:</b></color> <color={colorValor}>1/3 del danio Divino tirado.</color>"; }
+      }
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpoNuevo;
+
       bool mostrarProximoNivel = EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)
       {

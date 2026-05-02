@@ -197,6 +197,96 @@ public class REPRESENTACIONAcorazado : Habilidad
           txtDescripcion += "<i>(Passiva)Sua armadura pesada resiste golpes inimigos mais do que o normal.\nPrecisa receber 8 ou mais de dano para que a Armadura reduza ao ser atingido e nao pode cair abaixo da metade do valor inicial.</i>\n\n";
         }
       }
+
+      AplicarDescripcionEstandar();
+    }
+
+    private void AplicarDescripcionEstandar()
+    {
+      int umbralDanio = 6;
+      if (NIVEL == 2) { umbralDanio = 7; }
+      else if (NIVEL == 3 || NIVEL == 5) { umbralDanio = 8; }
+      else if (NIVEL == 4) { umbralDanio = 10; }
+
+      string titulo = $"Acorazado {SufijoNivel()}";
+      string subtitulo = $"<color=#4f5552>Pasiva: la Armadura solo baja si recibe {umbralDanio}+ dano fisico.</color>";
+      string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +
+                      $"<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>La Armadura se reduce solo al recibir {umbralDanio}+ dano fisico.</color>";
+
+      if (NIVEL == 5)
+      {
+        cuerpo += "\n<color=#44d3ec><b>Extra:</b></color> <color=#ffffff>La Armadura no baja de la mitad de su valor inicial.</color>";
+      }
+
+      string proximo = TextoProximoNivel();
+      if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+
+      if (TRADU.i.nIdioma == 2)
+      {
+        titulo = $"Armored {SufijoNivel()}";
+        subtitulo = $"<color=#4f5552>Passive: Armor only drops after taking {umbralDanio}+ physical damage.</color>";
+        cuerpo = "<color=#44d3ec><b>Type:</b></color> <color=#ffffff>Passive</color>\n" +
+                 $"<color=#44d3ec><b>Effect:</b></color> <color=#ffffff>Armor is reduced only after taking {umbralDanio}+ physical damage.</color>";
+        if (NIVEL == 5)
+        {
+          cuerpo += "\n<color=#44d3ec><b>Extra:</b></color> <color=#ffffff>Armor cannot drop below half of its initial value.</color>";
+        }
+        proximo = TextoProximoNivel();
+        if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+      }
+      else if (TRADU.i.nIdioma == 3)
+      {
+        titulo = $"Encouracado {SufijoNivel()}";
+        subtitulo = $"<color=#4f5552>Passiva: Armadura so baixa ao receber {umbralDanio}+ dano fisico.</color>";
+        cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Passiva</color>\n" +
+                 $"<color=#44d3ec><b>Efeito:</b></color> <color=#ffffff>A Armadura reduz apenas ao receber {umbralDanio}+ dano fisico.</color>";
+        if (NIVEL == 5)
+        {
+          cuerpo += "\n<color=#44d3ec><b>Extra:</b></color> <color=#ffffff>A Armadura nao baixa da metade do valor inicial.</color>";
+        }
+        proximo = TextoProximoNivel();
+        if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+      }
+
+      txtDescripcion = ConstruirDescripcionEstandar($"<size=115%>{titulo}</size>", subtitulo, cuerpo, "", "#5dade2");
+    }
+
+    private string SufijoNivel()
+    {
+      if (NIVEL < 2) { return "I"; }
+      if (NIVEL == 2) { return "II"; }
+      if (NIVEL == 3) { return "III"; }
+      if (NIVEL == 4) { return "IV a"; }
+      return "IV b";
+    }
+
+    private string TextoProximoNivel()
+    {
+      if (!EsEscenaCampaña() || CampaignManager.Instance.scMenuPersonajes.pSel == null || CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad <= 0)
+      {
+        return "";
+      }
+
+      if (TRADU.i.nIdioma == 2)
+      {
+        if (NIVEL < 2) { return "<color=#dfea02>Next Level: Armor reduction threshold becomes 7+ physical damage.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Next Level: Armor reduction threshold becomes 8+ physical damage.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Option A: threshold becomes 10+ physical damage.\nOption B: Armor cannot drop below half of its initial value.</color>"; }
+      }
+      else if (TRADU.i.nIdioma == 3)
+      {
+        if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: a Armadura reduz com 7+ dano fisico.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: a Armadura reduz com 8+ dano fisico.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opcao A: reduz com 10+ dano fisico.\nOpcao B: Armadura nao baixa da metade inicial.</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: la Armadura se reduce con 7+ dano fisico.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: la Armadura se reduce con 8+ dano fisico.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opcion A: se reduce con 10+ dano fisico.\nOpcion B: la Armadura no baja de la mitad inicial.</color>"; }
+      }
+
+      return "";
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}

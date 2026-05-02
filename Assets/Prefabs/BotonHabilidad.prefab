@@ -176,9 +176,9 @@ MonoBehaviour:
   background: {fileID: 6988876765770943579}
   paddingRect: {fileID: 6872524274027338711}
   text: {fileID: 4047022207269566032}
-  fixedWidth: 385
+  fixedWidth: 420
   minHeight: 55
-  maxHeight: 620
+  maxHeight: 600
   fadeInOnEnable: 1
   fadeInDuration: 0.12
   fadeInDelay: 0
@@ -807,7 +807,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.38354012, g: 0.38679248, b: 0.31198826, a: 0.99215686}
+  m_Color: {r: 0.38354012, g: 0.38679248, b: 0.31198826, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1621,7 +1621,8 @@ MonoBehaviour:
   BotonActivo: 0
   goDesc: {fileID: 2420411746238950538}
   txtDescHab: {fileID: 4047022207269566032}
-  hoverDelay: 0.6
+  spriteAssetIconosCombate: {fileID: 11400000, guid: 5f32fe4183ee4e14dbde4b971daf6138, type: 2}
+  hoverDelay: 0.15
   prefabCirculoAccion: {fileID: 3314831447237412656, guid: c7d4b4f7c9a1efe439dd6721d83c81ea, type: 3}
   contenedorCirculosAccion: {fileID: 8904033607636641587}
   txtHotkey: {fileID: 5993629050623384347}
@@ -2202,8 +2203,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 10.5217}
-  m_SizeDelta: {x: 0, y: -11.008}
+  m_AnchoredPosition: {x: 0, y: 13.0061}
+  m_SizeDelta: {x: 0, y: -6.0391}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4812908061588504182
 CanvasRenderer:
@@ -2272,7 +2273,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: -8
+  m_lineSpacing: -12
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -2298,10 +2299,10 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 7.3367157, z: 0, w: -2.3111877}
+  m_margin: {x: 0, y: 4.8192444, z: 0, w: -2.3111877}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &8670883891764536299

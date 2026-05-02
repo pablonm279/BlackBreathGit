@@ -16,6 +16,7 @@ public class BotonHabilidad : MonoBehaviour
     [SerializeField] private bool BotonActivo = false;
     [SerializeField] private GameObject goDesc;
     [SerializeField] private TextMeshProUGUI txtDescHab;
+    [SerializeField] private TMP_SpriteAsset spriteAssetIconosCombate;
     [SerializeField] private float hoverDelay = 0.35f;
 
     [SerializeField] private GameObject prefabCirculoAccion;
@@ -105,7 +106,22 @@ public class BotonHabilidad : MonoBehaviour
     private void MostrarDescripcion()
     {
         HabilidadRepresentada.ActualizarDescripcion();
-        txtDescHab.text = Habilidad.LimpiarCostoValentiaDescripcion(HabilidadRepresentada.txtDescripcion);
+        TMP_SpriteAsset spriteAsset = ObtenerSpriteAssetIconosCombate();
+        if (txtDescHab != null && spriteAsset != null)
+        {
+            txtDescHab.spriteAsset = spriteAsset;
+        }
+
+        string descripcion = Habilidad.LimpiarCostoValentiaDescripcion(HabilidadRepresentada.txtDescripcion);
+        bool incluirIconos = spriteAsset != null;
+        if (HabilidadRepresentada != null && HabilidadRepresentada.GetType().Name.Contains("REPRESENTACION"))
+        {
+            txtDescHab.text = TextoIconosCombate.FormatearIconosDespuesDelTitulo(descripcion, incluirIconos);
+        }
+        else
+        {
+            txtDescHab.text = TextoIconosCombate.FormatearIconosDesdeBloqueMecanico(descripcion, incluirIconos);
+        }
         goDesc.SetActive(true);
 
         // Asegurarnos de que el goDesc (RectTransform) no salga de los margenes de la pantalla
@@ -148,6 +164,17 @@ public class BotonHabilidad : MonoBehaviour
             }
         }
     }
+
+    private TMP_SpriteAsset ObtenerSpriteAssetIconosCombate()
+    {
+        if (spriteAssetIconosCombate != null)
+        {
+            return spriteAssetIconosCombate;
+        }
+
+        return BattleManager.Instance != null ? BattleManager.Instance.SpriteAssetCombate : null;
+    }
+
     public void ActivarHabilidad(bool yaVienedeCargando)
     {
         if(BattleManager.Instance.scTutorialCombate.tutorialCombateActivo)
@@ -384,9 +411,9 @@ public class BotonHabilidad : MonoBehaviour
                 Image img = contenedorCirculosAccion.transform.GetChild(i).GetComponent<Image>();
                 if (img != null)
                 {
-                    if (i < apActual)
+                  /*  if (i < apActual)
                     {
-                        img.color = new Color(0.1f, 0.1f, 0.8f, 1f); // Azul brillante para AP disponible
+                        img.color = new Color(1f, 0.1f, 0.1f, 1f); // rojo brillante para AP disponible
                     }
                     else if (i < apActual + esforzable && i < apNecesarios)
                     {
@@ -395,7 +422,7 @@ public class BotonHabilidad : MonoBehaviour
                     else
                     {
                         img.color = new Color(0.3f, 0.3f, 0.3f, 1f); // Oscuro si no tiene AP ni puede esforzarse
-                    }
+                    }*/
                 }
             }
         }

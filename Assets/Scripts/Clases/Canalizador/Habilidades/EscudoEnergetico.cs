@@ -122,6 +122,53 @@ public class EscudoEnergetico : Habilidad
             costos,
             "#5dade2");
 
+        string colorEncabezado = "#44d3ec";
+        string colorValor = "#ffffff";
+        string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+        string iconoReaccion = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_reaccion\"></voffset></size><space=-0.35em>";
+        string iconoEnergia = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_acumularenergia\"></voffset></size><space=-0.35em>";
+        string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+        string subtituloFormato = esIngles
+            ? "Gains Defense and counters failed enemy projectiles."
+            : esPortugues
+                ? "Ganha Defesa e contra-ataca projeteis inimigos falhos."
+                : "Gana Defensa y contraataca proyectiles enemigos fallidos.";
+        string bonusAtaqueTexto = bonusAtaqueReaccion > 0 ? $", +{bonusAtaqueReaccion}" : "";
+        string cuerpoFormato = "";
+        if (esIngles)
+        {
+            cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Self buff</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>Self</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Defense:</b></color> <color={colorValor}>+{defensaBase} + current Energy Tier for 2 rounds</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Reaction:</b></color> <color={colorValor}>{iconoReaccion} On failed enemy projectile: Arcane Discharge{bonusAtaqueTexto}, creates {iconoEnergia} 1 Energy Residue nearby</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Uses:</b></color> <color={colorValor}>{usosReaccion} reactions per cast</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Condition:</b></color> <color={colorValor}>{(seCancelaConDanio ? "Removed when user takes damage" : "Not removed by incoming damage")}</color>";
+        }
+        else if (esPortugues)
+        {
+            cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>O proprio usuario</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Defesa:</b></color> <color={colorValor}>+{defensaBase} + Nivel de Energia atual por 2 rodadas</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Reacao:</b></color> <color={colorValor}>{iconoReaccion} Se projetil inimigo falha: Descarga Arcana{bonusAtaqueTexto}, cria {iconoEnergia} 1 Residuo Energetico proximo</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Usos:</b></color> <color={colorValor}>{usosReaccion} reacoes por uso</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Condicao:</b></color> <color={colorValor}>{(seCancelaConDanio ? "Remove ao receber dano" : "Nao remove ao receber dano")}</color>";
+        }
+        else
+        {
+            cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Propio usuario</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Defensa:</b></color> <color={colorValor}>+{defensaBase} + Nivel de Energia actual por 2 rondas</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Reaccion:</b></color> <color={colorValor}>{iconoReaccion} Si proyectil enemigo falla: Descarga Arcana{bonusAtaqueTexto}, crea {iconoEnergia} 1 Residuo Energetico cercano</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Usos:</b></color> <color={colorValor}>{usosReaccion} reacciones por uso</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Condicion:</b></color> <color={colorValor}>{(seCancelaConDanio ? "Se remueve al recibir daño" : "No se remueve al recibir daño")}</color>";
+        }
+
+        txtDescripcion =
+            $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoAP} {iconoAP}</color>\n\n" +
+            $"<color=#8f8f8f><i>{subtituloFormato}</i></color>\n\n" +
+            "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+            cuerpoFormato;
+
         bool mostrarProximoNivel = EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
         if (!mostrarProximoNivel)
         {

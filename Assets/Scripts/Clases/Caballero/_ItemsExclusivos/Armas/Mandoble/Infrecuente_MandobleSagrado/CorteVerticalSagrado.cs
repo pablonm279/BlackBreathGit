@@ -70,11 +70,56 @@ public class CorteVerticalSagrado : Habilidad
         txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Forca +{bonusAtaque}</color> - Dano: Cortante 2d8- </color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Recarga: {cooldownMax} \n- Custo AP: {costoAP} \n- Custo Valentia: {costoPM} </color>";
       }
-       
+      ActualizarDescripcion();
     }
+     public override void ActualizarDescripcion()
+    {
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      StatsDescripcionUI stats = ObtenerStatsDescripcionUI();
+      int criticoMin = Mathf.Clamp(19 - (stats.CriticoRango + criticoRangoHab), 2, 20);
+      int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+      string rangoDanio = FormatearRangoDados(XdDanio, daniodX);
+      string bonusTirada = FormatoModificadorDescripcion(stats.Ataque) + FormatoModificadorDescripcion(bonusAtaque);
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string colorFuerza = "#d9822b";
+      string atributo = esIngles
+        ? $"<color={colorFuerza}>Strength ({stats.Fuerza})</color>"
+        : esPortugues
+          ? $"<color={colorFuerza}>Forca ({stats.Fuerza})</color>"
+          : $"<color={colorFuerza}>Fuerza ({stats.Fuerza})</color>";
+      string titulo = esIngles ? "Sacred Vertical Slash" : esPortugues ? "Corte Vertical Sagrado" : "Corte Vertical Sagrado";
+      string subtitulo = esIngles ? "Heavy melee attack with Divine damage against Undead and Ethereal." : esPortugues ? "Ataque corpo a corpo pesado com dano Divino contra Mortos-vivos e Etereos." : "Ataque melee pesado con dano Divino contra Nomuertos y Etereos.";
+      string efecto = esIngles ? "Against Undead/Ethereal: +1-8 Divine" : esPortugues ? "Contra Morto-vivo/Etereo: +1-8 Divino" : "Contra Nomuerto/Etereo: +1-8 Divino";
+      string cuerpo = "";
+      if (esIngles)
+      {
+        cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Melee attack</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy or obstacle in frontal melee range</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defense. Fumble: 10%. Crit: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Type: Slashing</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Weapon effect:</b></color> <color={colorValor}>{efecto}</color>";
+      }
+      else if (esPortugues)
+      {
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque corpo a corpo</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo ou obstaculo no alcance frontal corpo a corpo</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defesa. Falha critica: 10%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Cortante</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Efeito da arma:</b></color> <color={colorValor}>{efecto}</color>";
+      }
+      else
+      {
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstaculo en alcance melee frontal</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defensa. Pifia: 10%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Cortante</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Efecto del arma:</b></color> <color={colorValor}>{efecto}</color>";
+      }
 
-   
-     public override void ActualizarDescripcion(){}
+      txtDescripcion = ConstruirDescripcionTooltipNueva(titulo, subtitulo, cuerpo);
+    }
     Casilla Origen;
     public override void Activar()
     {

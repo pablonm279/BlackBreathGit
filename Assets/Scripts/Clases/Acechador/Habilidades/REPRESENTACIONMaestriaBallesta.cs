@@ -1,230 +1,138 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class REPRESENTACIONMaestriaBallesta : Habilidad
 {
-   
-
-    
   public override void  Awake()
     {
       imHab = Resources.Load<Sprite>("imHab/Acechador_MaestriaBallesta");
       ActualizarDescripcion();
       IDenClase = 1;
-      
     }
-
 
   public override void ActualizarDescripcion()
   {
+    int critico = NIVEL > 1 ? 5 : 0;
+    bool reduceAp = NIVEL >= 3;
+    bool alcance = NIVEL == 4;
+    bool sinCooldown = NIVEL == 5;
+    string sufijo = SufijoNivel();
+    string titulo = $"Maestría con Ballesta de Mano {sufijo}";
+    string bajada = "Mejora los ataques hechos con ballesta de mano.";
+    string tipo = "Pasiva";
+    string aplica = "Ataques con ballesta de mano";
+    string bonificador = "+1 Ataque, +2 daño Perforante";
+    string extra = "";
+    string proximo = ProximoNivel();
 
-    if (NIVEL < 2)
+    if (critico > 0)
     {
-      txtDescripcion = "<color=#5dade2><b>Maestría con Ballesta de Mano I</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Agrega +1 Ataque y +2 Daño Perforante a los ataques con la Ballesta de Mano.</i>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Rango Crítico</color>\n\n";
-          }
-        }
-      }
-
+      bonificador += $", +{critico}% Critico";
     }
-    if (NIVEL == 2)
+    if (alcance)
     {
-      txtDescripcion = "<color=#5dade2><b>Maestría con Ballesta de Mano II</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Agrega +1 Ataque, +1 Rango Crítico y +2 Daño Perforante a los ataques con la Ballesta de Mano.</i>\n\n";
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: -1 Costo AP/color>\n\n";
-          }
-        }
-      }
+      bonificador += ", +1 alcance";
     }
-    if (NIVEL == 3)
+    if (reduceAp)
     {
-      txtDescripcion = "<color=#5dade2><b>Maestría con Ballesta de Mano III</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Agrega +1 Ataque, +1 Rango Crítico y +2 Daño Perforante a los ataques con la Ballesta de Mano. Además cuestan 1 AP menos.</i>\n\n";
-
-
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: +1 Alcance</color>\n\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: Remueve Cooldown</color>\n";
-          }
-        }
-      }
+      extra = "-1 costo AP";
     }
-    if (NIVEL == 4)
+    if (sinCooldown)
     {
-      txtDescripcion = "<color=#5dade2><b>Maestría con Ballesta de Mano IVa</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Agrega +1 Alcance, +1 Ataque, +1 Rango Crítico y +2 Daño Perforante a los ataques con la Ballesta de Mano. Además cuestan 1 AP menos.</i>\n\n";
+      extra += string.IsNullOrEmpty(extra) ? "Sin cooldown" : ", sin cooldown";
     }
-    if (NIVEL == 5)
+
+    if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
     {
-      txtDescripcion = "<color=#5dade2><b>Maestría con Ballesta de Mano IVb</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Agrega +1 Ataque, +1 Rango Crítico y +2 Daño Perforante a los ataques con la Ballesta de Mano. Además cuestan 1 AP menos y no tiene Cooldown.</i>\n\n";
+      titulo = $"Hand Crossbow Mastery {sufijo}";
+      bajada = "Improves attacks made with a hand crossbow.";
+      tipo = "Passive";
+      aplica = "Hand crossbow attacks";
+      bonificador = "+1 Attack, +2 Piercing damage";
+      if (critico > 0) bonificador += $", +{critico}% Critical";
+      if (alcance) bonificador += ", +1 range";
+      extra = reduceAp ? "-1 AP cost" : "";
+      if (sinCooldown) extra += string.IsNullOrEmpty(extra) ? "No cooldown" : ", no cooldown";
+      proximo = ProximoNivelIngles();
     }
-      
-
-      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-      {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Hand Crossbow Mastery I</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) Adds +1 Attack and +2 Piercing Damage to Hand Crossbow attacks.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Critical Range</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Hand Crossbow Mastery II</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) Adds +1 Attack, +1 Critical Range and +2 Piercing Damage to Hand Crossbow attacks.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: -1 AP Cost</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Hand Crossbow Mastery III</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) Adds +1 Attack, +1 Critical Range and +2 Piercing Damage to Hand Crossbow attacks. Also costs 1 less AP.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: +1 Range</color>\n\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: Removes Cooldown</color>\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Hand Crossbow Mastery IVa</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) Adds +1 Range, +1 Attack, +1 Critical Range and +2 Piercing Damage to Hand Crossbow attacks. Also costs 1 less AP.</i>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Hand Crossbow Mastery IVb</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) Adds +1 Attack, +1 Critical Range and +2 Piercing Damage to Hand Crossbow attacks. Also costs 1 less AP and has no Cooldown.</i>\n\n";
-        }
-      }
-      if (TRADU.i.nIdioma == 3)
-      {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Maestria com Besta de Mao I</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque e +2 Dano Perfurante aos ataques com Besta de Mao.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 Faixa de Critico</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Maestria com Besta de Mao II</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque, +1 Faixa de Critico e +2 Dano Perfurante aos ataques com Besta de Mao.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: -1 Custo AP</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Maestria com Besta de Mao III</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque, +1 Faixa de Critico e +2 Dano Perfurante aos ataques com Besta de Mao. Alem disso custa 1 AP a menos.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Opcao A: +1 Alcance</color>\n\n";
-                txtDescripcion += $"<color=#dfea02>-Opcao B: Remove Recarga</color>\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Maestria com Besta de Mao IVa</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Adiciona +1 Alcance, +1 Ataque, +1 Faixa de Critico e +2 Dano Perfurante aos ataques com Besta de Mao. Alem disso custa 1 AP a menos.</i>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Maestria com Besta de Mao IVb</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Adiciona +1 Ataque, +1 Faixa de Critico e +2 Dano Perfurante aos ataques com Besta de Mao. Alem disso custa 1 AP a menos e nao tem Recarga.</i>\n\n";
-        }
-      }
-
+    if (TRADU.i.nIdioma == 3)
+    {
+      titulo = $"Maestria com Besta de Mao {sufijo}";
+      bajada = "Melhora ataques feitos com besta de mao.";
+      tipo = "Passiva";
+      aplica = "Ataques com besta de mao";
+      bonificador = "+1 Ataque, +2 de dano Perfurante";
+      if (critico > 0) bonificador += $", +{critico}% Critico";
+      if (alcance) bonificador += ", +1 alcance";
+      extra = reduceAp ? "-1 custo AP" : "";
+      if (sinCooldown) extra += string.IsNullOrEmpty(extra) ? "Sem recarga" : ", sem recarga";
+      proximo = ProximoNivelPortugues();
     }
 
+    txtDescripcion = $"<size=115%><color=#5dade2><b>{titulo}</b></color></size>\n\n";
+    txtDescripcion += $"<color=#8f8f8f><i>{bajada}</i></color>\n\n";
+    txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+    txtDescripcion += $"<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>{tipo}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>Aplica a:</b></color> <color=#ffffff>{aplica}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>Bonus:</b></color> <color=#ffffff>{bonificador}</color>";
+    if (!string.IsNullOrEmpty(extra))
+    {
+      txtDescripcion += $"\n<color=#44d3ec><b>Extra:</b></color> <color=#ffffff>{extra}</color>";
+    }
+    if (!string.IsNullOrEmpty(proximo))
+    {
+      txtDescripcion += $"\n\n<color=#dfea02>{proximo}</color>";
+    }
+  }
+
+  string SufijoNivel()
+  {
+    if (NIVEL < 2) return "I";
+    if (NIVEL == 2) return "II";
+    if (NIVEL == 3) return "III";
+    if (NIVEL == 4) return "IVa";
+    return "IVb";
+  }
+
+  bool PuedeMostrarProximoNivel()
+  {
+    return EsEscenaCampaña()
+      && CampaignManager.Instance != null
+      && CampaignManager.Instance.scMenuPersonajes != null
+      && CampaignManager.Instance.scMenuPersonajes.pSel != null
+      && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+  }
+
+  string ProximoNivel()
+  {
+    if (!PuedeMostrarProximoNivel()) return "";
+    if (NIVEL < 2) return "- Próximo Nivel: +5% Critico";
+    if (NIVEL == 2) return "- Próximo Nivel: -1 costo AP";
+    if (NIVEL == 3) return "- Opción A: +1 alcance\n- Opción B: remueve cooldown";
+    return "";
+  }
+
+  string ProximoNivelIngles()
+  {
+    if (!PuedeMostrarProximoNivel()) return "";
+    if (NIVEL < 2) return "- Next Level: +5% Critical";
+    if (NIVEL == 2) return "- Next Level: -1 AP cost";
+    if (NIVEL == 3) return "- Option A: +1 range\n- Option B: removes cooldown";
+    return "";
+  }
+
+  string ProximoNivelPortugues()
+  {
+    if (!PuedeMostrarProximoNivel()) return "";
+    if (NIVEL < 2) return "- Proximo Nivel: +5% Critico";
+    if (NIVEL == 2) return "- Proximo Nivel: -1 custo AP";
+    if (NIVEL == 3) return "- Opcao A: +1 alcance\n- Opcao B: remove recarga";
+    return "";
+  }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}
     public override void Activar()
     {
-       
-
-      
-       
-        
     }
-    
-
-
-
-
 }
-
-
-

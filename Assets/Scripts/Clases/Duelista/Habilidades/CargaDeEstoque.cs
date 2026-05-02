@@ -20,6 +20,7 @@ public class CargaDeEstoque : Habilidad
     private int casillasAvanzadasUltimoUso;
     private readonly List<Unidad> lObjetivosPosibles = new List<Unidad>();
 
+
     public override void Awake()
     {
         nombre = "Carga de Estoque";
@@ -64,6 +65,7 @@ public class CargaDeEstoque : Habilidad
         tipoPorcentaje = 2;
     }
 
+
     public override void ActualizarDescripcion()
     {
         bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
@@ -73,8 +75,9 @@ public class CargaDeEstoque : Habilidad
         int agilidadActual = statsUI.Agilidad;
         int ataqueActual = statsUI.Ataque;
         int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+        int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
         int danioPorCasillaActual = bonusDanioPorCasilla + bonusDanioPorCasillaNivel5;
-        string rangoDanioEs = FormatearRangoDados(1, 8, bonusDanioBase + bonusDanioNivel2);
+        string rangoDanio = FormatearRangoDados(1, 8, bonusDanioBase + bonusDanioNivel2);
 
         string tituloEs = "Carga de Estoque I";
         string tituloEn = "Estoc Charge I";
@@ -84,66 +87,72 @@ public class CargaDeEstoque : Habilidad
         if (NIVEL == 4) { tituloEs = "Carga de Estoque IV a"; tituloEn = "Estoc Charge IV a"; tituloPt = "Carga de Estoque IV a"; }
         if (NIVEL == 5) { tituloEs = "Carga de Estoque IV b"; tituloEn = "Estoc Charge IV b"; tituloPt = "Carga de Estoque IV b"; }
 
+        string colorTitulo = "#5dade2";
+        string colorEncabezado = "#44d3ec";
+        string colorAgilidad = "#7fa35a";
+        string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+        string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+        string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
+        string atributo = esIngles
+            ? $"<color={colorAgilidad}>Agility ({agilidadActual})</color>"
+            : esPortugues
+                ? $"<color={colorAgilidad}>Agilidade ({agilidadActual})</color>"
+                : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
+        string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaqueBase);
+
+        string reglaCruceEn = NIVEL > 2 ? "cannot cross obstacles; can cross allies" : "cannot cross obstacles or allies";
+        string reglaCrucePt = NIVEL > 2 ? "nao pode atravessar obstaculos; pode atravessar aliados" : "nao pode atravessar obstaculos nem aliados";
+        string reglaCruceEs = NIVEL > 2 ? "no puede atravesar obstaculos; puede atravesar aliados" : "no puede atravesar obstaculos ni aliados";
+
         string cuerpo = "";
         if (esIngles)
         {
-            cuerpo += "<b>Type:</b> Melee (row)\n";
-            cuerpo += "<b>Target:</b> Enemies on the same row\n";
-            cuerpo += "<b>Effect:</b> First moves to the front column. If the front tile has an ally, swaps it to the tile behind.\n";
-            cuerpo += NIVEL > 2
-              ? "<b>Cast rule:</b> cannot cross obstacles. Can cross allies.\n"
-              : "<b>Cast rule:</b> cannot cross obstacles or allies.\n";
-            cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Agility ({agilidadActual})</color> + Attack ({ataqueActual}) + {bonusAtaqueBase} + {bonusAtaquePorCasilla} per tile advanced vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Damage:</b> 1d8 + {bonusDanioBase + bonusDanioNivel2} + <color=#ea0606>Agility ({agilidadActual})</color> + {danioPorCasillaActual} per tile advanced | <b>Type:</b> Piercing\n";
+            cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Melee row attack\n";
+            cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> enemies on the same row\n";
+            cuerpo += $"<color={colorEncabezado}><b>Movement:</b></color> moves to front column; swaps a front ally to the tile behind\n";
+            cuerpo += $"<color={colorEncabezado}><b>Cast rule:</b></color> {reglaCruceEn}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> 1d20 + {atributo}{bonusTirada} + {bonusAtaquePorCasilla} per tile advanced vs Defense\n";
+            cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> {rangoDanio} + {atributo} + {danioPorCasillaActual} per tile advanced. <color={colorEncabezado}><b>Type:</b></color> Piercing\n";
+            cuerpo += $"<color={colorEncabezado}><b>Effortable:</b></color> yes ({esforzable})";
         }
         else if (esPortugues)
         {
-            cuerpo += "<b>Tipo:</b> Corpo a corpo (linha)\n";
-            cuerpo += "<b>Alvo:</b> Inimigos na mesma linha\n";
-            cuerpo += "<b>Efeito:</b> Primeiro avanca ate a coluna frontal. Se a casa frontal tiver um aliado, troca com ele para a casa de tras.\n";
-            cuerpo += NIVEL > 2
-              ? "<b>Regra de conjuro:</b> nao pode atravessar obstaculos. Pode atravessar aliados.\n"
-              : "<b>Regra de conjuro:</b> nao pode atravessar obstaculos nem aliados.\n";
-            cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Agilidade ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaqueBase} + {bonusAtaquePorCasilla} por casa avancada vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Dano:</b> 1d8 + {bonusDanioBase + bonusDanioNivel2} + <color=#ea0606>Agilidade ({agilidadActual})</color> + {danioPorCasillaActual} por casa avancada | <b>Tipo:</b> Perfurante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee em linha\n";
+            cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> inimigos na mesma linha\n";
+            cuerpo += $"<color={colorEncabezado}><b>Movimento:</b></color> avanca ate a coluna frontal; troca aliado frontal para a casa de tras\n";
+            cuerpo += $"<color={colorEncabezado}><b>Regra de uso:</b></color> {reglaCrucePt}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> 1d20 + {atributo}{bonusTirada} + {bonusAtaquePorCasilla} por casa avancada vs Defesa\n";
+            cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> {rangoDanio} + {atributo} + {danioPorCasillaActual} por casa avancada. <color={colorEncabezado}><b>Tipo:</b></color> Perfurante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Esforcavel:</b></color> sim ({esforzable})";
         }
         else
         {
-            cuerpo += "<b>Tipo:</b> Melee (fila)\n";
-            cuerpo += "<b>Objetivo:</b> Enemigos en la misma fila\n";
-            cuerpo += "<b>Efecto:</b> Primero avanza a la columna frontal. Si la casilla frontal tiene un aliado, lo intercambia hacia la casilla de atras.\n";
-            cuerpo += NIVEL > 2
-              ? "<b>Regla de casteo:</b> no puede atravesar obstaculos. Puede atravesar aliados.\n"
-              : "<b>Regla de casteo:</b> no puede atravesar obstaculos ni aliados.\n";
-            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Agi ({agilidadActual})</color> + Ataque ({ataqueActual}) + {bonusAtaqueBase} + {bonusAtaquePorCasilla} por casilla avanzada vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Agi ({agilidadActual})</color> + {danioPorCasillaActual} por casilla avanzada | <b>Tipo:</b> Perforante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee en fila\n";
+            cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> enemigos en la misma fila\n";
+            cuerpo += $"<color={colorEncabezado}><b>Movimiento:</b></color> avanza a columna frontal; intercambia aliado frontal hacia la casilla de atras\n";
+            cuerpo += $"<color={colorEncabezado}><b>Regla de uso:</b></color> {reglaCruceEs}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} + {bonusAtaquePorCasilla} por casilla avanzada vs Defensa\n";
+            cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo} + {danioPorCasillaActual} por casilla avanzada. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Esforzable:</b></color> si ({esforzable})";
         }
 
-        string costos = esIngles
-          ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-          : esPortugues
-            ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-            : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentia: {costoPM}\n- Esforzable: Si ({esforzable})";
-
-        txtDescripcion = ConstruirDescripcionEstandar(
-          esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-          esIngles
-            ? "The Duelist surges to the front and skewers the entire enemy row with a powerful strike."
+        string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+        string subtitulo = esIngles
+            ? "Advance to the front and pierce the enemy row."
             : esPortugues
-              ? "A Duelista avanca ate a frente e atravessa a linha inimiga inteira com um ataque poderoso."
-              : "La Duelista se lanza al frente y atraviesa toda la fila enemiga con un ataque poderoso.",
-          cuerpo,
-          costos,
-          "#5dade2");
+                ? "Avanca ate a frente e perfura a linha inimiga."
+                : "Avanza al frente y perfora la fila enemiga.";
 
-        bool mostrarProximoNivel = CampaignManager.Instance != null
-          && CampaignManager.Instance.scMenuPersonajes != null
-          && CampaignManager.Instance.scMenuPersonajes.pSel != null
-          && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
-        if (!mostrarProximoNivel)
-        {
-            return;
-        }
+        txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+        txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+        txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+        txtDescripcion += cuerpo;
+
+        bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+        if (!mostrarProximoNivel) { return; }
 
         if (esIngles)
         {
@@ -161,10 +170,16 @@ public class CargaDeEstoque : Habilidad
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +3 de danio.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: puede atravesar aliados.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de AP) u Opcion B (+2 de danio por casilla avanzada).</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo AP) u Opcion B (+2 de danio por casilla avanzada).</color>"; }
         }
     }
 
+    private string TextoModificadorDescripcion(int valor)
+    {
+        if (valor > 0) { return $" + {valor}"; }
+        if (valor < 0) { return $" - {Mathf.Abs(valor)}"; }
+        return "";
+    }
     public bool PuedeActivarseDesdePosicionActual(out string motivo)
     {
         motivo = string.Empty;
@@ -188,6 +203,7 @@ public class CargaDeEstoque : Habilidad
         return true;
     }
 
+
     public override void Activar()
     {
         origen = scEstaUnidad.CasillaPosicion;
@@ -209,6 +225,7 @@ public class CargaDeEstoque : Habilidad
         BattleManager.Instance.SeleccionandoObjetivo = true;
         BattleManager.Instance.HabilidadActiva = this;
     }
+
 
     public override async Task Resolver(List<object> Objetivos, Casilla casillaOrigenTrampas = null)
     {
@@ -301,6 +318,7 @@ public class CargaDeEstoque : Habilidad
         Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
         RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);
     }
+
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
         if (obj is not Unidad objetivo)

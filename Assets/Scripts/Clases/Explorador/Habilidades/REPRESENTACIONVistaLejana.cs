@@ -1,226 +1,107 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class REPRESENTACIONVistaLejana : Habilidad
 {
-   
-
-    
-    public override void  Awake()
+    public override void Awake()
     {
       imHab = Resources.Load<Sprite>("imHab/Explorador_VistaLejana");
       ActualizarDescripcion();
 
       IDenClase = 1;
-      
     }
 
     public bool seusoEsteTurno = false;
 
-  public override void ActualizarDescripcion()
-  {
-
-    if (NIVEL < 2)
+    public override void ActualizarDescripcion()
     {
-      txtDescripcion = "<color=#5dade2><b>Vista Lejana I</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la éltima columna, recibe +1 Ataque y +10% Daño.</i>\n\n";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      string colorTitulo = "#5dade2";
+      string colorEncabezado = "#44d3ec";
 
-      if (EsEscenaCampaña())
+      int ataque = NIVEL > 2 ? 2 : 1;
+      int danioPorcentaje = NIVEL > 1 ? 15 : 10;
+      bool critico = NIVEL == 4;
+      bool defensa = NIVEL == 5;
+
+      string titulo = $"Vista Lejana {SufijoNivel()}";
+      string subtitulo = "Mejora al Explorador si empieza el turno en la ultima columna.";
+      string cuerpo = $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n" +
+                      $"<color={colorEncabezado}><b>Activacion:</b></color> Empieza su turno en la ultima columna\n" +
+                      $"<color={colorEncabezado}><b>Efecto:</b></color> +{ataque} Ataque, +{danioPorcentaje}% Danio";
+      if (critico) { cuerpo += ", +5% Critico"; }
+      if (defensa) { cuerpo += ", +1 Defensa"; }
+
+      if (esIngles)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +5% Daño</color>\n\n";
-          }
-        }
+        titulo = $"Long Sight {SufijoNivel()}";
+        subtitulo = "Improves the Explorer when starting the turn in the last column.";
+        cuerpo = $"<color={colorEncabezado}><b>Type:</b></color> Passive\n" +
+                 $"<color={colorEncabezado}><b>Trigger:</b></color> Starts turn in the last column\n" +
+                 $"<color={colorEncabezado}><b>Effect:</b></color> +{ataque} Attack, +{danioPorcentaje}% Damage";
+        if (critico) { cuerpo += ", +5% Crit"; }
+        if (defensa) { cuerpo += ", +1 Defense"; }
+      }
+      else if (esPortugues)
+      {
+        titulo = $"Visao Distante {SufijoNivel()}";
+        subtitulo = "Melhora o Explorador se comecar o turno na ultima coluna.";
+        cuerpo = $"<color={colorEncabezado}><b>Tipo:</b></color> Passiva\n" +
+                 $"<color={colorEncabezado}><b>Ativacao:</b></color> Comeca o turno na ultima coluna\n" +
+                 $"<color={colorEncabezado}><b>Efeito:</b></color> +{ataque} Ataque, +{danioPorcentaje}% Dano";
+        if (critico) { cuerpo += ", +5% Critico"; }
+        if (defensa) { cuerpo += ", +1 Defesa"; }
       }
 
+      string proximo = TextoProximoNivel(esIngles, esPortugues);
+      if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
+
+      txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size>\n\n";
+      txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+      txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+      txtDescripcion += cuerpo;
     }
-    if (NIVEL == 2)
+
+    private string SufijoNivel()
     {
-      txtDescripcion = "<color=#5dade2><b>Vista Lejana II</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la éltima columna, recibe +1 Ataque y +15% Daño.</i>\n\n";
-      if (EsEscenaCampaña())
-      {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: +1 Ataque</color>\n\n";
-          }
-        }
-      }
+      if (NIVEL < 2) { return "I"; }
+      if (NIVEL == 2) { return "II"; }
+      if (NIVEL == 3) { return "III"; }
+      if (NIVEL == 4) { return "IV a"; }
+      return "IV b";
     }
-    if (NIVEL == 3)
+
+    private string TextoProximoNivel(bool esIngles, bool esPortugues)
     {
-      txtDescripcion = "<color=#5dade2><b>Vista Lejana III</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la éltima columna, recibe +2 Ataque y +15% Daño.</i>\n\n";
-
-      if (EsEscenaCampaña())
+      if (!EsEscenaCampaña() || CampaignManager.Instance.scMenuPersonajes.pSel == null || CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad <= 0)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: +1 Rango de Dado Crítico</color>\n\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: +1 Defensa</color>\n";
-          }
-        }
-      }
-    }
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Vista Lejana IV a</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la éltima columna, recibe +2 Ataque, +1 Rango de Dado Crítico y +15% Daño.</i>\n\n";
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Vista Lejana IV b</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Si el Explorador arranca su turno en la éltima columna, recibe +2 Ataque, +1 Defensa y +15% Daño.</i>\n\n";
-    }
-       
-      if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-      {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Long Sight I</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) If the Explorer starts their turn in the last column, they gain +1 Attack and +10% Damage.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +5% Damage</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Long Sight II</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) If the Explorer starts their turn in the last column, they gain +1 Attack and +15% Damage.</i>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Next Level: +1 Attack</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Long Sight III</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) If the Explorer starts their turn in the last column, they gain +2 Attack and +15% Damage.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Option A: +1 Critical Dice Range</color>\n\n";
-                txtDescripcion += $"<color=#dfea02>-Option B: +1 Defense</color>\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Long Sight IV a</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) If the Explorer starts their turn in the last column, they gain +2 Attack, +1 Critical Dice Range and +15% Damage.</i>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Long Sight IV b</b></color>\n\n";
-          txtDescripcion += "<i>(Passive) If the Explorer starts their turn in the last column, they gain +2 Attack, +1 Defense and +15% Damage.</i>\n\n";
-        }
-      }
-      if (TRADU.i.nIdioma == 3)
-      {
-        if (NIVEL < 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Visao Distante I</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Se o Explorador comecar o turno na ultima coluna, recebe +1 Ataque e +10% Dano.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +5% Dano</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 2)
-        {
-          txtDescripcion = "<color=#5dade2><b>Visao Distante II</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Se o Explorador comecar o turno na ultima coluna, recebe +1 Ataque e +15% Dano.</i>\n\n";
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Proximo Nivel: +1 Ataque</color>\n\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 3)
-        {
-          txtDescripcion = "<color=#5dade2><b>Visao Distante III</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Se o Explorador comecar o turno na ultima coluna, recebe +2 Ataque e +15% Dano.</i>\n\n";
-
-          if (EsEscenaCampaña())
-          {
-            if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-              {
-                txtDescripcion += $"<color=#dfea02>-Opcao A: +1 Faixa de Dado Critico</color>\n\n";
-                txtDescripcion += $"<color=#dfea02>-Opcao B: +1 Defesa</color>\n";
-              }
-            }
-          }
-        }
-        if (NIVEL == 4)
-        {
-          txtDescripcion = "<color=#5dade2><b>Visao Distante IV a</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Se o Explorador comecar o turno na ultima coluna, recebe +2 Ataque, +1 Faixa de Dado Critico e +15% Dano.</i>\n\n";
-        }
-        if (NIVEL == 5)
-        {
-          txtDescripcion = "<color=#5dade2><b>Visao Distante IV b</b></color>\n\n";
-          txtDescripcion += "<i>(Passiva) Se o Explorador comecar o turno na ultima coluna, recebe +2 Ataque, +1 Defesa e +15% Dano.</i>\n\n";
-        }
+        return "";
       }
 
+      if (esIngles)
+      {
+        if (NIVEL < 2) { return "<color=#dfea02>Next Level: +5% Damage.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Next Level: +1 Attack.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Option A: +5% Crit.\nOption B: +1 Defense.</color>"; }
+      }
+      else if (esPortugues)
+      {
+        if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: +5% Dano.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +1 Ataque.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opcao A: +5% Critico.\nOpcao B: +1 Defesa.</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: +5% Danio.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +1 Ataque.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opcion A: +5% Critico.\nOpcion B: +1 Defensa.</color>"; }
+      }
+
+      return "";
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}
-    public override void Activar()
-    {
-       
-
-      
-       
-        
-    }
-    
-
-
-
-
+    public override void Activar(){}
 }
-
-
-

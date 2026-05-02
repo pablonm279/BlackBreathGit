@@ -49,63 +49,60 @@ public class REPRESENTACIONEvasionMaestra : Habilidad
         else if (NIVEL == 4) { sufijoNivel = "IV a"; }
         else if (NIVEL == 5) { sufijoNivel = "IV b"; }
 
+        string colorTitulo = "#5dade2";
+        string colorEncabezado = "#44d3ec";
         string cuerpo = "";
         if (esIngles)
         {
-            cuerpo += "<b>Type:</b> Passive\n";
-            cuerpo += "<b>Trigger:</b> when the Duelist dodges a melee attack\n";
-            cuerpo += "<b>Movement:</b> steps 1 tile backward; if occupied, tries back diagonals\n";
-            cuerpo += "<b>Restriction:</b> never moves into trapped tiles\n";
-            cuerpo += "<b>Interrupt:</b> the attacker loses all remaining AP\n";
-            cuerpo += $"<b>Uses per turn:</b> {usosPorTurno}\n";
-            if (daImpulso) { cuerpo += "<b>Self:</b> gains +1 Impulse (discounted movement)\n"; }
-            if (daEvasion) { cuerpo += "<b>Self:</b> gains +1 Evasion\n"; }
-            if (aplicaTambaleando) { cuerpo += "<b>Lv4 B:</b> attacker rolls Reflex save vs DC 10; on fail gains Staggering (-1 max AP, -2 Defense, 1 turn)\n"; }
+            cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Passive\n";
+            cuerpo += $"<color={colorEncabezado}><b>Trigger:</b></color> when the Duelist dodges a melee attack\n";
+            cuerpo += $"<color={colorEncabezado}><b>Movement:</b></color> steps 1 tile backward; if occupied, tries back diagonals\n";
+            cuerpo += $"<color={colorEncabezado}><b>Restriction:</b></color> never moves into trapped tiles\n";
+            cuerpo += $"<color={colorEncabezado}><b>Interrupt:</b></color> attacker loses all remaining AP\n";
+            cuerpo += $"<color={colorEncabezado}><b>Uses per turn:</b></color> {usosPorTurno}";
+            if (daImpulso) { cuerpo += "\n" + $"<color={colorEncabezado}><b>Self:</b></color> +1 Impulse"; }
+            if (daEvasion) { cuerpo += "\n" + $"<color={colorEncabezado}><b>Self:</b></color> +1 Evasion"; }
+            if (aplicaTambaleando) { cuerpo += "\n" + $"<color={colorEncabezado}><b>On trigger:</b></color> attacker rolls Reflex Save vs DC 10; on fail gains Staggering (-1 max AP, -2 Defense, 1 turn)"; }
         }
         else if (esPortugues)
         {
-            cuerpo += "<b>Tipo:</b> Passiva\n";
-            cuerpo += "<b>Gatilho:</b> quando a Duelista esquiva de um ataque melee\n";
-            cuerpo += "<b>Movimento:</b> recua 1 casa; se ocupada, tenta diagonais para tras\n";
-            cuerpo += "<b>Restricao:</b> nunca move para casas com armadilhas\n";
-            cuerpo += "<b>Interrupcao:</b> o atacante perde todo AP restante\n";
-            cuerpo += $"<b>Usos por turno:</b> {usosPorTurno}\n";
-            if (daImpulso) { cuerpo += "<b>Proprio:</b> ganha +1 Impulso (movimento com desconto)\n"; }
-            if (daEvasion) { cuerpo += "<b>Proprio:</b> ganha +1 Evasao\n"; }
-            if (aplicaTambaleando) { cuerpo += "<b>Nv4 B:</b> atacante rola Reflexos vs CD 10; se falhar ganha Cambaleando (-1 AP max, -2 Defesa, 1 turno)\n"; }
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Passiva\n";
+            cuerpo += $"<color={colorEncabezado}><b>Gatilho:</b></color> quando esquiva de um ataque melee\n";
+            cuerpo += $"<color={colorEncabezado}><b>Movimento:</b></color> recua 1 casa; se ocupada, tenta diagonais para tras\n";
+            cuerpo += $"<color={colorEncabezado}><b>Restricao:</b></color> nunca move para casas com armadilhas\n";
+            cuerpo += $"<color={colorEncabezado}><b>Interrupcao:</b></color> atacante perde todo AP restante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Usos por turno:</b></color> {usosPorTurno}";
+            if (daImpulso) { cuerpo += "\n" + $"<color={colorEncabezado}><b>Proprio:</b></color> +1 Impulso"; }
+            if (daEvasion) { cuerpo += "\n" + $"<color={colorEncabezado}><b>Proprio:</b></color> +1 Evasao"; }
+            if (aplicaTambaleando) { cuerpo += "\n" + $"<color={colorEncabezado}><b>Ao ativar:</b></color> atacante rola Reflexos vs CD 10; se falhar ganha Cambaleando (-1 AP max, -2 Defesa, 1 turno)"; }
         }
         else
         {
-            cuerpo += "<b>Tipo:</b> Pasiva\n";
-            cuerpo += "<b>Disparo:</b> cuando la Duelista esquiva un ataque melee\n";
-            cuerpo += "<b>Movimiento:</b> retrocede 1 casilla; si esta ocupada, intenta diagonales atras\n";
-            cuerpo += "<b>Restriccion:</b> nunca se mueve a casillas con trampas\n";
-            cuerpo += "<b>Interrupcion:</b> el atacante pierde todo su AP restante\n";
-            cuerpo += $"<b>Usos por turno:</b> {usosPorTurno}\n";
-            if (daImpulso) { cuerpo += "<b>Propio:</b> gana +1 Impulso (movimiento abaratado)\n"; }
-            if (daEvasion) { cuerpo += "<b>Propio:</b> gana +1 Evasion\n"; }
-            if (aplicaTambaleando) { cuerpo += "<b>Nv4 B:</b> el atacante tira TS Reflejos vs DC 10; si falla gana Tambaleando (-1 AP max, -2 Defensa, 1 turno)\n"; }
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n";
+            cuerpo += $"<color={colorEncabezado}><b>Disparo:</b></color> cuando esquiva un ataque melee\n";
+            cuerpo += $"<color={colorEncabezado}><b>Movimiento:</b></color> retrocede 1 casilla; si esta ocupada, intenta diagonales atras\n";
+            cuerpo += $"<color={colorEncabezado}><b>Restriccion:</b></color> nunca se mueve a casillas con trampas\n";
+            cuerpo += $"<color={colorEncabezado}><b>Interrupcion:</b></color> atacante pierde todo su AP restante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Usos por turno:</b></color> {usosPorTurno}";
+            if (daImpulso) { cuerpo += "\n" + $"<color={colorEncabezado}><b>Propio:</b></color> +1 Impulso"; }
+            if (daEvasion) { cuerpo += "\n" + $"<color={colorEncabezado}><b>Propio:</b></color> +1 Evasion"; }
+            if (aplicaTambaleando) { cuerpo += "\n" + $"<color={colorEncabezado}><b>Al activarse:</b></color> atacante tira TS Reflejos vs DC 10; si falla gana Tambaleando (-1 AP max, -2 Defensa, 1 turno)"; }
         }
 
-        txtDescripcion = ConstruirDescripcionEstandar(
-          esIngles ? "Master Evasion " + sufijoNivel : esPortugues ? "Evasao Mestra " + sufijoNivel : "Evasion Maestra " + sufijoNivel,
-          esIngles
-            ? "A clean backstep after dodging melee attacks that disrupts enemy tempo."
+        string titulo = esIngles ? "Master Evasion " + sufijoNivel : esPortugues ? "Evasao Mestra " + sufijoNivel : "Evasion Maestra " + sufijoNivel;
+        string subtitulo = esIngles
+            ? "Dodge melee attacks, step back and interrupt the attacker."
             : esPortugues
-              ? "Um recuo preciso apos esquivar de ataques melee que quebra o ritmo inimigo."
-              : "Un retroceso preciso tras esquivar ataques melee que rompe el ritmo enemigo.",
-          cuerpo,
-          "",
-          "#5dade2");
+                ? "Esquiva ataques melee, recua e interrompe o atacante."
+                : "Esquiva ataques melee, retrocede e corta el turno del atacante.";
 
-        bool mostrarProximoNivel = CampaignManager.Instance != null
-            && CampaignManager.Instance.scMenuPersonajes != null
-            && CampaignManager.Instance.scMenuPersonajes.pSel != null
-            && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
-        if (!mostrarProximoNivel)
-        {
-            return;
-        }
+        txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size>\n\n";
+        txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+        txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+        txtDescripcion += cuerpo;
+
+        bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+        if (!mostrarProximoNivel) { return; }
 
         if (esIngles)
         {

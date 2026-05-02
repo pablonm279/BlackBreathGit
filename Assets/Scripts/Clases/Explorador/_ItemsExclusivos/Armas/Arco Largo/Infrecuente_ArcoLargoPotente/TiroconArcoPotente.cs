@@ -78,13 +78,62 @@ public class TiroconArcoPotente : Habilidad
       txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidade +{bonusAtaque}</color> - Dano: Perfurante 1d10+1- Requer 1 Flecha</color>\n\n";
       txtDescripcion += $"<color=#44d3ec>- Recarga: {cooldownMax} \n- Custo AP: {costoAP} \n- Custo Valentia: {costoPM} </color>";
     }
-    
-
-
+    ActualizarDescripcion();
     }
+     public override void ActualizarDescripcion()
+    {
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      StatsDescripcionUI stats = ObtenerStatsDescripcionUI();
+      int criticoMin = Mathf.Clamp(19 - (stats.CriticoRango + criticoRangoHab), 2, 20);
+      int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+      string rangoDanio = FormatearRangoDados(XdDanio, daniodX, 1);
+      string bonusTirada = FormatoModificadorDescripcion(stats.Ataque) + FormatoModificadorDescripcion(bonusAtaque);
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string colorAgilidad = "#7fa35a";
+      string atributo = esIngles
+        ? $"<color={colorAgilidad}>Agility ({stats.Agilidad})</color>"
+        : esPortugues
+          ? $"<color={colorAgilidad}>Agilidade ({stats.Agilidad})</color>"
+          : $"<color={colorAgilidad}>Agilidad ({stats.Agilidad})</color>";
+      string titulo = esIngles ? "Powerful Bow Shot" : esPortugues ? "Tiro com Arco Potente" : "Tiro con Arco Potente";
+      string subtitulo = esIngles ? "Bow shot that can push the target." : esPortugues ? "Disparo de arco que pode empurrar o alvo." : "Disparo de arco que puede empujar al objetivo.";
+      string efecto = esIngles ? "On hit: Fortitude save vs DC 11; on failed save, pushes 1 tile" : esPortugues ? "Ao acertar: resistencia Fortitude vs CD 11; se falhar, empurra 1 casa" : "Al impactar: TS Fortaleza DC 11; si falla, empuja 1 casilla";
+      string cuerpo = "";
+      if (esIngles)
+      {
+        cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged attack</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Range:</b></color> <color={colorValor}>{hAlcance}</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy or obstacle in range</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defense. Fumble: 5%. Crit: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Type: Piercing</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Cost:</b></color> <color={colorValor}>1 Arrow</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Weapon effect:</b></color> <color={colorValor}>{efecto}</color>";
+      }
+      else if (esPortugues)
+      {
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Alcance:</b></color> <color={colorValor}>{hAlcance}</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo ou obstaculo no alcance</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defesa. Falha critica: 5%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Perfurante</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Custo:</b></color> <color={colorValor}>1 Flecha</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Efeito da arma:</b></color> <color={colorValor}>{efecto}</color>";
+      }
+      else
+      {
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Alcance:</b></color> <color={colorValor}>{hAlcance}</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstaculo en alcance</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defensa. Pifia: 5%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Perforante</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> <color={colorValor}>1 Flecha</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Efecto del arma:</b></color> <color={colorValor}>{efecto}</color>";
+      }
 
-   
-     public override void ActualizarDescripcion(){}
+      txtDescripcion = ConstruirDescripcionTooltipNueva(titulo, subtitulo, cuerpo);
+    }
     Casilla Origen;
     public override void Activar()
     {

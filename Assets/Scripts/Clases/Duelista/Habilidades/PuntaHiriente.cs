@@ -62,14 +62,17 @@ public class PuntaHiriente : Habilidad
         string nombreAdolorido = TRADU.i != null ? TRADU.i.Traducir(BuffNombreAdolorido) : BuffNombreAdolorido;
         var statsUI = ObtenerStatsDescripcionUI();
 
-        int atributoMixtoActual = ObtenerAtributoMixto(statsUI.Fuerza, statsUI.Agilidad);
-        int ataqueActual = statsUI.Ataque;
+        int fuerzaActual = statsUI.Fuerza;
         int agilidadActual = statsUI.Agilidad;
+        int atributoMixtoActual = ObtenerAtributoMixto(fuerzaActual, agilidadActual);
+        int ataqueActual = statsUI.Ataque;
         int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
+        int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
         int duracionAdolorido = NIVEL == 5 ? 3 : 2;
         int dcBase = 7 + (NIVEL > 2 ? 1 : 0);
+        int dcTotal = dcBase + agilidadActual;
         int penetracion = 5 + (NIVEL == 4 ? 3 : 0);
-        string rangoDanioEs = FormatearRangoDados(1, 10, 2);
+        string rangoDanio = FormatearRangoDados(1, 10, 2);
 
         string tituloEs = "Punta Hiriente I";
         string tituloEn = "Wounding Thrust I";
@@ -79,89 +82,105 @@ public class PuntaHiriente : Habilidad
         if (NIVEL == 4) { tituloEs = "Punta Hiriente IV a"; tituloEn = "Wounding Thrust IV a"; tituloPt = "Ponta Feridora IV a"; }
         if (NIVEL == 5) { tituloEs = "Punta Hiriente IV b"; tituloEn = "Wounding Thrust IV b"; tituloPt = "Ponta Feridora IV b"; }
 
-        string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Fortaleza, dcBase, "Agi", "Agility", agilidadActual, "Agilidade");
+        string colorTitulo = "#5dade2";
+        string colorEncabezado = "#44d3ec";
+        string colorFuerza = "#d9822b";
+        string colorAgilidad = "#7fa35a";
+        string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+        string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+        string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
+        string atributo = esIngles
+            ? $"<color={colorFuerza}>Strength</color>/<color={colorAgilidad}>Agility</color> ({atributoMixtoActual})"
+            : esPortugues
+                ? $"<color={colorFuerza}>Forca</color>/<color={colorAgilidad}>Agilidade</color> ({atributoMixtoActual})"
+                : $"<color={colorFuerza}>Fuerza</color>/<color={colorAgilidad}>Agilidad</color> ({atributoMixtoActual})";
+        string agilidadDC = esIngles
+            ? $"<color={colorAgilidad}>Agility ({agilidadActual})</color>"
+            : esPortugues
+                ? $"<color={colorAgilidad}>Agilidade ({agilidadActual})</color>"
+                : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
+        string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
         string cuerpo = "";
         if (esIngles)
         {
-            cuerpo += "<b>Type:</b> Melee\n";
-            cuerpo += "<b>Target:</b> 1 enemy in melee range\n";
-            cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Str/Agi ({atributoMixtoActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Damage:</b> 1d10 + 2 | <b>Type:</b> Piercing\n";
-            cuerpo += $"<b>Armor Penetration:</b> {penetracion}\n";
-            cuerpo += "<b>On hit:</b> applies a status for 2 turns\n";
-            cuerpo += $"{lineaSalvacion}\n";
-            cuerpo += $"<b>On failed save:</b> applies {nombreAdolorido} for {duracionAdolorido} turns: -10% Damage, -2 Attack";
+            cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Melee attack\n";
+            cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy in melee range\n";
+            cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> 1d20 + {atributo}{bonusTirada} vs Defense\n";
+            cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> {rangoDanio}. <color={colorEncabezado}><b>Type:</b></color> Piercing\n";
+            cuerpo += $"<color={colorEncabezado}><b>Armor Penetration:</b></color> {penetracion}\n";
+            cuerpo += $"<color={colorEncabezado}><b>On hit:</b></color> applies Provoked for 2 turns\n";
+            cuerpo += $"<color={colorEncabezado}><b>Save:</b></color> Fortitude vs DC {dcBase} + {agilidadDC} = {dcTotal}\n";
+            cuerpo += $"<color={colorEncabezado}><b>On failed save:</b></color> applies {nombreAdolorido} for {duracionAdolorido} turns: -10% Damage, -2";
         }
         else if (esPortugues)
         {
-            cuerpo += "<b>Tipo:</b> Corpo a corpo\n";
-            cuerpo += "<b>Alvo:</b> 1 inimigo em alcance corpo a corpo\n";
-            cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Forca/Agilidade ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Dano:</b> 1d10 + 2 | <b>Tipo:</b> Perfurante\n";
-            cuerpo += $"<b>Penetracao de armadura:</b> {penetracion}\n";
-            cuerpo += "<b>Ao acertar:</b> aplica um estado por 2 turnos\n";
-            cuerpo += $"{lineaSalvacion}\n";
-            cuerpo += $"<b>Se falhar na resistencia:</b> aplica {nombreAdolorido} por {duracionAdolorido} turnos: -10% Dano, -2 Ataque";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
+            cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo em alcance melee\n";
+            cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> 1d20 + {atributo}{bonusTirada} vs Defesa\n";
+            cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> {rangoDanio}. <color={colorEncabezado}><b>Tipo:</b></color> Perfurante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Penetracao de armadura:</b></color> {penetracion}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Ao acertar:</b></color> aplica Provocado por 2 turnos\n";
+            cuerpo += $"<color={colorEncabezado}><b>Resistencia:</b></color> Fortitude vs CD {dcBase} + {agilidadDC} = {dcTotal}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Se falhar:</b></color> aplica {nombreAdolorido} por {duracionAdolorido} turnos: -10% Dano, -2";
         }
         else
         {
-            cuerpo += "<b>Tipo:</b> Melee\n";
-            cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance melee\n";
-            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue/Agi ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Danio:</b> {rangoDanioEs} | <b>Tipo:</b> Perforante\n";
-            cuerpo += $"<b>Penetracion de armadura:</b> {penetracion}\n";
-            cuerpo += "<b>Al impactar:</b> aplica un estado por 2 turnos\n";
-            cuerpo += $"{lineaSalvacion}\n";
-            cuerpo += $"<b>Si falla TS:</b> aplica {nombreAdolorido} por {duracionAdolorido} turnos: -10% Danio, -2 Ataque";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
+            cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo en alcance melee\n";
+            cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
+            cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Penetracion de armadura:</b></color> {penetracion}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Al impactar:</b></color> aplica Provocado por 2 turnos\n";
+            cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Fortaleza vs DC {dcBase} + {agilidadDC} = {dcTotal}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Si falla:</b></color> aplica {nombreAdolorido} por {duracionAdolorido} turnos: -10% Danio, -2";
         }
 
-        string costos = esIngles
-            ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+        string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+        string subtitulo = esIngles
+            ? "Pierce one enemy, provoke it and reduce its offense on failed save."
             : esPortugues
-                ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-                : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentia: {costoPM}\n- Esforzable: Si ({esforzable})";
+                ? "Perfura um inimigo, provoca e reduz ofensiva se falhar."
+                : "Perfora un enemigo, lo provoca y reduce su ofensiva si falla.";
 
-        txtDescripcion = ConstruirDescripcionEstandar(
-            esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-            esIngles
-                ? "A precise melee thrust that wounds the target and forces it to focus on the Duelist."
-                : esPortugues
-                    ? "Uma estocada precisa que fere o alvo e o obriga a focar a Duelista."
-                    : "Una punta precisa que hiere al objetivo y lo obliga a centrarse en la Duelista.",
-            cuerpo,
-            costos,
-            "#5dade2");
+        txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+        txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+        txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+        txtDescripcion += cuerpo;
 
-        bool mostrarProximoNivel = CampaignManager.Instance != null
-            && CampaignManager.Instance.scMenuPersonajes != null
-            && CampaignManager.Instance.scMenuPersonajes.pSel != null
-            && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
-        if (!mostrarProximoNivel)
-        {
-            return;
-        }
+        bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+        if (!mostrarProximoNivel) { return; }
 
         if (esIngles)
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 Attack.</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 roll bonus.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+3 Armor Penetration) or Option B (+1 Adolorido duration).</color>"; }
         }
         else if (esPortugues)
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Ataque.</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de rolagem.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na CD da resistencia.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+3 Penetracao de armadura) ou Opcao B (+1 turno de Adolorido).</color>"; }
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Ataque.</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bonus de tirada.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al DC de la TS.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+3 Penetracion de armadura) u Opcion B (+1 turno de Adolorido).</color>"; }
         }
     }
 
+
+    private string TextoModificadorDescripcion(int valor)
+    {
+        if (valor > 0) { return $" + {valor}"; }
+        if (valor < 0) { return $" - {Mathf.Abs(valor)}"; }
+        return "";
+    }
     public override void Activar()
     {
         origen = Usuario.GetComponent<Unidad>().CasillaPosicion;

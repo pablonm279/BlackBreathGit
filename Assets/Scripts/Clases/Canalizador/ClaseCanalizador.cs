@@ -164,7 +164,6 @@ public class ClaseCanalizador : Unidad
             buff.DuracionBuffRondas = -1;
             buff.cantDanioPorcentaje += 10;
             buff.cantCritDado += 1;
-            buff.cantResArc -= 1;
             buff.AplicarBuff(this);
             // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, this.gameObject);
@@ -180,7 +179,6 @@ public class ClaseCanalizador : Unidad
              buff.DuracionBuffRondas = -1;
             buff.cantCritDado += 1;
             buff.cantAPMax += 1;
-            buff.cantResArc -= 6;
             buff.AplicarBuff(this);
             // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, this.gameObject);
@@ -196,7 +194,6 @@ public class ClaseCanalizador : Unidad
              buff.DuracionBuffRondas = -1;
             buff.cantCritDado += 2;
             buff.cantAPMax += 2;
-            buff.cantResArc -= 14;
             buff.AplicarBuff(this);
             // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, this.gameObject);

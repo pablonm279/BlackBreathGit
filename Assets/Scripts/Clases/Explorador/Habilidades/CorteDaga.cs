@@ -49,47 +49,63 @@ public class CorteDaga : Habilidad
       int fuerzaActual = statsUI.Fuerza;
       int ataqueActual = statsUI.Ataque;
       int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
-      string rangoDanioEs = FormatearRangoDados(1, 6);
+      string rangoDanio = FormatearRangoDados(1, 6);
+      int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
+      string colorTitulo = "#5dade2";
+      string colorEncabezado = "#44d3ec";
+      string colorFuerza = "#d9822b";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string costoSuperior = $"{costoAP} {iconoAP}";
+      string atributo = esIngles
+        ? $"<color={colorFuerza}>Strength ({fuerzaActual})</color>"
+        : esPortugues
+          ? $"<color={colorFuerza}>Forca ({fuerzaActual})</color>"
+          : $"<color={colorFuerza}>Fuerza ({fuerzaActual})</color>";
+      string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
       string cuerpo = "";
       if (esIngles)
       {
-        cuerpo += "<b>Type:</b> Melee\n";
-        cuerpo += "<b>Target:</b> 1 enemy in front range\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Strength ({fuerzaActual})</color>   + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
-        cuerpo += $"<b>Damage:</b> 1d6 + <color=#ea0606>Strength ({fuerzaActual})</color> | <b>Type:</b> Slashing\n";
+        cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Melee attack\n";
+        cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy or obstacle in front range\n";
+        cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> 1d20 + {atributo}{bonusTirada} vs Defense\n";
+        cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
+        cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Type:</b></color> Slashing\n";
       }
       else if (esPortugues)
       {
-        cuerpo += "<b>Tipo:</b> Melee\n";
-        cuerpo += "<b>Alvo:</b> 1 inimigo em alcance frontal\n";
-        cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Forca ({fuerzaActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
-        cuerpo += $"<b>Dano:</b> 1d6 + <color=#ea0606>Forca ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
+        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo ou obstaculo em alcance frontal\n";
+        cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> 1d20 + {atributo}{bonusTirada} vs Defesa\n";
+        cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
       }
       else
       {
-        cuerpo += "<b>Tipo:</b> Melee\n";
-        cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance frontal\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-        cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Fue ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstaculo en alcance frontal\n";
+        cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
+        cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+        cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
       }
 
-      string costos = esIngles
-        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+      string titulo = esIngles ? "Dagger Slash" : esPortugues ? "Corte de Adaga" : "Corte Daga";
+      string subtitulo = esIngles
+        ? "Fast melee cut against one target."
         : esPortugues
-          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
+          ? "Corte melee rapido contra um alvo."
+          : "Corte melee rapido contra un objetivo.";
 
-      txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? "Dagger Slash" : esPortugues ? "Corte de Adaga" : "Corte Daga",
-        esIngles
-          ? "A quick melee cut for efficient close combat pressure."
-          : esPortugues
-            ? "Um corte melee rapido para manter pressao em combate corpo a corpo."
-            : "Un corte melee rapido para mantener presion en combate cercano.",
-        cuerpo,
-        costos,
-        "#5dade2");
+      txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+      txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+      txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+      txtDescripcion += cuerpo;
+    }
+    private string TextoModificadorDescripcion(int valor)
+    {
+      if (valor > 0) { return $" + {valor}"; }
+      if (valor < 0) { return $" - {Mathf.Abs(valor)}"; }
+      return "";
     }
     Casilla Origen;
     public override void Activar()

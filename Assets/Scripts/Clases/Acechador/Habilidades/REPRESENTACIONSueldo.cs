@@ -4,52 +4,50 @@ using UnityEngine;
 
 public class REPRESENTACIONSueldo : Habilidad
 {
-   
-
-    
    public override void  Awake()
     {
       imHab = Resources.Load<Sprite>("imHab/Acechador_Sueldo");
       ActualizarDescripcion();
       IDenClase = 0;
-      
     }
 
     public bool seusoEsteTurno = false;
 
    public override void ActualizarDescripcion()
    {
-
-      txtDescripcion = "<color=#5dade2><b>Sueldo</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) Sin importar lo compleja de la situación, los Acechadores igual exigen un sueldo de 20 Monedas de Oro en cada descanso.  </i>\n\n-Si la Esperanza es mayor a 70, no demandarán el pago.";
+      string titulo = "Sueldo";
+      string bajada = "El Acechador cobra 20 monedas de oro al descansar.";
+      string costo = "20 monedas de oro en cada descanso";
+      string excepcion = "Si la Esperanza es mayor a 70, no cobra";
+      string tipo = "Pasiva";
 
       if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
       {
-         txtDescripcion = "<color=#5dade2><b>Salary</b></color>\n\n";
-         txtDescripcion += "<i>(Passive) No matter how complex the situation, Stalkers still demand a salary of 20 Gold Coins at each rest.</i>\n\n-If Hope is greater than 70, they will not demand payment.";
+         titulo = "Salary";
+         bajada = "The Stalker charges 20 gold coins when resting.";
+         costo = "20 gold coins each rest";
+         excepcion = "If Hope is greater than 70, no payment is charged";
+         tipo = "Passive";
       }
       if (TRADU.i.nIdioma == 3)
       {
-         txtDescripcion = "<color=#5dade2><b>Salario</b></color>\n\n";
-         txtDescripcion += "<i>(Passiva) Nao importa quao complexa seja a situacao, os Acechadores continuam exigindo um salario de 20 Moedas de Ouro em cada descanso.</i>\n\n-Se a Esperanca for maior que 70, nao exigirao pagamento.";
+         titulo = "Salario";
+         bajada = "O Acechador cobra 20 moedas de ouro ao descansar.";
+         costo = "20 moedas de ouro a cada descanso";
+         excepcion = "Se a Esperanca for maior que 70, nao cobra";
+         tipo = "Passiva";
       }
-   
+
+      txtDescripcion = $"<size=115%><color=#5dade2><b>{titulo}</b></color></size>\n\n";
+      txtDescripcion += $"<color=#8f8f8f><i>{bajada}</i></color>\n\n";
+      txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+      txtDescripcion += $"<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>{tipo}</color>\n";
+      txtDescripcion += $"<color=#44d3ec><b>Costo:</b></color> <color=#ffffff>{costo}</color>\n";
+      txtDescripcion += $"<color=#44d3ec><b>Excepcion:</b></color> <color=#ffffff>{excepcion}</color>";
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}
     public override void Activar()
     {
-       
-
-      
-       
-        
     }
-    
-
-
-
-
 }
-
-

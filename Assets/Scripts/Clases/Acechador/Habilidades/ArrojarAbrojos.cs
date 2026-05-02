@@ -47,8 +47,12 @@ public class ArrojarAbrojos : Habilidad
       int dcBase = NIVEL > 2 ? 12 : 11;
       int bleedAplicado = 4 + (NIVEL == 4 ? 1 : 0);
       bool drenaAp = NIVEL == 5;
-      string danioBase = NIVEL > 1 ? "1d12 + 1" : "1d12";
-      string danioBaseEs = NIVEL > 1 ? FormatearRangoDados(1, 12, 1) : FormatearRangoDados(1, 12);
+      string danioBase = NIVEL > 1 ? FormatearRangoDados(1, 12, 1) : FormatearRangoDados(1, 12);
+      string colorTitulo = "#5dade2";
+      string colorEncabezado = "#44d3ec";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
 
       string tituloEs = "Arrojar Abrojos I";
       string tituloEn = "Throw Caltrops I";
@@ -62,71 +66,63 @@ public class ArrojarAbrojos : Habilidad
       if (NIVEL == 4) { tituloPt = "Lancar Abrolhos IV a"; }
       if (NIVEL == 5) { tituloPt = "Lancar Abrolhos IV b"; }
 
-      string lineaSalvacion = ConstruirLineaSalvacion(esIngles, TipoSalvacionDescripcion.Reflejos, dcBase);
-
       string cuerpo = "";
       if (esIngles)
       {
-        cuerpo += "<b>Type:</b> Ranged (3 range)\n";
-        cuerpo += "<b>Target:</b> 1 tile (plus empty diagonals around it)\n";
-        cuerpo += "<b>On cast:</b> places caltrop traps on the target tile and valid diagonals (same side)\n";
-        cuerpo += "<b>Trap profile:</b> 1 use, 10 turns duration\n";
-        cuerpo += $"<b>Trap trigger damage:</b> {danioBase} | <b>Type:</b> Piercing\n";
-        cuerpo += lineaSalvacion + "\n";
-        cuerpo += $"<b>On failed save:</b> damage x2, +{bleedAplicado} Bleed";
+        cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Ranged trap (3 range)\n";
+        cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 tile and empty diagonals on the same side\n";
+        cuerpo += $"<color={colorEncabezado}><b>On cast:</b></color> places caltrop traps\n";
+        cuerpo += $"<color={colorEncabezado}><b>Trap:</b></color> 1 use, 10 turns duration\n";
+        cuerpo += $"<color={colorEncabezado}><b>Trigger damage:</b></color> {danioBase}. <color={colorEncabezado}><b>Type:</b></color> Piercing\n";
+        cuerpo += $"<color={colorEncabezado}><b>Save:</b></color> Reflex vs DC {dcBase}\n";
+        cuerpo += $"<color={colorEncabezado}><b>On failed save:</b></color> x2 damage, +{bleedAplicado} Bleed";
         if (drenaAp)
         {
           cuerpo += ", -1 AP";
         }
-        cuerpo += "\n<b>Stealth interaction:</b> Discreet (does not reveal the caster)";
+        cuerpo += $"\n<color={colorEncabezado}><b>Stealth:</b></color> Discreet; does not reveal the caster";
       }
       else if (esPortugues)
       {
-        cuerpo += "<b>Tipo:</b> Alcance (3 de alcance)\n";
-        cuerpo += "<b>Alvo:</b> 1 celula (mais diagonais vazias ao redor)\n";
-        cuerpo += "<b>Ao usar:</b> coloca armadilhas de abrolhos na celula alvo e diagonais validas (mesmo lado)\n";
-        cuerpo += "<b>Perfil da armadilha:</b> 1 uso, 10 turnos de duracao\n";
-        cuerpo += $"<b>Dano ao ativar armadilha:</b> {danioBase} | <b>Tipo:</b> Perfurante\n";
-        cuerpo += lineaSalvacion + "\n";
-        cuerpo += $"<b>Se falhar no teste:</b> dano x2, +{bleedAplicado} Sangramento";
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Armadilha a distancia (3 de alcance)\n";
+        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 celula e diagonais vazias do mesmo lado\n";
+        cuerpo += $"<color={colorEncabezado}><b>Ao usar:</b></color> coloca armadilhas de abrolhos\n";
+        cuerpo += $"<color={colorEncabezado}><b>Armadilha:</b></color> 1 uso, 10 turnos de duracao\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano ao ativar:</b></color> {danioBase}. <color={colorEncabezado}><b>Tipo:</b></color> Perfurante\n";
+        cuerpo += $"<color={colorEncabezado}><b>Resistencia:</b></color> Reflexos vs CD {dcBase}\n";
+        cuerpo += $"<color={colorEncabezado}><b>Se falhar:</b></color> x2 dano, +{bleedAplicado} Sangramento";
         if (drenaAp)
         {
           cuerpo += ", -1 AP";
         }
-        cuerpo += "\n<b>Interacao com furtividade:</b> Discreta (nao revela o lancador)";
+        cuerpo += $"\n<color={colorEncabezado}><b>Furtividade:</b></color> Discreta; nao revela o lancador";
       }
       else
       {
-        cuerpo += "<b>Tipo:</b> Rango (3 alcance)\n";
-        cuerpo += "<b>Objetivo:</b> 1 casilla (mas diagonales vacias alrededor)\n";
-        cuerpo += "<b>Al lanzarla:</b> coloca trampas de abrojos en la casilla objetivo y diagonales validas (mismo lado)\n";
-        cuerpo += "<b>Perfil de trampa:</b> 1 uso, 10 turnos de duracion\n";
-        cuerpo += $"<b>Danio al activar trampa:</b> {danioBaseEs} | <b>Tipo:</b> Perforante\n";
-        cuerpo += lineaSalvacion + "\n";
-        cuerpo += $"<b>Si falla TS:</b> danio x2, +{bleedAplicado} Sangrado";
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Trampa a distancia (3 alcance)\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 casilla y diagonales vacias del mismo lado\n";
+        cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> coloca trampas de abrojos\n";
+        cuerpo += $"<color={colorEncabezado}><b>Trampa:</b></color> 1 uso, 10 turnos de duracion\n";
+        cuerpo += $"<color={colorEncabezado}><b>Danio al activar:</b></color> {danioBase}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+        cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Reflejos vs DC {dcBase}\n";
+        cuerpo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> x2 danio, +{bleedAplicado} Sangrado";
         if (drenaAp)
         {
           cuerpo += ", -1 AP";
         }
-        cuerpo += "\n<b>Interaccion con sigilo:</b> Discreta (no revela al lanzador)";
+        cuerpo += $"\n<color={colorEncabezado}><b>Sigilo:</b></color> Discreta; no revela al lanzador";
       }
 
-      string costos = esIngles
-        ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
+      string subtitulo = esIngles
+        ? "Places caltrops that punish movement."
         : esPortugues
-          ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
-
-      txtDescripcion = ConstruirDescripcionEstandar(
-        esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
-        esIngles
-          ? "Seeds a movement denial zone with high punishment on failed reflex saves."
-          : esPortugues
-            ? "Cria uma zona de negacao de movimento com alto castigo ao falhar em Reflexos."
-          : "Siembra una zona de negacion de movimiento con alto castigo al fallar Reflejos.",
-        cuerpo,
-        costos,
-        "#5dade2");
+          ? "Coloca abrolhos que punem movimento."
+          : "Coloca abrojos que castigan movimiento.";
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+      txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+      txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+      txtDescripcion += cuerpo;
 
       bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)

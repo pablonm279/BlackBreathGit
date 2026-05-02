@@ -9,6 +9,8 @@ public class LogDeCampania : MonoBehaviour
 {
     [Header("Referencias")]
     [SerializeField] private TextMeshProUGUI txtLog;
+    [SerializeField] private TMP_SpriteAsset spriteAssetRecursos;
+    [SerializeField] private TMP_SpriteAsset spriteAssetCombate;
 
     [Header("Comportamiento")]
     [Tooltip("Máxima cantidad de entradas (eventos). Se recorta por FIFO.")]
@@ -16,6 +18,13 @@ public class LogDeCampania : MonoBehaviour
 
     [Tooltip("Día actual de campaña (se puede setear desde CampaignManager).")]
     [SerializeField] private int diaActual = 1;
+
+    [Header("Debug")]
+    [Tooltip("En Play Mode, al activarlo imprime una sola vez un texto flotante de campaña con todos los recursos. Desactivar y reactivar para repetir.")]
+    [SerializeField] private bool debugTextoFlotanteRecursos;
+
+    [SerializeField] private string debugMensajeTextoFlotanteRecursos =
+        "Recurso Materiales +100 Materiales | Esperanza | Civiles | Oro | Fatiga | Suministros | Bueyes | Aliento Negro";
 
     private int rondaActual = 1;
 
@@ -29,9 +38,13 @@ public class LogDeCampania : MonoBehaviour
     private readonly List<EntradaLog> entradasCampania = new();
     private readonly List<EntradaLog> entradasBatalla = new();
     private bool mostrandoCombate;
+    private bool debugTextoFlotanteRecursosEmitido;
+
+    public TMP_SpriteAsset SpriteAssetRecursos => spriteAssetRecursos;
+    public TMP_SpriteAsset SpriteAssetCombate => spriteAssetCombate;
 
     private static readonly Regex regexTagsNoPermitidos =
-        new Regex(@"</?(?!\s*(?:b|i|color|size|mark)\b)[^>]+>",
+        new Regex(@"</?(?!\s*(?:b|i|color|size|mark|sprite)\b)[^>]+>",
                   RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     private static readonly Regex regexGuionInicial =
@@ -41,6 +54,59 @@ public class LogDeCampania : MonoBehaviour
     {
         public int Dia;
         public string Texto;
+    }
+
+    private void Awake()
+    {
+        AplicarSpriteAssetLog(false);
+    }
+
+    private void OnValidate()
+    {
+        AplicarSpriteAssetLog(false);
+    }
+
+    private void Update()
+    {
+        ProcesarDebugTextoFlotanteRecursos();
+    }
+
+    private void AplicarSpriteAssetLog(bool esCombate)
+    {
+        if (txtLog == null)
+        {
+            return;
+        }
+
+        TMP_SpriteAsset spriteAsset = esCombate ? spriteAssetCombate : spriteAssetRecursos;
+        if (spriteAsset != null)
+        {
+            txtLog.spriteAsset = spriteAsset;
+        }
+    }
+
+    private void ProcesarDebugTextoFlotanteRecursos()
+    {
+        if (!debugTextoFlotanteRecursos)
+        {
+            debugTextoFlotanteRecursosEmitido = false;
+            return;
+        }
+
+        if (debugTextoFlotanteRecursosEmitido)
+        {
+            return;
+        }
+
+        debugTextoFlotanteRecursosEmitido = true;
+
+        if (CampaignManager.Instance == null)
+        {
+            Debug.LogWarning("No se pudo imprimir el texto flotante debug de recursos: CampaignManager.Instance es null.");
+            return;
+        }
+
+        CampaignManager.Instance.GenerarTextoFlotanteCampaña(debugMensajeTextoFlotanteRecursos, Color.cyan);
     }
 
     public void SetDiaActual(int numeroTurno, bool esCombate = false)
@@ -151,6 +217,9 @@ public class LogDeCampania : MonoBehaviour
             {
                 EntradaLog entrada = entradas[i];
                 string mensajeRender = NormalizarMensajeRender(entrada.Texto);
+                mensajeRender = esCombate
+                    ? TextoIconosCombate.FormatearIconos(mensajeRender, spriteAssetCombate != null)
+                    : TextoRecursosCampania.FormatearRecursos(mensajeRender, spriteAssetRecursos != null);
                 string etiqueta = esCombate
                     ? (TRADU.i != null ? TRADU.i.Traducir("Ronda") : "Ronda")
                     : (TRADU.i != null ? TRADU.i.Traducir("Día") : "Día");
@@ -184,6 +253,7 @@ public class LogDeCampania : MonoBehaviour
 
         txtLog.enableWordWrapping = true;
         txtLog.richText = true;
+        AplicarSpriteAssetLog(esCombate);
         txtLog.overflowMode = TextOverflowModes.Truncate;
         txtLog.enableAutoSizing = false;
 

@@ -40,23 +40,20 @@ public class REPRESENTACIONUltimoPaso : Habilidad
     {
         bool esIngles = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaIngles;
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaPortugues;
-
-        if (esIngles)
-        {
-            txtDescripcion = "<color=#5dade2><b>Last Step</b></color>\n\n";
-            txtDescripcion += "<i>(Passive) The first time this battle the wearer drops below 50% HP, gain +2 Evasion and 10 Barrier for 1 turn.</i>";
-            return;
-        }
-
-        if (esPortugues)
-        {
-            txtDescripcion = "<color=#5dade2><b>Ultimo Passo</b></color>\n\n";
-            txtDescripcion += "<i>(Passiva) A primeira vez nesta batalha em que a usuaria cair abaixo de 50% HP, ganha +2 Evasao e 10 Barreira por 1 turno.</i>";
-            return;
-        }
-
-        txtDescripcion = "<color=#5dade2><b>Ultimo Paso</b></color>\n\n";
-        txtDescripcion += "<i>(Pasivo) La primera vez en combate que la portadora quede por debajo de 50% de vida, gana +2 Evasion y 10 Barrera por 1 turno.</i>";
+        string colorEncabezado = "#44d3ec";
+        string colorValor = "#ffffff";
+        string titulo = esIngles ? "Last Step" : esPortugues ? "Ultimo Passo" : "Ultimo Paso";
+        string subtitulo = esIngles
+            ? "Passive: triggers once per battle below half HP."
+            : esPortugues
+                ? "Passiva: ativa uma vez por batalha abaixo de metade do HP."
+                : "Pasiva: se activa una vez por combate bajo mitad de HP.";
+        string cuerpo = esIngles
+            ? $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Passive</color>\n<color={colorEncabezado}><b>Trigger:</b></color> <color={colorValor}>First time below 50% HP each battle</color>\n<color={colorEncabezado}><b>Effect:</b></color> <color={colorValor}>+{BonusEvasion} Evasion, +{BarreraOtorgada} Barrier for 1 turn</color>"
+            : esPortugues
+                ? $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Passiva</color>\n<color={colorEncabezado}><b>Ativacao:</b></color> <color={colorValor}>Primeira vez abaixo de 50% HP por batalha</color>\n<color={colorEncabezado}><b>Efeito:</b></color> <color={colorValor}>+{BonusEvasion} Evasao, +{BarreraOtorgada} Barreira por 1 turno</color>"
+                : $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Pasiva</color>\n<color={colorEncabezado}><b>Activacion:</b></color> <color={colorValor}>Primera vez bajo 50% HP por combate</color>\n<color={colorEncabezado}><b>Efecto:</b></color> <color={colorValor}>+{BonusEvasion} Evasion, +{BarreraOtorgada} Barrera por 1 turno</color>";
+        txtDescripcion = ConstruirDescripcionTooltipNueva(titulo, subtitulo, cuerpo, "");
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada) { }

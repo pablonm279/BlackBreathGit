@@ -59,6 +59,91 @@ public class SifonArcano : Habilidad
       ? $"<b>Turn Damage:</b> (1d10 + {bonusDanioBase}) x (1 + Energy Residues) | <b>Type:</b> Arcane"
       : "<b>Turn Damage:</b> 1d10 x (1 + Energy Residues) | <b>Type:</b> Arcane";
 
+    bool esInglesFormato = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esPortuguesFormato = TRADU.i != null && TRADU.i.nIdioma == 3;
+    string tituloPtFormato = "Sifao Arcano I";
+    if (NIVEL == 2) { tituloPtFormato = "Sifao Arcano II"; }
+    if (NIVEL == 3) { tituloPtFormato = "Sifao Arcano III"; }
+    if (NIVEL == 4) { tituloPtFormato = "Sifao Arcano IV a"; }
+    if (NIVEL == 5) { tituloPtFormato = "Sifao Arcano IV b"; }
+    string colorEncabezado = "#44d3ec";
+    string colorValor = "#ffffff";
+    string colorPoder = "#2aa6c8";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string iconoDebuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_debuff\"></voffset></size><space=-0.35em>";
+    string iconoBuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_buff\"></voffset></size><space=-0.35em>";
+    string iconoEnergia = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_acumularenergia\"></voffset></size><space=-0.35em>";
+    string costoSuperior = cooldownMax > 0
+      ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+      : $"{costoAP} {iconoAP}";
+    string tituloFormato = esInglesFormato ? tituloEn : esPortuguesFormato ? tituloPtFormato : tituloEs;
+    string subtituloFormato = esInglesFormato
+      ? "Applies a turn-damage siphon; damage scales with Energy Residues."
+      : esPortuguesFormato
+        ? "Aplica dano por turno; o dano escala com Residuos Energeticos."
+        : "Aplica daño por turno; el daño escala con Residuos Energeticos.";
+    string cuerpoFormato = "";
+    if (esInglesFormato)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged debuff (5 range)</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy on the opposite side</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Fortitude vs DC {dcBase} + <color={colorPoder}>Power ({poderActual})</color></color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>On failed save:</b></color> <color={colorValor}>{iconoDebuff} Arcane Siphon for {duracionTurnos} turns</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Turn damage:</b></color> <color={colorValor}>{rangoDanioEs} x (1 + {iconoEnergia} Energy Residues). Type: Arcane</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>On kill:</b></color> <color={colorValor}>{iconoBuff} +1 permanent Max AP, +10% Damage, {iconoEnergia} +1 Energy</color>";
+    }
+    else if (esPortuguesFormato)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Debuff a distancia (5 alcance)</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo no lado oposto</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Resistência:</b></color> <color={colorValor}>Fortitude vs CD {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoDebuff} Sifao Arcano por {duracionTurnos} turnos</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Dano por turno:</b></color> <color={colorValor}>{rangoDanioEs} x (1 + {iconoEnergia} Residuos Energeticos). Tipo: Arcano</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Ao matar:</b></color> <color={colorValor}>{iconoBuff} +1 AP Max permanente, +10% Dano, {iconoEnergia} +1 Energia</color>";
+    }
+    else
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Debuff a distancia (5 alcance)</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo del lado opuesto</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Fortaleza vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoDebuff} Sifon Arcano por {duracionTurnos} turnos</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Daño por turno:</b></color> <color={colorValor}>{rangoDanioEs} x (1 + {iconoEnergia} Residuos Energeticos). Tipo: Arcano</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Al matar:</b></color> <color={colorValor}>{iconoBuff} +1 AP Max permanente, +10% Daño, {iconoEnergia} +1 Energia</color>";
+    }
+
+    txtDescripcion =
+      $"<size=115%><color=#5dade2><b>{tituloFormato}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+      $"<color=#8f8f8f><i>{subtituloFormato}</i></color>\n\n" +
+      "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+      cuerpoFormato;
+
+    if (EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
+    {
+      if (esInglesFormato)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 base turn damage.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 DC.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A or B (IV upgrades).</color>"; }
+      }
+      else if (esPortuguesFormato)
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no dano base por turno.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 CD.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A ou Opcao B (melhorias IV).</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al danio base por turno.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A u Opcion B (mejoras IV).</color>"; }
+      }
+    }
+    if (!string.IsNullOrEmpty(txtDescripcion))
+    {
+      return;
+    }
+
     if (TRADU.i != null && TRADU.i.nIdioma == 2)
     {
       string cuerpo = "";

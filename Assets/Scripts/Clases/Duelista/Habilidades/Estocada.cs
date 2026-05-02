@@ -59,55 +59,76 @@ public class Estocada : Habilidad
         int atributoMixtoActual = ObtenerAtributoMixto(fuerzaActual, agilidadActual);
         int ataqueActual = statsUI.Ataque;
         int criticoBaseMin = Mathf.Clamp(19 - (statsUI.CriticoRango + criticoRangoHab), 2, 20);
-        string rangoDanioEs = FormatearRangoDados(1, 8);
+        int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
+        string rangoDanio = FormatearRangoDados(1, 8);
+        string colorTitulo = "#5dade2";
+        string colorEncabezado = "#44d3ec";
+        string colorFuerza = "#d9822b";
+        string colorAgilidad = "#7fa35a";
+        string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+        string costoSuperior = $"{costoAP} {iconoAP}";
+        string atributo = esIngles
+            ? $"<color={colorFuerza}>Strength</color>/<color={colorAgilidad}>Agility</color> ({atributoMixtoActual})"
+            : esPortugues
+                ? $"<color={colorFuerza}>Forca</color>/<color={colorAgilidad}>Agilidade</color> ({atributoMixtoActual})"
+                : $"<color={colorFuerza}>Fuerza</color>/<color={colorAgilidad}>Agilidad</color> ({atributoMixtoActual})";
+        string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
         string cuerpo = "";
         if (esIngles)
         {
-            cuerpo += "<b>Type:</b> Melee\n";
-            cuerpo += "<b>Target:</b> 1 enemy in front range\n";
-            cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Str/Agi ({atributoMixtoActual})</color> + Attack ({ataqueActual}) + {bonusAtaque} vs Defense. Fumble: 1. Crit: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Damage:</b> 1d8 + <color=#ea0606>Str/Agi ({atributoMixtoActual})</color> | <b>Type:</b> Piercing\n";
-            cuerpo += $"<b>Armor Penetration:</b> {penetracionArmadura}\n";
-            cuerpo += "<b>Scaling:</b> uses half Strength and half Agility, rounded up\n";
+            cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Melee attack\n";
+            cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy or obstacle in front range\n";
+            cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> 1d20 + {atributo}{bonusTirada} vs Defense\n";
+            cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Type:</b></color> Piercing\n";
+            cuerpo += $"<color={colorEncabezado}><b>Armor Penetration:</b></color> {penetracionArmadura}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Scaling:</b></color> half Strength + half Agility, rounded up\n";
+            cuerpo += $"<color={colorEncabezado}><b>Effortable:</b></color> yes ({esforzable})";
         }
         else if (esPortugues)
         {
-            cuerpo += "<b>Tipo:</b> Melee\n";
-            cuerpo += "<b>Alvo:</b> 1 inimigo em alcance frontal\n";
-            cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Forca/Agilidade ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defesa. Falha critica: 1. Critico: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Dano:</b> 1d8 + <color=#ea0606>Forca/Agilidade ({atributoMixtoActual})</color> | <b>Tipo:</b> Perfurante\n";
-            cuerpo += $"<b>Penetracao de armadura:</b> {penetracionArmadura}\n";
-            cuerpo += "<b>Escala:</b> usa metade de Forca e metade de Agilidade, arredondando para cima\n";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
+            cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo ou obstaculo em alcance frontal\n";
+            cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> 1d20 + {atributo}{bonusTirada} vs Defesa\n";
+            cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perfurante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Penetracao de armadura:</b></color> {penetracionArmadura}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Escala:</b></color> metade de Forca + metade de Agilidade, arredondando para cima\n";
+            cuerpo += $"<color={colorEncabezado}><b>Esforcavel:</b></color> sim ({esforzable})";
         }
         else
         {
-            cuerpo += "<b>Tipo:</b> Melee\n";
-            cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance frontal\n";
-            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue/Agi ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) + {bonusAtaque} vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Fue/Agi ({atributoMixtoActual})</color> | <b>Tipo:</b> Perforante\n";
-            cuerpo += $"<b>Penetracion de armadura:</b> {penetracionArmadura}\n";
-            cuerpo += "<b>Escala:</b> usa mitad Fue y mitad Agi, redondeando hacia arriba\n";
+            cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
+            cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstaculo en alcance frontal\n";
+            cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
+            cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Penetracion de armadura:</b></color> {penetracionArmadura}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Escala:</b></color> mitad Fuerza + mitad Agilidad, redondeando hacia arriba\n";
+            cuerpo += $"<color={colorEncabezado}><b>Esforzable:</b></color> si ({esforzable})";
         }
 
-        string costos = esIngles
-          ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
-          : esPortugues
-            ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-            : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentia: {costoPM}\n- Esforzable: Si ({esforzable})";
-
-        txtDescripcion = ConstruirDescripcionEstandar(
-          esIngles ? "Thrust" : esPortugues ? "Estocada" : "Estocada",
-          esIngles
-            ? "A precise melee thrust that pierces armor, scales with both Strength and Agility."
+        string titulo = esIngles ? "Thrust" : esPortugues ? "Estocada" : "Estocada";
+        string subtitulo = esIngles
+            ? "Precise melee thrust with armor penetration."
             : esPortugues
-              ? "Uma estocada corpo a corpo precisa que perfura armadura, escala com Forca e Agilidade."
-              : "Una estocada melee precisa que perfora armadura, escala con Fuerza y Agilidad.",
-          cuerpo,
-          costos,
-          "#5dade2");
+                ? "Estocada melee precisa com penetracao de armadura."
+                : "Estocada melee precisa con penetracion de armadura.";
+
+        txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
+        txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+        txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+        txtDescripcion += cuerpo;
     }
 
+
+    private string TextoModificadorDescripcion(int valor)
+    {
+        if (valor > 0) { return $" + {valor}"; }
+        if (valor < 0) { return $" - {Mathf.Abs(valor)}"; }
+        return "";
+    }
     public override void Activar()
     {
         Origen = Usuario.GetComponent<Unidad>().CasillaPosicion;

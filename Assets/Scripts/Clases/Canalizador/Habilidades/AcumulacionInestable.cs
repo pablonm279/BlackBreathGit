@@ -118,6 +118,56 @@ public class AcumulacionInestable : Habilidad
       costos,
       "#5dade2");
 
+    string colorEncabezado = "#44d3ec";
+    string colorValor = "#ffffff";
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    string iconoEnergia = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_acumularenergia\"></voffset></size><space=-0.35em>";
+    string iconoBuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_buff\"></voffset></size><space=-0.35em>";
+    string costoSuperior = cooldownMax > 0
+      ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+      : $"{costoAP} {iconoAP}";
+    string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+    string subtituloFormato = esIngles
+      ? "Gain +1 Energy now and Arcane bonus damage this turn."
+      : esPortugues
+        ? "Ganha +1 Energia agora e dano Arcano bonus neste turno."
+        : "Gana +1 Energia ahora y daño Arcano bonus este turno.";
+    string cuerpoFormato = "";
+    if (esIngles)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Self buff</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>Self</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>On cast:</b></color> <color={colorValor}>{iconoEnergia} +1 Energy Tier</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>This turn:</b></color> <color={colorValor}>{iconoBuff} +{bonusDanioArcano} Arcane damage</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Backlash:</b></color> <color={colorValor}>{(recibeDanioPropio ? "Takes 1-6 Arcane damage" : "No self damage")}</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Start cooldown:</b></color> <color={colorValor}>{(arrancaEnCooldown ? "Yes" : "No")}</color>";
+    }
+    else if (esPortugues)
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>O proprio usuario</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Ao usar:</b></color> <color={colorValor}>{iconoEnergia} +1 Nivel de Energia</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Neste turno:</b></color> <color={colorValor}>{iconoBuff} +{bonusDanioArcano} dano Arcano</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Retorno:</b></color> <color={colorValor}>{(recibeDanioPropio ? "Recebe 1-6 dano Arcano" : "Sem autodano")}</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Recarga inicial:</b></color> <color={colorValor}>{(arrancaEnCooldown ? "Sim" : "Nao")}</color>";
+    }
+    else
+    {
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Propio usuario</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Al usar:</b></color> <color={colorValor}>{iconoEnergia} +1 Nivel de Energia</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Este turno:</b></color> <color={colorValor}>{iconoBuff} +{bonusDanioArcano} daño Arcano</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Retorno:</b></color> <color={colorValor}>{(recibeDanioPropio ? "Recibe 1-6 daño Arcano" : "Sin autodaño")}</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Enfriamiento inicial:</b></color> <color={colorValor}>{(arrancaEnCooldown ? "Si" : "No")}</color>";
+    }
+
+    txtDescripcion =
+      $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+      $"<color=#8f8f8f><i>{subtituloFormato}</i></color>\n\n" +
+      "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+      cuerpoFormato;
+
     bool mostrarProximoNivel = EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
     if (!mostrarProximoNivel)
     {

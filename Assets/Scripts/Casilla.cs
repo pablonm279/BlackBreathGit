@@ -678,6 +678,25 @@ public class Casilla : MonoBehaviour
 
   }
 
+  public void AplicarEscalaPerspectivaUnidad(GameObject GO)
+  {
+    if (GO == null)
+    {
+      return;
+    }
+
+    Unidad unidad = GO.GetComponent<Unidad>();
+    if (unidad == null)
+    {
+      return;
+    }
+
+    float multiplicadorPerspectiva = BattleManager.Instance != null
+      ? BattleManager.Instance.ObtenerMultiplicadorEscalaPerspectivaUnidad(posY)
+      : 1f;
+    GO.transform.localScale *= multiplicadorPerspectiva;
+  }
+
   public void PonerObjetoEnCasillaAnimado(GameObject GO, int lado)
   {
 
@@ -1086,6 +1105,7 @@ public class Casilla : MonoBehaviour
     transform.GetChild(1).gameObject.SetActive(false); //desactiva la capa roja también
     GetComponent<MeshRenderer>().enabled = false; //desactiva la casilla en si
     transform.GetChild(2).gameObject.SetActive(true);
+  
     if (MarcaMeleeAtraviesa != null)
     {
       MarcaMeleeAtraviesa.SetActive(true);
@@ -1109,6 +1129,7 @@ public class Casilla : MonoBehaviour
     transform.GetChild(2).gameObject.SetActive(false);
     transform.GetChild(2).gameObject.SetActive(false);
     transform.GetChild(9).gameObject.SetActive(false);
+    transform.GetChild(11).gameObject.SetActive(false);
     GetComponent<MeshRenderer>().enabled = true;
     if (MarcaMeleeAtraviesa != null)
     {
@@ -1813,6 +1834,7 @@ public class Casilla : MonoBehaviour
   public GameObject MoverCostoso;
   public GameObject Desplazable;
   public GameObject MarcaMelee;
+  public GameObject OcupadoNegro;
   void Update()
   {
     if (Borde != null)
@@ -1825,6 +1847,7 @@ public class Casilla : MonoBehaviour
           Actual.SetActive(false);
           Sombra.SetActive(false);
           Desplazable.SetActive(false);
+          OcupadoNegro.SetActive(true);
 
         }
         else if (Presente.GetComponent<Unidad>() != null && esMovible() >= 10)
@@ -1832,17 +1855,21 @@ public class Casilla : MonoBehaviour
           Mover.SetActive(false);
           MoverCostoso.SetActive(false);
           Borde.SetActive(false);
-
+          OcupadoNegro.SetActive(true);
           Desplazable.SetActive(true);
         }
         else
         {
           Borde.SetActive(false);
+         
           if (Sombra != null)
           {
             Sombra.SetActive(true);
             Desplazable.SetActive(false);
-
+            if (Presente.GetComponent<Unidad>() != null)
+            { OcupadoNegro.SetActive(true); }
+            else
+            { OcupadoNegro.SetActive(false); }
             if (BattleManager.Instance.unidadActiva == Presente.GetComponent<Unidad>())
             {
               Actual.SetActive(true);
@@ -1864,7 +1891,7 @@ public class Casilla : MonoBehaviour
         MoverCostoso.SetActive(false);
         Borde.SetActive(false);
         Desplazable.SetActive(false);
-
+        OcupadoNegro.SetActive(false);
 
 
 
@@ -1952,8 +1979,6 @@ public class Casilla : MonoBehaviour
   }
 
 }
-
-
 
 
 

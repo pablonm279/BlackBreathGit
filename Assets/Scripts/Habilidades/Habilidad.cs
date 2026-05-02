@@ -199,6 +199,32 @@ public abstract class Habilidad : MonoBehaviour
     return $"{minimo}-{maximo}";
   }
 
+  protected string ConstruirDescripcionTooltipNueva(string titulo, string subtitulo, string cuerpo, string costoSuperior = null)
+  {
+    string costo = costoSuperior == null ? CostoSuperiorDescripcion() : costoSuperior;
+    string bloqueCosto = string.IsNullOrEmpty(costo) ? "" : $"<pos=74%><color=#c8c8c8>{costo}</color>";
+    return $"<size=115%><color=#5dade2><b>{titulo}</b></color></size>{bloqueCosto}\n\n" +
+           $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+           "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+           cuerpo;
+  }
+
+  protected string CostoSuperiorDescripcion()
+  {
+    string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+    string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    return cooldownMax > 0
+      ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+      : $"{costoAP} {iconoAP}";
+  }
+
+  protected string FormatoModificadorDescripcion(int valor)
+  {
+    if (valor > 0) { return $" + {valor}"; }
+    if (valor < 0) { return $" - {Mathf.Abs(valor)}"; }
+    return "";
+  }
+
   public static string LimpiarCostoValentiaDescripcion(string descripcion)
   {
     if (string.IsNullOrEmpty(descripcion))

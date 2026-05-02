@@ -46,6 +46,15 @@ public class HombroConHombro : Habilidad
       int bonoAtaque = 2 + (NIVEL > 2 ? 1 : 0);
       bool daInvulnerable = NIVEL == 4;
       bool daApMax = NIVEL == 5;
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string iconoBuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_buff\"></voffset></size><space=-0.35em>";
+      string iconoBarrera = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_barrera\"></voffset></size><space=-0.35em>";
+      string costoSuperior = cooldownMax > 0
+        ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+        : $"{costoAP} {iconoAP}";
 
       string tituloEs = "Hombro con Hombro I";
       string tituloEn = "Shoulder to Shoulder I";
@@ -125,6 +134,61 @@ public class HombroConHombro : Habilidad
         cuerpo,
         costos,
         "#5dade2");
+
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "Buff yourself and adjacent allies in the same column."
+        : esPortugues
+          ? "Buffa você e aliados adjacentes na mesma coluna."
+          : "Buffea al usuario y aliados adyacentes en la misma columna.";
+
+      string extraBuff = "";
+      if (daInvulnerable)
+      {
+        extraBuff += esIngles
+          ? $"\n<color={colorEncabezado}><b>Additional:</b></color> <color={colorValor}>{iconoBarrera} Invulnerable for 1 turn</color>"
+          : esPortugues
+            ? $"\n<color={colorEncabezado}><b>Adicional:</b></color> <color={colorValor}>{iconoBarrera} Invulnerável por 1 turno</color>"
+            : $"\n<color={colorEncabezado}><b>Adicional:</b></color> <color={colorValor}>{iconoBarrera} Invulnerable por 1 turno</color>";
+      }
+      if (daApMax)
+      {
+        extraBuff += esIngles
+          ? $"\n<color={colorEncabezado}><b>Additional:</b></color> <color={colorValor}>{iconoBuff} +1 Max AP for 3 turns</color>"
+          : esPortugues
+            ? $"\n<color={colorEncabezado}><b>Adicional:</b></color> <color={colorValor}>{iconoBuff} +1 AP Max por 3 turnos</color>"
+            : $"\n<color={colorEncabezado}><b>Adicional:</b></color> <color={colorValor}>{iconoBuff} +1 AP Max por 3 turnos</color>";
+      }
+
+      string cuerpoFormato = "";
+      if (esIngles)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Area support buff</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>Self and adjacent allies in your column</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Buff:</b></color> <color={colorValor}>{iconoBuff} 3 turns: +{bonoDefensa} Defense, +{bonoAtaque} Attack</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Per affected ally:</b></color> <color={colorValor}>+1 Valour</color>";
+      }
+      else if (esPortugues)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Buff de suporte em área</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>O usuário e aliados adjacentes na mesma coluna</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Buff:</b></color> <color={colorValor}>{iconoBuff} 3 turnos: +{bonoDefensa} Defesa, +{bonoAtaque} Ataque</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Por aliado afetado:</b></color> <color={colorValor}>+1 Valentia</color>";
+      }
+      else
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Buff de soporte en área</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Usuario y aliados adyacentes en su columna</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Buff:</b></color> <color={colorValor}>{iconoBuff} 3 turnos: +{bonoDefensa} Defensa, +{bonoAtaque} Ataque</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Por aliado afectado:</b></color> <color={colorValor}>+1 Valentía</color>";
+      }
+      cuerpoFormato += extraBuff;
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpoFormato;
 
       bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)

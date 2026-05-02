@@ -42,9 +42,16 @@ public class PrimerosAuxilios : Habilidad
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
       string dadoCuracion = NIVEL == 1 ? "1d8" : "1d12";
+      string rangoCuracion = NIVEL == 1 ? "1 + 1-8 por AP" : "1 + 1-12 por AP";
+      string rangoCuracionEn = NIVEL == 1 ? "1 + 1-8 per AP" : "1 + 1-12 per AP";
+      string rangoCuracionPt = NIVEL == 1 ? "1 + 1-8 por AP" : "1 + 1-12 por AP";
       int usos = NIVEL > 2 ? 3 : 2;
       int bonoResguardo = NIVEL == 4 ? 50 : 400;
       bool trasladaCampania = NIVEL == 5;
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string costoSuperior = $"{costoAP} {iconoAP}";
 
       string tituloEs = "Primeros Auxilios I";
       string tituloEn = "First Aid I";
@@ -115,6 +122,60 @@ public class PrimerosAuxilios : Habilidad
         cuerpo,
         costos,
         "#5dade2");
+
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "Heal an ally at close range; consumes all current AP."
+        : esPortugues
+          ? "Cura um aliado próximo; consome todo o AP atual."
+          : "Cura a un aliado cercano; consume todos los AP actuales.";
+
+      string cuerpoFormato = "";
+      if (esIngles)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Healing support</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>Self or ally at range 1</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Healing:</b></color> <color={colorValor}>{rangoCuracionEn}; spends all current AP</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Removes:</b></color> <color={colorValor}>Bleed and Poison</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Uses:</b></color> <color={colorValor}>{usos} per battle</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>In cover:</b></color> <color={colorValor}>+{bonoResguardo}% healing if an ally is in a more frontal column</color>";
+        if (trasladaCampania)
+        {
+          cuerpoFormato += $"\n<color={colorEncabezado}><b>Campaign:</b></color> <color={colorValor}>Enables campaign transfer effect</color>";
+        }
+      }
+      else if (esPortugues)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Suporte de cura</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>O próprio usuário ou aliado em alcance 1</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Cura:</b></color> <color={colorValor}>{rangoCuracionPt}; consome todo o AP atual</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Remove:</b></color> <color={colorValor}>Sangramento e Veneno</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Usos:</b></color> <color={colorValor}>{usos} por batalha</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Em resguardo:</b></color> <color={colorValor}>+{bonoResguardo}% de cura se houver um aliado em coluna mais frontal</color>";
+        if (trasladaCampania)
+        {
+          cuerpoFormato += $"\n<color={colorEncabezado}><b>Campanha:</b></color> <color={colorValor}>Habilita o efeito de traslado para campanha</color>";
+        }
+      }
+      else
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Soporte de curación</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Uno mismo o aliado a rango 1</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Curación:</b></color> <color={colorValor}>{rangoCuracion}; consume todos los AP actuales</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Remueve:</b></color> <color={colorValor}>Sangrado y Veneno</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Usos:</b></color> <color={colorValor}>{usos} por batalla</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>En resguardo:</b></color> <color={colorValor}>+{bonoResguardo}% curación si hay un aliado en una columna más frontal</color>";
+        if (trasladaCampania)
+        {
+          cuerpoFormato += $"\n<color={colorEncabezado}><b>Campaña:</b></color> <color={colorValor}>Habilita el efecto de traslado a campaña</color>";
+        }
+      }
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpoFormato;
 
       bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)

@@ -41,6 +41,7 @@ public class SiguesTu : Habilidad
       int duracionMarca = 3;
       int bonusDanioMarca = NIVEL > 2 ? 10 : 8;
       int bonusCritMarca = NIVEL > 1 ? 2 : 0;
+      int bonusCritMarcaPorcentaje = bonusCritMarca * 5;
       int dcSalvacion = NIVEL == 4 ? 110 : 10;
       int durDebuff = NIVEL == 5 ? 4 : 2;
       bool sinSalvacion = NIVEL == 4;
@@ -59,6 +60,17 @@ public class SiguesTu : Habilidad
       if (NIVEL == 4) { tituloPt = "Voce e o Proximo IV a"; }
       if (NIVEL == 5) { tituloPt = "Voce e o Proximo IV b"; }
 
+      string colorEncabezado = "#44d3ec";
+      string colorValor = "#ffffff";
+      string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
+      string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+      string iconoMarca = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_marcado\"></voffset></size><space=-0.35em>";
+      string iconoBuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_buff\"></voffset></size><space=-0.35em>";
+      string iconoDebuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_debuff\"></voffset></size><space=-0.35em>";
+      string costoSuperior = cooldownMax > 0
+        ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
+        : $"{costoAP} {iconoAP}";
+
       string cuerpo = "";
       if (esIngles)
       {
@@ -68,7 +80,7 @@ public class SiguesTu : Habilidad
         cuerpo += $"<b>Marked bonuses:</b> +5 attack, +{bonusDanioMarca} damage";
         if (bonusCritMarca > 0)
         {
-          cuerpo += $", +{bonusCritMarca} crit range";
+          cuerpo += $", +{bonusCritMarcaPorcentaje}% Crit";
         }
         cuerpo += "\n";
         cuerpo += "<b>Mark consumption:</b> consumed on first Vertical Cut/Cleave attempt\n";
@@ -90,7 +102,7 @@ public class SiguesTu : Habilidad
         cuerpo += $"<b>Bonus no marcado:</b> +5 ataque, +{bonusDanioMarca} dano";
         if (bonusCritMarca > 0)
         {
-          cuerpo += $", +{bonusCritMarca} faixa de critico";
+          cuerpo += $", +{bonusCritMarcaPorcentaje}% Critico";
         }
         cuerpo += "\n";
         cuerpo += "<b>Consumo da marca:</b> consumida na primeira tentativa de Corte Vertical/Partir\n";
@@ -112,7 +124,7 @@ public class SiguesTu : Habilidad
         cuerpo += $"<b>Bonos sobre marcado:</b> +5 ataque, +{bonusDanioMarca} danio";
         if (bonusCritMarca > 0)
         {
-          cuerpo += $", +{bonusCritMarca} rango critico";
+          cuerpo += $", +{bonusCritMarcaPorcentaje}% Critico";
         }
         cuerpo += "\n";
         cuerpo += "<b>Consumo de marca:</b> se consume en el primer intento de Corte Vertical/Partir\n";
@@ -144,6 +156,87 @@ public class SiguesTu : Habilidad
         costos,
         "#5dade2");
 
+      string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+      string subtitulo = esIngles
+        ? "Marks one enemy for stronger Vertical Cut and Cleave hits."
+        : esPortugues
+          ? "Marca um inimigo para fortalecer Corte Vertical e Partir."
+          : "Marca un enemigo para potenciar Corte Vertical y Partir.";
+
+      string cuerpoFormato = "";
+      if (esIngles)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Mark + debuff</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy unit</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>On cast:</b></color> <color={colorValor}>{iconoMarca} Marks target for {duracionMarca} turns</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Against marked target:</b></color> <color={colorValor}>{iconoBuff} Vertical Cut and Cleave gain +5 attack, +{bonusDanioMarca} damage";
+        if (bonusCritMarca > 0)
+        {
+          cuerpoFormato += $", +{bonusCritMarcaPorcentaje}% Crit";
+        }
+        cuerpoFormato += "</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Mark use:</b></color> <color={colorValor}>Consumed on first Vertical Cut/Cleave attempt</color>\n";
+        if (sinSalvacion)
+        {
+          cuerpoFormato += $"<color={colorEncabezado}><b>Debuff:</b></color> <color={colorValor}>{iconoDebuff} -2 Attack for {durDebuff} turns, no save</color>";
+        }
+        else
+        {
+          cuerpoFormato += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Mental vs DC {dcSalvacion}</color>\n";
+          cuerpoFormato += $"<color={colorEncabezado}><b>On failed save:</b></color> <color={colorValor}>{iconoDebuff} -2 Attack for {durDebuff} turns</color>";
+        }
+      }
+      else if (esPortugues)
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Marca + debuff</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 unidade inimiga</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Ao usar:</b></color> <color={colorValor}>{iconoMarca} Marca o alvo por {duracionMarca} turnos</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Contra alvo marcado:</b></color> <color={colorValor}>{iconoBuff} Corte Vertical e Partir ganham +5 ataque, +{bonusDanioMarca} dano";
+        if (bonusCritMarca > 0)
+        {
+          cuerpoFormato += $", +{bonusCritMarcaPorcentaje}% Critico";
+        }
+        cuerpoFormato += "</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Uso da marca:</b></color> <color={colorValor}>Consumida na primeira tentativa de Corte Vertical/Partir</color>\n";
+        if (sinSalvacion)
+        {
+          cuerpoFormato += $"<color={colorEncabezado}><b>Debuff:</b></color> <color={colorValor}>{iconoDebuff} -2 Ataque por {durDebuff} turnos, sem resistencia</color>";
+        }
+        else
+        {
+          cuerpoFormato += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Mental vs CD {dcSalvacion}</color>\n";
+          cuerpoFormato += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoDebuff} -2 Ataque por {durDebuff} turnos</color>";
+        }
+      }
+      else
+      {
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Marca + debuff</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 unidad enemiga</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Al usar:</b></color> <color={colorValor}>{iconoMarca} Marca al objetivo por {duracionMarca} turnos</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Contra marcado:</b></color> <color={colorValor}>{iconoBuff} Corte Vertical y Partir ganan +5 ataque, +{bonusDanioMarca} danio";
+        if (bonusCritMarca > 0)
+        {
+          cuerpoFormato += $", +{bonusCritMarcaPorcentaje}% Critico";
+        }
+        cuerpoFormato += "</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Uso de marca:</b></color> <color={colorValor}>Se consume en el primer intento de Corte Vertical/Partir</color>\n";
+        if (sinSalvacion)
+        {
+          cuerpoFormato += $"<color={colorEncabezado}><b>Debuff:</b></color> <color={colorValor}>{iconoDebuff} -2 Ataque por {durDebuff} turnos, sin TS</color>";
+        }
+        else
+        {
+          cuerpoFormato += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Mental vs DC {dcSalvacion}</color>\n";
+          cuerpoFormato += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoDebuff} -2 Ataque por {durDebuff} turnos</color>";
+        }
+      }
+
+      txtDescripcion =
+        $"<size=115%><color=#5dade2><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n" +
+        $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n" +
+        "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
+        cuerpoFormato;
+
       bool mostrarProximoNivel = CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
       if (!mostrarProximoNivel)
       {
@@ -152,19 +245,19 @@ public class SiguesTu : Habilidad
 
       if (esIngles)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 crit range bonus on marked target.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +10% Crit bonus on marked target.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 marked bonus damage.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (debuff has no save) or Option B (+2 debuff duration).</color>"; }
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de faixa de critico sobre o marcado.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +10% Critico sobre o marcado.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de dano extra no marcado.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (debuff sem resistencia) ou Opcao B (+2 turnos de debuff).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 rango critico sobre el marcado.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +10% Critico sobre el marcado.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 danio extra al marcado.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (debuff sin TS) u Opcion B (+2 turnos de debuff).</color>"; }
       }

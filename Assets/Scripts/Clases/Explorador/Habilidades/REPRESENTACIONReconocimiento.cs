@@ -1,261 +1,100 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class REPRESENTACIONReconocimiento : Habilidad
 {
-   
-
-    
-     public override void  Awake()
+    public override void Awake()
     {
       imHab = Resources.Load<Sprite>("imHab/Explorador_Reconocimiento");
       ActualizarDescripcion();
 
       IDenClase = 9;
-      
     }
 
     public bool seusoEsteTurno = false;
 
-  public override void ActualizarDescripcion()
-  {
-
-    if (NIVEL < 2)
+    public override void ActualizarDescripcion()
     {
-      txtDescripcion = "<color=#5dade2><b>Reconocimiento I</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) El Explorador otorga ventajas de terreno a sus aliados.</i>\n\n";
-      txtDescripcion += "<i>+1 AP en el primer turno.</i>\n";
-      txtDescripcion += "<i>Retrasa 1 turno refuerzos enemigos</i>\n";
+      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      string colorTitulo = "#5dade2";
+      string colorEncabezado = "#44d3ec";
 
-      if (EsEscenaCampaña())
+      int apPrimerTurno = NIVEL == 4 ? 2 : 1;
+      int iniciativa = NIVEL < 2 ? 0 : NIVEL == 2 ? 1 : 2;
+      int retrasoRefuerzos = NIVEL == 5 ? 2 : 1;
+
+      string titulo = $"Reconocimiento {SufijoNivel()}";
+      string subtitulo = "Otorga ventaja inicial al grupo.";
+      string cuerpo = $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n" +
+                      $"<color={colorEncabezado}><b>Aliados:</b></color> +{apPrimerTurno} AP" +
+                      (iniciativa > 0 ? $", +{iniciativa} Iniciativa" : "") + " en el primer turno\n" +
+                      $"<color={colorEncabezado}><b>Enemigos:</b></color> Retrasa refuerzos {retrasoRefuerzos} turno" + (retrasoRefuerzos > 1 ? "s" : "");
+
+      if (esIngles)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: Buff a aliados: +1 Iniciativa</color>\n\n";
-          }
-        }
+        titulo = $"Reconnaissance {SufijoNivel()}";
+        subtitulo = "Grants an opening advantage to the party.";
+        cuerpo = $"<color={colorEncabezado}><b>Type:</b></color> Passive\n" +
+                 $"<color={colorEncabezado}><b>Allies:</b></color> +{apPrimerTurno} AP" +
+                 (iniciativa > 0 ? $", +{iniciativa} Initiative" : "") + " on the first turn\n" +
+                 $"<color={colorEncabezado}><b>Enemies:</b></color> Delays reinforcements by {retrasoRefuerzos} turn" + (retrasoRefuerzos > 1 ? "s" : "");
+      }
+      else if (esPortugues)
+      {
+        titulo = $"Reconhecimento {SufijoNivel()}";
+        subtitulo = "Concede vantagem inicial ao grupo.";
+        cuerpo = $"<color={colorEncabezado}><b>Tipo:</b></color> Passiva\n" +
+                 $"<color={colorEncabezado}><b>Aliados:</b></color> +{apPrimerTurno} AP" +
+                 (iniciativa > 0 ? $", +{iniciativa} Iniciativa" : "") + " no primeiro turno\n" +
+                 $"<color={colorEncabezado}><b>Inimigos:</b></color> Atrasa reforcos em {retrasoRefuerzos} turno" + (retrasoRefuerzos > 1 ? "s" : "");
       }
 
-    }
-    if (NIVEL == 2)
-    {
-      txtDescripcion = "<color=#5dade2><b>Reconocimiento II</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) El Explorador otorga ventajas de terreno a sus aliados.</i>\n\n";
-      txtDescripcion += "<i>+1 AP y +1 Iniciativa en el primer turno.</i>\n";
-      txtDescripcion += "<i>Retrasa 1 turno refuerzos enemigos</i>\n";
+      string proximo = TextoProximoNivel(esIngles, esPortugues);
+      if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
 
-      if (EsEscenaCampaña())
+      txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size>\n\n";
+      txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
+      txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
+      txtDescripcion += cuerpo;
+    }
+
+    private string SufijoNivel()
+    {
+      if (NIVEL < 2) { return "I"; }
+      if (NIVEL == 2) { return "II"; }
+      if (NIVEL == 3) { return "III"; }
+      if (NIVEL == 4) { return "IV a"; }
+      return "IV b";
+    }
+
+    private string TextoProximoNivel(bool esIngles, bool esPortugues)
+    {
+      if (!EsEscenaCampaña() || CampaignManager.Instance.scMenuPersonajes.pSel == null || CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad <= 0)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Próximo Nivel: Buff a aliados: +1 Iniciativa</color>\n\n";
-          }
-        }
+        return "";
       }
-    }
-    if (NIVEL == 3)
-    {
-      txtDescripcion = "<color=#5dade2><b>Reconocimiento III</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) El Explorador otorga ventajas de terreno a sus aliados.</i>\n\n";
-      txtDescripcion += "<i>+1 AP y +2 Iniciativa en el primer turno.</i>\n";
-      txtDescripcion += "<i>Retrasa 1 turno refuerzos enemigos</i>\n";
 
-
-      if (EsEscenaCampaña())
+      if (esIngles)
       {
-        if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-        {
-          if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-          {
-            txtDescripcion += $"<color=#dfea02>-Opción A: Buff a aliados: +1 AP extra</color>\n\n";
-            txtDescripcion += $"<color=#dfea02>-Opción B: +1 Retraso extra a refuerzos enemigos</color>\n";
-          }
-        }
+        if (NIVEL < 2 || NIVEL == 2) { return "<color=#dfea02>Next Level: +1 Initiative.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Option A: +1 AP.\nOption B: +1 reinforcement delay.</color>"; }
       }
-    }
-    if (NIVEL == 4)
-    {
-      txtDescripcion = "<color=#5dade2><b>Reconocimiento IV a</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) El Explorador otorga ventajas de terreno a sus aliados.</i>\n\n";
-      txtDescripcion += "<i>+2 AP y +2 Iniciativa en el primer turno.</i>\n";
-      txtDescripcion += "<i>Retrasa 1 turno refuerzos enemigos</i>\n";
-    }
-    if (NIVEL == 5)
-    {
-      txtDescripcion = "<color=#5dade2><b>Reconocimiento IV b</b></color>\n\n";
-      txtDescripcion += "<i>(Pasiva) El Explorador otorga ventajas de terreno a sus aliados.</i>\n\n";
-      txtDescripcion += "<i>+1 AP y +2 Iniciativa en el primer turno.</i>\n";
-      txtDescripcion += "<i>Retrasa 2 turno refuerzos enemigos</i>\n";
-    }
-         
+      else if (esPortugues)
+      {
+        if (NIVEL < 2 || NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +1 Iniciativa.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opcao A: +1 AP.\nOpcao B: +1 atraso de reforcos.</color>"; }
+      }
+      else
+      {
+        if (NIVEL < 2 || NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +1 Iniciativa.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opcion A: +1 AP.\nOpcion B: +1 retraso de refuerzos.</color>"; }
+      }
 
-        if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
-        {
-          if (NIVEL < 2)
-          {
-            txtDescripcion = "<color=#5dade2><b>Reconnaissance I</b></color>\n\n";
-            txtDescripcion += "<i>(Passive) The Explorer grants terrain advantages to allies.</i>\n\n";
-            txtDescripcion += "<i>+1 AP on the first turn.</i>\n";
-            txtDescripcion += "<i>Delays enemy reinforcements by 1 turn</i>\n";
-
-            if (EsEscenaCampaña())
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-              {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                {
-                  txtDescripcion += $"<color=#dfea02>-Next Level: Buff to allies: +1 Initiative</color>\n\n";
-                }
-              }
-            }
-          }
-          if (NIVEL == 2)
-          {
-            txtDescripcion = "<color=#5dade2><b>Reconnaissance II</b></color>\n\n";
-            txtDescripcion += "<i>(Passive) The Explorer grants terrain advantages to allies.</i>\n\n";
-            txtDescripcion += "<i>+1 AP and +1 Initiative on the first turn.</i>\n";
-            txtDescripcion += "<i>Delays enemy reinforcements by 1 turn</i>\n";
-
-            if (EsEscenaCampaña())
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-              {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                {
-                  txtDescripcion += $"<color=#dfea02>-Next Level: Buff to allies: +1 Initiative</color>\n\n";
-                }
-              }
-            }
-          }
-          if (NIVEL == 3)
-          {
-            txtDescripcion = "<color=#5dade2><b>Reconnaissance III</b></color>\n\n";
-            txtDescripcion += "<i>(Passive) The Explorer grants terrain advantages to allies.</i>\n\n";
-            txtDescripcion += "<i>+1 AP and +2 Initiative on the first turn.</i>\n";
-            txtDescripcion += "<i>Delays enemy reinforcements by 1 turn</i>\n";
-
-            if (EsEscenaCampaña())
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-              {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                {
-                  txtDescripcion += $"<color=#dfea02>-Option A: Buff to allies: +1 extra AP</color>\n\n";
-                  txtDescripcion += $"<color=#dfea02>-Option B: +1 extra delay to enemy reinforcements</color>\n";
-                }
-              }
-            }
-          }
-          if (NIVEL == 4)
-          {
-            txtDescripcion = "<color=#5dade2><b>Reconnaissance IV a</b></color>\n\n";
-            txtDescripcion += "<i>(Passive) The Explorer grants terrain advantages to allies.</i>\n\n";
-            txtDescripcion += "<i>+2 AP and +2 Initiative on the first turn.</i>\n";
-            txtDescripcion += "<i>Delays enemy reinforcements by 1 turn</i>\n";
-          }
-          if (NIVEL == 5)
-          {
-            txtDescripcion = "<color=#5dade2><b>Reconnaissance IV b</b></color>\n\n";
-            txtDescripcion += "<i>(Passive) The Explorer grants terrain advantages to allies.</i>\n\n";
-            txtDescripcion += "<i>+1 AP and +2 Initiative on the first turn.</i>\n";
-            txtDescripcion += "<i>Delays enemy reinforcements by 2 turns</i>\n";
-          }
-        }
-        if (TRADU.i.nIdioma == 3)
-        {
-          if (NIVEL < 2)
-          {
-            txtDescripcion = "<color=#5dade2><b>Reconhecimento I</b></color>\n\n";
-            txtDescripcion += "<i>(Passiva) O Explorador concede vantagens de terreno aos aliados.</i>\n\n";
-            txtDescripcion += "<i>+1 AP no primeiro turno.</i>\n";
-            txtDescripcion += "<i>Atrasa reforcos inimigos em 1 turno</i>\n";
-
-            if (EsEscenaCampaña())
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-              {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                {
-                  txtDescripcion += $"<color=#dfea02>-Proximo Nivel: Buff em aliados: +1 Iniciativa</color>\n\n";
-                }
-              }
-            }
-          }
-          if (NIVEL == 2)
-          {
-            txtDescripcion = "<color=#5dade2><b>Reconhecimento II</b></color>\n\n";
-            txtDescripcion += "<i>(Passiva) O Explorador concede vantagens de terreno aos aliados.</i>\n\n";
-            txtDescripcion += "<i>+1 AP e +1 Iniciativa no primeiro turno.</i>\n";
-            txtDescripcion += "<i>Atrasa reforcos inimigos em 1 turno</i>\n";
-
-            if (EsEscenaCampaña())
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-              {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                {
-                  txtDescripcion += $"<color=#dfea02>-Proximo Nivel: Buff em aliados: +1 Iniciativa</color>\n\n";
-                }
-              }
-            }
-          }
-          if (NIVEL == 3)
-          {
-            txtDescripcion = "<color=#5dade2><b>Reconhecimento III</b></color>\n\n";
-            txtDescripcion += "<i>(Passiva) O Explorador concede vantagens de terreno aos aliados.</i>\n\n";
-            txtDescripcion += "<i>+1 AP e +2 Iniciativa no primeiro turno.</i>\n";
-            txtDescripcion += "<i>Atrasa reforcos inimigos em 1 turno</i>\n";
-
-            if (EsEscenaCampaña())
-            {
-              if (CampaignManager.Instance.scMenuPersonajes.pSel != null)
-              {
-                if (CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
-                {
-                  txtDescripcion += $"<color=#dfea02>-Opcao A: Buff em aliados: +1 AP extra</color>\n\n";
-                  txtDescripcion += $"<color=#dfea02>-Opcao B: +1 atraso extra em reforcos inimigos</color>\n";
-                }
-              }
-            }
-          }
-          if (NIVEL == 4)
-          {
-            txtDescripcion = "<color=#5dade2><b>Reconhecimento IV a</b></color>\n\n";
-            txtDescripcion += "<i>(Passiva) O Explorador concede vantagens de terreno aos aliados.</i>\n\n";
-            txtDescripcion += "<i>+2 AP e +2 Iniciativa no primeiro turno.</i>\n";
-            txtDescripcion += "<i>Atrasa reforcos inimigos em 1 turno</i>\n";
-          }
-          if (NIVEL == 5)
-          {
-            txtDescripcion = "<color=#5dade2><b>Reconhecimento IV b</b></color>\n\n";
-            txtDescripcion += "<i>(Passiva) O Explorador concede vantagens de terreno aos aliados.</i>\n\n";
-            txtDescripcion += "<i>+1 AP e +2 Iniciativa no primeiro turno.</i>\n";
-            txtDescripcion += "<i>Atrasa reforcos inimigos em 2 turnos</i>\n";
-          }
-        }
-
+      return "";
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}
-    public override void Activar()
-    {
-       
-
-      
-       
-        
-    }
-    
-
-
-
-
+    public override void Activar(){}
 }
-
-
-
