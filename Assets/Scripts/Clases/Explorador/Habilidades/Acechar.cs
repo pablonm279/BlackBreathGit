@@ -264,7 +264,6 @@ public class Acechar : Habilidad
 
       foreach(Unidad uni in BattleManager.Instance.lUnidadesPosiblesHabilidadActiva)
       {
-            uni.Marcar(1);
       }
 
       BattleManager.Instance.lObstaculosPosiblesHabilidadActiva.Clear();

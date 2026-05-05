@@ -610,6 +610,7 @@ MonoBehaviour:
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
   estado_CondenadoTurnosSeguidos: 0
+  ultimaUnidadQueLeHizoDanio: {fileID: 0}
   estado_Escudado: 0
   estado_MovimientoAbaratado: 0
   estado_Corrupto: 0
@@ -753,6 +754,9 @@ MonoBehaviour:
   barraVidaHealColor: {r: 1, g: 0.85, b: 0.2, a: 0.6}
   barraVidaHealDelay: 0.08
   barraVidaHealSpeed: 0.9
+  barraVidaColorVidaBaja: {r: 0.42, g: 0.02, b: 0.02, a: 1}
+  barraVidaRatioInicioRojo: 0.2
+  barraVidaOscurecerTurnoPasado: 0.72
   rotuloHabilidadOffset: {x: 0, y: 2.1}
   rotuloHabilidadPadding: {x: 0.34, y: 0.16}
   rotuloHabilidadDuracion: 3
@@ -797,6 +801,9 @@ MonoBehaviour:
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
   forzarPoseHabilidad: 0
+  omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
@@ -829,6 +836,9 @@ MonoBehaviour:
   esMelee: 0
   afectaObstaculos: 0
   fuerzaPoseAtaque: 1
+  omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -861,6 +871,9 @@ MonoBehaviour:
   esMelee: 0
   afectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   hCooldownMax: 2
   hActualCooldown: 2
   Usuario: {fileID: 0}
@@ -894,6 +907,9 @@ MonoBehaviour:
   esMelee: 0
   afectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   hCooldownMax: 3
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -6252,11 +6268,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.066840105
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.27112937
+      value: 0.20281939
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6292,7 +6308,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2.43
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

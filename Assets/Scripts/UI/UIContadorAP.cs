@@ -9,27 +9,42 @@ public class UIContadorAP : MonoBehaviour
 
     public GameObject circuloAPprefab;
     public GameObject esfuerzoAPprefab;
-
+    private Sprite spriteAPUsado;
+    private Sprite spriteEsforzar;
  
+   
    
     private void Start()
     {
+       spriteAPUsado = Resources.Load<Sprite>("Imagenes/RecursosSprites/IconosTextoCombate/Iconos/ap_usado");
+       spriteEsforzar = Resources.Load<Sprite>("Imagenes/RecursosSprites/IconosTextoCombate/Iconos/esforzar");
        ActualizarAPCirculos();
 
     }
 
  
     public void ActualizarAPCirculos()
-    {     
+    {
+      if (!isActiveAndEnabled || !gameObject.scene.isLoaded)
+      {
+        return;
+      }
+
+      BattleManager battleManager = BattleManager.Instance;
+      if (battleManager == null || !battleManager.isActiveAndEnabled)
+      {
+        return;
+      }
+
         foreach (Transform buttonTransform in transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
         {
             Destroy(buttonTransform.gameObject);
         }
     
       
-      if(BattleManager.Instance.unidadActiva != null)
+      if(battleManager.unidadActiva != null)
       {
-        Unidad unidadSeleccionada = BattleManager.Instance.unidadActiva.gameObject.GetComponent<Unidad>();
+        Unidad unidadSeleccionada = battleManager.unidadActiva.gameObject.GetComponent<Unidad>();
 
       for (int i = 0; i < unidadSeleccionada.ObtenerAPActual(); i++)
       {
@@ -40,15 +55,17 @@ public class UIContadorAP : MonoBehaviour
       }
 
     // Luego de actualizar la UI, revisar si debe indicarse pasar turno
-     if (BattleManager.Instance != null)
-     {
-       BattleManager.Instance.RevisarAPUnidadActiva();
-       BattleManager.Instance.ActualizarCasillasMelee();
-      }
+     battleManager.RevisarAPUnidadActiva();
+     battleManager.ActualizarCasillasMelee();
     }
 
   public void MarcarCirculos(int n)
   {
+    if (!isActiveAndEnabled || !gameObject.scene.isLoaded || BattleManager.Instance == null || BattleManager.Instance.unidadActiva == null)
+    {
+      return;
+    }
+
     // Obtén la cantidad total de elementos en el GridLayoutGroup
     int totalCirculos = transform.childCount;
 
@@ -64,8 +81,16 @@ public class UIContadorAP : MonoBehaviour
       Transform circuloTransform = transform.GetChild(i);
       Image circuloImage = circuloTransform.GetComponent<Image>();
 
-      // Cambia el color a azul (puedes ajustar esto según tus necesidades)
-      circuloImage.color = new Color(1.5f, 0.0f, 0.0f); // Azul 
+      if (circuloImage == null)
+      {
+        continue;
+      }
+
+      circuloImage.color = Color.white;
+      if (spriteAPUsado != null)
+      {
+        circuloImage.sprite = spriteAPUsado;
+      }
     }
    
   }
@@ -80,9 +105,12 @@ public class UIContadorAP : MonoBehaviour
     {
         Transform circuloTransform = transform.GetChild(i);
         Image circuloImage = circuloTransform.GetComponent<Image>();
+        if (circuloImage == null)
+        {
+          continue;
+        }
 
-        // Restablece el color a rojo
-        circuloImage.color = new Color(1f, 1f, 1f); 
+        circuloImage.color = Color.white;
     }
   }
 
@@ -93,12 +121,21 @@ public void SeEsforzaria(int n)
       for (int i = 0; i < n; i++)
       {
         GameObject nuevoCirculo = Instantiate(esfuerzoAPprefab, transform);
+        if (spriteEsforzar != null)
+        {
+          Image img = nuevoCirculo.GetComponent<Image>();
+          if (img != null)
+          {
+            img.sprite = spriteEsforzar;
+            img.type = Image.Type.Simple;
+            img.preserveAspect = false;
+            img.color = Color.white;
+          }
+        }
       }
     }
 }
 
 
 }
-
-
 

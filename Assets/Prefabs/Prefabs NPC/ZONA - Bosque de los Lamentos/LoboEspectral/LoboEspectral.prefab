@@ -38,8 +38,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.28999853, y: -11.02}
-  m_SizeDelta: {x: 20.99, y: 26.17}
+  m_AnchoredPosition: {x: 1.58, y: -17.495}
+  m_SizeDelta: {x: 20.99, y: 17.062}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3728128807783799882
 CanvasRenderer:
@@ -386,6 +386,9 @@ MonoBehaviour:
   esMelee: 1
   afectaObstaculos: 1
   fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -418,6 +421,9 @@ MonoBehaviour:
   esMelee: 1
   afectaObstaculos: 1
   fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   hCooldownMax: 2
   hActualCooldown: 2
   Usuario: {fileID: 0}
@@ -482,6 +488,9 @@ MonoBehaviour:
   barraVidaHealColor: {r: 1, g: 0.85, b: 0.2, a: 0.6}
   barraVidaHealDelay: 0.08
   barraVidaHealSpeed: 0.9
+  barraVidaColorVidaBaja: {r: 0.42, g: 0.02, b: 0.02, a: 1}
+  barraVidaRatioInicioRojo: 0.2
+  barraVidaOscurecerTurnoPasado: 0.72
   rotuloHabilidadOffset: {x: 0, y: 30}
   rotuloHabilidadPadding: {x: 18, y: 8}
   rotuloHabilidadDuracion: 0.95
@@ -527,6 +536,8 @@ MonoBehaviour:
   fuerzaPoseAtaque: 0
   forzarPoseHabilidad: 0
   omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
@@ -5656,8 +5667,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.44124985, y: -7.733}
-  m_SizeDelta: {x: 20.105, y: 17.324}
+  m_AnchoredPosition: {x: -0.44124985, y: -5.399}
+  m_SizeDelta: {x: 20.105, y: 21.603}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6744093025116458532
 CanvasRenderer:
@@ -6170,11 +6181,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.066840105
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.27112937
+      value: 0.20281939
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6210,7 +6221,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -5.3
+      value: -6.1
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

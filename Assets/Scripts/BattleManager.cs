@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using Stopwatch = System.Diagnostics.Stopwatch;
 
+
+
 public class BattleManager : MonoBehaviour
 {
   [Header("Ajustes visuales de batalla")]
@@ -27,6 +29,8 @@ public class BattleManager : MonoBehaviour
   [SerializeField] private int maxHitsDebugBajoMouse = 12;
 
   public TutorialCombate scTutorialCombate;
+
+  [SerializeField] public Image retratoPers;
   public GameObject prefabUnidad;
   public GameObject prefabUnidadCaballero;
   public GameObject prefabUnidadExplorador;
@@ -431,6 +435,18 @@ public class BattleManager : MonoBehaviour
   {
     if (unidadActiva != null)
     {
+      if (retratoPers != null)
+      {
+        Sprite retratoActual = unidadActiva.uRetrato;
+        if (retratoActual == null && unidadActiva.uImage != null)
+        {
+          retratoActual = unidadActiva.uImage.sprite;
+        }
+
+        retratoPers.sprite = retratoActual;
+        retratoPers.enabled = retratoActual != null;
+      }
+
       //Control si corresponde a IA o Jugador para activar UI correspondiente
       if (unidadActiva.GetComponent<IAUnidad>() != null)
       {
@@ -1968,11 +1984,11 @@ public class BattleManager : MonoBehaviour
       {
         if (TRADU.i == null || TRADU.i.nIdioma == TRADU.IdiomaEspanol)
         {
-          textoEsfuerzo = " -Â¡Esfuerzo!";
+          textoEsfuerzo = "<size=120%>                            -¡Esfuerzo!</size>";
         }
         else
         {
-          textoEsfuerzo = " -" + TRADU.i.Traducir("Esfuerzo") + "!";
+          textoEsfuerzo = "<size=120%>                            -" + TRADU.i.Traducir("Esfuerzo") + "!</size>";
         }
       }
 
@@ -4195,7 +4211,6 @@ public class BattleManager : MonoBehaviour
  
 
 }
-
 
 
 

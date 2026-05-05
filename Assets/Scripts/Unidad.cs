@@ -4735,6 +4735,30 @@ public void Marcar(int n)
 
 }
 
+  private bool EsObjetivoHoverValidoSeleccion()
+  {
+    return scBattleManager != null
+      && scBattleManager.SeleccionandoObjetivo
+      && scBattleManager.lUnidadesPosiblesHabilidadActiva != null
+      && scBattleManager.lUnidadesPosiblesHabilidadActiva.Contains(this);
+  }
+
+  private void ActualizarVisualObjetivoHover()
+  {
+    if (!EsObjetivoHoverValidoSeleccion())
+    {
+      Marcar(0);
+      return;
+    }
+
+    Marcar(1);
+  }
+
+  private void LimpiarVisualObjetivoHover()
+  {
+    Marcar(0);
+  }
+
   public void MostrarProbabilidad(float? probabilidad, string textoPersonalizado = null)
   {
     if (scUnidadCanvas == null)
@@ -4817,6 +4841,7 @@ public void OnMouseEnter()
      if(scBattleManager.SeleccionandoObjetivo)
      {
         CasillaPosicion.OnMouseOver();
+        ActualizarVisualObjetivoHover();
 
      }
 
@@ -4836,6 +4861,7 @@ public void OnMouseExit()
       if(scBattleManager.SeleccionandoObjetivo)
      {
         CasillaPosicion.OnMouseExit();
+        LimpiarVisualObjetivoHover();
 
      }
 }
@@ -4848,6 +4874,8 @@ public async void OnMouseDown()
 
     if (scBattleManager.lUnidadesPosiblesHabilidadActiva.Contains(this) && scBattleManager.SeleccionandoObjetivo)
     {
+      LimpiarVisualObjetivoHover();
+
       if (scBattleManager.HabilidadActiva.esMelee && estado_Volando)
       {
         //Si se quiere hacer una habilidad melee a una unidad voladora, no hace nada.

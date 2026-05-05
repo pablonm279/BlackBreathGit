@@ -14,7 +14,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     private const string PrefVsync = "gfx_vsync";
     private const string PrefFpsLimit = "gfx_fps_limit";
     private const string PrefBrightness = "gfx_brightness";
-    private const float DefaultBrightness = 0.5f;
+    private const float DefaultBrightness = 0.65f;
     private const float AudioSfxOffsetY = -60.7f;
 
     public Slider volMusicaSlider;

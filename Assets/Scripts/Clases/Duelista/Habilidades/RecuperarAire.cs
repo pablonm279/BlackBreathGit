@@ -200,8 +200,11 @@ public class RecuperarAire : Habilidad
         }
 
         objetivosPosibles.Add(scEstaUnidad);
+        if (scEstaUnidad.CasillaPosicion != null)
+        {
+            scEstaUnidad.CasillaPosicion.ActivarCapaColorAzul();
+        }
         BattleManager.Instance.lUnidadesPosiblesHabilidadActiva.Add(scEstaUnidad);
-        scEstaUnidad.Marcar(1);
     }
 
     private int ObtenerDadosCuracion()

@@ -34,7 +34,210 @@ public class Casilla : MonoBehaviour
   public GameObject MarcaMovX0Yv1;
   public GameObject MarcaMovXv1Yv1;
   public GameObject MarcaMeleeAtraviesa;
- 
+  [SerializeField] private float duracionFadeMarcaMovimiento = 0.1f;
+  [SerializeField] private float intensidadPulsoObjetivoHabilidad = 0.065f;
+  [SerializeField] private float velocidadPulsoObjetivoHabilidad = 5.8f;
+  private readonly Dictionary<Transform, Vector3> escalasBaseGlowMovimiento = new Dictionary<Transform, Vector3>();
+  private readonly Dictionary<GameObject, EstadoMarcaMovimiento> estadosMarcaMovimiento = new Dictionary<GameObject, EstadoMarcaMovimiento>();
+  private MaterialPropertyBlock bloqueGlowMovimiento;
+  private MaterialPropertyBlock bloqueTurnoActualEnemigo;
+  private bool hoverMovimientoValido;
+  private Vector3? escalaBaseCapaObjetivoHabilidad;
+  private Vector3? escalaBaseBordeActualObjetivoHabilidad;
+  private bool autoActivoCapaObjetivoHabilidad;
+  private Transform graficoBordeHabilidadAzul;
+  private Transform graficoBordeHabilidadRojo;
+  private Transform graficoBordeActual;
+  private Transform circuloBordeHabilidadAzul;
+  private Transform circuloBordeHabilidadRojo;
+  private Renderer[] renderersBordeActual = Array.Empty<Renderer>();
+  private Transform contenedorCostoMovimiento;
+  private readonly List<SpriteRenderer> iconosCostoMovimiento = new List<SpriteRenderer>();
+  private Sprite spriteCostoMovimiento;
+  private static readonly int ShaderColorId = Shader.PropertyToID("_Color");
+  private static readonly int ShaderBaseColorId = Shader.PropertyToID("_BaseColor");
+  private static readonly int ShaderEmissionColorId = Shader.PropertyToID("_EmissionColor");
+  private bool estaEnDestruccion;
+
+  private sealed class EstadoMarcaMovimiento
+  {
+    public GameObject objeto;
+    public Renderer[] renderers;
+    public Material[] materialesInstancia;
+    public Color[] coloresBase;
+    public Color[] emisionesBase;
+    public float alphaActual;
+    public float alphaObjetivo;
+  }
+  
+  void Awake()
+  {
+    bloqueGlowMovimiento = new MaterialPropertyBlock();
+    bloqueTurnoActualEnemigo = new MaterialPropertyBlock();
+    CachearReferenciasVisuales();
+    InicializarPreviewCostoMovimiento();
+    InicializarEstadosMarcaMovimiento();
+  }
+
+  private void CachearReferenciasVisuales()
+  {
+    graficoBordeHabilidadAzul = BuscarTransformRecursivo(transform, "GraficoBorde Habilidad amiga");
+    graficoBordeHabilidadRojo = BuscarTransformRecursivo(transform, "GraficoBorde Habilidad");
+    graficoBordeActual = BuscarTransformRecursivo(transform, "GraficoBorde Actual");
+    circuloBordeHabilidadAzul = BuscarTransformRecursivo(graficoBordeHabilidadAzul, "Circulo");
+    circuloBordeHabilidadRojo = BuscarTransformRecursivo(graficoBordeHabilidadRojo, "Circulo");
+    renderersBordeActual = graficoBordeActual != null ? graficoBordeActual.GetComponentsInChildren<Renderer>(true) : Array.Empty<Renderer>();
+  }
+
+  private static Transform BuscarTransformRecursivo(Transform raiz, string nombre)
+  {
+    if (raiz == null)
+    {
+      return null;
+    }
+
+    foreach (Transform hijo in raiz.GetComponentsInChildren<Transform>(true))
+    {
+      if (hijo != null && hijo.name == nombre)
+      {
+        return hijo;
+      }
+    }
+
+    return null;
+  }
+
+  private void InicializarPreviewCostoMovimiento()
+  {
+    spriteCostoMovimiento = Resources.Load<Sprite>("Imagenes/RecursosSprites/IconosTextoCombate/Iconos/ap_usado");
+    if (spriteCostoMovimiento == null)
+    {
+      return;
+    }
+
+    GameObject contenedorGO = new GameObject("CostoMovimientoPreview");
+    contenedorGO.transform.SetParent(transform, false);
+    contenedorGO.transform.localPosition = new Vector3(0.55f, 0.01f, -0.18f);
+    contenedorGO.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+    contenedorGO.transform.localScale = Vector3.one;
+    contenedorCostoMovimiento = contenedorGO.transform;
+    contenedorCostoMovimiento.gameObject.SetActive(false);
+  }
+
+  private void MostrarPreviewCostoMovimiento(int costo, bool alcanzable)
+  {
+    if (contenedorCostoMovimiento == null || spriteCostoMovimiento == null || costo <= 0)
+    {
+      OcultarPreviewCostoMovimiento();
+      return;
+    }
+
+    if (!contenedorCostoMovimiento.gameObject.activeSelf)
+    {
+      contenedorCostoMovimiento.gameObject.SetActive(true);
+    }
+
+    while (iconosCostoMovimiento.Count < costo)
+    {
+      GameObject iconoGO = new GameObject("APCosto");
+      iconoGO.transform.SetParent(contenedorCostoMovimiento, false);
+      SpriteRenderer spriteRenderer = iconoGO.AddComponent<SpriteRenderer>();
+      spriteRenderer.sprite = spriteCostoMovimiento;
+      spriteRenderer.sortingOrder = 400;
+      iconosCostoMovimiento.Add(spriteRenderer);
+    }
+
+    float separacion = 0.25f;
+    float offsetInicial = -((costo - 1) * separacion) * 0.5f;
+    Color colorIcono = alcanzable ? Color.white : new Color(1f, 0.35f, 0.35f, 1f);
+
+    for (int i = 0; i < iconosCostoMovimiento.Count; i++)
+    {
+      bool activo = i < costo;
+      iconosCostoMovimiento[i].gameObject.SetActive(activo);
+      if (!activo)
+      {
+        continue;
+      }
+
+      iconosCostoMovimiento[i].color = colorIcono;
+      iconosCostoMovimiento[i].transform.localPosition = new Vector3(offsetInicial + (i * separacion), 0f, 0f);
+      iconosCostoMovimiento[i].transform.localScale = Vector3.one * 0.030f;
+    }
+  }
+
+  private void OcultarPreviewCostoMovimiento()
+  {
+    if (contenedorCostoMovimiento != null && contenedorCostoMovimiento.gameObject.activeSelf)
+    {
+      contenedorCostoMovimiento.gameObject.SetActive(false);
+    }
+  }
+
+  private void ResetearPreviewCostoMovimientoUI()
+  {
+    if (estaEnDestruccion || !isActiveAndEnabled || !gameObject.scene.isLoaded)
+    {
+      return;
+    }
+
+    if (BattleManager.Instance == null || !BattleManager.Instance.isActiveAndEnabled)
+    {
+      return;
+    }
+
+    if (BattleManager.Instance != null
+      && BattleManager.Instance.scUIContadorAP != null
+      && BattleManager.Instance.scUIContadorAP.isActiveAndEnabled
+      && !BattleManager.Instance.SeleccionandoObjetivo
+      && BattleManager.Instance.HabilidadActiva == null)
+    {
+      BattleManager.Instance.scUIContadorAP.ResetearCirculos();
+    }
+  }
+
+  private bool TryObtenerCostoMovimientoHover(out int costoMovimientoTotal, out bool alcanzable)
+  {
+    costoMovimientoTotal = 0;
+    alcanzable = false;
+
+    if (lado == 1 || BattleManager.Instance == null || BattleManager.Instance.bOcupado)
+    {
+      return false;
+    }
+
+    if (!TryGetUnidadActiva(out Unidad unidad)
+      || unidad.movimientoEnCurso
+      || BattleManager.Instance.SeleccionandoObjetivo
+      || unidad.estado_inmovil >= 1
+      || !BattleManager.Instance.lCasillasMovimiento.Contains(this))
+    {
+      return false;
+    }
+
+    if (Presente == null)
+    {
+      costoMovimientoTotal = ObtenerCostoMovimientoTotal(unidad);
+      alcanzable = unidad.ObtenerAPActual() >= costoMovimientoTotal;
+      return true;
+    }
+
+    if (!PuedeIntercambiarConUnidadActiva())
+    {
+      return false;
+    }
+
+    costoMovimientoTotal = ObtenerCostoMovimientoTotal(unidad, true);
+    AdministradorEscenas adminEscenas = FindObjectOfType<AdministradorEscenas>();
+    if (adminEscenas != null && adminEscenas.TieneIntercambioGratisColaborativoDisponible(unidad, Presente.GetComponent<Unidad>()))
+    {
+      costoMovimientoTotal = 0;
+    }
+
+    alcanzable = unidad.ObtenerAPActual() >= costoMovimientoTotal;
+    return true;
+  }
+
   void Start()
   {
     BattleManager.Instance.OnRondaNueva += BattleManager_OnRondaNueva;
@@ -42,6 +245,11 @@ public class Casilla : MonoBehaviour
     {
       MarcaMeleeAtraviesa.SetActive(false);
     }
+  }
+
+  void OnEnable()
+  {
+    estaEnDestruccion = false;
   }
 
 
@@ -56,6 +264,234 @@ public class Casilla : MonoBehaviour
   {
     unidad = BattleManager.Instance != null ? BattleManager.Instance.unidadActiva : null;
     return unidad != null && unidad.CasillaPosicion != null;
+  }
+
+  private bool PuedeMoverOMutarDesdeUnidadActiva(Casilla destino, out Unidad unidadActiva, out bool esIntercambio)
+  {
+    unidadActiva = null;
+    esIntercambio = false;
+
+    if (destino == null || BattleManager.Instance == null || BattleManager.Instance.bOcupado)
+    {
+      return false;
+    }
+
+    if (!BattleManager.Instance.lCasillasMovimiento.Contains(destino))
+    {
+      return false;
+    }
+
+    if (!TryGetUnidadActiva(out unidadActiva))
+    {
+      return false;
+    }
+
+    if (unidadActiva.movimientoEnCurso || BattleManager.Instance.SeleccionandoObjetivo || unidadActiva.estado_inmovil > 0)
+    {
+      return false;
+    }
+
+    if (destino.Presente == null)
+    {
+      return unidadActiva.ObtenerAPActual() >= destino.ObtenerCostoMovimientoTotal(unidadActiva);
+    }
+
+    esIntercambio = destino.PuedeIntercambiarConUnidadActiva();
+    return esIntercambio;
+  }
+
+  private bool TryObtenerDireccionMovimientoHover(out Casilla origen, out int deltaX, out int deltaY)
+  {
+    origen = null;
+    deltaX = 0;
+    deltaY = 0;
+
+    if (!PuedeMoverOMutarDesdeUnidadActiva(this, out Unidad unidadActiva, out _))
+    {
+      return false;
+    }
+
+    origen = unidadActiva.CasillaPosicion;
+    if (origen == null || origen == this)
+    {
+      return false;
+    }
+
+    deltaX = posX - origen.posX;
+    deltaY = posY - origen.posY;
+
+    return Mathf.Abs(deltaX) <= 1
+      && Mathf.Abs(deltaY) <= 1
+      && (deltaX != 0 || deltaY != 0);
+  }
+
+  private GameObject ObtenerMarcaMovimientoPorDireccion(int deltaX, int deltaY)
+  {
+    if (deltaX == 0 && deltaY == 1) { return MarcaMovX0Y1; }
+    if (deltaX == 1 && deltaY == 1) { return MarcaMovX1Y1; }
+    if (deltaX == 1 && deltaY == 0) { return MarcaMovX1Y0; }
+    if (deltaX == -1 && deltaY == 1) { return MarcaMovXv1Y1; }
+    if (deltaX == -1 && deltaY == 0) { return MarcaMovXv1Y0; }
+    if (deltaX == 1 && deltaY == -1) { return MarcaMovX1Yv1; }
+    if (deltaX == 0 && deltaY == -1) { return MarcaMovX0Yv1; }
+    if (deltaX == -1 && deltaY == -1) { return MarcaMovXv1Yv1; }
+    return null;
+  }
+
+  private void MostrarSenialadorSoloEnDireccion(int deltaX, int deltaY)
+  {
+    DesactivarSenialadores();
+
+    GameObject marca = ObtenerMarcaMovimientoPorDireccion(deltaX, deltaY);
+    if (marca != null)
+    {
+      ConfigurarVisibilidadMarcaMovimiento(marca, true);
+    }
+  }
+
+  private IEnumerable<GameObject> ObtenerMarcasMovimiento()
+  {
+    if (MarcaMovX0Y1 != null) { yield return MarcaMovX0Y1; }
+    if (MarcaMovX1Y1 != null) { yield return MarcaMovX1Y1; }
+    if (MarcaMovX1Y0 != null) { yield return MarcaMovX1Y0; }
+    if (MarcaMovXv1Y1 != null) { yield return MarcaMovXv1Y1; }
+    if (MarcaMovXv1Y0 != null) { yield return MarcaMovXv1Y0; }
+    if (MarcaMovX1Yv1 != null) { yield return MarcaMovX1Yv1; }
+    if (MarcaMovX0Yv1 != null) { yield return MarcaMovX0Yv1; }
+    if (MarcaMovXv1Yv1 != null) { yield return MarcaMovXv1Yv1; }
+  }
+
+  private void InicializarEstadosMarcaMovimiento()
+  {
+    estadosMarcaMovimiento.Clear();
+
+    foreach (GameObject marca in ObtenerMarcasMovimiento())
+    {
+      if (marca == null)
+      {
+        continue;
+      }
+
+      Renderer[] renderers = marca.GetComponentsInChildren<Renderer>(true);
+      Material[] materialesInstancia = new Material[renderers.Length];
+      Color[] coloresBase = new Color[renderers.Length];
+      Color[] emisionesBase = new Color[renderers.Length];
+
+      for (int i = 0; i < renderers.Length; i++)
+      {
+        Material materialInstancia = new Material(renderers[i].sharedMaterial);
+        ConfigurarMaterialFadeMarcaMovimiento(materialInstancia);
+        renderers[i].material = materialInstancia;
+        materialesInstancia[i] = materialInstancia;
+        coloresBase[i] = materialInstancia.HasProperty(ShaderColorId) ? materialInstancia.GetColor(ShaderColorId) : Color.white;
+        emisionesBase[i] = materialInstancia.HasProperty(ShaderEmissionColorId) ? materialInstancia.GetColor(ShaderEmissionColorId) : Color.black;
+      }
+
+      EstadoMarcaMovimiento estado = new EstadoMarcaMovimiento
+      {
+        objeto = marca,
+        renderers = renderers,
+        materialesInstancia = materialesInstancia,
+        coloresBase = coloresBase,
+        emisionesBase = emisionesBase,
+        alphaActual = 0f,
+        alphaObjetivo = 0f
+      };
+
+      estadosMarcaMovimiento[marca] = estado;
+      AplicarAlphaMarcaMovimiento(estado, 0f);
+      marca.SetActive(false);
+    }
+  }
+
+  private static void ConfigurarMaterialFadeMarcaMovimiento(Material materialInstancia)
+  {
+    if (materialInstancia == null)
+    {
+      return;
+    }
+
+    materialInstancia.SetFloat("_Mode", 2f);
+    materialInstancia.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+    materialInstancia.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+    materialInstancia.SetInt("_ZWrite", 0);
+    materialInstancia.DisableKeyword("_ALPHATEST_ON");
+    materialInstancia.EnableKeyword("_ALPHABLEND_ON");
+    materialInstancia.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+    materialInstancia.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+  }
+
+  private void ConfigurarVisibilidadMarcaMovimiento(GameObject marca, bool visible)
+  {
+    if (marca == null)
+    {
+      return;
+    }
+
+    if (!estadosMarcaMovimiento.TryGetValue(marca, out EstadoMarcaMovimiento estado))
+    {
+      marca.SetActive(visible);
+      return;
+    }
+
+    estado.alphaObjetivo = visible ? 1f : 0f;
+    if (visible && !marca.activeSelf)
+    {
+      marca.SetActive(true);
+    }
+  }
+
+  private void AplicarAlphaMarcaMovimiento(EstadoMarcaMovimiento estado, float alpha)
+  {
+    if (estado == null)
+    {
+      return;
+    }
+
+    for (int i = 0; i < estado.materialesInstancia.Length; i++)
+    {
+      Material materialInstancia = estado.materialesInstancia[i];
+      if (materialInstancia == null)
+      {
+        continue;
+      }
+
+      if (materialInstancia.HasProperty(ShaderColorId))
+      {
+        Color color = estado.coloresBase[i];
+        color.a *= alpha;
+        materialInstancia.SetColor(ShaderColorId, color);
+      }
+
+      if (materialInstancia.HasProperty(ShaderEmissionColorId))
+      {
+        materialInstancia.SetColor(ShaderEmissionColorId, estado.emisionesBase[i] * Mathf.Lerp(0.2f, 1f, alpha));
+      }
+    }
+  }
+
+  private void ActualizarFadeMarcasMovimiento()
+  {
+    if (estadosMarcaMovimiento.Count == 0)
+    {
+      return;
+    }
+
+    float velocidad = duracionFadeMarcaMovimiento > 0.001f ? Time.deltaTime / duracionFadeMarcaMovimiento : 1f;
+    foreach (EstadoMarcaMovimiento estado in estadosMarcaMovimiento.Values)
+    {
+      float nuevoAlpha = Mathf.MoveTowards(estado.alphaActual, estado.alphaObjetivo, velocidad);
+      if (!Mathf.Approximately(nuevoAlpha, estado.alphaActual))
+      {
+        estado.alphaActual = nuevoAlpha;
+        AplicarAlphaMarcaMovimiento(estado, estado.alphaActual);
+      }
+
+      if (estado.alphaObjetivo <= 0f && estado.alphaActual <= 0.001f && estado.objeto.activeSelf)
+      {
+        estado.objeto.SetActive(false);
+      }
+    }
   }
 
   public bool PuedeIntercambiarConUnidadActiva()
@@ -134,28 +570,19 @@ public class Casilla : MonoBehaviour
       return;
     }
 
-    ActualizarSenialadorDireccion(0, 1, MarcaMovX0Y1);
-    ActualizarSenialadorDireccion(1, 1, MarcaMovX1Y1);
-    ActualizarSenialadorDireccion(1, 0, MarcaMovX1Y0);
-    ActualizarSenialadorDireccion(-1, 1, MarcaMovXv1Y1);
-    ActualizarSenialadorDireccion(-1, 0, MarcaMovXv1Y0);
-    ActualizarSenialadorDireccion(1, -1, MarcaMovX1Yv1);
-    ActualizarSenialadorDireccion(0, -1, MarcaMovX0Yv1);
-    ActualizarSenialadorDireccion(-1, -1, MarcaMovXv1Yv1);
-
-
+    DesactivarSenialadores();
   }
 
   public void DesactivarSenialadores()
   {
-    if (MarcaMovX0Y1 != null) MarcaMovX0Y1.SetActive(false);
-    if (MarcaMovX1Y1 != null) MarcaMovX1Y1.SetActive(false);
-    if (MarcaMovX1Y0 != null) MarcaMovX1Y0.SetActive(false);
-    if (MarcaMovXv1Y1 != null) MarcaMovXv1Y1.SetActive(false);
-    if (MarcaMovXv1Y0 != null) MarcaMovXv1Y0.SetActive(false);
-    if (MarcaMovX1Yv1 != null) MarcaMovX1Yv1.SetActive(false);
-    if (MarcaMovX0Yv1 != null) MarcaMovX0Yv1.SetActive(false);
-    if (MarcaMovXv1Yv1 != null) MarcaMovXv1Yv1.SetActive(false);
+    if (MarcaMovX0Y1 != null) ConfigurarVisibilidadMarcaMovimiento(MarcaMovX0Y1, false);
+    if (MarcaMovX1Y1 != null) ConfigurarVisibilidadMarcaMovimiento(MarcaMovX1Y1, false);
+    if (MarcaMovX1Y0 != null) ConfigurarVisibilidadMarcaMovimiento(MarcaMovX1Y0, false);
+    if (MarcaMovXv1Y1 != null) ConfigurarVisibilidadMarcaMovimiento(MarcaMovXv1Y1, false);
+    if (MarcaMovXv1Y0 != null) ConfigurarVisibilidadMarcaMovimiento(MarcaMovXv1Y0, false);
+    if (MarcaMovX1Yv1 != null) ConfigurarVisibilidadMarcaMovimiento(MarcaMovX1Yv1, false);
+    if (MarcaMovX0Yv1 != null) ConfigurarVisibilidadMarcaMovimiento(MarcaMovX0Yv1, false);
+    if (MarcaMovXv1Yv1 != null) ConfigurarVisibilidadMarcaMovimiento(MarcaMovXv1Yv1, false);
 
 
 
@@ -169,7 +596,7 @@ public class Casilla : MonoBehaviour
     if (marca == null) { return; }
     if (!TryGetUnidadActiva(out Unidad unidad))
     {
-      marca.SetActive(false);
+      ConfigurarVisibilidadMarcaMovimiento(marca, false);
       return;
     }
 
@@ -210,7 +637,7 @@ public class Casilla : MonoBehaviour
       }
     }
 
-    marca.SetActive(puedeMover);
+    ConfigurarVisibilidadMarcaMovimiento(marca, puedeMover);
   }
 
   public TooltipBatalla scTooltipBatalla;
@@ -336,28 +763,23 @@ public class Casilla : MonoBehaviour
   }
   public void MostrarAPparaMovimiento()
   {
-    if (lado == 1) { return; } //Solo para aliados
-    if (BattleManager.Instance == null || BattleManager.Instance.bOcupado) { return; }
-    if (!TryGetUnidadActiva(out Unidad unidad)) { return; }
-
-    //Unidad seleccionada - Movimiento
-    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
+    if (!TryObtenerCostoMovimientoHover(out int costoMovimientoTotal, out bool alcanzable))
     {
-      int costoMovimientoTotal = ObtenerCostoMovimientoTotal(unidad);
-      if (unidad.ObtenerAPActual() >= costoMovimientoTotal)
-      {
-        string text = ObtenerTextoCostoMovimiento(unidad);
-        scTooltipBatalla.ShowTooltipTextSinAnim(text);
-      }
-      else
-      {
-        string text = "<color=red>" + ObtenerTextoCostoMovimiento(unidad) + "</color>";
-        scTooltipBatalla.ShowTooltipTextSinAnim(text);
-
-      }
+      OcultarPreviewCostoMovimiento();
+      ResetearPreviewCostoMovimientoUI();
+      return;
     }
 
+    MostrarPreviewCostoMovimiento(costoMovimientoTotal, alcanzable);
 
+    if (BattleManager.Instance != null && BattleManager.Instance.scUIContadorAP != null)
+    {
+      BattleManager.Instance.scUIContadorAP.ResetearCirculos();
+      if (costoMovimientoTotal > 0)
+      {
+        BattleManager.Instance.scUIContadorAP.MarcarCirculos(costoMovimientoTotal);
+      }
+    }
   }
 
   public void MostrarTooltipIntercambiar()
@@ -1094,6 +1516,7 @@ public class Casilla : MonoBehaviour
   public void ActivarCapaColorRojo()
   {
     transform.GetChild(1).gameObject.SetActive(true);
+    ActualizarCirculoObjetivoHabilidad();
   }
 
   public void DesactivarCapaColorRojo()
@@ -1114,6 +1537,7 @@ public class Casilla : MonoBehaviour
   public void ActivarCapaColorAzul()
   {
     transform.GetChild(0).gameObject.SetActive(true);
+    ActualizarCirculoObjetivoHabilidad();
   }
   public void DesactivarCapaColorAzul()
   {
@@ -1144,6 +1568,8 @@ public class Casilla : MonoBehaviour
   [SerializeField] public List<Obstaculo> obstaculosEnCasAzul = new List<Obstaculo>();
   public void OnMouseOver()
   {
+    ActualizarHoverMovimientoVisual();
+    ActualizarPulsoObjetivoHabilidad();
 
     MostrarAPparaMovimiento();
     unidadesEnCasAzul.Clear();
@@ -1158,7 +1584,11 @@ public class Casilla : MonoBehaviour
        text += "" + TRADU.i.Traducir("Melee disponible");
       scTooltipBatalla.ShowTooltipTextSinAnim(text);
     }
-    else if (BattleManager.Instance != null && !BattleManager.Instance.SeleccionandoObjetivo && BattleManager.Instance.HabilidadActiva == null && PuedeIntercambiarConUnidadActiva())
+    else if (BattleManager.Instance != null
+      && !BattleManager.Instance.SeleccionandoObjetivo
+      && BattleManager.Instance.HabilidadActiva == null
+      && PuedeIntercambiarConUnidadActiva()
+      && !TryObtenerCostoMovimientoHover(out _, out _))
     {
       MostrarTooltipIntercambiar();
     }
@@ -1691,6 +2121,16 @@ public class Casilla : MonoBehaviour
 
   public void OnMouseExit()
   {
+    hoverMovimientoValido = false;
+    RestablecerGlowMovimientoHover();
+    RestablecerPulsoObjetivoHabilidad();
+    OcultarPreviewCostoMovimiento();
+    ResetearPreviewCostoMovimientoUI();
+    if (TryGetUnidadActiva(out Unidad unidadActiva) && unidadActiva.CasillaPosicion != null)
+    {
+      unidadActiva.CasillaPosicion.DesactivarSenialadores();
+    }
+
     scTooltipBatalla.HideTooltipSinAnim();
     if (BattleManager.Instance.HabilidadActiva != null)
     {
@@ -1837,6 +2277,8 @@ public class Casilla : MonoBehaviour
   public GameObject OcupadoNegro;
   void Update()
   {
+    ActualizarFadeMarcasMovimiento();
+
     if (Borde != null)
     {
       if (Presente != null)
@@ -1915,6 +2357,10 @@ public class Casilla : MonoBehaviour
         }
       }
     }
+
+    ActualizarGlowMovimientoHover();
+    ActualizarPulsoObjetivoHabilidad();
+    ActualizarVisualTurnoActualEnemigo();
   }
 
   int esMovible()
@@ -1978,12 +2424,398 @@ public class Casilla : MonoBehaviour
 
   }
 
+  private void ActualizarHoverMovimientoVisual()
+  {
+    hoverMovimientoValido = false;
+
+    if (TryObtenerDireccionMovimientoHover(out Casilla origen, out int deltaX, out int deltaY))
+    {
+      origen.MostrarSenialadorSoloEnDireccion(deltaX, deltaY);
+      hoverMovimientoValido = true;
+      return;
+    }
+
+    if (TryGetUnidadActiva(out Unidad unidadActiva) && unidadActiva.CasillaPosicion != null)
+    {
+      unidadActiva.CasillaPosicion.DesactivarSenialadores();
+    }
+  }
+
+  private void ActualizarGlowMovimientoHover()
+  {
+    GameObject objetivoGlow = ObtenerObjetivoGlowMovimientoHover();
+    if (!hoverMovimientoValido || objetivoGlow == null)
+    {
+      RestablecerGlowMovimientoHover();
+      return;
+    }
+
+    RestablecerGlowMovimientoHover(objetivoGlow);
+
+    Transform objetivoTransform = objetivoGlow.transform;
+    if (!escalasBaseGlowMovimiento.TryGetValue(objetivoTransform, out Vector3 escalaBase))
+    {
+      escalaBase = objetivoTransform.localScale;
+      escalasBaseGlowMovimiento[objetivoTransform] = escalaBase;
+    }
+
+    float pulso = 0.5f + (0.5f * Mathf.Sin(Time.time * 6.8f));
+    float multiplicadorEscala = Mathf.Lerp(1.015f, 1.075f, pulso);
+    objetivoTransform.localScale = escalaBase * multiplicadorEscala;
+
+    Color colorPulso = Color.Lerp(new Color(1f, 1f, 1f, 0.82f), Color.white, pulso);
+    Color emissionPulso = Color.white * Mathf.Lerp(0.55f, 1.35f, pulso);
+
+    foreach (Renderer renderer in objetivoGlow.GetComponentsInChildren<Renderer>(true))
+    {
+      bloqueGlowMovimiento.Clear();
+      if (renderer.sharedMaterial != null)
+      {
+        if (renderer.sharedMaterial.HasProperty(ShaderColorId))
+        {
+          bloqueGlowMovimiento.SetColor(ShaderColorId, colorPulso);
+        }
+
+        if (renderer.sharedMaterial.HasProperty(ShaderBaseColorId))
+        {
+          bloqueGlowMovimiento.SetColor(ShaderBaseColorId, colorPulso);
+        }
+
+        if (renderer.sharedMaterial.HasProperty(ShaderEmissionColorId))
+        {
+          bloqueGlowMovimiento.SetColor(ShaderEmissionColorId, emissionPulso);
+        }
+      }
+
+      renderer.SetPropertyBlock(bloqueGlowMovimiento);
+    }
+  }
+
+  private GameObject ObtenerObjetivoGlowMovimientoHover()
+  {
+    if (!hoverMovimientoValido)
+    {
+      return null;
+    }
+
+    if (Presente == null)
+    {
+      if (Mover != null && Mover.activeInHierarchy)
+      {
+        return Mover;
+      }
+
+      if (MoverCostoso != null && MoverCostoso.activeInHierarchy)
+      {
+        return MoverCostoso;
+      }
+    }
+    else if (PuedeIntercambiarConUnidadActiva() && Desplazable != null && Desplazable.activeInHierarchy)
+    {
+      return Desplazable;
+    }
+
+    return null;
+  }
+
+  private IEnumerable<GameObject> ObtenerRaicesGlowMovimiento()
+  {
+    if (Mover != null) { yield return Mover; }
+    if (MoverCostoso != null) { yield return MoverCostoso; }
+    if (Desplazable != null) { yield return Desplazable; }
+  }
+
+  private void RestablecerGlowMovimientoHover(GameObject excepcion = null)
+  {
+    foreach (GameObject raiz in ObtenerRaicesGlowMovimiento())
+    {
+      if (raiz == null || raiz == excepcion)
+      {
+        continue;
+      }
+
+      Transform raizTransform = raiz.transform;
+      if (escalasBaseGlowMovimiento.TryGetValue(raizTransform, out Vector3 escalaBase))
+      {
+        raizTransform.localScale = escalaBase;
+      }
+
+      foreach (Renderer renderer in raiz.GetComponentsInChildren<Renderer>(true))
+      {
+        renderer.SetPropertyBlock(null);
+      }
+    }
+  }
+
+  private bool EsObjetivoPosibleHabilidadActiva()
+  {
+    if (BattleManager.Instance == null
+      || !BattleManager.Instance.SeleccionandoObjetivo
+      || BattleManager.Instance.HabilidadActiva == null
+      || Presente == null)
+    {
+      return false;
+    }
+
+    Unidad unidadObjetivo = Presente.GetComponent<Unidad>();
+    if (unidadObjetivo != null)
+    {
+      return BattleManager.Instance.lUnidadesPosiblesHabilidadActiva != null
+        && BattleManager.Instance.lUnidadesPosiblesHabilidadActiva.Contains(unidadObjetivo);
+    }
+
+    Obstaculo obstaculoObjetivo = Presente.GetComponent<Obstaculo>();
+    if (obstaculoObjetivo != null)
+    {
+      return BattleManager.Instance.lObstaculosPosiblesHabilidadActiva != null
+        && BattleManager.Instance.lObstaculosPosiblesHabilidadActiva.Contains(obstaculoObjetivo);
+    }
+
+    return false;
+  }
+
+  private void ActualizarCirculoObjetivoHabilidad()
+  {
+    bool seleccionandoObjetivo = BattleManager.Instance != null
+      && BattleManager.Instance.SeleccionandoObjetivo
+      && BattleManager.Instance.HabilidadActiva != null;
+
+    bool mostrarCirculo = seleccionandoObjetivo && EsObjetivoPosibleHabilidadActiva();
+
+    if (circuloBordeHabilidadRojo != null)
+    {
+      circuloBordeHabilidadRojo.gameObject.SetActive(!seleccionandoObjetivo || mostrarCirculo);
+    }
+
+    if (circuloBordeHabilidadAzul != null)
+    {
+      circuloBordeHabilidadAzul.gameObject.SetActive(!seleccionandoObjetivo || mostrarCirculo);
+    }
+  }
+
+  private bool DebePulsarBordeActual()
+  {
+    if (BattleManager.Instance == null
+      || BattleManager.Instance.HabilidadActiva == null
+      || BattleManager.Instance.unidadActiva == null
+      || BattleManager.Instance.unidadActiva.CasillaPosicion != this)
+    {
+      return false;
+    }
+
+    return EsObjetivoPosibleHabilidadActiva()
+      && !BattleManager.Instance.HabilidadActiva.esHostil
+      && graficoBordeActual != null
+      && graficoBordeActual.gameObject.activeInHierarchy;
+  }
+
+  private Transform ObtenerCapaObjetivoHabilidadTransform()
+  {
+    if (BattleManager.Instance == null || BattleManager.Instance.HabilidadActiva == null)
+    {
+      return null;
+    }
+
+    Transform capaAzul = graficoBordeHabilidadAzul != null ? graficoBordeHabilidadAzul : (transform.childCount > 0 ? transform.GetChild(0) : null);
+    Transform capaRoja = graficoBordeHabilidadRojo != null ? graficoBordeHabilidadRojo : (transform.childCount > 1 ? transform.GetChild(1) : null);
+
+    if (capaRoja != null && capaRoja.gameObject.activeInHierarchy)
+    {
+      autoActivoCapaObjetivoHabilidad = false;
+      return capaRoja;
+    }
+
+    if (capaAzul != null && capaAzul.gameObject.activeInHierarchy)
+    {
+      autoActivoCapaObjetivoHabilidad = false;
+      return capaAzul;
+    }
+
+    Transform capaPreferida = BattleManager.Instance.HabilidadActiva.esHostil ? capaRoja : capaAzul;
+    if (capaPreferida != null && EsObjetivoPosibleHabilidadActiva())
+    {
+      capaPreferida.gameObject.SetActive(true);
+      autoActivoCapaObjetivoHabilidad = true;
+      return capaPreferida;
+    }
+
+    autoActivoCapaObjetivoHabilidad = false;
+    return capaPreferida;
+  }
+
+  private void ActualizarPulsoObjetivoHabilidad()
+  {
+    ActualizarCirculoObjetivoHabilidad();
+
+    Transform capaObjetivo = ObtenerCapaObjetivoHabilidadTransform();
+    if (capaObjetivo == null)
+    {
+      return;
+    }
+
+    if (!capaObjetivo.gameObject.activeInHierarchy || !EsObjetivoPosibleHabilidadActiva())
+    {
+      RestablecerPulsoObjetivoHabilidad();
+      return;
+    }
+
+    if (!escalaBaseCapaObjetivoHabilidad.HasValue)
+    {
+      escalaBaseCapaObjetivoHabilidad = capaObjetivo.localScale;
+    }
+
+    float pulso = 0.5f + (0.5f * Mathf.Sin(Time.time * velocidadPulsoObjetivoHabilidad));
+    float multiplicadorEscala = Mathf.Lerp(1f, 1f + intensidadPulsoObjetivoHabilidad, pulso);
+    capaObjetivo.localScale = escalaBaseCapaObjetivoHabilidad.Value * multiplicadorEscala;
+
+    if (DebePulsarBordeActual())
+    {
+      if (!escalaBaseBordeActualObjetivoHabilidad.HasValue)
+      {
+        escalaBaseBordeActualObjetivoHabilidad = graficoBordeActual.localScale;
+      }
+
+      graficoBordeActual.localScale = escalaBaseBordeActualObjetivoHabilidad.Value * multiplicadorEscala;
+    }
+    else if (graficoBordeActual != null && escalaBaseBordeActualObjetivoHabilidad.HasValue)
+    {
+      graficoBordeActual.localScale = escalaBaseBordeActualObjetivoHabilidad.Value;
+    }
+  }
+
+  private void RestablecerPulsoObjetivoHabilidad()
+  {
+    Transform capaAzul = graficoBordeHabilidadAzul != null ? graficoBordeHabilidadAzul : (transform.childCount > 0 ? transform.GetChild(0) : null);
+    Transform capaRoja = graficoBordeHabilidadRojo != null ? graficoBordeHabilidadRojo : (transform.childCount > 1 ? transform.GetChild(1) : null);
+    Transform capaObjetivo = null;
+    if (capaRoja != null && capaRoja.gameObject.activeInHierarchy)
+    {
+      capaObjetivo = capaRoja;
+    }
+    else if (capaAzul != null && capaAzul.gameObject.activeInHierarchy)
+    {
+      capaObjetivo = capaAzul;
+    }
+
+    if (capaObjetivo != null && escalaBaseCapaObjetivoHabilidad.HasValue)
+    {
+      capaObjetivo.localScale = escalaBaseCapaObjetivoHabilidad.Value;
+    }
+
+    if (graficoBordeActual != null && escalaBaseBordeActualObjetivoHabilidad.HasValue)
+    {
+      graficoBordeActual.localScale = escalaBaseBordeActualObjetivoHabilidad.Value;
+    }
+
+    if (autoActivoCapaObjetivoHabilidad)
+    {
+      Transform capaAuto = (BattleManager.Instance != null && BattleManager.Instance.HabilidadActiva != null && BattleManager.Instance.HabilidadActiva.esHostil)
+        ? capaRoja
+        : capaAzul;
+      if (capaAuto != null)
+      {
+        capaAuto.gameObject.SetActive(false);
+      }
+    }
+
+    autoActivoCapaObjetivoHabilidad = false;
+    ActualizarCirculoObjetivoHabilidad();
+  }
+
+  private void ActualizarVisualTurnoActualEnemigo()
+  {
+    if (renderersBordeActual == null || renderersBordeActual.Length == 0)
+    {
+      return;
+    }
+
+    bool esTurnoEnemigoActual = Actual != null
+      && Actual.activeInHierarchy
+      && BattleManager.Instance != null
+      && BattleManager.Instance.unidadActiva != null
+      && BattleManager.Instance.unidadActiva.CasillaPosicion == this
+      && BattleManager.Instance.unidadActiva.CasillaPosicion != null
+      && BattleManager.Instance.unidadActiva.CasillaPosicion.lado == 1;
+
+    if (!esTurnoEnemigoActual)
+    {
+      foreach (Renderer renderer in renderersBordeActual)
+      {
+        if (renderer != null)
+        {
+          renderer.SetPropertyBlock(null);
+        }
+      }
+
+      return;
+    }
+
+    float pulso = 0.8f + (0.8f * Mathf.Sin(Time.time * 5.4f));
+    Color colorPulso = Color.Lerp(new Color(0.92f, 0.04f, 0.04f, 1f), new Color(0.95f, 0.05f, 0.05f, 1f), pulso);
+    Color emissionPulso = Color.Lerp(new Color(1.1f, 0.02f, 0.02f, 1f), new Color(1.4f, 0.06f, 0.06f, 1f), pulso);
+
+    foreach (Renderer renderer in renderersBordeActual)
+    {
+      if (renderer == null || renderer.sharedMaterial == null)
+      {
+        continue;
+      }
+
+      bloqueTurnoActualEnemigo.Clear();
+      if (renderer.sharedMaterial.HasProperty(ShaderColorId))
+      {
+        bloqueTurnoActualEnemigo.SetColor(ShaderColorId, colorPulso);
+      }
+
+      if (renderer.sharedMaterial.HasProperty(ShaderBaseColorId))
+      {
+        bloqueTurnoActualEnemigo.SetColor(ShaderBaseColorId, colorPulso);
+      }
+
+      if (renderer.sharedMaterial.HasProperty(ShaderEmissionColorId))
+      {
+        bloqueTurnoActualEnemigo.SetColor(ShaderEmissionColorId, emissionPulso);
+      }
+
+      renderer.SetPropertyBlock(bloqueTurnoActualEnemigo);
+    }
+  }
+
+  void OnDisable()
+  {
+    estaEnDestruccion = true;
+    hoverMovimientoValido = false;
+    RestablecerGlowMovimientoHover();
+    RestablecerPulsoObjetivoHabilidad();
+    OcultarPreviewCostoMovimiento();
+    ResetearPreviewCostoMovimientoUI();
+    ActualizarVisualTurnoActualEnemigo();
+  }
+
+  void OnDestroy()
+  {
+    estaEnDestruccion = true;
+    hoverMovimientoValido = false;
+    RestablecerGlowMovimientoHover();
+    RestablecerPulsoObjetivoHabilidad();
+    OcultarPreviewCostoMovimiento();
+    ResetearPreviewCostoMovimientoUI();
+
+    foreach (EstadoMarcaMovimiento estado in estadosMarcaMovimiento.Values)
+    {
+      if (estado?.materialesInstancia == null)
+      {
+        continue;
+      }
+
+      foreach (Material materialInstancia in estado.materialesInstancia)
+      {
+        if (materialInstancia != null)
+        {
+          Destroy(materialInstancia);
+        }
+      }
+    }
+  }
+
 }
-
-
-
-
-
-
-
-

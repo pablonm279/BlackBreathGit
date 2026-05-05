@@ -700,7 +700,6 @@ MonoBehaviour:
   esInmobil: 0
   mod_maxAccionP: 4
   AccionP_actual: 4
-  AccionP_SeEsforzo: 0
   scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
@@ -736,6 +735,7 @@ MonoBehaviour:
   mod_DanioPorcentaje: 0
   at_CriticoRangoDado: 0
   mod_CriticoRangoDado: 0
+  bonusCritDadoRecibido: 0
   "at_CriticoDa\xF1oBonus": 0
   "mod_CriticoDa\xF1oBonus": 0
   at_TSReflejos: 3
@@ -762,7 +762,9 @@ MonoBehaviour:
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
   estado_CondenadoTurnosSeguidos: 0
+  ultimaUnidadQueLeHizoDanio: {fileID: 0}
   estado_Escudado: 0
+  estado_MovimientoAbaratado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
   estado_Volando: 0
@@ -779,6 +781,7 @@ MonoBehaviour:
   debuffsImpactoArma: []
   reduccionDanioRecibidoPorcentaje: 0
   reduccionDanioCriticoRecibidoPorcentaje: 0
+  aumentoDanioCriticoRecibidoPorcentaje: 0
   resistenciaEstadosPorcentaje: 0
   espinasDanioPlano: 0
   espinasDanioPorcentaje: 0
@@ -790,6 +793,9 @@ MonoBehaviour:
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  desplazamientoAnimacionTurnoNuevoY: 1.7
+  duracionSubidaAnimacionTurnoNuevo: 0.12
+  duracionBajadaAnimacionTurnoNuevo: 0.12
   apilarTextosFlotantes: 0
   floatingTextSlotSpacing: 9
   floatingTextSlotLifetimeFallback: 1.1
@@ -860,6 +866,9 @@ MonoBehaviour:
   barraVidaHealColor: {r: 1, g: 0.85, b: 0.2, a: 0.6}
   barraVidaHealDelay: 0.08
   barraVidaHealSpeed: 0.9
+  barraVidaColorVidaBaja: {r: 0.42, g: 0.02, b: 0.02, a: 1}
+  barraVidaRatioInicioRojo: 0.2
+  barraVidaOscurecerTurnoPasado: 0.72
   rotuloHabilidadOffset: {x: 0, y: 2.1}
   rotuloHabilidadPadding: {x: 0.34, y: 0.16}
   rotuloHabilidadDuracion: 3
@@ -904,6 +913,9 @@ MonoBehaviour:
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
   forzarPoseHabilidad: 0
+  omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
@@ -1054,6 +1066,9 @@ MonoBehaviour:
   esMelee: 0
   afectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   hCooldownMax: 0
   hActualCooldown: 0
   Usuario: {fileID: 0}
@@ -1299,11 +1314,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.066840105
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.27112937
+      value: 0.20281939
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1339,7 +1354,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 3.19
+      value: 1.89
       objectReference: {fileID: 0}
     - target: {fileID: 3815856211717428791, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

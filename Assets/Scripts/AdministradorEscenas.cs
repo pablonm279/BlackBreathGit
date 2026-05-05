@@ -74,7 +74,12 @@ public class AdministradorEscenas : MonoBehaviour
     if (delayMs <= 0) { return; }
     await BattleManager.DelayCombateAsync(delayMs);
   }
+  public GameObject MenuOpciones;
 
+  public void abrirOpciones()
+  {
+    MenuOpciones.SetActive(!MenuOpciones.activeInHierarchy);
+  }
   async void EjecutarOperacionSegura(Task tarea, string contexto)
   {
     try

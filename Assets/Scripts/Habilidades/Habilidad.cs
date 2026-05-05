@@ -959,7 +959,6 @@ public abstract class Habilidad : MonoBehaviour
 
     foreach (Unidad unidad in unidadesMarcadasPrevisualizacion)
     {
-      unidad?.Marcar(0);
       unidad?.OcultarProbabilidad();
     }
 
@@ -982,10 +981,7 @@ public abstract class Habilidad : MonoBehaviour
         continue;
       }
 
-      if (unidadesMarcadasPrevisualizacion.Add(unidad))
-      {
-        unidad.Marcar(1);
-      }
+      unidadesMarcadasPrevisualizacion.Add(unidad);
 
       if (DebeMostrarInvulnerableEnProbabilidad(unidad))
       {
@@ -1011,7 +1007,6 @@ public abstract class Habilidad : MonoBehaviour
     {
       if (!nuevas.Contains(unidadMarcada))
       {
-        unidadMarcada?.Marcar(0);
         unidadMarcada?.OcultarProbabilidad();
         paraRemover.Add(unidadMarcada);
       }

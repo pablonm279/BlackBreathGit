@@ -224,7 +224,6 @@ public class ImprovisarFlechas : Habilidad
 
       foreach(Unidad uni in BattleManager.Instance.lUnidadesPosiblesHabilidadActiva)
       {
-            uni.Marcar(1);
       }
      
     }

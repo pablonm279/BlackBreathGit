@@ -20,9 +20,13 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
     private BattleManager battleManager;
     private int ordenIndex = -1;
     private bool eventosRegistrados;
+    private Vector3 escalaBaseTarjeta = Vector3.one;
+    private bool escalaBaseInicializada;
+    private const float MultiplicadorEscalaTurnoActual = 1.15f;
 
     private void Awake()
     {
+        InicializarEscalaBaseTarjeta();
         ActualizarReferencias();
     }
 
@@ -196,10 +200,26 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
    public void MarcarTurnoActual()
     {
         bool mostrarActual = battleManager != null && battleManager.unidadActiva == scUnidad;
+        InicializarEscalaBaseTarjeta();
+        transform.localScale = mostrarActual
+            ? escalaBaseTarjeta * MultiplicadorEscalaTurnoActual
+            : escalaBaseTarjeta;
+
         if (Actual != null)
         {
             Actual.SetActive(mostrarActual);
         }
+    }
+
+    private void InicializarEscalaBaseTarjeta()
+    {
+        if (escalaBaseInicializada)
+        {
+            return;
+        }
+
+        escalaBaseTarjeta = transform.localScale;
+        escalaBaseInicializada = true;
     }
 
     private void ActualizarSeleccionado()

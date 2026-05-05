@@ -488,6 +488,12 @@ public class UIInfoChar : MonoBehaviour
       unidadMarcadaPrioritaria.Marcar(0);
     }
 
+    if (BattleManager.Instance != null && BattleManager.Instance.SeleccionandoObjetivo)
+    {
+      unidadMarcadaPrioritaria = null;
+      return;
+    }
+
     unidadMarcadaPrioritaria = unidadObjetivo;
 
     if (unidadMarcadaPrioritaria != null)
@@ -896,6 +902,5 @@ public class UIInfoChar : MonoBehaviour
     ActualizarVisibilidadInfoEnemigos(mostrardesc);
   }
 }
-
 
 
