@@ -438,7 +438,7 @@ public class DisparoEnvenenado : Habilidad
 
         if (flight != null && destino != null)
         {
-            flight.Configure(transform, destino, 0.12f, 5.6f);
+            flight.Configure(transform, destino, 0.08f, 6.1f);
             await flight.EsperarImpactoAsync();
         }
         else

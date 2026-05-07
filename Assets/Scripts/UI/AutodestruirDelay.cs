@@ -7,10 +7,27 @@ public class AutodestruirDelay : MonoBehaviour
    
    [SerializeField] float delayautodestruir;
 
-    // Update is called once per frame
     void Start()
     {
-        Invoke("Destruir", delayautodestruir);
+        ReiniciarTemporizador();
+    }
+
+    public void SetDelay(float nuevoDelay)
+    {
+        delayautodestruir = Mathf.Max(0f, nuevoDelay);
+
+        if (!isActiveAndEnabled)
+        {
+            return;
+        }
+
+        ReiniciarTemporizador();
+    }
+
+    private void ReiniciarTemporizador()
+    {
+        CancelInvoke(nameof(Destruir));
+        Invoke(nameof(Destruir), delayautodestruir);
     }
 
     void Destruir()

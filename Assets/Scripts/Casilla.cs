@@ -2117,6 +2117,7 @@ public class Casilla : MonoBehaviour
 
       }
 
+    ActualizarFadeHoverObjetivosHabilidad();
   }
 
   public void OnMouseExit()
@@ -2132,6 +2133,7 @@ public class Casilla : MonoBehaviour
     }
 
     scTooltipBatalla.HideTooltipSinAnim();
+    BattleManager.Instance?.LimpiarFadeHoverObjetivoHabilidad();
     if (BattleManager.Instance.HabilidadActiva != null)
     {
       if (BattleManager.Instance.HabilidadActiva.enArea > 0 && BattleManager.Instance.SeleccionandoObjetivo)
@@ -2142,6 +2144,43 @@ public class Casilla : MonoBehaviour
       }
 
     }
+  }
+
+  private void ActualizarFadeHoverObjetivosHabilidad()
+  {
+    if (BattleManager.Instance == null
+      || !BattleManager.Instance.SeleccionandoObjetivo
+      || BattleManager.Instance.HabilidadActiva == null)
+    {
+      BattleManager.Instance?.LimpiarFadeHoverObjetivoHabilidad();
+      return;
+    }
+
+    if (!EsObjetivoPosibleHabilidadActiva())
+    {
+      BattleManager.Instance.LimpiarFadeHoverObjetivoHabilidad();
+      return;
+    }
+
+    HashSet<Unidad> unidadesMantenerVisibles = new HashSet<Unidad>();
+    if (Presente != null)
+    {
+      Unidad unidadCentral = Presente.GetComponent<Unidad>();
+      if (unidadCentral != null)
+      {
+        unidadesMantenerVisibles.Add(unidadCentral);
+      }
+    }
+
+    foreach (Unidad unidad in unidadesEnCasAzul)
+    {
+      if (unidad != null)
+      {
+        unidadesMantenerVisibles.Add(unidad);
+      }
+    }
+
+    BattleManager.Instance.AplicarFadeHoverObjetivoHabilidad(unidadesMantenerVisibles);
   }
 
   private void MarcarCasillasAzul(List<Casilla> casillasZonahab)
@@ -2574,6 +2613,22 @@ public class Casilla : MonoBehaviour
     return false;
   }
 
+  private bool EsObjetivoObstaculoHabilidadActiva()
+  {
+    if (BattleManager.Instance == null
+      || !BattleManager.Instance.SeleccionandoObjetivo
+      || BattleManager.Instance.HabilidadActiva == null
+      || Presente == null)
+    {
+      return false;
+    }
+
+    Obstaculo obstaculoObjetivo = Presente.GetComponent<Obstaculo>();
+    return obstaculoObjetivo != null
+      && BattleManager.Instance.lObstaculosPosiblesHabilidadActiva != null
+      && BattleManager.Instance.lObstaculosPosiblesHabilidadActiva.Contains(obstaculoObjetivo);
+  }
+
   private void ActualizarCirculoObjetivoHabilidad()
   {
     bool seleccionandoObjetivo = BattleManager.Instance != null
@@ -2662,6 +2717,23 @@ public class Casilla : MonoBehaviour
     if (!escalaBaseCapaObjetivoHabilidad.HasValue)
     {
       escalaBaseCapaObjetivoHabilidad = capaObjetivo.localScale;
+    }
+
+    if (EsObjetivoObstaculoHabilidadActiva())
+    {
+      capaObjetivo.localScale = escalaBaseCapaObjetivoHabilidad.Value;
+
+      if (graficoBordeActual != null)
+      {
+        if (!escalaBaseBordeActualObjetivoHabilidad.HasValue)
+        {
+          escalaBaseBordeActualObjetivoHabilidad = graficoBordeActual.localScale;
+        }
+
+        graficoBordeActual.localScale = escalaBaseBordeActualObjetivoHabilidad.Value;
+      }
+
+      return;
     }
 
     float pulso = 0.5f + (0.5f * Mathf.Sin(Time.time * velocidadPulsoObjetivoHabilidad));

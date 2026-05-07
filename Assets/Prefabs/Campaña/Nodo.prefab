@@ -5016,7 +5016,7 @@ GameObject:
   - component: {fileID: 6734267041325267560}
   - component: {fileID: 4164805139984205341}
   m_Layer: 14
-  m_Name: NodoPosada
+  m_Name: NodoAsentamiento
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5032,8 +5032,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -1.4700841, z: 0}
-  m_LocalScale: {x: 1, y: 4.620356, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.25, y: 5.775445, z: 1.25}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7434274643738890407}
   - {fileID: 5717913181251802158}
@@ -5119,7 +5119,7 @@ Transform:
   m_GameObject: {fileID: 733563321340072159}
   serializedVersion: 2
   m_LocalRotation: {x: -0.27110532, y: 0.6530711, z: -0.27015898, w: -0.6534632}
-  m_LocalPosition: {x: 0.009768605, y: 1.5014648, z: 0.00008702278}
+  m_LocalPosition: {x: 0.009768605, y: 1.5014648, z: 0.02}
   m_LocalScale: {x: 2.2, y: 2.5311506, z: 3.480332}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -10384,8 +10384,8 @@ Transform:
   m_GameObject: {fileID: 1293750663857901119}
   serializedVersion: 2
   m_LocalRotation: {x: -0.40686995, y: -0.5775984, z: -0.5804407, w: 0.4048774}
-  m_LocalPosition: {x: -0.53, y: 1.26, z: 0.495}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_LocalPosition: {x: -0.6, y: 1.26, z: 0.623}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 261173425136930300}
@@ -80457,10 +80457,12 @@ MonoBehaviour:
   MaterialCaminoUsado: {fileID: 2100000, guid: 9799188ca27064a49a397f1c41094bfe, type: 2}
   MaterialAtajo: {fileID: 2100000, guid: ab64a35e7db072540b3821e60880eeb6, type: 2}
   caminoLento: {fileID: 2100000, guid: 7e75bc3e4db30c14daf59528a65f072c, type: 2}
+  caminoAAldea: {fileID: 2100000, guid: ab64a35e7db072540b3821e60880eeb6, type: 2}
   velocidadMovimiento: 6
   yatiroConexiones: 0
   nodoIncendiado: 0
   nodoRitual: 0
+  tipoNodoOriginalRitual: 0
   descripcion: 
   rotSpeed: 10
   lookAheadDist: 0.5

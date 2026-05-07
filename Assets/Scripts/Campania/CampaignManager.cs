@@ -31,9 +31,12 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private float recursoTextoStackOffsetY = 16f;
   [SerializeField] private float recursoTextoStackOffsetX = 10f;
   [SerializeField] private int recursoTextoMaxStackVisual = 4;
+  [SerializeField] private float recursoTextoDuracionExtra = 2.45f;
+  [SerializeField] private float recursoTextoAnimatorSpeed = 0.85f;
   public Animator animCaravana;
   public GameObject goCanvas;
   public MapaManager scMapaManager;
+  [SerializeField, Min(0f)] private float escalaNodos = 0f;
   public AtributosZona scAtributosZona;
   public TutorialManager scTutorialManager;
   public AlientoNegroVFX scAlientoNegroVFX;
@@ -202,6 +205,11 @@ public class CampaignManager : MonoBehaviour
 
       texto.text = textoCargaTraducido;
     }
+  }
+
+  public float ObtenerMultiplicadorEscalaNodos()
+  {
+    return 1f + (escalaNodos / 100f);
   }
 
   private string ObtenerTextoCargaInicialSegunIdioma()
@@ -483,7 +491,7 @@ public class CampaignManager : MonoBehaviour
  
   private void InicializarPersonajesNuevaCampania()
   {
-    CrearPurificadora(); //debug
+  
    
     if (!scTutorialManager.tutorialActivo)
     {
@@ -5597,6 +5605,18 @@ public class CampaignManager : MonoBehaviour
     // Instancia el nuevo objeto
     int stackIndex = ObtenerIndiceStackTextoRecurso(textoOrigen.transform);
     GameObject goTextoFlotante = Instantiate(prefabTextoRecursos, textoOrigen.transform, false);
+    Animator animator = goTextoFlotante.GetComponent<Animator>();
+    if (animator != null)
+    {
+      animator.speed = Mathf.Max(0.01f, recursoTextoAnimatorSpeed);
+    }
+
+    AutodestruirDelay autodestruirDelay = goTextoFlotante.GetComponent<AutodestruirDelay>();
+    if (autodestruirDelay != null)
+    {
+      autodestruirDelay.SetDelay(recursoTextoDuracionExtra);
+    }
+
     RectTransform rt = goTextoFlotante.GetComponent<RectTransform>();
     if (rt != null && stackIndex > 0)
     {
@@ -5615,22 +5635,63 @@ public class CampaignManager : MonoBehaviour
 
     // Configura el texto y el color
 
-
+    TMP_SpriteAsset spriteAssetRecursos = logDeCampania != null ? logDeCampania.SpriteAssetRecursos : null;
+    if (spriteAssetRecursos != null)
+    {
+      txtMesh.spriteAsset = spriteAssetRecursos;
+    }
 
     if (cantidad >= 1)
     {
       txtMesh.color = new Color(0.1f, 0.7f, 0.2f); ;
-      txtMesh.text = "+" + cantidad;
+      txtMesh.text = FormatearTextoFlotanteRecurso("+" + cantidad, textoOrigen);
 
     }
     else if (cantidad < 0)
     {
-      txtMesh.text = "" + cantidad;
+      txtMesh.text = FormatearTextoFlotanteRecurso("" + cantidad, textoOrigen);
       txtMesh.color = new Color(0.7f, 0.1f, 0.2f); ;
     }
 
     _ = efectoRetraso;
     return Task.CompletedTask;
+  }
+
+  private string FormatearTextoFlotanteRecurso(string textoBase, GameObject textoOrigen)
+  {
+    if (string.IsNullOrEmpty(textoBase))
+    {
+      return textoBase;
+    }
+
+    if (logDeCampania == null || logDeCampania.SpriteAssetRecursos == null)
+    {
+      return textoBase;
+    }
+
+    string spriteName = ObtenerSpriteTextoRecurso(textoOrigen);
+    if (string.IsNullOrEmpty(spriteName))
+    {
+      return textoBase;
+    }
+
+    return textoBase + " <sprite name=\"" + spriteName + "\">";
+  }
+
+  private string ObtenerSpriteTextoRecurso(GameObject textoOrigen)
+  {
+    if (textoOrigen == null)
+    {
+      return null;
+    }
+
+    if (valueEsperanza != null && textoOrigen == valueEsperanza.gameObject) { return "esperanza"; }
+    if (valueCiviles != null && textoOrigen == valueCiviles.gameObject) { return "civiles"; }
+    if (valueBueyes != null && textoOrigen == valueBueyes.gameObject) { return "bueyes"; }
+    if (valueSuministros != null && textoOrigen == valueSuministros.gameObject) { return "suministros"; }
+    if (valueMateriales != null && textoOrigen == valueMateriales.gameObject) { return "materiales"; }
+    if (valueOro != null && textoOrigen == valueOro.gameObject) { return "oro"; }
+    return null;
   }
 
   private int ObtenerIndiceStackTextoRecurso(Transform origen)

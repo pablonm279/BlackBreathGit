@@ -6,6 +6,9 @@ using TMPro;
 
 public class UIInfoChar : MonoBehaviour
 {
+  [Header("Posicion panel info")]
+  [SerializeField] private float posicionAliadoLeft = 27.9727f;
+  [SerializeField] private float posicionAliadoTop = 96.35375f;
   [SerializeField] private Image ImagenFondo; 
   [SerializeField] private Slider barraVida;
   [SerializeField] private Image Retrato; 
@@ -49,6 +52,13 @@ public class UIInfoChar : MonoBehaviour
   private Coroutine vMeritoPulseCoroutine;
   private Unidad unidadUltimoMerito;
   private int valorUltimoMerito;
+  private RectTransform rectTransformPanel;
+  private Vector2 posicionDefaultAnchoredPosition;
+  private Vector2 posicionDefaultSizeDelta;
+  private Vector3 posicionDefaultLocalScale;
+  private Vector2 posicionDefaultAnchorMin;
+  private Vector2 posicionDefaultAnchorMax;
+  private bool posicionDefaultInicializada;
 
 
 
@@ -62,6 +72,7 @@ public class UIInfoChar : MonoBehaviour
   public Unidad unidadFijadaActual => unidadFijadaInterna;
   private void Awake()
   {
+    InicializarRectTransformPanel();
     InicializarVisualMerito();
     gameObject.SetActive(false);
   }
@@ -162,6 +173,7 @@ public class UIInfoChar : MonoBehaviour
    vResDivino.text = ((int)scUnidadMostrada.ObtenerResistenciaA(7)) + "";
 
      bool esEnemigo = EsUnidadEnemiga(scUnidadMostrada);
+     ActualizarPosicionPanel(esEnemigo);
      ActualizarTags(scUnidadMostrada, esEnemigo);
      if(esEnemigo)
      {
@@ -698,6 +710,57 @@ public class UIInfoChar : MonoBehaviour
     return unidad != null && unidad.GetComponent<IAUnidad>() != null;
   }
 
+  private void InicializarRectTransformPanel()
+  {
+    if (posicionDefaultInicializada)
+    {
+      return;
+    }
+
+    rectTransformPanel = transform as RectTransform;
+    if (rectTransformPanel == null)
+    {
+      return;
+    }
+
+    posicionDefaultAnchoredPosition = rectTransformPanel.anchoredPosition;
+    posicionDefaultSizeDelta = rectTransformPanel.sizeDelta;
+    posicionDefaultLocalScale = rectTransformPanel.localScale;
+    posicionDefaultAnchorMin = rectTransformPanel.anchorMin;
+    posicionDefaultAnchorMax = rectTransformPanel.anchorMax;
+    posicionDefaultInicializada = true;
+  }
+
+  private void ActualizarPosicionPanel(bool esEnemigo)
+  {
+    InicializarRectTransformPanel();
+    if (rectTransformPanel == null)
+    {
+      return;
+    }
+
+    if (esEnemigo)
+    {
+      rectTransformPanel.anchorMin = posicionDefaultAnchorMin;
+      rectTransformPanel.anchorMax = posicionDefaultAnchorMax;
+      rectTransformPanel.sizeDelta = posicionDefaultSizeDelta;
+      rectTransformPanel.anchoredPosition = posicionDefaultAnchoredPosition;
+      rectTransformPanel.localScale = posicionDefaultLocalScale;
+      return;
+    }
+
+    Vector2 anchoredPositionAliado = posicionDefaultAnchoredPosition;
+    Vector2 pivot = rectTransformPanel.pivot;
+    anchoredPositionAliado.x = posicionAliadoLeft + (posicionDefaultSizeDelta.x * pivot.x);
+    anchoredPositionAliado.y = -posicionAliadoTop - (posicionDefaultSizeDelta.y * (1f - pivot.y));
+
+    rectTransformPanel.anchorMin = posicionDefaultAnchorMin;
+    rectTransformPanel.anchorMax = posicionDefaultAnchorMax;
+    rectTransformPanel.sizeDelta = posicionDefaultSizeDelta;
+    rectTransformPanel.anchoredPosition = anchoredPositionAliado;
+    rectTransformPanel.localScale = posicionDefaultLocalScale;
+  }
+
   private void ActualizarVisibilidadInfoEnemigos(bool mostrarPanel)
   {
     if (infoEnemigos != null)
@@ -902,5 +965,3 @@ public class UIInfoChar : MonoBehaviour
     ActualizarVisibilidadInfoEnemigos(mostrardesc);
   }
 }
-
-

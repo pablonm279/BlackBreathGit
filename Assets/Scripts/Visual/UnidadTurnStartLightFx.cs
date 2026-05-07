@@ -202,7 +202,7 @@ public sealed class UnidadTurnStartLightFx : MonoBehaviour
       overlayRoot.SetSiblingIndex(targetSibling);
     }
 
-    overlayGroup.alpha = envolvente;
+    overlayGroup.alpha = envolvente * (unidad != null ? unidad.ObtenerMultiplicadorAlphaVisual() : 1f);
 
     ConfigurarCapa(
       hazExterior,

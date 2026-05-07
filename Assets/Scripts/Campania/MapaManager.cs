@@ -28,6 +28,7 @@ public class MapaManager : MonoBehaviour
     public GameObject goCaravanafollower5;
     public GameObject goCaravanafollower6;
     readonly List<Nodo> settlementsForzados = new List<Nodo>(2);
+    readonly Dictionary<Nodo, Vector3> escalasBaseNodos = new Dictionary<Nodo, Vector3>();
     int emboscadasSubterraneasZona;
     int viajesDesdeUltimaEmboscadaSubterranea = 99;
 
@@ -78,6 +79,11 @@ public class MapaManager : MonoBehaviour
            {
                nodoActual = origen;
            }
+
+           if (nodoActual != null)
+           {
+               nodoActual.RefrescarCaminosMarcadosDesdeEstadoActual();
+           }
            return;
        }
 
@@ -91,6 +97,11 @@ public class MapaManager : MonoBehaviour
        DesactivarNodosSinUsar(zonaId);
        origen.PosicionarObjetoEnNodo(goCaravana);
        AlinearConvoyAlSuelo();
+
+       if (nodoActual != null)
+       {
+           nodoActual.RefrescarCaminosMarcadosDesdeEstadoActual();
+       }
   }
 
     // Reset total del mapa y regeneración para la siguiente zona
@@ -138,10 +149,24 @@ public class MapaManager : MonoBehaviour
     void PrepararNodosParaGeneracion()
     {
         MapDecorator mapDecorator = ObtenerMapDecorator();
+        float multiplicadorEscala = 1f;
+
+        if (CampaignManager.Instance != null)
+        {
+            multiplicadorEscala = Mathf.Max(0f, CampaignManager.Instance.ObtenerMultiplicadorEscalaNodos());
+        }
 
         foreach (Nodo nodo in scContenedordeNodos.listTodosNodos)
         {
             if (nodo == null) continue;
+
+            if (!escalasBaseNodos.TryGetValue(nodo, out Vector3 escalaBase))
+            {
+                escalaBase = nodo.transform.localScale;
+                escalasBaseNodos[nodo] = escalaBase;
+            }
+
+            nodo.transform.localScale = escalaBase * multiplicadorEscala;
             nodo.PrepararCostoMovimientoParaGeneracion();
             if (mapDecorator != null)
             {
@@ -315,6 +340,7 @@ public class MapaManager : MonoBehaviour
             }
 
             settlement.ForzarSettlement(true);
+            MarcarRutaCaminoAAldea(nodoActual, settlement);
             settlement.ActivarVfxDescubrimiento();
 
             if (CampaignManager.Instance != null)
@@ -378,6 +404,100 @@ public class MapaManager : MonoBehaviour
         }
 
         return -1;
+    }
+
+    void MarcarRutaCaminoAAldea(Nodo origen, Nodo settlement)
+    {
+        List<Nodo> ruta = CalcularRutaEnViajes(origen, settlement, DistanciaReveladoSettlement);
+        if (ruta == null || ruta.Count < 2)
+        {
+            return;
+        }
+
+        for (int i = 0; i < ruta.Count - 1; i++)
+        {
+            Nodo nodoRuta = ruta[i];
+            Nodo siguienteNodo = ruta[i + 1];
+            if (nodoRuta == null || siguienteNodo == null)
+            {
+                continue;
+            }
+
+            nodoRuta.MarcarCaminoAAldeaHacia(siguienteNodo);
+        }
+    }
+
+    List<Nodo> CalcularRutaEnViajes(Nodo origen, Nodo objetivo, int distanciaMaxima)
+    {
+        if (origen == null || objetivo == null)
+        {
+            return null;
+        }
+
+        if (origen == objetivo)
+        {
+            return new List<Nodo> { origen };
+        }
+
+        HashSet<Nodo> visitados = new HashSet<Nodo>();
+        Queue<Nodo> colaNodos = new Queue<Nodo>();
+        Queue<int> colaDistancias = new Queue<int>();
+        Dictionary<Nodo, Nodo> predecesores = new Dictionary<Nodo, Nodo>();
+
+        visitados.Add(origen);
+        colaNodos.Enqueue(origen);
+        colaDistancias.Enqueue(0);
+
+        while (colaNodos.Count > 0)
+        {
+            Nodo actual = colaNodos.Dequeue();
+            int distanciaActual = colaDistancias.Dequeue();
+
+            if (distanciaActual >= distanciaMaxima || actual.DestinosPosibles == null)
+            {
+                continue;
+            }
+
+            foreach (Nodo destino in actual.DestinosPosibles)
+            {
+                if (destino == null || !destino.gameObject.activeInHierarchy || !visitados.Add(destino))
+                {
+                    continue;
+                }
+
+                predecesores[destino] = actual;
+                if (destino == objetivo)
+                {
+                    return ReconstruirRuta(predecesores, origen, objetivo);
+                }
+
+                colaNodos.Enqueue(destino);
+                colaDistancias.Enqueue(distanciaActual + 1);
+            }
+        }
+
+        return null;
+    }
+
+    static List<Nodo> ReconstruirRuta(Dictionary<Nodo, Nodo> predecesores, Nodo origen, Nodo objetivo)
+    {
+        List<Nodo> ruta = new List<Nodo>();
+        Nodo actual = objetivo;
+
+        ruta.Add(actual);
+        while (actual != origen)
+        {
+            if (!predecesores.TryGetValue(actual, out Nodo anterior))
+            {
+                return null;
+            }
+
+            actual = anterior;
+            ruta.Add(actual);
+        }
+
+        ruta.Reverse();
+        return ruta;
     }
 
     public bool TirarEmboscadaSubterraneaAtajo(Nodo destino)

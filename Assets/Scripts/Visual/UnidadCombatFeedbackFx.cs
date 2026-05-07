@@ -261,6 +261,11 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     {
       overlayRoot.SetSiblingIndex(targetSibling);
     }
+
+    if (overlayGroup != null)
+    {
+      overlayGroup.alpha = unidad != null ? unidad.ObtenerMultiplicadorAlphaVisual() : 1f;
+    }
   }
 
   private void ActualizarImpacto()

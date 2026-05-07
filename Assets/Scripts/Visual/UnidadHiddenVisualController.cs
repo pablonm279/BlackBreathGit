@@ -186,7 +186,7 @@ public sealed class UnidadHiddenVisualController : MonoBehaviour
     float ancho = Mathf.Max(20f, tamano.x * 0.92f);
     float alto = Mathf.Max(24f, tamano.y * 1.02f);
 
-    overlayGroup.alpha = visibilidad;
+    overlayGroup.alpha = visibilidad * (unidad != null ? unidad.ObtenerMultiplicadorAlphaVisual() : 1f);
 
     ConfigurarCapa(
       overlayTint,

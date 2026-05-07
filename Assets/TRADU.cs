@@ -1639,7 +1639,7 @@ public class TRADU : MonoBehaviour
                 r = "Resources";
                 break;
             case "Esfuerzo":
-                r = "Effort";
+                r = "Exherted";
                 break;
             case "La unidad se ha esforzado. -1 PA máximo y -2 Defensa por stack.":
                 r = "The unit has overexerted. -1 max AP and -2 Defense per stack.";
@@ -2159,7 +2159,7 @@ public class TRADU : MonoBehaviour
                 r = " passed their Reflex Save (1d20: "; break;
             case " superó su Tirada de Salvación Mental (1d20: ":
                 r = " passed their Mental Save (1d20: "; break;
-             case " superó su Tirada de Salvación de Fortaleza (1d20: ":
+            case " superó su Tirada de Salvación de Fortaleza (1d20: ":
                 r = " passed their Fortitude Save (1d20: "; break;
             case " vs DC ":
                 r = " vs DC "; break;
@@ -7148,46 +7148,52 @@ public class TRADU : MonoBehaviour
                 r = "Save Game";
                 break;
             case "Al realizar la ofrenda, el Aliento Negro retrocederá en 3 y un personaje con Corrupción al azar será curado.":
-            r = "When performing the offering, the Black Breath will retreat by 3 and a random character with Corruption will be healed.";
+                r = "When performing the offering, the Black Breath will retreat by 3 and a random character with Corruption will be healed.";
                 break;
             case "<i>El Árbol de los Lamentos extiende sus raices de forma amenazante por sobre la superficie para atacar a sus enemigos y protegerse. </i>\n\n<color=#EE0000>-Débil al fuego.</color>":
-            r="<i>The Tree of Lamentations extends its roots threateningly over the surface to attack its enemies and protect itself. </i>\n\n<color=#EE0000>-Weak against fire.</color>";
-            break;   
+                r = "<i>The Tree of Lamentations extends its roots threateningly over the surface to attack its enemies and protect itself. </i>\n\n<color=#EE0000>-Weak against fire.</color>";
+                break;
             case "Raíz Maldita":
-            r= "Cursed Root";
-            break;
+                r = "Cursed Root";
+                break;
             case "<i>Este gigante árbol maldito bloquea la salida del Bosque Ardiente, poseído por los espíritus caídos en el bosque, buscará impedir el escape de los intrusos.</i>\n\n<color=#199F10>Crea Enredaderas.\n-Ataques de rango que atraen.\n-Regenera armadura.</color><color=#EE0000>-Débil al fuego.</color>":
-            r="<i>This giant cursed tree blocks the exit of the Burning Forest, possessed by the fallen spirits in the forest, it will seek to prevent the escape of intruders.</i>\n\n<color=#199F10>Creates Vines.\n-Range attacks that pull.\n-Regenerates armor.</color><color=#EE0000>-Weak against fire.</color>";
-            break;
-           case "Árbol de los Lamentos":
-            r = "Tree of Lamentations";
-            break; 
-            case "Invocar Raíz Maldita": r = "Summon Cursed Root";break;
-case "Raiz Maldita": r = "Cursed Root";break;
-case "Condena Feroz": r = "Fierce Condemnation";break;
-case "+15% Danio, +2 Ataque, +5 TS Mental.": r = "+15% Damage, +2 Attack, +5 Mental Save.";break;
-case "Estertor Maldito": r = "Cursed Death Rattle";break;
-case "Reacción: al morir, quien asesta el golpe final debe superar TS Mental 12 o recibe 2d6 daño necrótico.": r = "Reaction: on death, whoever deals the killing blow must pass Mental Save 12 or take 2d6 necrotic damage.";break;
-case "resiste el estertor maldito.": r = "resists the cursed death rattle.";break;
-case "desata una llamarada necrotica y ardiente sobre": r = "unleashes a burning necrotic flare upon";break;
-case "Bruja Quemada": r = "Bruxa Queimada"; break;
+                r = "<i>This giant cursed tree blocks the exit of the Burning Forest, possessed by the fallen spirits in the forest, it will seek to prevent the escape of intruders.</i>\n\n<color=#199F10>Creates Vines.\n-Range attacks that pull.\n-Regenerates armor.</color><color=#EE0000>-Weak against fire.</color>";
+                break;
+            case "Árbol de los Lamentos":
+                r = "Tree of Lamentations";
+                break;
+            case "Invocar Raíz Maldita": r = "Summon Cursed Root"; break;
+            case "Raiz Maldita": r = "Cursed Root"; break;
+            case "Condena Feroz": r = "Fierce Condemnation"; break;
+            case "+15% Danio, +2 Ataque, +5 TS Mental.": r = "+15% Damage, +2 Attack, +5 Mental Save."; break;
+            case "Estertor Maldito": r = "Cursed Death Rattle"; break;
+            case "Reacción: al morir, quien asesta el golpe final debe superar TS Mental 12 o recibe 2d6 daño necrótico.": r = "Reaction: on death, whoever deals the killing blow must pass Mental Save 12 or take 2d6 necrotic damage."; break;
+            case "resiste el estertor maldito.": r = "resists the cursed death rattle."; break;
+            case "desata una llamarada necrotica y ardiente sobre": r = "unleashes a burning necrotic flare upon"; break;
+            case "Bruja Quemada": r = "Bruxa Queimada"; break;
             case "<i>Esta bruja ha sido deformada por las llamas y corrompida la presencia del Aliento Negro. </i>\n\n<color=#199F10>Crea Enredaderas.\n-Ataque de rango que no falla.\n-Estertor Mortal.</color><color=#EE0000>-Poco resistente.</color>":
-            r = "<i>This witch has been deformed by the flames and corrupted by the presence of the Black Breath. </i>\n\n<color=#199F10>Creates Vines.\n-Range attack that never fails.\n-Cursed Death Rattle.</color><color=#EE0000>-Not very resistant.</color>";
-            break;
+                r = "<i>This witch has been deformed by the flames and corrupted by the presence of the Black Breath. </i>\n\n<color=#199F10>Creates Vines.\n-Range attack that never fails.\n-Cursed Death Rattle.</color><color=#EE0000>-Not very resistant.</color>";
+                break;
             case "), eligió bien la ruta y el Aliento Negro retrocedió 1. +25 Experiencia.":
-             r ="), chose the right path and the Black Breath retreated 1. +25 Experience.";
-              break;
-        case "Escape: los personajes podrán escapar desde esta casilla.":
-            r="Escape: characters can flee the battle from this tile.";
-            break;
-          case "Paciente":
-            r="Patient";
-            break;
+                r = "), chose the right path and the Black Breath retreated 1. +25 Experience.";
+                break;
+            case "Escape: los personajes podrán escapar desde esta casilla.":
+                r = "Escape: characters can flee the battle from this tile.";
+                break;
+            case "Paciente":
+                r = "Patient";
+                break;
             case "Defensa vencida":
-            r="Broken defense";
-            break;
+                r = "Broken defense";
+                break;
             case "Fortitud":
-            r="Fortitude";
+                r = "Fortitude";
+                break;
+            case "Al Esforzarse se toma prestado AP del turno siguiente y la Defensa bajará por 1T.":
+                r="When Exerting, you borrow AP from the next turn and your defense will decrease by 1T.";
+                break;
+            case "¡Esforzando!":
+            r="Exerting!";
             break;
             
 
@@ -14041,6 +14047,12 @@ case "Bruja Quemada": r = "Bruxa Queimada"; break;
             break;
             case "Fortitud":
             r="Fortitude";
+            break;
+            case "Al Esforzarse se toma prestado AP del turno siguiente y la Defensa bajará por 1T.":
+            r="Ao se esforçar, você empresta PA do próximo turno e sua Defesa diminuirá em 1T.";
+            break;
+            case "¡Esforzando!":
+            r="Esforçando-se!";
             break;
            
 

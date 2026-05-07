@@ -4,7 +4,7 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public class UnidadIdleMotion : MonoBehaviour
 {
-  [Header("Idle Motion")]
+ /* [Header("Idle Motion")]
   [SerializeField] private bool habilitado = true;
   [SerializeField] private bool soloEnBatalla = true;
   [SerializeField] private float amplitudX = 0.08f;
@@ -487,6 +487,11 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
   private float faseCongeladoGotaA;
   private float faseCongeladoGotaB;
 
+  private float ObtenerMultiplicadorAlphaVisualUnidad()
+  {
+    return unidad != null ? unidad.ObtenerMultiplicadorAlphaVisual() : 1f;
+  }
+
   private void Awake()
   {
     unidad = GetComponent<Unidad>();
@@ -815,7 +820,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     {
       if (!pruebaCondenadoBrutalActiva)
       {
-        colorBasePruebaCondenado = unidad.uImage.color;
+        colorBasePruebaCondenado = unidad.ObtenerColorBaseImagenUnidad();
         pruebaCondenadoBrutalActiva = true;
       }
 
@@ -833,7 +838,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
         progresoAcumulado);
       Color colorCondenado = Color.Lerp(colorCondenadoBase, colorCondenadoPico, pulso);
       float fuerzaColor = Mathf.Lerp(0.5f, 0.82f, progresoAcumulado);
-      unidad.uImage.color = Color.Lerp(colorBasePruebaCondenado, colorCondenado, fuerzaColor);
+      unidad.EstablecerColorBaseImagenUnidad(Color.Lerp(colorBasePruebaCondenado, colorCondenado, fuerzaColor));
       return;
     }
 
@@ -849,7 +854,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
 
     if (unidad != null && unidad.uImage != null)
     {
-      unidad.uImage.color = colorBasePruebaCondenado;
+      unidad.EstablecerColorBaseImagenUnidad(colorBasePruebaCondenado);
     }
 
     pruebaCondenadoBrutalActiva = false;
@@ -2094,7 +2099,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     float ascensoC = Mathf.Abs(OscilacionFuego(faseLlamaC + 1.6f, t, 5.1f));
     float ascensoD = Mathf.Abs(OscilacionFuego(faseLlamaD + 3.2f, t, 4.8f));
 
-    overlayArdiendoGroup.alpha = visibilidadArdiendo * 0.88f;
+    overlayArdiendoGroup.alpha = visibilidadArdiendo * 0.88f * ObtenerMultiplicadorAlphaVisualUnidad();
 
     ConfigurarCapa(
       overlayArdiendoGlow,
@@ -2159,7 +2164,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     EvaluarGoteoEstado(t, 0.62f + (stacks * 0.02f), faseVenenoGotaA, 0.36f, out float progresoGotaA, out float visGotaA);
     EvaluarGoteoEstado(t, 0.54f + (stacks * 0.018f), faseVenenoGotaB + 0.37f, 0.32f, out float progresoGotaB, out float visGotaB);
 
-    overlayVenenoGroup.alpha = visibilidadVeneno * 0.86f;
+    overlayVenenoGroup.alpha = visibilidadVeneno * 0.86f * ObtenerMultiplicadorAlphaVisualUnidad();
 
     ConfigurarCapa(
       overlayVenenoNubeA,
@@ -2231,7 +2236,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     EvaluarGoteoEstado(t, 0.71f + (stacks * 0.022f), faseAcidoGotaB + 0.31f, 0.4f, out float progresoGotaB, out float visGotaB);
     EvaluarGoteoEstado(t, 0.94f + (stacks * 0.03f), faseAcidoGotaC + 0.58f, 0.34f, out float progresoGotaC, out float visGotaC);
 
-    overlayAcidoGroup.alpha = visibilidadAcido * 0.92f;
+    overlayAcidoGroup.alpha = visibilidadAcido * 0.92f * ObtenerMultiplicadorAlphaVisualUnidad();
 
     ConfigurarCapa(
       overlayAcidoNubeA,
@@ -2299,7 +2304,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     EvaluarGoteoEstado(t, 0.67f + (stacks * 0.03f), faseSangradoGotaB + 0.26f, 0.34f, out float progresoGotaB, out float visGotaB);
     EvaluarGoteoEstado(t, 0.81f + (stacks * 0.035f), faseSangradoGotaC + 0.49f, 0.3f, out float progresoGotaC, out float visGotaC);
 
-    overlaySangradoGroup.alpha = visibilidadSangrado * 0.76f;
+    overlaySangradoGroup.alpha = visibilidadSangrado * 0.76f * ObtenerMultiplicadorAlphaVisualUnidad();
 
     ConfigurarCapa(
       overlaySangradoGotaA,
@@ -2348,7 +2353,8 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     float brilloX = Mathf.Lerp(-ancho * 0.18f, ancho * 0.02f, barrido) + (derivaX * 0.4f);
     float brilloY = Mathf.Lerp(alto * 0.22f, -alto * 0.16f, barrido) + (derivaY * 0.32f);
 
-    overlayEscudadoGroup.alpha = visibilidadEscudado * Mathf.Lerp(0.3f, 0.42f, carga);
+    float multiplicadorAlphaVisual = ObtenerMultiplicadorAlphaVisualUnidad();
+    overlayEscudadoGroup.alpha = visibilidadEscudado * Mathf.Lerp(0.3f, 0.42f, carga) * multiplicadorAlphaVisual;
 
     ConfigurarCapa(
       overlayEscudadoHalo,
@@ -2383,7 +2389,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     contadorRect.localEulerAngles = Vector3.zero;
     contadorRect.localScale = Vector3.one;
     overlayEscudadoPorcentaje.fontSize = Mathf.Clamp(Mathf.RoundToInt(ancho * 0.085f), 4, 6);
-    overlayEscudadoPorcentaje.color = new Color(0.86f, 0.91f, 0.97f, visibilidadEscudado * Mathf.Lerp(0.26f, 0.42f, carga));
+    overlayEscudadoPorcentaje.color = new Color(0.86f, 0.91f, 0.97f, visibilidadEscudado * Mathf.Lerp(0.26f, 0.42f, carga) * multiplicadorAlphaVisual);
     overlayEscudadoPorcentaje.text = porcentajeParada.ToString() + "%";
   }
 
@@ -2419,7 +2425,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     float brilloRunaA = Mathf.Abs(Mathf.Sin((t * 0.42f) + faseBarreraRunaA));
     float brilloRunaB = Mathf.Abs(Mathf.Sin((t * 0.38f) + faseBarreraRunaB));
 
-    overlayBarreraGroup.alpha = visibilidadBarrera * Mathf.Lerp(0.48f, 0.8f, cargaVisual);
+    overlayBarreraGroup.alpha = visibilidadBarrera * Mathf.Lerp(0.48f, 0.8f, cargaVisual) * ObtenerMultiplicadorAlphaVisualUnidad();
 
     ConfigurarCapa(
       overlayBarreraHalo,
@@ -2503,7 +2509,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     float derivaParticulaBX = OscilacionFuego(faseCondenadoParticulaB + 2.2f, t, 0.5f);
     float derivaParticulaBY = OscilacionFuego(faseCondenadoParticulaB + 4.4f, t, 0.42f);
 
-    overlayCondenadoGroup.alpha = visibilidadCondenado * Mathf.Lerp(0.42f, 0.58f, progresoCondena);
+    overlayCondenadoGroup.alpha = visibilidadCondenado * Mathf.Lerp(0.42f, 0.58f, progresoCondena) * ObtenerMultiplicadorAlphaVisualUnidad();
 
     ConfigurarCapa(
       overlayCondenadoAura,
@@ -2585,7 +2591,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     float anguloC = (t * 0.74f) + faseAturdidoOrbitaC + 4.2f;
     float tamOrbitaBase = Mathf.Max(3.8f, tamano.x * 0.052f);
 
-    overlayAturdidoGroup.alpha = visibilidadAturdido * 0.66f;
+    overlayAturdidoGroup.alpha = visibilidadAturdido * 0.66f * ObtenerMultiplicadorAlphaVisualUnidad();
 
     ConfigurarCapa(
       overlayAturdidoGlow,
@@ -2644,7 +2650,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     EvaluarGoteoEstado(t, 0.34f + (stacks * 0.012f), faseCongeladoGotaA, 0.24f, out float progresoGotaA, out float visGotaA);
     EvaluarGoteoEstado(t, 0.27f + (stacks * 0.01f), faseCongeladoGotaB + 0.41f, 0.2f, out float progresoGotaB, out float visGotaB);
 
-    overlayCongeladoGroup.alpha = visibilidadCongelado;
+    overlayCongeladoGroup.alpha = visibilidadCongelado * ObtenerMultiplicadorAlphaVisualUnidad();
     overlayCongeladoTint.color = new Color(0.76f, 0.92f, 1f, Mathf.Lerp(0.58f, 0.74f, brillo) * intensidad);
 
     ConfigurarCapa(
@@ -2895,5 +2901,5 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     overlayCongeladoGotaA = null;
     overlayCongeladoGotaB = null;
     visibilidadCongelado = 0f;
-  }
+  }*/
 }

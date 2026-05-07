@@ -325,7 +325,7 @@ public class TiroconArco : Habilidad
 
         if (flight != null && destino != null)
         {
-            flight.Configure(transform, destino, 0.85f, 5.3f);
+            flight.Configure(transform, destino, 0.45f, 5.8f);
             await flight.EsperarImpactoAsync();
         }
         else

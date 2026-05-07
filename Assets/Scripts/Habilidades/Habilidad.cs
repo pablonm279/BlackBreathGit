@@ -601,6 +601,7 @@ public abstract class Habilidad : MonoBehaviour
 
     BattleManager.Instance.txtSeleccionaobj.SetActive(false);
     BattleManager.Instance.SeleccionandoObjetivo = false;
+    BattleManager.Instance.LimpiarFadeHoverObjetivoHabilidad();
     BattleManager.Instance.lUnidadesPosiblesHabilidadActiva.Clear();
     BattleManager.Instance.lObstaculosPosiblesHabilidadActiva.Clear();
     BattleManager.Instance.scUIBotonesHab.UIDesactivarHabilidades();

@@ -233,7 +233,13 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     bool bloomEnabled = PrefBool(PrefBloom, defaultBloomEnabled);
     bool dofEnabled = PrefBool(PrefDoF, defaultDoFEnabled);
     float brightness = PrefFloat(PrefBrightness, defaultBrightness);
-    float brightnessExposureOffset = (Mathf.Clamp01(brightness) - 0.5f) * 2f * brightnessExposureRange;
+    float sceneBrightnessExposureRange = brightnessExposureRange;
+    if (isMenu || isCampaign)
+    {
+      // Give options brightness a bit more headroom in front-end scenes without affecting battles.
+      sceneBrightnessExposureRange += 0.24f;
+    }
+    float brightnessExposureOffset = (Mathf.Clamp01(brightness) - 0.5f) * 2f * sceneBrightnessExposureRange;
     float contrast = Mathf.Clamp(PrefFloat(PrefContrast, defaultContrast), 0.5f, 1.5f);
     float contrastDelta = contrast - 1f;
     float contrastOffset = -Mathf.Sign(contrastDelta) * Mathf.Pow(Mathf.Abs(contrastDelta) * 2f, 1.2f) * (contrastOffsetRange * 0.5f);
@@ -304,12 +310,13 @@ public sealed class VisualPolishRuntime : MonoBehaviour
       // Keep menu visuals neutral to avoid a darker main menu.
       color.temperature.Override(0f);
       color.saturation.Override(0f);
+      baseExposure = 0.18f;
     }
     else if (isCampaign)
     {
       color.temperature.Override(-9f);
       color.saturation.Override(-5f);
-      baseExposure = 0.12f;
+      baseExposure = 0.24f;
       baseContrast = 14f;
     }
     else if (isBattle)

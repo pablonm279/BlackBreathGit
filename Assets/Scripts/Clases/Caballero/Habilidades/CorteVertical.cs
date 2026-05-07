@@ -34,7 +34,7 @@ public class Cortevertical : Habilidad
     bonusAtaque = 1;
     XdDanio = 2;
     daniodX = 8; //2d8
-    tipoDanio = 2; //Cortante
+    tipoDanio = 1; //Cortante
     criticoRangoHab = 0;
 
     tipoPorcentaje = 1;

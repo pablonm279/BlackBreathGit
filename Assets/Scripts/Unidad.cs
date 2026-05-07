@@ -309,6 +309,10 @@ public class Unidad : MonoBehaviour
   private bool imagenOcultadaPorEscondido;
   private int ultimoEstadoVisualEscondido = int.MinValue;
   private bool ultimoOcultamientoTotalPorEscondido;
+  private float multiplicadorAlphaVisual = 1f;
+  private Color colorBaseImagenUnidad = Color.white;
+  private bool colorBaseImagenUnidadInicializado;
+  private CanvasGroup canvasGroupFadeImagenUnidad;
   public
 
 
@@ -330,10 +334,10 @@ public class Unidad : MonoBehaviour
     {
       gameObject.AddComponent<UnidadIdleMotion>();
     }
-    if (GetComponent<UnidadStatusVfxController>() == null)
+   /* if (GetComponent<UnidadStatusVfxController>() == null)
     {
       gameObject.AddComponent<UnidadStatusVfxController>();
-    }
+    }*/
     if (GetComponent<UnidadHiddenVisualController>() == null)
     {
       gameObject.AddComponent<UnidadHiddenVisualController>();
@@ -402,6 +406,96 @@ public class Unidad : MonoBehaviour
   public GameObject ObtenerImagenUnidadGO()
   {
     return uImage != null ? uImage.gameObject : null;
+  }
+
+  void AsegurarColorBaseImagenUnidad()
+  {
+    if (uImage == null)
+    {
+      colorBaseImagenUnidadInicializado = false;
+      colorBaseImagenUnidad = Color.white;
+      return;
+    }
+
+    if (colorBaseImagenUnidadInicializado)
+    {
+      return;
+    }
+
+    colorBaseImagenUnidad = uImage.color;
+    colorBaseImagenUnidadInicializado = true;
+  }
+
+  void AplicarColorImagenUnidad()
+  {
+    if (uImage == null)
+    {
+      return;
+    }
+
+    AsegurarColorBaseImagenUnidad();
+    Color colorFinal = colorBaseImagenUnidad;
+    uImage.color = colorFinal;
+    AplicarAlphaCanvasGroupImagenUnidad();
+  }
+
+  CanvasGroup ObtenerCanvasGroupFadeImagenUnidad()
+  {
+    if (uImage == null)
+    {
+      canvasGroupFadeImagenUnidad = null;
+      return null;
+    }
+
+    if (canvasGroupFadeImagenUnidad == null || canvasGroupFadeImagenUnidad.gameObject != uImage.gameObject)
+    {
+      canvasGroupFadeImagenUnidad = uImage.GetComponent<CanvasGroup>();
+      if (canvasGroupFadeImagenUnidad == null)
+      {
+        canvasGroupFadeImagenUnidad = uImage.gameObject.AddComponent<CanvasGroup>();
+      }
+    }
+
+    return canvasGroupFadeImagenUnidad;
+  }
+
+  void AplicarAlphaCanvasGroupImagenUnidad()
+  {
+    CanvasGroup canvasGroup = ObtenerCanvasGroupFadeImagenUnidad();
+    if (canvasGroup != null)
+    {
+      canvasGroup.alpha = multiplicadorAlphaVisual;
+    }
+  }
+
+  public void EstablecerColorBaseImagenUnidad(Color color)
+  {
+    colorBaseImagenUnidad = color;
+    colorBaseImagenUnidadInicializado = true;
+    AplicarColorImagenUnidad();
+  }
+
+  public Color ObtenerColorBaseImagenUnidad()
+  {
+    AsegurarColorBaseImagenUnidad();
+    return colorBaseImagenUnidad;
+  }
+
+  public float ObtenerMultiplicadorAlphaVisual()
+  {
+    return multiplicadorAlphaVisual;
+  }
+
+  public void EstablecerMultiplicadorAlphaVisual(float alpha)
+  {
+    multiplicadorAlphaVisual = Mathf.Clamp01(alpha);
+    AplicarColorImagenUnidad();
+  }
+
+  public void AplicarFadeImagenUnidad(float porcentajeTransparencia)
+  {
+    float alphaObjetivo = 1f - Mathf.Clamp01(porcentajeTransparencia / 100f);
+    EstablecerMultiplicadorAlphaVisual(alphaObjetivo);
   }
 
   void InicializarVueloVisual()
@@ -512,15 +606,15 @@ public class Unidad : MonoBehaviour
       yield break;
     }
 
-    Color colorBase = uImage.color;
+    Color colorBase = ObtenerColorBaseImagenUnidad();
     Color colorFlash = Color.Lerp(colorBase, new Color(1f, 0.35f, 0.35f, colorBase.a), 0.35f);
-    uImage.color = colorFlash;
+    EstablecerColorBaseImagenUnidad(colorFlash);
 
     yield return new WaitForSeconds(0.08f);
 
     if (uImage != null)
     {
-      uImage.color = colorBase;
+      EstablecerColorBaseImagenUnidad(colorBase);
     }
 
     flashPifiaCoroutine = null;
@@ -543,12 +637,12 @@ public class Unidad : MonoBehaviour
       turnStartLightFx.Reproducir();
     }
 
-    UnidadIdleMotion idleMotion = GetComponent<UnidadIdleMotion>();
+    /*UnidadIdleMotion idleMotion = GetComponent<UnidadIdleMotion>();
     if (idleMotion != null)
     {
       idleMotion.ReproducirReboteTurnoNuevo();
       return;
-    }
+    }*/
 
     if (animacionTurnoNuevoCoroutine != null)
     {
@@ -4491,7 +4585,7 @@ IEnumerator AnimarRetiradaPorMoral(Casilla casillaRetirada)
 
   RectTransform rectTransformImagen = uImage != null ? uImage.rectTransform : null;
   Vector3 escalaOriginalImagen = rectTransformImagen != null ? rectTransformImagen.localScale : Vector3.one;
-  Color colorOriginalImagen = uImage != null ? uImage.color : Color.white;
+  Color colorOriginalImagen = ObtenerColorBaseImagenUnidad();
   LookAtCamera lookAtCamera = uImage != null ? uImage.GetComponentInParent<LookAtCamera>() : null;
   LookAtCameraNOX lookAtCameraNOX = uImage != null ? uImage.GetComponentInParent<LookAtCameraNOX>() : null;
   bool usaBillboard = lookAtCamera != null || lookAtCameraNOX != null;
@@ -4534,7 +4628,7 @@ IEnumerator AnimarRetiradaPorMoral(Casilla casillaRetirada)
     {
       Color color = colorOriginalImagen;
       color.a = Mathf.Lerp(colorOriginalImagen.a, 0f, Mathf.Clamp01((progreso - 0.35f) / 0.65f));
-      uImage.color = color;
+      EstablecerColorBaseImagenUnidad(color);
     }
 
     yield return null;
@@ -4564,7 +4658,7 @@ IEnumerator AnimarRetiradaPorMoral(Casilla casillaRetirada)
 
   if (uImage != null)
   {
-    uImage.color = colorOriginalImagen;
+    EstablecerColorBaseImagenUnidad(colorOriginalImagen);
   }
 
   retiradaPorMoralCoroutine = null;
@@ -4846,6 +4940,19 @@ public void OnMouseEnter()
      }
 
 }
+public void OnMouseOver()
+{
+    if (EstaOcultoVisualmenteParaJugador())
+    {
+      return;
+    }
+
+    if(scBattleManager.SeleccionandoObjetivo)
+    {
+       CasillaPosicion.OnMouseOver();
+    }
+}
+
 public void OnMouseExit() 
 {
     if (EstaOcultoVisualmenteParaJugador())

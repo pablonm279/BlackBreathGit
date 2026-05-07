@@ -161,7 +161,7 @@ public sealed class UnidadLowHealthFx : MonoBehaviour
     float pulsoSuave = Mathf.SmoothStep(0f, 1f, pulso);
     float flashAlpha = Mathf.Lerp(alphaFlashMin, alphaFlashMax, pulsoSuave) * visibilidad;
 
-    overlayGroup.alpha = visibilidad;
+    overlayGroup.alpha = visibilidad * (unidad != null ? unidad.ObtenerMultiplicadorAlphaVisual() : 1f);
     ConfigurarImagenSprite(oscurecerSprite, new Color(0f, 0f, 0f, alphaOscurecer * visibilidad), escalaSpriteOverlay);
     ConfigurarImagenSprite(flashSprite, WithAlpha(colorFlash, flashAlpha), escalaSpriteOverlay);
 

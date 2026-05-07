@@ -189,6 +189,8 @@ public class TooltipBatalla : MonoBehaviour
                 return "Mirada de Masacre: al moverse aquí, Tirada de salvación mental CD 13 o se pierde el turno.";
             case 35:
                 return "Escape: los personajes podrán escapar desde esta casilla.";
+            case 36:
+                return "Al Esforzarse se toma prestado AP del turno siguiente y la Defensa bajará por 1T.";
             default:
                 return "Tooltip desconocido";
         }
