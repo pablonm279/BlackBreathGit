@@ -242,8 +242,8 @@ public class MenuDescanso : MonoBehaviour
     if (CampaignManager.Instance.scMenuSequito.TieneSequito(5)) { chancesAtaqueACaravana += 2; } //Herboristas, aumentan chances 2%
     chancesAtaqueACaravana += CampaignManager.Instance.ObtenerModificadorChanceEmboscadaTraits();
 
-    chancesAtaqueACaravana -= CampaignManager.Instance.mejoraCaravanaAntorchas * 5;
-    chancesExploracion += CampaignManager.Instance.mejoraCaravanaCatalejos * 5;
+    chancesAtaqueACaravana -= CampaignManager.Instance.mejoraCaravanaAntorchas * 2;
+    chancesExploracion += 3 + ((CampaignManager.Instance.mejoraCaravanaCatalejos - 1) * 2);
 
     chancesExploracion += CampaignManager.Instance.ExploracionSumadaPorActividades();
     chancesExploracion += CampaignManager.Instance.ObtenerModificadorChanceExploracionTraits();
@@ -253,6 +253,9 @@ public class MenuDescanso : MonoBehaviour
       chancesExploracion += CampaignManager.Instance.estadosCaravana.ObtenerModificadorExploracionPendiente();
       chancesAtaqueACaravana += CampaignManager.Instance.estadosCaravana.ObtenerModificadorEmboscadaDescansoPendiente();
     }
+
+    int modificadorDescansoExploracion = tareaCivilSeleccionada == 5 ? 20 : 0;
+    chancesExploracion = CampaignManager.Instance.ObtenerChanceExploracionDescanso(modificadorDescansoExploracion);
 
     if (CampaignManager.Instance.intTipoClima == 6) //Almas Danzantes
     {
@@ -361,7 +364,7 @@ public class MenuDescanso : MonoBehaviour
 
     } //Fiesta
 
-    consumo = consumo / 100 * (100 - CampaignManager.Instance.mejoraCaravanaAlmacen * 5);
+    consumo = consumo / 100 * (100 - CampaignManager.Instance.mejoraCaravanaAlmacen * 3);
 
     //Modificadores de Climas
     if (CampaignManager.Instance.intTipoClima == 2) //Calor
@@ -533,7 +536,8 @@ public class MenuDescanso : MonoBehaviour
 
     gameObject.SetActive(false);
 
-    CampaignManager.Instance.scMapaManager.nodoActual.TiradaExploracion(chancesExploracion, true);
+    int alcanceExploracion = Mathf.Max(1, CampaignManager.Instance.ObtenerDistanciaVisionEfectiva());
+    CampaignManager.Instance.scMapaManager.nodoActual.TiradaExploracion(chancesExploracion, true, "", false, alcanceExploracion);
 
     //Efectos Esperanza en Descanso - Se van Civiles
     if (CampaignManager.Instance.GetEsperanzaActual() < 20 && CampaignManager.Instance.GetEsperanzaActual() > 10)
@@ -628,7 +632,7 @@ public class MenuDescanso : MonoBehaviour
     bool descansoEnAsentamiento = CampaignManager.Instance.scMapaManager.nodoActual != null &&
                                   CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoAsentamiento;
 
-    CampaignManager.Instance.CambiarEsperanzaActual(CampaignManager.Instance.mejoraCaravanaTiendas * 5);
+    CampaignManager.Instance.CambiarEsperanzaActual(Mathf.Max(0, (CampaignManager.Instance.mejoraCaravanaTiendas - 1) * 2));
 
 
 
@@ -871,6 +875,10 @@ public class MenuDescanso : MonoBehaviour
     if (CampaignManager.Instance != null)
     {
       CampaignManager.Instance.RefrescarVfxClimaCalor();
+      if (CampaignManager.Instance.scMapaManager != null)
+      {
+        CampaignManager.Instance.scMapaManager.RefrescarVisibilidadExploracion();
+      }
     }
 
   }

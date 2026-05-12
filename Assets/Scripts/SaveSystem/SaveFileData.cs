@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [Serializable]
 public class SaveFileData
 {
-  public const int CurrentVersion = 10;
+  public const int CurrentVersion = 12;
 
   public int version = CurrentVersion;
   public string savedAtUtc;
@@ -66,6 +66,8 @@ public class CampaignSaveData
 
   public NodeReferenceSaveData nodoActual = new NodeReferenceSaveData();
   public NodeReferenceSaveData nodoDestinoActual = new NodeReferenceSaveData();
+  public int batallaEnCurso;
+  public int emboscadaEnCurso;
   public List<int> eventosAleatoriosUsadosMapa = new List<int>();
   public EstadosCaravanaSaveData estadosCaravana = new EstadosCaravanaSaveData();
   public bool settlementOpen;
@@ -97,6 +99,8 @@ public class NodeSaveData
   public int visualCode;
   public bool esMisterioso;
   public bool atajoSubterraneoPendiente;
+  public string faccionScoutReveladaId;
+  public string faccionScoutReveladaNombre;
   public List<NodeReferenceSaveData> destinos = new List<NodeReferenceSaveData>();
 }
 
@@ -154,6 +158,7 @@ public class CharacterSaveData
   public int[] habilidades = new int[10];
   public int[] actividades = new int[3];
   public int actividadSeleccionada;
+  public bool actividadFijada;
 
   public int nivelPuntoAtributo;
   public int nivelPuntoTS;
@@ -173,6 +178,11 @@ public class CharacterSaveData
   public bool traitHeroeLocalPenalidadMuerteAplicada;
   public bool traitEjemploASeguirAplicado;
   public bool traitHerenciaItemOtorgado;
+  public int diasViajado;
+  public int enemigosEliminados;
+  public int danioHecho;
+  public int danioRecibido;
+  public int vecesDerribado;
 
   public int[] rasgos = Array.Empty<int>();
   public EquipmentSaveData equipment = new EquipmentSaveData();

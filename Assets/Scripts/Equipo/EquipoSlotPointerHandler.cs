@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class EquipoSlotPointerHandler : MonoBehaviour, IPointerDownHandler, IPointerClickHandler
+public class EquipoSlotPointerHandler : MonoBehaviour
 {
   public enum TipoSlot
   {
@@ -15,24 +15,28 @@ public class EquipoSlotPointerHandler : MonoBehaviour, IPointerDownHandler, IPoi
 
   private MenuPersonajes menuPersonajes;
   private TipoSlot tipoSlot;
+  private bool callbacksRegistrados;
 
   public void Configurar(MenuPersonajes menu, TipoSlot slot)
   {
     menuPersonajes = menu;
     tipoSlot = slot;
+    RegistrarCallbacksSiHaceFalta();
   }
 
-  public void OnPointerDown(PointerEventData eventData)
+  public void ManejarPointerDown(BaseEventData eventDataBase)
   {
-    if (eventData.button == PointerEventData.InputButton.Right && menuPersonajes != null)
+    PointerEventData eventData = eventDataBase as PointerEventData;
+    if (eventData != null && eventData.button == PointerEventData.InputButton.Right && menuPersonajes != null)
     {
       menuPersonajes.RegistrarClickDerechoEnSlotEquipo();
     }
   }
 
-  public void OnPointerClick(PointerEventData eventData)
+  public void ManejarPointerClick(BaseEventData eventDataBase)
   {
-    if (eventData.button != PointerEventData.InputButton.Right || menuPersonajes == null)
+    PointerEventData eventData = eventDataBase as PointerEventData;
+    if (eventData == null || eventData.button != PointerEventData.InputButton.Right || menuPersonajes == null)
     {
       return;
     }
@@ -60,5 +64,36 @@ public class EquipoSlotPointerHandler : MonoBehaviour, IPointerDownHandler, IPoi
     }
 
     menuPersonajes.LimpiarBloqueoClickDerechoEnSlotEquipo();
+  }
+
+  private void RegistrarCallbacksSiHaceFalta()
+  {
+    if (callbacksRegistrados)
+    {
+      return;
+    }
+
+    EventTrigger trigger = GetComponent<EventTrigger>();
+    if (trigger == null)
+    {
+      trigger = gameObject.AddComponent<EventTrigger>();
+    }
+
+    RegistrarEntrada(trigger, EventTriggerType.PointerDown, ManejarPointerDown);
+    RegistrarEntrada(trigger, EventTriggerType.PointerClick, ManejarPointerClick);
+    callbacksRegistrados = true;
+  }
+
+  private static void RegistrarEntrada(EventTrigger trigger, EventTriggerType tipo, UnityEngine.Events.UnityAction<BaseEventData> accion)
+  {
+    if (trigger == null)
+    {
+      return;
+    }
+
+    EventTrigger.Entry entrada = new EventTrigger.Entry();
+    entrada.eventID = tipo;
+    entrada.callback.AddListener(accion);
+    trigger.triggers.Add(entrada);
   }
 }

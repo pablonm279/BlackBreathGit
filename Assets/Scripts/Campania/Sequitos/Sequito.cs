@@ -7,15 +7,14 @@ using TMPro;
 
 public class Sequito : MonoBehaviour
 {
-    
     public int ID;
-    
     public int intRepresentacionciviles; //-1 para séquitos que no se pueden eliminar (iniciales por ejemplo)
 
     public TextMeshProUGUI txtNombre;
     public Image imSplashart;
     public TextMeshProUGUI txtdesc;
     public TextMeshProUGUI txtmecanicas;
+    [SerializeField] GameObject contenidoPanel;
 
 
    /* void Start()
@@ -33,47 +32,83 @@ public class Sequito : MonoBehaviour
         txtdesc.text = TRADU.i.Traducir(txtdesc.text);
         txtmecanicas.text = TRADU.i.Traducir(txtmecanicas.text);
     }*/
-
-    private GameObject placeholderLugarContenido;
     public void clickRepresentar()
     {
-     
-     DesactivarContenidoTodosSequitos();
-     placeholderLugarContenido = transform.parent.parent.GetChild(0).gameObject;
+        MenuSequitos menuSequitos = GetComponentInParent<MenuSequitos>();
+        if (menuSequitos != null)
+        {
+            menuSequitos.RegistrarInstancia(this);
+            menuSequitos.OcultarContenidosInstancias();
+        }
 
-     GameObject contenido = transform.GetChild(1).gameObject;
-     contenido.SetActive(true);
+        if (contenidoPanel == null)
+        {
+            contenidoPanel = BuscarContenidoPanel();
+        }
 
-     contenido.transform.position = placeholderLugarContenido.transform.position;
+        if (contenidoPanel == null)
+        {
+            Debug.LogWarning($"[Sequito] {name} no tiene contenidoPanel asignado.", this);
+            return;
+        }
 
-     if(gameObject.GetComponent<SequitoMercaderes>() != null)
-     {
-       gameObject.GetComponent<SequitoMercaderes>().MostrarInventarioVenta();
-       gameObject.GetComponent<SequitoMercaderes>().Actualizar();
-     }
+        contenidoPanel.SetActive(true);
 
+        SequitoMercaderes mercaderes = GetComponent<SequitoMercaderes>();
+        if (mercaderes != null)
+        {
+            mercaderes.MostrarInventarioVenta();
+            mercaderes.Actualizar();
+        }
     }
 
+    public void OcultarContenido()
+    {
+        if (contenidoPanel == null)
+        {
+            contenidoPanel = BuscarContenidoPanel();
+        }
 
-    void DesactivarContenidoTodosSequitos()
-    {   
-            Transform parent = transform.parent;
+        if (contenidoPanel != null)
+        {
+            contenidoPanel.SetActive(false);
+        }
+    }
 
-            foreach(Transform child in parent)
+    GameObject BuscarContenidoPanel()
+    {
+        foreach (Transform child in transform)
+        {
+            if (child.name == "Contenido")
             {
-                child.GetChild(1).gameObject.SetActive(false);
+                return child.gameObject;
             }
+        }
 
+        foreach (Transform child in transform)
+        {
+            if (child.name.StartsWith("Contenido"))
+            {
+                return child.gameObject;
+            }
+        }
 
-
+        return null;
     }
 
+    void OnDestroy()
+    {
+        if (!Application.isPlaying)
+        {
+            return;
+        }
 
-
-
-
-
-
+        MenuSequitos menuSequitos = GetComponentInParent<MenuSequitos>();
+        if (menuSequitos != null)
+        {
+            menuSequitos.DesregistrarInstancia(this);
+        }
+    }
 }
 
 

@@ -72,6 +72,11 @@ public class Nodo : MonoBehaviour
   readonly Dictionary<Transform, Material> materialesOriginalesHoverCaminos = new Dictionary<Transform, Material>();
   readonly HashSet<Nodo> destinosCaminoAAldea = new HashSet<Nodo>();
   readonly Dictionary<Nodo, Transform> lineasPorDestino = new Dictionary<Nodo, Transform>();
+  readonly HashSet<Transform> lineasReveladas = new HashSet<Transform>();
+  bool visibleForzadaPorReveladoEspecial;
+  bool visiblePorVision = true;
+  string faccionScoutReveladaId = "";
+  string faccionScoutReveladaNombre = "";
 
   bool EsSettlement()
   {
@@ -153,6 +158,7 @@ public class Nodo : MonoBehaviour
     {
       scMapaManager.NotificarFinViajeCaravana();
     }
+    DeterminarConexiones();
 
     // Apagar animaciones con un retraso aleatorio hasta 0.25s por cada follower
     if (scMapaManager != null)
@@ -187,15 +193,9 @@ public class Nodo : MonoBehaviour
       if (pers.Camp_Moral < 0) pers.Camp_Moral += 1;
     }
 
-    if (hayExploracionExplorador != "")
-    {
-      TiradaExploracion(200, false);
-      TiradaExploracion(40, true, hayExploracionExplorador);
-    }
-    else
-    {
-      TiradaExploracion(200, false);
-    }
+    int chanceExploracion = CampaignManager.Instance.ObtenerChanceExploracionViaje();
+    int alcanceExploracion = Mathf.Max(1, CampaignManager.Instance.ObtenerDistanciaVisionEfectiva());
+    TiradaExploracion(chanceExploracion, true, hayExploracionExplorador, string.IsNullOrEmpty(hayExploracionExplorador), alcanceExploracion);
 
     int fatigaSuma = 1;
     int esperanzaSuma = 0;
@@ -222,7 +222,7 @@ public class Nodo : MonoBehaviour
     CampaignManager.Instance.CambiarEsperanzaActual(esperanzaSuma);
     CampaignManager.Instance.LlegarANodo(ObtenerTipoNodoAlLlegar(), posXNodo, this);
 
-    MarcarCaminosPosibles();
+    scMapaManager.RefrescarVisibilidadExploracion();
   }
 
   public void EncontrarAtajo(int X, int Y)
@@ -329,7 +329,14 @@ public class Nodo : MonoBehaviour
           IntentarConectar(1, 4, zonaId);
         }*/
 
-      TiradaExploracion(300, false);
+      RevelarNodosFuturosIniciales(3);
+
+      if (CampaignManager.Instance != null)
+      {
+        int chanceExploracionInicial = CampaignManager.Instance.ObtenerChanceExploracionViaje();
+        int alcanceExploracionInicial = Mathf.Max(1, CampaignManager.Instance.ObtenerDistanciaVisionEfectiva());
+        TiradaExploracion(chanceExploracionInicial, true, "", true, alcanceExploracionInicial);
+      }
     }
     else if (posXNodo == 1)
     {
@@ -542,9 +549,14 @@ public class Nodo : MonoBehaviour
     esMisterioso = false;
     numVisualActual = -1;
     atajoSubterraneoPendiente = false;
+    visiblePorVision = true;
+    visibleForzadaPorReveladoEspecial = false;
+    faccionScoutReveladaId = "";
+    faccionScoutReveladaNombre = "";
     vieneDeNodo = null;
     destinosCaminoAAldea.Clear();
     lineasPorDestino.Clear();
+    lineasReveladas.Clear();
 
     var destruir = new List<GameObject>();
     foreach (Transform child in transform)
@@ -580,10 +592,15 @@ public class Nodo : MonoBehaviour
     nodoIncendiado = data.nodoIncendiado;
     nodoRitual = data.nodoRitual;
     atajoSubterraneoPendiente = data.atajoSubterraneoPendiente;
+    visiblePorVision = true;
+    visibleForzadaPorReveladoEspecial = false;
+    faccionScoutReveladaId = data.faccionScoutReveladaId ?? "";
+    faccionScoutReveladaNombre = data.faccionScoutReveladaNombre ?? "";
     DestinosPosibles.Clear();
     vieneDeNodo = null;
     destinosCaminoAAldea.Clear();
     lineasPorDestino.Clear();
+    lineasReveladas.Clear();
     if (tipoNodo == 15 && !nodoRitual && tipoNodoOriginalRitual > 0)
     {
       tipoNodo = tipoNodoOriginalRitual;
@@ -640,6 +657,11 @@ public class Nodo : MonoBehaviour
 
   int ObtenerTipoNodoAlLlegar()
   {
+    if (!revelado || tipoNodo <= 0)
+    {
+      Revelar(false);
+    }
+
     bool llegoPorAtajo = vieneDeNodo != null && (posXNodo - vieneDeNodo.posXNodo > 1);
     int tipoNodoLlegada = tipoNodo;
 
@@ -672,6 +694,168 @@ public class Nodo : MonoBehaviour
     MarcarCaminosPosibles();
   }
 
+  public bool EstaVisiblePorVision()
+  {
+    return visiblePorVision;
+  }
+
+  public bool TieneVisibilidadForzadaPorReveladoEspecial()
+  {
+    return visibleForzadaPorReveladoEspecial;
+  }
+
+  public void ForzarVisibleSinRevelarEspecial()
+  {
+    visibleForzadaPorReveladoEspecial = true;
+  }
+
+  public void ForzarVisiblePorReveladoEspecial()
+  {
+    visibleForzadaPorReveladoEspecial = true;
+    Revelar(false);
+  }
+
+  public bool EstaReveladoParaExploradores()
+  {
+    return revelado && !esMisterioso;
+  }
+
+  public void AplicarVisibilidadPorVision(bool visible)
+  {
+    visiblePorVision = visible;
+    RestaurarPreviewHoverCaminosPosibles();
+
+    if (!visible)
+    {
+      DesactivarPulsoMovimientoNodo();
+      DesactivarTodosGraficosNodo();
+      return;
+    }
+
+    RefrescarVisualSegunRevelado();
+  }
+
+  public void OcultarCaminosPorVision()
+  {
+    foreach (Transform child in transform)
+    {
+      if (!child.name.Contains("LineaCaminos"))
+      {
+        continue;
+      }
+
+      if (lineasReveladas.Contains(child))
+      {
+        child.gameObject.SetActive(true);
+      }
+      else
+      {
+        child.gameObject.SetActive(false);
+      }
+    }
+  }
+
+  void RevelarNodosFuturosIniciales(int profundidad)
+  {
+    if (profundidad <= 0 || DestinosPosibles == null || DestinosPosibles.Count == 0)
+    {
+      return;
+    }
+
+    HashSet<Nodo> visitados = new HashSet<Nodo>();
+    RevelarNodosFuturosInicialesRecursivo(this, profundidad, visitados);
+  }
+
+  static void RevelarNodosFuturosInicialesRecursivo(Nodo origen, int profundidadRestante, HashSet<Nodo> visitados)
+  {
+    if (origen == null || profundidadRestante <= 0)
+    {
+      return;
+    }
+
+    foreach (Nodo destino in origen.DestinosPosibles)
+    {
+      if (destino == null || !visitados.Add(destino))
+      {
+        continue;
+      }
+
+      origen.MostrarCaminoPorVisionHacia(destino);
+      destino.ForzarVisibleSinRevelarEspecial();
+      RevelarNodosFuturosInicialesRecursivo(destino, profundidadRestante - 1, visitados);
+    }
+  }
+
+  public void MostrarCaminoPorVisionHacia(Nodo destino)
+  {
+    if (destino == null)
+    {
+      return;
+    }
+
+    if (lineasPorDestino.TryGetValue(destino, out Transform linea) && linea != null)
+    {
+      MostrarLineaPorVision(linea);
+      return;
+    }
+
+    foreach (Transform child in transform)
+    {
+      if (!child.name.Contains("LineaCaminos")) continue;
+
+      Nodo nodoDestino = ObtenerDestinoSegunTransformLinea(child);
+      if (nodoDestino == destino)
+      {
+        MostrarLineaPorVision(child);
+        return;
+      }
+    }
+  }
+
+  void MostrarLineaPorVision(Transform linea)
+  {
+    if (linea == null)
+    {
+      return;
+    }
+
+    lineasReveladas.Add(linea);
+    linea.gameObject.SetActive(true);
+
+    MapDecorator mapDecorator = ObtenerDecoradorMapa();
+    if (mapDecorator == null)
+    {
+      return;
+    }
+
+    LineRenderer lr = linea.GetComponent<LineRenderer>();
+    if (lr != null)
+    {
+      mapDecorator.OcultarDecoracionRemovibleSobreCamino(lr);
+    }
+  }
+
+  public void RegistrarFaccionScoutRevelada(string factionId, string factionName)
+  {
+    faccionScoutReveladaId = factionId ?? "";
+    faccionScoutReveladaNombre = factionName ?? "";
+  }
+
+  public bool TieneFaccionScoutRevelada()
+  {
+    return !string.IsNullOrEmpty(faccionScoutReveladaId);
+  }
+
+  public string ObtenerFaccionScoutReveladaId()
+  {
+    return faccionScoutReveladaId;
+  }
+
+  public string ObtenerFaccionScoutReveladaNombre()
+  {
+    return faccionScoutReveladaNombre;
+  }
+
   public void PosicionarObjetoEnNodo(GameObject go)
   {
     if (go == null)
@@ -684,14 +868,8 @@ public class Nodo : MonoBehaviour
 
   private void OnMouseDown()
   {
-    if (CampaignManager.Instance != null)
-    {
-      AsentamientoManager asentamientoManager = CampaignManager.Instance.ObtenerAsentamientoManager();
-      if (asentamientoManager != null && asentamientoManager.TieneInteraccionActiva)
-      {
-        return;
-      }
-    }
+    if (DebeIgnorarInputMouseNodo())
+      return;
 
     var tm = CampaignManager.Instance != null ? CampaignManager.Instance.scTutorialManager : null;
     if (tm != null && tm.tutorialActivo)
@@ -701,11 +879,18 @@ public class Nodo : MonoBehaviour
         return;
     }
 
-    if (EventSystem.current.IsPointerOverGameObject() && !TooltipNodos.Instance.tooltipObject.activeInHierarchy)
+    if (!Input.GetMouseButtonDown(0) && !Input.GetMouseButton(0))
+    {
       return;
+    }
 
     if (scMapaManager.nodoActual.DestinosPosibles.Contains(this))
     {
+      if (CampaignManager.Instance != null && !CampaignManager.Instance.IntentarIniciarViajeDesdeNodoActual())
+      {
+        return;
+      }
+
       if (tm != null && tm.tutorialActivo)
       {
         if (tm.pasoActual == 2)
@@ -731,6 +916,54 @@ public class Nodo : MonoBehaviour
         CampaignManager.Instance.CambiarEsperanzaActual(-5);
       }
     }
+  }
+
+  private void OnMouseOver()
+  {
+    if (!Input.GetMouseButtonDown(1))
+    {
+      return;
+    }
+
+    if (DebeIgnorarInputMouseNodo())
+    {
+      return;
+    }
+
+    CampaignManager.Instance.IntentarEnviarExploradores(this);
+  }
+
+  bool DebeIgnorarInputMouseNodo()
+  {
+    if (!visiblePorVision || CampaignManager.Instance == null)
+    {
+      return true;
+    }
+
+    AsentamientoManager asentamientoManager = CampaignManager.Instance.ObtenerAsentamientoManager();
+    if (asentamientoManager != null && asentamientoManager.TieneInteraccionActiva)
+    {
+      return true;
+    }
+
+    var tm = CampaignManager.Instance.scTutorialManager;
+    if (tm != null && tm.tutorialActivo)
+    {
+      // Permitir interacción solo en los pasos de mapa durante el tutorial.
+      if (!(tm.pasoActual == 2 || tm.pasoActual == 11 || tm.pasoActual == 17 || tm.pasoActual == 21 || tm.pasoActual == 30))
+        return true;
+    }
+
+    if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+    {
+      bool tooltipActivo = TooltipNodos.Instance != null &&
+                           TooltipNodos.Instance.tooltipObject != null &&
+                           TooltipNodos.Instance.tooltipObject.activeInHierarchy;
+      if (!tooltipActivo)
+        return true;
+    }
+
+    return false;
   }
 
 
@@ -1306,9 +1539,14 @@ if (esLaLider)
         if (lr == null) continue;
 
         if (CoincideExtremoLineaConPosicion(lr, transform.position))
+        {
+          child.gameObject.SetActive(true);
           SetMaterialCamino(child, MaterialCaminoUsado);
+        }
         else
+        {
           SetMaterialCamino(child, MaterialCaminoOriginal);
+        }
       }
     }
 
@@ -1339,6 +1577,11 @@ if (esLaLider)
   #endregion
 
   public void Revelar(bool esAtajo)
+  {
+    Revelar(esAtajo, true);
+  }
+
+  void Revelar(bool esAtajo, bool permitirNodoMisterioso)
   {
     bool estabaRevelado = revelado;
     revelado = true;
@@ -1508,25 +1751,84 @@ if (esLaLider)
       if (tipoNodo == 14) tipoNodo = 1; //Santuario a Batalla normal
     }
 
-    ActivarNodoVisual(tipoNodo, esAtajo, estabaRevelado);
+    ActivarNodoVisual(tipoNodo, esAtajo, estabaRevelado, permitirNodoMisterioso);
 
     if (esAtajo)
     {
       ConfigurarResultadoAtajoSubterraneo();
     }
+
+    if (!visiblePorVision)
+    {
+      DesactivarTodosGraficosNodo();
+    }
   }
 
-  public void TiradaExploracion(int chances, bool continua, string actividadExploradorON = "", bool sinLog = false)
+  public void RevelarPorExploradores()
   {
+    Revelar(false);
+    if (!esMisterioso)
+    {
+      ActivarVfxDescubrimiento();
+      return;
+    }
+
+    esMisterioso = false;
+    ActivarNodoVisual(tipoNodo, false, true);
+    ActivarVfxDescubrimiento();
+    if (!visiblePorVision)
+    {
+      DesactivarTodosGraficosNodo();
+    }
+  }
+
+  void MarcarComoMisteriosoPorExploracionFallida()
+  {
+    if (revelado || tipoNodo == 16)
+    {
+      return;
+    }
+
+    revelado = true;
+    esMisterioso = true;
+    numVisualActual = 12;
+    AplicarVisualGuardado(numVisualActual, esMisterioso);
+    SincronizarVFXPersistentes();
+
+    if (!visiblePorVision)
+    {
+      DesactivarTodosGraficosNodo();
+    }
+  }
+
+  public void TiradaExploracion(int chances, bool continua, string actividadExploradorON = "", bool sinLog = false, int distanciaRestante = -1, bool marcarFallosComoMisterioso = true)
+  {
+    if (distanciaRestante < 0 && CampaignManager.Instance != null)
+    {
+      distanciaRestante = Mathf.Max(1, CampaignManager.Instance.ObtenerDistanciaVisionEfectiva());
+    }
+
+    if (distanciaRestante == 0)
+    {
+      return;
+    }
+
     bool yaAvisoLog = sinLog;
     int cappedChance = Mathf.Clamp(chances, 0, 100);
 
     foreach (Nodo nodo in DestinosPosibles)
     {
       int tirada = UnityEngine.Random.Range(0, 100);
-      if (tirada >= cappedChance) continue;
+      if (tirada >= cappedChance)
+      {
+        if (marcarFallosComoMisterioso)
+        {
+          nodo.MarcarComoMisteriosoPorExploracionFallida();
+        }
+        continue;
+      }
 
-      nodo.Revelar(false);
+      nodo.Revelar(false, false);
       int logChance = Mathf.Min(cappedChance, 90);
 
       if ((continua || !string.IsNullOrEmpty(actividadExploradorON)) && logChance > 36)
@@ -1545,7 +1847,8 @@ if (esLaLider)
         if (continua)
         {
           int nextChance = Mathf.Clamp(logChance - 15, 0, 90);
-          if (nextChance > 0) nodo.TiradaExploracion(nextChance, true, "", true);
+          int siguienteDistancia = distanciaRestante > 0 ? distanciaRestante - 1 : -1;
+          if (nextChance > 0) nodo.TiradaExploracion(nextChance, true, "", true, siguienteDistancia, false);
         }
       }
     }
@@ -1562,6 +1865,36 @@ if (esLaLider)
 
       child.gameObject.SetActive(false);
     }
+  }
+
+  void DesactivarTodosGraficosNodo()
+  {
+    foreach (Transform child in transform)
+    {
+      if (child.name.Contains("Nodo"))
+      {
+        child.gameObject.SetActive(false);
+      }
+    }
+  }
+
+  void RefrescarVisualSegunRevelado()
+  {
+    if (!visiblePorVision)
+    {
+      DesactivarTodosGraficosNodo();
+      return;
+    }
+
+    if (!revelado)
+    {
+      DesactivarTodosGraficosNodo();
+      ActivarVisualBaseNoRevelado();
+      return;
+    }
+
+    AplicarVisualGuardado(numVisualActual, esMisterioso);
+    SincronizarVFXPersistentes();
   }
 
   bool ActivarVisualPorCodigo(int codigo)
@@ -1640,7 +1973,7 @@ if (esLaLider)
     visualSettlement.localScale = escalaSettlementOriginal * multiplicador;
   }
 
-  public void ActivarNodoVisual(int num, bool esAtajo, bool estabaRevelado)
+  public void ActivarNodoVisual(int num, bool esAtajo, bool estabaRevelado, bool permitirNodoMisterioso = true)
   {
     DesactivarGraficosNodo();
 
@@ -1667,7 +2000,7 @@ if (esLaLider)
     if (nodoRitual) chancesMisterioso = 0;
     if (nodoIncendiado) chancesMisterioso = 0;
 
-    if (UnityEngine.Random.Range(0, 100) < chancesMisterioso && tipoNodo != 16)
+    if (permitirNodoMisterioso && UnityEngine.Random.Range(0, 100) < chancesMisterioso && tipoNodo != 16)
     {
       num = 12; // misterioso
       esMisterioso = true;
@@ -1706,14 +2039,32 @@ if (esLaLider)
 
   void OnEnable()
   {
+    if (!Application.isPlaying)
+    {
+      return;
+    }
+
     // Sincronizar VFX persistentes con estado lógico al reactivar (antes de cualquier early-return)
     //SincronizarVFXPersistentes();
     SincronizarVFXPersistentes();
-    Invoke("SincronizarVFXPersistentes", 0.1f);
+    Invoke(nameof(SincronizarVFXPersistentes), 0.1f);
 
     if (tipoNodo == 15 && nodoRitual && numVisualActual == 16)
     {
       numVisualActual = 15;
+    }
+
+    if (!visiblePorVision)
+    {
+      DesactivarTodosGraficosNodo();
+      return;
+    }
+
+    if (!revelado)
+    {
+      DesactivarTodosGraficosNodo();
+      ActivarVisualBaseNoRevelado();
+      return;
     }
 
     int codigoAAplicar = numVisualActual > 0 ? numVisualActual : tipoNodo;
@@ -1757,14 +2108,28 @@ if (esLaLider)
 
   void OnDisable()
   {
+    if (!Application.isPlaying)
+    {
+      return;
+    }
+
     RestaurarPreviewHoverCaminosPosibles();
     DesactivarPulsoMovimientoNodo();
   }
 
   void OnMouseEnter()
   {
+    if (!visiblePorVision) return;
     if (EventSystem.current.IsPointerOverGameObject()) return;
     AplicarPreviewHoverCaminosPosibles();
+
+    if (!revelado)
+    {
+      descripcion = TRADU.i.Traducir("Nodo Desconocido.");
+      Vector3 posicionTooltip = Input.mousePosition;
+      TooltipNodos.Instance.ShowTooltip(descripcion, posicionTooltip, this);
+      return;
+    }
 
     switch (tipoNodo)
     {
@@ -1786,6 +2151,8 @@ if (esLaLider)
     if (esMisterioso) descripcion = TRADU.i.Traducir("Nodo Misterioso, no se ha logrado revelar.");
     if (transform.GetChild(11).gameObject.activeInHierarchy) descripcion = TRADU.i.Traducir("Salida del atajo subterraneo, no sabemos que hay del otro lado.");
     if (transform.GetChild(12).gameObject.activeInHierarchy) descripcion = TRADU.i.Traducir("Santuario de Purificadores.");
+    if (TieneFaccionScoutRevelada())
+      descripcion += "\n--" + ObtenerFaccionScoutReveladaNombre() + "--";
 
     Vector3 pos = Input.mousePosition;
     TooltipNodos.Instance.ShowTooltip(descripcion, pos, this);
@@ -1913,6 +2280,25 @@ if (esLaLider)
   {
     // En tutorial nunca deberáan quedar incendios/rituales activos
     LimpiarEstadosPersistentesNoValidos();
+
+    if (!visiblePorVision || !revelado)
+    {
+      if (transform.childCount > 14)
+        transform.GetChild(14).gameObject.SetActive(false);
+      if (transform.childCount > 15)
+        transform.GetChild(15).gameObject.SetActive(false);
+
+      for (int i = 0; i < transform.childCount; i++)
+      {
+        var child = transform.GetChild(i);
+        string name = child.name.ToLowerInvariant();
+        if (name.Contains("nodoincendiado") || name.Contains("nodoritual"))
+        {
+          child.gameObject.SetActive(false);
+        }
+      }
+      return;
+    }
 
     // Fallback por índice (prefab original)
     if (transform.childCount > 14)

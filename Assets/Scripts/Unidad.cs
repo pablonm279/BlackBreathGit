@@ -2987,6 +2987,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       danioTotal = adminTraitVida != null ? adminTraitVida.AjustarDanioRecibidoPorTraits(this, danioTotal) : danioTotal;
       muereConDanio = HP_actual - danioTotal < 1;
       HP_actual -= danioTotal;
+      RegistrarDanioCampania(uCausante, danioTotal);
       bool muertePrevenida = adminTraitVida != null && adminTraitVida.ProcesarTraitPuertasDeLaMuerteSiCorresponde(this);
       if (muertePrevenida)
       {
@@ -3654,6 +3655,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
       await BattleManager.DelayCombateAsync(150);
       HP_actual -= danioFinalInt;
+      RegistrarDanioCampania(uCausante, danioFinalInt);
       adminTraitVida?.ProcesarTraitPuertasDeLaMuerteSiCorresponde(this);
       adminTraitVida?.ProcesarTraitDuroDeMatarSiCorresponde(this);
       string textoDanioElemental = "-" + danioFinalInt + IconoDanioFlotante(tipoDanio);
@@ -3791,6 +3793,7 @@ public virtual void AcabaDeMatarUnidad(Unidad uVictima)
     : nombreAsesino + " derrota a " + nombreVictima;
   SumarValentia(2, motivoAsesino);
   OtorgarExperienciaPorBajaSiCorresponde(uVictima, nombreAsesino, nombreVictima, enIngles);
+  ObtenerPersonajeCampania(this)?.SumarEnemigosEliminados();
 
   LadoManager ladoAliado = null;
   if (BattleManager.Instance != null && CasillaPosicion != null)
@@ -3888,6 +3891,41 @@ private int ObtenerTierUnidadEnemiga(Unidad victima)
   }
 
   return Mathf.Max(1, ia.tierEnemigo);
+}
+
+private Personaje ObtenerPersonajeCampania(Unidad unidad)
+{
+  if (unidad == null)
+  {
+    return null;
+  }
+
+  CampaignManager camp = CampaignManager.Instance;
+  AdministradorEscenas admin = camp != null ? camp.scAdministradorEscenas : null;
+  return admin != null ? admin.ObtenerPersonajeDesdeUnidad(unidad) : null;
+}
+
+private void RegistrarDanioCampania(Unidad uCausante, int danioAplicado)
+{
+  if (danioAplicado <= 0)
+  {
+    return;
+  }
+
+  ObtenerPersonajeCampania(this)?.SumarDanioRecibido(danioAplicado);
+
+  bool sonEnemigos = uCausante != null
+    && uCausante != this
+    && uCausante.CasillaPosicion != null
+    && CasillaPosicion != null
+    && uCausante.CasillaPosicion.lado != CasillaPosicion.lado;
+
+  if (!sonEnemigos)
+  {
+    return;
+  }
+
+  ObtenerPersonajeCampania(uCausante)?.SumarDanioHecho(danioAplicado);
 }
 
   public virtual void AcabaDeHacerDañoA(Unidad uVictima)
@@ -4422,6 +4460,7 @@ public void UnidadMuere()
   {
    Casilla casillaMuerte = CasillaPosicion;
    yaMurio = true;
+   ObtenerPersonajeCampania(this)?.SumarVecesDerribado();
    CancelarMovimientoPendiente();
    GenerarTextoFlotante(TRADU.i.Traducir("Muerto"), new Color(0.35f, 0.35f, 0.35f), FloatingTextContext.Resist);
 

@@ -6,29 +6,22 @@ using TMPro;
 
 public class btnPersonaje : MonoBehaviour
 {
-  private static readonly string[] IconosLegacyCampania =
-  {
-    "BajaMoral",
-    "Herido",
-    "Corrupto",
-    "Fatigado",
-    "Enfermo",
-    "AltaMoral",
-    "Bendecido",
-    "Avergonzado",
-    "Vacio-dejar"
-  };
-
   public Personaje personajeRepresentado;
 
   public TextMeshProUGUI txtPersonajeRepresentado;
+  [SerializeField] private Image retratoRepresenta;
+  [SerializeField] private Image retratoSombraRepresenta;
+  [SerializeField] private btnActividad actividadRetrato;
+  [SerializeField] private GameObject indicadorActividadFijada;
   [SerializeField] private Transform contenedorEstadosCampania;
   [SerializeField] private GameObject prefabEstadoCampania;
   [SerializeField] private Image iconoMuerto;
+  [SerializeField] private GameObject indicadorNivelPendiente;
+  [SerializeField] private GameObject indicadorSeleccionado;
 
   private void Awake()
   {
-    AsegurarReferenciasEstadosCampania();
+    AsegurarReferencias();
   }
 
 
@@ -39,11 +32,28 @@ public class btnPersonaje : MonoBehaviour
     {
       if (!CampaignManager.Instance.goSequitos.activeInHierarchy)
       {
-        transform.parent.parent.GetComponent<MenuPersonajes>().SeleccionarPersonaje(personajeRepresentado, gameObject);
+        if (CampaignManager.Instance.scMenuCaravana != null)
+        {
+          CampaignManager.Instance.scMenuCaravana.AbrirMenuPersonajes(personajeRepresentado);
+        }
+        else
+        {
+          MenuPersonajes menuPersonajes = GetComponentInParent<MenuPersonajes>();
+          if (menuPersonajes != null)
+          {
+            menuPersonajes.PrepararYAbrirMenu(personajeRepresentado);
+          }
+        }
       }
       else //Si estan los sequitos activos, por lo tanto se asume que es el de curanderos curando.
       {
-        CampaignManager.Instance.goSequitos.transform.GetChild(2).GetChild(1).gameObject.GetComponent<SequitoCuranderos>().TratarHerida(personajeRepresentado);
+        SequitoCuranderos curanderos = CampaignManager.Instance.scMenuSequito != null
+          ? CampaignManager.Instance.scMenuSequito.ObtenerSequitoCuranderosActivo()
+          : null;
+        if (curanderos != null)
+        {
+          curanderos.TratarHerida(personajeRepresentado);
+        }
       }
     }
     else if (CampaignManager.Instance.scMenuBatallas.UIEmpezarBatalla.activeInHierarchy || CampaignManager.Instance.scMenuBatallas.UIEmpezarBatallaACaravana.activeInHierarchy) //Si esta en la pantalla de batalla, se selecciona el personaje para la batalla
@@ -56,16 +66,42 @@ public class btnPersonaje : MonoBehaviour
   }
 
   public Image vidaRepresenta;
+  public void Configurar(Personaje personaje)
+  {
+    personajeRepresentado = personaje;
+    RepresentarTodo();
+  }
+
+  public void SetSeleccionado(bool seleccionado)
+  {
+    AsegurarReferencias();
+
+    if (indicadorSeleccionado != null)
+    {
+      indicadorSeleccionado.SetActive(seleccionado);
+    }
+  }
+
+  public GameObject ObtenerPrefabEstadoCampania()
+  {
+    return prefabEstadoCampania;
+  }
+
   public void representarVida()
   {
+    AsegurarReferencias();
+
     if (personajeRepresentado != null)
     {
 
       float vidaMaxEscalada = personajeRepresentado.ObtenerVidaMaximaConFuerza();
       float vidaActualEscalada = personajeRepresentado.ObtenerVidaActualConFuerza();
-      float valor = 1 - (vidaActualEscalada / vidaMaxEscalada);
+      float valor = vidaMaxEscalada > 0f ? 1f - (vidaActualEscalada / vidaMaxEscalada) : 1f;
 
-      vidaRepresenta.fillAmount = valor;
+      if (vidaRepresenta != null)
+      {
+        vidaRepresenta.fillAmount = Mathf.Clamp01(valor);
+      }
 
 
       if (!CampaignManager.Instance.goMenuBatallas.activeInHierarchy) //Muestra efecto de subida pendiente
@@ -79,16 +115,35 @@ public class btnPersonaje : MonoBehaviour
 
           if (sube)
           {
-            transform.GetChild(2).gameObject.SetActive(true);
+            if (indicadorNivelPendiente != null)
+            {
+              indicadorNivelPendiente.SetActive(true);
+            }
           }
-          else { transform.GetChild(2).gameObject.SetActive(false); }
+          else if (indicadorNivelPendiente != null)
+          {
+            indicadorNivelPendiente.SetActive(false);
+          }
         }
       }
+      else if (indicadorNivelPendiente != null)
+      {
+        indicadorNivelPendiente.SetActive(false);
+      }
+    }
+    else if (indicadorNivelPendiente != null)
+    {
+      indicadorNivelPendiente.SetActive(false);
     }
 
   }
   public void representarinfo()
   {
+    if (txtPersonajeRepresentado == null)
+    {
+      return;
+    }
+
     if (CampaignManager.Instance.goMenuBatallas.activeInHierarchy)
     {
       if (personajeRepresentado != null)
@@ -116,9 +171,17 @@ public class btnPersonaje : MonoBehaviour
       }
     }
     else
+    {
+      if (personajeRepresentado != null)
+      {
+        txtPersonajeRepresentado.gameObject.SetActive(true);
+        txtPersonajeRepresentado.text = personajeRepresentado.sNombre;
+      }
+      else
       {
         txtPersonajeRepresentado.gameObject.SetActive(false);
       }
+    }
 
   }
   private void OnEnable()
@@ -130,14 +193,15 @@ public class btnPersonaje : MonoBehaviour
   }
   public void RepresentarTodo()
   {
+    RepresentarRetrato();
+    RepresentarActividad();
     representarinfo();
     representarVida();
     RepresentarIconos();
   }
   public void RepresentarIconos()
   {
-    AsegurarReferenciasEstadosCampania();
-    OcultarIconosLegacyCampania();
+    AsegurarReferencias();
 
     if (iconoMuerto != null)
     {
@@ -195,8 +259,118 @@ public class btnPersonaje : MonoBehaviour
     }
   }
 
-  private void AsegurarReferenciasEstadosCampania()
+  private void RepresentarRetrato()
   {
+    AsegurarReferencias();
+
+    Sprite spriteRetrato = personajeRepresentado != null ? personajeRepresentado.spRetrato : null;
+
+    if (retratoRepresenta != null)
+    {
+      retratoRepresenta.sprite = spriteRetrato;
+    }
+
+    if (retratoSombraRepresenta != null)
+    {
+      retratoSombraRepresenta.sprite = spriteRetrato;
+    }
+  }
+
+  private void RepresentarActividad()
+  {
+    AsegurarReferencias();
+
+    if (indicadorActividadFijada != null)
+    {
+      indicadorActividadFijada.SetActive(personajeRepresentado != null && personajeRepresentado.ActividadFijada);
+    }
+
+    if (actividadRetrato == null)
+    {
+      return;
+    }
+
+    Actividades actividades = CampaignManager.Instance != null
+      && CampaignManager.Instance.scMenuPersonajes != null
+      ? CampaignManager.Instance.scMenuPersonajes.scActividades
+      : null;
+
+    if (personajeRepresentado == null || personajeRepresentado.Camp_Muerto || actividades == null)
+    {
+      actividadRetrato.gameObject.SetActive(false);
+      if (indicadorActividadFijada != null)
+      {
+        indicadorActividadFijada.SetActive(false);
+      }
+      return;
+    }
+
+    Actividad actividadActual = actividades.ObtenerActividadActual(personajeRepresentado);
+    if (actividadActual == null)
+    {
+      actividadRetrato.gameObject.SetActive(false);
+      if (indicadorActividadFijada != null)
+      {
+        indicadorActividadFijada.SetActive(false);
+      }
+      return;
+    }
+
+    actividadRetrato.gameObject.SetActive(true);
+    actividadRetrato.ConfigurarIndicadorRetrato(actividadActual, actividades, personajeRepresentado);
+    actividadRetrato.actImage.sprite = actividades.ObtenerSpriteActividad(actividadActual.IDActividad);
+    if (actividadRetrato.Recuadro != null)
+    {
+      actividadRetrato.Recuadro.SetActive(false);
+    }
+  }
+
+  private void AsegurarReferencias()
+  {
+    if (retratoRepresenta == null)
+    {
+      Transform retrato = transform.Find("RetratoMask/Retrato");
+      if (retrato == null)
+      {
+        retrato = transform.Find("Retrato");
+      }
+      if (retrato != null)
+      {
+        retratoRepresenta = retrato.GetComponent<Image>();
+      }
+    }
+
+    if (retratoSombraRepresenta == null)
+    {
+      Transform retratoSombra = transform.Find("RetratoMask/RetratoSombra");
+      if (retratoSombra == null)
+      {
+        retratoSombra = transform.Find("RetratoSombra");
+      }
+      if (retratoSombra != null)
+      {
+        retratoSombraRepresenta = retratoSombra.GetComponent<Image>();
+      }
+    }
+
+    if (actividadRetrato == null)
+    {
+      Transform actividad = transform.Find("btnActividad");
+      if (actividad != null)
+      {
+        actividadRetrato = actividad.GetComponent<btnActividad>();
+      }
+    }
+
+    if (indicadorActividadFijada == null)
+    {
+      Transform candadoActividad = transform.Find("imCandadoActividad");
+      if (candadoActividad != null)
+      {
+        indicadorActividadFijada = candadoActividad.gameObject;
+      }
+    }
+
     if (contenedorEstadosCampania == null)
     {
       Transform estados = transform.Find("Estados");
@@ -206,24 +380,30 @@ public class btnPersonaje : MonoBehaviour
       }
     }
 
+    if (indicadorNivelPendiente == null)
+    {
+      Transform nivelPendiente = transform.Find("NivelPendiente");
+      if (nivelPendiente != null)
+      {
+        indicadorNivelPendiente = nivelPendiente.gameObject;
+      }
+    }
+
+    if (indicadorSeleccionado == null)
+    {
+      Transform seleccionado = transform.Find("Seleccionado");
+      if (seleccionado != null)
+      {
+        indicadorSeleccionado = seleccionado.gameObject;
+      }
+    }
+
     if (iconoMuerto == null)
     {
       Transform muerto = transform.Find("Muerto");
       if (muerto != null)
       {
         iconoMuerto = muerto.GetComponent<Image>();
-      }
-    }
-  }
-
-  private void OcultarIconosLegacyCampania()
-  {
-    for (int i = 0; i < IconosLegacyCampania.Length; i++)
-    {
-      Transform icono = transform.Find(IconosLegacyCampania[i]);
-      if (icono != null)
-      {
-        icono.gameObject.SetActive(false);
       }
     }
   }

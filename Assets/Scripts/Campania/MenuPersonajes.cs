@@ -54,12 +54,25 @@ public class MenuPersonajes : MonoBehaviour
   [SerializeField] TextMeshProUGUI txtResAcido;
   [SerializeField] TextMeshProUGUI txtResNecro;
   [SerializeField] TextMeshProUGUI txtResDivino;
+  [SerializeField] TextMeshProUGUI txtDiasViajado;
+  [SerializeField] TextMeshProUGUI txtEnemigosEliminados;
+  [SerializeField] TextMeshProUGUI txtDanioHecho;
+  [SerializeField] TextMeshProUGUI txtDanioRecibido;
+  [SerializeField] TextMeshProUGUI txtVecesDerribado;
 
   [SerializeField] TextMeshProUGUI txtContenedorRasgos;
   [SerializeField] TextMeshProUGUI txtCapacidadPersonajes;
 
   [SerializeField] Image imCorazon;
   [SerializeField] Image imMedalla;
+  [SerializeField] Image RetratoGrande;
+  [SerializeField] Image SombraRetratoGrande;
+
+  [SerializeField] GameObject EstadosContainer;
+  [SerializeField] GameObject EcharContainer;
+  [SerializeField] TextMeshProUGUI txtEchar;
+
+  private GameObject prefabEstadoCampania;
 
   private void Awake()
   {
@@ -72,6 +85,19 @@ public class MenuPersonajes : MonoBehaviour
     {
       scEquipo.CerrarInventario();
     }
+
+    LimpiarSeleccionVisual();
+  }
+
+  public void AbrirEchar()
+  {
+    if (EcharContainer == null)
+    {
+      return;
+    }
+
+    ActualizarTextoEchar();
+    EcharContainer.SetActive(!EcharContainer.activeInHierarchy);
   }
 
   public void PrepararYAbrirMenu(Personaje personajeInicial = null)
@@ -94,11 +120,106 @@ public class MenuPersonajes : MonoBehaviour
     {
       scEquipo.ConfigurarClickDerechoSlots(this);
     }
-    ActualizarLista();
+    if (ListaVisualPersonajesSincronizada())
+    {
+      RefrescarBotonesExistentes();
+    }
+    else
+    {
+      ActualizarLista();
+    }
     ActualizarTextoCapacidadPersonajes();
     CancelInvoke("ActualizarInfo");
     ActualizarInfo();
     ForzarRebuildInmediato();
+  }
+
+  private bool ListaVisualPersonajesSincronizada()
+  {
+    if (contenedorUIPersonajes == null)
+    {
+      return false;
+    }
+
+    int personajesVisibles = 0;
+    foreach (Personaje pers in listaPersonajes)
+    {
+      if (pers != null && !pers.Camp_Muerto)
+      {
+        personajesVisibles++;
+      }
+    }
+
+    if (contenedorUIPersonajes.transform.childCount != personajesVisibles)
+    {
+      return false;
+    }
+
+    foreach (Transform child in contenedorUIPersonajes.transform)
+    {
+      btnPersonaje btn = child.GetComponent<btnPersonaje>();
+      if (btn == null || btn.personajeRepresentado == null || btn.personajeRepresentado.Camp_Muerto)
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private void RefrescarBotonesExistentes()
+  {
+    if (contenedorUIPersonajes == null)
+    {
+      return;
+    }
+
+    bool mostrarSeleccion = DebeMostrarSeleccionVisual();
+
+    foreach (Transform child in contenedorUIPersonajes.transform)
+    {
+      btnPersonaje btn = child.GetComponent<btnPersonaje>();
+
+      if (btn != null)
+      {
+        btn.RepresentarTodo();
+        btn.SetSeleccionado(mostrarSeleccion && pSel == btn.personajeRepresentado);
+      }
+    }
+  }
+
+  private void LimpiarSeleccionVisual()
+  {
+    if (contenedorUIPersonajes == null)
+    {
+      return;
+    }
+
+    foreach (Transform child in contenedorUIPersonajes.transform)
+    {
+      btnPersonaje btn = child.GetComponent<btnPersonaje>();
+      if (btn != null)
+      {
+        btn.SetSeleccionado(false);
+      }
+    }
+  }
+
+  private bool DebeMostrarSeleccionVisual()
+  {
+    return isActiveAndEnabled && gameObject.activeInHierarchy;
+  }
+
+  public void RefrescarListaVisual()
+  {
+    if (ListaVisualPersonajesSincronizada())
+    {
+      RefrescarBotonesExistentes();
+    }
+    else
+    {
+      ActualizarLista();
+    }
   }
 
   private void AsegurarTextoCapacidadPersonajes()
@@ -157,6 +278,11 @@ public class MenuPersonajes : MonoBehaviour
 
   public void ActualizarLista()
   {
+    if (contenedorUIPersonajes == null)
+    {
+      ActualizarTextoCapacidadPersonajes();
+      return;
+    }
 
     foreach (Transform transform in contenedorUIPersonajes.transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
     {
@@ -168,8 +294,11 @@ public class MenuPersonajes : MonoBehaviour
       if (!pers.Camp_Muerto)
       {
         GameObject btnPers = Instantiate(prefabBtnPersonaje, contenedorUIPersonajes.transform);
-        btnPers.GetComponent<Image>().sprite = pers.spRetrato;
-        btnPers.GetComponent<btnPersonaje>().personajeRepresentado = pers;
+        btnPersonaje btn = btnPers.GetComponent<btnPersonaje>();
+        if (btn != null)
+        {
+          btn.personajeRepresentado = pers;
+        }
       }
 
     }
@@ -182,12 +311,7 @@ public class MenuPersonajes : MonoBehaviour
       if (btn != null) // Asegúrate de que el componente btnPersonaje exista
       {
         btn.RepresentarTodo();
-
-        Transform seleccionado = btn.transform.Find("Seleccionado");
-        if (seleccionado != null)
-        {
-          seleccionado.gameObject.SetActive(pSel == btn.personajeRepresentado);
-        }
+        btn.SetSeleccionado(DebeMostrarSeleccionVisual() && pSel == btn.personajeRepresentado);
       }
     }
 
@@ -203,15 +327,8 @@ public class MenuPersonajes : MonoBehaviour
 
     pSel = pers;
     RuntimeAnalytics.TrackDesign("characters", "select", RuntimeAnalytics.ClassToken(pSel));
-    ActualizarLista();
-    if (btnPers != null)
-    {
-      Transform seleccionado = btnPers.transform.Find("Seleccionado");
-      if (seleccionado != null)
-      {
-        seleccionado.gameObject.SetActive(true);
-      }
-    }
+    RefrescarBotonesExistentes();
+    ActualizarTextoEcharSiAbierto();
 
     CancelInvoke("ActualizarInfo");
     ActualizarInfo();
@@ -223,10 +340,110 @@ public class MenuPersonajes : MonoBehaviour
 
   }
 
+  public void EcharPersonajeSeleccionado()
+  {
+    if (pSel == null)
+    {
+      return;
+    }
+
+    Personaje personajeAEchar = pSel;
+    int esperanzaPerdida = Mathf.Max(1, (int)personajeAEchar.fNivelActual) * 2;
+
+    if (scEquipo != null)
+    {
+      scEquipo.CerrarInventario();
+    }
+
+    DestruirItemEquipadoSiExiste(personajeAEchar.itemArma);
+    DestruirItemEquipadoSiExiste(personajeAEchar.itemArmadura);
+    DestruirItemEquipadoSiExiste(personajeAEchar.Accesorio1);
+    DestruirItemEquipadoSiExiste(personajeAEchar.Accesorio2);
+    DestruirItemEquipadoSiExiste(personajeAEchar.Consumible1);
+    DestruirItemEquipadoSiExiste(personajeAEchar.Consumible2);
+
+    listaPersonajes.Remove(personajeAEchar);
+
+    if (CampaignManager.Instance != null)
+    {
+      CampaignManager.Instance.CambiarEsperanzaActual(-esperanzaPerdida);
+    }
+
+    Destroy(personajeAEchar.gameObject);
+
+    Personaje siguiente = listaPersonajes.Find(p => p != null && !p.Camp_Muerto);
+    pSel = siguiente;
+
+    if (pSel == null)
+    {
+      ActualizarLista();
+      ActualizarTextoCapacidadPersonajes();
+      if (EcharContainer != null)
+      {
+        EcharContainer.SetActive(false);
+      }
+      gameObject.SetActive(false);
+      return;
+    }
+    AbrirEchar();
+    PrepararYAbrirMenu(pSel);
+
+  }
+
+  private void DestruirItemEquipadoSiExiste(Item item)
+  {
+    if (item == null)
+    {
+      return;
+    }
+
+    if (scEquipo != null)
+    {
+      scEquipo.listInventario.Remove(item.gameObject);
+    }
+
+    Destroy(item.gameObject);
+  }
+
+  private void ActualizarTextoEcharSiAbierto()
+  {
+    if (EcharContainer != null && EcharContainer.activeInHierarchy)
+    {
+      ActualizarTextoEchar();
+    }
+  }
+
+  private void ActualizarTextoEchar()
+  {
+    if (txtEchar == null)
+    {
+      return;
+    }
+
+    if (pSel == null)
+    {
+      txtEchar.text = string.Empty;
+      return;
+    }
+
+    int esperanzaPerdida = Mathf.Max(1, (int)pSel.fNivelActual) * 2;
+    txtEchar.text =
+      TRADU.i.Traducir("Echar a ")
+      + pSel.sNombre
+      + TRADU.i.Traducir(" hará que se pierdan ")
+      + esperanzaPerdida
+      + TRADU.i.Traducir(" Esperanza. ¿Continuar?");
+  }
+
 
 
   public void ActualizarInfo()
   {
+    if (pSel == null)
+    {
+      return;
+    }
+
     pSel.NormalizarPuntosPendientesPorNivelActual();
     SelPos(pSel.iPuestoDeseado);
     //Clase
@@ -242,10 +459,19 @@ public class MenuPersonajes : MonoBehaviour
 
 
     }
-    foreach (Transform transform in contenedorUIPersonajes.transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
+    if (contenedorUIPersonajes != null)
     {
-      transform.gameObject.GetComponent<btnPersonaje>().representarVida();
-      transform.gameObject.GetComponent<btnPersonaje>().RepresentarIconos();
+      bool mostrarSeleccion = DebeMostrarSeleccionVisual();
+      foreach (Transform transform in contenedorUIPersonajes.transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
+      {
+        btnPersonaje btn = transform.gameObject.GetComponent<btnPersonaje>();
+        if (btn != null)
+        {
+          btn.representarVida();
+          btn.RepresentarIconos();
+          btn.SetSeleccionado(mostrarSeleccion && pSel == btn.personajeRepresentado);
+        }
+      }
     }
 
     RepresentarRasgos();
@@ -257,8 +483,14 @@ public class MenuPersonajes : MonoBehaviour
 
     //Info
     txtNombre.text = pSel.sNombre;
+    if (RetratoGrande != null)
+    {
+      RetratoGrande.sprite = pSel.spRetrato;
+      SombraRetratoGrande.sprite = pSel.spRetrato;
+    }
+    RepresentarEstadosCampaniaSeleccionado();
     float experienciaNecesaria = pSel.ObtenerExperienciaNecesariaParaProximoNivel();
-    txtExperiencia.text = $"" + pSel.fExperienciaActual + "/" + experienciaNecesaria;
+    //txtExperiencia.text = $"" + pSel.fExperienciaActual + "/" + experienciaNecesaria;
     txtNivel.text = "" + pSel.fNivelActual;
     float vidaActualEscalada = pSel.ObtenerVidaActualConFuerza(scEquipo.BuffTOTALEQUIPOhpMax, scEquipo.BuffTOTALEQUIPOFuerza);
     float vidaMaxEscalada = pSel.ObtenerVidaMaximaConFuerza(scEquipo.BuffTOTALEQUIPOhpMax, scEquipo.BuffTOTALEQUIPOFuerza);
@@ -283,8 +515,134 @@ public class MenuPersonajes : MonoBehaviour
     txtResAcido.text = "" + pSel.ObtenerResElementalConPoder(pSel.iResAcido, scEquipo.BuffTOTALEQUIPOResAcido, scEquipo.BuffTOTALEQUIPOPoder);
     txtResNecro.text = "" + (pSel.iResNecro + scEquipo.BuffTOTALEQUIPOResNecro);
     txtResDivino.text = "" + (pSel.iResDivino + scEquipo.BuffTOTALEQUIPOResDivino);
+    if (txtDiasViajado != null) { txtDiasViajado.text = pSel.DiasViajado.ToString(); }
+    if (txtEnemigosEliminados != null) { txtEnemigosEliminados.text = pSel.EnemigosEliminados.ToString(); }
+    if (txtDanioHecho != null) { txtDanioHecho.text = pSel.DanioHecho.ToString(); }
+    if (txtDanioRecibido != null) { txtDanioRecibido.text = pSel.DanioRecibido.ToString(); }
+    if (txtVecesDerribado != null) { txtVecesDerribado.text = pSel.VecesDerribado.ToString(); }
 
     Invoke("ActualizarInfoNivel", 0.05f);
+  }
+
+  private void RepresentarEstadosCampaniaSeleccionado()
+  {
+    LimpiarEstadosCampaniaSeleccionado();
+
+    if (EstadosContainer == null || pSel == null || pSel.Camp_Muerto)
+    {
+      return;
+    }
+
+    if (pSel.Camp_Herido)
+    {
+      CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.Herido);
+    }
+
+    if (pSel.Camp_Corrupto)
+    {
+      CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.Corrupto);
+    }
+
+    if (pSel.Camp_Enfermo > 0)
+    {
+      CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.Enfermo);
+    }
+
+    if (pSel.Camp_Moral < 0)
+    {
+      CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.BajaMoral);
+    }
+
+    if (pSel.Camp_Moral > 0)
+    {
+      CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.AltaMoral);
+    }
+
+    if (pSel.Camp_Fatigado)
+    {
+      CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.Fatigado);
+    }
+
+    if (pSel.TieneCampBendecido())
+    {
+      CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.Bendecido);
+    }
+
+    if (pSel.Camp_Avergonzado)
+    {
+      CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.Avergonzado);
+    }
+  }
+
+  private void LimpiarEstadosCampaniaSeleccionado()
+  {
+    if (EstadosContainer == null)
+    {
+      return;
+    }
+
+    for (int i = EstadosContainer.transform.childCount - 1; i >= 0; i--)
+    {
+      Destroy(EstadosContainer.transform.GetChild(i).gameObject);
+    }
+  }
+
+  private void CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania tipoEstado)
+  {
+    if (EstadosContainer == null)
+    {
+      return;
+    }
+
+    GameObject prefabEstado = ObtenerPrefabEstadoCampania();
+    GameObject goEstado = prefabEstado != null
+      ? Instantiate(prefabEstado, EstadosContainer.transform, false)
+      : null;
+
+    if (goEstado == null)
+    {
+      return;
+    }
+
+    goEstado.transform.localScale = Vector3.one;
+
+    UIEstadoPersonajeCamp estadoUI = goEstado.GetComponent<UIEstadoPersonajeCamp>();
+    if (estadoUI == null)
+    {
+      estadoUI = goEstado.AddComponent<UIEstadoPersonajeCamp>();
+    }
+
+    estadoUI.Representar(tipoEstado, pSel);
+  }
+
+  private GameObject ObtenerPrefabEstadoCampania()
+  {
+    if (prefabEstadoCampania != null)
+    {
+      return prefabEstadoCampania;
+    }
+
+    if (contenedorUIPersonajes == null)
+    {
+      return null;
+    }
+
+    foreach (Transform child in contenedorUIPersonajes.transform)
+    {
+      btnPersonaje btn = child.GetComponent<btnPersonaje>();
+      if (btn == null)
+      {
+        continue;
+      }
+
+      prefabEstadoCampania = btn.ObtenerPrefabEstadoCampania();
+      if (prefabEstadoCampania != null)
+      {
+        return prefabEstadoCampania;
+      }
+    }
+
+    return null;
   }
 
 
@@ -302,11 +660,24 @@ public class MenuPersonajes : MonoBehaviour
     {
       if (PersonajeTraitCatalog.TryGet(rasgoId, out PersonajeTraitDefinition definicion))
       {
-        lineas.Add(PersonajeTraitCatalog.FormatearParaUi(definicion, idioma));
+        string nombre = definicion.ObtenerNombre(idioma);
+        if (string.IsNullOrWhiteSpace(nombre))
+        {
+          continue;
+        }
+
+        string descripcion = definicion.ObtenerDescripcion(idioma);
+        string bloque = nombre.ToUpperInvariant();
+
+        if (!string.IsNullOrWhiteSpace(descripcion))
+        {
+          bloque += "\n" + descripcion;
+        }
+        lineas.Add(bloque);
       }
     }
 
-    txtContenedorRasgos.text = string.Join("\n", lineas);
+    txtContenedorRasgos.text = string.Join("\n\n", lineas);
   }
 
   public Transform listaHab;
@@ -377,6 +748,12 @@ public class MenuPersonajes : MonoBehaviour
   }
   public void OnClickArma()
   {
+    if (FueClickDerechoEnSlotEquipo())
+    {
+      OnRightClickArma();
+      return;
+    }
+
     if (DebeIgnorarClickSlotPorBloqueoDerecho())
     {
       return;
@@ -384,10 +761,16 @@ public class MenuPersonajes : MonoBehaviour
 
     TooltipItems.Instance.HideTooltip();
     RuntimeAnalytics.TrackDesign("characters", "inventory_open", "weapon");
-    AbrirInventarioDeEquipo(1);
+    AlternarInventarioDeEquipo(1);
   }
   public void OnClickArmadura()
   {
+    if (FueClickDerechoEnSlotEquipo())
+    {
+      OnRightClickArmadura();
+      return;
+    }
+
     if (DebeIgnorarClickSlotPorBloqueoDerecho())
     {
       return;
@@ -395,7 +778,7 @@ public class MenuPersonajes : MonoBehaviour
 
     TooltipItems.Instance.HideTooltip();
     RuntimeAnalytics.TrackDesign("characters", "inventory_open", "armor");
-    AbrirInventarioDeEquipo(2);
+    AlternarInventarioDeEquipo(2);
   }
 
 
@@ -429,15 +812,20 @@ public class MenuPersonajes : MonoBehaviour
 
   public void OnClickAccesorio1()
   {
+    if (FueClickDerechoEnSlotEquipo())
+    {
+      OnRightClickAccesorio1();
+      return;
+    }
+
     if (DebeIgnorarClickSlotPorBloqueoDerecho())
     {
       return;
     }
 
     TooltipItems.Instance.HideTooltip();
-    scEquipo.accesorioACambiar = 1;
     RuntimeAnalytics.TrackDesign("characters", "inventory_open", "accessory_1");
-    AbrirInventarioDeEquipo(3);
+    AlternarInventarioDeEquipo(3, accesorioSlot: 1);
   }
 
   public void OnHoverAccesorio1()
@@ -454,15 +842,20 @@ public class MenuPersonajes : MonoBehaviour
 
   public void OnClickAccesorio2()
   {
+    if (FueClickDerechoEnSlotEquipo())
+    {
+      OnRightClickAccesorio2();
+      return;
+    }
+
     if (DebeIgnorarClickSlotPorBloqueoDerecho())
     {
       return;
     }
 
     TooltipItems.Instance.HideTooltip();
-    scEquipo.accesorioACambiar = 2;
     RuntimeAnalytics.TrackDesign("characters", "inventory_open", "accessory_2");
-    AbrirInventarioDeEquipo(3);
+    AlternarInventarioDeEquipo(3, accesorioSlot: 2);
   }
 
   public void OnHoverAccesorio2()
@@ -480,15 +873,20 @@ public class MenuPersonajes : MonoBehaviour
 
   public void OnClickConsumible1()
   {
+    if (FueClickDerechoEnSlotEquipo())
+    {
+      OnRightClickConsumible1();
+      return;
+    }
+
     if (DebeIgnorarClickSlotPorBloqueoDerecho())
     {
       return;
     }
 
     TooltipItems.Instance.HideTooltip();
-    scEquipo.consumibleACambiar = 1;
     RuntimeAnalytics.TrackDesign("characters", "inventory_open", "consumable_1");
-    AbrirInventarioDeEquipo(4);
+    AlternarInventarioDeEquipo(4, consumibleSlot: 1);
   }
 
   public void OnHoverConsumible1()
@@ -505,15 +903,20 @@ public class MenuPersonajes : MonoBehaviour
 
   public void OnClickConsumible2()
   {
+    if (FueClickDerechoEnSlotEquipo())
+    {
+      OnRightClickConsumible2();
+      return;
+    }
+
     if (DebeIgnorarClickSlotPorBloqueoDerecho())
     {
       return;
     }
 
     TooltipItems.Instance.HideTooltip();
-    scEquipo.consumibleACambiar = 2;
     RuntimeAnalytics.TrackDesign("characters", "inventory_open", "consumable_2");
-    AbrirInventarioDeEquipo(4);
+    AlternarInventarioDeEquipo(4, consumibleSlot: 2);
   }
 
   public void OnHoverConsumible2()
@@ -563,6 +966,11 @@ public class MenuPersonajes : MonoBehaviour
     return true;
   }
 
+  private static bool FueClickDerechoEnSlotEquipo()
+  {
+    return Input.GetMouseButton(1) || Input.GetMouseButtonUp(1);
+  }
+
   private void AbrirInventarioDeEquipo(int tipo)
   {
     if (scEquipo == null)
@@ -571,6 +979,36 @@ public class MenuPersonajes : MonoBehaviour
     }
 
     scEquipo.MostrarInventario(tipo);
+  }
+
+  private void AlternarInventarioDeEquipo(int tipo, int accesorioSlot = 0, int consumibleSlot = 0)
+  {
+    if (scEquipo == null || scEquipo.goInventario == null)
+    {
+      return;
+    }
+
+    bool mismoTipo = scEquipo.TipoInventarioAbierto == tipo;
+    bool mismoAccesorio = tipo != 3 || scEquipo.accesorioACambiar == accesorioSlot;
+    bool mismoConsumible = tipo != 4 || scEquipo.consumibleACambiar == consumibleSlot;
+
+    if (scEquipo.goInventario.activeInHierarchy && mismoTipo && mismoAccesorio && mismoConsumible)
+    {
+      scEquipo.CerrarInventario();
+      return;
+    }
+
+    if (tipo == 3 && accesorioSlot > 0)
+    {
+      scEquipo.accesorioACambiar = accesorioSlot;
+    }
+
+    if (tipo == 4 && consumibleSlot > 0)
+    {
+      scEquipo.consumibleACambiar = consumibleSlot;
+    }
+
+    AbrirInventarioDeEquipo(tipo);
   }
 
   private void RefrescarInventarioDeEquipoSiEstaAbierto(int tipo)

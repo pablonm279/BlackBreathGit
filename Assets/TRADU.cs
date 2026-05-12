@@ -2699,14 +2699,14 @@ public class TRADU : MonoBehaviour
             case "Rasgos":
                 r = "Traits";
                 break;
-            case "Punto de Atributo!":
-                r = "Attribute Point!";
+            case "Mejora de atributo disponible":
+                r = "Attribute upgrade available";
                 break;
-            case "Punto de Salvación!":
-                r = "Saving throw Point!";
+            case "Mejora de salvación disponible":
+                r = "Saving throw upgrade available";
                 break;
-            case "Punto de Habilidad!":
-                r = "Skill Point!";
+            case "Mejora de habilidad disponible":
+                r = "Skill upgrade available";
                 break;
             case "Posición":
                 r = "Position";
@@ -7190,11 +7190,88 @@ public class TRADU : MonoBehaviour
                 r = "Fortitude";
                 break;
             case "Al Esforzarse se toma prestado AP del turno siguiente y la Defensa bajará por 1T.":
-                r="When Exerting, you borrow AP from the next turn and your defense will decrease by 1T.";
+                r = "When Exerting, you borrow AP from the next turn and your defense will decrease by 1T.";
                 break;
             case "¡Esforzando!":
-            r="Exerting!";
+                r = "Exerting!";
+                break;
+            case "Viajando...":
+                r = "Traveling...";
+                break;
+            case "Resolver Combate":
+                r = "Resolve Combat";
+                break;
+            case "Caravana":
+                r = "Caravan";
+                break;
+            case "Séquitos":
+                r = "Retinues";
+                break;
+            case "Bitácora":
+                r = "Binnacle";
+                break;
+            case "-La actividad de todos los personajes ahora es: ":
+                r = "-The activity of all characters is now: ";
+                break;
+            case "Guardia":
+                r = "Guard";
+                break;
+            case "Descanso":
+                r = "Rest";
+                break;
+            case "-Actividad fijada.":
+            r="-Activity fixed.";
+             break;
+            case "Atributos":
+            r="Attributes";
+             break;
+            case "Equipo Disponible":
+            r="Available Gear";
+             break;
+            case " disponibles para ":
+            r=" available for ";
+             break;
+            case "Armas":
+            r="Weapons";
+             break;
+            case "Armaduras":
+            r="Armors";
+             break;
+            case "Echar a ":
+            r="Expel ";
+             break;
+            case " hará que se pierdan ":
+            r=" will cause the loss of ";
+             break;
+            case " Esperanza. ¿Continuar?":
+            r=" Hope. Continue?";
+             break;
+            case "Estadísticas":
+            r="Stats";
+             break;
+            case"Días viajados con la caravana...":
+            r="Days traveled with the caravan...";
             break;
+            case"Enemigos eliminados...":
+            r="Enemies killed...";
+            break;
+            case"Daño infligido...":
+            r="Damage dealt...";
+            break;
+            case"Daño recibido...":
+            r="Damage received...";
+            break;
+            case"Veces derrotado...":
+            r="Times defeated...";
+            break;
+            case"Exploración":
+            r="Exploration";
+            break;
+            /*case"":
+            r="";
+            break;*/
+            
+            
             
 
 
@@ -7258,6 +7335,292 @@ public class TRADU : MonoBehaviour
 
         return r;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     bool TryTraducirEventosCampaniaUiPortuguesV2(string txt, out string traduccion)
@@ -9558,14 +9921,14 @@ public class TRADU : MonoBehaviour
             case "Rasgos":
                 r = "Traços";
                 break;
-            case "Punto de Atributo!":
-                r = "Ponto de Atributo!";
+            case "Mejora de atributo disponible":
+                r = "Melhoria de atributo disponível";
                 break;
-            case "Punto de Salvación!":
-                r = "Ponto de Resistência!";
+            case "Mejora de salvación disponible":
+                r = "Melhoria de resistência disponível";
                 break;
-            case "Punto de Habilidad!":
-                r = "Ponto de Habilidade!";
+            case "Mejora de habilidad disponible":
+                r = "Melhoria de habilidade disponível";
                 break;
             case "Posición":
                 r = "Posiçío";
@@ -9901,7 +10264,7 @@ public class TRADU : MonoBehaviour
                 r = "Armadura";
                 break;
             case "Consumibles":
-                r = "Consumí­veis";
+                r = "Consumíveis";
                 break;
             case "<color=#0cca74><b>Guardia: </b></color><color=#d3d3d3><i>El personaje se mantendrá alerta y custodiará la caravana.</color></i>\\n\\nSi se produce una emboscada, podrá participar de la defensa sin penalización. +3% Exploración al descansar.":
                 r = "<color=#0cca74><b>Guarda: </b></color><color=#d3d3d3><i>O personagem permanecerá alerta e protegerá a caravana.</color></i>\\n\\nSe ocorrer uma emboscada, poderá participar da defesa sem penalidade. +3% Exploraçío ao descansar.";
@@ -14054,6 +14417,99 @@ public class TRADU : MonoBehaviour
             case "¡Esforzando!":
             r="Esforçando-se!";
             break;
+            case "Viajando...":
+            r="Viajando...";
+            break;
+             case "Resolver Combate":
+            r="Resolver Combate";
+            break;
+            case "Caravana":
+            r="Caravana";
+            break;
+            case "Séquitos":
+            r="Séquitos";
+             break;
+            case "Bitácora":
+            r="Binácula";
+            break;
+            case "-La actividad de todos los personajes ahora es: ":
+            r="-A atividade de todos os personagens agora é: ";
+             break;
+            case "Guardia":
+            r="Guarda";
+             break;
+            case "Descanso":
+            r="Repouso";
+             break;
+            case "-Actividad fijada.":
+            r="-Atividade fixa.";
+             break;
+            case "Atributos":
+            r="Atributos";
+             break;
+            case "Equipo Disponible":
+            r="Equipamento Disponível";
+             break;
+            case " disponibles para ":
+            r=" disponível para ";
+             break;
+            case "Armas":
+            r="Braços";
+             break;
+            case "Armaduras":
+            r="Armadura";
+             break;
+            case "Echar a ":
+            r="Echar a ";
+             break;
+            case " hará que se pierdan ":
+            r=" fará com que eles se percam ";
+             break;
+            case " Esperanza. ¿Continuar?":
+            r=" Esperança. Continuar?";
+             break;
+            case "Estadísticas":
+            r="Estadística";
+             break;
+            case"Días viajados con la caravana...":
+            r="Dias viajando com a caravana...";
+            break;
+            case"Enemigos eliminados...":
+            r="Inimigos eliminados...";
+            break;
+            case"Daño infligido...":
+            r="Danos causados...";
+            break;
+            case"Daño recibido...":
+            r="Danos recebidos...";
+            break;
+            case"Veces derrotado...":
+            r="Tempos de derrota...";
+            break;
+            case"Exploración":
+            r="Exploração";
+            break;
+            /*case"":
+            r="";
+            break;
+            case"":
+            r="";
+            break;
+            case"":
+            r="";
+            break;
+            case"":
+            r="";
+            break;
+            case"":
+            r="";
+            break;
+            case"":
+            r="";
+            break;*/
+            
+            
+           
            
 
 

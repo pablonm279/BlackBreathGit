@@ -66,6 +66,7 @@ public class Personaje : MonoBehaviour
     public int Actividad_2;
     public int Actividad_3; 
     public int ActividadSeleccionada;
+    public bool ActividadFijada;
 
     public int NivelPuntoAtributo;
     public int NivelPuntoTS;
@@ -102,6 +103,11 @@ public class Personaje : MonoBehaviour
     [System.NonSerialized] public bool TraitColaborativoUsadoEnCombate;
     [System.NonSerialized] public bool TraitImpulsivoCansadoAplicadoEnCombate;
     [System.NonSerialized] public bool TraitPacienteAplicadoEnCombate;
+    public int DiasViajado;
+    public int EnemigosEliminados;
+    public int DanioHecho;
+    public int DanioRecibido;
+    public int VecesDerribado;
 
 
   
@@ -204,6 +210,41 @@ public class Personaje : MonoBehaviour
         TraitColaborativoUsadoEnCombate = false;
         TraitImpulsivoCansadoAplicadoEnCombate = false;
         TraitPacienteAplicadoEnCombate = false;
+    }
+
+    void SumarEstadisticaCampania(ref int estadistica, int cantidad)
+    {
+        if (cantidad <= 0)
+        {
+            return;
+        }
+
+        estadistica = Mathf.Max(0, estadistica + cantidad);
+    }
+
+    public void SumarDiasViajado(int cantidad = 1)
+    {
+        SumarEstadisticaCampania(ref DiasViajado, cantidad);
+    }
+
+    public void SumarEnemigosEliminados(int cantidad = 1)
+    {
+        SumarEstadisticaCampania(ref EnemigosEliminados, cantidad);
+    }
+
+    public void SumarDanioHecho(int cantidad)
+    {
+        SumarEstadisticaCampania(ref DanioHecho, cantidad);
+    }
+
+    public void SumarDanioRecibido(int cantidad)
+    {
+        SumarEstadisticaCampania(ref DanioRecibido, cantidad);
+    }
+
+    public void SumarVecesDerribado(int cantidad = 1)
+    {
+        SumarEstadisticaCampania(ref VecesDerribado, cantidad);
     }
 
     public bool PuedeRealizarActividades()

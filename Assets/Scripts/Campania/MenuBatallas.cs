@@ -270,6 +270,100 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
   return EncounterGenerator.TryGenerateEncounter(atributosZona, zona, tipo, fase, out definition, filtroEfectivo);
 }
 
+public bool TryGenerarFaccionScout(Nodo nodo, out string factionId, out string factionName)
+{
+   factionId = "";
+   factionName = "";
+   if (nodo == null)
+   {
+      return false;
+   }
+
+   var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+   EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
+   BattleEncounterType tipo = ObtenerTipoEncuentroScout(nodo);
+
+   Predicate<EnemyFactionConfig> filtro = null;
+   if (nodo.tipoNodo == 15 && nodo.nodoRitual)
+   {
+      filtro = faction =>
+         faction != null &&
+         !string.IsNullOrWhiteSpace(faction.factionId) &&
+         string.Equals(faction.factionId, KaleTavFactionId, StringComparison.OrdinalIgnoreCase);
+   }
+
+   if (!TryGenerarEncuentro(tipo, zonaActual, filtro, out EncounterDefinition definition) &&
+       !TryGenerarEncuentro(tipo, EncounterZoneType.Generico, filtro, out definition))
+   {
+      return false;
+   }
+
+   factionId = definition != null ? definition.factionId : "";
+   factionName = definition != null ? ObtenerNombreFaccionTraducido(definition.factionId, definition.factionName) : "";
+   return !string.IsNullOrWhiteSpace(factionId);
+}
+
+BattleEncounterType ObtenerTipoEncuentroScout(Nodo nodo)
+{
+   if (nodo == null)
+   {
+      return BattleEncounterType.Normal;
+   }
+
+   switch (nodo.tipoNodo)
+   {
+      case 8:
+      case 15:
+         return BattleEncounterType.Elite;
+      case 11:
+         return BattleEncounterType.AtaqueCaravana;
+      default:
+         return BattleEncounterType.Normal;
+   }
+}
+
+Predicate<EnemyFactionConfig> ObtenerFiltroFaccionScoutNodoActual()
+{
+   Nodo nodoActual = CampaignManager.Instance != null && CampaignManager.Instance.scMapaManager != null
+      ? CampaignManager.Instance.scMapaManager.nodoActual
+      : null;
+   string factionId = nodoActual != null ? nodoActual.ObtenerFaccionScoutReveladaId() : "";
+
+   if (string.IsNullOrWhiteSpace(factionId))
+   {
+      return null;
+   }
+
+   return faction =>
+      faction != null &&
+      !string.IsNullOrWhiteSpace(faction.factionId) &&
+      string.Equals(faction.factionId, factionId, StringComparison.OrdinalIgnoreCase);
+}
+
+bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType zonaActual, out EncounterDefinition definition)
+{
+   definition = null;
+   Predicate<EnemyFactionConfig> filtroScout = ObtenerFiltroFaccionScoutNodoActual();
+   if (filtroScout == null)
+   {
+      return false;
+   }
+
+   if (TryGenerarEncuentro(tipo, zonaActual, filtroScout, out definition))
+   {
+      encuentroZonaActual = zonaActual;
+      return true;
+   }
+
+   if (TryGenerarEncuentro(tipo, EncounterZoneType.Generico, filtroScout, out definition))
+   {
+      encuentroZonaActual = EncounterZoneType.Generico;
+      return true;
+   }
+
+   return false;
+}
+
  bool EsNodoActualRitualKaleTav()
  {
     var manager = CampaignManager.Instance;
@@ -537,8 +631,11 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
                 if (!pers.Camp_Muerto)
                 {
                     GameObject btnPers = Instantiate(prefabBtnPersonaje, contenedorUIPersonajes.transform);
-                    btnPers.GetComponent<Image>().sprite = pers.spRetrato;
-                    btnPers.GetComponent<btnPersonaje>().personajeRepresentado = pers;
+                    btnPersonaje btn = btnPers.GetComponent<btnPersonaje>();
+                    if (btn != null)
+                    {
+                        btn.personajeRepresentado = pers;
+                    }
                 }
 
             }
@@ -552,8 +649,11 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
                     if (EsGuardiaParaCaravana(pers))
                     {
                         GameObject btnPers = Instantiate(prefabBtnPersonaje, contenedorUIPersonajes.transform);
-                        btnPers.GetComponent<Image>().sprite = pers.spRetrato;
-                        btnPers.GetComponent<btnPersonaje>().personajeRepresentado = pers;
+                        btnPersonaje btn = btnPers.GetComponent<btnPersonaje>();
+                        if (btn != null)
+                        {
+                            btn.personajeRepresentado = pers;
+                        }
                     }
                    
                 }
@@ -567,35 +667,17 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
 
             if (btn != null) // Asegúrate de que el componente btnPersonaje exista
             {
-                btn.representarVida();
+                btn.RepresentarTodo();
 
-                //Marca los retratos de los personajes seleccionados
-                if (scAdministradorEscenas.Personaje1 == btn.personajeRepresentado)
-                {
-                    btn.transform.GetChild(12).gameObject.SetActive(true);
+                bool estaSeleccionado =
+                    scAdministradorEscenas.Personaje1 == btn.personajeRepresentado ||
+                    scAdministradorEscenas.Personaje2 == btn.personajeRepresentado ||
+                    scAdministradorEscenas.Personaje3 == btn.personajeRepresentado ||
+                    scAdministradorEscenas.Personaje4 == btn.personajeRepresentado;
 
-                }
-                else if (scAdministradorEscenas.Personaje2 == btn.personajeRepresentado)
-                {
-                    btn.transform.GetChild(12).gameObject.SetActive(true);
-                }
-                else if (scAdministradorEscenas.Personaje3 == btn.personajeRepresentado)
-                {
-                    btn.transform.GetChild(12).gameObject.SetActive(true);
-                }
-                else if (scAdministradorEscenas.Personaje4 == btn.personajeRepresentado)
-                {
-                    btn.transform.GetChild(12).gameObject.SetActive(true);
-                }
-                else { btn.transform.GetChild(12).gameObject.SetActive(false); }
+                btn.SetSeleccionado(estaSeleccionado);
 
             }
-
-
-           
-            btn.RepresentarTodo(); 
-
-
         }
    
 
@@ -884,6 +966,10 @@ public void DejanEnListaParticipantesSolo()
                     encuentroGeneradoActual = null;
                 }
             }
+            else if (TryGenerarEncuentroScoutForzado(BattleEncounterType.Normal, zonaActual, out encuentroGeneradoActual))
+            {
+                generado = true;
+            }
             else if (!EstaActivoDebugFaccionesCombate() && DeberiaGenerarBatallaCorrupta())
             {
                 generado = TryGenerarEncuentro(BattleEncounterType.Normal, EncounterZoneType.Generico, f => EsFaccionDeLista(f, corruptFactionIds), out encuentroGeneradoActual);
@@ -985,6 +1071,11 @@ public void DejanEnListaParticipantesSolo()
                     encuentroZonaActual = EncounterZoneType.Generico;
                     generado = true;
                 }
+            }
+
+            if (!generado && TryGenerarEncuentroScoutForzado(BattleEncounterType.Elite, zonaActual, out encuentroGeneradoActual))
+            {
+                generado = true;
             }
 
             if (!generado)
@@ -1151,7 +1242,12 @@ public void DejanEnListaParticipantesSolo()
             bool generado = false;
             float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
 
-            if (!EstaActivoDebugFaccionesCombate() && DeberiaGenerarBatallaCorrupta())
+            if (TryGenerarEncuentroScoutForzado(BattleEncounterType.AtaqueCaravana, zonaActual, out encuentroGeneradoActual))
+            {
+                generado = true;
+            }
+
+            if (!generado && !EstaActivoDebugFaccionesCombate() && DeberiaGenerarBatallaCorrupta())
             {
                 generado = TryGenerarEncuentro(BattleEncounterType.AtaqueCaravana, EncounterZoneType.Generico, f => EsFaccionDeLista(f, corruptFactionIds), out encuentroGeneradoActual);
                 if (generado)
@@ -1349,11 +1445,11 @@ public void EfectosDeBatallaEnCampaña(int resultado)
             OtorgarEstadoNegativoPorDerrota();
         }
     }
-    //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
-    if (EsResultadoDerrota(resultado)) //Al perder se tiran chances de eliminar sequito. 50% -10% por tier mejora Defensa
+    //Al perder se tiran chances de eliminar sequito. 50% - (5% + 3% por tier) mejora Defensa
+    if (EsResultadoDerrota(resultado)) //Al perder se tiran chances de eliminar sequito. 50% - (5% + 3% por tier) mejora Defensa
     {
         int rand =UnityEngine.Random.Range(1, 101);
-        int prob = 50 - CampaignManager.Instance.mejoraCaravanaDefensas*10;
+        int prob = Mathf.Clamp(50 - (5 + CampaignManager.Instance.mejoraCaravanaDefensas * 3), 0, 100);
         if (rand < prob) // chances de perder un sequito al perder una pelea
             {
                 if (CampaignManager.Instance.scMenuSequito.SequitoAlAzarPerdido(out string nombre))
@@ -1368,7 +1464,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
         if (EsResultadoVictoria(resultado)) //Al ganar puede tocar un item de la lista total del sequito de mercaderes al azar
         {
             int rand =UnityEngine.Random.Range(1, 101);
-            aumentochancesitem += CampaignManager.Instance.mejoraCaravanaCatalejos*5;
+            aumentochancesitem += 3 + ((CampaignManager.Instance.mejoraCaravanaCatalejos - 1) * 2);
             int prob = 30+aumentochancesitem; //!! 30%
             if (rand < prob) // chances de perder un sequito al perder una pelea
             {
@@ -1518,20 +1614,10 @@ public void EfectosDeBatallaEnCampaña(int resultado)
             foreach (Transform boton in contenedorUIPersonajes.transform)
             {
                 btnPersonaje btn = boton.gameObject.GetComponent<btnPersonaje>();
-
-                if (btn.personajeRepresentado.Camp_Herido)
+                if (btn != null)
                 {
-                    boton.transform.GetChild(3).gameObject.SetActive(true);
+                    btn.RepresentarTodo();
                 }
-                else { boton.transform.GetChild(3).gameObject.SetActive(false); }
-
-                if (btn.personajeRepresentado.Camp_Muerto)
-                {
-                    boton.transform.GetChild(3).gameObject.SetActive(false);
-                    boton.transform.GetChild(4).gameObject.SetActive(true);
-                }
-                else { boton.transform.GetChild(4).gameObject.SetActive(false); }
-
 
             }
 

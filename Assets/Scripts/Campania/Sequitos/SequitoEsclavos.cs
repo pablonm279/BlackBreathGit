@@ -30,7 +30,7 @@ public class SequitoEsclavos : MonoBehaviour
     {
         //Se remueven asi cuando son liberados, el metodo Removersequito() de scMenuSequitos.cs está para cuando son asesinados
         CampaignManager.Instance.scMenuSequito.lstSequitos.Remove(11);
-        CampaignManager.Instance.scSequitoClerigos = null;
+        CampaignManager.Instance.scSequitoEsclavos = null;
         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Esclavos han sido liberados y ahora son Civiles comunes. +25 Esperanza"));
         CampaignManager.Instance.CambiarEsperanzaActual(+25);
         CampaignManager.Instance.CambiarBueyesActuales(0); // Actualiza la capacidad de carga al liberar esclavos, 0 porque no cambia nada

@@ -3,6 +3,8 @@ using System.Text.RegularExpressions;
 
 public static class TextoRecursosCampania
 {
+    private const string SpriteTagTamanoReducido = "<size=45%><sprite name=\"{0}\"></size>";
+
     private static readonly Regex regexTagsTmp =
         new Regex(@"(<[^>]+>)", RegexOptions.Compiled);
 
@@ -68,7 +70,7 @@ public static class TextoRecursosCampania
             Regex = new Regex(
                 @"(?<![\p{L}\p{N}_])(?:" + patronAliases + @")(?![\p{L}\p{N}_])",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
-            SpriteTag = "<sprite name=\"" + spriteName + "\">";
+            SpriteTag = string.Format(SpriteTagTamanoReducido, spriteName);
         }
     }
 }

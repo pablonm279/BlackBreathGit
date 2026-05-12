@@ -31,6 +31,7 @@ public class MapaManager : MonoBehaviour
     readonly Dictionary<Nodo, Vector3> escalasBaseNodos = new Dictionary<Nodo, Vector3>();
     int emboscadasSubterraneasZona;
     int viajesDesdeUltimaEmboscadaSubterranea = 99;
+    bool refrescandoVisibilidadExploracion;
 
     void Start()
     {
@@ -82,7 +83,7 @@ public class MapaManager : MonoBehaviour
 
            if (nodoActual != null)
            {
-               nodoActual.RefrescarCaminosMarcadosDesdeEstadoActual();
+               RefrescarVisibilidadExploracion();
            }
            return;
        }
@@ -100,11 +101,126 @@ public class MapaManager : MonoBehaviour
 
        if (nodoActual != null)
        {
-           nodoActual.RefrescarCaminosMarcadosDesdeEstadoActual();
+           RefrescarVisibilidadExploracion();
        }
   }
 
     // Reset total del mapa y regeneración para la siguiente zona
+  public void RefrescarVisibilidadExploracion()
+  {
+       if (!Application.isPlaying || refrescandoVisibilidadExploracion)
+       {
+           return;
+       }
+
+       refrescandoVisibilidadExploracion = true;
+       try
+       {
+       if (scContenedordeNodos == null) return;
+       scContenedordeNodos.RecolectarNodos();
+
+       int distanciaVision = CampaignManager.Instance != null
+           ? CampaignManager.Instance.ObtenerDistanciaVisionEfectiva()
+           : 1;
+       int profundidadHistoricaVisible = nodoActual != null ? nodoActual.posXNodo : 0;
+
+       Dictionary<Nodo, int> distancias = CalcularDistanciasVision(distanciaVision);
+
+       foreach (Nodo nodo in scContenedordeNodos.GetComponentsInChildren<Nodo>(true))
+       {
+           if (nodo == null || !nodo.gameObject.activeSelf) continue;
+           bool visiblePorHistorial = profundidadHistoricaVisible > 0 && nodo.posXNodo <= profundidadHistoricaVisible;
+           bool visiblePorReveladoEspecial = nodo.TieneVisibilidadForzadaPorReveladoEspecial();
+           if (visiblePorHistorial)
+           {
+               nodo.Revelar(false);
+           }
+
+           nodo.OcultarCaminosPorVision();
+           nodo.AplicarVisibilidadPorVision(visiblePorHistorial || visiblePorReveladoEspecial || distancias.ContainsKey(nodo));
+       }
+
+       foreach (Nodo origenHistorico in scContenedordeNodos.GetComponentsInChildren<Nodo>(true))
+       {
+           if (origenHistorico == null || !origenHistorico.gameObject.activeSelf) continue;
+           if (origenHistorico.posXNodo > profundidadHistoricaVisible) continue;
+
+           foreach (Nodo destinoHistorico in origenHistorico.DestinosPosibles)
+           {
+               if (destinoHistorico == null || !destinoHistorico.gameObject.activeSelf) continue;
+               if (destinoHistorico.posXNodo > profundidadHistoricaVisible) continue;
+
+               origenHistorico.MostrarCaminoPorVisionHacia(destinoHistorico);
+           }
+       }
+
+       foreach (KeyValuePair<Nodo, int> kvp in distancias)
+       {
+           Nodo origen = kvp.Key;
+           int distanciaOrigen = kvp.Value;
+           if (origen == null || distanciaOrigen >= distanciaVision) continue;
+
+           foreach (Nodo destino in origen.DestinosPosibles)
+           {
+               if (destino != null && distancias.ContainsKey(destino))
+               {
+                   origen.MostrarCaminoPorVisionHacia(destino);
+               }
+           }
+       }
+
+       if (nodoActual != null)
+       {
+           nodoActual.RefrescarCaminosMarcadosDesdeEstadoActual();
+       }
+       }
+       finally
+       {
+           refrescandoVisibilidadExploracion = false;
+       }
+  }
+
+  public bool NodoDentroDeVision(Nodo nodo)
+  {
+       if (nodo == null) return false;
+       int distanciaVision = CampaignManager.Instance != null
+           ? CampaignManager.Instance.ObtenerDistanciaVisionEfectiva()
+           : 1;
+       return CalcularDistanciasVision(distanciaVision).ContainsKey(nodo);
+  }
+
+  Dictionary<Nodo, int> CalcularDistanciasVision(int distanciaVision)
+  {
+       Dictionary<Nodo, int> distancias = new Dictionary<Nodo, int>();
+       if (nodoActual == null || !nodoActual.gameObject.activeSelf)
+       {
+           return distancias;
+       }
+
+       distanciaVision = Mathf.Max(1, distanciaVision);
+       Queue<Nodo> cola = new Queue<Nodo>();
+       distancias[nodoActual] = 0;
+       cola.Enqueue(nodoActual);
+
+       while (cola.Count > 0)
+       {
+           Nodo actual = cola.Dequeue();
+           int distanciaActual = distancias[actual];
+           if (distanciaActual >= distanciaVision) continue;
+
+           foreach (Nodo destino in actual.DestinosPosibles)
+           {
+               if (destino == null || !destino.gameObject.activeSelf) continue;
+               if (distancias.ContainsKey(destino)) continue;
+
+               distancias[destino] = distanciaActual + 1;
+               cola.Enqueue(destino);
+           }
+       }
+
+       return distancias;
+  }
+
     public void ResetearYGenerarSiguienteZona()
     {
         ReiniciarEstadoVariedadMapa();
@@ -341,6 +457,7 @@ public class MapaManager : MonoBehaviour
 
             settlement.ForzarSettlement(true);
             MarcarRutaCaminoAAldea(nodoActual, settlement);
+            RevelarRutaCompletaAsentamiento(nodoActual, settlement);
             settlement.ActivarVfxDescubrimiento();
 
             if (CampaignManager.Instance != null)
@@ -408,7 +525,7 @@ public class MapaManager : MonoBehaviour
 
     void MarcarRutaCaminoAAldea(Nodo origen, Nodo settlement)
     {
-        List<Nodo> ruta = CalcularRutaEnViajes(origen, settlement, DistanciaReveladoSettlement);
+        List<Nodo> ruta = CalcularRutaEnViajes(origen, settlement, int.MaxValue);
         if (ruta == null || ruta.Count < 2)
         {
             return;
@@ -424,6 +541,39 @@ public class MapaManager : MonoBehaviour
             }
 
             nodoRuta.MarcarCaminoAAldeaHacia(siguienteNodo);
+        }
+    }
+
+    void RevelarRutaCompletaAsentamiento(Nodo origen, Nodo settlement)
+    {
+        List<Nodo> ruta = CalcularRutaEnViajes(origen, settlement, int.MaxValue);
+        if (ruta == null || ruta.Count == 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < ruta.Count; i++)
+        {
+            Nodo nodoRuta = ruta[i];
+            if (nodoRuta == null)
+            {
+                continue;
+            }
+
+            nodoRuta.ForzarVisiblePorReveladoEspecial();
+
+            if (i >= ruta.Count - 1)
+            {
+                continue;
+            }
+
+            Nodo siguienteNodo = ruta[i + 1];
+            if (siguienteNodo == null)
+            {
+                continue;
+            }
+
+            nodoRuta.MostrarCaminoPorVisionHacia(siguienteNodo);
         }
     }
 

@@ -71,9 +71,11 @@ public class MapDecorator : MonoBehaviour
     [SerializeField] float distanciaMuestreoNormal = 0.32f;
 
     // ---- internos ----
+    const float UmbralDistCaminoRellenoRemovible = 0.15f;
     struct Segmento { public Vector3 a, b; public float halfWidth; }
     readonly List<Segmento> segmentos = new List<Segmento>();
     readonly List<Transform> nodos = new List<Transform>();
+    readonly List<GameObject> decoracionesRemoviblesSobreCaminos = new List<GameObject>();
 
     Transform tPlane;
     Bounds   localBounds;
@@ -114,6 +116,7 @@ public class MapDecorator : MonoBehaviour
     int relieveSeed;
     float alturaRelieveActual;
     int decorBatchCounter;
+    bool batchActualEsRellenoRemovible;
 
     void Awake()
     {
@@ -257,6 +260,7 @@ public class MapDecorator : MonoBehaviour
         for (int i = transform.childCount - 1; i >= 0; i--)
             DestroyImmediate(transform.GetChild(i).gameObject);
 
+        decoracionesRemoviblesSobreCaminos.Clear();
         ReiniciarSesionDecoracion();
     }
 
@@ -316,6 +320,7 @@ public class MapDecorator : MonoBehaviour
         this.distNodo   = distNodoOverride;
         this.radioPoisson = rOverride;
         this.intentosPorPunto = kOverride;
+        batchActualEsRellenoRemovible = distCaminoOverride < UmbralDistCaminoRellenoRemovible;
 
         ActualizarZonaSegura();
 
@@ -495,29 +500,35 @@ public class MapDecorator : MonoBehaviour
         segmentos.Clear();
 
         List<LineRenderer> fuentes = new List<LineRenderer>();
+        bool incluirCaminosInactivos = !batchActualEsRellenoRemovible;
 
         if (soloLineRenderersConTag)
         {
-            // Tag principal
-            foreach (var go in FindByTagSafe(tagCaminos))
+            var todos = FindObjectsOfType<LineRenderer>(incluirCaminosInactivos);
+            for (int i = 0; i < todos.Length; i++)
             {
-                var lr = go.GetComponent<LineRenderer>();
-                if (lr) AgregarSiIntersecta(lr, fuentes);
-            }
-            // Tags alternativos
-            for (int i = 0; i < tagsCaminosAlternativos.Length; i++)
-            {
-                foreach (var go in FindByTagSafe(tagsCaminosAlternativos[i]))
+                LineRenderer lr = todos[i];
+                if (!lr || !TieneTagCamino(lr.gameObject) || (!incluirCaminosInactivos && !lr.gameObject.activeInHierarchy))
                 {
-                    var lr = go.GetComponent<LineRenderer>();
-                    if (lr) AgregarSiIntersecta(lr, fuentes);
+                    continue;
                 }
+
+                AgregarSiIntersecta(lr, fuentes);
             }
         }
         else
         {
-            var todos = FindObjectsOfType<LineRenderer>(true);
-            for (int i = 0; i < todos.Length; i++) AgregarSiIntersecta(todos[i], fuentes);
+            var todos = FindObjectsOfType<LineRenderer>(incluirCaminosInactivos);
+            for (int i = 0; i < todos.Length; i++)
+            {
+                LineRenderer lr = todos[i];
+                if (!lr || (!incluirCaminosInactivos && !lr.gameObject.activeInHierarchy))
+                {
+                    continue;
+                }
+
+                AgregarSiIntersecta(lr, fuentes);
+            }
         }
 
         float expand = distCamino + margenCamino + filtroCaminosInflar;
@@ -538,6 +549,108 @@ public class MapDecorator : MonoBehaviour
 
                 segmentos.Add(new Segmento { a = a, b = b, halfWidth = half });
             }
+        }
+    }
+
+    public void OcultarDecoracionRemovibleSobreCamino(LineRenderer lr)
+    {
+        if (lr == null || lr.positionCount < 2 || decoracionesRemoviblesSobreCaminos.Count == 0)
+        {
+            return;
+        }
+
+        float radio = CalcularRadioLimpiezaCamino(lr);
+        float radioSqr = radio * radio;
+
+        for (int i = decoracionesRemoviblesSobreCaminos.Count - 1; i >= 0; i--)
+        {
+            GameObject go = decoracionesRemoviblesSobreCaminos[i];
+            if (go == null)
+            {
+                decoracionesRemoviblesSobreCaminos.RemoveAt(i);
+                continue;
+            }
+
+            if (!go.activeSelf)
+            {
+                decoracionesRemoviblesSobreCaminos.RemoveAt(i);
+                continue;
+            }
+
+            if (!PuntoIntersectaCamino(lr, go.transform.position, radioSqr))
+            {
+                continue;
+            }
+
+            go.SetActive(false);
+            decoracionesRemoviblesSobreCaminos.RemoveAt(i);
+        }
+    }
+
+    float CalcularRadioLimpiezaCamino(LineRenderer lr)
+    {
+        float worldWidthLR = MaxWidthWorld(lr);
+        float worldWidth = Mathf.Max(worldWidthLR, anchoCaminoMinWorld);
+        return 0.5f * worldWidth + margenCamino;
+    }
+
+    static bool PuntoIntersectaCamino(LineRenderer lr, Vector3 punto, float radioSqr)
+    {
+        for (int i = 0; i < lr.positionCount - 1; i++)
+        {
+            Vector3 a = LRPointWorld(lr, i);
+            Vector3 b = LRPointWorld(lr, i + 1);
+            if (DistSegXZSqr(punto, a, b) <= radioSqr)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool TieneTagCamino(GameObject go)
+    {
+        if (go == null)
+        {
+            return false;
+        }
+
+        if (TieneTagSeguro(go, tagCaminos))
+        {
+            return true;
+        }
+
+        if (tagsCaminosAlternativos == null)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < tagsCaminosAlternativos.Length; i++)
+        {
+            if (TieneTagSeguro(go, tagsCaminosAlternativos[i]))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    static bool TieneTagSeguro(GameObject go, string tag)
+    {
+        if (go == null || string.IsNullOrEmpty(tag))
+        {
+            return false;
+        }
+
+        try
+        {
+            return go.CompareTag(tag);
+        }
+        catch
+        {
+            return false;
         }
     }
 
@@ -1007,6 +1120,10 @@ public class MapDecorator : MonoBehaviour
 
         var go = Instantiate(prefab, pos, Quaternion.identity, transform);
         if (rotarYRandom) go.transform.rotation = Quaternion.Euler(0f,UnityEngine.Random.Range(0f, 360f), 0f);
+        if (batchActualEsRellenoRemovible)
+        {
+            decoracionesRemoviblesSobreCaminos.Add(go);
+        }
         // Escala del prefab NO se toca (asegurate que este GameObject padre está en 1,1,1).
     }
 

@@ -15,10 +15,35 @@ using UnityEditor;
 
 public class CampaignManager : MonoBehaviour
 {
+  public class ResultadoExploradoresCampania
+  {
+    public Nodo nodoObjetivo;
+    public string titulo;
+    public string descripcion;
+    public int tirada;
+    public int chance;
+    public bool exito;
+    public bool critico;
+    public int civilesMuertos;
+    public int civilesDevueltos;
+    public int oroGanado;
+    public int materialesGanados;
+    public int esperanzaCambio;
+    public string faccionReveladaNombre;
+  }
+
   public static CampaignManager Instance { get; private set; }
+  private const int MinTierMejoraCaravana = 1;
+  private const int MaxTierMejoraCaravana = 5;
   private const bool DEBUG_FORZAR_OLA_DE_CALOR_AL_PLAY = false;
   private const bool DEBUG_FORZAR_MASACRE_NEDUKAZAL = false;
   private const bool DEBUG_ABRIR_MENU_SERRIA_AL_INICIAR = false;
+  private const int DistanciaVisionBase = 2;
+  private const int DistanciaVisionMinima = 1;
+  private const float DuracionEnvioExploradoresSegundos = 4f;
+  private const float RetrasoEntreTextosExploradoresSegundos = 0.9f;
+  private bool enviandoExploradores;
+  private readonly Dictionary<GameObject, bool> estadosCanvasCampaniaDuranteExploradores = new Dictionary<GameObject, bool>();
   [Header("Debug Demo")]
   [SerializeField] private bool debugSaltarTutorialAlIniciar = false;
   [SerializeField] private bool debugPermitirZonaBosque = false;
@@ -33,6 +58,10 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private int recursoTextoMaxStackVisual = 4;
   [SerializeField] private float recursoTextoDuracionExtra = 2.45f;
   [SerializeField] private float recursoTextoAnimatorSpeed = 0.85f;
+  private const float RecursoTextoDeltaAnimacionY = 110f;
+  private const float RecursoTextoDuracionMovimiento = 2.3833334f;
+  private const float RecursoTextoDuracionFade = 3.45f;
+  private const float RecursoTextoAlphaIntermedio = 0.9843137f;
   public Animator animCaravana;
   public GameObject goCanvas;
   public MapaManager scMapaManager;
@@ -90,7 +119,11 @@ public class CampaignManager : MonoBehaviour
   public ContenedorPrefabsCamp scContprefab;
 
   public int BATALLA_EnCurso;
+  public int EMBOSCADA_EnCurso;
 
+  public GameObject goBotonViajando;
+  public GameObject goBotonResolverCombate;
+  public GameObject goBotonAcampar;
   public GameObject goSequitos;
   public GameObject goLogCampania;
   public GameObject goDerrota;
@@ -166,7 +199,72 @@ public class CampaignManager : MonoBehaviour
 
     InicializarNuevaCampania();
 
+}
+
+public class AnimacionTextoRecursoManual : MonoBehaviour
+{
+  private RectTransform rectTransform;
+  private TextMeshProUGUI texto;
+  private Vector2 posicionInicial;
+  private float tiempoTranscurrido;
+  private float desplazamientoY;
+  private float duracionMovimiento;
+  private float duracionFade;
+  private float alphaIntermedio;
+
+  private void Awake()
+  {
+    enabled = false;
   }
+
+  public void Configurar(float desplazamientoYConfigurado, float duracionMovimientoConfigurada, float duracionFadeConfigurada, float alphaIntermedioConfigurado)
+  {
+    rectTransform = GetComponent<RectTransform>();
+    texto = GetComponent<TextMeshProUGUI>();
+    posicionInicial = rectTransform != null ? rectTransform.anchoredPosition : Vector2.zero;
+    tiempoTranscurrido = 0f;
+    desplazamientoY = desplazamientoYConfigurado;
+    duracionMovimiento = Mathf.Max(0.01f, duracionMovimientoConfigurada);
+    duracionFade = Mathf.Max(duracionMovimiento, duracionFadeConfigurada);
+    alphaIntermedio = Mathf.Clamp01(alphaIntermedioConfigurado);
+    enabled = rectTransform != null;
+  }
+
+  private void Update()
+  {
+    if (rectTransform == null)
+    {
+      enabled = false;
+      return;
+    }
+
+    tiempoTranscurrido += Time.unscaledDeltaTime;
+
+    float progresoMovimiento = Mathf.Clamp01(tiempoTranscurrido / duracionMovimiento);
+    rectTransform.anchoredPosition = posicionInicial + Vector2.up * (desplazamientoY * progresoMovimiento);
+
+    if (texto != null)
+    {
+      Color colorActual = texto.color;
+      if (tiempoTranscurrido <= duracionMovimiento)
+      {
+        colorActual.a = Mathf.Lerp(1f, alphaIntermedio, progresoMovimiento);
+      }
+      else
+      {
+        float progresoFade = Mathf.InverseLerp(duracionMovimiento, duracionFade, tiempoTranscurrido);
+        colorActual.a = Mathf.Lerp(alphaIntermedio, 0f, progresoFade);
+      }
+
+      texto.color = colorActual;
+    }
+
+    if (tiempoTranscurrido >= duracionFade)
+    {
+      enabled = false;
+    }
+  }
+}
 
   private void PrepararEscenaCampania()
   {
@@ -377,6 +475,7 @@ public class CampaignManager : MonoBehaviour
     bloquearOlaDeCalorEnSiguienteTiradaClima = false;
     nodoDestinoActual = null;
     BATALLA_EnCurso = 0;
+    EMBOSCADA_EnCurso = 0;
     resolviendoJefeZona = false;
     abriendoCiudadPuerto = false;
   }
@@ -460,6 +559,7 @@ public class CampaignManager : MonoBehaviour
 
   private void InicializarProgresoNuevaCampania()
   {
+    InicializarMejorasCaravanaNuevaCampania();
     numeroTurno = 1;
     posicionCaravana = 1;
     if (estadosCaravana == null)
@@ -475,6 +575,21 @@ public class CampaignManager : MonoBehaviour
     {
       AgregarEstadosCaravanaDebugIniciales();
     }
+  }
+
+  private void InicializarMejorasCaravanaNuevaCampania()
+  {
+    mejoraCaravanaAntorchas = MinTierMejoraCaravana;
+    mejoraCaravanaAlforjas = MinTierMejoraCaravana;
+    mejoraCaravanaTiendas = MinTierMejoraCaravana;
+    mejoraCaravanaCatalejos = MinTierMejoraCaravana;
+    mejoraCaravanaAlmacen = MinTierMejoraCaravana;
+    mejoraCaravanaDefensas = MinTierMejoraCaravana;
+  }
+
+  private int NormalizarTierMejoraCaravana(int tier)
+  {
+    return Mathf.Clamp(tier, MinTierMejoraCaravana, MaxTierMejoraCaravana);
   }
 
   private void AgregarEstadosCaravanaDebugIniciales()
@@ -500,10 +615,40 @@ public class CampaignManager : MonoBehaviour
       AgregarHeroe(0);
       AgregarHeroe(0);
       AgregarHeroe(0);
+      RefrescarRetratosPersonajesCampania();
       return;
     }
 
     CrearAcechador();
+    RefrescarRetratosPersonajesCampania();
+  }
+
+  private void RefrescarRetratosPersonajesCampania(bool actualizarInfoSiMenuAbierto = false)
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    if (scMenuPersonajes.listaPersonajes.Count > 0)
+    {
+      Personaje personajeBase = scMenuPersonajes.pSel != null && !scMenuPersonajes.pSel.Camp_Muerto
+        ? scMenuPersonajes.pSel
+        : scMenuPersonajes.listaPersonajes.Find(p => p != null && !p.Camp_Muerto);
+
+      scMenuPersonajes.pSel = personajeBase != null ? personajeBase : scMenuPersonajes.listaPersonajes[0];
+    }
+    else
+    {
+      scMenuPersonajes.pSel = null;
+    }
+
+    scMenuPersonajes.ActualizarLista();
+
+    if (actualizarInfoSiMenuAbierto && scMenuPersonajes.gameObject.activeInHierarchy)
+    {
+      scMenuPersonajes.ActualizarInfo();
+    }
   }
 
 
@@ -529,6 +674,18 @@ public class CampaignManager : MonoBehaviour
     tiempoUltimoSpawnTiempoReal = float.NegativeInfinity;
     RestaurarCursorCampaniaPredeterminado();
   }
+  [SerializeField]private TextMeshProUGUI txtDia;
+
+  private void ActualizarTextoDia()
+  {
+    if (txtDia == null)
+    {
+      return;
+    }
+
+    string textoDia = TRADU.i != null ? TRADU.i.Traducir("Día") : "Día";
+    txtDia.text = textoDia + " " + numeroTurno;
+  }
 
   private void Start()
   {
@@ -536,6 +693,9 @@ public class CampaignManager : MonoBehaviour
       logDeCampania.SetDiaActual(numeroTurno);
 
     TRADU.i.ActualizarIdioma();
+    RefrescarRetratosPersonajesCampania();
+    StartCoroutine(RefrescarRetratosPersonajesCampaniaDiferido());
+    ActualizarTextoDia();
     if (debeEscribirLogInicioEnStart)
     {
       EscribirLogInicioCampania();
@@ -559,6 +719,12 @@ public class CampaignManager : MonoBehaviour
     {
       ForzarCombateFinalBosqueDebug();
     }
+  }
+
+  private IEnumerator RefrescarRetratosPersonajesCampaniaDiferido()
+  {
+    yield return null;
+    RefrescarRetratosPersonajesCampania();
   }
 
   [ContextMenu("Debug/Forzar Combate Final Bosque")]
@@ -630,6 +796,12 @@ public class CampaignManager : MonoBehaviour
       return false;
     }
 
+    if (enviandoExploradores)
+    {
+      motivo = "No se puede guardar mientras los exploradores estan fuera.";
+      return false;
+    }
+
     if (transicionZonaEnCurso)
     {
       motivo = "No se puede guardar durante una transicion de zona.";
@@ -670,6 +842,426 @@ public class CampaignManager : MonoBehaviour
   private bool EstaInteraccionActiva(GameObject go)
   {
     return go != null && go.activeInHierarchy;
+  }
+
+  public int ObtenerDistanciaVisionEfectiva()
+  {
+    return Mathf.Max(ObtenerDistanciaVisionMinima(), ObtenerDistanciaVisionCalculada());
+  }
+
+  public int ObtenerDistanciaVisionCalculada()
+  {
+    return ObtenerDistanciaVisionBase() + ObtenerBonusDistanciaVisionCatalejos() - ObtenerPenalizacionClimaVision();
+  }
+
+  public int ObtenerDistanciaVisionBase()
+  {
+    return DistanciaVisionBase;
+  }
+
+  public int ObtenerDistanciaVisionMinima()
+  {
+    return DistanciaVisionMinima;
+  }
+
+  public int ObtenerBonusDistanciaVisionCatalejos()
+  {
+    return Mathf.Max(0, mejoraCaravanaCatalejos - 1);
+  }
+
+  public int ObtenerPenalizacionClimaVision()
+  {
+    if (intTipoClima == 5) return 2;
+    return 0;
+  }
+
+  public int ObtenerBonusScoutCatalejos()
+  {
+    return 5 * Mathf.Max(0, mejoraCaravanaCatalejos - 1);
+  }
+
+  int ObtenerBonusExploracionCatalejos()
+  {
+    return 3 + Mathf.Max(0, mejoraCaravanaCatalejos - 1) * 2;
+  }
+
+  public int ObtenerChanceExploracionPasiva(int modificadorContextual = 0)
+  {
+    int chance = 55;
+    chance += scAtributosZona != null ? scAtributosZona.modChanceExploracion : 0;
+    chance += ObtenerBonusExploracionCatalejos();
+    chance += MetaprogresionManager.Instance != null ? MetaprogresionManager.Instance.SerriaTierAlmenaras * 3 : 0;
+    chance += ExploracionSumadaPorActividades();
+    chance += ObtenerModificadorChanceExploracionTraits();
+    chance += estadosCaravana != null ? estadosCaravana.ObtenerModificadorExploracionPendiente() : 0;
+    chance += modificadorContextual;
+
+    if (intTipoClima == 5)
+    {
+      chance -= 20;
+    }
+
+    if (scTutorialManager != null && scTutorialManager.tutorialActivo)
+    {
+      chance = 100;
+    }
+
+    return Mathf.Clamp(chance, 0, 100);
+  }
+
+  public int ObtenerChanceExploracionViaje()
+  {
+    return ObtenerChanceExploracionPasiva();
+  }
+
+  public int ObtenerChanceExploracionDescanso(int modificadorDescanso = 0)
+  {
+    return ObtenerChanceExploracionPasiva(modificadorDescanso);
+  }
+
+  public int ObtenerChanceScout()
+  {
+    int chance = 80;
+    chance += scAtributosZona != null ? scAtributosZona.modChanceExploracion : 0;
+    chance += ObtenerBonusScoutCatalejos();
+    chance -= GetTierAlientoNegro() >= 2 ? 10 : 0;
+    return Mathf.Clamp(chance, 0, 100);
+  }
+
+  public bool IntentarEnviarExploradores(Nodo destino)
+  {
+    if (!PuedeEnviarExploradores(destino, out string motivo))
+    {
+      if (!string.IsNullOrEmpty(motivo))
+      {
+        EscribirLog(motivo);
+      }
+      return false;
+    }
+
+    EnviarExploradores(destino);
+    return true;
+  }
+
+  bool PuedeEnviarExploradores(Nodo destino, out string motivo)
+  {
+    motivo = "";
+
+    if (enviandoExploradores || MoviendoCaravana)
+    {
+      motivo = LocExploradores(
+        "-No se pueden enviar exploradores mientras la caravana esta ocupada.",
+        "-Scouts cannot be sent while the caravan is busy.",
+        "-Nao e possivel enviar exploradores enquanto a caravana esta ocupada.");
+      return false;
+    }
+
+    if (HayInteraccionTransitoriaActiva() || ObtenerTipoCombatePendiente() > 0)
+    {
+      motivo = LocExploradores(
+        "-Resuelve la interaccion actual antes de enviar exploradores.",
+        "-Resolve the current interaction before sending scouts.",
+        "-Resolva a interacao atual antes de enviar exploradores.");
+      return false;
+    }
+
+    Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
+    if (nodoActual == null || destino == null || !nodoActual.DestinosPosibles.Contains(destino))
+    {
+      motivo = LocExploradores(
+        "-Solo puedes enviar exploradores a un nodo adyacente.",
+        "-Scouts can only be sent to an adjacent node.",
+        "-Exploradores so podem ser enviados a um nodo adjacente.");
+      return false;
+    }
+
+    if (destino.posXNodo - nodoActual.posXNodo != 1)
+    {
+      motivo = LocExploradores(
+        "-Los exploradores solo pueden avanzar por caminos continuos.",
+        "-Scouts can only advance through continuous paths.",
+        "-Exploradores so podem avancar por caminhos continuos.");
+      return false;
+    }
+
+    if (!destino.EstaVisiblePorVision())
+    {
+      motivo = LocExploradores(
+        "-Ese destino esta fuera de la distancia de vision.",
+        "-That destination is outside vision range.",
+        "-Esse destino esta fora da distancia de visao.");
+      return false;
+    }
+
+    if (destino.EstaReveladoParaExploradores())
+    {
+      motivo = LocExploradores(
+        "-Ese destino ya fue revelado. Solo puedes enviar exploradores a nodos desconocidos.",
+        "-That destination has already been revealed. Scouts can only be sent to unknown nodes.",
+        "-Esse destino ja foi revelado. Exploradores so podem ser enviados a nodos desconhecidos.");
+      return false;
+    }
+
+    if (GetOroActuales() < 50 || GetCivilesActual() < 30)
+    {
+      motivo = LocExploradores(
+        "-Enviar exploradores requiere al menos 30 Civiles disponibles y 50 Oro.",
+        "-Sending scouts requires at least 30 available Civilians and 50 Gold.",
+        "-Enviar exploradores requer pelo menos 30 Civis disponiveis e 50 de Ouro.");
+      return false;
+    }
+
+    return true;
+  }
+
+  void EnviarExploradores(Nodo destino)
+  {
+    if (destino == null)
+    {
+      return;
+    }
+
+    StartCoroutine(EnviarExploradoresCoroutine(destino));
+  }
+
+  IEnumerator EnviarExploradoresCoroutine(Nodo destino)
+  {
+    if (destino == null)
+    {
+      yield break;
+    }
+
+    enviandoExploradores = true;
+    OcultarInterfazCampaniaParaExploradores();
+    ComenzarBufferTextosFlotantesCampania();
+
+    CambiarOroActual(-50);
+    CambiarCivilesActuales(-5);
+    CambiarValorAlientoNegro(1);
+
+    if (sunController != null)
+    {
+      float duracionSolOriginal = sunController.duracion;
+      sunController.duracion = DuracionEnvioExploradoresSegundos;
+      sunController.OnTravelStart();
+      sunController.duracion = duracionSolOriginal;
+    }
+
+    yield return new WaitForSeconds(DuracionEnvioExploradoresSegundos);
+
+    ResultadoExploradoresCampania resultado = ResolverResultadoExploradores(destino);
+    List<(string texto, Color color)> textosBufferizados = FinalizarBufferTextosFlotantesCampania();
+    enviandoExploradores = false;
+    RestaurarInterfazCampaniaTrasExploradores();
+    yield return null;
+
+    if (scMenuCaravana != null)
+    {
+      scMenuCaravana.MostrarResultadoExploradores(resultado);
+    }
+
+    if (!string.IsNullOrEmpty(resultado.descripcion))
+    {
+      EscribirLog("-" + resultado.titulo + ": " + resultado.descripcion);
+    }
+
+    if (textosBufferizados.Count > 0)
+    {
+      yield return ReproducirTextosExploradores(textosBufferizados);
+    }
+  }
+
+  ResultadoExploradoresCampania ResolverResultadoExploradores(Nodo destino)
+  {
+    ResultadoExploradoresCampania resultado = new ResultadoExploradoresCampania();
+    resultado.nodoObjetivo = destino;
+    resultado.chance = ObtenerChanceScout();
+    resultado.tirada = UnityEngine.Random.Range(1, 101);
+
+    int umbralExito = Mathf.Clamp(101 - resultado.chance, 1, 100);
+    bool falloCritico = resultado.tirada <= 20;
+    bool exito = resultado.chance > 0 && !falloCritico && resultado.tirada >= umbralExito;
+    bool exitoCritico = exito && resultado.tirada >= 80;
+
+    if (exitoCritico)
+    {
+      resultado.exito = true;
+      resultado.critico = true;
+      resultado.civilesDevueltos = 5;
+      resultado.materialesGanados = UnityEngine.Random.Range(10, 21);
+      resultado.oroGanado = UnityEngine.Random.Range(5, 16);
+      resultado.esperanzaCambio = 5;
+
+      CambiarCivilesActuales(resultado.civilesDevueltos);
+      CambiarMaterialesActuales(resultado.materialesGanados);
+      CambiarOroActual(resultado.oroGanado);
+      CambiarEsperanzaActual(resultado.esperanzaCambio);
+      RevelarNodoPorExploradores(destino, true, resultado);
+
+      resultado.titulo = LocExploradores(
+        "Exito critico de exploradores",
+        "Critical scout success",
+        "Sucesso critico dos exploradores");
+      resultado.descripcion = LocExploradores(
+        "Revelaron el destino, volvieron todos y trajeron recursos.",
+        "They revealed the destination, all returned, and they brought supplies back.",
+        "Eles revelaram o destino, todos retornaram e trouxeram recursos.");
+      return resultado;
+    }
+
+    if (exito)
+    {
+      resultado.exito = true;
+      resultado.civilesDevueltos = 5;
+      CambiarCivilesActuales(resultado.civilesDevueltos);
+      RevelarNodoPorExploradores(destino, false, resultado);
+
+      resultado.titulo = LocExploradores(
+        "Exito de exploradores",
+        "Scout success",
+        "Sucesso dos exploradores");
+      resultado.descripcion = LocExploradores(
+        "Revelaron el destino y volvieron todos.",
+        "They revealed the destination and all returned.",
+        "Eles revelaram o destino e todos retornaram.");
+      return resultado;
+    }
+
+    if (falloCritico)
+    {
+      resultado.critico = true;
+      resultado.esperanzaCambio = -7;
+      CambiarEsperanzaActual(resultado.esperanzaCambio);
+
+      resultado.titulo = LocExploradores(
+        "Fallo critico de exploradores",
+        "Critical scout failure",
+        "Falha critica dos exploradores");
+      resultado.descripcion = LocExploradores(
+        "Los exploradores se perdieron y no regresaron.",
+        "The scouts were lost and did not return.",
+        "Os exploradores se perderam e nao retornaram.");
+      return resultado;
+    }
+
+    resultado.civilesMuertos = UnityEngine.Random.Range(1, 4);
+    resultado.civilesDevueltos = 5 - resultado.civilesMuertos;
+    resultado.esperanzaCambio = -5;
+    CambiarCivilesActuales(resultado.civilesDevueltos);
+    CambiarEsperanzaActual(resultado.esperanzaCambio);
+
+    resultado.titulo = LocExploradores(
+      "Fallo de exploradores",
+      "Scout failure",
+      "Falha dos exploradores");
+    resultado.descripcion = LocExploradores(
+      "No llegaron al destino y volvieron con bajas.",
+      "They failed to reach the destination and returned with casualties.",
+      "Eles nao chegaram ao destino e retornaram com baixas.");
+    return resultado;
+  }
+
+  void RevelarNodoPorExploradores(Nodo nodo, bool revelarFaccionCombate, ResultadoExploradoresCampania resultado)
+  {
+    if (nodo == null)
+    {
+      return;
+    }
+
+    nodo.RevelarPorExploradores();
+
+    if (revelarFaccionCombate && EsTipoNodoDeCombateConScout(nodo.tipoNodo) && scMenuBatallas != null)
+    {
+      if (scMenuBatallas.TryGenerarFaccionScout(nodo, out string factionId, out string factionName))
+      {
+        nodo.RegistrarFaccionScoutRevelada(factionId, factionName);
+        resultado.faccionReveladaNombre = factionName;
+      }
+    }
+
+    if (scMapaManager != null)
+    {
+      scMapaManager.RefrescarVisibilidadExploracion();
+    }
+  }
+
+  bool EsTipoNodoDeCombateConScout(int tipoNodo)
+  {
+    return tipoNodo == 1 || tipoNodo == 8 || tipoNodo == 11 || tipoNodo == 15;
+  }
+
+  void OcultarInterfazCampaniaParaExploradores()
+  {
+    estadosCanvasCampaniaDuranteExploradores.Clear();
+    if (goCanvas == null)
+    {
+      return;
+    }
+
+    Transform canvasTransform = goCanvas.transform;
+    for (int i = 0; i < canvasTransform.childCount; i++)
+    {
+      Transform hijo = canvasTransform.GetChild(i);
+      if (hijo == null)
+      {
+        continue;
+      }
+
+      estadosCanvasCampaniaDuranteExploradores[hijo.gameObject] = hijo.gameObject.activeSelf;
+      hijo.gameObject.SetActive(false);
+    }
+  }
+
+  void RestaurarInterfazCampaniaTrasExploradores()
+  {
+    if (goCanvas == null || estadosCanvasCampaniaDuranteExploradores.Count == 0)
+    {
+      estadosCanvasCampaniaDuranteExploradores.Clear();
+      return;
+    }
+
+    foreach (KeyValuePair<GameObject, bool> estado in estadosCanvasCampaniaDuranteExploradores)
+    {
+      if (estado.Key != null)
+      {
+        estado.Key.SetActive(estado.Value);
+      }
+    }
+
+    estadosCanvasCampaniaDuranteExploradores.Clear();
+  }
+
+  IEnumerator ReproducirTextosExploradores(List<(string texto, Color color)> textosBufferizados)
+  {
+    if (textosBufferizados == null || textosBufferizados.Count == 0)
+    {
+      yield break;
+    }
+
+    for (int i = 0; i < textosBufferizados.Count; i++)
+    {
+      (string texto, Color color) = textosBufferizados[i];
+      GenerarTextoFlotanteCampaña(texto, color);
+
+      if (i < textosBufferizados.Count - 1)
+      {
+        yield return new WaitForSecondsRealtime(RetrasoEntreTextosExploradoresSegundos);
+      }
+    }
+  }
+
+  string LocExploradores(string es, string en, string pt)
+  {
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    switch (idioma)
+    {
+      case TRADU.IdiomaIngles:
+        return en;
+      case TRADU.IdiomaPortugues:
+        return pt;
+      default:
+        return es;
+    }
   }
 
   public bool TryGuardarCampania(out string error, string path = null)
@@ -802,6 +1394,8 @@ public class CampaignManager : MonoBehaviour
     }
     data.nodoActual = CrearReferenciaNodo(scMapaManager != null ? scMapaManager.nodoActual : null);
     data.nodoDestinoActual = CrearReferenciaNodo(MoviendoCaravana ? nodoDestinoActual : null);
+    data.batallaEnCurso = BATALLA_EnCurso;
+    data.emboscadaEnCurso = EMBOSCADA_EnCurso;
     data.eventosAleatoriosUsadosMapa = new List<int>(eventosAleatoriosUsadosMapa);
     data.estadosCaravana = estadosCaravana != null ? estadosCaravana.ConstruirSaveData() : new EstadosCaravanaSaveData();
     data.settlementOpen = asentamientoManager != null && asentamientoManager.DebeGuardarseComoAbierto;
@@ -839,6 +1433,8 @@ public class CampaignManager : MonoBehaviour
       nodoData.visualCode = nodo.ObtenerVisualCodeActual();
       nodoData.esMisterioso = nodo.ObtenerEstadoMisterioso();
       nodoData.atajoSubterraneoPendiente = nodo.ObtenerAtajoSubterraneoPendiente();
+      nodoData.faccionScoutReveladaId = nodo.ObtenerFaccionScoutReveladaId();
+      nodoData.faccionScoutReveladaNombre = nodo.ObtenerFaccionScoutReveladaNombre();
 
       if (nodo.DestinosPosibles != null)
       {
@@ -945,6 +1541,7 @@ public class CampaignManager : MonoBehaviour
     data.habilidades = CopiarHabilidadesPersonaje(personaje);
     data.actividades = CopiarActividadesPersonaje(personaje);
     data.actividadSeleccionada = personaje.PuedeRealizarActividades() ? personaje.ActividadSeleccionada : 0;
+    data.actividadFijada = personaje.ActividadFijada;
     data.nivelPuntoAtributo = personaje.NivelPuntoAtributo;
     data.nivelPuntoTS = personaje.NivelPuntoTS;
     data.nivelPuntoHabilidad = personaje.NivelPuntoHabilidad;
@@ -962,6 +1559,11 @@ public class CampaignManager : MonoBehaviour
     data.traitHeroeLocalPenalidadMuerteAplicada = personaje.TraitHeroeLocalPenalidadMuerteAplicada;
     data.traitEjemploASeguirAplicado = personaje.TraitEjemploASeguirAplicado;
     data.traitHerenciaItemOtorgado = personaje.TraitHerenciaItemOtorgado;
+    data.diasViajado = personaje.DiasViajado;
+    data.enemigosEliminados = personaje.EnemigosEliminados;
+    data.danioHecho = personaje.DanioHecho;
+    data.danioRecibido = personaje.DanioRecibido;
+    data.vecesDerribado = personaje.VecesDerribado;
     data.rasgos = CopiarRasgosPersonaje(personaje);
     data.equipment = ConstruirEquipmentSaveData(personaje, itemDatabase);
     return data;
@@ -1184,19 +1786,7 @@ public class CampaignManager : MonoBehaviour
   {
     if (scMenuSequito != null)
     {
-      Transform contenedorInstancias = scMenuSequito.transform.childCount > 2 ? scMenuSequito.transform.GetChild(2) : null;
-      if (contenedorInstancias != null)
-      {
-        foreach (Transform child in contenedorInstancias)
-        {
-          Destroy(child.gameObject);
-        }
-      }
-
-      if (scMenuSequito.lstSequitos != null)
-      {
-        scMenuSequito.lstSequitos.Clear();
-      }
+      scMenuSequito.LimpiarInstanciasParaCarga();
     }
 
     scSequitoMercaderes = null;
@@ -1264,12 +1854,12 @@ public class CampaignManager : MonoBehaviour
 
     numeroTurno = Mathf.Max(1, data.numeroTurno);
     posicionCaravana = Mathf.Max(0, data.posicionCaravana);
-    mejoraCaravanaAntorchas = data.mejoraCaravanaAntorchas;
-    mejoraCaravanaAlforjas = data.mejoraCaravanaAlforjas;
-    mejoraCaravanaTiendas = data.mejoraCaravanaTiendas;
-    mejoraCaravanaCatalejos = data.mejoraCaravanaCatalejos;
-    mejoraCaravanaAlmacen = data.mejoraCaravanaAlmacen;
-    mejoraCaravanaDefensas = data.mejoraCaravanaDefensas;
+    mejoraCaravanaAntorchas = NormalizarTierMejoraCaravana(data.mejoraCaravanaAntorchas);
+    mejoraCaravanaAlforjas = NormalizarTierMejoraCaravana(data.mejoraCaravanaAlforjas);
+    mejoraCaravanaTiendas = NormalizarTierMejoraCaravana(data.mejoraCaravanaTiendas);
+    mejoraCaravanaCatalejos = NormalizarTierMejoraCaravana(data.mejoraCaravanaCatalejos);
+    mejoraCaravanaAlmacen = NormalizarTierMejoraCaravana(data.mejoraCaravanaAlmacen);
+    mejoraCaravanaDefensas = NormalizarTierMejoraCaravana(data.mejoraCaravanaDefensas);
     sequitoHerrerosMantArmas = data.sequitoHerrerosMantArmas;
     sequitoHerrerosMantArmaduras = data.sequitoHerrerosMantArmaduras;
     sequitoMercaderesTier = data.sequitoMercaderesTier;
@@ -1288,7 +1878,8 @@ public class CampaignManager : MonoBehaviour
     }
     estadosCaravana.RestaurarDesdeSave(data.estadosCaravana);
     transicionZonaEnCurso = false;
-    BATALLA_EnCurso = 0;
+    BATALLA_EnCurso = data.batallaEnCurso;
+    EMBOSCADA_EnCurso = data.emboscadaEnCurso;
   }
 
   private void RestaurarZonaDesdeSave(SaveFileData saveFileData)
@@ -1434,7 +2025,7 @@ public class CampaignManager : MonoBehaviour
     scMapaManager.PosicionarCaravanaEnNodoActual();
     if (scMapaManager.nodoActual != null)
     {
-      scMapaManager.nodoActual.RefrescarCaminosMarcadosDesdeEstadoActual();
+      scMapaManager.RefrescarVisibilidadExploracion();
     }
   }
 
@@ -1487,7 +2078,7 @@ public class CampaignManager : MonoBehaviour
 
     RestaurarMercaderesDesdeSave(data);
 
-    SequitoCuranderos curanderos = scMenuSequito.GetComponentInChildren<SequitoCuranderos>(true);
+    SequitoCuranderos curanderos = scMenuSequito.ObtenerSequitoCuranderosActivo();
     if (curanderos != null)
     {
       curanderos.Actualizar();
@@ -1557,12 +2148,7 @@ public class CampaignManager : MonoBehaviour
 
     RestaurarInventarioDesdeSave(data.inventoryItemIds, itemDatabase);
 
-    if (scMenuPersonajes.listaPersonajes.Count > 0)
-    {
-      Personaje personajeInicial = scMenuPersonajes.listaPersonajes.Find(p => p != null && !p.Camp_Muerto);
-      scMenuPersonajes.pSel = personajeInicial != null ? personajeInicial : scMenuPersonajes.listaPersonajes[0];
-      scMenuPersonajes.ActualizarLista();
-    }
+    RefrescarRetratosPersonajesCampania();
   }
 
   private void RestaurarInventarioDesdeSave(List<string> inventoryItemIds, ItemDatabase itemDatabase)
@@ -1675,6 +2261,7 @@ public class CampaignManager : MonoBehaviour
     personaje.Actividad_2 = actividadesGuardadas.Length > 1 ? actividadesGuardadas[1] : 0;
     personaje.Actividad_3 = actividadesGuardadas.Length > 2 ? actividadesGuardadas[2] : 0;
     personaje.ActividadSeleccionada = data.actividadSeleccionada;
+    personaje.ActividadFijada = data.actividadFijada;
     personaje.NivelPuntoAtributo = data.nivelPuntoAtributo;
     personaje.NivelPuntoTS = data.nivelPuntoTS;
     personaje.NivelPuntoHabilidad = data.nivelPuntoHabilidad;
@@ -1692,6 +2279,11 @@ public class CampaignManager : MonoBehaviour
     personaje.TraitHeroeLocalPenalidadMuerteAplicada = data.traitHeroeLocalPenalidadMuerteAplicada;
     personaje.TraitEjemploASeguirAplicado = data.traitEjemploASeguirAplicado;
     personaje.TraitHerenciaItemOtorgado = data.traitHerenciaItemOtorgado;
+    personaje.DiasViajado = data.diasViajado;
+    personaje.EnemigosEliminados = data.enemigosEliminados;
+    personaje.DanioHecho = data.danioHecho;
+    personaje.DanioRecibido = data.danioRecibido;
+    personaje.VecesDerribado = data.vecesDerribado;
     personaje.aRasgos = new int[Mathf.Max(300, data.rasgos != null ? data.rasgos.Length : 300)];
     if (data.rasgos != null)
     {
@@ -1865,13 +2457,15 @@ public class CampaignManager : MonoBehaviour
     if (scMapaManager != null && scMapaManager.nodoActual != null)
     {
       scMapaManager.PosicionarCaravanaEnNodoActual();
-      scMapaManager.nodoActual.RefrescarCaminosMarcadosDesdeEstadoActual();
+      scMapaManager.RefrescarVisibilidadExploracion();
     }
 
     if (logDeCampania != null)
     {
       logDeCampania.SetDiaActual(numeroTurno);
     }
+
+    ActualizarTextoDia();
 
     if (scAtributosZona != null)
     {
@@ -1909,7 +2503,7 @@ public class CampaignManager : MonoBehaviour
 
     if (scMenuSequito != null)
     {
-      SequitoCuranderos curanderos = scMenuSequito.GetComponentInChildren<SequitoCuranderos>(true);
+      SequitoCuranderos curanderos = scMenuSequito.ObtenerSequitoCuranderosActivo();
       if (curanderos != null)
       {
         curanderos.Actualizar();
@@ -2490,6 +3084,10 @@ public class CampaignManager : MonoBehaviour
     }
 
     RefrescarVfxClimaCalor();
+    if (scMapaManager != null)
+    {
+      scMapaManager.RefrescarVisibilidadExploracion();
+    }
 
     if (escribirLogDebug)
     {
@@ -2586,6 +3184,208 @@ public class CampaignManager : MonoBehaviour
   #region Nodos
   public SunController sunController;
 
+  bool EsTipoNodoDeCombate(int tipoNodo)
+  {
+    switch (tipoNodo)
+    {
+      case 1:
+      case 8:
+      case 10:
+      case 11:
+      case 12:
+      case 15:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  int ObtenerTipoCombatePendiente()
+  {
+    if (BATALLA_EnCurso > 0)
+    {
+      return BATALLA_EnCurso;
+    }
+
+    Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
+    if (nodoActual != null && !nodoActual.nodoDespejado && EsTipoNodoDeCombate(nodoActual.tipoNodo))
+    {
+      return nodoActual.tipoNodo;
+    }
+
+    return 0;
+  }
+
+  bool PuedeAcamparEnNodo(Nodo nodo)
+  {
+    return nodo != null
+      && nodo.tipoNodo != 4
+      && nodo.nodoDespejado
+      && !nodo.nodoIncendiado;
+  }
+
+  void ActualizarBotonesAccionNodoActual()
+  {
+    bool mostrandoViajando = MoviendoCaravana || enviandoExploradores;
+    int combatePendiente = mostrandoViajando ? 0 : ObtenerTipoCombatePendiente();
+    bool mostrandoResolverCombate = !mostrandoViajando && combatePendiente > 0;
+    bool mostrandoAcampar = !mostrandoViajando
+      && !mostrandoResolverCombate
+      && PuedeAcamparEnNodo(scMapaManager != null ? scMapaManager.nodoActual : null);
+
+    if (goBotonViajando != null && goBotonViajando.activeSelf != mostrandoViajando)
+    {
+      goBotonViajando.SetActive(mostrandoViajando);
+    }
+
+    if (goBotonResolverCombate != null && goBotonResolverCombate.activeSelf != mostrandoResolverCombate)
+    {
+      goBotonResolverCombate.SetActive(mostrandoResolverCombate);
+    }
+
+    if (goBotonAcampar != null && goBotonAcampar.activeSelf != mostrandoAcampar)
+    {
+      goBotonAcampar.SetActive(mostrandoAcampar);
+    }
+  }
+
+  bool AbrirMenuBatallas()
+  {
+    GameObject menuBatallas = goMenuBatallas != null
+      ? goMenuBatallas
+      : (scMenuBatallas != null ? scMenuBatallas.gameObject : null);
+
+    if (menuBatallas == null || scMenuBatallas == null)
+    {
+      return false;
+    }
+
+    if (menuBatallas.activeInHierarchy)
+    {
+      return false;
+    }
+
+    menuBatallas.SetActive(true);
+    return true;
+  }
+
+  int CalcularResultadoEmboscadaViajeActual()
+  {
+    if (scTutorialManager.pasoActual == 2)
+    {
+      scTutorialManager.establecerPasoEspecifico(3);
+    }
+
+    int modEmboscadaViajeActual = estadosCaravana != null ? estadosCaravana.ObtenerModificadorEmboscadaDuranteViajeActual() : 0;
+    int randomEmboscada = UnityEngine.Random.Range(1, 101);
+
+    int chancesemboscada = scAtributosZona.modChanceEmboscada + modEmboscadaViajeActual;
+    chancesemboscada -= CuantosPersonajesHacenTalActividad(14) * 5;
+    chancesemboscada += ObtenerModificadorChanceEmboscadaTraits();
+    chancesemboscada -= mejoraCaravanaAntorchas * 2;
+
+    if (scMenuSequito.TieneSequito(9))
+    {
+      chancesemboscada += 4;
+    }
+    if (intTipoClima == 6)
+    {
+      chancesemboscada -= 100;
+    }
+    if (scTutorialManager.tutorialActivo)
+    {
+      chancesemboscada = 0;
+    }
+
+    int chanceEmboscadaNormalizada = Mathf.Clamp(chancesemboscada, 0, 100);
+    bool emboscadaEnemiga = randomEmboscada <= chanceEmboscadaNormalizada;
+    bool emboscadaAliada = !emboscadaEnemiga && (randomEmboscada - chanceEmboscadaNormalizada) >= 30;
+
+    if (emboscadaEnemiga)
+    {
+      EscribirLog(FormatearLogTiradaEmboscada(true, chanceEmboscadaNormalizada, randomEmboscada));
+      return 1;
+    }
+
+    if (emboscadaAliada)
+    {
+      EscribirLog(FormatearLogTiradaEmboscada(false, chanceEmboscadaNormalizada, randomEmboscada));
+      return 2;
+    }
+
+    return 0;
+  }
+
+  void ResolverCombateNormal(int emboscada)
+  {
+    scMenuBatallas.EventoBatallaNormal(0, emboscada);
+  }
+
+  void ResolverCombateElite(int emboscada, bool forzarRitualKaleTav = false)
+  {
+    scMenuBatallas.EventoBatallaElite(0, emboscada, forzarRitualKaleTav);
+  }
+
+  public bool IntentarIniciarViajeDesdeNodoActual()
+  {
+    if (MoviendoCaravana || enviandoExploradores)
+    {
+      return false;
+    }
+
+    if (ObtenerTipoCombatePendiente() <= 0)
+    {
+      return true;
+    }
+
+    ResolverCombate();
+    return false;
+  }
+
+  public void ResolverCombate()
+  {
+    if (MoviendoCaravana || enviandoExploradores)
+    {
+      return;
+    }
+
+    int tipoCombatePendiente = ObtenerTipoCombatePendiente();
+    if (tipoCombatePendiente <= 0)
+    {
+      return;
+    }
+
+    if (!AbrirMenuBatallas())
+    {
+      return;
+    }
+
+    switch (tipoCombatePendiente)
+    {
+      case 1:
+        ResolverCombateNormal(EMBOSCADA_EnCurso);
+        break;
+      case 8:
+        ResolverCombateElite(EMBOSCADA_EnCurso);
+        break;
+      case 10:
+        scMenuBatallas.EventoBatallaFinal(0);
+        break;
+      case 11:
+        scMenuBatallas.EventoBatallaCaravana(0, EMBOSCADA_EnCurso > 0 ? EMBOSCADA_EnCurso : 3);
+        break;
+      case 12:
+        scMenuBatallas.EventoBatallaSubterranea(scAtributosZona.FASE);
+        break;
+      case 15:
+        bool esRitualActivo = scMapaManager != null
+          && scMapaManager.nodoActual != null
+          && scMapaManager.nodoActual.nodoRitual;
+        ResolverCombateElite(0, esRitualActivo);
+        break;
+    }
+  }
+
   public void ViajeIniciado(Nodo destino, bool viajeSubterraneo = false)
   {
     EfectosViajeCaravana efectosViajeCaravana = estadosCaravana != null
@@ -2593,6 +3393,8 @@ public class CampaignManager : MonoBehaviour
       : default;
 
     bool sePrevieneAvanceAliento = false;
+    BATALLA_EnCurso = 0;
+    EMBOSCADA_EnCurso = 0;
     nodoDestinoActual = destino;
     sunController.OnTravelStart(); // duración en segundos
     animCaravana.SetBool("IsWalking", true);
@@ -2615,6 +3417,21 @@ public class CampaignManager : MonoBehaviour
 
     foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
     {
+      if (pers == null || pers.Camp_Muerto)
+      {
+        continue;
+      }
+
+      pers.SumarDiasViajado();
+    }
+
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null || pers.Camp_Muerto)
+      {
+        continue;
+      }
+
       int random = UnityEngine.Random.Range(0, 100);
       if (pers.PuedeRealizarActividades() && pers.ActividadSeleccionada == 10 && random < 15 && !sePrevieneAvanceAliento) //Ritual de Limpieza
       {
@@ -2639,6 +3456,7 @@ public class CampaignManager : MonoBehaviour
 
 
     numeroTurno++;
+    ActualizarTextoDia();
     if (destino.costoMovimiento > 1 && !sePrevieneAvanceAliento)
     {
       EscribirLog(TRADU.i.Traducir("-El viaje por el camino sinuoso ha retrasado la caravana. +") + destino.costoMovimiento + TRADU.i.Traducir(" Avance del Aliento Negro"));
@@ -2705,9 +3523,7 @@ public class CampaignManager : MonoBehaviour
 
     EfectosdeActividades();
     EfectosdeSequitos();
-
-
-
+    ActualizarBotonesAccionNodoActual();
   }
 
   public MenuBatallas scMenuBatallas;
@@ -2850,7 +3666,6 @@ public class CampaignManager : MonoBehaviour
 
     animCaravana.SetBool("IsWalking", false);
     animCaravana.speed = 1f;
-    int modEmboscadaViajeActual = estadosCaravana != null ? estadosCaravana.ObtenerModificadorEmboscadaDuranteViajeActual() : 0;
     if (estadosCaravana != null)
     {
       estadosCaravana.FinalizarViajeActual();
@@ -2864,8 +3679,14 @@ public class CampaignManager : MonoBehaviour
     if (ID == 1) //Batalla
     {
 
-      goMenuBatallas.SetActive(true);
+      BATALLA_EnCurso = ID;
+      EMBOSCADA_EnCurso = CalcularResultadoEmboscadaViajeActual();
+      if (EMBOSCADA_EnCurso == 1 && AbrirMenuBatallas())
+      {
+        ResolverCombateNormal(EMBOSCADA_EnCurso);
+      }
 
+#if false
       if (scTutorialManager.pasoActual == 2) {scTutorialManager.establecerPasoEspecifico(3); }
      
       
@@ -2911,15 +3732,17 @@ public class CampaignManager : MonoBehaviour
         }
 
       }
-
-
+#endif
     }
     if (ID == 8) //Batalla Elite
     {
 
-      goMenuBatallas.SetActive(true);
-      scMenuBatallas.EventoBatallaElite(0); //0 es Random
-
+      BATALLA_EnCurso = ID;
+      EMBOSCADA_EnCurso = CalcularResultadoEmboscadaViajeActual();
+      if (EMBOSCADA_EnCurso == 1 && AbrirMenuBatallas())
+      {
+        ResolverCombateElite(EMBOSCADA_EnCurso);
+      }
     }
     if (ID == 2) //Evento
     {
@@ -2979,24 +3802,29 @@ public class CampaignManager : MonoBehaviour
     if (ID == 10) //Batalla Final
     {
 
-      goMenuBatallas.SetActive(true);
-      scMenuBatallas.EventoBatallaFinal(0); //0 es Random
-
+      BATALLA_EnCurso = ID;
+      EMBOSCADA_EnCurso = 0;
     }
     if (ID == 11) //Ataque Caravana
     {
 
-      goMenuBatallas.SetActive(true);
-      scMenuBatallas.EventoBatallaCaravana(0); //0 es Random
-
+      BATALLA_EnCurso = ID;
+      EMBOSCADA_EnCurso = 3;
+      if (AbrirMenuBatallas())
+      {
+        scMenuBatallas.EventoBatallaCaravana(0, EMBOSCADA_EnCurso);
+      }
     }
     if (ID == 12) //Ataque Subterráneo
     {
       EscribirLog(TRADU.i.Traducir("-La Caravana ha sido emboscada por un ataque subterráneo."));
 
-      goMenuBatallas.SetActive(true);
-      scMenuBatallas.EventoBatallaSubterranea(scAtributosZona.FASE); //0 es Random
+      BATALLA_EnCurso = ID;
 
+    }
+    if (ID == 12)
+    {
+      EMBOSCADA_EnCurso = 1;
     }
     if (ID == 14) //Santuario
     {
@@ -3028,12 +3856,7 @@ public class CampaignManager : MonoBehaviour
     if (ID == 15) //Batalla Ritual PasoVientohelado
     {
 
-      goMenuBatallas.SetActive(true);
-      bool esRitualActivo = scMapaManager != null &&
-                            scMapaManager.nodoActual != null &&
-                            scMapaManager.nodoActual.nodoRitual;
-      scMenuBatallas.EventoBatallaElite(0, 0, esRitualActivo); //0 es Random
-
+      BATALLA_EnCurso = ID;
     }
     if (ID == 16) //Mision Salvamento
     {
@@ -3077,6 +3900,7 @@ public class CampaignManager : MonoBehaviour
       EscribirLog(TRADU.i.Traducir("-La caravana ha llegado a un nodo incendiado. -10 Esperanza.  ") + nmuertos + TRADU.i.Traducir(" Civiles Muertos."));
     }
 
+    ActualizarBotonesAccionNodoActual();
   }
 
 
@@ -3969,6 +4793,53 @@ public class CampaignManager : MonoBehaviour
     return cant;
   }
 
+  public void TodosDescansar()
+  {
+    CambiarActividadDeTodosLosPersonajes(1, "Descansar");
+  }
+
+  public void TodosGuardia()
+  {
+    CambiarActividadDeTodosLosPersonajes(3, "Guardia");
+  }
+
+  private void CambiarActividadDeTodosLosPersonajes(int idActividad, string nombreActividad)
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    foreach (Personaje personaje in scMenuPersonajes.listaPersonajes)
+    {
+      if (personaje == null || personaje.Camp_Muerto || !personaje.PuedeRealizarActividades() || personaje.ActividadFijada)
+      {
+        continue;
+      }
+
+      int actividadAnterior = personaje.ActividadSeleccionada;
+      personaje.ActividadSeleccionada = idActividad;
+
+      if (actividadAnterior != idActividad
+        && personaje.TieneRasgo(PersonajeTraitCatalog.TraitDesganado))
+      {
+        personaje.Camp_Moral = Mathf.Min(personaje.Camp_Moral, -2);
+      }
+    }
+
+    RefrescarRetratosPersonajesCampania(true);
+
+    if (scMenuPersonajes.scActividades != null)
+    {
+      scMenuPersonajes.scActividades.ActualizarRecuadros();
+    }
+
+    string mensaje = TRADU.i != null
+      ? TRADU.i.Traducir("-La actividad de todos los personajes ahora es: ") + TRADU.i.Traducir(nombreActividad)
+      : "-La actividad de todos los personajes ahora es: " + nombreActividad;
+    EscribirLog(mensaje, true);
+  }
+
   public int CuantosPersonajesSonDeTalClase(int IdClase)
   {
     if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
@@ -4719,7 +5590,7 @@ public class CampaignManager : MonoBehaviour
 
   public int ObtenerCapacidadMaximaPersonajes()
   {
-    return 4 + Mathf.Max(0, mejoraCaravanaTiendas);
+    return 4 + Mathf.Max(0, mejoraCaravanaTiendas - 1);
   }
 
   public bool TieneCapacidadDisponibleParaHeroe()
@@ -5389,8 +6260,9 @@ public class CampaignManager : MonoBehaviour
   private int CargaMaxActual;
   public int GetCapacidadDeCargaActual()
   {
-    int cargaPorBuey = 25 + mejoraCaravanaAlforjas;
+    int cargaPorBuey = 25 + Mathf.Max(0, mejoraCaravanaAlforjas - 1);
     CargaMaxActual = BueyesActuales * cargaPorBuey;
+    CargaMaxActual += mejoraCaravanaAlmacen * 5;
     CargaMaxActual += CuantosPersonajesHacenTalActividad(17) * 20; //Canalizador: Telekinesis
     CargaMaxActual += CuantosPersonajesTienenTraitActivo(PersonajeTraitCatalog.TraitHombrosFirmes) * 15;
     if (scMenuSequito.TieneSequito(11)) //Esclavos
@@ -5606,9 +6478,10 @@ public class CampaignManager : MonoBehaviour
     int stackIndex = ObtenerIndiceStackTextoRecurso(textoOrigen.transform);
     GameObject goTextoFlotante = Instantiate(prefabTextoRecursos, textoOrigen.transform, false);
     Animator animator = goTextoFlotante.GetComponent<Animator>();
+    float velocidadAnimador = Mathf.Max(0.01f, recursoTextoAnimatorSpeed);
     if (animator != null)
     {
-      animator.speed = Mathf.Max(0.01f, recursoTextoAnimatorSpeed);
+      animator.speed = velocidadAnimador;
     }
 
     AutodestruirDelay autodestruirDelay = goTextoFlotante.GetComponent<AutodestruirDelay>();
@@ -5653,8 +6526,39 @@ public class CampaignManager : MonoBehaviour
       txtMesh.color = new Color(0.7f, 0.1f, 0.2f); ;
     }
 
+    if (EsTextoFlotanteBueyes(textoOrigen))
+    {
+      AplicarAnimacionTextoRecursoHaciaArriba(goTextoFlotante, velocidadAnimador);
+    }
+
     _ = efectoRetraso;
     return Task.CompletedTask;
+  }
+
+  private void AplicarAnimacionTextoRecursoHaciaArriba(GameObject goTextoFlotante, float velocidadAnimador)
+  {
+    if (goTextoFlotante == null)
+    {
+      return;
+    }
+
+    Animator animator = goTextoFlotante.GetComponent<Animator>();
+    if (animator != null)
+    {
+      animator.enabled = false;
+    }
+
+    AnimacionTextoRecursoManual animacionManual = goTextoFlotante.GetComponent<AnimacionTextoRecursoManual>();
+    if (animacionManual == null)
+    {
+      animacionManual = goTextoFlotante.AddComponent<AnimacionTextoRecursoManual>();
+    }
+
+    animacionManual.Configurar(
+      RecursoTextoDeltaAnimacionY,
+      RecursoTextoDuracionMovimiento / velocidadAnimador,
+      RecursoTextoDuracionFade / velocidadAnimador,
+      RecursoTextoAlphaIntermedio);
   }
 
   private string FormatearTextoFlotanteRecurso(string textoBase, GameObject textoOrigen)
@@ -5675,7 +6579,7 @@ public class CampaignManager : MonoBehaviour
       return textoBase;
     }
 
-    return textoBase + " <sprite name=\"" + spriteName + "\">";
+    return textoBase + " <size=60%><sprite name=\"" + spriteName + "\"></size>";
   }
 
   private string ObtenerSpriteTextoRecurso(GameObject textoOrigen)
@@ -5692,6 +6596,11 @@ public class CampaignManager : MonoBehaviour
     if (valueMateriales != null && textoOrigen == valueMateriales.gameObject) { return "materiales"; }
     if (valueOro != null && textoOrigen == valueOro.gameObject) { return "oro"; }
     return null;
+  }
+
+  private bool EsTextoFlotanteBueyes(GameObject textoOrigen)
+  {
+    return valueBueyes != null && textoOrigen == valueBueyes.gameObject;
   }
 
   private int ObtenerIndiceStackTextoRecurso(Transform origen)
@@ -5804,11 +6713,12 @@ public class CampaignManager : MonoBehaviour
       int num2 = GetSuministrosActuales();
       int num3 = GetMaterialesActuales();
       int num4 = GetCargaLlevadaActual();
+      int capacidadActual = GetCapacidadDeCargaActual();
 
-      int cargaPorBuey = 25 + mejoraCaravanaAlforjas;
+      int cargaPorBuey = 25 + Mathf.Max(0, mejoraCaravanaAlforjas - 1);
       text += TRADU.i.Traducir("Los <color=#9e2a1c>Bueyes</color> son utilizados para llevar la carga de la caravana.\nCada uno da ") + cargaPorBuey + TRADU.i.Traducir(" de Capacidad de Carga.\n");
-      text += TRADU.i.Traducir("\nLlevas ") + num + TRADU.i.Traducir(" <color=#9e2a1c>Bueyes</color>, por un total de Capacidad de Carga de ") + (num * cargaPorBuey) + ".\n\n";
-      text += TRADU.i.Traducir("\nLlevas ") + num2 + TRADU.i.Traducir(" <color=#b7972c>Suministros</color> y ") + num3 + TRADU.i.Traducir(" <color=#b34f09>Materiales</color> por un total de peso de ") + num4 + "/" + (num * 25) + ".\n\n";
+      text += TRADU.i.Traducir("\nLlevas ") + num + TRADU.i.Traducir(" <color=#9e2a1c>Bueyes</color>, por un total de Capacidad de Carga de ") + capacidadActual + ".\n\n";
+      text += TRADU.i.Traducir("\nLlevas ") + num2 + TRADU.i.Traducir(" <color=#b7972c>Suministros</color> y ") + num3 + TRADU.i.Traducir(" <color=#b34f09>Materiales</color> por un total de peso de ") + num4 + "/" + capacidadActual + ".\n\n";
 
       if (num4 > GetCapacidadDeCargaActual())
       {
@@ -5917,7 +6827,7 @@ public class CampaignManager : MonoBehaviour
       return;
     }
 
-    bool puedeDescansar = nodoActual != null && nodoActual.nodoDespejado && !nodoActual.nodoIncendiado;
+    bool puedeDescansar = PuedeAcamparEnNodo(nodoActual);
 
     if (!menuDescanso.activeInHierarchy && puedeDescansar)
     {
@@ -6071,9 +6981,10 @@ public class CampaignManager : MonoBehaviour
   void Update()
   {
     ActualizarCursorCampania();
+    ActualizarBotonesAccionNodoActual();
 
     Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
-    bool puedeDescansar = nodoActual != null && nodoActual.nodoDespejado;
+    bool puedeDescansar = PuedeAcamparEnNodo(nodoActual);
     bool asentamientoActivo = asentamientoManager != null && asentamientoManager.TieneInteraccionActiva;
 
     if (botonDescansar != null)
@@ -7265,6 +8176,10 @@ public class CampaignManager : MonoBehaviour
       ? TRADU.i.Traducir("-Un nuevo personaje se ha unido a la caravana: ")
       : "-Un nuevo personaje se ha unido a la caravana: ";
     EscribirLog(mensajeNuevoHeroe + scMenuPersonajes.listaPersonajes[scMenuPersonajes.listaPersonajes.Count - 1].sNombre + ".");
+    if (!inicializandoNuevaCampania)
+    {
+      RefrescarRetratosPersonajesCampania(true);
+    }
     return true;
   }
 

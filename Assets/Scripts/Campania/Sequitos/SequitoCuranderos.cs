@@ -96,9 +96,11 @@ public class SequitoCuranderos : MonoBehaviour
       if(!pers.Camp_Muerto && pers.Camp_Herido)
       {
        GameObject btnPers = Instantiate( CampaignManager.Instance.scMenuPersonajes.prefabBtnPersonaje, contenedorUIPersonajes.transform);
-       btnPers.GetComponent<Image>().sprite = pers.spRetrato;
-       btnPers.transform.GetChild(3).gameObject.SetActive(true);
-       btnPers.GetComponent<btnPersonaje>().personajeRepresentado = pers;
+       btnPersonaje btn = btnPers.GetComponent<btnPersonaje>();
+       if (btn != null)
+       {
+         btn.Configurar(pers);
+       }
       }
 
     }

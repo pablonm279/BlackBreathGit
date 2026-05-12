@@ -153,6 +153,14 @@ MonoBehaviour:
       m_MarkPositionAdjustment:
         m_XPositionAdjustment: -49.21875
         m_YPositionAdjustment: 0
+    - m_BaseGlyphID: 51
+      m_BaseGlyphAnchorPoint:
+        m_XCoordinate: -6.591797
+        m_YCoordinate: 0
+      m_MarkGlyphID: 624
+      m_MarkPositionAdjustment:
+        m_XPositionAdjustment: -49.21875
+        m_YPositionAdjustment: 0
     - m_BaseGlyphID: 53
       m_BaseGlyphAnchorPoint:
         m_XCoordinate: 7.9101562

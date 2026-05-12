@@ -2351,50 +2351,7 @@ public class AdministradorEscenas : MonoBehaviour
 
   void CrearDefensasCaravana()
   {
-    if (CampaignManager.Instance.mejoraCaravanaDefensas == 1)
-    {
-      GameObject barricada = Instantiate(ContenedorPrefabsBatalla.Barricada);
-      ColocarEnCasillaEspecifica(1, barricada, 3, 1);
-      GameObject barricada3 = Instantiate(ContenedorPrefabsBatalla.Barricada);
-      ColocarEnCasillaEspecifica(1, barricada3, 3, 5);
-
-      //Pinchos
-      TrampaPinchos tr1 = BattleManager.Instance.ladoA.c3x2.gameObject.AddComponent<TrampaPinchos>();
-      tr1.Inicializar();
-      TrampaPinchos tr3 = BattleManager.Instance.ladoA.c3x4.gameObject.AddComponent<TrampaPinchos>();
-      tr3.Inicializar();
-
-      //Nido
-      TrampaNidoDefensivo tr5 = BattleManager.Instance.ladoB.c1x3.gameObject.AddComponent<TrampaNidoDefensivo>();
-      tr5.Inicializar();
-
-
-    }
-    else if (CampaignManager.Instance.mejoraCaravanaDefensas == 2)
-    {
-      GameObject barricada = Instantiate(ContenedorPrefabsBatalla.Barricada);
-      ColocarEnCasillaEspecifica(1, barricada, 3, 1);
-      GameObject barricada2 = Instantiate(ContenedorPrefabsBatalla.Barricada);
-      ColocarEnCasillaEspecifica(1, barricada2, 3, 3);
-      GameObject barricada3 = Instantiate(ContenedorPrefabsBatalla.Barricada);
-      ColocarEnCasillaEspecifica(1, barricada3, 3, 5);
-
-      //Pinchos
-      TrampaPinchos tr1 = BattleManager.Instance.ladoA.c3x2.gameObject.AddComponent<TrampaPinchos>();
-      tr1.Inicializar();
-      TrampaPinchos tr3 = BattleManager.Instance.ladoA.c3x4.gameObject.AddComponent<TrampaPinchos>();
-      tr3.Inicializar();
-      TrampaPinchos tr4 = BattleManager.Instance.ladoA.c2x1.gameObject.AddComponent<TrampaPinchos>();
-      tr4.Inicializar();
-      TrampaPinchos tr5 = BattleManager.Instance.ladoA.c2x5.gameObject.AddComponent<TrampaPinchos>();
-      tr5.Inicializar();
-
-      //Nido
-      TrampaNidoDefensivo tr6 = BattleManager.Instance.ladoB.c1x3.gameObject.AddComponent<TrampaNidoDefensivo>();
-      tr6.Inicializar();
-
-    }
-    else if (CampaignManager.Instance.mejoraCaravanaDefensas == 3)
+    if (CampaignManager.Instance.mejoraCaravanaDefensas >= 5)
     {
       GameObject barricada = Instantiate(ContenedorPrefabsBatalla.Barricada);
       ColocarEnCasillaEspecifica(1, barricada, 3, 1);
@@ -2425,9 +2382,49 @@ public class AdministradorEscenas : MonoBehaviour
       tr8.Inicializar();
 
     }
+    else if (CampaignManager.Instance.mejoraCaravanaDefensas >= 3)
+    {
+      GameObject barricada = Instantiate(ContenedorPrefabsBatalla.Barricada);
+      ColocarEnCasillaEspecifica(1, barricada, 3, 1);
+      GameObject barricada2 = Instantiate(ContenedorPrefabsBatalla.Barricada);
+      ColocarEnCasillaEspecifica(1, barricada2, 3, 3);
+      GameObject barricada3 = Instantiate(ContenedorPrefabsBatalla.Barricada);
+      ColocarEnCasillaEspecifica(1, barricada3, 3, 5);
+
+      //Pinchos
+      TrampaPinchos tr1 = BattleManager.Instance.ladoA.c3x2.gameObject.AddComponent<TrampaPinchos>();
+      tr1.Inicializar();
+      TrampaPinchos tr3 = BattleManager.Instance.ladoA.c3x4.gameObject.AddComponent<TrampaPinchos>();
+      tr3.Inicializar();
+      TrampaPinchos tr4 = BattleManager.Instance.ladoA.c2x1.gameObject.AddComponent<TrampaPinchos>();
+      tr4.Inicializar();
+      TrampaPinchos tr5 = BattleManager.Instance.ladoA.c2x5.gameObject.AddComponent<TrampaPinchos>();
+      tr5.Inicializar();
+
+      //Nido
+      TrampaNidoDefensivo tr6 = BattleManager.Instance.ladoB.c1x3.gameObject.AddComponent<TrampaNidoDefensivo>();
+      tr6.Inicializar();
+
+    }
+    else if (CampaignManager.Instance.mejoraCaravanaDefensas >= 2)
+    {
+      GameObject barricada = Instantiate(ContenedorPrefabsBatalla.Barricada);
+      ColocarEnCasillaEspecifica(1, barricada, 3, 1);
+      GameObject barricada3 = Instantiate(ContenedorPrefabsBatalla.Barricada);
+      ColocarEnCasillaEspecifica(1, barricada3, 3, 5);
+
+      //Pinchos
+      TrampaPinchos tr1 = BattleManager.Instance.ladoA.c3x2.gameObject.AddComponent<TrampaPinchos>();
+      tr1.Inicializar();
+      TrampaPinchos tr3 = BattleManager.Instance.ladoA.c3x4.gameObject.AddComponent<TrampaPinchos>();
+      tr3.Inicializar();
+
+      //Nido
+      TrampaNidoDefensivo tr5 = BattleManager.Instance.ladoB.c1x3.gameObject.AddComponent<TrampaNidoDefensivo>();
+      tr5.Inicializar();
 
 
-
+    }
   }
 
   void CrearEncuentroDinamico(EncounterDefinition encounterDefinition)
@@ -4680,6 +4677,8 @@ public class AdministradorEscenas : MonoBehaviour
     {
       campaignManager.scMapaManager.nodoActual.nodoDespejado = true;
     }
+    campaignManager.BATALLA_EnCurso = 0;
+    campaignManager.EMBOSCADA_EnCurso = 0;
 
    
 
@@ -5025,9 +5024,6 @@ public class AdministradorEscenas : MonoBehaviour
 
 
 }
-
-
-
 
 
 

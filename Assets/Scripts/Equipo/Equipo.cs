@@ -15,16 +15,18 @@ public class Equipo : MonoBehaviour
   [SerializeField] Image imItemConsumible1;
   [SerializeField] Image imItemConsumible2;
   [SerializeField] Sprite vacio;
+  [SerializeField] TextMeshProUGUI txtdisponibles;
  
 
   public List<GameObject> listInventario = new List<GameObject>();
  
 
 
- public GameObject goInventario;
+  public GameObject goInventario;
   public GameObject prefabNtnInventario;
   public Transform listaItems;
   private int tipoInventarioAbierto = 5;
+  public int TipoInventarioAbierto => tipoInventarioAbierto;
 
 
 
@@ -42,11 +44,11 @@ public class Equipo : MonoBehaviour
  }
 
  private static Transform ObtenerRaizSlotInteractivo(Transform origen)
- {
+  {
     Transform actual = origen;
     while (actual != null)
     {
-      if (actual.GetComponent<EventTrigger>() != null || actual.GetComponent<Button>() != null)
+      if (actual.GetComponent<Button>() != null)
       {
         return actual;
       }
@@ -77,6 +79,11 @@ public class Equipo : MonoBehaviour
   private void CrearBotonInventario(Item item, bool oscurecido)
   {
     if (item == null)
+    {
+      return;
+    }
+
+    if (!AsegurarListaItems())
     {
       return;
     }
@@ -147,6 +154,12 @@ public class Equipo : MonoBehaviour
   public void MostrarInventario(int tipo) //1 Armas
   {
     tipoInventarioAbierto = tipo;
+    ActualizarTextoDisponibles(tipo);
+
+    if (!AsegurarListaItems())
+    {
+      return;
+    }
 
     foreach (Transform transform in listaItems)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
     {
@@ -182,6 +195,80 @@ public class Equipo : MonoBehaviour
 
     }
 
+  }
+
+  private bool AsegurarListaItems()
+  {
+    if (goInventario == null)
+    {
+      return listaItems != null;
+    }
+
+    Transform contenedorInventario = goInventario.transform.Find("Inventario");
+    if (contenedorInventario != null)
+    {
+      listaItems = contenedorInventario;
+      return true;
+    }
+
+    if (goInventario.name == "Inventario")
+    {
+      listaItems = goInventario.transform;
+      return true;
+    }
+
+    return listaItems != null;
+  }
+
+  private void ActualizarTextoDisponibles(int tipo)
+  {
+    if (txtdisponibles == null)
+    {
+      return;
+    }
+
+    MenuPersonajes menuPersonajes = CampaignManager.Instance != null ? CampaignManager.Instance.scMenuPersonajes : null;
+    Personaje personajeSeleccionado = menuPersonajes != null ? menuPersonajes.pSel : null;
+    if (personajeSeleccionado == null)
+    {
+      txtdisponibles.text = string.Empty;
+      return;
+    }
+
+    string textoTipo = ObtenerTextoTipoInventario(tipo);
+    string textoClase = ObtenerTextoClase(personajeSeleccionado.IDClase);
+    txtdisponibles.text =
+      TRADU.i.Traducir(textoTipo)
+      + TRADU.i.Traducir(" disponibles para ")
+      + TRADU.i.Traducir(textoClase)
+      + ".";
+  }
+
+  private static string ObtenerTextoTipoInventario(int tipo)
+  {
+    switch (tipo)
+    {
+      case 1: return "Armas";
+      case 2: return "Armaduras";
+      case 3: return "Accesorios";
+      case 4: return "Consumibles";
+      case 5: return "Items";
+      default: return "Items";
+    }
+  }
+
+  private static string ObtenerTextoClase(int idClase)
+  {
+    switch (idClase)
+    {
+      case 1: return "Caballero";
+      case 2: return "Explorador";
+      case 3: return "Purificadora";
+      case 4: return "Acechador";
+      case 5: return "Canalizador";
+      case 6: return "Duelista";
+      default: return "Personaje";
+    }
   }
 
   public void RefrescarInventarioSiAbierto()

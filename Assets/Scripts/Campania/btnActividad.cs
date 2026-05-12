@@ -12,12 +12,14 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
    public Actividades scActividades;
    public Personaje personajeSeleccionado;
    public GameObject Recuadro;
+   [SerializeField] private bool usarComoIndicadorRetrato;
 
    void Awake()
    {
-      scActividades = transform.parent.parent.GetComponent<Actividades>();
-      
-
+      if (scActividades == null)
+      {
+        scActividades = GetComponentInParent<Actividades>();
+      }
    }
 
 
@@ -45,9 +47,23 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
    public void OnClick()
    {
+      if (usarComoIndicadorRetrato)
+      {
+        btnPersonaje btnRetrato = GetComponentInParent<btnPersonaje>();
+        if (btnRetrato != null)
+        {
+          btnRetrato.SeleccionarPJ();
+        }
+        return;
+      }
+
       CambiarActividadPersonaje(personajeSeleccionado);
 
       scActividades.ActualizarRecuadros();
+      if (scActividades.scMenuPersonajes != null)
+      {
+        scActividades.scMenuPersonajes.RefrescarListaVisual();
+      }
       RuntimeAnalytics.TrackDesign(
         "campaign",
         "activity_selected",
@@ -58,6 +74,15 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
    public void OnPointerClick(PointerEventData eventData)
    {
+      if (usarComoIndicadorRetrato)
+      {
+        if (eventData != null && eventData.button == PointerEventData.InputButton.Right)
+        {
+          ToggleActividadFijadaDesdeRetrato();
+        }
+        return;
+      }
+
       if (eventData == null || eventData.button != PointerEventData.InputButton.Right)
       {
         return;
@@ -68,6 +93,11 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
    public void OnClickCambiarATodos()
    {
+      if (usarComoIndicadorRetrato)
+      {
+        return;
+      }
+
       if (!EsActividadBaseCompartida())
       {
         return;
@@ -80,7 +110,7 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
       foreach (Personaje personaje in scActividades.scMenuPersonajes.listaPersonajes)
       {
-        if (personaje == null || personaje.Camp_Muerto || !personaje.PuedeRealizarActividades())
+        if (personaje == null || personaje.Camp_Muerto || !personaje.PuedeRealizarActividades() || personaje.ActividadFijada)
         {
           continue;
         }
@@ -89,6 +119,10 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
       }
 
       scActividades.ActualizarRecuadros();
+      if (scActividades.scMenuPersonajes != null)
+      {
+        scActividades.scMenuPersonajes.RefrescarListaVisual();
+      }
 
       if (CampaignManager.Instance != null)
       {
@@ -125,22 +159,76 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
    private void MostrarDescripcionHover()
    {
-      if (scActividades == null || scActividades.textdesc == null || actividadRepresentada == null)
+      if (actividadRepresentada == null)
       {
         return;
       }
 
-      scActividades.textdesc.text = actividadRepresentada.desc;
+      if (usarComoIndicadorRetrato)
+      {
+        if (TooltipStats.Instance != null)
+        {
+          TooltipStats.Instance.ShowTooltipRaw(actividadRepresentada.desc, Input.mousePosition);
+        }
+        else if (TooltipItems.Instance != null)
+        {
+          TooltipItems.Instance.ShowTooltip(actividadRepresentada.desc, Input.mousePosition);
+        }
+      }
+
+      if (scActividades == null || scActividades.textdesc == null)
+      {
+        return;
+      }
+
+      scActividades.textdesc.text = scActividades.FormatearDescripcionPanel(actividadRepresentada.desc);
    }
 
    private void RestaurarDescripcionSeleccionada()
    {
+      if (usarComoIndicadorRetrato)
+      {
+        TooltipStats.Instance?.HideTooltip();
+        TooltipItems.Instance?.HideTooltip();
+      }
+
       if (scActividades == null)
       {
         return;
       }
 
       scActividades.ActualizarRecuadros();
+   }
+
+   public void ConfigurarIndicadorRetrato(Actividad actividad, Actividades actividades, Personaje personaje)
+   {
+      actividadRepresentada = actividad;
+      scActividades = actividades;
+      personajeSeleccionado = personaje;
+      usarComoIndicadorRetrato = true;
+   }
+
+   private void ToggleActividadFijadaDesdeRetrato()
+   {
+      if (!usarComoIndicadorRetrato || personajeSeleccionado == null)
+      {
+        return;
+      }
+
+      personajeSeleccionado.ActividadFijada = !personajeSeleccionado.ActividadFijada;
+
+      btnPersonaje btnRetrato = GetComponentInParent<btnPersonaje>();
+      if (btnRetrato != null)
+      {
+        btnRetrato.RepresentarTodo();
+      }
+
+      if (personajeSeleccionado.ActividadFijada && CampaignManager.Instance != null)
+      {
+        CampaignManager.Instance.EscribirLog(TRADU.i != null
+          ? TRADU.i.Traducir("-Actividad fijada.")
+          : "-Actividad fijada.", true);
+      }
    }
 
 
