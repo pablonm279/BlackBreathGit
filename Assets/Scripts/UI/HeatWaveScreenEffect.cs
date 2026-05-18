@@ -278,18 +278,14 @@ public class BurningForestScreenEffect : MonoBehaviour
   private const int TextureSize = 128;
 
   private static readonly Color ColorTintBase = new Color(0.26f, 0.07f, 0.03f, 0.0065f);
-  private static readonly Color ColorVignetteBase = new Color(0.42f, 0.09f, 0.05f, 0.0148f);
 
   private Canvas overlayCanvas;
   private CanvasGroup canvasGroup;
   private RectTransform rectTransform;
   private Image tintImage;
-  private Image vignetteImage;
 
   private Texture2D solidTexture;
-  private Texture2D vignetteTexture;
   private Sprite solidSprite;
-  private Sprite vignetteSprite;
 
   private bool effectActive;
 
@@ -335,10 +331,8 @@ public class BurningForestScreenEffect : MonoBehaviour
   private void OnDestroy()
   {
     if (solidSprite != null) { Destroy(solidSprite); }
-    if (vignetteSprite != null) { Destroy(vignetteSprite); }
 
     if (solidTexture != null) { Destroy(solidTexture); }
-    if (vignetteTexture != null) { Destroy(vignetteTexture); }
   }
 
   public void SetEffectActive(bool active)
@@ -382,17 +376,12 @@ public class BurningForestScreenEffect : MonoBehaviour
     }
 
     EnsureSprites();
+    RemoveLegacyVignetteLayer();
 
     if (tintImage == null)
     {
       tintImage = CreateLayer("WarmTint", solidSprite);
       tintImage.color = ColorTintBase;
-    }
-
-    if (vignetteImage == null)
-    {
-      vignetteImage = CreateLayer("Vignette", vignetteSprite);
-      vignetteImage.color = ColorVignetteBase;
     }
   }
 
@@ -403,11 +392,14 @@ public class BurningForestScreenEffect : MonoBehaviour
       solidTexture = CreateSolidTexture();
       solidSprite = CreateSprite(solidTexture);
     }
+  }
 
-    if (vignetteSprite == null)
+  private void RemoveLegacyVignetteLayer()
+  {
+    Transform existingVignette = transform.Find("Vignette");
+    if (existingVignette != null)
     {
-      vignetteTexture = CreateRadialTexture(0.75f, 1f, true);
-      vignetteSprite = CreateSprite(vignetteTexture);
+      Destroy(existingVignette.gameObject);
     }
   }
 

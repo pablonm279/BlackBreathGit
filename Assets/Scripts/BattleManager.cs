@@ -848,8 +848,10 @@ public class BattleManager : MonoBehaviour
       return; // No mandar refuerzos si hay mÃ¡s de 6 enemigos
     }
 
-    // Si hay mÃ¡s de 3 enemigos en la lista de refuerzos
-    int cantidadAEnviar = enemigosRefuerzos.Count > 3 ? 2 : 1;
+    bool noHayEnemigosVivos = enemigosEnCampo < 1;
+    // Si el campo enemigo quedo vacio y hay mas de un refuerzo pendiente, entran 2 juntos.
+    // Se mantiene tambien la regla existente para listas largas de refuerzos.
+    int cantidadAEnviar = (noHayEnemigosVivos && enemigosRefuerzos.Count > 1) || enemigosRefuerzos.Count > 3 ? 2 : 1;
     for (int i = 0; i < cantidadAEnviar && enemigosRefuerzos.Count > 0; i++)
     {
       bool seEnvio = MandarRefuerzoEnemigo(enemigosRefuerzos[0]);

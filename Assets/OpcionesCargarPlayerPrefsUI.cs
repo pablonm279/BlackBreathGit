@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 {
@@ -584,15 +585,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         QualitySettings.vSyncCount = vsync ? 1 : 0;
 
         int fps = PlayerPrefs.GetInt(PrefFpsLimit, 60);
-        if (vsync)
-        {
-            Application.targetFrameRate = -1;
-        }
-        else
-        {
-            if (fps <= 0) { Application.targetFrameRate = -1; }
-            else { Application.targetFrameRate = Mathf.Clamp(fps, 30, 240); }
-        }
+        Application.targetFrameRate = VisualPolishRuntime.ResolveTargetFrameRate(vsync, fps, SceneManager.GetActiveScene());
     }
 
     private void InicializarDropdownFPS()

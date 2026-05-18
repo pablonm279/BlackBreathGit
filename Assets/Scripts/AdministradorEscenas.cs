@@ -36,6 +36,7 @@ public class AdministradorEscenas : MonoBehaviour
 
   // Personajes forzados a desplegar en Ataque a Caravana (se les aplica "Sorprendido" al inicio)
   public List<Personaje> PersonajesSorprendidosInicioCaravana = new List<Personaje>();
+  public List<RefuerzoAliadoCaravanaOrdenItem> OrdenRefuerzosAliadosCaravana = new List<RefuerzoAliadoCaravanaOrdenItem>();
 
 
   public MeshRenderer mrFondoBatalla;
@@ -4671,6 +4672,7 @@ public class AdministradorEscenas : MonoBehaviour
     if (campaignManager.scMenuBatallas != null)
     {
       campaignManager.scMenuBatallas.EfectosDeBatallaEnCampaña(resultado);
+      campaignManager.logDeCampania?.RegistrarResumenBatalla(resultado, campaignManager.scMenuPersonajes != null ? campaignManager.scMenuPersonajes.listaPersonajes : null);
       campaignManager.scMenuBatallas.DejanEnListaParticipantesSolo();
     }
     if (campaignManager.scMapaManager != null && campaignManager.scMapaManager.nodoActual != null)
@@ -4962,9 +4964,32 @@ public class AdministradorEscenas : MonoBehaviour
   void AsignarRefuerzosAliados(bool filtrarPorActividadGuardia = true)
   {
     AdministradorEscenas scAdminEscenas = CampaignManager.Instance.scMenuBatallas.scAdministradorEscenas;
+    bool usarOrdenPersonalizadoCaravana = OrdenRefuerzosAliadosCaravana != null && OrdenRefuerzosAliadosCaravana.Count > 0;
+    List<Personaje> personajesOrdenados = new List<Personaje>();
+    Dictionary<Personaje, GameObject> refuerzosHeroesPorPersonaje = new Dictionary<Personaje, GameObject>();
+    Dictionary<string, Queue<GameObject>> refuerzosMilicianosPorPrefab = new Dictionary<string, Queue<GameObject>>();
+
+    if (usarOrdenPersonalizadoCaravana)
+    {
+      foreach (RefuerzoAliadoCaravanaOrdenItem refuerzo in OrdenRefuerzosAliadosCaravana)
+      {
+        if (refuerzo != null && refuerzo.EsPersonaje && refuerzo.personaje != null && !personajesOrdenados.Contains(refuerzo.personaje))
+        {
+          personajesOrdenados.Add(refuerzo.personaje);
+        }
+      }
+    }
+
+    foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
+    {
+      if (pers != null && !personajesOrdenados.Contains(pers))
+      {
+        personajesOrdenados.Add(pers);
+      }
+    }
 
     int cantRefuerzoAliadoHeroe = 0;
-    foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
+    foreach (Personaje pers in personajesOrdenados)
     {
       if (pers == Personaje1 || pers == Personaje2 || pers == Personaje3 || pers == Personaje4)
       {
@@ -4977,6 +5002,10 @@ public class AdministradorEscenas : MonoBehaviour
           cantRefuerzoAliadoHeroe++;
           //Si no está haciendo guardia, lo agrega como refuerzo, pero no lo muestra
           scAdminEscenas.ColocarPersonajecomoUnidad(pers, cantRefuerzoAliadoHeroe);
+          if (!refuerzosHeroesPorPersonaje.ContainsKey(pers) && BattleManager.Instance.aliadosRefuerzos.Count > 0)
+          {
+            refuerzosHeroesPorPersonaje.Add(pers, BattleManager.Instance.aliadosRefuerzos[BattleManager.Instance.aliadosRefuerzos.Count - 1]);
+          }
         }
       }
 
@@ -4991,19 +5020,93 @@ public class AdministradorEscenas : MonoBehaviour
       for (int i = 0; i < cantidadMilicianos; i++)
       {
         GameObject aliado;
+        GameObject prefabOrigen;
 
         if (tieneDesertores)
-          aliado = Instantiate(i % 2 == 0 ? prefabs.Desertor2 : prefabs.Desertor1);
+        {
+          prefabOrigen = i % 2 == 0 ? prefabs.Desertor2 : prefabs.Desertor1;
+          aliado = Instantiate(prefabOrigen);
+        }
         else
-          aliado = Instantiate(i % 2 == 0 ? prefabs.Miliciano2 : prefabs.Miliciano1);
+        {
+          prefabOrigen = i % 2 == 0 ? prefabs.Miliciano2 : prefabs.Miliciano1;
+          aliado = Instantiate(prefabOrigen);
+        }
 
         aliado.SetActive(false);
         BattleManager.Instance.aliadosRefuerzos.Add(aliado);
+        if (prefabOrigen != null)
+        {
+          string clavePrefab = prefabOrigen.name;
+          if (!refuerzosMilicianosPorPrefab.TryGetValue(clavePrefab, out Queue<GameObject> colaPrefab))
+          {
+            colaPrefab = new Queue<GameObject>();
+            refuerzosMilicianosPorPrefab.Add(clavePrefab, colaPrefab);
+          }
+
+          colaPrefab.Enqueue(aliado);
+        }
       }
     }
 
-    // Da vuelta la lista de refuerzos aliados
-    BattleManager.Instance.aliadosRefuerzos.Reverse();
+    if (usarOrdenPersonalizadoCaravana)
+    {
+      List<GameObject> refuerzosOrdenados = new List<GameObject>(BattleManager.Instance.aliadosRefuerzos.Count);
+      HashSet<GameObject> refuerzosYaOrdenados = new HashSet<GameObject>();
+
+      foreach (RefuerzoAliadoCaravanaOrdenItem refuerzo in OrdenRefuerzosAliadosCaravana)
+      {
+        if (refuerzo == null)
+        {
+          continue;
+        }
+
+        if (refuerzo.EsPersonaje && refuerzo.personaje != null && refuerzosHeroesPorPersonaje.TryGetValue(refuerzo.personaje, out GameObject refuerzoHeroe) && refuerzoHeroe != null && !refuerzosYaOrdenados.Contains(refuerzoHeroe))
+        {
+          refuerzosOrdenados.Add(refuerzoHeroe);
+          refuerzosYaOrdenados.Add(refuerzoHeroe);
+          continue;
+        }
+
+        if (refuerzo.EsUnidadPrefab && refuerzo.prefabRefuerzo != null && refuerzosMilicianosPorPrefab.TryGetValue(refuerzo.prefabRefuerzo.name, out Queue<GameObject> colaPrefab))
+        {
+          while (colaPrefab.Count > 0)
+          {
+            GameObject refuerzoMilicia = colaPrefab.Dequeue();
+            if (refuerzoMilicia == null || refuerzosYaOrdenados.Contains(refuerzoMilicia))
+            {
+              continue;
+            }
+
+            refuerzosOrdenados.Add(refuerzoMilicia);
+            refuerzosYaOrdenados.Add(refuerzoMilicia);
+            break;
+          }
+        }
+      }
+
+      foreach (GameObject refuerzoPendiente in BattleManager.Instance.aliadosRefuerzos)
+      {
+        if (refuerzoPendiente != null && !refuerzosYaOrdenados.Contains(refuerzoPendiente))
+        {
+          refuerzosOrdenados.Add(refuerzoPendiente);
+        }
+      }
+
+      BattleManager.Instance.aliadosRefuerzos.Clear();
+      BattleManager.Instance.aliadosRefuerzos.AddRange(refuerzosOrdenados);
+    }
+    else
+    {
+      // Da vuelta la lista de refuerzos aliados
+      BattleManager.Instance.aliadosRefuerzos.Reverse();
+    }
+
+    if (usarOrdenPersonalizadoCaravana)
+    {
+      OrdenRefuerzosAliadosCaravana.Clear();
+    }
+
     BattleManager.Instance.ActualizarAliadosRefUI();
 
   }
@@ -5024,7 +5127,3 @@ public class AdministradorEscenas : MonoBehaviour
 
 
 }
-
-
-
-

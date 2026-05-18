@@ -25,6 +25,25 @@ public class BattleRewardProfile
    public BattleRewardTuning tuning = new BattleRewardTuning();
 }
 
+public enum TipoRefuerzoAliadoCaravana
+{
+   Personaje,
+   UnidadPrefab
+}
+
+public class RefuerzoAliadoCaravanaOrdenItem
+{
+   public string id;
+   public TipoRefuerzoAliadoCaravana tipo;
+   public Personaje personaje;
+   public GameObject prefabRefuerzo;
+   public string nombreVisible;
+   public Sprite retrato;
+
+   public bool EsPersonaje => tipo == TipoRefuerzoAliadoCaravana.Personaje && personaje != null;
+   public bool EsUnidadPrefab => tipo == TipoRefuerzoAliadoCaravana.UnidadPrefab && prefabRefuerzo != null;
+}
+
 public class MenuBatallas : MonoBehaviour
 {
  static readonly TipoEstadoCaravana[] EstadosNegativosDerrotaBatalla =
@@ -36,7 +55,10 @@ public class MenuBatallas : MonoBehaviour
  };
  public GameObject prefabBtnPersonaje; 
  public GameObject contenedorUIPersonajes; 
+ public GameObject contenedorUIPersonajesFuera; 
+
  public AdministradorEscenas scAdministradorEscenas;
+ List<RefuerzoAliadoCaravanaOrdenItem> ordenRefuerzosCaravana = new List<RefuerzoAliadoCaravanaOrdenItem>();
 
  [Header("Generador de encuentros")]
  [SerializeField] List<string> corruptFactionIds = new List<string>() { "Corruptos" };
@@ -63,6 +85,8 @@ public class MenuBatallas : MonoBehaviour
  public GameObject txtDerrota;
  public TextMeshProUGUI txtRecompensa;
  public TextMeshProUGUI faccionBatalla;
+ public TextMeshProUGUI txtPoderenemigo;
+ public TextMeshProUGUI txtPoderaliado;
 
  public TextMeshProUGUI txtMilicianosDisponibles;
 
@@ -530,6 +554,538 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
     }
  }
 
+ int ObtenerLimiteAliadosVisual()
+ {
+    var tutorial = CampaignManager.Instance != null ? CampaignManager.Instance.scTutorialManager : null;
+    int limiteVisual = ObtenerMaxAliadosPermitidos();
+    if (tutorial != null && tutorial.tutorialActivo)
+    {
+       if (tutorial.pasoActual < 4)
+       {
+          limiteVisual = Mathf.Min(limiteVisual, 1);
+       }
+       else if (tutorial.pasoActual < 40)
+       {
+          limiteVisual = Mathf.Min(limiteVisual, 3);
+       }
+    }
+
+    return limiteVisual;
+ }
+
+ void AsegurarReferenciasTextoSeleccionados()
+ {
+    if (txtSeleccionadosPersonajes == null && UIEmpezarBatalla != null)
+    {
+       txtSeleccionadosPersonajes = BuscarTextoSeleccionadosEnPanel(UIEmpezarBatalla);
+    }
+
+    if (txtSeleccionadosPersonajesCaravana == null && UIEmpezarBatallaACaravana != null)
+    {
+       txtSeleccionadosPersonajesCaravana = BuscarTextoSeleccionadosEnPanel(UIEmpezarBatallaACaravana);
+    }
+ }
+
+ TextMeshProUGUI BuscarTextoSeleccionadosEnPanel(GameObject panel)
+ {
+    if (panel == null)
+    {
+       return null;
+    }
+
+    foreach (TextMeshProUGUI texto in panel.GetComponentsInChildren<TextMeshProUGUI>(true))
+    {
+       if (texto != null && texto.gameObject.name == "Cantidadtxt")
+       {
+          return texto;
+       }
+    }
+
+    return null;
+ }
+
+ void ActualizarTextoSeleccionadosPersonajes(string texto)
+ {
+    AsegurarReferenciasTextoSeleccionados();
+
+    if (txtSeleccionadosPersonajes != null)
+    {
+       txtSeleccionadosPersonajes.text = texto;
+    }
+
+    if (txtSeleccionadosPersonajesCaravana != null)
+    {
+       txtSeleccionadosPersonajesCaravana.text = texto;
+    }
+ }
+
+ bool EstaSeleccionado(Personaje pers)
+ {
+    return pers != null
+      && (scAdministradorEscenas.Personaje1 == pers
+      || scAdministradorEscenas.Personaje2 == pers
+      || scAdministradorEscenas.Personaje3 == pers
+      || scAdministradorEscenas.Personaje4 == pers);
+ }
+
+ Personaje ObtenerPersonajeEnSlot(int indice)
+ {
+    switch (indice)
+    {
+       case 0: return scAdministradorEscenas.Personaje1;
+       case 1: return scAdministradorEscenas.Personaje2;
+       case 2: return scAdministradorEscenas.Personaje3;
+       case 3: return scAdministradorEscenas.Personaje4;
+       default: return null;
+    }
+ }
+
+ void AsignarPersonajeEnSlot(int indice, Personaje pers)
+ {
+    switch (indice)
+    {
+       case 0:
+          scAdministradorEscenas.Personaje1 = pers;
+          break;
+       case 1:
+          scAdministradorEscenas.Personaje2 = pers;
+          break;
+       case 2:
+          scAdministradorEscenas.Personaje3 = pers;
+          break;
+       case 3:
+          scAdministradorEscenas.Personaje4 = pers;
+          break;
+    }
+ }
+
+ int ObtenerIndicePrimerSlotLibre(int maxAliados)
+ {
+    for (int i = 0; i < maxAliados; i++)
+    {
+       if (ObtenerPersonajeEnSlot(i) == null)
+       {
+          return i;
+       }
+    }
+
+    return -1;
+ }
+
+ int ObtenerIndiceUltimoSlotOcupado(int maxAliados)
+ {
+    for (int i = maxAliados - 1; i >= 0; i--)
+    {
+       if (ObtenerPersonajeEnSlot(i) != null)
+       {
+          return i;
+       }
+    }
+
+    return -1;
+ }
+
+ bool QuitarPersonajeSeleccionado(Personaje pers)
+ {
+    for (int i = 0; i < 4; i++)
+    {
+       if (ObtenerPersonajeEnSlot(i) == pers)
+       {
+          AsignarPersonajeEnSlot(i, null);
+          return true;
+       }
+    }
+
+    return false;
+ }
+
+ List<Personaje> ObtenerSeleccionadosEnOrden()
+ {
+    var seleccionados = new List<Personaje>(4);
+    AgregarSiNoEsta(seleccionados, scAdministradorEscenas.Personaje1);
+    AgregarSiNoEsta(seleccionados, scAdministradorEscenas.Personaje2);
+    AgregarSiNoEsta(seleccionados, scAdministradorEscenas.Personaje3);
+    AgregarSiNoEsta(seleccionados, scAdministradorEscenas.Personaje4);
+    return seleccionados;
+ }
+
+ void LimpiarContenedor(GameObject contenedor)
+ {
+    if (contenedor == null)
+    {
+       return;
+    }
+
+    foreach (Transform child in contenedor.transform)
+    {
+       Destroy(child.gameObject);
+    }
+ }
+
+ void ActualizarVisibilidadListasBatalla()
+ {
+    bool mostrarListaSecundaria = UITerminarBatalla == null || !UITerminarBatalla.activeInHierarchy;
+    if (contenedorUIPersonajesFuera != null)
+    {
+       contenedorUIPersonajesFuera.SetActive(mostrarListaSecundaria);
+    }
+
+    RefrescarBotonesPersonaje(contenedorUIPersonajes);
+    RefrescarBotonesPersonaje(contenedorUIPersonajesFuera);
+ }
+
+ void RefrescarBotonesPersonaje(GameObject contenedor)
+ {
+    if (contenedor == null)
+    {
+       return;
+    }
+
+    foreach (Transform child in contenedor.transform)
+    {
+       btnPersonaje btn = child.GetComponent<btnPersonaje>();
+       if (btn != null)
+       {
+          btn.RepresentarTodo();
+       }
+    }
+ }
+
+ RefuerzoAliadoCaravanaOrdenItem CrearRefuerzoCaravanaDesdePersonaje(Personaje pers)
+ {
+    if (pers == null)
+    {
+       return null;
+    }
+
+    return new RefuerzoAliadoCaravanaOrdenItem
+    {
+       id = "personaje:" + pers.GetInstanceID(),
+       tipo = TipoRefuerzoAliadoCaravana.Personaje,
+       personaje = pers,
+       nombreVisible = pers.sNombre,
+       retrato = pers.spRetrato
+    };
+ }
+
+ RefuerzoAliadoCaravanaOrdenItem CrearRefuerzoCaravanaDesdePrefab(GameObject prefabRefuerzo, int indice)
+ {
+    if (prefabRefuerzo == null)
+    {
+       return null;
+    }
+
+    Unidad unidad = prefabRefuerzo.GetComponent<Unidad>();
+    string nombreVisible = unidad != null && !string.IsNullOrWhiteSpace(unidad.uNombre)
+      ? unidad.uNombre
+      : prefabRefuerzo.name;
+    Sprite retrato = unidad != null ? unidad.uRetrato : null;
+
+    return new RefuerzoAliadoCaravanaOrdenItem
+    {
+       id = "unidad:" + indice + ":" + prefabRefuerzo.name,
+       tipo = TipoRefuerzoAliadoCaravana.UnidadPrefab,
+       prefabRefuerzo = prefabRefuerzo,
+       nombreVisible = nombreVisible,
+       retrato = retrato
+    };
+ }
+
+ List<RefuerzoAliadoCaravanaOrdenItem> ObtenerCandidatosRefuerzosCaravana()
+ {
+    var candidatos = new List<RefuerzoAliadoCaravanaOrdenItem>();
+    if (CampaignManager.Instance == null || CampaignManager.Instance.scMenuPersonajes == null)
+    {
+       return candidatos;
+    }
+
+    foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
+    {
+       if (pers == null || pers.Camp_Muerto || pers.fVidaActual <= 1 || EstaSeleccionado(pers))
+       {
+          continue;
+       }
+
+       RefuerzoAliadoCaravanaOrdenItem refuerzoPersonaje = CrearRefuerzoCaravanaDesdePersonaje(pers);
+       if (refuerzoPersonaje != null)
+       {
+          candidatos.Add(refuerzoPersonaje);
+       }
+    }
+
+    if (scAdministradorEscenas == null || scAdministradorEscenas.ContenedorPrefabsBatalla == null)
+    {
+       return candidatos;
+    }
+
+    int cantidadMilicianos = (int)CampaignManager.Instance.GetMiliciasActual() / 10;
+    if (cantidadMilicianos <= 0)
+    {
+       return candidatos;
+    }
+
+    bool tieneDesertores = CampaignManager.Instance.scMenuSequito != null
+      && CampaignManager.Instance.scMenuSequito.TieneSequito(6);
+    ContenedorPrefabs prefabs = scAdministradorEscenas.ContenedorPrefabsBatalla;
+
+    for (int i = 0; i < cantidadMilicianos; i++)
+    {
+       GameObject prefabRefuerzo = tieneDesertores
+         ? (i % 2 == 0 ? prefabs.Desertor2 : prefabs.Desertor1)
+         : (i % 2 == 0 ? prefabs.Miliciano2 : prefabs.Miliciano1);
+
+       RefuerzoAliadoCaravanaOrdenItem refuerzoMilicia = CrearRefuerzoCaravanaDesdePrefab(prefabRefuerzo, i);
+       if (refuerzoMilicia != null)
+       {
+          candidatos.Add(refuerzoMilicia);
+       }
+    }
+
+    return candidatos;
+ }
+
+ void SincronizarOrdenRefuerzosCaravana()
+ {
+    List<RefuerzoAliadoCaravanaOrdenItem> candidatos = ObtenerCandidatosRefuerzosCaravana();
+    Dictionary<string, RefuerzoAliadoCaravanaOrdenItem> candidatosPorId = new Dictionary<string, RefuerzoAliadoCaravanaOrdenItem>();
+    foreach (RefuerzoAliadoCaravanaOrdenItem candidato in candidatos)
+    {
+       if (candidato == null || string.IsNullOrWhiteSpace(candidato.id) || candidatosPorId.ContainsKey(candidato.id))
+       {
+          continue;
+       }
+
+       candidatosPorId.Add(candidato.id, candidato);
+    }
+
+    ordenRefuerzosCaravana.RemoveAll(refuerzo =>
+      refuerzo == null
+      || string.IsNullOrWhiteSpace(refuerzo.id)
+      || !candidatosPorId.ContainsKey(refuerzo.id));
+
+    for (int i = 0; i < ordenRefuerzosCaravana.Count; i++)
+    {
+       RefuerzoAliadoCaravanaOrdenItem refuerzo = ordenRefuerzosCaravana[i];
+       ordenRefuerzosCaravana[i] = candidatosPorId[refuerzo.id];
+    }
+
+    foreach (RefuerzoAliadoCaravanaOrdenItem candidato in candidatos)
+    {
+       bool yaExiste = false;
+       foreach (RefuerzoAliadoCaravanaOrdenItem existente in ordenRefuerzosCaravana)
+       {
+          if (existente != null && existente.id == candidato.id)
+          {
+             yaExiste = true;
+             break;
+          }
+       }
+
+       if (!yaExiste)
+       {
+          ordenRefuerzosCaravana.Add(candidato);
+       }
+    }
+ }
+
+ void ReiniciarOrdenRefuerzosCaravana()
+ {
+    ordenRefuerzosCaravana.Clear();
+    SincronizarOrdenRefuerzosCaravana();
+ }
+
+ public bool PuedeReordenarRefuerzoCaravana(btnPersonaje btn)
+ {
+    return btn != null
+      && UIEmpezarBatallaACaravana != null
+      && UIEmpezarBatallaACaravana.activeInHierarchy
+      && contenedorUIPersonajesFuera != null
+      && btn.transform.parent == contenedorUIPersonajesFuera.transform;
+ }
+
+ public void ReordenarRefuerzoCaravana(btnPersonaje btn, Vector2 posicionPantalla, Camera uiCamera)
+ {
+    if (!PuedeReordenarRefuerzoCaravana(btn))
+    {
+       return;
+    }
+
+    RectTransform padre = contenedorUIPersonajesFuera.transform as RectTransform;
+    if (padre == null)
+    {
+       return;
+    }
+
+    if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(padre, posicionPantalla, uiCamera, out Vector2 puntoLocal))
+    {
+       return;
+    }
+
+    LayoutRebuilder.ForceRebuildLayoutImmediate(padre);
+    bool usarEjeVertical = DebeReordenarRefuerzoCaravanaEnVertical(padre);
+    float posicionComparacion = usarEjeVertical ? -puntoLocal.y : puntoLocal.x;
+    int nuevoIndice = 0;
+    for (int i = 0; i < padre.childCount; i++)
+    {
+       Transform child = padre.GetChild(i);
+       if (child == btn.transform)
+       {
+          continue;
+       }
+
+       RectTransform childRect = child as RectTransform;
+       if (childRect == null)
+       {
+          continue;
+       }
+
+       Vector3 centroMundo = childRect.TransformPoint(childRect.rect.center);
+       Vector3 centroLocal = padre.InverseTransformPoint(centroMundo);
+       float centroComparacion = usarEjeVertical ? -centroLocal.y : centroLocal.x;
+       if (posicionComparacion > centroComparacion)
+       {
+          nuevoIndice++;
+       }
+    }
+
+    int indiceClampeado = Mathf.Clamp(nuevoIndice, 0, padre.childCount - 1);
+    if (btn.transform.GetSiblingIndex() != indiceClampeado)
+    {
+       btn.transform.SetSiblingIndex(indiceClampeado);
+    }
+ }
+
+ bool DebeReordenarRefuerzoCaravanaEnVertical(RectTransform contenedor)
+ {
+    if (contenedor == null)
+    {
+       return false;
+    }
+
+    VerticalLayoutGroup verticalLayout = contenedor.GetComponent<VerticalLayoutGroup>();
+    if (verticalLayout != null)
+    {
+       return true;
+    }
+
+    GridLayoutGroup gridLayout = contenedor.GetComponent<GridLayoutGroup>();
+    return gridLayout != null && gridLayout.startAxis == GridLayoutGroup.Axis.Vertical;
+ }
+
+ public void ConfirmarOrdenRefuerzosCaravanaDesdeUI()
+ {
+    if (contenedorUIPersonajesFuera == null)
+    {
+       return;
+    }
+
+    ordenRefuerzosCaravana.Clear();
+    foreach (Transform child in contenedorUIPersonajesFuera.transform)
+    {
+       btnPersonaje btn = child.GetComponent<btnPersonaje>();
+       RefuerzoAliadoCaravanaOrdenItem refuerzo = btn != null ? btn.ObtenerRefuerzoCaravanaRepresentado() : null;
+       if (refuerzo != null)
+       {
+          ordenRefuerzosCaravana.Add(refuerzo);
+       }
+    }
+
+    SincronizarOrdenRefuerzosCaravana();
+ }
+
+ public List<RefuerzoAliadoCaravanaOrdenItem> ObtenerOrdenRefuerzosAliadosCaravana()
+ {
+    SincronizarOrdenRefuerzosCaravana();
+    return new List<RefuerzoAliadoCaravanaOrdenItem>(ordenRefuerzosCaravana);
+ }
+
+ void CrearBotonPersonajeEnContenedor(GameObject contenedor, Personaje pers, bool seleccionado, float escala)
+ {
+    if (contenedor == null || prefabBtnPersonaje == null || pers == null)
+    {
+       return;
+    }
+
+    GameObject btnPers = Instantiate(prefabBtnPersonaje, contenedor.transform);
+    btnPersonaje btn = btnPers.GetComponent<btnPersonaje>();
+    if (btn == null)
+    {
+       return;
+    }
+
+    btn.personajeRepresentado = pers;
+    btn.RepresentarTodo();
+    btn.SetSeleccionado(seleccionado);
+    btnPers.transform.localScale = Vector3.one * escala;
+ }
+
+ void CrearBotonRefuerzoCaravanaEnContenedor(GameObject contenedor, RefuerzoAliadoCaravanaOrdenItem refuerzo, float escala)
+ {
+    if (contenedor == null || prefabBtnPersonaje == null || refuerzo == null)
+    {
+       return;
+    }
+
+    GameObject btnPers = Instantiate(prefabBtnPersonaje, contenedor.transform);
+    btnPersonaje btn = btnPers.GetComponent<btnPersonaje>();
+    if (btn == null)
+    {
+       return;
+    }
+
+    btn.ConfigurarRefuerzoCaravana(refuerzo);
+    btn.SetSeleccionado(false);
+    btnPers.transform.localScale = Vector3.one * escala;
+ }
+
+ void PoblarListaBatallaNormal()
+ {
+    List<Personaje> seleccionados = ObtenerSeleccionadosEnOrden();
+    HashSet<Personaje> seleccionadosSet = new HashSet<Personaje>(seleccionados);
+
+    foreach (Personaje pers in seleccionados)
+    {
+       CrearBotonPersonajeEnContenedor(contenedorUIPersonajes, pers, true, 1.2f);
+    }
+
+    if (CampaignManager.Instance == null
+      || CampaignManager.Instance.scMenuPersonajes == null
+      || contenedorUIPersonajesFuera == null)
+    {
+       return;
+    }
+
+    foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
+    {
+       if (pers == null || pers.Camp_Muerto || seleccionadosSet.Contains(pers))
+       {
+          continue;
+       }
+
+       CrearBotonPersonajeEnContenedor(contenedorUIPersonajesFuera, pers, false, 1f);
+    }
+ }
+
+ void PoblarListaAtaqueCaravana()
+ {
+    List<Personaje> seleccionados = ObtenerSeleccionadosEnOrden();
+    foreach (Personaje pers in seleccionados)
+    {
+       CrearBotonPersonajeEnContenedor(contenedorUIPersonajes, pers, true, 1f);
+    }
+
+    if (contenedorUIPersonajesFuera == null)
+    {
+       return;
+    }
+
+    SincronizarOrdenRefuerzosCaravana();
+    foreach (RefuerzoAliadoCaravanaOrdenItem refuerzo in ordenRefuerzosCaravana)
+    {
+       CrearBotonRefuerzoCaravanaEnContenedor(contenedorUIPersonajesFuera, refuerzo, 1f);
+    }
+ }
+
  void AjustarSeleccionAlMaximo()
  {
     AjustarSeleccionAlMaximo(ObtenerMaxAliadosPermitidos());
@@ -560,40 +1116,27 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
  public void ActualizarLista()
 {
    var tutorial = CampaignManager.Instance != null ? CampaignManager.Instance.scTutorialManager : null;
-   int limiteVisual = ObtenerMaxAliadosPermitidos();
-   if (tutorial != null && tutorial.tutorialActivo)
-   {
-       if (tutorial.pasoActual < 4)
-       {
-           limiteVisual = Mathf.Min(limiteVisual, 1);
-       }
-       else if (tutorial.pasoActual < 40)
-       {
-           limiteVisual = Mathf.Min(limiteVisual, 3);
-       }
-   }
+   int limiteVisual = ObtenerLimiteAliadosVisual();
 
    AjustarSeleccionAlMaximo(limiteVisual);
 
    int seleccionados = ContarAliadosSeleccionados();
 
-        // Asumiendo que tienes un TextMeshProUGUI llamado txtSeleccionadosPersonajes
-        if (txtSeleccionadosPersonajes != null)
+        string textoSeleccionados;
+        if (tutorial != null && tutorial.tutorialActivo && tutorial.pasoActual < 4)
         {
-            if (tutorial != null && tutorial.tutorialActivo && tutorial.pasoActual < 4)
-            {
-                txtSeleccionadosPersonajes.text = $"{seleccionados}/1"; // Forzar a 1 durante el tutorial
-            }
-            else if (tutorial != null && tutorial.tutorialActivo && tutorial.pasoActual < 40)
-            {
-                txtSeleccionadosPersonajes.text = $"{seleccionados}/3";
-            }
-            else
-            { 
-                 txtSeleccionadosPersonajes.text = $"{seleccionados}/"+limiteVisual;
+            textoSeleccionados = $"{seleccionados}/1"; // Forzar a 1 durante el tutorial
+        }
+        else if (tutorial != null && tutorial.tutorialActivo && tutorial.pasoActual < 40)
+        {
+            textoSeleccionados = $"{seleccionados}/3";
+        }
+        else
+        {
+            textoSeleccionados = $"{seleccionados}/" + limiteVisual;
+        }
 
-            }
-    }
+        ActualizarTextoSeleccionadosPersonajes(textoSeleccionados);
     // Verifica si todos los personajes son null
     bool todosVacios = scAdministradorEscenas.Personaje1 == null &&
                        scAdministradorEscenas.Personaje2 == null &&
@@ -602,14 +1145,7 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
 
         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 50)
         {
-            if (seleccionados > 2)
-            { 
-                  btnComenzar.SetActive(true);
-
-            }else
-            {
-                btnComenzar.SetActive(false);
-            }
+            btnComenzar.SetActive(seleccionados > 2);
 
         }
         else
@@ -617,6 +1153,23 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
             // Configura el estado del botón basíndose en si hay personajes seleccionados o no
             btnComenzar.SetActive(!todosVacios);
         }
+
+    LimpiarContenedor(contenedorUIPersonajes);
+    LimpiarContenedor(contenedorUIPersonajesFuera);
+
+        if (UIEmpezarBatallaACaravana != null && UIEmpezarBatallaACaravana.activeInHierarchy)
+        {
+            PoblarListaAtaqueCaravana();
+        }
+        else
+        {
+            PoblarListaBatallaNormal();
+        }
+
+    ActualizarTextoFaccionBatalla();
+    ActualizarTextoPoderesBatalla();
+    ActualizarVisibilidadListasBatalla();
+    return;
    
 
     foreach (Transform transform in contenedorUIPersonajes.transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
@@ -683,6 +1236,173 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
 
     ActualizarTextoFaccionBatalla();
 
+ }
+
+ void ActualizarTextoPoderesBatalla()
+ {
+    ActualizarTextoPoderAliado();
+    ActualizarTextoPoderEnemigo();
+ }
+
+ void ActualizarTextoPoderAliado()
+ {
+    if (txtPoderaliado == null)
+    {
+       return;
+    }
+
+    int poderAliado = ObtenerPoderAliadoPreview();
+    txtPoderaliado.text = FormatearTextoPoderAliado(poderAliado);
+    txtPoderaliado.gameObject.SetActive(true);
+ }
+
+ void ActualizarTextoPoderEnemigo()
+ {
+    if (txtPoderenemigo == null)
+    {
+       return;
+    }
+
+    if (esEmboscadaEnemiga == 1)
+    {
+       txtPoderenemigo.text = FormatearTextoPoderEnemigoOculto();
+       txtPoderenemigo.gameObject.SetActive(true);
+       return;
+    }
+
+    int poderEnemigo = ObtenerPoderEnemigoPreview();
+    txtPoderenemigo.text = FormatearTextoPoderEnemigo(poderEnemigo);
+    txtPoderenemigo.gameObject.SetActive(true);
+ }
+
+ int ObtenerPoderAliadoPreview()
+ {
+    int poderTotal = 0;
+    List<Personaje> seleccionados = ObtenerSeleccionadosEnOrden();
+    foreach (Personaje personaje in seleccionados)
+    {
+       if (personaje == null)
+       {
+          continue;
+       }
+
+       int poderPersonaje = 2 + Mathf.RoundToInt(personaje.fNivelActual);
+       float vidaMaxima = Mathf.Max(1f, personaje.fVidaMaxima);
+       float porcentajeVida = personaje.fVidaActual / vidaMaxima;
+
+       if (porcentajeVida < 0.8f)
+       {
+          poderPersonaje -= 1;
+       }
+       if (porcentajeVida < 0.3f)
+       {
+          poderPersonaje -= 1;
+       }
+
+       poderTotal += Mathf.Max(0, poderPersonaje);
+    }
+
+    return poderTotal;
+ }
+
+ int ObtenerBuffPoderEquipo(Personaje personaje)
+ {
+    if (personaje == null)
+    {
+       return 0;
+    }
+
+    int buffPoder = 0;
+    if (personaje.itemArma != null)
+    {
+       buffPoder += personaje.itemArma.buffPoder;
+    }
+    if (personaje.itemArmadura != null)
+    {
+       buffPoder += personaje.itemArmadura.buffPoder;
+    }
+    if (personaje.Accesorio1 != null)
+    {
+       buffPoder += personaje.Accesorio1.buffPoder;
+    }
+    if (personaje.Accesorio2 != null)
+    {
+       buffPoder += personaje.Accesorio2.buffPoder;
+    }
+
+    return buffPoder;
+ }
+
+ int ObtenerPoderEnemigoPreview()
+ {
+    if (encuentroGeneradoActual == null || encuentroGeneradoActual.units == null)
+    {
+       return 0;
+    }
+
+    int poderTotal = 0;
+    foreach (EncounterUnitSlot slot in encuentroGeneradoActual.units)
+    {
+       if (slot == null)
+       {
+          continue;
+       }
+
+       Unidad unidad = slot.prefab != null ? slot.prefab.GetComponent<Unidad>() : null;
+       if (unidad != null)
+       {
+          int poderUnidad = Mathf.Max(0, Mathf.RoundToInt(unidad.mod_CarPoder));
+          poderTotal += Mathf.Max(poderUnidad, Mathf.Max(0, slot.tierCost));
+       }
+       else
+       {
+          poderTotal += Mathf.Max(0, slot.tierCost);
+       }
+    }
+
+    return poderTotal;
+ }
+
+ string FormatearTextoPoderAliado(int poder)
+ {
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    switch (idioma)
+    {
+       case TRADU.IdiomaIngles:
+          return "Ally Power: " + poder;
+       case TRADU.IdiomaPortugues:
+          return "Poder aliado: " + poder;
+       default:
+          return "Poder aliado: " + poder;
+    }
+ }
+
+ string FormatearTextoPoderEnemigo(int poder)
+ {
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    switch (idioma)
+    {
+       case TRADU.IdiomaIngles:
+          return "Enemy Power: " + poder;
+       case TRADU.IdiomaPortugues:
+          return "Poder enemigo: " + poder;
+       default:
+          return "Poder enemigo: " + poder;
+    }
+ }
+
+ string FormatearTextoPoderEnemigoOculto()
+ {
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    switch (idioma)
+    {
+       case TRADU.IdiomaIngles:
+          return "Enemy Power: ??";
+       case TRADU.IdiomaPortugues:
+          return "Poder enemigo: ??";
+       default:
+          return "Poder enemigo: ??";
+    }
  }
 
  void ActualizarTextoFaccionBatalla()
@@ -848,6 +1568,40 @@ public void DejanEnListaParticipantesSolo()
  public void Seleccionar(Personaje pers)
  {
      // Verificar si el personaje ya está seleccionado en alguna posición
+    if (pers == null || scAdministradorEscenas == null)
+    {
+       return;
+    }
+
+    if (UIEmpezarBatallaACaravana == null || !UIEmpezarBatallaACaravana.activeInHierarchy)
+    {
+       if (QuitarPersonajeSeleccionado(pers))
+       {
+          RuntimeAnalytics.TrackDesign("battle", "party_deselect", RuntimeAnalytics.ClassToken(pers));
+          ActualizarLista();
+          return;
+       }
+
+       int maxAliadosNormales = ObtenerLimiteAliadosVisual();
+       int indiceLibre = ObtenerIndicePrimerSlotLibre(maxAliadosNormales);
+       if (indiceLibre >= 0)
+       {
+          AsignarPersonajeEnSlot(indiceLibre, pers);
+       }
+       else
+       {
+          int indiceReemplazo = ObtenerIndiceUltimoSlotOcupado(maxAliadosNormales);
+          if (indiceReemplazo >= 0)
+          {
+             AsignarPersonajeEnSlot(indiceReemplazo, pers);
+          }
+       }
+
+       ActualizarLista();
+       RuntimeAnalytics.TrackDesign("battle", "party_select", RuntimeAnalytics.ClassToken(pers));
+       return;
+    }
+
     if (scAdministradorEscenas.Personaje1 == pers)
     {
         scAdministradorEscenas.Personaje1 = null;
@@ -916,6 +1670,7 @@ public void DejanEnListaParticipantesSolo()
     
  }
  [SerializeField] TextMeshProUGUI txtSeleccionadosPersonajes;
+ [SerializeField] TextMeshProUGUI txtSeleccionadosPersonajesCaravana;
  public int esEmboscadaEnemiga;
   public int EventoBatallaID = 0;
     public int cantidadAliadosComienzo;
@@ -1287,6 +2042,7 @@ public void DejanEnListaParticipantesSolo()
             encuentroGeneradoActual = null;
         }
 
+        ReiniciarOrdenRefuerzosCaravana();
         ActualizarLista();
     } public void EventoBatallaSubterranea(int fase)
   {
@@ -1351,6 +2107,90 @@ bool EsResultadoDerrota(int resultado)
    return !EsResultadoVictoria(resultado);
 }
 
+void PrepararContextoBitacoraBatalla()
+{
+   if (CampaignManager.Instance == null || CampaignManager.Instance.logDeCampania == null)
+   {
+      return;
+   }
+
+   List<Personaje> participantes = new List<Personaje>(4);
+   AgregarParticipanteBitacora(participantes, scAdministradorEscenas != null ? scAdministradorEscenas.Personaje1 : null);
+   AgregarParticipanteBitacora(participantes, scAdministradorEscenas != null ? scAdministradorEscenas.Personaje2 : null);
+   AgregarParticipanteBitacora(participantes, scAdministradorEscenas != null ? scAdministradorEscenas.Personaje3 : null);
+   AgregarParticipanteBitacora(participantes, scAdministradorEscenas != null ? scAdministradorEscenas.Personaje4 : null);
+
+   string factionId = encuentroGeneradoActual != null ? encuentroGeneradoActual.factionId : string.Empty;
+   string factionName = ObtenerNombreFaccionBitacoraActual();
+
+   CampaignManager.Instance.logDeCampania.PrepararContextoBatalla(
+      factionId,
+      factionName,
+      EventoBatallaID,
+      esEmboscadaEnemiga,
+      participantes);
+}
+
+void AgregarParticipanteBitacora(List<Personaje> participantes, Personaje personaje)
+{
+   if (participantes == null || personaje == null || participantes.Contains(personaje))
+   {
+      return;
+   }
+
+   participantes.Add(personaje);
+}
+
+string ObtenerNombreFaccionBitacoraActual()
+{
+   if (encuentroGeneradoActual != null)
+   {
+      return ObtenerNombreFaccionTraducido(encuentroGeneradoActual.factionId, encuentroGeneradoActual.factionName);
+   }
+
+   if (EventoBatallaID >= 500 && EventoBatallaID <= 599)
+   {
+      return ObtenerNombreFaccionTraducido("Bandidos", "Bandidos");
+   }
+
+   if (EventoBatallaID >= 600 && EventoBatallaID <= 699)
+   {
+      return ObtenerNombreFaccionTraducido("Corruptos", "Corruptos");
+   }
+
+   if (EventoBatallaID == 700)
+   {
+      return ObtenerNombreFaccionTraducido("Bandidos", "Bandidos");
+   }
+
+   if (EventoBatallaID == 701)
+   {
+      return ObtenerNombreFaccionTraducido("Criaturas del Bosque", "Criaturas del Bosque");
+   }
+
+   if (EventoBatallaID == 100)
+   {
+      return ObtenerNombreFaccionTraducido("Zarkil", "Zarkil");
+   }
+
+   if (encuentroTipoActual == BattleEncounterType.Subterraneo)
+   {
+      return ObtenerNombreAmenazaSubterraneaPorIdioma();
+   }
+
+   if (EsNodoActualRitualKaleTav())
+   {
+      return ObtenerNombreFaccionTraducido(KaleTavFactionId, KaleTavFactionId);
+   }
+
+   return string.Empty;
+}
+
+string ObtenerNombreAmenazaSubterraneaPorIdioma()
+{
+   return Bitacora.ObtenerNombreAmenazaSubterraneaBitacora();
+}
+
 bool DebeOtorgarEstadoNegativoPorDerrota()
 {
    return encuentroTipoActual == BattleEncounterType.Normal || encuentroTipoActual == BattleEncounterType.Elite;
@@ -1385,6 +2225,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
 {
    UIEmpezarBatalla.SetActive(false);
    UITerminarBatalla.SetActive(true);
+   ActualizarVisibilidadListasBatalla();
    transicionJefeZonaPendiente = false;
    bool fueBatallaFinalActual = esBatallaFinal;
    bool fueDefensaCaravana = encuentroTipoActual == BattleEncounterType.AtaqueCaravana || esEmboscadaEnemiga == 3;
@@ -1409,6 +2250,11 @@ public void EfectosDeBatallaEnCampaña(int resultado)
     {
         txtVictoria.SetActive(false);
         txtDerrota.SetActive(true);
+    }
+
+    if (CampaignManager.Instance != null)
+    {
+        CampaignManager.Instance.RegistrarBatallaLibrada();
     }
 
     int aumentochancesitem = 0;
@@ -1748,6 +2594,9 @@ public void EfectosDeBatallaEnCampaña(int resultado)
                 AgregarSorprendidoSiCorresponde(p);
             }
         }
+
+        ConfirmarOrdenRefuerzosCaravanaDesdeUI();
+        scAdministradorEscenas.OrdenRefuerzosAliadosCaravana = ObtenerOrdenRefuerzosAliadosCaravana();
     }
 
     bool usarRefuerzosAliadosCaravana = esBatallaFinal;
@@ -1755,6 +2604,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
       "battle",
       RuntimeAnalytics.SanitizeToken(encuentroTipoActual.ToString()),
       ObtenerAnalyticsEncounterToken());
+    PrepararContextoBitacoraBatalla();
     if (encuentroGeneradoActual != null)
     {
         scAdministradorEscenas.CargarBatalla(EventoBatallaID, esEmboscadaEnemiga, encuentroGeneradoActual, usarRefuerzosAliadosCaravana);

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -20,15 +21,20 @@ public class MenuCaravana : MonoBehaviour
     [SerializeField] GameObject MenuMejoras;
     [SerializeField] GameObject MenuSequitos;
     [SerializeField] GameObject MenuPersonajes;
+    [SerializeField] GameObject MenuBitacora;
+
     [Header("Exploradores")]
     [SerializeField] GameObject panelResultadoExploradores;
     [SerializeField] TextMeshProUGUI txtTituloResultadoExploradores;
     [SerializeField] TextMeshProUGUI txtDescripcionResultadoExploradores;
+    [SerializeField] TextMeshProUGUI txtStatsViaje;
+
 
     public bool TieneMenuAbierto =>
         (MenuMejoras != null && MenuMejoras.activeInHierarchy)
         || (MenuSequitos != null && MenuSequitos.activeInHierarchy)
         || (MenuPersonajes != null && MenuPersonajes.activeInHierarchy)
+        || (MenuBitacora != null && MenuBitacora.activeInHierarchy)
         || (panelResultadoExploradores != null && panelResultadoExploradores.activeInHierarchy);
 
      //Antorchas de Pie
@@ -103,6 +109,13 @@ public class MenuCaravana : MonoBehaviour
         }
 
         return habiaalgoabierto;
+    }
+
+    public void CerrarMenusExclusivos()
+    {
+        MenuMejoras.SetActive(false);
+        MenuSequitos.SetActive(false);
+        MenuPersonajes.SetActive(false);
     }
 
     public void MostrarResultadoExploradores(CampaignManager.ResultadoExploradoresCampania resultado)
@@ -354,15 +367,15 @@ public class MenuCaravana : MonoBehaviour
 
     public void AbrirMenuMejoras()
     {
-            CampaignManager.Instance.CambiarMaterialesActuales(500);
+         
         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 15) { return; }
         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 15)
         { CampaignManager.Instance.scTutorialManager.SiguientePaso(); }
 
         bool abrir = !MenuMejoras.activeInHierarchy;
         ActualizarMejoras();
-        MenuPersonajes.SetActive(false);
-        MenuSequitos.SetActive(false);
+        CerrarMenusExclusivos();
+        CampaignManager.Instance.ActivarLog(0);
         MenuMejoras.SetActive(abrir);
         if (abrir)
         {
@@ -375,12 +388,12 @@ public class MenuCaravana : MonoBehaviour
         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 27) { return; }
          if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 27)
         {            CampaignManager.Instance.scTutorialManager.SiguientePaso();        }
-          if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 29)
+         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 29)
         {            CampaignManager.Instance.scTutorialManager.SiguientePaso();        }
 
-        MenuPersonajes.SetActive(false);
-        MenuMejoras.SetActive(false);
         bool abrir = !MenuSequitos.activeInHierarchy;
+        CerrarMenusExclusivos();
+        CampaignManager.Instance.ActivarLog(0);
         MenuSequitos.SetActive(abrir);
         if (abrir)
         {
@@ -394,6 +407,58 @@ public class MenuCaravana : MonoBehaviour
     public void AbrirMenuPersonajes()
     {
         AbrirMenuPersonajes(null, true);
+    }
+    public void AbrirBitácora()
+    {
+       ActualizarStatsViaje();
+       bool abrir = MenuBitacora == null || !MenuBitacora.activeInHierarchy;
+       CerrarMenusExclusivos();
+       CampaignManager.Instance.ActivarLog(abrir ? 1 : 0);
+    }
+
+    private void ActualizarStatsViaje()
+    {
+        if (txtStatsViaje == null || CampaignManager.Instance == null)
+        {
+            return;
+        }
+
+        CampaignManager campaignManager = CampaignManager.Instance;
+        StringBuilder sb = new StringBuilder(160);
+        sb.AppendLine(FormatearLineaStat(
+            ObtenerTextoStats("Días viajados", "Days traveled", "Dias viajados"),
+            campaignManager.ObtenerEstadisticaDiasViajados()));
+        sb.AppendLine(FormatearLineaStat(
+            ObtenerTextoStats("Batallas libradas", "Battles fought", "Batalhas travadas"),
+            campaignManager.ObtenerEstadisticaBatallasLibradas()));
+        sb.AppendLine(FormatearLineaStat(
+            ObtenerTextoStats("Personajes muertos", "Characters dead", "Personagens mortos"),
+            campaignManager.ObtenerEstadisticaPersonajesMuertos()));
+        sb.AppendLine(FormatearLineaStat(
+            ObtenerTextoStats("Enemigos asesinados", "Enemies killed", "Inimigos assassinados"),
+            campaignManager.ObtenerEstadisticaEnemigosAsesinados()));
+        sb.AppendLine(FormatearLineaStat(
+            ObtenerTextoStats("Civiles perdidos", "Civilians lost", "Civis perdidos"),
+            campaignManager.ObtenerEstadisticaCivilesPerdidos()));
+        sb.Append(FormatearLineaStat(
+            ObtenerTextoStats("Asentamientos visitados", "Settlements visited", "Assentamentos visitados"),
+            campaignManager.ObtenerEstadisticaAsentamientosVisitados()));
+        txtStatsViaje.text = sb.ToString();
+    }
+
+    private string ObtenerTextoStats(string textoEs, string textoEn, string textoPt)
+    {
+        return ObtenerIdiomaActual() switch
+        {
+            TRADU.IdiomaPortugues => textoPt,
+            TRADU.IdiomaIngles => textoEn,
+            _ => textoEs
+        };
+    }
+
+    private static string FormatearLineaStat(string etiqueta, int valor)
+    {
+        return etiqueta + "... " + valor;
     }
 
     public void AbrirMenuPersonajes(Personaje personajeInicial)
@@ -426,8 +491,8 @@ public class MenuCaravana : MonoBehaviour
             return;
         }
 
-        MenuMejoras.SetActive(false);
-        MenuSequitos.SetActive(false);
+        CerrarMenusExclusivos();
+        CampaignManager.Instance.ActivarLog(0);
         bool abrir = alternarMenu ? !MenuPersonajes.activeInHierarchy : true;
         MenuPersonajes.SetActive(abrir);
         if (!abrir) return;

@@ -4,9 +4,8 @@ using UnityEngine.EventSystems;
 [DisallowMultipleComponent]
 public class EdgePanCameraZ : MonoBehaviour
 {
-    private const float ZoomWheelStepMultiplier = 0.9f;
     private const float ZoomSmoothMultiplier = 1.35f;
-    private const float ZoomOutRange = 0.15f;
+    private const float ZoomOutRange = 0.18f;
     private const float ZoomInOffsetMultiplier = 1.10f;
 
     [Header("Bordes de pantalla")]
@@ -32,7 +31,8 @@ public class EdgePanCameraZ : MonoBehaviour
 
     [Header("Zoom con rueda")]
     [SerializeField] private bool zoomEnabled = true;
-    [SerializeField] private float zoomWheelStep = 0.18f;
+    [SerializeField] private float zoomWheelForwardPercent = 0.05f;
+    [SerializeField] private float zoomWheelBackwardPercent = 0.10f;
     [SerializeField] private float zoomSmoothTime = 0.22f;
     [SerializeField] private float zoomInFovDelta = -10f;
     [SerializeField] private float zoomInPitchUp = 6.5f;
@@ -134,8 +134,8 @@ public class EdgePanCameraZ : MonoBehaviour
             float wheel = Input.mouseScrollDelta.y;
             if (Mathf.Abs(wheel) > 0.001f)
             {
-                float pasoZoom = zoomWheelStep * ZoomWheelStepMultiplier;
-                zoomObjetivo = Mathf.Clamp(zoomObjetivo - (wheel * pasoZoom), -1f, ZoomOutRange);
+                float pasoZoom = wheel > 0f ? zoomWheelForwardPercent : zoomWheelBackwardPercent;
+                zoomObjetivo = Mathf.Clamp(zoomObjetivo - (Mathf.Sign(wheel) * pasoZoom), -1f, ZoomOutRange);
             }
         }
 

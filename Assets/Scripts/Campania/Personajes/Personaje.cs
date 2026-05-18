@@ -577,9 +577,8 @@ public class Personaje : MonoBehaviour
         fExperienciaActual -= experienciaNecesaria;
         fNivelActual++;
 
-        float vidaAntesDeSubir = fVidaMaxima;
         AplicarRecompensasPorSubidaDeNivel();
-        EscribirLogSubidaDeNivel(vidaAntesDeSubir);
+        EscribirLogSubidaDeNivel();
       }
 
       NormalizarPuntosPendientesPorNivelActual();
@@ -730,62 +729,20 @@ public class Personaje : MonoBehaviour
       fVidaActual += vidaGanada;
     }
 
-    private void EscribirLogSubidaDeNivel(float vidaAntesDeSubir)
+    private void EscribirLogSubidaDeNivel()
     {
       CampaignManager campaignManager = CampaignManager.Instance;
-      bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
-      string nvMensaje = ConstruirMensajeSubidaDeNivel(vidaAntesDeSubir, esIngles);
+      string nvMensaje = ConstruirMensajeSubidaDeNivel();
 
       if (campaignManager != null && !string.IsNullOrWhiteSpace(nvMensaje))
       {
-        campaignManager.EscribirLog("<Color=#F0CC39><b>" + nvMensaje + "</b></color>");
+        campaignManager.EscribirLog("-" + nvMensaje);
       }
     }
 
-    private string ConstruirMensajeSubidaDeNivel(float vidaAntesDeSubir, bool esIngles)
+    private string ConstruirMensajeSubidaDeNivel()
     {
-      int nivelActualEntero = Mathf.RoundToInt(fNivelActual);
-      int vidaGanada10 = Mathf.FloorToInt(vidaAntesDeSubir / 10f);
-      int vidaGanada15 = Mathf.FloorToInt(vidaAntesDeSubir / 15f);
-
-      if (!esIngles)
-      {
-        string mensaje = $"{sNombre} ha subido a Nivel {nivelActualEntero} y obtuvo: ";
-        switch (nivelActualEntero)
-        {
-          case 2: return mensaje + $"{vidaGanada10} Vida +1 Punto de Habilidad +1 Punto Atributo";
-          case 3: return mensaje + $"{vidaGanada10} Vida +1 Punto de Habilidad +1 Habilidad Nueva +1 AP Máximo";
-          case 4: return mensaje + $"{vidaGanada10} Vida +2 Puntos de Habilidad +1 Punto Salvación";
-          case 5: return mensaje + $"{vidaGanada15} Vida +1 Punto de Habilidad +1 Punto Atributo";
-          case 6: return mensaje + $"{vidaGanada10} Vida +1 Punto de Habilidad +1 Habilidad Nueva";
-          case 7: return mensaje + $"{vidaGanada10} Vida +1 Punto de Habilidad +1 AP Máximo";
-          case 8: return mensaje + $"{vidaGanada10} Vida +2 Puntos de Habilidad +1 Punto Salvación";
-          case 9: return mensaje + $"{vidaGanada10} Vida +1 Punto de Habilidad +1 Punto Atributo";
-          case 10: return mensaje + $"{vidaGanada15} Vida +1 Punto de Habilidad +1 Habilidad Definitiva";
-          case 11: return mensaje + $"{vidaGanada10} Vida +1 Punto de Habilidad +1 Punto Salvación";
-          case 12: return mensaje + $"{vidaGanada10} Vida +2 Puntos de Habilidad +1 Punto Atributo";
-          case 13: return mensaje + $"{vidaGanada10} Vida +1 Punto de Habilidad";
-          default: return string.Empty;
-        }
-      }
-
-      string mensajeEn = $"{sNombre} is now level {nivelActualEntero} and obtained: ";
-      switch (nivelActualEntero)
-      {
-        case 2: return mensajeEn + $"{vidaGanada10} Health +1 Skill Point +1 Attribute Point";
-        case 3: return mensajeEn + $"{vidaGanada10} Health +1 Skill Point +1 New Skill +1 Max AP";
-        case 4: return mensajeEn + $"{vidaGanada10} Health +2 Skill Points +1 Saving Throw Point";
-        case 5: return mensajeEn + $"{vidaGanada15} Health +1 Skill Point +1 Attribute Point";
-        case 6: return mensajeEn + $"{vidaGanada10} Health +1 Skill Point +1 New Skill";
-        case 7: return mensajeEn + $"{vidaGanada10} Health +1 Skill Point +1 Max AP";
-        case 8: return mensajeEn + $"{vidaGanada10} Health +2 Skill Points +1 Saving Throw Point";
-        case 9: return mensajeEn + $"{vidaGanada10} Health +1 Skill Point +1 Attribute Point";
-        case 10: return mensajeEn + $"{vidaGanada15} Health +1 Skill Point +1 Ultimate Skill";
-        case 11: return mensajeEn + $"{vidaGanada10} Health +1 Skill Point +1 Saving Throw Point";
-        case 12: return mensajeEn + $"{vidaGanada10} Health +2 Skill Points +1 Attribute Point";
-        case 13: return mensajeEn + $"{vidaGanada10} Health +1 Skill Point";
-        default: return string.Empty;
-      }
+      return Bitacora.ConstruirTextoSubidaDeNivelNarrativo(sNombre);
     }
 
     private void AgregarHabilidadDefinitivaAleatoria()

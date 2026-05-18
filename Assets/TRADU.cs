@@ -2717,8 +2717,8 @@ public class TRADU : MonoBehaviour
             case "¡Batalla!":
                 r = "Battle!";
                 break;
-            case "Selecciona a tus personajes.":
-                r = "Select your characters.";
+            case "Selecciona a tus personajes:":
+                r = "Select your characters:";
                 break;
             case "Comenzar":
                 r = "Start Battle";
@@ -7267,9 +7267,21 @@ public class TRADU : MonoBehaviour
             case"Exploración":
             r="Exploration";
             break;
-            /*case"":
-            r="";
-            break;*/
+            case"Viaje":
+            r="Travel";
+            break;
+            case"Reservas":
+            r="Reserves";
+            break;
+            case"Si la defensa es derrotada, la caravana será destruída.":
+            r="If the defense is defeated, the caravan will be destroyed.";
+             break;
+            break;
+            case"Selecciona el orden de los refuerzos: (-->)":
+            r="Select the order of reinforcements: (-->)";
+            break;
+            
+            
             
             
             
@@ -9939,8 +9951,8 @@ public class TRADU : MonoBehaviour
             case "¡Batalla!":
                 r = "Batalha!";
                 break;
-            case "Selecciona a tus personajes.":
-                r = "Selecione seus personagens.";
+            case "Selecciona a tus personajes:":
+                r = "Selecione seus personagens:";
                 break;
             case "Comenzar":
                 r = "Iniciar Batalha";
@@ -14489,13 +14501,19 @@ public class TRADU : MonoBehaviour
             case"Exploración":
             r="Exploração";
             break;
+            case"Viaje":
+            r="Viaje";
+            break;
+            case"Reservas":
+            r="Reservas";
+            break;
+            case"Selecciona el orden de los refuerzos: (-->)":
+            r="Selecione a ordem dos reforços: (-->)";
+            break;
+            case"Si la defensa es derrotada, la caravana será destruída.":
+            r="Se a defesa for derrotada, a caravana será destruída.";
+             break;
             /*case"":
-            r="";
-            break;
-            case"":
-            r="";
-            break;
-            case"":
             r="";
             break;
             case"":

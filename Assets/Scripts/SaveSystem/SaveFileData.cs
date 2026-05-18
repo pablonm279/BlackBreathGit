@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [Serializable]
 public class SaveFileData
 {
-  public const int CurrentVersion = 12;
+  public const int CurrentVersion = 15;
 
   public int version = CurrentVersion;
   public string savedAtUtc;
@@ -62,6 +62,10 @@ public class CampaignSaveData
 
   public bool tutorialActivo;
   public int tutorialPasoActual;
+  public int estadisticaDiasViajados;
+  public int estadisticaBatallasLibradas;
+  public int estadisticaCivilesPerdidos;
+  public int estadisticaAsentamientosVisitados;
   public List<int> zonasEstado = new List<int>();
 
   public NodeReferenceSaveData nodoActual = new NodeReferenceSaveData();
@@ -70,8 +74,36 @@ public class CampaignSaveData
   public int emboscadaEnCurso;
   public List<int> eventosAleatoriosUsadosMapa = new List<int>();
   public EstadosCaravanaSaveData estadosCaravana = new EstadosCaravanaSaveData();
+  public BitacoraSaveData bitacora = new BitacoraSaveData();
   public bool settlementOpen;
   public int settlementActionsRemaining = 3;
+}
+
+[Serializable]
+public class BitacoraSaveData
+{
+  public int ultimoDiaRegistrado;
+  public List<BitacoraEntradaSaveData> entradasCampania = new List<BitacoraEntradaSaveData>();
+  public List<BitacoraDiaSaveData> dias = new List<BitacoraDiaSaveData>();
+}
+
+[Serializable]
+public class BitacoraDiaSaveData
+{
+  public int dia;
+  public int tipoClima;
+  public bool tieneSnapshotRecursos;
+  public int esperanzaInicial;
+  public int oroInicial;
+  public int materialesIniciales;
+  public int suministrosIniciales;
+  public List<BitacoraEntradaSaveData> entradas = new List<BitacoraEntradaSaveData>();
+}
+
+[Serializable]
+public class BitacoraEntradaSaveData
+{
+  public string texto;
 }
 
 [Serializable]

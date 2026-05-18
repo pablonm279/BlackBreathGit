@@ -34,6 +34,9 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   [SerializeField] private bool defaultDoFEnabled = false;
   [SerializeField] private bool defaultVsyncEnabled = true;
   [SerializeField] private int defaultFpsLimit = 60;
+  [Header("Safety")]
+  [SerializeField] private bool clampUnlimitedFpsInBattle = true;
+  [SerializeField] [Range(30, 240)] private int unlimitedBattleFpsCap = 120;
   [SerializeField] [Range(0f, 1f)] private float defaultBrightness = 0.5f;
   [SerializeField] [Range(0.25f, 2.5f)] private float brightnessExposureRange = 1.32f;
   [SerializeField] [Range(0.5f, 1.5f)] private float defaultContrast = 1f;
@@ -96,7 +99,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
 
   private void ApplyScenePolish(Scene scene)
   {
-    ApplySyncAndFrameRatePrefs();
+    ApplySyncAndFrameRatePrefs(scene);
 
     if (rebalanceQualityAtRuntime)
     {
@@ -162,29 +165,43 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     }
   }
 
-#if UNITY_POST_PROCESSING_STACK_V2
-  private void ApplySyncAndFrameRatePrefs()
+  public static int ResolveTargetFrameRate(bool vsyncEnabled, int fpsLimit, Scene scene)
+  {
+    if (vsyncEnabled)
+    {
+      return -1;
+    }
+
+    if (fpsLimit > 0)
+    {
+      return Mathf.Clamp(fpsLimit, 30, 240);
+    }
+
+    if (instance != null && instance.clampUnlimitedFpsInBattle && IsBattleScene(scene))
+    {
+      return Mathf.Clamp(instance.unlimitedBattleFpsCap, 30, 240);
+    }
+
+    return -1;
+  }
+
+  private void ApplySyncAndFrameRatePrefs(Scene scene)
   {
     bool vsyncEnabled = PrefBool(PrefVsync, defaultVsyncEnabled);
     QualitySettings.vSyncCount = vsyncEnabled ? 1 : 0;
 
     int fpsLimit = PrefInt(PrefFpsLimit, defaultFpsLimit);
-    if (vsyncEnabled)
-    {
-      Application.targetFrameRate = -1;
-      return;
-    }
-
-    if (fpsLimit <= 0)
-    {
-      Application.targetFrameRate = -1;
-    }
-    else
-    {
-      Application.targetFrameRate = Mathf.Clamp(fpsLimit, 30, 240);
-    }
+    Application.targetFrameRate = ResolveTargetFrameRate(vsyncEnabled, fpsLimit, scene);
   }
 
+  private static bool IsBattleScene(Scene scene)
+  {
+    return scene.IsValid()
+      && !string.IsNullOrWhiteSpace(scene.name)
+      && scene.name.ToLowerInvariant().Contains("batalla");
+  }
+
+#if UNITY_POST_PROCESSING_STACK_V2
   private void ApplyCameraPostFxAA(Scene scene)
   {
     Camera[] cameras = FindObjectsOfType<Camera>(true);

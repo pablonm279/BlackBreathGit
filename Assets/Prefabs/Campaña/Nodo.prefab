@@ -20168,14 +20168,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1669865136232347597}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.7430944, z: -0, w: 0.6691868}
-  m_LocalPosition: {x: -0.478, y: 27.8, z: -0.077}
-  m_LocalScale: {x: 1.9976104, y: 47.08911, z: 3.3847516}
+  m_LocalRotation: {x: -0, y: -0.5714783, z: -0, w: 0.8206172}
+  m_LocalPosition: {x: -0.4781087, y: 27.79948, z: 0.03199895}
+  m_LocalScale: {x: 2.5326204, y: 47.08911, z: 3.3847516}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5728059035898160527}
   m_Father: {fileID: 5021837157380839591}
-  m_LocalEulerAnglesHint: {x: 0, y: -95.991, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -69.707, z: 0}
 --- !u!33 &5783033081631174248
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -60159,9 +60159,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4864006720036410046}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.061, y: 0, z: -0.004}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_LocalRotation: {x: -0, y: -0.22737029, z: -0, w: 0.9738084}
+  m_LocalPosition: {x: 0.005150193, y: 0, z: 0.001168637}
+  m_LocalScale: {x: 0.44395924, y: 0.59999996, z: 0.6311598}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1485989239684680607}
@@ -60249,7 +60249,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 4
+      scalar: 3
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -85347,8 +85347,10 @@ MonoBehaviour:
   MaterialCaminoMarcado: {fileID: 2100000, guid: 61ac5b5a778d1504fba5c849b21846a0, type: 2}
   MaterialCaminoUsado: {fileID: 2100000, guid: 9799188ca27064a49a397f1c41094bfe, type: 2}
   MaterialAtajo: {fileID: 2100000, guid: ab64a35e7db072540b3821e60880eeb6, type: 2}
+  MaterialCaminoHint: {fileID: 2100000, guid: 99856a6afe4d9214aaa1d69fc76ee93e, type: 2}
   caminoLento: {fileID: 2100000, guid: 7e75bc3e4db30c14daf59528a65f072c, type: 2}
   caminoAAldea: {fileID: 2100000, guid: ab64a35e7db072540b3821e60880eeb6, type: 2}
+  materialAtajoSuperficieVisual: {fileID: 2100000, guid: dee9a04cfd1659143b37905cc9780f4f, type: 2}
   velocidadMovimiento: 6
   yatiroConexiones: 0
   nodoIncendiado: 0

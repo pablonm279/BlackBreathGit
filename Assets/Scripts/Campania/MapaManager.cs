@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,12 +11,15 @@ public class MapaManager : MonoBehaviour
     const int MaxXSettlementTardio = 8;
     const int MinDiferenciaYSettlements = 2;
     const int DistanciaReveladoSettlement = 4;
-    const string LogSettlementDescubierto = "<color=#7ED6F7>-Entre la bruma del camino, la caravana distingue una aldea a la distancia. Se ha descubierto un asentamiento.</color>";
+    const string LogSettlementDescubiertoEs = "<color=#7ED6F7>-La Caravana encuentra un camino de piedra, hay un asentamiento cerca.</color>";
+    const string LogSettlementDescubiertoEn = "<color=#7ED6F7>-The caravan finds a stone road, there is a settlement nearby.</color>";
+    const string LogSettlementDescubiertoPt = "<color=#7ED6F7>-A Caravana encontra um caminho de pedra, ha um assentamento por perto.</color>";
     bool inicioCompletado;
     bool generacionDiferidaPendiente;
     bool omitirAutoGeneracionEnStart;
     const float OffsetNodoSobreRelieve = 0.08f;
     const float OffsetConvoySobreRelieve = 0.03f;
+    [SerializeField] float rangoAleatorioNodoXZ = 0.18f;
 
     public ContenedorDeNodos scContenedordeNodos;
 
@@ -28,7 +32,11 @@ public class MapaManager : MonoBehaviour
     public GameObject goCaravanafollower5;
     public GameObject goCaravanafollower6;
     readonly List<Nodo> settlementsForzados = new List<Nodo>(2);
+    readonly List<Nodo> nodosActivosVisibilidad = new List<Nodo>(64);
+    readonly Dictionary<Nodo, int> distanciasVision = new Dictionary<Nodo, int>(64);
+    readonly Queue<Nodo> colaVision = new Queue<Nodo>(64);
     readonly Dictionary<Nodo, Vector3> escalasBaseNodos = new Dictionary<Nodo, Vector3>();
+    readonly Dictionary<Nodo, Vector3> posicionesBaseLocalesNodos = new Dictionary<Nodo, Vector3>();
     int emboscadasSubterraneasZona;
     int viajesDesdeUltimaEmboscadaSubterranea = 99;
     bool refrescandoVisibilidadExploracion;
@@ -117,7 +125,19 @@ public class MapaManager : MonoBehaviour
        try
        {
        if (scContenedordeNodos == null) return;
-       scContenedordeNodos.RecolectarNodos();
+       if (scContenedordeNodos.listTodosNodos.Count == 0)
+       {
+           scContenedordeNodos.RecolectarNodos();
+       }
+
+       nodosActivosVisibilidad.Clear();
+       foreach (Nodo nodo in scContenedordeNodos.listTodosNodos)
+       {
+           if (nodo != null && nodo.gameObject.activeSelf)
+           {
+               nodosActivosVisibilidad.Add(nodo);
+           }
+       }
 
        int distanciaVision = CampaignManager.Instance != null
            ? CampaignManager.Instance.ObtenerDistanciaVisionEfectiva()
@@ -126,9 +146,8 @@ public class MapaManager : MonoBehaviour
 
        Dictionary<Nodo, int> distancias = CalcularDistanciasVision(distanciaVision);
 
-       foreach (Nodo nodo in scContenedordeNodos.GetComponentsInChildren<Nodo>(true))
+       foreach (Nodo nodo in nodosActivosVisibilidad)
        {
-           if (nodo == null || !nodo.gameObject.activeSelf) continue;
            bool visiblePorHistorial = profundidadHistoricaVisible > 0 && nodo.posXNodo <= profundidadHistoricaVisible;
            bool visiblePorReveladoEspecial = nodo.TieneVisibilidadForzadaPorReveladoEspecial();
            if (visiblePorHistorial)
@@ -140,9 +159,8 @@ public class MapaManager : MonoBehaviour
            nodo.AplicarVisibilidadPorVision(visiblePorHistorial || visiblePorReveladoEspecial || distancias.ContainsKey(nodo));
        }
 
-       foreach (Nodo origenHistorico in scContenedordeNodos.GetComponentsInChildren<Nodo>(true))
+       foreach (Nodo origenHistorico in nodosActivosVisibilidad)
        {
-           if (origenHistorico == null || !origenHistorico.gameObject.activeSelf) continue;
            if (origenHistorico.posXNodo > profundidadHistoricaVisible) continue;
 
            foreach (Nodo destinoHistorico in origenHistorico.DestinosPosibles)
@@ -169,6 +187,19 @@ public class MapaManager : MonoBehaviour
            }
        }
 
+       foreach (Nodo origenVisible in nodosActivosVisibilidad)
+       {
+           if (!origenVisible.EstaVisiblePorVision()) continue;
+
+           foreach (Nodo destinoOculto in origenVisible.DestinosPosibles)
+           {
+               if (destinoOculto == null || !destinoOculto.gameObject.activeSelf) continue;
+               if (origenVisible.TieneCaminoVisiblePorVisionHacia(destinoOculto)) continue;
+
+               origenVisible.MostrarContinuacionCortaPorVisionHacia(destinoOculto);
+           }
+       }
+
        if (nodoActual != null)
        {
            nodoActual.RefrescarCaminosMarcadosDesdeEstadoActual();
@@ -191,34 +222,34 @@ public class MapaManager : MonoBehaviour
 
   Dictionary<Nodo, int> CalcularDistanciasVision(int distanciaVision)
   {
-       Dictionary<Nodo, int> distancias = new Dictionary<Nodo, int>();
+       distanciasVision.Clear();
+       colaVision.Clear();
        if (nodoActual == null || !nodoActual.gameObject.activeSelf)
        {
-           return distancias;
+           return distanciasVision;
        }
 
        distanciaVision = Mathf.Max(1, distanciaVision);
-       Queue<Nodo> cola = new Queue<Nodo>();
-       distancias[nodoActual] = 0;
-       cola.Enqueue(nodoActual);
+       distanciasVision[nodoActual] = 0;
+       colaVision.Enqueue(nodoActual);
 
-       while (cola.Count > 0)
+       while (colaVision.Count > 0)
        {
-           Nodo actual = cola.Dequeue();
-           int distanciaActual = distancias[actual];
+           Nodo actual = colaVision.Dequeue();
+           int distanciaActual = distanciasVision[actual];
            if (distanciaActual >= distanciaVision) continue;
 
            foreach (Nodo destino in actual.DestinosPosibles)
            {
                if (destino == null || !destino.gameObject.activeSelf) continue;
-               if (distancias.ContainsKey(destino)) continue;
+               if (distanciasVision.ContainsKey(destino)) continue;
 
-               distancias[destino] = distanciaActual + 1;
-               cola.Enqueue(destino);
+               distanciasVision[destino] = distanciaActual + 1;
+               colaVision.Enqueue(destino);
            }
        }
 
-       return distancias;
+       return distanciasVision;
   }
 
     public void ResetearYGenerarSiguienteZona()
@@ -282,6 +313,7 @@ public class MapaManager : MonoBehaviour
                 escalasBaseNodos[nodo] = escalaBase;
             }
 
+            AplicarVariacionPosicionNodo(nodo, mapDecorator);
             nodo.transform.localScale = escalaBase * multiplicadorEscala;
             nodo.PrepararCostoMovimientoParaGeneracion();
             if (mapDecorator != null)
@@ -306,8 +338,40 @@ public class MapaManager : MonoBehaviour
             if (nodo == null)
                 continue;
 
+            AplicarVariacionPosicionNodo(nodo, mapDecorator);
             mapDecorator.AlinearTransformASuelo(nodo.transform, OffsetNodoSobreRelieve);
         }
+    }
+
+    void AplicarVariacionPosicionNodo(Nodo nodo, MapDecorator mapDecorator)
+    {
+        if (nodo == null)
+            return;
+
+        if (!posicionesBaseLocalesNodos.TryGetValue(nodo, out Vector3 posicionBaseLocal))
+        {
+            posicionBaseLocal = nodo.transform.localPosition;
+            posicionesBaseLocalesNodos[nodo] = posicionBaseLocal;
+        }
+
+        nodo.transform.localPosition = ObtenerPosicionNodoConVariacion(nodo, posicionBaseLocal, mapDecorator);
+    }
+
+    Vector3 ObtenerPosicionNodoConVariacion(Nodo nodo, Vector3 posicionBaseLocal, MapDecorator mapDecorator)
+    {
+        float rango = Mathf.Max(0f, rangoAleatorioNodoXZ);
+        if (nodo == null || rango <= 0f)
+            return posicionBaseLocal;
+
+        int reliefSeed = mapDecorator != null ? mapDecorator.GetReliefSeed() : 0;
+        int seedNodo = reliefSeed ^ (nodo.posXNodo * 73856093) ^ (nodo.posYNodo * 19349663) ^ 0x4F1BBCDC;
+        System.Random random = new System.Random(seedNodo);
+        double angulo = random.NextDouble() * Mathf.PI * 2f;
+        double radio = Math.Sqrt(random.NextDouble()) * rango;
+
+        posicionBaseLocal.x += (float)(Math.Cos(angulo) * radio);
+        posicionBaseLocal.z += (float)(Math.Sin(angulo) * radio);
+        return posicionBaseLocal;
     }
 
     MapDecorator ObtenerMapDecorator()
@@ -462,9 +526,24 @@ public class MapaManager : MonoBehaviour
 
             if (CampaignManager.Instance != null)
             {
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir(LogSettlementDescubierto));
+                CampaignManager.Instance.EscribirAdvertenciaLog(ObtenerLogSettlementDescubierto());
             }
         }
+    }
+
+    string ObtenerLogSettlementDescubierto()
+    {
+        if (TRADU.i == null)
+        {
+            return LogSettlementDescubiertoEs;
+        }
+
+        return TRADU.i.nIdioma switch
+        {
+            TRADU.IdiomaIngles => LogSettlementDescubiertoEn,
+            TRADU.IdiomaPortugues => LogSettlementDescubiertoPt,
+            _ => LogSettlementDescubiertoEs
+        };
     }
 
     int CalcularDistanciaEnViajes(Nodo origen, Nodo objetivo, int distanciaMaxima)
@@ -560,7 +639,7 @@ public class MapaManager : MonoBehaviour
                 continue;
             }
 
-            nodoRuta.ForzarVisiblePorReveladoEspecial();
+            nodoRuta.ForzarVisibleSinRevelarEspecial();
 
             if (i >= ruta.Count - 1)
             {

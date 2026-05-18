@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -41,6 +42,7 @@ public class CampaignManager : MonoBehaviour
   private const int DistanciaVisionBase = 2;
   private const int DistanciaVisionMinima = 1;
   private const float DuracionEnvioExploradoresSegundos = 4f;
+  private const float RetrasoInicioEnvioExploradoresSegundos = 0.25f;
   private const float RetrasoEntreTextosExploradoresSegundos = 0.9f;
   private bool enviandoExploradores;
   private readonly Dictionary<GameObject, bool> estadosCanvasCampaniaDuranteExploradores = new Dictionary<GameObject, bool>();
@@ -51,6 +53,11 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private bool debugPermitirZonaNedukazal = false;
   [SerializeField] private bool debugIniciarConEstadosCaravana = false;
   [SerializeField] private bool debugForzarCombateFinalBosqueAlIniciar = false;
+  [SerializeField] private bool debugForzarAuroraPasoVientoHelado = false;
+  [SerializeField] private bool debugIgnorarCombates = false;
+  [Header("Debug mouse")]
+  [SerializeField] private KeyCode teclaDebugBajoMouse = KeyCode.F10;
+  [SerializeField] private int maxHitsDebugBajoMouse = 12;
 
   public GameObject prefabTextoRecursos;
   [SerializeField] private float recursoTextoStackOffsetY = 16f;
@@ -78,6 +85,10 @@ public class CampaignManager : MonoBehaviour
   public int mejoraCaravanaCatalejos;
   public int mejoraCaravanaAlmacen;
   public int mejoraCaravanaDefensas;
+  private int estadisticaDiasViajados;
+  private int estadisticaBatallasLibradas;
+  private int estadisticaCivilesPerdidos;
+  private int estadisticaAsentamientosVisitados;
 
   // Sonido de la caravana al moverse (asignar desde Inspector)
   public AudioClip sfxMovimientoCaravana;
@@ -525,6 +536,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   private int ObtenerZonaInicialDebug()
   {
+    if (EstaActivoDebugForzarAuroraPasoVientoHelado())
+    {
+      return 2;
+    }
+
     List<int> zonasHabilitadas = new List<int>();
 
     if (debugPermitirZonaBosque)
@@ -562,6 +578,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     InicializarMejorasCaravanaNuevaCampania();
     numeroTurno = 1;
     posicionCaravana = 1;
+    ResetearEstadisticasCampania();
     if (estadosCaravana == null)
     {
       estadosCaravana = new EstadosCaravana();
@@ -585,6 +602,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     mejoraCaravanaCatalejos = MinTierMejoraCaravana;
     mejoraCaravanaAlmacen = MinTierMejoraCaravana;
     mejoraCaravanaDefensas = MinTierMejoraCaravana;
+  }
+
+  private void ResetearEstadisticasCampania()
+  {
+    estadisticaDiasViajados = 0;
+    estadisticaBatallasLibradas = 0;
+    estadisticaCivilesPerdidos = 0;
+    estadisticaAsentamientosVisitados = 0;
   }
 
   private int NormalizarTierMejoraCaravana(int tier)
@@ -689,10 +714,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   private void Start()
   {
-    if (logDeCampania != null)
-      logDeCampania.SetDiaActual(numeroTurno);
+    PrepararBitacoraDiaActualSiCorresponde();
 
     TRADU.i.ActualizarIdioma();
+    logDeCampania?.SetDiaActual(numeroTurno);
     RefrescarRetratosPersonajesCampania();
     StartCoroutine(RefrescarRetratosPersonajesCampaniaDiferido());
     ActualizarTextoDia();
@@ -934,13 +959,18 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       if (!string.IsNullOrEmpty(motivo))
       {
-        EscribirLog(motivo);
+        EscribirAdvertenciaLog(motivo);
       }
       return false;
     }
 
     EnviarExploradores(destino);
     return true;
+  }
+
+  public bool PuedeEnviarExploradoresATooltip(Nodo destino)
+  {
+    return PuedeEnviarExploradores(destino, out _);
   }
 
   bool PuedeEnviarExploradores(Nodo destino, out string motivo)
@@ -1032,6 +1062,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     enviandoExploradores = true;
+    EscribirLog(LocExploradores(
+      "-Los exploradores se dirigen al destino.",
+      "-The scouts head toward the destination.",
+      "-Os exploradores seguem para o destino."), true);
+    yield return new WaitForSecondsRealtime(RetrasoInicioEnvioExploradoresSegundos);
+
     OcultarInterfazCampaniaParaExploradores();
     ComenzarBufferTextosFlotantesCampania();
 
@@ -1060,10 +1096,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       scMenuCaravana.MostrarResultadoExploradores(resultado);
     }
 
-    if (!string.IsNullOrEmpty(resultado.descripcion))
-    {
-      EscribirLog("-" + resultado.titulo + ": " + resultado.descripcion);
-    }
+    EscribirLogResultadoExploradores(resultado);
 
     if (textosBufferizados.Count > 0)
     {
@@ -1188,6 +1221,64 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   bool EsTipoNodoDeCombateConScout(int tipoNodo)
   {
     return tipoNodo == 1 || tipoNodo == 8 || tipoNodo == 11 || tipoNodo == 15;
+  }
+
+  void EscribirLogResultadoExploradores(ResultadoExploradoresCampania resultado)
+  {
+    string logResultado = ObtenerLogResultadoExploradores(resultado);
+    if (string.IsNullOrEmpty(logResultado))
+    {
+      return;
+    }
+
+    EscribirLog(logResultado, true);
+  }
+
+  string ObtenerLogResultadoExploradores(ResultadoExploradoresCampania resultado)
+  {
+    if (resultado == null)
+    {
+      return string.Empty;
+    }
+
+    if (resultado.exito && resultado.critico)
+    {
+      string logExitoCritico = LocExploradores(
+        "-Los exploradores regresan tras revelar el destino. Todos volvieron y trajeron recursos.",
+        "-The scouts return after revealing the destination. Everyone made it back and they brought resources.",
+        "-Os exploradores retornam apos revelar o destino. Todos voltaram e trouxeram recursos.");
+
+      if (!string.IsNullOrEmpty(resultado.faccionReveladaNombre))
+      {
+        logExitoCritico += " " + LocExploradores(
+          "Enemigos avistados: ",
+          "Enemies sighted: ",
+          "Inimigos avistados: ") + resultado.faccionReveladaNombre + ".";
+      }
+
+      return logExitoCritico;
+    }
+
+    if (resultado.exito)
+    {
+      return LocExploradores(
+        "-Los exploradores regresan tras revelar el destino. Todos volvieron sanos y salvos.",
+        "-The scouts return after revealing the destination. Everyone made it back safely.",
+        "-Os exploradores retornam apos revelar o destino. Todos voltaram em seguranca.");
+    }
+
+    if (resultado.critico)
+    {
+      return LocExploradores(
+        "-Los exploradores se perdieron y no regresaron.",
+        "-The scouts were lost and did not return.",
+        "-Os exploradores se perderam e nao retornaram.");
+    }
+
+    return LocExploradores(
+      "-Los exploradores no llegaron al destino y regresaron con bajas.",
+      "-The scouts failed to reach the destination and returned with casualties.",
+      "-Os exploradores nao chegaram ao destino e retornaram com baixas.");
   }
 
   void OcultarInterfazCampaniaParaExploradores()
@@ -1388,6 +1479,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.puestoComercialBueyesDisp = pComercialBueyesDisp;
     data.tutorialActivo = scTutorialManager != null && scTutorialManager.tutorialActivo;
     data.tutorialPasoActual = scTutorialManager != null ? scTutorialManager.pasoActual : 0;
+    data.estadisticaDiasViajados = estadisticaDiasViajados;
+    data.estadisticaBatallasLibradas = estadisticaBatallasLibradas;
+    data.estadisticaCivilesPerdidos = estadisticaCivilesPerdidos;
+    data.estadisticaAsentamientosVisitados = estadisticaAsentamientosVisitados;
     if (scAtributosZona != null && scAtributosZona.ZonasEstado != null)
     {
       data.zonasEstado = new List<int>(scAtributosZona.ZonasEstado);
@@ -1398,6 +1493,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.emboscadaEnCurso = EMBOSCADA_EnCurso;
     data.eventosAleatoriosUsadosMapa = new List<int>(eventosAleatoriosUsadosMapa);
     data.estadosCaravana = estadosCaravana != null ? estadosCaravana.ConstruirSaveData() : new EstadosCaravanaSaveData();
+    data.bitacora = logDeCampania != null ? logDeCampania.ExportarSaveData() : new BitacoraSaveData();
     data.settlementOpen = asentamientoManager != null && asentamientoManager.DebeGuardarseComoAbierto;
     data.settlementActionsRemaining = asentamientoManager != null ? asentamientoManager.AccionesRestantes : 3;
     return data;
@@ -1440,7 +1536,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         foreach (Nodo destino in nodo.DestinosPosibles)
         {
-          nodoData.destinos.Add(CrearReferenciaNodo(destino));
+          nodoData.destinos.Add(nodo.EsAtajoSuperficieHacia(destino)
+            ? CrearReferenciaNodoAtajoSuperficie(destino)
+            : CrearReferenciaNodo(destino));
         }
       }
 
@@ -1665,6 +1763,17 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     return data;
   }
 
+  private NodeReferenceSaveData CrearReferenciaNodoAtajoSuperficie(Nodo nodo)
+  {
+    NodeReferenceSaveData data = CrearReferenciaNodo(nodo);
+    if (data.y > 0)
+    {
+      data.y = -data.y;
+    }
+
+    return data;
+  }
+
   private int[] CopiarHabilidadesPersonaje(Personaje personaje)
   {
     return new int[]
@@ -1869,6 +1978,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pComercialSuministrosDisp = data.puestoComercialSuministrosDisp;
     pComercialMaterialesDisp = data.puestoComercialMaterialesDisp;
     pComercialBueyesDisp = data.puestoComercialBueyesDisp;
+    estadisticaDiasViajados = Mathf.Max(0, data.estadisticaDiasViajados);
+    estadisticaBatallasLibradas = Mathf.Max(0, data.estadisticaBatallasLibradas);
+    estadisticaCivilesPerdidos = Mathf.Max(0, data.estadisticaCivilesPerdidos);
+    estadisticaAsentamientosVisitados = Mathf.Max(0, data.estadisticaAsentamientosVisitados);
     MoviendoCaravana = false;
     nodoDestinoActual = null;
     multiplicadorVelocidadVisualViajeActual = 1f;
@@ -2002,6 +2115,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
         foreach (NodeReferenceSaveData destinoRef in nodeData.destinos)
         {
+          bool esAtajoSuperficie = destinoRef != null && destinoRef.y < 0;
           Nodo destino = BuscarNodoDesdeReferencia(destinoRef, nodosPorClave);
           if (destino == null)
           {
@@ -2009,7 +2123,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           }
 
           bool esAtajo = destino.posXNodo - origen.posXNodo > 1;
-          origen.ConectarConNodo(destino, esAtajo, false, true);
+          origen.ConectarConNodo(destino, esAtajo, false, true, esAtajoSuperficie);
         }
       }
     }
@@ -2036,12 +2150,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   private Nodo BuscarNodoDesdeReferencia(NodeReferenceSaveData referencia, Dictionary<string, Nodo> nodosPorClave)
   {
-    if (referencia == null || referencia.x < 0 || referencia.y < 0 || nodosPorClave == null)
+    if (referencia == null || referencia.x < 0 || nodosPorClave == null)
     {
       return null;
     }
 
-    nodosPorClave.TryGetValue(BuildNodeKey(referencia.x, referencia.y), out Nodo nodo);
+    nodosPorClave.TryGetValue(BuildNodeKey(referencia.x, Mathf.Abs(referencia.y)), out Nodo nodo);
     return nodo;
   }
 
@@ -2460,10 +2574,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       scMapaManager.RefrescarVisibilidadExploracion();
     }
 
-    if (logDeCampania != null)
-    {
-      logDeCampania.SetDiaActual(numeroTurno);
-    }
+    RestaurarBitacoraDesdeSave(saveFileData != null ? saveFileData.campaign : null);
 
     ActualizarTextoDia();
 
@@ -2481,6 +2592,41 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       asentamientoManager.RestaurarEstadoDesdeSave(saveFileData.campaign);
     }
+  }
+
+  private void RestaurarBitacoraDesdeSave(CampaignSaveData data)
+  {
+    if (logDeCampania == null)
+    {
+      return;
+    }
+
+    logDeCampania.ImportarSaveData(
+      data != null ? data.bitacora : null,
+      numeroTurno,
+      GetEsperanzaActual(),
+      GetOroActuales(),
+      GetMaterialesActuales(),
+      GetSuministrosActuales(),
+      intTipoClima);
+    logDeCampania.SetDiaActual(numeroTurno);
+  }
+
+  private void PrepararBitacoraDiaActualSiCorresponde()
+  {
+    if (logDeCampania == null)
+    {
+      return;
+    }
+
+    logDeCampania.AsegurarDiaActualConSnapshotSiFalta(
+      numeroTurno,
+      GetEsperanzaActual(),
+      GetOroActuales(),
+      GetMaterialesActuales(),
+      GetSuministrosActuales(),
+      intTipoClima);
+    logDeCampania.SetDiaActual(numeroTurno);
   }
 
   private void RefrescarUiSequitosTrasCarga()
@@ -3063,6 +3209,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public void ForzarTiradaClima()
   {
+    if (IntentarAplicarClimaAuroraPasoVientoHeladoDebug(true, true))
+    {
+      return;
+    }
+
     menuDescanso.GetComponent<MenuDescanso>().TiradaClima();
   }
 
@@ -3073,6 +3224,64 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 #else
     return false;
 #endif
+  }
+
+  public bool EstaActivoDebugForzarAuroraPasoVientoHelado()
+  {
+#if UNITY_EDITOR
+    return debugForzarAuroraPasoVientoHelado;
+#else
+    return false;
+#endif
+  }
+
+  public bool IntentarAplicarClimaAuroraPasoVientoHeladoDebug(bool escribirLogDebug = false, bool aplicarBeneficioEsperanza = false)
+  {
+    if (!EstaActivoDebugForzarAuroraPasoVientoHelado()
+      || scAtributosZona == null
+      || scAtributosZona.ID != 2)
+    {
+      return false;
+    }
+
+    AplicarClimaAuroraPasoVientoHeladoForzada(escribirLogDebug);
+
+    if (aplicarBeneficioEsperanza)
+    {
+      EscribirLog(TRADU.i.Traducir("-La Aurora Boreal maravilla a toda la caravana. +10 Esperanza"));
+      CambiarEsperanzaActual(10);
+    }
+
+    return true;
+  }
+
+  public void AplicarClimaAuroraPasoVientoHeladoForzada(bool escribirLogDebug = false)
+  {
+    intTipoClima = 7;
+    if (widgetClima != null)
+    {
+      widgetClima.sprite = clima_auroraboreal;
+    }
+
+    RefrescarVfxClimaCalor();
+    if (scMapaManager != null)
+    {
+      scMapaManager.RefrescarVisibilidadExploracion();
+    }
+
+    if (menuDescanso != null)
+    {
+      MenuDescanso menuDescansoComponent = menuDescanso.GetComponent<MenuDescanso>();
+      if (menuDescansoComponent != null)
+      {
+        menuDescansoComponent.SincronizarVisualesClimaDesdeEstadoActual();
+      }
+    }
+
+    if (escribirLogDebug)
+    {
+      Debug.Log("[CampaignManager] Debug de clima activo: Aurora Boreal forzada en Paso Viento Helado.");
+    }
   }
 
   public void AplicarClimaMasacreNedukazalForzada(bool escribirLogDebug = false)
@@ -3110,6 +3319,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   private void InicializarClimaAlIniciar()
   {
 #if UNITY_EDITOR
+    if (IntentarAplicarClimaAuroraPasoVientoHeladoDebug(true, false))
+    {
+      return;
+    }
+
     if (EstaActivoDebugForzarMasacreNedukazal() && scAtributosZona != null && scAtributosZona.ID == 3)
     {
       AplicarClimaMasacreNedukazalForzada(true);
@@ -3200,8 +3414,33 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
   }
 
+  void IgnorarCombatePendienteDebug(int tipoCombate)
+  {
+    if (tipoCombate <= 0 || !EsTipoNodoDeCombate(tipoCombate))
+    {
+      return;
+    }
+
+    BATALLA_EnCurso = 0;
+    EMBOSCADA_EnCurso = 0;
+
+    Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
+    if (nodoActual != null && nodoActual.tipoNodo == tipoCombate)
+    {
+      nodoActual.nodoDespejado = true;
+    }
+
+    Debug.Log("[CampaignManager] Debug activo: combate ignorado en nodo tipo " + tipoCombate + ".");
+    ActualizarBotonesAccionNodoActual();
+  }
+
   int ObtenerTipoCombatePendiente()
   {
+    if (debugIgnorarCombates)
+    {
+      return 0;
+    }
+
     if (BATALLA_EnCurso > 0)
     {
       return BATALLA_EnCurso;
@@ -3355,6 +3594,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return;
     }
 
+    if (debugIgnorarCombates)
+    {
+      IgnorarCombatePendienteDebug(tipoCombatePendiente);
+      return;
+    }
+
     if (!AbrirMenuBatallas())
     {
       return;
@@ -3386,8 +3631,24 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
   }
 
-  public void ViajeIniciado(Nodo destino, bool viajeSubterraneo = false)
+  private string ObtenerTextoLogViajeAtajoSuperficie()
   {
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    switch (idioma)
+    {
+      case TRADU.IdiomaIngles:
+        return "-The uncomfortable trip through the shortcut has caused unease among the civilians.";
+      case TRADU.IdiomaPortugues:
+        return "-A viagem desconfortável pelo atalho provocou mal-estar nos civis.";
+      default:
+        return "-El viaje incómodo por el atajo ha provocado malestar en los civiles.";
+    }
+  }
+
+  public void ViajeIniciado(Nodo destino, bool viajeSubterraneo = false, bool viajeAtajoSuperficie = false)
+  {
+    ActivarLog(0);
+
     EfectosViajeCaravana efectosViajeCaravana = estadosCaravana != null
       ? estadosCaravana.IniciarViajeActual()
       : default;
@@ -3405,6 +3666,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     // Inicia sonido de caravana en movimiento
     IniciarSonidoMovimientoCaravana(Mathf.Max(0.05f, sfxMovimientoFadeIn));
+
+    if (viajeAtajoSuperficie)
+    {
+      CambiarEsperanzaActual(-3);
+      EscribirLog(ObtenerTextoLogViajeAtajoSuperficie());
+    }
 
     //Sequito de Clerigos 20% de prevenirlo
     int random2 = UnityEngine.Random.Range(0, 100);
@@ -3424,6 +3691,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       pers.SumarDiasViajado();
     }
+
+    estadisticaDiasViajados++;
 
     foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
     {
@@ -3456,6 +3725,16 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
     numeroTurno++;
+    if (logDeCampania != null)
+    {
+      logDeCampania.RegistrarInicioDia(
+        numeroTurno,
+        GetEsperanzaActual(),
+        GetOroActuales(),
+        GetMaterialesActuales(),
+        GetSuministrosActuales(),
+        intTipoClima);
+    }
     ActualizarTextoDia();
     if (destino.costoMovimiento > 1 && !sePrevieneAvanceAliento)
     {
@@ -3495,17 +3774,17 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     //Efectos en Civiles segun Tier de Aliento
     if (GetTierAlientoNegro() == 1)
     {
-      EscribirLog(TRADU.i.Traducir("-La ausencia de Aliento Negro al viajar, inspira a la Caravana. +2 Esperanza"));
+      EscribirLogSinBitacora(TRADU.i.Traducir("-La ausencia de Aliento Negro al viajar, inspira a la Caravana. +2 Esperanza"));
       CambiarEsperanzaActual(2);
     }
     if (GetTierAlientoNegro() == 2)
     {
-      EscribirLog(TRADU.i.Traducir("-La presencia notable del Aliento Negro al viajar, provoca incertidumbre en la Caravana. -3 Esperanza"));
+      EscribirLogSinBitacora(TRADU.i.Traducir("-La presencia notable del Aliento Negro al viajar, provoca incertidumbre en la Caravana. -3 Esperanza"));
       CambiarEsperanzaActual(-3);
     }
     if (GetTierAlientoNegro() == 3)
     {
-      EscribirLog(TRADU.i.Traducir("-La gran presencia de Aliento Negro en el aire, provoca temor en la Caravana. -5 Esperanza"));
+      EscribirLogSinBitacora(TRADU.i.Traducir("-La gran presencia de Aliento Negro en el aire, provoca temor en la Caravana. -5 Esperanza"));
       CambiarEsperanzaActual(-5);
     }
     if (GetTierAlientoNegro() == 4)
@@ -3513,7 +3792,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       CambiarEsperanzaActual(-7);
       int random = UnityEngine.Random.Range(1, 5);
       CambiarCivilesActuales(-random);
-      EscribirLog(TRADU.i.Traducir("-La presencia de Aliento Negro en el aire es fatal para los Civiles. -7 Esperanza -") + random + TRADU.i.Traducir(" Civiles"));
+      EscribirLogSinBitacora(TRADU.i.Traducir("-La presencia de Aliento Negro en el aire es fatal para los Civiles. -7 Esperanza -") + random + TRADU.i.Traducir(" Civiles"));
     }
 
     AplicarTraitsMoraleAmbientales();
@@ -3676,6 +3955,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
     posicionCaravana = posX + 1;
+    logDeCampania?.RegistrarLlegadaNodo(ID);
+    if (debugIgnorarCombates && EsTipoNodoDeCombate(ID))
+    {
+      IgnorarCombatePendienteDebug(ID);
+      return;
+    }
+
     if (ID == 1) //Batalla
     {
 
@@ -3774,6 +4060,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (ID == 4) //Asentamiento
     {
+      estadisticaAsentamientosVisitados++;
       if (ObtenerAsentamientoManager() != null)
       {
         asentamientoManager.AbrirAlLlegar();
@@ -4465,7 +4752,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     else
     {
-      EscribirLog(TRADU.i.Traducir("-No hay personajes corruptos para purificar."));
+      EscribirAdvertenciaLog(TRADU.i.Traducir("-No hay personajes corruptos para purificar."));
     }
 
     goUISantuario.SetActive(false);
@@ -4480,7 +4767,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     if (GetBueyesActual() < 3)
     {
       txtBueyes.color = Color.red;
-      EscribirLog(TRADU.i.Traducir("-No tienes suficientes bueyes para realizar el ritual en el santuario."));
+      EscribirAdvertenciaLog(TRADU.i.Traducir("-No tienes suficientes bueyes para realizar el ritual en el santuario."));
       return;
     }
 
@@ -4499,7 +4786,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     else
     {
-      EscribirLog(TRADU.i.Traducir("-No hay personajes corruptos para purificar."));
+      EscribirAdvertenciaLog(TRADU.i.Traducir("-No hay personajes corruptos para purificar."));
     }
     goUISantuario.SetActive(false);
 
@@ -6210,6 +6497,70 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   {
     return civilesActuales;
   }
+
+  public void RegistrarBatallaLibrada()
+  {
+    estadisticaBatallasLibradas++;
+  }
+
+  public int ObtenerEstadisticaDiasViajados()
+  {
+    return estadisticaDiasViajados;
+  }
+
+  public int ObtenerEstadisticaBatallasLibradas()
+  {
+    return estadisticaBatallasLibradas;
+  }
+
+  public int ObtenerEstadisticaCivilesPerdidos()
+  {
+    return estadisticaCivilesPerdidos;
+  }
+
+  public int ObtenerEstadisticaAsentamientosVisitados()
+  {
+    return estadisticaAsentamientosVisitados;
+  }
+
+  public int ObtenerEstadisticaPersonajesMuertos()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return 0;
+    }
+
+    int total = 0;
+    foreach (Personaje personaje in scMenuPersonajes.listaPersonajes)
+    {
+      if (personaje != null && personaje.Camp_Muerto)
+      {
+        total++;
+      }
+    }
+
+    return total;
+  }
+
+  public int ObtenerEstadisticaEnemigosAsesinados()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return 0;
+    }
+
+    int total = 0;
+    foreach (Personaje personaje in scMenuPersonajes.listaPersonajes)
+    {
+      if (personaje != null)
+      {
+        total += Mathf.Max(0, personaje.EnemigosEliminados);
+      }
+    }
+
+    return total;
+  }
+
   public void CambiarCivilesActuales(int civiles)
   {
     EjecutarTareaSegura(CambiarCivilesActualesAsync(civiles), nameof(CambiarCivilesActuales));
@@ -6220,6 +6571,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     int civilesAnteriores = civilesActuales;
     civilesActuales = Mathf.Max(0, civilesActuales + civiles);
     int civilesAplicados = civilesActuales - civilesAnteriores;
+    if (civilesAplicados < 0)
+    {
+      estadisticaCivilesPerdidos += -civilesAplicados;
+    }
     valueCiviles.text = "" + civilesActuales;
 
     GetMiliciasActual();
@@ -6823,7 +7178,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
     if (nodoActual != null && nodoActual.tipoNodo == 4)
     {
-      EscribirLog(TRADU.i.Traducir("<color=#FF6666>En los Asentamientos debes usar las acciones propias del asentamiento.</color>"));
+      EscribirAdvertenciaLog(TRADU.i.Traducir("<color=#FF6666>En los Asentamientos debes usar las acciones propias del asentamiento.</color>"));
       return;
     }
 
@@ -6840,7 +7195,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     }
     if (nodoActual != null && !puedeDescansar)
-    { EscribirLog(TRADU.i.Traducir("<color=#FF6666>No puedes descansar aquí.</color>")); }
+    { EscribirAdvertenciaLog(TRADU.i.Traducir("<color=#FF6666>No puedes descansar aquí.</color>")); }
 
 
   }
@@ -6992,30 +7347,35 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       botonDescansar.sprite = puedeDescansar ? campSi : campNo;
     }
 
+    if (Input.GetKeyDown(teclaDebugBajoMouse))
+    {
+      DebugObjetosBajoMouseCampania();
+    }
+
 
     //HOTKEYS
     // Detecta cuando se presiona la tecla H una sola vez
     if (Input.GetKeyDown(KeyCode.R))
     {
-      if(scTutorialManager.tutorialActivo) {EscribirLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
+      if(scTutorialManager.tutorialActivo) {EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       if (asentamientoActivo) { return; }
       AbrirMenuDescanso();
     }
     if (Input.GetKeyDown(KeyCode.C))
     {
-       if(scTutorialManager.tutorialActivo) {EscribirLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
+       if(scTutorialManager.tutorialActivo) {EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       if (asentamientoActivo) { return; }
       scMenuCaravana.AbrirMenuPersonajes();
     }
     if (Input.GetKeyDown(KeyCode.I))
     {
-       if(scTutorialManager.tutorialActivo) {EscribirLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
+       if(scTutorialManager.tutorialActivo) {EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       if (asentamientoActivo) { return; }
       scMenuCaravana.AbrirMenuMejoras();
     }
     if (Input.GetKeyDown(KeyCode.M))
     {
-       if(scTutorialManager.tutorialActivo) {EscribirLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
+       if(scTutorialManager.tutorialActivo) {EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       if (asentamientoActivo) { return; }
       scMenuCaravana.AbrirMenuSequitos();
     }
@@ -7048,6 +7408,103 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
 
+  }
+
+  private void DebugObjetosBajoMouseCampania()
+  {
+    List<string> lineasDebug = new List<string>();
+    Vector3 mousePos = Input.mousePosition;
+    lineasDebug.Add("[MouseDebugCampania] Frame: " + Time.frameCount);
+    lineasDebug.Add("[MouseDebugCampania] Posicion mouse: " + mousePos);
+
+    if (EventSystem.current != null)
+    {
+      PointerEventData pointerData = new PointerEventData(EventSystem.current)
+      {
+        position = mousePos
+      };
+
+      List<RaycastResult> resultadosUI = new List<RaycastResult>();
+      EventSystem.current.RaycastAll(pointerData, resultadosUI);
+      lineasDebug.Add("[MouseDebugCampania] UI hits: " + resultadosUI.Count + " | IsPointerOverGameObject: " + EventSystem.current.IsPointerOverGameObject());
+
+      for (int i = 0; i < resultadosUI.Count && i < maxHitsDebugBajoMouse; i++)
+      {
+        RaycastResult hit = resultadosUI[i];
+        lineasDebug.Add("  UI[" + i + "] " + DescribirJerarquiaDebug(hit.gameObject) + " | dist=" + hit.distance.ToString("0.###") + " | sort=" + hit.sortingOrder + " | layer=" + LayerMask.LayerToName(hit.gameObject.layer));
+      }
+    }
+    else
+    {
+      lineasDebug.Add("[MouseDebugCampania] Sin EventSystem activo.");
+    }
+
+    Camera cam = Camera.main;
+    if (cam == null)
+    {
+      foreach (Camera cameraActiva in Camera.allCameras)
+      {
+        if (cameraActiva != null && cameraActiva.enabled)
+        {
+          cam = cameraActiva;
+          break;
+        }
+      }
+    }
+
+    if (cam == null)
+    {
+      lineasDebug.Add("[MouseDebugCampania] Sin camara activa para raycast 3D.");
+      Debug.Log(string.Join("\n", lineasDebug));
+      return;
+    }
+
+    Ray ray = cam.ScreenPointToRay(mousePos);
+    Debug.DrawRay(ray.origin, ray.direction * 500f, Color.cyan, 2f);
+    RaycastHit[] hits3D = Physics.RaycastAll(ray, 500f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide);
+    System.Array.Sort(hits3D, (a, b) => a.distance.CompareTo(b.distance));
+
+    lineasDebug.Add("[MouseDebugCampania] 3D hits: " + hits3D.Length + " | camara: " + cam.name);
+    for (int i = 0; i < hits3D.Length && i < maxHitsDebugBajoMouse; i++)
+    {
+      RaycastHit hit = hits3D[i];
+      GameObject go = hit.collider != null ? hit.collider.gameObject : null;
+      if (go == null)
+      {
+        continue;
+      }
+
+      Debug.DrawLine(ray.origin, hit.point, i == 0 ? Color.green : Color.yellow, 2f);
+      Nodo nodo = go.GetComponentInParent<Nodo>();
+      lineasDebug.Add(
+        "  3D[" + i + "] " + DescribirJerarquiaDebug(go)
+        + " | collider=" + hit.collider.GetType().Name
+        + " | dist=" + hit.distance.ToString("0.###")
+        + " | layer=" + LayerMask.LayerToName(go.layer)
+        + " | tag=" + go.tag
+        + " | nodo=" + (nodo != null ? nodo.posXNodo + "," + nodo.posYNodo + " tipo=" + nodo.tipoNodo : "none"));
+    }
+
+    Debug.Log(string.Join("\n", lineasDebug));
+  }
+
+  private static string DescribirJerarquiaDebug(GameObject go)
+  {
+    if (go == null)
+    {
+      return "(null)";
+    }
+
+    List<string> nombres = new List<string>();
+    Transform actual = go.transform;
+    while (actual != null)
+    {
+      nombres.Add(actual.name);
+      actual = actual.parent;
+    }
+
+    nombres.Reverse();
+    return string.Join("/", nombres);
   }
 
   private void AsegurarCursorCampania()
@@ -7136,7 +7593,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   {
     if (n == 1)
     {
+      if (MoviendoCaravana)
+      {
+        return;
+      }
+
+      scMenuCaravana?.CerrarMenusExclusivos();
       goLog.SetActive(true);
+      logDeCampania?.ForzarReacomodoLibro();
     }
     else
     {
@@ -7174,6 +7638,25 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     GenerarTextoFlotanteCampaña(log, Color.cyan);
 
 
+  }
+
+  public void EscribirAdvertenciaLog(string log, bool forzarAunqueNumeroTurno1 = false)
+  {
+    EscribirLogSinBitacora(log, forzarAunqueNumeroTurno1);
+  }
+
+  private void EscribirLogSinBitacora(string log, bool forzarAunqueNumeroTurno1 = false)
+  {
+    if (logDeCampania == null) return;
+    if (!forzarAunqueNumeroTurno1 && numeroTurno <= 1) return;
+
+    if (bloqueoTextosFlotantesCampania > 0)
+    {
+      colaTextosSuspendidosCampania.Enqueue((log, Color.cyan));
+      return;
+    }
+
+    GenerarTextoFlotanteCampaña(log, Color.cyan);
   }
 
   public void ComenzarBufferTextosFlotantesCampania()
@@ -8118,7 +8601,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       string mensajeSinCupo = TRADU.i != null
         ? TRADU.i.Traducir("La caravana no tiene más tiendas para otro personaje.")
         : "La caravana no tiene más tiendas para otro personaje.";
-      EscribirLog("<color=#ff9e9e>" + mensajeSinCupo + "</color>", true);
+      EscribirAdvertenciaLog("<color=#ff9e9e>" + mensajeSinCupo + "</color>", true);
       return false;
     }
 

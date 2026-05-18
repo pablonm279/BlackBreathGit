@@ -131,6 +131,11 @@ public class CaminoMesh : MonoBehaviour
         width = Mathf.Max(0.05f, newWidth);
     }
 
+    public float GetWidth()
+    {
+        return width;
+    }
+
     public void SetYOffset(float newYOffset)
     {
         yOffset = Mathf.Max(0f, newYOffset);

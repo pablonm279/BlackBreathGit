@@ -57,13 +57,14 @@ public class MenuDescanso : MonoBehaviour
 
 
     Actualizar();
+    SincronizarVisualesClimaDesdeEstadoActual();
     if (n == 1) //Suministros
     {
-      btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(false);
-      btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(true);
-      btnFiesta.transform.GetChild(0).gameObject.SetActive(true);
-      btnDiaLibre.transform.GetChild(0).gameObject.SetActive(true);
-      btnAlerta.transform.GetChild(0).gameObject.SetActive(true);
+     /* btnRecoleccionSum.transform.gameObject.SetActive(false);
+      btnRecoleccionMat.transform.gameObject.SetActive(true);
+      btnFiesta.transform.gameObject.SetActive(true);
+      btnDiaLibre.transform.gameObject.SetActive(true);
+      btnAlerta.transform.gameObject.SetActive(true);*/
 
 
 
@@ -99,11 +100,11 @@ public class MenuDescanso : MonoBehaviour
     }
     else if (n == 2) //Materiales
     {
-      btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(true);
-      btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(false);
-      btnFiesta.transform.GetChild(0).gameObject.SetActive(true);
-      btnDiaLibre.transform.GetChild(0).gameObject.SetActive(true);
-      btnAlerta.transform.GetChild(0).gameObject.SetActive(true);
+      /*btnRecoleccionSum.gameObject.SetActive(true);
+      btnRecoleccionMat.gameObject.SetActive(false);
+      btnFiesta.gameObject.SetActive(true);
+      btnDiaLibre.gameObject.SetActive(true);
+      btnAlerta.gameObject.SetActive(true);*/
 
       tareaCivilSeleccionada = n;
       valor = (CampaignManager.Instance.GetCivilesActual() / 5) / 100 * (100 + CampaignManager.Instance.scAtributosZona.modRecoleccionMateriales);
@@ -134,11 +135,11 @@ public class MenuDescanso : MonoBehaviour
     }
     else if (n == 3) //Fiesta
     {
-      btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(true);
-      btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(true);
-      btnFiesta.transform.GetChild(0).gameObject.SetActive(false);
-      btnDiaLibre.transform.GetChild(0).gameObject.SetActive(true);
-      btnAlerta.transform.GetChild(0).gameObject.SetActive(true);
+     /* btnRecoleccionSum.transform.gameObject.SetActive(true);
+      btnRecoleccionMat.transform.gameObject.SetActive(true);
+      btnFiesta.transform.gameObject.SetActive(false);
+      btnDiaLibre.transform.gameObject.SetActive(true);
+      btnAlerta.transform.gameObject.SetActive(true);*/
 
       tareaCivilSeleccionada = n;
 
@@ -153,11 +154,11 @@ public class MenuDescanso : MonoBehaviour
     }
     else if (n == 4) //Dia Libre
     {
-      btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(true);
-      btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(true);
-      btnFiesta.transform.GetChild(0).gameObject.SetActive(true);
-      btnDiaLibre.transform.GetChild(0).gameObject.SetActive(false);
-      btnAlerta.transform.GetChild(0).gameObject.SetActive(true);
+     /* btnRecoleccionSum.transform.gameObject.SetActive(true);
+      btnRecoleccionMat.transform.gameObject.SetActive(true);
+      btnFiesta.transform.gameObject.SetActive(true);
+      btnDiaLibre.transform.gameObject.SetActive(false);
+      btnAlerta.transform.gameObject.SetActive(true);*/
 
       tareaCivilSeleccionada = n;
 
@@ -173,11 +174,11 @@ public class MenuDescanso : MonoBehaviour
     }
     else if (n == 5) //Alerta
     {
-      btnRecoleccionSum.transform.GetChild(0).gameObject.SetActive(true);
-      btnRecoleccionMat.transform.GetChild(0).gameObject.SetActive(true);
-      btnFiesta.transform.GetChild(0).gameObject.SetActive(true);
-      btnDiaLibre.transform.GetChild(0).gameObject.SetActive(true);
-      btnAlerta.transform.GetChild(0).gameObject.SetActive(false);
+    /*  btnRecoleccionSum.transform.gameObject.SetActive(true);
+      btnRecoleccionMat.transform.gameObject.SetActive(true);
+      btnFiesta.transform.gameObject.SetActive(true);
+      btnDiaLibre.transform.gameObject.SetActive(true);
+      btnAlerta.transform.gameObject.SetActive(false);*/
 
       tareaCivilSeleccionada = n;
 
@@ -292,7 +293,7 @@ public class MenuDescanso : MonoBehaviour
         CampaignManager.Instance.scMapaManager.nodoActual != null &&
         CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoAsentamiento)
     {
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("<color=#FF6666>El descanso normal no está disponible dentro de un Asentamiento.</color>"));
+      CampaignManager.Instance.EscribirAdvertenciaLog(TRADU.i.Traducir("<color=#FF6666>El descanso normal no está disponible dentro de un Asentamiento.</color>"));
       gameObject.SetActive(false);
       return;
     }
@@ -322,6 +323,44 @@ public class MenuDescanso : MonoBehaviour
     }
   }
 
+  private void IntentarEncontrarAtajoSuperficieTrasDescanso()
+  {
+    Nodo nodoActual = CampaignManager.Instance != null &&
+                      CampaignManager.Instance.scMapaManager != null
+      ? CampaignManager.Instance.scMapaManager.nodoActual
+      : null;
+
+    if (nodoActual == null)
+    {
+      return;
+    }
+
+    int chanceAtajo = Mathf.Clamp(Mathf.FloorToInt(chancesExploracion * 0.5f), 0, 100);
+    if (UnityEngine.Random.Range(0, 100) >= chanceAtajo)
+    {
+      return;
+    }
+
+    if (nodoActual.IntentarEncontrarAtajoSuperficie())
+    {
+      CampaignManager.Instance.EscribirLog(ObtenerTextoLogAtajoSuperficieEncontrado());
+    }
+  }
+
+  private string ObtenerTextoLogAtajoSuperficieEncontrado()
+  {
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    switch (idioma)
+    {
+      case TRADU.IdiomaIngles:
+        return "-During the rest, the scouts found a hidden route.";
+      case TRADU.IdiomaPortugues:
+        return "-Durante o descanso, os exploradores encontraram uma rota oculta.";
+      default:
+        return "-Durante el descanso los exploradores han encontrado una ruta oculta.";
+    }
+  }
+
   private async Task DescansarAsync()
   {
     bool enTutorial = CampaignManager.Instance.scTutorialManager != null &&
@@ -331,6 +370,17 @@ public class MenuDescanso : MonoBehaviour
     // Audio: al presionar Descansar, cortar másica con fade, reproducir SFX y reanudar.
     IniciarAudioDescansoSimple();
     CampaignManager.Instance.numeroTurno++;
+    if (CampaignManager.Instance.logDeCampania != null)
+    {
+      CampaignManager.Instance.logDeCampania.RegistrarInicioDia(
+        CampaignManager.Instance.numeroTurno,
+        CampaignManager.Instance.GetEsperanzaActual(),
+        CampaignManager.Instance.GetOroActuales(),
+        CampaignManager.Instance.GetMaterialesActuales(),
+        CampaignManager.Instance.GetSuministrosActuales(),
+        CampaignManager.Instance.intTipoClima);
+      CampaignManager.Instance.logDeCampania.RegistrarDescanso();
+    }
 
     CampaignManager.Instance.scSequitoMercaderes.GenerarItemsVendidos();
 
@@ -338,6 +388,7 @@ public class MenuDescanso : MonoBehaviour
 
     CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(1.2f, 4.0f);
     await BattleManager.DelayCombateAsync(TimeSpan.FromSeconds(6.0f));
+    IntentarEncontrarAtajoSuperficieTrasDescanso();
 
     if (tareaCivilSeleccionada == 1)
     {
@@ -710,6 +761,38 @@ public class MenuDescanso : MonoBehaviour
     climaAlmasDanzantes.SetActive(false);
   }
 
+  public void SincronizarVisualesClimaDesdeEstadoActual()
+  {
+    ResetearVisualesClima();
+
+    if (CampaignManager.Instance == null)
+    {
+      return;
+    }
+
+    switch (CampaignManager.Instance.intTipoClima)
+    {
+      case 3:
+        if (climaLluvia != null) climaLluvia.SetActive(true);
+        break;
+      case 4:
+        if (climaNieve != null) climaNieve.SetActive(true);
+        break;
+      case 5:
+        if (climaNiebla != null) climaNiebla.SetActive(true);
+        break;
+      case 6:
+        if (climaAlmasDanzantes != null) climaAlmasDanzantes.SetActive(true);
+        break;
+      case 7:
+        if (climaAuroraBoreal != null) climaAuroraBoreal.SetActive(true);
+        break;
+      case 9:
+        if (climaMasacre != null) climaMasacre.SetActive(true);
+        break;
+    }
+  }
+
   bool IntentarAplicarMasacreNedukazalDebug()
   {
     if (CampaignManager.Instance == null
@@ -731,8 +814,23 @@ public class MenuDescanso : MonoBehaviour
     return true;
   }
 
+  bool IntentarAplicarAuroraPasoVientoHeladoDebug()
+  {
+    if (CampaignManager.Instance == null)
+    {
+      return false;
+    }
+
+    return CampaignManager.Instance.IntentarAplicarClimaAuroraPasoVientoHeladoDebug(false, true);
+  }
+
   public void TiradaClima()
   {
+    if (IntentarAplicarAuroraPasoVientoHeladoDebug())
+    {
+      return;
+    }
+
     if (IntentarAplicarMasacreNedukazalDebug())
     {
       return;

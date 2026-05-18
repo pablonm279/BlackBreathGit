@@ -247,7 +247,7 @@ public class AsentamientoManager : MonoBehaviour
 
         if (accionesRestantes <= 0)
         {
-            campaign.EscribirLog(MarcarSinAcciones(Loc(
+            campaign.EscribirAdvertenciaLog(MarcarSinAcciones(Loc(
                 "-No quedan acciones disponibles en este asentamiento.",
                 "-No actions remain in this settlement.",
                 "-Nao restam acoes disponiveis neste assentamento.")));
@@ -257,14 +257,14 @@ public class AsentamientoManager : MonoBehaviour
 
         if (accion == AccionAsentamiento.Taverna && !PuedeUsarTaverna(out string motivoTaverna))
         {
-            campaign.EscribirLog("<color=#ff8f8f>" + motivoTaverna + "</color>", true);
+            campaign.EscribirAdvertenciaLog("<color=#ff8f8f>" + motivoTaverna + "</color>", true);
             MostrarDescripcionAccion(accion);
             return;
         }
 
         if (accion == AccionAsentamiento.Posada && !PuedeUsarPosada(out string motivoPosada))
         {
-            campaign.EscribirLog("<color=#ff8f8f>" + motivoPosada + "</color>", true);
+            campaign.EscribirAdvertenciaLog("<color=#ff8f8f>" + motivoPosada + "</color>", true);
             MostrarDescripcionAccion(accion);
             return;
         }

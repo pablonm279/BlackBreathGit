@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
-public class btnPersonaje : MonoBehaviour
+public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
   public Personaje personajeRepresentado;
+  RefuerzoAliadoCaravanaOrdenItem refuerzoCaravanaRepresentado;
 
   public TextMeshProUGUI txtPersonajeRepresentado;
   [SerializeField] private Image retratoRepresenta;
@@ -18,6 +20,8 @@ public class btnPersonaje : MonoBehaviour
   [SerializeField] private Image iconoMuerto;
   [SerializeField] private GameObject indicadorNivelPendiente;
   [SerializeField] private GameObject indicadorSeleccionado;
+  bool arrastrandoRefuerzoCaravana;
+  int ultimoFrameArrastre = -1000;
 
   private void Awake()
   {
@@ -27,6 +31,15 @@ public class btnPersonaje : MonoBehaviour
 
   public void SeleccionarPJ()
   {
+    if (Time.frameCount - ultimoFrameArrastre <= 1)
+    {
+      return;
+    }
+
+    if (personajeRepresentado == null)
+    {
+      return;
+    }
 
     if (!CampaignManager.Instance.goMenuBatallas.activeInHierarchy)
     {
@@ -65,11 +78,85 @@ public class btnPersonaje : MonoBehaviour
 
   }
 
+  public void OnBeginDrag(PointerEventData eventData)
+  {
+    MenuBatallas menuBatallas = CampaignManager.Instance != null ? CampaignManager.Instance.scMenuBatallas : null;
+    if (menuBatallas == null || !menuBatallas.PuedeReordenarRefuerzoCaravana(this))
+    {
+      arrastrandoRefuerzoCaravana = false;
+      return;
+    }
+
+    arrastrandoRefuerzoCaravana = true;
+  }
+
+  public void OnDrag(PointerEventData eventData)
+  {
+    if (!arrastrandoRefuerzoCaravana)
+    {
+      return;
+    }
+
+    MenuBatallas menuBatallas = CampaignManager.Instance != null ? CampaignManager.Instance.scMenuBatallas : null;
+    if (menuBatallas != null)
+    {
+      menuBatallas.ReordenarRefuerzoCaravana(this, eventData.position, eventData.pressEventCamera);
+    }
+  }
+
+  public void OnEndDrag(PointerEventData eventData)
+  {
+    if (!arrastrandoRefuerzoCaravana)
+    {
+      return;
+    }
+
+    arrastrandoRefuerzoCaravana = false;
+    ultimoFrameArrastre = Time.frameCount;
+
+    MenuBatallas menuBatallas = CampaignManager.Instance != null ? CampaignManager.Instance.scMenuBatallas : null;
+    if (menuBatallas != null)
+    {
+      menuBatallas.ConfirmarOrdenRefuerzosCaravanaDesdeUI();
+      menuBatallas.ActualizarLista();
+    }
+  }
+
   public Image vidaRepresenta;
   public void Configurar(Personaje personaje)
   {
+    refuerzoCaravanaRepresentado = null;
     personajeRepresentado = personaje;
     RepresentarTodo();
+  }
+
+  public void ConfigurarRefuerzoCaravana(RefuerzoAliadoCaravanaOrdenItem refuerzo)
+  {
+    refuerzoCaravanaRepresentado = refuerzo;
+    personajeRepresentado = refuerzo != null ? refuerzo.personaje : null;
+    RepresentarTodo();
+  }
+
+  public RefuerzoAliadoCaravanaOrdenItem ObtenerRefuerzoCaravanaRepresentado()
+  {
+    if (refuerzoCaravanaRepresentado != null)
+    {
+      return refuerzoCaravanaRepresentado;
+    }
+
+    if (personajeRepresentado == null)
+    {
+      return null;
+    }
+
+    return new RefuerzoAliadoCaravanaOrdenItem
+    {
+      id = "personaje:" + personajeRepresentado.GetInstanceID(),
+      tipo = TipoRefuerzoAliadoCaravana.Personaje,
+      personaje = personajeRepresentado,
+      nombreVisible = personajeRepresentado.sNombre,
+      retrato = personajeRepresentado.spRetrato
+    };
   }
 
   public void SetSeleccionado(bool seleccionado)
@@ -90,6 +177,11 @@ public class btnPersonaje : MonoBehaviour
   public void representarVida()
   {
     AsegurarReferencias();
+
+    if (vidaRepresenta != null)
+    {
+      vidaRepresenta.gameObject.SetActive(personajeRepresentado != null);
+    }
 
     if (personajeRepresentado != null)
     {
@@ -165,6 +257,11 @@ public class btnPersonaje : MonoBehaviour
 
 
       }
+      else if (refuerzoCaravanaRepresentado != null)
+      {
+        txtPersonajeRepresentado.gameObject.SetActive(true);
+        txtPersonajeRepresentado.text = refuerzoCaravanaRepresentado.nombreVisible;
+      }
       else
       {
         txtPersonajeRepresentado.gameObject.SetActive(false);
@@ -176,6 +273,11 @@ public class btnPersonaje : MonoBehaviour
       {
         txtPersonajeRepresentado.gameObject.SetActive(true);
         txtPersonajeRepresentado.text = personajeRepresentado.sNombre;
+      }
+      else if (refuerzoCaravanaRepresentado != null)
+      {
+        txtPersonajeRepresentado.gameObject.SetActive(true);
+        txtPersonajeRepresentado.text = refuerzoCaravanaRepresentado.nombreVisible;
       }
       else
       {
@@ -263,7 +365,9 @@ public class btnPersonaje : MonoBehaviour
   {
     AsegurarReferencias();
 
-    Sprite spriteRetrato = personajeRepresentado != null ? personajeRepresentado.spRetrato : null;
+    Sprite spriteRetrato = personajeRepresentado != null
+      ? personajeRepresentado.spRetrato
+      : (refuerzoCaravanaRepresentado != null ? refuerzoCaravanaRepresentado.retrato : null);
 
     if (retratoRepresenta != null)
     {
@@ -279,6 +383,21 @@ public class btnPersonaje : MonoBehaviour
   private void RepresentarActividad()
   {
     AsegurarReferencias();
+
+    if (EstaEnMenuBatallas())
+    {
+      if (actividadRetrato != null)
+      {
+        actividadRetrato.gameObject.SetActive(false);
+      }
+
+      if (indicadorActividadFijada != null)
+      {
+        indicadorActividadFijada.SetActive(false);
+      }
+
+      return;
+    }
 
     if (indicadorActividadFijada != null)
     {
@@ -323,6 +442,17 @@ public class btnPersonaje : MonoBehaviour
     {
       actividadRetrato.Recuadro.SetActive(false);
     }
+  }
+
+  private bool EstaEnMenuBatallas()
+  {
+    return CampaignManager.Instance != null
+      && CampaignManager.Instance.goMenuBatallas != null
+      && CampaignManager.Instance.goMenuBatallas.activeInHierarchy
+      && CampaignManager.Instance.scMenuBatallas != null
+      && (CampaignManager.Instance.scMenuBatallas.UIEmpezarBatalla.activeInHierarchy
+      || CampaignManager.Instance.scMenuBatallas.UIEmpezarBatallaACaravana.activeInHierarchy
+      || CampaignManager.Instance.scMenuBatallas.UITerminarBatalla.activeInHierarchy);
   }
 
   private void AsegurarReferencias()
