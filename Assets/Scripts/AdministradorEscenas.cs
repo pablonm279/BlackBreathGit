@@ -76,10 +76,55 @@ public class AdministradorEscenas : MonoBehaviour
     await BattleManager.DelayCombateAsync(delayMs);
   }
   public GameObject MenuOpciones;
+  private Canvas canvasLogHandbook;
+  private int sortingOrderCanvasLogHandbookOriginal = int.MinValue;
 
   public void abrirOpciones()
   {
     MenuOpciones.SetActive(!MenuOpciones.activeInHierarchy);
+  }
+
+  Canvas ObtenerCanvasLogHandbook()
+  {
+    if (canvasLogHandbook != null)
+    {
+      return canvasLogHandbook;
+    }
+
+    Canvas[] canvases = GetComponentsInChildren<Canvas>(true);
+    for (int i = 0; i < canvases.Length; i++)
+    {
+      if (canvases[i] != null && canvases[i].name == "CanvasLog/Handbook")
+      {
+        canvasLogHandbook = canvases[i];
+        sortingOrderCanvasLogHandbookOriginal = canvasLogHandbook.sortingOrder;
+        break;
+      }
+    }
+
+    return canvasLogHandbook;
+  }
+
+  public void RefrescarUICompartidaSegunEscena()
+  {
+    Canvas canvasCompartido = ObtenerCanvasLogHandbook();
+    if (canvasCompartido == null)
+    {
+      return;
+    }
+
+    if (!canvasCompartido.gameObject.activeSelf)
+    {
+      canvasCompartido.gameObject.SetActive(true);
+    }
+
+    int sortingOrderBase = sortingOrderCanvasLogHandbookOriginal != int.MinValue
+      ? sortingOrderCanvasLogHandbookOriginal
+      : canvasCompartido.sortingOrder;
+
+    canvasCompartido.sortingOrder = escenaActual == 1
+      ? Mathf.Max(sortingOrderBase, 50)
+      : sortingOrderBase;
   }
   async void EjecutarOperacionSegura(Task tarea, string contexto)
   {
@@ -919,6 +964,8 @@ public class AdministradorEscenas : MonoBehaviour
 
   IEnumerator Start()
   {
+    RefrescarUICompartidaSegunEscena();
+
     if (mantenerFaderNegroEnProximaCargaCampania)
     {
       mantenerFaderNegroEnProximaCargaCampania = false;
@@ -1068,6 +1115,7 @@ public class AdministradorEscenas : MonoBehaviour
     await EsperarSegundosRealtime(esperaCambioEscena);
     EscenaCampaign.SetActive(false);
     EscenaBatalla.SetActive(true);
+    RefrescarUICompartidaSegunEscena();
     BattleManager battleManager = BattleManager.Instance;
     if (battleManager == null)
     {
@@ -1079,6 +1127,7 @@ public class AdministradorEscenas : MonoBehaviour
       return;
     }
     battleManager.RefrescarVfxClimaCalor(false);
+    battleManager.SetLogCombateActivoPorEscena(true);
     // Silenciar logs de combate durante la preparación (buffs/estados iniciales)
     battleManager.silenciarLogCombate = true;
     battleManager.ReiniciarEstadoRefuerzos();
@@ -1089,15 +1138,25 @@ public class AdministradorEscenas : MonoBehaviour
     if (Personaje2 != null) { totalAliadosInicialesAColocar++; }
     if (Personaje3 != null) { totalAliadosInicialesAColocar++; }
     if (Personaje4 != null) { totalAliadosInicialesAColocar++; }
-    bool esPrimerCombateTutorial = IDEncuentro == 700 && CampaignManager.Instance != null
-      && CampaignManager.Instance.scTutorialManager != null
-      && CampaignManager.Instance.scTutorialManager.tutorialActivo;
-    bool esCombateFinalTutorial = IDEncuentro == 701 && CampaignManager.Instance != null
-      && CampaignManager.Instance.scTutorialManager != null
-      && CampaignManager.Instance.scTutorialManager.tutorialActivo;
+    CampaignManager campaignManagerTutorial = CampaignManager.Instance;
+    bool tutorialViejoActivo = campaignManagerTutorial != null
+      && campaignManagerTutorial.scTutorialManager != null
+      && campaignManagerTutorial.scTutorialManager.tutorialActivo;
+    bool tutorialLinealForzado = campaignManagerTutorial != null && campaignManagerTutorial.DebeForzarMapaLinealTutorial();
+    bool esPrimerCombateTutorial = IDEncuentro == 700 && (tutorialViejoActivo || tutorialLinealForzado);
+    bool esCombateFinalTutorial = IDEncuentro == 701 && (tutorialViejoActivo || tutorialLinealForzado);
+    if (esPrimerCombateTutorial || esCombateFinalTutorial)
+    {
+      TutorialDirector.Instance?.SuspendForLegacyCombatTutorial();
+    }
     if (esEmboscada == 3) // Debe ocurrir antes de colocar unidades y objetos aleatorios para reservar esas casillas.
     {
       CrearDefensasCaravana();
+    }
+
+    if (esPrimerCombateTutorial)
+    {
+      GenerarObstaculosPrimerCombateTutorial();
     }
 
     AdministrarFondos(IDEncuentro, encuentroGeneradoActual);
@@ -1681,18 +1740,23 @@ public class AdministradorEscenas : MonoBehaviour
     // RondaNueva() incrementa el contador, por eso se inicializa en 0 aquí.
     BattleManager.Instance.RondaNro = 0;
     BattleManager.Instance.RondaNueva();
+    TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.BattleStarted, gameObject)
+      .Add("encounterId", IDEncuentro)
+      .Add("isFirstTutorialBattle", esPrimerCombateTutorial ? 1 : 0)
+      .Add("isFinalTutorialBattle", esCombateFinalTutorial ? 1 : 0));
 
     if (BattleManager.Instance != null && BattleManager.Instance.scTutorialCombate != null)
     {
       if (esPrimerCombateTutorial)
       {
-        BattleManager.Instance.scTutorialCombate.IniciarCombateDesdePaso(0);
+        BattleManager.Instance.scTutorialCombate.IniciarCombateDesdePaso(0, true);
       }
       else if (esCombateFinalTutorial)
       {
-        BattleManager.Instance.scTutorialCombate.IniciarCombateDesdePaso(12);
+        BattleManager.Instance.scTutorialCombate.IniciarCombateDesdePaso(12, true);
       }
     }
+    BattleManager.Instance.SetLogCombateActivoPorEscena(true);
 
     Invoke("ColocarunidadesEnCanvasUnidades", 0.3f);
 
@@ -1757,6 +1821,44 @@ public class AdministradorEscenas : MonoBehaviour
       int cantidadBarro = UnityEngine.Random.Range(0, 3);
       if (climaLluvioso) { cantidadBarro += 4; }
       ColocarTrampasDeBarro(cantidadBarro, ladoAliado, ladoEnemigo);
+    }
+  }
+
+  void GenerarObstaculosPrimerCombateTutorial()
+  {
+    if (ContenedorPrefabsBatalla == null)
+    {
+      Debug.LogWarning("[AdministradorEscenas] No se pudieron generar obstaculos del tutorial: contenedor de prefabs nulo.");
+      return;
+    }
+
+    ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca1, 1, 3, 1);
+    ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca1, 1, 1, 5);
+    ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 1, 2, 4);
+    ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 2, 2, 5);
+    ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 2, 3, 1);
+  }
+
+  void ColocarObstaculoFijoTutorial(GameObject prefab, int iLado, int x, int y)
+  {
+    if (prefab == null || BattleManager.Instance == null)
+    {
+      Debug.LogWarning("[AdministradorEscenas] No se pudo colocar obstaculo fijo del tutorial: prefab o BattleManager nulo.");
+      return;
+    }
+
+    LadoManager lado = iLado == 1 ? BattleManager.Instance.ladoB : BattleManager.Instance.ladoA;
+    Casilla casillaObjetivo = lado != null ? lado.ObtenerCasillaPorIndex(x, y) : null;
+    if (!CasillaEstaDisponibleParaSpawn(casillaObjetivo))
+    {
+      Debug.LogWarning("[AdministradorEscenas] No se pudo colocar obstaculo fijo del tutorial en x" + x + " y" + y + ".");
+      return;
+    }
+
+    GameObject obstaculo = Instantiate(prefab);
+    if (!lado.ColocarEnCasilla(obstaculo, x, y))
+    {
+      Destroy(obstaculo);
     }
   }
 
@@ -4667,6 +4769,10 @@ public class AdministradorEscenas : MonoBehaviour
       return;
     }
 
+    bool debeReanudarTutorialNuevoPostCombate =
+      (ultimoIDEncuentro == 700 || ultimoIDEncuentro == 701)
+      && campaignManager.DebeUsarConfiguracionTutorial();
+
     PlasmarEfectosBatallaEnPersonajes();
     campaignManager.logDeCampania?.LimpiarDesdeBatalla();
     if (campaignManager.scMenuBatallas != null)
@@ -4679,6 +4785,12 @@ public class AdministradorEscenas : MonoBehaviour
     {
       campaignManager.scMapaManager.nodoActual.nodoDespejado = true;
     }
+
+    if (resultado == 1 && ultimoIDEncuentro == 700 && campaignManager.DebeUsarConfiguracionTutorial())
+    {
+      campaignManager.AplicarRecompensaPrimerCombateTutorial();
+    }
+
     campaignManager.BATALLA_EnCurso = 0;
     campaignManager.EMBOSCADA_EnCurso = 0;
 
@@ -4734,6 +4846,8 @@ public class AdministradorEscenas : MonoBehaviour
       MusicManager.Instance.VolverACampania();
     }
     escenaActual = 0;
+    RefrescarUICompartidaSegunEscena();
+    battleManager.SetLogCombateActivoPorEscena(false);
     EscenaBatalla.SetActive(false);
 
     Time.timeScale = 1; //Vuelve el tiempo al normal(por si habia modo rapido), pero no cambia el estado de Modorapido
@@ -4743,6 +4857,18 @@ public class AdministradorEscenas : MonoBehaviour
     {
       await BattleManager.DelayCombateAsync(delayFinal);
     }
+
+    TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.BattleEnded, gameObject)
+      .Add("encounterId", ultimoIDEncuentro)
+      .Add("result", resultado)
+      .Add("isFirstTutorialBattle", ultimoIDEncuentro == 700 ? 1 : 0)
+      .Add("isFinalTutorialBattle", ultimoIDEncuentro == 701 ? 1 : 0));
+
+    if (debeReanudarTutorialNuevoPostCombate)
+    {
+      TutorialDirector.Instance?.ResumeFromLegacyCombatTutorial(true);
+    }
+
     if (campaignManager.scTutorialManager != null
       && campaignManager.scTutorialManager.tutorialActivo
       && campaignManager.scTutorialManager.pasoActual == 3)

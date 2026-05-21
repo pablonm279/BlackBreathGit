@@ -546,6 +546,10 @@ public class BattleManager : MonoBehaviour
 
   public void TerminarTurno(bool fueManualConBoton = false) //Termina el turno de la unidad activa
   {
+    TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.BattleTurnEnded, gameObject)
+      .Add("manual", fueManualConBoton ? 1 : 0)
+      .Add("unit", unidadActiva != null ? unidadActiva.uNombre : string.Empty));
+
     scUIBotonesHab.UIDesactivarBotones();
 
     unidadActiva.TerminaTurnoEstaUnidad(fueManualConBoton);
@@ -2039,7 +2043,17 @@ public class BattleManager : MonoBehaviour
     }
     else if (Input.GetKeyDown(KeyCode.Escape))
     {
-      //ACA QUE ABRA MENU OPCIONES DE BATALLA CUANDO ESTEN
+      if (scTutorialCombate.tutorialCombateActivo) { return; }
+
+      AdministradorEscenas administradorEscenas = CampaignManager.Instance != null
+        ? CampaignManager.Instance.scAdministradorEscenas
+        : null;
+
+      if (administradorEscenas != null)
+      {
+        administradorEscenas.RefrescarUICompartidaSegunEscena();
+        administradorEscenas.abrirOpciones();
+      }
     }
 
     if (Input.GetKeyDown(KeyCode.I))
@@ -3541,6 +3555,69 @@ public class BattleManager : MonoBehaviour
     txtLog.text = "";
   }
 
+  public void SetLogCombateActivoPorEscena(bool activo)
+  {
+    if (goLog == null)
+    {
+      return;
+    }
+
+    GameObject root = ObtenerRootLogCombate();
+    Transform logInteractivo = goLog.transform.parent;
+
+    if (activo)
+    {
+      if (root != null)
+      {
+        root.SetActive(true);
+        if (root.transform.localScale == Vector3.zero)
+        {
+          root.transform.localScale = Vector3.one;
+        }
+      }
+
+      if (logInteractivo != null)
+      {
+        logInteractivo.gameObject.SetActive(true);
+      }
+
+      UIFadeSlideUtility.HideImmediate(goLog);
+      ultimaVisibilidadLogActiva = false;
+    }
+    else
+    {
+      UIFadeSlideUtility.HideImmediate(goLog);
+      if (logInteractivo != null)
+      {
+        logInteractivo.gameObject.SetActive(false);
+      }
+
+      if (root != null)
+      {
+        root.SetActive(false);
+      }
+
+      ultimaVisibilidadLogActiva = false;
+    }
+
+    SetPausaPorLog(false);
+  }
+
+  private GameObject ObtenerRootLogCombate()
+  {
+    Transform actual = goLog.transform;
+    while (actual.parent != null)
+    {
+      actual = actual.parent;
+      if (actual.name.Contains("CanvasLog") || actual.name.Contains("Handbook"))
+      {
+        return actual.gameObject;
+      }
+    }
+
+    return goLog.transform.parent != null ? goLog.transform.parent.gameObject : goLog;
+  }
+
   public void ActivarLog(int n)
   {
     if (n == 1)
@@ -4457,12 +4534,24 @@ public class BattleManager : MonoBehaviour
 
   public void ActualizarCasillasMelee()
   {
+    if (lCasillasTotal == null)
+    {
+      return;
+    }
 
 
     foreach (Casilla casillas in lCasillasTotal)
     {
-      casillas.activarCapaMelee(false);
+      if (casillas != null)
+      {
+        casillas.activarCapaMelee(false);
+      }
     } //Resetear todas las casillas
+    if (unidadActiva == null)
+    {
+      return;
+    }
+
     if (unidadActiva.GetComponent<IAUnidad>() != null) //IA descartados
     {
       return;
@@ -4508,8 +4597,18 @@ public class BattleManager : MonoBehaviour
     if (EstaEnPosMelee(casillaActual, true))
     { return; } //Si ya estÃ¡ en melee no marcar nada
 
+    if (ladoB == null || ladoB.casillasLado == null)
+    {
+      return;
+    }
+
     foreach (Casilla casilla in ladoB.casillasLado)
     {
+      if (casilla == null)
+      {
+        continue;
+      }
+
       if (EstaEnPosMelee(casilla))
       {
         casilla.activarCapaMelee(true);

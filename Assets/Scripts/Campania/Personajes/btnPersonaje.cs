@@ -31,6 +31,8 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
   public void SeleccionarPJ()
   {
+    TutorialEvents.Emit("ui.pjpostbat1_presionado", gameObject);
+    
     if (Time.frameCount - ultimoFrameArrastre <= 1)
     {
       return;

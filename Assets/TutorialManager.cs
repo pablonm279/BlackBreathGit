@@ -5,6 +5,20 @@ using UnityEngine;
 public class TutorialManager : MonoBehaviour
 {
     private const string TutorialTerminadoKey = "Tutorial_Terminado";
+    private const int TutorialOrigenX = 0;
+    private const int TutorialOrigenY = 0;
+    private const int TutorialPrimerCombateX = 1;
+    private const int TutorialPrimerCombateY = 3;
+    private const int TutorialRecursosX = 2;
+    private const int TutorialRecursosY = 2;
+    private const int TutorialEliteX = 2;
+    private const int TutorialEliteY = 4;
+    private const int TutorialEventoX = 3;
+    private const int TutorialEventoY = 2;
+    private const int TutorialEmboscadaX = 4;
+    private const int TutorialEmboscadaY = 2;
+    private const int TutorialClaroX = 4;
+    private const int TutorialClaroY = 3;
 
     public bool tutorialActivo = true;
     public int pasoActual = 0;
@@ -21,18 +35,62 @@ public class TutorialManager : MonoBehaviour
 
     List<Nodo> ObtenerNodosTutorial()
     {
-        var nodos = new List<Nodo>
-        {
-            NodoPelea1,
-            Nodotut2,
-            Nodotut3,
-            Nodotut4,
-            Nodotut5,
-            Nodotut6
-        };
+        ContenedorDeNodos contenedor = CampaignManager.Instance != null
+            ? CampaignManager.Instance.scMapaManager?.scContenedordeNodos
+            : null;
 
-        nodos.RemoveAll(n => n == null);
+        ActualizarRutaMapaTutorial(contenedor);
+
+        var nodos = new List<Nodo>();
+        AgregarNodoSiExiste(nodos, ObtenerNodoMapaTutorial(contenedor, TutorialOrigenX, TutorialOrigenY, null));
+        AgregarNodoSiExiste(nodos, NodoPelea1);
+        AgregarNodoSiExiste(nodos, Nodotut3);
+        AgregarNodoSiExiste(nodos, ObtenerNodoMapaTutorial(contenedor, TutorialEliteX, TutorialEliteY, null));
+        AgregarNodoSiExiste(nodos, Nodotut4);
+        AgregarNodoSiExiste(nodos, Nodotut5);
+        AgregarNodoSiExiste(nodos, Nodotut6);
+
         return nodos;
+    }
+
+    void AgregarNodoSiExiste(List<Nodo> nodos, Nodo nodo)
+    {
+        if (nodo == null || nodos.Contains(nodo))
+        {
+            return;
+        }
+
+        nodos.Add(nodo);
+    }
+
+    Nodo ObtenerNodoMapaTutorial(ContenedorDeNodos contenedor, int x, int y, Nodo fallback)
+    {
+        if (contenedor != null)
+        {
+            Nodo nodo = contenedor.ObtenerNodoSegunXY(x, y);
+            if (nodo != null)
+            {
+                return nodo;
+            }
+        }
+
+        return fallback;
+    }
+
+    void ActualizarRutaMapaTutorial(ContenedorDeNodos contenedor)
+    {
+        Nodo primerCombate = ObtenerNodoMapaTutorial(contenedor, TutorialPrimerCombateX, TutorialPrimerCombateY, NodoPelea1);
+        Nodo recursos = ObtenerNodoMapaTutorial(contenedor, TutorialRecursosX, TutorialRecursosY, Nodotut3);
+        Nodo evento = ObtenerNodoMapaTutorial(contenedor, TutorialEventoX, TutorialEventoY, Nodotut4);
+        Nodo emboscada = ObtenerNodoMapaTutorial(contenedor, TutorialEmboscadaX, TutorialEmboscadaY, Nodotut5);
+        Nodo claro = ObtenerNodoMapaTutorial(contenedor, TutorialClaroX, TutorialClaroY, Nodotut6);
+
+        NodoPelea1 = primerCombate;
+        Nodotut2 = primerCombate;
+        Nodotut3 = recursos;
+        Nodotut4 = evento;
+        Nodotut5 = emboscada;
+        Nodotut6 = claro;
     }
 
     void Start()
@@ -43,6 +101,7 @@ public class TutorialManager : MonoBehaviour
     {
         if (nodo == null) return;
 
+        nodo.LimpiarEstadosEspecialesTutorial();
         nodo.DestinosPosibles.Clear();
         nodo.cantidadConexiones = 0;
 
@@ -66,20 +125,48 @@ public class TutorialManager : MonoBehaviour
         var contenedor = CampaignManager.Instance != null ? CampaignManager.Instance.scMapaManager?.scContenedordeNodos : null;
         if (contenedor == null) return;
 
-        var nodosOrdenados = ObtenerNodosTutorial();
-        if (nodosOrdenados.Count == 0) return;
+        ActualizarRutaMapaTutorial(contenedor);
 
-        foreach (var nodo in nodosOrdenados)
+        Nodo origen = ObtenerNodoMapaTutorial(contenedor, TutorialOrigenX, TutorialOrigenY, null);
+        if (origen == null) return;
+
+        foreach (var nodo in ObtenerNodosTutorial())
         {
             nodo.gameObject.SetActive(true);
             LimpiarConexionesNodo(nodo);
         }
 
-        for (int i = 0; i < nodosOrdenados.Count - 1; i++)
+        if (NodoPelea1 != null)
         {
-            var origen = nodosOrdenados[i];
-            var destino = nodosOrdenados[i + 1];
-            origen.ConectarConNodo(destino, false, false);
+            origen.ConectarConNodo(NodoPelea1, false, false);
+        }
+
+        if (NodoPelea1 != null && Nodotut3 != null)
+        {
+            NodoPelea1.ConectarConNodo(Nodotut3, false, false);
+        }
+
+        Nodo elite = ObtenerNodoMapaTutorial(contenedor, TutorialEliteX, TutorialEliteY, null);
+        if (NodoPelea1 != null && elite != null)
+        {
+            NodoPelea1.ConectarConNodo(elite, false, false);
+        }
+
+        MostrarEleccionInicialTutorial(elite);
+
+        if (Nodotut3 != null && Nodotut4 != null)
+        {
+            Nodotut3.ConectarConNodo(Nodotut4, false, false);
+        }
+
+        if (Nodotut4 != null && Nodotut5 != null)
+        {
+            Nodotut4.ConectarConNodo(Nodotut5, false, false);
+        }
+
+        if (Nodotut4 != null && Nodotut6 != null)
+        {
+            Nodotut4.ConectarConNodo(Nodotut6, false, false);
         }
     }
 
@@ -108,16 +195,50 @@ public class TutorialManager : MonoBehaviour
         pasosUsadosPorEstablecer.Clear();
         pasoActual = Mathf.Clamp(pasoActual, 0, pasosTutorial.Length - 1);
 
-        DesactivarOtrosNodosTuto();
-        ConfigurarConexionesLinealesTuto();
+        ConfigurarMapaLinealTutorial();
         OcultarTodosLosPasos();
         MostrarPaso(pasoActual);
+    }
 
-        ConfigurarVisualNodoTutorial(Nodotut2, 1, 2);
-        ConfigurarVisualNodoTutorial(Nodotut3, 5, 3);
-        ConfigurarVisualNodoTutorial(Nodotut4, 14, 4);
-        ConfigurarVisualNodoTutorial(Nodotut5, 3, 5);
-        ConfigurarVisualNodoTutorial(Nodotut6, 8, 6);
+    public void ConfigurarMapaLinealTutorial()
+    {
+        DesactivarOtrosNodosTuto();
+        ConfigurarConexionesLinealesTuto();
+
+        ConfigurarVisualNodoTutorial(NodoPelea1, 1);
+        ConfigurarVisualNodoTutorial(Nodotut3, 5);
+        ConfigurarVisualNodoTutorial(ObtenerNodoMapaTutorial(CampaignManager.Instance?.scMapaManager?.scContenedordeNodos, TutorialEliteX, TutorialEliteY, null), 8);
+        ConfigurarVisualNodoTutorial(Nodotut4, 2);
+        ConfigurarVisualNodoTutorial(Nodotut5, 11);
+        ConfigurarVisualNodoTutorial(Nodotut6, 3);
+        ConfigurarClaroMisteriosoTutorial();
+
+        ForzarEleccionInicialVisible();
+    }
+
+    public bool DebeForzarEventoDesaparicionesMisteriosas(Nodo nodo)
+    {
+        return CampaignManager.Instance != null
+            && CampaignManager.Instance.DebeUsarConfiguracionTutorial()
+            && nodo != null
+            && nodo.posXNodo == TutorialEventoX
+            && nodo.posYNodo == TutorialEventoY;
+    }
+
+    public bool EsClaroMisteriosoTutorial(Nodo nodo)
+    {
+        return CampaignManager.Instance != null
+            && CampaignManager.Instance.DebeUsarConfiguracionTutorial()
+            && nodo != null
+            && nodo.posXNodo == TutorialClaroX
+            && nodo.posYNodo == TutorialClaroY;
+    }
+
+    public void ConfigurarSoloMapaLinealTutorial()
+    {
+        pasosUsadosPorEstablecer.Clear();
+        OcultarTodosLosPasos();
+        ConfigurarMapaLinealTutorial();
     }
 
     public void SiguientePaso()
@@ -284,11 +405,50 @@ private void MostrarPanelIdioma(GameObject paso)
     }
 }
 
-    private void ConfigurarVisualNodoTutorial(Nodo nodo, int tipoNodo, int visualId)
+    private void ConfigurarVisualNodoTutorial(Nodo nodo, int tipoNodo)
     {
         if (nodo == null) return;
+        nodo.LimpiarEstadosEspecialesTutorial();
         nodo.tipoNodo = tipoNodo;
-        nodo.ActivarNodoVisual(visualId, false, true);
+        nodo.ActivarNodoVisual(tipoNodo, false, true);
+    }
+
+    private void ConfigurarClaroMisteriosoTutorial()
+    {
+        if (Nodotut6 == null) return;
+        Nodotut6.ForzarMisteriosoTutorial();
+    }
+
+    private void ForzarEleccionInicialVisible()
+    {
+        var contenedor = CampaignManager.Instance != null ? CampaignManager.Instance.scMapaManager?.scContenedordeNodos : null;
+        Nodo elite = ObtenerNodoMapaTutorial(contenedor, TutorialEliteX, TutorialEliteY, null);
+
+        RevelarNodoTutorial(Nodotut3);
+        RevelarNodoTutorial(elite);
+        MostrarEleccionInicialTutorial(elite);
+    }
+
+    private void RevelarNodoTutorial(Nodo nodo)
+    {
+        if (nodo == null) return;
+
+        nodo.ForzarVisiblePorReveladoEspecial();
+    }
+
+    private void MostrarEleccionInicialTutorial(Nodo elite)
+    {
+        if (NodoPelea1 == null) return;
+
+        if (Nodotut3 != null)
+        {
+            NodoPelea1.MostrarCaminoPorVisionHacia(Nodotut3);
+        }
+
+        if (elite != null)
+        {
+            NodoPelea1.MostrarCaminoPorVisionHacia(elite);
+        }
     }
 
     private void FinalizarTutorial()
@@ -300,5 +460,3 @@ private void MostrarPanelIdioma(GameObject paso)
         PlayerPrefs.Save();
     }
 }
-
-

@@ -367,7 +367,29 @@ public class MenuCaravana : MonoBehaviour
 
     public void AbrirMenuMejoras()
     {
-         
+        AbrirMenuMejoras(false);
+    }
+
+    public void AbrirMenuMejorasDesdeHotkey()
+    {
+        AbrirMenuMejoras(true);
+    }
+
+    public bool MenuMejorasEstaAbierto()
+    {
+        return MenuMejoras != null && MenuMejoras.activeInHierarchy;
+    }
+
+    private void AbrirMenuMejoras(bool desdeHotkey)
+    {
+         TutorialEvents.Emit("ui.abrirmejoras", gameObject);
+        if (desdeHotkey && MenuMejorasEstaAbierto())
+        {
+            MenuMejoras.SetActive(false);
+            EmitirCierreMenuMejorasTutorial(true);
+            return;
+        }
+
         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 15) { return; }
         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 15)
         { CampaignManager.Instance.scTutorialManager.SiguientePaso(); }
@@ -377,6 +399,12 @@ public class MenuCaravana : MonoBehaviour
         CerrarMenusExclusivos();
         CampaignManager.Instance.ActivarLog(0);
         MenuMejoras.SetActive(abrir);
+        if (!abrir)
+        {
+            EmitirCierreMenuMejorasTutorial(desdeHotkey);
+            return;
+        }
+
         if (abrir)
         {
             RuntimeAnalytics.TrackDesign("ui", "caravan", "open_upgrades");
@@ -406,7 +434,17 @@ public class MenuCaravana : MonoBehaviour
     }
     public void AbrirMenuPersonajes()
     {
-        AbrirMenuPersonajes(null, true);
+        AbrirMenuPersonajes(null, true, false);
+    }
+
+    public void AbrirMenuPersonajesDesdeHotkey()
+    {
+        AbrirMenuPersonajes(null, true, true);
+    }
+
+    public bool MenuPersonajesEstaAbierto()
+    {
+        return MenuPersonajes != null && MenuPersonajes.activeInHierarchy;
     }
     public void AbrirBitácora()
     {
@@ -463,11 +501,19 @@ public class MenuCaravana : MonoBehaviour
 
     public void AbrirMenuPersonajes(Personaje personajeInicial)
     {
-        AbrirMenuPersonajes(personajeInicial, false);
+        AbrirMenuPersonajes(personajeInicial, false, false);
     }
 
-    private void AbrirMenuPersonajes(Personaje personajeInicial, bool alternarMenu)
+    private void AbrirMenuPersonajes(Personaje personajeInicial, bool alternarMenu, bool desdeHotkey)
     {
+         TutorialEvents.Emit("ui.menupersonajescerrado1", gameObject);
+        if (desdeHotkey && MenuPersonajesEstaAbierto())
+        {
+            MenuPersonajes.SetActive(false);
+            EmitirCierreMenuPersonajesTutorial(true);
+            return;
+        }
+
         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 5) { return; }
         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 5)
         {
@@ -488,14 +534,20 @@ public class MenuCaravana : MonoBehaviour
         if (!alternarMenu && personajeInicial != null && MenuPersonajes.activeInHierarchy && scMenuPersonajes.pSel == personajeInicial)
         {
             MenuPersonajes.SetActive(false);
+            EmitirCierreMenuPersonajesTutorial(desdeHotkey);
             return;
         }
 
         CerrarMenusExclusivos();
         CampaignManager.Instance.ActivarLog(0);
-        bool abrir = alternarMenu ? !MenuPersonajes.activeInHierarchy : true;
+        bool estabaAbierto = MenuPersonajes.activeInHierarchy;
+        bool abrir = alternarMenu ? !estabaAbierto : true;
         MenuPersonajes.SetActive(abrir);
-        if (!abrir) return;
+        if (!abrir)
+        {
+            EmitirCierreMenuPersonajesTutorial(desdeHotkey);
+            return;
+        }
 
         RuntimeAnalytics.TrackDesign("ui", "caravan", "open_characters");
 
@@ -516,6 +568,25 @@ public class MenuCaravana : MonoBehaviour
 
      
        
+    }
+
+    private void EmitirCierreMenuPersonajesTutorial(bool desdeHotkey)
+    {
+        TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignCharacterMenuClosed, MenuPersonajes)
+            .Add("menu", "personajes")
+            .Add("closedByHotkey", desdeHotkey ? 1 : 0));
+    }
+
+    private void EmitirCierreMenuMejorasTutorial(bool desdeHotkey)
+    {
+        TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignUpgradeMenuClosed, MenuMejoras)
+            .Add("menu", "mejoras")
+            .Add("closedByHotkey", desdeHotkey ? 1 : 0));
+
+        if (desdeHotkey && CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 17)
+        {
+            CampaignManager.Instance.scTutorialManager.SiguientePaso();
+        }
     }
     public void ActualizarMejoras()
     {
@@ -593,7 +664,7 @@ public class MenuCaravana : MonoBehaviour
         CampaignManager.Instance.scAtributosZona.ActualizarLuzNedukazal();
     }
     public void MejorarAlforjas()
-    {
+    {   TutorialEvents.Emit("ui.mejoraralforjas", gameObject);
        if(costoMejorarAlforjas <= CampaignManager.Instance.GetMaterialesActuales() && CampaignManager.Instance.mejoraCaravanaAlforjas < MaxTierMejoraCaravana)
        {
         CampaignManager.Instance.mejoraCaravanaAlforjas += 1;
@@ -603,7 +674,6 @@ public class MenuCaravana : MonoBehaviour
        }
        if(CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 16)
        {
-           AbrirMenuMejoras();
            CampaignManager.Instance.scTutorialManager.SiguientePaso();
        }
 

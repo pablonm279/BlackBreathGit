@@ -91,6 +91,7 @@ public class MapaManager : MonoBehaviour
 
            if (nodoActual != null)
            {
+               AplicarMapaLinealTutorialSiCorresponde();
                RefrescarVisibilidadExploracion();
            }
            return;
@@ -109,11 +110,33 @@ public class MapaManager : MonoBehaviour
 
        if (nodoActual != null)
        {
+           AplicarMapaLinealTutorialSiCorresponde();
            RefrescarVisibilidadExploracion();
        }
   }
 
     // Reset total del mapa y regeneración para la siguiente zona
+  private void AplicarMapaLinealTutorialSiCorresponde()
+  {
+       CampaignManager campaignManager = CampaignManager.Instance;
+       if (campaignManager == null || !campaignManager.DebeForzarMapaLinealTutorial())
+       {
+           return;
+       }
+
+       TutorialManager tutorialManager = campaignManager.scTutorialManager;
+       if (tutorialManager == null)
+       {
+           return;
+       }
+
+       tutorialManager.ConfigurarSoloMapaLinealTutorial();
+       if (nodoActual == null)
+       {
+           nodoActual = scContenedordeNodos != null ? scContenedordeNodos.ObtenerNodoSegunXY(0, 0) : null;
+       }
+  }
+
   public void RefrescarVisibilidadExploracion()
   {
        if (!Application.isPlaying || refrescandoVisibilidadExploracion)
@@ -731,6 +754,12 @@ public class MapaManager : MonoBehaviour
 
     public bool TirarEmboscadaSubterraneaAtajo(Nodo destino)
     {
+        CampaignManager campaignManager = CampaignManager.Instance;
+        if (campaignManager != null && campaignManager.DebeUsarConfiguracionTutorial())
+        {
+            return false;
+        }
+
         if (destino == null)
         {
             return false;

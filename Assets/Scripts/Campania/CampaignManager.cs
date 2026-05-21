@@ -48,6 +48,7 @@ public class CampaignManager : MonoBehaviour
   private readonly Dictionary<GameObject, bool> estadosCanvasCampaniaDuranteExploradores = new Dictionary<GameObject, bool>();
   [Header("Debug Demo")]
   [SerializeField] private bool debugSaltarTutorialAlIniciar = false;
+  [SerializeField] private bool debugForzarMapaLinealTutorialAlIniciar = false;
   [SerializeField] private bool debugPermitirZonaBosque = false;
   [SerializeField] private bool debugPermitirZonaPasoVientoHelado = false;
   [SerializeField] private bool debugPermitirZonaNedukazal = false;
@@ -321,6 +322,33 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     return 1f + (escalaNodos / 100f);
   }
 
+  public bool DebeForzarMapaLinealTutorial()
+  {
+    return DebeUsarConfiguracionTutorial();
+  }
+
+  public bool DebeForzarPrimerCombateTutorial()
+  {
+    return DebeUsarConfiguracionTutorial()
+      && scMapaManager != null
+      && scTutorialManager != null
+      && (scMapaManager.nodoActual == scTutorialManager.NodoPelea1
+        || scMapaManager.nodoActual == scTutorialManager.Nodotut2);
+  }
+
+  public bool DebeUsarConfiguracionTutorial()
+  {
+    return debugForzarMapaLinealTutorialAlIniciar
+      || (scTutorialManager != null && scTutorialManager.tutorialActivo)
+      || HayTutorialNuevoEnEscena();
+  }
+
+  private bool HayTutorialNuevoEnEscena()
+  {
+    TutorialDirector director = TutorialDirector.Instance;
+    return director != null && (director.IsRunning || director.ActiveDefinition != null || director.gameObject.activeInHierarchy);
+  }
+
   private string ObtenerTextoCargaInicialSegunIdioma()
   {
     if (TRADU.i != null)
@@ -495,7 +523,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   {
     int yaPasotuto = PlayerPrefs.GetInt("Tutorial_Terminado");
 
-    if (debugSaltarTutorialAlIniciar)
+    if (debugSaltarTutorialAlIniciar || debugForzarMapaLinealTutorialAlIniciar || HayTutorialNuevoEnEscena())
     {
       yaPasotuto = 1;
     }
@@ -526,7 +554,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   private void InicializarZonaNuevaCampania()
   {
     int zonaInicial = ObtenerZonaInicialDebug();
-    if (zonaInicial == 0 && scTutorialManager.tutorialActivo)
+    if (zonaInicial == 0 && DebeUsarConfiguracionTutorial())
     {
       zonaInicial = 1;
     }
@@ -633,7 +661,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   {
   
    
-    if (!scTutorialManager.tutorialActivo)
+    if (!DebeUsarConfiguracionTutorial())
     {
       int claseInicialAleatoria = UnityEngine.Random.value < 0.5f ? 5 : 3;
       AgregarHeroe(claseInicialAleatoria); //Canalizador o Purificadora
@@ -644,7 +672,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return;
     }
 
-    CrearAcechador();
+    CrearAcechador(true);
     RefrescarRetratosPersonajesCampania();
   }
 
@@ -744,6 +772,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       ForzarCombateFinalBosqueDebug();
     }
+
+    TutorialEvents.Emit(TutorialEventNames.CampaignStarted, gameObject);
   }
 
   private IEnumerator RefrescarRetratosPersonajesCampaniaDiferido()
@@ -1097,6 +1127,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     EscribirLogResultadoExploradores(resultado);
+    EmitirTutorialExploradoresCompletado(resultado);
 
     if (textosBufferizados.Count > 0)
     {
@@ -1110,6 +1141,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     resultado.nodoObjetivo = destino;
     resultado.chance = ObtenerChanceScout();
     resultado.tirada = UnityEngine.Random.Range(1, 101);
+    if (DebeForzarExitoExploradoresTutorial(destino))
+    {
+      resultado.chance = 100;
+      resultado.tirada = 79;
+    }
 
     int umbralExito = Mathf.Clamp(101 - resultado.chance, 1, 100);
     bool falloCritico = resultado.tirada <= 20;
@@ -1192,6 +1228,63 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       "They failed to reach the destination and returned with casualties.",
       "Eles nao chegaram ao destino e retornaram com baixas.");
     return resultado;
+  }
+
+  bool DebeForzarExitoExploradoresTutorial(Nodo destino)
+  {
+    return DebeUsarConfiguracionTutorial()
+      && scTutorialManager != null
+      && scTutorialManager.EsClaroMisteriosoTutorial(destino);
+  }
+
+  void EmitirTutorialExploradoresCompletado(ResultadoExploradoresCampania resultado)
+  {
+    if (resultado == null || resultado.nodoObjetivo == null)
+    {
+      return;
+    }
+
+    Nodo nodo = resultado.nodoObjetivo;
+    TutorialDirector director = TutorialDirector.Instance;
+    TutorialStep pasoAntes = director != null ? director.CurrentStep : null;
+    TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignScoutsExplorationCompleted, nodo.gameObject)
+      .Add("nodeId", nodo.ObtenerTutorialTargetId())
+      .Add("type", nodo.tipoNodo)
+      .Add("x", nodo.posXNodo)
+      .Add("y", nodo.posYNodo)
+      .Add("success", resultado.exito ? 1 : 0)
+      .Add("critical", resultado.critico ? 1 : 0));
+
+    if (DebeAvanzarTutorialNuevoPorExploradores(resultado, nodo, director, pasoAntes))
+    {
+      director.NextStep();
+    }
+
+    if (resultado.exito
+        && scTutorialManager != null
+        && scTutorialManager.tutorialActivo
+        && scTutorialManager.pasoActual == 20
+        && scTutorialManager.EsClaroMisteriosoTutorial(nodo))
+    {
+      scTutorialManager.SiguientePaso();
+    }
+  }
+
+  bool DebeAvanzarTutorialNuevoPorExploradores(ResultadoExploradoresCampania resultado, Nodo nodo, TutorialDirector director, TutorialStep pasoAntes)
+  {
+    if (resultado == null || !resultado.exito || nodo == null || director == null || !director.IsRunning || pasoAntes == null)
+    {
+      return false;
+    }
+
+    if (director.CurrentStep != pasoAntes || scTutorialManager == null || !scTutorialManager.EsClaroMisteriosoTutorial(nodo))
+    {
+      return false;
+    }
+
+    return pasoAntes.id == "Exploracion2"
+      || pasoAntes.id == "exploracion2"
+      || (!string.IsNullOrEmpty(pasoAntes.targetId) && pasoAntes.targetId.StartsWith("tuto_nodoclaromist"));
   }
 
   void RevelarNodoPorExploradores(Nodo nodo, bool revelarFaccionCombate, ResultadoExploradoresCampania resultado)
@@ -3531,7 +3624,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       chancesemboscada -= 100;
     }
-    if (scTutorialManager.tutorialActivo)
+    if (DebeUsarConfiguracionTutorial())
     {
       chancesemboscada = 0;
     }
@@ -3604,7 +3697,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       return;
     }
-
+    TutorialEvents.Emit("ui.batprimeratuto_presionado", gameObject);
     switch (tipoCombatePendiente)
     {
       case 1:
@@ -4032,6 +4125,19 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (ID == 2) //Evento
     {
+      if (scTutorialManager != null && scTutorialManager.DebeForzarEventoDesaparicionesMisteriosas(nodo))
+      {
+        EmpezarEvento(IdsEventoCampania.DesaparicionesMisteriosas);
+        if (scMapaManager != null && scMapaManager.nodoActual != null)
+        {
+          scMapaManager.nodoActual.nodoDespejado = true;
+        }
+        else if (nodo != null)
+        {
+          nodo.nodoDespejado = true;
+        }
+        return;
+      }
 
       float factorEventoBuenoMalo = 40 + Instance.GetEsperanzaActual() / 3 + ObtenerModificadorChanceEventoTraits();
       factorEventoBuenoMalo = Mathf.Clamp(factorEventoBuenoMalo, 0f, 100f);
@@ -4502,7 +4608,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public void BosqueArdienteMecanicaIncendio(int probabilidad)
   {
-    if (scTutorialManager != null && scTutorialManager.tutorialActivo) { return; }
+    if (DebeUsarConfiguracionTutorial()) { return; }
     if (scAtributosZona == null || scAtributosZona.ID != 1) { return; } // Solo en Bosque Ardiente
 
     if (intTipoClima == 3) // Lluvia: desactiva la mecanica y apaga incendios existentes
@@ -7363,15 +7469,37 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (Input.GetKeyDown(KeyCode.C))
     {
-       if(scTutorialManager.tutorialActivo) {EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
+       if(scTutorialManager.tutorialActivo)
+       {
+         if (scMenuCaravana != null && scMenuCaravana.MenuPersonajesEstaAbierto())
+         {
+           scMenuCaravana.AbrirMenuPersonajesDesdeHotkey();
+         }
+         else
+         {
+           EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados."));
+         }
+         return;
+       }
       if (asentamientoActivo) { return; }
-      scMenuCaravana.AbrirMenuPersonajes();
+      scMenuCaravana.AbrirMenuPersonajesDesdeHotkey();
     }
     if (Input.GetKeyDown(KeyCode.I))
     {
-       if(scTutorialManager.tutorialActivo) {EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
+       if(scTutorialManager.tutorialActivo)
+       {
+         if (scMenuCaravana != null && scMenuCaravana.MenuMejorasEstaAbierto())
+         {
+           scMenuCaravana.AbrirMenuMejorasDesdeHotkey();
+         }
+         else
+         {
+           EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados."));
+         }
+         return;
+      }
       if (asentamientoActivo) { return; }
-      scMenuCaravana.AbrirMenuMejoras();
+      scMenuCaravana.AbrirMenuMejorasDesdeHotkey();
     }
     if (Input.GetKeyDown(KeyCode.M))
     {
@@ -7591,6 +7719,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public void ActivarLog(int n)
   {
+    if (scAdministradorEscenas != null
+      && scAdministradorEscenas.escenaActual == 1
+      && BattleManager.Instance != null)
+    {
+      BattleManager.Instance.ActivarLog(n);
+      return;
+    }
+
     if (n == 1)
     {
       if (MoviendoCaravana)
@@ -8113,7 +8249,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
   }
-  public void CrearAcechador()
+  public void CrearAcechador(bool configuracionTutorial = false)
   {
 
     GameObject acechador = Instantiate(prefabGOPersonaje);
@@ -8168,7 +8304,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
     //Habilidades Base
-    if (!scTutorialManager.tutorialActivo)
+    bool usarHabilidadesTutorial = configuracionTutorial || (scTutorialManager != null && scTutorialManager.tutorialActivo);
+    if (!usarHabilidadesTutorial)
     {
       int randHabPot1 = UnityEngine.Random.Range(1, 3);
       switch (randHabPot1)
@@ -8193,7 +8330,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     else
     {
-       pers1.AddComponent<Distraer>(); pers1.GetComponent<Distraer>().NIVEL = 1;
+      pers1.Habilidad_2 = 1;
+      pers1.AddComponent<REPRESENTACIONMaestriaEspadaCorta>();
+      pers1.GetComponent<REPRESENTACIONMaestriaEspadaCorta>().NIVEL = 1;
+
+      pers1.Habilidad_7 = 1;
+      pers1.AddComponent<Distraer>();
+      pers1.GetComponent<Distraer>().NIVEL = 1;
     }
 
     pers1.AplicarTraitExpertoInicial();
@@ -8587,6 +8730,45 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
   #endregion
+
+  public void AplicarRecompensaPrimerCombateTutorial()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    Personaje acechador = scMenuPersonajes.listaPersonajes.Find(p => p != null && !p.Camp_Muerto && p.IDClase == 4);
+    OtorgarExperienciaHastaNivel(acechador, 2);
+
+    if (CuantosPersonajesSonDeTalClase(1) == 0)
+    {
+      AgregarHeroe(1);
+    }
+
+    if (CuantosPersonajesSonDeTalClase(3) == 0)
+    {
+      AgregarHeroe(3);
+    }
+
+    RefrescarRetratosPersonajesCampania(true);
+  }
+
+  private void OtorgarExperienciaHastaNivel(Personaje personaje, int nivelObjetivo)
+  {
+    if (personaje == null)
+    {
+      return;
+    }
+
+    int intentos = 0;
+    while (personaje.fNivelActual < nivelObjetivo && intentos < 5)
+    {
+      float experienciaFaltante = Mathf.Max(1f, personaje.ObtenerExperienciaNecesariaParaProximoNivel() - personaje.fExperienciaActual);
+      personaje.RecibirExperiencia(experienciaFaltante + 1f);
+      intentos++;
+    }
+  }
 
   public bool AgregarHeroe(int n)
   {

@@ -70,6 +70,9 @@ public class Nodo : MonoBehaviour
   public bool yatiroConexiones = false;
   Nodo vieneDeNodo;
   bool esMisterioso = false; // Nodo no revelado visualmente
+  bool misterioForzadoTutorial = false;
+  bool revelandoPorExpedicionTutorial = false;
+  bool reveladoPorExpedicionTutorial = false;
   public bool nodoIncendiado = false;
   public bool nodoRitual = false;
   public int tipoNodoOriginalRitual = 0;
@@ -144,11 +147,14 @@ public class Nodo : MonoBehaviour
     return !EsSettlement();
   }
 
+  bool UsaConfiguracionTutorial()
+  {
+    return CampaignManager.Instance != null && CampaignManager.Instance.DebeUsarConfiguracionTutorial();
+  }
+
   void LimpiarEstadosPersistentesNoValidos()
   {
-    bool tutorialActivo = CampaignManager.Instance != null &&
-                          CampaignManager.Instance.scTutorialManager != null &&
-                          CampaignManager.Instance.scTutorialManager.tutorialActivo;
+    bool tutorialActivo = UsaConfiguracionTutorial();
 
     if (tutorialActivo || !PuedeTenerIncendioPersistente())
     {
@@ -159,6 +165,24 @@ public class Nodo : MonoBehaviour
     {
       nodoRitual = false;
     }
+  }
+
+  public void LimpiarEstadosEspecialesTutorial()
+  {
+    esMisterioso = false;
+    misterioForzadoTutorial = false;
+    revelandoPorExpedicionTutorial = false;
+    reveladoPorExpedicionTutorial = false;
+    atajoSubterraneoPendiente = false;
+    nodoIncendiado = false;
+    destinosAtajoSuperficie.Clear();
+
+    if (numVisualActual == 12 || numVisualActual == 13)
+    {
+      numVisualActual = tipoNodo;
+    }
+
+    SincronizarVFXPersistentes();
   }
 
   private class UndergroundAudioFxState
@@ -267,7 +291,7 @@ public class Nodo : MonoBehaviour
     int chancesAtajo = 15;
     chancesAtajo += 5 * CampaignManager.Instance.CuantosPersonajesHacenTalActividad(9);
     if (CampaignManager.Instance.scAtributosZona.ID == 3) { chancesAtajo = 0; } // En Nedukazal no hay atajos
-    if (CampaignManager.Instance.scTutorialManager.tutorialActivo ) { chancesAtajo = 0; } // En Tutorial no hay atajos
+    if (CampaignManager.Instance.DebeUsarConfiguracionTutorial()) { chancesAtajo = 0; } // En Tutorial no hay atajos
     
     if (UnityEngine.Random.Range(0, 100) < chancesAtajo && posXNodo < 9)
     {
@@ -278,12 +302,22 @@ public class Nodo : MonoBehaviour
     CampaignManager.Instance.CambiarFatigaActual(fatigaSuma);
     CampaignManager.Instance.CambiarEsperanzaActual(esperanzaSuma);
     CampaignManager.Instance.LlegarANodo(ObtenerTipoNodoAlLlegar(), posXNodo, this);
+    TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignNodeArrived, gameObject)
+      .Add("nodeId", ObtenerTutorialTargetId())
+      .Add("type", tipoNodo)
+      .Add("x", posXNodo)
+      .Add("y", posYNodo));
 
     scMapaManager.RefrescarVisibilidadExploracion();
   }
 
   public void EncontrarAtajo(int X, int Y)
   {
+    if (UsaConfiguracionTutorial())
+    {
+      return;
+    }
+
     if (scContenedorNodos2 == null)
       scContenedorNodos2 = CampaignManager.Instance.scMapaManager.scContenedordeNodos;
     int zonaId = -1;
@@ -349,7 +383,7 @@ public class Nodo : MonoBehaviour
   {
     if (CampaignManager.Instance == null ||
         CampaignManager.Instance.scMapaManager == null ||
-        (CampaignManager.Instance.scTutorialManager != null && CampaignManager.Instance.scTutorialManager.tutorialActivo))
+        CampaignManager.Instance.DebeUsarConfiguracionTutorial())
     {
       return false;
     }
@@ -527,6 +561,10 @@ public class Nodo : MonoBehaviour
   public void ConectarConNodo(Nodo nodoB, bool esPorAbajo = false, bool propagar = true, bool ignorarRestricciones = false, bool esAtajoSuperficie = false)
   {
     if (nodoB == null) return;
+    if (UsaConfiguracionTutorial() && (esPorAbajo || esAtajoSuperficie))
+    {
+      return;
+    }
 
     int zonaId = -1;
     if (CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null)
@@ -773,8 +811,15 @@ public class Nodo : MonoBehaviour
   public void AplicarVisualGuardado(int visualCode, bool estadoMisterioso)
   {
     DesactivarGraficosNodo();
-    esMisterioso = estadoMisterioso;
+    bool tutorialActivo = UsaConfiguracionTutorial();
+    bool permiteMisterioTutorial = tutorialActivo && misterioForzadoTutorial && visualCode == 12 && estadoMisterioso;
+    esMisterioso = tutorialActivo && !permiteMisterioTutorial ? false : estadoMisterioso;
     numVisualActual = visualCode;
+
+    if (tutorialActivo && !permiteMisterioTutorial && (numVisualActual == 12 || numVisualActual == 13))
+    {
+      numVisualActual = tipoNodo;
+    }
 
     int codigoAAplicar = numVisualActual > 0 ? numVisualActual : tipoNodo;
     if (codigoAAplicar <= 0)
@@ -1264,8 +1309,10 @@ public class Nodo : MonoBehaviour
     if (DebeIgnorarInputMouseNodo())
       return;
 
+    TutorialDirector tutorialNuevo = TutorialDirector.Instance;
+    bool tutorialNuevoActivo = tutorialNuevo != null && tutorialNuevo.IsRunning;
     var tm = CampaignManager.Instance != null ? CampaignManager.Instance.scTutorialManager : null;
-    if (tm != null && tm.tutorialActivo)
+    if (!tutorialNuevoActivo && tm != null && tm.tutorialActivo)
     {
       // permitir interacción solo en los pasos 2, 11, 17, 21 durante el tutorial
       if (!(tm.pasoActual == 2 || tm.pasoActual == 11 || tm.pasoActual == 17 || tm.pasoActual == 21|| tm.pasoActual == 30))
@@ -1284,7 +1331,7 @@ public class Nodo : MonoBehaviour
         return;
       }
 
-      if (tm != null && tm.tutorialActivo)
+      if (!tutorialNuevoActivo && tm != null && tm.tutorialActivo)
       {
         if (tm.pasoActual == 2)
           tm.cerrarPasoEspecifico(2);
@@ -1298,9 +1345,14 @@ public class Nodo : MonoBehaviour
         "campaign",
         "node_selected",
         RuntimeAnalytics.SanitizeToken("type_" + tipoNodo + "_x" + posXNodo + "_y" + posYNodo));
+      TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignNodeSelected, gameObject)
+        .Add("nodeId", ObtenerTutorialTargetId())
+        .Add("type", tipoNodo)
+        .Add("x", posXNodo)
+        .Add("y", posYNodo));
       MoverJugadorANodo(scMapaManager.nodoActual, this);
 
-      if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 7)
+      if (!tutorialNuevoActivo && CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 7)
         CampaignManager.Instance.scTutorialManager.SiguientePaso();
 
       if (posXNodo - scMapaManager.nodoActual.posXNodo > 1)
@@ -1318,7 +1370,7 @@ public class Nodo : MonoBehaviour
       return;
     }
 
-    if (DebeIgnorarInputMouseNodo())
+    if (DebeIgnorarInputMouseNodo(true))
     {
       return;
     }
@@ -1326,7 +1378,7 @@ public class Nodo : MonoBehaviour
     CampaignManager.Instance.IntentarEnviarExploradores(this);
   }
 
-  bool DebeIgnorarInputMouseNodo()
+  bool DebeIgnorarInputMouseNodo(bool esEnvioExploradores = false)
   {
     if (!visiblePorVision || CampaignManager.Instance == null)
     {
@@ -1339,11 +1391,24 @@ public class Nodo : MonoBehaviour
       return true;
     }
 
+    TutorialDirector tutorialNuevo = TutorialDirector.Instance;
+    TutorialStep pasoTutorialNuevo = tutorialNuevo != null ? tutorialNuevo.CurrentStep : null;
+    if (tutorialNuevo != null && tutorialNuevo.IsRunning && pasoTutorialNuevo != null && pasoTutorialNuevo.id == "postbatalla2")
+    {
+      return true;
+    }
+
+    if (tutorialNuevo != null && tutorialNuevo.IsRunning && !tutorialNuevo.AllowsInput(ObtenerTutorialTargetId()))
+    {
+      return !(esEnvioExploradores && DebePermitirEnvioExploradoresTutorial(pasoTutorialNuevo));
+    }
+
     var tm = CampaignManager.Instance.scTutorialManager;
     if (tm != null && tm.tutorialActivo)
     {
       // Permitir interacción solo en los pasos de mapa durante el tutorial.
-      if (!(tm.pasoActual == 2 || tm.pasoActual == 11 || tm.pasoActual == 17 || tm.pasoActual == 21 || tm.pasoActual == 30))
+      bool permitirExploradoresTutorial = esEnvioExploradores && tm.pasoActual == 20 && EsClaroMisteriosoTutorial();
+      if (!(permitirExploradoresTutorial || tm.pasoActual == 2 || tm.pasoActual == 11 || tm.pasoActual == 17 || tm.pasoActual == 21 || tm.pasoActual == 30))
         return true;
     }
 
@@ -1352,11 +1417,71 @@ public class Nodo : MonoBehaviour
       bool tooltipActivo = TooltipNodos.Instance != null &&
                            TooltipNodos.Instance.tooltipObject != null &&
                            TooltipNodos.Instance.tooltipObject.activeInHierarchy;
-      if (!tooltipActivo)
+      bool permitirExploradoresSobreUI = esEnvioExploradores && EsClaroMisteriosoTutorial();
+      if (!tooltipActivo && !permitirExploradoresSobreUI)
         return true;
     }
 
     return false;
+  }
+
+  public string ObtenerTutorialTargetId()
+  {
+    TutorialTarget target = GetComponent<TutorialTarget>();
+    if (target != null && !string.IsNullOrEmpty(target.targetId))
+    {
+      return target.targetId;
+    }
+
+    return "nodo_" + posXNodo + "_" + posYNodo;
+  }
+
+  bool DebePermitirEnvioExploradoresTutorial(TutorialStep pasoTutorial)
+  {
+    if (pasoTutorial == null || !EsClaroMisteriosoTutorial())
+    {
+      return false;
+    }
+
+    if (pasoTutorial.id == "Exploracion2" || pasoTutorial.id == "exploracion2")
+    {
+      return true;
+    }
+
+    if (!string.IsNullOrEmpty(pasoTutorial.targetId) && pasoTutorial.targetId.StartsWith("tuto_nodoclaromist"))
+    {
+      return true;
+    }
+
+    if (pasoTutorial.advanceConditions == null)
+    {
+      return false;
+    }
+
+    for (int i = 0; i < pasoTutorial.advanceConditions.Count; i++)
+    {
+      TutorialCondition condition = pasoTutorial.advanceConditions[i];
+      if (condition != null && condition.eventId == TutorialEventNames.CampaignScoutsExplorationCompleted)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool EsClaroMisteriosoTutorial()
+  {
+    return CampaignManager.Instance != null
+      && CampaignManager.Instance.scTutorialManager != null
+      && CampaignManager.Instance.scTutorialManager.EsClaroMisteriosoTutorial(this);
+  }
+
+  bool DebeMantenerMisteriosoHastaExpedicion()
+  {
+    return EsClaroMisteriosoTutorial()
+      && !revelandoPorExpedicionTutorial
+      && !reveladoPorExpedicionTutorial;
   }
 
 
@@ -2112,6 +2237,12 @@ if (esLaLider)
 
   void Revelar(bool esAtajo, bool permitirNodoMisterioso)
   {
+    if (DebeMantenerMisteriosoHastaExpedicion())
+    {
+      ForzarMisteriosoTutorial();
+      return;
+    }
+
     bool estabaRevelado = revelado;
     revelado = true;
 
@@ -2307,7 +2438,15 @@ if (esLaLider)
 
   public void RevelarPorExploradores()
   {
+    revelandoPorExpedicionTutorial = EsClaroMisteriosoTutorial();
     Revelar(false);
+    if (revelandoPorExpedicionTutorial)
+    {
+      reveladoPorExpedicionTutorial = true;
+      revelandoPorExpedicionTutorial = false;
+      misterioForzadoTutorial = false;
+    }
+
     if (!esMisterioso)
     {
       ActivarVfxDescubrimiento();
@@ -2325,7 +2464,7 @@ if (esLaLider)
 
   void MarcarComoMisteriosoPorExploracionFallida()
   {
-    if (revelado || tipoNodo == 16)
+    if (revelado || tipoNodo == 16 || UsaConfiguracionTutorial())
     {
       return;
     }
@@ -2344,6 +2483,12 @@ if (esLaLider)
 
   public void RevelarComoMisterioso()
   {
+    if (UsaConfiguracionTutorial())
+    {
+      Revelar(false, false);
+      return;
+    }
+
     if (!revelado || tipoNodo <= 0)
     {
       Revelar(false, false);
@@ -2363,6 +2508,11 @@ if (esLaLider)
 
   public void TiradaExploracion(int chances, bool continua, string actividadExploradorON = "", bool sinLog = false, int distanciaRestante = -1, bool marcarFallosComoMisterioso = true)
   {
+    if (UsaConfiguracionTutorial())
+    {
+      marcarFallosComoMisterioso = false;
+    }
+
     if (distanciaRestante < 0 && CampaignManager.Instance != null)
     {
       distanciaRestante = Mathf.Max(1, CampaignManager.Instance.ObtenerDistanciaVisionEfectiva());
@@ -2385,6 +2535,12 @@ if (esLaLider)
         {
           nodo.MarcarComoMisteriosoPorExploracionFallida();
         }
+        continue;
+      }
+
+      if (nodo.DebeMantenerMisteriosoHastaExpedicion())
+      {
+        nodo.ForzarMisteriosoTutorial();
         continue;
       }
 
@@ -2711,6 +2867,17 @@ if (esLaLider)
     }
   }
 
+  public void ForzarMisteriosoTutorial()
+  {
+    misterioForzadoTutorial = true;
+    reveladoPorExpedicionTutorial = false;
+    revelandoPorExpedicionTutorial = false;
+    revelado = true;
+    esMisterioso = true;
+    numVisualActual = 12;
+    RefrescarVisualSegunRevelado();
+  }
+
   void AplicarAlphaRenderers(List<FadeRendererState> renderers, float alphaNormalizado)
   {
     if (renderers == null)
@@ -2912,17 +3079,17 @@ if (esLaLider)
       case 2: return 2;  // 2: Evento aleatorio
       case 3: return 3;  // 3: Claro tranquilo (posible descanso / efecto benigno)
       case 4: return 4;  // 4: Asentamiento
-      case 5: return 5;  // 5: RecolecciÃ³n de recursos
+      case 5: return 5;  // 5: Recoleccion de recursos
       case 6: return 6;  // 6: Puesto de comercio
-      case 7: return 7;  // 7: AdquisiciÃ³n de personajes (reclutamiento)
-      case 8: return 8;  // 8: Combate contra enemigos de Ã©lite
-      case 10: return 8; // 10: Batalla final de la zona (visual similar a Ã©lite)
+      case 7: return 7;  // 7: Adquisicion de personajes (reclutamiento)
+      case 8: return 8;  // 8: Combate contra enemigos de elite
+      case 10: return 8; // 10: Batalla final de la zona (visual similar a elite)
       case 11: return 9; // 11: Zona expuesta (emboscada)
-      case 12: return 10; // 12: Nodo misterioso / posible batalla subterrÃ¡nea
-      case 13: return 11; // 13: Salida del atajo subterrÃ¡neo
+      case 12: return 10; // 12: Nodo misterioso / posible batalla subterranea
+      case 13: return 11; // 13: Salida del atajo subterraneo
       case 14: return 12; //14: Santuario
       case 15: return 15; //15: Ritual Kale'Tav
-      case 16: return 16; //16: MisiÃ³n de Salvamento
+      case 16: return 16; //16: Mision de Salvamento
       default: return -1;
     }
   }
@@ -2954,11 +3121,13 @@ if (esLaLider)
   {
     DesactivarGraficosNodo();
 
+    if (!revelandoPorExpedicionTutorial)
+    {
+      misterioForzadoTutorial = false;
+    }
     esMisterioso = false;
 
-    bool esTutorial = CampaignManager.Instance != null &&
-                      CampaignManager.Instance.scTutorialManager != null &&
-                      CampaignManager.Instance.scTutorialManager.tutorialActivo;
+    bool esTutorial = UsaConfiguracionTutorial();
 
     int chancesMisterioso = 15;
     if (CampaignManager.Instance.intTipoClima == 5) chancesMisterioso += 10; // Niebla
@@ -3213,7 +3382,7 @@ if (esLaLider)
 
   public void ActivarIncendio()
   {
-    if (!PuedeTenerIncendioPersistente())
+    if (UsaConfiguracionTutorial() || !PuedeTenerIncendioPersistente())
     {
       nodoIncendiado = false;
       if (transform.childCount > 14)

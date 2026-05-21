@@ -1,0 +1,525 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c75967742f65b44f80de3654cd79ae9, type: 3}
+  m_Name: TutorialVerticalSlice
+  m_EditorClassIdentifier: 
+  tutorialId: vertical_slice_intro
+  restartIfCompleted: 1
+  steps:
+  - id: Intro
+    titleKey: tutorial.intro.title
+    narratorKey: tutorial.intro.narrator
+    bodyKey: tutorial.intro.body
+    narratorAudio: {fileID: 0}
+    targetId: 
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 0
+    pointerOffset: {x: -80, y: 0}
+    pointerScale: 1
+    highlightScale: 1
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 0
+    inputBlockMode: 1
+    showNextButton: 1
+    canGoBack: 0
+    canSkip: 1
+    autoAdvanceDelay: 1
+    advanceConditions: []
+    enterActions: []
+    exitActions: []
+  - id: Intro2
+    titleKey: tutorial.intro2.title
+    narratorKey: tutorial.intro2.narrator
+    bodyKey: tutorial.intro2.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_civiles
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 2
+    pointerOffset: {x: 0, y: -65}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 1.3, y: 0.6}
+    advanceMode: 0
+    inputBlockMode: 1
+    showNextButton: 1
+    canGoBack: 1
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions: []
+    enterActions: []
+    exitActions: []
+  - id: intro4
+    titleKey: tutorial.intro4.title
+    narratorKey: tutorial.intro4.narrator
+    bodyKey: tutorial.intro4.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_esperanza
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 2
+    pointerOffset: {x: 0, y: -65}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 1.1, y: 0.6}
+    advanceMode: 0
+    inputBlockMode: 1
+    showNextButton: 1
+    canGoBack: 1
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions: []
+    enterActions: []
+    exitActions: []
+  - id: Intro3
+    titleKey: tutorial.intro3.title
+    narratorKey: tutorial.intro3.narrator
+    bodyKey: tutorial.intro3.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_aliento
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 2
+    pointerOffset: {x: 0, y: -65}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 2.85, y: 0.5}
+    advanceMode: 0
+    inputBlockMode: 1
+    showNextButton: 1
+    canGoBack: 1
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions: []
+    enterActions: []
+    exitActions: []
+  - id: mov1
+    titleKey: tutorial.mov1.title
+    narratorKey: tutorial.mov1.narrator
+    bodyKey: tutorial.mov1.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_nodo_viaje_1
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 0
+    pointerOffset: {x: -75, y: 0}
+    pointerScale: 0.85
+    highlightScale: 0.7
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 2
+    showNextButton: 0
+    canGoBack: 1
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions:
+    - eventId: campaign.node_arrived
+      requiredValues:
+      - key: nodeId
+        value: tut_nodo_viaje_1
+    enterActions: []
+    exitActions: []
+  - id: prebatalla1
+    titleKey: tutorial.prebatalla1.title
+    narratorKey: tutorial.prebatalla1.narrator
+    bodyKey: tutorial.prebatalla1.body
+    narratorAudio: {fileID: 0}
+    targetId: tuto_botonbatalla1
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 3
+    pointerOffset: {x: 0, y: 95}
+    pointerScale: 0.85
+    highlightScale: 1.5
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 2
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions:
+    - eventId: ui.batprimeratuto_presionado
+      requiredValues: []
+    enterActions: []
+    exitActions: []
+  - id: prebatalla2
+    titleKey: tutorial.prebatalla2.title
+    narratorKey: tutorial.prebatalla2.narrator
+    bodyKey: tutorial.prebatalla2.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_empezacombate1
+    presentationMode: 1
+    panelAnchor: 1
+    panelOffset: {x: 0, y: -150}
+    compactPanelSize: {x: 575, y: 550}
+    showPointer: 1
+    showHighlight: 0
+    pointerDirection: 1
+    pointerOffset: {x: 20, y: 0}
+    pointerScale: 0.85
+    highlightScale: 1.5
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 0
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 0
+    advanceConditions:
+    - eventId: battle.started
+      requiredValues:
+      - key: isFirstTutorialBattle
+        value: 1
+    enterActions: []
+    exitActions: []
+  - id: postbatalla1
+    titleKey: tutorial.postbatalla1.title
+    narratorKey: tutorial.postbatalla1.narrator
+    bodyKey: tutorial.postbatalla1.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_fincombate1
+    presentationMode: 1
+    panelAnchor: 1
+    panelOffset: {x: 0, y: -150}
+    compactPanelSize: {x: 575, y: 550}
+    showPointer: 1
+    showHighlight: 0
+    pointerDirection: 3
+    pointerOffset: {x: 0, y: 50}
+    pointerScale: 0.85
+    highlightScale: 1.5
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 0
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 0
+    advanceConditions:
+    - eventId: ui.batsalir1_presionado
+      requiredValues: []
+    enterActions: []
+    exitActions: []
+  - id: postbatalla2
+    titleKey: tutorial.postbatalla2.title
+    narratorKey: tutorial.postbatalla2.narrator
+    bodyKey: tutorial.postbatalla2.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_personajes1
+    presentationMode: 0
+    panelAnchor: 1
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 575, y: 550}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 3
+    pointerOffset: {x: 0, y: 55}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 0.9, y: 1.4}
+    advanceMode: 1
+    inputBlockMode: 0
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 0
+    advanceConditions:
+    - eventId: ui.pjpostbat1_presionado
+      requiredValues: []
+    enterActions: []
+    exitActions: []
+  - id: MenuPersonaje
+    titleKey: tutorial.personaje1.title
+    narratorKey: tutorial.personaje1.narrator
+    bodyKey: tutorial.personaje1.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_personajes1
+    presentationMode: 0
+    panelAnchor: 6
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 575, y: 550}
+    showPointer: 0
+    showHighlight: 0
+    pointerDirection: 3
+    pointerOffset: {x: 0, y: 55}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 0.9, y: 1.4}
+    advanceMode: 1
+    inputBlockMode: 0
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 0
+    advanceConditions:
+    - eventId: campaign.character_points_changed
+      requiredValues:
+      - key: isAcechador
+        value: 1
+      - key: noAttributeOrSkillPoints
+        value: 1
+    enterActions: []
+    exitActions: []
+  - id: MenuPersonaje2
+    titleKey: tutorial.personaje2.title
+    narratorKey: tutorial.personaje2.narrator
+    bodyKey: tutorial.personaje2.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_actividades
+    presentationMode: 0
+    panelAnchor: 6
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 575, y: 550}
+    showPointer: 0
+    showHighlight: 1
+    pointerDirection: 3
+    pointerOffset: {x: 0, y: 55}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 2.5, y: 2.5}
+    advanceMode: 1
+    inputBlockMode: 1
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 0
+    advanceConditions:
+    - eventId: campaign.character_menu_closed
+      requiredValues:
+      - key: closedByHotkey
+        value: 1
+    enterActions: []
+    exitActions: []
+  - id: mov2
+    titleKey: tutorial.mov2.title
+    narratorKey: tutorial.mov2.narrator
+    bodyKey: tutorial.mov2.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_nodo_viaje_2
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 0
+    pointerOffset: {x: -75, y: 0}
+    pointerScale: 0.85
+    highlightScale: 0.7
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 2
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions:
+    - eventId: campaign.resource_node_continued
+      requiredValues:
+      - key: campaignEventId
+        value: 403
+    enterActions: []
+    exitActions: []
+  - id: Recursos1
+    titleKey: tutorial.recursos1.title
+    narratorKey: tutorial.recursos1.narrator
+    bodyKey: tutorial.recursos1.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_recursos
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 0
+    showHighlight: 1
+    pointerDirection: 0
+    pointerOffset: {x: -75, y: 0}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 3.3, y: 0.55}
+    advanceMode: 0
+    inputBlockMode: 1
+    showNextButton: 1
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions: []
+    enterActions: []
+    exitActions: []
+  - id: Peso1
+    titleKey: tutorial.peso1.title
+    narratorKey: tutorial.peso1.narrator
+    bodyKey: tutorial.peso1.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_carga_1
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 0
+    showHighlight: 1
+    pointerDirection: 0
+    pointerOffset: {x: -110, y: 0}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 3.3, y: 0.55}
+    advanceMode: 0
+    inputBlockMode: 1
+    showNextButton: 1
+    canGoBack: 1
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions: []
+    enterActions: []
+    exitActions: []
+  - id: abrirmejoras
+    titleKey: tutorial.abrirmejoras.title
+    narratorKey: tutorial.abrirmejoras.narrator
+    bodyKey: tutorial.abrirmejoras.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_mejorascaravana
+    presentationMode: 1
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 100}
+    compactPanelSize: {x: 475, y: 300}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 3
+    pointerOffset: {x: 0, y: 90}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 2
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 0
+    advanceConditions:
+    - eventId: ui.abrirmejoras
+      requiredValues: []
+    enterActions: []
+    exitActions: []
+  - id: Alforjas1
+    titleKey: tutorial.alforjas1.title
+    narratorKey: tutorial.alforjas1.narrator
+    bodyKey: tutorial.alforjas1.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_mejorabtnalforjas
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 0
+    pointerOffset: {x: -45, y: 0}
+    pointerScale: 0.7
+    highlightScale: 1
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 2
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions:
+    - eventId: ui.mejoraralforjas
+      requiredValues: []
+    enterActions: []
+    exitActions: []
+  - id: Alforjas2
+    titleKey: tutorial.alforjas2.title
+    narratorKey: tutorial.alforjas2.narrator
+    bodyKey: tutorial.alforjas2.body
+    narratorAudio: {fileID: 0}
+    targetId: 
+    presentationMode: 1
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 100}
+    compactPanelSize: {x: 490, y: 300}
+    showPointer: 0
+    showHighlight: 0
+    pointerDirection: 0
+    pointerOffset: {x: -45, y: 0}
+    pointerScale: 0.7
+    highlightScale: 0.92
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 1
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 0
+    advanceConditions:
+    - eventId: campaign.upgrade_menu_closed
+      requiredValues:
+      - key: closedByHotkey
+        value: 1
+    enterActions: []
+    exitActions: []
+  - id: mov3
+    titleKey: tutorial.mov3.title
+    narratorKey: tutorial.mov3.narrator
+    bodyKey: tutorial.mov3.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_nodo_viaje_3
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 0
+    pointerOffset: {x: -75, y: 0}
+    pointerScale: 0.85
+    highlightScale: 0.7
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 2
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions:
+    - eventId: campaign.missing_people_event_continued
+      requiredValues:
+      - key: campaignEventId
+        value: 2
+    enterActions: []
+    exitActions: []

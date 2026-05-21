@@ -522,6 +522,24 @@ public class MenuPersonajes : MonoBehaviour
     if (txtVecesDerribado != null) { txtVecesDerribado.text = pSel.VecesDerribado.ToString(); }
 
     Invoke("ActualizarInfoNivel", 0.05f);
+    EmitirEstadoPuntosTutorial();
+  }
+
+  private void EmitirEstadoPuntosTutorial()
+  {
+    if (pSel == null)
+    {
+      return;
+    }
+
+    int puntosAtributo = Mathf.Max(0, pSel.NivelPuntoAtributo);
+    int puntosHabilidad = Mathf.Max(0, pSel.NivelPuntoHabilidad);
+    TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignCharacterPointsChanged, pSel.gameObject)
+      .Add("classId", pSel.IDClase)
+      .Add("isAcechador", pSel.IDClase == 4 ? 1 : 0)
+      .Add("attributePoints", puntosAtributo)
+      .Add("skillPoints", puntosHabilidad)
+      .Add("noAttributeOrSkillPoints", puntosAtributo == 0 && puntosHabilidad == 0 ? 1 : 0));
   }
 
   private void RepresentarEstadosCampaniaSeleccionado()
@@ -682,6 +700,26 @@ public class MenuPersonajes : MonoBehaviour
 
   public Transform listaHab;
   public GameObject actionButtonPrefab;
+
+  private static Transform BuscarHijoDirectoPorNombre(Transform padre, string nombre)
+  {
+    if (padre == null)
+    {
+      return null;
+    }
+
+    for (int i = 0; i < padre.childCount; i++)
+    {
+      Transform hijo = padre.GetChild(i);
+      if (hijo != null && hijo.name == nombre)
+      {
+        return hijo;
+      }
+    }
+
+    return null;
+  }
+
   public void ActualizarListaHabilidades()
   {
     foreach (Transform buttonTransform in listaHab)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
@@ -706,19 +744,25 @@ public class MenuPersonajes : MonoBehaviour
       GameObject actionButtonTransform = Instantiate(actionButtonPrefab, listaHab);
       BotonHabilidad habilidadBotonUI = actionButtonTransform.GetComponent<BotonHabilidad>();
       habilidadBotonUI.HabilidadRepresentada = habilidad;
+      Transform subirNivel = BuscarHijoDirectoPorNombre(actionButtonTransform.transform, "-SubirNivel");
 
-      if (pSel.NivelPuntoHabilidad > 0 && habilidadBotonUI.HabilidadRepresentada.NIVEL < 4 && habilidadBotonUI.HabilidadRepresentada.NIVEL > 0)
+      if (subirNivel != null && pSel.NivelPuntoHabilidad > 0 && habilidadBotonUI.HabilidadRepresentada.NIVEL < 4 && habilidadBotonUI.HabilidadRepresentada.NIVEL > 0)
       {
-        actionButtonTransform.transform.GetChild(3).gameObject.SetActive(true);
-        if (habilidadBotonUI.HabilidadRepresentada.NIVEL == 3)
+        subirNivel.gameObject.SetActive(true);
+
+        bool mostrarEspecializacion = habilidadBotonUI.HabilidadRepresentada.NIVEL == 3;
+        if (subirNivel.childCount > 0)
         {
-          actionButtonTransform.transform.GetChild(3).GetChild(0).gameObject.SetActive(false);
-          actionButtonTransform.transform.GetChild(3).GetChild(1).gameObject.SetActive(true);
+          subirNivel.GetChild(0).gameObject.SetActive(!mostrarEspecializacion);
+        }
+        if (subirNivel.childCount > 1)
+        {
+          subirNivel.GetChild(1).gameObject.SetActive(mostrarEspecializacion);
         }
       }
-      else
+      else if (subirNivel != null)
       {
-        actionButtonTransform.transform.GetChild(3).gameObject.SetActive(false);
+        subirNivel.gameObject.SetActive(false);
       }
       actionButtonTransform.GetComponent<BotonHabilidad>().scMenuPersonajes = this;
 
@@ -1565,7 +1609,11 @@ public class MenuPersonajes : MonoBehaviour
           GameObject actionButtonTransform = Instantiate(actionButtonPrefab, ListaElegirHabilidad);
           BotonHabilidad habilidadBotonUI = actionButtonTransform.GetComponent<BotonHabilidad>();
           habilidadBotonUI.HabilidadRepresentada = habilidad;
-          actionButtonTransform.transform.GetChild(4).gameObject.SetActive(true);
+          Transform seleccionarNueva = BuscarHijoDirectoPorNombre(actionButtonTransform.transform, "-SeleccionarNueva");
+          if (seleccionarNueva != null)
+          {
+            seleccionarNueva.gameObject.SetActive(true);
+          }
 
         }
       }

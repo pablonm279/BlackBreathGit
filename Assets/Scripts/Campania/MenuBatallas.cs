@@ -1760,8 +1760,11 @@ public void DejanEnListaParticipantesSolo()
 
             EventoBatallaID = encuentroGeneradoActual != null ? 0 : EventoBatallaID;
 
-            var tutorialManager = CampaignManager.Instance != null ? CampaignManager.Instance.scTutorialManager : null;
-            if (tutorialManager != null && tutorialManager.tutorialActivo && tutorialManager.pasoActual == 3)
+            CampaignManager campaignManager = CampaignManager.Instance;
+            var tutorialManager = campaignManager != null ? campaignManager.scTutorialManager : null;
+            bool forzarPrimerCombateTutorialNuevo = campaignManager != null && campaignManager.DebeForzarPrimerCombateTutorial();
+            if ((tutorialManager != null && tutorialManager.tutorialActivo && tutorialManager.pasoActual == 3)
+                || forzarPrimerCombateTutorialNuevo)
             {
                 EventoBatallaID = 700; //Fuerza el encuentro del tutorial
                 encuentroGeneradoActual = null; // No usar el encuentro procedural durante el tutorial
@@ -2472,9 +2475,10 @@ public void EfectosDeBatallaEnCampaña(int resultado)
 
  public void CerrarMenuBatalla()
     {
+      TutorialEvents.Emit("ui.batsalir1_presionado", gameObject);
       if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 4)
       {
-        CampaignManager.Instance.scTutorialManager.SiguientePaso();
+         CampaignManager.Instance.scTutorialManager.SiguientePaso();
       }
         bool debeResolverTransicionJefeZona = transicionJefeZonaPendiente;
         transicionJefeZonaPendiente = false;

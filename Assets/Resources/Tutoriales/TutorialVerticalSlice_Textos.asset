@@ -1,0 +1,327 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3e57d75427ca74487ca3bc7478db18, type: 3}
+  m_Name: TutorialVerticalSlice_Textos
+  m_EditorClassIdentifier: 
+  texts:
+  - key: tutorial.intro.title
+    es: "Introducci\xF3n"
+    en: Introduction
+    pt: "Introdu\xE7\xE3o"
+  - key: tutorial.intro.narrator
+    es: "\u201CGuardasenderos\u2026 perm\xEDtame presentarme. Soy el Contramaestre
+      asignado para asistirlo en este viaje cuando las dificultades aparezcan. Y
+      parece ser, se\xF1or, que ese momento ha llegado.\r\nEl Bosque de Glain ha\u2026
+      cambiado. Y no precisamente para bien.\u201D\r\n"
+    en: 
+    pt: 
+  - key: tutorial.intro.body
+    es: "Bienvenido al tutorial de <b>El Aliento Negro</b>.\r\nEl Contramaestre lo
+      guiar\xE1 durante este viaje, donde deber\xE1 conducir a la caravana a trav\xE9s
+      del <b>Bosque Ardiente</b>.\n\r\nAqu\xED debajo se le indicar\xE1n los pasos
+      a seguir.\n\n\n\r\n\r\n"
+    en: 
+    pt: 
+  - key: tutorial.intro2.title
+    es: Civiles
+    en: 
+    pt: 
+  - key: tutorial.intro2.body
+    es: "La caravana bajo tu cuidado transporta a numerosos Civiles que intentan
+      escapar del <b>Aliento Negro</b> y alcanzar la Ciudad Puerto de <b>Serria</b>.\r\nTu
+      objetivo ser\xE1 mantenerlos con vida y guiarlos a salvo a trav\xE9s de los
+      peligros del camino, eligiendo cada paso con cuidado.\r\nLa flecha se\xF1ala
+      la cantidad de Civiles que actualmente acompa\xF1a a la caravana.\n\r\n\r\n"
+    en: 
+    pt: 
+  - key: tutorial.intro2.narrator
+    es: "\u201CEl bosque ahora arde\u2026 y ese no es nuestro \xFAnico problema.
+      Debido a la creciente influencia del Aliento Negro, aquellos seres que perecieron
+      entre las llamas perduran a\xFAn, consumidos por una sed de venganza contra
+      cualquiera que ose cruzarlo.\r\nAun as\xED, ya no podemos volver atr\xE1s.
+      Debemos atravesar el bosque con extremo cuidado. Un centenar de vidas dependen
+      de ello.\u201D\r\n"
+    en: 
+    pt: 
+  - key: tutorial.intro3.title
+    es: Aliento Negro
+    en: 
+    pt: 
+  - key: tutorial.intro3.narrator
+    es: "\u201CDeber\xEDamos ponernos en marcha cuanto antes. El Aliento Negro nos
+      pisa los talones, y cualquier demora puede ser mortal.\n\r\nNo podremos detenerlo\u2026
+      s\xF3lo mantenernos delante de \xE9l y tratar de llegar al puerto.\u201D\r\n"
+    en: 
+    pt: 
+  - key: tutorial.intro3.body
+    es: "El <b>Aliento Negro</b> avanzar\xE1 a medida que la caravana viaje, descanse
+      o se retrase.\r\nCuanto m\xE1s cerca se encuentre, m\xE1s peligrosos ser\xE1n
+      los caminos y mayores los efectos nocivos sobre la caravana.\n\r\nLa flecha
+      se\xF1ala el avance actual del Aliento Negro.\n\n\r\n\r\n"
+    en: 
+    pt: 
+  - key: tutorial.intro4.title
+    es: Esperanza
+    en: 
+    pt: 
+  - key: tutorial.intro4.body
+    es: "La <b>Esperanza</b> representa la confianza y el \xE1nimo de la caravana.\n\r\nTomar
+      decisiones crueles, sufrir p\xE9rdidas o permanecer demasiado cerca del <b>Aliento
+      Negro</b> reducir\xE1 la Esperanza.\r\nSi la Esperanza cae demasiado, la caravana
+      comenzar\xE1 a desmoronarse progresivamente.\r\nLa flecha se\xF1ala el valor
+      actual de Esperanza de la caravana.\n\r\n\r\n"
+    en: 
+    pt: 
+  - key: tutorial.intro4.narrator
+    es: "\u201CY recuerde esto, Guardasenderos\u2026 los peligros del camino no son
+      lo \xFAnico que puede destruir una caravana. El miedo y la desesperaci\xF3n
+      suelen hacerlo primero. Los Civiles a\xFAn conservan Esperanza. Mientras crean
+      que Serria puede alcanzarse, seguir\xE1n avanzando.\nPero si la pierden\u2026
+      todo ser\xE1 en vano.\u201D"
+    en: 
+    pt: 
+  - key: tutorial.mov1.title
+    es: Viaje
+    en: 
+    pt: 
+  - key: tutorial.mov1.body
+    es: "Para avanzar por el mapa deber\xE1 seleccionar un nodo conectado al camino
+      de la caravana.\n\r\nEn este tutorial, el recorrido estar\xE1 prefijado y contar\xE1
+      con menos opciones que en una partida normal.\n\r\n<color=#FFD54A><b>Haga clic
+      sobre el nodo marcado para que la caravana comience el viaje.</b></color>\r\n"
+    en: 
+    pt: 
+  - key: tutorial.mov1.narrator
+    es: "\u201CCuando usted lo ordene, indicar\xE9 a los conductores que la caravana
+      contin\xFAe su marcha hacia lo que ahora llaman el Bosque Ardiente.\r\n\r\nEsperemos
+      que los Salmos de Purificaci\xF3n nos protejan.\u201D\r\n"
+    en: 
+    pt: 
+  - key: tutorial.prebatalla1.title
+    es: Batalla
+    en: 
+    pt: 
+  - key: tutorial.prebatalla1.body
+    es: "Los nodos de <b>Combate</b> representan enfrentamientos contra enemigos
+      hostiles.\n\nEn esta ocasi\xF3n, la caravana ha sido interceptada por un grupo
+      de bandidos.\n\n\n\n<color=#FFD54A><b>Haz clic sobre bot\xF3n marcado para
+      continuar.</b></color>"
+    en: 
+    pt: 
+  - key: tutorial.prebatalla1.narrator
+    es: "\u201CGuardasenderos\u2026 bandidos adelante.\r\n\r\nParece que incluso
+      con el Aliento Negro avanzando, todav\xEDa hay quienes prefieren aprovecharse
+      de los desesperados antes que huir.\r\nPrep\xE1rese. No nos dejar\xE1n pasar
+      sin luchar.\u201D\r\n"
+    en: 
+    pt: 
+  - key: tutorial.prebatalla2.narrator
+    es: 
+    en: 
+    pt: 
+  - key: tutorial.prebatalla2.title
+    es: "Selecci\xF3n"
+    en: 
+    pt: 
+  - key: tutorial.prebatalla2.body
+    es: "En este menu seleccionar\xE1s a los personajes de la caravana disponibles
+      para luchar.\n\nPor el momento solo contamos con el Acechador, <color=#FFD54A>seleccionalo
+      de las reservas y comienza la batalla.</color>"
+    en: 
+    pt: 
+  - key: tutorial.postbatalla1.body
+    es: "Luego del combate, podr\xE1s ver las recompensas obtenidas y las consecuencias
+      en los personajes participantes. \n\n<color=#FFD54A>Para salir presiona el
+      boton Continuar.</color>"
+    en: 
+    pt: 
+  - key: tutorial.postbatalla1.title
+    es: Batalla
+    en: 
+    pt: 
+  - key: tutorial.postbatalla2.title
+    es: Personajes
+    en: 
+    pt: 
+  - key: tutorial.postbatalla2.narrator
+    es: "\u201CBuen trabajo. Los hombres de la caravana han visto la victoria\u2026
+      y eso vale m\xE1s de lo que parece en tiempos como estos.\n\nDos supervivientes
+      se han ofrecido a unirse a nosotros. Necesitaremos toda espada dispuesta a
+      luchar si pretendemos llegar a Serria.\u201D"
+    en: 
+    pt: 
+  - key: tutorial.postbatalla2.body
+    es: "Nuevos <b>Personajes</b> se han unido a la caravana.\n\nCada Personaje posee
+      su propia clase, habilidades y estilo de combate.\n\nTras obtener experiencia
+      en combate, los Personajes podr\xE1n subir de nivel y volverse m\xE1s poderosos.\n\n<color=#FFD54A><b>Haz
+      clic sobre el bot\xF3n de Personajes para continuar.</b></color>"
+    en: 
+    pt: 
+  - key: tutorial.personaje1.title
+    es: Personajes
+    en: 
+    pt: 
+  - key: tutorial.personaje1.body
+    es: "Cuando un Personaje sube de nivel, obtendr\xE1 mejoras que lo volver\xE1n
+      m\xE1s poderoso.\n\nPodr\xE1s:\n\nRepartir puntos de <b>Atributo</b>.\nMejorar
+      una <b>Habilidad</b>.\nDesbloquear nuevas opciones de combate a medida que
+      avance su experiencia.\n\n<color=#FFD54A><b>Reparte el punto de atributo deseado
+      y mejora una habilidad del Acechador</b></color>"
+    en: 
+    pt: 
+  - key: tutorial.personaje1.narrator
+    es: "\u201CEl Acechador ha ganado experiencia en combate y ha mejorado sus capacidades\n\nMantenga
+      vivos a sus hombres el tiempo suficiente, y terminar\xE1n convirti\xE9ndose
+      en combatientes mucho m\xE1s capaces.\u201D"
+    en: 
+    pt: 
+  - key: tutorial.personaje2.body
+    es: "Las <b>Actividades de Campa\xF1a</b> permiten asignar tareas a los Personajes
+      mientras la caravana viaja o descansa.\n\nCada Actividad otorga distintos beneficios,
+      y cada Personaje posee opciones \xFAnicas seg\xFAn su clase.\nCuando quieras
+      cambiar de actividad, puedes hacerlo en el panel se\xF1alado.\n\n<color=#FFD54A><b>Cierra
+      el menu de Personajes Tecla \"C\" para continuar.</b></color>\n"
+    en: 
+    pt: 
+  - key: tutorial.personaje2.title
+    es: Actividades
+    en: 
+    pt: 
+  - key: tutorial.personaje2.narrator
+    es: "\u201CMientras la caravana avanza, sus combatientes no permanecer\xE1n ociosos.\nCada
+      uno puede cumplir una tarea durante el viaje: vigilar, entrenar o realizar
+      especialidades propias de su oficio.\n\nSeg\xFAn las necesidades del momento,
+      seguir\xE1n sus \xF3rdenes y har\xE1n lo indicado.\u201D"
+    en: 
+    pt: 
+  - key: tutorial.mov2.title
+    es: El viaje sigue
+    en: 
+    pt: 
+  - key: tutorial.mov2.narrator
+    es: "\u201CNo olvide esto, Guardasenderos\u2026 a veces un combate es inevitable
+      pero nuestros combatientes son pocos y el viaje es muy largo.\n\nAhora el camino
+      se bifurca ante nosotros y por fortuna tenemos la opci\xF3n de evitar un nuevo
+      combate.\""
+    en: 
+    pt: 
+  - key: tutorial.mov2.body
+    es: "A lo largo del viaje encontrar\xE1 distintos tipos de nodos y elegir bien
+      marcar\xE1 la diferencia.\n\nAl sur tenemos un nodo de <b>Batalla \xC9lite</b>,
+      que representa un peligro mayor, aunque con mejores recompensas.\nAl norte,
+      un nodo de <b>Recursos</b>, que permitir\xE1 obtener suministros \xFAtiles
+      para la caravana.\n\n<color=#FFD54A><b>Haz clic sobre el nodo de Recursos para
+      continuar.</b></color>"
+    en: 
+    pt: 
+  - key: tutorial.recursos1.title
+    es: Recursos
+    en: 
+    pt: 
+  - key: tutorial.recursos1.narrator
+    es: "\"Bien. Siempre es buena idea hacer acopio de recursos cuando se nos presente
+      la oportunidad, los necesitaremos en tan largo viaje. \n\nLos suministros encontrados
+      nos servir\xE1n para mantener vivos a los civiles, y los materiales para hacer
+      las mejoras que necesitemos.\""
+    en: 
+    pt: 
+  - key: tutorial.recursos1.body
+    es: "Los <b>Suministros</b> representan bienes b\xE1sicos y alimentos necesarios
+      para mantener con vida a la caravana. \n\nLos <b>Materiales</b> podr\xE1n ser
+      utilizados para realizar distintas mejoras a la caravana.\n\n"
+    en: 
+    pt: 
+  - key: tutorial.peso1.narrator
+    es: "\u201CLos recursos que hemos obtenido han sobrecargado a los bueyes de carga.
+      Viajar as\xED implica repartir la carga sobrante entre los civiles, lo cu\xE1l
+      reducir\xE1 la esperanza.\n\nSer\xE1 mejor utilizar parte de esos materiales
+      para reforzar la caravana y solucionar el problema antes de seguir avanzando.\u201D"
+    en: 
+    pt: 
+  - key: tutorial.peso1.title
+    es: Bueyes de Carga
+    en: 
+    pt: 
+  - key: tutorial.peso1.body
+    es: "Cada caravana posee un l\xEDmite de <b>Carga</b> determinado principalmente
+      por la cantidad de <b>Bueyes</b> disponibles. \n<color=#FFD54A><i>Podr\xE1s
+      verlo en el \xE1rea marcada.</color></i>\n\nViajar sobrecargado reducir\xE1
+      la <b>Esperanza</b> y puede provocar que muera alg\xFAno de los <b>Bueyes</b>.\n\n\n<color=#FFD54A>Presiona
+      la flecha para Continuar</color>"
+    en: 
+    pt: 
+  - key: tutorial.abrirmejoras.title
+    es: '  '
+    en: 
+    pt: 
+  - key: tutorial.abrirmejoras.narrator
+    es: 
+    en: 
+    pt: 
+  - key: tutorial.abrirmejoras.body
+    es: Para continuar, abre el menu de la <b>Caravana</b>.
+    en: 
+    pt: 
+  - key: tutorial.alforjas1.title
+    es: Mejoras
+    en: 
+    pt: 
+  - key: tutorial.alforjas1.narrator
+    es: "\u201CNuestra caravana puede beneficiarse de diversas mejoras, seg\xFAn
+      la situaci\xF3n, la zona que atravesemos y los muchos imprevistos del camino.\n\nPor
+      el momento, creo que a los bueyes les vendr\xEDan bien unas alforjas. Con ellas
+      podremos llevar m\xE1s carga sin retrasar la marcha.\u201D"
+    en: 
+    pt: 
+  - key: tutorial.alforjas1.body
+    es: "Las <b>Mejoras de Caravana</b> permiten reforzar distintos aspectos del
+      viaje, otorgando beneficios permanentes para la expedici\xF3n.\n\nCada mejora
+      requiere <b>Materiales</b> para ser construida.\n\n\n<color=#FFD54A><b>Selecciona
+      la mejora de Alforjas para aumentar la capacidad de carga de la caravana.</b></color>"
+    en: 
+    pt: 
+  - key: tutorial.alforjas2.title
+    es: '  '
+    en: 
+    pt: 
+  - key: tutorial.alforjas2.narrator
+    es: 
+    en: 
+    pt: 
+  - key: tutorial.alforjas2.body
+    es: 'La mejora ya fue implementada.
+
+
+      <color=#FFD54A><b>Presiona I para
+      cerrar el menu de Mejoras.</b></color>'
+    en: 
+    pt: 
+  - key: tutorial.mov3.title
+    es: El viaje sigue
+    en: 
+    pt: 
+  - key: tutorial.mov3.body
+    es: "El camino contin\xFAa sin bifurcaciones y el pr\xF3ximo destino es un nodo
+      de <b>Evento</b>.\n\nLos Eventos pueden ser positivos o negativos de forma
+      aleatoria, aunque la <b>Esperanza</b> de la caravana influir\xE1 en las probabilidades
+      de obtener resultados favorables.\n\n<color=#FFD54A><b>Haz clic sobre el siguiente
+      nodo para continuar el viaje.</b></color>"
+    en: 
+    pt: 
+  - key: tutorial.mov3.narrator
+    es: '"Perfecto.
+
+
+      Ahora que hemos utilizado algunos materiales e incrementado
+      la carga de nuestros bueyes, podemos continuar el viaje sin retrasos."'
+    en: 
+    pt: 

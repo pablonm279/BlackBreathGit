@@ -245,6 +245,13 @@ public class BotonHabilidad : MonoBehaviour
 
     public void ActivarHabilidad(bool yaVienedeCargando)
     {
+        if (HabilidadRepresentada != null)
+        {
+            TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.BattleAbilityClicked, gameObject)
+                .Add("abilityName", HabilidadRepresentada.nombre)
+                .Add("abilityType", HabilidadRepresentada.GetType().Name));
+        }
+
         if(BattleManager.Instance.scTutorialCombate.tutorialCombateActivo)
         {
             if(BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() < 4)

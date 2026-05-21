@@ -35,11 +35,11 @@ public class TutorialCombate : MonoBehaviour
         }
     }
 
-    public void IniciarCombateDesdePaso(int paso)
+    public void IniciarCombateDesdePaso(int paso, bool forzarInicio = false)
     {
         ReactivarTutorialSiHaceFalta();
 
-        if (tutorialManager != null && !tutorialManager.tutorialActivo) return;
+        if (!forzarInicio && tutorialManager != null && !tutorialManager.tutorialActivo) return;
         if (!TienePasosCombate()) return;
 
         AplicarPasoTutorial(paso);
@@ -241,5 +241,4 @@ public class TutorialCombate : MonoBehaviour
     }
 }
 }
-
 

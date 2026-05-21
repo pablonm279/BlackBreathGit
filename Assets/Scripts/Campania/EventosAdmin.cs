@@ -3230,6 +3230,9 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 2)
         {
+            TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignMissingPeopleEventContinued, gameObject)
+                .Add("campaignEventId", eventoActual)
+                .Add("type", 2));
             int civilesperdidos = UnityEngine.Random.Range(4, 13);
             CampaignManager.Instance.CambiarCivilesActuales(-civilesperdidos);
             CampaignManager.Instance.CambiarEsperanzaActual(-5);
@@ -4092,6 +4095,9 @@ public class EventosAdmin : MonoBehaviour
                 int materiales = UnityEngine.Random.Range(18, 31);
                 CampaignManager.Instance.CambiarMaterialesActuales(materiales);
             }
+            TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignResourceNodeContinued, gameObject)
+                .Add("campaignEventId", eventoActual)
+                .Add("type", 5));
             gameObject.SetActive(false);
         }
 

@@ -198,8 +198,8 @@ public class MenuDescanso : MonoBehaviour
 
   private void Actualizar()
   {
-    bool enTutorial = CampaignManager.Instance.scTutorialManager != null &&
-                      CampaignManager.Instance.scTutorialManager.tutorialActivo;
+    CampaignManager campaignManager = CampaignManager.Instance;
+    bool enTutorial = campaignManager != null && campaignManager.DebeUsarConfiguracionTutorial();
 
     if (CampaignManager.Instance.intTipoClima == 3 || CampaignManager.Instance.intTipoClima == 4 || CampaignManager.Instance.intTipoClima == 5) //Lluvia, Nieve o Niebla
     {
@@ -363,8 +363,8 @@ public class MenuDescanso : MonoBehaviour
 
   private async Task DescansarAsync()
   {
-    bool enTutorial = CampaignManager.Instance.scTutorialManager != null &&
-                      CampaignManager.Instance.scTutorialManager.tutorialActivo;
+    CampaignManager campaignManager = CampaignManager.Instance;
+    bool enTutorial = campaignManager != null && campaignManager.DebeUsarConfiguracionTutorial();
     bool autosavePendienteTrasDescanso = true;
 
     // Audio: al presionar Descansar, cortar másica con fade, reproducir SFX y reanudar.
