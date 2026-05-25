@@ -524,6 +524,12 @@ public class MapaManager : MonoBehaviour
     {
         viajesDesdeUltimaEmboscadaSubterranea = Mathf.Min(viajesDesdeUltimaEmboscadaSubterranea + 1, 99);
 
+        if (CampaignManager.Instance != null && CampaignManager.Instance.DebeUsarConfiguracionTutorial())
+        {
+            settlementsForzados.Clear();
+            return;
+        }
+
         if (nodoActual == null || settlementsForzados.Count == 0)
         {
             return;
@@ -832,6 +838,11 @@ public class MapaManager : MonoBehaviour
         }
 
         settlementsForzados.Clear();
+        if (CampaignManager.Instance != null && CampaignManager.Instance.DebeUsarConfiguracionTutorial())
+        {
+            return;
+        }
+
         List<Nodo> candidatosTempranos = ObtenerCandidatosSettlement(zonaId, MinXSettlementTemprano, MaxXSettlementTemprano);
         List<Nodo> candidatosTardios = ObtenerCandidatosSettlement(zonaId, MinXSettlementTardio, MaxXSettlementTardio);
 

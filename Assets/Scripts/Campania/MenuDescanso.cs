@@ -43,6 +43,7 @@ public class MenuDescanso : MonoBehaviour
   private int chancesExploracion;
   private int tareaCivilSeleccionada;
   private bool descansoEnCurso;
+  private bool forzarEventoBroteTutorialEnDescanso;
 
   float valor = 0;
   public void SeleccionarActividadCivil(int n)
@@ -297,7 +298,8 @@ public class MenuDescanso : MonoBehaviour
       gameObject.SetActive(false);
       return;
     }
-
+    forzarEventoBroteTutorialEnDescanso = DebeForzarEventoDescansoTutorial();
+    TutorialEvents.Emit("ui.descanso_confirmado", gameObject);
     EjecutarDescansoSeguro();
   }
 
@@ -361,11 +363,43 @@ public class MenuDescanso : MonoBehaviour
     }
   }
 
+  private bool DebeForzarEventoDescansoTutorial()
+  {
+    TutorialDirector director = TutorialDirector.Instance;
+    TutorialStep pasoActual = director != null ? director.CurrentStep : null;
+    if (pasoActual != null)
+    {
+      if (pasoActual.id == "Descanso1")
+      {
+        return true;
+      }
+
+      if (pasoActual.advanceConditions != null)
+      {
+        for (int i = 0; i < pasoActual.advanceConditions.Count; i++)
+        {
+          TutorialCondition condition = pasoActual.advanceConditions[i];
+          if (condition != null && condition.eventId == TutorialEventNames.CampaignRestRandomEventContinued)
+          {
+            return true;
+          }
+        }
+      }
+    }
+
+    TutorialManager tutorialLegacy = CampaignManager.Instance != null ? CampaignManager.Instance.scTutorialManager : null;
+    return tutorialLegacy != null
+      && tutorialLegacy.tutorialActivo
+      && (tutorialLegacy.pasoActual == 24 || tutorialLegacy.pasoActual == 25);
+  }
+
   private async Task DescansarAsync()
   {
     CampaignManager campaignManager = CampaignManager.Instance;
     bool enTutorial = campaignManager != null && campaignManager.DebeUsarConfiguracionTutorial();
     bool autosavePendienteTrasDescanso = true;
+    bool forzarEventoBroteTutorial = forzarEventoBroteTutorialEnDescanso;
+    forzarEventoBroteTutorialEnDescanso = false;
 
     // Audio: al presionar Descansar, cortar másica con fade, reproducir SFX y reanudar.
     IniciarAudioDescansoSimple();
@@ -687,7 +721,12 @@ public class MenuDescanso : MonoBehaviour
 
 
 
-    if (!toggleMenuMisiones.isOn) //Si no pidió rescate, todo normal
+    if (forzarEventoBroteTutorial)
+    {
+      CampaignManager.Instance.EmpezarEvento(IdsEventoCampania.BroteEntreLasBrasas);
+      autosavePendienteTrasDescanso = false;
+    }
+    else if (!toggleMenuMisiones.isOn) //Si no pidió rescate, todo normal
     {
       //Probabilidad emboscada
       // (Audio) Se maneja al principio de Descansar()
@@ -837,16 +876,19 @@ public class MenuDescanso : MonoBehaviour
     }
 
     int random = UnityEngine.Random.Range(1, 101);
-    if (CampaignManager.Instance.scTutorialManager.tutorialActivo)
+    if (CampaignManager.Instance.DebeUsarConfiguracionTutorial())
     {
-      if (CampaignManager.Instance.scTutorialManager.pasoActual > 4)
+      bool tutorialLegacyActivo = CampaignManager.Instance.scTutorialManager != null
+        && CampaignManager.Instance.scTutorialManager.tutorialActivo;
+      int pasoTutorial = tutorialLegacyActivo ? CampaignManager.Instance.scTutorialManager.pasoActual : 5;
+      if (pasoTutorial > 4)
       {
-        int lluviaForzada = CampaignManager.Instance.scAtributosZona.Clima_chances_Calor + 1;
-        if (lluviaForzada >= CampaignManager.Instance.scAtributosZona.Clima_chances_Lluvia)
+        int almasDanzantesForzada = CampaignManager.Instance.scAtributosZona.Clima_chances_Niebla + 1;
+        if (almasDanzantesForzada >= CampaignManager.Instance.scAtributosZona.Clima_chances_EspecialZona1)
         {
-          lluviaForzada = Mathf.Max(1, CampaignManager.Instance.scAtributosZona.Clima_chances_Lluvia - 1);
+          almasDanzantesForzada = Mathf.Max(1, CampaignManager.Instance.scAtributosZona.Clima_chances_EspecialZona1 - 1);
         }
-        random = Mathf.Clamp(lluviaForzada, 1, 100);
+        random = Mathf.Clamp(almasDanzantesForzada, 1, 100);
       }
       else
       { random = 1; } //Siempre sol en los primeros pasos del tutorial

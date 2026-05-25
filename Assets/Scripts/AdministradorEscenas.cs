@@ -1158,6 +1158,10 @@ public class AdministradorEscenas : MonoBehaviour
     {
       GenerarObstaculosPrimerCombateTutorial();
     }
+    if (esCombateFinalTutorial)
+    {
+      GenerarObstaculosCombateFinalTutorial();
+    }
 
     AdministrarFondos(IDEncuentro, encuentroGeneradoActual);
     ConfigurarAmbienteVidaBatalla();
@@ -1739,6 +1743,11 @@ public class AdministradorEscenas : MonoBehaviour
     // Asegurar que la primera ronda comience en 1.
     // RondaNueva() incrementa el contador, por eso se inicializa en 0 aquí.
     BattleManager.Instance.RondaNro = 0;
+    if (esCombateFinalTutorial && BattleManager.Instance.scTutorialCombate != null)
+    {
+      BattleManager.Instance.scTutorialCombate.IniciarCombateDesdePasoNombre("Paso11", 12, true);
+    }
+
     BattleManager.Instance.RondaNueva();
     TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.BattleStarted, gameObject)
       .Add("encounterId", IDEncuentro)
@@ -1750,10 +1759,6 @@ public class AdministradorEscenas : MonoBehaviour
       if (esPrimerCombateTutorial)
       {
         BattleManager.Instance.scTutorialCombate.IniciarCombateDesdePaso(0, true);
-      }
-      else if (esCombateFinalTutorial)
-      {
-        BattleManager.Instance.scTutorialCombate.IniciarCombateDesdePaso(12, true);
       }
     }
     BattleManager.Instance.SetLogCombateActivoPorEscena(true);
@@ -1837,6 +1842,20 @@ public class AdministradorEscenas : MonoBehaviour
     ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 1, 2, 4);
     ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 2, 2, 5);
     ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 2, 3, 1);
+  }
+
+  void GenerarObstaculosCombateFinalTutorial()
+  {
+    if (ContenedorPrefabsBatalla == null)
+    {
+      Debug.LogWarning("[AdministradorEscenas] No se pudieron generar obstaculos del tutorial final: contenedor de prefabs nulo.");
+      return;
+    }
+
+    ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca1, 2, 3, 5);
+    ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca1, 2, 2, 4);
+    ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 2, 3, 1);
+    ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 1, 2, 4);
   }
 
   void ColocarObstaculoFijoTutorial(GameObject prefab, int iLado, int x, int y)
@@ -3675,19 +3694,18 @@ public class AdministradorEscenas : MonoBehaviour
     }
     if (IDEncuentro == 701) // TUTORIAL Batalla final
     {
-      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.DriadaQuemada);
+      GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.BrujaQuemada);
       ColocarEnCasillaEspecifica(2, enemigo1.gameObject, 1, 3);
 
-      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.LoboAlfaEspectral);
-      ColocarEnCasillaEspecifica(2, enemigo2.gameObject, 3, 2);
-
-      GameObject enemigo3 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
-      ColocarEnCasillaEspecifica(2, enemigo3.gameObject, 3, 4);
+      GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.TreantEspectral);
+      ColocarEnCasillaEspecifica(2, enemigo2.gameObject, 2, 2);
 
      
 
       BattleManager.Instance.enemigosRefuerzos.Clear();
-      BattleManager.Instance.delayRefuerzo = ObtenerDelayRefuerzosAleatorio();
+      BattleManager.Instance.delayRefuerzo = 3;
+      BattleManager.Instance.enviarUnRefuerzoEnemigoPorRonda = true;
+      BattleManager.Instance.ignorarModificadoresDelayRefuerzosEnemigos = true;
 
       GameObject refuerzo1 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
       refuerzo1.SetActive(false);
@@ -4866,7 +4884,7 @@ public class AdministradorEscenas : MonoBehaviour
 
     if (debeReanudarTutorialNuevoPostCombate)
     {
-      TutorialDirector.Instance?.ResumeFromLegacyCombatTutorial(true);
+      TutorialDirector.Instance?.ResumeFromLegacyCombatTutorial(ultimoIDEncuentro != 701);
     }
 
     if (campaignManager.scTutorialManager != null

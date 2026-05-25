@@ -413,6 +413,29 @@ public class MenuCaravana : MonoBehaviour
     }
     public void AbrirMenuSequitos()
     {
+        AbrirMenuSequitos(false);
+    }
+
+    public void AbrirMenuSequitosDesdeHotkey()
+    {
+        AbrirMenuSequitos(true);
+    }
+
+    public bool MenuSequitosEstaAbierto()
+    {
+        return MenuSequitos != null && MenuSequitos.activeInHierarchy;
+    }
+
+    private void AbrirMenuSequitos(bool desdeHotkey)
+    {
+        TutorialEvents.Emit("ui.menusequitosab", gameObject);
+        if (desdeHotkey && MenuSequitosEstaAbierto())
+        {
+            MenuSequitos.SetActive(false);
+            EmitirCierreMenuSequitosTutorial(true);
+            return;
+        }
+
         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 27) { return; }
          if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 27)
         {            CampaignManager.Instance.scTutorialManager.SiguientePaso();        }
@@ -423,6 +446,12 @@ public class MenuCaravana : MonoBehaviour
         CerrarMenusExclusivos();
         CampaignManager.Instance.ActivarLog(0);
         MenuSequitos.SetActive(abrir);
+        if (!abrir)
+        {
+            EmitirCierreMenuSequitosTutorial(desdeHotkey);
+            return;
+        }
+
         if (abrir)
         {
             RuntimeAnalytics.TrackDesign("ui", "caravan", "open_followers");
@@ -588,6 +617,14 @@ public class MenuCaravana : MonoBehaviour
             CampaignManager.Instance.scTutorialManager.SiguientePaso();
         }
     }
+
+    private void EmitirCierreMenuSequitosTutorial(bool desdeHotkey)
+    {
+        TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignFollowersMenuClosed, MenuSequitos)
+            .Add("menu", "sequitos")
+            .Add("closedByHotkey", desdeHotkey ? 1 : 0));
+    }
+
     public void ActualizarMejoras()
     {
         InicializarColoresCostoSiHaceFalta();

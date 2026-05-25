@@ -201,6 +201,34 @@ MonoBehaviour:
     canSkip: 0
     autoAdvanceDelay: 0
     advanceConditions:
+    - eventId: ui.pjpostbat1_presionado
+      requiredValues: []
+    enterActions: []
+    exitActions: []
+  - id: prebatalla3
+    titleKey: tutorial.prebatalla3.title
+    narratorKey: tutorial.prebatalla3.narrator
+    bodyKey: tutorial.prebatalla3.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_empezacombate2
+    presentationMode: 1
+    panelAnchor: 1
+    panelOffset: {x: 0, y: -150}
+    compactPanelSize: {x: 575, y: 550}
+    showPointer: 1
+    showHighlight: 0
+    pointerDirection: 2
+    pointerOffset: {x: 0, y: -70}
+    pointerScale: 0.85
+    highlightScale: 1.5
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 2
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 0
+    advanceConditions:
     - eventId: battle.started
       requiredValues:
       - key: isFirstTutorialBattle
@@ -521,5 +549,419 @@ MonoBehaviour:
       requiredValues:
       - key: campaignEventId
         value: 2
+    enterActions: []
+    exitActions: []
+  - id: Exploracion1
+    titleKey: tutorial.exp1.title
+    narratorKey: tutorial.exp1.narrator
+    bodyKey: tutorial.exp1.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_nodo_viaje_3
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 0
+    showHighlight: 0
+    pointerDirection: 0
+    pointerOffset: {x: -75, y: 0}
+    pointerScale: 0.85
+    highlightScale: 0.7
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 0
+    inputBlockMode: 1
+    showNextButton: 1
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions: []
+    enterActions: []
+    exitActions: []
+  - id: Exploracion2
+    titleKey: tutorial.exp2.title
+    narratorKey: tutorial.exp2.narrator
+    bodyKey: tutorial.exp2.body
+    narratorAudio: {fileID: 0}
+    targetId: tuto_nodoclaromist
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 0
+    pointerOffset: {x: -75, y: 0}
+    pointerScale: 0.85
+    highlightScale: 0.7
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 1
+    showNextButton: 0
+    canGoBack: 1
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions: []
+    enterActions: []
+    exitActions: []
+  - id: mov4
+    titleKey: tutorial.exp3.title
+    narratorKey: tutorial.exp3.narrator
+    bodyKey: tutorial.exp3.body
+    narratorAudio: {fileID: 0}
+    targetId: tuto_nodoclaromist
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 0
+    pointerOffset: {x: -75, y: 0}
+    pointerScale: 0.85
+    highlightScale: 0.7
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 2
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions:
+    - eventId: campaign.rest_node_continued
+      requiredValues:
+      - key: campaignEventId
+        value: 401
+    enterActions: []
+    exitActions: []
+  - id: Fatiga2
+    titleKey: tutorial.fatiga2.title
+    narratorKey: tutorial.fatiga2.narrator
+    bodyKey: tutorial.fatiga2.body
+    narratorAudio: {fileID: 0}
+    targetId: tuto_botondescanso1
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 3
+    pointerOffset: {x: 0, y: 110}
+    pointerScale: 0.85
+    highlightScale: 1.5
+    highlightScaleXY: {x: 1.22, y: 1.1}
+    advanceMode: 1
+    inputBlockMode: 2
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions:
+    - eventId: ui.descanso_presionado
+      requiredValues: []
+    enterActions: []
+    exitActions: []
+  - id: Descanso1
+    titleKey: tutorial.descanso1.title
+    narratorKey: tutorial.descanso1.narrator
+    bodyKey: tutorial.descanso1.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_tareacivil1
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 455, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 3
+    pointerOffset: {x: -6, y: -340}
+    pointerScale: 0.85
+    highlightScale: 1.5
+    highlightScaleXY: {x: 4.1, y: 0.78}
+    advanceMode: 1
+    inputBlockMode: 0
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions:
+    - eventId: campaign.rest_random_event_continued
+      requiredValues:
+      - key: campaignEventId
+        value: 281
+    enterActions: []
+    exitActions: []
+  - id: Clima1
+    titleKey: tutorial.clima.title
+    narratorKey: tutorial.clima.narrator
+    bodyKey: tutorial.clima.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_clima
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 455, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 2
+    pointerOffset: {x: 0, y: -65}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 1.2, y: 1.2}
+    advanceMode: 0
+    inputBlockMode: 2
+    showNextButton: 1
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions: []
+    enterActions: []
+    exitActions: []
+  - id: Sequitos1
+    titleKey: tutorial.sequitos1.title
+    narratorKey: tutorial.sequitos1.narrator
+    bodyKey: tutorial.sequitos1.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_sequitos
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 455, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 3
+    pointerOffset: {x: 0, y: 90}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 2
+    showNextButton: 0
+    canGoBack: 1
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions:
+    - eventId: ui.menusequitosab
+      requiredValues: []
+    enterActions: []
+    exitActions: []
+  - id: Sequitos2Herreros
+    titleKey: tutorial.sequitos2.title
+    narratorKey: tutorial.sequitos2.narrator
+    bodyKey: tutorial.sequitos2.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_sequ_herr
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 455, y: 190}
+    showPointer: 1
+    showHighlight: 0
+    pointerDirection: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 0
+    inputBlockMode: 1
+    showNextButton: 1
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions: []
+    enterActions: []
+    exitActions: []
+  - id: Sequitos3Curanderos
+    titleKey: tutorial.sequitos3.title
+    narratorKey: tutorial.sequitos3.narrator
+    bodyKey: tutorial.sequitos3.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_sequ_cur
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 455, y: 190}
+    showPointer: 1
+    showHighlight: 0
+    pointerDirection: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 0
+    inputBlockMode: 1
+    showNextButton: 1
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions: []
+    enterActions: []
+    exitActions: []
+  - id: Sequitos4Mercaderes
+    titleKey: tutorial.sequitos4.title
+    narratorKey: tutorial.sequitos4.narrator
+    bodyKey: tutorial.sequitos4.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_sequ_merc
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 455, y: 190}
+    showPointer: 1
+    showHighlight: 0
+    pointerDirection: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 0
+    inputBlockMode: 1
+    showNextButton: 1
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions: []
+    enterActions: []
+    exitActions: []
+  - id: SequitosExit
+    titleKey: tutorial.sequitosexit.title
+    narratorKey: tutorial.sequitosexit.narrator
+    bodyKey: tutorial.sequitosexit.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_sequitos
+    presentationMode: 1
+    panelAnchor: 5
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 455, y: 190}
+    showPointer: 0
+    showHighlight: 0
+    pointerDirection: 3
+    pointerOffset: {x: 0, y: 90}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 1
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions:
+    - eventId: campaign.followers_menu_closed
+      requiredValues:
+      - key: closedByHotkey
+        value: 1
+    enterActions: []
+    exitActions: []
+  - id: mov5
+    titleKey: tutorial.batfinpre1.title
+    narratorKey: tutorial.batfinpre1.narrator
+    bodyKey: tutorial.batfinpre1.body
+    narratorAudio: {fileID: 0}
+    targetId: tut_nodo_final
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 440, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 0
+    pointerOffset: {x: -75, y: 0}
+    pointerScale: 0.85
+    highlightScale: 0.7
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 2
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions:
+    - eventId: campaign.node_arrived
+      requiredValues:
+      - key: nodeId
+        value: tut_nodo_final
+    enterActions: []
+    exitActions: []
+  - id: prebatallafinal
+    titleKey: tutorial.batfinpre2.title
+    narratorKey: tutorial.batfinpre2.narrator
+    bodyKey: tutorial.batfinpre2.body
+    narratorAudio: {fileID: 0}
+    targetId: tuto_botonbatalla1
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 455, y: 190}
+    showPointer: 1
+    showHighlight: 1
+    pointerDirection: 3
+    pointerOffset: {x: 0, y: 95}
+    pointerScale: 0.85
+    highlightScale: 1.5
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 2
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions:
+    - eventId: ui.batprimeratuto_presionado
+      requiredValues: []
+    enterActions: []
+    exitActions: []
+  - id: espera_postbatfinal
+    titleKey: tutorial.postbatfinal.wait.title
+    narratorKey: tutorial.postbatfinal.wait.narrator
+    bodyKey: tutorial.postbatfinal.wait.body
+    narratorAudio: {fileID: 0}
+    targetId: 
+    presentationMode: 2
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 455, y: 190}
+    showPointer: 0
+    showHighlight: 0
+    pointerDirection: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 1
+    inputBlockMode: 0
+    showNextButton: 0
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions:
+    - eventId: ui.batsalir1_presionado
+      requiredValues: []
+    enterActions: []
+    exitActions: []
+  - id: postbatfinal1
+    titleKey: tutorial.postbatfinal1.title
+    narratorKey: tutorial.postbatfinal1.narrator
+    bodyKey: tutorial.postbatfinal1.body
+    narratorAudio: {fileID: 0}
+    targetId: 
+    presentationMode: 0
+    panelAnchor: 0
+    panelOffset: {x: 0, y: 0}
+    compactPanelSize: {x: 455, y: 190}
+    showPointer: 0
+    showHighlight: 0
+    pointerDirection: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerScale: 0.85
+    highlightScale: 1
+    highlightScaleXY: {x: 1, y: 1}
+    advanceMode: 0
+    inputBlockMode: 1
+    showNextButton: 1
+    canGoBack: 0
+    canSkip: 0
+    autoAdvanceDelay: 1
+    advanceConditions: []
     enterActions: []
     exitActions: []

@@ -19,6 +19,8 @@ public class TutorialManager : MonoBehaviour
     private const int TutorialEmboscadaY = 2;
     private const int TutorialClaroX = 4;
     private const int TutorialClaroY = 3;
+    private const int TutorialBatallaFinalX = 5;
+    private const int TutorialBatallaFinalY = 4;
 
     public bool tutorialActivo = true;
     public int pasoActual = 0;
@@ -29,6 +31,7 @@ public class TutorialManager : MonoBehaviour
     public Nodo Nodotut4;
     public Nodo Nodotut5;
     public Nodo Nodotut6;
+    public Nodo Nodotut7;
 
     public GameObject[] pasosTutorial; // Array de objetos del tutorial
     private readonly HashSet<int> pasosUsadosPorEstablecer = new HashSet<int>();
@@ -49,6 +52,7 @@ public class TutorialManager : MonoBehaviour
         AgregarNodoSiExiste(nodos, Nodotut4);
         AgregarNodoSiExiste(nodos, Nodotut5);
         AgregarNodoSiExiste(nodos, Nodotut6);
+        AgregarNodoSiExiste(nodos, Nodotut7);
 
         return nodos;
     }
@@ -84,6 +88,7 @@ public class TutorialManager : MonoBehaviour
         Nodo evento = ObtenerNodoMapaTutorial(contenedor, TutorialEventoX, TutorialEventoY, Nodotut4);
         Nodo emboscada = ObtenerNodoMapaTutorial(contenedor, TutorialEmboscadaX, TutorialEmboscadaY, Nodotut5);
         Nodo claro = ObtenerNodoMapaTutorial(contenedor, TutorialClaroX, TutorialClaroY, Nodotut6);
+        Nodo batallaFinal = ObtenerNodoMapaTutorial(contenedor, TutorialBatallaFinalX, TutorialBatallaFinalY, Nodotut7);
 
         NodoPelea1 = primerCombate;
         Nodotut2 = primerCombate;
@@ -91,6 +96,7 @@ public class TutorialManager : MonoBehaviour
         Nodotut4 = evento;
         Nodotut5 = emboscada;
         Nodotut6 = claro;
+        Nodotut7 = batallaFinal;
     }
 
     void Start()
@@ -168,6 +174,11 @@ public class TutorialManager : MonoBehaviour
         {
             Nodotut4.ConectarConNodo(Nodotut6, false, false);
         }
+
+        if (Nodotut6 != null && Nodotut7 != null)
+        {
+            Nodotut6.ConectarConNodo(Nodotut7, false, false);
+        }
     }
 
     public void DesactivarOtrosNodosTuto()
@@ -211,6 +222,7 @@ public class TutorialManager : MonoBehaviour
         ConfigurarVisualNodoTutorial(Nodotut4, 2);
         ConfigurarVisualNodoTutorial(Nodotut5, 11);
         ConfigurarVisualNodoTutorial(Nodotut6, 3);
+        ConfigurarVisualNodoTutorial(Nodotut7, 1);
         ConfigurarClaroMisteriosoTutorial();
 
         ForzarEleccionInicialVisible();
@@ -232,6 +244,15 @@ public class TutorialManager : MonoBehaviour
             && nodo != null
             && nodo.posXNodo == TutorialClaroX
             && nodo.posYNodo == TutorialClaroY;
+    }
+
+    public bool EsBatallaFinalTutorial(Nodo nodo)
+    {
+        return CampaignManager.Instance != null
+            && CampaignManager.Instance.DebeUsarConfiguracionTutorial()
+            && nodo != null
+            && nodo.posXNodo == TutorialBatallaFinalX
+            && nodo.posYNodo == TutorialBatallaFinalY;
     }
 
     public void ConfigurarSoloMapaLinealTutorial()

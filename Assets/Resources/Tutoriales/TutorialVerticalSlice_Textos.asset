@@ -22,27 +22,67 @@ MonoBehaviour:
       asignado para asistirlo en este viaje cuando las dificultades aparezcan. Y
       parece ser, se\xF1or, que ese momento ha llegado.\r\nEl Bosque de Glain ha\u2026
       cambiado. Y no precisamente para bien.\u201D\r\n"
-    en: 
-    pt: 
+    en: "\u201CPathwarden... allow me to introduce myself. I am the Steward assigned
+      to assist you on this journey when hardship appears. And it seems, sir, that
+      moment has come.\r\nGlain Forest has... changed. And not for the better.\u201D\r\n"
+    pt: "\u201CGuarda-trilhas... permita-me apresentar. Sou o Contramestre designado
+      para auxili\xE1-lo nesta viagem quando surgirem problemas. E parece, senhor,
+      que esse momento chegou.\r\nA Floresta de Glain... mudou. E n\xE3o para melhor.\u201D\r\n"
   - key: tutorial.intro.body
-    es: "Bienvenido al tutorial de <b>El Aliento Negro</b>.\r\nEl Contramaestre lo
+    es: "Bienvenido al tutorial de <b>The Black Breath</b>.\r\nEl Contramaestre lo
       guiar\xE1 durante este viaje, donde deber\xE1 conducir a la caravana a trav\xE9s
       del <b>Bosque Ardiente</b>.\n\r\nAqu\xED debajo se le indicar\xE1n los pasos
       a seguir.\n\n\n\r\n\r\n"
-    en: 
-    pt: 
+    en: 'Welcome to the tutorial of <b>The Black Breath</b>.
+
+      The Steward
+      will guide you on this journey, where you must lead the caravan through the
+      <b>Burning Forest</b>.
+
+      
+
+      The steps to follow will be shown below.
+
+
+
+      
+
+      
+
+'
+    pt: "Bem-vindo ao tutorial de o <b>Respiro Negro</b>.\r\nO Contramestre o guiar\xE1
+      nesta viagem, onde voc\xEA dever\xE1 conduzir a caravana pela <b>Floresta Ardente</b>.\n\r\nAbaixo
+      ser\xE3o indicados os passos a seguir.\n\n\n\r\n\r\n"
   - key: tutorial.intro2.title
     es: Civiles
-    en: 
-    pt: 
+    en: Civilians
+    pt: Civis
   - key: tutorial.intro2.body
     es: "La caravana bajo tu cuidado transporta a numerosos Civiles que intentan
       escapar del <b>Aliento Negro</b> y alcanzar la Ciudad Puerto de <b>Serria</b>.\r\nTu
       objetivo ser\xE1 mantenerlos con vida y guiarlos a salvo a trav\xE9s de los
       peligros del camino, eligiendo cada paso con cuidado.\r\nLa flecha se\xF1ala
       la cantidad de Civiles que actualmente acompa\xF1a a la caravana.\n\r\n\r\n"
-    en: 
-    pt: 
+    en: 'The caravan under your care carries many Civilians fleeing the <b>Black
+      Breath</b> and trying to reach the Port City of <b>Serria</b>.
+
+      Your
+      goal is to keep them alive and guide them safely through the dangers ahead,
+      choosing each step with care.
+
+      The arrow shows how many Civilians currently
+      travel with the caravan.
+
+      
+
+      
+
+'
+    pt: "A caravana sob seus cuidados leva muitos Civis que tentam fugir do <b>Respiro
+      Negro</b> e alcan\xE7ar a Cidade Portu\xE1ria de <b>Serria</b>.\r\nSeu objetivo
+      ser\xE1 mant\xEA-los vivos e gui\xE1-los em seguran\xE7a pelos perigos do caminho,
+      escolhendo cada passo com cuidado.\r\nA seta indica quantos Civis acompanham
+      a caravana agora.\n\r\n\r\n"
   - key: tutorial.intro2.narrator
     es: "\u201CEl bosque ahora arde\u2026 y ese no es nuestro \xFAnico problema.
       Debido a la creciente influencia del Aliento Negro, aquellos seres que perecieron
@@ -50,170 +90,348 @@ MonoBehaviour:
       cualquiera que ose cruzarlo.\r\nAun as\xED, ya no podemos volver atr\xE1s.
       Debemos atravesar el bosque con extremo cuidado. Un centenar de vidas dependen
       de ello.\u201D\r\n"
-    en: 
-    pt: 
+    en: "\u201CThe forest now burns... and that is not our only problem. Under the
+      growing influence of the Black Breath, those who perished in the flames still
+      linger, consumed by vengeance against anyone who dares cross it.\r\nEven so,
+      we can no longer turn back. We must cross the forest with extreme care. A hundred
+      lives depend on it.\u201D\r\n"
+    pt: "\u201CA floresta agora arde... e esse n\xE3o \xE9 nosso \xFAnico problema.
+      Pela influ\xEAncia crescente do Respiro Negro, aqueles que morreram nas chamas
+      ainda perduram, consumidos por vingan\xE7a contra quem ousar atravess\xE1-la.\r\nAinda
+      assim, j\xE1 n\xE3o podemos voltar. Devemos atravessar a floresta com extremo
+      cuidado. Cem vidas dependem disso.\u201D\r\n"
   - key: tutorial.intro3.title
     es: Aliento Negro
-    en: 
-    pt: 
+    en: Black Breath
+    pt: Respiro Negro
   - key: tutorial.intro3.narrator
     es: "\u201CDeber\xEDamos ponernos en marcha cuanto antes. El Aliento Negro nos
       pisa los talones, y cualquier demora puede ser mortal.\n\r\nNo podremos detenerlo\u2026
       s\xF3lo mantenernos delante de \xE9l y tratar de llegar al puerto.\u201D\r\n"
-    en: 
-    pt: 
+    en: "\u201CWe should set out as soon as possible. The Black Breath is at our
+      heels, and any delay could be deadly.\n\r\nWe cannot stop it... only stay ahead
+      of it and try to reach the port.\u201D\r\n"
+    pt: "\u201CDevemos partir o quanto antes. O Respiro Negro est\xE1 em nosso encal\xE7o,
+      e qualquer demora pode ser mortal.\n\r\nN\xE3o poderemos det\xEA-lo... s\xF3
+      seguir \xE0 frente dele e tentar chegar ao porto.\u201D\r\n"
   - key: tutorial.intro3.body
     es: "El <b>Aliento Negro</b> avanzar\xE1 a medida que la caravana viaje, descanse
       o se retrase.\r\nCuanto m\xE1s cerca se encuentre, m\xE1s peligrosos ser\xE1n
       los caminos y mayores los efectos nocivos sobre la caravana.\n\r\nLa flecha
       se\xF1ala el avance actual del Aliento Negro.\n\n\r\n\r\n"
-    en: 
-    pt: 
+    en: 'The <b>Black Breath</b> will advance as the caravan travels, rests, or falls
+      behind.
+
+      The closer it gets, the more dangerous the roads become, and
+      the harsher its harmful effects on the caravan.
+
+      
+
+      The arrow shows
+      the current advance of the Black Breath.
+
+
+      
+
+      
+
+'
+    pt: "O <b>Respiro Negro</b> avan\xE7ar\xE1 conforme a caravana viaje, descanse
+      ou se atrase.\r\nQuanto mais perto estiver, mais perigosos ser\xE3o os caminhos
+      e maiores seus efeitos nocivos sobre a caravana.\n\r\nA seta indica o avan\xE7o
+      atual do Respiro Negro.\n\n\r\n\r\n"
   - key: tutorial.intro4.title
     es: Esperanza
-    en: 
-    pt: 
+    en: Hope
+    pt: "Esperan\xE7a"
   - key: tutorial.intro4.body
     es: "La <b>Esperanza</b> representa la confianza y el \xE1nimo de la caravana.\n\r\nTomar
       decisiones crueles, sufrir p\xE9rdidas o permanecer demasiado cerca del <b>Aliento
       Negro</b> reducir\xE1 la Esperanza.\r\nSi la Esperanza cae demasiado, la caravana
       comenzar\xE1 a desmoronarse progresivamente.\r\nLa flecha se\xF1ala el valor
       actual de Esperanza de la caravana.\n\r\n\r\n"
-    en: 
-    pt: 
+    en: 'The <b>Hope</b> represents the caravan''s trust and spirit.
+
+      
+
+      Making
+      cruel choices, suffering losses, or staying too close to the <b>Black Breath</b>
+      will reduce Hope.
+
+      If Hope falls too low, the caravan will begin to
+      break down gradually.
+
+      The arrow shows the caravan''s current Hope value.
+
+      
+
+      
+
+'
+    pt: "A <b>Esperan\xE7a</b> representa a confian\xE7a e o \xE2nimo da caravana.\n\r\nTomar
+      decis\xF5es cru\xE9is, sofrer perdas ou ficar perto demais do <b>Respiro Negro</b>
+      reduzir\xE1 a Esperan\xE7a.\r\nSe a Esperan\xE7a cair demais, a caravana come\xE7ar\xE1
+      a ruir aos poucos.\r\nA seta indica a Esperan\xE7a atual da caravana.\n\r\n\r\n"
   - key: tutorial.intro4.narrator
     es: "\u201CY recuerde esto, Guardasenderos\u2026 los peligros del camino no son
       lo \xFAnico que puede destruir una caravana. El miedo y la desesperaci\xF3n
       suelen hacerlo primero. Los Civiles a\xFAn conservan Esperanza. Mientras crean
       que Serria puede alcanzarse, seguir\xE1n avanzando.\nPero si la pierden\u2026
       todo ser\xE1 en vano.\u201D"
-    en: 
-    pt: 
+    en: "\u201CAnd remember this, Pathwarden... the dangers of the road are not the
+      only thing that can destroy a caravan. Fear and despair often do it first.
+      The Civilians still hold on to Hope. As long as they believe Serria can be
+      reached, they will keep moving.\nBut if they lose it... all will be in vain.\u201D"
+    pt: "\u201CE lembre-se disto, Guarda-trilhas... os perigos do caminho n\xE3o
+      s\xE3o a \xFAnica coisa que pode destruir uma caravana. Medo e desespero costumam
+      agir primeiro. Os Civis ainda conservam Esperan\xE7a. Enquanto acreditarem
+      que Serria pode ser alcan\xE7ada, seguir\xE3o avan\xE7ando.\nMas se a perderem...
+      tudo ter\xE1 sido em v\xE3o.\u201D"
   - key: tutorial.mov1.title
     es: Viaje
-    en: 
-    pt: 
+    en: Travel
+    pt: Viagem
   - key: tutorial.mov1.body
     es: "Para avanzar por el mapa deber\xE1 seleccionar un nodo conectado al camino
       de la caravana.\n\r\nEn este tutorial, el recorrido estar\xE1 prefijado y contar\xE1
       con menos opciones que en una partida normal.\n\r\n<color=#FFD54A><b>Haga clic
       sobre el nodo marcado para que la caravana comience el viaje.</b></color>\r\n"
-    en: 
-    pt: 
+    en: 'To move across the map, you must select a node connected to the caravan''s
+      path.
+
+      
+
+      In this tutorial, the route is fixed and has fewer options
+      than a normal game.
+
+      
+
+      <color=#FFD54A><b>Click the marked node
+      for the caravan to begin the journey.</b></color>
+
+'
+    pt: "Para avan\xE7ar pelo mapa, voc\xEA deve selecionar um n\xF3 ligado ao caminho
+      da caravana.\n\r\nNeste tutorial, a rota ser\xE1 fixa e ter\xE1 menos op\xE7\xF5es
+      que em uma partida normal.\n\r\n<color=#FFD54A><b>Clique no n\xF3 marcado para
+      que a caravana comece a viagem.</b></color>\r\n"
   - key: tutorial.mov1.narrator
     es: "\u201CCuando usted lo ordene, indicar\xE9 a los conductores que la caravana
       contin\xFAe su marcha hacia lo que ahora llaman el Bosque Ardiente.\r\n\r\nEsperemos
       que los Salmos de Purificaci\xF3n nos protejan.\u201D\r\n"
-    en: 
-    pt: 
+    en: "\u201CWhen you give the order, I will tell the drivers to move the caravan
+      toward what they now call the Burning Forest.\r\n\r\nMay the Psalms of Purification
+      protect us.\u201D\r\n"
+    pt: "\u201CQuando voc\xEA der a ordem, direi aos condutores que a caravana siga
+      rumo ao que agora chamam de Floresta Ardente.\r\n\r\nQue os Salmos de Purifica\xE7\xE3o
+      nos protejam.\u201D\r\n"
   - key: tutorial.prebatalla1.title
     es: Batalla
-    en: 
-    pt: 
+    en: Battle
+    pt: Batalha
   - key: tutorial.prebatalla1.body
     es: "Los nodos de <b>Combate</b> representan enfrentamientos contra enemigos
       hostiles.\n\nEn esta ocasi\xF3n, la caravana ha sido interceptada por un grupo
       de bandidos.\n\n\n\n<color=#FFD54A><b>Haz clic sobre bot\xF3n marcado para
       continuar.</b></color>"
-    en: 
-    pt: 
+    en: 'The <b>Combat</b> nodes represent clashes against hostile enemies.
+
+
+      This
+      time, the caravan has been intercepted by a group of bandits.
+
+
+
+
+      <color=#FFD54A><b>Click
+      the marked button to continue.</b></color>'
+    pt: "Os n\xF3s de <b>Combate</b> representam confrontos contra inimigos hostis.\n\nDesta
+      vez, a caravana foi interceptada por um grupo de bandidos.\n\n\n\n<color=#FFD54A><b>Clique
+      no bot\xE3o marcado para continuar.</b></color>"
   - key: tutorial.prebatalla1.narrator
     es: "\u201CGuardasenderos\u2026 bandidos adelante.\r\n\r\nParece que incluso
       con el Aliento Negro avanzando, todav\xEDa hay quienes prefieren aprovecharse
       de los desesperados antes que huir.\r\nPrep\xE1rese. No nos dejar\xE1n pasar
       sin luchar.\u201D\r\n"
-    en: 
-    pt: 
+    en: "\u201CPathwarden... bandits ahead.\r\n\r\nIt seems that even with the Black
+      Breath advancing, some still prefer to prey on the desperate rather than flee.\r\nPrepare
+      yourself. They will not let us pass without a fight.\u201D\r\n"
+    pt: "\u201CGuarda-trilhas... bandidos \xE0 frente.\r\n\r\nParece que, mesmo com
+      o Respiro Negro avan\xE7ando, ainda h\xE1 quem prefira explorar os desesperados
+      em vez de fugir.\r\nPrepare-se. N\xE3o nos deixar\xE3o passar sem lutar.\u201D\r\n"
   - key: tutorial.prebatalla2.narrator
     es: 
     en: 
     pt: 
   - key: tutorial.prebatalla2.title
     es: "Selecci\xF3n"
-    en: 
-    pt: 
+    en: Selection
+    pt: "Sele\xE7\xE3o"
   - key: tutorial.prebatalla2.body
     es: "En este menu seleccionar\xE1s a los personajes de la caravana disponibles
       para luchar.\n\nPor el momento solo contamos con el Acechador, <color=#FFD54A>seleccionalo
       de las reservas y comienza la batalla.</color>"
-    en: 
-    pt: 
+    en: 'In this menu you will select the caravan characters available to fight.
+
+
+      For
+      now we only have the Stalker, <color=#FFD54A>select him from the reserves and
+      begin the battle.</color>'
+    pt: "Neste menu voc\xEA selecionar\xE1 os personagens da caravana dispon\xEDveis
+      para lutar.\n\nPor enquanto temos apenas o Espreitador, <color=#FFD54A>selecione-o
+      nas reservas e comece a batalha.</color>"
   - key: tutorial.postbatalla1.body
     es: "Luego del combate, podr\xE1s ver las recompensas obtenidas y las consecuencias
       en los personajes participantes. \n\n<color=#FFD54A>Para salir presiona el
       boton Continuar.</color>"
-    en: 
-    pt: 
+    en: "After combat, you will see the rewards obtained and the consequences for
+      the participating characters. \n\n<color=#FFD54A>To leave, press the Continue
+      button.</color>"
+    pt: "Ap\xF3s o combate, voc\xEA ver\xE1 as recompensas obtidas e as consequ\xEAncias
+      nos personagens participantes. \n\n<color=#FFD54A>Para sair, pressione o bot\xE3o
+      Continuar.</color>"
   - key: tutorial.postbatalla1.title
     es: Batalla
-    en: 
-    pt: 
+    en: Battle
+    pt: Batalha
   - key: tutorial.postbatalla2.title
     es: Personajes
-    en: 
-    pt: 
+    en: Characters
+    pt: Personagens
   - key: tutorial.postbatalla2.narrator
     es: "\u201CBuen trabajo. Los hombres de la caravana han visto la victoria\u2026
       y eso vale m\xE1s de lo que parece en tiempos como estos.\n\nDos supervivientes
       se han ofrecido a unirse a nosotros. Necesitaremos toda espada dispuesta a
       luchar si pretendemos llegar a Serria.\u201D"
-    en: 
-    pt: 
+    en: "\u201CGood work. The caravan's men have seen victory... and that is worth
+      more than it seems in times like these.\n\nTwo survivors have offered to join
+      us. We will need every sword willing to fight if we mean to reach Serria.\u201D"
+    pt: "\u201CBom trabalho. Os homens da caravana viram a vit\xF3ria... e isso vale
+      mais do que parece em tempos assim.\n\nDois sobreviventes se ofereceram para
+      se juntar a n\xF3s. Precisaremos de toda espada disposta a lutar se quisermos
+      chegar a Serria.\u201D"
   - key: tutorial.postbatalla2.body
     es: "Nuevos <b>Personajes</b> se han unido a la caravana.\n\nCada Personaje posee
       su propia clase, habilidades y estilo de combate.\n\nTras obtener experiencia
       en combate, los Personajes podr\xE1n subir de nivel y volverse m\xE1s poderosos.\n\n<color=#FFD54A><b>Haz
       clic sobre el bot\xF3n de Personajes para continuar.</b></color>"
-    en: 
-    pt: 
+    en: 'New <b>Characters</b> have joined the caravan.
+
+
+      Each Character has
+      their own class, abilities, and combat style.
+
+
+      After gaining combat
+      experience, Characters can level up and become stronger.
+
+
+      <color=#FFD54A><b>Click
+      the Characters button to continue.</b></color>'
+    pt: "Novos <b>Personagens</b> se uniram \xE0 caravana.\n\nCada Personagem possui
+      sua pr\xF3pria classe, habilidades e estilo de combate.\n\nAo ganhar experi\xEAncia
+      em combate, os Personagens poder\xE3o subir de n\xEDvel e ficar mais fortes.\n\n<color=#FFD54A><b>Clique
+      no bot\xE3o de Personagens para continuar.</b></color>"
   - key: tutorial.personaje1.title
     es: Personajes
-    en: 
-    pt: 
+    en: Characters
+    pt: Personagens
   - key: tutorial.personaje1.body
     es: "Cuando un Personaje sube de nivel, obtendr\xE1 mejoras que lo volver\xE1n
       m\xE1s poderoso.\n\nPodr\xE1s:\n\nRepartir puntos de <b>Atributo</b>.\nMejorar
       una <b>Habilidad</b>.\nDesbloquear nuevas opciones de combate a medida que
       avance su experiencia.\n\n<color=#FFD54A><b>Reparte el punto de atributo deseado
       y mejora una habilidad del Acechador</b></color>"
-    en: 
-    pt: 
+    en: 'When a Character levels up, they gain upgrades that make them stronger.
+
+
+      You
+      will be able to:
+
+
+      Assign <b>Attribute</b> points.
+
+      Upgrade an
+      <b>Ability</b>.
+
+      Unlock new combat options as their experience grows.
+
+
+      <color=#FFD54A><b>Assign
+      the desired attribute point and upgrade one Stalker ability</b></color>'
+    pt: "Quando um Personagem sobe de n\xEDvel, recebe melhorias que o tornam mais
+      forte.\n\nVoc\xEA poder\xE1:\n\nDistribuir pontos de <b>Atributo</b>.\nMelhorar
+      uma <b>Habilidade</b>.\nDesbloquear novas op\xE7\xF5es de combate conforme
+      sua experi\xEAncia avance.\n\n<color=#FFD54A><b>Distribua o ponto de atributo
+      desejado e melhore uma habilidade do Espreitador</b></color>"
   - key: tutorial.personaje1.narrator
     es: "\u201CEl Acechador ha ganado experiencia en combate y ha mejorado sus capacidades\n\nMantenga
       vivos a sus hombres el tiempo suficiente, y terminar\xE1n convirti\xE9ndose
       en combatientes mucho m\xE1s capaces.\u201D"
-    en: 
-    pt: 
+    en: "\u201CThe Stalker has gained combat experience and improved his abilities.\n\nKeep
+      your men alive long enough, and they will eventually become far more capable
+      fighters.\u201D"
+    pt: "\u201CO Espreitador ganhou experi\xEAncia em combate e melhorou suas capacidades.\n\nMantenha
+      seus homens vivos por tempo suficiente, e acabar\xE3o se tornando combatentes
+      muito mais capazes.\u201D"
   - key: tutorial.personaje2.body
     es: "Las <b>Actividades de Campa\xF1a</b> permiten asignar tareas a los Personajes
       mientras la caravana viaja o descansa.\n\nCada Actividad otorga distintos beneficios,
       y cada Personaje posee opciones \xFAnicas seg\xFAn su clase.\nCuando quieras
       cambiar de actividad, puedes hacerlo en el panel se\xF1alado.\n\n<color=#FFD54A><b>Cierra
       el menu de Personajes Tecla \"C\" para continuar.</b></color>\n"
-    en: 
-    pt: 
+    en: '<b>Campaign Activities</b> let you assign tasks to Characters while the
+      caravan travels or rests.
+
+
+      Each Activity grants different benefits,
+      and each Character has unique options based on their class.
+
+      When you
+      want to change activity, you can do it in the marked panel.
+
+
+      <color=#FFD54A><b>Close
+      the Characters menu with the "C" key to continue.</b></color>
+
+'
+    pt: "As <b>Atividades de Campanha</b> permitem atribuir tarefas aos Personagens
+      enquanto a caravana viaja ou descansa.\n\nCada Atividade concede benef\xEDcios
+      diferentes, e cada Personagem possui op\xE7\xF5es \xFAnicas conforme sua classe.\nQuando
+      quiser mudar de atividade, use o painel marcado.\n\n<color=#FFD54A><b>Feche
+      o menu de Personagens com a tecla \"C\" para continuar.</b></color>\n"
   - key: tutorial.personaje2.title
     es: Actividades
-    en: 
-    pt: 
+    en: Activities
+    pt: Atividades
   - key: tutorial.personaje2.narrator
     es: "\u201CMientras la caravana avanza, sus combatientes no permanecer\xE1n ociosos.\nCada
       uno puede cumplir una tarea durante el viaje: vigilar, entrenar o realizar
       especialidades propias de su oficio.\n\nSeg\xFAn las necesidades del momento,
       seguir\xE1n sus \xF3rdenes y har\xE1n lo indicado.\u201D"
-    en: 
-    pt: 
+    en: "\u201CAs the caravan advances, your fighters will not remain idle.\nEach
+      one can perform a task during the journey: keep watch, train, or practice the
+      specialties of their trade.\n\nDepending on the needs of the moment, they will
+      follow your orders and do as instructed.\u201D"
+    pt: "\u201CEnquanto a caravana avan\xE7a, seus combatentes n\xE3o ficar\xE3o
+      ociosos.\nCada um pode cumprir uma tarefa durante a viagem: vigiar, treinar
+      ou realizar especialidades do pr\xF3prio of\xEDcio.\n\nConforme as necessidades
+      do momento, seguir\xE3o suas ordens e far\xE3o o indicado.\u201D"
   - key: tutorial.mov2.title
     es: El viaje sigue
-    en: 
-    pt: 
+    en: The Journey Continues
+    pt: A Viagem Continua
   - key: tutorial.mov2.narrator
     es: "\u201CNo olvide esto, Guardasenderos\u2026 a veces un combate es inevitable
       pero nuestros combatientes son pocos y el viaje es muy largo.\n\nAhora el camino
       se bifurca ante nosotros y por fortuna tenemos la opci\xF3n de evitar un nuevo
       combate.\""
-    en: 
-    pt: 
+    en: "\u201CDo not forget this, Pathwarden... sometimes combat is inevitable,
+      but our fighters are few and the journey is very long.\n\nNow the road forks
+      before us, and fortunately we have the option to avoid another fight.\u201D"
+    pt: "\u201CN\xE3o se esque\xE7a disto, Guarda-trilhas... \xE0s vezes o combate
+      \xE9 inevit\xE1vel, mas nossos combatentes s\xE3o poucos e a viagem \xE9 longa.\n\nAgora
+      o caminho se divide diante de n\xF3s e, por sorte, temos a op\xE7\xE3o de evitar
+      outro combate.\u201D"
   - key: tutorial.mov2.body
     es: "A lo largo del viaje encontrar\xE1 distintos tipos de nodos y elegir bien
       marcar\xE1 la diferencia.\n\nAl sur tenemos un nodo de <b>Batalla \xC9lite</b>,
@@ -221,78 +439,134 @@ MonoBehaviour:
       un nodo de <b>Recursos</b>, que permitir\xE1 obtener suministros \xFAtiles
       para la caravana.\n\n<color=#FFD54A><b>Haz clic sobre el nodo de Recursos para
       continuar.</b></color>"
-    en: 
-    pt: 
+    en: 'Throughout the journey you will find different types of nodes, and choosing
+      well will make the difference.
+
+
+      To the south we have an <b>Elite Battle</b>
+      node, which means greater danger, though with better rewards.
+
+      To the
+      north, a <b>Resources</b> node, which will provide useful supplies for the
+      caravan.
+
+
+      <color=#FFD54A><b>Click the Resources node to continue.</b></color>'
+    pt: "Ao longo da viagem voc\xEA encontrar\xE1 diferentes tipos de n\xF3s, e escolher
+      bem far\xE1 a diferen\xE7a.\n\nAo sul h\xE1 um n\xF3 de <b>Batalha de Elite</b>,
+      que representa maior perigo, mas traz recompensas melhores.\nAo norte, um n\xF3
+      de <b>Recursos</b>, que permitir\xE1 obter suprimentos \xFAteis para a caravana.\n\n<color=#FFD54A><b>Clique
+      no n\xF3 de Recursos para continuar.</b></color>"
   - key: tutorial.recursos1.title
     es: Recursos
-    en: 
-    pt: 
+    en: Resources
+    pt: Recursos
   - key: tutorial.recursos1.narrator
     es: "\"Bien. Siempre es buena idea hacer acopio de recursos cuando se nos presente
       la oportunidad, los necesitaremos en tan largo viaje. \n\nLos suministros encontrados
       nos servir\xE1n para mantener vivos a los civiles, y los materiales para hacer
       las mejoras que necesitemos.\""
-    en: 
-    pt: 
+    en: "\"Good. It is always wise to gather resources when we have the chance; we
+      will need them on such a long journey. \n\nThe supplies we found will help
+      keep the civilians alive, and the materials will serve for the upgrades we
+      need.\""
+    pt: "\"Muito bem. \xC9 sempre bom acumular recursos quando surge a chance; vamos
+      precisar deles nesta longa viagem. \n\nOs suprimentos encontrados servir\xE3o
+      para manter os civis vivos, e os materiais para fazer as melhorias necess\xE1rias.\""
   - key: tutorial.recursos1.body
     es: "Los <b>Suministros</b> representan bienes b\xE1sicos y alimentos necesarios
       para mantener con vida a la caravana. \n\nLos <b>Materiales</b> podr\xE1n ser
       utilizados para realizar distintas mejoras a la caravana.\n\n"
-    en: 
-    pt: 
+    en: "The <b>Supplies</b> represent basic goods and food needed to keep the caravan
+      alive. \n\n<b>Materials</b> can be used to build different caravan upgrades.\n\n"
+    pt: "Os <b>Suprimentos</b> representam bens b\xE1sicos e alimentos necess\xE1rios
+      para manter a caravana viva. \n\nOs <b>Materiais</b> poder\xE3o ser usados
+      para realizar diferentes melhorias na caravana.\n\n"
   - key: tutorial.peso1.narrator
     es: "\u201CLos recursos que hemos obtenido han sobrecargado a los bueyes de carga.
       Viajar as\xED implica repartir la carga sobrante entre los civiles, lo cu\xE1l
       reducir\xE1 la esperanza.\n\nSer\xE1 mejor utilizar parte de esos materiales
       para reforzar la caravana y solucionar el problema antes de seguir avanzando.\u201D"
-    en: 
-    pt: 
+    en: "\u201CThe resources we obtained have overloaded the pack oxen. Traveling
+      like this means spreading the excess load among the civilians, which will reduce
+      hope.\n\nIt would be best to use part of those materials to reinforce the caravan
+      and solve the problem before moving on.\u201D"
+    pt: "\u201COs recursos que obtivemos sobrecarregaram os bois de carga. Viajar
+      assim implica repartir a carga extra entre os civis, o que reduzir\xE1 a esperan\xE7a.\n\nSer\xE1
+      melhor usar parte desses materiais para refor\xE7ar a caravana e resolver o
+      problema antes de seguir.\u201D"
   - key: tutorial.peso1.title
     es: Bueyes de Carga
-    en: 
-    pt: 
+    en: Pack Oxen
+    pt: Bois de Carga
   - key: tutorial.peso1.body
     es: "Cada caravana posee un l\xEDmite de <b>Carga</b> determinado principalmente
       por la cantidad de <b>Bueyes</b> disponibles. \n<color=#FFD54A><i>Podr\xE1s
       verlo en el \xE1rea marcada.</color></i>\n\nViajar sobrecargado reducir\xE1
       la <b>Esperanza</b> y puede provocar que muera alg\xFAno de los <b>Bueyes</b>.\n\n\n<color=#FFD54A>Presiona
       la flecha para Continuar</color>"
-    en: 
-    pt: 
+    en: "Each caravan has a <b>Load</b> limit, mainly determined by the number of
+      available <b>Oxen</b>. \n<color=#FFD54A><i>You can see it in the marked area.</color></i>\n\nTraveling
+      overloaded will reduce <b>Hope</b> and may cause one of the <b>Oxen</b> to
+      die.\n\n\n<color=#FFD54A>Press the arrow to Continue</color>"
+    pt: "Cada caravana possui um limite de <b>Carga</b>, determinado principalmente
+      pela quantidade de <b>Bois</b> dispon\xEDveis. \n<color=#FFD54A><i>Voc\xEA
+      poder\xE1 v\xEA-lo na \xE1rea marcada.</color></i>\n\nViajar sobrecarregado
+      reduzir\xE1 a <b>Esperan\xE7a</b> e pode fazer algum dos <b>Bois</b> morrer.\n\n\n<color=#FFD54A>Pressione
+      a seta para Continuar</color>"
   - key: tutorial.abrirmejoras.title
     es: '  '
-    en: 
-    pt: 
+    en: '  '
+    pt: '  '
   - key: tutorial.abrirmejoras.narrator
     es: 
     en: 
     pt: 
   - key: tutorial.abrirmejoras.body
     es: Para continuar, abre el menu de la <b>Caravana</b>.
-    en: 
-    pt: 
+    en: To continue, open the <b>Caravan</b> menu.
+    pt: Para continuar, abra o menu da <b>Caravana</b>.
   - key: tutorial.alforjas1.title
     es: Mejoras
-    en: 
-    pt: 
+    en: Upgrades
+    pt: Melhorias
   - key: tutorial.alforjas1.narrator
     es: "\u201CNuestra caravana puede beneficiarse de diversas mejoras, seg\xFAn
       la situaci\xF3n, la zona que atravesemos y los muchos imprevistos del camino.\n\nPor
       el momento, creo que a los bueyes les vendr\xEDan bien unas alforjas. Con ellas
       podremos llevar m\xE1s carga sin retrasar la marcha.\u201D"
-    en: 
-    pt: 
+    en: "\u201COur caravan can benefit from various upgrades, depending on the situation,
+      the zone we cross, and the many surprises on the road.\n\nFor now, I think
+      the oxen could use some saddlebags. With them we can carry more load without
+      slowing the march.\u201D"
+    pt: "\u201CNossa caravana pode se beneficiar de v\xE1rias melhorias, conforme
+      a situa\xE7\xE3o, a zona que cruzarmos e os imprevistos do caminho.\n\nPor
+      enquanto, acho que os bois poderiam usar alguns alforjes. Com eles poderemos
+      levar mais carga sem atrasar a marcha.\u201D"
   - key: tutorial.alforjas1.body
     es: "Las <b>Mejoras de Caravana</b> permiten reforzar distintos aspectos del
       viaje, otorgando beneficios permanentes para la expedici\xF3n.\n\nCada mejora
       requiere <b>Materiales</b> para ser construida.\n\n\n<color=#FFD54A><b>Selecciona
       la mejora de Alforjas para aumentar la capacidad de carga de la caravana.</b></color>"
-    en: 
-    pt: 
+    en: '<b>Caravan Upgrades</b> let you reinforce different aspects of the journey,
+      granting permanent benefits to the expedition.
+
+
+      Each upgrade requires
+      <b>Materials</b> to build.
+
+
+
+      <color=#FFD54A><b>Select the Saddlebags
+      upgrade to increase the caravan''s load capacity.</b></color>'
+    pt: "As <b>Melhorias de Caravana</b> permitem refor\xE7ar diferentes aspectos
+      da viagem, concedendo benef\xEDcios permanentes \xE0 expedi\xE7\xE3o.\n\nCada
+      melhoria requer <b>Materiais</b> para ser constru\xEDda.\n\n\n<color=#FFD54A><b>Selecione
+      a melhoria de Alforjes para aumentar a capacidade de carga da caravana.</b></color>"
   - key: tutorial.alforjas2.title
     es: '  '
-    en: 
-    pt: 
+    en: '  '
+    pt: '  '
   - key: tutorial.alforjas2.narrator
     es: 
     en: 
@@ -303,25 +577,608 @@ MonoBehaviour:
 
       <color=#FFD54A><b>Presiona I para
       cerrar el menu de Mejoras.</b></color>'
-    en: 
-    pt: 
+    en: 'The upgrade has already been implemented.
+
+
+      <color=#FFD54A><b>Press
+      I to close the Upgrades menu.</b></color>'
+    pt: "A melhoria j\xE1 foi implementada.\n\n<color=#FFD54A><b>Pressione I para
+      fechar o menu de Melhorias.</b></color>"
   - key: tutorial.mov3.title
     es: El viaje sigue
-    en: 
-    pt: 
+    en: The Journey Continues
+    pt: A Viagem Continua
   - key: tutorial.mov3.body
     es: "El camino contin\xFAa sin bifurcaciones y el pr\xF3ximo destino es un nodo
       de <b>Evento</b>.\n\nLos Eventos pueden ser positivos o negativos de forma
       aleatoria, aunque la <b>Esperanza</b> de la caravana influir\xE1 en las probabilidades
       de obtener resultados favorables.\n\n<color=#FFD54A><b>Haz clic sobre el siguiente
       nodo para continuar el viaje.</b></color>"
-    en: 
-    pt: 
+    en: 'The road continues without forks, and the next destination is an <b>Event</b>
+      node.
+
+
+      Events can be positive or negative at random, though the caravan''s
+      <b>Hope</b> will influence the chances of favorable outcomes.
+
+
+      <color=#FFD54A><b>Click
+      the next node to continue the journey.</b></color>'
+    pt: "O caminho continua sem bifurca\xE7\xF5es, e o pr\xF3ximo destino \xE9 um
+      n\xF3 de <b>Evento</b>.\n\nOs Eventos podem ser positivos ou negativos de forma
+      aleat\xF3ria, embora a <b>Esperan\xE7a</b> da caravana influencie as chances
+      de resultados favor\xE1veis.\n\n<color=#FFD54A><b>Clique no pr\xF3ximo n\xF3
+      para continuar a viagem.</b></color>"
   - key: tutorial.mov3.narrator
     es: '"Perfecto.
 
 
       Ahora que hemos utilizado algunos materiales e incrementado
       la carga de nuestros bueyes, podemos continuar el viaje sin retrasos."'
-    en: 
-    pt: 
+    en: '"Perfect.
+
+
+      Now that we have used some materials and increased our
+      oxen''s load, we can continue the journey without delay."'
+    pt: '"Perfeito.
+
+
+      Agora que usamos alguns materiais e aumentamos a carga
+      dos nossos bois, podemos continuar a viagem sem atrasos."'
+  - key: tutorial.exp1.narrator
+    es: "\u201CMmm\u2026 el camino correcto aqu\xED es incierto.\nA lo lejos, nuestros
+      exploradores han divisado que el sendero del este parece ocultar una posible
+      emboscada enemiga.\n\nEn cambio, hacia el sureste\u2026 no han logrado determinar
+      ad\xF3nde conduce el camino.\u201D"
+    en: "\u201CMmm... the right path here is uncertain.\nIn the distance, our scouts
+      have seen that the eastern trail seems to hide a possible enemy ambush.\n\nTo
+      the southeast, however... they could not determine where the road leads.\u201D"
+    pt: "\u201CMmm... o caminho certo aqui \xE9 incerto.\n\xC0 dist\xE2ncia, nossos
+      exploradores avistaram que a trilha do leste parece ocultar uma poss\xEDvel
+      emboscada inimiga.\n\nJ\xE1 para o sudeste... n\xE3o conseguiram determinar
+      aonde o caminho leva.\u201D"
+  - key: tutorial.exp1.title
+    es: "Exploraci\xF3n Pasiva"
+    en: Passive Exploration
+    pt: "Explora\xE7\xE3o Passiva"
+  - key: tutorial.exp1.body
+    es: "La <b>Exploraci\xF3n Pasiva</b> ocurre cuando la caravana llega a un <b>Nodo</b>
+      o realiza un <b>Descanso</b>.\n\nDurante ella, se realiza una tirada que puede
+      revelar el tipo de los nodos cercanos.\n\nSi la exploraci\xF3n falla, los nodos
+      permanecer\xE1n como <b>Misteriosos</b> y su contenido ser\xE1 desconocido
+      hasta alcanzarlos."
+    en: '<b>Passive Exploration</b> occurs when the caravan reaches a <b>Node</b>
+      or performs a <b>Rest</b>.
+
+
+      During it, a roll is made that can reveal
+      the type of nearby nodes.
+
+
+      If exploration fails, the nodes will remain
+      <b>Mysterious</b>, and their content will be unknown until you reach them.'
+    pt: "A <b>Explora\xE7\xE3o Passiva</b> ocorre quando a caravana chega a um <b>N\xF3</b>
+      ou realiza um <b>Descanso</b>.\n\nDurante ela, \xE9 feita uma rolagem que pode
+      revelar o tipo dos n\xF3s pr\xF3ximos.\n\nSe a explora\xE7\xE3o falhar, os
+      n\xF3s permanecer\xE3o <b>Misteriosos</b>, e seu conte\xFAdo ser\xE1 desconhecido
+      at\xE9 alcan\xE7\xE1-los."
+  - key: tutorial.exp2.body
+    es: "<Size=85%><i><color=#A94444>---Los nodos de Zona Expuesta garantizan que
+      la caravana ser\xE1 emboscada si se viaja all\xED. \nSon combates m\xE1s dif\xEDciles
+      y extensos en los cuales si eres derrotado, perder\xE1s la partida.---</color></i></Size>\n\nLa
+      <b>Exploraci\xF3n Activa</b> te deja enviar 5 <b>Civiles</b> a revelar  un
+      <b>Nodo Misterioso</b> esto provocar\xE1 que el Aliento Negro avance levemente
+      y a veces pueden no regresar.\n\n<color=#FFD54A><b>Haz click con el <b>Bot\xF3n
+      Derecho</b> en el Nodo seleccionado para enviar Exploradores.</b></color>"
+    en: "<Size=85%><i><color=#A94444>---Exposed Zone nodes guarantee the caravan
+      will be ambushed if it travels there. \nThese are harder, longer fights where
+      defeat will end the game.---</color></i></Size>\n\n<b>Active Exploration</b>
+      lets you send 5 <b>Civilians</b> to reveal a <b>Mysterious Node</b>. This will
+      make the Black Breath advance slightly, and sometimes they may not return.\n\n<color=#FFD54A><b>Right-click
+      the selected Node to send Scouts.</b></color>"
+    pt: "<Size=85%><i><color=#A94444>---N\xF3s de Zona Exposta garantem que a caravana
+      ser\xE1 emboscada se viajar para l\xE1. \nS\xE3o combates mais dif\xEDceis
+      e longos nos quais, se voc\xEA for derrotado, perder\xE1 a partida.---</color></i></Size>\n\nA
+      <b>Explora\xE7\xE3o Ativa</b> permite enviar 5 <b>Civis</b> para revelar um
+      <b>N\xF3 Misterioso</b>. Isso far\xE1 o Respiro Negro avan\xE7ar um pouco,
+      e \xE0s vezes eles podem n\xE3o voltar.\n\n<color=#FFD54A><b>Clique com o <b>Bot\xE3o
+      Direito</b> no N\xF3 selecionado para enviar Exploradores.</b></color>"
+  - key: tutorial.exp2.narrator
+    es: "\u201CEs crucial evitar la emboscada enemiga.\n\nNuestra mejor opci\xF3n
+      es enviar un grupo de exploradores al sureste y esperar a su regreso. \nEsto
+      nos retrasar\xE1, pero al menos sabremos qu\xE9 nos aguarda all\xED antes de
+      tomar una decisi\xF3n. \u201D"
+    en: "\u201CIt is crucial to avoid the enemy ambush.\n\nOur best option is to
+      send a group of scouts southeast and wait for their return. \nThis will delay
+      us, but at least we will know what awaits us there before making a decision.\u201D"
+    pt: "\u201C\xC9 crucial evitar a emboscada inimiga.\n\nNossa melhor op\xE7\xE3o
+      \xE9 enviar um grupo de exploradores ao sudeste e esperar seu retorno. \nIsso
+      nos atrasar\xE1, mas ao menos saberemos o que nos aguarda l\xE1 antes de tomar
+      uma decis\xE3o.\u201D"
+  - key: tutorial.exp2.title
+    es: "Exploraci\xF3n Activa"
+    en: Active Exploration
+    pt: "Explora\xE7\xE3o Ativa"
+  - key: tutorial.exp3.title
+    es: "Exploraci\xF3n Activa"
+    en: Active Exploration
+    pt: "Explora\xE7\xE3o Ativa"
+  - key: tutorial.exp3.narrator
+    es: "\u201CEl grupo de exploradores ha regresado\u2026 y, esta vez, traen buenas
+      noticias.\n\nAl sureste han descubierto un refugio oculto entre la espesura
+      del bosque. Parece un lugar relativamente seguro donde la caravana podr\xE1
+      armar un campamento para descansar y reponer fuerzas.\u201D"
+    en: "\u201CThe scout group has returned... and this time, they bring good news.\n\nTo
+      the southeast they found a shelter hidden in the forest's thickness. It seems
+      like a relatively safe place where the caravan can set up camp to rest and
+      recover strength.\u201D"
+    pt: "\u201CO grupo de exploradores voltou... e desta vez traz boas not\xEDcias.\n\nAo
+      sudeste descobriram um ref\xFAgio oculto na mata fechada. Parece um lugar relativamente
+      seguro onde a caravana poder\xE1 montar acampamento para descansar e recuperar
+      for\xE7as.\u201D"
+  - key: tutorial.exp3.body
+    es: "Gracias a la <b>Exploraci\xF3n Activa</b>, has logrado revelar un nodo beneficioso
+      antes de avanzar.\n\nObtener informaci\xF3n sobre los caminos cercanos te permitir\xE1
+      tomar mejores decisiones y reducir los riesgos para la caravana.\n\n<color=#FFD54A><b>Haz
+      clic sobre el nodo de Descanso para viajar.</b></color>"
+    en: 'Thanks to <b>Active Exploration</b>, you have revealed a beneficial node
+      before advancing.
+
+
+      Getting information about nearby roads will let you
+      make better decisions and reduce risks for the caravan.
+
+
+      <color=#FFD54A><b>Click
+      the Rest node to travel.</b></color>'
+    pt: "Gra\xE7as \xE0 <b>Explora\xE7\xE3o Ativa</b>, voc\xEA revelou um n\xF3 ben\xE9fico
+      antes de avan\xE7ar.\n\nObter informa\xE7\xF5es sobre os caminhos pr\xF3ximos
+      permitir\xE1 tomar melhores decis\xF5es e reduzir os riscos para a caravana.\n\n<color=#FFD54A><b>Clique
+      no n\xF3 de Descanso para viajar.</b></color>"
+  - key: tutorial.fatiga1.title
+    es: Fatiga
+    en: Fatigue
+    pt: Fadiga
+  - key: tutorial.fatiga1.body
+    es: "La <b>Fatiga</b> representa el desgaste acumulado de la caravana durante
+      el viaje.\n<color=#FFD54A><i>Podr\xE1s verla en el \xE1rea marcada.</color></i>\n\nA
+      medida que se acrecenta comenzar\xE1 a tener un impacto negativo en la <b>Esperanza</b>
+      de manera progresiva.\n\nDescansar permite reducir la Fatiga y recuperar fuerzas
+      antes de continuar.\n"
+    en: '<b>Fatigue</b> represents the caravan''s accumulated wear during the journey.
+
+      <color=#FFD54A><i>You
+      can see it in the marked area.</color></i>
+
+
+      As it grows, it will begin
+      to have a progressive negative impact on <b>Hope</b>.
+
+
+      Resting reduces
+      Fatigue and recovers strength before continuing.
+
+'
+    pt: "A <b>Fadiga</b> representa o desgaste acumulado da caravana durante a viagem.\n<color=#FFD54A><i>Voc\xEA
+      poder\xE1 v\xEA-la na \xE1rea marcada.</color></i>\n\n\xC0 medida que aumenta,
+      come\xE7ar\xE1 a ter um impacto negativo progressivo na <b>Esperan\xE7a</b>.\n\nDescansar
+      permite reduzir a Fadiga e recuperar for\xE7as antes de continuar.\n"
+  - key: tutorial.fatiga1.narrator
+    es: "\u201CExcelente\u2026 la caravana necesita este descanso. Han sido cuatro
+      d\xEDas de viaje casi ininterrumpido, con apenas unas pocas pausas breves.\n\nSi
+      exigimos demasiado a la caravana sin acampar\u2026 tarde o temprano terminar\xE1
+      quebr\xE1ndose.\u201D"
+    en: "\u201CExcellent... the caravan needs this rest. It has been four days of
+      almost nonstop travel, with only a few short pauses.\n\nIf we demand too much
+      from the caravan without camping... sooner or later it will break.\u201D"
+    pt: "\u201CExcelente... a caravana precisa deste descanso. Foram quatro dias
+      de viagem quase sem parar, com apenas algumas pausas breves.\n\nSe exigirmos
+      demais da caravana sem acampar... cedo ou tarde ela acabar\xE1 quebrando.\u201D"
+  - key: tutorial.fatiga2.narrator
+    es: "\u201CLos claros como este son ideales para acampar. Aqu\xED estaremos m\xE1s
+      resguardados de posibles emboscadas y la caravana podr\xE1 recuperar fuerzas
+      como es debido.\n\nNo siempre tendremos la suerte de encontrar un lugar as\xED
+      durante el viaje\u2026 y, m\xE1s de una vez, nos veremos obligados a descansar
+      en sitios mucho menos seguros.\u201D"
+    en: "\u201CClearings like this are ideal for camping. Here we will be safer from
+      possible ambushes, and the caravan can recover properly.\n\nWe will not always
+      be lucky enough to find a place like this during the journey... and more than
+      once, we will be forced to rest in far less safe places.\u201D"
+    pt: "\u201CClareiras como esta s\xE3o ideais para acampar. Aqui estaremos mais
+      protegidos de poss\xEDveis emboscadas, e a caravana poder\xE1 recuperar for\xE7as
+      como deve.\n\nNem sempre teremos a sorte de encontrar um lugar assim durante
+      a viagem... e, mais de uma vez, seremos obrigados a descansar em locais bem
+      menos seguros.\u201D"
+  - key: tutorial.fatiga2.title
+    es: Descanso
+    en: Rest
+    pt: Descanso
+  - key: tutorial.fatiga2.body
+    es: "Acampar implica que la caravana parar\xE1 un d\xEDa entero para recobrar
+      fuerzas y reacomodarse.\n\nAl descansar:\n-La <b>Fatiga</b> se restablecer\xE1.\n-Los
+      <b>Personajes</b> recuperar\xE1n mas salud.\n-Cada <b>Civil</b> consumir\xE1
+      1 <b>Suministro</b>. (Cada Buey 2)\n-El <b>Aliento Negro</b> avanzar\xE1 2
+      posiciones. (1 en <b>Claros</b>)\n-Se dar\xE1 un <b>Evento</b> Aleatorio de
+      descanso.\n-Se podr\xE1 seleccionar una <b>Tarea Civil</b>.\n\n<color=#FFD54A>Presiona
+      el bot\xF3n de <b>Acampar</b></color>"
+    en: 'Camping means the caravan will stop for a full day to recover strength and
+      reorganize.
+
+
+      When resting:
+
+      -<b>Fatigue</b> will reset.
+
+      -<b>Characters</b>
+      will recover more health.
+
+      -Each <b>Civilian</b> will consume 1 <b>Supply</b>.
+      (Each Ox 2)
+
+      -The <b>Black Breath</b> will advance 2 positions. (1 in
+      <b>Clearings</b>)
+
+      -A random rest <b>Event</b> will occur.
+
+      -A
+      <b>Civil Task</b> can be selected.
+
+
+      <color=#FFD54A>Press the <b>Camp</b>
+      button</color>'
+    pt: "Acampar implica que a caravana parar\xE1 um dia inteiro para recuperar for\xE7as
+      e se reorganizar.\n\nAo descansar:\n-A <b>Fadiga</b> ser\xE1 restaurada.\n-Os
+      <b>Personagens</b> recuperar\xE3o mais sa\xFAde.\n-Cada <b>Civil</b> consumir\xE1
+      1 <b>Suprimento</b>. (Cada Boi 2)\n-O <b>Respiro Negro</b> avan\xE7ar\xE1 2
+      posi\xE7\xF5es. (1 em <b>Clareiras</b>)\n-Ocorrer\xE1 um <b>Evento</b> aleat\xF3rio
+      de descanso.\n-Ser\xE1 poss\xEDvel selecionar uma <b>Tarefa Civil</b>.\n\n<color=#FFD54A>Pressione
+      o bot\xE3o <b>Acampar</b></color>"
+  - key: tutorial.descanso1.title
+    es: Tarea Civil
+    en: Civil Task
+    pt: Tarefa Civil
+  - key: tutorial.descanso1.body
+    es: "Durante cada <b>Descanso</b>, podr\xE1s asignar una <b>Tarea Civil</b> a
+      los miembros de la caravana.\n\nEstas tareas pueden ayudarte a conseguir recursos,
+      reducir riesgos o incluso a aumentar la Esperanza.\n\n<color=#FFD54A>Elige
+      una Tarea Civil y presiona el bot\xF3n de <b>Descanso</b></color>"
+    en: 'During each <b>Rest</b>, you can assign a <b>Civil Task</b> to the caravan
+      members.
+
+
+      These tasks can help you obtain resources, reduce risks, or
+      even increase Hope.
+
+
+      <color=#FFD54A>Choose a Civil Task and press the
+      <b>Rest</b> button</color>'
+    pt: "Durante cada <b>Descanso</b>, voc\xEA poder\xE1 atribuir uma <b>Tarefa Civil</b>
+      aos membros da caravana.\n\nEssas tarefas podem ajudar a obter recursos, reduzir
+      riscos ou at\xE9 aumentar a Esperan\xE7a.\n\n<color=#FFD54A>Escolha uma Tarefa
+      Civil e pressione o bot\xE3o de <b>Descanso</b></color>"
+  - key: tutorial.descanso1.narrator
+    es: "\"El campamento est\xE1 montado, y hoy no avanzaremos, nos centraremos en
+      descansar y recobrar fuerzas.\n\nPero no ser\xE1 un descanso ocioso, podremos
+      asignar una tarea a los miembros de la caravana que realizar\xE1n durante el
+      d\xEDa. Hay que hacer valer el tiempo disponible.\""
+    en: '"The camp is set, and today we will not advance; we will focus on resting
+      and recovering strength.
+
+
+      But it will not be an idle rest. We can assign
+      a task to the caravan members to perform during the day. We must make the available
+      time count."'
+    pt: "\"O acampamento est\xE1 montado, e hoje n\xE3o avan\xE7aremos; vamos nos
+      concentrar em descansar e recuperar for\xE7as.\n\nMas n\xE3o ser\xE1 um descanso
+      ocioso. Poderemos atribuir uma tarefa aos membros da caravana para realizar
+      durante o dia. \xC9 preciso aproveitar o tempo dispon\xEDvel.\""
+  - key: tutorial.clima.title
+    es: Clima
+    en: Weather
+    pt: Clima
+  - key: tutorial.clima.narrator
+    es: "\"Bien, los la caravana ahora cuenta con vigor renovado para continuar esta
+      dif\xEDcil traves\xEDa. \n\nAdem\xE1s, parece que tenemos compa\xF1\xEDa: esp\xEDritus
+      ben\xE9volos, probablemente animales benignos que perecieron en las llamas
+      quieren guiarnos por caminos seguros, lejos del peligro.\""
+    en: "\"Good, the caravan now has renewed vigor to continue this difficult crossing.
+      \n\nBesides, it seems we have company: benevolent spirits, probably gentle
+      animals that perished in the flames, want to guide us along safe roads, far
+      from danger.\""
+    pt: "\"Muito bem, a caravana agora conta com vigor renovado para continuar esta
+      travessia dif\xEDcil. \n\nAl\xE9m disso, parece que temos companhia: esp\xEDritos
+      benevolentes, provavelmente animais benignos que pereceram nas chamas, querem
+      nos guiar por caminhos seguros, longe do perigo.\""
+  - key: tutorial.clima.body
+    es: "Cada vez que la caravana <b>Descansa</b>, se realiza una <b>Tirada de Clima</b>,
+      que puede cambiar las condiciones de la campa\xF1a.\n\n<color=#FFD54A>Puedes
+      ver el Clima actual y sus efectos en el \xE1rea marcada.</color>\n\nCada zona
+      puede tener sus propios climas, e incluso condiciones especiales, como las
+      <b>Almas Danzantes</b> del <b>Bosque Ardiente</b>."
+    en: 'Each time the caravan <b>Rests</b>, a <b>Weather Roll</b> is made, which
+      can change campaign conditions.
+
+
+      <color=#FFD54A>You can see the current
+      Weather and its effects in the marked area.</color>
+
+
+      Each zone can have
+      its own weather, and even special conditions, such as the <b>Dancing Souls</b>
+      of the <b>Burning Forest</b>.'
+    pt: "Cada vez que a caravana <b>Descansa</b>, \xE9 feita uma <b>Rolagem de Clima</b>,
+      que pode mudar as condi\xE7\xF5es da campanha.\n\n<color=#FFD54A>Voc\xEA pode
+      ver o Clima atual e seus efeitos na \xE1rea marcada.</color>\n\nCada zona pode
+      ter seus pr\xF3prios climas, e at\xE9 condi\xE7\xF5es especiais, como as <b>Almas
+      Dan\xE7antes</b> da <b>Floresta Ardente</b>."
+  - key: tutorial.sequitos1.body
+    es: "Los <b>S\xE9quitos</b> son grupos especializados que viajan junto a la caravana
+      y brindan servicios durante la expedici\xF3n.\n\nLos <b>S\xE9quitos</b> cobrar\xE1n
+      sus servicios, aunque a precios rebajados.\n\nCada caravana empieza siempre
+      con los 3 <b>S\xE9quitos</b> b\xE1sicos: <b>Herreros, Mercaderes y Curanderos</b>
+      y podr\xE1 encontrar nuevos durante el viaje.\n\n<color=#FFD54A>Abre el Men\xFA
+      de S\xE9quitos.</color>\n"
+    en: '<b>Retinues</b> are specialized groups that travel with the caravan and
+      provide services during the expedition.
+
+
+      <b>Retinues</b> will charge
+      for their services, though at reduced prices.
+
+
+      Every caravan always
+      starts with the 3 basic <b>Retinues</b>: <b>Blacksmiths, Merchants, and Healers</b>,
+      and can find new ones during the journey.
+
+
+      <color=#FFD54A>Open the Retinues
+      Menu.</color>
+
+'
+    pt: "Os <b>S\xE9quitos</b> s\xE3o grupos especializados que viajam junto \xE0
+      caravana e prestam servi\xE7os durante a expedi\xE7\xE3o.\n\nOs <b>S\xE9quitos</b>
+      cobrar\xE3o por seus servi\xE7os, embora a pre\xE7os reduzidos.\n\nCada caravana
+      sempre come\xE7a com os 3 <b>S\xE9quitos</b> b\xE1sicos: <b>Ferreiros, Mercadores
+      e Curandeiros</b>, e poder\xE1 encontrar novos durante a viagem.\n\n<color=#FFD54A>Abra
+      o Menu de S\xE9quitos.</color>\n"
+  - key: tutorial.sequitos1.narrator
+    es: "\u201CAntes de retomar la marcha, conviene hablar de la composici\xF3n de
+      la caravana.\nNo s\xF3lo viajan con nosotros civiles y familias: tambi\xE9n
+      contamos con grupos homog\xE9neos que colaboran cumpliendo funciones concretas.\u201D"
+    en: "\u201CBefore resuming the march, we should speak about the caravan's composition.\nCivilians
+      and families are not the only ones traveling with us: we also have organized
+      groups that help by fulfilling specific roles.\u201D"
+    pt: "\u201CAntes de retomar a marcha, conv\xE9m falar da composi\xE7\xE3o da
+      caravana.\nN\xE3o viajam conosco apenas civis e fam\xEDlias: tamb\xE9m contamos
+      com grupos organizados que colaboram cumprindo fun\xE7\xF5es concretas.\u201D"
+  - key: tutorial.sequitos1.title
+    es: "S\xE9quitos"
+    en: Retinues
+    pt: "S\xE9quitos"
+  - key: tutorial.sequitos2.title
+    es: Herreros
+    en: Blacksmiths
+    pt: Ferreiros
+  - key: tutorial.sequitos2.narrator
+    es: "\u201CLos herreros cargan en uno de los carros con las herramientas necesarias
+      para ejercer su oficio, aunque sea de forma improvisada.\n\nPodr\xE1n fabricar
+      armas para los civiles si la situaci\xF3n lo exige, y tambi\xE9n ayudar\xE1n
+      con el mantenimiento del equipo de nuestros combatientes.\u201D"
+    en: "\u201CThe blacksmiths carry the tools needed for their trade in one of the
+      carts, even if only in improvised form.\n\nThey can make weapons for the civilians
+      if the situation demands it, and also help maintain our fighters' equipment.\u201D"
+    pt: "\u201COs ferreiros levam em um dos carros as ferramentas necess\xE1rias
+      para exercer seu of\xEDcio, ainda que de forma improvisada.\n\nPoder\xE3o fabricar
+      armas para os civis se a situa\xE7\xE3o exigir, e tamb\xE9m ajudar\xE3o na
+      manuten\xE7\xE3o do equipamento dos nossos combatentes.\u201D"
+  - key: tutorial.sequitos2.body
+    es: "El <b>S\xE9quito de Herreros</b> puede generar armas para los civiles, aumentando
+      la proporci\xF3n de <b>Milicianos</b> que ayudar\xE1n a defender a la caravana
+      en ataques directos de vida o muerte.\n\nAdem\xE1s, otorgar\xE1 mejoras temporales
+      a los <b>Personajes</b>."
+    en: 'The <b>Blacksmith Retinue</b> can produce weapons for civilians, increasing
+      the share of <b>Militia</b> who will help defend the caravan in direct life-or-death
+      attacks.
+
+
+      It will also grant temporary upgrades to <b>Characters</b>.'
+    pt: "O <b>S\xE9quito de Ferreiros</b> pode gerar armas para os civis, aumentando
+      a propor\xE7\xE3o de <b>Milicianos</b> que ajudar\xE3o a defender a caravana
+      em ataques diretos de vida ou morte.\n\nAl\xE9m disso, conceder\xE1 melhorias
+      tempor\xE1rias aos <b>Personagens</b>."
+  - key: tutorial.sequitos3.title
+    es: Curanderos
+    en: Healers
+    pt: Curandeiros
+  - key: tutorial.sequitos3.narrator
+    es: "\u201CEl s\xE9quito de curanderos viaja con vendas, ung\xFCentos y todo
+      remedio que haya sobrevivido al camino.\n\nNo har\xE1n milagros, Guardasenderos\u2026
+      pero mientras tengan manos firmes y algo con qu\xE9 trabajar, se encargar\xE1n
+      de nuestros heridos y enfermos.\u201D"
+    en: "\u201CThe healer retinue travels with bandages, ointments, and every remedy
+      that survived the road.\n\nThey will not perform miracles, Pathwarden... but
+      as long as they have steady hands and something to work with, they will care
+      for our wounded and sick.\u201D"
+    pt: "\u201CO s\xE9quito de curandeiros viaja com ataduras, unguentos e todo rem\xE9dio
+      que sobreviveu ao caminho.\n\nN\xE3o far\xE3o milagres, Guarda-trilhas... mas
+      enquanto tiverem m\xE3os firmes e algo com que trabalhar, cuidar\xE3o dos nossos
+      feridos e doentes.\u201D"
+  - key: tutorial.sequitos3.body
+    es: "El <b>S\xE9quito de Curanderos</b> proporciona curaci\xF3n pasiva a los
+      <b>Personajes</b> heridos tras el combate. Cada d\xEDa restaurar\xE1 un <b>5%</b>
+      de su vida m\xE1xima.\n\nEsta curaci\xF3n puede mejorarse gastando <b>Materiales</b>.\n\nAdem\xE1s,
+      los Curanderos pueden tratar a Personajes con el estado <b>Herido</b>, aunque
+      hacerlo no ser\xE1 barato.\n\n<color=#A94444><size=90%><i>Un Personaje queda
+      Herido si cae en combate. Si vuelve a caer mientras ya tiene una Herida, morir\xE1.</i></size></color>"
+    en: 'The <b>Healer Retinue</b> provides passive healing to <b>Characters</b>
+      wounded after combat. Each day it will restore <b>5%</b> of their maximum health.
+
+
+      This
+      healing can be improved by spending <b>Materials</b>.
+
+
+      Healers can also
+      treat Characters with the <b>Wounded</b> state, though doing so will not be
+      cheap.
+
+
+      <color=#A94444><size=90%><i>A Character becomes Wounded if they
+      fall in combat. If they fall again while already Wounded, they will die.</i></size></color>'
+    pt: "O <b>S\xE9quito de Curandeiros</b> fornece cura passiva aos <b>Personagens</b>
+      feridos ap\xF3s o combate. Cada dia restaurar\xE1 <b>5%</b> da vida m\xE1xima
+      deles.\n\nEssa cura pode ser melhorada gastando <b>Materiais</b>.\n\nAl\xE9m
+      disso, os Curandeiros podem tratar Personagens com o estado <b>Ferido</b>,
+      embora isso n\xE3o seja barato.\n\n<color=#A94444><size=90%><i>Um Personagem
+      fica Ferido se cair em combate. Se cair novamente enquanto j\xE1 tem uma Ferida,
+      morrer\xE1.</i></size></color>"
+  - key: tutorial.sequitos4.narrator
+    es: "\u201CLos carros de los mercaderes ofrecen objetos que podr\xEDan ser \xFAtiles
+      para nuestros combatientes. No cuentan con demasiada variedad, pero conviene
+      visitarlos de tanto en tanto.\n\nEso s\xED\u2026 no espere nada gratis. La
+      situaci\xF3n es cr\xEDtica, pero esta gente tambi\xE9n necesitar\xE1 oro para
+      sobrevivir cuando lleguemos a un lugar seguro.\u201D"
+    en: "\u201CThe merchants' carts offer items that could be useful for our fighters.
+      They do not have much variety, but it is worth visiting them from time to time.\n\nThat
+      said... do not expect anything for free. The situation is critical, but these
+      people will also need gold to survive when we reach a safe place.\u201D"
+    pt: "\u201COs carros dos mercadores oferecem objetos que podem ser \xFAteis para
+      nossos combatentes. N\xE3o t\xEAm muita variedade, mas conv\xE9m visit\xE1-los
+      de tempos em tempos.\n\nDito isso... n\xE3o espere nada gr\xE1tis. A situa\xE7\xE3o
+      \xE9 cr\xEDtica, mas essa gente tamb\xE9m precisar\xE1 de ouro para sobreviver
+      quando chegarmos a um lugar seguro.\u201D"
+  - key: tutorial.sequitos4.title
+    es: Mercaderes
+    en: Merchants
+    pt: Mercadores
+  - key: tutorial.sequitos4.body
+    es: "El <b>S\xE9quito de Mercaderes</b> ofrece equipo a la venta para los <b>Personajes</b>.\n\nLa
+      cantidad de objetos disponibles puede aumentar si se mejoran sus tiendas gastando
+      <b>Materiales</b>.\n\nSus mercanc\xEDas cambiar\xE1n cada vez que la caravana
+      <b>Descanse</b>, llegue a un <b>Puesto Comercial</b> o visite un <b>Asentamiento</b>."
+    en: 'The <b>Merchant Retinue</b> offers equipment for sale to <b>Characters</b>.
+
+
+      The
+      number of available items can increase if their shops are upgraded by spending
+      <b>Materials</b>.
+
+
+      Their goods will change each time the caravan <b>Rests</b>,
+      reaches a <b>Trading Post</b>, or visits a <b>Settlement</b>.'
+    pt: "O <b>S\xE9quito de Mercadores</b> oferece equipamento \xE0 venda para os
+      <b>Personagens</b>.\n\nA quantidade de objetos dispon\xEDveis pode aumentar
+      se suas lojas forem melhoradas gastando <b>Materiais</b>.\n\nSuas mercadorias
+      mudar\xE3o cada vez que a caravana <b>Descansar</b>, chegar a um <b>Posto Comercial</b>
+      ou visitar um <b>Assentamento</b>."
+  - key: tutorial.sequitosexit.title
+    es: '  '
+    en: '  '
+    pt: '  '
+  - key: tutorial.sequitosexit.narrator
+    es: '  '
+    en: '  '
+    pt: '  '
+  - key: tutorial.sequitosexit.body
+    es: "<color=#FFD54A><b>Presiona M para cerrar el men\xFA de S\xE9quitos.</b></color>"
+    en: <color=#FFD54A><b>Press M to close the Retinues menu.</b></color>
+    pt: "<color=#FFD54A><b>Pressione M para fechar o menu de S\xE9quitos.</b></color>"
+  - key: tutorial.prebatalla3.title
+    es: '  '
+    en: '  '
+    pt: '  '
+  - key: tutorial.prebatalla3.narrator
+    es: '  '
+    en: '  '
+    pt: '  '
+  - key: tutorial.prebatalla3.body
+    es: Comienza la batalla.
+    en: The battle begins.
+    pt: "A batalha come\xE7a."
+  - key: tutorial.batfinpre1.title
+    es: Batalla Final
+    en: Final Battle
+    pt: Batalha Final
+  - key: tutorial.batfinpre1.narrator
+    es: "\u201CYa descansamos, reunimos fuerzas y pusimos la caravana en orden.\n\nPero
+      el Bosque Ardiente a\xFAn no ha terminado con nosotros.\nM\xE1s adelante, algo
+      custodia la salida.\n\nSi queremos cruzar, tendremos que enfrentarlo.\u201D"
+    en: "\u201CWe have rested, gathered strength, and put the caravan in order.\n\nBut
+      the Burning Forest is not done with us yet.\nFarther ahead, something guards
+      the exit.\n\nIf we want to cross, we will have to face it.\u201D"
+    pt: "\u201CJ\xE1 descansamos, reunimos for\xE7as e colocamos a caravana em ordem.\n\nMas
+      a Floresta Ardente ainda n\xE3o terminou conosco.\nMais adiante, algo guarda
+      a sa\xEDda.\n\nSe quisermos atravessar, teremos que enfrent\xE1-lo.\u201D"
+  - key: tutorial.batfinpre1.body
+    es: "El pr\xF3ximo nodo es la <b>Batalla Final</b> del tutorial.\n\nNormalmente,
+      las Zonas son mucho m\xE1s extensas, pero por motivos del tutorial, esta terminar\xE1
+      al superar la siguiente batalla.\n\n<color=#FFD54A><b>Viaja al siguiente nodo.</b></color>"
+    en: 'The next node is the tutorial''s <b>Final Battle</b>.
+
+
+      Normally,
+      Zones are much larger, but for tutorial reasons, this one will end after you
+      overcome the next battle.
+
+
+      <color=#FFD54A><b>Travel to the next node.</b></color>'
+    pt: "O pr\xF3ximo n\xF3 \xE9 a <b>Batalha Final</b> do tutorial.\n\nNormalmente,
+      as Zonas s\xE3o muito mais extensas, mas por motivos do tutorial, esta terminar\xE1
+      ao superar a pr\xF3xima batalha.\n\n<color=#FFD54A><b>Viaje para o pr\xF3ximo
+      n\xF3.</b></color>"
+  - key: tutorial.batfinpre2.body
+    es: "Presiona el bot\xF3n para Resolver Batalla"
+    en: Press the button to Resolve Battle
+    pt: "Pressione o bot\xE3o para Resolver Batalha"
+  - key: tutorial.batfinpre2.title
+    es: '  '
+    en: '  '
+    pt: '  '
+  - key: tutorial.batfinpre2.narrator
+    es: '  '
+    en: '  '
+    pt: '  '
+  - key: tutorial.postbatfinal.wait.title
+    es: '  '
+    en: '  '
+    pt: '  '
+  - key: tutorial.postbatfinal.wait.narrator
+    es: '  '
+    en: '  '
+    pt: '  '
+  - key: tutorial.postbatfinal.wait.body
+    es: '  '
+    en: '  '
+    pt: '  '
+  - key: tutorial.postbatfinal1.title
+    es: Tutorial completado
+    en: Tutorial Completed
+    pt: "Tutorial Conclu\xEDdo"
+  - key: tutorial.postbatfinal1.narrator
+    es: "\u201CEl camino queda abierto. La caravana sigue en pie, y eso basta por
+      ahora.\n\nA partir de aqu\xED, cada zona ser\xE1 m\xE1s amplia y menos predecible.
+      Mantenga a su gente con vida, elija bien sus descansos y no deje que el miedo
+      decida por usted.\u201D"
+    en: "\u201CThe road is open. The caravan still stands, and that is enough for
+      now.\n\nFrom here on, each zone will be larger and less predictable. Keep your
+      people alive, choose your rests well, and do not let fear decide for you.\u201D"
+    pt: "\u201CO caminho est\xE1 aberto. A caravana segue de p\xE9, e isso basta
+      por enquanto.\n\nA partir daqui, cada zona ser\xE1 mais ampla e menos previs\xEDvel.
+      Mantenha sua gente viva, escolha bem seus descansos e n\xE3o deixe que o medo
+      decida por voc\xEA.\u201D"
+  - key: tutorial.postbatfinal1.body
+    es: "<b>\xA1Felicidades!</b>\n\nSuperaste el tutorial y has adquirido los conocimientos
+      b\xE1sicos para arrancar a jugar.\n\n<b>Presionar Continuar te llevar\xE1 de
+      vuelta al Menu Principal</b>"
+    en: '<b>Congratulations!</b>
+
+
+      You completed the tutorial and acquired
+      the basic knowledge needed to start playing.
+
+
+      <b>Pressing Continue will
+      take you back to the Main Menu</b>'
+    pt: "<b>Parab\xE9ns!</b>\n\nVoc\xEA superou o tutorial e adquiriu os conhecimentos
+      b\xE1sicos para come\xE7ar a jogar.\n\n<b>Pressionar Continuar levar\xE1 voc\xEA
+      de volta ao Menu Principal</b>"

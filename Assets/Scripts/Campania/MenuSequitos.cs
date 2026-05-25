@@ -68,6 +68,50 @@ public class MenuSequitos : MonoBehaviour
       }
    }
 
+   public void MostrarContenidoSequitoTutorial(string stepId)
+   {
+      int idSequito = stepId switch
+      {
+         "Sequitos2Herreros" => 1,
+         "Sequitos3Curanderos" => 2,
+         "Sequitos4Mercaderes" => 3,
+         _ => 0
+      };
+
+      if (idSequito == 0)
+      {
+         return;
+      }
+
+      Sequito sequito = ObtenerInstanciaSequito(idSequito);
+      if (sequito != null)
+      {
+         sequito.clickRepresentar();
+      }
+   }
+
+   Sequito ObtenerInstanciaSequito(int idSequito)
+   {
+      if (secuenciasActivasPorId.TryGetValue(idSequito, out Sequito sequito) && sequito != null)
+      {
+         return sequito;
+      }
+
+      Transform raizBusqueda = contenedorInstancias != null ? contenedorInstancias : transform;
+      Sequito[] instancias = raizBusqueda.GetComponentsInChildren<Sequito>(true);
+      for (int i = 0; i < instancias.Length; i++)
+      {
+         Sequito instancia = instancias[i];
+         if (instancia != null && instancia.ID == idSequito)
+         {
+            RegistrarInstancia(instancia);
+            return instancia;
+         }
+      }
+
+      return null;
+   }
+
    public void LimpiarInstanciasParaCarga()
    {
       List<Sequito> instancias = new List<Sequito>(secuenciasActivasPorId.Values);

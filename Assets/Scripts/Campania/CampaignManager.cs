@@ -324,7 +324,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public bool DebeForzarMapaLinealTutorial()
   {
-    return DebeUsarConfiguracionTutorial();
+    return debugForzarMapaLinealTutorialAlIniciar || HayTutorialNuevoEnEscena();
   }
 
   public bool DebeForzarPrimerCombateTutorial()
@@ -346,7 +346,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   private bool HayTutorialNuevoEnEscena()
   {
     TutorialDirector director = TutorialDirector.Instance;
-    return director != null && (director.IsRunning || director.ActiveDefinition != null || director.gameObject.activeInHierarchy);
+    return PlayerPrefs.GetInt(TutorialDirector.PendingStartAfterZoneDescriptionKey, 0) == 1
+      || (director != null && director.IsRunning);
   }
 
   private string ObtenerTextoCargaInicialSegunIdioma()
@@ -3411,6 +3412,15 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   private void InicializarClimaAlIniciar()
   {
+    if (DebeUsarConfiguracionTutorial())
+    {
+      intTipoClima = 1;
+      AplicarSpriteClimaDesdeEstadoActual();
+      RefrescarVfxClimaCalor();
+      SincronizarVisualesMenuDescansoClima();
+      return;
+    }
+
 #if UNITY_EDITOR
     if (IntentarAplicarClimaAuroraPasoVientoHeladoDebug(true, false))
     {
@@ -3438,6 +3448,21 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 #endif
 
     RefrescarVfxClimaCalor();
+    SincronizarVisualesMenuDescansoClima();
+  }
+
+  private void SincronizarVisualesMenuDescansoClima()
+  {
+    if (menuDescanso == null)
+    {
+      return;
+    }
+
+    MenuDescanso menuDescansoComponent = menuDescanso.GetComponent<MenuDescanso>();
+    if (menuDescansoComponent != null)
+    {
+      menuDescansoComponent.SincronizarVisualesClimaDesdeEstadoActual();
+    }
   }
 
   public void RefrescarVfxClimaCalor()
@@ -4166,6 +4191,15 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (ID == 4) //Asentamiento
     {
+      if (DebeUsarConfiguracionTutorial())
+      {
+        if (scMapaManager != null && scMapaManager.nodoActual != null)
+        {
+          scMapaManager.nodoActual.nodoDespejado = true;
+        }
+        return;
+      }
+
       estadisticaAsentamientosVisitados++;
       if (ObtenerAsentamientoManager() != null)
       {
@@ -7287,6 +7321,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       EscribirAdvertenciaLog(TRADU.i.Traducir("<color=#FF6666>En los Asentamientos debes usar las acciones propias del asentamiento.</color>"));
       return;
     }
+        TutorialEvents.Emit("ui.descanso_presionado", gameObject);
 
     bool puedeDescansar = PuedeAcamparEnNodo(nodoActual);
 
@@ -7503,9 +7538,20 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (Input.GetKeyDown(KeyCode.M))
     {
-       if(scTutorialManager.tutorialActivo) {EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
+       if(scTutorialManager.tutorialActivo)
+       {
+         if (scMenuCaravana != null && scMenuCaravana.MenuSequitosEstaAbierto())
+         {
+           scMenuCaravana.AbrirMenuSequitosDesdeHotkey();
+         }
+         else
+         {
+           EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados."));
+         }
+         return;
+       }
       if (asentamientoActivo) { return; }
-      scMenuCaravana.AbrirMenuSequitos();
+      scMenuCaravana.AbrirMenuSequitosDesdeHotkey();
     }
     if (Input.GetKeyDown(KeyCode.F5))
     {

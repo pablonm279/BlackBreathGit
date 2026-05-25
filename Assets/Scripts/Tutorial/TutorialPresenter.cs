@@ -55,6 +55,7 @@ public class TutorialPresenter : MonoBehaviour
   private int narratorTextTotalCharacters;
   private TutorialStep currentStep;
   private bool hiddenForCampaignTravel;
+  private bool hideUntilRestRandomEvent;
   private bool narratorMuted;
   private bool panelLayoutCached;
   private TutorialInputBlockerRaycastFilter inputBlockerRaycastFilter;
@@ -205,6 +206,13 @@ public class TutorialPresenter : MonoBehaviour
     UpdateMuteVisualState();
     ApplyGraphicInputGate(step);
     ArrangeTutorialLayers();
+
+    if (hideUntilRestRandomEvent && CurrentStepWaitsForEvent(TutorialEventNames.CampaignRestRandomEventContinued))
+    {
+      hiddenForCampaignTravel = true;
+      SetTutorialVisualsVisible(false);
+      RestoreGatedGraphics();
+    }
   }
 
   public void Hide()
@@ -648,8 +656,31 @@ public class TutorialPresenter : MonoBehaviour
       return;
     }
 
+    if (payload.eventId == "ui.descanso_confirmado" &&
+        (hideUntilRestRandomEvent || CurrentStepWaitsForEvent(TutorialEventNames.CampaignRestRandomEventContinued)))
+    {
+      hideUntilRestRandomEvent = true;
+      hiddenForCampaignTravel = true;
+      SetTutorialVisualsVisible(false);
+      RestoreGatedGraphics();
+      return;
+    }
+
+    if (payload.eventId == TutorialEventNames.CampaignRestRandomEventContinued)
+    {
+      hideUntilRestRandomEvent = false;
+      hiddenForCampaignTravel = false;
+      return;
+    }
+
     if (payload.eventId == TutorialEventNames.CampaignNodeArrived && hiddenForCampaignTravel)
     {
+      if (currentStep == null)
+      {
+        hiddenForCampaignTravel = false;
+        return;
+      }
+
       if (ShouldKeepTutorialHiddenUntilCampaignEvent())
       {
         RestoreGatedGraphics();
@@ -689,7 +720,9 @@ public class TutorialPresenter : MonoBehaviour
   private bool ShouldKeepTutorialHiddenUntilCampaignEvent()
   {
     return CurrentStepWaitsForEvent(TutorialEventNames.CampaignResourceNodeContinued)
-      || CurrentStepWaitsForEvent(TutorialEventNames.CampaignMissingPeopleEventContinued);
+      || CurrentStepWaitsForEvent(TutorialEventNames.CampaignMissingPeopleEventContinued)
+      || CurrentStepWaitsForEvent(TutorialEventNames.CampaignRestNodeContinued)
+      || CurrentStepWaitsForEvent(TutorialEventNames.CampaignRestRandomEventContinued);
   }
 
   private void SetTutorialVisualsVisible(bool visible)

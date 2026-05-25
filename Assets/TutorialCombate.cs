@@ -46,6 +46,12 @@ public class TutorialCombate : MonoBehaviour
         ReforzarPasoTutorialSiguienteFrame();
     }
 
+    public void IniciarCombateDesdePasoNombre(string nombrePaso, int pasoFallback, bool forzarInicio = false)
+    {
+        int paso = ObtenerIndicePasoPorNombre(nombrePaso);
+        IniciarCombateDesdePaso(paso >= 0 ? paso : pasoFallback, forzarInicio);
+    }
+
     public void SiguientePasoCombate()
     {
 
@@ -138,6 +144,25 @@ public class TutorialCombate : MonoBehaviour
     private bool IndicePasoValido(int index)
     {
         return index >= 0 && index < pasosCombate.Length;
+    }
+
+    private int ObtenerIndicePasoPorNombre(string nombrePaso)
+    {
+        if (!TienePasosCombate() || string.IsNullOrEmpty(nombrePaso))
+        {
+            return -1;
+        }
+
+        for (int i = 0; i < pasosCombate.Length; i++)
+        {
+            GameObject paso = pasosCombate[i];
+            if (paso != null && paso.name == nombrePaso)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     private void SetPasoActivo(int index, bool activo)
@@ -241,4 +266,3 @@ public class TutorialCombate : MonoBehaviour
     }
 }
 }
-

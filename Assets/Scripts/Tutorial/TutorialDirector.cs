@@ -1,9 +1,15 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TutorialDirector : MonoBehaviour
 {
   private const string CompletedKeyPrefix = "TutorialNuevo_Completado_";
   private const string DefaultDefinitionPath = "Tutoriales/TutorialVerticalSlice";
+  public const string DefaultTutorialId = "vertical_slice_intro";
+  public const string PendingStartAfterZoneDescriptionKey = "TutorialNuevo_IniciarTrasDescripcionBosqueArdiente";
+  private const string LegacyTutorialCompletedKey = "Tutorial_Terminado";
+  private const string FinalStepId = "postbatfinal1";
+  private const string MainMenuSceneName = "ES-MenuPrincipal";
 
   public static TutorialDirector Instance { get; private set; }
 
@@ -58,10 +64,62 @@ public class TutorialDirector : MonoBehaviour
       activeDefinition = Resources.Load<TutorialDefinition>(DefaultDefinitionPath);
     }
 
-    if (autoStartOnStart && activeDefinition != null)
+    if (autoStartOnStart && activeDefinition != null && DebeAutoIniciarEnStart())
     {
       StartTutorial(activeDefinition, startFromStepId);
     }
+  }
+
+  public void StartDefaultTutorial(string stepId = "")
+  {
+    if (activeDefinition == null)
+    {
+      activeDefinition = Resources.Load<TutorialDefinition>(DefaultDefinitionPath);
+    }
+
+    StartTutorial(activeDefinition, string.IsNullOrEmpty(stepId) ? startFromStepId : stepId);
+  }
+
+  public static bool TryStartPendingAfterZoneDescription()
+  {
+    if (PlayerPrefs.GetInt(PendingStartAfterZoneDescriptionKey, 0) != 1)
+    {
+      return false;
+    }
+
+    TutorialDirector director = Instance != null ? Instance : FindObjectOfType<TutorialDirector>(true);
+    if (director == null)
+    {
+      TutorialDirector[] directores = Resources.FindObjectsOfTypeAll<TutorialDirector>();
+      for (int i = 0; i < directores.Length; i++)
+      {
+        if (directores[i] != null && directores[i].gameObject.scene.IsValid())
+        {
+          director = directores[i];
+          break;
+        }
+      }
+    }
+
+    if (director == null)
+    {
+      return false;
+    }
+
+    if (!director.gameObject.activeSelf)
+    {
+      director.gameObject.SetActive(true);
+    }
+
+    if (!director.enabled)
+    {
+      director.enabled = true;
+    }
+
+    PlayerPrefs.DeleteKey(PendingStartAfterZoneDescriptionKey);
+    PlayerPrefs.Save();
+    director.StartDefaultTutorial();
+    return true;
   }
 
   public void StartTutorial(TutorialDefinition definition, string stepId = "")
@@ -92,13 +150,14 @@ public class TutorialDirector : MonoBehaviour
       return;
     }
 
+    TutorialStep exitingStep = CurrentStep;
     StopTimedAdvance();
     ExitCurrentStep();
     stepIndex++;
 
     if (activeDefinition == null || stepIndex >= activeDefinition.steps.Count)
     {
-      CompleteTutorial();
+      CompleteTutorial(exitingStep != null && exitingStep.id == FinalStepId);
       return;
     }
 
@@ -208,6 +267,7 @@ public class TutorialDirector : MonoBehaviour
     }
 
     ExecuteActions(step.enterActions);
+    PrepararUiRuntimeParaPaso(step);
     EnsurePresenter();
 
     if (presenter != null)
@@ -268,15 +328,23 @@ public class TutorialDirector : MonoBehaviour
     }
   }
 
-  private void CompleteTutorial()
+  private void CompleteTutorial(bool volverAlMenuPrincipal = false)
   {
     StopTimedAdvance();
 
     if (activeDefinition != null && !string.IsNullOrEmpty(activeDefinition.tutorialId))
     {
       PlayerPrefs.SetInt(GetCompletedKey(activeDefinition.tutorialId), 1);
-      PlayerPrefs.Save();
     }
+
+    PlayerPrefs.DeleteKey(PendingStartAfterZoneDescriptionKey);
+
+    if (volverAlMenuPrincipal)
+    {
+      PlayerPrefs.SetInt(LegacyTutorialCompletedKey, 1);
+    }
+
+    PlayerPrefs.Save();
 
     running = false;
     stepIndex = -1;
@@ -286,11 +354,38 @@ public class TutorialDirector : MonoBehaviour
     {
       presenter.Hide();
     }
+
+    if (volverAlMenuPrincipal)
+    {
+      Time.timeScale = 1f;
+      if (MusicManager.Instance != null)
+      {
+        MusicManager.Instance.PausarMusica(false);
+        MusicManager.Instance.FadeOutYParar(0.5f);
+      }
+
+      SceneManager.LoadScene(MainMenuSceneName, LoadSceneMode.Single);
+    }
+  }
+
+  public static string GetCompletedPlayerPrefsKey(string tutorialId)
+  {
+    return CompletedKeyPrefix + tutorialId;
   }
 
   private static string GetCompletedKey(string tutorialId)
   {
-    return CompletedKeyPrefix + tutorialId;
+    return GetCompletedPlayerPrefsKey(tutorialId);
+  }
+
+  private bool DebeAutoIniciarEnStart()
+  {
+    if (PlayerPrefs.GetInt(PendingStartAfterZoneDescriptionKey, 0) == 1)
+    {
+      return false;
+    }
+
+    return PlayerPrefs.GetInt(LegacyTutorialCompletedKey, 0) != 1;
   }
 
   private void EnsurePresenter()
@@ -315,6 +410,16 @@ public class TutorialDirector : MonoBehaviour
     {
       NextStep();
     }
+  }
+
+  private void PrepararUiRuntimeParaPaso(TutorialStep step)
+  {
+    if (step == null || CampaignManager.Instance == null || CampaignManager.Instance.scMenuSequito == null)
+    {
+      return;
+    }
+
+    CampaignManager.Instance.scMenuSequito.MostrarContenidoSequitoTutorial(step.id);
   }
 
   private void StopTimedAdvance()

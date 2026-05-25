@@ -787,6 +787,8 @@ public class BattleManager : MonoBehaviour
 
   public List<GameObject> enemigosRefuerzos = new List<GameObject>();
   public int delayRefuerzo = 0; //La cantidad de turnos para que empiecen a aparecer los refuerzos.
+  public bool enviarUnRefuerzoEnemigoPorRonda = false;
+  public bool ignorarModificadoresDelayRefuerzosEnemigos = false;
   public TextMeshProUGUI txtRefuerzosContador;
   public TextMeshProUGUI txtRefuerzosTiempo;
   public GameObject goRefuerzos;
@@ -805,6 +807,8 @@ public class BattleManager : MonoBehaviour
     enemigosRefuerzos.Clear();
     aliadosRefuerzos.Clear();
     delayRefuerzo = 0;
+    enviarUnRefuerzoEnemigoPorRonda = false;
+    ignorarModificadoresDelayRefuerzosEnemigos = false;
     delayAliados = 1;
     ActualizarRefuerzosUI();
     ActualizarAliadosRefUI();
@@ -855,7 +859,9 @@ public class BattleManager : MonoBehaviour
     bool noHayEnemigosVivos = enemigosEnCampo < 1;
     // Si el campo enemigo quedo vacio y hay mas de un refuerzo pendiente, entran 2 juntos.
     // Se mantiene tambien la regla existente para listas largas de refuerzos.
-    int cantidadAEnviar = (noHayEnemigosVivos && enemigosRefuerzos.Count > 1) || enemigosRefuerzos.Count > 3 ? 2 : 1;
+    int cantidadAEnviar = enviarUnRefuerzoEnemigoPorRonda
+      ? 1
+      : ((noHayEnemigosVivos && enemigosRefuerzos.Count > 1) || enemigosRefuerzos.Count > 3 ? 2 : 1);
     for (int i = 0; i < cantidadAEnviar && enemigosRefuerzos.Count > 0; i++)
     {
       bool seEnvio = MandarRefuerzoEnemigo(enemigosRefuerzos[0]);
@@ -1665,6 +1671,11 @@ public class BattleManager : MonoBehaviour
   int ObtenerDelayRefuerzosEnemigosConTraits()
   {
     int delayAjustado = delayRefuerzo;
+    if (ignorarModificadoresDelayRefuerzosEnemigos)
+    {
+      return delayAjustado;
+    }
+
     if (AliadosTienenTrait(PersonajeTraitCatalog.TraitTactico))
     {
       delayAjustado += 1;

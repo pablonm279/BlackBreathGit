@@ -29,12 +29,14 @@ public class TextoInicialManager : MonoBehaviour
       
         gameObject.SetActive(false);
         CampaignManager.Instance.scTutorialManager.ComenzarTutorial();
+        TutorialDirector.TryStartPendingAfterZoneDescription();
     }
 
     public void ContinuarZonaNueva()
     {
         gameObject.SetActive(false);
         CampaignManager.Instance.ContinuarASiguienteZona();
+        TutorialDirector.TryStartPendingAfterZoneDescription();
     }
 
     private void AplicarVersionPorIdioma()

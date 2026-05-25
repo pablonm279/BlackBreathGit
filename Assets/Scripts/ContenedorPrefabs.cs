@@ -96,6 +96,7 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject pruebaGoblin;
     public GameObject LoboEspectral;
     public GameObject LoboAlfaEspectral;
+    public GameObject BrujaQuemada;
     public GameObject DriadaQuemada;
     public GameObject TreantEspectral;
     public GameObject FuegoFatuo;

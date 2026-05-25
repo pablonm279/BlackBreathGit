@@ -3606,6 +3606,9 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 281)
         {
+            TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignRestRandomEventContinued, gameObject)
+                .Add("campaignEventId", eventoActual)
+                .Add("origin", "rest"));
             CampaignManager.Instance.CambiarEsperanzaActual(10);
             gameObject.SetActive(false);
         }
@@ -4056,6 +4059,9 @@ public class EventosAdmin : MonoBehaviour
         if (eventoActual == 401) //Claro
         {
             CampaignManager.Instance.CambiarEsperanzaActual(5);
+            TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignRestNodeContinued, gameObject)
+                .Add("campaignEventId", eventoActual)
+                .Add("type", 3));
             gameObject.SetActive(false);
         }
 

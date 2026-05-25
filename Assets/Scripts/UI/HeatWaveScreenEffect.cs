@@ -8,21 +8,17 @@ public class HeatWaveScreenEffect : MonoBehaviour
   private const int TextureSize = 128;
 
   private static readonly Color ColorTintBase = new Color(0.8f, 0.52f, 0.14f, 0.00871f);
-  private static readonly Color ColorVignetteBase = new Color(0.85f, 0.32f, 0.08f, 0.022725f);
   private static readonly Color ColorGlowBase = new Color(0.8f, 0.64f, 0.34f, 0.01266f);
 
   private Canvas overlayCanvas;
   private CanvasGroup canvasGroup;
   private RectTransform rectTransform;
   private Image tintImage;
-  private Image vignetteImage;
   private Image glowImage;
 
   private Texture2D solidTexture;
-  private Texture2D vignetteTexture;
   private Texture2D glowTexture;
   private Sprite solidSprite;
-  private Sprite vignetteSprite;
   private Sprite glowSprite;
 
   private bool effectActive;
@@ -70,11 +66,9 @@ public class HeatWaveScreenEffect : MonoBehaviour
   private void OnDestroy()
   {
     if (solidSprite != null) { Destroy(solidSprite); }
-    if (vignetteSprite != null) { Destroy(vignetteSprite); }
     if (glowSprite != null) { Destroy(glowSprite); }
 
     if (solidTexture != null) { Destroy(solidTexture); }
-    if (vignetteTexture != null) { Destroy(vignetteTexture); }
     if (glowTexture != null) { Destroy(glowTexture); }
   }
 
@@ -87,10 +81,8 @@ public class HeatWaveScreenEffect : MonoBehaviour
 
     float t = Time.unscaledTime * 0.65f + animationSeed;
     float pulse = 0.5f + 0.5f * Mathf.Sin(t);
-    float secondaryPulse = 0.5f + 0.5f * Mathf.Sin((t * 1.31f) + 0.8f);
 
     tintImage.color = WithAlpha(ColorTintBase, ColorTintBase.a + (pulse * 0.00238f));
-    vignetteImage.color = WithAlpha(ColorVignetteBase, ColorVignetteBase.a + (secondaryPulse * 0.00714f));
     glowImage.color = WithAlpha(ColorGlowBase, ColorGlowBase.a + (pulse * 0.00595f));
 
     glowImage.rectTransform.localScale = Vector3.one * (1.03f + (pulse * 0.055f));
@@ -150,17 +142,12 @@ public class HeatWaveScreenEffect : MonoBehaviour
     }
 
     EnsureSprites();
+    RemoveLegacyVignetteLayer();
 
     if (tintImage == null)
     {
       tintImage = CreateLayer("WarmTint", solidSprite);
       tintImage.color = ColorTintBase;
-    }
-
-    if (vignetteImage == null)
-    {
-      vignetteImage = CreateLayer("Vignette", vignetteSprite);
-      vignetteImage.color = ColorVignetteBase;
     }
 
     if (glowImage == null)
@@ -179,16 +166,19 @@ public class HeatWaveScreenEffect : MonoBehaviour
       solidSprite = CreateSprite(solidTexture);
     }
 
-    if (vignetteSprite == null)
-    {
-      vignetteTexture = CreateRadialTexture(0.64f, 1f, true);
-      vignetteSprite = CreateSprite(vignetteTexture);
-    }
-
     if (glowSprite == null)
     {
       glowTexture = CreateRadialTexture(0f, 0.6f, false);
       glowSprite = CreateSprite(glowTexture);
+    }
+  }
+
+  private void RemoveLegacyVignetteLayer()
+  {
+    Transform existingVignette = transform.Find("Vignette");
+    if (existingVignette != null)
+    {
+      Destroy(existingVignette.gameObject);
     }
   }
 

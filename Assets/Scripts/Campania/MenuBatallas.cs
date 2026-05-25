@@ -77,6 +77,7 @@ public class MenuBatallas : MonoBehaviour
   BattleEncounterType encuentroTipoActual;
   bool esBatallaFinal = false;
   bool transicionJefeZonaPendiente = false;
+  bool tutorialFinalPostBatallaPendiente = false;
 
  public GameObject UIEmpezarBatalla;
  public GameObject UIEmpezarBatallaACaravana;
@@ -1143,7 +1144,8 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
                        scAdministradorEscenas.Personaje3 == null &&
                        scAdministradorEscenas.Personaje4 == null;
 
-        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 50)
+        if (DebeExigirTresParticipantesBatallaFinalTutorial()
+            || (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 50))
         {
             btnComenzar.SetActive(seleccionados > 2);
 
@@ -1674,6 +1676,24 @@ public void DejanEnListaParticipantesSolo()
  public int esEmboscadaEnemiga;
   public int EventoBatallaID = 0;
     public int cantidadAliadosComienzo;
+  private bool EsNodoActualBatallaFinalTutorial()
+  {
+      CampaignManager campaignManager = CampaignManager.Instance;
+      var tutorialManager = campaignManager != null ? campaignManager.scTutorialManager : null;
+      return tutorialManager != null
+          && campaignManager.DebeUsarConfiguracionTutorial()
+          && campaignManager.scMapaManager != null
+          && tutorialManager.EsBatallaFinalTutorial(campaignManager.scMapaManager.nodoActual);
+  }
+
+  private bool DebeExigirTresParticipantesBatallaFinalTutorial()
+  {
+      CampaignManager campaignManager = CampaignManager.Instance;
+      return EventoBatallaID == 701
+          && campaignManager != null
+          && campaignManager.DebeUsarConfiguracionTutorial();
+  }
+
   public void EventoBatallaNormal(int n, int esEmboscada = 0)
     {
         esBatallaFinal = false;
@@ -1694,6 +1714,14 @@ public void DejanEnListaParticipantesSolo()
         var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
         EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
         encuentroZonaActual = zonaActual;
+
+        if (EsNodoActualBatallaFinalTutorial())
+        {
+            EventoBatallaID = 701;
+            encuentroGeneradoActual = null;
+            ActualizarLista();
+            return;
+        }
 
         bool forzarBandidos = n == EventoEspecialDefenderCivilesBandidos;
         if (n == 0 || forzarBandidos)
@@ -1797,12 +1825,7 @@ public void DejanEnListaParticipantesSolo()
     EncounterZoneType zonaActual = atributosZona != null ? atributosZona.GetZoneTypeById(atributosZona.ID) : EncounterZoneType.BosqueAngustiante;
     encuentroZonaActual = zonaActual;
 
-    var tutorialManager = CampaignManager.Instance != null ? CampaignManager.Instance.scTutorialManager : null;
-    bool esUltimoNodoTutorial = tutorialManager != null &&
-                                tutorialManager.tutorialActivo &&
-                                CampaignManager.Instance.scMapaManager != null &&
-                                CampaignManager.Instance.scMapaManager.nodoActual == tutorialManager.Nodotut6;
-    if (esUltimoNodoTutorial)
+    if (EsNodoActualBatallaFinalTutorial())
     {
         EventoBatallaID = 701; // Fuerza el encuentro final del tutorial
         encuentroGeneradoActual = null;
@@ -1914,6 +1937,12 @@ public void DejanEnListaParticipantesSolo()
 
     public void EventoBatallaFinal(int n, int esEmboscada = 0)
     {
+        if (EsNodoActualBatallaFinalTutorial())
+        {
+            EventoBatallaNormal(701, esEmboscada);
+            return;
+        }
+
         esBatallaFinal = true;
         esEmboscadaEnemiga = esEmboscada;
         cantidadAliadosComienzo = 4;
@@ -2282,8 +2311,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
       else if (CampaignManager.Instance.scTutorialManager.tutorialActivo && EventoBatallaID == 701)
       {
          RuntimeAnalytics.TrackProgressionComplete("tutorial", "campaign", "intro");
-         CampaignManager.Instance.scTutorialManager.SiguientePaso();
-         CampaignManager.Instance.AbrirCiudadPuerto(); //fin tutorial
+         tutorialFinalPostBatallaPendiente = true;
       }
    }
     else if (EsResultadoDerrota(resultado) && CampaignManager.Instance != null)
@@ -2475,14 +2503,31 @@ public void EfectosDeBatallaEnCampaña(int resultado)
 
  public void CerrarMenuBatalla()
     {
+      bool debeMostrarPostBatallaFinalTutorial = tutorialFinalPostBatallaPendiente;
       TutorialEvents.Emit("ui.batsalir1_presionado", gameObject);
-      if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 4)
+      if (!debeMostrarPostBatallaFinalTutorial
+          && CampaignManager.Instance.scTutorialManager.tutorialActivo
+          && CampaignManager.Instance.scTutorialManager.pasoActual == 4)
       {
          CampaignManager.Instance.scTutorialManager.SiguientePaso();
       }
         bool debeResolverTransicionJefeZona = transicionJefeZonaPendiente;
         transicionJefeZonaPendiente = false;
+        tutorialFinalPostBatallaPendiente = false;
         gameObject.SetActive(false);
+
+        if (debeMostrarPostBatallaFinalTutorial && CampaignManager.Instance != null)
+        {
+          if (CampaignManager.Instance.scTutorialManager != null
+              && CampaignManager.Instance.scTutorialManager.tutorialActivo)
+          {
+            CampaignManager.Instance.scTutorialManager.SiguientePaso();
+          }
+
+          TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.BattleFinalTutorialPostBattleContinued, gameObject)
+            .Add("encounterId", 701));
+          CampaignManager.Instance.AbrirCiudadPuerto(); // fin tutorial
+        }
 
         if (!debeResolverTransicionJefeZona && CampaignManager.Instance != null)
         {
@@ -2517,6 +2562,14 @@ public void EfectosDeBatallaEnCampaña(int resultado)
     }
 
     AjustarSeleccionAlMaximo();
+    if (DebeExigirTresParticipantesBatallaFinalTutorial() && ContarAliadosSeleccionados() < 3)
+    {
+      bloqueoComenzarBatalla = false;
+      SetBotonComenzarInteractable(true);
+      ActualizarLista();
+      return;
+    }
+
     if (CampaignManager.Instance != null && CampaignManager.Instance.estadosCaravana != null)
     {
       CampaignManager.Instance.estadosCaravana.IniciarCombateActual();

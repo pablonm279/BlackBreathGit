@@ -465,7 +465,7 @@ public class Nodo : MonoBehaviour
 
     if ((posXNodo == 0) && (posYNodo == 0)) // Nodo origen
     {
-      int random = 1;// UnityEngine.Random.Range(1, 5); // 1..4
+      int random = UnityEngine.Random.Range(1, 5); // 1..4
 
       if (random == 1)
       {
@@ -473,24 +473,24 @@ public class Nodo : MonoBehaviour
         IntentarConectar(1, 3, zonaId);
         IntentarConectar(1, 5, zonaId);
       }
-      /*  else if (random == 2)
-        {
-          IntentarConectar(1, 2, zonaId);
-          IntentarConectar(1, 3, zonaId);
-          IntentarConectar(1, 4, zonaId);
-        }
-        else if (random == 3)
-        {
-          IntentarConectar(1, 2, zonaId);
-          IntentarConectar(1, 3, zonaId);
-          IntentarConectar(1, 5, zonaId);
-        }
-        else if (random == 4)
-        {
-          IntentarConectar(1, 1, zonaId);
-          IntentarConectar(1, 3, zonaId);
-          IntentarConectar(1, 4, zonaId);
-        }*/
+      else if (random == 2)
+      {
+        IntentarConectar(1, 2, zonaId);
+        IntentarConectar(1, 3, zonaId);
+        IntentarConectar(1, 4, zonaId);
+      }
+      else if (random == 3)
+      {
+        IntentarConectar(1, 2, zonaId);
+        IntentarConectar(1, 3, zonaId);
+        IntentarConectar(1, 5, zonaId);
+      }
+      else if (random == 4)
+      {
+        IntentarConectar(1, 1, zonaId);
+        IntentarConectar(1, 3, zonaId);
+        IntentarConectar(1, 4, zonaId);
+      }
 
       RevelarNodosFuturosIniciales(3);
 
@@ -837,6 +837,11 @@ public class Nodo : MonoBehaviour
 
   public void ForzarSettlement(bool mostrarVisualDesdeInicio)
   {
+    if (UsaConfiguracionTutorial())
+    {
+      return;
+    }
+
     tipoNodo = CodigoSettlement;
     tipoNodoOriginalRitual = 0;
     esMisterioso = false;

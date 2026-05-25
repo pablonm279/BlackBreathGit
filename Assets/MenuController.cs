@@ -216,12 +216,16 @@ public class MenuController : MonoBehaviour
     void MarcarTutorialComoCompletado()
     {
         PlayerPrefs.SetInt(TutorialTerminadoKey, 1);
+        PlayerPrefs.SetInt(TutorialDirector.GetCompletedPlayerPrefsKey(TutorialDirector.DefaultTutorialId), 1);
+        PlayerPrefs.DeleteKey(TutorialDirector.PendingStartAfterZoneDescriptionKey);
         PlayerPrefs.Save();
     }
 
     void ReiniciarTutorial()
     {
         PlayerPrefs.DeleteKey(TutorialTerminadoKey);
+        PlayerPrefs.DeleteKey(TutorialDirector.GetCompletedPlayerPrefsKey(TutorialDirector.DefaultTutorialId));
+        PlayerPrefs.SetInt(TutorialDirector.PendingStartAfterZoneDescriptionKey, 1);
         PlayerPrefs.Save();
     }
 }

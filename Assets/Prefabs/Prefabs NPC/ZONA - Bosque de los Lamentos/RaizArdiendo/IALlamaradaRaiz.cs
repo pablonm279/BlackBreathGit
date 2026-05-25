@@ -43,7 +43,7 @@ public class IALlamaradaRaiz : IAHabilidad
     hAncho = 2;
     esMelee = false;
     hAlcance = 5;
-    hCooldownMax = 2;
+    hCooldownMax = 0;
     esHostil = true;
     prioridad = 0;
     costoAP = 3;
