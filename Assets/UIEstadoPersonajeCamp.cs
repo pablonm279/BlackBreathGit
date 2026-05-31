@@ -169,8 +169,8 @@ public class UIEstadoPersonajeCamp : MonoBehaviour, IPointerEnterHandler, IPoint
       case TipoEstadoCampania.Fatigado:
         nombre = TextoPorIdioma("Fatigado", "Fatigued", "Fatigado");
         descripcion = TextoPorIdioma(
-          "-1 Atributos. Se limpia al descansar.",
-          "-1 Attributes. Removed by resting.",
+          "-1 Atributos. Se limpia al acampar.",
+          "-1 Attributes. Removed by camping.",
           "-1 Atributos. É removido ao descansar.");
         break;
 

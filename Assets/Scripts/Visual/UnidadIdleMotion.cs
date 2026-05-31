@@ -291,7 +291,7 @@ public class UnidadIdleMotion : MonoBehaviour
     }
 
     return Vector2.up * desplazamientoY;
-  }
+  }*/
 }
 
 [DefaultExecutionOrder(500)]
@@ -2901,5 +2901,5 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     overlayCongeladoGotaA = null;
     overlayCongeladoGotaB = null;
     visibilidadCongelado = 0f;
-  }*/
+  }
 }

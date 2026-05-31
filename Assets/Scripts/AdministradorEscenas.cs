@@ -852,7 +852,7 @@ public class AdministradorEscenas : MonoBehaviour
     buff.boolfDebufftBuff = false;
     buff.DuracionBuffRondas = duracionRondas;
     buff.cantIniciativa -= penalizacionIniciativa;
-    buff.cantAPMax -= 2;
+    buff.cantAPMax -= 1;
     buff.cantDefensa -= 2;
     buff.AplicarBuff(unidad);
     ComponentCopier.CopyComponent(buff, unidad.gameObject);
@@ -1379,7 +1379,7 @@ public class AdministradorEscenas : MonoBehaviour
           buff.boolfDebufftBuff = false;
           buff.DuracionBuffRondas = 4;
           buff.cantIniciativa -= 5;
-          buff.cantAPMax -= 2;
+          buff.cantAPMax -= 1;
           buff.cantDefensa -= 2;
           buff.AplicarBuff(uni);
           Buff buffComponent = ComponentCopier.CopyComponent(buff, uni.gameObject);
@@ -3752,6 +3752,10 @@ public class AdministradorEscenas : MonoBehaviour
                                                                      // obstaculo.transform.localScale = Vector3.one;     // Asegura escala normal
     }
 
+    if (BattleManager.Instance != null)
+    {
+      BattleManager.Instance.RefrescarOrdenVisualBatalla();
+    }
   }
   void ColocarEnCasillaAleatoria(int iLado, GameObject GO)
   {
@@ -4799,6 +4803,7 @@ public class AdministradorEscenas : MonoBehaviour
       campaignManager.logDeCampania?.RegistrarResumenBatalla(resultado, campaignManager.scMenuPersonajes != null ? campaignManager.scMenuPersonajes.listaPersonajes : null);
       campaignManager.scMenuBatallas.DejanEnListaParticipantesSolo();
     }
+    campaignManager.RefrescarBarraPersonajesCampania(true);
     if (campaignManager.scMapaManager != null && campaignManager.scMapaManager.nodoActual != null)
     {
       campaignManager.scMapaManager.nodoActual.nodoDespejado = true;

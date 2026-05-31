@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MapaManager : MonoBehaviour
 {
@@ -14,9 +15,18 @@ public class MapaManager : MonoBehaviour
     const string LogSettlementDescubiertoEs = "<color=#7ED6F7>-La Caravana encuentra un camino de piedra, hay un asentamiento cerca.</color>";
     const string LogSettlementDescubiertoEn = "<color=#7ED6F7>-The caravan finds a stone road, there is a settlement nearby.</color>";
     const string LogSettlementDescubiertoPt = "<color=#7ED6F7>-A Caravana encontra um caminho de pedra, ha um assentamento por perto.</color>";
+    const float TiempoMaximoEsperaCamaraIntro = 1.5f;
+    const float TiempoMaximoEsperaDecoracionIntro = 60f;
+    const float DelayInicioAnimacionIntroCampania = 0.45f;
+    const float DuracionFadeAcomodoIntroCampania = 0.18f;
+    const float ProgresoInicialVisualIntroCampania = 0.5f;
+    const float AlphaVignetaIntroCampania = 0.72f;
+    const float DuracionFadeVignetaIntroCampania = 0.18f;
+    const int SortingOrderVignetaIntroCampania = 32000;
     bool inicioCompletado;
     bool generacionDiferidaPendiente;
     bool omitirAutoGeneracionEnStart;
+    bool introCampaniaEnPreparacion;
     const float OffsetNodoSobreRelieve = 0.08f;
     const float OffsetConvoySobreRelieve = 0.03f;
     [SerializeField] float rangoAleatorioNodoXZ = 0.18f;
@@ -93,6 +103,7 @@ public class MapaManager : MonoBehaviour
            {
                AplicarMapaLinealTutorialSiCorresponde();
                RefrescarVisibilidadExploracion();
+               IniciarIntroCampaniaPendienteTrasCarga();
            }
            return;
        }
@@ -112,10 +123,555 @@ public class MapaManager : MonoBehaviour
        {
            AplicarMapaLinealTutorialSiCorresponde();
            RefrescarVisibilidadExploracion();
+           IniciarIntroCampaniaPendienteTrasCarga();
        }
   }
 
-    // Reset total del mapa y regeneración para la siguiente zona
+    public void IniciarIntroCampaniaPendienteTrasCarga(bool ignorarFaderInicial = false)
+    {
+        CampaignManager campaignManager = CampaignManager.Instance;
+        if (campaignManager == null || introCampaniaEnPreparacion || !campaignManager.IntroCampaniaActivaOPendiente)
+        {
+            return;
+        }
+
+        if (!ignorarFaderInicial && !campaignManager.IntroCampaniaPuedeIniciarTrasCarga())
+        {
+            return;
+        }
+
+        StartCoroutine(EsperarMapaEIniciarIntroCampania(campaignManager));
+    }
+
+    IEnumerator EsperarMapaEIniciarIntroCampania(CampaignManager campaignManager)
+    {
+        introCampaniaEnPreparacion = true;
+        yield return null;
+        yield return new WaitForEndOfFrame();
+
+        Nodo origen = null;
+        float tiempoEsperandoMapa = 0f;
+        while (origen == null && tiempoEsperandoMapa < TiempoMaximoEsperaCamaraIntro)
+        {
+            origen = ObtenerNodoIntroCampania();
+            if (origen == null || goCaravana == null)
+            {
+                origen = null;
+                tiempoEsperandoMapa += Time.unscaledDeltaTime;
+                yield return null;
+            }
+        }
+
+        yield return EsperarDecoracionZonaIntroCampania(campaignManager);
+
+        introCampaniaEnPreparacion = false;
+        if (campaignManager == null || !campaignManager.IntroCampaniaActivaOPendiente)
+        {
+            yield break;
+        }
+
+        if (origen == null || goCaravana == null)
+        {
+            FinalizarIntroCampaniaConFallback(origen, campaignManager, "mapa o caravana no listos tras cargar");
+            yield break;
+        }
+
+        IntentarIniciarIntroCampania(origen);
+    }
+
+    IEnumerator EsperarDecoracionZonaIntroCampania(CampaignManager campaignManager)
+    {
+        AtributosZona atributosZona = campaignManager != null ? campaignManager.scAtributosZona : null;
+        float tiempoEsperandoDecoracion = 0f;
+
+        while (atributosZona != null && atributosZona.DecoracionZonaEnCurso && tiempoEsperandoDecoracion < TiempoMaximoEsperaDecoracionIntro)
+        {
+            tiempoEsperandoDecoracion += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+    }
+
+    Nodo ObtenerNodoIntroCampania()
+    {
+        if (nodoActual != null)
+        {
+            return nodoActual;
+        }
+
+        if (scContenedordeNodos == null)
+        {
+            return null;
+        }
+
+        scContenedordeNodos.RecolectarNodos();
+        Nodo origen = scContenedordeNodos.ObtenerNodoSegunXY(0, 0);
+        return origen;
+    }
+
+    void IntentarIniciarIntroCampania(Nodo origen)
+    {
+        CampaignManager campaignManager = CampaignManager.Instance;
+        if (campaignManager == null || origen == null || introCampaniaEnPreparacion || !campaignManager.IntroCampaniaActivaOPendiente)
+        {
+            return;
+        }
+
+        origen.scMapaManager = this;
+        LineRenderer lineaIntro = origen.CrearLineaIntroCampaniaDesdeIzquierda(Vector3.left);
+        if (goCaravana == null || lineaIntro == null)
+        {
+            FinalizarIntroCampaniaConFallback(origen, campaignManager, "faltan caravana o linePrefab");
+            return;
+        }
+
+        introCampaniaEnPreparacion = true;
+        StartCoroutine(ReproducirIntroCampania(origen, lineaIntro, campaignManager));
+    }
+
+    IEnumerator ReproducirIntroCampania(Nodo origen, LineRenderer lineaIntro, CampaignManager campaignManager)
+    {
+        Transform camaraTransform = null;
+        float tiempoEsperandoCamara = 0f;
+        while (camaraTransform == null && tiempoEsperandoCamara < TiempoMaximoEsperaCamaraIntro)
+        {
+            Camera camaraIntro = ObtenerCamaraIntroCampania();
+            camaraTransform = camaraIntro != null ? camaraIntro.transform : null;
+
+            if (camaraTransform == null)
+            {
+                tiempoEsperandoCamara += Time.unscaledDeltaTime;
+                yield return null;
+            }
+        }
+
+        if (campaignManager == null || goCaravana == null || lineaIntro == null || camaraTransform == null)
+        {
+            FinalizarIntroCampaniaConFallback(origen, campaignManager, "no hubo camara activa al iniciar");
+            yield break;
+        }
+
+        if (!campaignManager.ConsumirIntroCampaniaPendiente())
+        {
+            introCampaniaEnPreparacion = false;
+            yield break;
+        }
+
+        Transform parentCamaraOriginal = camaraTransform != null ? camaraTransform.parent : null;
+        int indiceHermanoCamaraOriginal = camaraTransform != null && parentCamaraOriginal != null ? camaraTransform.GetSiblingIndex() : -1;
+        Vector3 posicionLocalCamaraOriginal = camaraTransform != null ? camaraTransform.localPosition : Vector3.zero;
+        Quaternion rotacionLocalCamaraOriginal = camaraTransform != null ? camaraTransform.localRotation : Quaternion.identity;
+        Vector3 escalaLocalCamaraOriginal = camaraTransform != null ? camaraTransform.localScale : Vector3.one;
+        Transform rotacionVisualLider = ObtenerRotacionVisualLiderIntro();
+        List<(Behaviour componente, bool activo)> controlesCamaraIntro = DesactivarControlesCamaraIntro(camaraTransform);
+        AdministradorEscenas administradorEscenasIntro = campaignManager.scAdministradorEscenas;
+
+        if (camaraTransform != null)
+        {
+            camaraTransform.SetParent(null, true);
+        }
+
+        bool faderAcomodoActivo = ActivarFaderAcomodoIntro(administradorEscenasIntro);
+        GameObject vignetaIntro = CrearVignetaIntroCampania(administradorEscenasIntro);
+        Vector3 inicioIntro = ObtenerPosicionLineaIntroPorFraccion(lineaIntro, ProgresoInicialVisualIntroCampania);
+        Vector3 deltaIntro = inicioIntro - goCaravana.transform.position;
+        DesplazarConvoy(deltaIntro);
+        AlinearConvoyAlSuelo();
+        origen.PrepararConvoyIntroEnLinea(lineaIntro, rotacionVisualLider, ProgresoInicialVisualIntroCampania);
+        yield return null;
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForSecondsRealtime(DelayInicioAnimacionIntroCampania);
+        if (faderAcomodoActivo)
+        {
+            yield return DesactivarFaderAcomodoIntro(administradorEscenasIntro);
+        }
+
+        bool introFinalizada = false;
+        origen.MoverConvoyIntroEnLinea(lineaIntro, () =>
+        {
+            introFinalizada = true;
+        }, rotacionVisualLider, ProgresoInicialVisualIntroCampania);
+
+        while (!introFinalizada)
+        {
+            yield return null;
+        }
+
+        if (origen != null)
+        {
+            Vector3 posicionCaravanaAntesDeSnap = goCaravana != null ? goCaravana.transform.position : Vector3.zero;
+            origen.PosicionarObjetoEnNodo(goCaravana);
+            if (goCaravana != null)
+            {
+                DesplazarSeguidores(goCaravana.transform.position - posicionCaravanaAntesDeSnap);
+            }
+            AlinearConvoyAlSuelo();
+        }
+
+        RestaurarCamaraIntroCampania(camaraTransform, parentCamaraOriginal, indiceHermanoCamaraOriginal, posicionLocalCamaraOriginal, rotacionLocalCamaraOriginal, escalaLocalCamaraOriginal);
+        RestaurarControlesCamaraIntro(controlesCamaraIntro);
+        yield return DesvanecerYDestruirVignetaIntroCampania(vignetaIntro);
+        introCampaniaEnPreparacion = false;
+        campaignManager.FinalizarIntroCampania();
+    }
+
+    Camera ObtenerCamaraIntroCampania()
+    {
+        Camera camaraCaravana = ObtenerCamaraHijaCaravana();
+        if (camaraCaravana != null)
+        {
+            return camaraCaravana;
+        }
+
+        Camera camara = Camera.main;
+        if (EsCamaraIntroDisponible(camara))
+        {
+            return camara;
+        }
+
+        Camera[] camaras = Camera.allCameras;
+        for (int i = 0; i < camaras.Length; i++)
+        {
+            if (EsCamaraIntroDisponible(camaras[i]))
+            {
+                return camaras[i];
+            }
+        }
+
+        Camera[] camarasEscena = Resources.FindObjectsOfTypeAll<Camera>();
+        for (int i = 0; i < camarasEscena.Length; i++)
+        {
+            if (EsCamaraIntroDisponible(camarasEscena[i]) && camarasEscena[i].gameObject.scene.IsValid())
+            {
+                return camarasEscena[i];
+            }
+        }
+
+        return null;
+    }
+
+    Camera ObtenerCamaraHijaCaravana()
+    {
+        if (goCaravana == null)
+        {
+            return null;
+        }
+
+        Camera[] camarasCaravana = goCaravana.GetComponentsInChildren<Camera>(true);
+        for (int i = 0; i < camarasCaravana.Length; i++)
+        {
+            if (EsCamaraIntroDisponible(camarasCaravana[i]))
+            {
+                return camarasCaravana[i];
+            }
+        }
+
+        return null;
+    }
+
+    bool EsCamaraIntroDisponible(Camera camara)
+    {
+        return camara != null && camara.enabled && camara.gameObject.activeInHierarchy;
+    }
+
+    Transform ObtenerRotacionVisualLiderIntro()
+    {
+        return goCaravana != null && goCaravana.transform.childCount > 4
+            ? goCaravana.transform.GetChild(4)
+            : null;
+    }
+
+    List<(Behaviour componente, bool activo)> DesactivarControlesCamaraIntro(Transform camaraTransform)
+    {
+        List<(Behaviour componente, bool activo)> controles = new List<(Behaviour componente, bool activo)>();
+        if (camaraTransform == null)
+        {
+            return controles;
+        }
+
+        RegistrarControlCamaraIntro(camaraTransform.GetComponent<EdgePanCameraZ>(), controles);
+        RegistrarControlCamaraIntro(camaraTransform.GetComponent<CameraObstaculosFader>(), controles);
+
+        for (int i = 0; i < controles.Count; i++)
+        {
+            if (controles[i].componente != null)
+            {
+                controles[i].componente.enabled = false;
+            }
+        }
+
+        return controles;
+    }
+
+    void RegistrarControlCamaraIntro(Behaviour componente, List<(Behaviour componente, bool activo)> controles)
+    {
+        if (componente == null || controles == null)
+        {
+            return;
+        }
+
+        controles.Add((componente, componente.enabled));
+    }
+
+    void RestaurarControlesCamaraIntro(List<(Behaviour componente, bool activo)> controles)
+    {
+        if (controles == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < controles.Count; i++)
+        {
+            if (controles[i].componente != null)
+            {
+                controles[i].componente.enabled = controles[i].activo;
+            }
+        }
+    }
+
+    static Vector3 ObtenerPosicionLineaIntroPorFraccion(LineRenderer lr, float fraccion)
+    {
+        if (lr == null || lr.positionCount == 0)
+        {
+            return Vector3.zero;
+        }
+
+        if (lr.positionCount == 1)
+        {
+            Vector3 unico = lr.GetPosition(0);
+            return lr.useWorldSpace ? unico : lr.transform.TransformPoint(unico);
+        }
+
+        int cantidadPuntos = lr.positionCount;
+        Vector3[] puntos = new Vector3[cantidadPuntos];
+        float total = 0f;
+        for (int i = 0; i < cantidadPuntos; i++)
+        {
+            Vector3 punto = lr.GetPosition(i);
+            puntos[i] = lr.useWorldSpace ? punto : lr.transform.TransformPoint(punto);
+            if (i > 0)
+            {
+                total += Vector3.Distance(puntos[i - 1], puntos[i]);
+            }
+        }
+
+        float objetivo = total * Mathf.Clamp01(fraccion);
+        float acumulado = 0f;
+        for (int i = 0; i < cantidadPuntos - 1; i++)
+        {
+            float segmento = Vector3.Distance(puntos[i], puntos[i + 1]);
+            if (segmento <= 0.0001f)
+            {
+                continue;
+            }
+
+            if (acumulado + segmento >= objetivo)
+            {
+                return Vector3.Lerp(puntos[i], puntos[i + 1], (objetivo - acumulado) / segmento);
+            }
+
+            acumulado += segmento;
+        }
+
+        return puntos[cantidadPuntos - 1];
+    }
+
+    GameObject CrearVignetaIntroCampania(AdministradorEscenas administradorEscenas)
+    {
+        GameObject vignetaRoot = new GameObject("VignetaIntroCampaniaCanvas", typeof(Canvas));
+        Canvas canvas = vignetaRoot.GetComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.overrideSorting = true;
+        canvas.sortingOrder = SortingOrderVignetaIntroCampania;
+
+        GameObject imagen = new GameObject("VignetaIntroCampania", typeof(RectTransform), typeof(CanvasGroup), typeof(RawImage));
+        imagen.transform.SetParent(vignetaRoot.transform, false);
+        ConfigurarRectTransformPantalla(imagen.GetComponent<RectTransform>());
+        ConfigurarImagenVigneta(imagen.GetComponent<RawImage>(), imagen.GetComponent<CanvasGroup>());
+        return vignetaRoot;
+    }
+
+    static void ConfigurarRectTransformPantalla(RectTransform rectTransform)
+    {
+        if (rectTransform == null)
+        {
+            return;
+        }
+
+        rectTransform.anchorMin = Vector2.zero;
+        rectTransform.anchorMax = Vector2.one;
+        rectTransform.offsetMin = Vector2.zero;
+        rectTransform.offsetMax = Vector2.zero;
+        rectTransform.localScale = Vector3.one;
+    }
+
+    static void ConfigurarImagenVigneta(RawImage rawImage, CanvasGroup canvasGroup)
+    {
+        if (rawImage != null)
+        {
+            rawImage.texture = CrearTexturaVignetaIntroCampania(256);
+            rawImage.color = Color.white;
+            rawImage.raycastTarget = false;
+        }
+
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = AlphaVignetaIntroCampania;
+            canvasGroup.blocksRaycasts = false;
+            canvasGroup.interactable = false;
+        }
+    }
+
+    static Texture2D CrearTexturaVignetaIntroCampania(int size)
+    {
+        Texture2D textura = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        textura.name = "TexturaVignetaIntroCampania";
+        textura.wrapMode = TextureWrapMode.Clamp;
+
+        float mitad = (size - 1) * 0.5f;
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                float nx = (x - mitad) / mitad;
+                float ny = (y - mitad) / mitad;
+                float distancia = Mathf.Sqrt(nx * nx + ny * ny);
+                float alpha = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.38f, 1.08f, distancia));
+                textura.SetPixel(x, y, new Color(0f, 0f, 0f, alpha));
+            }
+        }
+
+        textura.Apply(false, true);
+        return textura;
+    }
+
+    IEnumerator DesvanecerYDestruirVignetaIntroCampania(GameObject vignetaRoot)
+    {
+        if (vignetaRoot == null)
+        {
+            yield break;
+        }
+
+        CanvasGroup canvasGroup = vignetaRoot.GetComponentInChildren<CanvasGroup>(true);
+        if (canvasGroup != null)
+        {
+            float alphaInicial = canvasGroup.alpha;
+            float tiempo = 0f;
+            while (tiempo < DuracionFadeVignetaIntroCampania)
+            {
+                tiempo += Time.unscaledDeltaTime;
+                canvasGroup.alpha = Mathf.Lerp(alphaInicial, 0f, Mathf.Clamp01(tiempo / DuracionFadeVignetaIntroCampania));
+                yield return null;
+            }
+
+            canvasGroup.alpha = 0f;
+        }
+
+        RawImage rawImage = vignetaRoot.GetComponentInChildren<RawImage>(true);
+        if (rawImage != null && rawImage.texture != null)
+        {
+            Destroy(rawImage.texture);
+        }
+
+        Destroy(vignetaRoot);
+    }
+
+    void FinalizarIntroCampaniaConFallback(Nodo origen, CampaignManager campaignManager, string motivo)
+    {
+        introCampaniaEnPreparacion = false;
+        Debug.LogWarning("[IntroCampania] Fallback: " + motivo, this);
+
+        if (origen != null)
+        {
+            origen.PosicionarObjetoEnNodo(goCaravana);
+        }
+
+        AlinearConvoyAlSuelo();
+        campaignManager?.FinalizarIntroCampania();
+    }
+
+    void RestaurarCamaraIntroCampania(Transform camaraTransform, Transform parentOriginal, int indiceHermanoOriginal, Vector3 posicionLocalOriginal, Quaternion rotacionLocalOriginal, Vector3 escalaLocalOriginal)
+    {
+        if (camaraTransform == null)
+        {
+            return;
+        }
+
+        if (parentOriginal != null)
+        {
+            camaraTransform.SetParent(parentOriginal, false);
+            if (indiceHermanoOriginal >= 0)
+            {
+                camaraTransform.SetSiblingIndex(Mathf.Clamp(indiceHermanoOriginal, 0, parentOriginal.childCount - 1));
+            }
+
+            camaraTransform.localPosition = posicionLocalOriginal;
+            camaraTransform.localRotation = rotacionLocalOriginal;
+            camaraTransform.localScale = escalaLocalOriginal;
+            return;
+        }
+
+        if (goCaravana != null)
+        {
+            camaraTransform.SetParent(goCaravana.transform, true);
+        }
+    }
+
+    void DesplazarConvoy(Vector3 delta)
+    {
+        DesplazarTransform(goCaravana, delta);
+        DesplazarTransform(goCaravanafollower1, delta);
+        DesplazarTransform(goCaravanafollower2, delta);
+        DesplazarTransform(goCaravanafollower3, delta);
+        DesplazarTransform(goCaravanafollower4, delta);
+        DesplazarTransform(goCaravanafollower5, delta);
+        DesplazarTransform(goCaravanafollower6, delta);
+    }
+
+    static void DesplazarTransform(GameObject go, Vector3 delta)
+    {
+        if (go == null)
+        {
+            return;
+        }
+
+        go.transform.position += delta;
+    }
+
+    void DesplazarSeguidores(Vector3 delta)
+    {
+        DesplazarTransform(goCaravanafollower1, delta);
+        DesplazarTransform(goCaravanafollower2, delta);
+        DesplazarTransform(goCaravanafollower3, delta);
+        DesplazarTransform(goCaravanafollower4, delta);
+        DesplazarTransform(goCaravanafollower5, delta);
+        DesplazarTransform(goCaravanafollower6, delta);
+    }
+
+    bool ActivarFaderAcomodoIntro(AdministradorEscenas administradorEscenas)
+    {
+        if (administradorEscenas == null || administradorEscenas.fader == null)
+        {
+            return false;
+        }
+
+        administradorEscenas.SetFaderHold(true);
+        return true;
+    }
+
+    IEnumerator DesactivarFaderAcomodoIntro(AdministradorEscenas administradorEscenas)
+    {
+        if (administradorEscenas == null || administradorEscenas.fader == null)
+        {
+            yield break;
+        }
+
+        administradorEscenas.SetFaderHold(false);
+        yield return administradorEscenas.FadeOut(DuracionFadeAcomodoIntroCampania);
+        administradorEscenas.fader.blocksRaycasts = false;
+        administradorEscenas.fader.interactable = false;
+    }
+
   private void AplicarMapaLinealTutorialSiCorresponde()
   {
        CampaignManager campaignManager = CampaignManager.Instance;
@@ -223,6 +779,12 @@ public class MapaManager : MonoBehaviour
            }
        }
 
+       HashSet<Nodo> nodosAlcanzables = CalcularNodosAlcanzablesDesdeActual();
+       foreach (Nodo nodo in nodosActivosVisibilidad)
+       {
+           nodo.AplicarMaterialCaminosSegunAlcance(nodosAlcanzables);
+       }
+
        if (nodoActual != null)
        {
            nodoActual.RefrescarCaminosMarcadosDesdeEstadoActual();
@@ -273,6 +835,41 @@ public class MapaManager : MonoBehaviour
        }
 
        return distanciasVision;
+  }
+
+  HashSet<Nodo> CalcularNodosAlcanzablesDesdeActual()
+  {
+       HashSet<Nodo> alcanzables = new HashSet<Nodo>();
+       Queue<Nodo> pendientes = new Queue<Nodo>();
+
+       if (nodoActual == null || !nodoActual.gameObject.activeSelf)
+       {
+           return alcanzables;
+       }
+
+       alcanzables.Add(nodoActual);
+       pendientes.Enqueue(nodoActual);
+
+       while (pendientes.Count > 0)
+       {
+           Nodo actual = pendientes.Dequeue();
+           if (actual == null || actual.DestinosPosibles == null)
+           {
+               continue;
+           }
+
+           foreach (Nodo destino in actual.DestinosPosibles)
+           {
+               if (destino == null || !destino.gameObject.activeSelf || !alcanzables.Add(destino))
+               {
+                   continue;
+               }
+
+               pendientes.Enqueue(destino);
+           }
+       }
+
+       return alcanzables;
   }
 
     public void ResetearYGenerarSiguienteZona()
@@ -480,7 +1077,7 @@ public class MapaManager : MonoBehaviour
             if (nodo.ProhibidoEnZona != null && nodo.ProhibidoEnZona.Contains(zonaId)) continue;
 
             int distanciaX = objetivo.posXNodo - nodo.posXNodo;
-            if (distanciaX <= 0) continue;
+            if (distanciaX != 1) continue;
             int distanciaY = Mathf.Abs(objetivo.posYNodo - nodo.posYNodo);
 
             bool esMejor = false;

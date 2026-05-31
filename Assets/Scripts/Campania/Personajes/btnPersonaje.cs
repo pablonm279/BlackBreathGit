@@ -238,7 +238,7 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
       return;
     }
 
-    if (CampaignManager.Instance.goMenuBatallas.activeInHierarchy)
+    if (EstaEnContenedorMenuBatallas())
     {
       if (personajeRepresentado != null)
       {
@@ -386,7 +386,7 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
   {
     AsegurarReferencias();
 
-    if (EstaEnMenuBatallas())
+    if (EstaEnContenedorMenuBatallas())
     {
       if (actividadRetrato != null)
       {
@@ -446,15 +446,31 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     }
   }
 
-  private bool EstaEnMenuBatallas()
+  private bool EstaEnContenedorMenuBatallas()
   {
-    return CampaignManager.Instance != null
-      && CampaignManager.Instance.goMenuBatallas != null
-      && CampaignManager.Instance.goMenuBatallas.activeInHierarchy
-      && CampaignManager.Instance.scMenuBatallas != null
-      && (CampaignManager.Instance.scMenuBatallas.UIEmpezarBatalla.activeInHierarchy
-      || CampaignManager.Instance.scMenuBatallas.UIEmpezarBatallaACaravana.activeInHierarchy
-      || CampaignManager.Instance.scMenuBatallas.UITerminarBatalla.activeInHierarchy);
+    if (CampaignManager.Instance == null || CampaignManager.Instance.scMenuBatallas == null)
+    {
+      return false;
+    }
+
+    Transform parent = transform.parent;
+    if (parent == null)
+    {
+      return false;
+    }
+
+    Transform contenedorBatalla = CampaignManager.Instance.scMenuBatallas.contenedorUIPersonajes != null
+      ? CampaignManager.Instance.scMenuBatallas.contenedorUIPersonajes.transform
+      : null;
+    if (contenedorBatalla != null && parent == contenedorBatalla)
+    {
+      return true;
+    }
+
+    Transform contenedorBatallaFuera = CampaignManager.Instance.scMenuBatallas.contenedorUIPersonajesFuera != null
+      ? CampaignManager.Instance.scMenuBatallas.contenedorUIPersonajesFuera.transform
+      : null;
+    return contenedorBatallaFuera != null && parent == contenedorBatallaFuera;
   }
 
   private void AsegurarReferencias()

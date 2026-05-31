@@ -18,6 +18,16 @@ public class EdgePanCameraZ : MonoBehaviour
     [SerializeField] private float maxForwardOffsetPercent = 0.30f;
     [SerializeField] private float edgeEasePower = 2f;
 
+    [Header("Movimiento por teclado")]
+    [SerializeField] private bool keyboardPanEnabled = true;
+    [SerializeField] private float keyboardPanSpeedX = 12f;
+    [SerializeField] private float keyboardPanSpeedZ = 8f;
+    [SerializeField] private float keyboardPanSmoothTime = 0.12f;
+    [SerializeField] private float maxLeftOffsetX = 1.2f;
+    [SerializeField] private float maxRightOffsetX = 8.2f;
+    [SerializeField] private float maxBackwardOffsetZ = 2.5f;
+    [SerializeField] private float maxForwardOffsetZ = 2.5f;
+
     [Header("Perspectiva (si NO es ortografica)")]
     [SerializeField] private Transform focusAtDepth;
     [SerializeField] private float fallbackFocusDistance = 10f;
@@ -42,7 +52,14 @@ public class EdgePanCameraZ : MonoBehaviour
     private Camera cam;
     private Vector3 baseLocalPos;
     private Quaternion baseLocalRotation;
+    private float startLocalX;
     private float startLocalZ;
+    private float panXObjetivo;
+    private float panXActual;
+    private float panXVelocidad;
+    private float panZReposoObjetivo;
+    private float panZReposoActual;
+    private float panZReposoVelocidad;
     private float forwardLimitLocalZ;
     private float panZActual;
     private bool estaPaneando;
@@ -64,7 +81,12 @@ public class EdgePanCameraZ : MonoBehaviour
     {
         baseLocalPos = transform.localPosition;
         baseLocalRotation = transform.localRotation;
+        startLocalX = baseLocalPos.x;
         startLocalZ = baseLocalPos.z;
+        panXObjetivo = startLocalX;
+        panXActual = startLocalX;
+        panZReposoObjetivo = startLocalZ;
+        panZReposoActual = startLocalZ;
         panZActual = startLocalZ;
         RecalcularTopeAdelanteLocal();
         AplicarZoomVisual();
@@ -76,12 +98,13 @@ public class EdgePanCameraZ : MonoBehaviour
 
         if (CampaignManager.Instance != null)
         {
-            if (CampaignManager.Instance.scTutorialManager.tutorialActivo &&
+            if (CampaignManager.Instance.scTutorialManager != null &&
+                CampaignManager.Instance.scTutorialManager.tutorialActivo &&
                 CampaignManager.Instance.scTutorialManager.pasoActual < 7)
             {
                 bloquearMovimiento = true;
             }
-            else if (CampaignManager.Instance.MoviendoCaravana)
+            else if (CampaignManager.Instance.IntroCampaniaActivaOPendiente)
             {
                 bloquearMovimiento = true;
             }
@@ -96,6 +119,22 @@ public class EdgePanCameraZ : MonoBehaviour
             return;
         }
 
+        Vector2 inputTeclado = LeerInputTeclado();
+        bool usandoTeclado = keyboardPanEnabled && inputTeclado.sqrMagnitude > 0.001f;
+
+        ActualizarPaneoTeclado(inputTeclado);
+
+        if (usandoTeclado)
+        {
+            estaPaneando = false;
+            panZActual = Mathf.MoveTowards(
+                panZActual,
+                panZReposoActual,
+                Mathf.Max(returnSpeed, keyboardPanSpeedZ) * Time.deltaTime);
+            AplicarFinalPosicion();
+            return;
+        }
+
         float mouseX = Input.mousePosition.x;
         bool enBordeIzq = mouseX <= edgeThickness;
         bool enBordeDer = mouseX >= (Screen.width - edgeThickness);
@@ -106,21 +145,82 @@ public class EdgePanCameraZ : MonoBehaviour
             float t = Mathf.InverseLerp(Screen.width - edgeThickness, Screen.width, mouseX);
             float factor = Mathf.Pow(Mathf.Clamp01(t), Mathf.Max(0.1f, edgeEasePower));
             float step = panSpeed * factor * Time.deltaTime;
-            panZActual = Mathf.Clamp(panZActual + step, startLocalZ, forwardLimitLocalZ);
+            panZActual = Mathf.Clamp(panZActual + step, panZReposoActual, forwardLimitLocalZ);
         }
         else if (enBordeIzq)
         {
             float t = Mathf.InverseLerp(edgeThickness, 0f, mouseX);
             float factor = Mathf.Pow(Mathf.Clamp01(t), Mathf.Max(0.1f, edgeEasePower));
             float step = panSpeed * factor * Time.deltaTime;
-            panZActual = Mathf.Clamp(panZActual - step, startLocalZ, forwardLimitLocalZ);
+            panZActual = Mathf.Clamp(panZActual - step, panZReposoActual, forwardLimitLocalZ);
         }
         else
         {
-            panZActual = Mathf.MoveTowards(panZActual, startLocalZ, returnSpeed * Time.deltaTime);
+            panZActual = Mathf.MoveTowards(panZActual, panZReposoActual, returnSpeed * Time.deltaTime);
         }
 
         AplicarFinalPosicion();
+    }
+
+    private Vector2 LeerInputTeclado()
+    {
+        if (!keyboardPanEnabled)
+        {
+            return Vector2.zero;
+        }
+
+        float horizontal = 0f;
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            horizontal -= 1f;
+        }
+
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            horizontal += 1f;
+        }
+
+        float vertical = 0f;
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        {
+            vertical -= 1f;
+        }
+
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        {
+            vertical += 1f;
+        }
+
+        Vector2 input = new Vector2(horizontal, vertical);
+        return input.sqrMagnitude > 1f ? input.normalized : input;
+    }
+
+    private void ActualizarPaneoTeclado(Vector2 inputTeclado)
+    {
+        if (!keyboardPanEnabled)
+        {
+            return;
+        }
+
+        panXObjetivo -= inputTeclado.y * keyboardPanSpeedX * Time.deltaTime;
+        panZReposoObjetivo += inputTeclado.x * keyboardPanSpeedZ * Time.deltaTime;
+
+        panXObjetivo = Mathf.Clamp(panXObjetivo, startLocalX - Mathf.Max(0f, maxLeftOffsetX), startLocalX + Mathf.Max(0f, maxRightOffsetX));
+        panZReposoObjetivo = Mathf.Clamp(
+            panZReposoObjetivo,
+            startLocalZ - Mathf.Max(0f, maxBackwardOffsetZ),
+            startLocalZ + Mathf.Max(0f, maxForwardOffsetZ));
+
+        float smoothTime = Mathf.Max(0.01f, keyboardPanSmoothTime);
+        panXActual = Mathf.SmoothDamp(panXActual, panXObjetivo, ref panXVelocidad, smoothTime);
+        panZReposoActual = Mathf.SmoothDamp(panZReposoActual, panZReposoObjetivo, ref panZReposoVelocidad, smoothTime);
+
+        panXActual = Mathf.Clamp(panXActual, startLocalX - Mathf.Max(0f, maxLeftOffsetX), startLocalX + Mathf.Max(0f, maxRightOffsetX));
+        panZReposoActual = Mathf.Clamp(
+            panZReposoActual,
+            startLocalZ - Mathf.Max(0f, maxBackwardOffsetZ),
+            startLocalZ + Mathf.Max(0f, maxForwardOffsetZ));
+        panZActual = Mathf.Clamp(panZActual, panZReposoActual, forwardLimitLocalZ);
     }
 
     private void ActualizarZoom(bool bloquearMovimiento)
@@ -187,7 +287,7 @@ public class EdgePanCameraZ : MonoBehaviour
 
             Vector3 zoomOffset = CalcularOffsetZoomLocal();
             transform.localPosition = new Vector3(
-                baseLocalPos.x + ox,
+                panXActual + ox,
                 baseLocalPos.y + oy,
                 zFinal
             ) + zoomOffset;
@@ -195,7 +295,7 @@ public class EdgePanCameraZ : MonoBehaviour
         else
         {
             transform.localPosition = new Vector3(
-                baseLocalPos.x,
+                panXActual,
                 baseLocalPos.y,
                 panZActual
             ) + CalcularOffsetZoomLocal();
@@ -273,6 +373,12 @@ public class EdgePanCameraZ : MonoBehaviour
 
     public void RecentrarLocal()
     {
+        panXObjetivo = startLocalX;
+        panXActual = startLocalX;
+        panXVelocidad = 0f;
+        panZReposoObjetivo = startLocalZ;
+        panZReposoActual = startLocalZ;
+        panZReposoVelocidad = 0f;
         panZActual = startLocalZ;
         AplicarFinalPosicion();
     }

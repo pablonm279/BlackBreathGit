@@ -147,6 +147,8 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
       {
         personaje.Camp_Moral = Mathf.Min(personaje.Camp_Moral, -2);
       }
+
+      CampaignManager.Instance?.EvaluarTooltipPersonajeDescansando();
    }
 
    private bool EsActividadBaseCompartida()

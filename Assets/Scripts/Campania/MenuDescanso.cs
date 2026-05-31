@@ -12,6 +12,7 @@ public class MenuDescanso : MonoBehaviour
   const int TipoNodoClaro = 3;
   const int TipoNodoAsentamiento = 4;
   const int TipoNodoRecursos = 5;
+  const string TooltipEmboscadaNormalId = "campania_emboscada_normal";
 
 
   public TextMeshProUGUI tareaCivilDescripcion;
@@ -738,6 +739,7 @@ public class MenuDescanso : MonoBehaviour
       {
         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La caravana han sufrido un Ataque durante el descanso. Probabilidades ") + chancesAtaqueACaravana + TRADU.i.Traducir("% - Tirada: 1d100 = ") + randomEmboscada);
 
+        TutorialTooltipManager.TryShow(TooltipEmboscadaNormalId);
         CampaignManager.Instance.scMenuBatallas.EventoBatallaCaravana(0, 3);
         autosavePendienteTrasDescanso = false;
         // (Audio) Ignorado: la másica de batalla se maneja en AdministradorEscenas
@@ -776,6 +778,7 @@ public class MenuDescanso : MonoBehaviour
     if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 26)
     { CampaignManager.Instance.scTutorialManager.SiguientePaso(); }
     goMenuMisiones.SetActive(false);
+    CampaignManager.Instance.RefrescarBarraPersonajesCampania(true);
 
     if (autosavePendienteTrasDescanso)
     {

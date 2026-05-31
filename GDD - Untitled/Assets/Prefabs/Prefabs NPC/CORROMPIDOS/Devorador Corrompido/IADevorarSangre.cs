@@ -154,7 +154,7 @@ public class IADevorarSangre : IAHabilidad
           buff.buffNombre = "Sangre Devorada";
           buff.boolfDebufftBuff = false;
           buff.DuracionBuffRondas = 2;
-          buff.cantAPMax -= 2;
+          buff.cantAPMax -= 1;
           buff.cantAtaque -= 2;
           buff.AplicarBuff(objetivo);
           // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff

@@ -7,8 +7,8 @@ using TMPro;
 public class UnidadCanvas : MonoBehaviour
 {
     private const string RutaFuenteTextoFlotanteDanio = "Fuentes/SpectralSC/TextoFlotanteDaño";
-    private const float EscalaTextoProbabilidad = 0.85f;
-    private const float OffsetYTextoProbabilidad = 12f;
+    private const float EscalaTextoProbabilidad = 0.82f;
+    private const float OffsetYTextoProbabilidad = 10f;
     private const float DuracionMinimaRotuloHabilidadIA = 4f;
 
     public GameObject unidadCanvas;

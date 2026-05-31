@@ -443,6 +443,7 @@ MonoBehaviour:
   PASIVA_Determinacion: 0
   PASIVA_Implacable: 0
   PASIVA_Implacable_CARGAS: 0
+  Pose_PosturaDefensiva: {fileID: 21300000, guid: 1d43b0e8eb0e8cf478dcb283dc65e67d, type: 3}
   tieneCorazaDeLlamas: 0
 --- !u!65 &2841680355691457608
 BoxCollider:

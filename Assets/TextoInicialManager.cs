@@ -14,7 +14,15 @@ public class TextoInicialManager : MonoBehaviour
     void Start()
     {
         if(CampaignManager.Instance.scTutorialManager.tutorialActivo)
-        {   
+        {
+            if (CampaignManager.Instance.IntroCampaniaActivaOPendiente)
+            {
+                CampaignManager.Instance.EjecutarTrasIntroCampania(Continuar);
+                CampaignManager.Instance.SolicitarInicioIntroCampaniaTrasCarga(true);
+                gameObject.SetActive(false);
+                return;
+            }
+
             gameObject.SetActive(false);
             Invoke("Continuar", 0.5f);
         }
@@ -26,6 +34,13 @@ public class TextoInicialManager : MonoBehaviour
 
     public void Continuar()
     {
+        if (CampaignManager.Instance != null && CampaignManager.Instance.IntroCampaniaActivaOPendiente)
+        {
+            gameObject.SetActive(false);
+            CampaignManager.Instance.EjecutarTrasIntroCampania(Continuar);
+            CampaignManager.Instance.SolicitarInicioIntroCampaniaTrasCarga(true);
+            return;
+        }
       
         gameObject.SetActive(false);
         CampaignManager.Instance.scTutorialManager.ComenzarTutorial();

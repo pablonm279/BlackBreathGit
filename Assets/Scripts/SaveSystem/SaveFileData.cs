@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [Serializable]
 public class SaveFileData
 {
-  public const int CurrentVersion = 15;
+  public const int CurrentVersion = 17;
 
   public int version = CurrentVersion;
   public string savedAtUtc;
@@ -62,6 +62,12 @@ public class CampaignSaveData
 
   public bool tutorialActivo;
   public int tutorialPasoActual;
+  public bool tutorialNuevoActivo;
+  public string tutorialNuevoId;
+  public string tutorialNuevoPasoId;
+  public bool tutorialNuevoPendienteTrasDescripcionZona;
+  public bool tutorialTooltipsSilenciados;
+  public List<string> tutorialTooltipsVistos = new List<string>();
   public int estadisticaDiasViajados;
   public int estadisticaBatallasLibradas;
   public int estadisticaCivilesPerdidos;

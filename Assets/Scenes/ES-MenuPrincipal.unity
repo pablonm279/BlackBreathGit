@@ -2597,6 +2597,7 @@ MonoBehaviour:
   dificultadDropdown: {fileID: 15614856}
   fullscreenToggle: {fileID: 955166288}
   modorapidoToggle: {fileID: 1516651622}
+  tipsToggle: {fileID: 0}
   postFxToggle: {fileID: 0}
   aaToggle: {fileID: 0}
   bloomToggle: {fileID: 0}
@@ -5546,8 +5547,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layers:
   - rect: {fileID: 378517171}
-    strength: 1.2
-    maxOffset: {x: 70, y: 3}
+    strength: 1.35
+    maxOffset: {x: 75, y: 3}
     axisMask: {x: 1, y: 1}
     manualOffset: {x: 0, y: 0}
     baseAnchoredPos: {x: 0, y: 0}
@@ -5560,29 +5561,29 @@ MonoBehaviour:
     baseAnchoredPos: {x: 0, y: 0}
     velocity: {x: 0, y: 0}
   - rect: {fileID: 1519104504}
-    strength: 1.4
-    maxOffset: {x: 38, y: 2}
+    strength: 1.7
+    maxOffset: {x: 40, y: 2}
     axisMask: {x: 1, y: 1}
     manualOffset: {x: 0, y: 0}
     baseAnchoredPos: {x: 0, y: 0}
     velocity: {x: 0, y: 0}
   - rect: {fileID: 1628272117}
-    strength: 1.8
-    maxOffset: {x: 120, y: 4}
+    strength: 2
+    maxOffset: {x: 125, y: 4}
     axisMask: {x: 1, y: 1}
     manualOffset: {x: 0, y: 0}
     baseAnchoredPos: {x: 0, y: 0}
     velocity: {x: 0, y: 0}
   - rect: {fileID: 2114953019}
-    strength: 1.9
-    maxOffset: {x: 200, y: 4}
+    strength: 2.1
+    maxOffset: {x: 205, y: 4}
     axisMask: {x: 1, y: 1}
     manualOffset: {x: 0, y: 0}
     baseAnchoredPos: {x: 0, y: 0}
     velocity: {x: 0, y: 0}
   - rect: {fileID: 1739927928}
-    strength: 1.5
-    maxOffset: {x: 100, y: 3}
+    strength: 1.7
+    maxOffset: {x: 105, y: 3}
     axisMask: {x: 1, y: 0.6}
     manualOffset: {x: 0, y: 0}
     baseAnchoredPos: {x: 0, y: 0}
@@ -5617,8 +5618,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   enableAutoDrift: 1
-  driftStrength: 0.1216
-  driftSpeed: 0.3
+  driftStrength: 0.14
+  driftSpeed: 0.45
 --- !u!114 &378517173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48153,6 +48154,7 @@ MonoBehaviour:
   dificultadDropdown: {fileID: 225639053}
   fullscreenToggle: {fileID: 555917274}
   modorapidoToggle: {fileID: 1295965753}
+  tipsToggle: {fileID: 0}
   postFxToggle: {fileID: 0}
   aaToggle: {fileID: 0}
   bloomToggle: {fileID: 0}

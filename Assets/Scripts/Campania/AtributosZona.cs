@@ -62,6 +62,7 @@ public class EncounterZoneConfig
 public class AtributosZona : MonoBehaviour
 {
    bool restaurandoDesdeSave;
+   public bool DecoracionZonaEnCurso { get; private set; }
    public string Nombre;
    public int ID; //1 Bosque Ardiente, 2 Paso Vientohelado, 3 Nedukazal
 
@@ -274,7 +275,8 @@ public class AtributosZona : MonoBehaviour
 
       Invoke("PlayMusic", 0.2f);
       // Usar fader como tapón mientras se adorna el mapa (async, sin freeze)
-     StartCoroutine(AdornarBosqueArdienteConFadeAsync());
+      DecoracionZonaEnCurso = true;
+      StartCoroutine(AdornarBosqueArdienteConFadeAsync());
 
 
       Nedukazal_CaravanaLuz.SetActive(false);
@@ -374,17 +376,20 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_Llama,
-         cantidad: 65,
-         distCaminoOverride: 0.6f,
-         distNodoOverride: 0.9f,
-         rOverride: 8.0f,
+         cantidad: 75,
+         distCaminoOverride: 0.65f,
+         distNodoOverride: 0.95f,
+         rOverride: 6.0f,
          kOverride: 20);
 
       if (admin != null)
       {
-         // Liberar bloqueo y volver a mostrar la escena
-         admin.SetFaderHold(false);
-         yield return admin.FadeOut(0.25f);
+         DecoracionZonaEnCurso = false;
+         yield return LiberarFaderDecoracionZona(admin);
+      }
+      else
+      {
+         DecoracionZonaEnCurso = false;
       }
    }
 
@@ -422,6 +427,7 @@ public class AtributosZona : MonoBehaviour
 
       Invoke("PlayMusic", 0.2f);
       // Usar fader como tapón mientras se adorna el mapa (async, sin freeze)
+      DecoracionZonaEnCurso = true;
       StartCoroutine(AdornarPasoVientoHeladoConFadeAsync());
 
       Nedukazal_CaravanaLuz.SetActive(false);
@@ -568,9 +574,12 @@ public class AtributosZona : MonoBehaviour
 
       if (admin != null)
       {
-         // Liberar bloqueo y volver a mostrar la escena
-         admin.SetFaderHold(false);
-         yield return admin.FadeOut(0.25f);
+         DecoracionZonaEnCurso = false;
+         yield return LiberarFaderDecoracionZona(admin);
+      }
+      else
+      {
+         DecoracionZonaEnCurso = false;
       }
    }
 
@@ -610,6 +619,7 @@ public class AtributosZona : MonoBehaviour
 
       Invoke("PlayMusic", 0.2f);
       // Usar fader como tapón mientras se adorna el mapa (async, sin freeze)
+      DecoracionZonaEnCurso = true;
       StartCoroutine(AdornarNedukazalConFadeAsync());
 
 
@@ -734,10 +744,30 @@ public class AtributosZona : MonoBehaviour
  */
       if (admin != null)
       {
-         // Liberar bloqueo y volver a mostrar la escena
-         admin.SetFaderHold(false);
-         yield return admin.FadeOut(0.25f);
+         DecoracionZonaEnCurso = false;
+         yield return LiberarFaderDecoracionZona(admin);
       }
+      else
+      {
+         DecoracionZonaEnCurso = false;
+      }
+   }
+
+   IEnumerator LiberarFaderDecoracionZona(AdministradorEscenas admin)
+   {
+      if (admin == null)
+      {
+         yield break;
+      }
+
+      if (CampaignManager.Instance != null && CampaignManager.Instance.IntroCampaniaActivaOPendiente)
+      {
+         yield break;
+      }
+
+      // Liberar bloqueo y volver a mostrar la escena
+      admin.SetFaderHold(false);
+      yield return admin.FadeOut(0.25f);
    }
 
 

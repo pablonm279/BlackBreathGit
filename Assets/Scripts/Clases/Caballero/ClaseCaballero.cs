@@ -6,13 +6,18 @@ using Unity.VisualScripting;
 
 public class ClaseCaballero : Unidad
 {
+   private const string BuffNombrePosturaDefensiva = "Postura Defensiva";
    
    public int PASIVA_Acorazado; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ° 5 nv 4b
    public int PASIVA_Determinacion;  //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ° 5 nv 4b
    public int PASIVA_Implacable;  //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ° 5 nv 4b
    public int PASIVA_Implacable_CARGAS; 
+   private bool posePosturaDefensivaActiva;
+   private Sprite poseIdleOriginal;
+   private UnidadPoseController poseControllerCaballero;
    
 
+   public Sprite Pose_PosturaDefensiva;
 
 
 
@@ -91,10 +96,7 @@ public class ClaseCaballero : Unidad
   public override void ActualizarClaseComienzoTurno()
   {
     ChequearBuffPASIVADeterminacion();
-
-
-
-
+    SincronizarPosturaDefensivaSegunBuffActual();
   }
 
     void ChequearBuffPASIVADeterminacion()
@@ -172,6 +174,7 @@ public class ClaseCaballero : Unidad
     public override void ComienzoBatallaClase()
     {
        base.ComienzoBatallaClase();
+       SincronizarPosturaDefensivaSegunBuffActual();
 
 
        //PASIVA_Determinacion Nv 4a
@@ -195,6 +198,61 @@ public class ClaseCaballero : Unidad
          mod_maxValentiaP += 1;
        }
 
+    }
+
+    public void NotificarInicioPosturaDefensiva()
+    {
+      ActualizarPosePosturaDefensiva(true);
+    }
+
+    public void NotificarFinPosturaDefensiva()
+    {
+      ActualizarPosePosturaDefensiva(false);
+    }
+
+    private void SincronizarPosturaDefensivaSegunBuffActual()
+    {
+      if (TieneBuffNombre(BuffNombrePosturaDefensiva))
+      {
+        NotificarInicioPosturaDefensiva();
+        return;
+      }
+
+      NotificarFinPosturaDefensiva();
+    }
+
+    private void ActualizarPosePosturaDefensiva(bool activar)
+    {
+      if (poseControllerCaballero == null)
+      {
+        poseControllerCaballero = GetComponent<UnidadPoseController>();
+      }
+
+      if (poseControllerCaballero == null || Pose_PosturaDefensiva == null)
+      {
+        return;
+      }
+
+      if (activar)
+      {
+        if (!posePosturaDefensivaActiva)
+        {
+          poseIdleOriginal = poseControllerCaballero.poseIdle;
+        }
+
+        poseControllerCaballero.poseIdle = Pose_PosturaDefensiva;
+        posePosturaDefensivaActiva = true;
+        poseControllerCaballero.SetIdle();
+        return;
+      }
+
+      if (posePosturaDefensivaActiva && poseIdleOriginal != null)
+      {
+        poseControllerCaballero.poseIdle = poseIdleOriginal;
+        poseControllerCaballero.RefrescarPoseActual();
+      }
+
+      posePosturaDefensivaActiva = false;
     }
 
 

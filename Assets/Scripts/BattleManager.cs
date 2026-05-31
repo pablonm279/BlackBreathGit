@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using TMPro;
 using UnityEngine.Rendering;
 using UnityEngine.EventSystems;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Threading;
@@ -17,6 +18,9 @@ using Stopwatch = System.Diagnostics.Stopwatch;
 
 public class BattleManager : MonoBehaviour
 {
+  private const string TooltipObstaculoId = "combate_obstaculo";
+  private const string TooltipEscapeId = "combate_escape";
+
   [Header("Ajustes visuales de batalla")]
   [SerializeField] public float TAMANIO_UNIDADES = 1f;
   [Header("Compensacion de perspectiva")]
@@ -153,7 +157,7 @@ public class BattleManager : MonoBehaviour
     HeatWaveScreenEffect heatWaveEffect = HeatWaveScreenEffect.Ensure(canvasObjetivo);
     if (heatWaveEffect != null)
     {
-      heatWaveEffect.SetEffectActive(activo);
+      heatWaveEffect.SetEffectActive(false);
     }
   }
 
@@ -191,6 +195,7 @@ public class BattleManager : MonoBehaviour
 
     pausaPorLogActiva = false;
     pausaManualCombateActiva = false;
+    pausaTooltipTutorialActiva = false;
     ultimaVisibilidadLogActiva = false;
     CancelarCambioEstadoPausaDelay();
     AplicarEscalaTiempoCombate();
@@ -210,9 +215,6 @@ public class BattleManager : MonoBehaviour
     }
 
     RondaNro = 1;
-
-    if (logDeCampania != null)
-      logDeCampania.SetDiaActual(RondaNro, true);
 
     //OBSTACULOS---------
     #region 
@@ -474,7 +476,7 @@ public class BattleManager : MonoBehaviour
 
 
       /*---*/
-      SincronizarHabilidadDestruirObstaculo(unidadActiva);
+      SincronizarHabilidadDestruirObstaculo(unidadActiva, true);
       SincronizarHabilidadEscapar(unidadActiva);
       ActualizarlistaHabilidades();//dejar aca y abajo, se llama 2 veces
 
@@ -483,7 +485,7 @@ public class BattleManager : MonoBehaviour
       unidadActiva.ArrancaTurnoEstaUnidad();
       scUIInfoChar.RefrescarSegunEstadoActual();
       /*---*/
-      SincronizarHabilidadDestruirObstaculo(unidadActiva);
+      SincronizarHabilidadDestruirObstaculo(unidadActiva, true);
       SincronizarHabilidadEscapar(unidadActiva);
       ActualizarlistaHabilidades();//dejar aca y arriba, se llama 2 veces
 
@@ -717,6 +719,7 @@ public class BattleManager : MonoBehaviour
 
     if (viasGeneradas > 0)
     {
+      TutorialTooltipManager.TryShow(TooltipEscapeId);
       string mensaje = TRADU.i != null
         ? TRADU.i.Traducir(viasGeneradas == 1
           ? "Se abre 1 vÃ­a de escape en la retaguardia aliada."
@@ -1703,7 +1706,7 @@ public class BattleManager : MonoBehaviour
     return personaje != null && !personaje.Camp_Muerto && personaje.TieneRasgo(traitId);
   }
 
-  public void SincronizarHabilidadDestruirObstaculo(Unidad unidad)
+  public void SincronizarHabilidadDestruirObstaculo(Unidad unidad, bool mostrarTooltipSiCorresponde = false)
   {
     if (unidad == null)
     {
@@ -1727,6 +1730,11 @@ public class BattleManager : MonoBehaviour
       }
       Destroy(habilidad);
       SolicitarActualizarBotones();
+    }
+
+    if (mostrarTooltipSiCorresponde && requiere && unidad == unidadActiva)
+    {
+      TutorialTooltipManager.TryShow(TooltipObstaculoId);
     }
   }
 
@@ -3428,6 +3436,7 @@ public class BattleManager : MonoBehaviour
   public TMP_SpriteAsset SpriteAssetCombate => logDeCampania != null ? logDeCampania.SpriteAssetCombate : null;
   private bool pausaPorLogActiva;
   private bool pausaManualCombateActiva;
+  private bool pausaTooltipTutorialActiva;
   private bool ultimaVisibilidadLogActiva;
   private CancellationTokenSource cambioEstadoPausaDelayCts = new CancellationTokenSource();
   private GameObject goTextoPausaCombate;
@@ -3437,15 +3446,73 @@ public class BattleManager : MonoBehaviour
 
   public void EscribirLog(string log, bool normalizarNombresActores = true)
   {
-    if (logDeCampania == null) return;
+    if (txtLog == null) return;
 
     string logNormalizado = normalizarNombresActores
       ? TraducirNombresActoresEnLog(log)
       : log;
 
-    // Asegura que el logger sabe el dia actual
-    logDeCampania.SetDiaActual(RondaNro, true);
-    logDeCampania.Escribir(logNormalizado, true);
+    if (string.IsNullOrWhiteSpace(logNormalizado))
+    {
+      return;
+    }
+
+    TMP_SpriteAsset spriteAssetCombate = SpriteAssetCombate;
+    if (spriteAssetCombate != null && txtLog.spriteAsset != spriteAssetCombate)
+    {
+      txtLog.spriteAsset = spriteAssetCombate;
+    }
+
+    txtLog.textWrappingMode = TextWrappingModes.Normal;
+    txtLog.richText = true;
+    txtLog.enableAutoSizing = false;
+    txtLog.overflowMode = TextOverflowModes.Truncate;
+
+    string etiquetaRonda = TRADU.i != null ? TRADU.i.Traducir("Ronda") : "Ronda";
+    List<string> lineasActuales = string.IsNullOrEmpty(txtLog.text)
+      ? new List<string>()
+      : new List<string>(txtLog.text.Split('\n'));
+
+    while (lineasActuales.Count > 13)
+    {
+      lineasActuales.RemoveAt(0);
+    }
+
+    StringBuilder sb = new StringBuilder(txtLog.text.Length + logNormalizado.Length + 96);
+    foreach (string linea in lineasActuales)
+    {
+      if (string.IsNullOrEmpty(linea))
+      {
+        continue;
+      }
+
+      if (linea.Contains($"{etiquetaRonda} {RondaNro}"))
+      {
+        sb.Append(linea).Append('\n');
+      }
+      else
+      {
+        sb.Append("<size=70%>").Append(linea).Append("</size>\n");
+      }
+    }
+
+    sb.Append('\n')
+      .Append("<size=120%><color=#cdcdcd>-")
+      .Append(etiquetaRonda)
+      .Append(' ')
+      .Append(RondaNro)
+      .Append(": </color></size>")
+      .Append("<size=100%>")
+      .Append(logNormalizado)
+      .Append("</size>");
+
+    List<string> nuevasLineas = new List<string>(sb.ToString().Split('\n'));
+    while (nuevasLineas.Count > 13)
+    {
+      nuevasLineas.RemoveAt(0);
+    }
+
+    txtLog.text = string.Join("\n", nuevasLineas);
   }
 
   private string ObtenerNombreTraducidoParaLog(string nombreOriginal)
@@ -3563,7 +3630,10 @@ public class BattleManager : MonoBehaviour
 
   public void BorrarLog()
   {
-    txtLog.text = "";
+    if (txtLog != null)
+    {
+      txtLog.text = "";
+    }
   }
 
   public void SetLogCombateActivoPorEscena(bool activo)
@@ -3631,6 +3701,11 @@ public class BattleManager : MonoBehaviour
 
   public void ActivarLog(int n)
   {
+    if (goLog == null)
+    {
+      return;
+    }
+
     if (n == 1)
     {
       UIFadeSlideUtility.Show(goLog);
@@ -3918,6 +3993,11 @@ public class BattleManager : MonoBehaviour
     AplicarOrdenDuranteOscurecedor(unidad.gameObject, posY, true, ordenOscurecedor);
     ConfigurarOscurecidoVisualUnidad(unidad, false);
     AjustarOrdenRespectoOscurecedor(unidad.transform, oscurecedorTransform, false);
+  }
+
+  public void RefrescarOrdenVisualBatalla()
+  {
+    ReordenarTodoPorY();
   }
 
   private void ReordenarTodoPorY()
@@ -4228,7 +4308,7 @@ public class BattleManager : MonoBehaviour
 
   public bool PausaCombateActiva
   {
-    get { return pausaPorLogActiva || pausaManualCombateActiva; }
+    get { return pausaPorLogActiva || pausaManualCombateActiva || pausaTooltipTutorialActiva; }
   }
 
   public static async Task DelayCombateAsync(int milliseconds)
@@ -4322,6 +4402,18 @@ public class BattleManager : MonoBehaviour
     pausaManualCombateActiva = activa;
     NotificarCambioEstadoPausaCombate();
     ActualizarIndicadorPausaCombate();
+    AplicarEscalaTiempoCombate();
+  }
+
+  public void SetPausaTooltipTutorial(bool activa)
+  {
+    if (pausaTooltipTutorialActiva == activa)
+    {
+      return;
+    }
+
+    pausaTooltipTutorialActiva = activa;
+    NotificarCambioEstadoPausaCombate();
     AplicarEscalaTiempoCombate();
   }
 

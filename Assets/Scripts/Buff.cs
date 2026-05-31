@@ -432,6 +432,10 @@ public void RemoverBuff(Unidad unidad)
     {
         duelista.NotificarFinEnGarde();
     }
+    if (buffNombre == "Postura Defensiva" && unidad is ClaseCaballero caballero)
+    {
+        caballero.NotificarFinPosturaDefensiva();
+    }
     Destroy(this);
 
     // Repite el mismo patrón para otros atributos si es necesario...

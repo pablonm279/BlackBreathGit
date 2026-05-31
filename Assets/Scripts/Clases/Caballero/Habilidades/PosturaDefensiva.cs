@@ -7,6 +7,7 @@ using System;
 
 public class PosturaDefensiva : Habilidad
 {
+    private const int PausaClaridadMs = 300;
    
 
     [SerializeField] private GameObject VFXenObjetivo;
@@ -209,13 +210,14 @@ public class PosturaDefensiva : Habilidad
     
     
 
-    public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
+    public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
 
     if(obj is Unidad) //Acá van los efectos a Unidades.
      {
 
        Unidad objetivo = (Unidad)obj;
+       await BattleManager.DelayCombateAsync(PausaClaridadMs);
        BattleManager.Instance.EscribirLog(TRADU.i.Traducir(scEstaUnidad.uNombre) + " " + TRADU.i.Traducir("usa ") + TRADU.i.Traducir(nombre) + ".");
 
       VFXAplicar(objetivo.gameObject);
@@ -233,6 +235,11 @@ public class PosturaDefensiva : Habilidad
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
        objetivo.Marcar(0);
 
+       if (objetivo is ClaseCaballero caballero)
+       {
+         caballero.NotificarInicioPosturaDefensiva();
+       }
+
        //Agrega la reacción 
        ReaccionPosturaDefensiva reaccion = new ReaccionPosturaDefensiva();
        reaccion.NIVEL = NIVEL;
@@ -241,6 +248,7 @@ public class PosturaDefensiva : Habilidad
        ReaccionPosturaDefensiva reaccionPosturaDefensiva = ComponentCopier.CopyComponent(reaccion, objetivo.gameObject);
 
        //Usarla termina el turno
+       await BattleManager.DelayCombateAsync(PausaClaridadMs);
        BattleManager.Instance.TerminarTurno();
      }
     

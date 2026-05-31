@@ -11,6 +11,7 @@ public class HandbookManager : MonoBehaviour
     public GameObject solapaRecursos;
     public GameObject solapaAlientoNegro;
     public GameObject solapaPersonajes;
+    public GameObject solapaExploracion;
 
     public GameObject solapaEstados;
 
@@ -34,6 +35,7 @@ public class HandbookManager : MonoBehaviour
             case 5: target = solapaAlientoNegro; break;
             case 6: target = solapaPersonajes; break;
             case 7: target = solapaEstados; break;
+            case 8: target = solapaExploracion; break;
             default: return;
         }
 
@@ -52,7 +54,7 @@ public class HandbookManager : MonoBehaviour
     {
         GameObject[] solapas = {
             solapaZonas, solapaMapa, solapaCiviles, solapaRecursos,
-            solapaAlientoNegro, solapaPersonajes, solapaEstados
+            solapaAlientoNegro, solapaPersonajes, solapaEstados, solapaExploracion
         };
         for (int i = 0; i < solapas.Length; i++)
         {

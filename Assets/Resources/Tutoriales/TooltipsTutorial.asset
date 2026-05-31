@@ -1,0 +1,158 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33c225ebd62b45d0879f2914fd5d7f79, type: 3}
+  m_Name: TooltipsTutorial
+  m_EditorClassIdentifier: 
+  tooltips:
+  - id: campania_personaje_herido
+    size: 0
+    side: 3
+    panelOffset: {x: 0, y: 0}
+    textoEs: "Un personaje ha caído en combate y ahora está <b>Herido</b>. Tiene penalizaciones en combate, y si vuelve a caer mientras está herido: morirá.\nPuedes tratarlo en el Séquito de Curanderos."
+    textoEn: "A character has fallen in combat and is now <b>Wounded</b>. They suffer combat penalties, and if they fall again while wounded, they will die.\nYou can treat them in the Healers' Retinue."
+    textoPt: "Um personagem caiu em combate e agora está <b>Ferido</b>. Ele sofre penalidades em combate e, se cair novamente enquanto estiver ferido, morrerá.\nVocê pode tratá-lo no Séquito de Curandeiros."
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1
+  - id: campania_personaje_corrupto
+    size: 1
+    side: 3
+    panelOffset: {x: 0, y: 0}
+    textoEs: "Un personaje ha caído en combate contra un enemigo Corrupto y ahora está <b>Corrompido</b>.\nNo solo tiene penalizaciones de combate sino también que si vuelve a caer en combate: morirá.\nAdemás, los Corruptos que lo ataquen se curarán.\n\nPuede ser removido en un <b>Santuario de Purificadores</b>."
+    textoEn: "A character has fallen in combat against a Corrupted enemy and is now <b>Corrupted</b>.\nThey suffer combat penalties, and if they fall in combat again, they will die.\nAlso, Corrupted enemies that attack them will heal.\n\nIt can be removed at a <b>Purifiers' Shrine</b>."
+    textoPt: "Um personagem caiu em combate contra um inimigo Corrompido e agora está <b>Corrompido</b>.\nEle sofre penalidades em combate e, se cair em combate novamente, morrerá.\nAlém disso, Corrompidos que o atacarem serão curados.\n\nPode ser removido em um <b>Santuário dos Purificadores</b>."
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1
+  - id: campania_personaje_tiendas
+    size: 0
+    side: 0
+    panelOffset: {x: 0, y: 0}
+    textoEs: "No tienes mas Tiendas disponibles para personajes nuevos.\nPuedes agregar mas Tiendas a la Caravana desde el menú de <b>Mejoras de Caravana</b> (Atajo: \"I\")"
+    textoEn: "You do not have any Tents available for new characters.\nYou can add more Tents to the Caravan from the <b>Caravan Upgrades</b> menu (Shortcut: \"I\")"
+    textoPt: "Você não tem mais Tendas disponíveis para novos personagens.\nVocê pode adicionar mais Tendas à Caravana no menu de <b>Melhorias da Caravana</b> (Atalho: \"I\")"
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1
+  - id: campania_personaje_peso
+    size: 0
+    side: 0
+    panelOffset: {x: 0, y: 0}
+    textoEs: "La caravana lleva sobrepeso y tienes mas que suficientes materiales para realizar una mejora.\nGasta Materiales en una mejora de caravana y de paso aliviana el peso de la caravana.\n(el menu de <b>Mejoras de Caravana</b> se abre con atajo \"I\")"
+    textoEn: "The caravan is overloaded, and you have more than enough Materials to buy an upgrade.\nSpend Materials on a caravan upgrade and lighten the caravan's load at the same time.\n(the <b>Caravan Upgrades</b> menu opens with shortcut \"I\")"
+    textoPt: "A caravana está com sobrepeso, e você tem Materiais mais do que suficientes para fazer uma melhoria.\nGaste Materiais em uma melhoria da caravana e alivie o peso da caravana ao mesmo tempo.\n(o menu de <b>Melhorias da Caravana</b> abre com o atalho \"I\")"
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1
+  - id: campania_personaje_zonaExpuesta
+    size: 1
+    side: 0
+    panelOffset: {x: 0, y: 0}
+    textoEs: "Uno de los nodos a los cuales puedes viajar desde la posición actual es una \"Zona Expuesta\" (Ícono: OjoRojo).\n\nUna Zona Expuesta implica que la caravana <b>será</b> emboscada si viaja a ese nodo, además, será una batalla con <b>refuerzos</b> a todo o nada, si pierdes, la caravana será destruída.\n\nUna emboscada aplicará penalizaciones a tus combatientes que no estén en <b>Actividad de Campaña: Guardia</b>, por lo tanto, si no tienes otra opción acuérdate de cambiar su actividad a <b>Guardia</b>."
+    textoEn: "One of the nodes you can travel to from your current position is an \"Exposed Zone\" (Icon: Red Eye).\n\nAn Exposed Zone means the caravan <b>will</b> be ambushed if it travels to that node. It will also be an all-or-nothing battle with <b>reinforcements</b>: if you lose, the caravan will be destroyed.\n\nAn ambush applies penalties to combatants who are not on <b>Campaign Activity: Guard</b>, so if you have no other option, remember to switch their activity to <b>Guard</b>."
+    textoPt: "Um dos nós para os quais você pode viajar a partir da posição atual é uma \"Zona Exposta\" (Ícone: Olho Vermelho).\n\nUma Zona Exposta significa que a caravana <b>será</b> emboscada se viajar para esse nó. Além disso, será uma batalha com <b>reforços</b> de tudo ou nada: se você perder, a caravana será destruída.\n\nUma emboscada aplica penalidades aos combatentes que não estejam em <b>Atividade de Campanha: Guarda</b>; portanto, se não tiver outra opção, lembre-se de mudar a atividade deles para <b>Guarda</b>."
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1
+  - id: campania_emboscada_normal
+    size: 0
+    side: 0
+    panelOffset: {x: 0, y: 0}
+    textoEs: "Al llegar a los nodos de Batalla o descansar, se realiza una Tirada de Emboscada. Si la caravana la falla, el combate será una emboscada enemiga, aplicando penalizaciones a tus combatientes por los primeros turnos de la batalla.\nLos personajes en <b>Guardia</b> no serán afectados."
+    textoEn: "When reaching Battle nodes or resting, the caravan makes an Ambush Roll. If it fails, the combat will be an enemy ambush, applying penalties to your combatants during the first turns of the battle.\nCharacters on <b>Guard</b> will not be affected."
+    textoPt: "Ao chegar a nós de Batalha ou ao descansar, a caravana faz uma Rolagem de Emboscada. Se falhar, o combate será uma emboscada inimiga, aplicando penalidades aos seus combatentes nos primeiros turnos da batalha.\nPersonagens em <b>Guarda</b> não serão afetados."
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1
+  - id: campania_personaje_descansando
+    size: 0
+    side: 0
+    panelOffset: {x: 0, y: 0}
+    textoEs: "Tienes un personaje con <b>Actividad de Campaña: Descansar</b> cuando está curado en su totalidad. Por lo tanto, si bien tendrá el buff de combate \"Descansado\", no aprovecha completamente su potencial y seguramente otra Actividad sea mas provechosa."
+    textoEn: "You have a character on <b>Campaign Activity: Rest</b> while they are fully healed. So, even though they will get the \"Rested\" combat buff, they are not making full use of their potential, and another Activity will probably be more useful."
+    textoPt: "Você tem um personagem em <b>Atividade de Campanha: Descansar</b> enquanto ele está totalmente curado. Portanto, embora ele receba o buff de combate \"Descansado\", não está aproveitando todo o seu potencial, e outra Atividade provavelmente será mais útil."
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1
+  - id: campania_asentamiento
+    size: 0
+    side: 0
+    panelOffset: {x: 0, y: 0}
+    textoEs: "Se ha encontrado un camino de piedra que claramente lleva a un <b>Asentamiento</b>. Puedes seguir el camino para llegar a él y así podrás comerciar, descansar protegido, conseguir personajes y civiles. Puedes optar por elegir otro camino si consideras conveniente."
+    textoEn: "A stone road has been found, clearly leading to a <b>Settlement</b>. You can follow the road to reach it and then trade, rest safely, recruit characters, and gather civilians. You can choose another path if you think it is better."
+    textoPt: "Foi encontrado um caminho de pedra que claramente leva a um <b>Assentamento</b>. Você pode seguir o caminho para chegar lá e, assim, comerciar, descansar protegido, recrutar personagens e conseguir civis. Você pode escolher outro caminho se achar conveniente."
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1
+  - id: campania_atajo_sup
+    size: 0
+    side: 0
+    panelOffset: {x: 0, y: 0}
+    textoEs: "A veces, las <b>Tiradas de Exploración</b> que hace la caravana encontrarán <b>Atajos Subterráneos</b>. Estos te llevarán a otros tramos inesperados y mas adelante.\nLa contraparte es que no sabes qué hay del otro lado, y la caravana perderá algo de Esperanza."
+    textoEn: "Sometimes, the caravan's <b>Exploration Rolls</b> will find <b>Underground Shortcuts</b>. These will take you to unexpected path sections farther ahead.\nThe downside is that you do not know what is on the other side, and the caravan will lose some Hope."
+    textoPt: "Às vezes, as <b>Rolagens de Exploração</b> feitas pela caravana encontrarão <b>Atalhos Subterrâneos</b>. Eles levarão você a outros trechos inesperados mais adiante.\nA desvantagem é que você não sabe o que há do outro lado, e a caravana perderá um pouco de Esperança."
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1
+  - id: combate_esforzar
+    size: 1
+    side: 0
+    panelOffset: {x: 0, y: 0}
+    textoEs: "Estás por <b>Esforzar</b> una habilidad. Esto significa que no tienes PA suficientes para usarla este turno y por lo tanto tomarás PA del próximo turno del personaje.\n\nEl próximo turno, el Personaje verá reducido su PA disponible en 1.\n\nAdemás, hasta que el próximo turno comience, el personaje tendrá su Defensa reducida.\nBien usado, <b>Esforzar</b> es un buen recurso, pero tiene sus riesgos."
+    textoEn: "You are about to <b>Exert</b> an ability. This means you do not have enough AP to use it this turn, so you will take AP from the character's next turn.\n\nOn their next turn, the character will have their available AP reduced by 1.\n\nAlso, until that next turn begins, the character will have reduced Defense.\nUsed well, <b>Exerting</b> is a useful tool, but it has risks."
+    textoPt: "Você está prestes a <b>Forçar</b> uma habilidade. Isso significa que você não tem PA suficiente para usá-la neste turno, então usará PA do próximo turno do personagem.\n\nNo próximo turno, o Personagem terá seu PA disponível reduzido em 1.\n\nAlém disso, até o próximo turno começar, o personagem terá sua Defesa reduzida.\nBem usado, <b>Forçar</b> é um bom recurso, mas tem seus riscos."
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1
+  - id: combate_obstaculo
+    size: 0
+    side: 0
+    panelOffset: {x: 0, y: 0}
+    textoEs: "Cuando un Personaje tiene un obstáculo destruíble adyacente a su posición, este adquiere una habilidad temporal llamada \"Destruir Obstáculo\".\nUtilizarla termina el turno y destruye el obstáculo adyacente seleccionado."
+    textoEn: "When a Character has a destructible obstacle adjacent to their position, they gain a temporary ability called \"Destroy Obstacle\".\nUsing it ends the turn and destroys the selected adjacent obstacle."
+    textoPt: "Quando um Personagem tem um obstáculo destrutível adjacente à sua posição, ele recebe uma habilidade temporária chamada \"Destruir Obstáculo\".\nUsá-la encerra o turno e destrói o obstáculo adjacente selecionado."
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1
+  - id: combate_escape
+    size: 0
+    side: 0
+    panelOffset: {x: 0, y: 0}
+    textoEs: "Al comienzo de la tercera Ronda de una batalla aparecerán <b>Rutas de Escape</b> marcadas con una flecha en dos Casillas de la columna trasera de tu lado de la batalla.\n\nCualquier personaje presente en alguna de esas Casillas podrá usar una acción para Escapar del combate."
+    textoEn: "At the beginning of the third Round of a battle, <b>Escape Routes</b> will appear, marked with an arrow on two tiles in the back column on your side of the battle.\n\nAny character standing on one of those tiles can use an action to Escape from combat."
+    textoPt: "No começo da terceira Rodada de uma batalha, aparecerão <b>Rotas de Fuga</b> marcadas com uma seta em duas Casas da coluna traseira do seu lado da batalha.\n\nQualquer personagem presente em uma dessas Casas poderá usar uma ação para Escapar do combate."
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1
+  - id: combate_pifia
+    size: 0
+    side: 0
+    panelOffset: {x: 0, y: 0}
+    textoEs: "Tu Personaje ha <b>Pifiado</b>.\nEsto ocurre cuando en su tirada de ataque saca un 1 (5% chances).\nAl Pifiar, perderá los <b>PA</b> restantes y terminará su turno. Los Enemigos también Pifian."
+    textoEn: "Your Character has <b>Fumbled</b>.\nThis happens when their attack roll is a 1 (5% chance).\nWhen they Fumble, they lose their remaining <b>AP</b> and their turn ends. Enemies can Fumble too."
+    textoPt: "Seu Personagem teve uma <b>Falha Crítica</b>.\nIsso ocorre quando a rolagem de ataque dele tira 1 (5% de chance).\nAo ter uma Falha Crítica, ele perde os <b>PA</b> restantes e encerra o turno. Os Inimigos também podem ter Falha Crítica."
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1

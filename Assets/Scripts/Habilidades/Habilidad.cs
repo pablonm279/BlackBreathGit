@@ -67,6 +67,7 @@ public abstract class Habilidad : MonoBehaviour
 
   protected const string ColorDescripcionMecanica = "#c8c8c8";
   protected const string ColorDescripcionCostos = "#44d3ec";
+  private const string TooltipPifiaId = "combate_pifia";
 
   protected struct StatsDescripcionUI
   {
@@ -785,6 +786,11 @@ public abstract class Habilidad : MonoBehaviour
 
     if (iDadoSolo <= umbralPifia)//Pifia
     {
+      if (personajeTraits != null)
+      {
+        TutorialTooltipManager.TryShow(TooltipPifiaId);
+      }
+
       Unidad unidadTextoPifia = unidadAtacada != null ? unidadAtacada : scEstaUnidad;
       unidadTextoPifia?.GenerarTextoFlotante(TRADU.i.Traducir("<b>Pifia</b>"), Color.red, FloatingTextContext.Miss);
       scEstaUnidad?.ReproducirFlashPifiaLeveRapido();

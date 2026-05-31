@@ -85346,7 +85346,7 @@ MonoBehaviour:
   MaterialCaminoOriginal: {fileID: 2100000, guid: ae282af2e7ea5754ea7c6b573651c21a, type: 2}
   MaterialCaminoMarcado: {fileID: 2100000, guid: 61ac5b5a778d1504fba5c849b21846a0, type: 2}
   MaterialCaminoUsado: {fileID: 2100000, guid: 9799188ca27064a49a397f1c41094bfe, type: 2}
-  MaterialAtajo: {fileID: 2100000, guid: ab64a35e7db072540b3821e60880eeb6, type: 2}
+  MaterialAtajo: {fileID: 2100000, guid: 7e75bc3e4db30c14daf59528a65f072c, type: 2}
   MaterialCaminoHint: {fileID: 2100000, guid: 99856a6afe4d9214aaa1d69fc76ee93e, type: 2}
   caminoLento: {fileID: 2100000, guid: 7e75bc3e4db30c14daf59528a65f072c, type: 2}
   caminoAAldea: {fileID: 2100000, guid: ab64a35e7db072540b3821e60880eeb6, type: 2}

@@ -36,6 +36,10 @@ public class CampaignManager : MonoBehaviour
   public static CampaignManager Instance { get; private set; }
   private const int MinTierMejoraCaravana = 1;
   private const int MaxTierMejoraCaravana = 5;
+  private const string TooltipPersonajeTiendasId = "campania_personaje_tiendas";
+  private const string TooltipPersonajePesoId = "campania_personaje_peso";
+  private const string TooltipEmboscadaNormalId = "campania_emboscada_normal";
+  private const string TooltipPersonajeDescansandoId = "campania_personaje_descansando";
   private const bool DEBUG_FORZAR_OLA_DE_CALOR_AL_PLAY = false;
   private const bool DEBUG_FORZAR_MASACRE_NEDUKAZAL = false;
   private const bool DEBUG_ABRIR_MENU_SERRIA_AL_INICIAR = false;
@@ -46,6 +50,17 @@ public class CampaignManager : MonoBehaviour
   private const float RetrasoEntreTextosExploradoresSegundos = 0.9f;
   private bool enviandoExploradores;
   private readonly Dictionary<GameObject, bool> estadosCanvasCampaniaDuranteExploradores = new Dictionary<GameObject, bool>();
+  private readonly Dictionary<GameObject, bool> estadosCanvasCampaniaDuranteIntro = new Dictionary<GameObject, bool>();
+  private readonly List<System.Action> accionesAlFinalizarIntroCampania = new List<System.Action>();
+  private bool introCampaniaPendiente;
+  private bool introCampaniaActiva;
+  private bool interfazCampaniaOcultaPorIntro;
+  private bool faderIntroCampaniaTomado;
+  private bool startCampaniaEjecutado;
+  private bool eventoInicioCampaniaEmitido;
+  private Coroutine rutinaIntroCampaniaTrasCarga;
+  private const float AlphaFaderListoIntroCampania = 0.02f;
+  private const float TiempoMaximoEsperaFaderIntroCampania = 6f;
   [Header("Debug Demo")]
   [SerializeField] private bool debugSaltarTutorialAlIniciar = false;
   [SerializeField] private bool debugForzarMapaLinealTutorialAlIniciar = false;
@@ -343,11 +358,83 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       || HayTutorialNuevoEnEscena();
   }
 
+  public bool IntroCampaniaActivaOPendiente => introCampaniaPendiente || introCampaniaActiva;
+
+  public bool IntroCampaniaPuedeIniciarTrasCarga()
+  {
+    return !DebeEsperarFaderInicialIntroCampania();
+  }
+
+  public bool ConsumirIntroCampaniaPendiente()
+  {
+    if (!introCampaniaPendiente)
+    {
+      return false;
+    }
+
+    introCampaniaPendiente = false;
+    introCampaniaActiva = true;
+    OcultarInterfazCampaniaParaIntro();
+    return true;
+  }
+
+  public void FinalizarIntroCampania()
+  {
+    bool habiaIntro = IntroCampaniaActivaOPendiente;
+    introCampaniaPendiente = false;
+    introCampaniaActiva = false;
+
+    if (habiaIntro)
+    {
+      RestaurarInterfazCampaniaTrasIntro();
+      LiberarFaderIntroCampaniaSiCorresponde(true);
+    }
+
+    EjecutarAccionesAlFinalizarIntroCampania();
+    TutorialDirector.ReintentarAutoarranqueTrasIntroSiCorresponde();
+    CompletarInicioCampaniaSiCorresponde();
+  }
+
+  public void EjecutarTrasIntroCampania(System.Action accion)
+  {
+    if (accion == null)
+    {
+      return;
+    }
+
+    if (IntroCampaniaActivaOPendiente)
+    {
+      accionesAlFinalizarIntroCampania.Add(accion);
+      return;
+    }
+
+    accion.Invoke();
+  }
+
+  public void SolicitarInicioIntroCampaniaTrasCarga(bool ignorarFaderInicial = false)
+  {
+    if (!IntroCampaniaActivaOPendiente)
+    {
+      return;
+    }
+
+    if (rutinaIntroCampaniaTrasCarga != null)
+    {
+      if (!ignorarFaderInicial)
+      {
+        return;
+      }
+
+      StopCoroutine(rutinaIntroCampaniaTrasCarga);
+      rutinaIntroCampaniaTrasCarga = null;
+    }
+
+    rutinaIntroCampaniaTrasCarga = StartCoroutine(IniciarIntroCampaniaTrasCarga(ignorarFaderInicial));
+  }
+
   private bool HayTutorialNuevoEnEscena()
   {
-    TutorialDirector director = TutorialDirector.Instance;
-    return PlayerPrefs.GetInt(TutorialDirector.PendingStartAfterZoneDescriptionKey, 0) == 1
-      || (director != null && director.IsRunning);
+    return TutorialDirector.HayTutorialActivoOPendiente();
   }
 
   private string ObtenerTextoCargaInicialSegunIdioma()
@@ -429,8 +516,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     inicializandoNuevaCampania = true;
     try
     {
+      TutorialTooltipProgress.ResetearParaNuevaCampania();
       ResetearEstadoTransitorioCampania();
       ConfigurarEstadoTutorialNuevaCampania();
+      PrepararIntroCampaniaNueva();
       InicializarRecursosNuevaCampania();
       InicializarZonaNuevaCampania();
       InicializarSequitosNuevaCampania();
@@ -455,6 +544,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     if (savePendiente == null)
     {
+      TutorialDirector.CancelarRestauracionPendiente();
       error = "El save pendiente es invalido.";
       Debug.LogWarning("[CampaignManager] " + error);
       if (iniciarNuevaCampaniaSiFalla)
@@ -470,6 +560,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         throw new InvalidOperationException("El save no contiene todos los bloques necesarios.");
       }
+
+      TutorialDirector.PrepararRestauracionDesdeSave(savePendiente.campaign, savePendiente.version);
 
       if (scMapaManager != null)
       {
@@ -488,6 +580,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       RestaurarRecursosDesdeSave(savePendiente.campaign);
       RestaurarSeleccionBatallaDesdeSave(savePendiente.party);
       FinalizarCargaCampania(savePendiente);
+      TutorialDirector.AplicarRestauracionPendienteSiCorresponde();
 
       debeEscribirLogInicioEnStart = false;
       campaniaInicializada = true;
@@ -495,6 +588,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     catch (Exception ex)
     {
+      TutorialDirector.CancelarRestauracionPendiente();
       error = ex.Message;
       Debug.LogError("[CampaignManager] Fallo la carga del save. " + error);
       Debug.LogException(ex, this);
@@ -510,6 +604,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   {
     logInicioCampaniaEscrito = false;
     debeEscribirLogInicioEnStart = false;
+    introCampaniaPendiente = false;
+    introCampaniaActiva = false;
+    RestaurarInterfazCampaniaTrasIntro();
+    accionesAlFinalizarIntroCampania.Clear();
+    eventoInicioCampaniaEmitido = false;
     MoviendoCaravana = false;
     transicionZonaEnCurso = false;
     bloquearOlaDeCalorEnSiguienteTiradaClima = false;
@@ -530,6 +629,21 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     scTutorialManager.tutorialActivo = yaPasotuto != 1;
+  }
+
+  private void PrepararIntroCampaniaNueva()
+  {
+    introCampaniaPendiente = true;
+  }
+
+  public void PrepararIntroCampaniaNuevaZona()
+  {
+    if (introCampaniaActiva)
+    {
+      return;
+    }
+
+    introCampaniaPendiente = true;
   }
 
   private void InicializarRecursosNuevaCampania()
@@ -705,6 +819,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
   }
 
+  public void RefrescarBarraPersonajesCampania(bool actualizarInfoSiMenuAbierto = true)
+  {
+    RefrescarRetratosPersonajesCampania(actualizarInfoSiMenuAbierto);
+  }
+
 
   private void OnEnable()
   {
@@ -743,6 +862,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   private void Start()
   {
+    startCampaniaEjecutado = true;
     PrepararBitacoraDiaActualSiCorresponde();
 
     TRADU.i.ActualizarIdioma();
@@ -750,11 +870,6 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     RefrescarRetratosPersonajesCampania();
     StartCoroutine(RefrescarRetratosPersonajesCampaniaDiferido());
     ActualizarTextoDia();
-    if (debeEscribirLogInicioEnStart)
-    {
-      EscribirLogInicioCampania();
-      debeEscribirLogInicioEnStart = false;
-    }
 
     MenuOpciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
     RefrescarVfxClimaCalor();
@@ -774,7 +889,131 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       ForzarCombateFinalBosqueDebug();
     }
 
-    TutorialEvents.Emit(TutorialEventNames.CampaignStarted, gameObject);
+    if (introCampaniaActiva)
+    {
+      OcultarInterfazCampaniaParaIntro();
+    }
+    else if (introCampaniaPendiente)
+    {
+      SolicitarInicioIntroCampaniaTrasCarga();
+    }
+    else if (!introCampaniaPendiente)
+    {
+      CompletarInicioCampaniaSiCorresponde();
+    }
+  }
+
+  IEnumerator IniciarIntroCampaniaTrasCarga(bool ignorarFaderInicial = false)
+  {
+    yield return null;
+    yield return new WaitForEndOfFrame();
+    bool faderCubriendoIntro = AsegurarFaderNegroIntroCampania("inicio intro tras carga");
+    if (!ignorarFaderInicial && !faderCubriendoIntro)
+    {
+      yield return EsperarFaderInicialIntroCampania();
+    }
+
+    bool ignorarEsperaFaderMapa = ignorarFaderInicial || faderCubriendoIntro || DebeEsperarFaderInicialIntroCampania();
+    if (ignorarFaderInicial && !faderCubriendoIntro)
+    {
+      ForzarPantallaVisibleParaIntroCampania(ignorarFaderInicial ? "inicio forzado" : "timeout fader inicial");
+      yield return null;
+      yield return new WaitForEndOfFrame();
+    }
+
+    if (!IntroCampaniaActivaOPendiente)
+    {
+      rutinaIntroCampaniaTrasCarga = null;
+      yield break;
+    }
+
+    MapaManager mapaManager = scMapaManager != null ? scMapaManager : BuscarMapaManagerEnEscena();
+    if (mapaManager != null)
+    {
+      mapaManager.IniciarIntroCampaniaPendienteTrasCarga(ignorarEsperaFaderMapa);
+      rutinaIntroCampaniaTrasCarga = null;
+      yield break;
+    }
+
+    rutinaIntroCampaniaTrasCarga = null;
+    LiberarFaderIntroCampaniaSiCorresponde(true);
+    FinalizarIntroCampania();
+  }
+
+  IEnumerator EsperarFaderInicialIntroCampania()
+  {
+    float tiempoEsperando = 0f;
+    while (DebeEsperarFaderInicialIntroCampania() && tiempoEsperando < TiempoMaximoEsperaFaderIntroCampania)
+    {
+      tiempoEsperando += Time.unscaledDeltaTime;
+      yield return null;
+    }
+
+    yield return null;
+  }
+
+  bool DebeEsperarFaderInicialIntroCampania()
+  {
+    CanvasGroup fader = scAdministradorEscenas != null ? scAdministradorEscenas.fader : null;
+    return fader != null && fader.gameObject.activeInHierarchy && fader.alpha > AlphaFaderListoIntroCampania;
+  }
+
+  void ForzarPantallaVisibleParaIntroCampania(string motivo)
+  {
+    CanvasGroup fader = scAdministradorEscenas != null ? scAdministradorEscenas.fader : null;
+    if (fader == null)
+    {
+      return;
+    }
+
+    bool estabaTapando = fader.gameObject.activeInHierarchy && (fader.alpha > AlphaFaderListoIntroCampania || fader.blocksRaycasts || fader.interactable);
+    scAdministradorEscenas.SetFaderHold(false);
+    fader.alpha = 0f;
+    fader.blocksRaycasts = false;
+    fader.interactable = false;
+  }
+
+  bool AsegurarFaderNegroIntroCampania(string motivo)
+  {
+    if (scAdministradorEscenas == null || scAdministradorEscenas.fader == null)
+    {
+      return false;
+    }
+
+    scAdministradorEscenas.SetFaderHold(true);
+    faderIntroCampaniaTomado = true;
+    return true;
+  }
+
+  void LiberarFaderIntroCampaniaSiCorresponde(bool forzarTransparente)
+  {
+    if (!faderIntroCampaniaTomado || scAdministradorEscenas == null || scAdministradorEscenas.fader == null)
+    {
+      return;
+    }
+
+    faderIntroCampaniaTomado = false;
+    scAdministradorEscenas.SetFaderHold(false);
+    if (forzarTransparente)
+    {
+      scAdministradorEscenas.fader.alpha = 0f;
+      scAdministradorEscenas.fader.blocksRaycasts = false;
+      scAdministradorEscenas.fader.interactable = false;
+    }
+  }
+
+  MapaManager BuscarMapaManagerEnEscena()
+  {
+    MapaManager[] mapas = Resources.FindObjectsOfTypeAll<MapaManager>();
+    for (int i = 0; i < mapas.Length; i++)
+    {
+      if (mapas[i] != null && mapas[i].gameObject.scene.IsValid())
+      {
+        return mapas[i];
+      }
+    }
+
+    return null;
   }
 
   private IEnumerator RefrescarRetratosPersonajesCampaniaDiferido()
@@ -893,6 +1132,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       || EstaInteraccionActiva(goUIVictoriaZona)
       || EstaInteraccionActiva(goMenuPuerto)
       || EstaInteraccionActiva(goDerrota);
+  }
+
+  public bool DebeBloquearPaneoCamaraCampania()
+  {
+    return IntroCampaniaActivaOPendiente
+      || MoviendoCaravana
+      || HayInteraccionTransitoriaActiva()
+      || EstaInteraccionActiva(MenuOpciones);
   }
 
   private bool EstaInteraccionActiva(GameObject go)
@@ -1416,6 +1663,91 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     estadosCanvasCampaniaDuranteExploradores.Clear();
   }
 
+  void OcultarInterfazCampaniaParaIntro()
+  {
+    if (goCanvas == null)
+    {
+      return;
+    }
+
+    Transform canvasTransform = goCanvas.transform;
+    for (int i = 0; i < canvasTransform.childCount; i++)
+    {
+      Transform hijo = canvasTransform.GetChild(i);
+      if (hijo == null)
+      {
+        continue;
+      }
+
+      if (!estadosCanvasCampaniaDuranteIntro.ContainsKey(hijo.gameObject))
+      {
+        estadosCanvasCampaniaDuranteIntro[hijo.gameObject] = hijo.gameObject.activeSelf;
+      }
+      hijo.gameObject.SetActive(false);
+    }
+
+    interfazCampaniaOcultaPorIntro = true;
+  }
+
+  void RestaurarInterfazCampaniaTrasIntro()
+  {
+    if (!interfazCampaniaOcultaPorIntro)
+    {
+      estadosCanvasCampaniaDuranteIntro.Clear();
+      return;
+    }
+
+    if (goCanvas != null)
+    {
+      foreach (KeyValuePair<GameObject, bool> estado in estadosCanvasCampaniaDuranteIntro)
+      {
+        if (estado.Key != null)
+        {
+          estado.Key.SetActive(estado.Value);
+        }
+      }
+    }
+
+    estadosCanvasCampaniaDuranteIntro.Clear();
+    interfazCampaniaOcultaPorIntro = false;
+  }
+
+  void CompletarInicioCampaniaSiCorresponde()
+  {
+    if (!startCampaniaEjecutado || IntroCampaniaActivaOPendiente)
+    {
+      return;
+    }
+
+    if (debeEscribirLogInicioEnStart)
+    {
+      EscribirLogInicioCampania();
+      debeEscribirLogInicioEnStart = false;
+    }
+
+    if (!eventoInicioCampaniaEmitido)
+    {
+      TutorialEvents.Emit(TutorialEventNames.CampaignStarted, gameObject);
+      eventoInicioCampaniaEmitido = true;
+    }
+  }
+
+  void EjecutarAccionesAlFinalizarIntroCampania()
+  {
+    if (accionesAlFinalizarIntroCampania.Count == 0)
+    {
+      return;
+    }
+
+    List<System.Action> acciones = new List<System.Action>(accionesAlFinalizarIntroCampania);
+    accionesAlFinalizarIntroCampania.Clear();
+
+    for (int i = 0; i < acciones.Count; i++)
+    {
+      acciones[i]?.Invoke();
+    }
+  }
+
   IEnumerator ReproducirTextosExploradores(List<(string texto, Color color)> textosBufferizados)
   {
     if (textosBufferizados == null || textosBufferizados.Count == 0)
@@ -1573,6 +1905,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.puestoComercialBueyesDisp = pComercialBueyesDisp;
     data.tutorialActivo = scTutorialManager != null && scTutorialManager.tutorialActivo;
     data.tutorialPasoActual = scTutorialManager != null ? scTutorialManager.pasoActual : 0;
+    TutorialDirector tutorialNuevo = TutorialDirector.Instance;
+    data.tutorialNuevoActivo = tutorialNuevo != null && tutorialNuevo.IsRunning;
+    data.tutorialNuevoId = tutorialNuevo != null && tutorialNuevo.ActiveDefinition != null
+      ? tutorialNuevo.ActiveDefinition.tutorialId
+      : string.Empty;
+    data.tutorialNuevoPasoId = tutorialNuevo != null ? tutorialNuevo.CurrentStepId : string.Empty;
+    data.tutorialNuevoPendienteTrasDescripcionZona = PlayerPrefs.GetInt(TutorialDirector.PendingStartAfterZoneDescriptionKey, 0) == 1;
+    TutorialTooltipProgress.CopiarASave(data);
     data.estadisticaDiasViajados = estadisticaDiasViajados;
     data.estadisticaBatallasLibradas = estadisticaBatallasLibradas;
     data.estadisticaCivilesPerdidos = estadisticaCivilesPerdidos;
@@ -2005,13 +2345,18 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   private void RestaurarTutorialDesdeSave(CampaignSaveData data)
   {
-    if (data == null || scTutorialManager == null)
+    if (data == null)
     {
       return;
     }
 
-    scTutorialManager.tutorialActivo = data.tutorialActivo;
-    scTutorialManager.pasoActual = data.tutorialPasoActual;
+    if (scTutorialManager != null)
+    {
+      scTutorialManager.tutorialActivo = data.tutorialActivo;
+      scTutorialManager.pasoActual = data.tutorialPasoActual;
+    }
+
+    TutorialTooltipProgress.RestaurarDesdeSave(data);
   }
 
   private void RestaurarMetaprogresionDesdeSave(SaveFileData saveFileData)
@@ -3144,6 +3489,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     GetCargaLlevadaActual();
+    EvaluarTooltipSobrepesoMateriales();
   }
 
   private void ActualizarUIBueyesDesdeEstadoActual()
@@ -3157,6 +3503,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       valueCargaLlevada.text = "(" + GetCargaLlevadaActual();
     }
+    EvaluarTooltipSobrepesoMateriales();
     if (valueBueyes != null)
     {
       valueBueyes.text = "" + BueyesActuales;
@@ -3480,7 +3827,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     HeatWaveScreenEffect heatWaveEffect = HeatWaveScreenEffect.Ensure(canvasObjetivo);
     if (heatWaveEffect != null)
     {
-      heatWaveEffect.SetEffectActive(intTipoClima == 2);
+      heatWaveEffect.SetEffectActive(false);
     }
 
     BurningForestScreenEffect burningForestEffect = BurningForestScreenEffect.Ensure(canvasObjetivo);
@@ -3604,6 +3951,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       goBotonAcampar.SetActive(mostrandoAcampar);
     }
+
   }
 
   bool AbrirMenuBatallas()
@@ -3920,6 +4268,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     EfectosdeActividades();
     EfectosdeSequitos();
+    RefrescarBarraPersonajesCampania(true);
     ActualizarBotonesAccionNodoActual();
   }
 
@@ -3969,6 +4318,16 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     rutinaDesvanecerSfxMovimiento = StartCoroutine(FadeInSonidoMovimientoCaravanaCoroutine(Mathf.Max(0.05f, duracionFade)));
+  }
+
+  public void IniciarSonidoMovimientoCaravanaIntro()
+  {
+    IniciarSonidoMovimientoCaravana(Mathf.Max(0.05f, sfxMovimientoFadeIn));
+  }
+
+  public void DetenerSonidoMovimientoCaravanaIntro()
+  {
+    DesvanecerSonidoMovimientoCaravana(Mathf.Max(0.05f, sfxMovimientoFadeOut));
   }
 
   private IEnumerator FadeInSonidoMovimientoCaravanaCoroutine(float duracion)
@@ -4087,6 +4446,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       EMBOSCADA_EnCurso = CalcularResultadoEmboscadaViajeActual();
       if (EMBOSCADA_EnCurso == 1 && AbrirMenuBatallas())
       {
+        TutorialTooltipManager.TryShow(TooltipEmboscadaNormalId);
         ResolverCombateNormal(EMBOSCADA_EnCurso);
       }
 
@@ -4577,7 +4937,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     LimpiarPersonajesPorCambioZona();
     scMapaManager.ResetearYGenerarSiguienteZona();
     ResetearAlientoNegro();
+    PrepararIntroCampaniaNuevaZona();
     scAtributosZona.GenerarZona(0); //0 es aleatorio
+    SolicitarInicioIntroCampaniaTrasCarga(true);
     AplicarTraitsInicioNuevaZona();
     transicionZonaEnCurso = false;
   }
@@ -5265,6 +5627,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       ? TRADU.i.Traducir("-La actividad de todos los personajes ahora es: ") + TRADU.i.Traducir(nombreActividad)
       : "-La actividad de todos los personajes ahora es: " + nombreActividad;
     EscribirLog(mensaje, true);
+    EvaluarTooltipPersonajeDescansando();
   }
 
   public int CuantosPersonajesSonDeTalClase(int IdClase)
@@ -6118,6 +6481,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       EfectosdeSequitos();
     }
+
+    RefrescarBarraPersonajesCampania(true);
   }
 
   void EfectosdeSequitos()
@@ -6268,8 +6633,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       }
     }
 
-
-
+    EvaluarTooltipPersonajeDescansando();
   }
 
   public int ExploracionSumadaPorActividades()
@@ -6787,6 +7151,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     valueCargaMax.text = "/" + CargaMaxActual + ")";
     valueCargaLlevada.text = "(" + GetCargaLlevadaActual() + "";
     valueBueyes.text = "" + BueyesActuales;
+    EvaluarTooltipSobrepesoMateriales();
 
     GameObject textoOrigen = valueBueyes != null ? valueBueyes.gameObject : null;
     await GenerarTextoRecursos(bueyesAplicados, textoOrigen, false);
@@ -6812,6 +7177,39 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   {
     if (GetCargaLlevadaActual() > GetCapacidadDeCargaActual()) { return true; }
     return false;
+  }
+
+  private void EvaluarTooltipSobrepesoMateriales()
+  {
+    if (GetMaterialesActuales() > 50 && GetCargaLlevadaActual() > GetCapacidadDeCargaActual())
+    {
+      TutorialTooltipManager.TryShow(TooltipPersonajePesoId);
+    }
+  }
+
+  public void EvaluarTooltipPersonajeDescansando()
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    {
+      if (pers == null
+        || pers.Camp_Muerto
+        || pers.ActividadSeleccionada != 1
+        || pers.TieneRasgo(PersonajeTraitCatalog.TraitHolgazan))
+      {
+        continue;
+      }
+
+      if (pers.fVidaMaxima > 0f && pers.fVidaActual >= pers.fVidaMaxima)
+      {
+        TutorialTooltipManager.TryShow(TooltipPersonajeDescansandoId);
+        return;
+      }
+    }
   }
 
   public void SacrificarBuey()
@@ -6874,6 +7272,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
     GetCargaLlevadaActual();
+    EvaluarTooltipSobrepesoMateriales();
 
     if (SuministrosActuales < GetCivilesActual()) { alertaSuministros.SetActive(true); }
     else { alertaSuministros.SetActive(false); }
@@ -6916,6 +7315,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     int materialesAplicados = MaterialesActuales - materialesAnteriores;
     valueMateriales.text = "" + MaterialesActuales;
     GetCargaLlevadaActual();
+    EvaluarTooltipSobrepesoMateriales();
 
     GameObject textoOrigen = valueMateriales != null ? valueMateriales.gameObject : null;
     await GenerarTextoRecursos(materialesAplicados, textoOrigen, false);
@@ -7488,6 +7888,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       botonDescansar.sprite = puedeDescansar ? campSi : campNo;
     }
 
+    if (IntroCampaniaActivaOPendiente)
+    {
+      return;
+    }
+
     if (Input.GetKeyDown(teclaDebugBajoMouse))
     {
       DebugObjetosBajoMouseCampania();
@@ -7563,21 +7968,32 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (Input.GetKeyDown(KeyCode.Escape))
     {
-      if (asentamientoActivo) { return; }
-      if (!scMenuCaravana.SeApretoESC()) //Si se apreto escape se cierran menus, si no habia ningun abierto abre opciones
-      {
-        if (menuDescanso.activeInHierarchy)
-        {
-          menuDescanso.SetActive(false);
-        }
-        else
-        {
-          MenuOpciones.SetActive(true);
-        }
+      bool tutorialBloqueaEscape =
+        (scTutorialManager != null && scTutorialManager.tutorialActivo)
+        || (TutorialDirector.Instance != null && TutorialDirector.Instance.IsRunning);
 
+      if (tutorialBloqueaEscape) { return; }
+      if (asentamientoActivo) { return; }
+
+      if (MenuOpciones != null && MenuOpciones.activeInHierarchy)
+      {
+        MenuOpciones.SetActive(false);
+        return;
       }
 
+      if (scMenuCaravana != null && scMenuCaravana.SeApretoESC()) //Si se apreto escape se cierran menus, si no habia ningun abierto abre opciones
+      {
+        return;
+      }
 
+      if (menuDescanso != null && menuDescanso.activeInHierarchy)
+      {
+        menuDescanso.SetActive(false);
+      }
+      else if (MenuOpciones != null)
+      {
+        MenuOpciones.SetActive(true);
+      }
 
     }
 
@@ -7762,6 +8178,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   #region Log
   [SerializeField] TextMeshProUGUI txtLog;
   [SerializeField] GameObject goLog;
+
+  public bool LogEstaAbierto()
+  {
+    return goLog != null && goLog.activeInHierarchy;
+  }
 
   public void ActivarLog(int n)
   {
@@ -8830,6 +9251,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         ? TRADU.i.Traducir("La caravana no tiene más tiendas para otro personaje.")
         : "La caravana no tiene más tiendas para otro personaje.";
       EscribirAdvertenciaLog("<color=#ff9e9e>" + mensajeSinCupo + "</color>", true);
+      TutorialTooltipManager.TryShow(TooltipPersonajeTiendasId);
       return false;
     }
 

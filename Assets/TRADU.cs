@@ -7220,66 +7220,73 @@ public class TRADU : MonoBehaviour
                 r = "Rest";
                 break;
             case "-Actividad fijada.":
-            r="-Activity fixed.";
-             break;
+                r = "-Activity fixed.";
+                break;
             case "Atributos":
-            r="Attributes";
-             break;
+                r = "Attributes";
+                break;
             case "Equipo Disponible":
-            r="Available Gear";
-             break;
+                r = "Available Gear";
+                break;
             case " disponibles para ":
-            r=" available for ";
-             break;
+                r = " available for ";
+                break;
             case "Armas":
-            r="Weapons";
-             break;
+                r = "Weapons";
+                break;
             case "Armaduras":
-            r="Armors";
-             break;
+                r = "Armors";
+                break;
             case "Echar a ":
-            r="Expel ";
-             break;
+                r = "Expel ";
+                break;
             case " hará que se pierdan ":
-            r=" will cause the loss of ";
-             break;
+                r = " will cause the loss of ";
+                break;
             case " Esperanza. ¿Continuar?":
-            r=" Hope. Continue?";
-             break;
+                r = " Hope. Continue?";
+                break;
             case "Estadísticas":
-            r="Stats";
-             break;
-            case"Días viajados con la caravana...":
-            r="Days traveled with the caravan...";
+                r = "Stats";
+                break;
+            case "Días viajados con la caravana...":
+                r = "Days traveled with the caravan...";
+                break;
+            case "Enemigos eliminados...":
+                r = "Enemies killed...";
+                break;
+            case "Daño infligido...":
+                r = "Damage dealt...";
+                break;
+            case "Daño recibido...":
+                r = "Damage received...";
+                break;
+            case "Veces derrotado...":
+                r = "Times defeated...";
+                break;
+            case "Exploración":
+                r = "Exploration";
+                break;
+            case "Viaje":
+                r = "Travel";
+                break;
+            case "Reservas":
+                r = "Reserves";
+                break;
+            case "Si la defensa es derrotada, la caravana será destruída.":
+                r = "If the defense is defeated, the caravan will be destroyed.";
+                break;
+                break;
+            case "Selecciona el orden de los refuerzos: (-->)":
+                r = "Select the order of reinforcements: (-->)";
+                break;
+             case "Silenciar tips":
+                r = "Silence tips";
+                break;
+            case"Mostrar Ayudas":
+            r="Show Tips";
             break;
-            case"Enemigos eliminados...":
-            r="Enemies killed...";
-            break;
-            case"Daño infligido...":
-            r="Damage dealt...";
-            break;
-            case"Daño recibido...":
-            r="Damage received...";
-            break;
-            case"Veces derrotado...":
-            r="Times defeated...";
-            break;
-            case"Exploración":
-            r="Exploration";
-            break;
-            case"Viaje":
-            r="Travel";
-            break;
-            case"Reservas":
-            r="Reserves";
-            break;
-            case"Si la defensa es derrotada, la caravana será destruída.":
-            r="If the defense is defeated, the caravan will be destroyed.";
-             break;
-            break;
-            case"Selecciona el orden de los refuerzos: (-->)":
-            r="Select the order of reinforcements: (-->)";
-            break;
+            
             
             
             
@@ -14513,10 +14520,13 @@ public class TRADU : MonoBehaviour
             case"Si la defensa es derrotada, la caravana será destruída.":
             r="Se a defesa for derrotada, a caravana será destruída.";
              break;
-            /*case"":
-            r="";
+            case "Silenciar tips":
+                r = "Silenciar dicas";
+                break;
+            case"Mostrar Ayudas":
+            r="Mostrar ajuda";
             break;
-            case"":
+            /*case"":
             r="";
             break;
             case"":

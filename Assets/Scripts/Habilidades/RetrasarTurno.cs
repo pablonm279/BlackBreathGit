@@ -59,14 +59,16 @@ public class RetrasarTurno : Habilidad
       if(!yaRetraso)
       {
         yaRetraso = true;
+        BattleManager battleManager = BattleManager.Instance;
+        if (battleManager == null)
+        {
+          return;
+        }
 
-        
-        BattleManager.Instance.TerminarTurno();
-        print("Index: "+  BattleManager.Instance.indexTurno--);
-        BattleManager.Instance.lUnidadesTotal.Remove(scEstaUnidad);
-        BattleManager.Instance.lUnidadesTotal.Add(scEstaUnidad);
-
-        BattleManager.Instance.scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
+        battleManager.RemoverUnidadDeOrdenTurno(scEstaUnidad);
+        battleManager.lUnidadesTotal.Add(scEstaUnidad);
+        battleManager.scUIBarraOrdenTurno.ActualizarBarraOrdenTurno();
+        battleManager.TerminarTurno();
         
 
       }

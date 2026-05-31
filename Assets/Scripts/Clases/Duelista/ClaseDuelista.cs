@@ -411,7 +411,7 @@ public class ClaseDuelista : Unidad
     {
         if (nivel > 0)
         {
-            Estados.Aplicar_MovimientoAbaratado(this, 1, this);
+            Estados.Aplicar_MovimientoAbaratado(this, 1, this, false);
               if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
             {
                 BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(this);

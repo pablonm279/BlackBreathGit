@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class TutorialDirector : MonoBehaviour
 {
+  private const int SaveVersionConEstadoTutorialNuevo = 16;
   private const string CompletedKeyPrefix = "TutorialNuevo_Completado_";
   private const string DefaultDefinitionPath = "Tutoriales/TutorialVerticalSlice";
   public const string DefaultTutorialId = "vertical_slice_intro";
@@ -22,11 +23,24 @@ public class TutorialDirector : MonoBehaviour
   private int stepIndex = -1;
   private bool running;
   private bool suspendedForLegacyCombatTutorial;
+  private bool autoStartPendienteTrasIntro;
+  private bool pendingStartPendienteTrasIntro;
   private Coroutine timedAdvanceCoroutine;
+  private static PendingRestoreState pendingRestoreState;
 
   public bool IsRunning => running;
   public TutorialDefinition ActiveDefinition => activeDefinition;
   public TutorialStep CurrentStep => activeDefinition != null ? activeDefinition.GetStep(stepIndex) : null;
+  public string CurrentStepId => CurrentStep != null ? CurrentStep.id : string.Empty;
+
+  private struct PendingRestoreState
+  {
+    public bool hasValue;
+    public bool running;
+    public bool pendingAfterZoneDescription;
+    public string tutorialId;
+    public string stepId;
+  }
 
   private void Awake()
   {
@@ -62,6 +76,11 @@ public class TutorialDirector : MonoBehaviour
     if (activeDefinition == null)
     {
       activeDefinition = Resources.Load<TutorialDefinition>(DefaultDefinitionPath);
+    }
+
+    if (TryApplyPendingRestoreState())
+    {
+      return;
     }
 
     if (autoStartOnStart && activeDefinition != null && DebeAutoIniciarEnStart())
@@ -116,10 +135,72 @@ public class TutorialDirector : MonoBehaviour
       director.enabled = true;
     }
 
+    if (CampaignManager.Instance != null && CampaignManager.Instance.IntroCampaniaActivaOPendiente)
+    {
+      director.pendingStartPendienteTrasIntro = true;
+      return false;
+    }
+
     PlayerPrefs.DeleteKey(PendingStartAfterZoneDescriptionKey);
     PlayerPrefs.Save();
     director.StartDefaultTutorial();
     return true;
+  }
+
+  public static void ReintentarAutoarranqueTrasIntroSiCorresponde()
+  {
+    TutorialDirector director = Instance != null ? Instance : FindObjectOfType<TutorialDirector>(true);
+    if (director == null)
+    {
+      return;
+    }
+
+    director.ReintentarArranqueTrasIntroSiCorresponde();
+  }
+
+  public static void PrepararRestauracionDesdeSave(CampaignSaveData data, int saveVersion)
+  {
+    if (saveVersion < SaveVersionConEstadoTutorialNuevo)
+    {
+      CancelarRestauracionPendiente();
+      return;
+    }
+
+    pendingRestoreState = new PendingRestoreState
+    {
+      hasValue = true,
+      running = data != null && data.tutorialNuevoActivo,
+      pendingAfterZoneDescription = data != null && data.tutorialNuevoPendienteTrasDescripcionZona,
+      tutorialId = data != null ? data.tutorialNuevoId : string.Empty,
+      stepId = data != null ? data.tutorialNuevoPasoId : string.Empty
+    };
+  }
+
+  public static void AplicarRestauracionPendienteSiCorresponde()
+  {
+    TutorialDirector director = Instance != null ? Instance : FindObjectOfType<TutorialDirector>(true);
+    if (director == null)
+    {
+      return;
+    }
+
+    director.TryApplyPendingRestoreState();
+  }
+
+  public static void CancelarRestauracionPendiente()
+  {
+    pendingRestoreState = new PendingRestoreState();
+  }
+
+  public static bool HayTutorialActivoOPendiente()
+  {
+    if (pendingRestoreState.hasValue)
+    {
+      return pendingRestoreState.running || pendingRestoreState.pendingAfterZoneDescription;
+    }
+
+    return PlayerPrefs.GetInt(PendingStartAfterZoneDescriptionKey, 0) == 1
+      || (Instance != null && Instance.IsRunning);
   }
 
   public void StartTutorial(TutorialDefinition definition, string stepId = "")
@@ -331,6 +412,7 @@ public class TutorialDirector : MonoBehaviour
   private void CompleteTutorial(bool volverAlMenuPrincipal = false)
   {
     StopTimedAdvance();
+    CancelarRestauracionPendiente();
 
     if (activeDefinition != null && !string.IsNullOrEmpty(activeDefinition.tutorialId))
     {
@@ -380,12 +462,64 @@ public class TutorialDirector : MonoBehaviour
 
   private bool DebeAutoIniciarEnStart()
   {
+    if (pendingRestoreState.hasValue)
+    {
+      return false;
+    }
+
     if (PlayerPrefs.GetInt(PendingStartAfterZoneDescriptionKey, 0) == 1)
     {
       return false;
     }
 
-    return PlayerPrefs.GetInt(LegacyTutorialCompletedKey, 0) != 1;
+    if (PlayerPrefs.GetInt(LegacyTutorialCompletedKey, 0) == 1)
+    {
+      return false;
+    }
+
+    if (CampaignManager.Instance != null && CampaignManager.Instance.IntroCampaniaActivaOPendiente)
+    {
+      autoStartPendienteTrasIntro = true;
+      return false;
+    }
+
+    return true;
+  }
+
+  private void ReintentarArranqueTrasIntroSiCorresponde()
+  {
+    if (CampaignManager.Instance != null && CampaignManager.Instance.IntroCampaniaActivaOPendiente)
+    {
+      return;
+    }
+
+    if (TryApplyPendingRestoreState())
+    {
+      return;
+    }
+
+    if (pendingStartPendienteTrasIntro)
+    {
+      pendingStartPendienteTrasIntro = false;
+      TryStartPendingAfterZoneDescription();
+      return;
+    }
+
+    if (!autoStartPendienteTrasIntro || running)
+    {
+      return;
+    }
+
+    autoStartPendienteTrasIntro = false;
+    if (activeDefinition == null)
+    {
+      activeDefinition = Resources.Load<TutorialDefinition>(DefaultDefinitionPath);
+    }
+
+    if (autoStartOnStart && activeDefinition != null && DebeAutoIniciarEnStart())
+    {
+      StartTutorial(activeDefinition, startFromStepId);
+    }
   }
 
   private void EnsurePresenter()
@@ -431,5 +565,99 @@ public class TutorialDirector : MonoBehaviour
 
     StopCoroutine(timedAdvanceCoroutine);
     timedAdvanceCoroutine = null;
+  }
+
+  private bool TryApplyPendingRestoreState()
+  {
+    if (!pendingRestoreState.hasValue)
+    {
+      return false;
+    }
+
+    if (CampaignManager.Instance != null && CampaignManager.Instance.IntroCampaniaActivaOPendiente)
+    {
+      return false;
+    }
+
+    PendingRestoreState restoreState = pendingRestoreState;
+    pendingRestoreState = new PendingRestoreState();
+
+    autoStartPendienteTrasIntro = false;
+    pendingStartPendienteTrasIntro = false;
+    RestablecerEstadoRuntimeSinCompletar();
+
+    if (restoreState.pendingAfterZoneDescription)
+    {
+      PlayerPrefs.SetInt(PendingStartAfterZoneDescriptionKey, 1);
+    }
+    else
+    {
+      PlayerPrefs.DeleteKey(PendingStartAfterZoneDescriptionKey);
+    }
+
+    PlayerPrefs.Save();
+
+    if (!restoreState.running)
+    {
+      return true;
+    }
+
+    TutorialDefinition definition = ObtenerDefinitionParaTutorial(restoreState.tutorialId);
+    if (definition == null || definition.steps == null || definition.steps.Count == 0)
+    {
+      return true;
+    }
+
+    activeDefinition = definition;
+    stepIndex = definition.GetStepIndex(restoreState.stepId);
+    if (stepIndex < 0)
+    {
+      stepIndex = 0;
+    }
+
+    running = true;
+    suspendedForLegacyCombatTutorial = false;
+    EnterCurrentStep();
+    return true;
+  }
+
+  private void RestablecerEstadoRuntimeSinCompletar()
+  {
+    StopTimedAdvance();
+    running = false;
+    stepIndex = -1;
+    suspendedForLegacyCombatTutorial = false;
+
+    if (presenter != null)
+    {
+      presenter.Hide();
+    }
+  }
+
+  private TutorialDefinition ObtenerDefinitionParaTutorial(string tutorialId)
+  {
+    if (activeDefinition != null
+      && (string.IsNullOrEmpty(tutorialId) || activeDefinition.tutorialId == tutorialId))
+    {
+      return activeDefinition;
+    }
+
+    if (string.IsNullOrEmpty(tutorialId) || tutorialId == DefaultTutorialId)
+    {
+      activeDefinition = Resources.Load<TutorialDefinition>(DefaultDefinitionPath);
+      return activeDefinition;
+    }
+
+    TutorialDefinition[] definiciones = Resources.LoadAll<TutorialDefinition>(string.Empty);
+    for (int i = 0; i < definiciones.Length; i++)
+    {
+      if (definiciones[i] != null && definiciones[i].tutorialId == tutorialId)
+      {
+        activeDefinition = definiciones[i];
+        return activeDefinition;
+      }
+    }
+
+    return null;
   }
 }

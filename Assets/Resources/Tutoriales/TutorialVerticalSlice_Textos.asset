@@ -35,19 +35,19 @@ MonoBehaviour:
       a seguir.\n\n\n\r\n\r\n"
     en: 'Welcome to the tutorial of <b>The Black Breath</b>.
 
-      The Steward
-      will guide you on this journey, where you must lead the caravan through the
-      <b>Burning Forest</b>.
+      The Steward will
+      guide you on this journey, where you must lead the caravan through the <b>Burning
+      Forest</b>.
 
-      
+
 
       The steps to follow will be shown below.
 
 
 
-      
 
-      
+
+
 
 '
     pt: "Bem-vindo ao tutorial de o <b>Respiro Negro</b>.\r\nO Contramestre o guiar\xE1
@@ -61,7 +61,7 @@ MonoBehaviour:
     es: "La caravana bajo tu cuidado transporta a numerosos Civiles que intentan
       escapar del <b>Aliento Negro</b> y alcanzar la Ciudad Puerto de <b>Serria</b>.\r\nTu
       objetivo ser\xE1 mantenerlos con vida y guiarlos a salvo a trav\xE9s de los
-      peligros del camino, eligiendo cada paso con cuidado.\r\nLa flecha se\xF1ala
+      peligros del camino, eligiendo cada paso con cuidado.\n\r\nLa flecha se\xF1ala
       la cantidad de Civiles que actualmente acompa\xF1a a la caravana.\n\r\n\r\n"
     en: 'The caravan under your care carries many Civilians fleeing the <b>Black
       Breath</b> and trying to reach the Port City of <b>Serria</b>.
@@ -70,18 +70,19 @@ MonoBehaviour:
       goal is to keep them alive and guide them safely through the dangers ahead,
       choosing each step with care.
 
+
       The arrow shows how many Civilians currently
       travel with the caravan.
 
-      
 
-      
+
+
 
 '
     pt: "A caravana sob seus cuidados leva muitos Civis que tentam fugir do <b>Respiro
       Negro</b> e alcan\xE7ar a Cidade Portu\xE1ria de <b>Serria</b>.\r\nSeu objetivo
       ser\xE1 mant\xEA-los vivos e gui\xE1-los em seguran\xE7a pelos perigos do caminho,
-      escolhendo cada passo com cuidado.\r\nA seta indica quantos Civis acompanham
+      escolhendo cada passo com cuidado.\n\r\nA seta indica quantos Civis acompanham
       a caravana agora.\n\r\n\r\n"
   - key: tutorial.intro2.narrator
     es: "\u201CEl bosque ahora arde\u2026 y ese no es nuestro \xFAnico problema.
@@ -125,15 +126,15 @@ MonoBehaviour:
       The closer it gets, the more dangerous the roads become, and
       the harsher its harmful effects on the caravan.
 
-      
-
-      The arrow shows
-      the current advance of the Black Breath.
 
 
-      
+      The arrow shows the
+      current advance of the Black Breath.
 
-      
+
+
+
+
 
 '
     pt: "O <b>Respiro Negro</b> avan\xE7ar\xE1 conforme a caravana viaje, descanse
@@ -148,30 +149,31 @@ MonoBehaviour:
     es: "La <b>Esperanza</b> representa la confianza y el \xE1nimo de la caravana.\n\r\nTomar
       decisiones crueles, sufrir p\xE9rdidas o permanecer demasiado cerca del <b>Aliento
       Negro</b> reducir\xE1 la Esperanza.\r\nSi la Esperanza cae demasiado, la caravana
-      comenzar\xE1 a desmoronarse progresivamente.\r\nLa flecha se\xF1ala el valor
+      comenzar\xE1 a desmoronarse progresivamente.\n\r\nLa flecha se\xF1ala el valor
       actual de Esperanza de la caravana.\n\r\n\r\n"
     en: 'The <b>Hope</b> represents the caravan''s trust and spirit.
 
-      
+
 
       Making
       cruel choices, suffering losses, or staying too close to the <b>Black Breath</b>
       will reduce Hope.
 
-      If Hope falls too low, the caravan will begin to
-      break down gradually.
+      If Hope falls too low, the caravan will begin to break
+      down gradually.
+
 
       The arrow shows the caravan''s current Hope value.
 
-      
 
-      
+
+
 
 '
     pt: "A <b>Esperan\xE7a</b> representa a confian\xE7a e o \xE2nimo da caravana.\n\r\nTomar
       decis\xF5es cru\xE9is, sofrer perdas ou ficar perto demais do <b>Respiro Negro</b>
       reduzir\xE1 a Esperan\xE7a.\r\nSe a Esperan\xE7a cair demais, a caravana come\xE7ar\xE1
-      a ruir aos poucos.\r\nA seta indica a Esperan\xE7a atual da caravana.\n\r\n\r\n"
+      a ruir aos poucos.\n\r\nA seta indica a Esperan\xE7a atual da caravana.\n\r\n\r\n"
   - key: tutorial.intro4.narrator
     es: "\u201CY recuerde esto, Guardasenderos\u2026 los peligros del camino no son
       lo \xFAnico que puede destruir una caravana. El miedo y la desesperaci\xF3n
@@ -199,15 +201,15 @@ MonoBehaviour:
     en: 'To move across the map, you must select a node connected to the caravan''s
       path.
 
-      
 
-      In this tutorial, the route is fixed and has fewer options
-      than a normal game.
 
-      
+      In this tutorial, the route is fixed and has fewer options than
+      a normal game.
 
-      <color=#FFD54A><b>Click the marked node
-      for the caravan to begin the journey.</b></color>
+
+
+      <color=#FFD54A><b>Click the marked node for the caravan
+      to begin the journey.</b></color>
 
 '
     pt: "Para avan\xE7ar pelo mapa, voc\xEA deve selecionar um n\xF3 ligado ao caminho

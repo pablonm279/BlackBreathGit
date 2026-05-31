@@ -297,7 +297,7 @@ public class Estados : MonoBehaviour
 
 
 
-  public static void Aplicar_MovimientoAbaratado(Unidad unidad, int stacks, Unidad origen = null)
+  public static void Aplicar_MovimientoAbaratado(Unidad unidad, int stacks, Unidad origen = null, bool mostrarTextoFlotante = true)
   {
     if (unidad == null || stacks == 0)
     {
@@ -310,7 +310,7 @@ public class Estados : MonoBehaviour
       unidad.estado_MovimientoAbaratado = 0;
     }
 
-    if (stacks > 0)
+    if (stacks > 0 && mostrarTextoFlotante)
     {
       unidad.GenerarTextoFlotante("+" + stacks + " " + TRADU.i.Traducir("impulso"), new Color(0.2f, 0.95f, 1f));
     }
@@ -318,7 +318,6 @@ public class Estados : MonoBehaviour
     BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
   }
 }
-
 
 
 

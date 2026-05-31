@@ -46,6 +46,8 @@ public class RefuerzoAliadoCaravanaOrdenItem
 
 public class MenuBatallas : MonoBehaviour
 {
+ const string TooltipPersonajeHeridoId = "campania_personaje_herido";
+ const string TooltipPersonajeCorruptoId = "campania_personaje_corrupto";
  static readonly TipoEstadoCaravana[] EstadosNegativosDerrotaBatalla =
  {
     TipoEstadoCaravana.Acobardados,
@@ -78,6 +80,8 @@ public class MenuBatallas : MonoBehaviour
   bool esBatallaFinal = false;
   bool transicionJefeZonaPendiente = false;
   bool tutorialFinalPostBatallaPendiente = false;
+  bool tooltipPersonajeHeridoPendiente = false;
+  bool tooltipPersonajeCorruptoPendiente = false;
 
  public GameObject UIEmpezarBatalla;
  public GameObject UIEmpezarBatallaACaravana;
@@ -1049,6 +1053,11 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
        CrearBotonPersonajeEnContenedor(contenedorUIPersonajes, pers, true, 1.2f);
     }
 
+    if (UITerminarBatalla != null && UITerminarBatalla.activeInHierarchy)
+    {
+       return;
+    }
+
     if (CampaignManager.Instance == null
       || CampaignManager.Instance.scMenuPersonajes == null
       || contenedorUIPersonajesFuera == null)
@@ -1073,6 +1082,11 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
     foreach (Personaje pers in seleccionados)
     {
        CrearBotonPersonajeEnContenedor(contenedorUIPersonajes, pers, true, 1f);
+    }
+
+    if (UITerminarBatalla != null && UITerminarBatalla.activeInHierarchy)
+    {
+      return;
     }
 
     if (contenedorUIPersonajesFuera == null)
@@ -1543,7 +1557,14 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
  
 public void DejanEnListaParticipantesSolo()
  {
-   
+  LimpiarContenedor(contenedorUIPersonajesFuera);
+
+  if (UITerminarBatalla != null && UITerminarBatalla.activeInHierarchy)
+  {
+    ActualizarVisibilidadListasBatalla();
+  }
+
+  
   foreach (Transform boton in contenedorUIPersonajes.transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
    {
            btnPersonaje btn = boton.gameObject.GetComponent<btnPersonaje>();
@@ -2259,6 +2280,8 @@ public void EfectosDeBatallaEnCampaña(int resultado)
    UITerminarBatalla.SetActive(true);
    ActualizarVisibilidadListasBatalla();
    transicionJefeZonaPendiente = false;
+   tooltipPersonajeHeridoPendiente = false;
+   tooltipPersonajeCorruptoPendiente = false;
    bool fueBatallaFinalActual = esBatallaFinal;
    bool fueDefensaCaravana = encuentroTipoActual == BattleEncounterType.AtaqueCaravana || esEmboscadaEnemiga == 3;
    string battleTypeToken = RuntimeAnalytics.SanitizeToken(encuentroTipoActual.ToString());
@@ -2401,6 +2424,8 @@ public void EfectosDeBatallaEnCampaña(int resultado)
        
         if (pers != null)
         {
+            bool seHirioEnEstaBatalla = false;
+            bool seCorrompioEnEstaBatalla = false;
             if (pers.fVidaActual < 1)
             {
                 if (pers.TieneRasgo(PersonajeTraitCatalog.TraitEndeble))
@@ -2435,6 +2460,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
                 {
                     pers.Camp_Herido = true;
                     pers.fVidaActual = 5;
+                    seHirioEnEstaBatalla = true;
                 }
 
                 if (!pers.Camp_Muerto && uni != null)
@@ -2452,6 +2478,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
                     else
                     {
                         pers.Camp_Corrupto = true;
+                        seCorrompioEnEstaBatalla = true;
                         CampaignManager.Instance.EscribirLog("-" + uni.uNombre + TRADU.i.Traducir(" ha sido corrompido."));
 
 
@@ -2482,6 +2509,16 @@ public void EfectosDeBatallaEnCampaña(int resultado)
                     };
                     CampaignManager.Instance.EscribirLog("-" + mensajeResistente);
                 }
+            }
+
+            if (seHirioEnEstaBatalla && pers.Camp_Herido && !pers.Camp_Muerto)
+            {
+                tooltipPersonajeHeridoPendiente = true;
+            }
+
+            if (seCorrompioEnEstaBatalla && pers.Camp_Corrupto && !pers.Camp_Muerto)
+            {
+                tooltipPersonajeCorruptoPendiente = true;
             }
 
         
@@ -2543,7 +2580,25 @@ public void EfectosDeBatallaEnCampaña(int resultado)
     {
       CampaignManager.Instance.estadosCaravana.FinalizarCombateActual();
     }
+
+    MostrarTooltipsPostBatallaSiCorresponde();
  }
+
+ void MostrarTooltipsPostBatallaSiCorresponde()
+ {
+    if (tooltipPersonajeCorruptoPendiente)
+    {
+      tooltipPersonajeCorruptoPendiente = false;
+      TutorialTooltipManager.TryShow(TooltipPersonajeCorruptoId);
+    }
+
+    if (tooltipPersonajeHeridoPendiente)
+    {
+      tooltipPersonajeHeridoPendiente = false;
+      TutorialTooltipManager.TryShow(TooltipPersonajeHeridoId);
+    }
+ }
+
  public void ComenzarBatalla()
  {
     if (bloqueoComenzarBatalla)

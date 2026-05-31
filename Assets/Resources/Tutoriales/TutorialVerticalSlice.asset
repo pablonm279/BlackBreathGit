@@ -889,7 +889,7 @@ MonoBehaviour:
     bodyKey: tutorial.batfinpre2.body
     narratorAudio: {fileID: 0}
     targetId: tuto_botonbatalla1
-    presentationMode: 0
+    presentationMode: 1
     panelAnchor: 0
     panelOffset: {x: 0, y: 0}
     compactPanelSize: {x: 455, y: 190}
@@ -901,7 +901,7 @@ MonoBehaviour:
     highlightScale: 1.5
     highlightScaleXY: {x: 1, y: 1}
     advanceMode: 1
-    inputBlockMode: 2
+    inputBlockMode: 0
     showNextButton: 0
     canGoBack: 0
     canSkip: 0

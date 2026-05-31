@@ -33,6 +33,7 @@ public class Nodo : MonoBehaviour
   const float CaminoAnchoDificilMultiplicador = 0.62f;
   const float CaminoAAldeaAnchoMultiplicador = 1.15f;
   const float CaminoAtajoSuperficieAnchoMultiplicador = 0.85f;
+  const float CaminoSubterraneoAnchoMultiplicador = 0.8f;
   const float CaminoAlturaMinimaSobreRelieve = 0.055f;
   const float CaminoYOffsetMallaMinimo = 0.025f;
   const float CaminoAnchoGlobalMultiplicador = 0.75f;
@@ -47,6 +48,21 @@ public class Nodo : MonoBehaviour
   const float RetrasoPasoXFadeVision = 0.028f;
   const float RetrasoPasoYFadeVision = 0.006f;
   const float RetrasoMaximoFadeVision = 0.11f;
+  const string NombreLineaIntroCampania = "LineaIntroCampania";
+  const int SegmentosLineaIntroCampania = 5;
+  const int ResolucionLineaIntroCampania = 12;
+  const float AlphaIntroCampaniaMinimo = 0.16f;
+  const float AlphaIntroCampaniaMaximo = 0.82f;
+  const float VelocidadIntroCampania = 1.0f;
+  const float SeparacionIntroCampania = 0.62f;
+  const float LateralMaximoIntroCampania = 0.38f;
+  const float RotacionIntroCampania = 5.5f;
+  const float LookAheadIntroCampania = 0.45f;
+  const float DeltaMaximoIntroCampania = 1f / 30f;
+  const float OffsetConvoyIntroSobreRelieve = 0.03f;
+  const string TooltipZonaExpuestaId = "campania_personaje_zonaExpuesta";
+  const string TooltipAsentamientoId = "campania_asentamiento";
+  const string TooltipAtajoSubterraneoId = "campania_atajo_sup";
   static readonly int ShaderColorId = Shader.PropertyToID("_Color");
   static readonly int ShaderBaseColorId = Shader.PropertyToID("_BaseColor");
 
@@ -376,6 +392,7 @@ public class Nodo : MonoBehaviour
       Nodo elegido = posiblesAtajos[UnityEngine.Random.Range(0, posiblesAtajos.Count)];
       ConectarConNodo(elegido, true);
       elegido.Revelar(true);
+      TutorialTooltipManager.TryShow(TooltipAtajoSubterraneoId);
     }
   }
 
@@ -465,32 +482,9 @@ public class Nodo : MonoBehaviour
 
     if ((posXNodo == 0) && (posYNodo == 0)) // Nodo origen
     {
-      int random = UnityEngine.Random.Range(1, 5); // 1..4
-
-      if (random == 1)
-      {
-        IntentarConectar(1, 1, zonaId);
-        IntentarConectar(1, 3, zonaId);
-        IntentarConectar(1, 5, zonaId);
-      }
-      else if (random == 2)
-      {
-        IntentarConectar(1, 2, zonaId);
-        IntentarConectar(1, 3, zonaId);
-        IntentarConectar(1, 4, zonaId);
-      }
-      else if (random == 3)
-      {
-        IntentarConectar(1, 2, zonaId);
-        IntentarConectar(1, 3, zonaId);
-        IntentarConectar(1, 5, zonaId);
-      }
-      else if (random == 4)
-      {
-        IntentarConectar(1, 1, zonaId);
-        IntentarConectar(1, 3, zonaId);
-        IntentarConectar(1, 4, zonaId);
-      }
+      IntentarConectar(1, 1, zonaId);
+      IntentarConectar(1, 3, zonaId);
+      IntentarConectar(1, 5, zonaId);
 
       RevelarNodosFuturosIniciales(3);
 
@@ -700,6 +694,10 @@ public class Nodo : MonoBehaviour
     {
       anchoCamino *= CaminoAtajoSuperficieAnchoMultiplicador;
     }
+    if (esPorAbajo)
+    {
+      anchoCamino *= CaminoSubterraneoAnchoMultiplicador;
+    }
     caminoMesh.SetWidth(anchoCamino);
     caminoMesh.SetYOffset(Mathf.Max(CaminoYOffsetMallaMinimo, lineHeightOffset));
     caminoMesh.RebuildFromLine();
@@ -710,6 +708,256 @@ public class Nodo : MonoBehaviour
     // Continuar tirando conexiones
     if (propagar)
       nodoB.DeterminarConexiones();
+  }
+
+  public LineRenderer CrearLineaIntroCampaniaDesdeIzquierda(Vector3 direccionIzquierda)
+  {
+    if (linePrefab == null)
+    {
+      return null;
+    }
+
+    Transform lineaAnterior = transform.Find(NombreLineaIntroCampania);
+    if (lineaAnterior != null)
+    {
+      Destroy(lineaAnterior.gameObject);
+    }
+
+    direccionIzquierda.y = 0f;
+    if (direccionIzquierda.sqrMagnitude <= 0.0001f)
+    {
+      direccionIzquierda = Vector3.left;
+    }
+    direccionIzquierda.Normalize();
+
+    float longitud = CalcularLongitudIntroCampania();
+    Vector3 fin = transform.position;
+    Vector3 inicio = fin + direccionIzquierda * longitud;
+    GameObject lineaGO = Instantiate(linePrefab, transform);
+    lineaGO.name = NombreLineaIntroCampania;
+
+    LineRenderer lr = lineaGO.GetComponent<LineRenderer>();
+    if (lr == null)
+    {
+      Destroy(lineaGO);
+      return null;
+    }
+
+    lr.useWorldSpace = true;
+    ConfigurarPuntosLineaIntro(lr, inicio, fin, ResolucionLineaIntroCampania);
+    OcultarRenderersLineaIntro(lineaGO);
+    CrearSegmentosVisualesIntro(lineaGO.transform, lr);
+    return lr;
+  }
+
+  float CalcularLongitudIntroCampania()
+  {
+    float distanciaPrimerTramo = 0f;
+    for (int i = 0; i < DestinosPosibles.Count; i++)
+    {
+      Nodo destino = DestinosPosibles[i];
+      if (destino == null || !destino.gameObject.activeSelf)
+      {
+        continue;
+      }
+
+      distanciaPrimerTramo = Vector3.Distance(transform.position, destino.transform.position);
+      break;
+    }
+
+    if (distanciaPrimerTramo <= 0.001f)
+    {
+      distanciaPrimerTramo = 6.7f;
+    }
+
+    return Mathf.Clamp(distanciaPrimerTramo * 0.663f, 4.42f, 7.1825f);
+  }
+
+  void ConfigurarPuntosLineaIntro(LineRenderer lr, Vector3 inicio, Vector3 fin, int resolucion)
+  {
+    if (lr == null)
+    {
+      return;
+    }
+
+    MapDecorator mapDecorator = ObtenerDecoradorMapa();
+    int cantidadPuntos = Mathf.Max(2, resolucion);
+    lr.positionCount = cantidadPuntos;
+
+    for (int i = 0; i < cantidadPuntos; i++)
+    {
+      float t = i / (float)(cantidadPuntos - 1);
+      Vector3 punto = Vector3.Lerp(inicio, fin, t);
+      punto = AjustarPuntoIntroASuelo(punto, mapDecorator);
+      lr.SetPosition(i, punto);
+    }
+  }
+
+  Vector3 AjustarPuntoIntroASuelo(Vector3 punto, MapDecorator mapDecorator)
+  {
+    float offsetCaminoSobreRelieve = Mathf.Max(CaminoAlturaMinimaSobreRelieve, lineHeightOffset * 3f);
+    if (mapDecorator != null && mapDecorator.TrySampleSurface(punto, out var surfacePoint, out _, offsetCaminoSobreRelieve))
+    {
+      punto.y = surfacePoint.y;
+    }
+
+    return punto;
+  }
+
+  void OcultarRenderersLineaIntro(GameObject lineaGO)
+  {
+    if (lineaGO == null)
+    {
+      return;
+    }
+
+    LineRenderer lr = lineaGO.GetComponent<LineRenderer>();
+    if (lr != null)
+    {
+      lr.enabled = false;
+    }
+
+    MeshRenderer meshRenderer = lineaGO.GetComponent<MeshRenderer>();
+    if (meshRenderer != null)
+    {
+      meshRenderer.enabled = false;
+    }
+  }
+
+  void CrearSegmentosVisualesIntro(Transform raizIntro, LineRenderer lineaBase)
+  {
+    if (raizIntro == null || lineaBase == null || lineaBase.positionCount < 2)
+    {
+      return;
+    }
+
+    for (int i = 0; i < SegmentosLineaIntroCampania; i++)
+    {
+      float t0 = i / (float)SegmentosLineaIntroCampania;
+      float t1 = (i + 1) / (float)SegmentosLineaIntroCampania;
+      float alpha = Mathf.Lerp(AlphaIntroCampaniaMinimo, AlphaIntroCampaniaMaximo, t1);
+
+      GameObject segmentoGO = Instantiate(linePrefab, raizIntro);
+      segmentoGO.name = NombreLineaIntroCampania + "_Segmento_" + (i + 1);
+      ConfigurarSegmentoVisualIntro(segmentoGO, lineaBase, t0, t1, alpha);
+    }
+  }
+
+  void ConfigurarSegmentoVisualIntro(GameObject segmentoGO, LineRenderer lineaBase, float t0, float t1, float alpha)
+  {
+    if (segmentoGO == null)
+    {
+      return;
+    }
+
+    LineRenderer lrSegmento = segmentoGO.GetComponent<LineRenderer>();
+    if (lrSegmento == null)
+    {
+      Destroy(segmentoGO);
+      return;
+    }
+
+    const int puntosPorSegmento = 4;
+    lrSegmento.useWorldSpace = true;
+    lrSegmento.positionCount = puntosPorSegmento;
+    lrSegmento.startWidth = 0f;
+    lrSegmento.endWidth = 0f;
+
+    for (int i = 0; i < puntosPorSegmento; i++)
+    {
+      float t = Mathf.Lerp(t0, t1, i / (float)(puntosPorSegmento - 1));
+      lrSegmento.SetPosition(i, CalcularPosicionEnCurva(lineaBase, t));
+    }
+
+    CaminoMesh caminoMesh = segmentoGO.GetComponent<CaminoMesh>();
+    if (caminoMesh == null)
+    {
+      caminoMesh = segmentoGO.AddComponent<CaminoMesh>();
+    }
+
+    caminoMesh.SetWidth(ObtenerAnchoVisualCamino(false));
+    caminoMesh.SetYOffset(Mathf.Max(CaminoYOffsetMallaMinimo, lineHeightOffset));
+    caminoMesh.RebuildFromLine();
+    AplicarMaterialIntroCampania(segmentoGO.transform, CrearMaterialIntroCampania(alpha));
+  }
+
+  Material CrearMaterialIntroCampania(float alpha)
+  {
+    Material materialBase = MaterialCaminoOriginal != null ? MaterialCaminoOriginal : MaterialCaminoMarcado;
+    if (materialBase == null)
+    {
+      return null;
+    }
+
+    Material material = new Material(materialBase);
+    material.name = materialBase.name + "_IntroCampania_" + Mathf.RoundToInt(alpha * 100f);
+    Color color = Color.white;
+    if (material.HasProperty(ShaderBaseColorId))
+    {
+      color = material.GetColor(ShaderBaseColorId);
+    }
+    else if (material.HasProperty(ShaderColorId))
+    {
+      color = material.GetColor(ShaderColorId);
+    }
+
+    color.a = Mathf.Clamp01(alpha);
+    if (material.HasProperty(ShaderColorId))
+    {
+      material.SetColor(ShaderColorId, color);
+    }
+    if (material.HasProperty(ShaderBaseColorId))
+    {
+      material.SetColor(ShaderBaseColorId, color);
+    }
+
+    ConfigurarMaterialTransparenteIntro(material);
+    return material;
+  }
+
+  void ConfigurarMaterialTransparenteIntro(Material material)
+  {
+    if (material == null)
+    {
+      return;
+    }
+
+    if (material.HasProperty("_Surface"))
+    {
+      material.SetFloat("_Surface", 1f);
+    }
+    if (material.HasProperty("_Mode"))
+    {
+      material.SetFloat("_Mode", 3f);
+    }
+
+    material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+    material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+    material.SetInt("_ZWrite", 0);
+    material.DisableKeyword("_ALPHATEST_ON");
+    material.EnableKeyword("_ALPHABLEND_ON");
+    material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+    material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+  }
+
+  void AplicarMaterialIntroCampania(Transform linea, Material material)
+  {
+    if (linea == null || material == null)
+    {
+      return;
+    }
+
+    LineRenderer lr = linea.GetComponent<LineRenderer>();
+    if (lr != null)
+    {
+      lr.sharedMaterial = material;
+    }
+
+    MeshRenderer mr = linea.GetComponent<MeshRenderer>();
+    if (mr != null)
+    {
+      mr.sharedMaterial = material;
+    }
   }
   // Resetea este nodo para reutilizarlo en una nueva zona
   public void ResetearParaNuevaZona()
@@ -902,6 +1150,32 @@ public class Nodo : MonoBehaviour
     MarcarCaminosPosibles();
   }
 
+  public void AplicarMaterialCaminosSegunAlcance(HashSet<Nodo> nodosAlcanzables)
+  {
+    if (nodosAlcanzables == null)
+    {
+      return;
+    }
+
+    bool origenAlcanzable = nodosAlcanzables.Contains(this);
+    foreach (Transform child in transform)
+    {
+      if (!child.name.Contains("LineaCaminos"))
+      {
+        continue;
+      }
+
+      Nodo destino = ObtenerDestinoSegunTransformLinea(child);
+      if (destino == null)
+      {
+        continue;
+      }
+
+      bool caminoAlcanzable = origenAlcanzable && nodosAlcanzables.Contains(destino);
+      SetMaterialCamino(child, caminoAlcanzable ? ObtenerMaterialCaminoSegunDestino(destino) : MaterialCaminoUsado);
+    }
+  }
+
   public bool EstaVisiblePorVision()
   {
     return visiblePorVision;
@@ -1030,7 +1304,14 @@ public class Nodo : MonoBehaviour
       }
 
       origen.MostrarCaminoPorVisionHacia(destino);
-      destino.ForzarVisibleSinRevelarEspecial();
+      if (origen.posXNodo == 0 && origen.posYNodo == 0 && destino.posXNodo == 1)
+      {
+        destino.Revelar(false, false);
+      }
+      else
+      {
+        destino.ForzarVisibleSinRevelarEspecial();
+      }
       RevelarNodosFuturosInicialesRecursivo(destino, profundidadRestante - 1, visitados);
     }
   }
@@ -1193,12 +1474,12 @@ public class Nodo : MonoBehaviour
     lrContinuacion.SetPositions(puntos.ToArray());
 
     SetMaterialCamino(lineaContinuacion, ObtenerMaterialCaminoHintVisual());
-    AplicarAnchoContinuacionVision(lineaContinuacion);
+    AplicarAnchoContinuacionVision(lineaContinuacion, lineaOriginal.transform);
 
     OcultarDecoracionSobreCaminoUnaVez(lineaContinuacion);
   }
 
-  void AplicarAnchoContinuacionVision(Transform lineaContinuacion)
+  void AplicarAnchoContinuacionVision(Transform lineaContinuacion, Transform lineaOriginal = null)
   {
     if (lineaContinuacion == null)
     {
@@ -1218,7 +1499,14 @@ public class Nodo : MonoBehaviour
       caminoMesh = lineaContinuacion.gameObject.AddComponent<CaminoMesh>();
     }
 
-    caminoMesh.SetWidth(ObtenerAnchoVisualCamino(false) * MultiplicadorAnchoContinuacionVision);
+    float anchoBase = ObtenerAnchoVisualCamino(false);
+    CaminoMesh caminoOriginal = lineaOriginal != null ? lineaOriginal.GetComponent<CaminoMesh>() : null;
+    if (caminoOriginal != null)
+    {
+      anchoBase = caminoOriginal.GetWidth();
+    }
+
+    caminoMesh.SetWidth(anchoBase * MultiplicadorAnchoContinuacionVision);
     caminoMesh.SetYOffset(Mathf.Max(CaminoYOffsetMallaMinimo, lineHeightOffset));
     caminoMesh.RebuildFromLine();
   }
@@ -1487,6 +1775,11 @@ public class Nodo : MonoBehaviour
     return EsClaroMisteriosoTutorial()
       && !revelandoPorExpedicionTutorial
       && !reveladoPorExpedicionTutorial;
+  }
+
+  bool EsNodoInicialSinMisterio()
+  {
+    return posXNodo == 1;
   }
 
 
@@ -1788,6 +2081,7 @@ if (esLaLider)
     Nodo nodoDestino = nodoOrigen.ObtenerDestinoSegunTransformLinea(linea);
     bool esAtajo = nodoDestino != null && (nodoDestino.posXNodo - nodoOrigen.posXNodo > 1);
     bool esAtajoSuperficie = nodoDestino != null && nodoOrigen.EsAtajoSuperficieHacia(nodoDestino);
+    bool esCaminoSubterraneo = nodoDestino != null && nodoOrigen.EsCaminoSubterraneoHacia(nodoDestino);
     bool esCaminoDificil = nodoDestino != null && !esAtajo && !esAtajoSuperficie && nodoDestino.costoMovimiento > 1;
     bool esCaminoAAldea = nodoDestino != null && !esAtajo && nodoOrigen.destinosCaminoAAldea.Contains(nodoDestino);
 
@@ -1799,6 +2093,10 @@ if (esLaLider)
     if (esAtajoSuperficie)
     {
       ancho *= CaminoAtajoSuperficieAnchoMultiplicador;
+    }
+    if (esCaminoSubterraneo)
+    {
+      ancho *= CaminoSubterraneoAnchoMultiplicador;
     }
 
     LineRenderer lr = linea.GetComponent<LineRenderer>();
@@ -2439,6 +2737,39 @@ if (esLaLider)
     {
       DesactivarTodosGraficosNodo();
     }
+
+    EvaluarTooltipZonaExpuestaRevelada(estabaRevelado);
+    EvaluarTooltipAsentamientoRevelado(estabaRevelado);
+  }
+
+  void EvaluarTooltipZonaExpuestaRevelada(bool estabaRevelado)
+  {
+    if (estabaRevelado || tipoNodo != 11 || esMisterioso)
+    {
+      return;
+    }
+
+    if (scMapaManager == null || scMapaManager.nodoActual == null)
+    {
+      return;
+    }
+
+    if (!scMapaManager.nodoActual.DestinosPosibles.Contains(this))
+    {
+      return;
+    }
+
+    TutorialTooltipManager.TryShow(TooltipZonaExpuestaId);
+  }
+
+  void EvaluarTooltipAsentamientoRevelado(bool estabaRevelado)
+  {
+    if (estabaRevelado || tipoNodo != 4 || esMisterioso)
+    {
+      return;
+    }
+
+    TutorialTooltipManager.TryShow(TooltipAsentamientoId);
   }
 
   public void RevelarPorExploradores()
@@ -2469,7 +2800,7 @@ if (esLaLider)
 
   void MarcarComoMisteriosoPorExploracionFallida()
   {
-    if (revelado || tipoNodo == 16 || UsaConfiguracionTutorial())
+    if (revelado || tipoNodo == 16 || UsaConfiguracionTutorial() || EsNodoInicialSinMisterio())
     {
       return;
     }
@@ -2489,6 +2820,12 @@ if (esLaLider)
   public void RevelarComoMisterioso()
   {
     if (UsaConfiguracionTutorial())
+    {
+      Revelar(false, false);
+      return;
+    }
+
+    if (EsNodoInicialSinMisterio())
     {
       Revelar(false, false);
       return;
@@ -3146,7 +3483,7 @@ if (esLaLider)
       num = tipoNodo; // en tutorial no variamos el visual
     }
 
-    if (posXNodo == 10 || posXNodo == 1) chancesMisterioso = 0;
+    if (posXNodo == 10 || EsNodoInicialSinMisterio()) chancesMisterioso = 0;
     if (estabaRevelado) chancesMisterioso = 0;
     if (nodoRitual) chancesMisterioso = 0;
     if (nodoIncendiado) chancesMisterioso = 0;
@@ -3585,8 +3922,262 @@ if (esLaLider)
 public float rotSpeed = 10f;            // suavizado de rotación
 public float lookAheadDist = 0.5f;    // "mira" hacia adelante para orientar
 float gapDist = 0.66f;              // distancia entre vehículos
-private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = false)
+public void MoverConvoyIntroEnLinea(LineRenderer lr, System.Action alFinalizar, Transform rotacionLiderOverride = null, float progresoInicial = 0f)
 {
+    AsegurarMapaManagerRuntime();
+    if (lr == null || scMapaManager == null || scMapaManager.goCaravana == null)
+    {
+      alFinalizar?.Invoke();
+      return;
+    }
+
+    StartCoroutine(MoverConvoyIntroSuave(lr, alFinalizar, rotacionLiderOverride, progresoInicial));
+}
+
+public void PrepararConvoyIntroEnLinea(LineRenderer lr, Transform rotacionLiderOverride = null, float progresoInicial = 0f)
+{
+    AsegurarMapaManagerRuntime();
+    if (lr == null || lr.positionCount < 2 || scMapaManager == null || scMapaManager.goCaravana == null)
+    {
+      return;
+    }
+
+    var convoy = new List<(GameObject go, Transform rot)>();
+    ConstruirConvoyIntro(convoy, rotacionLiderOverride);
+    if (convoy.Count == 0)
+    {
+      return;
+    }
+
+    Vector3[] pts = ObtenerPuntosLineaIntro(lr);
+    float[] segLen;
+    float[] cumLen;
+    CalcularLongitudesLineaIntro(pts, out segLen, out cumLen);
+    Vector3[] offsetsIniciales = CalcularOffsetsFormacionIntro(convoy, pts);
+    MapDecorator mapDecorator = ObtenerDecoradorMapa();
+    float totalLen = cumLen[cumLen.Length - 1];
+    float distanciaInicial = totalLen * Mathf.Clamp01(progresoInicial);
+    AplicarFormacionIntro(convoy, PointAtDistance(pts, segLen, cumLen, distanciaInicial), PointAtDistance(pts, segLen, cumLen, Mathf.Min(totalLen, distanciaInicial + LookAheadIntroCampania)), offsetsIniciales, mapDecorator, 1f);
+}
+
+private IEnumerator MoverConvoyIntroSuave(LineRenderer lr, System.Action alFinalizar, Transform rotacionLiderOverride, float progresoInicial)
+{
+    var convoy = new List<(GameObject go, Transform rot)>();
+    ConstruirConvoyIntro(convoy, rotacionLiderOverride);
+
+    if (lr == null || lr.positionCount < 2 || convoy.Count == 0)
+    {
+      alFinalizar?.Invoke();
+      yield break;
+    }
+
+    int n = lr.positionCount;
+    Vector3[] pts = ObtenerPuntosLineaIntro(lr);
+    float[] segLen;
+    float[] cumLen;
+    CalcularLongitudesLineaIntro(pts, out segLen, out cumLen);
+
+    float totalLen = cumLen[n - 1];
+    if (totalLen <= 0.0001f)
+    {
+      alFinalizar?.Invoke();
+      yield break;
+    }
+
+    Vector3[] offsetsIniciales = CalcularOffsetsFormacionIntro(convoy, pts);
+    SetAnimacionCaravanaIntro(true);
+    SetWalkingFollowersIntro(true);
+    if (CampaignManager.Instance != null)
+    {
+      CampaignManager.Instance.IniciarSonidoMovimientoCaravanaIntro();
+    }
+
+    MapDecorator mapDecorator = ObtenerDecoradorMapa();
+    float distanciaInicial = totalLen * Mathf.Clamp01(progresoInicial);
+    float longitudRestante = Mathf.Max(0.01f, totalLen - distanciaInicial);
+    float duracion = Mathf.Max(1.2f, longitudRestante / Mathf.Max(0.1f, VelocidadIntroCampania));
+    float tiempo = 0f;
+
+    while (tiempo < duracion)
+    {
+      float dt = Mathf.Min(Time.deltaTime, DeltaMaximoIntroCampania);
+      tiempo += dt;
+      float t = Mathf.Clamp01(tiempo / duracion);
+      float progreso = t * t * (3f - 2f * t);
+      float leaderS = Mathf.Lerp(distanciaInicial, totalLen, progreso);
+      Vector3 posicionLider = PointAtDistance(pts, segLen, cumLen, leaderS);
+      Vector3 posicionLiderFutura = PointAtDistance(pts, segLen, cumLen, Mathf.Min(totalLen, leaderS + LookAheadIntroCampania));
+      AplicarFormacionIntro(convoy, posicionLider, posicionLiderFutura, offsetsIniciales, mapDecorator, dt);
+
+      yield return null;
+    }
+
+    AplicarFormacionIntro(convoy, pts[n - 1], pts[n - 1], offsetsIniciales, mapDecorator, 1f);
+
+    SetAnimacionCaravanaIntro(false);
+    SetWalkingFollowersIntro(false);
+    if (CampaignManager.Instance != null)
+    {
+      CampaignManager.Instance.DetenerSonidoMovimientoCaravanaIntro();
+    }
+    alFinalizar?.Invoke();
+}
+
+void ConstruirConvoyIntro(List<(GameObject go, Transform rot)> convoy, Transform rotacionLiderOverride)
+{
+    if (convoy == null || scMapaManager == null)
+    {
+      return;
+    }
+
+    void AddIf(GameObject go, bool esLider)
+    {
+        if (go == null) return;
+        int idx = esLider ? 4 : 0;
+        Transform rotT = (esLider && rotacionLiderOverride != null) ? rotacionLiderOverride : (go.transform.childCount > idx) ? go.transform.GetChild(idx) : null;
+        convoy.Add((go, rotT));
+    }
+
+    AddIf(scMapaManager.goCaravana, true);
+    AddIf(scMapaManager.goCaravanafollower1, false);
+    AddIf(scMapaManager.goCaravanafollower2, false);
+    AddIf(scMapaManager.goCaravanafollower3, false);
+    AddIf(scMapaManager.goCaravanafollower4, false);
+    AddIf(scMapaManager.goCaravanafollower5, false);
+    AddIf(scMapaManager.goCaravanafollower6, false);
+}
+
+static Vector3[] ObtenerPuntosLineaIntro(LineRenderer lr)
+{
+    int n = lr.positionCount;
+    Vector3[] pts = new Vector3[n];
+    for (int i = 0; i < n; i++)
+    {
+      Vector3 p = lr.GetPosition(i);
+      pts[i] = lr.useWorldSpace ? p : lr.transform.TransformPoint(p);
+    }
+
+    return pts;
+}
+
+static void CalcularLongitudesLineaIntro(Vector3[] pts, out float[] segLen, out float[] cumLen)
+{
+    int n = pts.Length;
+    segLen = new float[n - 1];
+    cumLen = new float[n];
+    cumLen[0] = 0f;
+    for (int i = 0; i < n - 1; i++)
+    {
+      segLen[i] = Vector3.Distance(pts[i], pts[i + 1]);
+      cumLen[i + 1] = cumLen[i] + segLen[i];
+    }
+}
+
+static Vector3[] CalcularOffsetsFormacionIntro(List<(GameObject go, Transform rot)> convoy, Vector3[] pts)
+{
+    Vector3 direccionIntro = ObtenerDireccionIntroCampania(pts);
+    Vector3 lateralIntro = Vector3.Cross(Vector3.up, direccionIntro).normalized;
+    Vector3 posicionLiderInicial = convoy[0].go.transform.position;
+    Vector3[] offsetsIniciales = new Vector3[convoy.Count];
+
+    for (int i = 0; i < convoy.Count; i++)
+    {
+      offsetsIniciales[i] = CalcularOffsetFormacionIntro(convoy[i].go.transform.position - posicionLiderInicial, i, direccionIntro, lateralIntro);
+    }
+
+    return offsetsIniciales;
+}
+
+void AplicarFormacionIntro(List<(GameObject go, Transform rot)> convoy, Vector3 posicionLider, Vector3 posicionLiderFutura, Vector3[] offsetsIniciales, MapDecorator mapDecorator, float dt)
+{
+    for (int i = 0; i < convoy.Count; i++)
+    {
+      Vector3 posicion = AplicarAlturaConvoyIntro(posicionLider + offsetsIniciales[i], mapDecorator);
+      convoy[i].go.transform.position = posicion;
+
+      if (convoy[i].rot == null)
+      {
+        continue;
+      }
+
+      Vector3 futuro = AplicarAlturaConvoyIntro(posicionLiderFutura + offsetsIniciales[i], mapDecorator);
+      Quaternion target = CalcularRotacionConvoyPorRelieve(posicion, futuro, false);
+      if (target == Quaternion.identity)
+      {
+        continue;
+      }
+
+      float k = 1f - Mathf.Exp(-RotacionIntroCampania * dt);
+      convoy[i].rot.rotation = Quaternion.Slerp(convoy[i].rot.rotation, target, k);
+    }
+}
+
+static Vector3 ObtenerDireccionIntroCampania(Vector3[] pts)
+{
+    for (int i = 0; i < pts.Length - 1; i++)
+    {
+      Vector3 dir = pts[i + 1] - pts[i];
+      dir.y = 0f;
+      if (dir.sqrMagnitude > 0.000001f)
+      {
+        return dir.normalized;
+      }
+    }
+
+    return Vector3.right;
+}
+
+static Vector3 CalcularOffsetFormacionIntro(Vector3 offsetOriginal, int indice, Vector3 direccionIntro, Vector3 lateralIntro)
+{
+    if (indice == 0)
+    {
+      return Vector3.zero;
+    }
+
+    offsetOriginal.y = 0f;
+    float lateral = Mathf.Clamp(Vector3.Dot(offsetOriginal, lateralIntro), -LateralMaximoIntroCampania, LateralMaximoIntroCampania);
+    return -direccionIntro * (SeparacionIntroCampania * indice) + lateralIntro * lateral;
+}
+
+Vector3 AplicarAlturaConvoyIntro(Vector3 posicion, MapDecorator mapDecorator)
+{
+    if (mapDecorator != null && mapDecorator.TrySampleSurface(posicion, out var surfacePoint, out _, OffsetConvoyIntroSobreRelieve))
+    {
+      posicion.y = surfacePoint.y;
+    }
+
+    return posicion;
+}
+
+void SetAnimacionCaravanaIntro(bool activa)
+{
+    if (CampaignManager.Instance == null || CampaignManager.Instance.animCaravana == null)
+    {
+      return;
+    }
+
+    CampaignManager.Instance.animCaravana.SetBool("IsWalking", activa);
+    CampaignManager.Instance.animCaravana.speed = 1f;
+}
+
+void SetWalkingFollowersIntro(bool walking)
+{
+    if (scMapaManager == null)
+    {
+      return;
+    }
+
+    SetWalkingConvoyIfPresent(scMapaManager.goCaravanafollower1, walking);
+    SetWalkingConvoyIfPresent(scMapaManager.goCaravanafollower2, walking);
+    SetWalkingConvoyIfPresent(scMapaManager.goCaravanafollower3, walking);
+    SetWalkingConvoyIfPresent(scMapaManager.goCaravanafollower4, walking);
+    SetWalkingConvoyIfPresent(scMapaManager.goCaravanafollower5, walking);
+    SetWalkingConvoyIfPresent(scMapaManager.goCaravanafollower6, walking);
+}
+
+private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = false, bool ejecutarLlegadaCaravana = true, System.Action alFinalizar = null, float velocidadOverride = -1f, Transform rotacionLiderOverride = null)
+{
+    AsegurarMapaManagerRuntime();
     // Ajustes de suavizado (si querés tunear, subilos a fields públicos)
     const float tramoSuavizadoExtremos = 0.18f;
     float easeInTime = 0.28f;       // segundos para acelerar al inicio
@@ -3595,7 +4186,11 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
     float minSpeedFactor = 0.10f;   // piso para que no se quede "cerquita"
     float snapEps = 0.03f;          // snap final del líder (en metros aprox)
 
-    if (lr == null) yield break;
+    if (lr == null)
+    {
+      if (!ejecutarLlegadaCaravana) alFinalizar?.Invoke();
+      yield break;
+    }
 
     // Convoy ordenado
     var convoy = new List<(GameObject go, Transform rot)>();
@@ -3603,7 +4198,7 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
     {
         if (go == null) return;
         int idx = esLider ? 4 : 0; // tu setup
-        Transform rotT = (go.transform.childCount > idx) ? go.transform.GetChild(idx) : null;
+        Transform rotT = (esLider && rotacionLiderOverride != null) ? rotacionLiderOverride : (go.transform.childCount > idx) ? go.transform.GetChild(idx) : null;
         convoy.Add((go, rotT));
     }
 
@@ -3615,15 +4210,20 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
     AddIf(scMapaManager.goCaravanafollower5, false);
     AddIf(scMapaManager.goCaravanafollower6, false);
 
-    scMapaManager.goCaravanafollower1.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", true);
-    scMapaManager.goCaravanafollower2.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", true);
-    scMapaManager.goCaravanafollower3.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", true);
-    scMapaManager.goCaravanafollower4.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", true);
-    scMapaManager.goCaravanafollower5.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", true);
-    scMapaManager.goCaravanafollower6.transform.GetChild(0).GetComponent<Animator>().SetBool("IsWalking", true);
+    SetWalkingConvoyIfPresent(scMapaManager.goCaravanafollower1, true);
+    SetWalkingConvoyIfPresent(scMapaManager.goCaravanafollower2, true);
+    SetWalkingConvoyIfPresent(scMapaManager.goCaravanafollower3, true);
+    SetWalkingConvoyIfPresent(scMapaManager.goCaravanafollower4, true);
+    SetWalkingConvoyIfPresent(scMapaManager.goCaravanafollower5, true);
+    SetWalkingConvoyIfPresent(scMapaManager.goCaravanafollower6, true);
 
     int m = convoy.Count;
-    if (m == 0) yield break;
+    float velocidadBaseMovimiento = velocidadOverride > 0f ? velocidadOverride : velocidadMovimiento;
+    if (m == 0)
+    {
+      if (!ejecutarLlegadaCaravana) alFinalizar?.Invoke();
+      yield break;
+    }
 
     var undergroundRenderers = new List<Renderer>();
     var undergroundRendererInitialStates = new List<bool>();
@@ -3643,7 +4243,11 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
 
     // Puntos del camino en WORLD
     int n = lr.positionCount;
-    if (n < 2) yield break;
+    if (n < 2)
+    {
+      if (!ejecutarLlegadaCaravana) alFinalizar?.Invoke();
+      yield break;
+    }
 
     Vector3[] pts = new Vector3[n];
     for (int i = 0; i < n; i++)
@@ -3666,7 +4270,11 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
     }
 
     float totalLen = cumLen[n - 1];
-    if (totalLen <= 0.0001f) yield break;
+    if (totalLen <= 0.0001f)
+    {
+      if (!ejecutarLlegadaCaravana) alFinalizar?.Invoke();
+      yield break;
+    }
     float duracionDesvanecidoSonido = Mathf.Lerp(0.08f, 0.2f, Mathf.InverseLerp(2.5f, 9f, totalLen));
 
     // Gap desde el Inspector (no lo pises con un local)
@@ -3791,7 +4399,7 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
 float kSpeed = 1f - Mathf.Exp(-speedSmooth * dt);
 speedFactorSmoothed = Mathf.Lerp(speedFactorSmoothed, speedFactorTarget, kSpeed);
 
-float step = Mathf.Max(0f, velocidadMovimiento) * dt * speedFactorSmoothed;
+float step = Mathf.Max(0f, velocidadBaseMovimiento) * dt * speedFactorSmoothed;
 
 
       // Mover líder hasta el final (luego se queda)
@@ -3805,7 +4413,7 @@ float step = Mathf.Max(0f, velocidadMovimiento) * dt * speedFactorSmoothed;
         }
       }
 
-      if (leaderArrived && !leaderArrivedPrevio && !sonidoMovimientoDesvanecido && CampaignManager.Instance != null)
+      if (ejecutarLlegadaCaravana && leaderArrived && !leaderArrivedPrevio && !sonidoMovimientoDesvanecido && CampaignManager.Instance != null)
       {
         CampaignManager.Instance.DesvanecerSonidoMovimientoCaravana(duracionDesvanecidoSonido);
         sonidoMovimientoDesvanecido = true;
@@ -3969,10 +4577,44 @@ else
       }
     }
 
-    LlegoCaravana();
+    if (ejecutarLlegadaCaravana)
+    {
+      LlegoCaravana();
+    }
+    else
+    {
+      alFinalizar?.Invoke();
+    }
+}
+
+void AsegurarMapaManagerRuntime()
+{
+    if (scMapaManager != null)
+    {
+      return;
+    }
+
+    if (CampaignManager.Instance != null)
+    {
+      scMapaManager = CampaignManager.Instance.scMapaManager;
+    }
 }
 
 // Helper: proyecta posición al TRAIL (polilínea) y devuelve "s"
+private static void SetWalkingConvoyIfPresent(GameObject go, bool walking)
+{
+    if (go == null || go.transform.childCount == 0)
+    {
+      return;
+    }
+
+    Animator animator = go.transform.GetChild(0).GetComponent<Animator>();
+    if (animator != null)
+    {
+      animator.SetBool("IsWalking", walking);
+    }
+}
+
 private static void AjustarExtremosTrayectoConvoy(Vector3[] pts, Vector3 origenReal, Vector3 destinoReal, float tramoSuavizado)
 {
     if (pts == null || pts.Length == 0)

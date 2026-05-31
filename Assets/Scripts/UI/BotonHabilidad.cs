@@ -8,6 +8,7 @@ using System.Net;
 
 public class BotonHabilidad : MonoBehaviour
 {
+    private const string TooltipEsforzarId = "combate_esforzar";
 
     public Habilidad HabilidadRepresentada;
     public Image HabilidadCooldownMuestra;
@@ -404,6 +405,10 @@ public class BotonHabilidad : MonoBehaviour
     {
 
         int esfuerzo = iEsfuerzo;
+        if (esfuerzo > 0)
+        {
+            TutorialTooltipManager.TryShow(TooltipEsforzarId);
+        }
 
         scUiBotonesHabilidades.UIDesactivarHabilidades(HabilidadRepresentada.esHostil);
         HabilidadRepresentada.Activar();

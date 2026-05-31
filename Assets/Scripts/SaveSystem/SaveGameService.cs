@@ -171,6 +171,10 @@ public static class SaveGameService
     {
       saveFileData.campaign.estadosCaravana = new EstadosCaravanaSaveData();
     }
+    if (saveFileData.campaign.tutorialTooltipsVistos == null)
+    {
+      saveFileData.campaign.tutorialTooltipsVistos = new System.Collections.Generic.List<string>();
+    }
     if (saveFileData.map == null)
     {
       saveFileData.map = new MapSaveData();

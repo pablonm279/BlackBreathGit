@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Riposte : Habilidad
 {
+    private const int PausaClaridadMs = 300;
     private readonly List<Unidad> objetivosPosibles = new List<Unidad>();
 
     public override void Awake()
@@ -149,7 +150,7 @@ public class Riposte : Habilidad
         BattleManager.Instance.HabilidadActiva = this;
     }
 
-    public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
+    public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
         if (obj is not Unidad objetivo)
         {
@@ -162,6 +163,8 @@ public class Riposte : Habilidad
             Destroy(reaccionExistente);
         }
 
+        await BattleManager.DelayCombateAsync(PausaClaridadMs);
+
         BattleManager.Instance.EscribirLog(TRADU.i.Traducir(scEstaUnidad.uNombre) + " " + TRADU.i.Traducir("usa ") + TRADU.i.Traducir(nombre) + ".");
         scEstaUnidad.GenerarTextoFlotante(TRADU.i.Traducir("Riposte"), new Color(0.55f, 0.8f, 1f));
 
@@ -172,6 +175,7 @@ public class Riposte : Habilidad
         ComponentCopier.CopyComponent(reaccion, objetivo.gameObject);
 
         objetivo.Marcar(0);
+        await BattleManager.DelayCombateAsync(PausaClaridadMs);
         BattleManager.Instance.TerminarTurno();
     }
 

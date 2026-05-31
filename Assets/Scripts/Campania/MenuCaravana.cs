@@ -35,7 +35,8 @@ public class MenuCaravana : MonoBehaviour
         || (MenuSequitos != null && MenuSequitos.activeInHierarchy)
         || (MenuPersonajes != null && MenuPersonajes.activeInHierarchy)
         || (MenuBitacora != null && MenuBitacora.activeInHierarchy)
-        || (panelResultadoExploradores != null && panelResultadoExploradores.activeInHierarchy);
+        || (panelResultadoExploradores != null && panelResultadoExploradores.activeInHierarchy)
+        || (CampaignManager.Instance != null && CampaignManager.Instance.LogEstaAbierto());
 
      //Antorchas de Pie
     [SerializeField] TextMeshProUGUI txtTierMejoraAntorchas;
@@ -99,10 +100,32 @@ public class MenuCaravana : MonoBehaviour
     public bool SeApretoESC()
     { 
         bool habiaalgoabierto = TieneMenuAbierto;
-        
-        MenuMejoras.SetActive(false);
-        MenuSequitos.SetActive(false);
-        MenuPersonajes.SetActive(false);
+
+        if (MenuMejoras != null)
+        {
+            MenuMejoras.SetActive(false);
+        }
+
+        if (MenuSequitos != null)
+        {
+            MenuSequitos.SetActive(false);
+        }
+
+        if (MenuPersonajes != null)
+        {
+            MenuPersonajes.SetActive(false);
+        }
+
+        if (MenuBitacora != null)
+        {
+            MenuBitacora.SetActive(false);
+        }
+
+        if (CampaignManager.Instance != null)
+        {
+            CampaignManager.Instance.ActivarLog(0);
+        }
+
         if (panelResultadoExploradores != null)
         {
             panelResultadoExploradores.SetActive(false);

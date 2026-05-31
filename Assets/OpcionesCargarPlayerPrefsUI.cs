@@ -49,6 +49,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public Toggle fullscreenToggle;
     public Toggle modorapidoToggle;
+    public Toggle tipsToggle;
 
     [Header("Visual Quality")]
     public Toggle postFxToggle;
@@ -67,6 +68,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     {
         InicializarCalibracionVisualPorDefecto();
         AsegurarControlesAudioSfx();
+        ConfigurarToggleAyudas();
        
         LlenarDropdownResoluciones();
         AplicarEfectosEnUI();
@@ -76,6 +78,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     {
         InicializarCalibracionVisualPorDefecto();
         AsegurarControlesAudioSfx();
+        ConfigurarToggleAyudas();
         
         AplicarEfectosEnUI();
     }
@@ -191,6 +194,9 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         if (modorapidoToggle != null)
             modorapidoToggle.SetIsOnWithoutNotify(modorapido);
 
+        if (tipsToggle != null)
+            tipsToggle.SetIsOnWithoutNotify(TutorialTooltipProgress.MostrarAyudas);
+
         CargarOpcionesVisuales();
         AplicarPreferenciasSyncYFPS();
     }
@@ -236,6 +242,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
         GuardarOpcionesVisuales();
         AplicarPreferenciasSyncYFPS();
+        AplicarMostrarAyudas();
 
         //---
         PlayerPrefs.Save();
@@ -528,6 +535,50 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         PlayerPrefs.Save();
         RuntimeAnalytics.TrackDesign("ui", "options", "fast_mode_" + RuntimeAnalytics.BoolToken(modorapido));
 
+    }
+
+    public void AplicarMostrarAyudas()
+    {
+        if (tipsToggle == null)
+        {
+            return;
+        }
+
+        TutorialTooltipProgress.SetMostrarAyudas(tipsToggle.isOn);
+        PersistirEstadoAyudasEnCampania();
+    }
+
+    private void ConfigurarToggleAyudas()
+    {
+        if (tipsToggle == null)
+        {
+            return;
+        }
+
+        tipsToggle.onValueChanged.RemoveListener(OnTipsToggleChanged);
+        tipsToggle.onValueChanged.AddListener(OnTipsToggleChanged);
+    }
+
+    private void OnTipsToggleChanged(bool activo)
+    {
+        TutorialTooltipProgress.SetMostrarAyudas(activo);
+        PersistirEstadoAyudasEnCampania();
+        RuntimeAnalytics.TrackDesign("ui", "options", "tutorial_tips_" + RuntimeAnalytics.BoolToken(activo));
+    }
+
+    private void PersistirEstadoAyudasEnCampania()
+    {
+        if (CampaignManager.Instance == null)
+        {
+            return;
+        }
+
+        if (!CampaignManager.Instance.PuedeGuardarCampania(out _))
+        {
+            return;
+        }
+
+        CampaignManager.Instance.TryAutosaveCampania("opciones ayudas tutorial", out _);
     }
 
     public void AplicarPostFXToggle() { GuardarOpcionesVisuales(); PlayerPrefs.Save(); }

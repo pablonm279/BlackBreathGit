@@ -330,14 +330,14 @@ public class Unidad : MonoBehaviour
 
     animator = GetComponent<Animator>();
     poseController = GetComponent<UnidadPoseController>();
-    if (GetComponent<UnidadIdleMotion>() == null)
+    /* if (GetComponent<UnidadIdleMotion>() == null)
     {
       gameObject.AddComponent<UnidadIdleMotion>();
-    }
-   /* if (GetComponent<UnidadStatusVfxController>() == null)
+    }*/
+    if (GetComponent<UnidadStatusVfxController>() == null)
     {
       gameObject.AddComponent<UnidadStatusVfxController>();
-    }*/
+    }
     if (GetComponent<UnidadHiddenVisualController>() == null)
     {
       gameObject.AddComponent<UnidadHiddenVisualController>();
@@ -345,6 +345,10 @@ public class Unidad : MonoBehaviour
     if (GetComponent<UnidadTurnStartLightFx>() == null)
     {
       gameObject.AddComponent<UnidadTurnStartLightFx>();
+    }
+    if (GetComponent<ClaseCanalizador>() != null && GetComponent<UnidadCanalizadorAuraFx>() == null)
+    {
+      gameObject.AddComponent<UnidadCanalizadorAuraFx>();
     }
     if (GetComponent<UnidadCombatFeedbackFx>() == null)
     {
@@ -912,7 +916,7 @@ private void Update()
     buff.buffNombre = "Derribado";
     buff.boolfDebufftBuff = false;
     buff.DuracionBuffRondas = dur;
-    buff.cantAPMax -= 2;
+    buff.cantAPMax -= 1;
     buff.cantDefensa -= 3;
     buff.AplicarBuff(this);
     // Agrega el componente Buff al objeto objetivo y asigna la configuraciÃ³n del buff
@@ -1975,7 +1979,7 @@ private void OnDestroy()
 public virtual void PerderEscondido()
 {
   estaEscondido = 0;
-  scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" ya no estÃ¡ escondido.")));
+  scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" ya no está escondido.")));
   GameObject overlayEscondido = ObtenerOverlayEscondidoGO();
   if (overlayEscondido != null)
   {
@@ -1987,7 +1991,7 @@ public virtual void PerderEscondido()
 public virtual void GanarEscondido(int n) // n es Tier de Escondido, 1 se va al recibir daÃ±o u atacar, 2 no se va al recibir daÃ±o ni atacar
 {
   estaEscondido = n;
-  scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" estÃ¡ escondido.")));
+  scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" está escondido.")));
   GameObject overlayEscondido = ObtenerOverlayEscondidoGO();
   if (overlayEscondido != null)
   {

@@ -2314,6 +2314,24 @@ public class Casilla : MonoBehaviour
   public GameObject Desplazable;
   public GameObject MarcaMelee;
   public GameObject OcupadoNegro;
+
+  private bool DebeMostrarBordeActual()
+  {
+    if (Actual == null || Presente == null || BattleManager.Instance == null)
+    {
+      return false;
+    }
+
+    Unidad unidadPresente = Presente.GetComponent<Unidad>();
+    Unidad unidadEnTurno = BattleManager.Instance.unidadActiva;
+    return unidadPresente != null
+      && unidadEnTurno != null
+      && unidadEnTurno == unidadPresente
+      && unidadEnTurno.CasillaPosicion == this
+      && unidadEnTurno.gameObject.activeInHierarchy
+      && unidadEnTurno.HP_actual > 0f;
+  }
+
   void Update()
   {
     ActualizarFadeMarcasMovimiento();
@@ -2351,11 +2369,7 @@ public class Casilla : MonoBehaviour
             { OcupadoNegro.SetActive(true); }
             else
             { OcupadoNegro.SetActive(false); }
-            if (BattleManager.Instance.unidadActiva == Presente.GetComponent<Unidad>())
-            {
-              Actual.SetActive(true);
-            }
-            else { Actual.SetActive(false); }
+            Actual.SetActive(DebeMostrarBordeActual());
 
           }
         }
