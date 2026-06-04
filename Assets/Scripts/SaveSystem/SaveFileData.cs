@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [Serializable]
 public class SaveFileData
 {
-  public const int CurrentVersion = 17;
+  public const int CurrentVersion = 18;
 
   public int version = CurrentVersion;
   public string savedAtUtc;
@@ -116,6 +116,7 @@ public class BitacoraEntradaSaveData
 public class MapSaveData
 {
   public List<NodeSaveData> nodes = new List<NodeSaveData>();
+  public List<NodeReferenceSaveData> settlementsForzados = new List<NodeReferenceSaveData>();
   public int emboscadasSubterraneasZona;
   public int viajesDesdeUltimaEmboscadaSubterranea = 99;
 }
@@ -128,7 +129,6 @@ public class NodeSaveData
   public bool activo;
   public int tipoNodo;
   public bool nodoDespejado;
-  public int costoMovimiento;
   public bool revelado;
   public bool yatiroConexiones;
   public bool nodoIncendiado;
@@ -139,7 +139,18 @@ public class NodeSaveData
   public bool atajoSubterraneoPendiente;
   public string faccionScoutReveladaId;
   public string faccionScoutReveladaNombre;
-  public List<NodeReferenceSaveData> destinos = new List<NodeReferenceSaveData>();
+  public bool visibilidadForzadaEspecial;
+  public List<CaminoConexionSaveData> conexiones = new List<CaminoConexionSaveData>();
+}
+
+[Serializable]
+public class CaminoConexionSaveData
+{
+  public int destinoX;
+  public int destinoY;
+  public TipoCaminoCampania tipo;
+  public int costoMovimiento = 1;
+  public bool rutaHaciaAldea;
 }
 
 [Serializable]

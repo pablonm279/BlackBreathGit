@@ -28,6 +28,15 @@ public class UnidadPoseController : MonoBehaviour
     public float duracionPoseDanyo = 1.0f;
     public float duracionPoseHabilidad = 1.0f;
 
+    [Header("Timing Melee Centralizado")]
+    [Range(0f, 1f)] public float meleeFraccionImpacto = 0.35f;
+    [Min(0f)] public float meleePreImpactoFallback = 0.22f;
+    [Min(0f)] public float meleePreImpactoMin = 0.08f;
+    [Min(0f)] public float meleePreImpactoMax = 0.42f;
+    [Min(0f)] public float meleePostImpacto = 0.16f;
+    [Min(0f)] public float meleePostImpactoMin = 0.05f;
+    [Min(0f)] public float meleePostImpactoMax = 0.30f;
+
     Unidad unidad;
     Coroutine revertCoroutine;
     bool mantenerPoseHabilidad = false;

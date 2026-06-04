@@ -110,7 +110,7 @@ Transform:
   m_GameObject: {fileID: 1737261922198035945}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.035, y: 0.67, z: 0}
+  m_LocalPosition: {x: 0.035, y: 0.925, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -698,7 +698,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   esRango: 1
   bPuedeVerEscondidos: 0
-  unicoEnCombate: 0
+  unicoEnCombate: 1
   tierEnemigo: 2
   costoMovimientoAP: 1
   tendenciaMovY: 0
@@ -935,6 +935,13 @@ MonoBehaviour:
   duracionPoseAtacar: 1
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1
+  meleeFraccionImpacto: 0.35
+  meleePreImpactoFallback: 0.22
+  meleePreImpactoMin: 0.08
+  meleePreImpactoMax: 0.42
+  meleePostImpacto: 0.16
+  meleePostImpactoMin: 0.05
+  meleePostImpactoMax: 0.3
 --- !u!114 &7894339736275126187
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -66,7 +66,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _BlendOp: 0
-    - _BumpScale: 1
+    - _BumpScale: 1.15
     - _CameraFadingEnabled: 0
     - _CameraFarFadeDistance: 2
     - _CameraNearFadeDistance: 1
@@ -85,7 +85,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 1
     - _LightingEnabled: 0
-    - _Metallic: 0.384
+    - _Metallic: 0
     - _Mode: 2
     - _OcclusionStrength: 1
     - _Parallax: 0.02

@@ -85334,8 +85334,6 @@ MonoBehaviour:
   posYNodo: 0
   nodoDespejado: 0
   cantidadConexiones: 0
-  costoMovimiento: 1
-  DestinosPosibles: []
   revelado: 0
   ObligatorioEnZona: 
   ProhibidoEnZona: 
@@ -85348,7 +85346,7 @@ MonoBehaviour:
   MaterialCaminoUsado: {fileID: 2100000, guid: 9799188ca27064a49a397f1c41094bfe, type: 2}
   MaterialAtajo: {fileID: 2100000, guid: 7e75bc3e4db30c14daf59528a65f072c, type: 2}
   MaterialCaminoHint: {fileID: 2100000, guid: 99856a6afe4d9214aaa1d69fc76ee93e, type: 2}
-  caminoLento: {fileID: 2100000, guid: 7e75bc3e4db30c14daf59528a65f072c, type: 2}
+  caminoLento: {fileID: 2100000, guid: cebc9f159c8e13d44b2312bc7d68a229, type: 2}
   caminoAAldea: {fileID: 2100000, guid: ab64a35e7db072540b3821e60880eeb6, type: 2}
   materialAtajoSuperficieVisual: {fileID: 2100000, guid: dee9a04cfd1659143b37905cc9780f4f, type: 2}
   velocidadMovimiento: 6
@@ -85357,7 +85355,7 @@ MonoBehaviour:
   nodoRitual: 0
   tipoNodoOriginalRitual: 0
   descripcion: 
-  rotSpeed: 10
+  rotSpeed: 9
   lookAheadDist: 0.5
 --- !u!1 &7871008110498989888
 GameObject:

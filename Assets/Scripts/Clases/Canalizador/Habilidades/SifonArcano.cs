@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Threading.Tasks;
 using System;
 
 public class SifonArcano : Habilidad
 {
-   
-
-    [SerializeField] private GameObject VFXenObjetivo;
-
    
       public override void  Awake()
     {
@@ -32,18 +29,12 @@ public class SifonArcano : Habilidad
       imHab = Resources.Load<Sprite>("imHab/Canalizador_SifonArcano");
       ActualizarDescripcion();
      
-    }
+  }
   public override void ActualizarDescripcion()
   {
-    var statsUI = ObtenerStatsDescripcionUI();
-    int poderActual = statsUI.Poder;
-    int bonusDCNivel = NIVEL > 2 ? 1 : 0;
-    int dcBase = 10 + bonusDCNivel;
     int duracionTurnos = NIVEL == 5 ? 4 : 3;
     int bonusDanioBase = NIVEL > 1 ? 5 : 3;
     string rangoDanioEs = FormatearRangoDados(1, 10, bonusDanioBase);
-    string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcBase, "Pod", "Power", poderActual, "Poder");
-    string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, dcBase, "Pod", "Power", poderActual, "Poder");
 
     string tituloEs = "Sifon Arcano I";
     string tituloEn = "Arcane Siphon I";
@@ -68,7 +59,6 @@ public class SifonArcano : Habilidad
     if (NIVEL == 5) { tituloPtFormato = "Sifao Arcano IV b"; }
     string colorEncabezado = "#44d3ec";
     string colorValor = "#ffffff";
-    string colorPoder = "#2aa6c8";
     string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
     string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
     string iconoDebuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_debuff\"></voffset></size><space=-0.35em>";
@@ -88,8 +78,7 @@ public class SifonArcano : Habilidad
     {
       cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged debuff (5 range)</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy on the opposite side</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Fortitude vs DC {dcBase} + <color={colorPoder}>Power ({poderActual})</color></color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>On failed save:</b></color> <color={colorValor}>{iconoDebuff} Arcane Siphon for {duracionTurnos} turns</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Effect:</b></color> <color={colorValor}>{iconoDebuff} Applies Arcane Siphon for {duracionTurnos} turns</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Turn damage:</b></color> <color={colorValor}>{rangoDanioEs} x (1 + {iconoEnergia} Energy Residues). Type: Arcane</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>On kill:</b></color> <color={colorValor}>{iconoBuff} +1 permanent Max AP, +10% Damage, {iconoEnergia} +1 Energy</color>";
     }
@@ -97,8 +86,7 @@ public class SifonArcano : Habilidad
     {
       cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Debuff a distancia (5 alcance)</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo no lado oposto</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Resistência:</b></color> <color={colorValor}>Fortitude vs CD {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoDebuff} Sifao Arcano por {duracionTurnos} turnos</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Efeito:</b></color> <color={colorValor}>{iconoDebuff} Aplica Sifao Arcano por {duracionTurnos} turnos</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Dano por turno:</b></color> <color={colorValor}>{rangoDanioEs} x (1 + {iconoEnergia} Residuos Energeticos). Tipo: Arcano</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Ao matar:</b></color> <color={colorValor}>{iconoBuff} +1 AP Max permanente, +10% Dano, {iconoEnergia} +1 Energia</color>";
     }
@@ -106,8 +94,7 @@ public class SifonArcano : Habilidad
     {
       cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Debuff a distancia (5 alcance)</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo del lado opuesto</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Fortaleza vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoDebuff} Sifon Arcano por {duracionTurnos} turnos</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Efecto:</b></color> <color={colorValor}>{iconoDebuff} Aplica Sifon Arcano por {duracionTurnos} turnos</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Daño por turno:</b></color> <color={colorValor}>{rangoDanioEs} x (1 + {iconoEnergia} Residuos Energeticos). Tipo: Arcano</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Al matar:</b></color> <color={colorValor}>{iconoBuff} +1 AP Max permanente, +10% Daño, {iconoEnergia} +1 Energia</color>";
     }
@@ -123,19 +110,19 @@ public class SifonArcano : Habilidad
       if (esInglesFormato)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 base turn damage.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 DC.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: unlocks IV upgrade path.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A or B (IV upgrades).</color>"; }
       }
       else if (esPortuguesFormato)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no dano base por turno.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 CD.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: desbloqueia melhorias IV.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A ou Opcao B (melhorias IV).</color>"; }
       }
       else
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al danio base por turno.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: desbloquea mejoras IV.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A u Opcion B (mejoras IV).</color>"; }
       }
     }
@@ -149,8 +136,7 @@ public class SifonArcano : Habilidad
       string cuerpo = "";
       cuerpo += "<b>Type:</b> Ranged (5 range)\n";
       cuerpo += "<b>Target:</b> 1 enemy unit on the opposite side\n";
-      cuerpo += lineaSalvacionEn + "\n";
-      cuerpo += $"<b>On failed save:</b> Applies Arcane Siphon for {duracionTurnos} turns\n";
+      cuerpo += $"<b>Effect:</b> Applies Arcane Siphon for {duracionTurnos} turns\n";
       cuerpo += lineaDanioEn + "\n";
       cuerpo += "<b>On kill by this effect:</b> +1 permanent AP max, +10% Damage and +1 Energy";
 
@@ -166,7 +152,7 @@ public class SifonArcano : Habilidad
       if (EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 base turn damage.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 DC.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: unlocks IV upgrade path.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A or B (IV upgrades).</color>"; }
       }
       return;
@@ -176,8 +162,7 @@ public class SifonArcano : Habilidad
       string corpo = "";
       corpo += "<b>Tipo:</b> Distancia (5 alcance)\n";
       corpo += "<b>Alvo:</b> 1 unidade inimiga do lado oposto\n";
-      corpo += $"{ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual)}\n";
-      corpo += $"<b>Se falhar TS:</b> aplica Sifao Arcano por {duracionTurnos} turnos\n";
+      corpo += $"<b>Efeito:</b> aplica Sifao Arcano por {duracionTurnos} turnos\n";
       corpo += (bonusDanioBase > 0
         ? $"<b>Dano por turno:</b> (1d10 + {bonusDanioBase}) x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano"
         : "<b>Dano por turno:</b> 1d10 x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano");
@@ -196,7 +181,7 @@ public class SifonArcano : Habilidad
       if (EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no dano base por turno.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 CD.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: desbloqueia melhorias IV.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A ou Opcao B (melhorias IV).</color>"; }
       }
       return;
@@ -206,8 +191,7 @@ public class SifonArcano : Habilidad
       string cuerpo = "";
       cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
       cuerpo += "<b>Objetivo:</b> 1 unidad enemiga del lado opuesto\n";
-      cuerpo += lineaSalvacionEs + "\n";
-      cuerpo += $"<b>Si falla TS:</b> aplica Sifon Arcano por {duracionTurnos} turnos\n";
+      cuerpo += $"<b>Efecto:</b> aplica Sifon Arcano por {duracionTurnos} turnos\n";
       cuerpo += lineaDanioEs + "\n";
       cuerpo += "<b>Si mata con este efecto:</b> +1 AP max permanente, +10% Danio y +1 Energia";
 
@@ -223,7 +207,7 @@ public class SifonArcano : Habilidad
       if (EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al danio base por turno.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: desbloquea mejoras IV.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A u Opcion B (mejoras IV).</color>"; }
       }
     }
@@ -248,25 +232,17 @@ public class SifonArcano : Habilidad
 
     if (obj is Unidad uni) //Acá van los efectos a Unidades.
     {
-      float dc = 8 + scEstaUnidad.mod_CarPoder; 
       VFXAplicar(uni.gameObject);
-      if (NIVEL > 2) { dc += 1; }
 
-      if (uni.TiradaSalvacion(uni.mod_TSFortaleza, dc))
-      {
+      //Agrega la reacción 
+      ReaccionSifonArcano reaccion = new ReaccionSifonArcano();
+      reaccion.variableUnidad = scEstaUnidad;
+      reaccion.NIVEL = NIVEL;
+      reaccion.nombre = "Sifón Arcano";
+      reaccion.variableUnidad = scEstaUnidad;
+      ReaccionSifonArcano reaccionPosturaDefensiva = ComponentCopier.CopyComponent(reaccion, uni.gameObject);
 
-        //Agrega la reacción 
-        ReaccionSifonArcano reaccion = new ReaccionSifonArcano();
-        reaccion.variableUnidad = scEstaUnidad;
-        reaccion.NIVEL = NIVEL;
-        reaccion.nombre = "Sifón Arcano";
-        reaccion.variableUnidad = scEstaUnidad;
-        ReaccionSifonArcano reaccionPosturaDefensiva = ComponentCopier.CopyComponent(reaccion, uni.gameObject);
-
-
-      }
-                        
-      }
+    }
      
     }
 
@@ -277,13 +253,7 @@ public class SifonArcano : Habilidad
       return null;
     }
 
-    float dc = 8 + scEstaUnidad.mod_CarPoder;
-    if (NIVEL > 2)
-    {
-      dc += 1;
-    }
-
-    return CalcularProbabilidadFallarTS(objetivo.mod_TSFortaleza, dc);
+    return 1f;
   }
 
   protected override string ObtenerTextoProbabilidadSobreObjetivo(Unidad objetivo, float probabilidad)
@@ -293,15 +263,7 @@ public class SifonArcano : Habilidad
     
        void VFXAplicar(GameObject objetivo)
   {
-    VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_SifonArcano");
-
-    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation);
-    vfx.transform.parent = objetivo.transform;
-     
-   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
-   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
-   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5); 
-            //---
+   SifonArcanoObjetivoFx.Crear(objetivo.GetComponent<Unidad>());
 
   }
 
@@ -388,5 +350,287 @@ public class SifonArcano : Habilidad
 }
 
 
+public class SifonArcanoObjetivoFx : MonoBehaviour
+{
+  private const float Duracion = 1.15f;
+  private const int CantidadHebras = 5;
 
+  private RectTransform root;
+  private CanvasGroup canvasGroup;
+  private RectTransform imagenUnidad;
+  private Image columna;
+  private Image nucleo;
+  private Image anilloSuperior;
+  private Image anilloInferior;
+  private readonly Image[] hebras = new Image[CantidadHebras];
+  private readonly float[] fasesHebra = new float[CantidadHebras];
+  private readonly float[] offsetHebraX = new float[CantidadHebras];
+  private readonly float[] velocidadHebra = new float[CantidadHebras];
+  private readonly float[] escalaHebra = new float[CantidadHebras];
+  private float tiempo;
+  private Vector2 tamanoBase;
+  private Vector2 posicionBase;
 
+  private static Sprite spriteSuave;
+  private static Sprite spriteAnillo;
+  private static Sprite spriteHebra;
+  private static Texture2D texturaSuave;
+  private static Texture2D texturaAnillo;
+  private static Texture2D texturaHebra;
+
+  public static void Crear(Unidad unidad)
+  {
+    if (unidad == null || unidad.uImage == null)
+    {
+      return;
+    }
+
+    RectTransform imagen = unidad.uImage.rectTransform;
+    if (imagen == null || !(imagen.parent is RectTransform padre))
+    {
+      return;
+    }
+
+    GameObject go = new GameObject("SifonArcanoObjetivoFx", typeof(RectTransform), typeof(CanvasGroup), typeof(SifonArcanoObjetivoFx));
+    SifonArcanoObjetivoFx fx = go.GetComponent<SifonArcanoObjetivoFx>();
+    fx.Inicializar(padre, imagen);
+
+    Canvas canvas = unidad.uImage.GetComponentInParent<Canvas>(true);
+    RenderOrderHelper.OrdenarCanvasEncima(canvas, unidad.transform, 8);
+  }
+
+  private void Inicializar(RectTransform padre, RectTransform imagen)
+  {
+    root = GetComponent<RectTransform>();
+    canvasGroup = GetComponent<CanvasGroup>();
+    imagenUnidad = imagen;
+    root.SetParent(padre, false);
+    canvasGroup.interactable = false;
+    canvasGroup.blocksRaycasts = false;
+
+    tamanoBase = imagenUnidad.rect.size;
+    if (tamanoBase.x <= 0.01f || tamanoBase.y <= 0.01f)
+    {
+      tamanoBase = imagenUnidad.sizeDelta;
+    }
+    if (tamanoBase.x <= 0.01f || tamanoBase.y <= 0.01f)
+    {
+      tamanoBase = new Vector2(36f, 42f);
+    }
+
+    posicionBase = new Vector2(0f, tamanoBase.y * 0.08f);
+    root.anchorMin = new Vector2(0.5f, 0.5f);
+    root.anchorMax = new Vector2(0.5f, 0.5f);
+    root.pivot = new Vector2(0.5f, 0.5f);
+    root.anchoredPosition = imagenUnidad.anchoredPosition + posicionBase;
+    root.localScale = imagenUnidad.localScale;
+    root.sizeDelta = new Vector2(tamanoBase.x * 0.7f, tamanoBase.y * 1.55f);
+
+    int targetSibling = Mathf.Min(padre.childCount - 1, imagenUnidad.GetSiblingIndex() + 1);
+    root.SetSiblingIndex(targetSibling);
+
+    columna = CrearImagen("Columna", ObtenerSpriteSuave(), root);
+    nucleo = CrearImagen("Nucleo", ObtenerSpriteSuave(), root);
+    anilloSuperior = CrearImagen("AnilloSuperior", ObtenerSpriteAnillo(), root);
+    anilloInferior = CrearImagen("AnilloInferior", ObtenerSpriteAnillo(), root);
+
+    for (int i = 0; i < hebras.Length; i++)
+    {
+      hebras[i] = CrearImagen("Hebra" + i, ObtenerSpriteHebra(), root);
+      fasesHebra[i] = UnityEngine.Random.Range(0f, 1f);
+      offsetHebraX[i] = UnityEngine.Random.Range(-0.32f, 0.32f);
+      velocidadHebra[i] = UnityEngine.Random.Range(0.65f, 1.35f);
+      escalaHebra[i] = UnityEngine.Random.Range(0.68f, 1.08f);
+    }
+
+    ActualizarVisual(0f);
+  }
+
+  private Image CrearImagen(string nombre, Sprite sprite, RectTransform padre)
+  {
+    GameObject go = new GameObject(nombre, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+    RectTransform rect = go.GetComponent<RectTransform>();
+    rect.SetParent(padre, false);
+    rect.anchorMin = new Vector2(0.5f, 0.5f);
+    rect.anchorMax = new Vector2(0.5f, 0.5f);
+    rect.pivot = new Vector2(0.5f, 0.5f);
+
+    Image image = go.GetComponent<Image>();
+    image.sprite = sprite;
+    image.raycastTarget = false;
+    image.maskable = false;
+    image.preserveAspect = false;
+    return image;
+  }
+
+  private void Update()
+  {
+    tiempo += Time.deltaTime;
+    float t = Mathf.Clamp01(tiempo / Duracion);
+    ActualizarVisual(t);
+
+    if (tiempo >= Duracion)
+    {
+      Destroy(gameObject);
+    }
+  }
+
+  private void ActualizarVisual(float t)
+  {
+    if (root == null || canvasGroup == null)
+    {
+      return;
+    }
+
+    float entrada = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / 0.16f));
+    float salida = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((t - 0.62f) / 0.38f));
+    float intensidad = entrada * salida;
+    float pulso = 0.9f + (0.08f * Mathf.Sin(Time.time * 10f)) + (0.04f * Mathf.Sin(Time.time * 21f));
+    float giro = Mathf.Sin(Time.time * 7.5f) * 7f;
+    float deriva = Mathf.Sin(Time.time * 13f) * tamanoBase.x * 0.025f;
+
+    canvasGroup.alpha = intensidad;
+    root.anchoredPosition = imagenUnidad != null ? imagenUnidad.anchoredPosition + posicionBase + new Vector2(deriva, 0f) : root.anchoredPosition;
+    root.localEulerAngles = new Vector3(0f, 0f, Mathf.Sin(Time.time * 11f) * 2.5f * intensidad);
+
+    Configurar(columna, new Vector2(Mathf.Sin(Time.time * 18f) * tamanoBase.x * 0.018f, 0f), new Vector2(tamanoBase.x * 0.5f * pulso, tamanoBase.y * 1.48f), 0f, new Color(0.26f, 0.72f, 1f, 0.14f * intensidad));
+    Configurar(nucleo, new Vector2(Mathf.Sin(Time.time * 15f) * tamanoBase.x * 0.025f, tamanoBase.y * 0.02f), new Vector2(tamanoBase.x * 0.14f, tamanoBase.y * 1.22f), 0f, new Color(0.78f, 0.96f, 1f, 0.25f * intensidad));
+    Configurar(anilloSuperior, new Vector2(Mathf.Sin(Time.time * 9f) * tamanoBase.x * 0.03f, tamanoBase.y * 0.44f), new Vector2(tamanoBase.x * (0.5f + (0.08f * pulso)), tamanoBase.y * 0.15f), giro, new Color(0.68f, 0.94f, 1f, 0.32f * intensidad));
+    Configurar(anilloInferior, new Vector2(Mathf.Sin(Time.time * 8f + 1.3f) * tamanoBase.x * 0.025f, -tamanoBase.y * 0.38f), new Vector2(tamanoBase.x * (0.46f + (0.06f * pulso)), tamanoBase.y * 0.12f), -giro * 1.25f, new Color(0.42f, 0.78f, 1f, 0.22f * intensidad));
+
+    for (int i = 0; i < hebras.Length; i++)
+    {
+      float avance = Mathf.Repeat((t * velocidadHebra[i]) + fasesHebra[i], 1f);
+      float alphaHebra = Mathf.Sin(avance * Mathf.PI) * intensidad;
+      float onda = Mathf.Sin((Time.time * (8f + i)) + (i * 1.9f)) * tamanoBase.x * 0.06f;
+      Vector2 posicion = new Vector2((tamanoBase.x * offsetHebraX[i]) + onda, Mathf.Lerp(-tamanoBase.y * 0.56f, tamanoBase.y * 0.6f, avance));
+      Vector2 tamano = new Vector2(tamanoBase.y * 0.5f * escalaHebra[i], Mathf.Max(1.3f, tamanoBase.x * 0.04f));
+      Configurar(hebras[i], posicion, tamano, 90f + (Mathf.Sin(Time.time * (7f + i) + fasesHebra[i]) * 10f), new Color(0.82f, 0.98f, 1f, 0.28f * alphaHebra));
+    }
+  }
+
+  private static void Configurar(Image image, Vector2 posicion, Vector2 tamano, float rotacionZ, Color color)
+  {
+    if (image == null)
+    {
+      return;
+    }
+
+    RectTransform rect = image.rectTransform;
+    rect.anchoredPosition = posicion;
+    rect.sizeDelta = tamano;
+    rect.localEulerAngles = new Vector3(0f, 0f, rotacionZ);
+    rect.localScale = Vector3.one;
+    image.color = color;
+  }
+
+  private static Sprite ObtenerSpriteSuave()
+  {
+    if (spriteSuave != null)
+    {
+      return spriteSuave;
+    }
+
+    const int size = 64;
+    texturaSuave = new Texture2D(size, size, TextureFormat.ARGB32, false);
+    texturaSuave.name = "SifonArcanoSoftRuntime";
+    texturaSuave.wrapMode = TextureWrapMode.Clamp;
+    texturaSuave.filterMode = FilterMode.Bilinear;
+    texturaSuave.hideFlags = HideFlags.HideAndDontSave;
+
+    Color[] pixels = new Color[size * size];
+    float centro = (size - 1) * 0.5f;
+    float radio = size * 0.5f;
+    for (int y = 0; y < size; y++)
+    {
+      for (int x = 0; x < size; x++)
+      {
+        float dx = (x - centro) / radio;
+        float dy = (y - centro) / radio;
+        float distancia = Mathf.Sqrt((dx * dx) + (dy * dy));
+        float alpha = Mathf.Pow(Mathf.Clamp01(1f - distancia), 2.1f);
+        pixels[(y * size) + x] = new Color(1f, 1f, 1f, alpha);
+      }
+    }
+
+    texturaSuave.SetPixels(pixels);
+    texturaSuave.Apply(false, true);
+    spriteSuave = Sprite.Create(texturaSuave, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+    spriteSuave.name = "SifonArcanoSoftRuntime";
+    return spriteSuave;
+  }
+
+  private static Sprite ObtenerSpriteAnillo()
+  {
+    if (spriteAnillo != null)
+    {
+      return spriteAnillo;
+    }
+
+    const int size = 64;
+    texturaAnillo = new Texture2D(size, size, TextureFormat.ARGB32, false);
+    texturaAnillo.name = "SifonArcanoRingRuntime";
+    texturaAnillo.wrapMode = TextureWrapMode.Clamp;
+    texturaAnillo.filterMode = FilterMode.Bilinear;
+    texturaAnillo.hideFlags = HideFlags.HideAndDontSave;
+
+    Color[] pixels = new Color[size * size];
+    float centro = (size - 1) * 0.5f;
+    float radio = size * 0.5f;
+    for (int y = 0; y < size; y++)
+    {
+      for (int x = 0; x < size; x++)
+      {
+        float dx = (x - centro) / radio;
+        float dy = (y - centro) / radio;
+        float distancia = Mathf.Sqrt((dx * dx) + (dy * dy));
+        float borde = Mathf.Abs(distancia - 0.58f);
+        float alpha = Mathf.Pow(Mathf.Clamp01(1f - (borde / 0.15f)), 1.75f) * Mathf.Clamp01(1f - distancia);
+        pixels[(y * size) + x] = new Color(1f, 1f, 1f, alpha);
+      }
+    }
+
+    texturaAnillo.SetPixels(pixels);
+    texturaAnillo.Apply(false, true);
+    spriteAnillo = Sprite.Create(texturaAnillo, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+    spriteAnillo.name = "SifonArcanoRingRuntime";
+    return spriteAnillo;
+  }
+
+  private static Sprite ObtenerSpriteHebra()
+  {
+    if (spriteHebra != null)
+    {
+      return spriteHebra;
+    }
+
+    const int width = 72;
+    const int height = 12;
+    texturaHebra = new Texture2D(width, height, TextureFormat.ARGB32, false);
+    texturaHebra.name = "SifonArcanoStrandRuntime";
+    texturaHebra.wrapMode = TextureWrapMode.Clamp;
+    texturaHebra.filterMode = FilterMode.Bilinear;
+    texturaHebra.hideFlags = HideFlags.HideAndDontSave;
+
+    Color[] pixels = new Color[width * height];
+    float centroY = (height - 1) * 0.5f;
+    for (int y = 0; y < height; y++)
+    {
+      for (int x = 0; x < width; x++)
+      {
+        float nx = x / (width - 1f);
+        float distanciaY = Mathf.Abs(y - centroY);
+        float grosor = Mathf.Clamp01(1f - (distanciaY / 3.4f));
+        float extremos = Mathf.SmoothStep(0f, 0.2f, nx) * (1f - Mathf.SmoothStep(0.8f, 1f, nx));
+        float alpha = Mathf.Pow(grosor, 1.8f) * extremos;
+        pixels[(y * width) + x] = new Color(1f, 1f, 1f, alpha);
+      }
+    }
+
+    texturaHebra.SetPixels(pixels);
+    texturaHebra.Apply(false, true);
+    spriteHebra = Sprite.Create(texturaHebra, new Rect(0f, 0f, width, height), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+    spriteHebra.name = "SifonArcanoStrandRuntime";
+    return spriteHebra;
+  }
+}

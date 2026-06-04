@@ -46,7 +46,7 @@ public abstract class IAHabilidad : MonoBehaviour
   private const float VentanaAnimacionDuplicada = 1.1f;
   private float inicioSecuenciaVisual = -999f;
   protected virtual int DelayPreImpactoMeleeMs => MeleeTimingUtility.CalcularPreImpactoMs(scEstaUnidad != null ? scEstaUnidad.GetComponent<UnidadPoseController>() : null);
-  protected virtual int DelayPostImpactoMeleeMs => MeleeTimingUtility.CalcularPostImpactoMs();
+  protected virtual int DelayPostImpactoMeleeMs => MeleeTimingUtility.CalcularPostImpactoMs(scEstaUnidad != null ? scEstaUnidad.GetComponent<UnidadPoseController>() : null);
 
   public List<object> objPosibles = new List<object>(); //Esta variable guarda los objetivos posibles de la habilidad
 
@@ -707,7 +707,7 @@ public abstract class IAHabilidad : MonoBehaviour
   }
 protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace falta desombrear después
 
-  protected async void PrepararInicioAnimacion(List<object> objetivos, object solo)
+  protected async void PrepararInicioAnimacion(List<object> objetivos, object solo, Func<Task> resolverImpacto = null)
   {
     TaskCompletionSource<bool> visualTcs = new TaskCompletionSource<bool>();
     bool focoCamaraAplicado = false;
@@ -803,10 +803,7 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     mantenerFocoCamaraPorCadena = focoCamaraAplicado && mantenerAdelantePorCadena;
     object objetivoVisual = solo ?? (objetivos != null && objetivos.Count > 0 ? objetivos[0] : null);
     bool seAproximo = await IntentarAproximarVisualMeleeAsync(objetivoVisual, mantenerAdelantePorCadena);
-    if (seAproximo && PausaPostAproximacionMs > 0)
-    {
-      await BattleManager.DelayCombateAsync(PausaPostAproximacionMs);
-    }
+    await EsperarPostAproximacionMeleeAsync(seAproximo);
 
     ReproducirAnimacionSegunTipo(true);
 
@@ -816,6 +813,21 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     if (scEstaUnidad != null)
     {
       scEstaUnidad.SetSuprimirAnimacionIA(false);
+    }
+
+    if (resolverImpacto != null)
+    {
+      if (esMelee && DelayPreImpactoMeleeMs > 0)
+      {
+        await BattleManager.DelayCombateAsync(DelayPreImpactoMeleeMs);
+      }
+
+      await resolverImpacto();
+
+      if (esMelee && DelayPostImpactoMeleeMs > 0)
+      {
+        await BattleManager.DelayCombateAsync(DelayPostImpactoMeleeMs);
+      }
     }
 
     if (mantenerAdelantePorCadena)
@@ -853,6 +865,21 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     }
 }
 
+  protected Task PrepararInicioAnimacionConImpactoAsync(object objetivo)
+  {
+    return PrepararInicioAnimacionConImpactoAsync(null, objetivo, () =>
+    {
+      AplicarEfectosHabilidad(objetivo);
+      return Task.CompletedTask;
+    });
+  }
+
+  protected async Task PrepararInicioAnimacionConImpactoAsync(List<object> objetivos, object solo, Func<Task> resolverImpacto)
+  {
+    PrepararInicioAnimacion(objetivos, solo, resolverImpacto);
+    await EsperarSecuenciaVisualAsync();
+  }
+
   protected Task<bool> IntentarAproximarVisualMeleeAsync(object objetivo, bool mantenerAdelante = false)
   {
     MeleeApproachMover mover = MeleeApproachMover.ObtenerOCrear(scEstaUnidad);
@@ -875,6 +902,16 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     return mover.VolverAPosicionInicialAsync(forzar);
   }
 
+  protected Task EsperarPostAproximacionMeleeAsync(bool seAproximo)
+  {
+    if (!seAproximo || PausaPostAproximacionMs <= 0)
+    {
+      return Task.CompletedTask;
+    }
+
+    return BattleManager.DelayCombateAsync(PausaPostAproximacionMs);
+  }
+
   /// <summary>
   /// Ejecuta la habilidad con aproximación visual si es melee. Reduce boilerplate en las IA melee.
   /// </summary>
@@ -886,6 +923,8 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
 
     try
     {
+      await EsperarPostAproximacionMeleeAsync(seAproximo);
+
       if (scEstaUnidad != null)
       {
         scEstaUnidad.IniciarPoseAtaqueSostenida(true);

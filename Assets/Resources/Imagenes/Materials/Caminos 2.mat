@@ -66,7 +66,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _BlendOp: 0
-    - _BumpScale: 1
+    - _BumpScale: 0.9
     - _CameraFadingEnabled: 0
     - _CameraFarFadeDistance: 2
     - _CameraNearFadeDistance: 1
@@ -81,11 +81,11 @@ Material:
     - _DstBlend: 10
     - _EmissionEnabled: 0
     - _FlipbookMode: 0
-    - _GlossMapScale: 1
+    - _GlossMapScale: 0.785
     - _Glossiness: 0
     - _GlossyReflections: 1
     - _LightingEnabled: 0
-    - _Metallic: 0.586
+    - _Metallic: 0.678
     - _Mode: 2
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -99,7 +99,7 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 0.122641504, g: 0.122641504, b: 0.122641504, a: 1}
+    - _Color: {r: 0.18, g: 0.18, b: 0.18, a: 1}
     - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}

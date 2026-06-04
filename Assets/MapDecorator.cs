@@ -72,10 +72,13 @@ public class MapDecorator : MonoBehaviour
 
     // ---- internos ----
     const float UmbralDistCaminoRellenoRemovible = 0.15f;
+    const float TamanoCeldaDecoracionRemovible = 2f;
     struct Segmento { public Vector3 a, b; public float halfWidth; }
     readonly List<Segmento> segmentos = new List<Segmento>();
     readonly List<Transform> nodos = new List<Transform>();
     readonly List<GameObject> decoracionesRemoviblesSobreCaminos = new List<GameObject>();
+    readonly Dictionary<CellKey, List<GameObject>> decoracionesRemoviblesPorCelda = new Dictionary<CellKey, List<GameObject>>();
+    readonly Dictionary<LineRenderer, int> versionLimpiezaDecoracionPorCamino = new Dictionary<LineRenderer, int>();
 
     Transform tPlane;
     Bounds   localBounds;
@@ -116,6 +119,7 @@ public class MapDecorator : MonoBehaviour
     int relieveSeed;
     float alturaRelieveActual;
     int decorBatchCounter;
+    int versionDecoracionesRemovibles;
     bool batchActualEsRellenoRemovible;
 
     void Awake()
@@ -261,6 +265,9 @@ public class MapDecorator : MonoBehaviour
             DestroyImmediate(transform.GetChild(i).gameObject);
 
         decoracionesRemoviblesSobreCaminos.Clear();
+        decoracionesRemoviblesPorCelda.Clear();
+        versionLimpiezaDecoracionPorCamino.Clear();
+        versionDecoracionesRemovibles = 0;
         ReiniciarSesionDecoracion();
     }
 
@@ -373,6 +380,7 @@ public class MapDecorator : MonoBehaviour
             if (!ok) activos.RemoveAt(idx);
         }
 
+        OcultarDecoracionRemovibleSobreCaminosActivos();
         return colocados;
     }
 
@@ -421,6 +429,7 @@ public class MapDecorator : MonoBehaviour
             }
         }
 
+        OcultarDecoracionRemovibleSobreCaminosActivos();
 //        Debug.Log($"[MapDecorator] (Async) Colocados {colocados}/{cantidad} '{prefab?.name}'.");
     }
 
@@ -559,31 +568,71 @@ public class MapDecorator : MonoBehaviour
             return;
         }
 
+        if (versionLimpiezaDecoracionPorCamino.TryGetValue(lr, out int versionLimpieza)
+            && versionLimpieza == versionDecoracionesRemovibles)
+        {
+            return;
+        }
+
         float radio = CalcularRadioLimpiezaCamino(lr);
         float radioSqr = radio * radio;
 
-        for (int i = decoracionesRemoviblesSobreCaminos.Count - 1; i >= 0; i--)
+        for (int i = 0; i < lr.positionCount - 1; i++)
         {
-            GameObject go = decoracionesRemoviblesSobreCaminos[i];
-            if (go == null)
+            Vector3 a = LRPointWorld(lr, i);
+            Vector3 b = LRPointWorld(lr, i + 1);
+            OcultarDecoracionRemovibleCercanaASegmento(a, b, radio, radioSqr);
+        }
+
+        versionLimpiezaDecoracionPorCamino[lr] = versionDecoracionesRemovibles;
+    }
+
+    void OcultarDecoracionRemovibleSobreCaminosActivos()
+    {
+        if (!batchActualEsRellenoRemovible || decoracionesRemoviblesSobreCaminos.Count == 0)
+        {
+            return;
+        }
+
+        var todos = FindObjectsOfType<LineRenderer>();
+        for (int i = 0; i < todos.Length; i++)
+        {
+            LineRenderer lr = todos[i];
+            if (!lr || !lr.gameObject.activeInHierarchy || (soloLineRenderersConTag && !TieneTagCamino(lr.gameObject)))
             {
-                decoracionesRemoviblesSobreCaminos.RemoveAt(i);
                 continue;
             }
 
-            if (!go.activeSelf)
+            OcultarDecoracionRemovibleSobreCamino(lr);
+        }
+    }
+
+    void OcultarDecoracionRemovibleCercanaASegmento(Vector3 a, Vector3 b, float radio, float radioSqr)
+    {
+        CellKey cmin = CellDecoracionRemovible(Mathf.Min(a.x, b.x) - radio, Mathf.Min(a.z, b.z) - radio);
+        CellKey cmax = CellDecoracionRemovible(Mathf.Max(a.x, b.x) + radio, Mathf.Max(a.z, b.z) + radio);
+
+        for (int x = cmin.x; x <= cmax.x; x++)
+        for (int z = cmin.z; z <= cmax.z; z++)
+        {
+            if (!decoracionesRemoviblesPorCelda.TryGetValue(new CellKey(x, z), out var candidatas))
             {
-                decoracionesRemoviblesSobreCaminos.RemoveAt(i);
                 continue;
             }
 
-            if (!PuntoIntersectaCamino(lr, go.transform.position, radioSqr))
+            for (int i = 0; i < candidatas.Count; i++)
             {
-                continue;
-            }
+                GameObject go = candidatas[i];
+                if (!go || !go.activeSelf)
+                {
+                    continue;
+                }
 
-            go.SetActive(false);
-            decoracionesRemoviblesSobreCaminos.RemoveAt(i);
+                if (DistSegXZSqr(go.transform.position, a, b) <= radioSqr)
+                {
+                    go.SetActive(false);
+                }
+            }
         }
     }
 
@@ -594,19 +643,11 @@ public class MapDecorator : MonoBehaviour
         return 0.5f * worldWidth + margenCamino;
     }
 
-    static bool PuntoIntersectaCamino(LineRenderer lr, Vector3 punto, float radioSqr)
+    static CellKey CellDecoracionRemovible(float worldX, float worldZ)
     {
-        for (int i = 0; i < lr.positionCount - 1; i++)
-        {
-            Vector3 a = LRPointWorld(lr, i);
-            Vector3 b = LRPointWorld(lr, i + 1);
-            if (DistSegXZSqr(punto, a, b) <= radioSqr)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return new CellKey(
+            Mathf.FloorToInt(worldX / TamanoCeldaDecoracionRemovible),
+            Mathf.FloorToInt(worldZ / TamanoCeldaDecoracionRemovible));
     }
 
     bool TieneTagCamino(GameObject go)
@@ -702,6 +743,14 @@ public class MapDecorator : MonoBehaviour
 
         float w = curveMax > 0f ? curveMax * lr.widthMultiplier
                                 : Mathf.Max(lr.startWidth, lr.endWidth);
+
+        CaminoMesh caminoMesh = lr.GetComponent<CaminoMesh>();
+        if (caminoMesh != null)
+        {
+            Vector3 escala = lr.transform.lossyScale;
+            float escalaXZ = Mathf.Max(Mathf.Abs(escala.x), Mathf.Abs(escala.z));
+            w = Mathf.Max(w, caminoMesh.GetWidth() * escalaXZ);
+        }
 
         return Mathf.Max(0.0001f, w);
     }
@@ -1123,6 +1172,14 @@ public class MapDecorator : MonoBehaviour
         if (batchActualEsRellenoRemovible)
         {
             decoracionesRemoviblesSobreCaminos.Add(go);
+            CellKey key = CellDecoracionRemovible(go.transform.position.x, go.transform.position.z);
+            if (!decoracionesRemoviblesPorCelda.TryGetValue(key, out var decoracionesCelda))
+            {
+                decoracionesCelda = new List<GameObject>(4);
+                decoracionesRemoviblesPorCelda.Add(key, decoracionesCelda);
+            }
+            decoracionesCelda.Add(go);
+            versionDecoracionesRemovibles++;
         }
         // Escala del prefab NO se toca (asegurate que este GameObject padre está en 1,1,1).
     }

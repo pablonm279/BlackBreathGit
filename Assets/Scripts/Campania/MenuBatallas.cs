@@ -2581,6 +2581,11 @@ public void EfectosDeBatallaEnCampaña(int resultado)
       CampaignManager.Instance.estadosCaravana.FinalizarCombateActual();
     }
 
+    if (CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null)
+    {
+      CampaignManager.Instance.scMenuPersonajes.RefrescarListaVisual();
+    }
+
     MostrarTooltipsPostBatallaSiCorresponde();
  }
 

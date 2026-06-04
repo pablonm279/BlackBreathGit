@@ -108,7 +108,7 @@ public class TutorialManager : MonoBehaviour
         if (nodo == null) return;
 
         nodo.LimpiarEstadosEspecialesTutorial();
-        nodo.DestinosPosibles.Clear();
+        nodo.LimpiarConexiones();
         nodo.cantidadConexiones = 0;
 
         var destruir = new List<GameObject>();

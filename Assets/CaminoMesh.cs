@@ -9,14 +9,16 @@ public class CaminoMesh : MonoBehaviour
     private float width = 0.45f;           // Ancho del camino
     private float yOffset = 0.02f;        // Altura para evitar z-fighting
     private float uvTilesPerUnit = 0.42f; // Tiling a lo largo
-    private const float WidthEndScale = 0.74f;
-    private const float WidthCenterBoost = 0.04f;
-    private const float WidthTaperSpan = 0.14f;
+    private const float WidthEndScale = 0.52f;
+    private const float WidthCenterBoost = 0.035f;
+    private const float WidthTaperSpan = 0.2f;
+    private const float EdgeIrregularity = 0.055f;
 
     Mesh _mesh;
     MeshFilter _mf;
     MeshRenderer _mr;
     LineRenderer _lr;
+    bool _visible = true;
 
     void Awake()
     {
@@ -64,6 +66,9 @@ public class CaminoMesh : MonoBehaviour
         var tris  = new int[tCount];
 
         float accDist = 0f;
+        float uvOffset = CalculateStablePhase(ptsLocal, 0.37f);
+        float leftPhase = CalculateStablePhase(ptsLocal, 1.73f);
+        float rightPhase = CalculateStablePhase(ptsLocal, 3.11f);
         for (int i = 0; i < n; i++)
         {
             float t = n > 1 ? i / (float)(n - 1) : 0f;
@@ -76,19 +81,28 @@ public class CaminoMesh : MonoBehaviour
 
             // Perpendicular en el plano XZ local
             Vector3 side = Vector3.Cross(Vector3.up, forward).normalized;
+            if (side.sqrMagnitude <= 0.0001f)
+                side = Vector3.right;
             float widthScale = EvaluateWidthScale(t);
+            float irregularityEnvelope = Mathf.Sin(t * Mathf.PI);
+            float leftWidthScale = 1f + EvaluateEdgeNoise(t, leftPhase) * EdgeIrregularity * irregularityEnvelope;
+            float rightWidthScale = 1f + EvaluateEdgeNoise(t, rightPhase) * EdgeIrregularity * irregularityEnvelope;
+            float halfWidth = width * widthScale * 0.5f;
 
-            Vector3 left  = ptsLocal[i] - side * (width * widthScale * 0.5f);
-            Vector3 right = ptsLocal[i] + side * (width * widthScale * 0.5f);
+            Vector3 left  = ptsLocal[i] - side * (halfWidth * leftWidthScale);
+            Vector3 right = ptsLocal[i] + side * (halfWidth * rightWidthScale);
+            Vector3 normal = Vector3.Cross(forward, side).normalized;
+            if (normal.sqrMagnitude <= 0.0001f || Vector3.Dot(normal, Vector3.up) < 0f)
+                normal = normal.sqrMagnitude <= 0.0001f ? Vector3.up : -normal;
 
             int vi = i * 2;
             verts[vi] = left;
             verts[vi + 1] = right;
-            norms[vi] = norms[vi + 1] = Vector3.up;
+            norms[vi] = norms[vi + 1] = normal;
 
             if (i > 0) accDist += Vector3.Distance(ptsLocal[i], ptsLocal[i - 1]);
 
-            float u = accDist * uvTilesPerUnit;
+            float u = uvOffset + accDist * uvTilesPerUnit;
             uvs[vi]     = new Vector2(u, 0f);
             uvs[vi + 1] = new Vector2(u, 1f);
 
@@ -111,11 +125,12 @@ public class CaminoMesh : MonoBehaviour
             _mesh.normals = norms;
             _mesh.uv = uvs;
             _mesh.triangles = tris;
+            _mesh.RecalculateTangents();
             _mesh.RecalculateBounds();
             _mf.sharedMesh = _mesh;
         }
 
-        if (_mr != null) _mr.enabled = true;
+        if (_mr != null) _mr.enabled = _visible;
     }
 
     float EvaluateWidthScale(float t)
@@ -124,6 +139,29 @@ public class CaminoMesh : MonoBehaviour
         float taperOut = Mathf.SmoothStep(WidthEndScale, 1f, Mathf.Clamp01((1f - t) / WidthTaperSpan));
         float centerBoost = 1f + Mathf.Sin(t * Mathf.PI) * WidthCenterBoost;
         return Mathf.Min(taperIn, taperOut) * centerBoost;
+    }
+
+    static float EvaluateEdgeNoise(float t, float phase)
+    {
+        float waveA = Mathf.Sin((t * 4.1f + phase) * Mathf.PI * 2f);
+        float waveB = Mathf.Sin((t * 7.3f + phase * 1.61f) * Mathf.PI * 2f) * 0.42f;
+        return (waveA + waveB) / 1.42f;
+    }
+
+    static float CalculateStablePhase(IList<Vector3> ptsLocal, float salt)
+    {
+        if (ptsLocal == null || ptsLocal.Count == 0)
+            return 0f;
+
+        Vector3 first = ptsLocal[0];
+        Vector3 last = ptsLocal[ptsLocal.Count - 1];
+        float value = Mathf.Sin(
+            first.x * 12.9898f +
+            first.z * 78.233f +
+            last.x * 37.719f +
+            last.z * 19.913f +
+            salt * 53.539f) * 43758.5453f;
+        return value - Mathf.Floor(value);
     }
 
     public void SetWidth(float newWidth)
@@ -139,6 +177,13 @@ public class CaminoMesh : MonoBehaviour
     public void SetYOffset(float newYOffset)
     {
         yOffset = Mathf.Max(0f, newYOffset);
+    }
+
+    public void SetVisible(bool visible)
+    {
+        _visible = visible;
+        if (_mr == null) _mr = GetComponent<MeshRenderer>();
+        if (_mr != null) _mr.enabled = _visible;
     }
 
     // Opcional para setear material por código

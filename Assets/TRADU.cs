@@ -1901,7 +1901,7 @@ public class TRADU : MonoBehaviour
                 r = "After a loud noise, you turn your head back and see that one of the supply wagons has had an accident. The wheels are stuck in the mud and the wagon seems to be lost for good.\n\n"; break;
             case "<color=#ba3fef>-Puedes pasar los 60 suministros caídos a otro carro, sacrificando 20 Materiales; o asumir la pérdida de suministros.</color>\n\n":
                 r = "<color=#ba3fef>-You can transfer the 60 fallen supplies to another wagon, sacrificing 20 Materials; or accept the loss of supplies.</color>\n\n"; break;
-            case "La Caravana encuentra un río con buen caudal y agua que parece decente. Varios civiles entusiasmados comienzan a dirigirse hacia él con la intención de recrearse y refrescarse.\n\n":
+            case "La Caravana encuentra un Río con buen caudal y agua que parece decente. Varios civiles entusiasmados comienzan a dirigirse hacia él con la intención de recrearse y refrescarse.\n\n":
                 r = "The Caravan finds a river with good flow and seemingly decent water. Several excited civilians head towards it to recreate and refresh themselves.\n\n"; break;
             case "El agua podría estar contaminada por el Aliento Negro. Puedes negarle a los Civiles el acceso al agua o dejarlos a su propia suerte.\n\n":
                 r = "The water could be contaminated by the Black Breath. You can deny the Civilians access to the water or leave them to their own fate.\n\n"; break;
@@ -9142,8 +9142,8 @@ public class TRADU : MonoBehaviour
                 r = "Após um estrondo, você vira a cabeça para trás e vê que uma das carroças de suprimentos da caravana sofreu um acidente. As rodas estío atoladas na lama, e a carroça parece estar perdida para sempre.\n\n"; break;
             case "<color=#ba3fef>-Puedes pasar los 60 suministros caídos a otro carro, sacrificando 20 Materiales; o asumir la pérdida de suministros.</color>\n\n":
                 r = "<color=#ba3fef>-Você pode passar os 60 suprimentos caídos para outra carroça, sacrificando 20 Materiais; ou assumir a perda dos suprimentos.</color>\n\n"; break;
-            case "La Caravana encuentra un río con buen caudal y agua que parece decente. Varios civiles entusiasmados comienzan a dirigirse hacia él con la intención de recrearse y refrescarse.\n\n":
-                r = "A Caravana encontra um rio com bom fluxo e água que parece aceitável. Vários civis, animados, começam a ir até lá com a intençío de descansar e se refrescar.\n\n"; break;
+            case "La Caravana encuentra un Río con buen caudal y agua que parece decente. Varios civiles entusiasmados comienzan a dirigirse hacia él con la intención de recrearse y refrescarse.\n\n":
+                r = "A Caravana encontra um Rio com bom fluxo e água que parece aceitável. Vários civis, animados, começam a ir até lá com a intençío de descansar e se refrescar.\n\n"; break;
             case "El agua podría estar contaminada por el Aliento Negro. Puedes negarle a los Civiles el acceso al agua o dejarlos a su propia suerte.\n\n":
                 r = "A água pode estar contaminada pelo Respiro Negro. Você pode negar aos Civis o acesso á água ou deixá-los á própria sorte.\n\n"; break;
             case "<color=#ba3fef>-Si les niegas el acceso perderás 15 de Esperanza.</color>\n\n":

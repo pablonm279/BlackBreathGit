@@ -66,7 +66,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _BlendOp: 0
-    - _BumpScale: 5
+    - _BumpScale: 1.3
     - _CameraFadingEnabled: 0
     - _CameraFarFadeDistance: 2
     - _CameraNearFadeDistance: 1
@@ -81,11 +81,11 @@ Material:
     - _DstBlend: 10
     - _EmissionEnabled: 0
     - _FlipbookMode: 0
-    - _GlossMapScale: 0.295
+    - _GlossMapScale: 0.531
     - _Glossiness: 0
     - _GlossyReflections: 1
     - _LightingEnabled: 0
-    - _Metallic: 0.885
+    - _Metallic: 0.936
     - _Mode: 2
     - _OcclusionStrength: 1
     - _Parallax: 0.02

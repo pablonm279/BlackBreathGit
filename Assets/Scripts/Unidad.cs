@@ -88,6 +88,7 @@ public class Unidad : MonoBehaviour
   public float mod_maxAccionP; 
   
  [SerializeField] float AccionP_actual;
+  private int ignorarSetAPCeroPorPifiaFrame = -1;
   public float ObtenerAPActual()
   {
     return AccionP_actual;
@@ -100,9 +101,21 @@ public class Unidad : MonoBehaviour
   }
    public void EstablecerAPActualA(int n)
   {
+    if (n == 0 && ignorarSetAPCeroPorPifiaFrame == Time.frameCount)
+    {
+      ignorarSetAPCeroPorPifiaFrame = -1;
+      RefrescarUIAPSiUnidadActiva();
+      return;
+    }
+
     AccionP_actual = n;
     RefrescarUIAPSiUnidadActiva();
 
+  }
+
+  public void IgnorarProximoSetAPCeroPorPifia()
+  {
+    ignorarSetAPCeroPorPifiaFrame = Time.frameCount;
   }
   void RefrescarUIAPSiUnidadActiva()
   {
@@ -275,6 +288,12 @@ public class Unidad : MonoBehaviour
   //Animaciones
   private Animator animator;
   private UnidadPoseController poseController;
+  private static readonly int TriggerAtaqueHash = Animator.StringToHash("Trigger_Ataque");
+  private static readonly int EstadoAnimacionAtaqueHash = Animator.StringToHash("Animacion_Ataque");
+  private static readonly int EstadoAnimacionAtaqueFullPathHash = Animator.StringToHash("Base Layer.Animacion_Ataque");
+  private static readonly int TriggerMissHash = Animator.StringToHash("Trigger_Miss");
+  private static readonly int EstadoAnimacionMissHash = Animator.StringToHash("Animacion_esquivar-Miss");
+  private static readonly int EstadoAnimacionMissFullPathHash = Animator.StringToHash("Base Layer.Animacion_esquivar-Miss");
   private Coroutine retiradaPorMoralCoroutine;
   private bool suprimirAnimacionIA;
   private float ultimoAtaqueAnimTime = -999f;
@@ -512,7 +531,8 @@ public class Unidad : MonoBehaviour
     uImagePosInicializada = true;
   }
 
- bool evitarRepeticion = false;
+  private const float VentanaBloqueoAnimacionAtaqueDuplicada = 0.18f;
+  bool evitarRepeticion = false;
   public void ReproducirAnimacionAtaque(bool forzar = false)
   {
     if (suprimirAnimacionIA && !forzar)
@@ -530,13 +550,13 @@ public class Unidad : MonoBehaviour
     }
     if (animator != null)
     {
-      animator.SetTrigger("Trigger_Ataque");
+      ReproducirEstadoAtaqueAnimator();
 
     }
     
 
     evitarRepeticion = true;
-    Invoke("ResetearEvitarRepeticionAnimacion", 2.5f);
+    Invoke("ResetearEvitarRepeticionAnimacion", VentanaBloqueoAnimacionAtaqueDuplicada);
   }
 
   public void ReproducirAnimacionMiss(bool forzar = false)
@@ -552,7 +572,7 @@ public class Unidad : MonoBehaviour
 
     if (animator != null)
     {
-      animator.SetTrigger("Trigger_Miss");
+      ReproducirEstadoMissAnimator();
 
     }
   
@@ -699,11 +719,11 @@ public class Unidad : MonoBehaviour
 
     if (animator != null)
     {
-      animator.SetTrigger("Trigger_Ataque");
+      ReproducirEstadoAtaqueAnimator();
     }
 
     evitarRepeticion = true;
-    Invoke("ResetearEvitarRepeticionAnimacion", 2.5f);
+    Invoke("ResetearEvitarRepeticionAnimacion", VentanaBloqueoAnimacionAtaqueDuplicada);
   }
 
   public void FinalizarPoseAtaqueSostenida(bool restaurarIdle = true)
@@ -712,6 +732,58 @@ public class Unidad : MonoBehaviour
     {
       poseController.ExitAttackPoseHold(restaurarIdle);
     }
+  }
+
+  private void ReproducirEstadoAtaqueAnimator()
+  {
+    if (animator == null)
+    {
+      return;
+    }
+
+    animator.ResetTrigger(TriggerAtaqueHash);
+
+    if (animator.HasState(0, EstadoAnimacionAtaqueFullPathHash))
+    {
+      animator.Play(EstadoAnimacionAtaqueFullPathHash, 0, 0f);
+      animator.Update(0f);
+      return;
+    }
+
+    if (animator.HasState(0, EstadoAnimacionAtaqueHash))
+    {
+      animator.Play(EstadoAnimacionAtaqueHash, 0, 0f);
+      animator.Update(0f);
+      return;
+    }
+
+    animator.SetTrigger(TriggerAtaqueHash);
+  }
+
+  private void ReproducirEstadoMissAnimator()
+  {
+    if (animator == null)
+    {
+      return;
+    }
+
+    animator.ResetTrigger(TriggerMissHash);
+
+    if (animator.HasState(0, EstadoAnimacionMissFullPathHash))
+    {
+      animator.Play(EstadoAnimacionMissFullPathHash, 0, 0f);
+      animator.Update(0f);
+      return;
+    }
+
+    if (animator.HasState(0, EstadoAnimacionMissHash))
+    {
+      animator.Play(EstadoAnimacionMissHash, 0, 0f);
+      animator.Update(0f);
+      return;
+    }
+
+    animator.SetTrigger(TriggerMissHash);
   }
 
   public void ReproducirAnimacionHabilidadNoHostil(bool forzar = false)

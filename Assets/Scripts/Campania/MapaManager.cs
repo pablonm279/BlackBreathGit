@@ -29,6 +29,7 @@ public class MapaManager : MonoBehaviour
     bool introCampaniaEnPreparacion;
     const float OffsetNodoSobreRelieve = 0.08f;
     const float OffsetConvoySobreRelieve = 0.03f;
+    const float EscalaDestinoNoAdyacente = 0.85f;
     [SerializeField] float rangoAleatorioNodoXZ = 0.18f;
 
     public ContenedorDeNodos scContenedordeNodos;
@@ -780,6 +781,7 @@ public class MapaManager : MonoBehaviour
        }
 
        HashSet<Nodo> nodosAlcanzables = CalcularNodosAlcanzablesDesdeActual();
+       AplicarEscalaDestinosNoAdyacentes();
        foreach (Nodo nodo in nodosActivosVisibilidad)
        {
            nodo.AplicarMaterialCaminosSegunAlcance(nodosAlcanzables);
@@ -788,6 +790,14 @@ public class MapaManager : MonoBehaviour
        if (nodoActual != null)
        {
            nodoActual.RefrescarCaminosMarcadosDesdeEstadoActual();
+       }
+
+       if (CampaignManager.Instance != null && CampaignManager.Instance.DebeMostrarTodosLosCaminosMapaDebug())
+       {
+           foreach (Nodo nodo in nodosActivosVisibilidad)
+           {
+               nodo.MostrarTodosLosCaminosDebug();
+           }
        }
        }
        finally
@@ -872,6 +882,35 @@ public class MapaManager : MonoBehaviour
        return alcanzables;
   }
 
+  void AplicarEscalaDestinosNoAdyacentes()
+  {
+       float multiplicadorEscala = CampaignManager.Instance != null
+           ? Mathf.Max(0f, CampaignManager.Instance.ObtenerMultiplicadorEscalaNodos())
+           : 1f;
+
+       foreach (Nodo nodo in nodosActivosVisibilidad)
+       {
+           if (nodo == null) continue;
+           if (!escalasBaseNodos.TryGetValue(nodo, out Vector3 escalaBase))
+           {
+               escalaBase = nodo.transform.localScale;
+               escalasBaseNodos[nodo] = escalaBase;
+           }
+
+           nodo.transform.localScale = escalaBase * multiplicadorEscala;
+       }
+
+       if (nodoActual == null) return;
+
+       foreach (Nodo destino in nodoActual.DestinosPosibles)
+       {
+           if (destino == null || destino.posXNodo - nodoActual.posXNodo == 1) continue;
+           if (!escalasBaseNodos.TryGetValue(destino, out Vector3 escalaBase)) continue;
+
+           destino.transform.localScale = escalaBase * multiplicadorEscala * EscalaDestinoNoAdyacente;
+       }
+  }
+
     public void ResetearYGenerarSiguienteZona()
     {
         ReiniciarEstadoVariedadMapa();
@@ -935,7 +974,6 @@ public class MapaManager : MonoBehaviour
 
             AplicarVariacionPosicionNodo(nodo, mapDecorator);
             nodo.transform.localScale = escalaBase * multiplicadorEscala;
-            nodo.PrepararCostoMovimientoParaGeneracion();
             if (mapDecorator != null)
             {
                 mapDecorator.AlinearTransformASuelo(nodo.transform, OffsetNodoSobreRelieve);
@@ -1408,6 +1446,25 @@ public class MapaManager : MonoBehaviour
     public int ObtenerViajesDesdeUltimaEmboscadaSubterranea()
     {
         return viajesDesdeUltimaEmboscadaSubterranea;
+    }
+
+    public IReadOnlyList<Nodo> ObtenerSettlementsForzados()
+    {
+        return settlementsForzados;
+    }
+
+    public void RestaurarSettlementsForzados(IEnumerable<Nodo> settlements)
+    {
+        settlementsForzados.Clear();
+        if (settlements == null)
+        {
+            return;
+        }
+
+        foreach (Nodo settlement in settlements)
+        {
+            RegistrarSettlementForzado(settlement);
+        }
     }
 
     public void RestaurarEstadoVariedadDesdeSave(MapSaveData data)

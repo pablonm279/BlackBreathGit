@@ -311,10 +311,10 @@ public class AtributosZona : MonoBehaviour
       // Async sin congelar: replicamos las llamadas Generar pero con yield
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado1,
-         cantidad: 2850,
-         distCaminoOverride: 0.07f,
+         cantidad: 2750,
+         distCaminoOverride: 0.11f,
          distNodoOverride: 0.13f,
-         rOverride: 0.57f,
+         rOverride: 0.58f,
          kOverride: 20);
          
        yield return scMapDecorator.GenerarAsyncCR(
@@ -322,15 +322,15 @@ public class AtributosZona : MonoBehaviour
         cantidad: 550,
         distCaminoOverride: 0.16f,
         distNodoOverride: 0.14f,
-        rOverride: 1.25f,
+        rOverride: 1.20f,
         kOverride: 20);
 
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado2,
-         cantidad: 425,
+         cantidad: 305,
          distCaminoOverride: 0.14f,
          distNodoOverride: 0.145f,
-         rOverride: 3.9f,
+         rOverride: 2.7f,
          kOverride: 20);
          
        yield return scMapDecorator.GenerarAsyncCR(

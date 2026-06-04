@@ -6,6 +6,39 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+public enum TipoCaminoCampania
+{
+  Normal,
+  Dificil,
+  AtajoSubterraneo,
+  AtajoSuperficie
+}
+
+public enum EstadoVisualCamino
+{
+  Neutral,
+  Disponible,
+  Inactivo,
+  Hint
+}
+
+[System.Serializable]
+public class CaminoConexion
+{
+  [System.NonSerialized] public Nodo origen;
+  [System.NonSerialized] public Nodo destino;
+  [System.NonSerialized] public Transform linea;
+
+  public TipoCaminoCampania tipo;
+  public int costoMovimiento = 1;
+  public bool rutaHaciaAldea;
+  [System.NonSerialized] public EstadoVisualCamino estadoVisual = EstadoVisualCamino.Neutral;
+  [System.NonSerialized] public bool hoverActivo;
+
+  public bool EsAtajoSubterraneo => tipo == TipoCaminoCampania.AtajoSubterraneo;
+  public bool EsAtajoSuperficie => tipo == TipoCaminoCampania.AtajoSuperficie;
+}
+
 public class Nodo : MonoBehaviour
 {
   private ContenedorDeNodos scContenedorNodos2;
@@ -16,8 +49,7 @@ public class Nodo : MonoBehaviour
   public int posYNodo;     // 1..5 (A..E)
   public bool nodoDespejado;
   public int cantidadConexiones = 0;
-  public int costoMovimiento = 1;
-  public List<Nodo> DestinosPosibles = new List<Nodo>();
+  [System.NonSerialized] public readonly List<Nodo> DestinosPosibles = new List<Nodo>();
   public bool revelado = false;
   public List<int> ObligatorioEnZona = new List<int>();
   public List<int> ProhibidoEnZona = new List<int>();
@@ -74,7 +106,6 @@ public class Nodo : MonoBehaviour
   public Material MaterialCaminoHint;
   public Material caminoLento;
   public Material caminoAAldea;
-  private Material caminoLentoVisual;
   private Material materialAtajoSubterraneoVisual;
   private Material materialCaminoHintVisual;
   public Material materialAtajoSuperficieVisual;
@@ -104,16 +135,15 @@ public class Nodo : MonoBehaviour
   Transform visualPulsoMovimientoActual;
   Vector3 escalaBaseVisualPulsoMovimiento = Vector3.one;
   static readonly HashSet<Nodo> nodosConPulsoMovimientoActivos = new HashSet<Nodo>();
-  readonly Dictionary<Transform, Material> materialesOriginalesHoverCaminos = new Dictionary<Transform, Material>();
-  readonly HashSet<Nodo> destinosCaminoAAldea = new HashSet<Nodo>();
-  readonly HashSet<Nodo> destinosAtajoSuperficie = new HashSet<Nodo>();
-  readonly Dictionary<Nodo, Transform> lineasPorDestino = new Dictionary<Nodo, Transform>();
+  readonly List<CaminoConexion> conexionesSalientes = new List<CaminoConexion>();
+  readonly Dictionary<string, Material> variantesMaterialCamino = new Dictionary<string, Material>();
+  CaminoConexion conexionHoverActiva;
+  CaminoConexion conexionLlegada;
   readonly Dictionary<Nodo, Transform> lineasContinuacionVisionPorDestino = new Dictionary<Nodo, Transform>();
   readonly HashSet<Transform> lineasReveladas = new HashSet<Transform>();
   readonly HashSet<Transform> lineasPendientesVision = new HashSet<Transform>();
   readonly HashSet<Transform> lineasConFadeVisionAplicado = new HashSet<Transform>();
   readonly HashSet<Nodo> continuacionesVisionConfiguradas = new HashSet<Nodo>();
-  readonly HashSet<Transform> lineasConDecoracionOculta = new HashSet<Transform>();
   readonly Dictionary<Transform, Coroutine> rutinasFadeVisionLineas = new Dictionary<Transform, Coroutine>();
   readonly Dictionary<Transform, List<FadeRendererState>> estadosFadeVisionLineas = new Dictionary<Transform, List<FadeRendererState>>();
   readonly Dictionary<Transform, List<FadeCaminoMeshState>> estadosFadeVisionMeshesLineas = new Dictionary<Transform, List<FadeCaminoMeshState>>();
@@ -191,8 +221,6 @@ public class Nodo : MonoBehaviour
     reveladoPorExpedicionTutorial = false;
     atajoSubterraneoPendiente = false;
     nodoIncendiado = false;
-    destinosAtajoSuperficie.Clear();
-
     if (numVisualActual == 12 || numVisualActual == 13)
     {
       numVisualActual = tipoNodo;
@@ -232,12 +260,7 @@ public class Nodo : MonoBehaviour
   void Start()
   {
     scContenedorNodos2 = CampaignManager.Instance.scMapaManager.scContenedordeNodos;
-    PrepararMaterialCaminoLento();
     PrepararMaterialAtajoSubterraneo();
-
-    int random = UnityEngine.Random.Range(0, 100);
-    if (random < 20 && posXNodo > 1) //20% camino difícil
-    { costoMovimiento = 2; }
 
     EsconderSiNedukazal();
   }
@@ -392,6 +415,10 @@ public class Nodo : MonoBehaviour
       Nodo elegido = posiblesAtajos[UnityEngine.Random.Range(0, posiblesAtajos.Count)];
       ConectarConNodo(elegido, true);
       elegido.Revelar(true);
+      if (scMapaManager != null)
+      {
+        scMapaManager.RefrescarVisibilidadExploracion();
+      }
       TutorialTooltipManager.TryShow(TooltipAtajoSubterraneoId);
     }
   }
@@ -469,6 +496,26 @@ public class Nodo : MonoBehaviour
   }
 
   #region LOGICA CAMINOS
+  public IReadOnlyList<CaminoConexion> ConexionesSalientes => conexionesSalientes;
+
+  public CaminoConexion ObtenerConexionHacia(Nodo destino)
+  {
+    return destino == null ? null : conexionesSalientes.Find(conexion => conexion != null && conexion.destino == destino);
+  }
+
+  public bool TieneConexionHacia(Nodo destino)
+  {
+    return ObtenerConexionHacia(destino) != null;
+  }
+
+  public void LimpiarConexiones()
+  {
+    conexionHoverActiva = null;
+    conexionLlegada = null;
+    conexionesSalientes.Clear();
+    DestinosPosibles.Clear();
+  }
+
   public void DeterminarConexiones()
   {
     int xadelante = posXNodo + 1;
@@ -552,7 +599,15 @@ public class Nodo : MonoBehaviour
       ConectarFallbackSiguienteColumna(xadelante, zonaId);
   }
 
-  public void ConectarConNodo(Nodo nodoB, bool esPorAbajo = false, bool propagar = true, bool ignorarRestricciones = false, bool esAtajoSuperficie = false)
+  public void ConectarConNodo(
+    Nodo nodoB,
+    bool esPorAbajo = false,
+    bool propagar = true,
+    bool ignorarRestricciones = false,
+    bool esAtajoSuperficie = false,
+    TipoCaminoCampania? tipoForzado = null,
+    int costoMovimientoForzado = 0,
+    bool rutaHaciaAldea = false)
   {
     if (nodoB == null) return;
     if (UsaConfiguracionTutorial() && (esPorAbajo || esAtajoSuperficie))
@@ -567,18 +622,36 @@ public class Nodo : MonoBehaviour
     if (DestinosPosibles.Contains(nodoB)) return;
 
     Nodo nodoA = this;
-    bool esCaminoDificil = !esPorAbajo && !esAtajoSuperficie && nodoB.costoMovimiento > 1;
-    nodoA.DestinosPosibles.Add(nodoB);
-    if (esAtajoSuperficie)
+    TipoCaminoCampania tipoCamino = tipoForzado ?? (
+      esPorAbajo
+        ? TipoCaminoCampania.AtajoSubterraneo
+        : esAtajoSuperficie
+          ? TipoCaminoCampania.AtajoSuperficie
+          : nodoB.posXNodo > 1 && UnityEngine.Random.Range(0, 100) < 20
+            ? TipoCaminoCampania.Dificil
+            : TipoCaminoCampania.Normal);
+    int costoMovimientoCamino = costoMovimientoForzado > 0
+      ? costoMovimientoForzado
+      : tipoCamino == TipoCaminoCampania.Normal || tipoCamino == TipoCaminoCampania.AtajoSuperficie ? 1 : 2;
+    bool esCaminoDificil = tipoCamino == TipoCaminoCampania.Dificil;
+    esPorAbajo = tipoCamino == TipoCaminoCampania.AtajoSubterraneo;
+    esAtajoSuperficie = tipoCamino == TipoCaminoCampania.AtajoSuperficie;
+    CaminoConexion conexion = new CaminoConexion
     {
-      destinosAtajoSuperficie.Add(nodoB);
-    }
+      origen = nodoA,
+      destino = nodoB,
+      tipo = tipoCamino,
+      costoMovimiento = costoMovimientoCamino,
+      rutaHaciaAldea = rutaHaciaAldea
+    };
+    conexionesSalientes.Add(conexion);
+    nodoA.DestinosPosibles.Add(nodoB);
     cantidadConexiones++;
 
     // Crear línea
     GameObject lineObject = Instantiate(linePrefab, this.transform);
     lineObject.name = esPorAbajo ? "LineaCaminosSubterraneo" : esAtajoSuperficie ? "LineaCaminosAtajoSuperficie" : "LineaCaminos";
-    lineasPorDestino[nodoB] = lineObject.transform;
+    conexion.linea = lineObject.transform;
 
     LineRenderer lineRenderer = lineObject.GetComponent<LineRenderer>();
     if (lineRenderer == null)
@@ -622,7 +695,7 @@ public class Nodo : MonoBehaviour
       if (UnityEngine.Random.value < 0.24f && cantidadConexiones < 2 && dist > 7.5f)
         outward = UnityEngine.Random.Range(0.9f, 1.35f); // curva visible pero controlada
       else
-        outward = UnityEngine.Random.Range(0.16f, 0.46f); // normal: leve
+        outward = UnityEngine.Random.Range(0.19f, 0.52f); // normal: leve
     }
 
     // Evitar que los primeros 2 ramos salgan muy curvos
@@ -633,7 +706,7 @@ public class Nodo : MonoBehaviour
       ? Mathf.Max(3f, dist * 0.3f)
       : esCaminoDificil
         ? Mathf.Clamp(dist * 0.125f, 0.3f, 0.67f)
-        : Mathf.Clamp(dist * 0.075f, 0.18f, 0.62f);
+        : Mathf.Clamp(dist * 0.085f, 0.2f, 0.7f);
     outward = Mathf.Min(outward, outwardMaximo);
 
     float sideSign = UnityEngine.Random.value < 0.5f ? -1f : 1f;
@@ -703,7 +776,8 @@ public class Nodo : MonoBehaviour
     caminoMesh.RebuildFromLine();
 
     // Material según tipo (normal vs atajo)
-    SetMaterialCamino(lineObject.transform, esPorAbajo ? ObtenerMaterialAtajoSubterraneoVisual() : esAtajoSuperficie ? ObtenerMaterialAtajoSuperficie() : MaterialCaminoOriginal);
+    AplicarEstadoVisualCamino(conexion, EstadoVisualCamino.Neutral);
+    caminoMesh.SetVisible(!esPorAbajo);
 
     // Continuar tirando conexiones
     if (propagar)
@@ -966,10 +1040,9 @@ public class Nodo : MonoBehaviour
     tipoNodoOriginalRitual = 0;
     nodoDespejado = false;
     cantidadConexiones = 0;
-    costoMovimiento = 1;
     revelado = false;
     yatiroConexiones = false;
-    DestinosPosibles.Clear();
+    LimpiarConexiones();
     nodoIncendiado = false;
     nodoRitual = false;
     esMisterioso = false;
@@ -980,15 +1053,11 @@ public class Nodo : MonoBehaviour
     faccionScoutReveladaId = "";
     faccionScoutReveladaNombre = "";
     vieneDeNodo = null;
-    destinosCaminoAAldea.Clear();
-    destinosAtajoSuperficie.Clear();
-    lineasPorDestino.Clear();
     lineasContinuacionVisionPorDestino.Clear();
     lineasReveladas.Clear();
     lineasPendientesVision.Clear();
     lineasConFadeVisionAplicado.Clear();
     continuacionesVisionConfiguradas.Clear();
-    lineasConDecoracionOculta.Clear();
     CancelarTodosLosFadesVision();
     nodoConFadeVisionAplicado = false;
 
@@ -1021,27 +1090,22 @@ public class Nodo : MonoBehaviour
     tipoNodoOriginalRitual = data.tipoNodoOriginalRitual;
     nodoDespejado = data.nodoDespejado;
     cantidadConexiones = 0;
-    costoMovimiento = data.costoMovimiento;
     revelado = data.revelado;
     yatiroConexiones = data.yatiroConexiones;
     nodoIncendiado = data.nodoIncendiado;
     nodoRitual = data.nodoRitual;
     atajoSubterraneoPendiente = data.atajoSubterraneoPendiente;
     visiblePorVision = true;
-    visibleForzadaPorReveladoEspecial = false;
+    visibleForzadaPorReveladoEspecial = data.visibilidadForzadaEspecial;
     faccionScoutReveladaId = data.faccionScoutReveladaId ?? "";
     faccionScoutReveladaNombre = data.faccionScoutReveladaNombre ?? "";
-    DestinosPosibles.Clear();
+    LimpiarConexiones();
     vieneDeNodo = null;
-    destinosCaminoAAldea.Clear();
-    destinosAtajoSuperficie.Clear();
-    lineasPorDestino.Clear();
     lineasContinuacionVisionPorDestino.Clear();
     lineasReveladas.Clear();
     lineasPendientesVision.Clear();
     lineasConFadeVisionAplicado.Clear();
     continuacionesVisionConfiguradas.Clear();
-    lineasConDecoracionOculta.Clear();
     CancelarTodosLosFadesVision();
     nodoConFadeVisionAplicado = false;
     DestruirContinuacionesCortasPorVision();
@@ -1118,7 +1182,7 @@ public class Nodo : MonoBehaviour
       Revelar(false);
     }
 
-    bool llegoPorAtajo = vieneDeNodo != null && (posXNodo - vieneDeNodo.posXNodo > 1);
+    bool llegoPorAtajo = conexionLlegada != null && conexionLlegada.EsAtajoSubterraneo;
     int tipoNodoLlegada = tipoNodo;
 
     if (llegoPorAtajo && atajoSubterraneoPendiente)
@@ -1158,21 +1222,21 @@ public class Nodo : MonoBehaviour
     }
 
     bool origenAlcanzable = nodosAlcanzables.Contains(this);
-    foreach (Transform child in transform)
+    Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
+    foreach (CaminoConexion conexion in conexionesSalientes)
     {
-      if (!child.name.Contains("LineaCaminos"))
+      if (conexion == null || conexion.destino == null)
       {
         continue;
       }
 
-      Nodo destino = ObtenerDestinoSegunTransformLinea(child);
-      if (destino == null)
-      {
-        continue;
-      }
-
-      bool caminoAlcanzable = origenAlcanzable && nodosAlcanzables.Contains(destino);
-      SetMaterialCamino(child, caminoAlcanzable ? ObtenerMaterialCaminoSegunDestino(destino) : MaterialCaminoUsado);
+      bool caminoAlcanzable = origenAlcanzable && nodosAlcanzables.Contains(conexion.destino);
+      EstadoVisualCamino estado = this == nodoActual
+        ? EstadoVisualCamino.Disponible
+        : caminoAlcanzable
+          ? EstadoVisualCamino.Neutral
+          : EstadoVisualCamino.Inactivo;
+      AplicarEstadoVisualCamino(conexion, estado);
     }
   }
 
@@ -1241,11 +1305,29 @@ public class Nodo : MonoBehaviour
       {
         child.gameObject.SetActive(true);
         RestaurarAlphaTransform(child);
+        OcultarDecoracionSobreCamino(child);
       }
       else
       {
         child.gameObject.SetActive(false);
       }
+    }
+  }
+
+  public void MostrarTodosLosCaminosDebug()
+  {
+    foreach (CaminoConexion conexion in conexionesSalientes)
+    {
+      Transform linea = conexion?.linea;
+      if (linea == null)
+      {
+        continue;
+      }
+
+      CancelarFadeVisionLinea(linea);
+      linea.gameObject.SetActive(true);
+      RestaurarAlphaTransform(linea);
+      OcultarDecoracionSobreCamino(linea);
     }
   }
 
@@ -1323,7 +1405,8 @@ public class Nodo : MonoBehaviour
       return;
     }
 
-    if (lineasPorDestino.TryGetValue(destino, out Transform linea) && linea != null)
+    Transform linea = ObtenerConexionHacia(destino)?.linea;
+    if (linea != null)
     {
       MostrarLineaPorVision(linea, destino);
       return;
@@ -1349,7 +1432,8 @@ public class Nodo : MonoBehaviour
       return false;
     }
 
-    if (lineasPorDestino.TryGetValue(destino, out Transform linea) && linea != null)
+    Transform linea = ObtenerConexionHacia(destino)?.linea;
+    if (linea != null)
     {
       return linea.gameObject.activeSelf || lineasPendientesVision.Contains(linea);
     }
@@ -1377,8 +1461,14 @@ public class Nodo : MonoBehaviour
       return;
     }
 
-    Transform lineaOriginal = null;
-    if (!lineasPorDestino.TryGetValue(destino, out lineaOriginal) || lineaOriginal == null)
+    CaminoConexion conexion = ObtenerConexionHacia(destino);
+    if (conexion != null && conexion.EsAtajoSubterraneo)
+    {
+      return;
+    }
+
+    Transform lineaOriginal = conexion?.linea;
+    if (lineaOriginal == null)
     {
       foreach (Transform child in transform)
       {
@@ -1476,7 +1566,7 @@ public class Nodo : MonoBehaviour
     SetMaterialCamino(lineaContinuacion, ObtenerMaterialCaminoHintVisual());
     AplicarAnchoContinuacionVision(lineaContinuacion, lineaOriginal.transform);
 
-    OcultarDecoracionSobreCaminoUnaVez(lineaContinuacion);
+    OcultarDecoracionSobreCamino(lineaContinuacion);
   }
 
   void AplicarAnchoContinuacionVision(Transform lineaContinuacion, Transform lineaOriginal = null)
@@ -1540,12 +1630,12 @@ public class Nodo : MonoBehaviour
       rutinasFadeVisionLineas[linea] = StartCoroutine(FadeInLineaVision(linea, CalcularRetrasoFadeVision(destino), DuracionFadeVisionCamino));
     }
 
-    OcultarDecoracionSobreCaminoUnaVez(linea);
+    OcultarDecoracionSobreCamino(linea);
   }
 
-  void OcultarDecoracionSobreCaminoUnaVez(Transform linea)
+  void OcultarDecoracionSobreCamino(Transform linea)
   {
-    if (linea == null || lineasConDecoracionOculta.Contains(linea))
+    if (linea == null)
     {
       return;
     }
@@ -1563,7 +1653,6 @@ public class Nodo : MonoBehaviour
     }
 
     mapDecorator.OcultarDecoracionRemovibleSobreCamino(lr);
-    lineasConDecoracionOculta.Add(linea);
   }
 
   public void RegistrarFaccionScoutRevelada(string factionId, string factionName)
@@ -1617,7 +1706,8 @@ public class Nodo : MonoBehaviour
       return;
     }
 
-    if (scMapaManager.nodoActual.DestinosPosibles.Contains(this))
+    CaminoConexion conexionSeleccionada = scMapaManager.nodoActual.ObtenerConexionHacia(this);
+    if (conexionSeleccionada != null)
     {
       if (CampaignManager.Instance != null && !CampaignManager.Instance.IntentarIniciarViajeDesdeNodoActual())
       {
@@ -1648,7 +1738,7 @@ public class Nodo : MonoBehaviour
       if (!tutorialNuevoActivo && CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 7)
         CampaignManager.Instance.scTutorialManager.SiguientePaso();
 
-      if (posXNodo - scMapaManager.nodoActual.posXNodo > 1)
+      if (conexionSeleccionada.EsAtajoSubterraneo)
       {
         CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Al viajar por el atajo subterráneo, la moral de la caravana disminuye. -5 Esperanza"));
         CampaignManager.Instance.CambiarEsperanzaActual(-5);
@@ -1785,7 +1875,8 @@ public class Nodo : MonoBehaviour
 
   public void MoverJugadorANodo(Nodo nodoOrigen, Nodo nodoDestino)
   {
-    if (nodoDestino == null || !nodoOrigen.DestinosPosibles.Contains(nodoDestino))
+    CaminoConexion conexion = nodoOrigen != null ? nodoOrigen.ObtenerConexionHacia(nodoDestino) : null;
+    if (nodoDestino == null || conexion == null)
     {
       Debug.LogWarning("Nodo destino no vélido o no está en la lista de destinos posibles.");
       return;
@@ -1793,22 +1884,12 @@ public class Nodo : MonoBehaviour
 
     // Buscar línea
     const float multiplicadorVelocidadMinimaFatiga = 0.6f;
-    float velocidadBase = 0.75f + 0.6f / nodoDestino.costoMovimiento;
+    float velocidadBase = 0.75f + 0.6f / conexion.costoMovimiento;
     int cansancio = CampaignManager.Instance.GetFatigaActual();
     float velocidadReducidaPorFatiga = velocidadBase - cansancio * 0.07f;
     velocidadMovimiento = Mathf.Max(velocidadBase * multiplicadorVelocidadMinimaFatiga, velocidadReducidaPorFatiga);
 
-    Transform lineaTransform = null;
-    foreach (Transform child in nodoOrigen.transform)
-    {
-      if (!child.name.Contains("LineaCaminos")) continue;
-      LineRenderer lr = child.GetComponent<LineRenderer>();
-      if (CoincideExtremoLineaConPosicion(lr, nodoDestino.transform.position))
-      {
-        lineaTransform = child;
-        break;
-      }
-    }
+    Transform lineaTransform = conexion.linea;
 
     if (lineaTransform == null)
     {
@@ -1816,12 +1897,11 @@ public class Nodo : MonoBehaviour
       return;
     }
 
-    bool viajeSubterraneo = lineaTransform.name.Contains("Subterraneo")
-      || (nodoDestino.posXNodo - nodoOrigen.posXNodo > 1);
-    bool viajeAtajoSuperficie = nodoOrigen.EsAtajoSuperficieHacia(nodoDestino);
+    bool viajeSubterraneo = conexion.EsAtajoSubterraneo;
 
     vieneDeNodo = nodoOrigen;
-    CampaignManager.Instance.ViajeIniciado(nodoDestino, viajeSubterraneo, viajeAtajoSuperficie);
+    conexionLlegada = conexion;
+    CampaignManager.Instance.ViajeIniciado(conexion);
 
     if (scMapaManager != null && scMapaManager.goCaravana != null)
     {
@@ -1958,21 +2038,6 @@ if (esLaLider)
     return Vector3.Lerp(posicionA, posicionB, tLocal);
   }
 
-  public void PrepararCostoMovimientoParaGeneracion()
-  {
-    costoMovimiento = 1;
-
-    if (posXNodo <= 1)
-    {
-      return;
-    }
-
-    if (UnityEngine.Random.Range(0, 100) < 20)
-    {
-      costoMovimiento = 2;
-    }
-  }
-
   private MapDecorator ObtenerDecoradorMapa()
   {
     if (CampaignManager.Instance == null || CampaignManager.Instance.scAtributosZona == null)
@@ -2051,11 +2116,6 @@ if (esLaLider)
       return;
     }
 
-    if (mat == caminoLento)
-    {
-      mat = ObtenerMaterialCaminoLentoVisual();
-    }
-
     var lr = linea.GetComponent<LineRenderer>();
     if (lr != null) lr.sharedMaterial = mat;
 
@@ -2078,12 +2138,11 @@ if (esLaLider)
       return;
     }
 
-    Nodo nodoDestino = nodoOrigen.ObtenerDestinoSegunTransformLinea(linea);
-    bool esAtajo = nodoDestino != null && (nodoDestino.posXNodo - nodoOrigen.posXNodo > 1);
-    bool esAtajoSuperficie = nodoDestino != null && nodoOrigen.EsAtajoSuperficieHacia(nodoDestino);
-    bool esCaminoSubterraneo = nodoDestino != null && nodoOrigen.EsCaminoSubterraneoHacia(nodoDestino);
-    bool esCaminoDificil = nodoDestino != null && !esAtajo && !esAtajoSuperficie && nodoDestino.costoMovimiento > 1;
-    bool esCaminoAAldea = nodoDestino != null && !esAtajo && nodoOrigen.destinosCaminoAAldea.Contains(nodoDestino);
+    CaminoConexion conexion = nodoOrigen.ObtenerConexionSegunTransformLinea(linea);
+    bool esAtajoSuperficie = conexion != null && conexion.EsAtajoSuperficie;
+    bool esCaminoSubterraneo = conexion != null && conexion.EsAtajoSubterraneo;
+    bool esCaminoDificil = conexion != null && conexion.tipo == TipoCaminoCampania.Dificil;
+    bool esCaminoAAldea = conexion != null && conexion.rutaHaciaAldea && !esAtajoSuperficie && !esCaminoSubterraneo;
 
     float ancho = nodoOrigen.ObtenerAnchoVisualCamino(esCaminoDificil);
     if (esCaminoAAldea)
@@ -2116,31 +2175,6 @@ if (esLaLider)
     }
   }
 
-  private void PrepararMaterialCaminoLento()
-  {
-    if (caminoLento == null || caminoLentoVisual != null)
-    {
-      return;
-    }
-
-    caminoLentoVisual = new Material(caminoLento);
-
-    if (caminoLentoVisual.HasProperty("_Color"))
-    {
-      Color colorBase = caminoLento.color;
-      float brilloObjetivo = Mathf.Max(Mathf.Max(colorBase.r, colorBase.g), colorBase.b);
-      brilloObjetivo = Mathf.Max(brilloObjetivo, 0.66f);
-      Color colorGris = new Color(brilloObjetivo, brilloObjetivo, brilloObjetivo, colorBase.a);
-      caminoLentoVisual.color = Color.Lerp(colorBase, colorGris, 0.5f);
-    }
-  }
-
-  private Material ObtenerMaterialCaminoLentoVisual()
-  {
-    PrepararMaterialCaminoLento();
-    return caminoLentoVisual != null ? caminoLentoVisual : caminoLento;
-  }
-
   private void PrepararMaterialAtajoSubterraneo()
   {
     if (MaterialAtajo == null || materialAtajoSubterraneoVisual != null)
@@ -2170,7 +2204,7 @@ if (esLaLider)
       return materialAtajoSuperficieVisual;
     }
 
-    materialAtajoSuperficieVisual = Resources.Load<Material>("MaterialAtajoSuperficie");
+    materialAtajoSuperficieVisual = Resources.Load<Material>("Imagenes/Materials/CaminoAtajoSup");
     return materialAtajoSuperficieVisual != null ? materialAtajoSuperficieVisual : MaterialAtajo != null ? MaterialAtajo : MaterialCaminoMarcado;
   }
 
@@ -2275,21 +2309,27 @@ if (esLaLider)
 
   Nodo ObtenerDestinoSegunTransformLinea(Transform linea)
   {
+    return ObtenerConexionSegunTransformLinea(linea)?.destino;
+  }
+
+  CaminoConexion ObtenerConexionSegunTransformLinea(Transform linea)
+  {
     if (linea == null)
     {
       return null;
     }
 
-    foreach (KeyValuePair<Nodo, Transform> kvp in lineasPorDestino)
+    foreach (CaminoConexion conexion in conexionesSalientes)
     {
-      if (kvp.Value == linea)
+      if (conexion != null && conexion.linea == linea)
       {
-        return kvp.Key;
+        return conexion;
       }
     }
 
     LineRenderer lr = linea.GetComponent<LineRenderer>();
-    return ObtenerDestinoSegunLinea(lr);
+    Nodo destino = ObtenerDestinoSegunLinea(lr);
+    return ObtenerConexionHacia(destino);
   }
 
   private void ActivarPulsoMovimientoNodo()
@@ -2305,49 +2345,145 @@ if (esLaLider)
     RestablecerPulsoMovimientoNodo();
   }
 
-  private Material ObtenerMaterialCaminoSegunDestino(Nodo nodoDestino)
+  void AplicarEstadoVisualCamino(CaminoConexion conexion, EstadoVisualCamino estado)
   {
-    if (nodoDestino == null)
+    if (conexion == null)
+    {
+      return;
+    }
+
+    conexion.estadoVisual = estado;
+    SetMaterialCamino(conexion.linea, ResolverMaterialCamino(conexion, estado, conexion.hoverActivo));
+  }
+
+  Material ResolverMaterialCamino(CaminoConexion conexion, EstadoVisualCamino estado, bool hover)
+  {
+    if (estado == EstadoVisualCamino.Hint)
+    {
+      return ObtenerMaterialCaminoHintVisual();
+    }
+
+    Material materialBase = ObtenerMaterialFisicoCamino(conexion);
+    if (materialBase == null)
     {
       return MaterialCaminoOriginal;
     }
 
-    if (EsCaminoSubterraneoHacia(nodoDestino) || nodoDestino.posXNodo - posXNodo > 1)
+    bool esNormalSinRuta = conexion != null
+      && conexion.tipo == TipoCaminoCampania.Normal
+      && !conexion.rutaHaciaAldea;
+    if (esNormalSinRuta)
     {
-      return MaterialAtajo;
+      materialBase = estado switch
+      {
+        EstadoVisualCamino.Disponible => MaterialCaminoMarcado != null ? MaterialCaminoMarcado : materialBase,
+        EstadoVisualCamino.Inactivo => MaterialCaminoUsado != null ? MaterialCaminoUsado : materialBase,
+        _ => materialBase
+      };
+      if (!hover)
+      {
+        return materialBase;
+      }
     }
 
-    if (EsAtajoSuperficieHacia(nodoDestino))
+    if (estado == EstadoVisualCamino.Neutral && !hover)
+    {
+      return materialBase;
+    }
+
+    string clave = materialBase.GetInstanceID() + "_" + estado + "_" + hover;
+    if (variantesMaterialCamino.TryGetValue(clave, out Material variante) && variante != null)
+    {
+      return variante;
+    }
+
+    variante = new Material(materialBase)
+    {
+      name = materialBase.name + " " + estado + (hover ? " Hover" : "") + " (Runtime)"
+    };
+    AplicarTinteEstadoCamino(variante, materialBase, estado, hover);
+    variantesMaterialCamino[clave] = variante;
+    return variante;
+  }
+
+  Material ObtenerMaterialFisicoCamino(CaminoConexion conexion)
+  {
+    if (conexion == null)
+    {
+      return MaterialCaminoOriginal;
+    }
+
+    if (conexion.EsAtajoSubterraneo)
+    {
+      return ObtenerMaterialAtajoSubterraneoVisual();
+    }
+
+    if (conexion.EsAtajoSuperficie)
     {
       return ObtenerMaterialAtajoSuperficie();
     }
 
-    if (caminoAAldea != null && destinosCaminoAAldea.Contains(nodoDestino))
+    if (conexion.rutaHaciaAldea && caminoAAldea != null)
     {
       return caminoAAldea;
     }
 
-    return nodoDestino.costoMovimiento > 1 ? caminoLento : MaterialCaminoMarcado;
+    return MaterialCaminoOriginal;
   }
 
-  bool EsCaminoSubterraneoHacia(Nodo nodoDestino)
+  static void AplicarTinteEstadoCamino(Material variante, Material materialBase, EstadoVisualCamino estado, bool hover)
   {
-    if (nodoDestino == null)
+    if (variante == null || materialBase == null)
     {
-      return false;
+      return;
     }
 
-    if (lineasPorDestino.TryGetValue(nodoDestino, out Transform linea) && linea != null)
+    if (variante.HasProperty("_Color") && materialBase.HasProperty("_Color"))
     {
-      return linea.name.Contains("Subterraneo");
+      Color color = materialBase.GetColor("_Color");
+      if (estado == EstadoVisualCamino.Disponible)
+      {
+        color = Color.Lerp(color, new Color(1f, 1f, 1f, color.a), 0.12f);
+      }
+      else if (estado == EstadoVisualCamino.Inactivo)
+      {
+        float gris = color.grayscale;
+        color = Color.Lerp(color, new Color(gris, gris, gris, color.a), 0.45f) * 0.68f;
+        color.a = materialBase.GetColor("_Color").a;
+      }
+
+      if (hover)
+      {
+        color = Color.Lerp(color, new Color(1f, 1f, 1f, color.a), 0.10f);
+      }
+
+      variante.SetColor("_Color", color);
     }
 
-    return false;
+    if (variante.HasProperty("_EmissionColor"))
+    {
+      Color emisionBase = materialBase.HasProperty("_EmissionColor")
+        ? materialBase.GetColor("_EmissionColor")
+        : Color.black;
+      Color colorBase = materialBase.HasProperty("_Color") ? materialBase.GetColor("_Color") : Color.white;
+      Color emision = estado == EstadoVisualCamino.Inactivo
+        ? emisionBase * 0.25f
+        : estado == EstadoVisualCamino.Disponible
+          ? emisionBase + colorBase * 0.12f
+          : emisionBase;
+      if (hover)
+      {
+        emision += colorBase * 0.08f;
+      }
+
+      variante.SetColor("_EmissionColor", emision);
+      variante.EnableKeyword("_EMISSION");
+    }
   }
 
   public bool EsAtajoSuperficieHacia(Nodo nodoDestino)
   {
-    return nodoDestino != null && destinosAtajoSuperficie.Contains(nodoDestino);
+    return ObtenerConexionHacia(nodoDestino)?.EsAtajoSuperficie ?? false;
   }
 
   public void MarcarCaminoAAldeaHacia(Nodo nodoDestino)
@@ -2357,18 +2493,25 @@ if (esLaLider)
       return;
     }
 
-    if (nodoDestino.posXNodo - posXNodo > 1)
+    CaminoConexion conexion = ObtenerConexionHacia(nodoDestino);
+    if (conexion == null || conexion.EsAtajoSubterraneo || conexion.EsAtajoSuperficie)
     {
       return;
     }
 
-    destinosCaminoAAldea.Add(nodoDestino);
+    conexion.rutaHaciaAldea = true;
     ActualizarMaterialCaminoHaciaDestino(nodoDestino);
   }
 
   public void LimpiarCaminosAAldea()
   {
-    destinosCaminoAAldea.Clear();
+    foreach (CaminoConexion conexion in conexionesSalientes)
+    {
+      if (conexion != null)
+      {
+        conexion.rutaHaciaAldea = false;
+      }
+    }
   }
 
   void ActualizarMaterialCaminoHaciaDestino(Nodo nodoDestino)
@@ -2378,9 +2521,11 @@ if (esLaLider)
       return;
     }
 
-    if (lineasPorDestino.TryGetValue(nodoDestino, out Transform linea) && linea != null)
+    CaminoConexion conexion = ObtenerConexionHacia(nodoDestino);
+    Transform linea = conexion?.linea;
+    if (linea != null)
     {
-      SetMaterialCamino(linea, ObtenerMaterialCaminoSegunDestino(nodoDestino));
+      AplicarEstadoVisualCamino(conexion, conexion.estadoVisual);
       return;
     }
 
@@ -2394,7 +2539,10 @@ if (esLaLider)
         continue;
       }
 
-      SetMaterialCamino(child, ObtenerMaterialCaminoSegunDestino(nodoDestino));
+      if (conexion != null)
+      {
+        AplicarEstadoVisualCamino(conexion, conexion.estadoVisual);
+      }
       return;
     }
   }
@@ -2486,27 +2634,6 @@ if (esLaLider)
   {
     LimpiarPulsosMovimientoNodos();
 
-    // Desde donde venís
-    if (vieneDeNodo != null)
-    {
-      foreach (Transform child in vieneDeNodo.transform)
-      {
-        if (!child.name.Contains("LineaCaminos")) continue;
-        var lr = child.GetComponent<LineRenderer>();
-        if (lr == null) continue;
-
-        if (CoincideExtremoLineaConPosicion(lr, transform.position))
-        {
-          child.gameObject.SetActive(true);
-          SetMaterialCamino(child, MaterialCaminoUsado);
-        }
-        else
-        {
-          SetMaterialCamino(child, MaterialCaminoOriginal);
-        }
-      }
-    }
-
     // Salientes del nodo actual
     foreach (Transform child in transform)
     {
@@ -2521,13 +2648,8 @@ if (esLaLider)
         continue;
       }
 
-      if (nodoDestino.posXNodo - posXNodo > 1)
-      {
-        nodoDestino.costoMovimiento = 2;
-      }
-
       // Camino normal, lento o atajo
-      SetMaterialCamino(child, ObtenerMaterialCaminoSegunDestino(nodoDestino));
+      AplicarEstadoVisualCamino(ObtenerConexionHacia(nodoDestino), EstadoVisualCamino.Disponible);
       nodoDestino.ActivarPulsoMovimientoNodo();
     }
   }
@@ -3053,6 +3175,7 @@ if (esLaLider)
     }
 
     linea.gameObject.SetActive(true);
+    OcultarDecoracionSobreCamino(linea);
     List<FadeRendererState> renderers = CapturarRenderersActivos(linea);
     List<FadeCaminoMeshState> caminoMeshes = CapturarCaminoMeshesActivos(linea);
     estadosFadeVisionLineas[linea] = renderers;
@@ -3674,51 +3797,36 @@ if (esLaLider)
 
   void AplicarPreviewHoverCaminosPosibles()
   {
-    if (!gameObject.activeInHierarchy)
+    if (!gameObject.activeInHierarchy ||
+        CampaignManager.Instance == null ||
+        CampaignManager.Instance.scMapaManager == null ||
+        CampaignManager.Instance.scMapaManager.nodoActual == null)
     {
       return;
     }
 
-    foreach (Transform child in transform)
+    CaminoConexion conexion = CampaignManager.Instance.scMapaManager.nodoActual.ObtenerConexionHacia(this);
+    if (conexion == null || conexion.estadoVisual != EstadoVisualCamino.Disponible)
     {
-      if (!child.name.Contains("LineaCaminos")) continue;
-      var lr = child.GetComponent<LineRenderer>();
-      if (lr == null) continue;
-
-      var mr = child.GetComponent<MeshRenderer>();
-      if (!materialesOriginalesHoverCaminos.ContainsKey(child))
-      {
-        Material materialActual = lr.sharedMaterial;
-        if (materialActual == null && mr != null)
-        {
-          materialActual = mr.sharedMaterial;
-        }
-        materialesOriginalesHoverCaminos.Add(child, materialActual);
-      }
-
-      Nodo nodoDestino = ObtenerDestinoSegunLinea(lr);
-      SetMaterialCamino(child, ObtenerMaterialCaminoSegunDestino(nodoDestino));
+      return;
     }
+
+    RestaurarPreviewHoverCaminosPosibles();
+    conexionHoverActiva = conexion;
+    conexion.hoverActivo = true;
+    AplicarEstadoVisualCamino(conexion, conexion.estadoVisual);
   }
 
   void RestaurarPreviewHoverCaminosPosibles()
   {
-    if (materialesOriginalesHoverCaminos.Count == 0)
+    if (conexionHoverActiva == null)
     {
       return;
     }
 
-    foreach (KeyValuePair<Transform, Material> kvp in materialesOriginalesHoverCaminos)
-    {
-      if (kvp.Key == null)
-      {
-        continue;
-      }
-
-      SetMaterialCamino(kvp.Key, kvp.Value != null ? kvp.Value : MaterialCaminoOriginal);
-    }
-
-    materialesOriginalesHoverCaminos.Clear();
+    conexionHoverActiva.hoverActivo = false;
+    AplicarEstadoVisualCamino(conexionHoverActiva, conexionHoverActiva.estadoVisual);
+    conexionHoverActiva = null;
   }
 
 
@@ -3878,8 +3986,31 @@ if (esLaLider)
   {
     Nodo destino = ObtenerNodoPermitido(x, y, zonaId);
     if (destino == null) return false;
+    if (!esPorAbajo && CruzariaConexionExistente(destino)) return false;
     ConectarConNodo(destino, esPorAbajo);
     return true;
+  }
+
+  bool CruzariaConexionExistente(Nodo destino)
+  {
+    if (destino == null || scContenedorNodos2 == null || destino.posXNodo != posXNodo + 1)
+      return false;
+
+    foreach (Nodo otroOrigen in scContenedorNodos2.listTodosNodos)
+    {
+      if (otroOrigen == null || otroOrigen == this || otroOrigen.posXNodo != posXNodo)
+        continue;
+
+      foreach (Nodo otroDestino in otroOrigen.DestinosPosibles)
+      {
+        if (otroDestino != null &&
+            otroDestino.posXNodo == destino.posXNodo &&
+            (posYNodo - otroOrigen.posYNodo) * (destino.posYNodo - otroDestino.posYNodo) < 0)
+          return true;
+      }
+    }
+
+    return false;
   }
 
   void ConectarFallbackSiguienteColumna(int nextX, int zonaId)
@@ -3894,6 +4025,7 @@ if (esLaLider)
       if (candidato == null) continue;
       if (candidato.posXNodo != nextX) continue;
       if (!EstaPermitidoEnZona(candidato, zonaId)) continue;
+      if (CruzariaConexionExistente(candidato)) continue;
 
       int distY = Mathf.Abs(candidato.posYNodo - posYNodo);
       if (distY < mejorDistY)

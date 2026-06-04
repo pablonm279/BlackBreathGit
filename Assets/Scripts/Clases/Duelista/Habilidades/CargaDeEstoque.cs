@@ -300,7 +300,8 @@ public class CargaDeEstoque : Habilidad
 
     protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
     {
-        int ms = MeleeTimingUtility.CalcularPostImpactoMs();
+        var pose = scEstaUnidad != null ? scEstaUnidad.GetComponent<UnidadPoseController>() : null;
+        int ms = MeleeTimingUtility.CalcularPostImpactoMs(pose);
         return ms > 0 ? BattleManager.DelayCombateAsync(ms) : Task.CompletedTask;
     }
 

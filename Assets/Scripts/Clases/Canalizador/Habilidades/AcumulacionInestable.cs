@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Threading.Tasks;
 using System;
 
@@ -262,6 +263,7 @@ public class AcumulacionInestable : Habilidad
    //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
    Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
    RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
+   AcumularEnergiaCanalizadorFx.CrearInestable(objetivo.GetComponent<Unidad>());
 
     }
 

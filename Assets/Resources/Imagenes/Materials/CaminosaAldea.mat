@@ -15,7 +15,6 @@ Material:
   - _ALPHABLEND_ON
   - _NORMALMAP
   - _PARALLAXMAP
-  - _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -84,14 +83,14 @@ Material:
     - _EmissionEnabled: 1
     - _FlipbookMode: 0
     - _GlossMapScale: 0.692
-    - _Glossiness: 0
+    - _Glossiness: 0.139
     - _GlossyReflections: 1
     - _LightingEnabled: 0
     - _Metallic: 0
     - _Mode: 2
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _SmoothnessTextureChannel: 1
+    - _SmoothnessTextureChannel: 0
     - _SoftParticlesEnabled: 0
     - _SoftParticlesFarFadeDistance: 1
     - _SoftParticlesNearFadeDistance: 0
@@ -101,7 +100,7 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 0.3207547, g: 0.2980598, b: 0.2980598, a: 0.9372549}
+    - _Color: {r: 0.5943396, g: 0.5943396, b: 0.5943396, a: 0.9372549}
     - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0.254717, g: 0.16321342, b: 0, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}

@@ -57,12 +57,13 @@ public class IAMordiscoArdiente : IAHabilidad
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
       hActualCooldown = hCooldownMax;
       
-      scEstaUnidad.ReproducirAnimacionAtaque();
       object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
-                PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
-                
-      await BattleManager.DelayCombateAsync(1500);
-      AplicarEfectosHabilidad(Objetivo);
+      PrepararInicioAnimacion(null, Objetivo, () =>
+      {
+        AplicarEfectosHabilidad(Objetivo);
+        return Task.CompletedTask;
+      });//Despues de establecer objetivo
+      await EsperarSecuenciaVisualAsync();
      
    }
 

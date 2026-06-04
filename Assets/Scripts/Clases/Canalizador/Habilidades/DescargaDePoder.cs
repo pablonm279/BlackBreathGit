@@ -295,6 +295,7 @@ public class DescargaDePoder : Habilidad
 
          danio -= danio/2; //Reduce 50% por roce
 
+         DescargaArcanaImpactoFx.Crear(objetivo);
          objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
     
         
@@ -308,6 +309,7 @@ public class DescargaDePoder : Habilidad
          danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
          if(NIVEL > 1){danio += 2;}
 
+         DescargaArcanaImpactoFx.Crear(objetivo);
          objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
         
@@ -321,6 +323,7 @@ public class DescargaDePoder : Habilidad
          danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje+danioExtra);
          if(NIVEL > 1){danio += 2;}
       
+         DescargaArcanaImpactoFx.Crear(objetivo);
          objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 
        

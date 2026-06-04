@@ -111,6 +111,12 @@ public static class SaveGameService
         error = "No se pudo deserializar el archivo de guardado.";
         return false;
       }
+      if (saveFileData.version < SaveFileData.CurrentVersion)
+      {
+        error = "El archivo de guardado pertenece a una version anterior incompatible.";
+        saveFileData = null;
+        return false;
+      }
 
       Normalizar(saveFileData);
       return true;
@@ -178,6 +184,21 @@ public static class SaveGameService
     if (saveFileData.map == null)
     {
       saveFileData.map = new MapSaveData();
+    }
+    if (saveFileData.map.nodes == null)
+    {
+      saveFileData.map.nodes = new System.Collections.Generic.List<NodeSaveData>();
+    }
+    if (saveFileData.map.settlementsForzados == null)
+    {
+      saveFileData.map.settlementsForzados = new System.Collections.Generic.List<NodeReferenceSaveData>();
+    }
+    foreach (NodeSaveData node in saveFileData.map.nodes)
+    {
+      if (node != null && node.conexiones == null)
+      {
+        node.conexiones = new System.Collections.Generic.List<CaminoConexionSaveData>();
+      }
     }
     if (saveFileData.party == null)
     {

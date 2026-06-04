@@ -92,7 +92,7 @@ public abstract class Habilidad : MonoBehaviour
   protected virtual int DelayPostImpactoMs => 700;
   protected virtual bool UsaTimingMeleeCentralizado => esHostil && esMelee && !omitirAnimacionDeUso;
   protected virtual int DelayPreImpactoMeleeMs => MeleeTimingUtility.CalcularPreImpactoMs(scEstaUnidad != null ? scEstaUnidad.GetComponent<UnidadPoseController>() : null);
-  protected virtual int DelayPostImpactoMeleeMs => MeleeTimingUtility.CalcularPostImpactoMs();
+  protected virtual int DelayPostImpactoMeleeMs => MeleeTimingUtility.CalcularPostImpactoMs(scEstaUnidad != null ? scEstaUnidad.GetComponent<UnidadPoseController>() : null);
   protected virtual bool UsaPoseAtaqueMeleeSostenida => esHostil && esMelee && !omitirAnimacionDeUso;
 
   protected virtual Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
@@ -803,6 +803,12 @@ public abstract class Habilidad : MonoBehaviour
         ? nombreAtacante + " fumbles against " + nombreObjetivoValentia
         : nombreAtacante + " pifia contra " + nombreObjetivoValentia;
       scEstaUnidad.SumarValentia(-1, motivoPifiaValentia);
+      if (scEstaUnidad.ObtenerAPActual() > 0)
+      {
+        scEstaUnidad.CambiarAPActual(-1);
+      }
+
+      scEstaUnidad.IgnorarProximoSetAPCeroPorPifia();
       textoResultado = TRADU.i.Traducir("Pifia");
       BattleManager.Instance.EscribirLog(
         CombatLogFormatter.FormatearAtaque(
@@ -1196,18 +1202,26 @@ static class MeleeTimingUtility
     float minimoSeg = MinPreImpactoSeg,
     float maximoSeg = MaxPreImpactoSeg)
   {
-    float duracionPose = poseController != null ? poseController.duracionPoseAtacar : fallbackSeg;
-    float preImpactoSeg = duracionPose > 0.01f ? duracionPose * fraccionPose : fallbackSeg;
-    preImpactoSeg = Mathf.Clamp(preImpactoSeg, minimoSeg, maximoSeg);
+    float fallback = poseController != null ? poseController.meleePreImpactoFallback : fallbackSeg;
+    float duracionPose = poseController != null ? poseController.duracionPoseAtacar : fallback;
+    float fraccion = poseController != null ? poseController.meleeFraccionImpacto : fraccionPose;
+    float minimo = poseController != null ? poseController.meleePreImpactoMin : minimoSeg;
+    float maximo = poseController != null ? poseController.meleePreImpactoMax : maximoSeg;
+    float preImpactoSeg = duracionPose > 0.01f ? duracionPose * fraccion : fallback;
+    preImpactoSeg = Mathf.Clamp(preImpactoSeg, Mathf.Min(minimo, maximo), Mathf.Max(minimo, maximo));
     return Mathf.Max(0, Mathf.RoundToInt(preImpactoSeg * 1000f));
   }
 
   public static int CalcularPostImpactoMs(
+    UnidadPoseController poseController = null,
     float postImpactoSeg = PostImpactoSegBase,
     float minimoSeg = MinPostImpactoSeg,
     float maximoSeg = MaxPostImpactoSeg)
   {
-    float clamped = Mathf.Clamp(postImpactoSeg, minimoSeg, maximoSeg);
+    float postImpacto = poseController != null ? poseController.meleePostImpacto : postImpactoSeg;
+    float minimo = poseController != null ? poseController.meleePostImpactoMin : minimoSeg;
+    float maximo = poseController != null ? poseController.meleePostImpactoMax : maximoSeg;
+    float clamped = Mathf.Clamp(postImpacto, Mathf.Min(minimo, maximo), Mathf.Max(minimo, maximo));
     return Mathf.Max(0, Mathf.RoundToInt(clamped * 1000f));
   }
 }

@@ -54,12 +54,8 @@ public class IAMordidaVagranilo : IAHabilidad
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
       hActualCooldown = hCooldownMax;
       
-      scEstaUnidad.ReproducirAnimacionAtaque();
-            object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
-                     PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
-
-      await BattleManager.DelayCombateAsync(450);
-      AplicarEfectosHabilidad(Objetivo);
+      object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
+      await PrepararInicioAnimacionConImpactoAsync(Objetivo);
      
    }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Threading.Tasks;
 using System;
 
@@ -297,14 +298,7 @@ public class LuzCegadora : Habilidad
   
       void VFXAplicar(GameObject objetivo)
     {
-      VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_LuzCegadora");
-
-    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity);
-    vfx.transform.parent = objetivo.transform;
-     
-   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
-   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
-   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
+      LuzCegadoraDestelloVFX.Crear(objetivo);
 
     }
 
@@ -385,6 +379,271 @@ public class LuzCegadora : Habilidad
     
 }
 
+public class LuzCegadoraDestelloVFX : MonoBehaviour
+{
+  private const float Duracion = 1.35f;
+  private const float EscalaGlobal = 0.18f;
+  private const float OffsetY = 8f;
+  private const float TamanoMinimo = 18f;
+
+  private RectTransform root;
+  private CanvasGroup canvasGroup;
+  private Image haloExterior;
+  private Image haloInterior;
+  private Image rayoHorizontal;
+  private Image rayoVertical;
+  private Image brilloCentral;
+  private float tiempo;
+  private Vector2 tamanoBase;
+
+  private static Sprite spriteSuave;
+  private static Sprite spriteRayo;
+  private static Texture2D texturaSuave;
+  private static Texture2D texturaRayo;
+
+  public static void Crear(GameObject objetivo)
+  {
+    if (objetivo == null)
+    {
+      return;
+    }
+
+    Unidad unidad = objetivo.GetComponent<Unidad>();
+    RectTransform imagenBase = unidad != null && unidad.uImage != null
+      ? unidad.uImage.rectTransform
+      : null;
+    Canvas canvas = imagenBase != null
+      ? imagenBase.GetComponentInParent<Canvas>(true)
+      : objetivo.GetComponentInChildren<Canvas>(true);
+    if (canvas == null)
+    {
+      return;
+    }
+
+    if (imagenBase == null)
+    {
+      imagenBase = ObtenerImagenBase(canvas.transform);
+    }
+
+    RectTransform padre = imagenBase != null && imagenBase.parent is RectTransform
+      ? (RectTransform)imagenBase.parent
+      : canvas.transform as RectTransform;
+    if (padre == null)
+    {
+      return;
+    }
+
+    GameObject go = new GameObject("DestelloLuzCegadora", typeof(RectTransform), typeof(CanvasGroup), typeof(LuzCegadoraDestelloVFX));
+    LuzCegadoraDestelloVFX destello = go.GetComponent<LuzCegadoraDestelloVFX>();
+    destello.Inicializar(padre, imagenBase);
+    RenderOrderHelper.OrdenarCanvasEncima(canvas, objetivo.transform, 8);
+  }
+
+  private static RectTransform ObtenerImagenBase(Transform canvas)
+  {
+    if (canvas == null)
+    {
+      return null;
+    }
+
+    Transform directa = canvas.Find("Image");
+    if (directa != null && directa.TryGetComponent(out Image imageDirecta))
+    {
+      return imageDirecta.rectTransform;
+    }
+
+    foreach (Image image in canvas.GetComponentsInChildren<Image>(true))
+    {
+      if (image != null && image.sprite != null)
+      {
+        return image.rectTransform;
+      }
+    }
+
+    return null;
+  }
+
+  private void Inicializar(RectTransform padre, RectTransform imagenBase)
+  {
+    root = GetComponent<RectTransform>();
+    canvasGroup = GetComponent<CanvasGroup>();
+    root.SetParent(padre, false);
+    canvasGroup.interactable = false;
+    canvasGroup.blocksRaycasts = false;
+
+    Vector2 posicion = Vector2.zero;
+    Vector3 escala = Vector3.one;
+    if (imagenBase != null)
+    {
+      posicion = imagenBase.anchoredPosition;
+      escala = imagenBase.localScale;
+      tamanoBase = imagenBase.rect.size;
+      if (tamanoBase.x <= 0.01f || tamanoBase.y <= 0.01f)
+      {
+        tamanoBase = imagenBase.sizeDelta;
+      }
+    }
+
+    float ancho = Mathf.Max(TamanoMinimo, tamanoBase.x * 2.4f * EscalaGlobal);
+    float alto = Mathf.Max(TamanoMinimo, tamanoBase.y * 2.4f * EscalaGlobal);
+    tamanoBase = new Vector2(ancho, alto);
+
+    root.anchorMin = new Vector2(0.5f, 0.5f);
+    root.anchorMax = new Vector2(0.5f, 0.5f);
+    root.pivot = new Vector2(0.5f, 0.5f);
+    root.anchoredPosition = posicion + new Vector2(0f, OffsetY);
+    root.localScale = escala;
+    root.sizeDelta = tamanoBase;
+    root.SetAsLastSibling();
+
+    haloExterior = CrearImagen("HaloExterior", ObtenerSpriteSuave());
+    haloInterior = CrearImagen("HaloInterior", ObtenerSpriteSuave());
+    rayoHorizontal = CrearImagen("RayoHorizontal", ObtenerSpriteRayo());
+    rayoVertical = CrearImagen("RayoVertical", ObtenerSpriteRayo());
+    brilloCentral = CrearImagen("BrilloCentral", ObtenerSpriteSuave());
+
+    rayoVertical.rectTransform.localEulerAngles = new Vector3(0f, 0f, 90f);
+    ActualizarVisual(0f);
+  }
+
+  private Image CrearImagen(string nombre, Sprite sprite)
+  {
+    GameObject go = new GameObject(nombre, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+    RectTransform rect = go.GetComponent<RectTransform>();
+    rect.SetParent(root, false);
+    rect.anchorMin = new Vector2(0.5f, 0.5f);
+    rect.anchorMax = new Vector2(0.5f, 0.5f);
+    rect.pivot = new Vector2(0.5f, 0.5f);
+
+    Image image = go.GetComponent<Image>();
+    image.sprite = sprite;
+    image.raycastTarget = false;
+    image.maskable = false;
+    image.preserveAspect = false;
+    return image;
+  }
+
+  private void Update()
+  {
+    tiempo += Time.deltaTime;
+    float t = Mathf.Clamp01(tiempo / Duracion);
+    ActualizarVisual(t);
+
+    if (tiempo >= Duracion)
+    {
+      Destroy(gameObject);
+    }
+  }
+
+  private void ActualizarVisual(float t)
+  {
+    if (root == null || canvasGroup == null)
+    {
+      return;
+    }
+
+    float entrada = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / 0.24f));
+    float salida = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((t - 0.45f) / 0.55f));
+    float intensidad = entrada * salida;
+    float pulsoCentro = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((t - 0.08f) / 0.22f)) * salida;
+    float pulsoRayos = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((t - 0.16f) / 0.28f)) * (1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((t - 0.62f) / 0.38f)));
+    float escala = Mathf.Lerp(0.58f, 0.88f, Mathf.SmoothStep(0f, 1f, t));
+
+    canvasGroup.alpha = intensidad;
+    root.localEulerAngles = new Vector3(0f, 0f, Mathf.Lerp(-3f, 5f, t));
+
+    ConfigurarImagen(haloExterior, tamanoBase * (2.15f * escala), new Color(1f, 0.93f, 0.38f, 0.36f * intensidad));
+    ConfigurarImagen(haloInterior, tamanoBase * (1.24f * escala), new Color(1f, 0.98f, 0.76f, 0.56f * intensidad));
+    ConfigurarImagen(brilloCentral, tamanoBase * (0.52f + (0.28f * escala)), new Color(1f, 1f, 0.9f, 0.68f * pulsoCentro));
+    ConfigurarImagen(rayoHorizontal, new Vector2(tamanoBase.x * 2.25f * escala, tamanoBase.y * 0.22f), new Color(1f, 0.96f, 0.58f, 0.54f * pulsoRayos));
+    ConfigurarImagen(rayoVertical, new Vector2(tamanoBase.x * 1.85f * escala, tamanoBase.y * 0.16f), new Color(1f, 1f, 0.78f, 0.42f * pulsoRayos));
+  }
+
+  private static void ConfigurarImagen(Image image, Vector2 tamano, Color color)
+  {
+    if (image == null)
+    {
+      return;
+    }
+
+    image.rectTransform.anchoredPosition = Vector2.zero;
+    image.rectTransform.sizeDelta = tamano;
+    image.color = color;
+  }
+
+  private static Sprite ObtenerSpriteSuave()
+  {
+    if (spriteSuave != null)
+    {
+      return spriteSuave;
+    }
+
+    const int size = 64;
+    texturaSuave = new Texture2D(size, size, TextureFormat.ARGB32, false);
+    texturaSuave.name = "LuzCegadoraSoftGlowRuntime";
+    texturaSuave.wrapMode = TextureWrapMode.Clamp;
+    texturaSuave.filterMode = FilterMode.Bilinear;
+    texturaSuave.hideFlags = HideFlags.HideAndDontSave;
+
+    Color[] pixels = new Color[size * size];
+    float centro = (size - 1) * 0.5f;
+    float radio = size * 0.5f;
+    for (int y = 0; y < size; y++)
+    {
+      for (int x = 0; x < size; x++)
+      {
+        float dx = (x - centro) / radio;
+        float dy = (y - centro) / radio;
+        float distancia = Mathf.Sqrt((dx * dx) + (dy * dy));
+        float alpha = Mathf.Pow(Mathf.Clamp01(1f - distancia), 2.1f);
+        pixels[(y * size) + x] = new Color(1f, 1f, 1f, alpha);
+      }
+    }
+
+    texturaSuave.SetPixels(pixels);
+    texturaSuave.Apply(false, true);
+    spriteSuave = Sprite.Create(texturaSuave, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+    spriteSuave.name = "LuzCegadoraSoftGlowRuntime";
+    return spriteSuave;
+  }
+
+  private static Sprite ObtenerSpriteRayo()
+  {
+    if (spriteRayo != null)
+    {
+      return spriteRayo;
+    }
+
+    const int width = 128;
+    const int height = 32;
+    texturaRayo = new Texture2D(width, height, TextureFormat.ARGB32, false);
+    texturaRayo.name = "LuzCegadoraRayGlowRuntime";
+    texturaRayo.wrapMode = TextureWrapMode.Clamp;
+    texturaRayo.filterMode = FilterMode.Bilinear;
+    texturaRayo.hideFlags = HideFlags.HideAndDontSave;
+
+    Color[] pixels = new Color[width * height];
+    float centroX = (width - 1) * 0.5f;
+    float centroY = (height - 1) * 0.5f;
+    for (int y = 0; y < height; y++)
+    {
+      float vertical = 1f - Mathf.Clamp01(Mathf.Abs(y - centroY) / centroY);
+      vertical = Mathf.Pow(vertical, 1.8f);
+      for (int x = 0; x < width; x++)
+      {
+        float horizontal = 1f - Mathf.Clamp01(Mathf.Abs(x - centroX) / centroX);
+        float alpha = Mathf.Pow(horizontal, 0.58f) * vertical;
+        pixels[(y * width) + x] = new Color(1f, 1f, 1f, alpha);
+      }
+    }
+
+    texturaRayo.SetPixels(pixels);
+    texturaRayo.Apply(false, true);
+    spriteRayo = Sprite.Create(texturaRayo, new Rect(0f, 0f, width, height), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+    spriteRayo.name = "LuzCegadoraRayGlowRuntime";
+    return spriteRayo;
+  }
+}
 
 
 
