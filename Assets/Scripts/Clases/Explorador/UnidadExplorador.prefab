@@ -842,6 +842,13 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e8d1362885b29fa4a8668c09d853a41e, type: 3}
   - {fileID: 8300000, guid: 8d249c058b0a5b44dae996824777d0bc, type: 3}
   - {fileID: 8300000, guid: 8be61b0b0c03b7b468891e4261779012, type: 3}
+  aparienciasAlternativas:
+  - nombre: Apariencia2
+    retrato: {fileID: 21300000, guid: 7587314880c0a984e8028f6de5151076, type: 3}
+    poseIdle: {fileID: 21300000, guid: 5e2e4d129d79bf847b62d7ded33fa9cf, type: 3}
+    poseMover: {fileID: 21300000, guid: 6f0ce1770674a9b418cf2da0c723ac1c, type: 3}
+    poseAtacar: {fileID: 21300000, guid: a7f0b81bd5cdeeb4693565edb78e7446, type: 3}
+    poseHabilidad: {fileID: 21300000, guid: 8d28baf02f8023e4389391f9f9c21df2, type: 3}
   PASIVA_VistaLejana: 0
   PASIVA_Acrobatico: 0
   PASIVA_Reconocimiento: 0
@@ -865,6 +872,13 @@ MonoBehaviour:
   duracionPoseAtacar: 1.4
   duracionPoseDanyo: 0.4
   duracionPoseHabilidad: 1.35
+  meleeFraccionImpacto: 0.35
+  meleePreImpactoFallback: 0.22
+  meleePreImpactoMin: 0.08
+  meleePreImpactoMax: 0.42
+  meleePostImpacto: 0.16
+  meleePostImpactoMin: 0.05
+  meleePostImpactoMax: 0.3
 --- !u!82 &8362178210770334868
 AudioSource:
   m_ObjectHideFlags: 0

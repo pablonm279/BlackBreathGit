@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [Serializable]
 public class SaveFileData
 {
-  public const int CurrentVersion = 18;
+  public const int CurrentVersion = 21;
 
   public int version = CurrentVersion;
   public string savedAtUtc;
@@ -81,8 +81,16 @@ public class CampaignSaveData
   public List<int> eventosAleatoriosUsadosMapa = new List<int>();
   public EstadosCaravanaSaveData estadosCaravana = new EstadosCaravanaSaveData();
   public BitacoraSaveData bitacora = new BitacoraSaveData();
+  public List<UltimaAparienciaClaseSaveData> ultimasAparienciasPorClase = new List<UltimaAparienciaClaseSaveData>();
   public bool settlementOpen;
   public int settlementActionsRemaining = 3;
+}
+
+[Serializable]
+public class UltimaAparienciaClaseSaveData
+{
+  public int idClase;
+  public int indiceAparienciaAlternativa = -1;
 }
 
 [Serializable]
@@ -175,6 +183,8 @@ public class CharacterSaveData
   public string nombre;
   public int idClase;
   public int idRetrato;
+  public int indiceAparienciaAlternativa = -1;
+  public bool aparienciaAlternativaResuelta;
   public int puestoDeseado;
 
   public float vidaActual;

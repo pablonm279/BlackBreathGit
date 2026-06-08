@@ -9,8 +9,10 @@ public class ZonaMusical
     public string nombreZona;
     [Header("Lista de campaña (exploración)")]
     public List<AudioClip> temasCampania = new List<AudioClip>();
-    [Header("Lista de batalla (combate)")]
+    [Header("Lista de batalla (combate normal)")]
     public List<AudioClip> temasBatalla = new List<AudioClip>();
+    [Header("Lista de batallas especiales")]
+    public List<AudioClip> temasBatallaEspecial = new List<AudioClip>();
     [Header("Opcional: stinger al entrar en batalla")]
     public AudioClip stingerBatalla;
 
@@ -21,6 +23,7 @@ public class MusicManager : MonoBehaviour
     public static MusicManager Instance;
 
     public enum ModoMusica { Campania, Batalla }
+    public enum VarianteBatalla { Normal, Especial }
 
     [Header("Zonas")]
     public List<ZonaMusical> zonas = new List<ZonaMusical>();
@@ -51,16 +54,19 @@ public class MusicManager : MonoBehaviour
     ModoMusica modoActual = ModoMusica.Campania;
     int ultimoIndexCampania = -1;
     int ultimoIndexBatalla = -1;
+    int ultimoIndexBatallaEspecial = -1;
     int ultimoIndexAlientoNegro = -1;
     Coroutine rutinaCiclo;
     bool pausado = false;
     bool usandoListaAlientoNegro = false;
+    VarianteBatalla varianteBatallaActual = VarianteBatalla.Normal;
 
-    bool EsSolicitudYaActiva(int idZona, ModoMusica modo)
+    bool EsSolicitudYaActiva(int idZona, ModoMusica modo, VarianteBatalla varianteBatalla = VarianteBatalla.Normal)
     {
         return zonaActual != null
             && zonaActual.idZona == idZona
             && modoActual == modo
+            && (modo != ModoMusica.Batalla || varianteBatallaActual == varianteBatalla)
             && rutinaCiclo != null;
     }
 
@@ -120,6 +126,10 @@ public class MusicManager : MonoBehaviour
 
         zonaActual = z;
         modoActual = modo;
+        if (modo != ModoMusica.Batalla)
+        {
+            varianteBatallaActual = VarianteBatalla.Normal;
+        }
         PausarMusica(false);
 
         IniciarCiclo();
@@ -129,12 +139,14 @@ public class MusicManager : MonoBehaviour
     public void PlayCampania(int idZona) => SetZonaYModo(idZona, ModoMusica.Campania);
 
     /// Atajo: batalla en zona (dispara stinger si existe)
-    public void PlayBatalla(int idZona)
+    public void PlayBatalla(int idZona) => PlayBatalla(idZona, VarianteBatalla.Normal);
+
+    public void PlayBatalla(int idZona, VarianteBatalla varianteBatalla)
     {
         var z = zonas.Find(x => x.idZona == idZona);
         if (z == null) { Debug.LogWarning($"[MusicManager] Zona {idZona} no encontrada."); return; }
 
-        if (EsSolicitudYaActiva(idZona, ModoMusica.Batalla))
+        if (EsSolicitudYaActiva(idZona, ModoMusica.Batalla, varianteBatalla))
         {
             PausarMusica(false);
             return;
@@ -142,6 +154,7 @@ public class MusicManager : MonoBehaviour
 
         zonaActual = z;
         modoActual = ModoMusica.Batalla;
+        varianteBatallaActual = varianteBatalla;
         PausarMusica(false);
 
         IniciarCiclo(true); // true = intenta stinger
@@ -266,6 +279,27 @@ public class MusicManager : MonoBehaviour
         return CampaignManager.Instance.GetTierAlientoNegro() >= 3f;
     }
 
+    List<AudioClip> ObtenerListaBatallaActiva()
+    {
+        if (zonaActual == null)
+        {
+            return null;
+        }
+
+        List<AudioClip> listaEspecial = varianteBatallaActual switch
+        {
+            VarianteBatalla.Especial => zonaActual.temasBatallaEspecial,
+            _ => null
+        };
+
+        if (listaEspecial != null && listaEspecial.Count > 0)
+        {
+            return listaEspecial;
+        }
+
+        return zonaActual.temasBatalla;
+    }
+
     IEnumerator Ciclo(bool conStinger = false)
     {
         try
@@ -280,13 +314,13 @@ public class MusicManager : MonoBehaviour
 
             List<AudioClip> lista = usarAliento
                 ? temasAlientoNegro
-                : (modoActual == ModoMusica.Campania ? zonaActual.temasCampania : zonaActual.temasBatalla);
+                : (modoActual == ModoMusica.Campania ? zonaActual.temasCampania : ObtenerListaBatallaActiva());
 
             if (usarAliento && (lista == null || lista.Count == 0))
             {
                 Debug.LogWarning("[MusicManager] Lista de Aliento Negro vacía. Se usará la lista de zona.");
                 usarAliento = false;
-                lista = (modoActual == ModoMusica.Campania) ? zonaActual.temasCampania : zonaActual.temasBatalla;
+                lista = (modoActual == ModoMusica.Campania) ? zonaActual.temasCampania : ObtenerListaBatallaActiva();
             }
 
             if (lista == null || lista.Count == 0)
@@ -375,15 +409,14 @@ public class MusicManager : MonoBehaviour
             }
             else
             {
-                ultimoIndexBatalla = (ultimoIndexBatalla + 1) % count;
-                return ultimoIndexBatalla;
+                return AvanzarIndiceSecuencialBatalla(count);
             }
         }
 
         // Aleatorio con anti-repetición inmediata
         int last = usarListaAliento
             ? ultimoIndexAlientoNegro
-            : (modoActual == ModoMusica.Campania ? ultimoIndexCampania : ultimoIndexBatalla);
+            : (modoActual == ModoMusica.Campania ? ultimoIndexCampania : ObtenerUltimoIndiceBatalla());
         int idx = UnityEngine.Random.Range(0, count);
         if (evitarRepeticionInmediata && count > 1)
         {
@@ -400,9 +433,44 @@ public class MusicManager : MonoBehaviour
         }
         else
         {
-            ultimoIndexBatalla = idx;
+            GuardarUltimoIndiceBatalla(idx);
         }
         return idx;
+    }
+
+    int ObtenerUltimoIndiceBatalla()
+    {
+        return varianteBatallaActual switch
+        {
+            VarianteBatalla.Especial => ultimoIndexBatallaEspecial,
+            _ => ultimoIndexBatalla
+        };
+    }
+
+    int AvanzarIndiceSecuencialBatalla(int count)
+    {
+        switch (varianteBatallaActual)
+        {
+            case VarianteBatalla.Especial:
+                ultimoIndexBatallaEspecial = (ultimoIndexBatallaEspecial + 1) % count;
+                return ultimoIndexBatallaEspecial;
+            default:
+                ultimoIndexBatalla = (ultimoIndexBatalla + 1) % count;
+                return ultimoIndexBatalla;
+        }
+    }
+
+    void GuardarUltimoIndiceBatalla(int idx)
+    {
+        switch (varianteBatallaActual)
+        {
+            case VarianteBatalla.Especial:
+                ultimoIndexBatallaEspecial = idx;
+                break;
+            default:
+                ultimoIndexBatalla = idx;
+                break;
+        }
     }
 
     IEnumerator CrossFade(AudioSource inSrc, float volObjetivo, float tiempo)

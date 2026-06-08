@@ -2853,7 +2853,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
         if (danioBloqueado > 0)
         {
-          BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(TRADU.i.Traducir("La Barrera de ") + uNombre + TRADU.i.Traducir(" absorbiÃ³ ") + danioBloqueado + TRADU.i.Traducir(" de daÃ±o.")));
+          BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(TRADU.i.Traducir("La Barrera de ") + uNombre + TRADU.i.Traducir(" absorbió ") + danioBloqueado + TRADU.i.Traducir(" de daño.")));
 
           int barreraMostrada = Mathf.RoundToInt(danioBloqueado);
           if (barreraMostrada > 0)
@@ -2883,7 +2883,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         if (random <= chances)
         {
           danioFinal = 0;
-          scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" bloquea el daÃ±o con su escudo.")));
+          scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" bloquea el daño con su escudo.")));
           GenerarTextoFlotante(TRADU.i.Traducir("Bloqueado"), Color.cyan, FloatingTextContext.Block);
           combatFeedbackFx?.PlayGuardImpact(Color.cyan);
           estado_Escudado--;
@@ -5362,6 +5362,160 @@ public async void OnMouseDown()
     //VACIO
     //Cada clase lo usarÃ¡ para determinar ciertos efectos en cada turno
   }
+
+  public virtual void AplicarAparienciaAlternativaAleatoria()
+  {
+    // Cada clase decide si tiene apariencias configuradas.
+  }
+
+  public virtual void AplicarAparienciaAlternativaPorIndice(int indiceApariencia)
+  {
+    // Cada clase decide si tiene apariencias configuradas.
+  }
+
+  public virtual int ObtenerCantidadAparienciasAlternativas()
+  {
+    return 1;
+  }
+
+  public virtual bool EsIndiceAparienciaAlternativaValido(int indiceApariencia)
+  {
+    return indiceApariencia == Personaje.IndiceAparienciaBase;
+  }
+
+  public virtual Sprite ObtenerRetratoAparienciaAlternativa(int indiceApariencia)
+  {
+    return null;
+  }
+
+  public virtual List<int> ObtenerIndicesAparienciasAlternativasDisponibles()
+  {
+    return new List<int> { Personaje.IndiceAparienciaBase };
+  }
+
+  public virtual int ElegirIndiceAparienciaAlternativaAleatoria()
+  {
+    return Personaje.IndiceAparienciaBase;
+  }
+
+  protected void AplicarAparienciaAlternativaAleatoriaDesdeLista(List<AparienciaAlternativaUnidad> aparienciasAlternativas)
+  {
+    AplicarAparienciaAlternativaDesdeLista(aparienciasAlternativas, ElegirIndiceAparienciaAlternativaAleatoriaDesdeLista(aparienciasAlternativas));
+  }
+
+  protected void AplicarAparienciaAlternativaDesdeLista(List<AparienciaAlternativaUnidad> aparienciasAlternativas, int indiceApariencia)
+  {
+    UnidadPoseController poseCtrl = GetComponent<UnidadPoseController>();
+    if (poseCtrl == null)
+    {
+      return;
+    }
+
+    AparienciaAlternativaUnidad aparienciaElegida = ObtenerAparienciaAlternativaDesdeLista(aparienciasAlternativas, indiceApariencia);
+    if (aparienciaElegida == null)
+    {
+      poseCtrl.RestaurarPosesBase();
+      return;
+    }
+
+    Sprite poseIdleBase = poseCtrl.ObtenerPoseIdleBase() != null ? poseCtrl.ObtenerPoseIdleBase() : (uImage != null ? uImage.sprite : null);
+    Sprite poseMoverBase = poseCtrl.ObtenerPoseMoverBase() != null ? poseCtrl.ObtenerPoseMoverBase() : poseIdleBase;
+    Sprite poseAtacarBase = poseCtrl.ObtenerPoseAtacarBase() != null ? poseCtrl.ObtenerPoseAtacarBase() : poseIdleBase;
+    Sprite poseHabilidadBase = poseCtrl.ObtenerPoseHabilidadBase() != null ? poseCtrl.ObtenerPoseHabilidadBase() : poseIdleBase;
+
+    Sprite poseIdle = aparienciaElegida.poseIdle != null ? aparienciaElegida.poseIdle : poseIdleBase;
+    Sprite poseMover = aparienciaElegida.poseMover != null ? aparienciaElegida.poseMover : poseMoverBase;
+    Sprite poseAtacar = aparienciaElegida.poseAtacar != null ? aparienciaElegida.poseAtacar : poseAtacarBase;
+    Sprite poseHabilidad = aparienciaElegida.poseHabilidad != null ? aparienciaElegida.poseHabilidad : poseHabilidadBase;
+
+    poseCtrl.ConfigurarPoses(poseIdle, poseMover, poseAtacar, poseHabilidad);
+  }
+
+  protected int ObtenerCantidadAparienciasAlternativasDesdeLista(List<AparienciaAlternativaUnidad> aparienciasAlternativas)
+  {
+    return 1 + ObtenerAparienciasAlternativasValidas(aparienciasAlternativas).Count;
+  }
+
+  protected bool EsIndiceAparienciaAlternativaValidoDesdeLista(List<AparienciaAlternativaUnidad> aparienciasAlternativas, int indiceApariencia)
+  {
+    return indiceApariencia == Personaje.IndiceAparienciaBase || ObtenerAparienciaAlternativaDesdeLista(aparienciasAlternativas, indiceApariencia) != null;
+  }
+
+  protected int ElegirIndiceAparienciaAlternativaAleatoriaDesdeLista(List<AparienciaAlternativaUnidad> aparienciasAlternativas)
+  {
+    List<AparienciaAlternativaUnidad> aparienciasValidas = ObtenerAparienciasAlternativasValidas(aparienciasAlternativas);
+    if (aparienciasValidas.Count == 0)
+    {
+      return Personaje.IndiceAparienciaBase;
+    }
+
+    int opcionElegida = UnityEngine.Random.Range(0, aparienciasValidas.Count + 1);
+    if (opcionElegida == 0)
+    {
+      return Personaje.IndiceAparienciaBase;
+    }
+
+    AparienciaAlternativaUnidad aparienciaElegida = aparienciasValidas[opcionElegida - 1];
+    return aparienciasAlternativas.IndexOf(aparienciaElegida);
+  }
+
+  protected Sprite ObtenerRetratoAparienciaAlternativaDesdeLista(List<AparienciaAlternativaUnidad> aparienciasAlternativas, int indiceApariencia)
+  {
+    AparienciaAlternativaUnidad apariencia = ObtenerAparienciaAlternativaDesdeLista(aparienciasAlternativas, indiceApariencia);
+    return apariencia != null ? apariencia.retrato : null;
+  }
+
+  protected List<int> ObtenerIndicesAparienciasAlternativasDisponiblesDesdeLista(List<AparienciaAlternativaUnidad> aparienciasAlternativas)
+  {
+    List<int> indicesDisponibles = new List<int> { Personaje.IndiceAparienciaBase };
+    if (aparienciasAlternativas == null || aparienciasAlternativas.Count == 0)
+    {
+      return indicesDisponibles;
+    }
+
+    for (int i = 0; i < aparienciasAlternativas.Count; i++)
+    {
+      AparienciaAlternativaUnidad apariencia = aparienciasAlternativas[i];
+      if (apariencia != null && apariencia.TieneContenido())
+      {
+        indicesDisponibles.Add(i);
+      }
+    }
+
+    return indicesDisponibles;
+  }
+
+  AparienciaAlternativaUnidad ObtenerAparienciaAlternativaDesdeLista(List<AparienciaAlternativaUnidad> aparienciasAlternativas, int indiceApariencia)
+  {
+    if (aparienciasAlternativas == null || indiceApariencia < 0 || indiceApariencia >= aparienciasAlternativas.Count)
+    {
+      return null;
+    }
+
+    AparienciaAlternativaUnidad apariencia = aparienciasAlternativas[indiceApariencia];
+    return apariencia != null && apariencia.TieneContenido() ? apariencia : null;
+  }
+
+  List<AparienciaAlternativaUnidad> ObtenerAparienciasAlternativasValidas(List<AparienciaAlternativaUnidad> aparienciasAlternativas)
+  {
+    List<AparienciaAlternativaUnidad> aparienciasValidas = new List<AparienciaAlternativaUnidad>();
+    if (aparienciasAlternativas == null || aparienciasAlternativas.Count == 0)
+    {
+      return aparienciasValidas;
+    }
+
+    for (int i = 0; i < aparienciasAlternativas.Count; i++)
+    {
+      AparienciaAlternativaUnidad apariencia = aparienciasAlternativas[i];
+      if (apariencia != null && apariencia.TieneContenido())
+      {
+        aparienciasValidas.Add(apariencia);
+      }
+    }
+
+    return aparienciasValidas;
+  }
+
   public virtual void ComienzoBatallaClase() //MÃ©todo vacÃ­o que se llama al comenzar la batalla
   {
     // Seguridad: recalcula por si la unidad llega con stats seteados por otra via.

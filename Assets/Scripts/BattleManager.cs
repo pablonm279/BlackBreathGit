@@ -20,6 +20,7 @@ public class BattleManager : MonoBehaviour
 {
   private const string TooltipObstaculoId = "combate_obstaculo";
   private const string TooltipEscapeId = "combate_escape";
+  private static bool aplicacionCerrandose;
 
   [Header("Ajustes visuales de batalla")]
   [SerializeField] public float TAMANIO_UNIDADES = 1f;
@@ -118,6 +119,13 @@ public class BattleManager : MonoBehaviour
   public GameObject nocheLienzo;
   private Coroutine coroutineTooltipValorDelay;
   private bool tooltipValorHoverActivo;
+
+  [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+  private static void ResetearEstadoEstaticoCombate()
+  {
+    Instance = null;
+    aplicacionCerrandose = false;
+  }
   private readonly Dictionary<int, Vector3> escalaBaseUnidadesBatalla = new Dictionary<int, Vector3>();
   private readonly List<RaycastResult> resultadosRaycastUnidadBajoMouse = new List<RaycastResult>();
 
@@ -182,8 +190,15 @@ public class BattleManager : MonoBehaviour
       return;
     }
 
+    aplicacionCerrandose = false;
     Instance = this;
     tiltCamaraSeleccionHabilidadActivo = true;
+  }
+
+  private void OnApplicationQuit()
+  {
+    aplicacionCerrandose = true;
+    CancelarCambioEstadoPausaDelay();
   }
 
   private void OnDestroy()
@@ -4318,7 +4333,7 @@ public class BattleManager : MonoBehaviour
 
   public static async Task DelayCombateAsync(TimeSpan duration)
   {
-    if (duration <= TimeSpan.Zero)
+    if (duration <= TimeSpan.Zero || DebeAbortarDelayPorCierre())
     {
       return;
     }
@@ -4334,15 +4349,30 @@ public class BattleManager : MonoBehaviour
 
     while (restanteMs > 0d)
     {
+      if (DebeAbortarDelayPorCierre())
+      {
+        return;
+      }
+
       battleManager = Instance;
       if (battleManager == null)
       {
+        if (DebeAbortarDelayPorCierre())
+        {
+          return;
+        }
+
         await Task.Delay(TimeSpan.FromMilliseconds(restanteMs));
         return;
       }
 
       while (battleManager.PausaCombateActiva)
       {
+        if (DebeAbortarDelayPorCierre())
+        {
+          return;
+        }
+
         CancellationToken tokenCambioEstadoPausa = battleManager.ObtenerTokenCambioEstadoPausa();
         try
         {
@@ -4350,11 +4380,20 @@ public class BattleManager : MonoBehaviour
         }
         catch (TaskCanceledException)
         {
+          if (DebeAbortarDelayPorCierre())
+          {
+            return;
+          }
         }
 
         battleManager = Instance;
         if (battleManager == null)
         {
+          if (DebeAbortarDelayPorCierre())
+          {
+            return;
+          }
+
           await Task.Delay(TimeSpan.FromMilliseconds(restanteMs));
           return;
         }
@@ -4369,9 +4408,19 @@ public class BattleManager : MonoBehaviour
       }
       catch (TaskCanceledException)
       {
+        if (DebeAbortarDelayPorCierre())
+        {
+          return;
+        }
+
         restanteMs = Math.Max(0d, restanteMs - cronometro.Elapsed.TotalMilliseconds);
       }
     }
+  }
+
+  private static bool DebeAbortarDelayPorCierre()
+  {
+    return aplicacionCerrandose || !Application.isPlaying;
   }
 
   private void TogglePausaManualCombate()

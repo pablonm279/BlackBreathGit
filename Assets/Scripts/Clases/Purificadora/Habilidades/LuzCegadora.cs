@@ -298,6 +298,14 @@ public class LuzCegadora : Habilidad
   
       void VFXAplicar(GameObject objetivo)
     {
+      VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_LuzCegadora");
+      if (VFXenObjetivo != null)
+      {
+        GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation);
+        vfx.transform.parent = objetivo.transform;
+        VFXSoloSonido.OcultarVisuales(vfx);
+      }
+
       LuzCegadoraDestelloVFX.Crear(objetivo);
 
     }
@@ -377,6 +385,37 @@ public class LuzCegadora : Habilidad
 
     
     
+}
+
+public static class VFXSoloSonido
+{
+  public static void OcultarVisuales(GameObject vfx)
+  {
+    if (vfx == null)
+    {
+      return;
+    }
+
+    foreach (Canvas canvas in vfx.GetComponentsInChildren<Canvas>(true))
+    {
+      canvas.enabled = false;
+    }
+
+    foreach (Graphic graphic in vfx.GetComponentsInChildren<Graphic>(true))
+    {
+      graphic.enabled = false;
+    }
+
+    foreach (Renderer renderer in vfx.GetComponentsInChildren<Renderer>(true))
+    {
+      renderer.enabled = false;
+    }
+
+    foreach (Light luz in vfx.GetComponentsInChildren<Light>(true))
+    {
+      luz.enabled = false;
+    }
+  }
 }
 
 public class LuzCegadoraDestelloVFX : MonoBehaviour

@@ -129,11 +129,15 @@ public class BotonHabilidad : MonoBehaviour
         bool incluirIconos = spriteAsset != null;
         if (HabilidadRepresentada != null && HabilidadRepresentada.GetType().Name.Contains("REPRESENTACION"))
         {
-            txtDescHab.text = TextoIconosCombate.FormatearIconosDespuesDelTitulo(descripcion, incluirIconos);
+            txtDescHab.text = TextoIconosCombate.LimitarRepeticionIconos(
+                TextoIconosCombate.FormatearIconosDespuesDelTitulo(descripcion, incluirIconos),
+                2);
         }
         else
         {
-            txtDescHab.text = TextoIconosCombate.FormatearIconosDesdeBloqueMecanico(descripcion, incluirIconos);
+            txtDescHab.text = TextoIconosCombate.LimitarRepeticionIconos(
+                TextoIconosCombate.FormatearIconosDesdeBloqueMecanico(descripcion, incluirIconos),
+                2);
         }
         goDesc.SetActive(true);
 

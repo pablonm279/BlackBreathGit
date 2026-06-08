@@ -47,11 +47,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imItem: {fileID: 21300000, guid: 74fb983f4e655c84c96154b2b28e1d82, type: 3}
   sNombreItem: "Anillo de Destrucci\xF3n"
-  IDEfectoEspecial: 0
+  IDEfectoEspecial: 5
   IDClasesQuePuedenUsarEsteItem: 
-  iPrecio: 240
-  itemDescripcion: Anillo orientado al dano ofensivo y al impacto magico.
-  iRareza: 0
+  iPrecio: 350
+  itemDescripcion: Anillo ofensivo que otorga +10% de dano.
+  iRareza: 1
   nivelMejora: 0
   barreraInicioCombate: 0
   evasionInicioCombate: 0
@@ -72,13 +72,13 @@ MonoBehaviour:
   requisitoFue: 0
   requisitoAgi: 0
   requisitoPoder: 0
-  habilidadExtra1: {fileID: 1039378382291529976}
+  habilidadExtra1: {fileID: 0}
   habilidadExtra2: {fileID: 0}
   buffFuerza: 0
   buffAgi: 0
   buffPoder: 0
   buffIniciativa: 0
-  buffApMax: 1
+  buffApMax: 0
   buffValMax: 0
   buffhpMax: 0
   buffArmadura: 0

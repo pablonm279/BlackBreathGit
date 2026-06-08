@@ -6,7 +6,7 @@ public class anillodedestruccion : Accesorio
 {
   void Awake()
    {
-    itemDescripcion = "Este anillo hace kabOOOOOOOOOOOOOM piuuuuuum!";
+    itemDescripcion = TRADU.i.Traducir("Anillo ofensivo que otorga +10% de daño.");
 
 
    }

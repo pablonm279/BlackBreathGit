@@ -7,10 +7,46 @@ using System.Data.Common;
 
 public class ClaseAcechador : Unidad
 {
+    public List<AparienciaAlternativaUnidad> aparienciasAlternativas = new List<AparienciaAlternativaUnidad>();
 
     public int PASIVA_MaestriaConBallestaMano; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ? 5 nv 4b
     public int PASIVA_MaestriaConEspadacorta; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ? 5 nv 4b
     public int PASIVA_Masacre; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ? 5 nv 4b
+
+    public override void AplicarAparienciaAlternativaAleatoria()
+    {
+        AplicarAparienciaAlternativaAleatoriaDesdeLista(aparienciasAlternativas);
+    }
+
+    public override void AplicarAparienciaAlternativaPorIndice(int indiceApariencia)
+    {
+        AplicarAparienciaAlternativaDesdeLista(aparienciasAlternativas, indiceApariencia);
+    }
+
+    public override int ObtenerCantidadAparienciasAlternativas()
+    {
+        return ObtenerCantidadAparienciasAlternativasDesdeLista(aparienciasAlternativas);
+    }
+
+    public override bool EsIndiceAparienciaAlternativaValido(int indiceApariencia)
+    {
+        return EsIndiceAparienciaAlternativaValidoDesdeLista(aparienciasAlternativas, indiceApariencia);
+    }
+
+    public override Sprite ObtenerRetratoAparienciaAlternativa(int indiceApariencia)
+    {
+        return ObtenerRetratoAparienciaAlternativaDesdeLista(aparienciasAlternativas, indiceApariencia);
+    }
+
+    public override List<int> ObtenerIndicesAparienciasAlternativasDisponibles()
+    {
+        return ObtenerIndicesAparienciasAlternativasDisponiblesDesdeLista(aparienciasAlternativas);
+    }
+
+    public override int ElegirIndiceAparienciaAlternativaAleatoria()
+    {
+        return ElegirIndiceAparienciaAlternativaAleatoriaDesdeLista(aparienciasAlternativas);
+    }
 
     public override void ComienzoBatallaClase()
     {

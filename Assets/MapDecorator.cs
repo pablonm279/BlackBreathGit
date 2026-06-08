@@ -12,6 +12,8 @@ public class MapDecorator : MonoBehaviour
 {
     [Header("área de trabajo (OBLIGATORIO)")]
     [SerializeField] MeshFilter planeMesh;
+    [SerializeField] MeshFilter[] sectoresTerreno = new MeshFilter[5];
+    [SerializeField] bool autoBuscarSectoresTerreno = true;
 
     [Header("Caminos y Nodos (exclusiones)")]
     [Tooltip("Usar SOLO LineRenderers con este tag (recomendado).")]
@@ -116,6 +118,9 @@ public class MapDecorator : MonoBehaviour
     Mesh runtimePlaneMeshExtension;
     Vector3[] basePlaneVertices;
     Vector3[] basePlaneExtensionVertices;
+    MeshFilter meshAreaActual;
+    Collider colliderSueloAreaActual;
+    MeshFilter sectorExcluidoActual;
     int relieveSeed;
     float alturaRelieveActual;
     int decorBatchCounter;
@@ -133,8 +138,25 @@ public class MapDecorator : MonoBehaviour
         EnsureReliefTargets();
         EnsureRuntimeTerrainMeshes();
 
-        tPlane      = planeMesh.transform;
-        localBounds = planeMesh.sharedMesh.bounds;
+        ConfigurarAreaTrabajo(planeMesh);
+        EnsureSectoresTerreno();
+
+        if (transform.lossyScale != Vector3.one)
+            Debug.LogWarning("[MapDecorator] Este GameObject deberáa estar en escala (1,1,1) para no heredar escalas raras.");
+    }
+
+    bool ConfigurarAreaTrabajo(MeshFilter areaMesh)
+    {
+        if (!areaMesh || !areaMesh.sharedMesh)
+        {
+            return false;
+        }
+
+        meshAreaActual = areaMesh;
+        colliderSueloAreaActual = areaMesh.GetComponent<Collider>();
+
+        tPlane      = areaMesh.transform;
+        localBounds = areaMesh.sharedMesh.bounds;
         minL        = localBounds.min;
         maxL        = localBounds.max;
         sizeL       = localBounds.size;
@@ -142,15 +164,13 @@ public class MapDecorator : MonoBehaviour
         safeMinX    = minL.x; safeMaxX = maxL.x;
         safeMinZ    = minL.z; safeMaxZ = maxL.z;
 
-        // Escalas absolutas en mundo
         sx = Mathf.Abs(tPlane.lossyScale.x);
         sz = Mathf.Abs(tPlane.lossyScale.z);
 
         sizeWorldX = sizeL.x * sx;
         sizeWorldZ = sizeL.z * sz;
 
-        // Rect mundo del plane (AABB del bounds transformado)
-        var b = planeMesh.sharedMesh.bounds;
+        var b = areaMesh.sharedMesh.bounds;
         Vector3 aW = tPlane.TransformPoint(new Vector3(b.min.x, b.center.y, b.min.z));
         Vector3 bW = tPlane.TransformPoint(new Vector3(b.max.x, b.center.y, b.min.z));
         Vector3 cW = tPlane.TransformPoint(new Vector3(b.max.x, b.center.y, b.max.z));
@@ -161,9 +181,160 @@ public class MapDecorator : MonoBehaviour
         rectMaxZ = Mathf.Max(Mathf.Max(aW.z, bW.z), Mathf.Max(cW.z, dW.z));
 
         ActualizarZonaSegura();
+        return true;
+    }
 
-        if (transform.lossyScale != Vector3.one)
-            Debug.LogWarning("[MapDecorator] Este GameObject deberáa estar en escala (1,1,1) para no heredar escalas raras.");
+    void EnsureSectoresTerreno()
+    {
+        if (sectoresTerreno == null || sectoresTerreno.Length < 5)
+        {
+            MeshFilter[] anteriores = sectoresTerreno;
+            sectoresTerreno = new MeshFilter[5];
+            if (anteriores != null)
+            {
+                for (int i = 0; i < anteriores.Length && i < sectoresTerreno.Length; i++)
+                {
+                    sectoresTerreno[i] = anteriores[i];
+                }
+            }
+        }
+
+        if (!autoBuscarSectoresTerreno || planeMesh == null)
+        {
+            return;
+        }
+
+        Transform raiz = planeMesh.transform.parent != null ? planeMesh.transform.parent : transform;
+        MeshFilter[] filtros = raiz.GetComponentsInChildren<MeshFilter>(true);
+        List<MeshFilter> candidatos = new List<MeshFilter>();
+
+        for (int i = 0; i < filtros.Length; i++)
+        {
+            MeshFilter filtro = filtros[i];
+            if (filtro == null || filtro == planeMesh || filtro == planeMeshExtension || filtro.sharedMesh == null)
+            {
+                continue;
+            }
+
+            if (filtro.GetComponent<MeshCollider>() == null)
+            {
+                continue;
+            }
+
+            candidatos.Add(filtro);
+        }
+
+        candidatos.Sort((a, b) =>
+        {
+            int indiceA = ExtraerIndiceSector(a.name);
+            int indiceB = ExtraerIndiceSector(b.name);
+            if (indiceA != indiceB)
+            {
+                if (indiceA <= 0) return 1;
+                if (indiceB <= 0) return -1;
+                return indiceA.CompareTo(indiceB);
+            }
+            return string.CompareOrdinal(a.name, b.name);
+        });
+
+        for (int i = 0; i < candidatos.Count; i++)
+        {
+            int indiceSector = ExtraerIndiceSector(candidatos[i].name);
+            if (indiceSector >= 1 && indiceSector <= sectoresTerreno.Length)
+            {
+                sectoresTerreno[indiceSector - 1] = candidatos[i];
+            }
+        }
+
+        int proximoLibre = 0;
+        for (int i = 0; i < candidatos.Count; i++)
+        {
+            if (ContieneSector(candidatos[i]))
+            {
+                continue;
+            }
+
+            while (proximoLibre < sectoresTerreno.Length && sectoresTerreno[proximoLibre] != null)
+            {
+                proximoLibre++;
+            }
+
+            if (proximoLibre >= sectoresTerreno.Length)
+            {
+                break;
+            }
+
+            sectoresTerreno[proximoLibre] = candidatos[i];
+        }
+    }
+
+    bool ContieneSector(MeshFilter filtro)
+    {
+        for (int i = 0; i < sectoresTerreno.Length; i++)
+        {
+            if (sectoresTerreno[i] == filtro)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    int ExtraerIndiceSector(string nombre)
+    {
+        if (string.IsNullOrEmpty(nombre))
+        {
+            return 0;
+        }
+
+        for (int i = 0; i < nombre.Length; i++)
+        {
+            if (nombre[i] != '(')
+            {
+                continue;
+            }
+
+            int cierre = nombre.IndexOf(')', i + 1);
+            if (cierre <= i + 1)
+            {
+                continue;
+            }
+
+            string textoIndice = nombre.Substring(i + 1, cierre - i - 1);
+            if (int.TryParse(textoIndice, out int indice))
+            {
+                return indice;
+            }
+        }
+
+        char ultimo = nombre[nombre.Length - 1];
+        if (ultimo >= '1' && ultimo <= '9')
+        {
+            return ultimo - '0';
+        }
+
+        return 0;
+    }
+
+    MeshFilter ResolverAreaPorSector(int sector)
+    {
+        if (sector <= 0)
+        {
+            return planeMesh;
+        }
+
+        EnsureSectoresTerreno();
+        int indice = sector - 1;
+        if (sectoresTerreno != null
+            && indice >= 0
+            && indice < sectoresTerreno.Length
+            && sectoresTerreno[indice] != null)
+        {
+            return sectoresTerreno[indice];
+        }
+
+        Debug.LogWarning($"[MapDecorator] Sector {sector} no asignado. Se usa el terreno principal.");
+        return planeMesh;
     }
 
     public void RegenerarRelieveParaZona(int zonaId, int fase)
@@ -272,16 +443,16 @@ public class MapDecorator : MonoBehaviour
     }
 
     // Firma compatible con tu llamada previa
-    public int Generar(GameObject prefab, int cantidad, float distCamino, float distNodo, float r, int k = 100)
-        => GenerarSync(prefab, cantidad, distCamino, distNodo, r, k);
-    public int Generar(GameObject prefab, int cantidad)
-        => GenerarSync(prefab, cantidad, this.distCamino, this.distNodo, this.radioPoisson, this.intentosPorPunto);
+    public int Generar(GameObject prefab, int cantidad, float distCamino, float distNodo, float r, int k = 100, int sector = 0, int sectorno = 0)
+        => GenerarSync(prefab, cantidad, distCamino, distNodo, r, k, sector, sectorno);
+    public int Generar(GameObject prefab, int cantidad, int sector = 0, int sectorno = 0)
+        => GenerarSync(prefab, cantidad, this.distCamino, this.distNodo, this.radioPoisson, this.intentosPorPunto, sector, sectorno);
 
     public int GenerarSync(GameObject prefab, int cantidad,
                            float distCaminoOverride, float distNodoOverride,
-                           float rOverride, int kOverride)
+                           float rOverride, int kOverride, int sector = 0, int sectorno = 0)
     {
-        Preparar(prefab, distCaminoOverride, distNodoOverride, rOverride, kOverride);
+        Preparar(prefab, distCaminoOverride, distNodoOverride, rOverride, kOverride, sector, sectorno);
         int col = ColocarPoisson(prefab, cantidad);
 //        Debug.Log($"[MapDecorator] (Sync) Colocados {col}/{cantidad} '{prefab?.name}'.");
         return col;
@@ -289,31 +460,34 @@ public class MapDecorator : MonoBehaviour
 
     public void GenerarAsync(MonoBehaviour runner, GameObject prefab, int cantidad,
                              float distCaminoOverride, float distNodoOverride,
-                             float rOverride, int kOverride)
+                             float rOverride, int kOverride, int sector = 0, int sectorno = 0)
     {
-        Preparar(prefab, distCaminoOverride, distNodoOverride, rOverride, kOverride);
+        Preparar(prefab, distCaminoOverride, distNodoOverride, rOverride, kOverride, sector, sectorno);
         runner.StartCoroutine(ColocarPoissonCR(prefab, cantidad));
     }
 
     // Variante que permite al llamador hacer yield hasta terminar
     public IEnumerator GenerarAsyncCR(GameObject prefab, int cantidad,
                                       float distCaminoOverride, float distNodoOverride,
-                                      float rOverride, int kOverride)
+                                      float rOverride, int kOverride, int sector = 0, int sectorno = 0)
     {
-        Preparar(prefab, distCaminoOverride, distNodoOverride, rOverride, kOverride);
+        Preparar(prefab, distCaminoOverride, distNodoOverride, rOverride, kOverride, sector, sectorno);
         yield return ColocarPoissonCR(prefab, cantidad);
     }
 
-    public IEnumerator GenerarAsyncCR(GameObject prefab, int cantidad)
+    public IEnumerator GenerarAsyncCR(GameObject prefab, int cantidad, int sector = 0, int sectorno = 0)
     {
-        Preparar(prefab, this.distCamino, this.distNodo, this.radioPoisson, this.intentosPorPunto);
+        Preparar(prefab, this.distCamino, this.distNodo, this.radioPoisson, this.intentosPorPunto, sector, sectorno);
         yield return ColocarPoissonCR(prefab, cantidad);
     }
 
     // ===================== Preparación =====================
-    void Preparar(GameObject prefab, float distCaminoOverride, float distNodoOverride, float rOverride, int kOverride)
+    void Preparar(GameObject prefab, float distCaminoOverride, float distNodoOverride, float rOverride, int kOverride, int sector = 0, int sectorno = 0)
     {
         if (prefab == null) { Debug.LogError("[MapDecorator] Prefab nulo."); return; }
+
+        ConfigurarAreaTrabajo(ResolverAreaPorSector(sector));
+        sectorExcluidoActual = sector == 0 && sectorno > 0 ? ResolverAreaPorSector(sectorno) : null;
 
         int batchSeedBase = relieveSeed != 0
             ? relieveSeed
@@ -822,6 +996,11 @@ public class MapDecorator : MonoBehaviour
 
     bool PasaExclusiones(Vector3 p)
     {
+        if (EstaDentroSectorExcluido(p))
+        {
+            return false;
+        }
+
         // 1) por segmentos de LR (con ancho real + piso mínimo) usando índice espacial
         if (segmentos.Count > 0)
         {
@@ -866,6 +1045,21 @@ public class MapDecorator : MonoBehaviour
         }
 
         return true;
+    }
+
+    bool EstaDentroSectorExcluido(Vector3 p)
+    {
+        if (sectorExcluidoActual == null || sectorExcluidoActual.sharedMesh == null)
+        {
+            return false;
+        }
+
+        Bounds bounds = sectorExcluidoActual.sharedMesh.bounds;
+        Vector3 local = sectorExcluidoActual.transform.InverseTransformPoint(p);
+        return local.x >= bounds.min.x
+            && local.x <= bounds.max.x
+            && local.z >= bounds.min.z
+            && local.z <= bounds.max.z;
     }
 
     bool TocaCaminoPorCapa(Vector3 p)
@@ -1154,14 +1348,22 @@ public class MapDecorator : MonoBehaviour
         {
             if (usarColliderSueloDirecto && sueloCollider != null)
             {
-                Ray ray = new Ray(posMundo + Vector3.up * 200f, Vector3.down);
-                var hits = Physics.RaycastAll(ray, 500f);
-                for (int i = 0; i < hits.Length; i++)
-                    if (hits[i].collider == sueloCollider) { pos.y = hits[i].point.y; break; }
+                if (TryRaycastCollider(sueloCollider, posMundo, out var puntoSuelo))
+                {
+                    pos.y = puntoSuelo.y;
+                }
+            }
+            else if (colliderSueloAreaActual != null)
+            {
+                if (TryRaycastCollider(colliderSueloAreaActual, posMundo, out var puntoSuelo))
+                {
+                    pos.y = puntoSuelo.y;
+                }
             }
             else
             {
-                int mask = raycastSoloContraPlane ? (1 << planeMesh.gameObject.layer) : (int)capaSuelo;
+                MeshFilter areaRaycast = meshAreaActual != null ? meshAreaActual : planeMesh;
+                int mask = raycastSoloContraPlane ? (1 << areaRaycast.gameObject.layer) : (int)capaSuelo;
                 if (Physics.Raycast(new Ray(posMundo + Vector3.up * 200f, Vector3.down), out var hit, 500f, mask))
                     pos.y = hit.point.y;
             }
@@ -1182,6 +1384,41 @@ public class MapDecorator : MonoBehaviour
             versionDecoracionesRemovibles++;
         }
         // Escala del prefab NO se toca (asegurate que este GameObject padre está en 1,1,1).
+    }
+
+    bool TryRaycastCollider(Collider colliderObjetivo, Vector3 posMundo, out Vector3 punto)
+    {
+        punto = posMundo;
+        if (colliderObjetivo == null)
+        {
+            return false;
+        }
+
+        Ray ray = new Ray(posMundo + Vector3.up * 200f, Vector3.down);
+        RaycastHit[] hits = Physics.RaycastAll(ray, 500f, ~0, QueryTriggerInteraction.Ignore);
+        bool encontrado = false;
+        float menorDistancia = float.PositiveInfinity;
+        Vector3 mejorPunto = posMundo;
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (hits[i].collider != colliderObjetivo || hits[i].distance >= menorDistancia)
+            {
+                continue;
+            }
+
+            menorDistancia = hits[i].distance;
+            mejorPunto = hits[i].point;
+            encontrado = true;
+        }
+
+        if (!encontrado)
+        {
+            return false;
+        }
+
+        punto = mejorPunto;
+        return true;
     }
 
     // ===================== Gizmos =====================

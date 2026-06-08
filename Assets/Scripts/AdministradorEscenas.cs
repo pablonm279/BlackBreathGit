@@ -1075,6 +1075,60 @@ public class AdministradorEscenas : MonoBehaviour
     EjecutarOperacionSegura(CargarBatallaAsync(IDEncuentro, esEmboscada, encuentro, usarRefuerzosAliadosCaravana), nameof(CargarBatalla));
   }
 
+  MusicManager.VarianteBatalla DeterminarVarianteMusicalBatalla(int idEncuentro, int esEmboscada, EncounterDefinition encuentro, bool usarRefuerzosAliadosCaravana)
+  {
+    if (EsCombateEspecialMusical(idEncuentro, encuentro, usarRefuerzosAliadosCaravana))
+    {
+      return MusicManager.VarianteBatalla.Especial;
+    }
+
+    return MusicManager.VarianteBatalla.Normal;
+  }
+
+  bool EsCombateEspecialMusical(int idEncuentro, EncounterDefinition encuentro, bool usarRefuerzosAliadosCaravana)
+  {
+    if (EsCombateFinalODeCaravana(idEncuentro, encuentro, usarRefuerzosAliadosCaravana))
+    {
+      return true;
+    }
+
+    if (idEncuentro < 0 || idEncuentro == 700)
+    {
+      return true;
+    }
+
+    if (encuentro != null && encuentro.battleType == BattleEncounterType.Subterraneo)
+    {
+      return true;
+    }
+
+    if (CampaignManager.Instance != null
+      && CampaignManager.Instance.scMapaManager != null
+      && CampaignManager.Instance.scMapaManager.nodoActual != null
+      && CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 15
+      && CampaignManager.Instance.scMapaManager.nodoActual.nodoRitual)
+    {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool EsCombateFinalODeCaravana(int idEncuentro, EncounterDefinition encuentro, bool usarRefuerzosAliadosCaravana)
+  {
+    if (usarRefuerzosAliadosCaravana || idEncuentro == 701)
+    {
+      return true;
+    }
+
+    if (encuentro != null && encuentro.battleType == BattleEncounterType.AtaqueCaravana)
+    {
+      return true;
+    }
+
+    return false;
+  }
+
   private async Task CargarBatallaAsync(int IDEncuentro, int esEmboscada = 0, EncounterDefinition encuentro = null, bool usarRefuerzosAliadosCaravana = false)
   {
     if (cargandoBatalla || cerrandoBatalla)
@@ -1103,13 +1157,14 @@ public class AdministradorEscenas : MonoBehaviour
     escenaActual = 1; //1 Batalla 0 Campaña
     campaignManager.logDeCampania?.LimpiarDesdeCampania();
     int idZona = campaignManager.scAtributosZona.ID;
+    MusicManager.VarianteBatalla varianteMusical = DeterminarVarianteMusicalBatalla(IDEncuentro, esEmboscada, encuentro, usarRefuerzosAliadosCaravana);
     float fadeTransicion = Mathf.Max(0.05f, fadeEntradaBatalla);
     float holdTransicion = Mathf.Max(0.1f, esperaEntradaBatalla);
     float esperaCambioEscena = CalcularEsperaCambioEscena(fadeTransicion, holdTransicion);
     if (MusicManager.Instance != null)
     {
       MusicManager.Instance.PausarMusica(false);
-      MusicManager.Instance.PlayBatalla(idZona);
+      MusicManager.Instance.PlayBatalla(idZona, varianteMusical);
     }
     campaignManager.scAdministradorEscenas.PlayFadeInOut(fadeTransicion, holdTransicion);
     await EsperarSegundosRealtime(esperaCambioEscena);
@@ -2284,16 +2339,14 @@ public class AdministradorEscenas : MonoBehaviour
 
    
     GameObject persUnidad = Instantiate(prefabClase);
-    switch (pers.IDClase) // Cuerpos Clase
+    Unidad scUnidadPrefabClase = persUnidad.GetComponent<Unidad>();
+    if (CampaignManager.Instance != null)
     {
-      case 1: persUnidad.GetComponent<Unidad>().uImage.sprite = ContenedorPrefabsBatalla.Heroe1; break;
-      case 2: persUnidad.GetComponent<Unidad>().uImage.sprite = ContenedorPrefabsBatalla.ExploradorCuerpo1; break;
-      case 3: persUnidad.GetComponent<Unidad>().uImage.sprite = ContenedorPrefabsBatalla.PurificadoraCuerpo1; break;
-      case 4: persUnidad.GetComponent<Unidad>().uImage.sprite = ContenedorPrefabsBatalla.AcechadorCuerpo1; break;
-      case 5: persUnidad.GetComponent<Unidad>().uImage.sprite = ContenedorPrefabsBatalla.CanalizadorCuerpo1; break;
-      case 6: persUnidad.GetComponent<Unidad>().uImage.sprite = ContenedorPrefabsBatalla.DuelistaCuerpo1; break;
-
-        //-----
+      CampaignManager.Instance.SincronizarAparienciaVisualPersonaje(pers);
+    }
+    if (scUnidadPrefabClase != null)
+    {
+      scUnidadPrefabClase.AplicarAparienciaAlternativaPorIndice(pers.indiceAparienciaAlternativa);
     }
 
 
@@ -2330,6 +2383,10 @@ public class AdministradorEscenas : MonoBehaviour
 
 
     persUnidad.GetComponent<Unidad>().CrearUnidad(indexRetrato, stNombre, maxHP, fIniciativa, fApMax, fValMax, fFuerza, fAgilidad, fPoder, fArmadura, resNecro, resArcano, resFuego, resHielo, resRayo, fDefensa, fCritRango, fCritDanio, fAtaque, fTSReflejos, fTSFortaleza, fTSMental, ResDivino); //Asi se determinan atributos
+    if (pers.spRetrato != null)
+    {
+      persUnidad.GetComponent<Unidad>().uRetrato = pers.spRetrato;
+    }
 
 
 
@@ -4620,8 +4677,30 @@ public class AdministradorEscenas : MonoBehaviour
       }
     }
 
+    AplicarEfectoEspecialAccesorio(pers.Accesorio1, unidad, GO);
+    AplicarEfectoEspecialAccesorio(pers.Accesorio2, unidad, GO);
   }
 
+
+  void AplicarEfectoEspecialAccesorio(Accesorio accesorio, Unidad unidad, GameObject GO)
+  {
+    if (accesorio == null || unidad == null || GO == null)
+    {
+      return;
+    }
+
+    if (accesorio.IDEfectoEspecial == 5)
+    {
+      Buff buffAnillo = new Buff();
+      buffAnillo.buffNombre = "Anillo de Destruccion";
+      buffAnillo.boolfDebufftBuff = true;
+      buffAnillo.DuracionBuffRondas = -1;
+      buffAnillo.esBuffVisibleUI = false;
+      buffAnillo.cantDanioPorcentaje += 10;
+      buffAnillo.AplicarBuff(unidad);
+      ComponentCopier.CopyComponent(buffAnillo, GO.gameObject);
+    }
+  }
 
   void CopiarHabilidades(GameObject pers, GameObject persUnidad)
   {

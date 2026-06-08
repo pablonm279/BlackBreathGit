@@ -616,13 +616,13 @@ MonoBehaviour:
     id: ITEM_SCRIPTS_EQUIPO_ACCESORIOS_ANILLODEDESTRUCCION
     prefab: {fileID: 1780994479000739857, guid: 976e3419dae32b842a75198f5e5cdf1b, type: 3}
     nombre: "Anillo de Destrucci\xF3n"
-    descripcion: Anillo orientado al dano ofensivo y al impacto magico.
+    descripcion: Anillo ofensivo que otorga +10% de dano.
     categoria: Accesorio
-    rareza: 0
+    rareza: 1
     icono: {fileID: 21300000, guid: 74fb983f4e655c84c96154b2b28e1d82, type: 3}
-    precio: 240
+    precio: 350
     nivelMejora: 0
-    idEfectoEspecial: 0
+    idEfectoEspecial: 5
     clasesPermitidas: 
     requisitoFue: 0
     requisitoAgi: 0
@@ -632,7 +632,7 @@ MonoBehaviour:
       buffAgi: 0
       buffPoder: 0
       buffIniciativa: 0
-      buffApMax: 1
+      buffApMax: 0
       buffValMax: 0
       buffhpMax: 0
       buffArmadura: 0
@@ -719,7 +719,7 @@ MonoBehaviour:
         cantEspinasDanioPlano: 0
         cantEspinasDanioPorcentaje: 0
     habilidadAtaque: {fileID: 0}
-    habilidadExtra1: {fileID: 1039378382291529976, guid: 976e3419dae32b842a75198f5e5cdf1b, type: 3}
+    habilidadExtra1: {fileID: 0}
     habilidadExtra2: {fileID: 0}
     tags: []
     activo: 1

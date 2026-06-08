@@ -81,10 +81,18 @@ public class Nodo : MonoBehaviour
   const float RetrasoPasoYFadeVision = 0.006f;
   const float RetrasoMaximoFadeVision = 0.11f;
   const string NombreLineaIntroCampania = "LineaIntroCampania";
+  const string NombreLineaOutroCampania = "LineaOutroCampania";
   const int SegmentosLineaIntroCampania = 5;
+  const int SegmentosLineaOutroCampania = 6;
   const int ResolucionLineaIntroCampania = 12;
+  const int ResolucionLineaOutroCampania = 16;
   const float AlphaIntroCampaniaMinimo = 0.16f;
   const float AlphaIntroCampaniaMaximo = 0.82f;
+  const float MultiplicadorLongitudOutroCampania = 1.18f;
+  const float LongitudMinimaOutroCampania = 5.4f;
+  const float LongitudMaximaOutroCampania = 8.35f;
+  const float CurvaturaLateralOutroCampania = 0.34f;
+  const float SinuosidadOutroCampania = 0.12f;
   const float VelocidadIntroCampania = 1.0f;
   const float SeparacionIntroCampania = 0.62f;
   const float LateralMaximoIntroCampania = 0.38f;
@@ -898,23 +906,174 @@ public class Nodo : MonoBehaviour
     }
   }
 
+  void CrearSegmentosVisualesDecorativos(Transform raizLinea, LineRenderer lineaBase, string nombreBase, int cantidadSegmentos)
+  {
+    if (raizLinea == null || lineaBase == null || lineaBase.positionCount < 2)
+    {
+      return;
+    }
+
+    for (int i = 0; i < cantidadSegmentos; i++)
+    {
+      float t0 = i / (float)cantidadSegmentos;
+      float t1 = (i + 1) / (float)cantidadSegmentos;
+      float alpha = Mathf.Lerp(AlphaIntroCampaniaMinimo, AlphaIntroCampaniaMaximo, t1);
+
+      GameObject segmentoGO = Instantiate(linePrefab, raizLinea);
+      segmentoGO.name = nombreBase + "_Segmento_" + (i + 1);
+      ConfigurarSegmentoVisualIntro(segmentoGO, lineaBase, t0, t1, alpha);
+    }
+  }
+
+  void CrearSegmentosVisualesOutro(Transform raizOutro, LineRenderer lineaBase)
+  {
+    CrearSegmentosVisualesDecorativos(raizOutro, lineaBase, NombreLineaOutroCampania, SegmentosLineaOutroCampania);
+  }
+
+  public LineRenderer CrearLineaDecorativaFinalHaciaDerecha(Vector3 direccionDerecha)
+  {
+    if (linePrefab == null)
+    {
+      return null;
+    }
+
+    Transform lineaAnterior = transform.Find(NombreLineaOutroCampania);
+    if (lineaAnterior != null)
+    {
+      Destroy(lineaAnterior.gameObject);
+    }
+
+    direccionDerecha.y = 0f;
+    if (direccionDerecha.sqrMagnitude <= 0.0001f)
+    {
+      direccionDerecha = Vector3.right;
+    }
+    direccionDerecha.Normalize();
+
+    float longitud = CalcularLongitudOutroCampania();
+    Vector3 inicio = transform.position;
+    Vector3 fin = inicio + direccionDerecha * longitud;
+    GameObject lineaGO = Instantiate(linePrefab, transform);
+    lineaGO.name = NombreLineaOutroCampania;
+
+    LineRenderer lr = lineaGO.GetComponent<LineRenderer>();
+    if (lr == null)
+    {
+      Destroy(lineaGO);
+      return null;
+    }
+
+    lr.useWorldSpace = true;
+    ConfigurarPuntosLineaOutro(lr, inicio, fin, ResolucionLineaOutroCampania);
+    OcultarRenderersLineaIntro(lineaGO);
+    CrearSegmentosVisualesOutro(lineaGO.transform, lr);
+    return lr;
+  }
+
+  float CalcularLongitudOutroCampania()
+  {
+    float distanciaUltimoTramo = 0f;
+    if (scContenedorNodos2 != null && scContenedorNodos2.listTodosNodos != null)
+    {
+      for (int i = 0; i < scContenedorNodos2.listTodosNodos.Count; i++)
+      {
+        Nodo origen = scContenedorNodos2.listTodosNodos[i];
+        if (origen == null || !origen.TieneConexionHacia(this))
+        {
+          continue;
+        }
+
+        distanciaUltimoTramo = Vector3.Distance(origen.transform.position, transform.position);
+        break;
+      }
+    }
+
+    if (distanciaUltimoTramo <= 0.001f)
+    {
+      distanciaUltimoTramo = 6.2f;
+    }
+
+    return Mathf.Clamp(distanciaUltimoTramo * MultiplicadorLongitudOutroCampania, LongitudMinimaOutroCampania, LongitudMaximaOutroCampania);
+  }
+
+  void ConfigurarPuntosLineaOutro(LineRenderer lr, Vector3 inicio, Vector3 fin, int resolucion)
+  {
+    if (lr == null)
+    {
+      return;
+    }
+
+    MapDecorator mapDecorator = ObtenerDecoradorMapa();
+    int cantidadPuntos = Mathf.Max(2, resolucion);
+    lr.positionCount = cantidadPuntos;
+
+    Vector3 direccion = (fin - inicio).normalized;
+    Vector3 perpendicular = Vector3.Cross(Vector3.up, direccion);
+    if (perpendicular.sqrMagnitude <= 0.0001f)
+    {
+      perpendicular = Vector3.forward;
+    }
+    perpendicular.Normalize();
+
+    for (int i = 0; i < cantidadPuntos; i++)
+    {
+      float t = i / (float)(cantidadPuntos - 1);
+      Vector3 punto = Vector3.Lerp(inicio, fin, t);
+      float envolvente = Mathf.Sin(t * Mathf.PI);
+      float desplazamiento = Mathf.Sin(t * Mathf.PI * 1.65f) * CurvaturaLateralOutroCampania;
+      desplazamiento += Mathf.Sin(t * Mathf.PI * 3.1f) * SinuosidadOutroCampania;
+      punto += perpendicular * (desplazamiento * envolvente);
+      punto = AjustarPuntoIntroASuelo(punto, mapDecorator);
+      lr.SetPosition(i, punto);
+    }
+  }
+
+  bool EsNodoFinalZona()
+  {
+    return posXNodo == 11;
+  }
+
+  void SincronizarLineaDecorativaNodoFinal()
+  {
+    Transform lineaOutro = transform.Find(NombreLineaOutroCampania);
+    if (!EsNodoFinalZona())
+    {
+      if (lineaOutro != null)
+      {
+        Destroy(lineaOutro.gameObject);
+      }
+      return;
+    }
+
+    bool mostrar = visiblePorVision && revelado && gameObject.activeInHierarchy;
+    if (!mostrar)
+    {
+      if (lineaOutro != null)
+      {
+        lineaOutro.gameObject.SetActive(false);
+      }
+      return;
+    }
+
+    if (lineaOutro == null)
+    {
+      LineRenderer lr = CrearLineaDecorativaFinalHaciaDerecha(Vector3.right);
+      lineaOutro = lr != null ? lr.transform : null;
+    }
+
+    if (lineaOutro != null)
+    {
+      lineaOutro.gameObject.SetActive(true);
+    }
+  }
+
   void CrearSegmentosVisualesIntro(Transform raizIntro, LineRenderer lineaBase)
   {
     if (raizIntro == null || lineaBase == null || lineaBase.positionCount < 2)
     {
       return;
     }
-
-    for (int i = 0; i < SegmentosLineaIntroCampania; i++)
-    {
-      float t0 = i / (float)SegmentosLineaIntroCampania;
-      float t1 = (i + 1) / (float)SegmentosLineaIntroCampania;
-      float alpha = Mathf.Lerp(AlphaIntroCampaniaMinimo, AlphaIntroCampaniaMaximo, t1);
-
-      GameObject segmentoGO = Instantiate(linePrefab, raizIntro);
-      segmentoGO.name = NombreLineaIntroCampania + "_Segmento_" + (i + 1);
-      ConfigurarSegmentoVisualIntro(segmentoGO, lineaBase, t0, t1, alpha);
-    }
+    CrearSegmentosVisualesDecorativos(raizIntro, lineaBase, NombreLineaIntroCampania, SegmentosLineaIntroCampania);
   }
 
   void ConfigurarSegmentoVisualIntro(GameObject segmentoGO, LineRenderer lineaBase, float t0, float t1, float alpha)
@@ -1066,6 +1225,7 @@ public class Nodo : MonoBehaviour
     {
       if (child.name.Contains("LineaCaminos")) destruir.Add(child.gameObject);
       if (child.name.Contains(NombreLineaContinuacionVision)) destruir.Add(child.gameObject);
+      if (child.name.Contains(NombreLineaOutroCampania)) destruir.Add(child.gameObject);
       if (child.name.Contains("Nodo")) child.gameObject.SetActive(false);
     }
     foreach (var go in destruir) Destroy(go);
@@ -1117,6 +1277,7 @@ public class Nodo : MonoBehaviour
     LimpiarEstadosPersistentesNoValidos();
     AplicarVisualGuardado(data.visualCode, data.esMisterioso);
     SincronizarVFXPersistentes();
+    SincronizarLineaDecorativaNodoFinal();
     gameObject.SetActive(data.activo);
   }
 
@@ -1276,17 +1437,20 @@ public class Nodo : MonoBehaviour
       CancelarFadeVisionNodo();
       DesactivarPulsoMovimientoNodo();
       DesactivarTodosGraficosNodo();
+      SincronizarLineaDecorativaNodoFinal();
       return;
     }
 
     if (DebeAplicarFadeVisionNodo())
     {
       ProgramarFadeVisionNodo();
+      SincronizarLineaDecorativaNodoFinal();
       return;
     }
 
     RefrescarVisualSegunRevelado();
     RestaurarAlphaGraficosNodoActivos();
+    SincronizarLineaDecorativaNodoFinal();
   }
 
   public void OcultarCaminosPorVision()
@@ -3063,6 +3227,7 @@ if (esLaLider)
     if (!visiblePorVision)
     {
       DesactivarTodosGraficosNodo();
+      SincronizarLineaDecorativaNodoFinal();
       return;
     }
 
@@ -3070,17 +3235,20 @@ if (esLaLider)
     {
       DesactivarTodosGraficosNodo();
       ActivarVisualBaseNoRevelado();
+      SincronizarLineaDecorativaNodoFinal();
       return;
     }
 
     AplicarVisualGuardado(numVisualActual, esMisterioso);
     SincronizarVFXPersistentes();
+    SincronizarLineaDecorativaNodoFinal();
   }
 
   bool DebeAplicarFadeVisionNodo()
   {
     return Application.isPlaying
       && !nodoConFadeVisionAplicado
+      && !EsNodoFinalZona()
       && scMapaManager != null
       && scMapaManager.nodoActual != null
       && posXNodo > scMapaManager.nodoActual.posXNodo;
@@ -3668,6 +3836,7 @@ if (esLaLider)
     if (!visiblePorVision)
     {
       DesactivarTodosGraficosNodo();
+      SincronizarLineaDecorativaNodoFinal();
       return;
     }
 
@@ -3675,6 +3844,7 @@ if (esLaLider)
     {
       DesactivarTodosGraficosNodo();
       ActivarVisualBaseNoRevelado();
+      SincronizarLineaDecorativaNodoFinal();
       return;
     }
 
@@ -3701,8 +3871,11 @@ if (esLaLider)
     if (!visualActivado)
     {
       ActivarVisualBaseNoRevelado();
+      SincronizarLineaDecorativaNodoFinal();
       return;
     }
+
+    SincronizarLineaDecorativaNodoFinal();
 
     if (CampaignManager.Instance != null &&
         CampaignManager.Instance.scMapaManager != null &&

@@ -1,6 +1,23 @@
 using System.Threading.Tasks;
 using UnityEngine;
 
+[System.Serializable]
+public class AparienciaAlternativaDuelista
+{
+    public string nombre;
+    public Sprite retrato;
+    public Sprite poseIdle;
+    public Sprite poseMover;
+    public Sprite poseAtacar;
+    public Sprite poseHabilidad;
+    public Sprite poseEnGarde;
+
+    public bool TieneContenido()
+    {
+        return retrato != null || poseIdle != null || poseMover != null || poseAtacar != null || poseHabilidad != null || poseEnGarde != null;
+    }
+}
+
 public class ClaseDuelista : Unidad
 {
     private const string BuffNombreEnGarde = "En Garde";
@@ -13,9 +30,134 @@ public class ClaseDuelista : Unidad
     private int bonusEvasionEnGardeAplicado;
     private bool poseEnGardeActiva;
     private Sprite poseIdleOriginal;
+    private Sprite poseEnGardeAlternativaActiva;
     private UnidadPoseController poseControllerDuelista;
 
     public Sprite Pose_Engarde;
+    public System.Collections.Generic.List<AparienciaAlternativaDuelista> aparienciasAlternativas = new System.Collections.Generic.List<AparienciaAlternativaDuelista>();
+
+    public override void AplicarAparienciaAlternativaAleatoria()
+    {
+        AplicarAparienciaAlternativaPorIndice(ElegirIndiceAparienciaAlternativaAleatoria());
+    }
+
+    public override void AplicarAparienciaAlternativaPorIndice(int indiceApariencia)
+    {
+        if (poseControllerDuelista == null)
+        {
+            poseControllerDuelista = GetComponent<UnidadPoseController>();
+        }
+
+        if (poseControllerDuelista == null)
+        {
+            return;
+        }
+
+        AparienciaAlternativaDuelista aparienciaElegida = ObtenerAparienciaAlternativaDuelista(indiceApariencia);
+        poseEnGardeAlternativaActiva = aparienciaElegida != null ? aparienciaElegida.poseEnGarde : null;
+        if (aparienciaElegida == null)
+        {
+            poseControllerDuelista.RestaurarPosesBase();
+            return;
+        }
+
+        Sprite poseIdleBase = poseControllerDuelista.ObtenerPoseIdleBase() != null ? poseControllerDuelista.ObtenerPoseIdleBase() : (uImage != null ? uImage.sprite : null);
+        Sprite poseMoverBase = poseControllerDuelista.ObtenerPoseMoverBase() != null ? poseControllerDuelista.ObtenerPoseMoverBase() : poseIdleBase;
+        Sprite poseAtacarBase = poseControllerDuelista.ObtenerPoseAtacarBase() != null ? poseControllerDuelista.ObtenerPoseAtacarBase() : poseIdleBase;
+        Sprite poseHabilidadBase = poseControllerDuelista.ObtenerPoseHabilidadBase() != null ? poseControllerDuelista.ObtenerPoseHabilidadBase() : poseIdleBase;
+
+        Sprite poseIdle = aparienciaElegida.poseIdle != null ? aparienciaElegida.poseIdle : poseIdleBase;
+        Sprite poseMover = aparienciaElegida.poseMover != null ? aparienciaElegida.poseMover : poseMoverBase;
+        Sprite poseAtacar = aparienciaElegida.poseAtacar != null ? aparienciaElegida.poseAtacar : poseAtacarBase;
+        Sprite poseHabilidad = aparienciaElegida.poseHabilidad != null ? aparienciaElegida.poseHabilidad : poseHabilidadBase;
+
+        poseControllerDuelista.ConfigurarPoses(poseIdle, poseMover, poseAtacar, poseHabilidad);
+    }
+
+    public override int ObtenerCantidadAparienciasAlternativas()
+    {
+        return 1 + ObtenerAparienciasAlternativasDuelistaValidas().Count;
+    }
+
+    public override bool EsIndiceAparienciaAlternativaValido(int indiceApariencia)
+    {
+        return indiceApariencia == Personaje.IndiceAparienciaBase || ObtenerAparienciaAlternativaDuelista(indiceApariencia) != null;
+    }
+
+    public override Sprite ObtenerRetratoAparienciaAlternativa(int indiceApariencia)
+    {
+        AparienciaAlternativaDuelista apariencia = ObtenerAparienciaAlternativaDuelista(indiceApariencia);
+        return apariencia != null ? apariencia.retrato : null;
+    }
+
+    public override System.Collections.Generic.List<int> ObtenerIndicesAparienciasAlternativasDisponibles()
+    {
+        System.Collections.Generic.List<int> indicesDisponibles = new System.Collections.Generic.List<int> { Personaje.IndiceAparienciaBase };
+        if (aparienciasAlternativas == null || aparienciasAlternativas.Count == 0)
+        {
+            return indicesDisponibles;
+        }
+
+        for (int i = 0; i < aparienciasAlternativas.Count; i++)
+        {
+            AparienciaAlternativaDuelista apariencia = aparienciasAlternativas[i];
+            if (apariencia != null && apariencia.TieneContenido())
+            {
+                indicesDisponibles.Add(i);
+            }
+        }
+
+        return indicesDisponibles;
+    }
+
+    AparienciaAlternativaDuelista ObtenerAparienciaAlternativaDuelista(int indiceApariencia)
+    {
+        if (aparienciasAlternativas == null || indiceApariencia < 0 || indiceApariencia >= aparienciasAlternativas.Count)
+        {
+            return null;
+        }
+
+        AparienciaAlternativaDuelista apariencia = aparienciasAlternativas[indiceApariencia];
+        return apariencia != null && apariencia.TieneContenido() ? apariencia : null;
+    }
+
+    System.Collections.Generic.List<AparienciaAlternativaDuelista> ObtenerAparienciasAlternativasDuelistaValidas()
+    {
+        System.Collections.Generic.List<AparienciaAlternativaDuelista> aparienciasValidas = new System.Collections.Generic.List<AparienciaAlternativaDuelista>();
+        if (aparienciasAlternativas == null || aparienciasAlternativas.Count == 0)
+        {
+            return aparienciasValidas;
+        }
+
+        for (int i = 0; i < aparienciasAlternativas.Count; i++)
+        {
+            AparienciaAlternativaDuelista apariencia = aparienciasAlternativas[i];
+            if (apariencia != null && apariencia.TieneContenido())
+            {
+                aparienciasValidas.Add(apariencia);
+            }
+        }
+
+        return aparienciasValidas;
+    }
+
+    public override int ElegirIndiceAparienciaAlternativaAleatoria()
+    {
+        System.Collections.Generic.List<AparienciaAlternativaDuelista> aparienciasValidas = ObtenerAparienciasAlternativasDuelistaValidas();
+        if (aparienciasValidas.Count == 0)
+        {
+            return Personaje.IndiceAparienciaBase;
+        }
+
+        int opcionElegida = UnityEngine.Random.Range(0, aparienciasValidas.Count + 1);
+        if (opcionElegida == 0)
+        {
+            return Personaje.IndiceAparienciaBase;
+        }
+
+        AparienciaAlternativaDuelista aparienciaElegida = aparienciasValidas[opcionElegida - 1];
+        return aparienciasAlternativas.IndexOf(aparienciaElegida);
+    }
 
     public override void ComienzoBatallaClase()
     {
@@ -538,7 +680,13 @@ public class ClaseDuelista : Unidad
             poseControllerDuelista = GetComponent<UnidadPoseController>();
         }
 
-        if (poseControllerDuelista == null || Pose_Engarde == null)
+        if (poseControllerDuelista == null)
+        {
+            return;
+        }
+
+        Sprite poseEnGarde = poseEnGardeAlternativaActiva != null ? poseEnGardeAlternativaActiva : Pose_Engarde;
+        if (poseEnGarde == null)
         {
             return;
         }
@@ -550,7 +698,7 @@ public class ClaseDuelista : Unidad
                 poseIdleOriginal = poseControllerDuelista.poseIdle;
             }
 
-            poseControllerDuelista.poseIdle = Pose_Engarde;
+            poseControllerDuelista.poseIdle = poseEnGarde;
             poseEnGardeActiva = true;
             poseControllerDuelista.SetIdle();
             return;

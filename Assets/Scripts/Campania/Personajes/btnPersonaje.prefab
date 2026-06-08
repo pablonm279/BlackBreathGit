@@ -1753,19 +1753,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2138467819804082972, guid: 0ed217c8bf414de4b94c4dda381f19db, type: 3}
       propertyPath: m_Color.a
-      value: 0.8862745
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2138467819804082972, guid: 0ed217c8bf414de4b94c4dda381f19db, type: 3}
       propertyPath: m_Color.b
-      value: 0.69753474
+      value: 0.8867924
       objectReference: {fileID: 0}
     - target: {fileID: 2138467819804082972, guid: 0ed217c8bf414de4b94c4dda381f19db, type: 3}
       propertyPath: m_Color.g
-      value: 0.69753474
+      value: 0.8867924
       objectReference: {fileID: 0}
     - target: {fileID: 2138467819804082972, guid: 0ed217c8bf414de4b94c4dda381f19db, type: 3}
       propertyPath: m_Color.r
-      value: 0.7075472
+      value: 0.8867924
       objectReference: {fileID: 0}
     - target: {fileID: 2618670317908357268, guid: 0ed217c8bf414de4b94c4dda381f19db, type: 3}
       propertyPath: m_Name

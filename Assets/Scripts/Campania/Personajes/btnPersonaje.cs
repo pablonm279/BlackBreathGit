@@ -297,6 +297,11 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
   }
   public void RepresentarTodo()
   {
+    if (personajeRepresentado != null && CampaignManager.Instance != null)
+    {
+      CampaignManager.Instance.SincronizarAparienciaVisualPersonaje(personajeRepresentado);
+    }
+
     RepresentarRetrato();
     RepresentarActividad();
     representarinfo();

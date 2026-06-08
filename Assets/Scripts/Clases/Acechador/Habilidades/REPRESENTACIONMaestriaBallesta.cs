@@ -20,6 +20,10 @@ public class REPRESENTACIONMaestriaBallesta : Habilidad
     string sufijo = SufijoNivel();
     string titulo = $"Maestría con Ballesta de Mano {sufijo}";
     string bajada = "Mejora los ataques hechos con ballesta de mano.";
+    string etiquetaTipo = "Tipo";
+    string etiquetaAplica = "Aplica a";
+    string etiquetaBonus = "Bonus";
+    string etiquetaExtra = "Extra";
     string tipo = "Pasiva";
     string aplica = "Ataques con ballesta de mano";
     string bonificador = "+1 Ataque, +2 daño Perforante";
@@ -47,6 +51,10 @@ public class REPRESENTACIONMaestriaBallesta : Habilidad
     {
       titulo = $"Hand Crossbow Mastery {sufijo}";
       bajada = "Improves attacks made with a hand crossbow.";
+      etiquetaTipo = "Type";
+      etiquetaAplica = "Applies to";
+      etiquetaBonus = "Bonus";
+      etiquetaExtra = "Extra";
       tipo = "Passive";
       aplica = "Hand crossbow attacks";
       bonificador = "+1 Attack, +2 Piercing damage";
@@ -60,6 +68,10 @@ public class REPRESENTACIONMaestriaBallesta : Habilidad
     {
       titulo = $"Maestria com Besta de Mao {sufijo}";
       bajada = "Melhora ataques feitos com besta de mao.";
+      etiquetaTipo = "Tipo";
+      etiquetaAplica = "Aplica a";
+      etiquetaBonus = "Bonus";
+      etiquetaExtra = "Extra";
       tipo = "Passiva";
       aplica = "Ataques com besta de mao";
       bonificador = "+1 Ataque, +2 de dano Perfurante";
@@ -73,12 +85,12 @@ public class REPRESENTACIONMaestriaBallesta : Habilidad
     txtDescripcion = $"<size=115%><color=#5dade2><b>{titulo}</b></color></size>\n\n";
     txtDescripcion += $"<color=#8f8f8f><i>{bajada}</i></color>\n\n";
     txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
-    txtDescripcion += $"<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>{tipo}</color>\n";
-    txtDescripcion += $"<color=#44d3ec><b>Aplica a:</b></color> <color=#ffffff>{aplica}</color>\n";
-    txtDescripcion += $"<color=#44d3ec><b>Bonus:</b></color> <color=#ffffff>{bonificador}</color>";
+    txtDescripcion += $"<color=#44d3ec><b>{etiquetaTipo}:</b></color> <color=#ffffff>{tipo}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>{etiquetaAplica}:</b></color> <color=#ffffff>{aplica}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>{etiquetaBonus}:</b></color> <color=#ffffff>{bonificador}</color>";
     if (!string.IsNullOrEmpty(extra))
     {
-      txtDescripcion += $"\n<color=#44d3ec><b>Extra:</b></color> <color=#ffffff>{extra}</color>";
+      txtDescripcion += $"\n<color=#44d3ec><b>{etiquetaExtra}:</b></color> <color=#ffffff>{extra}</color>";
     }
     if (!string.IsNullOrEmpty(proximo))
     {

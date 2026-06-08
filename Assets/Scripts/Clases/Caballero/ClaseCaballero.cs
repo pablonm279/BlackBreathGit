@@ -4,6 +4,23 @@ using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
 
+[System.Serializable]
+public class AparienciaAlternativaCaballero
+{
+   public string nombre;
+   public Sprite retrato;
+   public Sprite poseIdle;
+   public Sprite poseMover;
+   public Sprite poseAtacar;
+   public Sprite poseHabilidad;
+   public Sprite posePosturaDefensiva;
+
+   public bool TieneContenido()
+   {
+      return retrato != null || poseIdle != null || poseMover != null || poseAtacar != null || poseHabilidad != null || posePosturaDefensiva != null;
+   }
+}
+
 public class ClaseCaballero : Unidad
 {
    private const string BuffNombrePosturaDefensiva = "Postura Defensiva";
@@ -14,10 +31,12 @@ public class ClaseCaballero : Unidad
    public int PASIVA_Implacable_CARGAS; 
    private bool posePosturaDefensivaActiva;
    private Sprite poseIdleOriginal;
+   private Sprite posePosturaDefensivaAlternativaActiva;
    private UnidadPoseController poseControllerCaballero;
    
 
    public Sprite Pose_PosturaDefensiva;
+   public List<AparienciaAlternativaCaballero> aparienciasAlternativas = new List<AparienciaAlternativaCaballero>();
 
 
 
@@ -97,6 +116,129 @@ public class ClaseCaballero : Unidad
   {
     ChequearBuffPASIVADeterminacion();
     SincronizarPosturaDefensivaSegunBuffActual();
+  }
+
+  public override void AplicarAparienciaAlternativaAleatoria()
+  {
+    AplicarAparienciaAlternativaPorIndice(ElegirIndiceAparienciaAlternativaAleatoria());
+  }
+
+  public override void AplicarAparienciaAlternativaPorIndice(int indiceApariencia)
+  {
+    if (poseControllerCaballero == null)
+    {
+      poseControllerCaballero = GetComponent<UnidadPoseController>();
+    }
+
+    if (poseControllerCaballero == null)
+    {
+      return;
+    }
+
+    AparienciaAlternativaCaballero aparienciaElegida = ObtenerAparienciaAlternativaCaballero(indiceApariencia);
+    posePosturaDefensivaAlternativaActiva = aparienciaElegida != null ? aparienciaElegida.posePosturaDefensiva : null;
+    if (aparienciaElegida == null)
+    {
+      poseControllerCaballero.RestaurarPosesBase();
+      return;
+    }
+
+    Sprite poseIdleBase = poseControllerCaballero.ObtenerPoseIdleBase() != null ? poseControllerCaballero.ObtenerPoseIdleBase() : (uImage != null ? uImage.sprite : null);
+    Sprite poseMoverBase = poseControllerCaballero.ObtenerPoseMoverBase() != null ? poseControllerCaballero.ObtenerPoseMoverBase() : poseIdleBase;
+    Sprite poseAtacarBase = poseControllerCaballero.ObtenerPoseAtacarBase() != null ? poseControllerCaballero.ObtenerPoseAtacarBase() : poseIdleBase;
+    Sprite poseHabilidadBase = poseControllerCaballero.ObtenerPoseHabilidadBase() != null ? poseControllerCaballero.ObtenerPoseHabilidadBase() : poseIdleBase;
+
+    Sprite poseIdle = aparienciaElegida.poseIdle != null ? aparienciaElegida.poseIdle : poseIdleBase;
+    Sprite poseMover = aparienciaElegida.poseMover != null ? aparienciaElegida.poseMover : poseMoverBase;
+    Sprite poseAtacar = aparienciaElegida.poseAtacar != null ? aparienciaElegida.poseAtacar : poseAtacarBase;
+    Sprite poseHabilidad = aparienciaElegida.poseHabilidad != null ? aparienciaElegida.poseHabilidad : poseHabilidadBase;
+
+    poseControllerCaballero.ConfigurarPoses(poseIdle, poseMover, poseAtacar, poseHabilidad);
+  }
+
+  public override int ObtenerCantidadAparienciasAlternativas()
+  {
+    return 1 + ObtenerAparienciasAlternativasCaballeroValidas().Count;
+  }
+
+  public override bool EsIndiceAparienciaAlternativaValido(int indiceApariencia)
+  {
+    return indiceApariencia == Personaje.IndiceAparienciaBase || ObtenerAparienciaAlternativaCaballero(indiceApariencia) != null;
+  }
+
+  public override Sprite ObtenerRetratoAparienciaAlternativa(int indiceApariencia)
+  {
+    AparienciaAlternativaCaballero apariencia = ObtenerAparienciaAlternativaCaballero(indiceApariencia);
+    return apariencia != null ? apariencia.retrato : null;
+  }
+
+  public override List<int> ObtenerIndicesAparienciasAlternativasDisponibles()
+  {
+    List<int> indicesDisponibles = new List<int> { Personaje.IndiceAparienciaBase };
+    if (aparienciasAlternativas == null || aparienciasAlternativas.Count == 0)
+    {
+      return indicesDisponibles;
+    }
+
+    for (int i = 0; i < aparienciasAlternativas.Count; i++)
+    {
+      AparienciaAlternativaCaballero apariencia = aparienciasAlternativas[i];
+      if (apariencia != null && apariencia.TieneContenido())
+      {
+        indicesDisponibles.Add(i);
+      }
+    }
+
+    return indicesDisponibles;
+  }
+
+  AparienciaAlternativaCaballero ObtenerAparienciaAlternativaCaballero(int indiceApariencia)
+  {
+    if (aparienciasAlternativas == null || indiceApariencia < 0 || indiceApariencia >= aparienciasAlternativas.Count)
+    {
+      return null;
+    }
+
+    AparienciaAlternativaCaballero apariencia = aparienciasAlternativas[indiceApariencia];
+    return apariencia != null && apariencia.TieneContenido() ? apariencia : null;
+  }
+
+  List<AparienciaAlternativaCaballero> ObtenerAparienciasAlternativasCaballeroValidas()
+  {
+    List<AparienciaAlternativaCaballero> aparienciasValidas = new List<AparienciaAlternativaCaballero>();
+    if (aparienciasAlternativas == null || aparienciasAlternativas.Count == 0)
+    {
+      return aparienciasValidas;
+    }
+
+    for (int i = 0; i < aparienciasAlternativas.Count; i++)
+    {
+      AparienciaAlternativaCaballero apariencia = aparienciasAlternativas[i];
+      if (apariencia != null && apariencia.TieneContenido())
+      {
+        aparienciasValidas.Add(apariencia);
+      }
+    }
+
+    return aparienciasValidas;
+  }
+
+  public override int ElegirIndiceAparienciaAlternativaAleatoria()
+  {
+    List<AparienciaAlternativaCaballero> aparienciasValidas = ObtenerAparienciasAlternativasCaballeroValidas();
+    if (aparienciasValidas.Count == 0)
+    {
+      return Personaje.IndiceAparienciaBase;
+    }
+
+    int opcionElegida = UnityEngine.Random.Range(0, aparienciasValidas.Count + 1);
+    if (opcionElegida == 0)
+    {
+      return Personaje.IndiceAparienciaBase;
+    }
+
+    AparienciaAlternativaCaballero aparienciaElegida = aparienciasValidas[opcionElegida - 1];
+    return aparienciasAlternativas.IndexOf(aparienciaElegida);
   }
 
     void ChequearBuffPASIVADeterminacion()
@@ -228,7 +370,13 @@ public class ClaseCaballero : Unidad
         poseControllerCaballero = GetComponent<UnidadPoseController>();
       }
 
-      if (poseControllerCaballero == null || Pose_PosturaDefensiva == null)
+      if (poseControllerCaballero == null)
+      {
+        return;
+      }
+
+      Sprite posePosturaDefensiva = posePosturaDefensivaAlternativaActiva != null ? posePosturaDefensivaAlternativaActiva : Pose_PosturaDefensiva;
+      if (posePosturaDefensiva == null)
       {
         return;
       }
@@ -240,7 +388,7 @@ public class ClaseCaballero : Unidad
           poseIdleOriginal = poseControllerCaballero.poseIdle;
         }
 
-        poseControllerCaballero.poseIdle = Pose_PosturaDefensiva;
+        poseControllerCaballero.poseIdle = posePosturaDefensiva;
         posePosturaDefensivaActiva = true;
         poseControllerCaballero.SetIdle();
         return;

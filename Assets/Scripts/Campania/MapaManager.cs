@@ -719,6 +719,14 @@ public class MapaManager : MonoBehaviour
            }
        }
 
+       foreach (Nodo nodo in nodosActivosVisibilidad)
+       {
+           if (nodo != null && nodo.posXNodo == 11 && (!nodo.revelado || !nodo.TieneVisibilidadForzadaPorReveladoEspecial()))
+           {
+               nodo.ForzarVisiblePorReveladoEspecial();
+           }
+       }
+
        int distanciaVision = CampaignManager.Instance != null
            ? CampaignManager.Instance.ObtenerDistanciaVisionEfectiva()
            : 1;

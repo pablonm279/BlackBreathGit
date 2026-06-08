@@ -13,7 +13,7 @@ public class RecuperarAire : Habilidad
     {
         nombre = "Recuperar Aire";
         IDenClase = 8;
-        costoAP = 3;
+        costoAP = 2;
         costoPM = 0;
         Usuario = gameObject;
         scEstaUnidad = Usuario.GetComponent<Unidad>();

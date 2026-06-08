@@ -410,6 +410,9 @@ MonoBehaviour:
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
   forzarPoseHabilidad: 0
+  omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
@@ -474,6 +477,14 @@ MonoBehaviour:
   barraVidaHealColor: {r: 1, g: 0.85, b: 0.2, a: 0.6}
   barraVidaHealDelay: 0.08
   barraVidaHealSpeed: 0.9
+  barraVidaColorVidaBaja: {r: 0.42, g: 0.02, b: 0.02, a: 1}
+  barraVidaRatioInicioRojo: 0.2
+  barraVidaOscurecerTurnoPasado: 0.72
+  rotuloHabilidadOffset: {x: 0, y: 2.1}
+  rotuloHabilidadPadding: {x: 0.34, y: 0.16}
+  rotuloHabilidadDuracion: 3
+  rotuloHabilidadFondo: {r: 0.09, g: 0.012, b: 0.012, a: 0.82}
+  rotuloHabilidadBorde: {r: 0.35, g: 0.07, b: 0.06, a: 0.72}
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 6131020686038377689}
 --- !u!114 &-4855694794881200728
@@ -508,7 +519,6 @@ MonoBehaviour:
   esInmobil: 0
   mod_maxAccionP: 0
   AccionP_actual: 0
-  AccionP_SeEsforzo: 0
   scTextoArmaduraFlash: {fileID: 0}
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
@@ -544,6 +554,7 @@ MonoBehaviour:
   mod_DanioPorcentaje: 0
   at_CriticoRangoDado: 0
   mod_CriticoRangoDado: 0
+  bonusCritDadoRecibido: 0
   "at_CriticoDa\xF1oBonus": 0
   "mod_CriticoDa\xF1oBonus": 0
   at_TSReflejos: 0
@@ -570,7 +581,9 @@ MonoBehaviour:
   estado_ResistenciasReducidas: 0
   estado_Condenado: 0
   estado_CondenadoTurnosSeguidos: 0
+  ultimaUnidadQueLeHizoDanio: {fileID: 0}
   estado_Escudado: 0
+  estado_MovimientoAbaratado: 0
   estado_Corrupto: 0
   unidadVoladora: 0
   estado_Volando: 0
@@ -587,6 +600,7 @@ MonoBehaviour:
   debuffsImpactoArma: []
   reduccionDanioRecibidoPorcentaje: 0
   reduccionDanioCriticoRecibidoPorcentaje: 0
+  aumentoDanioCriticoRecibidoPorcentaje: 0
   resistenciaEstadosPorcentaje: 0
   espinasDanioPlano: 0
   espinasDanioPorcentaje: 0
@@ -598,11 +612,17 @@ MonoBehaviour:
   entroComoAliado: 0
   offsetVueloY: 13
   duracionAnimacionVuelo: 0.4
+  desplazamientoAnimacionTurnoNuevoY: 1.7
+  duracionSubidaAnimacionTurnoNuevo: 0.12
+  duracionBajadaAnimacionTurnoNuevo: 0.12
   apilarTextosFlotantes: 0
   floatingTextSlotSpacing: 9
   floatingTextSlotLifetimeFallback: 1.1
   floatingTextMaxSlots: 4
   floatingTextMinInterval: 0.05
+  floatingTextCrowdThreshold: 3
+  floatingTextCrowdIntervalStep: 0.01
+  floatingTextCrowdExtraIntervalMax: 0.03
   scBattleManager: {fileID: 0}
   puntoSaliente: {fileID: 0}
   puntoEntrante: {fileID: 0}
@@ -614,6 +634,13 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 9fe522683747b294c97e6347f1e993a2, type: 3}
   - {fileID: 8300000, guid: 7929aa17ba4dd5d4aa7bbf5679d47801, type: 3}
   - {fileID: 8300000, guid: 13f254d7dafce3e4da11ab8a9d71bdd9, type: 3}
+  aparienciasAlternativas:
+  - nombre: Apariencia2
+    retrato: {fileID: 21300000, guid: 8de03174416412a41b5eb474fe105888, type: 3}
+    poseIdle: {fileID: 21300000, guid: 39ab3e6efe62ae5498c2dac4b5fbc8a1, type: 3}
+    poseMover: {fileID: 21300000, guid: f6a4df1b2ba74584f908ba50054e32ce, type: 3}
+    poseAtacar: {fileID: 21300000, guid: a490f7f9b7093904b9655a800c4ff69e, type: 3}
+    poseHabilidad: {fileID: 21300000, guid: be3d6d2b7aa290345a752d488f199574, type: 3}
   PASIVA_MaestriaConBallestaMano: 0
   PASIVA_MaestriaConEspadacorta: 0
   PASIVA_Masacre: 0
@@ -638,6 +665,13 @@ MonoBehaviour:
   duracionPoseAtacar: 1.7
   duracionPoseDanyo: 0.7
   duracionPoseHabilidad: 1.2
+  meleeFraccionImpacto: 0.35
+  meleePreImpactoFallback: 0.22
+  meleePreImpactoMin: 0.08
+  meleePreImpactoMax: 0.42
+  meleePostImpacto: 0.16
+  meleePostImpactoMin: 0.05
+  meleePostImpactoMax: 0.3
 --- !u!82 &-8030155357043385531
 AudioSource:
   m_ObjectHideFlags: 0

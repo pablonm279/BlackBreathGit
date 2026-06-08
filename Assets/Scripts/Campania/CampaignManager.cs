@@ -51,6 +51,7 @@ public class CampaignManager : MonoBehaviour
   private bool enviandoExploradores;
   private readonly Dictionary<GameObject, bool> estadosCanvasCampaniaDuranteExploradores = new Dictionary<GameObject, bool>();
   private readonly Dictionary<GameObject, bool> estadosCanvasCampaniaDuranteIntro = new Dictionary<GameObject, bool>();
+  private readonly Dictionary<int, int> ultimasAparienciasAlternativasPorClase = new Dictionary<int, int>();
   private readonly List<System.Action> accionesAlFinalizarIntroCampania = new List<System.Action>();
   private bool introCampaniaPendiente;
   private bool introCampaniaActiva;
@@ -72,6 +73,12 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private bool debugForzarAuroraPasoVientoHelado = false;
   [SerializeField] private bool debugIgnorarCombates = false;
   [SerializeField] private bool debugMostrarTodosLosCaminosMapa = false;
+  [SerializeField] private bool debugIniciarConCaballeroCompleto = false;
+  [SerializeField] private bool debugIniciarConExploradorCompleto = false;
+  [SerializeField] private bool debugIniciarConPurificadoraCompleta = false;
+  [SerializeField] private bool debugIniciarConAcechadorCompleto = false;
+  [SerializeField] private bool debugIniciarConCanalizadorCompleto = false;
+  [SerializeField] private bool debugIniciarConDuelistaCompleta = false;
   private bool debugMostrarTodosLosCaminosMapaAplicado;
   [Header("Debug mouse")]
   [SerializeField] private KeyCode teclaDebugBajoMouse = KeyCode.F10;
@@ -855,11 +862,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
  
   private void InicializarPersonajesNuevaCampania()
   {
-  
-   
+    AgregarHeroesDebugIniciales();
+
     if (!DebeUsarConfiguracionTutorial())
     {
-      CrearCanalizador();
       int claseInicialAleatoria = UnityEngine.Random.value < 0.5f ? 5 : 3;
       AgregarHeroe(claseInicialAleatoria); //Canalizador o Purificadora
       AgregarHeroe(0);
@@ -871,6 +877,61 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     CrearAcechador(true);
     RefrescarRetratosPersonajesCampania();
+  }
+
+  private void AgregarHeroesDebugIniciales()
+  {
+    if (debugIniciarConCaballeroCompleto)
+    {
+      AgregarHeroeDebugCompleto(1);
+    }
+
+    if (debugIniciarConExploradorCompleto)
+    {
+      AgregarHeroeDebugCompleto(2);
+    }
+
+    if (debugIniciarConPurificadoraCompleta)
+    {
+      AgregarHeroeDebugCompleto(3);
+    }
+
+    if (debugIniciarConAcechadorCompleto)
+    {
+      AgregarHeroeDebugCompleto(4);
+    }
+
+    if (debugIniciarConCanalizadorCompleto)
+    {
+      AgregarHeroeDebugCompleto(5);
+    }
+
+    if (debugIniciarConDuelistaCompleta)
+    {
+      AgregarHeroeDebugCompleto(6);
+    }
+  }
+
+  private void AgregarHeroeDebugCompleto(int idClase)
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    int cantidadAntes = scMenuPersonajes.listaPersonajes.Count;
+    if (!AgregarHeroe(idClase))
+    {
+      return;
+    }
+
+    if (scMenuPersonajes.listaPersonajes.Count <= cantidadAntes)
+    {
+      return;
+    }
+
+    Personaje personaje = scMenuPersonajes.listaPersonajes[scMenuPersonajes.listaPersonajes.Count - 1];
+    CompletarHeroeDebugConTodasLasHabilidades(personaje);
   }
 
   private void RefrescarRetratosPersonajesCampania(bool actualizarInfoSiMenuAbierto = false)
@@ -2017,6 +2078,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.eventosAleatoriosUsadosMapa = new List<int>(eventosAleatoriosUsadosMapa);
     data.estadosCaravana = estadosCaravana != null ? estadosCaravana.ConstruirSaveData() : new EstadosCaravanaSaveData();
     data.bitacora = logDeCampania != null ? logDeCampania.ExportarSaveData() : new BitacoraSaveData();
+    GuardarUltimasAparienciasPorClaseEnSave(data);
     data.settlementOpen = asentamientoManager != null && asentamientoManager.DebeGuardarseComoAbierto;
     data.settlementActionsRemaining = asentamientoManager != null ? asentamientoManager.AccionesRestantes : 3;
     return data;
@@ -2144,6 +2206,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.nombre = personaje.sNombre;
     data.idClase = personaje.IDClase;
     data.idRetrato = personaje.idRetrato;
+    data.indiceAparienciaAlternativa = personaje.indiceAparienciaAlternativa;
+    data.aparienciaAlternativaResuelta = personaje.aparienciaAlternativaResuelta;
     data.puestoDeseado = personaje.iPuestoDeseado;
     data.vidaActual = personaje.fVidaActual;
     data.vidaMaxima = personaje.fVidaMaxima;
@@ -2484,6 +2548,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   private void AplicarEstadoBaseCampaniaDesdeSave(CampaignSaveData data)
   {
+    ultimasAparienciasAlternativasPorClase.Clear();
     if (data == null)
     {
       return;
@@ -2521,6 +2586,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     transicionZonaEnCurso = false;
     BATALLA_EnCurso = data.batallaEnCurso;
     EMBOSCADA_EnCurso = data.emboscadaEnCurso;
+    RestaurarUltimasAparienciasPorClaseDesdeSave(data);
   }
 
   private void RestaurarZonaDesdeSave(SaveFileData saveFileData)
@@ -2854,7 +2920,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     int[] habilidadesGuardadas = data.habilidades ?? Array.Empty<int>();
     int[] actividadesGuardadas = data.actividades ?? Array.Empty<int>();
 
-    AplicarDatosBasePersonajeDesdeSave(personaje, data, habilidadesGuardadas, actividadesGuardadas);
+    AplicarDatosBasePersonajeDesdeSave(personaje, data, habilidadesGuardadas, actividadesGuardadas, saveVersion);
     AgregarHabilidadesIntrinsecasDeClase(personaje);
     AgregarActividadesBase(personaje);
 
@@ -2883,12 +2949,19 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     return personaje;
   }
 
-  private void AplicarDatosBasePersonajeDesdeSave(Personaje personaje, CharacterSaveData data, int[] habilidadesGuardadas, int[] actividadesGuardadas)
+  private void AplicarDatosBasePersonajeDesdeSave(Personaje personaje, CharacterSaveData data, int[] habilidadesGuardadas, int[] actividadesGuardadas, int saveVersion)
   {
     personaje.SetPersistentId(string.IsNullOrWhiteSpace(data.id) ? Guid.NewGuid().ToString("N") : data.id);
     personaje.sNombre = data.nombre;
     personaje.IDClase = data.idClase;
     personaje.idRetrato = data.idRetrato;
+    personaje.indiceAparienciaAlternativa = data.indiceAparienciaAlternativa;
+    personaje.aparienciaAlternativaResuelta = data.aparienciaAlternativaResuelta;
+    if (saveVersion < 21)
+    {
+      personaje.aparienciaAlternativaResuelta = false;
+      personaje.indiceAparienciaAlternativa = Personaje.IndiceAparienciaBase;
+    }
     personaje.iPuestoDeseado = data.puestoDeseado;
     personaje.fVidaActual = data.vidaActual;
     personaje.fVidaMaxima = data.vidaMaxima;
@@ -2963,9 +3036,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       personaje.ActividadSeleccionada = 1; //descansa
     }
 
-    personaje.spRetrato = ObtenerRetratoCampaniaPorId(data.idRetrato, data.idClase);
     personaje.InicializarEscaladoDefensaPorAgilidadSiHaceFalta();
     personaje.InicializarEscaladoResElementalPorPoderSiHaceFalta();
+    SincronizarAparienciaVisualPersonaje(personaje);
   }
 
   private void RestaurarEquipmentDesdeSave(Personaje personaje, EquipmentSaveData equipment, ItemDatabase itemDatabase, int saveVersion)
@@ -3240,6 +3313,172 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
   }
 
+  BattleManager ObtenerBattleManagerParaResolverApariencias()
+  {
+    if (scAdministradorEscenas != null && scAdministradorEscenas.EscenaBatalla != null)
+    {
+      BattleManager battleManagerEscena = scAdministradorEscenas.EscenaBatalla.GetComponentInChildren<BattleManager>(true);
+      if (battleManagerEscena != null)
+      {
+        return battleManagerEscena;
+      }
+    }
+
+    return BattleManager.Instance;
+  }
+
+  Unidad ObtenerPrefabClaseParaResolverApariencia(int idClase)
+  {
+    BattleManager battleManager = ObtenerBattleManagerParaResolverApariencias();
+    if (battleManager == null)
+    {
+      return null;
+    }
+
+    GameObject prefabClase = null;
+    switch (idClase)
+    {
+      case 1: prefabClase = battleManager.prefabUnidadCaballero; break;
+      case 2: prefabClase = battleManager.prefabUnidadExplorador; break;
+      case 3: prefabClase = battleManager.prefabUnidadPurificadora; break;
+      case 4: prefabClase = battleManager.prefabUnidadAcechador; break;
+      case 5: prefabClase = battleManager.prefabUnidadCanalizador; break;
+      case 6: prefabClase = battleManager.prefabUnidadDuelista; break;
+    }
+
+    return prefabClase != null ? prefabClase.GetComponent<Unidad>() : null;
+  }
+
+  public void SincronizarAparienciaVisualPersonaje(Personaje personaje)
+  {
+    if (personaje == null)
+    {
+      return;
+    }
+
+    Unidad prefabClase = ObtenerPrefabClaseParaResolverApariencia(personaje.IDClase);
+    if (prefabClase == null)
+    {
+      if (personaje.spRetrato == null)
+      {
+        personaje.spRetrato = ObtenerRetratoCampaniaPorId(personaje.idRetrato, personaje.IDClase);
+      }
+      return;
+    }
+
+    int cantidadApariencias = prefabClase.ObtenerCantidadAparienciasAlternativas();
+    if (cantidadApariencias <= 0)
+    {
+      personaje.indiceAparienciaAlternativa = Personaje.IndiceAparienciaBase;
+      personaje.aparienciaAlternativaResuelta = true;
+      personaje.spRetrato = ObtenerRetratoCampaniaPorId(personaje.idRetrato, personaje.IDClase);
+      return;
+    }
+
+    if (!personaje.aparienciaAlternativaResuelta || !prefabClase.EsIndiceAparienciaAlternativaValido(personaje.indiceAparienciaAlternativa))
+    {
+      personaje.indiceAparienciaAlternativa = ElegirIndiceAparienciaAlternativaSinRepetirConsecutiva(personaje.IDClase, prefabClase);
+      personaje.aparienciaAlternativaResuelta = true;
+      RegistrarUltimaAparienciaAlternativaClase(personaje.IDClase, personaje.indiceAparienciaAlternativa);
+    }
+
+    Sprite retratoApariencia = prefabClase.ObtenerRetratoAparienciaAlternativa(personaje.indiceAparienciaAlternativa);
+    personaje.spRetrato = retratoApariencia != null
+      ? retratoApariencia
+      : ObtenerRetratoCampaniaPorId(personaje.idRetrato, personaje.IDClase);
+  }
+
+  void GuardarUltimasAparienciasPorClaseEnSave(CampaignSaveData data)
+  {
+    if (data == null)
+    {
+      return;
+    }
+
+    data.ultimasAparienciasPorClase.Clear();
+    foreach (KeyValuePair<int, int> entry in ultimasAparienciasAlternativasPorClase)
+    {
+      if (entry.Key <= 0)
+      {
+        continue;
+      }
+
+      data.ultimasAparienciasPorClase.Add(new UltimaAparienciaClaseSaveData
+      {
+        idClase = entry.Key,
+        indiceAparienciaAlternativa = entry.Value
+      });
+    }
+  }
+
+  void RestaurarUltimasAparienciasPorClaseDesdeSave(CampaignSaveData data)
+  {
+    if (data == null || data.ultimasAparienciasPorClase == null)
+    {
+      return;
+    }
+
+    foreach (UltimaAparienciaClaseSaveData entry in data.ultimasAparienciasPorClase)
+    {
+      if (entry == null || entry.idClase <= 0)
+      {
+        continue;
+      }
+
+      ultimasAparienciasAlternativasPorClase[entry.idClase] = entry.indiceAparienciaAlternativa;
+    }
+  }
+
+  void RegistrarUltimaAparienciaAlternativaClase(int idClase, int indiceApariencia)
+  {
+    if (idClase <= 0)
+    {
+      return;
+    }
+
+    ultimasAparienciasAlternativasPorClase[idClase] = indiceApariencia;
+  }
+
+  int ElegirIndiceAparienciaAlternativaSinRepetirConsecutiva(int idClase, Unidad prefabClase)
+  {
+    if (prefabClase == null)
+    {
+      return Personaje.IndiceAparienciaBase;
+    }
+
+    List<int> indicesDisponibles = prefabClase.ObtenerIndicesAparienciasAlternativasDisponibles();
+    if (indicesDisponibles == null || indicesDisponibles.Count == 0)
+    {
+      return Personaje.IndiceAparienciaBase;
+    }
+
+    if (indicesDisponibles.Count == 1)
+    {
+      return indicesDisponibles[0];
+    }
+
+    if (!ultimasAparienciasAlternativasPorClase.TryGetValue(idClase, out int ultimoIndiceUsado) || !indicesDisponibles.Contains(ultimoIndiceUsado))
+    {
+      return indicesDisponibles[UnityEngine.Random.Range(0, indicesDisponibles.Count)];
+    }
+
+    List<int> indicesFiltrados = new List<int>();
+    for (int i = 0; i < indicesDisponibles.Count; i++)
+    {
+      if (indicesDisponibles[i] != ultimoIndiceUsado)
+      {
+        indicesFiltrados.Add(indicesDisponibles[i]);
+      }
+    }
+
+    if (indicesFiltrados.Count == 0)
+    {
+      return ultimoIndiceUsado;
+    }
+
+    return indicesFiltrados[UnityEngine.Random.Range(0, indicesFiltrados.Count)];
+  }
+
   private void AgregarHabilidadesIntrinsecasDeClase(Personaje personaje)
   {
     if (personaje == null)
@@ -3283,6 +3522,152 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     Type tipo = ResolverTipoHabilidadDeClase(personaje != null ? personaje.IDClase : 0, slot);
     Habilidad habilidad = AgregarComponenteSiFalta(personaje != null ? personaje.gameObject : null, tipo) as Habilidad;
     AsignarNivelHabilidad(habilidad, nivel);
+  }
+
+  private void CompletarHeroeDebugConTodasLasHabilidades(Personaje personaje)
+  {
+    if (personaje == null)
+    {
+      return;
+    }
+
+    AgregarHabilidadesIntrinsecasDeClase(personaje);
+    AsignarNivelesHabilidadesIntrinsecasDebug(personaje);
+
+    switch (personaje.IDClase)
+    {
+      case 1:
+        AgregarHabilidadDebug(personaje, 1, typeof(REPRESENTACIONAcorazado));
+        AgregarHabilidadDebug(personaje, 2, typeof(GritoMotivador));
+        AgregarHabilidadDebug(personaje, 3, typeof(CorteHorizontal));
+        AgregarHabilidadDebug(personaje, 4, typeof(PrimerosAuxilios));
+        AgregarHabilidadDebug(personaje, 5, typeof(REPRESENTACIONDeterminacion));
+        AgregarHabilidadDebug(personaje, 6, typeof(Partir));
+        AgregarHabilidadDebug(personaje, 7, typeof(PosturaDefensiva));
+        AgregarHabilidadDebug(personaje, 8, typeof(SiguesTu));
+        break;
+      case 2:
+        AgregarHabilidadDebug(personaje, 1, typeof(REPRESENTACIONVistaLejana));
+        AgregarHabilidadDebug(personaje, 2, typeof(REPRESENTACIONAcrobatico));
+        AgregarHabilidadDebug(personaje, 3, typeof(MarcarPresa));
+        AgregarHabilidadDebug(personaje, 4, typeof(DisparoPotente));
+        AgregarHabilidadDebug(personaje, 5, typeof(Vigilancia));
+        AgregarHabilidadDebug(personaje, 6, typeof(Acechar));
+        AgregarHabilidadDebug(personaje, 7, typeof(Fogata));
+        break;
+      case 3:
+        AgregarHabilidadDebug(personaje, 1, typeof(REPRESENTACIONAuraSagrada));
+        AgregarHabilidadDebug(personaje, 2, typeof(REPRESENTACIONEcosDivinos));
+        AgregarHabilidadDebug(personaje, 3, typeof(Enmendar));
+        AgregarHabilidadDebug(personaje, 4, typeof(LuzCegadora));
+        AgregarHabilidadDebug(personaje, 5, typeof(PilaresDeLuz));
+        AgregarHabilidadDebug(personaje, 6, typeof(SalmoPurificador));
+        AgregarHabilidadDebug(personaje, 7, typeof(LlamaDivina));
+        AgregarHabilidadDebug(personaje, 8, typeof(CastigaraLosMalvados));
+        break;
+      case 4:
+        AgregarHabilidadDebug(personaje, 1, typeof(REPRESENTACIONMaestriaBallesta));
+        AgregarHabilidadDebug(personaje, 2, typeof(REPRESENTACIONMaestriaEspadaCorta));
+        AgregarHabilidadDebug(personaje, 3, typeof(DisparoEnvenenado));
+        AgregarHabilidadDebug(personaje, 4, typeof(CorteIncapacitante));
+        AgregarHabilidadDebug(personaje, 5, typeof(BombaDeHumo));
+        AgregarHabilidadDebug(personaje, 6, typeof(Asesinar));
+        AgregarHabilidadDebug(personaje, 7, typeof(Distraer));
+        AgregarHabilidadDebug(personaje, 8, typeof(ArrojarAbrojos));
+        break;
+      case 5:
+        AgregarHabilidadDebug(personaje, 1, typeof(REPRESENTACIONAcumulacionProtegida));
+        AgregarHabilidadDebug(personaje, 2, typeof(DescargaDePoder));
+        AgregarHabilidadDebug(personaje, 3, typeof(Instatransporte));
+        AgregarHabilidadDebug(personaje, 4, typeof(AcumulacionInestable));
+        AgregarHabilidadDebug(personaje, 5, typeof(HojaDeEnergia));
+        AgregarHabilidadDebug(personaje, 6, typeof(EscudoEnergetico));
+        AgregarHabilidadDebug(personaje, 7, typeof(SifonArcano));
+        AgregarHabilidadDebug(personaje, 8, typeof(REPRESENTACIONExcesoDePoder));
+        break;
+      case 6:
+        AgregarHabilidadDebug(personaje, 1, typeof(REPRESENTACIONAtaquesReveladores));
+        AgregarHabilidadDebug(personaje, 2, typeof(REPRESENTACIONEvasionMaestra));
+        AgregarHabilidadDebug(personaje, 3, typeof(CargaDeEstoque));
+        AgregarHabilidadDebug(personaje, 4, typeof(Riposte));
+        AgregarHabilidadDebug(personaje, 5, typeof(AFondo));
+        AgregarHabilidadDebug(personaje, 6, typeof(EnGarde));
+        AgregarHabilidadDebug(personaje, 7, typeof(PuntaHiriente));
+        AgregarHabilidadDebug(personaje, 8, typeof(RecuperarAire));
+        AgregarHabilidadDebug(personaje, 9, typeof(PresenciaProvocadora));
+        AgregarHabilidadDebug(personaje, 10, typeof(REPRESENTACIONDanzaDelEstoque));
+        break;
+    }
+  }
+
+  private void AsignarNivelesHabilidadesIntrinsecasDebug(Personaje personaje)
+  {
+    if (personaje == null)
+    {
+      return;
+    }
+
+    switch (personaje.IDClase)
+    {
+      case 1:
+        AsignarNivelHabilidad(personaje.GetComponent<REPRESENTACIONCorajeInquebrantable>(), -1);
+        break;
+      case 2:
+        AsignarNivelHabilidad(personaje.GetComponent<REPRESENTACIONPasoCauteloso>(), -1);
+        AsignarNivelHabilidad(personaje.GetComponent<ImprovisarFlechas>(), 1);
+        break;
+      case 3:
+        AsignarNivelHabilidad(personaje.GetComponent<REPRESENTACIONAlmaEndeble>(), -1);
+        AsignarNivelHabilidad(personaje.GetComponent<REPRESENTACIONFervorConjunto>(), -1);
+        break;
+      case 4:
+        AsignarNivelHabilidad(personaje.GetComponent<REPRESENTACIONSueldo>(), -1);
+        AsignarNivelHabilidad(personaje.GetComponent<REPRESENTACIONSigiloso>(), -1);
+        AsignarNivelHabilidad(personaje.GetComponent<TiroBallestaDeMano>(), -1);
+        break;
+      case 5:
+        AsignarNivelHabilidad(personaje.GetComponent<REPRESENTACIONSobrecarga>(), -1);
+        AsignarNivelHabilidad(personaje.GetComponent<AcumularEnergia>(), -1);
+        AsignarNivelHabilidad(personaje.GetComponent<DescargaArcana>(), -1);
+        break;
+      case 6:
+        AsignarNivelHabilidad(personaje.GetComponent<REPRESENTACIONPasoLigero>(), -1);
+        AsignarNivelHabilidad(personaje.GetComponent<REPRESENTACIONPosturaDemandante>(), -1);
+        break;
+    }
+  }
+
+  private void AgregarHabilidadDebug(Personaje personaje, int slot, Type tipo, int nivel = 1)
+  {
+    if (personaje == null || tipo == null)
+    {
+      return;
+    }
+
+    AsignarSlotHabilidadPersonaje(personaje, slot, 1);
+    AsignarNivelHabilidad(AgregarComponenteSiFalta(personaje.gameObject, tipo) as Habilidad, nivel);
+  }
+
+  private void AsignarSlotHabilidadPersonaje(Personaje personaje, int slot, int valor)
+  {
+    if (personaje == null)
+    {
+      return;
+    }
+
+    switch (slot)
+    {
+      case 1: personaje.Habilidad_1 = valor; break;
+      case 2: personaje.Habilidad_2 = valor; break;
+      case 3: personaje.Habilidad_3 = valor; break;
+      case 4: personaje.Habilidad_4 = valor; break;
+      case 5: personaje.Habilidad_5 = valor; break;
+      case 6: personaje.Habilidad_6 = valor; break;
+      case 7: personaje.Habilidad_7 = valor; break;
+      case 8: personaje.Habilidad_8 = valor; break;
+      case 9: personaje.Habilidad_9 = valor; break;
+      case 10: personaje.Habilidad_10 = valor; break;
+    }
   }
 
   private Type ResolverTipoHabilidadDeClase(int idClase, int slot)
@@ -5058,6 +5443,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     posicionCaravana = 1;
     scAtributosZona.ActualizarEstadoZona(scAtributosZona.ID, 1); //Zona completada
     LimpiarPersonajesPorCambioZona();
+    FatigaActual = 0;
+    ActualizarUIFatigaDesdeEstadoActual();
     scMapaManager.ResetearYGenerarSiguienteZona();
     ResetearAlientoNegro();
     PrepararIntroCampaniaNuevaZona();
@@ -6503,7 +6890,21 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public int ObtenerCapacidadMaximaPersonajes()
   {
-    return 4 + Mathf.Max(0, mejoraCaravanaTiendas - 1);
+    return 4 + Mathf.Max(0, mejoraCaravanaTiendas - 1) + ObtenerCantidadHeroesDebugInicialesExtra();
+  }
+
+  private int ObtenerCantidadHeroesDebugInicialesExtra()
+  {
+    int cantidad = 0;
+
+    if (debugIniciarConCaballeroCompleto) cantidad++;
+    if (debugIniciarConExploradorCompleto) cantidad++;
+    if (debugIniciarConPurificadoraCompleta) cantidad++;
+    if (debugIniciarConAcechadorCompleto) cantidad++;
+    if (debugIniciarConCanalizadorCompleto) cantidad++;
+    if (debugIniciarConDuelistaCompleta) cantidad++;
+
+    return cantidad;
   }
 
   public bool TieneCapacidadDisponibleParaHeroe()
@@ -8631,7 +9032,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.itemArmadura = Instantiate(scContprefab.Coraza);
     AplicarTraitHerenciaInicialSiCorresponde(pers1);
 
-    pers1.spRetrato = scMenuPersonajes.Male001;
+    SincronizarAparienciaVisualPersonaje(pers1);
 
     scMenuPersonajes.listaPersonajes.Add(pers1);
 
@@ -8748,7 +9149,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.itemArma = Instantiate(scContprefab.armaArcoLargo);
     pers1.itemArmadura = Instantiate(scContprefab.ArmaduraCuero);
     AplicarTraitHerenciaInicialSiCorresponde(pers1);
-    pers1.spRetrato = scMenuPersonajes.Male003;
+    SincronizarAparienciaVisualPersonaje(pers1);
     scMenuPersonajes.listaPersonajes.Add(pers1);
     scMenuPersonajes.scEquipo.ActualizarEquipo(pers1);
 
@@ -8852,7 +9253,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     pers1.itemArma = Instantiate(scContprefab.armaBaculoPurificador);
     AplicarTraitHerenciaInicialSiCorresponde(pers1);
-    pers1.spRetrato = scMenuPersonajes.Female001;
+    SincronizarAparienciaVisualPersonaje(pers1);
     scMenuPersonajes.listaPersonajes.Add(pers1);
     scMenuPersonajes.scEquipo.ActualizarEquipo(pers1);
 
@@ -8970,7 +9371,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.itemArma = Instantiate(scContprefab.armaEspadaCorta);
     pers1.itemArmadura = Instantiate(scContprefab.ArmaduraCueroReforzado);
     AplicarTraitHerenciaInicialSiCorresponde(pers1);
-    pers1.spRetrato = scMenuPersonajes.Male004;
+    SincronizarAparienciaVisualPersonaje(pers1);
     scMenuPersonajes.listaPersonajes.Add(pers1);
     scMenuPersonajes.scEquipo.ActualizarEquipo(pers1);
 
@@ -9067,7 +9468,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     }
     AplicarTraitHerenciaInicialSiCorresponde(pers1);
-    pers1.spRetrato = scMenuPersonajes.Male005;
+    SincronizarAparienciaVisualPersonaje(pers1);
     scMenuPersonajes.listaPersonajes.Add(pers1);
     scMenuPersonajes.scEquipo.ActualizarEquipo(pers1);
 
@@ -9167,7 +9568,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.itemArma = Instantiate(scContprefab.armaEstoque);
     pers1.itemArmadura = Instantiate(scContprefab.ArmaduraGambeson);
     AplicarTraitHerenciaInicialSiCorresponde(pers1);
-    pers1.spRetrato = scMenuPersonajes.Female002;
+    SincronizarAparienciaVisualPersonaje(pers1);
 
     scMenuPersonajes.listaPersonajes.Add(pers1);
 

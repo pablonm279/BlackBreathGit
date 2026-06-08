@@ -444,6 +444,11 @@ public class MenuPersonajes : MonoBehaviour
       return;
     }
 
+    if (CampaignManager.Instance != null)
+    {
+      CampaignManager.Instance.SincronizarAparienciaVisualPersonaje(pSel);
+    }
+
     pSel.NormalizarPuntosPendientesPorNivelActual();
     SelPos(pSel.iPuestoDeseado);
     //Clase

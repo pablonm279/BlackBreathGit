@@ -357,6 +357,10 @@ public static class ItemTooltipFormatter
         AgregarLineaStat(lineasStats, "Resistencia estados: ", item.resistenciaEstadosPorcentaje, "%");
         AgregarLineaStat(lineasStats, "Espinas dano plano: ", item.espinasDanioPlano);
         AgregarLineaStat(lineasStats, "Espinas dano %: ", item.espinasDanioPorcentaje, "%");
+        if (item.IDEfectoEspecial == 5)
+        {
+            AgregarLineaStat(lineasStats, "Danio %: ", 10, "%");
+        }
 
         if (lineasStats.Count == 0 && lineasHabilidades.Count == 0 && lineasDebuffImpacto.Count == 0 && lineasConsumible.Count == 0)
         {

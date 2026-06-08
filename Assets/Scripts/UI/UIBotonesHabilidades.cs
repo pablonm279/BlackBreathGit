@@ -35,7 +35,7 @@ public class UIBotonesHabilidades : MonoBehaviour
     public UIbotonesPasivas botonesPasivas;
     public void ActualizarBotonesHabilidad()
     {  
-        // Las habilidades melee se ordenan al final para que queden al final del listado.
+        // Las habilidades contextuales de combate se renderizan al final del listado.
         botonesPasivas.ActualizarBotonesPasivas();
         foreach (Transform buttonTransform in transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
         {
@@ -56,6 +56,7 @@ public class UIBotonesHabilidades : MonoBehaviour
         List<Habilidad> noHostilMelee = new List<Habilidad>();
         List<Habilidad> hostilNoMelee = new List<Habilidad>();
         List<Habilidad> hostilMelee = new List<Habilidad>();
+        List<Habilidad> contextualesCombate = new List<Habilidad>();
 
         foreach (Habilidad habilidad in unidadSeleccionada.GetComponents<Habilidad>())
         {
@@ -66,6 +67,12 @@ public class UIBotonesHabilidades : MonoBehaviour
 
             if(habilidad.GetType().Name.Contains("REPRESENTACION"))
             {
+                continue;
+            }
+
+            if (EsHabilidadContextualDeCombate(habilidad))
+            {
+                contextualesCombate.Add(habilidad);
                 continue;
             }
 
@@ -112,6 +119,11 @@ public class UIBotonesHabilidades : MonoBehaviour
         {
             CrearBotonHabilidad(habilidad);
         }
+
+        foreach (Habilidad habilidad in contextualesCombate.OrderBy(h => h.costoAP))
+        {
+            CrearBotonHabilidad(habilidad);
+        }
       }
     }
 
@@ -132,6 +144,11 @@ public class UIBotonesHabilidades : MonoBehaviour
         {
           buttonTransform.GetComponent<BotonHabilidad>().DesactivarBoton();
         }
+    }
+
+    bool EsHabilidadContextualDeCombate(Habilidad habilidad)
+    {
+        return habilidad is DestruirObstaculo || habilidad is Escapar;
     }
 
     void CrearBotonHabilidad(Habilidad habilidad)

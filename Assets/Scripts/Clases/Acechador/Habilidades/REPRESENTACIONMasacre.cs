@@ -21,6 +21,11 @@ public class REPRESENTACIONMasacre : Habilidad
     string sufijo = SufijoNivel();
     string titulo = $"Masacre {sufijo}";
     string bajada = "Al matar, gana AP y daño; los enemigos cercanos pueden quedar aterrorizados.";
+    string etiquetaTipo = "Tipo";
+    string etiquetaDisparador = "Disparador";
+    string etiquetaEfecto = "Efecto";
+    string etiquetaTiradaEnemiga = "Tirada enemiga";
+    string etiquetaFallo = "Fallo";
     string tipo = "Pasiva";
     string disparador = "Al matar a un enemigo";
     string tirada = $"TS Mental vs DC {dcBase} + <color={colorAgilidad}>Agilidad</color>";
@@ -32,6 +37,11 @@ public class REPRESENTACIONMasacre : Habilidad
     {
       titulo = $"Massacre {sufijo}";
       bajada = "On kill, gains AP and damage; nearby enemies may become terrified.";
+      etiquetaTipo = "Type";
+      etiquetaDisparador = "Trigger";
+      etiquetaEfecto = "Effect";
+      etiquetaTiradaEnemiga = "Enemy save";
+      etiquetaFallo = "On fail";
       tipo = "Passive";
       disparador = "When killing an enemy";
       tirada = $"Mental Save vs DC {dcBase} + <color={colorAgilidad}>Agility</color>";
@@ -43,6 +53,11 @@ public class REPRESENTACIONMasacre : Habilidad
     {
       titulo = $"Massacre {sufijo}";
       bajada = "Ao matar, ganha AP e dano; inimigos proximos podem ficar aterrorizados.";
+      etiquetaTipo = "Tipo";
+      etiquetaDisparador = "Ativacao";
+      etiquetaEfecto = "Efeito";
+      etiquetaTiradaEnemiga = "Teste inimigo";
+      etiquetaFallo = "Se falhar";
       tipo = "Passiva";
       disparador = "Ao matar um inimigo";
       tirada = $"Teste Mental vs CD {dcBase} + <color={colorAgilidad}>Agilidade</color>";
@@ -54,11 +69,11 @@ public class REPRESENTACIONMasacre : Habilidad
     txtDescripcion = $"<size=115%><color=#5dade2><b>{titulo}</b></color></size>\n\n";
     txtDescripcion += $"<color=#8f8f8f><i>{bajada}</i></color>\n\n";
     txtDescripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n";
-    txtDescripcion += $"<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>{tipo}</color>\n";
-    txtDescripcion += $"<color=#44d3ec><b>Disparador:</b></color> <color=#ffffff>{disparador}</color>\n";
-    txtDescripcion += $"<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>{efectoPropio}</color>\n";
-    txtDescripcion += $"<color=#44d3ec><b>Tirada enemiga:</b></color> <color=#ffffff>{tirada}</color>\n";
-    txtDescripcion += $"<color=#44d3ec><b>Fallo:</b></color> <color=#ffffff>{efectoEnemigo}</color>";
+    txtDescripcion += $"<color=#44d3ec><b>{etiquetaTipo}:</b></color> <color=#ffffff>{tipo}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>{etiquetaDisparador}:</b></color> <color=#ffffff>{disparador}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>{etiquetaEfecto}:</b></color> <color=#ffffff>{efectoPropio}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>{etiquetaTiradaEnemiga}:</b></color> <color=#ffffff>{tirada}</color>\n";
+    txtDescripcion += $"<color=#44d3ec><b>{etiquetaFallo}:</b></color> <color=#ffffff>{efectoEnemigo}</color>";
 
     if (!string.IsNullOrEmpty(proximo))
     {

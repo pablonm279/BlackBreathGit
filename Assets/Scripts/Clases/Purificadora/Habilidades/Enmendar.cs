@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Threading.Tasks;
 using System;
 
@@ -284,6 +285,7 @@ public class Enmendar : Habilidad
    //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
    Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
    RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
+   PurificadoraReceptorSutilFx.CrearEnmendar(objetivo.GetComponent<Unidad>());
 
     }
 
@@ -369,6 +371,391 @@ public class Enmendar : Habilidad
  
 }
 
+
+public class PurificadoraReceptorSutilFx : MonoBehaviour
+{
+  private enum TipoFx
+  {
+    Enmendar,
+    Purificacion
+  }
+
+  private const int CantidadParticulas = 7;
+
+  private RectTransform root;
+  private CanvasGroup canvasGroup;
+  private RectTransform imagenUnidad;
+  private Image aura;
+  private Image nucleo;
+  private Image anillo;
+  private Image barraVertical;
+  private Image barraHorizontal;
+  private readonly Image[] particulas = new Image[CantidadParticulas];
+  private readonly float[] fases = new float[CantidadParticulas];
+  private readonly float[] offsetsX = new float[CantidadParticulas];
+  private readonly float[] velocidades = new float[CantidadParticulas];
+  private readonly float[] tamanos = new float[CantidadParticulas];
+  private float tiempo;
+  private float duracion;
+  private Vector2 tamanoBase;
+  private Vector2 posicionBase;
+  private TipoFx tipo;
+
+  private static Sprite spriteSuave;
+  private static Sprite spriteAnillo;
+  private static Sprite spriteRayo;
+  private static Sprite spriteGota;
+  private static Texture2D texturaSuave;
+  private static Texture2D texturaAnillo;
+  private static Texture2D texturaRayo;
+  private static Texture2D texturaGota;
+
+  public static void CrearEnmendar(Unidad unidad)
+  {
+    Crear(unidad, TipoFx.Enmendar);
+  }
+
+  public static void CrearPurificacion(Unidad unidad)
+  {
+    Crear(unidad, TipoFx.Purificacion);
+  }
+
+  private static void Crear(Unidad unidad, TipoFx tipoFx)
+  {
+    if (unidad == null || unidad.uImage == null)
+    {
+      return;
+    }
+
+    RectTransform imagen = unidad.uImage.rectTransform;
+    if (imagen == null || !(imagen.parent is RectTransform padre))
+    {
+      return;
+    }
+
+    GameObject go = new GameObject("PurificadoraReceptorSutilFx", typeof(RectTransform), typeof(CanvasGroup), typeof(PurificadoraReceptorSutilFx));
+    PurificadoraReceptorSutilFx fx = go.GetComponent<PurificadoraReceptorSutilFx>();
+    fx.Inicializar(padre, imagen, tipoFx);
+
+    Canvas canvas = unidad.uImage.GetComponentInParent<Canvas>(true);
+    RenderOrderHelper.OrdenarCanvasEncima(canvas, unidad.transform, tipoFx == TipoFx.Purificacion ? 8 : 7);
+  }
+
+  private void Inicializar(RectTransform padre, RectTransform imagen, TipoFx tipoFx)
+  {
+    root = GetComponent<RectTransform>();
+    canvasGroup = GetComponent<CanvasGroup>();
+    imagenUnidad = imagen;
+    tipo = tipoFx;
+    duracion = tipo == TipoFx.Purificacion ? 1.15f : 0.95f;
+    root.SetParent(padre, false);
+    canvasGroup.interactable = false;
+    canvasGroup.blocksRaycasts = false;
+
+    tamanoBase = imagenUnidad.rect.size;
+    if (tamanoBase.x <= 0.01f || tamanoBase.y <= 0.01f)
+    {
+      tamanoBase = imagenUnidad.sizeDelta;
+    }
+    if (tamanoBase.x <= 0.01f || tamanoBase.y <= 0.01f)
+    {
+      tamanoBase = new Vector2(36f, 42f);
+    }
+
+    posicionBase = new Vector2(0f, tamanoBase.y * 0.08f);
+    root.anchorMin = new Vector2(0.5f, 0.5f);
+    root.anchorMax = new Vector2(0.5f, 0.5f);
+    root.pivot = new Vector2(0.5f, 0.5f);
+    root.anchoredPosition = imagenUnidad.anchoredPosition + posicionBase;
+    root.localScale = imagenUnidad.localScale;
+    root.sizeDelta = tipo == TipoFx.Purificacion
+      ? new Vector2(tamanoBase.x * 0.9f, tamanoBase.y * 1.35f)
+      : new Vector2(tamanoBase.x * 0.9f, tamanoBase.y * 1.05f);
+
+    int targetSibling = Mathf.Min(padre.childCount - 1, imagenUnidad.GetSiblingIndex() + 1);
+    root.SetSiblingIndex(targetSibling);
+
+    aura = CrearImagen("Aura", ObtenerSpriteSuave(), root);
+    nucleo = CrearImagen("Nucleo", ObtenerSpriteSuave(), root);
+    anillo = CrearImagen("Anillo", ObtenerSpriteAnillo(), root);
+    barraVertical = CrearImagen("BarraVertical", ObtenerSpriteRayo(), root);
+    barraHorizontal = CrearImagen("BarraHorizontal", ObtenerSpriteRayo(), root);
+
+    for (int i = 0; i < particulas.Length; i++)
+    {
+      particulas[i] = CrearImagen("Particula" + i, tipo == TipoFx.Purificacion ? ObtenerSpriteGota() : ObtenerSpriteSuave(), root);
+      fases[i] = UnityEngine.Random.Range(0f, 1f);
+      offsetsX[i] = UnityEngine.Random.Range(-0.42f, 0.42f);
+      velocidades[i] = UnityEngine.Random.Range(0.75f, 1.35f);
+      tamanos[i] = UnityEngine.Random.Range(0.75f, 1.15f);
+    }
+
+    ActualizarVisual(0f);
+  }
+
+  private Image CrearImagen(string nombre, Sprite sprite, RectTransform padre)
+  {
+    GameObject go = new GameObject(nombre, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+    RectTransform rect = go.GetComponent<RectTransform>();
+    rect.SetParent(padre, false);
+    rect.anchorMin = new Vector2(0.5f, 0.5f);
+    rect.anchorMax = new Vector2(0.5f, 0.5f);
+    rect.pivot = new Vector2(0.5f, 0.5f);
+
+    Image image = go.GetComponent<Image>();
+    image.sprite = sprite;
+    image.raycastTarget = false;
+    image.maskable = false;
+    image.preserveAspect = false;
+    return image;
+  }
+
+  private void Update()
+  {
+    tiempo += Time.deltaTime;
+    float t = Mathf.Clamp01(tiempo / duracion);
+    ActualizarVisual(t);
+
+    if (tiempo >= duracion)
+    {
+      Destroy(gameObject);
+    }
+  }
+
+  private void ActualizarVisual(float t)
+  {
+    if (root == null || canvasGroup == null)
+    {
+      return;
+    }
+
+    float entrada = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / 0.16f));
+    float salida = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((t - 0.62f) / 0.38f));
+    float intensidad = entrada * salida;
+    canvasGroup.alpha = intensidad;
+    root.anchoredPosition = imagenUnidad != null ? imagenUnidad.anchoredPosition + posicionBase : root.anchoredPosition;
+
+    if (tipo == TipoFx.Purificacion)
+    {
+      ActualizarPurificacion(t, intensidad);
+    }
+    else
+    {
+      ActualizarEnmendar(t, intensidad);
+    }
+  }
+
+  private void ActualizarEnmendar(float t, float intensidad)
+  {
+    float pulso = 0.94f + (0.06f * Mathf.Sin(Time.time * 8f));
+    float escala = Mathf.Lerp(0.72f, 1.08f, Mathf.SmoothStep(0f, 1f, t));
+
+    Configurar(aura, Vector2.zero, tamanoBase * (0.86f * escala), 0f, new Color(0.58f, 1f, 0.68f, 0.18f * intensidad));
+    Configurar(nucleo, new Vector2(0f, tamanoBase.y * 0.04f), tamanoBase * (0.34f * pulso), 0f, new Color(0.94f, 1f, 0.78f, 0.36f * intensidad));
+    Configurar(anillo, Vector2.zero, tamanoBase * (0.48f + (0.22f * t)), Mathf.Sin(Time.time * 5f) * 4f, new Color(0.82f, 1f, 0.74f, 0.26f * intensidad));
+    Configurar(barraVertical, Vector2.zero, new Vector2(tamanoBase.x * 0.06f, tamanoBase.y * 0.44f), 90f, new Color(0.9f, 1f, 0.82f, 0.3f * intensidad));
+    Configurar(barraHorizontal, Vector2.zero, new Vector2(tamanoBase.x * 0.42f, tamanoBase.y * 0.055f), 0f, new Color(0.9f, 1f, 0.82f, 0.3f * intensidad));
+
+    for (int i = 0; i < particulas.Length; i++)
+    {
+      float avance = Mathf.Repeat((t * velocidades[i]) + fases[i], 1f);
+      float alpha = Mathf.Sin(avance * Mathf.PI) * intensidad;
+      Vector2 posicion = new Vector2(
+        (tamanoBase.x * offsetsX[i] * 0.55f) + (Mathf.Sin(Time.time * 4.5f + i) * tamanoBase.x * 0.025f),
+        Mathf.Lerp(-tamanoBase.y * 0.28f, tamanoBase.y * 0.42f, avance));
+      Vector2 tamano = tamanoBase * (0.075f * tamanos[i] * Mathf.Lerp(1f, 0.65f, avance));
+      Configurar(particulas[i], posicion, tamano, 0f, new Color(0.82f, 1f, 0.74f, 0.34f * alpha));
+    }
+  }
+
+  private void ActualizarPurificacion(float t, float intensidad)
+  {
+    float velo = 0.88f + (0.05f * Mathf.Sin(Time.time * 10f));
+
+    Configurar(aura, new Vector2(0f, tamanoBase.y * 0.02f), new Vector2(tamanoBase.x * 0.58f * velo, tamanoBase.y * 1.18f), 0f, new Color(0.4f, 0.86f, 1f, 0.12f * intensidad));
+    Configurar(nucleo, new Vector2(0f, -tamanoBase.y * 0.05f), new Vector2(tamanoBase.x * 0.24f, tamanoBase.y * 1.04f), 0f, new Color(0.82f, 0.98f, 1f, 0.18f * intensidad));
+    Configurar(anillo, new Vector2(0f, -tamanoBase.y * 0.34f), new Vector2(tamanoBase.x * 0.58f, tamanoBase.y * 0.13f), Mathf.Sin(Time.time * 6f) * 6f, new Color(0.62f, 0.95f, 1f, 0.24f * intensidad));
+    Configurar(barraVertical, Vector2.zero, Vector2.zero, 0f, Color.clear);
+    Configurar(barraHorizontal, Vector2.zero, Vector2.zero, 0f, Color.clear);
+
+    for (int i = 0; i < particulas.Length; i++)
+    {
+      float avance = Mathf.Repeat((t * velocidades[i]) + fases[i], 1f);
+      float alpha = Mathf.Sin(avance * Mathf.PI) * intensidad;
+      Vector2 posicion = new Vector2(
+        (tamanoBase.x * offsetsX[i]) + (Mathf.Sin(Time.time * (5f + i)) * tamanoBase.x * 0.035f),
+        Mathf.Lerp(tamanoBase.y * 0.58f, -tamanoBase.y * 0.5f, avance));
+      Vector2 tamano = new Vector2(tamanoBase.x * 0.085f * tamanos[i], tamanoBase.y * 0.16f * tamanos[i]);
+      Configurar(particulas[i], posicion, tamano, Mathf.Sin(Time.time * 7f + i) * 8f, new Color(0.68f, 0.94f, 1f, 0.36f * alpha));
+    }
+  }
+
+  private static void Configurar(Image image, Vector2 posicion, Vector2 tamano, float rotacionZ, Color color)
+  {
+    if (image == null)
+    {
+      return;
+    }
+
+    RectTransform rect = image.rectTransform;
+    rect.anchoredPosition = posicion;
+    rect.sizeDelta = tamano;
+    rect.localEulerAngles = new Vector3(0f, 0f, rotacionZ);
+    rect.localScale = Vector3.one;
+    image.color = color;
+  }
+
+  private static Sprite ObtenerSpriteSuave()
+  {
+    if (spriteSuave != null)
+    {
+      return spriteSuave;
+    }
+
+    const int size = 64;
+    texturaSuave = new Texture2D(size, size, TextureFormat.ARGB32, false);
+    texturaSuave.name = "PurificadoraSoftRuntime";
+    texturaSuave.wrapMode = TextureWrapMode.Clamp;
+    texturaSuave.filterMode = FilterMode.Bilinear;
+    texturaSuave.hideFlags = HideFlags.HideAndDontSave;
+
+    Color[] pixels = new Color[size * size];
+    float centro = (size - 1) * 0.5f;
+    float radio = size * 0.5f;
+    for (int y = 0; y < size; y++)
+    {
+      for (int x = 0; x < size; x++)
+      {
+        float dx = (x - centro) / radio;
+        float dy = (y - centro) / radio;
+        float distancia = Mathf.Sqrt((dx * dx) + (dy * dy));
+        float alpha = Mathf.Pow(Mathf.Clamp01(1f - distancia), 2.2f);
+        pixels[(y * size) + x] = new Color(1f, 1f, 1f, alpha);
+      }
+    }
+
+    texturaSuave.SetPixels(pixels);
+    texturaSuave.Apply(false, true);
+    spriteSuave = Sprite.Create(texturaSuave, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+    spriteSuave.name = "PurificadoraSoftRuntime";
+    return spriteSuave;
+  }
+
+  private static Sprite ObtenerSpriteAnillo()
+  {
+    if (spriteAnillo != null)
+    {
+      return spriteAnillo;
+    }
+
+    const int size = 64;
+    texturaAnillo = new Texture2D(size, size, TextureFormat.ARGB32, false);
+    texturaAnillo.name = "PurificadoraRingRuntime";
+    texturaAnillo.wrapMode = TextureWrapMode.Clamp;
+    texturaAnillo.filterMode = FilterMode.Bilinear;
+    texturaAnillo.hideFlags = HideFlags.HideAndDontSave;
+
+    Color[] pixels = new Color[size * size];
+    float centro = (size - 1) * 0.5f;
+    float radio = size * 0.5f;
+    for (int y = 0; y < size; y++)
+    {
+      for (int x = 0; x < size; x++)
+      {
+        float dx = (x - centro) / radio;
+        float dy = (y - centro) / radio;
+        float distancia = Mathf.Sqrt((dx * dx) + (dy * dy));
+        float borde = Mathf.Abs(distancia - 0.58f);
+        float alpha = Mathf.Pow(Mathf.Clamp01(1f - (borde / 0.16f)), 1.7f) * Mathf.Clamp01(1f - distancia);
+        pixels[(y * size) + x] = new Color(1f, 1f, 1f, alpha);
+      }
+    }
+
+    texturaAnillo.SetPixels(pixels);
+    texturaAnillo.Apply(false, true);
+    spriteAnillo = Sprite.Create(texturaAnillo, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+    spriteAnillo.name = "PurificadoraRingRuntime";
+    return spriteAnillo;
+  }
+
+  private static Sprite ObtenerSpriteRayo()
+  {
+    if (spriteRayo != null)
+    {
+      return spriteRayo;
+    }
+
+    const int width = 64;
+    const int height = 12;
+    texturaRayo = new Texture2D(width, height, TextureFormat.ARGB32, false);
+    texturaRayo.name = "PurificadoraRayRuntime";
+    texturaRayo.wrapMode = TextureWrapMode.Clamp;
+    texturaRayo.filterMode = FilterMode.Bilinear;
+    texturaRayo.hideFlags = HideFlags.HideAndDontSave;
+
+    Color[] pixels = new Color[width * height];
+    float centroY = (height - 1) * 0.5f;
+    for (int y = 0; y < height; y++)
+    {
+      for (int x = 0; x < width; x++)
+      {
+        float nx = x / (width - 1f);
+        float distanciaY = Mathf.Abs(y - centroY);
+        float grosor = Mathf.Clamp01(1f - (distanciaY / 3.4f));
+        float extremos = Mathf.SmoothStep(0f, 0.12f, nx) * (1f - Mathf.SmoothStep(0.88f, 1f, nx));
+        float alpha = Mathf.Pow(grosor, 1.65f) * extremos;
+        pixels[(y * width) + x] = new Color(1f, 1f, 1f, alpha);
+      }
+    }
+
+    texturaRayo.SetPixels(pixels);
+    texturaRayo.Apply(false, true);
+    spriteRayo = Sprite.Create(texturaRayo, new Rect(0f, 0f, width, height), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+    spriteRayo.name = "PurificadoraRayRuntime";
+    return spriteRayo;
+  }
+
+  private static Sprite ObtenerSpriteGota()
+  {
+    if (spriteGota != null)
+    {
+      return spriteGota;
+    }
+
+    const int width = 32;
+    const int height = 48;
+    texturaGota = new Texture2D(width, height, TextureFormat.ARGB32, false);
+    texturaGota.name = "PurificadoraDropRuntime";
+    texturaGota.wrapMode = TextureWrapMode.Clamp;
+    texturaGota.filterMode = FilterMode.Bilinear;
+    texturaGota.hideFlags = HideFlags.HideAndDontSave;
+
+    Color[] pixels = new Color[width * height];
+    float cx = (width - 1) * 0.5f;
+    for (int y = 0; y < height; y++)
+    {
+      float ny = y / (height - 1f);
+      float radioX = Mathf.Lerp(width * 0.16f, width * 0.36f, Mathf.SmoothStep(0f, 1f, 1f - Mathf.Abs(ny - 0.34f) * 1.45f));
+      float cy = height * 0.44f;
+      for (int x = 0; x < width; x++)
+      {
+        float dx = (x - cx) / Mathf.Max(1f, radioX);
+        float dy = (y - cy) / (height * 0.36f);
+        float forma = (dx * dx) + (dy * dy);
+        float punta = Mathf.SmoothStep(0.52f, 1f, ny) * Mathf.Clamp01(1f - Mathf.Abs(x - cx) / (width * 0.16f));
+        float alpha = Mathf.Clamp01((1f - forma) + (punta * 0.55f));
+        alpha = Mathf.Pow(alpha, 1.55f);
+        pixels[(y * width) + x] = new Color(1f, 1f, 1f, alpha);
+      }
+    }
+
+    texturaGota.SetPixels(pixels);
+    texturaGota.Apply(false, true);
+    spriteGota = Sprite.Create(texturaGota, new Rect(0f, 0f, width, height), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+    spriteGota.name = "PurificadoraDropRuntime";
+    return spriteGota;
+  }
+}
 
 
 

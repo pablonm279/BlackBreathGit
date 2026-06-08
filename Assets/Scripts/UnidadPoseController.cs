@@ -2,6 +2,22 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class AparienciaAlternativaUnidad
+{
+    public string nombre;
+    public Sprite retrato;
+    public Sprite poseIdle;
+    public Sprite poseMover;
+    public Sprite poseAtacar;
+    public Sprite poseHabilidad;
+
+    public bool TieneContenido()
+    {
+        return retrato != null || poseIdle != null || poseMover != null || poseAtacar != null || poseHabilidad != null;
+    }
+}
+
 // Controlador generico de poses por sprite para unidades (jugador o IA)
 public class UnidadPoseController : MonoBehaviour
 {
@@ -42,6 +58,10 @@ public class UnidadPoseController : MonoBehaviour
     bool mantenerPoseHabilidad = false;
     bool mantenerPoseAtaque = false;
     TipoPoseActual poseActual = TipoPoseActual.Idle;
+    Sprite poseIdleBaseConfigurada;
+    Sprite poseMoverBaseConfigurada;
+    Sprite poseAtacarBaseConfigurada;
+    Sprite poseHabilidadBaseConfigurada;
 
     void Awake()
     {
@@ -56,6 +76,11 @@ public class UnidadPoseController : MonoBehaviour
         {
             poseIdle = targetImage.sprite;
         }
+
+        poseIdleBaseConfigurada = poseIdle;
+        poseMoverBaseConfigurada = poseMover;
+        poseAtacarBaseConfigurada = poseAtacar;
+        poseHabilidadBaseConfigurada = poseHabilidad;
     }
 
     bool DebeAplicar()
@@ -173,6 +198,39 @@ public class UnidadPoseController : MonoBehaviour
         poseMover = mover;
         poseAtacar = atacar;
         poseHabilidad = habilidad;
+
+        if (refrescarPoseActual)
+        {
+            RefrescarPoseActual();
+        }
+    }
+
+    public Sprite ObtenerPoseIdleBase()
+    {
+        return poseIdleBaseConfigurada;
+    }
+
+    public Sprite ObtenerPoseMoverBase()
+    {
+        return poseMoverBaseConfigurada;
+    }
+
+    public Sprite ObtenerPoseAtacarBase()
+    {
+        return poseAtacarBaseConfigurada;
+    }
+
+    public Sprite ObtenerPoseHabilidadBase()
+    {
+        return poseHabilidadBaseConfigurada;
+    }
+
+    public void RestaurarPosesBase(bool refrescarPoseActual = true)
+    {
+        poseIdle = poseIdleBaseConfigurada;
+        poseMover = poseMoverBaseConfigurada;
+        poseAtacar = poseAtacarBaseConfigurada;
+        poseHabilidad = poseHabilidadBaseConfigurada;
 
         if (refrescarPoseActual)
         {

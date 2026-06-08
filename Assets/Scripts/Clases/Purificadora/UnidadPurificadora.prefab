@@ -828,6 +828,8 @@ MonoBehaviour:
   fuerzaPoseAtaque: 0
   forzarPoseHabilidad: 0
   omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
@@ -892,6 +894,9 @@ MonoBehaviour:
   barraVidaHealColor: {r: 1, g: 0.85, b: 0.2, a: 0.6}
   barraVidaHealDelay: 0.08
   barraVidaHealSpeed: 0.9
+  barraVidaColorVidaBaja: {r: 0.42, g: 0.02, b: 0.02, a: 1}
+  barraVidaRatioInicioRojo: 0.2
+  barraVidaOscurecerTurnoPasado: 0.72
   rotuloHabilidadOffset: {x: 0, y: 2.1}
   rotuloHabilidadPadding: {x: 0.34, y: 0.16}
   rotuloHabilidadDuracion: 3
@@ -1046,6 +1051,13 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 65b304a02680d8843a11c63b4df9df85, type: 3}
   - {fileID: 8300000, guid: 92d3e212b4e06d14e8c443a671ba400f, type: 3}
   - {fileID: 8300000, guid: 247002d3cd4ec764f9ef0e01223d9155, type: 3}
+  aparienciasAlternativas:
+  - nombre: Apariencia 2
+    retrato: {fileID: 21300000, guid: 9d17f509219f1e546aadc118067673ea, type: 3}
+    poseIdle: {fileID: 21300000, guid: d81eda7ef0eb7ea4ab4114283bfbf52d, type: 3}
+    poseMover: {fileID: 21300000, guid: 261b4f68199f1c745a9827e60ffe3ed6, type: 3}
+    poseAtacar: {fileID: 21300000, guid: be80d28cec7bd8e4d93d8944fbebacd8, type: 3}
+    poseHabilidad: {fileID: 21300000, guid: a8ddd66bcd2061143af3b67cbbcedf39, type: 3}
   PASIVA_AuraSagrada: 0
   PASIVA_EcosDivinos: 0
   Cantidad_Fervor: 0
@@ -1069,6 +1081,13 @@ MonoBehaviour:
   duracionPoseAtacar: 1
   duracionPoseDanyo: 0.4
   duracionPoseHabilidad: 0.9
+  meleeFraccionImpacto: 0.35
+  meleePreImpactoFallback: 0.22
+  meleePreImpactoMin: 0.08
+  meleePreImpactoMax: 0.42
+  meleePostImpacto: 0.16
+  meleePostImpactoMin: 0.05
+  meleePostImpactoMax: 0.3
 --- !u!82 &3654989211772453739
 AudioSource:
   m_ObjectHideFlags: 0

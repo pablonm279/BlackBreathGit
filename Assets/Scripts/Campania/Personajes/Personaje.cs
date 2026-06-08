@@ -5,6 +5,7 @@ using UnityEngine;
 public class Personaje : MonoBehaviour
 {
     public const int CantidadMaximaRasgos = 300;
+    public const int IndiceAparienciaBase = -1;
     [SerializeField] private string persistentId;
     private const float PorcentajeVidaPorPuntoFuerza = 0.03f;
     public int iDefensaBaseSinAgilidad;
@@ -26,6 +27,8 @@ public class Personaje : MonoBehaviour
 
     public Sprite spRetrato;
     public int idRetrato;
+    public int indiceAparienciaAlternativa = IndiceAparienciaBase;
+    public bool aparienciaAlternativaResuelta;
    
     public int iFuerza;
     public int iAgi;
@@ -116,6 +119,10 @@ public class Personaje : MonoBehaviour
   void Start()
   {
     AsegurarCapacidadRasgos();
+    if (CampaignManager.Instance != null)
+    {
+      CampaignManager.Instance.SincronizarAparienciaVisualPersonaje(this);
+    }
     if (ActividadSeleccionada == 0 && PuedeRealizarActividades())
     {
       ActividadSeleccionada = 3; //Guardia

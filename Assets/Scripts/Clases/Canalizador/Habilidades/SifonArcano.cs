@@ -263,6 +263,14 @@ public class SifonArcano : Habilidad
     
        void VFXAplicar(GameObject objetivo)
   {
+   GameObject vfxPrefab = Resources.Load<GameObject>("VFX/VFX_SifonArcano");
+   if (vfxPrefab != null)
+   {
+    GameObject vfx = Instantiate(vfxPrefab, objetivo.transform.position, objetivo.transform.rotation);
+    vfx.transform.parent = objetivo.transform;
+    VFXSoloSonido.OcultarVisuales(vfx);
+   }
+
    SifonArcanoObjetivoFx.Crear(objetivo.GetComponent<Unidad>());
 
   }

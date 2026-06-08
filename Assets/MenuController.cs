@@ -40,7 +40,12 @@ public class MenuController : MonoBehaviour
             }
         }
 
-        if (fader != null) fader.alpha = 1f;
+        if (fader != null)
+        {
+            fader.alpha = 1f;
+            fader.blocksRaycasts = true;
+            fader.interactable = false;
+        }
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
@@ -64,7 +69,21 @@ public class MenuController : MonoBehaviour
 
     IEnumerator Start()
     {
+        silverlandlogomanager logoManager = FindFirstObjectByType<silverlandlogomanager>(FindObjectsInactive.Include);
+        if (logoManager != null && logoManager.isActiveAndEnabled)
+        {
+            yield return logoManager.EsperarFinIntro();
+        }
+
+        yield return null;
+        AsegurarMenuListoAntesDeMostrar();
+        yield return null;
         yield return FadeTo(0f, fadeTime);
+
+        if (fader != null)
+        {
+            fader.blocksRaycasts = false;
+        }
     }
 
     public void CambiarIdioma(int n)
@@ -194,6 +213,12 @@ public class MenuController : MonoBehaviour
 
     IEnumerator CargarJuego()
     {
+        if (fader != null)
+        {
+            fader.blocksRaycasts = true;
+            fader.interactable = false;
+        }
+
         yield return FadeTo(1f, fadeTime);
         AdministradorEscenas.SolicitarFaderNegroEnProximaCargaCampania();
         SceneManager.LoadScene(escenaJuego, LoadSceneMode.Single);
@@ -211,6 +236,46 @@ public class MenuController : MonoBehaviour
             yield return null;
         }
         fader.alpha = target;
+
+        if (target >= 1f)
+        {
+            fader.blocksRaycasts = true;
+        }
+        else if (target <= 0f)
+        {
+            fader.blocksRaycasts = false;
+        }
+    }
+
+    void AsegurarMenuListoAntesDeMostrar()
+    {
+        AplicarIdiomaActualSinFadeVisible();
+        AplicarVersionesIdioma();
+        RefrescarBotonesCargarPartida();
+
+        OpcionesCargarPlayerPrefsUI opcionesUi = Opciones != null ? Opciones.GetComponent<OpcionesCargarPlayerPrefsUI>() : null;
+        if (opcionesUi != null)
+        {
+            opcionesUi.AplicarEfectosEnUI();
+        }
+    }
+
+    void AplicarIdiomaActualSinFadeVisible()
+    {
+        if (TRADU.i == null)
+        {
+            return;
+        }
+
+        int idioma = PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaIngles);
+        if (idioma != TRADU.IdiomaEspanol && idioma != TRADU.IdiomaIngles && idioma != TRADU.IdiomaPortugues)
+        {
+            idioma = TRADU.IdiomaIngles;
+        }
+
+        TRADU.i.nIdioma = idioma;
+        TRADU.i.CancelInvoke(nameof(TRADU.TraducirTodosTextosSegunIdioma));
+        TRADU.i.TraducirTodosTextosSegunIdioma();
     }
 
     void MarcarTutorialComoCompletado()

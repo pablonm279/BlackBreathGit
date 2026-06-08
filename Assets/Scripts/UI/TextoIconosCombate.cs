@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -10,6 +11,11 @@ public static class TextoIconosCombate
 
     private static readonly Regex regexTagsTmp =
         new Regex(@"(<[^>]+>)", RegexOptions.Compiled);
+
+    private static readonly Regex regexBloqueIconoInline =
+        new Regex(
+            @"(?:\s*<space=[^>]+>)?(?:<size=[^>]+>)?(?:<voffset=[^>]+>)?<sprite name=""(?<name>[^""]+)""(?:\s*/)?>(?:</voffset>)?(?:</size>)?(?:\s*<space=[^>]+>)?",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     private static readonly Regex regexInicioBloqueMecanico =
         new Regex(
@@ -147,6 +153,33 @@ public static class TextoIconosCombate
 
         string spriteName = ObtenerSpriteDanio(tipoDanio);
         return string.IsNullOrEmpty(spriteName) ? string.Empty : margenIzquierdoIcono + CrearSpriteTag(spriteName);
+    }
+
+    public static string LimitarRepeticionIconos(string texto, int maxRepeticionesPorIcono = 2)
+    {
+        if (string.IsNullOrEmpty(texto) || maxRepeticionesPorIcono < 1)
+        {
+            return texto;
+        }
+
+        var conteoPorSprite = new Dictionary<string, int>(System.StringComparer.OrdinalIgnoreCase);
+        return regexBloqueIconoInline.Replace(texto, match =>
+        {
+            string spriteName = match.Groups["name"].Value;
+            if (string.IsNullOrEmpty(spriteName))
+            {
+                return match.Value;
+            }
+
+            conteoPorSprite.TryGetValue(spriteName, out int repeticionesActuales);
+            if (repeticionesActuales >= maxRepeticionesPorIcono)
+            {
+                return string.Empty;
+            }
+
+            conteoPorSprite[spriteName] = repeticionesActuales + 1;
+            return match.Value;
+        });
     }
 
     private static string FormatearTextoVisible(string texto)

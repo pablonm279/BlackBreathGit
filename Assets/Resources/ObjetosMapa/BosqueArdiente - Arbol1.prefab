@@ -408,7 +408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e7e1b5bb8b41bb4c93df116ce95047f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minFactor: 0.893
-  maxFactor: 1.23
+  minFactor: 0.845
+  maxFactor: 1.355
   anchorWorldUp: 1
   randomizeY: 0

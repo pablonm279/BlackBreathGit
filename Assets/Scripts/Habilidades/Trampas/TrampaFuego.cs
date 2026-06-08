@@ -9,7 +9,7 @@ public class TrampaFuego : Trampa
   {
      nombre = "Llama";
      intDificultadVer = 0;   
-     intUsos = 10;
+     intUsos = 3;
      intDuracionTurnos = 500;
      esPersistente = true;
 
@@ -20,14 +20,17 @@ public class TrampaFuego : Trampa
   public override void  AplicarEfectosTrampa(Unidad objetivo)
   {
     
-         int danio =UnityEngine.Random.Range(5,14)+2;
-         objetivo.RecibirDanio(danio,4,false, null);
+         int danio =UnityEngine.Random.Range(2,9)+2;
 
-        if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, 12))
-        {
-          objetivo.estado_ardiendo = +2;
-        }
 
+    if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, 12))
+    {
+      objetivo.estado_ardiendo = +2;
+              objetivo.RecibirDanio(danio,4,false, null);
+    }
+        
+        
+     
           ReducirUsos();
   }
 

@@ -633,6 +633,14 @@ MonoBehaviour:
   PASIVA_EvasionMaestra: 0
   PASIVA_DanzaDelEstoque: 0
   Pose_Engarde: {fileID: 21300000, guid: 3232262e74ba17042a71adbcfcf28820, type: 3}
+  aparienciasAlternativas:
+  - nombre: Apariencia2
+    retrato: {fileID: 21300000, guid: 1d42ccdf4adb6ee4ea42b13bcc40e2c0, type: 3}
+    poseIdle: {fileID: 21300000, guid: e7a86a58cf911164b8d3670bc8ba32f3, type: 3}
+    poseMover: {fileID: 21300000, guid: 5494531d0f75342448c90641fd93a905, type: 3}
+    poseAtacar: {fileID: 21300000, guid: 6b2db627a80488349b99e38df5cd1261, type: 3}
+    poseHabilidad: {fileID: 21300000, guid: c4eca6cc93b43da44826c8a93623d699, type: 3}
+    poseEnGarde: {fileID: 21300000, guid: 68f0ac07e56eb1c45bf5d0bc26702618, type: 3}
 --- !u!114 &3516291864437776501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -693,6 +701,13 @@ MonoBehaviour:
   duracionPoseAtacar: 1.2
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1.1
+  meleeFraccionImpacto: 0.35
+  meleePreImpactoFallback: 0.22
+  meleePreImpactoMin: 0.08
+  meleePreImpactoMax: 0.42
+  meleePostImpacto: 0.16
+  meleePostImpactoMin: 0.05
+  meleePostImpactoMax: 0.3
 --- !u!82 &5686394255633030034
 AudioSource:
   m_ObjectHideFlags: 0

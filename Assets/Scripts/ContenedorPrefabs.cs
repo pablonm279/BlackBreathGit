@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -151,5 +151,3 @@ public class ContenedorPrefabs : MonoBehaviour
     public AudioClip sonidoErrar;
 
 }
-
-

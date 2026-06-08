@@ -273,6 +273,7 @@ public class Purificacion : Habilidad
    //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
    Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
    RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
+   PurificadoraReceptorSutilFx.CrearPurificacion(objetivo.GetComponent<Unidad>());
 
     }
 

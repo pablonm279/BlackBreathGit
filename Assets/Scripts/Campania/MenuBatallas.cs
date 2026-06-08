@@ -763,6 +763,11 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
        return null;
     }
 
+    if (CampaignManager.Instance != null)
+    {
+       CampaignManager.Instance.SincronizarAparienciaVisualPersonaje(pers);
+    }
+
     return new RefuerzoAliadoCaravanaOrdenItem
     {
        id = "personaje:" + pers.GetInstanceID(),
