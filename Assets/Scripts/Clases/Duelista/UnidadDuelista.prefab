@@ -640,6 +640,8 @@ MonoBehaviour:
     poseMover: {fileID: 21300000, guid: 5494531d0f75342448c90641fd93a905, type: 3}
     poseAtacar: {fileID: 21300000, guid: 6b2db627a80488349b99e38df5cd1261, type: 3}
     poseHabilidad: {fileID: 21300000, guid: c4eca6cc93b43da44826c8a93623d699, type: 3}
+    poseRecibirDanio: {fileID: 0}
+    poseTurnoActivo: {fileID: 21300000, guid: 0ead9b0cd8f7a434c8f9d9e51d5aea59, type: 3}
     poseEnGarde: {fileID: 21300000, guid: 68f0ac07e56eb1c45bf5d0bc26702618, type: 3}
 --- !u!114 &3516291864437776501
 MonoBehaviour:
@@ -698,6 +700,8 @@ MonoBehaviour:
   poseMover: {fileID: 21300000, guid: 560e8b8f9d4253544a5af8ddcde1b5ac, type: 3}
   poseAtacar: {fileID: 21300000, guid: fee39f6eea7570b42b36c716c2225dd4, type: 3}
   poseHabilidad: {fileID: 21300000, guid: 845123177dd03a24eb818bac0799fbb5, type: 3}
+  poseRecibirDanio: {fileID: 0}
+  poseTurnoActivo: {fileID: 21300000, guid: 6e1a26c73fca7db46b231c0502593f13, type: 3}
   duracionPoseAtacar: 1.2
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1.1
@@ -1419,6 +1423,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7824808104588706269, guid: ad323613071b64040902f61f50b3ea82, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7843513215899889583, guid: ad323613071b64040902f61f50b3ea82, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7843513215899889583, guid: ad323613071b64040902f61f50b3ea82, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7843513215899889583, guid: ad323613071b64040902f61f50b3ea82, type: 3}
+      propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

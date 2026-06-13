@@ -28,7 +28,7 @@ public static class ItemTooltipFormatter
         StringBuilder texto = new StringBuilder();
         if (incluirNombre && !string.IsNullOrWhiteSpace(item.sNombreItem))
         {
-            texto.Append(FormatearTituloItem(Traducir(item.sNombreItem)));
+            texto.Append(FormatearTituloItem(Traducir(ObtenerNombreVisibleItem(item))));
         }
 
         string lineaRareza = ConstruirLineaRareza(item);
@@ -77,6 +77,28 @@ public static class ItemTooltipFormatter
         }
 
         return $"<size=112%><color={ColorTituloItem}><b>{nombre}</b></color></size>";
+    }
+
+    private static string ObtenerNombreVisibleItem(Item item)
+    {
+        if (item == null || string.IsNullOrWhiteSpace(item.sNombreItem))
+        {
+            return string.Empty;
+        }
+
+        string nombre = item.sNombreItem.Trim();
+        if (item.nivelMejora <= 0)
+        {
+            return nombre;
+        }
+
+        string sufijo = " +" + item.nivelMejora;
+        if (nombre.EndsWith(sufijo))
+        {
+            return nombre;
+        }
+
+        return nombre + sufijo;
     }
 
     private static string ConstruirSeparador()
@@ -728,6 +750,12 @@ public static class ItemTooltipFormatter
 
     private static string ObtenerNombreHabilidad(Habilidad habilidad)
     {
+        string tituloDescripcion = ObtenerTituloDescripcionHabilidad(habilidad);
+        if (!string.IsNullOrWhiteSpace(tituloDescripcion))
+        {
+            return tituloDescripcion;
+        }
+
         if (!string.IsNullOrWhiteSpace(habilidad.nombre))
         {
             return habilidad.nombre;
@@ -741,12 +769,6 @@ public static class ItemTooltipFormatter
 
         if (tipo.StartsWith("REPRESENTACION"))
         {
-            string tituloDescripcion = ObtenerTituloDescripcionHabilidad(habilidad);
-            if (!string.IsNullOrWhiteSpace(tituloDescripcion))
-            {
-                return tituloDescripcion;
-            }
-
             tipo = tipo.Substring("REPRESENTACION".Length);
         }
 

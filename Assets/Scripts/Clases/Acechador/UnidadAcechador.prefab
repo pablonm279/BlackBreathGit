@@ -641,6 +641,8 @@ MonoBehaviour:
     poseMover: {fileID: 21300000, guid: f6a4df1b2ba74584f908ba50054e32ce, type: 3}
     poseAtacar: {fileID: 21300000, guid: a490f7f9b7093904b9655a800c4ff69e, type: 3}
     poseHabilidad: {fileID: 21300000, guid: be3d6d2b7aa290345a752d488f199574, type: 3}
+    poseRecibirDanio: {fileID: 0}
+    poseTurnoActivo: {fileID: 21300000, guid: 4105d5db13f2f1547b7195930b58d391, type: 3}
   PASIVA_MaestriaConBallestaMano: 0
   PASIVA_MaestriaConEspadacorta: 0
   PASIVA_Masacre: 0
@@ -662,6 +664,8 @@ MonoBehaviour:
   poseMover: {fileID: 21300000, guid: 32f7997e200fc8b4d8c70b8c6aae214b, type: 3}
   poseAtacar: {fileID: 21300000, guid: f78cfe14488de1a4c83e54566331161f, type: 3}
   poseHabilidad: {fileID: 21300000, guid: 5eb6c03849362bb46b54bc050d8616dc, type: 3}
+  poseRecibirDanio: {fileID: 0}
+  poseTurnoActivo: {fileID: 21300000, guid: 8ed18c5e239d40d468895c0292a7394b, type: 3}
   duracionPoseAtacar: 1.7
   duracionPoseDanyo: 0.7
   duracionPoseHabilidad: 1.2

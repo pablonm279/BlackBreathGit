@@ -651,7 +651,6 @@ public abstract class Habilidad : MonoBehaviour
     }
   }
 
-
   void ActualizarCirculosDelay()
   {
     BattleManager.Instance.scUIContadorAP.ActualizarAPCirculos();

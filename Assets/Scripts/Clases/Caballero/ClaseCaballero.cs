@@ -13,11 +13,13 @@ public class AparienciaAlternativaCaballero
    public Sprite poseMover;
    public Sprite poseAtacar;
    public Sprite poseHabilidad;
+   public Sprite poseRecibirDanio;
+   public Sprite poseTurnoActivo;
    public Sprite posePosturaDefensiva;
 
    public bool TieneContenido()
    {
-      return retrato != null || poseIdle != null || poseMover != null || poseAtacar != null || poseHabilidad != null || posePosturaDefensiva != null;
+      return retrato != null || poseIdle != null || poseMover != null || poseAtacar != null || poseHabilidad != null || poseRecibirDanio != null || poseTurnoActivo != null || posePosturaDefensiva != null;
    }
 }
 
@@ -147,13 +149,17 @@ public class ClaseCaballero : Unidad
     Sprite poseMoverBase = poseControllerCaballero.ObtenerPoseMoverBase() != null ? poseControllerCaballero.ObtenerPoseMoverBase() : poseIdleBase;
     Sprite poseAtacarBase = poseControllerCaballero.ObtenerPoseAtacarBase() != null ? poseControllerCaballero.ObtenerPoseAtacarBase() : poseIdleBase;
     Sprite poseHabilidadBase = poseControllerCaballero.ObtenerPoseHabilidadBase() != null ? poseControllerCaballero.ObtenerPoseHabilidadBase() : poseIdleBase;
+    Sprite poseRecibirDanioBase = poseControllerCaballero.ObtenerPoseRecibirDanioBase();
+    Sprite poseTurnoActivoBase = poseControllerCaballero.ObtenerPoseTurnoActivoBase();
 
     Sprite poseIdle = aparienciaElegida.poseIdle != null ? aparienciaElegida.poseIdle : poseIdleBase;
     Sprite poseMover = aparienciaElegida.poseMover != null ? aparienciaElegida.poseMover : poseMoverBase;
     Sprite poseAtacar = aparienciaElegida.poseAtacar != null ? aparienciaElegida.poseAtacar : poseAtacarBase;
     Sprite poseHabilidad = aparienciaElegida.poseHabilidad != null ? aparienciaElegida.poseHabilidad : poseHabilidadBase;
+    Sprite poseRecibirDanio = aparienciaElegida.poseRecibirDanio != null ? aparienciaElegida.poseRecibirDanio : poseRecibirDanioBase;
+    Sprite poseTurnoActivo = aparienciaElegida.poseTurnoActivo != null ? aparienciaElegida.poseTurnoActivo : poseTurnoActivoBase;
 
-    poseControllerCaballero.ConfigurarPoses(poseIdle, poseMover, poseAtacar, poseHabilidad);
+    poseControllerCaballero.ConfigurarPoses(poseIdle, poseMover, poseAtacar, poseHabilidad, poseRecibirDanio, poseTurnoActivo);
   }
 
   public override int ObtenerCantidadAparienciasAlternativas()

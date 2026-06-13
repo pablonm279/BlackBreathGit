@@ -40,6 +40,7 @@ public abstract class IAHabilidad : MonoBehaviour
   Casilla casillaOrigen;
   private Task secuenciaVisualEnCurso = Task.CompletedTask;
   private readonly object secuenciaVisualLock = new object();
+  private bool poseJugadorAtacadoPorIAEnCurso = false;
   private const int PausaPostAproximacionMs = 150;
   private const int PausaAntesVolverMs = 1700;
   private const int PausaEntreMeleesEncadenadosMs = 250;
@@ -517,6 +518,7 @@ public abstract class IAHabilidad : MonoBehaviour
       ReaccionRiposte.TryPrepararIntercepcion(scEstaUnidad, unidadAtacada, esMelee, objetivoUnitario, out Unidad objetivoIntercepcion, out float defensaIntercepcion);
       unidadAtacada = objetivoIntercepcion;
       defensaObjetivo = defensaIntercepcion;
+      ActivarPoseJugadorAtacadoPorIATemporal(unidadAtacada);
     }
 
     int resultado = 0;
@@ -646,6 +648,75 @@ public abstract class IAHabilidad : MonoBehaviour
     return resultado;
   }
 
+  void ActivarPoseJugadorAtacadoPorIATemporal(Unidad unidadAtacada)
+  {
+    if (poseJugadorAtacadoPorIAEnCurso)
+    {
+      return;
+    }
+
+    UnidadPoseController poseObjetivo = ObtenerPoseJugadorAtacadoPorIA(unidadAtacada);
+    if (poseObjetivo != null)
+    {
+      poseObjetivo.PlayPoseObjetivoHostilTemporal(0.6f);
+    }
+  }
+
+  UnidadPoseController IniciarPoseJugadorAtacadoPorIA(object objetivo)
+  {
+    UnidadPoseController poseObjetivo = ObtenerPoseJugadorAtacadoPorIA(objetivo as Unidad);
+    if (poseObjetivo == null)
+    {
+      return null;
+    }
+
+    poseJugadorAtacadoPorIAEnCurso = true;
+    poseObjetivo.EnterPoseObjetivoHostil();
+    return poseObjetivo;
+  }
+
+  void FinalizarPoseJugadorAtacadoPorIA(UnidadPoseController poseObjetivo)
+  {
+    if (poseObjetivo == null)
+    {
+      return;
+    }
+
+    poseObjetivo.ExitPoseObjetivoHostil();
+    poseJugadorAtacadoPorIAEnCurso = false;
+  }
+
+  UnidadPoseController ObtenerPoseJugadorAtacadoPorIA(Unidad unidadAtacada)
+  {
+    if (!esHostil || scEstaUnidad == null || unidadAtacada == null)
+    {
+      return null;
+    }
+
+    if (scEstaUnidad.GetComponent<IAUnidad>() == null || unidadAtacada.GetComponent<IAUnidad>() != null)
+    {
+      return null;
+    }
+
+    if (scEstaUnidad.CasillaPosicion == null || unidadAtacada.CasillaPosicion == null)
+    {
+      return null;
+    }
+
+    if (scEstaUnidad.CasillaPosicion.lado == unidadAtacada.CasillaPosicion.lado)
+    {
+      return null;
+    }
+
+    UnidadPoseController poseObjetivo = unidadAtacada.GetComponent<UnidadPoseController>();
+    if (poseObjetivo == null || poseObjetivo.poseTurnoActivo == null)
+    {
+      return null;
+    }
+
+    return poseObjetivo;
+  }
+
   //Tiradas Salvacion vs Atributo 
   /*
   public bool TiradaSalvacion(float atributoDefiende, float atributoAtaca, float modificadorHabilidadaAtaque)
@@ -712,6 +783,7 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     TaskCompletionSource<bool> visualTcs = new TaskCompletionSource<bool>();
     bool focoCamaraAplicado = false;
     bool mantenerFocoCamaraPorCadena = false;
+    UnidadPoseController poseObjetivoAtacado = null;
     lock (secuenciaVisualLock)
     {
       secuenciaVisualEnCurso = visualTcs.Task;
@@ -745,6 +817,11 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
         bool focoEsArea = hAncho > 1 || objetivosCamara.Count > 1;
         BattleManager.Instance.EnfocarCamaraHabilidad(scEstaUnidad, objetivosCamara, esHostil, true, intensidadFocoCamara, esMelee, focoEsArea);
         focoCamaraAplicado = true;
+      }
+
+      if (!esMelee)
+      {
+        await ForzarRetornoMeleeVisualAsync();
       }
 
       // Log de uso de habilidad de IA
@@ -802,6 +879,7 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     bool mantenerAdelantePorCadena = DebeMantenerAdelanteParaEncadenarMelee();
     mantenerFocoCamaraPorCadena = focoCamaraAplicado && mantenerAdelantePorCadena;
     object objetivoVisual = solo ?? (objetivos != null && objetivos.Count > 0 ? objetivos[0] : null);
+    poseObjetivoAtacado = esMelee ? IniciarPoseJugadorAtacadoPorIA(objetivoVisual) : null;
     bool seAproximo = await IntentarAproximarVisualMeleeAsync(objetivoVisual, mantenerAdelantePorCadena);
     await EsperarPostAproximacionMeleeAsync(seAproximo);
 
@@ -830,6 +908,12 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
       }
     }
 
+    if (mantenerAdelantePorCadena && (scEstaUnidad == null || scEstaUnidad.ObtenerAPActual() <= 0))
+    {
+      mantenerAdelantePorCadena = false;
+      mantenerFocoCamaraPorCadena = false;
+    }
+
     if (mantenerAdelantePorCadena)
     {
       if (PausaEntreMeleesEncadenadosMs > 0)
@@ -851,6 +935,8 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     }
     finally
     {
+      FinalizarPoseJugadorAtacadoPorIA(poseObjetivoAtacado);
+
       if (scEstaUnidad != null)
       {
         scEstaUnidad.SetSuprimirAnimacionIA(false);
@@ -902,6 +988,17 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     return mover.VolverAPosicionInicialAsync(forzar);
   }
 
+  protected Task ForzarRetornoMeleeVisualAsync()
+  {
+    if (scEstaUnidad == null)
+    {
+      return Task.CompletedTask;
+    }
+
+    MeleeApproachMover mover = scEstaUnidad.GetComponent<MeleeApproachMover>();
+    return mover != null ? mover.VolverAPosicionInicialAsync(true) : Task.CompletedTask;
+  }
+
   protected Task EsperarPostAproximacionMeleeAsync(bool seAproximo)
   {
     if (!seAproximo || PausaPostAproximacionMs <= 0)
@@ -918,11 +1015,13 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
   protected async Task EjecutarMeleeConAproximacionAsync(object objetivo, Func<Task> resolver, bool mantenerAdelante = false, bool forzarRetornoDespues = true)
   {
     bool mantenerReal = mantenerAdelante || DebeMantenerAdelanteParaEncadenarMelee();
-    bool seAproximo = await IntentarAproximarVisualMeleeAsync(objetivo, mantenerReal);
+    UnidadPoseController poseObjetivoAtacado = IniciarPoseJugadorAtacadoPorIA(objetivo);
+    bool seAproximo = false;
     bool poseAtaqueSostenidaActiva = false;
 
     try
     {
+      seAproximo = await IntentarAproximarVisualMeleeAsync(objetivo, mantenerReal);
       await EsperarPostAproximacionMeleeAsync(seAproximo);
 
       if (scEstaUnidad != null)
@@ -948,12 +1047,16 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     }
     finally
     {
-      await VolverTrasAproximacionVisualAsync(seAproximo, forzarRetornoDespues || !mantenerReal);
+      bool mantenerRealVigente = mantenerReal && scEstaUnidad != null && scEstaUnidad.ObtenerAPActual() > 0;
+      bool debeForzarRetorno = !mantenerRealVigente && forzarRetornoDespues;
+      await VolverTrasAproximacionVisualAsync(seAproximo, debeForzarRetorno);
 
       if (poseAtaqueSostenidaActiva && !seAproximo && scEstaUnidad != null)
       {
         scEstaUnidad.FinalizarPoseAtaqueSostenida();
       }
+
+      FinalizarPoseJugadorAtacadoPorIA(poseObjetivoAtacado);
     }
   }
 
@@ -970,7 +1073,12 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
       return false;
     }
 
-    return TieneOtraHabilidadMeleeDisponible(apDisponiblePost, true);
+    if (TieneOtraHabilidadMeleeDisponible(apDisponiblePost, true))
+    {
+      return true;
+    }
+
+    return scEstaUnidad.GetComponent<IAUnidad>() != null;
   }
 
   protected bool TieneOtraHabilidadMeleeDisponible(float apDisponiblePost, bool incluirEsta = true)

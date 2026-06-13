@@ -60,6 +60,10 @@ public class MusicManager : MonoBehaviour
     bool pausado = false;
     bool usandoListaAlientoNegro = false;
     VarianteBatalla varianteBatallaActual = VarianteBatalla.Normal;
+    const float DuracionFadeDuckingNarradorTutorial = 0.25f;
+    float duckingNarradorTutorialFactor = 0f;
+    float volumenMaximoDuckingNarradorTutorial = 0.15f;
+    Coroutine rutinaDuckingNarradorTutorial;
 
     bool EsSolicitudYaActiva(int idZona, ModoMusica modo, VarianteBatalla varianteBatalla = VarianteBatalla.Normal)
     {
@@ -179,7 +183,19 @@ public class MusicManager : MonoBehaviour
     public void SetVolumen(float v)
     {
         volumenBase = Mathf.Clamp01(v);
-        if (activo != null) activo.volume = volumenBase;
+        if (activo != null) activo.volume = ObtenerVolumenMusicaObjetivo(volumenBase);
+    }
+
+    public void SetDuckingNarradorTutorial(bool activo, float volumenMaximo = 0.15f)
+    {
+        volumenMaximoDuckingNarradorTutorial = Mathf.Clamp01(volumenMaximo);
+        if (rutinaDuckingNarradorTutorial != null)
+        {
+            StopCoroutine(rutinaDuckingNarradorTutorial);
+            rutinaDuckingNarradorTutorial = null;
+        }
+
+        rutinaDuckingNarradorTutorial = StartCoroutine(FadeDuckingNarradorTutorial(activo ? 1f : 0f));
     }
 
     /// Forzar siguiente tema dentro del modo actual
@@ -484,13 +500,59 @@ public class MusicManager : MonoBehaviour
         {
             t += Time.unscaledDeltaTime;
             float k = t / tiempo;
-            inSrc.volume = Mathf.Lerp(vIn0, volObjetivo, k);
+            inSrc.volume = Mathf.Lerp(vIn0, ObtenerVolumenMusicaObjetivo(volObjetivo), k);
             activo.volume = Mathf.Lerp(vOut0, 0f, k);
             yield return null;
         }
-        inSrc.volume = volObjetivo;
+        inSrc.volume = ObtenerVolumenMusicaObjetivo(volObjetivo);
         activo.volume = 0f;
         activo.Stop();
+    }
+
+    float ObtenerVolumenMusicaObjetivo(float volumen)
+    {
+        float volumenClamped = Mathf.Clamp01(volumen);
+        float volumenDuckeado = Mathf.Min(volumenClamped, volumenMaximoDuckingNarradorTutorial);
+        return Mathf.Lerp(volumenClamped, volumenDuckeado, duckingNarradorTutorialFactor);
+    }
+
+    IEnumerator FadeDuckingNarradorTutorial(float factorObjetivo)
+    {
+        float factorInicial = duckingNarradorTutorialFactor;
+        float volumenActivoInicial = activo != null ? activo.volume : 0f;
+        float volumenPasivoInicial = pasivo != null ? pasivo.volume : 0f;
+        float tiempo = 0f;
+        float duracion = Mathf.Max(0.01f, DuracionFadeDuckingNarradorTutorial);
+
+        while (tiempo < duracion)
+        {
+            tiempo += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(tiempo / duracion);
+            duckingNarradorTutorialFactor = Mathf.Lerp(factorInicial, factorObjetivo, t);
+
+            if (activo != null && activo.isPlaying)
+            {
+                activo.volume = Mathf.Lerp(volumenActivoInicial, ObtenerVolumenMusicaObjetivo(volumenBase), t);
+            }
+
+            if (pasivo != null && pasivo.isPlaying)
+            {
+                float volumenPasivoObjetivo = factorObjetivo > factorInicial
+                    ? Mathf.Min(volumenPasivoInicial, volumenMaximoDuckingNarradorTutorial)
+                    : volumenPasivoInicial;
+                pasivo.volume = Mathf.Lerp(volumenPasivoInicial, volumenPasivoObjetivo, t);
+            }
+
+            yield return null;
+        }
+
+        duckingNarradorTutorialFactor = factorObjetivo;
+        if (activo != null && activo.isPlaying)
+        {
+            activo.volume = ObtenerVolumenMusicaObjetivo(volumenBase);
+        }
+
+        rutinaDuckingNarradorTutorial = null;
     }
 
     IEnumerator FadeOut(AudioSource src, float tiempo)

@@ -7,6 +7,8 @@ public class TutorialPresenter : MonoBehaviour
 {
   private const string DefaultLocalizationPath = "Tutoriales/TutorialVerticalSlice_Textos";
   private const string NarratorMutedKey = "TutorialNuevo_NarradorSilenciado";
+  private const float NarratorMusicDuckingMaxVolume = 0.15f;
+  private const float NarratorTextAudioDurationFactor = 0.85f;
 
   [SerializeField] private TutorialLocalizationTable localizationTable;
   [SerializeField] private GameObject panelRoot;
@@ -20,7 +22,7 @@ public class TutorialPresenter : MonoBehaviour
   [SerializeField] private TMP_SpriteAsset inlineSpriteAsset;
   [SerializeField] private bool autoUseCampaignInlineSprites = true;
   [SerializeField] private bool animateNarratorText = true;
-  [SerializeField, Min(1f)] private float narratorCharactersPerSecond = 42f;
+  [SerializeField, Min(1f)] private float narratorCharactersPerSecond = 45f;
   [SerializeField] private bool showNextAfterNarration = true;
   [SerializeField] private bool hidePanelWhileCampaignTravels = true;
   [SerializeField] private bool fitPanelInsideParent = true;
@@ -32,6 +34,7 @@ public class TutorialPresenter : MonoBehaviour
   [SerializeField] private Button muteButton;
   [SerializeField] private Button replayButton;
   [SerializeField] private AudioSource narratorAudioSource;
+  [SerializeField, Min(0f)] private float narratorVolumeMultiplier = 2.5f;
   [SerializeField] private Graphic muteStateGraphic;
   [SerializeField] private Color muteColor = new Color(0.55f, 0.55f, 0.55f, 1f);
   [SerializeField] private Color unmuteColor = Color.white;
@@ -52,6 +55,7 @@ public class TutorialPresenter : MonoBehaviour
   private AudioClip currentNarratorAudio;
   private Coroutine narratorTextCoroutine;
   private Coroutine revealNextButtonCoroutine;
+  private Coroutine narratorMusicDuckingCoroutine;
   private int narratorTextTotalCharacters;
   private TutorialStep currentStep;
   private bool hiddenForCampaignTravel;
@@ -75,7 +79,8 @@ public class TutorialPresenter : MonoBehaviour
   private void Awake()
   {
     AutoBindReferences();
-    narratorMuted = PlayerPrefs.GetInt(NarratorMutedKey, 0) == 1;
+    narratorMuted = false;
+    PlayerPrefs.SetInt(NarratorMutedKey, 0);
   }
 
   private void Update()
@@ -167,6 +172,7 @@ public class TutorialPresenter : MonoBehaviour
     currentStep = step;
     hiddenForCampaignTravel = false;
     RestoreGatedGraphics();
+    AudioClip narratorAudio = GetNarratorAudioForCurrentLanguage(step);
     SelectActivePanel(step);
     ApplyPanelPresentation(step);
     if (step.presentationMode != TutorialPresentationMode.Full)
@@ -191,18 +197,18 @@ public class TutorialPresenter : MonoBehaviour
 
     if (activeNarratorText != null)
     {
-      ShowNarratorText(Translate(step.narratorKey), step.narratorAudio);
+      ShowNarratorText(Translate(step.narratorKey), narratorAudio);
     }
 
     ApplyInlineSpriteAsset();
-    ConfigureNextButtonVisibility(step);
+    ConfigureNextButtonVisibility(step, narratorAudio);
     SetActive(backButton != null ? backButton.gameObject : null, step.canGoBack && canGoBack);
     if (skipButton != null && !UsesSameButton(skipButton, nextButton) && !UsesSameButton(skipButton, backButton))
     {
       SetActive(skipButton.gameObject, step.canSkip);
     }
     PositionTargetVisuals(step);
-    PlayNarratorAudio(step.narratorAudio);
+    PlayNarratorAudio(narratorAudio);
     UpdateMuteVisualState();
     ApplyGraphicInputGate(step);
     ArrangeTutorialLayers();
@@ -227,6 +233,13 @@ public class TutorialPresenter : MonoBehaviour
     SetActive(inputBlocker, false);
     SetActive(highlight != null ? highlight.gameObject : null, false);
     SetActive(pointer != null ? pointer.gameObject : null, false);
+  }
+
+  public void StopCurrentStepNarration()
+  {
+    StopRevealNextButtonDelay();
+    StopNarratorTextAnimation();
+    StopNarratorAudio();
   }
 
   private string Translate(string key)
@@ -647,6 +660,7 @@ public class TutorialPresenter : MonoBehaviour
 
     if (payload.eventId == TutorialEventNames.CampaignNodeSelected)
     {
+      StopCurrentStepNarration();
       hiddenForCampaignTravel = true;
       SetTutorialVisualsVisible(false);
       if (ShouldSuspendInputGateForCampaignTravel())
@@ -659,6 +673,7 @@ public class TutorialPresenter : MonoBehaviour
     if (payload.eventId == "ui.descanso_confirmado" &&
         (hideUntilRestRandomEvent || CurrentStepWaitsForEvent(TutorialEventNames.CampaignRestRandomEventContinued)))
     {
+      StopCurrentStepNarration();
       hideUntilRestRandomEvent = true;
       hiddenForCampaignTravel = true;
       SetTutorialVisualsVisible(false);
@@ -1151,7 +1166,7 @@ public class TutorialPresenter : MonoBehaviour
     }
 
     float duration = audioClip != null && audioClip.length > 0.05f
-      ? audioClip.length
+      ? audioClip.length * NarratorTextAudioDurationFactor
       : narratorTextTotalCharacters / Mathf.Max(1f, narratorCharactersPerSecond);
 
     narratorTextCoroutine = StartCoroutine(AnimateNarratorText(narratorTextTotalCharacters, duration));
@@ -1198,7 +1213,7 @@ public class TutorialPresenter : MonoBehaviour
     }
   }
 
-  private void ConfigureNextButtonVisibility(TutorialStep step)
+  private void ConfigureNextButtonVisibility(TutorialStep step, AudioClip audioClip)
   {
     StopRevealNextButtonDelay();
 
@@ -1219,7 +1234,7 @@ public class TutorialPresenter : MonoBehaviour
       return;
     }
 
-    float delay = GetNextButtonRevealDelay(step);
+    float delay = GetNextButtonRevealDelay(step, audioClip);
     if (!showNextAfterNarration || delay <= 0f)
     {
       SetActive(nextButtonRoot, true);
@@ -1230,7 +1245,7 @@ public class TutorialPresenter : MonoBehaviour
     revealNextButtonCoroutine = StartCoroutine(RevealNextButtonAfterDelay(delay));
   }
 
-  private float GetNextButtonRevealDelay(TutorialStep step)
+  private float GetNextButtonRevealDelay(TutorialStep step, AudioClip audioClip)
   {
     if (step == null)
     {
@@ -1238,9 +1253,9 @@ public class TutorialPresenter : MonoBehaviour
     }
 
     float delay = 0f;
-    if (!narratorMuted && step.narratorAudio != null)
+    if (!narratorMuted && audioClip != null)
     {
-      delay = Mathf.Max(delay, step.narratorAudio.length);
+      delay = Mathf.Max(delay, audioClip.length);
     }
 
     if (animateNarratorText && activeNarratorText != null)
@@ -1249,14 +1264,33 @@ public class TutorialPresenter : MonoBehaviour
       int totalCharacters = activeNarratorText.textInfo.characterCount;
       if (totalCharacters > 0)
       {
-        float typewriterDuration = step.narratorAudio != null && step.narratorAudio.length > 0.05f
-          ? step.narratorAudio.length
+        float typewriterDuration = audioClip != null && audioClip.length > 0.05f
+          ? audioClip.length * NarratorTextAudioDurationFactor
           : totalCharacters / Mathf.Max(1f, narratorCharactersPerSecond);
         delay = Mathf.Max(delay, typewriterDuration);
       }
     }
 
     return delay;
+  }
+
+  private AudioClip GetNarratorAudioForCurrentLanguage(TutorialStep step)
+  {
+    if (step == null)
+    {
+      return null;
+    }
+
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaEspanol);
+    switch (idioma)
+    {
+      case TRADU.IdiomaIngles:
+        return step.narratorAudioIngles;
+      case TRADU.IdiomaPortugues:
+        return step.narratorAudioPortugues;
+      default:
+        return step.narratorAudio;
+    }
   }
 
   private System.Collections.IEnumerator RevealNextButtonAfterDelay(float delay)
@@ -1291,6 +1325,7 @@ public class TutorialPresenter : MonoBehaviour
 
   private void PlayNarratorAudio(AudioClip audioClip)
   {
+    StopNarratorMusicDucking();
     currentNarratorAudio = audioClip;
     if (narratorAudioSource == null)
     {
@@ -1306,7 +1341,55 @@ public class TutorialPresenter : MonoBehaviour
     }
 
     narratorAudioSource.clip = audioClip;
-    narratorAudioSource.Play();
+    narratorAudioSource.volume = 1f;
+    narratorAudioSource.PlayOneShot(audioClip, Mathf.Max(0f, narratorVolumeMultiplier));
+    StartNarratorMusicDucking(audioClip);
+  }
+
+  private void StartNarratorMusicDucking(AudioClip audioClip)
+  {
+    if (MusicManager.Instance == null || audioClip == null)
+    {
+      return;
+    }
+
+    MusicManager.Instance.SetDuckingNarradorTutorial(true, NarratorMusicDuckingMaxVolume);
+    narratorMusicDuckingCoroutine = StartCoroutine(RestoreNarratorMusicWhenAudioEnds(audioClip));
+  }
+
+  private System.Collections.IEnumerator RestoreNarratorMusicWhenAudioEnds(AudioClip audioClip)
+  {
+    float elapsed = 0f;
+    float duration = audioClip != null ? audioClip.length : 0f;
+    while (elapsed < duration
+      && narratorAudioSource != null
+      && narratorAudioSource.clip == audioClip)
+    {
+      elapsed += Time.unscaledDeltaTime;
+      yield return null;
+    }
+
+    narratorMusicDuckingCoroutine = null;
+    RestoreNarratorMusicDucking();
+  }
+
+  private void StopNarratorMusicDucking()
+  {
+    if (narratorMusicDuckingCoroutine != null)
+    {
+      StopCoroutine(narratorMusicDuckingCoroutine);
+      narratorMusicDuckingCoroutine = null;
+    }
+
+    RestoreNarratorMusicDucking();
+  }
+
+  private void RestoreNarratorMusicDucking()
+  {
+    if (MusicManager.Instance != null)
+    {
+      MusicManager.Instance.SetDuckingNarradorTutorial(false, NarratorMusicDuckingMaxVolume);
+    }
   }
 
   private void UpdateMuteVisualState()
@@ -1323,6 +1406,8 @@ public class TutorialPresenter : MonoBehaviour
 
   private void StopNarratorAudio()
   {
+    StopNarratorMusicDucking();
+
     if (narratorAudioSource == null)
     {
       return;

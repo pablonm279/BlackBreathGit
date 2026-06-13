@@ -12,6 +12,8 @@ public class TRADU : MonoBehaviour
 
     public static TRADU i { get; private set; }
     public int nIdioma = IdiomaIngles; //1 Español  -  2 Inglés
+    private readonly Dictionary<TMPro.TextMeshProUGUI, string> textosOriginalesTMP = new Dictionary<TMPro.TextMeshProUGUI, string>();
+
     private void Awake()
     {
         if (i == null)
@@ -7286,6 +7288,15 @@ public class TRADU : MonoBehaviour
             case"Mostrar Ayudas":
             r="Show Tips";
             break;
+            case"Noticias":
+            r="News";
+            break;
+            case"Prueba jugable":
+            r="Open Playtest";
+            break;
+            case"Gracias por jugar la demo.\\nEn esta versión podrás experimentar el Tutorial y luego la primer zona del juego completa.\\n\\nTu feedback es muy importante para seguir mejorando.":
+            r="Thank you for playing the demo.\nIn this version, you will be able to experience the Tutorial and then the first region of the game.\n\nYour feedback is very important to help us keep improving.";
+            break;
             
             
             
@@ -14526,13 +14537,16 @@ public class TRADU : MonoBehaviour
             case"Mostrar Ayudas":
             r="Mostrar ajuda";
             break;
+            case"Noticias":
+            r="Notícias";
+            break;
+            case"Prueba jugable":
+            r="Teste de jogovel";
+             break;
+            case"Gracias por jugar la demo.\nEn esta versión podrás experimentar el Tutorial y luego la primer zona del juego completa.\n\nTu feedback es muy importante para seguir mejorando.":
+            r="Obrigado por jogar a demo.\nNesta versão, você poderá experimentar o Tutorial e depois a primeira zona completa do jogo.\n\nO seu feedback é muito importante para continuarmos melhorando.";
+            break;
             /*case"":
-            r="";
-            break;
-            case"":
-            r="";
-            break;
-            case"":
             r="";
             break;*/
             
@@ -14561,7 +14575,17 @@ public class TRADU : MonoBehaviour
 
     foreach (var txt in textos)
     {
-        string original = txt.text;
+        if (txt == null)
+        {
+            continue;
+        }
+
+        if (!textosOriginalesTMP.TryGetValue(txt, out string original))
+        {
+            original = txt.text;
+            textosOriginalesTMP[txt] = original;
+        }
+
         string traducido = original;
 
         if (nIdioma == IdiomaIngles)
@@ -14573,7 +14597,7 @@ public class TRADU : MonoBehaviour
             traducido = TraducirConCompatibilidadMojibake(original.Normalize(NormalizationForm.FormC), TraducirPortugues);
         }
 
-        if (traducido != original)
+        if (txt.text != traducido)
         {
             txt.text = traducido;
         }

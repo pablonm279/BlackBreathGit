@@ -246,6 +246,33 @@ public class TutorialManager : MonoBehaviour
             && nodo.posYNodo == TutorialClaroY;
     }
 
+    public void RevelarEmboscadaMov3AlLlegar(Nodo nodoLlegada)
+    {
+        CampaignManager campaignManager = CampaignManager.Instance;
+        if (!tutorialActivo || campaignManager == null || !campaignManager.DebeUsarConfiguracionTutorial())
+        {
+            return;
+        }
+
+        if (nodoLlegada == null
+            || nodoLlegada.posXNodo != TutorialEventoX
+            || nodoLlegada.posYNodo != TutorialEventoY)
+        {
+            return;
+        }
+
+        ActualizarRutaMapaTutorial(campaignManager.scMapaManager?.scContenedordeNodos);
+        if (Nodotut5 == null)
+        {
+            return;
+        }
+
+        Nodotut5.LimpiarEstadosEspecialesTutorial();
+        Nodotut5.tipoNodo = 11;
+        Nodotut5.Revelar(false);
+        nodoLlegada.MostrarCaminoPorVisionHacia(Nodotut5);
+    }
+
     public bool EsBatallaFinalTutorial(Nodo nodo)
     {
         return CampaignManager.Instance != null

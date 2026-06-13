@@ -65,6 +65,7 @@ public class BattleManager : MonoBehaviour
   public List<Unidad> lUnidadesPosiblesHabilidadActiva = new List<Unidad>();
   public List<Obstaculo> lObstaculosPosiblesHabilidadActiva = new List<Obstaculo>();
   private readonly HashSet<Unidad> unidadesConFadeHoverObjetivoHabilidad = new HashSet<Unidad>();
+  private readonly HashSet<Unidad> unidadesConFadeAliadoDebajoUnidadActivaFrontal = new HashSet<Unidad>();
   public event EventHandler OnRondaNueva;
   public event EventHandler OnTurnoNuevo;
   public event Action<float> OnValourGlobalAliadosCambiado;
@@ -84,6 +85,7 @@ public class BattleManager : MonoBehaviour
   private int huidasMoralEstaRonda = 0;
   private float ultimoValourGlobalAliadosPct = -1f;
   [SerializeField, Range(0f, 1f)] private float alphaHoverObjetivoNoAfectado = 0.35f;
+  [SerializeField, Range(0f, 1f)] private float alphaAliadoDebajoUnidadActivaFrontal = 0.35f;
 
 
   public UIBotonesHabilidades scUIBotonesHab;
@@ -457,6 +459,9 @@ public class BattleManager : MonoBehaviour
   {
     if (unidadActiva != null)
     {
+      RefrescarPosesUnidadesPorCambioDeTurno();
+      ActualizarFadeAliadoDebajoUnidadActivaFrontal();
+
       if (retratoPers != null)
       {
         Sprite retratoActual = unidadActiva.uRetrato;
@@ -1753,6 +1758,28 @@ public class BattleManager : MonoBehaviour
     }
   }
 
+  void RefrescarPosesUnidadesPorCambioDeTurno()
+  {
+    if (lUnidadesTotal == null)
+    {
+      return;
+    }
+
+    foreach (Unidad unidad in lUnidadesTotal)
+    {
+      if (unidad == null)
+      {
+        continue;
+      }
+
+      UnidadPoseController poseController = unidad.GetComponent<UnidadPoseController>();
+      if (poseController != null)
+      {
+        poseController.RefrescarPoseActual();
+      }
+    }
+  }
+
   public void SincronizarHabilidadEscapar(Unidad unidad)
   {
     if (unidad == null)
@@ -1844,6 +1871,7 @@ public class BattleManager : MonoBehaviour
     }
 
     HashSet<Unidad> nuevasConFade = new HashSet<Unidad>();
+    HashSet<Unidad> unidadesActualizar = new HashSet<Unidad>(unidadesConFadeHoverObjetivoHabilidad);
     if (lUnidadesPosiblesHabilidadActiva != null)
     {
       foreach (Unidad unidad in lUnidadesPosiblesHabilidadActiva)
@@ -1853,22 +1881,13 @@ public class BattleManager : MonoBehaviour
           continue;
         }
 
+        unidadesActualizar.Add(unidad);
         if (visibles.Contains(unidad))
         {
-          unidad.AplicarFadeImagenUnidad(0f);
           continue;
         }
 
-        unidad.EstablecerMultiplicadorAlphaVisual(alphaHoverObjetivoNoAfectado);
         nuevasConFade.Add(unidad);
-      }
-    }
-
-    foreach (Unidad unidad in unidadesConFadeHoverObjetivoHabilidad)
-    {
-      if (unidad != null && !nuevasConFade.Contains(unidad))
-      {
-        unidad.AplicarFadeImagenUnidad(0f);
       }
     }
 
@@ -1876,6 +1895,11 @@ public class BattleManager : MonoBehaviour
     foreach (Unidad unidad in nuevasConFade)
     {
       unidadesConFadeHoverObjetivoHabilidad.Add(unidad);
+    }
+
+    foreach (Unidad unidad in unidadesActualizar)
+    {
+      AplicarAlphaVisualCompuesto(unidad);
     }
   }
 
@@ -1886,15 +1910,111 @@ public class BattleManager : MonoBehaviour
       return;
     }
 
-    foreach (Unidad unidad in unidadesConFadeHoverObjetivoHabilidad)
+    List<Unidad> unidadesActualizar = new List<Unidad>(unidadesConFadeHoverObjetivoHabilidad);
+    unidadesConFadeHoverObjetivoHabilidad.Clear();
+
+    foreach (Unidad unidad in unidadesActualizar)
     {
       if (unidad != null)
       {
-        unidad.AplicarFadeImagenUnidad(0f);
+        AplicarAlphaVisualCompuesto(unidad);
       }
     }
+  }
 
-    unidadesConFadeHoverObjetivoHabilidad.Clear();
+  private void ActualizarFadeAliadoDebajoUnidadActivaFrontal()
+  {
+    HashSet<Unidad> nuevasConFade = new HashSet<Unidad>();
+    Unidad aliadoDebajo = ObtenerAliadoDebajoUnidadActivaFrontal();
+    if (aliadoDebajo != null)
+    {
+      nuevasConFade.Add(aliadoDebajo);
+    }
+
+    if (unidadesConFadeAliadoDebajoUnidadActivaFrontal.SetEquals(nuevasConFade))
+    {
+      return;
+    }
+
+    HashSet<Unidad> unidadesActualizar = new HashSet<Unidad>(unidadesConFadeAliadoDebajoUnidadActivaFrontal);
+    foreach (Unidad unidad in nuevasConFade)
+    {
+      unidadesActualizar.Add(unidad);
+    }
+
+    unidadesConFadeAliadoDebajoUnidadActivaFrontal.Clear();
+    foreach (Unidad unidad in nuevasConFade)
+    {
+      unidadesConFadeAliadoDebajoUnidadActivaFrontal.Add(unidad);
+    }
+
+    foreach (Unidad unidad in unidadesActualizar)
+    {
+      AplicarAlphaVisualCompuesto(unidad);
+    }
+  }
+
+  private Unidad ObtenerAliadoDebajoUnidadActivaFrontal()
+  {
+    if (unidadActiva == null || unidadActiva.GetComponent<IAUnidad>() != null)
+    {
+      return null;
+    }
+
+    Casilla casillaActiva = unidadActiva.CasillaPosicion;
+    if (casillaActiva == null || casillaActiva.posX != 3)
+    {
+      return null;
+    }
+
+    Casilla casillaDebajo = null;
+    LadoManager lado = casillaActiva.ladoGO != null ? casillaActiva.ladoGO.GetComponent<LadoManager>() : null;
+    if (lado != null)
+    {
+      casillaDebajo = lado.ObtenerCasillaPorIndex(casillaActiva.posX, casillaActiva.posY - 1);
+    }
+
+    if (casillaDebajo == null && lCasillasTotal != null)
+    {
+      casillaDebajo = lCasillasTotal.FirstOrDefault(casilla => casilla != null
+        && casilla.lado == casillaActiva.lado
+        && casilla.posX == casillaActiva.posX
+        && casilla.posY == casillaActiva.posY - 1);
+    }
+
+    if (casillaDebajo == null || casillaDebajo.Presente == null)
+    {
+      return null;
+    }
+
+    Unidad aliadoDebajo = casillaDebajo.Presente.GetComponent<Unidad>();
+    if (aliadoDebajo == null || aliadoDebajo == unidadActiva || aliadoDebajo.CasillaPosicion == null)
+    {
+      return null;
+    }
+
+    return aliadoDebajo.CasillaPosicion.lado == casillaActiva.lado ? aliadoDebajo : null;
+  }
+
+  private void AplicarAlphaVisualCompuesto(Unidad unidad)
+  {
+    if (unidad == null)
+    {
+      return;
+    }
+
+    float alpha = 1f;
+    if (unidadesConFadeHoverObjetivoHabilidad.Contains(unidad))
+    {
+      alpha = Mathf.Min(alpha, alphaHoverObjetivoNoAfectado);
+    }
+
+    if (unidadesConFadeAliadoDebajoUnidadActivaFrontal.Contains(unidad))
+    {
+      alpha = Mathf.Min(alpha, alphaAliadoDebajoUnidadActivaFrontal);
+    }
+
+    unidad.EstablecerMultiplicadorAlphaVisual(alpha);
   }
 
   private void ActualizarVisibilidadIndicadorEsfuerzo()
@@ -2038,6 +2158,7 @@ public class BattleManager : MonoBehaviour
     bool tutorialActivo = scTutorialCombate != null && scTutorialCombate.tutorialCombateActivo;
     SincronizarPausaConVisibilidadLog();
     ActualizarFadeHoverObjetivoHabilidadPorMouse();
+    ActualizarFadeAliadoDebajoUnidadActivaFrontal();
 
     if (Input.GetKeyDown(teclaDebugBajoMouse))
     {
@@ -2051,17 +2172,17 @@ public class BattleManager : MonoBehaviour
 
     if (Input.GetKeyDown(KeyCode.Space))
     {
-      if (!tutorialActivo && !pausaPorLogActiva && unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() != null)
-      {
-        TogglePausaManualCombate();
-        return;
-      }
-
       if (unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() == null && tutorialActivo == false)
       {
         TerminarTurno();
         return;
       }
+    }
+
+    if (Input.GetKeyDown(KeyCode.Escape) && tutorialActivo)
+    {
+      AbrirOpcionesDesdeCombate();
+      return;
     }
 
     if (PausaCombateActiva)
@@ -2077,17 +2198,7 @@ public class BattleManager : MonoBehaviour
     }
     else if (Input.GetKeyDown(KeyCode.Escape))
     {
-      if (scTutorialCombate.tutorialCombateActivo) { return; }
-
-      AdministradorEscenas administradorEscenas = CampaignManager.Instance != null
-        ? CampaignManager.Instance.scAdministradorEscenas
-        : null;
-
-      if (administradorEscenas != null)
-      {
-        administradorEscenas.RefrescarUICompartidaSegunEscena();
-        administradorEscenas.abrirOpciones();
-      }
+      AbrirOpcionesDesdeCombate();
     }
 
     if (Input.GetKeyDown(KeyCode.I))
@@ -2136,6 +2247,21 @@ public class BattleManager : MonoBehaviour
     {
       apDisponible.text = string.Empty;
     }
+  }
+
+  private void AbrirOpcionesDesdeCombate()
+  {
+    AdministradorEscenas administradorEscenas = CampaignManager.Instance != null
+      ? CampaignManager.Instance.scAdministradorEscenas
+      : null;
+
+    if (administradorEscenas == null)
+    {
+      return;
+    }
+
+    administradorEscenas.RefrescarUICompartidaSegunEscena();
+    administradorEscenas.abrirOpciones();
   }
 
   private void LateUpdate()

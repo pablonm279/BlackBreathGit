@@ -320,7 +320,10 @@ public class BotonHabilidad : MonoBehaviour
             if (HabilidadRepresentada.nombre == "Enmendar")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClasePurificadora>().ObtenerFervor() < HabilidadRepresentada.requiereRecurso)
-                { return; }
+                {
+                    BattleManager.Instance.unidadActiva.GenerarTextoFlotante(ObtenerTextoSinFervor(), Color.gray, FloatingTextContext.Resist);
+                    return;
+                }
             }
             if (HabilidadRepresentada.nombre == "Asesinar")
             {
@@ -582,6 +585,24 @@ public class BotonHabilidad : MonoBehaviour
         else
         {
             return false;
+        }
+    }
+
+    string ObtenerTextoSinFervor()
+    {
+        if (TRADU.i == null)
+        {
+            return "Fervor insuficiente";
+        }
+
+        switch (TRADU.i.nIdioma)
+        {
+            case TRADU.IdiomaIngles:
+                return "Insufficient Fervor";
+            case TRADU.IdiomaPortugues:
+                return "Fervor insuficiente";
+            default:
+                return "Fervor insuficiente";
         }
     }
 

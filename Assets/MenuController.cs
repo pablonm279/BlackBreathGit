@@ -103,19 +103,38 @@ public class MenuController : MonoBehaviour
         AplicarVersionesIdioma();
     }
 
-    private void AplicarVersionesIdioma()
+    public void AplicarVersionesIdioma()
     {
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaEspanol);
         bool usarIngles = idioma == TRADU.IdiomaIngles;
         bool usarPortugues = idioma == TRADU.IdiomaPortugues;
 
-        if (logoEspaniol != null) { logoEspaniol.SetActive(!usarIngles && (!usarPortugues || logoPortugues == null)); }
-        if (logoIngles != null) { logoIngles.SetActive(usarIngles); }
-        if (logoPortugues != null) { logoPortugues.SetActive(usarPortugues); }
+        GameObject logoActivo = logoEspaniol;
+        if (usarIngles && logoIngles != null) { logoActivo = logoIngles; }
+        else if (usarPortugues && logoPortugues != null) { logoActivo = logoPortugues; }
 
-        if (disclaimerEspaniol != null) { disclaimerEspaniol.SetActive(!usarIngles && (!usarPortugues || disclaimerPortugues == null)); }
-        if (disclaimerIngles != null) { disclaimerIngles.SetActive(usarIngles); }
-        if (disclaimerPortugues != null) { disclaimerPortugues.SetActive(usarPortugues); }
+        GameObject disclaimerActivo = disclaimerEspaniol;
+        if (usarIngles && disclaimerIngles != null) { disclaimerActivo = disclaimerIngles; }
+        else if (usarPortugues && disclaimerPortugues != null) { disclaimerActivo = disclaimerPortugues; }
+
+        ReiniciarVersionesIdioma(logoActivo, logoEspaniol, logoIngles, logoPortugues);
+        ReiniciarVersionesIdioma(disclaimerActivo, disclaimerEspaniol, disclaimerIngles, disclaimerPortugues);
+    }
+
+    private static void ReiniciarVersionesIdioma(GameObject activo, params GameObject[] versiones)
+    {
+        for (int i = 0; i < versiones.Length; i++)
+        {
+            if (versiones[i] != null)
+            {
+                versiones[i].SetActive(false);
+            }
+        }
+
+        if (activo != null)
+        {
+            activo.SetActive(true);
+        }
     }
 
     public void OnNuevaPartida()

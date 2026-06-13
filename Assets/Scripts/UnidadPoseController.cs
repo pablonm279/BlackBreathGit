@@ -11,10 +11,12 @@ public class AparienciaAlternativaUnidad
     public Sprite poseMover;
     public Sprite poseAtacar;
     public Sprite poseHabilidad;
+    public Sprite poseRecibirDanio;
+    public Sprite poseTurnoActivo;
 
     public bool TieneContenido()
     {
-        return retrato != null || poseIdle != null || poseMover != null || poseAtacar != null || poseHabilidad != null;
+        return retrato != null || poseIdle != null || poseMover != null || poseAtacar != null || poseHabilidad != null || poseRecibirDanio != null || poseTurnoActivo != null;
     }
 }
 
@@ -26,7 +28,8 @@ public class UnidadPoseController : MonoBehaviour
         Idle,
         Mover,
         Atacar,
-        Habilidad
+        Habilidad,
+        RecibirDanio
     }
 
     [Header("Destino")]
@@ -36,12 +39,13 @@ public class UnidadPoseController : MonoBehaviour
     public Sprite poseIdle;
     public Sprite poseMover;
     public Sprite poseAtacar;
-    // public Sprite poseDanyo;
     public Sprite poseHabilidad; // Para habilidades no hostiles
+    public Sprite poseRecibirDanio;
+    public Sprite poseTurnoActivo;
 
     [Header("Tiempos Pose Transitoria (seg)")]
     public float duracionPoseAtacar = 1.0f;
-    public float duracionPoseDanyo = 1.0f;
+    public float duracionPoseDanyo = 0.4f;
     public float duracionPoseHabilidad = 1.0f;
 
     [Header("Timing Melee Centralizado")]
@@ -57,11 +61,16 @@ public class UnidadPoseController : MonoBehaviour
     Coroutine revertCoroutine;
     bool mantenerPoseHabilidad = false;
     bool mantenerPoseAtaque = false;
+    int contadorObjetivoHostilActivo = 0;
+    bool objetivoHostilTemporalActivo = false;
     TipoPoseActual poseActual = TipoPoseActual.Idle;
     Sprite poseIdleBaseConfigurada;
     Sprite poseMoverBaseConfigurada;
     Sprite poseAtacarBaseConfigurada;
     Sprite poseHabilidadBaseConfigurada;
+    Sprite poseRecibirDanioBaseConfigurada;
+    Sprite poseTurnoActivoBaseConfigurada;
+    Coroutine objetivoHostilTemporalCoroutine;
 
     void Awake()
     {
@@ -81,6 +90,8 @@ public class UnidadPoseController : MonoBehaviour
         poseMoverBaseConfigurada = poseMover;
         poseAtacarBaseConfigurada = poseAtacar;
         poseHabilidadBaseConfigurada = poseHabilidad;
+        poseRecibirDanioBaseConfigurada = poseRecibirDanio;
+        poseTurnoActivoBaseConfigurada = poseTurnoActivo;
     }
 
     bool DebeAplicar()
@@ -99,6 +110,64 @@ public class UnidadPoseController : MonoBehaviour
         targetImage.sprite = sp;
     }
 
+    bool EstaUnidadEnTurnoActivo()
+    {
+        return unidad != null && BattleManager.Instance != null && BattleManager.Instance.unidadActiva == unidad;
+    }
+
+    Sprite ResolverPoseIdle()
+    {
+        if (poseTurnoActivo != null && (EstaUnidadEnTurnoActivo() || contadorObjetivoHostilActivo > 0))
+        {
+            return poseTurnoActivo;
+        }
+
+        return poseIdle;
+    }
+
+    public void EnterPoseObjetivoHostil()
+    {
+        contadorObjetivoHostilActivo++;
+        RefrescarPoseActual();
+    }
+
+    public void ExitPoseObjetivoHostil()
+    {
+        contadorObjetivoHostilActivo = Mathf.Max(0, contadorObjetivoHostilActivo - 1);
+        RefrescarPoseActual();
+    }
+
+    public void PlayPoseObjetivoHostilTemporal(float duracion)
+    {
+        if (!objetivoHostilTemporalActivo)
+        {
+            objetivoHostilTemporalActivo = true;
+            EnterPoseObjetivoHostil();
+        }
+        else
+        {
+            RefrescarPoseActual();
+        }
+
+        if (objetivoHostilTemporalCoroutine != null)
+        {
+            StopCoroutine(objetivoHostilTemporalCoroutine);
+        }
+
+        objetivoHostilTemporalCoroutine = StartCoroutine(LiberarPoseObjetivoHostilTemporal(duracion));
+    }
+
+    IEnumerator LiberarPoseObjetivoHostilTemporal(float duracion)
+    {
+        yield return new WaitForSeconds(Mathf.Max(0f, duracion));
+        objetivoHostilTemporalCoroutine = null;
+        if (objetivoHostilTemporalActivo)
+        {
+            objetivoHostilTemporalActivo = false;
+            ExitPoseObjetivoHostil();
+        }
+    }
+
     public void SetIdle()
     {
         if (mantenerPoseHabilidad || mantenerPoseAtaque)
@@ -108,7 +177,7 @@ public class UnidadPoseController : MonoBehaviour
 
         CancelarReversionAutomatica();
         poseActual = TipoPoseActual.Idle;
-        SetSprite(poseIdle);
+        SetSprite(ResolverPoseIdle());
     }
 
     public void OnStartMove()
@@ -122,7 +191,7 @@ public class UnidadPoseController : MonoBehaviour
     {
         CancelarReversionAutomatica();
         poseActual = TipoPoseActual.Idle;
-        SetSprite(poseIdle);
+        SetSprite(ResolverPoseIdle());
     }
 
     public void PlayAttackPose()
@@ -151,6 +220,23 @@ public class UnidadPoseController : MonoBehaviour
         poseActual = TipoPoseActual.Habilidad;
         SetSprite(poseHabilidad);
         IniciarReversion(duracionPoseHabilidad);
+    }
+
+    public void PlayDamagePose()
+    {
+        if (poseRecibirDanio == null)
+        {
+            if (poseTurnoActivo != null)
+            {
+                PlayPoseObjetivoHostilTemporal(duracionPoseDanyo);
+            }
+            return;
+        }
+
+        CancelarReversionAutomatica();
+        poseActual = TipoPoseActual.RecibirDanio;
+        SetSprite(poseRecibirDanio);
+        IniciarReversion(duracionPoseDanyo);
     }
 
     // Mantiene la pose de habilidad fija hasta que se libere manualmente
@@ -192,12 +278,14 @@ public class UnidadPoseController : MonoBehaviour
         }
     }
 
-    public void ConfigurarPoses(Sprite idle, Sprite mover, Sprite atacar, Sprite habilidad, bool refrescarPoseActual = true)
+    public void ConfigurarPoses(Sprite idle, Sprite mover, Sprite atacar, Sprite habilidad, Sprite recibirDanio = null, Sprite turnoActivo = null, bool refrescarPoseActual = true)
     {
         poseIdle = idle;
         poseMover = mover;
         poseAtacar = atacar;
         poseHabilidad = habilidad;
+        poseRecibirDanio = recibirDanio;
+        poseTurnoActivo = turnoActivo;
 
         if (refrescarPoseActual)
         {
@@ -225,12 +313,24 @@ public class UnidadPoseController : MonoBehaviour
         return poseHabilidadBaseConfigurada;
     }
 
+    public Sprite ObtenerPoseRecibirDanioBase()
+    {
+        return poseRecibirDanioBaseConfigurada;
+    }
+
+    public Sprite ObtenerPoseTurnoActivoBase()
+    {
+        return poseTurnoActivoBaseConfigurada;
+    }
+
     public void RestaurarPosesBase(bool refrescarPoseActual = true)
     {
         poseIdle = poseIdleBaseConfigurada;
         poseMover = poseMoverBaseConfigurada;
         poseAtacar = poseAtacarBaseConfigurada;
         poseHabilidad = poseHabilidadBaseConfigurada;
+        poseRecibirDanio = poseRecibirDanioBaseConfigurada;
+        poseTurnoActivo = poseTurnoActivoBaseConfigurada;
 
         if (refrescarPoseActual)
         {
@@ -252,16 +352,19 @@ public class UnidadPoseController : MonoBehaviour
         switch (poseActual)
         {
             case TipoPoseActual.Mover:
-                SetSprite(poseMover != null ? poseMover : poseIdle);
+                SetSprite(poseMover != null ? poseMover : ResolverPoseIdle());
                 break;
             case TipoPoseActual.Atacar:
-                SetSprite(poseAtacar != null ? poseAtacar : poseIdle);
+                SetSprite(poseAtacar != null ? poseAtacar : ResolverPoseIdle());
                 break;
             case TipoPoseActual.Habilidad:
-                SetSprite(poseHabilidad != null ? poseHabilidad : poseIdle);
+                SetSprite(poseHabilidad != null ? poseHabilidad : ResolverPoseIdle());
+                break;
+            case TipoPoseActual.RecibirDanio:
+                SetSprite(poseRecibirDanio != null ? poseRecibirDanio : ResolverPoseIdle());
                 break;
             default:
-                SetSprite(poseIdle);
+                SetSprite(ResolverPoseIdle());
                 break;
         }
     }

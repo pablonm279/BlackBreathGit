@@ -1058,6 +1058,8 @@ MonoBehaviour:
     poseMover: {fileID: 21300000, guid: 261b4f68199f1c745a9827e60ffe3ed6, type: 3}
     poseAtacar: {fileID: 21300000, guid: be80d28cec7bd8e4d93d8944fbebacd8, type: 3}
     poseHabilidad: {fileID: 21300000, guid: a8ddd66bcd2061143af3b67cbbcedf39, type: 3}
+    poseRecibirDanio: {fileID: 0}
+    poseTurnoActivo: {fileID: 21300000, guid: 23ae867836d46b5458988e5d496e9471, type: 3}
   PASIVA_AuraSagrada: 0
   PASIVA_EcosDivinos: 0
   Cantidad_Fervor: 0
@@ -1078,6 +1080,8 @@ MonoBehaviour:
   poseMover: {fileID: 21300000, guid: 04c2f66322ed5574abfe70a17322fa76, type: 3}
   poseAtacar: {fileID: 21300000, guid: 08e55b5dc1e9e9642a38b4222e42c459, type: 3}
   poseHabilidad: {fileID: 21300000, guid: 22e5e107c76c0dc45bf4abee803ea8aa, type: 3}
+  poseRecibirDanio: {fileID: 0}
+  poseTurnoActivo: {fileID: 21300000, guid: 1072a99b386ffc44c95e1e5dabcfdbd8, type: 3}
   duracionPoseAtacar: 1
   duracionPoseDanyo: 0.4
   duracionPoseHabilidad: 0.9

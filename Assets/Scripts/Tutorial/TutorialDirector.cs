@@ -233,6 +233,10 @@ public class TutorialDirector : MonoBehaviour
 
     TutorialStep exitingStep = CurrentStep;
     StopTimedAdvance();
+    if (presenter != null)
+    {
+      presenter.StopCurrentStepNarration();
+    }
     ExitCurrentStep();
     stepIndex++;
 
@@ -253,6 +257,10 @@ public class TutorialDirector : MonoBehaviour
     }
 
     StopTimedAdvance();
+    if (presenter != null)
+    {
+      presenter.StopCurrentStepNarration();
+    }
     ExitCurrentStep();
     stepIndex--;
     EnterCurrentStep();
@@ -261,6 +269,10 @@ public class TutorialDirector : MonoBehaviour
   public void SkipTutorial()
   {
     StopTimedAdvance();
+    if (presenter != null)
+    {
+      presenter.StopCurrentStepNarration();
+    }
     CompleteTutorial();
   }
 

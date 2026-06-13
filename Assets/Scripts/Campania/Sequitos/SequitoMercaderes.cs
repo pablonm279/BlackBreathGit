@@ -173,6 +173,10 @@ public class SequitoMercaderes : MonoBehaviour
             armadurasDisponibles = new List<Armadura>(ArmadurasAVender);
             accesoriosDisponibles = new List<Accesorio>(AccesoriosAVender);
             consumiblesDisponibles = new List<Consumible>(ConsumiblesAVender);
+            RemoverItemsInicialesDeClase(armasDisponibles);
+            RemoverItemsInicialesDeClase(armadurasDisponibles);
+            RemoverItemsInicialesDeClase(accesoriosDisponibles);
+            RemoverItemsInicialesDeClase(consumiblesDisponibles);
         }
 
         // Determinar cuántos items agregar de cada lista
@@ -613,6 +617,35 @@ public class SequitoMercaderes : MonoBehaviour
             && a.IDEfectoEspecial == b.IDEfectoEspecial;
     }
 
+    private bool EsItemInicialDeClase(Item item)
+    {
+        if (item == null || CampaignManager.Instance == null || CampaignManager.Instance.scContprefab == null)
+        {
+            return false;
+        }
+
+        ContenedorPrefabsCamp contenedor = CampaignManager.Instance.scContprefab;
+        return item == contenedor.armaMandoble
+            || item == contenedor.Coraza
+            || item == contenedor.armaArcoLargo
+            || item == contenedor.ArmaduraCuero
+            || item == contenedor.armaBaculoPurificador
+            || item == contenedor.armaEspadaCorta
+            || item == contenedor.ArmaduraCueroReforzado
+            || item == contenedor.armaEstoque
+            || item == contenedor.ArmaduraGambeson;
+    }
+
+    private void RemoverItemsInicialesDeClase<T>(List<T> items) where T : Item
+    {
+        if (items == null)
+        {
+            return;
+        }
+
+        items.RemoveAll(item => EsItemInicialDeClase(item));
+    }
+
     bool TryBuildPoolsFromDatabase(
         out List<Arma> armas,
         out List<Armadura> armaduras,
@@ -639,7 +672,7 @@ public class SequitoMercaderes : MonoBehaviour
             }
 
             Item prefab = entry.prefab;
-            if (prefab == null || !uniqueItems.Add(prefab))
+            if (prefab == null || EsItemInicialDeClase(prefab) || !uniqueItems.Add(prefab))
             {
                 continue;
             }
@@ -682,7 +715,7 @@ public class SequitoMercaderes : MonoBehaviour
                 continue;
             }
 
-            if (entry.prefab != null && uniqueItems.Add(entry.prefab))
+            if (entry.prefab != null && !EsItemInicialDeClase(entry.prefab) && uniqueItems.Add(entry.prefab))
             {
                 result.Add(entry.prefab);
             }
@@ -711,6 +744,7 @@ public class SequitoMercaderes : MonoBehaviour
             todosLosItems.AddRange(ArmadurasAVender);
             todosLosItems.AddRange(AccesoriosAVender);
             todosLosItems.AddRange(ConsumiblesAVender);
+            todosLosItems.RemoveAll(item => EsItemInicialDeClase(item));
         }
 
         if (todosLosItems.Count == 0)

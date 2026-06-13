@@ -99,8 +99,8 @@ MonoBehaviour:
   m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 3.25
-  m_fontSizeMax: 3.3
+  m_fontSizeMin: 3.1
+  m_fontSizeMax: 3.22
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 4096
@@ -543,7 +543,7 @@ MonoBehaviour:
   blockProfile:
     lifetime: 2
     initialOffset: {x: 0, y: 2}
-    verticalSpeed: 0.5
+    verticalSpeed: -0.2
     horizontalSpeed: 0
     scaleCurve:
       serializedVersion: 2

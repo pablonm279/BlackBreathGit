@@ -6,14 +6,29 @@ public class silverlandlogomanager : MonoBehaviour
     [SerializeField] float duracionLogo = 4f;
     [SerializeField] KeyCode teclaSkip = KeyCode.Escape;
 
+    public static bool LogoCerradoEstaSesion { get; private set; }
+
     CanvasGroup canvasGroup;
 
     public bool IntroTerminada { get; private set; }
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void ResetEstadoSesion()
+    {
+        LogoCerradoEstaSesion = false;
+    }
+
     void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
-        IntroTerminada = false;
+        IntroTerminada = LogoCerradoEstaSesion;
+
+        if (LogoCerradoEstaSesion)
+        {
+            OcultarLogo();
+            gameObject.SetActive(false);
+            return;
+        }
 
         if (canvasGroup != null)
         {
@@ -53,11 +68,23 @@ public class silverlandlogomanager : MonoBehaviour
 
         if (canvasGroup != null)
         {
-            canvasGroup.alpha = 0f;
-            canvasGroup.blocksRaycasts = false;
+            OcultarLogo();
         }
 
+        LogoCerradoEstaSesion = true;
         IntroTerminada = true;
         gameObject.SetActive(false);
+    }
+
+    void OcultarLogo()
+    {
+        if (canvasGroup == null)
+        {
+            return;
+        }
+
+        canvasGroup.alpha = 0f;
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.interactable = false;
     }
 }

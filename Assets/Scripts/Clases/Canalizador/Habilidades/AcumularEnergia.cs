@@ -70,7 +70,7 @@ public class AcumularEnergia : Habilidad
       {
         cuerpo += "<b>Type:</b> Self\n";
         cuerpo += "<b>Target:</b> Self\n";
-        cuerpo += "<b>Effect on cast:</b> Applies <b>Gathering</b> buff (2 rounds)\n";
+        cuerpo += "<b>Effect on cast:</b> Applies <b>Gathering</b> buff (1 round)\n";
         cuerpo += "<b>If concentration is maintained:</b> +1 Energy Tier on next turn\n";
         cuerpo += "<b>Energy I:</b> +10% Damage, +5% Critical\n";
         cuerpo += "<b>Energy II:</b> +15% Damage, +1 Max AP\n";
@@ -80,7 +80,7 @@ public class AcumularEnergia : Habilidad
       {
         cuerpo += "<b>Tipo:</b> Propria\n";
         cuerpo += "<b>Alvo:</b> O proprio usuario\n";
-        cuerpo += "<b>Efeito ao ativar:</b> Aplica buff <b>Acumulando</b> (2 rodadas)\n";
+        cuerpo += "<b>Efeito ao ativar:</b> Aplica buff <b>Acumulando</b> (1 rodada)\n";
         cuerpo += "<b>Se mantiver a concentracao:</b> +1 Nivel de Energia no proximo turno\n";
         cuerpo += "<b>Energia I:</b> +10% Dano, +5% Critico\n";
         cuerpo += "<b>Energia II:</b> +15% Dano, +1 AP Maximo\n";
@@ -90,7 +90,7 @@ public class AcumularEnergia : Habilidad
       {
         cuerpo += "<b>Tipo:</b> Propia\n";
         cuerpo += "<b>Objetivo:</b> Propio usuario\n";
-        cuerpo += "<b>Efecto al activar:</b> Aplica buff <b>Acumulando</b> (2 rondas)\n";
+        cuerpo += "<b>Efecto al activar:</b> Aplica buff <b>Acumulando</b> (1 ronda)\n";
         cuerpo += "<b>Si mantiene la concentracion:</b> +1 Nivel de Energia al siguiente turno\n";
         cuerpo += "<b>Energia I:</b> +10% Danio, +5% Critico\n";
         cuerpo += "<b>Energia II:</b> +15% Danio, +1 AP Maximo\n";
@@ -105,7 +105,7 @@ public class AcumularEnergia : Habilidad
 
       txtDescripcion = ConstruirDescripcionEstandar(titulo, subtitulo, cuerpo, costos, "#5dade2");
       string subtituloFormato = esIngles
-        ? "Start gathering energy; if concentration holds, gain +1 Energy next turn."
+        ? "Start gathering energy; if concentration holds, gain +1 Energy Level next turn."
         : esPortugues
           ? "Começa a acumular energia; se mantiver concentração, ganha +1 Energia no próximo turno."
           : "Empieza a acumular energía; si mantiene concentración, gana +1 Energía el próximo turno.";
@@ -115,7 +115,7 @@ public class AcumularEnergia : Habilidad
       {
         cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Self buff</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>Self</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>On cast:</b></color> <color={colorValor}>{iconoEnergia} Gathering for 2 rounds; ends turn</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>On cast:</b></color> <color={colorValor}>{iconoEnergia} Gathering for 1 round; ends turn</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>If maintained:</b></color> <color={colorValor}>{iconoEnergia} +1 Energy Tier next turn</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>When damaged:</b></color> <color={colorValor}>Mental Save vs DC {dcConcentracion}; on failed save loses Gathering</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Energy I:</b></color> <color={colorValor}>+10% Damage, +5% Critical</color>\n";
@@ -130,7 +130,7 @@ public class AcumularEnergia : Habilidad
       {
         cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>O próprio usuário</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Ao ativar:</b></color> <color={colorValor}>{iconoEnergia} Acumulando por 2 rodadas; termina o turno</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Ao ativar:</b></color> <color={colorValor}>{iconoEnergia} Acumulando por 1 rodada; termina o turno</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Se mantiver:</b></color> <color={colorValor}>{iconoEnergia} +1 Nível de Energia no próximo turno</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Ao receber dano:</b></color> <color={colorValor}>Resistência Mental vs CD {dcConcentracionPt}; se falhar, perde Acumulando</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Energia I:</b></color> <color={colorValor}>+10% Dano, +5% Crítico</color>\n";
@@ -145,7 +145,7 @@ public class AcumularEnergia : Habilidad
       {
         cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Propio usuario</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Al activar:</b></color> <color={colorValor}>{iconoEnergia} Acumulando por 2 rondas; termina el turno</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Al activar:</b></color> <color={colorValor}>{iconoEnergia} Acumulando por 1 ronda; termina el turno</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Si mantiene:</b></color> <color={colorValor}>{iconoEnergia} +1 Nivel de Energía el próximo turno</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Al recibir daño:</b></color> <color={colorValor}>TS Mental vs DC {dcConcentracionEs}; si falla, pierde Acumulando</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Energía I:</b></color> <color={colorValor}>+10% Daño, +5% Crítico</color>\n";

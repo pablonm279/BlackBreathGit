@@ -57,7 +57,7 @@ public class IAArqueroVengador : IAHabilidad
    {
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
      
-      scEstaUnidad.ReproducirAnimacionAtaque();
+     
 
       Objetivo = EstablecerObjetivoPrioritario();
                   PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
@@ -78,8 +78,8 @@ public class IAArqueroVengador : IAHabilidad
       GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.ViroteBallestadeManoVeneno;
       GameObject Proyectil = Instantiate(flechaPrefab);
       Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-      Proyectil.GetComponent<ArrowFlight>().velocidad = 6.15f;
-      Proyectil.GetComponent<ArrowFlight>().parabola = 0.55f;  
+      Proyectil.GetComponent<ArrowFlight>().velocidad = 6.2f;
+      Proyectil.GetComponent<ArrowFlight>().parabola = 0.5f;  
     
      
       if (Objetivo != null)

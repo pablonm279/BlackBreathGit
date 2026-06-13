@@ -20,6 +20,8 @@ MonoBehaviour:
     narratorKey: tutorial.intro.narrator
     bodyKey: tutorial.intro.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 041b7790e31ea8442a9aab2b1626ba70, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: 
     presentationMode: 0
     panelAnchor: 0
@@ -46,6 +48,8 @@ MonoBehaviour:
     narratorKey: tutorial.intro2.narrator
     bodyKey: tutorial.intro2.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 0509107ea23714f479385856863c63d6, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_civiles
     presentationMode: 0
     panelAnchor: 0
@@ -72,6 +76,8 @@ MonoBehaviour:
     narratorKey: tutorial.intro4.narrator
     bodyKey: tutorial.intro4.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 84b024912fc88374cb677d55fee0849e, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_esperanza
     presentationMode: 0
     panelAnchor: 0
@@ -98,6 +104,8 @@ MonoBehaviour:
     narratorKey: tutorial.intro3.narrator
     bodyKey: tutorial.intro3.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: cb80bd22f1cff034d8c57cecf6ec0201, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_aliento
     presentationMode: 0
     panelAnchor: 0
@@ -124,6 +132,8 @@ MonoBehaviour:
     narratorKey: tutorial.mov1.narrator
     bodyKey: tutorial.mov1.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 56a288c10be771b48a9c6dd60fe08fbe, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_nodo_viaje_1
     presentationMode: 0
     panelAnchor: 0
@@ -154,6 +164,8 @@ MonoBehaviour:
     narratorKey: tutorial.prebatalla1.narrator
     bodyKey: tutorial.prebatalla1.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 47a408fb659b7e142870b6a34ccd373d, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tuto_botonbatalla1
     presentationMode: 0
     panelAnchor: 0
@@ -182,6 +194,8 @@ MonoBehaviour:
     narratorKey: tutorial.prebatalla2.narrator
     bodyKey: tutorial.prebatalla2.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 0}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_empezacombate1
     presentationMode: 1
     panelAnchor: 1
@@ -210,6 +224,8 @@ MonoBehaviour:
     narratorKey: tutorial.prebatalla3.narrator
     bodyKey: tutorial.prebatalla3.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 0}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_empezacombate2
     presentationMode: 1
     panelAnchor: 1
@@ -240,6 +256,8 @@ MonoBehaviour:
     narratorKey: tutorial.postbatalla1.narrator
     bodyKey: tutorial.postbatalla1.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 0}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_fincombate1
     presentationMode: 1
     panelAnchor: 1
@@ -268,6 +286,8 @@ MonoBehaviour:
     narratorKey: tutorial.postbatalla2.narrator
     bodyKey: tutorial.postbatalla2.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 70d88fd3fbcc92b46abcb5bed843fb0f, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_personajes1
     presentationMode: 0
     panelAnchor: 1
@@ -296,6 +316,8 @@ MonoBehaviour:
     narratorKey: tutorial.personaje1.narrator
     bodyKey: tutorial.personaje1.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 05f6c4a3e5e38a4418a44d300d51b2fe, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_personajes1
     presentationMode: 0
     panelAnchor: 6
@@ -328,6 +350,8 @@ MonoBehaviour:
     narratorKey: tutorial.personaje2.narrator
     bodyKey: tutorial.personaje2.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 54cda3f9cacc93c478939fce4f8b092a, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_actividades
     presentationMode: 0
     panelAnchor: 6
@@ -358,6 +382,8 @@ MonoBehaviour:
     narratorKey: tutorial.mov2.narrator
     bodyKey: tutorial.mov2.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 86dce6d585ba8bd49b4f417fd9c81a9e, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_nodo_viaje_2
     presentationMode: 0
     panelAnchor: 0
@@ -388,6 +414,8 @@ MonoBehaviour:
     narratorKey: tutorial.recursos1.narrator
     bodyKey: tutorial.recursos1.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: b12dda58e7d87b24c9c83020714a2347, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_recursos
     presentationMode: 0
     panelAnchor: 0
@@ -414,6 +442,8 @@ MonoBehaviour:
     narratorKey: tutorial.peso1.narrator
     bodyKey: tutorial.peso1.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 4c2ba4a9f8e230e469ebf777b345f692, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_carga_1
     presentationMode: 0
     panelAnchor: 0
@@ -440,6 +470,8 @@ MonoBehaviour:
     narratorKey: tutorial.abrirmejoras.narrator
     bodyKey: tutorial.abrirmejoras.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 1f7ef5a699803d94cb6f9fd89e331daf, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_mejorascaravana
     presentationMode: 1
     panelAnchor: 0
@@ -468,6 +500,8 @@ MonoBehaviour:
     narratorKey: tutorial.alforjas1.narrator
     bodyKey: tutorial.alforjas1.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: b1765ea9597780a4f8e2b3423d69184e, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_mejorabtnalforjas
     presentationMode: 0
     panelAnchor: 0
@@ -496,6 +530,8 @@ MonoBehaviour:
     narratorKey: tutorial.alforjas2.narrator
     bodyKey: tutorial.alforjas2.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 0}
+    narratorAudioPortugues: {fileID: 0}
     targetId: 
     presentationMode: 1
     panelAnchor: 0
@@ -526,6 +562,8 @@ MonoBehaviour:
     narratorKey: tutorial.mov3.narrator
     bodyKey: tutorial.mov3.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: f2b3e067b013f4f4d9cef3826bd2da43, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_nodo_viaje_3
     presentationMode: 0
     panelAnchor: 0
@@ -539,7 +577,7 @@ MonoBehaviour:
     highlightScale: 0.7
     highlightScaleXY: {x: 1, y: 1}
     advanceMode: 1
-    inputBlockMode: 2
+    inputBlockMode: 0
     showNextButton: 0
     canGoBack: 0
     canSkip: 0
@@ -556,6 +594,8 @@ MonoBehaviour:
     narratorKey: tutorial.exp1.narrator
     bodyKey: tutorial.exp1.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 9601b986728bf864792669f19dd27a44, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_nodo_viaje_3
     presentationMode: 0
     panelAnchor: 0
@@ -582,6 +622,8 @@ MonoBehaviour:
     narratorKey: tutorial.exp2.narrator
     bodyKey: tutorial.exp2.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 1f7ef5a699803d94cb6f9fd89e331daf, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tuto_nodoclaromist
     presentationMode: 0
     panelAnchor: 0
@@ -595,7 +637,7 @@ MonoBehaviour:
     highlightScale: 0.7
     highlightScaleXY: {x: 1, y: 1}
     advanceMode: 1
-    inputBlockMode: 1
+    inputBlockMode: 2
     showNextButton: 0
     canGoBack: 1
     canSkip: 0
@@ -608,6 +650,8 @@ MonoBehaviour:
     narratorKey: tutorial.exp3.narrator
     bodyKey: tutorial.exp3.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 85fbc7ae6d9f9914194d75af70708b76, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tuto_nodoclaromist
     presentationMode: 0
     panelAnchor: 0
@@ -638,6 +682,8 @@ MonoBehaviour:
     narratorKey: tutorial.fatiga2.narrator
     bodyKey: tutorial.fatiga2.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: e969a097894643f4c94bf6badf2bf90e, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tuto_botondescanso1
     presentationMode: 0
     panelAnchor: 0
@@ -666,6 +712,8 @@ MonoBehaviour:
     narratorKey: tutorial.descanso1.narrator
     bodyKey: tutorial.descanso1.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: ec2dd3ce07689404693bd39eeae9fbff, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_tareacivil1
     presentationMode: 0
     panelAnchor: 0
@@ -696,6 +744,8 @@ MonoBehaviour:
     narratorKey: tutorial.clima.narrator
     bodyKey: tutorial.clima.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 7ac80c50dd9accf4280d0406a887e7ee, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_clima
     presentationMode: 0
     panelAnchor: 0
@@ -722,6 +772,8 @@ MonoBehaviour:
     narratorKey: tutorial.sequitos1.narrator
     bodyKey: tutorial.sequitos1.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 966df6a22081b8741bcffb8d1fed9cf6, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_sequitos
     presentationMode: 0
     panelAnchor: 0
@@ -750,6 +802,8 @@ MonoBehaviour:
     narratorKey: tutorial.sequitos2.narrator
     bodyKey: tutorial.sequitos2.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 3202770748075c448ac91c0e79fe1ecd, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_sequ_herr
     presentationMode: 0
     panelAnchor: 0
@@ -776,6 +830,8 @@ MonoBehaviour:
     narratorKey: tutorial.sequitos3.narrator
     bodyKey: tutorial.sequitos3.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 4dd5edac9c3b36646ada0d6d9e4501c0, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_sequ_cur
     presentationMode: 0
     panelAnchor: 0
@@ -802,6 +858,8 @@ MonoBehaviour:
     narratorKey: tutorial.sequitos4.narrator
     bodyKey: tutorial.sequitos4.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: f8a819768ed81f043badcb3050e7fcc0, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_sequ_merc
     presentationMode: 0
     panelAnchor: 0
@@ -828,6 +886,8 @@ MonoBehaviour:
     narratorKey: tutorial.sequitosexit.narrator
     bodyKey: tutorial.sequitosexit.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 0}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_sequitos
     presentationMode: 1
     panelAnchor: 5
@@ -858,6 +918,8 @@ MonoBehaviour:
     narratorKey: tutorial.batfinpre1.narrator
     bodyKey: tutorial.batfinpre1.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: 1c8fff8d9d94d38499261bf4b497299e, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tut_nodo_final
     presentationMode: 0
     panelAnchor: 0
@@ -888,6 +950,8 @@ MonoBehaviour:
     narratorKey: tutorial.batfinpre2.narrator
     bodyKey: tutorial.batfinpre2.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 0}
+    narratorAudioPortugues: {fileID: 0}
     targetId: tuto_botonbatalla1
     presentationMode: 1
     panelAnchor: 0
@@ -916,6 +980,8 @@ MonoBehaviour:
     narratorKey: tutorial.postbatfinal.wait.narrator
     bodyKey: tutorial.postbatfinal.wait.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 0}
+    narratorAudioPortugues: {fileID: 0}
     targetId: 
     presentationMode: 2
     panelAnchor: 0
@@ -944,6 +1010,8 @@ MonoBehaviour:
     narratorKey: tutorial.postbatfinal1.narrator
     bodyKey: tutorial.postbatfinal1.body
     narratorAudio: {fileID: 0}
+    narratorAudioIngles: {fileID: 8300000, guid: d3b9a66897eb11f468c9293a9ac8aa8e, type: 3}
+    narratorAudioPortugues: {fileID: 0}
     targetId: 
     presentationMode: 0
     panelAnchor: 0

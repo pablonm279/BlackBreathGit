@@ -451,6 +451,8 @@ MonoBehaviour:
     poseMover: {fileID: 21300000, guid: a5cb60086e47d7f42963b4efbc9f66e7, type: 3}
     poseAtacar: {fileID: 21300000, guid: 045da8a95c2f3de41a611330b6e6b23a, type: 3}
     poseHabilidad: {fileID: 21300000, guid: d778198f8bd8fe94aa414d639ebfc42d, type: 3}
+    poseRecibirDanio: {fileID: 0}
+    poseTurnoActivo: {fileID: 21300000, guid: 2b03ca46e1655ac43bb0d696d2662f15, type: 3}
     posePosturaDefensiva: {fileID: 21300000, guid: 9bc20dfe43747a14c874b8208c81238d, type: 3}
   tieneCorazaDeLlamas: 0
 --- !u!65 &2841680355691457608
@@ -605,6 +607,8 @@ MonoBehaviour:
   poseMover: {fileID: 21300000, guid: 8913b322d94d8b04ba1844e229a027d0, type: 3}
   poseAtacar: {fileID: 21300000, guid: 000234941f6bde24e8df1426ef331dbe, type: 3}
   poseHabilidad: {fileID: 21300000, guid: abdda54a8bc616c4cb38c1f65f3ff599, type: 3}
+  poseRecibirDanio: {fileID: 0}
+  poseTurnoActivo: {fileID: 21300000, guid: 7465f1a3fc5cc5a44827965a3c2d28e8, type: 3}
   duracionPoseAtacar: 1.45
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1.1

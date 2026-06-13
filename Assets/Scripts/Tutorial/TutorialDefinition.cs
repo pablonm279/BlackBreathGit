@@ -108,7 +108,13 @@ public class TutorialStep
   public string titleKey;
   [TextArea(2, 6)] public string narratorKey;
   [TextArea(2, 6)] public string bodyKey;
+  [Header("Audio por idioma")]
+  [Tooltip("Audio del narrador en español.")]
   public AudioClip narratorAudio;
+  [Tooltip("Audio del narrador en inglés.")]
+  public AudioClip narratorAudioIngles;
+  [Tooltip("Audio del narrador en portugués.")]
+  public AudioClip narratorAudioPortugues;
   public string targetId;
   public TutorialPresentationMode presentationMode = TutorialPresentationMode.Full;
   public TutorialPanelAnchor panelAnchor = TutorialPanelAnchor.Center;

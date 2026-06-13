@@ -77,6 +77,7 @@ public class AdministradorEscenas : MonoBehaviour
   }
   public GameObject MenuOpciones;
   private Canvas canvasLogHandbook;
+  private GameObject goLogCompartido;
   private int sortingOrderCanvasLogHandbookOriginal = int.MinValue;
 
   public void abrirOpciones()
@@ -105,6 +106,28 @@ public class AdministradorEscenas : MonoBehaviour
     return canvasLogHandbook;
   }
 
+  GameObject ObtenerLogCompartido()
+  {
+    if (goLogCompartido != null)
+    {
+      return goLogCompartido;
+    }
+
+    Canvas canvasCompartido = ObtenerCanvasLogHandbook();
+    if (canvasCompartido == null)
+    {
+      return null;
+    }
+
+    Transform logTransform = canvasCompartido.transform.Find("Log");
+    if (logTransform != null)
+    {
+      goLogCompartido = logTransform.gameObject;
+    }
+
+    return goLogCompartido;
+  }
+
   public void RefrescarUICompartidaSegunEscena()
   {
     Canvas canvasCompartido = ObtenerCanvasLogHandbook();
@@ -125,6 +148,12 @@ public class AdministradorEscenas : MonoBehaviour
     canvasCompartido.sortingOrder = escenaActual == 1
       ? Mathf.Max(sortingOrderBase, 50)
       : sortingOrderBase;
+
+    GameObject logCompartido = ObtenerLogCompartido();
+    if (logCompartido != null && logCompartido.activeSelf != (escenaActual == 1))
+    {
+      logCompartido.SetActive(escenaActual == 1);
+    }
   }
   async void EjecutarOperacionSegura(Task tarea, string contexto)
   {
@@ -4940,6 +4969,11 @@ public class AdministradorEscenas : MonoBehaviour
 
         nodo.SincronizarVFXPersistentes();
       }
+    }
+
+    if (campaignManager.scMapaManager != null)
+    {
+      campaignManager.scMapaManager.RefrescarVisibilidadExploracion();
     }
 
     if (MusicManager.Instance != null)

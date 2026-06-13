@@ -252,8 +252,8 @@ RectTransform:
   m_GameObject: {fileID: 2383047622823427081}
   m_LocalRotation: {x: 0, y: 0, z: -0.0019665675, w: 0.9999981}
   m_LocalPosition: {x: 0, y: 0, z: 0.0011525}
-  m_LocalScale: {x: 1.1873034, y: 1.2763859, z: 0.94988}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1.142637, y: 1.2763859, z: 0.94988}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6721434453643647482}
   - {fileID: 8775609431354661570}
@@ -261,8 +261,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.35218, y: -14.26}
-  m_SizeDelta: {x: 20.99, y: 20.613}
+  m_AnchoredPosition: {x: -0.38956, y: -14.735}
+  m_SizeDelta: {x: 20.99, y: 20.434}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1678664685221969079
 CanvasRenderer:
@@ -1144,9 +1144,18 @@ MonoBehaviour:
   poseMover: {fileID: 21300000, guid: 8545036629f8db84babcff2dcdaf435c, type: 3}
   poseAtacar: {fileID: 21300000, guid: 699577ba1a65177498a699410bab044d, type: 3}
   poseHabilidad: {fileID: 21300000, guid: 7cd35fa22caf1d84e9bb20e98c408aa5, type: 3}
+  poseRecibirDanio: {fileID: 0}
+  poseTurnoActivo: {fileID: 0}
   duracionPoseAtacar: 1
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1
+  meleeFraccionImpacto: 0.35
+  meleePreImpactoFallback: 0.22
+  meleePreImpactoMin: 0.08
+  meleePreImpactoMax: 0.42
+  meleePostImpacto: 0.16
+  meleePostImpactoMin: 0.05
+  meleePostImpactoMax: 0.3
 --- !u!1 &6374952428414666906
 GameObject:
   m_ObjectHideFlags: 0

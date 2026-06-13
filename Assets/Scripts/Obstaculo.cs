@@ -8,6 +8,9 @@ public class Obstaculo : MonoBehaviour
 {
   private const string RutaSonidoImpactoRoca = "rocahit";
   private static AudioClip sfxImpactoRoca;
+  private static Material materialFallbackParticulas;
+  private static Texture2D texturaCirculoSuave;
+  private bool destruccionIniciada;
 
   public string oName;
   public float hpMax;
@@ -113,8 +116,27 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
   public Casilla CasillaPosicion;
   void ObstaculoDestruir()
   {
+     ObstaculoDestruir(false);
+  }
+
+  void ObstaculoDestruir(bool reproducirVfxDestruccion)
+  {
+     if (destruccionIniciada)
+     {
+       return;
+     }
+
+     destruccionIniciada = true;
+     if (reproducirVfxDestruccion)
+     {
+       ReproducirVfxDestruccionEspecial();
+     }
+
      Invoke("DesactivarGOconDelay", 0.5f);
-     CasillaPosicion.Presente = null;
+     if (CasillaPosicion != null && CasillaPosicion.Presente == gameObject)
+     {
+       CasillaPosicion.Presente = null;
+     }
 
   }
 
@@ -122,9 +144,9 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
   /// Permite a otras lógicas forzar la destrucción del obstáculo reutilizando
   /// el mismo flujo visual que se dispara al llegar a 0 de vida.
   /// </summary>
-  public void ForzarDestruccion()
+  public void ForzarDestruccion(bool reproducirVfxDestruccion = false)
   {
-    ObstaculoDestruir();
+    ObstaculoDestruir(reproducirVfxDestruccion);
   }
   void DesactivarGOconDelay()
   {
@@ -201,6 +223,205 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
     private bool EsRoca()
     {
       return !string.IsNullOrEmpty(oName) && oName.ToLowerInvariant().Contains("roca");
+    }
+
+    private void ReproducirVfxDestruccionEspecial()
+    {
+      GameObject vfxRoot = new GameObject("VFX_DestruirObstaculo");
+      vfxRoot.transform.position = transform.position + new Vector3(0f, 0.12f, 0f);
+
+      SpriteRenderer referenciaOrden = GetComponentInChildren<SpriteRenderer>();
+      int sortingLayerId = referenciaOrden != null ? referenciaOrden.sortingLayerID : 0;
+      int sortingOrder = referenciaOrden != null ? referenciaOrden.sortingOrder + 1 : 0;
+
+      CrearPolvo(vfxRoot.transform, sortingLayerId, sortingOrder);
+      CrearPiedritas(vfxRoot.transform, sortingLayerId, sortingOrder);
+
+      AutodestruirDelay autodestruir = vfxRoot.AddComponent<AutodestruirDelay>();
+      autodestruir.SetDelay(1.6f);
+    }
+
+    private void CrearPolvo(Transform padre, int sortingLayerId, int sortingOrder)
+    {
+      GameObject goPolvo = new GameObject("Polvo");
+      goPolvo.transform.SetParent(padre, false);
+
+      ParticleSystem ps = goPolvo.AddComponent<ParticleSystem>();
+      ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+      ParticleSystemRenderer renderer = goPolvo.GetComponent<ParticleSystemRenderer>();
+      renderer.sharedMaterial = ObtenerMaterialParticulasSuaves();
+      renderer.sortingLayerID = sortingLayerId;
+      renderer.sortingOrder = sortingOrder;
+      renderer.renderMode = ParticleSystemRenderMode.Billboard;
+
+      var main = ps.main;
+      main.playOnAwake = true;
+      main.loop = false;
+      main.duration = 0.45f;
+      main.startLifetime = new ParticleSystem.MinMaxCurve(0.3f, 0.55f);
+      main.startSpeed = new ParticleSystem.MinMaxCurve(0.14f, 0.36f);
+      main.startSize = new ParticleSystem.MinMaxCurve(0.04f, 0.08f);
+      main.startColor = new Color(0.72f, 0.66f, 0.58f, 0.26f);
+      main.gravityModifier = 0.03f;
+      main.simulationSpace = ParticleSystemSimulationSpace.World;
+      main.maxParticles = 10;
+
+      var emission = ps.emission;
+      emission.enabled = false;
+
+      var shape = ps.shape;
+      shape.enabled = true;
+      shape.shapeType = ParticleSystemShapeType.Circle;
+      shape.radius = 0.05f;
+
+      var velocity = ps.velocityOverLifetime;
+      velocity.enabled = true;
+      velocity.space = ParticleSystemSimulationSpace.World;
+      velocity.x = new ParticleSystem.MinMaxCurve(0f);
+      velocity.y = new ParticleSystem.MinMaxCurve(0.05f, 0.14f);
+      velocity.z = new ParticleSystem.MinMaxCurve(0f);
+
+      var colorOverLifetime = ps.colorOverLifetime;
+      colorOverLifetime.enabled = true;
+      Gradient gradiente = new Gradient();
+      gradiente.SetKeys(
+        new GradientColorKey[] {
+          new GradientColorKey(new Color(0.72f, 0.66f, 0.58f), 0f),
+          new GradientColorKey(new Color(0.62f, 0.58f, 0.52f), 1f)
+        },
+        new GradientAlphaKey[] {
+          new GradientAlphaKey(0f, 0f),
+          new GradientAlphaKey(0.24f, 0.18f),
+          new GradientAlphaKey(0.14f, 0.62f),
+          new GradientAlphaKey(0f, 1f)
+        });
+      colorOverLifetime.color = new ParticleSystem.MinMaxGradient(gradiente);
+
+      var sizeOverLifetime = ps.sizeOverLifetime;
+      sizeOverLifetime.enabled = true;
+      AnimationCurve curvaTam = new AnimationCurve();
+      curvaTam.AddKey(0f, 0.72f);
+      curvaTam.AddKey(0.35f, 0.95f);
+      curvaTam.AddKey(1f, 1.05f);
+      sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1f, curvaTam);
+      ps.Play();
+      ps.Emit(6);
+    }
+
+    private void CrearPiedritas(Transform padre, int sortingLayerId, int sortingOrder)
+    {
+      GameObject goPiedras = new GameObject("Piedritas");
+      goPiedras.transform.SetParent(padre, false);
+
+      ParticleSystem ps = goPiedras.AddComponent<ParticleSystem>();
+      ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+      ParticleSystemRenderer renderer = goPiedras.GetComponent<ParticleSystemRenderer>();
+      renderer.sharedMaterial = ObtenerMaterialParticulasSuaves();
+      renderer.sortingLayerID = sortingLayerId;
+      renderer.sortingOrder = sortingOrder + 1;
+      renderer.renderMode = ParticleSystemRenderMode.Billboard;
+
+      var main = ps.main;
+      main.playOnAwake = true;
+      main.loop = false;
+      main.duration = 0.42f;
+      main.startLifetime = new ParticleSystem.MinMaxCurve(0.24f, 0.42f);
+      main.startSpeed = new ParticleSystem.MinMaxCurve(0.34f, 0.82f);
+      main.startSize = new ParticleSystem.MinMaxCurve(0.01f, 0.022f);
+      main.startColor = new Color(0.55f, 0.5f, 0.46f, 0.72f);
+      main.gravityModifier = 0.85f;
+      main.simulationSpace = ParticleSystemSimulationSpace.World;
+      main.maxParticles = 6;
+
+      var emission = ps.emission;
+      emission.enabled = false;
+
+      var shape = ps.shape;
+      shape.enabled = true;
+      shape.shapeType = ParticleSystemShapeType.Circle;
+      shape.radius = 0.03f;
+
+      var velocity = ps.velocityOverLifetime;
+      velocity.enabled = true;
+      velocity.space = ParticleSystemSimulationSpace.World;
+      velocity.x = new ParticleSystem.MinMaxCurve(-0.09f, 0.09f);
+      velocity.y = new ParticleSystem.MinMaxCurve(0f);
+      velocity.z = new ParticleSystem.MinMaxCurve(0f);
+
+      var limit = ps.limitVelocityOverLifetime;
+      limit.enabled = true;
+      limit.limit = 0.95f;
+      limit.dampen = 0.5f;
+      ps.Play();
+      ps.Emit(4);
+    }
+
+    private static Material ObtenerMaterialParticulasSuaves()
+    {
+      if (materialFallbackParticulas != null)
+      {
+        return materialFallbackParticulas;
+      }
+
+      Shader shaderFallback = Shader.Find("Legacy Shaders/Particles/Alpha Blended");
+      if (shaderFallback == null)
+      {
+        shaderFallback = Shader.Find("Particles/Standard Unlit");
+      }
+      if (shaderFallback == null)
+      {
+        shaderFallback = Shader.Find("Sprites/Default");
+      }
+      if (shaderFallback == null)
+      {
+        return null;
+      }
+
+      materialFallbackParticulas = new Material(shaderFallback);
+      materialFallbackParticulas.name = "ObstaculoDestruccion_Particulas";
+
+      if (materialFallbackParticulas.HasProperty("_MainTex"))
+      {
+        materialFallbackParticulas.mainTexture = ObtenerTexturaCirculoSuave();
+      }
+      if (materialFallbackParticulas.HasProperty("_Color"))
+      {
+        materialFallbackParticulas.color = Color.white;
+      }
+
+      return materialFallbackParticulas;
+    }
+
+    private static Texture2D ObtenerTexturaCirculoSuave()
+    {
+      if (texturaCirculoSuave != null)
+      {
+        return texturaCirculoSuave;
+      }
+
+      const int size = 32;
+      Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false, true);
+      tex.name = "ObstaculoDestruccion_CirculoSuave";
+      tex.wrapMode = TextureWrapMode.Clamp;
+      tex.filterMode = FilterMode.Bilinear;
+
+      float half = (size - 1) * 0.5f;
+      for (int y = 0; y < size; y++)
+      {
+        for (int x = 0; x < size; x++)
+        {
+          float nx = (x - half) / half;
+          float ny = (y - half) / half;
+          float r = Mathf.Sqrt(nx * nx + ny * ny);
+          float alpha = Mathf.Clamp01(1f - r);
+          alpha = alpha * alpha * (3f - 2f * alpha);
+          tex.SetPixel(x, y, new Color(1f, 1f, 1f, alpha));
+        }
+      }
+
+      tex.Apply(false, false);
+      texturaCirculoSuave = tex;
+      return texturaCirculoSuave;
     }
 
 }

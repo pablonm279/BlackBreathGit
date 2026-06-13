@@ -152,6 +152,7 @@ public class IAUnidad : MonoBehaviour
          if (habilidadesDisponibles.Count == 0) // No hay habilidades posibles
          {
             BattleManager.Instance.RestaurarCamaraHabilidad();
+            await ForzarRetornoMeleeVisualSiCorresponde();
             await DelayIA(timings.DelaySinObjetivosMs);
 
             if (scUnidad.esInmobil)
@@ -395,7 +396,7 @@ public class IAUnidad : MonoBehaviour
       }
 
       objetivo.ReproducirSonidoImpactoRoca();
-      objetivo.ForzarDestruccion();
+      objetivo.ForzarDestruccion(true);
 
       string nombreObstaculo = TRADU.i != null ? TRADU.i.Traducir(objetivo.oName) : objetivo.oName;
       BattleManager.Instance.EscribirLog($"{TraducirTexto("Destruyes")} {nombreObstaculo}.");

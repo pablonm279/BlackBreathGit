@@ -14,6 +14,16 @@ using UnityEngine.EventSystems;
 using UnityEditor;
 #endif
 
+public enum TipoHighlightNodoCampania
+{
+  Asentamiento,
+  Ritual,
+  Incendio,
+  AtajoSuperficie,
+  AtajoSubterraneo,
+  MisionSalvamento
+}
+
 public class CampaignManager : MonoBehaviour
 {
   public class ResultadoExploradoresCampania
@@ -33,6 +43,19 @@ public class CampaignManager : MonoBehaviour
     public string faccionReveladaNombre;
   }
 
+  private class SlotHighlightNodoCampania
+  {
+    public GameObject root;
+    public RectTransform rect;
+    public Image image;
+    public TMP_Text texto;
+    public RectTransform textoRect;
+    public Animator animator;
+    public Coroutine rutina;
+    public bool ocupado;
+    public Vector3 offsetTextoPantalla;
+  }
+
   public static CampaignManager Instance { get; private set; }
   private const int MinTierMejoraCaravana = 1;
   private const int MaxTierMejoraCaravana = 5;
@@ -48,6 +71,8 @@ public class CampaignManager : MonoBehaviour
   private const float DuracionEnvioExploradoresSegundos = 4f;
   private const float RetrasoInicioEnvioExploradoresSegundos = 0.25f;
   private const float RetrasoEntreTextosExploradoresSegundos = 0.9f;
+  private const float DuracionHighlightNodoSegundos = 10f;
+  private const float DuracionFadeOutHighlightNodoSegundos = 1f;
   private bool enviandoExploradores;
   private readonly Dictionary<GameObject, bool> estadosCanvasCampaniaDuranteExploradores = new Dictionary<GameObject, bool>();
   private readonly Dictionary<GameObject, bool> estadosCanvasCampaniaDuranteIntro = new Dictionary<GameObject, bool>();
@@ -71,7 +96,7 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private bool debugIniciarConEstadosCaravana = false;
   [SerializeField] private bool debugForzarCombateFinalBosqueAlIniciar = false;
   [SerializeField] private bool debugForzarAuroraPasoVientoHelado = false;
-  [SerializeField] private bool debugIgnorarCombates = false;
+  [SerializeField, InspectorName("Debug Ignorar Peleas")] private bool debugIgnorarCombates = false;
   [SerializeField] private bool debugMostrarTodosLosCaminosMapa = false;
   [SerializeField] private bool debugIniciarConCaballeroCompleto = false;
   [SerializeField] private bool debugIniciarConExploradorCompleto = false;
@@ -83,6 +108,7 @@ public class CampaignManager : MonoBehaviour
   [Header("Debug mouse")]
   [SerializeField] private KeyCode teclaDebugBajoMouse = KeyCode.F10;
   [SerializeField] private int maxHitsDebugBajoMouse = 12;
+  private Nodo nodoHoverCampaniaActual;
 
   public GameObject prefabTextoRecursos;
   [SerializeField] private float recursoTextoStackOffsetY = 16f;
@@ -96,6 +122,9 @@ public class CampaignManager : MonoBehaviour
   private const float RecursoTextoAlphaIntermedio = 0.9843137f;
   public Animator animCaravana;
   public GameObject goCanvas;
+  public GameObject highlightNodos;
+  private readonly List<SlotHighlightNodoCampania> slotsHighlightNodos = new List<SlotHighlightNodoCampania>();
+  private GameObject origenSlotsHighlightNodos;
   public MapaManager scMapaManager;
   [SerializeField, Min(0f)] private float escalaNodos = 0f;
   public AtributosZona scAtributosZona;
@@ -226,6 +255,12 @@ public class CampaignManager : MonoBehaviour
     }
 
     Instance = this;
+    if (highlightNodos != null)
+    {
+      PrepararSlotsHighlightNodosCampania();
+      OcultarTodosSlotsHighlightNodosCampania();
+    }
+
     PrepararEscenaCampania();
 
     if (SaveGameService.TryConsumePendingLoad(out SaveFileData savePendiente))
@@ -240,6 +275,372 @@ public class CampaignManager : MonoBehaviour
     InicializarNuevaCampania();
 
 }
+
+  public void MarcarNodoCampaniaTemporal(Nodo nodo, TipoHighlightNodoCampania tipo, float retrasoSegundos = 0f)
+  {
+    if (nodo == null || highlightNodos == null)
+    {
+      return;
+    }
+
+    PrepararSlotsHighlightNodosCampania();
+    SlotHighlightNodoCampania slot = ObtenerSlotHighlightNodoCampaniaDisponible();
+    if (slot == null)
+    {
+      return;
+    }
+
+    if (slot.rutina != null)
+    {
+      StopCoroutine(slot.rutina);
+    }
+
+    slot.ocupado = true;
+    slot.rutina = StartCoroutine(RutinaMarcarNodoCampaniaTemporal(slot, nodo, tipo, retrasoSegundos));
+  }
+
+  private IEnumerator RutinaMarcarNodoCampaniaTemporal(SlotHighlightNodoCampania slot, Nodo nodo, TipoHighlightNodoCampania tipo, float retrasoSegundos)
+  {
+    if (retrasoSegundos > 0f)
+    {
+      yield return new WaitForSecondsRealtime(retrasoSegundos);
+    }
+
+    if (slot == null || nodo == null || highlightNodos == null)
+    {
+      LiberarSlotHighlightNodoCampania(slot);
+      yield break;
+    }
+
+    TutorialTarget target = nodo != null ? nodo.GetComponent<TutorialTarget>() : null;
+    Color colorBase = ObtenerColorHighlightNodoCampania(tipo);
+    float tiempo = 0f;
+    float duracionVisible = Mathf.Max(0f, DuracionHighlightNodoSegundos - DuracionFadeOutHighlightNodoSegundos);
+
+    highlightNodos.SetActive(true);
+    slot.root.SetActive(true);
+    if (slot.texto != null)
+    {
+      slot.texto.gameObject.SetActive(true);
+    }
+
+    if (slot.root.transform.localScale.sqrMagnitude <= 0.0001f)
+    {
+      slot.root.transform.localScale = Vector3.one;
+    }
+
+    slot.root.transform.SetAsLastSibling();
+    if (slot.texto != null && !slot.texto.transform.IsChildOf(slot.root.transform))
+    {
+      slot.texto.transform.SetAsLastSibling();
+    }
+
+    slot.offsetTextoPantalla = slot.textoRect != null && slot.rect != null
+      ? slot.textoRect.position - slot.rect.position
+      : Vector3.zero;
+
+    ConfigurarContenidoHighlightNodoCampania(slot.image, slot.texto, tipo, colorBase, 1f);
+
+    if (slot.animator != null)
+    {
+      slot.animator.Play(0, 0, 0f);
+      slot.animator.Update(0f);
+    }
+
+    while (tiempo < DuracionHighlightNodoSegundos
+      && nodo != null
+      && nodo.gameObject.activeInHierarchy
+      && slot.root != null
+      && slot.root.activeInHierarchy)
+    {
+      PosicionarHighlightNodoCampania(nodo, target, slot);
+      float alpha = tiempo <= duracionVisible
+        ? 1f
+        : Mathf.Clamp01(1f - ((tiempo - duracionVisible) / Mathf.Max(0.01f, DuracionFadeOutHighlightNodoSegundos)));
+      AplicarAlphaHighlightNodoCampania(slot.image, slot.texto, colorBase, alpha);
+      tiempo += Time.unscaledDeltaTime;
+      yield return null;
+    }
+
+    LiberarSlotHighlightNodoCampania(slot);
+  }
+
+  private void PrepararSlotsHighlightNodosCampania()
+  {
+    if (highlightNodos == null)
+    {
+      slotsHighlightNodos.Clear();
+      origenSlotsHighlightNodos = null;
+      return;
+    }
+
+    if (origenSlotsHighlightNodos == highlightNodos && slotsHighlightNodos.Count > 0)
+    {
+      return;
+    }
+
+    slotsHighlightNodos.Clear();
+    origenSlotsHighlightNodos = highlightNodos;
+
+    Image imagenRaiz = highlightNodos.GetComponent<Image>();
+    if (imagenRaiz != null)
+    {
+      AgregarSlotHighlightNodoCampania(imagenRaiz, highlightNodos.GetComponentInChildren<TMP_Text>(true));
+      return;
+    }
+
+    Image[] imagenes = highlightNodos.GetComponentsInChildren<Image>(true);
+    TMP_Text[] textos = highlightNodos.GetComponentsInChildren<TMP_Text>(true);
+    for (int i = 0; i < imagenes.Length; i++)
+    {
+      TMP_Text texto = i < textos.Length ? textos[i] : imagenes[i].GetComponentInChildren<TMP_Text>(true);
+      AgregarSlotHighlightNodoCampania(imagenes[i], texto);
+    }
+  }
+
+  private void AgregarSlotHighlightNodoCampania(Image image, TMP_Text texto)
+  {
+    if (image == null)
+    {
+      return;
+    }
+
+    slotsHighlightNodos.Add(new SlotHighlightNodoCampania
+    {
+      root = image.gameObject,
+      rect = image.GetComponent<RectTransform>(),
+      image = image,
+      texto = texto,
+      textoRect = texto != null ? texto.GetComponent<RectTransform>() : null,
+      animator = image.GetComponent<Animator>()
+    });
+  }
+
+  private SlotHighlightNodoCampania ObtenerSlotHighlightNodoCampaniaDisponible()
+  {
+    for (int i = 0; i < slotsHighlightNodos.Count; i++)
+    {
+      SlotHighlightNodoCampania slot = slotsHighlightNodos[i];
+      if (slot != null && !slot.ocupado)
+      {
+        return slot;
+      }
+    }
+
+    return slotsHighlightNodos.Count > 0 ? slotsHighlightNodos[0] : null;
+  }
+
+  private void OcultarTodosSlotsHighlightNodosCampania()
+  {
+    for (int i = 0; i < slotsHighlightNodos.Count; i++)
+    {
+      OcultarVisualSlotHighlightNodoCampania(slotsHighlightNodos[i]);
+      slotsHighlightNodos[i].ocupado = false;
+      slotsHighlightNodos[i].rutina = null;
+    }
+
+    if (highlightNodos != null)
+    {
+      highlightNodos.SetActive(false);
+    }
+  }
+
+  private void LiberarSlotHighlightNodoCampania(SlotHighlightNodoCampania slot)
+  {
+    if (slot == null)
+    {
+      return;
+    }
+
+    OcultarVisualSlotHighlightNodoCampania(slot);
+    slot.ocupado = false;
+    slot.rutina = null;
+
+    if (highlightNodos != null && !HaySlotsHighlightNodosOcupados())
+    {
+      highlightNodos.SetActive(false);
+    }
+  }
+
+  private bool HaySlotsHighlightNodosOcupados()
+  {
+    for (int i = 0; i < slotsHighlightNodos.Count; i++)
+    {
+      if (slotsHighlightNodos[i] != null && slotsHighlightNodos[i].ocupado)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private void OcultarVisualSlotHighlightNodoCampania(SlotHighlightNodoCampania slot)
+  {
+    if (slot == null)
+    {
+      return;
+    }
+
+    if (slot.texto != null)
+    {
+      slot.texto.gameObject.SetActive(false);
+    }
+
+    if (slot.root != null)
+    {
+      slot.root.SetActive(false);
+    }
+  }
+
+  private void ConfigurarContenidoHighlightNodoCampania(Image highlightImage, TMP_Text highlightTexto, TipoHighlightNodoCampania tipo, Color colorBase, float alpha)
+  {
+    AplicarAlphaHighlightNodoCampania(highlightImage, highlightTexto, colorBase, alpha);
+
+    if (highlightTexto != null)
+    {
+      highlightTexto.text = ObtenerTextoHighlightNodoCampania(tipo);
+      highlightTexto.gameObject.SetActive(true);
+    }
+  }
+
+  private void AplicarAlphaHighlightNodoCampania(Image highlightImage, TMP_Text highlightTexto, Color colorBase, float alpha)
+  {
+    alpha = Mathf.Clamp01(alpha);
+    Color color = colorBase;
+    color.a = alpha;
+
+    if (highlightImage != null)
+    {
+      highlightImage.color = color;
+    }
+
+    if (highlightTexto != null)
+    {
+      highlightTexto.color = color;
+    }
+  }
+
+  private Color ObtenerColorHighlightNodoCampania(TipoHighlightNodoCampania tipo)
+  {
+    switch (tipo)
+    {
+      case TipoHighlightNodoCampania.Asentamiento:
+        return new Color32(126, 214, 247, 255);
+      case TipoHighlightNodoCampania.Ritual:
+        return new Color32(180, 92, 255, 255);
+      case TipoHighlightNodoCampania.Incendio:
+        return new Color32(255, 138, 42, 255);
+      case TipoHighlightNodoCampania.AtajoSuperficie:
+        return new Color32(196, 154, 108, 255);
+      case TipoHighlightNodoCampania.AtajoSubterraneo:
+        return new Color32(12, 202, 116, 255);
+      case TipoHighlightNodoCampania.MisionSalvamento:
+        return new Color32(224, 184, 48, 255);
+      default:
+        return Color.white;
+    }
+  }
+
+  private string ObtenerTextoHighlightNodoCampania(TipoHighlightNodoCampania tipo)
+  {
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+
+    switch (tipo)
+    {
+      case TipoHighlightNodoCampania.Asentamiento:
+        if (idioma == TRADU.IdiomaIngles) { return "Settlement discovered"; }
+        if (idioma == TRADU.IdiomaPortugues) { return "Assentamento descoberto"; }
+        return "Asentamiento descubierto";
+      case TipoHighlightNodoCampania.Ritual:
+        if (idioma == TRADU.IdiomaIngles) { return "Ritual detected"; }
+        if (idioma == TRADU.IdiomaPortugues) { return "Ritual detectado"; }
+        return "Ritual detectado";
+      case TipoHighlightNodoCampania.Incendio:
+        if (idioma == TRADU.IdiomaIngles) { return "The flames spread!"; }
+        if (idioma == TRADU.IdiomaPortugues) { return "As chamas se espalham!"; }
+        return "¡Las llamas se esparcen!";
+      case TipoHighlightNodoCampania.AtajoSuperficie:
+        if (idioma == TRADU.IdiomaIngles) { return "Shortcut found!"; }
+        if (idioma == TRADU.IdiomaPortugues) { return "Atalho encontrado!"; }
+        return "¡Atajo encontrado!";
+      case TipoHighlightNodoCampania.AtajoSubterraneo:
+        if (idioma == TRADU.IdiomaIngles) { return "Underground shortcut"; }
+        if (idioma == TRADU.IdiomaPortugues) { return "Atalho subterrâneo"; }
+        return "Atajo subterráneo";
+      case TipoHighlightNodoCampania.MisionSalvamento:
+        if (idioma == TRADU.IdiomaIngles) { return "Rescue Mission"; }
+        if (idioma == TRADU.IdiomaPortugues) { return "Missão de Salvamento"; }
+        return "Misión Salvamento";
+      default:
+        return string.Empty;
+    }
+  }
+
+  private void PosicionarHighlightNodoCampania(Nodo nodo, TutorialTarget target, SlotHighlightNodoCampania slot)
+  {
+    if (nodo == null || highlightNodos == null || slot == null)
+    {
+      return;
+    }
+
+    Vector3 posicionPantalla = Vector3.zero;
+    bool tienePosicion = target != null && target.TryGetScreenPosition(out posicionPantalla);
+
+    if (!tienePosicion)
+    {
+      Camera camara = Camera.main;
+      if (camara == null)
+      {
+        OcultarVisualSlotHighlightNodoCampania(slot);
+        return;
+      }
+
+      posicionPantalla = camara.WorldToScreenPoint(nodo.transform.position);
+      tienePosicion = posicionPantalla.z >= 0f;
+    }
+
+    if (!tienePosicion)
+    {
+      OcultarVisualSlotHighlightNodoCampania(slot);
+      return;
+    }
+
+    if (!highlightNodos.activeSelf)
+    {
+      highlightNodos.SetActive(true);
+    }
+
+    if (slot.root != null && !slot.root.activeSelf)
+    {
+      slot.root.SetActive(true);
+    }
+
+    if (slot.rect != null)
+    {
+      slot.rect.position = posicionPantalla;
+
+      if (target != null)
+      {
+        Vector2 tamano = target.GetHighlightSize();
+        if (tamano.sqrMagnitude > 0f)
+        {
+          slot.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, tamano.x);
+          slot.rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, tamano.y);
+        }
+      }
+    }
+
+    if (slot.textoRect != null && slot.root != null && !slot.textoRect.transform.IsChildOf(slot.root.transform))
+    {
+      slot.textoRect.position = posicionPantalla + slot.offsetTextoPantalla;
+      slot.texto.gameObject.SetActive(true);
+    }
+    else if (slot.root != null)
+    {
+      slot.root.transform.position = posicionPantalla;
+    }
+  }
 
 public class AnimacionTextoRecursoManual : MonoBehaviour
 {
@@ -4476,6 +4877,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   int CalcularResultadoEmboscadaViajeActual()
   {
+    if (debugIgnorarCombates)
+    {
+      return 0;
+    }
+
     if (scTutorialManager.pasoActual == 2)
     {
       scTutorialManager.establecerPasoEspecifico(3);
@@ -5247,14 +5653,27 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   {
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
     string color = emboscadaEnemiga ? "#ff9a9a" : "#8ad8ff";
-    int umbralEmboscadaAliada = Mathf.Clamp(chanceEmboscada + 30, 1, 100);
+    int inicioSinEmboscada = chanceEmboscada + 1;
+    int finSinEmboscada = Mathf.Min(chanceEmboscada + 29, 100);
+    int umbralEmboscadaAliada = chanceEmboscada + 30;
+    int chanceEmboscadaAliada = umbralEmboscadaAliada <= 100 ? 101 - umbralEmboscadaAliada : 0;
+    int chanceSinEmboscada = Mathf.Clamp(100 - chanceEmboscada - chanceEmboscadaAliada, 0, 100);
+    string detalleEmboscadaEnemiga = chanceEmboscada > 0
+      ? $"{chanceEmboscada}% (1-{chanceEmboscada})"
+      : "0%";
+    string detalleSinEmboscada = chanceSinEmboscada > 0
+      ? $"{chanceSinEmboscada}% ({inicioSinEmboscada}-{finSinEmboscada})"
+      : "0%";
+    string detalleEmboscadaAliada = chanceEmboscadaAliada > 0
+      ? $"{chanceEmboscadaAliada}% ({umbralEmboscadaAliada}-100)"
+      : "0%";
 
     if (idioma == TRADU.IdiomaIngles)
     {
       string textoEn = emboscadaEnemiga
         ? "-The caravan was ambushed."
         : "-You ambushed the enemies.";
-      return $"<color={color}>{textoEn} Enemy ambush chance: {chanceEmboscada}% (roll <= {chanceEmboscada}) | Ally ambush if roll >= {umbralEmboscadaAliada} - 1d100: {tirada}.</color>";
+      return $"<color={color}>{textoEn} Enemy ambush: {detalleEmboscadaEnemiga} | No ambush: {detalleSinEmboscada} | Ally ambush: {detalleEmboscadaAliada} | 1d100: {tirada}.</color>";
     }
 
     if (idioma == TRADU.IdiomaPortugues)
@@ -5262,13 +5681,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       string textoPt = emboscadaEnemiga
         ? "-A caravana sofreu uma emboscada."
         : "-Você emboscou os inimigos.";
-      return $"<color={color}>{textoPt} Chance de emboscada inimiga: {chanceEmboscada}% (rolagem <= {chanceEmboscada}) | Emboscada aliada se rolagem >= {umbralEmboscadaAliada} - 1d100: {tirada}.</color>";
+      return $"<color={color}>{textoPt} Emboscada inimiga: {detalleEmboscadaEnemiga} | Sem emboscada: {detalleSinEmboscada} | Emboscada aliada: {detalleEmboscadaAliada} | 1d100: {tirada}.</color>";
     }
 
     string textoEs = emboscadaEnemiga
       ? "-La caravana ha sido emboscada."
       : "-Has emboscado a los enemigos.";
-    return $"<color={color}>{textoEs} Chance de emboscada enemiga: {chanceEmboscada}% (tirada <= {chanceEmboscada}) | Emboscada aliada si tirada >= {umbralEmboscadaAliada} - 1d100: {tirada}.</color>";
+    return $"<color={color}>{textoEs} Emboscada enemiga: {detalleEmboscadaEnemiga} | Sin emboscada: {detalleSinEmboscada} | Emboscada aliada: {detalleEmboscadaAliada} | 1d100: {tirada}.</color>";
   }
 
   private void CachearTextosOriginalesDerrota()
@@ -5544,6 +5963,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       if (nodoAIncendiar != null)
       {
         nodoAIncendiar.ActivarIncendio();
+        MarcarNodoCampaniaTemporal(nodoAIncendiar, TipoHighlightNodoCampania.Incendio);
         EscribirLog(TRADU.i.Traducir("<color=#FF3D00>-El incendio ha envuelto un nodo cercano al camino de la caravana.</color>"));
       }
     }
@@ -5587,6 +6007,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           nodoRitual.tipoNodo = 15; // Nodo Ritual
           nodoRitual.ActivarNodoVisual(15, false, true);
           nodoRitual.ActivarRitual();
+          MarcarNodoCampaniaTemporal(nodoRitual, TipoHighlightNodoCampania.Ritual);
           CambiarEsperanzaActual(-5);
           EscribirLog(TRADU.i.Traducir("<color=#6A0DAD>-Un ritual Kale'Tav ha comenzado en un nodo cercano. La másica profana desalienta a la caravana. -5 Esperanza.</color>"));
 
@@ -6958,7 +7379,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     nodoFuturo.DesactivarGraficosNodo();
     nodoFuturo.tipoNodo = 16;
+    nodoFuturo.revelado = true;
     nodoFuturo.ActivarNodoVisual(16, false, true);
+    scMapaManager.RefrescarVisibilidadExploracion();
+    MarcarNodoCampaniaTemporal(nodoFuturo, TipoHighlightNodoCampania.MisionSalvamento);
     return true;
   }
 
@@ -8434,6 +8858,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     if (IntroCampaniaActivaOPendiente)
     {
+      LimpiarHoverNodoCampaniaActual();
       return;
     }
 
@@ -8441,6 +8866,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       DebugObjetosBajoMouseCampania();
     }
+
+    ProcesarInputMouseNodosCampania();
 
 
     //HOTKEYS
@@ -8516,14 +8943,22 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         (scTutorialManager != null && scTutorialManager.tutorialActivo)
         || (TutorialDirector.Instance != null && TutorialDirector.Instance.IsRunning);
 
-      if (tutorialBloqueaEscape) { return; }
-      if (asentamientoActivo) { return; }
-
       if (MenuOpciones != null && MenuOpciones.activeInHierarchy)
       {
         MenuOpciones.SetActive(false);
         return;
       }
+
+      if (tutorialBloqueaEscape)
+      {
+        if (MenuOpciones != null)
+        {
+          MenuOpciones.SetActive(true);
+        }
+        return;
+      }
+
+      if (asentamientoActivo) { return; }
 
       if (scMenuCaravana != null && scMenuCaravana.SeApretoESC()) //Si se apreto escape se cierran menus, si no habia ningun abierto abre opciones
       {
@@ -8542,6 +8977,102 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
 
+  }
+
+  public bool UsaRaycastManualNodosCampania => true;
+
+  void ProcesarInputMouseNodosCampania()
+  {
+    Nodo nodoBajoMouse = ObtenerNodoBajoMouseCampania();
+    if (nodoHoverCampaniaActual != nodoBajoMouse)
+    {
+      if (nodoHoverCampaniaActual != null)
+      {
+        nodoHoverCampaniaActual.ProcesarMouseExitDesdeRaycast();
+      }
+
+      nodoHoverCampaniaActual = nodoBajoMouse;
+
+      if (nodoHoverCampaniaActual != null)
+      {
+        nodoHoverCampaniaActual.ProcesarMouseEnterDesdeRaycast();
+      }
+    }
+
+    if (nodoHoverCampaniaActual == null)
+    {
+      return;
+    }
+
+    if (Input.GetMouseButtonDown(0))
+    {
+      nodoHoverCampaniaActual.ProcesarClickIzquierdoDesdeRaycast();
+    }
+
+    if (Input.GetMouseButtonDown(1))
+    {
+      nodoHoverCampaniaActual.ProcesarClickDerechoDesdeRaycast();
+    }
+  }
+
+  Nodo ObtenerNodoBajoMouseCampania()
+  {
+    if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+    {
+      return null;
+    }
+
+    Camera cam = Camera.main;
+    if (cam == null)
+    {
+      foreach (Camera cameraActiva in Camera.allCameras)
+      {
+        if (cameraActiva != null && cameraActiva.enabled)
+        {
+          cam = cameraActiva;
+          break;
+        }
+      }
+    }
+
+    if (cam == null)
+    {
+      return null;
+    }
+
+    Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+    RaycastHit[] hits3D = Physics.RaycastAll(ray, 500f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide);
+    System.Array.Sort(hits3D, (a, b) => a.distance.CompareTo(b.distance));
+
+    for (int i = 0; i < hits3D.Length; i++)
+    {
+      Collider collider = hits3D[i].collider;
+      if (collider == null)
+      {
+        continue;
+      }
+
+      Nodo nodo = collider.GetComponentInParent<Nodo>();
+      if (nodo == null || !nodo.gameObject.activeInHierarchy)
+      {
+        continue;
+      }
+
+      return nodo;
+    }
+
+    return null;
+  }
+
+  void LimpiarHoverNodoCampaniaActual()
+  {
+    if (nodoHoverCampaniaActual == null)
+    {
+      return;
+    }
+
+    nodoHoverCampaniaActual.ProcesarMouseExitDesdeRaycast();
+    nodoHoverCampaniaActual = null;
   }
 
   private void DebugObjetosBajoMouseCampania()

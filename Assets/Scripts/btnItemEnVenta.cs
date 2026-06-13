@@ -6,7 +6,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.EventSystems;
 
-public class btnItemEnVenta : MonoBehaviour, IPointerClickHandler
+public class btnItemEnVenta : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
     
     public Item itemRepresentado;
@@ -18,6 +18,7 @@ public class btnItemEnVenta : MonoBehaviour, IPointerClickHandler
     SequitoMercaderes scSequitoMercaderes;
     private Sprite pinSprite;
     private bool estaPineado;
+    private bool bloquearSiguienteClickDeCompra;
 
     private void Awake()
     {
@@ -83,6 +84,12 @@ public class btnItemEnVenta : MonoBehaviour, IPointerClickHandler
     }
     public void ClickearItem()
     {
+      if (bloquearSiguienteClickDeCompra)
+      {
+        bloquearSiguienteClickDeCompra = false;
+        return;
+      }
+
       if(CampaignManager.Instance.GetOroActuales() >= itemRepresentado.iPrecio)
       {
         scSequitoMercaderes.DespinearItem(itemRepresentado);
@@ -95,6 +102,12 @@ public class btnItemEnVenta : MonoBehaviour, IPointerClickHandler
         RuntimeAnalytics.TrackDesign("merchant", "buy", RuntimeAnalytics.ItemToken(itemRepresentado));
       }
 
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+      bloquearSiguienteClickDeCompra = eventData != null
+        && eventData.button != PointerEventData.InputButton.Left;
     }
 
     public void OnPointerClick(PointerEventData eventData)

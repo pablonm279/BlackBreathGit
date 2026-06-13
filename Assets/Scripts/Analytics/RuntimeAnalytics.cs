@@ -1,16 +1,22 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text;
-using GameAnalyticsSDK;
 using UnityEngine;
 
 public static class RuntimeAnalytics
 {
     private const string RuntimeSettingsResourcePath = "Analytics/RuntimeAnalyticsSettings";
+    private const string DefaultLogFolderName = "Metrics";
+
+    private static readonly string sessionId = Guid.NewGuid().ToString("N");
     private static RuntimeAnalyticsSettings cachedSettings;
     private static bool initializeAttempted;
-    private static bool providerReady;
+    private static bool metricsReady;
     private static bool stateLogged;
+    private static bool fileWriteFailed;
+    private static string logFilePath;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoInitialize()
@@ -33,16 +39,14 @@ public static class RuntimeAnalytics
             return;
         }
 
-        if (!HasCurrentPlatformKeys(out reason))
+        RuntimeAnalyticsSettings settings = GetSettings();
+        if (settings == null || settings.WriteEventsToFile)
         {
-            LogState(reason);
-            return;
+            PrepareLogFile(settings);
         }
 
-        EnsureGameAnalyticsObject();
-        GameAnalytics.Initialize();
-        providerReady = true;
-        LogState("GameAnalytics inicializado.");
+        metricsReady = true;
+        LogState("Metricas runtime inicializadas.");
     }
 
     public static void TrackDesign(params string[] parts)
@@ -58,32 +62,36 @@ public static class RuntimeAnalytics
             return;
         }
 
-        GameAnalytics.NewDesignEvent(eventName);
+        Emit(new MetricEvent
+        {
+            type = "design",
+            name = eventName
+        });
     }
 
     public static void TrackProgressionStart(string progression01, string progression02 = null, string progression03 = null)
     {
-        TrackProgression(GAProgressionStatus.Start, progression01, progression02, progression03);
+        TrackProgression("start", progression01, progression02, progression03);
     }
 
     public static void TrackProgressionComplete(string progression01, string progression02 = null, string progression03 = null)
     {
-        TrackProgression(GAProgressionStatus.Complete, progression01, progression02, progression03);
+        TrackProgression("complete", progression01, progression02, progression03);
     }
 
     public static void TrackProgressionFail(string progression01, string progression02 = null, string progression03 = null)
     {
-        TrackProgression(GAProgressionStatus.Fail, progression01, progression02, progression03);
+        TrackProgression("fail", progression01, progression02, progression03);
     }
 
     public static void TrackResourceSource(string currency, float amount, string itemType, string itemId)
     {
-        TrackResource(GAResourceFlowType.Source, currency, amount, itemType, itemId);
+        TrackResource("source", currency, amount, itemType, itemId);
     }
 
     public static void TrackResourceSink(string currency, float amount, string itemType, string itemId)
     {
-        TrackResource(GAResourceFlowType.Sink, currency, amount, itemType, itemId);
+        TrackResource("sink", currency, amount, itemType, itemId);
     }
 
     public static string SanitizeToken(string value, int maxLength = 32)
@@ -177,12 +185,12 @@ public static class RuntimeAnalytics
 
     private static bool EnsureProviderReady()
     {
-        if (!providerReady)
+        if (!metricsReady)
         {
             Initialize();
         }
 
-        return providerReady;
+        return metricsReady;
     }
 
     private static bool CanSendEvents(out string reason)
@@ -190,20 +198,20 @@ public static class RuntimeAnalytics
         RuntimeAnalyticsSettings settings = GetSettings();
         if (settings != null && !settings.EnableAnalytics)
         {
-            reason = "Analytics deshabilitado en RuntimeAnalyticsSettings.";
+            reason = "Metricas deshabilitadas en RuntimeAnalyticsSettings.";
             return false;
         }
 
         if (Application.isEditor && (settings == null || settings.DisableInEditor))
         {
-            reason = "Analytics deshabilitado dentro del editor.";
+            reason = "Metricas deshabilitadas dentro del editor.";
             return false;
         }
 
 #if DEVELOPMENT_BUILD
         if (!Application.isEditor && settings != null && settings.DisableInDevelopmentBuild)
         {
-            reason = "Analytics deshabilitado en development build.";
+            reason = "Metricas deshabilitadas en development build.";
             return false;
         }
 #endif
@@ -222,85 +230,85 @@ public static class RuntimeAnalytics
         return cachedSettings;
     }
 
-    private static bool HasCurrentPlatformKeys(out string reason)
+    private static void PrepareLogFile(RuntimeAnalyticsSettings settings)
     {
-        var settings = GameAnalytics.SettingsGA;
-        if (settings == null)
-        {
-            reason = "No existe Assets/Resources/GameAnalytics/Settings.asset.";
-            return false;
-        }
+        string folderName = settings == null || string.IsNullOrWhiteSpace(settings.EventLogFolderName)
+            ? DefaultLogFolderName
+            : settings.EventLogFolderName.Trim();
 
-        int platformIndex = settings.Platforms.IndexOf(Application.platform);
-        if (platformIndex < 0)
+        try
         {
-            reason = "La plataforma actual no esta configurada en GameAnalytics Settings.";
-            return false;
+            string directory = Path.Combine(Application.persistentDataPath, folderName);
+            Directory.CreateDirectory(directory);
+            logFilePath = Path.Combine(directory, "events-" + DateTime.UtcNow.ToString("yyyyMMdd", CultureInfo.InvariantCulture) + ".jsonl");
         }
-
-        if (string.IsNullOrWhiteSpace(settings.GetGameKey(platformIndex)) || string.IsNullOrWhiteSpace(settings.GetSecretKey(platformIndex)))
+        catch (Exception exception)
         {
-            reason = "Faltan Game Key y Secret Key para la plataforma actual en GameAnalytics Settings.";
-            return false;
+            fileWriteFailed = true;
+            Debug.LogWarning("[Metrics] No se pudo preparar el archivo de metricas: " + exception.Message);
         }
-
-        reason = string.Empty;
-        return true;
     }
 
-    private static void EnsureGameAnalyticsObject()
-    {
-#if UNITY_2023_1_OR_NEWER
-        GameAnalytics ga = Object.FindFirstObjectByType<GameAnalytics>();
-#else
-        GameAnalytics ga = Object.FindObjectOfType<GameAnalytics>();
-#endif
-        if (ga != null)
-        {
-            return;
-        }
-
-        GameObject analyticsObject = new GameObject("GameAnalytics");
-        Object.DontDestroyOnLoad(analyticsObject);
-        analyticsObject.AddComponent<GameAnalytics>();
-    }
-
-    private static void TrackProgression(GAProgressionStatus status, string progression01, string progression02, string progression03)
+    private static void TrackProgression(string status, string progression01, string progression02, string progression03)
     {
         if (!EnsureProviderReady())
         {
             return;
         }
 
-        string p1 = SanitizeToken(progression01);
-        string p2 = string.IsNullOrWhiteSpace(progression02) ? null : SanitizeToken(progression02);
-        string p3 = string.IsNullOrWhiteSpace(progression03) ? null : SanitizeToken(progression03);
-
-        if (string.IsNullOrEmpty(p2))
+        Emit(new MetricEvent
         {
-            GameAnalytics.NewProgressionEvent(status, p1);
-        }
-        else if (string.IsNullOrEmpty(p3))
-        {
-            GameAnalytics.NewProgressionEvent(status, p1, p2);
-        }
-        else
-        {
-            GameAnalytics.NewProgressionEvent(status, p1, p2, p3);
-        }
+            type = "progression",
+            status = status,
+            progression01 = SanitizeToken(progression01),
+            progression02 = string.IsNullOrWhiteSpace(progression02) ? null : SanitizeToken(progression02),
+            progression03 = string.IsNullOrWhiteSpace(progression03) ? null : SanitizeToken(progression03)
+        });
     }
 
-    private static void TrackResource(GAResourceFlowType flowType, string currency, float amount, string itemType, string itemId)
+    private static void TrackResource(string flowType, string currency, float amount, string itemType, string itemId)
     {
         if (amount <= 0f || !EnsureProviderReady())
         {
             return;
         }
 
-        string safeCurrency = SanitizeToken(currency, 24);
-        string safeItemType = SanitizeToken(itemType, 32);
-        string safeItemId = SanitizeToken(itemId, 32);
-        GameAnalytics.NewResourceEvent(flowType, safeCurrency, amount, safeItemType, safeItemId);
+        Emit(new MetricEvent
+        {
+            type = "resource",
+            flow = flowType,
+            currency = SanitizeToken(currency, 24),
+            amount = amount,
+            itemType = SanitizeToken(itemType, 32),
+            itemId = SanitizeToken(itemId, 32)
+        });
+    }
+
+    private static void Emit(MetricEvent metricEvent)
+    {
+        RuntimeAnalyticsSettings settings = GetSettings();
+        metricEvent.utc = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
+        metricEvent.session = sessionId;
+        metricEvent.scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+        string json = JsonUtility.ToJson(metricEvent);
+        if (settings != null && settings.LogEventsToConsole)
+        {
+            Debug.Log("[Metrics] " + json);
+        }
+
+        if ((settings == null || settings.WriteEventsToFile) && !fileWriteFailed && !string.IsNullOrWhiteSpace(logFilePath))
+        {
+            try
+            {
+                File.AppendAllText(logFilePath, json + Environment.NewLine, Encoding.UTF8);
+            }
+            catch (Exception exception)
+            {
+                fileWriteFailed = true;
+                Debug.LogWarning("[Metrics] No se pudo escribir el evento: " + exception.Message);
+            }
+        }
     }
 
     private static string BuildEventName(params string[] parts)
@@ -360,6 +368,25 @@ public static class RuntimeAnalytics
         }
 
         stateLogged = true;
-        Debug.Log("[Analytics] " + message);
+        Debug.Log("[Metrics] " + message);
+    }
+
+    [Serializable]
+    private sealed class MetricEvent
+    {
+        public string utc;
+        public string session;
+        public string scene;
+        public string type;
+        public string name;
+        public string status;
+        public string progression01;
+        public string progression02;
+        public string progression03;
+        public string flow;
+        public string currency;
+        public float amount;
+        public string itemType;
+        public string itemId;
     }
 }

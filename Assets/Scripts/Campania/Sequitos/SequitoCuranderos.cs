@@ -99,7 +99,7 @@ public class SequitoCuranderos : MonoBehaviour
        btnPersonaje btn = btnPers.GetComponent<btnPersonaje>();
        if (btn != null)
        {
-         btn.Configurar(pers);
+         btn.ConfigurarParaCuranderos(pers, this);
        }
       }
 

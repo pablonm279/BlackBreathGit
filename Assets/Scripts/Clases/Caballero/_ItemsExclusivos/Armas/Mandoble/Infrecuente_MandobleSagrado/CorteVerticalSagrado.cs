@@ -195,7 +195,7 @@ public class CorteVerticalSagrado : Habilidad
           objetivo.RecibirDanio(daniodivino, 11, false, scEstaUnidad); //11: Da�o Divino
         }
 
-
+        VFXAplicar(objetivo.gameObject);
 
       }
       else if (resultadoTirada == 2)
@@ -214,7 +214,7 @@ public class CorteVerticalSagrado : Habilidad
           objetivo.RecibirDanio(daniodivino, 11, false, scEstaUnidad); //11: Da�o Divino
         }
 
-
+        VFXAplicar(objetivo.gameObject);
 
       }
       else if (resultadoTirada == 3)
@@ -232,6 +232,8 @@ public class CorteVerticalSagrado : Habilidad
           int daniodivino = TiradaDeDados.TirarDados(1, 8);
           objetivo.RecibirDanio(daniodivino, 11, true, scEstaUnidad); //11: Da�o Divino
         }
+
+        VFXAplicar(objetivo.gameObject);
       }
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
@@ -251,8 +253,14 @@ public class CorteVerticalSagrado : Habilidad
     
     void VFXAplicar(GameObject objetivo)
     {
-       //GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation); 
+      VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_CorteVertical");
+      if (VFXenObjetivo == null || objetivo == null) { return; }
 
+      GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation);
+      vfx.transform.parent = objetivo.transform;
+
+      Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+      RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, objetivo.transform, 500);
     }
     bool ChequearTieneSiguesTu(Unidad obj)
     { 

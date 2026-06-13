@@ -107,7 +107,7 @@ public class DestruirObstaculo : Habilidad
     }
 
     obstaculo.ReproducirSonidoImpactoRoca();
-    obstaculo.ForzarDestruccion();
+    obstaculo.ForzarDestruccion(true);
     string nombreObstaculo = TRADU.i != null ? TRADU.i.Traducir(obstaculo.oName) : obstaculo.oName;
     BattleManager.Instance.EscribirLog(string.Format("{0} {1}", Traducir("Destruyes"), nombreObstaculo));
     // Refresca movimiento al salir del modo de selección para que las casillas

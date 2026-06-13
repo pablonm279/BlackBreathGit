@@ -233,7 +233,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         print("Obtener Idioma seleccionado: " + nIdioma);
         PlayerPrefs.SetInt("nIdioma", nIdioma);
         if (TRADU.i != null) TRADU.i.nIdioma = nIdioma;*/
-        SetRestartRequiredText(ObtenerTextoReinicio(nIdioma));
+        SetRestartRequiredText(string.Empty);
 
         // Resolución y pantalla completa
 
@@ -492,6 +492,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             graficosDropdown.options[2].text = "Ultra";
         }
 
+        graficosDropdown.RefreshShownValue();
 
     }
 
@@ -526,6 +527,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             dificultadDropdown.options[3].text = "Dificil";
             dificultadDropdown.options[4].text = "Muito Dificil";
         }
+
+        dificultadDropdown.RefreshShownValue();
     }
 
     public void AplicarModoRapido()
@@ -735,22 +738,33 @@ public void OnEnglishToggle(bool isOn)
 
 public void CambiarIdioma(int idioma)
 {
-    Debug.Log("ANTES de guardar nIdioma pref = " + PlayerPrefs.GetInt("nIdioma", -999));
-
     nIdioma = idioma;
     PlayerPrefs.SetInt("nIdioma", nIdioma);
     PlayerPrefs.Save();
 
-    Debug.Log("DESPUES de guardar nIdioma variable = " + nIdioma);
-    Debug.Log("DESPUES de guardar nIdioma pref = " + PlayerPrefs.GetInt("nIdioma", -999));
-   
-
-    /*if (TRADU.i != null)
+    if (TRADU.i != null)
     {
         TRADU.i.nIdioma = nIdioma;
-        TRADU.i.ActualizarIdioma();
-    }*/
+        TRADU.i.TraducirTodosTextosSegunIdioma();
+    }
+
+    ActualizarEtiquetasAudio();
+    ActualizarEtiquetaBrillo();
+    TraducirDropdownGraficos();
+    TraducirDropdownDificultad();
+    AplicarIdiomaPanelControles();
+    RefrescarObjetosMenuDependientesIdioma();
+    SetRestartRequiredText(string.Empty);
 }
+
+    private void RefrescarObjetosMenuDependientesIdioma()
+    {
+        MenuController menu = FindFirstObjectByType<MenuController>(FindObjectsInactive.Include);
+        if (menu != null)
+        {
+            menu.AplicarVersionesIdioma();
+        }
+    }
 
     private static int ObtenerIndicePanelIdioma(int idioma, int childCount)
     {

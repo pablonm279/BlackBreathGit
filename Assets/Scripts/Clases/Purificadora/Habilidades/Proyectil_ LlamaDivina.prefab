@@ -248,8 +248,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clip: {fileID: 8300000, guid: 721c9ff3c43fcd249a13a83d7c18b31a, type: 3}
-  volumen: 0.961
-  pitch: 1
+  volumen: 0.85
+  pitch: 1.1
   delay: 0
 --- !u!1 &8104475024167382613
 GameObject:

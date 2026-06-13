@@ -292,11 +292,6 @@ public class Personaje : MonoBehaviour
     public void SetCampFatigado(bool fatigado)
     {
         Camp_Fatigado = fatigado;
-
-        if (fatigado)
-        {
-            ActividadSeleccionada = 1;
-        }
     }
 
     public float AplicarMultiplicadorExperienciaTraits(float cantidadBase)
@@ -1572,11 +1567,11 @@ public static class PersonajeTraitCatalog
             "teamwork",
             true,
             "Trabajo en Equipo",
-            "Obtiene Claridad: +1 TS Mental por cada aliado no IA vivo.",
+            "Obtiene Claridad: +1 TS Mental por cada aliado vivo.",
             "Teamwork",
-            "Gains Clarity: +1 Mental Save per living non-AI ally.",
+            "Gains Clarity: +1 Mental Save per living ally.",
             "Trabalho em Equipe",
-            "Recebe Clareza: +1 Teste Mental por cada aliado sem IA vivo.",
+            "Recebe Clareza: +1 Teste Mental por cada aliado vivo.",
             TraitLoboSolitario),
         new PersonajeTraitDefinition(
             TraitPuertasDeLaMuerte,

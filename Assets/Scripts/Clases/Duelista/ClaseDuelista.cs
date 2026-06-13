@@ -10,11 +10,13 @@ public class AparienciaAlternativaDuelista
     public Sprite poseMover;
     public Sprite poseAtacar;
     public Sprite poseHabilidad;
+    public Sprite poseRecibirDanio;
+    public Sprite poseTurnoActivo;
     public Sprite poseEnGarde;
 
     public bool TieneContenido()
     {
-        return retrato != null || poseIdle != null || poseMover != null || poseAtacar != null || poseHabilidad != null || poseEnGarde != null;
+        return retrato != null || poseIdle != null || poseMover != null || poseAtacar != null || poseHabilidad != null || poseRecibirDanio != null || poseTurnoActivo != null || poseEnGarde != null;
     }
 }
 
@@ -30,6 +32,7 @@ public class ClaseDuelista : Unidad
     private int bonusEvasionEnGardeAplicado;
     private bool poseEnGardeActiva;
     private Sprite poseIdleOriginal;
+    private Sprite poseTurnoActivoOriginal;
     private Sprite poseEnGardeAlternativaActiva;
     private UnidadPoseController poseControllerDuelista;
 
@@ -65,13 +68,17 @@ public class ClaseDuelista : Unidad
         Sprite poseMoverBase = poseControllerDuelista.ObtenerPoseMoverBase() != null ? poseControllerDuelista.ObtenerPoseMoverBase() : poseIdleBase;
         Sprite poseAtacarBase = poseControllerDuelista.ObtenerPoseAtacarBase() != null ? poseControllerDuelista.ObtenerPoseAtacarBase() : poseIdleBase;
         Sprite poseHabilidadBase = poseControllerDuelista.ObtenerPoseHabilidadBase() != null ? poseControllerDuelista.ObtenerPoseHabilidadBase() : poseIdleBase;
+        Sprite poseRecibirDanioBase = poseControllerDuelista.ObtenerPoseRecibirDanioBase();
+        Sprite poseTurnoActivoBase = poseControllerDuelista.ObtenerPoseTurnoActivoBase();
 
         Sprite poseIdle = aparienciaElegida.poseIdle != null ? aparienciaElegida.poseIdle : poseIdleBase;
         Sprite poseMover = aparienciaElegida.poseMover != null ? aparienciaElegida.poseMover : poseMoverBase;
         Sprite poseAtacar = aparienciaElegida.poseAtacar != null ? aparienciaElegida.poseAtacar : poseAtacarBase;
         Sprite poseHabilidad = aparienciaElegida.poseHabilidad != null ? aparienciaElegida.poseHabilidad : poseHabilidadBase;
+        Sprite poseRecibirDanio = aparienciaElegida.poseRecibirDanio != null ? aparienciaElegida.poseRecibirDanio : poseRecibirDanioBase;
+        Sprite poseTurnoActivo = aparienciaElegida.poseTurnoActivo != null ? aparienciaElegida.poseTurnoActivo : poseTurnoActivoBase;
 
-        poseControllerDuelista.ConfigurarPoses(poseIdle, poseMover, poseAtacar, poseHabilidad);
+        poseControllerDuelista.ConfigurarPoses(poseIdle, poseMover, poseAtacar, poseHabilidad, poseRecibirDanio, poseTurnoActivo);
     }
 
     public override int ObtenerCantidadAparienciasAlternativas()
@@ -696,17 +703,20 @@ public class ClaseDuelista : Unidad
             if (!poseEnGardeActiva)
             {
                 poseIdleOriginal = poseControllerDuelista.poseIdle;
+                poseTurnoActivoOriginal = poseControllerDuelista.poseTurnoActivo;
             }
 
             poseControllerDuelista.poseIdle = poseEnGarde;
+            poseControllerDuelista.poseTurnoActivo = poseEnGarde;
             poseEnGardeActiva = true;
             poseControllerDuelista.SetIdle();
             return;
         }
 
-        if (poseEnGardeActiva && poseIdleOriginal != null)
+        if (poseEnGardeActiva)
         {
             poseControllerDuelista.poseIdle = poseIdleOriginal;
+            poseControllerDuelista.poseTurnoActivo = poseTurnoActivoOriginal;
             poseControllerDuelista.RefrescarPoseActual();
         }
 

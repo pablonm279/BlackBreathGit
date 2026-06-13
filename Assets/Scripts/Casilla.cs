@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using System;
-using UnityEngine.Analytics;
 using System.Linq;
 
 
@@ -1593,14 +1592,20 @@ public class Casilla : MonoBehaviour
       MostrarTooltipIntercambiar();
     }
     //Controlar se esta haciendo hablidad en Area, marca las casillas en la zona de alcance y en el area
-      if (BattleManager.Instance.HabilidadActiva != null)
+    if (BattleManager.Instance.HabilidadActiva != null)
+    {
+      if (BattleManager.Instance.SeleccionandoObjetivo
+        && (BattleManager.Instance.HabilidadActiva.enArea > 0 || BattleManager.Instance.HabilidadActiva.targetEspecial > 0))
       {
-        if (BattleManager.Instance.HabilidadActiva.enArea > 0 && BattleManager.Instance.SeleccionandoObjetivo)
-        {
+        DesmarcarTodasLasCasillasAzules();
+      }
 
-          casAlre = ObtenerCasillasAlrededor(BattleManager.Instance.HabilidadActiva.enArea);
-          foreach (Casilla cas in casAlre)
-          {
+      if (BattleManager.Instance.HabilidadActiva.enArea > 0 && BattleManager.Instance.SeleccionandoObjetivo)
+      {
+
+        casAlre = ObtenerCasillasAlrededor(BattleManager.Instance.HabilidadActiva.enArea);
+        foreach (Casilla cas in casAlre)
+        {
             if (cas.Presente != null)
             {
               if (!BattleManager.Instance.HabilidadActiva.bAfectaObstaculos)
@@ -1629,11 +1634,11 @@ public class Casilla : MonoBehaviour
 
             }
 
-          }
-          MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
-
         }
-        else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 1)  //Target Especial 1: misma fila (horizontal)
+        MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
+
+      }
+      else if (BattleManager.Instance.HabilidadActiva.targetEspecial == 1)  //Target Especial 1: misma fila (horizontal)
         {
           casAlre = ObtenerCasillasenMismaFila();
           MarcarCasillasAzul(BattleManager.Instance.HabilidadActiva.lCasillasafectadas);
@@ -2205,6 +2210,22 @@ public class Casilla : MonoBehaviour
     foreach (Casilla cas in casAlre)
     {
       cas.DesactivarCapaColorAzul();
+    }
+  }
+
+  private void DesmarcarTodasLasCasillasAzules()
+  {
+    if (BattleManager.Instance == null || BattleManager.Instance.lCasillasTotal == null)
+    {
+      return;
+    }
+
+    foreach (Casilla cas in BattleManager.Instance.lCasillasTotal)
+    {
+      if (cas != null)
+      {
+        cas.DesactivarCapaColorAzul();
+      }
     }
   }
 

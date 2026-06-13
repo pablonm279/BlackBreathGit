@@ -74,7 +74,10 @@ public class Nodo : MonoBehaviour
   const float MultiplicadorAnchoContinuacionVision = 0.58f;
   const string NombreLineaContinuacionVision = "LineaVisionCorta";
   const float PulsoNodoMovibleVelocidad = 3.7f;
-  const float PulsoNodoMovibleEscalaMax = 1.17f;
+  const float PulsoNodoMovibleEscalaMax = 1.26f;
+  const float PulsoNodoMovibleEscalaMaxHover = 1.31f;
+  const float PulsoNodoMovibleGlowColorBlend = 0.16f;
+  const float PulsoNodoMovibleGlowEmission = 0.55f;
   const float DuracionFadeVisionNodo = 0.18f;
   const float DuracionFadeVisionCamino = 0.14f;
   const float RetrasoPasoXFadeVision = 0.028f;
@@ -105,6 +108,7 @@ public class Nodo : MonoBehaviour
   const string TooltipAtajoSubterraneoId = "campania_atajo_sup";
   static readonly int ShaderColorId = Shader.PropertyToID("_Color");
   static readonly int ShaderBaseColorId = Shader.PropertyToID("_BaseColor");
+  static readonly int ShaderEmissionColorId = Shader.PropertyToID("_EmissionColor");
 
   // Materiales
   public Material MaterialCaminoOriginal;
@@ -142,6 +146,7 @@ public class Nodo : MonoBehaviour
   bool pulsoMovimientoActivo;
   Transform visualPulsoMovimientoActual;
   Vector3 escalaBaseVisualPulsoMovimiento = Vector3.one;
+  readonly List<Renderer> renderersPulsoMovimientoActuales = new List<Renderer>();
   static readonly HashSet<Nodo> nodosConPulsoMovimientoActivos = new HashSet<Nodo>();
   readonly List<CaminoConexion> conexionesSalientes = new List<CaminoConexion>();
   readonly Dictionary<string, Material> variantesMaterialCamino = new Dictionary<string, Material>();
@@ -158,6 +163,8 @@ public class Nodo : MonoBehaviour
   List<FadeRendererState> estadosFadeVisionNodo;
   List<FadeTransformState> estadosFadeVisionTransformNodo;
   MaterialPropertyBlock bloqueFadeVision;
+  MaterialPropertyBlock bloquePulsoMovimiento;
+  bool cursorSobreNodo;
   bool visibleForzadaPorReveladoEspecial;
   bool visiblePorVision = true;
   string faccionScoutReveladaId = "";
@@ -263,6 +270,7 @@ public class Nodo : MonoBehaviour
   void Awake()
   {
     bloqueFadeVision = new MaterialPropertyBlock();
+    bloquePulsoMovimiento = new MaterialPropertyBlock();
   }
 
   void Start()
@@ -340,10 +348,11 @@ public class Nodo : MonoBehaviour
     if (CampaignManager.Instance.scAtributosZona.ID == 3) { chancesAtajo = 0; } // En Nedukazal no hay atajos
     if (CampaignManager.Instance.DebeUsarConfiguracionTutorial()) { chancesAtajo = 0; } // En Tutorial no hay atajos
     
+    Nodo nodoAtajoSubterraneoEncontrado = null;
     if (UnityEngine.Random.Range(0, 100) < chancesAtajo && posXNodo < 9)
     {
       CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Se ha encontrado un atajo subterráneo."));
-      EncontrarAtajo(2, 0);
+      nodoAtajoSubterraneoEncontrado = EncontrarAtajo(2, 0);
     }
 
     CampaignManager.Instance.CambiarFatigaActual(fatigaSuma);
@@ -355,14 +364,16 @@ public class Nodo : MonoBehaviour
       .Add("x", posXNodo)
       .Add("y", posYNodo));
 
+    CampaignManager.Instance?.scTutorialManager?.RevelarEmboscadaMov3AlLlegar(this);
     scMapaManager.RefrescarVisibilidadExploracion();
+    CampaignManager.Instance?.MarcarNodoCampaniaTemporal(nodoAtajoSubterraneoEncontrado, TipoHighlightNodoCampania.AtajoSubterraneo);
   }
 
-  public void EncontrarAtajo(int X, int Y)
+  public Nodo EncontrarAtajo(int X, int Y)
   {
     if (UsaConfiguracionTutorial())
     {
-      return;
+      return null;
     }
 
     if (scContenedorNodos2 == null)
@@ -403,8 +414,7 @@ public class Nodo : MonoBehaviour
     {
       if (Y < 2)
       {
-        EncontrarAtajo(X, Y + 1);
-        return;
+        return EncontrarAtajo(X, Y + 1);
       }
 
       for (int dy = -2; dy <= 2; dy++)
@@ -421,14 +431,17 @@ public class Nodo : MonoBehaviour
     if (posiblesAtajos.Count > 0)
     {
       Nodo elegido = posiblesAtajos[UnityEngine.Random.Range(0, posiblesAtajos.Count)];
-      ConectarConNodo(elegido, true);
+      ConectarConNodo(elegido, true, false);
       elegido.Revelar(true);
       if (scMapaManager != null)
       {
         scMapaManager.RefrescarVisibilidadExploracion();
       }
       TutorialTooltipManager.TryShow(TooltipAtajoSubterraneoId);
+      return elegido;
     }
+
+    return null;
   }
 
   public bool IntentarEncontrarAtajoSuperficie()
@@ -500,6 +513,7 @@ public class Nodo : MonoBehaviour
     }
 
     elegido.ActivarVfxDescubrimiento();
+    CampaignManager.Instance?.MarcarNodoCampaniaTemporal(elegido, TipoHighlightNodoCampania.AtajoSuperficie);
     return true;
   }
 
@@ -1033,6 +1047,23 @@ public class Nodo : MonoBehaviour
     return posXNodo == 11;
   }
 
+  void AsegurarNodoFinalSiempreRevelado()
+  {
+    if (!EsNodoFinalZona())
+    {
+      return;
+    }
+
+    if (tipoNodo <= 0)
+    {
+      tipoNodo = 10;
+    }
+
+    revelado = true;
+    esMisterioso = false;
+    numVisualActual = tipoNodo;
+  }
+
   void SincronizarLineaDecorativaNodoFinal()
   {
     Transform lineaOutro = transform.Find(NombreLineaOutroCampania);
@@ -1289,6 +1320,11 @@ public class Nodo : MonoBehaviour
     esMisterioso = tutorialActivo && !permiteMisterioTutorial ? false : estadoMisterioso;
     numVisualActual = visualCode;
 
+    if (EsNodoFinalZona())
+    {
+      AsegurarNodoFinalSiempreRevelado();
+    }
+
     if (tutorialActivo && !permiteMisterioTutorial && (numVisualActual == 12 || numVisualActual == 13))
     {
       numVisualActual = tipoNodo;
@@ -1327,6 +1363,7 @@ public class Nodo : MonoBehaviour
     {
       revelado = true;
       ActivarNodoVisual(CodigoSettlement, false, true);
+      CampaignManager.Instance?.MarcarNodoCampaniaTemporal(this, TipoHighlightNodoCampania.Asentamiento);
       return;
     }
 
@@ -1852,6 +1889,16 @@ public class Nodo : MonoBehaviour
 
   private void OnMouseDown()
   {
+    if (DebeIgnorarEventosOnMousePorRaycastManual())
+    {
+      return;
+    }
+
+    ProcesarClickIzquierdoDesdeRaycast();
+  }
+
+  public void ProcesarClickIzquierdoDesdeRaycast()
+  {
     if (DebeIgnorarInputMouseNodo())
       return;
 
@@ -1888,6 +1935,7 @@ public class Nodo : MonoBehaviour
       }
 
       CampaignManager.Instance.MoviendoCaravana = true;
+      LimpiarPulsosMovimientoNodos();
       RuntimeAnalytics.TrackDesign(
         "campaign",
         "node_selected",
@@ -1912,6 +1960,16 @@ public class Nodo : MonoBehaviour
 
   private void OnMouseOver()
   {
+    if (DebeIgnorarEventosOnMousePorRaycastManual())
+    {
+      return;
+    }
+
+    ProcesarClickDerechoDesdeRaycast();
+  }
+
+  public void ProcesarClickDerechoDesdeRaycast()
+  {
     if (!Input.GetMouseButtonDown(1))
     {
       return;
@@ -1923,6 +1981,11 @@ public class Nodo : MonoBehaviour
     }
 
     CampaignManager.Instance.IntentarEnviarExploradores(this);
+  }
+
+  bool DebeIgnorarEventosOnMousePorRaycastManual()
+  {
+    return CampaignManager.Instance != null && CampaignManager.Instance.UsaRaycastManualNodosCampania;
   }
 
   bool DebeIgnorarInputMouseNodo(bool esEnvioExploradores = false)
@@ -2754,16 +2817,21 @@ if (esLaLider)
       RestablecerPulsoMovimientoNodo();
       visualPulsoMovimientoActual = visualObjetivo;
       escalaBaseVisualPulsoMovimiento = visualObjetivo.localScale;
+      CachearRenderersPulsoMovimiento(visualObjetivo);
     }
 
     float desfase = (posXNodo * 0.37f) + (posYNodo * 0.19f);
     float pulso = 0.5f + (0.5f * Mathf.Sin((Time.time * PulsoNodoMovibleVelocidad) + desfase));
-    float multiplicadorEscala = Mathf.Lerp(1f, PulsoNodoMovibleEscalaMax, pulso);
+    float escalaMaxima = cursorSobreNodo ? PulsoNodoMovibleEscalaMaxHover : PulsoNodoMovibleEscalaMax;
+    float multiplicadorEscala = Mathf.Lerp(1f, escalaMaxima, pulso);
     visualPulsoMovimientoActual.localScale = escalaBaseVisualPulsoMovimiento * multiplicadorEscala;
+    ActualizarGlowPulsoMovimientoNodo(pulso);
   }
 
   private void RestablecerPulsoMovimientoNodo()
   {
+    RestablecerGlowPulsoMovimientoNodo();
+
     if (visualPulsoMovimientoActual != null)
     {
       visualPulsoMovimientoActual.localScale = escalaBaseVisualPulsoMovimiento;
@@ -2771,6 +2839,110 @@ if (esLaLider)
 
     visualPulsoMovimientoActual = null;
     escalaBaseVisualPulsoMovimiento = Vector3.one;
+    renderersPulsoMovimientoActuales.Clear();
+  }
+
+  void CachearRenderersPulsoMovimiento(Transform visualObjetivo)
+  {
+    renderersPulsoMovimientoActuales.Clear();
+    if (visualObjetivo == null)
+    {
+      return;
+    }
+
+    Renderer[] renderers = visualObjetivo.GetComponentsInChildren<Renderer>(true);
+    for (int i = 0; i < renderers.Length; i++)
+    {
+      if (renderers[i] != null)
+      {
+        renderersPulsoMovimientoActuales.Add(renderers[i]);
+      }
+    }
+  }
+
+  void ActualizarGlowPulsoMovimientoNodo(float pulso)
+  {
+    if (bloquePulsoMovimiento == null || renderersPulsoMovimientoActuales.Count == 0)
+    {
+      return;
+    }
+
+    float intensidadGlow = Mathf.Lerp(0.2f, 1f, pulso);
+    for (int i = 0; i < renderersPulsoMovimientoActuales.Count; i++)
+    {
+      Renderer renderer = renderersPulsoMovimientoActuales[i];
+      if (renderer == null)
+      {
+        continue;
+      }
+
+      Material materialBase = renderer.sharedMaterial;
+      if (materialBase == null)
+      {
+        continue;
+      }
+
+      renderer.GetPropertyBlock(bloquePulsoMovimiento);
+      Color colorBase = ObtenerColorBasePulsoMovimiento(materialBase);
+      Color colorPulso = Color.Lerp(colorBase, Color.white, PulsoNodoMovibleGlowColorBlend * intensidadGlow);
+
+      if (materialBase.HasProperty("_Color"))
+      {
+        bloquePulsoMovimiento.SetColor(ShaderColorId, colorPulso);
+      }
+
+      if (materialBase.HasProperty("_BaseColor"))
+      {
+        bloquePulsoMovimiento.SetColor(ShaderBaseColorId, colorPulso);
+      }
+
+      if (materialBase.HasProperty("_EmissionColor"))
+      {
+        Color emissionBase = materialBase.GetColor("_EmissionColor");
+        Color emissionPulso = emissionBase + (colorPulso * (PulsoNodoMovibleGlowEmission * intensidadGlow));
+        bloquePulsoMovimiento.SetColor(ShaderEmissionColorId, emissionPulso);
+      }
+
+      renderer.SetPropertyBlock(bloquePulsoMovimiento);
+    }
+  }
+
+  void RestablecerGlowPulsoMovimientoNodo()
+  {
+    if (bloquePulsoMovimiento == null)
+    {
+      return;
+    }
+
+    bloquePulsoMovimiento.Clear();
+    for (int i = 0; i < renderersPulsoMovimientoActuales.Count; i++)
+    {
+      Renderer renderer = renderersPulsoMovimientoActuales[i];
+      if (renderer != null)
+      {
+        renderer.SetPropertyBlock(bloquePulsoMovimiento);
+      }
+    }
+  }
+
+  static Color ObtenerColorBasePulsoMovimiento(Material materialBase)
+  {
+    if (materialBase == null)
+    {
+      return Color.white;
+    }
+
+    if (materialBase.HasProperty("_BaseColor"))
+    {
+      return materialBase.GetColor("_BaseColor");
+    }
+
+    if (materialBase.HasProperty("_Color"))
+    {
+      return materialBase.GetColor("_Color");
+    }
+
+    return Color.white;
   }
 
   private Transform ObtenerVisualPrincipalNodoParaPulso()
@@ -3056,6 +3228,7 @@ if (esLaLider)
     }
 
     TutorialTooltipManager.TryShow(TooltipAsentamientoId);
+    CampaignManager.Instance?.MarcarNodoCampaniaTemporal(this, TipoHighlightNodoCampania.Asentamiento);
   }
 
   public void RevelarPorExploradores()
@@ -3086,6 +3259,12 @@ if (esLaLider)
 
   void MarcarComoMisteriosoPorExploracionFallida()
   {
+    if (EsNodoFinalZona())
+    {
+      Revelar(false, false);
+      return;
+    }
+
     if (revelado || tipoNodo == 16 || UsaConfiguracionTutorial() || EsNodoInicialSinMisterio())
     {
       return;
@@ -3105,6 +3284,12 @@ if (esLaLider)
 
   public void RevelarComoMisterioso()
   {
+    if (EsNodoFinalZona())
+    {
+      Revelar(false, false);
+      return;
+    }
+
     if (UsaConfiguracionTutorial())
     {
       Revelar(false, false);
@@ -3502,6 +3687,12 @@ if (esLaLider)
 
   public void ForzarMisteriosoTutorial()
   {
+    if (EsNodoFinalZona())
+    {
+      Revelar(false, false);
+      return;
+    }
+
     misterioForzadoTutorial = true;
     reveladoPorExpedicionTutorial = false;
     revelandoPorExpedicionTutorial = false;
@@ -3786,6 +3977,14 @@ if (esLaLider)
     }
     if (esAtajo) num = 13; // salida atajo
 
+    if (EsNodoFinalZona())
+    {
+      num = tipoNodo > 0 ? tipoNodo : 10;
+      esAtajo = false;
+      esMisterioso = false;
+      revelado = true;
+    }
+
     numVisualActual = num;
     if (!ActivarVisualPorCodigo(numVisualActual))
       numVisualActual = -1;
@@ -3904,8 +4103,19 @@ if (esLaLider)
 
   void OnMouseEnter()
   {
+    if (DebeIgnorarEventosOnMousePorRaycastManual())
+    {
+      return;
+    }
+
+    ProcesarMouseEnterDesdeRaycast();
+  }
+
+  public void ProcesarMouseEnterDesdeRaycast()
+  {
     if (!visiblePorVision) return;
     if (EventSystem.current.IsPointerOverGameObject()) return;
+    cursorSobreNodo = true;
     AplicarPreviewHoverCaminosPosibles();
 
     if (!revelado)
@@ -3964,6 +4174,17 @@ if (esLaLider)
 
   void OnMouseExit()
   {
+    if (DebeIgnorarEventosOnMousePorRaycastManual())
+    {
+      return;
+    }
+
+    ProcesarMouseExitDesdeRaycast();
+  }
+
+  public void ProcesarMouseExitDesdeRaycast()
+  {
+    cursorSobreNodo = false;
     RestaurarPreviewHoverCaminosPosibles();
     TooltipNodos.Instance.HideTooltip();
   }

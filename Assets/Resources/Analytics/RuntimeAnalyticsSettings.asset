@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: RuntimeAnalyticsSettings
   m_EditorClassIdentifier: 
   enableAnalytics: 1
-  disableInEditor: 1
+  disableInEditor: 0
   disableInDevelopmentBuild: 0
   logInitializationMessages: 1
+  writeEventsToFile: 1
+  logEventsToConsole: 0
+  eventLogFolderName: Metrics

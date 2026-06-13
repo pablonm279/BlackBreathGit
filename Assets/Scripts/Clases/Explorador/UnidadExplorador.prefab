@@ -849,6 +849,8 @@ MonoBehaviour:
     poseMover: {fileID: 21300000, guid: 6f0ce1770674a9b418cf2da0c723ac1c, type: 3}
     poseAtacar: {fileID: 21300000, guid: a7f0b81bd5cdeeb4693565edb78e7446, type: 3}
     poseHabilidad: {fileID: 21300000, guid: 8d28baf02f8023e4389391f9f9c21df2, type: 3}
+    poseRecibirDanio: {fileID: 0}
+    poseTurnoActivo: {fileID: 21300000, guid: ef11609ef6ce18949a56d9164c742e0e, type: 3}
   PASIVA_VistaLejana: 0
   PASIVA_Acrobatico: 0
   PASIVA_Reconocimiento: 0
@@ -869,6 +871,8 @@ MonoBehaviour:
   poseMover: {fileID: 21300000, guid: 537e298d5105b8d46ba674ff7fbf7b03, type: 3}
   poseAtacar: {fileID: 21300000, guid: 81e7f7b5ea067554ebaecc6872fe74ce, type: 3}
   poseHabilidad: {fileID: 21300000, guid: cf18b8fbad8dd7e43aa5d17c3298bf05, type: 3}
+  poseRecibirDanio: {fileID: 0}
+  poseTurnoActivo: {fileID: 21300000, guid: 5cbdaa60f45ac9243a4b3436b86f98c4, type: 3}
   duracionPoseAtacar: 1.4
   duracionPoseDanyo: 0.4
   duracionPoseHabilidad: 1.35

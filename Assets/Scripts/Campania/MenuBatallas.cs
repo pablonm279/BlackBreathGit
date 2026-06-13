@@ -48,6 +48,9 @@ public class MenuBatallas : MonoBehaviour
 {
  const string TooltipPersonajeHeridoId = "campania_personaje_herido";
  const string TooltipPersonajeCorruptoId = "campania_personaje_corrupto";
+ const string ItemRewardNombre = "ItemRecomp";
+
+ GameObject itemReward;
  static readonly TipoEstadoCaravana[] EstadosNegativosDerrotaBatalla =
  {
     TipoEstadoCaravana.Acobardados,
@@ -904,11 +907,16 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
     SincronizarOrdenRefuerzosCaravana();
  }
 
+ bool DebeUsarListaRefuerzosAliados()
+ {
+    return esBatallaFinal
+      || (UIEmpezarBatallaACaravana != null && UIEmpezarBatallaACaravana.activeInHierarchy);
+ }
+
  public bool PuedeReordenarRefuerzoCaravana(btnPersonaje btn)
  {
     return btn != null
-      && UIEmpezarBatallaACaravana != null
-      && UIEmpezarBatallaACaravana.activeInHierarchy
+      && DebeUsarListaRefuerzosAliados()
       && contenedorUIPersonajesFuera != null
       && btn.transform.parent == contenedorUIPersonajesFuera.transform;
  }
@@ -1178,7 +1186,7 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
     LimpiarContenedor(contenedorUIPersonajes);
     LimpiarContenedor(contenedorUIPersonajesFuera);
 
-        if (UIEmpezarBatallaACaravana != null && UIEmpezarBatallaACaravana.activeInHierarchy)
+        if (DebeUsarListaRefuerzosAliados())
         {
             PoblarListaAtaqueCaravana();
         }
@@ -2001,6 +2009,7 @@ public void DejanEnListaParticipantesSolo()
             EventoBatallaID = n;
         }
 
+        ReiniciarOrdenRefuerzosCaravana();
         ActualizarLista();
     }
     public void EventoBatallaCaravana(int n, int esEmboscada = 3/*3 es Ataque a Caravana*/)
@@ -2283,6 +2292,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
 {
    UIEmpezarBatalla.SetActive(false);
    UITerminarBatalla.SetActive(true);
+   LimpiarItemReward();
    ActualizarVisibilidadListasBatalla();
    transicionJefeZonaPendiente = false;
    tooltipPersonajeHeridoPendiente = false;
@@ -2375,6 +2385,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
             {
                 Item recompensa = CampaignManager.Instance.scMenuSequito.Sequito003Mercaderes.GetComponent<SequitoMercaderes>().ObtenerItemAlAzar();
                 CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(recompensa.gameObject);
+                MostrarItemReward(recompensa);
                 txtRecompensa.text += TRADU.i.Traducir("\n\n- Has encontrado un objeto de recompensa: ") + TRADU.i.Traducir(recompensa.sNombreItem) + ".";
 
             }
@@ -2411,6 +2422,87 @@ public void EfectosDeBatallaEnCampaña(int resultado)
             EventoBatallaID = 0;
             esBatallaFinal = false;
 }
+
+ void LimpiarItemReward()
+ {
+    GameObject itemRewardGO = ObtenerItemReward();
+    if (itemRewardGO == null)
+    {
+       return;
+    }
+
+    foreach (Transform hijo in itemRewardGO.transform)
+    {
+       Destroy(hijo.gameObject);
+    }
+
+    itemRewardGO.SetActive(false);
+ }
+
+ void MostrarItemReward(Item item)
+ {
+    GameObject itemRewardGO = ObtenerItemReward();
+    if (item == null || itemRewardGO == null)
+    {
+       return;
+    }
+
+    MenuPersonajes menuPersonajes = CampaignManager.Instance != null ? CampaignManager.Instance.scMenuPersonajes : null;
+    Equipo equipo = menuPersonajes != null ? menuPersonajes.scEquipo : null;
+    if (equipo == null || equipo.prefabNtnInventario == null)
+    {
+       return;
+    }
+
+    itemRewardGO.SetActive(true);
+    GameObject btnItem = Instantiate(equipo.prefabNtnInventario, itemRewardGO.transform);
+    btnItemInventario scBtnItem = btnItem.GetComponent<btnItemInventario>();
+    if (scBtnItem == null)
+    {
+       return;
+    }
+
+    scBtnItem.imageMuestraItem.sprite = item.imItem;
+    scBtnItem.itemRepresentado = item;
+    scBtnItem.scMenuPersonajes = menuPersonajes;
+    scBtnItem.SetOscurecido(false);
+ }
+
+ GameObject ObtenerItemReward()
+ {
+    if (itemReward != null)
+    {
+       return itemReward;
+    }
+
+    if (UITerminarBatalla == null)
+    {
+       return null;
+    }
+
+    Transform itemRewardTransform = BuscarHijoPorNombre(UITerminarBatalla.transform, ItemRewardNombre);
+    itemReward = itemRewardTransform != null ? itemRewardTransform.gameObject : null;
+    return itemReward;
+ }
+
+ Transform BuscarHijoPorNombre(Transform raiz, string nombre)
+ {
+    foreach (Transform hijo in raiz)
+    {
+       if (hijo.name == nombre)
+       {
+          return hijo;
+       }
+
+       Transform encontrado = BuscarHijoPorNombre(hijo, nombre);
+       if (encontrado != null)
+       {
+          return encontrado;
+       }
+    }
+
+    return null;
+ }
 
  void DarExperiencia(int cant)
  {
@@ -2717,6 +2809,11 @@ public void EfectosDeBatallaEnCampaña(int resultado)
             }
         }
 
+        ConfirmarOrdenRefuerzosCaravanaDesdeUI();
+        scAdministradorEscenas.OrdenRefuerzosAliadosCaravana = ObtenerOrdenRefuerzosAliadosCaravana();
+    }
+    else if (esBatallaFinal)
+    {
         ConfirmarOrdenRefuerzosCaravanaDesdeUI();
         scAdministradorEscenas.OrdenRefuerzosAliadosCaravana = ObtenerOrdenRefuerzosAliadosCaravana();
     }

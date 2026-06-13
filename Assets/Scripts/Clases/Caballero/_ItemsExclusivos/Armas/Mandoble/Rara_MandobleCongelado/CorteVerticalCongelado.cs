@@ -195,6 +195,7 @@ public class CorteVerticalCongelado : Habilidad
 
         float danioFrio = TiradaDeDados.TirarDados(1, 5); //1d5 de da�o fr�o
         objetivo.RecibirDanio(danioFrio, 5, false, scEstaUnidad);
+        VFXAplicar(objetivo.gameObject);
 
 
 
@@ -215,6 +216,7 @@ public class CorteVerticalCongelado : Habilidad
 
         float danioFrio = TiradaDeDados.TirarDados(1, 10); //1d10 de da�o fr�o
         objetivo.RecibirDanio(danioFrio, 5, false, scEstaUnidad);
+        VFXAplicar(objetivo.gameObject);
 
 
 
@@ -230,6 +232,7 @@ public class CorteVerticalCongelado : Habilidad
 
         float danioFrio = TiradaDeDados.TirarDados(1, 10); //1d10 de da�o fr�o
         objetivo.RecibirDanio(danioFrio, 5, true, scEstaUnidad);
+        VFXAplicar(objetivo.gameObject);
 
         foreach (Casilla cas in objetivo.CasillaPosicion.ObtenerCasillasAlrededor(1))
         {
@@ -269,8 +272,14 @@ public class CorteVerticalCongelado : Habilidad
     
     void VFXAplicar(GameObject objetivo)
     {
-       //GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation); 
+      VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_CorteVertical");
+      if (VFXenObjetivo == null || objetivo == null) { return; }
 
+      GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation);
+      vfx.transform.parent = objetivo.transform;
+
+      Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+      RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, objetivo.transform, 500);
     }
     bool ChequearTieneSiguesTu(Unidad obj)
     { 

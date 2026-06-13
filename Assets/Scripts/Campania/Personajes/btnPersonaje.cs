@@ -9,6 +9,7 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 {
   public Personaje personajeRepresentado;
   RefuerzoAliadoCaravanaOrdenItem refuerzoCaravanaRepresentado;
+  SequitoCuranderos sequitoCuranderosTratamiento;
 
   public TextMeshProUGUI txtPersonajeRepresentado;
   [SerializeField] private Image retratoRepresenta;
@@ -40,6 +41,13 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     if (personajeRepresentado == null)
     {
+      return;
+    }
+
+    if (sequitoCuranderosTratamiento != null)
+    {
+      sequitoCuranderosTratamiento.TratarHerida(personajeRepresentado);
+      representarVida();
       return;
     }
 
@@ -128,6 +136,15 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
   public void Configurar(Personaje personaje)
   {
     refuerzoCaravanaRepresentado = null;
+    sequitoCuranderosTratamiento = null;
+    personajeRepresentado = personaje;
+    RepresentarTodo();
+  }
+
+  public void ConfigurarParaCuranderos(Personaje personaje, SequitoCuranderos curanderos)
+  {
+    refuerzoCaravanaRepresentado = null;
+    sequitoCuranderosTratamiento = curanderos;
     personajeRepresentado = personaje;
     RepresentarTodo();
   }
@@ -135,6 +152,7 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
   public void ConfigurarRefuerzoCaravana(RefuerzoAliadoCaravanaOrdenItem refuerzo)
   {
     refuerzoCaravanaRepresentado = refuerzo;
+    sequitoCuranderosTratamiento = null;
     personajeRepresentado = refuerzo != null ? refuerzo.personaje : null;
     RepresentarTodo();
   }

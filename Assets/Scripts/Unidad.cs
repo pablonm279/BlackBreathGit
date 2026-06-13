@@ -8,7 +8,6 @@ using System.Diagnostics;
 using TMPro;
 using System.Threading.Tasks;
 using System.Transactions;
-using UnityEngine.Analytics;
 using System.Linq;
 using System.Reflection;
 
@@ -685,8 +684,13 @@ public class Unidad : MonoBehaviour
   public GameObject goSANGRE;
 
 
-  public void ReproducirAnimacionRecibirDanio()
+  public void ReproducirAnimacionRecibirDanio(bool usarPoseRecibirDanio = false)
   {
+    if (usarPoseRecibirDanio && poseController != null)
+    {
+      poseController.PlayDamagePose();
+    }
+
     if (animator != null)
     {
       animator.SetTrigger("Trigger_Recibedanio");
@@ -2687,6 +2691,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     float danioFinal = 0;
     bool textoDanioMostrado = false;
     bool absorbioPorArmadura = false;
+    bool usarPoseRecibirDanio = DebeUsarPoseRecibirDanioPorHabilidadEnemiga(uCausante);
     UnidadCombatFeedbackFx combatFeedbackFx = GetComponent<UnidadCombatFeedbackFx>();
     string nombreLog = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;
     if (estado_invulnerable == 0)
@@ -2898,7 +2903,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       //----
       if (danioFinal > 0)
       {
-        ReproducirAnimacionRecibirDanio();
+        ReproducirAnimacionRecibirDanio(usarPoseRecibirDanio);
         combatFeedbackFx?.PlayDamageImpact(colorDanio, esCritico, tipoDanio);
         ChequearCorrompidoVsCorrupto(uCausante, danioFinal);
         BajarVuelo();
@@ -3217,6 +3222,27 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       { GenerarTextoFlotante( TRADU.i.Traducir("Invulnerable"), Color.gray, FloatingTextContext.Resist); }
 
     }
+  }
+
+  bool DebeUsarPoseRecibirDanioPorHabilidadEnemiga(Unidad uCausante)
+  {
+    BattleManager battleManager = BattleManager.Instance;
+    if (poseController == null || uCausante == null || battleManager == null)
+    {
+      return false;
+    }
+
+    if (battleManager.unidadActiva != uCausante || uCausante.GetComponent<IAUnidad>() == null || GetComponent<IAUnidad>() != null)
+    {
+      return false;
+    }
+
+    if (CasillaPosicion == null || uCausante.CasillaPosicion == null)
+    {
+      return false;
+    }
+
+    return CasillaPosicion.lado != uCausante.CasillaPosicion.lado;
   }
 
   void IntentarAplicarDebuffsImpactoArma(Unidad uCausante, int tipoDanio, ref int danioTotal)
@@ -5062,6 +5088,8 @@ public void OnMouseOver()
       return;
     }
 
+    ActualizarVisualObjetivoHover();
+
     if(scBattleManager.SeleccionandoObjetivo)
     {
        CasillaPosicion.OnMouseOver();
@@ -5081,11 +5109,11 @@ public void OnMouseExit()
     }
 
       if(scBattleManager.SeleccionandoObjetivo)
-     {
+      {
         CasillaPosicion.OnMouseExit();
-        LimpiarVisualObjetivoHover();
+      }
 
-     }
+      LimpiarVisualObjetivoHover();
 }
 public async void OnMouseDown() 
 {
@@ -5422,13 +5450,17 @@ public async void OnMouseDown()
     Sprite poseMoverBase = poseCtrl.ObtenerPoseMoverBase() != null ? poseCtrl.ObtenerPoseMoverBase() : poseIdleBase;
     Sprite poseAtacarBase = poseCtrl.ObtenerPoseAtacarBase() != null ? poseCtrl.ObtenerPoseAtacarBase() : poseIdleBase;
     Sprite poseHabilidadBase = poseCtrl.ObtenerPoseHabilidadBase() != null ? poseCtrl.ObtenerPoseHabilidadBase() : poseIdleBase;
+    Sprite poseRecibirDanioBase = poseCtrl.ObtenerPoseRecibirDanioBase();
+    Sprite poseTurnoActivoBase = poseCtrl.ObtenerPoseTurnoActivoBase();
 
     Sprite poseIdle = aparienciaElegida.poseIdle != null ? aparienciaElegida.poseIdle : poseIdleBase;
     Sprite poseMover = aparienciaElegida.poseMover != null ? aparienciaElegida.poseMover : poseMoverBase;
     Sprite poseAtacar = aparienciaElegida.poseAtacar != null ? aparienciaElegida.poseAtacar : poseAtacarBase;
     Sprite poseHabilidad = aparienciaElegida.poseHabilidad != null ? aparienciaElegida.poseHabilidad : poseHabilidadBase;
+    Sprite poseRecibirDanio = aparienciaElegida.poseRecibirDanio != null ? aparienciaElegida.poseRecibirDanio : poseRecibirDanioBase;
+    Sprite poseTurnoActivo = aparienciaElegida.poseTurnoActivo != null ? aparienciaElegida.poseTurnoActivo : poseTurnoActivoBase;
 
-    poseCtrl.ConfigurarPoses(poseIdle, poseMover, poseAtacar, poseHabilidad);
+    poseCtrl.ConfigurarPoses(poseIdle, poseMover, poseAtacar, poseHabilidad, poseRecibirDanio, poseTurnoActivo);
   }
 
   protected int ObtenerCantidadAparienciasAlternativasDesdeLista(List<AparienciaAlternativaUnidad> aparienciasAlternativas)
