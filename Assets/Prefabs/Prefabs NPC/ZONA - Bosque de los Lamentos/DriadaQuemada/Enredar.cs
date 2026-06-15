@@ -14,7 +14,7 @@ public class Enredar : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano
 
 
     
@@ -57,7 +57,7 @@ public class Enredar : IAHabilidad
    {
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
      
-      scEstaUnidad.ReproducirAnimacionAtaque();
+     // scEstaUnidad.ReproducirAnimacionAtaque();
 
       Objetivo = EstablecerObjetivoPrioritario();
            PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
@@ -86,10 +86,10 @@ public class Enredar : IAHabilidad
          if(objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 12)&& objetivo.estado_inmovil < 1)
           {
             /////////////////////////////////////////////
-            //BUFF ---- Así se aplica un buff/debuff
+            //BUFF ---- Asï¿½ se aplica un buff/debuff
             Buff buff = new Buff();
             buff.buffNombre = "Enredadera Ardiente";
-            buff.buffDescr = "Inmóvil, Melee solo adyacente.";
+            buff.buffDescr = "Inmï¿½vil, Melee solo adyacente.";
             buff.boolfDebufftBuff = false;
             buff.DuracionBuffRondas = 2;
             buff.cantAPMax -= 1;
@@ -105,7 +105,7 @@ public class Enredar : IAHabilidad
             RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, objetivo.transform, 5);
             //---
 
-            // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+            // Agrega el componente Buff al objeto objetivo y asigna la configuraciï¿½n del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
             objetivo.estado_inmovil = buff.DuracionBuffRondas;
@@ -126,16 +126,16 @@ public class Enredar : IAHabilidad
     }
 
    
-    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
+    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lï¿½gica
    {
     
-    // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+    // Obtener la unidad duea
+    Unidad unidadDuea = gameObject.GetComponent<Unidad>();
+    if (unidadDuea == null) return null;
   
     var unidades = objPosibles.OfType<Unidad>().ToList();
   
-  // Remover las unidades inmóviles recorriendo de atrás hacia adelante
+  // Remover las unidades inmviles recorriendo de atrs hacia adelante
     for (int i = unidades.Count - 1; i >= 0; i--)
     {
       if (unidades[i].estado_inmovil > 0)
@@ -146,7 +146,7 @@ public class Enredar : IAHabilidad
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderBy(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDuea.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la ultima (la mas cercana)

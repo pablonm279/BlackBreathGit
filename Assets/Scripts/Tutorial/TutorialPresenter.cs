@@ -34,7 +34,7 @@ public class TutorialPresenter : MonoBehaviour
   [SerializeField] private Button muteButton;
   [SerializeField] private Button replayButton;
   [SerializeField] private AudioSource narratorAudioSource;
-  [SerializeField, Min(0f)] private float narratorVolumeMultiplier = 2.5f;
+  [SerializeField, Min(0f)] private float narratorVolumeMultiplier = 2.875f;
   [SerializeField] private Graphic muteStateGraphic;
   [SerializeField] private Color muteColor = new Color(0.55f, 0.55f, 0.55f, 1f);
   [SerializeField] private Color unmuteColor = Color.white;

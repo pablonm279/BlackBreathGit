@@ -34,7 +34,7 @@ public class EcosDivinos : Trampa
       if (objetivo.CasillaPosicion.lado == unidadCreadora.CasillaPosicion.lado) //Aliados
       {
 
-        int rand = UnityEngine.Random.Range(1, 11);
+        int rand = UnityEngine.Random.Range(1, 11)+3;
         if (NIVEL > 1) { rand += 2; }
         if (NIVEL > 2) { rand += 2; }
         if (NIVEL == 4) { rand += 5; }
@@ -46,7 +46,7 @@ public class EcosDivinos : Trampa
       }
       else //Enemigos
       {
-        int rand = UnityEngine.Random.Range(1, 11);
+        int rand = UnityEngine.Random.Range(1, 11)+3;
         if (NIVEL > 1) { rand += 2; }
         if (NIVEL > 2) { rand += 2; }
         if (NIVEL == 5) { rand += 5; }

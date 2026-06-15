@@ -215,7 +215,7 @@ namespace Sistema
       u.mod_TSMental = Ajuste(u.mod_TSMental, a.tsAllPct, a.tsAllFlat);
 
       // Daño % global
-      u.mod_DanioPorcentaje = Ajuste(u.mod_DanioPorcentaje, a.danioPorcPct, a.danioPorcFlat);
+      u.mod_DanioPorcentaje = ((100f + u.mod_DanioPorcentaje) * (1f + a.danioPorcPct / 100f) + a.danioPorcFlat) - 100f;
     }
 
     public void EstablecerDificultadCombate(int nivel)

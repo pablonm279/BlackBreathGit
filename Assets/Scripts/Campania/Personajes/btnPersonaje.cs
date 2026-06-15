@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
-public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
   public Personaje personajeRepresentado;
   RefuerzoAliadoCaravanaOrdenItem refuerzoCaravanaRepresentado;
@@ -23,10 +23,13 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
   [SerializeField] private GameObject indicadorSeleccionado;
   bool arrastrandoRefuerzoCaravana;
   int ultimoFrameArrastre = -1000;
+  bool abreMenuPersonajesAlHover;
+  bool reenvioArrastreConfigurado;
 
   private void Awake()
   {
     AsegurarReferencias();
+    ConfigurarReenvioArrastreDesdeEventTriggers();
   }
 
 
@@ -132,6 +135,42 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     }
   }
 
+  private void ConfigurarReenvioArrastreDesdeEventTriggers()
+  {
+    if (reenvioArrastreConfigurado)
+    {
+      return;
+    }
+
+    reenvioArrastreConfigurado = true;
+    EventTrigger[] triggers = GetComponentsInChildren<EventTrigger>(true);
+    foreach (EventTrigger trigger in triggers)
+    {
+      if (trigger == null || trigger.gameObject == gameObject)
+      {
+        continue;
+      }
+
+      AgregarReenvioArrastre(trigger, EventTriggerType.BeginDrag, OnBeginDrag);
+      AgregarReenvioArrastre(trigger, EventTriggerType.Drag, OnDrag);
+      AgregarReenvioArrastre(trigger, EventTriggerType.EndDrag, OnEndDrag);
+    }
+  }
+
+  private static void AgregarReenvioArrastre(EventTrigger trigger, EventTriggerType tipo, System.Action<PointerEventData> accion)
+  {
+    EventTrigger.Entry entry = new EventTrigger.Entry { eventID = tipo };
+    entry.callback.AddListener(data =>
+    {
+      PointerEventData pointerData = data as PointerEventData;
+      if (pointerData != null)
+      {
+        accion(pointerData);
+      }
+    });
+    trigger.triggers.Add(entry);
+  }
+
   public Image vidaRepresenta;
   public void Configurar(Personaje personaje)
   {
@@ -139,6 +178,31 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     sequitoCuranderosTratamiento = null;
     personajeRepresentado = personaje;
     RepresentarTodo();
+  }
+
+  public void ConfigurarHoverMenuPersonajesCampania(bool habilitado)
+  {
+    abreMenuPersonajesAlHover = habilitado;
+  }
+
+  public void OnPointerEnter(PointerEventData eventData)
+  {
+    if (!abreMenuPersonajesAlHover || personajeRepresentado == null || CampaignManager.Instance == null || CampaignManager.Instance.scMenuCaravana == null)
+    {
+      return;
+    }
+
+    CampaignManager.Instance.scMenuCaravana.AbrirMenuPersonajesPorHover(personajeRepresentado);
+  }
+
+  public void OnPointerExit(PointerEventData eventData)
+  {
+    if (!abreMenuPersonajesAlHover || personajeRepresentado == null || CampaignManager.Instance == null || CampaignManager.Instance.scMenuCaravana == null)
+    {
+      return;
+    }
+
+    CampaignManager.Instance.scMenuCaravana.CerrarMenuPersonajesPorHover(personajeRepresentado);
   }
 
   public void ConfigurarParaCuranderos(Personaje personaje, SequitoCuranderos curanderos)
@@ -261,17 +325,19 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
       if (personajeRepresentado != null)
       {
         txtPersonajeRepresentado.gameObject.SetActive(true);
+        string nombreClase = ObtenerNombreClaseTraducido(personajeRepresentado);
+        string prefijoClase = string.IsNullOrEmpty(nombreClase) ? "" : nombreClase + " ";
         if (TRADU.i.nIdioma == 1) //Español
         {
-          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>Nv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
+          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>" + prefijoClase + "Nv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
         }
         if (TRADU.i.nIdioma == 2) //Inglés
         {
-          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>Lv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
+          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>" + prefijoClase + "Lv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
         }
          if (TRADU.i.nIdioma == 3) //Poertu
         {
-          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>Nv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
+          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>" + prefijoClase + "Nv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
         }
 
 
@@ -494,6 +560,33 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
       ? CampaignManager.Instance.scMenuBatallas.contenedorUIPersonajesFuera.transform
       : null;
     return contenedorBatallaFuera != null && parent == contenedorBatallaFuera;
+  }
+
+  private string ObtenerNombreClaseTraducido(Personaje personaje)
+  {
+    if (personaje == null)
+    {
+      return "";
+    }
+
+    string nombreClase = ObtenerNombreClaseBase(personaje.IDClase);
+    return string.IsNullOrEmpty(nombreClase) || TRADU.i == null
+      ? nombreClase
+      : TRADU.i.Traducir(nombreClase);
+  }
+
+  private string ObtenerNombreClaseBase(int idClase)
+  {
+    switch (idClase)
+    {
+      case 1: return "Caballero";
+      case 2: return "Explorador";
+      case 3: return "Purificadora";
+      case 4: return "Acechador";
+      case 5: return "Canalizador";
+      case 6: return "Duelista";
+      default: return "";
+    }
   }
 
   private void AsegurarReferencias()

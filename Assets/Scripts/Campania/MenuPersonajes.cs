@@ -298,6 +298,7 @@ public class MenuPersonajes : MonoBehaviour
         if (btn != null)
         {
           btn.personajeRepresentado = pers;
+          btn.ConfigurarHoverMenuPersonajesCampania(true);
         }
       }
 

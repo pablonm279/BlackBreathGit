@@ -7,11 +7,11 @@ public class IAOracionKadryn : IAHabilidad
 {
   [SerializeField] public int pPrioridad;
 
-  private const int CantidadTrampas = 5;
+  private const int CantidadTrampas = 4;
 
   void Awake()
   {
-    nombre = "Oración de Kadryn";
+    nombre = "OraciÃ³n de Kadryn";
     Usuario = gameObject;
     scEstaUnidad = Usuario.GetComponent<Unidad>();
     hAncho = 1;

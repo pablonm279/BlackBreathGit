@@ -318,18 +318,18 @@ MonoBehaviour:
     narratorAudio: {fileID: 0}
     narratorAudioIngles: {fileID: 8300000, guid: 05f6c4a3e5e38a4418a44d300d51b2fe, type: 3}
     narratorAudioPortugues: {fileID: 0}
-    targetId: tut_personajes1
+    targetId: tut_personajesatr
     presentationMode: 0
     panelAnchor: 6
     panelOffset: {x: 0, y: 0}
-    compactPanelSize: {x: 575, y: 550}
+    compactPanelSize: {x: 610, y: 530}
     showPointer: 0
     showHighlight: 0
     pointerDirection: 3
     pointerOffset: {x: 0, y: 55}
     pointerScale: 0.85
     highlightScale: 1
-    highlightScaleXY: {x: 0.9, y: 1.4}
+    highlightScaleXY: {x: 1.5, y: 1.5}
     advanceMode: 1
     inputBlockMode: 0
     showNextButton: 0
@@ -363,7 +363,7 @@ MonoBehaviour:
     pointerOffset: {x: 0, y: 55}
     pointerScale: 0.85
     highlightScale: 1
-    highlightScaleXY: {x: 2.5, y: 2.5}
+    highlightScaleXY: {x: 3.2, y: 2.2}
     advanceMode: 1
     inputBlockMode: 1
     showNextButton: 0
@@ -470,7 +470,7 @@ MonoBehaviour:
     narratorKey: tutorial.abrirmejoras.narrator
     bodyKey: tutorial.abrirmejoras.body
     narratorAudio: {fileID: 0}
-    narratorAudioIngles: {fileID: 8300000, guid: 1f7ef5a699803d94cb6f9fd89e331daf, type: 3}
+    narratorAudioIngles: {fileID: 0}
     narratorAudioPortugues: {fileID: 0}
     targetId: tut_mejorascaravana
     presentationMode: 1
@@ -933,7 +933,7 @@ MonoBehaviour:
     highlightScale: 0.7
     highlightScaleXY: {x: 1, y: 1}
     advanceMode: 1
-    inputBlockMode: 2
+    inputBlockMode: 0
     showNextButton: 0
     canGoBack: 0
     canSkip: 0

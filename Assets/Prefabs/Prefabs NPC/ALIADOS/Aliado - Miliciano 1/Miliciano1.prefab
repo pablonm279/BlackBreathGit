@@ -675,7 +675,7 @@ MonoBehaviour:
   valorCargando: 0
   uRetrato: {fileID: 21300000, guid: acf00c261d8f2c34da225bca29e4e652, type: 3}
   uImage: {fileID: 7996714464312373375}
-  uNombre: Miliciano
+  uNombre: Lancero
   tags:
   - Humanoide
   at_iniciativa: 1
@@ -1206,9 +1206,18 @@ MonoBehaviour:
   poseMover: {fileID: 21300000, guid: 59d205eaf48ecd743ac73898eb47c91b, type: 3}
   poseAtacar: {fileID: 21300000, guid: 9318cb34185f1cf4aa011b8c796693d6, type: 3}
   poseHabilidad: {fileID: 21300000, guid: 9318cb34185f1cf4aa011b8c796693d6, type: 3}
+  poseRecibirDanio: {fileID: 0}
+  poseTurnoActivo: {fileID: 0}
   duracionPoseAtacar: 1
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1
+  meleeFraccionImpacto: 0.35
+  meleePreImpactoFallback: 0.22
+  meleePreImpactoMin: 0.08
+  meleePreImpactoMax: 0.42
+  meleePostImpacto: 0.16
+  meleePostImpactoMin: 0.05
+  meleePostImpactoMax: 0.3
 --- !u!1 &7062342823671644620
 GameObject:
   m_ObjectHideFlags: 0

@@ -22,6 +22,34 @@ public class MarcaMarcarPresa : Marca
 
    }
 
+   public static bool AplicarBonosContraMarca(Unidad objetivo, Unidad atacante, ref int bonusAtaque, ref float criticoRango, ref int danioMarca)
+   {
+    MarcaMarcarPresa marca = objetivo != null ? objetivo.GetComponent<MarcaMarcarPresa>() : null;
+    if (marca == null || marca.quienMarco != atacante)
+    {
+        return false;
+    }
+
+    bonusAtaque += 4;
+    criticoRango += 1;
+    danioMarca += 15;
+
+    if (marca.NIVEL > 1)
+    {
+        danioMarca += 5;
+    }
+    if (marca.NIVEL > 2)
+    {
+        criticoRango += 1;
+    }
+    if (marca.NIVEL == 4)
+    {
+        bonusAtaque -= 2;
+    }
+
+    return true;
+   }
+
 }
 
 

@@ -325,7 +325,7 @@ public class EventosAdmin : MonoBehaviour
                 txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Fortaleza DC 10. Si la supera, rescatará 6-10 Civiles y ganará 30 Experiencia. Si falla, obtendrá Enfermo por 3 días.</color>\n\n");
             }
 
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides sellar la entrada y seguir, -4 Esperanza.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides sellar la entrada y seguir, -12 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Entrar");
             textBotonB.text = TRADU.i.Traducir("Sellarla");
@@ -350,7 +350,7 @@ public class EventosAdmin : MonoBehaviour
                 txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Mental DC 12. Si la supera, ganará 35 Experiencia y +4 Esperanza. Si falla, obtendrá Baja Moral por 3 días y la Caravana perderá 5 Esperanza.</color>\n\n");
             }
 
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides imponer silencio por la fuerza, -3 Esperanza.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides imponer silencio por la fuerza, -9 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Hablar");
             textBotonB.text = TRADU.i.Traducir("Imponer silencio");
@@ -862,13 +862,13 @@ public class EventosAdmin : MonoBehaviour
             if (participanteEvento1 != null)
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b>: TS Mental DC ") + DificultadPulsoDeMando + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si supera la tirada, ganará 30 Experiencia y la Caravana obtendrá +6 Esperanza. Si falla, la Caravana perderá 2 Esperanza.</color>\n\n");
+                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b>: TS Mental DC ") + DificultadPulsoDeMando + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento1) + TraducirPulsoDeMandoFallo();
             }
 
             if (participanteEvento2 != null)
             {
                 retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-<b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b>: TS Mental DC ") + DificultadPulsoDeMando + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento2) + TRADU.i.Traducir(").</i> Si supera la tirada, ganará 30 Experiencia y la Caravana obtendrá +6 Esperanza. Si falla, la Caravana perderá 2 Esperanza.</color>\n\n");
+                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-<b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b>: TS Mental DC ") + DificultadPulsoDeMando + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento2) + TraducirPulsoDeMandoFallo();
                 textBotonA.text = participanteEvento1 != null ? participanteEvento1.sNombre : TRADU.i.Traducir("Héroe 1");
                 textBotonB.text = participanteEvento2.sNombre;
             }
@@ -924,7 +924,7 @@ public class EventosAdmin : MonoBehaviour
                 txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si lo intentas, hará una Tirada de Salvación: TS Reflejos DC 13. Si la supera, se revelarán nodos cercanos, ganará 35 Experiencia y la Caravana obtendrá +4 Esperanza. Si falla, obtendrá Herida.</color>\n\n");
             }
 
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides dejarla ir, -4 Esperanza.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides dejarla ir, -10 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Recuperarla");
             textBotonB.text = TRADU.i.Traducir("Dejarla ir");
@@ -1328,7 +1328,7 @@ public class EventosAdmin : MonoBehaviour
             txtDescripcion.text = TRADU.i.Traducir("Al amanecer encuentran huellas frescas marcando un círculo incompleto alrededor del campamento.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("No parece un ataque fallido. Más bien un mensaje. Puedes revisar bien el perímetro o mantener la calma y evitar que el rumor corra entre los Civiles.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides revisar, partirán más tarde. +1 Avance Aliento Negro.</color>\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides mantener la calma, los rumores igual harán mella. -3 Esperanza.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides mantener la calma, los rumores igual harán mella. -9 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Revisar");
             textBotonB.text = TRADU.i.Traducir("Mantener la calma");
@@ -1930,7 +1930,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("Lo que empieza como murmullo termina recorriendo el campamento entero: cansancio, dudas, comparaciones con dias mejores. No hay gritos ni desbande, solo una erosion lenta del ánimo.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si dejas que se descarguen, la Caravana obtendrá 1 estado positivo aleatorio.</color>\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si cortas la charla y apagas el fuego, la Caravana perdera 3 Esperanza.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si cortas la charla y apagas el fuego, la Caravana perdera 9 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Escucharlas");
             textBotonB.text = TRADU.i.Traducir("Cortarlas");
@@ -2239,6 +2239,14 @@ public class EventosAdmin : MonoBehaviour
         }
 
         return Mathf.Min(inicioNegativo, inicioPositivo);
+    }
+
+    string TraducirPulsoDeMandoFallo()
+    {
+        return TRADU.i.Traducir(").</i> Si supera la tirada, ganará 30 Experiencia y la Caravana obtendrá +6 Esperanza. Si falla, la Caravana perderá 2 Esperanza.</color>\n\n")
+            .Replace("perderá 2 Esperanza", "perderá 6 Esperanza")
+            .Replace("loses 2 Hope", "loses 6 Hope")
+            .Replace("perderá 2 Esperança", "perderá 6 Esperança");
     }
 
     Personaje participanteEvento1;
@@ -2850,7 +2858,7 @@ public class EventosAdmin : MonoBehaviour
             }
             else
             {
-                CampaignManager.Instance.CambiarEsperanzaActual(-2);
+                CampaignManager.Instance.CambiarEsperanzaActual(-6);
             }
             gameObject.SetActive(false);
         }
@@ -3311,12 +3319,12 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 12)
         {
-            CampaignManager.Instance.CambiarEsperanzaActual(-4);
+            CampaignManager.Instance.CambiarEsperanzaActual(-12);
             gameObject.SetActive(false);
         }
         if (eventoActual == 13)
         {
-            CampaignManager.Instance.CambiarEsperanzaActual(-3);
+            CampaignManager.Instance.CambiarEsperanzaActual(-9);
             gameObject.SetActive(false);
         }
         if (eventoActual == 14)
@@ -3553,7 +3561,7 @@ public class EventosAdmin : MonoBehaviour
                 }
                 else
                 {
-                    CampaignManager.Instance.CambiarEsperanzaActual(-2);
+                    CampaignManager.Instance.CambiarEsperanzaActual(-6);
                 }
             }
             else
@@ -3570,7 +3578,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 214)
         {
-            CampaignManager.Instance.CambiarEsperanzaActual(-4);
+            CampaignManager.Instance.CambiarEsperanzaActual(-10);
             gameObject.SetActive(false);
         }
         if (eventoActual == 215)
@@ -3830,7 +3838,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 112)
         {
-            CampaignManager.Instance.CambiarEsperanzaActual(-3);
+            CampaignManager.Instance.CambiarEsperanzaActual(-9);
             gameObject.SetActive(false);
         }
         if (eventoActual == 111)
@@ -3975,7 +3983,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 121)
         {
-            CampaignManager.Instance.CambiarEsperanzaActual(-3);
+            CampaignManager.Instance.CambiarEsperanzaActual(-9);
             gameObject.SetActive(false);
         }
         if (eventoActual == 122)

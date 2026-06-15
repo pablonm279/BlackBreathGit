@@ -166,11 +166,12 @@ public class TiroconArcoAcido : Habilidad
 
        await BattleManager.DelayCombateAsync(1300);
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
+       int bonusAtaqueTotal = bonusAtaque;
        
        //Chequear si tiene Marcar Presa
        if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para pas habilidades dedel explorador
        {
-         bonusAtaque += 4;
+         bonusAtaqueTotal += 4;
          criticoRango += 1;
          danioMarca += 15; //Esto se suma al porcentaje de do solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % do cr
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
@@ -178,11 +179,11 @@ public class TiroconArcoAcido : Habilidad
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 2)
          {  criticoRango += 1;  }
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL == 4)
-         {  bonusAtaque -= 2;  } //NV 4 Quita el debuff al marcar, entonces se resta los 2 que se ponia como compensacion
+         {  bonusAtaqueTotal -= 2;  } //NV 4 Quita el debuff al marcar, entonces se resta los 2 que se ponia como compensacion
        }
        //----
 
-       int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarAgilidad, bonusAtaque, criticoRango, objetivo, 0);
+       int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarAgilidad, bonusAtaqueTotal, criticoRango, objetivo, 0);
 
 
       if (resultadoTirada == -1)

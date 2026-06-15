@@ -736,8 +736,8 @@ MonoBehaviour:
   mod_CarPoder: 4
   at_Armadura: 6
   mod_Armadura: 6
-  at_ResFuego: -4
-  mod_ResFuego: -4
+  at_ResFuego: -6
+  mod_ResFuego: -6
   at_ResHielo: 0
   mod_ResHielo: 0
   at_ResRayo: 2

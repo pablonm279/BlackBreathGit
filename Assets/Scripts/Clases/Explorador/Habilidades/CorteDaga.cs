@@ -144,10 +144,11 @@ public class CorteDaga : Habilidad
 
 
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
+       int bonusAtaqueTotal = bonusAtaque;
        //Chequear si tiene Marcar Presa
        if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para pr�ximas habilidades de da�o del explorador
        {
-         bonusAtaque += 4;
+         bonusAtaqueTotal += 4;
          criticoRango += 1;
          danioMarca += 15; //Esto se suma al porcentaje de da�o solamente al ser golpe critico, ver mas abajo. Ya que esta amrca agrega % da�o cr�tico.
 
@@ -156,11 +157,11 @@ public class CorteDaga : Habilidad
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 2)
          {  criticoRango += 1;  }
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL == 4)
-         {  bonusAtaque -= 2;  } //NV 4 Quita el debuff al marcar, entonces se resta los 2 que se ponia como compensacion
+         {  bonusAtaqueTotal -= 2;  } //NV 4 Quita el debuff al marcar, entonces se resta los 2 que se ponia como compensacion
        
        }
        //----
-       int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarFuerza, bonusAtaque, criticoRango, objetivo, 0);
+       int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarFuerza, bonusAtaqueTotal, criticoRango, objetivo, 0);
 
 
       if (resultadoTirada == -1)

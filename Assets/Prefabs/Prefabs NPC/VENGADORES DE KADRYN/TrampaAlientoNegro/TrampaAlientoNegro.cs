@@ -11,7 +11,7 @@ public class TrampaAlientoNegro : Trampa
      nombre = "Trampa Aliento Negro";
      intDificultadVer = 3;   
      intUsos = 1;
-     intDuracionTurnos = 10;
+     intDuracionTurnos = 3;
      esPersistente = false;
 
      ActivarVFXModeloTrampa();
@@ -21,7 +21,7 @@ public class TrampaAlientoNegro : Trampa
   public override void  AplicarEfectosTrampa(Unidad objetivo)
   {
 
-      objetivo.RecibirCuracion(20, true);
+      objetivo.RecibirCuracion(12, true);
       // BUFF ---- Así se aplica un buff/debuff
       Buff buff = new Buff();
       buff.buffNombre = "Extasiado por Aliento Negro";
@@ -29,7 +29,7 @@ public class TrampaAlientoNegro : Trampa
       buff.DuracionBuffRondas = 2;
       buff.cantTsFortaleza += 3;
       buff.cantTsMental += 3;
-      buff.cantAtaque += 2;
+      buff.cantAtaque += 1;
       buff.AplicarBuff(objetivo);
       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
       Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);    

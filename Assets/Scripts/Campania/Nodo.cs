@@ -151,6 +151,9 @@ public class Nodo : MonoBehaviour
   readonly List<CaminoConexion> conexionesSalientes = new List<CaminoConexion>();
   readonly Dictionary<string, Material> variantesMaterialCamino = new Dictionary<string, Material>();
   CaminoConexion conexionHoverActiva;
+  Transform lineaHoverTemporalActiva;
+  bool lineaHoverTemporalEstabaActiva;
+  bool lineaHoverTemporalMeshEstabaVisible;
   CaminoConexion conexionLlegada;
   readonly Dictionary<Nodo, Transform> lineasContinuacionVisionPorDestino = new Dictionary<Nodo, Transform>();
   readonly HashSet<Transform> lineasReveladas = new HashSet<Transform>();
@@ -4209,6 +4212,7 @@ if (esLaLider)
     conexionHoverActiva = conexion;
     conexion.hoverActivo = true;
     AplicarEstadoVisualCamino(conexion, conexion.estadoVisual);
+    MostrarCaminoSubterraneoHoverTemporal(conexion);
   }
 
   void RestaurarPreviewHoverCaminosPosibles()
@@ -4220,7 +4224,73 @@ if (esLaLider)
 
     conexionHoverActiva.hoverActivo = false;
     AplicarEstadoVisualCamino(conexionHoverActiva, conexionHoverActiva.estadoVisual);
+    RestaurarCaminoSubterraneoHoverTemporal();
     conexionHoverActiva = null;
+  }
+
+  void MostrarCaminoSubterraneoHoverTemporal(CaminoConexion conexion)
+  {
+    if (conexion == null || !conexion.EsAtajoSubterraneo || conexion.linea == null)
+    {
+      return;
+    }
+
+    lineaHoverTemporalActiva = conexion.linea;
+    lineaHoverTemporalEstabaActiva = lineaHoverTemporalActiva.gameObject.activeSelf;
+    lineaHoverTemporalMeshEstabaVisible = EstaMeshCaminoVisible(lineaHoverTemporalActiva);
+
+    lineaHoverTemporalActiva.gameObject.SetActive(true);
+    SetMeshCaminoVisible(lineaHoverTemporalActiva, true);
+    RestaurarAlphaTransform(lineaHoverTemporalActiva);
+    OcultarDecoracionSobreCamino(lineaHoverTemporalActiva);
+  }
+
+  void RestaurarCaminoSubterraneoHoverTemporal()
+  {
+    if (lineaHoverTemporalActiva == null)
+    {
+      return;
+    }
+
+    RestaurarAlphaTransform(lineaHoverTemporalActiva);
+    SetMeshCaminoVisible(lineaHoverTemporalActiva, lineaHoverTemporalMeshEstabaVisible);
+    lineaHoverTemporalActiva.gameObject.SetActive(lineaHoverTemporalEstabaActiva);
+    lineaHoverTemporalActiva = null;
+    lineaHoverTemporalEstabaActiva = false;
+    lineaHoverTemporalMeshEstabaVisible = false;
+  }
+
+  bool EstaMeshCaminoVisible(Transform linea)
+  {
+    if (linea == null)
+    {
+      return false;
+    }
+
+    CaminoMesh caminoMesh = linea.GetComponent<CaminoMesh>();
+    MeshRenderer meshRenderer = caminoMesh != null ? caminoMesh.GetMeshRenderer() : linea.GetComponent<MeshRenderer>();
+    return meshRenderer != null && meshRenderer.enabled;
+  }
+
+  void SetMeshCaminoVisible(Transform linea, bool visible)
+  {
+    if (linea == null)
+    {
+      return;
+    }
+
+    CaminoMesh caminoMesh = linea.GetComponent<CaminoMesh>();
+    if (caminoMesh != null)
+    {
+      caminoMesh.SetVisible(visible);
+      return;
+    }
+
+    MeshRenderer meshRenderer = linea.GetComponent<MeshRenderer>();
+    if (meshRenderer != null)
+    {
+      meshRenderer.enabled = visible;
+    }
   }
 
 

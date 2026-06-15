@@ -264,10 +264,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   glowColor: {r: 1, g: 0.8687144, b: 0.25, a: 1}
-  minAlpha: 0.3
-  maxAlpha: 1.2
-  pulseSpeed: 0.4
+  minAlpha: 0.2
+  maxAlpha: 1.5
+  pulseSpeed: 0.6
   syncWithOthers: 0
+  activo: 0
 --- !u!1 &2357469452426824238
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 
 public class ReaccionSifonArcano : Reaccion
 {
+  public SifonArcanoObjetivoFx vfxSifon;
 
   void Start()
   {
@@ -106,6 +107,13 @@ public class ReaccionSifonArcano : Reaccion
 
   }
    
+  void OnDestroy()
+  {
+    if (vfxSifon != null)
+    {
+      vfxSifon.Detener();
+    }
+  }
 
 
 }

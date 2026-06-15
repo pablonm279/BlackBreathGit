@@ -368,6 +368,10 @@ public class Unidad : MonoBehaviour
     {
       gameObject.AddComponent<UnidadCanalizadorAuraFx>();
     }
+    if (GetComponent<ClasePurificadora>() != null && GetComponent<UnidadPurificadoraFervorAuraFx>() == null)
+    {
+      gameObject.AddComponent<UnidadPurificadoraFervorAuraFx>();
+    }
     if (GetComponent<UnidadCombatFeedbackFx>() == null)
     {
       gameObject.AddComponent<UnidadCombatFeedbackFx>();

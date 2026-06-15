@@ -64,7 +64,7 @@ public class SalmoPurificador : Habilidad
       cuerpo += "<b>Type:</b> Ranged (4 range)\n";
       cuerpo += "<b>Target:</b> 1 unit in range\n";
       cuerpo += "<b>Area:</b> Target + adjacent units\n";
-      cuerpo += $"<b>Effect:</b> Removes up to {debuffsPorUnidad} removable Debuffs from each affected unit\n";
+      cuerpo += $"<b>Effect:</b> Removes up to {debuffsPorUnidad} removable Debuffs or negative states from each affected unit\n";
       if (daValentia)
       {
         cuerpo += "<b>IV b Extra:</b> +1 Valour to each affected unit per removed Debuff\n";
@@ -77,7 +77,7 @@ public class SalmoPurificador : Habilidad
       cuerpo += "<b>Tipo:</b> Alcance (4 de alcance)\n";
       cuerpo += "<b>Alvo:</b> 1 unidade no alcance\n";
       cuerpo += "<b>Area:</b> Alvo + unidades adjacentes\n";
-      cuerpo += $"<b>Efeito:</b> Remove ate {debuffsPorUnidad} Debuffs removiveis de cada unidade afetada\n";
+      cuerpo += $"<b>Efeito:</b> Remove ate {debuffsPorUnidad} Debuffs removiveis ou estados negativos de cada unidade afetada\n";
       if (daValentia)
       {
         cuerpo += "<b>Extra IV b:</b> +1 Valentia para cada unidade afetada por Debuff removido\n";
@@ -90,7 +90,7 @@ public class SalmoPurificador : Habilidad
       cuerpo += "<b>Tipo:</b> Rango (4 alcance)\n";
       cuerpo += "<b>Objetivo:</b> 1 unidad en rango\n";
       cuerpo += "<b>Area:</b> Objetivo + unidades adyacentes\n";
-      cuerpo += $"<b>Efecto:</b> Remueve hasta {debuffsPorUnidad} Debuffs removibles de cada unidad afectada\n";
+      cuerpo += $"<b>Efecto:</b> Remueve hasta {debuffsPorUnidad} debuffs removibles o estados negativos de cada unidad afectada\n";
       if (daValentia)
       {
         cuerpo += "<b>Extra IV b:</b> +1 Valentía a cada unidad afectada por cada Debuff removido\n";
@@ -125,16 +125,16 @@ public class SalmoPurificador : Habilidad
       : $"{costoAP} {iconoAP}";
     string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
     string subtitulo = esIngles
-      ? "Cleanses removable debuffs from a small allied cluster."
+      ? "Cleanses removable debuffs and negative states from a small allied cluster."
       : esPortugues
-        ? "Remove debuffs removiveis de um pequeno grupo aliado."
-        : "Remueve debuffs removibles de un pequeno grupo aliado.";
+        ? "Remove debuffs removiveis e estados negativos de um pequeno grupo aliado."
+        : "Remueve debuffs removibles y estados negativos de un pequeno grupo aliado.";
     string cuerpoNuevo = "";
     if (esIngles)
     {
       cuerpoNuevo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged cleanse (4 range)</color>\n";
       cuerpoNuevo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 unit and adjacent units</color>\n";
-      cuerpoNuevo += $"<color={colorEncabezado}><b>Effect:</b></color> <color={colorValor}>Removes up to {debuffsPorUnidad} removable debuffs per affected unit</color>\n";
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Effect:</b></color> <color={colorValor}>Removes up to {debuffsPorUnidad} removable debuffs or negative states per affected unit</color>\n";
       if (daValentia) { cuerpoNuevo += $"<color={colorEncabezado}><b>Extra:</b></color> <color={colorValor}>+1 Valour per removed debuff.</color>\n"; }
       cuerpoNuevo += $"<color={colorEncabezado}><b>Requirement:</b></color> <color={colorValor}>Requires 1+ Fervor; does not consume it.</color>";
     }
@@ -142,7 +142,7 @@ public class SalmoPurificador : Habilidad
     {
       cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Purificacao a alcance (4 de alcance)</color>\n";
       cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 unidade e unidades adjacentes</color>\n";
-      cuerpoNuevo += $"<color={colorEncabezado}><b>Efeito:</b></color> <color={colorValor}>Remove ate {debuffsPorUnidad} debuffs removiveis por unidade afetada</color>\n";
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Efeito:</b></color> <color={colorValor}>Remove ate {debuffsPorUnidad} debuffs removiveis ou estados negativos por unidade afetada</color>\n";
       if (daValentia) { cuerpoNuevo += $"<color={colorEncabezado}><b>Extra:</b></color> <color={colorValor}>+1 Valentia por debuff removido.</color>\n"; }
       cuerpoNuevo += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>Requer 1+ Fervor; nao consome.</color>";
     }
@@ -150,7 +150,7 @@ public class SalmoPurificador : Habilidad
     {
       cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Purificacion a rango (4 alcance)</color>\n";
       cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 unidad y unidades adyacentes</color>\n";
-      cuerpoNuevo += $"<color={colorEncabezado}><b>Efecto:</b></color> <color={colorValor}>Remueve hasta {debuffsPorUnidad} debuffs removibles por unidad afectada</color>\n";
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Efecto:</b></color> <color={colorValor}>Remueve hasta {debuffsPorUnidad} debuffs removibles o estados negativos por unidad afectada</color>\n";
       if (daValentia) { cuerpoNuevo += $"<color={colorEncabezado}><b>Extra:</b></color> <color={colorValor}>+1 Valentia por debuff removido.</color>\n"; }
       cuerpoNuevo += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>Requiere 1+ Fervor; no lo consume.</color>";
     }
@@ -243,9 +243,9 @@ public class SalmoPurificador : Habilidad
         
         foreach(Unidad aliado in aliadosAdyacentes)
         {
-          int buffsremover = 1;
-          if(NIVEL > 1){buffsremover++;}
-          if(NIVEL == 4){buffsremover++;}
+          int buffsremover = ObtenerCantidadDebuffsARemover();
+          buffsremover = RemoverEstadosNegativos(aliado, buffsremover);
+
           foreach (Buff buff in aliado.GetComponents<Buff>())
           {
             if(buff.esRemovible && !buff.boolfDebufftBuff)
@@ -260,12 +260,7 @@ public class SalmoPurificador : Habilidad
 
               if(buff != null)
               {
-                string nombreLanzador = TRADU.i != null ? TRADU.i.Traducir(scEstaUnidad.uNombre) : scEstaUnidad.uNombre;
-                string nombreBuff = TRADU.i != null ? TRADU.i.Traducir(buff.buffNombre) : buff.buffNombre;
-                string nombreAliado = TRADU.i != null ? TRADU.i.Traducir(aliado.uNombre) : aliado.uNombre;
-                string verboRemueve = TRADU.i != null ? TRADU.i.Traducir(" remueve ") : " remueve ";
-                string conector = (TRADU.i != null && TRADU.i.nIdioma == 2) ? " from " : (TRADU.i != null && TRADU.i.nIdioma == 3) ? " de " : " de ";
-                BattleManager.Instance.EscribirLog(nombreLanzador + verboRemueve + nombreBuff + conector + nombreAliado + ".");
+                RegistrarRemocionDebuff(aliado, buff.buffNombre);
                 buff.RemoverBuff(aliado);
                
               }
@@ -314,6 +309,67 @@ public class SalmoPurificador : Habilidad
    Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
    RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
 
+    }
+
+    int ObtenerCantidadDebuffsARemover()
+    {
+      int debuffsRemover = 1;
+      if(NIVEL > 1){debuffsRemover++;}
+      if(NIVEL == 4){debuffsRemover++;}
+      return debuffsRemover;
+    }
+
+    int RemoverEstadosNegativos(Unidad aliado, int debuffsRemover)
+    {
+      debuffsRemover = RemoverEstadoNegativoSiTiene(aliado, ref aliado.estado_ardiendo, debuffsRemover, "Ardiendo", Color.red);
+      debuffsRemover = RemoverEstadoNegativoSiTiene(aliado, ref aliado.estado_congelado, debuffsRemover, "Congelado", Color.cyan);
+      debuffsRemover = RemoverEstadoNegativoSiTiene(aliado, ref aliado.estado_aturdido, debuffsRemover, "Aturdido", Color.yellow);
+      debuffsRemover = RemoverEstadoNegativoSiTiene(aliado, ref aliado.estado_inmovil, debuffsRemover, "Inmovil", Color.yellow);
+      debuffsRemover = RemoverEstadoNegativoSiTiene(aliado, ref aliado.estado_acido, debuffsRemover, "Ácido", Color.green);
+      debuffsRemover = RemoverEstadoNegativoSiTiene(aliado, ref aliado.estado_sangrado, debuffsRemover, "Sangrado", Color.red);
+      debuffsRemover = RemoverEstadoNegativoSiTiene(aliado, ref aliado.estado_veneno, debuffsRemover, "Veneno", Color.green);
+      debuffsRemover = RemoverEstadoNegativoSiTiene(aliado, ref aliado.estado_APModificador, debuffsRemover, "AP Reducido", Color.yellow);
+      debuffsRemover = RemoverEstadoNegativoSiTiene(aliado, ref aliado.estado_ResistenciasReducidas, debuffsRemover, "Resistencias Reducidas", Color.magenta);
+      debuffsRemover = RemoverEstadoNegativoSiTiene(aliado, ref aliado.estado_Condenado, debuffsRemover, "Condenado", new Color(0.4f, 0.24f, 0.5f), true);
+      return debuffsRemover;
+    }
+
+    int RemoverEstadoNegativoSiTiene(Unidad aliado, ref int estado, int debuffsRemover, string nombreEstado, Color colorTexto, bool limpiarCondenaAcumulada = false)
+    {
+      if (debuffsRemover <= 0 || estado <= 0)
+      {
+        return debuffsRemover;
+      }
+
+      estado = 0;
+      if (limpiarCondenaAcumulada)
+      {
+        aliado.estado_CondenadoTurnosSeguidos = 0;
+      }
+
+      if (NIVEL == 5)
+      {
+        aliado.SumarValentia(1, mostrarTextoFlotante: false);
+      }
+
+      RegistrarRemocionDebuff(aliado, nombreEstado);
+      _ = aliado.GenerarTextoFlotante("<s>" + TraducirTexto(nombreEstado) + "</s>", colorTexto, FloatingTextContext.BuffEnd);
+      return debuffsRemover - 1;
+    }
+
+    void RegistrarRemocionDebuff(Unidad aliado, string nombreDebuff)
+    {
+      string nombreLanzador = TraducirTexto(scEstaUnidad.uNombre);
+      string nombreDebuffTraducido = TraducirTexto(nombreDebuff);
+      string nombreAliado = TraducirTexto(aliado.uNombre);
+      string verboRemueve = TRADU.i != null ? TRADU.i.Traducir(" remueve ") : " remueve ";
+      string conector = (TRADU.i != null && TRADU.i.nIdioma == 2) ? " from " : (TRADU.i != null && TRADU.i.nIdioma == 3) ? " de " : " de ";
+      BattleManager.Instance.EscribirLog(nombreLanzador + verboRemueve + nombreDebuffTraducido + conector + nombreAliado + ".");
+    }
+
+    string TraducirTexto(string texto)
+    {
+      return TRADU.i != null ? TRADU.i.Traducir(texto) : texto;
     }
 
     //Provisorio

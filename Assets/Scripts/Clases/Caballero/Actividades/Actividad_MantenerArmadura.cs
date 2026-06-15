@@ -8,7 +8,7 @@ public class Actividad_MantenerArmadura : Actividad
     {
       IDActividad = 5; //
 
-      desc = TRADU.i.Traducir("<color=#0cca74><b>Mantenimiento de Armadura: </b></color><color=#d3d3d3><i>El personaje se ocupará de hacer mantenimiento a su armadura.</color></i>\\n\\nSi se produce un combate comenzará con +3 Armadura.");
+      desc = TRADU.i.Traducir("<color=#0cca74><b>Mantenimiento de Armadura: </b></color><color=#d3d3d3><i>El personaje se ocupará de hacer mantenimiento a su armadura.</color></i>\\n\\nSi se produce un combate comenzará con +2 Armadura.");
 
     }
 }

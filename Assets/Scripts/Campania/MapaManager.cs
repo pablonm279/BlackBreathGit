@@ -744,7 +744,7 @@ public class MapaManager : MonoBehaviour
            }
 
            nodo.OcultarCaminosPorVision();
-           nodo.AplicarVisibilidadPorVision(visiblePorHistorial || visiblePorReveladoEspecial || distancias.ContainsKey(nodo));
+           nodo.AplicarVisibilidadPorVision(nodo.revelado || visiblePorHistorial || visiblePorReveladoEspecial || distancias.ContainsKey(nodo));
        }
 
        foreach (Nodo origenHistorico in nodosActivosVisibilidad)
@@ -777,7 +777,10 @@ public class MapaManager : MonoBehaviour
 
        foreach (Nodo origenVisible in nodosActivosVisibilidad)
        {
-           if (!origenVisible.EstaVisiblePorVision()) continue;
+           bool origenTieneVisionParaContinuaciones = origenVisible.posXNodo <= profundidadHistoricaVisible
+               || origenVisible.TieneVisibilidadForzadaPorReveladoEspecial()
+               || distancias.ContainsKey(origenVisible);
+           if (!origenTieneVisionParaContinuaciones) continue;
 
            foreach (Nodo destinoOculto in origenVisible.DestinosPosibles)
            {

@@ -32,7 +32,7 @@ public class ArrojarAbrojos : Habilidad
       poneTrampas = true;
       poneObstaculo = false;
       
-      targetEspecial = 7; 
+      targetEspecial = 7;
       esDiscreta = true; //No quita sigilo
      
       
@@ -70,7 +70,7 @@ public class ArrojarAbrojos : Habilidad
       if (esIngles)
       {
         cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Ranged trap (3 range)\n";
-        cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 tile and empty diagonals on the same side\n";
+        cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> empty diagonals around the target\n";
         cuerpo += $"<color={colorEncabezado}><b>On cast:</b></color> places caltrop traps\n";
         cuerpo += $"<color={colorEncabezado}><b>Trap:</b></color> 1 use, 10 turns duration\n";
         cuerpo += $"<color={colorEncabezado}><b>Trigger damage:</b></color> {danioBase}. <color={colorEncabezado}><b>Type:</b></color> Piercing\n";
@@ -85,7 +85,7 @@ public class ArrojarAbrojos : Habilidad
       else if (esPortugues)
       {
         cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Armadilha a distancia (3 de alcance)\n";
-        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 celula e diagonais vazias do mesmo lado\n";
+        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> diagonais vazias ao redor do alvo\n";
         cuerpo += $"<color={colorEncabezado}><b>Ao usar:</b></color> coloca armadilhas de abrolhos\n";
         cuerpo += $"<color={colorEncabezado}><b>Armadilha:</b></color> 1 uso, 10 turnos de duracao\n";
         cuerpo += $"<color={colorEncabezado}><b>Dano ao ativar:</b></color> {danioBase}. <color={colorEncabezado}><b>Tipo:</b></color> Perfurante\n";
@@ -100,7 +100,7 @@ public class ArrojarAbrojos : Habilidad
       else
       {
         cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Trampa a distancia (3 alcance)\n";
-        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 casilla y diagonales vacias del mismo lado\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> diagonales vacias alrededor del objetivo\n";
         cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> coloca trampas de abrojos\n";
         cuerpo += $"<color={colorEncabezado}><b>Trampa:</b></color> 1 uso, 10 turnos de duracion\n";
         cuerpo += $"<color={colorEncabezado}><b>Danio al activar:</b></color> {danioBase}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
@@ -168,6 +168,21 @@ public class ArrojarAbrojos : Habilidad
         
     }
     
+    public override async Task Resolver(List<object> Objetivos, Casilla casillaOrigenTrampas = null)
+    {
+      if (!EsCasillaObjetivoValida(casillaOrigenTrampas))
+      {
+        return;
+      }
+
+      await base.Resolver(Objetivos, casillaOrigenTrampas);
+    }
+
+    private bool EsCasillaObjetivoValida(Casilla cas)
+    {
+      Unidad unidadObjetivo = cas != null && cas.Presente != null ? cas.Presente.GetComponent<Unidad>() : null;
+      return unidadObjetivo != null && lObjetivosPosibles.Contains(unidadObjetivo);
+    }
     
 
     public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla cas)
@@ -175,15 +190,11 @@ public class ArrojarAbrojos : Habilidad
       
       List<Casilla> CasillasXcas = new List<Casilla>();
 
-    if (cas != null)
+    if (!EsCasillaObjetivoValida(cas))
     {
-      // Solo agregamos la casilla objetivo si está libre de unidades
-      var unidadEnCasilla = cas.Presente != null ? cas.Presente.GetComponent<Unidad>() : null;
-      if (unidadEnCasilla == null)
-      {
-        CasillasXcas.Add(cas); // Agregar la casilla original si está libre
-      }
+      return;
     }
+
     foreach (Casilla c in BattleManager.Instance.lCasillasTotal)
     {
 

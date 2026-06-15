@@ -100,6 +100,7 @@ public class MenuBatallas : MonoBehaviour
 
  [SerializeField] GameObject btnComenzar;
  bool bloqueoComenzarBatalla = false;
+ int idiomaUIBatallaCache = int.MinValue;
 
  static readonly Dictionary<string, string> TraduccionesFaccionEn = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
  {
@@ -135,6 +136,12 @@ public class MenuBatallas : MonoBehaviour
  {
     bloqueoComenzarBatalla = false;
     SetBotonComenzarInteractable(true);
+    RefrescarTextosUIBatallaSegunIdioma();
+ }
+
+ void Update()
+ {
+    RefrescarTextosUIBatallaSegunIdioma();
  }
 
   void SetBotonComenzarInteractable(bool interactable)
@@ -1273,6 +1280,19 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
     ActualizarTextoPoderEnemigo();
  }
 
+ void RefrescarTextosUIBatallaSegunIdioma()
+ {
+    int idiomaActual = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    if (idiomaUIBatallaCache == idiomaActual)
+    {
+       return;
+    }
+
+    idiomaUIBatallaCache = idiomaActual;
+    ActualizarTextoFaccionBatalla();
+    ActualizarTextoPoderesBatalla();
+ }
+
  void ActualizarTextoPoderAliado()
  {
     if (txtPoderaliado == null)
@@ -2386,7 +2406,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
                 Item recompensa = CampaignManager.Instance.scMenuSequito.Sequito003Mercaderes.GetComponent<SequitoMercaderes>().ObtenerItemAlAzar();
                 CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(recompensa.gameObject);
                 MostrarItemReward(recompensa);
-                txtRecompensa.text += TRADU.i.Traducir("\n\n- Has encontrado un objeto de recompensa: ") + TRADU.i.Traducir(recompensa.sNombreItem) + ".";
+                txtRecompensa.text += TRADU.i.Traducir("\n\n- Has encontrado un objeto de recompensa: ") + TRADU.i.Traducir(ObtenerNombreVisibleRecompensa(recompensa)) + ".";
 
             }
 
@@ -2468,6 +2488,28 @@ public void EfectosDeBatallaEnCampaña(int resultado)
     scBtnItem.SetOscurecido(false);
  }
 
+ string ObtenerNombreVisibleRecompensa(Item item)
+ {
+    if (item == null || string.IsNullOrWhiteSpace(item.sNombreItem))
+    {
+       return string.Empty;
+    }
+
+    string nombre = item.sNombreItem.Trim();
+    if (item.nivelMejora <= 0)
+    {
+       return nombre;
+    }
+
+    string sufijo = " +" + item.nivelMejora;
+    if (nombre.EndsWith(sufijo))
+    {
+       return nombre;
+    }
+
+    return nombre + sufijo;
+ }
+
  GameObject ObtenerItemReward()
  {
     if (itemReward != null)
@@ -2523,7 +2565,8 @@ public void EfectosDeBatallaEnCampaña(int resultado)
         {
             bool seHirioEnEstaBatalla = false;
             bool seCorrompioEnEstaBatalla = false;
-            if (pers.fVidaActual < 1)
+            bool cayoEnCombate = uni != null ? uni.HP_actual < 1f : pers.fVidaActual < 1f;
+            if (cayoEnCombate)
             {
                 if (pers.TieneRasgo(PersonajeTraitCatalog.TraitEndeble))
                 {

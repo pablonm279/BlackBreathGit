@@ -278,7 +278,7 @@ public class CampaignManager : MonoBehaviour
 
   public void MarcarNodoCampaniaTemporal(Nodo nodo, TipoHighlightNodoCampania tipo, float retrasoSegundos = 0f)
   {
-    if (nodo == null || highlightNodos == null)
+    if (nodo == null || highlightNodos == null || !DebeMostrarHighlightNodoCampania(nodo, tipo))
     {
       return;
     }
@@ -306,7 +306,7 @@ public class CampaignManager : MonoBehaviour
       yield return new WaitForSecondsRealtime(retrasoSegundos);
     }
 
-    if (slot == null || nodo == null || highlightNodos == null)
+    if (slot == null || nodo == null || highlightNodos == null || !DebeMostrarHighlightNodoCampania(nodo, tipo))
     {
       LiberarSlotHighlightNodoCampania(slot);
       yield break;
@@ -349,6 +349,7 @@ public class CampaignManager : MonoBehaviour
 
     while (tiempo < DuracionHighlightNodoSegundos
       && nodo != null
+      && DebeMostrarHighlightNodoCampania(nodo, tipo)
       && nodo.gameObject.activeInHierarchy
       && slot.root != null
       && slot.root.activeInHierarchy)
@@ -363,6 +364,21 @@ public class CampaignManager : MonoBehaviour
     }
 
     LiberarSlotHighlightNodoCampania(slot);
+  }
+
+  bool DebeMostrarHighlightNodoCampania(Nodo nodo, TipoHighlightNodoCampania tipo)
+  {
+    if (nodo == null)
+    {
+      return false;
+    }
+
+    if (tipo == TipoHighlightNodoCampania.Incendio || tipo == TipoHighlightNodoCampania.Ritual)
+    {
+      return nodo.revelado;
+    }
+
+    return true;
   }
 
   private void PrepararSlotsHighlightNodosCampania()
@@ -1138,7 +1154,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   private void InicializarRecursosNuevaCampania()
   {
     CambiarCivilesActuales(110);
-    CambiarEsperanzaActual(75);
+    CambiarEsperanzaActual(70);
     CambiarSuministrosActuales(300);
     CambiarMaterialesActuales(45);
     CambiarBueyesActuales(22);
@@ -5589,7 +5605,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
 
-    BosqueArdienteMecanicaIncendio(35);
+    BosqueArdienteMecanicaIncendio(25);
     PasoVientoHeladoMecanicaRituales(30);
 
 
@@ -5956,6 +5972,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         if (candidato == null) { continue; }
         if (candidato.nodoIncendiado) { continue; }
         if (candidato.tipoNodo == codigoAsentamiento) { continue; }
+        if (candidato.tipoNodo == 16) { continue; }
         nodoAIncendiar = candidato;
         break;
       }
@@ -6064,7 +6081,48 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
   }
 
+  bool EsNodoValidoParaMisionSalvamento(Nodo nodo)
+  {
+    if (nodo == null || !nodo.gameObject.activeInHierarchy)
+    {
+      return false;
+    }
+
+    if (nodo.nodoRitual || nodo.nodoIncendiado)
+    {
+      return false;
+    }
+
+    Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
+    if (nodoActual != null && nodo.posXNodo <= nodoActual.posXNodo)
+    {
+      return false;
+    }
+
+    if (nodo.DestinosPosibles == null || !nodo.DestinosPosibles.Exists(destino => destino != null && destino.gameObject.activeInHierarchy))
+    {
+      return false;
+    }
+
+    switch (nodo.tipoNodo)
+    {
+      case 4:
+      case 10:
+      case 14:
+      case 15:
+      case 16:
+        return false;
+      default:
+        return true;
+    }
+  }
+
   public Nodo ObtenerNodoFuturoAleatorio(int distancia = 0)
+  {
+    return ObtenerNodoFuturoAleatorio(distancia, null);
+  }
+
+  Nodo ObtenerNodoFuturoAleatorio(int distancia, Predicate<Nodo> filtroCandidato)
   {
     if (scMapaManager == null || scMapaManager.nodoActual == null)
     {
@@ -6104,12 +6162,16 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
         int distanciaDestino = distanciaActual + 1;
 
-        if (!nodosPorDistancia.TryGetValue(distanciaDestino, out var lista))
+        if (filtroCandidato == null || filtroCandidato(destino))
         {
-          lista = new List<Nodo>();
-          nodosPorDistancia[distanciaDestino] = lista;
+          if (!nodosPorDistancia.TryGetValue(distanciaDestino, out var lista))
+          {
+            lista = new List<Nodo>();
+            nodosPorDistancia[distanciaDestino] = lista;
+          }
+
+          lista.Add(destino);
         }
-        lista.Add(destino);
 
         colaNodos.Enqueue(destino);
         colaDistancias.Enqueue(distanciaDestino);
@@ -7359,7 +7421,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return false;
     }
 
-    Nodo nodoFuturo = ObtenerNodoFuturoAleatorio(2);
+    Nodo nodoFuturo = ObtenerNodoFuturoAleatorio(2, EsNodoValidoParaMisionSalvamento);
+    if (nodoFuturo == null)
+    {
+      nodoFuturo = ObtenerNodoFuturoAleatorio(1, EsNodoValidoParaMisionSalvamento);
+    }
+
     if (nodoFuturo == null)
     {
       return false;
@@ -8800,6 +8867,24 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     MenuOpciones.SetActive(!MenuOpciones.activeInHierarchy);
   }
 
+  private bool CerrarMenuOpcionesSiEstaAbierto()
+  {
+    if (MenuOpciones != null && MenuOpciones.activeInHierarchy)
+    {
+      MenuOpciones.SetActive(false);
+      return true;
+    }
+
+    AdministradorEscenas administradorEscenas = scAdministradorEscenas;
+    if (administradorEscenas != null && administradorEscenas.MenuOpciones != null && administradorEscenas.MenuOpciones.activeInHierarchy)
+    {
+      administradorEscenas.MenuOpciones.SetActive(false);
+      return true;
+    }
+
+    return false;
+  }
+
   private void NotificarResultadoGuardado(string mensaje, Color color)
   {
     if (logDeCampania != null && numeroTurno > 1)
@@ -8943,9 +9028,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         (scTutorialManager != null && scTutorialManager.tutorialActivo)
         || (TutorialDirector.Instance != null && TutorialDirector.Instance.IsRunning);
 
-      if (MenuOpciones != null && MenuOpciones.activeInHierarchy)
+      if (CerrarMenuOpcionesSiEstaAbierto())
       {
-        MenuOpciones.SetActive(false);
         return;
       }
 

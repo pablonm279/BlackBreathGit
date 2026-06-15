@@ -232,8 +232,6 @@ public class SifonArcano : Habilidad
 
     if (obj is Unidad uni) //Acá van los efectos a Unidades.
     {
-      VFXAplicar(uni.gameObject);
-
       //Agrega la reacción 
       ReaccionSifonArcano reaccion = new ReaccionSifonArcano();
       reaccion.variableUnidad = scEstaUnidad;
@@ -241,6 +239,7 @@ public class SifonArcano : Habilidad
       reaccion.nombre = "Sifón Arcano";
       reaccion.variableUnidad = scEstaUnidad;
       ReaccionSifonArcano reaccionPosturaDefensiva = ComponentCopier.CopyComponent(reaccion, uni.gameObject);
+      reaccionPosturaDefensiva.vfxSifon = VFXAplicar(uni.gameObject);
 
     }
      
@@ -261,7 +260,7 @@ public class SifonArcano : Habilidad
     return FormatearTextoProbabilidadExito(probabilidad);
   }
     
-       void VFXAplicar(GameObject objetivo)
+       SifonArcanoObjetivoFx VFXAplicar(GameObject objetivo)
   {
    GameObject vfxPrefab = Resources.Load<GameObject>("VFX/VFX_SifonArcano");
    if (vfxPrefab != null)
@@ -271,7 +270,7 @@ public class SifonArcano : Habilidad
     VFXSoloSonido.OcultarVisuales(vfx);
    }
 
-   SifonArcanoObjetivoFx.Crear(objetivo.GetComponent<Unidad>());
+   return SifonArcanoObjetivoFx.Crear(objetivo.GetComponent<Unidad>());
 
   }
 
@@ -360,8 +359,12 @@ public class SifonArcano : Habilidad
 
 public class SifonArcanoObjetivoFx : MonoBehaviour
 {
-  private const float Duracion = 1.15f;
+  private const float DuracionEntrada = 0.18f;
+  private const float DuracionSalida = 0.28f;
   private const int CantidadHebras = 5;
+  private const float EscalaVisual = 0.85f;
+  private const float OpacidadVisual = 0.7f;
+  private const float VelocidadVisual = 0.9f;
 
   private RectTransform root;
   private CanvasGroup canvasGroup;
@@ -376,6 +379,8 @@ public class SifonArcanoObjetivoFx : MonoBehaviour
   private readonly float[] velocidadHebra = new float[CantidadHebras];
   private readonly float[] escalaHebra = new float[CantidadHebras];
   private float tiempo;
+  private float tiempoSalida;
+  private bool deteniendo;
   private Vector2 tamanoBase;
   private Vector2 posicionBase;
 
@@ -386,17 +391,17 @@ public class SifonArcanoObjetivoFx : MonoBehaviour
   private static Texture2D texturaAnillo;
   private static Texture2D texturaHebra;
 
-  public static void Crear(Unidad unidad)
+  public static SifonArcanoObjetivoFx Crear(Unidad unidad)
   {
     if (unidad == null || unidad.uImage == null)
     {
-      return;
+      return null;
     }
 
     RectTransform imagen = unidad.uImage.rectTransform;
     if (imagen == null || !(imagen.parent is RectTransform padre))
     {
-      return;
+      return null;
     }
 
     GameObject go = new GameObject("SifonArcanoObjetivoFx", typeof(RectTransform), typeof(CanvasGroup), typeof(SifonArcanoObjetivoFx));
@@ -405,6 +410,7 @@ public class SifonArcanoObjetivoFx : MonoBehaviour
 
     Canvas canvas = unidad.uImage.GetComponentInParent<Canvas>(true);
     RenderOrderHelper.OrdenarCanvasEncima(canvas, unidad.transform, 8);
+    return fx;
   }
 
   private void Inicializar(RectTransform padre, RectTransform imagen)
@@ -431,7 +437,7 @@ public class SifonArcanoObjetivoFx : MonoBehaviour
     root.anchorMax = new Vector2(0.5f, 0.5f);
     root.pivot = new Vector2(0.5f, 0.5f);
     root.anchoredPosition = imagenUnidad.anchoredPosition + posicionBase;
-    root.localScale = imagenUnidad.localScale;
+    root.localScale = imagenUnidad.localScale * EscalaVisual;
     root.sizeDelta = new Vector2(tamanoBase.x * 0.7f, tamanoBase.y * 1.55f);
 
     int targetSibling = Mathf.Min(padre.childCount - 1, imagenUnidad.GetSiblingIndex() + 1);
@@ -474,46 +480,63 @@ public class SifonArcanoObjetivoFx : MonoBehaviour
   private void Update()
   {
     tiempo += Time.deltaTime;
-    float t = Mathf.Clamp01(tiempo / Duracion);
-    ActualizarVisual(t);
+    float intensidad = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(tiempo / DuracionEntrada));
 
-    if (tiempo >= Duracion)
+    if (deteniendo)
+    {
+      tiempoSalida += Time.deltaTime;
+      intensidad *= 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(tiempoSalida / DuracionSalida));
+    }
+
+    ActualizarVisual(intensidad);
+
+    if (deteniendo && tiempoSalida >= DuracionSalida)
     {
       Destroy(gameObject);
     }
   }
 
-  private void ActualizarVisual(float t)
+  public void Detener()
+  {
+    if (deteniendo)
+    {
+      return;
+    }
+
+    deteniendo = true;
+    tiempoSalida = 0f;
+  }
+
+  private void ActualizarVisual(float intensidad)
   {
     if (root == null || canvasGroup == null)
     {
       return;
     }
 
-    float entrada = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / 0.16f));
-    float salida = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((t - 0.62f) / 0.38f));
-    float intensidad = entrada * salida;
-    float pulso = 0.9f + (0.08f * Mathf.Sin(Time.time * 10f)) + (0.04f * Mathf.Sin(Time.time * 21f));
-    float giro = Mathf.Sin(Time.time * 7.5f) * 7f;
-    float deriva = Mathf.Sin(Time.time * 13f) * tamanoBase.x * 0.025f;
+    float tiempoFx = Time.time * VelocidadVisual;
+    intensidad *= OpacidadVisual;
+    float pulso = 0.9f + (0.08f * Mathf.Sin(tiempoFx * 10f)) + (0.04f * Mathf.Sin(tiempoFx * 21f));
+    float giro = Mathf.Sin(tiempoFx * 7.5f) * 7f;
+    float deriva = Mathf.Sin(tiempoFx * 13f) * tamanoBase.x * 0.025f;
 
     canvasGroup.alpha = intensidad;
     root.anchoredPosition = imagenUnidad != null ? imagenUnidad.anchoredPosition + posicionBase + new Vector2(deriva, 0f) : root.anchoredPosition;
-    root.localEulerAngles = new Vector3(0f, 0f, Mathf.Sin(Time.time * 11f) * 2.5f * intensidad);
+    root.localEulerAngles = new Vector3(0f, 0f, Mathf.Sin(tiempoFx * 11f) * 2.5f * intensidad);
 
-    Configurar(columna, new Vector2(Mathf.Sin(Time.time * 18f) * tamanoBase.x * 0.018f, 0f), new Vector2(tamanoBase.x * 0.5f * pulso, tamanoBase.y * 1.48f), 0f, new Color(0.26f, 0.72f, 1f, 0.14f * intensidad));
-    Configurar(nucleo, new Vector2(Mathf.Sin(Time.time * 15f) * tamanoBase.x * 0.025f, tamanoBase.y * 0.02f), new Vector2(tamanoBase.x * 0.14f, tamanoBase.y * 1.22f), 0f, new Color(0.78f, 0.96f, 1f, 0.25f * intensidad));
-    Configurar(anilloSuperior, new Vector2(Mathf.Sin(Time.time * 9f) * tamanoBase.x * 0.03f, tamanoBase.y * 0.44f), new Vector2(tamanoBase.x * (0.5f + (0.08f * pulso)), tamanoBase.y * 0.15f), giro, new Color(0.68f, 0.94f, 1f, 0.32f * intensidad));
-    Configurar(anilloInferior, new Vector2(Mathf.Sin(Time.time * 8f + 1.3f) * tamanoBase.x * 0.025f, -tamanoBase.y * 0.38f), new Vector2(tamanoBase.x * (0.46f + (0.06f * pulso)), tamanoBase.y * 0.12f), -giro * 1.25f, new Color(0.42f, 0.78f, 1f, 0.22f * intensidad));
+    Configurar(columna, new Vector2(Mathf.Sin(tiempoFx * 18f) * tamanoBase.x * 0.018f, 0f), new Vector2(tamanoBase.x * 0.5f * pulso, tamanoBase.y * 1.48f), 0f, new Color(0.26f, 0.72f, 1f, 0.14f * intensidad));
+    Configurar(nucleo, new Vector2(Mathf.Sin(tiempoFx * 15f) * tamanoBase.x * 0.025f, tamanoBase.y * 0.02f), new Vector2(tamanoBase.x * 0.14f, tamanoBase.y * 1.22f), 0f, new Color(0.78f, 0.96f, 1f, 0.25f * intensidad));
+    Configurar(anilloSuperior, new Vector2(Mathf.Sin(tiempoFx * 9f) * tamanoBase.x * 0.03f, tamanoBase.y * 0.44f), new Vector2(tamanoBase.x * (0.5f + (0.08f * pulso)), tamanoBase.y * 0.15f), giro, new Color(0.68f, 0.94f, 1f, 0.32f * intensidad));
+    Configurar(anilloInferior, new Vector2(Mathf.Sin(tiempoFx * 8f + 1.3f) * tamanoBase.x * 0.025f, -tamanoBase.y * 0.38f), new Vector2(tamanoBase.x * (0.46f + (0.06f * pulso)), tamanoBase.y * 0.12f), -giro * 1.25f, new Color(0.42f, 0.78f, 1f, 0.22f * intensidad));
 
     for (int i = 0; i < hebras.Length; i++)
     {
-      float avance = Mathf.Repeat((t * velocidadHebra[i]) + fasesHebra[i], 1f);
+      float avance = Mathf.Repeat((tiempoFx * velocidadHebra[i] * 0.45f) + fasesHebra[i], 1f);
       float alphaHebra = Mathf.Sin(avance * Mathf.PI) * intensidad;
-      float onda = Mathf.Sin((Time.time * (8f + i)) + (i * 1.9f)) * tamanoBase.x * 0.06f;
+      float onda = Mathf.Sin((tiempoFx * (8f + i)) + (i * 1.9f)) * tamanoBase.x * 0.06f;
       Vector2 posicion = new Vector2((tamanoBase.x * offsetHebraX[i]) + onda, Mathf.Lerp(-tamanoBase.y * 0.56f, tamanoBase.y * 0.6f, avance));
       Vector2 tamano = new Vector2(tamanoBase.y * 0.5f * escalaHebra[i], Mathf.Max(1.3f, tamanoBase.x * 0.04f));
-      Configurar(hebras[i], posicion, tamano, 90f + (Mathf.Sin(Time.time * (7f + i) + fasesHebra[i]) * 10f), new Color(0.82f, 0.98f, 1f, 0.28f * alphaHebra));
+      Configurar(hebras[i], posicion, tamano, 90f + (Mathf.Sin(tiempoFx * (7f + i) + fasesHebra[i]) * 10f), new Color(0.82f, 0.98f, 1f, 0.28f * alphaHebra));
     }
   }
 

@@ -17,7 +17,7 @@ public class IAPrimerGolpeAlabardero : IAHabilidad
     hAncho = 1;
     esMelee = false;
     hAlcance = 1;
-    hCooldownMax = 1;
+    hCooldownMax = 2;
     esHostil = false;
     prioridad = 0;
     costoAP = 0;

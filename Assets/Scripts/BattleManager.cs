@@ -58,6 +58,7 @@ public class BattleManager : MonoBehaviour
 
   public LadoManager ladoA; //Enemigo
   public LadoManager ladoB; //Jugador
+  private int tipoEmboscadaOrdenIniciativa = 0;
 
   public List<Unidad> lUnidadesTotal = new List<Unidad>();
   public List<Casilla> lCasillasTotal = new List<Casilla>();
@@ -1562,8 +1563,47 @@ public class BattleManager : MonoBehaviour
       }
     }
     // Ordena la lista de unidades por iniciativa de mayor a menor
+    if (RondaNro < 2 && (tipoEmboscadaOrdenIniciativa == 1 || tipoEmboscadaOrdenIniciativa == 2))
+    {
+      lUnidadesTotal = lUnidadesTotal
+        .OrderBy(u => ObtenerPrioridadOrdenEmboscada(u))
+        .ThenByDescending(u => u.iniciativa_actual)
+        .ToList();
+      return;
+    }
+
     lUnidadesTotal = lUnidadesTotal.OrderByDescending(u => u.iniciativa_actual).ToList();
 
+  }
+
+  public void ConfigurarOrdenIniciativaPorEmboscada(int tipoEmboscada)
+  {
+    tipoEmboscadaOrdenIniciativa = tipoEmboscada;
+  }
+
+  private int ObtenerPrioridadOrdenEmboscada(Unidad unidad)
+  {
+    if (unidad == null)
+    {
+      return 2;
+    }
+
+    bool esEnemigo = ladoA != null && ladoA.unidadesLado.Contains(unidad);
+    bool esAliado = ladoB != null && ladoB.unidadesLado.Contains(unidad);
+
+    if (tipoEmboscadaOrdenIniciativa == 1)
+    {
+      if (esEnemigo) { return 0; }
+      if (esAliado) { return 1; }
+    }
+
+    if (tipoEmboscadaOrdenIniciativa == 2)
+    {
+      if (esAliado) { return 0; }
+      if (esEnemigo) { return 1; }
+    }
+
+    return 2;
   }
 
 
@@ -1646,6 +1686,11 @@ public class BattleManager : MonoBehaviour
   private bool DebeTenerHabilidadEscapar(Unidad unidad)
   {
     if (unidad == null || unidad.CasillaPosicion == null)
+    {
+      return false;
+    }
+
+    if (unidad.GetComponent<IAUnidad>() != null)
     {
       return false;
     }
@@ -2170,6 +2215,11 @@ public class BattleManager : MonoBehaviour
       SetPausaManualCombate(false);
     }
 
+    if (Input.GetKeyDown(KeyCode.Escape) && CerrarOpcionesSiEstanAbiertasEnCombate())
+    {
+      return;
+    }
+
     if (Input.GetKeyDown(KeyCode.Space))
     {
       if (unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() == null && tutorialActivo == false)
@@ -2262,6 +2312,21 @@ public class BattleManager : MonoBehaviour
 
     administradorEscenas.RefrescarUICompartidaSegunEscena();
     administradorEscenas.abrirOpciones();
+  }
+
+  private bool CerrarOpcionesSiEstanAbiertasEnCombate()
+  {
+    AdministradorEscenas administradorEscenas = CampaignManager.Instance != null
+      ? CampaignManager.Instance.scAdministradorEscenas
+      : null;
+
+    if (administradorEscenas == null || administradorEscenas.MenuOpciones == null || !administradorEscenas.MenuOpciones.activeInHierarchy)
+    {
+      return false;
+    }
+
+    administradorEscenas.MenuOpciones.SetActive(false);
+    return true;
   }
 
   private void LateUpdate()

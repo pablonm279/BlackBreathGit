@@ -8,7 +8,12 @@ public class UnidadCanvas : MonoBehaviour
 {
     private const string RutaFuenteTextoFlotanteDanio = "Fuentes/SpectralSC/TextoFlotanteDaño";
     private const float EscalaTextoProbabilidad = 0.82f;
-    private const float OffsetYTextoProbabilidad = 10f;
+    private const float OffsetYTextoProbabilidad = 8.5f;
+    private const float AmplitudPulsoTextoProbabilidad = 0.035f;
+    private const float VelocidadPulsoTextoProbabilidad = 3.1f;
+    private const float AlphaMinPulsoTextoProbabilidad = 0.9f;
+    private const float AlphaMaxPulsoTextoProbabilidad = 1f;
+    private const float AlphaGlowTextoProbabilidad = 0.34f;
     private const float DuracionMinimaRotuloHabilidadIA = 4f;
 
     public GameObject unidadCanvas;
@@ -59,6 +64,9 @@ public class UnidadCanvas : MonoBehaviour
     private Outline outlineRotuloHabilidadIA;
     private CanvasGroup canvasGroupRotuloHabilidadIA;
     private Coroutine rotuloHabilidadCoroutine;
+    private Outline outlineTextoProbabilidad;
+    private Vector3 escalaBaseTextoProbabilidad = Vector3.one;
+    private float fasePulsoTextoProbabilidad;
 
     void Start()
     {
@@ -67,6 +75,7 @@ public class UnidadCanvas : MonoBehaviour
             escalaBase = barraVida.localScale;   // guardás la escala original
         }
         PrepararBarraDanio();
+        fasePulsoTextoProbabilidad = Random.Range(0f, Mathf.PI * 2f);
     }
 
     void Update()
@@ -124,6 +133,7 @@ public class UnidadCanvas : MonoBehaviour
         }
         ActualizarBarraDanio(unidad);
         ActualizarEscalaBarra(unidad);
+        ActualizarPulsoTextoProbabilidad();
 
         ActualizarEstadosIconos();
     }
@@ -548,6 +558,17 @@ public class UnidadCanvas : MonoBehaviour
             rectTransform.anchoredPosition = new Vector2(0f, OffsetYTextoProbabilidad);
         }
 
+        escalaBaseTextoProbabilidad = Vector3.one;
+        texto.transform.localScale = escalaBaseTextoProbabilidad;
+        outlineTextoProbabilidad = texto.GetComponent<Outline>();
+        if (outlineTextoProbabilidad == null)
+        {
+            outlineTextoProbabilidad = texto.gameObject.AddComponent<Outline>();
+        }
+        outlineTextoProbabilidad.effectDistance = new Vector2(1.2f, -1.2f);
+        outlineTextoProbabilidad.effectColor = new Color(1f, 0.95f, 0.6f, AlphaGlowTextoProbabilidad);
+        outlineTextoProbabilidad.useGraphicAlpha = true;
+
         TextMeshProUGUI textoReferencia = PrefabtxtDaño != null
             ? (PrefabtxtDaño.GetComponent<TextMeshProUGUI>() ?? PrefabtxtDaño.GetComponentInChildren<TextMeshProUGUI>())
             : null;
@@ -577,6 +598,35 @@ public class UnidadCanvas : MonoBehaviour
         {
             texto.font = fuenteTextoProbabilidad;
             texto.fontSharedMaterial = fuenteTextoProbabilidad.material;
+        }
+    }
+
+    private void ActualizarPulsoTextoProbabilidad()
+    {
+        if (txtProbabilidad == null)
+        {
+            return;
+        }
+
+        if (!txtProbabilidad.gameObject.activeSelf)
+        {
+            txtProbabilidad.transform.localScale = escalaBaseTextoProbabilidad;
+            return;
+        }
+
+        float pulso = 0.5f + (0.5f * Mathf.Sin((Time.unscaledTime * VelocidadPulsoTextoProbabilidad) + fasePulsoTextoProbabilidad));
+        float escala = 1f + (((pulso * 2f) - 1f) * AmplitudPulsoTextoProbabilidad);
+        txtProbabilidad.transform.localScale = escalaBaseTextoProbabilidad * escala;
+
+        Color colorActual = txtProbabilidad.color;
+        colorActual.a = Mathf.Lerp(AlphaMinPulsoTextoProbabilidad, AlphaMaxPulsoTextoProbabilidad, pulso);
+        txtProbabilidad.color = colorActual;
+
+        if (outlineTextoProbabilidad != null)
+        {
+            Color glow = outlineTextoProbabilidad.effectColor;
+            glow.a = Mathf.Lerp(AlphaGlowTextoProbabilidad * 0.7f, AlphaGlowTextoProbabilidad, pulso);
+            outlineTextoProbabilidad.effectColor = glow;
         }
     }
 

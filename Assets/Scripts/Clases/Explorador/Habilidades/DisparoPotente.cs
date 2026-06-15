@@ -252,13 +252,13 @@ public class DisparoPotente : Habilidad
        print("Defensa: "+ defensaObjetivo);
 
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
-       int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarAgilidad, bonusAtaque, criticoRango, objetivo, 0); 
-       print("Resultado tirada "+resultadoTirada);
+       int bonusAtaqueTotal = bonusAtaque;
+       int resultadoTirada;
        
         //Chequear si tiene Marcar Presa
        if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para próximas habilidades de daño del explorador
        {
-         bonusAtaque += 4;
+         bonusAtaqueTotal += 4;
          criticoRango += 1;
          danioMarca += 15; //Esto se suma al porcentaje de daño solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % daño crítico.
 
@@ -267,9 +267,11 @@ public class DisparoPotente : Habilidad
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 2)
          {  criticoRango += 1;  }
          if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL == 4)
-         {  bonusAtaque -= 2;  } //NV 4 Quita el debuff al marcar, entonces se resta los 2 que se ponia como compensacion
+         {  bonusAtaqueTotal -= 2;  } //NV 4 Quita el debuff al marcar, entonces se resta los 2 que se ponia como compensacion
        }
        //----
+       resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarAgilidad, bonusAtaqueTotal, criticoRango, objetivo, 0); 
+       print("Resultado tirada "+resultadoTirada);
      
        if(resultadoTirada == -1)
        {//PIFIA 

@@ -649,7 +649,7 @@ MonoBehaviour:
   healProfile:
     lifetime: 2
     initialOffset: {x: 0, y: 0}
-    verticalSpeed: 15
+    verticalSpeed: 12
     horizontalSpeed: 0
     scaleCurve:
       serializedVersion: 2

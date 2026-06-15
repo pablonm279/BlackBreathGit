@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -10,6 +12,18 @@ public class SequitoMercaderes : MonoBehaviour
     private const int RarezaMinTienda = 0; // Comun
     private const int RarezaMaxTienda = 4; // Legendario
     private const int CorrimientoPorFase = 10;
+    private static readonly HashSet<string> NombresItemsIniciales = new HashSet<string>
+    {
+        "mandoble",
+        "coraza",
+        "arcolargo",
+        "armaduradecuero",
+        "baculopurificador",
+        "espadacorta",
+        "armaduradecueroreforzado",
+        "estoque",
+        "gambeson"
+    };
 
     [Header("Fuente de Items")]
     [SerializeField] ItemDatabase itemDatabase;
@@ -42,6 +56,7 @@ public class SequitoMercaderes : MonoBehaviour
     void Start()
     {
         AsegurarReferenciaDatabase();
+        SanitizarItemsVendidos();
         if (!restauradoDesdeSave && (ItemsVendidos == null || ItemsVendidos.Count == 0))
         {
             GenerarItemsVendidos();
@@ -473,6 +488,7 @@ public class SequitoMercaderes : MonoBehaviour
 
     public void MostrarInventarioVenta()
     {
+        SanitizarItemsVendidos();
 
         foreach (Transform transform in listaItemsVenta)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
         {
@@ -619,21 +635,35 @@ public class SequitoMercaderes : MonoBehaviour
 
     private bool EsItemInicialDeClase(Item item)
     {
-        if (item == null || CampaignManager.Instance == null || CampaignManager.Instance.scContprefab == null)
+        if (item == null)
         {
             return false;
         }
 
-        ContenedorPrefabsCamp contenedor = CampaignManager.Instance.scContprefab;
-        return item == contenedor.armaMandoble
-            || item == contenedor.Coraza
-            || item == contenedor.armaArcoLargo
-            || item == contenedor.ArmaduraCuero
-            || item == contenedor.armaBaculoPurificador
-            || item == contenedor.armaEspadaCorta
-            || item == contenedor.ArmaduraCueroReforzado
-            || item == contenedor.armaEstoque
-            || item == contenedor.ArmaduraGambeson;
+        if (CampaignManager.Instance != null && CampaignManager.Instance.scContprefab != null)
+        {
+            ContenedorPrefabsCamp contenedor = CampaignManager.Instance.scContprefab;
+            if (item == contenedor.armaMandoble
+                || item == contenedor.Coraza
+                || item == contenedor.armaArcoLargo
+                || item == contenedor.ArmaduraCuero
+                || item == contenedor.armaBaculoPurificador
+                || item == contenedor.armaEspadaCorta
+                || item == contenedor.ArmaduraCueroReforzado
+                || item == contenedor.armaEstoque
+                || item == contenedor.ArmaduraGambeson)
+            {
+                return true;
+            }
+        }
+
+        if (item.nivelMejora > 0)
+        {
+            return false;
+        }
+
+        string nombreNormalizado = NormalizarNombreItem(item.sNombreItem);
+        return NombresItemsIniciales.Contains(nombreNormalizado);
     }
 
     private void RemoverItemsInicialesDeClase<T>(List<T> items) where T : Item
@@ -644,6 +674,63 @@ public class SequitoMercaderes : MonoBehaviour
         }
 
         items.RemoveAll(item => EsItemInicialDeClase(item));
+    }
+
+    private void SanitizarItemsVendidos()
+    {
+        if (ItemsVendidos == null)
+        {
+            return;
+        }
+
+        for (int i = ItemsVendidos.Count - 1; i >= 0; i--)
+        {
+            Item item = ItemsVendidos[i];
+            if (!EsItemInicialDeClase(item))
+            {
+                continue;
+            }
+
+            if (itemPineado == item)
+            {
+                itemPineado = null;
+                itemPineadoId = string.Empty;
+            }
+
+            ItemsVendidos.RemoveAt(i);
+            if (item != null)
+            {
+                Destroy(item.gameObject);
+            }
+        }
+    }
+
+    private string NormalizarNombreItem(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre))
+        {
+            return string.Empty;
+        }
+
+        string normalized = nombre.Trim().Normalize(NormalizationForm.FormD);
+        StringBuilder builder = new StringBuilder(normalized.Length);
+
+        for (int i = 0; i < normalized.Length; i++)
+        {
+            char current = normalized[i];
+            UnicodeCategory category = CharUnicodeInfo.GetUnicodeCategory(current);
+            if (category == UnicodeCategory.NonSpacingMark)
+            {
+                continue;
+            }
+
+            if (char.IsLetterOrDigit(current))
+            {
+                builder.Append(char.ToLowerInvariant(current));
+            }
+        }
+
+        return builder.ToString();
     }
 
     bool TryBuildPoolsFromDatabase(
@@ -752,7 +839,20 @@ public class SequitoMercaderes : MonoBehaviour
 
         System.Random random = new System.Random();
         int index = random.Next(todosLosItems.Count);
-        return todosLosItems[index];
+        Item itemSeleccionado = todosLosItems[index];
+        if (itemSeleccionado == null)
+        {
+            return null;
+        }
+
+        Item recompensa = Instantiate(itemSeleccionado);
+        ItemDatabase database = GetItemDatabase();
+        if (database != null)
+        {
+            ItemSaveCatalog.ResolveItemId(recompensa, database);
+        }
+
+        return recompensa;
     }
    
 }

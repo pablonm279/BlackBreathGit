@@ -344,6 +344,11 @@ public class IAUnidad : MonoBehaviour
          return false;
       }
 
+      if (scUnidad.GetComponent<IAUnidad>() != null)
+      {
+         return false;
+      }
+
       Escapar habilidadEscape = scUnidad.GetComponent<Escapar>();
       if (habilidadEscape == null || scUnidad.CasillaPosicion == null || scUnidad.CasillaPosicion.lado != 2)
       {

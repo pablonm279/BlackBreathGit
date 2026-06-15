@@ -22,6 +22,8 @@ public class MenuCaravana : MonoBehaviour
     [SerializeField] GameObject MenuSequitos;
     [SerializeField] GameObject MenuPersonajes;
     [SerializeField] GameObject MenuBitacora;
+    private bool menuPersonajesAbiertoPorHover;
+    private Personaje personajeMenuPersonajesHover;
 
     [Header("Exploradores")]
     [SerializeField] GameObject panelResultadoExploradores;
@@ -115,6 +117,8 @@ public class MenuCaravana : MonoBehaviour
         {
             MenuPersonajes.SetActive(false);
         }
+        menuPersonajesAbiertoPorHover = false;
+        personajeMenuPersonajesHover = null;
 
         if (MenuBitacora != null)
         {
@@ -139,6 +143,10 @@ public class MenuCaravana : MonoBehaviour
         MenuMejoras.SetActive(false);
         MenuSequitos.SetActive(false);
         MenuPersonajes.SetActive(false);
+        MenuBitacora.SetActive(false);
+        menuPersonajesAbiertoPorHover = false;
+        personajeMenuPersonajesHover = null;
+        
     }
 
     public void MostrarResultadoExploradores(CampaignManager.ResultadoExploradoresCampania resultado)
@@ -486,12 +494,12 @@ public class MenuCaravana : MonoBehaviour
     }
     public void AbrirMenuPersonajes()
     {
-        AbrirMenuPersonajes(null, true, false);
+        AbrirMenuPersonajes(null, true, false, false);
     }
 
     public void AbrirMenuPersonajesDesdeHotkey()
     {
-        AbrirMenuPersonajes(null, true, true);
+        AbrirMenuPersonajes(null, true, true, false);
     }
 
     public bool MenuPersonajesEstaAbierto()
@@ -553,15 +561,51 @@ public class MenuCaravana : MonoBehaviour
 
     public void AbrirMenuPersonajes(Personaje personajeInicial)
     {
-        AbrirMenuPersonajes(personajeInicial, false, false);
+        AbrirMenuPersonajes(personajeInicial, false, false, false);
     }
 
-    private void AbrirMenuPersonajes(Personaje personajeInicial, bool alternarMenu, bool desdeHotkey)
+    public void AbrirMenuPersonajesPorHover(Personaje personajeInicial)
+    {
+        if (personajeInicial == null || MenuPersonajes == null)
+        {
+            return;
+        }
+
+        if (MenuPersonajes.activeInHierarchy && !menuPersonajesAbiertoPorHover)
+        {
+            return;
+        }
+
+        AbrirMenuPersonajes(personajeInicial, false, false, true);
+    }
+
+    public void CerrarMenuPersonajesPorHover(Personaje personaje)
+    {
+        if (!menuPersonajesAbiertoPorHover || MenuPersonajes == null)
+        {
+            return;
+        }
+
+        if (personajeMenuPersonajesHover != null && personaje != personajeMenuPersonajesHover)
+        {
+            return;
+        }
+
+        MenuPersonajes.SetActive(false);
+        menuPersonajesAbiertoPorHover = false;
+        personajeMenuPersonajesHover = null;
+        EmitirCierreMenuPersonajesTutorial(false);
+    }
+
+    private void AbrirMenuPersonajes(Personaje personajeInicial, bool alternarMenu, bool desdeHotkey, bool desdeHover)
     {
          TutorialEvents.Emit("ui.menupersonajescerrado1", gameObject);
+        bool estabaAbiertoPorHover = menuPersonajesAbiertoPorHover;
         if (desdeHotkey && MenuPersonajesEstaAbierto())
         {
             MenuPersonajes.SetActive(false);
+            menuPersonajesAbiertoPorHover = false;
+            personajeMenuPersonajesHover = null;
             EmitirCierreMenuPersonajesTutorial(true);
             return;
         }
@@ -583,9 +627,11 @@ public class MenuCaravana : MonoBehaviour
         var scMenuPersonajes = MenuPersonajes.GetComponent<MenuPersonajes>();
         if (scMenuPersonajes == null) return;
 
-        if (!alternarMenu && personajeInicial != null && MenuPersonajes.activeInHierarchy && scMenuPersonajes.pSel == personajeInicial)
+        if (!alternarMenu && personajeInicial != null && MenuPersonajes.activeInHierarchy && scMenuPersonajes.pSel == personajeInicial && !estabaAbiertoPorHover)
         {
             MenuPersonajes.SetActive(false);
+            menuPersonajesAbiertoPorHover = false;
+            personajeMenuPersonajesHover = null;
             EmitirCierreMenuPersonajesTutorial(desdeHotkey);
             return;
         }
@@ -597,6 +643,8 @@ public class MenuCaravana : MonoBehaviour
         MenuPersonajes.SetActive(abrir);
         if (!abrir)
         {
+            menuPersonajesAbiertoPorHover = false;
+            personajeMenuPersonajesHover = null;
             EmitirCierreMenuPersonajesTutorial(desdeHotkey);
             return;
         }
@@ -612,6 +660,8 @@ public class MenuCaravana : MonoBehaviour
             }
         }
 
+        menuPersonajesAbiertoPorHover = desdeHover;
+        personajeMenuPersonajesHover = desdeHover ? personajeInicial : null;
         scMenuPersonajes.PrepararYAbrirMenu(personajeInicial);
         if (scMenuPersonajes.itemDesc != null)
         {

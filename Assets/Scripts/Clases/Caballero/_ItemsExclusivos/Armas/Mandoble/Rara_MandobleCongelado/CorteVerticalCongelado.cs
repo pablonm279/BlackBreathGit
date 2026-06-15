@@ -148,9 +148,10 @@ public class CorteVerticalCongelado : Habilidad
 
 
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
+       int bonusAtaqueTotal = bonusAtaque;
        if(ChequearTieneSiguesTu(objetivo))
        {
-         bonusAtaque += 5;
+         bonusAtaqueTotal += 5;
          danioMarca = 8;
          Destroy(objetivo.GetComponent<MarcaSiguesTu>());
 
@@ -165,7 +166,7 @@ public class CorteVerticalCongelado : Habilidad
 
 
 
-       int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarFuerza, bonusAtaque, criticoRango, objetivo, 1); // En habilidades caballero +1 a pifia, debilidad de Caballero
+       int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarFuerza, bonusAtaqueTotal, criticoRango, objetivo, 1); // En habilidades caballero +1 a pifia, debilidad de Caballero
        print("Resultado tirada "+resultadoTirada);
 
 

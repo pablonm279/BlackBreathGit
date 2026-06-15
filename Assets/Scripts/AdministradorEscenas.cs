@@ -1211,6 +1211,7 @@ public class AdministradorEscenas : MonoBehaviour
       return;
     }
     battleManager.RefrescarVfxClimaCalor(false);
+    battleManager.ConfigurarOrdenIniciativaPorEmboscada(esEmboscada);
     battleManager.SetLogCombateActivoPorEscena(true);
     // Silenciar logs de combate durante la preparación (buffs/estados iniciales)
     battleManager.silenciarLogCombate = true;
@@ -4371,7 +4372,7 @@ public class AdministradorEscenas : MonoBehaviour
         Herido.buffNombre = "Armadura Cuidada";
         Herido.boolfDebufftBuff = true;
         Herido.DuracionBuffRondas = -1;
-        Herido.cantArmadura += 3;
+        Herido.cantArmadura += 2;
         Herido.AplicarBuff(unidad);
         Buff buffComponent = ComponentCopier.CopyComponent(Herido, GO.gameObject);
       }
@@ -5089,7 +5090,8 @@ public class AdministradorEscenas : MonoBehaviour
       }
 
       float vidaSinBonusFuerza = unidad.HP_actual - unidad.ObtenerBonusVidaPorFuerzaActual();
-      return Mathf.Clamp(vidaSinBonusFuerza, 0f, pers.fVidaMaxima);
+      float vidaCampania = Mathf.Clamp(vidaSinBonusFuerza, 0f, pers.fVidaMaxima);
+      return unidad.HP_actual > 0f && vidaCampania < 1f ? 1f : vidaCampania;
     }
 
 

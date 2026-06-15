@@ -251,14 +251,15 @@ public class Partir : Habilidad
        print("Defensa: "+ defensaObjetivo);
 
        int danioMarca = 0;
+       int bonusAtaqueTotal = bonusAtaque;
        if(NIVEL > 2)
-       {bonusAtaque += 2;}
-       if(NIVEL == 5)
-       {criticoRangoHab += 1;}
+       {bonusAtaqueTotal += 2;}
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
+       if(NIVEL == 5)
+       {criticoRango += 1;}
        if(ChequearTieneSiguesTu(objetivo))
        {
-         bonusAtaque += 5;
+         bonusAtaqueTotal += 5;
          danioMarca = 8;
          Destroy(objetivo.GetComponent<MarcaSiguesTu>());
 
@@ -271,7 +272,7 @@ public class Partir : Habilidad
       
 
       
-       int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarFuerza, bonusAtaque, criticoRango, objetivo, 1); // En habilidades caballero +1 a pifia, debilidad de Caballero
+       int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarFuerza, bonusAtaqueTotal, criticoRango, objetivo, 1); // En habilidades caballero +1 a pifia, debilidad de Caballero
        print("Resultado tirada "+resultadoTirada);
 
 
@@ -374,12 +375,15 @@ public class Partir : Habilidad
     {
          VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_Partir");
 
-    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation);
-    vfx.transform.parent = objetivo.transform;
+    for (int i = 0; i < 3; i++)
+    {
+      GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation);
+      vfx.transform.parent = objetivo.transform;
      
-   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
-   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
-   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
+      //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
+      Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
+      RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);
+    }
 
     }
 

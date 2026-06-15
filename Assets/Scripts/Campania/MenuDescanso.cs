@@ -166,7 +166,7 @@ public class MenuDescanso : MonoBehaviour
 
       tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Día Libre</b></u>\n\n\n");
       tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se tomarán el día para descansar y recobrar fuerzas.\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se conseguirá 10 de Esperanza y el día siguiente arrancará con -1 Fatiga.</color>\n\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se conseguirá 10 de Esperanza y el día siguiente arrancará con -1 Fatiga. +10% Curación a personajes.</color>\n\n\n");
 
       chancesAtaqueACaravana = 20 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
       chancesExploracion = 50 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -548,6 +548,8 @@ public class MenuDescanso : MonoBehaviour
       { porcentajeVidaMax = porcentajeVidaMax * 1.1f; }
       if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoRecursos) //Bonus descansar en nodo de recursos
       { porcentajeVidaMax = porcentajeVidaMax * 1.2f; }
+      if (tareaCivilSeleccionada == 4) //Bonus por actividad civil Día Libre
+      { porcentajeVidaMax = porcentajeVidaMax * 1.1f; }
 
       if (pers.fVidaMaxima > pers.fVidaActual)
       {
