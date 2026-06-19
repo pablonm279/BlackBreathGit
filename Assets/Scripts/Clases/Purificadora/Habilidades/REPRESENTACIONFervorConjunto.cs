@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,7 +22,7 @@ public class REPRESENTACIONFervorConjunto : Habilidad
         string subtitulo = "<color=#4f5552>Pasiva: la Esperanza genera Fervor para la Purificadora.</color>";
         string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +
                         "<color=#44d3ec><b>Fuente:</b></color> <color=#ffffff>Esperanza de la caravana.</color>\n" +
-                        "<color=#44d3ec><b>Por Fervor:</b></color> <color=#ffffff>+1 danio Divino y 1 Barrera.</color>";
+                        "<color=#44d3ec><b>Por Fervor:</b></color> <color=#ffffff>+1 daño Divino y 1 Barrera.</color>";
 
         if (TRADU.i.nIdioma == 2)
         {

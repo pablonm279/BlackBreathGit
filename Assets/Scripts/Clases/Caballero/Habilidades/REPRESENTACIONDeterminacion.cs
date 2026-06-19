@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -219,7 +219,7 @@ public class REPRESENTACIONDeterminacion : Habilidad
         txtDescripcion += "<i>(Passiva)Seu compromisso com a causa e inquebravel.\n +5% de dano causado por cada Ponto de Valentia.</i>\n\n";
         txtDescripcion += "<i>Ao estar Motivado ganha +1 em Resistencias.\n";
         txtDescripcion += "<i>Ao estar Euforico ganha +1 de Ataque.\n";  
-        txtDescripcion += "<i>Comeca a batalha com 5 P. de Valentia.\n";    
+        txtDescripcion += "<i>Comeca a batalha com 5 P. de Valentia.\n";
       }
       if(NIVEL==5)
       {
@@ -241,9 +241,9 @@ public class REPRESENTACIONDeterminacion : Habilidad
     string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +
                     $"<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>+{danoPorValentia}% dano por cada punto de Valentia.</color>";
 
-    if (NIVEL >= 2) { cuerpo += "\n<color=#44d3ec><b>Motivado:</b></color> <color=#ffffff>" + iconoBuff + " +1 Tiradas de Salvacion.</color>"; }
+    if (NIVEL >= 2) { cuerpo += "\n<color=#44d3ec><b>Motivado:</b></color> <color=#ffffff>" + iconoBuff + " +1 Tiradas de Salvación.</color>"; }
     if (NIVEL >= 3) { cuerpo += "\n<color=#44d3ec><b>Euforico:</b></color> <color=#ffffff>" + iconoBuff + " +1 Ataque.</color>"; }
-    if (NIVEL == 4) { cuerpo += "\n<color=#44d3ec><b>Inicio:</b></color> <color=#ffffff>Comienza la batalla con 5 Valentia.</color>"; }
+    if (NIVEL == 4) { cuerpo += "\n<color=#44d3ec><b>Inicio:</b></color> <color=#ffffff>Comienza la batalla con 5 Valentía.</color>"; }
 
     string proximo = TextoProximoNivel();
     if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
@@ -306,8 +306,8 @@ public class REPRESENTACIONDeterminacion : Habilidad
     }
     else
     {
-      if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: Motivado tambien da +1 Tiradas de Salvacion.</color>"; }
-      if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: Euforico tambien da +1 Ataque.</color>"; }
+      if (NIVEL < 2) { return "<color=#dfea02>Próximo Nivel: Motivado tambien da +1 Tiradas de Salvación.</color>"; }
+      if (NIVEL == 2) { return "<color=#dfea02>Próximo Nivel: Euforico tambien da +1 Ataque.</color>"; }
       if (NIVEL == 3) { return "<color=#dfea02>Opcion A: comienza la batalla con 5 Valentia.\nOpcion B: +7% dano por punto de Valentia.</color>"; }
     }
 

@@ -68,15 +68,15 @@ public class REPRESENTACIONDanzaDelEstoque : Habilidad
             cuerpo += $"<color={colorEncabezado}><b>Execucao:</b></color> +{bonusDanio}% de dano contra inimigos com {umbralVida}% da vida maxima ou menos\n";
             cuerpo += $"<color={colorEncabezado}><b>Ao matar:</b></color> no proprio turno, ganha +{apAlMatar} AP imediatamente\n";
             cuerpo += $"<color={colorEncabezado}><b>{nombreBuff}:</b></color> 1 turno, acumulavel, +1, +15% Dano";
-            if (bonusCritPorcentaje > 0) { cuerpo += $", +{bonusCritPorcentaje}% Critico"; }
+            if (bonusCritPorcentaje > 0) { cuerpo += $", +{bonusCritPorcentaje}% Crítico"; }
         }
         else
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n";
-            cuerpo += $"<color={colorEncabezado}><b>Ejecucion:</b></color> +{bonusDanio}% de danio contra enemigos con {umbralVida}% de HP maximo o menos\n";
+            cuerpo += $"<color={colorEncabezado}><b>Ejecución:</b></color> +{bonusDanio}% de daño contra enemigos con {umbralVida}% de HP máximo o menos\n";
             cuerpo += $"<color={colorEncabezado}><b>Al matar:</b></color> en su propio turno, gana +{apAlMatar} AP inmediatamente\n";
-            cuerpo += $"<color={colorEncabezado}><b>{nombreBuff}:</b></color> 1 turno, acumulable, +1, +15% Danio";
-            if (bonusCritPorcentaje > 0) { cuerpo += $", +{bonusCritPorcentaje}% Critico"; }
+            cuerpo += $"<color={colorEncabezado}><b>{nombreBuff}:</b></color> 1 turno, acumulable, +1, +15% Daño";
+            if (bonusCritPorcentaje > 0) { cuerpo += $", +{bonusCritPorcentaje}% Crítico"; }
         }
 
         string titulo = esIngles ? "Sword Dance " + sufijoNivel : esPortugues ? "Danca do Estoque " + sufijoNivel : "Danza del Estoque " + sufijoNivel;
@@ -102,15 +102,15 @@ public class REPRESENTACIONDanzaDelEstoque : Habilidad
         }
         else if (esPortugues)
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% de limiar de vida maxima.</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% de limiar de vida máxima.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% de dano contra alvos no limiar.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 AP ao matar) ou Opcao B (+5% Critico em Dancando).</color>"; }
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% al umbral de HP maximo enemigo.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% danio contra unidades en el umbral.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 AP al matar) u Opcion B (+5% Critico a Danzando).</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% al umbral de HP máximo enemigo.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% daño contra unidades en el umbral.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1 AP al matar) u Opción B (+5% Crítico a Danzando).</color>"; }
         }
     }
 

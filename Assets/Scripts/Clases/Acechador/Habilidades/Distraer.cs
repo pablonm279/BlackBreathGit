@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -61,8 +61,8 @@ public class Distraer : Habilidad
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
-    int dcBase = NIVEL > 1 ? 13 : 12;
-    int apPenalty = -2;
+    int dcBase = NIVEL > 1 ? 15 : 14;
+    int apPenalty = -1;
     int defPenalty = -2;
     if (NIVEL > 2) { apPenalty -= 1; }
     if (NIVEL == 4) { apPenalty -= 1; defPenalty -= 1; }
@@ -142,15 +142,15 @@ public class Distraer : Habilidad
     }
     else if (esPortugues)
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na CD base da resistencia.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 AP max no debuff Distraido.</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 na CD base da resistencia.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: -1 AP max no debuff Distraido.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 reducao de AP max e +1 reducao de Defesa) ou Opcao B (ganhar Escondido II se estiver isolado).</color>"; }
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al DC base de TS.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 AP max en el debuff Distraido.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 reduccion de AP max y +1 reduccion de Defensa) u Opcion B (ganar Escondido II si esta aislado).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al DC base de TS.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: -1 AP max en el debuff Distraido.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1 reducción de AP max y +1 reducción de Defensa) u Opción B (ganar Escondido II si esta aislado).</color>"; }
     }
   }
 
@@ -173,7 +173,7 @@ public class Distraer : Habilidad
 
     if (obj is Unidad) //Acá van los efectos a Unidades.
     {
-      int DC = 12;
+      int DC = 14;
       if (NIVEL > 1) { DC++; }
       Unidad objetivo = (Unidad)obj;
       VFXAplicar(objetivo.gameObject);
@@ -186,7 +186,7 @@ public class Distraer : Habilidad
         buff.buffNombre = "Distraído";
         buff.boolfDebufftBuff = false;
         buff.DuracionBuffRondas = 2;
-        buff.cantAPMax -= 2;
+        buff.cantAPMax -= 1;
         buff.cantDefensa -= 2;
         if (NIVEL > 2) { buff.cantAPMax--; }
         if (NIVEL == 4) { buff.cantAPMax--; buff.cantDefensa--; }
@@ -217,7 +217,7 @@ public class Distraer : Habilidad
       return null;
     }
 
-    int dc = 12;
+    int dc = 14;
     if (NIVEL > 1)
     {
       dc++;

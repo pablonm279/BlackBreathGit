@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -221,7 +221,7 @@ public class REPRESENTACIONAuraSagrada : Habilidad
       string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +
                       "<color=#44d3ec><b>Objetivo:</b></color> <color=#ffffff>Aliados</color>\n" +
                       "<color=#44d3ec><b>Requisito:</b></color> <color=#ffffff>" + (requiereFervor ? "Purificadora con 1+ Fervor." : "No requiere Fervor.") + "</color>\n" +
-                      $"<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>+{barrera} Barrera, +{bonusDivino} danio Divino.</color>";
+                      $"<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>+{barrera} Barrera, +{bonusDivino} daño Divino.</color>";
 
       if (NIVEL == 5)
       {
@@ -299,9 +299,9 @@ public class REPRESENTACIONAuraSagrada : Habilidad
       }
       else
       {
-        if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: +1 Barrera.</color>"; }
-        if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +1 danio Divino.</color>"; }
-        if (NIVEL == 3) { return "<color=#dfea02>Opcion A: remueve requisito de Fervor.\nOpcion B: 3+ Fervor duplica bonificaciones.</color>"; }
+        if (NIVEL < 2) { return "<color=#dfea02>Próximo Nivel: +1 Barrera.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Próximo Nivel: +1 daño Divino.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opción A: remueve requisito de Fervor.\nOpción B: 3+ Fervor duplica bonificaciones.</color>"; }
       }
 
       return "";

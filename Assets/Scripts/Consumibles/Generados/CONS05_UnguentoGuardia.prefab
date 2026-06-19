@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 678a8b3ddc342ad468b974a204244880, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  persistentItemId: 
   imItem: {fileID: 21300000, guid: 33469342027fe4d4bae03eddd55af534, type: 3}
   sNombreItem: Unguento de Guardia
   IDEfectoEspecial: 0

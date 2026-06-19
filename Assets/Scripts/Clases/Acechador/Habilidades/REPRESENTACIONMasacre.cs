@@ -120,7 +120,7 @@ public class REPRESENTACIONMasacre : Habilidad
   string ProximoNivelPortugues()
   {
     if (!PuedeMostrarProximoNivel()) return "";
-    if (NIVEL < 2) return "- Proximo Nivel: +1 CD";
+    if (NIVEL < 2) return "- Próximo Nivel: +1 CD";
     if (NIVEL == 2) return "- Proximo Nivel: +5% de dano neste turno";
     if (NIVEL == 3) return "- Opcao A: Aterrorizado aplica -2 AP Max\n- Opcao B: +1 AP ao matar";
     return "";

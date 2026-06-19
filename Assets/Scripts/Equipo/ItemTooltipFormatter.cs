@@ -69,6 +69,11 @@ public static class ItemTooltipFormatter
         return texto.ToString();
     }
 
+    public static string ConstruirTooltipSoloEfectos(Item item)
+    {
+        return ConstruirBloqueEfectos(item);
+    }
+
     private static string FormatearTituloItem(string nombre)
     {
         if (string.IsNullOrWhiteSpace(nombre))

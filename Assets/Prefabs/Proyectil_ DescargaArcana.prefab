@@ -323,7 +323,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clip: {fileID: 8300000, guid: aef4b20cba471104c909bb3c00a6ac45, type: 3}
-  volumen: 1
+  volumen: 0.818
   pitch: 1.19
   delay: 0
 --- !u!1 &7229963349115915767

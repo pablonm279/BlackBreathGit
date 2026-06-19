@@ -204,16 +204,54 @@ public class Consumible : Item
         UsarConsumibleDesdeDatos(unidad);
     }
 
-    public void UsarConsumibleDesdeDatos(Unidad unidad)
+    public bool UsarConsumibleConRegistro(Unidad unidad)
     {
-        if (ejecutandoFallbackLegacy)
+        bool aplicado = UsarConsumibleDesdeDatos(unidad);
+        if (!aplicado)
+        {
+            return false;
+        }
+
+        RefrescarUITrasUso(unidad);
+        print("Consumible usado: " + sNombreItem + " en " + unidad);
+        return true;
+    }
+
+    private void RefrescarUITrasUso(Unidad unidad)
+    {
+        if (unidad == null || BattleManager.Instance == null)
         {
             return;
         }
 
+        if (BattleManager.Instance.scUIInfoChar != null)
+        {
+            BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
+        }
+    }
+
+    public bool TieneUsoConfigurado()
+    {
+        ConsumibleEfectoData data = ObtenerEfectoConsumibleNormalizado();
+        if (data.TieneEfecto())
+        {
+            return true;
+        }
+
+        var metodo = GetType().GetMethod(nameof(UsarConsumible));
+        return metodo != null && metodo.DeclaringType != typeof(Consumible);
+    }
+
+    public bool UsarConsumibleDesdeDatos(Unidad unidad)
+    {
+        if (ejecutandoFallbackLegacy)
+        {
+            return false;
+        }
+
         if (unidad == null)
         {
-            return;
+            return false;
         }
 
         ConsumibleEfectoData data = ObtenerEfectoConsumibleNormalizado();
@@ -227,13 +265,14 @@ public class Consumible : Item
                 try
                 {
                     UsarConsumible(unidad);
+                    return true;
                 }
                 finally
                 {
                     ejecutandoFallbackLegacy = false;
                 }
             }
-            return;
+            return false;
         }
 
         bool aplicoAlgo = false;
@@ -319,6 +358,8 @@ public class Consumible : Item
         {
             BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
         }
+
+        return aplicoAlgo;
     }
 
     public ConsumibleEfectoData ObtenerEfectoConsumibleNormalizado()
@@ -356,7 +397,7 @@ public class Consumible : Item
 
     private void AplicarDatosBuffConsumible(Buff buff, ConsumibleEfectoData data)
     {
-        if (buff == null || data == null)
+        if (ReferenceEquals(buff, null) || data == null)
         {
             return;
         }
@@ -423,7 +464,7 @@ public class Consumible : Item
 
     private static void CopiarBuffBase(Buff origen, Buff destino)
     {
-        if (origen == null || destino == null)
+        if (ReferenceEquals(origen, null) || ReferenceEquals(destino, null))
         {
             return;
         }
@@ -571,7 +612,3 @@ public class Consumible : Item
         return data;
     }
 }
-
-
-
-

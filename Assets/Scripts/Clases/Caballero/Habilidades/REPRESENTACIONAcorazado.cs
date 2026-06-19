@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -209,9 +209,9 @@ public class REPRESENTACIONAcorazado : Habilidad
       else if (NIVEL == 4) { umbralDanio = 10; }
 
       string titulo = $"Acorazado {SufijoNivel()}";
-      string subtitulo = $"<color=#4f5552>Pasiva: la Armadura solo baja si recibe {umbralDanio}+ dano fisico.</color>";
+      string subtitulo = $"<color=#4f5552>Pasiva: la Armadura solo baja si recibe {umbralDanio}+ daño físico.</color>";
       string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +
-                      $"<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>La Armadura se reduce solo al recibir {umbralDanio}+ dano fisico.</color>";
+                      $"<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>La Armadura se reduce solo al recibir {umbralDanio}+ daño físico.</color>";
 
       if (NIVEL == 5)
       {
@@ -281,9 +281,9 @@ public class REPRESENTACIONAcorazado : Habilidad
       }
       else
       {
-        if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: la Armadura se reduce con 7+ dano fisico.</color>"; }
-        if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: la Armadura se reduce con 8+ dano fisico.</color>"; }
-        if (NIVEL == 3) { return "<color=#dfea02>Opcion A: se reduce con 10+ dano fisico.\nOpcion B: la Armadura no baja de la mitad inicial.</color>"; }
+        if (NIVEL < 2) { return "<color=#dfea02>Próximo Nivel: la Armadura se reduce con 7+ daño físico.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Próximo Nivel: la Armadura se reduce con 8+ daño físico.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opción A: se reduce con 10+ daño físico.\nOpción B: la Armadura no baja de la mitad inicial.</color>"; }
       }
 
       return "";

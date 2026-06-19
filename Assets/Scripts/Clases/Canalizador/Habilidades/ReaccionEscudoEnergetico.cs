@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 //using UnityEditor.SearchService;
 using UnityEngine;
@@ -41,7 +41,7 @@ public class ReaccionEscudoEnergetico : Reaccion
 
         if (descargaArcana == null)
         {
-          Debug.LogWarning("ReaccionEscudoEnergetico no encontró DescargaArcana en la unidad.");
+          Debug.LogWarning("ReacciónEscudoEnergetico no encontró DescargaArcana en la unidad.");
           return;
         }
 

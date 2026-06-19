@@ -255,7 +255,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -344,7 +344,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0.07058823, b: 0.116061844, a: 0.105882354}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -437,7 +437,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.93333334}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -793,7 +793,6 @@ MonoBehaviour:
   sonidosRecibirDanio:
   - {fileID: 8300000, guid: 79023d9cb1ec18540bbb755c50c701fe, type: 3}
   - {fileID: 8300000, guid: e744c3797d344eb4e9b81f037945c425, type: 3}
-  - {fileID: 8300000, guid: 0a9770cc7b358f84183fc3ba4fb549c8, type: 3}
 --- !u!114 &3516505517758023242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1114,9 +1113,18 @@ MonoBehaviour:
   poseMover: {fileID: 21300000, guid: 17dfe033126c6af4c8f842ba05da5c46, type: 3}
   poseAtacar: {fileID: 21300000, guid: b022dda97e6cfeb438330fce0a0498c6, type: 3}
   poseHabilidad: {fileID: 21300000, guid: 15fd57bcd6a35e94a93b8b5fc8cc805b, type: 3}
+  poseRecibirDanio: {fileID: 0}
+  poseTurnoActivo: {fileID: 0}
   duracionPoseAtacar: 1
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1
+  meleeFraccionImpacto: 0.35
+  meleePreImpactoFallback: 0.22
+  meleePreImpactoMin: 0.08
+  meleePreImpactoMax: 0.42
+  meleePostImpacto: 0.16
+  meleePostImpactoMin: 0.05
+  meleePostImpactoMax: 0.3
 --- !u!1 &5939473797897287989
 GameObject:
   m_ObjectHideFlags: 0

@@ -121,13 +121,13 @@ public class DescargaDesintegradora : Habilidad
     else
     {
       cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
-      cuerpo += "<b>Objetivo:</b> Area en piramide\n";
-      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Pod ({poderActual})</color> + Ataque ({ataqueActual}) + 5 vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
-      cuerpo += $"<b>Danio:</b> {danioEs} | <b>Tipo:</b> Arcano\n";
+      cuerpo += "<b>Objetivo:</b> Área en piramide\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Pod ({poderActual})</color> + Ataque ({ataqueActual}) + 5 vs Defensa. Pifia: 1. Crítico: {criticoMin}-20\n";
+      cuerpo += $"<b>Daño:</b> {danioEs} | <b>Tipo:</b> Arcano\n";
       cuerpo += $"{lineaSalvacionEs}. Si falla TS: desintegrado (muerte instantanea)\n";
       cuerpo += consumeEnergia
-        ? "<b>Costo al lanzar:</b> -1 Nivel de Energia"
-        : "<b>Costo al lanzar:</b> No consume Nivel de Energia";
+        ? "<b>Costo al lanzar:</b> -1 Nivel de Energía"
+        : "<b>Costo al lanzar:</b> No consume Nivel de Energía";
       cuerpo += "\n";
       cuerpo += aturdeCaster
         ? "<b>Costo al lanzar:</b> El usuario queda Aturdido 1 turno"
@@ -138,7 +138,7 @@ public class DescargaDesintegradora : Habilidad
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})\n- Requires Energy Tier: {energiaRequerida}+"
       : esPortugues
         ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})\n- Requer Nivel de Energia: {energiaRequerida}+"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})\n- Requiere Nivel de Energia: {energiaRequerida}+";
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})\n- Requiere Nivel de Energía: {energiaRequerida}+";
 
     txtDescripcion = ConstruirDescripcionEstandar(
       esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
@@ -146,7 +146,7 @@ public class DescargaDesintegradora : Habilidad
         ? "At peak charge, the Channeler unleashes a high-risk detonation that can erase targets outright."
         : esPortugues
           ? "No auge da energia, o Canalizador libera uma detonacao de alto risco capaz de apagar alvos."
-        : "Con la energia al maximo, el Canalizador libera una detonacion de alto riesgo capaz de borrar objetivos.",
+        : "Con la energía al máximo, el Canalizador libera una detonacion de alto riesgo capaz de borrar objetivos.",
       cuerpo,
       costos,
       "#e67e22");
@@ -191,16 +191,16 @@ public class DescargaDesintegradora : Habilidad
       cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Area em piramide</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>{iconoEnergia} Nivel de Energia {energiaRequerida}+</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defesa. Falha critica: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Poder ({poderActual})</color>. Tipo: Arcano</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Poder ({poderActual})</color>. Tipo: Arcano</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Fortitude vs CD {dcDesintegracion}; se falhar: {iconoDebuff} morte instantanea</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Custo ao usar:</b></color> <color={colorValor}>{(consumeEnergia ? $"{iconoEnergia} -1 Nivel de Energia" : "Sem perda de Energia")}, {(aturdeCaster ? $"{iconoAturdido} usuario Atordoado 1 turno" : "sem auto Atordoar")}</color>";
     }
     else
     {
       cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia (5 alcance)</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Area en piramide</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Área en piramide</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>{iconoEnergia} Nivel de Energia {energiaRequerida}+</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Poder ({poderActual})</color>. Tipo: Arcano</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Fortaleza vs DC {dcDesintegracion}; si falla: {iconoDebuff} muerte instantanea</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Costo al lanzar:</b></color> <color={colorValor}>{(consumeEnergia ? $"{iconoEnergia} -1 Nivel de Energia" : "Sin perdida de Energia")}, {(aturdeCaster ? $"{iconoAturdido} usuario Aturdido 1 turno" : "sin auto Aturdir")}</color>";
@@ -227,14 +227,14 @@ public class DescargaDesintegradora : Habilidad
     else if (esPortugues)
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +8 de dano.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 CD de resistencia.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 CD de resistencia.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (sem atordoamento) ou Opcao B (sem perda de Energia).</color>"; }
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +8 de danio.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC de salvacion.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (sin aturdimiento) u Opcion B (sin perdida de Energia).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +8 de daño.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 DC de salvación.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (sin aturdimiento) u Opción B (sin perdida de Energía).</color>"; }
     }
   }
 
@@ -342,7 +342,7 @@ public class DescargaDesintegradora : Habilidad
       }
       else if (resultadoTirada == 3)
       {//CRITICO
-        print("Critico");
+        print("Crítico");
 
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + danioExtra + scEstaUnidad.mod_CarPoder;
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje + danioExtra);

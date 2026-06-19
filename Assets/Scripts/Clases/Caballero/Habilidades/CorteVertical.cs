@@ -72,7 +72,7 @@ public class Cortevertical : Habilidad
         ? "High-damage frontal melee attack against one target."
         : esPortugues
           ? "Ataque corpo a corpo frontal de alto dano contra um alvo."
-          : "Golpe melee frontal de alto danio contra un objetivo.";
+          : "Golpe melee frontal de alto daño contra un objetivo.";
 
       string cuerpo = "";
       if (esIngles)
@@ -92,9 +92,9 @@ public class Cortevertical : Habilidad
       else
       {
         cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
-        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstaculo en alcance frontal</color>\n";
-        cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>{ataqueTxt}{bonusAtaqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
-        cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>. Tipo: Cortante</color>";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstáculo en alcance frontal</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>{ataqueTxt}{bonusAtaqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>. Tipo: Cortante</color>";
       }
 
       string costos = esIngles
@@ -109,7 +109,7 @@ public class Cortevertical : Habilidad
           ? "A heavy downward strike with strong single-hit damage."
           : esPortugues
             ? "Um golpe descendente pesado com alto dano em um unico impacto."
-          : "Un golpe descendente pesado con danio alto en un solo impacto.",
+          : "Un golpe descendente pesado con daño alto en un solo impacto.",
         cuerpo,
         costos,
         "#5dade2");
@@ -213,7 +213,7 @@ public class Cortevertical : Habilidad
       }
       else if (resultadoTirada == 3)
       {//CRITICO
-        print("Critico");
+        print("Crítico");
 
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + scEstaUnidad.mod_CarFuerza + danioMarca;
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);

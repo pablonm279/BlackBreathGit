@@ -120,8 +120,8 @@ public class Partir : Habilidad
       {
         cuerpo += "<b>Tipo:</b> Melee\n";
         cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance frontal\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Critico: {criticoMin}-20\n";
-        cuerpo += $"<b>Danio:</b> {rangoDanio} + <color=#ea0606>Fue ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Crítico: {criticoMin}-20\n";
+        cuerpo += $"<b>Daño:</b> {rangoDanio} + <color=#ea0606>Fue ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
         cuerpo += $"<b>Penetracion de armadura:</b> {penetracionArmadura}\n";
         cuerpo += "<b>Si mata al objetivo:</b> todos los enemigos hacen TS\n";
         cuerpo += $"{lineaSalvacionEs}\n";
@@ -140,7 +140,7 @@ public class Partir : Habilidad
           ? "A crushing execution cut that can panic the entire enemy side on kill."
           : esPortugues
             ? "Um corte de execucao brutal que pode causar panico no lado inimigo ao matar."
-          : "Un corte de ejecucion brutal que puede entrar en panico al lado enemigo al matar.",
+          : "Un corte de ejecución brutal que puede entrar en panico al lado enemigo al matar.",
         cuerpo,
         costos,
         "#5dade2");
@@ -171,7 +171,7 @@ public class Partir : Habilidad
         cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque corpo a corpo</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo ou obstáculo no alcance frontal</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Força ({fuerzaActual})</color>{ataqueTxt} vs Defesa. Falha crítica: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Força ({fuerzaActual})</color>. Tipo: Cortante</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Força ({fuerzaActual})</color>. Tipo: Cortante</color>\n";
         if (penetracionArmadura > 0)
         {
           cuerpoFormato += $"<color={colorEncabezado}><b>Penetração de armadura:</b></color> <color={colorValor}>{penetracionArmadura}</color>\n";
@@ -214,14 +214,14 @@ public class Partir : Habilidad
       else if (esPortugues)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +4 de dano.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 no bonus de ataque.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +2 no bonus de ataque.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 CD do efeito ao matar) ou Opcao B (+5% Critico).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +4 de danio.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 al bono de ataque.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 DC del efecto al matar) u Opcion B (+5% Critico).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +4 de daño.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +2 al bono de ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+2 DC del efecto al matar) u Opción B (+5% Crítico).</color>"; }
       }
     }
 
@@ -322,7 +322,7 @@ public class Partir : Habilidad
       }
       else if (resultadoTirada == 3)
       {//CRITICO
-        print("Critico");
+        print("Crítico");
 
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + scEstaUnidad.mod_CarFuerza + 5 + danioMarca;
         if (NIVEL > 1) { danio += 4; }

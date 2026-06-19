@@ -54,8 +54,8 @@ public class EstocadaAstral : Estocada
         {
             cuerpo += "<b>Tipo:</b> Melee\n";
             cuerpo += "<b>Objetivo:</b> 1 enemigo en alcance frontal\n";
-            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza/Agilidad ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) vs Defensa. Pifia: 1. Critico: {criticoBaseMin}-20\n";
-            cuerpo += $"<b>Danio:</b> 1d8 + <color=#ea0606>Fuerza/Agilidad ({atributoMixtoActual})</color> | <b>Tipo:</b> Perforante\n";
+            cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fuerza/Agilidad ({atributoMixtoActual})</color> + Ataque ({ataqueActual}) vs Defensa. Pifia: 1. Crítico: {criticoBaseMin}-20\n";
+            cuerpo += $"<b>Daño:</b> 1d8 + <color=#ea0606>Fuerza/Agilidad ({atributoMixtoActual})</color> | <b>Tipo:</b> Perforante\n";
             cuerpo += $"<b>Penetracion de armadura:</b> {penetracionArmadura}\n";
             cuerpo += $"<b>Efecto del arma:</b> al impactar, aplica Marca Astral por {DuracionMarcaAstral} turnos si el objetivo falla una TS Mental\n";
             cuerpo += $"{lineaSalvacion}\n";
@@ -66,7 +66,7 @@ public class EstocadaAstral : Estocada
             ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
             : esPortugues
                 ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-                : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentia: {costoPM}\n- Esforzable: Si ({esforzable})";
+                : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
 
         txtDescripcion = ConstruirDescripcionEstandar(
             nombre,
@@ -104,16 +104,16 @@ public class EstocadaAstral : Estocada
             cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Tipo:</b></color> <color={colorValorNuevo}>Ataque corpo a corpo</color>\n";
             cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Alvo:</b></color> <color={colorValorNuevo}>1 inimigo ou obstaculo no alcance frontal corpo a corpo</color>\n";
             cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Rolagem:</b></color> <color={colorValorNuevo}>1d20 + {atributoNuevo}{bonusTiradaNuevo} vs Defesa. Falha critica: 5%. Critico: {criticoPorcentajeNuevo}%</color>\n";
-            cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Dano:</b></color> <color={colorValorNuevo}>{rangoDanioNuevo} + {atributoNuevo}. Tipo: Perfurante</color>\n";
+            cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Daño:</b></color> <color={colorValorNuevo}>{rangoDanioNuevo} + {atributoNuevo}. Tipo: Perfurante</color>\n";
             if (penetracionArmadura > 0) { cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Penetracao de armadura:</b></color> <color={colorValorNuevo}>{penetracionArmadura}</color>\n"; }
             cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Efeito da arma:</b></color> <color={colorValorNuevo}>{efectoNuevo}</color>";
         }
         else
         {
             cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Tipo:</b></color> <color={colorValorNuevo}>Ataque melee</color>\n";
-            cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Objetivo:</b></color> <color={colorValorNuevo}>1 enemigo u obstaculo en alcance melee frontal</color>\n";
-            cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Tirada:</b></color> <color={colorValorNuevo}>1d20 + {atributoNuevo}{bonusTiradaNuevo} vs Defensa. Pifia: 5%. Critico: {criticoPorcentajeNuevo}%</color>\n";
-            cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Dano:</b></color> <color={colorValorNuevo}>{rangoDanioNuevo} + {atributoNuevo}. Tipo: Perforante</color>\n";
+            cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Objetivo:</b></color> <color={colorValorNuevo}>1 enemigo u obstáculo en alcance melee frontal</color>\n";
+            cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Tirada:</b></color> <color={colorValorNuevo}>1d20 + {atributoNuevo}{bonusTiradaNuevo} vs Defensa. Pifia: 5%. Crítico: {criticoPorcentajeNuevo}%</color>\n";
+            cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Daño:</b></color> <color={colorValorNuevo}>{rangoDanioNuevo} + {atributoNuevo}. Tipo: Perforante</color>\n";
             if (penetracionArmadura > 0) { cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Penetracion de armadura:</b></color> <color={colorValorNuevo}>{penetracionArmadura}</color>\n"; }
             cuerpoNuevo += $"<color={colorEncabezadoNuevo}><b>Efecto del arma:</b></color> <color={colorValorNuevo}>{efectoNuevo}</color>";
         }

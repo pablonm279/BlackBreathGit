@@ -30,7 +30,7 @@ public class REPRESENTACIONAcrobatico : Habilidad
                       $"<color={colorEncabezado}><b>Activacion:</b></color> Comienzo de combate\n" +
                       $"<color={colorEncabezado}><b>Efecto:</b></color> +{evasion} Evasion" +
                       (reflejos > 0 ? $", +{reflejos} Reflejos" : "") + "\n" +
-                      $"<color={colorEncabezado}><b>Evasion:</b></color> Se suma a Defensa y se pierde al recibir danio";
+                      $"<color={colorEncabezado}><b>Evasion:</b></color> Se suma a Defensa y se pierde al recibir daño";
 
       if (esIngles)
       {
@@ -86,15 +86,15 @@ public class REPRESENTACIONAcrobatico : Habilidad
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: +1 TS Reflexos.</color>"; }
-        if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +1 Evasao.</color>"; }
+        if (NIVEL < 2) { return "<color=#dfea02>Próximo Nivel: +1 TS Reflexos.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Próximo Nivel: +1 Evasao.</color>"; }
         if (NIVEL == 3) { return "<color=#dfea02>Opcao A/B: +1 Evasao.</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: +1 TS Reflejos.</color>"; }
-        if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +1 Evasion.</color>"; }
-        if (NIVEL == 3) { return "<color=#dfea02>Opcion A/B: +1 Evasion.</color>"; }
+        if (NIVEL < 2) { return "<color=#dfea02>Próximo Nivel: +1 TS Reflejos.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Próximo Nivel: +1 Evasion.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opción A/B: +1 Evasion.</color>"; }
       }
 
       return "";

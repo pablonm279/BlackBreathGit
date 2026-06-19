@@ -115,12 +115,12 @@ public class Vigilancia : Habilidad
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Preparacion reactiva a distancia ({6} alcance)\n";
       cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo; crea una zona 3x3 centrada en su casilla\n";
-      cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentia; requiere {requiereRecurso} Flechas\n";
+      cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentía; requiere {requiereRecurso} Flechas\n";
       cuerpo += $"<color={colorEncabezado}><b>Preparacion:</b></color> casillas vacias de la zona se vuelven trampas de 1 turno, 1 uso cada una\n";
       cuerpo += $"<color={colorEncabezado}><b>Limite reactivo:</b></color> hasta {disparosPorUso} disparos en total; consume 1 Flecha por disparo\n";
       cuerpo += $"<color={colorEncabezado}><b>Tirada reactiva:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
-      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
-      cuerpo += $"<color={colorEncabezado}><b>Danio reactivo:</b></color> {rangoDanioReaccion} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Daño reactivo:</b></color> {rangoDanioReaccion} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
       cuerpo += $"<color={colorEncabezado}><b>Flujo de turno:</b></color> termina turno";
     }
 
@@ -153,9 +153,9 @@ public class Vigilancia : Habilidad
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bonus de tirada reactiva.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bonus de tirada reactiva.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valentia) u Opcion B (+1 disparo reactivo y +1 Flecha requerida).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al bonus de tirada reactiva.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al bonus de tirada reactiva.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (-1 costo de Valentía) u Opción B (+1 disparo reactivo y +1 Flecha requerida).</color>"; }
       }
     }
 

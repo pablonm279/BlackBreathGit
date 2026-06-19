@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -85,18 +85,18 @@ public class BombaDeHumo : Habilidad
         cuerpo += $"<color={colorEncabezado}><b>Ao usar:</b></color> cria armadilhas de fumaca em area de raio {radioZona} ao redor da celula alvo\n";
         cuerpo += $"<color={colorEncabezado}><b>Armadilha de fumaca:</b></color> 30 usos, {duracionHumo} turnos de duracao, persistente\n";
         cuerpo += $"<color={colorEncabezado}><b>Ao ativar (qualquer unidade):</b></color> concede Escondido (1) se nao estava escondido\n";
-        cuerpo += $"<color={colorEncabezado}><b>Unidades que nao sao Acechador:</b></color> 2 turnos, +2 Ataque, +5% Critico";
+        cuerpo += $"<color={colorEncabezado}><b>Unidades que nao sao Acechador:</b></color> 2 turnos, +2 Ataque, +5% Crítico";
       }
       else
       {
         cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Trampa de utilidad (4 alcance)\n";
         cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 casilla en rango\n";
         cuerpo += $"<color={colorEncabezado}><b>Tirada/TS:</b></color> no tiene\n";
-        cuerpo += $"<color={colorEncabezado}><b>Costo Valentia:</b></color> {costoPM}\n";
-        cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> crea trampas de humo en area de radio {radioZona} alrededor de la casilla objetivo\n";
-        cuerpo += $"<color={colorEncabezado}><b>Trampa de humo:</b></color> 30 usos, {duracionHumo} turnos de duracion, persistente\n";
+        cuerpo += $"<color={colorEncabezado}><b>Costo Valentía:</b></color> {costoPM}\n";
+        cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> crea trampas de humo en área de radio {radioZona} alrededor de la casilla objetivo\n";
+        cuerpo += $"<color={colorEncabezado}><b>Trampa de humo:</b></color> 30 usos, {duracionHumo} turnos de duración, persistente\n";
         cuerpo += $"<color={colorEncabezado}><b>Al activar (cualquier unidad):</b></color> otorga Escondido (1) si no estaba escondido\n";
-        cuerpo += $"<color={colorEncabezado}><b>Unidades no Acechador:</b></color> 2 turnos, +2 Ataque, +5% Critico";
+        cuerpo += $"<color={colorEncabezado}><b>Unidades no Acechador:</b></color> 2 turnos, +2 Ataque, +5% Crítico";
       }
 
       string subtitulo = esIngles
@@ -130,9 +130,9 @@ public class BombaDeHumo : Habilidad
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 costo AP.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 turno de duracion de humo) u Opcion B (area radio 2).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: -1 enfriamiento.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: -1 costo AP.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1 turno de duración de humo) u Opción B (área radio 2).</color>"; }
       }
     }
     void Start()

@@ -17,7 +17,8 @@ public enum FloatingTextContext
     BuffApply = 7,
     BuffEnd = 8,
     ValourGain = 9,
-    ValourLoss = 10
+    ValourLoss = 10,
+    ArmorAbsorb = 11
 }
 
 [Serializable]
@@ -131,6 +132,7 @@ public class FloatingTextAnimator : MonoBehaviour
     [SerializeField] private FloatingTextProfile damageProfile = CreateDamageProfile();
     [SerializeField] private FloatingTextProfile criticalProfile = CreateCriticalProfile();
     [SerializeField] private FloatingTextProfile blockProfile = CreateBlockProfile();
+    [SerializeField] private FloatingTextProfile armorAbsorbProfile = CreateArmorAbsorbProfile();
     [SerializeField] private FloatingTextProfile healProfile = CreateHealProfile();
     [SerializeField] private FloatingTextProfile resistProfile = CreateResistProfile();
     [SerializeField] private FloatingTextProfile missProfile = CreateMissProfile();
@@ -158,6 +160,7 @@ public class FloatingTextAnimator : MonoBehaviour
         damageProfile?.Validate();
         criticalProfile?.Validate();
         blockProfile?.Validate();
+        armorAbsorbProfile?.Validate();
         healProfile?.Validate();
         resistProfile?.Validate();
         missProfile?.Validate();
@@ -294,6 +297,10 @@ public class FloatingTextAnimator : MonoBehaviour
             case FloatingTextContext.Block:
                 if (blockProfile != null) { return FloatingTextProfile.Clone(blockProfile); }
                 break;
+            case FloatingTextContext.ArmorAbsorb:
+                if (armorAbsorbProfile != null) { return FloatingTextProfile.Clone(armorAbsorbProfile); }
+                if (blockProfile != null) { return FloatingTextProfile.Clone(blockProfile); }
+                break;
             case FloatingTextContext.Heal:
                 if (healProfile != null) { return FloatingTextProfile.Clone(healProfile); }
                 break;
@@ -410,6 +417,11 @@ public class FloatingTextAnimator : MonoBehaviour
                 new Keyframe(0.15f, 1.04f),
                 new Keyframe(1f, 0.97f))
         };
+    }
+
+    private static FloatingTextProfile CreateArmorAbsorbProfile()
+    {
+        return CreateBlockProfile();
     }
 
     private static FloatingTextProfile CreateHealProfile()

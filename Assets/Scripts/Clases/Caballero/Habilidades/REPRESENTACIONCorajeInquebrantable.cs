@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,9 +29,9 @@ public class REPRESENTACIONCorajeInquebrantable : Habilidad
     public override void ActualizarDescripcion()
     {
       string titulo = "Coraje Inquebrantable";
-      string subtitulo = "<color=#4f5552>Pasiva: la Valentia no baja de 0.</color>";
+      string subtitulo = "<color=#4f5552>Pasiva: la Valentía no baja de 0.</color>";
       string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +
-                      "<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>Los puntos de Valentia nunca quedan por debajo de 0.</color>";
+                      "<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>Los puntos de Valentía nunca quedan por debajo de 0.</color>";
 
       if (TRADU.i.nIdioma == 2)
       {
@@ -43,7 +43,7 @@ public class REPRESENTACIONCorajeInquebrantable : Habilidad
       else if (TRADU.i.nIdioma == 3)
       {
         titulo = "Coragem Inquebravel";
-        subtitulo = "<color=#4f5552>Passiva: Valentia nao baixa de 0.</color>";
+        subtitulo = "<color=#4f5552>Passiva: Valentía nao baixa de 0.</color>";
         cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Passiva</color>\n" +
                  "<color=#44d3ec><b>Efeito:</b></color> <color=#ffffff>Os pontos de Valentia nunca ficam abaixo de 0.</color>";
       }

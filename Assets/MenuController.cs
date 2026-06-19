@@ -59,7 +59,10 @@ public class MenuController : MonoBehaviour
 
         AplicarVersionesIdioma();
 
-        Opciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
+        if (Opciones != null)
+        {
+            Opciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
+        }
     }
 
     void OnEnable()

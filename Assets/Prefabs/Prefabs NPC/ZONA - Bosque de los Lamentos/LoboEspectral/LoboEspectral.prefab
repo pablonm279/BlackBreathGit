@@ -63,7 +63,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -137,7 +137,6 @@ GameObject:
   - component: {fileID: 246849736186351410}
   - component: {fileID: 4025668627226190853}
   - component: {fileID: 4829865122741183206}
-  - component: {fileID: 4032195806640965824}
   - component: {fileID: 205814929933279108}
   - component: {fileID: 328258012268738169}
   - component: {fileID: 2732777772784433487}
@@ -238,8 +237,8 @@ MonoBehaviour:
   mod_ResNecro: 4
   at_ResDivino: 0
   mod_ResDivino: 0
-  at_Defensa: 12
-  mod_Defensa: 12
+  at_Defensa: 13
+  mod_Defensa: 13
   Defensa_AtaquesRepetidosRonda: 0
   Defensa_BonusPASinUsar: 0
   at_Ataque: 2
@@ -344,7 +343,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.6, y: 0.95, z: 0.6}
+  m_Size: {x: 0.39, y: 0.88, z: 0.42}
   m_Center: {x: 0, y: 0.62, z: 0}
 --- !u!114 &4025668627226190853
 MonoBehaviour:
@@ -401,41 +400,6 @@ MonoBehaviour:
   XdDanio: 1
   daniodX: 6
   tipoDanio: 2
---- !u!114 &4032195806640965824
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1216717484583080327}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec2fc6997ccd0c847a3c9af7ff3ae26d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nombre: 
-  vfxImpacto: {fileID: 0}
-  vfxCasteo: {fileID: 0}
-  hAncho: 1
-  hAlcance: 1
-  esMelee: 1
-  afectaObstaculos: 1
-  fuerzaPoseAtaque: 0
-  omitirAnimacionDeUso: 0
-  omitirFocoCamara: 0
-  intensidadFocoCamara: 1
-  hCooldownMax: 2
-  hActualCooldown: 2
-  Usuario: {fileID: 0}
-  scEstaUnidad: {fileID: 0}
-  esHostil: 1
-  prioridad: 3
-  costoAP: 3
-  pPrioridad: 3
-  bonusAtaque: 3
-  XdDanio: 2
-  daniodX: 6
-  tipoDanio: 4
 --- !u!95 &205814929933279108
 Animator:
   serializedVersion: 7
@@ -685,9 +649,18 @@ MonoBehaviour:
   poseMover: {fileID: 21300000, guid: 67a65384f8150c344a6af525fcf6fbf8, type: 3}
   poseAtacar: {fileID: 21300000, guid: 37f7dcca4064b5e45b29763dd750c4f6, type: 3}
   poseHabilidad: {fileID: 21300000, guid: 37f7dcca4064b5e45b29763dd750c4f6, type: 3}
+  poseRecibirDanio: {fileID: 0}
+  poseTurnoActivo: {fileID: 0}
   duracionPoseAtacar: 1
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1
+  meleeFraccionImpacto: 0.35
+  meleePreImpactoFallback: 0.22
+  meleePreImpactoMin: 0.08
+  meleePreImpactoMax: 0.42
+  meleePostImpacto: 0.16
+  meleePostImpactoMin: 0.05
+  meleePostImpactoMax: 0.3
 --- !u!1 &1222569005234699974
 GameObject:
   m_ObjectHideFlags: 0
@@ -5692,7 +5665,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.7264151, g: 0, b: 0, a: 0.105882354}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5785,7 +5758,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.8862745}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

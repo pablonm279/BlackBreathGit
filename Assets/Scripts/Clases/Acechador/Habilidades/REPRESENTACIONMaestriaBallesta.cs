@@ -32,7 +32,7 @@ public class REPRESENTACIONMaestriaBallesta : Habilidad
 
     if (critico > 0)
     {
-      bonificador += $", +{critico}% Critico";
+      bonificador += $", +{critico}% Crítico";
     }
     if (alcance)
     {
@@ -75,7 +75,7 @@ public class REPRESENTACIONMaestriaBallesta : Habilidad
       tipo = "Passiva";
       aplica = "Ataques com besta de mao";
       bonificador = "+1 Ataque, +2 de dano Perfurante";
-      if (critico > 0) bonificador += $", +{critico}% Critico";
+      if (critico > 0) bonificador += $", +{critico}% Crítico";
       if (alcance) bonificador += ", +1 alcance";
       extra = reduceAp ? "-1 custo AP" : "";
       if (sinCooldown) extra += string.IsNullOrEmpty(extra) ? "Sem recarga" : ", sem recarga";
@@ -119,7 +119,7 @@ public class REPRESENTACIONMaestriaBallesta : Habilidad
   string ProximoNivel()
   {
     if (!PuedeMostrarProximoNivel()) return "";
-    if (NIVEL < 2) return "- Próximo Nivel: +5% Critico";
+    if (NIVEL < 2) return "- Próximo Nivel: +5% Crítico";
     if (NIVEL == 2) return "- Próximo Nivel: -1 costo AP";
     if (NIVEL == 3) return "- Opción A: +1 alcance\n- Opción B: remueve cooldown";
     return "";
@@ -137,7 +137,7 @@ public class REPRESENTACIONMaestriaBallesta : Habilidad
   string ProximoNivelPortugues()
   {
     if (!PuedeMostrarProximoNivel()) return "";
-    if (NIVEL < 2) return "- Proximo Nivel: +5% Critico";
+    if (NIVEL < 2) return "- Próximo Nivel: +5% Crítico";
     if (NIVEL == 2) return "- Proximo Nivel: -1 custo AP";
     if (NIVEL == 3) return "- Opcao A: +1 alcance\n- Opcao B: remove recarga";
     return "";

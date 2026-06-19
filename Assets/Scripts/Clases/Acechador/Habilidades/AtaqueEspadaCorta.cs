@@ -114,10 +114,10 @@ public class AtaqueEspadaCorta : Habilidad
       else
       {
         cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
-        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstaculo en alcance melee frontal\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstáculo en alcance melee frontal\n";
         cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
-        cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
-        cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante";
+        cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
+        cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante";
         if (nivelMaestria > 0)
         {
           cuerpo += $"\n<color={colorEncabezado}><b>Pasiva:</b></color> Maestria con Espada Corta (Tier {nivelMaestria})";
@@ -160,7 +160,7 @@ public class AtaqueEspadaCorta : Habilidad
       damExtra += 2;
       if (TRADU.i.nIdioma == 1)
       {
-        txtDescripcion += "\n\n<i>Maestria con Espada Corta agrega: +1 Ataque +2 Danio.</i>\n\n";
+        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño.</i>\n\n";
       }
       if (TRADU.i.nIdioma == 2)
       {
@@ -178,7 +178,7 @@ public class AtaqueEspadaCorta : Habilidad
       criticoRangoHab = 1;
       if (TRADU.i.nIdioma == 1)
       {
-        txtDescripcion += "\n\n<i>Maestria con Espada Corta agrega: +1 Ataque +2 Danio +5% Critico.</i>\n\n";
+        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Dañio +5% Crítico.</i>\n\n";
       }
       if (TRADU.i.nIdioma == 2)
       {
@@ -197,7 +197,7 @@ public class AtaqueEspadaCorta : Habilidad
       costoAP -= 1; //costo AP -1
       if (TRADU.i.nIdioma == 1)
       {
-        txtDescripcion += "\n\n<i>Maestria con Espada Corta agrega: +1 Ataque +2 Danio +5% Critico, -1 AP.</i>\n\n";
+        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +5% Crítico, -1 AP.</i>\n\n";
       }
       if (TRADU.i.nIdioma == 2)
       {
@@ -216,7 +216,7 @@ public class AtaqueEspadaCorta : Habilidad
       costoAP -= 1; //costo AP -1
       if (TRADU.i.nIdioma == 1)
       {
-        txtDescripcion += "\n\n<i>Maestria con Espada Corta agrega: +1 Ataque +4 Danio +10% Critico.</i>\n\n";
+        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +10% Crítico.</i>\n\n";
       }
       if (TRADU.i.nIdioma == 2)
       {
@@ -235,7 +235,7 @@ public class AtaqueEspadaCorta : Habilidad
       costoAP -= 1; //costo AP -1
       if (TRADU.i.nIdioma == 1)
       {
-        txtDescripcion += "\n\n<i>Maestria con Espada Corta agrega: +2 Ataque +4 Danio +5% Critico.</i>\n\n";
+        txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +2 Ataque +4 Daño +5% Crítico.</i>\n\n";
       }
       if (TRADU.i.nIdioma == 2)
       {
@@ -305,7 +305,7 @@ public class AtaqueEspadaCorta : Habilidad
       }
       else if (resultadoTirada == 3)
       {//CRITICO
-        print("Critico");
+        print("Crítico");
 
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + 2 + damExtra + scEstaUnidad.mod_CarFuerza + danioMarca;
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);

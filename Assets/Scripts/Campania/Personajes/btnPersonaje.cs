@@ -7,6 +7,8 @@ using TMPro;
 
 public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
+  private const float IntervaloAutoRefrescoRetratoCampania = 0.2f;
+
   public Personaje personajeRepresentado;
   RefuerzoAliadoCaravanaOrdenItem refuerzoCaravanaRepresentado;
   SequitoCuranderos sequitoCuranderosTratamiento;
@@ -25,6 +27,8 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
   int ultimoFrameArrastre = -1000;
   bool abreMenuPersonajesAlHover;
   bool reenvioArrastreConfigurado;
+  float proximoAutoRefrescoRetratoCampania;
+  int firmaVisualRetratoCampania = int.MinValue;
 
   private void Awake()
   {
@@ -379,6 +383,23 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
 
   }
+
+  private void Update()
+  {
+    if (!abreMenuPersonajesAlHover || personajeRepresentado == null)
+    {
+      return;
+    }
+
+    if (Time.unscaledTime < proximoAutoRefrescoRetratoCampania)
+    {
+      return;
+    }
+
+    proximoAutoRefrescoRetratoCampania = Time.unscaledTime + IntervaloAutoRefrescoRetratoCampania;
+    RefrescarRetratoCampaniaSiCambio();
+  }
+
   public void RepresentarTodo()
   {
     if (personajeRepresentado != null && CampaignManager.Instance != null)
@@ -391,6 +412,50 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     representarinfo();
     representarVida();
     RepresentarIconos();
+    firmaVisualRetratoCampania = CalcularFirmaVisualRetratoCampania();
+  }
+
+  private void RefrescarRetratoCampaniaSiCambio()
+  {
+    int firmaActual = CalcularFirmaVisualRetratoCampania();
+    if (firmaActual == firmaVisualRetratoCampania)
+    {
+      return;
+    }
+
+    RepresentarTodo();
+  }
+
+  private int CalcularFirmaVisualRetratoCampania()
+  {
+    if (personajeRepresentado == null)
+    {
+      return 0;
+    }
+
+    unchecked
+    {
+      int hash = 17;
+      hash = hash * 31 + Mathf.RoundToInt(personajeRepresentado.fVidaActual * 100f);
+      hash = hash * 31 + Mathf.RoundToInt(personajeRepresentado.fVidaMaxima * 100f);
+      hash = hash * 31 + Mathf.RoundToInt(personajeRepresentado.fExperienciaActual * 100f);
+      hash = hash * 31 + Mathf.RoundToInt(personajeRepresentado.fNivelActual * 100f);
+      hash = hash * 31 + personajeRepresentado.NivelPuntoAtributo;
+      hash = hash * 31 + personajeRepresentado.NivelPuntoHabilidad;
+      hash = hash * 31 + personajeRepresentado.NivelPuntoTS;
+      hash = hash * 31 + personajeRepresentado.ActividadSeleccionada;
+      hash = hash * 31 + (personajeRepresentado.ActividadFijada ? 1 : 0);
+      hash = hash * 31 + (personajeRepresentado.Camp_Muerto ? 1 : 0);
+      hash = hash * 31 + (personajeRepresentado.Camp_Herido ? 1 : 0);
+      hash = hash * 31 + (personajeRepresentado.Camp_Corrupto ? 1 : 0);
+      hash = hash * 31 + personajeRepresentado.Camp_Enfermo;
+      hash = hash * 31 + personajeRepresentado.Camp_Moral;
+      hash = hash * 31 + (personajeRepresentado.Camp_Fatigado ? 1 : 0);
+      hash = hash * 31 + personajeRepresentado.Camp_Bendecido;
+      hash = hash * 31 + (personajeRepresentado.Camp_Avergonzado ? 1 : 0);
+      hash = hash * 31 + (personajeRepresentado.spRetrato != null ? personajeRepresentado.spRetrato.GetInstanceID() : 0);
+      return hash;
+    }
   }
   public void RepresentarIconos()
   {

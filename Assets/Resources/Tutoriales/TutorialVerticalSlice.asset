@@ -139,7 +139,7 @@ MonoBehaviour:
     panelAnchor: 0
     panelOffset: {x: 0, y: 0}
     compactPanelSize: {x: 440, y: 190}
-    showPointer: 1
+    showPointer: 0
     showHighlight: 1
     pointerDirection: 0
     pointerOffset: {x: -75, y: 0}
@@ -293,7 +293,7 @@ MonoBehaviour:
     panelAnchor: 1
     panelOffset: {x: 0, y: 0}
     compactPanelSize: {x: 575, y: 550}
-    showPointer: 1
+    showPointer: 0
     showHighlight: 1
     pointerDirection: 3
     pointerOffset: {x: 0, y: 55}
@@ -365,7 +365,7 @@ MonoBehaviour:
     highlightScale: 1
     highlightScaleXY: {x: 3.2, y: 2.2}
     advanceMode: 1
-    inputBlockMode: 1
+    inputBlockMode: 0
     showNextButton: 0
     canGoBack: 0
     canSkip: 0
@@ -389,7 +389,7 @@ MonoBehaviour:
     panelAnchor: 0
     panelOffset: {x: 0, y: 0}
     compactPanelSize: {x: 440, y: 190}
-    showPointer: 1
+    showPointer: 0
     showHighlight: 1
     pointerDirection: 0
     pointerOffset: {x: -75, y: 0}
@@ -510,8 +510,8 @@ MonoBehaviour:
     showPointer: 1
     showHighlight: 1
     pointerDirection: 0
-    pointerOffset: {x: -45, y: 0}
-    pointerScale: 0.7
+    pointerOffset: {x: -52, y: 0}
+    pointerScale: 0.6
     highlightScale: 1
     highlightScaleXY: {x: 1, y: 1}
     advanceMode: 1
@@ -569,7 +569,7 @@ MonoBehaviour:
     panelAnchor: 0
     panelOffset: {x: 0, y: 0}
     compactPanelSize: {x: 440, y: 190}
-    showPointer: 1
+    showPointer: 0
     showHighlight: 1
     pointerDirection: 0
     pointerOffset: {x: -75, y: 0}
@@ -629,7 +629,7 @@ MonoBehaviour:
     panelAnchor: 0
     panelOffset: {x: 0, y: 0}
     compactPanelSize: {x: 440, y: 190}
-    showPointer: 1
+    showPointer: 0
     showHighlight: 1
     pointerDirection: 0
     pointerOffset: {x: -75, y: 0}
@@ -657,7 +657,7 @@ MonoBehaviour:
     panelAnchor: 0
     panelOffset: {x: 0, y: 0}
     compactPanelSize: {x: 440, y: 190}
-    showPointer: 1
+    showPointer: 0
     showHighlight: 1
     pointerDirection: 0
     pointerOffset: {x: -75, y: 0}
@@ -692,8 +692,8 @@ MonoBehaviour:
     showPointer: 1
     showHighlight: 1
     pointerDirection: 3
-    pointerOffset: {x: 0, y: 110}
-    pointerScale: 0.85
+    pointerOffset: {x: 0, y: 115}
+    pointerScale: 0.75
     highlightScale: 1.5
     highlightScaleXY: {x: 1.22, y: 1.1}
     advanceMode: 1
@@ -723,7 +723,7 @@ MonoBehaviour:
     showHighlight: 1
     pointerDirection: 3
     pointerOffset: {x: -6, y: -340}
-    pointerScale: 0.85
+    pointerScale: 0.75
     highlightScale: 1.5
     highlightScaleXY: {x: 4.1, y: 0.78}
     advanceMode: 1
@@ -751,7 +751,7 @@ MonoBehaviour:
     panelAnchor: 0
     panelOffset: {x: 0, y: 0}
     compactPanelSize: {x: 455, y: 190}
-    showPointer: 1
+    showPointer: 0
     showHighlight: 1
     pointerDirection: 2
     pointerOffset: {x: 0, y: -65}
@@ -925,7 +925,7 @@ MonoBehaviour:
     panelAnchor: 0
     panelOffset: {x: 0, y: 0}
     compactPanelSize: {x: 440, y: 190}
-    showPointer: 1
+    showPointer: 0
     showHighlight: 1
     pointerDirection: 0
     pointerOffset: {x: -75, y: 0}

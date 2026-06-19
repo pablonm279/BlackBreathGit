@@ -130,12 +130,12 @@ public class Rafaga : Habilidad
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia ({hAlcance} alcance, ancho {hAncho})\n";
       cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo; continua al siguiente enemigo si el objetivo muere\n";
-      cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentia; requiere 1 Flecha\n";
+      cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentía; requiere 1 Flecha\n";
       cuerpo += $"<color={colorEncabezado}><b>Bucle:</b></color> repite mientras AP actuales y Flechas sean mayores que 0\n";
       cuerpo += $"<color={colorEncabezado}><b>Por disparo:</b></color> consume 1 AP y 1 Flecha\n";
       cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
-      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
-      cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
       cuerpo += $"<color={colorEncabezado}><b>Flujo de turno:</b></color> termina turno";
     }
 
@@ -168,9 +168,9 @@ public class Rafaga : Habilidad
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bonus de tirada.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valentia) u Opcion B (+2 al bonus de tirada).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al bonus de tirada.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: -1 enfriamiento.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (-1 costo de Valentía) u Opción B (+2 al bonus de tirada).</color>"; }
       }
     }
 
@@ -348,7 +348,7 @@ public class Rafaga : Habilidad
        }
        else if (resultadoTirada == 3)
        {//CRITICO
-         print("Critico");
+         print("Crítico");
 
          float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+1+scEstaUnidad.mod_CarAgilidad;
          danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje+danioMarca);

@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class HandbookManager : MonoBehaviour
 {
+    private const int SolapaInicial = 1;
+
     public GameObject solapaZonas;
     public GameObject solapaMapa;
     public GameObject solapaCiviles;
@@ -20,6 +22,12 @@ public class HandbookManager : MonoBehaviour
     public GameObject elOtroHandbook;
 
     public bool esdeBatalla;
+
+    void OnEnable()
+    {
+        AbrirSolapa(SolapaInicial);
+    }
+
     public void AbrirSolapa(int ID)
     {
         int nIdioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
@@ -87,7 +95,7 @@ public class HandbookManager : MonoBehaviour
             HandbookManager otro = elOtroHandbook.GetComponent<HandbookManager>();
             if (otro != null)
             {
-                otro.AbrirSolapa(1);
+                otro.AbrirSolapa(SolapaInicial);
             }
         }
     }

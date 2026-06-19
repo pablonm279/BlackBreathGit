@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -243,8 +243,8 @@ public class REPRESENTACIONEcosDivinos : Habilidad
       string subtitulo = "<color=#4f5552>Pasiva: crea un eco por turno.</color>";
       string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +
                       "<color=#44d3ec><b>Frecuencia:</b></color> <color=#ffffff>1 eco por turno.</color>\n" +
-                      $"<color=#44d3ec><b>Aliados:</b></color> <color=#ffffff>cura {rangoAliados}, +1 Valentia; si es la Purificadora, +1 Fervor.</color>\n" +
-                      $"<color=#44d3ec><b>Enemigos:</b></color> <color=#ffffff>{rangoEnemigos} danio Divino.</color>";
+                      $"<color=#44d3ec><b>Aliados:</b></color> <color=#ffffff>cura {rangoAliados}, +1 Valentía; si es la Purificadora, +1 Fervor.</color>\n" +
+                      $"<color=#44d3ec><b>Enemigos:</b></color> <color=#ffffff>{rangoEnemigos} daño Divino.</color>";
 
       string proximo = TextoProximoNivel();
       if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
@@ -266,7 +266,7 @@ public class REPRESENTACIONEcosDivinos : Habilidad
         subtitulo = "<color=#4f5552>Passiva: cria um eco por turno.</color>";
         cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Passiva</color>\n" +
                  "<color=#44d3ec><b>Frequencia:</b></color> <color=#ffffff>1 eco por turno.</color>\n" +
-                 $"<color=#44d3ec><b>Aliados:</b></color> <color=#ffffff>cura {rangoAliados}, +1 Valentia; se for a Purificadora, +1 Fervor.</color>\n" +
+                 $"<color=#44d3ec><b>Aliados:</b></color> <color=#ffffff>cura {rangoAliados}, +1 Valentía; se for a Purificadora, +1 Fervor.</color>\n" +
                  $"<color=#44d3ec><b>Inimigos:</b></color> <color=#ffffff>{rangoEnemigos} dano Divino.</color>";
         proximo = TextoProximoNivel();
         if (!string.IsNullOrEmpty(proximo)) { cuerpo += "\n\n" + proximo; }
@@ -319,8 +319,8 @@ public class REPRESENTACIONEcosDivinos : Habilidad
       }
       else
       {
-        if (NIVEL < 2 || NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +2 danio y curacion.</color>"; }
-        if (NIVEL == 3) { return "<color=#dfea02>Opcion A: +5 curacion.\nOpcion B: +5 danio.</color>"; }
+        if (NIVEL < 2 || NIVEL == 2) { return "<color=#dfea02>Próximo Nivel: +2 daño y curación.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opción A: +5 curación.\nOpción B: +5 daño.</color>"; }
       }
 
       return "";

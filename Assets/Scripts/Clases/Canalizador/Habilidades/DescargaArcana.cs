@@ -38,7 +38,7 @@ public class DescargaArcana : Habilidad
       cooldownMax = 0;
       bAfectaObstaculos = true;
 
-      bonusAtaque = 0;
+      bonusAtaque = 1;
       XdDanio = 1;
       daniodX = 10; //1d10
       tipoDanio = 8; //Arcano
@@ -142,7 +142,7 @@ public class DescargaArcana : Habilidad
         cuerpo += "<b>Alvo:</b> 1 inimigo em alcance\n";
         cuerpo += $"<b>Largura:</b> {hAncho} ({(hAncho == 0 ? "apenas fila alvo" : "fila alvo + adjacentes")})\n";
         cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}){bonusTexto} vs Defesa. Falha critica: 1. Critico: {criticoMin}-20\n";
-        cuerpo += $"<b>Dano:</b> 1d10 + 1 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Arcano";
+        cuerpo += $"<b>Daño:</b> 1d10 + 1 + <color=#ea0606>Poder ({poderActual})</color> | <b>Tipo:</b> Arcano";
 
         string costos = $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM} ";
 
@@ -165,14 +165,14 @@ public class DescargaArcana : Habilidad
         cuerpo += lineaTipoEs + "\n";
         cuerpo += "<b>Objetivo:</b> 1 enemigo en rango\n";
         cuerpo += $"<b>Ancho:</b> {hAncho} ({anchoDetalleEs})\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Pod ({poderActual})</color> + Ataque ({ataqueActual}){bonusTexto} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
-        cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color> | <b>Tipo:</b> Arcano";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Pod ({poderActual})</color> + Ataque ({ataqueActual}){bonusTexto} vs Defensa. Pifia: 1. Crítico: {criticoMin}-20\n";
+        cuerpo += $"<b>Daño:</b> {rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color> | <b>Tipo:</b> Arcano";
 
         string costos = $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM} ";
 
         txtDescripcion = ConstruirDescripcionEstandar(
           "Descarga Arcana",
-          "El canalizador lanza una descarga de energia a un enemigo, haciendo danio arcano.",
+          "El canalizador lanza una descarga de energía a un enemigo, haciendo daño arcano.",
           cuerpo,
           costos,
           "#5dade2");
@@ -285,7 +285,7 @@ public class DescargaArcana : Habilidad
        }
        else if (resultadoTirada == 3)
        {//CRITICO
-         print("Critico");
+         print("Crítico");
 
          float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+1+scEstaUnidad.mod_CarPoder;
          danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje+danioMarca);

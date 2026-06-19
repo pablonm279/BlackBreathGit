@@ -89,7 +89,7 @@ public class Acechar : Habilidad
       cuerpo += $"<color={colorEncabezado}><b>Efeito ({duracionTurnos} turnos):</b></color> +15% Dano, +{buffAtaque}";
       if (buffCritPorcentaje > 0)
       {
-        cuerpo += $", +{buffCritPorcentaje}% Critico";
+        cuerpo += $", +{buffCritPorcentaje}% Crítico";
       }
       cuerpo += "\n";
       cuerpo += seRemueveAlDanar
@@ -101,15 +101,15 @@ public class Acechar : Habilidad
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Auto buff\n";
       cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Uno mismo\n";
       cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> gana Escondido (1); termina turno\n";
-      cuerpo += $"<color={colorEncabezado}><b>Efecto ({duracionTurnos} turnos):</b></color> +15% Danio, +{buffAtaque}";
+      cuerpo += $"<color={colorEncabezado}><b>Efecto ({duracionTurnos} turnos):</b></color> +15% Daño, +{buffAtaque}";
       if (buffCritPorcentaje > 0)
       {
-        cuerpo += $", +{buffCritPorcentaje}% Critico";
+        cuerpo += $", +{buffCritPorcentaje}% Crítico";
       }
       cuerpo += "\n";
       cuerpo += seRemueveAlDanar
-        ? $"<color={colorEncabezado}><b>Remocion:</b></color> se elimina al hacer danio"
-        : $"<color={colorEncabezado}><b>Remocion:</b></color> no se elimina al hacer danio";
+        ? $"<color={colorEncabezado}><b>Remoción:</b></color> se elimina al hacer daño"
+        : $"<color={colorEncabezado}><b>Remoción:</b></color> no se elimina al hacer daño";
     }
 
     string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
@@ -139,14 +139,14 @@ public class Acechar : Habilidad
     else if (esPortugues)
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de rolagem.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% Crítico.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+10% Critico) ou Opcao B (o efeito persiste ao causar dano).</color>"; }
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bonus de tirada.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+10% Critico) u Opcion B (el efecto persiste al danar).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al bonus de tirada.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% Crítico.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+10% Crítico) u Opción B (el efecto persiste al danar).</color>"; }
     }
   }
   public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log

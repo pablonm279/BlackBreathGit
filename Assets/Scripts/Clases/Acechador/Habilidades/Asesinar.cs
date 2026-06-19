@@ -128,7 +128,7 @@ public class Asesinar : Habilidad
       cuerpo += $"<color={colorEncabezado}><b>Ao matar:</b></color> ganha Escondido (1), o cooldown da habilidade fica em 1";
       if (NIVEL == 4)
       {
-        cuerpo += ", +2 Valentia";
+        cuerpo += ", +2 Valentía";
       }
     }
     else
@@ -137,14 +137,14 @@ public class Asesinar : Habilidad
       cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo\n";
       cuerpo += $"<color={colorEncabezado}><b>Requisito:</b></color> Escondido (1)\n";
       cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
-      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
-      cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
-      cuerpo += $"<color={colorEncabezado}><b>Humanoide:</b></color> +2 danio plano\n";
-      cuerpo += $"<color={colorEncabezado}><b>Si esta aislado:</b></color> +{bonoAtaqueAislado} y x2 al danio final\n";
+      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Humanoide:</b></color> +2 daño plano\n";
+      cuerpo += $"<color={colorEncabezado}><b>Si esta aislado:</b></color> +{bonoAtaqueAislado} y x2 al daño final\n";
       cuerpo += $"<color={colorEncabezado}><b>Al matar:</b></color> gana Escondido (1), el cooldown de la habilidad se fija en 1";
       if (NIVEL == 4)
       {
-        cuerpo += ", +2 Valentia";
+        cuerpo += ", +2 Valentía";
       }
     }
 
@@ -152,12 +152,12 @@ public class Asesinar : Habilidad
       ? "High-damage stealth attack; stronger against isolated targets."
       : esPortugues
         ? "Ataque de furtividade de alto dano; mais forte contra alvos isolados."
-        : "Ataque desde sigilo de alto danio; mas fuerte contra objetivos aislados.";
+        : "Ataque desde sigilo de alto daño; mas fuerte contra objetivos aislados.";
     string costoValor = esIngles
       ? $"<color={colorEncabezado}><b>Valour cost:</b></color> {costoPM}"
       : esPortugues
         ? $"<color={colorEncabezado}><b>Custo Valentia:</b></color> {costoPM}"
-        : $"<color={colorEncabezado}><b>Costo Valentia:</b></color> {costoPM}";
+        : $"<color={colorEncabezado}><b>Costo Valentía:</b></color> {costoPM}";
 
     txtDescripcion = $"<size=115%><color={colorTitulo}><b>{(esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs)}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
     txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
@@ -185,9 +185,9 @@ public class Asesinar : Habilidad
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio plano.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 ataque si el objetivo esta aislado.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Valentía al matar) u Opcion B (+3 de danio plano).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +2 de daño plano.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 ataque si el objetivo esta aislado.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+2 Valentía al matar) u Opción B (+3 de daño plano).</color>"; }
     }
   }
 
@@ -314,7 +314,7 @@ public class Asesinar : Habilidad
       }
       else if (resultadoTirada == 3)
       {//CRITICO
-                print("Critico");
+                print("Crítico");
         VFXAplicar(objetivo.gameObject);
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + 2 + damExtra + scEstaUnidad.mod_CarAgilidad + danioMarca;
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);

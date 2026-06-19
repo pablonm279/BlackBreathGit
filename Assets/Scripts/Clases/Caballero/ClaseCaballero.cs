@@ -256,7 +256,7 @@ public class ClaseCaballero : Unidad
        Buff buffDet = new Buff();
        buffDet.buffNombre = "Determinación "+ValentiaP_actual;
        buffDet.suprimeTextoFlotante = true;
-       buffDet.ocultarEnBarraVida = true;
+       buffDet.ocultarEnBarraVida = false;
        buffDet.boolfDebufftBuff = true;
        buffDet.DuracionBuffRondas = 1; 
        buffDet.cantDanioPorcentaje = 5*ValentiaP_actual;

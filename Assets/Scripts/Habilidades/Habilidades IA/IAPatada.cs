@@ -125,7 +125,7 @@ public class IAPatada : IAHabilidad
           }
           else if (resultadoTirada == 3)
           {//CRITICO
-          //  print("Critico");
+          //  print("Crítico");
 
             float danio = TiradaDeDados.TirarDados(XdDanio,daniodX);
              danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);

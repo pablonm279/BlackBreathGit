@@ -293,7 +293,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.8862745}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -557,8 +557,8 @@ MonoBehaviour:
   mod_CarAgilidad: 1
   at_CarPoder: 5
   mod_CarPoder: 5
-  at_Armadura: 6
-  mod_Armadura: 6
+  at_Armadura: 4
+  mod_Armadura: 4
   at_ResFuego: -6
   mod_ResFuego: -6
   at_ResHielo: 0
@@ -573,8 +573,8 @@ MonoBehaviour:
   mod_ResNecro: 3
   at_ResDivino: 0
   mod_ResDivino: 0
-  at_Defensa: 11
-  mod_Defensa: 11
+  at_Defensa: 10
+  mod_Defensa: 10
   Defensa_AtaquesRepetidosRonda: 0
   Defensa_BonusPASinUsar: 0
   at_Ataque: 2
@@ -1038,7 +1038,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5963,7 +5963,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.7264151, g: 0, b: 0, a: 0.105882354}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

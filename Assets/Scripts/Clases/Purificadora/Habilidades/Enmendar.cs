@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -95,8 +95,8 @@ public class Enmendar : Habilidad
       {
         cuerpo += $"<b>Tipo:</b> Rango ({alcance} alcance)\n";
         cuerpo += "<b>Objetivo:</b> 1 unidad en rango\n";
-        cuerpo += $"<b>Curacion:</b> Aleatorio 4-18{bonusPlanoTexto} + <color=#ea0606>Pod ({poderActual})</color> + Fervor ({fervorActual})\n";
-        cuerpo += "<b>Tipo de curacion:</b> Curacion magica\n";
+        cuerpo += $"<b>Curación:</b> Aleatorio 4-18{bonusPlanoTexto} + <color=#ea0606>Pod ({poderActual})</color> + Fervor ({fervorActual})\n";
+        cuerpo += "<b>Tipo de curación:</b> Curación mágica\n";
         cuerpo += "<b>Requisito:</b> Necesita al menos 1 Fervor para activarse\n";
         cuerpo += consumeFervor
           ? "<b>Al lanzar:</b> Consume 1 Fervor"
@@ -154,9 +154,9 @@ public class Enmendar : Habilidad
       }
       else
       {
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Curacion a rango ({alcance} alcance)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Curación a rango ({alcance} alcance)</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 unidad en rango</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Curacion:</b></color> <color={colorValor}>{curacion}. Tipo: Curacion magica</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Curación:</b></color> <color={colorValor}>{curacion}. Tipo: Curación mágica</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>{(consumeFervor ? "Requiere 1+ Fervor." : "No requiere Fervor.")}</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Al lanzar:</b></color> <color={colorValor}>{(consumeFervor ? "Consume 1 Fervor." : "No consume Fervor.")}</color>";
       }
@@ -181,15 +181,15 @@ public class Enmendar : Habilidad
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 cura plana.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 cura plana.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 cura plana.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +2 cura plana.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (sem consumo de Fervor) ou Opcao B (mantem consumo de Fervor).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 curacion plana.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 curacion plana.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (sin consumo de Fervor) u Opcion B (mantiene consumo de Fervor).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 curación plana.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +2 curación plana.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (sin consumo de Fervor) u Opción B (mantiene consumo de Fervor).</color>"; }
       }
     }
     void Start()

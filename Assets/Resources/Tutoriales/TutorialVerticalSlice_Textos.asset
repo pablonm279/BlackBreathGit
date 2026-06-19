@@ -722,7 +722,7 @@ MonoBehaviour:
     es: "Gracias a la <b>Exploraci\xF3n Activa</b>, has logrado revelar un nodo beneficioso
       antes de avanzar.\n\nObtener informaci\xF3n sobre los caminos cercanos te permitir\xE1
       tomar mejores decisiones y reducir los riesgos para la caravana.\n\n<color=#FFD54A><b>Haz
-      clic sobre el nodo de Descanso para viajar.</b></color>"
+      clic sobre el nodo siguiente para viajar.</b></color>"
     en: 'Thanks to <b>Active Exploration</b>, you have revealed a beneficial node
       before advancing.
 
@@ -732,7 +732,7 @@ MonoBehaviour:
 
 
       <color=#FFD54A><b>Click
-      the Rest node to travel.</b></color>'
+      the Next node to travel.</b></color>'
     pt: "Gra\xE7as \xE0 <b>Explora\xE7\xE3o Ativa</b>, voc\xEA revelou um n\xF3 ben\xE9fico
       antes de avan\xE7ar.\n\nObter informa\xE7\xF5es sobre os caminhos pr\xF3ximos
       permitir\xE1 tomar melhores decis\xF5es e reduzir os riscos para a caravana.\n\n<color=#FFD54A><b>Clique

@@ -118,9 +118,9 @@ public class REPRESENTACIONEvasionMaestra : Habilidad
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: gana +1 Impulso al activarse.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: gana +1 Evasion al activarse.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 uso por turno) u Opcion B (TS Reflejos para Tambaleando).</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: gana +1 Impulso al activarse.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: gana +1 Evasion al activarse.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1 uso por turno) u Opción B (TS Reflejos para Tambaleando).</color>"; }
         }
     }
 

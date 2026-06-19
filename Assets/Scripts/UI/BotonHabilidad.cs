@@ -328,7 +328,10 @@ public class BotonHabilidad : MonoBehaviour
             if (HabilidadRepresentada.nombre == "Asesinar")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseAcechador>().ObtenerEstaEscondido() < HabilidadRepresentada.requiereRecurso)
-                { return; }
+                {
+                    BattleManager.Instance.unidadActiva.GenerarTextoFlotante(ObtenerTextoRequiereEstarEscondido(), Color.gray, FloatingTextContext.Resist);
+                    return;
+                }
             }
             if (HabilidadRepresentada.nombre == "Descarga Desintegradora")
             {
@@ -375,6 +378,10 @@ public class BotonHabilidad : MonoBehaviour
             }
            }
             DesactivarBoton();
+        }
+        else
+        {
+            BattleManager.Instance.unidadActiva?.GenerarTextoFlotante(ObtenerTextoPAInsuficientes(), Color.gray, FloatingTextContext.Resist);
         }
 
 
@@ -603,6 +610,42 @@ public class BotonHabilidad : MonoBehaviour
                 return "Fervor insuficiente";
             default:
                 return "Fervor insuficiente";
+        }
+    }
+
+    string ObtenerTextoRequiereEstarEscondido()
+    {
+        if (TRADU.i == null)
+        {
+            return "Requiere estar escondido";
+        }
+
+        switch (TRADU.i.nIdioma)
+        {
+            case TRADU.IdiomaIngles:
+                return "Requires being hidden";
+            case TRADU.IdiomaPortugues:
+                return "Requer estar escondido";
+            default:
+                return "Requiere estar escondido";
+        }
+    }
+
+    string ObtenerTextoPAInsuficientes()
+    {
+        if (TRADU.i == null)
+        {
+            return "PA insuficientes";
+        }
+
+        switch (TRADU.i.nIdioma)
+        {
+            case TRADU.IdiomaIngles:
+                return "Insufficient AP";
+            case TRADU.IdiomaPortugues:
+                return "PA insuficientes";
+            default:
+                return "PA insuficientes";
         }
     }
 

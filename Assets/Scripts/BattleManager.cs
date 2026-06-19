@@ -1386,7 +1386,7 @@ public class BattleManager : MonoBehaviour
 
     Buff dudando = new Buff();
     dudando.buffNombre = "Dudando";
-    dudando.buffDescr = "La moral flaquea por la presiÃ³n del combate.";
+    dudando.buffDescr = "La moral flaquea por la presión del combate.";
     dudando.esBuffVisibleUI = true;
     dudando.suprimeTextoFlotante = true;
     dudando.ocultarEnBarraVida = true;
@@ -3644,6 +3644,7 @@ public class BattleManager : MonoBehaviour
   private bool pausaManualCombateActiva;
   private bool pausaTooltipTutorialActiva;
   private bool ultimaVisibilidadLogActiva;
+  private bool logCombateActivoPorEscena;
   private CancellationTokenSource cambioEstadoPausaDelayCts = new CancellationTokenSource();
   private GameObject goTextoPausaCombate;
   private TextMeshProUGUI txtPausaCombate;
@@ -3844,6 +3845,8 @@ public class BattleManager : MonoBehaviour
 
   public void SetLogCombateActivoPorEscena(bool activo)
   {
+    logCombateActivoPorEscena = activo;
+
     if (goLog == null)
     {
       return;
@@ -3879,7 +3882,7 @@ public class BattleManager : MonoBehaviour
         logInteractivo.gameObject.SetActive(false);
       }
 
-      if (root != null)
+      if (root != null && !EsRootUICompartidaLogHandbook(root))
       {
         root.SetActive(false);
       }
@@ -3888,6 +3891,11 @@ public class BattleManager : MonoBehaviour
     }
 
     SetPausaPorLog(false);
+  }
+
+  public bool LogCombateActivoPorEscena
+  {
+    get { return logCombateActivoPorEscena; }
   }
 
   private GameObject ObtenerRootLogCombate()
@@ -3903,6 +3911,12 @@ public class BattleManager : MonoBehaviour
     }
 
     return goLog.transform.parent != null ? goLog.transform.parent.gameObject : goLog;
+  }
+
+  private static bool EsRootUICompartidaLogHandbook(GameObject root)
+  {
+    return root != null
+      && root.name.Contains("CanvasLog");
   }
 
   public void ActivarLog(int n)

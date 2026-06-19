@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -89,7 +89,7 @@ public class SalmoPurificador : Habilidad
     {
       cuerpo += "<b>Tipo:</b> Rango (4 alcance)\n";
       cuerpo += "<b>Objetivo:</b> 1 unidad en rango\n";
-      cuerpo += "<b>Area:</b> Objetivo + unidades adyacentes\n";
+      cuerpo += "<b>Área:</b> Objetivo + unidades adyacentes\n";
       cuerpo += $"<b>Efecto:</b> Remueve hasta {debuffsPorUnidad} debuffs removibles o estados negativos de cada unidad afectada\n";
       if (daValentia)
       {
@@ -151,7 +151,7 @@ public class SalmoPurificador : Habilidad
       cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Purificacion a rango (4 alcance)</color>\n";
       cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 unidad y unidades adyacentes</color>\n";
       cuerpoNuevo += $"<color={colorEncabezado}><b>Efecto:</b></color> <color={colorValor}>Remueve hasta {debuffsPorUnidad} debuffs removibles o estados negativos por unidad afectada</color>\n";
-      if (daValentia) { cuerpoNuevo += $"<color={colorEncabezado}><b>Extra:</b></color> <color={colorValor}>+1 Valentia por debuff removido.</color>\n"; }
+      if (daValentia) { cuerpoNuevo += $"<color={colorEncabezado}><b>Extra:</b></color> <color={colorValor}>+1 Valentía por debuff removido.</color>\n"; }
       cuerpoNuevo += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>Requiere 1+ Fervor; no lo consume.</color>";
     }
 
@@ -185,9 +185,9 @@ public class SalmoPurificador : Habilidad
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: remueve +1 Debuff por unidad.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 Debuff removido) u Opcion B (+1 Valentía por Debuff removido).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: remueve +1 Debuff por unidad.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: -1 enfriamiento.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1 Debuff removido) u Opción B (+1 Valentía por Debuff removido).</color>"; }
     }
   }
     void Start()

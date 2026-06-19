@@ -12,6 +12,7 @@ public class TooltipNodos : MonoBehaviour
     public TextMeshProUGUI tooltipText;
     private UIFadeSlide tooltipAnim;
 
+    public AudioSource audioSource;
     void Awake()
     {
         Instance = this;
@@ -54,13 +55,21 @@ public class TooltipNodos : MonoBehaviour
     public void ShowTooltip(string content, Vector3 position, Nodo nodo)
     {
         if (tooltipObject == null) { return; }
-
         tooltipText.text = content;
         UIFadeSlideUtility.ShowAt(tooltipObject, position);
+        ReproducirAudioHover();
 
         if (nodo.nodoIncendiado)
         {
             tooltipText.text += TRADU.i.Traducir("\n<color=#FF3D00>--Incendiado--</color>");
+        }
+        Nodo nodoActual = CampaignManager.Instance != null && CampaignManager.Instance.scMapaManager != null
+            ? CampaignManager.Instance.scMapaManager.nodoActual
+            : null;
+        CaminoConexion caminoDesdeCaravana = nodoActual != null ? nodoActual.ObtenerConexionHacia(nodo) : null;
+        if (caminoDesdeCaravana != null && caminoDesdeCaravana.tipo == TipoCaminoCampania.Dificil)
+        {
+            tooltipText.text += ObtenerTextoCaminoSinuoso();
         }
          if (nodo.nodoRitual)
         {
@@ -71,6 +80,36 @@ public class TooltipNodos : MonoBehaviour
         
 
        
+    }
+
+    void ReproducirAudioHover()
+    {
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+
+        if (audioSource == null || !audioSource.enabled || !audioSource.gameObject.activeInHierarchy)
+        {
+            return;
+        }
+
+        audioSource.Stop();
+        audioSource.Play();
+    }
+
+    string ObtenerTextoCaminoSinuoso()
+    {
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+        switch (idioma)
+        {
+            case TRADU.IdiomaIngles:
+                return "\n<color=#8A2BE2>Winding Road</color>";
+            case TRADU.IdiomaPortugues:
+                return "\n<color=#8A2BE2>Caminho Sinuoso</color>";
+            default:
+                return "\n<color=#8A2BE2>Camino Sinuoso</color>";
+        }
     }
 
     public void HideTooltip()

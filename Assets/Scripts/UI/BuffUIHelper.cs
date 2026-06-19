@@ -6,6 +6,7 @@ public static class BuffUIHelper
     public struct BuffStack
     {
         public Buff AggregatedBuff;
+        public Buff SourceBuff;
         public int StackCount;
     }
 
@@ -52,6 +53,7 @@ public static class BuffUIHelper
             result.Add(new BuffStack
             {
                 AggregatedBuff = aggregated,
+                SourceBuff = stack[0],
                 StackCount = stack.Count
             });
         }

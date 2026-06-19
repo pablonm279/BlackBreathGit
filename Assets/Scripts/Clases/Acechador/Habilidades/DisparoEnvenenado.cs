@@ -86,7 +86,7 @@ public class DisparoEnvenenado : Habilidad
       damExtra += 2;
       criticoRangoHab = 1;
       if (TRADU.i.nIdioma == 1)
-      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +5% Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +5% Crítico.</i>\n\n"; }
       if (TRADU.i.nIdioma == 2)
       {  txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +5% Critical.</i>\n\n"; }
       if (TRADU.i.nIdioma == 3)
@@ -100,7 +100,7 @@ public class DisparoEnvenenado : Habilidad
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
       if(TRADU.i.nIdioma== 1)
-      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +5% Critico, -1 AP.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +5% Crítico, -1 AP.</i>\n\n"; }
       if(TRADU.i.nIdioma== 2)
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +5% Critical, -1 AP.</i>\n\n"; }
       if(TRADU.i.nIdioma== 3)
@@ -116,7 +116,7 @@ public class DisparoEnvenenado : Habilidad
       costoAP -= 1; //costo AP -1
       hAlcance += 1; //Alcance +1
       if(TRADU.i.nIdioma== 1)
-      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Daño +5% Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Daño +5% Crítico.</i>\n\n"; }
       if(TRADU.i.nIdioma== 2)
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Range +1 Attack +2 Damage +5% Critical.</i>\n\n"; }
       if(TRADU.i.nIdioma== 3)
@@ -221,10 +221,10 @@ public class DisparoEnvenenado : Habilidad
     else
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia ({hAlcance} alcance)\n";
-      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstaculo en rango\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstáculo en rango\n";
       cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
-      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
-      cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
       cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Fortaleza vs DC {dcBase}\n";
       cuerpo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> aplica {venenoAplicado} Veneno";
       if (nivelMaestria > 0)
@@ -258,15 +258,15 @@ public class DisparoEnvenenado : Habilidad
     }
     else if (esPortugues)
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Veneno se falhar na resistencia.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na CD base da resistencia.</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 Veneno se falhar na resistencia.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 na CD base da resistencia.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 Veneno) ou Opcao B (-1 recarga).</color>"; }
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Veneno si falla TS.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al DC base de TS.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Veneno) u Opcion B (-1 enfriamiento).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 Veneno si falla TS.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al DC base de TS.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+2 Veneno) u Opción B (-1 enfriamiento).</color>"; }
     }
   }
 
@@ -379,7 +379,7 @@ public class DisparoEnvenenado : Habilidad
       }
       else if (resultadoTirada == 3)
       {//CRITICO
-        print("Critico");
+        print("Crítico");
 
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + damExtra + scEstaUnidad.mod_CarAgilidad;
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje + danioMarca);

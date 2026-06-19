@@ -342,7 +342,7 @@ public class ReaccionRiposte : Reaccion
         }
         else
         {
-            descripcion = "Reaccion: intercambia con un aliado adyacente objetivo de un ataque melee unitario, gana Defensa para ese golpe y contraataca con Estocada cuando fallan contra ella.";
+            descripcion = "Reacción: intercambia con un aliado adyacente objetivo de un ataque melee unitario, gana Defensa para ese golpe y contraataca con Estocada cuando fallan contra ella.";
         }
     }
 }

@@ -77,7 +77,7 @@ public class RecuperarAire : Habilidad
             cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Si mesmo\n";
             cuerpo += $"<color={colorEncabezado}><b>Posicao:</b></color> apenas na coluna traseira\n";
             cuerpo += $"<color={colorEncabezado}><b>Efeito (2 turnos):</b></color> +{apMax} AP max, {defensa} Defesa\n";
-            cuerpo += $"<color={colorEncabezado}><b>Imediato:</b></color> cura {rangoCuracion}, +{impulso} Impulso, +{valentia} Valentia\n";
+            cuerpo += $"<color={colorEncabezado}><b>Imediato:</b></color> cura {rangoCuracion}, +{impulso} Impulso, +{valentia} Valentía\n";
             cuerpo += $"<color={colorEncabezado}><b>Fluxo de turno:</b></color> termina turno";
         }
         else
@@ -86,7 +86,7 @@ public class RecuperarAire : Habilidad
             cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Uno mismo\n";
             cuerpo += $"<color={colorEncabezado}><b>Posicion:</b></color> solo en columna trasera\n";
             cuerpo += $"<color={colorEncabezado}><b>Efecto (2 turnos):</b></color> +{apMax} AP max, {defensa} Defensa\n";
-            cuerpo += $"<color={colorEncabezado}><b>Inmediato:</b></color> cura {rangoCuracion}, +{impulso} Impulso, +{valentia} Valentia\n";
+            cuerpo += $"<color={colorEncabezado}><b>Inmediato:</b></color> cura {rangoCuracion}, +{impulso} Impulso, +{valentia} Valentía\n";
             cuerpo += $"<color={colorEncabezado}><b>Flujo de turno:</b></color> termina turno";
         }
 
@@ -94,8 +94,8 @@ public class RecuperarAire : Habilidad
         string subtitulo = esIngles
             ? "Recover in the rear column and prepare the next turn."
             : esPortugues
-                ? "Recupera na coluna traseira e prepara o proximo turno."
-                : "Recupera en columna trasera y prepara el proximo turno.";
+                ? "Recupera na coluna traseira e prepara o próximo turno."
+                : "Recupera en columna trasera y prepara el próximo turno.";
 
         txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
         txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
@@ -114,14 +114,14 @@ public class RecuperarAire : Habilidad
         else if (esPortugues)
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Defesa.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1-10 cura.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1-10 cura.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 Impulso) ou Opcao B (+1 Valentia).</color>"; }
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Defensa.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1-10 curacion.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 Impulso) u Opcion B (+1 Valentia).</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 Defensa.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1-10 curación.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1 Impulso) u Opción B (+1 Valentía).</color>"; }
         }
     }
 
@@ -149,7 +149,7 @@ public class RecuperarAire : Habilidad
 
         Buff buff = new Buff();
         buff.buffNombre = BuffNombre;
-        buff.buffDescr = $"Descansa para el turno siguiente: +3 PA maximo, {ObtenerModDefensa()} Defensa.";
+        buff.buffDescr = $"Descansa para el turno siguiente: +3 PA máximo, {ObtenerModDefensa()} Defensa.";
         buff.boolfDebufftBuff = true;
         buff.esStackeable = false;
         buff.DuracionBuffRondas = 2;

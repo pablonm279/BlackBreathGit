@@ -113,9 +113,9 @@ public class HojaDeEnergia : Habilidad
     else
     {
       cuerpo += "<b>Tipo:</b> Melee\n";
-      cuerpo += $"<b>Objetivo:</b> Area frontal ({ancho} de ancho)\n";
-      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
-      cuerpo += $"<b>Danio:</b> {danioEs} | <b>Tipo:</b> Verdadero\n";
+      cuerpo += $"<b>Objetivo:</b> Área frontal ({ancho} de ancho)\n";
+      cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defensa. Pifia: 1. Crítico: {criticoMin}-20\n";
+      cuerpo += $"<b>Daño:</b> {danioEs} | <b>Tipo:</b> Verdadero\n";
       cuerpo += lineaSalvacionEs + "\n";
       cuerpo += $"<b>Si falla TS:</b> +{sangrado} Sangrado y -{reduccionRes} a todas las Resistencias";
     }
@@ -132,7 +132,7 @@ public class HojaDeEnergia : Habilidad
         ? "A condensed arcane blade cuts through the front line with true damage."
         : esPortugues
           ? "Uma lamina arcana condensada atravessa a linha de frente com dano verdadeiro."
-        : "Una hoja arcana condensada atraviesa la primera linea con danio verdadero.",
+        : "Una hoja arcana condensada atraviesa la primera línea con daño verdadero.",
       cuerpo,
       costos,
       "#5dade2");
@@ -158,7 +158,7 @@ public class HojaDeEnergia : Habilidad
       ? $"Melee true-damage attack against a frontal {ancho}-tile area."
       : esPortugues
         ? $"Ataque melee de dano verdadeiro em area frontal de {ancho} casas."
-        : $"Ataque melee de daño verdadero en area frontal de {ancho} casillas.";
+        : $"Ataque melee de daño verdadero en área frontal de {ancho} casillas.";
     string cuerpoFormato = "";
     if (esIngles)
     {
@@ -174,15 +174,15 @@ public class HojaDeEnergia : Habilidad
       cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Area frontal ({ancho} largura)</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Forca ({fuerzaActual})</color>{ataqueTxt} vs Defesa. Falha critica: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorFuerza}>Forca ({fuerzaActual})</color>. Tipo: Verdadeiro</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorFuerza}>Forca ({fuerzaActual})</color>. Tipo: Verdadeiro</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Fortitude vs CD 12</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoSangrado} +{sangrado} Sangramento, {iconoDebuff} -{reduccionRes} todas as Resistencias</color>";
     }
     else
     {
       cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Area frontal ({ancho} ancho)</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Área frontal ({ancho} ancho)</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>. Tipo: Verdadero</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Fortaleza vs DC 12</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoSangrado} +{sangrado} Sangrado, {iconoDebuff} -{reduccionRes} todas las Resistencias</color>";
@@ -209,14 +209,14 @@ public class HojaDeEnergia : Habilidad
     else if (esPortugues)
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de dano.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de ataque.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 no bonus de ataque.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 largura) ou Opcao B (+1 Sangramento e -2 Resistencias).</color>"; }
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 ancho) u Opcion B (+1 Sangrado y -2 Resistencias).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +2 de daño.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al bono de ataque.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1 ancho) u Opción B (+1 Sangrado y -2 Resistencias).</color>"; }
     }
 
   }
@@ -303,7 +303,7 @@ public class HojaDeEnergia : Habilidad
        }
        else if (resultadoTirada == 3)
        {//CRITICO
-         print("Critico");
+         print("Crítico");
 
          float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+scEstaUnidad.mod_CarFuerza;
          danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);

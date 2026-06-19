@@ -93,6 +93,11 @@ public class UIInfoChar : MonoBehaviour
     }
   }
 
+  public void ReaplicarMarcadoPrioritario()
+  {
+    SincronizarMarcadoPrioritario(unidadHover ?? unidadFijadaInterna);
+  }
+
   public void ToggleFijado(Unidad unidad)
   {
     if (!EstaUnidadValidaParaInfo(unidad))
@@ -394,7 +399,7 @@ public class UIInfoChar : MonoBehaviour
         foreach (BuffUIHelper.BuffStack stack in buffStacks)
         {
            GameObject buffCuadro = Instantiate(casillaEstadoPrefab, contenedorEstadosTransform);
-           buffCuadro.GetComponent<UIEstadoCuadro>().RepresentarBuff(stack.AggregatedBuff, false, stack.StackCount);
+           buffCuadro.GetComponent<UIEstadoCuadro>().RepresentarBuff(stack.AggregatedBuff, false, stack.StackCount, stack.SourceBuff);
         }
 
        //MostrarReacciones
@@ -786,7 +791,7 @@ public class UIInfoChar : MonoBehaviour
     Vector2 anchoredPositionAliado = posicionDefaultAnchoredPosition;
     Vector2 pivot = rectTransformPanel.pivot;
     anchoredPositionAliado.x = posicionAliadoLeft + (posicionDefaultSizeDelta.x * pivot.x);
-    anchoredPositionAliado.y = -posicionAliadoTop - (posicionDefaultSizeDelta.y * (1f - pivot.y));
+    anchoredPositionAliado.y = posicionDefaultAnchoredPosition.y;
 
     rectTransformPanel.anchorMin = posicionDefaultAnchorMin;
     rectTransformPanel.anchorMax = posicionDefaultAnchorMax;

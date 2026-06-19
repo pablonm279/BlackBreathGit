@@ -107,9 +107,9 @@ public class DescargaDePoder : Habilidad
       else
       {
         cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
-        cuerpo += "<b>Objetivo:</b> Area en T (3 horizontal + 2 al fondo)\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Pod ({poderActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
-        cuerpo += $"<b>Danio:</b> {danioEs} | <b>Tipo:</b> Arcano";
+        cuerpo += "<b>Objetivo:</b> Área en T (3 horizontal + 2 al fondo)\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Pod ({poderActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defensa. Pifia: 1. Crítico: {criticoMin}-20\n";
+        cuerpo += $"<b>Daño:</b> {danioEs} | <b>Tipo:</b> Arcano";
       }
 
       string costos = esIngles
@@ -162,13 +162,13 @@ public class DescargaDePoder : Habilidad
         cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia (5 alcance)</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Area em T (3 horizontal + 2 no fundo)</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defesa. Falha critica: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Poder ({poderActual})</color>. Tipo: Arcano</color>";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Poder ({poderActual})</color>. Tipo: Arcano</color>";
       }
       else
       {
         cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia (5 alcance)</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Area en T (3 horizontal + 2 al fondo)</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Área en T (3 horizontal + 2 al fondo)</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Poder ({poderActual})</color>. Tipo: Arcano</color>";
       }
 
@@ -193,14 +193,14 @@ public class DescargaDePoder : Habilidad
       else if (esPortugues)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5 de dano.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de ataque.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 no bonus de ataque.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 AP) ou Opcao B (-1 recarga).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5 de danio.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 AP) u Opcion B (-1 enfriamiento).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5 de daño.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al bono de ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (-1 AP) u Opción B (-1 enfriamiento).</color>"; }
       }
     }
 
@@ -317,7 +317,7 @@ public class DescargaDePoder : Habilidad
        }
        else if (resultadoTirada == 3)
        {//CRITICO
-         print("Critico");
+         print("Crítico");
 
          float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+danioExtra+scEstaUnidad.mod_CarPoder;
          danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje+danioExtra);

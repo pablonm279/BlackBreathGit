@@ -893,9 +893,9 @@ public class ClaseDuelista : Unidad
     {
         if (ObtenerNivelDanzaDelEstoque() == 5)
         {
-            return "Encadena bajas por este turno: +1 Ataque, +15% Danio y +5% Critico.";
+            return "Encadena bajas por este turno: +1 Ataque, +15% Daño y +5% Crítico.";
         }
 
-        return "Encadena bajas por este turno: +1 Ataque y +15% Danio.";
+        return "Encadena bajas por este turno: +1 Ataque y +15% Daño.";
     }
 }

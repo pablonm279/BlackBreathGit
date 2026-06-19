@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -90,10 +90,10 @@ public class AcumulacionInestable : Habilidad
       cuerpo += "<b>Tipo:</b> Propia\n";
       cuerpo += "<b>Objetivo:</b> Propio usuario\n";
       cuerpo += "<b>Efecto instantaneo:</b> +1 Nivel de Energia\n";
-      cuerpo += $"<b>Buff (este turno):</b> +{bonusDanioArcano} de danio Arcano\n";
+      cuerpo += $"<b>Buff (este turno):</b> +{bonusDanioArcano} de daño Arcano\n";
       cuerpo += recibeDanioPropio
-        ? "<b>Contragolpe:</b> Recibe 1-6 de danio Arcano al usarla"
-        : "<b>Contragolpe:</b> No recibe danio al usarla";
+        ? "<b>Contragolpe:</b> Recibe 1-6 de daño Arcano al usarla"
+        : "<b>Contragolpe:</b> No recibe daño al usarla";
     }
 
     string notaInicioCooldown = esIngles
@@ -133,7 +133,7 @@ public class AcumulacionInestable : Habilidad
       ? "Gain +1 Energy now and Arcane bonus damage this turn."
       : esPortugues
         ? "Ganha +1 Energia agora e dano Arcano bonus neste turno."
-        : "Gana +1 Energia ahora y daño Arcano bonus este turno.";
+        : "Gana +1 Energía ahora y daño Arcano bonus este turno.";
     string cuerpoFormato = "";
     if (esIngles)
     {
@@ -189,9 +189,9 @@ public class AcumulacionInestable : Habilidad
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de bonus de danio Arcano.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (no arranca en enfriamiento) u Opcion B (sin autodanio).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: -1 enfriamiento.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +2 de bonus de daño Arcano.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (no arranca en enfriamiento) u Opción B (sin autodaño).</color>"; }
     }
   }
 

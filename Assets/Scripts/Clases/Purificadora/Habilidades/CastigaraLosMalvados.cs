@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -84,10 +84,10 @@ public class CastigaraLosMalvados : Habilidad
       {
         cuerpo += "<b>Tipo:</b> Marca reactiva\n";
         cuerpo += "<b>Objetivo:</b> 1 unidad enemiga del lado opuesto\n";
-        cuerpo += "<b>Disparo:</b> Cada vez que la unidad marcada dana a un aliado tuyo\n";
+        cuerpo += "<b>Disparo:</b> Cada vez que la unidad marcada daña a un aliado tuyo\n";
         cuerpo += lineaSalvacionEs + "\n";
-        cuerpo += $"<b>Si falla TS:</b> Pierde todo su AP restante y recibe {rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color> + {fraccionDanio} del dano infligido | <b>Tipo:</b> Divino\n";
-        cuerpo += $"<b>Duracion:</b> Hasta {usos} fallos de TS, o termina antes si el objetivo supera la TS";
+        cuerpo += $"<b>Si falla TS:</b> Pierde todo su AP restante y recibe {rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color> + {fraccionDanio} del daño infligido | <b>Tipo:</b> Divino\n";
+        cuerpo += $"<b>Duración:</b> Hasta {usos} fallos de TS, o termina antes si el objetivo supera la TS";
       }
 
       string costos = esIngles
@@ -102,7 +102,7 @@ public class CastigaraLosMalvados : Habilidad
           ? "Marks a target with divine retribution that punishes aggression."
           : esPortugues
             ? "Marca um alvo com uma represalia divina que pune a agressao."
-          : "Marca un objetivo con una represalia divina que castiga la agresion.",
+          : "Marca un objetivo con una represalia divina que castiga la agresión.",
         cuerpo,
         costos,
         "#5dade2");
@@ -122,7 +122,7 @@ public class CastigaraLosMalvados : Habilidad
         ? "Marks an enemy; damaging allies triggers Divine punishment."
         : esPortugues
           ? "Marca um inimigo; causar dano a aliados ativa punicao Divina."
-          : "Marca a un enemigo; daniar aliados activa castigo Divino.";
+          : "Marca a un enemigo; dañar aliados activa castigo Divino.";
       string danio = $"{rangoDanioEs} + <color={colorPoder}>{(esIngles ? "Power" : esPortugues ? "Poder" : "Poder")} ({poderActual})</color> + {fraccionDanio}";
       string cuerpoNuevo = "";
       if (esIngles)
@@ -147,10 +147,10 @@ public class CastigaraLosMalvados : Habilidad
       {
         cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Marca reactiva {iconoReaccion}</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo del lado opuesto</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Disparo:</b></color> <color={colorValor}>Cuando la unidad marcada dania a un aliado</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Disparo:</b></color> <color={colorValor}>Cuando la unidad marcada daña a un aliado</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Mental vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoDebuff} pierde todo AP restante; {danio} del danio infligido. Tipo: Divino</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Duracion:</b></color> <color={colorValor}>{usos} fallos de TS, o termina si el objetivo supera la TS.</color>";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoDebuff} pierde todo AP restante; {danio} del daño infligido. Tipo: Divino</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Duración:</b></color> <color={colorValor}>{usos} fallos de TS, o termina si el objetivo supera la TS.</color>";
       }
 
       txtDescripcion =
@@ -177,14 +177,14 @@ public class CastigaraLosMalvados : Habilidad
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 CD de resistencia.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 CD de resistencia.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 recarga.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 uso) ou Opcao B (proporcao de dano para 1/2).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC de salvacion.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 DC de salvación.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: -1 enfriamiento.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 uso) u Opcion B (proporcion de dano a 1/2).</color>"; }
       }
    }

@@ -101,8 +101,8 @@ public class CargaDeEstoque : Habilidad
         string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaqueBase);
 
         string reglaCruceEn = NIVEL > 2 ? "cannot cross obstacles; can cross allies" : "cannot cross obstacles or allies";
-        string reglaCrucePt = NIVEL > 2 ? "nao pode atravessar obstaculos; pode atravessar aliados" : "nao pode atravessar obstaculos nem aliados";
-        string reglaCruceEs = NIVEL > 2 ? "no puede atravesar obstaculos; puede atravesar aliados" : "no puede atravesar obstaculos ni aliados";
+        string reglaCrucePt = NIVEL > 2 ? "nao pode atravessar obstáculos; pode atravessar aliados" : "nao pode atravessar obstáculos nem aliados";
+        string reglaCruceEs = NIVEL > 2 ? "no puede atravesar obstáculos; puede atravesar aliados" : "no puede atravesar obstáculos ni aliados";
 
         string cuerpo = "";
         if (esIngles)
@@ -134,8 +134,8 @@ public class CargaDeEstoque : Habilidad
             cuerpo += $"<color={colorEncabezado}><b>Movimiento:</b></color> avanza a columna frontal; intercambia aliado frontal hacia la casilla de atras\n";
             cuerpo += $"<color={colorEncabezado}><b>Regla de uso:</b></color> {reglaCruceEs}\n";
             cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} + {bonusAtaquePorCasilla} por casilla avanzada vs Defensa\n";
-            cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
-            cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo} + {danioPorCasillaActual} por casilla avanzada. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> {rangoDanio} + {atributo} + {danioPorCasillaActual} por casilla avanzada. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
             cuerpo += $"<color={colorEncabezado}><b>Esforzable:</b></color> si ({esforzable})";
         }
 
@@ -163,14 +163,14 @@ public class CargaDeEstoque : Habilidad
         else if (esPortugues)
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +3 de dano.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: pode atravessar aliados.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: pode atravessar aliados.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 custo de AP) ou Opcao B (+2 de dano por casa avancada).</color>"; }
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +3 de danio.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: puede atravesar aliados.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo AP) u Opcion B (+2 de danio por casilla avanzada).</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +3 de daño.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: puede atravesar aliados.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (-1 costo AP) u Opción B (+2 de daño por casilla avanzada).</color>"; }
         }
     }
 

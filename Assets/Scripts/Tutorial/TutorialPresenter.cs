@@ -107,7 +107,15 @@ public class TutorialPresenter : MonoBehaviour
   {
     if (currentStep != null && !hiddenForCampaignTravel)
     {
-      PositionTargetVisuals(currentStep);
+      if (ShouldHideNodeTargetVisualsForCampaignMenu())
+      {
+        SetActive(highlight != null ? highlight.gameObject : null, false);
+        SetActive(pointer != null ? pointer.gameObject : null, false);
+      }
+      else
+      {
+        PositionTargetVisuals(currentStep);
+      }
     }
 
     if (ShouldSuspendInputGateForCampaignTravel())
@@ -738,6 +746,20 @@ public class TutorialPresenter : MonoBehaviour
       || CurrentStepWaitsForEvent(TutorialEventNames.CampaignMissingPeopleEventContinued)
       || CurrentStepWaitsForEvent(TutorialEventNames.CampaignRestNodeContinued)
       || CurrentStepWaitsForEvent(TutorialEventNames.CampaignRestRandomEventContinued);
+  }
+
+  private bool ShouldHideNodeTargetVisualsForCampaignMenu()
+  {
+    return CurrentStepTargetsCampaignNode()
+      && CampaignManager.Instance != null
+      && CampaignManager.Instance.DebeBloquearPaneoCamaraCampania();
+  }
+
+  private bool CurrentStepTargetsCampaignNode()
+  {
+    return currentStep != null
+      && !string.IsNullOrEmpty(currentStep.targetId)
+      && currentStep.targetId.ToLowerInvariant().Contains("nodo");
   }
 
   private void SetTutorialVisualsVisible(bool visible)

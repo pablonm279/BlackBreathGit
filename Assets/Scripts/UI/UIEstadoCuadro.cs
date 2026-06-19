@@ -17,11 +17,44 @@ public class UIEstadoCuadro : MonoBehaviour
   public TextMeshProUGUI textTooltip;
 
   public TextMeshProUGUI textStacks;
+  private string textoTooltipActual = string.Empty;
+  private int valorTextoStacksActual;
+  private bool textoStacksConfigurado;
+  private Buff buffDuracionAsociado;
+  private bool usarDuracionBuffAsociado;
 
   void Awake()
   {
     Retrato = gameObject.GetComponent<Image>();
 
+  }
+
+  void OnEnable()
+  {
+    Canvas.willRenderCanvases += ReaplicarTextoStacks;
+  }
+
+  void OnDisable()
+  {
+    Canvas.willRenderCanvases -= ReaplicarTextoStacks;
+  }
+
+  void LateUpdate()
+  {
+    ReaplicarTextoStacks();
+  }
+
+  void Update()
+  {
+    ActualizarTextoDesdeBuffAsociado();
+  }
+
+  private void ReaplicarTextoStacks()
+  {
+    if (textoStacksConfigurado)
+    {
+      AplicarTextoStacks(valorTextoStacksActual);
+    }
   }
 
   private void AsegurarRetrato()
@@ -71,14 +104,9 @@ public class UIEstadoCuadro : MonoBehaviour
   {
     AsegurarRetrato();
     debarravida = desdeBarraVida;
-    if (stacks == -1  || debarravida)
-    {
-      textStacks.text = "";
-    }
-    else
-    {
-      textStacks.text = "" + stacks;
-    }
+    usarDuracionBuffAsociado = false;
+    buffDuracionAsociado = null;
+    ActualizarTextoStacks(desdeBarraVida ? stacks : 0);
 
 
 
@@ -110,41 +138,40 @@ public class UIEstadoCuadro : MonoBehaviour
     //32 - Provocado
     indexEstadoRepresentado = index;
     if (Retrato == null) { return; }
-    if (textTooltip == null) { return; }
     switch (index)
     {
-      case 1: Retrato.sprite = ResolverSprite(imArdiendo, "Imagenes/Estado_ardiendo"); textTooltip.text = TRADU.i.Traducir("Ardiendo: causa daño cada turno, se apaga con AP disponibles."); break;
-      case 2: Retrato.sprite = ResolverSprite(imAturdido, "Imagenes/Estado_aturdido"); textTooltip.text = TRADU.i.Traducir("Aturdido: no puede actuar."); break;
-      case 3: Retrato.sprite = ResolverSprite(imAcido, "Imagenes/Estado_acido"); textTooltip.text = TRADU.i.Traducir("Ácido: cada acumulación reduce en 1 la armadura."); break;
-      case 4: Retrato.sprite = ResolverSprite(imCongelado, "Imagenes/Estado_congelado"); textTooltip.text = TRADU.i.Traducir("Congelado: reduce PA disponibles y aumenta armadura."); break;
-      case 5: Retrato.sprite = ResolverSprite(ResRed, "Imagenes/Estado_resreducidas"); textTooltip.text = TRADU.i.Traducir("Resistencias Reducidas: reduce todas las resistencias 1 por acumulación."); break;
-      case 6: Retrato.sprite = ResolverSprite(ArmMod, "Imagenes/Estado_armadurareducida"); textTooltip.text = TRADU.i.Traducir("Armadura Rota: reduce la armadura en 1 por acumulación."); break;
+      case 1: Retrato.sprite = ResolverSprite(imArdiendo, "Imagenes/Estado_ardiendo"); AsignarTextoTooltip(TRADU.i.Traducir("Ardiendo: causa daño cada turno, se apaga con AP disponibles.")); break;
+      case 2: Retrato.sprite = ResolverSprite(imAturdido, "Imagenes/Estado_aturdido"); AsignarTextoTooltip(TRADU.i.Traducir("Aturdido: no puede actuar.")); break;
+      case 3: Retrato.sprite = ResolverSprite(imAcido, "Imagenes/Estado_acido"); AsignarTextoTooltip(TRADU.i.Traducir("Ácido: cada acumulación reduce en 1 la armadura.")); break;
+      case 4: Retrato.sprite = ResolverSprite(imCongelado, "Imagenes/Estado_congelado"); AsignarTextoTooltip(TRADU.i.Traducir("Congelado: reduce PA disponibles y aumenta armadura.")); break;
+      case 5: Retrato.sprite = ResolverSprite(ResRed, "Imagenes/Estado_resreducidas"); AsignarTextoTooltip(TRADU.i.Traducir("Resistencias Reducidas: reduce todas las resistencias 1 por acumulación.")); break;
+      case 6: Retrato.sprite = ResolverSprite(ArmMod, "Imagenes/Estado_armadurareducida"); AsignarTextoTooltip(TRADU.i.Traducir("Armadura Rota: reduce la armadura en 1 por acumulación.")); break;
       // case 7: Retrato.sprite = imApMod;  break;
-      case 8: Retrato.sprite = ResolverSprite(imSangrado, "Imagenes/Estado_sangrando"); textTooltip.text = TRADU.i.Traducir("Sangrado: cada acumulación resta 1 HP máxima por turno y previene 2 de curación."); break;
-      case 9: Retrato.sprite = ResolverSprite(imVeneno, "Imagenes/Estado_veneno"); textTooltip.text = TRADU.i.Traducir("Veneno: provoca daño por turno, se debe hacer una tirada de salvación de Fortaleza cada turno para curarse, si falla se incrementa en 1."); break;
-      case 10: Retrato.sprite = ResolverSprite(imRegvid, "Imagenes/Estado_regeneravida"); textTooltip.text = TRADU.i.Traducir("Regeneración: recupera vida cada turno."); break;
-      case 11: Retrato.sprite = ResolverSprite(imRegArm, "Imagenes/Estado_regeneraAramdura"); textTooltip.text = TRADU.i.Traducir("Regeneración Armadura: recupera Armadura perdida cada turno."); break;
-      case 12: Retrato.sprite = ResolverSprite(imEvasion, "Imagenes/Estado_EVASION"); textTooltip.text = TRADU.i.Traducir("Evasión: cada stack aumenta 1 la Defensa, se elimina al recibir daño."); break;
-      case 13: Retrato.sprite = ResolverSprite(imFlechas, "Imagenes/Estado_flechas"); textTooltip.text = TRADU.i.Traducir("Flechas: Cantidad de flechas disponibles."); break;
-      case 14: Retrato.sprite = ResolverSprite(imBonusAcido, "Imagenes/est_acido"); textTooltip.text = TRADU.i.Traducir("Bonus daño elemental Acido."); break;
-      case 15: Retrato.sprite = ResolverSprite(imBonusArcano, null); textTooltip.text =  TRADU.i.Traducir("Bonus daño elemental Arcano."); break;
-      case 16: Retrato.sprite = ResolverSprite(imBonusFuego, "Imagenes/est_fuego"); textTooltip.text = TRADU.i.Traducir("Bonus daño elemental Fuego."); break;
-      case 17: Retrato.sprite = ResolverSprite(imBonusHielo, null); textTooltip.text =  TRADU.i.Traducir("Bonus daño elemental Hielo."); break;
-      case 18: Retrato.sprite = ResolverSprite(imBonusNecro, null); textTooltip.text =  TRADU.i.Traducir("Bonus daño elemental Necro."); break;
-      case 19: Retrato.sprite = ResolverSprite(imBonusRayo, "Imagenes/est_rayo"); textTooltip.text =  TRADU.i.Traducir("Bonus daño elemental Rayo."); break;
-      case 20: Retrato.sprite = ResolverSprite(imPurificadoraFervor, "Imagenes/Estado_Fervor"); textTooltip.text = TRADU.i.Traducir("Fervor: Cantidad de Fervor que tiene la purificadora."); break;
-      case 21: Retrato.sprite = ResolverSprite(imBonusDivino, null); textTooltip.text = TRADU.i.Traducir("Bonus daño elemental Divino."); break;
-      case 22: Retrato.sprite = ResolverSprite(imBarrera, "Imagenes/Estado_Barrera"); textTooltip.text = TRADU.i.Traducir("Barrera: previene X cantidad de daño."); break;
-      case 23: Retrato.sprite = ResolverSprite(imResiduoTejido, "Imagenes/Estado_residuocurativo"); textTooltip.text = TRADU.i.Traducir("Residuo de Tejido: se obtiene al recibir curación de origen mágico. Previene X puntos de curación."); break;
-      case 24: Retrato.sprite = ResolverSprite(imEstaEscondido, "Imagenes/Estado_oculto"); textTooltip.text = TRADU.i.Traducir("Escondido I: Esta unidad está escondida y los enemigos no pueden atacarla. El efecto se remueve al atacar o recibir daño."); break;
-      case 25: Retrato.sprite = ResolverSprite(imEstaEscondido, "Imagenes/Estado_oculto"); textTooltip.text = TRADU.i.Traducir("Escondido II: Esta unidad está escondida y los enemigos no pueden atacarla. El efecto no se remueve al recibir daño."); break;
-      case 26: Retrato.sprite = ResolverSprite(imTierEnergia, "Imagenes/Estado_acumularenergia"); textTooltip.text = TRADU.i.Traducir("Energía: Nivel de Energía Acumulada por el Canalizador."); break;
-      case 27: Retrato.sprite = ResolverSprite(imCorrupto, "Imagenes/Estado_Corrupto"); textTooltip.text = TRADU.i.Traducir("Corrupto: Recibe daño adicional de enemigos Corrompidos que además se curan al dañarlo. Si lo deja fuera de combate un enemigo corrompido, muere."); break;
-      case 28: Retrato.sprite = ResolverSprite(imVolador, "Imagenes/estado_volando"); textTooltip.text = TRADU.i.Traducir("Volador: Esta unidad no puede ser alcanzada por ataques melee, puede perder el vuelo al ser dañado o fallar un ataque."); break;
-      case 29: Retrato.sprite = ResolverSprite(imCondena, "Imagenes/Estado_condena"); textTooltip.text = TRADU.i.Traducir("Condena: En X cantidad de turnos recibirá daño verdadero igual al 10% de su vida máxima por turno con el efecto."); break;
-      case 30: Retrato.sprite = ResolverSprite(imEscudado, "Imagenes/Estado_escudado"); textTooltip.text = TRADU.i.Traducir("Escudado: 10% chances por stack de evitar un ataque físico. Al evitar uno, pierde un stack."); break;
-      case 31: Retrato.sprite = ResolverSprite(imMovimientoAbaratado, "Imagenes/Estado_movimientoabaratado"); textTooltip.text = TRADU.i.Traducir("Impulso: el próximo movimiento a casilla o intercambio cuesta 1 PA menos y consume 1 stack."); break;
-      case 32: Retrato.sprite = ResolverSprite(imProvocado, "Imagenes/Estado_Provocado"); textTooltip.text = TRADU.i.Traducir("Provocado: solo puede usar acciones hostiles contra quien aplicó este estado."); break;
+      case 8: Retrato.sprite = ResolverSprite(imSangrado, "Imagenes/Estado_sangrando"); AsignarTextoTooltip(TRADU.i.Traducir("Sangrado: cada acumulación resta 1 HP máxima por turno y previene 2 de curación.")); break;
+      case 9: Retrato.sprite = ResolverSprite(imVeneno, "Imagenes/Estado_veneno"); AsignarTextoTooltip(TRADU.i.Traducir("Veneno: provoca daño por turno, se debe hacer una tirada de salvación de Fortaleza cada turno para curarse, si falla se incrementa en 1.")); break;
+      case 10: Retrato.sprite = ResolverSprite(imRegvid, "Imagenes/Estado_regeneravida"); AsignarTextoTooltip(TRADU.i.Traducir("Regeneración: recupera vida cada turno.")); break;
+      case 11: Retrato.sprite = ResolverSprite(imRegArm, "Imagenes/Estado_regeneraAramdura"); AsignarTextoTooltip(TRADU.i.Traducir("Regeneración Armadura: recupera Armadura perdida cada turno.")); break;
+      case 12: Retrato.sprite = ResolverSprite(imEvasion, "Imagenes/Estado_EVASION"); AsignarTextoTooltip(TRADU.i.Traducir("Evasión: cada stack aumenta 1 la Defensa, se elimina al recibir daño.")); break;
+      case 13: Retrato.sprite = ResolverSprite(imFlechas, "Imagenes/Estado_flechas"); AsignarTextoTooltip(TRADU.i.Traducir("Flechas: Cantidad de flechas disponibles.")); break;
+      case 14: Retrato.sprite = ResolverSprite(imBonusAcido, "Imagenes/est_acido"); AsignarTextoTooltip(TRADU.i.Traducir("Bonus daño elemental Acido.")); break;
+      case 15: Retrato.sprite = ResolverSprite(imBonusArcano, null); AsignarTextoTooltip(TRADU.i.Traducir("Bonus daño elemental Arcano.")); break;
+      case 16: Retrato.sprite = ResolverSprite(imBonusFuego, "Imagenes/est_fuego"); AsignarTextoTooltip(TRADU.i.Traducir("Bonus daño elemental Fuego.")); break;
+      case 17: Retrato.sprite = ResolverSprite(imBonusHielo, null); AsignarTextoTooltip(TRADU.i.Traducir("Bonus daño elemental Hielo.")); break;
+      case 18: Retrato.sprite = ResolverSprite(imBonusNecro, null); AsignarTextoTooltip(TRADU.i.Traducir("Bonus daño elemental Necro.")); break;
+      case 19: Retrato.sprite = ResolverSprite(imBonusRayo, "Imagenes/est_rayo"); AsignarTextoTooltip(TRADU.i.Traducir("Bonus daño elemental Rayo.")); break;
+      case 20: Retrato.sprite = ResolverSprite(imPurificadoraFervor, "Imagenes/Estado_Fervor"); AsignarTextoTooltip(TRADU.i.Traducir("Fervor: Cantidad de Fervor que tiene la purificadora.")); break;
+      case 21: Retrato.sprite = ResolverSprite(imBonusDivino, null); AsignarTextoTooltip(TRADU.i.Traducir("Bonus daño elemental Divino.")); break;
+      case 22: Retrato.sprite = ResolverSprite(imBarrera, "Imagenes/Estado_Barrera"); AsignarTextoTooltip(TRADU.i.Traducir("Barrera: previene X cantidad de daño.")); break;
+      case 23: Retrato.sprite = ResolverSprite(imResiduoTejido, "Imagenes/Estado_residuocurativo"); AsignarTextoTooltip(TRADU.i.Traducir("Residuo de Tejido: se obtiene al recibir curación de origen mágico. Previene X puntos de curación.")); break;
+      case 24: Retrato.sprite = ResolverSprite(imEstaEscondido, "Imagenes/Estado_oculto"); AsignarTextoTooltip(TRADU.i.Traducir("Escondido I: Esta unidad está escondida y los enemigos no pueden atacarla. El efecto se remueve al atacar o recibir daño.")); break;
+      case 25: Retrato.sprite = ResolverSprite(imEstaEscondido, "Imagenes/Estado_oculto"); AsignarTextoTooltip(TRADU.i.Traducir("Escondido II: Esta unidad está escondida y los enemigos no pueden atacarla. El efecto no se remueve al recibir daño.")); break;
+      case 26: Retrato.sprite = ResolverSprite(imTierEnergia, "Imagenes/Estado_acumularenergia"); AsignarTextoTooltip(TRADU.i.Traducir("Energía: Nivel de Energía Acumulada por el Canalizador.")); break;
+      case 27: Retrato.sprite = ResolverSprite(imCorrupto, "Imagenes/Estado_Corrupto"); AsignarTextoTooltip(TRADU.i.Traducir("Corrupto: Recibe daño adicional de enemigos Corrompidos que además se curan al dañarlo. Si lo deja fuera de combate un enemigo corrompido, muere.")); break;
+      case 28: Retrato.sprite = ResolverSprite(imVolador, "Imagenes/estado_volando"); AsignarTextoTooltip(TRADU.i.Traducir("Volador: Esta unidad no puede ser alcanzada por ataques melee, puede perder el vuelo al ser dañado o fallar un ataque.")); break;
+      case 29: Retrato.sprite = ResolverSprite(imCondena, "Imagenes/Estado_condena"); AsignarTextoTooltip(TRADU.i.Traducir("Condena: En X cantidad de turnos recibirá daño verdadero igual al 10% de su vida máxima por turno con el efecto.")); break;
+      case 30: Retrato.sprite = ResolverSprite(imEscudado, "Imagenes/Estado_escudado"); AsignarTextoTooltip(TRADU.i.Traducir("Escudado: 10% chances por stack de evitar un ataque físico. Al evitar uno, pierde un stack.")); break;
+      case 31: Retrato.sprite = ResolverSprite(imMovimientoAbaratado, "Imagenes/Estado_movimientoabaratado"); AsignarTextoTooltip(TRADU.i.Traducir("Impulso: el próximo movimiento a casilla o intercambio cuesta 1 PA menos y consume 1 stack.")); break;
+      case 32: Retrato.sprite = ResolverSprite(imProvocado, "Imagenes/Estado_Provocado"); AsignarTextoTooltip(TRADU.i.Traducir("Provocado: solo puede usar acciones hostiles contra quien aplicó este estado.")); break;
 
     }
   }
@@ -189,25 +216,27 @@ public class UIEstadoCuadro : MonoBehaviour
     {
       if (go.CompareTag("TooltipBatalla"))
       {
-        scTooltipBatalla = go.GetComponent<TooltipBatalla>();
-        break;
+        TooltipBatalla tooltipBatalla = go.GetComponent<TooltipBatalla>();
+        if (tooltipBatalla != null && !tooltipBatalla.usoSoloCostoMov)
+        {
+          scTooltipBatalla = tooltipBatalla;
+          break;
+        }
       }
     }
   }
-  public void RepresentarBuff(Buff buff, bool desdeBarraVida = false, int stackCount = 1)
+  public void RepresentarBuff(Buff buff, bool desdeBarraVida = false, int stackCount = 1, Buff buffDuracion = null)
   {
     AsegurarRetrato();
     debarravida = desdeBarraVida;
-    if (textStacks != null)
-    {
-      textStacks.text = (!desdeBarraVida && stackCount > 1) ? $"x{stackCount}" : "";
-    }
+    buffDuracionAsociado = !ReferenceEquals(buffDuracion, null) ? buffDuracion : buff;
+    usarDuracionBuffAsociado = desdeBarraVida && !ReferenceEquals(buffDuracionAsociado, null);
 
-    textTooltip.text = GenerarDescripcionBuff(buff); //Efectos del buff
+    AsignarTextoTooltip(GenerarDescripcionBuff(buff)); //Efectos del buff
     if (Retrato != null)
     {
       Sprite sprite = null;
-      if(buff.boolfDebufftBuff )
+      if (!ReferenceEquals(buff, null) && buff.boolfDebufftBuff)
       {
         sprite = ResolverSprite(imBuff, "Imagenes/Estado_buff");
       }
@@ -220,16 +249,25 @@ public class UIEstadoCuadro : MonoBehaviour
         Retrato.sprite = sprite;
       
     }
+
+    if (usarDuracionBuffAsociado)
+    {
+      ActualizarTextoDesdeBuffAsociado();
+    }
+    else
+    {
+      ActualizarTextoStacks(0);
+    }
   }
 
   public void RepresentarReaccion(Reaccion buff, bool desdeBarraVida = false)
   {
     debarravida = desdeBarraVida;
-    textStacks.text = buff.usos < 0 ? "" : "" + buff.usos;
+    usarDuracionBuffAsociado = false;
+    buffDuracionAsociado = null;
+    ActualizarTextoStacks(0);
 
-     if (desdeBarraVida) { textStacks.text = ""; }
-
-    textTooltip.text = buff.descripcion; //Efectos del buff
+    AsignarTextoTooltip(buff != null ? buff.descripcion : string.Empty); //Efectos del buff
     Sprite spriteReaccion = ResolverSprite(imReaccion, "Imagenes/Estado_reaccion");
     if (Retrato != null && spriteReaccion != null)
     {
@@ -240,12 +278,11 @@ public class UIEstadoCuadro : MonoBehaviour
   public void RepresentarMarca(Marca buff, bool desdeBarraVida = false)
   {
     debarravida = desdeBarraVida;
-    textStacks.text = "" + buff.duracion;
-    
+    usarDuracionBuffAsociado = false;
+    buffDuracionAsociado = null;
+    ActualizarTextoStacks(desdeBarraVida && buff != null ? buff.duracion : 0);
 
-    if (desdeBarraVida) { textStacks.text = ""; }
-
-    textTooltip.text = buff.descripcion; //Efectos del buff
+    AsignarTextoTooltip(buff != null ? buff.descripcion : string.Empty); //Efectos del buff
 
      Sprite spriteMarca = ResolverSprite(imMarca, "Imagenes/Estado_Marcado");
      if (Retrato != null && spriteMarca != null)
@@ -256,7 +293,12 @@ public class UIEstadoCuadro : MonoBehaviour
 
   private string GenerarDescripcionBuff(Buff buff)
   {
-    string descripcion = "" + TRADU.i.Traducir(buff.buffNombre) + "\n" + TRADU.i.Traducir(buff.buffDescr) + "\n";
+    if (ReferenceEquals(buff, null))
+    {
+      return string.Empty;
+    }
+
+    string descripcion = TraducirSeguro(buff.buffNombre) + "\n" + TraducirSeguro(buff.buffDescr) + "\n";
 
     if (buff.percHPMax != 0) descripcion += TRADU.i.Traducir("HP Máximo: ") + "<color=" + (buff.percHPMax > 0 ? "green" : "red") + ">" + buff.percHPMax + "%" + "</color>\n";
     if (buff.cantHPMax != 0) descripcion += TRADU.i.Traducir("HP Máximo: ") + "<color=" + (buff.cantHPMax > 0 ? "green" : "red") + ">" + buff.cantHPMax + "</color>\n";
@@ -344,6 +386,94 @@ public class UIEstadoCuadro : MonoBehaviour
     return descripcion;
   }
 
+  private void ActualizarTextoStacks(int valor)
+  {
+    EscribirTextoStacks(valor);
+  }
+
+  private void ActualizarTextoDesdeBuffAsociado()
+  {
+    if (!usarDuracionBuffAsociado)
+    {
+      return;
+    }
+
+    EscribirTextoStacks(!ReferenceEquals(buffDuracionAsociado, null) ? buffDuracionAsociado.DuracionBuffRondas : 0);
+  }
+
+  private void EscribirTextoStacks(int valor)
+  {
+    valorTextoStacksActual = valor;
+    textoStacksConfigurado = true;
+    AplicarTextoStacks(valor);
+  }
+
+  private void AplicarTextoStacks(int valor)
+  {
+    string texto = valor > 0 ? valor.ToString() : "";
+    List<TextMeshProUGUI> textos = ObtenerTextosStacks();
+
+    for (int i = 0; i < textos.Count; i++)
+    {
+      TextMeshProUGUI textoStacksActual = textos[i];
+      if (textoStacksActual == null) { continue; }
+
+      textoStacksActual.gameObject.SetActive(true);
+      textoStacksActual.enabled = true;
+      textoStacksActual.SetText(texto);
+      textoStacksActual.ForceMeshUpdate();
+    }
+  }
+
+  private List<TextMeshProUGUI> ObtenerTextosStacks()
+  {
+    List<TextMeshProUGUI> textos = new List<TextMeshProUGUI>();
+
+    Transform hijoTexto = transform.Find("Text (TMP)");
+    if (hijoTexto != null)
+    {
+      textStacks = hijoTexto.GetComponent<TextMeshProUGUI>();
+      AgregarTextoStack(textos, textStacks);
+    }
+
+    AgregarTextoStack(textos, textStacks);
+
+    TextMeshProUGUI[] textosEnHijos = GetComponentsInChildren<TextMeshProUGUI>(true);
+    for (int i = 0; i < textosEnHijos.Length; i++)
+    {
+      AgregarTextoStack(textos, textosEnHijos[i]);
+    }
+
+    return textos;
+  }
+
+  private void AgregarTextoStack(List<TextMeshProUGUI> textos, TextMeshProUGUI candidato)
+  {
+    if (candidato == null) { return; }
+    if (EsTextoTooltip(candidato)) { return; }
+    if (textos.Contains(candidato)) { return; }
+
+    textos.Add(candidato);
+  }
+
+  private bool EsTextoTooltip(TextMeshProUGUI candidato)
+  {
+    if (candidato == textTooltip) { return true; }
+
+    Transform actual = candidato.transform;
+    while (actual != null && actual != transform)
+    {
+      if (actual.name.Contains("Tooltip") || actual.name.Contains("tooltip"))
+      {
+        return true;
+      }
+
+      actual = actual.parent;
+    }
+
+    return false;
+  }
+
   private string EtiquetaBilingue(string textoEs, string textoEn)
   {
     if (TRADU.i != null && TRADU.i.nIdioma == 2)
@@ -354,16 +484,54 @@ public class UIEstadoCuadro : MonoBehaviour
     return textoEs;
   }
 
+  private static string TraducirSeguro(string texto)
+  {
+    if (string.IsNullOrEmpty(texto))
+    {
+      return string.Empty;
+    }
+
+    return TRADU.i != null ? TRADU.i.Traducir(texto) : texto;
+  }
+
+  private void AsignarTextoTooltip(string texto)
+  {
+    textoTooltipActual = texto ?? string.Empty;
+    if (textTooltip != null)
+    {
+      textTooltip.text = textoTooltipActual;
+    }
+  }
+
+  private string ObtenerTextoTooltip()
+  {
+    if (!string.IsNullOrEmpty(textoTooltipActual))
+    {
+      return textoTooltipActual;
+    }
+
+    return textTooltip != null ? textTooltip.text : string.Empty;
+  }
+
   public void ActivarTooltip()
   {
-    if (!debarravida)
+    string textoTooltip = ObtenerTextoTooltip();
+    if (string.IsNullOrEmpty(textoTooltip))
+    {
+      return;
+    }
+
+    if (!debarravida && goTooltip != null)
       goTooltip.SetActive(true);
 
 
     if (debarravida)
     {
       BuscartooltipBatallaTag();
-      scTooltipBatalla.ShowTooltipText(textTooltip.text);
+      if (scTooltipBatalla != null)
+      {
+        scTooltipBatalla.ShowTooltipText(textoTooltip);
+      }
 
      
 
@@ -373,7 +541,7 @@ public class UIEstadoCuadro : MonoBehaviour
   public void DesactivarTooltip()
   {
     
-    if (!debarravida)
+    if (!debarravida && goTooltip != null)
       goTooltip.SetActive(false);
 
 

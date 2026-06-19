@@ -49,7 +49,7 @@ public class armaduraGambeson : Armadura
          if (TRADU.i.nIdioma == 1)
          {
             sNombreItem = "Gambeson del Temple " + nmejora;
-            itemDescripcion = "Un gambeson sobrio, reforzado para mantener la mente y el cuerpo firmes bajo presion.";
+            itemDescripcion = "Un gambeson sobrio, reforzado para mantener la mente y el cuerpo firmes bajo presión.";
          }
          else if (TRADU.i.nIdioma == 2)
          {

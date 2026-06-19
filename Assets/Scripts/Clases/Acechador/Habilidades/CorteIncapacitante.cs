@@ -149,12 +149,12 @@ public class CorteIncapacitante : Habilidad
     else
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
-      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstaculo en alcance melee frontal\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstáculo en alcance melee frontal\n";
       cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributoAtaque}{bonusTirada} vs Defensa\n";
-      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
-      cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributoAtaque}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> {rangoDanio} + {atributoAtaque}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
       cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Fortaleza vs DC {dcBase} + {atributoTS} = {dcTotal}\n";
-      cuerpo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> Incapacitado ({duracion} turnos): Inmovil, -20% Danio, -2 Ataque";
+      cuerpo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> Incapacitado ({duracion} turnos): Inmovil, -20% Daño, -2 Ataque";
       if (NIVEL == 4)
       {
         cuerpo += ", +3 Sangrado";
@@ -190,15 +190,15 @@ public class CorteIncapacitante : Habilidad
     }
     else if (esPortugues)
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de ataque.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na CD base da resistencia.</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 no bonus de ataque.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 na CD base da resistencia.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+3 Sangramento) ou Opcao B (+1 turno de duracao).</color>"; }
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bono de ataque.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al DC base de TS.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+3 Sangrado) u Opcion B (+1 turno de duracion).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al bono de ataque.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al DC base de TS.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+3 Sangrado) u Opción B (+1 turno de duración).</color>"; }
     }
   }
 
@@ -240,7 +240,7 @@ public class CorteIncapacitante : Habilidad
       bonusAtaque = 1;
       damExtra += 2;
       criticoRangoHab = 1;
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +5% Critico.</i>\n\n";
+      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +5% Crítico.</i>\n\n";
 
     }
     else if (NivelMaestria == 3)
@@ -249,7 +249,7 @@ public class CorteIncapacitante : Habilidad
       damExtra += 2;
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +5% Critico, -1 AP.</i>\n\n";
+      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +5% Crítico, -1 AP.</i>\n\n";
 
 
     }
@@ -259,7 +259,7 @@ public class CorteIncapacitante : Habilidad
       damExtra += 4;
       criticoRangoHab = 2;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +10% Critico.</i>\n\n";
+      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +10% Crítico.</i>\n\n";
 
     }
     else if (NivelMaestria == 5)
@@ -337,7 +337,7 @@ public class CorteIncapacitante : Habilidad
       }
       else if (resultadoTirada == 3)
       {//CRITICO
-        print("Critico");
+        print("Crítico");
 
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + 3 + damExtra + scEstaUnidad.mod_CarFuerza + danioMarca;
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);

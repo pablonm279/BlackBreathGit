@@ -123,9 +123,9 @@ public class CorteHorizontal : Habilidad
       else
       {
         cuerpo += "<b>Tipo:</b> Melee\n";
-        cuerpo += "<b>Objetivo:</b> Area frontal (3 de ancho)\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Critico: {criticoMin}-20\n";
-        cuerpo += $"<b>Danio:</b> {rangoDanio} + <color=#ea0606>Fue ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
+        cuerpo += "<b>Objetivo:</b> Área frontal (3 de ancho)\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Fue ({fuerzaActual})</color> + Ataque ({ataqueActual}){bonusAtaqueTxt} vs Defensa. Pifia: 1-2. Crítico: {criticoMin}-20\n";
+        cuerpo += $"<b>Daño:</b> {rangoDanio} + <color=#ea0606>Fue ({fuerzaActual})</color> | <b>Tipo:</b> Cortante\n";
         cuerpo += $"{lineaSalvacionEs}\n";
         cuerpo += $"<b>Si falla TS:</b> +{sangradoAplicado} Sangrado";
       }
@@ -169,7 +169,7 @@ public class CorteHorizontal : Habilidad
         cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque corpo a corpo em área</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Área frontal, 3 casas de largura</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Força ({fuerzaActual})</color>{ataqueTxt} vs Defesa. Falha crítica: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Força ({fuerzaActual})</color>. Tipo: Cortante</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Força ({fuerzaActual})</color>. Tipo: Cortante</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Resistência:</b></color> <color={colorValor}>Fortaleza vs CD {dcSangrado}</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoSangrado} +{sangradoAplicado} Sangramento</color>";
       }
@@ -233,8 +233,68 @@ public class CorteHorizontal : Habilidad
    {
     // El log de uso ahora está centralizado en Habilidad.Resolver
      VFXAplicarOrigen(Usuario.gameObject);
-   await base.Resolver(Objetivos);
-   
+
+     MeleeApproachMover acercamientoMelee = MeleeApproachMover.ObtenerOCrear(scEstaUnidad);
+     bool hizoAproximacion = false;
+
+     try
+     {
+       object objetivoVisual = ObtenerObjetivoVisualAproximacion(Objetivos, cas);
+       if (acercamientoMelee != null && objetivoVisual != null)
+       {
+         hizoAproximacion = await acercamientoMelee.PrepararAproximacionIAAsync(esMelee, 1, objetivoVisual, false);
+       }
+
+       await base.Resolver(Objetivos, cas);
+     }
+     finally
+     {
+       if (hizoAproximacion && acercamientoMelee != null)
+       {
+         await acercamientoMelee.VolverAPosicionInicialAsync();
+       }
+     }
+   }
+
+   object ObtenerObjetivoVisualAproximacion(List<object> objetivos, Casilla casillaClickeada)
+   {
+     if (casillaClickeada != null && casillaClickeada.Presente != null)
+     {
+       Unidad unidadCentro = casillaClickeada.Presente.GetComponent<Unidad>();
+       if (unidadCentro != null)
+       {
+         return unidadCentro;
+       }
+
+       Obstaculo obstaculoCentro = casillaClickeada.Presente.GetComponent<Obstaculo>();
+       if (obstaculoCentro != null)
+       {
+         return obstaculoCentro;
+       }
+     }
+
+     if (objetivos == null)
+     {
+       return null;
+     }
+
+     foreach (object objetivo in objetivos)
+     {
+       if (objetivo is Unidad)
+       {
+         return objetivo;
+       }
+     }
+
+     foreach (object objetivo in objetivos)
+     {
+       if (objetivo is Obstaculo)
+       {
+         return objetivo;
+       }
+     }
+
+     return null;
    }
 
     protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
@@ -306,7 +366,7 @@ public class CorteHorizontal : Habilidad
       }
       else if (resultadoTirada == 3)
       {//CRITICO
-        print("Critico");
+        print("Crítico");
 
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + scEstaUnidad.mod_CarFuerza;
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
@@ -401,7 +461,7 @@ public class CorteHorizontal : Habilidad
           rangoPlus ++;
         }
       }
-      List<Casilla> alCasillasafectadas = Origen.ObtenerCasillasRango(2+rangoPlus,1);
+      List<Casilla> alCasillasafectadas = Origen.ObtenerCasillasRango(2+rangoPlus,0);
     
       foreach(Casilla c in alCasillasafectadas)
       {

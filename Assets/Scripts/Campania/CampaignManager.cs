@@ -66,7 +66,7 @@ public class CampaignManager : MonoBehaviour
   private const bool DEBUG_FORZAR_OLA_DE_CALOR_AL_PLAY = false;
   private const bool DEBUG_FORZAR_MASACRE_NEDUKAZAL = false;
   private const bool DEBUG_ABRIR_MENU_SERRIA_AL_INICIAR = false;
-  private const int DistanciaVisionBase = 2;
+  private const int DistanciaVisionBase = 1;
   private const int DistanciaVisionMinima = 1;
   private const float DuracionEnvioExploradoresSegundos = 4f;
   private const float RetrasoInicioEnvioExploradoresSegundos = 0.25f;
@@ -114,12 +114,18 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private float recursoTextoStackOffsetY = 16f;
   [SerializeField] private float recursoTextoStackOffsetX = 10f;
   [SerializeField] private int recursoTextoMaxStackVisual = 4;
-  [SerializeField] private float recursoTextoDuracionExtra = 2.45f;
+  [SerializeField] private float recursoTextoDuracionExtra = 5.35f;
   [SerializeField] private float recursoTextoAnimatorSpeed = 0.85f;
+  [SerializeField] private float recursoTextoIntervaloSpawn = 0.25f;
+  [SerializeField] private float recursoTextoVentanaStackGlobal = 0.45f;
   private const float RecursoTextoDeltaAnimacionY = 110f;
   private const float RecursoTextoDuracionMovimiento = 2.3833334f;
   private const float RecursoTextoDuracionFade = 3.45f;
   private const float RecursoTextoAlphaIntermedio = 0.9843137f;
+  private readonly Queue<SolicitudTextoRecurso> colaTextosRecursos = new Queue<SolicitudTextoRecurso>();
+  private readonly Queue<SolicitudTextoRecurso> colaTextosRecursosSuspendidos = new Queue<SolicitudTextoRecurso>();
+  private readonly List<RegistroTextoRecurso> textosRecursosRecientes = new List<RegistroTextoRecurso>();
+  private Coroutine rutinaTextosRecursos;
   public Animator animCaravana;
   public GameObject goCanvas;
   public GameObject highlightNodos;
@@ -204,6 +210,7 @@ public class CampaignManager : MonoBehaviour
   private readonly Queue<(string, Color)> colaTextosSuspendidosCampania = new Queue<(string, Color)>();
   private bool procesandoCola;
   private int bloqueoTextosFlotantesCampania;
+  private int bloqueoTextosRecursosCampania;
   private float tiempoUltimoSpawnTiempoReal = float.NegativeInfinity;
   private readonly List<float> recentSpawnTimes = new List<float>();
   private Coroutine rutinaTextoFlotanteCampania;
@@ -1048,9 +1055,19 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       }
       return false;
     }
-    if (savePendiente.version < SaveFileData.CurrentVersion)
+    if (savePendiente.version < SaveFileData.MinimumCompatibleVersion)
     {
       error = "El save pertenece a una version anterior incompatible.";
+      Debug.LogWarning("[CampaignManager] " + error);
+      if (iniciarNuevaCampaniaSiFalla)
+      {
+        InicializarNuevaCampania();
+      }
+      return false;
+    }
+    if (savePendiente.version > SaveFileData.CurrentVersion)
+    {
+      error = "El save pertenece a una version posterior incompatible.";
       Debug.LogWarning("[CampaignManager] " + error);
       if (iniciarNuevaCampaniaSiFalla)
       {
@@ -1407,9 +1424,20 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       StopCoroutine(rutinaTextoFlotanteCampania);
       rutinaTextoFlotanteCampania = null;
     }
+    if (rutinaTextosRecursos != null)
+    {
+      StopCoroutine(rutinaTextosRecursos);
+      rutinaTextosRecursos = null;
+    }
 
     procesandoCola = false;
+    bloqueoTextosFlotantesCampania = 0;
+    bloqueoTextosRecursosCampania = 0;
     colaTextos.Clear();
+    colaTextosSuspendidosCampania.Clear();
+    colaTextosRecursos.Clear();
+    colaTextosRecursosSuspendidos.Clear();
+    textosRecursosRecientes.Clear();
     recentSpawnTimes.Clear();
     tiempoUltimoSpawnTiempoReal = float.NegativeInfinity;
     RestaurarCursorCampaniaPredeterminado();
@@ -1701,6 +1729,28 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       || EstaInteraccionActiva(goDerrota);
   }
 
+  private bool HayInteraccionTransitoriaActivaParaExploradores()
+  {
+    bool ignorarEventoNodoActual = EsNodoActualDeEvento();
+    return EstaInteraccionActiva(menuDescanso)
+      || EstaInteraccionActiva(goMenuBatallas)
+      || (!ignorarEventoNodoActual && EstaInteraccionActiva(UIEvetos))
+      || (scMenuCaravana != null && scMenuCaravana.TieneMenuAbierto)
+      || (asentamientoManager != null && asentamientoManager.TieneInteraccionActiva)
+      || EstaInteraccionActiva(goUIComercioNodo)
+      || EstaInteraccionActiva(goUIPersonajeSequito)
+      || EstaInteraccionActiva(goUISantuario)
+      || EstaInteraccionActiva(goUIVictoriaZona)
+      || EstaInteraccionActiva(goMenuPuerto)
+      || EstaInteraccionActiva(goDerrota);
+  }
+
+  private bool EsNodoActualDeEvento()
+  {
+    Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
+    return nodoActual != null && nodoActual.tipoNodo == 2;
+  }
+
   public bool DebeBloquearPaneoCamaraCampania()
   {
     return IntroCampaniaActivaOPendiente
@@ -1721,7 +1771,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public int ObtenerDistanciaVisionCalculada()
   {
-    return ObtenerDistanciaVisionBase() + ObtenerBonusDistanciaVisionCatalejos() - ObtenerPenalizacionClimaVision();
+    return Mathf.Max(
+      ObtenerDistanciaVisionMinima(),
+      ObtenerDistanciaVisionBase() + ObtenerBonusDistanciaVisionCatalejos() - ObtenerPenalizacionClimaVision());
   }
 
   public int ObtenerDistanciaVisionBase()
@@ -1831,7 +1883,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return false;
     }
 
-    if (HayInteraccionTransitoriaActiva() || ObtenerTipoCombatePendiente() > 0)
+    if (HayInteraccionTransitoriaActivaParaExploradores() || ObtenerTipoCombatePendiente() > 0)
     {
       motivo = LocExploradores(
         "-Resuelve la interaccion actual antes de enviar exploradores.",
@@ -1941,13 +1993,21 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       scMenuCaravana.MostrarResultadoExploradores(resultado);
     }
 
-    EscribirLogResultadoExploradores(resultado);
+    string logResultado = ObtenerLogResultadoExploradores(resultado);
+    if (!string.IsNullOrEmpty(logResultado))
+    {
+      EscribirLogEnBitacoraSinTextoFlotante(logResultado, true);
+      textosBufferizados.Insert(0, (logResultado, Color.cyan));
+    }
+
     EmitirTutorialExploradoresCompletado(resultado);
 
     if (textosBufferizados.Count > 0)
     {
       yield return ReproducirTextosExploradores(textosBufferizados);
     }
+
+    LiberarTextosRecursosSuspendidos();
   }
 
   ResultadoExploradoresCampania ResolverResultadoExploradores(Nodo destino)
@@ -4926,7 +4986,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     int chanceEmboscadaNormalizada = Mathf.Clamp(chancesemboscada, 0, 100);
     bool emboscadaEnemiga = randomEmboscada <= chanceEmboscadaNormalizada;
-    bool emboscadaAliada = !emboscadaEnemiga && (randomEmboscada - chanceEmboscadaNormalizada) >= 30;
+    bool emboscadaAliada = !emboscadaEnemiga && (randomEmboscada - chanceEmboscadaNormalizada) >= 50;
 
     if (emboscadaEnemiga)
     {
@@ -5180,15 +5240,15 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (GetTierAlientoNegro() == 3)
     {
-      EscribirLogSinBitacora(TRADU.i.Traducir("-La gran presencia de Aliento Negro en el aire, provoca temor en la Caravana. -5 Esperanza"));
-      CambiarEsperanzaActual(-5);
+      EscribirLogSinBitacora(TRADU.i.Traducir("-La gran presencia de Aliento Negro en el aire, provoca temor en la Caravana. -7 Esperanza"));
+      CambiarEsperanzaActual(-7);
     }
     if (GetTierAlientoNegro() == 4)
     {
-      CambiarEsperanzaActual(-7);
+      CambiarEsperanzaActual(-10);
       int random = UnityEngine.Random.Range(1, 5);
       CambiarCivilesActuales(-random);
-      EscribirLogSinBitacora(TRADU.i.Traducir("-La presencia de Aliento Negro en el aire es fatal para los Civiles. -7 Esperanza -") + random + TRADU.i.Traducir(" Civiles"));
+      EscribirLogSinBitacora(TRADU.i.Traducir("-La presencia de Aliento Negro en el aire es fatal para los Civiles. -10 Esperanza -") + random + TRADU.i.Traducir(" Civiles"));
     }
 
     AplicarTraitsMoraleAmbientales();
@@ -5405,7 +5465,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       int chanceEmboscadaNormalizada = Mathf.Clamp(chancesemboscada, 0, 100);
       bool emboscadaEnemiga = randomEmboscada <= chanceEmboscadaNormalizada;
-      bool emboscadaAliada = !emboscadaEnemiga && (randomEmboscada - chanceEmboscadaNormalizada) >= 30;
+      bool emboscadaAliada = !emboscadaEnemiga && (randomEmboscada - chanceEmboscadaNormalizada) >= 40;
 
       if (emboscadaEnemiga)
       {
@@ -5669,16 +5729,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   {
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
     string color = emboscadaEnemiga ? "#ff9a9a" : "#8ad8ff";
-    int inicioSinEmboscada = chanceEmboscada + 1;
-    int finSinEmboscada = Mathf.Min(chanceEmboscada + 29, 100);
-    int umbralEmboscadaAliada = chanceEmboscada + 30;
+    int umbralEmboscadaAliada = chanceEmboscada + 50;
     int chanceEmboscadaAliada = umbralEmboscadaAliada <= 100 ? 101 - umbralEmboscadaAliada : 0;
-    int chanceSinEmboscada = Mathf.Clamp(100 - chanceEmboscada - chanceEmboscadaAliada, 0, 100);
     string detalleEmboscadaEnemiga = chanceEmboscada > 0
       ? $"{chanceEmboscada}% (1-{chanceEmboscada})"
-      : "0%";
-    string detalleSinEmboscada = chanceSinEmboscada > 0
-      ? $"{chanceSinEmboscada}% ({inicioSinEmboscada}-{finSinEmboscada})"
       : "0%";
     string detalleEmboscadaAliada = chanceEmboscadaAliada > 0
       ? $"{chanceEmboscadaAliada}% ({umbralEmboscadaAliada}-100)"
@@ -5689,7 +5743,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       string textoEn = emboscadaEnemiga
         ? "-The caravan was ambushed."
         : "-You ambushed the enemies.";
-      return $"<color={color}>{textoEn} Enemy ambush: {detalleEmboscadaEnemiga} | No ambush: {detalleSinEmboscada} | Ally ambush: {detalleEmboscadaAliada} | 1d100: {tirada}.</color>";
+      string detalleResultadoEn = emboscadaEnemiga
+        ? $"Enemy ambush: {detalleEmboscadaEnemiga}"
+        : $"Ally ambush: {detalleEmboscadaAliada}";
+      return $"<color={color}>{textoEn} {detalleResultadoEn} | 1d100: {tirada}.</color>";
     }
 
     if (idioma == TRADU.IdiomaPortugues)
@@ -5697,13 +5754,19 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       string textoPt = emboscadaEnemiga
         ? "-A caravana sofreu uma emboscada."
         : "-Você emboscou os inimigos.";
-      return $"<color={color}>{textoPt} Emboscada inimiga: {detalleEmboscadaEnemiga} | Sem emboscada: {detalleSinEmboscada} | Emboscada aliada: {detalleEmboscadaAliada} | 1d100: {tirada}.</color>";
+      string detalleResultadoPt = emboscadaEnemiga
+        ? $"Emboscada inimiga: {detalleEmboscadaEnemiga}"
+        : $"Emboscada aliada: {detalleEmboscadaAliada}";
+      return $"<color={color}>{textoPt} {detalleResultadoPt} | 1d100: {tirada}.</color>";
     }
 
     string textoEs = emboscadaEnemiga
       ? "-La caravana ha sido emboscada."
       : "-Has emboscado a los enemigos.";
-    return $"<color={color}>{textoEs} Emboscada enemiga: {detalleEmboscadaEnemiga} | Sin emboscada: {detalleSinEmboscada} | Emboscada aliada: {detalleEmboscadaAliada} | 1d100: {tirada}.</color>";
+    string detalleResultadoEs = emboscadaEnemiga
+      ? $"Emboscada enemiga: {detalleEmboscadaEnemiga}"
+      : $"Emboscada aliada: {detalleEmboscadaAliada}";
+    return $"<color={color}>{textoEs} {detalleResultadoEs} | 1d100: {tirada}.</color>";
   }
 
   private void CachearTextosOriginalesDerrota()
@@ -6108,7 +6171,6 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       case 4:
       case 10:
-      case 14:
       case 15:
       case 16:
         return false;
@@ -7618,7 +7680,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       }
       if (pers.ActividadSeleccionada == 20) //Duelista: Socializar
       {
-        const int dificultad = 13;
+        const int dificultad = 16;
         List<string> beneficiados = new List<string>();
 
         foreach (Personaje pers2 in scMenuPersonajes.listaPersonajes)
@@ -8384,9 +8446,75 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return Task.CompletedTask;
     }
 
-    // Instancia el nuevo objeto
-    int stackIndex = ObtenerIndiceStackTextoRecurso(textoOrigen.transform);
+    SolicitudTextoRecurso solicitud = new SolicitudTextoRecurso(cantidad, textoOrigen, efectoRetraso);
+    if (bloqueoTextosRecursosCampania > 0)
+    {
+      colaTextosRecursosSuspendidos.Enqueue(solicitud);
+      return Task.CompletedTask;
+    }
+
+    EncolarTextoRecurso(solicitud);
+
+    return Task.CompletedTask;
+  }
+
+  private void EncolarTextoRecurso(SolicitudTextoRecurso solicitud)
+  {
+    colaTextosRecursos.Enqueue(solicitud);
+    if (rutinaTextosRecursos == null)
+    {
+      rutinaTextosRecursos = StartCoroutine(ProcesarColaTextosRecursos());
+    }
+  }
+
+  public void LiberarTextosRecursosSuspendidos()
+  {
+    if (bloqueoTextosRecursosCampania > 0 || colaTextosRecursosSuspendidos.Count == 0)
+    {
+      return;
+    }
+
+    while (colaTextosRecursosSuspendidos.Count > 0)
+    {
+      EncolarTextoRecurso(colaTextosRecursosSuspendidos.Dequeue());
+    }
+  }
+
+  private IEnumerator ProcesarColaTextosRecursos()
+  {
+    yield return null;
+
+    while (colaTextosRecursos.Count > 0)
+    {
+      SolicitudTextoRecurso solicitud = colaTextosRecursos.Dequeue();
+      CrearTextoRecursos(solicitud.Cantidad, solicitud.TextoOrigen);
+
+      if (colaTextosRecursos.Count > 0)
+      {
+        float intervalo = solicitud.EfectoRetraso
+          ? Mathf.Max(0.12f, recursoTextoIntervaloSpawn)
+          : recursoTextoIntervaloSpawn;
+        yield return new WaitForSecondsRealtime(Mathf.Max(0f, intervalo));
+      }
+    }
+
+    rutinaTextosRecursos = null;
+  }
+
+  private void CrearTextoRecursos(int cantidad, GameObject textoOrigen)
+  {
+    if (cantidad == 0 || prefabTextoRecursos == null || textoOrigen == null)
+    {
+      return;
+    }
+
+    Transform origen = textoOrigen.transform;
+    int stackIndex = Mathf.Max(
+      ObtenerIndiceStackTextoRecurso(origen),
+      ObtenerIndiceStackGlobalTextoRecurso(origen));
+
     GameObject goTextoFlotante = Instantiate(prefabTextoRecursos, textoOrigen.transform, false);
+
     Animator animator = goTextoFlotante.GetComponent<Animator>();
     float velocidadAnimador = Mathf.Max(0.01f, recursoTextoAnimatorSpeed);
     if (animator != null)
@@ -8412,9 +8540,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     TextMeshProUGUI txtMesh = goTextoFlotante.GetComponent<TextMeshProUGUI>();
     if (txtMesh == null)
     {
-      return Task.CompletedTask;
+      Destroy(goTextoFlotante);
+      return;
     }
 
+    RegistrarTextoRecursoReciente(origen);
 
     // Configura el texto y el color
 
@@ -8440,9 +8570,6 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       AplicarAnimacionTextoRecursoHaciaArriba(goTextoFlotante, velocidadAnimador);
     }
-
-    _ = efectoRetraso;
-    return Task.CompletedTask;
   }
 
   private void AplicarAnimacionTextoRecursoHaciaArriba(GameObject goTextoFlotante, float velocidadAnimador)
@@ -8513,6 +8640,31 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     return valueBueyes != null && textoOrigen == valueBueyes.gameObject;
   }
 
+  private int ObtenerIndiceStackGlobalTextoRecurso(Transform origen)
+  {
+    if (origen == null)
+    {
+      return 0;
+    }
+
+    float tiempoActual = Time.unscaledTime;
+    float ventanaStack = Mathf.Max(0f, recursoTextoVentanaStackGlobal);
+    textosRecursosRecientes.RemoveAll(registro => registro.Origen == null || tiempoActual - registro.Tiempo > ventanaStack);
+
+    int maxStackVisual = Mathf.Max(1, recursoTextoMaxStackVisual);
+    return Mathf.Clamp(textosRecursosRecientes.Count, 0, maxStackVisual - 1);
+  }
+
+  private void RegistrarTextoRecursoReciente(Transform origen)
+  {
+    if (origen == null)
+    {
+      return;
+    }
+
+    textosRecursosRecientes.Add(new RegistroTextoRecurso(origen, Time.unscaledTime));
+  }
+
   private int ObtenerIndiceStackTextoRecurso(Transform origen)
   {
     if (origen == null || prefabTextoRecursos == null)
@@ -8539,6 +8691,32 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     return Mathf.Clamp(textosActivos, 0, maxStackVisual - 1);
+  }
+
+  private readonly struct SolicitudTextoRecurso
+  {
+    public readonly int Cantidad;
+    public readonly GameObject TextoOrigen;
+    public readonly bool EfectoRetraso;
+
+    public SolicitudTextoRecurso(int cantidad, GameObject textoOrigen, bool efectoRetraso)
+    {
+      Cantidad = cantidad;
+      TextoOrigen = textoOrigen;
+      EfectoRetraso = efectoRetraso;
+    }
+  }
+
+  private readonly struct RegistroTextoRecurso
+  {
+    public readonly Transform Origen;
+    public readonly float Tiempo;
+
+    public RegistroTextoRecurso(Transform origen, float tiempo)
+    {
+      Origen = origen;
+      Tiempo = tiempo;
+    }
   }
 
   #region Tooltips
@@ -9402,6 +9580,15 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   }
 
+  private void EscribirLogEnBitacoraSinTextoFlotante(string log, bool forzarAunqueNumeroTurno1 = false)
+  {
+    if (logDeCampania == null) return;
+    if (!forzarAunqueNumeroTurno1 && numeroTurno <= 1) return;
+
+    logDeCampania.SetDiaActual(numeroTurno);
+    logDeCampania.Escribir(log);
+  }
+
   public void EscribirAdvertenciaLog(string log, bool forzarAunqueNumeroTurno1 = false)
   {
     EscribirLogSinBitacora(log, forzarAunqueNumeroTurno1);
@@ -9424,6 +9611,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   public void ComenzarBufferTextosFlotantesCampania()
   {
     bloqueoTextosFlotantesCampania++;
+    bloqueoTextosRecursosCampania++;
   }
 
   public List<(string texto, Color color)> FinalizarBufferTextosFlotantesCampania()
@@ -9431,6 +9619,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     if (bloqueoTextosFlotantesCampania > 0)
     {
       bloqueoTextosFlotantesCampania--;
+    }
+
+    if (bloqueoTextosRecursosCampania > 0)
+    {
+      bloqueoTextosRecursosCampania--;
     }
 
     List<(string texto, Color color)> textosBufferizados = new List<(string texto, Color color)>();

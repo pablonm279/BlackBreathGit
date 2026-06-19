@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -82,7 +82,7 @@ public class EscudoEnergetico : Habilidad
             {
                 cuerpo += $" (+{bonusAtaqueReaccion} na rolagem de ataque)";
             }
-            cuerpo += " e gera 1 Residuo Energetico proximo\n";
+            cuerpo += " e gera 1 Residuo Energetico próximo\n";
             cuerpo += $"<b>Usos da reacao por uso:</b> {usosReaccion}\n";
             cuerpo += seCancelaConDanio
                 ? "<b>Condicao:</b> O escudo e removido ao receber dano"
@@ -93,7 +93,7 @@ public class EscudoEnergetico : Habilidad
             cuerpo += "<b>Tipo:</b> Propia\n";
             cuerpo += "<b>Objetivo:</b> Propio usuario\n";
             cuerpo += $"<b>Buff de Defensa:</b> {defensaBase} + Nivel de Energia actual (2 rondas)\n";
-            cuerpo += $"<b>Reaccion:</b> Ante proyectil enemigo fallido, contraataca con Descarga Arcana";
+            cuerpo += $"<b>Reacción:</b> Ante proyectil enemigo fallido, contraataca con Descarga Arcana";
             if (bonusAtaqueReaccion > 0)
             {
                 cuerpo += $" (+{bonusAtaqueReaccion} a la tirada de ataque)";
@@ -101,8 +101,8 @@ public class EscudoEnergetico : Habilidad
             cuerpo += " y genera 1 Residuo Energetico cercano\n";
             cuerpo += $"<b>Usos de la reaccion por casteo:</b> {usosReaccion}\n";
             cuerpo += seCancelaConDanio
-                ? "<b>Condicion:</b> El escudo se cancela si recibe danio"
-                : "<b>Condicion:</b> El escudo no se cancela al recibir danio";
+                ? "<b>Condición:</b> El escudo se cancela si recibe daño"
+                : "<b>Condición:</b> El escudo no se cancela al recibir daño";
         }
 
         string costos = esIngles
@@ -117,7 +117,7 @@ public class EscudoEnergetico : Habilidad
                 ? "The Channeler forms a reactive barrier that reinforces defense and punishes ranged pressure."
                 : esPortugues
                     ? "O Canalizador forma uma barreira reativa que reforca a defesa e pune pressao a distancia."
-                : "El Canalizador forma una barrera reactiva que refuerza defensa y castiga la presion a distancia.",
+                : "El Canalizador forma una barrera reactiva que refuerza defensa y castiga la presión a distancia.",
             cuerpo,
             costos,
             "#5dade2");
@@ -158,9 +158,9 @@ public class EscudoEnergetico : Habilidad
             cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Propio usuario</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Defensa:</b></color> <color={colorValor}>+{defensaBase} + Nivel de Energia actual por 2 rondas</color>\n";
-            cuerpoFormato += $"<color={colorEncabezado}><b>Reaccion:</b></color> <color={colorValor}>{iconoReaccion} Si proyectil enemigo falla: Descarga Arcana{bonusAtaqueTexto}, crea {iconoEnergia} 1 Residuo Energetico cercano</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Reacción:</b></color> <color={colorValor}>{iconoReaccion} Si proyectil enemigo falla: Descarga Arcana{bonusAtaqueTexto}, crea {iconoEnergia} 1 Residuo Energetico cercano</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Usos:</b></color> <color={colorValor}>{usosReaccion} reacciones por uso</color>\n";
-            cuerpoFormato += $"<color={colorEncabezado}><b>Condicion:</b></color> <color={colorValor}>{(seCancelaConDanio ? "Se remueve al recibir daño" : "No se remueve al recibir daño")}</color>";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Condición:</b></color> <color={colorValor}>{(seCancelaConDanio ? "Se remueve al recibir daño" : "No se remueve al recibir daño")}</color>";
         }
 
         txtDescripcion =
@@ -189,9 +189,9 @@ public class EscudoEnergetico : Habilidad
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 defensa base.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 a la tirada de ataque de la descarga de reaccion.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (no se cancela por danio) u Opcion B (+1 uso de reaccion).</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 defensa base.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 a la tirada de ataque de la descarga de reacción.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (no se cancela por daño) u Opción B (+1 uso de reacción).</color>"; }
         }
 
     }

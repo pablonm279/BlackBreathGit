@@ -131,12 +131,12 @@ public class PuntaHiriente : Habilidad
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
             cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo en alcance melee\n";
             cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
-            cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
-            cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> {rangoDanio}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
             cuerpo += $"<color={colorEncabezado}><b>Penetracion de armadura:</b></color> {penetracion}\n";
             cuerpo += $"<color={colorEncabezado}><b>Al impactar:</b></color> aplica Provocado por 2 turnos\n";
             cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Fortaleza vs DC {dcBase} + {agilidadDC} = {dcTotal}\n";
-            cuerpo += $"<color={colorEncabezado}><b>Si falla:</b></color> aplica {nombreAdolorido} por {duracionAdolorido} turnos: -10% Danio, -2";
+            cuerpo += $"<color={colorEncabezado}><b>Si falla:</b></color> aplica {nombreAdolorido} por {duracionAdolorido} turnos: -10% Daño, -2";
         }
 
         string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
@@ -163,14 +163,14 @@ public class PuntaHiriente : Habilidad
         else if (esPortugues)
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no bonus de rolagem.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na CD da resistencia.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 na CD da resistencia.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+3 Penetracao de armadura) ou Opcao B (+1 turno de Adolorido).</color>"; }
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bonus de tirada.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al DC de la TS.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+3 Penetracion de armadura) u Opcion B (+1 turno de Adolorido).</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al bonus de tirada.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al DC de la TS.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+3 Penetracion de armadura) u Opción B (+1 turno de Adolorido).</color>"; }
         }
     }
 
@@ -259,7 +259,7 @@ public class PuntaHiriente : Habilidad
 
         objetivo.RemoverBuffNombre(BuffNombreProvocado);
 
-        Buff buff = new Buff();
+         Buff buff = new Buff();
         buff.buffNombre = BuffNombreProvocado;
         buff.buffDescr = string.Empty;
         buff.boolfDebufftBuff = false;
@@ -287,7 +287,7 @@ public class PuntaHiriente : Habilidad
             ? "Deals -10% damage and -2 Attack."
             : esPortugues
                 ? "Causa -10% de dano e -2 Ataque."
-                : "Hace -10% de danio y -2 Ataque.";
+                : "Hace -10% de daño y -2 Ataque.";
         buff.boolfDebufftBuff = false;
         buff.esStackeable = false;
         buff.DuracionBuffRondas = NIVEL == 5 ? 3 : 2;

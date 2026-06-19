@@ -15,6 +15,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     private const string PrefVsync = "gfx_vsync";
     private const string PrefFpsLimit = "gfx_fps_limit";
     private const string PrefBrightness = "gfx_brightness";
+    private const string EscenaMenuPrincipal = "ES-MenuPrincipal";
     private const float DefaultBrightness = 0.65f;
     private const float AudioSfxOffsetY = -60.7f;
 
@@ -347,6 +348,13 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
          CambiarEfectos();
         this.gameObject.SetActive(false);
 
+    }
+
+    public void VolverAlMenuPrincipal()
+    {
+        CambiarEfectos();
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(EscenaMenuPrincipal, LoadSceneMode.Single);
     }
 
     void LlenarDropdownResoluciones()
@@ -1259,6 +1267,8 @@ public static class AjustesAudio
             AplicarVolumenSfx(audioSource);
         }
     }
+
+    
 }
 
 

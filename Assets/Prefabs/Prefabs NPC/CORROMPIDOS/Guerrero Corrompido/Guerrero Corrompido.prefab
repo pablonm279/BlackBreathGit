@@ -162,13 +162,13 @@ MonoBehaviour:
   tags:
   - Corrupto
   - Nomuerto
-  at_iniciativa: 2
-  mod_iniciativa: 2
+  at_iniciativa: 0
+  mod_iniciativa: 0
   iniciativa_actual: 0
   esEtereo: 0
-  at_maxHP: 45
-  mod_maxHP: 45
-  HP_actual: 45
+  at_maxHP: 41
+  mod_maxHP: 41
+  HP_actual: 41
   at_maxAccionP: 4
   esInmobil: 0
   mod_maxAccionP: 4
@@ -177,16 +177,16 @@ MonoBehaviour:
   at_maxMeritoP: 0
   mod_maxValentiaP: 0
   ValentiaP_actual: 0
-  at_CarFuerza: 6
-  mod_CarFuerza: 6
-  at_CarAgilidad: 3
-  mod_CarAgilidad: 3
+  at_CarFuerza: 5
+  mod_CarFuerza: 5
+  at_CarAgilidad: 2
+  mod_CarAgilidad: 2
   at_CarPoder: 2
   mod_CarPoder: 2
-  at_Armadura: 4
-  mod_Armadura: 4
-  at_ResFuego: -3
-  mod_ResFuego: -3
+  at_Armadura: 3
+  mod_Armadura: 3
+  at_ResFuego: -4
+  mod_ResFuego: -4
   at_ResHielo: 0
   mod_ResHielo: 0
   at_ResRayo: 0
@@ -213,8 +213,8 @@ MonoBehaviour:
   "mod_CriticoDa\xF1oBonus": 0
   at_TSReflejos: 2
   mod_TSReflejos: 2
-  at_TSFortaleza: 6
-  mod_TSFortaleza: 6
+  at_TSFortaleza: 5
+  mod_TSFortaleza: 5
   at_TSMental: 3
   mod_TSMental: 3
   ConsumibleA: {fileID: 0}
@@ -305,7 +305,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.6, y: 0.95, z: 0.6}
+  m_Size: {x: 0.3, y: 0.95, z: 0.39}
   m_Center: {x: 0, y: 0.62, z: 0}
 --- !u!114 &2066782550647620012
 MonoBehaviour:
@@ -590,9 +590,18 @@ MonoBehaviour:
   poseMover: {fileID: 21300000, guid: 68488c170fa42be43b82fd28137923a1, type: 3}
   poseAtacar: {fileID: 21300000, guid: 217738d55c0c9704c92dd4c10e81a1e7, type: 3}
   poseHabilidad: {fileID: 21300000, guid: 217738d55c0c9704c92dd4c10e81a1e7, type: 3}
+  poseRecibirDanio: {fileID: 0}
+  poseTurnoActivo: {fileID: 0}
   duracionPoseAtacar: 1
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1
+  meleeFraccionImpacto: 0.35
+  meleePreImpactoFallback: 0.22
+  meleePreImpactoMin: 0.08
+  meleePreImpactoMax: 0.42
+  meleePostImpacto: 0.16
+  meleePostImpactoMin: 0.05
+  meleePostImpactoMax: 0.3
 --- !u!1 &3030485952608272424
 GameObject:
   m_ObjectHideFlags: 0
@@ -653,7 +662,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.7264151, g: 0, b: 0, a: 0.105882354}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -745,7 +754,7 @@ RectTransform:
   m_GameObject: {fileID: 4612788786185205983}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.036}
-  m_LocalScale: {x: 1.65, y: 0.91671234, z: 0.91671234}
+  m_LocalScale: {x: 1.6, y: 0.8889332, z: 0.8889332}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4886713912358591016}
@@ -754,7 +763,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.4, y: -13.5}
+  m_AnchoredPosition: {x: -0.4, y: -14.64}
   m_SizeDelta: {x: 19.71, y: 33.86}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2299710019064433329
@@ -779,7 +788,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1209,7 +1218,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.8862745}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

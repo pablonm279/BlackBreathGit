@@ -124,7 +124,7 @@ public class AtaqueBasico : Habilidad
        }
        else if (resultadoTirada == 3)
        {//CRITICO
-         print("Critico");
+         print("Crítico");
 
          float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+scEstaUnidad.mod_CarFuerza;
          danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);

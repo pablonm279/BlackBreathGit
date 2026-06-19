@@ -41,9 +41,9 @@ public class TrampaMasaContaminada : Trampa
       Buff buff = new Buff();
       buff.buffNombre = "Potenciado por Masa Contaminada";
       buff.boolfDebufftBuff = true;
-      buff.DuracionBuffRondas = 3;
-      buff.cantAPMax += 1;
-      buff.cantDamBonusElementalNec += 6;
+      buff.DuracionBuffRondas = 2;
+      buff.cantDamBonusElementalNec += 4;
+      unidad.estado_regeneravida = 2;
       buff.AplicarBuff(unidad);
       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
       Buff buffComponent = ComponentCopier.CopyComponent(buff, unidad.gameObject);

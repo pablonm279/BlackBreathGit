@@ -89,20 +89,20 @@ public class MarcarPresa : Habilidad
       cuerpo += aplicaPenalidadPropia
         ? $"<color={colorEncabezado}><b>Depois de usar:</b></color> -2 em rolagens contra alvos nao marcados por 2 turnos\n"
         : $"<color={colorEncabezado}><b>Depois de usar:</b></color> sem penalidade contra alvos nao marcados\n";
-      cuerpo += $"<color={colorEncabezado}><b>Ao matar o marcado:</b></color> +{recompensaVal} Valentia, +{recompensaApMax} AP max, +{recompensaTsMental} TS Mental por 3 turnos";
+      cuerpo += $"<color={colorEncabezado}><b>Ao matar o marcado:</b></color> +{recompensaVal} Valentía, +{recompensaApMax} AP max, +{recompensaTsMental} TS Mental por 3 turnos";
     }
     else
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Marca\n";
       cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo del lado opuesto\n";
       cuerpo += $"<color={colorEncabezado}><b>Tirada/TS:</b></color> no tiene\n";
-      cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentia\n";
-      cuerpo += $"<color={colorEncabezado}><b>Duracion de marca:</b></color> 3 turnos\n";
-      cuerpo += $"<color={colorEncabezado}><b>Contra marcado:</b></color> tirada +{bonoAtaqueMarca}, +{bonoCritPorcentajeMarca}% Critico, +{bonoCritDanioMarca}% danio critico\n";
+      cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentía\n";
+      cuerpo += $"<color={colorEncabezado}><b>Duración de marca:</b></color> 3 turnos\n";
+      cuerpo += $"<color={colorEncabezado}><b>Contra marcado:</b></color> tirada +{bonoAtaqueMarca}, +{bonoCritPorcentajeMarca}% Crítico, +{bonoCritDanioMarca}% daño crítico\n";
       cuerpo += aplicaPenalidadPropia
         ? $"<color={colorEncabezado}><b>Despues de lanzar:</b></color> -2 en tiradas contra no marcados por 2 turnos\n"
         : $"<color={colorEncabezado}><b>Despues de lanzar:</b></color> sin penalidad contra no marcados\n";
-      cuerpo += $"<color={colorEncabezado}><b>Al matar al marcado:</b></color> +{recompensaVal} Valentia, +{recompensaApMax} AP max, +{recompensaTsMental} TS Mental por 3 turnos";
+      cuerpo += $"<color={colorEncabezado}><b>Al matar al marcado:</b></color> +{recompensaVal} Valentía, +{recompensaApMax} AP max, +{recompensaTsMental} TS Mental por 3 turnos";
     }
 
     string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
@@ -132,14 +132,14 @@ public class MarcarPresa : Habilidad
     else if (esPortugues)
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% de dano critico contra marcado.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico contra marcado.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% Crítico contra marcado.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A remove a penalidade propria; Opcao B melhora a recompensa por morte (+1 Valentia, +1 AP max, +1 TS Mental).</color>"; }
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% al danio critico contra marcado.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico contra marcado.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A elimina la penalidad propia; Opcion B mejora la recompensa por muerte (+1 Valentia, +1 AP max, +1 TS Mental).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% al daño crítico contra marcado.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% Crítico contra marcado.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A elimina la penalidad propia; Opción B mejora la recompensa por muerte (+1 Valentía, +1 AP max, +1 TS Mental).</color>"; }
     }
   }
 

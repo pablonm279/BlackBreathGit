@@ -563,22 +563,24 @@ public class Nodo : MonoBehaviour
       if (CampaignManager.Instance != null)
       {
         int chanceExploracionInicial = CampaignManager.Instance.ObtenerChanceExploracionViaje();
-        int alcanceExploracionInicial = Mathf.Max(1, CampaignManager.Instance.ObtenerDistanciaVisionEfectiva());
-        TiradaExploracion(chanceExploracionInicial, true, "", true, alcanceExploracionInicial);
+        TiradaExploracion(chanceExploracionInicial, true, "", true, 1);
       }
     }
     else if (posXNodo == 1)
     {
-      IntentarConectar(xadelante, posYNodo - 1, zonaId);
+      if (posYNodo == 1)
+        IntentarConectar(xadelante, 2, zonaId);
+      else
+        IntentarConectar(xadelante, posYNodo - 1, zonaId);
+
       IntentarConectar(xadelante, posYNodo, zonaId);
     }
     else if (posYNodo == 1 && posXNodo < 10)
     {
-      int random1 = UnityEngine.Random.Range(1, 5);
-      if (random1 == 1) IntentarConectar(xadelante, 1, zonaId);
-      else if (random1 == 2) { IntentarConectar(xadelante, 1, zonaId); IntentarConectar(xadelante, 2, zonaId); }
-      else if (random1 == 3) IntentarConectar(xadelante, 2, zonaId);
-      else if (random1 == 4) { IntentarConectar(xadelante, 1, zonaId); IntentarConectar(xadelante, 2, zonaId); }
+      int random1 = UnityEngine.Random.Range(1, 11);
+      if (random1 <= 2) IntentarConectar(xadelante, 1, zonaId);
+      else if (random1 <= 4) IntentarConectar(xadelante, 2, zonaId);
+      else { IntentarConectar(xadelante, 1, zonaId); IntentarConectar(xadelante, 2, zonaId); }
     }
     else if (posYNodo == 2 && posXNodo < 10)
     {
@@ -2011,6 +2013,11 @@ public class Nodo : MonoBehaviour
       return true;
     }
 
+    if (tutorialNuevo != null && tutorialNuevo.IsRunning && !esEnvioExploradores && DebeBloquearViajeEnPasoTutorial(pasoTutorialNuevo))
+    {
+      return true;
+    }
+
     if (tutorialNuevo != null && tutorialNuevo.IsRunning && !tutorialNuevo.AllowsInput(ObtenerTutorialTargetId()))
     {
       return !(esEnvioExploradores && DebePermitirEnvioExploradoresTutorial(pasoTutorialNuevo));
@@ -2036,6 +2043,26 @@ public class Nodo : MonoBehaviour
     }
 
     return false;
+  }
+
+  bool DebeBloquearViajeEnPasoTutorial(TutorialStep pasoTutorial)
+  {
+    if (pasoTutorial == null)
+    {
+      return false;
+    }
+
+    if (pasoTutorial.id == "Exploracion2" || pasoTutorial.id == "exploracion2")
+    {
+      return EsClaroMisteriosoTutorial();
+    }
+
+    return pasoTutorial.id == "Fatiga2"
+      || pasoTutorial.id == "fatiga2"
+      || pasoTutorial.id == "Descanso1"
+      || pasoTutorial.id == "descanso1"
+      || pasoTutorial.id == "Clima1"
+      || pasoTutorial.id == "clima1";
   }
 
   public string ObtenerTutorialTargetId()

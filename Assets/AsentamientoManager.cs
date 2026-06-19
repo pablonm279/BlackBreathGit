@@ -123,7 +123,7 @@ public class AsentamientoManager : MonoBehaviour
         campaign.ResetearPuestoComercial();
         if (campaign.scSequitoMercaderes != null)
         {
-            campaign.scSequitoMercaderes.GenerarItemsVendidos();
+            campaign.scSequitoMercaderes.GenerarItemsVendidos(false);
         }
 
         campaign.CambiarEsperanzaActual(5);
@@ -341,6 +341,8 @@ public class AsentamientoManager : MonoBehaviour
         {
             yield return ReproducirTextosAccionAsentamiento(campaign, textosBufferizados);
         }
+
+        campaign.LiberarTextosRecursosSuspendidos();
 
         if (accion == AccionAsentamiento.PuestoComercial)
         {

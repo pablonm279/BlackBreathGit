@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -93,7 +93,7 @@ public class HaciaLasSombras : Habilidad
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Utilidad de movilidad\n";
       cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Cualquier casilla vacia de tu lado\n";
       cuerpo += $"<color={colorEncabezado}><b>Tirada/TS:</b></color> no tiene\n";
-      cuerpo += $"<color={colorEncabezado}><b>Costo Valentia:</b></color> {costoPM}\n";
+      cuerpo += $"<color={colorEncabezado}><b>Costo Valentía:</b></color> {costoPM}\n";
       cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> se teletransporta a la casilla objetivo\n";
       cuerpo += $"<color={colorEncabezado}><b>Propio:</b></color> gana Escondido (2), Evasion ({evasionGanada}), remueve debuffs\n";
       cuerpo += terminaTurno
@@ -132,9 +132,9 @@ public class HaciaLasSombras : Habilidad
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 enfriamiento.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Evasion ganada.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (no termina turno) u Opcion B (-1 costo de Valentía).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: -1 enfriamiento.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 Evasion ganada.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (no termina turno) u Opción B (-1 costo de Valentía).</color>"; }
     }
   }
 

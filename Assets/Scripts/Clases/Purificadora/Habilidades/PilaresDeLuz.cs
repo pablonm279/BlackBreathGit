@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -108,15 +108,15 @@ public class PilaresDeLuz : Habilidad
       {
         cuerpo += "<b>Tipo:</b> Rango (3 alcance)\n";
         cuerpo += "<b>Objetivo:</b> 1 casilla en rango\n";
-        cuerpo += $"<b>Invocacion:</b> {cantidadPilares} pilares (casilla seleccionada y casillas adyacentes en la misma columna si estan libres)\n";
+        cuerpo += $"<b>Invocación:</b> {cantidadPilares} pilares (casilla seleccionada y casillas adyacentes en la misma columna si estan libres)\n";
         cuerpo += $"<b>Stats del pilar:</b> Vida {vidaPilar}";
         if (resistenciaDanio > 0)
         {
-          cuerpo += $", Resistencia al dano {resistenciaDanio}";
+          cuerpo += $", Resistencia al daño {resistenciaDanio}";
         }
         cuerpo += "\n";
-        cuerpo += $"<b>Contraataque:</b> {danioPilarEs} | <b>Tipo:</b> Divino (x2 vs Nomuerto/Etereo)\n";
-        cuerpo += $"<b>Duracion:</b> {duracionTurnos} turnos";
+        cuerpo += $"<b>Contraataque:</b> {danioPilarEs} | <b>Tipo:</b> Divino (x2 vs Nomuerto/Etéreo)\n";
+        cuerpo += $"<b>Duración:</b> {duracionTurnos} turnos";
       }
 
       string costos = esIngles
@@ -130,8 +130,8 @@ public class PilaresDeLuz : Habilidad
         esIngles
           ? "Creates holy obstacles that punish attackers with divine retaliation."
           : esPortugues
-            ? "Cria obstaculos sagrados que punem agressores com represalia divina."
-          : "Crea obstaculos sagrados que castigan a quienes los ataquen con represalia divina.",
+            ? "Cria obstáculos sagrados que punem agressores com represalia divina."
+          : "Crea obstáculos sagrados que castigan a quienes los ataquen con represalia divina.",
         cuerpo,
         costos,
         "#5dade2");
@@ -146,10 +146,10 @@ public class PilaresDeLuz : Habilidad
         : $"{costoAP} {iconoAP}";
       string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
       string subtitulo = esIngles
-        ? "Creates holy pillars that retaliate when attacked."
+        ? "Creates holy pillars that damages enemies when attacked."
         : esPortugues
-          ? "Cria pilares sagrados que contra-atacam quando atacados."
-          : "Crea pilares sagrados que contraatacan al ser atacados.";
+          ? "Cria pilares sagrados que causam dano quando atacados."
+          : "Crea pilares sagrados que dañan al ser atacados.";
       string danioPilar = $"{rangoDanioPilarEs} + <color={colorPoder}>{(esIngles ? "Power" : esPortugues ? "Poder" : "Poder")} ({poderActual})</color>";
       string cuerpoNuevo = "";
       if (esIngles)
@@ -164,7 +164,7 @@ public class PilaresDeLuz : Habilidad
       }
       else if (esPortugues)
       {
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Obstaculo a alcance (3 de alcance)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Obstáculo a alcance (3 de alcance)</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 celula livre no alcance</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Invocacao:</b></color> <color={colorValor}>{cantidadPilares} pilares na mesma coluna se livres</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Pilar:</b></color> <color={colorValor}>{vidaPilar} Vida";
@@ -174,13 +174,13 @@ public class PilaresDeLuz : Habilidad
       }
       else
       {
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Obstaculo a rango (3 alcance)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Obstáculo a rango (3 alcance)</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 casilla libre en rango</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Invocacion:</b></color> <color={colorValor}>{cantidadPilares} pilares en la misma columna si estan libres</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Invocación:</b></color> <color={colorValor}>{cantidadPilares} pilares en la misma columna si estan libres</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Pilar:</b></color> <color={colorValor}>{vidaPilar} Vida";
-        if (resistenciaDanio > 0) { cuerpoNuevo += $", {resistenciaDanio} resistencia al danio"; }
+        if (resistenciaDanio > 0) { cuerpoNuevo += $", {resistenciaDanio} resistencia al daño"; }
         cuerpoNuevo += $", {duracionTurnos} turnos</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Al recibir golpe:</b></color> <color={colorValor}>{danioPilar}. Tipo: Divino (x2 vs Nomuerto/Etereo)</color>";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Al recibir golpe:</b></color> <color={colorValor}>{danioPilar}. Tipo: Divino (x2 vs Nomuerto/Etéreo)</color>";
       }
 
       txtDescripcion =
@@ -207,15 +207,15 @@ public class PilaresDeLuz : Habilidad
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5 Vida do pilar.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5 Vida do pilar.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +3 de dano no contra-ataque do pilar.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+3 Resistencia a dano) ou Opcao B (+1 pilar).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5 Vida de pilar.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +3 danio de contraataque del pilar.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+3 Resistencia al dano) u Opcion B (+1 pilar).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5 Vida de pilar.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +3 daño de contraataque del pilar.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+3 Resistencia al daño) u Opción B (+1 pilar).</color>"; }
       }
     }
     void Start()

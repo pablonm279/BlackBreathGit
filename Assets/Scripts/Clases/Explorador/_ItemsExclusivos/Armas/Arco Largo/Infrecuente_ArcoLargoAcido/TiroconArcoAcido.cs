@@ -124,9 +124,9 @@ public class TiroconArcoAcido : Habilidad
       {
         cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Alcance:</b></color> <color={colorValor}>{hAlcance}</color>\n";
-        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstaculo en alcance</color>\n";
-        cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defensa. Pifia: 5%. Critico: {criticoPorcentaje}%</color>\n";
-        cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Perforante</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstáculo en alcance</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defensa. Pifia: 5%. Crítico: {criticoPorcentaje}%</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Perforante</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> <color={colorValor}>1 Flecha</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Efecto del arma:</b></color> <color={colorValor}>{efecto}</color>";
       }
@@ -231,7 +231,7 @@ public class TiroconArcoAcido : Habilidad
       }
       else if (resultadoTirada == 3)
       {//CRITICO
-        print("Critico");
+        print("Crítico");
 
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + 1 + scEstaUnidad.mod_CarAgilidad;
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje + danioMarca);

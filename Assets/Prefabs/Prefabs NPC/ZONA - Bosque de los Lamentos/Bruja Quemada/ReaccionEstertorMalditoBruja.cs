@@ -19,7 +19,7 @@ public class ReaccionEstertorMalditoBruja : Reaccion
     scEstaUnidad = GetComponent<Unidad>();
     descripcion = TRADU.i != null
       ? TRADU.i.Traducir("Reacción: al morir, quien asesta el golpe final debe superar TS Mental 12 o recibe 2d6 daño necrótico.")
-      : "Reaccion: al morir, quien asesta el golpe final debe superar TS Mental 12 o recibe 2d6 dano necrotico.";
+      : "Reacción: al morir, quien asesta el golpe final debe superar TS Mental 12 o recibe 2d6 daño necrótico.";
   }
 
   public async override void AplicarEfectos(Unidad uTriggerer, bool melee, float variableFlexible1 = 0, float variableFlexible2 = 0)

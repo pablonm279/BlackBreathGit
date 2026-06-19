@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -50,15 +50,15 @@ public class SiguesTu : Habilidad
 
       string tituloEs = "Sigues Tu I";
       string tituloEn = "You Are Next I";
-      string tituloPt = "Voce e o Proximo I";
+      string tituloPt = "Voce e o Próximo I";
       if (NIVEL == 2) { tituloEs = "Sigues Tu II"; tituloEn = "You Are Next II"; }
       if (NIVEL == 3) { tituloEs = "Sigues Tu III"; tituloEn = "You Are Next III"; }
       if (NIVEL == 4) { tituloEs = "Sigues Tu IV a"; tituloEn = "You Are Next IV a"; }
       if (NIVEL == 5) { tituloEs = "Sigues Tu IV b"; tituloEn = "You Are Next IV b"; }
-      if (NIVEL == 2) { tituloPt = "Voce e o Proximo II"; }
-      if (NIVEL == 3) { tituloPt = "Voce e o Proximo III"; }
-      if (NIVEL == 4) { tituloPt = "Voce e o Proximo IV a"; }
-      if (NIVEL == 5) { tituloPt = "Voce e o Proximo IV b"; }
+      if (NIVEL == 2) { tituloPt = "Voce e o Próximo II"; }
+      if (NIVEL == 3) { tituloPt = "Voce e o Próximo III"; }
+      if (NIVEL == 4) { tituloPt = "Voce e o Próximo IV a"; }
+      if (NIVEL == 5) { tituloPt = "Voce e o Próximo IV b"; }
 
       string colorEncabezado = "#44d3ec";
       string colorValor = "#ffffff";
@@ -102,7 +102,7 @@ public class SiguesTu : Habilidad
         cuerpo += $"<b>Bonus no marcado:</b> +5 ataque, +{bonusDanioMarca} dano";
         if (bonusCritMarca > 0)
         {
-          cuerpo += $", +{bonusCritMarcaPorcentaje}% Critico";
+          cuerpo += $", +{bonusCritMarcaPorcentaje}% Crítico";
         }
         cuerpo += "\n";
         cuerpo += "<b>Consumo da marca:</b> consumida na primeira tentativa de Corte Vertical/Partir\n";
@@ -121,10 +121,10 @@ public class SiguesTu : Habilidad
         cuerpo += "<b>Tipo:</b> Marca + Debuff\n";
         cuerpo += "<b>Objetivo:</b> 1 unidad enemiga\n";
         cuerpo += $"<b>Marca ({duracionMarca} turnos):</b> habilita bonos solo para Corte Vertical y Partir\n";
-        cuerpo += $"<b>Bonos sobre marcado:</b> +5 ataque, +{bonusDanioMarca} danio";
+        cuerpo += $"<b>Bonos sobre marcado:</b> +5 ataque, +{bonusDanioMarca} daño";
         if (bonusCritMarca > 0)
         {
-          cuerpo += $", +{bonusCritMarcaPorcentaje}% Critico";
+          cuerpo += $", +{bonusCritMarcaPorcentaje}% Crítico";
         }
         cuerpo += "\n";
         cuerpo += "<b>Consumo de marca:</b> se consume en el primer intento de Corte Vertical/Partir\n";
@@ -151,7 +151,7 @@ public class SiguesTu : Habilidad
           ? "A lethal threat mark that sets up your single-target finishers."
           : esPortugues
             ? "Uma marca de ameaca letal que prepara seus finalizadores de alvo unico."
-          : "Una marca de amenaza letal que prepara tus remates de objetivo unico.",
+          : "Una marca de amenaza letal que prepara tus remates de objetivo único.",
         cuerpo,
         costos,
         "#5dade2");
@@ -194,7 +194,7 @@ public class SiguesTu : Habilidad
         cuerpoFormato += $"<color={colorEncabezado}><b>Contra alvo marcado:</b></color> <color={colorValor}>{iconoBuff} Corte Vertical e Partir ganham +5 ataque, +{bonusDanioMarca} dano";
         if (bonusCritMarca > 0)
         {
-          cuerpoFormato += $", +{bonusCritMarcaPorcentaje}% Critico";
+          cuerpoFormato += $", +{bonusCritMarcaPorcentaje}% Crítico";
         }
         cuerpoFormato += "</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Uso da marca:</b></color> <color={colorValor}>Consumida na primeira tentativa de Corte Vertical/Partir</color>\n";
@@ -213,10 +213,10 @@ public class SiguesTu : Habilidad
         cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Marca + debuff</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 unidad enemiga</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Al usar:</b></color> <color={colorValor}>{iconoMarca} Marca al objetivo por {duracionMarca} turnos</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Contra marcado:</b></color> <color={colorValor}>{iconoBuff} Corte Vertical y Partir ganan +5 ataque, +{bonusDanioMarca} danio";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Contra marcado:</b></color> <color={colorValor}>{iconoBuff} Corte Vertical y Partir ganan +5 ataque, +{bonusDanioMarca} daño";
         if (bonusCritMarca > 0)
         {
-          cuerpoFormato += $", +{bonusCritMarcaPorcentaje}% Critico";
+          cuerpoFormato += $", +{bonusCritMarcaPorcentaje}% Crítico";
         }
         cuerpoFormato += "</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Uso de marca:</b></color> <color={colorValor}>Se consume en el primer intento de Corte Vertical/Partir</color>\n";
@@ -251,15 +251,15 @@ public class SiguesTu : Habilidad
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +10% Critico sobre o marcado.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +10% Crítico sobre o marcado.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de dano extra no marcado.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (debuff sem resistencia) ou Opcao B (+2 turnos de debuff).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +10% Critico sobre el marcado.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 danio extra al marcado.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (debuff sin TS) u Opcion B (+2 turnos de debuff).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +10% Crítico sobre el marcado.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +2 daño extra al marcado.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (debuff sin TS) u Opción B (+2 turnos de debuff).</color>"; }
       }
 
    }
@@ -301,7 +301,7 @@ public class SiguesTu : Habilidad
                 objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Marcado"), Color.yellow);
 
                 int salvDC = 10;
-                if(NIVEL == 4){salvDC += 100;} //Si nivel 4a, "no hay tirada de salvacion"
+                if(NIVEL == 4){salvDC += 100;} //Si nivel 4a, "no hay tirada de salvación"
                 int durDebuff = 2;
                 if(NIVEL == 5){durDebuff += 2;} //Si nivel 4b, dura 2 turnos+ debuff
 

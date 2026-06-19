@@ -116,10 +116,10 @@ public class LlamaDivina : Habilidad
       {
         cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
         cuerpo += "<b>Objetivo:</b> 1 unidad en rango\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Pod ({poderActual})</color> + Ataque ({ataqueActual}) vs Defensa. Pifia: 1. Critico: {criticoMin}-20\n";
-        cuerpo += $"<b>Danio:</b> {rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color> | <b>Tipo:</b> Divino\n";
+        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Pod ({poderActual})</color> + Ataque ({ataqueActual}) vs Defensa. Pifia: 1. Crítico: {criticoMin}-20\n";
+        cuerpo += $"<b>Daño:</b> {rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color> | <b>Tipo:</b> Divino\n";
         cuerpo += lineaSalvacionEs + "\n";
-        cuerpo += $"<b>Si falla TS:</b> Ardiendo {quemadura}. Nomuerto y Etereo mueren instantaneamente";
+        cuerpo += $"<b>Si falla TS:</b> Ardiendo {quemadura}. Nomuerto y Etéreo mueren instantáneamente";
         if (ganaFervorAlMatar)
         {
           cuerpo += "\n<b>Extra IV a:</b> Al matar, gana +1 Fervor";
@@ -129,7 +129,7 @@ public class LlamaDivina : Habilidad
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})"
         : esPortugues
           ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})"
-          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentia: {costoPM}\n- Esforzable: Si ({esforzable})";
+          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})";
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
@@ -177,7 +177,7 @@ public class LlamaDivina : Habilidad
         cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia (5 de alcance)</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 unidade ou obstaculo no alcance</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defesa. Falha critica: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{dano}. Tipo: Divino</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{dano}. Tipo: Divino</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Fortitude vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoArdiendo} Queimando {quemadura}; Morto-vivo/Etereo morrem instantaneamente.</color>";
         if (ganaFervorAlMatar) { cuerpoNuevo += $"\n<color={colorEncabezado}><b>Ao matar:</b></color> <color={colorValor}>{iconoBuff} +1 Fervor.</color>"; }
@@ -185,11 +185,11 @@ public class LlamaDivina : Habilidad
       else
       {
         cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia (5 alcance)</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 unidad u obstaculo en rango</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Danio:</b></color> <color={colorValor}>{dano}. Tipo: Divino</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 unidad u obstáculo en rango</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{dano}. Tipo: Divino</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Fortaleza vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoArdiendo} Ardiendo {quemadura}; Nomuerto/Etereo mueren instantaneamente.</color>";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoArdiendo} Ardiendo {quemadura}; Nomuerto/Etéreo mueren instantáneamente.</color>";
         if (ganaFervorAlMatar) { cuerpoNuevo += $"\n<color={colorEncabezado}><b>Al matar:</b></color> <color={colorValor}>{iconoBuff} +1 Fervor.</color>"; }
       }
 
@@ -215,15 +215,15 @@ public class LlamaDivina : Habilidad
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 CD de resistencia.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 CD de resistencia.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +3 de dano base.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 Fervor ao matar) ou Opcao B (+2 Queimando).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC de salvacion.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +3 de danio base.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 Fervor al matar) u Opcion B (+2 Ardiendo).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 DC de salvación.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +3 de daño base.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1 Fervor al matar) u Opción B (+2 Ardiendo).</color>"; }
       }
      }
     Casilla Origen;
@@ -323,7 +323,7 @@ public class LlamaDivina : Habilidad
        }
        else if (resultadoTirada == 3)
        {//CRITICO
-         print("Critico");
+         print("Crítico");
 
          float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+danioFijo+scEstaUnidad.mod_CarPoder;
          danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);

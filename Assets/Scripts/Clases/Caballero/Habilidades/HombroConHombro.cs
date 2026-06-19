@@ -90,7 +90,7 @@ public class HombroConHombro : Habilidad
         cuerpo += "<b>Tipo:</b> Suporte\n";
         cuerpo += "<b>Alvo:</b> O usuario e aliados adjacentes na mesma coluna\n";
         cuerpo += $"<b>Buff (3 turnos):</b> +{bonoDefensa} Defesa, +{bonoAtaque} Ataque\n";
-        cuerpo += "<b>Por aliado afetado:</b> +1 Valentia\n";
+        cuerpo += "<b>Por aliado afetado:</b> +1 Valentía\n";
         if (daInvulnerable)
         {
           cuerpo += "<b>Adicional:</b> Invulneravel por 1 turno\n";
@@ -129,8 +129,8 @@ public class HombroConHombro : Habilidad
         esIngles
           ? "The Knight forms a compact frontline stance and boosts nearby allies."
           : esPortugues
-            ? "O Cavaleiro forma uma linha compacta e fortalece aliados proximos."
-          : "El Caballero forma una linea cerrada y potencia a sus aliados cercanos.",
+            ? "O Cavaleiro forma uma linha compacta e fortalece aliados próximos."
+          : "El Caballero forma una línea cerrada y potencia a sus aliados cercanos.",
         cuerpo,
         costos,
         "#5dade2");
@@ -173,7 +173,7 @@ public class HombroConHombro : Habilidad
         cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Buff de suporte em área</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>O usuário e aliados adjacentes na mesma coluna</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Buff:</b></color> <color={colorValor}>{iconoBuff} 3 turnos: +{bonoDefensa} Defesa, +{bonoAtaque} Ataque</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Por aliado afetado:</b></color> <color={colorValor}>+1 Valentia</color>";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Por aliado afetado:</b></color> <color={colorValor}>+1 Valentía</color>";
       }
       else
       {
@@ -205,14 +205,14 @@ public class HombroConHombro : Habilidad
       else if (esPortugues)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no buff de Defesa.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no buff de Ataque.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 no buff de Ataque.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (Invulneravel 1 turno) ou Opcao B (+1 AP Max).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al buff de Defensa.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al buff de Ataque.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (Invulnerable 1 turno) u Opcion B (+1 AP Max).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al buff de Defensa.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al buff de Ataque.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (Invulnerable 1 turno) u Opción B (+1 AP Max).</color>"; }
       }
     }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 [Serializable]
 public class SaveFileData
 {
+  public const int MinimumCompatibleVersion = 1;
   public const int CurrentVersion = 21;
 
   public int version = CurrentVersion;

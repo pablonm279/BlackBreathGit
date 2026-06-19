@@ -70,7 +70,7 @@ public class Unidad : MonoBehaviour
   [SerializeField] private float at_maxHP; 
   public float mod_maxHP; 
   public float HP_actual; 
-  private const float PorcentajeVidaPorPuntoFuerza = 0.05f;
+  private const float PorcentajeVidaPorPuntoFuerza = 0.10f;
   private float bonusVidaPorFuerzaAplicado;
   private float agilidadReferenciaDefensa;
   private float bonusDefensaPorAgilidadAplicado;
@@ -341,6 +341,8 @@ public class Unidad : MonoBehaviour
   private void Awake()
   {
     scBattleManager = BattleManager.Instance;
+    InicializarReferenciaDefensaPorAgilidadActual();
+    InicializarReferenciaResElementalPorPoderActual();
 
     scUnidadCanvas = GetComponentInChildren<UnidadCanvas>();
 
@@ -1114,6 +1116,8 @@ float critRangoDado, float critDañoBonus, float Ataque, float TSReflejos, float
   {
     if (!statsInicializados)
     {
+      SincronizarDefensaPorAgilidad();
+      SincronizarResElementalesPorPoder();
       return;
     }
 
@@ -1123,16 +1127,24 @@ float critRangoDado, float critDañoBonus, float Ataque, float TSReflejos, float
       ultimaFuerzaSincronizada = mod_CarFuerza;
     }
 
+    SincronizarDefensaPorAgilidad();
+
+    SincronizarResElementalesPorPoder();
+  }
+
+  private void SincronizarDefensaPorAgilidad()
+  {
     if (!Mathf.Approximately(ultimaAgilidadSincronizada, mod_CarAgilidad))
     {
       RecalcularDefensaPorAgilidad();
-      ultimaAgilidadSincronizada = mod_CarAgilidad;
     }
+  }
 
+  private void SincronizarResElementalesPorPoder()
+  {
     if (!Mathf.Approximately(ultimoPoderSincronizado, mod_CarPoder))
     {
       RecalcularResElementalesPorPoder();
-      ultimoPoderSincronizado = mod_CarPoder;
     }
   }
 
@@ -1181,6 +1193,14 @@ float critRangoDado, float critDañoBonus, float Ataque, float TSReflejos, float
 
     mod_Defensa += delta;
     bonusDefensaPorAgilidadAplicado = bonusNuevo;
+    ultimaAgilidadSincronizada = mod_CarAgilidad;
+  }
+
+  private void InicializarReferenciaDefensaPorAgilidadActual()
+  {
+    agilidadReferenciaDefensa = mod_CarAgilidad;
+    bonusDefensaPorAgilidadAplicado = 0f;
+    ultimaAgilidadSincronizada = mod_CarAgilidad;
   }
 
   public void RecalcularResElementalesPorPoder()
@@ -1199,6 +1219,14 @@ float critRangoDado, float critDañoBonus, float Ataque, float TSReflejos, float
     mod_ResArcano += delta;
 
     bonusResElementalPorPoderAplicado = bonusNuevo;
+    ultimoPoderSincronizado = mod_CarPoder;
+  }
+
+  private void InicializarReferenciaResElementalPorPoderActual()
+  {
+    poderReferenciaResElemental = mod_CarPoder;
+    bonusResElementalPorPoderAplicado = 0f;
+    ultimoPoderSincronizado = mod_CarPoder;
   }
 
   public void EstablecerResistenciaAcidoBase(float resistenciaAcido)
@@ -2214,7 +2242,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     // Recorre cada buff y realiza una acciÃ³n
     foreach (Buff buff in buffs)
     {
-      if (buff.buffNombre == nombreBuff)
+      if (buff != null && !buff.RemocionAplicada && buff.buffNombre == nombreBuff)
       {
         buff.RemoverBuff(this);
       }
@@ -2244,7 +2272,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     Buff[] buffs = this.GetComponents<Buff>();
     foreach (Buff buff in buffs)
     {
-      if (buff.buffNombre == nombreBuff)
+      if (buff != null && !buff.RemocionAplicada && buff.buffNombre == nombreBuff)
       {
         cantidad++;
       }
@@ -2263,7 +2291,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     Buff[] buffs = this.GetComponents<Buff>();
     foreach (Buff buff in buffs)
     {
-      if (buff.buffNombre == nombreBuff)
+      if (buff != null && !buff.RemocionAplicada && buff.buffNombre == nombreBuff)
       {
         encontrados.Add(buff);
       }
@@ -2289,7 +2317,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     // Recorre cada buff y realiza una acciÃ³n
     foreach (Buff buff in buffs)
     {
-      if (buff.buffNombre == nombreBuff)
+      if (buff != null && !buff.RemocionAplicada && buff.buffNombre == nombreBuff)
       {
         return true;
       }
@@ -2630,7 +2658,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     {
       mensaje = esIngles
         ? $"<color=#d92b08>{nombreLog} takes {danio} {tipoDanioTexto} extra damage.</color>"
-        : $"<color=#d92b08>{nombreLog} recibe {danio} de daÃ±o elemental extra {tipoDanioTexto}.</color>";
+        : $"<color=#d92b08>{nombreLog} recibe {danio} de daño elemental extra {tipoDanioTexto}.</color>";
     }
     else if (esIngles)
     {
@@ -2640,7 +2668,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     else
     {
       string bonusLogEs = bonusElemental > 0 ? $" (+{bonusElemental} bonus elemental)" : string.Empty;
-      mensaje = $"<color=#d92b08>{nombreLog} recibe {danio} de daÃ±o {tipoDanioTexto}{bonusLogEs}.</color>";
+      mensaje = $"<color=#d92b08>{nombreLog} recibe {danio} de daño {tipoDanioTexto}{bonusLogEs}.</color>";
     }
 
     if (!string.IsNullOrWhiteSpace(detalleCalculo))
@@ -3062,7 +3090,8 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
             ? TRADU.i.Traducir("Invulnerable")
             : TRADU.i.Traducir("Armadura");
           Color colorResiste = espectroEtereo ? Color.gray : Color.yellow;
-          GenerarTextoFlotante(textoResiste, colorResiste, FloatingTextContext.Resist);
+          FloatingTextContext contextoTexto = espectroEtereo ? FloatingTextContext.Resist : FloatingTextContext.ArmorAbsorb;
+          GenerarTextoFlotante(textoResiste, colorResiste, contextoTexto);
         }
       }
 
@@ -3579,7 +3608,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       string nombreAtacante = TRADU.i != null ? TRADU.i.Traducir(uCausante.uNombre) : uCausante.uNombre;
       string mensaje = esIngles
         ? $"{nombreDefensor} reflects {danioEspinas} damage to {nombreAtacante}."
-        : $"{nombreDefensor} refleja {danioEspinas} de dano a {nombreAtacante}.";
+        : $"{nombreDefensor} refleja {danioEspinas} de daño a {nombreAtacante}.";
       BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(mensaje));
     }
 
@@ -4984,6 +5013,11 @@ public void Marcar(int n)
 
   private void ActualizarVisualObjetivoHover()
   {
+    if (scBattleManager == null || !scBattleManager.SeleccionandoObjetivo)
+    {
+      return;
+    }
+
     if (!EsObjetivoHoverValidoSeleccion())
     {
       Marcar(0);
@@ -4995,6 +5029,11 @@ public void Marcar(int n)
 
   private void LimpiarVisualObjetivoHover()
   {
+    if (scBattleManager == null || !scBattleManager.SeleccionandoObjetivo)
+    {
+      return;
+    }
+
     Marcar(0);
   }
 
@@ -5097,6 +5136,10 @@ public void OnMouseOver()
     if(scBattleManager.SeleccionandoObjetivo)
     {
        CasillaPosicion.OnMouseOver();
+    }
+    else if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
+    {
+      BattleManager.Instance.scUIInfoChar.ReaplicarMarcadoPrioritario();
     }
 }
 

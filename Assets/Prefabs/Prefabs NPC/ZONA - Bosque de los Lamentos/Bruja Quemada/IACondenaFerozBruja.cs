@@ -114,7 +114,7 @@ public class IACondenaFerozBruja : IAHabilidad
     Buff buff = new Buff
     {
       buffNombre = NombreBuff,
-      buffDescr = "+15% Danio, +2 Ataque, +5 TS Mental.",
+      buffDescr = "+15% Daño, +2 Ataque, +5 TS Mental.",
       boolfDebufftBuff = true,
       DuracionBuffRondas = DuracionBuff,
       cantDanioPorcentaje = 15f,

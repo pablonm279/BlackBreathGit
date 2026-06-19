@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -105,7 +105,7 @@ public class BoladeFuego : Habilidad
      }
      else if (resultadoTirada == 3)
      {//CRITICO
-       print("Critico");
+       print("Crítico");
 
        float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+scEstaUnidad.mod_CarPoder;
         danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);

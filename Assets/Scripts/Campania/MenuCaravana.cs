@@ -140,13 +140,31 @@ public class MenuCaravana : MonoBehaviour
 
     public void CerrarMenusExclusivos()
     {
+        bool menuMejorasAbierto = MenuMejoras != null && MenuMejoras.activeInHierarchy;
+        bool menuSequitosAbierto = MenuSequitos != null && MenuSequitos.activeInHierarchy;
+        bool menuPersonajesAbierto = MenuPersonajes != null && MenuPersonajes.activeInHierarchy;
+
         MenuMejoras.SetActive(false);
         MenuSequitos.SetActive(false);
         MenuPersonajes.SetActive(false);
         MenuBitacora.SetActive(false);
         menuPersonajesAbiertoPorHover = false;
         personajeMenuPersonajesHover = null;
-        
+
+        if (menuMejorasAbierto)
+        {
+            EmitirCierreMenuMejorasTutorial(false);
+        }
+
+        if (menuSequitosAbierto)
+        {
+            EmitirCierreMenuSequitosTutorial(false);
+        }
+
+        if (menuPersonajesAbierto)
+        {
+            EmitirCierreMenuPersonajesTutorial(false);
+        }
     }
 
     public void MostrarResultadoExploradores(CampaignManager.ResultadoExploradoresCampania resultado)

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -105,7 +105,7 @@ public class EscudodeFe : Habilidad
         cuerpo += "<b>Tipo:</b> Rango (8 alcance)\n";
         cuerpo += "<b>Objetivo:</b> 1 casilla en rango\n";
         cuerpo += "<b>Area:</b> Casilla seleccionada + casillas adyacentes\n";
-        cuerpo += $"<b>Duracion de trampa:</b> {duracionTurnos} turnos\n";
+        cuerpo += $"<b>Duración de trampa:</b> {duracionTurnos} turnos\n";
         cuerpo += $"<b>Al activarse:</b> Otorga +{bonusBarrera} Barrera y +{bonusTS} a Fortaleza/Reflejos/Mental (segun Fervor {fervorActual} al lanzar)";
         if (agregaDefensa)
         {
@@ -173,7 +173,7 @@ public class EscudodeFe : Habilidad
       {
         cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Trampa protectora a rango (8 alcance)</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 casilla en rango; afecta esa y adyacentes</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Duracion:</b></color> <color={colorValor}>{duracionTurnos} turnos</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Duración:</b></color> <color={colorValor}>{duracionTurnos} turnos</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Al activarse:</b></color> <color={colorValor}>{efecto} (Fervor {fervorActual} al lanzar)</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>Requiere 1+ Fervor; no lo consume.</color>";
       }
@@ -208,9 +208,9 @@ public class EscudodeFe : Habilidad
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 costo de Valentía.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Defensa en el buff al activarse.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 turno de duracion) u Opcion B (+2-12 curacion al activarse).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: -1 costo de Valentía.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 Defensa en el buff al activarse.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1 turno de duración) u Opción B (+2-12 curación al activarse).</color>"; }
       }
     }
     void Start()

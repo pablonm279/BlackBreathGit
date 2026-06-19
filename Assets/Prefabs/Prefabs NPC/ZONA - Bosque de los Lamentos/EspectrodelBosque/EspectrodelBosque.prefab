@@ -5205,7 +5205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.8862745}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5250,7 +5250,7 @@ RectTransform:
   m_GameObject: {fileID: 4725468778746984210}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.63926256, y: 0.69636923, z: 0.81247145}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5193793747634204484}
@@ -5260,7 +5260,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.03, y: -11.88}
+  m_AnchoredPosition: {x: 1.99, y: -11.88}
   m_SizeDelta: {x: 48.85, y: 44.22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7183569897580904577
@@ -5285,7 +5285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.6509804}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5392,7 +5392,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.4811321, g: 0.038581353, b: 0.038581353, a: 0.6666667}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5652,8 +5652,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.6, y: 0.95, z: 0.6}
-  m_Center: {x: 0, y: 0.62, z: 0}
+  m_Size: {x: 0.61, y: 0.72, z: 0.3}
+  m_Center: {x: 0.04, y: 0.68, z: 0}
 --- !u!114 &2678417726393746191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5974,9 +5974,18 @@ MonoBehaviour:
   poseMover: {fileID: 21300000, guid: 3d2dd53d96545ad4592e758d8d813a35, type: 3}
   poseAtacar: {fileID: 21300000, guid: e1c6c02960e7ae34baaae3f67ea04ac0, type: 3}
   poseHabilidad: {fileID: 21300000, guid: e1c6c02960e7ae34baaae3f67ea04ac0, type: 3}
+  poseRecibirDanio: {fileID: 0}
+  poseTurnoActivo: {fileID: 0}
   duracionPoseAtacar: 1
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1
+  meleeFraccionImpacto: 0.35
+  meleePreImpactoFallback: 0.22
+  meleePreImpactoMin: 0.08
+  meleePreImpactoMax: 0.42
+  meleePostImpacto: 0.16
+  meleePostImpactoMin: 0.05
+  meleePostImpactoMax: 0.3
 --- !u!1 &6629396250897313548
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -94,11 +94,11 @@ public class PrimerosAuxilios : Habilidad
       }
       else
       {
-        cuerpo += "<b>Tipo:</b> Curacion\n";
+        cuerpo += "<b>Tipo:</b> Curación\n";
         cuerpo += "<b>Objetivo:</b> Uno mismo o aliado a rango 1\n";
-        cuerpo += $"<b>Curacion:</b> 1 + ({dadoCuracion} x AP actuales)\n";
+        cuerpo += $"<b>Curación:</b> 1 + ({dadoCuracion} x AP actuales)\n";
         cuerpo += "<b>Adicional:</b> remueve Sangrado y Veneno\n";
-        cuerpo += $"<b>Bono en resguardo:</b> +{bonoResguardo}% curacion si hay otro aliado en una columna mas frontal\n";
+        cuerpo += $"<b>Bono en resguardo:</b> +{bonoResguardo}% curación si hay otro aliado en una columna mas frontal\n";
         cuerpo += "<b>Al lanzarla:</b> consume todos los AP actuales";
         if (trasladaCampania)
         {
@@ -191,15 +191,15 @@ public class PrimerosAuxilios : Habilidad
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: o dado de cura passa de 1d4 para 1d6 por AP.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 uso por batalha.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: o dado de cura passa de 1d4 para 1d6 por AP.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 uso por batalha.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+40% em resguardo) ou Opcao B (melhoria de traslado para campanha).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: el dado de curacion pasa de 1d4 a 1d6 por AP.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 uso por batalla.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+40% en resguardo) u Opcion B (mejora de traslado a campania).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: el dado de curación pasa de 1d4 a 1d6 por AP.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 uso por batalla.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+40% en resguardo) u Opción B (mejora de traslado a campania).</color>"; }
       }
     }
 

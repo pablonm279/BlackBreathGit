@@ -48,6 +48,7 @@ public class MenuBatallas : MonoBehaviour
 {
  const string TooltipPersonajeHeridoId = "campania_personaje_herido";
  const string TooltipPersonajeCorruptoId = "campania_personaje_corrupto";
+ const string TooltipPersonajeFatigadoBatallaLargaId = "campania_personaje_fatigado_batalla_larga";
  const string ItemRewardNombre = "ItemRecomp";
 
  GameObject itemReward;
@@ -85,6 +86,7 @@ public class MenuBatallas : MonoBehaviour
   bool tutorialFinalPostBatallaPendiente = false;
   bool tooltipPersonajeHeridoPendiente = false;
   bool tooltipPersonajeCorruptoPendiente = false;
+  bool tooltipPersonajeFatigadoBatallaLargaPendiente = false;
 
  public GameObject UIEmpezarBatalla;
  public GameObject UIEmpezarBatallaACaravana;
@@ -2317,6 +2319,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
    transicionJefeZonaPendiente = false;
    tooltipPersonajeHeridoPendiente = false;
    tooltipPersonajeCorruptoPendiente = false;
+   tooltipPersonajeFatigadoBatallaLargaPendiente = false;
    bool fueBatallaFinalActual = esBatallaFinal;
    bool fueDefensaCaravana = encuentroTipoActual == BattleEncounterType.AtaqueCaravana || esEmboscadaEnemiga == 3;
    string battleTypeToken = RuntimeAnalytics.SanitizeToken(encuentroTipoActual.ToString());
@@ -2404,9 +2407,12 @@ public void EfectosDeBatallaEnCampaña(int resultado)
             if (rand < prob) // chances de perder un sequito al perder una pelea
             {
                 Item recompensa = CampaignManager.Instance.scMenuSequito.Sequito003Mercaderes.GetComponent<SequitoMercaderes>().ObtenerItemAlAzar();
-                CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(recompensa.gameObject);
-                MostrarItemReward(recompensa);
-                txtRecompensa.text += TRADU.i.Traducir("\n\n- Has encontrado un objeto de recompensa: ") + TRADU.i.Traducir(ObtenerNombreVisibleRecompensa(recompensa)) + ".";
+                if (recompensa != null)
+                {
+                    CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(recompensa.gameObject);
+                    MostrarItemReward(recompensa);
+                    txtRecompensa.text += TRADU.i.Traducir("\n\n- Has encontrado un objeto de recompensa: ") + TRADU.i.Traducir(ObtenerNombreVisibleRecompensa(recompensa)) + ".";
+                }
 
             }
 
@@ -2729,6 +2735,11 @@ public void EfectosDeBatallaEnCampaña(int resultado)
     MostrarTooltipsPostBatallaSiCorresponde();
  }
 
+ public void RegistrarTooltipFatigadoPorBatallaLarga()
+ {
+    tooltipPersonajeFatigadoBatallaLargaPendiente = true;
+ }
+
  void MostrarTooltipsPostBatallaSiCorresponde()
  {
     if (tooltipPersonajeCorruptoPendiente)
@@ -2741,6 +2752,12 @@ public void EfectosDeBatallaEnCampaña(int resultado)
     {
       tooltipPersonajeHeridoPendiente = false;
       TutorialTooltipManager.TryShow(TooltipPersonajeHeridoId);
+    }
+
+    if (tooltipPersonajeFatigadoBatallaLargaPendiente)
+    {
+      tooltipPersonajeFatigadoBatallaLargaPendiente = false;
+      TutorialTooltipManager.TryShow(TooltipPersonajeFatigadoBatallaLargaId);
     }
  }
 

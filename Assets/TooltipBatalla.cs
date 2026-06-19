@@ -6,6 +6,7 @@ using TMPro;
 public class TooltipBatalla : MonoBehaviour
 {
     public static TooltipBatalla Instance;
+    public static TooltipBatalla InstanceCostoMovimiento;
 
     public GameObject tooltipObject;
     public TextMeshProUGUI tooltipText;
@@ -13,12 +14,13 @@ public class TooltipBatalla : MonoBehaviour
     [SerializeField] private Vector2 backgroundPadding = new Vector2(26f, 18f);
     [SerializeField] private Vector2 backgroundMinSize = new Vector2(140f, 48f);
     [SerializeField] private float preferredTextMaxWidth = 260f;
+    public bool usoSoloCostoMov;
     private UIFadeSlide tooltipAnim;
 
     public bool tooltipFade = false;
     void Awake()
     {
-        Instance = this;
+        RegistrarInstancia();
         if (tooltipObject == null) { return; }
 
         if (backgroundRectTransform == null)
@@ -44,8 +46,33 @@ public class TooltipBatalla : MonoBehaviour
         }
     }
 
+    private void RegistrarInstancia()
+    {
+        if (usoSoloCostoMov)
+        {
+            InstanceCostoMovimiento = this;
+            return;
+        }
+
+        Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+
+        if (InstanceCostoMovimiento == this)
+        {
+            InstanceCostoMovimiento = null;
+        }
+    }
+
     public void ShowTooltip(int tipo)
     {
+        if (usoSoloCostoMov) { return; }
         if (tooltipObject == null) { return; }
 
         desdeBarraVida = false;
@@ -64,6 +91,7 @@ public class TooltipBatalla : MonoBehaviour
 
     public void ShowTooltipText(string txt)
     {
+        if (usoSoloCostoMov) { return; }
         if (tooltipObject == null) { return; }
 
         desdeBarraVida = true;
@@ -74,6 +102,7 @@ public class TooltipBatalla : MonoBehaviour
 
     public void ShowTooltipTextSinAnim(string txt)
     {
+        if (usoSoloCostoMov) { return; }
         if (tooltipObject == null) { return; }
 
         desdeBarraVida = false;
@@ -84,6 +113,18 @@ public class TooltipBatalla : MonoBehaviour
 
     public void ShowTooltipTextSinAnimDirecto(string txt)
     {
+        if (usoSoloCostoMov) { return; }
+        if (tooltipObject == null) { return; }
+
+        desdeBarraVida = false;
+        UIFadeSlideUtility.ShowAtImmediate(tooltipObject, Input.mousePosition);
+        tooltipText.text = txt;
+        AjustarTamanoTooltip();
+    }
+
+    public void ShowTooltipCostoMovimiento(string txt)
+    {
+        if (!usoSoloCostoMov) { return; }
         if (tooltipObject == null) { return; }
 
         desdeBarraVida = false;

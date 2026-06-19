@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -104,10 +104,10 @@ public class PosturaDefensiva : Habilidad
           cuerpo += $", +{bonoAtaque} Ataque";
         }
         cuerpo += "\n";
-        cuerpo += $"<b>Reaccion:</b> contraataca con Corte Vertical cuando un enemigo falla un ataque melee ({usosReaccion} uso/s)\n";
+        cuerpo += $"<b>Reacción:</b> contraataca con Corte Vertical cuando un enemigo falla un ataque melee ({usosReaccion} uso/s)\n";
         cuerpo += seCancelaAlRecibirDanio
-          ? "<b>Cancelacion de reaccion:</b> se elimina al recibir danio"
-          : "<b>Cancelacion de reaccion:</b> no se elimina al recibir danio";
+          ? "<b>Cancelación de reacción:</b> se elimina al recibir daño"
+          : "<b>Cancelación de reacción:</b> no se elimina al recibir daño";
       }
 
       string costos = esIngles
@@ -184,14 +184,14 @@ public class PosturaDefensiva : Habilidad
       else if (esPortugues)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no buff de Defesa.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no buff de Ataque durante a postura.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 no buff de Ataque durante a postura.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (nao cancela ao receber golpe) ou Opcao B (+1 uso de reacao).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al buff de Defensa.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al buff de Ataque durante la postura.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (no se cancela al recibir golpe) u Opcion B (+1 uso de reaccion).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al buff de Defensa.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al buff de Ataque durante la postura.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (no se cancela al recibir golpe) u Opción B (+1 uso de reacción).</color>"; }
       }
     }
 

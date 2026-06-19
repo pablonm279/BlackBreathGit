@@ -85,7 +85,7 @@ public class PresenciaProvocadora : Habilidad
             cuerpo += $"<color={colorEncabezado}><b>Resistencia:</b></color> Mental vs CD {dcMental}\n";
             cuerpo += $"<color={colorEncabezado}><b>Se falhar:</b></color> {nombreProvocado} e {nombreDistraido} por 2 turnos: {reduccionDefensa} Defesa, {reduccionArmadura} Armadura\n";
             cuerpo += $"<color={colorEncabezado}><b>Reacao (1 turno):</b></color> quando um inimigo erra ataque melee contra ela, contra-ataca com Estocada base{contraataque}\n";
-            cuerpo += $"<color={colorEncabezado}><b>Usos da reacao:</b></color> ilimitados ate o proximo turno\n";
+            cuerpo += $"<color={colorEncabezado}><b>Usos da reacao:</b></color> ilimitados ate o próximo turno\n";
             cuerpo += $"<color={colorEncabezado}><b>Esforcavel:</b></color> sim ({esforzable})";
         }
         else
@@ -95,8 +95,8 @@ public class PresenciaProvocadora : Habilidad
             cuerpo += $"<color={colorEncabezado}><b>Al usar:</b></color> afecta a todos los enemigos del lado opuesto; termina turno\n";
             cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Mental vs DC {dcMental}\n";
             cuerpo += $"<color={colorEncabezado}><b>Si falla:</b></color> {nombreProvocado} y {nombreDistraido} por 2 turnos: {reduccionDefensa} Defensa, {reduccionArmadura} Armadura\n";
-            cuerpo += $"<color={colorEncabezado}><b>Reaccion (1 turno):</b></color> cuando un enemigo falla ataque melee contra ella, contraataca con Estocada base{contraataque}\n";
-            cuerpo += $"<color={colorEncabezado}><b>Usos de reaccion:</b></color> ilimitados hasta el proximo turno\n";
+            cuerpo += $"<color={colorEncabezado}><b>Reacción (1 turno):</b></color> cuando un enemigo falla ataque melee contra ella, contraataca con Estocada base{contraataque}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Usos de reacción:</b></color> ilimitados hasta el próximo turno\n";
             cuerpo += $"<color={colorEncabezado}><b>Esforzable:</b></color> si ({esforzable})";
         }
 
@@ -123,15 +123,15 @@ public class PresenciaProvocadora : Habilidad
         }
         else if (esPortugues)
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na CD da resistencia.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Distraido aplica -1 Armadura extra.</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 na CD da resistencia.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Distraido aplica -1 Armadura extra.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (contra-ataque perde penalidades) ou Opcao B (-1 custo AP).</color>"; }
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al DC de la TS.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Distraido aplica -1 Armadura extra.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (contraataque pierde penalidades) u Opcion B (-1 costo AP).</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al DC de la TS.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Distraido aplica -1 Armadura extra.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (contraataque pierde penalidades) u Opción B (-1 costo AP).</color>"; }
         }
     }
 
@@ -148,7 +148,7 @@ public class PresenciaProvocadora : Habilidad
                 ? $", {bonusDanioContra:+#;-#;0} Damage"
                 : esPortugues
                     ? $", {bonusDanioContra:+#;-#;0} Dano"
-                    : $", {bonusDanioContra:+#;-#;0} Danio";
+                    : $", {bonusDanioContra:+#;-#;0} Daño";
         }
         return texto;
     }

@@ -84,13 +84,13 @@ public class Riposte : Habilidad
         else
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Reaccion propia\n";
-            cuerpo += $"<color={colorEncabezado}><b>Disparo 1:</b></color> aliado adyacente es objetivo de ataque melee unitario enemigo\n";
+            cuerpo += $"<color={colorEncabezado}><b>Se activa cuando:</b></color> aliado adyacente es objetivo de ataque melee unitario enemigo\n";
             cuerpo += $"<color={colorEncabezado}><b>Intercepcion:</b></color> intercambia posicion, pasa a ser objetivo, +{bonoDefensa} Defensa para ese golpe\n";
-            cuerpo += $"<color={colorEncabezado}><b>Disparo 2:</b></color> enemigo falla ataque melee contra ella; contraataca con Estocada base{contraataque}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Al fallar enemigo:</b></color> contraataca con Estocada base{contraataque}\n";
             cuerpo += $"<color={colorEncabezado}><b>Usos:</b></color> {usos} por turno\n";
             cuerpo += seCancelaConDanio
-                ? $"<color={colorEncabezado}><b>Cancelacion:</b></color> se elimina al recibir danio\n"
-                : $"<color={colorEncabezado}><b>Cancelacion:</b></color> no se elimina al recibir danio\n";
+                ? $"<color={colorEncabezado}><b>Cancelación:</b></color> se elimina al recibir daño\n"
+                : $"<color={colorEncabezado}><b>Cancelación:</b></color> no se elimina al recibir daño\n";
             cuerpo += $"<color={colorEncabezado}><b>Flujo de turno:</b></color> termina turno";
         }
 
@@ -119,9 +119,9 @@ public class Riposte : Habilidad
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Defensa en el golpe interceptado.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: contraataque elimina penalidad de -1 en tirada.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (no se cancela al recibir danio) u Opcion B (+1 uso por turno).</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 Defensa en el golpe interceptado.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: contraataque elimina penalidad de -1 en tirada.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (no se cancela al recibir daño) u Opción B (+1 uso por turno).</color>"; }
         }
     }
 
@@ -138,7 +138,7 @@ public class Riposte : Habilidad
                 ? $", {bonusDanio:+#;-#;0} Damage"
                 : esPortugues
                     ? $", {bonusDanio:+#;-#;0} Dano"
-                    : $", {bonusDanio:+#;-#;0} Danio";
+                    : $", {bonusDanio:+#;-#;0} Daño";
         }
         return texto;
     }

@@ -94,16 +94,16 @@ public class ImprovisarFlechas : Habilidad
         cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Uno mismo\n";
         cuerpo += $"<color={colorEncabezado}><b>Flechas ganadas:</b></color> {flechasGanadasEs}\n";
         cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> deja los AP actuales en 0\n";
-        cuerpo += $"<color={colorEncabezado}><b>Efecto ({duracionBuff} turnos):</b></color> +{criticoPorcentaje}% Critico, +{buffPenetracion} Penetracion de armadura";
-        if (sumaDanioNivel5) { cuerpo += ", +15% Danio"; }
+        cuerpo += $"<color={colorEncabezado}><b>Efecto ({duracionBuff} turnos):</b></color> +{criticoPorcentaje}% Crítico, +{buffPenetracion} Penetracion de armadura";
+        if (sumaDanioNivel5) { cuerpo += ", +15% Daño"; }
       }
 
       string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
       string subtitulo = esIngles
-        ? "Convert current AP into arrows and a short attack boost."
+        ? "Creates arrows from current AP and provides an armor piercing boost."
         : esPortugues
-          ? "Converte AP atuais em flechas e um impulso ofensivo curto."
-          : "Convierte AP actuales en flechas y una mejora ofensiva breve.";
+          ? "Converte os AP atuais em flechas e um breve aumento de ataque."
+          : "Fabrica flechas a partir de los AP actuales y proporciona penetración de armadura.";
 
       txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
       txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
@@ -121,15 +121,15 @@ public class ImprovisarFlechas : Habilidad
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 flecha fixa.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 flecha fixa.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico no efeito.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 flecha fixa) ou Opcao B (+15% Dano no efeito).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 flecha fija.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico en el efecto.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 flecha fija) u Opcion B (+15% Danio en el efecto).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 flecha fija.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% Crítico en el efecto.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1 flecha fija) u Opción B (+15% Daño en el efecto).</color>"; }
       }
 
     }

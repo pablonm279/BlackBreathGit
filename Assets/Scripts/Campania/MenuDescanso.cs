@@ -6,6 +6,7 @@ using System.Data;
 using System;
 using UnityEngine.UI;
 using System.Threading.Tasks;
+using UnityEngine.EventSystems;
 
 public class MenuDescanso : MonoBehaviour
 {
@@ -45,14 +46,157 @@ public class MenuDescanso : MonoBehaviour
   private int tareaCivilSeleccionada;
   private bool descansoEnCurso;
   private bool forzarEventoBroteTutorialEnDescanso;
+  private bool hoversTareasCivilesConfigurados;
+  private readonly Dictionary<GameObject, Vector3> escalaOriginalBotonesTareasCiviles = new Dictionary<GameObject, Vector3>();
 
   float valor = 0;
+
+  void Awake()
+  {
+    ConfigurarHoversTareasCiviles();
+  }
+
+  private void ConfigurarHoversTareasCiviles()
+  {
+    if (hoversTareasCivilesConfigurados)
+    {
+      return;
+    }
+
+    hoversTareasCivilesConfigurados = true;
+    RegistrarHoverTareaCivil(btnRecoleccionSum, 1);
+    RegistrarHoverTareaCivil(btnRecoleccionMat, 2);
+    RegistrarHoverTareaCivil(btnFiesta, 3);
+    RegistrarHoverTareaCivil(btnDiaLibre, 4);
+    RegistrarHoverTareaCivil(btnAlerta, 5);
+  }
+
+  private void RegistrarHoverTareaCivil(GameObject boton, int tareaCivil)
+  {
+    if (boton == null)
+    {
+      return;
+    }
+    if (!escalaOriginalBotonesTareasCiviles.ContainsKey(boton))
+    {
+      escalaOriginalBotonesTareasCiviles.Add(boton, boton.transform.localScale);
+    }
+
+    EventTrigger trigger = boton.GetComponent<EventTrigger>();
+    if (trigger == null)
+    {
+      trigger = boton.AddComponent<EventTrigger>();
+    }
+    if (trigger.triggers == null)
+    {
+      trigger.triggers = new List<EventTrigger.Entry>();
+    }
+
+    AgregarEventoTareaCivil(trigger, EventTriggerType.PointerEnter, () => MostrarDescripcionHoverTareaCivil(tareaCivil));
+    AgregarEventoTareaCivil(trigger, EventTriggerType.PointerExit, RestaurarDescripcionTareaCivilSeleccionada);
+  }
+
+  private void AgregarEventoTareaCivil(EventTrigger trigger, EventTriggerType tipo, Action accion)
+  {
+    EventTrigger.Entry entrada = new EventTrigger.Entry { eventID = tipo };
+    entrada.callback.AddListener(_ => accion());
+    trigger.triggers.Add(entrada);
+  }
+
+  private void MostrarDescripcionHoverTareaCivil(int tareaCivil)
+  {
+    if (tareaCivilSeleccionada <= 0)
+    {
+      SeleccionarActividadCivil(1);
+    }
+
+    int tareaSeleccionadaGuardada = tareaCivilSeleccionada;
+    int chancesAtaqueGuardadas = chancesAtaqueACaravana;
+    int chancesExploracionGuardadas = chancesExploracion;
+    float valorGuardado = valor;
+    string textoEmboscadaGuardado = textEmboscadaChances != null ? textEmboscadaChances.text : null;
+    string textoExploracionGuardado = textExploracionChances != null ? textExploracionChances.text : null;
+
+    SeleccionarActividadCivil(tareaCivil);
+
+    tareaCivilSeleccionada = tareaSeleccionadaGuardada;
+    chancesAtaqueACaravana = chancesAtaqueGuardadas;
+    chancesExploracion = chancesExploracionGuardadas;
+    valor = valorGuardado;
+    ActualizarEscalaTareaCivilSeleccionada();
+
+    if (textEmboscadaChances != null)
+    {
+      textEmboscadaChances.text = textoEmboscadaGuardado;
+    }
+
+    if (textExploracionChances != null)
+    {
+      textExploracionChances.text = textoExploracionGuardado;
+    }
+  }
+
+  private void RestaurarDescripcionTareaCivilSeleccionada()
+  {
+    SeleccionarActividadCivil(tareaCivilSeleccionada > 0 ? tareaCivilSeleccionada : 1);
+  }
+
+  private void ActualizarEscalaTareaCivilSeleccionada()
+  {
+    ActualizarEscalaBotonTareaCivil(btnRecoleccionSum, tareaCivilSeleccionada == 1);
+    ActualizarEscalaBotonTareaCivil(btnRecoleccionMat, tareaCivilSeleccionada == 2);
+    ActualizarEscalaBotonTareaCivil(btnFiesta, tareaCivilSeleccionada == 3);
+    ActualizarEscalaBotonTareaCivil(btnDiaLibre, tareaCivilSeleccionada == 4);
+    ActualizarEscalaBotonTareaCivil(btnAlerta, tareaCivilSeleccionada == 5);
+  }
+
+  private void ActualizarEscalaBotonTareaCivil(GameObject boton, bool seleccionado)
+  {
+    if (boton == null)
+    {
+      return;
+    }
+
+    if (!escalaOriginalBotonesTareasCiviles.TryGetValue(boton, out Vector3 escalaOriginal))
+    {
+      escalaOriginal = boton.transform.localScale;
+      escalaOriginalBotonesTareasCiviles.Add(boton, escalaOriginal);
+    }
+
+    boton.transform.localScale = seleccionado ? escalaOriginal * 1.15f : escalaOriginal;
+  }
+
+  private bool FeriaBloqueadaPorLluvia()
+  {
+    return CampaignManager.Instance != null && CampaignManager.Instance.intTipoClima == 3;
+  }
+
+  private void ActualizarDisponibilidadFeria()
+  {
+    if (btnFiesta == null)
+    {
+      return;
+    }
+
+    bool bloqueada = FeriaBloqueadaPorLluvia();
+    if (btnFiesta.transform.childCount > 0)
+    {
+      btnFiesta.transform.GetChild(0).gameObject.SetActive(!bloqueada);
+    }
+
+    Button boton = btnFiesta.GetComponent<Button>();
+    if (boton != null)
+    {
+      boton.interactable = !bloqueada;
+    }
+  }
+
   public void SeleccionarActividadCivil(int n)
   {
-    if (CampaignManager.Instance.intTipoClima == 3) //Lluvia desactiva fiesta
-    {
-      btnFiesta.transform.GetChild(0).gameObject.SetActive(false);
+    ActualizarDisponibilidadFeria();
 
+    if (FeriaBloqueadaPorLluvia()) //Lluvia desactiva fiesta
+    {
       if (n == 3)
       { n = 1; }
     }
@@ -195,6 +339,7 @@ public class MenuDescanso : MonoBehaviour
     }
 
     Actualizar();
+    ActualizarEscalaTareaCivilSeleccionada();
 
   }
 

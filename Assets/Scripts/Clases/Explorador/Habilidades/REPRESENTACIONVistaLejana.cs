@@ -27,17 +27,17 @@ public class REPRESENTACIONVistaLejana : Habilidad
       bool defensa = NIVEL == 5;
 
       string titulo = $"Vista Lejana {SufijoNivel()}";
-      string subtitulo = "Mejora al Explorador si empieza el turno en la ultima columna.";
+      string subtitulo = "Proporciona bonificaciones al ataque si el Explorador comienza su turno en la última columna.";
       string cuerpo = $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n" +
                       $"<color={colorEncabezado}><b>Activacion:</b></color> Empieza su turno en la ultima columna\n" +
-                      $"<color={colorEncabezado}><b>Efecto:</b></color> +{ataque} Ataque, +{danioPorcentaje}% Danio";
-      if (critico) { cuerpo += ", +5% Critico"; }
+                      $"<color={colorEncabezado}><b>Efecto:</b></color> +{ataque} Ataque, +{danioPorcentaje}% Daño";
+      if (critico) { cuerpo += ", +5% Crítico"; }
       if (defensa) { cuerpo += ", +1 Defensa"; }
 
       if (esIngles)
       {
         titulo = $"Long Sight {SufijoNivel()}";
-        subtitulo = "Improves the Explorer when starting the turn in the last column.";
+        subtitulo = "Grants attack bonuses if the Explorer starts their turn in the last column.";
         cuerpo = $"<color={colorEncabezado}><b>Type:</b></color> Passive\n" +
                  $"<color={colorEncabezado}><b>Trigger:</b></color> Starts turn in the last column\n" +
                  $"<color={colorEncabezado}><b>Effect:</b></color> +{ataque} Attack, +{danioPorcentaje}% Damage";
@@ -47,11 +47,11 @@ public class REPRESENTACIONVistaLejana : Habilidad
       else if (esPortugues)
       {
         titulo = $"Visao Distante {SufijoNivel()}";
-        subtitulo = "Melhora o Explorador se comecar o turno na ultima coluna.";
+        subtitulo = "Concede bonus de ataque se o Explorador começar seu turno na última coluna.";
         cuerpo = $"<color={colorEncabezado}><b>Tipo:</b></color> Passiva\n" +
                  $"<color={colorEncabezado}><b>Ativacao:</b></color> Comeca o turno na ultima coluna\n" +
                  $"<color={colorEncabezado}><b>Efeito:</b></color> +{ataque} Ataque, +{danioPorcentaje}% Dano";
-        if (critico) { cuerpo += ", +5% Critico"; }
+        if (critico) { cuerpo += ", +5% Crítico"; }
         if (defensa) { cuerpo += ", +1 Defesa"; }
       }
 
@@ -89,14 +89,14 @@ public class REPRESENTACIONVistaLejana : Habilidad
       else if (esPortugues)
       {
         if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: +5% Dano.</color>"; }
-        if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +1 Ataque.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Próximo Nivel: +1 Ataque.</color>"; }
         if (NIVEL == 3) { return "<color=#dfea02>Opcao A: +5% Critico.\nOpcao B: +1 Defesa.</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: +5% Danio.</color>"; }
-        if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +1 Ataque.</color>"; }
-        if (NIVEL == 3) { return "<color=#dfea02>Opcion A: +5% Critico.\nOpcion B: +1 Defensa.</color>"; }
+        if (NIVEL < 2) { return "<color=#dfea02>Próximo Nivel: +5% Daño.</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>Próximo Nivel: +1 Ataque.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opción A: +5% Crítico.\nOpción B: +1 Defensa.</color>"; }
       }
 
       return "";

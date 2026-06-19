@@ -5077,7 +5077,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.8862745}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5184,7 +5184,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.7264151, g: 0, b: 0, a: 0.105882354}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5245,7 +5245,7 @@ RectTransform:
   m_GameObject: {fileID: 6785599127545183066}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.1164546, y: 1.7136953, z: 0.91231}
+  m_LocalScale: {x: 2.3022795, y: 1.8641578, z: 0.99241084}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2141404797064528879}
@@ -5255,8 +5255,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.01, y: -21.77}
-  m_SizeDelta: {x: 20.99, y: 23.323}
+  m_AnchoredPosition: {x: -1.43, y: -21.2}
+  m_SizeDelta: {x: 18.35, y: 23}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2367726031596992557
 CanvasRenderer:
@@ -5280,7 +5280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5368,7 +5368,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -5670,8 +5670,8 @@ MonoBehaviour:
   mod_ResNecro: 4
   at_ResDivino: 0
   mod_ResDivino: 0
-  at_Defensa: 11
-  mod_Defensa: 11
+  at_Defensa: 12
+  mod_Defensa: 12
   Defensa_AtaquesRepetidosRonda: 0
   Defensa_BonusPASinUsar: 0
   at_Ataque: 2
@@ -5811,8 +5811,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.6, y: 0.95, z: 0.6}
-  m_Center: {x: 0, y: 0.62, z: 0}
+  m_Size: {x: 0.51, y: 0.95, z: 0.42}
+  m_Center: {x: 0, y: 0.34, z: 0}
 --- !u!114 &6262378611950485550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6152,9 +6152,18 @@ MonoBehaviour:
   poseMover: {fileID: 21300000, guid: 9269e1eed978b224e86b581746f4f5ff, type: 3}
   poseAtacar: {fileID: 21300000, guid: ea7e7b3beffcf7844ae94b7a1e28279c, type: 3}
   poseHabilidad: {fileID: 21300000, guid: aa84428220fdd744c94060ee3ec9ee80, type: 3}
+  poseRecibirDanio: {fileID: 0}
+  poseTurnoActivo: {fileID: 0}
   duracionPoseAtacar: 1
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1
+  meleeFraccionImpacto: 0.35
+  meleePreImpactoFallback: 0.22
+  meleePreImpactoMin: 0.08
+  meleePreImpactoMax: 0.42
+  meleePostImpacto: 0.16
+  meleePostImpactoMin: 0.05
+  meleePostImpactoMax: 0.3
 --- !u!1001 &5711151464720401929
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -171,6 +171,8 @@ public class Casilla : MonoBehaviour
     {
       contenedorCostoMovimiento.gameObject.SetActive(false);
     }
+
+    TooltipBatalla.InstanceCostoMovimiento?.HideTooltipSinAnim();
   }
 
   private void ResetearPreviewCostoMovimientoUI()
@@ -640,6 +642,17 @@ public class Casilla : MonoBehaviour
   }
 
   public TooltipBatalla scTooltipBatalla;
+
+  private TooltipBatalla ObtenerTooltipBatallaGeneral()
+  {
+    if (TooltipBatalla.Instance != null)
+    {
+      return TooltipBatalla.Instance;
+    }
+
+    return scTooltipBatalla != null && !scTooltipBatalla.usoSoloCostoMov ? scTooltipBatalla : null;
+  }
+
   private bool EsMovimientoDiagonal(Unidad unidad)
   {
     if (unidad == null || unidad.CasillaPosicion == null)
@@ -756,10 +769,24 @@ public class Casilla : MonoBehaviour
     BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
   }
 
-  private string ObtenerTextoCostoMovimiento(Unidad unidad)
+  private string ObtenerTextoCostoMovimiento(int costoMovimientoTotal)
   {
-    return TRADU.i.Traducir("Coste: ") + ObtenerCostoMovimientoTotal(unidad) + " " + TRADU.i.Traducir("PA");
+    if (TRADU.i == null)
+    {
+      return "Coste: " + costoMovimientoTotal + " PA";
+    }
+
+    return TRADU.i.Traducir("Coste: ") + costoMovimientoTotal + " " + TRADU.i.Traducir("PA");
   }
+
+  private void MostrarTooltipCostoMovimiento(int costoMovimientoTotal)
+  {
+    TooltipBatalla tooltipCostoMovimiento = TooltipBatalla.InstanceCostoMovimiento;
+    if (tooltipCostoMovimiento == null) { return; }
+
+    tooltipCostoMovimiento.ShowTooltipCostoMovimiento(ObtenerTextoCostoMovimiento(costoMovimientoTotal));
+  }
+
   public void MostrarAPparaMovimiento()
   {
     if (!TryObtenerCostoMovimientoHover(out int costoMovimientoTotal, out bool alcanzable))
@@ -770,6 +797,7 @@ public class Casilla : MonoBehaviour
     }
 
     MostrarPreviewCostoMovimiento(costoMovimientoTotal, alcanzable);
+    MostrarTooltipCostoMovimiento(costoMovimientoTotal);
 
     if (BattleManager.Instance != null && BattleManager.Instance.scUIContadorAP != null)
     {
@@ -783,10 +811,11 @@ public class Casilla : MonoBehaviour
 
   public void MostrarTooltipIntercambiar()
   {
-    if (scTooltipBatalla == null) { return; }
+    TooltipBatalla tooltipBatalla = ObtenerTooltipBatallaGeneral();
+    if (tooltipBatalla == null) { return; }
 
     string texto = TRADU.i != null ? TRADU.i.Traducir("Intercambiar") : "Intercambiar";
-    scTooltipBatalla.ShowTooltipTextSinAnim(texto);
+    tooltipBatalla.ShowTooltipTextSinAnimDirecto(texto);
   }
 
   public async void OnMouseDown()
@@ -1581,7 +1610,7 @@ public class Casilla : MonoBehaviour
     if (MarcaMelee.activeInHierarchy)
     {
        text += "" + TRADU.i.Traducir("Melee disponible");
-      scTooltipBatalla.ShowTooltipTextSinAnim(text);
+      TooltipBatalla.InstanceCostoMovimiento?.ShowTooltipCostoMovimiento(text);
     }
     else if (BattleManager.Instance != null
       && !BattleManager.Instance.SeleccionandoObjetivo
@@ -2137,7 +2166,8 @@ public class Casilla : MonoBehaviour
       unidadActiva.CasillaPosicion.DesactivarSenialadores();
     }
 
-    scTooltipBatalla.HideTooltipSinAnim();
+    ObtenerTooltipBatallaGeneral()?.HideTooltipSinAnim();
+    TooltipBatalla.InstanceCostoMovimiento?.HideTooltipSinAnim();
     BattleManager.Instance?.LimpiarFadeHoverObjetivoHabilidad();
     if (BattleManager.Instance.HabilidadActiva != null)
     {

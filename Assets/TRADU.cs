@@ -1646,8 +1646,8 @@ public class TRADU : MonoBehaviour
             case "Esfuerzo":
                 r = "Exherted";
                 break;
-            case "La unidad se ha esforzado. -1 PA máximo y -2 Defensa por stack.":
-                r = "The unit has overexerted. -1 max AP and -2 Defense per stack.";
+            case "La unidad se ha esforzado.":
+                r = "The unit has overexerted.";
                 break;
             case "Continuar":
                 r = "Continue";
@@ -3061,8 +3061,8 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Preparar Flechas: </b></color><color=#d3d3d3><i>El personaje invertirá su tiempo en crear y mejorar sus flechas.</color></i>\\n\\nSi se produce un combate tendrá +3 Flechas y +5% daño.":
                 r = "<color=#0cca74><b>Prepare Arrows: </b></color><color=#d3d3d3><i>The character will spend their time creating and improving their arrows.</color></i>\\n\\nIf a combat occurs, they will have +3 Arrows and +5% damage.";
                 break;
-            case "<color=#0cca74><b>Mantenimiento de Armadura: </b></color><color=#d3d3d3><i>El personaje se ocupará de hacer mantenimiento a su armadura.</color></i>\\n\\nSi se produce un combate comenzará con +3 Armadura.":
-                r = "<color=#0cca74><b>Armor Maintenance: </b></color><color=#d3d3d3><i>The character will take care of his armor.</color></i>\\n\\nIf a combat occurs, he will start with +3 Armor.";
+            case "<color=#0cca74><b>Mantenimiento de Armadura: </b></color><color=#d3d3d3><i>El personaje se ocupará de hacer mantenimiento a su armadura.</color></i>\\n\\nSi se produce un combate comenzará con +2 Armadura.":
+                r = "<color=#0cca74><b>Armor Maintenance: </b></color><color=#d3d3d3><i>The character will take care of his armor.</color></i>\\n\\nIf a combat occurs, he will start with +2 Armor.";
                 break;
             case "<color=#0cca74><b>Vigilar: </b></color><color=#d3d3d3><i>El personaje permanecerá vigilante ante cualquier peligro.</color></i>\\n\\nSi se produce una emboscada podrá participar activamente de la defensa y obtiene +2 AP, +5 Iniciativa y +20% daño los primeros 2 turnos.":
                 r = "<color=#0cca74><b>Watch: </b></color><color=#d3d3d3><i>The character will remain vigilant against any danger.</color></i>\\n\\nIf an ambush occurs, they can actively participate in the defense and gain +2 AP, +5 Initiative, and +20% damage for the first 2 turns.";
@@ -3118,11 +3118,11 @@ public class TRADU : MonoBehaviour
             case "-La presencia notable del Aliento Negro al viajar, provoca incertidumbre en la Caravana. -3 Esperanza":
                 r = "-The noticeable presence of Black Breath while traveling causes uncertainty in the Caravan. -3 Hope";
                 break;
-            case "-La gran presencia de Aliento Negro en el aire, provoca temor en la Caravana. -5 Esperanza":
-                r = "-The strong presence of Black Breath in the air causes fear in the Caravan. -5 Hope";
+            case "-La gran presencia de Aliento Negro en el aire, provoca temor en la Caravana. -7 Esperanza":
+                r = "-The strong presence of Black Breath in the air causes fear in the Caravan. -7 Hope";
                 break;
-            case "-La presencia de Aliento Negro en el aire es fatal para los Civiles. -7 Esperanza -":
-                r = "-The Black Breath in the air is fatal for Civilians. -7 Hope -";
+            case "-La presencia de Aliento Negro en el aire es fatal para los Civiles. -10 Esperanza -":
+                r = "-The Black Breath in the air is fatal for Civilians. -10 Hope -";
                 break;
             case " Civiles":
                 r = " Civilians";
@@ -5455,7 +5455,7 @@ public class TRADU : MonoBehaviour
             case "Condena del bosque":
                 r = "Forest's Curse";
                 break;
-            case "<i>Manifestación de la energía espectral del bosque. Desde su interior emana un fulgor fantasmal frío, como un espí­ritu atrapado que se retuerce para escapar.</color>\n\n<color=#199F10>-Llama refuerzos sin fin.\n-Ataque necrótico que condena a dos objetivos.</color>\n<color=#EE0000>-Inmóvil.</color>":
+            case "<i>Manifestación de la energía espectral del bosque. Desde su interior emana un fulgor fantasmal frío, como un espíritu atrapado que se retuerce para escapar.</color>\n\n<color=#199F10>-Llama refuerzos sin fin.\n-Ataque necrótico que condena a dos objetivos.</color>\n<color=#EE0000>-Inmóvil.</color>":
                 r = "<i>Manifestation of the spectral energy of the forest. From within it emanates a cold ghostly glow, like a trapped spirit writhing to escape.</color>\n\n<color=#199F10>-Calls endless reinforcements.\n-Necrotic attack that condemns two targets.</color>\n<color=#EE0000>-Immobile.</color>";
                 break;
             case "Aliento Helado":
@@ -5467,7 +5467,7 @@ public class TRADU : MonoBehaviour
             case "Garra Draco":
                 r = "Drake Claw";
                 break;
-            case "<i>Estas criaturas aladas habitan en las regiones más frí­as del Paso. Son conocidas por ser muy territoriales y por su aliento gélido.</i>\n\n<color=#199F10>-Vuelo.\n-Aliento gélido en zona.\n-Regenera armadura.</color>\n<color=#EE0000>-Débil al fuego.</color>":
+            case "<i>Estas criaturas aladas habitan en las regiones más frías del Paso. Son conocidas por ser muy territoriales y por su aliento gélido.</i>\n\n<color=#199F10>-Vuelo.\n-Aliento gélido en zona.\n-Regenera armadura.</color>\n<color=#EE0000>-Débil al fuego.</color>":
                 r = "<i>These winged creatures inhabit the coldest regions of the Pass. They are known for being very territorial and for their icy breath.</i>\n\n<color=#199F10>-Flight.\n-Icy breath in area.\n-Regenerates armor.</color>\n<color=#EE0000>-Weak to fire.</color>";
                 break;
             case "Aturdido":
@@ -7288,21 +7288,41 @@ public class TRADU : MonoBehaviour
             case "Selecciona el orden de los refuerzos: (-->)":
                 r = "Select the order of reinforcements: (-->)";
                 break;
-             case "Silenciar tips":
+            case "Silenciar tips":
                 r = "Silence tips";
                 break;
-            case"Mostrar Ayudas":
-            r="Show Tips";
+            case "Mostrar Ayudas":
+                r = "Show Tips";
+                break;
+            case "Noticias":
+                r = "News";
+                break;
+            case "Prueba jugable":
+                r = "Open Playtest";
+                break;
+            case "Gracias por jugar la demo.\\nEn esta versión podrás experimentar el Tutorial y luego la primer zona del juego completa.\\n\\nTu feedback es muy importante para seguir mejorando.":
+                r = "Thank you for playing the demo.\nIn this version, you will be able to experience the Tutorial and then the first region of the game.\n\nYour feedback is very important to help us keep improving.";
+                break;
+            case "Claridad":
+                r = "Clarity";
+                break;
+            case "Puedes dar feedback y unirte a nuestro Discord aquí.":
+                r = "You can give feedback and join the Discord community here.";
+                break;
+            case "Créditos":
+                r = "Credits";
+                break;
+            case "Wishlist en Steam":
+                r = "Wishlist on Steam";
+                break;
+            case "Prohibido: Individualista":
+                r = "Forbidden: Individualist";
+                break;
+            case "Salir al Menú":
+            r = "Exit to Menu";
             break;
-            case"Noticias":
-            r="News";
-            break;
-            case"Prueba jugable":
-            r="Open Playtest";
-            break;
-            case"Gracias por jugar la demo.\\nEn esta versión podrás experimentar el Tutorial y luego la primer zona del juego completa.\\n\\nTu feedback es muy importante para seguir mejorando.":
-            r="Thank you for playing the demo.\nIn this version, you will be able to experience the Tutorial and then the first region of the game.\n\nYour feedback is very important to help us keep improving.";
-            break;
+         
+            
             
             
             
@@ -8902,8 +8922,8 @@ public class TRADU : MonoBehaviour
             case "Esfuerzo":
                 r = "Esforço";
                 break;
-            case "La unidad se ha esforzado. -1 PA máximo y -2 Defensa por stack.":
-                r = "A unidade se esforçou. -1 PA máximo e -2 Defesa por stack.";
+            case "La unidad se ha esforzado.":
+                r = "A unidade se esforçou.";
                 break;
             case "Continuar":
                 r = "Continuar";
@@ -10317,8 +10337,8 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Preparar Flechas: </b></color><color=#d3d3d3><i>El personaje invertirá su tiempo en crear y mejorar sus flechas.</color></i>\\n\\nSi se produce un combate tendrá +3 Flechas y +5% daño.":
                 r = "<color=#0cca74><b>Preparar Flechas: </b></color><color=#d3d3d3><i>O personagem dedicará seu tempo a criar e aprimorar suas flechas.</color></i>\\n\\nSe ocorrer um combate, terá +3 Flechas e +5% de dano.";
                 break;
-            case "<color=#0cca74><b>Mantenimiento de Armadura: </b></color><color=#d3d3d3><i>El personaje se ocupará de hacer mantenimiento a su armadura.</color></i>\\n\\nSi se produce un combate comenzará con +3 Armadura.":
-                r = "<color=#0cca74><b>Manutençío de Armadura: </b></color><color=#d3d3d3><i>O personagem cuidará da manutençío da sua armadura.</color></i>\\n\\nSe ocorrer um combate, começará com +3 de Armadura.";
+            case "<color=#0cca74><b>Mantenimiento de Armadura: </b></color><color=#d3d3d3><i>El personaje se ocupará de hacer mantenimiento a su armadura.</color></i>\\n\\nSi se produce un combate comenzará con +2 Armadura.":
+                r = "<color=#0cca74><b>Manutençío de Armadura: </b></color><color=#d3d3d3><i>O personagem cuidará da manutençío da sua armadura.</color></i>\\n\\nSe ocorrer um combate, começará com +2 de Armadura.";
                 break;
             case "<color=#0cca74><b>Vigilar: </b></color><color=#d3d3d3><i>El personaje permanecerá vigilante ante cualquier peligro.</color></i>\\n\\nSi se produce una emboscada podrá participar activamente de la defensa y obtiene +2 AP, +5 Iniciativa y +20% daño los primeros 2 turnos.":
                 r = "<color=#0cca74><b>Vigiar: </b></color><color=#d3d3d3><i>O personagem permanecerá vigilante diante de qualquer perigo.</color></i>\\n\\nSe ocorrer uma emboscada, poderá participar ativamente da defesa e recebe +2 PA, +5 Iniciativa e +20% de dano nos 2 primeiros turnos.";
@@ -10374,11 +10394,11 @@ public class TRADU : MonoBehaviour
             case "-La presencia notable del Aliento Negro al viajar, provoca incertidumbre en la Caravana. -3 Esperanza":
                 r = "-A presença perceptí­vel do Respiro Negro durante a viagem provoca incerteza na Caravana. -3 Esperança";
                 break;
-            case "-La gran presencia de Aliento Negro en el aire, provoca temor en la Caravana. -5 Esperanza":
-                r = "-A forte presença do Respiro Negro no ar provoca medo na Caravana. -5 Esperança";
+            case "-La gran presencia de Aliento Negro en el aire, provoca temor en la Caravana. -7 Esperanza":
+                r = "-A forte presença do Respiro Negro no ar provoca medo na Caravana. -7 Esperança";
                 break;
-            case "-La presencia de Aliento Negro en el aire es fatal para los Civiles. -7 Esperanza -":
-                r = "-A presença do Respiro Negro no ar é fatal para os Civis. -7 Esperança -";
+            case "-La presencia de Aliento Negro en el aire es fatal para los Civiles. -10 Esperanza -":
+                r = "-A presença do Respiro Negro no ar é fatal para os Civis. -10 Esperança -";
                 break;
             case " Civiles":
                 r = " Civis";
@@ -14558,9 +14578,25 @@ public class TRADU : MonoBehaviour
             case "Arquero Vengador de Kadryn":
             r = "Arqueiro Vingador de Kadryn";
             break;
-            /*case"":
-            r="";
-            break;*/
+            case"Claridad":
+            r="Clareza";
+            break;
+            case"Puedes dar feedback y unirte a nuestro Discord aquí.":
+            r="Você pode dar feedback e se juntar à comunidade do Discord aqui.";
+            break;
+            case "Créditos":
+            r = "Créditos";
+            break;
+            case "Wishlist en Steam":
+            r = "Wishlist no Steam";
+            break;
+            case "Prohibido: Individualista":
+            r = "Prohibido: Individualista";
+            break;
+            case "Salir al Menú":
+            r = "Sair para o menu";
+            break;
+         
             
             
            

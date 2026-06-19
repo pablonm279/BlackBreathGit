@@ -69,7 +69,7 @@ public class REPRESENTACIONPosturaDemandante : Habilidad
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n";
             cuerpo += $"<color={colorEncabezado}><b>Usos:</b></color> una vez por turno\n";
-            cuerpo += $"<color={colorEncabezado}><b>Disparo:</b></color> recibe danio mayor a 20% de su HP maximo\n";
+            cuerpo += $"<color={colorEncabezado}><b>Disparo:</b></color> recibe daño mayor a 20% de su HP máximo\n";
             cuerpo += $"<color={colorEncabezado}><b>Efecto:</b></color> gana {nombreTambaleando} por 1 turno (-1 AP max, -2 Defensa)";
         }
 

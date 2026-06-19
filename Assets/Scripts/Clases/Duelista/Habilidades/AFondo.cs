@@ -122,11 +122,11 @@ public class AFondo : Habilidad
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
             cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> casilla enemiga elegida y las 2 diagonales de atras\n";
             cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
-            cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
-            cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> {rangoDanio}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
             cuerpo += $"<color={colorEncabezado}><b>Penetracion de armadura:</b></color> {penetracionArmadura}\n";
             cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Fortaleza vs DC {dcFortitud}\n";
-            cuerpo += $"<color={colorEncabezado}><b>Si falla:</b></color> si recibio danio, +{sangradoAplicado} Sangrado\n";
+            cuerpo += $"<color={colorEncabezado}><b>Si falla:</b></color> si recibio daño, +{sangradoAplicado} Sangrado\n";
             cuerpo += $"<color={colorEncabezado}><b>Esforzable:</b></color> si ({esforzable})";
         }
 
@@ -154,14 +154,14 @@ public class AFondo : Habilidad
         else if (esPortugues)
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de dano.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 de Penetracao de armadura.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 de Penetracao de armadura.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 Sangramento) ou Opcao B (+5% Critico).</color>"; }
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 de Penetracion de armadura.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Sangrado) u Opcion B (+5% Critico).</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +2 de daño.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 de Penetracion de armadura.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+2 Sangrado) u Opción B (+5% Crítico).</color>"; }
         }
     }
 
@@ -264,7 +264,7 @@ public class AFondo : Habilidad
             }
         }
 
-        List<Casilla> casillasPrimarias = origen.ObtenerCasillasRango(1 + rangoPlus, 1);
+        List<Casilla> casillasPrimarias = origen.ObtenerCasillasRango(1 + rangoPlus, 0);
         foreach (Casilla c in casillasPrimarias)
         {
             c.ActivarCapaColorRojo();

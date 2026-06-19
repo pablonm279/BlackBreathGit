@@ -11,6 +11,7 @@ public class SequitoMercaderes : MonoBehaviour
 {
     private const int RarezaMinTienda = 0; // Comun
     private const int RarezaMaxTienda = 4; // Legendario
+    private const int RarezaMinRecompensa = 1; // Infrecuente
     private const int CorrimientoPorFase = 10;
     private static readonly HashSet<string> NombresItemsIniciales = new HashSet<string>
     {
@@ -59,7 +60,7 @@ public class SequitoMercaderes : MonoBehaviour
         SanitizarItemsVendidos();
         if (!restauradoDesdeSave && (ItemsVendidos == null || ItemsVendidos.Count == 0))
         {
-            GenerarItemsVendidos();
+            GenerarItemsVendidos(false);
         }
         else
         {
@@ -147,7 +148,7 @@ public class SequitoMercaderes : MonoBehaviour
         }
     }
 
-    public void GenerarItemsVendidos()
+    public void GenerarItemsVendidos(bool escribirLog = true)
     {
         intItemsaVender = 6 + (3 * CampaignManager.Instance.sequitoMercaderesTier);
         Item itemPineadoActual = itemPineado;
@@ -238,7 +239,10 @@ public class SequitoMercaderes : MonoBehaviour
             }
         }
 
-        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-El Séquito de Mercaderes ha actualizado su oferta."));
+        if (escribirLog)
+        {
+            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-El Séquito de Mercaderes ha actualizado su oferta."));
+        }
         CompletarSlotsRestantesConPools(
             armasDisponibles,
             armadurasDisponibles,
@@ -372,7 +376,7 @@ public class SequitoMercaderes : MonoBehaviour
                 continue;
             }
 
-            if (item.iRareza >= RarezaMinTienda && item.iRareza <= RarezaMaxTienda)
+            if (EsItemValidoParaOfertaMercaderes(item))
             {
                 elegibles.Add(item);
             }
@@ -404,6 +408,21 @@ public class SequitoMercaderes : MonoBehaviour
         }
 
         return elegibles[random.Next(elegibles.Count)];
+    }
+
+    private bool EsItemValidoParaOfertaMercaderes(Item item)
+    {
+        if (item == null || item.iRareza > RarezaMaxTienda)
+        {
+            return false;
+        }
+
+        if (item is Arma || item is Armadura)
+        {
+            return item.iRareza >= RarezaMinRecompensa;
+        }
+
+        return item.iRareza >= RarezaMinTienda;
     }
 
     private T ElegirAleatorioPorRareza<T>(List<T> candidatos, int rareza, System.Random random) where T : Item
@@ -802,13 +821,28 @@ public class SequitoMercaderes : MonoBehaviour
                 continue;
             }
 
-            if (entry.prefab != null && !EsItemInicialDeClase(entry.prefab) && uniqueItems.Add(entry.prefab))
+            if (EsItemValidoParaRecompensa(entry.prefab) && uniqueItems.Add(entry.prefab))
             {
                 result.Add(entry.prefab);
             }
         }
 
         return result;
+    }
+
+    bool EsItemValidoParaRecompensa(Item item)
+    {
+        if (item == null || EsItemInicialDeClase(item))
+        {
+            return false;
+        }
+
+        if (item is Arma || item is Armadura)
+        {
+            return item.iRareza >= RarezaMinRecompensa;
+        }
+
+        return true;
     }
 
     bool EsEntradaValidaParaTiendas(ItemDatabaseEntry entry)
@@ -831,7 +865,7 @@ public class SequitoMercaderes : MonoBehaviour
             todosLosItems.AddRange(ArmadurasAVender);
             todosLosItems.AddRange(AccesoriosAVender);
             todosLosItems.AddRange(ConsumiblesAVender);
-            todosLosItems.RemoveAll(item => EsItemInicialDeClase(item));
+            todosLosItems.RemoveAll(item => !EsItemValidoParaRecompensa(item));
         }
 
         if (todosLosItems.Count == 0)

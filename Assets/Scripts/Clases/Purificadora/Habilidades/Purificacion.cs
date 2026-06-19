@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -105,11 +105,11 @@ public class Purificacion : Habilidad
       else
       {
         cuerpo += "<b>Tipo:</b> Area (10 alcance)\n";
-        cuerpo += "<b>Objetivo:</b> Todos los enemigos del area seleccionada\n";
+        cuerpo += "<b>Objetivo:</b> Todos los enemigos del área seleccionada\n";
         cuerpo += lineaSalvacionEs + "\n";
-        cuerpo += $"<b>Danio:</b> (2 + 1-5 + Pod ({poderActual}) / 2) x (1 + Fervor ({fervorActual})) | <b>Tipo:</b> Divino\n";
+        cuerpo += $"<b>Daño:</b> (2 + 1-5 + Pod ({poderActual}) / 2) x (1 + Fervor ({fervorActual})) | <b>Tipo:</b> Divino\n";
         cuerpo += $"<b>Rango actual con Fervor:</b> {danioMinConFervor}-{danioMaxConFervor} (si supera TS), {danioMinConFervor * 2}-{danioMaxConFervor * 2} (si falla TS)\n";
-        cuerpo += "<b>Si falla TS:</b> Ardiendo 2 y danio duplicado\n";
+        cuerpo += "<b>Si falla TS:</b> Ardiendo 2 y daño duplicado\n";
         cuerpo += "<b>Al lanzar:</b> Fervor queda en 0";
       }
 
@@ -164,7 +164,7 @@ public class Purificacion : Habilidad
         cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque em area (10 de alcance)</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Todos os inimigos da area selecionada</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Reflexos vs DC 9 + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{formula}. Tipo: Divino</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{formula}. Tipo: Divino</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Faixa atual:</b></color> <color={colorValor}>{rangoActual}; se falhar: {rangoFalla}</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoArdiendo} Queimando 2 e dano dobrado.</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Ao usar:</b></color> <color={colorValor}>Fervor vai para 0.</color>";
@@ -172,11 +172,11 @@ public class Purificacion : Habilidad
       else
       {
         cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque en area (10 alcance)</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Todos los enemigos del area seleccionada</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Todos los enemigos del área seleccionada</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Reflejos vs DC 9 + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Danio:</b></color> <color={colorValor}>{formula}. Tipo: Divino</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{formula}. Tipo: Divino</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Rango actual:</b></color> <color={colorValor}>{rangoActual}; si falla TS: {rangoFalla}</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> <color={colorValor}>{iconoArdiendo} Ardiendo 2 y danio duplicado.</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> <color={colorValor}>{iconoArdiendo} Ardiendo 2 y daño duplicado.</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Al lanzar:</b></color> <color={colorValor}>Fervor queda en 0.</color>";
       }
 

@@ -84,7 +84,7 @@ public class ReaccionPresenciaProvocadora : Reaccion
         }
         else
         {
-            descripcion = $"Reaccion: si un enemigo falla un ataque melee contra ella, contraataca con Estocada base ({bonusAtaque:+#;-#;0} Ataque, {bonusDanio:+#;-#;0} Danio). Usos ilimitados hasta el proximo turno.";
+            descripcion = $"Reacción: si un enemigo falla un ataque melee contra ella, contraataca con Estocada base ({bonusAtaque:+#;-#;0} Ataque, {bonusDanio:+#;-#;0} Daño). Usos ilimitados hasta el próximo turno.";
         }
     }
 

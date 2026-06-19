@@ -48,7 +48,7 @@ public class REPRESENTACIONExcesoDePoder : Habilidad
         {
             cuerpoFormato =
                 $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Buff passivo</color>\n" +
-                $"<color={colorEncabezado}><b>Bonus passivo:</b></color> <color={colorValor}>+{criticoPorcentaje}% Critico</color>\n" +
+                $"<color={colorEncabezado}><b>Bonus passivo:</b></color> <color={colorValor}>+{criticoPorcentaje}% Crítico</color>\n" +
                 $"<color={colorEncabezado}><b>Ao critar:</b></color> <color={colorValor}>{iconoEnergia} cria {residuos} Residuo{(residuos > 1 ? "s" : "")} Energetico{(residuos > 1 ? "s" : "")}</color>\n" +
                 $"<color={colorEncabezado}><b>Retorno:</b></color> <color={colorValor}>Recebe {danioPropio} dano Arcano</color>";
         }
@@ -56,8 +56,8 @@ public class REPRESENTACIONExcesoDePoder : Habilidad
         {
             cuerpoFormato =
                 $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Buff pasivo</color>\n" +
-                $"<color={colorEncabezado}><b>Bonus pasivo:</b></color> <color={colorValor}>+{criticoPorcentaje}% Critico</color>\n" +
-                $"<color={colorEncabezado}><b>Al critico:</b></color> <color={colorValor}>{iconoEnergia} crea {residuos} Residuo{(residuos > 1 ? "s" : "")} Energetico{(residuos > 1 ? "s" : "")}</color>\n" +
+                $"<color={colorEncabezado}><b>Bonus pasivo:</b></color> <color={colorValor}>+{criticoPorcentaje}% Crítico</color>\n" +
+                $"<color={colorEncabezado}><b>Al crítico:</b></color> <color={colorValor}>{iconoEnergia} crea {residuos} Residuo{(residuos > 1 ? "s" : "")} Energetico{(residuos > 1 ? "s" : "")}</color>\n" +
                 $"<color={colorEncabezado}><b>Retorno:</b></color> <color={colorValor}>Recibe {danioPropio} daño Arcano</color>";
         }
 
@@ -131,8 +131,8 @@ public class REPRESENTACIONExcesoDePoder : Habilidad
 
             if (esPortuguesFormato)
             {
-                return "<color=#dfea02><b>Proximo Nivel A:</b></color> <color=#ffffff>+1 Residuo Energetico por critico</color>\n"
-                    + "<color=#dfea02><b>Proximo Nivel B:</b></color> <color=#ffffff>+5% Critico adicional</color>";
+                return "<color=#dfea02><b>Próximo Nivel A:</b></color> <color=#ffffff>+1 Residuo Energetico por crítico</color>\n"
+                    + "<color=#dfea02><b>Próximo Nivel B:</b></color> <color=#ffffff>+5% Crítico adicional</color>";
             }
 
             return "<color=#dfea02><b>Próximo Nivel A:</b></color> <color=#ffffff>+1 Residuo Energético por crítico</color>\n"

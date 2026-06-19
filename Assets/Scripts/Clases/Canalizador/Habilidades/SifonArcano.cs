@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -44,8 +44,8 @@ public class SifonArcano : Habilidad
     if (NIVEL == 5) { tituloEs = "Sifon Arcano IV b"; tituloEn = "Arcane Siphon IV b"; }
 
     string lineaDanioEs = bonusDanioBase > 0
-      ? $"<b>Danio por turno:</b> ({rangoDanioEs}) x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano"
-      : "<b>Danio por turno:</b> 1-10 x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano";
+      ? $"<b>Daño por turno:</b> ({rangoDanioEs}) x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano"
+      : "<b>Daño por turno:</b> 1-10 x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano";
     string lineaDanioEn = bonusDanioBase > 0
       ? $"<b>Turn Damage:</b> (1d10 + {bonusDanioBase}) x (1 + Energy Residues) | <b>Type:</b> Arcane"
       : "<b>Turn Damage:</b> 1d10 x (1 + Energy Residues) | <b>Type:</b> Arcane";
@@ -96,7 +96,7 @@ public class SifonArcano : Habilidad
       cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo del lado opuesto</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Efecto:</b></color> <color={colorValor}>{iconoDebuff} Aplica Sifon Arcano por {duracionTurnos} turnos</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Daño por turno:</b></color> <color={colorValor}>{rangoDanioEs} x (1 + {iconoEnergia} Residuos Energeticos). Tipo: Arcano</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Al matar:</b></color> <color={colorValor}>{iconoBuff} +1 AP Max permanente, +10% Daño, {iconoEnergia} +1 Energia</color>";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Al matar:</b></color> <color={colorValor}>{iconoBuff} +1 AP Max permanente, +10% Daño, {iconoEnergia} +1 Energía</color>";
     }
 
     txtDescripcion =
@@ -116,14 +116,14 @@ public class SifonArcano : Habilidad
       else if (esPortuguesFormato)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no dano base por turno.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: desbloqueia melhorias IV.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: desbloqueia melhorias IV.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A ou Opcao B (melhorias IV).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al danio base por turno.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: desbloquea mejoras IV.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A u Opcion B (mejoras IV).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al daño base por turno.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: desbloquea mejoras IV.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A u Opción B (mejoras IV).</color>"; }
       }
     }
     if (!string.IsNullOrEmpty(txtDescripcion))
@@ -181,7 +181,7 @@ public class SifonArcano : Habilidad
       if (EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 no dano base por turno.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: desbloqueia melhorias IV.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: desbloqueia melhorias IV.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A ou Opcao B (melhorias IV).</color>"; }
       }
       return;
@@ -193,7 +193,7 @@ public class SifonArcano : Habilidad
       cuerpo += "<b>Objetivo:</b> 1 unidad enemiga del lado opuesto\n";
       cuerpo += $"<b>Efecto:</b> aplica Sifon Arcano por {duracionTurnos} turnos\n";
       cuerpo += lineaDanioEs + "\n";
-      cuerpo += "<b>Si mata con este efecto:</b> +1 AP max permanente, +10% Danio y +1 Energia";
+      cuerpo += "<b>Si mata con este efecto:</b> +1 AP max permanente, +10% Daño y +1 Energía";
 
       string costos = $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM} ";
 
@@ -206,9 +206,9 @@ public class SifonArcano : Habilidad
 
       if (EsEscenaCampaña() && CampaignManager.Instance != null && CampaignManager.Instance.scMenuPersonajes != null && CampaignManager.Instance.scMenuPersonajes.pSel != null && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al danio base por turno.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: desbloquea mejoras IV.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A u Opcion B (mejoras IV).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al daño base por turno.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: desbloquea mejoras IV.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A u Opción B (mejoras IV).</color>"; }
       }
     }
   }
@@ -362,9 +362,9 @@ public class SifonArcanoObjetivoFx : MonoBehaviour
   private const float DuracionEntrada = 0.18f;
   private const float DuracionSalida = 0.28f;
   private const int CantidadHebras = 5;
-  private const float EscalaVisual = 0.85f;
-  private const float OpacidadVisual = 0.7f;
-  private const float VelocidadVisual = 0.9f;
+  private const float EscalaVisual = 0.75f;
+  private const float OpacidadVisual = 0.5f;
+  private const float VelocidadVisual = 0.72f;
 
   private RectTransform root;
   private CanvasGroup canvasGroup;
@@ -524,10 +524,10 @@ public class SifonArcanoObjetivoFx : MonoBehaviour
     root.anchoredPosition = imagenUnidad != null ? imagenUnidad.anchoredPosition + posicionBase + new Vector2(deriva, 0f) : root.anchoredPosition;
     root.localEulerAngles = new Vector3(0f, 0f, Mathf.Sin(tiempoFx * 11f) * 2.5f * intensidad);
 
-    Configurar(columna, new Vector2(Mathf.Sin(tiempoFx * 18f) * tamanoBase.x * 0.018f, 0f), new Vector2(tamanoBase.x * 0.5f * pulso, tamanoBase.y * 1.48f), 0f, new Color(0.26f, 0.72f, 1f, 0.14f * intensidad));
-    Configurar(nucleo, new Vector2(Mathf.Sin(tiempoFx * 15f) * tamanoBase.x * 0.025f, tamanoBase.y * 0.02f), new Vector2(tamanoBase.x * 0.14f, tamanoBase.y * 1.22f), 0f, new Color(0.78f, 0.96f, 1f, 0.25f * intensidad));
-    Configurar(anilloSuperior, new Vector2(Mathf.Sin(tiempoFx * 9f) * tamanoBase.x * 0.03f, tamanoBase.y * 0.44f), new Vector2(tamanoBase.x * (0.5f + (0.08f * pulso)), tamanoBase.y * 0.15f), giro, new Color(0.68f, 0.94f, 1f, 0.32f * intensidad));
-    Configurar(anilloInferior, new Vector2(Mathf.Sin(tiempoFx * 8f + 1.3f) * tamanoBase.x * 0.025f, -tamanoBase.y * 0.38f), new Vector2(tamanoBase.x * (0.46f + (0.06f * pulso)), tamanoBase.y * 0.12f), -giro * 1.25f, new Color(0.42f, 0.78f, 1f, 0.22f * intensidad));
+    Configurar(columna, new Vector2(Mathf.Sin(tiempoFx * 18f) * tamanoBase.x * 0.018f, 0f), new Vector2(tamanoBase.x * 0.5f * pulso, tamanoBase.y * 1.48f), 0f, new Color(0.08f, 0.42f, 1f, 0.14f * intensidad));
+    Configurar(nucleo, new Vector2(Mathf.Sin(tiempoFx * 15f) * tamanoBase.x * 0.025f, tamanoBase.y * 0.02f), new Vector2(tamanoBase.x * 0.14f, tamanoBase.y * 1.22f), 0f, new Color(0.36f, 0.68f, 1f, 0.25f * intensidad));
+    Configurar(anilloSuperior, new Vector2(Mathf.Sin(tiempoFx * 9f) * tamanoBase.x * 0.03f, tamanoBase.y * 0.44f), new Vector2(tamanoBase.x * (0.5f + (0.08f * pulso)), tamanoBase.y * 0.15f), giro, new Color(0.24f, 0.56f, 1f, 0.32f * intensidad));
+    Configurar(anilloInferior, new Vector2(Mathf.Sin(tiempoFx * 8f + 1.3f) * tamanoBase.x * 0.025f, -tamanoBase.y * 0.38f), new Vector2(tamanoBase.x * (0.46f + (0.06f * pulso)), tamanoBase.y * 0.12f), -giro * 1.25f, new Color(0.12f, 0.44f, 1f, 0.22f * intensidad));
 
     for (int i = 0; i < hebras.Length; i++)
     {
@@ -536,7 +536,7 @@ public class SifonArcanoObjetivoFx : MonoBehaviour
       float onda = Mathf.Sin((tiempoFx * (8f + i)) + (i * 1.9f)) * tamanoBase.x * 0.06f;
       Vector2 posicion = new Vector2((tamanoBase.x * offsetHebraX[i]) + onda, Mathf.Lerp(-tamanoBase.y * 0.56f, tamanoBase.y * 0.6f, avance));
       Vector2 tamano = new Vector2(tamanoBase.y * 0.5f * escalaHebra[i], Mathf.Max(1.3f, tamanoBase.x * 0.04f));
-      Configurar(hebras[i], posicion, tamano, 90f + (Mathf.Sin(tiempoFx * (7f + i) + fasesHebra[i]) * 10f), new Color(0.82f, 0.98f, 1f, 0.28f * alphaHebra));
+      Configurar(hebras[i], posicion, tamano, 90f + (Mathf.Sin(tiempoFx * (7f + i) + fasesHebra[i]) * 10f), new Color(0.44f, 0.74f, 1f, 0.28f * alphaHebra));
     }
   }
 

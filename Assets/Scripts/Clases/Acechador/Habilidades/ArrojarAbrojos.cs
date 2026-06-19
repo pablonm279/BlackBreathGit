@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -102,10 +102,10 @@ public class ArrojarAbrojos : Habilidad
         cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Trampa a distancia (3 alcance)\n";
         cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> diagonales vacias alrededor del objetivo\n";
         cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> coloca trampas de abrojos\n";
-        cuerpo += $"<color={colorEncabezado}><b>Trampa:</b></color> 1 uso, 10 turnos de duracion\n";
-        cuerpo += $"<color={colorEncabezado}><b>Danio al activar:</b></color> {danioBase}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+        cuerpo += $"<color={colorEncabezado}><b>Trampa:</b></color> 1 uso, 10 turnos de duración\n";
+        cuerpo += $"<color={colorEncabezado}><b>Daño al activar:</b></color> {danioBase}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
         cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Reflejos vs DC {dcBase}\n";
-        cuerpo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> x2 danio, +{bleedAplicado} Sangrado";
+        cuerpo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> x2 daño, +{bleedAplicado} Sangrado";
         if (drenaAp)
         {
           cuerpo += ", -1 AP";
@@ -139,14 +139,14 @@ public class ArrojarAbrojos : Habilidad
       else if (esPortugues)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 dano da armadilha.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na CD base da resistencia.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 na CD base da resistencia.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 Sangramento) ou Opcao B (-1 AP ao falhar na resistencia).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 danio de trampa.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al DC base de TS.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 Sangrado) u Opcion B (-1 AP al fallar TS).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 daño de trampa.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al DC base de TS.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1 Sangrado) u Opción B (-1 AP al fallar TS).</color>"; }
       }
     }
     void Start()

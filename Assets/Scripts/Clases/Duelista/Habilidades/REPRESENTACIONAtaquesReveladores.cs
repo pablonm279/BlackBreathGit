@@ -76,10 +76,10 @@ public class REPRESENTACIONAtaquesReveladores : Habilidad
         else
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n";
-            cuerpo += $"<color={colorEncabezado}><b>Disparo:</b></color> al causar danio\n";
+            cuerpo += $"<color={colorEncabezado}><b>Disparo:</b></color> al causar daño\n";
             cuerpo += $"<color={colorEncabezado}><b>Efecto:</b></color> aplica {nombreDebuff} por {duracion} turnos\n";
-            cuerpo += $"<color={colorEncabezado}><b>{nombreDebuff}:</b></color> ataques contra ese objetivo ganan +{bonusCritPorcentaje}% Critico";
-            if (bonusDanioCritico > 0) { cuerpo += $", criticos causan +{bonusDanioCritico}% de danio"; }
+            cuerpo += $"<color={colorEncabezado}><b>{nombreDebuff}:</b></color> ataques contra ese objetivo ganan +{bonusCritPorcentaje}% Crítico";
+            if (bonusDanioCritico > 0) { cuerpo += $", críticos causan +{bonusDanioCritico}% de daño"; }
         }
 
         string titulo = esIngles ? "Revealing Attacks " + sufijoNivel : esPortugues ? "Ataques Reveladores " + sufijoNivel : "Ataques Reveladores " + sufijoNivel;
@@ -87,7 +87,7 @@ public class REPRESENTACIONAtaquesReveladores : Habilidad
             ? "Damaging hits expose the target to critical follow-up."
             : esPortugues
                 ? "Golpes com dano expoem o alvo a criticos posteriores."
-                : "Los golpes con danio exponen al objetivo a criticos posteriores.";
+                : "Los golpes con daño exponen al objetivo a críticos posteriores.";
 
         txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size>\n\n";
         txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
@@ -106,14 +106,14 @@ public class REPRESENTACIONAtaquesReveladores : Habilidad
         else if (esPortugues)
         {
             if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +10% de dano critico recebido.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico contra alvos expostos.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% Crítico contra alvos expostos.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+15% de dano critico recebido) ou Opcao B (+1 duracao).</color>"; }
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +10% danio critico recibido.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Critico contra objetivos expuestos.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+15% danio critico recibido) u Opcion B (+1 duracion).</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +10% daño crítico recibido.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% Crítico contra objetivos expuestos.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+15% daño crítico recibido) u Opción B (+1 duración).</color>"; }
         }
     }
 

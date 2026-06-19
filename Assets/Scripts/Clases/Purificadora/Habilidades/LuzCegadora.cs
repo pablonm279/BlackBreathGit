@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -118,13 +118,13 @@ public class LuzCegadora : Habilidad
       else
       {
         cuerpo += "<b>Tipo:</b> Rango (3 alcance)\n";
-        cuerpo += "<b>Objetivo:</b> Area frontal (2 ancho)\n";
+        cuerpo += "<b>Objetivo:</b> Área frontal (2 ancho)\n";
         cuerpo += lineaSalvacionEs + "\n";
         cuerpo += "<b>Si falla TS y no es inmune a Ceguera:</b> Ciego por 2 rondas (-3 Ataque, -2 Defensa, -1 Reflejos)\n";
-        cuerpo += $"<b>Danio vs Nomuerto/Etereo:</b> {danioPrincipalEs}";
+        cuerpo += $"<b>Daño vs Nomuerto/Etéreo:</b> {danioPrincipalEs}";
         if (afectaOtrosEnemigos)
         {
-          cuerpo += "\n<b>Otros enemigos:</b> reciben 1/3 del danio Divino tirado";
+          cuerpo += "\n<b>Otros enemigos:</b> reciben 1/3 del daño Divino tirado";
         }
       }
 
@@ -185,11 +185,11 @@ public class LuzCegadora : Habilidad
       else
       {
         cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Area frontal (3 alcance, 2 ancho)</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Enemigos en el area</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Enemigos en el área</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Reflejos vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoDebuff} Ciego 2 rondas: -3 Ataque, -2 Defensa, -1 Reflejos</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Nomuerto/Etereo:</b></color> <color={colorValor}>{danioVsImpuro}. Tipo: Divino</color>";
-        if (afectaOtrosEnemigos) { cuerpoNuevo += $"\n<color={colorEncabezado}><b>Otros enemigos:</b></color> <color={colorValor}>1/3 del danio Divino tirado.</color>"; }
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Nomuerto/Etéreo:</b></color> <color={colorValor}>{danioVsImpuro}. Tipo: Divino</color>";
+        if (afectaOtrosEnemigos) { cuerpoNuevo += $"\n<color={colorEncabezado}><b>Otros enemigos:</b></color> <color={colorValor}>1/3 del daño Divino tirado.</color>"; }
       }
 
       txtDescripcion =
@@ -212,15 +212,15 @@ public class LuzCegadora : Habilidad
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 CD de resistencia.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 CD de resistencia.</color>"; }
         else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1d6 de dano Divino vs Morto-vivo/Etereo.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 custo de Valentia) ou Opcao B (1/3 de dano para outros inimigos).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC de salvacion.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1-6 de danio Divino vs Nomuerto/Etereo.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valentía) u Opcion B (1/3 de danio a otros enemigos).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 DC de salvación.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1-6 de daño Divino vs Nomuerto/Etéreo.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (-1 costo de Valentía) u Opción B (1/3 de daño a otros enemigos).</color>"; }
       }
     }
 

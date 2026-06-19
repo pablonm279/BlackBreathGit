@@ -100,10 +100,10 @@ public class Estocada : Habilidad
         else
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee\n";
-            cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstaculo en alcance frontal\n";
+            cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstáculo en alcance frontal\n";
             cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
-            cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
-            cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
+            cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
+            cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
             cuerpo += $"<color={colorEncabezado}><b>Penetracion de armadura:</b></color> {penetracionArmadura}\n";
             cuerpo += $"<color={colorEncabezado}><b>Escala:</b></color> mitad Fuerza + mitad Agilidad, redondeando hacia arriba\n";
             cuerpo += $"<color={colorEncabezado}><b>Esforzable:</b></color> si ({esforzable})";
@@ -350,7 +350,7 @@ public class Estocada : Habilidad
         }
         else if (resultadoTirada == 3)
         {
-            print("Critico");
+            print("Crítico");
             float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + atributoMixto + bonusDanioPlano;
             danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje + bonusDanioPorcentajeDanza);
 

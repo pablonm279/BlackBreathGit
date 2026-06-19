@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Buff : MonoBehaviour
 {
+  public bool RemocionAplicada { get; private set; }
+
   public string buffNombre;
   public string buffDescr;
   // Si true, no genera texto flotante al aplicar/remover (útil para buffs iniciales de pelea, clima, etc.)
@@ -230,20 +232,21 @@ public class Buff : MonoBehaviour
         Color colorTexto = boolfDebufftBuff ? Color.cyan : Color.magenta;
         FloatingTextContext contextoTexto = FloatingTextContext.BuffApply;
         bool suprimirPorInicioCombate = BattleManager.Instance != null && BattleManager.Instance.silenciarLogCombate;
+        string buffNombreTraducido = TraducirSeguro(buffNombre);
         if (!suprimeTextoFlotante && (!suprimirPorInicioCombate || forzarTextoFlotanteInicioCombate))
         {
             if (DuracionBuffRondas > 0)
             {
-                unidad.GenerarTextoFlotante("+"+TRADU.i.Traducir(buffNombre) + " " + DuracionBuffRondas + "T", colorTexto, contextoTexto);
+                unidad.GenerarTextoFlotante("+" + buffNombreTraducido + " " + DuracionBuffRondas + "T", colorTexto, contextoTexto);
             }
             else if (DuracionBuffRondas < 0)
             {
-                unidad.GenerarTextoFlotante("+" + TRADU.i.Traducir(buffNombre), colorTexto, contextoTexto);
+                unidad.GenerarTextoFlotante("+" + buffNombreTraducido, colorTexto, contextoTexto);
             }
         }
 
-        string nombreUnidadLog = TRADU.i != null ? TRADU.i.Traducir(unidad.uNombre) : unidad.uNombre;
-        string sBuff = nombreUnidadLog + TRADU.i.Traducir(" recibe ") + TRADU.i.Traducir(buffNombre) + ".";
+        string nombreUnidadLog = TraducirSeguro(unidad != null ? unidad.uNombre : null);
+        string sBuff = nombreUnidadLog + TraducirSeguro(" recibe ") + buffNombreTraducido + ".";
 
         if (boolfDebufftBuff)
         {
@@ -262,9 +265,25 @@ public class Buff : MonoBehaviour
         // Repite el mismo patrón para otros atributos si es necesario...
     }
 
+    private static string TraducirSeguro(string texto)
+    {
+        if (string.IsNullOrEmpty(texto))
+        {
+            return string.Empty;
+        }
+
+        return TRADU.i != null ? TRADU.i.Traducir(texto) : texto;
+    }
 
 public void RemoverBuff(Unidad unidad)
 {
+    if (RemocionAplicada)
+    {
+        return;
+    }
+
+    RemocionAplicada = true;
+
      //Manejo VFX Buff
     if(goVFX != null)//Si se asignó un VFX al crear el efecto, se destruye.
     {
@@ -393,11 +412,11 @@ public void RemoverBuff(Unidad unidad)
     bool suprimirTextoFinBuff = !string.IsNullOrEmpty(buffNombre) && buffNombre.StartsWith("Vista Lejana");
     if (!quedaOtroBuffConMismoNombre && !suprimeTextoFlotante && !suprimirTextoFinBuff && (!suprimirPorInicioCombate || forzarTextoFlotanteInicioCombate))
     {
-        unidad.GenerarTextoFlotante("<s>" +  TRADU.i.Traducir(buffNombre) + "</s>", Color.cyan, FloatingTextContext.BuffEnd);
+        unidad.GenerarTextoFlotante("<s>" + TraducirSeguro(buffNombre) + "</s>", Color.cyan, FloatingTextContext.BuffEnd);
     }
 
-    string nombreUnidadLog = TRADU.i != null ? TRADU.i.Traducir(unidad.uNombre) : unidad.uNombre;
-    string sBuff = nombreUnidadLog + TRADU.i.Traducir(" ya no tiene ") + TRADU.i.Traducir(buffNombre) + ".";
+    string nombreUnidadLog = TraducirSeguro(unidad != null ? unidad.uNombre : null);
+    string sBuff = nombreUnidadLog + TraducirSeguro(" ya no tiene ") + TraducirSeguro(buffNombre) + ".";
 
     if(boolfDebufftBuff)
     {
@@ -453,7 +472,7 @@ private bool QuedaOtroBuffConMismoNombre(Unidad unidad)
     Buff[] buffs = unidad.GetComponents<Buff>();
     foreach (Buff buff in buffs)
     {
-        if (buff != null && !ReferenceEquals(buff, this) && buff.buffNombre == buffNombre)
+        if (buff != null && !buff.RemocionAplicada && !ReferenceEquals(buff, this) && buff.buffNombre == buffNombre)
         {
             return true;
         }

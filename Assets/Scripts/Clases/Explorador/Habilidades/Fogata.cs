@@ -89,9 +89,9 @@ public class Fogata : Habilidad
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Trampa de utilidad\n";
       cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Casilla adyacente, incluida tu propia casilla\n";
-      cuerpo += $"<color={colorEncabezado}><b>Perfil de fogata:</b></color> {trampaUsos} usos, {duracionTrampaTurnos} turnos de duracion, persistente\n";
-      cuerpo += $"<color={colorEncabezado}><b>Al activarse:</b></color> {danoTrampa} danio de fuego\n";
-      cuerpo += $"<color={colorEncabezado}><b>Aliados adyacentes:</b></color> ataques ganan +{danoFuego} danio de fuego\n";
+      cuerpo += $"<color={colorEncabezado}><b>Perfil de fogata:</b></color> {trampaUsos} usos, {duracionTrampaTurnos} turnos de duración, persistente\n";
+      cuerpo += $"<color={colorEncabezado}><b>Al activarse:</b></color> {danoTrampa} daño de fuego\n";
+      cuerpo += $"<color={colorEncabezado}><b>Aliados adyacentes:</b></color> ataques ganan +{danoFuego} daño de fuego\n";
       cuerpo += $"<color={colorEncabezado}><b>Esforzable:</b></color> si ({esforzable})";
     }
 
@@ -118,15 +118,15 @@ public class Fogata : Habilidad
     }
     else if (esPortugues)
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 uso de armadilha e +1 turno de duracao.</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 uso de armadilha e +1 turno de duracao.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 custo AP.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1-3 dano de fogo bonus) ou Opcao B (-1 custo AP).</color>"; }
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 uso de trampa y +1 turno de duracion.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 costo AP.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1-3 danio de fuego bonus) u Opcion B (-1 costo AP).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 uso de trampa y +1 turno de duración.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: -1 costo AP.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1-3 daño de fuego bonus) u Opción B (-1 costo AP).</color>"; }
     }
   }
     void Start()

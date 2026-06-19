@@ -77,9 +77,9 @@ public class EnGarde : Habilidad
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Auto buff\n";
             cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Uno mismo\n";
-            cuerpo += $"<color={colorEncabezado}><b>Efecto:</b></color> maximo 3 turnos, +{bonusEvasion} Evasion, +{bonusDanio}% Danio, +{bonusCriticoPorcentaje}% Critico, +{bonusAtaque}\n";
-            cuerpo += $"<color={colorEncabezado}><b>Cancelacion:</b></color> se elimina al recibir danio\n";
-            cuerpo += $"<color={colorEncabezado}><b>Postura Demandante:</b></color> umbral pasa a {umbralPosturaDemandante}% de HP maximo mientras esta activo";
+            cuerpo += $"<color={colorEncabezado}><b>Efecto:</b></color> máximo 3 turnos, +{bonusEvasion} Evasion, +{bonusDanio}% Daño, +{bonusCriticoPorcentaje}% Crítico, +{bonusAtaque}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Cancelación:</b></color> se elimina al recibir daño\n";
+            cuerpo += $"<color={colorEncabezado}><b>Postura Demandante:</b></color> umbral pasa a {umbralPosturaDemandante}% de HP máximo mientras esta activo";
         }
 
         string titulo = esIngles ? "En Garde " + sufijoNivel : esPortugues ? "Em Guarda " + sufijoNivel : "En Garde " + sufijoNivel;
@@ -105,15 +105,15 @@ public class EnGarde : Habilidad
         }
         else if (esPortugues)
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Evasao.</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 Evasao.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Dano.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (Postura Demandante em 10%) ou Opcao B (-1 recarga).</color>"; }
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 Evasion.</color>"; }
-            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% Danio.</color>"; }
-            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (Postura Demandante al 10%) u Opcion B (-1 enfriamiento).</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 Evasion.</color>"; }
+            else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% Daño.</color>"; }
+            else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (Postura Demandante al 10%) u Opción B (-1 enfriamiento).</color>"; }
         }
     }
 

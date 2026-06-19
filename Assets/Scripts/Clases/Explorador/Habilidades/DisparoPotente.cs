@@ -99,7 +99,7 @@ public class DisparoPotente : Habilidad
       {
         cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Ranged line attack\n";
         cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> enemies and obstacles on the same row\n";
-        cuerpo += $"<color={colorEncabezado}><b>Cost:</b></color> {costoPM} Valour; consumes 2 Arrows\n";
+        cuerpo += $"<color={colorEncabezado}><b>Cost:</b></color> {costoPM} Valour; consumes 1 Arrow \n";
         cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> 1d20 + {atributo}{bonusTirada} vs Defense\n";
         cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
         cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Type:</b></color> Slashing\n";
@@ -110,7 +110,7 @@ public class DisparoPotente : Habilidad
       {
         cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia em linha\n";
         cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> inimigos e obstaculos na mesma fila\n";
-        cuerpo += $"<color={colorEncabezado}><b>Custo:</b></color> {costoPM} Valentia; consome 2 Flechas\n";
+        cuerpo += $"<color={colorEncabezado}><b>Custo:</b></color> {costoPM} Valentia; consome 1 Flecha\n";
         cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> 1d20 + {atributo}{bonusTirada} vs Defesa\n";
         cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
         cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
@@ -120,11 +120,11 @@ public class DisparoPotente : Habilidad
       else
       {
         cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia en linea\n";
-        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> enemigos y obstaculos en la misma fila\n";
-        cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentia; consume 2 Flechas\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> enemigos y obstáculos en la misma fila\n";
+        cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentía; consume 1 Flecha\n";
         cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
-        cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
-        cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
+        cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
+        cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
         cuerpo += $"<color={colorEncabezado}><b>Penetracion de armadura:</b></color> {penetracionArmadura}\n";
         cuerpo += $"<color={colorEncabezado}><b>Esforzable:</b></color> si ({esforzable})";
       }
@@ -158,9 +158,9 @@ public class DisparoPotente : Habilidad
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de danio.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 al bonus de tirada.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (-1 costo de Valentia) u Opcion B (+2 al bonus de tirada).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +2 de daño.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al bonus de tirada.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (-1 costo de Valentía) u Opción B (+2 al bonus de tirada).</color>"; }
       }
 
       if (CampaignManager.Instance != null && CampaignManager.Instance.gameObject != null && CampaignManager.Instance.gameObject.transform.parent != null && CampaignManager.Instance.gameObject.transform.parent.parent != null)
@@ -189,7 +189,7 @@ public class DisparoPotente : Habilidad
         Origen = Usuario.GetComponent<Unidad>().CasillaPosicion;
         ObtenerObjetivos();
         
-        Usuario.GetComponent<ClaseExplorador>().CambiarCantidadFlechas(-2);
+        Usuario.GetComponent<ClaseExplorador>().CambiarCantidadFlechas(-1);
       
         BattleManager.Instance.SeleccionandoObjetivo = true;
         BattleManager.Instance.HabilidadActiva = this;
@@ -316,7 +316,7 @@ public class DisparoPotente : Habilidad
        }
        else if (resultadoTirada == 3)
        {//CRITICO
-         print("Critico");
+         print("Crítico");
 
          float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+scEstaUnidad.mod_CarAgilidad+2;
          danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje+danioMarca);
@@ -381,7 +381,7 @@ public class DisparoPotente : Habilidad
 
         if (flight != null && destino != null)
         {
-            flight.Configure(transform, destino, 0.12f, 9.2f);
+            flight.Configure(transform, destino, 0.22f, 7.2f);
             await flight.EsperarImpactoAsync();
         }
         else

@@ -865,7 +865,7 @@ public class AdministradorEscenas : MonoBehaviour
     ComponentCopier.CopyComponent(buff, unidad.gameObject);
   }
 
-  void AplicarSorprendidoInicioCombate(Unidad unidad, int penalizacionIniciativa = 3, int duracionRondas = 4)
+  void AplicarSorprendidoInicioCombate(Unidad unidad, int penalizacionIniciativa = 3, int duracionRondas = 2)
   {
     if (unidad == null || unidad.TieneBuffNombre("Sorprendido"))
     {
@@ -877,7 +877,7 @@ public class AdministradorEscenas : MonoBehaviour
     Buff buff = new Buff();
     buff.buffNombre = "Sorprendido";
     buff.forzarTextoFlotanteInicioCombate = true;
-    buff.ocultarEnBarraVida = true;
+    buff.ocultarEnBarraVida = false;
     buff.boolfDebufftBuff = false;
     buff.DuracionBuffRondas = duracionRondas;
     buff.cantIniciativa -= penalizacionIniciativa;
@@ -1389,9 +1389,9 @@ public class AdministradorEscenas : MonoBehaviour
         Buff buff = new Buff();
         buff.buffNombre = "Sorprendido";
         buff.forzarTextoFlotanteInicioCombate = true;
-        buff.ocultarEnBarraVida = true;
+        buff.ocultarEnBarraVida = false;
         buff.boolfDebufftBuff = false;
-        buff.DuracionBuffRondas = 4;
+        buff.DuracionBuffRondas = 2;
         buff.cantIniciativa -= 3;
         buff.cantAPMax -= 2;
         buff.cantDefensa -= 2;
@@ -1443,7 +1443,7 @@ public class AdministradorEscenas : MonoBehaviour
       AplicarSigiloInicialCaravana(Personaje3, unidadPers3);
       AplicarSigiloInicialCaravana(Personaje4, unidadPers4);
 
-      // Aplicar "Sorprendido" (4 rondas) solo a los que fueron forzados a desplegar
+      // Aplicar "Sorprendido" solo a los que fueron forzados a desplegar
       if (PersonajesSorprendidosInicioCaravana != null && PersonajesSorprendidosInicioCaravana.Count > 0)
       {
         // Aplicar a cada uno de los 4 posibles participantes si corresponde
@@ -1457,15 +1457,16 @@ public class AdministradorEscenas : MonoBehaviour
           // Remover ocultamiento si lo tuviera
           uni.PerderEscondido();
 
-          // Debuff Sorprendido: mismos efectos que emboscada, pero 4 rondas
+          // Debuff Sorprendido: mismos efectos que emboscada
           Buff buff = new Buff();
           buff.buffNombre = "Sorprendido";
           buff.forzarTextoFlotanteInicioCombate = true;
+          buff.ocultarEnBarraVida = false;
           buff.boolfDebufftBuff = false;
-          buff.DuracionBuffRondas = 4;
+          buff.DuracionBuffRondas = 2;
           buff.cantIniciativa -= 5;
           buff.cantAPMax -= 1;
-          buff.cantDefensa -= 2;
+          buff.cantDefensa -= 1;
           buff.AplicarBuff(uni);
           Buff buffComponent = ComponentCopier.CopyComponent(buff, uni.gameObject);
         }
@@ -5080,7 +5081,7 @@ public class AdministradorEscenas : MonoBehaviour
   }
   void PlasmarEfectosBatallaEnPersonajes()
   {
-    int longitudBatallaFatiga = 5;
+    int longitudBatallaFatiga = 7;
 
     float VidaCampaniaDesdeUnidad(Personaje pers, Unidad unidad)
     {
@@ -5094,6 +5095,22 @@ public class AdministradorEscenas : MonoBehaviour
       return unidad.HP_actual > 0f && vidaCampania < 1f ? 1f : vidaCampania;
     }
 
+    void AplicarFatigaPorBatallaLargaSiCorresponde(Personaje pers)
+    {
+      if (pers == null || BattleManager.Instance.RondaNro <= longitudBatallaFatiga || TieneTrait(pers, PersonajeTraitCatalog.TraitIncansable))
+      {
+        return;
+      }
+
+      bool yaEstabaFatigado = pers.Camp_Fatigado;
+      pers.SetCampFatigado(true);
+
+      if (!yaEstabaFatigado && CampaignManager.Instance != null && CampaignManager.Instance.scMenuBatallas != null)
+      {
+        CampaignManager.Instance.scMenuBatallas.RegistrarTooltipFatigadoPorBatallaLarga();
+      }
+    }
+
 
     if (Personaje1 != null)
     {
@@ -5103,7 +5120,7 @@ public class AdministradorEscenas : MonoBehaviour
 
       CanalizadorPasivaSobrecarga(Personaje1, unidadPers1);
 
-      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje1, PersonajeTraitCatalog.TraitIncansable)) { Personaje1.SetCampFatigado(true); } //Batalla de mas de 5 turnos, fatiga.
+      AplicarFatigaPorBatallaLargaSiCorresponde(Personaje1);
     }
     if (Personaje2 != null)
     {
@@ -5114,7 +5131,7 @@ public class AdministradorEscenas : MonoBehaviour
       CanalizadorPasivaSobrecarga(Personaje2, unidadPers2);
 
 
-      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje2, PersonajeTraitCatalog.TraitIncansable)) { Personaje2.SetCampFatigado(true); } //Batalla de mas de 7 turnos, fatiga.
+      AplicarFatigaPorBatallaLargaSiCorresponde(Personaje2);
     }
     if (Personaje3 != null)
     {
@@ -5125,7 +5142,7 @@ public class AdministradorEscenas : MonoBehaviour
       CanalizadorPasivaSobrecarga(Personaje3, unidadPers3);
 
 
-      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje3, PersonajeTraitCatalog.TraitIncansable)) { Personaje3.SetCampFatigado(true); } //Batalla de mas de 7 turnos, fatiga.
+      AplicarFatigaPorBatallaLargaSiCorresponde(Personaje3);
     }
     if (Personaje4 != null)
     {
@@ -5135,7 +5152,7 @@ public class AdministradorEscenas : MonoBehaviour
 
       CanalizadorPasivaSobrecarga(Personaje4, unidadPers4);
 
-      if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(Personaje4, PersonajeTraitCatalog.TraitIncansable)) { Personaje4.SetCampFatigado(true); } //Batalla de mas de 7 turnos, fatiga.
+      AplicarFatigaPorBatallaLargaSiCorresponde(Personaje4);
     }
 
     // Plasmar efectos de los refuerzos aliados (no milicianos) 
@@ -5170,10 +5187,7 @@ public class AdministradorEscenas : MonoBehaviour
           CanalizadorPasivaSobrecarga(pers, unidadRefuerzo);
           CampaignManager.Instance.scMenuBatallas.AdministrarHeridas(pers, unidadRefuerzo);
 
-          if (BattleManager.Instance.RondaNro > longitudBatallaFatiga && !TieneTrait(pers, PersonajeTraitCatalog.TraitIncansable))
-          {
-            pers.SetCampFatigado(true);
-          }
+          AplicarFatigaPorBatallaLargaSiCorresponde(pers);
           encontrado = true;
           break;
         }
@@ -5377,7 +5391,38 @@ public class AdministradorEscenas : MonoBehaviour
 
   public void AbrirHandbook()
   {
-    HandbookCampania.SetActive(!HandbookCampania.activeSelf);
+    if (HandbookCampania == null)
+    {
+      return;
+    }
+
+    bool abrir = !HandbookCampania.activeSelf;
+    HandbookCampania.SetActive(abrir);
+
+    if (abrir)
+    {
+      bool abrirHandbookBatalla = BattleManager.Instance != null && BattleManager.Instance.LogCombateActivoPorEscena;
+      ActivarHandbookInicial(abrirHandbookBatalla);
+    }
+  }
+
+  void ActivarHandbookInicial(bool batalla)
+  {
+    HandbookManager[] handbooks = HandbookCampania.GetComponentsInChildren<HandbookManager>(true);
+    foreach (HandbookManager handbook in handbooks)
+    {
+      if (handbook == null)
+      {
+        continue;
+      }
+
+      bool activo = handbook.esdeBatalla == batalla;
+      handbook.gameObject.SetActive(activo);
+      if (activo)
+      {
+        handbook.AbrirSolapa(1);
+      }
+    }
   }
   void Update()
   {

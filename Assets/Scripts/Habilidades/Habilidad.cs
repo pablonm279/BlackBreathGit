@@ -718,7 +718,7 @@ public abstract class Habilidad : MonoBehaviour
 
     Buff buffEsfuerzo = new Buff();
     buffEsfuerzo.buffNombre = "Esfuerzo";
-    buffEsfuerzo.buffDescr = "La unidad se ha esforzado. -1 PA máximo y -2 Defensa por stack.";
+    buffEsfuerzo.buffDescr = "La unidad se ha esforzado.";
     buffEsfuerzo.boolfDebufftBuff = false;
     buffEsfuerzo.DuracionBuffRondas = 2;
     buffEsfuerzo.suprimeTextoFlotante = true;

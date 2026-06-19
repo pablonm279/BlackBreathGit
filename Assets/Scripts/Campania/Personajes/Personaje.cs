@@ -7,7 +7,7 @@ public class Personaje : MonoBehaviour
     public const int CantidadMaximaRasgos = 300;
     public const int IndiceAparienciaBase = -1;
     [SerializeField] private string persistentId;
-    private const float PorcentajeVidaPorPuntoFuerza = 0.03f;
+    private const float PorcentajeVidaPorPuntoFuerza = 0.10f;
     public int iDefensaBaseSinAgilidad;
     public int iAgiReferenciaDefensa;
     public bool escalaDefensaInicializada;
@@ -669,7 +669,7 @@ public class Personaje : MonoBehaviour
           break;
         case 4:
           OtorgarVidaExtraPorDivisor(10f);
-          NivelPuntoHabilidad += 2;
+          NivelPuntoHabilidad ++;
           NivelPuntoTS++;
           break;
         case 5:
@@ -1534,11 +1534,11 @@ public static class PersonajeTraitCatalog
             "brutal",
             true,
             "Brutal",
-            "-1 Ataque y +2 Rango crítico.",
+            "-1 Ataque y +10% Probabilidad de crítico.",
             "Brutal",
-            "-1 Attack and +2 Critical range.",
+            "-1 Attack and +10% Critical Chance.",
             "Brutal",
-            "-1 de Ataque e +2 de faixa crítica.",
+            "-1 de Ataque e +10% de chance crítica.",
             TraitClinico),
         new PersonajeTraitDefinition(
             TraitClinico,
@@ -1787,7 +1787,7 @@ public static class PersonajeTraitCatalog
             "Mínimo Esfuerzo",
             "No puede Esforzarse en combate.",
             "Minimal Effort",
-            "Cannot use Effort in battle.",
+            "Cannot Exert in battle.",
             "Esforço Mínimo",
             "Nao pode se Esforçar em combate.",
             TraitEsforzado),

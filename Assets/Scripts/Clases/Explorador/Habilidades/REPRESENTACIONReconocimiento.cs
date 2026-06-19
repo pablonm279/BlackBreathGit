@@ -83,13 +83,13 @@ public class REPRESENTACIONReconocimiento : Habilidad
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2 || NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +1 Iniciativa.</color>"; }
+        if (NIVEL < 2 || NIVEL == 2) { return "<color=#dfea02>Próximo Nivel: +1 Iniciativa.</color>"; }
         if (NIVEL == 3) { return "<color=#dfea02>Opcao A: +1 AP.\nOpcao B: +1 atraso de reforcos.</color>"; }
       }
       else
       {
-        if (NIVEL < 2 || NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: +1 Iniciativa.</color>"; }
-        if (NIVEL == 3) { return "<color=#dfea02>Opcion A: +1 AP.\nOpcion B: +1 retraso de refuerzos.</color>"; }
+        if (NIVEL < 2 || NIVEL == 2) { return "<color=#dfea02>Próximo Nivel: +1 Iniciativa.</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>Opción A: +1 AP.\nOpción B: +1 retraso de refuerzos.</color>"; }
       }
 
       return "";

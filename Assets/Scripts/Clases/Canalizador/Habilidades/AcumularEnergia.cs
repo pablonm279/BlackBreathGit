@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -62,8 +62,8 @@ public class AcumularEnergia : Habilidad
       string subtitulo = esIngles
         ? "The Channeler enters concentration to increase their Energy tier at the start of the next turn."
         : esPortugues
-          ? "O Canalizador entra em concentracao para aumentar seu Nivel de Energia no inicio do proximo turno."
-          : "El Canalizador entra en concentracion para aumentar su Nivel de Energia al inicio de su siguiente turno.";
+          ? "O Canalizador entra em concentracao para aumentar seu Nivel de Energía no inicio do próximo turno."
+          : "El Canalizador entra en concentracion para aumentar su Nivel de Energía al inicio de su siguiente turno.";
 
       string cuerpo = "";
       if (esIngles)
@@ -81,7 +81,7 @@ public class AcumularEnergia : Habilidad
         cuerpo += "<b>Tipo:</b> Propria\n";
         cuerpo += "<b>Alvo:</b> O proprio usuario\n";
         cuerpo += "<b>Efeito ao ativar:</b> Aplica buff <b>Acumulando</b> (1 rodada)\n";
-        cuerpo += "<b>Se mantiver a concentracao:</b> +1 Nivel de Energia no proximo turno\n";
+        cuerpo += "<b>Se mantiver a concentracao:</b> +1 Nivel de Energía no próximo turno\n";
         cuerpo += "<b>Energia I:</b> +10% Dano, +5% Critico\n";
         cuerpo += "<b>Energia II:</b> +15% Dano, +1 AP Maximo\n";
         cuerpo += "<b>Energia III:</b> +15% Dano, +1 AP Maximo, +5% Critico";
@@ -91,17 +91,17 @@ public class AcumularEnergia : Habilidad
         cuerpo += "<b>Tipo:</b> Propia\n";
         cuerpo += "<b>Objetivo:</b> Propio usuario\n";
         cuerpo += "<b>Efecto al activar:</b> Aplica buff <b>Acumulando</b> (1 ronda)\n";
-        cuerpo += "<b>Si mantiene la concentracion:</b> +1 Nivel de Energia al siguiente turno\n";
-        cuerpo += "<b>Energia I:</b> +10% Danio, +5% Critico\n";
-        cuerpo += "<b>Energia II:</b> +15% Danio, +1 AP Maximo\n";
-        cuerpo += "<b>Energia III:</b> +15% Danio, +1 AP Maximo, +5% Critico";
+        cuerpo += "<b>Si mantiene la concentracion:</b> +1 Nivel de Energía al siguiente turno\n";
+        cuerpo += "<b>Energía I:</b> +10% Daño, +5% Crítico\n";
+        cuerpo += "<b>Energía II:</b> +15% Daño, +1 AP Máximo\n";
+        cuerpo += "<b>Energía III:</b> +15% Daño, +1 AP Máximo, +5% Crítico";
       }
 
       string costos = esIngles
         ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP} (ends turn)\n- Valour Cost: {costoPM}"
         : esPortugues
           ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP} (termina turno)\n- Custo Valentia: {costoPM}"
-          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentia: {costoPM}";
+          : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP} (termina turno)\n- Costo Valentía: {costoPM}";
 
       txtDescripcion = ConstruirDescripcionEstandar(titulo, subtitulo, cuerpo, costos, "#5dade2");
       string subtituloFormato = esIngles
@@ -131,7 +131,7 @@ public class AcumularEnergia : Habilidad
         cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>O próprio usuário</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Ao ativar:</b></color> <color={colorValor}>{iconoEnergia} Acumulando por 1 rodada; termina o turno</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Se mantiver:</b></color> <color={colorValor}>{iconoEnergia} +1 Nível de Energia no próximo turno</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Se mantiver:</b></color> <color={colorValor}>{iconoEnergia} +1 Nível de Energía no próximo turno</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Ao receber dano:</b></color> <color={colorValor}>Resistência Mental vs CD {dcConcentracionPt}; se falhar, perde Acumulando</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Energia I:</b></color> <color={colorValor}>+10% Dano, +5% Crítico</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Energia II:</b></color> <color={colorValor}>+15% Dano, +1 AP Máximo</color>\n";

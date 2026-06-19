@@ -56,7 +56,7 @@ public class AtaqueBaculoLlamaSacra : GolpeBaston
     txtDescripcion = "<color=#5dade2><b>Llama Sacra</b></color>\n\n";
     txtDescripcion += "<i>El báculo estalla en fuego sacro y abrasa al enemigo con juicio divino.</i>\n\n";
     txtDescripcion += "<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Poder +1</color> - Daño: Fuego 1d8 + Divino 1d4- </color>\n";
-    txtDescripcion += "<color=#c8c8c8><b>Efecto del arma:</b> Ardiendo 1. Contra Etereo, Nomuerto o Corrupto: +1d6 de daño Divino.</color>\n\n";
+    txtDescripcion += "<color=#c8c8c8><b>Efecto del arma:</b> Ardiendo 1. Contra Etéreo, Nomuerto o Corrupto: +1d6 de daño Divino.</color>\n\n";
     txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
     ActualizarDescripcion();
   }
@@ -102,10 +102,10 @@ public class AtaqueBaculoLlamaSacra : GolpeBaston
     else
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
-      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstaculo en alcance melee frontal</color>\n";
-      cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defensa. Pifia: 5%. Critico: {criticoPorcentaje}%</color>\n";
-      cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>1-8 Fuego + {atributo}; 1-4 Divino + mitad de {atributo}. Tipo: Fuego/Divino</color>\n";
-      cuerpo += $"<color={colorEncabezado}><b>Efecto del arma:</b></color> <color={colorValor}>Ardiendo 1. Contra Etereo, Nomuerto o Corrupto: +1-6 Divino</color>";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstáculo en alcance melee frontal</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defensa. Pifia: 5%. Crítico: {criticoPorcentaje}%</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>1-8 Fuego + {atributo}; 1-4 Divino + mitad de {atributo}. Tipo: Fuego/Divino</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Efecto del arma:</b></color> <color={colorValor}>Ardiendo 1. Contra Etéreo, Nomuerto o Corrupto: +1-6 Divino</color>";
     }
 
     txtDescripcion = ConstruirDescripcionTooltipNueva(titulo, subtitulo, cuerpo);

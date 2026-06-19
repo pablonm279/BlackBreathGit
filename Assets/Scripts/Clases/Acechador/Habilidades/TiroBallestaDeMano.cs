@@ -71,7 +71,7 @@ public class TiroBallestaDeMano : Habilidad
       bonusAtaque = 1;
       damExtra += 2;
       criticoRangoHab = 1;
-      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +5% Critico.</i>\n\n";
+      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +5% Crítico.</i>\n\n";
 
     }
     else if (NivelMaestria == 3)
@@ -80,7 +80,7 @@ public class TiroBallestaDeMano : Habilidad
       damExtra += 2;
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +5% Critico, -1 AP.</i>\n\n";
+      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Ataque +2 Daño +5% Crítico, -1 AP.</i>\n\n";
 
 
     }
@@ -91,7 +91,7 @@ public class TiroBallestaDeMano : Habilidad
       criticoRangoHab = 1;
       costoAP -= 1; //costo AP -1
       hAlcance += 1; //Alcance +1
-      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Daño +5% Critico.</i>\n\n";
+      txtDescripcion += "\n\n<i>Maestría con Ballesta de Mano agrega: +1 Alcance +1 Ataque +2 Daño +5% Crítico.</i>\n\n";
 
     }
     else if (NivelMaestria == 5)
@@ -174,10 +174,10 @@ public class TiroBallestaDeMano : Habilidad
     else
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia ({hAlcance} alcance)\n";
-      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstaculo en rango\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo u obstáculo en rango\n";
       cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
-      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
-      cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante";
+      cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
+      cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante";
       if (nivelMaestria > 0)
       {
         cuerpo += $"\n<color={colorEncabezado}><b>Pasiva:</b></color> Maestria con Ballesta de Mano (Tier {nivelMaestria})";
@@ -295,7 +295,7 @@ public class TiroBallestaDeMano : Habilidad
        }
        else if (resultadoTirada == 3)
        {//CRITICO
-         print("Critico");
+         print("Crítico");
 
          float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+damExtra+scEstaUnidad.mod_CarAgilidad;
          danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje+danioMarca);

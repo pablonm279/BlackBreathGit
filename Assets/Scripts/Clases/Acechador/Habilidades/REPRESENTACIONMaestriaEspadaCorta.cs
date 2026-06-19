@@ -32,7 +32,7 @@ public class REPRESENTACIONMaestriaEspadaCorta : Habilidad
 
     if (critico > 0)
     {
-      bonificador += $", +{critico}% Critico";
+      bonificador += $", +{critico}% Crítico";
     }
 
     if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
@@ -61,7 +61,7 @@ public class REPRESENTACIONMaestriaEspadaCorta : Habilidad
       tipo = "Passiva";
       aplica = "Ataques com espada curta";
       bonificador = $"+{ataque} Ataque, +{danio} de dano Cortante";
-      if (critico > 0) bonificador += $", +{critico}% Critico";
+      if (critico > 0) bonificador += $", +{critico}% Crítico";
       extra = reduceAp ? "-1 custo AP" : "";
       proximo = ProximoNivelPortugues();
     }
@@ -103,9 +103,9 @@ public class REPRESENTACIONMaestriaEspadaCorta : Habilidad
   string ProximoNivel()
   {
     if (!PuedeMostrarProximoNivel()) return "";
-    if (NIVEL < 2) return "- Próximo Nivel: +5% Critico";
+    if (NIVEL < 2) return "- Próximo Nivel: +5% Crítico";
     if (NIVEL == 2) return "- Próximo Nivel: -1 costo AP";
-    if (NIVEL == 3) return "- Opción A: +5% Critico, +2 daño\n- Opción B: +1 Ataque, +2 daño";
+    if (NIVEL == 3) return "- Opción A: +5% Crítico, +2 daño\n- Opción B: +1 Ataque, +2 daño";
     return "";
   }
 
@@ -121,7 +121,7 @@ public class REPRESENTACIONMaestriaEspadaCorta : Habilidad
   string ProximoNivelPortugues()
   {
     if (!PuedeMostrarProximoNivel()) return "";
-    if (NIVEL < 2) return "- Proximo Nivel: +5% Critico";
+    if (NIVEL < 2) return "- Próximo Nivel: +5% Crítico";
     if (NIVEL == 2) return "- Proximo Nivel: -1 custo AP";
     if (NIVEL == 3) return "- Opcao A: +5% Critico, +2 dano\n- Opcao B: +1 Ataque, +2 dano";
     return "";

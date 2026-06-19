@@ -93,11 +93,11 @@ public class GritoMotivador : Habilidad
         cuerpo += $"<b>Buff em aliados:</b> +{buffDanio}% Dano por 3 turnos\n";
         if (valorAliados > 0)
         {
-          cuerpo += $"<b>Bonus em aliados:</b> +{valorAliados} Valentia para os outros aliados\n";
+          cuerpo += $"<b>Bonus em aliados:</b> +{valorAliados} Valentía para os outros aliados\n";
         }
         if (NIVEL == 4)
         {
-          cuerpo += "<b>Bonus proprio:</b> +2 Valentia por aliado afetado\n";
+          cuerpo += "<b>Bonus proprio:</b> +2 Valentía por aliado afetado\n";
         }
         if (afectaEnemigos)
         {
@@ -108,7 +108,7 @@ public class GritoMotivador : Habilidad
       {
         cuerpo += "<b>Tipo:</b> Soporte\n";
         cuerpo += "<b>Objetivo:</b> Todas las unidades aliadas de tu lado\n";
-        cuerpo += $"<b>Buff aliados:</b> +{buffDanio}% Danio por 3 turnos\n";
+        cuerpo += $"<b>Buff aliados:</b> +{buffDanio}% Daño por 3 turnos\n";
         if (valorAliados > 0)
         {
           cuerpo += $"<b>Bono aliados:</b> +{valorAliados} Valentía a los demás aliados\n";
@@ -119,7 +119,7 @@ public class GritoMotivador : Habilidad
         }
         if (afectaEnemigos)
         {
-          cuerpo += $"<b>Efecto enemigos:</b> -10% Danio por {duracionDebuffEnemigos} turno (sin TS)";
+          cuerpo += $"<b>Efecto enemigos:</b> -10% Daño por {duracionDebuffEnemigos} turno (sin TS)";
         }
       }
 
@@ -145,7 +145,7 @@ public class GritoMotivador : Habilidad
         ? "Boosts allied damage and Valour; at mastery, weakens enemy damage."
         : esPortugues
           ? "Aumenta dano e Valentia aliados; no dominio, reduz dano inimigo."
-          : "Aumenta danio y Valentia aliada; al dominarla, reduce danio enemigo.";
+          : "Aumenta daño y Valentía aliada; al dominarla, reduce daño enemigo.";
 
       string cuerpoFormato = "";
       if (esIngles)
@@ -168,10 +168,10 @@ public class GritoMotivador : Habilidad
         cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Suporte</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Todas as unidades aliadas do seu lado{(afectaEnemigos ? " e inimigos do lado oposto" : string.Empty)}</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Aliados:</b></color> <color={colorValor}>{iconoBuff} +{buffDanio}% Dano por 3 turnos</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Outros aliados:</b></color> <color={colorValor}>+{valorAliados} Valentia</color>";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Outros aliados:</b></color> <color={colorValor}>+{valorAliados} Valentía</color>";
         if (NIVEL == 4)
         {
-          cuerpoFormato += $"\n<color={colorEncabezado}><b>Proprio:</b></color> <color={colorValor}>+2 Valentia por aliado afetado</color>";
+          cuerpoFormato += $"\n<color={colorEncabezado}><b>Proprio:</b></color> <color={colorValor}>+2 Valentía por aliado afetado</color>";
         }
         if (afectaEnemigos)
         {
@@ -182,15 +182,15 @@ public class GritoMotivador : Habilidad
       {
         cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Soporte</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Todas las unidades aliadas de tu lado{(afectaEnemigos ? " y enemigos del lado opuesto" : string.Empty)}</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Aliados:</b></color> <color={colorValor}>{iconoBuff} +{buffDanio}% Danio por 3 turnos</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Demas aliados:</b></color> <color={colorValor}>+{valorAliados} Valentia</color>";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Aliados:</b></color> <color={colorValor}>{iconoBuff} +{buffDanio}% Daño por 3 turnos</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Demas aliados:</b></color> <color={colorValor}>+{valorAliados} Valentía</color>";
         if (NIVEL == 4)
         {
-          cuerpoFormato += $"\n<color={colorEncabezado}><b>Propio:</b></color> <color={colorValor}>+2 Valentia por aliado afectado</color>";
+          cuerpoFormato += $"\n<color={colorEncabezado}><b>Propio:</b></color> <color={colorValor}>+2 Valentía por aliado afectado</color>";
         }
         if (afectaEnemigos)
         {
-          cuerpoFormato += $"\n<color={colorEncabezado}><b>Enemigos:</b></color> <color={colorValor}>{iconoDebuff} -10% Danio por {duracionDebuffEnemigos} turno, sin TS</color>";
+          cuerpoFormato += $"\n<color={colorEncabezado}><b>Enemigos:</b></color> <color={colorValor}>{iconoDebuff} -10% Daño por {duracionDebuffEnemigos} turno, sin TS</color>";
         }
       }
 
@@ -215,14 +215,14 @@ public class GritoMotivador : Habilidad
       else if (esPortugues)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% no buff de dano aliado.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: melhora a progressao para a especializacao de nivel IV.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: melhora a progressao para a especializacao de nivel IV.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 Valentia por aliado para o Cavaleiro) ou Opcao B (debuff de dano em inimigos).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% al buff de danio aliado.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: mejora la progresión hacia la especialización de nivel IV.</color>"; }
-        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+2 Valentía por aliado para el Caballero) u Opcion B (debuff de danio a enemigos).</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% al buff de daño aliado.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: mejora la progresión hacia la especialización de nivel IV.</color>"; }
+        else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+2 Valentía por aliado para el Caballero) u Opción B (debuff de daño a enemigos).</color>"; }
       }
     }
 

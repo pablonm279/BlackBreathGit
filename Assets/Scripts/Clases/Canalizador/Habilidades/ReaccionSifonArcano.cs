@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 
 public class ReaccionSifonArcano : Reaccion
 {
+  [System.NonSerialized]
   public SifonArcanoObjetivoFx vfxSifon;
 
   void Start()

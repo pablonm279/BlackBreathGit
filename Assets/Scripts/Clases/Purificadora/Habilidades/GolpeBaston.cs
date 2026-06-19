@@ -99,9 +99,9 @@ public class GolpeBaston : Habilidad
         else
         {
           cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque melee</color>\n";
-          cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstaculo en alcance melee</color>\n";
-          cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>{ataqueTxt}{bonusAtaqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
-          cuerpo += $"<color={colorEncabezado}><b>Danio:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>. Tipo: Contundente</color>";
+          cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstáculo en alcance melee</color>\n";
+          cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>{ataqueTxt}{bonusAtaqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
+          cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Fuerza ({fuerzaActual})</color>. Tipo: Contundente</color>";
         }
 
         txtDescripcion =
@@ -180,7 +180,7 @@ public class GolpeBaston : Habilidad
        }
        else if (resultadoTirada == 3)
        {//CRITICO
-         print("Critico");
+         print("Crítico");
 
          float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+scEstaUnidad.mod_CarFuerza+danioMarca;
          danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);

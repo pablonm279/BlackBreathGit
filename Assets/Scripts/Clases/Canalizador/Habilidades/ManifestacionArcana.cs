@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -81,27 +81,27 @@ public class ManifestacionArcana : Habilidad
       cuerpo += "<b>Por Residuo absorvido:</b> +5% Dano e +6 Vida Maxima\n";
       if (bonusAtaqueBase > 0) { cuerpo += $"<b>Bonus base:</b> +{bonusAtaqueBase} Ataque\n"; }
       if (bonusDefensaBase > 0) { cuerpo += $"<b>Bonus base:</b> +{bonusDefensaBase} Defesa\n"; }
-      if (bonusAPMax > 0) { cuerpo += $"<b>Bonus base:</b> +{bonusAPMax} AP Maximo\n"; }
+      if (bonusAPMax > 0) { cuerpo += $"<b>Bonus base:</b> +{bonusAPMax} AP Máximo\n"; }
       cuerpo += "<b>Turno da invocacao:</b> Surge com 0 AP";
     }
     else
     {
-      cuerpo += "<b>Tipo:</b> Invocacion\n";
+      cuerpo += "<b>Tipo:</b> Invocación\n";
       cuerpo += "<b>Objetivo:</b> 1 casilla en 4 de alcance\n";
-      cuerpo += "<b>Efecto de invocacion:</b> Crea 1 Manifestacion Arcana\n";
+      cuerpo += "<b>Efecto de invocación:</b> Crea 1 Manifestacion Arcana\n";
       cuerpo += "<b>Al invocarse:</b> Absorbe todos los Residuos Energeticos del campo\n";
-      cuerpo += "<b>Por cada Residuo absorbido:</b> +5% Danio y +6 Vida Maxima\n";
+      cuerpo += "<b>Por cada Residuo absorbido:</b> +5% Daño y +6 Vida Máxima\n";
       if (bonusAtaqueBase > 0) { cuerpo += $"<b>Bonus base:</b> +{bonusAtaqueBase} Ataque\n"; }
       if (bonusDefensaBase > 0) { cuerpo += $"<b>Bonus base:</b> +{bonusDefensaBase} Defensa\n"; }
-      if (bonusAPMax > 0) { cuerpo += $"<b>Bonus base:</b> +{bonusAPMax} AP Maximo\n"; }
-      cuerpo += "<b>Turno de invocacion:</b> Aparece con 0 AP";
+      if (bonusAPMax > 0) { cuerpo += $"<b>Bonus base:</b> +{bonusAPMax} AP Máximo\n"; }
+      cuerpo += "<b>Turno de invocación:</b> Aparece con 0 AP";
     }
 
     string costos = esIngles
       ? $"- Cooldown: {cooldownMax}\n- AP Cost: {costoAP}\n- Valour Cost: {costoPM}\n- Effortable: Yes ({esforzable})\n- Requires Energy Tier: {energiaRequerida}+"
       : esPortugues
         ? $"- Recarga: {cooldownMax}\n- Custo AP: {costoAP}\n- Custo Valentia: {costoPM}\n- Esforcavel: Sim ({esforzable})\n- Requer Nivel de Energia: {energiaRequerida}+"
-        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})\n- Requiere Nivel de Energia: {energiaRequerida}+";
+        : $"- Enfriamiento: {cooldownMax}\n- Costo AP: {costoAP}\n- Costo Valentía: {costoPM}\n- Esforzable: Si ({esforzable})\n- Requiere Nivel de Energía: {energiaRequerida}+";
 
     txtDescripcion = ConstruirDescripcionEstandar(
       esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
@@ -109,7 +109,7 @@ public class ManifestacionArcana : Habilidad
         ? "A high-investment summon that converts every Energy Residue into raw stats."
         : esPortugues
           ? "Uma invocacao de alto investimento que converte cada Residuo Energetico em atributos brutos."
-        : "Una invocacion de alta inversion que convierte cada Residuo Energetico en estadisticas brutas.",
+        : "Una invocación de alta inversion que convierte cada Residuo Energetico en estadisticas brutas.",
       cuerpo,
       costos,
       "#ab47bc");
@@ -136,11 +136,11 @@ public class ManifestacionArcana : Habilidad
     string bonusBasePt = "";
     if (bonusAtaqueBase > 0) { bonusBasePt += $"+{bonusAtaqueBase} Ataque"; }
     if (bonusDefensaBase > 0) { bonusBasePt += (bonusBasePt.Length > 0 ? ", " : "") + $"+{bonusDefensaBase} Defesa"; }
-    if (bonusAPMax > 0) { bonusBasePt += (bonusBasePt.Length > 0 ? ", " : "") + $"+{bonusAPMax} AP Maximo"; }
+    if (bonusAPMax > 0) { bonusBasePt += (bonusBasePt.Length > 0 ? ", " : "") + $"+{bonusAPMax} AP Máximo"; }
     string bonusBaseEs = "";
     if (bonusAtaqueBase > 0) { bonusBaseEs += $"+{bonusAtaqueBase} Ataque"; }
     if (bonusDefensaBase > 0) { bonusBaseEs += (bonusBaseEs.Length > 0 ? ", " : "") + $"+{bonusDefensaBase} Defensa"; }
-    if (bonusAPMax > 0) { bonusBaseEs += (bonusBaseEs.Length > 0 ? ", " : "") + $"+{bonusAPMax} AP Maximo"; }
+    if (bonusAPMax > 0) { bonusBaseEs += (bonusBaseEs.Length > 0 ? ", " : "") + $"+{bonusAPMax} AP Máximo"; }
 
     string cuerpoFormato = "";
     if (esIngles)
@@ -165,13 +165,13 @@ public class ManifestacionArcana : Habilidad
     }
     else
     {
-      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Invocacion</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Invocación</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 casilla en 4 de alcance</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>{iconoEnergia} Nivel de Energia {energiaRequerida}+</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Al invocar:</b></color> <color={colorValor}>Crea 1 Manifestacion Arcana y absorbe todos los {iconoEnergia} Residuos Energeticos</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Por residuo:</b></color> <color={colorValor}>{iconoBuff} +5% Daño, +6 Vida Maxima</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Por residuo:</b></color> <color={colorValor}>{iconoBuff} +5% Daño, +6 Vida Máxima</color>\n";
       if (bonusBaseEs.Length > 0) { cuerpoFormato += $"<color={colorEncabezado}><b>Bonus base:</b></color> <color={colorValor}>{iconoBuff} {bonusBaseEs}</color>\n"; }
-      cuerpoFormato += $"<color={colorEncabezado}><b>Turno de invocacion:</b></color> <color={colorValor}>Aparece con 0 AP</color>";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Turno de invocación:</b></color> <color={colorValor}>Aparece con 0 AP</color>";
     }
 
     txtDescripcion =
@@ -195,14 +195,14 @@ public class ManifestacionArcana : Habilidad
     else if (esPortugues)
     {
       if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 defesa base para a invocacao.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 ataque base para a invocacao.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 ataque base para a invocacao.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1 AP Maximo) ou Opcao B (-1 requisito de Energia).</color>"; }
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 defensa base para la invocacion.</color>"; }
-      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 ataque base para la invocacion.</color>"; }
-      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcion A (+1 AP Maximo) u Opcion B (-1 requisito de Energia).</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 defensa base para la invocación.</color>"; }
+      else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 ataque base para la invocación.</color>"; }
+      else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1 AP Máximo) u Opción B (-1 requisito de Energía).</color>"; }
     }
 
   }

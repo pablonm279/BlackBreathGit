@@ -44,7 +44,7 @@ public class REPRESENTACIONSobrecarga : Habilidad
             ? "Campaign drawback based on Energy left at combat end."
             : esPortugues
               ? "Custo de campanha baseado na Energia restante ao fim do combate."
-              : "Costo de campaña segun la Energia restante al final del combate.";
+              : "Costo de campaña segun la Energía restante al final del combate.";
           string cuerpoFormato = "";
           if (esIngles)
           {
@@ -64,7 +64,7 @@ public class REPRESENTACIONSobrecarga : Habilidad
           {
             cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Pasiva negativa</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Activa:</b></color> <color={colorValor}>Final del combate</color>\n";
-            cuerpoFormato += $"<color={colorEncabezado}><b>Efecto:</b></color> <color={colorValor}>Recibe 15% de Vida Maxima por {iconoEnergia} Nivel de Energia</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Efecto:</b></color> <color={colorValor}>Recibe 15% de Vida Máxima por {iconoEnergia} Nivel de Energía</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Limite:</b></color> <color={colorValor}>No puede matar; aumenta el tiempo de recuperacion en campaña</color>";
           }
 
