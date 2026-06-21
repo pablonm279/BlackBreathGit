@@ -90,7 +90,7 @@ public class Vigilancia : Habilidad
     if (esIngles)
     {
       cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Reactive ranged setup ({6} range)\n";
-      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy; creates a 3x3 watch zone centered on its tile\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy; creates a watch zone centered on target tile\n";
       cuerpo += $"<color={colorEncabezado}><b>Cost:</b></color> {costoPM} Valour; requires {requiereRecurso} Arrows\n";
       cuerpo += $"<color={colorEncabezado}><b>Setup:</b></color> empty tiles in the zone become 1-turn traps, 1 use each\n";
       cuerpo += $"<color={colorEncabezado}><b>Reaction limit:</b></color> up to {disparosPorUso} shots total; consumes 1 Arrow per shot\n";
@@ -102,7 +102,7 @@ public class Vigilancia : Habilidad
     else if (esPortugues)
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Preparacao reativa a distancia ({6} alcance)\n";
-      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo; cria uma zona 3x3 centrada na casa dele\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo; cria uma zona centrada na casa alvo\n";
       cuerpo += $"<color={colorEncabezado}><b>Custo:</b></color> {costoPM} Valentia; requer {requiereRecurso} Flechas\n";
       cuerpo += $"<color={colorEncabezado}><b>Preparacao:</b></color> casas vazias da zona viram armadilhas de 1 turno, 1 uso cada\n";
       cuerpo += $"<color={colorEncabezado}><b>Limite reativo:</b></color> ate {disparosPorUso} disparos no total; consome 1 Flecha por disparo\n";
@@ -114,7 +114,7 @@ public class Vigilancia : Habilidad
     else
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Preparacion reactiva a distancia ({6} alcance)\n";
-      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo; crea una zona 3x3 centrada en su casilla\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo; crea una zona de vigilancia centrada en la casilla objetivo\n";
       cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentía; requiere {requiereRecurso} Flechas\n";
       cuerpo += $"<color={colorEncabezado}><b>Preparacion:</b></color> casillas vacias de la zona se vuelven trampas de 1 turno, 1 uso cada una\n";
       cuerpo += $"<color={colorEncabezado}><b>Limite reactivo:</b></color> hasta {disparosPorUso} disparos en total; consume 1 Flecha por disparo\n";
@@ -126,10 +126,10 @@ public class Vigilancia : Habilidad
 
     string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
     string subtitulo = esIngles
-      ? "Set a short watch zone that fires reaction shots."
+      ? "Set a watch zone to fire reaction shots."
       : esPortugues
-        ? "Cria uma zona curta que dispara reacoes."
-        : "Crea una zona breve que dispara reacciones.";
+        ? "Crie uma zona de vigilância para disparos reativos."
+        : "Crea una zona de vigilancia y dispara a los enemigos que entren en ella.";
 
     txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
     txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";

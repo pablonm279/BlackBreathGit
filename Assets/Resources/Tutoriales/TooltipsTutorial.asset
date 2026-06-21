@@ -273,6 +273,17 @@ MonoBehaviour:
     pointerOffset: {x: 0, y: 0}
     pointerDirection: 0
     pointerScale: 1
+  - id: combate_hostil_sin_objetivos
+    size: 1
+    side: 0
+    panelOffset: {x: 0, y: 0}
+    textoEs: "A veces deberás mover a tu personaje para poder alcanzar a los enemigos con sus habilidades.\n\nPuedes mantener la tecla \"Shift\" para luego previsualizar el alcance de la Habilidad seleccionada desde otra casilla que esté bajo el mouse, mientras mantengas \"Shift\"."
+    textoEn: "Sometimes you will need to move your character so their abilities can reach enemies.\n\nYou can hold the \"Shift\" key to preview the selected Ability's range from another tile under the mouse while you keep holding \"Shift\"."
+    textoPt: "Às vezes, você precisará mover seu personagem para alcançar os inimigos com suas habilidades.\n\nVocê pode manter a tecla \"Shift\" pressionada para previsualizar o alcance da Habilidade selecionada a partir de outra casa sob o mouse enquanto mantiver \"Shift\" pressionado."
+    showPointer: 0
+    pointerOffset: {x: 0, y: 0}
+    pointerDirection: 0
+    pointerScale: 1
   - id: combate_obstaculo
     size: 0
     side: 0

@@ -13,6 +13,8 @@ public class MenuDescanso : MonoBehaviour
   const int TipoNodoClaro = 3;
   const int TipoNodoAsentamiento = 4;
   const int TipoNodoRecursos = 5;
+  const int TipoNodoPuestoComercial = 6;
+  const int TipoNodoSantuario = 14;
   const string TooltipEmboscadaNormalId = "campania_emboscada_normal";
 
 
@@ -726,6 +728,38 @@ public class MenuDescanso : MonoBehaviour
       CampaignManager.Instance.CambiarMaterialesActuales(random);
     }
 
+    if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoPuestoComercial)
+    {
+      int oroGenerado = Mathf.RoundToInt(CampaignManager.Instance.GetCivilesActual()) * 2;
+      if (oroGenerado > 0)
+      {
+        CampaignManager.Instance.CambiarOroActual(oroGenerado);
+
+        string mensajeComercio = TRADU.i.nIdioma switch
+        {
+          TRADU.IdiomaIngles => "-The civilians traded goods at the Trading Post and generated " + oroGenerado + " Gold, which they donated to the Caravan.",
+          TRADU.IdiomaPortugues => "-Os civis trocaram mercadorias no Posto Comercial e geraram " + oroGenerado + " de Ouro, que doaram para a Caravana.",
+          _ => "-Los civiles intercambiaron bienes en el Puesto Comercial y han generado " + oroGenerado + " Oro, que han donado a la Caravana."
+        };
+
+        CampaignManager.Instance.EscribirLog(mensajeComercio);
+      }
+    }
+
+    if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoSantuario)
+    {
+      CampaignManager.Instance.BendecirPersonajesSantuario(4);
+
+      string mensajeSantuario = TRADU.i.nIdioma switch
+      {
+        TRADU.IdiomaIngles => "-Resting in the Sanctuary blesses all characters for 4 days.",
+        TRADU.IdiomaPortugues => "-Descansar no Santuário abençoa todos os personagens por 4 dias.",
+        _ => "-Descansar en el Santuario bendice a todos los personajes por 4 días."
+      };
+
+      CampaignManager.Instance.EscribirLog(mensajeSantuario);
+    }
+
 
 
 
@@ -926,6 +960,14 @@ public class MenuDescanso : MonoBehaviour
     { CampaignManager.Instance.scTutorialManager.SiguientePaso(); }
     goMenuMisiones.SetActive(false);
     CampaignManager.Instance.RefrescarBarraPersonajesCampania(true);
+
+    if (autosavePendienteTrasDescanso &&
+        CampaignManager.Instance.scMapaManager != null &&
+        CampaignManager.Instance.scMapaManager.nodoActual != null &&
+        CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoPuestoComercial)
+    {
+      CampaignManager.Instance.AbrirPuestoComercial(false);
+    }
 
     if (autosavePendienteTrasDescanso)
     {

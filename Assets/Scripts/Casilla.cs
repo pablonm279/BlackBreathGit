@@ -208,6 +208,7 @@ public class Casilla : MonoBehaviour
     }
 
     if (!TryGetUnidadActiva(out Unidad unidad)
+      || EsTurnoIA(unidad)
       || unidad.movimientoEnCurso
       || BattleManager.Instance.SeleccionandoObjetivo
       || unidad.estado_inmovil >= 1
@@ -267,6 +268,11 @@ public class Casilla : MonoBehaviour
     return unidad != null && unidad.CasillaPosicion != null;
   }
 
+  private static bool EsTurnoIA(Unidad unidad)
+  {
+    return unidad != null && unidad.GetComponent<IAUnidad>() != null;
+  }
+
   private bool PuedeMoverOMutarDesdeUnidadActiva(Casilla destino, out Unidad unidadActiva, out bool esIntercambio)
   {
     unidadActiva = null;
@@ -283,6 +289,11 @@ public class Casilla : MonoBehaviour
     }
 
     if (!TryGetUnidadActiva(out unidadActiva))
+    {
+      return false;
+    }
+
+    if (EsTurnoIA(unidadActiva))
     {
       return false;
     }
@@ -508,6 +519,11 @@ public class Casilla : MonoBehaviour
     }
 
     if (!TryGetUnidadActiva(out Unidad unidadActiva))
+    {
+      return false;
+    }
+
+    if (EsTurnoIA(unidadActiva))
     {
       return false;
     }
@@ -842,6 +858,11 @@ public class Casilla : MonoBehaviour
     }
 
     if (!TryGetUnidadActiva(out Unidad unidad))
+    {
+      return;
+    }
+
+    if (EsTurnoIA(unidad))
     {
       return;
     }
@@ -1607,9 +1628,9 @@ public class Casilla : MonoBehaviour
 
     string text = "";
    
-    if (MarcaMelee.activeInHierarchy)
+    if (MarcaMelee != null && MarcaMelee.activeInHierarchy)
     {
-       text += "" + TRADU.i.Traducir("Melee disponible");
+       text += "" + TRADU.i.Traducir("Melee disponible \n(Ver: Mantén Shift)");
       TooltipBatalla.InstanceCostoMovimiento?.ShowTooltipCostoMovimiento(text);
     }
     else if (BattleManager.Instance != null
@@ -1620,6 +1641,18 @@ public class Casilla : MonoBehaviour
     {
       MostrarTooltipIntercambiar();
     }
+
+    if (BattleManager.Instance != null && BattleManager.Instance.MostrarPreviewHoverMeleeGenericoDesdeCasilla(this))
+    {
+      return;
+    }
+
+    if (BattleManager.Instance != null && BattleManager.Instance.MostrarPreviewHoverHostilDesdeCasilla(this))
+    {
+      ActualizarFadeHoverObjetivosHabilidad();
+      return;
+    }
+
     //Controlar se esta haciendo hablidad en Area, marca las casillas en la zona de alcance y en el area
     if (BattleManager.Instance.HabilidadActiva != null)
     {
@@ -2169,6 +2202,7 @@ public class Casilla : MonoBehaviour
     ObtenerTooltipBatallaGeneral()?.HideTooltipSinAnim();
     TooltipBatalla.InstanceCostoMovimiento?.HideTooltipSinAnim();
     BattleManager.Instance?.LimpiarFadeHoverObjetivoHabilidad();
+    BattleManager.Instance?.LimpiarPreviewHoverHostil();
     if (BattleManager.Instance.HabilidadActiva != null)
     {
       if (BattleManager.Instance.HabilidadActiva.enArea > 0 && BattleManager.Instance.SeleccionandoObjetivo)
@@ -2480,6 +2514,10 @@ public class Casilla : MonoBehaviour
     {
       return 0;
     }
+    if (EsTurnoIA(unidad))
+    {
+      return 0;
+    }
     if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
       int costoMovimientoTotal = ObtenerCostoMovimientoTotal(unidad);
@@ -2664,15 +2702,13 @@ public class Casilla : MonoBehaviour
     Unidad unidadObjetivo = Presente.GetComponent<Unidad>();
     if (unidadObjetivo != null)
     {
-      return BattleManager.Instance.lUnidadesPosiblesHabilidadActiva != null
-        && BattleManager.Instance.lUnidadesPosiblesHabilidadActiva.Contains(unidadObjetivo);
+      return BattleManager.Instance.EsUnidadObjetivoVisualHabilidadActiva(unidadObjetivo);
     }
 
     Obstaculo obstaculoObjetivo = Presente.GetComponent<Obstaculo>();
     if (obstaculoObjetivo != null)
     {
-      return BattleManager.Instance.lObstaculosPosiblesHabilidadActiva != null
-        && BattleManager.Instance.lObstaculosPosiblesHabilidadActiva.Contains(obstaculoObjetivo);
+      return BattleManager.Instance.EsObstaculoObjetivoVisualHabilidadActiva(obstaculoObjetivo);
     }
 
     return false;
@@ -2690,8 +2726,7 @@ public class Casilla : MonoBehaviour
 
     Obstaculo obstaculoObjetivo = Presente.GetComponent<Obstaculo>();
     return obstaculoObjetivo != null
-      && BattleManager.Instance.lObstaculosPosiblesHabilidadActiva != null
-      && BattleManager.Instance.lObstaculosPosiblesHabilidadActiva.Contains(obstaculoObjetivo);
+      && BattleManager.Instance.EsObstaculoObjetivoVisualHabilidadActiva(obstaculoObjetivo);
   }
 
   private void ActualizarCirculoObjetivoHabilidad()

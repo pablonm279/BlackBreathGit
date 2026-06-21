@@ -68,7 +68,6 @@ public class HaciaLasSombras : Habilidad
     {
       cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Mobility utility\n";
       cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Any empty tile on own side\n";
-      cuerpo += $"<color={colorEncabezado}><b>Roll/Save:</b></color> none\n";
       cuerpo += $"<color={colorEncabezado}><b>Valour cost:</b></color> {costoPM}\n";
       cuerpo += $"<color={colorEncabezado}><b>On cast:</b></color> teleports to target tile\n";
       cuerpo += $"<color={colorEncabezado}><b>Self:</b></color> gains Hidden (2), Evasion ({evasionGanada}), removes debuffs\n";
@@ -80,7 +79,6 @@ public class HaciaLasSombras : Habilidad
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Utilidade de mobilidade\n";
       cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Qualquer celula vazia do proprio lado\n";
-      cuerpo += $"<color={colorEncabezado}><b>Rolagem/Resistencia:</b></color> nao tem\n";
       cuerpo += $"<color={colorEncabezado}><b>Custo Valentia:</b></color> {costoPM}\n";
       cuerpo += $"<color={colorEncabezado}><b>Ao usar:</b></color> teleporta para a celula alvo\n";
       cuerpo += $"<color={colorEncabezado}><b>Proprio:</b></color> ganha Escondido (2), Evasao ({evasionGanada}), remove debuffs\n";
@@ -92,7 +90,6 @@ public class HaciaLasSombras : Habilidad
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Utilidad de movilidad\n";
       cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Cualquier casilla vacia de tu lado\n";
-      cuerpo += $"<color={colorEncabezado}><b>Tirada/TS:</b></color> no tiene\n";
       cuerpo += $"<color={colorEncabezado}><b>Costo Valentía:</b></color> {costoPM}\n";
       cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> se teletransporta a la casilla objetivo\n";
       cuerpo += $"<color={colorEncabezado}><b>Propio:</b></color> gana Escondido (2), Evasion ({evasionGanada}), remueve debuffs\n";
@@ -102,10 +99,10 @@ public class HaciaLasSombras : Habilidad
     }
 
     string subtitulo = esIngles
-      ? "Teleports, removes debuffs and returns to stealth."
+      ? "Moves to a cell, removes debuffs and returns to stealth."
       : esPortugues
-        ? "Teleporta, remove debuffs e volta a furtividade."
-        : "Teletransporta, remueve debuffs y vuelve al sigilo.";
+        ? "Move para uma celula, remove debuffs e volta a furtividade."
+        : "Se mueve a una casilla, remueve debuffs y vuelve al sigilo.";
     string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
     txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
     txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";

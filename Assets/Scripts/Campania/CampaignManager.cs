@@ -126,6 +126,7 @@ public class CampaignManager : MonoBehaviour
   private readonly Queue<SolicitudTextoRecurso> colaTextosRecursosSuspendidos = new Queue<SolicitudTextoRecurso>();
   private readonly List<RegistroTextoRecurso> textosRecursosRecientes = new List<RegistroTextoRecurso>();
   private Coroutine rutinaTextosRecursos;
+  private bool pausandoTextoDistanciaAliento;
   public Animator animCaravana;
   public GameObject goCanvas;
   public GameObject highlightNodos;
@@ -162,6 +163,7 @@ public class CampaignManager : MonoBehaviour
   public int sequitoHerrerosMantArmas;
   public int sequitoHerrerosMantArmaduras;
   public int sequitoMercaderesTier;
+  public TextMeshProUGUI distanciaAlientotxt;
   public SequitoMercaderes scSequitoMercaderes;
   public SequitoArtistas scSequitoArtistas;
   public SequitoHerboristas scSequitoHerboristas;
@@ -300,6 +302,8 @@ public class CampaignManager : MonoBehaviour
     if (slot.rutina != null)
     {
       StopCoroutine(slot.rutina);
+      OcultarVisualSlotHighlightNodoCampania(slot);
+      slot.rutina = null;
     }
 
     slot.ocupado = true;
@@ -343,7 +347,7 @@ public class CampaignManager : MonoBehaviour
     }
 
     slot.offsetTextoPantalla = slot.textoRect != null && slot.rect != null
-      ? slot.textoRect.position - slot.rect.position
+      ? (Vector3)(slot.textoRect.anchoredPosition - slot.rect.anchoredPosition)
       : Vector3.zero;
 
     ConfigurarContenidoHighlightNodoCampania(slot.image, slot.texto, tipo, colorBase, 1f);
@@ -608,19 +612,27 @@ public class CampaignManager : MonoBehaviour
     }
 
     Vector3 posicionPantalla = Vector3.zero;
-    bool tienePosicion = target != null && target.TryGetScreenPosition(out posicionPantalla);
+    bool tienePosicion = false;
 
-    if (!tienePosicion)
+    if (target != null && target.rectTransform != null)
     {
-      Camera camara = Camera.main;
-      if (camara == null)
-      {
-        OcultarVisualSlotHighlightNodoCampania(slot);
-        return;
-      }
+      posicionPantalla = target.rectTransform.position;
+      tienePosicion = true;
+    }
 
-      posicionPantalla = camara.WorldToScreenPoint(nodo.transform.position);
+    Camera camara = ObtenerCamaraHighlightNodoCampania(target);
+    if (!tienePosicion && camara != null)
+    {
+      Transform referenciaMundo = target != null && target.worldTransform != null
+        ? target.worldTransform
+        : nodo.transform;
+      posicionPantalla = camara.WorldToScreenPoint(referenciaMundo.position);
       tienePosicion = posicionPantalla.z >= 0f;
+    }
+
+    if (!tienePosicion && target != null)
+    {
+      tienePosicion = target.TryGetScreenPosition(out posicionPantalla);
     }
 
     if (!tienePosicion)
@@ -639,9 +651,19 @@ public class CampaignManager : MonoBehaviour
       slot.root.SetActive(true);
     }
 
+    bool pudoConvertirPosicion = false;
+    Vector2 posicionLocal = Vector2.zero;
     if (slot.rect != null)
     {
-      slot.rect.position = posicionPantalla;
+      pudoConvertirPosicion = TryConvertirPantallaALocalHighlightNodoCampania(slot.rect, posicionPantalla, out posicionLocal);
+      if (pudoConvertirPosicion)
+      {
+        slot.rect.anchoredPosition = posicionLocal;
+      }
+      else
+      {
+        slot.rect.position = posicionPantalla;
+      }
 
       if (target != null)
       {
@@ -656,13 +678,113 @@ public class CampaignManager : MonoBehaviour
 
     if (slot.textoRect != null && slot.root != null && !slot.textoRect.transform.IsChildOf(slot.root.transform))
     {
-      slot.textoRect.position = posicionPantalla + slot.offsetTextoPantalla;
+      if (pudoConvertirPosicion)
+      {
+        slot.textoRect.anchoredPosition = posicionLocal + (Vector2)slot.offsetTextoPantalla;
+      }
+      else
+      {
+        slot.textoRect.position = posicionPantalla + slot.offsetTextoPantalla;
+      }
+
       slot.texto.gameObject.SetActive(true);
     }
     else if (slot.root != null)
     {
-      slot.root.transform.position = posicionPantalla;
+      if (pudoConvertirPosicion && slot.root.transform is RectTransform rectRoot)
+      {
+        rectRoot.anchoredPosition = posicionLocal;
+      }
+      else
+      {
+        slot.root.transform.position = posicionPantalla;
+      }
     }
+  }
+
+  private Camera ObtenerCamaraHighlightNodoCampania(TutorialTarget target)
+  {
+    if (EsCamaraActivaValida(target != null ? target.worldCamera : null))
+    {
+      return target.worldCamera;
+    }
+
+    Camera camaraMain = Camera.main;
+    if (EsCamaraCampaniaPreferida(camaraMain))
+    {
+      return camaraMain;
+    }
+
+    Camera[] camaras = Camera.allCameras;
+    for (int i = 0; i < camaras.Length; i++)
+    {
+      if (EsCamaraCampaniaPreferida(camaras[i]))
+      {
+        return camaras[i];
+      }
+    }
+
+    if (EsCamaraActivaValida(camaraMain))
+    {
+      return camaraMain;
+    }
+
+    for (int i = 0; i < camaras.Length; i++)
+    {
+      if (EsCamaraActivaValida(camaras[i]) && !NombreIndicaCamaraBatalla(camaras[i]))
+      {
+        return camaras[i];
+      }
+    }
+
+    for (int i = 0; i < camaras.Length; i++)
+    {
+      if (EsCamaraActivaValida(camaras[i]))
+      {
+        return camaras[i];
+      }
+    }
+
+    return null;
+  }
+
+  private static bool EsCamaraCampaniaPreferida(Camera camara)
+  {
+    return EsCamaraActivaValida(camara) && camara.GetComponent("EdgePanCameraZ") != null;
+  }
+
+  private static bool EsCamaraActivaValida(Camera camara)
+  {
+    return camara != null && camara.enabled && camara.gameObject.activeInHierarchy;
+  }
+
+  private static bool NombreIndicaCamaraBatalla(Camera camara)
+  {
+    return camara != null
+      && !string.IsNullOrEmpty(camara.name)
+      && camara.name.IndexOf("Batalla", StringComparison.OrdinalIgnoreCase) >= 0;
+  }
+
+  private bool TryConvertirPantallaALocalHighlightNodoCampania(RectTransform rectObjetivo, Vector2 posicionPantalla, out Vector2 posicionLocal)
+  {
+    posicionLocal = Vector2.zero;
+    if (rectObjetivo == null)
+    {
+      return false;
+    }
+
+    RectTransform rectPadre = rectObjetivo.parent as RectTransform;
+    if (rectPadre == null)
+    {
+      return false;
+    }
+
+    Canvas canvasPadre = rectPadre.GetComponentInParent<Canvas>();
+    Camera camaraCanvas = canvasPadre != null && canvasPadre.renderMode != RenderMode.ScreenSpaceOverlay
+      ? canvasPadre.worldCamera
+      : null;
+
+    return RectTransformUtility.ScreenPointToLocalPointInRectangle(rectPadre, posicionPantalla, camaraCanvas, out posicionLocal);
   }
 
 public class AnimacionTextoRecursoManual : MonoBehaviour
@@ -1800,6 +1922,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   public int ObtenerBonusScoutCatalejos()
   {
     return 5 * Mathf.Max(0, mejoraCaravanaCatalejos - 1);
+  }
+
+  public int ObtenerBonusObjetosPostBatallaAntorchas()
+  {
+    return 3 + Mathf.Max(0, mejoraCaravanaAntorchas - 1) * 2;
   }
 
   int ObtenerBonusExploracionCatalejos()
@@ -4555,6 +4682,77 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     ActualizarTierAlientoNegro();
   }
 
+  public float GetPosicionAlientoNegro()
+  {
+    return EstadoAlientoNegro;
+  }
+
+  public int GetPosicionCaravana()
+  {
+    return posicionCaravana;
+  }
+
+  public float GetDistanciaAlientoACaravana()
+  {
+    return 7f - (EstadoAlientoNegro - posicionCaravana);
+  }
+
+  private void RefrescarTextoDistanciaAliento(bool forzar = false)
+  {
+    if (distanciaAlientotxt == null)
+    {
+      return;
+    }
+
+    if (!forzar && (MoviendoCaravana || pausandoTextoDistanciaAliento))
+    {
+      return;
+    }
+
+    if (scAtributosZona != null && scAtributosZona.ID == 3)
+    {
+      distanciaAlientotxt.text = ObtenerTextoDistanciaAliento("--");
+      distanciaAlientotxt.color = new Color(0.65f, 0.65f, 0.65f);
+      return;
+    }
+
+    int distancia = Mathf.RoundToInt(GetDistanciaAlientoACaravana());
+    distanciaAlientotxt.text = ObtenerTextoDistanciaAliento(distancia.ToString());
+    distanciaAlientotxt.color = ObtenerColorDistanciaAliento(distancia);
+  }
+
+  private string ObtenerTextoDistanciaAliento(string distancia)
+  {
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+
+    return idioma switch
+    {
+      TRADU.IdiomaIngles => "Distance: " + distancia,
+      TRADU.IdiomaPortugues => "Distância: " + distancia,
+      _ => "Distancia: " + distancia
+    };
+  }
+
+  private Color ObtenerColorDistanciaAliento(int distancia)
+  {
+    Color rojo = new Color(0.9f, 0.14f, 0.12f);
+    Color rojoProfundo = new Color(0.55f, 0.02f, 0.08f);
+    Color amarillo = new Color(0.95f, 0.78f, 0.16f);
+    Color verde = new Color(0.22f, 0.85f, 0.28f);
+
+    if (distancia <= 0)
+    {
+      return Color.Lerp(rojo, rojoProfundo, Mathf.InverseLerp(0f, -10f, distancia));
+    }
+
+    if (distancia < 3)
+    {
+      return Color.Lerp(rojo, amarillo, Mathf.InverseLerp(0f, 3f, distancia));
+    }
+
+    return Color.Lerp(amarillo, verde, Mathf.InverseLerp(3f, 7f, distancia));
+  }
+
   private void AplicarSpriteClimaDesdeEstadoActual()
   {
     if (widgetClima == null)
@@ -4791,6 +4989,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public void RefrescarVfxClimaCalor()
   {
+    RefrescarTextoDistanciaAliento();
+
     Canvas canvasObjetivo = null;
     if (widgetClima != null && widgetClima.canvas != null)
     {
@@ -5101,6 +5301,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return;
     }
 
+    pausandoTextoDistanciaAliento = true;
     Nodo destino = conexion.destino;
     bool viajeAtajoSuperficie = conexion.EsAtajoSuperficie;
     ActivarLog(0);
@@ -5194,7 +5395,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     ActualizarTextoDia();
     if (conexion.costoMovimiento > 1 && !sePrevieneAvanceAliento)
     {
-      EscribirLog(TRADU.i.Traducir("-El viaje por el camino sinuoso ha retrasado la caravana. +") + conexion.costoMovimiento + TRADU.i.Traducir(" Avance del Aliento Negro"));
+      EscribirLog(TRADU.i.Traducir("-El viaje por el camino sinuoso ha retrasado la caravana. +") + (conexion.costoMovimiento - 1) + TRADU.i.Traducir(" Avance del Aliento Negro"));
     }
 
     //Si Nieva, avanza 1 mas el élito
@@ -5403,6 +5604,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public void LlegarANodo(int ID, int posX, Nodo nodo)
   {
+    pausandoTextoDistanciaAliento = true;
     
     // Detiene el sonido de movimiento al llegar al nodo
     if (sfxMovimientoSource != null && sfxMovimientoSource.isPlaying && rutinaDesvanecerSfxMovimiento == null)
@@ -5422,6 +5624,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
     posicionCaravana = posX + 1;
+    pausandoTextoDistanciaAliento = false;
+    RefrescarTextoDistanciaAliento(true);
+    ActualizarTierAlientoNegro();
     logDeCampania?.RegistrarLlegadaNodo(ID);
     if (debugIgnorarCombates && EsTipoNodoDeCombate(ID))
     {
@@ -5607,7 +5812,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
 
       goUISantuario.SetActive(true);
-      txtdescripcionSantuario.text = TRADU.i.Traducir("Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n\n. ");
+      txtdescripcionSantuario.text = TRADU.i.Traducir("Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 4 días.</i>");
 
       CambiarEsperanzaActual(10);
       EscribirLog(TRADU.i.Traducir("-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza."));
@@ -6296,8 +6501,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     CambiarOroActual(-200);
     CambiarValorAlientoNegro(-3);
-    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3, se ha gastado 200 de oro y todos los personajes obtienen Bendecido por 3 días."));
-    BendecirPersonajesSantuario(3);
+    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se ha gastado 200 de oro."));
 
     // Buscar personajes corruptos
     var corruptos = scMenuPersonajes.listaPersonajes.FindAll(p => p.Camp_Corrupto);
@@ -6330,8 +6534,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     CambiarBueyesActuales(-3);
     CambiarValorAlientoNegro(-3);
-    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3, se han sacrificado 3 bueyes y todos los personajes obtienen Bendecido por 3 días."));
-    BendecirPersonajesSantuario(3);
+    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se han sacrificado 3 bueyes."));
 
     // Buscar personajes corruptos
     var corruptos = scMenuPersonajes.listaPersonajes.FindAll(p => p.Camp_Corrupto);
@@ -6353,7 +6556,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   }
   #endregion
 
-  private void BendecirPersonajesSantuario(int dias)
+  public void BendecirPersonajesSantuario(int dias)
   {
     if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
     {
@@ -6554,7 +6757,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
   }
 
-  public void AbrirPuestoComercial()
+  public void AbrirPuestoComercial(bool resetearPuesto = true)
   {
     if (goUIComercioNodo == null)
     {
@@ -6562,13 +6765,20 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     goUIComercioNodo.SetActive(true);
-    txtDescripcionPuestoComercial.text = TRADU.i.Traducir("Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\nTu Séquito de Mercaderes ha actualizado su Inventario.");
+    txtDescripcionPuestoComercial.text = TRADU.i.Traducir("Has llegado a un improvisado <b>Puesto Comercial</b>, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\nTu Séquito de Mercaderes ha actualizado su Inventario.\n\nSi descansas aquí, los civiles entablarán relaciones comerciales, generando 2 Oro cada uno.");
 
-    ResetearPuestoComercial();
-    AplicarTraitsVisitaPuestoComercial();
-    if (scSequitoMercaderes != null)
+    if (resetearPuesto)
     {
-      scSequitoMercaderes.GenerarItemsVendidos();
+      ResetearPuestoComercial();
+      AplicarTraitsVisitaPuestoComercial();
+      if (scSequitoMercaderes != null)
+      {
+        scSequitoMercaderes.GenerarItemsVendidos();
+      }
+    }
+    else
+    {
+      ActualizarPuestoComercial();
     }
 
     //EscribirLog(TRADU.i.Traducir("El Séquito de Mercaderes ha actualizado su inventario en el Puesto Comercial."));
@@ -8869,7 +9079,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       }
       if (scAtributosZona.ID == 3) //Nedukazal
       {
-        text.text = TRADU.i.Traducir("Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será más propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Pie</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta zona.");
+        text.text = TRADU.i.Traducir("Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será más propensa a sufrir emboscadas (+20%).\n\nMejora los <b>Catalejos</b> para aumentar el rango de visión.\nLas <b>Antorchas de Pie</b> seguirán reforzando la luz propia de la caravana en esta zona.\n\nEl Aliento Negro no será una preocupación en esta zona.");
       }
 
 
@@ -9752,7 +9962,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.idRetrato = 1;
     pers1.iPuestoDeseado = 3;
 
-    pers1.fVidaMaxima = 60 + UnityEngine.Random.Range(1, 7);
+    pers1.fVidaMaxima = 50 + UnityEngine.Random.Range(1, 7);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 3 + UnityEngine.Random.Range(0, 2);
@@ -9863,7 +10073,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.idRetrato = 5;
     pers1.iPuestoDeseado = 1;
 
-    pers1.fVidaMaxima = 48 + UnityEngine.Random.Range(1, 5);
+    pers1.fVidaMaxima = 42 + UnityEngine.Random.Range(1, 5);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 3 + UnityEngine.Random.Range(0, 2);
@@ -9976,7 +10186,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.idRetrato = 6;
     pers1.iPuestoDeseado = 1;
 
-    pers1.fVidaMaxima = 37 + UnityEngine.Random.Range(1, 5);
+    pers1.fVidaMaxima = 32 + UnityEngine.Random.Range(1, 5);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 1 + UnityEngine.Random.Range(0, 2);
@@ -10081,7 +10291,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.idRetrato = 7;
     pers1.iPuestoDeseado = 2;
 
-    pers1.fVidaMaxima = 52 + UnityEngine.Random.Range(1, 6);
+    pers1.fVidaMaxima = 46 + UnityEngine.Random.Range(1, 6);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 4 + UnityEngine.Random.Range(0, 2);
@@ -10200,7 +10410,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.idRetrato = 8;
     pers1.iPuestoDeseado = 2;
 
-    pers1.fVidaMaxima = 42 + UnityEngine.Random.Range(1, 4);
+    pers1.fVidaMaxima = 37 + UnityEngine.Random.Range(1, 4);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 2 + UnityEngine.Random.Range(0, 2);
@@ -10295,7 +10505,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.idRetrato = 9;
     pers1.iPuestoDeseado = 3;
 
-    pers1.fVidaMaxima = 51 + UnityEngine.Random.Range(1, 6);
+    pers1.fVidaMaxima = 45 + UnityEngine.Random.Range(1, 6);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 3 + UnityEngine.Random.Range(0, 2);
@@ -10794,4 +11004,5 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   }
 }
+
 

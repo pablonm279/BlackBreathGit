@@ -37,7 +37,7 @@ public class ResiduoEnergetico : Trampa
        Buff buff = new Buff();
        buff.buffNombre = "Residuo Energético";
        buff.boolfDebufftBuff = true;
-       buff.DuracionBuffRondas = 1;
+       buff.DuracionBuffRondas = 2;
        if (NIVEL == 4) {  buff.DuracionBuffRondas += 1;}     
        buff.cantDamBonusElementalArc += 3;
        if (NIVEL > 1) { buff.cantDamBonusElementalArc++; }

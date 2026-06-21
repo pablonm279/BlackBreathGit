@@ -69,38 +69,38 @@ public class Fogata : Habilidad
     string cuerpo = "";
     if (esIngles)
     {
-      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Utility trap\n";
-      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Adjacent tile, including own tile\n";
-      cuerpo += $"<color={colorEncabezado}><b>Campfire profile:</b></color> {trampaUsos} uses, {duracionTrampaTurnos} turns duration, persistent\n";
-      cuerpo += $"<color={colorEncabezado}><b>On trap trigger:</b></color> {danoTrampa} fire damage\n";
-      cuerpo += $"<color={colorEncabezado}><b>Adjacent allies:</b></color> attacks gain +{danoFuego} fire damage\n";
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Utility\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Adjacent tile\n";
+      cuerpo += $"<color={colorEncabezado}><b>Duration:</b></color> {duracionTrampaTurnos} turns\n";
+      cuerpo += $"<color={colorEncabezado}><b>On step on:</b></color> {danoTrampa} fire damage\n";
+      cuerpo += $"<color={colorEncabezado}><b>Adjacent Explorers:</b></color> attacks gain +{danoFuego} fire damage\n";
       cuerpo += $"<color={colorEncabezado}><b>Effortable:</b></color> yes ({esforzable})";
     }
     else if (esPortugues)
     {
-      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Armadilha de utilidade\n";
-      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Casa adjacente, incluindo a propria casa\n";
-      cuerpo += $"<color={colorEncabezado}><b>Perfil da fogueira:</b></color> {trampaUsos} usos, {duracionTrampaTurnos} turnos de duracao, persistente\n";
-      cuerpo += $"<color={colorEncabezado}><b>Ao ativar:</b></color> {danoTrampa} dano de fogo\n";
-      cuerpo += $"<color={colorEncabezado}><b>Aliados adjacentes:</b></color> ataques ganham +{danoFuego} dano de fogo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Utilidade\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Casa adjacente\n";
+      cuerpo += $"<color={colorEncabezado}><b>Duración:</b></color> {duracionTrampaTurnos} turnos\n";
+      cuerpo += $"<color={colorEncabezado}><b>Ao pisar:</b></color> {danoTrampa} dano de fogo\n";
+      cuerpo += $"<color={colorEncabezado}><b>Exploradores adjacentes:</b></color> ataques ganham +{danoFuego} dano de fogo\n";
       cuerpo += $"<color={colorEncabezado}><b>Esforcavel:</b></color> sim ({esforzable})";
     }
     else
     {
-      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Trampa de utilidad\n";
-      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Casilla adyacente, incluida tu propia casilla\n";
-      cuerpo += $"<color={colorEncabezado}><b>Perfil de fogata:</b></color> {trampaUsos} usos, {duracionTrampaTurnos} turnos de duración, persistente\n";
-      cuerpo += $"<color={colorEncabezado}><b>Al activarse:</b></color> {danoTrampa} daño de fuego\n";
-      cuerpo += $"<color={colorEncabezado}><b>Aliados adyacentes:</b></color> ataques ganan +{danoFuego} daño de fuego\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Utilidad\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Casilla adyacente\n";
+      cuerpo += $"<color={colorEncabezado}><b>Duración:</b></color> {duracionTrampaTurnos} turnos\n";
+      cuerpo += $"<color={colorEncabezado}><b>Al pisar:</b></color> {danoTrampa} daño de fuego\n";
+      cuerpo += $"<color={colorEncabezado}><b>Exploradores adyacentes:</b></color> ataques ganan +{danoFuego} daño de fuego\n";
       cuerpo += $"<color={colorEncabezado}><b>Esforzable:</b></color> si ({esforzable})";
     }
 
     string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
     string subtitulo = esIngles
-      ? "Places a campfire trap and empowers nearby attacks."
+      ? "Lights an improvsed fire to use burning arrows."
       : esPortugues
-        ? "Coloca uma fogueira e fortalece ataques proximos."
-        : "Coloca una fogata y potencia ataques cercanos.";
+        ? "Acende um fogo improvisado para usar flechas flamejantes."
+        : "Enciende un fuego improvisado para usar flechas incendiarias.";
 
     txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
     txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";
@@ -112,19 +112,19 @@ public class Fogata : Habilidad
 
     if (esIngles)
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 trap use and +1 trap duration turn.</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 trap duration turn.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: -1 AP cost.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+1-3 fire damage bonus) or Option B (-1 AP cost).</color>"; }
     }
     else if (esPortugues)
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 uso de armadilha e +1 turno de duracao.</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel:+1 turno de duracao.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: -1 custo AP.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+1-3 dano de fogo bonus) ou Opcao B (-1 custo AP).</color>"; }
     }
     else
     {
-      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 uso de trampa y +1 turno de duración.</color>"; }
+      if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 turno de duración.</color>"; }
       else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: -1 costo AP.</color>"; }
       else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+1-3 daño de fuego bonus) u Opción B (-1 costo AP).</color>"; }
     }

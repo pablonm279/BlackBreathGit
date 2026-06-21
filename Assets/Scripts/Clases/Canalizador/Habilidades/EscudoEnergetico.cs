@@ -59,7 +59,6 @@ public class EscudoEnergetico : Habilidad
         if (esIngles)
         {
             cuerpo += "<b>Type:</b> Self\n";
-            cuerpo += "<b>Target:</b> Self\n";
             cuerpo += $"<b>Defense Buff:</b> {defensaBase} + current Energy Tier (2 rounds)\n";
             cuerpo += $"<b>Reaction:</b> On failed enemy projectile, counters with Arcane Discharge";
             if (bonusAtaqueReaccion > 0)
@@ -75,7 +74,6 @@ public class EscudoEnergetico : Habilidad
         else if (esPortugues)
         {
             cuerpo += "<b>Tipo:</b> Propria\n";
-            cuerpo += "<b>Alvo:</b> O proprio usuario\n";
             cuerpo += $"<b>Buff de Defesa:</b> {defensaBase} + Nivel de Energia atual (2 rodadas)\n";
             cuerpo += $"<b>Reacao:</b> Contra projetil inimigo falho, contra-ataca com Descarga Arcana";
             if (bonusAtaqueReaccion > 0)
@@ -91,7 +89,6 @@ public class EscudoEnergetico : Habilidad
         else
         {
             cuerpo += "<b>Tipo:</b> Propia\n";
-            cuerpo += "<b>Objetivo:</b> Propio usuario\n";
             cuerpo += $"<b>Buff de Defensa:</b> {defensaBase} + Nivel de Energia actual (2 rondas)\n";
             cuerpo += $"<b>Reacción:</b> Ante proyectil enemigo fallido, contraataca con Descarga Arcana";
             if (bonusAtaqueReaccion > 0)
@@ -138,7 +135,6 @@ public class EscudoEnergetico : Habilidad
         if (esIngles)
         {
             cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Self buff</color>\n";
-            cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>Self</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Defense:</b></color> <color={colorValor}>+{defensaBase} + current Energy Tier for 2 rounds</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Reaction:</b></color> <color={colorValor}>{iconoReaccion} On failed enemy projectile: Arcane Discharge{bonusAtaqueTexto}, creates {iconoEnergia} 1 Energy Residue nearby</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Uses:</b></color> <color={colorValor}>{usosReaccion} reactions per cast</color>\n";
@@ -147,7 +143,6 @@ public class EscudoEnergetico : Habilidad
         else if (esPortugues)
         {
             cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
-            cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>O proprio usuario</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Defesa:</b></color> <color={colorValor}>+{defensaBase} + Nivel de Energia atual por 2 rodadas</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Reacao:</b></color> <color={colorValor}>{iconoReaccion} Se projetil inimigo falha: Descarga Arcana{bonusAtaqueTexto}, cria {iconoEnergia} 1 Residuo Energetico proximo</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Usos:</b></color> <color={colorValor}>{usosReaccion} reacoes por uso</color>\n";
@@ -156,7 +151,6 @@ public class EscudoEnergetico : Habilidad
         else
         {
             cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
-            cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Propio usuario</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Defensa:</b></color> <color={colorValor}>+{defensaBase} + Nivel de Energia actual por 2 rondas</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Reacción:</b></color> <color={colorValor}>{iconoReaccion} Si proyectil enemigo falla: Descarga Arcana{bonusAtaqueTexto}, crea {iconoEnergia} 1 Residuo Energetico cercano</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Usos:</b></color> <color={colorValor}>{usosReaccion} reacciones por uso</color>\n";

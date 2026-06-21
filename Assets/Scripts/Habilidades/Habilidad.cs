@@ -959,6 +959,11 @@ public abstract class Habilidad : MonoBehaviour
     SincronizarMarcasUnidades(BattleManager.Instance != null ? BattleManager.Instance.lUnidadesPosiblesHabilidadActiva : null);
   }
 
+  public void SincronizarMarcasUnidadesPosibles(IEnumerable<Unidad> unidadesObjetivo)
+  {
+    SincronizarMarcasUnidades(unidadesObjetivo);
+  }
+
   /// <summary>
   /// Limpia las unidades marcadas en la ultima previsualizacion de la habilidad.
   /// </summary>

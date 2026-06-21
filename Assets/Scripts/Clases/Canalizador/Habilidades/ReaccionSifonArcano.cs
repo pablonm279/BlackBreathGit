@@ -55,8 +55,7 @@ public class ReaccionSifonArcano : Reaccion
         }
       }
       // Sumar el daño base por la cantidad de residuos encontrados
-      float danioBase =UnityEngine.Random.Range(1, 11);
-      if (NIVEL > 1) { danioBase += 1; }
+      float danioBase = UnityEngine.Random.Range(1, 11) + SifonArcano.ObtenerBonusDanioBase(NIVEL);
       float danioExtra = 1 + cantidadResiduos;
 
       float daniofinal = danioBase * danioExtra;

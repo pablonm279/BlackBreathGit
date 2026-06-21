@@ -69,7 +69,6 @@ public class PresenciaProvocadora : Habilidad
         if (esIngles)
         {
             cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Self aura + reaction\n";
-            cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Self\n";
             cuerpo += $"<color={colorEncabezado}><b>On cast:</b></color> affects all enemies on the opposite side; ends turn\n";
             cuerpo += $"<color={colorEncabezado}><b>Save:</b></color> Mental vs DC {dcMental}\n";
             cuerpo += $"<color={colorEncabezado}><b>On failed save:</b></color> {nombreProvocado} and {nombreDistraido} for 2 turns: {reduccionDefensa} Defense, {reduccionArmadura} Armor\n";
@@ -80,7 +79,6 @@ public class PresenciaProvocadora : Habilidad
         else if (esPortugues)
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Aura propria + reacao\n";
-            cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Si mesmo\n";
             cuerpo += $"<color={colorEncabezado}><b>Ao usar:</b></color> afeta todos os inimigos do lado oposto; termina turno\n";
             cuerpo += $"<color={colorEncabezado}><b>Resistencia:</b></color> Mental vs CD {dcMental}\n";
             cuerpo += $"<color={colorEncabezado}><b>Se falhar:</b></color> {nombreProvocado} e {nombreDistraido} por 2 turnos: {reduccionDefensa} Defesa, {reduccionArmadura} Armadura\n";
@@ -91,7 +89,6 @@ public class PresenciaProvocadora : Habilidad
         else
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Aura propia + reaccion\n";
-            cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Uno mismo\n";
             cuerpo += $"<color={colorEncabezado}><b>Al usar:</b></color> afecta a todos los enemigos del lado opuesto; termina turno\n";
             cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Mental vs DC {dcMental}\n";
             cuerpo += $"<color={colorEncabezado}><b>Si falla:</b></color> {nombreProvocado} y {nombreDistraido} por 2 turnos: {reduccionDefensa} Defensa, {reduccionArmadura} Armadura\n";

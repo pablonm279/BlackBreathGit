@@ -125,10 +125,10 @@ public class SalmoPurificador : Habilidad
       : $"{costoAP} {iconoAP}";
     string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
     string subtitulo = esIngles
-      ? "Cleanses removable debuffs and negative states from a small allied cluster."
+      ? "Cleanses debuffs and negative states from allies."
       : esPortugues
-        ? "Remove debuffs removiveis e estados negativos de um pequeno grupo aliado."
-        : "Remueve debuffs removibles y estados negativos de un pequeno grupo aliado.";
+        ? "Remove debuffs e estados negativos de aliados."
+        : "Remueve penalziaciones y estados negativos de aliados.";
     string cuerpoNuevo = "";
     if (esIngles)
     {

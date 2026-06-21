@@ -60,34 +60,31 @@ public class EnGarde : Habilidad
         if (esIngles)
         {
             cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Self buff\n";
-            cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Self\n";
             cuerpo += $"<color={colorEncabezado}><b>Effect:</b></color> max 3 turns, +{bonusEvasion} Evasion, +{bonusDanio}% Damage, +{bonusCriticoPorcentaje}% Crit, +{bonusAtaque}\n";
             cuerpo += $"<color={colorEncabezado}><b>Cancel:</b></color> removed when taking damage\n";
-            cuerpo += $"<color={colorEncabezado}><b>Demanding Stance:</b></color> trigger threshold becomes {umbralPosturaDemandante}% max HP while active";
+            cuerpo += $"<color=red><b>Demanding Stance:</b></color> trigger threshold becomes {umbralPosturaDemandante}% max HP while active";
         }
         else if (esPortugues)
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Auto buff\n";
-            cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Si mesmo\n";
             cuerpo += $"<color={colorEncabezado}><b>Efeito:</b></color> maximo 3 turnos, +{bonusEvasion} Evasao, +{bonusDanio}% Dano, +{bonusCriticoPorcentaje}% Critico, +{bonusAtaque}\n";
             cuerpo += $"<color={colorEncabezado}><b>Cancelamento:</b></color> removido ao receber dano\n";
-            cuerpo += $"<color={colorEncabezado}><b>Postura Demandante:</b></color> limiar vira {umbralPosturaDemandante}% da vida maxima enquanto ativo";
+            cuerpo += $"<color=red><b>Postura Demandante:</b></color> limiar vira {umbralPosturaDemandante}% da vida maxima enquanto ativo";
         }
         else
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Auto buff\n";
-            cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Uno mismo\n";
             cuerpo += $"<color={colorEncabezado}><b>Efecto:</b></color> máximo 3 turnos, +{bonusEvasion} Evasion, +{bonusDanio}% Daño, +{bonusCriticoPorcentaje}% Crítico, +{bonusAtaque}\n";
             cuerpo += $"<color={colorEncabezado}><b>Cancelación:</b></color> se elimina al recibir daño\n";
-            cuerpo += $"<color={colorEncabezado}><b>Postura Demandante:</b></color> umbral pasa a {umbralPosturaDemandante}% de HP máximo mientras esta activo";
+            cuerpo += $"<color=red><b>Postura Demandante:</b></color> umbral pasa a {umbralPosturaDemandante}% de HP máximo mientras esta activo";
         }
 
         string titulo = esIngles ? "En Garde " + sufijoNivel : esPortugues ? "Em Guarda " + sufijoNivel : "En Garde " + sufijoNivel;
         string subtitulo = esIngles
-            ? "Enter a short guard stance for offense and evasion."
+            ? "Adopt a very technical pose that enhances offense and evasion."
             : esPortugues
-                ? "Entra em guarda curta para ofensiva e evasao."
-                : "Entra en guardia breve para ofensiva y evasion.";
+                ? "Adote uma postura de guarda por um curto periodo para ofensiva e evasao."
+                : "Utiliza una pose muy técnica que mejora la ofensiva y evasión.";
 
         txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
         txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";

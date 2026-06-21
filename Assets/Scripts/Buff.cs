@@ -453,7 +453,14 @@ public void RemoverBuff(Unidad unidad)
     }
     if (buffNombre == "Postura Defensiva" && unidad is ClaseCaballero caballero)
     {
-        caballero.NotificarFinPosturaDefensiva();
+        if (quedaOtroBuffConMismoNombre)
+        {
+            caballero.NotificarInicioPosturaDefensiva();
+        }
+        else
+        {
+            caballero.NotificarFinPosturaDefensiva();
+        }
     }
     Destroy(this);
 

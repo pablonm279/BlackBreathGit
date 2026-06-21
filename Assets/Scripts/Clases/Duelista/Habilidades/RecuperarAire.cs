@@ -65,7 +65,6 @@ public class RecuperarAire : Habilidad
         if (esIngles)
         {
             cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Self recovery\n";
-            cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Self\n";
             cuerpo += $"<color={colorEncabezado}><b>Position:</b></color> rear column only\n";
             cuerpo += $"<color={colorEncabezado}><b>Effect (2 turns):</b></color> +{apMax} Max AP, {defensa} Defense\n";
             cuerpo += $"<color={colorEncabezado}><b>Immediate:</b></color> heals {rangoCuracion}, +{impulso} Impulse, +{valentia} Valour\n";
@@ -74,7 +73,6 @@ public class RecuperarAire : Habilidad
         else if (esPortugues)
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Recuperacao propria\n";
-            cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Si mesmo\n";
             cuerpo += $"<color={colorEncabezado}><b>Posicao:</b></color> apenas na coluna traseira\n";
             cuerpo += $"<color={colorEncabezado}><b>Efeito (2 turnos):</b></color> +{apMax} AP max, {defensa} Defesa\n";
             cuerpo += $"<color={colorEncabezado}><b>Imediato:</b></color> cura {rangoCuracion}, +{impulso} Impulso, +{valentia} Valentía\n";
@@ -83,7 +81,6 @@ public class RecuperarAire : Habilidad
         else
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Recuperacion propia\n";
-            cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Uno mismo\n";
             cuerpo += $"<color={colorEncabezado}><b>Posicion:</b></color> solo en columna trasera\n";
             cuerpo += $"<color={colorEncabezado}><b>Efecto (2 turnos):</b></color> +{apMax} AP max, {defensa} Defensa\n";
             cuerpo += $"<color={colorEncabezado}><b>Inmediato:</b></color> cura {rangoCuracion}, +{impulso} Impulso, +{valentia} Valentía\n";
@@ -92,10 +89,10 @@ public class RecuperarAire : Habilidad
 
         string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
         string subtitulo = esIngles
-            ? "Recover in the rear column and prepare the next turn."
+            ? "Take a breather in the rear column and prepare for the next turn."
             : esPortugues
-                ? "Recupera na coluna traseira e prepara o próximo turno."
-                : "Recupera en columna trasera y prepara el próximo turno.";
+                ? "Faça uma pausa na coluna traseira e se prepare para a próxima rodada."
+                : "Se toma un descanso en la columna trasera y se prepara para el combate.";
 
         txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
         txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";

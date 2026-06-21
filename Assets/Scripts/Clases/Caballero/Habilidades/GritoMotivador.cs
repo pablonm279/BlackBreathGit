@@ -132,20 +132,20 @@ public class GritoMotivador : Habilidad
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
-          ? "A commanding shout that empowers allies and, at mastery, weakens enemies."
+          ? "A commanding shout that empowers allies."
           : esPortugues
-            ? "Um grito de comando que fortalece aliados e, no dominio total, enfraquece inimigos."
-          : "Un grito de mando que potencia aliados y, al dominarlo, debilita enemigos.",
+            ? "Um grito de comando que fortalece aliados."
+          : "Un grito de mando que fortalece aliados.",
         cuerpo,
         costos,
         "#5dade2");
 
       string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
       string subtitulo = esIngles
-        ? "Boosts allied damage and Valour; at mastery, weakens enemy damage."
+        ? "A commanding shout that empowers allies."
         : esPortugues
-          ? "Aumenta dano e Valentia aliados; no dominio, reduz dano inimigo."
-          : "Aumenta daño y Valentía aliada; al dominarla, reduce daño enemigo.";
+          ? "Um grito de comando que fortalece aliados."
+          : "Un grito de mando que fortalece aliados.";
 
       string cuerpoFormato = "";
       if (esIngles)

@@ -290,6 +290,11 @@ public class MenuCaravana : MonoBehaviour
         return tier * 2;
     }
 
+    private int ObtenerBonusObjetosAntorchas(int tier)
+    {
+        return 3 + ((tier - 1) * 2);
+    }
+
     private int ObtenerBonusCargaPorBueyAlforjas(int tier)
     {
         return Mathf.Max(0, tier - 1);
@@ -872,22 +877,22 @@ public class MenuCaravana : MonoBehaviour
     private string ObtenerDescripcionAntorchasEs(int tier)
     {
         return "Antorchas de Pie:\n"
-            + "Proporcionan iluminación a los alrededores de la caravana.\n"
-            + "Disminuyen en " + ObtenerReduccionEmboscadaAntorchas(tier) + "% las chances de sufrir emboscadas al viajar o descansar.";
+            + "Disminuyen en " + ObtenerReduccionEmboscadaAntorchas(tier) + "% las chances de sufrir emboscadas al viajar o descansar.\n"
+            + "Además aumentan en " + ObtenerBonusObjetosAntorchas(tier) + "% las chances de encontrar objetos tras una batalla.";
     }
 
     private string ObtenerDescripcionAntorchasEn(int tier)
     {
         return "Standing Torches:\n"
-            + "Provide light around the caravan.\n"
-            + "Reduce the chance of ambushes while traveling or resting by " + ObtenerReduccionEmboscadaAntorchas(tier) + "%.";
+            + "Reduce the chance of ambushes while traveling or resting by " + ObtenerReduccionEmboscadaAntorchas(tier) + "%.\n"
+            + "They also increase the chance to find items after a battle by " + ObtenerBonusObjetosAntorchas(tier) + "%.";
     }
 
     private string ObtenerDescripcionAntorchasPt(int tier)
     {
         return "Tochas de Pé:\n"
-            + "Fornecem iluminação ao redor da caravana.\n"
-            + "Reduzem em " + ObtenerReduccionEmboscadaAntorchas(tier) + "% as chances de sofrer emboscadas ao viajar ou descansar.";
+            + "Reduzem em " + ObtenerReduccionEmboscadaAntorchas(tier) + "% as chances de sofrer emboscadas ao viajar ou descansar.\n"
+            + "Além disso, aumentam em " + ObtenerBonusObjetosAntorchas(tier) + "% as chances de encontrar itens após uma batalha.";
     }
 
     private string ObtenerDescripcionAlforjasEs(int tier)
@@ -935,22 +940,22 @@ public class MenuCaravana : MonoBehaviour
     private string ObtenerDescripcionCatalejosEs(int tier)
     {
         return "Catalejos:\n"
-            + "Esta mejora proporciona herramientas que mejoran el Índice de Exploración en " + ObtenerBonusCatalejos(tier) + "%.\n"
-            + "Además mejora en " + ObtenerBonusCatalejos(tier) + "% las chances de encontrar objetos tras una batalla.";
+            + "Aumentan en +" + ObtenerBonusVisionCatalejos(tier) + " el Rango de Visión de la caravana.\n"
+            + "Además mejoran en " + ObtenerBonusCatalejos(tier) + "% la Exploración Pasiva.";
     }
 
     private string ObtenerDescripcionCatalejosEn(int tier)
     {
         return "Spyglasses:\n"
-            + "This upgrade provides tools that improve the Exploration Rating by " + ObtenerBonusCatalejos(tier) + "%.\n"
-            + "It also improves the chance to find items after a battle by " + ObtenerBonusCatalejos(tier) + "%.";
+            + "Increase the caravan's Vision Range by +" + ObtenerBonusVisionCatalejos(tier) + ".\n"
+            + "They also improve Passive Exploration by " + ObtenerBonusCatalejos(tier) + "%.";
     }
 
     private string ObtenerDescripcionCatalejosPt(int tier)
     {
         return "Lunetas:\n"
-            + "Esta melhoria fornece ferramentas que aumentam o Índice de Exploração em " + ObtenerBonusCatalejos(tier) + "%.\n"
-            + "Também melhora em " + ObtenerBonusCatalejos(tier) + "% as chances de encontrar itens após uma batalha.";
+            + "Aumentam em +" + ObtenerBonusVisionCatalejos(tier) + " o Alcance de Visão da caravana.\n"
+            + "Além disso, melhoram a Exploração Passiva em " + ObtenerBonusCatalejos(tier) + "%.";
     }
 
     private string ObtenerDescripcionAlmacenEs(int tier)

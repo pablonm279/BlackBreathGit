@@ -69,7 +69,6 @@ public class AcumularEnergia : Habilidad
       if (esIngles)
       {
         cuerpo += "<b>Type:</b> Self\n";
-        cuerpo += "<b>Target:</b> Self\n";
         cuerpo += "<b>Effect on cast:</b> Applies <b>Gathering</b> buff (1 round)\n";
         cuerpo += "<b>If concentration is maintained:</b> +1 Energy Tier on next turn\n";
         cuerpo += "<b>Energy I:</b> +10% Damage, +5% Critical\n";
@@ -79,7 +78,6 @@ public class AcumularEnergia : Habilidad
       else if (esPortugues)
       {
         cuerpo += "<b>Tipo:</b> Propria\n";
-        cuerpo += "<b>Alvo:</b> O proprio usuario\n";
         cuerpo += "<b>Efeito ao ativar:</b> Aplica buff <b>Acumulando</b> (1 rodada)\n";
         cuerpo += "<b>Se mantiver a concentracao:</b> +1 Nivel de Energía no próximo turno\n";
         cuerpo += "<b>Energia I:</b> +10% Dano, +5% Critico\n";
@@ -89,7 +87,6 @@ public class AcumularEnergia : Habilidad
       else
       {
         cuerpo += "<b>Tipo:</b> Propia\n";
-        cuerpo += "<b>Objetivo:</b> Propio usuario\n";
         cuerpo += "<b>Efecto al activar:</b> Aplica buff <b>Acumulando</b> (1 ronda)\n";
         cuerpo += "<b>Si mantiene la concentracion:</b> +1 Nivel de Energía al siguiente turno\n";
         cuerpo += "<b>Energía I:</b> +10% Daño, +5% Crítico\n";

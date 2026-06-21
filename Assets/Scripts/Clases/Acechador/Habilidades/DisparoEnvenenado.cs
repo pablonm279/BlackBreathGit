@@ -234,10 +234,10 @@ public class DisparoEnvenenado : Habilidad
     }
 
     string subtitulo = esIngles
-      ? "Ranged attack that applies Poison on failed save."
+      ? "Poisonous crossbow attack."
       : esPortugues
-        ? "Ataque a distancia que aplica Veneno se falhar na resistencia."
-        : "Ataque a distancia que aplica Veneno si falla TS.";
+        ? "Ataque de besta venenosa."
+        : "Tiro de ballesta que puede envenenar.";
     string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
     txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
     txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";

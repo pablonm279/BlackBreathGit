@@ -5007,8 +5007,7 @@ public void Marcar(int n)
   {
     return scBattleManager != null
       && scBattleManager.SeleccionandoObjetivo
-      && scBattleManager.lUnidadesPosiblesHabilidadActiva != null
-      && scBattleManager.lUnidadesPosiblesHabilidadActiva.Contains(this);
+      && scBattleManager.EsUnidadObjetivoVisualHabilidadActiva(this);
   }
 
   private void ActualizarVisualObjetivoHover()

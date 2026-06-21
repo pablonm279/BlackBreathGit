@@ -95,10 +95,10 @@ public class Riposte : Habilidad
         }
 
         string subtitulo = esIngles
-            ? "Intercept melee attacks and answer misses with a counterattack."
+            ? "Intercept melee attacks and counterattacks."
             : esPortugues
-                ? "Intercepta ataques melee e responde erros com contra-ataque."
-                : "Intercepta ataques melee y responde fallos con contraataque.";
+                ? "Intercepte ataques melee e contra-ataque."
+                : "Intercepta ataques melee y contraataca.";
 
         txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
         txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";

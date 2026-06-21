@@ -425,6 +425,7 @@ public class BotonHabilidad : MonoBehaviour
         }
 
         scUiBotonesHabilidades.UIDesactivarHabilidades(HabilidadRepresentada.esHostil);
+        BattleManager.Instance.LimpiarSeleccionHabilidadActual();
         HabilidadRepresentada.Activar();
         RuntimeAnalytics.TrackDesign("combat", "ability_selected", RuntimeAnalytics.AbilityToken(HabilidadRepresentada));
         VisualBotonActivo(1);

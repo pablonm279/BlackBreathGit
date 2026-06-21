@@ -761,6 +761,9 @@ MonoBehaviour:
   MarcaMovX0Yv1: {fileID: 1516672612019980883}
   MarcaMovXv1Yv1: {fileID: 3641522972707361790}
   MarcaMeleeAtraviesa: {fileID: 7896300795311259330}
+  duracionFadeMarcaMovimiento: 0.1
+  intensidadPulsoObjetivoHabilidad: 0.065
+  velocidadPulsoObjetivoHabilidad: 5.8
   scTooltipBatalla: {fileID: 0}
   unidadesEnCasAzul: []
   obstaculosEnCasAzul: []

@@ -69,10 +69,10 @@ public class Cortevertical : Habilidad
         : ataqueActual > 0 ? $" + {ataqueActual}" : $" - {Mathf.Abs(ataqueActual)}";
       string titulo = esIngles ? "Vertical Cut" : esPortugues ? "Corte Vertical" : "Corte Vertical";
       string subtitulo = esIngles
-        ? "High-damage frontal melee attack against one target."
+        ? "Greatsword frontal melee attack against one target."
         : esPortugues
-          ? "Ataque corpo a corpo frontal de alto dano contra um alvo."
-          : "Golpe melee frontal de alto daño contra un objetivo.";
+          ? "Ataque corpo a corpo com mandoble."
+          : "Golpe frontal con el mandoble.";
 
       string cuerpo = "";
       if (esIngles)

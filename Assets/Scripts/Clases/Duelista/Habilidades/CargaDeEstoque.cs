@@ -141,10 +141,10 @@ public class CargaDeEstoque : Habilidad
 
         string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
         string subtitulo = esIngles
-            ? "Advance to the front and pierce the enemy row."
+            ? "Charges to the front tile and pierce the enemies in the row."
             : esPortugues
-                ? "Avanca ate a frente e perfura a linha inimiga."
-                : "Avanza al frente y perfora la fila enemiga.";
+                ? "Avanca para a casa da frente e perfura os inimigos na linha."
+                : "Carga hacia la casilla del frente y atraviesa los enemigos en la fila.";
 
         txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
         txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";

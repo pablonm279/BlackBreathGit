@@ -88,32 +88,29 @@ public class Distraer : Habilidad
     string cuerpo = "";
     if (esIngles)
     {
-      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Ranged control (5 range)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Ranged control \n";
       cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy\n";
-      cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> no attack roll\n";
       cuerpo += $"<color={colorEncabezado}><b>Save:</b></color> Mental vs DC {dcBase}\n";
       cuerpo += $"<color={colorEncabezado}><b>On failed save:</b></color> Distracted (2 turns): {apPenalty} max AP, {defPenalty} Defense\n";
-      cuerpo += $"<color={colorEncabezado}><b>If isolated:</b></color> gain Hidden ({escondidoGanado})\n";
+      cuerpo += $"<color={colorEncabezado}><b>If enemy isolated (no allies nearby):</b></color> Stalker gain Hidden ({escondidoGanado})\n";
       cuerpo += $"<color={colorEncabezado}><b>Stealth:</b></color> Discreet; does not reveal the caster";
     }
     else if (esPortugues)
     {
-      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Controle a distancia (5 de alcance)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Controle a distancia\n";
       cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo\n";
-      cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> sem rolagem de ataque\n";
       cuerpo += $"<color={colorEncabezado}><b>Resistencia:</b></color> Mental vs CD {dcBase}\n";
       cuerpo += $"<color={colorEncabezado}><b>Se falhar:</b></color> Distraido (2 turnos): {apPenalty} AP max, {defPenalty} Defesa\n";
-      cuerpo += $"<color={colorEncabezado}><b>Se estiver isolado:</b></color> ganha Escondido ({escondidoGanado})\n";
+      cuerpo += $"<color={colorEncabezado}><b>Se o inimigo estiver isolado (sem aliados por perto):</b></color> Acechador ganha Escondido ({escondidoGanado})\n";
       cuerpo += $"<color={colorEncabezado}><b>Furtividade:</b></color> Discreta; nao revela o lancador";
     }
     else
     {
-      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Control a distancia (5 alcance)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Control a distancia\n";
       cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo\n";
-      cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> no tiene tirada de ataque\n";
       cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Mental vs DC {dcBase}\n";
       cuerpo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> Distraido (2 turnos): {apPenalty} AP max, {defPenalty} Defensa\n";
-      cuerpo += $"<color={colorEncabezado}><b>Si esta aislado:</b></color> ganas Escondido ({escondidoGanado})\n";
+      cuerpo += $"<color={colorEncabezado}><b>Si el enemigo esta aislado (sin aliados cerca):</b></color> Acechador ganas Escondido ({escondidoGanado})\n";
       cuerpo += $"<color={colorEncabezado}><b>Sigilo:</b></color> Discreta; no revela al lanzador";
     }
 

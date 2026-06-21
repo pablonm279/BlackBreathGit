@@ -20,7 +20,17 @@ public class BattleManager : MonoBehaviour
 {
   private const string TooltipObstaculoId = "combate_obstaculo";
   private const string TooltipEscapeId = "combate_escape";
+  private const string TooltipHostilSinObjetivosId = "combate_hostil_sin_objetivos";
   private static bool aplicacionCerrandose;
+  private readonly Dictionary<Casilla, EstadoVisualCasillaPreview> estadosPreviewHoverHostil = new Dictionary<Casilla, EstadoVisualCasillaPreview>();
+  private readonly HashSet<Casilla> casillasPreviewHoverHostil = new HashSet<Casilla>();
+  private readonly List<Unidad> unidadesPosiblesPreviewHoverHostil = new List<Unidad>();
+  private readonly List<Obstaculo> obstaculosPosiblesPreviewHoverHostil = new List<Obstaculo>();
+  private Casilla casillaOrigenPreviewHoverHostil;
+  private bool previewHoverMeleeGenericoActivo;
+  private GameObject fantasmaPreviewHoverHostil;
+  private Image imagenFantasmaPreviewHoverHostil;
+  private Canvas canvasFantasmaPreviewHoverHostil;
 
   [Header("Ajustes visuales de batalla")]
   [SerializeField] public float TAMANIO_UNIDADES = 1f;
@@ -131,6 +141,15 @@ public class BattleManager : MonoBehaviour
   }
   private readonly Dictionary<int, Vector3> escalaBaseUnidadesBatalla = new Dictionary<int, Vector3>();
   private readonly List<RaycastResult> resultadosRaycastUnidadBajoMouse = new List<RaycastResult>();
+
+  private struct EstadoVisualCasillaPreview
+  {
+    public bool capaAzulActiva;
+    public bool capaRojaActiva;
+    public bool capaNegraActiva;
+    public bool meshRendererActivo;
+    public bool marcaMeleeAtraviesaActiva;
+  }
 
   private void OnValidate()
   {
@@ -1006,38 +1025,33 @@ public class BattleManager : MonoBehaviour
 
     unidadRefuerzo.entroComoAliado = true;
 
-    if (ladoB.c1x3.Presente == null)
+    List<Casilla> casillasSinTrampa = new List<Casilla>();
+    List<Casilla> casillasConTrampa = new List<Casilla>();
+    Casilla[] casillasRetaguardiaAliada = { ladoB.c1x1, ladoB.c1x2, ladoB.c1x3, ladoB.c1x4, ladoB.c1x5 };
+
+    foreach (Casilla casilla in casillasRetaguardiaAliada)
     {
-      enemigo.SetActive(true);
-      ladoB.c1x3.PonerObjetoEnCasillaAnimado(enemigo, 1);
-      unidadRefuerzo.EstablecerAPActualA(0);
-      seColoco = true;
+      if (casilla == null || casilla.Presente != null)
+      {
+        continue;
+      }
+
+      if (casilla.GetComponent<Trampa>() == null)
+      {
+        casillasSinTrampa.Add(casilla);
+      }
+      else
+      {
+        casillasConTrampa.Add(casilla);
+      }
     }
-    else if (ladoB.c1x2.Presente == null)
+
+    List<Casilla> casillasCandidatas = casillasSinTrampa.Count > 0 ? casillasSinTrampa : casillasConTrampa;
+    if (casillasCandidatas.Count > 0)
     {
+      Casilla casillaEntrada = casillasCandidatas[UnityEngine.Random.Range(0, casillasCandidatas.Count)];
       enemigo.SetActive(true);
-      ladoB.c1x2.PonerObjetoEnCasillaAnimado(enemigo, 1);
-      unidadRefuerzo.EstablecerAPActualA(0);
-      seColoco = true;
-    }
-    else if (ladoB.c1x4.Presente == null)
-    {
-      enemigo.SetActive(true);
-      ladoB.c1x4.PonerObjetoEnCasillaAnimado(enemigo, 1);
-      unidadRefuerzo.EstablecerAPActualA(0);
-      seColoco = true;
-    }
-    else if (ladoB.c1x5.Presente == null)
-    {
-      enemigo.SetActive(true);
-      ladoB.c1x5.PonerObjetoEnCasillaAnimado(enemigo, 1);
-      unidadRefuerzo.EstablecerAPActualA(0);
-      seColoco = true;
-    }
-    else if (ladoB.c1x1.Presente == null)
-    {
-      enemigo.SetActive(true);
-      ladoB.c1x1.PonerObjetoEnCasillaAnimado(enemigo, 1);
+      casillaEntrada.PonerObjetoEnCasillaAnimado(enemigo, 1);
       unidadRefuerzo.EstablecerAPActualA(0);
       seColoco = true;
     }
@@ -1869,6 +1883,7 @@ public class BattleManager : MonoBehaviour
   }
   public void LimpiarCapasCasillas()
   {
+    LimpiarPreviewHoverHostil();
 
     foreach (Casilla cas in lCasillasTotal)
     {
@@ -1876,6 +1891,21 @@ public class BattleManager : MonoBehaviour
     }
 
   }
+
+  public void LimpiarSeleccionHabilidadActual()
+  {
+    LimpiarFadeHoverObjetivoHabilidad();
+    LimpiarPreviewHoverHostil();
+    _habilidadActiva?.LimpiarMarcasUnidadesPosibles();
+    DesmarcarTodasLasUnidades();
+    LimpiarCapasCasillas();
+    lUnidadesPosiblesHabilidadActiva.Clear();
+    lObstaculosPosiblesHabilidadActiva.Clear();
+    SeleccionandoObjetivo = false;
+    HabilidadActiva = null;
+    ActualizarTextoSeleccionObjetivo();
+  }
+
   public bool SeleccionandoObjetivo;
   private Habilidad _habilidadActiva;
   public Habilidad HabilidadActiva
@@ -1889,10 +1919,41 @@ public class BattleManager : MonoBehaviour
       }
 
       LimpiarFadeHoverObjetivoHabilidad();
+      LimpiarPreviewHoverHostil();
       _habilidadActiva?.LimpiarMarcasUnidadesPosibles();
       _habilidadActiva = value;
       ActualizarVisibilidadIndicadorEsfuerzo();
     }
+  }
+
+  public bool EsUnidadObjetivoVisualHabilidadActiva(Unidad unidad)
+  {
+    if (unidad == null || !SeleccionandoObjetivo || HabilidadActiva == null)
+    {
+      return false;
+    }
+
+    if (PreviewHoverHostilActivo())
+    {
+      return unidadesPosiblesPreviewHoverHostil.Contains(unidad);
+    }
+
+    return lUnidadesPosiblesHabilidadActiva != null && lUnidadesPosiblesHabilidadActiva.Contains(unidad);
+  }
+
+  public bool EsObstaculoObjetivoVisualHabilidadActiva(Obstaculo obstaculo)
+  {
+    if (obstaculo == null || !SeleccionandoObjetivo || HabilidadActiva == null)
+    {
+      return false;
+    }
+
+    if (PreviewHoverHostilActivo())
+    {
+      return obstaculosPosiblesPreviewHoverHostil.Contains(obstaculo);
+    }
+
+    return lObstaculosPosiblesHabilidadActiva != null && lObstaculosPosiblesHabilidadActiva.Contains(obstaculo);
   }
 
   public void AplicarFadeHoverObjetivoHabilidad(IEnumerable<Unidad> unidadesMantenerVisibles)
@@ -2202,6 +2263,10 @@ public class BattleManager : MonoBehaviour
   {
     bool tutorialActivo = scTutorialCombate != null && scTutorialCombate.tutorialCombateActivo;
     SincronizarPausaConVisibilidadLog();
+    if (PreviewHoverHostilActivo() && !ShiftPreviewHoverHostilPresionado())
+    {
+      LimpiarPreviewHoverHostil();
+    }
     ActualizarFadeHoverObjetivoHabilidadPorMouse();
     ActualizarFadeAliadoDebajoUnidadActivaFrontal();
 
@@ -2692,13 +2757,28 @@ public class BattleManager : MonoBehaviour
 
     txtSeleccionaobj.SetActive(true);
 
+    if (PreviewHoverHostilActivo())
+    {
+      if (tmp != null)
+      {
+        tmp.text = TRADU.i != null ? TRADU.i.Traducir("Preview") : "Preview";
+        tmp.color = new Color(1f, 0.82f, 0.35f);
+      }
+      return;
+    }
+
     if (!hayObjetivos)
     {
       if (HabilidadActiva.esHostil)
       {
+        Unidad provocador = unidadActiva != null ? unidadActiva.ObtenerProvocadorVigente() : null;
+        if (provocador == null && unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() == null)
+        {
+          TutorialTooltipManager.TryShow(TooltipHostilSinObjetivosId);
+        }
+
         if (tmp != null)
         {
-          Unidad provocador = unidadActiva != null ? unidadActiva.ObtenerProvocadorVigente() : null;
           if (provocador != null)
           {
             string nombreProvocador = TRADU.i != null ? TRADU.i.Traducir(provocador.uNombre) : provocador.uNombre;
@@ -2734,7 +2814,14 @@ public class BattleManager : MonoBehaviour
 
     if (SeleccionandoObjetivo)
     {
-      HabilidadActiva.SincronizarMarcasUnidadesPosibles();
+      if (PreviewHoverHostilActivo())
+      {
+        HabilidadActiva.SincronizarMarcasUnidadesPosibles(unidadesPosiblesPreviewHoverHostil);
+      }
+      else
+      {
+        HabilidadActiva.SincronizarMarcasUnidadesPosibles();
+      }
     }
     else
     {
@@ -4977,6 +5064,657 @@ public class BattleManager : MonoBehaviour
       }
     }
 
+  }
+
+  public bool MostrarPreviewHoverHostilDesdeCasilla(Casilla origenPreview)
+  {
+    if (!PuedeMostrarPreviewHoverHostil(origenPreview))
+    {
+      if (PreviewHoverHostilActivo())
+      {
+        LimpiarPreviewHoverHostil();
+      }
+      return false;
+    }
+
+    if (casillaOrigenPreviewHoverHostil == origenPreview)
+    {
+      MostrarFantasmaPreviewHoverHostil(origenPreview);
+      return true;
+    }
+
+    if (PreviewHoverHostilActivo())
+    {
+      LimpiarPreviewHoverHostil();
+    }
+
+    previewHoverMeleeGenericoActivo = false;
+    if (!TryInferirPatronRangoHostil(out int alcanceBase, out int ancho))
+    {
+      return false;
+    }
+
+    GuardarEstadoVisualPreviewHoverHostil();
+    casillaOrigenPreviewHoverHostil = origenPreview;
+
+    foreach (Casilla casilla in lCasillasTotal)
+    {
+      OcultarCapasHostilesParaPreview(casilla);
+    }
+
+    HashSet<Casilla> casillasNegras;
+    HashSet<Casilla> casillasRojas = CalcularCasillasRangoHostilDesde(origenPreview, alcanceBase, ancho, HabilidadActiva.esMelee, out casillasNegras);
+    ActualizarUnidadesPosiblesPreviewHoverHostil(casillasRojas);
+
+    foreach (Casilla casillaNegra in casillasNegras)
+    {
+      if (casillaNegra == null)
+      {
+        continue;
+      }
+
+      casillaNegra.ActivarCapaColorNegro();
+      casillasPreviewHoverHostil.Add(casillaNegra);
+    }
+
+    foreach (Casilla casillaRoja in casillasRojas)
+    {
+      if (casillaRoja == null)
+      {
+        continue;
+      }
+
+      casillaRoja.ActivarCapaColorRojo();
+      casillasPreviewHoverHostil.Add(casillaRoja);
+    }
+
+    MostrarFantasmaPreviewHoverHostil(origenPreview);
+    SincronizarMarcasHabilidadActiva();
+    ActualizarTextoSeleccionObjetivo();
+    return true;
+  }
+
+  public bool MostrarPreviewHoverMeleeGenericoDesdeCasilla(Casilla origenPreview)
+  {
+    if (!PuedeMostrarPreviewHoverMeleeGenerico(origenPreview))
+    {
+      if (previewHoverMeleeGenericoActivo)
+      {
+        LimpiarPreviewHoverHostil();
+      }
+      return false;
+    }
+
+    if (previewHoverMeleeGenericoActivo && casillaOrigenPreviewHoverHostil == origenPreview)
+    {
+      MostrarFantasmaPreviewHoverHostil(origenPreview);
+      return true;
+    }
+
+    if (PreviewHoverHostilActivo())
+    {
+      LimpiarPreviewHoverHostil();
+    }
+
+    GuardarEstadoVisualPreviewHoverHostil();
+    casillaOrigenPreviewHoverHostil = origenPreview;
+    previewHoverMeleeGenericoActivo = true;
+
+    foreach (Casilla casilla in lCasillasTotal)
+    {
+      OcultarCapasHostilesParaPreview(casilla);
+    }
+
+    HashSet<Casilla> casillasNegras;
+    HashSet<Casilla> casillasRojas = CalcularCasillasRangoHostilDesde(origenPreview, 1, 1, true, out casillasNegras);
+    unidadesPosiblesPreviewHoverHostil.Clear();
+    obstaculosPosiblesPreviewHoverHostil.Clear();
+
+    foreach (Casilla casillaNegra in casillasNegras)
+    {
+      if (casillaNegra == null)
+      {
+        continue;
+      }
+
+      casillaNegra.ActivarCapaColorNegro();
+      casillasPreviewHoverHostil.Add(casillaNegra);
+    }
+
+    foreach (Casilla casillaRoja in casillasRojas)
+    {
+      if (casillaRoja == null)
+      {
+        continue;
+      }
+
+      casillaRoja.ActivarCapaColorRojo();
+      casillasPreviewHoverHostil.Add(casillaRoja);
+    }
+
+    MostrarFantasmaPreviewHoverHostil(origenPreview);
+    SincronizarMarcasHabilidadActiva();
+    ActualizarTextoSeleccionObjetivo();
+    return true;
+  }
+
+  public void LimpiarPreviewHoverHostil()
+  {
+    if (!PreviewHoverHostilActivo())
+    {
+      unidadesPosiblesPreviewHoverHostil.Clear();
+      obstaculosPosiblesPreviewHoverHostil.Clear();
+      previewHoverMeleeGenericoActivo = false;
+      OcultarFantasmaPreviewHoverHostil();
+      return;
+    }
+
+    foreach (KeyValuePair<Casilla, EstadoVisualCasillaPreview> par in estadosPreviewHoverHostil)
+    {
+      RestaurarEstadoVisualCasillaPreview(par.Key, par.Value);
+    }
+
+    estadosPreviewHoverHostil.Clear();
+    casillasPreviewHoverHostil.Clear();
+    unidadesPosiblesPreviewHoverHostil.Clear();
+    obstaculosPosiblesPreviewHoverHostil.Clear();
+    casillaOrigenPreviewHoverHostil = null;
+    previewHoverMeleeGenericoActivo = false;
+    OcultarFantasmaPreviewHoverHostil();
+    SincronizarMarcasHabilidadActiva();
+    ActualizarTextoSeleccionObjetivo();
+  }
+
+  private bool PreviewHoverHostilActivo()
+  {
+    return casillaOrigenPreviewHoverHostil != null || estadosPreviewHoverHostil.Count > 0 || casillasPreviewHoverHostil.Count > 0;
+  }
+
+  private bool ShiftPreviewHoverHostilPresionado()
+  {
+    return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+  }
+
+  private bool PuedeMostrarPreviewHoverHostil(Casilla origenPreview)
+  {
+    if (!ShiftPreviewHoverHostilPresionado())
+    {
+      return false;
+    }
+
+    if (origenPreview == null || unidadActiva == null || HabilidadActiva == null || !SeleccionandoObjetivo)
+    {
+      return false;
+    }
+
+    if (!HabilidadActiva.esHostil || unidadActiva.GetComponent<IAUnidad>() != null)
+    {
+      return false;
+    }
+
+    Casilla casillaUnidad = unidadActiva.CasillaPosicion;
+    return casillaUnidad != null && origenPreview.lado == casillaUnidad.lado;
+  }
+
+  private bool PuedeMostrarPreviewHoverMeleeGenerico(Casilla origenPreview)
+  {
+    if (!ShiftPreviewHoverHostilPresionado())
+    {
+      return false;
+    }
+
+    if (origenPreview == null || unidadActiva == null)
+    {
+      return false;
+    }
+
+    if (HabilidadActiva != null && HabilidadActiva.esMelee)
+    {
+      return false;
+    }
+
+    if (unidadActiva.GetComponent<IAUnidad>() != null || unidadActiva.ObtenerAPActual() < 1)
+    {
+      return false;
+    }
+
+    if (origenPreview.MarcaMelee == null || !origenPreview.MarcaMelee.activeInHierarchy)
+    {
+      return false;
+    }
+
+    Casilla casillaUnidad = unidadActiva.CasillaPosicion;
+    return casillaUnidad != null && origenPreview.lado == casillaUnidad.lado;
+  }
+
+  private void ActualizarUnidadesPosiblesPreviewHoverHostil(IEnumerable<Casilla> casillasRojas)
+  {
+    unidadesPosiblesPreviewHoverHostil.Clear();
+    obstaculosPosiblesPreviewHoverHostil.Clear();
+    if (casillasRojas == null)
+    {
+      return;
+    }
+
+    Unidad provocador = unidadActiva != null ? unidadActiva.ObtenerProvocadorVigente() : null;
+    HashSet<Unidad> unidadesAgregadas = new HashSet<Unidad>();
+    foreach (Casilla casilla in casillasRojas)
+    {
+      if (casilla == null || casilla.Presente == null)
+      {
+        continue;
+      }
+
+      Unidad unidadObjetivo = casilla.Presente.GetComponent<Unidad>();
+      if (unidadObjetivo == null)
+      {
+        Obstaculo obstaculoObjetivo = casilla.Presente.GetComponent<Obstaculo>();
+        if (obstaculoObjetivo != null && HabilidadActiva != null && HabilidadActiva.bAfectaObstaculos && provocador == null)
+        {
+          obstaculosPosiblesPreviewHoverHostil.Add(obstaculoObjetivo);
+        }
+
+        continue;
+      }
+
+      if (provocador != null && unidadObjetivo != provocador)
+      {
+        continue;
+      }
+
+      if (unidadesAgregadas.Add(unidadObjetivo))
+      {
+        unidadesPosiblesPreviewHoverHostil.Add(unidadObjetivo);
+      }
+    }
+  }
+
+  private void GuardarEstadoVisualPreviewHoverHostil()
+  {
+    estadosPreviewHoverHostil.Clear();
+    if (lCasillasTotal == null)
+    {
+      return;
+    }
+
+    foreach (Casilla casilla in lCasillasTotal)
+    {
+      if (casilla == null)
+      {
+        continue;
+      }
+
+      MeshRenderer meshRenderer = casilla.GetComponent<MeshRenderer>();
+      EstadoVisualCasillaPreview estado = new EstadoVisualCasillaPreview
+      {
+        capaAzulActiva = ObtenerCapaCasillaActiva(casilla, 0),
+        capaRojaActiva = ObtenerCapaCasillaActiva(casilla, 1),
+        capaNegraActiva = ObtenerCapaCasillaActiva(casilla, 2),
+        meshRendererActivo = meshRenderer == null || meshRenderer.enabled,
+        marcaMeleeAtraviesaActiva = casilla.MarcaMeleeAtraviesa != null && casilla.MarcaMeleeAtraviesa.activeSelf
+      };
+      estadosPreviewHoverHostil[casilla] = estado;
+    }
+  }
+
+  private void RestaurarEstadoVisualCasillaPreview(Casilla casilla, EstadoVisualCasillaPreview estado)
+  {
+    if (casilla == null)
+    {
+      return;
+    }
+
+    EstablecerCapaCasillaActiva(casilla, 0, estado.capaAzulActiva);
+    EstablecerCapaCasillaActiva(casilla, 1, estado.capaRojaActiva);
+    EstablecerCapaCasillaActiva(casilla, 2, estado.capaNegraActiva);
+
+    MeshRenderer meshRenderer = casilla.GetComponent<MeshRenderer>();
+    if (meshRenderer != null)
+    {
+      meshRenderer.enabled = estado.meshRendererActivo;
+    }
+
+    if (casilla.MarcaMeleeAtraviesa != null)
+    {
+      casilla.MarcaMeleeAtraviesa.SetActive(estado.marcaMeleeAtraviesaActiva);
+    }
+  }
+
+  private void OcultarCapasHostilesParaPreview(Casilla casilla)
+  {
+    if (casilla == null)
+    {
+      return;
+    }
+
+    EstablecerCapaCasillaActiva(casilla, 1, false);
+    EstablecerCapaCasillaActiva(casilla, 2, false);
+
+    MeshRenderer meshRenderer = casilla.GetComponent<MeshRenderer>();
+    if (meshRenderer != null)
+    {
+      meshRenderer.enabled = true;
+    }
+
+    if (casilla.MarcaMeleeAtraviesa != null)
+    {
+      casilla.MarcaMeleeAtraviesa.SetActive(false);
+    }
+  }
+
+  private bool ObtenerCapaCasillaActiva(Casilla casilla, int indice)
+  {
+    if (casilla == null || casilla.transform.childCount <= indice)
+    {
+      return false;
+    }
+
+    return casilla.transform.GetChild(indice).gameObject.activeSelf;
+  }
+
+  private void EstablecerCapaCasillaActiva(Casilla casilla, int indice, bool activa)
+  {
+    if (casilla == null || casilla.transform.childCount <= indice)
+    {
+      return;
+    }
+
+    casilla.transform.GetChild(indice).gameObject.SetActive(activa);
+  }
+
+  private bool TryInferirPatronRangoHostil(out int alcanceBase, out int ancho)
+  {
+    alcanceBase = 0;
+    ancho = 0;
+
+    if (unidadActiva == null || unidadActiva.CasillaPosicion == null || HabilidadActiva == null)
+    {
+      return false;
+    }
+
+    HashSet<Casilla> casillasObjetivo = ObtenerCasillasRojasActuales();
+    if (casillasObjetivo.Count == 0 && HabilidadActiva.lCasillasafectadas != null)
+    {
+      foreach (Casilla casilla in HabilidadActiva.lCasillasafectadas)
+      {
+        if (casilla != null)
+        {
+          casillasObjetivo.Add(casilla);
+        }
+      }
+    }
+
+    if (casillasObjetivo.Count == 0)
+    {
+      return false;
+    }
+
+    Casilla origenActual = unidadActiva.CasillaPosicion;
+    for (int alcance = 0; alcance <= 12; alcance++)
+    {
+      for (int anchoCandidato = 0; anchoCandidato <= 5; anchoCandidato++)
+      {
+        HashSet<Casilla> casillasCandidatas = CalcularCasillasRangoHostilDesde(origenActual, alcance, anchoCandidato, HabilidadActiva.esMelee, out _);
+        if (casillasCandidatas.SetEquals(casillasObjetivo))
+        {
+          alcanceBase = alcance;
+          ancho = anchoCandidato;
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  private HashSet<Casilla> ObtenerCasillasRojasActuales()
+  {
+    HashSet<Casilla> casillasRojas = new HashSet<Casilla>();
+    if (lCasillasTotal == null)
+    {
+      return casillasRojas;
+    }
+
+    foreach (Casilla casilla in lCasillasTotal)
+    {
+      if (casilla != null && ObtenerCapaCasillaActiva(casilla, 1))
+      {
+        casillasRojas.Add(casilla);
+      }
+    }
+
+    return casillasRojas;
+  }
+
+  private HashSet<Casilla> CalcularCasillasRangoHostilDesde(Casilla origen, int alcanceBase, int ancho, bool esMelee, out HashSet<Casilla> casillasNegras)
+  {
+    casillasNegras = new HashSet<Casilla>();
+    HashSet<Casilla> casillasRojas = new HashSet<Casilla>();
+    if (origen == null)
+    {
+      return casillasRojas;
+    }
+
+    int alcanceFinal = alcanceBase;
+    if (esMelee)
+    {
+      if (origen.posX == 3)
+      {
+        alcanceFinal += CalcularAumentoRangoMeleePreviewSinPintar(origen, casillasNegras);
+      }
+
+      if (TieneObstaculoOUnidadAdelanteMeleePreview(origen) != 0)
+      {
+        alcanceFinal++;
+      }
+    }
+
+    List<Casilla> casillasAfectadas = origen.ObtenerCasillasRango(Mathf.Max(0, alcanceFinal), Mathf.Max(0, ancho));
+    foreach (Casilla casilla in casillasAfectadas)
+    {
+      if (casilla != null && !casillasNegras.Contains(casilla))
+      {
+        casillasRojas.Add(casilla);
+      }
+    }
+
+    return casillasRojas;
+  }
+
+  private int CalcularAumentoRangoMeleePreviewSinPintar(Casilla origenPreview, HashSet<Casilla> casillasNegras)
+  {
+    LadoManager ladoOpuesto = origenPreview != null && origenPreview.ladoOpuesto != null
+      ? origenPreview.ladoOpuesto.GetComponent<LadoManager>()
+      : null;
+    if (ladoOpuesto == null)
+    {
+      return 0;
+    }
+
+    int posYorigen = origenPreview.posY;
+    List<Casilla> casillasAdyacentesyFrenteColumna1 = new List<Casilla>();
+    List<Casilla> casillasAdyacentesyFrenteColumna2 = new List<Casilla>();
+
+    foreach (Transform child in ladoOpuesto.transform)
+    {
+      Casilla casilla = child.GetComponent<Casilla>();
+      if (casilla == null)
+      {
+        continue;
+      }
+
+      int distanciaY = Math.Abs(casilla.posY - posYorigen);
+      if (distanciaY >= 2)
+      {
+        continue;
+      }
+
+      if (casilla.posX == 3)
+      {
+        casillasAdyacentesyFrenteColumna1.Add(casilla);
+      }
+      else if (casilla.posX == 2)
+      {
+        casillasAdyacentesyFrenteColumna2.Add(casilla);
+      }
+    }
+
+    foreach (Casilla casilla in casillasAdyacentesyFrenteColumna1)
+    {
+      if (casilla.BloqueaAvanceMeleeDesdeFila(posYorigen, unidadActiva))
+      {
+        return 0;
+      }
+    }
+
+    foreach (Casilla casilla in casillasAdyacentesyFrenteColumna1)
+    {
+      casillasNegras.Add(casilla);
+    }
+
+    foreach (Casilla casilla in casillasAdyacentesyFrenteColumna2)
+    {
+      if (casilla.BloqueaAvanceMeleeDesdeFila(posYorigen, unidadActiva))
+      {
+        return 1;
+      }
+    }
+
+    foreach (Casilla casilla in casillasAdyacentesyFrenteColumna2)
+    {
+      casillasNegras.Add(casilla);
+    }
+
+    return 2;
+  }
+
+  private void MostrarFantasmaPreviewHoverHostil(Casilla origenPreview)
+  {
+    if (origenPreview == null || unidadActiva == null || unidadActiva.uImage == null || unidadActiva.uImage.sprite == null)
+    {
+      OcultarFantasmaPreviewHoverHostil();
+      return;
+    }
+
+    AsegurarFantasmaPreviewHoverHostil();
+    if (fantasmaPreviewHoverHostil == null || imagenFantasmaPreviewHoverHostil == null)
+    {
+      return;
+    }
+
+    Canvas canvasReferencia = unidadActiva.uImage.GetComponentInParent<Canvas>(true);
+    RectTransform rectReferencia = unidadActiva.uImage.rectTransform;
+    RectTransform rectFantasma = fantasmaPreviewHoverHostil.GetComponent<RectTransform>();
+    if (rectReferencia != null && rectFantasma != null)
+    {
+      Vector2 size = rectReferencia.rect.size;
+      if (size.x <= 0f || size.y <= 0f)
+      {
+        size = rectReferencia.sizeDelta;
+      }
+
+      rectFantasma.sizeDelta = new Vector2(size.x * 1.08f, size.y * 1.18f);
+      rectFantasma.pivot = rectReferencia.pivot;
+    }
+
+    imagenFantasmaPreviewHoverHostil.sprite = unidadActiva.uImage.sprite;
+    imagenFantasmaPreviewHoverHostil.color = new Color(0.55f, 0.9f, 1f, 0.92f);
+
+    Vector3 offset = Vector3.zero;
+    if (unidadActiva.CasillaPosicion != null)
+    {
+      offset = unidadActiva.transform.position - unidadActiva.CasillaPosicion.transform.position;
+    }
+
+    if (canvasReferencia != null)
+    {
+      offset += canvasReferencia.transform.up * 0.12f;
+    }
+
+    fantasmaPreviewHoverHostil.transform.position = origenPreview.transform.position + offset;
+    if (canvasReferencia != null)
+    {
+      fantasmaPreviewHoverHostil.transform.rotation = canvasReferencia.transform.rotation;
+      fantasmaPreviewHoverHostil.transform.localScale = canvasReferencia.transform.lossyScale;
+
+      canvasFantasmaPreviewHoverHostil.worldCamera = canvasReferencia.worldCamera;
+      canvasFantasmaPreviewHoverHostil.sortingLayerID = canvasReferencia.sortingLayerID;
+    }
+
+    canvasFantasmaPreviewHoverHostil.sortingOrder = RenderOrderHelper.CalcularOrdenPorY(origenPreview.posY) + 8;
+    fantasmaPreviewHoverHostil.SetActive(true);
+  }
+
+  private void AsegurarFantasmaPreviewHoverHostil()
+  {
+    if (fantasmaPreviewHoverHostil != null)
+    {
+      return;
+    }
+
+    fantasmaPreviewHoverHostil = new GameObject("PreviewHostilFantasma", typeof(RectTransform), typeof(Canvas), typeof(CanvasGroup));
+    fantasmaPreviewHoverHostil.transform.SetParent(transform, false);
+
+    canvasFantasmaPreviewHoverHostil = fantasmaPreviewHoverHostil.GetComponent<Canvas>();
+    canvasFantasmaPreviewHoverHostil.renderMode = RenderMode.WorldSpace;
+    canvasFantasmaPreviewHoverHostil.overrideSorting = true;
+
+    CanvasGroup canvasGroup = fantasmaPreviewHoverHostil.GetComponent<CanvasGroup>();
+    canvasGroup.alpha = 0.6f;
+    canvasGroup.interactable = false;
+    canvasGroup.blocksRaycasts = false;
+
+    GameObject imagenGO = new GameObject("Silueta", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+    imagenGO.transform.SetParent(fantasmaPreviewHoverHostil.transform, false);
+    imagenFantasmaPreviewHoverHostil = imagenGO.GetComponent<Image>();
+    imagenFantasmaPreviewHoverHostil.raycastTarget = false;
+    imagenFantasmaPreviewHoverHostil.preserveAspect = true;
+
+    RectTransform rectImagen = imagenGO.GetComponent<RectTransform>();
+    rectImagen.anchorMin = Vector2.zero;
+    rectImagen.anchorMax = Vector2.one;
+    rectImagen.offsetMin = Vector2.zero;
+    rectImagen.offsetMax = Vector2.zero;
+  }
+
+  private void OcultarFantasmaPreviewHoverHostil()
+  {
+    if (fantasmaPreviewHoverHostil != null)
+    {
+      fantasmaPreviewHoverHostil.SetActive(false);
+    }
+  }
+
+  private int TieneObstaculoOUnidadAdelanteMeleePreview(Casilla origenPreview)
+  {
+    if (origenPreview == null || origenPreview.posX != 2 || origenPreview.ladoGO == null)
+    {
+      return 0;
+    }
+
+    Casilla casillaRevisar = null;
+    foreach (Transform child in origenPreview.ladoGO.transform)
+    {
+      Casilla casilla = child.GetComponent<Casilla>();
+      if (casilla != null && casilla.posY == origenPreview.posY && casilla.posX == origenPreview.posX + 1)
+      {
+        casillaRevisar = casilla;
+        break;
+      }
+    }
+
+    if (casillaRevisar == null || casillaRevisar.Presente == null)
+    {
+      return 0;
+    }
+
+    if (casillaRevisar.Presente.GetComponent<Unidad>() != null)
+    {
+      return 1;
+    }
+
+    Obstaculo obstaculo = casillaRevisar.Presente.GetComponent<Obstaculo>();
+    return obstaculo != null && obstaculo.bPermiteAtacarDetras ? 2 : 0;
   }
 
   bool EstaEnPosMelee(Casilla casilla, bool ignorarPresente = false)

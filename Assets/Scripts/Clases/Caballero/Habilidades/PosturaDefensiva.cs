@@ -13,7 +13,7 @@ public class PosturaDefensiva : Habilidad
     [SerializeField] private GameObject VFXenObjetivo;
    
    
-     public override void  Awake()
+    public override void  Awake()
     {
       nombre = "Postura Defensiva";
       IDenClase = 7;
@@ -29,9 +29,26 @@ public class PosturaDefensiva : Habilidad
       esHostil = false;
       cooldownMax = 0;
       bAfectaObstaculos = false;
+      omitirAnimacionDeUso = true;
 
       imHab = Resources.Load<Sprite>("imHab/Caballero_PosturaDefensiva");
       ActualizarDescripcion();
+    }
+
+    public override async Task Resolver(List<object> Objetivos, Casilla casillaOrigenTrampas = null)
+    {
+      ClaseCaballero caballero = scEstaUnidad as ClaseCaballero;
+      if (caballero != null)
+      {
+        caballero.NotificarInicioPosturaDefensiva();
+      }
+
+      await base.Resolver(Objetivos, casillaOrigenTrampas);
+
+      if (caballero != null && !caballero.TieneBuffNombre("Postura Defensiva"))
+      {
+        caballero.NotificarFinPosturaDefensiva();
+      }
     }
 
    
@@ -67,7 +84,6 @@ public class PosturaDefensiva : Habilidad
       if (esIngles)
       {
         cuerpo += "<b>Type:</b> Self Buff + Reaction\n";
-        cuerpo += "<b>Target:</b> Self\n";
         cuerpo += $"<b>Buff (2 turns):</b> +{bonoDefensa} Defense";
         if (bonoAtaque > 0)
         {
@@ -82,7 +98,6 @@ public class PosturaDefensiva : Habilidad
       else if (esPortugues)
       {
         cuerpo += "<b>Tipo:</b> Auto Buff + Reacao\n";
-        cuerpo += "<b>Alvo:</b> O proprio usuario\n";
         cuerpo += $"<b>Buff (2 turnos):</b> +{bonoDefensa} Defesa";
         if (bonoAtaque > 0)
         {
@@ -97,7 +112,6 @@ public class PosturaDefensiva : Habilidad
       else
       {
         cuerpo += "<b>Tipo:</b> Auto Buff + Reaccion\n";
-        cuerpo += "<b>Objetivo:</b> Uno mismo\n";
         cuerpo += $"<b>Buff (2 turnos):</b> +{bonoDefensa} Defensa";
         if (bonoAtaque > 0)
         {

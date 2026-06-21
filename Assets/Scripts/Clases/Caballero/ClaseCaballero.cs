@@ -33,6 +33,7 @@ public class ClaseCaballero : Unidad
    public int PASIVA_Implacable_CARGAS; 
    private bool posePosturaDefensivaActiva;
    private Sprite poseIdleOriginal;
+   private Sprite poseTurnoActivoOriginal;
    private Sprite posePosturaDefensivaAlternativaActiva;
    private UnidadPoseController poseControllerCaballero;
    
@@ -392,17 +393,20 @@ public class ClaseCaballero : Unidad
         if (!posePosturaDefensivaActiva)
         {
           poseIdleOriginal = poseControllerCaballero.poseIdle;
+          poseTurnoActivoOriginal = poseControllerCaballero.poseTurnoActivo;
         }
 
         poseControllerCaballero.poseIdle = posePosturaDefensiva;
+        poseControllerCaballero.poseTurnoActivo = posePosturaDefensiva;
         posePosturaDefensivaActiva = true;
         poseControllerCaballero.SetIdle();
         return;
       }
 
-      if (posePosturaDefensivaActiva && poseIdleOriginal != null)
+      if (posePosturaDefensivaActiva)
       {
         poseControllerCaballero.poseIdle = poseIdleOriginal;
+        poseControllerCaballero.poseTurnoActivo = poseTurnoActivoOriginal;
         poseControllerCaballero.RefrescarPoseActual();
       }
 
@@ -457,7 +461,6 @@ public class ClaseCaballero : Unidad
     }
 
 }
-
 
 
 

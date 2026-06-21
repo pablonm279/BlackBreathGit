@@ -15843,7 +15843,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: v0.75.1
+  m_text: v0.75.2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -31797,7 +31797,8 @@ MonoBehaviour:
     \"C\"\nMen\xFA Mejoras   -- \"I\"\nMen\xFA S\xE9quitos  -- \"M\"\nGuardar Partida
     R\xE1pida -- \"F5\"\nCarga Partida R\xE1pida -- \"F9\"\n\n\n-----------------------------------------------\nBatallas:\n\nSiguiente
     Turno  -- \"Espacio\"\nInformaci\xF3n Unidad  -- \"I\"\nModo R\xE1pido -- \"F\"\nSeleccionar
-    Habilidad  -- \"1, 2, 3, 4...\"\n"
+    Habilidad  -- \"1, 2, 3, 4...\"\nPrevisualizar Habilidad Seleccionada -- \"Mantener
+    Shift\"\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -46553,6 +46554,8 @@ MonoBehaviour:
     Select Skill 
     -- "1, 2, 3, 4..."
 
+    Preview Selected Skill -- "Hold Shift"
+
 
 
 '
@@ -57944,10 +57947,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Campanha:\n\nMenu de Descanso -- \"R\"\nMenu de Personagens -- \"C\"\nMenu
-    de Melhorias -- \"I\"\nMenu de Retentores -- \"M\"\nSalvamento r\xE1pido -- \"F5\"\nCarregamento
-    r\xE1pido -- \"F9\"\n\nBatalha:\n\nEncerrar turno -- \"Space\"\nInforma\xE7\xF5es
-    da unidade -- \"I\"\nModo r\xE1pido -- \"F\"\nSelecionar habilidade -- \"1, 2,
-    3, 4...\""
+    de Melhorias -- \"I\"\nMenu de S\xE9quitos -- \"M\"\nSalvar R\xE1pido -- \"F5\"\nCarregar
+    R\xE1pido -- \"F9\"\n\n-----------------------------------------------\nBatalha:\n\nEncerrar
+    Turno -- \"Espa\xE7o\"\nInforma\xE7\xF5es da Unidade -- \"I\"\nModo R\xE1pido
+    -- \"F\"\nSelecionar Habilidade -- \"1, 2, 3, 4...\"\nPr\xE9-visualizar Habilidade
+    Selecionada -- \"Segurar Shift\""
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}

@@ -70,9 +70,9 @@ public class ArrojarAbrojos : Habilidad
       if (esIngles)
       {
         cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Ranged trap (3 range)\n";
-        cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> empty diagonals around the target\n";
+        cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Target tile and empty diagonals around it.\n";
         cuerpo += $"<color={colorEncabezado}><b>On cast:</b></color> places caltrop traps\n";
-        cuerpo += $"<color={colorEncabezado}><b>Trap:</b></color> 1 use, 10 turns duration\n";
+        cuerpo += $"<color={colorEncabezado}><b>Trap:</b></color> 1 use\n";
         cuerpo += $"<color={colorEncabezado}><b>Trigger damage:</b></color> {danioBase}. <color={colorEncabezado}><b>Type:</b></color> Piercing\n";
         cuerpo += $"<color={colorEncabezado}><b>Save:</b></color> Reflex vs DC {dcBase}\n";
         cuerpo += $"<color={colorEncabezado}><b>On failed save:</b></color> x2 damage, +{bleedAplicado} Bleed";
@@ -85,9 +85,9 @@ public class ArrojarAbrojos : Habilidad
       else if (esPortugues)
       {
         cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Armadilha a distancia (3 de alcance)\n";
-        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> diagonais vazias ao redor do alvo\n";
+        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> A peça alvo e as diagonais vazias ao redor dela.\n";
         cuerpo += $"<color={colorEncabezado}><b>Ao usar:</b></color> coloca armadilhas de abrolhos\n";
-        cuerpo += $"<color={colorEncabezado}><b>Armadilha:</b></color> 1 uso, 10 turnos de duracao\n";
+        cuerpo += $"<color={colorEncabezado}><b>Armadilha:</b></color> 1 uso\n";
         cuerpo += $"<color={colorEncabezado}><b>Dano ao ativar:</b></color> {danioBase}. <color={colorEncabezado}><b>Tipo:</b></color> Perfurante\n";
         cuerpo += $"<color={colorEncabezado}><b>Resistencia:</b></color> Reflexos vs CD {dcBase}\n";
         cuerpo += $"<color={colorEncabezado}><b>Se falhar:</b></color> x2 dano, +{bleedAplicado} Sangramento";
@@ -100,9 +100,9 @@ public class ArrojarAbrojos : Habilidad
       else
       {
         cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Trampa a distancia (3 alcance)\n";
-        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> diagonales vacias alrededor del objetivo\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> La casilla objetivo y las diagonales vacías alrededor de ella.\n";
         cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> coloca trampas de abrojos\n";
-        cuerpo += $"<color={colorEncabezado}><b>Trampa:</b></color> 1 uso, 10 turnos de duración\n";
+        cuerpo += $"<color={colorEncabezado}><b>Trampa:</b></color> 1 uso\n";
         cuerpo += $"<color={colorEncabezado}><b>Daño al activar:</b></color> {danioBase}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
         cuerpo += $"<color={colorEncabezado}><b>TS:</b></color> Reflejos vs DC {dcBase}\n";
         cuerpo += $"<color={colorEncabezado}><b>Si falla TS:</b></color> x2 daño, +{bleedAplicado} Sangrado";
@@ -114,10 +114,10 @@ public class ArrojarAbrojos : Habilidad
       }
 
       string subtitulo = esIngles
-        ? "Places caltrops that punish movement."
+        ? "Places caltrops in various locations that damages entering enemies."
         : esPortugues
-          ? "Coloca abrolhos que punem movimento."
-          : "Coloca abrojos que castigan movimiento.";
+          ? "Coloca em vários locais, causando dano aos inimigos que se aproximarem."
+          : "Coloca abrojos en varias casillas que dañan a los enemigos que entren.";
       string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
       txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
       txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";

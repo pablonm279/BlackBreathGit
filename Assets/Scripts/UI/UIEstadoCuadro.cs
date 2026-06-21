@@ -147,7 +147,7 @@ public class UIEstadoCuadro : MonoBehaviour
       case 5: Retrato.sprite = ResolverSprite(ResRed, "Imagenes/Estado_resreducidas"); AsignarTextoTooltip(TRADU.i.Traducir("Resistencias Reducidas: reduce todas las resistencias 1 por acumulación.")); break;
       case 6: Retrato.sprite = ResolverSprite(ArmMod, "Imagenes/Estado_armadurareducida"); AsignarTextoTooltip(TRADU.i.Traducir("Armadura Rota: reduce la armadura en 1 por acumulación.")); break;
       // case 7: Retrato.sprite = imApMod;  break;
-      case 8: Retrato.sprite = ResolverSprite(imSangrado, "Imagenes/Estado_sangrando"); AsignarTextoTooltip(TRADU.i.Traducir("Sangrado: cada acumulación resta 1 HP máxima por turno y previene 2 de curación.")); break;
+      case 8: Retrato.sprite = ResolverSprite(imSangrado, "Imagenes/Estado_sangrando"); AsignarTextoTooltip(TRADU.i.Traducir("Sangrado: cada acumulación resta 2 HP máxima por turno y previene 2 de curación.")); break;
       case 9: Retrato.sprite = ResolverSprite(imVeneno, "Imagenes/Estado_veneno"); AsignarTextoTooltip(TRADU.i.Traducir("Veneno: provoca daño por turno, se debe hacer una tirada de salvación de Fortaleza cada turno para curarse, si falla se incrementa en 1.")); break;
       case 10: Retrato.sprite = ResolverSprite(imRegvid, "Imagenes/Estado_regeneravida"); AsignarTextoTooltip(TRADU.i.Traducir("Regeneración: recupera vida cada turno.")); break;
       case 11: Retrato.sprite = ResolverSprite(imRegArm, "Imagenes/Estado_regeneraAramdura"); AsignarTextoTooltip(TRADU.i.Traducir("Regeneración Armadura: recupera Armadura perdida cada turno.")); break;

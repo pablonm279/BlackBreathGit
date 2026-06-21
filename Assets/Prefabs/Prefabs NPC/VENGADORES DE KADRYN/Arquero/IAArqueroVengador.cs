@@ -79,7 +79,7 @@ public class IAArqueroVengador : IAHabilidad
       GameObject Proyectil = Instantiate(flechaPrefab);
       Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
       Proyectil.GetComponent<ArrowFlight>().velocidad = 6.2f;
-      Proyectil.GetComponent<ArrowFlight>().parabola = 0.5f;  
+      Proyectil.GetComponent<ArrowFlight>().parabola = 0.3f;  
     
      
       if (Objetivo != null)

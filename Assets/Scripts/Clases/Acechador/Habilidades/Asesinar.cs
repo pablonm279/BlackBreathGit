@@ -103,13 +103,13 @@ public class Asesinar : Habilidad
     {
       cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Ranged attack (4 range)\n";
       cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy\n";
-      cuerpo += $"<color={colorEncabezado}><b>Requirement:</b></color> Hidden (1)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Requirement:</b></color> Stalker Hidden\n";
       cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> 1d20 + {atributo}{bonusTirada} vs Defense\n";
       cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
       cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Type:</b></color> Piercing\n";
       cuerpo += $"<color={colorEncabezado}><b>Humanoid:</b></color> +2 flat damage\n";
-      cuerpo += $"<color={colorEncabezado}><b>If isolated:</b></color> +{bonoAtaqueAislado} and x2 final damage\n";
-      cuerpo += $"<color={colorEncabezado}><b>On kill:</b></color> gains Hidden (1), skill cooldown becomes 1";
+      cuerpo += $"<color={colorEncabezado}><b>If target isolated (has no adyacent enemies):</b></color> +{bonoAtaqueAislado} and x2 final damage\n";
+      cuerpo += $"<color={colorEncabezado}><b>On kill:</b></color> gains Hidden, skill cooldown becomes 1";
       if (NIVEL == 4)
       {
         cuerpo += ", +2 Valour";
@@ -119,13 +119,13 @@ public class Asesinar : Habilidad
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia (4 de alcance)\n";
       cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo\n";
-      cuerpo += $"<color={colorEncabezado}><b>Requisito:</b></color> Escondido (1)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Requisito:</b></color> Acechador Escondido\n";
       cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> 1d20 + {atributo}{bonusTirada} vs Defesa\n";
       cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
       cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perfurante\n";
       cuerpo += $"<color={colorEncabezado}><b>Humanoide:</b></color> +2 dano fixo\n";
-      cuerpo += $"<color={colorEncabezado}><b>Se estiver isolado:</b></color> +{bonoAtaqueAislado} e x2 no dano final\n";
-      cuerpo += $"<color={colorEncabezado}><b>Ao matar:</b></color> ganha Escondido (1), o cooldown da habilidade fica em 1";
+      cuerpo += $"<color={colorEncabezado}><b>Se inimigo isolado (sem inimigos adjacentes):</b></color> +{bonoAtaqueAislado} e x2 no dano final\n";
+      cuerpo += $"<color={colorEncabezado}><b>Ao matar:</b></color> ganha Escondido, o cooldown da habilidade fica em 1";
       if (NIVEL == 4)
       {
         cuerpo += ", +2 Valentía";
@@ -135,13 +135,13 @@ public class Asesinar : Habilidad
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque a distancia (4 alcance)\n";
       cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo\n";
-      cuerpo += $"<color={colorEncabezado}><b>Requisito:</b></color> Escondido (1)\n";
+      cuerpo += $"<color={colorEncabezado}><b>Requisito:</b></color> Acechador Escondido\n";
       cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
       cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
       cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> {rangoDanio} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
       cuerpo += $"<color={colorEncabezado}><b>Humanoide:</b></color> +2 daño plano\n";
-      cuerpo += $"<color={colorEncabezado}><b>Si esta aislado:</b></color> +{bonoAtaqueAislado} y x2 al daño final\n";
-      cuerpo += $"<color={colorEncabezado}><b>Al matar:</b></color> gana Escondido (1), el cooldown de la habilidad se fija en 1";
+      cuerpo += $"<color={colorEncabezado}><b>Si objetivo aislado (sin enemigos adyacentes):</b></color> +{bonoAtaqueAislado} y x2 al daño final\n";
+      cuerpo += $"<color={colorEncabezado}><b>Al matar:</b></color> gana Escondido, el cooldown de la habilidad se fija en 1";
       if (NIVEL == 4)
       {
         cuerpo += ", +2 Valentía";

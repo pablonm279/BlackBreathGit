@@ -69,7 +69,6 @@ public class Acechar : Habilidad
     if (esIngles)
     {
       cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Self buff\n";
-      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> Self\n";
       cuerpo += $"<color={colorEncabezado}><b>On cast:</b></color> gains Hidden (1); ends turn\n";
       cuerpo += $"<color={colorEncabezado}><b>Effect ({duracionTurnos} turns):</b></color> +15% Damage, +{buffAtaque}";
       if (buffCritPorcentaje > 0)
@@ -84,7 +83,6 @@ public class Acechar : Habilidad
     else if (esPortugues)
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Auto buff\n";
-      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> Si mesmo\n";
       cuerpo += $"<color={colorEncabezado}><b>Ao usar:</b></color> ganha Escondido (1); termina turno\n";
       cuerpo += $"<color={colorEncabezado}><b>Efeito ({duracionTurnos} turnos):</b></color> +15% Dano, +{buffAtaque}";
       if (buffCritPorcentaje > 0)
@@ -99,7 +97,6 @@ public class Acechar : Habilidad
     else
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Auto buff\n";
-      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> Uno mismo\n";
       cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> gana Escondido (1); termina turno\n";
       cuerpo += $"<color={colorEncabezado}><b>Efecto ({duracionTurnos} turnos):</b></color> +15% Daño, +{buffAtaque}";
       if (buffCritPorcentaje > 0)
@@ -114,10 +111,10 @@ public class Acechar : Habilidad
 
     string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
     string subtitulo = esIngles
-      ? "Gain Hidden and improve your next attacks."
+      ? "Hide and prepare your next attacks."
       : esPortugues
-        ? "Ganha Escondido e melhora seus proximos ataques."
-        : "Gana Escondido y mejora tus proximos ataques.";
+        ? "Esconda-se e prepare seus próximos ataques."
+        : "Se esconde y prepara sus próximos ataques.";
 
     txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
     txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";

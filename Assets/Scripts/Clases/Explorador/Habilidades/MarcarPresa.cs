@@ -68,8 +68,7 @@ public class MarcarPresa : Habilidad
     if (esIngles)
     {
       cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Mark\n";
-      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy on opposite side\n";
-      cuerpo += $"<color={colorEncabezado}><b>Roll/Save:</b></color> none\n";
+      cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy\n";
       cuerpo += $"<color={colorEncabezado}><b>Cost:</b></color> {costoPM} Valour\n";
       cuerpo += $"<color={colorEncabezado}><b>Mark duration:</b></color> 3 turns\n";
       cuerpo += $"<color={colorEncabezado}><b>Against marked target:</b></color> roll +{bonoAtaqueMarca}, +{bonoCritPorcentajeMarca}% Crit, +{bonoCritDanioMarca}% crit damage\n";
@@ -81,8 +80,7 @@ public class MarcarPresa : Habilidad
     else if (esPortugues)
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Marca\n";
-      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo do lado oposto\n";
-      cuerpo += $"<color={colorEncabezado}><b>Rolagem/TS:</b></color> nao tem\n";
+      cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo\n";
       cuerpo += $"<color={colorEncabezado}><b>Custo:</b></color> {costoPM} Valentia\n";
       cuerpo += $"<color={colorEncabezado}><b>Duracao da marca:</b></color> 3 turnos\n";
       cuerpo += $"<color={colorEncabezado}><b>Contra marcado:</b></color> rolagem +{bonoAtaqueMarca}, +{bonoCritPorcentajeMarca}% Critico, +{bonoCritDanioMarca}% dano critico\n";
@@ -94,8 +92,7 @@ public class MarcarPresa : Habilidad
     else
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Marca\n";
-      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo del lado opuesto\n";
-      cuerpo += $"<color={colorEncabezado}><b>Tirada/TS:</b></color> no tiene\n";
+      cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo\n";
       cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentía\n";
       cuerpo += $"<color={colorEncabezado}><b>Duración de marca:</b></color> 3 turnos\n";
       cuerpo += $"<color={colorEncabezado}><b>Contra marcado:</b></color> tirada +{bonoAtaqueMarca}, +{bonoCritPorcentajeMarca}% Crítico, +{bonoCritDanioMarca}% daño crítico\n";
@@ -107,10 +104,10 @@ public class MarcarPresa : Habilidad
 
     string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
     string subtitulo = esIngles
-      ? "Marks one enemy and improves your attacks against it."
+      ? "Focus one enemy and improves your attacks against it."
       : esPortugues
         ? "Marca um inimigo e melhora seus ataques contra ele."
-        : "Marca un enemigo y mejora tus ataques contra el.";
+        : "Marca a un enemigo y mejora sus ataques contra el.";
 
     txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
     txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";

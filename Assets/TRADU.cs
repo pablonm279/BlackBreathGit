@@ -2278,14 +2278,14 @@ public class TRADU : MonoBehaviour
                 r = "<color=#d6c304>true</color>"; break; //Verdadero
             case "<color=#d6c304>divino</color>":
                 r = "<color=#d6c304>divine</color>"; break; //Divino
-            case "Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\nTu Séquito de Mercaderes ha actualizado su Inventario.":
-                r = "You have arrived at an improvised Trading Post, they offer basic survival Supplies to travelers.\nThe Tier of your Merchant Retinue will help lower prices.\n\nYour Merchant Retinue has updated its inventory.";
+            case "Has llegado a un improvisado <b>Puesto Comercial</b>, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\nTu Séquito de Mercaderes ha actualizado su Inventario.\n\nSi descansas aquí, los civiles entablarán relaciones comerciales, generando 2 Oro cada uno.":
+                r = "You have arrived at an improvised <b>Trading Post</b>, they offer basic survival Supplies to travelers.\nThe Tier of your Merchant Retinue will help lower prices.\n\nYour Merchant Retinue has updated its inventory.\n\nIf you rest here, the civilians will engage in trade, generating 2 Gold each.";
                 break;
             case "El Séquito de Mercaderes ha actualizado su inventario en el Puesto Comercial.":
                 r = "The Merchant Retinue has updated its inventory at the Trading Post.";
                 break;
-            case "Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n\n. ":
-                r = "You have arrived at a Purifier's Sanctuary, several have been built in the area to provide support and prayers to the brave who fought the Lich.\nToday, although it is abandoned, it maintains its aura of tranquility and you can deposit offerings to make a purification prayer.\n\n\n.";
+            case "Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 4 días.</i>":
+                r = "You have arrived at a Purifier's Sanctuary, several have been built in the area to provide support and prayers to the brave who fought the Lich.\nToday, although it is abandoned, it maintains its aura of tranquility and you can deposit offerings to make a purification prayer.\n\n<i>Resting here will bless your characters for 4 days.</i>";
                 break;
             case "-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza.":
                 r = "The caravan has arrived at a Purifier's Sanctuary. Characters have healed by 15%. +10 Hope.";
@@ -4078,8 +4078,8 @@ public class TRADU : MonoBehaviour
             case "Armadura Rota: reduce la armadura en 1 por acumulación.":
                 r = "Broken Armor: reduces armor by 1 per stack.";
                 break;
-            case "Sangrado: cada acumulación resta 1 HP máxima por turno y previene 2 de curación.":
-                r = "Bleeding: each stack reduces max HP by 1 per turn and prevents 2 healing.";
+            case "Sangrado: cada acumulación resta 2 HP máxima por turno y previene 2 de curación.":
+                r = "Bleeding: each stack reduces max HP by 2 per turn and prevents 2 healing.";
                 break;
             case "Veneno: provoca daño por turno, se debe hacer una tirada de salvación de Fortaleza cada turno para curarse, si falla se incrementa en 1.":
                 r = "Poison: deals damage each turn, a Fortitude saving throw must be made each turn to heal, if it fails it increases by 1.";
@@ -5161,6 +5161,9 @@ public class TRADU : MonoBehaviour
             case "El Bosque Ardiente":
                 r = "The Burning Forest";
                 break;
+             case "Bosque Angustiante":
+                r = "The Burning Forest";
+                break;
             case "Paso Vientohelado":
                 r = "Frozenwind Passage";
                 break;
@@ -5581,8 +5584,8 @@ public class TRADU : MonoBehaviour
             case "Inmóvil, Melee solo adyacente.":
                 r = "Immobile: melee only against adjacent targets.";
                 break;
-            case "Melee disponible":
-                r = "Melee available";
+            case "Melee disponible \n(Ver: Mantén Shift)":
+                r = "Melee available \n(Preview:Hold Shift)";
                 break;
             case "Intercambiar":
                 r = "Swap";
@@ -5598,6 +5601,9 @@ public class TRADU : MonoBehaviour
                 break;
             case "Selecciona un objetivo.":
                 r = "Choose a target.";
+                break;
+            case "Preview":
+                r = "Preview";
                 break;
             case " % Chances":
                 r = " % To hit";
@@ -7284,7 +7290,7 @@ public class TRADU : MonoBehaviour
             case "Si la defensa es derrotada, la caravana será destruída.":
                 r = "If the defense is defeated, the caravan will be destroyed.";
                 break;
-                break;
+                
             case "Selecciona el orden de los refuerzos: (-->)":
                 r = "Select the order of reinforcements: (-->)";
                 break;
@@ -9554,14 +9560,14 @@ public class TRADU : MonoBehaviour
                 r = "<color=#d6c304>verdadeiro</color>"; break; //Verdadero
             case "<color=#d6c304>divino</color>":
                 r = "<color=#d6c304>divino</color>"; break; //Divino
-            case "Has llegado a un improvisado Puesto Comercial, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\nTu Séquito de Mercaderes ha actualizado su Inventario.":
-                r = "Você chegou a um Posto Comercial improvisado, onde oferecem Suprimentos básicos de sobrevivência aos viajantes.\nO Ní­vel do seu Séquito de Mercadores ajudará a reduzir os preços.\n\n\nSeu Séquito de Mercadores atualizou o Inventário.";
+            case "Has llegado a un improvisado <b>Puesto Comercial</b>, ofrecen Suministros básicos de supervivencia a los viajeros.\nEl Tier de tu Séquito de Mercaderes ayudará a bajar los precios.\n\nTu Séquito de Mercaderes ha actualizado su Inventario.\n\nSi descansas aquí, los civiles entablarán relaciones comerciales, generando 2 Oro cada uno.":
+                r = "Você chegou a um <b>Posto Comercial</b> improvisado, onde oferecem Suprimentos básicos de sobrevivência aos viajantes.\nO Ní­vel do seu Séquito de Mercadores ajudará a reduzir os preços.\n\n\nSeu Séquito de Mercadores atualizou o Inventário.\n\nSe descansar aqui, os civis estabelecerão relações comerciais, gerando 2 Ouro cada um.";
                 break;
             case "El Séquito de Mercaderes ha actualizado su inventario en el Puesto Comercial.":
                 r = "O Séquito de Mercadores atualizou seu inventário no Posto Comercial.";
                 break;
-            case "Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n\n. ":
-                r = "Você chegou a um Santuário dos Purificadores; vários foram construídos na regiío para oferecer apoio e preces aos valentes que combateram o Lich.\nHoje, embora esteja abandonado, ele mantém sua aura de tranquilidade, e você pode depositar oferendas para realizar uma prece de purificaçío.\n\n\n. ";
+            case "Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 4 días.</i>":
+                r = "Você chegou a um Santuário dos Purificadores; vários foram construídos na regiío para oferecer apoio e preces aos valentes que combateram o Lich.\nHoje, embora esteja abandonado, ele mantém sua aura de tranquilidade, e você pode depositar oferendas para realizar uma prece de purificaçío.\n\n<i>Descansar aqui abençoará seus personagens por 4 dias.</i>";
                 break;
             case "-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza.":
                 r = "A caravana chegou a um Santuário dos Purificadores. Os personagens se curaram em 15%. +10 Esperança.";
@@ -11191,7 +11197,7 @@ public class TRADU : MonoBehaviour
                 break;
                 /*case "Distraído":
                     r = "Distraído";*/
-                break;
+                
             case "Implacable":
                 r = "Implacável";
                 break;
@@ -11354,8 +11360,8 @@ public class TRADU : MonoBehaviour
             case "Armadura Rota: reduce la armadura en 1 por acumulación.":
                 r = "Armadura Quebrada: reduz a armadura em 1 por acúmulo.";
                 break;
-            case "Sangrado: cada acumulación resta 1 HP máxima por turno y previene 2 de curación.":
-                r = "Sangramento: cada acúmulo reduz 1 de HP máximo por turno e impede 2 de cura.";
+            case "Sangrado: cada acumulación resta 2 HP máxima por turno y previene 2 de curación.":
+                r = "Sangramento: cada acúmulo reduz 2 de HP máximo por turno e impede 2 de cura.";
                 break;
             case "Veneno: provoca daño por turno, se debe hacer una tirada de salvación de Fortaleza cada turno para curarse, si falla se incrementa en 1.":
                 r = "Veneno: causa dano por turno; é preciso fazer uma jogada de resistência de Fortaleza a cada turno para se curar; se falhar, aumenta em 1.";
@@ -12431,7 +12437,7 @@ public class TRADU : MonoBehaviour
             case "Refuerzos enemigos disponibles, irán uniéndose a la batalla gradualmente.":
                 r = "Reforços inimigos disponí­veis, entrarío gradualmente na batalha.";
                 break;
-            case "El Bosque Ardiente":
+            case "Bosque Angustiante":
                 r = "A Floresta Ardente";
                 break;
             case "Paso Vientohelado":
@@ -12854,8 +12860,8 @@ public class TRADU : MonoBehaviour
             case "Inmóvil, Melee solo adyacente.":
                 r = "Imóvel, corpo a corpo apenas adjacente.";
                 break;
-            case "Melee disponible":
-                r = "Corpo a corpo disponí­vel";
+            case "Melee disponible \n(Ver: Mantén Shift)":
+                r = "Melee disponível \n(Prévia: Segure Shift)";
                 break;
             case "Intercambiar":
                 r = "Trocar";
@@ -12871,6 +12877,9 @@ public class TRADU : MonoBehaviour
                 break;
             case "Selecciona un objetivo.":
                 r = "Selecione um alvo.";
+                break;
+            case "Preview":
+                r = "Prévia";
                 break;
             case " % Chances":
                 r = " % de chance";
@@ -14446,7 +14455,7 @@ public class TRADU : MonoBehaviour
             case "Invocar Raíz Maldita": r = "Summon Cursed Root"; break;
             case "Raiz Maldita": r = "Cursed Root"; break;
             case "Condena Feroz": r = "Fierce Condemnation"; break;
-            case "+15% Danio, +2 Ataque, +5 TS Mental.": r = "+15% Damage, +2 Attack, +5 Mental Save."; break;
+            case "+15% Daño, +2 Ataque, +5 TS Mental.": r = "+15% Damage, +2 Attack, +5 Mental Save."; break;
             case "Estertor Maldito": r = "Cursed Death Rattle"; break;
             case "Reacción: al morir, quien asesta el golpe final debe superar TS Mental 12 o recibe 2d6 daño necrótico.": r = "Reaction: on death, whoever deals the killing blow must pass Mental Save 12 or take 2d6 necrotic damage."; break;
             case "resiste el estertor maldito.": r = "resists the cursed death rattle."; break;

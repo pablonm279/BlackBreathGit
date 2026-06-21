@@ -28,7 +28,7 @@ public static class ItemTooltipFormatter
         StringBuilder texto = new StringBuilder();
         if (incluirNombre && !string.IsNullOrWhiteSpace(item.sNombreItem))
         {
-            texto.Append(FormatearTituloItem(Traducir(ObtenerNombreVisibleItem(item))));
+            texto.Append(FormatearTituloItem(TraducirNombreVisibleItem(item)));
         }
 
         string lineaRareza = ConstruirLineaRareza(item);
@@ -104,6 +104,27 @@ public static class ItemTooltipFormatter
         }
 
         return nombre + sufijo;
+    }
+
+    private static string TraducirNombreVisibleItem(Item item)
+    {
+        string nombreVisible = ObtenerNombreVisibleItem(item);
+        if (string.IsNullOrEmpty(nombreVisible) || TRADU.i == null)
+        {
+            return nombreVisible;
+        }
+
+        if (item != null && item.nivelMejora > 0)
+        {
+            string sufijo = " +" + item.nivelMejora;
+            if (nombreVisible.EndsWith(sufijo))
+            {
+                string nombreBase = nombreVisible.Substring(0, nombreVisible.Length - sufijo.Length);
+                return Traducir(nombreBase) + sufijo;
+            }
+        }
+
+        return Traducir(nombreVisible);
     }
 
     private static string ConstruirSeparador()

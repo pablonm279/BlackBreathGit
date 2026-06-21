@@ -141,10 +141,10 @@ public class PuntaHiriente : Habilidad
 
         string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
         string subtitulo = esIngles
-            ? "Pierce one enemy, provoke it and reduce its offense on failed save."
+            ? "Hurts an enemy, provoking it and reducing its offense."
             : esPortugues
-                ? "Perfura um inimigo, provoca e reduz ofensiva se falhar."
-                : "Perfora un enemigo, lo provoca y reduce su ofensiva si falla.";
+                ? "Perfurar um inimigo, provocando-o e reduzindo sua ofensiva."
+                : "Hiere a un enemigo, provocándolo y reduciendo su ofensiva.";
 
         txtDescripcion = $"<size=115%><color={colorTitulo}><b>{titulo}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
         txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";

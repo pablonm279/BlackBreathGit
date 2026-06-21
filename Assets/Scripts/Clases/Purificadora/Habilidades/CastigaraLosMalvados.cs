@@ -99,10 +99,10 @@ public class CastigaraLosMalvados : Habilidad
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
-          ? "Marks a target with divine retribution that punishes aggression."
+          ? "Curses a target with divine retribution after attacking an ally."
           : esPortugues
-            ? "Marca um alvo com uma represalia divina que pune a agressao."
-          : "Marca un objetivo con una represalia divina que castiga la agresión.",
+            ? "Amaldiçoa um alvo com retribuição divina após atacar um aliado."
+          : "Maldice a un objetivo con retribución divina después de atacar a un aliado.",
         cuerpo,
         costos,
         "#5dade2");

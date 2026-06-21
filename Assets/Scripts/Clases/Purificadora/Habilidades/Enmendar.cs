@@ -112,10 +112,10 @@ public class Enmendar : Habilidad
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
-          ? "A restorative spell that scales with current Fervor and Power."
+          ? "A restorative spell that scales with current Fervor."
           : esPortugues
-            ? "Uma magia restauradora que escala com o Fervor atual e o Poder."
-          : "Un hechizo restaurador que escala con el Fervor actual y el Poder.",
+            ? "Uma magia restauradora que escala com o Fervor atual."
+          : "Un hechizo restaurador que escala con el Fervor actual.",
         cuerpo,
         costos,
         "#5dade2");

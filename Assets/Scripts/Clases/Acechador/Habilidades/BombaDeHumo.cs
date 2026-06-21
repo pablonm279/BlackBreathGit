@@ -67,43 +67,40 @@ public class BombaDeHumo : Habilidad
       string cuerpo = "";
       if (esIngles)
       {
-        cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Utility trap (4 range)\n";
+        cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Utility\n";
         cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 tile in range\n";
-        cuerpo += $"<color={colorEncabezado}><b>Roll/Save:</b></color> none\n";
         cuerpo += $"<color={colorEncabezado}><b>Valour cost:</b></color> {costoPM}\n";
-        cuerpo += $"<color={colorEncabezado}><b>On cast:</b></color> creates smoke traps in area radius {radioZona} around target\n";
-        cuerpo += $"<color={colorEncabezado}><b>Smoke trap:</b></color> 30 uses, {duracionHumo} turns duration, persistent\n";
-        cuerpo += $"<color={colorEncabezado}><b>On trigger (any unit):</b></color> grants Hidden (1) if not hidden\n";
+        cuerpo += $"<color={colorEncabezado}><b>On cast:</b></color> creates smoke in target tile and adjacent tiles.\n";
+        cuerpo += $"<color={colorEncabezado}><b>Smoke:</b></color> {duracionHumo} turns duration\n";
+        cuerpo += $"<color={colorEncabezado}><b>On enter (any unit):</b></color> grants Hidden.\n";
         cuerpo += $"<color={colorEncabezado}><b>Non-Stalker units:</b></color> 2 turns, +2 Attack, +5% Crit";
       }
       else if (esPortugues)
       {
-        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Armadilha de utilidade (4 de alcance)\n";
-        cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 celula no alcance\n";
-        cuerpo += $"<color={colorEncabezado}><b>Rolagem/Resistencia:</b></color> nao tem\n";
-        cuerpo += $"<color={colorEncabezado}><b>Custo Valentia:</b></color> {costoPM}\n";
-        cuerpo += $"<color={colorEncabezado}><b>Ao usar:</b></color> cria armadilhas de fumaca em area de raio {radioZona} ao redor da celula alvo\n";
-        cuerpo += $"<color={colorEncabezado}><b>Armadilha de fumaca:</b></color> 30 usos, {duracionHumo} turnos de duracao, persistente\n";
-        cuerpo += $"<color={colorEncabezado}><b>Ao ativar (qualquer unidade):</b></color> concede Escondido (1) se nao estava escondido\n";
-        cuerpo += $"<color={colorEncabezado}><b>Unidades que nao sao Acechador:</b></color> 2 turnos, +2 Ataque, +5% Crítico";
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Utilidad\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 casilla en rango\n";
+        cuerpo += $"<color={colorEncabezado}><b>Costo de Valentía:</b></color> {costoPM}\n";
+        cuerpo += $"<color={colorEncabezado}><b>Al lanzar:</b></color> crea humo en la casilla objetivo y en las casillas adyacentes.\n";
+        cuerpo += $"<color={colorEncabezado}><b>Humo:</b></color> {duracionHumo} turnos de duración\n";
+        cuerpo += $"<color={colorEncabezado}><b>Al entrar (cualquier unidad):</b></color> otorga Oculto.\n";
+        cuerpo += $"<color={colorEncabezado}><b>Unidades no Acechadoras:</b></color> 2 turnos, +2 Ataque, +5% Crítico";
       }
       else
       {
-        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Trampa de utilidad (4 alcance)\n";
-        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 casilla en rango\n";
-        cuerpo += $"<color={colorEncabezado}><b>Tirada/TS:</b></color> no tiene\n";
-        cuerpo += $"<color={colorEncabezado}><b>Costo Valentía:</b></color> {costoPM}\n";
-        cuerpo += $"<color={colorEncabezado}><b>Al lanzarla:</b></color> crea trampas de humo en área de radio {radioZona} alrededor de la casilla objetivo\n";
-        cuerpo += $"<color={colorEncabezado}><b>Trampa de humo:</b></color> 30 usos, {duracionHumo} turnos de duración, persistente\n";
-        cuerpo += $"<color={colorEncabezado}><b>Al activar (cualquier unidad):</b></color> otorga Escondido (1) si no estaba escondido\n";
-        cuerpo += $"<color={colorEncabezado}><b>Unidades no Acechador:</b></color> 2 turnos, +2 Ataque, +5% Crítico";
+        cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Utilidad\n";
+        cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 casilla dentro del alcance\n";
+        cuerpo += $"<color={colorEncabezado}><b>Costo de Valentía:</b></color> {costoPM}\n";
+        cuerpo += $"<color={colorEncabezado}><b>Al lanzar:</b></color> crea humo en la casilla objetivo y en las casillas adyacentes.\n";
+        cuerpo += $"<color={colorEncabezado}><b>Humo:</b></color> {duracionHumo} turnos de duración\n";
+        cuerpo += $"<color={colorEncabezado}><b>Al entrar (cualquier unidad):</b></color> otorga Oculto.\n";
+        cuerpo += $"<color={colorEncabezado}><b>Unidades que no sean Acechadores:</b></color> 2 turnos, +2 Ataque, +5% Crítico";
       }
 
       string subtitulo = esIngles
-        ? "Creates smoke traps that grant Hidden and support non-Stalker units."
+        ? "Creates smoke that hides units on it."
         : esPortugues
-          ? "Cria armadilhas de fumaca que concedem Escondido e apoiam unidades que nao sao Acechador."
-          : "Crea trampas de humo que otorgan Escondido y apoyan a unidades no Acechador.";
+          ? "Cria fumaça que esconde as unidades nela."
+          : "Crea humo que esconde a las unidades en él.";
 
       txtDescripcion = $"<size=115%><color={colorTitulo}><b>{(esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs)}</b></color></size><pos=74%><color=#c8c8c8>{costoSuperior}</color>\n\n";
       txtDescripcion += $"<color=#8f8f8f><i>{subtitulo}</i></color>\n\n";

@@ -37,7 +37,7 @@ public class CorteHorizontal : Habilidad
 
     targetEspecial = 4;
 
-    bonusAtaque = -2;
+    bonusAtaque = 0;
     if (NIVEL > 2) { bonusAtaque += 1; }
     XdDanio = 2;
     daniodX = 6; //2d6

@@ -128,10 +128,10 @@ public class PilaresDeLuz : Habilidad
       txtDescripcion = ConstruirDescripcionEstandar(
         esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
         esIngles
-          ? "Creates holy obstacles that punish attackers with divine retaliation."
+          ? "Creates divine obstacles that damages enemies when attacked."
           : esPortugues
-            ? "Cria obstáculos sagrados que punem agressores com represalia divina."
-          : "Crea obstáculos sagrados que castigan a quienes los ataquen con represalia divina.",
+            ? "Cria obstáculos divinos que causam dano aos inimigos quando atacados."
+          : "Crea obstáculos divinos que dañan a quienes los ataquen.",
         cuerpo,
         costos,
         "#5dade2");

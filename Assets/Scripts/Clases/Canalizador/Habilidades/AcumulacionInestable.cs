@@ -68,7 +68,6 @@ public class AcumulacionInestable : Habilidad
     if (esIngles)
     {
       cuerpo += "<b>Type:</b> Self\n";
-      cuerpo += "<b>Target:</b> Self\n";
       cuerpo += "<b>Instant effect:</b> +1 Energy Tier\n";
       cuerpo += $"<b>Buff (this turn):</b> +{bonusDanioArcano} Arcane damage\n";
       cuerpo += recibeDanioPropio
@@ -78,7 +77,6 @@ public class AcumulacionInestable : Habilidad
     else if (esPortugues)
     {
       cuerpo += "<b>Tipo:</b> Propria\n";
-      cuerpo += "<b>Alvo:</b> O proprio usuario\n";
       cuerpo += "<b>Efeito instantaneo:</b> +1 Nivel de Energia\n";
       cuerpo += $"<b>Buff (neste turno):</b> +{bonusDanioArcano} de dano Arcano\n";
       cuerpo += recibeDanioPropio
@@ -88,7 +86,6 @@ public class AcumulacionInestable : Habilidad
     else
     {
       cuerpo += "<b>Tipo:</b> Propia\n";
-      cuerpo += "<b>Objetivo:</b> Propio usuario\n";
       cuerpo += "<b>Efecto instantaneo:</b> +1 Nivel de Energia\n";
       cuerpo += $"<b>Buff (este turno):</b> +{bonusDanioArcano} de daño Arcano\n";
       cuerpo += recibeDanioPropio
@@ -111,7 +108,7 @@ public class AcumulacionInestable : Habilidad
     txtDescripcion = ConstruirDescripcionEstandar(
       esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
       esIngles
-        ? "The Channeler overloads their core to gain immediate power at a personal cost."
+        ? "The Channeler overloads their core to gain immediate power risking his body."
         : esPortugues
           ? "O Canalizador sobrecarrega o nucleo para ganhar poder imediato com custo pessoal."
         : "El Canalizador sobrecarga su nucleo para ganar poder inmediato a costa de su propio cuerpo.",
@@ -138,7 +135,6 @@ public class AcumulacionInestable : Habilidad
     if (esIngles)
     {
       cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Self buff</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>Self</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>On cast:</b></color> <color={colorValor}>{iconoEnergia} +1 Energy Tier</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>This turn:</b></color> <color={colorValor}>{iconoBuff} +{bonusDanioArcano} Arcane damage</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Backlash:</b></color> <color={colorValor}>{(recibeDanioPropio ? "Takes 1-6 Arcane damage" : "No self damage")}</color>\n";
@@ -147,7 +143,6 @@ public class AcumulacionInestable : Habilidad
     else if (esPortugues)
     {
       cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>O proprio usuario</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Ao usar:</b></color> <color={colorValor}>{iconoEnergia} +1 Nivel de Energia</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Neste turno:</b></color> <color={colorValor}>{iconoBuff} +{bonusDanioArcano} dano Arcano</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Retorno:</b></color> <color={colorValor}>{(recibeDanioPropio ? "Recebe 1-6 dano Arcano" : "Sem autodano")}</color>\n";
@@ -156,7 +151,6 @@ public class AcumulacionInestable : Habilidad
     else
     {
       cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Propio usuario</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Al usar:</b></color> <color={colorValor}>{iconoEnergia} +1 Nivel de Energia</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Este turno:</b></color> <color={colorValor}>{iconoBuff} +{bonusDanioArcano} daño Arcano</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Retorno:</b></color> <color={colorValor}>{(recibeDanioPropio ? "Recibe 1-6 daño Arcano" : "Sin autodaño")}</color>\n";

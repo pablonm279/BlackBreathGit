@@ -676,6 +676,94 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
     }
  }
 
+ static int CompararPersonajesPorMenorHerida(Personaje a, Personaje b)
+ {
+    if (ReferenceEquals(a, b))
+    {
+       return 0;
+    }
+
+    if (a == null)
+    {
+       return 1;
+    }
+
+    if (b == null)
+    {
+       return -1;
+    }
+
+    bool aEsGuardia = EsGuardiaParaCaravana(a);
+    bool bEsGuardia = EsGuardiaParaCaravana(b);
+    int comparacion = bEsGuardia.CompareTo(aEsGuardia);
+    if (comparacion != 0)
+    {
+       return comparacion;
+    }
+
+    float vidaMaximaA = Mathf.Max(1f, a.fVidaMaxima);
+    float vidaMaximaB = Mathf.Max(1f, b.fVidaMaxima);
+    float porcentajeVidaA = Mathf.Clamp01(a.fVidaActual / vidaMaximaA);
+    float porcentajeVidaB = Mathf.Clamp01(b.fVidaActual / vidaMaximaB);
+
+    comparacion = porcentajeVidaB.CompareTo(porcentajeVidaA);
+    if (comparacion != 0)
+    {
+       return comparacion;
+    }
+
+    comparacion = b.fVidaActual.CompareTo(a.fVidaActual);
+    if (comparacion != 0)
+    {
+       return comparacion;
+    }
+
+    comparacion = b.fVidaMaxima.CompareTo(a.fVidaMaxima);
+    if (comparacion != 0)
+    {
+       return comparacion;
+    }
+
+    return string.Compare(a.sNombre, b.sNombre, StringComparison.Ordinal);
+ }
+
+ void PreseleccionarHeroesMenosHeridosParaBatallaConRefuerzos()
+ {
+    if (scAdministradorEscenas == null || CampaignManager.Instance == null || CampaignManager.Instance.scMenuPersonajes == null)
+    {
+       return;
+    }
+
+    scAdministradorEscenas.Personaje1 = null;
+    scAdministradorEscenas.Personaje2 = null;
+    scAdministradorEscenas.Personaje3 = null;
+    scAdministradorEscenas.Personaje4 = null;
+
+    List<Personaje> candidatos = new List<Personaje>();
+    foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
+    {
+       if (pers == null || pers.Camp_Muerto)
+       {
+          continue;
+       }
+
+       if (!EsGuardiaParaCaravana(pers) && pers.fVidaActual <= 1f)
+       {
+          continue;
+       }
+
+       candidatos.Add(pers);
+    }
+
+    candidatos.Sort(CompararPersonajesPorMenorHerida);
+
+    int maxAliados = Mathf.Clamp(ObtenerMaxAliadosPermitidos(), 1, 4);
+    for (int i = 0; i < maxAliados && i < candidatos.Count; i++)
+    {
+       AsignarPersonajeEnSlot(i, candidatos[i]);
+    }
+ }
+
  int ObtenerIndicePrimerSlotLibre(int maxAliados)
  {
     for (int i = 0; i < maxAliados; i++)
@@ -2031,6 +2119,7 @@ public void DejanEnListaParticipantesSolo()
             EventoBatallaID = n;
         }
 
+        PreseleccionarHeroesMenosHeridosParaBatallaConRefuerzos();
         ReiniciarOrdenRefuerzosCaravana();
         ActualizarLista();
     }
@@ -2051,27 +2140,7 @@ public void DejanEnListaParticipantesSolo()
             txtMilicianosDisponibles.text = TRADU.i.Traducir("Milicianos disponibles: ") + (int)CampaignManager.Instance.GetMiliciasActual() / 10;
         }
 
-        scAdministradorEscenas.Personaje1 = null;
-        scAdministradorEscenas.Personaje2 = null;
-        scAdministradorEscenas.Personaje3 = null;
-        scAdministradorEscenas.Personaje4 = null;
-
-        int maxAliados = ObtenerMaxAliadosPermitidos();
-        int asignados = 0;
-        foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
-        {
-            if (asignados >= maxAliados) break;
-            if (pers == null) continue;
-            if (pers.Camp_Muerto) continue;
-            if (pers.fVidaActual <= 1) continue;
-            if (!EsGuardiaParaCaravana(pers)) continue;
-
-            asignados++;
-            if (asignados == 1) scAdministradorEscenas.Personaje1 = pers;
-            else if (asignados == 2) scAdministradorEscenas.Personaje2 = pers;
-            else if (asignados == 3) scAdministradorEscenas.Personaje3 = pers;
-            else if (asignados == 4) scAdministradorEscenas.Personaje4 = pers;
-        }
+        PreseleccionarHeroesMenosHeridosParaBatallaConRefuerzos();
 
         encuentroGeneradoActual = null;
         encuentroTipoActual = BattleEncounterType.AtaqueCaravana;
@@ -2402,7 +2471,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
         if (EsResultadoVictoria(resultado)) //Al ganar puede tocar un item de la lista total del sequito de mercaderes al azar
         {
             int rand =UnityEngine.Random.Range(1, 101);
-            aumentochancesitem += 3 + ((CampaignManager.Instance.mejoraCaravanaCatalejos - 1) * 2);
+            aumentochancesitem += CampaignManager.Instance.ObtenerBonusObjetosPostBatallaAntorchas();
             int prob = 30+aumentochancesitem; //!! 30%
             if (rand < prob) // chances de perder un sequito al perder una pelea
             {
@@ -2411,7 +2480,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
                 {
                     CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(recompensa.gameObject);
                     MostrarItemReward(recompensa);
-                    txtRecompensa.text += TRADU.i.Traducir("\n\n- Has encontrado un objeto de recompensa: ") + TRADU.i.Traducir(ObtenerNombreVisibleRecompensa(recompensa)) + ".";
+                    txtRecompensa.text += TRADU.i.Traducir("\n\n- Has encontrado un objeto de recompensa: ") + TraducirNombreVisibleRecompensa(recompensa) + ".";
                 }
 
             }
@@ -2514,6 +2583,27 @@ public void EfectosDeBatallaEnCampaña(int resultado)
     }
 
     return nombre + sufijo;
+ }
+
+ string TraducirNombreVisibleRecompensa(Item item)
+ {
+    string nombreVisible = ObtenerNombreVisibleRecompensa(item);
+    if (string.IsNullOrEmpty(nombreVisible) || TRADU.i == null)
+    {
+       return nombreVisible;
+    }
+
+    if (item != null && item.nivelMejora > 0)
+    {
+       string sufijo = " +" + item.nivelMejora;
+       if (nombreVisible.EndsWith(sufijo))
+       {
+          string nombreBase = nombreVisible.Substring(0, nombreVisible.Length - sufijo.Length);
+          return TRADU.i.Traducir(nombreBase) + sufijo;
+       }
+    }
+
+    return TRADU.i.Traducir(nombreVisible);
  }
 
  GameObject ObtenerItemReward()

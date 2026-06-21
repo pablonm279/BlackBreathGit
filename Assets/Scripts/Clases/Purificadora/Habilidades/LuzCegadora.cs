@@ -93,10 +93,10 @@ public class LuzCegadora : Habilidad
       string cuerpo = "";
       if (esIngles)
       {
-        cuerpo += "<b>Type:</b> Ranged (3 range)\n";
-        cuerpo += "<b>Target:</b> Frontal area (2 width)\n";
+        cuerpo += "<b>Type:</b> Ranged\n";
+        cuerpo += "<b>Target:</b> Frontal area (3 width)\n";
         cuerpo += lineaSalvacionEn + "\n";
-        cuerpo += "<b>On failed save and if not immune to Blind:</b> Blinded for 2 rounds (-3 Attack, -2 Defense, -1 Reflex)\n";
+        cuerpo += "<b>On failed save:</b> Blinded for 2 rounds (-3 Attack, -2 Defense, -1 Reflex)\n";
         cuerpo += $"<b>Damage vs Undead/Ethereal:</b> {danioPrincipalEn}";
         if (afectaOtrosEnemigos)
         {
@@ -105,10 +105,10 @@ public class LuzCegadora : Habilidad
       }
       else if (esPortugues)
       {
-        cuerpo += "<b>Tipo:</b> Alcance (3 de alcance)\n";
-        cuerpo += "<b>Alvo:</b> Area frontal (2 de largura)\n";
+        cuerpo += "<b>Tipo:</b> Alcance\n";
+        cuerpo += "<b>Alvo:</b> Area frontal (3 de largura)\n";
         cuerpo += lineaSalvacionEs + "\n";
-        cuerpo += "<b>Se falhar na resistencia e nao for imune a Cegueira:</b> Cego por 2 rodadas (-3 Ataque, -2 Defesa, -1 Reflexos)\n";
+        cuerpo += "<b>Se falhar na resistencia:</b> Cego por 2 rodadas (-3 Ataque, -2 Defesa, -1 Reflexos)\n";
         cuerpo += $"<b>Dano vs Morto-vivo/Etereo:</b> {danioPrincipalPt}";
         if (afectaOtrosEnemigos)
         {
@@ -117,10 +117,10 @@ public class LuzCegadora : Habilidad
       }
       else
       {
-        cuerpo += "<b>Tipo:</b> Rango (3 alcance)\n";
-        cuerpo += "<b>Objetivo:</b> Área frontal (2 ancho)\n";
+        cuerpo += "<b>Tipo:</b> Rango\n";
+        cuerpo += "<b>Objetivo:</b> Área frontal (3 ancho)\n";
         cuerpo += lineaSalvacionEs + "\n";
-        cuerpo += "<b>Si falla TS y no es inmune a Ceguera:</b> Ciego por 2 rondas (-3 Ataque, -2 Defensa, -1 Reflejos)\n";
+        cuerpo += "<b>Si falla TS:</b> Ciego por 2 rondas (-3 Ataque, -2 Defensa, -1 Reflejos)\n";
         cuerpo += $"<b>Daño vs Nomuerto/Etéreo:</b> {danioPrincipalEs}";
         if (afectaOtrosEnemigos)
         {
@@ -166,7 +166,7 @@ public class LuzCegadora : Habilidad
       string cuerpoNuevo = "";
       if (esIngles)
       {
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Frontal area (3 range, 2 width)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Frontal area (3 width)</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>Enemies in area</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Reflex vs DC {dcBase} + <color={colorPoder}>Power ({poderActual})</color></color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Failed save:</b></color> <color={colorValor}>{iconoDebuff} Blinded 2 rounds: -3 Attack, -2 Defense, -1 Reflex</color>\n";
@@ -175,7 +175,7 @@ public class LuzCegadora : Habilidad
       }
       else if (esPortugues)
       {
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Area frontal (3 de alcance, 2 de largura)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Area frontal (3 de largura)</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Inimigos na area</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Reflexos vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoDebuff} Cego 2 rodadas: -3 Ataque, -2 Defesa, -1 Reflexos</color>\n";
@@ -184,7 +184,7 @@ public class LuzCegadora : Habilidad
       }
       else
       {
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Area frontal (3 alcance, 2 ancho)</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Area frontal (3 ancho)</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Enemigos en el área</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Reflejos vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoDebuff} Ciego 2 rondas: -3 Ataque, -2 Defensa, -1 Reflejos</color>\n";
