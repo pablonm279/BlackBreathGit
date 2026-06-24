@@ -369,9 +369,14 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         List<Vector2Int> resolucionesDeseadas = new List<Vector2Int>()
     {
         new Vector2Int(1280, 720),
+        new Vector2Int(1280, 800),
+        new Vector2Int(1440, 900),
         new Vector2Int(1600, 900),
+        new Vector2Int(1680, 1050),
         new Vector2Int(1920, 1080),
+        new Vector2Int(1920, 1200),
         new Vector2Int(2560, 1440),
+        new Vector2Int(2560, 1600),
         new Vector2Int(3840, 2160)
     };
 

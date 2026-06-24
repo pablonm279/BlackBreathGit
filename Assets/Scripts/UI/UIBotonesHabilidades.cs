@@ -187,6 +187,13 @@ public class UIBotonesHabilidades : MonoBehaviour
 
             if (indiceFiltrado == index)
             {
+                if (BattleManager.Instance != null
+                    && BattleManager.Instance.HabilidadActiva == boton.HabilidadRepresentada
+                    && BattleManager.Instance.TryConfirmarHabilidadAutoObjetivo())
+                {
+                    return true;
+                }
+
                 boton.ActivarHabilidad(false);
                 return true;
             }

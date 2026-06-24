@@ -3102,6 +3102,10 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       muereConDanio = HP_actual - danioTotal < 1;
       HP_actual -= danioTotal;
       RegistrarDanioCampania(uCausante, danioTotal);
+      if (danioTotal > 0)
+      {
+        AlRecibirDanioReal(danioTotal, tipoDanio, esCritico, uCausante);
+      }
       bool muertePrevenida = adminTraitVida != null && adminTraitVida.ProcesarTraitPuertasDeLaMuerteSiCorresponde(this);
       if (muertePrevenida)
       {
@@ -3139,7 +3143,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
             if (aplicarResReducidasCrit && !IntentarResistenciaEstado("Resistencias reducidas", uCausante)) { estado_ResistenciasReducidas += 1; }
             break;
           case 11:
-            if (intentarCondenadoCrit && danioFinal > 0 && TiradaSalvacion(mod_TSMental, 17) && !IntentarResistenciaEstado("Condenado", uCausante))
+            if (intentarCondenadoCrit && danioFinal > 0 && TiradaSalvacion(TipoSalvacionMental, 17) && !IntentarResistenciaEstado("Condenado", uCausante))
             {
               Buff buff = new Buff();
               buff.buffNombre = "Condenado";
@@ -3329,8 +3333,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
       if (efecto.requiereTiradaSalvacion && efecto.tipoTiradaSalvacion > 0)
       {
-        float atributoDefensaTS = ObtenerAtributoTSParaDebuff(efecto.tipoTiradaSalvacion);
-        bool noSeSalva = TiradaSalvacion(atributoDefensaTS, efecto.dificultadSalvacion);
+        bool noSeSalva = TiradaSalvacion(efecto.tipoTiradaSalvacion, efecto.dificultadSalvacion);
         if (!noSeSalva)
         {
           continue;
@@ -3662,15 +3665,14 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     return true;
   }
 
-  float ObtenerAtributoTSParaDebuff(int tipoTiradaSalvacion)
+  float ObtenerAtributoTS(int tipoSalvacion)
   {
-    switch (tipoTiradaSalvacion)
+    switch (tipoSalvacion)
     {
-      case 2: return mod_TSReflejos;
-      case 3: return mod_TSMental;
-      case 1:
-      default:
-        return mod_TSFortaleza;
+      case TipoSalvacionFortaleza: return mod_TSFortaleza;
+      case TipoSalvacionReflejos: return mod_TSReflejos;
+      case TipoSalvacionMental: return mod_TSMental;
+      default: return 0f;
     }
   }
 
@@ -3865,6 +3867,11 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
 
   }
+
+  protected virtual void AlRecibirDanioReal(float danioReal, int tipoDanio, bool esCritico, Unidad uCausante)
+  {
+  }
+
   public virtual void ReducirArmaduraPorGolpe(float danioFinal)
   {
    if (scTextoArmaduraFlash == null)
@@ -5221,15 +5228,16 @@ public async void OnMouseDown()
     }
 }
 
-  public virtual bool TiradaSalvacion(float atributoDefiende, float dificultadHabilidada, bool porValourGlobal = false) //TRUE no se salva FALSE se salva (xd)
+  public virtual bool TiradaSalvacion(int tipoSalvacion, float dificultadHabilidada, bool porValourGlobal = false) //TRUE no se salva FALSE se salva (xd)
   {
+    tipoSalvacion = NormalizarTipoSalvacionIndice(tipoSalvacion);
+    float atributoDefiende = ObtenerAtributoTS(tipoSalvacion);
     float iTiradaDefensa = UnityEngine.Random.Range(1,21);
     float iResultadoAtaque =  dificultadHabilidada;
     float iResultadoDefensa = iTiradaDefensa + atributoDefiende;
 
     bool noSeSalva = iResultadoAtaque > iResultadoDefensa;
 
-    int tipoSalvacion = InferirTipoSalvacionIndice(atributoDefiende);
     string tipoTS = ObtenerNombreTipoSalvacionLog(tipoSalvacion);
     string textoResultado = noSeSalva ? TRADU.i.Traducir("No se salva") : TRADU.i.Traducir("Se salva");
     CombatLogFormatter.CombatOutcome outcome = noSeSalva ? CombatLogFormatter.CombatOutcome.Fallo : CombatLogFormatter.CombatOutcome.Exito;
@@ -5261,12 +5269,17 @@ public async void OnMouseDown()
     return noSeSalva;
   }
 
-  private int InferirTipoSalvacionIndice(float atributoDefiende)
+  private int NormalizarTipoSalvacionIndice(int tipoSalvacion)
   {
-    if (Mathf.Approximately(atributoDefiende, mod_TSFortaleza)) { return TipoSalvacionFortaleza; }
-    if (Mathf.Approximately(atributoDefiende, mod_TSReflejos)) { return TipoSalvacionReflejos; }
-    if (Mathf.Approximately(atributoDefiende, mod_TSMental)) { return TipoSalvacionMental; }
-    return TipoSalvacionDesconocida;
+    switch (tipoSalvacion)
+    {
+      case TipoSalvacionFortaleza:
+      case TipoSalvacionReflejos:
+      case TipoSalvacionMental:
+        return tipoSalvacion;
+      default:
+        return TipoSalvacionDesconocida;
+    }
   }
 
   private string ObtenerNombreTipoSalvacionLog(int tipoSalvacion)

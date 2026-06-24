@@ -23,7 +23,7 @@ public class TrampaFuego : Trampa
          int danio =UnityEngine.Random.Range(2,9)+2;
 
 
-    if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, 12))
+    if (objetivo.TiradaSalvacion(2, 12))
     {
       objetivo.estado_ardiendo = +2;
               objetivo.RecibirDanio(danio,4,false, null);

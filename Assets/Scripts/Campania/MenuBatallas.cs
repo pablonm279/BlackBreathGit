@@ -2667,7 +2667,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
                 if (pers.TieneRasgo(PersonajeTraitCatalog.TraitEndeble))
                 {
                     bool fallaFortitud = uni != null
-                        ? uni.TiradaSalvacion(uni.mod_TSFortaleza, 11f)
+                        ? uni.TiradaSalvacion(1, 11f)
                         : pers.FalloTiradaSalvacionFortalezaCampania(11);
 
                     if (fallaFortitud)
@@ -2729,7 +2729,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
             if (!pers.Camp_Muerto && pers.Camp_Herido && pers.TieneRasgo(PersonajeTraitCatalog.TraitResistente))
             {
                 bool fallaFortitud = uni != null
-                    ? uni.TiradaSalvacion(uni.mod_TSFortaleza, 13f)
+                    ? uni.TiradaSalvacion(1, 13f)
                     : pers.FalloTiradaSalvacionFortalezaCampania(13);
 
                 if (!fallaFortitud)

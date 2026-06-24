@@ -63,7 +63,7 @@ public class EnemigoGulekGul : Unidad
         if (TieneBuffNombre("Martillo Listo"))
         {
 
-            if (TiradaSalvacion(mod_TSFortaleza, (danio / 2) + 2))
+            if (TiradaSalvacion(1, (danio / 2) + 2))
             {
                 //Salvación exitosa
 
@@ -80,38 +80,26 @@ public class EnemigoGulekGul : Unidad
 
     }
     
-    public override bool TiradaSalvacion(float atributoDefiende, float dificultadHabilidada, bool porValourGlobal = false) //TRUE no se salva FALSE se salva (xd)
+    public override bool TiradaSalvacion(int tipoSalvacion, float dificultadHabilidada, bool porValourGlobal = false) //TRUE no se salva FALSE se salva (xd)
   {
      bool resultado = false;
-        int intentos = 1;
+        int intentos = tipoSalvacion == 3 ? 2 : 1;
 
-      if (atributoDefiende == 3) { intentos++; } //Si el atributo es 3 (Voluntad), tiene un intento adicional
-     for (int i = 0; i < intentos; i++) // Permitir un intento adicional si falla
+     for (int i = 0; i < intentos; i++)
      {
-        float iTiradaDefensa = UnityEngine.Random.Range(1, 21);
+        resultado = base.TiradaSalvacion(tipoSalvacion, dificultadHabilidada, porValourGlobal);
 
-        float iResultadoAtaque = dificultadHabilidada;
-        float iResultadoDefensa = iTiradaDefensa + atributoDefiende;
-
-        resultado = iResultadoAtaque > iResultadoDefensa;
-
-        if (resultado) // positivo NO se salva
+        if (!resultado)
         {
-            BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende +  TRADU.i.Traducir(" vs Tirada Dificultad: ") + iResultadoAtaque + TRADU.i.Traducir(". Resultado: No se salva."));
-        }
-        else // Negativo Se Salva
-        {
-            BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" realiza Tirada de Salvación: 1d20 = ") + iTiradaDefensa + " +" + atributoDefiende +  TRADU.i.Traducir(" vs Tirada Dificultad: ") + iResultadoAtaque +  TRADU.i.Traducir(". Resultado: Se salva."));
-            GenerarTextoFlotante(TRADU.i.Traducir("Resiste"), Color.green);
-            return resultado; // Si se salva, no se realiza un segundo intento
+            return resultado;
         }
 
-        if (intentos == 0 && atributoDefiende == 3 && resultado) // Si falla en el primer intento y atributoDefiende es 3
+        if (tipoSalvacion == 3 && i == 0)
         {
             BattleManager.Instance.EscribirLog(uNombre + TRADU.i.Traducir(" obtiene un intento adicional de Tirada de Salvación."));
         }
      }
-        if (atributoDefiende == 3 && resultado)
+        if (tipoSalvacion == 3 && resultado)
         {
             RemoverBuffNombre("Martillo Listo");
             ActualizarPoseMartillo(true);

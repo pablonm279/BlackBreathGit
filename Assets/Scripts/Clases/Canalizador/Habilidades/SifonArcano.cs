@@ -244,7 +244,7 @@ public class SifonArcano : Habilidad
 
     if (obj is Unidad uni) //Acá van los efectos a Unidades.
     {
-      if (uni.TiradaSalvacion(uni.mod_TSMental, DificultadSalvacionMental))
+      if (uni.TiradaSalvacion(3, DificultadSalvacionMental))
       {
         //Agrega la reacción 
         ReaccionSifonArcano reaccion = new ReaccionSifonArcano();

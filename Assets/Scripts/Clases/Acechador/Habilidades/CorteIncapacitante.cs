@@ -383,7 +383,7 @@ public class CorteIncapacitante : Habilidad
     if (NIVEL > 2) { DC++; }
 
 
-    if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, DC))
+    if (objetivo.TiradaSalvacion(2, DC))
     {
       int duracion = 2;
       if (NIVEL == 5) { duracion++; }

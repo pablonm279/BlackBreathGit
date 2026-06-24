@@ -39,7 +39,7 @@ public class Abrojo : Trampa
       if(NIVEL > 2){ DC++;}
       
 
-    if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, DC))
+    if (objetivo.TiradaSalvacion(2, DC))
     {
       rand *= 2;
       objetivo.estado_sangrado += 4;

@@ -788,13 +788,15 @@ public class UIInfoChar : MonoBehaviour
       return;
     }
 
+    Vector2 anchorMinAliado = new Vector2(0f, posicionDefaultAnchorMin.y);
+    Vector2 anchorMaxAliado = new Vector2(0f, posicionDefaultAnchorMax.y);
     Vector2 anchoredPositionAliado = posicionDefaultAnchoredPosition;
     Vector2 pivot = rectTransformPanel.pivot;
     anchoredPositionAliado.x = posicionAliadoLeft + (posicionDefaultSizeDelta.x * pivot.x);
     anchoredPositionAliado.y = posicionDefaultAnchoredPosition.y;
 
-    rectTransformPanel.anchorMin = posicionDefaultAnchorMin;
-    rectTransformPanel.anchorMax = posicionDefaultAnchorMax;
+    rectTransformPanel.anchorMin = anchorMinAliado;
+    rectTransformPanel.anchorMax = anchorMaxAliado;
     rectTransformPanel.sizeDelta = posicionDefaultSizeDelta;
     rectTransformPanel.anchoredPosition = anchoredPositionAliado;
     rectTransformPanel.localScale = posicionDefaultLocalScale;

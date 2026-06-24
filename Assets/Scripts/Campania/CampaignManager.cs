@@ -2734,7 +2734,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           destinoY = conexion.destino.posYNodo,
           tipo = conexion.tipo,
           costoMovimiento = conexion.costoMovimiento,
-          rutaHaciaAldea = conexion.rutaHaciaAldea
+          rutaHaciaAldea = conexion.rutaHaciaAldea,
+          reveladoPorVision = nodo.EstaCaminoReveladoPorVision(conexion)
         });
       }
 
@@ -3335,6 +3336,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
             conexionData.tipo,
             conexionData.costoMovimiento,
             conexionData.rutaHaciaAldea);
+
+          if (conexionData.reveladoPorVision)
+          {
+            origen.RestaurarCaminoReveladoPorVisionHacia(destino);
+          }
         }
       }
     }

@@ -443,7 +443,7 @@ public class ClaseCaballero : Unidad
     {
       if (uCausante != null)
       {
-        if (uCausante.TiradaSalvacion(uCausante.mod_TSReflejos, 10))
+        if (uCausante.TiradaSalvacion(2, 10))
         {
           uCausante.estado_ardiendo += 1; //Agrega el estado ardiente
           uCausante.GenerarTextoFlotante(TRADU.i.Traducir("Ardiendo") + " +1", Color.red);

@@ -14,12 +14,12 @@ public class IAEmpujonRufian : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano - 9: Necro
 
    
   void Awake()
    {
-      nombre = "Empujón Rufián";
+      nombre = "Empujï¿½n Rufiï¿½n";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 1;
@@ -114,18 +114,18 @@ public class IAEmpujonRufian : IAHabilidad
         VFXAplicar(objetivo.gameObject);
 
         objetivo.RecibirDanio(danio + 4, tipoDanio, false, scEstaUnidad);
-        if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 14))
+        if (objetivo.TiradaSalvacion(1, 14))
         {
           IntentarEmpujarObjetivo(objetivo, 2);
           /////////////////////////////////////////////
-          //BUFF ---- Así se aplica un buff/debuff
+          //BUFF ---- Asï¿½ se aplica un buff/debuff
           Buff buff = new Buff();
           buff.buffNombre = "Desestabilizado";
           buff.boolfDebufftBuff = false;
           buff.DuracionBuffRondas = 1;
           buff.cantAPMax -= 1;
           buff.AplicarBuff(objetivo);
-          // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+          // Agrega el componente Buff al objeto objetivo y asigna la configuraciï¿½n del buff
           Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
         }
@@ -144,18 +144,18 @@ public class IAEmpujonRufian : IAHabilidad
         VFXAplicar(objetivo.gameObject);
 
         objetivo.RecibirDanio(danio + 6, tipoDanio, true, scEstaUnidad);
-         if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 15))
+         if (objetivo.TiradaSalvacion(1, 15))
         {
           IntentarEmpujarObjetivo(objetivo, 2);
           /////////////////////////////////////////////
-          //BUFF ---- Así se aplica un buff/debuff
+          //BUFF ---- As se aplica un buff/debuff
           Buff buff = new Buff();
           buff.buffNombre = "Desestabilizado";
           buff.boolfDebufftBuff = false;
           buff.DuracionBuffRondas = 1;
           buff.cantAPMax -= 1;
           buff.AplicarBuff(objetivo);
-          // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+          // Agrega el componente Buff al objeto objetivo y asigna la configuraciï¿½n del buff
           Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
            
        }
@@ -196,19 +196,19 @@ public class IAEmpujonRufian : IAHabilidad
     }
 public override object EstablecerObjetivoPrioritario() 
 {
-    // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+    // Obtener la unidad duea
+    Unidad unidadDuea = gameObject.GetComponent<Unidad>();
+    if (unidadDuea == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obstáculos
+    // Filtrar los obstculos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderByDescending(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDuea.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -217,7 +217,7 @@ public override object EstablecerObjetivoPrioritario()
         return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obstculo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
 }

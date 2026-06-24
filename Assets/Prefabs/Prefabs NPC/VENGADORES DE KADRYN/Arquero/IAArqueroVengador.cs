@@ -176,7 +176,7 @@ public class IAArqueroVengador : IAHabilidad
 
     void Aplicarveneno(Unidad objetivo)
     {
-     if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 13))
+     if (objetivo.TiradaSalvacion(1, 13))
      { 
 
       objetivo.estado_veneno += 2;

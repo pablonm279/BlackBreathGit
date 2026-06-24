@@ -305,7 +305,7 @@ public class SiguesTu : Habilidad
                 int durDebuff = 2;
                 if(NIVEL == 5){durDebuff += 2;} //Si nivel 4b, dura 2 turnos+ debuff
 
-                if(objetivo.TiradaSalvacion(objetivo.mod_TSMental, salvDC))
+                if(objetivo.TiradaSalvacion(3, salvDC))
                 {
                     //BUFF ---- Así se aplica un buff/debuff
                     Buff debuff = new Buff();

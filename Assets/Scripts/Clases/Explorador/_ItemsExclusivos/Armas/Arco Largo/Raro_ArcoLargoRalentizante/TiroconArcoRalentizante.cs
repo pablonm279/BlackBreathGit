@@ -256,7 +256,7 @@ public class TiroconArcoRalentizante : Habilidad
 
   void AplicarEfectoRalentizante(Unidad objetivo)
   {
-    if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza,12))
+    if (objetivo.TiradaSalvacion(1,12))
     {
          /////////////////////////////////////////////
         //BUFF ---- As se aplica un buff/debuff

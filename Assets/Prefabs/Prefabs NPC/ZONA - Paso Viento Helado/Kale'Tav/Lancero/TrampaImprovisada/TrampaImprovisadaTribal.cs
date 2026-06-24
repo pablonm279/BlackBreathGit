@@ -24,7 +24,7 @@ public class TrampaImprovisadaTribal : Trampa
          int danio =UnityEngine.Random.Range(1,10)+2;
          objetivo.RecibirDanio(danio,2,false, null);
 
-    if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, 12))
+    if (objetivo.TiradaSalvacion(2, 12))
     {
     
 

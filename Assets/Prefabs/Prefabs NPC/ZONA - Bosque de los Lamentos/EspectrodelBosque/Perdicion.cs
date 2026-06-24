@@ -64,7 +64,7 @@ public class Perdicion : IAHabilidad
       return;
     }
 
-    if (!objetivo.TiradaSalvacion(objetivo.mod_TSMental, 13))
+    if (!objetivo.TiradaSalvacion(3, 13))
     {
       return;
     }

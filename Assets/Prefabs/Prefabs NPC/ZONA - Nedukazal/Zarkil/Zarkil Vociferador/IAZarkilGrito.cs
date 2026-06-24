@@ -14,7 +14,7 @@ public class IAZarkilGrito : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano
 
     [SerializeField] private int zonaX; 
     [SerializeField] private  int zonaY;
@@ -111,14 +111,14 @@ public class IAZarkilGrito : IAHabilidad
           if (obj.TieneTag("Zarkil") && obj != scEstaUnidad)
           {
 
-            // BUFF ---- Así se aplica un buff/debuff
+            // BUFF ---- Asï¿½ se aplica un buff/debuff
             Buff buff = new Buff();
             buff.buffNombre = "Orden Recibida";
             buff.boolfDebufftBuff = true;
             buff.DuracionBuffRondas = 1;
             buff.cantAPMax += 2;
             buff.AplicarBuff(obj);
-            // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+            // Agrega el componente Buff al objeto objetivo y asigna la configuraciï¿½n del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, obj.gameObject);
           }
           
@@ -145,7 +145,7 @@ public class IAZarkilGrito : IAHabilidad
         {
           Unidad obj = cas.Presente.GetComponent<Unidad>();
 
-          if (obj.TiradaSalvacion(obj.mod_TSMental, 9))
+          if (obj.TiradaSalvacion(3, 9))
           {
 
             obj.estado_aturdido += 1;
@@ -231,7 +231,7 @@ public class IAZarkilGrito : IAHabilidad
        Unidad obj = (Unidad)objetivo;
        
 
-      if (obj.TiradaSalvacion(obj.mod_TSMental, 10))
+      if (obj.TiradaSalvacion(3, 10))
       {
 
         obj.estado_aturdido += 1;
@@ -250,24 +250,24 @@ public class IAZarkilGrito : IAHabilidad
     
 
 
-   public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
+   public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lï¿½gica
    {
     
   
 
-    // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+    // Obtener la unidad duea
+    Unidad unidadDuea = gameObject.GetComponent<Unidad>();
+    if (unidadDuea == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obstáculos
+    // Filtrar los obstculos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
     var unidadesOrdenadas = unidades
         .OrderBy(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDuea.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -276,7 +276,7 @@ public class IAZarkilGrito : IAHabilidad
         return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obstculo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
 

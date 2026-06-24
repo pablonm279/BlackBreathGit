@@ -181,7 +181,7 @@ public override object EstablecerObjetivoPrioritario()
 
 void AplicaEnredadoTirada(Unidad unidad, int extraDC)
 {
-   if(unidad.TiradaSalvacion(unidad.mod_TSFortaleza, 8+extraDC)&& unidad.estado_inmovil < 1)
+   if(unidad.TiradaSalvacion(1, 8+extraDC)&& unidad.estado_inmovil < 1)
      {
           /////////////////////////////////////////////
             //BUFF ---- As� se aplica un buff/debuff

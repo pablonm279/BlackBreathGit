@@ -908,7 +908,7 @@ public class AdministradorEscenas : MonoBehaviour
 
     if (TieneTrait(pers, PersonajeTraitCatalog.TraitCobarde))
     {
-      bool fallaSalvacion = unidad.TiradaSalvacion(unidad.mod_TSMental, 12f);
+      bool fallaSalvacion = unidad.TiradaSalvacion(3, 12f);
       if (fallaSalvacion)
       {
         int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
@@ -924,7 +924,7 @@ public class AdministradorEscenas : MonoBehaviour
 
     if (TieneTrait(pers, PersonajeTraitCatalog.TraitDistraido))
     {
-      bool fallaSalvacion = unidad.TiradaSalvacion(unidad.mod_TSMental, 11f);
+      bool fallaSalvacion = unidad.TiradaSalvacion(3, 11f);
       if (fallaSalvacion)
       {
         AplicarSorprendidoInicioCombate(unidad);

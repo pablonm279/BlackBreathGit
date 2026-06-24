@@ -38,7 +38,7 @@ public class ReaccionCastigarMalvados : Reaccion
       float DC = variableUnidad.mod_CarPoder + 10;
       if(NIVEL > 1){DC++;}
 
-      if(scEstaUnidad.TiradaSalvacion(scEstaUnidad.mod_TSMental, DC))
+      if(scEstaUnidad.TiradaSalvacion(3, DC))
       {
 
       scEstaUnidad.EstablecerAPActualA(0); //Cuando a una IA le reacciona un personaje, se queda sin AP, para que no haga cosas mientras el pj reacciona

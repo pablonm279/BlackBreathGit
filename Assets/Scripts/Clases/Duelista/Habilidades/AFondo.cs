@@ -235,7 +235,7 @@ public class AFondo : Habilidad
             }
 
             VFXAplicar(objetivo.gameObject);
-            if (objetivo.HP_actual < hpAntes && objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, dcFortitud))
+            if (objetivo.HP_actual < hpAntes && objetivo.TiradaSalvacion(1, dcFortitud))
             {
                 Estados.Aplicar_Sangrado(objetivo, sangradoAplicado, scEstaUnidad);
             }

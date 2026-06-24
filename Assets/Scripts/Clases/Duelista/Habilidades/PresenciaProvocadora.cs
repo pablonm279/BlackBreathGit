@@ -192,7 +192,7 @@ public class PresenciaProvocadora : Habilidad
                 continue;
             }
 
-            if (enemigo.TiradaSalvacion(enemigo.mod_TSMental, ObtenerDificultadSalvacion()))
+            if (enemigo.TiradaSalvacion(3, ObtenerDificultadSalvacion()))
             {
                 continue;
             }

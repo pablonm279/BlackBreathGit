@@ -85,7 +85,7 @@ public class IACondenaRaices : IAHabilidad
     float danio = TiradaDeDados.TirarDados(DadosCantidad, DadosCaras);
     danio = danio / 100f * (100 + scEstaUnidad.mod_DanioPorcentaje);
 
-    bool noSeSalva = objetivo.TiradaSalvacion(objetivo.mod_TSMental, DificultadSalvacion);
+    bool noSeSalva = objetivo.TiradaSalvacion(3, DificultadSalvacion);
     if (noSeSalva)
     {    objetivo.RecibirDanio(danio, TipoDanioNecrotico, false, scEstaUnidad);
 

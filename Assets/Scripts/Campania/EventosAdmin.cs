@@ -1871,7 +1871,7 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Barro que Retiene");
 
             txtDescripcion.text = TRADU.i.Traducir("Un tramo de barro pegajoso se agarra a ruedas, botas y arreos. Cada metro parece costar el doble, y la columna entera empieza a moverse con una pesadez desesperante.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendrá Aletargados. El Aliento Negro avanzará +1 en el próximo viaje y la marcha se verá más lenta.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendra Aletargados. El Aliento Negro avanzara +1 en el proximo viaje.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si ordenas reacomodar la marcha, la Caravana ganará +1 Fatiga.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Forzar");

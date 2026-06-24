@@ -194,8 +194,8 @@ MonoBehaviour:
   mod_ResRayo: 0
   at_ResAcido: 2
   mod_ResAcido: 2
-  at_ResArcano: 0
-  mod_ResArcano: 0
+  at_ResArcano: 2
+  mod_ResArcano: 2
   at_ResNecro: 3
   mod_ResNecro: 3
   at_ResDivino: -2

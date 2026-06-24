@@ -96,7 +96,7 @@ public class EfectosDanios : MonoBehaviour
   {
         
         float final = danio - objetivo.ObtenerResistenciaA(7);
-        if(final > 0 && objetivo.TiradaSalvacion(objetivo.mod_TSMental,17)) 
+        if(final > 0 && objetivo.TiradaSalvacion(3,17)) 
         {
             /////////////////////////////////////////////
             //BUFF ---- Así se aplica un buff/debuff

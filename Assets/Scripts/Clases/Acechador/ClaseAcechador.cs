@@ -121,7 +121,7 @@ public class ClaseAcechador : Unidad
             if (PASIVA_Masacre > 1) { DC += 1; }
             foreach (Unidad uni in ObtenerTodosEnemigos())
             {
-                if (uni.TiradaSalvacion(uni.mod_TSMental, DC + mod_CarAgilidad) && !uni.TieneBuffNombre("Aterrorizado"))
+                if (uni.TiradaSalvacion(3, DC + mod_CarAgilidad) && !uni.TieneBuffNombre("Aterrorizado"))
                 {
                     /////////////////////////////////////////////
                     //BUFF ---- Así se aplica un buff/debuff

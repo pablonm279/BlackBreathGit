@@ -216,7 +216,7 @@ public override object EstablecerObjetivoPrioritario()
 
  void AplicarEfecto(Unidad objetivo, int intensidad)
     {
-      if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, 8+intensidad))
+      if (objetivo.TiradaSalvacion(2, 8+intensidad))
       {
         
         // BUFF ---- As se aplica un buff/debuff

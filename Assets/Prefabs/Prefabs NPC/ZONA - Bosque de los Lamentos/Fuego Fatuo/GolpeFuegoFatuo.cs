@@ -160,7 +160,7 @@ public class GolpeFuegoFatuo : IAHabilidad
     }
   public void AplicarPosesion(Unidad objetivo)
   {
-    if (objetivo.TiradaSalvacion(objetivo.mod_TSMental, 10))
+    if (objetivo.TiradaSalvacion(3, 10))
     {
 
       objetivo.estado_Condenado = Mathf.Min(3, objetivo.estado_Condenado + 2);

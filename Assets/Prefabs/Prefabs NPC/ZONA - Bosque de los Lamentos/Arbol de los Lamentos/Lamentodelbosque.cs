@@ -173,7 +173,7 @@ public class Lamentodelbosque : IAHabilidad
     {
       Unidad obj = (Unidad)objetivo;
       VFXAplicar(obj.gameObject);
-      if (obj.TiradaSalvacion(obj.mod_TSMental, 15))
+      if (obj.TiradaSalvacion(3, 15))
       {
         /////////////////////////////////////////////
         //BUFF ---- As� se aplica un buff/debuff

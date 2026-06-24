@@ -174,7 +174,7 @@ public class Distraer : Habilidad
       if (NIVEL > 1) { DC++; }
       Unidad objetivo = (Unidad)obj;
       VFXAplicar(objetivo.gameObject);
-      if (objetivo.TiradaSalvacion(objetivo.mod_TSMental, DC))
+      if (objetivo.TiradaSalvacion(3, DC))
       {
 
         /////////////////////////////////////////////

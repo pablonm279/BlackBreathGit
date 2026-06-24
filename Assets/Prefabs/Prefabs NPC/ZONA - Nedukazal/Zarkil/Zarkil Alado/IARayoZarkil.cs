@@ -85,9 +85,9 @@ public class IARayoZarkil : IAHabilidad
     unidadObjetivo.RecibirDanio(danio, TipoDanioNecrotico, false, scEstaUnidad);
     unidadObjetivo.AplicarDebuffPorAtaquesreiterados(1);
 
-    if(unidadObjetivo.TiradaSalvacion(unidadObjetivo.mod_TSFortaleza, 12))
+    if(unidadObjetivo.TiradaSalvacion(1, 12))
     { 
-      // BUFF ---- Así se aplica un buff/debuff
+      // BUFF ---- Asï¿½ se aplica un buff/debuff
       Buff buff = new Buff();
       buff.buffNombre = "Debilitado";
       buff.boolfDebufftBuff = false;
@@ -95,7 +95,7 @@ public class IARayoZarkil : IAHabilidad
       buff.cantDanioPorcentaje -= 15;
       buff.cantAtaque -= 2;
       buff.AplicarBuff(unidadObjetivo);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+      // Agrega el componente Buff al objeto objetivo y asigna la configuraciï¿½n del buff
       Buff buffComponent = ComponentCopier.CopyComponent(buff, unidadObjetivo.gameObject);
 
     }

@@ -85,7 +85,7 @@ public class IALiturgiaPutrefaccion : IAHabilidad
     danio = danio / 100f * (100 + scEstaUnidad.mod_DanioPorcentaje);
     objetivo.RecibirDanio(danio, TipoDanioNecrotico, false, scEstaUnidad);
 
-    bool noSeSalva = objetivo.TiradaSalvacion(objetivo.mod_TSMental, DificultadSalvacion);
+    bool noSeSalva = objetivo.TiradaSalvacion(3, DificultadSalvacion);
     if (!noSeSalva)
     {
       return;

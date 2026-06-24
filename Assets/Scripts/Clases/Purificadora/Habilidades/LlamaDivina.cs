@@ -427,7 +427,7 @@ public class LlamaDivina : Habilidad
       int DC = (int)(8+scEstaUnidad.mod_CarPoder);
 
       if(NIVEL > 1){DC++;}
-      if(objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, DC))
+      if(objetivo.TiradaSalvacion(1, DC))
      {
        if(objetivo.TieneTag("Nomuerto") || objetivo.TieneTag("Etereo")) // Si los nomuertos no se salvan los mata.
        {

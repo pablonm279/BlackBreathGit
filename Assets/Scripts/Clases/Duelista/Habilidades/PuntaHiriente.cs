@@ -241,7 +241,7 @@ public class PuntaHiriente : Habilidad
                 dc++;
             }
 
-            if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, dc))
+            if (objetivo.TiradaSalvacion(1, dc))
             {
                 AplicarAdolorido(objetivo);
             }

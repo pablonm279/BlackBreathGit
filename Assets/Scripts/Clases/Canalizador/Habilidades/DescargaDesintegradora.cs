@@ -372,7 +372,7 @@ public class DescargaDesintegradora : Habilidad
     {
         int dc = 9;
         if (NIVEL > 2) { dc += 1; }
-    if (Objetivo.TiradaSalvacion(Objetivo.mod_TSFortaleza, dc))
+    if (Objetivo.TiradaSalvacion(1, dc))
     {
       Objetivo.RecibirDanio(Objetivo.mod_maxHP, 10, false, scEstaUnidad);
       string objetivoNombre = TRADU.i != null ? TRADU.i.Traducir(Objetivo.uNombre) : Objetivo.uNombre;

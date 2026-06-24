@@ -83,7 +83,7 @@ public class Enredar : IAHabilidad
      
         Unidad objetivo = (Unidad)obj;
      
-         if(objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 12)&& objetivo.estado_inmovil < 1)
+         if(objetivo.TiradaSalvacion(2, 12)&& objetivo.estado_inmovil < 1)
           {
             /////////////////////////////////////////////
             //BUFF ---- As� se aplica un buff/debuff

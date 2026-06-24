@@ -222,7 +222,7 @@ public class Purificacion : Habilidad
       damDivino = damDivino* (1 + fervor);
 
 
-      if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, dificultadAtributo))
+      if (objetivo.TiradaSalvacion(2, dificultadAtributo))
       {
         //Si falla la tirada de salvación, se aplica el daño completo (en vez de la mitad) y arde
         objetivo.estado_ardiendo += 2;

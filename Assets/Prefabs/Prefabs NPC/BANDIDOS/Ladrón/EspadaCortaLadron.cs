@@ -123,7 +123,7 @@ public class EspadaCortaLadron : IAHabilidad
 
         if (scEstaUnidad.TieneBuffNombre("Arma Envenenada"))
         {
-          if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 12))
+          if (objetivo.TiradaSalvacion(1, 12))
           {
             objetivo.estado_veneno += 2;
             objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Envenenado"), Color.green);
@@ -149,7 +149,7 @@ public class EspadaCortaLadron : IAHabilidad
         objetivo.RecibirDanio(danio + 4, tipoDanio, true, scEstaUnidad);
         if (scEstaUnidad.TieneBuffNombre("Arma Envenenada"))
         {
-          if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 14))
+          if (objetivo.TiradaSalvacion(1, 14))
           {
             objetivo.estado_veneno += 3;
             objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Envenenado"), Color.green);

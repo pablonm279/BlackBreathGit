@@ -42,7 +42,7 @@ public class ReaccionEstertorMalditoBruja : Reaccion
 
     BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir(" reacciona con ") + nombre + ".");
 
-    bool fallaSalvacion = asesino.TiradaSalvacion(asesino.mod_TSMental, DCMental);
+    bool fallaSalvacion = asesino.TiradaSalvacion(3, DCMental);
     if (fallaSalvacion)
     {
       CrearVfxEstertor(asesino);

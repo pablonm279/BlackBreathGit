@@ -331,7 +331,7 @@ public class HojaDeEnergia : Habilidad
     void EfectoAdicional(Unidad Objetivo)
     {
       
-        if(Objetivo.TiradaSalvacion(Objetivo.mod_TSFortaleza, 12))
+        if(Objetivo.TiradaSalvacion(1, 12))
         {
           Objetivo.estado_sangrado += 2;
           Objetivo.estado_ResistenciasReducidas += 3;

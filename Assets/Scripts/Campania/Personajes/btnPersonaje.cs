@@ -8,6 +8,10 @@ using TMPro;
 public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
   private const float IntervaloAutoRefrescoRetratoCampania = 0.2f;
+  private static readonly Vector2 AnchorEstadosCampania = new Vector2(0.5f, 0f);
+  private static readonly Vector2 PosicionEstadosCampania = new Vector2(-16.2f, 56.2f);
+  private static readonly Vector2 AnchorEstadosMenuBatallas = new Vector2(0.5f, 0.5f);
+  private static readonly Vector2 PosicionEstadosMenuBatallas = new Vector2(-16.2f, 6.3f);
 
   public Personaje personajeRepresentado;
   RefuerzoAliadoCaravanaOrdenItem refuerzoCaravanaRepresentado;
@@ -411,6 +415,7 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     RepresentarActividad();
     representarinfo();
     representarVida();
+    AjustarLayoutEstadosCampania();
     RepresentarIconos();
     firmaVisualRetratoCampania = CalcularFirmaVisualRetratoCampania();
   }
@@ -625,6 +630,21 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
       ? CampaignManager.Instance.scMenuBatallas.contenedorUIPersonajesFuera.transform
       : null;
     return contenedorBatallaFuera != null && parent == contenedorBatallaFuera;
+  }
+
+  private void AjustarLayoutEstadosCampania()
+  {
+    RectTransform rectEstados = contenedorEstadosCampania as RectTransform;
+    if (rectEstados == null)
+    {
+      return;
+    }
+
+    bool enMenuBatallas = EstaEnContenedorMenuBatallas();
+    Vector2 anchor = enMenuBatallas ? AnchorEstadosMenuBatallas : AnchorEstadosCampania;
+    rectEstados.anchorMin = anchor;
+    rectEstados.anchorMax = anchor;
+    rectEstados.anchoredPosition = enMenuBatallas ? PosicionEstadosMenuBatallas : PosicionEstadosCampania;
   }
 
   private string ObtenerNombreClaseTraducido(Personaje personaje)

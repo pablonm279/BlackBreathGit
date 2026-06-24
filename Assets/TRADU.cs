@@ -1409,8 +1409,8 @@ public class TRADU : MonoBehaviour
             case "Un tramo de barro pegajoso se agarra a ruedas, botas y arreos. Cada metro parece costar el doble, y la columna entera empieza a moverse con una pesadez desesperante.\n\n":
                 r = "A stretch of sticky mud clings to wheels, boots, and harnesses. Every yard feels twice as costly, and the whole column starts moving with desperate heaviness.\n\n";
                 break;
-            case "<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendra Aletargados. El Aliento Negro avanzara +1 en el proximo viaje y la marcha se vera mas lenta.</color>\n\n":
-                r = "<color=#ba3fef>-If you force the march anyway, the Caravan will gain Sluggish. The Black Breath will advance +1 on the next trip and the march will look slower.</color>\n\n";
+            case "<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendra Aletargados. El Aliento Negro avanzara +1 en el proximo viaje.</color>\n\n":
+                r = "<color=#ba3fef>-If you force the march anyway, the Caravan will gain Sluggish. The Black Breath will advance +1 on the next trip.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si ordenas reacomodar la marcha, la Caravana ganara +1 Fatiga.</color>\n\n":
                 r = "<color=#ba3fef>-If you order the march to be reorganized, the Caravan will gain +1 Fatigue.</color>\n\n";
@@ -7327,6 +7327,12 @@ public class TRADU : MonoBehaviour
             case "Salir al Menú":
             r = "Exit to Menu";
             break;
+            case "Lancero":
+            r = "Lancer";
+            break;
+            case "Ballestero":
+            r = "Crossbowman";
+            break;
          
             
             
@@ -8691,8 +8697,8 @@ public class TRADU : MonoBehaviour
             case "Un tramo de barro pegajoso se agarra a ruedas, botas y arreos. Cada metro parece costar el doble, y la columna entera empieza a moverse con una pesadez desesperante.\n\n":
                 r = "Um trecho de barro pegajoso se agarra a rodas, botas e arreios. Cada metro parece custar o dobro, e a coluna inteira começa a se mover com um peso desesperador.\n\n";
                 break;
-            case "<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendra Aletargados. El Aliento Negro avanzara +1 en el proximo viaje y la marcha se vera mas lenta.</color>\n\n":
-                r = "<color=#ba3fef>-Se você forçar a marcha mesmo assim, a Caravana obterá Letargia. O Respiro Negro avançará +1 na próxima viagem e a marcha parecerá mais lenta.</color>\n\n";
+            case "<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendra Aletargados. El Aliento Negro avanzara +1 en el proximo viaje.</color>\n\n":
+                r = "<color=#ba3fef>-Se você forçar a marcha mesmo assim, a Caravana obterá Letargia. O Respiro Negro avançará +1 na próxima viagem.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si ordenas reacomodar la marcha, la Caravana ganara +1 Fatiga.</color>\n\n":
                 r = "<color=#ba3fef>-Se você ordenar reorganizar a marcha, a Caravana ganhará +1 Fadiga.</color>\n\n";
@@ -14604,6 +14610,12 @@ public class TRADU : MonoBehaviour
             break;
             case "Salir al Menú":
             r = "Sair para o menu";
+            break;
+            case "Lancero":
+            r = "Lanceiro";
+             break;
+            case "Ballestero":
+            r = "Arqueiro";
             break;
          
             

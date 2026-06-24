@@ -254,7 +254,7 @@ public class LuzCegadora : Habilidad
       {
         objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.red);
       }
-      else if (objetivo.TiradaSalvacion(objetivo.mod_TSReflejos, dificultadAtributo)) //Si la tirada de salvacion es mayor a la tirada del usuario, no se aplica el efecto
+      else if (objetivo.TiradaSalvacion(2, dificultadAtributo)) //Si la tirada de salvacion es mayor a la tirada del usuario, no se aplica el efecto
       {
 
         /////////////////////////////////////////////

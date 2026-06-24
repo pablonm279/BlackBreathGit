@@ -2320,11 +2320,13 @@ public class Casilla : MonoBehaviour
 
   public void NuevoObjetoPresenteEnCasilla(GameObject obj)
   {
+    Unidad unidad = obj.GetComponent<Unidad>();
 
-    if (obj.GetComponent<Unidad>() != null)
+    if (unidad != null)
     {
 
       Presente = obj;
+      unidad.CasillaPosicion = this;
 
       // Aplicar handicap de dificultad (invisible en UI) al aparecer una unidad en esta casilla
       try
@@ -2332,7 +2334,6 @@ public class Casilla : MonoBehaviour
         var hd = Sistema.HandicapDificultad.Instance;
         if (hd != null)
         {
-          var unidad = obj.GetComponent<Unidad>();
           hd.AplicarSiCorresponde(unidad, lado);
         }
       }
@@ -2342,7 +2343,7 @@ public class Casilla : MonoBehaviour
       if (GetComponent<Trampa>() != null)
       {
         Trampa scTramp = gameObject.GetComponent<Trampa>();
-        Unidad scUnidad = obj.GetComponent<Unidad>();
+        Unidad scUnidad = unidad;
 
         // Si la unidad es inmune y la trampa no es favorable, no aplica efectos.
         if (scUnidad != null && scUnidad.inmunidad_Trampas && !scTramp.esTrampaFavorable)
@@ -2379,7 +2380,7 @@ public class Casilla : MonoBehaviour
 
     }
 
-    string sortingLayerCanvas = obj.GetComponent<Unidad>() != null ? "UI3D" : null;
+    string sortingLayerCanvas = unidad != null ? "UI3D" : null;
     RenderOrderHelper.AplicarOrdenPorY(obj, posY, sortingLayerCanvas);
 
 

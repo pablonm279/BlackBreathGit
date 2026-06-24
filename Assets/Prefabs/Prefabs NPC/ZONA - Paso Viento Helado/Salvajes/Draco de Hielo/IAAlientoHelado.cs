@@ -70,7 +70,7 @@ public class IAAlientoHelado : IAHabilidad
       float danio = TiradaDeDados.TirarDados(DadosDanio, CarasDado);
       danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
 
-      bool fallaSalvacion = unidadObjetivo.TiradaSalvacion(unidadObjetivo.mod_TSReflejos, dificultadReflejos);
+      bool fallaSalvacion = unidadObjetivo.TiradaSalvacion(2, dificultadReflejos);
       if (!fallaSalvacion)
       {
         danio *= 0.5f;

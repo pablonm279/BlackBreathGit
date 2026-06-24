@@ -532,7 +532,7 @@ public class DisparoEnvenenado : Habilidad
     if (NIVEL > 2) { DC++; }
 
 
-    if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, DC))
+    if (objetivo.TiradaSalvacion(1, DC))
     {
 
       objetivo.estado_veneno += 2;

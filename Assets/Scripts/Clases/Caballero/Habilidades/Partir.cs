@@ -638,7 +638,7 @@ public class Partir : Habilidad
                 int nDif = 13;
                 if(NIVEL == 4){nDif += 2;}
 
-                if(uni.TiradaSalvacion(uni.mod_TSMental, nDif))
+                if(uni.TiradaSalvacion(3, nDif))
                 {
                     /////////////////////////////////////////////
                     //BUFF ---- Así se aplica un buff/debuff

@@ -157,7 +157,7 @@ public class Estados : MonoBehaviour
     BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre+TRADU.i.Traducir(" recibe ") + (1*unidad.estado_veneno) + TRADU.i.Traducir(" daño veneno.")));
 
 
-   bool noSeSalva = unidad.TiradaSalvacion(unidad.mod_TSFortaleza, 7+unidad.estado_veneno);
+   bool noSeSalva = unidad.TiradaSalvacion(1, 7+unidad.estado_veneno);
    if(!noSeSalva) //Cada turno se puede salvar del veneno; si falla, se suma 1 stack.
    {
      unidad.estado_veneno = 0; unidad.GenerarTextoFlotante("<s>" + TRADU.i.Traducir("Veneno") + "</s>", Color.green);

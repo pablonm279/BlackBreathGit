@@ -147,7 +147,7 @@ public class IAEmbestidaFaagdan : IAHabilidad
     objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
     //objetivo.AplicarDebuffPorAtaquesreiterados(1);
 
-    bool noSeSalva = objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, fortitudeDC);
+    bool noSeSalva = objetivo.TiradaSalvacion(2, fortitudeDC);
     if (noSeSalva)
     {
       EmpujarVerticalAleatorioAsync(objetivo);

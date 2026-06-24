@@ -263,7 +263,7 @@ public class TiroconArcoPotente : Habilidad
       return;
     }
 
-    if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza,11))
+    if (objetivo.TiradaSalvacion(1,11))
     {
       objetivo.EmpujarUnidad(1);
 

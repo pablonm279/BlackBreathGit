@@ -24,7 +24,7 @@ public class TrampaEnredaderaEspinosa : Trampa
          int danio =UnityEngine.Random.Range(1,5)+2;
          objetivo.RecibirDanio(danio,2,false, null);
 
-         if(objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 14)&& objetivo.estado_inmovil < 1)
+         if(objetivo.TiradaSalvacion(2, 14)&& objetivo.estado_inmovil < 1)
           {
             /////////////////////////////////////////////
             //BUFF ---- Así se aplica un buff/debuff

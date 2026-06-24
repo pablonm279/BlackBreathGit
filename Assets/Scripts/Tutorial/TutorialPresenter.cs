@@ -812,6 +812,11 @@ public class TutorialPresenter : MonoBehaviour
       return false;
     }
 
+    if (IsOptionsPriorityTransform(graphic.transform))
+    {
+      return true;
+    }
+
     if (step.inputBlockMode == TutorialInputBlockMode.None)
     {
       return true;
@@ -850,6 +855,40 @@ public class TutorialPresenter : MonoBehaviour
       || (pointer != null && graphicTransform.IsChildOf(pointer));
   }
 
+  private static bool IsOptionsPriorityTransform(Transform target)
+  {
+    while (target != null)
+    {
+      if (target.GetComponent<OpcionesCargarPlayerPrefsUI>() != null || IsOptionsPriorityName(target.name))
+      {
+        return true;
+      }
+
+      target = target.parent;
+    }
+
+    return false;
+  }
+
+  private static bool IsOptionsPriorityName(string objectName)
+  {
+    if (string.IsNullOrEmpty(objectName))
+    {
+      return false;
+    }
+
+    switch (objectName.Trim().ToLowerInvariant())
+    {
+      case "opciones":
+      case "menuopciones":
+      case "btnopciones":
+      case "bt_opciones":
+        return true;
+      default:
+        return false;
+    }
+  }
+
   private static bool IsChildOf(Transform child, GameObject parent)
   {
     return child != null && parent != null && child.IsChildOf(parent.transform);
@@ -882,13 +921,39 @@ public class TutorialPresenter : MonoBehaviour
       inputBlockerRaycastFilter = inputBlocker.AddComponent<TutorialInputBlockerRaycastFilter>();
     }
 
-    inputBlockerRaycastFilter.SetPassthroughTargets(
-      GetRectTransform(nextButtonRoot),
-      nextButton != null ? nextButton.GetComponent<RectTransform>() : null,
-      backButton != null ? backButton.GetComponent<RectTransform>() : null,
-      skipButton != null ? skipButton.GetComponent<RectTransform>() : null,
-      muteButton != null ? muteButton.GetComponent<RectTransform>() : null,
-      replayButton != null ? replayButton.GetComponent<RectTransform>() : null);
+    List<RectTransform> passthroughTargets = new List<RectTransform>();
+    AddPassthroughTarget(passthroughTargets, GetRectTransform(nextButtonRoot));
+    AddPassthroughTarget(passthroughTargets, nextButton != null ? nextButton.GetComponent<RectTransform>() : null);
+    AddPassthroughTarget(passthroughTargets, backButton != null ? backButton.GetComponent<RectTransform>() : null);
+    AddPassthroughTarget(passthroughTargets, skipButton != null ? skipButton.GetComponent<RectTransform>() : null);
+    AddPassthroughTarget(passthroughTargets, muteButton != null ? muteButton.GetComponent<RectTransform>() : null);
+    AddPassthroughTarget(passthroughTargets, replayButton != null ? replayButton.GetComponent<RectTransform>() : null);
+    AddOptionsPassthroughTargets(passthroughTargets);
+
+    inputBlockerRaycastFilter.SetPassthroughTargets(passthroughTargets.ToArray());
+  }
+
+  private static void AddOptionsPassthroughTargets(List<RectTransform> targets)
+  {
+    RectTransform[] rectTransforms = Resources.FindObjectsOfTypeAll<RectTransform>();
+    for (int i = 0; i < rectTransforms.Length; i++)
+    {
+      RectTransform rectTransform = rectTransforms[i];
+      if (rectTransform != null && IsOptionsPriorityTransform(rectTransform))
+      {
+        AddPassthroughTarget(targets, rectTransform);
+      }
+    }
+  }
+
+  private static void AddPassthroughTarget(List<RectTransform> targets, RectTransform target)
+  {
+    if (targets == null || target == null || targets.Contains(target))
+    {
+      return;
+    }
+
+    targets.Add(target);
   }
 
   private static RectTransform GetRectTransform(GameObject target)

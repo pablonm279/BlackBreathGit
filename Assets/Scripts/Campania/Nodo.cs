@@ -1660,6 +1660,33 @@ public class Nodo : MonoBehaviour
     return false;
   }
 
+  public bool EstaCaminoReveladoPorVision(CaminoConexion conexion)
+  {
+    Transform linea = conexion?.linea;
+    return linea != null && (lineasReveladas.Contains(linea) || lineasPendientesVision.Contains(linea));
+  }
+
+  public void RestaurarCaminoReveladoPorVisionHacia(Nodo destino)
+  {
+    if (destino == null)
+    {
+      return;
+    }
+
+    Transform linea = ObtenerConexionHacia(destino)?.linea;
+    if (linea == null)
+    {
+      return;
+    }
+
+    CancelarFadeVisionLinea(linea);
+    lineasReveladas.Add(linea);
+    lineasConFadeVisionAplicado.Add(linea);
+    linea.gameObject.SetActive(true);
+    RestaurarAlphaTransform(linea);
+    OcultarDecoracionSobreCamino(linea);
+  }
+
   public void MostrarContinuacionCortaPorVisionHacia(Nodo destino)
   {
     if (destino == null || linePrefab == null)
@@ -2023,14 +2050,15 @@ public class Nodo : MonoBehaviour
       return !(esEnvioExploradores && DebePermitirEnvioExploradoresTutorial(pasoTutorialNuevo));
     }
 
-    var tm = CampaignManager.Instance.scTutorialManager;
-    if (tm != null && tm.tutorialActivo)
-    {
-      // Permitir interacción solo en los pasos de mapa durante el tutorial.
-      bool permitirExploradoresTutorial = esEnvioExploradores && tm.pasoActual == 20 && EsClaroMisteriosoTutorial();
-      if (!(permitirExploradoresTutorial || tm.pasoActual == 2 || tm.pasoActual == 11 || tm.pasoActual == 17 || tm.pasoActual == 21 || tm.pasoActual == 30))
-        return true;
-    }
+    // TutorialManager legacy deshabilitado: no debe seguir filtrando input de nodos.
+    // var tm = CampaignManager.Instance.scTutorialManager;
+    // if (tm != null && tm.tutorialActivo)
+    // {
+    //   // Permitir interaccion solo en los pasos de mapa durante el tutorial.
+    //   bool permitirExploradoresTutorial = esEnvioExploradores && tm.pasoActual == 20 && EsClaroMisteriosoTutorial();
+    //   if (!(permitirExploradoresTutorial || tm.pasoActual == 2 || tm.pasoActual == 11 || tm.pasoActual == 17 || tm.pasoActual == 21 || tm.pasoActual == 30))
+    //     return true;
+    // }
 
     if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
     {

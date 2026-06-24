@@ -61,9 +61,26 @@ public class LadoManager : MonoBehaviour
                 continue;
               }
 
-               if (scCasilla.Presente.GetComponent<Unidad>() != null)
+               Unidad unidadPresente = scCasilla.Presente.GetComponent<Unidad>();
+               if (unidadPresente != null)
               {
-                unidadesLado.Add(scCasilla.Presente.GetComponent<Unidad>());
+                if (unidadPresente.HP_actual <= 0)
+                {
+                    unidadPresente.UnidadMuere();
+                    if (scCasilla.Presente == unidadPresente.gameObject)
+                    {
+                        scCasilla.Presente = null;
+                    }
+                    continue;
+                }
+
+                if (!unidadPresente.gameObject.activeInHierarchy)
+                {
+                    scCasilla.Presente = null;
+                    continue;
+                }
+
+                unidadesLado.Add(unidadPresente);
               
                 
               }

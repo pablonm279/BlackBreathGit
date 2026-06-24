@@ -110,7 +110,7 @@ public class IALlamaradaRaiz : IAHabilidad
     unidadObjetivo.RecibirDanio(danioFuego, TipoDanioFuego, false, scEstaUnidad);
    
 
-    bool noSeSalva = unidadObjetivo.TiradaSalvacion(unidadObjetivo.mod_TSReflejos, 10);
+    bool noSeSalva = unidadObjetivo.TiradaSalvacion(2, 10);
     if (noSeSalva)
     {
       Estados.Aplicar_Ardiendo(unidadObjetivo, 2);

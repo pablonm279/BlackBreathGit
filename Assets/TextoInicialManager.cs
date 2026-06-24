@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class TextoInicialManager : MonoBehaviour
 {
+    private const string EscenaMenuPrincipal = "ES-MenuPrincipal";
 
     public GameObject versionEspañol;
     public GameObject versionIngles;
@@ -50,8 +52,14 @@ public class TextoInicialManager : MonoBehaviour
     public void ContinuarZonaNueva()
     {
         gameObject.SetActive(false);
-        CampaignManager.Instance.ContinuarASiguienteZona();
-        TutorialDirector.TryStartPendingAfterZoneDescription();
+        PlayerPrefs.Save();
+        Time.timeScale = 1f;
+        if (MusicManager.Instance != null)
+        {
+            MusicManager.Instance.PausarMusica(false);
+            MusicManager.Instance.FadeOutYParar(0.5f);
+        }
+        SceneManager.LoadScene(EscenaMenuPrincipal, LoadSceneMode.Single);
     }
 
     private void AplicarVersionPorIdioma()

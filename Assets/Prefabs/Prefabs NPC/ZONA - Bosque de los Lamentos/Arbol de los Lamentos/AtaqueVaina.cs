@@ -211,7 +211,7 @@ public class AtaqueVaina : IAHabilidad
       return;
     }
 
-    if(unidad.TiradaSalvacion(unidad.mod_TSFortaleza, 14))
+    if(unidad.TiradaSalvacion(1, 14))
     {
       unidad.ForzarMoverAPrimeraFila();
     }

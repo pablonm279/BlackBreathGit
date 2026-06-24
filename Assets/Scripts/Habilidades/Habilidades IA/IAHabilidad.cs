@@ -48,6 +48,7 @@ public abstract class IAHabilidad : MonoBehaviour
   private float inicioSecuenciaVisual = -999f;
   protected virtual int DelayPreImpactoMeleeMs => MeleeTimingUtility.CalcularPreImpactoMs(scEstaUnidad != null ? scEstaUnidad.GetComponent<UnidadPoseController>() : null);
   protected virtual int DelayPostImpactoMeleeMs => MeleeTimingUtility.CalcularPostImpactoMs(scEstaUnidad != null ? scEstaUnidad.GetComponent<UnidadPoseController>() : null);
+  private const float ProbabilidadPriorizarFrenteEnRango = 0.3f;
 
   public List<object> objPosibles = new List<object>(); //Esta variable guarda los objetivos posibles de la habilidad
 
@@ -249,6 +250,7 @@ public abstract class IAHabilidad : MonoBehaviour
 
       AplicarRestriccionMeleePorInmovilizacion();
       AplicarRestriccionProvocado();
+      ReordenarObjetivosHostilesDeRango();
       return objPosibles;
     }
     else
@@ -305,7 +307,38 @@ public abstract class IAHabilidad : MonoBehaviour
     }
     AplicarRestriccionMeleePorInmovilizacion();
     AplicarRestriccionProvocado();
+    ReordenarObjetivosHostilesDeRango();
     return objPosibles;
+  }
+
+  private void ReordenarObjetivosHostilesDeRango()
+  {
+    if (!esHostil || esMelee || objPosibles == null || objPosibles.Count < 2)
+    {
+      return;
+    }
+
+    List<Unidad> unidades = objPosibles.OfType<Unidad>().ToList();
+    if (unidades.Count < 2)
+    {
+      return;
+    }
+
+    List<Obstaculo> obstaculos = objPosibles.OfType<Obstaculo>().ToList();
+    int filaOrigen = scEstaUnidad != null && scEstaUnidad.CasillaPosicion != null ? scEstaUnidad.CasillaPosicion.posY : 0;
+    bool priorizarFrente = UnityEngine.Random.value < ProbabilidadPriorizarFrenteEnRango;
+
+    IOrderedEnumerable<Unidad> unidadesOrdenadas = priorizarFrente
+      ? unidades
+        .OrderByDescending(unidad => unidad.CasillaPosicion.posX)
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - filaOrigen))
+      : unidades
+        .OrderBy(unidad => unidad.CasillaPosicion.posX)
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - filaOrigen));
+
+    objPosibles.Clear();
+    objPosibles.AddRange(unidadesOrdenadas.Cast<object>());
+    objPosibles.AddRange(obstaculos.Cast<object>());
   }
 
   private void AplicarRestriccionMeleePorInmovilizacion()

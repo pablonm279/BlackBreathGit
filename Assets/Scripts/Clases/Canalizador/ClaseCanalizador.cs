@@ -54,7 +54,6 @@ public class ClaseCanalizador : Unidad
         base.RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayefectos, ignorarEscudo);
 
 
-        ChequearResisteAcumulandoEnergia(danio);
         
         //Remueve reaccion escudo energético al ser dañado si no es NV 4
       if(gameObject != null)
@@ -74,6 +73,12 @@ public class ClaseCanalizador : Unidad
      }
     
 
+    }
+
+    protected override void AlRecibirDanioReal(float danioReal, int tipoDanio, bool esCritico, Unidad uCausante)
+    {
+        base.AlRecibirDanioReal(danioReal, tipoDanio, esCritico, uCausante);
+        ChequearResisteAcumulandoEnergia(danioReal);
     }
 
     public override void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool esCritico, float danio)
@@ -148,12 +153,16 @@ public class ClaseCanalizador : Unidad
     }
     void ChequearResisteAcumulandoEnergia(float danio)
     {
+        if (danio <= 0)
+        {
+            return;
+        }
 
         if (TieneBuffNombre("Acumulando")) //Si está acumulando, hace TS mental (concentracion) para ver si se interrumpe.
         {
 
             int DC = (int)(8 + danio / 4);
-            if (TiradaSalvacion(mod_TSMental, 10 + danio / 3))
+            if (TiradaSalvacion(3, 10 + danio / 3))
             {
                 RemoverBuffNombre("Acumulando");
                 string nombreUnidad = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;

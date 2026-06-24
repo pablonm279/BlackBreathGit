@@ -396,14 +396,14 @@ public class CorteHorizontal : Habilidad
     {
        if(NIVEL !=5)
        {
-        if(Objetivo.TiradaSalvacion(Objetivo.mod_TSFortaleza, 12))
+        if(Objetivo.TiradaSalvacion(1, 12))
         {
            Objetivo.estado_sangrado += 3;
             
         }
        }else //Si es nivel 4b, +1DC sangrado +1 stack
        {
-         if(Objetivo.TiradaSalvacion(Objetivo.mod_TSFortaleza, 13))
+         if(Objetivo.TiradaSalvacion(1, 13))
         {
           Objetivo.estado_sangrado += 4;
             

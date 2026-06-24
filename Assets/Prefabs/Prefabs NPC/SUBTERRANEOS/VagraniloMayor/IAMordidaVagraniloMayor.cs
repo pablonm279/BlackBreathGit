@@ -190,7 +190,7 @@ public override object EstablecerObjetivoPrioritario()
 
   void AplicaSangradoTirada(Unidad unidad, int extraDC)
   {
-    if (unidad.TiradaSalvacion(unidad.mod_TSFortaleza, 10 + extraDC))
+    if (unidad.TiradaSalvacion(1, 10 + extraDC))
     {
       unidad.estado_sangrado = 2;
 

@@ -180,6 +180,16 @@ public class ArrojarAbrojos : Habilidad
 
     private bool EsCasillaObjetivoValida(Casilla cas)
     {
+      if (cas == null || !lCasillasafectadas.Contains(cas))
+      {
+        return false;
+      }
+
+      if (cas.Presente == null)
+      {
+        return true;
+      }
+
       Unidad unidadObjetivo = cas != null && cas.Presente != null ? cas.Presente.GetComponent<Unidad>() : null;
       return unidadObjetivo != null && lObjetivosPosibles.Contains(unidadObjetivo);
     }
@@ -204,8 +214,13 @@ public class ArrojarAbrojos : Habilidad
         {
           continue; // Si la casilla  tiene presente, no la agregamos
         }
-        if (c != cas && (cas.lado == c.lado))
+        if (cas.lado == c.lado)
         {
+          if (c == cas)
+          {
+            CasillasXcas.Add(c);
+            continue;
+          }
 
           if (c.posX + 1 == cas.posX && (c.posY == cas.posY - 1 || c.posY == cas.posY + 1))
           {

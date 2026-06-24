@@ -579,7 +579,7 @@ public class ClaseDuelista : Unidad
         if (nivel == 5 && atacante != null && atacante.HP_actual > 0f)
         {
             const int dcReflejos = 10;
-            bool fallaTSReflejos = atacante.TiradaSalvacion(atacante.mod_TSReflejos, dcReflejos);
+            bool fallaTSReflejos = atacante.TiradaSalvacion(2, dcReflejos);
             if (fallaTSReflejos)
             {
                 AplicarTambaleandoEvasionMaestra(atacante);

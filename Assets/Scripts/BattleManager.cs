@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using TMPro;
 using UnityEngine.Rendering;
 using UnityEngine.EventSystems;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -1333,7 +1334,7 @@ public class BattleManager : MonoBehaviour
       }
 
       int dc = Mathf.Clamp(DcValourBase - Mathf.RoundToInt(aliado.ValentiaP_actual), DcValourMin, DcValourMax);
-      bool noSeSalva = aliado.TiradaSalvacion(aliado.mod_TSMental, dc, true);
+      bool noSeSalva = aliado.TiradaSalvacion(3, dc, true);
       if (!noSeSalva)
       {
         continue;
@@ -2289,6 +2290,11 @@ public class BattleManager : MonoBehaviour
     {
       if (unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() == null && tutorialActivo == false)
       {
+        if (TryConfirmarHabilidadAutoObjetivo())
+        {
+          return;
+        }
+
         TerminarTurno();
         return;
       }
@@ -2855,6 +2861,42 @@ public class BattleManager : MonoBehaviour
       _requiereActualizarBotones = false;
       scUIBotonesHab?.ActualizarBotonesHabilidad();
     }
+  }
+
+  public bool TryConfirmarHabilidadAutoObjetivo()
+  {
+    if (!SeleccionandoObjetivo || HabilidadActiva == null || unidadActiva == null || bOcupado)
+    {
+      return false;
+    }
+
+    if (HabilidadActiva.esZonal
+      || HabilidadActiva.poneTrampas
+      || HabilidadActiva.poneObstaculo
+      || HabilidadActiva.targetEspecial > 0)
+    {
+      return false;
+    }
+
+    if (lObstaculosPosiblesHabilidadActiva != null && lObstaculosPosiblesHabilidadActiva.Count > 0)
+    {
+      return false;
+    }
+
+    if (lUnidadesPosiblesHabilidadActiva == null || lUnidadesPosiblesHabilidadActiva.Count != 1)
+    {
+      return false;
+    }
+
+    Unidad usuario = HabilidadActiva.scEstaUnidad != null ? HabilidadActiva.scEstaUnidad : unidadActiva;
+    Unidad objetivo = lUnidadesPosiblesHabilidadActiva[0];
+    if (usuario == null || objetivo != usuario)
+    {
+      return false;
+    }
+
+    _ = HabilidadActiva.Resolver(new List<object> { objetivo });
+    return true;
   }
 
 
@@ -5433,6 +5475,11 @@ public class BattleManager : MonoBehaviour
     }
 
     HashSet<Casilla> casillasObjetivo = ObtenerCasillasRojasActuales();
+    if (casillasObjetivo.Count == 0 && TryObtenerPatronDeclaradoHabilidadActiva(out alcanceBase, out ancho, true))
+    {
+      return true;
+    }
+
     if (casillasObjetivo.Count == 0 && HabilidadActiva.lCasillasafectadas != null)
     {
       foreach (Casilla casilla in HabilidadActiva.lCasillasafectadas)
@@ -5462,6 +5509,60 @@ public class BattleManager : MonoBehaviour
           return true;
         }
       }
+    }
+
+    return TryObtenerPatronDeclaradoHabilidadActiva(out alcanceBase, out ancho, false);
+  }
+
+  private bool TryObtenerPatronDeclaradoHabilidadActiva(out int alcanceBase, out int ancho, bool permitirMeleeGenerico)
+  {
+    alcanceBase = 0;
+    ancho = 0;
+
+    if (HabilidadActiva == null)
+    {
+      return false;
+    }
+
+    if (TryObtenerCampoEnteroHabilidad(HabilidadActiva, "hAlcance", out int alcanceDeclarado)
+      && TryObtenerCampoEnteroHabilidad(HabilidadActiva, "hAncho", out int anchoDeclarado)
+      && alcanceDeclarado >= 0
+      && anchoDeclarado >= 0)
+    {
+      alcanceBase = alcanceDeclarado;
+      ancho = anchoDeclarado;
+      return true;
+    }
+
+    if (permitirMeleeGenerico && HabilidadActiva.esMelee)
+    {
+      alcanceBase = 1;
+      ancho = 1;
+      return true;
+    }
+
+    return false;
+  }
+
+  private bool TryObtenerCampoEnteroHabilidad(Habilidad habilidad, string nombreCampo, out int valor)
+  {
+    valor = 0;
+    if (habilidad == null || string.IsNullOrEmpty(nombreCampo))
+    {
+      return false;
+    }
+
+    Type tipo = habilidad.GetType();
+    while (tipo != null && tipo != typeof(MonoBehaviour))
+    {
+      FieldInfo campo = tipo.GetField(nombreCampo, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+      if (campo != null && campo.FieldType == typeof(int))
+      {
+        valor = (int)campo.GetValue(habilidad);
+        return true;
+      }
+
+      tipo = tipo.BaseType;
     }
 
     return false;

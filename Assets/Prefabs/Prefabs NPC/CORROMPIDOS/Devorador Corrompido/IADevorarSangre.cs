@@ -141,9 +141,9 @@ public class IADevorarSangre : IAHabilidad
 
   public void EfectoDevorar(Unidad objetivo)
   { 
-     if (objetivo.TiradaSalvacion(objetivo.mod_TSFortaleza, 11))
+     if (objetivo.TiradaSalvacion(1, 11))
         {
-          // BUFF ---- As� se aplica un buff/debuff
+        
           Buff buff = new Buff();
           buff.buffNombre = "Sangre Devorada";
           buff.boolfDebufftBuff = false;
@@ -151,12 +151,12 @@ public class IADevorarSangre : IAHabilidad
           buff.cantAPMax -= 2;
           buff.cantAtaque -= 2;
           buff.AplicarBuff(objetivo);
-          // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
+          // Agrega el componente Buff al objeto objetivo y asigna la configuracin del buff
           Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
           if (objetivo.estado_Corrupto)
           { 
-            // BUFF ---- As� se aplica un buff/debuff
+            // BUFF ---- Asse aplica un buff/debuff
             Buff buff2 = new Buff();
             buff2.buffNombre = "Eufórico";
             buff2.boolfDebufftBuff = true;
