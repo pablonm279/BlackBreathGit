@@ -808,6 +808,11 @@ public class IAUnidad : MonoBehaviour
          return false;
       }
 
+      if (scUnidad.estado_inmovil > 0 || scUnidad.esInmobil)
+      {
+         return false;
+      }
+
       if (casillaObjetivo.posX != scUnidad.CasillaPosicion.posX)
       {
          return false;
@@ -1251,6 +1256,11 @@ public class IAUnidad : MonoBehaviour
    public async Task<bool> MoverACasilla(Casilla casillaObjetivo)
     {
         if (casillaObjetivo == null || scUnidad.CasillaPosicion == null)
+        {
+            return false;
+        }
+
+        if (scUnidad.estado_inmovil > 0 || scUnidad.esInmobil)
         {
             return false;
         }

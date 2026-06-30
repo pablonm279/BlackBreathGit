@@ -29,6 +29,7 @@ public class BallestaMiliciano : IAHabilidad
       prioridad = pPrioridad;
       costoAP = 2;
       afectaObstaculos = true;
+      ocultarRotuloHabilidad = true;
 
       hActualCooldown = hCooldownMax;
 

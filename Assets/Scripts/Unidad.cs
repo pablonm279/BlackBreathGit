@@ -71,7 +71,9 @@ public class Unidad : MonoBehaviour
   public float mod_maxHP; 
   public float HP_actual; 
   private const float PorcentajeVidaPorPuntoFuerza = 0.10f;
+  private float fuerzaReferenciaVidaPorFuerza;
   private float bonusVidaPorFuerzaAplicado;
+  private bool referenciaVidaPorFuerzaInicializada;
   private float agilidadReferenciaDefensa;
   private float bonusDefensaPorAgilidadAplicado;
   private float poderReferenciaResElemental;
@@ -341,6 +343,7 @@ public class Unidad : MonoBehaviour
   private void Awake()
   {
     scBattleManager = BattleManager.Instance;
+    InicializarReferenciaVidaPorFuerzaActual();
     InicializarReferenciaDefensaPorAgilidadActual();
     InicializarReferenciaResElementalPorPoderActual();
 
@@ -1053,6 +1056,7 @@ float critRangoDado, float critDañoBonus, float Ataque, float TSReflejos, float
 
   at_CarFuerza = cFuerza;
   mod_CarFuerza = cFuerza;
+  InicializarReferenciaVidaPorFuerzaActual();
 
   at_CarAgilidad = cAgilidad;
   mod_CarAgilidad = cAgilidad;
@@ -1095,7 +1099,7 @@ float critRangoDado, float critDañoBonus, float Ataque, float TSReflejos, float
   at_TSMental = TSMental;
   mod_TSMental = TSMental;
 
-  // La Fuerza escala vida maxima para todas las unidades (PJ e IA).
+  // Los cambios de Fuerza escalan vida maxima; la Fuerza base de IA no infla el HP del prefab.
   RecalcularVidaPorFuerza(true);
   // La Agilidad escala defensa sobre una referencia inicial para mantener el valor de arranque.
   RecalcularDefensaPorAgilidad();
@@ -1150,7 +1154,13 @@ float critRangoDado, float critDañoBonus, float Ataque, float TSReflejos, float
 
   public void RecalcularVidaPorFuerza(bool ajustarHPActual)
   {
-    float bonusNuevo = at_maxHP * PorcentajeVidaPorPuntoFuerza * mod_CarFuerza;
+    if (!referenciaVidaPorFuerzaInicializada)
+    {
+      InicializarReferenciaVidaPorFuerzaActual();
+    }
+
+    float fuerzaDiferencial = mod_CarFuerza - fuerzaReferenciaVidaPorFuerza;
+    float bonusNuevo = at_maxHP * PorcentajeVidaPorPuntoFuerza * fuerzaDiferencial;
     float delta = bonusNuevo - bonusVidaPorFuerzaAplicado;
     if (Mathf.Approximately(delta, 0f))
     {
@@ -1180,6 +1190,14 @@ float critRangoDado, float critDañoBonus, float Ataque, float TSReflejos, float
   public float ObtenerBonusVidaPorFuerzaActual()
   {
     return bonusVidaPorFuerzaAplicado;
+  }
+
+  private void InicializarReferenciaVidaPorFuerzaActual()
+  {
+    fuerzaReferenciaVidaPorFuerza = GetComponent<IAUnidad>() != null ? at_CarFuerza : 0f;
+    bonusVidaPorFuerzaAplicado = 0f;
+    referenciaVidaPorFuerzaInicializada = true;
+    ultimaFuerzaSincronizada = mod_CarFuerza;
   }
 
   public void RecalcularDefensaPorAgilidad()

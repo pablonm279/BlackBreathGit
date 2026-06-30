@@ -250,7 +250,7 @@ namespace Sistema
       switch (preset)
       {
         case DificultadPreset.MuyFacil:
-          a.hpMaxPct = -20f;
+          a.hpMaxPct = -15f;
           a.ataqueFlat = -2f;
           a.danioPorcPct = -15f;
           a.tsAllFlat = -2f;
@@ -264,13 +264,13 @@ namespace Sistema
         case DificultadPreset.Default:
           break;
         case DificultadPreset.Dificil:
-          a.hpMaxPct = 15f;
+          a.hpMaxPct = 10f;
           a.ataqueFlat = 1f;
           a.danioPorcPct = 10f;
           a.tsAllFlat = 1f;
           break;
         case DificultadPreset.MuyDificil:
-          a.hpMaxPct = 20f;
+          a.hpMaxPct = 15f;
           a.ataqueFlat = 2f;
           a.danioPorcPct = 15f;
           a.tsAllFlat = 2f;

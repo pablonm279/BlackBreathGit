@@ -310,6 +310,27 @@ public class CampaignManager : MonoBehaviour
     slot.rutina = StartCoroutine(RutinaMarcarNodoCampaniaTemporal(slot, nodo, tipo, retrasoSegundos));
   }
 
+  public void CancelarHighlightsNodosCampania()
+  {
+    PrepararSlotsHighlightNodosCampania();
+
+    for (int i = 0; i < slotsHighlightNodos.Count; i++)
+    {
+      SlotHighlightNodoCampania slot = slotsHighlightNodos[i];
+      if (slot == null)
+      {
+        continue;
+      }
+
+      if (slot.rutina != null)
+      {
+        StopCoroutine(slot.rutina);
+      }
+    }
+
+    OcultarTodosSlotsHighlightNodosCampania();
+  }
+
   private IEnumerator RutinaMarcarNodoCampaniaTemporal(SlotHighlightNodoCampania slot, Nodo nodo, TipoHighlightNodoCampania tipo, float retrasoSegundos)
   {
     if (retrasoSegundos > 0f)
@@ -5191,22 +5212,29 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     int chanceEmboscadaNormalizada = Mathf.Clamp(chancesemboscada, 0, 100);
-    bool emboscadaEnemiga = randomEmboscada <= chanceEmboscadaNormalizada;
-    bool emboscadaAliada = !emboscadaEnemiga && (randomEmboscada - chanceEmboscadaNormalizada) >= 50;
+    int chanceEmboscadaEnemiga = ReducirFrecuenciaEmboscada(chanceEmboscadaNormalizada);
+    int chanceEmboscadaAliada = ReducirFrecuenciaEmboscada(Mathf.Max(0, 51 - chanceEmboscadaNormalizada));
+    bool emboscadaEnemiga = randomEmboscada <= chanceEmboscadaEnemiga;
+    bool emboscadaAliada = !emboscadaEnemiga && chanceEmboscadaAliada > 0 && randomEmboscada > 100 - chanceEmboscadaAliada;
 
     if (emboscadaEnemiga)
     {
-      EscribirLog(FormatearLogTiradaEmboscada(true, chanceEmboscadaNormalizada, randomEmboscada));
+      EscribirLog(FormatearLogTiradaEmboscada(true, chanceEmboscadaEnemiga, chanceEmboscadaAliada, randomEmboscada));
       return 1;
     }
 
     if (emboscadaAliada)
     {
-      EscribirLog(FormatearLogTiradaEmboscada(false, chanceEmboscadaNormalizada, randomEmboscada));
+      EscribirLog(FormatearLogTiradaEmboscada(false, chanceEmboscadaEnemiga, chanceEmboscadaAliada, randomEmboscada));
       return 2;
     }
 
     return 0;
+  }
+
+  int ReducirFrecuenciaEmboscada(int chanceBase)
+  {
+    return Mathf.Clamp(Mathf.RoundToInt(chanceBase * 0.9f), 0, 100);
   }
 
   void ResolverCombateNormal(int emboscada)
@@ -5675,12 +5703,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       { chancesemboscada = 0; } //No emboscadas en tutorial
 
       int chanceEmboscadaNormalizada = Mathf.Clamp(chancesemboscada, 0, 100);
-      bool emboscadaEnemiga = randomEmboscada <= chanceEmboscadaNormalizada;
-      bool emboscadaAliada = !emboscadaEnemiga && (randomEmboscada - chanceEmboscadaNormalizada) >= 40;
+      int chanceEmboscadaEnemiga = ReducirFrecuenciaEmboscada(chanceEmboscadaNormalizada);
+      int chanceEmboscadaAliada = ReducirFrecuenciaEmboscada(Mathf.Max(0, 61 - chanceEmboscadaNormalizada));
+      bool emboscadaEnemiga = randomEmboscada <= chanceEmboscadaEnemiga;
+      bool emboscadaAliada = !emboscadaEnemiga && chanceEmboscadaAliada > 0 && randomEmboscada > 100 - chanceEmboscadaAliada;
 
       if (emboscadaEnemiga)
       {
-        EscribirLog(FormatearLogTiradaEmboscada(true, chanceEmboscadaNormalizada, randomEmboscada));
+        EscribirLog(FormatearLogTiradaEmboscada(true, chanceEmboscadaEnemiga, chanceEmboscadaAliada, randomEmboscada));
         scMenuBatallas.EventoBatallaNormal(0, 1); //Emboscada
 
       }
@@ -5688,7 +5718,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         if (emboscadaAliada)
         {
-          EscribirLog(FormatearLogTiradaEmboscada(false, chanceEmboscadaNormalizada, randomEmboscada));
+          EscribirLog(FormatearLogTiradaEmboscada(false, chanceEmboscadaEnemiga, chanceEmboscadaAliada, randomEmboscada));
           scMenuBatallas.EventoBatallaNormal(0, 2); //Emboscada a favor de la caravana
         }
         else
@@ -5936,17 +5966,16 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
   }
 
-  string FormatearLogTiradaEmboscada(bool emboscadaEnemiga, int chanceEmboscada, int tirada)
+  string FormatearLogTiradaEmboscada(bool emboscadaEnemiga, int chanceEmboscadaEnemiga, int chanceEmboscadaAliada, int tirada)
   {
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
     string color = emboscadaEnemiga ? "#ff9a9a" : "#8ad8ff";
-    int umbralEmboscadaAliada = chanceEmboscada + 50;
-    int chanceEmboscadaAliada = umbralEmboscadaAliada <= 100 ? 101 - umbralEmboscadaAliada : 0;
-    string detalleEmboscadaEnemiga = chanceEmboscada > 0
-      ? $"{chanceEmboscada}% (1-{chanceEmboscada})"
+    int inicioEmboscadaAliada = chanceEmboscadaAliada > 0 ? 101 - chanceEmboscadaAliada : 0;
+    string detalleEmboscadaEnemiga = chanceEmboscadaEnemiga > 0
+      ? $"{chanceEmboscadaEnemiga}% (1-{chanceEmboscadaEnemiga})"
       : "0%";
     string detalleEmboscadaAliada = chanceEmboscadaAliada > 0
-      ? $"{chanceEmboscadaAliada}% ({umbralEmboscadaAliada}-100)"
+      ? $"{chanceEmboscadaAliada}% ({inicioEmboscadaAliada}-100)"
       : "0%";
 
     if (idioma == TRADU.IdiomaIngles)
@@ -9495,7 +9524,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   Nodo ObtenerNodoBajoMouseCampania()
   {
-    if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+    if (EventSystem.current != null
+        && EventSystem.current.IsPointerOverGameObject()
+        && !DebePermitirRaycastNodosBajoUITutorial())
     {
       return null;
     }
@@ -9540,6 +9571,63 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     return null;
+  }
+
+  bool DebePermitirRaycastNodosBajoUITutorial()
+  {
+    TutorialDirector tutorial = TutorialDirector.Instance;
+    TutorialStep pasoTutorial = tutorial != null ? tutorial.CurrentStep : null;
+    return tutorial != null
+      && tutorial.IsRunning
+      && pasoTutorial != null
+      && EsPasoInteraccionNodoTutorial(pasoTutorial);
+  }
+
+  static bool EsPasoInteraccionNodoTutorial(TutorialStep pasoTutorial)
+  {
+    if (pasoTutorial == null || !EsTargetNodoTutorialCampania(pasoTutorial.targetId))
+    {
+      return false;
+    }
+
+    if (pasoTutorial.id == "Exploracion2" || pasoTutorial.id == "exploracion2")
+    {
+      return true;
+    }
+
+    if (pasoTutorial.advanceMode != TutorialAdvanceMode.Event || pasoTutorial.advanceConditions == null)
+    {
+      return false;
+    }
+
+    for (int i = 0; i < pasoTutorial.advanceConditions.Count; i++)
+    {
+      TutorialCondition condition = pasoTutorial.advanceConditions[i];
+      if (condition != null && EsEventoInteraccionNodoTutorial(condition.eventId))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  static bool EsTargetNodoTutorialCampania(string targetId)
+  {
+    return !string.IsNullOrEmpty(targetId)
+      && (targetId.StartsWith("tut_nodo", StringComparison.OrdinalIgnoreCase)
+        || targetId.StartsWith("tuto_nodo", StringComparison.OrdinalIgnoreCase));
+  }
+
+  static bool EsEventoInteraccionNodoTutorial(string eventId)
+  {
+    return eventId == TutorialEventNames.CampaignNodeSelected
+      || eventId == TutorialEventNames.CampaignNodeArrived
+      || eventId == TutorialEventNames.CampaignResourceNodeContinued
+      || eventId == TutorialEventNames.CampaignMissingPeopleEventContinued
+      || eventId == TutorialEventNames.CampaignRestNodeContinued
+      || eventId == TutorialEventNames.CampaignRestRandomEventContinued
+      || eventId == TutorialEventNames.CampaignScoutsExplorationCompleted;
   }
 
   void LimpiarHoverNodoCampaniaActual()
@@ -9968,7 +10056,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.idRetrato = 1;
     pers1.iPuestoDeseado = 3;
 
-    pers1.fVidaMaxima = 50 + UnityEngine.Random.Range(1, 7);
+    pers1.fVidaMaxima = 45 + UnityEngine.Random.Range(1, 7);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 3 + UnityEngine.Random.Range(0, 2);
@@ -10079,7 +10167,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.idRetrato = 5;
     pers1.iPuestoDeseado = 1;
 
-    pers1.fVidaMaxima = 42 + UnityEngine.Random.Range(1, 5);
+    pers1.fVidaMaxima = 38 + UnityEngine.Random.Range(1, 5);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 3 + UnityEngine.Random.Range(0, 2);
@@ -10192,7 +10280,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.idRetrato = 6;
     pers1.iPuestoDeseado = 1;
 
-    pers1.fVidaMaxima = 32 + UnityEngine.Random.Range(1, 5);
+    pers1.fVidaMaxima = 29 + UnityEngine.Random.Range(1, 5);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 1 + UnityEngine.Random.Range(0, 2);
@@ -10297,7 +10385,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.idRetrato = 7;
     pers1.iPuestoDeseado = 2;
 
-    pers1.fVidaMaxima = 46 + UnityEngine.Random.Range(1, 6);
+    pers1.fVidaMaxima = 41 + UnityEngine.Random.Range(1, 6);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 4 + UnityEngine.Random.Range(0, 2);
@@ -10416,7 +10504,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.idRetrato = 8;
     pers1.iPuestoDeseado = 2;
 
-    pers1.fVidaMaxima = 37 + UnityEngine.Random.Range(1, 4);
+    pers1.fVidaMaxima = 33 + UnityEngine.Random.Range(1, 4);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 2 + UnityEngine.Random.Range(0, 2);
@@ -10511,7 +10599,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.idRetrato = 9;
     pers1.iPuestoDeseado = 3;
 
-    pers1.fVidaMaxima = 45 + UnityEngine.Random.Range(1, 6);
+    pers1.fVidaMaxima = 41 + UnityEngine.Random.Range(1, 6);
     pers1.fVidaActual = pers1.fVidaMaxima;
 
     pers1.iFuerza = 3 + UnityEngine.Random.Range(0, 2);

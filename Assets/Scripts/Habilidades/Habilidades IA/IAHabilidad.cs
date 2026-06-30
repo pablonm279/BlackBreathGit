@@ -24,6 +24,7 @@ public abstract class IAHabilidad : MonoBehaviour
   public bool omitirFocoCamara = false;
   [SerializeField, Range(0.15f, 2f), Tooltip("Multiplicador del foco de camara para esta habilidad de IA. 1 usa el valor global; menor es mas sutil; mayor es mas dramatico.")]
   public float intensidadFocoCamara = 1f;
+  protected bool ocultarRotuloHabilidad = false;
 
   public int hCooldownMax;
   public int hActualCooldown;
@@ -868,7 +869,10 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     unidadesNoParticipantes = new List<object>(BattleManager.Instance.lUnidadesTotal);
     unidadesNoParticipantes.Remove(scEstaUnidad);
 
-    scEstaUnidad.MostrarRotuloHabilidadIA(nombreHab, new Color(1f, 0.86f, 0.62f, 1f));
+    if (!ocultarRotuloHabilidad)
+    {
+      scEstaUnidad.MostrarRotuloHabilidadIA(nombreHab, new Color(1f, 0.86f, 0.62f, 1f));
+    }
 
     if (objetivos != null && objetivos.Count > 0)
     {

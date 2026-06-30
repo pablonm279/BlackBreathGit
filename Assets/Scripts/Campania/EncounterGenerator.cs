@@ -65,7 +65,8 @@ public static class EncounterGenerator
       BattleEncounterType battleType,
       int fase,
       out EncounterDefinition encounter,
-      Predicate<EnemyFactionConfig> factionFilter = null)
+      Predicate<EnemyFactionConfig> factionFilter = null,
+      int budgetModifier = 0)
    {
       encounter = null;
       if (atributosZona == null)
@@ -127,8 +128,12 @@ public static class EncounterGenerator
       int randomBonus = RollBudgetBonus(battleType, faseClamped);
       int totalBudget = baseBudget * faseClamped + randomBonus;
       totalBudget += Sistema.HandicapDificultad.AjustePuntosEnemigos;
+      totalBudget += budgetModifier;
       int minBudgetFloor = GetMinBudgetFloor(battleType, faseClamped, cheapestTier, minUnits, highestTierAvailable);
-      totalBudget = Mathf.Max(Mathf.Max(cheapestTier * minUnits, minBudgetFloor), totalBudget);
+      int minBudgetAplicado = budgetModifier < 0
+         ? cheapestTier * minUnits
+         : Mathf.Max(cheapestTier * minUnits, minBudgetFloor);
+      totalBudget = Mathf.Max(minBudgetAplicado, totalBudget);
       int initialCap = GetInitialUnitCap(battleType, faseClamped);
       int reinforcementDelay = 0;
 

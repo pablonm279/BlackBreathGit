@@ -8,8 +8,8 @@ public class IACondenaRaices : IAHabilidad
 {
   const int TipoDanioNecrotico = 9;
   const int DadosCantidad = 1;
-  const int DadosCaras = 10;
-  const int DificultadSalvacion = 14;
+  const int DadosCaras = 8;
+  const int DificultadSalvacion = 13;
   const int TurnosCondena = 2;
   const int CantidadObjetivos = 2;
 

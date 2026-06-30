@@ -345,6 +345,11 @@ public class ClaseDuelista : Unidad
             return;
         }
 
+        if (estado_inmovil > 0 || esInmobil)
+        {
+            return;
+        }
+
         int nivel = ObtenerNivelEvasionMaestra();
         if (nivel <= 0 || !EsAtaqueMeleeParaEvasionMaestra(atacante, melee))
         {

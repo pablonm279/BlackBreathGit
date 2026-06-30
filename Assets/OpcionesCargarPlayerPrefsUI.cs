@@ -18,6 +18,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     private const string EscenaMenuPrincipal = "ES-MenuPrincipal";
     private const float DefaultBrightness = 0.65f;
     private const float AudioSfxOffsetY = -60.7f;
+    private const float FpsLimitOffsetY = -85f;
 
     public Slider volMusicaSlider;
     [NonSerialized] private Slider volSfxSlider;
@@ -59,6 +60,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public Toggle dofToggle;
     public Toggle vSyncToggle;
     public TMP_Dropdown fpsLimitDropdown;
+    private TextMeshProUGUI fpsLimitLabel;
 
     [Header("Brillo")]
     public Slider brilloSlider;
@@ -69,6 +71,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     {
         InicializarCalibracionVisualPorDefecto();
         AsegurarControlesAudioSfx();
+        AsegurarDropdownLimitadorFPS();
         ConfigurarToggleAyudas();
        
         LlenarDropdownResoluciones();
@@ -79,6 +82,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     {
         InicializarCalibracionVisualPorDefecto();
         AsegurarControlesAudioSfx();
+        AsegurarDropdownLimitadorFPS();
         ConfigurarToggleAyudas();
         
         AplicarEfectosEnUI();
@@ -101,6 +105,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public void AplicarEfectosEnUI()
     {
         AsegurarControlesAudioSfx();
+        AsegurarDropdownLimitadorFPS();
 
         // Volumen de la másica
         float volumenMusica = AjustesAudio.ObtenerVolumenMusica();
@@ -295,6 +300,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public void AbrirPanelGraficos()
     {
         RuntimeAnalytics.TrackDesign("ui", "options", "graphics_panel");
+        AsegurarDropdownLimitadorFPS();
         PanelAudio.SetActive(false);
         PanelGraficos.SetActive(true);
         PanelControles.SetActive(false);
@@ -464,7 +470,6 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         PlayerPrefs.Save();
 
         AplicarPreferenciasSyncYFPS();
-
     }
 
     public void AplicarDificultad()
@@ -602,11 +607,28 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public void AplicarBloomToggle() { GuardarOpcionesVisuales(); PlayerPrefs.Save(); }
     public void AplicarDoFToggle() { GuardarOpcionesVisuales(); PlayerPrefs.Save(); }
     public void AplicarVSyncToggle() { GuardarOpcionesVisuales(); AplicarPreferenciasSyncYFPS(); PlayerPrefs.Save(); }
-    public void AplicarFPSLimit() { GuardarOpcionesVisuales(); AplicarPreferenciasSyncYFPS(); PlayerPrefs.Save(); }
+    public void AplicarFPSLimit()
+    {
+        if (fpsLimitDropdown != null && MapearIndiceAFPS(fpsLimitDropdown.value) > 0)
+        {
+            if (vSyncToggle != null)
+            {
+                vSyncToggle.SetIsOnWithoutNotify(false);
+            }
+
+            PlayerPrefs.SetInt(PrefVsync, 0);
+        }
+
+        GuardarOpcionesVisuales();
+        AplicarPreferenciasSyncYFPS();
+        PlayerPrefs.Save();
+    }
 
 
     private void CargarOpcionesVisuales()
     {
+        AsegurarDropdownLimitadorFPS();
+
         bool postFx = PlayerPrefs.GetInt(PrefPostFx, 1) == 1;
         bool aa = PlayerPrefs.GetInt(PrefAA, 1) == 1;
         bool bloom = PlayerPrefs.GetInt(PrefBloom, 1) == 1;
@@ -622,7 +644,6 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
         if (fpsLimitDropdown != null)
         {
-            InicializarDropdownFPS();
             fpsLimitDropdown.SetValueWithoutNotify(MapearFPSAIndice(fpsLimit));
         }
 
@@ -658,18 +679,219 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     private void InicializarDropdownFPS()
     {
         if (fpsLimitDropdown == null) { return; }
-        if (fpsLimitDropdown.options != null && fpsLimitDropdown.options.Count > 0) { return; }
 
-        fpsLimitDropdown.ClearOptions();
-        fpsLimitDropdown.AddOptions(new List<string>
+        if (fpsLimitDropdown.options == null || fpsLimitDropdown.options.Count != 6)
         {
-            "30 FPS",
-            "60 FPS",
-            "120 FPS",
-            "144 FPS",
-            "240 FPS",
-            "Sin lí­mite"
-        });
+            fpsLimitDropdown.ClearOptions();
+            fpsLimitDropdown.AddOptions(new List<string>
+            {
+                "30 FPS",
+                "60 FPS",
+                "120 FPS",
+                "144 FPS",
+                "240 FPS",
+                "Sin limite"
+            });
+        }
+
+        ActualizarTextosLimitadorFPS();
+    }
+
+    private void AsegurarDropdownLimitadorFPS()
+    {
+        if (fpsLimitDropdown == null)
+        {
+            fpsLimitDropdown = BuscarDropdownLimitadorFPSExistente();
+        }
+
+        if (fpsLimitDropdown == null)
+        {
+            CrearDropdownLimitadorFPS();
+        }
+
+        if (fpsLimitDropdown == null) { return; }
+
+        InicializarDropdownFPS();
+        fpsLimitDropdown.onValueChanged.RemoveListener(OnFPSLimitDropdownChanged);
+        fpsLimitDropdown.onValueChanged.AddListener(OnFPSLimitDropdownChanged);
+    }
+
+    private TMP_Dropdown BuscarDropdownLimitadorFPSExistente()
+    {
+        if (PanelGraficos == null) { return null; }
+
+        TMP_Dropdown[] dropdowns = PanelGraficos.GetComponentsInChildren<TMP_Dropdown>(true);
+        for (int i = 0; i < dropdowns.Length; i++)
+        {
+            TMP_Dropdown dropdown = dropdowns[i];
+            if (dropdown == null) { continue; }
+
+            string nombre = dropdown.name.ToLowerInvariant();
+            if (nombre.Contains("fps") || nombre.Contains("framerate"))
+            {
+                return dropdown;
+            }
+        }
+
+        return null;
+    }
+
+    private void CrearDropdownLimitadorFPS()
+    {
+        if (PanelGraficos == null || graficosDropdown == null) { return; }
+
+        Transform parent = graficosDropdown.transform.parent;
+        if (parent == null) { parent = PanelGraficos.transform; }
+
+        RectTransform dropdownBaseRect = graficosDropdown.transform as RectTransform;
+        float baseY = dropdownBaseRect != null ? dropdownBaseRect.anchoredPosition.y : 0f;
+        float fpsY = CalcularPosicionYLimitadorFPS(parent, baseY);
+
+        GameObject clonDropdown = Instantiate(graficosDropdown.gameObject, parent);
+        clonDropdown.name = "FPSLimitDropdown";
+        fpsLimitDropdown = clonDropdown.GetComponent<TMP_Dropdown>();
+        if (fpsLimitDropdown == null) { return; }
+
+        RectTransform fpsRect = fpsLimitDropdown.transform as RectTransform;
+        if (fpsRect != null && dropdownBaseRect != null)
+        {
+            fpsRect.anchorMin = dropdownBaseRect.anchorMin;
+            fpsRect.anchorMax = dropdownBaseRect.anchorMax;
+            fpsRect.pivot = dropdownBaseRect.pivot;
+            fpsRect.sizeDelta = dropdownBaseRect.sizeDelta;
+            fpsRect.anchoredPosition = new Vector2(dropdownBaseRect.anchoredPosition.x, fpsY);
+        }
+
+        fpsLimitDropdown.onValueChanged.RemoveAllListeners();
+        CrearEtiquetaLimitadorFPS(parent, baseY, fpsY);
+    }
+
+    private float CalcularPosicionYLimitadorFPS(Transform parent, float fallbackY)
+    {
+        float minY = fallbackY;
+        bool encontroControl = false;
+
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            RectTransform child = parent.GetChild(i) as RectTransform;
+            if (child == null) { continue; }
+
+            if (child.GetComponent<TMP_Dropdown>() == null
+                && child.GetComponent<Toggle>() == null
+                && child.GetComponent<Slider>() == null)
+            {
+                continue;
+            }
+
+            minY = encontroControl ? Mathf.Min(minY, child.anchoredPosition.y) : child.anchoredPosition.y;
+            encontroControl = true;
+        }
+
+        return minY + FpsLimitOffsetY;
+    }
+
+    private void CrearEtiquetaLimitadorFPS(Transform parent, float baseY, float fpsY)
+    {
+        TextMeshProUGUI etiquetaBase = BuscarEtiquetaGraficos();
+        if (etiquetaBase == null) { return; }
+
+        GameObject clonEtiqueta = Instantiate(etiquetaBase.gameObject, parent);
+        clonEtiqueta.name = "txtLimitadorFPS";
+        fpsLimitLabel = clonEtiqueta.GetComponent<TextMeshProUGUI>();
+
+        RectTransform etiquetaRect = clonEtiqueta.transform as RectTransform;
+        RectTransform etiquetaBaseRect = etiquetaBase.transform as RectTransform;
+        if (etiquetaRect != null && etiquetaBaseRect != null)
+        {
+            etiquetaRect.anchorMin = etiquetaBaseRect.anchorMin;
+            etiquetaRect.anchorMax = etiquetaBaseRect.anchorMax;
+            etiquetaRect.pivot = etiquetaBaseRect.pivot;
+            etiquetaRect.sizeDelta = etiquetaBaseRect.sizeDelta;
+
+            Vector2 posicion = etiquetaBaseRect.parent == parent
+                ? etiquetaBaseRect.anchoredPosition
+                : new Vector2(etiquetaBaseRect.anchoredPosition.x, baseY);
+            posicion.y += fpsY - baseY;
+            etiquetaRect.anchoredPosition = posicion;
+        }
+
+        ActualizarTextosLimitadorFPS();
+    }
+
+    private TextMeshProUGUI BuscarEtiquetaGraficos()
+    {
+        if (PanelGraficos == null) { return null; }
+
+        TextMeshProUGUI[] textos = PanelGraficos.GetComponentsInChildren<TextMeshProUGUI>(true);
+        for (int i = 0; i < textos.Length; i++)
+        {
+            TextMeshProUGUI texto = textos[i];
+            if (texto == null) { continue; }
+
+            string nombre = texto.name.ToLowerInvariant();
+            string contenido = texto.text.ToLowerInvariant();
+            if (nombre.Contains("calidad") || contenido.Contains("calidad") || contenido.Contains("quality"))
+            {
+                return texto;
+            }
+        }
+
+        return textos.Length > 0 ? textos[0] : null;
+    }
+
+    private void OnFPSLimitDropdownChanged(int _)
+    {
+        AplicarFPSLimit();
+    }
+
+    private void ActualizarTextosLimitadorFPS()
+    {
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : nIdioma;
+
+        if (fpsLimitLabel == null && PanelGraficos != null)
+        {
+            Transform existente = PanelGraficos.transform.Find("txtLimitadorFPS");
+            if (existente != null)
+            {
+                fpsLimitLabel = existente.GetComponent<TextMeshProUGUI>();
+            }
+        }
+
+        if (fpsLimitLabel != null)
+        {
+            if (idioma == TRADU.IdiomaIngles)
+            {
+                fpsLimitLabel.text = "FPS Limit";
+            }
+            else if (idioma == TRADU.IdiomaPortugues)
+            {
+                fpsLimitLabel.text = "Limite de FPS";
+            }
+            else
+            {
+                fpsLimitLabel.text = "Limitador de FPS";
+            }
+        }
+
+        if (fpsLimitDropdown == null || fpsLimitDropdown.options == null || fpsLimitDropdown.options.Count < 6)
+        {
+            return;
+        }
+
+        if (idioma == TRADU.IdiomaIngles)
+        {
+            fpsLimitDropdown.options[5].text = "Unlimited";
+        }
+        else if (idioma == TRADU.IdiomaPortugues)
+        {
+            fpsLimitDropdown.options[5].text = "Sem limite";
+        }
+        else
+        {
+            fpsLimitDropdown.options[5].text = "Sin limite";
+        }
+
+        fpsLimitDropdown.RefreshShownValue();
     }
 
     private static int MapearIndiceAFPS(int idx)
@@ -765,6 +987,7 @@ public void CambiarIdioma(int idioma)
     ActualizarEtiquetaBrillo();
     TraducirDropdownGraficos();
     TraducirDropdownDificultad();
+    ActualizarTextosLimitadorFPS();
     AplicarIdiomaPanelControles();
     RefrescarObjetosMenuDependientesIdioma();
     SetRestartRequiredText(string.Empty);

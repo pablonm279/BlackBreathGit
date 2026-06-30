@@ -219,8 +219,11 @@ public class Instatransporte : Habilidad
   {
     scEstaUnidad.estado_evasion = 1;
     if (NIVEL == 5) { scEstaUnidad.estado_evasion += 1; }
-  
-    VFXAplicar(scEstaUnidad.gameObject);
+
+    float alphaOriginal = scEstaUnidad.ObtenerMultiplicadorAlphaVisual();
+    ReproducirVfxSonidoOculto(scEstaUnidad.gameObject);
+    InstatransporteBlinkVFX.Crear(scEstaUnidad.transform.position, true, scEstaUnidad.transform);
+    scEstaUnidad.EstablecerMultiplicadorAlphaVisual(Mathf.Min(alphaOriginal, 0.18f));
     
 
     Trampa[] trampas = cas.transform.GetComponentsInChildren<Trampa>();
@@ -231,6 +234,7 @@ public class Instatransporte : Habilidad
     }
 
     scEstaUnidad.TeletransportarACasilla(cas);
+    InstatransporteBlinkVFX.Crear(scEstaUnidad.transform.position, false, scEstaUnidad.transform);
     
     int alre = 1;
     if (NIVEL == 4) { alre = 2; }
@@ -243,14 +247,22 @@ public class Instatransporte : Habilidad
 
 
 
+    await Task.Delay(140);
+    if (scEstaUnidad != null)
+    {
+      scEstaUnidad.EstablecerMultiplicadorAlphaVisual(alphaOriginal);
+    }
+
 
   }
-      void VFXAplicar(GameObject objetivo)
+      void ReproducirVfxSonidoOculto(GameObject objetivo)
     {
       VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_Instatransporte");
+      if (VFXenObjetivo == null || objetivo == null) { return; }
 
     GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
     vfx.transform.parent = objetivo.transform;
+    VFXSoloSonido.OcultarVisuales(vfx);
      
    //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
    Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
@@ -296,7 +308,311 @@ public class Instatransporte : Habilidad
     
 
  
+public class InstatransporteBlinkVFX : MonoBehaviour
+{
+  private const float Duracion = 0.72f;
+  private const float OffsetVertical = 0.34f;
+  private const int SegmentosAnillo = 56;
 
+  private static Material materialParticulas;
+  private static Material materialAnillo;
+  private static Texture2D texturaCirculoSuave;
+
+  private LineRenderer anilloExterior;
+  private LineRenderer anilloInterior;
+  private LineRenderer haloGlow;
+  private bool salida;
+  private float tiempo;
+  private Color colorBase;
+  private Color colorSecundario;
+
+  public static void Crear(Vector3 posicion, bool salida, Transform referenciaOrden)
+  {
+    GameObject root = new GameObject(salida ? "VFX_Instatransporte_Origen" : "VFX_Instatransporte_Destino");
+    root.transform.position = posicion + new Vector3(0f, OffsetVertical, 0f);
+
+    InstatransporteBlinkVFX fx = root.AddComponent<InstatransporteBlinkVFX>();
+    fx.salida = salida;
+    fx.colorBase = salida ? new Color(0.42f, 0.95f, 1f, 1f) : new Color(0.66f, 0.76f, 1f, 1f);
+    fx.colorSecundario = salida ? new Color(0.74f, 0.46f, 1f, 1f) : new Color(0.36f, 1f, 0.88f, 1f);
+    fx.Inicializar(referenciaOrden);
+  }
+
+  private void Inicializar(Transform referenciaOrden)
+  {
+    int sortingLayerId;
+    int sortingOrder;
+    ObtenerOrden(referenciaOrden, out sortingLayerId, out sortingOrder);
+
+    haloGlow = CrearAnillo("HaloGlow", 0.378f, 0.055f, sortingLayerId, sortingOrder + 1);
+    anilloExterior = CrearAnillo("AnilloExterior", 0.306f, 0.022f, sortingLayerId, sortingOrder + 2);
+    anilloInterior = CrearAnillo("AnilloInterior", 0.198f, 0.015f, sortingLayerId, sortingOrder + 3);
+
+    CrearParticulas("ChispasDeBorde", 24, 0.18f, 0.48f, 0.033f, 0.62f, sortingLayerId, sortingOrder + 4);
+    CrearParticulas("PolvoArcano", 14, 0.07f, 0.62f, 0.066f, 0.22f, sortingLayerId, sortingOrder + 1);
+  }
+
+  private void Update()
+  {
+    tiempo += Time.deltaTime;
+    float t = Mathf.Clamp01(tiempo / Duracion);
+    float entrada = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / 0.14f));
+    float salidaAlpha = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((t - 0.48f) / 0.52f));
+    float intensidad = entrada * salidaAlpha;
+    float pulso = 0.5f + (0.5f * Mathf.Sin(tiempo * 18f));
+    float escala = salida
+      ? Mathf.Lerp(1.04f, 0.38f, Mathf.SmoothStep(0f, 1f, t))
+      : Mathf.Lerp(0.42f, 1.08f, Mathf.SmoothStep(0f, 1f, t));
+
+    ActualizarAnillo(haloGlow, 0.378f * Mathf.Lerp(escala, 1.12f, 0.28f), 0.055f, Color.Lerp(colorBase, colorSecundario, 0.35f), 0.28f * intensidad);
+    ActualizarAnillo(anilloExterior, 0.306f * escala, 0.022f, Color.Lerp(colorBase, colorSecundario, pulso), 0.92f * intensidad);
+    ActualizarAnillo(anilloInterior, 0.198f * Mathf.Lerp(escala, 1f, 0.22f), 0.015f, colorSecundario, 0.72f * intensidad);
+    transform.localEulerAngles = new Vector3(0f, 0f, Mathf.Lerp(salida ? 14f : -18f, salida ? -12f : 10f, t));
+
+    if (tiempo >= Duracion)
+    {
+      Destroy(gameObject);
+    }
+  }
+
+  private LineRenderer CrearAnillo(string nombre, float radio, float ancho, int sortingLayerId, int sortingOrder)
+  {
+    GameObject go = new GameObject(nombre);
+    go.transform.SetParent(transform, false);
+
+    LineRenderer lr = go.AddComponent<LineRenderer>();
+    lr.useWorldSpace = false;
+    lr.loop = true;
+    lr.positionCount = SegmentosAnillo;
+    lr.sharedMaterial = ObtenerMaterialAnillo();
+    lr.sortingLayerID = sortingLayerId;
+    lr.sortingOrder = sortingOrder;
+    lr.numCornerVertices = 3;
+    lr.numCapVertices = 3;
+    ActualizarAnillo(lr, radio, ancho, colorBase, 0f);
+    return lr;
+  }
+
+  private void ActualizarAnillo(LineRenderer lr, float radio, float ancho, Color color, float alpha)
+  {
+    if (lr == null)
+    {
+      return;
+    }
+
+    radio = Mathf.Max(0.01f, radio);
+    for (int i = 0; i < SegmentosAnillo; i++)
+    {
+      float angulo = (i / (float)SegmentosAnillo) * Mathf.PI * 2f;
+      lr.SetPosition(i, new Vector3(Mathf.Cos(angulo) * radio, Mathf.Sin(angulo) * radio * 0.46f, 0f));
+    }
+
+    Color colorFinal = new Color(color.r, color.g, color.b, alpha);
+    lr.startWidth = ancho;
+    lr.endWidth = ancho;
+    lr.startColor = colorFinal;
+    lr.endColor = colorFinal;
+  }
+
+  private void CrearParticulas(string nombre, int cantidad, float radio, float vida, float tamano, float velocidad, int sortingLayerId, int sortingOrder)
+  {
+    GameObject go = new GameObject(nombre);
+    go.transform.SetParent(transform, false);
+
+    ParticleSystem ps = go.AddComponent<ParticleSystem>();
+    ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+    ParticleSystemRenderer renderer = go.GetComponent<ParticleSystemRenderer>();
+    renderer.sharedMaterial = ObtenerMaterialParticulas();
+    renderer.sortingLayerID = sortingLayerId;
+    renderer.sortingOrder = sortingOrder;
+    renderer.renderMode = ParticleSystemRenderMode.Billboard;
+
+    var main = ps.main;
+    main.playOnAwake = false;
+    main.loop = false;
+    main.duration = 0.18f;
+    main.startLifetime = new ParticleSystem.MinMaxCurve(vida * 0.72f, vida);
+    main.startSpeed = new ParticleSystem.MinMaxCurve(velocidad * 0.45f, velocidad);
+    main.startSize = new ParticleSystem.MinMaxCurve(tamano * 0.62f, tamano);
+    main.startColor = new ParticleSystem.MinMaxGradient(colorBase, colorSecundario);
+    main.gravityModifier = 0f;
+    main.simulationSpace = ParticleSystemSimulationSpace.World;
+    main.maxParticles = Mathf.Max(8, cantidad + 4);
+
+    var emission = ps.emission;
+    emission.enabled = false;
+
+    var shape = ps.shape;
+    shape.enabled = true;
+    shape.shapeType = ParticleSystemShapeType.Circle;
+    shape.radius = radio;
+
+    var colorOverLifetime = ps.colorOverLifetime;
+    colorOverLifetime.enabled = true;
+    Gradient gradiente = new Gradient();
+    gradiente.SetKeys(
+      new GradientColorKey[] {
+        new GradientColorKey(colorBase, 0f),
+        new GradientColorKey(colorSecundario, 0.55f),
+        new GradientColorKey(colorBase, 1f)
+      },
+      new GradientAlphaKey[] {
+        new GradientAlphaKey(0f, 0f),
+        new GradientAlphaKey(0.62f, 0.14f),
+        new GradientAlphaKey(0.34f, 0.62f),
+        new GradientAlphaKey(0f, 1f)
+      });
+    colorOverLifetime.color = new ParticleSystem.MinMaxGradient(gradiente);
+
+    var sizeOverLifetime = ps.sizeOverLifetime;
+    sizeOverLifetime.enabled = true;
+    AnimationCurve curvaTamano = new AnimationCurve();
+    curvaTamano.AddKey(0f, salida ? 0.74f : 0.42f);
+    curvaTamano.AddKey(0.42f, 1f);
+    curvaTamano.AddKey(1f, salida ? 0.28f : 0.62f);
+    sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1f, curvaTamano);
+
+    ps.Play();
+    ps.Emit(cantidad);
+  }
+
+  private static void ObtenerOrden(Transform referencia, out int sortingLayerId, out int sortingOrder)
+  {
+    sortingLayerId = 0;
+    sortingOrder = 70;
+    if (referencia == null)
+    {
+      return;
+    }
+
+    Canvas canvas = referencia.GetComponentInChildren<Canvas>(true);
+    if (canvas != null)
+    {
+      sortingLayerId = canvas.sortingLayerID;
+      sortingOrder = canvas.sortingOrder + 7;
+      return;
+    }
+
+    SpriteRenderer spriteRenderer = referencia.GetComponentInChildren<SpriteRenderer>(true);
+    if (spriteRenderer != null)
+    {
+      sortingLayerId = spriteRenderer.sortingLayerID;
+      sortingOrder = spriteRenderer.sortingOrder + 7;
+      return;
+    }
+
+    Renderer renderer = referencia.GetComponentInChildren<Renderer>(true);
+    if (renderer != null)
+    {
+      sortingLayerId = renderer.sortingLayerID;
+      sortingOrder = renderer.sortingOrder + 7;
+    }
+  }
+
+  private static Material ObtenerMaterialParticulas()
+  {
+    if (materialParticulas != null)
+    {
+      return materialParticulas;
+    }
+
+    Shader shader = Shader.Find("Legacy Shaders/Particles/Alpha Blended");
+    if (shader == null)
+    {
+      shader = Shader.Find("Particles/Standard Unlit");
+    }
+    if (shader == null)
+    {
+      shader = Shader.Find("Sprites/Default");
+    }
+    if (shader == null)
+    {
+      return null;
+    }
+
+    materialParticulas = new Material(shader);
+    materialParticulas.name = "Instatransporte_Particulas";
+    materialParticulas.hideFlags = HideFlags.HideAndDontSave;
+    if (materialParticulas.HasProperty("_MainTex"))
+    {
+      materialParticulas.mainTexture = ObtenerTexturaCirculoSuave();
+    }
+    if (materialParticulas.HasProperty("_Color"))
+    {
+      materialParticulas.color = Color.white;
+    }
+
+    return materialParticulas;
+  }
+
+  private static Material ObtenerMaterialAnillo()
+  {
+    if (materialAnillo != null)
+    {
+      return materialAnillo;
+    }
+
+    Shader shader = Shader.Find("Sprites/Default");
+    if (shader == null)
+    {
+      shader = Shader.Find("Legacy Shaders/Particles/Alpha Blended");
+    }
+    if (shader == null)
+    {
+      return ObtenerMaterialParticulas();
+    }
+
+    materialAnillo = new Material(shader);
+    materialAnillo.name = "Instatransporte_Anillo";
+    materialAnillo.hideFlags = HideFlags.HideAndDontSave;
+    if (materialAnillo.HasProperty("_MainTex"))
+    {
+      materialAnillo.mainTexture = ObtenerTexturaCirculoSuave();
+    }
+    if (materialAnillo.HasProperty("_Color"))
+    {
+      materialAnillo.color = Color.white;
+    }
+
+    return materialAnillo;
+  }
+
+  private static Texture2D ObtenerTexturaCirculoSuave()
+  {
+    if (texturaCirculoSuave != null)
+    {
+      return texturaCirculoSuave;
+    }
+
+    const int size = 32;
+    texturaCirculoSuave = new Texture2D(size, size, TextureFormat.RGBA32, false, true);
+    texturaCirculoSuave.name = "Instatransporte_CirculoSuave";
+    texturaCirculoSuave.wrapMode = TextureWrapMode.Clamp;
+    texturaCirculoSuave.filterMode = FilterMode.Bilinear;
+    texturaCirculoSuave.hideFlags = HideFlags.HideAndDontSave;
+
+    float half = (size - 1) * 0.5f;
+    for (int y = 0; y < size; y++)
+    {
+      for (int x = 0; x < size; x++)
+      {
+        float nx = (x - half) / half;
+        float ny = (y - half) / half;
+        float r = Mathf.Sqrt((nx * nx) + (ny * ny));
+        float alpha = Mathf.Clamp01(1f - r);
+        alpha = alpha * alpha * (3f - 2f * alpha);
+        texturaCirculoSuave.SetPixel(x, y, new Color(1f, 1f, 1f, alpha));
+      }
+    }
+
+    texturaCirculoSuave.Apply(false, false);
+    return texturaCirculoSuave;
+  }
+}
+
+ 
+ 
    /*  private void ObtenerObjetivos()
     {
       

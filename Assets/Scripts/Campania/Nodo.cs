@@ -2066,11 +2066,69 @@ public class Nodo : MonoBehaviour
                            TooltipNodos.Instance.tooltipObject != null &&
                            TooltipNodos.Instance.tooltipObject.activeInHierarchy;
       bool permitirExploradoresSobreUI = esEnvioExploradores && EsClaroMisteriosoTutorial();
-      if (!tooltipActivo && !permitirExploradoresSobreUI)
+      bool permitirNodoTutorialSobreUI = !esEnvioExploradores && DebePermitirClickNodoTutorialSobreUI(pasoTutorialNuevo);
+      if (!tooltipActivo && !permitirExploradoresSobreUI && !permitirNodoTutorialSobreUI)
         return true;
     }
 
     return false;
+  }
+
+  bool DebePermitirClickNodoTutorialSobreUI(TutorialStep pasoTutorial)
+  {
+    if (pasoTutorial == null || !EsPasoInteraccionNodoTutorial(pasoTutorial))
+    {
+      return false;
+    }
+
+    return string.Equals(pasoTutorial.targetId, ObtenerTutorialTargetId(), System.StringComparison.OrdinalIgnoreCase);
+  }
+
+  static bool EsPasoInteraccionNodoTutorial(TutorialStep pasoTutorial)
+  {
+    if (pasoTutorial == null || !EsTargetNodoTutorialCampania(pasoTutorial.targetId))
+    {
+      return false;
+    }
+
+    if (pasoTutorial.id == "Exploracion2" || pasoTutorial.id == "exploracion2")
+    {
+      return true;
+    }
+
+    if (pasoTutorial.advanceMode != TutorialAdvanceMode.Event || pasoTutorial.advanceConditions == null)
+    {
+      return false;
+    }
+
+    for (int i = 0; i < pasoTutorial.advanceConditions.Count; i++)
+    {
+      TutorialCondition condition = pasoTutorial.advanceConditions[i];
+      if (condition != null && EsEventoInteraccionNodoTutorial(condition.eventId))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  static bool EsTargetNodoTutorialCampania(string targetId)
+  {
+    return !string.IsNullOrEmpty(targetId)
+      && (targetId.StartsWith("tut_nodo", System.StringComparison.OrdinalIgnoreCase)
+        || targetId.StartsWith("tuto_nodo", System.StringComparison.OrdinalIgnoreCase));
+  }
+
+  static bool EsEventoInteraccionNodoTutorial(string eventId)
+  {
+    return eventId == TutorialEventNames.CampaignNodeSelected
+      || eventId == TutorialEventNames.CampaignNodeArrived
+      || eventId == TutorialEventNames.CampaignResourceNodeContinued
+      || eventId == TutorialEventNames.CampaignMissingPeopleEventContinued
+      || eventId == TutorialEventNames.CampaignRestNodeContinued
+      || eventId == TutorialEventNames.CampaignRestRandomEventContinued
+      || eventId == TutorialEventNames.CampaignScoutsExplorationCompleted;
   }
 
   bool DebeBloquearViajeEnPasoTutorial(TutorialStep pasoTutorial)

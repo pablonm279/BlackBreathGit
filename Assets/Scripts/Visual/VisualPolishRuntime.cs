@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 #if UNITY_POST_PROCESSING_STACK_V2
 using UnityEngine.Rendering.PostProcessing;
@@ -18,6 +19,18 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   private const string PrefFpsLimit = "gfx_fps_limit";
   private const string PrefBrightness = "gfx_brightness";
   private const string PrefContrast = "gfx_contrast";
+  private const string PrefGraficosIndex = "graficos_index";
+  private const float BlackBreathParticleReductionPerQualityLevel = 0.15f;
+
+  private struct ParticleAmountDefaults
+  {
+    public int maxParticles;
+    public ParticleSystem.MinMaxCurve rateOverTime;
+    public ParticleSystem.MinMaxCurve rateOverDistance;
+    public ParticleSystem.Burst[] bursts;
+  }
+
+  private static readonly Dictionary<int, ParticleAmountDefaults> particleAmountDefaultsById = new Dictionary<int, ParticleAmountDefaults>();
 
   [SerializeField] private bool rebalanceQualityAtRuntime = true;
   [SerializeField] private int postProcessLayerIndex = 12; // Bit 4096 in current scenes.
@@ -54,9 +67,16 @@ public sealed class VisualPolishRuntime : MonoBehaviour
 
   public static void ApplyPostProcessingPrefsNow()
   {
+    Scene scene = SceneManager.GetActiveScene();
+
+    if (instance != null)
+    {
+      instance.ApplySyncAndFrameRatePrefs(scene);
+      instance.ApplyAlientoNegroParticleQualityScale(scene);
+    }
+
 #if UNITY_POST_PROCESSING_STACK_V2
     if (instance == null) { return; }
-    Scene scene = SceneManager.GetActiveScene();
     instance.ApplyCameraPostFxAA(scene);
     if (instance.ensureSceneGlobalPostFxVolume)
     {
@@ -107,6 +127,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     }
 
     NormalizeSceneCanvasScalers(scene);
+    ApplyAlientoNegroParticleQualityScale(scene);
 
 #if UNITY_POST_PROCESSING_STACK_V2
     ApplyCameraPostFxAA(scene);
@@ -192,6 +213,142 @@ public sealed class VisualPolishRuntime : MonoBehaviour
 
     int fpsLimit = PrefInt(PrefFpsLimit, defaultFpsLimit);
     Application.targetFrameRate = ResolveTargetFrameRate(vsyncEnabled, fpsLimit, scene);
+  }
+
+  public static float ResolveQualityAmountMultiplier(float reductionPerLevel)
+  {
+    int calidadMaxima = Mathf.Max(0, QualitySettings.names.Length - 1);
+    if (calidadMaxima <= 0)
+    {
+      return 1f;
+    }
+
+    int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
+    calidadActual = Mathf.Clamp(calidadActual, 0, calidadMaxima);
+
+    int nivelesDebajoDeUltra = calidadMaxima - calidadActual;
+    if (nivelesDebajoDeUltra <= 0)
+    {
+      return 1f;
+    }
+
+    return Mathf.Clamp01(1f - (Mathf.Max(0f, reductionPerLevel) * nivelesDebajoDeUltra));
+  }
+
+  public static void ApplyBlackBreathParticleQualityScale(GameObject root)
+  {
+    ApplyParticleAmountQualityScale(root, BlackBreathParticleReductionPerQualityLevel);
+  }
+
+  public static void ApplyParticleAmountQualityScale(GameObject root, float reductionPerLevel)
+  {
+    if (root == null) { return; }
+
+    ParticleSystem[] systems = root.GetComponentsInChildren<ParticleSystem>(true);
+    float multiplier = ResolveQualityAmountMultiplier(reductionPerLevel);
+    for (int i = 0; i < systems.Length; i++)
+    {
+      ApplyParticleSystemAmountScale(systems[i], multiplier);
+    }
+  }
+
+  private void ApplyAlientoNegroParticleQualityScale(Scene scene)
+  {
+    ParticleSystem[] systems = FindObjectsByType<ParticleSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+    float multiplier = ResolveQualityAmountMultiplier(BlackBreathParticleReductionPerQualityLevel);
+    for (int i = 0; i < systems.Length; i++)
+    {
+      ParticleSystem ps = systems[i];
+      if (ps == null) { continue; }
+      if (ps.gameObject.scene != scene) { continue; }
+      if (!EsSistemaParticulasAlientoNegro(ps.transform)) { continue; }
+
+      ApplyParticleSystemAmountScale(ps, multiplier);
+    }
+  }
+
+  private static bool EsSistemaParticulasAlientoNegro(Transform transform)
+  {
+    while (transform != null)
+    {
+      string nombre = transform.name;
+      if (!string.IsNullOrEmpty(nombre) && nombre.ToLowerInvariant().Contains("aliento"))
+      {
+        return true;
+      }
+
+      transform = transform.parent;
+    }
+
+    return false;
+  }
+
+  private static void ApplyParticleSystemAmountScale(ParticleSystem ps, float multiplier)
+  {
+    if (ps == null) { return; }
+
+    int id = ps.GetInstanceID();
+    if (!particleAmountDefaultsById.TryGetValue(id, out ParticleAmountDefaults defaults))
+    {
+      var mainDefaults = ps.main;
+      var emissionDefaults = ps.emission;
+      ParticleSystem.Burst[] bursts = new ParticleSystem.Burst[emissionDefaults.burstCount];
+      if (bursts.Length > 0)
+      {
+        emissionDefaults.GetBursts(bursts);
+      }
+
+      defaults = new ParticleAmountDefaults
+      {
+        maxParticles = mainDefaults.maxParticles,
+        rateOverTime = emissionDefaults.rateOverTime,
+        rateOverDistance = emissionDefaults.rateOverDistance,
+        bursts = bursts
+      };
+      particleAmountDefaultsById[id] = defaults;
+    }
+
+    var main = ps.main;
+    main.maxParticles = defaults.maxParticles > 0
+      ? Mathf.Max(1, Mathf.RoundToInt(defaults.maxParticles * multiplier))
+      : defaults.maxParticles;
+
+    var emission = ps.emission;
+    emission.rateOverTime = ScaleMinMaxCurve(defaults.rateOverTime, multiplier);
+    emission.rateOverDistance = ScaleMinMaxCurve(defaults.rateOverDistance, multiplier);
+
+    if (defaults.bursts != null && defaults.bursts.Length > 0)
+    {
+      ParticleSystem.Burst[] scaledBursts = new ParticleSystem.Burst[defaults.bursts.Length];
+      for (int i = 0; i < defaults.bursts.Length; i++)
+      {
+        scaledBursts[i] = defaults.bursts[i];
+        scaledBursts[i].count = ScaleMinMaxCurve(defaults.bursts[i].count, multiplier);
+      }
+
+      emission.SetBursts(scaledBursts);
+    }
+  }
+
+  private static ParticleSystem.MinMaxCurve ScaleMinMaxCurve(ParticleSystem.MinMaxCurve source, float multiplier)
+  {
+    ParticleSystem.MinMaxCurve scaled = source;
+    switch (source.mode)
+    {
+      case ParticleSystemCurveMode.Constant:
+        scaled.constant = source.constant * multiplier;
+        break;
+      case ParticleSystemCurveMode.TwoConstants:
+        scaled.constantMin = source.constantMin * multiplier;
+        scaled.constantMax = source.constantMax * multiplier;
+        break;
+      case ParticleSystemCurveMode.Curve:
+      case ParticleSystemCurveMode.TwoCurves:
+        scaled.curveMultiplier = source.curveMultiplier * multiplier;
+        break;
+    }
+
+    return scaled;
   }
 
   private static bool IsBattleScene(Scene scene)

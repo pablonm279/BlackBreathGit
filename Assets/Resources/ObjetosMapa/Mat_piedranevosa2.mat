@@ -64,13 +64,13 @@ Material:
     m_Ints: []
     m_Floats:
     - _BumpScale: 1
-    - _Cutoff: 0.878
+    - _Cutoff: 0.907
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.795
     - _GlossyReflections: 1
-    - _Metallic: 0.741
+    - _Metallic: 0.3
     - _Mode: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -80,7 +80,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.754717, g: 0.7505043, b: 0.6514774, a: 1}
+    - _Color: {r: 0.2830189, g: 0.28101638, b: 0.23896407, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

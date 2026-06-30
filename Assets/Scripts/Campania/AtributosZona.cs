@@ -59,6 +59,264 @@ public class EncounterZoneConfig
    }
 }
 
+[Serializable]
+public class TexturaProceduralPasoVientoHeladoConfig
+{
+   [Header("Salida")]
+   [Tooltip("+ mas resolucion y detalle, - menos costo de memoria.")]
+   [Range(128, 2048)] public int tamanoTextura = 1024;
+   [Tooltip("+ mas claro/teñido el material final, - mas oscuro o neutro.")]
+   public Color tintMaterial = new Color(0.94f, 0.98f, 1f, 1f);
+
+   [Header("Colores")]
+   [Tooltip("Color principal de la nieve. Mas claro aclara toda la base, mas oscuro ensucia el suelo.")]
+   public Color nieveBase = new Color(0.69f, 0.81f, 0.85f, 1f);
+   [Tooltip("Color de los parches claros. Mas claro da nieve fresca, mas oscuro reduce brillo.")]
+   public Color nieveClara = new Color(0.82f, 0.91f, 0.94f, 1f);
+   [Tooltip("Color de manchas grises. Mas oscuro marca nieve pisada, mas claro suaviza manchas.")]
+   public Color grisCompactado = new Color(0.45f, 0.56f, 0.61f, 1f);
+   [Tooltip("Color de zonas heladas. Mas saturado/azul suma hielo, mas neutro lo disimula.")]
+   public Color hieloLavado = new Color(0.53f, 0.73f, 0.80f, 1f);
+   [Tooltip("Color de sombras suaves. Mas oscuro aumenta contraste, mas claro aplana la textura.")]
+   public Color sombraSuave = new Color(0.36f, 0.45f, 0.50f, 1f);
+
+   [Header("Escalas de ruido")]
+   [Tooltip("+ deforma mas las manchas, - deja patrones mas rectos y limpios.")]
+   [Range(0f, 0.25f)] public float intensidadWarp = 0.07f;
+   [Tooltip("+ mas ondulaciones horizontales chicas, - manchas mas anchas en X.")]
+   [Range(0.1f, 12f)] public float escalaWarpX = 3.1f;
+   [Tooltip("+ mas ondulaciones verticales chicas, - manchas mas anchas en Y.")]
+   [Range(0.1f, 12f)] public float escalaWarpY = 3.4f;
+   [Tooltip("+ manchas grandes mas chicas y repetidas, - manchas grandes mas amplias.")]
+   [Range(0.1f, 24f)] public float escalaManchasGrandes = 5.2f;
+   [Tooltip("+ hielo medio mas picado, - placas de hielo mas grandes.")]
+   [Range(0.1f, 48f)] public float escalaHieloMedio = 13.5f;
+   [Tooltip("+ grano fino mas cerrado, - textura fina mas amplia y suave.")]
+   [Range(1f, 96f)] public float escalaNieveFina = 48f;
+   [Tooltip("+ vetas mas juntas, - vetas mas largas y separadas.")]
+   [Range(0.1f, 64f)] public float escalaVetas = 23f;
+   [Tooltip("+ vetas mas cortadas en Y, - vetas mas estiradas y horizontales.")]
+   [Range(0.1f, 16f)] public float escalaVetasY = 3f;
+
+   [Header("Intensidades")]
+   [Tooltip("+ mas parches de nieve clara, - base mas uniforme.")]
+   [Range(0f, 1f)] public float intensidadNieveClara = 0.18f;
+   [Tooltip("+ mas manchas grises/pisadas, - suelo mas limpio.")]
+   [Range(0f, 1f)] public float intensidadGris = 0.42f;
+   [Tooltip("+ mas presencia de hielo lavado, - menos tonos celestes.")]
+   [Range(0f, 1f)] public float intensidadHielo = 0.26f;
+   [Tooltip("+ mas lineas/vetas visibles, - superficie mas lisa.")]
+   [Range(0f, 1f)] public float intensidadVetas = 0.18f;
+   [Tooltip("+ mas ruido fino, - textura mas plana y suave.")]
+   [Range(0f, 0.15f)] public float intensidadGrano = 0.035f;
+
+   public int GetCacheHash()
+   {
+      unchecked
+      {
+         int hash = 17;
+         hash = hash * 31 + tamanoTextura;
+         hash = hash * 31 + HashColor(tintMaterial);
+         hash = hash * 31 + HashColor(nieveBase);
+         hash = hash * 31 + HashColor(nieveClara);
+         hash = hash * 31 + HashColor(grisCompactado);
+         hash = hash * 31 + HashColor(hieloLavado);
+         hash = hash * 31 + HashColor(sombraSuave);
+         hash = hash * 31 + HashFloat(intensidadWarp);
+         hash = hash * 31 + HashFloat(escalaWarpX);
+         hash = hash * 31 + HashFloat(escalaWarpY);
+         hash = hash * 31 + HashFloat(escalaManchasGrandes);
+         hash = hash * 31 + HashFloat(escalaHieloMedio);
+         hash = hash * 31 + HashFloat(escalaNieveFina);
+         hash = hash * 31 + HashFloat(escalaVetas);
+         hash = hash * 31 + HashFloat(escalaVetasY);
+         hash = hash * 31 + HashFloat(intensidadNieveClara);
+         hash = hash * 31 + HashFloat(intensidadGris);
+         hash = hash * 31 + HashFloat(intensidadHielo);
+         hash = hash * 31 + HashFloat(intensidadVetas);
+         hash = hash * 31 + HashFloat(intensidadGrano);
+         return hash;
+      }
+   }
+
+   static int HashFloat(float value)
+   {
+      return Mathf.RoundToInt(value * 10000f);
+   }
+
+   static int HashColor(Color color)
+   {
+      unchecked
+      {
+         int hash = 17;
+         hash = hash * 31 + HashFloat(color.r);
+         hash = hash * 31 + HashFloat(color.g);
+         hash = hash * 31 + HashFloat(color.b);
+         hash = hash * 31 + HashFloat(color.a);
+         return hash;
+      }
+   }
+}
+
+public static class TexturaProceduralSueloZona
+{
+   const int TamanoMinimo = 128;
+   const int TamanoMaximo = 2048;
+
+   static readonly Dictionary<string, Texture2D> texturasCache = new Dictionary<string, Texture2D>();
+
+   public static Texture2D CrearTexturaSuelo(EncounterZoneType zona, int seed, int size = 1024)
+   {
+      return CrearTexturaSuelo(zona, seed, null, size);
+   }
+
+   public static Texture2D CrearTexturaSuelo(EncounterZoneType zona, int seed, TexturaProceduralPasoVientoHeladoConfig pasoConfig, int size = 1024)
+   {
+      int tamanoSolicitado = pasoConfig != null ? pasoConfig.tamanoTextura : size;
+      int tamano = Mathf.Clamp(tamanoSolicitado, TamanoMinimo, TamanoMaximo);
+      int configHash = pasoConfig != null ? pasoConfig.GetCacheHash() : 0;
+      string cacheKey = $"{zona}_{seed}_{tamano}_{configHash}";
+
+      if (texturasCache.TryGetValue(cacheKey, out Texture2D texturaCacheada) && texturaCacheada != null)
+      {
+         return texturaCacheada;
+      }
+
+      Texture2D textura = zona == EncounterZoneType.PasoVientoHelado
+         ? CrearTexturaPasoVientoHelado(seed, tamano, pasoConfig)
+         : CrearTexturaBaseSuave(seed, tamano);
+
+      texturasCache[cacheKey] = textura;
+      return textura;
+   }
+
+   public static void AplicarTexturaSueloZona(MeshRenderer renderer, Texture2D textura, Color tint)
+   {
+      if (renderer == null || textura == null)
+      {
+         return;
+      }
+
+      Material material = renderer.material;
+      if (material == null)
+      {
+         return;
+      }
+
+      if (material.HasProperty("_MainTex"))
+      {
+         material.SetTexture("_MainTex", textura);
+      }
+
+      if (material.HasProperty("_BaseMap"))
+      {
+         material.SetTexture("_BaseMap", textura);
+      }
+
+      if (material.HasProperty("_Color"))
+      {
+         material.SetColor("_Color", tint);
+      }
+
+      if (material.HasProperty("_BaseColor"))
+      {
+         material.SetColor("_BaseColor", tint);
+      }
+   }
+
+   static Texture2D CrearTexturaPasoVientoHelado(int seed, int size, TexturaProceduralPasoVientoHeladoConfig config)
+   {
+      if (config == null)
+      {
+         config = new TexturaProceduralPasoVientoHeladoConfig();
+      }
+
+      Texture2D textura = CrearTexturaVacia("TexturaProcedural_PasoVientoHelado", size);
+      Color32[] pixels = new Color32[size * size];
+
+      float seedA = (seed & 0x7fffffff) * 0.00037f;
+      float seedB = ((seed >> 8) & 0x7fffffff) * 0.00053f;
+
+      for (int y = 0; y < size; y++)
+      {
+         float ny = y / (float)(size - 1);
+         for (int x = 0; x < size; x++)
+         {
+            float nx = x / (float)(size - 1);
+            float warpX = RuidoFirmado(nx * config.escalaWarpX + seedA, ny * config.escalaWarpX - seedB) * config.intensidadWarp;
+            float warpY = RuidoFirmado(nx * config.escalaWarpY - seedB, ny * config.escalaWarpY + seedA) * config.intensidadWarp;
+            float ux = nx + warpX;
+            float uy = ny + warpY;
+
+            float manchasGrandes = Mathf.PerlinNoise(ux * config.escalaManchasGrandes + seedA, uy * config.escalaManchasGrandes - seedB);
+            float hieloMedio = Mathf.PerlinNoise(ux * config.escalaHieloMedio - seedB * 0.7f, uy * (config.escalaHieloMedio * 0.95f) + seedA * 0.8f);
+            float nieveFina = Mathf.PerlinNoise(ux * config.escalaNieveFina + seedB, uy * (config.escalaNieveFina * 0.98f) - seedA);
+            float vetaLarga = Mathf.PerlinNoise((ux + uy * 0.18f) * config.escalaVetas + seedA * 0.4f, uy * config.escalaVetasY - seedB * 0.4f);
+
+            Color color = Color.Lerp(config.nieveBase, config.nieveClara, Mathf.InverseLerp(0.15f, 0.85f, nieveFina) * config.intensidadNieveClara);
+
+            float pesoGris = Mathf.SmoothStep(0.46f, 0.86f, manchasGrandes) * config.intensidadGris;
+            color = Color.Lerp(color, config.grisCompactado, pesoGris);
+
+            float pesoHielo = Mathf.SmoothStep(0.58f, 0.91f, hieloMedio) * config.intensidadHielo;
+            color = Color.Lerp(color, config.hieloLavado, pesoHielo);
+
+            float pesoVeta = Mathf.SmoothStep(0.72f, 0.95f, vetaLarga) * config.intensidadVetas;
+            color = Color.Lerp(color, config.sombraSuave, pesoVeta);
+
+            float grano = (nieveFina - 0.5f) * config.intensidadGrano;
+            color.r = Mathf.Clamp01(color.r + grano);
+            color.g = Mathf.Clamp01(color.g + grano);
+            color.b = Mathf.Clamp01(color.b + grano);
+
+            pixels[y * size + x] = color;
+         }
+      }
+
+      textura.SetPixels32(pixels);
+      textura.Apply(true, true);
+      return textura;
+   }
+
+   static Texture2D CrearTexturaBaseSuave(int seed, int size)
+   {
+      Texture2D textura = CrearTexturaVacia("TexturaProcedural_SueloZona", size);
+      Color32[] pixels = new Color32[size * size];
+      float seedA = (seed & 0x7fffffff) * 0.00041f;
+
+      for (int y = 0; y < size; y++)
+      {
+         float ny = y / (float)(size - 1);
+         for (int x = 0; x < size; x++)
+         {
+            float nx = x / (float)(size - 1);
+            float ruido = Mathf.PerlinNoise(nx * 8f + seedA, ny * 8f - seedA);
+            float valor = Mathf.Lerp(0.82f, 0.96f, ruido);
+            pixels[y * size + x] = new Color(valor, valor, valor, 1f);
+         }
+      }
+
+      textura.SetPixels32(pixels);
+      textura.Apply(true, true);
+      return textura;
+   }
+
+   static Texture2D CrearTexturaVacia(string nombre, int size)
+   {
+      Texture2D textura = new Texture2D(size, size, TextureFormat.RGBA32, true, false);
+      textura.name = nombre;
+      textura.wrapMode = TextureWrapMode.Repeat;
+      textura.filterMode = FilterMode.Trilinear;
+      textura.anisoLevel = 4;
+      return textura;
+   }
+
+   static float RuidoFirmado(float x, float y)
+   {
+      return (Mathf.PerlinNoise(x, y) - 0.5f) * 2f;
+   }
+}
+
 public class AtributosZona : MonoBehaviour
 {
    bool restaurandoDesdeSave;
@@ -94,17 +352,40 @@ public class AtributosZona : MonoBehaviour
    [Header("Debug de encuentros")]
    public List<GameObject> debugEncounterUnits = new List<GameObject>();
 
+   [Header("Textura procedural suelo - Paso Viento Helado")]
+   [SerializeField] TexturaProceduralPasoVientoHeladoConfig texturaSueloPasoVientoHelado = new TexturaProceduralPasoVientoHeladoConfig();
+
+   [Header("Hielo visible - Paso Viento Helado")]
+   [SerializeField, Tooltip("Si esta activo, los adornos no se generan donde el relieve queda a la altura del hielo o por debajo.")]
+   bool evitarAdornosSobreHieloPasoVientoHelado = true;
+   [SerializeField, Tooltip("Altura Y del plano de hielo. El decorador descarta puntos con superficie <= este valor.")]
+   float alturaHieloPasoVientoHelado = -0.7f;
+
+   [Header("Distribucion adornos - Paso Viento Helado")]
+   [SerializeField, Tooltip("Si esta activo, cada tanda de adornos empieza en una posicion aleatoria en vez de forzar el centro.")]
+   bool evitarPrimerPuntoCentricoPasoVientoHelado = true;
+
    MapDecorator scMapDecorator;
 
    void Awake()
    {
       scMapDecorator = GetComponent<MapDecorator>();
+      EnsureTexturaProceduralDefaults();
       EnsureEncounterLabels();
    }
 
    void OnValidate()
    {
+      EnsureTexturaProceduralDefaults();
       EnsureEncounterLabels();
+   }
+
+   void EnsureTexturaProceduralDefaults()
+   {
+      if (texturaSueloPasoVientoHelado == null)
+      {
+         texturaSueloPasoVientoHelado = new TexturaProceduralPasoVientoHeladoConfig();
+      }
    }
 
    void EnsureEncounterLabels()
@@ -206,10 +487,15 @@ public class AtributosZona : MonoBehaviour
    public GameObject PasoVientoHelado_Piedra1;
    public GameObject PasoVientoHelado_Piedra2;
    public GameObject PasoVientoHelado_Piedra3;
+   public GameObject PasoVientoHelado_Piedra4;
+   public GameObject PasoVientoHelado_Piedra5;
+   public GameObject PasoVientoHelado_Piedra6;
    public GameObject PasoVientoHelado_grieta1;
    public GameObject PasoVientoHelado_aldeatribal;
    public GameObject PasoVientoHelado_simbolopagano;
    public GameObject PasoVientoHelado_efigie;
+   public GameObject PasoVientoHelado_HuesoGrande;
+   public GameObject PasoVientoHelado_HuesoChico;
 
 
    public GameObject BosqueArdiente_Descripcion;
@@ -290,6 +576,9 @@ public class AtributosZona : MonoBehaviour
    }
    IEnumerator AdornarBosqueArdienteConFadeAsync()
    {
+
+      ConfigurarExclusionHieloPasoVientoHelado(false);
+      ConfigurarPrimerPuntoCentricoPasoVientoHelado(false);
 
       TexturaTerreno.material = MaterialBosqueAngustiante_Terreno;
       TexturaTerrenoExtension.material = MaterialBosqueAngustiante_Terreno;
@@ -381,8 +670,6 @@ public class AtributosZona : MonoBehaviour
          distNodoOverride: 2.2f,
          rOverride: 11.0f,
          kOverride: 20);
-
-
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_Llama,
          cantidad: 75,
@@ -461,6 +748,10 @@ public class AtributosZona : MonoBehaviour
       // Respetar timing previo y dejar terminar el fade inicial del AdministradorEscenas
       yield return new WaitForSecondsRealtime(0.5f);
 
+      AplicarTexturaProceduralPasoVientoHelado();
+      ConfigurarExclusionHieloPasoVientoHelado(true);
+      ConfigurarPrimerPuntoCentricoPasoVientoHelado(true);
+
       var admin = CampaignManager.Instance != null ? CampaignManager.Instance.scAdministradorEscenas : null;
       if (admin != null)
       {
@@ -472,7 +763,8 @@ public class AtributosZona : MonoBehaviour
       // Async sin congelar: replicamos las llamadas Generar pero con yield
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado1,
-         cantidad: 28,
+         cantidad: 34,
+         sectorno: 3,
          distCaminoOverride: 0.11f,
          distNodoOverride: 0.15f,
          rOverride: 6.25f,
@@ -480,7 +772,8 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
        PasoVientoHelado_Arbol1,
-       cantidad: 39,
+       cantidad: 48,
+       sectorno: 3,
        distCaminoOverride: 0.11f,
        distNodoOverride: 0.15f,
        rOverride: 5.95f,
@@ -488,7 +781,8 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
        PasoVientoHelado_Arbol2,
-       cantidad: 55,
+       cantidad: 65,
+       sectorno: 3,
        distCaminoOverride: 0.11f,
        distNodoOverride: 0.15f,
        rOverride: 5.85f,
@@ -497,14 +791,17 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
         PasoVientoHelado_Manchahielo,
-        cantidad: 7,
-        distCaminoOverride: 1.1f,
-        distNodoOverride: 0.83f,
+        cantidad: 10,
+        sector: 1,  //EN QUE SECTOR SE GENERA - 0 es en todos MENOS sectorno: x.
+        sectorno: 3,
+        distCaminoOverride: 1.25f,
+        distNodoOverride: 0.93f,
         rOverride: 13.85f,
         kOverride: 20);
       yield return scMapDecorator.GenerarAsyncCR(
         PasoVientoHelado_Mancha2,
-        cantidad: 7,
+        cantidad: 0,
+        sectorno: 3,
         distCaminoOverride: 0.11f,
         distNodoOverride: 0.15f,
         rOverride: 7.85f,
@@ -512,15 +809,26 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Maleza1,
-         cantidad: 1650,
+         cantidad: 1150,
+         sectorno: 3,
+         distCaminoOverride: 0.12f,
+         distNodoOverride: 0.85f,
+         rOverride: 0.87f,
+         kOverride: 30);
+
+      yield return scMapDecorator.GenerarAsyncCR(
+         PasoVientoHelado_Maleza1,
+         cantidad: 1450,
+         sectorno: 3,
          distCaminoOverride: 0.1f,
          distNodoOverride: 0.8f,
-         rOverride: 0.9f,
+         rOverride: 0.82f,
          kOverride: 30);
 
       yield return scMapDecorator.GenerarAsyncCR(
           BosqueAngustiante_ManchaCeniza1,
           cantidad: 60,
+          sectorno: 3,
           distCaminoOverride: 0.10f,
           distNodoOverride: 0.10f,
           rOverride: 10.8f,
@@ -529,6 +837,7 @@ public class AtributosZona : MonoBehaviour
       yield return scMapDecorator.GenerarAsyncCR(
         PasoVientoHelado_Piedra1,
         cantidad: 85,
+        sectorno: 3,
         distCaminoOverride: 0.10f,
         distNodoOverride: 0.10f,
         rOverride: 8.8f,
@@ -537,6 +846,7 @@ public class AtributosZona : MonoBehaviour
       yield return scMapDecorator.GenerarAsyncCR(
         PasoVientoHelado_Piedra2,
         cantidad: 68,
+        sectorno: 3,
         distCaminoOverride: 0.10f,
         distNodoOverride: 0.10f,
         rOverride: 10.8f,
@@ -544,15 +854,44 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Piedra3,
-         cantidad: 11,
+         cantidad: 10,
+         sectorno: 3,
+         distCaminoOverride: 1.80f,
+         distNodoOverride: 2.10f,
+         rOverride: 17.8f,
+         kOverride: 20);
+
+      yield return scMapDecorator.GenerarAsyncCR(
+         PasoVientoHelado_Piedra4,
+         cantidad: 14,
+         sectorno: 3,
          distCaminoOverride: 1.60f,
-         distNodoOverride: 1.80f,
+         distNodoOverride: 1.75f,
+         rOverride: 18.8f,
+         kOverride: 20);
+
+      yield return scMapDecorator.GenerarAsyncCR(
+         PasoVientoHelado_Piedra5,
+         cantidad: 20,
+         sectorno: 3,
+         distCaminoOverride: 1.40f,
+         distNodoOverride: 1.70f,
+         rOverride: 14.8f,
+         kOverride: 20);
+
+      yield return scMapDecorator.GenerarAsyncCR(
+         PasoVientoHelado_Piedra6,
+         cantidad: 13,
+         sectorno: 3,
+         distCaminoOverride: 1.60f,
+         distNodoOverride: 1.95f,
          rOverride: 16.8f,
          kOverride: 20);
 
       yield return scMapDecorator.GenerarAsyncCR(
        PasoVientoHelado_grieta1,
        cantidad: 4,
+       sectorno: 3,
        distCaminoOverride: 1.4f,
        distNodoOverride: 1.40f,
        rOverride: 15.8f,
@@ -560,15 +899,17 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
        PasoVientoHelado_aldeatribal,
-       cantidad: 12,
-       distCaminoOverride: 0.85f,
-       distNodoOverride: 1.30f,
-       rOverride: 7.8f,
+       cantidad: 10,
+       sectorno: 3,
+       distCaminoOverride: 0.95f,
+       distNodoOverride: 1.60f,
+       rOverride: 9.8f,
        kOverride: 20);
 
       yield return scMapDecorator.GenerarAsyncCR(
         PasoVientoHelado_efigie,
         cantidad: 15,
+        sectorno: 3,
         distCaminoOverride: 0.3f,
         distNodoOverride: 0.50f,
         rOverride: 7.8f,
@@ -577,9 +918,21 @@ public class AtributosZona : MonoBehaviour
       yield return scMapDecorator.GenerarAsyncCR(
         PasoVientoHelado_simbolopagano,
         cantidad: 4,
+        sectorno: 3,
         distCaminoOverride: 0.8f,
         distNodoOverride: 0.50f,
         rOverride: 10.8f,
+        kOverride: 20);
+
+      yield return scMapDecorator.GenerarAsyncCR(
+        PasoVientoHelado_HuesoGrande,
+        cantidad: 2,
+        sector: 1,  //EN QUE SECTOR SE GENERA - 0 es en todos MENOS sectorno: x.
+        sectorno: 3,
+         //sectorno: 3, por ejemplo no se generarian en el sector TerrenoSur(3)
+        distCaminoOverride: 3.1f,
+        distNodoOverride: 2.5f,
+        rOverride: 50.8f,
         kOverride: 20);
 
       if (admin != null)
@@ -591,6 +944,51 @@ public class AtributosZona : MonoBehaviour
       {
          DecoracionZonaEnCurso = false;
       }
+
+      ConfigurarExclusionHieloPasoVientoHelado(false);
+      ConfigurarPrimerPuntoCentricoPasoVientoHelado(false);
+   }
+
+   void AplicarTexturaProceduralPasoVientoHelado()
+   {
+      int seed = ObtenerSeedTexturaSueloZona();
+      Texture2D texturaSuelo = TexturaProceduralSueloZona.CrearTexturaSuelo(EncounterZoneType.PasoVientoHelado, seed, texturaSueloPasoVientoHelado);
+      Color tint = texturaSueloPasoVientoHelado != null ? texturaSueloPasoVientoHelado.tintMaterial : Color.white;
+
+      TexturaProceduralSueloZona.AplicarTexturaSueloZona(TexturaTerreno, texturaSuelo, tint);
+      TexturaProceduralSueloZona.AplicarTexturaSueloZona(TexturaTerrenoExtension, texturaSuelo, tint);
+   }
+
+   int ObtenerSeedTexturaSueloZona()
+   {
+      int reliefSeed = scMapDecorator != null ? scMapDecorator.GetReliefSeed() : 0;
+
+      unchecked
+      {
+         return (ID * 73856093) ^ (FASE * 19349663) ^ reliefSeed;
+      }
+   }
+
+   void ConfigurarExclusionHieloPasoVientoHelado(bool activa)
+   {
+      if (scMapDecorator == null)
+      {
+         return;
+      }
+
+      bool activarFiltro = activa && evitarAdornosSobreHieloPasoVientoHelado;
+      scMapDecorator.ConfigurarExclusionDecoracionPorAltura(activarFiltro, alturaHieloPasoVientoHelado);
+   }
+
+   void ConfigurarPrimerPuntoCentricoPasoVientoHelado(bool pasoActivo)
+   {
+      if (scMapDecorator == null)
+      {
+         return;
+      }
+
+      bool usarCentro = !(pasoActivo && evitarPrimerPuntoCentricoPasoVientoHelado);
+      scMapDecorator.ConfigurarPrimerPuntoCentrico(usarCentro);
    }
 
    public GameObject Nedukazal_CaravanaLuz;
@@ -669,6 +1067,9 @@ public class AtributosZona : MonoBehaviour
 
    IEnumerator AdornarNedukazalConFadeAsync()
    {
+
+      ConfigurarExclusionHieloPasoVientoHelado(false);
+      ConfigurarPrimerPuntoCentricoPasoVientoHelado(false);
 
       TexturaTerreno.material = MaterialNedukazal_Terreno;
       TexturaTerrenoExtension.material = MaterialNedukazal_Terreno;
@@ -779,8 +1180,6 @@ public class AtributosZona : MonoBehaviour
       admin.SetFaderHold(false);
       yield return admin.FadeOut(0.25f);
    }
-
-
 
    // Lista para llevar registro del estado de las zonas
    // 0: No cruzada, 1: Cruzada, 2: Descartada

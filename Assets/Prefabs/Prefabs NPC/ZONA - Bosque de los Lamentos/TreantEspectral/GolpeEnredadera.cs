@@ -187,7 +187,7 @@ void AplicaEnredadoTirada(Unidad unidad, int extraDC)
             //BUFF ---- As� se aplica un buff/debuff
             Buff buff = new Buff();
             buff.buffNombre = "Enredado";
-            buff.buffDescr = "Inm�vil, Melee solo adyacente.";
+            buff.buffDescr = "Inmóvil, Melee solo adyacente.";
             buff.boolfDebufftBuff = false;
             buff.DuracionBuffRondas = 2;
             buff.cantAPMax -= 1;
@@ -207,7 +207,7 @@ void AplicaEnredadoTirada(Unidad unidad, int extraDC)
 
             // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, unidad.gameObject);
-            unidad.estado_inmovil = buff.DuracionBuffRondas;
+            unidad.estado_inmovil = buff.DuracionBuffRondas + 1;
      }
 
 }

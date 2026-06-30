@@ -108,7 +108,7 @@ public class Enredar : IAHabilidad
             // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
-            objetivo.estado_inmovil = buff.DuracionBuffRondas;
+            objetivo.estado_inmovil = buff.DuracionBuffRondas + 1;
             objetivo.estado_ardiendo = buff.DuracionBuffRondas*2;
 
           }

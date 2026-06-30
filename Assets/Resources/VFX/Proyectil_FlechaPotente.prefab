@@ -262,7 +262,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 394.73727, y: 422.37033, z: -14.996291}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalScale: {x: 0.62, y: 0.62, z: 0.62}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6364140224260877042}
@@ -280,7 +280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36e1d84cd899eff469105ee713e212cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocidad: 7.4
+  velocidad: 7.55
   duracion: 0.65
 --- !u!82 &1227553603906772135
 AudioSource:

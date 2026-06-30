@@ -9,6 +9,8 @@ using UnityEditor;
 /// Controla el avance del Aliento Negro en escena usando un sistema de partículas.
 public class AlientoNegroVFX : MonoBehaviour
 {
+    const float ReduccionParticulasPorNivelCalidad = 0.15f;
+
     [Header("Referencias")]
     [SerializeField] Slider sliderAlientoNegro;
     [SerializeField] ParticleSystem alientoNegroParticulas;
@@ -71,6 +73,7 @@ public class AlientoNegroVFX : MonoBehaviour
         if (alientoNegroParticulas != null)
         {
             emissionDefaultEnabled = alientoNegroParticulas.emission.enabled;
+            AplicarCalidadCantidadParticulas();
         }
     }
 
@@ -82,6 +85,7 @@ public class AlientoNegroVFX : MonoBehaviour
     void OnEnable()
     {
         AjustesAudio.VolumenSfxCambiado += OnVolumenSfxCambiado;
+        AplicarCalidadCantidadParticulas();
     }
 
     void OnValidate()
@@ -208,8 +212,17 @@ public class AlientoNegroVFX : MonoBehaviour
         if (alientoNegroParticulas != null && ajustarEmisionSegunProgreso)
         {
             var emission = alientoNegroParticulas.emission;
-            emission.rateOverTime = Mathf.Lerp(emissionRateMin, emissionRateMax, progreso);
+            float multiplicadorCalidad = VisualPolishRuntime.ResolveQualityAmountMultiplier(ReduccionParticulasPorNivelCalidad);
+            emission.rateOverTime = Mathf.Lerp(emissionRateMin, emissionRateMax, progreso) * multiplicadorCalidad;
         }
+    }
+
+    public void AplicarCalidadCantidadParticulas()
+    {
+        if (alientoNegroParticulas == null)
+            return;
+
+        VisualPolishRuntime.ApplyParticleAmountQualityScale(alientoNegroParticulas.gameObject, ReduccionParticulasPorNivelCalidad);
     }
 
     void ActivarParticulas()
@@ -724,5 +737,4 @@ class AlientoNegroVFXEditor : Editor
     }
 }
 #endif
-
 

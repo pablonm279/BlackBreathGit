@@ -36,11 +36,14 @@ public class MapDecorator : MonoBehaviour
     [SerializeField] float distNodo   = 5f;
     [SerializeField] float radioPoisson = 3.5f;
     [SerializeField] int   intentosPorPunto = 30;
+    [SerializeField] bool preferirPrimerPuntoCentrico = true;
 
     [Header("Altura / terreno")]
     [SerializeField] bool ajustarAlturaConRaycast = true;
     [SerializeField] bool raycastSoloContraPlane = true;
     [SerializeField] LayerMask capaSuelo = ~0;
+    [SerializeField] bool excluirDecoracionBajoAlturaSuperficie = false;
+    [SerializeField] float alturaMinimaSuperficieDecoracion = -0.7f;
 
     [Header("Altura precisa (opcional)")]
     [SerializeField] bool usarColliderSueloDirecto = false;
@@ -72,7 +75,43 @@ public class MapDecorator : MonoBehaviour
     [SerializeField] float intensidadWarpRelieve = 1.1f;
     [SerializeField] float distanciaMuestreoNormal = 0.32f;
 
+    [Header("Precipicio - Paso Viento Helado")]
+    [SerializeField] bool usarPrecipicioTerrenoSurPasoHelado = true;
+    [SerializeField] float caidaPrecipicioTerrenoSur = 9.5f;
+    [SerializeField] float margenLateralPrecipicioTerrenoSur = 2f;
+    [SerializeField] float offsetBordePrecipicioTerrenoSur = 0.18f;
+    [SerializeField] float anchoSuavizadoSubidaPrecipicioTerrenoSur = 7f;
+    [SerializeField, Range(0f, 1f)] float factorSubidaBordePrecipicioTerrenoSur = 0.18f;
+    [SerializeField] bool usarPrecipicioTerrenoNortePasoHelado = true;
+    [SerializeField] float caidaPrecipicioTerrenoNorte = 9.5f;
+    [SerializeField] float margenLateralPrecipicioTerrenoNorte = 2f;
+    [SerializeField] float offsetBordePrecipicioTerrenoNorte = 0.18f;
+    [SerializeField] float irregularidadBordePrecipicioTerrenoNorte = 4f;
+    [SerializeField] float frecuenciaBordePrecipicioTerrenoNorte = 0.055f;
+    [SerializeField] float irregularidadLateralPrecipicioTerrenoNorte = 4f;
+    [SerializeField] float frecuenciaLateralPrecipicioTerrenoNorte = 0.045f;
+    [SerializeField] float anchoTransicionLateralPrecipicioTerrenoNorte = 1.25f;
+    [SerializeField] float ruidoAlturaPrecipicioTerrenoNorte = 0.55f;
+    [SerializeField] float frecuenciaRuidoAlturaPrecipicioTerrenoNorte = 0.085f;
+    [SerializeField] float anchoSuavizadoSubidaPrecipicioTerrenoNorte = 7f;
+    [SerializeField, Range(0f, 1f)] float factorSubidaBordePrecipicioTerrenoNorte = 0.18f;
+    [SerializeField] bool permitirDecoracionSobrePrecipicioTerrenoNorte = true;
+
+    [Header("Grieta - Paso Viento Helado")]
+    [SerializeField] bool usarGrietaMarcadorPasoHelado = true;
+    [SerializeField] string nombreMarcadorGrietaPasoHelado = "MarcadorGrieta";
+    [SerializeField] float profundidadGrietaPasoHelado = 8.5f;
+    [SerializeField] float anchoMinimoGrietaPasoHelado = 3.5f;
+    [SerializeField] float irregularidadBordeGrietaPasoHelado = 1.8f;
+    [SerializeField] float frecuenciaBordeGrietaPasoHelado = 0.14f;
+    [SerializeField] float ruidoFondoGrietaPasoHelado = 0.45f;
+    [SerializeField] float frecuenciaRuidoFondoGrietaPasoHelado = 0.18f;
+    [SerializeField] float anchoTransicionGrietaPasoHelado = 0.65f;
+    [SerializeField] float margenDecoracionGrietaPasoHelado = 2f;
+
     // ---- internos ----
+    const string PrefGraficosIndex = "graficos_index";
+    const float AumentoRadioDecoracionesPorNivelCalidad = 0.10f;
     const float UmbralDistCaminoRellenoRemovible = 0.15f;
     const float TamanoCeldaDecoracionRemovible = 2f;
     struct Segmento { public Vector3 a, b; public float halfWidth; }
@@ -122,7 +161,28 @@ public class MapDecorator : MonoBehaviour
     Collider colliderSueloAreaActual;
     MeshFilter sectorExcluidoActual;
     int relieveSeed;
+    int zonaRelieveActual;
     float alturaRelieveActual;
+    bool precipicioTerrenoSurDisponible;
+    float precipicioSurMinX;
+    float precipicioSurMaxX;
+    float precipicioSurMinZ;
+    float precipicioSurMaxZ;
+    float precipicioSurBordeInteriorZ;
+    float precipicioSurDireccionExteriorZ = -1f;
+    bool precipicioTerrenoNorteDisponible;
+    float precipicioNorteMinX;
+    float precipicioNorteMaxX;
+    float precipicioNorteMinZ;
+    float precipicioNorteMaxZ;
+    float precipicioNorteBordeInteriorZ;
+    float precipicioNorteDireccionExteriorZ = 1f;
+    bool grietaPasoHeladoDisponible;
+    Vector3 grietaPasoHeladoCentro;
+    Vector3 grietaPasoHeladoEjeLargo = Vector3.forward;
+    Vector3 grietaPasoHeladoEjeAncho = Vector3.right;
+    float grietaPasoHeladoMitadLargo;
+    float grietaPasoHeladoMitadAncho;
     int decorBatchCounter;
     int versionDecoracionesRemovibles;
     bool batchActualEsRellenoRemovible;
@@ -356,15 +416,20 @@ public class MapDecorator : MonoBehaviour
         }
         else
         {
-            int varianteAleatoria = System.Guid.NewGuid().GetHashCode();
-            relieveSeed = (zonaId * 73856093) ^ varianteAleatoria ^ 0x2f6e2b1;
+            int variante = zonaId == 2 ? fase * 19349663 : System.Guid.NewGuid().GetHashCode();
+            relieveSeed = (zonaId * 73856093) ^ variante ^ 0x2f6e2b1;
         }
 
         ReiniciarSesionDecoracion();
+        zonaRelieveActual = zonaId;
         alturaRelieveActual = ObtenerAlturaRelieveParaZona(zonaId);
+        PrepararPrecipicioTerrenoSur();
+        PrepararPrecipicioTerrenoNorte();
+        PrepararGrietaPasoHelado();
 
         AplicarRelieveAPlano(planeMesh, runtimePlaneMesh, basePlaneVertices, planeCollider);
         AplicarRelieveAPlano(planeMeshExtension, runtimePlaneMeshExtension, basePlaneExtensionVertices, planeColliderExtension);
+        LimpiarParedVisualPrecipicioTerrenoSur();
     }
 
     public int GetReliefSeed()
@@ -429,11 +494,32 @@ public class MapDecorator : MonoBehaviour
             target.position = surfacePos;
     }
 
+    public void ConfigurarExclusionDecoracionPorAltura(bool activa, float alturaMinimaSuperficie)
+    {
+        excluirDecoracionBajoAlturaSuperficie = activa;
+        alturaMinimaSuperficieDecoracion = alturaMinimaSuperficie;
+    }
+
+    public void ConfigurarPrimerPuntoCentrico(bool usarCentro)
+    {
+        preferirPrimerPuntoCentrico = usarCentro;
+    }
+
     // ===================== API =====================
     public void Limpiar()
     {
         for (int i = transform.childCount - 1; i >= 0; i--)
-            DestroyImmediate(transform.GetChild(i).gameObject);
+        {
+            GameObject hijo = transform.GetChild(i).gameObject;
+            if (Application.isPlaying)
+            {
+                Destroy(hijo);
+            }
+            else
+            {
+                DestroyImmediate(hijo);
+            }
+        }
 
         decoracionesRemoviblesSobreCaminos.Clear();
         decoracionesRemoviblesPorCelda.Clear();
@@ -482,12 +568,38 @@ public class MapDecorator : MonoBehaviour
     }
 
     // ===================== Preparación =====================
+    float EscalarRadioDecoracionesPorCalidad(float radio)
+    {
+        if (radio <= 0f)
+        {
+            return radio;
+        }
+
+        int calidadMaxima = Mathf.Max(0, QualitySettings.names.Length - 1);
+        if (calidadMaxima <= 0)
+        {
+            return radio;
+        }
+
+        int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
+        calidadActual = Mathf.Clamp(calidadActual, 0, calidadMaxima);
+
+        int nivelesDebajoDeUltra = calidadMaxima - calidadActual;
+        if (nivelesDebajoDeUltra <= 0)
+        {
+            return radio;
+        }
+
+        float multiplicador = 1f + (AumentoRadioDecoracionesPorNivelCalidad * nivelesDebajoDeUltra);
+        return radio * multiplicador;
+    }
+
     void Preparar(GameObject prefab, float distCaminoOverride, float distNodoOverride, float rOverride, int kOverride, int sector = 0, int sectorno = 0)
     {
         if (prefab == null) { Debug.LogError("[MapDecorator] Prefab nulo."); return; }
 
         ConfigurarAreaTrabajo(ResolverAreaPorSector(sector));
-        sectorExcluidoActual = sector == 0 && sectorno > 0 ? ResolverAreaPorSector(sectorno) : null;
+        sectorExcluidoActual = sectorno > 0 ? ResolverAreaPorSector(sectorno) : null;
 
         int batchSeedBase = relieveSeed != 0
             ? relieveSeed
@@ -499,7 +611,7 @@ public class MapDecorator : MonoBehaviour
 
         this.distCamino = distCaminoOverride;
         this.distNodo   = distNodoOverride;
-        this.radioPoisson = rOverride;
+        this.radioPoisson = EscalarRadioDecoracionesPorCalidad(rOverride);
         this.intentosPorPunto = kOverride;
         batchActualEsRellenoRemovible = distCaminoOverride < UmbralDistCaminoRellenoRemovible;
 
@@ -645,27 +757,30 @@ public class MapDecorator : MonoBehaviour
     // ===================== Primer punto =====================
     bool TryPrimerPunto(out Vector3 p0)
     {
-        Vector3 centro = CentroTerrenoMundo();
-        float radioCentro = Mathf.Max(0.6f, radioPoisson * 0.35f);
-
-        for (int i = 0; i < 6; i++)
+        if (preferirPrimerPuntoCentrico)
         {
-            float distancia = radioCentro * (0.25f + (float)rng.NextDouble() * 0.75f);
-            Vector3 candidatoCentrico = MoverEnPlano(centro, RandomUnit(), distancia);
-            if (!DentroDelRect(candidatoCentrico))
-                continue;
+            Vector3 centro = CentroTerrenoMundo();
+            float radioCentro = Mathf.Max(0.6f, radioPoisson * 0.35f);
 
-            if (PasaExclusiones(candidatoCentrico) && PasaPoisson(candidatoCentrico))
+            for (int i = 0; i < 6; i++)
             {
-                p0 = candidatoCentrico;
+                float distancia = radioCentro * (0.25f + (float)rng.NextDouble() * 0.75f);
+                Vector3 candidatoCentrico = MoverEnPlano(centro, RandomUnit(), distancia);
+                if (!DentroDelRect(candidatoCentrico))
+                    continue;
+
+                if (PasaExclusiones(candidatoCentrico) && PasaPoisson(candidatoCentrico))
+                {
+                    p0 = candidatoCentrico;
+                    return true;
+                }
+            }
+
+            if (PasaExclusiones(centro) && PasaPoisson(centro))
+            {
+                p0 = centro;
                 return true;
             }
-        }
-
-        if (PasaExclusiones(centro) && PasaPoisson(centro))
-        {
-            p0 = centro;
-            return true;
         }
 
         for (int i = 0; i < 400; i++)
@@ -1001,6 +1116,16 @@ public class MapDecorator : MonoBehaviour
             return false;
         }
 
+        if (EstaSobreGrietaPasoHelado(p, margenDecoracionGrietaPasoHelado))
+        {
+            return false;
+        }
+
+        if (!PasaAlturaMinimaDecoracion(p))
+        {
+            return false;
+        }
+
         // 1) por segmentos de LR (con ancho real + piso mínimo) usando índice espacial
         if (segmentos.Count > 0)
         {
@@ -1045,6 +1170,76 @@ public class MapDecorator : MonoBehaviour
         }
 
         return true;
+    }
+
+    bool PasaAlturaMinimaDecoracion(Vector3 p)
+    {
+        if (!excluirDecoracionBajoAlturaSuperficie)
+        {
+            return true;
+        }
+
+        if (permitirDecoracionSobrePrecipicioTerrenoNorte && EstaSobrePrecipicioTerrenoNorte(p))
+        {
+            return true;
+        }
+
+        float alturaSuperficie = ObtenerAlturaSuperficieEstimada(p);
+        return alturaSuperficie > alturaMinimaSuperficieDecoracion;
+    }
+
+    bool EstaSobrePrecipicioTerrenoNorte(Vector3 worldPos)
+    {
+        if (!precipicioTerrenoNorteDisponible || zonaRelieveActual != 2)
+        {
+            return false;
+        }
+
+        float seedA = relieveSeed * 0.00071f;
+        float seedB = relieveSeed * 0.00037f;
+        float mascaraLateral = CalcularMascaraLateralPrecipicioTerrenoNorte(worldPos, seedA, seedB);
+        if (mascaraLateral <= 0.5f)
+        {
+            return false;
+        }
+
+        float borde = CalcularBordePrecipicioTerrenoNorte(worldPos.x, seedA, seedB);
+        float distanciaExterior = (worldPos.z - borde) * precipicioNorteDireccionExteriorZ;
+        return distanciaExterior >= 0f;
+    }
+
+    float ObtenerAlturaSuperficieEstimada(Vector3 worldPos)
+    {
+        if (!usarRelieveProcedural)
+        {
+            return worldPos.y;
+        }
+
+        MeshFilter area = meshAreaActual != null ? meshAreaActual : planeMesh;
+        if (area == null)
+        {
+            return worldPos.y + EvaluateReliefHeightOffsetWorld(worldPos);
+        }
+
+        Vector3 local = area.transform.InverseTransformPoint(worldPos);
+        local.y = ObtenerYLocalBaseAreaActual();
+        float baseY = area.transform.TransformPoint(local).y;
+        return baseY + EvaluateReliefHeightOffsetWorld(worldPos);
+    }
+
+    float ObtenerYLocalBaseAreaActual()
+    {
+        if (meshAreaActual == planeMesh && basePlaneVertices != null && basePlaneVertices.Length > 0)
+        {
+            return basePlaneVertices[0].y;
+        }
+
+        if (meshAreaActual == planeMeshExtension && basePlaneExtensionVertices != null && basePlaneExtensionVertices.Length > 0)
+        {
+            return basePlaneExtensionVertices[0].y;
+        }
+
+        return yLocalPlano;
     }
 
     bool EstaDentroSectorExcluido(Vector3 p)
@@ -1292,6 +1487,161 @@ public class MapDecorator : MonoBehaviour
         }
     }
 
+    void PrepararPrecipicioTerrenoSur()
+    {
+        precipicioTerrenoSurDisponible = false;
+
+        if (!usarPrecipicioTerrenoSurPasoHelado || zonaRelieveActual != 2)
+            return;
+
+        MeshFilter sectorSur = ObtenerSectorTerreno(3);
+        if (sectorSur == null || sectorSur.sharedMesh == null)
+            return;
+
+        if (!TryObtenerBoundsXZ(sectorSur, out precipicioSurMinX, out precipicioSurMaxX, out precipicioSurMinZ, out precipicioSurMaxZ))
+            return;
+
+        float centroSectorZ = (precipicioSurMinZ + precipicioSurMaxZ) * 0.5f;
+        float centroTerrenoZ = ObtenerCentroTerrenoPrincipalZ();
+        precipicioSurDireccionExteriorZ = centroSectorZ < centroTerrenoZ ? -1f : 1f;
+        float bordeSector = precipicioSurDireccionExteriorZ < 0f ? precipicioSurMaxZ : precipicioSurMinZ;
+        precipicioSurBordeInteriorZ = bordeSector + precipicioSurDireccionExteriorZ * offsetBordePrecipicioTerrenoSur;
+        precipicioTerrenoSurDisponible = true;
+    }
+
+    void PrepararPrecipicioTerrenoNorte()
+    {
+        precipicioTerrenoNorteDisponible = false;
+
+        if (!usarPrecipicioTerrenoNortePasoHelado || zonaRelieveActual != 2)
+            return;
+
+        MeshFilter sectorNorte = ObtenerSectorTerreno(1);
+        if (sectorNorte == null || sectorNorte.sharedMesh == null)
+            return;
+
+        if (!TryObtenerBoundsXZ(sectorNorte, out precipicioNorteMinX, out precipicioNorteMaxX, out precipicioNorteMinZ, out precipicioNorteMaxZ))
+            return;
+
+        float centroSectorZ = (precipicioNorteMinZ + precipicioNorteMaxZ) * 0.5f;
+        float centroTerrenoZ = ObtenerCentroTerrenoPrincipalZ();
+        precipicioNorteDireccionExteriorZ = centroSectorZ < centroTerrenoZ ? -1f : 1f;
+        float bordeSector = precipicioNorteDireccionExteriorZ < 0f ? precipicioNorteMaxZ : precipicioNorteMinZ;
+        precipicioNorteBordeInteriorZ = bordeSector + precipicioNorteDireccionExteriorZ * offsetBordePrecipicioTerrenoNorte;
+        precipicioTerrenoNorteDisponible = true;
+    }
+
+    void PrepararGrietaPasoHelado()
+    {
+        grietaPasoHeladoDisponible = false;
+
+        if (!usarGrietaMarcadorPasoHelado || zonaRelieveActual != 2)
+            return;
+
+        Transform marcador = BuscarTransformEscena(nombreMarcadorGrietaPasoHelado);
+        if (marcador == null)
+            return;
+
+        Vector3 escala = marcador.lossyScale;
+        bool largoEnX = Mathf.Abs(escala.x) >= Mathf.Abs(escala.z);
+        Vector3 ejeLargo = largoEnX ? marcador.right : marcador.forward;
+        Vector3 ejeAncho = largoEnX ? marcador.forward : marcador.right;
+
+        ejeLargo.y = 0f;
+        ejeAncho.y = 0f;
+        if (ejeLargo.sqrMagnitude < 0.0001f || ejeAncho.sqrMagnitude < 0.0001f)
+            return;
+
+        grietaPasoHeladoCentro = marcador.position;
+        grietaPasoHeladoEjeLargo = ejeLargo.normalized;
+        grietaPasoHeladoEjeAncho = ejeAncho.normalized;
+        grietaPasoHeladoMitadLargo = Mathf.Max(1f, (largoEnX ? Mathf.Abs(escala.x) : Mathf.Abs(escala.z)) * 0.5f);
+        grietaPasoHeladoMitadAncho = Mathf.Max(anchoMinimoGrietaPasoHelado * 0.5f, (largoEnX ? Mathf.Abs(escala.z) : Mathf.Abs(escala.x)) * 0.5f);
+        grietaPasoHeladoDisponible = true;
+    }
+
+    static Transform BuscarTransformEscena(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre))
+            return null;
+
+        Transform[] transforms = Resources.FindObjectsOfTypeAll<Transform>();
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            Transform candidato = transforms[i];
+            if (candidato == null || !candidato.gameObject.scene.IsValid())
+                continue;
+
+            if (candidato.name == nombre)
+                return candidato;
+        }
+
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            Transform candidato = transforms[i];
+            if (candidato == null || !candidato.gameObject.scene.IsValid())
+                continue;
+
+            if (candidato.name.IndexOf(nombre, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                return candidato;
+        }
+
+        return null;
+    }
+
+    MeshFilter ObtenerSectorTerreno(int sector)
+    {
+        if (sector <= 0)
+            return null;
+
+        EnsureSectoresTerreno();
+        int indice = sector - 1;
+        if (sectoresTerreno == null || indice < 0 || indice >= sectoresTerreno.Length)
+            return null;
+
+        return sectoresTerreno[indice];
+    }
+
+    float ObtenerCentroTerrenoPrincipalZ()
+    {
+        if (planeMesh == null || planeMesh.sharedMesh == null)
+            return (precipicioSurMinZ + precipicioSurMaxZ) * 0.5f;
+
+        return planeMesh.transform.TransformPoint(planeMesh.sharedMesh.bounds.center).z;
+    }
+
+    static bool TryObtenerBoundsXZ(MeshFilter filter, out float minX, out float maxX, out float minZ, out float maxZ)
+    {
+        minX = maxX = minZ = maxZ = 0f;
+        if (filter == null || filter.sharedMesh == null)
+            return false;
+
+        Bounds bounds = filter.sharedMesh.bounds;
+        Transform tf = filter.transform;
+        Vector3[] corners =
+        {
+            new Vector3(bounds.min.x, bounds.center.y, bounds.min.z),
+            new Vector3(bounds.min.x, bounds.center.y, bounds.max.z),
+            new Vector3(bounds.max.x, bounds.center.y, bounds.min.z),
+            new Vector3(bounds.max.x, bounds.center.y, bounds.max.z)
+        };
+
+        Vector3 first = tf.TransformPoint(corners[0]);
+        minX = maxX = first.x;
+        minZ = maxZ = first.z;
+
+        for (int i = 1; i < corners.Length; i++)
+        {
+            Vector3 world = tf.TransformPoint(corners[i]);
+            minX = Mathf.Min(minX, world.x);
+            maxX = Mathf.Max(maxX, world.x);
+            minZ = Mathf.Min(minZ, world.z);
+            maxZ = Mathf.Max(maxZ, world.z);
+        }
+
+        return maxX > minX && maxZ > minZ;
+    }
+
     float EvaluateReliefHeightOffsetWorld(Vector3 worldPos)
     {
         if (!usarRelieveProcedural)
@@ -1312,7 +1662,241 @@ public class MapDecorator : MonoBehaviour
         cresta = (cresta - 0.5f) * 0.18f;
 
         float combinado = principal * 0.74f + secundario * 0.26f + cresta;
-        return combinado * alturaRelieveActual;
+        float relieve = combinado * alturaRelieveActual;
+        relieve = SuavizarSubidaCercaPrecipicioTerrenoSur(worldPos, relieve);
+        relieve = SuavizarSubidaCercaPrecipicioTerrenoNorte(worldPos, relieve, seedA, seedB);
+        return relieve
+            + EvaluatePrecipicioTerrenoSur(worldPos, seedA, seedB)
+            + EvaluatePrecipicioTerrenoNorte(worldPos, seedA, seedB)
+            + EvaluateGrietaPasoHelado(worldPos, seedA, seedB);
+    }
+
+    float SuavizarSubidaCercaPrecipicioTerrenoSur(Vector3 worldPos, float relieve)
+    {
+        if (!precipicioTerrenoSurDisponible || zonaRelieveActual != 2 || relieve <= 0f)
+            return relieve;
+
+        float margenLateral = Mathf.Max(0f, margenLateralPrecipicioTerrenoSur);
+        if (worldPos.x < precipicioSurMinX - margenLateral || worldPos.x > precipicioSurMaxX + margenLateral)
+            return relieve;
+
+        float distanciaExterior = (worldPos.z - precipicioSurBordeInteriorZ) * precipicioSurDireccionExteriorZ;
+        if (distanciaExterior >= 0f)
+            return relieve;
+
+        float ancho = Mathf.Max(0.1f, anchoSuavizadoSubidaPrecipicioTerrenoSur);
+        float distanciaInterior = -distanciaExterior;
+        if (distanciaInterior >= ancho)
+            return relieve;
+
+        float t = Mathf.Clamp01(distanciaInterior / ancho);
+        t = t * t * (3f - 2f * t);
+        float factorBorde = Mathf.Clamp01(factorSubidaBordePrecipicioTerrenoSur);
+        return relieve * Mathf.Lerp(factorBorde, 1f, t);
+    }
+
+    float SuavizarSubidaCercaPrecipicioTerrenoNorte(Vector3 worldPos, float relieve, float seedA, float seedB)
+    {
+        if (!precipicioTerrenoNorteDisponible || zonaRelieveActual != 2 || relieve <= 0f)
+            return relieve;
+
+        float mascaraLateral = CalcularMascaraLateralPrecipicioTerrenoNorte(worldPos, seedA, seedB);
+        if (mascaraLateral <= 0.001f)
+            return relieve;
+
+        float borde = CalcularBordePrecipicioTerrenoNorte(worldPos.x, seedA, seedB);
+        float distanciaExterior = (worldPos.z - borde) * precipicioNorteDireccionExteriorZ;
+        if (distanciaExterior >= 0f)
+            return relieve;
+
+        float ancho = Mathf.Max(0.1f, anchoSuavizadoSubidaPrecipicioTerrenoNorte);
+        float distanciaInterior = -distanciaExterior;
+        if (distanciaInterior >= ancho)
+            return relieve;
+
+        float t = Mathf.Clamp01(distanciaInterior / ancho);
+        t = t * t * (3f - 2f * t);
+        float factorBorde = Mathf.Clamp01(factorSubidaBordePrecipicioTerrenoNorte);
+        return relieve * Mathf.Lerp(factorBorde, 1f, t);
+    }
+
+    float EvaluatePrecipicioTerrenoSur(Vector3 worldPos, float seedA, float seedB)
+    {
+        if (!precipicioTerrenoSurDisponible || zonaRelieveActual != 2)
+            return 0f;
+
+        float margenLateral = Mathf.Max(0f, margenLateralPrecipicioTerrenoSur);
+        if (worldPos.x < precipicioSurMinX - margenLateral || worldPos.x > precipicioSurMaxX + margenLateral)
+            return 0f;
+
+        float distanciaExterior = (worldPos.z - precipicioSurBordeInteriorZ) * precipicioSurDireccionExteriorZ;
+        float mascaraCaida = distanciaExterior >= 0f ? 1f : 0f;
+        float caida = Mathf.Max(8.5f, Mathf.Abs(caidaPrecipicioTerrenoSur));
+
+        return -caida * mascaraCaida;
+    }
+
+    float CalcularBordePrecipicioTerrenoSur(float worldX, float seedA, float seedB)
+    {
+        return precipicioSurBordeInteriorZ;
+    }
+
+    float EvaluatePrecipicioTerrenoNorte(Vector3 worldPos, float seedA, float seedB)
+    {
+        if (!precipicioTerrenoNorteDisponible || zonaRelieveActual != 2)
+            return 0f;
+
+        float mascaraLateral = CalcularMascaraLateralPrecipicioTerrenoNorte(worldPos, seedA, seedB);
+        if (mascaraLateral <= 0.001f)
+            return 0f;
+
+        float borde = CalcularBordePrecipicioTerrenoNorte(worldPos.x, seedA, seedB);
+        float distanciaExterior = (worldPos.z - borde) * precipicioNorteDireccionExteriorZ;
+        float mascaraCaida = distanciaExterior >= 0f ? 1f : 0f;
+        float caida = Mathf.Max(8.5f, Mathf.Abs(caidaPrecipicioTerrenoNorte));
+        float ruidoAltura = CalcularRuidoAlturaPrecipicioTerrenoNorte(worldPos, seedA, seedB);
+
+        return (-caida + ruidoAltura) * mascaraCaida * mascaraLateral;
+    }
+
+    float CalcularBordePrecipicioTerrenoNorte(float worldX, float seedA, float seedB)
+    {
+        float frecuencia = Mathf.Max(0.001f, frecuenciaBordePrecipicioTerrenoNorte);
+        float ruidoAmplio = SampleSignedPerlin(worldX * frecuencia + seedA * 2.1f + 37.4f, seedB * 1.7f - 19.8f);
+        float ruidoDetalle = SampleSignedPerlin(worldX * frecuencia * 2.35f - seedB * 1.4f + 81.2f, seedA * 1.3f + 11.6f);
+        float ruidoCorto = SampleSignedPerlin(worldX * frecuencia * 4.2f + seedA * 0.9f - 12.8f, seedB * 2.4f + 53.1f);
+        float ruido = ruidoAmplio * 0.62f + ruidoDetalle * 0.28f + ruidoCorto * 0.10f;
+        return precipicioNorteBordeInteriorZ + ruido * Mathf.Max(0f, irregularidadBordePrecipicioTerrenoNorte);
+    }
+
+    float CalcularMascaraLateralPrecipicioTerrenoNorte(Vector3 worldPos, float seedA, float seedB)
+    {
+        float margen = Mathf.Max(0f, margenLateralPrecipicioTerrenoNorte);
+        float irregularidad = Mathf.Max(0f, irregularidadLateralPrecipicioTerrenoNorte);
+        float transicion = Mathf.Max(0.1f, anchoTransicionLateralPrecipicioTerrenoNorte);
+        float minX = precipicioNorteMinX - margen + CalcularRuidoLateralPrecipicioTerrenoNorte(worldPos.z, seedA, seedB, 0) * irregularidad;
+        float maxX = precipicioNorteMaxX + margen + CalcularRuidoLateralPrecipicioTerrenoNorte(worldPos.z, seedA, seedB, 1) * irregularidad;
+
+        if (maxX < minX + transicion)
+        {
+            float centro = (minX + maxX) * 0.5f;
+            minX = centro - transicion * 0.5f;
+            maxX = centro + transicion * 0.5f;
+        }
+
+        float izquierda = Mathf.Clamp01((worldPos.x - minX) / transicion);
+        float derecha = Mathf.Clamp01((maxX - worldPos.x) / transicion);
+        float mascara = Mathf.Min(izquierda, derecha);
+        return mascara * mascara * (3f - 2f * mascara);
+    }
+
+    float CalcularRuidoLateralPrecipicioTerrenoNorte(float worldZ, float seedA, float seedB, int lado)
+    {
+        float frecuencia = Mathf.Max(0.001f, frecuenciaLateralPrecipicioTerrenoNorte);
+        float offset = lado == 0 ? -31.7f : 46.2f;
+        float amplio = SampleSignedPerlin(worldZ * frecuencia + seedA * 1.5f + offset, seedB * 1.2f - 9.4f + offset);
+        float detalle = SampleSignedPerlin(worldZ * frecuencia * 2.6f - seedB * 0.9f + offset * 1.7f, seedA * 1.1f + 62.5f - offset);
+        return amplio * 0.72f + detalle * 0.28f;
+    }
+
+    float CalcularRuidoAlturaPrecipicioTerrenoNorte(Vector3 worldPos, float seedA, float seedB)
+    {
+        float intensidad = Mathf.Max(0f, ruidoAlturaPrecipicioTerrenoNorte);
+        if (intensidad <= 0f)
+            return 0f;
+
+        float frecuencia = Mathf.Max(0.001f, frecuenciaRuidoAlturaPrecipicioTerrenoNorte);
+        float amplio = SampleSignedPerlin(worldPos.x * frecuencia + seedA * 1.8f + 25.3f, worldPos.z * frecuencia - seedB * 1.1f - 44.6f);
+        float detalle = SampleSignedPerlin(worldPos.x * frecuencia * 2.7f - seedB * 0.8f + 73.9f, worldPos.z * frecuencia * 2.7f + seedA * 1.2f + 18.4f);
+        return (amplio * 0.7f + detalle * 0.3f) * intensidad;
+    }
+
+    float EvaluateGrietaPasoHelado(Vector3 worldPos, float seedA, float seedB)
+    {
+        if (!grietaPasoHeladoDisponible || zonaRelieveActual != 2)
+            return 0f;
+
+        float mascara = CalcularMascaraGrietaPasoHelado(worldPos, seedA, seedB, 0f);
+        if (mascara <= 0f)
+            return 0f;
+
+        float profundidad = Mathf.Max(1f, Mathf.Abs(profundidadGrietaPasoHelado));
+        float ruidoFondo = CalcularRuidoFondoGrietaPasoHelado(worldPos, seedA, seedB);
+        return (-profundidad + ruidoFondo) * mascara;
+    }
+
+    bool EstaSobreGrietaPasoHelado(Vector3 worldPos, float margenExtra)
+    {
+        if (!grietaPasoHeladoDisponible || zonaRelieveActual != 2)
+            return false;
+
+        float seedA = relieveSeed * 0.00071f;
+        float seedB = relieveSeed * 0.00037f;
+        return CalcularMascaraGrietaPasoHelado(worldPos, seedA, seedB, margenExtra) > 0.02f;
+    }
+
+    float CalcularMascaraGrietaPasoHelado(Vector3 worldPos, float seedA, float seedB, float margenExtra)
+    {
+        Vector3 delta = worldPos - grietaPasoHeladoCentro;
+        float largo = Vector3.Dot(delta, grietaPasoHeladoEjeLargo);
+        float ancho = Vector3.Dot(delta, grietaPasoHeladoEjeAncho);
+        float frecuencia = Mathf.Max(0.001f, frecuenciaBordeGrietaPasoHelado);
+        float irregularidad = Mathf.Max(0f, irregularidadBordeGrietaPasoHelado);
+        float transicion = Mathf.Max(0.05f, anchoTransicionGrietaPasoHelado);
+
+        float bordeIzq = -grietaPasoHeladoMitadAncho - margenExtra
+            + SampleSignedPerlin(largo * frecuencia + seedA * 1.6f + 12.7f, seedB * 1.1f - 44.9f) * irregularidad;
+        float bordeDer = grietaPasoHeladoMitadAncho + margenExtra
+            + SampleSignedPerlin(largo * frecuencia - seedB * 1.3f - 73.2f, seedA * 1.4f + 19.6f) * irregularidad;
+        float bordeInicio = -grietaPasoHeladoMitadLargo - margenExtra
+            + SampleSignedPerlin(ancho * frecuencia * 1.4f + seedB * 0.9f - 11.3f, seedA * 1.2f + 63.5f) * irregularidad;
+        float bordeFin = grietaPasoHeladoMitadLargo + margenExtra
+            + SampleSignedPerlin(ancho * frecuencia * 1.4f - seedA * 1.1f + 39.8f, seedB * 1.5f - 27.4f) * irregularidad;
+
+        if (bordeDer < bordeIzq + transicion)
+        {
+            float centro = (bordeIzq + bordeDer) * 0.5f;
+            bordeIzq = centro - transicion * 0.5f;
+            bordeDer = centro + transicion * 0.5f;
+        }
+
+        if (bordeFin < bordeInicio + transicion)
+        {
+            float centro = (bordeInicio + bordeFin) * 0.5f;
+            bordeInicio = centro - transicion * 0.5f;
+            bordeFin = centro + transicion * 0.5f;
+        }
+
+        float mascaraIzq = Mathf.Clamp01((ancho - (bordeIzq - transicion)) / transicion);
+        float mascaraDer = Mathf.Clamp01(((bordeDer + transicion) - ancho) / transicion);
+        float mascaraInicio = Mathf.Clamp01((largo - (bordeInicio - transicion)) / transicion);
+        float mascaraFin = Mathf.Clamp01(((bordeFin + transicion) - largo) / transicion);
+        float mascara = Mathf.Min(Mathf.Min(mascaraIzq, mascaraDer), Mathf.Min(mascaraInicio, mascaraFin));
+        return mascara * mascara * (3f - 2f * mascara);
+    }
+
+    float CalcularRuidoFondoGrietaPasoHelado(Vector3 worldPos, float seedA, float seedB)
+    {
+        float intensidad = Mathf.Max(0f, ruidoFondoGrietaPasoHelado);
+        if (intensidad <= 0f)
+            return 0f;
+
+        float frecuencia = Mathf.Max(0.001f, frecuenciaRuidoFondoGrietaPasoHelado);
+        float amplio = SampleSignedPerlin(worldPos.x * frecuencia + seedA * 1.7f + 91.4f, worldPos.z * frecuencia - seedB * 1.2f + 8.6f);
+        float detalle = SampleSignedPerlin(worldPos.x * frecuencia * 2.9f - seedB * 0.8f - 38.1f, worldPos.z * frecuencia * 2.9f + seedA * 1.1f + 54.2f);
+        return (amplio * 0.65f + detalle * 0.35f) * intensidad;
+    }
+
+    void LimpiarParedVisualPrecipicioTerrenoSur()
+    {
+        Transform existente = transform.Find("ParedPrecipicioTerrenoSur");
+        if (existente == null)
+            return;
+
+        if (Application.isPlaying)
+            Destroy(existente.gameObject);
+        else
+            DestroyImmediate(existente.gameObject);
     }
 
     Vector3 CalculateReliefNormalWorld(Vector3 worldPos)

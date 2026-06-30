@@ -2340,15 +2340,20 @@ public class Casilla : MonoBehaviour
       catch { }
 
       //------------- TRIGGER DE TRAMPAS
-      if (GetComponent<Trampa>() != null)
+      Trampa[] trampas = gameObject.GetComponents<Trampa>();
+      foreach (Trampa scTramp in trampas)
       {
-        Trampa scTramp = gameObject.GetComponent<Trampa>();
+        if (scTramp == null)
+        {
+          continue;
+        }
+
         Unidad scUnidad = unidad;
 
         // Si la unidad es inmune y la trampa no es favorable, no aplica efectos.
         if (scUnidad != null && scUnidad.inmunidad_Trampas && !scTramp.esTrampaFavorable)
         {
-          return;
+          continue;
         }
 
         bool seEvadeEfecto = false;

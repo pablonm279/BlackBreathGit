@@ -324,6 +324,7 @@ MonoBehaviour:
   NoSonidoAlMover: 0
   sonidosRecibirDanio:
   - {fileID: 8300000, guid: 6209314b037f3eb438644d48ffa51458, type: 3}
+  - {fileID: 8300000, guid: 3f10f00dfaa8db746b64bbcd7a500f63, type: 3}
 --- !u!65 &246849736186351410
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -215,17 +215,24 @@ public class AdministradorEscenas : MonoBehaviour
     }
 
     int tierAlientoNegro = (int)CampaignManager.Instance.GetTierAlientoNegro();
+    GameObject vfxActivo = null;
     if (tierAlientoNegro == 2)
     {
-      SetActiveSiExiste(VFXAlientoLeve, true);
+      vfxActivo = VFXAlientoLeve;
     }
     else if (tierAlientoNegro == 3)
     {
-      SetActiveSiExiste(VFXAlientoMedio, true);
+      vfxActivo = VFXAlientoMedio;
     }
     else if (tierAlientoNegro >= 4)
     {
-      SetActiveSiExiste(VFXAlientoGrande, true);
+      vfxActivo = VFXAlientoGrande;
+    }
+
+    if (vfxActivo != null)
+    {
+      VisualPolishRuntime.ApplyBlackBreathParticleQualityScale(vfxActivo);
+      SetActiveSiExiste(vfxActivo, true);
     }
   }
 
@@ -1184,6 +1191,7 @@ public class AdministradorEscenas : MonoBehaviour
     RefrescarVfxAlientoNegroBatalla(desactivarTodo: true);
 
     escenaActual = 1; //1 Batalla 0 Campaña
+    campaignManager.CancelarHighlightsNodosCampania();
     campaignManager.logDeCampania?.LimpiarDesdeCampania();
     int idZona = campaignManager.scAtributosZona.ID;
     MusicManager.VarianteBatalla varianteMusical = DeterminarVarianteMusicalBatalla(IDEncuentro, esEmboscada, encuentro, usarRefuerzosAliadosCaravana);

@@ -28,6 +28,7 @@ public class GolpeMiliciano1 : IAHabilidad
       prioridad = 1;
       costoAP = 2;
       afectaObstaculos = true;
+      ocultarRotuloHabilidad = true;
       
 
 
