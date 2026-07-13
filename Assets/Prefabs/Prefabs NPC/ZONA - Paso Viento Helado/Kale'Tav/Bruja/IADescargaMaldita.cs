@@ -37,7 +37,7 @@ public class IADescargaMaldita : IAHabilidad
 
       bonusAtaque = 3;
       XdDanio = 2;
-      daniodX = 4; //1d6
+      daniodX = 6; //1d6
       tipoDanio = 8; //Arcano
    }
 
@@ -156,7 +156,7 @@ public class IADescargaMaldita : IAHabilidad
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
-        objetivo.RecibirDanio(danio, 9, false, scEstaUnidad);
+       
         objetivo.estado_Condenado = 4; //Aplica 3 stacks de condenado
 
 
@@ -169,7 +169,7 @@ public class IADescargaMaldita : IAHabilidad
         danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
 
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
-        objetivo.RecibirDanio(danio, 9, false, scEstaUnidad);
+      
         objetivo.estado_Condenado = 3; //Aplica 2 stacks de condenado
 
       }

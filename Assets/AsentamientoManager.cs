@@ -19,7 +19,7 @@ public class AsentamientoManager : MonoBehaviour
 
     private const int MaxAcciones = 3;
     private const int CostoTaverna = 100;
-    private const int CostoPosada = 50;
+    private const int CostoPosada = 100;
     private const float DuracionAccionSegundos = 4f;
     private const float RetrasoEntreLogsAccionSegundos = 0.9f;
     private const float MultiplicadorCuracionViajeAsentamiento = 1.1f;
@@ -502,9 +502,9 @@ public class AsentamientoManager : MonoBehaviour
         TipoEstadoCaravana estadoGanado = EstadosCaravanaPosada[UnityEngine.Random.Range(0, EstadosCaravanaPosada.Length)];
         campaign.AgregarEstadoCaravana(estadoGanado, 1);
         campaign.EscribirLog(Loc(
-            "-La caravana descansa en la posada. -50 Oro, Fatiga a 0, +5 Esperanza.",
-            "-The caravan rests at the inn. -50 Gold, Fatigue reset to 0, +5 Hope.",
-            "-A caravana descansa na hospedaria. -50 Ouro, Fadiga zerada, +5 Esperanca."));
+            $"-La caravana descansa en la posada. -{CostoPosada} Oro, Fatiga a 0, +5 Esperanza.",
+            $"-The caravan rests at the inn. -{CostoPosada} Gold, Fatigue reset to 0, +5 Hope.",
+            $"-A caravana descansa na hospedaria. -{CostoPosada} Ouro, Fadiga zerada, +5 Esperanca."));
         campaign.EscribirLog(Loc(
             "-La posada deja a la Caravana con 1 estado de caravana al azar.",
             "-The inn leaves the Caravan with 1 random caravan state.",
@@ -790,9 +790,9 @@ public class AsentamientoManager : MonoBehaviour
 
             case AccionAsentamiento.Posada:
                 return Loc(
-                    "Costo: 50 Oro. La caravana se dedicará a descansar. Todos los personajes recuperan 25% de su vida maxima, la Fatiga volverá a 0, la caravana ganará 5 Esperanza y obtendrá 1 estado de caravana al azar.\n\n" + estadoAcciones,
-                    "Cost: 50 Gold. The caravan focuses on resting. All characters recover 25% of their maximum health, Fatigue is reset to 0, the caravan gains 5 Hope, and it obtains 1 random caravan state.\n\n" + estadoAcciones,
-                    "Custo: 50 Ouro. A caravana dedica-se a descansar. Todos os personagens recuperam 25% da vida maxima, a Fadiga voltará a 0, a caravana ganhará 5 Esperanca e obterá 1 estado de caravana aleatorio.\n\n" + estadoAcciones);
+                    $"Costo: {CostoPosada} Oro. La caravana se dedicará a descansar. Todos los personajes recuperan 25% de su vida maxima, la Fatiga volverá a 0, la caravana ganará 5 Esperanza y obtendrá 1 estado de caravana al azar.\n\n" + estadoAcciones,
+                    $"Cost: {CostoPosada} Gold. The caravan focuses on resting. All characters recover 25% of their maximum health, Fatigue is reset to 0, the caravan gains 5 Hope, and it obtains 1 random caravan state.\n\n" + estadoAcciones,
+                    $"Custo: {CostoPosada} Ouro. A caravana dedica-se a descansar. Todos os personagens recuperam 25% da vida maxima, a Fadiga voltará a 0, a caravana ganhará 5 Esperanca e obterá 1 estado de caravana aleatorio.\n\n" + estadoAcciones);
 
             case AccionAsentamiento.Marcharse:
                 return Loc(

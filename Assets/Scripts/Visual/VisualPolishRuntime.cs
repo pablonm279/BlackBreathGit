@@ -21,6 +21,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   private const string PrefContrast = "gfx_contrast";
   private const string PrefGraficosIndex = "graficos_index";
   private const float BlackBreathParticleReductionPerQualityLevel = 0.15f;
+  private const float CampaignParticleReductionPerQualityLevel = 0.15f;
 
   private struct ParticleAmountDefaults
   {
@@ -72,6 +73,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     if (instance != null)
     {
       instance.ApplySyncAndFrameRatePrefs(scene);
+      ApplyCampaignParticleQualityScale(scene);
       instance.ApplyAlientoNegroParticleQualityScale(scene);
     }
 
@@ -127,6 +129,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     }
 
     NormalizeSceneCanvasScalers(scene);
+    ApplyCampaignParticleQualityScale(scene);
     ApplyAlientoNegroParticleQualityScale(scene);
 
 #if UNITY_POST_PROCESSING_STACK_V2
@@ -240,6 +243,11 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     ApplyParticleAmountQualityScale(root, BlackBreathParticleReductionPerQualityLevel);
   }
 
+  public static void ApplyCampaignParticleQualityScaleNow()
+  {
+    ApplyCampaignParticleQualityScale(SceneManager.GetActiveScene());
+  }
+
   public static void ApplyParticleAmountQualityScale(GameObject root, float reductionPerLevel)
   {
     if (root == null) { return; }
@@ -262,6 +270,22 @@ public sealed class VisualPolishRuntime : MonoBehaviour
       if (ps == null) { continue; }
       if (ps.gameObject.scene != scene) { continue; }
       if (!EsSistemaParticulasAlientoNegro(ps.transform)) { continue; }
+
+      ApplyParticleSystemAmountScale(ps, multiplier);
+    }
+  }
+
+  private static void ApplyCampaignParticleQualityScale(Scene scene)
+  {
+    if (!IsCampaignScene(scene)) { return; }
+
+    ParticleSystem[] systems = FindObjectsByType<ParticleSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+    float multiplier = ResolveQualityAmountMultiplier(CampaignParticleReductionPerQualityLevel);
+    for (int i = 0; i < systems.Length; i++)
+    {
+      ParticleSystem ps = systems[i];
+      if (ps == null) { continue; }
+      if (ps.gameObject.scene != scene) { continue; }
 
       ApplyParticleSystemAmountScale(ps, multiplier);
     }
@@ -356,6 +380,13 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     return scene.IsValid()
       && !string.IsNullOrWhiteSpace(scene.name)
       && scene.name.ToLowerInvariant().Contains("batalla");
+  }
+
+  private static bool IsCampaignScene(Scene scene)
+  {
+    return scene.IsValid()
+      && !string.IsNullOrWhiteSpace(scene.name)
+      && scene.name.ToLowerInvariant().Contains("camp");
   }
 
 #if UNITY_POST_PROCESSING_STACK_V2

@@ -149,6 +149,16 @@ public class IAUnidad : MonoBehaviour
             break;
          }
 
+         if (!PuedeAtacarUnidadDesdePosicionActual(habilidadesDisponibles)
+            && await IntentarDestruirObstaculoPrioritarioDeBorde(timings))
+         {
+            realizoAccion = true;
+            turnoTerminado = true;
+            break;
+         }
+
+         FiltrarAtaquesDeRangoSoloAObstaculosParaBuscarEnemigos(habilidadesDisponibles);
+
          if (habilidadesDisponibles.Count == 0) // No hay habilidades posibles
          {
             BattleManager.Instance.RestaurarCamaraHabilidad();
@@ -386,6 +396,30 @@ public class IAUnidad : MonoBehaviour
          return false;
       }
 
+      await ResolverDestruccionObstaculoIA(objetivo, timings, "fallback de destruccion de obstaculo");
+      return true;
+   }
+
+   private async Task<bool> IntentarDestruirObstaculoPrioritarioDeBorde(AITurnTimings timings)
+   {
+      Obstaculo objetivo = ObtenerObstaculoPrioritarioBordeFrontal();
+      if (objetivo == null)
+      {
+         return false;
+      }
+
+      await DelayIA(timings.DelayPreAccionMs);
+      await ResolverDestruccionObstaculoIA(objetivo, timings, "prioridad de obstaculo en borde frontal");
+      return true;
+   }
+
+   private async Task ResolverDestruccionObstaculoIA(Obstaculo objetivo, AITurnTimings timings, string motivo)
+   {
+      if (objetivo == null || scUnidad == null || BattleManager.Instance == null)
+      {
+         return;
+      }
+
       string nombreHabilidad = TraducirTexto("Destruir Obstaculo");
       string nombreUnidad = NombreUnidadParaLogLocal(scUnidad);
 
@@ -407,8 +441,142 @@ public class IAUnidad : MonoBehaviour
       BattleManager.Instance.EscribirLog($"{TraducirTexto("Destruyes")} {nombreObstaculo}.");
       BattleManager.Instance.CalcularCasillasAMovimiento();
 
-      await TerminarTurnoSeguro(true, timings, "fallback de destruccion de obstaculo");
-      return true;
+      await TerminarTurnoSeguro(true, timings, motivo);
+   }
+
+   private bool PuedeAtacarUnidadDesdePosicionActual(List<IAHabilidad> habilidadesDisponibles)
+   {
+      if (habilidadesDisponibles == null || habilidadesDisponibles.Count == 0 || scUnidad == null || scUnidad.CasillaPosicion == null)
+      {
+         return false;
+      }
+
+      foreach (IAHabilidad habilidad in habilidadesDisponibles)
+      {
+         if (habilidad == null || !habilidad.esHostil || habilidad.objPosibles == null)
+         {
+            continue;
+         }
+
+         foreach (Unidad unidad in habilidad.objPosibles.OfType<Unidad>())
+         {
+            if (unidad == null || unidad.HP_actual <= 0 || unidad.CasillaPosicion == null)
+            {
+               continue;
+            }
+
+            if (unidad.CasillaPosicion.lado != scUnidad.CasillaPosicion.lado)
+            {
+               return true;
+            }
+         }
+      }
+
+      return false;
+   }
+
+   private void FiltrarAtaquesDeRangoSoloAObstaculosParaBuscarEnemigos(List<IAHabilidad> habilidadesDisponibles)
+   {
+      if (!esRango || habilidadesDisponibles == null || habilidadesDisponibles.Count == 0)
+      {
+         return;
+      }
+
+      if (!HayUnidadEnemigaVisibleViva())
+      {
+         return;
+      }
+
+      habilidadesDisponibles.RemoveAll(EsAtaqueDeRangoSoloAObstaculos);
+   }
+
+   private bool EsAtaqueDeRangoSoloAObstaculos(IAHabilidad habilidad)
+   {
+      if (habilidad == null || !habilidad.esHostil || habilidad.esMelee || habilidad.objPosibles == null)
+      {
+         return false;
+      }
+
+      bool tieneObstaculo = habilidad.objPosibles.OfType<Obstaculo>().Any();
+      bool tieneUnidad = habilidad.objPosibles.OfType<Unidad>().Any(unidad =>
+         unidad != null
+         && unidad.HP_actual > 0
+         && scUnidad != null
+         && scUnidad.CasillaPosicion != null
+         && unidad.CasillaPosicion != null
+         && unidad.CasillaPosicion.lado != scUnidad.CasillaPosicion.lado);
+
+      return tieneObstaculo && !tieneUnidad;
+   }
+
+   private bool HayUnidadEnemigaVisibleViva()
+   {
+      if (BattleManager.Instance == null || BattleManager.Instance.lUnidadesTotal == null || scUnidad == null || scUnidad.CasillaPosicion == null)
+      {
+         return false;
+      }
+
+      foreach (Unidad unidad in BattleManager.Instance.lUnidadesTotal)
+      {
+         if (unidad == null || unidad.HP_actual <= 0 || unidad.CasillaPosicion == null)
+         {
+            continue;
+         }
+
+         if (unidad.CasillaPosicion.lado == scUnidad.CasillaPosicion.lado)
+         {
+            continue;
+         }
+
+         if (!bPuedeVerEscondidos && unidad.ObtenerEstaEscondido() > 0)
+         {
+            continue;
+         }
+
+         return true;
+      }
+
+      return false;
+   }
+
+   private Obstaculo ObtenerObstaculoPrioritarioBordeFrontal()
+   {
+      if (scUnidad == null || scUnidad.CasillaPosicion == null)
+      {
+         return null;
+      }
+
+      Casilla origen = scUnidad.CasillaPosicion;
+      if (origen.posX != 3 || (origen.posY != 1 && origen.posY != 5))
+      {
+         return null;
+      }
+
+      LadoManager lado = ObtenerLadoActual();
+      if (lado == null)
+      {
+         return null;
+      }
+
+      int filaInterior = origen.posY == 1 ? 2 : 4;
+      Casilla casillaObjetivo = lado.ObtenerCasillaPorIndex(origen.posX, filaInterior);
+      if (casillaObjetivo == null || casillaObjetivo.Presente == null)
+      {
+         return null;
+      }
+
+      Obstaculo obstaculo = casillaObjetivo.Presente.GetComponent<Obstaculo>();
+      if (obstaculo == null || !obstaculo.destruiblePorMismoLado)
+      {
+         return null;
+      }
+
+      if (obstaculo.CasillaPosicion == null || obstaculo.CasillaPosicion.lado != origen.lado)
+      {
+         return null;
+      }
+
+      return obstaculo;
    }
 
    private int ContarVecinosMismoLadoParaDestruirObstaculo()

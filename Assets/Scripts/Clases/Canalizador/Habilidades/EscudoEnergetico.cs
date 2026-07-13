@@ -244,9 +244,11 @@ public class EscudoEnergetico : Habilidad
     void VFXAplicar(GameObject objetivo)
     {
       VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_EscudoEnergetico");
+      if (VFXenObjetivo == null || objetivo == null) { return; }
 
     GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
     vfx.transform.parent = objetivo.transform;
+    VFXSoloSonido.OcultarVisuales(vfx);
      
    //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
    Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();

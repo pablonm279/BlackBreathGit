@@ -197,12 +197,12 @@ public class MenuBatallas : MonoBehaviour
         continue;
       }
 
-      CampaignManager.Instance.CambiarEsperanzaActual(10);
+      CampaignManager.Instance.CambiarEsperanzaActual(5);
       string mensajeAdmirado = idiomaTrait switch
       {
-        TRADU.IdiomaIngles => pers.sNombre + " turns victory into a rallying cry. +10 Hope.",
-        TRADU.IdiomaPortugues => pers.sNombre + " transforma a vitória em inspiração. +10 de Esperança.",
-        _ => pers.sNombre + " convierte la victoria en inspiración. +10 Esperanza."
+        TRADU.IdiomaIngles => pers.sNombre + " turns victory into a rallying cry. +5 Hope.",
+        TRADU.IdiomaPortugues => pers.sNombre + " transforma a vitória em inspiração. +5 de Esperança.",
+        _ => pers.sNombre + " convierte la victoria en inspiración. +5 Esperanza."
       };
       CampaignManager.Instance.EscribirLog("-" + mensajeAdmirado);
     }

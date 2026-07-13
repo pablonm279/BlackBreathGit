@@ -14,7 +14,7 @@ public class AtaqueArcoDesertor : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ï¿½cido - 8: Arcano
 
 
     
@@ -38,7 +38,7 @@ public class AtaqueArcoDesertor : IAHabilidad
 
       bonusAtaque = 0;
       XdDanio = 2;
-      daniodX = 4; 
+      daniodX = 10; 
       tipoDanio = 2; //Perforante
 
 
@@ -189,12 +189,12 @@ public class AtaqueArcoDesertor : IAHabilidad
     }
 
    
-    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
+    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lï¿½gica
    {
     
-      // Obtener la unidad dueña
-    Unidad unidadDueña = gameObject.GetComponent<Unidad>();
-    if (unidadDueña == null) return null;
+      // Obtener la unidad duea
+    Unidad unidadDuea = gameObject.GetComponent<Unidad>();
+    if (unidadDuea == null) return null;
    
     // Filtrar las unidades
      print("Sel objPosibles "+objPosibles.Count);
@@ -202,7 +202,7 @@ public class AtaqueArcoDesertor : IAHabilidad
      
     var unidades = objPosibles.OfType<Unidad>().ToList();
     print("Sel obj unidades cant: "+unidades.Count);
-    // Filtrar los obstáculos
+    // Filtrar los obstculos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
      print("Sel obj obstaculos cant: "+obstaculos.Count);
 
@@ -210,7 +210,7 @@ public class AtaqueArcoDesertor : IAHabilidad
    
     var unidadesOrdenadas = unidades
         .OrderBy(unidad => unidad.CasillaPosicion.posX)
-        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDueña.CasillaPosicion.posY))
+        .ThenBy(unidad => Mathf.Abs(unidad.CasillaPosicion.posY - unidadDuea.CasillaPosicion.posY))
         .ToList();
 
     // Si hay unidades disponibles, devolver la primera
@@ -220,7 +220,7 @@ public class AtaqueArcoDesertor : IAHabilidad
         return unidadesOrdenadas.FirstOrDefault();
     }else{print("lista unidades vacia");}
 
-    // Si no hay unidades, devolver el obstáculo
+    // Si no hay unidades, devolver el obstculo
      if (obstaculos.Any())
      {
        var obstaculo = obstaculos.FirstOrDefault();

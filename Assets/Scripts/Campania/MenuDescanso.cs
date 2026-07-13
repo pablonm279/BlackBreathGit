@@ -1145,8 +1145,8 @@ public class MenuDescanso : MonoBehaviour
       climaNieve.SetActive(true);
       CampaignManager.Instance.intTipoClima = 4;
       CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_nieve;
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Nieve mejora el ánimo. +3 Esperanza."));
-      CampaignManager.Instance.CambiarEsperanzaActual(3);
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Nieve cubre el camino y limita las actividades de la caravana."));
+      CampaignManager.Instance.NormalizarActividadesPorClimaCampania();
     }
     else if (random < CampaignManager.Instance.scAtributosZona.Clima_chances_Niebla)
     {

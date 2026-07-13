@@ -872,7 +872,7 @@ public class AdministradorEscenas : MonoBehaviour
     ComponentCopier.CopyComponent(buff, unidad.gameObject);
   }
 
-  void AplicarSorprendidoInicioCombate(Unidad unidad, int penalizacionIniciativa = 3, int duracionRondas = 2)
+  void AplicarSorprendidoInicioCombate(Unidad unidad, int penalizacionIniciativa = 3, int duracionRondas = 1)
   {
     if (unidad == null || unidad.TieneBuffNombre("Sorprendido"))
     {
@@ -1238,6 +1238,7 @@ public class AdministradorEscenas : MonoBehaviour
     bool tutorialLinealForzado = campaignManagerTutorial != null && campaignManagerTutorial.DebeForzarMapaLinealTutorial();
     bool esPrimerCombateTutorial = IDEncuentro == 700 && (tutorialViejoActivo || tutorialLinealForzado);
     bool esCombateFinalTutorial = IDEncuentro == 701 && (tutorialViejoActivo || tutorialLinealForzado);
+    bool esEncuentroJefeGulekGul = IDEncuentro == 60;
     if (esPrimerCombateTutorial || esCombateFinalTutorial)
     {
       TutorialDirector.Instance?.SuspendForLegacyCombatTutorial();
@@ -1399,7 +1400,7 @@ public class AdministradorEscenas : MonoBehaviour
         buff.forzarTextoFlotanteInicioCombate = true;
         buff.ocultarEnBarraVida = false;
         buff.boolfDebufftBuff = false;
-        buff.DuracionBuffRondas = 2;
+        buff.DuracionBuffRondas = 1;
         buff.cantIniciativa -= 3;
         buff.cantAPMax -= 2;
         buff.cantDefensa -= 2;
@@ -1471,7 +1472,7 @@ public class AdministradorEscenas : MonoBehaviour
           buff.forzarTextoFlotanteInicioCombate = true;
           buff.ocultarEnBarraVida = false;
           buff.boolfDebufftBuff = false;
-          buff.DuracionBuffRondas = 2;
+          buff.DuracionBuffRondas = 1;
           buff.cantIniciativa -= 5;
           buff.cantAPMax -= 1;
           buff.cantDefensa -= 1;
@@ -1809,7 +1810,7 @@ public class AdministradorEscenas : MonoBehaviour
     //Obstaculos genericos
     if (ProbabilidadPorcentual(70))
     {
-      if (!esPrimerCombateTutorial && !esCombateFinalTutorial) //Si no es tutorial
+      if (!esPrimerCombateTutorial && !esCombateFinalTutorial && !esEncuentroJefeGulekGul) //Si no es tutorial
       {
         GenerarObstaculosGenericos();
       }
@@ -3160,7 +3161,13 @@ public class AdministradorEscenas : MonoBehaviour
     if (IDEncuentro == 60) // FASE 1 - Jefe 1 - Paso Vientohelado
     {
       GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.GulekGul);
-      ColocarEnCasillaAleatoria(2, enemigo1);
+      ColocarEnCasillaEspecifica(2, enemigo1, 2, 3);
+
+      ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca1, 2, 3, 1);
+      ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 2, 3, 2);
+      ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 2, 3, 3);
+      ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 2, 3, 4);
+      ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca1, 2, 3, 5);
 
     }
     if (IDEncuentro == 61) // FASE 1 - Jefe 2 - Paso Vientohelado - PENDIENTE

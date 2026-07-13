@@ -182,11 +182,10 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         {
             brilloSlider.SetValueWithoutNotify(brillo);
         }
-        VisualPolishRuntime.ApplyPostProcessingPrefsNow();
-
         QualitySettings.SetQualityLevel(calidadIndex, true);
         PlayerPrefs.SetInt("graficos_index", calidadIndex); // asegura persistencia inmediata
         PlayerPrefs.Save();
+        VisualPolishRuntime.ApplyPostProcessingPrefsNow();
         graficosDropdown.SetValueWithoutNotify(calidadIndex);
         TraducirDropdownGraficos();
         TraducirDropdownDificultad();
@@ -469,6 +468,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         PlayerPrefs.SetInt("graficos_index", index);
         PlayerPrefs.Save();
 
+        VisualPolishRuntime.ApplyPostProcessingPrefsNow();
         AplicarPreferenciasSyncYFPS();
     }
 

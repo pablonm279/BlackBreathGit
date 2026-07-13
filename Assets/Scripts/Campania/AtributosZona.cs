@@ -158,6 +158,108 @@ public class TexturaProceduralPasoVientoHeladoConfig
    }
 }
 
+[Serializable]
+public class TexturaProceduralBosqueAngustianteConfig
+{
+   [Header("Salida")]
+   [Tooltip("+ mas resolucion y detalle, - menos costo de memoria.")]
+   [Range(128, 2048)] public int tamanoTextura = 1024;
+   [Tooltip("+ mas claro/teñido el material final, - mas oscuro o neutro.")]
+   public Color tintMaterial = new Color(1f, 0.96f, 0.90f, 1f);
+
+   [Header("Colores")]
+   [Tooltip("Color principal del suelo quemado. Mas claro levanta el terreno, mas oscuro lo apaga.")]
+   public Color tierraQuemadaBase = new Color(0.22f, 0.20f, 0.17f, 1f);
+   [Tooltip("Color de ceniza clara. Mas claro genera parches secos visibles, mas oscuro los integra.")]
+   public Color cenizaClara = new Color(0.43f, 0.41f, 0.36f, 1f);
+   [Tooltip("Color de manchas carbonizadas. Mas oscuro marca quemado fuerte, mas claro suaviza.")]
+   public Color carbonOscuro = new Color(0.08f, 0.07f, 0.06f, 1f);
+   [Tooltip("Color de tierra rojiza. Mas rojo/calido suma calor residual, mas neutro reduce contraste.")]
+   public Color tierraRojiza = new Color(0.32f, 0.15f, 0.09f, 1f);
+   [Tooltip("Color de brasas apagadas. Mas saturado deja puntos calidos, mas oscuro los vuelve hollin.")]
+   public Color brasaApagada = new Color(0.55f, 0.18f, 0.05f, 1f);
+
+   [Header("Escalas de ruido")]
+   [Tooltip("+ deforma mas las manchas, - deja patrones mas rectos y limpios.")]
+   [Range(0f, 0.25f)] public float intensidadWarp = 0.08f;
+   [Tooltip("+ mas ondulaciones horizontales chicas, - manchas mas anchas en X.")]
+   [Range(0.1f, 12f)] public float escalaWarpX = 2.7f;
+   [Tooltip("+ mas ondulaciones verticales chicas, - manchas mas anchas en Y.")]
+   [Range(0.1f, 12f)] public float escalaWarpY = 3.2f;
+   [Tooltip("+ manchas grandes mas chicas y repetidas, - quemados grandes mas amplios.")]
+   [Range(0.1f, 24f)] public float escalaManchasGrandes = 4.4f;
+   [Tooltip("+ ceniza media mas picada, - placas de ceniza mas amplias.")]
+   [Range(0.1f, 48f)] public float escalaCenizaMedia = 11.5f;
+   [Tooltip("+ grano fino mas cerrado, - textura fina mas suave.")]
+   [Range(1f, 96f)] public float escalaGrano = 44f;
+   [Tooltip("+ vetas quemadas mas juntas, - vetas mas largas y separadas.")]
+   [Range(0.1f, 64f)] public float escalaVetasQuemadas = 18f;
+   [Tooltip("+ vetas mas cortadas en Y, - vetas mas estiradas.")]
+   [Range(0.1f, 16f)] public float escalaVetasY = 4f;
+
+   [Header("Intensidades")]
+   [Tooltip("+ mas ceniza clara, - base mas tierra quemada.")]
+   [Range(0f, 1f)] public float intensidadCeniza = 0.34f;
+   [Tooltip("+ mas carbon oscuro, - suelo menos manchado.")]
+   [Range(0f, 1f)] public float intensidadCarbon = 0.46f;
+   [Tooltip("+ mas zonas rojizas, - paleta mas fria/neutra.")]
+   [Range(0f, 1f)] public float intensidadRojiza = 0.22f;
+   [Tooltip("+ mas puntos calidos tipo brasa apagada, - menos acentos naranjas.")]
+   [Range(0f, 1f)] public float intensidadBrasas = 0.10f;
+   [Tooltip("+ mas lineas/vetas quemadas, - superficie mas lisa.")]
+   [Range(0f, 1f)] public float intensidadVetas = 0.18f;
+   [Tooltip("+ mas ruido fino, - textura mas plana y suave.")]
+   [Range(0f, 0.15f)] public float intensidadGrano = 0.04f;
+
+   public int GetCacheHash()
+   {
+      unchecked
+      {
+         int hash = 17;
+         hash = hash * 31 + tamanoTextura;
+         hash = hash * 31 + HashColor(tintMaterial);
+         hash = hash * 31 + HashColor(tierraQuemadaBase);
+         hash = hash * 31 + HashColor(cenizaClara);
+         hash = hash * 31 + HashColor(carbonOscuro);
+         hash = hash * 31 + HashColor(tierraRojiza);
+         hash = hash * 31 + HashColor(brasaApagada);
+         hash = hash * 31 + HashFloat(intensidadWarp);
+         hash = hash * 31 + HashFloat(escalaWarpX);
+         hash = hash * 31 + HashFloat(escalaWarpY);
+         hash = hash * 31 + HashFloat(escalaManchasGrandes);
+         hash = hash * 31 + HashFloat(escalaCenizaMedia);
+         hash = hash * 31 + HashFloat(escalaGrano);
+         hash = hash * 31 + HashFloat(escalaVetasQuemadas);
+         hash = hash * 31 + HashFloat(escalaVetasY);
+         hash = hash * 31 + HashFloat(intensidadCeniza);
+         hash = hash * 31 + HashFloat(intensidadCarbon);
+         hash = hash * 31 + HashFloat(intensidadRojiza);
+         hash = hash * 31 + HashFloat(intensidadBrasas);
+         hash = hash * 31 + HashFloat(intensidadVetas);
+         hash = hash * 31 + HashFloat(intensidadGrano);
+         return hash;
+      }
+   }
+
+   static int HashFloat(float value)
+   {
+      return Mathf.RoundToInt(value * 10000f);
+   }
+
+   static int HashColor(Color color)
+   {
+      unchecked
+      {
+         int hash = 17;
+         hash = hash * 31 + HashFloat(color.r);
+         hash = hash * 31 + HashFloat(color.g);
+         hash = hash * 31 + HashFloat(color.b);
+         hash = hash * 31 + HashFloat(color.a);
+         return hash;
+      }
+   }
+}
+
 public static class TexturaProceduralSueloZona
 {
    const int TamanoMinimo = 128;
@@ -167,7 +269,7 @@ public static class TexturaProceduralSueloZona
 
    public static Texture2D CrearTexturaSuelo(EncounterZoneType zona, int seed, int size = 1024)
    {
-      return CrearTexturaSuelo(zona, seed, null, size);
+      return CrearTexturaSuelo(zona, seed, (TexturaProceduralPasoVientoHeladoConfig)null, size);
    }
 
    public static Texture2D CrearTexturaSuelo(EncounterZoneType zona, int seed, TexturaProceduralPasoVientoHeladoConfig pasoConfig, int size = 1024)
@@ -175,7 +277,7 @@ public static class TexturaProceduralSueloZona
       int tamanoSolicitado = pasoConfig != null ? pasoConfig.tamanoTextura : size;
       int tamano = Mathf.Clamp(tamanoSolicitado, TamanoMinimo, TamanoMaximo);
       int configHash = pasoConfig != null ? pasoConfig.GetCacheHash() : 0;
-      string cacheKey = $"{zona}_{seed}_{tamano}_{configHash}";
+      string cacheKey = $"{zona}_paso_{seed}_{tamano}_{configHash}";
 
       if (texturasCache.TryGetValue(cacheKey, out Texture2D texturaCacheada) && texturaCacheada != null)
       {
@@ -184,6 +286,26 @@ public static class TexturaProceduralSueloZona
 
       Texture2D textura = zona == EncounterZoneType.PasoVientoHelado
          ? CrearTexturaPasoVientoHelado(seed, tamano, pasoConfig)
+         : CrearTexturaBaseSuave(seed, tamano);
+
+      texturasCache[cacheKey] = textura;
+      return textura;
+   }
+
+   public static Texture2D CrearTexturaSuelo(EncounterZoneType zona, int seed, TexturaProceduralBosqueAngustianteConfig bosqueConfig, int size = 1024)
+   {
+      int tamanoSolicitado = bosqueConfig != null ? bosqueConfig.tamanoTextura : size;
+      int tamano = Mathf.Clamp(tamanoSolicitado, TamanoMinimo, TamanoMaximo);
+      int configHash = bosqueConfig != null ? bosqueConfig.GetCacheHash() : 0;
+      string cacheKey = $"{zona}_bosque_{seed}_{tamano}_{configHash}";
+
+      if (texturasCache.TryGetValue(cacheKey, out Texture2D texturaCacheada) && texturaCacheada != null)
+      {
+         return texturaCacheada;
+      }
+
+      Texture2D textura = zona == EncounterZoneType.BosqueAngustiante
+         ? CrearTexturaBosqueAngustiante(seed, tamano, bosqueConfig)
          : CrearTexturaBaseSuave(seed, tamano);
 
       texturasCache[cacheKey] = textura;
@@ -278,6 +400,67 @@ public static class TexturaProceduralSueloZona
       return textura;
    }
 
+   static Texture2D CrearTexturaBosqueAngustiante(int seed, int size, TexturaProceduralBosqueAngustianteConfig config)
+   {
+      if (config == null)
+      {
+         config = new TexturaProceduralBosqueAngustianteConfig();
+      }
+
+      Texture2D textura = CrearTexturaVacia("TexturaProcedural_BosqueAngustiante", size);
+      Color32[] pixels = new Color32[size * size];
+
+      float seedA = (seed & 0x7fffffff) * 0.00043f;
+      float seedB = ((seed >> 8) & 0x7fffffff) * 0.00059f;
+
+      for (int y = 0; y < size; y++)
+      {
+         float ny = y / (float)(size - 1);
+         for (int x = 0; x < size; x++)
+         {
+            float nx = x / (float)(size - 1);
+            float warpX = RuidoFirmado(nx * config.escalaWarpX + seedA, ny * config.escalaWarpX - seedB) * config.intensidadWarp;
+            float warpY = RuidoFirmado(nx * config.escalaWarpY - seedB, ny * config.escalaWarpY + seedA) * config.intensidadWarp;
+            float ux = nx + warpX;
+            float uy = ny + warpY;
+
+            float manchasGrandes = Mathf.PerlinNoise(ux * config.escalaManchasGrandes + seedA, uy * config.escalaManchasGrandes - seedB);
+            float cenizaMedia = Mathf.PerlinNoise(ux * config.escalaCenizaMedia - seedB * 0.6f, uy * (config.escalaCenizaMedia * 0.9f) + seedA * 0.7f);
+            float grano = Mathf.PerlinNoise(ux * config.escalaGrano + seedB, uy * (config.escalaGrano * 1.07f) - seedA);
+            float veta = Mathf.PerlinNoise((ux - uy * 0.12f) * config.escalaVetasQuemadas + seedA * 0.35f, uy * config.escalaVetasY - seedB * 0.35f);
+            float brasa = Mathf.PerlinNoise(ux * (config.escalaCenizaMedia * 1.9f) + seedA * 2.1f, uy * (config.escalaCenizaMedia * 1.7f) - seedB * 1.8f);
+
+            Color color = config.tierraQuemadaBase;
+
+            float pesoCeniza = Mathf.SmoothStep(0.52f, 0.88f, cenizaMedia) * config.intensidadCeniza;
+            color = Color.Lerp(color, config.cenizaClara, pesoCeniza);
+
+            float pesoCarbon = Mathf.SmoothStep(0.42f, 0.84f, manchasGrandes) * config.intensidadCarbon;
+            color = Color.Lerp(color, config.carbonOscuro, pesoCarbon);
+
+            float pesoRojizo = Mathf.SmoothStep(0.58f, 0.90f, 1f - manchasGrandes) * config.intensidadRojiza;
+            color = Color.Lerp(color, config.tierraRojiza, pesoRojizo);
+
+            float pesoVeta = Mathf.SmoothStep(0.74f, 0.96f, veta) * config.intensidadVetas;
+            color = Color.Lerp(color, config.carbonOscuro, pesoVeta);
+
+            float pesoBrasa = Mathf.SmoothStep(0.91f, 0.995f, brasa) * Mathf.SmoothStep(0.45f, 0.85f, manchasGrandes) * config.intensidadBrasas;
+            color = Color.Lerp(color, config.brasaApagada, pesoBrasa);
+
+            float granoFirmado = (grano - 0.5f) * config.intensidadGrano;
+            color.r = Mathf.Clamp01(color.r + granoFirmado);
+            color.g = Mathf.Clamp01(color.g + granoFirmado);
+            color.b = Mathf.Clamp01(color.b + granoFirmado);
+
+            pixels[y * size + x] = color;
+         }
+      }
+
+      textura.SetPixels32(pixels);
+      textura.Apply(true, true);
+      return textura;
+   }
+
    static Texture2D CrearTexturaBaseSuave(int seed, int size)
    {
       Texture2D textura = CrearTexturaVacia("TexturaProcedural_SueloZona", size);
@@ -352,6 +535,11 @@ public class AtributosZona : MonoBehaviour
    [Header("Debug de encuentros")]
    public List<GameObject> debugEncounterUnits = new List<GameObject>();
 
+   [Header("Textura procedural suelo - Bosque Ardiente")]
+   [SerializeField, Tooltip("Activa o desactiva la capa procedural de manchas del suelo del Bosque Ardiente.")]
+   bool usarTexturaProceduralBosqueAngustiante = true;
+   [SerializeField] TexturaProceduralBosqueAngustianteConfig texturaSueloBosqueAngustiante = new TexturaProceduralBosqueAngustianteConfig();
+
    [Header("Textura procedural suelo - Paso Viento Helado")]
    [SerializeField] TexturaProceduralPasoVientoHeladoConfig texturaSueloPasoVientoHelado = new TexturaProceduralPasoVientoHeladoConfig();
 
@@ -382,6 +570,11 @@ public class AtributosZona : MonoBehaviour
 
    void EnsureTexturaProceduralDefaults()
    {
+      if (texturaSueloBosqueAngustiante == null)
+      {
+         texturaSueloBosqueAngustiante = new TexturaProceduralBosqueAngustianteConfig();
+      }
+
       if (texturaSueloPasoVientoHelado == null)
       {
          texturaSueloPasoVientoHelado = new TexturaProceduralPasoVientoHeladoConfig();
@@ -590,6 +783,8 @@ public class AtributosZona : MonoBehaviour
       // Respetar timing previo y dejar terminar el fade inicial del AdministradorEscenas
       yield return new WaitForSecondsRealtime(0.5f);
 
+      AplicarTexturaProceduralBosqueAngustiante();
+
       var admin = CampaignManager.Instance != null ? CampaignManager.Instance.scAdministradorEscenas : null;
       if (admin != null)
       {
@@ -672,11 +867,12 @@ public class AtributosZona : MonoBehaviour
          kOverride: 20);
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_Llama,
-         cantidad: 75,
+         cantidad: 50,
          sector: 0,
+         sectorno: 4,
          distCaminoOverride: 0.65f,
          distNodoOverride: 0.95f,
-         rOverride: 6.0f,
+         rOverride: 5.0f,
          kOverride: 20);
 
       if (admin != null)
@@ -711,9 +907,11 @@ public class AtributosZona : MonoBehaviour
       Clima_chances_Sol = 40;
       Clima_chances_Calor = 40;
       Clima_chances_Lluvia = 43;
-      Clima_chances_Nieve = 70;
-      Clima_chances_Niebla = 93;
+      Clima_chances_Nieve = 75;
+      Clima_chances_Niebla = 91;
       Clima_chances_EspecialZona1 = 100;
+
+       
 
 
 
@@ -775,7 +973,7 @@ public class AtributosZona : MonoBehaviour
        cantidad: 48,
        sectorno: 3,
        distCaminoOverride: 0.11f,
-       distNodoOverride: 0.15f,
+       distNodoOverride: 0.45f,
        rOverride: 5.95f,
        kOverride: 20);
 
@@ -784,7 +982,7 @@ public class AtributosZona : MonoBehaviour
        cantidad: 65,
        sectorno: 3,
        distCaminoOverride: 0.11f,
-       distNodoOverride: 0.15f,
+       distNodoOverride: 0.45f,
        rOverride: 5.85f,
        kOverride: 20);
 
@@ -813,7 +1011,7 @@ public class AtributosZona : MonoBehaviour
          sectorno: 3,
          distCaminoOverride: 0.12f,
          distNodoOverride: 0.85f,
-         rOverride: 0.87f,
+         rOverride: 1.27f,
          kOverride: 30);
 
       yield return scMapDecorator.GenerarAsyncCR(
@@ -947,6 +1145,21 @@ public class AtributosZona : MonoBehaviour
 
       ConfigurarExclusionHieloPasoVientoHelado(false);
       ConfigurarPrimerPuntoCentricoPasoVientoHelado(false);
+   }
+
+   void AplicarTexturaProceduralBosqueAngustiante()
+   {
+      if (!usarTexturaProceduralBosqueAngustiante)
+      {
+         return;
+      }
+
+      int seed = ObtenerSeedTexturaSueloZona();
+      Texture2D texturaSuelo = TexturaProceduralSueloZona.CrearTexturaSuelo(EncounterZoneType.BosqueAngustiante, seed, texturaSueloBosqueAngustiante);
+      Color tint = texturaSueloBosqueAngustiante != null ? texturaSueloBosqueAngustiante.tintMaterial : Color.white;
+
+      TexturaProceduralSueloZona.AplicarTexturaSueloZona(TexturaTerreno, texturaSuelo, tint);
+      TexturaProceduralSueloZona.AplicarTexturaSueloZona(TexturaTerrenoExtension, texturaSuelo, tint);
    }
 
    void AplicarTexturaProceduralPasoVientoHelado()

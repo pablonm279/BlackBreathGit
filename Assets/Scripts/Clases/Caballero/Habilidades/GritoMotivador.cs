@@ -35,8 +35,14 @@ public class GritoMotivador : Habilidad
     
     }
 
+    void ActualizarParametrosPorNivel()
+    {
+      cooldownMax = NIVEL >= 3 ? 3 : 4;
+    }
+
     public override void ActualizarDescripcion()
     {
+      ActualizarParametrosPorNivel();
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
 
@@ -209,25 +215,26 @@ public class GritoMotivador : Habilidad
       if (esIngles)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5% allied damage buff.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: improved progression toward IV specialization.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: cooldown reduced from 4 to 3.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+2 Valour per ally to self) or Option B (enemy damage debuff).</color>"; }
       }
       else if (esPortugues)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5% no buff de dano aliado.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: melhora a progressao para a especializacao de nivel IV.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: recarga reduzida de 4 para 3.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+2 Valentia por aliado para o Cavaleiro) ou Opcao B (debuff de dano em inimigos).</color>"; }
       }
       else
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5% al buff de daño aliado.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: mejora la progresión hacia la especialización de nivel IV.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: enfriamiento reducido de 4 a 3.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+2 Valentía por aliado para el Caballero) u Opción B (debuff de daño a enemigos).</color>"; }
       }
     }
 
   public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
   {
+    ActualizarParametrosPorNivel();
     // El log de uso ahora está centralizado en Habilidad.Resolver
     VFXAplicarPropio(Usuario.gameObject);
    await base.Resolver(Objetivos);
@@ -275,6 +282,7 @@ public class GritoMotivador : Habilidad
     Casilla Origen;
     public override void Activar()
     {
+        ActualizarParametrosPorNivel();
         Origen = Usuario.GetComponent<Unidad>().CasillaPosicion;
         ObtenerObjetivos();
 

@@ -327,7 +327,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -8}
+  m_AnchoredPosition: {x: 0, y: 17}
   m_SizeDelta: {x: 402.64, y: 280}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7521355882606595503
@@ -425,7 +425,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.025580239}
   m_AnchorMax: {x: 0.5, y: 0.025580239}
   m_AnchoredPosition: {x: -1.2, y: 140}
-  m_SizeDelta: {x: 150, y: 80}
+  m_SizeDelta: {x: 150, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8605226345982764415
 CanvasRenderer:
@@ -538,7 +538,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8873313289388911469
 RectTransform:
   m_ObjectHideFlags: 0
@@ -691,8 +691,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 143.6, y: -241.20004}
-  m_SizeDelta: {x: -361.0492, y: -821.29}
+  m_AnchoredPosition: {x: 168, y: -232}
+  m_SizeDelta: {x: -409.85, y: -821.29}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6275662770177167452
 CanvasRenderer:
@@ -787,7 +787,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 4.91626, z: 0, w: 0}
+  m_margin: {x: 1.142273, y: 28.67865, z: 0, w: 5.736374}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1160,8 +1160,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15
-  m_fontSizeBase: 15
+  m_fontSize: 16
+  m_fontSizeBase: 16
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1238,7 +1238,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00017547607, y: -0.000091552734}
+  m_AnchoredPosition: {x: -0.00017547607, y: -5.7}
   m_SizeDelta: {x: -51.993988, y: -14.18103}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3919853615240055052
@@ -1334,7 +1334,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 6.351837, z: 0, w: 7.7899475}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1589,6 +1589,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   txtDesc: {fileID: 3312014607506495964}
   txtMecanica: {fileID: 2564035602071047180}
+  txtPlegaria: {fileID: 7208306880803303931}
   costooroplegaria: {fileID: 5739245098882759179}
 --- !u!114 &7494822906339484246
 MonoBehaviour:
@@ -1680,7 +1681,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -19.100006, y: -189.4}
+  m_AnchoredPosition: {x: -15.4, y: -168}
   m_SizeDelta: {x: -316.3, y: -745.8965}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &361057811428289512
@@ -1711,9 +1712,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "La Plegaria retrasar\xE1 1 el H\xE1lito Negro, bendecir\xE1 a los personajes
-    por 1 d\xEDa con: +3 TS +5 Resistencia Da\xF1o Necr\xF3tico y aumentar\xE1 en
-    10 la Esperanza."
+  m_text: "La Plegaria retrasar\xE1 1 el Aliento Negro y bendecir\xE1 a los personajes
+    por 3 d\xEDas. 1 vez por regi\xF3n."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -1722,8 +1722,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294953637
-  m_fontColor: {r: 0.64705884, g: 0.7940605, b: 1, a: 1}
+    rgba: 4289973206
+  m_fontColor: {r: 0.8396226, g: 0.7969396, b: 0.7010057, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1740,19 +1740,19 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: -25
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -1778,7 +1778,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -57.99414, y: 0, z: -89.35547, w: 0}
+  m_margin: {x: -57.99414, y: 0, z: -89.35547, w: -0.29318237}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

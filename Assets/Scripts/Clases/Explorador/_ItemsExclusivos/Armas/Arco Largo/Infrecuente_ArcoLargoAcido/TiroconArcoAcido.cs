@@ -211,7 +211,7 @@ public class TiroconArcoAcido : Habilidad
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
         float danioAcido = TiradaDeDados.TirarDados(1, 2); //1d2 de
-        objetivo.RecibirDanio(danioAcido, 7, false, scEstaUnidad);
+        objetivo.RecibirDanioSinBonusElemental(danioAcido, 7, false, scEstaUnidad);
 
 
 
@@ -226,7 +226,7 @@ public class TiroconArcoAcido : Habilidad
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
         float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de
-        objetivo.RecibirDanio(danioAcido, 7, false, scEstaUnidad);
+        objetivo.RecibirDanioSinBonusElemental(danioAcido, 7, false, scEstaUnidad);
 
       }
       else if (resultadoTirada == 3)
@@ -239,7 +239,7 @@ public class TiroconArcoAcido : Habilidad
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 
         float danioAcido = TiradaDeDados.TirarDados(1, 6); //1d6 de 
-        objetivo.RecibirDanio(danioAcido, 7, true, scEstaUnidad);
+        objetivo.RecibirDanioSinBonusElemental(danioAcido, 7, true, scEstaUnidad);
 
       }
      

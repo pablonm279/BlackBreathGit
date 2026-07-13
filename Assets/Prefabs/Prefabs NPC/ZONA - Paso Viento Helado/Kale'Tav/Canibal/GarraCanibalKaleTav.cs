@@ -17,7 +17,7 @@ public class GarraCanibalKaleTav : IAHabilidad
    
   void Awake()
    {
-      nombre = "Garra Can�bal";
+      nombre = "Garra Caníbal";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 1;

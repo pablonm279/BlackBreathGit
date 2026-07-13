@@ -46,12 +46,12 @@ public class PilaresDeLuz : Habilidad
       var statsUI = ObtenerStatsDescripcionUI();
 
       int poderActual = statsUI.Poder;
-      int vidaPilar = NIVEL > 1 ? 25 : 20;
+      int vidaPilar = NIVEL > 1 ? 20 : 14;
       int resistenciaDanio = NIVEL == 4 ? 3 : 0;
       int cantidadPilares = NIVEL == 5 ? 3 : 2;
       int duracionTurnos = NIVEL == 5 ? 4 : 3;
-      int bonusDanio = NIVEL > 2 ? 3 : 0;
-      string rangoDanioPilarEs = FormatearRangoDados(1, 6, bonusDanio);
+      int bonusDanio = NIVEL > 2 ? 2 : 0;
+      string rangoDanioPilarEs = FormatearRangoDados(1, 4, bonusDanio);
 
       string tituloEs = "Pilares de Luz I";
       string tituloEn = "Pillars of Light I";
@@ -69,11 +69,11 @@ public class PilaresDeLuz : Habilidad
         ? $"{rangoDanioPilarEs} + <color=#ea0606>Pod ({poderActual})</color>"
         : $"{rangoDanioPilarEs} + <color=#ea0606>Pod ({poderActual})</color>";
       string danioPilarEn = bonusDanio > 0
-        ? $"1d6 + {bonusDanio} + <color=#ea0606>Power ({poderActual})</color>"
-        : $"1d6 + <color=#ea0606>Power ({poderActual})</color>";
+        ? $"1d4 + {bonusDanio} + <color=#ea0606>Power ({poderActual})</color>"
+        : $"1d4 + <color=#ea0606>Power ({poderActual})</color>";
       string danioPilarPt = bonusDanio > 0
-        ? $"1d6 + {bonusDanio} + <color=#ea0606>Poder ({poderActual})</color>"
-        : $"1d6 + <color=#ea0606>Poder ({poderActual})</color>";
+        ? $"1d4 + {bonusDanio} + <color=#ea0606>Poder ({poderActual})</color>"
+        : $"1d4 + <color=#ea0606>Poder ({poderActual})</color>";
 
       string cuerpo = "";
       if (esIngles)
@@ -201,20 +201,20 @@ public class PilaresDeLuz : Habilidad
 
       if (esIngles)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5 pillar HP.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +3 pillar retaliation damage.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +6 pillar HP.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +2 pillar retaliation damage.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (+3 Damage Resistance) or Option B (+1 pillar).</color>"; }
       }
       else if (esPortugues)
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5 Vida do pilar.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +3 de dano no contra-ataque do pilar.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +6 Vida do pilar.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +2 de dano no contra-ataque do pilar.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (+3 Resistencia a dano) ou Opcao B (+1 pilar).</color>"; }
       }
       else
       {
-        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5 Vida de pilar.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +3 daño de contraataque del pilar.</color>"; }
+        if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +6 Vida de pilar.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +2 daño de contraataque del pilar.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (+3 Resistencia al daño) u Opción B (+1 pilar).</color>"; }
       }
     }
@@ -245,8 +245,8 @@ public class PilaresDeLuz : Habilidad
        
      GameObject obst1 = Instantiate(BattleManager.Instance.contenedorPrefabs.PurificadoraPilarDeLuz);
      obst1.GetComponent<PilarDeLuz>().oName = "Pilar De Luz";
-     obst1.GetComponent<PilarDeLuz>().hpMax = 20.0f;
-     if(NIVEL > 1){ obst1.GetComponent<PilarDeLuz>().hpMax += 5;}
+     obst1.GetComponent<PilarDeLuz>().hpMax = 14.0f;
+     if(NIVEL > 1){ obst1.GetComponent<PilarDeLuz>().hpMax += 6;}
      obst1.GetComponent<PilarDeLuz>().iDureza = 0.0f;
      if(NIVEL == 4){ obst1.GetComponent<PilarDeLuz>().iDureza += 3;}
      obst1.GetComponent<PilarDeLuz>().hpCurr =  obst1.GetComponent<PilarDeLuz>().hpMax;
@@ -267,8 +267,8 @@ public class PilaresDeLuz : Habilidad
         cantidadQuedan--;
         GameObject obst2 = Instantiate(BattleManager.Instance.contenedorPrefabs.PurificadoraPilarDeLuz);
         obst2.GetComponent<PilarDeLuz>().oName = "Pilar De Luz";
-        obst2.GetComponent<PilarDeLuz>().hpMax = 20.0f;
-        if(NIVEL > 1){ obst2.GetComponent<PilarDeLuz>().hpMax += 5;}
+        obst2.GetComponent<PilarDeLuz>().hpMax = 14.0f;
+        if(NIVEL > 1){ obst2.GetComponent<PilarDeLuz>().hpMax += 6;}
         obst2.GetComponent<PilarDeLuz>().iDureza = 0.0f;
         obst2.GetComponent<PilarDeLuz>().hpCurr =  obst2.GetComponent<PilarDeLuz>().hpMax;
         if(NIVEL == 4){ obst2.GetComponent<PilarDeLuz>().iDureza += 3;}
@@ -335,6 +335,3 @@ public class PilaresDeLuz : Habilidad
 
  
 }
-
-
-

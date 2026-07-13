@@ -2017,7 +2017,7 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede leer el rastro y ordenar a tiempo la vigilancia.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Tirada de Salvación: TS Reflejos DC ") + DificultadRastroSospechoso + TRADU.i.Traducir(" <i>(TS Reflejos actual: ") + ObtenerTSReflejosTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, la Caravana obtendrá Vigilante por 1 viaje y ganará 30 Experiencia. Si falla, la Caravana ganará +1 Fatiga.</color>\n\n");
+                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Tirada de Salvación: TS Reflejos DC ") + DificultadRastroSospechoso + TRADU.i.Traducir(" <i>(TS Reflejos actual: ") + ObtenerTSReflejosTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, la Caravana obtendrá Vigilante por 1 viaje y ganará 30 Experiencia. Si falla, la Caravana obtendrá Descuidados por 3 días.</color>\n\n");
             }
             else
             {
@@ -2337,14 +2337,14 @@ public class EventosAdmin : MonoBehaviour
         CampaignManager.Instance.scAtributosZona.PasoVientoHelado_FuerzaKaleTav = Mathf.Max(0, fuerzaActual + delta);
     }
 
-    void OtorgarEstadoCaravana(TipoEstadoCaravana tipo, string textoLog)
+    void OtorgarEstadoCaravana(TipoEstadoCaravana tipo, string textoLog, int stacks = 1)
     {
         if (CampaignManager.Instance == null)
         {
             return;
         }
 
-        CampaignManager.Instance.AgregarEstadoCaravana(tipo, 1);
+        CampaignManager.Instance.AgregarEstadoCaravana(tipo, stacks);
         if (!string.IsNullOrEmpty(textoLog))
         {
             CampaignManager.Instance.EscribirLog(TRADU.i.Traducir(textoLog));
@@ -3105,13 +3105,13 @@ public class EventosAdmin : MonoBehaviour
                 }
                 else
                 {
-                    CampaignManager.Instance.CambiarFatigaActual(1);
+                    OtorgarEstadoCaravana(TipoEstadoCaravana.Descuidados, null, 3);
                     CampaignManager.Instance.EscribirLog(
                         TRADU.i.Traducir("-") + participanteEvento1.sNombre
                         + TRADU.i.Traducir(" no logró leer bien el rastro (1d20: ")
                         + tirada + TRADU.i.Traducir(" + ")
                         + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                        + DificultadRastroSospechoso + TRADU.i.Traducir("). +1 Fatiga."));
+                        + DificultadRastroSospechoso + TRADU.i.Traducir("). Descuidados por 3 días."));
                 }
             }
             else

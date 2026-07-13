@@ -8,6 +8,7 @@ using System;
 public class DescargaDePoder : Habilidad
 {
    
+    private const int DificultadSalvacionReflejos = 13;
 
     [SerializeField] private GameObject VFXenObjetivo;
     [SerializeField] private int bonusAtaque;
@@ -59,11 +60,8 @@ public class DescargaDePoder : Habilidad
       var statsUI = ObtenerStatsDescripcionUI();
 
       int poderActual = statsUI.Poder;
-      int ataqueActual = statsUI.Ataque;
-      int criticoBonusUnidad = statsUI.CriticoRango;
-      int bonusAtaqueNivel = NIVEL > 2 ? 1 : 0;
       int danioFijo = NIVEL > 1 ? 5 : 0;
-      int criticoMin = Mathf.Clamp(19 - (criticoBonusUnidad + 2), 2, 20);
+      int dcSalvacion = ObtenerDificultadSalvacionReflejos();
 
       string tituloEs = "Descarga de Poder I";
       string tituloEn = "Power Discharge I";
@@ -77,8 +75,6 @@ public class DescargaDePoder : Habilidad
       if (NIVEL == 4) { tituloPt = "Descarga de Poder IV a"; }
       if (NIVEL == 5) { tituloPt = "Descarga de Poder IV b"; }
 
-      string bonusAtaqueEs = bonusAtaqueNivel != 0 ? $" + {bonusAtaqueNivel}" : "";
-      string bonusAtaqueEn = bonusAtaqueNivel != 0 ? $" + {bonusAtaqueNivel}" : "";
       string rangoDanioEs = FormatearRangoDados(3, 6, danioFijo);
 
       string danioEs = $"{rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color>";
@@ -94,21 +90,24 @@ public class DescargaDePoder : Habilidad
       {
         cuerpo += "<b>Type:</b> Ranged (5 range)\n";
         cuerpo += "<b>Target:</b> T area (3 horizontal + 2 at the far end)\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color>  {bonusAtaqueEn} vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
+        cuerpo += "<b>Attack Roll:</b> None. Always hits.\n";
+        cuerpo += $"<b>Save:</b> Reflex DC {dcSalvacion}. Success: half damage.\n";
         cuerpo += $"<b>Damage:</b> {danioEn} | <b>Type:</b> Arcane";
       }
       else if (esPortugues)
       {
         cuerpo += "<b>Tipo:</b> Distancia (5 alcance)\n";
         cuerpo += "<b>Alvo:</b> Area em T (3 horizontal + 2 no fundo)\n";
-        cuerpo += $"<b>Rolagem:</b> 1d20 + <color=#ea0606>Poder ({poderActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defesa. Falha critica: 1. Critico: {criticoMin}-20\n";
+        cuerpo += "<b>Rolagem de ataque:</b> Nenhuma. Acerta automaticamente.\n";
+        cuerpo += $"<b>TS:</b> Reflexos DC {dcSalvacion}. Sucesso: metade do dano.\n";
         cuerpo += $"<b>Dano:</b> {danioPt} | <b>Tipo:</b> Arcano";
       }
       else
       {
         cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
         cuerpo += "<b>Objetivo:</b> Área en T (3 horizontal + 2 al fondo)\n";
-        cuerpo += $"<b>Tirada:</b> 1d20 + <color=#ea0606>Pod ({poderActual})</color> + Ataque ({ataqueActual}){bonusAtaqueEs} vs Defensa. Pifia: 1. Crítico: {criticoMin}-20\n";
+        cuerpo += "<b>Tirada de ataque:</b> No tiene. Pega si o si.\n";
+        cuerpo += $"<b>TS:</b> Reflejos DC {dcSalvacion}. Si la supera, recibe mitad de daño.\n";
         cuerpo += $"<b>Daño:</b> {danioEs} | <b>Tipo:</b> Arcano";
       }
 
@@ -129,12 +128,6 @@ public class DescargaDePoder : Habilidad
         costos,
         "#5dade2");
 
-      int pifiaPorcentaje = 5;
-      int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
-      int modificadorAtaqueExtra = ataqueActual + bonusAtaqueNivel;
-      string ataqueTxt = modificadorAtaqueExtra == 0
-        ? string.Empty
-        : modificadorAtaqueExtra > 0 ? $" + {modificadorAtaqueExtra}" : $" - {Mathf.Abs(modificadorAtaqueExtra)}";
       string colorEncabezado = "#44d3ec";
       string colorValor = "#ffffff";
       string colorPoder = "#2aa6c8";
@@ -145,30 +138,33 @@ public class DescargaDePoder : Habilidad
         : $"{costoAP} {iconoAP}";
       string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
       string subtituloFormato = esIngles
-        ? "Ranged arcane attack in a T-shaped area."
+        ? "Ranged arcane discharge in a T-shaped area."
         : esPortugues
-          ? "Ataque arcano a distancia em area de T."
-          : "Ataque arcano a distancia en area de T.";
+          ? "Descarga arcana a distancia em area de T."
+          : "Descarga arcana a distancia en area de T.";
       string cuerpoFormato = "";
       if (esIngles)
       {
-        cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged attack (5 range)</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged ability (5 range)</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>T area (3 horizontal + 2 at far end)</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Power ({poderActual})</color>{ataqueTxt} vs Defense. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Attack Roll:</b></color> <color={colorValor}>None. Always hits.</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Reflex DC {dcSalvacion}. Success: half damage.</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Power ({poderActual})</color>. Type: Arcane</color>";
       }
       else if (esPortugues)
       {
-        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia (5 alcance)</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Habilidade a distancia (5 alcance)</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>Area em T (3 horizontal + 2 no fundo)</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defesa. Falha critica: {pifiaPorcentaje}%. Critico: {criticoPorcentaje}%</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Rolagem de ataque:</b></color> <color={colorValor}>Nenhuma. Acerta automaticamente.</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Reflexos DC {dcSalvacion}. Sucesso: metade do dano.</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Poder ({poderActual})</color>. Tipo: Arcano</color>";
       }
       else
       {
-        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Ataque a distancia (5 alcance)</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Habilidad a distancia (5 alcance)</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>Área en T (3 horizontal + 2 al fondo)</color>\n";
-        cuerpoFormato += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Poder ({poderActual})</color>{ataqueTxt} vs Defensa. Pifia: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>Tirada de ataque:</b></color> <color={colorValor}>No tiene. Pega si o si.</color>\n";
+        cuerpoFormato += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Reflejos DC {dcSalvacion}. Si la supera, recibe mitad de daño.</color>\n";
         cuerpoFormato += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanioEs} + <color={colorPoder}>Poder ({poderActual})</color>. Tipo: Arcano</color>";
       }
 
@@ -187,19 +183,19 @@ public class DescargaDePoder : Habilidad
       if (esIngles)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +5 damage.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack roll bonus.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 save DC.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (-1 AP) or Option B (-1 cooldown).</color>"; }
       }
       else if (esPortugues)
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +5 de dano.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 no bonus de ataque.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC de salvacao.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (-1 AP) ou Opcao B (-1 recarga).</color>"; }
       }
       else
       {
         if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +5 de daño.</color>"; }
-        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 al bono de ataque.</color>"; }
+        else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 DC de salvacion.</color>"; }
         else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (-1 AP) u Opción B (-1 enfriamiento).</color>"; }
       }
     }
@@ -251,6 +247,11 @@ public class DescargaDePoder : Habilidad
         return Task.CompletedTask;
     }
 
+    private int ObtenerDificultadSalvacionReflejos()
+    {
+      return DificultadSalvacionReflejos + (NIVEL > 2 ? 1 : 0);
+    }
+
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
@@ -258,77 +259,23 @@ public class DescargaDePoder : Habilidad
      { 
       
         Unidad objetivo = (Unidad)obj;
-       
-       int danioExtra = 0;
-       if (NIVEL > 1) { danioExtra += 3; }
 
-       float defensaObjetivo = objetivo.ObtenerdefensaActual();
-       print("Defensa: "+ defensaObjetivo);
+        int danioExtra = 0;
+        if (NIVEL > 1) { danioExtra += 3; }
 
-       float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
-       int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarPoder, bonusAtaque, criticoRango, objetivo, 0); 
-       print("Resultado tirada "+resultadoTirada);
-       
-      
-       //----
-     
-       if(resultadoTirada == -1)
-       {//PIFIA 
-         print("Pifia");
-         objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
-         //BattleManager.Instance.TerminarTurno(); //Al ser Pifia, termina el turno.
-       scEstaUnidad.EstablecerAPActualA(0);
-       }
-       else if (resultadoTirada == 0)
-       {//FALLO
-         print("Fallo");
-         objetivo.FalloAtaqueRecibido(scEstaUnidad, esMelee);
+        float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + danioExtra + scEstaUnidad.mod_CarPoder;
+        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+        if (NIVEL > 1) { danio += 2; }
 
-       }
-       else if (resultadoTirada == 1)
-       {//ROCE
-         print("Roce");
-         float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+danioExtra+scEstaUnidad.mod_CarPoder;
+        bool fallaSalvacion = objetivo.TiradaSalvacion(2, ObtenerDificultadSalvacionReflejos());
+        if (!fallaSalvacion)
+        {
+          danio *= 0.5f;
+        }
 
-         danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
-         if(NIVEL > 1){danio += 2;}
-
-         danio -= danio/2; //Reduce 50% por roce
-
-         DescargaArcanaImpactoFx.Crear(objetivo);
-         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
-    
-        
-
-       }
-       else if (resultadoTirada == 2)
-       {//GOLPE
-         print("Golpe");
-
-         float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+danioExtra+scEstaUnidad.mod_CarPoder;
-         danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
-         if(NIVEL > 1){danio += 2;}
-
-         DescargaArcanaImpactoFx.Crear(objetivo);
-         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
-
-        
-
-       }
-       else if (resultadoTirada == 3)
-       {//CRITICO
-         print("Crítico");
-
-         float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+danioExtra+scEstaUnidad.mod_CarPoder;
-         danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje+danioExtra);
-         if(NIVEL > 1){danio += 2;}
-      
-         DescargaArcanaImpactoFx.Crear(objetivo);
-         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
-
-       
-       }
-     
+        DescargaArcanaImpactoFx.Crear(objetivo);
+        DescargaDePoderImpactoFx.Crear(objetivo.transform.position, fallaSalvacion ? 0.16f : 0.14f);
+        objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
      else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
@@ -429,6 +376,7 @@ public class DescargaDePoder : Habilidad
 
         Quaternion rotacion = dir.sqrMagnitude > 0.0001f ? Quaternion.LookRotation(dir) * Quaternion.Euler(0f, -90f, 0f) : Quaternion.Euler(0f, -90f, 0f);
         GameObject vfx = Instantiate(vfxPrefab, spawnPos, rotacion);
+        vfx.transform.localScale *= 0.85f;
         FlechaPotenteVuelo vuelo = vfx.GetComponent<FlechaPotenteVuelo>();
         if (vuelo != null)
         {
@@ -512,6 +460,90 @@ private void ObtenerObjetivos()
     }
 
     
+}
+
+public class DescargaDePoderImpactoFx : MonoBehaviour
+{
+  private const float Duracion = 0.5f;
+
+  private SpriteRenderer spriteRenderer;
+  private Vector3 escalaBase;
+  private float tiempo;
+
+  private static Sprite spriteImpacto;
+  private static Material materialImpacto;
+
+  public static void Crear(Vector3 posicion, float escala)
+  {
+    Sprite sprite = ObtenerSpriteImpacto();
+    if (sprite == null)
+    {
+      return;
+    }
+
+    GameObject go = new GameObject("VFX_DescargaDePoder_Impacto");
+    go.transform.position = posicion + Vector3.up * 0.12f;
+    if (Camera.main != null)
+    {
+      go.transform.rotation = Camera.main.transform.rotation;
+    }
+
+    DescargaDePoderImpactoFx fx = go.AddComponent<DescargaDePoderImpactoFx>();
+    fx.spriteRenderer = go.AddComponent<SpriteRenderer>();
+    fx.spriteRenderer.sprite = sprite;
+    fx.spriteRenderer.material = ObtenerMaterialImpacto();
+    fx.spriteRenderer.sortingOrder = 190;
+    fx.spriteRenderer.color = new Color(0.5f, 0.88f, 1.35f, 0.82f);
+    fx.escalaBase = Vector3.one * escala;
+    go.transform.localScale = fx.escalaBase * 0.58f;
+  }
+
+  private void Update()
+  {
+    tiempo += Time.deltaTime;
+    float p = Mathf.Clamp01(tiempo / Duracion);
+    float entrada = Mathf.Clamp01(p / 0.12f);
+    float salida = 1f - Mathf.Clamp01((p - 0.42f) / 0.58f);
+    float alpha = entrada * salida;
+    float pulso = 0.92f + Mathf.Sin(tiempo * 24f) * 0.08f;
+
+    transform.localScale = Vector3.Lerp(escalaBase * 0.58f, escalaBase * 0.92f, p) * pulso;
+    if (spriteRenderer != null)
+    {
+      spriteRenderer.color = new Color(0.62f, 0.95f, 1.45f, 0.72f * alpha);
+    }
+
+    if (p >= 1f)
+    {
+      Destroy(gameObject);
+    }
+  }
+
+  private static Sprite ObtenerSpriteImpacto()
+  {
+    if (spriteImpacto == null)
+    {
+      spriteImpacto = Resources.Load<Sprite>("VFX/descargadesintegradora");
+    }
+
+    return spriteImpacto;
+  }
+
+  private static Material ObtenerMaterialImpacto()
+  {
+    if (materialImpacto == null)
+    {
+      Shader shader = Shader.Find("Legacy Shaders/Particles/Additive");
+      if (shader == null)
+      {
+        shader = Shader.Find("Sprites/Default");
+      }
+      materialImpacto = new Material(shader);
+      materialImpacto.hideFlags = HideFlags.HideAndDontSave;
+    }
+
+    return materialImpacto;
+  }
 }
 
 

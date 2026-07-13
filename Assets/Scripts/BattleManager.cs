@@ -73,6 +73,8 @@ public class BattleManager : MonoBehaviour
 
   public List<Unidad> lUnidadesTotal = new List<Unidad>();
   public List<Casilla> lCasillasTotal = new List<Casilla>();
+  private bool vistaTacticaActiva;
+  public bool VistaTacticaActiva => vistaTacticaActiva;
 
   public List<Unidad> lUnidadesPosiblesHabilidadActiva = new List<Unidad>();
   public List<Obstaculo> lObstaculosPosiblesHabilidadActiva = new List<Obstaculo>();
@@ -2276,6 +2278,15 @@ public class BattleManager : MonoBehaviour
       DebugObjetosBajoMouse();
     }
 
+    if (Input.GetKeyDown(KeyCode.Tab))
+    {
+      ActivarVistaTactica(!vistaTacticaActiva);
+    }
+    else if (vistaTacticaActiva)
+    {
+      RefrescarVistaTactica();
+    }
+
     if (pausaManualCombateActiva && (unidadActiva == null || unidadActiva.GetComponent<IAUnidad>() == null))
     {
       SetPausaManualCombate(false);
@@ -2367,6 +2378,41 @@ public class BattleManager : MonoBehaviour
     else if (apDisponible != null)
     {
       apDisponible.text = string.Empty;
+    }
+  }
+
+  public void ActivarVistaTactica(bool activa)
+  {
+    if (vistaTacticaActiva == activa)
+    {
+      RefrescarVistaTactica();
+      return;
+    }
+
+    vistaTacticaActiva = activa;
+    RefrescarVistaTactica();
+  }
+
+  public void RefrescarVistaTactica()
+  {
+    foreach (Unidad unidad in lUnidadesTotal)
+    {
+      if (unidad == null)
+      {
+        continue;
+      }
+
+      unidad.AplicarVistaTactica(vistaTacticaActiva);
+    }
+
+    foreach (Casilla casilla in lCasillasTotal)
+    {
+      if (casilla == null)
+      {
+        continue;
+      }
+
+      casilla.ActualizarVistaTactica(vistaTacticaActiva);
     }
   }
 

@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 
 public class Casilla : MonoBehaviour
@@ -52,11 +53,24 @@ public class Casilla : MonoBehaviour
   private Renderer[] renderersBordeActual = Array.Empty<Renderer>();
   private Transform contenedorCostoMovimiento;
   private readonly List<SpriteRenderer> iconosCostoMovimiento = new List<SpriteRenderer>();
+  private Transform transformVistaTactica;
+  private SpriteRenderer spriteVistaTactica;
+  private SpriteRenderer rellenoDanioVistaTactica;
+  private Sprite spriteBaseVistaTactica;
+  private Vector3 escalaBaseVistaTactica = Vector3.one;
+  private Vector3 escalaActualVistaTactica = Vector3.one;
+  private Vector2 tamanoSpriteBaseVistaTactica = Vector2.one;
   private Sprite spriteCostoMovimiento;
+  private const int OrdenVistaTacticaOffset = 6;
+  private const float AlphaRellenoDanioVistaTactica = 0.72f;
+  private const float IntensidadPulsoVistaTactica = 0.055f;
+  private const float VelocidadPulsoVistaTactica = 7.5f;
   private static readonly int ShaderColorId = Shader.PropertyToID("_Color");
   private static readonly int ShaderBaseColorId = Shader.PropertyToID("_BaseColor");
   private static readonly int ShaderEmissionColorId = Shader.PropertyToID("_EmissionColor");
   private bool estaEnDestruccion;
+  private bool hoverVistaTactica;
+  private Unidad unidadHoverVistaTactica;
 
   private sealed class EstadoMarcaMovimiento
   {
@@ -86,6 +100,19 @@ public class Casilla : MonoBehaviour
     circuloBordeHabilidadAzul = BuscarTransformRecursivo(graficoBordeHabilidadAzul, "Circulo");
     circuloBordeHabilidadRojo = BuscarTransformRecursivo(graficoBordeHabilidadRojo, "Circulo");
     renderersBordeActual = graficoBordeActual != null ? graficoBordeActual.GetComponentsInChildren<Renderer>(true) : Array.Empty<Renderer>();
+
+    Transform vistaTactica = BuscarTransformRecursivo(transform, "VistaTactica");
+    transformVistaTactica = vistaTactica;
+    spriteVistaTactica = vistaTactica != null ? vistaTactica.GetComponent<SpriteRenderer>() : null;
+    if (spriteVistaTactica != null)
+    {
+      spriteBaseVistaTactica = spriteVistaTactica.sprite;
+      escalaBaseVistaTactica = spriteVistaTactica.transform.localScale;
+      escalaActualVistaTactica = escalaBaseVistaTactica;
+      tamanoSpriteBaseVistaTactica = ObtenerTamanoSpriteVistaTactica(spriteVistaTactica.sprite);
+      CrearRellenoDanioVistaTactica();
+    }
+    ActualizarVistaTactica(false);
   }
 
   private static Transform BuscarTransformRecursivo(Transform raiz, string nombre)
@@ -104,6 +131,187 @@ public class Casilla : MonoBehaviour
     }
 
     return null;
+  }
+
+  public void ActualizarVistaTactica(bool activa)
+  {
+    if (spriteVistaTactica == null)
+    {
+      return;
+    }
+
+    Unidad unidadPresente = Presente != null ? Presente.GetComponent<Unidad>() : null;
+    bool mostrarRetrato = activa && unidadPresente != null && unidadPresente.uRetrato != null;
+    Sprite retrato = mostrarRetrato ? unidadPresente.uRetrato : null;
+
+    spriteVistaTactica.sprite = retrato;
+    AplicarEscalaVistaTactica(retrato);
+    if (!mostrarRetrato)
+    {
+      LimpiarHoverVistaTactica();
+    }
+    ActualizarPulsoVistaTactica(mostrarRetrato);
+    spriteVistaTactica.sortingOrder = RenderOrderHelper.CalcularOrdenPorY(posY) + OrdenVistaTacticaOffset;
+    ActualizarRellenoDanioVistaTactica(unidadPresente, mostrarRetrato);
+    SetActiveIfChanged(spriteVistaTactica.gameObject, mostrarRetrato);
+  }
+
+  private void CrearRellenoDanioVistaTactica()
+  {
+    if (transformVistaTactica == null || spriteBaseVistaTactica == null || rellenoDanioVistaTactica != null)
+    {
+      return;
+    }
+
+    GameObject rellenoGO = new GameObject("VistaTacticaDanio");
+    rellenoGO.transform.SetParent(transformVistaTactica, false);
+    rellenoGO.transform.localPosition = Vector3.zero;
+    rellenoGO.transform.localRotation = Quaternion.identity;
+    rellenoGO.transform.localScale = Vector3.one;
+
+    rellenoDanioVistaTactica = rellenoGO.AddComponent<SpriteRenderer>();
+    rellenoDanioVistaTactica.sprite = spriteBaseVistaTactica;
+    rellenoDanioVistaTactica.color = new Color(0.28f, 0f, 0f, AlphaRellenoDanioVistaTactica);
+    rellenoDanioVistaTactica.sortingOrder = RenderOrderHelper.CalcularOrdenPorY(posY) + OrdenVistaTacticaOffset + 1;
+    rellenoDanioVistaTactica.gameObject.SetActive(false);
+  }
+
+  private void ActualizarRellenoDanioVistaTactica(Unidad unidadPresente, bool mostrarRetrato)
+  {
+    if (rellenoDanioVistaTactica == null)
+    {
+      return;
+    }
+
+    float proporcionDanio = 0f;
+    if (mostrarRetrato && unidadPresente != null && unidadPresente.mod_maxHP > 0f)
+    {
+      proporcionDanio = 1f - Mathf.Clamp01(unidadPresente.HP_actual / unidadPresente.mod_maxHP);
+    }
+
+    bool mostrarRelleno = mostrarRetrato && proporcionDanio > 0.001f;
+    if (mostrarRelleno)
+    {
+      Sprite spriteActual = spriteVistaTactica != null ? spriteVistaTactica.sprite : null;
+      Vector2 tamanoSpriteActual = ObtenerTamanoSpriteVistaTactica(spriteActual);
+
+      rellenoDanioVistaTactica.sprite = spriteBaseVistaTactica;
+      rellenoDanioVistaTactica.sortingOrder = RenderOrderHelper.CalcularOrdenPorY(posY) + OrdenVistaTacticaOffset + 1;
+      rellenoDanioVistaTactica.transform.localScale = new Vector3(
+        tamanoSpriteActual.x / tamanoSpriteBaseVistaTactica.x,
+        (tamanoSpriteActual.y / tamanoSpriteBaseVistaTactica.y) * proporcionDanio,
+        1f);
+      rellenoDanioVistaTactica.transform.localPosition = new Vector3(
+        0f,
+        -(tamanoSpriteActual.y * (1f - proporcionDanio)) * 0.5f,
+        0f);
+    }
+
+    SetActiveIfChanged(rellenoDanioVistaTactica.gameObject, mostrarRelleno);
+  }
+
+  private void AplicarEscalaVistaTactica(Sprite spriteActual)
+  {
+    if (transformVistaTactica == null)
+    {
+      return;
+    }
+
+    if (spriteActual == null)
+    {
+      escalaActualVistaTactica = escalaBaseVistaTactica;
+      transformVistaTactica.localScale = escalaActualVistaTactica;
+      return;
+    }
+
+    Vector2 tamanoSpriteActual = ObtenerTamanoSpriteVistaTactica(spriteActual);
+    escalaActualVistaTactica = new Vector3(
+      escalaBaseVistaTactica.x * tamanoSpriteBaseVistaTactica.x / tamanoSpriteActual.x,
+      escalaBaseVistaTactica.y * tamanoSpriteBaseVistaTactica.y / tamanoSpriteActual.y,
+      escalaBaseVistaTactica.z);
+    transformVistaTactica.localScale = escalaActualVistaTactica;
+  }
+
+  private void ActualizarPulsoVistaTactica(bool mostrarRetrato)
+  {
+    if (transformVistaTactica == null)
+    {
+      return;
+    }
+
+    if (!mostrarRetrato || !hoverVistaTactica)
+    {
+      transformVistaTactica.localScale = escalaActualVistaTactica;
+      return;
+    }
+
+    float pulso = 1f + (Mathf.Sin(Time.time * VelocidadPulsoVistaTactica) * 0.5f + 0.5f) * IntensidadPulsoVistaTactica;
+    transformVistaTactica.localScale = escalaActualVistaTactica * pulso;
+  }
+
+  private void SetHoverVistaTactica(bool hover)
+  {
+    Unidad unidadPresente = Presente != null ? Presente.GetComponent<Unidad>() : null;
+    bool mostrarPulso = hover
+      && BattleManager.Instance != null
+      && BattleManager.Instance.VistaTacticaActiva
+      && spriteVistaTactica != null
+      && spriteVistaTactica.gameObject.activeSelf
+      && unidadPresente != null;
+
+    hoverVistaTactica = mostrarPulso;
+    ActualizarPulsoVistaTactica(mostrarPulso);
+    ActualizarInfoHoverVistaTactica(mostrarPulso ? unidadPresente : null);
+  }
+
+  private void ActualizarInfoHoverVistaTactica(Unidad unidad)
+  {
+    UIInfoChar infoChar = BattleManager.Instance != null ? BattleManager.Instance.scUIInfoChar : null;
+    if (infoChar == null)
+    {
+      unidadHoverVistaTactica = unidad;
+      return;
+    }
+
+    if (unidadHoverVistaTactica == unidad)
+    {
+      if (unidad != null)
+      {
+        infoChar.ReaplicarMarcadoPrioritario();
+      }
+      return;
+    }
+
+    if (unidadHoverVistaTactica != null)
+    {
+      infoChar.LimpiarHover(unidadHoverVistaTactica);
+    }
+
+    unidadHoverVistaTactica = unidad;
+
+    if (unidadHoverVistaTactica != null)
+    {
+      infoChar.MostrarHover(unidadHoverVistaTactica);
+    }
+  }
+
+  private void LimpiarHoverVistaTactica()
+  {
+    hoverVistaTactica = false;
+    ActualizarInfoHoverVistaTactica(null);
+  }
+
+  private static Vector2 ObtenerTamanoSpriteVistaTactica(Sprite sprite)
+  {
+    if (sprite == null)
+    {
+      return Vector2.one;
+    }
+
+    Vector3 tamano = sprite.bounds.size;
+    float ancho = Mathf.Abs(tamano.x) > 0.0001f ? Mathf.Abs(tamano.x) : 1f;
+    float alto = Mathf.Abs(tamano.y) > 0.0001f ? Mathf.Abs(tamano.y) : 1f;
+    return new Vector2(ancho, alto);
   }
 
   private void InicializarPreviewCostoMovimiento()
@@ -867,7 +1075,10 @@ public class Casilla : MonoBehaviour
       return;
     }
 
-
+    if (await TryResolverObjetivoUnidadVistaTactica())
+    {
+      return;
+    }
 
     // --- Cancelar habilidad activa si se hace clic en el campo ---
     if (BattleManager.Instance.HabilidadActiva != null)
@@ -1111,8 +1322,80 @@ public class Casilla : MonoBehaviour
       }
     }
 
+    TryToggleFijadoVistaTactica();
 
 
+
+  }
+
+  private bool TryToggleFijadoVistaTactica()
+  {
+    BattleManager battleManager = BattleManager.Instance;
+    if (battleManager == null
+      || !battleManager.VistaTacticaActiva
+      || battleManager.SeleccionandoObjetivo
+      || battleManager.HabilidadActiva != null
+      || battleManager.scUIInfoChar == null
+      || Presente == null)
+    {
+      return false;
+    }
+
+    if (battleManager.lCasillasMovimiento.Contains(this))
+    {
+      return false;
+    }
+
+    Unidad unidad = Presente.GetComponent<Unidad>();
+    if (unidad == null)
+    {
+      return false;
+    }
+
+    battleManager.scUIInfoChar.ToggleFijado(unidad);
+    return true;
+  }
+
+  private async Task<bool> TryResolverObjetivoUnidadVistaTactica()
+  {
+    BattleManager battleManager = BattleManager.Instance;
+    if (battleManager == null
+      || !battleManager.VistaTacticaActiva
+      || !battleManager.SeleccionandoObjetivo
+      || battleManager.HabilidadActiva == null
+      || battleManager.bOcupado
+      || Presente == null)
+    {
+      return false;
+    }
+
+    Habilidad habilidad = battleManager.HabilidadActiva;
+    if (habilidad.esZonal || habilidad.enArea > 0 || habilidad.targetEspecial > 0 || habilidad.poneTrampas || habilidad.poneObstaculo)
+    {
+      return false;
+    }
+
+    Unidad objetivo = Presente.GetComponent<Unidad>();
+    if (objetivo == null || !battleManager.lUnidadesPosiblesHabilidadActiva.Contains(objetivo))
+    {
+      return false;
+    }
+
+    if (habilidad.esMelee && objetivo.estado_Volando)
+    {
+      await objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Inalcanzable: unidad volando"), Color.gray, FloatingTextContext.Resist);
+      return true;
+    }
+
+    if (habilidad.esHostil && objetivo.ObtenerEstaEscondido() > 0)
+    {
+      await objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Inalcanzable: unidad escondida"), Color.gray, FloatingTextContext.Resist);
+      return true;
+    }
+
+    await habilidad.Resolver(new List<object> { objetivo });
+    battleManager.scUIInfoChar.RefrescarSegunEstadoActual();
+    return true;
   }
 
 
@@ -1524,7 +1807,7 @@ public class Casilla : MonoBehaviour
   }
 
   // Regla central de avance melee:
-  // - Las unidades visibles/no volando siempre bloquean.
+  // - Las unidades visibles/no volando siempre bloquean, salvo espectros etereos.
   // - Los obstaculos solo bloquean si estan en la misma fila (posY) que el origen.
   public bool BloqueaAvanceMeleeDesdeFila(int posYorigen, Unidad atacante = null)
   {
@@ -1537,6 +1820,12 @@ public class Casilla : MonoBehaviour
     if (unidad != null)
     {
       if (unidad.ObtenerEstaEscondido() != 0 || unidad.estado_Volando)
+      {
+        return false;
+      }
+
+      IAUnidadEspectroBosque espectroBosque = unidad.GetComponent<IAUnidadEspectroBosque>();
+      if (espectroBosque != null && espectroBosque.EstaEnPlanoEtereo())
       {
         return false;
       }
@@ -1617,6 +1906,7 @@ public class Casilla : MonoBehaviour
   [SerializeField] public List<Obstaculo> obstaculosEnCasAzul = new List<Obstaculo>();
   public void OnMouseOver()
   {
+    SetHoverVistaTactica(true);
     ActualizarHoverMovimientoVisual();
     ActualizarPulsoObjetivoHabilidad();
 
@@ -2189,6 +2479,7 @@ public class Casilla : MonoBehaviour
 
   public void OnMouseExit()
   {
+    SetHoverVistaTactica(false);
     hoverMovimientoValido = false;
     RestablecerGlowMovimientoHover();
     RestablecerPulsoObjetivoHabilidad();
@@ -2406,14 +2697,27 @@ public class Casilla : MonoBehaviour
   public GameObject MarcaMelee;
   public GameObject OcupadoNegro;
 
+  private static void SetActiveIfChanged(GameObject objeto, bool activo)
+  {
+    if (objeto != null && objeto.activeSelf != activo)
+    {
+      objeto.SetActive(activo);
+    }
+  }
+
   private bool DebeMostrarBordeActual()
+  {
+    Unidad unidadPresente = Presente != null ? Presente.GetComponent<Unidad>() : null;
+    return DebeMostrarBordeActual(unidadPresente);
+  }
+
+  private bool DebeMostrarBordeActual(Unidad unidadPresente)
   {
     if (Actual == null || Presente == null || BattleManager.Instance == null)
     {
       return false;
     }
 
-    Unidad unidadPresente = Presente.GetComponent<Unidad>();
     Unidad unidadEnTurno = BattleManager.Instance.unidadActiva;
     return unidadPresente != null
       && unidadEnTurno != null
@@ -2429,75 +2733,90 @@ public class Casilla : MonoBehaviour
 
     if (Borde != null)
     {
+      Unidad unidadPresente = null;
+      Obstaculo obstaculoPresente = null;
+      int movible = 0;
+
       if (Presente != null)
       {
-        if (Presente.GetComponent<Obstaculo>() != null)
+        obstaculoPresente = Presente.GetComponent<Obstaculo>();
+        if (obstaculoPresente == null)
         {
-          Borde.SetActive(false);
-          Actual.SetActive(false);
-          Sombra.SetActive(false);
-          Desplazable.SetActive(false);
-          OcupadoNegro.SetActive(true);
+          unidadPresente = Presente.GetComponent<Unidad>();
+          if (unidadPresente != null)
+          {
+            movible = esMovible(unidadPresente);
+          }
+        }
+
+        if (obstaculoPresente != null)
+        {
+          SetActiveIfChanged(Borde, false);
+          SetActiveIfChanged(Actual, false);
+          SetActiveIfChanged(Sombra, false);
+          SetActiveIfChanged(Desplazable, false);
+          SetActiveIfChanged(OcupadoNegro, true);
 
         }
-        else if (Presente.GetComponent<Unidad>() != null && esMovible() >= 10)
+        else if (unidadPresente != null && movible >= 10)
         {
-          Mover.SetActive(false);
-          MoverCostoso.SetActive(false);
-          Borde.SetActive(false);
-          OcupadoNegro.SetActive(true);
-          Desplazable.SetActive(true);
+          SetActiveIfChanged(Mover, false);
+          SetActiveIfChanged(MoverCostoso, false);
+          SetActiveIfChanged(Borde, false);
+          SetActiveIfChanged(OcupadoNegro, true);
+          SetActiveIfChanged(Desplazable, true);
         }
         else
         {
-          Borde.SetActive(false);
+          SetActiveIfChanged(Borde, false);
          
           if (Sombra != null)
           {
-            Sombra.SetActive(true);
-            Desplazable.SetActive(false);
-            if (Presente.GetComponent<Unidad>() != null)
-            { OcupadoNegro.SetActive(true); }
+            SetActiveIfChanged(Sombra, true);
+            SetActiveIfChanged(Desplazable, false);
+            if (unidadPresente != null)
+            { SetActiveIfChanged(OcupadoNegro, true); }
             else
-            { OcupadoNegro.SetActive(false); }
-            Actual.SetActive(DebeMostrarBordeActual());
+            { SetActiveIfChanged(OcupadoNegro, false); }
+            SetActiveIfChanged(Actual, DebeMostrarBordeActual(unidadPresente));
 
           }
         }
       }
       else
       {
+        movible = esMovible(null);
 
-        Actual.SetActive(false);
+        SetActiveIfChanged(Actual, false);
         if (Sombra != null)
         {
-          Sombra.SetActive(false);
+          SetActiveIfChanged(Sombra, false);
         }
-        Mover.SetActive(false);
-        MoverCostoso.SetActive(false);
-        Borde.SetActive(false);
-        Desplazable.SetActive(false);
-        OcupadoNegro.SetActive(false);
+        SetActiveIfChanged(Mover, false);
+        SetActiveIfChanged(MoverCostoso, false);
+        SetActiveIfChanged(Borde, false);
+        SetActiveIfChanged(Desplazable, false);
+        SetActiveIfChanged(OcupadoNegro, false);
 
 
 
-        if (esMovible() == 1)
+        if (movible == 1)
         {
-          Mover.SetActive(true);
+          SetActiveIfChanged(Mover, true);
         }
-        else if (esMovible() > 1 && esMovible() < 10)
+        else if (movible > 1 && movible < 10)
         {
-          MoverCostoso.SetActive(true);
+          SetActiveIfChanged(MoverCostoso, true);
         }
-        else if (esMovible() >= 10)
+        else if (movible >= 10)
         {
 
-          Desplazable.SetActive(true);
+          SetActiveIfChanged(Desplazable, true);
         }
         else
         {
           if (gameObject.GetComponent<Trampa>() == null)
-          { Borde.SetActive(true); Desplazable.SetActive(false); }
+          { SetActiveIfChanged(Borde, true); SetActiveIfChanged(Desplazable, false); }
         }
       }
     }
@@ -2509,12 +2828,19 @@ public class Casilla : MonoBehaviour
 
   int esMovible()
   {
+    Unidad unidadPresente = Presente != null ? Presente.GetComponent<Unidad>() : null;
+    return esMovible(unidadPresente);
+  }
+
+  int esMovible(Unidad unidadPresente)
+  {
     int res = 0;
     if (lado == 1) { return 0; } //Solo para aliados
-    if (BattleManager.Instance == null || BattleManager.Instance.bOcupado) { return 0; }
+    BattleManager battleManager = BattleManager.Instance;
+    if (battleManager == null || battleManager.bOcupado) { return 0; }
 
     //Unidad seleccionada - Movimiento
-    Unidad unidad = BattleManager.Instance.unidadActiva;
+    Unidad unidad = battleManager.unidadActiva;
 
     if (unidad == null)
     {
@@ -2524,7 +2850,9 @@ public class Casilla : MonoBehaviour
     {
       return 0;
     }
-    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
+
+    bool casillaEnRangoMovimiento = battleManager.lCasillasMovimiento.Contains(this);
+    if (casillaEnRangoMovimiento && Presente == null && !battleManager.bOcupado && !unidad.movimientoEnCurso && !battleManager.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
       int costoMovimientoTotal = ObtenerCostoMovimientoTotal(unidad);
       if (unidad.ObtenerAPActual() < costoMovimientoTotal)
@@ -2537,11 +2865,11 @@ public class Casilla : MonoBehaviour
 
       }
     }
-    else if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente != null && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
+    else if (casillaEnRangoMovimiento && unidadPresente != null && !unidad.movimientoEnCurso && !battleManager.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
-      if (Presente.GetComponent<Unidad>() != null)
+      if (unidadPresente != null)
       {
-        if (!Presente.GetComponent<Unidad>().TieneBuffNombre("Desplazado"))
+        if (!unidadPresente.TieneBuffNombre("Desplazado"))
         {
 
           res = 10; //Desplazable

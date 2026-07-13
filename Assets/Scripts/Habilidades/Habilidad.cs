@@ -430,6 +430,21 @@ public abstract class Habilidad : MonoBehaviour
   }
   public abstract void Awake();
 
+  public Sprite ObtenerIconoUI()
+  {
+    if (imHab != null)
+    {
+      return imHab;
+    }
+
+    if (agregaDesdeArmaUI != null && agregaDesdeArmaUI.imItem != null)
+    {
+      return agregaDesdeArmaUI.imItem;
+    }
+
+    return null;
+  }
+
   // Método abstracto para activar la habilidad.
   public virtual async Task Resolver(List<object> Objetivos, Casilla casillaOrigenTrampas = null)
   {

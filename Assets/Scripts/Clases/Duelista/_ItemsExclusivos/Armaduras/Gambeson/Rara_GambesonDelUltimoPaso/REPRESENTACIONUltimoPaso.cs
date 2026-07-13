@@ -32,7 +32,7 @@ public class REPRESENTACIONUltimoPaso : Habilidad
         esDiscreta = true;
         NIVEL = -1;
 
-        imHab = Resources.Load<Sprite>("imHab/Duelista_habilidad");
+        imHab = null;
         ActualizarDescripcion();
     }
 

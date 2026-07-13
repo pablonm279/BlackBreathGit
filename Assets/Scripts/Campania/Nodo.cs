@@ -120,6 +120,7 @@ public class Nodo : MonoBehaviour
   public Material caminoAAldea;
   private Material materialAtajoSubterraneoVisual;
   private Material materialCaminoHintVisual;
+  private Material materialCaminoHintPasoVientoHeladoVisual;
   public Material materialAtajoSuperficieVisual;
 
   // Lógica movimiento
@@ -2553,6 +2554,44 @@ if (esLaLider)
 
   private Material ObtenerMaterialCaminoHintVisual()
   {
+    if (EsZonaPasoVientoHelado())
+    {
+      return ObtenerMaterialCaminoHintPasoVientoHeladoVisual();
+    }
+
+    if (MaterialCaminoHint != null)
+    {
+      return MaterialCaminoHint;
+    }
+
+    return ObtenerMaterialCaminoHintBaseRuntime();
+  }
+
+  private Material ObtenerMaterialCaminoHintPasoVientoHeladoVisual()
+  {
+    if (materialCaminoHintPasoVientoHeladoVisual != null)
+    {
+      return materialCaminoHintPasoVientoHeladoVisual;
+    }
+
+    Material materialBase = MaterialCaminoHint != null ? MaterialCaminoHint : ObtenerMaterialCaminoHintBaseRuntime();
+    if (materialBase == null)
+    {
+      return MaterialCaminoOriginal;
+    }
+
+    materialCaminoHintPasoVientoHeladoVisual = new Material(materialBase);
+    materialCaminoHintPasoVientoHeladoVisual.name = "Caminos Hint Paso Viento Helado (Runtime)";
+    AplicarColorHintCamino(
+      materialCaminoHintPasoVientoHeladoVisual,
+      new Color(0.55f, 0.03f, 0.42f, 0.98f),
+      new Color(1.15f, 0.08f, 0.78f, 1f));
+
+    return materialCaminoHintPasoVientoHeladoVisual;
+  }
+
+  private Material ObtenerMaterialCaminoHintBaseRuntime()
+  {
     if (MaterialCaminoHint != null)
     {
       return MaterialCaminoHint;
@@ -2621,6 +2660,37 @@ if (esLaLider)
     materialCaminoHintVisual.DisableKeyword("_ALPHAPREMULTIPLY_ON");
 
     return materialCaminoHintVisual;
+  }
+
+  static void AplicarColorHintCamino(Material material, Color color, Color emision)
+  {
+    if (material == null)
+    {
+      return;
+    }
+
+    if (material.HasProperty(ShaderColorId))
+    {
+      material.SetColor(ShaderColorId, color);
+    }
+
+    if (material.HasProperty(ShaderBaseColorId))
+    {
+      material.SetColor(ShaderBaseColorId, color);
+    }
+
+    if (material.HasProperty(ShaderEmissionColorId))
+    {
+      material.SetColor(ShaderEmissionColorId, emision);
+      material.EnableKeyword("_EMISSION");
+    }
+  }
+
+  static bool EsZonaPasoVientoHelado()
+  {
+    return CampaignManager.Instance != null
+      && CampaignManager.Instance.scAtributosZona != null
+      && CampaignManager.Instance.scAtributosZona.ID == 2;
   }
 
   private bool CoincideExtremoLineaConPosicion(LineRenderer lineRenderer, Vector3 posicionObjetivo)

@@ -45,8 +45,8 @@ public  class PilarDeLuz : Obstaculo
 
     if (uCausante != null)
     {
-      int dam = UnityEngine.Random.Range(1, 7) + (int)scCreador.mod_CarPoder;
-      if (NIVEL > 2) { dam += 3; }
+      int dam = UnityEngine.Random.Range(1, 5) + (int)scCreador.mod_CarPoder;
+      if (NIVEL > 2) { dam += 2; }
       if (uCausante.TieneTag("Nomuerto") || uCausante.TieneTag("Etereo"))
       {
         dam = dam * 2;

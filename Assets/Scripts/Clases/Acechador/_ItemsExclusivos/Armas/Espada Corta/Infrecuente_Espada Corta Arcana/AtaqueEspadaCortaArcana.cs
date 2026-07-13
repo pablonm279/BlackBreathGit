@@ -253,7 +253,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
         float danioArcano = TiradaDeDados.TirarDados(1, 4);
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
-        objetivo.RecibirDanio(danioArcano, 8, false, scEstaUnidad,200);
+        objetivo.RecibirDanioSinBonusElemental(danioArcano, 8, false, scEstaUnidad, 200);
 
       }
       else if (resultadoTirada == 2)
@@ -268,7 +268,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
 
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
         
-        objetivo.RecibirDanio(danioArcano, 8, false, scEstaUnidad,200);
+        objetivo.RecibirDanioSinBonusElemental(danioArcano, 8, false, scEstaUnidad, 200);
 
 
       }
@@ -283,7 +283,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
         //Arcano 1d8
         float danioArcano = TiradaDeDados.TirarDados(1, 8);
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
-        objetivo.RecibirDanio(danioArcano, 8, true, scEstaUnidad,200);
+        objetivo.RecibirDanioSinBonusElemental(danioArcano, 8, true, scEstaUnidad, 200);
 
       }
 
@@ -516,7 +516,4 @@ public class AtaqueEspadaCortaArcana : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
-
-
-
 

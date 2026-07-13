@@ -109,6 +109,14 @@ public class MapDecorator : MonoBehaviour
     [SerializeField] float anchoTransicionGrietaPasoHelado = 0.65f;
     [SerializeField] float margenDecoracionGrietaPasoHelado = 2f;
 
+    [Header("Materiales Aliento Negro")]
+    [SerializeField] Material materialDefaultAlientoNegro;
+    [SerializeField] Material materialDefaultAlientoNegro1;
+    [SerializeField] Material materialPasoVientoHeladoAlientoNegro;
+    [SerializeField] Material materialPasoVientoHeladoAlientoNegro1;
+    [SerializeField] Material materialDefaultClimaNiebla;
+    [SerializeField] Material materialPasoVientoHeladoClimaNiebla;
+
     // ---- internos ----
     const string PrefGraficosIndex = "graficos_index";
     const float AumentoRadioDecoracionesPorNivelCalidad = 0.10f;
@@ -422,6 +430,8 @@ public class MapDecorator : MonoBehaviour
 
         ReiniciarSesionDecoracion();
         zonaRelieveActual = zonaId;
+        AplicarMaterialesAlientoNegro(zonaId);
+        AplicarMaterialesClimaNiebla(zonaId);
         alturaRelieveActual = ObtenerAlturaRelieveParaZona(zonaId);
         PrepararPrecipicioTerrenoSur();
         PrepararPrecipicioTerrenoNorte();
@@ -1484,6 +1494,61 @@ public class MapDecorator : MonoBehaviour
                 return alturaRelieveNedukazal;
             default:
                 return alturaRelieveBosque;
+        }
+    }
+
+    void AplicarMaterialesAlientoNegro(int zonaId)
+    {
+        bool esPasoVientoHelado = zonaId == 2;
+        Material materialAlientoNegro = esPasoVientoHelado && materialPasoVientoHeladoAlientoNegro != null
+            ? materialPasoVientoHeladoAlientoNegro
+            : materialDefaultAlientoNegro;
+        Material materialAlientoNegro1 = esPasoVientoHelado && materialPasoVientoHeladoAlientoNegro1 != null
+            ? materialPasoVientoHeladoAlientoNegro1
+            : materialDefaultAlientoNegro1;
+
+        AsignarMaterialAlientoNegro("ALIENTONEGRO", materialAlientoNegro);
+        AsignarMaterialAlientoNegro("ALIENTONEGRO (1)", materialAlientoNegro1);
+    }
+
+    void AplicarMaterialesClimaNiebla(int zonaId)
+    {
+        Material materialNiebla = zonaId == 2 && materialPasoVientoHeladoClimaNiebla != null
+            ? materialPasoVientoHeladoClimaNiebla
+            : materialDefaultClimaNiebla;
+
+        AsignarMaterialATodosLosObjetos("Clima_Niebla", materialNiebla);
+    }
+
+    static void AsignarMaterialAlientoNegro(string nombreObjeto, Material material)
+    {
+        if (material == null)
+            return;
+
+        Transform objetoAliento = BuscarTransformEscena(nombreObjeto);
+        if (objetoAliento == null)
+            return;
+
+        Renderer renderer = objetoAliento.GetComponent<Renderer>();
+        if (renderer != null)
+            renderer.sharedMaterial = material;
+    }
+
+    static void AsignarMaterialATodosLosObjetos(string nombreObjeto, Material material)
+    {
+        if (material == null || string.IsNullOrWhiteSpace(nombreObjeto))
+            return;
+
+        Transform[] transforms = Resources.FindObjectsOfTypeAll<Transform>();
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            Transform candidato = transforms[i];
+            if (candidato == null || !candidato.gameObject.scene.IsValid() || candidato.name != nombreObjeto)
+                continue;
+
+            Renderer renderer = candidato.GetComponent<Renderer>();
+            if (renderer != null)
+                renderer.sharedMaterial = material;
         }
     }
 

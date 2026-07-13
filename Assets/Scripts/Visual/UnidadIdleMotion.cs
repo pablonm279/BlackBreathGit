@@ -713,9 +713,20 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
   private bool DebeMostrarBarrera()
   {
     return unidad != null
-      && unidad.barreraDeDanio > 0.01f
+      && (unidad.barreraDeDanio > 0.01f || EsEscudoEnergeticoCanalizadorActivo())
       && unidad.HP_actual > 0f
       && gameObject.activeInHierarchy;
+  }
+
+  private bool EsEscudoEnergeticoCanalizadorActivo()
+  {
+    if (!(unidad is ClaseCanalizador) || unidad.HP_actual <= 0f)
+    {
+      return false;
+    }
+
+    return unidad.TieneBuffNombre("Escudo Energ\u00e9tico")
+      || GetComponent<ReaccionEscudoEnergetico>() != null;
   }
 
   private bool DebeMostrarCondenado()
@@ -1900,9 +1911,14 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
     overlayBarreraRoot.anchorMin = new Vector2(0.5f, 0.5f);
     overlayBarreraRoot.anchorMax = new Vector2(0.5f, 0.5f);
     overlayBarreraRoot.pivot = new Vector2(0.5f, 0.5f);
-    overlayBarreraRoot.sizeDelta = new Vector2(
-      Mathf.Max(26f, tamanoUnidad.x * 1.04f),
-      Mathf.Max(30f, tamanoUnidad.y * 1.1f));
+    bool escudoEnergetico = EsEscudoEnergeticoCanalizadorActivo();
+    overlayBarreraRoot.sizeDelta = escudoEnergetico
+      ? new Vector2(
+        Mathf.Max(22f, tamanoUnidad.x * 0.72f),
+        Mathf.Max(30f, tamanoUnidad.y * 1.06f))
+      : new Vector2(
+        Mathf.Max(26f, tamanoUnidad.x * 1.04f),
+        Mathf.Max(30f, tamanoUnidad.y * 1.1f));
 
     Canvas canvasPadre = overlayBarreraRoot.GetComponentInParent<Canvas>();
     if (canvasPadre != null
@@ -2405,6 +2421,12 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
       return;
     }
 
+    if (EsEscudoEnergeticoCanalizadorActivo())
+    {
+      ActualizarVisualEscudoEnergeticoCanalizador(valorBarrera);
+      return;
+    }
+
     float t = Time.time;
     float maxReferencia = unidad != null ? Mathf.Max(8f, unidad.mod_maxHP * 0.18f) : 12f;
     float carga = Mathf.Clamp01(valorBarrera / maxReferencia);
@@ -2460,6 +2482,66 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
       new Vector2(ancho * 0.15f, alto * 0.085f) * (0.93f + (brilloRunaB * 0.05f) + (cargaVisual * 0.05f)) * intensidad,
       new Color(0.58f, 0.86f, 0.96f, Mathf.Lerp(0.03f, 0.11f, brilloRunaB) * (0.84f + (cargaVisual * 0.4f))),
       -10f + (Mathf.Sin(anguloRunaB * 0.9f) * 12f));
+  }
+
+  private void ActualizarVisualEscudoEnergeticoCanalizador(float valorBarrera)
+  {
+    float t = Time.time;
+    int energia = unidad is ClaseCanalizador canalizador ? Mathf.Clamp(canalizador.ObtenerEnergia(), 0, 3) : 0;
+    float carga = Mathf.Clamp01(Mathf.Max(valorBarrera, 4f + (energia * 3f)) / 16f);
+    float cargaVisual = Mathf.Lerp(0.62f, 1f, carga);
+    float intensidad = Mathf.Lerp(0.88f, 1.06f, cargaVisual);
+    Vector2 tamano = ObtenerTamanoUnidad();
+    float ancho = Mathf.Max(18f, tamano.x * 0.48f);
+    float alto = Mathf.Max(28f, tamano.y * 0.98f);
+    float pulsoHalo = Mathf.Abs(OscilacionFuego(faseBarreraHalo, t, 0.54f));
+    float pulsoAro = Mathf.Abs(OscilacionFuego(faseBarreraAro + 1.9f, t, 0.42f));
+    float derivaX = OscilacionFuego(faseBarreraHalo + 2.8f, t, 0.44f);
+    float derivaY = OscilacionFuego(faseBarreraAro + 4.1f, t, 0.38f);
+    float barridoA = Mathf.Repeat((t * 0.3f) + (faseBarreraShimmer * 0.09f), 1f);
+    float cicloSigiloA = Mathf.Repeat((t * 0.68f) + (faseBarreraRunaA * 0.11f), 1f);
+    float cicloSigiloB = Mathf.Repeat((t * 0.52f) + (faseBarreraRunaB * 0.13f) + 0.38f, 1f);
+    float shimmerAX = Mathf.Lerp(-ancho * 0.18f, ancho * 0.12f, barridoA) + (derivaX * 0.62f);
+    float shimmerAY = Mathf.Lerp(alto * 0.32f, -alto * 0.22f, barridoA) + (derivaY * 0.52f);
+    float brilloRunaA = Mathf.Sin(cicloSigiloA * Mathf.PI);
+    float brilloRunaB = Mathf.Sin(cicloSigiloB * Mathf.PI);
+    float alphaVisual = ObtenerMultiplicadorAlphaVisualUnidad();
+
+    overlayBarreraGroup.alpha = visibilidadBarrera * Mathf.Lerp(0.48f, 0.66f, cargaVisual) * alphaVisual;
+
+    ConfigurarCapa(
+      overlayBarreraHalo,
+      new Vector2(derivaX * 0.58f, derivaY * 0.72f),
+      new Vector2(ancho * 1.42f, alto * 1.08f) * (0.97f + (pulsoHalo * 0.07f)) * intensidad,
+      new Color(0.04f, 0.3f, 0.9f, Mathf.Lerp(0.045f, 0.095f, pulsoHalo) * (0.86f + (cargaVisual * 0.16f))));
+
+    ConfigurarCapa(
+      overlayBarreraAro,
+      new Vector2(derivaX * 0.38f, derivaY * 0.34f),
+      new Vector2(ancho * 0.78f, alto * 0.98f) * (0.985f + (pulsoAro * 0.025f)) * intensidad,
+      new Color(0.12f, 0.46f, 0.9f, Mathf.Lerp(0.13f, 0.24f, pulsoAro) * (0.9f + (cargaVisual * 0.12f))),
+      Mathf.Sin((t * 0.75f) + faseBarreraAro) * 1.2f);
+
+    ConfigurarCapa(
+      overlayBarreraShimmer,
+      new Vector2(shimmerAX, shimmerAY),
+      new Vector2(ancho * 0.1f, alto * 0.46f) * (0.94f + (pulsoHalo * 0.08f)) * intensidad,
+      new Color(0.42f, 0.74f, 1f, Mathf.Lerp(0.06f, 0.13f, cargaVisual)),
+      -14f + (derivaX * 4f));
+
+    ConfigurarCapa(
+      overlayBarreraRunaA,
+      new Vector2((-ancho * 0.16f) + (derivaX * 0.28f), Mathf.Lerp(-alto * 0.24f, alto * 0.22f, cicloSigiloA) + (derivaY * 0.18f)),
+      new Vector2(ancho * 0.075f, alto * 0.34f) * (0.86f + (brilloRunaA * 0.08f)) * intensidad,
+      new Color(0.22f, 0.66f, 1f, Mathf.Lerp(0f, 0.24f, brilloRunaA) * (0.86f + (cargaVisual * 0.08f))),
+      -18f + (derivaX * 5f));
+
+    ConfigurarCapa(
+      overlayBarreraRunaB,
+      new Vector2((ancho * 0.13f) - (derivaX * 0.22f), Mathf.Lerp(alto * 0.2f, -alto * 0.2f, cicloSigiloB) - (derivaY * 0.14f)),
+      new Vector2(ancho * 0.065f, alto * 0.28f) * (0.82f + (brilloRunaB * 0.07f)) * intensidad,
+      new Color(0.5f, 0.86f, 1f, Mathf.Lerp(0f, 0.18f, brilloRunaB) * (0.84f + (cargaVisual * 0.08f))),
+      18f - (derivaX * 4f));
   }
 
   private void ActualizarVisualCondenado(int turnosRestantes, int turnosAcumulados)

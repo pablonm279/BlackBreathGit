@@ -35,8 +35,8 @@ public class GolpeMiliciano1 : IAHabilidad
       hActualCooldown = hCooldownMax;
 
       bonusAtaque = 0;
-      XdDanio = 1;
-      daniodX = 8; //1d8
+      XdDanio = 2;
+      daniodX = 6; //1d8
       tipoDanio = 1; //Perforante
 
 

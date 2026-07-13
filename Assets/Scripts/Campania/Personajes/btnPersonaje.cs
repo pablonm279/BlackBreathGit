@@ -337,15 +337,15 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         string prefijoClase = string.IsNullOrEmpty(nombreClase) ? "" : nombreClase + " ";
         if (TRADU.i.nIdioma == 1) //Español
         {
-          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>" + prefijoClase + "Nv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
+          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<size=90%><color=#B8860B>" + prefijoClase + "Nv." + ((int)personajeRepresentado.fNivelActual) + "</color></size>";
         }
         if (TRADU.i.nIdioma == 2) //Inglés
         {
-          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>" + prefijoClase + "Lv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
+          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<size=90%><color=#B8860B>" + prefijoClase + "Lv." + ((int)personajeRepresentado.fNivelActual) + "</color></size>";
         }
          if (TRADU.i.nIdioma == 3) //Poertu
         {
-          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<i><size=75%><color=#B8860B>" + prefijoClase + "Nv." + ((int)personajeRepresentado.fNivelActual) + "</color></size></i>";
+          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<size=90%><color=#B8860B>" + prefijoClase + "Nv." + ((int)personajeRepresentado.fNivelActual) + "</color></size>";
         }
 
 

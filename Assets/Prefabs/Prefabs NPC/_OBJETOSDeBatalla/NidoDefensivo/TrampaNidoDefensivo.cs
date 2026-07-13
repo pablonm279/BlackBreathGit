@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TrampaNidoDefensivo : Trampa
 {
-  
+  private const int OffsetOrdenVisualFrenteUnidad = 20;
   
   public void Inicializar()
   {
@@ -50,13 +50,10 @@ public class TrampaNidoDefensivo : Trampa
     newPosition.y += 0.035f;
     GOvfx.transform.position = newPosition;
 
-     Canvas canvas = GOvfx.GetComponentInChildren<Canvas>();
-    if (canvas != null)
-    {
-      canvas.overrideSorting = true;
-      float posY = gameObject.GetComponent<Casilla>().posY;
-      canvas.sortingOrder = 60 - Mathf.RoundToInt(10 * posY) + 2;
-    }
+    Casilla casilla = gameObject.GetComponent<Casilla>();
+    float posY = casilla != null ? casilla.posY : transform.position.y;
+    int ordenVisual = RenderOrderHelper.CalcularOrdenPorY(posY) + OffsetOrdenVisualFrenteUnidad;
+    RenderOrderHelper.AplicarOrdenBase(GOvfx, ordenVisual, "UI3D");
   }
 
 }

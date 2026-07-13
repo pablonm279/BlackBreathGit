@@ -5568,7 +5568,6 @@ GameObject:
   - component: {fileID: 8015609902327097546}
   - component: {fileID: 9125904178711769859}
   - component: {fileID: 6262378611950485550}
-  - component: {fileID: 6191657680315144271}
   - component: {fileID: 7781242196021979821}
   - component: {fileID: 5838032006138475490}
   - component: {fileID: 2772397333352493071}
@@ -5812,8 +5811,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.51, y: 0.95, z: 0.42}
-  m_Center: {x: 0, y: 0.34, z: 0}
+  m_Size: {x: 0.72, y: 0.95, z: 0.42}
+  m_Center: {x: -0.14, y: 0.34, z: 0}
 --- !u!114 &6262378611950485550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5834,41 +5833,6 @@ MonoBehaviour:
   tendenciaMovY: 0
   tendenciaMovX: 0
   HabPosibles: []
---- !u!114 &6191657680315144271
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9004922787472980425}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a92c688d580e6748b0e4086485126aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nombre: Garra Espectral
-  vfxImpacto: {fileID: 0}
-  vfxCasteo: {fileID: 0}
-  hAncho: 1
-  hAlcance: 1
-  esMelee: 1
-  afectaObstaculos: 1
-  fuerzaPoseAtaque: 1
-  omitirAnimacionDeUso: 0
-  omitirFocoCamara: 0
-  intensidadFocoCamara: 1
-  hCooldownMax: 0
-  hActualCooldown: 0
-  Usuario: {fileID: 0}
-  scEstaUnidad: {fileID: 0}
-  esHostil: 1
-  prioridad: 1
-  costoAP: 1
-  pPrioridad: 1
-  bonusAtaque: 1
-  XdDanio: 1
-  daniodX: 6
-  tipoDanio: 2
 --- !u!114 &7781242196021979821
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -251,7 +251,7 @@ if(NIVEL==5)
       cuerpoFormato += $"<color={colorEncabezado}><b>Trigger:</b></color> <color={colorValor}>When using Gather Energy</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Barrier:</b></color> <color={colorValor}>{formulaBarrera} until next turn</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Mental Save:</b></color> <color={colorValor}>+{tsMental} until next turn</color>";
-      if (NIVEL == 5) { cuerpoFormato += $"\n<color={colorEncabezado}><b>On completed gathering:</b></color> <color={colorValor}>+1 AP that turn</color>"; }
+      if (NIVEL == 5) { cuerpoFormato += $"\n<color={colorEncabezado}><b>On completed gathering:</b></color> <color={colorValor}>+1 Max AP that turn</color>"; }
     }
     else if (esPortuguesFormato)
     {
@@ -259,7 +259,7 @@ if(NIVEL==5)
       cuerpoFormato += $"<color={colorEncabezado}><b>Ativa:</b></color> <color={colorValor}>Ao usar Acumular Energia</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Barreira:</b></color> <color={colorValor}>{formulaBarrera} ate o proximo turno</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Resistencia Mental:</b></color> <color={colorValor}>+{tsMental} ate o próximo turno</color>";
-      if (NIVEL == 5) { cuerpoFormato += $"\n<color={colorEncabezado}><b>Ao completar acumulacao:</b></color> <color={colorValor}>+1 AP nesse turno</color>"; }
+      if (NIVEL == 5) { cuerpoFormato += $"\n<color={colorEncabezado}><b>Ao completar acumulacao:</b></color> <color={colorValor}>+1 AP Max nesse turno</color>"; }
     }
     else
     {
@@ -267,15 +267,89 @@ if(NIVEL==5)
       cuerpoFormato += $"<color={colorEncabezado}><b>Activa:</b></color> <color={colorValor}>Al usar Acumular Energia</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Barrera:</b></color> <color={colorValor}>{formulaBarrera} hasta el próximo turno</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>TS Mental:</b></color> <color={colorValor}>+{tsMental} hasta el próximo turno</color>";
-      if (NIVEL == 5) { cuerpoFormato += $"\n<color={colorEncabezado}><b>Al completar acumulacion:</b></color> <color={colorValor}>+1 AP ese turno</color>"; }
+      if (NIVEL == 5) { cuerpoFormato += $"\n<color={colorEncabezado}><b>Al completar acumulacion:</b></color> <color={colorValor}>+1 AP Max ese turno</color>"; }
     }
 
     txtDescripcion =
       $"<size=115%><color=#5dade2><b>{tituloFormato}</b></color></size>\n\n" +
       $"<color=#8f8f8f><i>{subtituloFormato}</i></color>\n\n" +
       "<color=#3f4744><size=85%>--------------------------------</size></color>\n\n" +
-      cuerpoFormato;
+      cuerpoFormato +
+      ObtenerBloqueProximoNivelSiCorresponde(esInglesFormato, esPortuguesFormato);
 
+    }
+
+    string ObtenerBloqueProximoNivelSiCorresponde(bool esInglesFormato, bool esPortuguesFormato)
+    {
+        if (!EsEscenaCampaña()
+            || CampaignManager.Instance == null
+            || CampaignManager.Instance.scMenuPersonajes == null
+            || CampaignManager.Instance.scMenuPersonajes.pSel == null
+            || CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad <= 0)
+        {
+            return string.Empty;
+        }
+
+        string texto = ObtenerTextoProximoNivel(esInglesFormato, esPortuguesFormato);
+        if (string.IsNullOrWhiteSpace(texto))
+        {
+            return string.Empty;
+        }
+
+        return "\n\n" + texto;
+    }
+
+    string ObtenerTextoProximoNivel(bool esInglesFormato, bool esPortuguesFormato)
+    {
+        if (NIVEL < 2)
+        {
+            if (esInglesFormato)
+            {
+                return "<color=#dfea02><b>Next Level:</b></color> <color=#ffffff>+2 Barrier when gathering Energy</color>";
+            }
+
+            if (esPortuguesFormato)
+            {
+                return "<color=#dfea02><b>Proximo Nivel:</b></color> <color=#ffffff>+2 Barreira ao acumular Energia</color>";
+            }
+
+            return "<color=#dfea02><b>Próximo Nivel:</b></color> <color=#ffffff>+2 Barrera al acumular Energía</color>";
+        }
+
+        if (NIVEL == 2)
+        {
+            if (esInglesFormato)
+            {
+                return "<color=#dfea02><b>Next Level:</b></color> <color=#ffffff>+1 additional Mental Save</color>";
+            }
+
+            if (esPortuguesFormato)
+            {
+                return "<color=#dfea02><b>Proximo Nivel:</b></color> <color=#ffffff>+1 Resistencia Mental adicional</color>";
+            }
+
+            return "<color=#dfea02><b>Próximo Nivel:</b></color> <color=#ffffff>+1 TS Mental adicional</color>";
+        }
+
+        if (NIVEL == 3)
+        {
+            if (esInglesFormato)
+            {
+                return "<color=#dfea02><b>Next Level A:</b></color> <color=#ffffff>+4 additional Barrier when gathering Energy</color>\n"
+                    + "<color=#dfea02><b>Next Level B:</b></color> <color=#ffffff>+1 Max AP while gathering Energy</color>";
+            }
+
+            if (esPortuguesFormato)
+            {
+                return "<color=#dfea02><b>Proximo Nivel A:</b></color> <color=#ffffff>+4 Barreira adicional ao acumular Energia</color>\n"
+                    + "<color=#dfea02><b>Proximo Nivel B:</b></color> <color=#ffffff>+1 AP Max ao acumular Energia</color>";
+            }
+
+            return "<color=#dfea02><b>Próximo Nivel A:</b></color> <color=#ffffff>+4 Barrera adicional al acumular Energía</color>\n"
+                + "<color=#dfea02><b>Próximo Nivel B:</b></color> <color=#ffffff>+1 AP Max al acumular Energía</color>";
+        }
+
+        return string.Empty;
     }
 
 

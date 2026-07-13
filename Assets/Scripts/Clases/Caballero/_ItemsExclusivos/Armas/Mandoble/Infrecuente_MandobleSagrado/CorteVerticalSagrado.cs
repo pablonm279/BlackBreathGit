@@ -193,7 +193,7 @@ public class CorteVerticalSagrado : Habilidad
         {//Si es NoMuerto o Etereo, inflige da�o divino
 
           int daniodivino = TiradaDeDados.TirarDados(1, 4);
-          objetivo.RecibirDanio(daniodivino, 11, false, scEstaUnidad); //11: Da�o Divino
+          objetivo.RecibirDanioSinBonusElemental(daniodivino, 11, false, scEstaUnidad); //11: Da�o Divino
         }
 
         VFXAplicar(objetivo.gameObject);
@@ -212,7 +212,7 @@ public class CorteVerticalSagrado : Habilidad
         {//Si es NoMuerto o Etereo, inflige da�o divino
 
           int daniodivino = TiradaDeDados.TirarDados(1, 8);
-          objetivo.RecibirDanio(daniodivino, 11, false, scEstaUnidad); //11: Da�o Divino
+          objetivo.RecibirDanioSinBonusElemental(daniodivino, 11, false, scEstaUnidad); //11: Da�o Divino
         }
 
         VFXAplicar(objetivo.gameObject);
@@ -231,7 +231,7 @@ public class CorteVerticalSagrado : Habilidad
         {//Si es NoMuerto o Etereo, inflige da�o divino
         
           int daniodivino = TiradaDeDados.TirarDados(1, 8);
-          objetivo.RecibirDanio(daniodivino, 11, true, scEstaUnidad); //11: Da�o Divino
+          objetivo.RecibirDanioSinBonusElemental(daniodivino, 11, true, scEstaUnidad); //11: Da�o Divino
         }
 
         VFXAplicar(objetivo.gameObject);
@@ -479,7 +479,5 @@ public class CorteVerticalSagrado : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
-
-
 
 

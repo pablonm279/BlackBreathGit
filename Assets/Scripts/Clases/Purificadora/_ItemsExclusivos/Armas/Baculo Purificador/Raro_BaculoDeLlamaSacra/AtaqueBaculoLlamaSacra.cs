@@ -148,7 +148,7 @@ public class AtaqueBaculoLlamaSacra : GolpeBaston
       }
 
       objetivo.RecibirDanio(danioFuego, TipoDanioFuego, esCritico, scEstaUnidad);
-      objetivo.RecibirDanio(danioDivino, TipoDanioDivino, esCritico, scEstaUnidad);
+      objetivo.RecibirDanioSinBonusElemental(danioDivino, TipoDanioDivino, esCritico, scEstaUnidad);
 
       if (EsObjetivoProfano(objetivo))
       {
@@ -158,7 +158,7 @@ public class AtaqueBaculoLlamaSacra : GolpeBaston
           danioBonus -= danioBonus / 2f;
         }
 
-        objetivo.RecibirDanio(danioBonus, TipoDanioDivino, esCritico, scEstaUnidad);
+        objetivo.RecibirDanioSinBonusElemental(danioBonus, TipoDanioDivino, esCritico, scEstaUnidad);
       }
 
       Estados.Aplicar_Ardiendo(objetivo, esCritico ? 2 : 1, scEstaUnidad);

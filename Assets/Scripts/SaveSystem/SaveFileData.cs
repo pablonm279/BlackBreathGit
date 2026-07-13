@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class SaveFileData
 {
   public const int MinimumCompatibleVersion = 1;
-  public const int CurrentVersion = 21;
+  public const int CurrentVersion = 22;
 
   public int version = CurrentVersion;
   public string savedAtUtc;
@@ -272,6 +272,8 @@ public class SequitosSaveData
 
   public int cronistasValorCambios;
   public bool cronistasYaVendio;
+
+  public int clerigosZonaIdUltimaPlegaria = -1;
 
   public List<string> mercaderesItemsVendidosIds = new List<string>();
 }

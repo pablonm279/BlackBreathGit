@@ -27,15 +27,15 @@ public class BallestaMiliciano : IAHabilidad
       hCooldownMax = 0;
       esHostil = true;
       prioridad = pPrioridad;
-      costoAP = 2;
+      costoAP = 3;
       afectaObstaculos = true;
       ocultarRotuloHabilidad = true;
 
       hActualCooldown = hCooldownMax;
 
       bonusAtaque = 0;
-      XdDanio = 1;
-      daniodX = 6; //3d5
+      XdDanio = 2;
+      daniodX = 8; //3d5
       tipoDanio = 2; //Perforante
   }
 

@@ -50,7 +50,7 @@ public class BotonHabilidad : MonoBehaviour
     void Start()
     {
 
-        gameObject.GetComponent<Image>().sprite = HabilidadRepresentada.imHab;
+        gameObject.GetComponent<Image>().sprite = HabilidadRepresentada.ObtenerIconoUI();
         CachearSpritesCirculosAccion();
 
 

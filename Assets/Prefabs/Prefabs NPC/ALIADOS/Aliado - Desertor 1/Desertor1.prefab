@@ -394,9 +394,9 @@ MonoBehaviour:
   mod_iniciativa: 0
   iniciativa_actual: 0
   esEtereo: 0
-  at_maxHP: 26
-  mod_maxHP: 26
-  HP_actual: 26
+  at_maxHP: 38
+  mod_maxHP: 38
+  HP_actual: 38
   at_maxAccionP: 4
   esInmobil: 0
   mod_maxAccionP: 4

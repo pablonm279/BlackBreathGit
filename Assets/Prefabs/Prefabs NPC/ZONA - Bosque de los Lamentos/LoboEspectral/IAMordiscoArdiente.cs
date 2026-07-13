@@ -24,7 +24,7 @@ public class IAMordiscoArdiente : IAHabilidad
       hAncho = 1;
       esMelee = true;
       hAlcance = 1;
-      hCooldownMax = 2;
+      hCooldownMax = 0;
       esHostil = true;
       prioridad = 2;
       costoAP = 3;
@@ -33,7 +33,7 @@ public class IAMordiscoArdiente : IAHabilidad
       
 
 
-      hActualCooldown = hCooldownMax;
+      hActualCooldown = 0;
 
       bonusdadocrit = 1;
       bonusAtaque = 2;

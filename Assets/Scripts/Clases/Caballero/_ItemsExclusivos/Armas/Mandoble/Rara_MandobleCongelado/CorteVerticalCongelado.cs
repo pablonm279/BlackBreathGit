@@ -195,7 +195,7 @@ public class CorteVerticalCongelado : Habilidad
         objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
         float danioFrio = TiradaDeDados.TirarDados(1, 5); //1d5 de da�o fr�o
-        objetivo.RecibirDanio(danioFrio, 5, false, scEstaUnidad);
+        objetivo.RecibirDanioSinBonusElemental(danioFrio, 5, false, scEstaUnidad);
         VFXAplicar(objetivo.gameObject);
 
 
@@ -216,7 +216,7 @@ public class CorteVerticalCongelado : Habilidad
 
 
         float danioFrio = TiradaDeDados.TirarDados(1, 10); //1d10 de da�o fr�o
-        objetivo.RecibirDanio(danioFrio, 5, false, scEstaUnidad);
+        objetivo.RecibirDanioSinBonusElemental(danioFrio, 5, false, scEstaUnidad);
         VFXAplicar(objetivo.gameObject);
 
 
@@ -232,7 +232,7 @@ public class CorteVerticalCongelado : Habilidad
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 
         float danioFrio = TiradaDeDados.TirarDados(1, 10); //1d10 de da�o fr�o
-        objetivo.RecibirDanio(danioFrio, 5, true, scEstaUnidad);
+        objetivo.RecibirDanioSinBonusElemental(danioFrio, 5, true, scEstaUnidad);
         VFXAplicar(objetivo.gameObject);
 
         foreach (Casilla cas in objetivo.CasillaPosicion.ObtenerCasillasAlrededor(1))
@@ -244,7 +244,7 @@ public class CorteVerticalCongelado : Habilidad
               Unidad unidadAlrededor = cas.Presente.GetComponent<Unidad>();
 
               float danioColateral = TiradaDeDados.TirarDados(1, 6);
-              unidadAlrededor.RecibirDanio(danioColateral, 5, false, scEstaUnidad);
+              unidadAlrededor.RecibirDanioSinBonusElemental(danioColateral, 5, false, scEstaUnidad);
             }
             
           }
@@ -498,7 +498,5 @@ public class CorteVerticalCongelado : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
-
-
 
 

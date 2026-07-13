@@ -329,6 +329,10 @@ public class Unidad : MonoBehaviour
   private bool imagenOcultadaPorEscondido;
   private int ultimoEstadoVisualEscondido = int.MinValue;
   private bool ultimoOcultamientoTotalPorEscondido;
+  private readonly List<Renderer> renderersOcultosPorVistaTactica = new List<Renderer>();
+  private bool unidadCanvasOcultadoPorVistaTactica;
+  private bool imagenOcultadaPorVistaTactica;
+  private bool ocultamientoVistaTacticaActivo;
   private float multiplicadorAlphaVisual = 1f;
   private Color colorBaseImagenUnidad = Color.white;
   private bool colorBaseImagenUnidadInicializado;
@@ -437,6 +441,88 @@ public class Unidad : MonoBehaviour
   public GameObject ObtenerImagenUnidadGO()
   {
     return uImage != null ? uImage.gameObject : null;
+  }
+
+  public void AplicarVistaTactica(bool activa)
+  {
+    if (activa)
+    {
+      ocultamientoVistaTacticaActivo = true;
+      OcultarVisualesPorVistaTactica();
+      return;
+    }
+
+    RestaurarVisualesPorVistaTactica();
+  }
+
+  private void OcultarVisualesPorVistaTactica()
+  {
+    if (scUnidadCanvas == null)
+    {
+      scUnidadCanvas = GetComponentInChildren<UnidadCanvas>(true);
+    }
+
+    if (scUnidadCanvas != null
+      && scUnidadCanvas.unidadCanvas != null
+      && scUnidadCanvas.unidadCanvas.activeSelf)
+    {
+      scUnidadCanvas.unidadCanvas.SetActive(false);
+      unidadCanvasOcultadoPorVistaTactica = true;
+    }
+
+    if ((scUnidadCanvas == null || scUnidadCanvas.unidadCanvas == null) && uImage != null && uImage.enabled)
+    {
+      uImage.enabled = false;
+      imagenOcultadaPorVistaTactica = true;
+    }
+
+    foreach (Renderer renderer in GetComponentsInChildren<Renderer>(true))
+    {
+      if (renderer == null || !renderer.enabled || renderersOcultosPorVistaTactica.Contains(renderer))
+      {
+        continue;
+      }
+
+      renderer.enabled = false;
+      renderersOcultosPorVistaTactica.Add(renderer);
+    }
+  }
+
+  private void RestaurarVisualesPorVistaTactica()
+  {
+    if (!ocultamientoVistaTacticaActivo
+      && !unidadCanvasOcultadoPorVistaTactica
+      && !imagenOcultadaPorVistaTactica
+      && renderersOcultosPorVistaTactica.Count == 0)
+    {
+      return;
+    }
+
+    if (unidadCanvasOcultadoPorVistaTactica && scUnidadCanvas != null && scUnidadCanvas.unidadCanvas != null)
+    {
+      scUnidadCanvas.unidadCanvas.SetActive(true);
+    }
+    unidadCanvasOcultadoPorVistaTactica = false;
+
+    if (imagenOcultadaPorVistaTactica && uImage != null)
+    {
+      uImage.enabled = true;
+    }
+    imagenOcultadaPorVistaTactica = false;
+
+    foreach (Renderer renderer in renderersOcultosPorVistaTactica)
+    {
+      if (renderer != null)
+      {
+        renderer.enabled = true;
+      }
+    }
+    renderersOcultosPorVistaTactica.Clear();
+    ocultamientoVistaTacticaActivo = false;
+
+    ultimoEstadoVisualEscondido = int.MinValue;
+    ultimoOcultamientoTotalPorEscondido = !EstaOcultoVisualmenteParaJugador();
+    SincronizarVisualEscondido();
   }
 
   void AsegurarColorBaseImagenUnidad()
@@ -2718,8 +2804,22 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     return "<size=80%><color=#" + bonusHex + ">(+" + bonus + IconoDanioFlotante(tipoDanio) + ")</color></size>";
   }
 
+  private int daniosPendientesSinBonusElemental;
+
+  public void RecibirDanioSinBonusElemental(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignoraArmadura = false)
+  {
+    daniosPendientesSinBonusElemental++;
+    RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos, ignoraArmadura);
+  }
+
   public async virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignoraArmadura = false)
   {
+    bool aplicarBonusElemental = daniosPendientesSinBonusElemental <= 0;
+    if (!aplicarBonusElemental)
+    {
+      daniosPendientesSinBonusElemental--;
+    }
+
     Task impactoProyectilPendiente = ArrowFlight.ObtenerImpactoPendienteAsync(uCausante, this);
     if (impactoProyectilPendiente != null)
     {
@@ -2734,7 +2834,14 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     Unidad unidadRedirigida = ObtenerObjetivoRedirigidoSiCorresponde(uCausante, this);
     if (unidadRedirigida != null && unidadRedirigida != this)
     {
-      unidadRedirigida.RecibirDanio(danio, tipoDanio, esCritico, uCausante, 0, ignoraArmadura);
+      if (aplicarBonusElemental)
+      {
+        unidadRedirigida.RecibirDanio(danio, tipoDanio, esCritico, uCausante, 0, ignoraArmadura);
+      }
+      else
+      {
+        unidadRedirigida.RecibirDanioSinBonusElemental(danio, tipoDanio, esCritico, uCausante, 0, ignoraArmadura);
+      }
       return;
     }
 
@@ -2974,7 +3081,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       bool bonusColorAsignado = false;
       Color bonusColorPrimario = colorDanio;
 
-      if (uCausante != null)
+      if (uCausante != null && aplicarBonusElemental)
       {
         if (uCausante.bonusdam_acido > 0)
         {
@@ -4676,13 +4783,13 @@ public void UnidadMuere()
      Personaje personajeCaido = adminTraits != null ? adminTraits.ObtenerPersonajeAliadoSeleccionadoPorUnidad(this) : null;
      if (campTraits != null && !caidoEraIAAliada && personajeCaido != null && personajeCaido.TieneRasgo(PersonajeTraitCatalog.TraitAdmirado))
      {
-       campTraits.CambiarEsperanzaActual(-10);
+       campTraits.CambiarEsperanzaActual(-15);
        int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
        string mensajeAdmirado = idiomaTrait switch
        {
-         TRADU.IdiomaIngles => personajeCaido.sNombre + " falls in battle. -10 Hope.",
-         TRADU.IdiomaPortugues => personajeCaido.sNombre + " cai em batalha. -10 de EsperanÃ§a.",
-         _ => personajeCaido.sNombre + " cae en combate. -10 Esperanza."
+         TRADU.IdiomaIngles => personajeCaido.sNombre + " falls in battle. -15 Hope.",
+         TRADU.IdiomaPortugues => personajeCaido.sNombre + " cai em batalha. -15 de EsperanÃ§a.",
+         _ => personajeCaido.sNombre + " cae en combate. -15 Esperanza."
        };
        campTraits.EscribirLog("-" + mensajeAdmirado);
      }
@@ -5130,6 +5237,12 @@ public void OnMouseEnter()
       return;
     }
 
+    if (DebeDelegarMouseACasillaPorVistaTactica())
+    {
+      CasillaPosicion.OnMouseOver();
+      return;
+    }
+
     if (!scBattleManager.SeleccionandoObjetivo)
     {
       TooltipBatalla.Instance?.HideTooltipSinAnim();
@@ -5155,6 +5268,12 @@ public void OnMouseOver()
       return;
     }
 
+    if (DebeDelegarMouseACasillaPorVistaTactica())
+    {
+      CasillaPosicion.OnMouseOver();
+      return;
+    }
+
     ActualizarVisualObjetivoHover();
 
     if(scBattleManager.SeleccionandoObjetivo)
@@ -5174,6 +5293,12 @@ public void OnMouseExit()
       return;
     }
 
+    if (DebeDelegarMouseACasillaPorVistaTactica())
+    {
+      CasillaPosicion.OnMouseExit();
+      return;
+    }
+
     if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
     {
       BattleManager.Instance.scUIInfoChar.LimpiarHover(this);
@@ -5190,6 +5315,12 @@ public async void OnMouseDown()
 {
     if (EstaOcultoVisualmenteParaJugador())
     {
+      return;
+    }
+
+    if (DebeDelegarMouseACasillaPorVistaTactica())
+    {
+      CasillaPosicion.OnMouseDown();
       return;
     }
 
@@ -5244,6 +5375,14 @@ public async void OnMouseDown()
     {
       BattleManager.Instance.scUIInfoChar.ToggleFijado(this);
     }
+}
+
+private bool DebeDelegarMouseACasillaPorVistaTactica()
+{
+  BattleManager battleManager = BattleManager.Instance;
+  return battleManager != null
+    && battleManager.VistaTacticaActiva
+    && CasillaPosicion != null;
 }
 
   public virtual bool TiradaSalvacion(int tipoSalvacion, float dificultadHabilidada, bool porValourGlobal = false) //TRUE no se salva FALSE se salva (xd)

@@ -95,6 +95,7 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private bool debugPermitirZonaNedukazal = false;
   [SerializeField] private bool debugIniciarConEstadosCaravana = false;
   [SerializeField] private bool debugForzarCombateFinalBosqueAlIniciar = false;
+  [SerializeField] private bool debugForzarCombateJefeGulekGulAlIniciar = false;
   [SerializeField] private bool debugForzarAuroraPasoVientoHelado = false;
   [SerializeField, InspectorName("Debug Ignorar Peleas")] private bool debugIgnorarCombates = false;
   [SerializeField] private bool debugMostrarTodosLosCaminosMapa = false;
@@ -1627,6 +1628,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       ForzarCombateFinalBosqueDebug();
     }
 
+    if (debugForzarCombateJefeGulekGulAlIniciar)
+    {
+      ForzarCombateJefeGulekGulDebug();
+    }
+
     if (introCampaniaActiva)
     {
       OcultarInterfazCampaniaParaIntro();
@@ -1782,6 +1788,31 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     if (scMenuBatallas != null)
     {
       scMenuBatallas.EventoBatallaFinal(11);
+    }
+  }
+
+  [ContextMenu("Debug/Forzar Combate Jefe Gulek-Gul")]
+  public void ForzarCombateJefeGulekGulDebug()
+  {
+    if (scTutorialManager != null)
+    {
+      scTutorialManager.tutorialActivo = false;
+    }
+
+    if (scAtributosZona != null)
+    {
+      scAtributosZona.GenerarZona(IdsZonaCampania.PasoVientoHelado);
+      scAtributosZona.FASE = 1;
+    }
+
+    if (goMenuBatallas != null)
+    {
+      goMenuBatallas.SetActive(true);
+    }
+
+    if (scMenuBatallas != null)
+    {
+      scMenuBatallas.EventoBatallaFinal(60);
     }
   }
 
@@ -2938,6 +2969,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       }
     }
 
+    if (scSequitoClerigos != null)
+    {
+      data.clerigosZonaIdUltimaPlegaria = scSequitoClerigos.ObtenerZonaIdUltimaPlegaria();
+    }
+
     return data;
   }
 
@@ -3439,6 +3475,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       scSequitoCronistas.valorCambiosCronicas = data.cronistasValorCambios;
       scSequitoCronistas.yaVendioCronica = data.cronistasYaVendio;
       scSequitoCronistas.Actualizar();
+    }
+
+    if (scSequitoClerigos != null)
+    {
+      scSequitoClerigos.RestaurarZonaIdUltimaPlegaria(data.clerigosZonaIdUltimaPlegaria);
     }
 
     RestaurarMercaderesDesdeSave(data);
@@ -5046,6 +5087,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       blackBreathEffect.SetEffectActive(EstaDentroDelAlientoNegro());
     }
+
+    VisualPolishRuntime.ApplyCampaignParticleQualityScaleNow();
   }
 
   private bool EstaDentroDelAlientoNegro()
@@ -5432,14 +5475,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       EscribirLog(TRADU.i.Traducir("-El viaje por el camino sinuoso ha retrasado la caravana. +") + (conexion.costoMovimiento - 1) + TRADU.i.Traducir(" Avance del Aliento Negro"));
     }
 
-    //Si Nieva, avanza 1 mas el élito
+    //Si nieva, viajar desgasta la esperanza de la caravana.
     if (intTipoClima == 4)
     {
-      if (!sePrevieneAvanceAliento)
-      {
-        EscribirLog(TRADU.i.Traducir("-La nieve a retrasado el viaje. +1 Avance del Aliento Negro"));
-        CambiarValorAlientoNegro(1);
-      }
+      int perdidaEsperanzaNieve = 3 * Mathf.Max(1, conexion.costoMovimiento);
+      CambiarEsperanzaActual(-perdidaEsperanzaNieve);
+      EscribirLog(ObtenerTextoLogViajeNieve(perdidaEsperanzaNieve));
     }
 
     if (efectosViajeCaravana.avanceAlientoExtra > 0)
@@ -5495,6 +5536,20 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     EfectosdeSequitos();
     RefrescarBarraPersonajesCampania(true);
     ActualizarBotonesAccionNodoActual();
+  }
+
+  private string ObtenerTextoLogViajeNieve(int perdidaEsperanza)
+  {
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    switch (idioma)
+    {
+      case TRADU.IdiomaIngles:
+        return "-Traveling through snow wears down the caravan. -" + perdidaEsperanza + " Hope";
+      case TRADU.IdiomaPortugues:
+        return "-Viajar pela neve desgasta a caravana. -" + perdidaEsperanza + " Esperança";
+      default:
+        return "-Viajar con nieve desgasta a la caravana. -" + perdidaEsperanza + " Esperanza";
+    }
   }
 
   public MenuBatallas scMenuBatallas;
@@ -6836,13 +6891,65 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     int cant = 0;
     foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
     {
-      if (pers != null && !pers.Camp_Muerto && pers.PuedeRealizarActividades() && pers.ActividadSeleccionada == IDActividad)
+      if (pers != null
+        && !pers.Camp_Muerto
+        && pers.PuedeRealizarActividades()
+        && pers.ActividadSeleccionada == IDActividad
+        && EsActividadPermitidaPorClimaCampania(IDActividad))
       {
         cant++;
       }
     }
 
     return cant;
+  }
+
+  public bool EsActividadPermitidaPorClimaCampania(int idActividad)
+  {
+    if (intTipoClima != 4)
+    {
+      return true;
+    }
+
+    return idActividad == 1
+      || idActividad == 3
+      || idActividad == 6
+      || idActividad == 14;
+  }
+
+  public int NormalizarActividadesPorClimaCampania()
+  {
+    if (intTipoClima != 4 || scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return 0;
+    }
+
+    int cambios = 0;
+    foreach (Personaje personaje in scMenuPersonajes.listaPersonajes)
+    {
+      if (personaje == null
+        || personaje.Camp_Muerto
+        || !personaje.PuedeRealizarActividades()
+        || EsActividadPermitidaPorClimaCampania(personaje.ActividadSeleccionada))
+      {
+        continue;
+      }
+
+      personaje.ActividadSeleccionada = 1;
+      cambios++;
+    }
+
+    if (cambios > 0)
+    {
+      RefrescarRetratosPersonajesCampania(true);
+      if (scMenuPersonajes.scActividades != null)
+      {
+        scMenuPersonajes.scActividades.ActualizarRecuadros();
+      }
+      EvaluarTooltipPersonajeDescansando();
+    }
+
+    return cambios;
   }
 
   private int ObtenerTSMentalTotalCampania(Personaje personaje)
@@ -7864,6 +7971,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       }
 
       if (!pers.PuedeRealizarActividades())
+      {
+        continue;
+      }
+
+      if (!EsActividadPermitidaPorClimaCampania(pers.ActividadSeleccionada))
       {
         continue;
       }
@@ -9203,6 +9315,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     if (n == 1)
     {
       climaTooltip.SetActive(true);
+
+      if (intTipoClima == 4)
+      {
+        textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + ":\n" + TRADU.i.Traducir("Nieve: solo permite Descansar o Guardia. -15% Recolecciones, -20% Emboscada. Viajar da -3 Esperanza por día.");
+        return;
+      }
 
       switch (intTipoClima)
       {

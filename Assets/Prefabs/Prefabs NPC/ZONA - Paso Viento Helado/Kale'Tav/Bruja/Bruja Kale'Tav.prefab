@@ -989,7 +989,7 @@ MonoBehaviour:
   bonusdam_hielo: 0
   bonusdam_rayo: 0
   bonusdam_acido: 0
-  bonusdam_arcano: 0
+  bonusdam_arcano: 3
   bonusdam_necro: 0
   bonusdam_divino: 0
   debuffsImpactoArma: []

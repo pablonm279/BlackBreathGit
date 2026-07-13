@@ -137,6 +137,7 @@ MonoBehaviour:
   endMarker: {fileID: 0}
   parabola: 0
   velocidad: 0
+  alturaMinimaParabola: 0.05
 --- !u!82 &9003452082906731512
 AudioSource:
   m_ObjectHideFlags: 0
@@ -358,7 +359,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.43137258, g: 0, b: 1, a: 1}
+      key0: {r: 0.5931827, g: 0.31318974, b: 0.9622642, a: 1}
       key1: {r: 0.16884556, g: 0, b: 0.46226418, a: 0.25882354}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}

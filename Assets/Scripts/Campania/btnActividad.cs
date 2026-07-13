@@ -57,6 +57,12 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         return;
       }
 
+      if (!PuedeSeleccionarActividadConClima())
+      {
+        MostrarLogActividadBloqueadaPorNieve();
+        return;
+      }
+
       CambiarActividadPersonaje(personajeSeleccionado);
 
       scActividades.ActualizarRecuadros();
@@ -103,6 +109,12 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         return;
       }
 
+      if (!PuedeSeleccionarActividadConClima())
+      {
+        MostrarLogActividadBloqueadaPorNieve();
+        return;
+      }
+
       if (scActividades == null || scActividades.scMenuPersonajes == null || scActividades.scMenuPersonajes.listaPersonajes == null)
       {
         return;
@@ -140,6 +152,11 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
       }
 
       int actividadAnterior = personaje.ActividadSeleccionada;
+      if (!PuedeSeleccionarActividadConClima())
+      {
+        return;
+      }
+
       personaje.ActividadSeleccionada = actividadRepresentada.IDActividad;
 
       if (actividadAnterior != actividadRepresentada.IDActividad
@@ -157,6 +174,29 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         && (actividadRepresentada.IDActividad == 1
         || actividadRepresentada.IDActividad == 2
         || actividadRepresentada.IDActividad == 3);
+   }
+
+   private bool PuedeSeleccionarActividadConClima()
+   {
+      if (CampaignManager.Instance == null || actividadRepresentada == null)
+      {
+        return true;
+      }
+
+      return CampaignManager.Instance.EsActividadPermitidaPorClimaCampania(actividadRepresentada.IDActividad);
+   }
+
+   private void MostrarLogActividadBloqueadaPorNieve()
+   {
+      if (CampaignManager.Instance == null)
+      {
+        return;
+      }
+
+      string mensaje = TRADU.i != null
+        ? TRADU.i.Traducir("<color=#FF6666>La nieve impide realizar actividades que no sean Descansar o Guardia.</color>")
+        : "<color=#FF6666>La nieve impide realizar actividades que no sean Descansar o Guardia.</color>";
+      CampaignManager.Instance.EscribirAdvertenciaLog(mensaje, true);
    }
 
    private void MostrarDescripcionHover()

@@ -592,7 +592,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -197.07996, y: 10.560059}
+  m_AnchoredPosition: {x: -197.07999, y: 10.560059}
   m_SizeDelta: {x: 442.93, y: 356.86}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &19448476
@@ -15445,7 +15445,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &576643679
 RectTransform:
   m_ObjectHideFlags: 0
@@ -30348,7 +30348,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1116599621
 RectTransform:
   m_ObjectHideFlags: 0
@@ -32025,7 +32025,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -296, y: -14.000183}
-  m_SizeDelta: {x: 100, y: 240.3}
+  m_SizeDelta: {x: 100, y: 226.4}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1221919057
 MonoBehaviour:
@@ -32837,7 +32837,7 @@ MonoBehaviour:
     R\xE1pida -- \"F5\"\nCarga Partida R\xE1pida -- \"F9\"\n\n\n-----------------------------------------------\nBatallas:\n\nSiguiente
     Turno  -- \"Espacio\"\nInformaci\xF3n Unidad  -- \"I\"\nModo R\xE1pido -- \"F\"\nSeleccionar
     Habilidad  -- \"1, 2, 3, 4...\"\nPrevisualizar Habilidad Seleccionada -- \"Mantener
-    Shift\"\n"
+    Shift\"\nVista T\xE1ctica -- \"TAB\"\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -47806,6 +47806,8 @@ MonoBehaviour:
 
     Preview Selected Skill -- "Hold Shift"
 
+    Tactival
+    View -- "TAB"
 
 
 '
@@ -49195,7 +49197,7 @@ RectTransform:
   m_GameObject: {fileID: 1604450977}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.6258961, y: 1.625896, z: 0.92908347}
+  m_LocalScale: {x: 1.6258961, y: 1.5, z: 0.92908347}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 410119314}
@@ -49208,7 +49210,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -122, y: 196}
+  m_AnchoredPosition: {x: -122, y: 194.3}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1604450979
@@ -50324,7 +50326,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1678710457
 RectTransform:
   m_ObjectHideFlags: 0
@@ -56967,7 +56969,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1787406630
 RectTransform:
   m_ObjectHideFlags: 0
@@ -59327,7 +59329,7 @@ MonoBehaviour:
     R\xE1pido -- \"F9\"\n\n-----------------------------------------------\nBatalha:\n\nEncerrar
     Turno -- \"Espa\xE7o\"\nInforma\xE7\xF5es da Unidade -- \"I\"\nModo R\xE1pido
     -- \"F\"\nSelecionar Habilidade -- \"1, 2, 3, 4...\"\nPr\xE9-visualizar Habilidade
-    Selecionada -- \"Segurar Shift\""
+    Selecionada -- \"Segurar Shift\"\nVis\xE3o t\xE1tica \u2014 \"TAB\""
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}

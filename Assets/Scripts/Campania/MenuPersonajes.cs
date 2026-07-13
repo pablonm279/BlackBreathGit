@@ -8,6 +8,8 @@ using Unity.VisualScripting;
 
 public class MenuPersonajes : MonoBehaviour
 {
+  const string ColorTituloRasgo = "#bfb7aa";
+
   public List<Personaje> listaPersonajes = new List<Personaje>(); //La lista que posee los personajes activos
 
 
@@ -691,7 +693,7 @@ public class MenuPersonajes : MonoBehaviour
         }
 
         string descripcion = definicion.ObtenerDescripcion(idioma);
-        string bloque = nombre.ToUpperInvariant();
+        string bloque = "<color=" + ColorTituloRasgo + ">" + nombre.ToUpperInvariant() + "</color>";
 
         if (!string.IsNullOrWhiteSpace(descripcion))
         {

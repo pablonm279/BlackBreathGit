@@ -27,6 +27,7 @@ public class ImprovisarFlechas : Habilidad
       esCargable = false;
       esMelee = false;
       esHostil = false;
+      omitirAnimacionDeUso = true;
       cooldownMax = 1;
       bAfectaObstaculos = false;
       

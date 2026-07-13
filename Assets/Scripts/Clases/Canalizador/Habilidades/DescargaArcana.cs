@@ -329,6 +329,7 @@ public class DescargaArcana : Habilidad
         }
 
         GameObject proyectil = Instantiate(proyectilPrefab);
+        DesacoplarAudioDelProyectil(proyectil);
         ArrowFlight flight = proyectil.GetComponent<ArrowFlight>();
 
         Transform destino = null;
@@ -349,6 +350,51 @@ public class DescargaArcana : Habilidad
         else
         {
             await BattleManager.DelayCombateAsync(200);
+        }
+    }
+
+    private static void DesacoplarAudioDelProyectil(GameObject proyectil)
+    {
+        if (proyectil == null)
+        {
+            return;
+        }
+
+        AudioSource[] audioSources = proyectil.GetComponentsInChildren<AudioSource>();
+        foreach (AudioSource source in audioSources)
+        {
+            if (source == null || source.clip == null)
+            {
+                continue;
+            }
+
+            GameObject audioGo = new GameObject("SFX_DescargaArcana");
+            audioGo.transform.position = source.transform.position;
+
+            AudioSource audioIndependiente = audioGo.AddComponent<AudioSource>();
+            audioIndependiente.clip = source.clip;
+            audioIndependiente.outputAudioMixerGroup = source.outputAudioMixerGroup;
+            audioIndependiente.volume = source.volume;
+            audioIndependiente.pitch = source.pitch;
+            audioIndependiente.priority = source.priority;
+            audioIndependiente.spatialBlend = source.spatialBlend;
+            audioIndependiente.rolloffMode = source.rolloffMode;
+            audioIndependiente.minDistance = source.minDistance;
+            audioIndependiente.maxDistance = source.maxDistance;
+            audioIndependiente.dopplerLevel = source.dopplerLevel;
+            audioIndependiente.Play();
+
+            source.Stop();
+            source.enabled = false;
+
+            float duracion = source.clip.length;
+            float pitch = Mathf.Abs(audioIndependiente.pitch);
+            if (pitch > 0.001f)
+            {
+                duracion /= pitch;
+            }
+
+            Destroy(audioGo, duracion + 0.05f);
         }
     }
 
@@ -719,6 +765,5 @@ public class DescargaArcanaImpactoFx : MonoBehaviour
     return spriteChispa;
   }
 }
-
 
 
