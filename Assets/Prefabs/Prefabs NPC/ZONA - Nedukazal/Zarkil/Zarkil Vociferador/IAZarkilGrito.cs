@@ -148,8 +148,7 @@ public class IAZarkilGrito : IAHabilidad
           if (obj.TiradaSalvacion(3, 9))
           {
 
-            obj.estado_aturdido += 1;
-            obj.GenerarTextoFlotante("Aturdido", Color.red);
+            Estados.Aplicar_Aturdido(obj, 1, scEstaUnidad);
 
           }
 
@@ -234,8 +233,7 @@ public class IAZarkilGrito : IAHabilidad
       if (obj.TiradaSalvacion(3, 10))
       {
 
-        obj.estado_aturdido += 1;
-        obj.GenerarTextoFlotante("Aturdido", Color.red);
+        Estados.Aplicar_Aturdido(obj, 1, scEstaUnidad);
 
 
       }

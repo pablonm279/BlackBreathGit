@@ -57,6 +57,12 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         return;
       }
 
+      if (HayBatallaPendiente())
+      {
+        MostrarLogActividadBloqueadaPorBatallaPendiente();
+        return;
+      }
+
       if (!PuedeSeleccionarActividadConClima())
       {
         MostrarLogActividadBloqueadaPorNieve();
@@ -106,6 +112,12 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
       if (!EsActividadBaseCompartida())
       {
+        return;
+      }
+
+      if (HayBatallaPendiente())
+      {
+        MostrarLogActividadBloqueadaPorBatallaPendiente();
         return;
       }
 
@@ -184,6 +196,24 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
       }
 
       return CampaignManager.Instance.EsActividadPermitidaPorClimaCampania(actividadRepresentada.IDActividad);
+   }
+
+   private bool HayBatallaPendiente()
+   {
+      return CampaignManager.Instance != null && CampaignManager.Instance.HayBatallaPendiente();
+   }
+
+   private void MostrarLogActividadBloqueadaPorBatallaPendiente()
+   {
+      if (CampaignManager.Instance == null)
+      {
+        return;
+      }
+
+      string mensaje = TRADU.i != null
+        ? TRADU.i.Traducir("-No puedes cambiar de actividad si hay una batalla pendiente.")
+        : "-No puedes cambiar de actividad si hay una batalla pendiente.";
+      CampaignManager.Instance.EscribirAdvertenciaLog(mensaje, true);
    }
 
    private void MostrarLogActividadBloqueadaPorNieve()

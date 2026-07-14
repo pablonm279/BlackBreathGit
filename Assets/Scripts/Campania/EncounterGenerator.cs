@@ -50,6 +50,7 @@ public class EncounterDefinition
 public static class EncounterGenerator
 {
    const int MaxInitialUnits = 6;
+   const int MaxInitialCopiesPerPrefab = 3;
 
    enum CompositionArchetype
    {
@@ -156,6 +157,7 @@ public static class EncounterGenerator
       EnsureMandatoryReinforcements(generated, chosenFaction, maxTierAllowed);
       EnforceUniqueUnits(generated, chosenFaction, battleType, maxTierAllowed, minUnits);
       MarkReinforcements(generated, initialCap);
+      EnforceInitialPrefabCopyLimit(generated, chosenFaction, maxTierAllowed, MaxInitialCopiesPerPrefab);
       generated.totalBudget = CalcularCostoTotal(generated);
       generated.reinforcementDelay = HasReinforcements(generated)
          ? GetReinforcementDelay(battleType, faseClamped)
@@ -438,7 +440,8 @@ public static class EncounterGenerator
       int tier,
       Dictionary<GameObject, int> prefabUsage,
       Dictionary<string, int> uniqueUsage,
-      string ignoreUniqueKey = null)
+      string ignoreUniqueKey = null,
+      GameObject excludedPrefab = null)
    {
       var tierList = GetEligibleTierList(faction, tier, uniqueUsage, ignoreUniqueKey);
       if (tierList == null || tierList.Count == 0)
@@ -450,7 +453,7 @@ public static class EncounterGenerator
       List<GameObject> candidates = new List<GameObject>();
       foreach (GameObject prefab in tierList)
       {
-         if (prefab == null)
+         if (prefab == null || prefab == excludedPrefab)
          {
             continue;
          }
@@ -727,6 +730,69 @@ public static class EncounterGenerator
          }
 
          definition.units[i].spawnAsReinforcement = !mantenerInicial[i];
+      }
+   }
+
+   static void EnforceInitialPrefabCopyLimit(
+      EncounterDefinition definition,
+      EnemyFactionConfig faction,
+      int maxTierAllowed,
+      int maxCopies)
+   {
+      if (definition == null || definition.units == null || faction == null || maxCopies < 1)
+      {
+         return;
+      }
+
+      HashSet<GameObject> prefabsWithoutReplacement = new HashSet<GameObject>();
+      for (int attempt = 0; attempt < MaxInitialUnits; attempt++)
+      {
+         Dictionary<GameObject, int> initialUsage = new Dictionary<GameObject, int>();
+         int duplicateIndex = -1;
+         for (int i = 0; i < definition.units.Count; i++)
+         {
+            var candidate = definition.units[i];
+            if (candidate == null || candidate.spawnAsReinforcement || candidate.prefab == null)
+            {
+               continue;
+            }
+
+            RegistrarUsoPrefab(initialUsage, candidate.prefab, 1);
+            if (initialUsage[candidate.prefab] > maxCopies && !prefabsWithoutReplacement.Contains(candidate.prefab))
+            {
+               duplicateIndex = i;
+               break;
+            }
+         }
+
+         if (duplicateIndex < 0)
+         {
+            return;
+         }
+
+         var slot = definition.units[duplicateIndex];
+         GameObject originalPrefab = slot.prefab;
+         Dictionary<GameObject, int> prefabUsage = BuildPrefabUsage(definition);
+         Dictionary<string, int> uniqueUsage = BuildUniqueUsage(definition);
+         RegistrarUsoPrefab(prefabUsage, originalPrefab, -1);
+         RegistrarUsoUnico(uniqueUsage, originalPrefab, -1);
+
+         GameObject replacement = BuscarReemplazoParaDuplicadoUnico(
+            faction,
+            slot.tierCost,
+            maxTierAllowed,
+            prefabUsage,
+            uniqueUsage,
+            originalPrefab);
+
+         if (replacement == null)
+         {
+            prefabsWithoutReplacement.Add(originalPrefab);
+            continue;
+         }
+
+         slot.prefab = replacement;
+         slot.tierCost = ObtenerTierDelPrefab(faction, replacement);
       }
    }
 
@@ -1364,7 +1430,8 @@ public static class EncounterGenerator
       int tierActual,
       int maxTierAllowed,
       Dictionary<GameObject, int> prefabUsage,
-      Dictionary<string, int> uniqueUsage)
+      Dictionary<string, int> uniqueUsage,
+      GameObject excludedPrefab = null)
    {
       if (faction == null)
       {
@@ -1395,7 +1462,7 @@ public static class EncounterGenerator
 
       foreach (int tier in ordenTiers)
       {
-         GameObject candidato = PickPrefabFromTierWithVariety(faction, tier, prefabUsage, uniqueUsage);
+         GameObject candidato = PickPrefabFromTierWithVariety(faction, tier, prefabUsage, uniqueUsage, null, excludedPrefab);
          if (candidato != null)
          {
             return candidato;

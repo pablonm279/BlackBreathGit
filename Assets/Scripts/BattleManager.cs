@@ -126,6 +126,7 @@ public class BattleManager : MonoBehaviour
   public GameObject tooltipValorEN;
   public GameObject tooltipValorPO;
   [SerializeField] private float tooltipValorHoverDelay = 0.25f;
+  private const float MargenHoverUnidadPixeles = 12f;
   public TextMeshProUGUI rondaText;
   public TextMeshProUGUI apDisponible;
 
@@ -135,6 +136,7 @@ public class BattleManager : MonoBehaviour
   public GameObject nocheLienzo;
   private Coroutine coroutineTooltipValorDelay;
   private bool tooltipValorHoverActivo;
+  private Unidad unidadHoverBajoMouse;
 
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
   private static void ResetearEstadoEstaticoCombate()
@@ -2381,6 +2383,79 @@ public class BattleManager : MonoBehaviour
     }
   }
 
+  public bool HoverUnidadesCentralizadoActivo => true;
+
+  private void ActualizarHoverUnidadBajoMouse()
+  {
+    UIInfoChar infoChar = scUIInfoChar;
+    if (infoChar == null)
+    {
+      unidadHoverBajoMouse = null;
+      return;
+    }
+
+    Unidad nuevaUnidadHover = !vistaTacticaActiva && !EstaPunteroSobreUIExterna()
+      ? ObtenerUnidadBajoMousePorRectImagen(Input.mousePosition, MargenHoverUnidadPixeles)
+      : null;
+
+    if (nuevaUnidadHover == unidadHoverBajoMouse)
+    {
+      return;
+    }
+
+    if (unidadHoverBajoMouse != null)
+    {
+      infoChar?.LimpiarHover(unidadHoverBajoMouse);
+    }
+
+    unidadHoverBajoMouse = nuevaUnidadHover;
+    if (unidadHoverBajoMouse == null)
+    {
+      return;
+    }
+
+    if (!SeleccionandoObjetivo)
+    {
+      TooltipBatalla.Instance?.HideTooltipSinAnim();
+    }
+
+    infoChar?.MostrarHover(unidadHoverBajoMouse);
+  }
+
+  private bool EstaPunteroSobreUIExterna()
+  {
+    if (EventSystem.current == null)
+    {
+      return false;
+    }
+
+    PointerEventData pointerData = new PointerEventData(EventSystem.current)
+    {
+      position = Input.mousePosition
+    };
+
+    resultadosRaycastUnidadBajoMouse.Clear();
+    EventSystem.current.RaycastAll(pointerData, resultadosRaycastUnidadBajoMouse);
+    for (int i = 0; i < resultadosRaycastUnidadBajoMouse.Count; i++)
+    {
+      GameObject go = resultadosRaycastUnidadBajoMouse[i].gameObject;
+      if (go == null)
+      {
+        continue;
+      }
+
+      if (go.GetComponentInParent<Unidad>() != null)
+      {
+        return false;
+      }
+
+      Canvas canvas = go.GetComponentInParent<Canvas>();
+      return canvas != null && canvas.renderMode != RenderMode.WorldSpace;
+    }
+
+    return false;
+  }
+
   public void ActivarVistaTactica(bool activa)
   {
     if (vistaTacticaActiva == activa)
@@ -2455,6 +2530,7 @@ public class BattleManager : MonoBehaviour
     SincronizarMarcasHabilidadActiva();
 
     ActualizarTextoSeleccionObjetivo();
+    ActualizarHoverUnidadBajoMouse();
   }
 
   private void DebugObjetosBajoMouse()
@@ -2611,7 +2687,7 @@ public class BattleManager : MonoBehaviour
     return null;
   }
 
-  private Unidad ObtenerUnidadBajoMousePorRectImagen(Vector3 mousePos)
+  private Unidad ObtenerUnidadBajoMousePorRectImagen(Vector3 mousePos, float margenPantallaPixeles = 0f)
   {
     if (lUnidadesTotal == null || lUnidadesTotal.Count == 0)
     {
@@ -2635,13 +2711,14 @@ public class BattleManager : MonoBehaviour
 
       RectTransform rect = unidad.uImage.rectTransform;
       Camera camaraUI = ObtenerCamaraParaRectTransform(unidad.uImage.canvas);
-      if (!RectTransformUtility.RectangleContainsScreenPoint(rect, mousePos, camaraUI))
+      if (!EstaDentroDelRectImagen(rect, mousePos, camaraUI, margenPantallaPixeles))
       {
         continue;
       }
 
-      Vector3 centroPantalla = RectTransformUtility.WorldToScreenPoint(camaraUI, rect.TransformPoint(rect.rect.center));
-      float distancia = (centroPantalla - mousePos).sqrMagnitude;
+      Vector3 puntoBase = rect.TransformPoint(new Vector3(rect.rect.center.x, rect.rect.yMin + rect.rect.height * 0.2f));
+      Vector3 puntoBasePantalla = RectTransformUtility.WorldToScreenPoint(camaraUI, puntoBase);
+      float distancia = (puntoBasePantalla - mousePos).sqrMagnitude;
       if (distancia < mejorDistancia)
       {
         mejorDistancia = distancia;
@@ -2650,6 +2727,35 @@ public class BattleManager : MonoBehaviour
     }
 
     return mejorUnidad;
+  }
+
+  private static bool EstaDentroDelRectImagen(RectTransform rect, Vector2 puntoPantalla, Camera camaraUI, float margenPantallaPixeles)
+  {
+    if (margenPantallaPixeles <= 0f)
+    {
+      return RectTransformUtility.RectangleContainsScreenPoint(rect, puntoPantalla, camaraUI);
+    }
+
+    if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(rect, puntoPantalla, camaraUI, out Vector2 puntoLocal))
+    {
+      return false;
+    }
+
+    Rect rectLocal = rect.rect;
+    Vector3 centroLocal = rectLocal.center;
+    float anchoPantalla = Vector2.Distance(
+      RectTransformUtility.WorldToScreenPoint(camaraUI, rect.TransformPoint(new Vector3(rectLocal.xMin, centroLocal.y))),
+      RectTransformUtility.WorldToScreenPoint(camaraUI, rect.TransformPoint(new Vector3(rectLocal.xMax, centroLocal.y))));
+    float altoPantalla = Vector2.Distance(
+      RectTransformUtility.WorldToScreenPoint(camaraUI, rect.TransformPoint(new Vector3(centroLocal.x, rectLocal.yMin))),
+      RectTransformUtility.WorldToScreenPoint(camaraUI, rect.TransformPoint(new Vector3(centroLocal.x, rectLocal.yMax))));
+
+    float margenLocalX = margenPantallaPixeles * rectLocal.width / Mathf.Max(anchoPantalla, 0.001f);
+    float margenLocalY = margenPantallaPixeles * rectLocal.height / Mathf.Max(altoPantalla, 0.001f);
+    return puntoLocal.x >= rectLocal.xMin - margenLocalX
+      && puntoLocal.x <= rectLocal.xMax + margenLocalX
+      && puntoLocal.y >= rectLocal.yMin - margenLocalY
+      && puntoLocal.y <= rectLocal.yMax + margenLocalY;
   }
 
   private Camera ObtenerCamaraParaRectTransform(Canvas canvas)

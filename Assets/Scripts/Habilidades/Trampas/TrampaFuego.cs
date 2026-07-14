@@ -25,7 +25,7 @@ public class TrampaFuego : Trampa
 
     if (objetivo.TiradaSalvacion(2, 12))
     {
-      objetivo.estado_ardiendo = +2;
+      Estados.Aplicar_Ardiendo(objetivo, 2);
               objetivo.RecibirDanio(danio,4,false, null);
     }
         

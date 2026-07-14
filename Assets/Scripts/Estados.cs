@@ -194,11 +194,11 @@ public class Estados : MonoBehaviour
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
   }
 
-  public static void  Aplicar_Veneno(Unidad unidad, int stacks, Unidad origen = null)
+  public static bool Aplicar_Veneno(Unidad unidad, int stacks, Unidad origen = null)
   {
      if (stacks > 0 && unidad.IntentarResistenciaEstado("Veneno", origen))
      {
-       return;
+       return false;
      }
 
      if(unidad.estado_veneno > -1) //-1 Es si es inmune al estado.
@@ -206,7 +206,11 @@ public class Estados : MonoBehaviour
        unidad.estado_veneno += stacks;
        unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" veneno"), Color.green);
        BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
-     } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
+       return true;
+     }
+
+     unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);
+     return false;
   }
 
   public static void  Aplicar_Congelado(Unidad unidad, int stacks, Unidad origen = null)
@@ -619,4 +623,3 @@ public class CondenaDanioImpactoFx : MonoBehaviour
     return spriteFragmento;
   }
 }
-

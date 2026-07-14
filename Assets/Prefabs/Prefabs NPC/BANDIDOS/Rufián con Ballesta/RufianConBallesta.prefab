@@ -261,8 +261,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.38956, y: -14.735}
-  m_SizeDelta: {x: 20.99, y: 20.434}
+  m_AnchoredPosition: {x: -0.38956, y: -14.707}
+  m_SizeDelta: {x: 20.99, y: 20.879}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1678664685221969079
 CanvasRenderer:
@@ -693,6 +693,7 @@ MonoBehaviour:
   bPuedeVerEscondidos: 0
   unicoEnCombate: 0
   tierEnemigo: 2
+  siempreEnRetaguardiaInicial: 0
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0
@@ -987,6 +988,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 0
+  ignoraProvocacion: 0
   prioridad: 5
   costoAP: 0
   pPrioridad: 0
@@ -1023,6 +1025,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 0
+  ignoraProvocacion: 0
   prioridad: 0
   costoAP: 0
   pPrioridad: 0

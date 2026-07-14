@@ -385,9 +385,16 @@ public class CorteIncapacitante : Habilidad
 
     if (objetivo.TiradaSalvacion(2, DC))
     {
-      int duracion = 2;
-      if (NIVEL == 5) { duracion++; }
-       /////////////////////////////////////////////
+       int duracion = 2;
+       if (NIVEL == 5) { duracion++; }
+       if (NIVEL == 4) { Estados.Aplicar_Sangrado(objetivo, 3, scEstaUnidad); }
+
+       if (objetivo.estado_inmovil < 0)
+       {
+         return;
+       }
+
+        /////////////////////////////////////////////
       //BUFF ---- Así se aplica un buff/debuff
       Buff buff = new Buff();
        buff.buffNombre = "Incapacitado";
@@ -395,10 +402,9 @@ public class CorteIncapacitante : Habilidad
        buff.boolfDebufftBuff = false;
        buff.DuracionBuffRondas = duracion;
        buff.cantDanioPorcentaje -= 20;
-       if (NIVEL == 4) { objetivo.estado_sangrado += 3; }
-       buff.cantAtAgi -= 2;
-       buff.AplicarBuff(objetivo);
-       objetivo.estado_inmovil = duracion;
+        buff.cantAtAgi -= 2;
+        buff.AplicarBuff(objetivo);
+        Estados.Aplicar_Inmovil(objetivo, duracion, scEstaUnidad);
        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 

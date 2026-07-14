@@ -20,8 +20,15 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   private const string PrefBrightness = "gfx_brightness";
   private const string PrefContrast = "gfx_contrast";
   private const string PrefGraficosIndex = "graficos_index";
+  private const int CalidadGraficaBaja = 0;
+  private const string EscenaMenuPrincipal = "ES-MenuPrincipal";
   private const float BlackBreathParticleReductionPerQualityLevel = 0.15f;
   private const float CampaignParticleReductionPerQualityLevel = 0.15f;
+
+  private struct MenuParticleState
+  {
+    public bool emissionEnabled;
+  }
 
   private struct ParticleAmountDefaults
   {
@@ -32,6 +39,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   }
 
   private static readonly Dictionary<int, ParticleAmountDefaults> particleAmountDefaultsById = new Dictionary<int, ParticleAmountDefaults>();
+  private static readonly Dictionary<int, MenuParticleState> menuParticleStatesById = new Dictionary<int, MenuParticleState>();
 
   [SerializeField] private bool rebalanceQualityAtRuntime = true;
   [SerializeField] private int postProcessLayerIndex = 12; // Bit 4096 in current scenes.
@@ -73,6 +81,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     if (instance != null)
     {
       instance.ApplySyncAndFrameRatePrefs(scene);
+      ApplyMainMenuParticleQuality(scene);
       ApplyCampaignParticleQualityScale(scene);
       instance.ApplyAlientoNegroParticleQualityScale(scene);
     }
@@ -129,6 +138,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     }
 
     NormalizeSceneCanvasScalers(scene);
+    ApplyMainMenuParticleQuality(scene);
     ApplyCampaignParticleQualityScale(scene);
     ApplyAlientoNegroParticleQualityScale(scene);
 
@@ -260,6 +270,46 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     }
   }
 
+  private static void ApplyMainMenuParticleQuality(Scene scene)
+  {
+    if (!IsMainMenuScene(scene)) { return; }
+
+    bool desactivarParticulas = IsLowGraphicsQuality();
+    ParticleSystem[] systems = FindObjectsByType<ParticleSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+    for (int i = 0; i < systems.Length; i++)
+    {
+      ParticleSystem ps = systems[i];
+      if (ps == null) { continue; }
+      if (ps.gameObject.scene != scene) { continue; }
+
+      int id = ps.GetInstanceID();
+      if (!menuParticleStatesById.TryGetValue(id, out MenuParticleState estadoOriginal))
+      {
+        var emissionOriginal = ps.emission;
+        estadoOriginal = new MenuParticleState
+        {
+          emissionEnabled = emissionOriginal.enabled
+        };
+        menuParticleStatesById[id] = estadoOriginal;
+      }
+
+      var emission = ps.emission;
+      if (desactivarParticulas)
+      {
+        emission.enabled = false;
+        ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        continue;
+      }
+
+      emission.enabled = estadoOriginal.emissionEnabled;
+      var main = ps.main;
+      if (estadoOriginal.emissionEnabled && main.playOnAwake && ps.gameObject.activeInHierarchy && !ps.isPlaying)
+      {
+        ps.Play(true);
+      }
+    }
+  }
+
   private void ApplyAlientoNegroParticleQualityScale(Scene scene)
   {
     ParticleSystem[] systems = FindObjectsByType<ParticleSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
@@ -380,6 +430,18 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     return scene.IsValid()
       && !string.IsNullOrWhiteSpace(scene.name)
       && scene.name.ToLowerInvariant().Contains("batalla");
+  }
+
+  private static bool IsMainMenuScene(Scene scene)
+  {
+    return scene.IsValid()
+      && scene.name == EscenaMenuPrincipal;
+  }
+
+  private static bool IsLowGraphicsQuality()
+  {
+    int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
+    return calidadActual <= CalidadGraficaBaja;
   }
 
   private static bool IsCampaignScene(Scene scene)

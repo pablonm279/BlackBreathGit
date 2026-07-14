@@ -101,7 +101,7 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     }
   }
 
-  public void PlayDamageImpact(Color color, bool critico, int tipoDanio)
+  public void PlayDamageImpact(Color color, bool critico, int tipoDanio, bool omitirFlashPantalla = false)
   {
     colorImpacto = AjustarColorImpacto(color, tipoDanio, false);
     impactoCritico = critico;
@@ -111,17 +111,17 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     duracionImpactoActual = critico ? duracionImpactoCritico : duracionImpacto;
     tiempoImpactoRestante = duracionImpactoActual;
 
-    if (critico)
+    if (!omitirFlashPantalla && critico)
     {
       ScreenFlash.FlashImpact(colorImpacto, 0.07f, 0.01f, 0.09f, 0f);
     }
-    else if (tipoDanio >= 4)
+    else if (!omitirFlashPantalla && tipoDanio >= 4)
     {
       ScreenFlash.FlashImpact(colorImpacto, 0.02f, 0.008f, 0.06f, 0f);
     }
   }
 
-  public void PlayGuardImpact(Color color)
+  public void PlayGuardImpact(Color color, bool omitirFlashPantalla = false)
   {
     colorImpacto = AjustarColorImpacto(color, 0, true);
     impactoCritico = false;
@@ -130,7 +130,10 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     tipoImpacto = 0;
     duracionImpactoActual = duracionImpacto * 0.85f;
     tiempoImpactoRestante = duracionImpactoActual;
-    ScreenFlash.FlashImpact(colorImpacto, 0.012f, 0.008f, 0.05f, 0f);
+    if (!omitirFlashPantalla)
+    {
+      ScreenFlash.FlashImpact(colorImpacto, 0.012f, 0.008f, 0.05f, 0f);
+    }
   }
 
   public void PlaySaveSuccess(int tipo)

@@ -382,13 +382,13 @@ public class Consumible : Item
 
     private void RemoverEstadosNegativos(Unidad unidad)
     {
-        unidad.estado_ardiendo = 0;
-        unidad.estado_congelado = 0;
-        unidad.estado_aturdido = 0;
-        unidad.estado_inmovil = 0;
-        unidad.estado_acido = 0;
-        unidad.estado_sangrado = 0;
-        unidad.estado_veneno = 0;
+        if (unidad.estado_ardiendo > 0) { unidad.estado_ardiendo = 0; }
+        if (unidad.estado_congelado > 0) { unidad.estado_congelado = 0; }
+        if (unidad.estado_aturdido > 0) { unidad.estado_aturdido = 0; }
+        if (unidad.estado_inmovil > 0) { unidad.estado_inmovil = 0; }
+        if (unidad.estado_acido > 0) { unidad.estado_acido = 0; }
+        if (unidad.estado_sangrado > 0) { unidad.estado_sangrado = 0; }
+        if (unidad.estado_veneno > 0) { unidad.estado_veneno = 0; }
         unidad.estado_APModificador = 0;
         unidad.estado_ResistenciasReducidas = 0;
         unidad.estado_Condenado = 0;

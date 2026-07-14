@@ -188,7 +188,7 @@ public override object EstablecerObjetivoPrioritario()
 
 void AplicaEfectoTirada(Unidad unidad, int extraDC)
 {
-   unidad.estado_ardiendo = 2;
+   Estados.Aplicar_Ardiendo(unidad, 2, scEstaUnidad);
 }
 
 }

@@ -120,7 +120,7 @@ public class IACorteHozEfigie : IAHabilidad
         objetivo.RecibirDanio(danio + 2, tipoDanio, false, scEstaUnidad);
         VFXAplicar(objetivo.gameObject);
         
-        objetivo.estado_sangrado += 2; //Aplica 2 stacks de sangrado
+        Estados.Aplicar_Sangrado(objetivo, 2, scEstaUnidad);
 
 
       
@@ -135,7 +135,7 @@ public class IACorteHozEfigie : IAHabilidad
         VFXAplicar(objetivo.gameObject);
 
 
-         objetivo.estado_sangrado += 3; //Aplica 2 stacks de sangrado
+         Estados.Aplicar_Sangrado(objetivo, 3, scEstaUnidad);
 
 
         objetivo.RecibirDanio(danio + 4, tipoDanio, true, scEstaUnidad);

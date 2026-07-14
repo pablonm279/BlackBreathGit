@@ -5785,6 +5785,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 0
+  ignoraProvocacion: 0
   prioridad: 10
   costoAP: 2
   pPrioridad: 10
@@ -5811,7 +5812,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.72, y: 0.95, z: 0.42}
+  m_Size: {x: 0.81, y: 0.95, z: 0.42}
   m_Center: {x: -0.14, y: 0.34, z: 0}
 --- !u!114 &6262378611950485550
 MonoBehaviour:
@@ -5829,6 +5830,7 @@ MonoBehaviour:
   bPuedeVerEscondidos: 0
   unicoEnCombate: 1
   tierEnemigo: 2
+  siempreEnRetaguardiaInicial: 0
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0
@@ -5861,6 +5863,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 1
+  ignoraProvocacion: 0
   prioridad: 3
   costoAP: 3
   pPrioridad: 3

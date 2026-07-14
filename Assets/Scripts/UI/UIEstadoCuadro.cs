@@ -7,8 +7,12 @@ using UnityEngine.EventSystems;
 using Unity.VisualScripting;
 using System.Collections.Generic;
 
-public class UIEstadoCuadro : MonoBehaviour
+public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
 {
+  // El icono se dibuja muy chico en los canvas de las unidades. Ampliamos solo
+  // su zona de hover; el filtro de raycast de abajo resuelve los solapamientos.
+  private static readonly Vector4 PaddingRaycast = new Vector4(16f, 16f, 16f, 16f);
+
   public int indexEstadoRepresentado;
   private Image Retrato;
   private static readonly Dictionary<string, Sprite> CacheSpritesFallback = new Dictionary<string, Sprite>();
@@ -26,6 +30,10 @@ public class UIEstadoCuadro : MonoBehaviour
   void Awake()
   {
     Retrato = gameObject.GetComponent<Image>();
+    if (Retrato != null)
+    {
+      Retrato.raycastPadding = PaddingRaycast;
+    }
 
   }
 
@@ -62,7 +70,62 @@ public class UIEstadoCuadro : MonoBehaviour
     if (Retrato == null)
     {
       Retrato = gameObject.GetComponent<Image>();
+      if (Retrato != null)
+      {
+        Retrato.raycastPadding = PaddingRaycast;
+      }
     }
+  }
+
+  public bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
+  {
+    Transform contenedor = transform.parent;
+    if (contenedor == null)
+    {
+      return true;
+    }
+
+    UIEstadoCuadro masCercano = this;
+    float distanciaMasCercana = DistanciaCuadradaAlCentro(screenPoint, eventCamera);
+
+    for (int i = 0; i < contenedor.childCount; i++)
+    {
+      UIEstadoCuadro candidato = contenedor.GetChild(i).GetComponent<UIEstadoCuadro>();
+      if (candidato == null || !candidato.isActiveAndEnabled || !candidato.EstaDentroDelAreaRaycast(screenPoint, eventCamera))
+      {
+        continue;
+      }
+
+      float distancia = candidato.DistanciaCuadradaAlCentro(screenPoint, eventCamera);
+      if (distancia < distanciaMasCercana)
+      {
+        masCercano = candidato;
+        distanciaMasCercana = distancia;
+      }
+    }
+
+    return masCercano == this;
+  }
+
+  private float DistanciaCuadradaAlCentro(Vector2 screenPoint, Camera eventCamera)
+  {
+    Vector2 centro = RectTransformUtility.WorldToScreenPoint(eventCamera, transform.position);
+    return (screenPoint - centro).sqrMagnitude;
+  }
+
+  private bool EstaDentroDelAreaRaycast(Vector2 screenPoint, Camera eventCamera)
+  {
+    RectTransform rectTransform = transform as RectTransform;
+    if (rectTransform == null || !RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, screenPoint, eventCamera, out Vector2 puntoLocal))
+    {
+      return false;
+    }
+
+    Rect rect = rectTransform.rect;
+    return puntoLocal.x >= rect.xMin - PaddingRaycast.x
+      && puntoLocal.x <= rect.xMax + PaddingRaycast.z
+      && puntoLocal.y >= rect.yMin - PaddingRaycast.y
+      && puntoLocal.y <= rect.yMax + PaddingRaycast.w;
   }
 
   public Sprite imArdiendo;
@@ -561,6 +624,3 @@ public class UIEstadoCuadro : MonoBehaviour
  
  
 }
-
-
-

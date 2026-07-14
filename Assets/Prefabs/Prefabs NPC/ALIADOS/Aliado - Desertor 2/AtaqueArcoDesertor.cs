@@ -29,8 +29,9 @@ public class AtaqueArcoDesertor : IAHabilidad
       hCooldownMax = 0;
       esHostil = true;
       prioridad = pPrioridad;
-      costoAP = 2;
+      costoAP = 3;
       afectaObstaculos = true;
+      ocultarRotuloHabilidad = true;
       
 
 
@@ -239,5 +240,4 @@ public class AtaqueArcoDesertor : IAHabilidad
   
  
   
-
 

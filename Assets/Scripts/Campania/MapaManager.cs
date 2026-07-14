@@ -23,6 +23,8 @@ public class MapaManager : MonoBehaviour
     const float AlphaVignetaIntroCampania = 0.72f;
     const float DuracionFadeVignetaIntroCampania = 0.18f;
     const int SortingOrderVignetaIntroCampania = 32000;
+    const string PrefGraficosIndex = "graficos_index";
+    const int CalidadGraficaBaja = 0;
     bool inicioCompletado;
     bool generacionDiferidaPendiente;
     bool omitirAutoGeneracionEnStart;
@@ -215,6 +217,12 @@ public class MapaManager : MonoBehaviour
         CampaignManager campaignManager = CampaignManager.Instance;
         if (campaignManager == null || origen == null || introCampaniaEnPreparacion || !campaignManager.IntroCampaniaActivaOPendiente)
         {
+            return;
+        }
+
+        if (DebeOmitirIntroCampaniaPorCalidadBaja())
+        {
+            FinalizarIntroCampaniaSinAnimacion(origen, campaignManager);
             return;
         }
 
@@ -575,6 +583,25 @@ public class MapaManager : MonoBehaviour
         }
 
         Destroy(vignetaRoot);
+    }
+
+    bool DebeOmitirIntroCampaniaPorCalidadBaja()
+    {
+        int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
+        return calidadActual <= CalidadGraficaBaja;
+    }
+
+    void FinalizarIntroCampaniaSinAnimacion(Nodo origen, CampaignManager campaignManager)
+    {
+        introCampaniaEnPreparacion = false;
+
+        if (origen != null)
+        {
+            origen.PosicionarObjetoEnNodo(goCaravana);
+        }
+
+        AlinearConvoyAlSuelo();
+        campaignManager?.FinalizarIntroCampania();
     }
 
     void FinalizarIntroCampaniaConFallback(Nodo origen, CampaignManager campaignManager, string motivo)

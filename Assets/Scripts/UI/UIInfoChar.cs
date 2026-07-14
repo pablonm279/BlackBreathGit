@@ -987,6 +987,10 @@ public class UIInfoChar : MonoBehaviour
    {
       desc = TRADU.i.Traducir("<i>Esta bruja ha sido deformada por las llamas y corrompida la presencia del Aliento Negro. </i>\n\n<color=#199F10>Crea Enredaderas.\n-Ataque de rango que no falla.\n-Estertor Mortal.</color><color=#EE0000>-Poco resistente.</color>");
    }
+   if (unidadMostrada.uNombre == "Pústula Corrompida")
+   {
+      desc = TRADU.i.Traducir("<i>Esta masa de carne y viscocidad corrompida parece aún conservar vida. Se mueve lentamente con el propósito de inmolarse y terminar su propio sufrimiento. </i>\n\n<color=#199F10>Resistente.\n-Explosiva en zona.\n-Deja masa contaminada.</color><color=#EE0000>-Lenta.</color>");
+   }
    
   
    return desc;

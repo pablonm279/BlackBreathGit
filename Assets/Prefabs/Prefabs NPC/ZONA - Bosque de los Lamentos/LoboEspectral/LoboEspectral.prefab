@@ -344,8 +344,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.39, y: 0.88, z: 0.42}
-  m_Center: {x: 0, y: 0.62, z: 0}
+  m_Size: {x: 0.51, y: 0.88, z: 0.42}
+  m_Center: {x: -0.15, y: 0.62, z: 0}
 --- !u!114 &4025668627226190853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,6 +362,7 @@ MonoBehaviour:
   bPuedeVerEscondidos: 0
   unicoEnCombate: 0
   tierEnemigo: 1
+  siempreEnRetaguardiaInicial: 0
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0
@@ -394,6 +395,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 1
+  ignoraProvocacion: 0
   prioridad: 1
   costoAP: 1
   pPrioridad: 1

@@ -192,7 +192,7 @@ public override object EstablecerObjetivoPrioritario()
   {
     if (unidad.TiradaSalvacion(1, 10 + extraDC))
     {
-      unidad.estado_sangrado = 2;
+       Estados.Aplicar_Sangrado(unidad, 2, scEstaUnidad);
 
       /////////////////////////////////////////////
       //BUFF ---- As� se aplica un buff/debuff

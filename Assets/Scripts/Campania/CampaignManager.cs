@@ -110,6 +110,9 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private KeyCode teclaDebugBajoMouse = KeyCode.F10;
   [SerializeField] private int maxHitsDebugBajoMouse = 12;
   private Nodo nodoHoverCampaniaActual;
+  private readonly List<RaycastResult> resultadosRaycastUICampania = new List<RaycastResult>();
+  private PointerEventData pointerRaycastUICampania;
+  private EventSystem eventSystemRaycastUICampania;
 
   public GameObject prefabTextoRecursos;
   [SerializeField] private float recursoTextoStackOffsetY = 16f;
@@ -204,18 +207,18 @@ public class CampaignManager : MonoBehaviour
 
   public AdministradorEscenas scAdministradorEscenas;
 
-  // Cola de textos flotantes para evitar solapamientos (mínimo 0.5s entre spawns)
+  // Cola y reacomodo de textos flotantes para evitar solapamientos.
   [SerializeField] private float gapEntreMensajes = 0.5f;
   [SerializeField] private bool usarTextoFlotanteManager = false;
-  [SerializeField] private float yStackOffset = 28f;            // desplazamiento vertical entre mensajes simultáneos
-  [SerializeField] private float stackWindowSeconds = 1.2f;     // ventana donde consideramos mensajes "cercanos" al origen
+  [SerializeField] private float yStackOffset = 28f;            // separación vertical mínima entre mensajes visibles
+  [SerializeField, Min(0f)] private float duracionEntradaTextoFlotante = 0.35f;
   private readonly Queue<(string, Color)> colaTextos = new Queue<(string, Color)>();
   private readonly Queue<(string, Color)> colaTextosSuspendidosCampania = new Queue<(string, Color)>();
+  private readonly List<(RectTransform contenedor, RectTransform rectTexto, float altura)> textosFlotantesCampaniaActivos = new List<(RectTransform, RectTransform, float)>();
   private bool procesandoCola;
   private int bloqueoTextosFlotantesCampania;
   private int bloqueoTextosRecursosCampania;
   private float tiempoUltimoSpawnTiempoReal = float.NegativeInfinity;
-  private readonly List<float> recentSpawnTimes = new List<float>();
   private Coroutine rutinaTextoFlotanteCampania;
   private readonly Dictionary<TextMeshProUGUI, string> textosOriginalesDerrotaTMP = new Dictionary<TextMeshProUGUI, string>();
   private readonly Dictionary<Text, string> textosOriginalesDerrotaLegacy = new Dictionary<Text, string>();
@@ -1582,7 +1585,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     colaTextosRecursos.Clear();
     colaTextosRecursosSuspendidos.Clear();
     textosRecursosRecientes.Clear();
-    recentSpawnTimes.Clear();
+    LimpiarTextosFlotantesCampaniaActivos();
     tiempoUltimoSpawnTiempoReal = float.NegativeInfinity;
     RestaurarCursorCampaniaPredeterminado();
   }
@@ -5165,6 +5168,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     return 0;
+  }
+
+  public bool HayBatallaPendiente()
+  {
+    return ObtenerTipoCombatePendiente() > 0;
   }
 
   bool PuedeAcamparEnNodo(Nodo nodo)
@@ -9642,8 +9650,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   Nodo ObtenerNodoBajoMouseCampania()
   {
-    if (EventSystem.current != null
-        && EventSystem.current.IsPointerOverGameObject()
+    if (!Application.isFocused)
+    {
+      return null;
+    }
+
+    if (EstaPunteroSobreUICampania()
         && !DebePermitirRaycastNodosBajoUITutorial())
     {
       return null;
@@ -9691,6 +9703,27 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     return null;
   }
 
+  bool EstaPunteroSobreUICampania()
+  {
+    EventSystem eventSystemActual = EventSystem.current;
+    if (eventSystemActual == null)
+    {
+      return false;
+    }
+
+    if (pointerRaycastUICampania == null || eventSystemRaycastUICampania != eventSystemActual)
+    {
+      eventSystemRaycastUICampania = eventSystemActual;
+      pointerRaycastUICampania = new PointerEventData(eventSystemActual);
+    }
+
+    pointerRaycastUICampania.Reset();
+    pointerRaycastUICampania.position = Input.mousePosition;
+    resultadosRaycastUICampania.Clear();
+    eventSystemActual.RaycastAll(pointerRaycastUICampania, resultadosRaycastUICampania);
+    return resultadosRaycastUICampania.Count > 0;
+  }
+
   bool DebePermitirRaycastNodosBajoUITutorial()
   {
     TutorialDirector tutorial = TutorialDirector.Instance;
@@ -9699,6 +9732,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       && tutorial.IsRunning
       && pasoTutorial != null
       && EsPasoInteraccionNodoTutorial(pasoTutorial);
+  }
+
+  private void LateUpdate()
+  {
+    LimpiarRegistrosTextosFlotantesCampaniaDestruidos();
   }
 
   static bool EsPasoInteraccionNodoTutorial(TutorialStep pasoTutorial)
@@ -10113,20 +10151,15 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       }
       else
       {
-        // Manejo local: instancia el prefab directamente
-        GameObject goTextoFlotante = Instantiate(prefabTextoCampaña, puntoPantalla.transform, false);
-
-        // Calcula desplazamiento vertical según cuántos spawns recientes hay aún cerca del origen
-        float tiempoActual = Time.unscaledTime;
-        recentSpawnTimes.RemoveAll(t => tiempoActual - t > stackWindowSeconds);
-        int stackIndex = recentSpawnTimes.Count; // 0 para el primero, 1 para el segundo, etc.
-        var rt = goTextoFlotante.GetComponent<RectTransform>();
-        if (rt != null && stackIndex > 0)
-        {
-          rt.anchoredPosition += new Vector2(0f, -yStackOffset * stackIndex);
-        }
+        // El contenedor conserva el desplazamiento correctivo aunque el Animator
+        // del prefab escriba su propia anchoredPosition en cada frame.
+        RectTransform contenedor = CrearContenedorTextoFlotanteCampania();
+        Transform padre = contenedor != null ? contenedor : puntoPantalla.transform;
+        GameObject goTextoFlotante = Instantiate(prefabTextoCampaña, padre, false);
+        RectTransform rt = goTextoFlotante.GetComponent<RectTransform>();
 
         TextMeshProUGUI txtMesh = goTextoFlotante.GetComponentInChildren<TextMeshProUGUI>();
+        FloatingTextBackground fondoTexto = null;
         if (txtMesh != null)
         {
           TMP_SpriteAsset spriteAssetRecursos = logDeCampania != null ? logDeCampania.SpriteAssetRecursos : null;
@@ -10137,15 +10170,134 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
           txtMesh.text = tx;
           txtMesh.color = col;
-          FloatingTextBackground.Attach(txtMesh);
+          fondoTexto = FloatingTextBackground.Attach(txtMesh);
+          txtMesh.ForceMeshUpdate();
+        }
+
+        CanvasGroup grupoEntrada = contenedor != null ? contenedor.GetComponent<CanvasGroup>() : null;
+        if (grupoEntrada != null)
+        {
+          fondoTexto?.SetExternalAlpha(0f);
+          StartCoroutine(MostrarTextoFlotanteCampaniaSuavemente(grupoEntrada, fondoTexto));
+        }
+
+        if (contenedor != null && rt != null)
+        {
+          float alturaTexto = txtMesh != null
+            ? Mathf.Max(1f, txtMesh.textBounds.size.y)
+            : Mathf.Max(1f, rt.rect.height);
+          LimpiarRegistrosTextosFlotantesCampaniaDestruidos();
+          textosFlotantesCampaniaActivos.Add((contenedor, rt, alturaTexto));
+          PosicionarNuevoTextoFlotanteCampania();
         }
       }
 
       tiempoUltimoSpawnTiempoReal = Time.unscaledTime;
-      recentSpawnTimes.Add(tiempoUltimoSpawnTiempoReal);
     }
     procesandoCola = false;
     rutinaTextoFlotanteCampania = null;
+  }
+
+  private RectTransform CrearContenedorTextoFlotanteCampania()
+  {
+    if (puntoPantalla == null)
+    {
+      return null;
+    }
+
+    GameObject goContenedor = new GameObject("ContenedorTextoFlotanteCampania", typeof(RectTransform), typeof(CanvasGroup));
+    RectTransform contenedor = goContenedor.GetComponent<RectTransform>();
+    contenedor.SetParent(puntoPantalla.transform, false);
+    contenedor.anchorMin = Vector2.zero;
+    contenedor.anchorMax = Vector2.one;
+    contenedor.offsetMin = Vector2.zero;
+    contenedor.offsetMax = Vector2.zero;
+    contenedor.localScale = Vector3.one;
+    goContenedor.GetComponent<CanvasGroup>().alpha = duracionEntradaTextoFlotante > 0f ? 0f : 1f;
+    return contenedor;
+  }
+
+  private IEnumerator MostrarTextoFlotanteCampaniaSuavemente(CanvasGroup grupo, FloatingTextBackground fondo)
+  {
+    float duracion = Mathf.Max(0f, duracionEntradaTextoFlotante);
+    if (duracion <= 0f)
+    {
+      grupo.alpha = 1f;
+      fondo?.SetExternalAlpha(1f);
+      yield break;
+    }
+
+    float transcurrido = 0f;
+    while (transcurrido < duracion && grupo != null)
+    {
+      transcurrido += Time.unscaledDeltaTime;
+      float progreso = Mathf.Clamp01(transcurrido / duracion);
+      float alpha = Mathf.SmoothStep(0f, 1f, progreso);
+      grupo.alpha = alpha;
+      fondo?.SetExternalAlpha(alpha);
+      yield return null;
+    }
+
+    if (grupo != null)
+    {
+      grupo.alpha = 1f;
+    }
+    fondo?.SetExternalAlpha(1f);
+  }
+
+  private void LimpiarRegistrosTextosFlotantesCampaniaDestruidos()
+  {
+    for (int i = textosFlotantesCampaniaActivos.Count - 1; i >= 0; i--)
+    {
+      var registro = textosFlotantesCampaniaActivos[i];
+      if (registro.contenedor != null && registro.rectTexto != null)
+      {
+        continue;
+      }
+
+      if (registro.contenedor != null)
+      {
+        Destroy(registro.contenedor.gameObject);
+      }
+      textosFlotantesCampaniaActivos.RemoveAt(i);
+    }
+  }
+
+  private void PosicionarNuevoTextoFlotanteCampania()
+  {
+    int indiceNuevo = textosFlotantesCampaniaActivos.Count - 1;
+    if (indiceNuevo < 0)
+    {
+      return;
+    }
+
+    var registroNuevo = textosFlotantesCampaniaActivos[indiceNuevo];
+    float desplazamientoFijo = 0f;
+    for (int anterior = 0; anterior < indiceNuevo; anterior++)
+    {
+      var registroAnterior = textosFlotantesCampaniaActivos[anterior];
+      float separacionPorAltura = (registroAnterior.altura + registroNuevo.altura) * 0.5f + 6f;
+      float separacionMinima = Mathf.Max(yStackOffset, separacionPorAltura);
+      float desplazamientoDebajo = registroAnterior.contenedor.anchoredPosition.y - separacionMinima;
+      desplazamientoFijo = Mathf.Min(desplazamientoFijo, desplazamientoDebajo);
+    }
+
+    Vector2 posicionContenedor = registroNuevo.contenedor.anchoredPosition;
+    posicionContenedor.y = desplazamientoFijo;
+    registroNuevo.contenedor.anchoredPosition = posicionContenedor;
+  }
+
+  private void LimpiarTextosFlotantesCampaniaActivos()
+  {
+    for (int i = 0; i < textosFlotantesCampaniaActivos.Count; i++)
+    {
+      RectTransform contenedor = textosFlotantesCampaniaActivos[i].contenedor;
+      if (contenedor != null)
+      {
+        Destroy(contenedor.gameObject);
+      }
+    }
+    textosFlotantesCampaniaActivos.Clear();
   }
 
   public void BorrarLog()

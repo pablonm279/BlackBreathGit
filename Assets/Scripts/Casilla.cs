@@ -257,6 +257,7 @@ public class Casilla : MonoBehaviour
       && BattleManager.Instance.VistaTacticaActiva
       && spriteVistaTactica != null
       && spriteVistaTactica.gameObject.activeSelf
+      && MouseSobreImagenVistaTactica()
       && unidadPresente != null;
 
     hoverVistaTactica = mostrarPulso;
@@ -299,6 +300,68 @@ public class Casilla : MonoBehaviour
   {
     hoverVistaTactica = false;
     ActualizarInfoHoverVistaTactica(null);
+  }
+
+  private bool DebeIgnorarInputUnidadVistaTactica()
+  {
+    return BattleManager.Instance != null
+      && BattleManager.Instance.VistaTacticaActiva
+      && Presente != null
+      && Presente.GetComponent<Unidad>() != null
+      && !MouseSobreImagenVistaTactica();
+  }
+
+  private bool MouseSobreImagenVistaTactica()
+  {
+    if (spriteVistaTactica == null || !spriteVistaTactica.gameObject.activeInHierarchy || spriteVistaTactica.sprite == null)
+    {
+      return false;
+    }
+
+    Camera camara = Camera.main;
+    if (camara == null)
+    {
+      return false;
+    }
+
+    Bounds bounds = spriteVistaTactica.bounds;
+    Vector3 centro = bounds.center;
+    Vector3 ext = bounds.extents;
+    Vector3[] esquinas =
+    {
+      centro + new Vector3(-ext.x, -ext.y, -ext.z),
+      centro + new Vector3(-ext.x, -ext.y, ext.z),
+      centro + new Vector3(-ext.x, ext.y, -ext.z),
+      centro + new Vector3(-ext.x, ext.y, ext.z),
+      centro + new Vector3(ext.x, -ext.y, -ext.z),
+      centro + new Vector3(ext.x, -ext.y, ext.z),
+      centro + new Vector3(ext.x, ext.y, -ext.z),
+      centro + new Vector3(ext.x, ext.y, ext.z)
+    };
+
+    Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
+    Vector2 max = new Vector2(float.MinValue, float.MinValue);
+    bool algunaEsquinaValida = false;
+
+    foreach (Vector3 esquina in esquinas)
+    {
+      Vector3 pantalla = camara.WorldToScreenPoint(esquina);
+      if (pantalla.z < 0f)
+      {
+        continue;
+      }
+
+      algunaEsquinaValida = true;
+      min = Vector2.Min(min, pantalla);
+      max = Vector2.Max(max, pantalla);
+    }
+
+    if (!algunaEsquinaValida)
+    {
+      return false;
+    }
+
+    return new Rect(min, max - min).Contains(Input.mousePosition);
   }
 
   private static Vector2 ObtenerTamanoSpriteVistaTactica(Sprite sprite)
@@ -1075,6 +1138,11 @@ public class Casilla : MonoBehaviour
       return;
     }
 
+    if (DebeIgnorarInputUnidadVistaTactica())
+    {
+      return;
+    }
+
     if (await TryResolverObjetivoUnidadVistaTactica())
     {
       return;
@@ -1336,7 +1404,8 @@ public class Casilla : MonoBehaviour
       || battleManager.SeleccionandoObjetivo
       || battleManager.HabilidadActiva != null
       || battleManager.scUIInfoChar == null
-      || Presente == null)
+      || Presente == null
+      || !MouseSobreImagenVistaTactica())
     {
       return false;
     }
@@ -1364,7 +1433,8 @@ public class Casilla : MonoBehaviour
       || !battleManager.SeleccionandoObjetivo
       || battleManager.HabilidadActiva == null
       || battleManager.bOcupado
-      || Presente == null)
+      || Presente == null
+      || !MouseSobreImagenVistaTactica())
     {
       return false;
     }
@@ -1907,6 +1977,11 @@ public class Casilla : MonoBehaviour
   public void OnMouseOver()
   {
     SetHoverVistaTactica(true);
+    if (DebeIgnorarInputUnidadVistaTactica())
+    {
+      return;
+    }
+
     ActualizarHoverMovimientoVisual();
     ActualizarPulsoObjetivoHabilidad();
 
@@ -2763,6 +2838,7 @@ public class Casilla : MonoBehaviour
           SetActiveIfChanged(Mover, false);
           SetActiveIfChanged(MoverCostoso, false);
           SetActiveIfChanged(Borde, false);
+          SetActiveIfChanged(Actual, false);
           SetActiveIfChanged(OcupadoNegro, true);
           SetActiveIfChanged(Desplazable, true);
         }

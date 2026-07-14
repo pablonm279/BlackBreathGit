@@ -42,9 +42,9 @@ public class Abrojo : Trampa
     if (objetivo.TiradaSalvacion(2, DC))
     {
       rand *= 2;
-      objetivo.estado_sangrado += 4;
-      if(NIVEL == 5){ objetivo.CambiarAPActual(-1); }
-      if (NIVEL == 4) { objetivo.estado_sangrado += 1; }
+       int stacksSangrado = 4 + (NIVEL == 4 ? 1 : 0);
+       Estados.Aplicar_Sangrado(objetivo, stacksSangrado, unidadCreadora);
+       if(NIVEL == 5){ objetivo.CambiarAPActual(-1); }
 
     }
 

@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9433962, g: 0.9433962, b: 0.9433962, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -553,6 +553,7 @@ MonoBehaviour:
   bPuedeVerEscondidos: 0
   unicoEnCombate: 0
   tierEnemigo: 1
+  siempreEnRetaguardiaInicial: 0
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0
@@ -699,6 +700,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 0
+  ignoraProvocacion: 0
   prioridad: 0
   costoAP: 0
   pPrioridad: 0

@@ -535,9 +535,8 @@ public class DisparoEnvenenado : Habilidad
     if (objetivo.TiradaSalvacion(1, DC))
     {
 
-      objetivo.estado_veneno += 2;
-      if (NIVEL > 1) { objetivo.estado_veneno += 1; }
-      if (NIVEL == 4) { objetivo.estado_veneno += 2;}
+       int stacksVeneno = 2 + (NIVEL > 1 ? 1 : 0) + (NIVEL == 4 ? 2 : 0);
+       Estados.Aplicar_Veneno(objetivo, stacksVeneno, scEstaUnidad);
 
 
 

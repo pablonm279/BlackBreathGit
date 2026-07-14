@@ -398,14 +398,14 @@ public class CorteHorizontal : Habilidad
        {
         if(Objetivo.TiradaSalvacion(1, 12))
         {
-           Objetivo.estado_sangrado += 3;
+           Estados.Aplicar_Sangrado(Objetivo, 3, scEstaUnidad);
             
         }
        }else //Si es nivel 4b, +1DC sangrado +1 stack
        {
          if(Objetivo.TiradaSalvacion(1, 13))
         {
-          Objetivo.estado_sangrado += 4;
+          Estados.Aplicar_Sangrado(Objetivo, 4, scEstaUnidad);
             
         }
        }

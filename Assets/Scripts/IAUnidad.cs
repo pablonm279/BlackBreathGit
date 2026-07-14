@@ -36,6 +36,7 @@ public class IAUnidad : MonoBehaviour
    [Header("Composicion")]
    public bool unicoEnCombate = false; // Si esta activo, no puede haber mas de 1 en la composicion inicial enemiga.
    public int tierEnemigo = 1;
+   public bool siempreEnRetaguardiaInicial = false;
 
    public int costoMovimientoAP = 1; //Cuanto gasta de AP al moverse 
 
@@ -1216,6 +1217,11 @@ public class IAUnidad : MonoBehaviour
          return SincronizarObjetivosHabilidad(habilidad, objetivosBase);
       }
 
+      if (habilidad.ignoraProvocacion)
+      {
+         return SincronizarObjetivosHabilidad(habilidad, objetivosBase);
+      }
+
       if (!BattleManager.Instance.TryFiltrarObjetivosHostilesPorProvocacion(scUnidad, habilidad.esHostil, objetivosBase, out List<object> objetivosFiltrados))
       {
          habilidad.objPosibles.Clear();
@@ -1282,6 +1288,10 @@ public class IAUnidad : MonoBehaviour
             if (tareaCompletada == habilidadTask)
             {
                await habilidadTask; // Repropaga excepciones si las hay
+               if (BattleManager.Instance == null || BattleManager.Instance.unidadActiva != scUnidad)
+               {
+                  return true;
+               }
                await EsperarSecuenciaVisualAsync(habilidad, timings);
                return true;
             }
@@ -1290,6 +1300,10 @@ public class IAUnidad : MonoBehaviour
             if (gracia == habilidadTask)
             {
                await habilidadTask;
+               if (BattleManager.Instance == null || BattleManager.Instance.unidadActiva != scUnidad)
+               {
+                  return true;
+               }
                await EsperarSecuenciaVisualAsync(habilidad, timings);
                return true;
             }

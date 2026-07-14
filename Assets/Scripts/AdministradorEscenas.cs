@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.TextCore;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -174,6 +175,40 @@ public class AdministradorEscenas : MonoBehaviour
     {
       go.SetActive(activo);
     }
+  }
+
+  void ConfigurarEventSystemCompartido()
+  {
+    EventSystem eventSystemCompartido = EscenaCampaign != null
+      ? EscenaCampaign.GetComponentInChildren<EventSystem>(true)
+      : null;
+
+    if (eventSystemCompartido == null && EscenaBatalla != null)
+    {
+      eventSystemCompartido = EscenaBatalla.GetComponentInChildren<EventSystem>(true);
+    }
+
+    if (eventSystemCompartido == null)
+    {
+      Debug.LogWarning("[AdministradorEscenas] No se encontro un EventSystem para compartir entre campania y batalla.");
+      return;
+    }
+
+    eventSystemCompartido.transform.SetParent(transform, false);
+    eventSystemCompartido.gameObject.SetActive(true);
+    eventSystemCompartido.enabled = true;
+
+    EventSystem[] eventSystems = GetComponentsInChildren<EventSystem>(true);
+    for (int i = 0; i < eventSystems.Length; i++)
+    {
+      EventSystem eventSystem = eventSystems[i];
+      if (eventSystem != null && eventSystem != eventSystemCompartido)
+      {
+        eventSystem.gameObject.SetActive(false);
+      }
+    }
+
+    EventSystem.current = eventSystemCompartido;
   }
 
   void ResolverReferenciasVfxAlientoNegroBatalla()
@@ -1000,6 +1035,7 @@ public class AdministradorEscenas : MonoBehaviour
 
   IEnumerator Start()
   {
+    ConfigurarEventSystemCompartido();
     RefrescarUICompartidaSegunEscena();
 
     if (mantenerFaderNegroEnProximaCargaCampania)
@@ -1983,7 +2019,7 @@ public class AdministradorEscenas : MonoBehaviour
       return;
     }
 
-    int cantidadTrampasPorLado = UnityEngine.Random.Range(1, 5) + 1;
+    int cantidadTrampasPorLado = UnityEngine.Random.Range(1, 4) + 1;
     ColocarTrampasDeFuegoNodoIncendiado(cantidadTrampasPorLado, BattleManager.Instance.ladoA);
     ColocarTrampasDeFuegoNodoIncendiado(cantidadTrampasPorLado, BattleManager.Instance.ladoB);
   }
@@ -3899,18 +3935,22 @@ public class AdministradorEscenas : MonoBehaviour
     LadoManager lado = iLado == 1 ? BattleManager.Instance.ladoB : BattleManager.Instance.ladoA;
 
     List<int> columnasPreferidas = null;
+    bool requiereRetaguardiaInicial = false;
     if (iLado != 1)
     {
       IAUnidad iaUnidad = GO.GetComponent<IAUnidad>();
       if (iaUnidad != null)
       {
-        columnasPreferidas = iaUnidad.esRango ? new List<int> { 1 } : new List<int> { 2, 3 };
+        requiereRetaguardiaInicial = iaUnidad.siempreEnRetaguardiaInicial;
+        columnasPreferidas = requiereRetaguardiaInicial
+          ? new List<int> { 1 }
+          : iaUnidad.esRango ? new List<int> { 1 } : new List<int> { 2, 3 };
       }
     }
 
     bool colocado = IntentarColocar(GO, lado, columnasPreferidas);
 
-    if (!colocado && columnasPreferidas != null)
+    if (!colocado && columnasPreferidas != null && !requiereRetaguardiaInicial)
     {
       colocado = IntentarColocar(GO, lado, new List<int> { 1, 2, 3 });
     }
@@ -4120,6 +4160,13 @@ public class AdministradorEscenas : MonoBehaviour
       lado = BattleManager.Instance.ladoB; //Player
     }
     else { lado = BattleManager.Instance.ladoA; } //Enemigos
+
+    IAUnidad iaUnidad = GO != null ? GO.GetComponent<IAUnidad>() : null;
+    if (iLado != 1 && iaUnidad != null && iaUnidad.siempreEnRetaguardiaInicial && X != 1)
+    {
+      ColocarEnCasillaAleatoriaEnColumna(iLado, 1, GO);
+      return;
+    }
 
     Casilla casillaObjetivo = lado.ObtenerCasillaPorIndex(X, Y);
     if (!CasillaEstaDisponibleParaSpawn(casillaObjetivo))

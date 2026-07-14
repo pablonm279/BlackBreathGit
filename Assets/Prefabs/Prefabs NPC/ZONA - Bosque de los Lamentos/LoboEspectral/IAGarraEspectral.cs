@@ -188,7 +188,7 @@ void AplicaSangradoTirada(Unidad unidad, int extraDC)
 {
    if(unidad.TiradaSalvacion(1, 7+extraDC))
      {
-         unidad.estado_sangrado = 2;
+         Estados.Aplicar_Sangrado(unidad, 2, scEstaUnidad);
      }
 
 }

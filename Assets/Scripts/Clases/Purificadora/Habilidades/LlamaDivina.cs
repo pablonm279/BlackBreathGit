@@ -438,11 +438,8 @@ public class LlamaDivina : Habilidad
        }
        else
        {
-         objetivo.estado_ardiendo += 3;
-         if(NIVEL == 5)
-         {
-           objetivo.estado_ardiendo += 2 ;
-         }
+         int stacksArdiendo = 3 + (NIVEL == 5 ? 2 : 0);
+         Estados.Aplicar_Ardiendo(objetivo, stacksArdiendo, scEstaUnidad);
        }
 
 

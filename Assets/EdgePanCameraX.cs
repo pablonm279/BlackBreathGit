@@ -68,6 +68,15 @@ public class EdgePanCameraZ : MonoBehaviour
     private float zoomVelocidadActual;
     private float zoomVisualActual;
 
+#if UNITY_EDITOR
+    private bool diagnosticoViajeAnterior;
+    private bool diagnosticoTieneMuestra;
+    private int diagnosticoViajeNumero;
+    private int diagnosticoFramesRestantes;
+    private Vector3 diagnosticoCamaraAnterior;
+    private Vector3 diagnosticoCaravanaAnterior;
+#endif
+
     void Awake()
     {
         cam = GetComponent<Camera>();
@@ -370,6 +379,47 @@ public class EdgePanCameraZ : MonoBehaviour
     {
         return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
     }
+
+#if UNITY_EDITOR
+    private void LateUpdate()
+    {
+        bool moviendo = CampaignManager.Instance != null && CampaignManager.Instance.MoviendoCaravana;
+        Vector3 posicionCamara = transform.position;
+        Vector3 posicionCaravana = transform.parent != null ? transform.parent.position : Vector3.zero;
+
+        if (moviendo && !diagnosticoViajeAnterior)
+        {
+            diagnosticoViajeNumero++;
+            diagnosticoFramesRestantes = 45;
+            Debug.Log($"[CameraTravelDiag] START viaje={diagnosticoViajeNumero} frame={Time.frameCount}", this);
+        }
+
+        if (moviendo && diagnosticoFramesRestantes > 0 && diagnosticoTieneMuestra)
+        {
+            Vector3 deltaCamara = posicionCamara - diagnosticoCamaraAnterior;
+            Vector3 deltaCaravana = posicionCaravana - diagnosticoCaravanaAnterior;
+            Vector3 deltaExtra = deltaCamara - deltaCaravana;
+            Debug.Log(
+                $"[CameraTravelDiag] viaje={diagnosticoViajeNumero} frame={Time.frameCount} " +
+                $"cam={posicionCamara.ToString("F4")} dCam={deltaCamara.ToString("F4")} " +
+                $"caravana={posicionCaravana.ToString("F4")} dCaravana={deltaCaravana.ToString("F4")} " +
+                $"extra={deltaExtra.ToString("F4")} local={transform.localPosition.ToString("F4")} " +
+                $"mouseX={Input.mousePosition.x:F1} paneando={estaPaneando}",
+                this);
+            diagnosticoFramesRestantes--;
+        }
+
+        diagnosticoCamaraAnterior = posicionCamara;
+        diagnosticoCaravanaAnterior = posicionCaravana;
+        diagnosticoTieneMuestra = true;
+        diagnosticoViajeAnterior = moviendo;
+
+        if (!moviendo)
+        {
+            diagnosticoFramesRestantes = 0;
+        }
+    }
+#endif
 
     public void RecentrarLocal()
     {

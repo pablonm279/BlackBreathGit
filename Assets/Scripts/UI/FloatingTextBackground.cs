@@ -21,6 +21,7 @@ public class FloatingTextBackground : MonoBehaviour
     private Vector2 horizontalPadding = DefaultHorizontalPadding;
     private float verticalPadding = DefaultVerticalPadding;
     private float alpha = DefaultAlpha;
+    private float externalAlpha = 1f;
 
     public static FloatingTextBackground Attach(TextMeshProUGUI target)
     {
@@ -48,6 +49,7 @@ public class FloatingTextBackground : MonoBehaviour
         horizontalPadding = horizontalPaddingValue;
         verticalPadding = verticalPaddingValue;
         alpha = Mathf.Clamp01(alphaValue);
+        externalAlpha = 1f;
 
         RectTransform parentRect = canvasRect != null ? canvasRect : targetRect != null ? targetRect.parent as RectTransform : null;
         if (targetRect == null || parentRect == null)
@@ -72,6 +74,11 @@ public class FloatingTextBackground : MonoBehaviour
         backgroundImage.sprite = GetSharedSprite();
         backgroundImage.type = Image.Type.Simple;
         backgroundImage.raycastTarget = false;
+    }
+
+    public void SetExternalAlpha(float value)
+    {
+        externalAlpha = Mathf.Clamp01(value);
     }
 
     private void LateUpdate()
@@ -106,7 +113,7 @@ public class FloatingTextBackground : MonoBehaviour
         backgroundRect.sizeDelta = new Vector2(width, height);
 
         Color backgroundColor = Color.black;
-        backgroundColor.a = alpha * targetText.color.a;
+        backgroundColor.a = alpha * targetText.color.a * externalAlpha;
         backgroundImage.color = backgroundColor;
     }
 

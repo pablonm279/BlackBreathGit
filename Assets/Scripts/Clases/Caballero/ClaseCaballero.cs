@@ -445,8 +445,7 @@ public class ClaseCaballero : Unidad
       {
         if (uCausante.TiradaSalvacion(2, 10))
         {
-          uCausante.estado_ardiendo += 1; //Agrega el estado ardiente
-          uCausante.GenerarTextoFlotante(TRADU.i.Traducir("Ardiendo") + " +1", Color.red);
+          Estados.Aplicar_Ardiendo(uCausante, 1, this);
 
         }
 
@@ -461,6 +460,5 @@ public class ClaseCaballero : Unidad
     }
 
 }
-
 
 

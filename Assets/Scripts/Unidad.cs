@@ -330,6 +330,8 @@ public class Unidad : MonoBehaviour
   private int ultimoEstadoVisualEscondido = int.MinValue;
   private bool ultimoOcultamientoTotalPorEscondido;
   private readonly List<Renderer> renderersOcultosPorVistaTactica = new List<Renderer>();
+  private readonly List<Collider> collidersOcultosPorVistaTactica = new List<Collider>();
+  private readonly List<Collider2D> colliders2DOcultosPorVistaTactica = new List<Collider2D>();
   private bool unidadCanvasOcultadoPorVistaTactica;
   private bool imagenOcultadaPorVistaTactica;
   private bool ocultamientoVistaTacticaActivo;
@@ -447,6 +449,12 @@ public class Unidad : MonoBehaviour
   {
     if (activa)
     {
+      if (!ocultamientoVistaTacticaActivo)
+      {
+        BattleManager.Instance?.scUIInfoChar?.LimpiarHover(this);
+        LimpiarVisualObjetivoHover();
+      }
+
       ocultamientoVistaTacticaActivo = true;
       OcultarVisualesPorVistaTactica();
       return;
@@ -486,6 +494,28 @@ public class Unidad : MonoBehaviour
       renderer.enabled = false;
       renderersOcultosPorVistaTactica.Add(renderer);
     }
+
+    foreach (Collider colliderUnidad in GetComponentsInChildren<Collider>(true))
+    {
+      if (colliderUnidad == null || !colliderUnidad.enabled || collidersOcultosPorVistaTactica.Contains(colliderUnidad))
+      {
+        continue;
+      }
+
+      colliderUnidad.enabled = false;
+      collidersOcultosPorVistaTactica.Add(colliderUnidad);
+    }
+
+    foreach (Collider2D colliderUnidad in GetComponentsInChildren<Collider2D>(true))
+    {
+      if (colliderUnidad == null || !colliderUnidad.enabled || colliders2DOcultosPorVistaTactica.Contains(colliderUnidad))
+      {
+        continue;
+      }
+
+      colliderUnidad.enabled = false;
+      colliders2DOcultosPorVistaTactica.Add(colliderUnidad);
+    }
   }
 
   private void RestaurarVisualesPorVistaTactica()
@@ -493,7 +523,9 @@ public class Unidad : MonoBehaviour
     if (!ocultamientoVistaTacticaActivo
       && !unidadCanvasOcultadoPorVistaTactica
       && !imagenOcultadaPorVistaTactica
-      && renderersOcultosPorVistaTactica.Count == 0)
+      && renderersOcultosPorVistaTactica.Count == 0
+      && collidersOcultosPorVistaTactica.Count == 0
+      && colliders2DOcultosPorVistaTactica.Count == 0)
     {
       return;
     }
@@ -518,6 +550,24 @@ public class Unidad : MonoBehaviour
       }
     }
     renderersOcultosPorVistaTactica.Clear();
+
+    foreach (Collider colliderUnidad in collidersOcultosPorVistaTactica)
+    {
+      if (colliderUnidad != null)
+      {
+        colliderUnidad.enabled = true;
+      }
+    }
+    collidersOcultosPorVistaTactica.Clear();
+
+    foreach (Collider2D colliderUnidad in colliders2DOcultosPorVistaTactica)
+    {
+      if (colliderUnidad != null)
+      {
+        colliderUnidad.enabled = true;
+      }
+    }
+    colliders2DOcultosPorVistaTactica.Clear();
     ocultamientoVistaTacticaActivo = false;
 
     ultimoEstadoVisualEscondido = int.MinValue;
@@ -2805,6 +2855,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
   }
 
   private int daniosPendientesSinBonusElemental;
+  private int daniosPendientesSinFlashPantalla;
 
   public void RecibirDanioSinBonusElemental(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignoraArmadura = false)
   {
@@ -2812,8 +2863,20 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos, ignoraArmadura);
   }
 
+  public void RecibirDanioSinFlashPantalla(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignoraArmadura = false)
+  {
+    daniosPendientesSinFlashPantalla++;
+    RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos, ignoraArmadura);
+  }
+
   public async virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignoraArmadura = false)
   {
+    bool omitirFlashPantalla = daniosPendientesSinFlashPantalla > 0;
+    if (omitirFlashPantalla)
+    {
+      daniosPendientesSinFlashPantalla--;
+    }
+
     bool aplicarBonusElemental = daniosPendientesSinBonusElemental <= 0;
     if (!aplicarBonusElemental)
     {
@@ -2836,7 +2899,14 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     {
       if (aplicarBonusElemental)
       {
-        unidadRedirigida.RecibirDanio(danio, tipoDanio, esCritico, uCausante, 0, ignoraArmadura);
+        if (omitirFlashPantalla)
+        {
+          unidadRedirigida.RecibirDanioSinFlashPantalla(danio, tipoDanio, esCritico, uCausante, 0, ignoraArmadura);
+        }
+        else
+        {
+          unidadRedirigida.RecibirDanio(danio, tipoDanio, esCritico, uCausante, 0, ignoraArmadura);
+        }
       }
       else
       {
@@ -3047,7 +3117,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           danioFinal = 0;
           scBattleManager.EscribirLog(CombatLogFormatter.EventoEstado(uNombre + TRADU.i.Traducir(" bloquea el daño con su escudo.")));
           GenerarTextoFlotante(TRADU.i.Traducir("Bloqueado"), Color.cyan, FloatingTextContext.Block);
-          combatFeedbackFx?.PlayGuardImpact(Color.cyan);
+          combatFeedbackFx?.PlayGuardImpact(Color.cyan, omitirFlashPantalla);
           estado_Escudado--;
           textoDanioMostrado = true;
         }
@@ -3061,7 +3131,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       if (danioFinal > 0)
       {
         ReproducirAnimacionRecibirDanio(usarPoseRecibirDanio);
-        combatFeedbackFx?.PlayDamageImpact(colorDanio, esCritico, tipoDanio);
+        combatFeedbackFx?.PlayDamageImpact(colorDanio, esCritico, tipoDanio, omitirFlashPantalla);
         ChequearCorrompidoVsCorrupto(uCausante, danioFinal);
         BajarVuelo();
         estado_evasion = 0;
@@ -3201,7 +3271,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
    
       if (absorbioPorArmadura)
       {
-        combatFeedbackFx?.PlayGuardImpact(new Color(1f, 0.9f, 0.2f, 1f));
+        combatFeedbackFx?.PlayGuardImpact(new Color(1f, 0.9f, 0.2f, 1f), omitirFlashPantalla);
         if (scTextoArmaduraFlash != null)
         {
           scTextoArmaduraFlash.Flash(new Color(1f, 0.9f, 0.2f, 1f));
@@ -4026,7 +4096,6 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
        Herida.boolfDebufftBuff = false;
        Herida.DuracionBuffRondas = -1;
        Herida.ocultarEnBarraVida = true;
-       Herida.cantAtFue -= 1;
        Herida.cantAtAgi -= 1;
        Herida.cantAtPod -= 1;
        Herida.AplicarBuff(this);
@@ -4679,12 +4748,15 @@ public void RecibirCuracion(float curacion, bool magica)
   
  //Cada stack de sangrado previene 2 de curaciÃ³n y se elimina
  float curaFinal = curacion;
- curaFinal -= estado_sangrado*2;
+  curaFinal -= Mathf.Max(estado_sangrado, 0)*2;
  curaFinal -= tejidoCuracMagica; //Resta el tejido curativo mÃ¡gico
  if(curaFinal < 0 ){ curaFinal = 0;}
 
- estado_sangrado -= (int)(curacion/2);
- if(estado_sangrado < 0){estado_sangrado = 0;}
+  if (estado_sangrado > 0)
+  {
+    estado_sangrado -= (int)(curacion/2);
+    if (estado_sangrado < 0) { estado_sangrado = 0; }
+  }
 
  
  if(curaFinal > 0 && HP_actual < mod_maxHP)
@@ -5237,18 +5309,17 @@ public void OnMouseEnter()
       return;
     }
 
-    if (DebeDelegarMouseACasillaPorVistaTactica())
+    if (DebeIgnorarMousePorVistaTactica())
     {
-      CasillaPosicion.OnMouseOver();
       return;
     }
 
-    if (!scBattleManager.SeleccionandoObjetivo)
+    if (!scBattleManager.HoverUnidadesCentralizadoActivo && !scBattleManager.SeleccionandoObjetivo)
     {
       TooltipBatalla.Instance?.HideTooltipSinAnim();
     }
 
-    if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
+    if (!scBattleManager.HoverUnidadesCentralizadoActivo && BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
     {
       BattleManager.Instance.scUIInfoChar.MostrarHover(this);
     }
@@ -5268,9 +5339,8 @@ public void OnMouseOver()
       return;
     }
 
-    if (DebeDelegarMouseACasillaPorVistaTactica())
+    if (DebeIgnorarMousePorVistaTactica())
     {
-      CasillaPosicion.OnMouseOver();
       return;
     }
 
@@ -5280,7 +5350,7 @@ public void OnMouseOver()
     {
        CasillaPosicion.OnMouseOver();
     }
-    else if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
+    else if (!scBattleManager.HoverUnidadesCentralizadoActivo && BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
     {
       BattleManager.Instance.scUIInfoChar.ReaplicarMarcadoPrioritario();
     }
@@ -5293,13 +5363,12 @@ public void OnMouseExit()
       return;
     }
 
-    if (DebeDelegarMouseACasillaPorVistaTactica())
+    if (DebeIgnorarMousePorVistaTactica())
     {
-      CasillaPosicion.OnMouseExit();
       return;
     }
 
-    if (BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
+    if (!scBattleManager.HoverUnidadesCentralizadoActivo && BattleManager.Instance != null && BattleManager.Instance.scUIInfoChar != null)
     {
       BattleManager.Instance.scUIInfoChar.LimpiarHover(this);
     }
@@ -5318,9 +5387,8 @@ public async void OnMouseDown()
       return;
     }
 
-    if (DebeDelegarMouseACasillaPorVistaTactica())
+    if (DebeIgnorarMousePorVistaTactica())
     {
-      CasillaPosicion.OnMouseDown();
       return;
     }
 
@@ -5377,7 +5445,7 @@ public async void OnMouseDown()
     }
 }
 
-private bool DebeDelegarMouseACasillaPorVistaTactica()
+private bool DebeIgnorarMousePorVistaTactica()
 {
   BattleManager battleManager = BattleManager.Instance;
   return battleManager != null

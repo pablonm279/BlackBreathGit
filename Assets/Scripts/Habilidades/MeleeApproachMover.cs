@@ -26,6 +26,8 @@ public class MeleeApproachMover : MonoBehaviour
   private float ultimaDuracionVuelta;
   private readonly System.Threading.SemaphoreSlim lockMovimiento = new System.Threading.SemaphoreSlim(1, 1);
   private bool lockTomado;
+  private bool retornoTemporalmenteBloqueado;
+  private TaskCompletionSource<bool> desbloqueoRetorno;
 
   // Pose
   private UnidadPoseController poseController;
@@ -118,10 +120,12 @@ public class MeleeApproachMover : MonoBehaviour
 
   public async Task VolverAPosicionInicialAsync(bool forzar = false)
   {
+    await EsperarDesbloqueoRetornoAsync();
     if (!posicionRetorno.HasValue || unidad == null) { posicionRetorno = null; adelantado = false; mantenerAdelante = false; RestaurarPose(); LiberarLock(); return; }
     if (mantenerAdelante && !forzar) return;
 
     await BattleManager.DelayCombateAsync(Mathf.Max(0, Mathf.RoundToInt(demoraAntesDeVolver * 1000f)));
+    await EsperarDesbloqueoRetornoAsync();
 
     Vector3 origen = unidad.transform.position;
     Vector3 destino = posicionRetorno.Value;
@@ -130,12 +134,53 @@ public class MeleeApproachMover : MonoBehaviour
     unidad.FinalizarPoseAtaqueSostenida(false);
     AplicarPoseMovimiento();
 
-    await AnimarWorld(unidad.transform, origen, destino, ultimaDuracionVuelta);
+    await AnimarWorld(unidad.transform, origen, destino, ultimaDuracionVuelta, true);
 
     adelantado = false;
     mantenerAdelante = false;
     RestaurarPose();
     LiberarLock();
+  }
+
+  public bool TieneAproximacionActiva()
+  {
+    return adelantado && posicionRetorno.HasValue;
+  }
+
+  public void BloquearRetornoTemporal()
+  {
+    if (retornoTemporalmenteBloqueado)
+    {
+      return;
+    }
+
+    retornoTemporalmenteBloqueado = true;
+    desbloqueoRetorno = new TaskCompletionSource<bool>();
+  }
+
+  public void LiberarRetornoTemporal()
+  {
+    retornoTemporalmenteBloqueado = false;
+    desbloqueoRetorno?.TrySetResult(true);
+    desbloqueoRetorno = null;
+  }
+
+  public void ConfirmarPosicionActual()
+  {
+    posicionRetorno = null;
+    adelantado = false;
+    mantenerAdelante = false;
+    RestaurarPose();
+    LiberarLock();
+  }
+
+  async Task EsperarDesbloqueoRetornoAsync()
+  {
+    while (retornoTemporalmenteBloqueado)
+    {
+      Task espera = desbloqueoRetorno != null ? desbloqueoRetorno.Task : Task.CompletedTask;
+      await espera;
+    }
   }
 
   async Task<bool> MoverHaciaObjetivoAsync(Transform objetivoTransform, bool mantenerLuego)
@@ -201,6 +246,11 @@ public class MeleeApproachMover : MonoBehaviour
   bool TryObtenerDatosObjetivo(object objetivo, out Transform objetivoTransform)
   {
     objetivoTransform = null;
+    if (objetivo is Casilla casillaObjetivo)
+    {
+      objetivoTransform = casillaObjetivo.transform;
+      return true;
+    }
     if (objetivo is Unidad unidadObjetivo)
     {
       objetivoTransform = unidadObjetivo.transform;
@@ -230,7 +280,7 @@ public class MeleeApproachMover : MonoBehaviour
     return Mathf.Clamp(distancia / velocidadUsar, minimo, maximo);
   }
 
-  async Task AnimarWorld(Transform t, Vector3 origen, Vector3 destino, float duracion)
+  async Task AnimarWorld(Transform t, Vector3 origen, Vector3 destino, float duracion, bool respetarBloqueoRetorno = false)
   {
     if (t == null)
     {
@@ -246,6 +296,11 @@ public class MeleeApproachMover : MonoBehaviour
     float tiempo = 0f;
     while (tiempo < duracion)
     {
+      if (respetarBloqueoRetorno)
+      {
+        await EsperarDesbloqueoRetornoAsync();
+      }
+
       tiempo += Time.deltaTime;
       float tLerp = Mathf.Clamp01(tiempo / duracion);
       t.position = Vector3.Lerp(origen, destino, tLerp);

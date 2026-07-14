@@ -333,12 +333,12 @@ public class HojaDeEnergia : Habilidad
       
         if(Objetivo.TiradaSalvacion(1, 12))
         {
-          Objetivo.estado_sangrado += 2;
-          Objetivo.estado_ResistenciasReducidas += 3;
-          if (NIVEL == 5)
-          {
-            Objetivo.estado_sangrado += 1;
-            Objetivo.estado_ResistenciasReducidas += 2;
+           int stacksSangrado = 2 + (NIVEL == 5 ? 1 : 0);
+           Estados.Aplicar_Sangrado(Objetivo, stacksSangrado, scEstaUnidad);
+           Objetivo.estado_ResistenciasReducidas += 3;
+           if (NIVEL == 5)
+           {
+             Objetivo.estado_ResistenciasReducidas += 2;
           }
         }
        

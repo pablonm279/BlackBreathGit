@@ -4741,7 +4741,7 @@ public class TRADU : MonoBehaviour
             case "Lobo Espectral":
                 r = "Spectral Wolf";
                 break;
-            case "<i>El Lobo Espectral es un enemigo feroz que se mueve y ataca rápidamente, mientras su destreza animal le brinda una buena defensa.</i>\n\n<color=#199F10>-Posee un mordisco imbuido en fuego que además de dañar, puede hacer arder a sus enemigos.</color>\n<color=#EE0000>-Estadí­sticas débiles.</color>":
+            case "<i>El Lobo Espectral es un enemigo feroz que se mueve y ataca rápidamente, mientras su destreza animal le brinda una buena defensa.</i>\n\n<color=#199F10>-Posee un mordisco imbuido en fuego que además de dañar, puede hacer arder a sus enemigos.</color>\n<color=#EE0000>-Estadísticas débiles.</color>":
                 r = "<i>The Spectral Wolf is a fierce enemy that moves and attacks quickly, while its animal dexterity provides good defense.</i>\n\n<color=#199F10>-Has a fire-infused bite that not only damages but can also set enemies ablaze.</color>\n<color=#EE0000>-Weak statistics.</color>";
                 break;
             case "Lobo Alfa Espectral":
@@ -4754,7 +4754,7 @@ public class TRADU : MonoBehaviour
                 r = "Burnt Dryad";
                 break;
             case "<i>Antes siervas y cuidadoras del bosque, ahora manifestaciones de venganza y odio en contra de cualquier invasor del Bosque Ardiente.</i>\n\n<color=#199F10>-Puede enredar con raíces ignífugas.\n-Ataque de rango.</color>\n<color=#EE0000>-Relativamente débil.</color>":
-                r = "<i>Once servants and caretakers of the forest, they are now manifestations of vengeance and hatred against any invader of the Burning Forest.</i>\n\n<color=#199F10>-Can entangle with fire-resistant roots.\n-Ranged attack.</color>\n<color=#EE0000>-Relatively weak.</color>";
+                r = "<i>Once servants and caretakers of the forest, they are now manifestations of vengeance and hatred against any invader of the Burning Forest.</i>\n\n<color=#199F10>-Can entangle with burning roots.\n-Ranged attack.</color>\n<color=#EE0000>-Relatively weak.</color>";
                 break;
             case "Espectro del Bosque":
                 r = "Forest Specter";
@@ -5167,7 +5167,7 @@ public class TRADU : MonoBehaviour
             case "El Bosque Ardiente":
                 r = "The Burning Forest";
                 break;
-             case "Bosque Angustiante":
+            case "Bosque Angustiante":
                 r = "The Burning Forest";
                 break;
             case "Paso Vientohelado":
@@ -7149,6 +7149,9 @@ public class TRADU : MonoBehaviour
             case "-Se ha cambiado la actividad de todos los personajes.":
                 r = "The activity of all characters has been changed.";
                 break;
+            case "-No puedes cambiar de actividad si hay una batalla pendiente.":
+                r = "-You cannot change activities while a battle is pending.";
+                break;
             case "Duelista":
                 r = "Duelist";
                 break;
@@ -7299,7 +7302,7 @@ public class TRADU : MonoBehaviour
             case "Si la defensa es derrotada, la caravana será destruída.":
                 r = "If the defense is defeated, the caravan will be destroyed.";
                 break;
-                
+
             case "Selecciona el orden de los refuerzos: (-->)":
                 r = "Select the order of reinforcements: (-->)";
                 break;
@@ -7334,26 +7337,38 @@ public class TRADU : MonoBehaviour
                 r = "Forbidden: Individualist";
                 break;
             case "Salir al Menú":
-            r = "Exit to Menu";
-            break;
+                r = "Exit to Menu";
+                break;
             case "Lancero":
-            r = "Lancer";
-            break;
+                r = "Lancer";
+                break;
             case "Ballestero":
-            r = "Crossbowman";
-            break;
+                r = "Crossbowman";
+                break;
             case ").</i> Si la supera, la Caravana obtendrá Vigilante por 1 viaje y ganará 30 Experiencia. Si falla, la Caravana obtendrá Descuidados por 3 días.</color>\n\n":
-            r = ").</i> If they succeed, the Caravan will gain Watchful for 1 trip and earn 30 Experience. If they fail, the Caravan will gain Careless for 3 days.</color>\n\n";
-            break;
+                r = ").</i> If they succeed, the Caravan will gain Watchful for 1 trip and earn 30 Experience. If they fail, the Caravan will gain Careless for 3 days.</color>\n\n";
+                break;
             case "). Descuidados por 3 días.":
-            r = "). Careless for 3 days.";
+                r = "). Careless for 3 days.";
                 break;
             case "Descarga Maldita":
-            r = "Cursed Bolt";
+                r = "Cursed Bolt";
                 break;
             case "La Plegaria retrasará 1 el Aliento Negro y bendecirá a los personajes por 3 días. 1 vez por región.":
-            r = "The Prayer will delay the Black Breath in 1 and bless the characters for 3 days and increases Hope by 10. Once per Region.";
+                r = "The Prayer will delay the Black Breath in 1 and bless the characters for 3 days and increases Hope by 10. Once per Region.";
                 break;
+            case ") y logró apagar el rumor antes de que creciera. +35 Experiencia, +4 Esperanza.":
+            r= ") and managed to put out the rumor before it could spread. +35 Experience, +4 Hope.";
+                break;
+            case "<i>Esta masa de carne y viscocidad corrompida parece aún conservar vida. Se mueve lentamente con el propósito de inmolarse y terminar su propio sufrimiento. </i>\n\n<color=#199F10>Resistente.\n-Explosiva en zona.\n-Deja masa contaminada.</color><color=#EE0000>-Lenta.</color>":
+            r= "<i>This mass of corrupted flesh and viscocity appears to still retain life. It moves slowly with the purpose of immolating itself and ending its own suffering. </i>\n\n<color=#199F10>Resistant.\n-Explosive in area.\n-Leaves contaminated mass.</color><color=#EE0000>-Slow.</color>";
+                break;
+            case "Pústula Corrompida":
+                r = "Cursed Pustule";
+                break; 
+            case "Desertor":
+                r = "Deserter";
+                break; 
             
             
             
@@ -14451,6 +14466,9 @@ public class TRADU : MonoBehaviour
             case "-Se ha cambiado la actividad de todos los personajes.":
                 r = "A atividade de todos os personagens foi alterada.";
                 break;
+            case "-No puedes cambiar de actividad si hay una batalla pendiente.":
+                r = "-Não é possível mudar de atividade enquanto houver uma batalha pendente.";
+                break;
             case "Duelista":
                 r = "Duelista";
                 break;
@@ -14658,6 +14676,18 @@ public class TRADU : MonoBehaviour
             case "La Plegaria retrasará 1 el Aliento Negro y bendecirá a los personajes por 3 días. 1 vez por región.":
             r = "A Plegaria atrasará 1 o Aliento Negro e bendecirá os personagens por 3 dias. 1 vez por região.";
                 break;
+            case ") y logró apagar el rumor antes de que creciera. +35 Experiencia, +4 Esperanza.":
+            r= ") and managed to put out the rumor before it could spread. +35 Experience, +4 Hope.";
+                break;
+             case "<i>Esta masa de carne y viscocidad corrompida parece aún conservar vida. Se mueve lentamente con el propósito de inmolarse y terminar su propio sufrimiento. </i>\n\n<color=#199F10>Resistente.\n-Explosiva en zona.\n-Deja masa contaminada.</color><color=#EE0000>-Lenta.</color>":
+            r= "<i>Esta massa de carne e viscosidade corrompida parece ainda conservar vida. Move-se lentamente com o propósito de se imolar e pôr fim ao próprio sofrimento.</i>\n\n<color=#199F10>Resistente.\n-Explosiva em área.\n-Deixa massa contaminada.</color><color=#EE0000>-Lenta.</color>";
+                break;
+            case "Pústula Corrompida":
+                r = "Pústula Corrompida";
+                break; 
+            case "Desertor":
+                r = "Desertor";
+                break; 
             
             
            

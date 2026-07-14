@@ -83,7 +83,7 @@ public class Enredar : IAHabilidad
      
         Unidad objetivo = (Unidad)obj;
      
-         if(objetivo.TiradaSalvacion(2, 12)&& objetivo.estado_inmovil < 1)
+         if(objetivo.TiradaSalvacion(2, 12) && objetivo.estado_inmovil > -1 && objetivo.estado_inmovil < 1)
           {
             /////////////////////////////////////////////
             //BUFF ---- As� se aplica un buff/debuff
@@ -108,8 +108,8 @@ public class Enredar : IAHabilidad
             // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
-            objetivo.estado_inmovil = buff.DuracionBuffRondas + 1;
-            objetivo.estado_ardiendo = buff.DuracionBuffRondas*2;
+            Estados.Aplicar_Inmovil(objetivo, buff.DuracionBuffRondas + 1, scEstaUnidad);
+            Estados.Aplicar_Ardiendo(objetivo, buff.DuracionBuffRondas * 2, scEstaUnidad);
 
           }
          

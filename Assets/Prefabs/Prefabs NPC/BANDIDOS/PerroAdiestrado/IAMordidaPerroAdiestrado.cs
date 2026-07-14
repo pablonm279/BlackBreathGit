@@ -127,8 +127,8 @@ public class IAMordidaPerroAdiestrado : IAHabilidad
 
         if (objetivo.TiradaSalvacion(1, 12))
         {
-          objetivo.estado_inmovil = 1;
-          objetivo.estado_sangrado = 1;
+          Estados.Aplicar_Inmovil(objetivo, 1, scEstaUnidad);
+          Estados.Aplicar_Sangrado(objetivo, 1, scEstaUnidad);
         }
 
       }
@@ -146,8 +146,8 @@ public class IAMordidaPerroAdiestrado : IAHabilidad
         objetivo.RecibirDanio(danio + 4, tipoDanio, true, scEstaUnidad);
         if (objetivo.TiradaSalvacion(1, 14))
         {
-          objetivo.estado_inmovil = 1;
-          objetivo.estado_sangrado = 2;
+          Estados.Aplicar_Inmovil(objetivo, 1, scEstaUnidad);
+          Estados.Aplicar_Sangrado(objetivo, 2, scEstaUnidad);
         }
 
       }
@@ -201,4 +201,3 @@ public override object EstablecerObjetivoPrioritario()
   
  
   
-

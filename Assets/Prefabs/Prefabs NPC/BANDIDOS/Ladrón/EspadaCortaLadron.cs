@@ -125,9 +125,10 @@ public class EspadaCortaLadron : IAHabilidad
         {
           if (objetivo.TiradaSalvacion(1, 12))
           {
-            objetivo.estado_veneno += 2;
-            objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Envenenado"), Color.green);
-            BattleManager.Instance.EscribirLog($"{objetivo.uNombre} ha sido envenenado por {scEstaUnidad.uNombre}.");
+             if (Estados.Aplicar_Veneno(objetivo, 2, scEstaUnidad))
+             {
+               BattleManager.Instance.EscribirLog($"{objetivo.uNombre} ha sido envenenado por {scEstaUnidad.uNombre}.");
+             }
           }
 
           scEstaUnidad.RemoverBuffNombre("Arma Envenenada");
@@ -151,9 +152,10 @@ public class EspadaCortaLadron : IAHabilidad
         {
           if (objetivo.TiradaSalvacion(1, 14))
           {
-            objetivo.estado_veneno += 3;
-            objetivo.GenerarTextoFlotante(TRADU.i.Traducir("Envenenado"), Color.green);
-            BattleManager.Instance.EscribirLog(objetivo.uNombre + TRADU.i.Traducir(" ha sido envenenado por ") + scEstaUnidad.uNombre);
+             if (Estados.Aplicar_Veneno(objetivo, 3, scEstaUnidad))
+             {
+               BattleManager.Instance.EscribirLog(objetivo.uNombre + TRADU.i.Traducir(" ha sido envenenado por ") + scEstaUnidad.uNombre);
+             }
           }
 
           scEstaUnidad.RemoverBuffNombre("Arma Envenenada");

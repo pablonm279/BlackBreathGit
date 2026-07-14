@@ -33,6 +33,7 @@ public abstract class IAHabilidad : MonoBehaviour
   public Unidad scEstaUnidad;
 
   public bool esHostil; //Si es para enemigos o aliados
+  public bool ignoraProvocacion;
 
   public int prioridad; //Mientras mas, mas chances que la elija
 

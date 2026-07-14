@@ -181,7 +181,7 @@ public override object EstablecerObjetivoPrioritario()
 
 void AplicaEnredadoTirada(Unidad unidad, int extraDC)
 {
-   if(unidad.TiradaSalvacion(1, 8+extraDC)&& unidad.estado_inmovil < 1)
+   if(unidad.TiradaSalvacion(1, 8+extraDC) && unidad.estado_inmovil > -1 && unidad.estado_inmovil < 1)
      {
           /////////////////////////////////////////////
             //BUFF ---- As� se aplica un buff/debuff
@@ -207,7 +207,7 @@ void AplicaEnredadoTirada(Unidad unidad, int extraDC)
 
             // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, unidad.gameObject);
-            unidad.estado_inmovil = buff.DuracionBuffRondas + 1;
+            Estados.Aplicar_Inmovil(unidad, buff.DuracionBuffRondas + 1, scEstaUnidad);
      }
 
 }

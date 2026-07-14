@@ -661,6 +661,7 @@ MonoBehaviour:
   bPuedeVerEscondidos: 0
   unicoEnCombate: 0
   tierEnemigo: 3
+  siempreEnRetaguardiaInicial: 0
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0
@@ -933,8 +934,8 @@ MonoBehaviour:
   mod_ResArcano: 0
   at_ResNecro: 4
   mod_ResNecro: 4
-  at_ResDivino: -3
-  mod_ResDivino: -3
+  at_ResDivino: -1
+  mod_ResDivino: -1
   at_Defensa: 11
   mod_Defensa: 11
   Defensa_AtaquesRepetidosRonda: 0
@@ -1050,6 +1051,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 0
+  ignoraProvocacion: 0
   prioridad: 0
   costoAP: 0
   pPrioridad: 0

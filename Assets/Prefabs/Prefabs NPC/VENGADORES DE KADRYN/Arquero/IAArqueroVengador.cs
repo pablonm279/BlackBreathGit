@@ -179,7 +179,7 @@ public class IAArqueroVengador : IAHabilidad
      if (objetivo.TiradaSalvacion(1, 13))
      { 
 
-      objetivo.estado_veneno += 2;
+       Estados.Aplicar_Veneno(objetivo, 2, scEstaUnidad);
 
      }
     }

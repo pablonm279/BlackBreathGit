@@ -28,6 +28,7 @@ public class GolpeDesertor : IAHabilidad
       prioridad = 1;
       costoAP = 2;
       afectaObstaculos = true;
+      ocultarRotuloHabilidad = true;
       
 
 
@@ -192,4 +193,3 @@ public override object EstablecerObjetivoPrioritario()
   
  
   
-

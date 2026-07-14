@@ -225,7 +225,7 @@ public class Purificacion : Habilidad
       if (objetivo.TiradaSalvacion(2, dificultadAtributo))
       {
         //Si falla la tirada de salvación, se aplica el daño completo (en vez de la mitad) y arde
-        objetivo.estado_ardiendo += 2;
+        Estados.Aplicar_Ardiendo(objetivo, 2, scEstaUnidad);
         damDivino = damDivino*2;
 
 

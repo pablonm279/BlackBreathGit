@@ -112,6 +112,7 @@ public class ContenedorPrefabs : MonoBehaviour
     public GameObject DevoradorCorrompido;
     public GameObject GuerreroCorrompido;
     public GameObject AlimaniaCorrompida;
+    public GameObject PustulaCorrompida;
     public GameObject CanibalKaleTav;
     public GameObject LanceroKaleTav;
     public GameObject GuerreroKaleTav;

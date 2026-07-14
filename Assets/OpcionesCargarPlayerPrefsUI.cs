@@ -19,6 +19,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     private const float DefaultBrightness = 0.65f;
     private const float AudioSfxOffsetY = -60.7f;
     private const float FpsLimitOffsetY = -85f;
+    private const float EscalaTextoSliderOffsetY = -80f;
+    private const float EscalaTextoSeparacionEtiquetaY = -19f;
 
     public Slider volMusicaSlider;
     [NonSerialized] private Slider volSfxSlider;
@@ -52,6 +54,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public Toggle fullscreenToggle;
     public Toggle modorapidoToggle;
     public Toggle tipsToggle;
+    [NonSerialized] private Slider escalaTextoSlider;
+    private TextMeshProUGUI etiquetaEscalaTexto;
 
     [Header("Visual Quality")]
     public Toggle postFxToggle;
@@ -73,6 +77,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         AsegurarControlesAudioSfx();
         AsegurarDropdownLimitadorFPS();
         ConfigurarToggleAyudas();
+        AsegurarSliderEscalaTexto();
        
         LlenarDropdownResoluciones();
         AplicarEfectosEnUI();
@@ -84,6 +89,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         AsegurarControlesAudioSfx();
         AsegurarDropdownLimitadorFPS();
         ConfigurarToggleAyudas();
+        AsegurarSliderEscalaTexto();
         
         AplicarEfectosEnUI();
     }
@@ -106,6 +112,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     {
         AsegurarControlesAudioSfx();
         AsegurarDropdownLimitadorFPS();
+        AsegurarSliderEscalaTexto();
 
         // Volumen de la másica
         float volumenMusica = AjustesAudio.ObtenerVolumenMusica();
@@ -201,6 +208,11 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
         if (tipsToggle != null)
             tipsToggle.SetIsOnWithoutNotify(TutorialTooltipProgress.MostrarAyudas);
+
+        if (escalaTextoSlider != null)
+            escalaTextoSlider.SetValueWithoutNotify(EscaladoFuentesGlobal.EscalaTextoActual * 100f);
+
+        ActualizarEtiquetaEscalaTexto();
 
         CargarOpcionesVisuales();
         AplicarPreferenciasSyncYFPS();
@@ -322,6 +334,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public void AbrirPanelGameplay()
     {
         RuntimeAnalytics.TrackDesign("ui", "options", "gameplay_panel");
+        AsegurarSliderEscalaTexto();
+        ActualizarEtiquetaEscalaTexto();
         PanelAudio.SetActive(false);
         PanelGraficos.SetActive(false);
         PanelControles.SetActive(false);
@@ -622,6 +636,153 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         GuardarOpcionesVisuales();
         AplicarPreferenciasSyncYFPS();
         PlayerPrefs.Save();
+    }
+
+    private void AsegurarSliderEscalaTexto()
+    {
+        if (PanelGameplay == null)
+        {
+            return;
+        }
+
+        if (escalaTextoSlider == null)
+        {
+            Slider[] sliders = PanelGameplay.GetComponentsInChildren<Slider>(true);
+            for (int i = 0; i < sliders.Length; i++)
+            {
+                Slider slider = sliders[i];
+                if (slider != null && slider.name == "EscalaTextoSlider")
+                {
+                    escalaTextoSlider = slider;
+                    break;
+                }
+            }
+        }
+
+        if (etiquetaEscalaTexto == null)
+        {
+            Transform etiquetaExistente = PanelGameplay.transform.Find("txtEscalaTexto");
+            if (etiquetaExistente != null)
+            {
+                etiquetaEscalaTexto = etiquetaExistente.GetComponent<TextMeshProUGUI>();
+            }
+        }
+
+        if (escalaTextoSlider == null)
+        {
+            Slider sliderBase = brilloSlider != null ? brilloSlider : volMusicaSlider;
+            TextMeshProUGUI etiquetaBase = brilloLabel != null ? brilloLabel : etiquetaVolMusica;
+            if (sliderBase == null || etiquetaBase == null)
+            {
+                return;
+            }
+
+            Transform parent = PanelGameplay.transform;
+
+            GameObject clonEtiqueta = Instantiate(etiquetaBase.gameObject, parent);
+            clonEtiqueta.name = "txtEscalaTexto";
+            etiquetaEscalaTexto = clonEtiqueta.GetComponent<TextMeshProUGUI>();
+
+            GameObject clonSlider = Instantiate(sliderBase.gameObject, parent);
+            clonSlider.name = "EscalaTextoSlider";
+            escalaTextoSlider = clonSlider.GetComponent<Slider>();
+            if (escalaTextoSlider == null)
+            {
+                Destroy(clonEtiqueta);
+                Destroy(clonSlider);
+                etiquetaEscalaTexto = null;
+                return;
+            }
+
+            escalaTextoSlider.onValueChanged = new Slider.SliderEvent();
+
+            EscaladoFuentesGlobal.RegistrarClon(etiquetaBase, etiquetaEscalaTexto);
+        }
+
+        PosicionarControlEscalaTexto();
+        escalaTextoSlider.minValue = EscaladoFuentesGlobal.EscalaMinima * 100f;
+        escalaTextoSlider.maxValue = EscaladoFuentesGlobal.EscalaMaxima * 100f;
+        escalaTextoSlider.wholeNumbers = true;
+        escalaTextoSlider.onValueChanged.RemoveListener(OnEscalaTextoChanged);
+        escalaTextoSlider.onValueChanged.AddListener(OnEscalaTextoChanged);
+        escalaTextoSlider.SetValueWithoutNotify(EscaladoFuentesGlobal.EscalaTextoActual * 100f);
+        ActualizarEtiquetaEscalaTexto();
+    }
+
+    private void PosicionarControlEscalaTexto()
+    {
+        if (PanelGameplay == null || escalaTextoSlider == null || etiquetaEscalaTexto == null) { return; }
+
+        Transform parent = PanelGameplay.transform;
+        float minY = ObtenerPosicionYControlMasBajo(parent, escalaTextoSlider);
+        RectTransform sliderRect = escalaTextoSlider.transform as RectTransform;
+        RectTransform etiquetaRect = etiquetaEscalaTexto.transform as RectTransform;
+        if (sliderRect == null || etiquetaRect == null) { return; }
+
+        Vector2 posicionSlider = sliderRect.anchoredPosition;
+        posicionSlider.y = minY + EscalaTextoSliderOffsetY;
+        sliderRect.anchoredPosition = posicionSlider;
+
+        etiquetaRect.anchorMin = sliderRect.anchorMin;
+        etiquetaRect.anchorMax = sliderRect.anchorMax;
+        etiquetaRect.pivot = sliderRect.pivot;
+        etiquetaRect.anchoredPosition = new Vector2(
+            posicionSlider.x,
+            posicionSlider.y + EscalaTextoSeparacionEtiquetaY);
+    }
+
+    private static float ObtenerPosicionYControlMasBajo(Transform parent, Slider sliderIgnorado)
+    {
+        float minY = 0f;
+        bool encontroControl = false;
+
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            RectTransform rect = parent.GetChild(i) as RectTransform;
+            if (rect == null) { continue; }
+            if (sliderIgnorado != null && rect.gameObject == sliderIgnorado.gameObject) { continue; }
+
+            bool esControl = rect.GetComponent<Toggle>() != null
+                || rect.GetComponent<Slider>() != null
+                || rect.GetComponent<TMP_Dropdown>() != null;
+            if (!esControl) { continue; }
+
+            minY = encontroControl ? Mathf.Min(minY, rect.anchoredPosition.y) : rect.anchoredPosition.y;
+            encontroControl = true;
+        }
+
+        return minY;
+    }
+
+    private void OnEscalaTextoChanged(float porcentaje)
+    {
+        float escala = porcentaje / 100f;
+        EscaladoFuentesGlobal.EstablecerEscalaTexto(escala);
+        ActualizarEtiquetaEscalaTexto();
+    }
+
+    private void ActualizarEtiquetaEscalaTexto()
+    {
+        if (etiquetaEscalaTexto == null) { return; }
+
+        int porcentaje = Mathf.RoundToInt(
+            escalaTextoSlider != null
+                ? escalaTextoSlider.value
+                : EscaladoFuentesGlobal.EscalaTextoActual * 100f) - 5;
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : nIdioma;
+
+        if (idioma == TRADU.IdiomaIngles)
+        {
+            etiquetaEscalaTexto.text = "Text size: " + porcentaje + "%";
+        }
+        else if (idioma == TRADU.IdiomaPortugues)
+        {
+            etiquetaEscalaTexto.text = "Tamanho do texto: " + porcentaje + "%";
+        }
+        else
+        {
+            etiquetaEscalaTexto.text = "Tamaño de texto: " + porcentaje + "%";
+        }
     }
 
 

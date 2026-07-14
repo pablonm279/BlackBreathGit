@@ -24,7 +24,7 @@ public class TrampaEnredaderaEspinosa : Trampa
          int danio =UnityEngine.Random.Range(1,5)+2;
          objetivo.RecibirDanio(danio,2,false, null);
 
-         if(objetivo.TiradaSalvacion(2, 14)&& objetivo.estado_inmovil < 1)
+         if(objetivo.TiradaSalvacion(2, 14) && objetivo.estado_inmovil > -1 && objetivo.estado_inmovil < 1)
           {
             /////////////////////////////////////////////
             //BUFF ---- Así se aplica un buff/debuff
@@ -40,7 +40,7 @@ public class TrampaEnredaderaEspinosa : Trampa
             // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
-            objetivo.estado_inmovil = buff.DuracionBuffRondas;
+            Estados.Aplicar_Inmovil(objetivo, buff.DuracionBuffRondas);
           
 
           }

@@ -84,7 +84,7 @@ public class IAChirridoVagranilo : IAHabilidad
          if(objetivo.TiradaSalvacion(3, 11))
           {
             //Si falla, se aturde y hace 2d4 da�o verdadero
-            objetivo.estado_aturdido = 1;
+            Estados.Aplicar_Aturdido(objetivo, 1, scEstaUnidad);
             objetivo.RecibirDanio(TiradaDeDados.TirarDados(2,4), 10, false,scEstaUnidad);
 
           }
