@@ -1112,6 +1112,16 @@ public class Casilla : MonoBehaviour
       return;
     }
 
+    if (BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
+    {
+      return;
+    }
+
+    if (TutorialTooltipManager.Instance != null && TutorialTooltipManager.Instance.EstaMostrandoTooltip)
+    {
+      return;
+    }
+
     //----
     if(BattleManager.Instance.scTutorialCombate.tutorialCombateActivo && BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() < 6)
     {
@@ -1878,7 +1888,7 @@ public class Casilla : MonoBehaviour
 
   // Regla central de avance melee:
   // - Las unidades visibles/no volando siempre bloquean, salvo espectros etereos.
-  // - Los obstaculos solo bloquean si estan en la misma fila (posY) que el origen.
+  // - Los obstaculos solo bloquean si estan en la misma fila (posY) que el origen, salvo para atacantes volando.
   public bool BloqueaAvanceMeleeDesdeFila(int posYorigen, Unidad atacante = null)
   {
     if (Presente == null)
@@ -1915,7 +1925,7 @@ public class Casilla : MonoBehaviour
 
     if (Presente.GetComponent<Obstaculo>() != null)
     {
-      return posY == posYorigen;
+      return (atacante == null || !atacante.estado_Volando) && posY == posYorigen;
     }
 
     return false;
@@ -1976,6 +1986,11 @@ public class Casilla : MonoBehaviour
   [SerializeField] public List<Obstaculo> obstaculosEnCasAzul = new List<Obstaculo>();
   public void OnMouseOver()
   {
+    if (BattleManager.Instance != null && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
+    {
+      return;
+    }
+
     SetHoverVistaTactica(true);
     if (DebeIgnorarInputUnidadVistaTactica())
     {
@@ -2019,7 +2034,7 @@ public class Casilla : MonoBehaviour
     }
 
     //Controlar se esta haciendo hablidad en Area, marca las casillas en la zona de alcance y en el area
-    if (BattleManager.Instance.HabilidadActiva != null)
+    if (BattleManager.Instance.HabilidadActiva != null && BattleManager.Instance.SeleccionandoObjetivo)
     {
       if (BattleManager.Instance.SeleccionandoObjetivo
         && (BattleManager.Instance.HabilidadActiva.enArea > 0 || BattleManager.Instance.HabilidadActiva.targetEspecial > 0))
@@ -2753,8 +2768,25 @@ public class Casilla : MonoBehaviour
 
     string sortingLayerCanvas = unidad != null ? "UI3D" : null;
     RenderOrderHelper.AplicarOrdenPorY(obj, posY, sortingLayerCanvas);
+    SincronizarVistaTacticaObjetoPresente(unidad);
 
 
+  }
+
+  private void SincronizarVistaTacticaObjetoPresente(Unidad unidad)
+  {
+    BattleManager battleManager = BattleManager.Instance;
+    if (battleManager == null || !battleManager.VistaTacticaActiva)
+    {
+      return;
+    }
+
+    if (unidad != null)
+    {
+      unidad.AplicarVistaTactica(true);
+    }
+
+    ActualizarVistaTactica(true);
   }
 
   public GameObject resaltadorBordeActivo;
@@ -2794,12 +2826,21 @@ public class Casilla : MonoBehaviour
     }
 
     Unidad unidadEnTurno = BattleManager.Instance.unidadActiva;
+    bool unidadActualEsObjetivoAzul = BattleManager.Instance.SeleccionandoObjetivo
+      && BattleManager.Instance.HabilidadActiva != null
+      && !BattleManager.Instance.HabilidadActiva.esHostil
+      && unidadEnTurno != null
+      && unidadEnTurno.CasillaPosicion != null
+      && unidadEnTurno.CasillaPosicion.lado == 0
+      && EsObjetivoPosibleHabilidadActiva();
+
     return unidadPresente != null
       && unidadEnTurno != null
       && unidadEnTurno == unidadPresente
       && unidadEnTurno.CasillaPosicion == this
       && unidadEnTurno.gameObject.activeInHierarchy
-      && unidadEnTurno.HP_actual > 0f;
+      && unidadEnTurno.HP_actual > 0f
+      && !unidadActualEsObjetivoAzul;
   }
 
   void Update()

@@ -141,7 +141,7 @@ public class Perdicion : IAHabilidad
 public class PerdicionEspectroObjetivoFx : MonoBehaviour
 {
   private const float DuracionEntrada = 0.24f;
-  private const float OpacidadBase = 0.58f;
+  private const float OpacidadBase = 0.9f;
   private const float VelocidadVisual = 0.68f;
   private const int CantidadFragmentos = 6;
   private const int CantidadMotas = 4;

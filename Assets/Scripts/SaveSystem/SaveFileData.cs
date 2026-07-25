@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 [Serializable]
 public class SaveFileData
 {
   public const int MinimumCompatibleVersion = 1;
-  public const int CurrentVersion = 22;
+  public const int CurrentVersion = 23;
 
   public int version = CurrentVersion;
   public string savedAtUtc;
@@ -32,6 +33,9 @@ public class CampaignSaveData
   public int numeroTurno;
   public int posicionCaravana;
   public int tipoClima;
+  public int presagiosRegionId;
+  public List<int> presagiosActivos = new List<int>();
+  public bool primeraBatallaPresagioEnemigosConsumida;
 
   public float alientoNegro;
   public int fatiga;
@@ -149,6 +153,7 @@ public class NodeSaveData
   public string faccionScoutReveladaId;
   public string faccionScoutReveladaNombre;
   public bool visibilidadForzadaEspecial;
+  public bool reveladoPorZonaCartografiada;
   public List<CaminoConexionSaveData> conexiones = new List<CaminoConexionSaveData>();
 }
 
@@ -215,6 +220,7 @@ public class CharacterSaveData
   public float critRango;
   public float critDanio;
   public float bonusAtaque;
+  public bool sinCooldownDebug;
 
   public int[] habilidades = new int[10];
   public int[] actividades = new int[3];
@@ -237,6 +243,7 @@ public class CharacterSaveData
   public bool campCorrupto;
   public bool traitHeroeLocalCivilesOtorgados;
   public bool traitHeroeLocalPenalidadMuerteAplicada;
+  public bool traitLiderCaravanaPenalidadMuerteAplicada;
   public bool traitEjemploASeguirAplicado;
   public bool traitHerenciaItemOtorgado;
   public int diasViajado;
@@ -284,11 +291,15 @@ public class MetaprogresionSaveData
   public int corrupcionGlobal;
   public int cantidadCiviles;
   public int valorTrabajoDisponible;
+  public List<PresagioRegionPendienteSaveData> presagiosRegionesPendientes = new List<PresagioRegionPendienteSaveData>();
 
   public int misionesSalvamento = -1;
-  public int nivelPeligroBosqueArdiente = -1;
-  public int nivelPeligroPasoVientohelado = -1;
-  public int nivelPeligroNedukazal = -1;
+  [FormerlySerializedAs("nivelPeligroBosqueArdiente")]
+  public int nivelAlertaBosqueArdiente = -1;
+  [FormerlySerializedAs("nivelPeligroPasoVientohelado")]
+  public int nivelAlertaPasoVientohelado = -1;
+  [FormerlySerializedAs("nivelPeligroNedukazal")]
+  public int nivelAlertaNedukazal = -1;
 
   public int serriaTierBarcos = -1;
   public int serriaTierAlmenaras = -1;

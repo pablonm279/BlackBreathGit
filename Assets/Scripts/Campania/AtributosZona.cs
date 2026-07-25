@@ -75,7 +75,7 @@ public class TexturaProceduralPasoVientoHeladoConfig
    public Color nieveClara = new Color(0.82f, 0.91f, 0.94f, 1f);
    [Tooltip("Color de manchas grises. Mas oscuro marca nieve pisada, mas claro suaviza manchas.")]
    public Color grisCompactado = new Color(0.45f, 0.56f, 0.61f, 1f);
-   [Tooltip("Color de zonas heladas. Mas saturado/azul suma hielo, mas neutro lo disimula.")]
+   [Tooltip("Color de regiones heladas. Mas saturado/azul suma hielo, mas neutro lo disimula.")]
    public Color hieloLavado = new Color(0.53f, 0.73f, 0.80f, 1f);
    [Tooltip("Color de sombras suaves. Mas oscuro aumenta contraste, mas claro aplana la textura.")]
    public Color sombraSuave = new Color(0.36f, 0.45f, 0.50f, 1f);
@@ -202,7 +202,7 @@ public class TexturaProceduralBosqueAngustianteConfig
    [Range(0f, 1f)] public float intensidadCeniza = 0.34f;
    [Tooltip("+ mas carbon oscuro, - suelo menos manchado.")]
    [Range(0f, 1f)] public float intensidadCarbon = 0.46f;
-   [Tooltip("+ mas zonas rojizas, - paleta mas fria/neutra.")]
+   [Tooltip("+ mas regiones rojizas, - paleta mas fria/neutra.")]
    [Range(0f, 1f)] public float intensidadRojiza = 0.22f;
    [Tooltip("+ mas puntos calidos tipo brasa apagada, - menos acentos naranjas.")]
    [Range(0f, 1f)] public float intensidadBrasas = 0.10f;
@@ -727,7 +727,7 @@ public class AtributosZona : MonoBehaviour
 
       if (!restaurandoDesdeSave)
       {
-         Invoke("AumentarDifconDelayPorPeligroBosqueArdiente", 1.5f);
+         Invoke("AplicarAlertaBosqueArdienteConDelay", 1.5f);
       }
 
       modChanceExploracion = 5;
@@ -901,7 +901,7 @@ public class AtributosZona : MonoBehaviour
 
       if (!restaurandoDesdeSave)
       {
-         Invoke("AumentarDifconDelayPorPeligroPasoVientoHelado", 1.5f);
+         Invoke("AplicarAlertaPasoVientoHeladoConDelay", 1.5f);
       }
 
       Clima_chances_Sol = 40;
@@ -1219,7 +1219,7 @@ public class AtributosZona : MonoBehaviour
 
       if (!restaurandoDesdeSave)
       {
-         Invoke("AumentarDifconDelayPorPeligroNedukazal", 1.5f);
+         Invoke("AplicarAlertaNedukazalConDelay", 1.5f);
       }
 
 
@@ -1452,7 +1452,7 @@ public class AtributosZona : MonoBehaviour
          }
          else
          {
-            Debug.LogWarning("No hay zonas disponibles con estado 0.");
+            Debug.LogWarning("No hay regiones disponibles con estado 0.");
             return;
          }
       }
@@ -1512,7 +1512,7 @@ public class AtributosZona : MonoBehaviour
                ConstruirZonaNedukazal(fase);
                break;
             default:
-               Debug.LogWarning($"[SaveGame] Zona {zonaId} no reconocida al restaurar campania.");
+               Debug.LogWarning($"[SaveGame] Región {zonaId} no reconocida al restaurar campania.");
                return;
          }
 
@@ -1533,20 +1533,26 @@ public class AtributosZona : MonoBehaviour
    }
 
 
-   void AumentarDifconDelayPorPeligroNedukazal()
+   void AplicarAlertaNedukazalConDelay()
    {
-      CampaignManager.Instance.IncrementarDificultadSegunPeligroRegion(MetaprogresionManager.Instance.NivelPeligroNedukazal);
-      MetaprogresionManager.Instance.NivelPeligroNedukazal++;
+      if (!CampaignManager.Instance.EstaMecanicaAlertaRegionHabilitada()) return;
+
+      CampaignManager.Instance.IncrementarDificultadSegunAlertaRegion(MetaprogresionManager.Instance.NivelAlertaNedukazal);
+      MetaprogresionManager.Instance.NivelAlertaNedukazal += CampaignManager.Instance.ObtenerAumentoAlertaRegionalAlComenzarViaje();
    }
-   void AumentarDifconDelayPorPeligroBosqueArdiente()
+   void AplicarAlertaBosqueArdienteConDelay()
    {
-      CampaignManager.Instance.IncrementarDificultadSegunPeligroRegion(MetaprogresionManager.Instance.NivelPeligroBosqueArdiente);
-      MetaprogresionManager.Instance.NivelPeligroBosqueArdiente++;
+      if (!CampaignManager.Instance.EstaMecanicaAlertaRegionHabilitada()) return;
+
+      CampaignManager.Instance.IncrementarDificultadSegunAlertaRegion(MetaprogresionManager.Instance.NivelAlertaBosqueArdiente);
+      MetaprogresionManager.Instance.NivelAlertaBosqueArdiente += CampaignManager.Instance.ObtenerAumentoAlertaRegionalAlComenzarViaje();
    }
-   void AumentarDifconDelayPorPeligroPasoVientoHelado()
+   void AplicarAlertaPasoVientoHeladoConDelay()
    { 
-      CampaignManager.Instance.IncrementarDificultadSegunPeligroRegion(MetaprogresionManager.Instance.NivelPeligroPasoVientohelado);
-      MetaprogresionManager.Instance.NivelPeligroPasoVientohelado++;
+      if (!CampaignManager.Instance.EstaMecanicaAlertaRegionHabilitada()) return;
+
+      CampaignManager.Instance.IncrementarDificultadSegunAlertaRegion(MetaprogresionManager.Instance.NivelAlertaPasoVientohelado);
+      MetaprogresionManager.Instance.NivelAlertaPasoVientohelado += CampaignManager.Instance.ObtenerAumentoAlertaRegionalAlComenzarViaje();
    }
 }
 

@@ -92,7 +92,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8843601072113839914
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1181,6 +1181,7 @@ MonoBehaviour:
   txtdesc: {fileID: 3312014607506495964}
   txtmecanicas: {fileID: 2564035602071047180}
   contenidoPanel: {fileID: 0}
+  txtBotonEchar: {fileID: 1604241844299852164}
 --- !u!114 &7494822906339484246
 MonoBehaviour:
   m_ObjectHideFlags: 0

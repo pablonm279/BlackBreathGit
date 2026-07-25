@@ -125,17 +125,17 @@ MonoBehaviour:
     side: 0
     panelOffset: {x: 0, y: 0}
     textoEs: "Uno de los nodos a los cuales puedes viajar desde la posici\xF3n actual
-      es una \"Zona Expuesta\" (\xCDcono: OjoRojo).\n\nUna Zona Expuesta implica
+      es una \"Regi\xF3n Expuesta\" (\xCDcono: OjoRojo).\n\nUna Regi\xF3n Expuesta implica
       que la caravana <b>ser\xE1</b> emboscada si viaja a ese nodo, adem\xE1s, ser\xE1
       una batalla con <b>refuerzos</b> a todo o nada, si pierdes, la caravana ser\xE1
       destru\xEDda.\n\nUna emboscada aplicar\xE1 penalizaciones a tus combatientes
       que no est\xE9n en <b>Actividad de Campa\xF1a: Guardia</b>, por lo tanto, si
       no tienes otra opci\xF3n acu\xE9rdate de cambiar su actividad a <b>Guardia</b>."
     textoEn: 'One of the nodes you can travel to from your current position is an
-      "Exposed Zone" (Icon: Red Eye).
+      "Exposed Region" (Icon: Red Eye).
 
 
-      An Exposed Zone means the caravan <b>will</b>
+      An Exposed Region means the caravan <b>will</b>
       be ambushed if it travels to that node. It will also be an all-or-nothing battle
       with <b>reinforcements</b>: if you lose, the caravan will be destroyed.
 
@@ -145,7 +145,7 @@ MonoBehaviour:
       Guard</b>, so if you have no other option, remember to switch their activity
       to <b>Guard</b>.'
     textoPt: "Um dos n\xF3s para os quais voc\xEA pode viajar a partir da posi\xE7\xE3o
-      atual \xE9 uma \"Zona Exposta\" (\xCDcone: Olho Vermelho).\n\nUma Zona Exposta
+      atual \xE9 uma \"Regi\xE3o Exposta\" (\xCDcone: Olho Vermelho).\n\nUma Regi\xE3o Exposta
       significa que a caravana <b>ser\xE1</b> emboscada se viajar para esse n\xF3.
       Al\xE9m disso, ser\xE1 uma batalha com <b>refor\xE7os</b> de tudo ou nada:
       se voc\xEA perder, a caravana ser\xE1 destru\xEDda.\n\nUma emboscada aplica

@@ -24216,7 +24216,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Zonas
+  m_text: Regiones
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -24688,9 +24688,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'DERROTA
-
-'
+  m_text: DERROTA
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 185ee1c6d79ccd949b75ce671a921084, type: 2}
   m_sharedMaterial: {fileID: -2215442784225158101, guid: 185ee1c6d79ccd949b75ce671a921084, type: 2}
@@ -53705,11 +53703,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Luego de d\xEDas enteros de marcha y batallas, la caravana ha atravesado
-    la zona y se dispone a continuar su viaje hacia el Puerto de Serria. Los pr\xF3ximos
+    la regi\xF3n y se dispone a continuar su viaje hacia el Puerto de Serria. Los pr\xF3ximos
     pocos d\xEDas de viaje ser\xE1n pac\xEDficos y permitir\xE1n descansar a los
     miembros de la caravana.\n\n- Los personajes se recuperar\xE1n de sus heridas
     (no la Corrupci\xF3n).\n- Conseguir\xE1s 120 Suministros y 40 Materiales.\n-
-    Una nueva Zona aleatoria comenzar\xE1.\n\n\n\n\n"
+    Una nueva Regi\xF3n aleatoria comenzar\xE1.\n\n\n\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -59794,14 +59792,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Cada zona representa un \xE1rea por la cual la caravana necesitar\xE1
+  m_text: "Cada regi\xF3n representa un \xE1rea por la cual la caravana necesitar\xE1
     cruzar para avanzar en su viaje hacia el <b>Puerto de Serria</b>.\n\nEn una partida
     completa de <b>El Aliento Negro</b>, la caravana necesitar\xE1 cruzar con vida
-    por 3 Zonas diferentes.\n\nAl completar una Zona, se mostrar\xE1n dos opciones
-    aleatorias para la siguiente. Y si es la tercera zona que atraviesa, se considera
+    por 3 Regiones diferentes.\n\nAl completar una Regi\xF3n, se mostrar\xE1n dos opciones
+    aleatorias para la siguiente. Y si es la tercera regi\xF3n que atraviesa, se considera
     que la caravana lleg\xF3 con \xE9xito al <b>Puerto de Serria</b>,  sumando la
     cantidad de Civiles y Personajes a la ciudad que se prepara para partir.\n\n<b>----Climas</b>\n\nCada
-    Zona posee distintos tipos de climas posibles (a veces hasta climas exclusivos)
+    Regi\xF3n posee distintos tipos de climas posibles (a veces hasta climas exclusivos)
     que cambiar\xE1 cada vez que la caravana descanse. Estos climas tendr\xE1n distintos
     efectos en el viaje.\n\n\n\n\n\n"
   m_isRightToLeft: 0
@@ -75125,6 +75123,7 @@ RectTransform:
   - {fileID: 796781225}
   - {fileID: 134069446}
   - {fileID: 994850256}
+  - {fileID: 820163862}
   - {fileID: 341630626}
   - {fileID: 2088446387}
   m_Father: {fileID: 314276524}
@@ -76607,6 +76606,184 @@ RectTransform:
   m_AnchoredPosition: {x: 17, y: -227}
   m_SizeDelta: {x: 703.036, y: 475.088}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &213452809
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 213452810}
+  - component: {fileID: 213452814}
+  - component: {fileID: 213452813}
+  - component: {fileID: 213452812}
+  - component: {fileID: 213452811}
+  m_Layer: 5
+  m_Name: Oro
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &213452810
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213452809}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 820163862}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.029167742, y: 0.5}
+  m_AnchorMax: {x: 0.029167742, y: 0.5}
+  m_AnchoredPosition: {x: 44.5, y: -3.9999166}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &213452811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213452809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 0.7830189, g: 0.7830189, b: 0.7830189, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.95441294, b: 0, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 691036785}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &213452812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213452809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1034401034}
+          m_TargetAssemblyTypeName: CampaignManager, Assembly-CSharp
+          m_MethodName: TooltipRecursoEntrar
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 9
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 267286438}
+          m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+          m_MethodName: Play
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1034401034}
+          m_TargetAssemblyTypeName: CampaignManager, Assembly-CSharp
+          m_MethodName: TooltipRecursoSalir
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &213452813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213452809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.9528302, g: 0.6606889, b: 0.77024186, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 74317a889160e9540a983afa378dec76, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &213452814
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213452809}
+  m_CullTransparentMesh: 1
 --- !u!1 &213714191
 GameObject:
   m_ObjectHideFlags: 0
@@ -157143,10 +157320,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "O Mapa representa a zona atual pela qual a caravana viajar\xE1 para chegar
-    ao \xFAltimo nodo da zona.\nEle \xE9 composto por v\xE1rios nodos conectados
+  m_text: "O Mapa representa a regi\xE3o atual pela qual a caravana viajar\xE1 para chegar
+    ao \xFAltimo nodo da regi\xE3o.\nEle \xE9 composto por v\xE1rios nodos conectados
     entre si por caminhos gerados de forma procedural, criando disposi\xE7\xF5es
-    diferentes a cada vez que se entra em uma zona.\n\n<b>---Nodos</b>\n\nSempre
+    diferentes a cada vez que se entra em uma regi\xE3o.\n\n<b>---Nodos</b>\n\nSempre
     que a caravana chega a um nodo, diferentes resultados ser\xE3o desencadeados
     de acordo com seu tipo. Alguns ser\xE3o favor\xE1veis, outros prejudiciais. Al\xE9m
     disso, o <b>Respiro Negro</b> avan\xE7ar\xE1 1.\n\n<b>---Fadiga</b>\n\nAo viajar
@@ -159721,9 +159898,9 @@ MonoBehaviour:
   CorrupcionGlobal: 0
   CorrupcionMax: 0
   ValordeTrabajoDisponible: 0
-  NivelPeligroBosqueArdiente: 0
-  NivelPeligroPasoVientohelado: 0
-  NivelPeligroNedukazal: 0
+  NivelAlertaBosqueArdiente: 0
+  NivelAlertaPasoVientohelado: 0
+  NivelAlertaNedukazal: 0
   CantidadCiviles: 0
   MisionesSalvamento: 0
   SerriaTierBarcos: 0
@@ -210287,14 +210464,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Cada zona representa uma \xE1rea que a caravana deve atravessar para avan\xE7ar
+  m_text: "Cada regi\xE3o representa uma \xE1rea que a caravana deve atravessar para avan\xE7ar
     em sua jornada rumo ao <b>Porto de Serria</b>.\n\nEm uma campanha completa de
     <b>The Black Breath</b>, a caravana precisar\xE1 sobreviver \xE0 travessia de
-    3 zonas diferentes.\n\nAo concluir uma zona, duas op\xE7\xF5es aleat\xF3rias
-    aparecer\xE3o para a pr\xF3xima. Se for a terceira zona atravessada, isso significa
+    3 regi\xF5es diferentes.\n\nAo concluir uma regi\xE3o, duas op\xE7\xF5es aleat\xF3rias
+    aparecer\xE3o para a pr\xF3xima. Se for a terceira regi\xE3o atravessada, isso significa
     que a caravana chegou com sucesso ao <b>Porto de Serria</b>, somando o n\xFAmero
     total de Civis e Personagens \xE0 cidade que se prepara para partir.\n\n<b>----Climas</b>\n\nCada
-    zona apresenta diferentes tipos poss\xEDveis de clima, \xE0s vezes at\xE9 exclusivos,
+    regi\xE3o apresenta diferentes tipos poss\xEDveis de clima, \xE0s vezes at\xE9 exclusivos,
     que mudar\xE3o sempre que a caravana descansar. Esses climas ter\xE3o diversos
     efeitos sobre a jornada."
   m_isRightToLeft: 0
@@ -219323,10 +219500,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "El Mapa representa la Zona actual en la cual la caravana viajar\xE1 para
-    llegar al \xFAltimo nodo de la Zona.\nEst\xE1 compuesto por varios Nodos conectados
+  m_text: "El Mapa representa la Regi\xF3n actual en la cual la caravana viajar\xE1 para
+    llegar al \xFAltimo nodo de la Regi\xF3n.\nEst\xE1 compuesto por varios Nodos conectados
     entre s\xED por caminos de forma procedimental, generando disposiciones distintas
-    cada vez que se entra a una Zona.\n\n<b>---Nodos</b>\n\nCada vez que la caravana
+    cada vez que se entra a una Regi\xF3n.\n\n<b>---Nodos</b>\n\nCada vez que la caravana
     llega a un nodo, seg\xFAn su tipo, se desecadenar\xE1n distintos resultados.
     Algunos favorables y otros perjudiciales. Adem\xE1s el <b>Aliento Negro</b> avanzar\xE1
     1.\n\n<b>---Fatiga</b>\n\nAl viajar de un nodo a otro, la caravana sumar\xE1
@@ -230549,11 +230726,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "<b>---Enemigos</b>\n\nDurante el viaje, la caravana enfrentar\xE1 enemigos
-    espec\xEDficos de la Zona actual mezcaldos con enemigos generales que pueden
-    tocar en cualqueir zona (ej. Bandidos).\n\n\n<b>---Mec\xE1nicas</b>\n\nCada Zona
+    espec\xEDficos de la Regi\xF3n actual mezcaldos con enemigos generales que pueden
+    tocar en cualqueir regi\xF3n (ej. Bandidos).\n\n\n<b>---Mec\xE1nicas</b>\n\nCada Regi\xF3n
     tiene una mec\xE1nica de juego que representa la tem\xE1tica principal de la
-    Zona. Estas mec\xE1nicas har\xE1n que cada una se sienta como un desaf\xEDo distinto.\n\n\n<b>---Modificadores</b>\n\nA
-    veces las Zonas contar\xE1n con modificadores aleatorios que alterar\xE1n ciertos
+    Regi\xF3n. Estas mec\xE1nicas har\xE1n que cada una se sienta como un desaf\xEDo distinto.\n\n\n<b>---Modificadores</b>\n\nA
+    veces las Regiones contar\xE1n con modificadores aleatorios que alterar\xE1n ciertos
     aspectos espec\xEDficos de la misma. Estos se aclarar\xE1n con anticipaci\xF3n
     para que el jugador pueda elegir acorde a esa informaci\xF3n."
   m_isRightToLeft: 0
@@ -261230,9 +261407,9 @@ MonoBehaviour:
     la caravana, el caos generado al correrse la noticia de la inminente llegada
     del <b>Aliento Negro</b> ha causado que diversos grupos de hombres desesperados
     hayan comenzado un incendio accidental de proporciones monumentales en el bosque
-    mismo.\nEl fuego se ha esparcido casi por completo por la zona, y la gran mayor\xEDa
+    mismo.\nEl fuego se ha esparcido casi por completo por la regi\xF3n, y la gran mayor\xEDa
     de los animales y seres protectores del bosque han perecido en las llamas.\n\nAhora
-    es una zona de muerte y cenizas, donde los esp\xEDritus\nde los ca\xEDdos han
+    es una regi\xF3n de muerte y cenizas, donde los esp\xEDritus\nde los ca\xEDdos han
     sido potenciados por la presencia del\nAliento y los seres del bosque se han
     alzado en venganza \n        contra cualquier intruso que se atreva a atravesarlo.\n\n"
   m_isRightToLeft: 0
@@ -263610,7 +263787,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Zonas
+  m_text: Regiones
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -279780,7 +279957,7 @@ MonoBehaviour:
     da batalha:\nA Esperan\xE7a da Caravana ajusta a VAL inicial de cada aliado:\na
     cada 20 pontos acima ou abaixo de 50, ele ganha ou perde 1 de VAL.\n\nSe uma
     unidade fugir por moral, ela recebe o estado de campanha Envergonhado at\xE9
-    mudar de zona\n(-2 em Salvaguarda Mental, -10% de Vida M\xE1x.)."
+    mudar de regi\xE3o\n(-2 em Salvaguarda Mental, -10% de Vida M\xE1x.)."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
   m_sharedMaterial: {fileID: -4687675609486072877, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
@@ -292228,6 +292405,44 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 818783394}
   m_CullTransparentMesh: 1
+--- !u!1 &820163861
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 820163862}
+  m_Layer: 5
+  m_Name: CPresagios
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &820163862
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820163861}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children:
+  - {fileID: 1934751738}
+  - {fileID: 213452810}
+  - {fileID: 1960322787}
+  m_Father: {fileID: 191257734}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -361, y: 5.733032}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &820399849
 GameObject:
   m_ObjectHideFlags: 0
@@ -312427,14 +312642,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Mec\xE1nica Especial de la Zona:\\n\\n<color=#ff5722>---Bosque Ardiente---</color>\\n\\n
+  m_text: "Mec\xE1nica Especial de la Regi\xF3n:\\n\\n<color=#ff5722>---Bosque Ardiente---</color>\\n\\n
     A medida que viajas por el bosque, las llamas envolver\xE1n regiones del mapa
     de forma inesperada.\\n\\nSi intentas atravesar un Nodo prendido fuego, perder\xE1s
     10 de Esperanza y 1-10 Civiles.\\n\\nAdem\xE1s, las batallas que tengan lugar
     en un Nodo incendiado, tendr\xE1n llamas en el campo de batalla."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
-  m_sharedMaterial: {fileID: -4687675609486072877, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
+  m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -312496,7 +312711,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -108.04797, y: 163.0841, z: -269.87488, w: -230.7384}
+  m_margin: {x: -108.04797, y: 152.5834, z: -269.87488, w: -230.7384}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -337643,10 +337858,10 @@ MonoBehaviour:
   m_text: "Each zone represents an area that the caravan must cross in order to advance
     on its journey toward the <b>Port of Serria</b>.\n\nIn a full playthrough of
     <b>The Black Breath</b>, the caravan will need to make it through 3 different
-    Zones alive.\n\nUpon completing a Zone, two random options will appear for the
-    next one. If it\u2019s the third Zone crossed, it means the caravan has successfully
+    Regions alive.\n\nUpon completing a Region, two random options will appear for the
+    next one. If it\u2019s the third Region crossed, it means the caravan has successfully
     reached the <b>Port of Serria</b>, adding the total number of Civilians and Characters
-    to the city that prepares to depart.\n\n<b>----Climates</b>\n\nEach Zone features
+    to the city that prepares to depart.\n\n<b>----Climates</b>\n\nEach Region features
     different possible weather types (sometimes even exclusive ones) that will change
     every time the caravan rests. These climates will have various effects on the
     journey."
@@ -359285,7 +359500,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Zonas
+  m_text: Regiones
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -398243,7 +398458,6 @@ MonoBehaviour:
   usarTextoFlotanteManager: 0
   yStackOffset: 50
   duracionEntradaTextoFlotante: 0.35
-  velocidadReacomodoTextoFlotante: 60
   asentamientoManager: {fileID: 1864502516}
   txtDia: {fileID: 852751743}
   sunController: {fileID: 1919062227}
@@ -398300,6 +398514,7 @@ MonoBehaviour:
   tooltipGOOro: {fileID: 1420761914}
   tooltipGOFatiga: {fileID: 1168853171}
   tooltipGOMecanicaZona: {fileID: 1443532855}
+  tooltipGOPresagios: {fileID: 1960322786}
   botonDescansar: {fileID: 117155691}
   campSi: {fileID: 21300000, guid: 0e8dfcd83925cf447b8841945ad0753f, type: 3}
   campNo: {fileID: 21300000, guid: ff2b3aa79b523c2469aa3391a19e5d12, type: 3}
@@ -455894,7 +456109,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Zones
+  m_text: Regions
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -458819,22 +459034,22 @@ MonoBehaviour:
 
 
     During the journey, the caravan will face enemies
-    specific to the current Zone, mixed with general enemies that can appear in any
+    specific to the current Region, mixed with general enemies that can appear in any
     area (e.g. Bandits).
 
 
     <b>---Mechanics</b>
 
 
-    Each Zone features a gameplay
-    mechanic that reflects its main theme. These mechanics make every Zone feel like
+    Each Region features a gameplay
+    mechanic that reflects its main theme. These mechanics make every Region feel like
     a distinct challenge.
 
 
     <b>---Modifiers</b>
 
 
-    At times, Zones may include
+    At times, Regions may include
     random modifiers that alter certain specific aspects of that area. These will
     be revealed beforehand so the player can choose accordingly.'
   m_isRightToLeft: 0
@@ -495959,6 +496174,142 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1275718207}
   m_CullTransparentMesh: 1
+--- !u!1 &1276247082
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1276247083}
+  - component: {fileID: 1276247085}
+  - component: {fileID: 1276247084}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1276247083
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1276247082}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1960322787}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -305.9, y: -11.1}
+  m_SizeDelta: {x: 1007.682, y: 397.777}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1276247084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1276247082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
+  m_sharedMaterial: {fileID: -4687675609486072877, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4292467161
+  m_fontColor: {r: 0.8490566, g: 0.8490566, b: 0.8490566, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 16
+  m_fontSizeBase: 16
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 14
+  m_fontSizeMax: 16
+  m_fontStyle: 0
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 7
+  m_wordSpacing: -1
+  m_lineSpacing: -20
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 626.1421, y: 118.24889, z: 15.370605, w: 139.76022}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1276247085
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1276247082}
+  m_CullTransparentMesh: 1
 --- !u!1 &1276472750
 GameObject:
   m_ObjectHideFlags: 0
@@ -497092,13 +497443,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'The Map represents the current Zone through which the caravan must travel
-    to reach the final node of that Zone.
+  m_text: 'The Map represents the current Region through which the caravan must travel
+    to reach the final node of that Region.
 
 
     It is composed of multiple Nodes
     connected by procedurally generated paths, creating different layouts each time
-    a Zone is entered.
+    a Region is entered.
 
 
     <b>---Nodes</b>
@@ -513786,7 +514137,7 @@ MonoBehaviour:
     fallos de esa ronda reciben Dudando.\r\n\r\nInicio de batalla:\r\nLa Esperanza
     de la caravana ajusta la VAL inicial de cada aliado:\r\npor cada 20 puntos por
     encima/debajo de 50, gana/pierde 1 VAL.\r\n\r\nSi una unidad huye por moral,
-    queda Avergonzada en campa\xF1a hasta cambiar de zona\r\n(-2 TS Mental, -10%
+    queda Avergonzada en campa\xF1a hasta cambiar de regi\xF3n\r\n(-2 TS Mental, -10%
     HP m\xE1xima).\r\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
@@ -552266,11 +552617,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "<b>---Inimigos</b>\n\nDurante a jornada, a caravana enfrentar\xE1 inimigos
-    espec\xEDficos da zona atual, misturados com inimigos gerais que podem aparecer
-    em qualquer \xE1rea, como bandidos.\n\n<b>---Mec\xE2nicas</b>\n\nCada zona possui
+    espec\xEDficos da regi\xE3o atual, misturados com inimigos gerais que podem aparecer
+    em qualquer \xE1rea, como bandidos.\n\n<b>---Mec\xE2nicas</b>\n\nCada regi\xE3o possui
     uma mec\xE2nica de jogabilidade que reflete seu tema principal. Essas mec\xE2nicas
-    fazem com que cada zona pare\xE7a um desafio distinto.\n\n<b>---Modificadores</b>\n\n\xC0s
-    vezes, as zonas podem incluir modificadores aleat\xF3rios que alteram certos
+    fazem com que cada regi\xE3o pare\xE7a um desafio distinto.\n\n<b>---Modificadores</b>\n\n\xC0s
+    vezes, as regi\xF5es podem incluir modificadores aleat\xF3rios que alteram certos
     aspectos espec\xEDficos daquela \xE1rea. Eles ser\xE3o revelados com anteced\xEAncia,
     para que o jogador possa escolher de acordo."
   m_isRightToLeft: 0
@@ -554632,7 +554983,7 @@ MonoBehaviour:
     -
     You gain 120 Supplies and 40 Materials.
 
-    - A new random Zone will begin.'
+    - A new random Region will begin.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
   m_sharedMaterial: {fileID: -4687675609486072877, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
@@ -556350,7 +556701,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Mec\xE1nica Especial de la Zona:\\n\\n<color=#ff5722>---Bosque Ardiente---</color>\\n\\n
+  m_text: "Mec\xE1nica Especial de la Regi\xF3n:\\n\\n<color=#ff5722>---Bosque Ardiente---</color>\\n\\n
     A medida que viajas por el bosque, las llamas envolver\xE1n regiones del mapa
     de forma inesperada.\\n\\nSi intentas atravesar un Nodo prendido fuego, perder\xE1s
     10 de Esperanza y 1-10 Civiles.\\n\\nAdem\xE1s, las batallas que tengan lugar
@@ -631344,7 +631695,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 34, y: -255}
+  m_AnchoredPosition: {x: 34, y: -137}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1649410416
@@ -728381,7 +728732,7 @@ MonoBehaviour:
     dias de viagem ser\xE3o pac\xEDficos e permitir\xE3o que os membros da caravana
     descansem.\n\nOs personagens se recuperar\xE3o de seus ferimentos (mas n\xE3o
     da Corrup\xE7\xE3o).\n\nVoc\xEA receber\xE1 120 Suprimentos e 40 Materiais.\n\nUma
-    nova Zona aleat\xF3ria come\xE7ar\xE1."
+    nova Regi\xE3o aleat\xF3ria come\xE7ar\xE1."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
   m_sharedMaterial: {fileID: -4687675609486072877, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
@@ -738238,6 +738589,81 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1934751737
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1934751738}
+  - component: {fileID: 1934751740}
+  - component: {fileID: 1934751739}
+  m_Layer: 5
+  m_Name: Sombra
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1934751738
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934751737}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 820163862}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.029167742, y: 0.5}
+  m_AnchorMax: {x: 0.029167742, y: 0.5}
+  m_AnchoredPosition: {x: 44.500004, y: -4}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1934751739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934751737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 74317a889160e9540a983afa378dec76, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1934751740
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934751737}
+  m_CullTransparentMesh: 1
 --- !u!1 &1935509850
 GameObject:
   m_ObjectHideFlags: 0
@@ -740337,7 +740763,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1954922856}
   m_Layer: 5
-  m_Name: CZona
+  m_Name: DescZona
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -740809,6 +741235,82 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -95}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1960322786
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1960322787}
+  - component: {fileID: 1960322789}
+  - component: {fileID: 1960322788}
+  m_Layer: 5
+  m_Name: Tooltip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1960322787
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960322786}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.0766139, y: 1.0766139, z: 1.0766139}
+  m_ConstrainProportionsScale: 1
+  m_Children:
+  - {fileID: 1276247083}
+  m_Father: {fileID: 820163862}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -11.084508, y: -114.26593}
+  m_SizeDelta: {x: 400, y: 166.5644}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1960322788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960322786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.83137256, g: 0.83137256, b: 0.83137256, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 3b71c44fba62fab41acfabd0efbf38ba, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1960322789
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960322786}
+  m_CullTransparentMesh: 1
 --- !u!1 &1961406970
 GameObject:
   m_ObjectHideFlags: 0
@@ -777177,6 +777679,7 @@ GameObject:
   - component: {fileID: 2110770540}
   - component: {fileID: 2110770539}
   - component: {fileID: 2110770538}
+  - component: {fileID: 2110770541}
   m_Layer: 5
   m_Name: Cerrar
   m_TagString: Untagged
@@ -777298,6 +777801,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2110770536}
   m_CullTransparentMesh: 1
+--- !u!114 &2110770541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2110770536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1841622893}
+          m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+          m_MethodName: Play
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2111091655
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,6 +9,13 @@ public class SequitoHerboristas : MonoBehaviour
     //---
     [SerializeField] TextMeshProUGUI txtDesc;
 
+    [SerializeField] TextMeshProUGUI txtTituloBalsamoFort;
+    [SerializeField] TextMeshProUGUI txtDescripcionBalsamoFort;
+    [SerializeField] TextMeshProUGUI txtTituloBalsamoReflej;
+    [SerializeField] TextMeshProUGUI txtDescripcionBalsamoReflej;
+    [SerializeField] TextMeshProUGUI txtTituloBalsamoMental;
+    [SerializeField] TextMeshProUGUI txtDescripcionBalsamoMental;
+
     public int vecesEnClaro = 0;
     [SerializeField] TextMeshProUGUI txtMecanica;
 
@@ -27,6 +34,12 @@ public class SequitoHerboristas : MonoBehaviour
 
     public void Actualizar()
     {
+        txtTituloBalsamoFort.text = TraducirLocal("Bálsamo Reforzante:\n", "Fortifying Balm:\n", "Bálsamo Fortalecedor:\n");
+        txtDescripcionBalsamoFort.text = TraducirLocal("Consumible: +2 TS Fortaleza durante el combate.", "Consumable: +2 Fortitude Save during combat.", "Consumível: +2 Fortitude durante o combate.");
+        txtTituloBalsamoReflej.text = TraducirLocal("Bálsamo Energizante:\n", "Energizing Balm:\n", "Bálsamo Energizante:\n");
+        txtDescripcionBalsamoReflej.text = TraducirLocal("Consumible: +2 TS Reflejos durante el combate.", "Consumable: +2 Reflex Save during combat.", "Consumível: +2 Reflexos durante o combate.");
+        txtTituloBalsamoMental.text = TraducirLocal("Bálsamo de Claridad:\n", "Balm of Clarity:\n", "Bálsamo de Clareza:\n");
+        txtDescripcionBalsamoMental.text = TraducirLocal("Consumible: +2 TS Mental durante el combate.", "Consumable: +2 Mental Save during combat.", "Consumível: +2 Mental durante o combate.");
 
 
         txtDesc.text = TRADU.i.Traducir("Un grupo de especialistas en recolectar hierbas y crear con ellas bélsamos especiales para vender. \nAdemás, sus hierbas proporcionarán beneficios curativos a la caravana.\nPero quizás no sean demasiado cuidadosos al adentrarse en zonas peligrosas para recolectar hierbas.\n\n");
@@ -42,6 +55,16 @@ public class SequitoHerboristas : MonoBehaviour
         txstCantBalsamoFort.text = $"{cantBalsamoFort}/2 - {precioFort}";
         txstCantBalsamoReflej.text = $"{cantBalsamoReflej}/2 - {precioReflej}";
         txstCantBalsamoMental.text = $"{cantBalsamoMental}/2 - {precioMental}";
+    }
+
+    private string TraducirLocal(string espanol, string ingles, string portugues)
+    {
+        if (TRADU.i == null || TRADU.i.nIdioma == TRADU.IdiomaEspanol)
+        {
+            return espanol;
+        }
+
+        return TRADU.i.nIdioma == TRADU.IdiomaPortugues ? portugues : ingles;
     }
 
 

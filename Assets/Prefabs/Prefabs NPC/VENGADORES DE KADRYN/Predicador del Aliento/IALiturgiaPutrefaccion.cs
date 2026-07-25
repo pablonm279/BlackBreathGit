@@ -27,7 +27,7 @@ public class IALiturgiaPutrefaccion : IAHabilidad
 
   void Awake()
   {
-    nombre = "Liturgia de la Putrefacci�n";
+    nombre = "Liturgia de la Putrefacción";
     Usuario = gameObject;
     scEstaUnidad = Usuario.GetComponent<Unidad>();
     hAncho = 2;

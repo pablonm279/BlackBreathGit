@@ -354,7 +354,9 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
       else if (refuerzoCaravanaRepresentado != null)
       {
         txtPersonajeRepresentado.gameObject.SetActive(true);
-        txtPersonajeRepresentado.text = refuerzoCaravanaRepresentado.nombreVisible;
+        txtPersonajeRepresentado.text = TRADU.i != null
+          ? TRADU.i.Traducir(refuerzoCaravanaRepresentado.nombreVisible)
+          : refuerzoCaravanaRepresentado.nombreVisible;
       }
       else
       {
@@ -371,7 +373,9 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
       else if (refuerzoCaravanaRepresentado != null)
       {
         txtPersonajeRepresentado.gameObject.SetActive(true);
-        txtPersonajeRepresentado.text = refuerzoCaravanaRepresentado.nombreVisible;
+        txtPersonajeRepresentado.text = TRADU.i != null
+          ? TRADU.i.Traducir(refuerzoCaravanaRepresentado.nombreVisible)
+          : refuerzoCaravanaRepresentado.nombreVisible;
       }
       else
       {

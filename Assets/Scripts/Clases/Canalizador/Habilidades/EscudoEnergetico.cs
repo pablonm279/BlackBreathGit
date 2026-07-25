@@ -50,7 +50,7 @@ public class EscudoEnergetico : Habilidad
         if (NIVEL == 4) { tituloPt = "Escudo Energetico IV a"; }
         if (NIVEL == 5) { tituloPt = "Escudo Energetico IV b"; }
 
-        int defensaBase = NIVEL > 1 ? 2 : 1;
+        int barreraBase = NIVEL > 1 ? 12 : 8;
         int bonusAtaqueReaccion = NIVEL > 2 ? 1 : 0;
         int usosReaccion = NIVEL == 5 ? 3 : 2;
         bool seCancelaConDanio = NIVEL != 4;
@@ -59,7 +59,7 @@ public class EscudoEnergetico : Habilidad
         if (esIngles)
         {
             cuerpo += "<b>Type:</b> Self\n";
-            cuerpo += $"<b>Defense Buff:</b> {defensaBase} + current Energy Tier (2 rounds)\n";
+            cuerpo += $"<b>Barrier:</b> {barreraBase} + 10 x current Energy Tier (2 rounds)\n";
             cuerpo += $"<b>Reaction:</b> On failed enemy projectile, counters with Arcane Discharge";
             if (bonusAtaqueReaccion > 0)
             {
@@ -74,7 +74,7 @@ public class EscudoEnergetico : Habilidad
         else if (esPortugues)
         {
             cuerpo += "<b>Tipo:</b> Propria\n";
-            cuerpo += $"<b>Buff de Defesa:</b> {defensaBase} + Nivel de Energia atual (2 rodadas)\n";
+            cuerpo += $"<b>Barreira:</b> {barreraBase} + 10 x Nivel de Energia atual (2 rodadas)\n";
             cuerpo += $"<b>Reacao:</b> Contra projetil inimigo falho, contra-ataca com Descarga Arcana";
             if (bonusAtaqueReaccion > 0)
             {
@@ -89,7 +89,7 @@ public class EscudoEnergetico : Habilidad
         else
         {
             cuerpo += "<b>Tipo:</b> Propia\n";
-            cuerpo += $"<b>Buff de Defensa:</b> {defensaBase} + Nivel de Energia actual (2 rondas)\n";
+            cuerpo += $"<b>Barrera:</b> {barreraBase} + 10 x Nivel de Energia actual (2 rondas)\n";
             cuerpo += $"<b>Reacción:</b> Ante proyectil enemigo fallido, contraataca con Descarga Arcana";
             if (bonusAtaqueReaccion > 0)
             {
@@ -111,10 +111,10 @@ public class EscudoEnergetico : Habilidad
         txtDescripcion = ConstruirDescripcionEstandar(
             esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs,
             esIngles
-                ? "The Channeler forms a reactive barrier that reinforces defense and punishes ranged pressure."
+                ? "The Channeler forms a reactive barrier that protects against ranged pressure."
                 : esPortugues
-                    ? "O Canalizador forma uma barreira reativa que reforca a defesa e pune pressao a distancia."
-                : "El Canalizador forma una barrera reactiva que refuerza defensa y castiga la presión a distancia.",
+                    ? "O Canalizador forma uma barreira reativa que protege contra a pressao a distancia."
+                : "El Canalizador forma una barrera reactiva que protege contra la presión a distancia.",
             cuerpo,
             costos,
             "#5dade2");
@@ -126,16 +126,16 @@ public class EscudoEnergetico : Habilidad
         string iconoEnergia = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_acumularenergia\"></voffset></size><space=-0.35em>";
         string titulo = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
         string subtituloFormato = esIngles
-            ? "Gains Defense and counters failed enemy projectiles."
+            ? "Gains Barrier and counters failed enemy projectiles."
             : esPortugues
-                ? "Ganha Defesa e contra-ataca projeteis inimigos falhos."
-                : "Gana Defensa y contraataca proyectiles enemigos fallidos.";
+                ? "Ganha Barreira e contra-ataca projeteis inimigos falhos."
+                : "Gana Barrera y contraataca proyectiles enemigos fallidos.";
         string bonusAtaqueTexto = bonusAtaqueReaccion > 0 ? $", +{bonusAtaqueReaccion}" : "";
         string cuerpoFormato = "";
         if (esIngles)
         {
             cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Self buff</color>\n";
-            cuerpoFormato += $"<color={colorEncabezado}><b>Defense:</b></color> <color={colorValor}>+{defensaBase} + current Energy Tier for 2 rounds</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Barrier:</b></color> <color={colorValor}>+{barreraBase} + 10 x current Energy Tier for 2 rounds</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Reaction:</b></color> <color={colorValor}>{iconoReaccion} On failed enemy projectile: Arcane Discharge{bonusAtaqueTexto}, creates {iconoEnergia} 1 Energy Residue nearby</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Uses:</b></color> <color={colorValor}>{usosReaccion} reactions per cast</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Condition:</b></color> <color={colorValor}>{(seCancelaConDanio ? "Removed when user takes damage" : "Not removed by incoming damage")}</color>";
@@ -143,7 +143,7 @@ public class EscudoEnergetico : Habilidad
         else if (esPortugues)
         {
             cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
-            cuerpoFormato += $"<color={colorEncabezado}><b>Defesa:</b></color> <color={colorValor}>+{defensaBase} + Nivel de Energia atual por 2 rodadas</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Barreira:</b></color> <color={colorValor}>+{barreraBase} + 10 x Nivel de Energia atual por 2 rodadas</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Reacao:</b></color> <color={colorValor}>{iconoReaccion} Se projetil inimigo falha: Descarga Arcana{bonusAtaqueTexto}, cria {iconoEnergia} 1 Residuo Energetico proximo</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Usos:</b></color> <color={colorValor}>{usosReaccion} reacoes por uso</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Condicao:</b></color> <color={colorValor}>{(seCancelaConDanio ? "Remove ao receber dano" : "Nao remove ao receber dano")}</color>";
@@ -151,7 +151,7 @@ public class EscudoEnergetico : Habilidad
         else
         {
             cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
-            cuerpoFormato += $"<color={colorEncabezado}><b>Defensa:</b></color> <color={colorValor}>+{defensaBase} + Nivel de Energia actual por 2 rondas</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Barrera:</b></color> <color={colorValor}>+{barreraBase} + 10 x Nivel de Energia actual por 2 rondas</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Reacción:</b></color> <color={colorValor}>{iconoReaccion} Si proyectil enemigo falla: Descarga Arcana{bonusAtaqueTexto}, crea {iconoEnergia} 1 Residuo Energetico cercano</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Usos:</b></color> <color={colorValor}>{usosReaccion} reacciones por uso</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Condición:</b></color> <color={colorValor}>{(seCancelaConDanio ? "Se remueve al recibir daño" : "No se remueve al recibir daño")}</color>";
@@ -171,19 +171,19 @@ public class EscudoEnergetico : Habilidad
 
         if (esIngles)
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 defense base.</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +4 base Barrier.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: +1 attack roll on counter discharge.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Next Level: Option A (no cancel on damage) or Option B (+1 reaction use).</color>"; }
         }
         else if (esPortugues)
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 defesa base.</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +4 Barreira base.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: +1 na rolagem de ataque da descarga de reacao.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Proximo Nivel: Opcao A (nao remove com dano) ou Opcao B (+1 uso de reacao).</color>"; }
         }
         else
         {
-            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 defensa base.</color>"; }
+            if (NIVEL < 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +4 Barrera base.</color>"; }
             else if (NIVEL == 2) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: +1 a la tirada de ataque de la descarga de reacción.</color>"; }
             else if (NIVEL == 3) { txtDescripcion += "\n\n<color=#dfea02>- Próximo Nivel: Opción A (no se cancela por daño) u Opción B (+1 uso de reacción).</color>"; }
         }
@@ -213,15 +213,15 @@ public class EscudoEnergetico : Habilidad
        Unidad objetivo = (Unidad)obj;
          VFXAplicar(objetivo.gameObject);
       ClaseCanalizador scCana = (ClaseCanalizador)objetivo;
-      float defensa = 10*scCana.ObtenerEnergia(); 
+      int barreraBase = NIVEL > 1 ? 12 : 8;
+      int barreraEnergia = 10 * scCana.ObtenerEnergia();
        /////////////////////////////////////////////
        //BUFF ---- Así se aplica un buff/debuff
        Buff buff = new Buff();
        buff.buffNombre = "Escudo Energético";
        buff.boolfDebufftBuff = true;
        buff.DuracionBuffRondas = 2;
-       buff.cantDefensa += 1+defensa;
-       if (NIVEL > 1) { buff.cantDefensa += 1; }
+       buff.cantBarrera += barreraBase + barreraEnergia;
        buff.AplicarBuff(objetivo);
        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);

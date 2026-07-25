@@ -342,15 +342,15 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede intentar frenarlo con calma antes de que empeore.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Tirada de Salvación: TS Mental DC ") + DificultadRumorDeDesbande + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, ganará 35 Experiencia y +4 Esperanza. Si falla, obtendrá Baja Moral por 3 días y la Caravana perderá 5 Esperanza.</color>\n\n");
+                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Tirada de Salvación: TS Mental DC ") + DificultadRumorDeDesbande + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, ganará 35 Experiencia y +4 Esperanza. Si falla, obtendrá Baja Moral por 3 días y la Caravana perderá 10 Esperanza.</color>\n\n");
             }
             else
             {
                 txtDescripcion.text += TRADU.i.Traducir("Uno de los Héroes puede intentar frenar el rumor con calma antes de que empeore.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Mental DC 12. Si la supera, ganará 35 Experiencia y +4 Esperanza. Si falla, obtendrá Baja Moral por 3 días y la Caravana perderá 5 Esperanza.</color>\n\n");
+                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Mental DC 12. Si la supera, ganará 35 Experiencia y +4 Esperanza. Si falla, obtendrá Baja Moral por 3 días y la Caravana perderá 10 Esperanza.</color>\n\n");
             }
 
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides imponer silencio por la fuerza, -9 Esperanza.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides imponer silencio por la fuerza, -10 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Hablar");
             textBotonB.text = TRADU.i.Traducir("Imponer silencio");
@@ -2326,6 +2326,70 @@ public class EventosAdmin : MonoBehaviour
         CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(item.gameObject);
     }
 
+    string ObtenerTextoResultadoHombrosFirmes(Personaje participante, int tirada, int tsFortaleza, int resultado, bool exito)
+    {
+        string nombre = participante != null ? participante.sNombre : "Héroe";
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+
+        switch (idioma)
+        {
+            case TRADU.IdiomaIngles:
+                return "-" + nombre + (exito ? " passed the Fortitude Save (1d20: " : " failed the Fortitude Save (1d20: ")
+                    + tirada + " + " + tsFortaleza + " = " + resultado + " vs DC " + DificultadHombrosFirmes
+                    + (exito ? "), carried the Civilian during the march. +50 Experience, +5 Hope." : "). Became Fatigued.");
+            case TRADU.IdiomaPortugues:
+                return "-" + nombre + (exito ? " foi aprovado no Teste de Resistência de Fortitude (1d20: " : " falhou no Teste de Resistência de Fortitude (1d20: ")
+                    + tirada + " + " + tsFortaleza + " = " + resultado + " contra CD " + DificultadHombrosFirmes
+                    + (exito ? "), carregou o Civil durante a marcha. +50 Experiência, +5 Esperança." : "). Ficou Fatigado.");
+            default:
+                return "-" + nombre + (exito ? " superó su Tirada de Salvación de Fortaleza (1d20: " : " falló su Tirada de Salvación de Fortaleza (1d20: ")
+                    + tirada + " + " + tsFortaleza + " = " + resultado + " vs DC " + DificultadHombrosFirmes
+                    + (exito ? "), cargó al Civil durante la marcha. +50 Experiencia, +5 Esperanza." : "). Obtuvo Fatigado.");
+        }
+    }
+
+    string ObtenerTextoTiradaLocal(
+        Personaje participante,
+        int tirada,
+        int modificador,
+        int resultado,
+        int dificultad,
+        string textoEs,
+        string textoEn,
+        string textoPt,
+        string consecuenciaEs,
+        string consecuenciaEn,
+        string consecuenciaPt)
+    {
+        string nombre = participante != null ? participante.sNombre : "Héroe";
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+        string texto;
+        string consecuencia;
+        string contraDificultad;
+
+        switch (idioma)
+        {
+            case TRADU.IdiomaIngles:
+                texto = textoEn;
+                consecuencia = consecuenciaEn;
+                contraDificultad = " vs DC ";
+                break;
+            case TRADU.IdiomaPortugues:
+                texto = textoPt;
+                consecuencia = consecuenciaPt;
+                contraDificultad = " contra CD ";
+                break;
+            default:
+                texto = textoEs;
+                consecuencia = consecuenciaEs;
+                contraDificultad = " vs DC ";
+                break;
+        }
+
+        return "-" + nombre + texto + " (1d20: " + tirada + " + " + modificador + " = " + resultado
+            + contraDificultad + dificultad + "). " + consecuencia;
+    }
+
     void CambiarFuerzaKaleTav(int delta)
     {
         if (CampaignManager.Instance == null || CampaignManager.Instance.scAtributosZona == null)
@@ -2540,13 +2604,13 @@ public class EventosAdmin : MonoBehaviour
             else if (participanteEvento1 != null)
             {
                 participanteEvento1.Camp_Moral -= 3;
-                CampaignManager.Instance.CambiarEsperanzaActual(-5);
+                CampaignManager.Instance.CambiarEsperanzaActual(-10);
                 CampaignManager.Instance.EscribirLog(
                     TRADU.i.Traducir("-") + participanteEvento1.sNombre
                     + TRADU.i.Traducir(" falló su Tirada de Salvación Mental (1d20: ")
                     + tirada + TRADU.i.Traducir(" + ")
                     + tsMental + TRADU.i.Traducir(" vs DC ")
-                    + DificultadRumorDeDesbande + TRADU.i.Traducir("). El rumor de desbande se agravó. Baja Moral por 3 días, -5 Esperanza."));
+                    + DificultadRumorDeDesbande + TRADU.i.Traducir("). El rumor de desbande se agravó. Baja Moral por 3 días, -10 Esperanza."));
             }
 
             gameObject.SetActive(false);
@@ -2835,6 +2899,15 @@ public class EventosAdmin : MonoBehaviour
             else
             {
                 CampaignManager.Instance.CambiarFatigaActual(1);
+                CampaignManager.Instance.EscribirAdvertenciaLog(
+                    ObtenerTextoTiradaLocal(
+                        participanteEvento1, tirada, tsMental, resultado, DificultadMarcasDelCorreo,
+                        " no logró interpretar las marcas del correo",
+                        " failed to interpret the courier's marks",
+                        " não conseguiu interpretar as marcas da mensagem",
+                        "La demora hizo que la Caravana ganara +1 Fatiga.",
+                        "The delay caused the Caravan to gain +1 Fatigue.",
+                        "O atraso fez a Caravana ganhar +1 Fadiga."));
             }
             gameObject.SetActive(false);
         }
@@ -2859,6 +2932,15 @@ public class EventosAdmin : MonoBehaviour
             else
             {
                 CampaignManager.Instance.CambiarEsperanzaActual(-6);
+                CampaignManager.Instance.EscribirAdvertenciaLog(
+                    ObtenerTextoTiradaLocal(
+                        participante, tirada, tsMental, resultado, DificultadPulsoDeMando,
+                        " falló su Tirada de Salvación Mental",
+                        " failed the Mental Save",
+                        " falhou no Teste de Resistência Mental",
+                        "La confusión desanimó a la Caravana. -6 Esperanza.",
+                        "The confusion discouraged the Caravan. -6 Hope.",
+                        "A confusão desanimou a Caravana. -6 Esperança."));
             }
             gameObject.SetActive(false);
         }
@@ -2872,16 +2954,14 @@ public class EventosAdmin : MonoBehaviour
             {
                 participanteEvento1.RecibirExperiencia(50);
                 CampaignManager.Instance.CambiarEsperanzaActual(5);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" superó su Tirada de Salvación de Fortaleza (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsFortaleza + TRADU.i.Traducir(" vs DC ")
-                    + DificultadHombrosFirmes + TRADU.i.Traducir("), cargó al Civil durante la marcha. +50 Experiencia, +5 Esperanza."));
+                CampaignManager.Instance.EscribirAdvertenciaLog(
+                    ObtenerTextoResultadoHombrosFirmes(participanteEvento1, tirada, tsFortaleza, resultado, true));
             }
             else if (participanteEvento1 != null)
             {
                 participanteEvento1.SetCampFatigado(true);
+                CampaignManager.Instance.EscribirAdvertenciaLog(
+                    ObtenerTextoResultadoHombrosFirmes(participanteEvento1, tirada, tsFortaleza, resultado, false));
             }
             gameObject.SetActive(false);
         }
@@ -2938,6 +3018,15 @@ public class EventosAdmin : MonoBehaviour
             else
             {
                 CampaignManager.Instance.CambiarFatigaActual(1);
+                CampaignManager.Instance.EscribirAdvertenciaLog(
+                    ObtenerTextoTiradaLocal(
+                        participante, tirada, tsMental, resultado, DificultadDosMiradas,
+                        " falló su Tirada de Salvación Mental",
+                        " failed the Mental Save",
+                        " falhou no Teste de Resistência Mental",
+                        "La Caravana ganó +1 Fatiga al dudar del camino.",
+                        "The Caravan gained +1 Fatigue while doubting the route.",
+                        "A Caravana ganhou +1 Fadiga ao duvidar do caminho."));
             }
             gameObject.SetActive(false);
         }
@@ -3141,6 +3230,15 @@ public class EventosAdmin : MonoBehaviour
                     CampaignManager.Instance.EscribirLog(
                         TRADU.i.Traducir("-") + participanteEvento1.sNombre
                         + TRADU.i.Traducir(" no logró ordenar bien el repaso de maniobras. +1 Fatiga."));
+                    CampaignManager.Instance.EscribirAdvertenciaLog(
+                        ObtenerTextoTiradaLocal(
+                            participanteEvento1, tirada, tsMental, resultado, DificultadRepasoDeManiobras,
+                            " no logró ordenar bien el repaso de maniobras",
+                            " failed to organize the maneuver review",
+                            " não conseguiu organizar bem a revisão de manobras",
+                            "+1 Fatiga.",
+                            "+1 Fatigue.",
+                            "+1 Fadiga."));
                 }
             }
             else
@@ -3167,11 +3265,29 @@ public class EventosAdmin : MonoBehaviour
                     CampaignManager.Instance.EscribirLog(
                         TRADU.i.Traducir("-") + participanteEvento1.sNombre
                         + TRADU.i.Traducir(" rompio el mal augurio de los cuervos. +2 Esperanza."));
+                    CampaignManager.Instance.EscribirAdvertenciaLog(
+                        ObtenerTextoTiradaLocal(
+                            participanteEvento1, tirada, tsMental, resultado, DificultadCuervosDelPaso,
+                            " superó su Tirada de Salvación Mental y rompió el mal augurio de los cuervos",
+                            " passed the Mental Save and broke the crows' bad omen",
+                            " foi aprovado no Teste de Resistência Mental e rompeu o mau agouro dos corvos",
+                            "+2 Esperanza.",
+                            "+2 Hope.",
+                            "+2 Esperança."));
                 }
                 else
                 {
                     OtorgarEstadoCaravana(TipoEstadoCaravana.Acobardados,
                         "-" + participanteEvento1.sNombre + TRADU.i.Traducir(" no logró cortar el malestar de la Caravana. Acobardados para el próximo combate."));
+                    CampaignManager.Instance.EscribirAdvertenciaLog(
+                        ObtenerTextoTiradaLocal(
+                            participanteEvento1, tirada, tsMental, resultado, DificultadCuervosDelPaso,
+                            " no logró superar su Tirada de Salvación Mental y no pudo cortar el malestar de la Caravana",
+                            " failed the Mental Save and could not break the Caravan's unease",
+                            " falhou no Teste de Resistência Mental e não conseguiu cortar o mal-estar da Caravana",
+                            "Acobardados para el próximo combate.",
+                            "Doubtful for the next battle.",
+                            "Acobardados para o próximo combate."));
                 }
             }
             else
@@ -3202,6 +3318,15 @@ public class EventosAdmin : MonoBehaviour
                     participanteEvento1.RecibirExperiencia(30);
                     OtorgarEstadoCaravana(TipoEstadoCaravana.Vigilante,
                         "-" + participanteEvento1.sNombre + TRADU.i.Traducir(" vigiló desde el hielo alto y ordeno la marcha. +30 Experiencia y Vigilante."));
+                    CampaignManager.Instance.EscribirAdvertenciaLog(
+                        ObtenerTextoTiradaLocal(
+                            participanteEvento1, tirada, tsReflejos, resultado, DificultadVigiaDelHielo,
+                            " superó su Tirada de Salvación de Reflejos, vigiló desde el hielo alto y ordenó la marcha",
+                            " passed the Reflex Save, watched from the high ice, and organized the march",
+                            " foi aprovado no Teste de Resistência de Reflexos, vigiou do gelo alto e ordenou a marcha",
+                            "+30 Experiencia y Vigilante.",
+                            "+30 Experience and Vigilant.",
+                            "+30 Experiência e Vigilante."));
                 }
                 else
                 {
@@ -3209,6 +3334,15 @@ public class EventosAdmin : MonoBehaviour
                     CampaignManager.Instance.EscribirLog(
                         TRADU.i.Traducir("-") + participanteEvento1.sNombre
                         + TRADU.i.Traducir(" bajo agotado del filo helado. +1 Fatiga."));
+                    CampaignManager.Instance.EscribirAdvertenciaLog(
+                        ObtenerTextoTiradaLocal(
+                            participanteEvento1, tirada, tsReflejos, resultado, DificultadVigiaDelHielo,
+                            " bajó agotado del filo helado",
+                            " came down exhausted from the icy ridge",
+                            " desceu exausto da crista congelada",
+                            "+1 Fatiga.",
+                            "+1 Fatigue.",
+                            "+1 Fadiga."));
                 }
             }
             else
@@ -3324,7 +3458,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 13)
         {
-            CampaignManager.Instance.CambiarEsperanzaActual(-9);
+            CampaignManager.Instance.CambiarEsperanzaActual(-10);
             gameObject.SetActive(false);
         }
         if (eventoActual == 14)

@@ -224,6 +224,9 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
     [SerializeField] private Color colorFlashEntradaPlanoMaterial = new Color(0.72f, 1f, 0.93f, 1f);
     [SerializeField] private float duracionFlash = 0.08f;
     [SerializeField] private float duracionTransicion = 0.18f;
+    [SerializeField] private string prefabVfxEntradaPlanoMaterial = "VFX/VFX_RefuerzosLlamadaEspectral";
+    [SerializeField][Range(0.2f, 1f)] private float escalaVfxEntradaPlanoMaterial = 0.55f;
+    [SerializeField][Min(0.1f)] private float duracionVfxEntradaPlanoMaterial = 0.9f;
 
     private Unidad unidad;
     private Image imagenUnidad;
@@ -232,6 +235,7 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
     private bool estadoInicializado;
     private bool estabaEnPlanoMaterial;
     private Coroutine rutinaTransicion;
+    private GameObject vfxEntradaPlanoMaterial;
     private Color colorBase = Color.white;
 
     void Awake()
@@ -303,7 +307,47 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
         bool entrarPlanoMaterial = enPlanoMaterial && !estabaEnPlanoMaterial;
         AplicarSpritesSegunPlano(enPlanoMaterial);
         estabaEnPlanoMaterial = enPlanoMaterial;
+        if (entrarPlanoMaterial)
+        {
+            ReproducirVfxEntradaPlanoMaterial();
+        }
         IniciarTransicion(instantaneo, AlphaObjetivo(enPlanoMaterial), entrarPlanoMaterial);
+    }
+
+    private void ReproducirVfxEntradaPlanoMaterial()
+    {
+        if (!gameObject.activeInHierarchy)
+        {
+            return;
+        }
+
+        if (vfxEntradaPlanoMaterial != null)
+        {
+            Destroy(vfxEntradaPlanoMaterial);
+        }
+
+        GameObject prefabVfx = Resources.Load<GameObject>(prefabVfxEntradaPlanoMaterial);
+        if (prefabVfx == null)
+        {
+            return;
+        }
+
+        vfxEntradaPlanoMaterial = Instantiate(prefabVfx, transform.position, Quaternion.identity, transform);
+        vfxEntradaPlanoMaterial.transform.localPosition = Vector3.zero;
+        vfxEntradaPlanoMaterial.transform.localScale *= escalaVfxEntradaPlanoMaterial;
+
+        foreach (AudioSource audioSource in vfxEntradaPlanoMaterial.GetComponentsInChildren<AudioSource>(true))
+        {
+            audioSource.enabled = false;
+        }
+
+        Canvas canvasVfx = vfxEntradaPlanoMaterial.GetComponentInChildren<Canvas>();
+        if (canvasVfx != null)
+        {
+            RenderOrderHelper.OrdenarCanvasEncima(canvasVfx, transform, 2);
+        }
+
+        Destroy(vfxEntradaPlanoMaterial, duracionVfxEntradaPlanoMaterial);
     }
 
     private float AlphaObjetivo(bool enPlanoMaterial)
@@ -408,5 +452,4 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
   
  
   
-
 

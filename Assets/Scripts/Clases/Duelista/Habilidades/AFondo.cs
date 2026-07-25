@@ -371,7 +371,7 @@ public class AFondo : Habilidad
 
         foreach (Casilla cas in casillasAdyacentesyFrenteColumna1)
         {
-            if (cas.BloqueaAvanceMeleeDesdeFila(posYorigen))
+            if (cas.BloqueaAvanceMeleeDesdeFila(posYorigen, scEstaUnidad))
             {
                 return 0;
             }
@@ -383,7 +383,7 @@ public class AFondo : Habilidad
 
         foreach (Casilla cas in casillasAdyacentesyFrenteColumna2)
         {
-            if (cas.BloqueaAvanceMeleeDesdeFila(posYorigen))
+            if (cas.BloqueaAvanceMeleeDesdeFila(posYorigen, scEstaUnidad))
             {
                 return 1;
             }

@@ -3150,6 +3150,13 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       string bonusTexto = "";
       bool bonusColorAsignado = false;
       Color bonusColorPrimario = colorDanio;
+      bool bonusAcidoAplicado = false;
+      bool bonusArcanoAplicado = false;
+      bool bonusFuegoAplicado = false;
+      bool bonusHieloAplicado = false;
+      bool bonusNecroAplicado = false;
+      bool bonusRayoAplicado = false;
+      bool bonusDivinoAplicado = false;
 
       if (uCausante != null && aplicarBonusElemental)
       {
@@ -3158,6 +3165,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_acido, 7, out Color col);
           if (bonus > 0)
           {
+            bonusAcidoAplicado = true;
             bool bonusMismoTipo = tipoDanio == 7;
             bonusTotal += bonus;
             if (!bonusMismoTipo)
@@ -3172,6 +3180,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_arcano, 8, out Color col);
           if (bonus > 0)
           {
+            bonusArcanoAplicado = true;
             bool bonusMismoTipo = tipoDanio == 8;
             bonusTotal += bonus;
             if (!bonusMismoTipo)
@@ -3186,6 +3195,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_fuego, 4, out Color col);
           if (bonus > 0)
           {
+            bonusFuegoAplicado = true;
             bool bonusMismoTipo = tipoDanio == 4;
             bonusTotal += bonus;
             if (!bonusMismoTipo)
@@ -3200,6 +3210,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_hielo, 5, out Color col);
           if (bonus > 0)
           {
+            bonusHieloAplicado = true;
             bool bonusMismoTipo = tipoDanio == 5;
             bonusTotal += bonus;
             if (!bonusMismoTipo)
@@ -3214,6 +3225,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_necro, 9, out Color col);
           if (bonus > 0)
           {
+            bonusNecroAplicado = true;
             bool bonusMismoTipo = tipoDanio == 9;
             bonusTotal += bonus;
             if (!bonusMismoTipo)
@@ -3228,6 +3240,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_rayo, 6, out Color col);
           if (bonus > 0)
           {
+            bonusRayoAplicado = true;
             bool bonusMismoTipo = tipoDanio == 6;
             bonusTotal += bonus;
             if (!bonusMismoTipo)
@@ -3242,6 +3255,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           int bonus = CalcularDanioBonusElemental(uCausante.bonusdam_divino, 11, out Color col);
           if (bonus > 0)
           {
+            bonusDivinoAplicado = true;
             bool bonusMismoTipo = tipoDanio == 11;
             bonusTotal += bonus;
             if (!bonusMismoTipo)
@@ -3257,6 +3271,17 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       Color colorDanioFinal = (danioFinal <= 0 && bonusTotal > 0 && bonusColorAsignado) ? bonusColorPrimario : colorDanio;
       IntentarAplicarDebuffsImpactoArma(uCausante, tipoDanio, ref danioTotal);
       AplicarMitigacionDefensivaAlDanioRecibido(tipoDanio, esCritico, ref danioTotal, out reduccionCritAplicada, out reduccionGlobalAplicada);
+
+      if (danioTotal > 0)
+      {
+        if (bonusAcidoAplicado) { combatFeedbackFx?.PlayElementalBonusImpact(7); }
+        if (bonusArcanoAplicado) { combatFeedbackFx?.PlayElementalBonusImpact(8); }
+        if (bonusFuegoAplicado) { combatFeedbackFx?.PlayElementalBonusImpact(4); }
+        if (bonusHieloAplicado) { combatFeedbackFx?.PlayElementalBonusImpact(5); }
+        if (bonusNecroAplicado) { combatFeedbackFx?.PlayElementalBonusImpact(9); }
+        if (bonusRayoAplicado) { combatFeedbackFx?.PlayElementalBonusImpact(6); }
+        if (bonusDivinoAplicado) { combatFeedbackFx?.PlayElementalBonusImpact(11); }
+      }
 
       if (danioTotal > 0 && scUnidadCanvas.unidadCanvas != null)
       {
@@ -5304,6 +5329,11 @@ public void Marcar(int n)
 
 public void OnMouseEnter() 
 {
+    if (BattleManager.Instance != null && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
+    {
+      return;
+    }
+
     if (EstaOcultoVisualmenteParaJugador())
     {
       return;
@@ -5334,6 +5364,11 @@ public void OnMouseEnter()
 }
 public void OnMouseOver()
 {
+    if (BattleManager.Instance != null && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
+    {
+      return;
+    }
+
     if (EstaOcultoVisualmenteParaJugador())
     {
       return;
@@ -5382,6 +5417,11 @@ public void OnMouseExit()
 }
 public async void OnMouseDown() 
 {
+    if (BattleManager.Instance != null && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
+    {
+      return;
+    }
+
     if (EstaOcultoVisualmenteParaJugador())
     {
       return;

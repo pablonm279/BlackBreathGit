@@ -398,7 +398,7 @@ GameObject:
   - component: {fileID: 6191675943694387991}
   - component: {fileID: 5898702094305266692}
   m_Layer: 5
-  m_Name: Text (TMP) (1)
+  m_Name: consec
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1299,6 +1299,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   txtDesc: {fileID: 3312014607506495964}
+  txtBotonLiberar: {fileID: 1604241844299852164}
+  txtConsec: {fileID: 5898702094305266692}
   txtMecanica: {fileID: 2564035602071047180}
 --- !u!114 &4590980476301199766
 MonoBehaviour:
@@ -1319,6 +1321,7 @@ MonoBehaviour:
   txtdesc: {fileID: 3312014607506495964}
   txtmecanicas: {fileID: 2564035602071047180}
   contenidoPanel: {fileID: 0}
+  txtBotonEchar: {fileID: 0}
 --- !u!114 &7494822906339484246
 MonoBehaviour:
   m_ObjectHideFlags: 0

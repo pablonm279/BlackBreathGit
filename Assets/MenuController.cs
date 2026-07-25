@@ -14,6 +14,7 @@ public class MenuController : MonoBehaviour
     [SerializeField] CanvasGroup fader;
     [SerializeField] float fadeTime = 0.4f;
     [SerializeField] GameObject panelOpciones;
+    [SerializeField] PrePartidaManager prePartidaManager;
 
     public GameObject logoIngles;
     public GameObject logoEspaniol;
@@ -27,6 +28,11 @@ public class MenuController : MonoBehaviour
 
     void Awake()
     {
+        if (prePartidaManager == null)
+        {
+            prePartidaManager = FindFirstObjectByType<PrePartidaManager>(FindObjectsInactive.Include);
+        }
+
         if (panelOpciones != null) panelOpciones.SetActive(false);
 
         if (Opciones != null)
@@ -142,6 +148,24 @@ public class MenuController : MonoBehaviour
 
     public void OnNuevaPartida()
     {
+        if (prePartidaManager != null)
+        {
+            RuntimeAnalytics.TrackDesign("ui", "main_menu", "new_game_preparation_open");
+            prePartidaManager.Abrir();
+            return;
+        }
+
+        IniciarNuevaPartida();
+    }
+
+    public void IniciarNuevaPartidaDesdePrePartida(int zonaId)
+    {
+        PrePartidaManager.EstablecerZonaInicialPendiente(zonaId);
+        IniciarNuevaPartida();
+    }
+
+    private void IniciarNuevaPartida()
+    {
         RuntimeAnalytics.TrackDesign("ui", "main_menu", "new_game");
         RuntimeAnalytics.TrackProgressionStart("campaign", "new_game");
         MarcarTutorialComoCompletado();
@@ -151,6 +175,9 @@ public class MenuController : MonoBehaviour
 
     public void OnNuevaPartidaTutorial()
     {
+        PrePartidaManager.LimpiarZonaInicialPendiente();
+        PrePartidaManager.LimpiarClaseLiderPendiente();
+        PrePartidaManager.LimpiarPresagiosInicialesPendientes();
         RuntimeAnalytics.TrackDesign("ui", "main_menu", "new_game_tutorial");
         RuntimeAnalytics.TrackProgressionStart("tutorial", "campaign", "intro");
         ReiniciarTutorial();
@@ -235,6 +262,8 @@ public class MenuController : MonoBehaviour
 
     IEnumerator CargarJuego()
     {
+        OcultarInterfazExceptoFader();
+
         if (fader != null)
         {
             fader.blocksRaycasts = true;
@@ -244,6 +273,67 @@ public class MenuController : MonoBehaviour
         yield return FadeTo(1f, fadeTime);
         AdministradorEscenas.SolicitarFaderNegroEnProximaCargaCampania();
         SceneManager.LoadScene(escenaJuego, LoadSceneMode.Single);
+    }
+
+    void OcultarInterfazExceptoFader()
+    {
+        if (fader == null)
+        {
+            return;
+        }
+
+        Transform faderTransform = fader.transform;
+        Transform contenedorUI = faderTransform.parent;
+        if (contenedorUI == null)
+        {
+            faderTransform.gameObject.SetActive(true);
+            return;
+        }
+
+        faderTransform.gameObject.SetActive(true);
+        faderTransform.SetAsLastSibling();
+
+        for (int i = 0; i < contenedorUI.childCount; i++)
+        {
+            Transform hijo = contenedorUI.GetChild(i);
+            if (hijo == null || hijo == faderTransform)
+            {
+                continue;
+            }
+
+            if (OcultarPrePartidaExceptoFondo(hijo))
+            {
+                continue;
+            }
+
+            hijo.gameObject.SetActive(false);
+        }
+    }
+
+    bool OcultarPrePartidaExceptoFondo(Transform candidato)
+    {
+        if (prePartidaManager == null
+            || candidato != prePartidaManager.transform
+            || !candidato.gameObject.activeSelf)
+        {
+            return false;
+        }
+
+        candidato.gameObject.SetActive(true);
+
+        Transform fondoPrePartida = candidato.Find("FondoPrepartida");
+        if (fondoPrePartida != null)
+        {
+            fondoPrePartida.gameObject.SetActive(true);
+        }
+
+        Transform panelFondo = candidato.Find("Panelfondo");
+        if (panelFondo != null)
+        {
+            panelFondo.gameObject.SetActive(false);
+        }
+
+        return true;
     }
 
     IEnumerator FadeTo(float target, float time)

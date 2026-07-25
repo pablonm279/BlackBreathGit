@@ -130,6 +130,8 @@ public class Nodo : MonoBehaviour
   public bool yatiroConexiones = false;
   Nodo vieneDeNodo;
   bool esMisterioso = false; // Nodo no revelado visualmente
+  bool preparandoTipoParaPresagios = false;
+  bool reveladoPorZonaCartografiada = false;
   bool misterioForzadoTutorial = false;
   bool revelandoPorExpedicionTutorial = false;
   bool reveladoPorExpedicionTutorial = false;
@@ -349,6 +351,7 @@ public class Nodo : MonoBehaviour
 
     int chancesAtajo = 15;
     chancesAtajo += 5 * CampaignManager.Instance.CuantosPersonajesHacenTalActividad(9);
+    chancesAtajo = CampaignManager.Instance.AjustarChanceAtajoSubterraneoPresagios(chancesAtajo);
     if (CampaignManager.Instance.scAtributosZona.ID == 3) { chancesAtajo = 0; } // En Nedukazal no hay atajos
     if (CampaignManager.Instance.DebeUsarConfiguracionTutorial()) { chancesAtajo = 0; } // En Tutorial no hay atajos
     
@@ -376,6 +379,12 @@ public class Nodo : MonoBehaviour
   public Nodo EncontrarAtajo(int X, int Y)
   {
     if (UsaConfiguracionTutorial())
+    {
+      return null;
+    }
+
+    if (CampaignManager.Instance != null
+      && CampaignManager.Instance.TienePresagioActivo(PresagioCatalog.Derrumbado))
     {
       return null;
     }
@@ -453,6 +462,11 @@ public class Nodo : MonoBehaviour
     if (CampaignManager.Instance == null ||
         CampaignManager.Instance.scMapaManager == null ||
         CampaignManager.Instance.DebeUsarConfiguracionTutorial())
+    {
+      return false;
+    }
+
+    if (CampaignManager.Instance.TienePresagioActivo(PresagioCatalog.CaminosBorrados))
     {
       return false;
     }
@@ -558,6 +572,7 @@ public class Nodo : MonoBehaviour
       IntentarConectar(1, 1, zonaId);
       IntentarConectar(1, 3, zonaId);
       IntentarConectar(1, 5, zonaId);
+      AsegurarBifurcacionMinimaOrigen(zonaId);
 
       RevelarNodosFuturosIniciales(3);
 
@@ -623,8 +638,67 @@ public class Nodo : MonoBehaviour
       IntentarConectar(11, 10, zonaId);
     }
 
+    float chanceRamaCentral = 0.5f;
+    if (CampaignManager.Instance != null)
+    {
+      float multiplicadorBifurcaciones = CampaignManager.Instance.ObtenerMultiplicadorBifurcacionesPresagios();
+      if (multiplicadorBifurcaciones > 1f)
+      {
+        chanceRamaCentral = Mathf.Clamp01(chanceRamaCentral * multiplicadorBifurcaciones);
+      }
+    }
+
+    if (DestinosPosibles.Count == 1 &&
+        posXNodo < 10 &&
+        posYNodo >= 3 && posYNodo <= 5 &&
+        UnityEngine.Random.value < chanceRamaCentral)
+    {
+      IntentarAgregarRamaCentral(xadelante, zonaId);
+    }
+
     if (DestinosPosibles.Count == 0 && posXNodo < 10)
       ConectarFallbackSiguienteColumna(xadelante, zonaId);
+  }
+
+  void AsegurarBifurcacionMinimaOrigen(int zonaId)
+  {
+    if (posXNodo != 0 || posYNodo != 0 || DestinosPosibles.Count >= 2)
+    {
+      return;
+    }
+
+    for (int y = 1; y <= 5 && DestinosPosibles.Count < 2; y++)
+    {
+      IntentarConectar(1, y, zonaId);
+    }
+  }
+
+  void IntentarAgregarRamaCentral(int nextX, int zonaId)
+  {
+    List<int> filasCandidatas = new List<int>(3);
+    int filaMinima = Mathf.Max(1, posYNodo - 1);
+    int filaMaxima = Mathf.Min(5, posYNodo + 1);
+
+    for (int y = filaMinima; y <= filaMaxima; y++)
+    {
+      Nodo candidato = ObtenerNodoPermitido(nextX, y, zonaId);
+      if (candidato != null && !DestinosPosibles.Contains(candidato))
+      {
+        filasCandidatas.Add(y);
+      }
+    }
+
+    while (filasCandidatas.Count > 0)
+    {
+      int indice = UnityEngine.Random.Range(0, filasCandidatas.Count);
+      int y = filasCandidatas[indice];
+      filasCandidatas.RemoveAt(indice);
+
+      if (IntentarConectar(nextX, y, zonaId))
+      {
+        return;
+      }
+    }
   }
 
   public void ConectarConNodo(
@@ -650,12 +724,18 @@ public class Nodo : MonoBehaviour
     if (DestinosPosibles.Contains(nodoB)) return;
 
     Nodo nodoA = this;
+    int chanceCaminoSinuoso = 20;
+    if (CampaignManager.Instance != null)
+    {
+      chanceCaminoSinuoso = CampaignManager.Instance.AjustarChanceCaminoSinuosoPresagios(chanceCaminoSinuoso);
+    }
+
     TipoCaminoCampania tipoCamino = tipoForzado ?? (
       esPorAbajo
         ? TipoCaminoCampania.AtajoSubterraneo
         : esAtajoSuperficie
           ? TipoCaminoCampania.AtajoSuperficie
-          : nodoB.posXNodo > 1 && UnityEngine.Random.Range(0, 100) < 20
+          : nodoB.posXNodo > 1 && UnityEngine.Random.Range(0, 100) < chanceCaminoSinuoso
             ? TipoCaminoCampania.Dificil
             : TipoCaminoCampania.Normal);
     int costoMovimientoCamino = costoMovimientoForzado > 0
@@ -1242,6 +1322,7 @@ public class Nodo : MonoBehaviour
     nodoIncendiado = false;
     nodoRitual = false;
     esMisterioso = false;
+    reveladoPorZonaCartografiada = false;
     numVisualActual = -1;
     atajoSubterraneoPendiente = false;
     visiblePorVision = true;
@@ -1296,6 +1377,7 @@ public class Nodo : MonoBehaviour
     visibleForzadaPorReveladoEspecial = data.visibilidadForzadaEspecial;
     faccionScoutReveladaId = data.faccionScoutReveladaId ?? "";
     faccionScoutReveladaNombre = data.faccionScoutReveladaNombre ?? "";
+    reveladoPorZonaCartografiada = data.reveladoPorZonaCartografiada;
     LimpiarConexiones();
     vieneDeNodo = null;
     lineasContinuacionVisionPorDestino.Clear();
@@ -1377,6 +1459,166 @@ public class Nodo : MonoBehaviour
     numVisualActual = -1;
     DesactivarGraficosNodo();
     ActivarVisualBaseNoRevelado();
+  }
+
+  public void AplicarPresagiosInicialesDeNodos()
+  {
+    CampaignManager campaign = CampaignManager.Instance;
+    if (campaign == null
+      || campaign.DebeUsarConfiguracionTutorial()
+      || !campaign.DebePrepararTiposNodoPorPresagios())
+    {
+      return;
+    }
+
+    if (EsNodoFinalZona())
+    {
+      Revelar(false, false);
+      return;
+    }
+
+    bool estabaRevelado = revelado;
+    if (tipoNodo <= 0)
+    {
+      preparandoTipoParaPresagios = true;
+      Revelar(false, false);
+      preparandoTipoParaPresagios = false;
+    }
+
+    if (tipoNodo <= 0)
+    {
+      revelado = estabaRevelado;
+      return;
+    }
+
+    if (campaign.DebeRevelarTipoNodoPorPresagio(tipoNodo))
+    {
+      revelado = true;
+      esMisterioso = false;
+      AplicarVisualGuardado(tipoNodo, false);
+      return;
+    }
+
+    if (campaign.DebeForzarTipoNodoMisteriosoPorPresagio(tipoNodo))
+    {
+      if (estabaRevelado)
+      {
+        revelado = true;
+        esMisterioso = true;
+        AplicarVisualGuardado(12, true);
+      }
+      else
+      {
+        revelado = false;
+        esMisterioso = false;
+        numVisualActual = -1;
+        DesactivarTodosGraficosNodo();
+        ActivarVisualBaseNoRevelado();
+      }
+      return;
+    }
+
+    if (!estabaRevelado)
+    {
+      revelado = false;
+      esMisterioso = false;
+      numVisualActual = -1;
+      DesactivarTodosGraficosNodo();
+      ActivarVisualBaseNoRevelado();
+    }
+  }
+
+  public void RevelarPorZonaCartografiada()
+  {
+    reveladoPorZonaCartografiada = true;
+
+    if (EsNodoFinalZona())
+    {
+      AsegurarNodoFinalSiempreRevelado();
+      AplicarVisualGuardado(tipoNodo, false);
+      return;
+    }
+
+    if (posXNodo == 0)
+    {
+      revelado = true;
+      esMisterioso = false;
+      return;
+    }
+
+    if (tipoNodo <= 0)
+    {
+      preparandoTipoParaPresagios = true;
+      Revelar(false, false);
+      preparandoTipoParaPresagios = false;
+    }
+
+    if (tipoNodo <= 0)
+    {
+      return;
+    }
+
+    revelado = true;
+    esMisterioso = false;
+    AplicarVisualGuardado(tipoNodo, false);
+  }
+
+  public bool FueReveladoPorZonaCartografiada()
+  {
+    return reveladoPorZonaCartografiada;
+  }
+
+  public bool PuedeCambiarTipoPorEspejismo()
+  {
+    return gameObject.activeSelf
+      && revelado
+      && !esMisterioso
+      && !nodoDespejado
+      && !reveladoPorZonaCartografiada
+      && !nodoRitual
+      && tipoNodoOriginalRitual <= 0
+      && !nodoIncendiado
+      && !EsNodoFinalZona()
+      && !atajoSubterraneoPendiente
+      && numVisualActual != 13
+      && EsTipoBasicoParaEspejismo(tipoNodo);
+  }
+
+  public bool CambiarTipoPorEspejismo(int nuevoTipo)
+  {
+    if (!PuedeCambiarTipoPorEspejismo() || !EsTipoBasicoParaEspejismo(nuevoTipo))
+    {
+      return false;
+    }
+
+    if (tipoNodo != nuevoTipo)
+    {
+      tipoNodo = nuevoTipo;
+      faccionScoutReveladaId = "";
+      faccionScoutReveladaNombre = "";
+      AplicarVisualGuardado(tipoNodo, false);
+      SincronizarVFXPersistentes();
+
+      if (!visiblePorVision)
+      {
+        DesactivarTodosGraficosNodo();
+      }
+    }
+
+    return true;
+  }
+
+  static bool EsTipoBasicoParaEspejismo(int tipo)
+  {
+    return tipo == 1  // Batalla
+      || tipo == 2    // Evento
+      || tipo == 3    // Claro
+      || tipo == 5    // Recursos
+      || tipo == 6    // Puesto Comercial
+      || tipo == 7    // Reclutamiento
+      || tipo == 8    // Batalla Elite
+      || tipo == 11   // Zona Expuesta
+      || tipo == 14;  // Altar
   }
 
   int ObtenerTipoNodoAlLlegar()
@@ -3370,6 +3612,16 @@ if (esLaLider)
       if (tipoNodo == 14) tipoNodo = 1; //Santuario a Batalla normal
     }
 
+    if (CampaignManager.Instance.DebeEliminarAltaresPorPresagio() && tipoNodo == 14)
+    {
+      tipoNodo = 1;
+    }
+
+    if (preparandoTipoParaPresagios)
+    {
+      return;
+    }
+
     ActivarNodoVisual(tipoNodo, esAtajo, estabaRevelado, permitirNodoMisterioso);
 
     if (esAtajo)
@@ -3451,7 +3703,7 @@ if (esLaLider)
       return;
     }
 
-    if (revelado || tipoNodo == 16 || UsaConfiguracionTutorial() || EsNodoInicialSinMisterio())
+    if (revelado || tipoNodo == 16 || UsaConfiguracionTutorial() || EsNodoInicialSinMisterio() || reveladoPorZonaCartografiada)
     {
       return;
     }
@@ -3470,6 +3722,14 @@ if (esLaLider)
 
   public void RevelarComoMisterioso()
   {
+    if (reveladoPorZonaCartografiada)
+    {
+      revelado = true;
+      esMisterioso = false;
+      AplicarVisualGuardado(tipoNodo, false);
+      return;
+    }
+
     if (EsNodoFinalZona())
     {
       Revelar(false, false);
@@ -4155,10 +4415,21 @@ if (esLaLider)
     if (estabaRevelado) chancesMisterioso = 0;
     if (nodoRitual) chancesMisterioso = 0;
     if (nodoIncendiado) chancesMisterioso = 0;
+    if (reveladoPorZonaCartografiada) chancesMisterioso = 0;
 
     if (permitirNodoMisterioso && UnityEngine.Random.Range(0, 100) < chancesMisterioso && tipoNodo != 16)
     {
       num = 12; // misterioso
+      esMisterioso = true;
+    }
+    if (!esTutorial
+      && !EsNodoInicialSinMisterio()
+      && !nodoRitual
+      && !nodoIncendiado
+      && !reveladoPorZonaCartografiada
+      && CampaignManager.Instance.DebeForzarTipoNodoMisteriosoPorPresagio(tipoNodo))
+    {
+      num = 12;
       esMisterioso = true;
     }
     if (esAtajo) num = 13; // salida atajo
@@ -4634,6 +4905,20 @@ if (esLaLider)
     Nodo destino = ObtenerNodoPermitido(x, y, zonaId);
     if (destino == null) return false;
     if (!esPorAbajo && CruzariaConexionExistente(destino)) return false;
+
+    if (!esPorAbajo
+      && posXNodo > 0
+      && DestinosPosibles.Count > 0
+      && CampaignManager.Instance != null)
+    {
+      float multiplicadorBifurcaciones = CampaignManager.Instance.ObtenerMultiplicadorBifurcacionesPresagios();
+      if (multiplicadorBifurcaciones < 1f
+        && UnityEngine.Random.value >= multiplicadorBifurcaciones)
+      {
+        return false;
+      }
+    }
+
     ConectarConNodo(destino, esPorAbajo);
     return true;
   }

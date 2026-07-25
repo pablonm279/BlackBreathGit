@@ -10,6 +10,7 @@ public class TRADU : MonoBehaviour
     public const int IdiomaIngles = 2;
     public const int IdiomaPortugues = 3;
 
+    public static event System.Action<int> IdiomaActualizado;
     public static TRADU i { get; private set; }
     public int nIdioma = IdiomaIngles; //1 Español  -  2 Inglés
     private readonly Dictionary<TMPro.TextMeshProUGUI, string> textosOriginalesTMP = new Dictionary<TMPro.TextMeshProUGUI, string>();
@@ -44,6 +45,10 @@ public class TRADU : MonoBehaviour
         {
             Invoke(nameof(TraducirTodosTextosSegunIdioma), 0.1f); // espera a que carguen todos los textos
         }
+        else
+        {
+            IdiomaActualizado?.Invoke(nIdioma);
+        }
     }
     public void ActualizarIdioma()
     {
@@ -55,6 +60,10 @@ public class TRADU : MonoBehaviour
         if (IdiomaRequiereTraduccionMasiva(nIdioma))
         {
             Invoke(nameof(TraducirTodosTextosSegunIdioma), 0.5f);
+        }
+        else
+        {
+            IdiomaActualizado?.Invoke(nIdioma);
         }
 
     }
@@ -260,17 +269,17 @@ public class TRADU : MonoBehaviour
             case " <i>(TS Mental actual: ":
                 traduccion = " <i>(Current Mental Save: ";
                 return true;
-            case ").</i> Si la supera, ganarÃ¡ 35 Experiencia y +4 Esperanza. Si falla, obtendrÃ¡ Baja Moral por 3 dÃ­as y la Caravana perderÃ¡ 5 Esperanza.</color>\n\n":
-                traduccion = ").</i> On success, they gain 35 Experience and +4 Hope. On failure, they suffer Low Morale for 3 days and the Caravan loses 5 Hope.</color>\n\n";
+            case ").</i> Si la supera, ganarÃ¡ 35 Experiencia y +4 Esperanza. Si falla, obtendrÃ¡ Baja Moral por 3 dÃ­as y la Caravana perderÃ¡ 10 Esperanza.</color>\n\n":
+                traduccion = ").</i> On success, they gain 35 Experience and +4 Hope. On failure, they suffer Low Morale for 3 days and the Caravan loses 10 Hope.</color>\n\n";
                 return true;
             case "Uno de los HÃ©roes puede intentar frenar el rumor con calma antes de que empeore.\n\n":
                 traduccion = "One of the Heroes can try to calm the rumor before it gets worse.\n\n";
                 return true;
-            case "<color=#ba3fef>-Si lo intentas, harÃ¡ una Tirada de SalvaciÃ³n: TS Mental DC 12. Si la supera, ganarÃ¡ 35 Experiencia y +4 Esperanza. Si falla, obtendrÃ¡ Baja Moral por 3 dÃ­as y la Caravana perderÃ¡ 5 Esperanza.</color>\n\n":
-                traduccion = "<color=#ba3fef>-If you try it, they will make a Mental Saving Throw, DC 12. On success, they gain 35 Experience and +4 Hope. On failure, they suffer Low Morale for 3 days and the Caravan loses 5 Hope.</color>\n\n";
+            case "<color=#ba3fef>-Si lo intentas, harÃ¡ una Tirada de SalvaciÃ³n: TS Mental DC 12. Si la supera, ganarÃ¡ 35 Experiencia y +4 Esperanza. Si falla, obtendrÃ¡ Baja Moral por 3 dÃ­as y la Caravana perderÃ¡ 10 Esperanza.</color>\n\n":
+                traduccion = "<color=#ba3fef>-If you try it, they will make a Mental Saving Throw, DC 12. On success, they gain 35 Experience and +4 Hope. On failure, they suffer Low Morale for 3 days and the Caravan loses 10 Hope.</color>\n\n";
                 return true;
-            case "<color=#ba3fef>-Si decides imponer silencio por la fuerza, -9 Esperanza.</color>\n\n":
-                traduccion = "<color=#ba3fef>-If you choose to impose silence by force, -9 Hope.</color>\n\n";
+            case "<color=#ba3fef>-Si decides imponer silencio por la fuerza, -10 Esperanza.</color>\n\n":
+                traduccion = "<color=#ba3fef>-If you choose to impose silence by force, -10 Hope.</color>\n\n";
                 return true;
             case "La corriente parece mansa desde lejos, pero apenas los primeros carros tocan el vado queda claro que el fondo es resbaladizo y el agua tira con mÃ¡s fuerza de la esperada.\n\n":
                 traduccion = "The current looks gentle from afar, but as soon as the first wagons touch the ford it becomes clear the bottom is slippery and the water pulls harder than expected.\n\n";
@@ -560,17 +569,17 @@ public class TRADU : MonoBehaviour
         }
         if (txt.StartsWith(").</i> Si la supera, ganar") && txt.Contains("+4 Esperanza") && txt.Contains("Baja Moral por 3"))
         {
-            traduccion = ").</i> On success, they gain 35 Experience and +4 Hope. On failure, they suffer Low Morale for 3 days and the Caravan loses 5 Hope.</color>\n\n";
+            traduccion = ").</i> On success, they gain 35 Experience and +4 Hope. On failure, they suffer Low Morale for 3 days and the Caravan loses 10 Hope.</color>\n\n";
             return true;
         }
         if (txt.StartsWith("<color=#ba3fef>-Si lo intentas, har") && txt.Contains("TS Mental DC 12"))
         {
-            traduccion = "<color=#ba3fef>-If you try it, they will make a Mental Saving Throw, DC 12. On success, they gain 35 Experience and +4 Hope. On failure, they suffer Low Morale for 3 days and the Caravan loses 5 Hope.</color>\n\n";
+            traduccion = "<color=#ba3fef>-If you try it, they will make a Mental Saving Throw, DC 12. On success, they gain 35 Experience and +4 Hope. On failure, they suffer Low Morale for 3 days and the Caravan loses 10 Hope.</color>\n\n";
             return true;
         }
         if (txt.StartsWith("<color=#ba3fef>-Si decides imponer silencio"))
         {
-            traduccion = "<color=#ba3fef>-If you choose to impose silence by force, -3 Hope.</color>\n\n";
+            traduccion = "<color=#ba3fef>-If you choose to impose silence by force, -10 Hope.</color>\n\n";
             return true;
         }
 
@@ -2806,6 +2815,9 @@ public class TRADU : MonoBehaviour
             case "-Debido al optimismo que rodea la Caravana, los Civiles han donado Oro: ":
                 r = "-Due to the optimism surrounding the Caravan, the Civilians have donated Gold: ";
                 break;
+            case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se han sacrificado 3 bueyes.":
+                r = "-You performed a ritual at the sanctuary. The Black Breath retreats by 3, and 3 oxen were sacrificed.";
+                break;
             case "-Por la muy baja Esperanza ":
                 r = "-Due to the very low Hope ";
                 break;
@@ -3056,7 +3068,7 @@ public class TRADU : MonoBehaviour
                 r = "Consumables";
                 break;
             case "<color=#0cca74><b>Guardia: </b></color><color=#d3d3d3><i>El personaje se mantendrá alerta y custodiará la caravana.</color></i>\\n\\nSi se produce una emboscada, podrá participar de la defensa sin penalización. +3% Exploración al descansar.":
-                r = "<color=#0cca74><b>Guard: </b></color><color=#d3d3d3><i>The character will remain alert and guard the caravan.</color></i>\\n\\nIf an ambush occurs, they can participate in the defense without penalty. +3% Scouuting when resting.";
+                r = "<color=#0cca74><b>Guard: </b></color><color=#d3d3d3><i>The character will remain alert and guard the caravan.</color></i>\\n\\nIf an ambush occurs, they can participate in the defense without penalty. +3% Exploration when resting.";
                 break;
             case "<color=#0cca74><b>Coerción: </b></color><color=#d3d3d3><i>Con métodos cuestionables, el Acechador obliga a los Mercaderes a donar dinero a la caravana.</color></i>\\n\\n+1-10 Oro y -1 Esperanza por día.":
                 r = "<color=#0cca74><b>Coercion: </b></color><color=#d3d3d3><i>Using questionable methods, the Stalker forces Merchants to donate money to the caravan.</color></i>\\n\\n+1-10 Gold and -1 Hope per day.";
@@ -3073,8 +3085,8 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Vigilar: </b></color><color=#d3d3d3><i>El personaje permanecerá vigilante ante cualquier peligro.</color></i>\\n\\nSi se produce una emboscada podrá participar activamente de la defensa y obtiene +2 AP, +5 Iniciativa y +20% daño los primeros 2 turnos.":
                 r = "<color=#0cca74><b>Watch: </b></color><color=#d3d3d3><i>The character will remain vigilant against any danger.</color></i>\\n\\nIf an ambush occurs, they can actively participate in the defense and gain +2 AP, +5 Initiative, and +20% damage for the first 2 turns.";
                 break;
-            case "<color=#0cca74><b>Entrenar: </b></color><color=#d3d3d3><i>El personaje utilizará su tiempo libre para entrenar y mantenerse en forma.</color></i>\\n\\nCada día que pase ganará 15 Experiencia.\\nSi se produce un combate, lo arrancará Fatigado.":
-                r = "<color=#0cca74><b>Train: </b></color><color=#d3d3d3><i>The character will use their free time to train and stay in shape.</color></i>\\n\\nEach day that passes, they will gain 15 Experience.\\nIf a combat occurs, they will start Fatigued.";
+            case "<color=#0cca74><b>Entrenar: </b></color><color=#d3d3d3><i>El personaje utilizará su tiempo libre para entrenar y mantenerse en forma.</color></i>\\n\\nCada día que pase ganará 20 Experiencia.\\nSi se produce un combate, lo arrancará Fatigado.":
+                r = "<color=#0cca74><b>Train: </b></color><color=#d3d3d3><i>The character will use their free time to train and stay in shape.</color></i>\\n\\nEach day that passes, they will gain 20 Experience.\\nIf a combat occurs, they will start Fatigued.";
                 break;
             case "<color=#0cca74><b>Descanso: </b></color><color=#d3d3d3><i>El personaje se centrará en descansar y recuperar su salud.</color></i>\\n\\nCada día que pase recuperará un 15% de salud.\\nSi se produce un combate, lo arrancará Fresco.":
                 r = "<color=#0cca74><b>Rest: </b></color><color=#d3d3d3><i>The character will focus on resting and recovering their health.</color></i>\\n\\nEach day that passes, they will recover 15% of their health.\\nIf a combat occurs, they will start Fresh.";
@@ -3098,7 +3110,7 @@ public class TRADU : MonoBehaviour
                 r = "<color=#0cca74><b>Help the Hopeless: </b></color><color=#d3d3d3><i>The Purifier will use her time to help the laggards and weaker members of the caravan.</color></i>\\n\\n+1d3 Hope per day. +1 Fervor in combat.";
                 break;
             case "<color=#0cca74><b>Concentración Arcana: </b></color><color=#d3d3d3><i>El Canalizador se concentra y mantiene su poder preparado para cualquier combate que surja.</color></i>\\n\\n+1 Nivel de Energía al iniciar combates.":
-                r = "<color=#0cca74><b>Arcane Concentration: </b></color><color=#d3d3d3><i>The Channeler focuses and keeps their power ready for any combat that arises.</color></i>\\n\\n+1 Energy Level at the start of combats.";
+                r = "<color=#0cca74><b>Arcane Concentration: </b></color><color=#d3d3d3><i>The Channeler focuses and keeps their power ready for any combat that comes.</color></i>\\n\\n+1 Energy Level at the start of combats.";
                 break;
             case "<color=#0cca74><b>Vigilar Desde las Sombras: </b></color><color=#d3d3d3><i>El Acechador recorre las inmediaciones de la caravana en sigilo, tratando de anticipar emboscadas enemigas.</color></i>\\n\\n-5% chances de emboscadas.\\nEn Ataque a Caravana cuenta como Guardia y comienza en Sigilo.":
                 r = "<color=#0cca74><b>Watch from Shadows: </b></color><color=#d3d3d3><i>The Stalker moves stealthily around the caravan, trying to anticipate enemy ambushes.</color></i>\\n\\n-5% chance of ambushes.\\nIn Caravan Attack it counts as Guard and starts Hidden.";
@@ -7369,6 +7381,9 @@ public class TRADU : MonoBehaviour
             case "Desertor":
                 r = "Deserter";
                 break; 
+            case "DERROTA":
+                r = "DEFEAT";
+                break; 
             
             
             
@@ -7858,17 +7873,17 @@ public class TRADU : MonoBehaviour
         }
         if (txt.StartsWith(").</i> Si la supera, ganar") && txt.Contains("+4 Esperanza") && txt.Contains("Baja Moral por 3"))
         {
-            traduccion = ").</i> Se passar, ganhará 35 de Experiência e +4 Esperança. Se falhar, sofrerá Moral Baixa por 3 dias e a Caravana perderá 5 Esperança.</color>\n\n";
+            traduccion = ").</i> Se passar, ganhará 35 de Experiência e +4 Esperança. Se falhar, sofrerá Moral Baixa por 3 dias e a Caravana perderá 10 Esperança.</color>\n\n";
             return true;
         }
         if (txt.StartsWith("<color=#ba3fef>-Si lo intentas, har") && txt.Contains("TS Mental DC 12"))
         {
-            traduccion = "<color=#ba3fef>-Se tentar, fará um Teste de Resistência Mental CD 12. Se passar, ganhará 35 de Experiência e +4 Esperança. Se falhar, sofrerá Moral Baixa por 3 dias e a Caravana perderá 5 Esperança.</color>\n\n";
+            traduccion = "<color=#ba3fef>-Se tentar, fará um Teste de Resistência Mental CD 12. Se passar, ganhará 35 de Experiência e +4 Esperança. Se falhar, sofrerá Moral Baixa por 3 dias e a Caravana perderá 10 Esperança.</color>\n\n";
             return true;
         }
         if (txt.StartsWith("<color=#ba3fef>-Si decides imponer silencio"))
         {
-            traduccion = "<color=#ba3fef>-Se decidir impor silêncio à força, -3 Esperança.</color>\n\n";
+            traduccion = "<color=#ba3fef>-Se decidir impor silêncio à força, -10 Esperança.</color>\n\n";
             return true;
         }
 
@@ -10129,6 +10144,9 @@ public class TRADU : MonoBehaviour
             case "-Debido al optimismo que rodea la Caravana, los Civiles han donado Oro: ":
                 r = "-Devido ao otimismo que cerca a Caravana, os Civis doaram Ouro: ";
                 break;
+            case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se han sacrificado 3 bueyes.":
+                r = "-Você realizou um ritual no santuário. O Sopro Negro recua 3, e 3 bois foram sacrificados.";
+                break;
             case "-Por la muy baja Esperanza ":
                 r = "-Devido á Esperança muito baixa ";
                 break;
@@ -10396,8 +10414,8 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Vigilar: </b></color><color=#d3d3d3><i>El personaje permanecerá vigilante ante cualquier peligro.</color></i>\\n\\nSi se produce una emboscada podrá participar activamente de la defensa y obtiene +2 AP, +5 Iniciativa y +20% daño los primeros 2 turnos.":
                 r = "<color=#0cca74><b>Vigiar: </b></color><color=#d3d3d3><i>O personagem permanecerá vigilante diante de qualquer perigo.</color></i>\\n\\nSe ocorrer uma emboscada, poderá participar ativamente da defesa e recebe +2 PA, +5 Iniciativa e +20% de dano nos 2 primeiros turnos.";
                 break;
-            case "<color=#0cca74><b>Entrenar: </b></color><color=#d3d3d3><i>El personaje utilizará su tiempo libre para entrenar y mantenerse en forma.</color></i>\\n\\nCada día que pase ganará 15 Experiencia.\\nSi se produce un combate, lo arrancará Fatigado.":
-                r = "<color=#0cca74><b>Treinar: </b></color><color=#d3d3d3><i>O personagem usará seu tempo livre para treinar e se manter em forma.</color></i>\\n\\nA cada dia, ganhará 15 de Experiência.\\nSe ocorrer um combate, ele o iniciará Fatigado.";
+            case "<color=#0cca74><b>Entrenar: </b></color><color=#d3d3d3><i>El personaje utilizará su tiempo libre para entrenar y mantenerse en forma.</color></i>\\n\\nCada día que pase ganará 20 Experiencia.\\nSi se produce un combate, lo arrancará Fatigado.":
+                r = "<color=#0cca74><b>Treinar: </b></color><color=#d3d3d3><i>O personagem usará seu tempo livre para treinar e se manter em forma.</color></i>\\n\\nA cada dia, ganhará 20 de Experiência.\\nSe ocorrer um combate, ele o iniciará Fatigado.";
                 break;
             case "<color=#0cca74><b>Descanso: </b></color><color=#d3d3d3><i>El personaje se centrará en descansar y recuperar su salud.</color></i>\\n\\nCada día que pase recuperará un 15% de salud.\\nSi se produce un combate, lo arrancará Fresco.":
                 r = "<color=#0cca74><b>Descanso: </b></color><color=#d3d3d3><i>O personagem vai se concentrar em descansar e recuperar sua saúde.</color></i>\\n\\nA cada dia, recuperará 15% de saúde.\\nSe ocorrer um combate, ele o iniciará Disposto.";
@@ -14688,6 +14706,12 @@ public class TRADU : MonoBehaviour
             case "Desertor":
                 r = "Desertor";
                 break; 
+            case "DERROTA":
+                r = "DERROTA";
+                break; 
+            case "El Bosque Ardiente":
+                r = "La Floresta Ardente";
+                break;
             
             
            
@@ -14741,6 +14765,8 @@ public class TRADU : MonoBehaviour
             txt.text = traducido;
         }
     }
+
+    IdiomaActualizado?.Invoke(nIdioma);
 }
 
 

@@ -6,6 +6,8 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
 {
   private const string OverlayRootName = "CombatFeedbackFx";
   private const float EscalaImpacto = 0.9f;
+  private const int PrimerTipoDanioElemental = 4;
+  private const int UltimoTipoDanioElemental = 11;
   private const int SalvacionFortaleza = 1;
   private const int SalvacionReflejos = 2;
   private const int SalvacionMental = 3;
@@ -13,6 +15,7 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
   [Header("Impacto")]
   [SerializeField] private float duracionImpacto = 0.18f;
   [SerializeField] private float duracionImpactoCritico = 0.24f;
+  [SerializeField] private float duracionImpactoBonusElemental = 0.18f;
   [SerializeField] private float duracionMissGlint = 0.14f;
   [SerializeField] private float duracionSalvacionMental = 0.58f;
   [SerializeField] private float duracionSalvacionReflejos = 0.26f;
@@ -25,6 +28,7 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
   private CanvasGroup overlayGroup;
   private Image impactoAnillo;
   private Image impactoDestello;
+  private readonly Image[] impactosBonusElementales = new Image[UltimoTipoDanioElemental + 1];
   private Image missGlint;
   private Image salvacionGlow;
   private Image salvacionAro;
@@ -33,6 +37,7 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
   private Image salvacionMarcaC;
 
   private float tiempoImpactoRestante = -1f;
+  private readonly float[] tiempoImpactoBonusElemental = new float[UltimoTipoDanioElemental + 1];
   private float tiempoMissGlintRestante = -1f;
   private float tiempoSalvacionRestante = -1f;
   private float duracionImpactoActual;
@@ -49,6 +54,8 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
   private static Sprite spriteSuave;
   private static Texture2D texturaAnillo;
   private static Sprite spriteAnillo;
+  private static Texture2D texturaEscudo;
+  private static Sprite spriteEscudo;
   private static Texture2D texturaGlint;
   private static Sprite spriteGlint;
 
@@ -81,6 +88,7 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
 
     ActualizarOverlayBase();
     ActualizarImpacto();
+    ActualizarImpactosBonusElementales();
     ActualizarMissGlint();
     ActualizarSalvacion();
   }
@@ -88,6 +96,10 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
   private void OnDisable()
   {
     tiempoImpactoRestante = -1f;
+    for (int tipoDanio = PrimerTipoDanioElemental; tipoDanio <= UltimoTipoDanioElemental; tipoDanio++)
+    {
+      tiempoImpactoBonusElemental[tipoDanio] = -1f;
+    }
     tiempoMissGlintRestante = -1f;
     tiempoSalvacionRestante = -1f;
     OcultarOverlay();
@@ -134,6 +146,16 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     {
       ScreenFlash.FlashImpact(colorImpacto, 0.012f, 0.008f, 0.05f, 0f);
     }
+  }
+
+  public void PlayElementalBonusImpact(int tipoDanio)
+  {
+    if (tipoDanio < PrimerTipoDanioElemental || tipoDanio > UltimoTipoDanioElemental || tipoDanio == 10)
+    {
+      return;
+    }
+
+    tiempoImpactoBonusElemental[tipoDanio] = Mathf.Max(0.01f, duracionImpactoBonusElemental);
   }
 
   public void PlaySaveSuccess(int tipo)
@@ -235,6 +257,14 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
 
     impactoAnillo = CrearImagen("ImpactAnillo", overlayRoot, spriteAnillo);
     impactoDestello = CrearImagen("ImpactDestello", overlayRoot, spriteSuave);
+    for (int tipoDanio = PrimerTipoDanioElemental; tipoDanio <= UltimoTipoDanioElemental; tipoDanio++)
+    {
+      if (tipoDanio != 10)
+      {
+        Sprite sprite = tipoDanio == 8 ? spriteAnillo : (tipoDanio == 5 || tipoDanio == 6 || tipoDanio == 11 ? spriteGlint : spriteSuave);
+        impactosBonusElementales[tipoDanio] = CrearImagen("ImpactoBonusElemental_" + tipoDanio, overlayRoot, sprite);
+      }
+    }
     missGlint = CrearImagen("MissGlint", overlayRoot, spriteGlint);
     salvacionGlow = CrearImagen("SalvacionGlow", overlayRoot, spriteSuave);
     salvacionAro = CrearImagen("SalvacionAro", overlayRoot, spriteAnillo);
@@ -291,12 +321,14 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     float fade = 1f - Mathf.SmoothStep(0f, 1f, n);
     Vector2 tamano = ObtenerTamanoUnidad();
 
-    float anchoBase = tamano.x * (impactoSalvacionFallida ? 0.32f : (impactoGuardia ? 0.3536f : (impactoCritico ? 0.468f : 0.4056f))) * EscalaImpacto;
-    float altoBase = tamano.y * (impactoSalvacionFallida ? 0.26f : (impactoGuardia ? 0.2808f : (impactoCritico ? 0.4368f : 0.3536f))) * EscalaImpacto;
-    float expansion = impactoSalvacionFallida ? 0.055f : (impactoGuardia ? 0.08f : (impactoCritico ? 0.14f : 0.1f));
+    impactoAnillo.sprite = impactoGuardia ? spriteEscudo : spriteAnillo;
+
+    float anchoBase = tamano.x * (impactoSalvacionFallida ? 0.32f : (impactoGuardia ? 0.24f : (impactoCritico ? 0.468f : 0.4056f))) * EscalaImpacto;
+    float altoBase = tamano.y * (impactoSalvacionFallida ? 0.26f : (impactoGuardia ? 0.22f : (impactoCritico ? 0.4368f : 0.3536f))) * EscalaImpacto;
+    float expansion = impactoSalvacionFallida ? 0.055f : (impactoGuardia ? 0.035f : (impactoCritico ? 0.14f : 0.1f));
     float giro = (impactoGuardia || impactoSalvacionFallida) ? 0f : (tipoImpacto <= 3 ? -10f : 0f);
-    float alphaAnillo = impactoSalvacionFallida ? 0.053f : (impactoGuardia ? 0.102f : (impactoCritico ? 0.153f : 0.095625f));
-    float alphaDestello = impactoSalvacionFallida ? 0.067f : (impactoGuardia ? 0.11475f : (impactoCritico ? 0.19125f : 0.1275f));
+    float alphaAnillo = impactoSalvacionFallida ? 0.053f : (impactoGuardia ? 0.34f : (impactoCritico ? 0.153f : 0.095625f));
+    float alphaDestello = impactoSalvacionFallida ? 0.067f : (impactoGuardia ? 0f : (impactoCritico ? 0.19125f : 0.1275f));
 
     ConfigurarImagen(
       impactoAnillo,
@@ -308,8 +340,105 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     ConfigurarImagen(
       impactoDestello,
       Vector2.zero,
-      new Vector2(tamano.x * (impactoSalvacionFallida ? 0.23f : (impactoGuardia ? 0.26f : (impactoCritico ? 0.3536f : 0.3016f))) * EscalaImpacto, tamano.y * (impactoSalvacionFallida ? 0.2f : (impactoGuardia ? 0.2288f : (impactoCritico ? 0.3328f : 0.2704f))) * EscalaImpacto),
+      new Vector2(tamano.x * (impactoSalvacionFallida ? 0.23f : (impactoGuardia ? 0.2f : (impactoCritico ? 0.3536f : 0.3016f))) * EscalaImpacto, tamano.y * (impactoSalvacionFallida ? 0.2f : (impactoGuardia ? 0.18f : (impactoCritico ? 0.3328f : 0.2704f))) * EscalaImpacto),
       WithAlpha(Color.Lerp(colorImpacto, Color.white, impactoCritico ? 0.28f : 0.14f), fade * alphaDestello));
+  }
+
+  private void ActualizarImpactosBonusElementales()
+  {
+    Vector2 tamano = ObtenerTamanoUnidad();
+    float duracion = Mathf.Max(0.01f, duracionImpactoBonusElemental);
+
+    for (int tipoDanio = PrimerTipoDanioElemental; tipoDanio <= UltimoTipoDanioElemental; tipoDanio++)
+    {
+      Image impacto = impactosBonusElementales[tipoDanio];
+      if (impacto == null || tipoDanio == 10)
+      {
+        continue;
+      }
+
+      if (tiempoImpactoBonusElemental[tipoDanio] <= 0f)
+      {
+        OcultarImagen(impacto);
+        continue;
+      }
+
+      tiempoImpactoBonusElemental[tipoDanio] = Mathf.Max(0f, tiempoImpactoBonusElemental[tipoDanio] - Time.unscaledDeltaTime);
+      float n = 1f - (tiempoImpactoBonusElemental[tipoDanio] / duracion);
+      float fade = 1f - Mathf.SmoothStep(0f, 1f, n);
+      Vector2 posicion = Vector2.zero;
+      Vector2 tamanoEfecto = new Vector2(tamano.x * 0.14f, tamano.y * 0.12f);
+      float giro = 0f;
+      Color color = ObtenerColorBonusElemental(tipoDanio);
+
+      switch (tipoDanio)
+      {
+        case 4: // Fuego: ascua que se eleva.
+          posicion = new Vector2(0f, tamano.y * (0.02f + (n * 0.12f)));
+          tamanoEfecto *= 1f + (n * 0.35f);
+          break;
+        case 5: // Hielo: destello vertical y frio.
+          posicion = new Vector2(-tamano.x * 0.08f, tamano.y * 0.04f);
+          tamanoEfecto = new Vector2(tamano.x * 0.11f, tamano.y * 0.22f) * (1f + (n * 0.18f));
+          giro = 90f;
+          break;
+        case 6: // Rayo: trazo diagonal breve.
+          posicion = new Vector2(tamano.x * 0.07f, tamano.y * 0.03f);
+          tamanoEfecto = new Vector2(tamano.x * 0.25f, tamano.y * 0.07f) * (1f + (n * 0.15f));
+          giro = -38f;
+          break;
+        case 7: // Acido: salpicadura baja.
+          posicion = new Vector2(tamano.x * 0.06f, -tamano.y * 0.09f);
+          tamanoEfecto = new Vector2(tamano.x * 0.16f, tamano.y * 0.1f) * (1f + (n * 0.22f));
+          break;
+        case 8: // Arcano: aro concentrico.
+          tamanoEfecto = new Vector2(tamano.x * 0.22f, tamano.y * 0.18f) * (1f + (n * 0.25f));
+          giro = n * 45f;
+          break;
+        case 9: // Necro: halo tenue descendente.
+          posicion = new Vector2(-tamano.x * 0.05f, -tamano.y * (0.01f + (n * 0.08f)));
+          tamanoEfecto = new Vector2(tamano.x * 0.2f, tamano.y * 0.14f) * (1f + (n * 0.2f));
+          break;
+        case 11: // Divino: destello dorado vertical.
+          posicion = new Vector2(0f, tamano.y * 0.06f);
+          tamanoEfecto = new Vector2(tamano.x * 0.08f, tamano.y * 0.24f) * (1f + (n * 0.12f));
+          giro = 90f;
+          break;
+      }
+
+      ConfigurarImagen(impacto, posicion, tamanoEfecto, WithAlpha(color, fade * ObtenerIntensidadBonusElemental(tipoDanio)));
+      impacto.rectTransform.localEulerAngles = new Vector3(0f, 0f, giro);
+    }
+  }
+
+  private static Color ObtenerColorBonusElemental(int tipoDanio)
+  {
+    switch (tipoDanio)
+    {
+      case 4: return new Color(1f, 0.43f, 0.12f, 1f);
+      case 5: return new Color(0.48f, 0.92f, 1f, 1f);
+      case 6: return new Color(1f, 0.9f, 0.2f, 1f);
+      case 7: return new Color(0.32f, 0.9f, 0.24f, 1f);
+      case 8: return new Color(0.32f, 0.58f, 1f, 1f);
+      case 9: return new Color(0.63f, 0.9f, 0.48f, 1f);
+      case 11: return new Color(1f, 0.82f, 0.28f, 1f);
+      default: return Color.white;
+    }
+  }
+
+  private static float ObtenerIntensidadBonusElemental(int tipoDanio)
+  {
+    switch (tipoDanio)
+    {
+      case 4: return 0.24f;
+      case 5: return 0.22f;
+      case 6: return 0.25f;
+      case 7: return 0.21f;
+      case 8: return 0.2f;
+      case 9: return 0.21f;
+      case 11: return 0.24f;
+      default: return 0.2f;
+    }
   }
 
   private void ActualizarMissGlint()
@@ -630,6 +759,12 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
       spriteAnillo = CrearSprite(texturaAnillo);
     }
 
+    if (spriteEscudo == null)
+    {
+      texturaEscudo = CrearTexturaEscudo(96);
+      spriteEscudo = CrearSprite(texturaEscudo);
+    }
+
     if (spriteGlint == null)
     {
       texturaGlint = CrearTexturaGlint(96, 48);
@@ -726,6 +861,69 @@ public sealed class UnidadCombatFeedbackFx : MonoBehaviour
     texture.SetPixels(pixels);
     texture.Apply();
     return texture;
+  }
+
+  private static Texture2D CrearTexturaEscudo(int size)
+  {
+    Texture2D texture = new Texture2D(size, size, TextureFormat.ARGB32, false);
+    texture.wrapMode = TextureWrapMode.Clamp;
+    texture.filterMode = FilterMode.Point;
+
+    Vector2[] vertices =
+    {
+      new Vector2(-0.7f, 0.58f),
+      new Vector2(0.7f, 0.58f),
+      new Vector2(0.7f, 0.15f),
+      new Vector2(0.48f, -0.36f),
+      new Vector2(0f, -0.72f),
+      new Vector2(-0.48f, -0.36f),
+      new Vector2(-0.7f, 0.15f)
+    };
+
+    Color[] pixels = new Color[size * size];
+    Vector2 centro = new Vector2((size - 1) * 0.5f, (size - 1) * 0.5f);
+    float radio = size * 0.5f;
+
+    for (int y = 0; y < size; y++)
+    {
+      for (int x = 0; x < size; x++)
+      {
+        Vector2 punto = (new Vector2(x, y) - centro) / radio;
+        float distanciaBorde = float.MaxValue;
+        for (int i = 0; i < vertices.Length; i++)
+        {
+          Vector2 inicio = vertices[i];
+          Vector2 fin = vertices[(i + 1) % vertices.Length];
+          Vector2 segmento = fin - inicio;
+          float t = Mathf.Clamp01(Vector2.Dot(punto - inicio, segmento) / Mathf.Max(0.0001f, segmento.sqrMagnitude));
+          distanciaBorde = Mathf.Min(distanciaBorde, Vector2.Distance(punto, inicio + (segmento * t)));
+        }
+
+        bool dentro = PuntoDentroPoligono(punto, vertices);
+        float alpha = dentro ? Mathf.Clamp01((0.105f - distanciaBorde) / 0.025f) : 0f;
+        pixels[(y * size) + x] = new Color(1f, 1f, 1f, alpha);
+      }
+    }
+
+    texture.SetPixels(pixels);
+    texture.Apply();
+    return texture;
+  }
+
+  private static bool PuntoDentroPoligono(Vector2 punto, Vector2[] vertices)
+  {
+    bool dentro = false;
+    for (int i = 0, j = vertices.Length - 1; i < vertices.Length; j = i++)
+    {
+      bool cruza = ((vertices[i].y > punto.y) != (vertices[j].y > punto.y))
+        && (punto.x < ((vertices[j].x - vertices[i].x) * (punto.y - vertices[i].y) / (vertices[j].y - vertices[i].y)) + vertices[i].x);
+      if (cruza)
+      {
+        dentro = !dentro;
+      }
+    }
+
+    return dentro;
   }
 
   private static Texture2D CrearTexturaGlint(int width, int height)

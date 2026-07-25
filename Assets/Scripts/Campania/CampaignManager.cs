@@ -78,6 +78,7 @@ public class CampaignManager : MonoBehaviour
   private readonly Dictionary<GameObject, bool> estadosCanvasCampaniaDuranteIntro = new Dictionary<GameObject, bool>();
   private readonly Dictionary<int, int> ultimasAparienciasAlternativasPorClase = new Dictionary<int, int>();
   private readonly List<System.Action> accionesAlFinalizarIntroCampania = new List<System.Action>();
+  private readonly List<string> logsPresagiosInicioPendientes = new List<string>();
   private bool introCampaniaPendiente;
   private bool introCampaniaActiva;
   private bool interfazCampaniaOcultaPorIntro;
@@ -85,8 +86,12 @@ public class CampaignManager : MonoBehaviour
   private bool startCampaniaEjecutado;
   private bool eventoInicioCampaniaEmitido;
   private Coroutine rutinaIntroCampaniaTrasCarga;
+  private Coroutine rutinaLogsPresagiosInicio;
+  private bool logsPresagiosInicioSolicitados;
   private const float AlphaFaderListoIntroCampania = 0.02f;
   private const float TiempoMaximoEsperaFaderIntroCampania = 6f;
+  private const float RetrasoLogsPresagiosInicioSegundos = 1f;
+  private const string ColorEtiquetaLogPresagio = "#C16070";
   [Header("Debug Demo")]
   [SerializeField] private bool debugSaltarTutorialAlIniciar = false;
   [SerializeField] private bool debugForzarMapaLinealTutorialAlIniciar = false;
@@ -224,6 +229,12 @@ public class CampaignManager : MonoBehaviour
   private readonly Dictionary<Text, string> textosOriginalesDerrotaLegacy = new Dictionary<Text, string>();
   private bool textosDerrotaCacheados;
   private bool inicializandoNuevaCampania;
+  private bool creandoLiderInicial;
+  private int presagiosRegionActivaId;
+  private readonly List<int> presagiosActivosRegion = new List<int>();
+  private bool primeraBatallaPresagioEnemigosConsumida;
+  // Demo: la Alerta Regional de metaprogresion no modifica dificultad ni aumenta hasta habilitar este interruptor.
+  private static readonly bool MecanicaAlertaRegionHabilitada = false;
   private bool resolviendoJefeZona;
   private bool abriendoCiudadPuerto;
   private bool campaniaInicializada;
@@ -1173,9 +1184,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       InicializarZonaNuevaCampania();
       InicializarSequitosNuevaCampania();
       InicializarProgresoNuevaCampania();
+      AplicarPresagioEsperanzaInicial();
       InicializarClimaAlIniciar();
       InicializarPersonajesNuevaCampania();
       AplicarTraitsInicioNuevaZona();
+      AplicarPresagiosPersonajesAlComenzar();
+      EncolarResumenesPresagiosInicio();
       AjustarDificultad();
 
       debeEscribirLogInicioEnStart = true;
@@ -1277,6 +1291,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     introCampaniaActiva = false;
     RestaurarInterfazCampaniaTrasIntro();
     accionesAlFinalizarIntroCampania.Clear();
+    logsPresagiosInicioPendientes.Clear();
+    logsPresagiosInicioSolicitados = false;
+    if (rutinaLogsPresagiosInicio != null)
+    {
+      StopCoroutine(rutinaLogsPresagiosInicio);
+      rutinaLogsPresagiosInicio = null;
+    }
     eventoInicioCampaniaEmitido = false;
     MoviendoCaravana = false;
     transicionZonaEnCurso = false;
@@ -1337,13 +1358,686 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   private void InicializarZonaNuevaCampania()
   {
-    int zonaInicial = ObtenerZonaInicialDebug();
+    int zonaInicial = PrePartidaManager.ConsumirZonaInicialPendiente();
+    if (zonaInicial <= 0)
+    {
+      zonaInicial = ObtenerZonaInicialDebug();
+    }
+
     if (zonaInicial == 0 && DebeUsarConfiguracionTutorial())
     {
       zonaInicial = 1;
     }
 
+    InicializarPresagiosNuevaCampania(zonaInicial);
     scAtributosZona.GenerarZona(zonaInicial);
+    AplicarPresagioAlientoNegroInicial();
+  }
+
+  private void InicializarPresagiosNuevaCampania(int regionId)
+  {
+    presagiosActivosRegion.Clear();
+    presagiosRegionActivaId = Mathf.Max(0, regionId);
+    primeraBatallaPresagioEnemigosConsumida = false;
+
+    if (PrePartidaManager.TryConsumirPresagiosInicialesPendientes(out List<int> presagios))
+    {
+      presagiosActivosRegion.AddRange(presagios);
+    }
+  }
+
+  public bool TienePresagioActivo(int presagioId)
+  {
+    return presagioId > 0
+      && scAtributosZona != null
+      && scAtributosZona.ID == presagiosRegionActivaId
+      && presagiosActivosRegion.Contains(presagioId);
+  }
+
+  public bool DebeGarantizarPrimeraBatallaPresagioEnemigos()
+  {
+    return !primeraBatallaPresagioEnemigosConsumida
+      && (TienePresagioActivo(PresagioCatalog.LeyDelMasFuerte)
+        || TienePresagioActivo(PresagioCatalog.CorrompidosAlAcecho)
+        || TienePresagioActivo(PresagioCatalog.VenganadoresCazando)
+        || TienePresagioActivo(PresagioCatalog.CentinelasLocales));
+  }
+
+  public void RegistrarInicioBatallaPresagioEnemigos()
+  {
+    if (DebeGarantizarPrimeraBatallaPresagioEnemigos())
+    {
+      primeraBatallaPresagioEnemigosConsumida = true;
+    }
+  }
+
+  private void AplicarPresagioEsperanzaInicial()
+  {
+    int idioma = PresagioCatalog.ObtenerIdiomaActual();
+    if (TienePresagioActivo(PresagioCatalog.SensacionPositiva))
+    {
+      CambiarEsperanzaActual(15);
+      EncolarLogPresagioInicio(idioma switch
+      {
+        TRADU.IdiomaIngles => "-Positive Feeling: the Caravan starts with +15 Hope.",
+        TRADU.IdiomaPortugues => "-Sensação Positiva: a Caravana começa com +15 de Esperança.",
+        _ => "-Sensación Positiva: la Caravana comienza con +15 Esperanza."
+      });
+    }
+    else if (TienePresagioActivo(PresagioCatalog.SensacionNegativa))
+    {
+      CambiarEsperanzaActual(-10);
+      EncolarLogPresagioInicio(idioma switch
+      {
+        TRADU.IdiomaIngles => "-Negative Feeling: the Caravan starts with -10 Hope.",
+        TRADU.IdiomaPortugues => "-Sensação Negativa: a Caravana começa com -10 de Esperança.",
+        _ => "-Sensación Negativa: la Caravana comienza con -10 Esperanza."
+      });
+    }
+  }
+
+  private void AplicarPresagioAlientoNegroInicial()
+  {
+    if (DebeUsarConfiguracionTutorial())
+    {
+      return;
+    }
+
+    if (TienePresagioActivo(PresagioCatalog.VientoAFavor))
+    {
+      CambiarValorAlientoNegro(1);
+      int idioma = PresagioCatalog.ObtenerIdiomaActual();
+      EncolarLogPresagioInicio(idioma switch
+      {
+        TRADU.IdiomaIngles => "-Tailwind: the Black Breath starts 1 advance farther ahead.",
+        TRADU.IdiomaPortugues => "-Vento a Favor: o Hálito Negro começa 1 avanço mais adiante.",
+        _ => "-Viento a favor: el Aliento Negro comienza 1 avance más adelante."
+      });
+    }
+    else if (TienePresagioActivo(PresagioCatalog.VientoEnContra))
+    {
+      CambiarValorAlientoNegro(-2);
+      int idioma = PresagioCatalog.ObtenerIdiomaActual();
+      EncolarLogPresagioInicio(idioma switch
+      {
+        TRADU.IdiomaIngles => "-Headwind: the Black Breath starts 2 advances farther behind.",
+        TRADU.IdiomaPortugues => "-Vento Contrário: o Hálito Negro começa 2 avanços mais atrás.",
+        _ => "-Viento en contra: el Aliento Negro comienza 2 avances más atrás."
+      });
+    }
+  }
+
+  private int AjustarPerdidaPorAlientoNegroPresagios(int perdidaBase)
+  {
+    if (perdidaBase <= 0)
+    {
+      return 0;
+    }
+
+    float multiplicador = 1f;
+    if (TienePresagioActivo(PresagioCatalog.AireLimpio))
+    {
+      multiplicador = 0.7f;
+    }
+    else if (TienePresagioActivo(PresagioCatalog.AirePutrido))
+    {
+      multiplicador = 1.3f;
+    }
+
+    return Mathf.Max(1, Mathf.RoundToInt(perdidaBase * multiplicador));
+  }
+
+  private string ObtenerTextoLogEfectoAlientoNegroViaje(int tier, int perdidaEsperanza, int perdidaCiviles = 0)
+  {
+    int idioma = PresagioCatalog.ObtenerIdiomaActual();
+    if (tier == 2)
+    {
+      return idioma switch
+      {
+        TRADU.IdiomaIngles => $"-The noticeable presence of the Black Breath unsettles the Caravan. -{perdidaEsperanza} Hope",
+        TRADU.IdiomaPortugues => $"-A presença perceptível do Hálito Negro provoca incerteza na Caravana. -{perdidaEsperanza} Esperança",
+        _ => $"-La presencia notable del Aliento Negro al viajar provoca incertidumbre en la Caravana. -{perdidaEsperanza} Esperanza"
+      };
+    }
+
+    if (tier == 3)
+    {
+      return idioma switch
+      {
+        TRADU.IdiomaIngles => $"-The heavy presence of the Black Breath frightens the Caravan. -{perdidaEsperanza} Hope",
+        TRADU.IdiomaPortugues => $"-A forte presença do Hálito Negro provoca medo na Caravana. -{perdidaEsperanza} Esperança",
+        _ => $"-La gran presencia del Aliento Negro provoca temor en la Caravana. -{perdidaEsperanza} Esperanza"
+      };
+    }
+
+    return idioma switch
+    {
+      TRADU.IdiomaIngles => $"-The Black Breath is fatal to the civilians. -{perdidaEsperanza} Hope, -{perdidaCiviles} Civilians",
+      TRADU.IdiomaPortugues => $"-O Hálito Negro é fatal para os Civis. -{perdidaEsperanza} Esperança, -{perdidaCiviles} Civis",
+      _ => $"-El Aliento Negro resulta fatal para los Civiles. -{perdidaEsperanza} Esperanza, -{perdidaCiviles} Civiles"
+    };
+  }
+
+  public void AplicarPresagiosDescanso()
+  {
+    AplicarPresagioEsperanzaDescanso();
+    AplicarPresagioPlagaDescanso();
+    AplicarPresagioEspejismosDescanso();
+  }
+
+  private void AplicarPresagioEsperanzaDescanso()
+  {
+    int cambio = 0;
+    if (TienePresagioActivo(PresagioCatalog.NochesPacificas))
+    {
+      cambio = 5;
+    }
+    else if (TienePresagioActivo(PresagioCatalog.NochesTurbulentas))
+    {
+      cambio = -10;
+    }
+
+    if (cambio == 0)
+    {
+      return;
+    }
+
+    CambiarEsperanzaActual(cambio);
+    int idioma = PresagioCatalog.ObtenerIdiomaActual();
+    if (cambio > 0)
+    {
+      EscribirLog(idioma switch
+      {
+        TRADU.IdiomaIngles => "-A peaceful night renews the Caravan's spirits. +5 Hope.",
+        TRADU.IdiomaPortugues => "-Uma noite pacífica renova o ânimo da Caravana. +5 Esperança.",
+        _ => "-Una noche pacífica renueva el ánimo de la Caravana. +5 Esperanza."
+      });
+      return;
+    }
+
+    EscribirLog(idioma switch
+    {
+      TRADU.IdiomaIngles => "-A turbulent night unsettles the Caravan. -10 Hope.",
+      TRADU.IdiomaPortugues => "-Uma noite turbulenta abala a Caravana. -10 Esperança.",
+      _ => "-Una noche turbulenta inquieta a la Caravana. -10 Esperanza."
+    });
+  }
+
+  private void AplicarPresagioPlagaDescanso()
+  {
+    if (!TienePresagioActivo(PresagioCatalog.PlagaEnLaRegion)
+      || scMenuPersonajes == null
+      || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    int idioma = PresagioCatalog.ObtenerIdiomaActual();
+    foreach (Personaje personaje in scMenuPersonajes.listaPersonajes)
+    {
+      if (personaje == null || personaje.Camp_Muerto || !personaje.FalloTiradaSalvacionFortalezaCampania(10))
+      {
+        continue;
+      }
+
+      int dias = UnityEngine.Random.Range(3, 6);
+      personaje.Camp_Enfermo = Mathf.Max(personaje.Camp_Enfermo, dias);
+      EscribirLog(idioma switch
+      {
+        TRADU.IdiomaIngles => $"-{personaje.sNombre} fails Fortitude DC 10 and becomes Sick for {dias} days.",
+        TRADU.IdiomaPortugues => $"-{personaje.sNombre} falha em Fortitude CD 10 e fica Doente por {dias} dias.",
+        _ => $"-{personaje.sNombre} falla Fortaleza DC 10 y obtiene Enfermo por {dias} días."
+      });
+    }
+  }
+
+  private void AplicarPresagioEspejismosDescanso()
+  {
+    if (!TienePresagioActivo(PresagioCatalog.Espejismos)
+      || DebeUsarConfiguracionTutorial()
+      || scMapaManager == null
+      || scMapaManager.AplicarEspejismosEnNodosConocidosAlcanzables() <= 0)
+    {
+      return;
+    }
+
+    int idioma = PresagioCatalog.ObtenerIdiomaActual();
+    EscribirLog(idioma switch
+    {
+      TRADU.IdiomaIngles => "-As the Caravan rests, mirages engulf the roads. Familiar places no longer seem to be what they were.",
+      TRADU.IdiomaPortugues => "-Enquanto a Caravana descansa, miragens cobrem os caminhos. Lugares conhecidos já não parecem ser o que eram.",
+      _ => "-Mientras la Caravana descansa, espejismos cubren los caminos. Los lugares conocidos ya no parecen ser lo que eran."
+    });
+  }
+
+  private void AplicarPresagiosPersonajesAlComenzar()
+  {
+    if (DebeUsarConfiguracionTutorial()
+      || scMenuPersonajes == null
+      || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    bool corrupcionInsoportable = TienePresagioActivo(PresagioCatalog.CorrupcionInsoportable);
+    bool regionBendecida = TienePresagioActivo(PresagioCatalog.RegionBendecida);
+    if (!corrupcionInsoportable && !regionBendecida)
+    {
+      return;
+    }
+
+    int idioma = PresagioCatalog.ObtenerIdiomaActual();
+    List<string> nombresCorrompidos = corrupcionInsoportable ? new List<string>() : null;
+    foreach (Personaje personaje in scMenuPersonajes.listaPersonajes)
+    {
+      if (personaje == null || personaje.Camp_Muerto)
+      {
+        continue;
+      }
+
+      if (corrupcionInsoportable)
+      {
+        if (!personaje.FalloTiradaSalvacionFortalezaCampania(8))
+        {
+          continue;
+        }
+
+        personaje.Camp_Corrupto = true;
+        nombresCorrompidos.Add(personaje.sNombre);
+        continue;
+      }
+
+      int tiradaMental = UnityEngine.Random.Range(1, 21) + ObtenerTSMentalTotalCampania(personaje);
+      if (tiradaMental < 13)
+      {
+        continue;
+      }
+
+      personaje.AgregarCampBendecido(4);
+      EncolarLogPresagioInicio(idioma switch
+      {
+        TRADU.IdiomaIngles => $"-{personaje.sNombre} passes Mental DC 13 and becomes Blessed for 4 days.",
+        TRADU.IdiomaPortugues => $"-{personaje.sNombre} passa em Mental CD 13 e fica Abençoado por 4 dias.",
+        _ => $"-{personaje.sNombre} supera Mental DC 13 y obtiene Bendecido por 4 días."
+      });
+    }
+
+    if (nombresCorrompidos != null && nombresCorrompidos.Count > 0)
+    {
+      string nombres = UnirNombresLocalizados(nombresCorrompidos, idioma);
+      bool singular = nombresCorrompidos.Count == 1;
+      EncolarLogPresagioInicio(idioma switch
+      {
+        TRADU.IdiomaIngles => singular
+          ? $"-Facing the region's Unbearable Corruption, {nombres} fails a DC 8 Fortitude check and becomes Corrupted."
+          : $"-Facing the region's Unbearable Corruption, {nombres} fail a DC 8 Fortitude check and become Corrupted.",
+        TRADU.IdiomaPortugues => singular
+          ? $"-Diante da Corrupção Insuportável da região, {nombres} falha em um teste de Fortitude CD 8 e fica Corrompido."
+          : $"-Diante da Corrupção Insuportável da região, {nombres} falham em um teste de Fortitude CD 8 e ficam Corrompidos.",
+        _ => singular
+          ? $"-Ante la Corrupción Insoportable de la región, {nombres} falla una prueba de Fortaleza DC 8 y queda Corrupto."
+          : $"-Ante la Corrupción Insoportable de la región, {nombres} fallan una prueba de Fortaleza DC 8 y quedan Corruptos."
+      });
+    }
+
+  }
+
+  private void EncolarResumenesPresagiosInicio()
+  {
+    for (int i = 0; i < presagiosActivosRegion.Count; i++)
+    {
+      int presagioId = presagiosActivosRegion[i];
+      if (presagioId == PresagioCatalog.SensacionPositiva
+        || presagioId == PresagioCatalog.SensacionNegativa
+        || presagioId == PresagioCatalog.VientoAFavor
+        || presagioId == PresagioCatalog.VientoEnContra
+        || presagioId == PresagioCatalog.CorrupcionInsoportable
+        || presagioId == PresagioCatalog.RegionBendecida
+        || presagioId == PresagioCatalog.AmenazasVigilantes
+        || presagioId == PresagioCatalog.SinVigilancia)
+      {
+        continue;
+      }
+
+      string resumen = PresagioCatalog.ObtenerTextoLocalizado(presagioId);
+      if (!string.IsNullOrWhiteSpace(resumen))
+      {
+        EncolarLogPresagioInicio("-" + resumen);
+      }
+    }
+  }
+
+  private void EncolarLogPresagioInicio(string mensaje)
+  {
+    if (!string.IsNullOrWhiteSpace(mensaje))
+    {
+      logsPresagiosInicioPendientes.Add(mensaje);
+    }
+  }
+
+  public void MostrarLogsPresagiosInicioTrasContinuarDescripcionZona()
+  {
+    if (logsPresagiosInicioSolicitados || logsPresagiosInicioPendientes.Count == 0)
+    {
+      return;
+    }
+
+    logsPresagiosInicioSolicitados = true;
+    if (rutinaLogsPresagiosInicio != null)
+    {
+      StopCoroutine(rutinaLogsPresagiosInicio);
+    }
+
+    rutinaLogsPresagiosInicio = StartCoroutine(EscribirLogsPresagiosInicioDiferidos());
+  }
+
+  private IEnumerator EscribirLogsPresagiosInicioDiferidos()
+  {
+    yield return new WaitForSecondsRealtime(RetrasoLogsPresagiosInicioSegundos);
+
+    List<string> mensajes = new List<string>(logsPresagiosInicioPendientes);
+    logsPresagiosInicioPendientes.Clear();
+    for (int i = 0; i < mensajes.Count; i++)
+    {
+      EscribirLog(FormatearLogPresagioInicio(mensajes[i]), true);
+    }
+
+    rutinaLogsPresagiosInicio = null;
+  }
+
+  private static string FormatearLogPresagioInicio(string mensaje)
+  {
+    string contenido = string.IsNullOrWhiteSpace(mensaje)
+      ? string.Empty
+      : mensaje.Trim().TrimStart('-').TrimStart();
+    int idioma = PresagioCatalog.ObtenerIdiomaActual();
+    string etiqueta = idioma switch
+    {
+      TRADU.IdiomaIngles => "OMEN",
+      TRADU.IdiomaPortugues => "PRESSÁGIO",
+      _ => "PRESAGIO"
+    };
+
+    return "-<color=" + ColorEtiquetaLogPresagio + "><b>" + etiqueta + ":</b></color> " + contenido;
+  }
+
+  private static string UnirNombresLocalizados(List<string> nombres, int idioma)
+  {
+    if (nombres == null || nombres.Count == 0)
+    {
+      return string.Empty;
+    }
+
+    if (nombres.Count == 1)
+    {
+      return nombres[0];
+    }
+
+    string conjuncion = idioma switch
+    {
+      TRADU.IdiomaIngles => " and ",
+      TRADU.IdiomaPortugues => " e ",
+      _ => " y "
+    };
+    return string.Join(", ", nombres.GetRange(0, nombres.Count - 1))
+      + conjuncion
+      + nombres[nombres.Count - 1];
+  }
+
+  public float AplicarMultiplicadorExperienciaPresagios(float experienciaBase)
+  {
+    if (TienePresagioActivo(PresagioCatalog.AventuraMemorable))
+    {
+      return experienciaBase * 1.15f;
+    }
+
+    if (TienePresagioActivo(PresagioCatalog.AventuraOlvidable))
+    {
+      return experienciaBase * 0.85f;
+    }
+
+    return experienciaBase;
+  }
+
+  public float ObtenerBonusCuracionPasivaViajePresagios()
+  {
+    return TienePresagioActivo(PresagioCatalog.PlantasCurativas) ? 0.1f : 0f;
+  }
+
+  public int AjustarChanceEmboscadaEnemigaPresagios(int chanceBase)
+  {
+    if (!DebeUsarConfiguracionTutorial() && TienePresagioActivo(PresagioCatalog.CaminosPeligrosos))
+    {
+      chanceBase += 10;
+    }
+
+    return Mathf.Clamp(chanceBase, 0, 100);
+  }
+
+  public int AjustarChanceEmboscadaAliadaPresagios(int chanceBase)
+  {
+    if (!DebeUsarConfiguracionTutorial() && TienePresagioActivo(PresagioCatalog.EnemigosDesprevenidos))
+    {
+      chanceBase += 10;
+    }
+
+    return Mathf.Clamp(chanceBase, 0, 100);
+  }
+
+  public int ObtenerAumentoAlertaRegionalAlComenzarViaje()
+  {
+    if (!MecanicaAlertaRegionHabilitada)
+    {
+      return 0;
+    }
+
+    if (TienePresagioActivo(PresagioCatalog.SinVigilancia))
+    {
+      return 0;
+    }
+
+    return TienePresagioActivo(PresagioCatalog.AmenazasVigilantes) ? 2 : 1;
+  }
+
+  public bool EstaMecanicaAlertaRegionHabilitada()
+  {
+    return MecanicaAlertaRegionHabilitada;
+  }
+
+  public List<int> ObtenerPresagiosActivosRegion()
+  {
+    return new List<int>(presagiosActivosRegion);
+  }
+
+  public int ObtenerRegionPresagiosActivos()
+  {
+    return presagiosRegionActivaId;
+  }
+
+  public float ObtenerMultiplicadorBifurcacionesPresagios()
+  {
+    if (TienePresagioActivo(PresagioCatalog.RutasQuebradas))
+    {
+      return 0.8f;
+    }
+
+    if (TienePresagioActivo(PresagioCatalog.RutasAbiertas))
+    {
+      return 1.2f;
+    }
+
+    return 1f;
+  }
+
+  public int AjustarChanceAtajoSubterraneoPresagios(int chanceBase)
+  {
+    if (TienePresagioActivo(PresagioCatalog.Derrumbado))
+    {
+      return 0;
+    }
+
+    if (TienePresagioActivo(PresagioCatalog.Subsuelo))
+    {
+      return Mathf.Clamp(chanceBase + 15, 0, 100);
+    }
+
+    return Mathf.Clamp(chanceBase, 0, 100);
+  }
+
+  public int AjustarChanceCaminoSinuosoPresagios(int chanceBase)
+  {
+    if (TienePresagioActivo(PresagioCatalog.CaminosIntrincados))
+    {
+      return Mathf.Clamp(chanceBase + 15, 0, 100);
+    }
+
+    if (TienePresagioActivo(PresagioCatalog.CaminosCuidados))
+    {
+      return Mathf.Clamp(Mathf.RoundToInt(chanceBase * 0.5f), 0, 100);
+    }
+
+    return Mathf.Clamp(chanceBase, 0, 100);
+  }
+
+  public int AjustarChanceAtajoSuperficiePresagios(int chanceBase)
+  {
+    if (TienePresagioActivo(PresagioCatalog.CaminosBorrados))
+    {
+      return 0;
+    }
+
+    if (TienePresagioActivo(PresagioCatalog.ViejosSenderos))
+    {
+      return Mathf.Clamp(chanceBase + 15, 0, 100);
+    }
+
+    return Mathf.Clamp(chanceBase, 0, 100);
+  }
+
+  public float AplicarRecoleccionMaterialesPresagios(float cantidadBase)
+  {
+    float multiplicador = 1f;
+    if (TienePresagioActivo(PresagioCatalog.MaterialesAbundantes))
+    {
+      multiplicador = 1.15f;
+    }
+    else if (TienePresagioActivo(PresagioCatalog.MaterialesEscasos))
+    {
+      multiplicador = 0.85f;
+    }
+
+    return Mathf.Max(0f, cantidadBase * multiplicador);
+  }
+
+  public float AplicarRecoleccionSuministrosPresagios(float cantidadBase)
+  {
+    float multiplicador = 1f;
+    if (TienePresagioActivo(PresagioCatalog.PresasFaciles))
+    {
+      multiplicador = 1.15f;
+    }
+    else if (TienePresagioActivo(PresagioCatalog.FaunaReducida))
+    {
+      multiplicador = 0.85f;
+    }
+
+    return Mathf.Max(0f, cantidadBase * multiplicador);
+  }
+
+  public int ObtenerCostoCompraConPresagios(float costoBase)
+  {
+    if (costoBase <= 0f)
+    {
+      return 0;
+    }
+
+    if (TienePresagioActivo(PresagioCatalog.ComercioActivo))
+    {
+      return Mathf.Max(1, Mathf.RoundToInt(costoBase * 0.9f));
+    }
+
+    if (TienePresagioActivo(PresagioCatalog.ComercioMenguado))
+    {
+      return Mathf.Max(1, Mathf.RoundToInt(costoBase * 1.1f));
+    }
+
+    return Mathf.Max(1, (int)costoBase);
+  }
+
+  public int ObtenerCostoPuestoComercialConPresagios(float costoBase)
+  {
+    int costo = ObtenerCostoCompraConPresagios(costoBase);
+    if (TienePresagioActivo(PresagioCatalog.PobladosVividos))
+    {
+      costo = Mathf.Max(1, Mathf.RoundToInt(costo * 0.85f));
+    }
+
+    return costo;
+  }
+
+  public int ObtenerCostoServicioAsentamientoConPresagios(int costoBase)
+  {
+    if (costoBase <= 0)
+    {
+      return 0;
+    }
+
+    return TienePresagioActivo(PresagioCatalog.PobladosVividos)
+      ? Mathf.Max(1, Mathf.RoundToInt(costoBase * 0.85f))
+      : costoBase;
+  }
+
+  public int ObtenerMaxAccionesAsentamiento()
+  {
+    return TienePresagioActivo(PresagioCatalog.PobladosEscasos) ? 2 : 3;
+  }
+
+  public bool DebeEliminarAltaresPorPresagio()
+  {
+    return TienePresagioActivo(PresagioCatalog.TierraProfana);
+  }
+
+  public bool DebePrepararTiposNodoPorPresagios()
+  {
+    return TienePresagioActivo(PresagioCatalog.SenalesClaras)
+      || TienePresagioActivo(PresagioCatalog.SenalesConfusas)
+      || TienePresagioActivo(PresagioCatalog.PilasDeRecursos)
+      || TienePresagioActivo(PresagioCatalog.RecursosEscondidos)
+      || TienePresagioActivo(PresagioCatalog.RumoresComeciales)
+      || TienePresagioActivo(PresagioCatalog.SenalesSagradas)
+      || TienePresagioActivo(PresagioCatalog.TierraProfana)
+      || TienePresagioActivo(PresagioCatalog.AdvertenciasDeAmenazas)
+      || TienePresagioActivo(PresagioCatalog.AmenazasEscondidas);
+  }
+
+  public bool DebeRevelarTipoNodoPorPresagio(int tipoNodo)
+  {
+    return (tipoNodo == 2 && TienePresagioActivo(PresagioCatalog.SenalesClaras))
+      || (tipoNodo == 5 && TienePresagioActivo(PresagioCatalog.PilasDeRecursos))
+      || (tipoNodo == 6 && TienePresagioActivo(PresagioCatalog.RumoresComeciales))
+      || (tipoNodo == 14 && TienePresagioActivo(PresagioCatalog.SenalesSagradas))
+      || (tipoNodo == 8 && TienePresagioActivo(PresagioCatalog.AdvertenciasDeAmenazas));
+  }
+
+  public bool DebeForzarTipoNodoMisteriosoPorPresagio(int tipoNodo)
+  {
+    return (tipoNodo == 2 && TienePresagioActivo(PresagioCatalog.SenalesConfusas))
+      || (tipoNodo == 5 && TienePresagioActivo(PresagioCatalog.RecursosEscondidos))
+      || (tipoNodo == 8 && TienePresagioActivo(PresagioCatalog.AmenazasEscondidas));
+  }
+
+  public float AjustarChanceEventoBuenoPresagios(float chanceBase)
+  {
+    if (TienePresagioActivo(PresagioCatalog.AuraPositiva))
+    {
+      chanceBase += 15f;
+    }
+    else if (TienePresagioActivo(PresagioCatalog.AuraNegativa))
+    {
+      chanceBase -= 15f;
+    }
+
+    return Mathf.Clamp(chanceBase, 0f, 100f);
   }
 
   private int ObtenerZonaInicialDebug()
@@ -1447,17 +2141,128 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     if (!DebeUsarConfiguracionTutorial())
     {
-      int claseInicialAleatoria = UnityEngine.Random.value < 0.5f ? 5 : 3;
-      AgregarHeroe(claseInicialAleatoria); //Canalizador o Purificadora
-      AgregarHeroe(0);
-      AgregarHeroe(0);
-      AgregarHeroe(0);
+      int claseLider = PrePartidaManager.ConsumirClaseLiderPendiente();
+      if (claseLider < PrePartidaManager.ClaseCaballero || claseLider > PrePartidaManager.ClaseDuelista)
+      {
+        claseLider = UnityEngine.Random.Range(
+          PrePartidaManager.ClaseCaballero,
+          PrePartidaManager.ClaseDuelista + 1);
+      }
+
+      int heroesInicialesAgregados = AgregarLiderInicial(claseLider) != null ? 1 : 0;
+
+      // Si el lider no ocupa uno de estos roles, se mantiene la garantia anterior.
+      if (claseLider != 3 && claseLider != 5 && heroesInicialesAgregados < 4)
+      {
+        int claseApoyo = UnityEngine.Random.value < 0.5f ? 5 : 3;
+        if (AgregarHeroe(claseApoyo))
+        {
+          heroesInicialesAgregados++;
+        }
+      }
+
+      int intentos = 0;
+      while (heroesInicialesAgregados < 4 && intentos < 8)
+      {
+        if (AgregarHeroe(0))
+        {
+          heroesInicialesAgregados++;
+        }
+
+        intentos++;
+      }
+
       RefrescarRetratosPersonajesCampania();
       return;
     }
 
     CrearAcechador(true);
     RefrescarRetratosPersonajesCampania();
+  }
+
+  private Personaje AgregarLiderInicial(int claseLider)
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return null;
+    }
+
+    int cantidadAntes = scMenuPersonajes.listaPersonajes.Count;
+    creandoLiderInicial = true;
+    try
+    {
+      if (!AgregarHeroe(claseLider) || scMenuPersonajes.listaPersonajes.Count <= cantidadAntes)
+      {
+        return null;
+      }
+    }
+    finally
+    {
+      creandoLiderInicial = false;
+    }
+
+    Personaje lider = scMenuPersonajes.listaPersonajes[scMenuPersonajes.listaPersonajes.Count - 1];
+    OtorgarExperienciaHastaNivel(lider, 2);
+    ResolverSubidaNivelLiderInicial(lider);
+    return lider;
+  }
+
+  private void ResolverSubidaNivelLiderInicial(Personaje lider)
+  {
+    if (lider == null || lider.fNivelActual < 2f)
+    {
+      return;
+    }
+
+    while (lider.NivelPuntoAtributo > 0)
+    {
+      bool puedeElegirPoder = lider.IDClase == 3 // Purificadora
+        || lider.IDClase == 5; // Canalizador
+      int atributoElegido = UnityEngine.Random.Range(0, puedeElegirPoder ? 3 : 2);
+
+      if (atributoElegido == 0)
+      {
+        lider.iFuerza++;
+      }
+      else if (atributoElegido == 1)
+      {
+        lider.iAgi++;
+      }
+      else
+      {
+        lider.iPoder++;
+      }
+
+      lider.NivelPuntoAtributo--;
+    }
+
+    while (lider.NivelPuntoHabilidad > 0)
+    {
+      List<Habilidad> habilidadesDisponibles = new List<Habilidad>();
+      foreach (Habilidad habilidad in lider.GetComponents<Habilidad>())
+      {
+        if (habilidad == null
+          || habilidad.NIVEL != 1
+          || habilidad is AtaqueBasico
+          || habilidad is RetrasarTurno
+          || habilidad.agregaDesdeArmaUI != null)
+        {
+          continue;
+        }
+
+        habilidadesDisponibles.Add(habilidad);
+      }
+
+      if (habilidadesDisponibles.Count == 0)
+      {
+        Debug.LogWarning("[CampaignManager] El líder no tiene una habilidad de clase válida para resolver automáticamente su subida a nivel 2.");
+        break;
+      }
+
+      Habilidad habilidadElegida = habilidadesDisponibles[UnityEngine.Random.Range(0, habilidadesDisponibles.Count)];
+      habilidadElegida.NIVEL = 2;
+      lider.NivelPuntoHabilidad--;
+    }
   }
 
   private void AgregarHeroesDebugIniciales()
@@ -1513,6 +2318,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     Personaje personaje = scMenuPersonajes.listaPersonajes[scMenuPersonajes.listaPersonajes.Count - 1];
     CompletarHeroeDebugConTodasLasHabilidades(personaje);
+    personaje.iIniciativa += 100;
+    personaje.iApMax += 20;
+    personaje.sinCooldownDebug = true;
   }
 
   private void RefrescarRetratosPersonajesCampania(bool actualizarInfoSiMenuAbierto = false)
@@ -1871,7 +2679,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     if (transicionZonaEnCurso)
     {
-      motivo = "No se puede guardar durante una transicion de zona.";
+      motivo = "No se puede guardar durante una transición de región.";
       return false;
     }
 
@@ -1999,6 +2807,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     chance += ObtenerModificadorChanceExploracionTraits();
     chance += estadosCaravana != null ? estadosCaravana.ObtenerModificadorExploracionPendiente() : 0;
     chance += modificadorContextual;
+    if (TienePresagioActivo(PresagioCatalog.ZonaDesconocida))
+    {
+      chance -= 10;
+    }
 
     if (intTipoClima == 5)
     {
@@ -2686,6 +3498,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     MapDecorator mapDecorator = scAtributosZona != null ? scAtributosZona.GetComponent<MapDecorator>() : null;
     data.reliefSeed = mapDecorator != null ? mapDecorator.GetReliefSeed() : 0;
     data.pasoVientoHeladoFuerzaKaleTav = scAtributosZona != null ? scAtributosZona.PasoVientoHelado_FuerzaKaleTav : 0;
+    data.presagiosRegionId = presagiosRegionActivaId;
+    data.presagiosActivos = new List<int>(presagiosActivosRegion);
+    data.primeraBatallaPresagioEnemigosConsumida = primeraBatallaPresagioEnemigosConsumida;
     data.numeroTurno = numeroTurno;
     data.posicionCaravana = posicionCaravana;
     data.tipoClima = intTipoClima;
@@ -2775,6 +3590,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       nodoData.faccionScoutReveladaId = nodo.ObtenerFaccionScoutReveladaId();
       nodoData.faccionScoutReveladaNombre = nodo.ObtenerFaccionScoutReveladaNombre();
       nodoData.visibilidadForzadaEspecial = nodo.TieneVisibilidadForzadaPorReveladoEspecial();
+      nodoData.reveladoPorZonaCartografiada = nodo.FueReveladoPorZonaCartografiada();
 
       foreach (CaminoConexion conexion in nodo.ConexionesSalientes)
       {
@@ -2894,6 +3710,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.critRango = personaje.fCritRango;
     data.critDanio = personaje.fCritDanio;
     data.bonusAtaque = personaje.fBonusAtaque;
+    data.sinCooldownDebug = personaje.sinCooldownDebug;
     data.habilidades = CopiarHabilidadesPersonaje(personaje);
     data.actividades = CopiarActividadesPersonaje(personaje);
     data.actividadSeleccionada = personaje.PuedeRealizarActividades() ? personaje.ActividadSeleccionada : 0;
@@ -2913,6 +3730,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.campCorrupto = personaje.Camp_Corrupto;
     data.traitHeroeLocalCivilesOtorgados = personaje.TraitHeroeLocalCivilesOtorgados;
     data.traitHeroeLocalPenalidadMuerteAplicada = personaje.TraitHeroeLocalPenalidadMuerteAplicada;
+    data.traitLiderCaravanaPenalidadMuerteAplicada = personaje.TraitLiderCaravanaPenalidadMuerteAplicada;
     data.traitEjemploASeguirAplicado = personaje.TraitEjemploASeguirAplicado;
     data.traitHerenciaItemOtorgado = personaje.TraitHerenciaItemOtorgado;
     data.diasViajado = personaje.DiasViajado;
@@ -2983,6 +3801,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   private MetaprogresionSaveData ConstruirMetaprogresionSaveData()
   {
     MetaprogresionSaveData data = new MetaprogresionSaveData();
+    data.presagiosRegionesPendientes = PresagioRegionPendienteStore.Exportar();
     MetaprogresionManager meta = MetaprogresionManager.Instance;
     if (meta == null)
     {
@@ -2993,9 +3812,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.cantidadCiviles = meta.CantidadCiviles;
     data.valorTrabajoDisponible = meta.ValordeTrabajoDisponible;
     data.misionesSalvamento = meta.MisionesSalvamento;
-    data.nivelPeligroBosqueArdiente = meta.NivelPeligroBosqueArdiente;
-    data.nivelPeligroPasoVientohelado = meta.NivelPeligroPasoVientohelado;
-    data.nivelPeligroNedukazal = meta.NivelPeligroNedukazal;
+    data.nivelAlertaBosqueArdiente = meta.NivelAlertaBosqueArdiente;
+    data.nivelAlertaPasoVientohelado = meta.NivelAlertaPasoVientohelado;
+    data.nivelAlertaNedukazal = meta.NivelAlertaNedukazal;
     data.serriaTierBarcos = meta.SerriaTierBarcos;
     data.serriaTierAlmenaras = meta.SerriaTierAlmenaras;
     data.serriaTierPalacio = meta.SerriaTierPalacio;
@@ -3179,6 +3998,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   private void RestaurarMetaprogresionDesdeSave(SaveFileData saveFileData)
   {
+    if (saveFileData != null && saveFileData.metaprogresion != null)
+    {
+      PresagioRegionPendienteStore.ImportarSiNoHayEstadoGlobal(saveFileData.metaprogresion.presagiosRegionesPendientes);
+    }
+
     if (saveFileData == null || saveFileData.version < 3 || saveFileData.metaprogresion == null || MetaprogresionManager.Instance == null)
     {
       return;
@@ -3191,9 +4015,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     meta.ValordeTrabajoDisponible = Mathf.Max(0, data.valorTrabajoDisponible);
 
     if (data.misionesSalvamento >= 0) meta.MisionesSalvamento = data.misionesSalvamento;
-    if (data.nivelPeligroBosqueArdiente >= 0) meta.NivelPeligroBosqueArdiente = data.nivelPeligroBosqueArdiente;
-    if (data.nivelPeligroPasoVientohelado >= 0) meta.NivelPeligroPasoVientohelado = data.nivelPeligroPasoVientohelado;
-    if (data.nivelPeligroNedukazal >= 0) meta.NivelPeligroNedukazal = data.nivelPeligroNedukazal;
+    if (data.nivelAlertaBosqueArdiente >= 0) meta.NivelAlertaBosqueArdiente = data.nivelAlertaBosqueArdiente;
+    if (data.nivelAlertaPasoVientohelado >= 0) meta.NivelAlertaPasoVientohelado = data.nivelAlertaPasoVientohelado;
+    if (data.nivelAlertaNedukazal >= 0) meta.NivelAlertaNedukazal = data.nivelAlertaNedukazal;
     if (data.serriaTierBarcos >= 0) meta.SerriaTierBarcos = data.serriaTierBarcos;
     if (data.serriaTierAlmenaras >= 0) meta.SerriaTierAlmenaras = data.serriaTierAlmenaras;
     if (data.serriaTierPalacio >= 0) meta.SerriaTierPalacio = data.serriaTierPalacio;
@@ -3221,6 +4045,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     numeroTurno = Mathf.Max(1, data.numeroTurno);
     posicionCaravana = Mathf.Max(0, data.posicionCaravana);
+    presagiosRegionActivaId = Mathf.Max(0, data.presagiosRegionId);
+    presagiosActivosRegion.Clear();
+    if (data.presagiosActivos != null)
+    {
+      presagiosActivosRegion.AddRange(data.presagiosActivos);
+    }
+    primeraBatallaPresagioEnemigosConsumida = data.primeraBatallaPresagioEnemigosConsumida;
     mejoraCaravanaAntorchas = NormalizarTierMejoraCaravana(data.mejoraCaravanaAntorchas);
     mejoraCaravanaAlforjas = NormalizarTierMejoraCaravana(data.mejoraCaravanaAlforjas);
     mejoraCaravanaTiendas = NormalizarTierMejoraCaravana(data.mejoraCaravanaTiendas);
@@ -3663,6 +4494,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     personaje.fCritRango = data.critRango;
     personaje.fCritDanio = data.critDanio;
     personaje.fBonusAtaque = data.bonusAtaque;
+    personaje.sinCooldownDebug = data.sinCooldownDebug;
     personaje.Habilidad_1 = habilidadesGuardadas.Length > 0 ? habilidadesGuardadas[0] : 0;
     personaje.Habilidad_2 = habilidadesGuardadas.Length > 1 ? habilidadesGuardadas[1] : 0;
     personaje.Habilidad_3 = habilidadesGuardadas.Length > 2 ? habilidadesGuardadas[2] : 0;
@@ -3693,6 +4525,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     personaje.Camp_Corrupto = data.campCorrupto;
     personaje.TraitHeroeLocalCivilesOtorgados = data.traitHeroeLocalCivilesOtorgados;
     personaje.TraitHeroeLocalPenalidadMuerteAplicada = data.traitHeroeLocalPenalidadMuerteAplicada;
+    personaje.TraitLiderCaravanaPenalidadMuerteAplicada = data.traitLiderCaravanaPenalidadMuerteAplicada;
     personaje.TraitEjemploASeguirAplicado = data.traitEjemploASeguirAplicado;
     personaje.TraitHerenciaItemOtorgado = data.traitHerenciaItemOtorgado;
     personaje.DiasViajado = data.diasViajado;
@@ -4862,18 +5695,21 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   private void ActualizarDescripcionesPuestoComercialDesdeEstadoActual()
   {
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
+    int costoCompraSuministros = ObtenerCostoPuestoComercialConPresagios(precio10Suministros);
+    int costoCompraMaterial = ObtenerCostoPuestoComercialConPresagios(precio1Material);
+    int costoCompraBuey = ObtenerCostoPuestoComercialConPresagios(precio1Buey);
 
     if (idioma == 2)
     {
-      if (txtDescSum != null) txtDescSum.text = $"<Color=#F26B70>Sell: {(int)precio10Suministros / 2} Gold</color>    x10   <Color=#5ABD46>Buy: {(int)precio10Suministros} Gold</color>";
-      if (txtDescMat != null) txtDescMat.text = $"<Color=#F26B70>Sell: {(int)precio1Material / 2} Gold</color>    x1   <Color=#5ABD46>Buy: {(int)precio1Material} Gold</color>";
-      if (txtDescBuey != null) txtDescBuey.text = $"<Color=#F26B70>Sell: {(int)precio1Buey / 2}  Gold</color>    x1   <Color=#5ABD46>Buy: {(int)precio1Buey} Gold</color>";
+      if (txtDescSum != null) txtDescSum.text = $"<Color=#F26B70>Sell: {(int)precio10Suministros / 2} Gold</color>    x10   <Color=#5ABD46>Buy: {costoCompraSuministros} Gold</color>";
+      if (txtDescMat != null) txtDescMat.text = $"<Color=#F26B70>Sell: {(int)precio1Material / 2} Gold</color>    x1   <Color=#5ABD46>Buy: {costoCompraMaterial} Gold</color>";
+      if (txtDescBuey != null) txtDescBuey.text = $"<Color=#F26B70>Sell: {(int)precio1Buey / 2}  Gold</color>    x1   <Color=#5ABD46>Buy: {costoCompraBuey} Gold</color>";
       return;
     }
 
-    if (txtDescSum != null) txtDescSum.text = $"<Color=#F26B70>Venta: {(int)precio10Suministros / 2} Oro</color>    x10   <Color=#5ABD46>Compra: {(int)precio10Suministros} Oro</color>";
-    if (txtDescMat != null) txtDescMat.text = $"<Color=#F26B70>Venta: {(int)precio1Material / 2} Oro</color>    x1   <Color=#5ABD46>Compra: {(int)precio1Material} Oro</color>";
-    if (txtDescBuey != null) txtDescBuey.text = $"<Color=#F26B70>Venta: {(int)precio1Buey / 2}  Oro</color>    x1   <Color=#5ABD46>Compra: {(int)precio1Buey} Oro</color>";
+    if (txtDescSum != null) txtDescSum.text = $"<Color=#F26B70>Venta: {(int)precio10Suministros / 2} Oro</color>    x10   <Color=#5ABD46>Compra: {costoCompraSuministros} Oro</color>";
+    if (txtDescMat != null) txtDescMat.text = $"<Color=#F26B70>Venta: {(int)precio1Material / 2} Oro</color>    x1   <Color=#5ABD46>Compra: {costoCompraMaterial} Oro</color>";
+    if (txtDescBuey != null) txtDescBuey.text = $"<Color=#F26B70>Venta: {(int)precio1Buey / 2}  Oro</color>    x1   <Color=#5ABD46>Compra: {costoCompraBuey} Oro</color>";
   }
 
   private string TraducirDuranteCarga(string texto)
@@ -5265,6 +6101,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     int chanceEmboscadaNormalizada = Mathf.Clamp(chancesemboscada, 0, 100);
     int chanceEmboscadaEnemiga = ReducirFrecuenciaEmboscada(chanceEmboscadaNormalizada);
     int chanceEmboscadaAliada = ReducirFrecuenciaEmboscada(Mathf.Max(0, 51 - chanceEmboscadaNormalizada));
+    chanceEmboscadaEnemiga = AjustarChanceEmboscadaEnemigaPresagios(chanceEmboscadaEnemiga);
+    chanceEmboscadaAliada = AjustarChanceEmboscadaAliadaPresagios(chanceEmboscadaAliada);
     bool emboscadaEnemiga = randomEmboscada <= chanceEmboscadaEnemiga;
     bool emboscadaAliada = !emboscadaEnemiga && chanceEmboscadaAliada > 0 && randomEmboscada > 100 - chanceEmboscadaAliada;
 
@@ -5519,20 +6357,23 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (GetTierAlientoNegro() == 2)
     {
-      EscribirLogSinBitacora(TRADU.i.Traducir("-La presencia notable del Aliento Negro al viajar, provoca incertidumbre en la Caravana. -3 Esperanza"));
-      CambiarEsperanzaActual(-3);
+      int perdidaEsperanza = AjustarPerdidaPorAlientoNegroPresagios(3);
+      EscribirLogSinBitacora(ObtenerTextoLogEfectoAlientoNegroViaje(2, perdidaEsperanza));
+      CambiarEsperanzaActual(-perdidaEsperanza);
     }
     if (GetTierAlientoNegro() == 3)
     {
-      EscribirLogSinBitacora(TRADU.i.Traducir("-La gran presencia de Aliento Negro en el aire, provoca temor en la Caravana. -7 Esperanza"));
-      CambiarEsperanzaActual(-7);
+      int perdidaEsperanza = AjustarPerdidaPorAlientoNegroPresagios(7);
+      EscribirLogSinBitacora(ObtenerTextoLogEfectoAlientoNegroViaje(3, perdidaEsperanza));
+      CambiarEsperanzaActual(-perdidaEsperanza);
     }
     if (GetTierAlientoNegro() == 4)
     {
-      CambiarEsperanzaActual(-10);
-      int random = UnityEngine.Random.Range(1, 5);
-      CambiarCivilesActuales(-random);
-      EscribirLogSinBitacora(TRADU.i.Traducir("-La presencia de Aliento Negro en el aire es fatal para los Civiles. -10 Esperanza -") + random + TRADU.i.Traducir(" Civiles"));
+      int perdidaEsperanza = AjustarPerdidaPorAlientoNegroPresagios(10);
+      int civilesPerdidos = AjustarPerdidaPorAlientoNegroPresagios(UnityEngine.Random.Range(1, 5));
+      CambiarEsperanzaActual(-perdidaEsperanza);
+      CambiarCivilesActuales(-civilesPerdidos);
+      EscribirLogSinBitacora(ObtenerTextoLogEfectoAlientoNegroViaje(4, perdidaEsperanza, civilesPerdidos));
     }
 
     AplicarTraitsMoraleAmbientales();
@@ -5540,7 +6381,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     if (sequitoHerrerosMantArmaduras > 0) { sequitoHerrerosMantArmaduras--; }
     if (sequitoHerrerosMantArmas > 0) { sequitoHerrerosMantArmas--; }
 
-    EfectosdeActividades();
+    EfectosdeActividades(1f, true);
     EfectosdeSequitos();
     RefrescarBarraPersonajesCampania(true);
     ActualizarBotonesAccionNodoActual();
@@ -5819,7 +6660,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       }
 
       float factorEventoBuenoMalo = 40 + Instance.GetEsperanzaActual() / 3 + ObtenerModificadorChanceEventoTraits();
-      factorEventoBuenoMalo = Mathf.Clamp(factorEventoBuenoMalo, 0f, 100f);
+      factorEventoBuenoMalo = AjustarChanceEventoBuenoPresagios(factorEventoBuenoMalo);
       float randomEvento = UnityEngine.Random.Range(0, 100);
 
       if (randomEvento < factorEventoBuenoMalo)
@@ -6333,8 +7174,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       // Evita incendiar asentamientos por la mecanica del Bosque Ardiente.
       for (int intento = 0; intento < 6; intento++)
       {
-        int random = UnityEngine.Random.Range(1, 3);
-        Nodo candidato = ObtenerNodoFuturoAleatorio(random);
+        // El nodo inmediatamente contiguo a la caravana queda protegido.
+        Nodo candidato = ObtenerNodoFuturoAleatorio(2);
         if (candidato == null) { continue; }
         if (candidato.nodoIncendiado) { continue; }
         if (candidato.tipoNodo == codigoAsentamiento) { continue; }
@@ -6722,19 +7563,22 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     precio1Material *= descuento;
     precio1Buey *= descuento;
 
+    int costoCompraSuministros = ObtenerCostoPuestoComercialConPresagios(precio10Suministros);
+    int costoCompraMaterial = ObtenerCostoPuestoComercialConPresagios(precio1Material);
+    int costoCompraBuey = ObtenerCostoPuestoComercialConPresagios(precio1Buey);
 
 
     if (TRADU.i.nIdioma == 1) //Español
     {
-      txtDescSum.text = $"<Color=#F26B70>Venta: {(int)precio10Suministros / 2} Oro</color>    x10   <Color=#5ABD46>Compra: {(int)precio10Suministros} Oro</color>";
-      txtDescMat.text = $"<Color=#F26B70>Venta: {(int)precio1Material / 2} Oro</color>    x1   <Color=#5ABD46>Compra: {(int)precio1Material} Oro</color>";
-      txtDescBuey.text = $"<Color=#F26B70>Venta: {(int)precio1Buey / 2}  Oro</color>    x1   <Color=#5ABD46>Compra: {(int)precio1Buey} Oro</color>";
+      txtDescSum.text = $"<Color=#F26B70>Venta: {(int)precio10Suministros / 2} Oro</color>    x10   <Color=#5ABD46>Compra: {costoCompraSuministros} Oro</color>";
+      txtDescMat.text = $"<Color=#F26B70>Venta: {(int)precio1Material / 2} Oro</color>    x1   <Color=#5ABD46>Compra: {costoCompraMaterial} Oro</color>";
+      txtDescBuey.text = $"<Color=#F26B70>Venta: {(int)precio1Buey / 2}  Oro</color>    x1   <Color=#5ABD46>Compra: {costoCompraBuey} Oro</color>";
     }
     else if (TRADU.i.nIdioma == 2) //Inglés
     {
-      txtDescSum.text = $"<Color=#F26B70>Sell: {(int)precio10Suministros / 2} Gold</color>    x10   <Color=#5ABD46>Buy: {(int)precio10Suministros} Gold</color>";
-      txtDescMat.text = $"<Color=#F26B70>Sell: {(int)precio1Material / 2} Gold</color>    x1   <Color=#5ABD46>Buy: {(int)precio1Material} Gold</color>";
-      txtDescBuey.text = $"<Color=#F26B70>Sell: {(int)precio1Buey / 2}  Gold</color>    x1   <Color=#5ABD46>Buy: {(int)precio1Buey} Gold</color>";
+      txtDescSum.text = $"<Color=#F26B70>Sell: {(int)precio10Suministros / 2} Gold</color>    x10   <Color=#5ABD46>Buy: {costoCompraSuministros} Gold</color>";
+      txtDescMat.text = $"<Color=#F26B70>Sell: {(int)precio1Material / 2} Gold</color>    x1   <Color=#5ABD46>Buy: {costoCompraMaterial} Gold</color>";
+      txtDescBuey.text = $"<Color=#F26B70>Sell: {(int)precio1Buey / 2}  Gold</color>    x1   <Color=#5ABD46>Buy: {costoCompraBuey} Gold</color>";
     }
     ActualizarPuestoComercial();
   }
@@ -6745,7 +7589,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     txtComnercialMatDisp.text = "" + pComercialMaterialesDisp;
     txtComnercialBueyesDisp.text = "" + pComercialBueyesDisp;
 
-    if ((pComercialSuministrosDisp > 0) && (GetOroActuales() >= precio10Suministros))
+    if ((pComercialSuministrosDisp > 0) && (GetOroActuales() >= ObtenerCostoPuestoComercialConPresagios(precio10Suministros)))
     {
       btnCompraSum.SetActive(true);
     }
@@ -6759,7 +7603,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
 
-    if ((pComercialMaterialesDisp > 0) && (GetOroActuales() >= precio1Material))
+    if ((pComercialMaterialesDisp > 0) && (GetOroActuales() >= ObtenerCostoPuestoComercialConPresagios(precio1Material)))
     {
       btnCompraMat.SetActive(true);
     }
@@ -6772,7 +7616,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     else { btnVentaMat.SetActive(false); }
 
 
-    if ((pComercialBueyesDisp > 0) && (GetOroActuales() >= precio1Buey))
+    if ((pComercialBueyesDisp > 0) && (GetOroActuales() >= ObtenerCostoPuestoComercialConPresagios(precio1Buey)))
     {
       btnCompraBuey.SetActive(true);
     }
@@ -6788,7 +7632,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public void ComprarSum()
   {
-    CambiarOroActual(-(int)precio10Suministros);
+    CambiarOroActual(-ObtenerCostoPuestoComercialConPresagios(precio10Suministros));
     CambiarSuministrosActuales(10);
     pComercialSuministrosDisp -= 10;
 
@@ -6808,7 +7652,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public void ComprarMat()
   {
-    CambiarOroActual(-(int)precio1Material);
+    CambiarOroActual(-ObtenerCostoPuestoComercialConPresagios(precio1Material));
     CambiarMaterialesActuales(1);
     pComercialMaterialesDisp--;
 
@@ -6828,7 +7672,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public void ComprarBuey()
   {
-    CambiarOroActual(-(int)precio1Buey);
+    CambiarOroActual(-ObtenerCostoPuestoComercialConPresagios(precio1Buey));
     CambiarBueyesActuales(1);
     pComercialBueyesDisp--;
 
@@ -7326,9 +8170,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         pers.Camp_Moral = Mathf.Max(pers.Camp_Moral, 4);
         string mensajeAventurero = idiomaTrait switch
         {
-          TRADU.IdiomaIngles => pers.sNombre + " embraces the new zone. Gains High Morale for 4 days.",
-          TRADU.IdiomaPortugues => pers.sNombre + " abraça a nova zona. Recebe Moral Alta por 4 dias.",
-          _ => pers.sNombre + " abraza la nueva zona. Obtiene Alta Moral por 4 días."
+          TRADU.IdiomaIngles => pers.sNombre + " embraces the new region. Gains High Morale for 4 days.",
+          TRADU.IdiomaPortugues => pers.sNombre + " abraça a nova região. Recebe Moral Alta por 4 dias.",
+          _ => pers.sNombre + " abraza la nueva región. Obtiene Alta Moral por 4 días."
         };
         EscribirLog("-" + mensajeAventurero);
       }
@@ -7338,9 +8182,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -3);
         string mensajeArrastrado = idiomaTrait switch
         {
-          TRADU.IdiomaIngles => pers.sNombre + " dreads the new zone. Gains Low Morale for 3 days.",
-          TRADU.IdiomaPortugues => pers.sNombre + " teme a nova zona. Recebe Moral Baixa por 3 dias.",
-          _ => pers.sNombre + " teme la nueva zona. Obtiene Baja Moral por 3 días."
+          TRADU.IdiomaIngles => pers.sNombre + " dreads the new region. Gains Low Morale for 3 days.",
+          TRADU.IdiomaPortugues => pers.sNombre + " teme a nova região. Recebe Moral Baixa por 3 dias.",
+          _ => pers.sNombre + " teme la nueva región. Obtiene Baja Moral por 3 días."
         };
         EscribirLog("-" + mensajeArrastrado);
       }
@@ -7443,6 +8287,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     int modificador = 0;
     modificador += CuantosPersonajesTienenTraitActivo(PersonajeTraitCatalog.TraitBuenaReputacion) * 2;
     modificador -= CuantosPersonajesTienenTraitActivo(PersonajeTraitCatalog.TraitMalaReputacion) * 2;
+    if (TienePresagioActivo(PresagioCatalog.PobladosVividos))
+    {
+      modificador += 5;
+    }
     return modificador;
   }
 
@@ -7624,6 +8472,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public void AplicarTraitHeroeLocalMuerteSiCorresponde(Personaje pers)
   {
+    AplicarTraitLiderCaravanaMuerteSiCorresponde(pers);
+
     if (pers == null || !pers.Camp_Muerto || !pers.TieneRasgo(PersonajeTraitCatalog.TraitHeroeLocal) || pers.TraitHeroeLocalPenalidadMuerteAplicada)
     {
       return;
@@ -7640,6 +8490,50 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       _ => pers.sNombre + " muere para siempre. -20 Esperanza."
     };
     EscribirLog("-" + mensajeHeroeLocal);
+  }
+
+  private void AplicarTraitLiderCaravanaMuerteSiCorresponde(Personaje pers)
+  {
+    if (pers == null
+      || !pers.Camp_Muerto
+      || !pers.TieneRasgo(PersonajeTraitCatalog.TraitLiderCaravana)
+      || pers.TraitLiderCaravanaPenalidadMuerteAplicada)
+    {
+      return;
+    }
+
+    pers.TraitLiderCaravanaPenalidadMuerteAplicada = true;
+    CambiarEsperanzaActual(-25);
+
+    if (scMenuPersonajes != null && scMenuPersonajes.listaPersonajes != null)
+    {
+      foreach (Personaje aliado in scMenuPersonajes.listaPersonajes)
+      {
+        if (aliado == null || aliado.Camp_Muerto)
+        {
+          continue;
+        }
+
+        aliado.Camp_Moral = Mathf.Min(aliado.Camp_Moral, -4);
+      }
+    }
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    string mensajeLider = idiomaTrait switch
+    {
+      TRADU.IdiomaIngles => pers.sNombre + ", the Caravan Protector, dies. -25 Hope.",
+      TRADU.IdiomaPortugues => pers.sNombre + ", Protetor da Caravana, morre. -25 de Esperança.",
+      _ => pers.sNombre + ", Protector de la Caravana, muere. -25 Esperanza."
+    };
+    EscribirLog("-" + mensajeLider);
+
+    string mensajeMoral = idiomaTrait switch
+    {
+      TRADU.IdiomaIngles => "The Protector's death demoralizes the caravan. Everyone gains Low Morale for 4 days.",
+      TRADU.IdiomaPortugues => "A morte do Protetor desmoraliza a caravana. Todos recebem Moral Baixa por 4 dias.",
+      _ => "La muerte del Protector desmoraliza a la caravana. Todos obtienen Baja Moral por 4 días."
+    };
+    EscribirLog("-" + mensajeMoral);
   }
 
   public void ProcesarTraitContratoSiCorresponde(Personaje pers)
@@ -7944,7 +8838,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
   }
-  void EfectosdeActividades(float multiplicadorCuracionDescanso = 1f)
+  void EfectosdeActividades(float multiplicadorCuracionDescanso = 1f, bool esViaje = false)
   {
 
     foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
@@ -7966,14 +8860,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         }
 
 
-        float curacionFinalSequito = sequitoCuranderosMejoraCuracion + (cantPurificadorasColaborando * 0.05f) + cantHerboristasVecesClaro; //5% por cada Purificadora colaborando
+        float bonusPlantasCurativas = esViaje ? ObtenerBonusCuracionPasivaViajePresagios() : 0f;
+        float curacionFinalSequito = sequitoCuranderosMejoraCuracion + (cantPurificadorasColaborando * 0.05f) + cantHerboristasVecesClaro + bonusPlantasCurativas; //5% por cada Purificadora colaborando
 
         float porcentajeVidaMax = pers.fVidaMaxima * curacionFinalSequito * Mathf.Max(0f, multiplicadorCuracionDescanso);
         porcentajeVidaMax = pers.AplicarMultiplicadorCuracionCampaniaTraits(porcentajeVidaMax);
-        if (pers.fVidaMaxima > pers.fVidaActual)
-        {
-          EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" se cura ") + (int)porcentajeVidaMax + TRADU.i.Traducir(" PV por su Actividad de <b>Descanso</b>."));
-        }
         pers.RecibirCuracion(porcentajeVidaMax);
 
       }
@@ -9093,6 +9984,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   public GameObject tooltipGOOro;
   public GameObject tooltipGOFatiga;
   public GameObject tooltipGOMecanicaZona;
+  public GameObject tooltipGOPresagios;
 
 
   public void TooltipRecursoEntrar(int n)
@@ -9240,7 +10132,32 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
     }
+    else if (n == 9) //Presagios activos
+    {
+      if (tooltipGOPresagios == null)
+      {
+        return;
+      }
 
+      tooltipGOPresagios.SetActive(true);
+      TMP_Text textObject = tooltipGOPresagios.GetComponentInChildren<TMP_Text>(true);
+      if (textObject != null)
+      {
+        List<string> textosPresagios = new List<string>();
+        for (int i = 0; i < presagiosActivosRegion.Count; i++)
+        {
+          string textoPresagio = PresagioCatalog.ObtenerTextoLocalizado(presagiosActivosRegion[i]);
+          if (!string.IsNullOrWhiteSpace(textoPresagio))
+          {
+            textosPresagios.Add(textoPresagio);
+          }
+        }
+
+        textObject.text = textosPresagios.Count > 0
+          ? string.Join("\n\n", textosPresagios)
+          : PresagioCatalog.ObtenerTextoSinPresagios();
+      }
+    }
 
 
 
@@ -9256,6 +10173,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     tooltipGOOro.SetActive(false);
     tooltipGOFatiga.SetActive(false);
     tooltipGOMecanicaZona.SetActive(false);
+    if (tooltipGOPresagios != null)
+    {
+      tooltipGOPresagios.SetActive(false);
+    }
   }
 
   #endregion
@@ -9477,6 +10398,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   void Update()
   {
+    if (BattleManager.Instance != null && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
+    {
+      return;
+    }
+
     ActualizarCursorCampania();
     ActualizarBotonesAccionNodoActual();
     RefrescarDebugMostrarTodosLosCaminosSiCambio();
@@ -10277,7 +11203,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       var registroAnterior = textosFlotantesCampaniaActivos[anterior];
       float separacionPorAltura = (registroAnterior.altura + registroNuevo.altura) * 0.5f + 6f;
-      float separacionMinima = Mathf.Max(yStackOffset, separacionPorAltura);
+      float separacionMinima = Mathf.Max(yStackOffset * 0.6f, separacionPorAltura);
       float desplazamientoDebajo = registroAnterior.contenedor.anchoredPosition.y - separacionMinima;
       desplazamientoFijo = Mathf.Min(desplazamientoFijo, desplazamientoDebajo);
     }
@@ -11062,6 +11988,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     pers.LimpiarRasgos();
+    bool esLiderInicial = creandoLiderInicial;
+    if (esLiderInicial)
+    {
+      pers.AgregarRasgo(PersonajeTraitCatalog.TraitLiderCaravana);
+    }
 
     List<PersonajeTraitDefinition> disponibles = PersonajeTraitCatalog.ObtenerTraitsDisponiblesAlCrear();
     if (disponibles.Count == 0)
@@ -11069,7 +12000,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return;
     }
 
-    int cantidadARollear = UnityEngine.Random.Range(1, Mathf.Min(3, disponibles.Count) + 1);
+    int cantidadMinima = esLiderInicial ? 0 : 1;
+    int cantidadMaxima = Mathf.Min(esLiderInicial ? 2 : 3, disponibles.Count);
+    int cantidadARollear = UnityEngine.Random.Range(cantidadMinima, cantidadMaxima + 1);
     for (int i = 0; i < cantidadARollear; i++)
     {
       List<PersonajeTraitDefinition> compatibles = new List<PersonajeTraitDefinition>();
@@ -11158,7 +12091,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     while (personaje.fNivelActual < nivelObjetivo && intentos < 5)
     {
       float experienciaFaltante = Mathf.Max(1f, personaje.ObtenerExperienciaNecesariaParaProximoNivel() - personaje.fExperienciaActual);
-      personaje.RecibirExperiencia(experienciaFaltante + 1f);
+      personaje.RecibirExperiencia(experienciaFaltante + 1f, false);
       intentos++;
     }
   }
@@ -11318,7 +12251,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   }
 
   public int peligrozonaanterior;
-  public void IncrementarDificultadSegunPeligroRegion(int peligro)
+  public void IncrementarDificultadSegunAlertaRegion(int nivelAlerta)
   {
 
     var hd = Sistema.HandicapDificultad.Instance;
@@ -11326,11 +12259,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       hd.puntosExtraEnemigos -= 2 * peligrozonaanterior;
 
-      hd.puntosExtraEnemigos += 2 * peligro;
+      hd.puntosExtraEnemigos += 2 * nivelAlerta;
     }
 
 
-    peligrozonaanterior = peligro;
+    peligrozonaanterior = nivelAlerta;
   }
 
 

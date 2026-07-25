@@ -17,9 +17,9 @@ public class AsentamientoManager : MonoBehaviour
         Marcharse = 5
     }
 
-    private const int MaxAcciones = 3;
-    private const int CostoTaverna = 100;
-    private const int CostoPosada = 100;
+    private const int MaxAccionesBase = 3;
+    private const int CostoTavernaBase = 100;
+    private const int CostoPosadaBase = 100;
     private const float DuracionAccionSegundos = 4f;
     private const float RetrasoEntreLogsAccionSegundos = 0.9f;
     private const float MultiplicadorCuracionViajeAsentamiento = 1.1f;
@@ -69,7 +69,7 @@ public class AsentamientoManager : MonoBehaviour
     private bool asentamientoArrasadoPorAliento;
     private bool volverAlAsentamientoTrasPuesto;
     private bool persistirAbiertoEnProximoSave;
-    private int accionesRestantes = MaxAcciones;
+    private int accionesRestantes = MaxAccionesBase;
     private AccionAsentamiento accionHoverActual = AccionAsentamiento.Ninguna;
     private readonly System.Collections.Generic.Dictionary<GameObject, bool> estadosVisibilidadDirecta = new System.Collections.Generic.Dictionary<GameObject, bool>();
     private readonly System.Collections.Generic.Dictionary<GameObject, bool> estadosCanvasCampaniaDuranteTransicion = new System.Collections.Generic.Dictionary<GameObject, bool>();
@@ -111,7 +111,7 @@ public class AsentamientoManager : MonoBehaviour
         }
         CerrarSilencioso();
 
-        accionesRestantes = MaxAcciones;
+        accionesRestantes = ObtenerMaxAcciones();
         accionHoverActual = AccionAsentamiento.Ninguna;
         asentamientoArrasadoPorAliento = campaign.EstaDentroOpeorDelAlientoNegro();
 
@@ -177,7 +177,7 @@ public class AsentamientoManager : MonoBehaviour
         {
             return;
         }
-        accionesRestantes = Mathf.Clamp(data.settlementActionsRemaining, 0, MaxAcciones);
+        accionesRestantes = Mathf.Clamp(data.settlementActionsRemaining, 0, ObtenerMaxAcciones());
         accionHoverActual = AccionAsentamiento.Ninguna;
         asentamientoArrasadoPorAliento = campaign.EstaDentroOpeorDelAlientoNegro();
 
@@ -399,11 +399,12 @@ public class AsentamientoManager : MonoBehaviour
             return;
         }
 
-        campaign.CambiarOroActual(-CostoTaverna);
+        int costoTaverna = ObtenerCostoServicio(CostoTavernaBase);
+        campaign.CambiarOroActual(-costoTaverna);
         bool reclutado = campaign.AgregarHeroe(0);
         if (!reclutado)
         {
-            campaign.CambiarOroActual(CostoTaverna);
+            campaign.CambiarOroActual(costoTaverna);
             campaign.EscribirLog("<color=#ff8f8f>" + Loc(
                 "-No se pudo reclutar a nadie en la taverna.",
                 "-No one could be recruited in the tavern.",
@@ -412,9 +413,9 @@ public class AsentamientoManager : MonoBehaviour
         }
 
         campaign.EscribirLog(Loc(
-            "-Se pagan 100 de Oro en la taverna para reclutar un nuevo personaje.",
-            "-100 Gold is paid at the tavern to recruit a new character.",
-            "-Pagam-se 100 de Ouro na taverna para recrutar um novo personagem."));
+            $"-Se pagan {costoTaverna} de Oro en la taverna para reclutar un nuevo personaje.",
+            $"-{costoTaverna} Gold is paid at the tavern to recruit a new character.",
+            $"-Pagam-se {costoTaverna} de Ouro na taverna para recrutar um novo personagem."));
 
         if (campaign.scMenuPersonajes != null && campaign.scMenuPersonajes.listaPersonajes != null)
         {
@@ -470,7 +471,8 @@ public class AsentamientoManager : MonoBehaviour
             return;
         }
 
-        campaign.CambiarOroActual(-CostoPosada);
+        int costoPosada = ObtenerCostoServicio(CostoPosadaBase);
+        campaign.CambiarOroActual(-costoPosada);
 
         foreach (Personaje pers in campaign.scMenuPersonajes.listaPersonajes)
         {
@@ -502,13 +504,14 @@ public class AsentamientoManager : MonoBehaviour
         TipoEstadoCaravana estadoGanado = EstadosCaravanaPosada[UnityEngine.Random.Range(0, EstadosCaravanaPosada.Length)];
         campaign.AgregarEstadoCaravana(estadoGanado, 1);
         campaign.EscribirLog(Loc(
-            $"-La caravana descansa en la posada. -{CostoPosada} Oro, Fatiga a 0, +5 Esperanza.",
-            $"-The caravan rests at the inn. -{CostoPosada} Gold, Fatigue reset to 0, +5 Hope.",
-            $"-A caravana descansa na hospedaria. -{CostoPosada} Ouro, Fadiga zerada, +5 Esperanca."));
+            $"-La caravana descansa en la posada. -{costoPosada} Oro, Fatiga a 0, +5 Esperanza.",
+            $"-The caravan rests at the inn. -{costoPosada} Gold, Fatigue reset to 0, +5 Hope.",
+            $"-A caravana descansa na hospedaria. -{costoPosada} Ouro, Fadiga zerada, +5 Esperanca."));
         campaign.EscribirLog(Loc(
             "-La posada deja a la Caravana con 1 estado de caravana al azar.",
             "-The inn leaves the Caravan with 1 random caravan state.",
             "-A hospedaria deixa a Caravana com 1 estado de caravana aleatorio."));
+        campaign.AplicarPresagiosDescanso();
 
     }
 
@@ -524,7 +527,7 @@ public class AsentamientoManager : MonoBehaviour
             return false;
         }
 
-        if (campaign.GetOroActuales() < CostoTaverna)
+        if (campaign.GetOroActuales() < ObtenerCostoServicio(CostoTavernaBase))
         {
             motivo = Loc(
                 "No hay suficiente Oro para pagar la taverna.",
@@ -558,7 +561,7 @@ public class AsentamientoManager : MonoBehaviour
             return false;
         }
 
-        if (campaign.GetOroActuales() < CostoPosada)
+        if (campaign.GetOroActuales() < ObtenerCostoServicio(CostoPosadaBase))
         {
             motivo = Loc(
                 "No hay suficiente Oro para pagar la posada.",
@@ -705,10 +708,11 @@ public class AsentamientoManager : MonoBehaviour
             return;
         }
 
+        int maxAcciones = ObtenerMaxAcciones();
         string textoAcciones = Loc(
-            $"{accionesRestantes}/{MaxAcciones} Acciones disponibles",
-            $"{accionesRestantes}/{MaxAcciones} Actions available",
-            $"{accionesRestantes}/{MaxAcciones} Acoes disponiveis");
+            $"{accionesRestantes}/{maxAcciones} Acciones disponibles",
+            $"{accionesRestantes}/{maxAcciones} Actions available",
+            $"{accionesRestantes}/{maxAcciones} Acoes disponiveis");
 
         txtAccionesDisponibles.text = accionesRestantes <= 0 ? MarcarSinAcciones(textoAcciones) : textoAcciones;
     }
@@ -761,6 +765,11 @@ public class AsentamientoManager : MonoBehaviour
 
     private string ObtenerDescripcionAccion(AccionAsentamiento accion)
     {
+        int modificadorCiviles = CampaignManager.Instance != null
+            ? CampaignManager.Instance.ObtenerModificadorCivilesPlazaAsentamiento()
+            : 0;
+        int civilesMinimos = Mathf.Max(0, 12 + modificadorCiviles);
+        int civilesMaximos = Mathf.Max(civilesMinimos, 23 + modificadorCiviles);
         string estadoAcciones = accionesRestantes > 0
             ? Loc("Consume 1 accion y 1 dia.", "Consumes 1 action and 1 day.", "Consome 1 acao e 1 dia.")
             : MarcarSinAcciones(Loc("No quedan acciones disponibles.", "No actions remain.", "Nao restam acoes disponiveis."));
@@ -776,23 +785,23 @@ public class AsentamientoManager : MonoBehaviour
             case AccionAsentamiento.Taverna:
                 string estadoTaverna = PuedeUsarTaverna(out string motivo)
                     ? Loc(
-                        "Costo: 100 Oro. Recluta un personaje aleatorio nivel 1.",
-                        "Cost: 100 Gold. Recruits a random level 1character.",
-                        "Custo: 100 Ouro. Recruta um personagem aleatorio nível 1.")
+                        $"Costo: {ObtenerCostoServicio(CostoTavernaBase)} Oro. Recluta un personaje aleatorio nivel 1.",
+                        $"Cost: {ObtenerCostoServicio(CostoTavernaBase)} Gold. Recruits a random level 1character.",
+                        $"Custo: {ObtenerCostoServicio(CostoTavernaBase)} Ouro. Recruta um personagem aleatorio nível 1.")
                     : motivo;
                 return estadoTaverna + "\n\n" + estadoAcciones;
 
             case AccionAsentamiento.PlazaPrincipal:
                 return Loc(
-                    "Das un discurso en la plaza para concientizar a los pobladores sobre la situación, y que deben unirse a la caravana si quieren sobrevivir. Convences entre 12 y 23 civiles para unirse. Cada civil aporta 2 suministros y 1 material.\n\n" + estadoAcciones,
-                    "You give a speech in the square to raise awareness among the settlers about the inminent danger, and try to convince them to join the caravan if they want to survive. You convince between 12 and 23 civilians to join. Each civilian brings 2 supplies and 1 material.\n\n" + estadoAcciones,
-                    "Voce da um discurso na praca para conscientizar os moradores sobre a situacao, e que devem se juntar a caravana se quiserem sobreviver. Voce convence entre 12 e 23 civis para se juntar. Cada civil traz 2 suprimentos e 1 material.\n\n" + estadoAcciones);
+                    $"Das un discurso en la plaza para concientizar a los pobladores sobre la situación, y que deben unirse a la caravana si quieren sobrevivir. Convences entre {civilesMinimos} y {civilesMaximos} civiles para unirse. Cada civil aporta 2 suministros y 1 material.\n\n" + estadoAcciones,
+                    $"You give a speech in the square to raise awareness among the settlers about the inminent danger, and try to convince them to join the caravan if they want to survive. You convince between {civilesMinimos} and {civilesMaximos} civilians to join. Each civilian brings 2 supplies and 1 material.\n\n" + estadoAcciones,
+                    $"Voce da um discurso na praca para conscientizar os moradores sobre a situacao, e que devem se juntar a caravana se quiserem sobreviver. Voce convence entre {civilesMinimos} e {civilesMaximos} civis para se juntar. Cada civil traz 2 suprimentos e 1 material.\n\n" + estadoAcciones);
 
             case AccionAsentamiento.Posada:
                 return Loc(
-                    $"Costo: {CostoPosada} Oro. La caravana se dedicará a descansar. Todos los personajes recuperan 25% de su vida maxima, la Fatiga volverá a 0, la caravana ganará 5 Esperanza y obtendrá 1 estado de caravana al azar.\n\n" + estadoAcciones,
-                    $"Cost: {CostoPosada} Gold. The caravan focuses on resting. All characters recover 25% of their maximum health, Fatigue is reset to 0, the caravan gains 5 Hope, and it obtains 1 random caravan state.\n\n" + estadoAcciones,
-                    $"Custo: {CostoPosada} Ouro. A caravana dedica-se a descansar. Todos os personagens recuperam 25% da vida maxima, a Fadiga voltará a 0, a caravana ganhará 5 Esperanca e obterá 1 estado de caravana aleatorio.\n\n" + estadoAcciones);
+                    $"Costo: {ObtenerCostoServicio(CostoPosadaBase)} Oro. La caravana se dedicará a descansar. Todos los personajes recuperan 25% de su vida maxima, la Fatiga volverá a 0, la caravana ganará 5 Esperanza y obtendrá 1 estado de caravana al azar.\n\n" + estadoAcciones,
+                    $"Cost: {ObtenerCostoServicio(CostoPosadaBase)} Gold. The caravan focuses on resting. All characters recover 25% of their maximum health, Fatigue is reset to 0, the caravan gains 5 Hope, and it obtains 1 random caravan state.\n\n" + estadoAcciones,
+                    $"Custo: {ObtenerCostoServicio(CostoPosadaBase)} Ouro. A caravana dedica-se a descansar. Todos os personagens recuperam 25% da vida maxima, a Fadiga voltará a 0, a caravana ganhará 5 Esperanca e obterá 1 estado de caravana aleatorio.\n\n" + estadoAcciones);
 
             case AccionAsentamiento.Marcharse:
                 return Loc(
@@ -844,6 +853,20 @@ public class AsentamientoManager : MonoBehaviour
             default:
                 return es;
         }
+    }
+
+    private int ObtenerMaxAcciones()
+    {
+        return CampaignManager.Instance != null
+            ? CampaignManager.Instance.ObtenerMaxAccionesAsentamiento()
+            : MaxAccionesBase;
+    }
+
+    private int ObtenerCostoServicio(int costoBase)
+    {
+        return CampaignManager.Instance != null
+            ? CampaignManager.Instance.ObtenerCostoServicioAsentamientoConPresagios(costoBase)
+            : costoBase;
     }
 
     private void AsegurarUi()

@@ -534,15 +534,15 @@ MonoBehaviour:
     pt: Melhorias
   - key: tutorial.alforjas1.narrator
     es: "\u201CNuestra caravana puede beneficiarse de diversas mejoras, seg\xFAn
-      la situaci\xF3n, la zona que atravesemos y los muchos imprevistos del camino.\n\nPor
+      la situaci\xF3n, la regi\xF3n que atravesemos y los muchos imprevistos del camino.\n\nPor
       el momento, creo que a los bueyes les vendr\xEDan bien unas alforjas. Con ellas
       podremos llevar m\xE1s carga sin retrasar la marcha.\u201D"
     en: "\u201COur caravan can benefit from various upgrades, depending on the situation,
-      the zone we cross, and the many surprises on the road.\n\nFor now, I think
+      the region we cross, and the many surprises on the road.\n\nFor now, I think
       the oxen could use some saddlebags. With them we can carry more load without
       slowing the march.\u201D"
     pt: "\u201CNossa caravana pode se beneficiar de v\xE1rias melhorias, conforme
-      a situa\xE7\xE3o, a zona que cruzarmos e os imprevistos do caminho.\n\nPor
+      a situa\xE7\xE3o, a regi\xE3o que cruzarmos e os imprevistos do caminho.\n\nPor
       enquanto, acho que os bois poderiam usar alguns alforjes. Com eles poderemos
       levar mais carga sem atrasar a marcha.\u201D"
   - key: tutorial.alforjas1.body
@@ -665,20 +665,20 @@ MonoBehaviour:
       n\xF3s permanecer\xE3o <b>Misteriosos</b>, e seu conte\xFAdo ser\xE1 desconhecido
       at\xE9 alcan\xE7\xE1-los."
   - key: tutorial.exp2.body
-    es: "<Size=85%><i><color=#A94444>---Los nodos de Zona Expuesta garantizan que
+    es: "<Size=85%><i><color=#A94444>---Los nodos de Regi\xF3n Expuesta garantizan que
       la caravana ser\xE1 emboscada si se viaja all\xED. \nSon combates m\xE1s dif\xEDciles
       y extensos en los cuales si eres derrotado, perder\xE1s la partida.---</color></i></Size>\n\nLa
       <b>Exploraci\xF3n Activa</b> te deja enviar 5 <b>Civiles</b> a revelar  un
       <b>Nodo Misterioso</b> esto provocar\xE1 que el Aliento Negro avance levemente
       y a veces pueden no regresar.\n\n<color=#FFD54A><b>Haz click con el <b>Bot\xF3n
       Derecho</b> en el Nodo seleccionado para enviar Exploradores.</b></color>"
-    en: "<Size=85%><i><color=#A94444>---Exposed Zone nodes guarantee the caravan
+    en: "<Size=85%><i><color=#A94444>---Exposed Region nodes guarantee the caravan
       will be ambushed if it travels there. \nThese are harder, longer fights where
       defeat will end the game.---</color></i></Size>\n\n<b>Active Exploration</b>
       lets you send 5 <b>Civilians</b> to reveal a <b>Mysterious Node</b>. This will
       make the Black Breath advance slightly, and sometimes they may not return.\n\n<color=#FFD54A><b>Right-click
       the selected Node to send Scouts.</b></color>"
-    pt: "<Size=85%><i><color=#A94444>---N\xF3s de Zona Exposta garantem que a caravana
+    pt: "<Size=85%><i><color=#A94444>---N\xF3s de Regi\xE3o Exposta garantem que a caravana
       ser\xE1 emboscada se viajar para l\xE1. \nS\xE3o combates mais dif\xEDceis
       e longos nos quais, se voc\xEA for derrotado, perder\xE1 a partida.---</color></i></Size>\n\nA
       <b>Explora\xE7\xE3o Ativa</b> permite enviar 5 <b>Civis</b> para revelar um
@@ -894,7 +894,7 @@ MonoBehaviour:
   - key: tutorial.clima.body
     es: "Cada vez que la caravana <b>Descansa</b>, se realiza una <b>Tirada de Clima</b>,
       que puede cambiar las condiciones de la campa\xF1a.\n\n<color=#FFD54A>Puedes
-      ver el Clima actual y sus efectos en el \xE1rea marcada.</color>\n\nCada zona
+      ver el Clima actual y sus efectos en el \xE1rea marcada.</color>\n\nCada regi\xF3n
       puede tener sus propios climas, e incluso condiciones especiales, como las
       <b>Almas Danzantes</b> del <b>Bosque Ardiente</b>."
     en: 'Each time the caravan <b>Rests</b>, a <b>Weather Roll</b> is made, which
@@ -905,12 +905,12 @@ MonoBehaviour:
       Weather and its effects in the marked area.</color>
 
 
-      Each zone can have
+      Each region can have
       its own weather, and even special conditions, such as the <b>Dancing Souls</b>
       of the <b>Burning Forest</b>.'
     pt: "Cada vez que a caravana <b>Descansa</b>, \xE9 feita uma <b>Rolagem de Clima</b>,
       que pode mudar as condi\xE7\xF5es da campanha.\n\n<color=#FFD54A>Voc\xEA pode
-      ver o Clima atual e seus efeitos na \xE1rea marcada.</color>\n\nCada zona pode
+      ver o Clima atual e seus efeitos na \xE1rea marcada.</color>\n\nCada regi\xE3o pode
       ter seus pr\xF3prios climas, e at\xE9 condi\xE7\xF5es especiais, como as <b>Almas
       Dan\xE7antes</b> da <b>Floresta Ardente</b>."
   - key: tutorial.sequitos1.body
@@ -1113,19 +1113,19 @@ MonoBehaviour:
       a sa\xEDda.\n\nSe quisermos atravessar, teremos que enfrent\xE1-lo.\u201D"
   - key: tutorial.batfinpre1.body
     es: "El pr\xF3ximo nodo es la <b>Batalla Final</b> del tutorial.\n\nNormalmente,
-      las Zonas son mucho m\xE1s extensas, pero por motivos del tutorial, esta terminar\xE1
+      las Regiones son mucho m\xE1s extensas, pero por motivos del tutorial, esta terminar\xE1
       al superar la siguiente batalla.\n\n<color=#FFD54A><b>Viaja al siguiente nodo.</b></color>"
     en: 'The next node is the tutorial''s <b>Final Battle</b>.
 
 
       Normally,
-      Zones are much larger, but for tutorial reasons, this one will end after you
+      Regions are much larger, but for tutorial reasons, this one will end after you
       overcome the next battle.
 
 
       <color=#FFD54A><b>Travel to the next node.</b></color>'
     pt: "O pr\xF3ximo n\xF3 \xE9 a <b>Batalha Final</b> do tutorial.\n\nNormalmente,
-      as Zonas s\xE3o muito mais extensas, mas por motivos do tutorial, esta terminar\xE1
+      as Regi\xF5es s\xE3o muito mais extensas, mas por motivos do tutorial, esta terminar\xE1
       ao superar a pr\xF3xima batalha.\n\n<color=#FFD54A><b>Viaje para o pr\xF3ximo
       n\xF3.</b></color>"
   - key: tutorial.batfinpre2.body
@@ -1158,14 +1158,14 @@ MonoBehaviour:
     pt: "Tutorial Conclu\xEDdo"
   - key: tutorial.postbatfinal1.narrator
     es: "\u201CEl camino queda abierto. La caravana sigue en pie, y eso basta por
-      ahora.\n\nA partir de aqu\xED, cada zona ser\xE1 m\xE1s amplia y menos predecible.
+      ahora.\n\nA partir de aqu\xED, cada regi\xF3n ser\xE1 m\xE1s amplia y menos predecible.
       Mantenga a su gente con vida, elija bien sus descansos y no deje que el miedo
       decida por usted.\u201D"
     en: "\u201CThe road is open. The caravan still stands, and that is enough for
-      now.\n\nFrom here on, each zone will be larger and less predictable. Keep your
+      now.\n\nFrom here on, each region will be larger and less predictable. Keep your
       people alive, choose your rests well, and do not let fear decide for you.\u201D"
     pt: "\u201CO caminho est\xE1 aberto. A caravana segue de p\xE9, e isso basta
-      por enquanto.\n\nA partir daqui, cada zona ser\xE1 mais ampla e menos previs\xEDvel.
+      por enquanto.\n\nA partir daqui, cada regi\xE3o ser\xE1 mais ampla e menos previs\xEDvel.
       Mantenha sua gente viva, escolha bem seus descansos e n\xE3o deixe que o medo
       decida por voc\xEA.\u201D"
   - key: tutorial.postbatfinal1.body

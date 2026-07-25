@@ -15,6 +15,17 @@ public class Sequito : MonoBehaviour
     public TextMeshProUGUI txtdesc;
     public TextMeshProUGUI txtmecanicas;
     [SerializeField] GameObject contenidoPanel;
+    [SerializeField] TextMeshProUGUI txtBotonEchar;
+
+    private void Start()
+    {
+        if (txtBotonEchar == null)
+        {
+            return;
+        }
+
+        txtBotonEchar.text = TRADU.i != null ? TRADU.i.Traducir("Echar") : "Echar";
+    }
 
 
    /* void Start()

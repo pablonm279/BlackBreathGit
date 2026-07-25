@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MetaprogresionManager : MonoBehaviour
 {
@@ -24,9 +25,12 @@ public class MetaprogresionManager : MonoBehaviour
     public int CorrupcionMax = 5;
     public int ValordeTrabajoDisponible = 0;
 
-    public int NivelPeligroBosqueArdiente;
-    public int NivelPeligroPasoVientohelado;
-    public int NivelPeligroNedukazal;
+    [FormerlySerializedAs("NivelPeligroBosqueArdiente")]
+    public int NivelAlertaBosqueArdiente;
+    [FormerlySerializedAs("NivelPeligroPasoVientohelado")]
+    public int NivelAlertaPasoVientohelado;
+    [FormerlySerializedAs("NivelPeligroNedukazal")]
+    public int NivelAlertaNedukazal;
 
     public int CantidadCiviles;
     public int MisionesSalvamento = 1;

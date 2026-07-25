@@ -15,10 +15,10 @@ public class TiroconArcoAcido : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7:ido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Acido - 8: Arcano
 
     private int hAlcance = 7;
-    private int hAncho = 2; //1 - adyancentes tamb
+    private int hAncho = 2; //1 - adyancentes tambien
   public override void Awake()
   {
     nombre = "Tiro con Arco Acido";
@@ -37,8 +37,8 @@ public class TiroconArcoAcido : Habilidad
 
     bonusAtaque = 0;
     XdDanio = 1;
-    daniodX = 10; //1d10
-    tipoDanio = 1; //Perforante
+    daniodX = 8; //igual que Tiro con Arco
+    tipoDanio = 2; //Cortante, igual que Tiro con Arco
     criticoRangoHab = 0;
 
     requiereRecurso = 1; //esto es para que el boton no se active al apretar si no tiene X recursos (ej Flecha). Ver en BotonHabilidad.
@@ -56,7 +56,7 @@ public class TiroconArcoAcido : Habilidad
     txtDescripcion = "<color=#5dade2><b>Tiro con Arco Ácido</b></color>\n\n";
     txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";
     txtDescripcion += "<i>+1d6 daño ácido.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Perforante 1d10+1- Requiere 1 Flecha</color>\n\n";
+    txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidad +{bonusAtaque}</color> - Daño: Cortante 1d8+1 + daño ácido - Requiere 1 Flecha</color>\n\n";
     txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
       
       if(TRADU.i.nIdioma == 2)
@@ -65,7 +65,7 @@ public class TiroconArcoAcido : Habilidad
         txtDescripcion = "<color=#5dade2><b>Acid Bow Shot</b></color>\n\n";
         txtDescripcion += "<i>The ranger attacks the enemy with his bow.</i>\n\n";
         txtDescripcion += "<i>+1d6 Acid damage.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Range: 7</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Piercing 1d10+1- Requires 1 Arrow</color>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>Range: 7</b> -Attack: <color=#ea0606>Agility +{bonusAtaque}</color> - Damage: Slashing 1d8+1 + Acid damage - Requires 1 Arrow</color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valour Cost: {costoPM} </color>";
       }
       else if(TRADU.i.nIdioma == 3)
@@ -74,7 +74,7 @@ public class TiroconArcoAcido : Habilidad
         txtDescripcion = "<color=#5dade2><b>Tiro com Arco Acido</b></color>\n\n";
         txtDescripcion += "<i>O explorador ataca o inimigo com seu arco.</i>\n\n";
         txtDescripcion += "<i>+1d6 de dano acido.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidade +{bonusAtaque}</color> - Dano: Perfurante 1d10+1- Requer 1 Flecha</color>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>Alcance: 7</b> -Ataque: <color=#ea0606>Agilidade +{bonusAtaque}</color> - Dano: Cortante 1d8+1 + dano acido - Requer 1 Flecha</color>\n\n";
         txtDescripcion += $"<color=#44d3ec>- Recarga: {cooldownMax} \n- Custo AP: {costoAP} \n- Custo Valentia: {costoPM} </color>";
       }
     ActualizarDescripcion();
@@ -106,7 +106,7 @@ public class TiroconArcoAcido : Habilidad
         cuerpo += $"<color={colorEncabezado}><b>Range:</b></color> <color={colorValor}>{hAlcance}</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy or obstacle in range</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defense. Fumble: 5%. Crit: {criticoPorcentaje}%</color>\n";
-        cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Type: Piercing</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Type: Slashing</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Cost:</b></color> <color={colorValor}>1 Arrow</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Weapon effect:</b></color> <color={colorValor}>{efecto}</color>";
       }
@@ -116,7 +116,7 @@ public class TiroconArcoAcido : Habilidad
         cuerpo += $"<color={colorEncabezado}><b>Alcance:</b></color> <color={colorValor}>{hAlcance}</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo ou obstaculo no alcance</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defesa. Falha critica: 5%. Critico: {criticoPorcentaje}%</color>\n";
-        cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Perfurante</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Dano:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Cortante</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Custo:</b></color> <color={colorValor}>1 Flecha</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Efeito da arma:</b></color> <color={colorValor}>{efecto}</color>";
       }
@@ -126,7 +126,7 @@ public class TiroconArcoAcido : Habilidad
         cuerpo += $"<color={colorEncabezado}><b>Alcance:</b></color> <color={colorValor}>{hAlcance}</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo u obstáculo en alcance</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defensa. Pifia: 5%. Crítico: {criticoPorcentaje}%</color>\n";
-        cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Perforante</color>\n";
+        cuerpo += $"<color={colorEncabezado}><b>Daño:</b></color> <color={colorValor}>{rangoDanio} + {atributo}. Tipo: Cortante</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> <color={colorValor}>1 Flecha</color>\n";
         cuerpo += $"<color={colorEncabezado}><b>Efecto del arma:</b></color> <color={colorValor}>{efecto}</color>";
       }
@@ -151,7 +151,43 @@ public class TiroconArcoAcido : Habilidad
     
       
 
-    public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
+    protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        if (objetivos == null || objetivos.Count == 0)
+        {
+            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
+        }
+
+        List<Task> impactos = new List<Task>();
+        var clase = Usuario.GetComponent<ClaseExplorador>();
+        if (clase != null)
+        {
+            clase.CambiarCantidadFlechas(-1);
+        }
+
+        foreach (var objetivo in objetivos)
+        {
+            var impacto = CrearProyectil(objetivo);
+            if (impacto != null)
+            {
+                impactos.Add(impacto);
+            }
+        }
+
+        if (impactos.Count == 0)
+        {
+            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
+        }
+
+        return Task.WhenAll(impactos);
+    }
+
+    protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        return Task.CompletedTask;
+    }
+
+    public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
      if(obj is Unidad) // van los efectos a Unidades.
@@ -161,27 +197,10 @@ public class TiroconArcoAcido : Habilidad
              
        int danioMarca = 0;
        
-       Usuario.GetComponent<ClaseExplorador>().CambiarCantidadFlechas(-1);
-       CrearProyectil(objetivo);
-
-       await BattleManager.DelayCombateAsync(1300);
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        int bonusAtaqueTotal = bonusAtaque;
-       
-       //Chequear si tiene Marcar Presa
-       if(ChequearTieneMarcarPresa(objetivo)) //Copiar este metodo, ver bien lo de danio marca, para pas habilidades dedel explorador
-       {
-         bonusAtaqueTotal += 4;
-         criticoRango += 1;
-         danioMarca += 15; //Esto se suma al porcentaje de do solamente al ser golpe critico, ver mas abajo. Ya que esta marca agrega % do cr
-         if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 1)
-         {  danioMarca += 5;   }
-         if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL > 2)
-         {  criticoRango += 1;  }
-         if(objetivo.GetComponent<MarcaMarcarPresa>().NIVEL == 4)
-         {  bonusAtaqueTotal -= 2;  } //NV 4 Quita el debuff al marcar, entonces se resta los 2 que se ponia como compensacion
-       }
-       //----
+
+       MarcaMarcarPresa.AplicarBonosContraMarca(objetivo, scEstaUnidad, ref bonusAtaqueTotal, ref criticoRango, ref danioMarca);
 
        int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarAgilidad, bonusAtaqueTotal, criticoRango, objetivo, 0);
 
@@ -260,32 +279,58 @@ public class TiroconArcoAcido : Habilidad
 
  
     
-    async Task CrearProyectil(object Objetivo)
-  {
-    await BattleManager.DelayCombateAsync(200);
-    GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
-    GameObject Proyectil = Instantiate(flechaPrefab);
-    Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-    Proyectil.GetComponent<ArrowFlight>().parabola = 0.9f;
-    Proyectil.GetComponent<ArrowFlight>().velocidad = 4.9f;
-
-
-    if (Objetivo != null)
+    private Task CrearProyectil(object objetivo)
     {
+        if (objetivo == null)
+        {
+            return Task.CompletedTask;
+        }
 
-      if (Objetivo is Unidad)
-      {
-        Unidad obj = (Unidad)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-      }
-      else if (Objetivo is Obstaculo)
-      {
-        Obstaculo obj = (Obstaculo)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-      }
+        return LanzarProyectilAsync(objetivo);
     }
 
-  }
+    private async Task LanzarProyectilAsync(object objetivo)
+    {
+        await BattleManager.DelayCombateAsync(200);
+
+        GameObject flechaPrefab = null;
+        if (scEstaUnidad.bonusdam_fuego > 0)
+        {
+            flechaPrefab = BattleManager.Instance.contenedorPrefabs.FlechaFuego;
+        }
+        else
+        {
+            flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
+        }
+
+        if (flechaPrefab == null)
+        {
+            return;
+        }
+
+        GameObject proyectil = Instantiate(flechaPrefab);
+        ArrowFlight flight = proyectil.GetComponent<ArrowFlight>();
+
+        Transform destino = null;
+        if (objetivo is Unidad unidadObjetivo)
+        {
+            destino = unidadObjetivo.transform;
+        }
+        else if (objetivo is Obstaculo obstaculoObjetivo)
+        {
+            destino = obstaculoObjetivo.transform;
+        }
+
+        if (flight != null && destino != null)
+        {
+            flight.Configure(transform, destino, 0.45f, 5.8f);
+            await flight.EsperarImpactoAsync();
+        }
+        else
+        {
+            await BattleManager.DelayCombateAsync(150);
+        }
+    }
     void VFXAplicar(GameObject objetivo)
     {
        //GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation); 

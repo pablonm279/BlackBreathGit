@@ -60,6 +60,123 @@ public static class EncounterGenerator
       Reinforced
    }
 
+   public static List<GameObject> ObtenerRefuerzosAmenazaSuperior(
+      AtributosZona atributosZona,
+      EncounterZoneType zoneType,
+      BattleEncounterType battleType,
+      int fase,
+      string factionId = null)
+   {
+      List<GameObject> resultado = new List<GameObject>();
+      if (atributosZona == null)
+      {
+         return resultado;
+      }
+
+      List<EnemyFactionConfig> facciones = new List<EnemyFactionConfig>();
+      AgregarFaccionesAmenazaSuperior(atributosZona.GetEncounterConfig(zoneType), battleType, factionId, facciones);
+      if (facciones.Count == 0 && zoneType != EncounterZoneType.Generico)
+      {
+         AgregarFaccionesAmenazaSuperior(
+            atributosZona.GetEncounterConfig(EncounterZoneType.Generico),
+            battleType,
+            factionId,
+            facciones);
+      }
+
+      if (facciones.Count == 0)
+      {
+         return resultado;
+      }
+
+      EnemyFactionConfig faccion = facciones[UnityEngine.Random.Range(0, facciones.Count)];
+      int tierMinimo = Mathf.Clamp(fase, 1, 5);
+      List<GameObject> candidatos = null;
+      for (int tier = tierMinimo; tier <= Mathf.Min(5, tierMinimo + 2); tier++)
+      {
+         candidatos = ObtenerPrefabsNoUnicos(faccion, tier);
+         if (candidatos.Count > 0)
+         {
+            break;
+         }
+      }
+
+      if (candidatos == null || candidatos.Count == 0)
+      {
+         for (int tier = tierMinimo - 1; tier >= 1; tier--)
+         {
+            candidatos = ObtenerPrefabsNoUnicos(faccion, tier);
+            if (candidatos.Count > 0)
+            {
+               break;
+            }
+         }
+      }
+
+      if (candidatos == null || candidatos.Count == 0)
+      {
+         return resultado;
+      }
+
+      int cantidad = UnityEngine.Random.Range(1, 3);
+      for (int i = 0; i < cantidad; i++)
+      {
+         resultado.Add(candidatos[UnityEngine.Random.Range(0, candidatos.Count)]);
+      }
+
+      return resultado;
+   }
+
+   static void AgregarFaccionesAmenazaSuperior(
+      EncounterZoneConfig zoneConfig,
+      BattleEncounterType battleType,
+      string factionId,
+      List<EnemyFactionConfig> destino)
+   {
+      BattleFactionPool pool = zoneConfig != null ? zoneConfig.GetPool(battleType) : null;
+      if (pool == null || pool.factions == null)
+      {
+         return;
+      }
+
+      foreach (EnemyFactionConfig faccion in pool.factions)
+      {
+         if (!FactionHasPrefabs(faccion))
+         {
+            continue;
+         }
+
+         if (!string.IsNullOrWhiteSpace(factionId)
+            && !string.Equals(faccion.factionId, factionId, StringComparison.OrdinalIgnoreCase))
+         {
+            continue;
+         }
+
+         destino.Add(faccion);
+      }
+   }
+
+   static List<GameObject> ObtenerPrefabsNoUnicos(EnemyFactionConfig faccion, int tier)
+   {
+      List<GameObject> resultado = new List<GameObject>();
+      List<GameObject> prefabs = GetTierList(faccion, tier);
+      if (prefabs == null)
+      {
+         return resultado;
+      }
+
+      foreach (GameObject prefab in prefabs)
+      {
+         IAUnidad ia = prefab != null ? prefab.GetComponent<IAUnidad>() : null;
+         if (prefab != null && (ia == null || !ia.unicoEnCombate))
+         {
+            resultado.Add(prefab);
+         }
+      }
+
+      return resultado;
+   }
+
    public static bool TryGenerateEncounter(
       AtributosZona atributosZona,
       EncounterZoneType zoneType,

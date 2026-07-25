@@ -19,8 +19,19 @@ public abstract class Habilidad : MonoBehaviour
   public int requiereRecurso; // Habilidades que requieren un recurso externo para funcionar, ej flechas.
 
   public int costoPM;
-  public int cooldownMax;
-  public int cooldownActual;
+  [System.NonSerialized] public bool sinCooldownDebug;
+  private int cooldownMaxBase;
+  private int cooldownActualBase;
+  public int cooldownMax
+  {
+    get { return sinCooldownDebug ? 0 : cooldownMaxBase; }
+    set { cooldownMaxBase = value; }
+  }
+  public int cooldownActual
+  {
+    get { return sinCooldownDebug ? 0 : cooldownActualBase; }
+    set { cooldownActualBase = sinCooldownDebug ? 0 : value; }
+  }
   public GameObject Usuario;
   public Unidad scEstaUnidad;
 

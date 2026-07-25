@@ -239,8 +239,8 @@ internal sealed class DefinicionEventoAleatorioCampania
 
 public static class CatalogoEventosCampania
 {
-    const float ChanceEventoZonalNodo = 25f;
-    const float ChanceEventoZonalDescanso = 25f;
+    const float ChanceEventoZonalNodo = 20f;
+    const float ChanceEventoZonalDescanso = 20f;
 
     static readonly List<DefinicionEventoAleatorioCampania> definiciones = new List<DefinicionEventoAleatorioCampania>
     {

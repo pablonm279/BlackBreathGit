@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Parallaxcontroller : MonoBehaviour
 {
@@ -27,6 +28,16 @@ public class Parallaxcontroller : MonoBehaviour
 
     [Header("Layers (orden sugerido: cielo -> lejano -> medio -> ruta -> foreground -> nubes)")]
     public List<Layer> layers = new List<Layer>();
+
+    [Header("Paisaje de zona (prepartida)")]
+    [SerializeField] private GameObject containerPrePartida;
+    [SerializeField] private Image paisajeZonaSeleccionada;
+    [SerializeField] private Sprite spriteBosqueArdiente;
+    [SerializeField] private Sprite spritePasoVientoHelado;
+    [SerializeField] private Sprite spriteNedukazal;
+    [SerializeField] private Sprite spriteZonaDesconocida;
+    [SerializeField, Min(0.01f)] private float duracionFadeZona = 0.18f;
+    [SerializeField, Range(0.35f, 1f)] private float intensidadMinimaFadeZona = 0.45f;
 
     [Header("Input")]
     [Tooltip("Si está ON, usa mouse. Si está OFF, podés alimentar targetNormalized desde otro lado")]
@@ -58,9 +69,22 @@ public class Parallaxcontroller : MonoBehaviour
     public float driftSpeed = 0.25f;
 
     private Vector2 drift;
+    private PrePartidaManager prePartidaManager;
+    private int ultimaZonaMostrada = -1;
+    private Color colorBasePaisaje = Color.white;
+    private bool colorBasePaisajeCapturado;
+    private bool fadePaisajeZonaActivo;
+    private bool spriteFadeZonaCambiado;
+    private float tiempoFadePaisajeZona;
+    private Sprite spritePendienteFadeZona;
+    private Color colorInicioFadeZona;
 
     void Awake()
     {
+        intensidadMinimaFadeZona = Mathf.Clamp(intensidadMinimaFadeZona, 0.35f, 1f);
+        BuscarReferenciasPrePartida();
+        ActualizarPaisajeZonaSeleccionada();
+
         for (int i = 0; i < layers.Count; i++)
         {
             if (layers[i].rect != null)
@@ -70,6 +94,9 @@ public class Parallaxcontroller : MonoBehaviour
 
     void OnEnable()
     {
+        BuscarReferenciasPrePartida();
+        ActualizarPaisajeZonaSeleccionada();
+
         // Re-captura por si moviste algo en editor
         for (int i = 0; i < layers.Count; i++)
         {
@@ -80,6 +107,8 @@ public class Parallaxcontroller : MonoBehaviour
 
     void Update()
     {
+        ActualizarPaisajeZonaSeleccionada();
+
         Vector2 input = targetNormalized;
 
         if (useMouse)
@@ -142,6 +171,168 @@ public class Parallaxcontroller : MonoBehaviour
                 Time.unscaledDeltaTime
             );
         }
+    }
+
+    void OnDisable()
+    {
+        DetenerFadePaisajeZona();
+        if (paisajeZonaSeleccionada != null)
+        {
+            paisajeZonaSeleccionada.color = colorBasePaisaje;
+            paisajeZonaSeleccionada.gameObject.SetActive(false);
+        }
+    }
+
+    private void BuscarReferenciasPrePartida()
+    {
+        if (prePartidaManager == null && containerPrePartida != null)
+        {
+            prePartidaManager = containerPrePartida.GetComponent<PrePartidaManager>();
+        }
+
+        if (prePartidaManager == null)
+        {
+            prePartidaManager = FindFirstObjectByType<PrePartidaManager>(FindObjectsInactive.Include);
+        }
+
+        if (containerPrePartida == null && prePartidaManager != null)
+        {
+            containerPrePartida = prePartidaManager.gameObject;
+        }
+
+        if (paisajeZonaSeleccionada == null && transform.parent != null)
+        {
+            Transform paisaje = transform.parent.Find("PaisajeZonaSeleccionada");
+            if (paisaje != null)
+            {
+                paisajeZonaSeleccionada = paisaje.GetComponent<Image>();
+            }
+        }
+
+        if (paisajeZonaSeleccionada != null && !colorBasePaisajeCapturado)
+        {
+            colorBasePaisaje = paisajeZonaSeleccionada.color;
+            colorBasePaisajeCapturado = true;
+        }
+    }
+
+    private void ActualizarPaisajeZonaSeleccionada()
+    {
+        if (paisajeZonaSeleccionada == null)
+        {
+            return;
+        }
+
+        bool mostrar = containerPrePartida != null
+            && containerPrePartida.activeInHierarchy
+            && prePartidaManager != null;
+        if (!mostrar)
+        {
+            DetenerFadePaisajeZona();
+            paisajeZonaSeleccionada.color = colorBasePaisaje;
+            if (paisajeZonaSeleccionada.gameObject.activeSelf)
+            {
+                paisajeZonaSeleccionada.gameObject.SetActive(false);
+            }
+            return;
+        }
+
+        if (!paisajeZonaSeleccionada.gameObject.activeSelf)
+        {
+            paisajeZonaSeleccionada.gameObject.SetActive(true);
+        }
+
+        int zonaSeleccionada = prePartidaManager.ZonaSeleccionada;
+        if (zonaSeleccionada != ultimaZonaMostrada)
+        {
+            Sprite spriteZona = ObtenerSpriteZona(zonaSeleccionada);
+            if (ultimaZonaMostrada < 0)
+            {
+                paisajeZonaSeleccionada.sprite = spriteZona;
+                paisajeZonaSeleccionada.color = colorBasePaisaje;
+            }
+            else
+            {
+                IniciarFadePaisajeZona(spriteZona);
+            }
+
+            ultimaZonaMostrada = zonaSeleccionada;
+        }
+
+        ActualizarFadePaisajeZona();
+    }
+
+    private Sprite ObtenerSpriteZona(int zonaId)
+    {
+        switch (zonaId)
+        {
+            case 1:
+                return spriteBosqueArdiente;
+            case 2:
+                return spritePasoVientoHelado;
+            case 3:
+                return spriteNedukazal;
+            default:
+                return spriteZonaDesconocida;
+        }
+    }
+
+    private void IniciarFadePaisajeZona(Sprite spriteZona)
+    {
+        spritePendienteFadeZona = spriteZona;
+        colorInicioFadeZona = paisajeZonaSeleccionada.color;
+        tiempoFadePaisajeZona = 0f;
+        spriteFadeZonaCambiado = false;
+        fadePaisajeZonaActivo = true;
+    }
+
+    private void ActualizarFadePaisajeZona()
+    {
+        if (!fadePaisajeZonaActivo || paisajeZonaSeleccionada == null)
+        {
+            return;
+        }
+
+        float duracion = Mathf.Max(0.01f, duracionFadeZona);
+        Color colorOscuro = new Color(
+            colorBasePaisaje.r * intensidadMinimaFadeZona,
+            colorBasePaisaje.g * intensidadMinimaFadeZona,
+            colorBasePaisaje.b * intensidadMinimaFadeZona,
+            colorBasePaisaje.a);
+
+        tiempoFadePaisajeZona += Time.unscaledDeltaTime;
+        if (tiempoFadePaisajeZona < duracion)
+        {
+            paisajeZonaSeleccionada.color = Color.Lerp(
+                colorInicioFadeZona,
+                colorOscuro,
+                tiempoFadePaisajeZona / duracion);
+            return;
+        }
+
+        if (!spriteFadeZonaCambiado)
+        {
+            paisajeZonaSeleccionada.sprite = spritePendienteFadeZona;
+            spriteFadeZonaCambiado = true;
+        }
+
+        float regreso = (tiempoFadePaisajeZona - duracion) / duracion;
+        paisajeZonaSeleccionada.color = Color.Lerp(colorOscuro, colorBasePaisaje, regreso);
+        if (regreso < 1f)
+        {
+            return;
+        }
+
+        paisajeZonaSeleccionada.color = colorBasePaisaje;
+        fadePaisajeZonaActivo = false;
+    }
+
+    private void DetenerFadePaisajeZona()
+    {
+        fadePaisajeZonaActivo = false;
+        spriteFadeZonaCambiado = false;
+        tiempoFadePaisajeZona = 0f;
+        spritePendienteFadeZona = null;
     }
 }
 

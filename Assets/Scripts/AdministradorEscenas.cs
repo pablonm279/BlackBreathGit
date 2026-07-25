@@ -86,6 +86,28 @@ public class AdministradorEscenas : MonoBehaviour
     MenuOpciones.SetActive(!MenuOpciones.activeInHierarchy);
   }
 
+  public bool HandbookBatallaAbierto
+  {
+    get
+    {
+      if (HandbookCampania == null || !HandbookCampania.activeInHierarchy)
+      {
+        return false;
+      }
+
+      HandbookManager[] handbooks = HandbookCampania.GetComponentsInChildren<HandbookManager>(true);
+      foreach (HandbookManager handbook in handbooks)
+      {
+        if (handbook != null && handbook.esdeBatalla && handbook.gameObject.activeInHierarchy)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
+  }
+
   Canvas ObtenerCanvasLogHandbook()
   {
     if (canvasLogHandbook != null)
@@ -934,6 +956,11 @@ public class AdministradorEscenas : MonoBehaviour
     if (pers == null || unidad == null)
     {
       return;
+    }
+
+    if (TieneTrait(pers, PersonajeTraitCatalog.TraitLiderCaravana) && BattleManager.Instance != null)
+    {
+      BattleManager.Instance.AplicarTraitLiderCaravanaSiCorresponde(unidad);
     }
 
     if (TieneTrait(pers, PersonajeTraitCatalog.TraitValiente))
@@ -2721,6 +2748,77 @@ public class AdministradorEscenas : MonoBehaviour
 
     battleManager.ActualizarRefuerzosUI();
   }
+
+  void ConfigurarRefuerzosAmenazaSuperior(int idEncuentro, EncounterDefinition encounterDefinition)
+  {
+    CampaignManager campaignManager = CampaignManager.Instance;
+    BattleManager battleManager = BattleManager.Instance;
+    if (campaignManager == null
+      || battleManager == null
+      || campaignManager.DebeUsarConfiguracionTutorial()
+      || !campaignManager.TienePresagioActivo(PresagioCatalog.AmenazaSuperior))
+    {
+      return;
+    }
+
+    AtributosZona atributosZona = campaignManager.scAtributosZona;
+    if (atributosZona == null)
+    {
+      return;
+    }
+
+    EncounterZoneType zona = encounterDefinition != null
+      ? encounterDefinition.zoneType
+      : atributosZona.GetZoneTypeById(atributosZona.ID);
+    BattleEncounterType tipo = encounterDefinition != null
+      ? encounterDefinition.battleType
+      : campaignManager.scMenuBatallas != null
+        ? campaignManager.scMenuBatallas.ObtenerTipoEncuentroActual()
+        : BattleEncounterType.Normal;
+    string factionId = encounterDefinition != null
+      ? encounterDefinition.factionId
+      : ObtenerFaccionLegacyParaAmenazaSuperior(idEncuentro);
+
+    List<GameObject> prefabs = EncounterGenerator.ObtenerRefuerzosAmenazaSuperior(
+      atributosZona,
+      zona,
+      tipo,
+      Mathf.Max(1, atributosZona.FASE),
+      factionId);
+
+    foreach (GameObject prefab in prefabs)
+    {
+      if (prefab == null)
+      {
+        continue;
+      }
+
+      GameObject refuerzo = Instantiate(prefab);
+      refuerzo.SetActive(false);
+      battleManager.RegistrarRefuerzoEnemigoProgramado(refuerzo, 4);
+    }
+  }
+
+  string ObtenerFaccionLegacyParaAmenazaSuperior(int idEncuentro)
+  {
+    if (idEncuentro >= 500 && idEncuentro <= 505)
+    {
+      return "Bandidos";
+    }
+
+    if (idEncuentro >= 506 && idEncuentro <= 511)
+    {
+      return "Vengadores de Kadryn";
+    }
+
+    if (idEncuentro >= 600 && idEncuentro <= 606)
+    {
+      return "Corruptos";
+    }
+
+    return null;
+  }
+
   bool EsEncuentroSubterraneo(int idEncuentro)
   {
     if (encuentroGeneradoActual != null)
@@ -3864,6 +3962,7 @@ public class AdministradorEscenas : MonoBehaviour
     }
     finally
     {
+      ConfigurarRefuerzosAmenazaSuperior(IDEncuentro, encounterDefinition);
       FiltrarRefuerzosUnicosEnCombate();
       if (BattleManager.Instance != null)
       {
@@ -4798,6 +4897,7 @@ public class AdministradorEscenas : MonoBehaviour
   void CopiarHabilidades(GameObject pers, GameObject persUnidad)
   {
     Habilidad[] habilidades = pers.GetComponents<Habilidad>();
+    Personaje personaje = pers.GetComponent<Personaje>();
 
 
     foreach (Habilidad habilidad in habilidades)
@@ -4936,6 +5036,7 @@ public class AdministradorEscenas : MonoBehaviour
 
 
       nuevaHabilidad.NIVEL = habilidad.NIVEL;
+      nuevaHabilidad.sinCooldownDebug = personaje != null && personaje.sinCooldownDebug;
       nuevaHabilidad.ActualizarNivel(); //Esto es para que se llame awake de nuevo, luego de establecer el nivel, asi se aplican los efectos del nivel
 
     }

@@ -25,7 +25,7 @@ public class MusicManager : MonoBehaviour
     public enum ModoMusica { Campania, Batalla }
     public enum VarianteBatalla { Normal, Especial }
 
-    [Header("Zonas")]
+    [Header("Regiones")]
     public List<ZonaMusical> zonas = new List<ZonaMusical>();
 
     [Header("Audio")]

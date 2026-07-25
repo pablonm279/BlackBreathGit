@@ -266,13 +266,13 @@ namespace Sistema
         case DificultadPreset.Dificil:
           a.hpMaxPct = 10f;
           a.ataqueFlat = 1f;
-          a.danioPorcPct = 10f;
+          a.danioPorcPct = 5f;
           a.tsAllFlat = 1f;
           break;
         case DificultadPreset.MuyDificil:
           a.hpMaxPct = 15f;
           a.ataqueFlat = 2f;
-          a.danioPorcPct = 15f;
+          a.danioPorcPct = 10f;
           a.tsAllFlat = 2f;
           break;
       }

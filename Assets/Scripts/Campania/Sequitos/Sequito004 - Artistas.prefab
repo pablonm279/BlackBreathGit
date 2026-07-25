@@ -99,6 +99,7 @@ MonoBehaviour:
   txtdesc: {fileID: 2076389907010439041}
   txtmecanicas: {fileID: 6352629462537919484}
   contenidoPanel: {fileID: 0}
+  txtBotonEchar: {fileID: 5543711561922108936}
 --- !u!114 &4327617358306668090
 MonoBehaviour:
   m_ObjectHideFlags: 0

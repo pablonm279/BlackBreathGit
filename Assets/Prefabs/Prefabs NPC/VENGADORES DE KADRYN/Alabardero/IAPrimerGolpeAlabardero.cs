@@ -17,6 +17,7 @@ public class IAPrimerGolpeAlabardero : IAHabilidad
     hAncho = 1;
     esMelee = false;
     hAlcance = 1;
+    // El cooldown se reduce al inicio del turno: 2 bloquea exactamente el turno siguiente.
     hCooldownMax = 2;
     esHostil = false;
     prioridad = 0;
@@ -39,7 +40,7 @@ public class IAPrimerGolpeAlabardero : IAHabilidad
     }
     if(scEstaUnidad.CasillaPosicion.posX != 3)
     {
-      hActualCooldown = 1;
+      hActualCooldown = hCooldownMax;
       return;
 
     }
@@ -68,6 +69,8 @@ public class IAPrimerGolpeAlabardero : IAHabilidad
     {
       return;
     }
+
+    EliminarTrampasPrimerGolpeAnteriores();
 
     LadoManager ladoOpuesto = scEstaUnidad.CasillaPosicion.ladoOpuesto.GetComponent<LadoManager>();
     if (ladoOpuesto == null)
@@ -114,15 +117,40 @@ public class IAPrimerGolpeAlabardero : IAHabilidad
         unidadEmpujada = true;
       }
 
-      if (casillaObjetivo.GetComponent<TrampaPrimerGolpeAlabardero>() != null)
+      TrampaPrimerGolpeAlabardero trampaExistente = casillaObjetivo.GetComponent<TrampaPrimerGolpeAlabardero>();
+      if (trampaExistente != null && trampaExistente.unidadCreadora != scEstaUnidad)
       {
         continue;
       }
 
    
-       hActualCooldown = 1;
       TrampaPrimerGolpeAlabardero trampa = casillaObjetivo.gameObject.AddComponent<TrampaPrimerGolpeAlabardero>();
       trampa.InicializarCreador(scEstaUnidad);
+    }
+  }
+
+  private void EliminarTrampasPrimerGolpeAnteriores()
+  {
+    if (BattleManager.Instance == null)
+    {
+      return;
+    }
+
+    EliminarTrampasDeCasillas(BattleManager.Instance.ladoA.casillasLado);
+    EliminarTrampasDeCasillas(BattleManager.Instance.ladoB.casillasLado);
+  }
+
+  private void EliminarTrampasDeCasillas(List<Casilla> casillas)
+  {
+    foreach (Casilla casilla in casillas)
+    {
+      foreach (TrampaPrimerGolpeAlabardero trampa in casilla.GetComponents<TrampaPrimerGolpeAlabardero>())
+      {
+        if (trampa.unidadCreadora == scEstaUnidad)
+        {
+          trampa.DestruirTrampa();
+        }
+      }
     }
   }
 

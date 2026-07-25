@@ -78,6 +78,7 @@ public class MenuBatallas : MonoBehaviour
  [SerializeField] List<BattleRewardProfile> rewardProfiles = new List<BattleRewardProfile>();
  [SerializeField] BattleRewardTuning defaultRewardTuning = new BattleRewardTuning();
  const string KaleTavFactionId = "Kale'Tav";
+ const string VengadoresKadrynFactionId = "Vengadores de Kadryn";
  const int EventoEspecialDefenderCivilesBandidos = -206;
 
   EncounterDefinition encuentroGeneradoActual;
@@ -419,6 +420,104 @@ bool TryGenerarEncuentroScoutForzado(BattleEncounterType tipo, EncounterZoneType
    }
 
    return false;
+}
+
+bool TryGenerarEncuentroPresagioEnemigos(BattleEncounterType tipo, EncounterZoneType zonaActual, out EncounterDefinition definition)
+{
+   definition = null;
+   CampaignManager campaignManager = CampaignManager.Instance;
+   if (campaignManager == null || campaignManager.DebeUsarConfiguracionTutorial())
+   {
+      return false;
+   }
+
+   int presagioId = 0;
+   if (campaignManager.TienePresagioActivo(PresagioCatalog.LeyDelMasFuerte))
+   {
+      presagioId = PresagioCatalog.LeyDelMasFuerte;
+   }
+   else if (campaignManager.TienePresagioActivo(PresagioCatalog.CorrompidosAlAcecho))
+   {
+      presagioId = PresagioCatalog.CorrompidosAlAcecho;
+   }
+   else if (campaignManager.TienePresagioActivo(PresagioCatalog.VenganadoresCazando))
+   {
+      presagioId = PresagioCatalog.VenganadoresCazando;
+   }
+   else if (campaignManager.TienePresagioActivo(PresagioCatalog.CentinelasLocales))
+   {
+      presagioId = PresagioCatalog.CentinelasLocales;
+   }
+
+   if (presagioId == 0)
+   {
+      return false;
+   }
+
+   bool garantizarPrimera = campaignManager.DebeGarantizarPrimeraBatallaPresagioEnemigos();
+   if (presagioId == PresagioCatalog.CentinelasLocales && !garantizarPrimera)
+   {
+      return false;
+   }
+
+   if (!garantizarPrimera && UnityEngine.Random.Range(0f, 100f) >= 25f)
+   {
+      return false;
+   }
+
+   bool generado;
+   if (presagioId == PresagioCatalog.CentinelasLocales)
+   {
+      generado = TryGenerarEncuentro(tipo, zonaActual, null, out definition, 0, true);
+      if (generado)
+      {
+         encuentroZonaActual = zonaActual;
+      }
+   }
+   else
+   {
+      string factionId = presagioId == PresagioCatalog.LeyDelMasFuerte
+         ? "Bandidos"
+         : presagioId == PresagioCatalog.CorrompidosAlAcecho
+            ? "Corruptos"
+            : VengadoresKadrynFactionId;
+      Predicate<EnemyFactionConfig> filtro = faction =>
+         faction != null
+         && !string.IsNullOrWhiteSpace(faction.factionId)
+         && string.Equals(faction.factionId, factionId, StringComparison.OrdinalIgnoreCase);
+
+      generado = TryGenerarEncuentro(tipo, EncounterZoneType.Generico, filtro, out definition, 0, true);
+      if (generado)
+      {
+         encuentroZonaActual = EncounterZoneType.Generico;
+      }
+   }
+
+   if (generado)
+   {
+      Nodo nodoActual = campaignManager.scMapaManager != null ? campaignManager.scMapaManager.nodoActual : null;
+      if (nodoActual != null && nodoActual.TieneFaccionScoutRevelada())
+      {
+         nodoActual.RegistrarFaccionScoutRevelada(
+            definition.factionId,
+            ObtenerNombreFaccionTraducido(definition.factionId, definition.factionName));
+      }
+   }
+
+   return generado;
+}
+
+float AjustarChanceEncuentroPropioPresagioEnemigos(float chanceBase)
+{
+   CampaignManager campaignManager = CampaignManager.Instance;
+   if (campaignManager == null
+      || campaignManager.DebeUsarConfiguracionTutorial()
+      || !campaignManager.TienePresagioActivo(PresagioCatalog.CentinelasLocales))
+   {
+      return chanceBase;
+   }
+
+   return Mathf.Clamp(chanceBase + 25f, 0f, 100f);
 }
 
  bool EsNodoActualRitualKaleTav()
@@ -1888,6 +1987,7 @@ public void DejanEnListaParticipantesSolo()
         {
             bool generado = false;
             float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
+            chanceEncuentroPropio = AjustarChanceEncuentroPropioPresagioEnemigos(chanceEncuentroPropio);
             Predicate<EnemyFactionConfig> filtroBandidos = forzarBandidos ? (f => EsFaccionDeLista(f, banditFactionIds)) : null;
 
             if (forzarBandidos)
@@ -1908,6 +2008,10 @@ public void DejanEnListaParticipantesSolo()
                     EventoBatallaID = ObtenerEncuentroBandidoFallback();
                     encuentroGeneradoActual = null;
                 }
+            }
+            else if (TryGenerarEncuentroPresagioEnemigos(BattleEncounterType.Normal, zonaActual, out encuentroGeneradoActual))
+            {
+                generado = true;
             }
             else if (TryGenerarEncuentroScoutForzado(BattleEncounterType.Normal, zonaActual, out encuentroGeneradoActual))
             {
@@ -1997,6 +2101,7 @@ public void DejanEnListaParticipantesSolo()
     {
         bool generado = false;
         float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
+        chanceEncuentroPropio = AjustarChanceEncuentroPropioPresagioEnemigos(chanceEncuentroPropio);
         bool esRitualKaleTav = forzarRitualKaleTav || EsNodoActualRitualKaleTav();
 
             if (esRitualKaleTav)
@@ -2012,6 +2117,12 @@ public void DejanEnListaParticipantesSolo()
                     encuentroZonaActual = EncounterZoneType.Generico;
                     generado = true;
                 }
+            }
+
+            if (!generado && !esRitualKaleTav
+                && TryGenerarEncuentroPresagioEnemigos(BattleEncounterType.Elite, zonaActual, out encuentroGeneradoActual))
+            {
+                generado = true;
             }
 
             if (!generado && TryGenerarEncuentroScoutForzado(BattleEncounterType.Elite, zonaActual, out encuentroGeneradoActual))
@@ -2170,8 +2281,13 @@ public void DejanEnListaParticipantesSolo()
         {
             bool generado = false;
             float chanceEncuentroPropio = atributosZona != null ? atributosZona.GetChanceEncuentroPropio(zonaActual) : 70f;
+            chanceEncuentroPropio = AjustarChanceEncuentroPropioPresagioEnemigos(chanceEncuentroPropio);
 
-            if (TryGenerarEncuentroScoutForzado(BattleEncounterType.AtaqueCaravana, zonaActual, out encuentroGeneradoActual))
+            if (TryGenerarEncuentroPresagioEnemigos(BattleEncounterType.AtaqueCaravana, zonaActual, out encuentroGeneradoActual))
+            {
+                generado = true;
+            }
+            else if (TryGenerarEncuentroScoutForzado(BattleEncounterType.AtaqueCaravana, zonaActual, out encuentroGeneradoActual))
             {
                 generado = true;
             }
@@ -3001,6 +3117,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
     }
 
     bool usarRefuerzosAliadosCaravana = esBatallaFinal;
+    CampaignManager.Instance?.RegistrarInicioBatallaPresagioEnemigos();
     RuntimeAnalytics.TrackProgressionStart(
       "battle",
       RuntimeAnalytics.SanitizeToken(encuentroTipoActual.ToString()),
@@ -3133,6 +3250,11 @@ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
     }
 
     CampaignManager.Instance.CambiarEsperanzaActual(deltaEsperanza);
+ }
+
+ public BattleEncounterType ObtenerTipoEncuentroActual()
+ {
+    return encuentroTipoActual;
  }
 
  string FormatearTextoVictoria(int exp, int oro, int materiales, int hopeBonus)

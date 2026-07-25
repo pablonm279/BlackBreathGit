@@ -100,6 +100,11 @@ public class UIInfoChar : MonoBehaviour
 
   public void ToggleFijado(Unidad unidad)
   {
+    if (BattleManager.Instance != null && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
+    {
+      return;
+    }
+
     if (!EstaUnidadValidaParaInfo(unidad))
     {
       return;
@@ -674,6 +679,11 @@ public class UIInfoChar : MonoBehaviour
   public GameObject BotonSalir;
   public void botonSalirDeseleccionar()
   {
+    if (BattleManager.Instance != null && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
+    {
+      return;
+    }
+
     Desfijar();
   }
   public void ActualizarColoresFondo()
@@ -999,6 +1009,11 @@ public class UIInfoChar : MonoBehaviour
   public bool mostrardesc;
   public void BotonInfoenemigos()
   {
+    if (BattleManager.Instance != null && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
+    {
+      return;
+    }
+
     if (!EsUnidadEnemiga(unidadMostrada))
     {
       mostrardesc = false;

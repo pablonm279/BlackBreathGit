@@ -51,6 +51,7 @@ public class Personaje : MonoBehaviour
     public float fCritRango;
     public float fCritDanio;
     public float fBonusAtaque;
+    [System.NonSerialized] public bool sinCooldownDebug;
 
     //Habilidades - Aca se aclara que Habilidades de la clase tiene 0 no 1 si NO EL NIVEL
     //(ver REPRESENTACIONCorajeInquebrantalbe, para que las PASIVAS aparezcan en lista habilidades)
@@ -98,6 +99,7 @@ public class Personaje : MonoBehaviour
     public bool Camp_Corrupto;
     public bool TraitHeroeLocalCivilesOtorgados;
     public bool TraitHeroeLocalPenalidadMuerteAplicada;
+    public bool TraitLiderCaravanaPenalidadMuerteAplicada;
     public bool TraitEjemploASeguirAplicado;
     public bool TraitHerenciaItemOtorgado;
     [System.NonSerialized] public bool TraitDuroDeMatarActivadoEnCombate;
@@ -106,6 +108,7 @@ public class Personaje : MonoBehaviour
     [System.NonSerialized] public bool TraitColaborativoUsadoEnCombate;
     [System.NonSerialized] public bool TraitImpulsivoCansadoAplicadoEnCombate;
     [System.NonSerialized] public bool TraitPacienteAplicadoEnCombate;
+    [System.NonSerialized] public bool TraitLiderCaravanaAplicadoEnCombate;
     public int DiasViajado;
     public int EnemigosEliminados;
     public int DanioHecho;
@@ -217,6 +220,7 @@ public class Personaje : MonoBehaviour
         TraitColaborativoUsadoEnCombate = false;
         TraitImpulsivoCansadoAplicadoEnCombate = false;
         TraitPacienteAplicadoEnCombate = false;
+        TraitLiderCaravanaAplicadoEnCombate = false;
     }
 
     void SumarEstadisticaCampania(ref int estadistica, int cantidad)
@@ -557,7 +561,7 @@ public class Personaje : MonoBehaviour
       return 100f + (fNivelActual * 50f);
     }
 
-    public void RecibirExperiencia(float cant)
+    public void RecibirExperiencia(float cant, bool aplicarPresagios = true)
     {
       if (cant <= 0f)
       {
@@ -569,6 +573,10 @@ public class Personaje : MonoBehaviour
       if (CampaignManager.Instance != null)
       {
         cant = CampaignManager.Instance.AplicarMultiplicadorExperienciaEstadosCaravana(cant);
+        if (aplicarPresagios)
+        {
+          cant = CampaignManager.Instance.AplicarMultiplicadorExperienciaPresagios(cant);
+        }
       }
 
       fExperienciaActual += cant;
@@ -1035,6 +1043,7 @@ public static class PersonajeTraitCatalog
     public const int TraitTactico = 83;
     public const int TraitHerencia = 84;
     public const int TraitContrato = 85;
+    public const int TraitLiderCaravana = 86;
 
     private const string ColorNombre = "#f2e6c9";
     private const string ColorDescripcion = "#d7cfbf";
@@ -1436,11 +1445,11 @@ public static class PersonajeTraitCatalog
             "vengeful",
             true,
             "Vengativo",
-            "Si un aliado no IA cae en combate, obtiene Furia.",
+            "Si un compañero cae en combate, obtiene Furia.",
             "Vengeful",
-            "If a non-AI ally falls in combat, gains Fury.",
+            "If a companion falls in combat, gains Fury.",
             "Vingativo",
-            "Se um aliado sem IA cair em combate, recebe Fúria."),
+            "Se um companheiro cair em combate, recebe Fúria."),
         new PersonajeTraitDefinition(
             TraitIndividualista,
             "individualistic",
@@ -1686,22 +1695,22 @@ public static class PersonajeTraitCatalog
             "adventurous",
             true,
             "Aventurero",
-            "Obtiene Alta Moral por 4 días al comenzar una Zona nueva.",
+            "Obtiene Alta Moral por 4 días al comenzar una Región nueva.",
             "Adventurous",
-            "Gains High Morale for 4 days when a new Zone begins.",
+            "Gains High Morale for 4 days when a new Region begins.",
             "Aventureiro",
-            "Recebe Moral Alta por 4 dias ao começar uma nova Zona.",
+            "Recebe Moral Alta por 4 dias ao começar uma nova Região.",
             TraitArrastrado),
         new PersonajeTraitDefinition(
             TraitArrastrado,
             "dragged_along",
             true,
             "Arrastrado",
-            "Obtiene Baja Moral por 3 días al comenzar una Zona nueva.",
+            "Obtiene Baja Moral por 3 días al comenzar una Región nueva.",
             "Dragged Along",
-            "Gains Low Morale for 3 days when a new Zone begins.",
+            "Gains Low Morale for 3 days when a new Region begins.",
             "Arrastado",
-            "Recebe Moral Baixa por 3 dias ao começar uma nova Zona.",
+            "Recebe Moral Baixa por 3 dias ao começar uma nova Região.",
             TraitAventurero),
         new PersonajeTraitDefinition(
             TraitConoceBosqueArdiente,
@@ -1843,7 +1852,8 @@ public static class PersonajeTraitCatalog
             "Adds 15 Civilians to the Caravan. If permanently killed, -20 Hope.",
             "Herói Local",
             "Adiciona 15 Civis à Caravana. Se morrer permanentemente, -20 Esperança.",
-            TraitAdmirado),
+            TraitAdmirado,
+            TraitLiderCaravana),
         new PersonajeTraitDefinition(
             TraitAdmirado,
             "admired",
@@ -1960,7 +1970,18 @@ public static class PersonajeTraitCatalog
             "Contract",
             "Works with the caravan on contract, so they get paid. Each rest, 50 Gold is paid automatically. If that is not possible, they gain Low Morale for 3 days.",
             "Contrato",
-            "Trabalha com a caravana por contrato, portanto recebe pagamento. A cada descanso, 50 de Ouro são pagos automaticamente. Se não for possível, recebe Moral Baixa por 3 dias.")
+            "Trabalha com a caravana por contrato, portanto recebe pagamento. A cada descanso, 50 de Ouro são pagos automaticamente. Se não for possível, recebe Moral Baixa por 3 dias."),
+        new PersonajeTraitDefinition(
+            TraitLiderCaravana,
+            "caravan_leader",
+            false,
+            "Protector de la Caravana",
+            "Da +2 VAL a los aliados en combate. Si muere permanentemente, -25 Esperanza.",
+            "Caravan Protector",
+            "Grants allies +2 Valour in combat. If permanently killed, -25 Hope.",
+            "Protetor da Caravana",
+            "Concede +2 de Valentia aos aliados em combate. Se morrer permanentemente, -25 de Esperança.",
+            TraitHeroeLocal)
     };
 
     private static readonly Dictionary<int, PersonajeTraitDefinition> definicionesPorId = CrearIndicePorId();

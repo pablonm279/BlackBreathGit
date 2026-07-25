@@ -36,16 +36,21 @@ public class TextoInicialManager : MonoBehaviour
 
     public void Continuar()
     {
-        if (CampaignManager.Instance != null && CampaignManager.Instance.IntroCampaniaActivaOPendiente)
+        CampaignManager campaignManager = CampaignManager.Instance;
+        gameObject.SetActive(false);
+        if (campaignManager != null)
         {
-            gameObject.SetActive(false);
-            CampaignManager.Instance.EjecutarTrasIntroCampania(Continuar);
-            CampaignManager.Instance.SolicitarInicioIntroCampaniaTrasCarga(true);
+            campaignManager.MostrarLogsPresagiosInicioTrasContinuarDescripcionZona();
+        }
+
+        if (campaignManager != null && campaignManager.IntroCampaniaActivaOPendiente)
+        {
+            campaignManager.EjecutarTrasIntroCampania(Continuar);
+            campaignManager.SolicitarInicioIntroCampaniaTrasCarga(true);
             return;
         }
       
-        gameObject.SetActive(false);
-        CampaignManager.Instance.scTutorialManager.ComenzarTutorial();
+        campaignManager.scTutorialManager.ComenzarTutorial();
         TutorialDirector.TryStartPendingAfterZoneDescription();
     }
 

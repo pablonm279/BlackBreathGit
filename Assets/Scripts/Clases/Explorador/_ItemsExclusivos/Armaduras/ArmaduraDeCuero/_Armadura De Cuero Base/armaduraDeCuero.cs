@@ -89,17 +89,17 @@ public class armaduraDeCuero : Armadura
       {
          if (TRADU.i.nIdioma == 1)
          {
-            sNombreItem = "Armadura de Cuero" + nmejora;
+            sNombreItem = "Armadura de Cuero " + nmejora;
             itemDescripcion = "Una armadura ligera hecha de cuero.";
          }
          else if (TRADU.i.nIdioma == 2)
          {
-            sNombreItem = "Leather Armor" + nmejora;
+            sNombreItem = "Leather Armor " + nmejora;
             itemDescripcion = "A lightweight armor made of leather.";
          }
          else if (TRADU.i.nIdioma == 3)
          {
-            sNombreItem = "Armadura de Couro" + nmejora;
+            sNombreItem = "Armadura de Couro " + nmejora;
             itemDescripcion = "Uma armadura leve feita de couro.";
          }
       }

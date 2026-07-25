@@ -90,15 +90,16 @@ public class btnItemEnVenta : MonoBehaviour, IPointerClickHandler, IPointerDownH
         return;
       }
 
-      if(CampaignManager.Instance.GetOroActuales() >= itemRepresentado.iPrecio)
+      int costoCompra = CampaignManager.Instance.ObtenerCostoCompraConPresagios(itemRepresentado.iPrecio);
+      if(CampaignManager.Instance.GetOroActuales() >= costoCompra)
       {
         scSequitoMercaderes.DespinearItem(itemRepresentado);
         CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(itemRepresentado.gameObject);
         scSequitoMercaderes.ItemsVendidos.Remove(itemRepresentado);
         scSequitoMercaderes.MostrarInventarioVenta();
 
-        CampaignManager.Instance.CambiarOroActual(-itemRepresentado.iPrecio);
-        RuntimeAnalytics.TrackResourceSink("gold", itemRepresentado.iPrecio, "merchant_item", RuntimeAnalytics.ItemToken(itemRepresentado));
+        CampaignManager.Instance.CambiarOroActual(-costoCompra);
+        RuntimeAnalytics.TrackResourceSink("gold", costoCompra, "merchant_item", RuntimeAnalytics.ItemToken(itemRepresentado));
         RuntimeAnalytics.TrackDesign("merchant", "buy", RuntimeAnalytics.ItemToken(itemRepresentado));
       }
 
@@ -136,13 +137,14 @@ public class btnItemEnVenta : MonoBehaviour, IPointerClickHandler, IPointerDownH
         {
         
          string precio ="";
-         if(CampaignManager.Instance.GetOroActuales() >= itemRepresentado.iPrecio)
+         int costoCompra = CampaignManager.Instance.ObtenerCostoCompraConPresagios(itemRepresentado.iPrecio);
+         if(CampaignManager.Instance.GetOroActuales() >= costoCompra)
          {
-           precio =TRADU.i.Traducir("<Color=#e6b50f>\nPrecio: ")+itemRepresentado.iPrecio+"</Color>";
+           precio =TRADU.i.Traducir("<Color=#e6b50f>\nPrecio: ")+costoCompra+"</Color>";
          }
          else
          {
-           precio =TRADU.i.Traducir("<Color=#e60f0f>\nPrecio: ")+itemRepresentado.iPrecio+"</Color>";
+           precio =TRADU.i.Traducir("<Color=#e60f0f>\nPrecio: ")+costoCompra+"</Color>";
          }
           
 

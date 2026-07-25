@@ -10,6 +10,7 @@ public class TutorialTooltipManager : MonoBehaviour
   private const string DefaultCatalogPath = "Tutoriales/TooltipsTutorial";
 
   public static TutorialTooltipManager Instance { get; private set; }
+  public bool EstaMostrandoTooltip { get { return mostrando; } }
 
   [Header("Contenido")]
   [SerializeField] private TutorialTooltipCatalog catalog;

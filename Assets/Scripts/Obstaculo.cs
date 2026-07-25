@@ -37,6 +37,10 @@ public class Obstaculo : MonoBehaviour
 
 private async void OnMouseDown() 
 {
+  if (scBattleManager == null || scBattleManager.EntradaBatallaBloqueadaPorUI)
+  {
+    return;
+  }
 
   if(scBattleManager.lObstaculosPosiblesHabilidadActiva.Contains(this) && scBattleManager.SeleccionandoObjetivo)
   {

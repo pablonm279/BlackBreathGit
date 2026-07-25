@@ -250,6 +250,13 @@ public class BotonHabilidad : MonoBehaviour
 
     public void ActivarHabilidad(bool yaVienedeCargando)
     {
+        if (!yaVienedeCargando
+            && BattleManager.Instance != null
+            && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
+        {
+            return;
+        }
+
         if (HabilidadRepresentada != null)
         {
             TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.BattleAbilityClicked, gameObject)
@@ -390,7 +397,21 @@ public class BotonHabilidad : MonoBehaviour
 
     public void UpdateCooldownMuestra()
     {
+        if (HabilidadCooldownMuestra == null)
+        {
+            return;
+        }
 
+        bool mostrarMuestraCooldown = DebeMostrarMuestraCooldown();
+        if (HabilidadCooldownMuestra.gameObject.activeSelf != mostrarMuestraCooldown)
+        {
+            HabilidadCooldownMuestra.gameObject.SetActive(mostrarMuestraCooldown);
+        }
+
+        if (!mostrarMuestraCooldown)
+        {
+            return;
+        }
 
         if (HabilidadRepresentada != null)
         {
@@ -413,6 +434,18 @@ public class BotonHabilidad : MonoBehaviour
 
 
         }
+    }
+
+    private bool DebeMostrarMuestraCooldown()
+    {
+        if (!(HabilidadRepresentada is AcumulacionInestable))
+        {
+            return true;
+        }
+
+        return CampaignManager.Instance != null
+            && CampaignManager.Instance.scAdministradorEscenas != null
+            && CampaignManager.Instance.scAdministradorEscenas.escenaActual == 1;
     }
 
     void ActivarBoton(int iEsfuerzo)
@@ -490,7 +523,7 @@ public class BotonHabilidad : MonoBehaviour
 
             if (turnosCooldown != null)
             {
-                turnosCooldown.text = HabilidadRepresentada.cooldownActual > 0
+                turnosCooldown.text = DebeMostrarMuestraCooldown() && HabilidadRepresentada.cooldownActual > 0
                     ? HabilidadRepresentada.cooldownActual.ToString()
                     : string.Empty;
             }

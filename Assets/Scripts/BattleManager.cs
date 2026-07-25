@@ -588,6 +588,11 @@ public class BattleManager : MonoBehaviour
 
   public void TerminarTurnoManual()
   {
+    if (EntradaBatallaBloqueadaPorUI)
+    {
+      return;
+    }
+
     TerminarTurno(true);
   }
 
@@ -671,7 +676,7 @@ public class BattleManager : MonoBehaviour
 
     ArrancarTurno();
 
-    if (RondaNro > ObtenerDelayRefuerzosEnemigosConTraits())
+    if (HayRefuerzoEnemigoDisponibleEstaRonda())
     {
       AdministrarRefuerzosEnemigos();
     }
@@ -823,7 +828,7 @@ public class BattleManager : MonoBehaviour
 
   public void ActualizarRefuerzosUI()
   {
-    int tiempoRestante = ObtenerDelayRefuerzosEnemigosConTraits() - RondaNro + 1;
+    int tiempoRestante = ObtenerTiempoRestanteProximoRefuerzoEnemigo();
     if (tiempoRestante < 0) { tiempoRestante = 0; }
     txtRefuerzosContador.text = "" + enemigosRefuerzos.Count();
 
@@ -834,12 +839,28 @@ public class BattleManager : MonoBehaviour
   }
 
   public List<GameObject> enemigosRefuerzos = new List<GameObject>();
+  readonly Dictionary<GameObject, int> rondaMinimaRefuerzoEnemigo = new Dictionary<GameObject, int>();
   public int delayRefuerzo = 0; //La cantidad de turnos para que empiecen a aparecer los refuerzos.
   public bool enviarUnRefuerzoEnemigoPorRonda = false;
   public bool ignorarModificadoresDelayRefuerzosEnemigos = false;
   public TextMeshProUGUI txtRefuerzosContador;
   public TextMeshProUGUI txtRefuerzosTiempo;
   public GameObject goRefuerzos;
+
+  public void RegistrarRefuerzoEnemigoProgramado(GameObject refuerzo, int rondaMinima)
+  {
+    if (refuerzo == null)
+    {
+      return;
+    }
+
+    if (!enemigosRefuerzos.Contains(refuerzo))
+    {
+      enemigosRefuerzos.Add(refuerzo);
+    }
+
+    rondaMinimaRefuerzoEnemigo[refuerzo] = Mathf.Max(1, rondaMinima);
+  }
 
 
   public TextMeshProUGUI txtAliadosContador;
@@ -854,6 +875,7 @@ public class BattleManager : MonoBehaviour
     DestruirRefuerzosPendientes(aliadosRefuerzos);
     enemigosRefuerzos.Clear();
     aliadosRefuerzos.Clear();
+    rondaMinimaRefuerzoEnemigo.Clear();
     delayRefuerzo = 0;
     enviarUnRefuerzoEnemigoPorRonda = false;
     ignorarModificadoresDelayRefuerzosEnemigos = false;
@@ -904,18 +926,27 @@ public class BattleManager : MonoBehaviour
       return; // No mandar refuerzos si hay mÃ¡s de 6 enemigos
     }
 
+    int refuerzosDisponibles = ContarRefuerzosEnemigosDisponiblesEstaRonda();
     bool noHayEnemigosVivos = enemigosEnCampo < 1;
     // Si el campo enemigo quedo vacio y hay mas de un refuerzo pendiente, entran 2 juntos.
     // Se mantiene tambien la regla existente para listas largas de refuerzos.
     int cantidadAEnviar = enviarUnRefuerzoEnemigoPorRonda
       ? 1
-      : ((noHayEnemigosVivos && enemigosRefuerzos.Count > 1) || enemigosRefuerzos.Count > 3 ? 2 : 1);
-    for (int i = 0; i < cantidadAEnviar && enemigosRefuerzos.Count > 0; i++)
+      : ((noHayEnemigosVivos && refuerzosDisponibles > 1) || refuerzosDisponibles > 3 ? 2 : 1);
+    for (int i = 0; i < cantidadAEnviar; i++)
     {
-      bool seEnvio = MandarRefuerzoEnemigo(enemigosRefuerzos[0]);
+      int indiceRefuerzo = BuscarIndiceRefuerzoEnemigoDisponible();
+      if (indiceRefuerzo < 0)
+      {
+        break;
+      }
+
+      GameObject refuerzo = enemigosRefuerzos[indiceRefuerzo];
+      bool seEnvio = MandarRefuerzoEnemigo(refuerzo);
       if (seEnvio)
       {
-        enemigosRefuerzos.RemoveAt(0);
+        enemigosRefuerzos.RemoveAt(indiceRefuerzo);
+        rondaMinimaRefuerzoEnemigo.Remove(refuerzo);
       }
       else
       {
@@ -1068,6 +1099,7 @@ public class BattleManager : MonoBehaviour
 
     AplicarTamanioUnidadBatalla(unidadRefuerzo);
     AplicarEfectosInicioCombate(unidadRefuerzo);
+    AplicarTraitLiderCaravanaSiCorresponde(unidadRefuerzo);
     string nombreRefuerzoAliado = ObtenerNombreTraducidoParaLog(unidadRefuerzo.uNombre);
     string txtSeUnio = TRADU.i != null ? TRADU.i.Traducir(" se ha unido a la batalla. Quedan ") : " se ha unido a la batalla. Quedan ";
     string txtRefuerzosRestantes = TRADU.i != null ? TRADU.i.Traducir(" refuerzos.</color> ") : " refuerzos.</color> ";
@@ -1551,7 +1583,7 @@ public class BattleManager : MonoBehaviour
 
   void AcelerarRefuerzosSiLadoSinUnidades()
   {
-    if (ladoA != null && ladoA.unidadesLado.Count < 1 && enemigosRefuerzos != null && enemigosRefuerzos.Count > 0)
+    if (ladoA != null && ladoA.unidadesLado.Count < 1 && HayRefuerzoEnemigoNormalPendiente())
     {
       if (delayRefuerzo > RondaNro)
       {
@@ -1744,6 +1776,46 @@ public class BattleManager : MonoBehaviour
     return personaje != null && personaje.TieneRasgo(traitId);
   }
 
+  public void AplicarTraitLiderCaravanaSiCorresponde(Unidad unidadLider)
+  {
+    if (unidadLider == null || ladoB == null)
+    {
+      return;
+    }
+
+    AdministradorEscenas admin = ObtenerAdministradorEscenasActual();
+    Personaje lider = admin != null ? admin.ObtenerPersonajeDesdeUnidad(unidadLider) : null;
+    if (lider == null
+      || !lider.TieneRasgo(PersonajeTraitCatalog.TraitLiderCaravana)
+      || lider.TraitLiderCaravanaAplicadoEnCombate)
+    {
+      return;
+    }
+
+    lider.TraitLiderCaravanaAplicadoEnCombate = true;
+    ladoB.ActualizarListaDeUnidadesEnLado();
+
+    int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
+    string motivo = idiomaTrait switch
+    {
+      TRADU.IdiomaIngles => lider.sNombre + " leads the Caravan into battle.",
+      TRADU.IdiomaPortugues => lider.sNombre + " lidera a Caravana na batalha.",
+      _ => lider.sNombre + " lidera a la Caravana en combate."
+    };
+
+    foreach (Unidad aliado in ladoB.unidadesLado)
+    {
+      if (aliado == null || aliado == unidadLider || aliado.HP_actual <= 0)
+      {
+        continue;
+      }
+
+      aliado.SumarValentia(2, motivo);
+    }
+
+    NotificarCambioValourGlobal();
+  }
+
   int ObtenerRondaAparicionViasEscape()
   {
     int rondaBase = 3;
@@ -1769,6 +1841,104 @@ public class BattleManager : MonoBehaviour
     }
 
     return delayAjustado;
+  }
+
+  bool HayRefuerzoEnemigoNormalPendiente()
+  {
+    if (enemigosRefuerzos == null)
+    {
+      return false;
+    }
+
+    foreach (GameObject refuerzo in enemigosRefuerzos)
+    {
+      if (refuerzo != null && !rondaMinimaRefuerzoEnemigo.ContainsKey(refuerzo))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  int ObtenerRondaMinimaRefuerzoProgramado(GameObject refuerzo)
+  {
+    if (refuerzo == null || !rondaMinimaRefuerzoEnemigo.TryGetValue(refuerzo, out int rondaMinima))
+    {
+      return 0;
+    }
+
+    if (!ignorarModificadoresDelayRefuerzosEnemigos && AliadosTienenTrait(PersonajeTraitCatalog.TraitTactico))
+    {
+      rondaMinima += 1;
+    }
+
+    return rondaMinima;
+  }
+
+  bool PuedeEntrarRefuerzoEnemigoEstaRonda(GameObject refuerzo)
+  {
+    int rondaProgramada = ObtenerRondaMinimaRefuerzoProgramado(refuerzo);
+    return rondaProgramada > 0
+      ? RondaNro >= rondaProgramada
+      : RondaNro > ObtenerDelayRefuerzosEnemigosConTraits();
+  }
+
+  int BuscarIndiceRefuerzoEnemigoDisponible()
+  {
+    for (int i = 0; i < enemigosRefuerzos.Count; i++)
+    {
+      if (enemigosRefuerzos[i] != null && PuedeEntrarRefuerzoEnemigoEstaRonda(enemigosRefuerzos[i]))
+      {
+        return i;
+      }
+    }
+
+    return -1;
+  }
+
+  int ContarRefuerzosEnemigosDisponiblesEstaRonda()
+  {
+    int cantidad = 0;
+    foreach (GameObject refuerzo in enemigosRefuerzos)
+    {
+      if (refuerzo != null && PuedeEntrarRefuerzoEnemigoEstaRonda(refuerzo))
+      {
+        cantidad++;
+      }
+    }
+
+    return cantidad;
+  }
+
+  bool HayRefuerzoEnemigoDisponibleEstaRonda()
+  {
+    return BuscarIndiceRefuerzoEnemigoDisponible() >= 0;
+  }
+
+  int ObtenerTiempoRestanteProximoRefuerzoEnemigo()
+  {
+    if (enemigosRefuerzos == null || enemigosRefuerzos.Count == 0)
+    {
+      return 0;
+    }
+
+    int minimo = int.MaxValue;
+    foreach (GameObject refuerzo in enemigosRefuerzos)
+    {
+      if (refuerzo == null)
+      {
+        continue;
+      }
+
+      int rondaProgramada = ObtenerRondaMinimaRefuerzoProgramado(refuerzo);
+      int restante = rondaProgramada > 0
+        ? rondaProgramada - RondaNro
+        : ObtenerDelayRefuerzosEnemigosConTraits() - RondaNro + 1;
+      minimo = Mathf.Min(minimo, Mathf.Max(0, restante));
+    }
+
+    return minimo == int.MaxValue ? 0 : minimo;
   }
 
   bool AliadosTienenTrait(int traitId)
@@ -2266,6 +2436,16 @@ public class BattleManager : MonoBehaviour
 
   private void Update()
   {
+    if (EntradaBatallaBloqueadaPorUI)
+    {
+      if (Input.GetKeyDown(KeyCode.Escape) && CerrarOpcionesSiEstanAbiertasEnCombate())
+      {
+        return;
+      }
+
+      return;
+    }
+
     bool tutorialActivo = scTutorialCombate != null && scTutorialCombate.tutorialCombateActivo;
     SincronizarPausaConVisibilidadLog();
     if (PreviewHoverHostilActivo() && !ShiftPreviewHoverHostilPresionado())
@@ -2292,11 +2472,6 @@ public class BattleManager : MonoBehaviour
     if (pausaManualCombateActiva && (unidadActiva == null || unidadActiva.GetComponent<IAUnidad>() == null))
     {
       SetPausaManualCombate(false);
-    }
-
-    if (Input.GetKeyDown(KeyCode.Escape) && CerrarOpcionesSiEstanAbiertasEnCombate())
-    {
-      return;
     }
 
     if (Input.GetKeyDown(KeyCode.Space))
@@ -2470,6 +2645,7 @@ public class BattleManager : MonoBehaviour
 
   public void RefrescarVistaTactica()
   {
+    HashSet<Unidad> unidadesVistaTactica = new HashSet<Unidad>();
     foreach (Unidad unidad in lUnidadesTotal)
     {
       if (unidad == null)
@@ -2477,7 +2653,7 @@ public class BattleManager : MonoBehaviour
         continue;
       }
 
-      unidad.AplicarVistaTactica(vistaTacticaActiva);
+      unidadesVistaTactica.Add(unidad);
     }
 
     foreach (Casilla casilla in lCasillasTotal)
@@ -2487,7 +2663,18 @@ public class BattleManager : MonoBehaviour
         continue;
       }
 
+      Unidad unidadPresente = casilla.Presente != null ? casilla.Presente.GetComponent<Unidad>() : null;
+      if (unidadPresente != null)
+      {
+        unidadesVistaTactica.Add(unidadPresente);
+      }
+
       casilla.ActualizarVistaTactica(vistaTacticaActiva);
+    }
+
+    foreach (Unidad unidad in unidadesVistaTactica)
+    {
+      unidad.AplicarVistaTactica(vistaTacticaActiva);
     }
   }
 
@@ -2523,6 +2710,12 @@ public class BattleManager : MonoBehaviour
 
   private void LateUpdate()
   {
+    if (EntradaBatallaBloqueadaPorUI)
+    {
+      LimpiarInteraccionCampoPorUI();
+      return;
+    }
+
     FiltrarObjetivosActivosPorProvocacion();
 
     FiltrarObjetivosActivosMeleePorInmovilizacion();
@@ -2531,6 +2724,32 @@ public class BattleManager : MonoBehaviour
 
     ActualizarTextoSeleccionObjetivo();
     ActualizarHoverUnidadBajoMouse();
+  }
+
+  public bool EntradaBatallaBloqueadaPorUI
+  {
+    get
+    {
+      AdministradorEscenas administradorEscenas = CampaignManager.Instance != null
+        ? CampaignManager.Instance.scAdministradorEscenas
+        : ObtenerAdministradorEscenasActual();
+
+      return administradorEscenas != null
+        && ((administradorEscenas.MenuOpciones != null && administradorEscenas.MenuOpciones.activeInHierarchy)
+          || administradorEscenas.HandbookBatallaAbierto);
+    }
+  }
+
+  private void LimpiarInteraccionCampoPorUI()
+  {
+    LimpiarFadeHoverObjetivoHabilidad();
+    LimpiarPreviewHoverHostil();
+
+    if (unidadHoverBajoMouse != null)
+    {
+      scUIInfoChar?.LimpiarHover(unidadHoverBajoMouse);
+      unidadHoverBajoMouse = null;
+    }
   }
 
   private void DebugObjetosBajoMouse()
@@ -5142,6 +5361,11 @@ public class BattleManager : MonoBehaviour
 
   public void btnCambiarEstadoModoRapido()
   {
+    if (EntradaBatallaBloqueadaPorUI)
+    {
+      return;
+    }
+
     ActivarModoRapido(!modoRapidoActivado);
   }
   public void ActivarModoRapido(bool activar)

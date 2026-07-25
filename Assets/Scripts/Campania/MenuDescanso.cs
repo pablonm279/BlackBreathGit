@@ -239,7 +239,9 @@ public class MenuDescanso : MonoBehaviour
 
       tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Recolección de Suministros</b></u>\n\n\n");
       tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se dedicarán a recolectar distintos suministros de las inmediaciones al campamento.\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir($"<color=#d8a205>Se juntarán entre ") + (int)valor + TRADU.i.Traducir(" y ") + ((int)valor + 10) + TRADU.i.Traducir(" suministros. </color>\n\n\n");
+      int suministrosMinimos = (int)CampaignManager.Instance.AplicarRecoleccionSuministrosPresagios(valor);
+      int suministrosMaximos = (int)CampaignManager.Instance.AplicarRecoleccionSuministrosPresagios(valor + 10);
+      tareaCivilDescripcion.text += TRADU.i.Traducir($"<color=#d8a205>Se juntarán entre ") + suministrosMinimos + TRADU.i.Traducir(" y ") + suministrosMaximos + TRADU.i.Traducir(" suministros. </color>\n\n\n");
 
       chancesAtaqueACaravana = 25 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
       chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -272,7 +274,9 @@ public class MenuDescanso : MonoBehaviour
 
       tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Recolección de Materiales</b></u>\n\n\n");
       tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se dedicarán a recolectar materiales básicos en la zona.\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se juntarán entre ") + (int)valor + TRADU.i.Traducir(" y ") + ((int)valor + 10) + TRADU.i.Traducir(" materiales. </color>\n\n\n");
+      int materialesMinimos = (int)CampaignManager.Instance.AplicarRecoleccionMaterialesPresagios(valor);
+      int materialesMaximos = (int)CampaignManager.Instance.AplicarRecoleccionMaterialesPresagios(valor + 10);
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se juntarán entre ") + materialesMinimos + TRADU.i.Traducir(" y ") + materialesMaximos + TRADU.i.Traducir(" materiales. </color>\n\n\n");
 
       chancesAtaqueACaravana = 25 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
       chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -486,6 +490,7 @@ public class MenuDescanso : MonoBehaviour
     }
 
     int chanceAtajo = Mathf.Clamp(Mathf.FloorToInt(chancesExploracion * 0.5f), 0, 100);
+    chanceAtajo = CampaignManager.Instance.AjustarChanceAtajoSuperficiePresagios(chanceAtajo);
     if (UnityEngine.Random.Range(0, 100) >= chanceAtajo)
     {
       return;
@@ -575,7 +580,7 @@ public class MenuDescanso : MonoBehaviour
     if (tareaCivilSeleccionada == 1)
     {
       int random = UnityEngine.Random.Range(0, 21);
-      float total = valor + random;
+      float total = CampaignManager.Instance.AplicarRecoleccionSuministrosPresagios(valor + random);
 
       CampaignManager.Instance.CambiarSuministrosActuales((int)total);
 
@@ -584,7 +589,8 @@ public class MenuDescanso : MonoBehaviour
     if (tareaCivilSeleccionada == 2)
     {
       int random = UnityEngine.Random.Range(0, 11);
-      CampaignManager.Instance.CambiarMaterialesActuales((int)valor + random);
+      float total = CampaignManager.Instance.AplicarRecoleccionMaterialesPresagios(valor + random);
+      CampaignManager.Instance.CambiarMaterialesActuales((int)total);
 
     } //Recoleccion Materiales
 
@@ -698,10 +704,6 @@ public class MenuDescanso : MonoBehaviour
       if (tareaCivilSeleccionada == 4) //Bonus por actividad civil Día Libre
       { porcentajeVidaMax = porcentajeVidaMax * 1.1f; }
 
-      if (pers.fVidaMaxima > pers.fVidaActual)
-      {
-        CampaignManager.Instance.EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" se cura ") + (int)porcentajeVidaMax + TRADU.i.Traducir(" PV tras el Descanso."));
-      }
       pers.RecibirCuracion(porcentajeVidaMax);
 
 
@@ -801,6 +803,7 @@ public class MenuDescanso : MonoBehaviour
       CampaignManager.Instance.CambiarSuministrosActuales(-(int)consumo);
     }
 
+    CampaignManager.Instance.AplicarPresagiosDescanso();
     gameObject.SetActive(false);
 
     int alcanceExploracion = Mathf.Max(1, CampaignManager.Instance.ObtenerDistanciaVisionEfectiva());
@@ -824,15 +827,15 @@ public class MenuDescanso : MonoBehaviour
     //Efectos Esperanza en Descanso 
     if (CampaignManager.Instance.GetEsperanzaActual() > 79 && CampaignManager.Instance.GetEsperanzaActual() < 90)
     {
-      float random = UnityEngine.Random.Range(1, 21) + CampaignManager.Instance.GetCivilesActual() / 3;
-      CampaignManager.Instance.CambiarOroActual((int)random);
+      int random = Mathf.RoundToInt(UnityEngine.Random.Range(1, 21) + CampaignManager.Instance.GetCivilesActual() / 3f);
+      CampaignManager.Instance.CambiarOroActual(random);
 
       CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Debido al optimismo que rodea la Caravana, los Civiles han donado Oro: ") + random);
     }
     else if (CampaignManager.Instance.GetEsperanzaActual() >= 90)
     {
-      float random = UnityEngine.Random.Range(1, 21) + CampaignManager.Instance.GetCivilesActual() / 2;
-      CampaignManager.Instance.CambiarOroActual((int)random);
+      int random = Mathf.RoundToInt(UnityEngine.Random.Range(1, 21) + CampaignManager.Instance.GetCivilesActual() / 2f);
+      CampaignManager.Instance.CambiarOroActual(random);
       CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Debido al gran optimismo que rodea la Caravana, los Civiles han donado Oro: ") + random);
 
     }
@@ -894,7 +897,7 @@ public class MenuDescanso : MonoBehaviour
 
     float randomEvento = UnityEngine.Random.Range(0, 100);
     float factorEventoBuenoMalo = 36 + CampaignManager.Instance.GetEsperanzaActual() / 3 + CampaignManager.Instance.ObtenerModificadorChanceEventoTraits();
-    factorEventoBuenoMalo = Mathf.Clamp(factorEventoBuenoMalo, 0f, 100f);
+    factorEventoBuenoMalo = CampaignManager.Instance.AjustarChanceEventoBuenoPresagios(factorEventoBuenoMalo);
     bool descansoEnNodoEvento = CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 2;
     bool descansoEnAsentamiento = CampaignManager.Instance.scMapaManager.nodoActual != null &&
                                   CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoAsentamiento;

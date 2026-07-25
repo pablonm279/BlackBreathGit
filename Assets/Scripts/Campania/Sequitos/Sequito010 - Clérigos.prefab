@@ -1575,6 +1575,7 @@ MonoBehaviour:
   txtdesc: {fileID: 3312014607506495964}
   txtmecanicas: {fileID: 2564035602071047180}
   contenidoPanel: {fileID: 0}
+  txtBotonEchar: {fileID: 1604241844299852164}
 --- !u!114 &3657594406686350096
 MonoBehaviour:
   m_ObjectHideFlags: 0

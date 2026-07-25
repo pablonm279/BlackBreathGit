@@ -59,22 +59,22 @@ public class MenuCiudadPuerto : MonoBehaviour
         txtValorValorTrabajo.text = "" + MetaprogresionManager.Instance.ValordeTrabajoDisponible;
         txtValorCorrupcion.text = MetaprogresionManager.Instance.CorrupcionGlobal + "/" + MetaprogresionManager.Instance.CorrupcionMax;
         txtPuedeEsperartantascav.text = TRADU.i.Traducir("La ciudad puede permitirse esperar ") + (MetaprogresionManager.Instance.CorrupcionMax - MetaprogresionManager.Instance.CorrupcionGlobal) + TRADU.i.Traducir(" caravanas más antes de tener que zarpar.");
-        if (MetaprogresionManager.Instance.NivelPeligroBosqueArdiente > 0)
+        if (MetaprogresionManager.Instance.NivelAlertaBosqueArdiente > 0)
         {
-            txtPeligroBosque.text = TRADU.i.Traducir("El <b>Nivel de Peligro</b> actual en el Bosque Ardiente es: ") + MetaprogresionManager.Instance.NivelPeligroBosqueArdiente;
-            ColorearSegunIntensidad(txtPeligroBosque, MetaprogresionManager.Instance.NivelPeligroBosqueArdiente);
+            txtPeligroBosque.text = TRADU.i.Traducir("El <b>Nivel de Peligro</b> actual en el Bosque Ardiente es: ") + MetaprogresionManager.Instance.NivelAlertaBosqueArdiente;
+            ColorearSegunIntensidad(txtPeligroBosque, MetaprogresionManager.Instance.NivelAlertaBosqueArdiente);
         }
         else { txtPeligroBosque.text = ""; }
-        if (MetaprogresionManager.Instance.NivelPeligroPasoVientohelado > 0)
+        if (MetaprogresionManager.Instance.NivelAlertaPasoVientohelado > 0)
         {
-            txtPeligroPaso.text = TRADU.i.Traducir("El <b>Nivel de Peligro</b> actual en el Paso Vientohelado es: ") + MetaprogresionManager.Instance.NivelPeligroPasoVientohelado;
-            ColorearSegunIntensidad(txtPeligroPaso, MetaprogresionManager.Instance.NivelPeligroPasoVientohelado);
+            txtPeligroPaso.text = TRADU.i.Traducir("El <b>Nivel de Peligro</b> actual en el Paso Vientohelado es: ") + MetaprogresionManager.Instance.NivelAlertaPasoVientohelado;
+            ColorearSegunIntensidad(txtPeligroPaso, MetaprogresionManager.Instance.NivelAlertaPasoVientohelado);
         }
         else { txtPeligroPaso.text = ""; }
-        if (MetaprogresionManager.Instance.NivelPeligroNedukazal > 0)
+        if (MetaprogresionManager.Instance.NivelAlertaNedukazal > 0)
         {
-            txtPeligroNedukazal.text = TRADU.i.Traducir("El <b>Nivel de Peligro</b> actual en Nedukazal es: ") + MetaprogresionManager.Instance.NivelPeligroNedukazal;
-            ColorearSegunIntensidad(txtPeligroNedukazal, MetaprogresionManager.Instance.NivelPeligroNedukazal);
+            txtPeligroNedukazal.text = TRADU.i.Traducir("El <b>Nivel de Peligro</b> actual en Nedukazal es: ") + MetaprogresionManager.Instance.NivelAlertaNedukazal;
+            ColorearSegunIntensidad(txtPeligroNedukazal, MetaprogresionManager.Instance.NivelAlertaNedukazal);
         }
         else { txtPeligroNedukazal.text = ""; }
 

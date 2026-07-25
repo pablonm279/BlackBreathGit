@@ -32,6 +32,10 @@ public class UIBotonesConsumibles : MonoBehaviour
 
   public void UsarConsumible(int num)
   {
+     if (BattleManager.Instance != null && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
+     {
+       return;
+     }
       
      if(num == 1 &&  BattleManager.Instance.unidadActiva.ObtenerAPActual() > 1)
      {

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class MapaManager : MonoBehaviour
 {
+    static readonly int[] TiposNodoEspejismos = { 1, 2, 3, 5, 6, 7, 8, 11, 14 };
     const int MinXSettlementTemprano = 5;
     const int MaxXSettlementTemprano = 6;
     const int MinXSettlementTardio = 7;
@@ -119,6 +120,8 @@ public class MapaManager : MonoBehaviour
        ForzarNodosObligatorios(zonaId);
        ForzarSettlementsPorMapa(zonaId);
        DesactivarNodosSinUsar(zonaId);
+       AplicarPresagiosInicialesDeNodos();
+       AplicarZonaCartografiadaSiCorresponde();
        origen.PosicionarObjetoEnNodo(goCaravana);
        AlinearConvoyAlSuelo();
 
@@ -787,6 +790,19 @@ public class MapaManager : MonoBehaviour
            }
        }
 
+       foreach (Nodo origenCartografiado in nodosActivosVisibilidad)
+       {
+           if (!origenCartografiado.FueReveladoPorZonaCartografiada()) continue;
+
+           foreach (Nodo destinoCartografiado in origenCartografiado.DestinosPosibles)
+           {
+               if (destinoCartografiado != null && destinoCartografiado.FueReveladoPorZonaCartografiada())
+               {
+                   origenCartografiado.MostrarCaminoPorVisionHacia(destinoCartografiado);
+               }
+           }
+       }
+
        foreach (KeyValuePair<Nodo, int> kvp in distancias)
        {
            Nodo origen = kvp.Key;
@@ -918,6 +934,46 @@ public class MapaManager : MonoBehaviour
        }
 
        return alcanzables;
+  }
+
+  public int AplicarEspejismosEnNodosConocidosAlcanzables()
+  {
+       if (nodoActual == null || TiposNodoEspejismos.Length == 0)
+       {
+           return 0;
+       }
+
+       HashSet<Nodo> alcanzables = CalcularNodosAlcanzablesDesdeActual();
+       int nodosAfectados = 0;
+       CampaignManager campaign = CampaignManager.Instance;
+       bool altarPermitido = campaign != null
+           && campaign.scAtributosZona != null
+           && campaign.scAtributosZona.ID != 3
+           && !campaign.DebeEliminarAltaresPorPresagio();
+       int cantidadTiposDisponibles = altarPermitido
+           ? TiposNodoEspejismos.Length
+           : TiposNodoEspejismos.Length - 1;
+
+       foreach (Nodo nodo in alcanzables)
+       {
+           if (nodo == null || nodo == nodoActual || !nodo.PuedeCambiarTipoPorEspejismo())
+           {
+               continue;
+           }
+
+           int nuevoTipo = TiposNodoEspejismos[UnityEngine.Random.Range(0, cantidadTiposDisponibles)];
+           if (nodo.CambiarTipoPorEspejismo(nuevoTipo))
+           {
+               nodosAfectados++;
+           }
+       }
+
+       if (nodosAfectados > 0)
+       {
+           RefrescarVisibilidadExploracion();
+       }
+
+       return nodosAfectados;
   }
 
   void AplicarEscalaDestinosNoAdyacentes()
@@ -1117,6 +1173,101 @@ public class MapaManager : MonoBehaviour
             }
         }
 
+    }
+
+    void AplicarPresagiosInicialesDeNodos()
+    {
+        if (scContenedordeNodos == null)
+        {
+            return;
+        }
+
+        foreach (Nodo nodo in scContenedordeNodos.listTodosNodos)
+        {
+            if (nodo != null && nodo.gameObject.activeSelf)
+            {
+                nodo.AplicarPresagiosInicialesDeNodos();
+            }
+        }
+    }
+
+    void AplicarZonaCartografiadaSiCorresponde()
+    {
+        CampaignManager campaign = CampaignManager.Instance;
+        if (campaign == null
+            || !campaign.TienePresagioActivo(PresagioCatalog.ZonaCartografiada)
+            || scContenedordeNodos == null)
+        {
+            return;
+        }
+
+        Nodo origen = scContenedordeNodos.ObtenerNodoSegunXY(0, 0);
+        Nodo destinoFinal = scContenedordeNodos.listTodosNodos.Find(
+            nodo => nodo != null && nodo.gameObject.activeSelf && nodo.posXNodo == 11);
+        if (origen == null || destinoFinal == null)
+        {
+            return;
+        }
+
+        List<Nodo> ruta = new List<Nodo>();
+        if (!IntentarConstruirRutaCartografiada(origen, destinoFinal, new HashSet<Nodo>(), ruta))
+        {
+            Debug.LogWarning("[Presagios] No se pudo construir la ruta de Región Cartografiada.");
+            return;
+        }
+
+        for (int i = 0; i < ruta.Count; i++)
+        {
+            ruta[i].RevelarPorZonaCartografiada();
+            if (i > 0)
+            {
+                ruta[i - 1].MostrarCaminoPorVisionHacia(ruta[i]);
+            }
+        }
+    }
+
+    bool IntentarConstruirRutaCartografiada(
+        Nodo actual,
+        Nodo destinoFinal,
+        HashSet<Nodo> visitados,
+        List<Nodo> ruta)
+    {
+        if (actual == null || !actual.gameObject.activeSelf || !visitados.Add(actual))
+        {
+            return false;
+        }
+
+        ruta.Add(actual);
+        if (actual == destinoFinal)
+        {
+            return true;
+        }
+
+        List<Nodo> candidatos = new List<Nodo>();
+        foreach (Nodo destino in actual.DestinosPosibles)
+        {
+            if (destino != null && destino.gameObject.activeSelf && !visitados.Contains(destino))
+            {
+                candidatos.Add(destino);
+            }
+        }
+
+        for (int i = candidatos.Count - 1; i > 0; i--)
+        {
+            int indiceAleatorio = UnityEngine.Random.Range(0, i + 1);
+            (candidatos[i], candidatos[indiceAleatorio]) = (candidatos[indiceAleatorio], candidatos[i]);
+        }
+
+        foreach (Nodo candidato in candidatos)
+        {
+            if (IntentarConstruirRutaCartografiada(candidato, destinoFinal, visitados, ruta))
+            {
+                return true;
+            }
+        }
+
+        ruta.RemoveAt(ruta.Count - 1);
+        return false;
     }
 
     void ForzarNodosObligatorios(int zonaId)
@@ -1535,9 +1686,22 @@ public class MapaManager : MonoBehaviour
             return;
         }
 
-        List<Nodo> candidatosTempranos = ObtenerCandidatosSettlement(zonaId, MinXSettlementTemprano, MaxXSettlementTemprano);
         List<Nodo> candidatosTardios = ObtenerCandidatosSettlement(zonaId, MinXSettlementTardio, MaxXSettlementTardio);
+        if (CampaignManager.Instance != null
+            && CampaignManager.Instance.TienePresagioActivo(PresagioCatalog.PobladosEscasos))
+        {
+            if (!IntentarAplicarSettlementUnico(candidatosTardios, zonaId))
+            {
+                List<Nodo> candidatosFallback = ObtenerCandidatosSettlement(
+                    zonaId,
+                    MinXSettlementTemprano,
+                    MaxXSettlementTardio);
+                IntentarAplicarSettlementUnico(candidatosFallback, zonaId);
+            }
+            return;
+        }
 
+        List<Nodo> candidatosTempranos = ObtenerCandidatosSettlement(zonaId, MinXSettlementTemprano, MaxXSettlementTemprano);
         List<SettlementPair> paresConDiferenciaMinima = ConstruirParesSettlement(candidatosTempranos, candidatosTardios, true);
         if (IntentarAplicarParSettlement(paresConDiferenciaMinima, zonaId))
         {
@@ -1550,6 +1714,34 @@ public class MapaManager : MonoBehaviour
         {
             Debug.LogWarning("No se pudo cumplir diferencia minima de Y=2 para settlements. Se uso el mejor par disponible.");
         }
+    }
+
+    bool IntentarAplicarSettlementUnico(List<Nodo> candidatos, int zonaId)
+    {
+        if (candidatos == null || candidatos.Count == 0)
+        {
+            return false;
+        }
+
+        List<Nodo> pendientes = new List<Nodo>(candidatos);
+        while (pendientes.Count > 0)
+        {
+            int indice = UnityEngine.Random.Range(0, pendientes.Count);
+            Nodo settlement = pendientes[indice];
+            pendientes.RemoveAt(indice);
+
+            if (!PuedeConectarseNodo(settlement, zonaId) || !AsegurarNodoConectado(settlement, zonaId))
+            {
+                continue;
+            }
+
+            settlementsForzados.Clear();
+            RegistrarSettlementForzado(settlement);
+            settlement.ForzarSettlement(false);
+            return true;
+        }
+
+        return false;
     }
 
     List<Nodo> ObtenerCandidatosSettlement(int zonaId, int minX, int maxX)

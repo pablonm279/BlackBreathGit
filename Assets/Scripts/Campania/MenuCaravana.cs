@@ -1078,9 +1078,10 @@ public class MenuCaravana : MonoBehaviour
     {
         return ObtenerResumenFactoresExploracionPasiva(
             "Valor actual",
-            "Zona",
+            "Región",
             "Clima",
             ObtenerNombreClimaVisionEs(),
+            "Presagio",
             tierCatalejos);
     }
 
@@ -1088,9 +1089,10 @@ public class MenuCaravana : MonoBehaviour
     {
         return ObtenerResumenFactoresExploracionPasiva(
             "Current value",
-            "Zone",
+            "Region",
             "Weather",
             ObtenerNombreClimaVisionEn(),
+            "Omen",
             tierCatalejos);
     }
 
@@ -1098,9 +1100,10 @@ public class MenuCaravana : MonoBehaviour
     {
         return ObtenerResumenFactoresExploracionPasiva(
             "Valor atual",
-            "Zona",
+            "Região",
             "Clima",
             ObtenerNombreClimaVisionPt(),
+            "Presságio",
             tierCatalejos);
     }
 
@@ -1109,12 +1112,14 @@ public class MenuCaravana : MonoBehaviour
         string etiquetaZona,
         string etiquetaClima,
         string nombreClima,
+        string etiquetaPresagio,
         int tierCatalejos)
     {
         CampaignManager cm = CampaignManager.Instance;
         int chancePasiva = cm != null ? cm.ObtenerChanceExploracionPasiva() : 55 + ObtenerBonusCatalejos(tierCatalejos);
         int modZona = cm != null && cm.scAtributosZona != null ? cm.scAtributosZona.modChanceExploracion : 0;
         int modClimaExploracion = cm != null && cm.intTipoClima == 5 ? -20 : 0;
+        int modPresagio = cm != null && cm.TienePresagioActivo(PresagioCatalog.ZonaDesconocida) ? -10 : 0;
 
         List<string> lineas = new List<string>
         {
@@ -1129,6 +1134,12 @@ public class MenuCaravana : MonoBehaviour
         if (modClimaExploracion != 0)
         {
             lineas.Add(etiquetaClima + " (" + nombreClima + "): " + FormatearModificadorPorcentaje(modClimaExploracion));
+        }
+
+        if (modPresagio != 0)
+        {
+            lineas.Add(etiquetaPresagio + " (" + PresagioCatalog.ObtenerNombreLocalizado(PresagioCatalog.ZonaDesconocida) + "): "
+                + FormatearModificadorPorcentaje(modPresagio));
         }
 
         return ObtenerTextoFactoresGris(lineas);

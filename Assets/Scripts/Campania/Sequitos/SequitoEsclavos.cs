@@ -8,6 +8,8 @@ public class SequitoEsclavos : MonoBehaviour
 {
     //---
     [SerializeField] TextMeshProUGUI txtDesc;
+    [SerializeField] TextMeshProUGUI txtBotonLiberar;
+    [SerializeField] TextMeshProUGUI txtConsec;
 
     [SerializeField] TextMeshProUGUI txtMecanica;
 
@@ -19,6 +21,15 @@ public class SequitoEsclavos : MonoBehaviour
 
     void Actualizar()
     {
+        if (txtBotonLiberar != null)
+        {
+            txtBotonLiberar.text = TraducirBotonLiberar();
+        }
+
+        if (txtConsec != null)
+        {
+            txtConsec.text = TraducirConsec();
+        }
 
 
         txtDesc.text = TRADU.i.Traducir("Han sido esclavos toda su vida, e incluso en estas circunstancias se comportan como tal. La situación amerita aprovecharse de su condición para obtener ventajas de mano de obra, ¿o quizás llegó el momento de liberarlos?\n\n");
@@ -26,6 +37,28 @@ public class SequitoEsclavos : MonoBehaviour
 
       
     }
+    private string TraducirBotonLiberar()
+    {
+        if (TRADU.i == null || TRADU.i.nIdioma == TRADU.IdiomaEspanol)
+        {
+            return "Liberar";
+        }
+
+        return TRADU.i.nIdioma == TRADU.IdiomaPortugues ? "Liberar" : "Release";
+    }
+
+    private string TraducirConsec()
+    {
+        if (TRADU.i == null || TRADU.i.nIdioma == TRADU.IdiomaEspanol)
+        {
+            return "Se perderá el séquito, pero se sumarán como civiles comunes a la caravana. +25 Esperanza";
+        }
+
+        return TRADU.i.nIdioma == TRADU.IdiomaPortugues
+            ? "O séquito será perdido, mas eles se juntarão à caravana como civis comuns. +25 Esperança"
+            : "The retinue will be lost, but they will join the caravan as common civilians. +25 Hope";
+    }
+
     public void EcharSequito()
     {
         //Se remueven asi cuando son liberados, el metodo Removersequito() de scMenuSequitos.cs está para cuando son asesinados
