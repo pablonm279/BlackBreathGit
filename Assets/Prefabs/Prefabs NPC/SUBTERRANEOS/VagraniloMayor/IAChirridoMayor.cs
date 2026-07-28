@@ -14,7 +14,7 @@ public class IAChirridoMayor : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
 
     [SerializeField] private int zonaX; 
     [SerializeField] private  int zonaY;
@@ -95,7 +95,7 @@ public class IAChirridoMayor : IAHabilidad
      foreach(Casilla cas in casillas)
      {
         //-----
-        //Ac� aplicar efectos visuales a la casilla si corresponde
+        //Acá aplicar efectos visuales a la casilla si corresponde
         //-----
        
 
@@ -217,7 +217,7 @@ public class IAChirridoMayor : IAHabilidad
     
 
 
-   public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun l�gica
+   public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
    {
     
   

@@ -14,7 +14,7 @@ public class CorteVerticalSediento : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
       public override void  Awake()
     {
       nombre = "Corte Vertical Sediento";
@@ -49,12 +49,12 @@ public class CorteVerticalSediento : Habilidad
       if (TRADU.i.nIdioma == 1)
       {
         txtDescripcion = "<color=#5dade2><b>Corte Vertical Sediento</b></color>\n\n"; 
-        txtDescripcion += "<i>Con el mandoble, el Caballero efect�a un ataque de arriba hacia abajo, lento, pero capaz de provocar grandes da�os.</i>\n\n";
-        txtDescripcion += "<i>+1 Ataque y +1 Rango Cr�tico si el objetivo tiene 50% de vida o menos y no es Constructo.</i>\n\n";
-        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Da�o: Cortante 2d8- </color>\n\n";
-        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valent�a: {costoPM} </color>";
+        txtDescripcion += "<i>Con el mandoble, el Caballero efectúa un ataque de arriba hacia abajo, lento, pero capaz de provocar grandes daños.</i>\n\n";
+        txtDescripcion += "<i>+1 Ataque y +1 Rango Crítico si el objetivo tiene 50% de vida o menos y no es Constructo.</i>\n\n";
+        txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza +{bonusAtaque}</color> - Daño: Cortante 2d8- </color>\n\n";
+        txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
       }
-      if (TRADU.i.nIdioma == 2) //Ingl�s
+      if (TRADU.i.nIdioma == 2) //Inglés
       {
         txtDescripcion = "<color=#5dade2><b>Thirsty Vertical Slash</b></color>\n\n";
         txtDescripcion += "<i>With the greatsword, the Knight performs a slow downward attack, capable of inflicting great damage.</i>\n\n";
@@ -138,7 +138,7 @@ public class CorteVerticalSediento : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
     {
     
-     if(obj is Unidad) //Ac� van los efectos a Unidades.
+     if(obj is Unidad) //Acá van los efectos a Unidades.
      {
        Unidad objetivo = (Unidad)obj;
        float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -232,7 +232,7 @@ public class CorteVerticalSediento : Habilidad
      
         objetivo.AplicarDebuffPorAtaquesreiterados(1);
        }   
-     else if (obj is Obstaculo) //Ac� van los efectos a Obstaculos
+     else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
@@ -277,7 +277,7 @@ public class CorteVerticalSediento : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si est� en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si está en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -299,7 +299,7 @@ public class CorteVerticalSediento : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambi�n
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras también
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -399,7 +399,7 @@ public class CorteVerticalSediento : Habilidad
         
       }
 
-       //Se fija si las 3 casillas de la columna 1 est�n vacias
+       //Se fija si las 3 casillas de la columna 1 están vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
           if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen, scEstaUnidad)) //si alguna de las 3 tiene algo, no aumenta el rango melee

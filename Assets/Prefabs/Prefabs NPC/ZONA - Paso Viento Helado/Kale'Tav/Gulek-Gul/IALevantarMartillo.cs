@@ -14,7 +14,7 @@ public class IALevantarMartillo : IAHabilidad
   [SerializeField] private int bonusAtaque;
   [SerializeField] private int XdDanio;
   [SerializeField] private int daniodX;
-  [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano
+  [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
 
 
 
@@ -100,7 +100,7 @@ public class IALevantarMartillo : IAHabilidad
       // VFXAplicar(objetivo.gameObject);
 
       /////////////////////////////////////////////
-      //BUFF ---- As� se aplica un buff/debuff
+      //BUFF ---- Así se aplica un buff/debuff
       Buff buff = new Buff();
       buff.buffNombre = "Martillo Listo";
       buff.boolfDebufftBuff = true;
@@ -108,7 +108,7 @@ public class IALevantarMartillo : IAHabilidad
       buff.cantAtaque += 2;
       buff.cantDanioPorcentaje += 15;
       buff.AplicarBuff(objetivo);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
+      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
       Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
     }

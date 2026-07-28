@@ -13,7 +13,7 @@ public class GolpeEnredadera : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
    
   void Awake()
    {
@@ -171,7 +171,7 @@ public override object EstablecerObjetivoPrioritario()
         return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obst�culo
+    // Si no hay unidades, devolver el obstáculo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
 }
@@ -184,7 +184,7 @@ void AplicaEnredadoTirada(Unidad unidad, int extraDC)
    if(unidad.TiradaSalvacion(1, 8+extraDC) && unidad.estado_inmovil > -1 && unidad.estado_inmovil < 1)
      {
           /////////////////////////////////////////////
-            //BUFF ---- As� se aplica un buff/debuff
+            //BUFF ---- Así se aplica un buff/debuff
             Buff buff = new Buff();
             buff.buffNombre = "Enredado";
             buff.buffDescr = "Inmóvil, Melee solo adyacente.";
@@ -205,7 +205,7 @@ void AplicaEnredadoTirada(Unidad unidad, int extraDC)
             
             buff.goVFX =  goVFX;
 
-            // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
+            // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, unidad.gameObject);
             Estados.Aplicar_Inmovil(unidad, buff.DuracionBuffRondas + 1, scEstaUnidad);
      }

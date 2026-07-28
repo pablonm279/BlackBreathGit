@@ -478,11 +478,11 @@ public class AdministradorEscenas : MonoBehaviour
 
     unidad.RemoverBuffNombre("Valentía Global Alta");
     unidad.RemoverBuffNombre("Valentia Global Alta");
-    unidad.RemoverBuffNombre("ValentÃ­a Global Alta");
+    unidad.RemoverBuffNombre("Valentía Global Alta");
     unidad.RemoverBuffNombre("Valour Global Alto");
     unidad.RemoverBuffNombre("Valentía Global Muy Alta");
     unidad.RemoverBuffNombre("Valentia Global Muy Alta");
-    unidad.RemoverBuffNombre("ValentÃ­a Global Muy Alta");
+    unidad.RemoverBuffNombre("Valentía Global Muy Alta");
     unidad.RemoverBuffNombre("Valour Global Muy Alto");
   }
 

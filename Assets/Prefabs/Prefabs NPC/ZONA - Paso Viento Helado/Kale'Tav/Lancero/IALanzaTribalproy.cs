@@ -14,7 +14,7 @@ public class IALanzaTribalproy : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
 
 
     
@@ -172,10 +172,10 @@ public class IALanzaTribalproy : IAHabilidad
     }
 
    
-    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun l�gica
+    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
    {
     
-      // Obtener la unidad due�a
+      // Obtener la unidad dueña
     Unidad unidadDueña = gameObject.GetComponent<Unidad>();
     if (unidadDueña == null) return null;
    
@@ -185,7 +185,7 @@ public class IALanzaTribalproy : IAHabilidad
      
     var unidades = objPosibles.OfType<Unidad>().ToList();
     print("Sel obj unidades cant: "+unidades.Count);
-    // Filtrar los obst�culos
+    // Filtrar los obstáculos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
      print("Sel obj obstaculos cant: "+obstaculos.Count);
 
@@ -203,7 +203,7 @@ public class IALanzaTribalproy : IAHabilidad
         return unidadesOrdenadas.FirstOrDefault();
     }else{print("lista unidades vacia");}
 
-    // Si no hay unidades, devolver el obst�culo
+    // Si no hay unidades, devolver el obstáculo
      if (obstaculos.Any())
      {
        var obstaculo = obstaculos.FirstOrDefault();

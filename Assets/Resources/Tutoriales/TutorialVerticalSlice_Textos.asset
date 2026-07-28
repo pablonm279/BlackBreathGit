@@ -295,6 +295,10 @@ MonoBehaviour:
     es: Batalla
     en: Battle
     pt: Batalha
+  - key: tutorial.postbatalla1.narrator
+    es: ''
+    en: ''
+    pt: ''
   - key: tutorial.postbatalla2.title
     es: Personajes
     en: Characters

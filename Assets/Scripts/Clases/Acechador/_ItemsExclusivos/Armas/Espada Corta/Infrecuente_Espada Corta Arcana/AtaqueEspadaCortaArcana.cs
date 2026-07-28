@@ -14,7 +14,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int criticoRangoHab;//lo que resta al rango de critico del dado (mientras mayor, mas probable)
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
      ClaseAcechador claseAcechador;
   public override void Awake()
   {
@@ -51,9 +51,9 @@ public class AtaqueEspadaCortaArcana : Habilidad
     imHab = Resources.Load<Sprite>("imHab/Acechador_EspadaCorta");
 
     txtDescripcion = "<color=#5dade2><b>Corte de Espada corta Arcana</b></color>\n\n";
-    txtDescripcion += "<i>Con su mano h�bil, el Acechador asesta un golpe con la espada corta.</i>\n\n";
-    txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza + {bonusAtaque}</color> - Da�o: Cortante 1d6+2  +1d4 Arcano- </color>\n\n";
-    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valent�a: {costoPM} </color>";
+    txtDescripcion += "<i>Con su mano hábil, el Acechador asesta un golpe con la espada corta.</i>\n\n";
+    txtDescripcion += $"<color=#c8c8c8><b>MELEE</b> -Ataque: <color=#ea0606>Fuerza + {bonusAtaque}</color> - Daño: Cortante 1d6+2  +1d4 Arcano- </color>\n\n";
+    txtDescripcion += $"<color=#44d3ec>- Enfriamiento: {cooldownMax} \n- Costo AP: {costoAP} \n- Costo Valentía: {costoPM} </color>";
 
     if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
     {
@@ -156,7 +156,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
       if (TRADU.i.nIdioma == 3)
       { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano.</i>\n\n"; }
       else
-      { txtDescripcion += "\n\n<i>Maestr�a con Espada Corta agrega: +1 Ataque +2 Da�o.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 2)
@@ -167,7 +167,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
       if (TRADU.i.nIdioma == 3)
       { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano +5% Critico.</i>\n\n"; }
       else
-      { txtDescripcion += "\n\n<i>Maestr�a con Espada Corta agrega: +1 Ataque +2 Da�o +5% Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +5% Critico.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 3)
@@ -179,7 +179,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
       if (TRADU.i.nIdioma == 3)
       { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano +5% Critico, -1 AP.</i>\n\n"; }
       else
-      { txtDescripcion += "\n\n<i>Maestr�a con Espada Corta agrega: +1 Ataque +2 Da�o +5% Critico, -1 AP.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +5% Critico, -1 AP.</i>\n\n"; }
 
 
     }
@@ -192,7 +192,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
       if (TRADU.i.nIdioma == 3)
       { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +4 Dano +10% Critico.</i>\n\n"; }
       else
-      { txtDescripcion += "\n\n<i>Maestr�a con Espada Corta agrega: +1 Ataque +4 Da�o +10% Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +10% Critico.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 5)
@@ -204,7 +204,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
       if (TRADU.i.nIdioma == 3)
       { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +2 Ataque +4 Dano +5% Critico.</i>\n\n"; }
       else
-      { txtDescripcion += "\n\n<i>Maestr�a con Espada Corta agrega: +2 Ataque +4 Da�o +5% Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +2 Ataque +4 Daño +5% Critico.</i>\n\n"; }
 
     }
       ActualizarDescripcion();
@@ -214,7 +214,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada)
   {
 
-    if (obj is Unidad) //Ac� van los efectos a Unidades.
+    if (obj is Unidad) //Acá van los efectos a Unidades.
     {
       Unidad objetivo = (Unidad)obj;
       float defensaObjetivo = objetivo.ObtenerdefensaActual();
@@ -289,7 +289,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
 
       objetivo.AplicarDebuffPorAtaquesreiterados(1);
     }
-    else if (obj is Obstaculo) //Ac� van los efectos a Obstaculos
+    else if (obj is Obstaculo) //Acá van los efectos a Obstaculos
     {
       Obstaculo objetivo = (Obstaculo)obj;
       //---
@@ -321,7 +321,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
       //Cualquier objetivo en 1 de alcance 3 de ancho
       lObjetivosPosibles.Clear();
       
-      //Melee - Si est� en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
+      //Melee - Si está en columna 3 de su lado, aumenta el rango ignorando cada columna vacia del lado opuesto
       int rangoPlus = 0;
    
       if(esMelee) 
@@ -343,7 +343,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
        
        
        c.ActivarCapaColorRojo();
-       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras tambi�n
+       if(esMelee)//Si hab es melee, activa capa roja, de columna al alcance final, no de las otras también
        {
          if(c.transform.GetChild(2).gameObject.activeInHierarchy){ c.DesactivarCapaColorRojo();}
        } 
@@ -443,7 +443,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
         
       }
 
-       //Se fija si las 3 casillas de la columna 1 est�n vacias
+       //Se fija si las 3 casillas de la columna 1 están vacias
        foreach(Casilla cas in casillasAdyacentesyFrenteColumna1)
        {
           if(cas.BloqueaAvanceMeleeDesdeFila(posYorigen, scEstaUnidad)) //si alguna de las 3 tiene algo, no aumenta el rango melee

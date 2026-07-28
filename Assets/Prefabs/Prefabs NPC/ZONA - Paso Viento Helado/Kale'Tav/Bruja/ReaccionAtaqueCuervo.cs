@@ -20,7 +20,7 @@ public class ReaccionAtaqueCuervo : Reaccion
 
     if (TRADU.i.nIdioma == 1)
     {
-      descripcion = $"ReacciÛn: El cuervo atacar· los ojos de quien lastime a su maestra.";
+      descripcion = $"Reacci√≥n: El cuervo atacar√° los ojos de quien lastime a su maestra.";
     }
     if (TRADU.i.nIdioma == 2)
     {

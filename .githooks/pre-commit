@@ -1,19 +1,33 @@
 #!/bin/sh
 set -eu
 
-files="$(git diff --cached --name-only --diff-filter=ACMR)"
+repo_root="$(git rev-parse --show-toplevel)"
+cd "${repo_root}"
+
+if command -v pwsh >/dev/null 2>&1; then
+  pwsh -NoProfile -File tools/check-mojibake.ps1 \
+    -Staged -FailOnHit
+  exit $?
+fi
+
+if command -v powershell.exe >/dev/null 2>&1; then
+  powershell.exe -NoProfile -ExecutionPolicy Bypass \
+    -File tools/check-mojibake.ps1 -Staged -FailOnHit
+  exit $?
+fi
+
+echo "[pre-commit] PowerShell no esta disponible; se usa validacion UTF-8 de respaldo."
+
+files="$(git -c core.quotepath=false diff --cached --name-only --diff-filter=ACMR)"
 if [ -z "${files}" ]; then
   exit 0
 fi
 
 has_issue=0
-mojibake_regex='Ã[[:print:]]|ÃƒÂ.|¿|¡|â€|â€™|â€œ|â€|�'
-tmp_list="$(mktemp)"
-printf '%s\n' "${files}" > "${tmp_list}"
 
 while IFS= read -r file; do
   case "$file" in
-    *.cs|*.txt|*.md|*.json|*.xml|*.yml|*.yaml|*.csv|*.shader|*.cginc|*.hlsl|*.compute|*.uss|*.uxml|*.asmdef|*.asmref|*.meta) ;;
+    .editorconfig|.gitattributes|.gitignore|.gitmodules|*/pre-commit|*/pre-push|*/commit-msg|*.cs|*.txt|*.md|*.json|*.xml|*.yml|*.yaml|*.csv|*.shader|*.cginc|*.hlsl|*.compute|*.uss|*.uxml|*.asmdef|*.asmref|*.meta|*.ps1|*.sh|*.asset|*.prefab|*.unity) ;;
     *) continue ;;
   esac
 
@@ -22,28 +36,23 @@ while IFS= read -r file; do
     continue
   fi
 
-  if command -v iconv >/dev/null 2>&1; then
-    if ! printf '%s' "${content}" | iconv -f UTF-8 -t UTF-8 >/dev/null 2>&1; then
-      echo "[pre-commit] Archivo no UTF-8 valido: $file"
-      has_issue=1
-      continue
-    fi
+  if command -v iconv >/dev/null 2>&1 \
+    && ! printf '%s' "${content}" | iconv -f UTF-8 -t UTF-8 >/dev/null 2>&1; then
+    echo "[pre-commit] Archivo no UTF-8 valido: $file"
+    has_issue=1
+    continue
   fi
 
-  if printf '%s' "${content}" | grep -nE "${mojibake_regex}" >/dev/null 2>&1; then
-    echo "[pre-commit] Mojibake sospechoso en: $file"
-    printf '%s' "${content}" | grep -nE "${mojibake_regex}" | head -n 8 || true
+  if printf '%s' "${content}" | LC_ALL=C grep -n "$(printf '\357\277\275')" >/dev/null 2>&1; then
+    echo "[pre-commit] Caracter de reemplazo Unicode detectado: $file"
     has_issue=1
   fi
-done < "${tmp_list}"
-
-rm -f "${tmp_list}"
+done <<EOF
+${files}
+EOF
 
 if [ "${has_issue}" -ne 0 ]; then
-  cat <<'EOF'
-[pre-commit] Commit bloqueado por problemas de encoding.
-Revisa los reemplazos tipicos (ej. á -> á, é -> é, ¿ -> ¿, ¡ -> ¡).
-EOF
+  echo "[pre-commit] Commit bloqueado por problemas de encoding."
   exit 1
 fi
 

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
@@ -197,7 +197,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         TraducirDropdownGraficos();
         TraducirDropdownDificultad();
 
-        int difGuardada = PlayerPrefs.GetInt("dificultad_index", 2); // 2 = Normal por defecto (í­ndice dropdown)
+        int difGuardada = PlayerPrefs.GetInt("dificultad_index", 2); // 2 = Normal por defecto (índice dropdown)
         difGuardada = Mathf.Clamp(difGuardada, 0, Mathf.Max(0, dificultadDropdown.options.Count - 1));
         dificultadDropdown.SetValueWithoutNotify(difGuardada);
 
@@ -384,7 +384,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         resolucionesSoportadas.Clear();
         resolucionDropdown.ClearOptions();
 
-        // Resoluciones tí­picas que queremos mostrar
+        // Resoluciones típicas que queremos mostrar
         List<Vector2Int> resolucionesDeseadas = new List<Vector2Int>()
     {
         new Vector2Int(1280, 720),
@@ -440,7 +440,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
         resolucionDropdown.AddOptions(opciones);
 
-        // Cargar í­ndice guardado
+        // Cargar índice guardado
         int guardado = PlayerPrefs.GetInt("res_index", indiceActualPorDefecto);
         guardado = Mathf.Clamp(guardado, 0, resolucionesSoportadas.Count - 1);
 

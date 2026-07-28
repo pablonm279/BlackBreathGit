@@ -109,7 +109,7 @@ public class IALiturgiaPutrefaccion : IAHabilidad
     Buff copia = ComponentCopier.CopyComponent(putrefaccion, objetivo.gameObject);
     copia.esStackeable = false;
 
-    BattleManager.Instance?.EscribirLog($"{objetivo.uNombre} {TRADU.i.Traducir("es presa de la Putrefacci�n.")}");
+    BattleManager.Instance?.EscribirLog($"{objetivo.uNombre} {TRADU.i.Traducir("es presa de la Putrefacción.")}");
   }
 
   public override object EstablecerObjetivoPrioritario()

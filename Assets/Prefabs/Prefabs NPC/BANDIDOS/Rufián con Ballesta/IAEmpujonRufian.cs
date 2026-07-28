@@ -14,12 +14,12 @@ public class IAEmpujonRufian : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
 
    
   void Awake()
    {
-      nombre = "Empuj�n Rufi�n";
+      nombre = "Empujón Rufián";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 1;
@@ -118,14 +118,14 @@ public class IAEmpujonRufian : IAHabilidad
         {
           IntentarEmpujarObjetivo(objetivo, 2);
           /////////////////////////////////////////////
-          //BUFF ---- As� se aplica un buff/debuff
+          //BUFF ---- Así se aplica un buff/debuff
           Buff buff = new Buff();
           buff.buffNombre = "Desestabilizado";
           buff.boolfDebufftBuff = false;
           buff.DuracionBuffRondas = 1;
           buff.cantAPMax -= 1;
           buff.AplicarBuff(objetivo);
-          // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
+          // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
           Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
         }
@@ -155,7 +155,7 @@ public class IAEmpujonRufian : IAHabilidad
           buff.DuracionBuffRondas = 1;
           buff.cantAPMax -= 1;
           buff.AplicarBuff(objetivo);
-          // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
+          // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
           Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
            
        }

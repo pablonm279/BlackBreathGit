@@ -14,7 +14,7 @@ public class IAAtaqueCuervo : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
 
 
     
@@ -102,7 +102,7 @@ public class IAAtaqueCuervo : IAHabilidad
         buff.cantDefensa -= 2;
         buff.cantTsReflejos -= 1;
         buff.AplicarBuff(objetivo);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
       }
       
@@ -123,7 +123,7 @@ public class IAAtaqueCuervo : IAHabilidad
    RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
 
     }
-    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun l�gica
+    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
    {
     
     // Obtener la unidad duea
@@ -132,7 +132,7 @@ public class IAAtaqueCuervo : IAHabilidad
   
     var unidades = objPosibles.OfType<Unidad>().ToList();
   
-  // Remover las unidades inm�viles recorriendo de atrs hacia adelante
+  // Remover las unidades inmóviles recorriendo de atrs hacia adelante
     for (int i = unidades.Count - 1; i >= 0; i--)
     {
       if (unidades[i].estado_inmovil > 0)

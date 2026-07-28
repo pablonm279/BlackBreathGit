@@ -119,14 +119,14 @@ public class IALlamaDaZarkil : IAHabilidad
           if (obj.TieneTag("Zarkil") && obj != scEstaUnidad)
           {
 
-            // BUFF ---- As� se aplica un buff/debuff
+            // BUFF ---- Así se aplica un buff/debuff
             Buff buff = new Buff();
             buff.buffNombre = "Orden Recibida";
             buff.boolfDebufftBuff = true;
             buff.DuracionBuffRondas = 1;
             buff.cantAPMax += 2;
             buff.AplicarBuff(obj);
-            // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
+            // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, obj.gameObject);
           }
           

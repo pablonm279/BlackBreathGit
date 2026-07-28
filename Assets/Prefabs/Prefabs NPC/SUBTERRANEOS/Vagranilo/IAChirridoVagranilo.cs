@@ -14,7 +14,7 @@ public class IAChirridoVagranilo : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
 
 
     
@@ -83,7 +83,7 @@ public class IAChirridoVagranilo : IAHabilidad
         VFXAplicar(objetivo.gameObject);
          if(objetivo.TiradaSalvacion(3, 11))
           {
-            //Si falla, se aturde y hace 2d4 da�o verdadero
+            //Si falla, se aturde y hace 2d4 daño verdadero
             Estados.Aplicar_Aturdido(objetivo, 1, scEstaUnidad);
             objetivo.RecibirDanio(TiradaDeDados.TirarDados(2,4), 10, false,scEstaUnidad);
 
@@ -104,10 +104,10 @@ public class IAChirridoVagranilo : IAHabilidad
    RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
 
     }
-    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun l�gica
+    public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica
    {
     
-    // Obtener la unidad due�a
+    // Obtener la unidad dueña
     Unidad unidadDuea = gameObject.GetComponent<Unidad>();
     if (unidadDuea == null) return null;
   

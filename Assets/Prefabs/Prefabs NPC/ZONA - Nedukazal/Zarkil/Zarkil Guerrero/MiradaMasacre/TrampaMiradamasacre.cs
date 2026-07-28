@@ -61,7 +61,7 @@ public class TrampaMiradamasacre : Trampa
         BattleManager.Instance.EscribirLog(objetivo.uNombre + TRADU.i.Traducir(" se aterra por Mirada de la Masacre y pierde el turno."));
 
         //---
-        // BUFF ---- As� se aplica un buff/debuff
+        // BUFF ---- Así se aplica un buff/debuff
         Buff buff = new Buff();
         buff.buffNombre = "Por la masacre";
         buff.boolfDebufftBuff = true;
@@ -70,7 +70,7 @@ public class TrampaMiradamasacre : Trampa
         buff.cantAtaque += 2;
         buff.esStackeable = false;
         buff.AplicarBuff(unidadCreadora);
-        // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
+        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, unidadCreadora.gameObject);       
 
       }
@@ -89,7 +89,7 @@ public class TrampaMiradamasacre : Trampa
   {
     prefabModelo = scBattleManager.contenedorPrefabs.TrampaMiradaMasacre;
     GOvfx = Instantiate(prefabModelo, transform.position, transform.rotation) as GameObject;
-    // Ajusta la posici�n en el eje Y
+    // Ajusta la posición en el eje Y
     Vector3 newPosition = GOvfx.transform.position;
     newPosition.y += 0.015f;
     GOvfx.transform.position = newPosition;

@@ -14,12 +14,12 @@ public class IAMartilloLigero : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
 
    
   void Awake()
    {
-      nombre = "Martillo Peque�o";
+      nombre = "Martillo Pequeño";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 1;
@@ -193,7 +193,7 @@ public override object EstablecerObjetivoPrioritario()
       return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obst�culo
+    // Si no hay unidades, devolver el obstáculo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
   }

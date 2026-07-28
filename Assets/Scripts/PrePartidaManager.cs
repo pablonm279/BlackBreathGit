@@ -389,13 +389,11 @@ public class PrePartidaManager : MonoBehaviour
         {
             if (botonCancelarSobreescribir != null)
             {
-                botonCancelarSobreescribir.onClick = new Button.ButtonClickedEvent();
                 botonCancelarSobreescribir.onClick.AddListener(CancelarSobreescritura);
             }
 
             if (botonContinuarSobreescribir != null)
             {
-                botonContinuarSobreescribir.onClick = new Button.ButtonClickedEvent();
                 botonContinuarSobreescribir.onClick.AddListener(ContinuarSobreescritura);
             }
 

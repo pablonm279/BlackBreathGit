@@ -13,7 +13,7 @@ public class GolpeDesertor : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
    
   void Awake()
    {
@@ -179,7 +179,7 @@ public override object EstablecerObjetivoPrioritario()
         return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obst�culo
+    // Si no hay unidades, devolver el obstáculo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
 }

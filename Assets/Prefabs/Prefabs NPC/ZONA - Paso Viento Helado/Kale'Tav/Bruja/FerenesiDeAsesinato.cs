@@ -14,13 +14,13 @@ public class FerenesiDeAsesinato : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
+    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
 
 
     
   void Awake()
    {
-      nombre = "FrenesÌ del Asesinato";
+      nombre = "Frenes√≠ del Asesinato";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       hAncho = 8;
@@ -85,9 +85,9 @@ public class FerenesiDeAsesinato : IAHabilidad
 
         VFXAplicar(objetivo.gameObject);
 
-       // BUFF ---- AsÌ se aplica un buff/debuff
+       // BUFF ---- As√≠ se aplica un buff/debuff
        Buff buff = new Buff();
-       buff.buffNombre = "FrenesÌ del Asesinato";
+       buff.buffNombre = "Frenes√≠ del Asesinato";
        buff.boolfDebufftBuff = true;
        buff.DuracionBuffRondas = 3;
        buff.cantDanioPorcentaje += 15;
@@ -95,7 +95,7 @@ public class FerenesiDeAsesinato : IAHabilidad
        buff.cantDefensa -= 2;
        buff.cantAPMax += 1;
        buff.AplicarBuff(objetivo);
-       // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
+       // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
    
       
@@ -120,16 +120,16 @@ public class FerenesiDeAsesinato : IAHabilidad
 
   public override object EstablecerObjetivoPrioritario()
   {
-    // Obtener la unidad dueÒa
-    Unidad unidadDueÒa = gameObject.GetComponent<Unidad>();
-    if (unidadDueÒa == null) return null;
+    // Obtener la unidad due√±a
+    Unidad unidadDue√±a = gameObject.GetComponent<Unidad>();
+    if (unidadDue√±a == null) return null;
 
     // Filtrar, ordenar y seleccionar el objetivo prioritario
     var random = new System.Random();
     var objetivo = objPosibles.OfType<Unidad>()
-      .Where(u => !u.TieneBuffNombre("FrenesÌ del Asesinato")) // Filtrar unidades que no tengan el buff
+      .Where(u => !u.TieneBuffNombre("Frenes√≠ del Asesinato")) // Filtrar unidades que no tengan el buff
       .OrderBy(u => random.Next()) // Ordenar aleatoriamente
-      .FirstOrDefault(); // Tomar el primero despuÈs del ordenamiento
+      .FirstOrDefault(); // Tomar el primero despu√©s del ordenamiento
 
     return objetivo;
   }

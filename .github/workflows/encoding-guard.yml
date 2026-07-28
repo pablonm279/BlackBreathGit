@@ -1,0 +1,26 @@
+name: Encoding guard
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  utf8-and-mojibake:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate project text encoding
+        shell: pwsh
+        run: |
+          ./tools/check-mojibake.ps1 -Root Assets -FailOnHit
+          ./tools/check-mojibake.ps1 -Root tools -FailOnHit
+          ./tools/check-mojibake.ps1 -Root .githooks -FailOnHit
+          ./tools/check-mojibake.ps1 -Root .github -FailOnHit
+          ./tools/check-mojibake.ps1 -Root .editorconfig -FailOnHit
+          ./tools/check-mojibake.ps1 -Root .gitattributes -FailOnHit
+
+      - name: Test encoding guard
+        shell: pwsh
+        run: ./tools/test-encoding-guard.ps1

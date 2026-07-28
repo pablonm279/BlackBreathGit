@@ -13,7 +13,7 @@ public class IAGarraOsoEspectral : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
    
   void Awake()
    {
@@ -156,7 +156,7 @@ public class IAGarraOsoEspectral : IAHabilidad
     }
   void aplicarAbrumado(Unidad objetivo)
   {
-    // BUFF ---- As� se aplica un buff/debuff
+    // BUFF ---- Así se aplica un buff/debuff
     Buff buff = new Buff();
     buff.buffNombre = "Abrumado";
     buff.boolfDebufftBuff = false;
@@ -165,7 +165,7 @@ public class IAGarraOsoEspectral : IAHabilidad
     buff.cantAtaque -= 1;
     buff.esStackeable = true;
     buff.AplicarBuff(objetivo);
-    // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
+    // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
     Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
   }
 

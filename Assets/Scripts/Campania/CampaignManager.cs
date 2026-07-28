@@ -6411,8 +6411,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       if (scAtributosZona.ID == 1) // Bosque Angustiante
       {
-        EscribirLog(TRADU.i.Traducir("-Las Almas Danzantes guían a la caravana. +5 Esperanza"));
-        CambiarEsperanzaActual(5);
+        EscribirLog(TRADU.i.Traducir("-Las Almas Danzantes guían a la caravana. +3 Esperanza."));
+        CambiarEsperanzaActual(3);
       }
       if (scAtributosZona.ID == 2) // Paso del Viento Helado
       {
@@ -10323,7 +10323,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         case 3: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada."); break;
         case 4: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Nieve: +3 Esperanza. -15% Recolecciones, -20% Emboscada. Viajar lleva el doble de tiempo."); break;
         case 5: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Niebla: -20% Recolecciones, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos."); break;
-        case 6: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Almas Danzantes: +5 Esperanza, -100% chances de Emboscada."); break;
+        case 6: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Almas Danzantes: +3 Esperanza por viaje, -100% de probabilidad de Emboscada."); break;
         case 7: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Aurora Boreal: +10 Esperanza."); break;
         case 8: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Nedukazal está a oscuras."); break;
         case 9: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Masacre: Nedukazal está siendo atacada. -10 Esperanza. +10% Emboscada. Los Zúrkil están potenciados."); break;

@@ -13,7 +13,7 @@ public class IADevorarSangre : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
    
   void Awake()
    {
@@ -165,7 +165,7 @@ public class IADevorarSangre : IAHabilidad
             buff2.percCritDaño += 20;
             buff2.cantDefensa -= 1;
             buff2.AplicarBuff(scEstaUnidad);
-            // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
+            // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
             Buff buffComponent2 = ComponentCopier.CopyComponent(buff2, scEstaUnidad.gameObject);
 
 
@@ -196,7 +196,7 @@ public class IADevorarSangre : IAHabilidad
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obst�culos
+    // Filtrar los obstáculos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
@@ -211,7 +211,7 @@ public class IADevorarSangre : IAHabilidad
       return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obst�culo
+    // Si no hay unidades, devolver el obstáculo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
   }

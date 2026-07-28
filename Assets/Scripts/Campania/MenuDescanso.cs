@@ -1069,7 +1069,7 @@ public class MenuDescanso : MonoBehaviour
       return;
     }
 
-    int random = UnityEngine.Random.Range(1, 101);
+    int random = UnityEngine.Random.Range(0, 100);
     if (CampaignManager.Instance.DebeUsarConfiguracionTutorial())
     {
       bool tutorialLegacyActivo = CampaignManager.Instance.scTutorialManager != null
@@ -1097,7 +1097,7 @@ public class MenuDescanso : MonoBehaviour
       int intentos = 0;
       while (random >= inicioRangoCalor && random < finRangoCalor && intentos < 32)
       {
-        random = UnityEngine.Random.Range(1, 101);
+        random = UnityEngine.Random.Range(0, 100);
         intentos++;
       }
 
@@ -1167,8 +1167,7 @@ public class MenuDescanso : MonoBehaviour
         CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_almasDanzantes;
 
 
-        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Las Almas Danzantes de animales inocentes guian a la caravana. +5 Esperanza, 0% chances de emboscada."));
-        CampaignManager.Instance.CambiarEsperanzaActual(5);
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Las Almas Danzantes de animales inocentes guían a la caravana. Mientras permanezcan, no habrá emboscadas."));
       }
       if (CampaignManager.Instance.scAtributosZona.ID == 2) //Paso Helado - Aurora Boreal
       {

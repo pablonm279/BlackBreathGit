@@ -14,7 +14,7 @@ public class LadronEnvenenarArma : IAHabilidad
   [SerializeField] private int bonusAtaque;
   [SerializeField] private int XdDanio;
   [SerializeField] private int daniodX;
-  [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: ¡cido - 8: Arcano
+  [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: √Åcido - 8: Arcano
 
 
 
@@ -101,13 +101,13 @@ public class LadronEnvenenarArma : IAHabilidad
       VFXAplicar(objetivo.gameObject);
 
       /////////////////////////////////////////////
-      //BUFF ---- AsÌ se aplica un buff/debuff
+      //BUFF ---- As√≠ se aplica un buff/debuff
       Buff buff = new Buff();
       buff.buffNombre = "Arma Envenenada"; //El ataque basico del Ladron controla si tiene este buff para aplicar veneno
       buff.boolfDebufftBuff = true;
       buff.DuracionBuffRondas = 2;
       buff.AplicarBuff(objetivo);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
+      // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
       Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
     }

@@ -5,6 +5,10 @@
 .githooks/* text eol=lf working-tree-encoding=UTF-8
 
 # Encoding guardrails for source/config/text files that often include accents.
+.editorconfig text working-tree-encoding=UTF-8
+.gitattributes text working-tree-encoding=UTF-8
+.gitignore text working-tree-encoding=UTF-8
+.gitmodules text working-tree-encoding=UTF-8
 *.cs text working-tree-encoding=UTF-8
 *.txt text working-tree-encoding=UTF-8
 *.md text working-tree-encoding=UTF-8
@@ -22,3 +26,10 @@
 *.asmdef text working-tree-encoding=UTF-8
 *.asmref text working-tree-encoding=UTF-8
 *.meta text working-tree-encoding=UTF-8
+*.ps1 text eol=lf working-tree-encoding=UTF-8
+*.sh text eol=lf working-tree-encoding=UTF-8
+
+# Unity usa Force Text; estos archivos deben seguir siendo UTF-8.
+*.prefab text working-tree-encoding=UTF-8
+*.unity text working-tree-encoding=UTF-8
+Assets/Resources/Tutoriales/*.asset text working-tree-encoding=UTF-8

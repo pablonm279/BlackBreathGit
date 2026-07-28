@@ -13,7 +13,7 @@ public class IAMordidaVagraniloMayor : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Perforante - 2: Cortante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
 
     void Awake()
     {
@@ -166,7 +166,7 @@ public override object EstablecerObjetivoPrioritario()
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obst�culos
+    // Filtrar los obstáculos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
@@ -181,7 +181,7 @@ public override object EstablecerObjetivoPrioritario()
         return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obst�culo
+    // Si no hay unidades, devolver el obstáculo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
 }
@@ -195,7 +195,7 @@ public override object EstablecerObjetivoPrioritario()
        Estados.Aplicar_Sangrado(unidad, 2, scEstaUnidad);
 
       /////////////////////////////////////////////
-      //BUFF ---- As� se aplica un buff/debuff
+      //BUFF ---- Así se aplica un buff/debuff
       Buff buff = new Buff();
       buff.buffNombre = "Sangre Contaminada";
       buff.boolfDebufftBuff = false;
@@ -204,7 +204,7 @@ public override object EstablecerObjetivoPrioritario()
       buff.cantDanioPorcentaje -= 5;
       buff.cantTsFortaleza -= 1;
       buff.AplicarBuff(unidad);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
+      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
       Buff buffComponent = ComponentCopier.CopyComponent(buff, unidad.gameObject);
 
 

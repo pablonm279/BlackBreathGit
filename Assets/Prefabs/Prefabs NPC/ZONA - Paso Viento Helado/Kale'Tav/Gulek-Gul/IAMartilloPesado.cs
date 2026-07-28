@@ -14,7 +14,7 @@ public class IAMartilloPesado : IAHabilidad
     [SerializeField] private int bonusAtaque;
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
-    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: �cido - 8: Arcano - 9: Necro
+    [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
 
    
   void Awake()
@@ -197,7 +197,7 @@ public class IAMartilloPesado : IAHabilidad
         { 
           Unidad unidadObjetivo = casilla.Presente.GetComponent<Unidad>();
 
-          float danio = TiradaDeDados.TirarDados(XdDanio, daniodX)/2; //Da�o reducido en un 50% a unidades cercanas
+          float danio = TiradaDeDados.TirarDados(XdDanio, daniodX)/2; //Daño reducido en un 50% a unidades cercanas
           danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
 
           unidadObjetivo.RecibirDanio(danio , tipoDanio, false, scEstaUnidad); 
@@ -215,13 +215,13 @@ public class IAMartilloPesado : IAHabilidad
 
 public override object EstablecerObjetivoPrioritario()
   {
-    // Obtener la unidad due�a
+    // Obtener la unidad dueña
     Unidad unidadDueña = gameObject.GetComponent<Unidad>();
     if (unidadDueña == null) return null;
 
     // Filtrar las unidades
     var unidades = objPosibles.OfType<Unidad>().ToList();
-    // Filtrar los obst�culos
+    // Filtrar los obstáculos
     var obstaculos = objPosibles.OfType<Obstaculo>().ToList();
 
     // Ordenar las unidades primero por posX y luego por la diferencia en posY
@@ -236,7 +236,7 @@ public override object EstablecerObjetivoPrioritario()
       return unidadesOrdenadas.FirstOrDefault();
     }
 
-    // Si no hay unidades, devolver el obst�culo
+    // Si no hay unidades, devolver el obstáculo
     var obstaculo = obstaculos.FirstOrDefault();
     return obstaculo;
   }

@@ -8,5 +8,8 @@ trim_trailing_whitespace = true
 [*.md]
 trim_trailing_whitespace = false
 
+[*.ps1]
+charset = utf-8-bom
+
 [.githooks/*]
 end_of_line = lf

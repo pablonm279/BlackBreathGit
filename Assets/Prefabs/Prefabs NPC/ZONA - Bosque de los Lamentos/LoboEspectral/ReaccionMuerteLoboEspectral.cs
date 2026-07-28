@@ -20,7 +20,7 @@ public class ReaccionMuerteLoboEspectral : Reaccion
     corteVertical =  gameObject.GetComponent<Cortevertical>();
     
 
-    descripcion = TRADU.i.Traducir("ReacciÛn: Al morir, enfurecer· a otros Lobos Espectrales.");
+    descripcion = TRADU.i.Traducir("Reacci√≥n: Al morir, enfurecer√° a otros Lobos Espectrales.");
 
    }
 
@@ -44,7 +44,7 @@ public class ReaccionMuerteLoboEspectral : Reaccion
            if(unidad.GetComponent<ReaccionMuerteLoboEspectral>() != null)
            {
               /////////////////////////////////////////////
-              //BUFF ---- AsÌ se aplica un buff/debuff
+              //BUFF ---- As√≠ se aplica un buff/debuff
               Buff buff = new Buff();
               buff.buffNombre = "Furia";
               buff.boolfDebufftBuff = true;
@@ -53,7 +53,7 @@ public class ReaccionMuerteLoboEspectral : Reaccion
               buff.cantAtaque += 1;
               buff.cantDefensa -= 1;
               buff.AplicarBuff(unidad);
-              // Agrega el componente Buff al objeto objetivo y asigna la configuraciÛn del buff
+              // Agrega el componente Buff al objeto objetivo y asigna la configuraci√≥n del buff
               Buff buffComponent = ComponentCopier.CopyComponent(buff, unidad.gameObject);
 
            }
