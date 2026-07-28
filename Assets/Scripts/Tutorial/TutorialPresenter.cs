@@ -69,7 +69,8 @@ public class TutorialPresenter : MonoBehaviour
   private Vector2 panelOriginalAnchoredPosition;
   private Vector2 panelOriginalSizeDelta;
   private Vector3 panelOriginalScale;
-  private readonly Dictionary<Graphic, bool> gatedGraphicsOriginalRaycastTarget = new Dictionary<Graphic, bool>();
+  private TutorialTarget inputBlockerPassthroughTarget;
+  private string inputBlockerTargetId = string.Empty;
 
   private void Reset()
   {
@@ -100,7 +101,8 @@ public class TutorialPresenter : MonoBehaviour
   private void OnDisable()
   {
     TutorialEvents.EventEmitted -= OnTutorialEvent;
-    RestoreGatedGraphics();
+    ClearInputBlockerTarget();
+    SetActive(inputBlocker, false);
   }
 
   private void LateUpdate()
@@ -118,20 +120,16 @@ public class TutorialPresenter : MonoBehaviour
       }
     }
 
-    if (ShouldSuspendInputGateForCampaignTravel())
-    {
-      RestoreGatedGraphics();
-      return;
-    }
-
-    if (currentStep != null && currentStep.inputBlockMode != TutorialInputBlockMode.None)
-    {
-      ApplyGraphicInputGate(currentStep);
-    }
+    RefreshInputBlockerTargetIfNeeded();
   }
 
   public void Configure(TutorialDirector tutorialDirector)
   {
+    if (director == tutorialDirector)
+    {
+      return;
+    }
+
     director = tutorialDirector;
     AutoBindReferences();
     ApplyInlineSpriteAsset();
@@ -179,7 +177,7 @@ public class TutorialPresenter : MonoBehaviour
 
     currentStep = step;
     hiddenForCampaignTravel = false;
-    RestoreGatedGraphics();
+    ConfigureInputBlockerTarget(step);
     AudioClip narratorAudio = GetNarratorAudioForCurrentLanguage(step);
     SelectActivePanel(step);
     ApplyPanelPresentation(step);
@@ -190,7 +188,7 @@ public class TutorialPresenter : MonoBehaviour
     ConfigurePanelContentVisibility(step);
     SetActive(panelRoot, activePanelRoot == panelRoot && ShouldShowPanel(step));
     SetActive(combatPanelRoot, activePanelRoot == combatPanelRoot && ShouldShowPanel(step));
-    SetActive(inputBlocker, step.inputBlockMode == TutorialInputBlockMode.All);
+    SetActive(inputBlocker, step.inputBlockMode != TutorialInputBlockMode.None);
     ArrangeTutorialLayers();
 
     if (activeTitleText != null)
@@ -218,20 +216,18 @@ public class TutorialPresenter : MonoBehaviour
     PositionTargetVisuals(step);
     PlayNarratorAudio(narratorAudio);
     UpdateMuteVisualState();
-    ApplyGraphicInputGate(step);
     ArrangeTutorialLayers();
 
     if (hideUntilRestRandomEvent && CurrentStepWaitsForEvent(TutorialEventNames.CampaignRestRandomEventContinued))
     {
       hiddenForCampaignTravel = true;
       SetTutorialVisualsVisible(false);
-      RestoreGatedGraphics();
     }
   }
 
   public void Hide()
   {
-    RestoreGatedGraphics();
+    ClearInputBlockerTarget();
     currentStep = null;
     StopRevealNextButtonDelay();
     StopNarratorTextAnimation();
@@ -419,7 +415,7 @@ public class TutorialPresenter : MonoBehaviour
   {
     if (inputBlocker != null)
     {
-      inputBlocker.transform.SetAsFirstSibling();
+      inputBlocker.transform.SetAsLastSibling();
     }
 
     if (highlight != null)
@@ -671,10 +667,6 @@ public class TutorialPresenter : MonoBehaviour
       StopCurrentStepNarration();
       hiddenForCampaignTravel = true;
       SetTutorialVisualsVisible(false);
-      if (ShouldSuspendInputGateForCampaignTravel())
-      {
-        RestoreGatedGraphics();
-      }
       return;
     }
 
@@ -685,7 +677,6 @@ public class TutorialPresenter : MonoBehaviour
       hideUntilRestRandomEvent = true;
       hiddenForCampaignTravel = true;
       SetTutorialVisualsVisible(false);
-      RestoreGatedGraphics();
       return;
     }
 
@@ -706,7 +697,6 @@ public class TutorialPresenter : MonoBehaviour
 
       if (ShouldKeepTutorialHiddenUntilCampaignEvent())
       {
-        RestoreGatedGraphics();
         return;
       }
 
@@ -733,11 +723,6 @@ public class TutorialPresenter : MonoBehaviour
     }
 
     return false;
-  }
-
-  private bool ShouldSuspendInputGateForCampaignTravel()
-  {
-    return hiddenForCampaignTravel && ShouldKeepTutorialHiddenUntilCampaignEvent();
   }
 
   private bool ShouldKeepTutorialHiddenUntilCampaignEvent()
@@ -768,143 +753,60 @@ public class TutorialPresenter : MonoBehaviour
     SetActive(combatPanelRoot, visible && activePanelRoot == combatPanelRoot && ShouldShowPanel(currentStep));
     SetActive(highlight != null ? highlight.gameObject : null, visible && currentStep != null && currentStep.showHighlight);
     SetActive(pointer != null ? pointer.gameObject : null, visible && currentStep != null && currentStep.showPointer);
-    SetActive(inputBlocker, visible && currentStep != null && currentStep.inputBlockMode == TutorialInputBlockMode.All);
+    SetActive(inputBlocker, visible && currentStep != null && currentStep.inputBlockMode != TutorialInputBlockMode.None);
   }
 
-  private void ApplyGraphicInputGate(TutorialStep step)
+  private void ConfigureInputBlockerTarget(TutorialStep step)
   {
-    if (step == null || step.inputBlockMode == TutorialInputBlockMode.None)
+    string targetId = step != null && step.inputBlockMode == TutorialInputBlockMode.AllExceptTarget
+      ? step.targetId
+      : string.Empty;
+
+    if (inputBlockerTargetId != targetId)
+    {
+      inputBlockerTargetId = targetId;
+      inputBlockerPassthroughTarget = null;
+      inputBlockerRaycastFilter?.SetDynamicPassthroughTarget(
+        null,
+        !string.IsNullOrEmpty(inputBlockerTargetId));
+    }
+
+    RefreshInputBlockerTargetIfNeeded();
+  }
+
+  private void RefreshInputBlockerTargetIfNeeded()
+  {
+    if (inputBlockerRaycastFilter == null)
     {
       return;
     }
 
-    Graphic[] graphics = UnityEngine.Object.FindObjectsByType<Graphic>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-    TutorialTarget target = step.inputBlockMode == TutorialInputBlockMode.AllExceptTarget
-      ? TutorialTarget.Find(step.targetId)
-      : null;
-
-    for (int i = 0; i < graphics.Length; i++)
+    bool needsTarget = !string.IsNullOrEmpty(inputBlockerTargetId);
+    if (!needsTarget)
     {
-      Graphic graphic = graphics[i];
-      if (graphic == null)
-      {
-        continue;
-      }
-
-      if (IsTutorialOwnedGraphic(graphic))
-      {
-        continue;
-      }
-
-      if (!gatedGraphicsOriginalRaycastTarget.ContainsKey(graphic))
-      {
-        gatedGraphicsOriginalRaycastTarget.Add(graphic, graphic.raycastTarget);
-      }
-
-      graphic.raycastTarget = gatedGraphicsOriginalRaycastTarget[graphic] && IsGraphicAllowedForStep(graphic, step, target);
+      return;
     }
+
+    if (inputBlockerPassthroughTarget != null && inputBlockerPassthroughTarget.gameObject.activeInHierarchy)
+    {
+      return;
+    }
+
+    TutorialTarget resolvedTarget = TutorialTarget.Find(inputBlockerTargetId);
+    if (resolvedTarget == inputBlockerPassthroughTarget)
+    {
+      return;
+    }
+
+    inputBlockerPassthroughTarget = resolvedTarget;
+    inputBlockerRaycastFilter.SetDynamicPassthroughTarget(inputBlockerPassthroughTarget, true);
   }
 
-  private bool IsGraphicAllowedForStep(Graphic graphic, TutorialStep step, TutorialTarget target)
+  private void ClearInputBlockerTarget()
   {
-    if (graphic == null || step == null)
-    {
-      return false;
-    }
-
-    if (IsOptionsPriorityTransform(graphic.transform))
-    {
-      return true;
-    }
-
-    if (step.inputBlockMode == TutorialInputBlockMode.None)
-    {
-      return true;
-    }
-
-    if (step.inputBlockMode == TutorialInputBlockMode.All)
-    {
-      return false;
-    }
-
-    if (target == null)
-    {
-      return false;
-    }
-
-    Transform graphicTransform = graphic.transform;
-    Transform targetTransform = target.transform;
-    return graphicTransform == targetTransform
-      || graphicTransform.IsChildOf(targetTransform)
-      || targetTransform.IsChildOf(graphicTransform);
-  }
-
-  private bool IsTutorialOwnedGraphic(Graphic graphic)
-  {
-    if (graphic == null)
-    {
-      return false;
-    }
-
-    Transform graphicTransform = graphic.transform;
-    return graphicTransform.IsChildOf(transform)
-      || IsChildOf(graphicTransform, panelRoot)
-      || IsChildOf(graphicTransform, combatPanelRoot)
-      || IsChildOf(graphicTransform, inputBlocker)
-      || (highlight != null && graphicTransform.IsChildOf(highlight))
-      || (pointer != null && graphicTransform.IsChildOf(pointer));
-  }
-
-  private static bool IsOptionsPriorityTransform(Transform target)
-  {
-    while (target != null)
-    {
-      if (target.GetComponent<OpcionesCargarPlayerPrefsUI>() != null || IsOptionsPriorityName(target.name))
-      {
-        return true;
-      }
-
-      target = target.parent;
-    }
-
-    return false;
-  }
-
-  private static bool IsOptionsPriorityName(string objectName)
-  {
-    if (string.IsNullOrEmpty(objectName))
-    {
-      return false;
-    }
-
-    switch (objectName.Trim().ToLowerInvariant())
-    {
-      case "opciones":
-      case "menuopciones":
-      case "btnopciones":
-      case "bt_opciones":
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  private static bool IsChildOf(Transform child, GameObject parent)
-  {
-    return child != null && parent != null && child.IsChildOf(parent.transform);
-  }
-
-  private void RestoreGatedGraphics()
-  {
-    foreach (KeyValuePair<Graphic, bool> entry in gatedGraphicsOriginalRaycastTarget)
-    {
-      if (entry.Key != null)
-      {
-        entry.Key.raycastTarget = entry.Value;
-      }
-    }
-
-    gatedGraphicsOriginalRaycastTarget.Clear();
+    inputBlockerTargetId = string.Empty;
+    inputBlockerPassthroughTarget = null;
+    inputBlockerRaycastFilter?.SetDynamicPassthroughTarget(null, false);
   }
 
   private void ConfigureInputBlockerRaycastFilter()
@@ -912,6 +814,14 @@ public class TutorialPresenter : MonoBehaviour
     if (inputBlocker == null)
     {
       inputBlockerRaycastFilter = null;
+      return;
+    }
+
+    if (inputBlockerRaycastFilter != null && inputBlockerRaycastFilter.gameObject == inputBlocker)
+    {
+      inputBlockerRaycastFilter.SetDynamicPassthroughTarget(
+        inputBlockerPassthroughTarget,
+        !string.IsNullOrEmpty(inputBlockerTargetId));
       return;
     }
 
@@ -931,19 +841,32 @@ public class TutorialPresenter : MonoBehaviour
     AddOptionsPassthroughTargets(passthroughTargets);
 
     inputBlockerRaycastFilter.SetPassthroughTargets(passthroughTargets.ToArray());
+    inputBlockerRaycastFilter.SetDynamicPassthroughTarget(
+      inputBlockerPassthroughTarget,
+      !string.IsNullOrEmpty(inputBlockerTargetId));
   }
 
   private static void AddOptionsPassthroughTargets(List<RectTransform> targets)
   {
-    RectTransform[] rectTransforms = Resources.FindObjectsOfTypeAll<RectTransform>();
-    for (int i = 0; i < rectTransforms.Length; i++)
+    OpcionesCargarPlayerPrefsUI[] optionsMenus = Resources.FindObjectsOfTypeAll<OpcionesCargarPlayerPrefsUI>();
+    for (int i = 0; i < optionsMenus.Length; i++)
     {
-      RectTransform rectTransform = rectTransforms[i];
-      if (rectTransform != null && IsOptionsPriorityTransform(rectTransform))
+      OpcionesCargarPlayerPrefsUI optionsMenu = optionsMenus[i];
+      if (optionsMenu != null && optionsMenu.gameObject.scene.IsValid())
       {
-        AddPassthroughTarget(targets, rectTransform);
+        AddPassthroughTarget(targets, optionsMenu.transform as RectTransform);
       }
     }
+
+    AddPassthroughTarget(targets, FindActiveRectTransform("btnOpciones"));
+    AddPassthroughTarget(targets, FindActiveRectTransform("bt_opciones"));
+    AddPassthroughTarget(targets, FindActiveRectTransform("menuOpciones"));
+  }
+
+  private static RectTransform FindActiveRectTransform(string objectName)
+  {
+    GameObject target = GameObject.Find(objectName);
+    return target != null ? target.transform as RectTransform : null;
   }
 
   private static void AddPassthroughTarget(List<RectTransform> targets, RectTransform target)
@@ -1520,34 +1443,112 @@ public class TutorialPresenter : MonoBehaviour
 
 public class TutorialInputBlockerRaycastFilter : MonoBehaviour, ICanvasRaycastFilter
 {
+  private const float MinimumWorldTargetSize = 48f;
+
   private RectTransform[] passthroughTargets;
+  private TutorialTarget dynamicPassthroughTarget;
+  private bool requiresDynamicPassthroughTarget;
 
   public void SetPassthroughTargets(params RectTransform[] targets)
   {
     passthroughTargets = targets;
   }
 
+  public void SetDynamicPassthroughTarget(TutorialTarget target, bool required)
+  {
+    dynamicPassthroughTarget = target;
+    requiresDynamicPassthroughTarget = required;
+  }
+
   public bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
   {
-    if (passthroughTargets == null)
+    bool hasValidDynamicTarget = TryIsInsideDynamicTarget(screenPoint, eventCamera, out bool isInsideDynamicTarget);
+    if (isInsideDynamicTarget)
     {
-      return true;
+      return false;
     }
 
-    for (int i = 0; i < passthroughTargets.Length; i++)
+    // Si el objetivo aun no aparecio o quedo fuera de pantalla, no cerramos
+    // toda la UI: el tutorial se recupera en cuanto el target se registra.
+    if (requiresDynamicPassthroughTarget && !hasValidDynamicTarget)
     {
-      RectTransform target = passthroughTargets[i];
-      if (target == null || !target.gameObject.activeInHierarchy)
-      {
-        continue;
-      }
+      return false;
+    }
 
-      if (RectTransformUtility.RectangleContainsScreenPoint(target, screenPoint, eventCamera))
+    if (passthroughTargets != null)
+    {
+      for (int i = 0; i < passthroughTargets.Length; i++)
       {
-        return false;
+        RectTransform target = passthroughTargets[i];
+        if (target == null || !target.gameObject.activeInHierarchy)
+        {
+          continue;
+        }
+
+        if (ContainsScreenPoint(target, screenPoint, eventCamera))
+        {
+          return false;
+        }
       }
     }
 
     return true;
+  }
+
+  private bool TryIsInsideDynamicTarget(Vector2 screenPoint, Camera eventCamera, out bool isInside)
+  {
+    isInside = false;
+    TutorialTarget target = dynamicPassthroughTarget;
+    if (target == null || !target.gameObject.activeInHierarchy)
+    {
+      return false;
+    }
+
+    RectTransform targetRect = GetInteractiveRect(target);
+    if (targetRect != null && targetRect.gameObject.activeInHierarchy)
+    {
+      isInside = ContainsScreenPoint(targetRect, screenPoint, eventCamera);
+      return true;
+    }
+
+    if (!target.TryGetScreenPosition(out Vector3 targetPosition))
+    {
+      return false;
+    }
+
+    Vector2 targetSize = target.GetHighlightSize();
+    float halfWidth = Mathf.Max(MinimumWorldTargetSize, targetSize.x) * 0.5f;
+    float halfHeight = Mathf.Max(MinimumWorldTargetSize, targetSize.y) * 0.5f;
+    isInside = Mathf.Abs(screenPoint.x - targetPosition.x) <= halfWidth
+      && Mathf.Abs(screenPoint.y - targetPosition.y) <= halfHeight;
+    return true;
+  }
+
+  private static RectTransform GetInteractiveRect(TutorialTarget target)
+  {
+    Selectable selectable = target.GetComponentInParent<Selectable>();
+    if (selectable != null && selectable.IsActive())
+    {
+      RectTransform selectableRect = selectable.transform as RectTransform;
+      if (selectableRect != null)
+      {
+        return selectableRect;
+      }
+    }
+
+    return target.rectTransform;
+  }
+
+  private static bool ContainsScreenPoint(RectTransform target, Vector2 screenPoint, Camera fallbackCamera)
+  {
+    Canvas canvas = target.GetComponentInParent<Canvas>();
+    Canvas rootCanvas = canvas != null ? canvas.rootCanvas : null;
+    Camera targetCamera = rootCanvas == null || rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay
+      ? null
+      : rootCanvas.worldCamera != null
+        ? rootCanvas.worldCamera
+        : fallbackCamera;
+
+    return RectTransformUtility.RectangleContainsScreenPoint(target, screenPoint, targetCamera);
   }
 }

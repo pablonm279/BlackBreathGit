@@ -273,7 +273,7 @@ public class MenuDescanso : MonoBehaviour
 
 
       tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Recolección de Materiales</b></u>\n\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se dedicarán a recolectar materiales básicos en la zona.\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se dedicarán a recolectar materiales básicos en la región.\n\n");
       int materialesMinimos = (int)CampaignManager.Instance.AplicarRecoleccionMaterialesPresagios(valor);
       int materialesMaximos = (int)CampaignManager.Instance.AplicarRecoleccionMaterialesPresagios(valor + 10);
       tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se juntarán entre ") + materialesMinimos + TRADU.i.Traducir(" y ") + materialesMaximos + TRADU.i.Traducir(" materiales. </color>\n\n\n");
@@ -767,8 +767,7 @@ public class MenuDescanso : MonoBehaviour
 
 
 
-    CampaignManager.Instance.BosqueArdienteMecanicaIncendio(30);
-    CampaignManager.Instance.BosqueArdienteMecanicaIncendio(10);
+    CampaignManager.Instance.BosqueArdienteMecanicaIncendio(40);
     CampaignManager.Instance.PasoVientoHeladoMecanicaRituales(30);
 
     int fatiga = CampaignManager.Instance.GetFatigaActual();
@@ -1164,6 +1163,7 @@ public class MenuDescanso : MonoBehaviour
         climaAlmasDanzantes.SetActive(true);
 
         CampaignManager.Instance.intTipoClima = 6;
+        CampaignManager.Instance.RegistrarClimaExclusivoDescubierto(CampaignManager.Instance.intTipoClima);
         CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_almasDanzantes;
 
 
@@ -1175,6 +1175,7 @@ public class MenuDescanso : MonoBehaviour
         climaAuroraBoreal.SetActive(true);
 
         CampaignManager.Instance.intTipoClima = 7;
+        CampaignManager.Instance.RegistrarClimaExclusivoDescubierto(CampaignManager.Instance.intTipoClima);
         CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_auroraboreal;
 
 
@@ -1185,6 +1186,7 @@ public class MenuDescanso : MonoBehaviour
       if (CampaignManager.Instance.scAtributosZona.ID == 3) //Nedukazal - Oscuridad
       {
         CampaignManager.Instance.intTipoClima = 8;
+        CampaignManager.Instance.RegistrarClimaExclusivoDescubierto(CampaignManager.Instance.intTipoClima);
         CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_NedukazalNormal;
 
       }
@@ -1197,6 +1199,7 @@ public class MenuDescanso : MonoBehaviour
       {
         climaMasacre.SetActive(true);
         CampaignManager.Instance.intTipoClima = 9;
+        CampaignManager.Instance.RegistrarClimaExclusivoDescubierto(CampaignManager.Instance.intTipoClima);
         CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_NedukazalMasacre;
         CampaignManager.Instance.CambiarEsperanzaActual(-10);
       }

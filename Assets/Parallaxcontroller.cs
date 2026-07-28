@@ -78,6 +78,7 @@ public class Parallaxcontroller : MonoBehaviour
     private float tiempoFadePaisajeZona;
     private Sprite spritePendienteFadeZona;
     private Color colorInicioFadeZona;
+    private bool paisajeZonaEstabaVisible;
 
     void Awake()
     {
@@ -176,6 +177,7 @@ public class Parallaxcontroller : MonoBehaviour
     void OnDisable()
     {
         DetenerFadePaisajeZona();
+        paisajeZonaEstabaVisible = false;
         if (paisajeZonaSeleccionada != null)
         {
             paisajeZonaSeleccionada.color = colorBasePaisaje;
@@ -230,6 +232,7 @@ public class Parallaxcontroller : MonoBehaviour
         {
             DetenerFadePaisajeZona();
             paisajeZonaSeleccionada.color = colorBasePaisaje;
+            paisajeZonaEstabaVisible = false;
             if (paisajeZonaSeleccionada.gameObject.activeSelf)
             {
                 paisajeZonaSeleccionada.gameObject.SetActive(false);
@@ -243,19 +246,18 @@ public class Parallaxcontroller : MonoBehaviour
         }
 
         int zonaSeleccionada = prePartidaManager.ZonaSeleccionada;
-        if (zonaSeleccionada != ultimaZonaMostrada)
+        Sprite spriteZona = ObtenerSpriteZona(zonaSeleccionada);
+        if (!paisajeZonaEstabaVisible)
         {
-            Sprite spriteZona = ObtenerSpriteZona(zonaSeleccionada);
-            if (ultimaZonaMostrada < 0)
-            {
-                paisajeZonaSeleccionada.sprite = spriteZona;
-                paisajeZonaSeleccionada.color = colorBasePaisaje;
-            }
-            else
-            {
-                IniciarFadePaisajeZona(spriteZona);
-            }
-
+            paisajeZonaEstabaVisible = true;
+            ultimaZonaMostrada = zonaSeleccionada;
+            paisajeZonaSeleccionada.sprite = spriteZona;
+            paisajeZonaSeleccionada.color = colorBasePaisaje;
+            IniciarFadePaisajeZona(spriteZona);
+        }
+        else if (zonaSeleccionada != ultimaZonaMostrada)
+        {
+            IniciarFadePaisajeZona(spriteZona);
             ultimaZonaMostrada = zonaSeleccionada;
         }
 

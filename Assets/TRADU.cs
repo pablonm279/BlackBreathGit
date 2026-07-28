@@ -1899,8 +1899,8 @@ public class TRADU : MonoBehaviour
 
             case "Uno de los principales encargados de guiar la caravana y elegir las rutas más seguras accidentalmente perdió sus mapas.\n":
                 r = "One of the main people in charge of guiding the caravan and choosing the safest routes accidentally lost their maps.\n"; break;
-            case "Los demás encargados lo ayudarán a buscarlos ya que esos mapas contiene información crucial de la zona actual, y sin su ayuda la caravana podría perderse.\n\n\n\n\n\n\n":
-                r = "The other leaders will help search for them since those maps contain crucial information about the current area, and without them the caravan could get lost.\n\n\n\n\n\n\n"; break;
+            case "Los demás encargados lo ayudarán a buscarlos ya que esos mapas contiene información crucial de la región actual, y sin su ayuda la caravana podría perderse.\n\n\n\n\n\n\n":
+                r = "The other leaders will help search for them since those maps contain crucial information about the current region, and without them the caravan could get lost.\n\n\n\n\n\n\n"; break;
             case "Obtendrá el estado Enfermo por 4-7 días. Cada nivel del Séquito de Curanderos reducirá el tiempo de recuperación en 1 día.\n\n\n\n\n":
                 r = "Will gain the Sick status for 4-7 days. Each tier of the Healers' Retinue will reduce recovery time by 1 day.\n\n\n\n\n"; break;
             case "<color=#ba3fef>-Puedes comprar medicina por 45 Oro para reducir la Enfermedad un día extra.</color>\n\n":
@@ -2293,8 +2293,8 @@ public class TRADU : MonoBehaviour
             case "El Séquito de Mercaderes ha actualizado su inventario en el Puesto Comercial.":
                 r = "The Merchant Retinue has updated its inventory at the Trading Post.";
                 break;
-            case "Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 4 días.</i>":
-                r = "You have arrived at a Purifier's Sanctuary, several have been built in the area to provide support and prayers to the brave who fought the Lich.\nToday, although it is abandoned, it maintains its aura of tranquility and you can deposit offerings to make a purification prayer.\n\n<i>Resting here will bless your characters for 4 days.</i>";
+            case "Has llegado a un Santuario de Purificadores, varios se han construido en la región para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 4 días.</i>":
+                r = "You have arrived at a Purifier's Sanctuary, several have been built in the region to provide support and prayers to the brave who fought the Lich.\nToday, although it is abandoned, it maintains its aura of tranquility and you can deposit offerings to make a purification prayer.\n\n<i>Resting here will bless your characters for 4 days.</i>";
                 break;
             case "-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza.":
                 r = "The caravan has arrived at a Purifier's Sanctuary. Characters have healed by 15%. +10 Hope.";
@@ -2566,8 +2566,8 @@ public class TRADU : MonoBehaviour
             case "<color=#ba3fef>Respondes: -'Acepto tu ofrecimiento, no hay moneda que sobre en nuestra situación actual y seguramente nos ayudará durante el viaje, gracias.'</color> Efectos: +120-160 Oro. \n\n":
                 r = "<color=#ba3fef>You respond: -'I accept your offer, there is no money to spare in our current situation and it will surely help us during the journey, thank you.'</color> Effects: +120-160 Gold. \n\n";
                 break;
-            case "Un hombre anciano aparece a un lado del camino haciendole señas con las manos a la Caravana. De cerca, te das cuenta que este hombre lleva viviendo muchísimos años en la zona y la conoce a la perfección.\n":
-                r = "An old man appears at the side of the road waving his hands at the Caravan. Up close, you realize that this man has been living in the area for many years and knows it perfectly.\n";
+            case "Un hombre anciano aparece a un lado del camino haciendole señas con las manos a la Caravana. De cerca, te das cuenta que este hombre lleva viviendo muchísimos años en la región y la conoce a la perfección.\n":
+                r = "An old man appears at the side of the road waving his hands at the Caravan. Up close, you realize that this man has been living in the region for many years and knows it perfectly.\n";
                 break;
             case "'Aliento Negro o no, mis días ya están contados. Pero puedo transmitirles mis conocimientos sobre esta tierra, como último acto de bien.'- dice\n\n":
                 r = "'Black Breath or not, my days are already numbered. But I can share my knowledge about this land, as a final act of kindness.'- he says\n\n";
@@ -2899,8 +2899,8 @@ public class TRADU : MonoBehaviour
             case "<b><u>Recolección de Materiales</b></u>\n\n\n":
                 r = "<b><u>Material Collection</b></u>\n\n\n";
                 break;
-            case "Los civiles se dedicarán a recolectar materiales básicos en la zona.\n\n":
-                r = "The civilians will dedicate themselves to collecting basic materials in the area.\n\n";
+            case "Los civiles se dedicarán a recolectar materiales básicos en la región.\n\n":
+                r = "The civilians will dedicate themselves to collecting basic materials in the region.\n\n";
                 break;
             case "<color=#d8a205>Se juntarán entre ":
                 r = "<color=#d8a205>You will gather between ";
@@ -2938,11 +2938,11 @@ public class TRADU : MonoBehaviour
             case "Combate directo contra enemigos de élite.":
                 r = "Direct combat against Elite enemies.";
                 break;
-            case "Batalla final de la Zona actual.":
-                r = "Final battle of the current Zone.";
+            case "Batalla final de la Región actual.":
+                r = "Final battle of the current Region.";
                 break;
-            case "<b>(!)</b> Zona Expuesta, la caravana será emboscada.":
-                r = "<b>(!)</b> Exposed Zone, the caravan will be ambushed.";
+            case "<b>(!)</b> Región Expuesta, la caravana será emboscada.":
+                r = "<b>(!)</b> Exposed Region, the caravan will be ambushed.";
                 break;
             case "Nodo Desconocido.":
                 r = "Unknown Node.";
@@ -3625,8 +3625,8 @@ public class TRADU : MonoBehaviour
             case "EFECTOS PASIVOS:\n\n-Consumen la mitad de Suministros que los Civiles habituales. \n\n-Al aceptarlos la Esperanza aumenta en 30. \n\n-Al perderlos la Esperanza disminuye en 40.":
                 r = "PASSIVE EFFECTS:\n\n-They consume half as many Supplies as regular Civilians. \n\n-Accepting them increases Hope by 30. \n\n-Losing them decreases Hope by 40.";
                 break;
-            case "Un grupo de especialistas en recolectar hierbas y crear con ellas bélsamos especiales para vender. \nAdemás, sus hierbas proporcionarán beneficios curativos a la caravana.\nPero quizás no sean demasiado cuidadosos al adentrarse en zonas peligrosas para recolectar hierbas.\n\n":
-                r = "A group of specialists who gather herbs and make special balms to sell. \nTheir herbs also provide healing benefits to the Caravan.\nBut they may be careless when entering dangerous areas to gather more herbs.\n\n";
+            case "Un grupo de especialistas en recolectar hierbas y crear con ellas bélsamos especiales para vender. \nAdemás, sus hierbas proporcionarán beneficios curativos a la caravana.\nPero quizás no sean demasiado cuidadosos al adentrarse en regiones peligrosas para recolectar hierbas.\n\n":
+                r = "A group of specialists who gather herbs and make special balms to sell. \nTheir herbs also provide healing benefits to the Caravan.\nBut they may be careless when entering dangerous regions to gather more herbs.\n\n";
                 break;
             case "EFECTOS PASIVOS:\n\n-Hierbas curativas: Mejoran ":
                 r = "PASSIVE EFFECTS:\n\n-Healing Herbs: Improve ";
@@ -5239,8 +5239,8 @@ public class TRADU : MonoBehaviour
             case "Mapa":
                 r = "Map";
                 break;
-            case "Zonas":
-                r = "Zones";
+            case "Regiones":
+                r = "Regions";
                 break;
             case "Civiles":
                 r = "Civilians";
@@ -5368,8 +5368,8 @@ public class TRADU : MonoBehaviour
             case "Modo Rápido":
                 r = "Fast Mode";
                 break;
-            case "Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será mas propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Pie</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta zona.":
-                r = "Due to the invasion, Nedukazal is shrouded in chaos and darkness, so the caravan will not be able to clearly see the path ahead.\n\nRelying on its own light, it will be more prone to ambushes (+20%).\n\nUpgrade the <b>Standing Torches</b> to increase the vision range.\n\nThe Black Breath will not be a concern in this area.";
+            case "Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será mas propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Pie</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta región.":
+                r = "Due to the invasion, Nedukazal is shrouded in chaos and darkness, so the caravan will not be able to clearly see the path ahead.\n\nRelying on its own light, it will be more prone to ambushes (+20%).\n\nUpgrade the <b>Standing Torches</b> to increase the vision range.\n\nThe Black Breath will not be a concern in this region.";
                 break;
             case "\nSe conseguirán de 25-40 Materiales y 60-85 Suministros.":
                 r = "\n25-40 Materials and 60-85 Supplies will be gathered.";
@@ -6127,8 +6127,8 @@ public class TRADU : MonoBehaviour
             case "Al reparo de un patio de posta, ocultos por lonas y carros volcados, encuentran a varios habitantes de Nedukazal esperando el momento para huir.\n\n":
                 r = "Sheltering in a coaching yard, hidden by tarps and overturned carts, they find several inhabitants of Nedukazal waiting for the moment to flee.\n\n";
                 break;
-            case "Al enterarse de que la Caravana partirá al amanecer, piden sumarse antes de que los Zarkil vuelvan a cruzar la zona.\n\n":
-                r = "When they learn the Caravan will leave at dawn, they ask to join before the Zarkil cross the area again.\n\n";
+            case "Al enterarse de que la Caravana partirá al amanecer, piden sumarse antes de que los Zarkil vuelvan a cruzar la región.\n\n":
+                r = "When they learn the Caravan will leave at dawn, they ask to join before the Zarkil cross the region again.\n\n";
                 break;
             case "<color=#a0e812><b>+5-10 Civiles, +3 Esperanza</b></color>":
                 r = "<color=#a0e812><b>+5-10 Civilians, +3 Hope</b></color>";
@@ -7330,7 +7330,7 @@ public class TRADU : MonoBehaviour
             case "Prueba jugable":
                 r = "Open Playtest";
                 break;
-            case "Gracias por jugar la demo.\\nEn esta versión podrás experimentar el Tutorial y luego la primer zona del juego completa.\\n\\nTu feedback es muy importante para seguir mejorando.":
+            case "Gracias por jugar la demo.\\nEn esta versión podrás experimentar el Tutorial y luego la primera región del juego completa.\\n\\nTu feedback es muy importante para seguir mejorando.":
                 r = "Thank you for playing the demo.\nIn this version, you will be able to experience the Tutorial and then the first region of the game.\n\nYour feedback is very important to help us keep improving.";
                 break;
             case "Claridad":
@@ -9228,8 +9228,8 @@ public class TRADU : MonoBehaviour
 
             case "Uno de los principales encargados de guiar la caravana y elegir las rutas más seguras accidentalmente perdió sus mapas.\n":
                 r = "Um dos principais responsáveis por guiar a caravana e escolher as rotas mais seguras perdeu seus mapas por acidente.\n"; break;
-            case "Los demás encargados lo ayudarán a buscarlos ya que esos mapas contiene información crucial de la zona actual, y sin su ayuda la caravana podría perderse.\n\n\n\n\n\n\n":
-                r = "Os outros responsáveis vío ajudá-lo a procurá-los, já que esses mapas contêm informações cruciais sobre a área atual, e sem eles a caravana pode se perder.\n\n\n\n\n\n\n"; break;
+            case "Los demás encargados lo ayudarán a buscarlos ya que esos mapas contiene información crucial de la región actual, y sin su ayuda la caravana podría perderse.\n\n\n\n\n\n\n":
+                r = "Os outros responsáveis vão ajudá-lo a procurá-los, já que esses mapas contêm informações cruciais sobre a região atual, e sem eles a caravana pode se perder.\n\n\n\n\n\n\n"; break;
             case "Obtendrá el estado Enfermo por 4-7 días. Cada nivel del Séquito de Curanderos reducirá el tiempo de recuperación en 1 día.\n\n\n\n\n":
                 r = "Receberá o estado Doente por 4-7 dias. Cada ní­vel do Séquito de Curandeiros reduzirá o tempo de recuperaçío em 1 dia.\n\n\n\n\n"; break;
             case "<color=#ba3fef>-Puedes comprar medicina por 45 Oro para reducir la Enfermedad un día extra.</color>\n\n":
@@ -9622,8 +9622,8 @@ public class TRADU : MonoBehaviour
             case "El Séquito de Mercaderes ha actualizado su inventario en el Puesto Comercial.":
                 r = "O Séquito de Mercadores atualizou seu inventário no Posto Comercial.";
                 break;
-            case "Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 4 días.</i>":
-                r = "Você chegou a um Santuário dos Purificadores; vários foram construídos na regiío para oferecer apoio e preces aos valentes que combateram o Lich.\nHoje, embora esteja abandonado, ele mantém sua aura de tranquilidade, e você pode depositar oferendas para realizar uma prece de purificaçío.\n\n<i>Descansar aqui abençoará seus personagens por 4 dias.</i>";
+            case "Has llegado a un Santuario de Purificadores, varios se han construido en la región para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 4 días.</i>":
+                r = "Você chegou a um Santuário dos Purificadores; vários foram construídos na região para oferecer apoio e preces aos valentes que combateram o Lich.\nHoje, embora esteja abandonado, ele mantém sua aura de tranquilidade, e você pode depositar oferendas para realizar uma prece de purificação.\n\n<i>Descansar aqui abençoará seus personagens por 4 dias.</i>";
                 break;
             case "-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza.":
                 r = "A caravana chegou a um Santuário dos Purificadores. Os personagens se curaram em 15%. +10 Esperança.";
@@ -9895,8 +9895,8 @@ public class TRADU : MonoBehaviour
             case "<color=#ba3fef>Respondes: -'Acepto tu ofrecimiento, no hay moneda que sobre en nuestra situación actual y seguramente nos ayudará durante el viaje, gracias.'</color> Efectos: +120-160 Oro. \n\n":
                 r = "<color=#ba3fef>Você responde: -'Aceito sua oferta, nío há moeda sobrando em nossa situaçío atual, e isso certamente nos ajudará durante a viagem, obrigado.'</color> Efeitos: +120-160 Ouro. \n\n";
                 break;
-            case "Un hombre anciano aparece a un lado del camino haciendole señas con las manos a la Caravana. De cerca, te das cuenta que este hombre lleva viviendo muchísimos años en la zona y la conoce a la perfección.\n":
-                r = "Um homem idoso aparece ao lado do caminho fazendo sinais com as míos para a Caravana. De perto, você percebe que esse homem vive na regiío há muitos anos e a conhece perfeitamente.\n";
+            case "Un hombre anciano aparece a un lado del camino haciendole señas con las manos a la Caravana. De cerca, te das cuenta que este hombre lleva viviendo muchísimos años en la región y la conoce a la perfección.\n":
+                r = "Um homem idoso aparece ao lado do caminho fazendo sinais com as mãos para a Caravana. De perto, você percebe que esse homem vive na região há muitos anos e a conhece perfeitamente.\n";
                 break;
             case "'Aliento Negro o no, mis días ya están contados. Pero puedo transmitirles mis conocimientos sobre esta tierra, como último acto de bien.'- dice\n\n":
                 r = "'Respiro Negro ou nío, meus dias já estío contados. Mas posso transmitir a vocês meu conhecimento sobre esta terra, como último ato de bondade.'- diz\n\n";
@@ -10228,8 +10228,8 @@ public class TRADU : MonoBehaviour
             case "<b><u>Recolección de Materiales</b></u>\n\n\n":
                 r = "<b><u>Coleta de Materiais</b></u>\n\n\n";
                 break;
-            case "Los civiles se dedicarán a recolectar materiales básicos en la zona.\n\n":
-                r = "Os civis se dedicarío a coletar materiais básicos na área.\n\n";
+            case "Los civiles se dedicarán a recolectar materiales básicos en la región.\n\n":
+                r = "Os civis se dedicarão a coletar materiais básicos na região.\n\n";
                 break;
             case "<color=#d8a205>Se juntarán entre ":
                 r = "<color=#d8a205>Serío reunidos entre ";
@@ -10267,11 +10267,11 @@ public class TRADU : MonoBehaviour
             case "Combate directo contra enemigos de élite.":
                 r = "Combate direto contra inimigos de elite.";
                 break;
-            case "Batalla final de la Zona actual.":
-                r = "Batalha final da Zona atual.";
+            case "Batalla final de la Región actual.":
+                r = "Batalha final da Região atual.";
                 break;
-            case "<b>(!)</b> Zona Expuesta, la caravana será emboscada.":
-                r = "<b>(!)</b> Zona Exposta, a caravana será emboscada.";
+            case "<b>(!)</b> Región Expuesta, la caravana será emboscada.":
+                r = "<b>(!)</b> Região Exposta, a caravana será emboscada.";
                 break;
             case "Nodo Desconocido.":
                 r = "Nó Desconhecido.";
@@ -10954,8 +10954,8 @@ public class TRADU : MonoBehaviour
             case "EFECTOS PASIVOS:\n\n-Consumen la mitad de Suministros que los Civiles habituales. \n\n-Al aceptarlos la Esperanza aumenta en 30. \n\n-Al perderlos la Esperanza disminuye en 40.":
                 r = "EFEITOS PASSIVOS:\n\n-Consomem metade dos Suprimentos dos Civis comuns. \n\n-Ao aceitá-los, a Esperança aumenta em 30. \n\n-Ao perdê-los, a Esperança diminui em 40.";
                 break;
-            case "Un grupo de especialistas en recolectar hierbas y crear con ellas bélsamos especiales para vender. \nAdemás, sus hierbas proporcionarán beneficios curativos a la caravana.\nPero quizás no sean demasiado cuidadosos al adentrarse en zonas peligrosas para recolectar hierbas.\n\n":
-                r = "Um grupo de especialistas em coletar ervas e criar com elas bálsamos especiais para vender. \nAlém disso, suas ervas proporcionarío benefí­cios curativos á caravana.\nMas talvez nío sejam cuidadosos demais ao entrar em áreas perigosas para coletar ervas.\n\n";
+            case "Un grupo de especialistas en recolectar hierbas y crear con ellas bálsamos especiales para vender. \nAdemás, sus hierbas proporcionarán beneficios curativos a la caravana.\nPero quizás no sean demasiado cuidadosos al adentrarse en regiones peligrosas para recolectar hierbas.\n\n":
+                r = "Um grupo de especialistas em coletar ervas e criar com elas bálsamos especiais para vender. \nAlém disso, suas ervas proporcionarão benefícios curativos à caravana.\nMas talvez não sejam cuidadosos demais ao entrar em regiões perigosas para coletar ervas.\n\n";
                 break;
             case "EFECTOS PASIVOS:\n\n-Hierbas curativas: Mejoran ":
                 r = "EFEITOS PASSIVOS:\n\n-Ervas curativas: Melhoram ";
@@ -12562,8 +12562,8 @@ public class TRADU : MonoBehaviour
             case "Mapa":
                 r = "Mapa";
                 break;
-            case "Zonas":
-                r = "Zonas";
+            case "Regiones":
+                r = "Regiões";
                 break;
             case "Civiles":
                 r = "Civis";
@@ -12691,8 +12691,8 @@ public class TRADU : MonoBehaviour
             case "Modo Rápido":
                 r = "Modo Rápido";
                 break;
-            case "Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será mas propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Pie</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta zona.":
-                r = "Devido á invasío, Nedukazal está envolta em caos e escuridío, portanto a caravana nío conseguirá ver claramente o caminho á frente.\n\nPor depender da própria luz, será mais propensa a sofrer emboscadas (+20%).\n\nMelhore as <b>Tochas de Pé</b> para aumentar o alcance da visío.\n\nO Respiro Negro nío será uma preocupaçío nesta zona.";
+            case "Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será mas propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Pie</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta región.":
+                r = "Devido à invasão, Nedukazal está envolta em caos e escuridão, portanto a caravana não conseguirá ver claramente o caminho à frente.\n\nPor depender da própria luz, será mais propensa a sofrer emboscadas (+20%).\n\nMelhore as <b>Tochas de Pé</b> para aumentar o alcance da visão.\n\nO Respiro Negro não será uma preocupação nesta região.";
                 break;
             case "\nSe conseguirán de 25-40 Materiales y 60-85 Suministros.":
                 r = "\nSerío obtidos 25-40 Materiais e 60-85 Suprimentos.";
@@ -13450,8 +13450,8 @@ public class TRADU : MonoBehaviour
             case "Al reparo de un patio de posta, ocultos por lonas y carros volcados, encuentran a varios habitantes de Nedukazal esperando el momento para huir.\n\n":
                 r = "Ao abrigo de um pátio de posta, ocultos por lonas e carroças viradas, encontram vários habitantes de Nedukazal esperando o momento de fugir.\n\n";
                 break;
-            case "Al enterarse de que la Caravana partirá al amanecer, piden sumarse antes de que los Zarkil vuelvan a cruzar la zona.\n\n":
-                r = "Ao saber que a Caravana partirá ao amanhecer, pedem para se juntar antes que os Zarkil voltem a cruzar a área.\n\n";
+            case "Al enterarse de que la Caravana partirá al amanecer, piden sumarse antes de que los Zarkil vuelvan a cruzar la región.\n\n":
+                r = "Ao saber que a Caravana partirá ao amanhecer, pedem para se juntar antes que os Zarkil voltem a cruzar a região.\n\n";
                 break;
             case "<color=#a0e812><b>+5-10 Civiles, +3 Esperanza</b></color>":
                 r = "<color=#a0e812><b>+5-10 Civis, +3 Esperança</b></color>";
@@ -14652,8 +14652,8 @@ public class TRADU : MonoBehaviour
             case"Prueba jugable":
             r="Teste de jogovel";
              break;
-            case"Gracias por jugar la demo.\nEn esta versión podrás experimentar el Tutorial y luego la primer zona del juego completa.\n\nTu feedback es muy importante para seguir mejorando.":
-            r="Obrigado por jogar a demo.\nNesta versão, você poderá experimentar o Tutorial e depois a primeira zona completa do jogo.\n\nO seu feedback é muito importante para continuarmos melhorando.";
+            case"Gracias por jugar la demo.\nEn esta versión podrás experimentar el Tutorial y luego la primera región del juego completa.\n\nTu feedback es muy importante para seguir mejorando.":
+            r="Obrigado por jogar a demo.\nNesta versão, você poderá experimentar o Tutorial e depois a primeira região completa do jogo.\n\nO seu feedback é muito importante para continuarmos melhorando.";
             break;
             case "Arquero Vengador de Kadryn":
             r = "Arqueiro Vingador de Kadryn";

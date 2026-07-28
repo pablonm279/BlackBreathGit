@@ -197,7 +197,7 @@ public class LogDeCampania : Bitacora
             txtLog.enabled = false;
         }
 
-        int pagina = Mathf.Clamp(GetPaginaVisible(), 1, paginasLibro.Count);
+        int pagina = NormalizarPaginaVisible(paginasLibro.Count);
         RenderizarPaginaLibro(pagina);
         return true;
     }
@@ -222,7 +222,7 @@ public class LogDeCampania : Bitacora
             indicadorPaginaLibro.gameObject.SetActive(false);
         }
 
-        ActualizarBotonesNavegacion(1, 1);
+        OcultarBotonesNavegacion();
     }
 
     private void SolicitarReacomodoLibro()
@@ -274,7 +274,7 @@ public class LogDeCampania : Bitacora
 
         if (txtLog != null && !txtLog.enabled && paginasLibro.Count > 0)
         {
-            int pagina = Mathf.Clamp(GetPaginaVisible(), 1, paginasLibro.Count);
+            int pagina = NormalizarPaginaVisible(paginasLibro.Count);
             RenderizarPaginaLibro(pagina);
         }
 
@@ -820,14 +820,38 @@ public class LogDeCampania : Bitacora
         bool puedeRetroceder = totalPaginas > 1 && paginaActual > 1;
         bool puedeAvanzar = totalPaginas > 1 && paginaActual < totalPaginas;
 
+        ActualizarBotonNavegacion(botonPaginaAnterior, puedeRetroceder);
+        ActualizarBotonNavegacion(botonPaginaSiguiente, puedeAvanzar);
+    }
+
+    private static void ActualizarBotonNavegacion(GameObject botonObjeto, bool habilitado)
+    {
+        if (botonObjeto == null)
+        {
+            return;
+        }
+
+        botonObjeto.SetActive(true);
+        Button boton = botonObjeto.GetComponent<Button>();
+        if (boton != null)
+        {
+            boton.interactable = habilitado;
+            return;
+        }
+
+        botonObjeto.SetActive(habilitado);
+    }
+
+    private void OcultarBotonesNavegacion()
+    {
         if (botonPaginaAnterior != null)
         {
-            botonPaginaAnterior.SetActive(puedeRetroceder);
+            botonPaginaAnterior.SetActive(false);
         }
 
         if (botonPaginaSiguiente != null)
         {
-            botonPaginaSiguiente.SetActive(puedeAvanzar);
+            botonPaginaSiguiente.SetActive(false);
         }
     }
 }

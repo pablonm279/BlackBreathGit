@@ -13,6 +13,7 @@ public class PrePartidaTooltip : MonoBehaviour, IPointerEnterHandler, IPointerEx
     [SerializeField] private string textoIngles;
     [TextArea(2, 6)]
     [SerializeField] private string textoPortugues;
+    [SerializeField] private bool traducirTextoEspanol;
 
     [Header("Referencia opcional")]
     [SerializeField] private PrePartidaTooltipManager manager;
@@ -49,6 +50,11 @@ public class PrePartidaTooltip : MonoBehaviour, IPointerEnterHandler, IPointerEx
 
     public string ObtenerTextoActual()
     {
+        if (traducirTextoEspanol)
+        {
+            return Traducir(textoEspanol);
+        }
+
         string textoSeleccionado;
         switch (ObtenerIdiomaActual())
         {
@@ -71,6 +77,18 @@ public class PrePartidaTooltip : MonoBehaviour, IPointerEnterHandler, IPointerEx
         return !string.IsNullOrWhiteSpace(textoEspanol) ? textoEspanol : textoSeleccionado;
     }
 
+    public void ConfigurarTexto(
+        string textoEspanol,
+        string textoIngles = "",
+        string textoPortugues = "",
+        bool traducirTextoEspanol = false)
+    {
+        this.textoEspanol = textoEspanol ?? string.Empty;
+        this.textoIngles = textoIngles ?? string.Empty;
+        this.textoPortugues = textoPortugues ?? string.Empty;
+        this.traducirTextoEspanol = traducirTextoEspanol;
+    }
+
     public int ObtenerIdiomaActual()
     {
         int idioma = TRADU.i != null
@@ -91,5 +109,15 @@ public class PrePartidaTooltip : MonoBehaviour, IPointerEnterHandler, IPointerEx
         {
             manager = FindFirstObjectByType<PrePartidaTooltipManager>(FindObjectsInactive.Include);
         }
+    }
+
+    private static string Traducir(string texto)
+    {
+        if (string.IsNullOrWhiteSpace(texto))
+        {
+            return string.Empty;
+        }
+
+        return TRADU.i != null ? TRADU.i.Traducir(texto) : texto;
     }
 }

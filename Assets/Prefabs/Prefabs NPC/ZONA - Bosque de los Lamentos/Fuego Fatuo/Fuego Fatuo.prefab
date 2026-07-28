@@ -695,7 +695,8 @@ MonoBehaviour:
   esRango: 0
   bPuedeVerEscondidos: 0
   unicoEnCombate: 0
-  tierEnemigo: 2
+  tierEnemigo: 1
+  siempreEnRetaguardiaInicial: 0
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0
@@ -780,8 +781,6 @@ MonoBehaviour:
   vfxCasteo: {fileID: 0}
   requiereRecurso: 0
   costoPM: 0
-  cooldownMax: 0
-  cooldownActual: 0
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   NIVEL: 0
@@ -842,6 +841,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 1
+  ignoraProvocacion: 0
   prioridad: 1
   costoAP: 1
   pPrioridad: 1

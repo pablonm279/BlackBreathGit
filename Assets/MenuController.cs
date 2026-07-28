@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -7,6 +8,9 @@ using UnityEngine.UI;
 public class MenuController : MonoBehaviour
 {
     private const string TutorialTerminadoKey = "Tutorial_Terminado";
+    public const string TutorialIniciadoKey = "Tutorial_Iniciado";
+    private static readonly Color ColorBotonDeshabilitado = new Color(0.37f, 0.37f, 0.37f, 1f);
+    private static readonly Color ColorTextoDeshabilitado = new Color(0.78f, 0.78f, 0.78f, 1f);
     [Header("Escenas")]
     [SerializeField] string escenaJuego = "ES-Campaña";
 
@@ -25,6 +29,8 @@ public class MenuController : MonoBehaviour
     public GameObject Opciones;
 
     private readonly List<Button> botonesCargarPartida = new List<Button>();
+    private readonly List<Button> botonesNuevaPartida = new List<Button>();
+    private readonly Dictionary<TMP_Text, Color> coloresTextoOriginales = new Dictionary<TMP_Text, Color>();
 
     void Awake()
     {
@@ -61,7 +67,9 @@ public class MenuController : MonoBehaviour
         }
 
         RecolectarBotonesCargarPartida();
+        RecolectarBotonesNuevaPartida();
         RefrescarBotonesCargarPartida();
+        RefrescarBotonesNuevaPartida();
 
         AplicarVersionesIdioma();
 
@@ -74,6 +82,7 @@ public class MenuController : MonoBehaviour
     void OnEnable()
     {
         RefrescarBotonesCargarPartida();
+        RefrescarBotonesNuevaPartida();
     }
 
     IEnumerator Start()
@@ -148,6 +157,12 @@ public class MenuController : MonoBehaviour
 
     public void OnNuevaPartida()
     {
+        if (!TutorialFueIniciado())
+        {
+            RefrescarBotonesNuevaPartida();
+            return;
+        }
+
         if (prePartidaManager != null)
         {
             RuntimeAnalytics.TrackDesign("ui", "main_menu", "new_game_preparation_open");
@@ -241,6 +256,19 @@ public class MenuController : MonoBehaviour
         }
     }
 
+    void RecolectarBotonesNuevaPartida()
+    {
+        botonesNuevaPartida.Clear();
+        Button[] botones = GetComponentsInChildren<Button>(true);
+        foreach (Button boton in botones)
+        {
+            if (boton != null && boton.name == "bt_NuevaPartida")
+            {
+                botonesNuevaPartida.Add(boton);
+            }
+        }
+    }
+
     void RefrescarBotonesCargarPartida()
     {
         bool haySave = SaveGameService.HasSaveFile();
@@ -257,6 +285,27 @@ public class MenuController : MonoBehaviour
             }
 
             boton.interactable = haySave;
+            AplicarEstadoVisualDeshabilitado(boton, !haySave);
+        }
+    }
+
+    void RefrescarBotonesNuevaPartida()
+    {
+        bool tutorialIniciado = TutorialFueIniciado();
+        if (botonesNuevaPartida.Count == 0)
+        {
+            RecolectarBotonesNuevaPartida();
+        }
+
+        foreach (Button boton in botonesNuevaPartida)
+        {
+            if (boton == null)
+            {
+                continue;
+            }
+
+            boton.interactable = tutorialIniciado;
+            AplicarEstadoVisualDeshabilitado(boton, !tutorialIniciado);
         }
     }
 
@@ -364,6 +413,7 @@ public class MenuController : MonoBehaviour
         AplicarIdiomaActualSinFadeVisible();
         AplicarVersionesIdioma();
         RefrescarBotonesCargarPartida();
+        RefrescarBotonesNuevaPartida();
 
         OpcionesCargarPlayerPrefsUI opcionesUi = Opciones != null ? Opciones.GetComponent<OpcionesCargarPlayerPrefsUI>() : null;
         if (opcionesUi != null)
@@ -392,6 +442,7 @@ public class MenuController : MonoBehaviour
 
     void MarcarTutorialComoCompletado()
     {
+        PlayerPrefs.SetInt(TutorialIniciadoKey, 1);
         PlayerPrefs.SetInt(TutorialTerminadoKey, 1);
         PlayerPrefs.SetInt(TutorialDirector.GetCompletedPlayerPrefsKey(TutorialDirector.DefaultTutorialId), 1);
         PlayerPrefs.DeleteKey(TutorialDirector.PendingStartAfterZoneDescriptionKey);
@@ -400,9 +451,43 @@ public class MenuController : MonoBehaviour
 
     void ReiniciarTutorial()
     {
+        PlayerPrefs.SetInt(TutorialIniciadoKey, 1);
         PlayerPrefs.DeleteKey(TutorialTerminadoKey);
         PlayerPrefs.DeleteKey(TutorialDirector.GetCompletedPlayerPrefsKey(TutorialDirector.DefaultTutorialId));
         PlayerPrefs.SetInt(TutorialDirector.PendingStartAfterZoneDescriptionKey, 1);
         PlayerPrefs.Save();
+    }
+
+    public static bool TutorialFueIniciado()
+    {
+        return PlayerPrefs.GetInt(TutorialIniciadoKey, 0) == 1
+            || PlayerPrefs.GetInt(TutorialTerminadoKey, 0) == 1
+            || PlayerPrefs.GetInt(TutorialDirector.PendingStartAfterZoneDescriptionKey, 0) == 1
+            || PlayerPrefs.GetInt(TutorialDirector.GetCompletedPlayerPrefsKey(TutorialDirector.DefaultTutorialId), 0) == 1;
+    }
+
+    private void AplicarEstadoVisualDeshabilitado(Button boton, bool deshabilitado)
+    {
+        if (boton == null)
+        {
+            return;
+        }
+
+        ColorBlock colores = boton.colors;
+        colores.disabledColor = ColorBotonDeshabilitado;
+        boton.colors = colores;
+
+        TMP_Text texto = boton.GetComponentInChildren<TMP_Text>(true);
+        if (texto == null)
+        {
+            return;
+        }
+
+        if (!coloresTextoOriginales.ContainsKey(texto))
+        {
+            coloresTextoOriginales[texto] = texto.color;
+        }
+
+        texto.color = deshabilitado ? ColorTextoDeshabilitado : coloresTextoOriginales[texto];
     }
 }

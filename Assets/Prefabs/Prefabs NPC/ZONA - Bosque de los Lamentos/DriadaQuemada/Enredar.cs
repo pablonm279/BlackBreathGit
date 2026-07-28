@@ -89,7 +89,7 @@ public class Enredar : IAHabilidad
             //BUFF ---- As� se aplica un buff/debuff
             Buff buff = new Buff();
             buff.buffNombre = "Enredadera Ardiente";
-            buff.buffDescr = "Inm�vil, Melee solo adyacente.";
+            buff.buffDescr = "Inmóvil, Melee solo adyacente.";
             buff.boolfDebufftBuff = false;
             buff.DuracionBuffRondas = 2;
             buff.cantAPMax -= 1;
@@ -105,7 +105,7 @@ public class Enredar : IAHabilidad
             RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, objetivo.transform, 5);
             //---
 
-            // Agrega el componente Buff al objeto objetivo y asigna la configuraci�n del buff
+            // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
             Estados.Aplicar_Inmovil(objetivo, buff.DuracionBuffRondas + 1, scEstaUnidad);

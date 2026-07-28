@@ -367,6 +367,7 @@ public static class SaveGameService
       saveFileData.campaign.ultimasAparienciasPorClase = new List<UltimaAparienciaClaseSaveData>();
     }
     NormalizarBitacora(saveFileData.campaign.bitacora);
+    saveFileData.AsegurarDisplayName();
 
     if (saveFileData.map == null)
     {
@@ -425,6 +426,18 @@ public static class SaveGameService
     if (saveFileData.metaprogresion == null)
     {
       saveFileData.metaprogresion = new MetaprogresionSaveData();
+    }
+    if (saveFileData.metaprogresion.presagiosRegionesPendientes == null)
+    {
+      saveFileData.metaprogresion.presagiosRegionesPendientes = new List<PresagioRegionPendienteSaveData>();
+    }
+    if (saveFileData.metaprogresion.zonasVisitadas == null)
+    {
+      saveFileData.metaprogresion.zonasVisitadas = new List<int>();
+    }
+    if (saveFileData.metaprogresion.climasExclusivosDescubiertos == null)
+    {
+      saveFileData.metaprogresion.climasExclusivosDescubiertos = new List<int>();
     }
   }
 

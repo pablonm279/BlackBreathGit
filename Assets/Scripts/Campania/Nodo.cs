@@ -1617,7 +1617,7 @@ public class Nodo : MonoBehaviour
       || tipo == 6    // Puesto Comercial
       || tipo == 7    // Reclutamiento
       || tipo == 8    // Batalla Elite
-      || tipo == 11   // Zona Expuesta
+      || tipo == 11   // Región Expuesta
       || tipo == 14;  // Altar
   }
 
@@ -4593,8 +4593,8 @@ if (esLaLider)
       case 6: descripcion = TRADU.i.Traducir("Puesto de Comercio."); break;
       case 7: descripcion = TRADU.i.Traducir("Adquisición de Personajes."); break;
       case 8: descripcion = TRADU.i.Traducir("Combate directo contra enemigos de élite."); break;
-      case 10: descripcion = TRADU.i.Traducir("Batalla final de la Zona actual."); break;
-      case 11: descripcion = TRADU.i.Traducir("<b>(!)</b> Zona Expuesta, la caravana será emboscada."); break;
+      case 10: descripcion = TRADU.i.Traducir("Batalla final de la Región actual."); break;
+      case 11: descripcion = TRADU.i.Traducir("<b>(!)</b> Región Expuesta, la caravana será emboscada."); break;
       case 15: descripcion = TRADU.i.Traducir("Batalla Kale'Tav"); break;
       case 16: descripcion = TRADU.i.Traducir("Ubicación de la Misión de Salvamento"); break;
 

@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class TutorialTooltipManager : MonoBehaviour
 {
   private const string DefaultCatalogPath = "Tutoriales/TooltipsTutorial";
+  private const int CooldownDias = 3;
 
   public static TutorialTooltipManager Instance { get; private set; }
   public bool EstaMostrandoTooltip { get { return mostrando; } }
@@ -239,17 +240,21 @@ public class TutorialTooltipManager : MonoBehaviour
         continue;
       }
 
-      Mostrar(definition);
+      Mostrar(definition, request.force);
       return;
     }
 
     mostrando = false;
   }
 
-  private void Mostrar(TutorialTooltipDefinition definition)
+  private void Mostrar(TutorialTooltipDefinition definition, bool force)
   {
     tooltipActual = definition;
     mostrando = true;
+    if (!force)
+    {
+      TutorialTooltipProgress.RegistrarDiaMostrado(ObtenerDiaActual());
+    }
     StopTextoAnimation();
     SelectPanel(definition.size);
     SetActive(bloqueador, true);
@@ -294,7 +299,18 @@ public class TutorialTooltipManager : MonoBehaviour
       return false;
     }
 
+    if (!TutorialTooltipProgress.PuedeMostrarPorCooldown(ObtenerDiaActual(), CooldownDias))
+    {
+      return false;
+    }
+
     return debugIgnorarVistos || !TutorialTooltipProgress.FueVisto(definition.id);
+  }
+
+  private static int ObtenerDiaActual()
+  {
+    CampaignManager campaignManager = CampaignManager.Instance;
+    return campaignManager != null ? Mathf.Max(1, campaignManager.numeroTurno) : 1;
   }
 
   private static bool HayTutorialActivo()

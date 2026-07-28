@@ -1371,7 +1371,29 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     InicializarPresagiosNuevaCampania(zonaInicial);
     scAtributosZona.GenerarZona(zonaInicial);
+    RegistrarZonaVisitada(scAtributosZona != null ? scAtributosZona.ID : zonaInicial);
     AplicarPresagioAlientoNegroInicial();
+  }
+
+  private void RegistrarZonaVisitada(int zonaId)
+  {
+    if (zonaId <= 0 || MetaprogresionManager.Instance == null)
+    {
+      return;
+    }
+
+    MetaprogresionManager.Instance.MarcarZonaVisitada(zonaId);
+  }
+
+  private bool MecanicasZonaConocidas(int zonaId)
+  {
+    if (zonaId <= 0)
+    {
+      return false;
+    }
+
+    MetaprogresionManager meta = MetaprogresionManager.Instance;
+    return meta == null || meta.ZonaVisitada(zonaId);
   }
 
   private void InicializarPresagiosNuevaCampania(int regionId)
@@ -3803,6 +3825,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     MetaprogresionSaveData data = new MetaprogresionSaveData();
     data.presagiosRegionesPendientes = PresagioRegionPendienteStore.Exportar();
     MetaprogresionManager meta = MetaprogresionManager.Instance;
+    if (meta != null)
+    {
+      data.zonasVisitadas = meta.ObtenerZonasVisitadas();
+      data.climasExclusivosDescubiertos = meta.ObtenerClimasExclusivosDescubiertos();
+    }
+    AgregarZonaVisitadaASave(data, scAtributosZona != null ? scAtributosZona.ID : 0);
     if (meta == null)
     {
       return data;
@@ -3830,6 +3858,24 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.serriaPuntosAlmacenadosBarricadas = meta.SerriaPuntosAlmacenadosBarricadas;
     data.serriaPuntosAlmacenadosTemplo = meta.SerriaPuntosAlmacenadosTemplo;
     return data;
+  }
+
+  private static void AgregarZonaVisitadaASave(MetaprogresionSaveData data, int zonaId)
+  {
+    if (data == null || zonaId <= 0)
+    {
+      return;
+    }
+
+    if (data.zonasVisitadas == null)
+    {
+      data.zonasVisitadas = new List<int>();
+    }
+
+    if (!data.zonasVisitadas.Contains(zonaId))
+    {
+      data.zonasVisitadas.Add(zonaId);
+    }
   }
 
   private NodeReferenceSaveData CrearReferenciaNodo(Nodo nodo)
@@ -4003,13 +4049,28 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       PresagioRegionPendienteStore.ImportarSiNoHayEstadoGlobal(saveFileData.metaprogresion.presagiosRegionesPendientes);
     }
 
-    if (saveFileData == null || saveFileData.version < 3 || saveFileData.metaprogresion == null || MetaprogresionManager.Instance == null)
+    if (saveFileData == null || MetaprogresionManager.Instance == null)
     {
       return;
     }
 
     MetaprogresionSaveData data = saveFileData.metaprogresion;
     MetaprogresionManager meta = MetaprogresionManager.Instance;
+    if (data != null)
+    {
+      meta.RestaurarZonasVisitadas(data.zonasVisitadas);
+      meta.RestaurarClimasExclusivosDescubiertos(data.climasExclusivosDescubiertos);
+    }
+    if (saveFileData.campaign != null)
+    {
+      meta.MarcarZonaVisitada(saveFileData.campaign.zonaId);
+    }
+
+    if (saveFileData.version < 3 || data == null)
+    {
+      return;
+    }
+
     meta.CorrupcionGlobal = Mathf.Max(0, data.corrupcionGlobal);
     meta.CantidadCiviles = Mathf.Max(0, data.cantidadCiviles);
     meta.ValordeTrabajoDisponible = Mathf.Max(0, data.valorTrabajoDisponible);
@@ -5373,6 +5434,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     intTipoClima = data.tipoClima;
+    RegistrarClimaExclusivoDescubierto(intTipoClima);
     EstadoAlientoNegro = Mathf.Max(0f, data.alientoNegro);
     FatigaActual = data.fatiga;
     EsperanzaActual = Mathf.Clamp(data.esperanza, 0, 100);
@@ -5781,6 +5843,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   public void AplicarClimaAuroraPasoVientoHeladoForzada(bool escribirLogDebug = false)
   {
     intTipoClima = 7;
+    RegistrarClimaExclusivoDescubierto(intTipoClima);
     if (widgetClima != null)
     {
       widgetClima.sprite = clima_auroraboreal;
@@ -5810,6 +5873,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   public void AplicarClimaMasacreNedukazalForzada(bool escribirLogDebug = false)
   {
     intTipoClima = 9;
+    RegistrarClimaExclusivoDescubierto(intTipoClima);
     if (widgetClima != null)
     {
       widgetClima.sprite = clima_NedukazalMasacre;
@@ -5824,6 +5888,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     if (escribirLogDebug)
     {
       Debug.Log("[CampaignManager] Debug de clima activo: Masacre de Nedukazal forzada.");
+    }
+  }
+
+  public void RegistrarClimaExclusivoDescubierto(int tipoClima)
+  {
+    if (MetaprogresionManager.Instance != null)
+    {
+      MetaprogresionManager.Instance.RegistrarClimaExclusivoDescubierto(tipoClima);
     }
   }
 
@@ -6752,7 +6824,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
 
       goUISantuario.SetActive(true);
-      txtdescripcionSantuario.text = TRADU.i.Traducir("Has llegado a un Santuario de Purificadores, varios se han construido en la zona para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 4 días.</i>");
+      txtdescripcionSantuario.text = TRADU.i.Traducir("Has llegado a un Santuario de Purificadores, varios se han construido en la región para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 4 días.</i>");
 
       CambiarEsperanzaActual(10);
       EscribirLog(TRADU.i.Traducir("-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza."));
@@ -7091,6 +7163,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     ResetearAlientoNegro();
     PrepararIntroCampaniaNuevaZona();
     scAtributosZona.GenerarZona(0); //0 es aleatorio
+    RegistrarZonaVisitada(scAtributosZona != null ? scAtributosZona.ID : 0);
     SolicitarInicioIntroCampaniaTrasCarga(true);
     AplicarTraitsInicioNuevaZona();
     transicionZonaEnCurso = false;
@@ -10114,20 +10187,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       tooltipGOMecanicaZona.SetActive(true);
       TextMeshProUGUI text = tooltipGOMecanicaZona.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-
-      if (scAtributosZona.ID == 1) //Bosque Ardiente
-      {
-
-        text.text = TRADU.i.Traducir("A medida que viajas por el bosque, las llamas envolverán regiones del mapa de forma inesperada.\n\nSi intentas atravesar un Nodo prendido fuego, perderás 10 de Esperanza y 8-15 Civiles.\nNo se podrá descansar en nodos incendiados.\n\nAdemás, las batallas que tengan lugar en un Nodo incendiado, tendrán llamas en el campo de batalla.");
-      }
-      if (scAtributosZona.ID == 2) //Paso Vientohelado
-      {
-        text.text = TRADU.i.Traducir("La tribu Kale'Tav está realizando rituales en el área, preparándose para el Aliento Negro.\n\nAl escuchar sus tambores a lo lejos sabrás dónde se encuentran.\nPor cada Ritual completado, sus combatientes recibirán bonificaciones en batalla.\n\nPara interrumpir un ritual debes aproximarte a los nodos marcados y derrotarlos.\n\nFuerza Kale'Tav: ") + scAtributosZona.PasoVientoHelado_FuerzaKaleTav;
-      }
-      if (scAtributosZona.ID == 3) //Nedukazal
-      {
-        text.text = TRADU.i.Traducir("Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será más propensa a sufrir emboscadas (+20%).\n\nMejora los <b>Catalejos</b> para aumentar el rango de visión.\nLas <b>Antorchas de Pie</b> seguirán reforzando la luz propia de la caravana en esta zona.\n\nEl Aliento Negro no será una preocupación en esta zona.");
-      }
+      text.text = scAtributosZona != null
+        ? ZonaMecanicaTextos.ObtenerDescripcion(
+          scAtributosZona.ID,
+          scAtributosZona.PasoVientoHelado_FuerzaKaleTav,
+          MecanicasZonaConocidas(scAtributosZona.ID))
+        : string.Empty;
 
 
 

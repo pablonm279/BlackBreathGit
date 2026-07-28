@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
@@ -74,6 +75,9 @@ public class PrePartidaManager : MonoBehaviour
     [Header("Región seleccionada")]
     [SerializeField] private TMP_Text textoZonaSeleccionada;
     [SerializeField] private TMP_Text textoDescripcionZona;
+    [SerializeField] private GameObject infoZona;
+    [SerializeField] private GameObject fondoInfoZona;
+    [SerializeField] private TMP_Text textoInfoZona;
 
     [Header("Metaprogresión visible")]
     [SerializeField] private TMP_Text textoCorrupcion;
@@ -86,10 +90,17 @@ public class PrePartidaManager : MonoBehaviour
     [Header("Lider de caravana")]
     [SerializeField] private TMP_Dropdown dropdownLider;
 
+    [Header("Confirmacion sobrescritura")]
+    [SerializeField] private GameObject confirmarSobreescribir;
+    [SerializeField] private TMP_Text textoConfirmarSobreescribir;
+    [SerializeField] private Button botonCancelarSobreescribir;
+    [SerializeField] private Button botonContinuarSobreescribir;
+
     [Header("Presagios")]
     [SerializeField] private TMP_Text txtPresagio1;
     [SerializeField] private TMP_Text txtPresagio2;
     [SerializeField] private TMP_Text disclaimerDemo;
+    [SerializeField] private UIManagerContZonas uiClimasZona;
     [SerializeField] private GameObject flechaIzq;
     [SerializeField] private GameObject flechaDer;
     [SerializeField] private GameObject btnNuevaZona;
@@ -97,7 +108,7 @@ public class PrePartidaManager : MonoBehaviour
     [SerializeField] private Color colorDisclaimerDesconocida = new Color(0.55f, 0.2f, 0.8f, 1f);
     [SerializeField] private Color colorNombrePasoVientoHelado = new Color(0.37f, 0.62f, 0.7f, 1f);
     [SerializeField] private Color colorNombreNedukazal = new Color(0.54f, 0.19f, 0.19f, 1f);
-
+    public AudioClip audioAliento;
     private int zonaSeleccionada;
     private int indiceCarrusel;
     private MetaprogresionSaveData metaprogresionActual = new MetaprogresionSaveData();
@@ -105,6 +116,10 @@ public class PrePartidaManager : MonoBehaviour
     private bool menuPrincipalOculto;
     private bool flechaIzquierdaConfigurada;
     private bool flechaDerechaConfigurada;
+    private bool infoZonaConfigurada;
+    private bool mostrandoInfoZona;
+    private bool confirmacionSobreescribirConfigurada;
+    private string nombrePartidaSobreescribir = string.Empty;
     private Color colorNombreZonaBase = Color.white;
     private bool colorNombreZonaBaseCapturado;
 
@@ -126,6 +141,11 @@ public class PrePartidaManager : MonoBehaviour
         BuscarDropdownLider();
         BuscarTextosPresagios();
         BuscarControlesCarrusel();
+        BuscarUIClimasZona();
+        ConfigurarInfoZona();
+        OcultarInfoZona();
+        ConfigurarConfirmacionSobreescribir();
+        OcultarConfirmacionSobreescribir();
         ConfigurarFlechasCarrusel();
         ActualizarDropdownLider();
 
@@ -144,16 +164,28 @@ public class PrePartidaManager : MonoBehaviour
     {
         TRADU.IdiomaActualizado -= AlActualizarIdioma;
         TRADU.IdiomaActualizado += AlActualizarIdioma;
+        ConfigurarInfoZona();
+        OcultarInfoZona();
+        ConfigurarConfirmacionSobreescribir();
+        OcultarConfirmacionSobreescribir();
         Refrescar();
     }
 
     private void OnDisable()
     {
         TRADU.IdiomaActualizado -= AlActualizarIdioma;
+        OcultarInfoZona();
+        OcultarConfirmacionSobreescribir();
     }
 
     private void Update()
     {
+        if (ConfirmacionSobreescribirActiva() && Input.GetKeyDown(KeyCode.Escape))
+        {
+            CancelarSobreescritura();
+            return;
+        }
+
         if (menuPrincipalOculto && Input.GetKeyDown(KeyCode.Escape))
         {
             Cerrar();
@@ -167,6 +199,7 @@ public class PrePartidaManager : MonoBehaviour
     {
         OcultarMenuPrincipal();
         SeleccionarPrimeraZonaDisponible();
+        OcultarConfirmacionSobreescribir();
 
         if (panelPrePartida != null && !panelPrePartida.activeSelf)
         {
@@ -178,6 +211,8 @@ public class PrePartidaManager : MonoBehaviour
 
     public void Cerrar()
     {
+        OcultarInfoZona();
+        OcultarConfirmacionSobreescribir();
         RestaurarMenuPrincipal();
 
         if (panelPrePartida != null)
@@ -231,6 +266,33 @@ public class PrePartidaManager : MonoBehaviour
             return;
         }
 
+        if (TryObtenerNombrePartidaGuardada(out string nombrePartida))
+        {
+            if (MostrarConfirmacionSobreescribir(nombrePartida))
+            {
+                return;
+            }
+
+            Debug.LogWarning("[PrePartidaManager] Hay una partida guardada, pero no se encontro el panel ConfirmarSobreescribir.", this);
+            return;
+        }
+
+        IniciarNuevaPartidaConfirmada();
+    }
+
+    public void CancelarSobreescritura()
+    {
+        OcultarConfirmacionSobreescribir();
+    }
+
+    public void ContinuarSobreescritura()
+    {
+        OcultarConfirmacionSobreescribir();
+        IniciarNuevaPartidaConfirmada();
+    }
+
+    private void IniciarNuevaPartidaConfirmada()
+    {
         EstablecerZonaInicialPendiente(zonaSeleccionada);
         EstablecerClaseLiderPendiente(ObtenerClaseLiderSeleccionada());
 
@@ -246,7 +308,264 @@ public class PrePartidaManager : MonoBehaviour
         }
 
         EstablecerPresagiosInicialesPendientes(PresagioRegionPendienteStore.Consumir(zonaSeleccionada));
+        ReproducirAudioAlientoInicioPartida();
         menuController.IniciarNuevaPartidaDesdePrePartida(zonaSeleccionada);
+    }
+
+    private void ReproducirAudioAlientoInicioPartida()
+    {
+        if (audioAliento == null)
+        {
+            return;
+        }
+
+        GameObject audioTemporal = new GameObject("AudioAlientoInicioPartida");
+        DontDestroyOnLoad(audioTemporal);
+
+        AudioSource source = audioTemporal.AddComponent<AudioSource>();
+        source.playOnAwake = false;
+        source.loop = false;
+        source.spatialBlend = 0f;
+        source.clip = audioAliento;
+        AjustesAudio.AplicarVolumenSfx(source);
+        source.Play();
+        Destroy(audioTemporal, audioAliento.length + 0.1f);
+    }
+
+    private bool TryObtenerNombrePartidaGuardada(out string nombrePartida)
+    {
+        nombrePartida = string.Empty;
+        if (!SaveGameService.TryReadSaveFile(out SaveFileData save, out _)
+            || save == null)
+        {
+            return false;
+        }
+
+        save.AsegurarDisplayName();
+        nombrePartida = !string.IsNullOrWhiteSpace(save.displayName)
+            ? save.displayName
+            : ObtenerTextoPartidaGuardadaSinNombre();
+        return true;
+    }
+
+    private bool MostrarConfirmacionSobreescribir(string nombrePartida)
+    {
+        ConfigurarConfirmacionSobreescribir();
+        if (confirmarSobreescribir == null)
+        {
+            return false;
+        }
+
+        nombrePartidaSobreescribir = !string.IsNullOrWhiteSpace(nombrePartida)
+            ? nombrePartida
+            : ObtenerTextoPartidaGuardadaSinNombre();
+        ActualizarTextosConfirmacionSobreescribir();
+        confirmarSobreescribir.SetActive(true);
+        return true;
+    }
+
+    private void OcultarConfirmacionSobreescribir()
+    {
+        if (confirmarSobreescribir != null)
+        {
+            confirmarSobreescribir.SetActive(false);
+        }
+    }
+
+    private bool ConfirmacionSobreescribirActiva()
+    {
+        return confirmarSobreescribir != null && confirmarSobreescribir.activeInHierarchy;
+    }
+
+    private void ConfigurarConfirmacionSobreescribir()
+    {
+        BuscarConfirmacionSobreescribir();
+        if (confirmarSobreescribir == null)
+        {
+            return;
+        }
+
+        if (!confirmacionSobreescribirConfigurada)
+        {
+            if (botonCancelarSobreescribir != null)
+            {
+                botonCancelarSobreescribir.onClick = new Button.ButtonClickedEvent();
+                botonCancelarSobreescribir.onClick.AddListener(CancelarSobreescritura);
+            }
+
+            if (botonContinuarSobreescribir != null)
+            {
+                botonContinuarSobreescribir.onClick = new Button.ButtonClickedEvent();
+                botonContinuarSobreescribir.onClick.AddListener(ContinuarSobreescritura);
+            }
+
+            confirmacionSobreescribirConfigurada = true;
+        }
+
+        ActualizarTextosConfirmacionSobreescribir();
+    }
+
+    private void BuscarConfirmacionSobreescribir()
+    {
+        if (confirmarSobreescribir == null)
+        {
+            Transform raiz = BuscarDescendientePorNombre(transform, "ConfirmarSobreescribir");
+            confirmarSobreescribir = raiz != null ? raiz.gameObject : null;
+        }
+
+        if (confirmarSobreescribir == null)
+        {
+            return;
+        }
+
+        if (botonCancelarSobreescribir == null || botonContinuarSobreescribir == null)
+        {
+            Button[] botones = confirmarSobreescribir.GetComponentsInChildren<Button>(true);
+            for (int i = 0; i < botones.Length; i++)
+            {
+                Button boton = botones[i];
+                if (boton == null)
+                {
+                    continue;
+                }
+
+                string nombre = boton.gameObject.name;
+                if (botonCancelarSobreescribir == null
+                    && string.Equals(nombre, "bt_no", StringComparison.OrdinalIgnoreCase))
+                {
+                    botonCancelarSobreescribir = boton;
+                }
+                else if (botonContinuarSobreescribir == null
+                    && string.Equals(nombre, "bt_si", StringComparison.OrdinalIgnoreCase))
+                {
+                    botonContinuarSobreescribir = boton;
+                }
+            }
+        }
+
+        if (textoConfirmarSobreescribir == null)
+        {
+            textoConfirmarSobreescribir = BuscarTextoPrincipalConfirmacion(confirmarSobreescribir.transform);
+        }
+    }
+
+    private static Transform BuscarDescendientePorNombre(Transform raiz, string nombre)
+    {
+        if (raiz == null)
+        {
+            return null;
+        }
+
+        Transform[] descendientes = raiz.GetComponentsInChildren<Transform>(true);
+        for (int i = 0; i < descendientes.Length; i++)
+        {
+            Transform candidato = descendientes[i];
+            if (candidato != null && string.Equals(candidato.gameObject.name, nombre, StringComparison.OrdinalIgnoreCase))
+            {
+                return candidato;
+            }
+        }
+
+        return null;
+    }
+
+    private static TMP_Text BuscarTextoPrincipalConfirmacion(Transform raiz)
+    {
+        if (raiz == null)
+        {
+            return null;
+        }
+
+        TMP_Text[] textos = raiz.GetComponentsInChildren<TMP_Text>(true);
+        for (int i = 0; i < textos.Length; i++)
+        {
+            TMP_Text texto = textos[i];
+            if (texto != null && !EstaDentroDeBoton(texto.transform, raiz))
+            {
+                return texto;
+            }
+        }
+
+        return textos.Length > 0 ? textos[0] : null;
+    }
+
+    private static bool EstaDentroDeBoton(Transform transform, Transform raiz)
+    {
+        Transform actual = transform;
+        while (actual != null && actual != raiz)
+        {
+            if (actual.GetComponent<Button>() != null)
+            {
+                return true;
+            }
+
+            actual = actual.parent;
+        }
+
+        return false;
+    }
+
+    private void ActualizarTextosConfirmacionSobreescribir()
+    {
+        int idioma = ObtenerIdiomaActual();
+        if (textoConfirmarSobreescribir != null)
+        {
+            textoConfirmarSobreescribir.text = ObtenerMensajeConfirmacionSobreescribir(
+                nombrePartidaSobreescribir,
+                idioma);
+        }
+
+        AsignarTextoBoton(botonCancelarSobreescribir, ObtenerTextoCancelarConfirmacion(idioma));
+        AsignarTextoBoton(botonContinuarSobreescribir, ObtenerTextoContinuarConfirmacion(idioma));
+    }
+
+    private static void AsignarTextoBoton(Button boton, string texto)
+    {
+        if (boton == null)
+        {
+            return;
+        }
+
+        TMP_Text label = boton.GetComponentInChildren<TMP_Text>(true);
+        if (label != null)
+        {
+            label.text = texto;
+        }
+    }
+
+    private static string ObtenerMensajeConfirmacionSobreescribir(string nombrePartida, int idioma)
+    {
+        string nombre = !string.IsNullOrWhiteSpace(nombrePartida)
+            ? nombrePartida
+            : ObtenerTextoPartidaGuardadaSinNombre();
+
+        return idioma switch
+        {
+            TRADU.IdiomaIngles => "If you start a new game, you will overwrite the save: \"" + nombre + "\".\n\nContinue?",
+            TRADU.IdiomaPortugues => "Se você começar uma nova partida, sobrescreverá a partida: \"" + nombre + "\".\n\nContinuar?",
+            _ => "Si empiezas una nueva partida, sobreescribirás la partida: \"" + nombre + "\".\n\n¿Continuar?"
+        };
+    }
+
+    private static string ObtenerTextoCancelarConfirmacion(int idioma)
+    {
+        return idioma == TRADU.IdiomaIngles ? "Cancel" : "Cancelar";
+    }
+
+    private static string ObtenerTextoContinuarConfirmacion(int idioma)
+    {
+        return idioma == TRADU.IdiomaIngles ? "Continue" : "Continuar";
+    }
+
+    private static string ObtenerTextoPartidaGuardadaSinNombre()
+    {
+        int idioma = ObtenerIdiomaActual();
+        return idioma switch
+        {
+            TRADU.IdiomaIngles => "Saved Game",
+            TRADU.IdiomaPortugues => "Partida salva",
+            _ => "Partida guardada"
+        };
     }
 
     public void Refrescar()
@@ -254,6 +573,9 @@ public class PrePartidaManager : MonoBehaviour
         ActualizarDropdownLider();
         BuscarTextosPresagios();
         BuscarControlesCarrusel();
+        BuscarUIClimasZona();
+        ConfigurarInfoZona();
+        ConfigurarConfirmacionSobreescribir();
         ConfigurarFlechasCarrusel();
         CargarMetaprogresion();
         ActualizarTextoMetaprogresion();
@@ -452,6 +774,8 @@ public class PrePartidaManager : MonoBehaviour
             PresagioRegionPendienteStore.ImportarSiNoHayEstadoGlobal(save.metaprogresion.presagiosRegionesPendientes);
             metaprogresionActual = save.metaprogresion;
             NormalizarMetaprogresion();
+            RegistrarZonasVisitadasInferidasDesdeSave(save);
+            SincronizarZonasVisitadasConManager();
             return;
         }
 
@@ -472,7 +796,9 @@ public class PrePartidaManager : MonoBehaviour
             misionesSalvamento = meta.MisionesSalvamento,
             nivelAlertaBosqueArdiente = meta.NivelAlertaBosqueArdiente,
             nivelAlertaPasoVientohelado = meta.NivelAlertaPasoVientohelado,
-            nivelAlertaNedukazal = meta.NivelAlertaNedukazal
+            nivelAlertaNedukazal = meta.NivelAlertaNedukazal,
+            zonasVisitadas = meta.ObtenerZonasVisitadas(),
+            climasExclusivosDescubiertos = meta.ObtenerClimasExclusivosDescubiertos()
         };
         NormalizarMetaprogresion();
     }
@@ -488,6 +814,111 @@ public class PrePartidaManager : MonoBehaviour
         metaprogresionActual.nivelAlertaBosqueArdiente = Mathf.Max(0, metaprogresionActual.nivelAlertaBosqueArdiente);
         metaprogresionActual.nivelAlertaPasoVientohelado = Mathf.Max(0, metaprogresionActual.nivelAlertaPasoVientohelado);
         metaprogresionActual.nivelAlertaNedukazal = Mathf.Max(0, metaprogresionActual.nivelAlertaNedukazal);
+        NormalizarZonasVisitadas();
+        NormalizarClimasExclusivosDescubiertos();
+    }
+
+    private void NormalizarZonasVisitadas()
+    {
+        if (metaprogresionActual.zonasVisitadas == null)
+        {
+            metaprogresionActual.zonasVisitadas = new List<int>();
+            return;
+        }
+
+        List<int> normalizadas = new List<int>();
+        for (int i = 0; i < metaprogresionActual.zonasVisitadas.Count; i++)
+        {
+            int zonaId = metaprogresionActual.zonasVisitadas[i];
+            if (zonaId <= 0 || normalizadas.Contains(zonaId))
+            {
+                continue;
+            }
+
+            normalizadas.Add(zonaId);
+        }
+
+        metaprogresionActual.zonasVisitadas = normalizadas;
+    }
+
+    private void NormalizarClimasExclusivosDescubiertos()
+    {
+        if (metaprogresionActual.climasExclusivosDescubiertos == null)
+        {
+            metaprogresionActual.climasExclusivosDescubiertos = new List<int>();
+            return;
+        }
+
+        List<int> normalizados = new List<int>();
+        for (int i = 0; i < metaprogresionActual.climasExclusivosDescubiertos.Count; i++)
+        {
+            int tipoClima = metaprogresionActual.climasExclusivosDescubiertos[i];
+            if (!ClimaZonaCatalog.EsClimaExclusivoRegion(tipoClima)
+                || normalizados.Contains(tipoClima))
+            {
+                continue;
+            }
+
+            normalizados.Add(tipoClima);
+        }
+
+        metaprogresionActual.climasExclusivosDescubiertos = normalizados;
+    }
+
+    private void RegistrarZonasVisitadasInferidasDesdeSave(SaveFileData save)
+    {
+        if (save == null || save.campaign == null)
+        {
+            return;
+        }
+
+        AgregarZonaVisitadaAMetaprogresionActual(save.campaign.zonaId);
+        if (save.campaign.zonasEstado == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < save.campaign.zonasEstado.Count; i++)
+        {
+            if (save.campaign.zonasEstado[i] == 1)
+            {
+                AgregarZonaVisitadaAMetaprogresionActual(i + 1);
+            }
+        }
+    }
+
+    private void AgregarZonaVisitadaAMetaprogresionActual(int zonaId)
+    {
+        if (zonaId <= 0)
+        {
+            return;
+        }
+
+        if (metaprogresionActual.zonasVisitadas == null)
+        {
+            metaprogresionActual.zonasVisitadas = new List<int>();
+        }
+
+        if (!metaprogresionActual.zonasVisitadas.Contains(zonaId))
+        {
+            metaprogresionActual.zonasVisitadas.Add(zonaId);
+        }
+    }
+
+    private bool ZonaMecanicasConocidas(int zonaId)
+    {
+        return zonaId > 0
+            && metaprogresionActual.zonasVisitadas != null
+            && metaprogresionActual.zonasVisitadas.Contains(zonaId);
+    }
+
+    private void SincronizarZonasVisitadasConManager()
+    {
+        if (MetaprogresionManager.Instance != null)
+        {
+            MetaprogresionManager.Instance.RestaurarZonasVisitadas(metaprogresionActual.zonasVisitadas);
+            MetaprogresionManager.Instance.RestaurarClimasExclusivosDescubiertos(metaprogresionActual.climasExclusivosDescubiertos);
+        }
     }
 
     private void ActualizarTextoMetaprogresion()
@@ -558,6 +989,11 @@ public class PrePartidaManager : MonoBehaviour
         ActualizarColorNombreZona();
         ActualizarDisclaimerDemo();
         ActualizarBotonNuevaZona();
+        ActualizarClimasZonaSeleccionada();
+        if (mostrandoInfoZona && !ActualizarTextoInfoZona())
+        {
+            OcultarInfoZona();
+        }
 
         if (zonaSeleccionada != ZonaBosqueArdiente)
         {
@@ -610,6 +1046,201 @@ public class PrePartidaManager : MonoBehaviour
 
             int idZona = zona.id;
             zona.boton.onClick.AddListener(() => SeleccionarZona(idZona));
+        }
+    }
+
+    private void ConfigurarInfoZona()
+    {
+        BuscarInfoZona();
+
+        if (infoZona == null || infoZonaConfigurada)
+        {
+            return;
+        }
+
+        EventTrigger trigger = infoZona.GetComponent<EventTrigger>();
+        if (trigger == null)
+        {
+            trigger = infoZona.AddComponent<EventTrigger>();
+        }
+
+        if (trigger.triggers == null)
+        {
+            trigger.triggers = new List<EventTrigger.Entry>();
+        }
+
+        AgregarEventoInfoZona(trigger, EventTriggerType.PointerEnter, _ => MostrarInfoZona());
+        AgregarEventoInfoZona(trigger, EventTriggerType.PointerExit, _ => OcultarInfoZona());
+        infoZonaConfigurada = true;
+    }
+
+    private void BuscarInfoZona()
+    {
+        if (infoZona != null && fondoInfoZona != null && textoInfoZona != null)
+        {
+            return;
+        }
+
+        Transform[] objetos = GetComponentsInChildren<Transform>(true);
+        for (int i = 0; i < objetos.Length; i++)
+        {
+            Transform candidato = objetos[i];
+            if (candidato == null)
+            {
+                continue;
+            }
+
+            string nombre = candidato.gameObject.name;
+            if (infoZona == null && string.Equals(nombre, "infoZona", StringComparison.OrdinalIgnoreCase))
+            {
+                infoZona = candidato.gameObject;
+            }
+            else if (fondoInfoZona == null && string.Equals(nombre, "FondoInfoZona", StringComparison.OrdinalIgnoreCase))
+            {
+                fondoInfoZona = candidato.gameObject;
+            }
+
+            if (textoInfoZona == null && string.Equals(nombre, "txtDescZona (1)", StringComparison.OrdinalIgnoreCase))
+            {
+                textoInfoZona = candidato.GetComponent<TMP_Text>();
+            }
+        }
+
+        if (infoZona != null && textoInfoZona == null)
+        {
+            textoInfoZona = infoZona.GetComponentInChildren<TMP_Text>(true);
+        }
+    }
+
+    private static void AgregarEventoInfoZona(
+        EventTrigger trigger,
+        EventTriggerType tipo,
+        UnityEngine.Events.UnityAction<BaseEventData> accion)
+    {
+        EventTrigger.Entry entrada = new EventTrigger.Entry { eventID = tipo };
+        entrada.callback.AddListener(accion);
+        trigger.triggers.Add(entrada);
+    }
+
+    private void MostrarInfoZona()
+    {
+        BuscarInfoZona();
+        if (!ActualizarTextoInfoZona())
+        {
+            OcultarInfoZona();
+            return;
+        }
+
+        if (fondoInfoZona != null)
+        {
+            fondoInfoZona.SetActive(true);
+        }
+
+        if (textoInfoZona != null)
+        {
+            textoInfoZona.gameObject.SetActive(true);
+        }
+
+        mostrandoInfoZona = true;
+    }
+
+    private void OcultarInfoZona()
+    {
+        mostrandoInfoZona = false;
+
+        if (fondoInfoZona != null)
+        {
+            fondoInfoZona.SetActive(false);
+        }
+
+        if (textoInfoZona != null)
+        {
+            textoInfoZona.gameObject.SetActive(false);
+        }
+    }
+
+    private bool ActualizarTextoInfoZona()
+    {
+        if (textoInfoZona == null)
+        {
+            return false;
+        }
+
+        string descripcion = ZonaMecanicaTextos.ObtenerDescripcion(
+            zonaSeleccionada,
+            0,
+            ZonaMecanicasConocidas(zonaSeleccionada));
+        if (string.IsNullOrWhiteSpace(descripcion))
+        {
+            textoInfoZona.text = string.Empty;
+            return false;
+        }
+
+        textoInfoZona.text = descripcion;
+        return true;
+    }
+
+    private void ActualizarClimasZonaSeleccionada()
+    {
+        BuscarUIClimasZona();
+        if (uiClimasZona != null)
+        {
+            uiClimasZona.MostrarRegion(zonaSeleccionada, metaprogresionActual);
+        }
+    }
+
+    private void BuscarUIClimasZona()
+    {
+        if (uiClimasZona != null)
+        {
+            return;
+        }
+
+        uiClimasZona = GetComponentInChildren<UIManagerContZonas>(true);
+        if (uiClimasZona != null)
+        {
+            return;
+        }
+
+        UIManagerContZonas[] managersClimas = FindObjectsByType<UIManagerContZonas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < managersClimas.Length; i++)
+        {
+            UIManagerContZonas managerClimas = managersClimas[i];
+            if (managerClimas == null)
+            {
+                continue;
+            }
+
+            if (string.Equals(managerClimas.gameObject.name, "contClimas", StringComparison.OrdinalIgnoreCase)
+                || managersClimas.Length == 1)
+            {
+                uiClimasZona = managerClimas;
+                return;
+            }
+        }
+
+        Transform[] objetos = GetComponentsInChildren<Transform>(true);
+        for (int i = 0; i < objetos.Length; i++)
+        {
+            Transform candidato = objetos[i];
+            if (candidato == null)
+            {
+                continue;
+            }
+
+            if (!string.Equals(candidato.gameObject.name, "contClimas", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(candidato.gameObject.name, "contClima", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            uiClimasZona = candidato.GetComponent<UIManagerContZonas>();
+            if (uiClimasZona == null)
+            {
+                uiClimasZona = candidato.gameObject.AddComponent<UIManagerContZonas>();
+            }
+
+            return;
         }
     }
 
@@ -716,6 +1347,7 @@ public class PrePartidaManager : MonoBehaviour
     {
         ActualizarDropdownLider();
         ActualizarZonaSeleccionada();
+        ActualizarTextosConfirmacionSobreescribir();
     }
 
     private void BuscarDropdownLider()
@@ -1000,5 +1632,96 @@ public class PrePartidaManager : MonoBehaviour
         return TRADU.i != null && !string.IsNullOrWhiteSpace(texto)
             ? TRADU.i.Traducir(texto)
             : texto ?? string.Empty;
+    }
+}
+
+public static class ZonaMecanicaTextos
+{
+    public static string ObtenerDescripcion(int zonaId, int fuerzaKaleTav = 0, bool mecanicasConocidas = true)
+    {
+        if (zonaId <= 0)
+        {
+            return string.Empty;
+        }
+
+        int idioma = ObtenerIdiomaActual();
+        if (!mecanicasConocidas)
+        {
+            return ObtenerTextoMecanicasDesconocidas(idioma);
+        }
+
+        if (idioma == TRADU.IdiomaIngles)
+        {
+            return ObtenerDescripcionIngles(zonaId, fuerzaKaleTav);
+        }
+
+        if (idioma == TRADU.IdiomaPortugues)
+        {
+            return ObtenerDescripcionPortugues(zonaId, fuerzaKaleTav);
+        }
+
+        return ObtenerDescripcionEspanol(zonaId, fuerzaKaleTav);
+    }
+
+    private static string ObtenerTextoMecanicasDesconocidas(int idioma)
+    {
+        return idioma switch
+        {
+            TRADU.IdiomaIngles => "Mechanics unknown for this region. Visit it to learn them.",
+            TRADU.IdiomaPortugues => "Mecânicas desconhecidas para esta região. Visite-a para conhecê-las.",
+            _ => "Mecánicas desconocidas para esta región. Visítala para conocerlas."
+        };
+    }
+
+    private static string ObtenerDescripcionEspanol(int zonaId, int fuerzaKaleTav)
+    {
+        switch (zonaId)
+        {
+            case 1:
+                return "A medida que viajas por el bosque, <color=#ff6a1a><b>las llamas</b></color> envolverán regiones del mapa de forma inesperada.\n\nSi intentas atravesar un <color=#ff6a1a><b>Nodo prendido fuego</b></color>, perderás <color=#a0e812><b>10 de Esperanza</b></color> y <color=#c918bb><b>8-15 Civiles</b></color>.\nNo se podrá <b>descansar</b> en nodos incendiados.\n\nAdemás, las batallas que tengan lugar en un <color=#ff6a1a><b>Nodo incendiado</b></color>, tendrán <color=#ff6a1a><b>llamas</b></color> en el campo de batalla.";
+            case 2:
+                return "La tribu <color=#77c7ff><b>Kale'Tav</b></color> está realizando <color=#b98cff><b>rituales</b></color> en el área, preparándose para el <color=#8b5cf6><b>Aliento Negro</b></color>.\n\nAl escuchar sus <b>tambores</b> a lo lejos sabrás dónde se encuentran.\nPor cada <color=#b98cff><b>Ritual completado</b></color>, sus combatientes recibirán <color=#ffcc66><b>bonificaciones en batalla</b></color>.\n\nPara interrumpir un ritual debes aproximarte a los <color=#77c7ff><b>nodos marcados</b></color> y derrotarlos.\n\n<color=#77c7ff><b>Fuerza Kale'Tav:</b></color> " + fuerzaKaleTav;
+            case 3:
+                return "Debido a la invasión, <color=#b44a4a><b>Nedukazal</b></color> está envuelta en <color=#8b5cf6><b>caos y oscuridad</b></color>, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la <color=#ffd166><b>luz propia</b></color>, será más propensa a sufrir <color=#ff4d4d><b>emboscadas (+20%)</b></color>.\n\nMejora los <color=#77c7ff><b>Catalejos</b></color> para aumentar el <color=#77c7ff><b>rango de visión</b></color>.\nLas <color=#ffd166><b>Antorchas de Pie</b></color> seguirán reforzando la luz propia de la caravana en esta región.\n\nEl <color=#8b5cf6><b>Aliento Negro</b></color> no será una preocupación en esta región.";
+            default:
+                return string.Empty;
+        }
+    }
+
+    private static string ObtenerDescripcionIngles(int zonaId, int fuerzaKaleTav)
+    {
+        switch (zonaId)
+        {
+            case 1:
+                return "As you travel through the forest, <color=#ff6a1a><b>flames</b></color> will unexpectedly engulf regions of the map.\n\nIf you try to cross a <color=#ff6a1a><b>burning Node</b></color>, you will lose <color=#a0e812><b>10 Hope</b></color> and <color=#c918bb><b>8-15 Civilians</b></color>.\nYou cannot <b>rest</b> on burning nodes.\n\nAlso, battles that take place on a <color=#ff6a1a><b>burning Node</b></color> will have <color=#ff6a1a><b>flames</b></color> on the battlefield.";
+            case 2:
+                return "The <color=#77c7ff><b>Kale'Tav</b></color> tribe is performing <color=#b98cff><b>rituals</b></color> in the area, preparing for the <color=#8b5cf6><b>Black Breath</b></color>.\n\nWhen you hear their <b>drums</b> in the distance, you will know where they are.\nFor each <color=#b98cff><b>completed Ritual</b></color>, their fighters will receive <color=#ffcc66><b>battle bonuses</b></color>.\n\nTo interrupt a ritual, approach the <color=#77c7ff><b>marked nodes</b></color> and defeat them.\n\n<color=#77c7ff><b>Kale'Tav Strength:</b></color> " + fuerzaKaleTav;
+            case 3:
+                return "Due to the invasion, <color=#b44a4a><b>Nedukazal</b></color> is shrouded in <color=#8b5cf6><b>chaos and darkness</b></color>, so the caravan will not be able to clearly see the path ahead.\n\nBecause it relies on its <color=#ffd166><b>own light</b></color>, it will be more likely to suffer <color=#ff4d4d><b>ambushes (+20%)</b></color>.\n\nThe <color=#ffd166><b>Standing Torches</b></color> improvement will increase the <color=#77c7ff><b>Vision Range</b></color> of the caravan.\n\nThe <color=#8b5cf6><b>Black Breath</b></color> will not be a concern in this region.";
+            default:
+                return string.Empty;
+        }
+    }
+
+    private static string ObtenerDescripcionPortugues(int zonaId, int fuerzaKaleTav)
+    {
+        switch (zonaId)
+        {
+            case 1:
+                return "À medida que viaja pela floresta, <color=#ff6a1a><b>as chamas</b></color> envolverão regiões do mapa de forma inesperada.\n\nSe tentar atravessar um <color=#ff6a1a><b>Nodo em chamas</b></color>, perderá <color=#a0e812><b>10 de Esperança</b></color> e <color=#c918bb><b>8-15 Civis</b></color>.\nNão será possível <b>descansar</b> em nodos incendiados.\n\nAlém disso, as batalhas que acontecerem em um <color=#ff6a1a><b>Nodo incendiado</b></color> terão <color=#ff6a1a><b>chamas</b></color> no campo de batalha.";
+            case 2:
+                return "A tribo <color=#77c7ff><b>Kale'Tav</b></color> está realizando <color=#b98cff><b>rituais</b></color> na área, preparando-se para o <color=#8b5cf6><b>Sopro Negro</b></color>.\n\nAo ouvir seus <b>tambores</b> ao longe, você saberá onde eles estão.\nPara cada <color=#b98cff><b>Ritual completado</b></color>, seus combatentes receberão <color=#ffcc66><b>bonificações em batalha</b></color>.\n\nPara interromper um ritual, aproxime-se dos <color=#77c7ff><b>nodos marcados</b></color> e derrote-os.\n\n<color=#77c7ff><b>Força Kale'Tav:</b></color> " + fuerzaKaleTav;
+            case 3:
+                return "Devido à invasão, <color=#b44a4a><b>Nedukazal</b></color> está envolta em <color=#8b5cf6><b>caos e escuridão</b></color>, portanto a caravana não poderá ver claramente o caminho à frente.\n\nPor depender da <color=#ffd166><b>própria luz</b></color>, será mais propensa a sofrer <color=#ff4d4d><b>emboscadas (+20%)</b></color>.\n\nMelhore as <color=#77c7ff><b>Lunetas</b></color> para aumentar o <color=#77c7ff><b>Alcance de Visão</b></color>.\nAs <color=#ffd166><b>Tochas de Pé</b></color> continuarão reforçando a luz própria da caravana nesta região.\n\nO <color=#8b5cf6><b>Sopro Negro</b></color> não será uma preocupação nesta região.";
+            default:
+                return string.Empty;
+        }
+    }
+
+    private static int ObtenerIdiomaActual()
+    {
+        return TRADU.i != null
+            ? TRADU.i.nIdioma
+            : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaEspanol);
     }
 }

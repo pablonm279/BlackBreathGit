@@ -196,9 +196,9 @@ MonoBehaviour:
   mod_iniciativa: 0
   iniciativa_actual: 0
   esEtereo: 0
-  at_maxHP: 42
-  mod_maxHP: 42
-  HP_actual: 42
+  at_maxHP: 36
+  mod_maxHP: 36
+  HP_actual: 36
   at_maxAccionP: 2
   esInmobil: 0
   mod_maxAccionP: 2
@@ -352,7 +352,8 @@ MonoBehaviour:
   esRango: 0
   bPuedeVerEscondidos: 0
   unicoEnCombate: 0
-  tierEnemigo: 2
+  tierEnemigo: 1
+  siempreEnRetaguardiaInicial: 0
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0
@@ -437,8 +438,6 @@ MonoBehaviour:
   vfxCasteo: {fileID: 0}
   requiereRecurso: 0
   costoPM: 0
-  cooldownMax: 0
-  cooldownActual: 0
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   NIVEL: 0
@@ -499,6 +498,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 0
+  ignoraProvocacion: 0
   prioridad: 5
   costoAP: 1
   pPrioridad: 5

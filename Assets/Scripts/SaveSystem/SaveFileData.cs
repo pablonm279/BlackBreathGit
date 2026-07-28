@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine.Serialization;
 
 [Serializable]
@@ -10,6 +11,7 @@ public class SaveFileData
 
   public int version = CurrentVersion;
   public string savedAtUtc;
+  public string displayName;
   public CampaignSaveData campaign = new CampaignSaveData();
   public MapSaveData map = new MapSaveData();
   public PartySaveData party = new PartySaveData();
@@ -19,7 +21,106 @@ public class SaveFileData
   public void MarcarGuardadoAhora()
   {
     version = CurrentVersion;
-    savedAtUtc = DateTime.UtcNow.ToString("o");
+    DateTime utcNow = DateTime.UtcNow;
+    savedAtUtc = utcNow.ToString("o");
+    displayName = ConstruirDisplayName(utcNow.ToLocalTime());
+  }
+
+  public void AsegurarDisplayName()
+  {
+    if (!string.IsNullOrWhiteSpace(displayName))
+    {
+      return;
+    }
+
+    displayName = ConstruirDisplayName(ObtenerFechaLocalGuardado());
+  }
+
+  private string ConstruirDisplayName(DateTime fechaLocal)
+  {
+    int fase = campaign != null ? Math.Max(1, campaign.zonaFase) : 1;
+    int idioma = ObtenerIdiomaActual();
+    string etapa = ObtenerEtiquetaEtapa(idioma);
+    string region = ObtenerNombreRegion(campaign != null ? campaign.zonaId : 0, idioma);
+    string fecha = fechaLocal.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
+
+    return etapa + " " + ConvertirARomano(fase) + " - " + region + " - " + fecha;
+  }
+
+  private DateTime ObtenerFechaLocalGuardado()
+  {
+    if (DateTime.TryParse(savedAtUtc, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTime fechaGuardada))
+    {
+      return fechaGuardada.Kind == DateTimeKind.Utc ? fechaGuardada.ToLocalTime() : fechaGuardada;
+    }
+
+    return DateTime.Now;
+  }
+
+  private static int ObtenerIdiomaActual()
+  {
+    return TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+  }
+
+  private static string ObtenerEtiquetaEtapa(int idioma)
+  {
+    return idioma == TRADU.IdiomaIngles ? "Stage" : "Etapa";
+  }
+
+  private static string ObtenerNombreRegion(int zonaId, int idioma)
+  {
+    if (idioma == TRADU.IdiomaIngles)
+    {
+      return zonaId switch
+      {
+        IdsZonaCampania.BosqueAngustiante => "Burning Forest",
+        IdsZonaCampania.PasoVientoHelado => "Frozenwind Passage",
+        IdsZonaCampania.Nedukazal => "Nedukazal",
+        _ => "Unknown Region"
+      };
+    }
+
+    if (idioma == TRADU.IdiomaPortugues)
+    {
+      return zonaId switch
+      {
+        IdsZonaCampania.BosqueAngustiante => "Floresta Ardente",
+        IdsZonaCampania.PasoVientoHelado => "Passagem do Vento Gelado",
+        IdsZonaCampania.Nedukazal => "Nedukazal",
+        _ => "Regiao desconhecida"
+      };
+    }
+
+    return zonaId switch
+    {
+      IdsZonaCampania.BosqueAngustiante => "Bosque Ardiente",
+      IdsZonaCampania.PasoVientoHelado => "Paso Vientohelado",
+      IdsZonaCampania.Nedukazal => "Nedukazal",
+      _ => "Region desconocida"
+    };
+  }
+
+  private static string ConvertirARomano(int numero)
+  {
+    if (numero <= 0 || numero > 3999)
+    {
+      return numero.ToString(CultureInfo.InvariantCulture);
+    }
+
+    int[] valores = { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
+    string[] simbolos = { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
+    string resultado = string.Empty;
+
+    for (int i = 0; i < valores.Length; i++)
+    {
+      while (numero >= valores[i])
+      {
+        resultado += simbolos[i];
+        numero -= valores[i];
+      }
+    }
+
+    return resultado;
   }
 }
 
@@ -292,6 +393,8 @@ public class MetaprogresionSaveData
   public int cantidadCiviles;
   public int valorTrabajoDisponible;
   public List<PresagioRegionPendienteSaveData> presagiosRegionesPendientes = new List<PresagioRegionPendienteSaveData>();
+  public List<int> zonasVisitadas = new List<int>();
+  public List<int> climasExclusivosDescubiertos = new List<int>();
 
   public int misionesSalvamento = -1;
   [FormerlySerializedAs("nivelPeligroBosqueArdiente")]

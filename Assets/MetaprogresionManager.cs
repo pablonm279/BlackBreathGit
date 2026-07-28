@@ -52,6 +52,102 @@ public class MetaprogresionManager : MonoBehaviour
     public int SerriaPuntosAlmacenadosBarricadas;
     public int SerriaPuntosAlmacenadosTemplo;
 
+    public List<int> ZonasVisitadas = new List<int>();
+
+    public bool ZonaVisitada(int zonaId)
+    {
+        return zonaId > 0 && ZonasVisitadas != null && ZonasVisitadas.Contains(zonaId);
+    }
+
+    public void MarcarZonaVisitada(int zonaId)
+    {
+        if (zonaId <= 0)
+        {
+            return;
+        }
+
+        if (ZonasVisitadas == null)
+        {
+            ZonasVisitadas = new List<int>();
+        }
+
+        if (!ZonasVisitadas.Contains(zonaId))
+        {
+            ZonasVisitadas.Add(zonaId);
+        }
+    }
+
+    public void RestaurarZonasVisitadas(List<int> zonasVisitadas)
+    {
+        ZonasVisitadas = new List<int>();
+        if (zonasVisitadas == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < zonasVisitadas.Count; i++)
+        {
+            MarcarZonaVisitada(zonasVisitadas[i]);
+        }
+    }
+
+    public List<int> ObtenerZonasVisitadas()
+    {
+        return ZonasVisitadas != null
+            ? new List<int>(ZonasVisitadas)
+            : new List<int>();
+    }
+
+    public List<int> ClimasExclusivosDescubiertos = new List<int>();
+
+    public bool ClimaExclusivoDescubierto(int tipoClima)
+    {
+        return ClimasExclusivosDescubiertos != null
+            && ClimasExclusivosDescubiertos.Contains(tipoClima);
+    }
+
+    public bool RegistrarClimaExclusivoDescubierto(int tipoClima)
+    {
+        if (!ClimaZonaCatalog.EsClimaExclusivoRegion(tipoClima))
+        {
+            return false;
+        }
+
+        if (ClimasExclusivosDescubiertos == null)
+        {
+            ClimasExclusivosDescubiertos = new List<int>();
+        }
+
+        if (ClimasExclusivosDescubiertos.Contains(tipoClima))
+        {
+            return false;
+        }
+
+        ClimasExclusivosDescubiertos.Add(tipoClima);
+        return true;
+    }
+
+    public void RestaurarClimasExclusivosDescubiertos(List<int> climas)
+    {
+        ClimasExclusivosDescubiertos = new List<int>();
+        if (climas == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < climas.Count; i++)
+        {
+            RegistrarClimaExclusivoDescubierto(climas[i]);
+        }
+    }
+
+    public List<int> ObtenerClimasExclusivosDescubiertos()
+    {
+        return ClimasExclusivosDescubiertos != null
+            ? new List<int>(ClimasExclusivosDescubiertos)
+            : new List<int>();
+    }
+
    
     public void AumentarAlmacenadosBarcos()
     {

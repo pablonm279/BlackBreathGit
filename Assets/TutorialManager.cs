@@ -206,7 +206,6 @@ public class TutorialManager : MonoBehaviour
         pasosUsadosPorEstablecer.Clear();
         pasoActual = Mathf.Clamp(pasoActual, 0, pasosTutorial.Length - 1);
 
-        ConfigurarMapaLinealTutorial();
         OcultarTodosLosPasos();
         MostrarPaso(pasoActual);
     }

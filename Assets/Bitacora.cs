@@ -142,12 +142,15 @@ public abstract class Bitacora : MonoBehaviour
 
     public bool MostrarPaginaAnterior()
     {
-        return MostrarPagina(GetPaginaVisible() - 1);
+        int paginaActualNormalizada = Mathf.Clamp(GetPaginaVisible(), 1, GetUltimaPagina());
+        return paginaActualNormalizada > 1 && MostrarPagina(paginaActualNormalizada - 1);
     }
 
     public bool MostrarPaginaSiguiente()
     {
-        return MostrarPagina(GetPaginaVisible() + 1);
+        int ultimaPagina = GetUltimaPagina();
+        int paginaActualNormalizada = Mathf.Clamp(GetPaginaVisible(), 1, ultimaPagina);
+        return paginaActualNormalizada < ultimaPagina && MostrarPagina(paginaActualNormalizada + 1);
     }
 
     public int GetDiaVisible()
@@ -556,6 +559,16 @@ public abstract class Bitacora : MonoBehaviour
         }
 
         entradasCampania.Add(mensaje);
+    }
+
+    protected int NormalizarPaginaVisible(int totalPaginas)
+    {
+        int totalNormalizado = Mathf.Max(1, totalPaginas);
+        paginaVisible = ancladoALaUltimaPagina
+            ? totalNormalizado
+            : Mathf.Clamp(GetPaginaVisible(), 1, totalNormalizado);
+        ancladoALaUltimaPagina = paginaVisible >= totalNormalizado;
+        return paginaVisible;
     }
 
     private int GetUltimaPagina()

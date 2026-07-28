@@ -125,7 +125,7 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Retraso Nocturno");
 
             txtDescripcion.text = TRADU.i.Traducir("Uno de los principales encargados de guiar la caravana y elegir las rutas más seguras accidentalmente perdió sus mapas.\n");
-            txtDescripcion.text += TRADU.i.Traducir("Los demás encargados lo ayudarán a buscarlos ya que esos mapas contiene información crucial de la zona actual, y sin su ayuda la caravana podría perderse.\n\n\n\n\n\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("Los demás encargados lo ayudarán a buscarlos ya que esos mapas contiene información crucial de la región actual, y sin su ayuda la caravana podría perderse.\n\n\n\n\n\n\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Pasan las Horas: +1 Avance Aliento Negro</b></color>");
@@ -799,7 +799,7 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Lugareño Anciano ");
 
 
-            txtDescripcion.text = TRADU.i.Traducir("Un hombre anciano aparece a un lado del camino haciendole señas con las manos a la Caravana. De cerca, te das cuenta que este hombre lleva viviendo muchísimos años en la zona y la conoce a la perfección.\n");
+            txtDescripcion.text = TRADU.i.Traducir("Un hombre anciano aparece a un lado del camino haciendole señas con las manos a la Caravana. De cerca, te das cuenta que este hombre lleva viviendo muchísimos años en la región y la conoce a la perfección.\n");
             txtDescripcion.text += TRADU.i.Traducir("'Aliento Negro o no, mis días ya están contados. Pero puedo transmitirles mis conocimientos sobre esta tierra, como último acto de bien.'- dice\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>Preguntas: -'¿Conoce algún atajo que nos aleje del peligro inminente al menos por unos kilómetros?'</color> Efectos: Si es posible se generará un Atajo subterráneo. \n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>Preguntas: -'Describanos el area circundante para que podamos tomar decisiones con más información.'</color> Efectos: Se revelarán próximos nodos. \n\n");
@@ -1688,7 +1688,7 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Patio de Evacuación");
 
             txtDescripcion.text = TRADU.i.Traducir("Al reparo de un patio de posta, ocultos por lonas y carros volcados, encuentran a varios habitantes de Nedukazal esperando el momento para huir.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("Al enterarse de que la Caravana partirá al amanecer, piden sumarse antes de que los Zarkil vuelvan a cruzar la zona.\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("Al enterarse de que la Caravana partirá al amanecer, piden sumarse antes de que los Zarkil vuelvan a cruzar la región.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>+5-10 Civiles, +3 Esperanza</b></color>");
 
             botonA.SetActive(false);

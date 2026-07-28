@@ -89,10 +89,12 @@ public class TutorialTooltipCatalog : ScriptableObject
 public static class TutorialTooltipProgress
 {
   public const string PrefMostrarAyudas = "tutorial_tooltips_mostrar_ayudas";
+  private const string CooldownSavePrefix = "__tooltip_cooldown_dia__:";
 
   private static readonly HashSet<string> vistos = new HashSet<string>();
   private static bool silenciados;
   private static bool playerPrefsCargados;
+  private static int ultimoDiaMostrado;
 
   public static bool Silenciados
   {
@@ -125,6 +127,17 @@ public static class TutorialTooltipProgress
     }
   }
 
+  public static bool PuedeMostrarPorCooldown(int diaActual, int cooldownDias)
+  {
+    return ultimoDiaMostrado <= 0
+      || Mathf.Max(1, diaActual) - ultimoDiaMostrado >= Mathf.Max(0, cooldownDias);
+  }
+
+  public static void RegistrarDiaMostrado(int diaActual)
+  {
+    ultimoDiaMostrado = Mathf.Max(1, diaActual);
+  }
+
   public static void Silenciar()
   {
     SetMostrarAyudas(false);
@@ -142,11 +155,13 @@ public static class TutorialTooltipProgress
   {
     CargarPlayerPrefsSiHaceFalta();
     vistos.Clear();
+    ultimoDiaMostrado = 0;
   }
 
   public static void RestaurarDesdeSave(CampaignSaveData data)
   {
     vistos.Clear();
+    ultimoDiaMostrado = 0;
     CargarPlayerPrefsSiHaceFalta();
     if (data != null && data.tutorialTooltipsSilenciados)
     {
@@ -161,6 +176,12 @@ public static class TutorialTooltipProgress
     for (int i = 0; i < data.tutorialTooltipsVistos.Count; i++)
     {
       string id = data.tutorialTooltipsVistos[i];
+      if (TryLeerDiaCooldown(id, out int diaCooldown))
+      {
+        ultimoDiaMostrado = Mathf.Max(ultimoDiaMostrado, diaCooldown);
+        continue;
+      }
+
       if (!string.IsNullOrWhiteSpace(id))
       {
         vistos.Add(id);
@@ -177,6 +198,19 @@ public static class TutorialTooltipProgress
 
     data.tutorialTooltipsSilenciados = Silenciados;
     data.tutorialTooltipsVistos = new List<string>(vistos);
+    if (ultimoDiaMostrado > 0)
+    {
+      data.tutorialTooltipsVistos.Add(CooldownSavePrefix + ultimoDiaMostrado);
+    }
+  }
+
+  private static bool TryLeerDiaCooldown(string valor, out int dia)
+  {
+    dia = 0;
+    return !string.IsNullOrEmpty(valor)
+      && valor.StartsWith(CooldownSavePrefix, StringComparison.Ordinal)
+      && int.TryParse(valor.Substring(CooldownSavePrefix.Length), out dia)
+      && dia > 0;
   }
 
   private static void CargarPlayerPrefsSiHaceFalta()
