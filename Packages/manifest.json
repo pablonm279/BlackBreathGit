@@ -1,5 +1,17 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.gameanalytics.sdk",
+        "com.google.external-dependency-manager"
+      ]
+    }
+  ],
   "dependencies": {
+    "com.gameanalytics.sdk": "8.0.1",
+    "com.google.external-dependency-manager": "1.2.187",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.ai.navigation": "2.0.0",
     "com.unity.collab-proxy": "2.3.1",

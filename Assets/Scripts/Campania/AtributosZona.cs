@@ -800,7 +800,7 @@ public class AtributosZona : MonoBehaviour
          //sectorno: 3, por ejemplo no se generarian en el sector TerrenoSur(3)
          distCaminoOverride: 0.11f,
          distNodoOverride: 0.13f,
-         rOverride: 0.58f,
+         rOverride: 0.56f,
          kOverride: 20);
          
        yield return scMapDecorator.GenerarAsyncCR(

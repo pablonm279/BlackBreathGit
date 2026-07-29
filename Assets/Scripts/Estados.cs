@@ -10,6 +10,21 @@ public class Estados : MonoBehaviour
 {
   private const int TurnosCondenadoParaEjecucion = 10;
 
+  private static void RegistrarCambioEstado(Unidad unidad, string estado, int valorAnterior, int valorActual)
+  {
+    int diferencia = valorActual - valorAnterior;
+    if (diferencia == 0)
+    {
+      return;
+    }
+
+    RuntimeAnalytics.TrackCombatState(
+      diferencia > 0 ? "applied" : "removed",
+      estado,
+      Mathf.Abs(diferencia),
+      unidad);
+  }
+
   public async static void Efecto_Ardiendo(Unidad unidad)
   {
     unidad.RecibirDanio(2 * unidad.estado_ardiendo, 4, false, null, 400);
@@ -184,7 +199,9 @@ public class Estados : MonoBehaviour
 
      if(unidad.estado_ardiendo > -1) //-1 Es si es inmune al estado.
      {
+       int estadoAnterior = unidad.estado_ardiendo;
        unidad.estado_ardiendo += stacks;
+       RegistrarCambioEstado(unidad, "burning", estadoAnterior, unidad.estado_ardiendo);
 
        if(stacks > 0)
         unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" arde"), Color.red);
@@ -203,7 +220,9 @@ public class Estados : MonoBehaviour
 
      if(unidad.estado_veneno > -1) //-1 Es si es inmune al estado.
      {
+       int estadoAnterior = unidad.estado_veneno;
        unidad.estado_veneno += stacks;
+       RegistrarCambioEstado(unidad, "poison", estadoAnterior, unidad.estado_veneno);
        unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" veneno"), Color.green);
        BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
        return true;
@@ -222,7 +241,9 @@ public class Estados : MonoBehaviour
 
      if(unidad.estado_congelado > -1) //-1 Es si es inmune al estado.
      {
+      int estadoAnterior = unidad.estado_congelado;
       unidad.estado_congelado += stacks;
+      RegistrarCambioEstado(unidad, "frozen", estadoAnterior, unidad.estado_congelado);
       unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" frio"), Color.cyan);
 
       BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
@@ -238,11 +259,13 @@ public class Estados : MonoBehaviour
 
      if(unidad.estado_aturdido > -1) //-1 Es si es inmune al estado.
      {
+      int estadoAnterior = unidad.estado_aturdido;
       if(unidad.estado_aturdido < stacks)
       {
         unidad.estado_aturdido = stacks;
         unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" aturde"), Color.yellow);
       }
+      RegistrarCambioEstado(unidad, "stunned", estadoAnterior, unidad.estado_aturdido);
 
       BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
@@ -256,11 +279,13 @@ public class Estados : MonoBehaviour
 
      if(unidad.estado_inmovil > -1) //-1 Es si es inmune al estado.
      {
+      int estadoAnterior = unidad.estado_inmovil;
       if(unidad.estado_inmovil < stacks)
       {
         unidad.estado_inmovil = stacks;
         unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" inmóvil"), Color.yellow);
       }
+      RegistrarCambioEstado(unidad, "immobilized", estadoAnterior, unidad.estado_inmovil);
 
       BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
      } else{unidad.GenerarTextoFlotante(TRADU.i.Traducir("Inmune"), Color.green);}
@@ -276,7 +301,9 @@ public class Estados : MonoBehaviour
 
     if(unidad.estado_sangrado > -1) //-1 Es si es inmune al estado.
     {
+       int estadoAnterior = unidad.estado_sangrado;
        unidad.estado_sangrado += stacks;
+       RegistrarCambioEstado(unidad, "bleeding", estadoAnterior, unidad.estado_sangrado);
        unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" sangrado"), Color.red);
      
 
@@ -293,8 +320,9 @@ public class Estados : MonoBehaviour
 
      if(unidad.estado_acido > -1) //-1 Es si es inmune al estado.
     {
-     
+       int estadoAnterior = unidad.estado_acido;
        unidad.estado_acido += stacks;
+       RegistrarCambioEstado(unidad, "acid", estadoAnterior, unidad.estado_acido);
        unidad.GenerarTextoFlotante("+"+stacks+TRADU.i.Traducir(" acido"), Color.green);
 
      BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
@@ -311,11 +339,13 @@ public class Estados : MonoBehaviour
       return;
     }
 
+    int estadoAnterior = unidad.estado_MovimientoAbaratado;
     unidad.estado_MovimientoAbaratado += stacks;
     if (unidad.estado_MovimientoAbaratado < 0)
     {
       unidad.estado_MovimientoAbaratado = 0;
     }
+    RegistrarCambioEstado(unidad, "discounted_movement", estadoAnterior, unidad.estado_MovimientoAbaratado);
 
     if (stacks > 0 && mostrarTextoFlotante)
     {

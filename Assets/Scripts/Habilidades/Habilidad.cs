@@ -478,6 +478,7 @@ public abstract class Habilidad : MonoBehaviour
       Objetivos = objetivosFiltrados;
     }
 
+    RuntimeAnalytics.TrackAbilityUsed(this, scEstaUnidad);
     BattleManager.Instance.bOcupado = true;
     // Al confirmar la habilidad, limpiar marcas de previsualizacion en unidades.
     LimpiarMarcasUnidadesPosibles();

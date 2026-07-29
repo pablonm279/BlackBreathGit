@@ -484,6 +484,7 @@ public class BattleManager : MonoBehaviour
   {
     if (unidadActiva != null)
     {
+      RuntimeAnalytics.RecordBattleTurn(RondaNro);
       RefrescarPosesUnidadesPorCambioDeTurno();
       ActualizarFadeAliadoDebajoUnidadActivaFrontal();
 
@@ -2436,9 +2437,11 @@ public class BattleManager : MonoBehaviour
 
   private void Update()
   {
+    bool tutorialActivo = scTutorialCombate != null && scTutorialCombate.tutorialCombateActivo;
+
     if (EntradaBatallaBloqueadaPorUI)
     {
-      if (Input.GetKeyDown(KeyCode.Escape) && CerrarOpcionesSiEstanAbiertasEnCombate())
+      if (!tutorialActivo && Input.GetKeyDown(KeyCode.Escape) && CerrarOpcionesSiEstanAbiertasEnCombate())
       {
         return;
       }
@@ -2446,7 +2449,6 @@ public class BattleManager : MonoBehaviour
       return;
     }
 
-    bool tutorialActivo = scTutorialCombate != null && scTutorialCombate.tutorialCombateActivo;
     SincronizarPausaConVisibilidadLog();
     if (PreviewHoverHostilActivo() && !ShiftPreviewHoverHostilPresionado())
     {
@@ -2455,12 +2457,12 @@ public class BattleManager : MonoBehaviour
     ActualizarFadeHoverObjetivoHabilidadPorMouse();
     ActualizarFadeAliadoDebajoUnidadActivaFrontal();
 
-    if (Input.GetKeyDown(teclaDebugBajoMouse))
+    if (!tutorialActivo && Input.GetKeyDown(teclaDebugBajoMouse))
     {
       DebugObjetosBajoMouse();
     }
 
-    if (Input.GetKeyDown(KeyCode.Tab))
+    if (!tutorialActivo && Input.GetKeyDown(KeyCode.Tab))
     {
       ActivarVistaTactica(!vistaTacticaActiva);
     }
@@ -2490,7 +2492,6 @@ public class BattleManager : MonoBehaviour
 
     if (Input.GetKeyDown(KeyCode.Escape) && tutorialActivo)
     {
-      AbrirOpcionesDesdeCombate();
       return;
     }
 
@@ -2510,15 +2511,15 @@ public class BattleManager : MonoBehaviour
       AbrirOpcionesDesdeCombate();
     }
 
-    if (Input.GetKeyDown(KeyCode.I))
+    if (!tutorialActivo && Input.GetKeyDown(KeyCode.I))
     {
       scUIInfoChar.BotonInfoenemigos();
     }
-    if (Input.GetKeyDown(KeyCode.F))
+    if (!tutorialActivo && Input.GetKeyDown(KeyCode.F))
     {
       ActivarModoRapido(!modoRapidoActivado);
     }
-    ManejarHotkeysHabilidadesJugador();
+    ManejarHotkeysHabilidadesJugador(tutorialActivo);
 
     if (unidadActiva != null && scUIBotonesHab != null && unidadActiva.GetComponent<IAUnidad>() == null)
     {
@@ -3206,7 +3207,7 @@ public class BattleManager : MonoBehaviour
     }
   }
 
-  private void ManejarHotkeysHabilidadesJugador()
+  private void ManejarHotkeysHabilidadesJugador(bool soloHotkeyDos)
   {
     if (unidadActiva == null || scUIBotonesHab == null)
     {
@@ -3220,6 +3221,11 @@ public class BattleManager : MonoBehaviour
 
     for (int i = 0; i < _habilidadHotkeys.Length; i++)
     {
+      if (soloHotkeyDos && _habilidadHotkeys[i] != KeyCode.Alpha2)
+      {
+        continue;
+      }
+
       if (Input.GetKeyDown(_habilidadHotkeys[i]))
       {
         scUIBotonesHab.ActivarHabilidadPorHotkeyIndex(i);
@@ -5650,6 +5656,11 @@ public class BattleManager : MonoBehaviour
 
   private bool ShiftPreviewHoverHostilPresionado()
   {
+    if (scTutorialCombate != null && scTutorialCombate.tutorialCombateActivo)
+    {
+      return false;
+    }
+
     return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
   }
 

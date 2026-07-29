@@ -18,4 +18,5 @@ MonoBehaviour:
   logInitializationMessages: 1
   writeEventsToFile: 1
   logEventsToConsole: 0
+  sendEventsToGameAnalytics: 1
   eventLogFolderName: Metrics

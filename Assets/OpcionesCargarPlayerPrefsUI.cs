@@ -355,6 +355,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void OnSalir()
     {
+        RuntimeAnalytics.TrackBattleAbandoned("quit");
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -371,6 +372,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void VolverAlMenuPrincipal()
     {
+        RuntimeAnalytics.TrackBattleAbandoned("return_to_menu");
         CambiarEfectos();
         Time.timeScale = 1f;
         SceneManager.LoadScene(EscenaMenuPrincipal, LoadSceneMode.Single);

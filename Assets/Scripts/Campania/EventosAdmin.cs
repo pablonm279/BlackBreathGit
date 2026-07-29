@@ -2324,6 +2324,22 @@ public class EventosAdmin : MonoBehaviour
         }
 
         CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(item.gameObject);
+        RuntimeAnalytics.TrackItemAcquired(item, "campaign_event");
+    }
+
+    void AplicarHeridaDeEvento(Personaje personaje)
+    {
+        if (personaje == null)
+        {
+            return;
+        }
+
+        bool yaEstabaHerido = personaje.Camp_Herido;
+        personaje.Camp_Herido = true;
+        if (!yaEstabaHerido)
+        {
+            RuntimeAnalytics.TrackCharacterState(personaje, "injured", "campaign_event");
+        }
     }
 
     string ObtenerTextoResultadoHombrosFirmes(Personaje participante, int tirada, int tsFortaleza, int resultado, bool exito)
@@ -2541,7 +2557,7 @@ public class EventosAdmin : MonoBehaviour
             }
             else if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Herido = true;
+                AplicarHeridaDeEvento(participanteEvento1);
                 CampaignManager.Instance.EscribirLog(
                     TRADU.i.Traducir("-") + participanteEvento1.sNombre
                     + TRADU.i.Traducir(" falló su Tirada de Salvación de Reflejos (1d20: ")
@@ -2634,7 +2650,7 @@ public class EventosAdmin : MonoBehaviour
             }
             else if (participante != null)
             {
-                participante.Camp_Herido = true;
+                AplicarHeridaDeEvento(participante);
                 CampaignManager.Instance.CambiarBueyesActuales(-1);
                 CampaignManager.Instance.EscribirLog(
                     TRADU.i.Traducir("-") + participante.sNombre
@@ -2666,7 +2682,7 @@ public class EventosAdmin : MonoBehaviour
             }
             else if (participante != null)
             {
-                participante.Camp_Herido = true;
+                AplicarHeridaDeEvento(participante);
                 CampaignManager.Instance.CambiarFatigaActual(1);
                 CampaignManager.Instance.EscribirLog(
                     TRADU.i.Traducir("-") + participante.sNombre
@@ -2738,7 +2754,7 @@ public class EventosAdmin : MonoBehaviour
             }
             else if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Herido = true;
+                AplicarHeridaDeEvento(participanteEvento1);
                 CampaignManager.Instance.EscribirLog(
                     TRADU.i.Traducir("-") + participanteEvento1.sNombre
                     + TRADU.i.Traducir(" falló su Tirada de Salvación de Reflejos (1d20: ")
@@ -2770,7 +2786,7 @@ public class EventosAdmin : MonoBehaviour
             }
             else if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Herido = true;
+                AplicarHeridaDeEvento(participanteEvento1);
                 CampaignManager.Instance.EscribirLog(
                     TRADU.i.Traducir("-") + participanteEvento1.sNombre
                     + TRADU.i.Traducir(" falló su Tirada de Salvación de Reflejos (1d20: ")
@@ -2843,7 +2859,7 @@ public class EventosAdmin : MonoBehaviour
             }
             else
             {
-                participanteEvento1.Camp_Herido = true;
+                AplicarHeridaDeEvento(participanteEvento1);
                 participanteEvento1.fVidaActual -= participanteEvento1.fVidaActual * 0.6f;
                 CampaignManager.Instance.EscribirLog("-" + participanteEvento1.sNombre + TRADU.i.Traducir(" sufrió un accidente durante la cacería. Herido."));
             }
@@ -2985,7 +3001,7 @@ public class EventosAdmin : MonoBehaviour
             }
             else if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Herido = true;
+                AplicarHeridaDeEvento(participanteEvento1);
 
                  CampaignManager.Instance.EscribirLog(
                     TRADU.i.Traducir("-") + participanteEvento1.sNombre
@@ -3073,7 +3089,7 @@ public class EventosAdmin : MonoBehaviour
             }
             else if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Herido = true;
+                AplicarHeridaDeEvento(participanteEvento1);
                 CampaignManager.Instance.EscribirLog(
                     TRADU.i.Traducir("-") + participanteEvento1.sNombre
                     + TRADU.i.Traducir(" falló su Tirada de Salvación de Reflejos (1d20: ")
@@ -3482,7 +3498,7 @@ public class EventosAdmin : MonoBehaviour
                 }
                 else
                 {
-                    participante.Camp_Herido = true;
+                    AplicarHeridaDeEvento(participante);
                     CampaignManager.Instance.CambiarBueyesActuales(-1);
                     CampaignManager.Instance.EscribirLog(
                         TRADU.i.Traducir("-") + participante.sNombre
@@ -3520,7 +3536,7 @@ public class EventosAdmin : MonoBehaviour
                 }
                 else
                 {
-                    participante.Camp_Herido = true;
+                    AplicarHeridaDeEvento(participante);
                     CampaignManager.Instance.CambiarFatigaActual(1);
                     CampaignManager.Instance.EscribirLog(
                         TRADU.i.Traducir("-") + participante.sNombre
@@ -3901,7 +3917,7 @@ public class EventosAdmin : MonoBehaviour
         {
             if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Herido = true;
+                AplicarHeridaDeEvento(participanteEvento1);
             }
             gameObject.SetActive(false);
         }

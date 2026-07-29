@@ -101,6 +101,7 @@ public class btnItemEnVenta : MonoBehaviour, IPointerClickHandler, IPointerDownH
         CampaignManager.Instance.CambiarOroActual(-costoCompra);
         RuntimeAnalytics.TrackResourceSink("gold", costoCompra, "merchant_item", RuntimeAnalytics.ItemToken(itemRepresentado));
         RuntimeAnalytics.TrackDesign("merchant", "buy", RuntimeAnalytics.ItemToken(itemRepresentado));
+        RuntimeAnalytics.TrackItemAcquired(itemRepresentado, "merchant");
       }
 
     }

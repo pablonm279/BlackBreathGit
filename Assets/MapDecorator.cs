@@ -124,6 +124,7 @@ public class MapDecorator : MonoBehaviour
 
     // ---- internos ----
     const string PrefGraficosIndex = "graficos_index";
+    const int CalidadGraficaBaja = 0;
     const float AumentoRadioDecoracionesPorNivelCalidad = 0.10f;
     const float UmbralDistCaminoRellenoRemovible = 0.15f;
     const float TamanoCeldaDecoracionRemovible = 2f;
@@ -202,6 +203,7 @@ public class MapDecorator : MonoBehaviour
     int decorBatchCounter;
     int versionDecoracionesRemovibles;
     bool batchActualEsRellenoRemovible;
+    bool desactivarSombrasDinamicasDecoracion;
 
     void Awake()
     {
@@ -632,6 +634,8 @@ public class MapDecorator : MonoBehaviour
         this.radioPoisson = EscalarRadioDecoracionesPorCalidad(rOverride);
         this.intentosPorPunto = kOverride;
         batchActualEsRellenoRemovible = distCaminoOverride < UmbralDistCaminoRellenoRemovible;
+        desactivarSombrasDinamicasDecoracion =
+            PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel()) <= CalidadGraficaBaja;
 
         ActualizarZonaSegura();
 
@@ -2027,7 +2031,7 @@ public class MapDecorator : MonoBehaviour
         }
 
         var go = Instantiate(prefab, pos, Quaternion.identity, transform);
-        if (ConvertirSombrasBlobCanvas(go))
+        if (ConvertirSombrasBlobCanvas(go) && desactivarSombrasDinamicasDecoracion)
         {
             DesactivarSombrasDinamicasRedundantes(go);
         }

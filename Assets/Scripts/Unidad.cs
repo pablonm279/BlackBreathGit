@@ -3321,6 +3321,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       danioTotal = adminTraitVida != null ? adminTraitVida.AjustarDanioRecibidoPorTraits(this, danioTotal) : danioTotal;
       muereConDanio = HP_actual - danioTotal < 1;
       HP_actual -= danioTotal;
+      RuntimeAnalytics.TrackCombatDamage(danioTotal, tipoDanio, esCritico, uCausante, this);
       RegistrarDanioCampania(uCausante, danioTotal);
       if (danioTotal > 0)
       {
@@ -3882,6 +3883,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(mensaje));
     }
 
+    RuntimeAnalytics.TrackCombatStateResisted(nombreEstado, this);
     return true;
   }
 
@@ -4012,6 +4014,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
       await BattleManager.DelayCombateAsync(150);
       HP_actual -= danioFinalInt;
+      RuntimeAnalytics.TrackCombatDamage(danioFinalInt, tipoDanio, false, uCausante, this);
       RegistrarDanioCampania(uCausante, danioFinalInt);
       adminTraitVida?.ProcesarTraitPuertasDeLaMuerteSiCorresponde(this);
       adminTraitVida?.ProcesarTraitDuroDeMatarSiCorresponde(this);
@@ -4786,8 +4789,10 @@ public void RecibirCuracion(float curacion, bool magica)
  
  if(curaFinal > 0 && HP_actual < mod_maxHP)
  { 
+  float vidaAntes = HP_actual;
   HP_actual += (int)curaFinal;
  if(HP_actual > mod_maxHP){HP_actual = mod_maxHP; }
+  RuntimeAnalytics.TrackCombatHealing(HP_actual - vidaAntes, this);
   GenerarTextoFlotante(TRADU.i.Traducir("Cura ")+(int)curaFinal, Color.green, FloatingTextContext.Heal);
   scBattleManager.EscribirLog(CombatLogFormatter.EventoCuracion(uNombre+TRADU.i.Traducir(" recibe <color=#11c66b>") +curaFinal+TRADU.i.Traducir("</color> de curación.")));
 
@@ -4824,6 +4829,7 @@ public void UnidadMuere()
   {
    Casilla casillaMuerte = CasillaPosicion;
    yaMurio = true;
+   RuntimeAnalytics.TrackUnitDown(this);
    ObtenerPersonajeCampania(this)?.SumarVecesDerribado();
    CancelarMovimientoPendiente();
    GenerarTextoFlotante(TRADU.i.Traducir("Muerto"), new Color(0.35f, 0.35f, 0.35f), FloatingTextContext.Resist);

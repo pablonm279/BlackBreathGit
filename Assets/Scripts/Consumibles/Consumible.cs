@@ -212,6 +212,7 @@ public class Consumible : Item
             return false;
         }
 
+        RuntimeAnalytics.TrackItemUsed(this, unidad);
         RefrescarUITrasUso(unidad);
         print("Consumible usado: " + sNombreItem + " en " + unidad);
         return true;

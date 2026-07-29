@@ -9,6 +9,7 @@ public sealed class RuntimeAnalyticsSettings : ScriptableObject
     [SerializeField] private bool logInitializationMessages = true;
     [SerializeField] private bool writeEventsToFile = true;
     [SerializeField] private bool logEventsToConsole = false;
+    [SerializeField] private bool sendEventsToGameAnalytics = true;
     [SerializeField] private string eventLogFolderName = "Metrics";
 
     public bool EnableAnalytics => enableAnalytics;
@@ -17,5 +18,6 @@ public sealed class RuntimeAnalyticsSettings : ScriptableObject
     public bool LogInitializationMessages => logInitializationMessages;
     public bool WriteEventsToFile => writeEventsToFile;
     public bool LogEventsToConsole => logEventsToConsole;
+    public bool SendEventsToGameAnalytics => sendEventsToGameAnalytics;
     public string EventLogFolderName => eventLogFolderName;
 }

@@ -262,6 +262,7 @@ public class Buff : MonoBehaviour
             BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoBuff(sBuff, boolfDebufftBuff));
         }
 
+        RuntimeAnalytics.TrackCombatBuff("applied", buffNombre, boolfDebufftBuff, unidad);
         // Repite el mismo patrón para otros atributos si es necesario...
     }
 
@@ -440,6 +441,10 @@ public void RemoverBuff(Unidad unidad)
     if (!quedaOtroBuffConMismoNombre && !suprimeLogCombate && BattleManager.Instance != null)
     {
         BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoBuff(sBuff, boolfDebufftBuff));
+    }
+    if (!quedaOtroBuffConMismoNombre)
+    {
+        RuntimeAnalytics.TrackCombatBuff("removed", buffNombre, boolfDebufftBuff, unidad);
     }
     // Si se remueve "Acumulando" del Canalizador, liberar la pose fija de habilidad
     if (buffNombre == "Acumulando" && unidad is ClaseCanalizador)

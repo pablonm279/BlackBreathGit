@@ -451,6 +451,50 @@ public class AdministradorEscenas : MonoBehaviour
     ComponentCopier.CopyComponent(buff, unidad.gameObject);
   }
 
+  void AplicarDebuffEnemigosBatallaFinalTutorial()
+  {
+    if (BattleManager.Instance == null)
+    {
+      return;
+    }
+
+    foreach (Unidad enemigo in BattleManager.Instance.ladoA.unidadesLado)
+    {
+      AplicarDebuffBatallaFinalTutorial(enemigo);
+    }
+
+    foreach (GameObject refuerzo in BattleManager.Instance.enemigosRefuerzos)
+    {
+      AplicarDebuffBatallaFinalTutorial(refuerzo != null ? refuerzo.GetComponent<Unidad>() : null);
+    }
+  }
+
+  void AplicarDebuffBatallaFinalTutorial(Unidad enemigo)
+  {
+    const string nombreDebuff = "Ajuste batalla final tutorial";
+    if (enemigo == null || enemigo.TieneBuffNombre(nombreDebuff))
+    {
+      return;
+    }
+
+    Buff debuff = new Buff();
+    debuff.buffNombre = nombreDebuff;
+    debuff.boolfDebufftBuff = false;
+    debuff.DuracionBuffRondas = -1;
+    debuff.esStackeable = false;
+    debuff.esBuffVisibleUI = false;
+    debuff.ocultarEnBarraVida = true;
+    debuff.suprimeTextoFlotante = true;
+    debuff.suprimeLogCombate = true;
+    debuff.cantAtaque = -2;
+    debuff.cantDefensa = -2;
+    debuff.percHPMax = -10;
+    debuff.AplicarBuff(enemigo, null, false);
+    enemigo.HP_actual = Mathf.Min(enemigo.HP_actual, enemigo.mod_maxHP);
+    enemigo.ActualizarBarraVidaPropia();
+    ComponentCopier.CopyComponent(debuff, enemigo.gameObject);
+  }
+
   int ContarAliadosSeleccionadosNoIAVivos()
   {
     int cantidad = 0;
@@ -1407,6 +1451,13 @@ public class AdministradorEscenas : MonoBehaviour
     {
       BattleManager.Instance.ladoA.ActualizarListaDeUnidadesEnLado();
       BattleManager.Instance.ladoB.ActualizarListaDeUnidadesEnLado();
+      RuntimeAnalytics.TrackEnemyPartyComposition(
+        BattleManager.Instance.ladoA.unidadesLado,
+        BattleManager.Instance.enemigosRefuerzos);
+      if (esCombateFinalTutorial)
+      {
+        AplicarDebuffEnemigosBatallaFinalTutorial();
+      }
       AplicarAjusteValentiaInicialPorEsperanza();
     }
 
@@ -5590,7 +5641,13 @@ public class AdministradorEscenas : MonoBehaviour
   void Update()
   {
     // Detecta cuando se presiona la tecla H una sola vez
-    if (Input.GetKeyDown(KeyCode.H))
+    bool tutorialActivo =
+      (CampaignManager.Instance != null && CampaignManager.Instance.DebeUsarConfiguracionTutorial())
+      || (BattleManager.Instance != null
+        && BattleManager.Instance.scTutorialCombate != null
+        && BattleManager.Instance.scTutorialCombate.tutorialCombateActivo);
+
+    if (!tutorialActivo && Input.GetKeyDown(KeyCode.H))
     {
       AbrirHandbook();
     }

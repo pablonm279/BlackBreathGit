@@ -2213,8 +2213,9 @@ public class Nodo : MonoBehaviour
       LimpiarPulsosMovimientoNodos();
       RuntimeAnalytics.TrackDesign(
         "campaign",
-        "node_selected",
-        RuntimeAnalytics.SanitizeToken("type_" + tipoNodo + "_x" + posXNodo + "_y" + posYNodo));
+        "node",
+        "selected",
+        RuntimeAnalytics.SanitizeToken("type_" + tipoNodo));
       TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignNodeSelected, gameObject)
         .Add("nodeId", ObtenerTutorialTargetId())
         .Add("type", tipoNodo)

@@ -23,6 +23,18 @@ public class disclaimerManager : MonoBehaviour
 
     public void Continuar()
     {
+        RuntimeAnalytics.SetTelemetryEnabled(true);
+        CerrarDisclaimer();
+    }
+
+    public void ContinuarSinTelemetria()
+    {
+        RuntimeAnalytics.SetTelemetryEnabled(false);
+        CerrarDisclaimer();
+    }
+
+    private void CerrarDisclaimer()
+    {
         DisclaimerCerradoEstaSesion = true;
         gameObject.SetActive(false);
     }

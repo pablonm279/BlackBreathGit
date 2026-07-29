@@ -260,7 +260,7 @@ public class PrePartidaManager : MonoBehaviour
     /// </summary>
     public void ConfirmarNuevaPartida()
     {
-        if (zonaSeleccionada != ZonaBosqueArdiente)
+        if (!ZonaDisponibleEnDemoODebug(zonaSeleccionada))
         {
             Debug.LogWarning("[PrePartidaManager] La región seleccionada no está disponible en la demo.", this);
             return;
@@ -1552,8 +1552,22 @@ public class PrePartidaManager : MonoBehaviour
     {
         if (btnNuevaZona != null)
         {
-            btnNuevaZona.SetActive(zonaSeleccionada == ZonaBosqueArdiente);
+            btnNuevaZona.SetActive(ZonaDisponibleEnDemoODebug(zonaSeleccionada));
         }
+    }
+
+    private static bool ZonaDisponibleEnDemoODebug(int zonaId)
+    {
+        if (zonaId == ZonaBosqueArdiente)
+        {
+            return true;
+        }
+
+#if UNITY_EDITOR
+        return CampaignManager.EsZonaPermitidaPorDebug(zonaId);
+#else
+        return false;
+#endif
     }
 
     private static int ObtenerIdiomaActual()
@@ -1570,7 +1584,7 @@ public class PrePartidaManager : MonoBehaviour
             return;
         }
 
-        if (zonaSeleccionada == ZonaBosqueArdiente)
+        if (ZonaDisponibleEnDemoODebug(zonaSeleccionada))
         {
             disclaimerDemo.text = string.Empty;
             return;

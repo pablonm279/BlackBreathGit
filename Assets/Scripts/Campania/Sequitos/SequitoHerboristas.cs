@@ -86,6 +86,9 @@ public class SequitoHerboristas : MonoBehaviour
                 cantBalsamoFort--;
                 GameObject consumible = Instantiate( CampaignManager.Instance.scContprefab.BalsamoFortalecedor.gameObject);
                 CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(consumible);
+                Item item = consumible.GetComponent<Item>();
+                RuntimeAnalytics.TrackResourceSink("gold", 50, "merchant_item", RuntimeAnalytics.ItemToken(item));
+                RuntimeAnalytics.TrackItemAcquired(item, "herbalists");
             }
         }
         
@@ -97,6 +100,9 @@ public class SequitoHerboristas : MonoBehaviour
                 cantBalsamoReflej--;
                 GameObject consumible = Instantiate( CampaignManager.Instance.scContprefab.BalsamoEnergizante.gameObject);
                 CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(consumible);
+                Item item = consumible.GetComponent<Item>();
+                RuntimeAnalytics.TrackResourceSink("gold", 50, "merchant_item", RuntimeAnalytics.ItemToken(item));
+                RuntimeAnalytics.TrackItemAcquired(item, "herbalists");
             }
         }
 
@@ -108,6 +114,9 @@ public class SequitoHerboristas : MonoBehaviour
                 cantBalsamoMental--;
                 GameObject consumible = Instantiate( CampaignManager.Instance.scContprefab.BalsamoClaridad.gameObject);
                 CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(consumible);
+                Item item = consumible.GetComponent<Item>();
+                RuntimeAnalytics.TrackResourceSink("gold", 50, "merchant_item", RuntimeAnalytics.ItemToken(item));
+                RuntimeAnalytics.TrackItemAcquired(item, "herbalists");
             }
         }
 

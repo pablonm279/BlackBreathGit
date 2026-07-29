@@ -2525,8 +2525,13 @@ public void EfectosDeBatallaEnCampaña(int resultado)
    bool fueDefensaCaravana = encuentroTipoActual == BattleEncounterType.AtaqueCaravana || esEmboscadaEnemiga == 3;
    string battleTypeToken = RuntimeAnalytics.SanitizeToken(encuentroTipoActual.ToString());
    string encounterToken = ObtenerAnalyticsEncounterToken();
+   bool fueVictoria = EsResultadoVictoria(resultado);
 
-    if (EsResultadoVictoria(resultado))
+    RuntimeAnalytics.EndBattle(
+      fueVictoria,
+      BattleManager.Instance != null ? BattleManager.Instance.RondaNro : 0);
+
+    if (fueVictoria)
     {
         RuntimeAnalytics.TrackProgressionComplete("battle", battleTypeToken, encounterToken);
     }
@@ -2535,7 +2540,21 @@ public void EfectosDeBatallaEnCampaña(int resultado)
         RuntimeAnalytics.TrackProgressionFail("battle", battleTypeToken, encounterToken);
     }
 
-    if (EsResultadoVictoria(resultado))
+    if (fueBatallaFinalActual && CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null)
+    {
+        string zoneToken = RuntimeAnalytics.ZoneToken(CampaignManager.Instance.scAtributosZona.ID);
+        string phaseToken = RuntimeAnalytics.PhaseToken(CampaignManager.Instance.scAtributosZona.FASE);
+        if (fueVictoria)
+        {
+            RuntimeAnalytics.TrackProgressionComplete("boss", zoneToken, phaseToken);
+        }
+        else
+        {
+            RuntimeAnalytics.TrackProgressionFail("boss", zoneToken, phaseToken);
+        }
+    }
+
+    if (fueVictoria)
     {
         txtVictoria.SetActive(true);
         txtDerrota.SetActive(false);
@@ -2600,7 +2619,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
     }
     
     //Al ganar puede tocar un item de la lista total del sequito de mercaderes al azar
-        if (EsResultadoVictoria(resultado)) //Al ganar puede tocar un item de la lista total del sequito de mercaderes al azar
+        if (EsResultadoVictoria(resultado) && EventoBatallaID != 700) //Al ganar puede tocar un item de la lista total del sequito de mercaderes al azar
         {
             int rand =UnityEngine.Random.Range(1, 101);
             aumentochancesitem += CampaignManager.Instance.ObtenerBonusObjetosPostBatallaAntorchas();
@@ -2611,6 +2630,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
                 if (recompensa != null)
                 {
                     CampaignManager.Instance.scMenuPersonajes.scEquipo.listInventario.Add(recompensa.gameObject);
+                    RuntimeAnalytics.TrackItemAcquired(recompensa, "battle_reward");
                     MostrarItemReward(recompensa);
                     txtRecompensa.text += TRADU.i.Traducir("\n\n- Has encontrado un objeto de recompensa: ") + TraducirNombreVisibleRecompensa(recompensa) + ".";
                 }
@@ -2807,6 +2827,9 @@ public void EfectosDeBatallaEnCampaña(int resultado)
        
         if (pers != null)
         {
+            bool estabaMuerto = pers.Camp_Muerto;
+            bool estabaHerido = pers.Camp_Herido;
+            bool estabaCorrupto = pers.Camp_Corrupto;
             bool seHirioEnEstaBatalla = false;
             bool seCorrompioEnEstaBatalla = false;
             bool cayoEnCombate = uni != null ? uni.HP_actual < 1f : pers.fVidaActual < 1f;
@@ -2903,6 +2926,23 @@ public void EfectosDeBatallaEnCampaña(int resultado)
             if (seCorrompioEnEstaBatalla && pers.Camp_Corrupto && !pers.Camp_Muerto)
             {
                 tooltipPersonajeCorruptoPendiente = true;
+            }
+
+            if (!estabaMuerto && pers.Camp_Muerto)
+            {
+                RuntimeAnalytics.TrackCharacterState(pers, "dead", "post_battle");
+            }
+            if (!estabaHerido && pers.Camp_Herido)
+            {
+                RuntimeAnalytics.TrackCharacterState(pers, "injured", "post_battle");
+            }
+            else if (estabaHerido && !pers.Camp_Herido)
+            {
+                RuntimeAnalytics.TrackCharacterState(pers, "recovered", "post_battle");
+            }
+            if (!estabaCorrupto && pers.Camp_Corrupto)
+            {
+                RuntimeAnalytics.TrackCharacterState(pers, "corrupted", "post_battle");
             }
 
         
@@ -3118,10 +3158,20 @@ public void EfectosDeBatallaEnCampaña(int resultado)
 
     bool usarRefuerzosAliadosCaravana = esBatallaFinal;
     CampaignManager.Instance?.RegistrarInicioBatallaPresagioEnemigos();
+    string battleTypeToken = RuntimeAnalytics.SanitizeToken(encuentroTipoActual.ToString());
+    string encounterToken = ObtenerAnalyticsEncounterToken();
+    RuntimeAnalytics.BeginBattle(battleTypeToken, encounterToken);
     RuntimeAnalytics.TrackProgressionStart(
       "battle",
-      RuntimeAnalytics.SanitizeToken(encuentroTipoActual.ToString()),
-      ObtenerAnalyticsEncounterToken());
+      battleTypeToken,
+      encounterToken);
+    if (esBatallaFinal && CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null)
+    {
+        RuntimeAnalytics.TrackProgressionStart(
+          "boss",
+          RuntimeAnalytics.ZoneToken(CampaignManager.Instance.scAtributosZona.ID),
+          RuntimeAnalytics.PhaseToken(CampaignManager.Instance.scAtributosZona.FASE));
+    }
     PrepararContextoBitacoraBatalla();
     if (encuentroGeneradoActual != null)
     {

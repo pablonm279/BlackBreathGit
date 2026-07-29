@@ -17,6 +17,7 @@ public class MenuController : MonoBehaviour
     [Header("UI")]
     [SerializeField] CanvasGroup fader;
     [SerializeField] float fadeTime = 0.4f;
+    [SerializeField] float fadePrePartidaTime = 0.15f;
     [SerializeField] GameObject panelOpciones;
     [SerializeField] PrePartidaManager prePartidaManager;
 
@@ -24,13 +25,13 @@ public class MenuController : MonoBehaviour
     public GameObject logoEspaniol;
     public GameObject logoPortugues;
     public GameObject disclaimerIngles;
-    public GameObject disclaimerEspaniol;
-    public GameObject disclaimerPortugues;
+   
     public GameObject Opciones;
 
     private readonly List<Button> botonesCargarPartida = new List<Button>();
     private readonly List<Button> botonesNuevaPartida = new List<Button>();
     private readonly Dictionary<TMP_Text, Color> coloresTextoOriginales = new Dictionary<TMP_Text, Color>();
+    private bool transicionPrePartidaEnCurso;
 
     void Awake()
     {
@@ -131,12 +132,11 @@ public class MenuController : MonoBehaviour
         if (usarIngles && logoIngles != null) { logoActivo = logoIngles; }
         else if (usarPortugues && logoPortugues != null) { logoActivo = logoPortugues; }
 
-        GameObject disclaimerActivo = disclaimerEspaniol;
-        if (usarIngles && disclaimerIngles != null) { disclaimerActivo = disclaimerIngles; }
-        else if (usarPortugues && disclaimerPortugues != null) { disclaimerActivo = disclaimerPortugues; }
-
+       
+      
+      
         ReiniciarVersionesIdioma(logoActivo, logoEspaniol, logoIngles, logoPortugues);
-        ReiniciarVersionesIdioma(disclaimerActivo, disclaimerEspaniol, disclaimerIngles, disclaimerPortugues);
+        
     }
 
     private static void ReiniciarVersionesIdioma(GameObject activo, params GameObject[] versiones)
@@ -165,12 +165,38 @@ public class MenuController : MonoBehaviour
 
         if (prePartidaManager != null)
         {
-            RuntimeAnalytics.TrackDesign("ui", "main_menu", "new_game_preparation_open");
-            prePartidaManager.Abrir();
+            if (!transicionPrePartidaEnCurso)
+            {
+                StartCoroutine(AbrirPrePartidaConFade());
+            }
             return;
         }
 
         IniciarNuevaPartida();
+    }
+
+    private IEnumerator AbrirPrePartidaConFade()
+    {
+        transicionPrePartidaEnCurso = true;
+
+        if (fader != null)
+        {
+            fader.transform.SetAsLastSibling();
+            fader.blocksRaycasts = true;
+            fader.interactable = false;
+            yield return FadeTo(1f, fadePrePartidaTime);
+        }
+
+        RuntimeAnalytics.TrackDesign("ui", "main_menu", "new_game_preparation_open");
+        prePartidaManager.Abrir();
+
+        if (fader != null)
+        {
+            fader.transform.SetAsLastSibling();
+            yield return FadeTo(0f, fadePrePartidaTime);
+        }
+
+        transicionPrePartidaEnCurso = false;
     }
 
     public void IniciarNuevaPartidaDesdePrePartida(int zonaId)

@@ -255,8 +255,22 @@ public class CampaignManager : MonoBehaviour
   private string prefijoTextoCargaCampania = "Cargando";
 
 #if UNITY_EDITOR
+  private static string ObtenerClaveEditorDebugZona(int zonaId)
+  {
+    return $"{Application.dataPath}:CampaignManager:DebugPermitirZona:{zonaId}";
+  }
+
+  public static bool EsZonaPermitidaPorDebug(int zonaId)
+  {
+    return EditorPrefs.GetBool(ObtenerClaveEditorDebugZona(zonaId), false);
+  }
+
   private void OnValidate()
   {
+    EditorPrefs.SetBool(ObtenerClaveEditorDebugZona(1), debugPermitirZonaBosque);
+    EditorPrefs.SetBool(ObtenerClaveEditorDebugZona(2), debugPermitirZonaPasoVientoHelado);
+    EditorPrefs.SetBool(ObtenerClaveEditorDebugZona(3), debugPermitirZonaNedukazal);
+
     if (Application.isPlaying)
     {
       return;
@@ -1356,7 +1370,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     CambiarOroActual(400);
-    CambiarValorAlientoNegro(2);
+    CambiarValorAlientoNegro(DebeUsarConfiguracionTutorial() ? 2 : 1);
   }
 
   private void InicializarZonaNuevaCampania()
@@ -1375,6 +1389,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     InicializarPresagiosNuevaCampania(zonaInicial);
     scAtributosZona.GenerarZona(zonaInicial);
     RegistrarZonaVisitada(scAtributosZona != null ? scAtributosZona.ID : zonaInicial);
+    if (scAtributosZona != null)
+    {
+      RuntimeAnalytics.TrackProgressionStart(
+        "zone",
+        RuntimeAnalytics.ZoneToken(scAtributosZona.ID),
+        RuntimeAnalytics.PhaseToken(scAtributosZona.FASE));
+    }
     AplicarPresagioAlientoNegroInicial();
   }
 
@@ -1667,7 +1688,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           continue;
         }
 
+        bool yaEstabaCorrupto = personaje.Camp_Corrupto;
         personaje.Camp_Corrupto = true;
+        if (!yaEstabaCorrupto)
+        {
+          RuntimeAnalytics.TrackCharacterState(personaje, "corrupted", "omen");
+        }
         nombresCorrompidos.Add(personaje.sNombre);
         continue;
       }
@@ -6373,9 +6399,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       EscribirLog(TRADU.i.Traducir("-La Presteza de la Caravana ha evitado el avance del Aliento Negro durante el viaje."));
     }
 
+    int avanceAlientoViaje = DebeUsarConfiguracionTutorial()
+      ? Mathf.Min(conexion.costoMovimiento, 1)
+      : conexion.costoMovimiento;
+
     if (!sePrevieneAvanceAliento)
     {
-      CambiarValorAlientoNegro(conexion.costoMovimiento); //Avance Aliento Negro por día, si no es prevenido por Purificadora o Clérigos
+      CambiarValorAlientoNegro(avanceAlientoViaje); //Avance Aliento Negro por día, si no es prevenido por Purificadora o Clérigos
     }
 
 
@@ -6391,7 +6421,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         intTipoClima);
     }
     ActualizarTextoDia();
-    if (conexion.costoMovimiento > 1 && !sePrevieneAvanceAliento)
+    if (avanceAlientoViaje > 1 && !sePrevieneAvanceAliento)
     {
       EscribirLog(TRADU.i.Traducir("-El viaje por el camino sinuoso ha retrasado la caravana. +") + (conexion.costoMovimiento - 1) + TRADU.i.Traducir(" Avance del Aliento Negro"));
     }
@@ -6928,6 +6958,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return;
     }
 
+    if (!goDerrota.activeSelf && !DebeUsarConfiguracionTutorial())
+    {
+      RuntimeAnalytics.TrackProgressionFail("campaign", "new_game");
+    }
     AplicarTraduccionPanelDerrota();
     goDerrota.SetActive(true);
   }
@@ -7068,6 +7102,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     resolviendoJefeZona = true;
     try
     {
+    RuntimeAnalytics.TrackProgressionComplete(
+      "zone",
+      RuntimeAnalytics.ZoneToken(scAtributosZona.ID),
+      RuntimeAnalytics.PhaseToken(scAtributosZona.FASE));
+    if (scAtributosZona.FASE >= 3 && !DebeUsarConfiguracionTutorial())
+    {
+      RuntimeAnalytics.TrackProgressionComplete("campaign", "new_game");
+    }
     if (scAtributosZona.FASE < 3) //Zona completada pero no es la final
     {
 
@@ -7167,6 +7209,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     PrepararIntroCampaniaNuevaZona();
     scAtributosZona.GenerarZona(0); //0 es aleatorio
     RegistrarZonaVisitada(scAtributosZona != null ? scAtributosZona.ID : 0);
+    if (scAtributosZona != null)
+    {
+      RuntimeAnalytics.TrackProgressionStart(
+        "zone",
+        RuntimeAnalytics.ZoneToken(scAtributosZona.ID),
+        RuntimeAnalytics.PhaseToken(scAtributosZona.FASE));
+    }
     SolicitarInicioIntroCampaniaTrasCarga(true);
     AplicarTraitsInicioNuevaZona();
     transicionZonaEnCurso = false;
@@ -9007,6 +9056,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
         GameObject consumible = Instantiate(scContprefab.SimboloProtArcano.gameObject);
         scMenuPersonajes.scEquipo.listInventario.Add(consumible);
+        RuntimeAnalytics.TrackItemAcquired(consumible.GetComponent<Item>(), "character_activity");
         EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha creado un Símbolo de Protección Arcano."));
 
       }
@@ -10490,7 +10540,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return;
     }
 
-    if (Input.GetKeyDown(teclaDebugBajoMouse))
+    bool tutorialConfiguracionActiva = DebeUsarConfiguracionTutorial();
+
+    if (!tutorialConfiguracionActiva && Input.GetKeyDown(teclaDebugBajoMouse))
     {
       DebugObjetosBajoMouseCampania();
     }
@@ -10502,18 +10554,20 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     // Detecta cuando se presiona la tecla H una sola vez
     if (Input.GetKeyDown(KeyCode.R))
     {
-      if(scTutorialManager.tutorialActivo) {EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
+      if (tutorialConfiguracionActiva) { EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       if (asentamientoActivo) { return; }
       AbrirMenuDescanso();
     }
     if (Input.GetKeyDown(KeyCode.C))
     {
-       if(scTutorialManager.tutorialActivo)
+       if (tutorialConfiguracionActiva)
        {
-         if (scMenuCaravana != null && scMenuCaravana.MenuPersonajesEstaAbierto())
-         {
-           scMenuCaravana.AbrirMenuPersonajesDesdeHotkey();
-         }
+          if (scMenuCaravana != null
+              && scMenuCaravana.MenuPersonajesEstaAbierto()
+              && TutorialSolicitaCierrePorHotkey(TutorialEventNames.CampaignCharacterMenuClosed))
+          {
+            scMenuCaravana.AbrirMenuPersonajesDesdeHotkey();
+          }
          else
          {
            EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados."));
@@ -10525,12 +10579,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (Input.GetKeyDown(KeyCode.I))
     {
-       if(scTutorialManager.tutorialActivo)
+       if (tutorialConfiguracionActiva)
        {
-         if (scMenuCaravana != null && scMenuCaravana.MenuMejorasEstaAbierto())
-         {
-           scMenuCaravana.AbrirMenuMejorasDesdeHotkey();
-         }
+          if (scMenuCaravana != null
+              && scMenuCaravana.MenuMejorasEstaAbierto()
+              && TutorialSolicitaCierrePorHotkey(TutorialEventNames.CampaignUpgradeMenuClosed))
+          {
+            scMenuCaravana.AbrirMenuMejorasDesdeHotkey();
+          }
          else
          {
            EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados."));
@@ -10542,12 +10598,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (Input.GetKeyDown(KeyCode.M))
     {
-       if(scTutorialManager.tutorialActivo)
+       if (tutorialConfiguracionActiva)
        {
-         if (scMenuCaravana != null && scMenuCaravana.MenuSequitosEstaAbierto())
-         {
-           scMenuCaravana.AbrirMenuSequitosDesdeHotkey();
-         }
+          if (scMenuCaravana != null
+              && scMenuCaravana.MenuSequitosEstaAbierto()
+              && TutorialSolicitaCierrePorHotkey(TutorialEventNames.CampaignFollowersMenuClosed))
+          {
+            scMenuCaravana.AbrirMenuSequitosDesdeHotkey();
+          }
          else
          {
            EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados."));
@@ -10559,29 +10617,24 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (Input.GetKeyDown(KeyCode.F5))
     {
+      if (tutorialConfiguracionActiva) { EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       GuardarCampaniaManual();
     }
     if (Input.GetKeyDown(KeyCode.F9))
     {
+      if (tutorialConfiguracionActiva) { EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       CargarCampaniaManual();
     }
     if (Input.GetKeyDown(KeyCode.Escape))
     {
-      bool tutorialBloqueaEscape =
-        (scTutorialManager != null && scTutorialManager.tutorialActivo)
-        || (TutorialDirector.Instance != null && TutorialDirector.Instance.IsRunning);
-
-      if (CerrarMenuOpcionesSiEstaAbierto())
+      if (tutorialConfiguracionActiva)
       {
+        EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados."));
         return;
       }
 
-      if (tutorialBloqueaEscape)
+      if (CerrarMenuOpcionesSiEstaAbierto())
       {
-        if (MenuOpciones != null)
-        {
-          MenuOpciones.SetActive(true);
-        }
         return;
       }
 
@@ -10604,6 +10657,43 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
 
+  }
+
+  private bool TutorialSolicitaCierrePorHotkey(string eventId)
+  {
+    TutorialDirector director = TutorialDirector.Instance;
+    TutorialStep paso = director != null && director.IsRunning ? director.CurrentStep : null;
+    if (paso != null && paso.advanceConditions != null)
+    {
+      for (int i = 0; i < paso.advanceConditions.Count; i++)
+      {
+        TutorialCondition condicion = paso.advanceConditions[i];
+        if (condicion == null
+            || !string.Equals(condicion.eventId, eventId, StringComparison.Ordinal)
+            || condicion.requiredValues == null)
+        {
+          continue;
+        }
+
+        for (int j = 0; j < condicion.requiredValues.Count; j++)
+        {
+          TutorialConditionValue valor = condicion.requiredValues[j];
+          if (valor != null
+              && string.Equals(valor.key, "closedByHotkey", StringComparison.OrdinalIgnoreCase)
+              && string.Equals(valor.value, "1", StringComparison.OrdinalIgnoreCase))
+          {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    return eventId == TutorialEventNames.CampaignUpgradeMenuClosed
+      && scTutorialManager != null
+      && scTutorialManager.tutorialActivo
+      && scTutorialManager.pasoActual == 17;
   }
 
   public bool UsaRaycastManualNodosCampania => true;
