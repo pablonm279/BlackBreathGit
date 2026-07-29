@@ -71,6 +71,37 @@ public class Casilla : MonoBehaviour
   private bool estaEnDestruccion;
   private bool hoverVistaTactica;
   private Unidad unidadHoverVistaTactica;
+  private GameObject presenteCache;
+  private Unidad unidadPresenteCache;
+  private Obstaculo obstaculoPresenteCache;
+  private List<Casilla> casillasMovimientoCache;
+  private bool casillaEnRangoMovimientoCache;
+  private bool cacheRangoMovimientoInicializada;
+  private Unidad unidadTurnoIACache;
+  private bool unidadTurnoEsIACache;
+  private AdministradorEscenas administradorEscenasCache;
+  private Renderer[] renderersMover = Array.Empty<Renderer>();
+  private Renderer[] renderersMoverCostoso = Array.Empty<Renderer>();
+  private Renderer[] renderersDesplazable = Array.Empty<Renderer>();
+  private GameObject objetivoGlowMovimientoActual;
+  private bool hayFadeMarcasMovimientoActivo;
+  private bool visualTurnoActualEnemigoAplicado;
+  private EstadoVisualCasilla estadoVisualCasillaCache = EstadoVisualCasilla.NoInicializado;
+  private bool mostrarBordeActualCache;
+  private bool ocupadaPorUnidadCache;
+
+  private enum EstadoVisualCasilla
+  {
+    NoInicializado = -1,
+    Obstaculo,
+    UnidadDesplazable,
+    Ocupada,
+    VaciaMover,
+    VaciaMoverCostoso,
+    VaciaDesplazable,
+    VaciaConTrampa,
+    VaciaLibre
+  }
 
   private sealed class EstadoMarcaMovimiento
   {
@@ -90,6 +121,49 @@ public class Casilla : MonoBehaviour
     CachearReferenciasVisuales();
     InicializarPreviewCostoMovimiento();
     InicializarEstadosMarcaMovimiento();
+    renderersMover = ObtenerRenderersGlowMovimiento(Mover);
+    renderersMoverCostoso = ObtenerRenderersGlowMovimiento(MoverCostoso);
+    renderersDesplazable = ObtenerRenderersGlowMovimiento(Desplazable);
+  }
+
+  private void ActualizarCacheObjetoPresente()
+  {
+    if (Presente == null)
+    {
+      if (!ReferenceEquals(presenteCache, null) || unidadPresenteCache != null || obstaculoPresenteCache != null)
+      {
+        presenteCache = null;
+        unidadPresenteCache = null;
+        obstaculoPresenteCache = null;
+      }
+      return;
+    }
+
+    if (ReferenceEquals(presenteCache, Presente))
+    {
+      return;
+    }
+
+    presenteCache = Presente;
+    Presente.TryGetComponent(out unidadPresenteCache);
+    Presente.TryGetComponent(out obstaculoPresenteCache);
+  }
+
+  private Unidad ObtenerUnidadPresente()
+  {
+    ActualizarCacheObjetoPresente();
+    return unidadPresenteCache;
+  }
+
+  private Obstaculo ObtenerObstaculoPresente()
+  {
+    ActualizarCacheObjetoPresente();
+    return obstaculoPresenteCache;
+  }
+
+  private static Renderer[] ObtenerRenderersGlowMovimiento(GameObject raiz)
+  {
+    return raiz != null ? raiz.GetComponentsInChildren<Renderer>(true) : Array.Empty<Renderer>();
   }
 
   private void CachearReferenciasVisuales()
@@ -140,7 +214,7 @@ public class Casilla : MonoBehaviour
       return;
     }
 
-    Unidad unidadPresente = Presente != null ? Presente.GetComponent<Unidad>() : null;
+    Unidad unidadPresente = ObtenerUnidadPresente();
     bool mostrarRetrato = activa && unidadPresente != null && unidadPresente.uRetrato != null;
     Sprite retrato = mostrarRetrato ? unidadPresente.uRetrato : null;
 
@@ -251,7 +325,7 @@ public class Casilla : MonoBehaviour
 
   private void SetHoverVistaTactica(bool hover)
   {
-    Unidad unidadPresente = Presente != null ? Presente.GetComponent<Unidad>() : null;
+    Unidad unidadPresente = ObtenerUnidadPresente();
     bool mostrarPulso = hover
       && BattleManager.Instance != null
       && BattleManager.Instance.VistaTacticaActiva
@@ -307,7 +381,7 @@ public class Casilla : MonoBehaviour
     return BattleManager.Instance != null
       && BattleManager.Instance.VistaTacticaActiva
       && Presente != null
-      && Presente.GetComponent<Unidad>() != null
+      && ObtenerUnidadPresente() != null
       && !MouseSobreImagenVistaTactica();
   }
 
@@ -327,34 +401,18 @@ public class Casilla : MonoBehaviour
     Bounds bounds = spriteVistaTactica.bounds;
     Vector3 centro = bounds.center;
     Vector3 ext = bounds.extents;
-    Vector3[] esquinas =
-    {
-      centro + new Vector3(-ext.x, -ext.y, -ext.z),
-      centro + new Vector3(-ext.x, -ext.y, ext.z),
-      centro + new Vector3(-ext.x, ext.y, -ext.z),
-      centro + new Vector3(-ext.x, ext.y, ext.z),
-      centro + new Vector3(ext.x, -ext.y, -ext.z),
-      centro + new Vector3(ext.x, -ext.y, ext.z),
-      centro + new Vector3(ext.x, ext.y, -ext.z),
-      centro + new Vector3(ext.x, ext.y, ext.z)
-    };
-
     Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
     Vector2 max = new Vector2(float.MinValue, float.MinValue);
     bool algunaEsquinaValida = false;
 
-    foreach (Vector3 esquina in esquinas)
-    {
-      Vector3 pantalla = camara.WorldToScreenPoint(esquina);
-      if (pantalla.z < 0f)
-      {
-        continue;
-      }
-
-      algunaEsquinaValida = true;
-      min = Vector2.Min(min, pantalla);
-      max = Vector2.Max(max, pantalla);
-    }
+    AcumularEsquinaPantalla(camara, centro + new Vector3(-ext.x, -ext.y, -ext.z), ref min, ref max, ref algunaEsquinaValida);
+    AcumularEsquinaPantalla(camara, centro + new Vector3(-ext.x, -ext.y, ext.z), ref min, ref max, ref algunaEsquinaValida);
+    AcumularEsquinaPantalla(camara, centro + new Vector3(-ext.x, ext.y, -ext.z), ref min, ref max, ref algunaEsquinaValida);
+    AcumularEsquinaPantalla(camara, centro + new Vector3(-ext.x, ext.y, ext.z), ref min, ref max, ref algunaEsquinaValida);
+    AcumularEsquinaPantalla(camara, centro + new Vector3(ext.x, -ext.y, -ext.z), ref min, ref max, ref algunaEsquinaValida);
+    AcumularEsquinaPantalla(camara, centro + new Vector3(ext.x, -ext.y, ext.z), ref min, ref max, ref algunaEsquinaValida);
+    AcumularEsquinaPantalla(camara, centro + new Vector3(ext.x, ext.y, -ext.z), ref min, ref max, ref algunaEsquinaValida);
+    AcumularEsquinaPantalla(camara, centro + new Vector3(ext.x, ext.y, ext.z), ref min, ref max, ref algunaEsquinaValida);
 
     if (!algunaEsquinaValida)
     {
@@ -362,6 +420,24 @@ public class Casilla : MonoBehaviour
     }
 
     return new Rect(min, max - min).Contains(Input.mousePosition);
+  }
+
+  private static void AcumularEsquinaPantalla(
+    Camera camara,
+    Vector3 esquina,
+    ref Vector2 min,
+    ref Vector2 max,
+    ref bool algunaEsquinaValida)
+  {
+    Vector3 pantalla = camara.WorldToScreenPoint(esquina);
+    if (pantalla.z < 0f)
+    {
+      return;
+    }
+
+    algunaEsquinaValida = true;
+    min = Vector2.Min(min, pantalla);
+    max = Vector2.Max(max, pantalla);
   }
 
   private static Vector2 ObtenerTamanoSpriteVistaTactica(Sprite sprite)
@@ -483,7 +559,7 @@ public class Casilla : MonoBehaviour
       || unidad.movimientoEnCurso
       || BattleManager.Instance.SeleccionandoObjetivo
       || unidad.estado_inmovil >= 1
-      || !BattleManager.Instance.lCasillasMovimiento.Contains(this))
+      || !EstaEnRangoMovimiento(BattleManager.Instance))
     {
       return false;
     }
@@ -501,8 +577,8 @@ public class Casilla : MonoBehaviour
     }
 
     costoMovimientoTotal = ObtenerCostoMovimientoTotal(unidad, true);
-    AdministradorEscenas adminEscenas = FindObjectOfType<AdministradorEscenas>();
-    if (adminEscenas != null && adminEscenas.TieneIntercambioGratisColaborativoDisponible(unidad, Presente.GetComponent<Unidad>()))
+    AdministradorEscenas adminEscenas = ObtenerAdministradorEscenas();
+    if (adminEscenas != null && adminEscenas.TieneIntercambioGratisColaborativoDisponible(unidad, ObtenerUnidadPresente()))
     {
       costoMovimientoTotal = 0;
     }
@@ -523,6 +599,8 @@ public class Casilla : MonoBehaviour
   void OnEnable()
   {
     estaEnDestruccion = false;
+    estadoVisualCasillaCache = EstadoVisualCasilla.NoInicializado;
+    cacheRangoMovimientoInicializada = false;
   }
 
 
@@ -539,9 +617,45 @@ public class Casilla : MonoBehaviour
     return unidad != null && unidad.CasillaPosicion != null;
   }
 
-  private static bool EsTurnoIA(Unidad unidad)
+  private bool EsTurnoIA(Unidad unidad)
   {
-    return unidad != null && unidad.GetComponent<IAUnidad>() != null;
+    if (unidad == null)
+    {
+      return false;
+    }
+
+    if (unidadTurnoIACache != unidad)
+    {
+      unidadTurnoIACache = unidad;
+      unidadTurnoEsIACache = unidad.TryGetComponent(out IAUnidad _);
+    }
+
+    return unidadTurnoEsIACache;
+  }
+
+  private bool EstaEnRangoMovimiento(BattleManager battleManager)
+  {
+    List<Casilla> casillasMovimiento = battleManager != null ? battleManager.lCasillasMovimiento : null;
+    if (!cacheRangoMovimientoInicializada || !ReferenceEquals(casillasMovimientoCache, casillasMovimiento))
+    {
+      casillasMovimientoCache = casillasMovimiento;
+      casillaEnRangoMovimientoCache = casillasMovimiento != null && casillasMovimiento.Contains(this);
+      cacheRangoMovimientoInicializada = true;
+    }
+
+    return casillaEnRangoMovimientoCache;
+  }
+
+  private AdministradorEscenas ObtenerAdministradorEscenas()
+  {
+    if (administradorEscenasCache == null)
+    {
+      administradorEscenasCache = CampaignManager.Instance != null
+        ? CampaignManager.Instance.scAdministradorEscenas
+        : FindObjectOfType<AdministradorEscenas>();
+    }
+
+    return administradorEscenasCache;
   }
 
   private bool PuedeMoverOMutarDesdeUnidadActiva(Casilla destino, out Unidad unidadActiva, out bool esIntercambio)
@@ -554,7 +668,7 @@ public class Casilla : MonoBehaviour
       return false;
     }
 
-    if (!BattleManager.Instance.lCasillasMovimiento.Contains(destino))
+    if (!destino.EstaEnRangoMovimiento(BattleManager.Instance))
     {
       return false;
     }
@@ -717,7 +831,18 @@ public class Casilla : MonoBehaviour
       return;
     }
 
-    estado.alphaObjetivo = visible ? 1f : 0f;
+    float alphaObjetivo = visible ? 1f : 0f;
+    if (!Mathf.Approximately(estado.alphaObjetivo, alphaObjetivo))
+    {
+      estado.alphaObjetivo = alphaObjetivo;
+    }
+
+    if (!Mathf.Approximately(estado.alphaActual, estado.alphaObjetivo)
+      || (!visible && estado.objeto.activeSelf))
+    {
+      hayFadeMarcasMovimientoActivo = true;
+    }
+
     if (visible && !marca.activeSelf)
     {
       marca.SetActive(true);
@@ -755,11 +880,12 @@ public class Casilla : MonoBehaviour
 
   private void ActualizarFadeMarcasMovimiento()
   {
-    if (estadosMarcaMovimiento.Count == 0)
+    if (!hayFadeMarcasMovimientoActivo || estadosMarcaMovimiento.Count == 0)
     {
       return;
     }
 
+    bool quedaFadeActivo = false;
     float velocidad = duracionFadeMarcaMovimiento > 0.001f ? Time.deltaTime / duracionFadeMarcaMovimiento : 1f;
     foreach (EstadoMarcaMovimiento estado in estadosMarcaMovimiento.Values)
     {
@@ -774,7 +900,15 @@ public class Casilla : MonoBehaviour
       {
         estado.objeto.SetActive(false);
       }
+
+      if (!Mathf.Approximately(estado.alphaActual, estado.alphaObjetivo)
+        || (estado.alphaObjetivo <= 0f && estado.objeto.activeSelf))
+      {
+        quedaFadeActivo = true;
+      }
     }
+
+    hayFadeMarcasMovimientoActivo = quedaFadeActivo;
   }
 
   public bool PuedeIntercambiarConUnidadActiva()
@@ -784,7 +918,7 @@ public class Casilla : MonoBehaviour
       return false;
     }
 
-    if (!BattleManager.Instance.lCasillasMovimiento.Contains(this))
+    if (!EstaEnRangoMovimiento(BattleManager.Instance))
     {
       return false;
     }
@@ -809,7 +943,7 @@ public class Casilla : MonoBehaviour
       return false;
     }
 
-    Unidad unidadPresente = Presente.GetComponent<Unidad>();
+    Unidad unidadPresente = ObtenerUnidadPresente();
     if (unidadPresente == null || unidadPresente.CasillaPosicion == null)
     {
       return false;
@@ -1181,7 +1315,7 @@ public class Casilla : MonoBehaviour
     //!!!
     unidad.CasillaPosicion.CalcularDistanciaACasilla(this, out int x, out int y, out bool lado);
     //!!!
-    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente == null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
+    if (EstaEnRangoMovimiento(BattleManager.Instance) && Presente == null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
       int costoMovimientoTotal = ObtenerCostoMovimientoTotal(unidad);
       if (unidad.ObtenerAPActual() >= costoMovimientoTotal)
@@ -1197,9 +1331,9 @@ public class Casilla : MonoBehaviour
       }
     }
     // Intercambio con aliado: mover a casilla ocupada por aliado y que el aliado vaya a la casilla original
-    if (BattleManager.Instance.lCasillasMovimiento.Contains(this) && Presente != null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
+    if (EstaEnRangoMovimiento(BattleManager.Instance) && Presente != null && !BattleManager.Instance.bOcupado && !unidad.movimientoEnCurso && !BattleManager.Instance.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
-      Unidad aliado = Presente != null ? Presente.GetComponent<Unidad>() : null;
+      Unidad aliado = ObtenerUnidadPresente();
       if (aliado != null)
       {
         if (aliado.CasillaPosicion.lado != unidad.CasillaPosicion.lado)
@@ -1420,7 +1554,7 @@ public class Casilla : MonoBehaviour
       return false;
     }
 
-    if (battleManager.lCasillasMovimiento.Contains(this))
+    if (EstaEnRangoMovimiento(battleManager))
     {
       return false;
     }
@@ -2550,13 +2684,16 @@ public class Casilla : MonoBehaviour
         //---
         if (Presente != null)
         {
-          if (Presente.GetComponent<Unidad>() != null)
+          Unidad unidadPresente = ObtenerUnidadPresente();
+          if (unidadPresente != null)
           {
-            unidadesEnCasAzul.Add(Presente.GetComponent<Unidad>());
+            unidadesEnCasAzul.Add(unidadPresente);
           }
-          if (Presente.GetComponent<Obstaculo>() != null)
+
+          Obstaculo obstaculoPresente = ObtenerObstaculoPresente();
+          if (obstaculoPresente != null)
           {
-            obstaculosEnCasAzul.Add(Presente.GetComponent<Obstaculo>());
+            obstaculosEnCasAzul.Add(obstaculoPresente);
           }
         }
 
@@ -2814,7 +2951,7 @@ public class Casilla : MonoBehaviour
 
   private bool DebeMostrarBordeActual()
   {
-    Unidad unidadPresente = Presente != null ? Presente.GetComponent<Unidad>() : null;
+    Unidad unidadPresente = ObtenerUnidadPresente();
     return DebeMostrarBordeActual(unidadPresente);
   }
 
@@ -2846,106 +2983,147 @@ public class Casilla : MonoBehaviour
   void Update()
   {
     ActualizarFadeMarcasMovimiento();
-
-    if (Borde != null)
-    {
-      Unidad unidadPresente = null;
-      Obstaculo obstaculoPresente = null;
-      int movible = 0;
-
-      if (Presente != null)
-      {
-        obstaculoPresente = Presente.GetComponent<Obstaculo>();
-        if (obstaculoPresente == null)
-        {
-          unidadPresente = Presente.GetComponent<Unidad>();
-          if (unidadPresente != null)
-          {
-            movible = esMovible(unidadPresente);
-          }
-        }
-
-        if (obstaculoPresente != null)
-        {
-          SetActiveIfChanged(Borde, false);
-          SetActiveIfChanged(Actual, false);
-          SetActiveIfChanged(Sombra, false);
-          SetActiveIfChanged(Desplazable, false);
-          SetActiveIfChanged(OcupadoNegro, true);
-
-        }
-        else if (unidadPresente != null && movible >= 10)
-        {
-          SetActiveIfChanged(Mover, false);
-          SetActiveIfChanged(MoverCostoso, false);
-          SetActiveIfChanged(Borde, false);
-          SetActiveIfChanged(Actual, false);
-          SetActiveIfChanged(OcupadoNegro, true);
-          SetActiveIfChanged(Desplazable, true);
-        }
-        else
-        {
-          SetActiveIfChanged(Borde, false);
-         
-          if (Sombra != null)
-          {
-            SetActiveIfChanged(Sombra, true);
-            SetActiveIfChanged(Desplazable, false);
-            if (unidadPresente != null)
-            { SetActiveIfChanged(OcupadoNegro, true); }
-            else
-            { SetActiveIfChanged(OcupadoNegro, false); }
-            SetActiveIfChanged(Actual, DebeMostrarBordeActual(unidadPresente));
-
-          }
-        }
-      }
-      else
-      {
-        movible = esMovible(null);
-
-        SetActiveIfChanged(Actual, false);
-        if (Sombra != null)
-        {
-          SetActiveIfChanged(Sombra, false);
-        }
-        SetActiveIfChanged(Mover, false);
-        SetActiveIfChanged(MoverCostoso, false);
-        SetActiveIfChanged(Borde, false);
-        SetActiveIfChanged(Desplazable, false);
-        SetActiveIfChanged(OcupadoNegro, false);
-
-
-
-        if (movible == 1)
-        {
-          SetActiveIfChanged(Mover, true);
-        }
-        else if (movible > 1 && movible < 10)
-        {
-          SetActiveIfChanged(MoverCostoso, true);
-        }
-        else if (movible >= 10)
-        {
-
-          SetActiveIfChanged(Desplazable, true);
-        }
-        else
-        {
-          if (gameObject.GetComponent<Trampa>() == null)
-          { SetActiveIfChanged(Borde, true); SetActiveIfChanged(Desplazable, false); }
-        }
-      }
-    }
-
+    ActualizarEstadoVisualCasilla();
     ActualizarGlowMovimientoHover();
     ActualizarPulsoObjetivoHabilidad();
     ActualizarVisualTurnoActualEnemigo();
   }
 
+  private void ActualizarEstadoVisualCasilla()
+  {
+    if (Borde == null)
+    {
+      return;
+    }
+
+    ActualizarCacheObjetoPresente();
+
+    int movible = 0;
+    bool mostrarBordeActual = false;
+    bool ocupadaPorUnidad = false;
+    EstadoVisualCasilla estadoVisual;
+
+    if (Presente != null)
+    {
+      if (obstaculoPresenteCache != null)
+      {
+        estadoVisual = EstadoVisualCasilla.Obstaculo;
+      }
+      else
+      {
+        if (unidadPresenteCache != null)
+        {
+          movible = esMovible(unidadPresenteCache);
+        }
+
+        if (unidadPresenteCache != null && movible >= 10)
+        {
+          estadoVisual = EstadoVisualCasilla.UnidadDesplazable;
+        }
+        else
+        {
+          estadoVisual = EstadoVisualCasilla.Ocupada;
+          ocupadaPorUnidad = unidadPresenteCache != null;
+          mostrarBordeActual = Sombra != null && DebeMostrarBordeActual(unidadPresenteCache);
+        }
+      }
+    }
+    else
+    {
+      movible = esMovible(null);
+      if (movible == 1)
+      {
+        estadoVisual = EstadoVisualCasilla.VaciaMover;
+      }
+      else if (movible > 1 && movible < 10)
+      {
+        estadoVisual = EstadoVisualCasilla.VaciaMoverCostoso;
+      }
+      else if (movible >= 10)
+      {
+        estadoVisual = EstadoVisualCasilla.VaciaDesplazable;
+      }
+      else
+      {
+        estadoVisual = TryGetComponent(out Trampa _)
+          ? EstadoVisualCasilla.VaciaConTrampa
+          : EstadoVisualCasilla.VaciaLibre;
+      }
+    }
+
+    if (estadoVisualCasillaCache == estadoVisual
+      && (estadoVisual != EstadoVisualCasilla.Ocupada
+        || (mostrarBordeActualCache == mostrarBordeActual && ocupadaPorUnidadCache == ocupadaPorUnidad)))
+    {
+      return;
+    }
+
+    estadoVisualCasillaCache = estadoVisual;
+    mostrarBordeActualCache = mostrarBordeActual;
+    ocupadaPorUnidadCache = ocupadaPorUnidad;
+
+    if (estadoVisual == EstadoVisualCasilla.Obstaculo)
+    {
+      SetActiveIfChanged(Borde, false);
+      SetActiveIfChanged(Actual, false);
+      SetActiveIfChanged(Sombra, false);
+      SetActiveIfChanged(Desplazable, false);
+      SetActiveIfChanged(OcupadoNegro, true);
+    }
+    else if (estadoVisual == EstadoVisualCasilla.UnidadDesplazable)
+    {
+      SetActiveIfChanged(Mover, false);
+      SetActiveIfChanged(MoverCostoso, false);
+      SetActiveIfChanged(Borde, false);
+      SetActiveIfChanged(Actual, false);
+      SetActiveIfChanged(OcupadoNegro, true);
+      SetActiveIfChanged(Desplazable, true);
+    }
+    else if (estadoVisual == EstadoVisualCasilla.Ocupada)
+    {
+      SetActiveIfChanged(Borde, false);
+
+      if (Sombra != null)
+      {
+        SetActiveIfChanged(Sombra, true);
+        SetActiveIfChanged(Desplazable, false);
+        SetActiveIfChanged(OcupadoNegro, ocupadaPorUnidad);
+        SetActiveIfChanged(Actual, mostrarBordeActual);
+      }
+    }
+    else
+    {
+      SetActiveIfChanged(Actual, false);
+      SetActiveIfChanged(Sombra, false);
+      SetActiveIfChanged(Mover, false);
+      SetActiveIfChanged(MoverCostoso, false);
+      SetActiveIfChanged(Borde, false);
+      SetActiveIfChanged(Desplazable, false);
+      SetActiveIfChanged(OcupadoNegro, false);
+
+      if (estadoVisual == EstadoVisualCasilla.VaciaMover)
+      {
+        SetActiveIfChanged(Mover, true);
+      }
+      else if (estadoVisual == EstadoVisualCasilla.VaciaMoverCostoso)
+      {
+        SetActiveIfChanged(MoverCostoso, true);
+      }
+      else if (estadoVisual == EstadoVisualCasilla.VaciaDesplazable)
+      {
+        SetActiveIfChanged(Desplazable, true);
+      }
+      else if (estadoVisual == EstadoVisualCasilla.VaciaLibre)
+      {
+        SetActiveIfChanged(Borde, true);
+        SetActiveIfChanged(Desplazable, false);
+      }
+    }
+  }
+
   int esMovible()
   {
-    Unidad unidadPresente = Presente != null ? Presente.GetComponent<Unidad>() : null;
+    Unidad unidadPresente = ObtenerUnidadPresente();
     return esMovible(unidadPresente);
   }
 
@@ -2968,7 +3146,7 @@ public class Casilla : MonoBehaviour
       return 0;
     }
 
-    bool casillaEnRangoMovimiento = battleManager.lCasillasMovimiento.Contains(this);
+    bool casillaEnRangoMovimiento = EstaEnRangoMovimiento(battleManager);
     if (casillaEnRangoMovimiento && Presente == null && !battleManager.bOcupado && !unidad.movimientoEnCurso && !battleManager.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
       int costoMovimientoTotal = ObtenerCostoMovimientoTotal(unidad);
@@ -3043,7 +3221,11 @@ public class Casilla : MonoBehaviour
       return;
     }
 
-    RestablecerGlowMovimientoHover(objetivoGlow);
+    if (objetivoGlowMovimientoActual != objetivoGlow)
+    {
+      RestablecerGlowMovimientoHover();
+      objetivoGlowMovimientoActual = objetivoGlow;
+    }
 
     Transform objetivoTransform = objetivoGlow.transform;
     if (!escalasBaseGlowMovimiento.TryGetValue(objetivoTransform, out Vector3 escalaBase))
@@ -3059,8 +3241,13 @@ public class Casilla : MonoBehaviour
     Color colorPulso = Color.Lerp(new Color(1f, 1f, 1f, 0.82f), Color.white, pulso);
     Color emissionPulso = Color.white * Mathf.Lerp(0.55f, 1.35f, pulso);
 
-    foreach (Renderer renderer in objetivoGlow.GetComponentsInChildren<Renderer>(true))
+    foreach (Renderer renderer in ObtenerRenderersGlowMovimientoCache(objetivoGlow))
     {
+      if (renderer == null)
+      {
+        continue;
+      }
+
       bloqueGlowMovimiento.Clear();
       if (renderer.sharedMaterial != null)
       {
@@ -3111,33 +3298,48 @@ public class Casilla : MonoBehaviour
     return null;
   }
 
-  private IEnumerable<GameObject> ObtenerRaicesGlowMovimiento()
+  private Renderer[] ObtenerRenderersGlowMovimientoCache(GameObject objetivoGlow)
   {
-    if (Mover != null) { yield return Mover; }
-    if (MoverCostoso != null) { yield return MoverCostoso; }
-    if (Desplazable != null) { yield return Desplazable; }
+    if (objetivoGlow == Mover)
+    {
+      return renderersMover;
+    }
+
+    if (objetivoGlow == MoverCostoso)
+    {
+      return renderersMoverCostoso;
+    }
+
+    if (objetivoGlow == Desplazable)
+    {
+      return renderersDesplazable;
+    }
+
+    return Array.Empty<Renderer>();
   }
 
-  private void RestablecerGlowMovimientoHover(GameObject excepcion = null)
+  private void RestablecerGlowMovimientoHover()
   {
-    foreach (GameObject raiz in ObtenerRaicesGlowMovimiento())
+    if (objetivoGlowMovimientoActual == null)
     {
-      if (raiz == null || raiz == excepcion)
-      {
-        continue;
-      }
+      return;
+    }
 
-      Transform raizTransform = raiz.transform;
-      if (escalasBaseGlowMovimiento.TryGetValue(raizTransform, out Vector3 escalaBase))
-      {
-        raizTransform.localScale = escalaBase;
-      }
+    Transform raizTransform = objetivoGlowMovimientoActual.transform;
+    if (escalasBaseGlowMovimiento.TryGetValue(raizTransform, out Vector3 escalaBase))
+    {
+      raizTransform.localScale = escalaBase;
+    }
 
-      foreach (Renderer renderer in raiz.GetComponentsInChildren<Renderer>(true))
+    foreach (Renderer renderer in ObtenerRenderersGlowMovimientoCache(objetivoGlowMovimientoActual))
+    {
+      if (renderer != null)
       {
         renderer.SetPropertyBlock(null);
       }
     }
+
+    objetivoGlowMovimientoActual = null;
   }
 
   private bool EsObjetivoPosibleHabilidadActiva()
@@ -3150,13 +3352,13 @@ public class Casilla : MonoBehaviour
       return false;
     }
 
-    Unidad unidadObjetivo = Presente.GetComponent<Unidad>();
+    Unidad unidadObjetivo = ObtenerUnidadPresente();
     if (unidadObjetivo != null)
     {
       return BattleManager.Instance.EsUnidadObjetivoVisualHabilidadActiva(unidadObjetivo);
     }
 
-    Obstaculo obstaculoObjetivo = Presente.GetComponent<Obstaculo>();
+    Obstaculo obstaculoObjetivo = ObtenerObstaculoPresente();
     if (obstaculoObjetivo != null)
     {
       return BattleManager.Instance.EsObstaculoObjetivoVisualHabilidadActiva(obstaculoObjetivo);
@@ -3175,7 +3377,7 @@ public class Casilla : MonoBehaviour
       return false;
     }
 
-    Obstaculo obstaculoObjetivo = Presente.GetComponent<Obstaculo>();
+    Obstaculo obstaculoObjetivo = ObtenerObstaculoPresente();
     return obstaculoObjetivo != null
       && BattleManager.Instance.EsObstaculoObjetivoVisualHabilidadActiva(obstaculoObjetivo);
   }
@@ -3190,12 +3392,12 @@ public class Casilla : MonoBehaviour
 
     if (circuloBordeHabilidadRojo != null)
     {
-      circuloBordeHabilidadRojo.gameObject.SetActive(!seleccionandoObjetivo || mostrarCirculo);
+      SetActiveIfChanged(circuloBordeHabilidadRojo.gameObject, !seleccionandoObjetivo || mostrarCirculo);
     }
 
     if (circuloBordeHabilidadAzul != null)
     {
-      circuloBordeHabilidadAzul.gameObject.SetActive(!seleccionandoObjetivo || mostrarCirculo);
+      SetActiveIfChanged(circuloBordeHabilidadAzul.gameObject, !seleccionandoObjetivo || mostrarCirculo);
     }
   }
 
@@ -3240,7 +3442,7 @@ public class Casilla : MonoBehaviour
     Transform capaPreferida = BattleManager.Instance.HabilidadActiva.esHostil ? capaRoja : capaAzul;
     if (capaPreferida != null && EsObjetivoPosibleHabilidadActiva())
     {
-      capaPreferida.gameObject.SetActive(true);
+      SetActiveIfChanged(capaPreferida.gameObject, true);
       autoActivoCapaObjetivoHabilidad = true;
       return capaPreferida;
     }
@@ -3337,7 +3539,7 @@ public class Casilla : MonoBehaviour
         : capaAzul;
       if (capaAuto != null)
       {
-        capaAuto.gameObject.SetActive(false);
+        SetActiveIfChanged(capaAuto.gameObject, false);
       }
     }
 
@@ -3362,6 +3564,11 @@ public class Casilla : MonoBehaviour
 
     if (!esTurnoEnemigoActual)
     {
+      if (!visualTurnoActualEnemigoAplicado)
+      {
+        return;
+      }
+
       foreach (Renderer renderer in renderersBordeActual)
       {
         if (renderer != null)
@@ -3370,6 +3577,7 @@ public class Casilla : MonoBehaviour
         }
       }
 
+      visualTurnoActualEnemigoAplicado = false;
       return;
     }
 
@@ -3402,6 +3610,8 @@ public class Casilla : MonoBehaviour
 
       renderer.SetPropertyBlock(bloqueTurnoActualEnemigo);
     }
+
+    visualTurnoActualEnemigoAplicado = true;
   }
 
   void OnDisable()

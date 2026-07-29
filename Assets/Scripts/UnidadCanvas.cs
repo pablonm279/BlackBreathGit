@@ -67,6 +67,28 @@ public class UnidadCanvas : MonoBehaviour
     private Outline outlineTextoProbabilidad;
     private Vector3 escalaBaseTextoProbabilidad = Vector3.one;
     private float fasePulsoTextoProbabilidad;
+    private Unidad unidadCacheada;
+    private float ultimaArmaduraMostrada = float.NaN;
+    private int ultimaVidaMostrada = int.MinValue;
+    private int ultimaVidaMaximaMostrada = int.MinValue;
+    private int ultimaBarreraMostrada = int.MinValue;
+    private float ultimoRatioVidaVisual = -1f;
+    private float ultimoRatioColorVida = -1f;
+    private bool ultimoEstadoTurnoPasado;
+    private bool estadoTurnoPasadoInicializado;
+    private int ultimaFilaEscala = int.MinValue;
+    private readonly List<Buff> buffsFirmaBuffer = new List<Buff>();
+    private readonly List<Reaccion> reaccionesFirmaBuffer = new List<Reaccion>();
+    private readonly List<Marca> marcasFirmaBuffer = new List<Marca>();
+
+    void Awake()
+    {
+        unidadCacheada = GetComponentInParent<Unidad>();
+        if (barraVida != null)
+        {
+            barraVidaSlider = barraVida.GetComponent<Slider>();
+        }
+    }
 
     void Start()
     {
@@ -80,62 +102,124 @@ public class UnidadCanvas : MonoBehaviour
 
     void Update()
     {
-        Unidad unidad = GetComponentInParent<Unidad>();
-
-
-        if (unidad == null) { return; }
-
-        if (txtArmadura != null) { txtArmadura.text = unidad.ObtenerArmaduraActual().ToString(); }
-
-        if (txtVida != null)
+        if (unidadCacheada == null)
         {
-
-            txtVida.text = ((int)unidad.HP_actual).ToString();
-            txtVida.text += "/" + ((int)unidad.mod_maxHP).ToString();
-
-            // Mostrar barrera de daño en azul si existe
-            if (unidad.barreraDeDanio > 0)
-            {
-                int barreraMostrada = Mathf.RoundToInt(unidad.barreraDeDanio);
-                if (barreraMostrada > 0)
-                {
-                    txtVida.text += $" <size=90%><color=#4FC3F7>+({barreraMostrada})</color></size>";
-                }
-            }
+            unidadCacheada = GetComponentInParent<Unidad>();
         }
-        if (barraVida != null)
-        {
-            float ratioVida = unidad.mod_maxHP > 0f ? Mathf.Clamp01(unidad.HP_actual / unidad.mod_maxHP) : 0f;
-            barraVida.gameObject.GetComponent<Slider>().value = ratioVida * 100f;
-            
-            Image barraFillImage = ObtenerImagenFillBarraVida();
-            if (barraFillImage != null)
-            {
-                if (!barraVidaFillColorBaseInicializado)
-                {
-                    barraVidaFillColorBase = barraFillImage.color;
-                    barraVidaFillColorBaseInicializado = true;
-                }
 
-                float tVidaBaja = barraVidaRatioInicioRojo > 0f ? Mathf.Clamp01(ratioVida / barraVidaRatioInicioRojo) : 1f;
-                Color colorFill = Color.Lerp(barraVidaColorVidaBaja, barraVidaFillColorBase, tVidaBaja);
-                int posEstaUnidad = BattleManager.Instance.lUnidadesTotal.IndexOf(unidad);
-                bool yapasosuturno = BattleManager.Instance.indexTurno > posEstaUnidad + 1;
-                if (yapasosuturno)
-                {
-                    colorFill.r *= barraVidaOscurecerTurnoPasado;
-                    colorFill.g *= barraVidaOscurecerTurnoPasado;
-                    colorFill.b *= barraVidaOscurecerTurnoPasado;
-                }
-                colorFill.a = 1f;
-                barraFillImage.color = colorFill;
-            }
-        }
-        ActualizarBarraDanio(unidad);
-        ActualizarEscalaBarra(unidad);
+        if (unidadCacheada == null) { return; }
+
+        ActualizarTextosSiCambian(unidadCacheada);
+        ActualizarBarraVidaSiCambia(unidadCacheada);
+        ActualizarEscalaBarraSiCambia(unidadCacheada);
         ActualizarPulsoTextoProbabilidad();
-
         ActualizarEstadosIconos();
+    }
+
+    private void ActualizarTextosSiCambian(Unidad unidad)
+    {
+        float armaduraActual = unidad.ObtenerArmaduraActual();
+        if (txtArmadura != null
+            && (float.IsNaN(ultimaArmaduraMostrada) || !Mathf.Approximately(ultimaArmaduraMostrada, armaduraActual)))
+        {
+            ultimaArmaduraMostrada = armaduraActual;
+            txtArmadura.text = armaduraActual.ToString();
+        }
+
+        int vidaActual = (int)unidad.HP_actual;
+        int vidaMaxima = (int)unidad.mod_maxHP;
+        int barreraActual = unidad.barreraDeDanio > 0f ? Mathf.RoundToInt(unidad.barreraDeDanio) : 0;
+        if (txtVida != null
+            && (vidaActual != ultimaVidaMostrada
+                || vidaMaxima != ultimaVidaMaximaMostrada
+                || barreraActual != ultimaBarreraMostrada))
+        {
+            ultimaVidaMostrada = vidaActual;
+            ultimaVidaMaximaMostrada = vidaMaxima;
+            ultimaBarreraMostrada = barreraActual;
+
+            string textoVida = vidaActual + "/" + vidaMaxima;
+            if (barreraActual > 0)
+            {
+                textoVida += $" <size=90%><color=#4FC3F7>+({barreraActual})</color></size>";
+            }
+
+            txtVida.text = textoVida;
+        }
+    }
+
+    private void ActualizarBarraVidaSiCambia(Unidad unidad)
+    {
+        if (barraVida == null) { return; }
+
+        if (barraVidaSlider == null)
+        {
+            barraVidaSlider = barraVida.GetComponent<Slider>();
+        }
+
+        float ratioVida = unidad.mod_maxHP > 0f ? Mathf.Clamp01(unidad.HP_actual / unidad.mod_maxHP) : 0f;
+        bool cambioRatio = ultimoRatioVidaVisual < 0f || !Mathf.Approximately(ultimoRatioVidaVisual, ratioVida);
+        if (cambioRatio)
+        {
+            if (barraVidaSlider != null)
+            {
+                barraVidaSlider.value = ratioVida * 100f;
+            }
+
+            ActualizarBarraDanio(unidad);
+            ultimoRatioVidaVisual = ratioVida;
+        }
+
+        BattleManager battleManager = BattleManager.Instance;
+        int posicionUnidad = battleManager != null && battleManager.lUnidadesTotal != null
+            ? battleManager.lUnidadesTotal.IndexOf(unidad)
+            : -1;
+        bool turnoPasado = battleManager != null
+            && posicionUnidad >= 0
+            && battleManager.indexTurno > posicionUnidad + 1;
+
+        Image barraFillImage = ObtenerImagenFillBarraVida();
+        if (barraFillImage == null
+            || (!cambioRatio
+                && estadoTurnoPasadoInicializado
+                && turnoPasado == ultimoEstadoTurnoPasado
+                && Mathf.Approximately(ultimoRatioColorVida, ratioVida)))
+        {
+            return;
+        }
+
+        if (!barraVidaFillColorBaseInicializado)
+        {
+            barraVidaFillColorBase = barraFillImage.color;
+            barraVidaFillColorBaseInicializado = true;
+        }
+
+        float tVidaBaja = barraVidaRatioInicioRojo > 0f ? Mathf.Clamp01(ratioVida / barraVidaRatioInicioRojo) : 1f;
+        Color colorFill = Color.Lerp(barraVidaColorVidaBaja, barraVidaFillColorBase, tVidaBaja);
+        if (turnoPasado)
+        {
+            colorFill.r *= barraVidaOscurecerTurnoPasado;
+            colorFill.g *= barraVidaOscurecerTurnoPasado;
+            colorFill.b *= barraVidaOscurecerTurnoPasado;
+        }
+
+        colorFill.a = 1f;
+        barraFillImage.color = colorFill;
+        ultimoRatioColorVida = ratioVida;
+        ultimoEstadoTurnoPasado = turnoPasado;
+        estadoTurnoPasadoInicializado = true;
+    }
+
+    private void ActualizarEscalaBarraSiCambia(Unidad unidad)
+    {
+        int filaActual = unidad.CasillaPosicion != null ? unidad.CasillaPosicion.posY : int.MinValue;
+        if (filaActual == ultimaFilaEscala)
+        {
+            return;
+        }
+
+        ultimaFilaEscala = filaActual;
+        ActualizarEscalaBarra(unidad);
     }
 
     void PrepararBarraDanio()
@@ -354,6 +438,14 @@ public class UnidadCanvas : MonoBehaviour
     void OnEnable()
     {
         firmaEstadosUI = int.MinValue;
+        ultimaArmaduraMostrada = float.NaN;
+        ultimaVidaMostrada = int.MinValue;
+        ultimaVidaMaximaMostrada = int.MinValue;
+        ultimaBarreraMostrada = int.MinValue;
+        ultimoRatioVidaVisual = -1f;
+        ultimoRatioColorVida = -1f;
+        estadoTurnoPasadoInicializado = false;
+        ultimaFilaEscala = int.MinValue;
     }
 
     void ActualizarEscalaBarra(Unidad unidad)
@@ -380,7 +472,7 @@ public class UnidadCanvas : MonoBehaviour
     void ActualizarEstadosIconos()
     {
         if (contenedorCasillasEstados == null) return;
-        Unidad scUnidadMostrada = GetComponentInParent<Unidad>();
+        Unidad scUnidadMostrada = unidadCacheada;
         if (scUnidadMostrada == null) return;
 
         int firmaActual = CalcularFirmaEstadosUI(scUnidadMostrada);
@@ -409,14 +501,14 @@ public class UnidadCanvas : MonoBehaviour
         }
 
         // Mostrar Reacciones
-        foreach (Reaccion buff in scUnidadMostrada.gameObject.GetComponents<Reaccion>())
+        foreach (Reaccion buff in reaccionesFirmaBuffer)
         {
             GameObject buffCuadro = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
             buffCuadro.GetComponent<UIEstadoCuadro>().RepresentarReaccion(buff, true);
         }
 
         // Mostrar Marcas
-        foreach (Marca buff in scUnidadMostrada.gameObject.GetComponents<Marca>())
+        foreach (Marca buff in marcasFirmaBuffer)
         {
             GameObject buffCuadro = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
             buffCuadro.GetComponent<UIEstadoCuadro>().RepresentarMarca(buff, true);
@@ -479,49 +571,60 @@ public class UnidadCanvas : MonoBehaviour
             h = MezclarHash(h, unidad.estado_Condenado);
             h = MezclarHash(h, unidad.estado_Escudado);
             h = MezclarHash(h, unidad.estado_MovimientoAbaratado);
-            h = MezclarHash(h, unidad.TieneBuffNombre(Unidad.BuffNombreProvocado) ? 1 : 0);
 
             // Buffs visibles en barra (mismo filtro de render)
-            List<BuffUIHelper.BuffStack> buffStacks = BuffUIHelper.GetVisibleBuffStacks(unidad, true);
-            int visibles = 0;
-            for (int i = 0; i < buffStacks.Count; i++)
-            {
-                Buff b = buffStacks[i].AggregatedBuff;
-                if (ReferenceEquals(b, null) || !b.esRemovible) { continue; }
-
-                visibles++;
-                h = MezclarHash(h, HashTexto(b.buffNombre));
-                h = MezclarHash(h, HashTexto(b.buffDescr));
-                h = MezclarHash(h, b.boolfDebufftBuff ? 1 : 0);
-                h = MezclarHash(h, b.DuracionBuffRondas);
-                h = MezclarHash(h, buffStacks[i].StackCount);
-            }
-            h = MezclarHash(h, visibles);
+            int firmaBuffs = BuffUIHelper.CalculateVisibleBuffSignature(
+                unidad,
+                true,
+                true,
+                buffsFirmaBuffer);
+            h = MezclarHash(h, firmaBuffs);
+            h = MezclarHash(h, TieneBuffActivo(Unidad.BuffNombreProvocado) ? 1 : 0);
 
             // Reacciones mostradas
-            Reaccion[] reacciones = unidad.gameObject.GetComponents<Reaccion>();
-            h = MezclarHash(h, reacciones.Length);
-            for (int i = 0; i < reacciones.Length; i++)
+            reaccionesFirmaBuffer.Clear();
+            unidad.GetComponents(reaccionesFirmaBuffer);
+            h = MezclarHash(h, reaccionesFirmaBuffer.Count);
+            for (int i = 0; i < reaccionesFirmaBuffer.Count; i++)
             {
-                Reaccion r = reacciones[i];
+                Reaccion r = reaccionesFirmaBuffer[i];
                 if (r == null) { continue; }
+                h = MezclarHash(h, r.GetInstanceID());
                 h = MezclarHash(h, r.usos);
                 h = MezclarHash(h, HashTexto(r.descripcion));
             }
 
             // Marcas mostradas
-            Marca[] marcas = unidad.gameObject.GetComponents<Marca>();
-            h = MezclarHash(h, marcas.Length);
-            for (int i = 0; i < marcas.Length; i++)
+            marcasFirmaBuffer.Clear();
+            unidad.GetComponents(marcasFirmaBuffer);
+            h = MezclarHash(h, marcasFirmaBuffer.Count);
+            for (int i = 0; i < marcasFirmaBuffer.Count; i++)
             {
-                Marca m = marcas[i];
+                Marca m = marcasFirmaBuffer[i];
                 if (m == null) { continue; }
+                h = MezclarHash(h, m.GetInstanceID());
                 h = MezclarHash(h, m.duracion);
                 h = MezclarHash(h, HashTexto(m.descripcion));
             }
 
             return h;
         }
+    }
+
+    private bool TieneBuffActivo(string nombreBuff)
+    {
+        for (int i = 0; i < buffsFirmaBuffer.Count; i++)
+        {
+            Buff buff = buffsFirmaBuffer[i];
+            if (buff != null
+                && !buff.RemocionAplicada
+                && buff.buffNombre == nombreBuff)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void CrearTextoProbabilidad()

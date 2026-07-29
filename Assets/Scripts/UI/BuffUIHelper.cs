@@ -3,6 +3,9 @@ using System.Reflection;
 
 public static class BuffUIHelper
 {
+    private static readonly FieldInfo[] AggregateFields =
+        typeof(Buff).GetFields(BindingFlags.Public | BindingFlags.Instance);
+
     public struct BuffStack
     {
         public Buff AggregatedBuff;
@@ -61,6 +64,74 @@ public static class BuffUIHelper
         return result;
     }
 
+    public static int CalculateVisibleBuffSignature(
+        Unidad unidad,
+        bool paraBarraVida,
+        bool soloRemovibles,
+        List<Buff> componentBuffer)
+    {
+        if (componentBuffer == null)
+        {
+            return 0;
+        }
+
+        componentBuffer.Clear();
+        if (unidad == null)
+        {
+            return 0;
+        }
+
+        unidad.GetComponents(componentBuffer);
+
+        unchecked
+        {
+            int hash = 17;
+            for (int i = 0; i < componentBuffer.Count; i++)
+            {
+                Buff baseBuff = componentBuffer[i];
+                if (!IsVisible(baseBuff, paraBarraVida) || YaFueAgrupado(componentBuffer, i, paraBarraVida))
+                {
+                    continue;
+                }
+
+                if (soloRemovibles && !baseBuff.esRemovible)
+                {
+                    continue;
+                }
+
+                int stackCount = 0;
+                int stackDuration = 0;
+                for (int j = i; j < componentBuffer.Count; j++)
+                {
+                    Buff candidate = componentBuffer[j];
+                    if (!IsVisible(candidate, paraBarraVida) || !SameStackKey(baseBuff, candidate))
+                    {
+                        continue;
+                    }
+
+                    stackCount++;
+                    if (candidate.DuracionBuffRondas < 0)
+                    {
+                        stackDuration = -1;
+                    }
+                    else if (stackDuration >= 0 && candidate.DuracionBuffRondas > stackDuration)
+                    {
+                        stackDuration = candidate.DuracionBuffRondas;
+                    }
+                }
+
+                hash = MixHash(hash, baseBuff.GetInstanceID());
+                hash = MixHash(hash, HashText(baseBuff.buffNombre));
+                hash = MixHash(hash, HashText(baseBuff.buffDescr));
+                hash = MixHash(hash, baseBuff.boolfDebufftBuff ? 1 : 0);
+                hash = MixHash(hash, stackDuration);
+                hash = MixHash(hash, stackCount);
+            }
+
+            return hash;
+        }
+    }
+
     private static Buff AggregateBuff(List<Buff> buffs)
     {
         Buff aggregated = new Buff();
@@ -70,8 +141,7 @@ public static class BuffUIHelper
         }
 
         Buff baseBuff = buffs[0];
-        FieldInfo[] fields = typeof(Buff).GetFields(BindingFlags.Public | BindingFlags.Instance);
-        foreach (FieldInfo field in fields)
+        foreach (FieldInfo field in AggregateFields)
         {
             if (field.FieldType == typeof(float))
             {
@@ -141,5 +211,53 @@ public static class BuffUIHelper
         }
 
         return hasPermanent ? -1 : maxDuration;
+    }
+
+    private static bool IsVisible(Buff buff, bool paraBarraVida)
+    {
+        return buff != null
+            && buff.DuracionBuffRondas != 0
+            && buff.esBuffVisibleUI
+            && (!paraBarraVida || !buff.ocultarEnBarraVida);
+    }
+
+    private static bool YaFueAgrupado(List<Buff> buffs, int currentIndex, bool paraBarraVida)
+    {
+        Buff current = buffs[currentIndex];
+        for (int i = 0; i < currentIndex; i++)
+        {
+            Buff previous = buffs[i];
+            if (IsVisible(previous, paraBarraVida) && SameStackKey(previous, current))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool SameStackKey(Buff left, Buff right)
+    {
+        bool leftUnnamed = string.IsNullOrWhiteSpace(left.buffNombre);
+        bool rightUnnamed = string.IsNullOrWhiteSpace(right.buffNombre);
+        if (leftUnnamed || rightUnnamed)
+        {
+            return leftUnnamed && rightUnnamed && ReferenceEquals(left, right);
+        }
+
+        return string.Equals(left.buffNombre, right.buffNombre, System.StringComparison.Ordinal);
+    }
+
+    private static int MixHash(int current, int value)
+    {
+        unchecked
+        {
+            return (current * 31) + value;
+        }
+    }
+
+    private static int HashText(string text)
+    {
+        return string.IsNullOrEmpty(text) ? 0 : text.GetHashCode();
     }
 }

@@ -114,10 +114,13 @@ public class CampaignManager : MonoBehaviour
   [Header("Debug mouse")]
   [SerializeField] private KeyCode teclaDebugBajoMouse = KeyCode.F10;
   [SerializeField] private int maxHitsDebugBajoMouse = 12;
+  private const int CapacidadRaycastNodosCampania = 64;
   private Nodo nodoHoverCampaniaActual;
   private readonly List<RaycastResult> resultadosRaycastUICampania = new List<RaycastResult>();
+  private readonly RaycastHit[] hitsRaycastNodosCampania = new RaycastHit[CapacidadRaycastNodosCampania];
   private PointerEventData pointerRaycastUICampania;
   private EventSystem eventSystemRaycastUICampania;
+  private Camera camaraRaycastNodosCampania;
 
   public GameObject prefabTextoRecursos;
   [SerializeField] private float recursoTextoStackOffsetY = 16f;
@@ -10652,18 +10655,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return null;
     }
 
-    Camera cam = Camera.main;
-    if (cam == null)
-    {
-      foreach (Camera cameraActiva in Camera.allCameras)
-      {
-        if (cameraActiva != null && cameraActiva.enabled)
-        {
-          cam = cameraActiva;
-          break;
-        }
-      }
-    }
+    Camera cam = ObtenerCamaraRaycastNodosCampania();
 
     if (cam == null)
     {
@@ -10671,24 +10663,96 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-    RaycastHit[] hits3D = Physics.RaycastAll(ray, 500f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide);
-    System.Array.Sort(hits3D, (a, b) => a.distance.CompareTo(b.distance));
+    int cantidadHits = Physics.RaycastNonAlloc(
+      ray,
+      hitsRaycastNodosCampania,
+      500f,
+      Physics.DefaultRaycastLayers,
+      QueryTriggerInteraction.Collide);
 
-    for (int i = 0; i < hits3D.Length; i++)
+    if (cantidadHits >= hitsRaycastNodosCampania.Length)
     {
-      Collider collider = hits3D[i].collider;
+      return ObtenerNodoBajoMouseCampaniaFallback(ray);
+    }
+
+    return ObtenerNodoMasCercano(hitsRaycastNodosCampania, cantidadHits);
+  }
+
+  Camera ObtenerCamaraRaycastNodosCampania()
+  {
+    if (camaraRaycastNodosCampania != null
+        && camaraRaycastNodosCampania.enabled
+        && camaraRaycastNodosCampania.gameObject.activeInHierarchy)
+    {
+      return camaraRaycastNodosCampania;
+    }
+
+    camaraRaycastNodosCampania = Camera.main;
+    if (camaraRaycastNodosCampania != null)
+    {
+      return camaraRaycastNodosCampania;
+    }
+
+    foreach (Camera cameraActiva in Camera.allCameras)
+    {
+      if (cameraActiva != null && cameraActiva.enabled)
+      {
+        camaraRaycastNodosCampania = cameraActiva;
+        break;
+      }
+    }
+
+    return camaraRaycastNodosCampania;
+  }
+
+  static Nodo ObtenerNodoMasCercano(RaycastHit[] hits, int cantidadHits)
+  {
+    Nodo nodoMasCercano = null;
+    float distanciaMasCercana = float.PositiveInfinity;
+
+    for (int i = 0; i < cantidadHits; i++)
+    {
+      RaycastHit hit = hits[i];
+      if (hit.distance >= distanciaMasCercana || hit.collider == null)
+      {
+        continue;
+      }
+
+      Nodo nodo = hit.collider.GetComponentInParent<Nodo>();
+      if (nodo == null || !nodo.gameObject.activeInHierarchy)
+      {
+        continue;
+      }
+
+      nodoMasCercano = nodo;
+      distanciaMasCercana = hit.distance;
+    }
+
+    return nodoMasCercano;
+  }
+
+  static Nodo ObtenerNodoBajoMouseCampaniaFallback(Ray ray)
+  {
+    RaycastHit[] hits = Physics.RaycastAll(
+      ray,
+      500f,
+      Physics.DefaultRaycastLayers,
+      QueryTriggerInteraction.Collide);
+    System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+    for (int i = 0; i < hits.Length; i++)
+    {
+      Collider collider = hits[i].collider;
       if (collider == null)
       {
         continue;
       }
 
       Nodo nodo = collider.GetComponentInParent<Nodo>();
-      if (nodo == null || !nodo.gameObject.activeInHierarchy)
+      if (nodo != null && nodo.gameObject.activeInHierarchy)
       {
-        continue;
+        return nodo;
       }
-
-      return nodo;
     }
 
     return null;

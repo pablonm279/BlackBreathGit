@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine.Rendering;
 
 #if UNITY_POST_PROCESSING_STACK_V2
 using UnityEngine.Rendering.PostProcessing;
@@ -23,7 +24,12 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   private const int CalidadGraficaBaja = 0;
   private const string EscenaMenuPrincipal = "ES-MenuPrincipal";
   private const float BlackBreathParticleReductionPerQualityLevel = 0.15f;
-  private const float CampaignParticleReductionPerQualityLevel = 0.15f;
+  private const float CampaignParticleReductionPerQualityLevel = 0.25f;
+  private const float CampaignBlackBreathReductionPerQualityLevel = 0.30f;
+  private const float CampaignParticleBaseMultiplier = 0.60f;
+  private const float CampaignBlackBreathBaseMultiplier = 0.45f;
+  private const float CampaignGeneratedVfxBaseMultiplier = 0.25f;
+  private const float CampaignLargePointLightRange = 40f;
 
   private struct MenuParticleState
   {
@@ -38,8 +44,16 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     public ParticleSystem.Burst[] bursts;
   }
 
+  private struct CampaignLightDefaults
+  {
+    public LightShadows shadows;
+    public LightShadowResolution shadowResolution;
+  }
+
   private static readonly Dictionary<int, ParticleAmountDefaults> particleAmountDefaultsById = new Dictionary<int, ParticleAmountDefaults>();
   private static readonly Dictionary<int, MenuParticleState> menuParticleStatesById = new Dictionary<int, MenuParticleState>();
+  private static readonly Dictionary<int, CampaignLightDefaults> campaignLightDefaultsById = new Dictionary<int, CampaignLightDefaults>();
+  private static int campaignGeneratedVfxRootCounter;
 
   [SerializeField] private bool rebalanceQualityAtRuntime = true;
   [SerializeField] private int postProcessLayerIndex = 12; // Bit 4096 in current scenes.
@@ -84,6 +98,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
       ApplyMainMenuParticleQuality(scene);
       ApplyCampaignParticleQualityScale(scene);
       instance.ApplyAlientoNegroParticleQualityScale(scene);
+      ApplyCampaignLightQuality(scene);
     }
 
 #if UNITY_POST_PROCESSING_STACK_V2
@@ -125,6 +140,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
 
   private void OnSceneLoaded(Scene scene, LoadSceneMode _)
   {
+    campaignGeneratedVfxRootCounter = 0;
     ApplyScenePolish(scene);
   }
 
@@ -141,6 +157,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     ApplyMainMenuParticleQuality(scene);
     ApplyCampaignParticleQualityScale(scene);
     ApplyAlientoNegroParticleQualityScale(scene);
+    ApplyCampaignLightQuality(scene);
 
 #if UNITY_POST_PROCESSING_STACK_V2
     ApplyCameraPostFxAA(scene);
@@ -169,6 +186,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     {
       QualitySettings.shadowDistance = Mathf.Min(QualitySettings.shadowDistance, 140f);
     }
+
   }
 
   private void NormalizeSceneCanvasScalers(Scene scene)
@@ -258,6 +276,76 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     ApplyCampaignParticleQualityScale(SceneManager.GetActiveScene());
   }
 
+  public static void ApplyGeneratedCampaignVfxQualityScale(GameObject root)
+  {
+    if (root == null || !IsCampaignScene(root.scene)) { return; }
+
+    ParticleSystem[] systems = root.GetComponentsInChildren<ParticleSystem>(true);
+    float multiplier = CampaignGeneratedVfxBaseMultiplier
+      * ResolveQualityAmountMultiplier(CampaignParticleReductionPerQualityLevel);
+    for (int i = 0; i < systems.Length; i++)
+    {
+      ApplyParticleSystemAmountScale(systems[i], multiplier);
+    }
+
+    int calidadMaxima = Mathf.Max(0, QualitySettings.names.Length - 1);
+    int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
+    calidadActual = Mathf.Clamp(calidadActual, 0, calidadMaxima);
+    int indiceVfx = campaignGeneratedVfxRootCounter++;
+
+    ApplyGeneratedCampaignVfxLod(root, calidadActual, calidadMaxima);
+    ApplyGeneratedCampaignVfxLightBudget(root, indiceVfx, calidadActual, calidadMaxima);
+  }
+
+  private static void ApplyGeneratedCampaignVfxLod(GameObject root, int calidadActual, int calidadMaxima)
+  {
+    if (root.GetComponent<LODGroup>() != null) { return; }
+
+    ParticleSystemRenderer[] particleRenderers = root.GetComponentsInChildren<ParticleSystemRenderer>(true);
+    if (particleRenderers.Length == 0) { return; }
+
+    float alturaMinimaPantalla = calidadActual >= calidadMaxima
+      ? 0.006f
+      : calidadActual <= CalidadGraficaBaja ? 0.018f : 0.010f;
+
+    LODGroup lodGroup = root.AddComponent<LODGroup>();
+    lodGroup.fadeMode = LODFadeMode.None;
+    lodGroup.animateCrossFading = false;
+    lodGroup.SetLODs(new[]
+    {
+      new LOD(alturaMinimaPantalla, particleRenderers)
+    });
+    lodGroup.RecalculateBounds();
+  }
+
+  private static void ApplyGeneratedCampaignVfxLightBudget(
+    GameObject root,
+    int indiceVfx,
+    int calidadActual,
+    int calidadMaxima)
+  {
+    if (root.name.IndexOf("llama", System.StringComparison.OrdinalIgnoreCase) < 0) { return; }
+
+    int conservarCada = calidadActual >= calidadMaxima
+      ? 3
+      : calidadActual <= CalidadGraficaBaja ? int.MaxValue : 5;
+    bool conservarLuz = calidadActual > CalidadGraficaBaja && indiceVfx % conservarCada == 0;
+    if (conservarLuz) { return; }
+
+    Light[] lights = root.GetComponentsInChildren<Light>(true);
+    for (int i = 0; i < lights.Length; i++)
+    {
+      Light light = lights[i];
+      if (light != null
+          && light.type == LightType.Point
+          && light.range <= 1.5f
+          && light.shadows == LightShadows.None)
+      {
+        light.enabled = false;
+      }
+    }
+  }
+
   public static void ApplyParticleAmountQualityScale(GameObject root, float reductionPerLevel)
   {
     if (root == null) { return; }
@@ -313,7 +401,15 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   private void ApplyAlientoNegroParticleQualityScale(Scene scene)
   {
     ParticleSystem[] systems = FindObjectsByType<ParticleSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-    float multiplier = ResolveQualityAmountMultiplier(BlackBreathParticleReductionPerQualityLevel);
+    bool esCampania = IsCampaignScene(scene);
+    float multiplier = ResolveQualityAmountMultiplier(
+      esCampania
+        ? CampaignBlackBreathReductionPerQualityLevel
+        : BlackBreathParticleReductionPerQualityLevel);
+    if (esCampania)
+    {
+      multiplier *= CampaignBlackBreathBaseMultiplier;
+    }
     for (int i = 0; i < systems.Length; i++)
     {
       ParticleSystem ps = systems[i];
@@ -330,7 +426,8 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     if (!IsCampaignScene(scene)) { return; }
 
     ParticleSystem[] systems = FindObjectsByType<ParticleSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-    float multiplier = ResolveQualityAmountMultiplier(CampaignParticleReductionPerQualityLevel);
+    float multiplier = CampaignParticleBaseMultiplier
+      * ResolveQualityAmountMultiplier(CampaignParticleReductionPerQualityLevel);
     for (int i = 0; i < systems.Length; i++)
     {
       ParticleSystem ps = systems[i];
@@ -338,6 +435,48 @@ public sealed class VisualPolishRuntime : MonoBehaviour
       if (ps.gameObject.scene != scene) { continue; }
 
       ApplyParticleSystemAmountScale(ps, multiplier);
+    }
+  }
+
+  private static void ApplyCampaignLightQuality(Scene scene)
+  {
+    if (!IsCampaignScene(scene)) { return; }
+
+    int calidadMaxima = Mathf.Max(0, QualitySettings.names.Length - 1);
+    int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
+    calidadActual = Mathf.Clamp(calidadActual, 0, calidadMaxima);
+
+    Light[] lights = FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+    for (int i = 0; i < lights.Length; i++)
+    {
+      Light light = lights[i];
+      if (light == null || light.gameObject.scene != scene) { continue; }
+      if (light.type != LightType.Point || light.range < CampaignLargePointLightRange) { continue; }
+
+      int id = light.GetInstanceID();
+      if (!campaignLightDefaultsById.TryGetValue(id, out CampaignLightDefaults defaults))
+      {
+        defaults = new CampaignLightDefaults
+        {
+          shadows = light.shadows,
+          shadowResolution = light.shadowResolution
+        };
+        campaignLightDefaultsById[id] = defaults;
+      }
+
+      if (defaults.shadows == LightShadows.None)
+      {
+        continue;
+      }
+
+      if (calidadActual < calidadMaxima)
+      {
+        light.shadows = LightShadows.None;
+        continue;
+      }
+
+      light.shadows = LightShadows.Hard;
+      light.shadowResolution = LightShadowResolution.Low;
     }
   }
 
@@ -479,7 +618,9 @@ public sealed class VisualPolishRuntime : MonoBehaviour
       {
         // SMAA avoids temporal ghosting/motion blur feel when characters move.
         layer.antialiasingMode = PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing;
-        layer.subpixelMorphologicalAntialiasing.quality = SubpixelMorphologicalAntialiasing.Quality.High;
+        layer.subpixelMorphologicalAntialiasing.quality = IsCampaignScene(scene)
+          ? SubpixelMorphologicalAntialiasing.Quality.Medium
+          : SubpixelMorphologicalAntialiasing.Quality.High;
       }
       else
       {
@@ -611,11 +752,21 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     }
 
     AmbientOcclusion ao = GetOrAddSetting<AmbientOcclusion>(profile);
-    ao.enabled.Override(!isMenu);
-    if (!isMenu)
+    int calidadMaxima = Mathf.Max(0, QualitySettings.names.Length - 1);
+    int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
+    calidadActual = Mathf.Clamp(calidadActual, 0, calidadMaxima);
+    bool habilitarAo = !isMenu && (!isCampaign || calidadActual >= calidadMaxima);
+    ao.enabled.Override(habilitarAo);
+    if (habilitarAo)
     {
-      ao.intensity.Override(isBattle ? 0.26f : 0.32f);
+      ao.intensity.Override(isBattle ? 0.26f : isCampaign ? 0.20f : 0.32f);
       ao.mode.Override(AmbientOcclusionMode.MultiScaleVolumetricObscurance);
+    }
+
+    if (isCampaign)
+    {
+      ChromaticAberration chromaticAberration = GetOrAddSetting<ChromaticAberration>(profile);
+      chromaticAberration.enabled.Override(false);
     }
 
     DepthOfField dof = GetOrAddSetting<DepthOfField>(profile);

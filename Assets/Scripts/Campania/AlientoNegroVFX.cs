@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEditor;
 #endif
 
+
 /// Controla el avance del Aliento Negro en escena usando un sistema de partículas.
 public class AlientoNegroVFX : MonoBehaviour
 {
@@ -43,6 +44,7 @@ public class AlientoNegroVFX : MonoBehaviour
     [SerializeField] bool ajustarEmisionSegunProgreso = false;
     [SerializeField] float emissionRateMin = 10f;
     [SerializeField] float emissionRateMax = 60f;
+    [SerializeField] bool mejorarVolumenVisual = true;
     [Header("Audio")]
     [SerializeField] AudioSource audioMovimiento;
     [SerializeField] bool reproducirAudioDuranteMovimiento = true;
@@ -72,6 +74,11 @@ public class AlientoNegroVFX : MonoBehaviour
         ActualizarPosicionesDesdeAnclas();
         if (alientoNegroParticulas != null)
         {
+            if (mejorarVolumenVisual)
+            {
+                AlientoNegroVolumenRuntime.Ensure(gameObject, alientoNegroParticulas);
+            }
+
             emissionDefaultEnabled = alientoNegroParticulas.emission.enabled;
             AplicarCalidadCantidadParticulas();
         }
@@ -737,4 +744,3 @@ class AlientoNegroVFXEditor : Editor
     }
 }
 #endif
-

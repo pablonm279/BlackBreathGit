@@ -26,6 +26,10 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
   private bool textoStacksConfigurado;
   private Buff buffDuracionAsociado;
   private bool usarDuracionBuffAsociado;
+  private readonly List<TextMeshProUGUI> textosStacksCache = new List<TextMeshProUGUI>();
+  private readonly List<TextMeshProUGUI> textosStacksEncontrados = new List<TextMeshProUGUI>();
+  private bool textosStacksCacheados;
+  private int ultimoValorTextoStacksAplicado = int.MinValue;
 
   void Awake()
   {
@@ -35,34 +39,21 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
       Retrato.raycastPadding = PaddingRaycast;
     }
 
+    CachearTextosStacks();
   }
 
   void OnEnable()
   {
-    Canvas.willRenderCanvases += ReaplicarTextoStacks;
-  }
-
-  void OnDisable()
-  {
-    Canvas.willRenderCanvases -= ReaplicarTextoStacks;
-  }
-
-  void LateUpdate()
-  {
-    ReaplicarTextoStacks();
+    ultimoValorTextoStacksAplicado = int.MinValue;
+    if (textoStacksConfigurado)
+    {
+      AplicarTextoStacks(valorTextoStacksActual);
+    }
   }
 
   void Update()
   {
     ActualizarTextoDesdeBuffAsociado();
-  }
-
-  private void ReaplicarTextoStacks()
-  {
-    if (textoStacksConfigurado)
-    {
-      AplicarTextoStacks(valorTextoStacksActual);
-    }
   }
 
   private void AsegurarRetrato()
@@ -466,48 +457,62 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
 
   private void EscribirTextoStacks(int valor)
   {
+    bool cambioValor = !textoStacksConfigurado || valorTextoStacksActual != valor;
     valorTextoStacksActual = valor;
     textoStacksConfigurado = true;
-    AplicarTextoStacks(valor);
+    if (cambioValor || ultimoValorTextoStacksAplicado != valor)
+    {
+      AplicarTextoStacks(valor);
+    }
   }
 
   private void AplicarTextoStacks(int valor)
   {
+    CachearTextosStacks();
     string texto = valor > 0 ? valor.ToString() : "";
-    List<TextMeshProUGUI> textos = ObtenerTextosStacks();
 
-    for (int i = 0; i < textos.Count; i++)
+    for (int i = 0; i < textosStacksCache.Count; i++)
     {
-      TextMeshProUGUI textoStacksActual = textos[i];
+      TextMeshProUGUI textoStacksActual = textosStacksCache[i];
       if (textoStacksActual == null) { continue; }
 
-      textoStacksActual.gameObject.SetActive(true);
-      textoStacksActual.enabled = true;
-      textoStacksActual.SetText(texto);
-      textoStacksActual.ForceMeshUpdate();
+      if (!textoStacksActual.gameObject.activeSelf)
+      {
+        textoStacksActual.gameObject.SetActive(true);
+      }
+      if (!textoStacksActual.enabled)
+      {
+        textoStacksActual.enabled = true;
+      }
+      if (textoStacksActual.text != texto)
+      {
+        textoStacksActual.SetText(texto);
+      }
     }
+
+    ultimoValorTextoStacksAplicado = valor;
   }
 
-  private List<TextMeshProUGUI> ObtenerTextosStacks()
+  private void CachearTextosStacks()
   {
-    List<TextMeshProUGUI> textos = new List<TextMeshProUGUI>();
-
-    Transform hijoTexto = transform.Find("Text (TMP)");
-    if (hijoTexto != null)
+    if (textosStacksCacheados)
     {
-      textStacks = hijoTexto.GetComponent<TextMeshProUGUI>();
-      AgregarTextoStack(textos, textStacks);
+      return;
     }
 
-    AgregarTextoStack(textos, textStacks);
+    textosStacksCache.Clear();
+    textosStacksEncontrados.Clear();
+    GetComponentsInChildren(true, textosStacksEncontrados);
 
-    TextMeshProUGUI[] textosEnHijos = GetComponentsInChildren<TextMeshProUGUI>(true);
-    for (int i = 0; i < textosEnHijos.Length; i++)
+    AgregarTextoStack(textosStacksCache, textStacks);
+
+    for (int i = 0; i < textosStacksEncontrados.Count; i++)
     {
-      AgregarTextoStack(textos, textosEnHijos[i]);
+      AgregarTextoStack(textosStacksCache, textosStacksEncontrados[i]);
     }
 
-    return textos;
+    textosStacksEncontrados.Clear();
+    textosStacksCacheados = true;
   }
 
   private void AgregarTextoStack(List<TextMeshProUGUI> textos, TextMeshProUGUI candidato)

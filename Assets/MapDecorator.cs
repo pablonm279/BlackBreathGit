@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 /// Decorador con Poisson blue-noise + exclusiones.
 /// - Grilla en MUNDO (respeta escala del plane).
@@ -61,6 +63,9 @@ public class MapDecorator : MonoBehaviour
 
     [Header("Rendimiento (async)")]
     [SerializeField] int porFrame = 60;
+
+    [Header("Rendimiento (sombras de decoracion)")]
+    [SerializeField] bool convertirSombrasBlobCanvas = true;
 
     [Header("Relieve procedural")]
     [SerializeField] bool usarRelieveProcedural = true;
@@ -128,6 +133,9 @@ public class MapDecorator : MonoBehaviour
     readonly List<GameObject> decoracionesRemoviblesSobreCaminos = new List<GameObject>();
     readonly Dictionary<CellKey, List<GameObject>> decoracionesRemoviblesPorCelda = new Dictionary<CellKey, List<GameObject>>();
     readonly Dictionary<LineRenderer, int> versionLimpiezaDecoracionPorCamino = new Dictionary<LineRenderer, int>();
+    readonly List<Canvas> canvasesSombraCandidatos = new List<Canvas>(2);
+    readonly List<Graphic> graficosSombraCandidatos = new List<Graphic>(2);
+    readonly List<MeshRenderer> renderersDecoracionConSombraBlob = new List<MeshRenderer>(2);
 
     Transform tPlane;
     Bounds   localBounds;
@@ -2019,6 +2027,14 @@ public class MapDecorator : MonoBehaviour
         }
 
         var go = Instantiate(prefab, pos, Quaternion.identity, transform);
+        if (ConvertirSombrasBlobCanvas(go))
+        {
+            DesactivarSombrasDinamicasRedundantes(go);
+        }
+        if (go.GetComponentInChildren<ParticleSystem>(true) != null)
+        {
+            VisualPolishRuntime.ApplyGeneratedCampaignVfxQualityScale(go);
+        }
         if (rotarYRandom) go.transform.rotation = Quaternion.Euler(0f,UnityEngine.Random.Range(0f, 360f), 0f);
         if (batchActualEsRellenoRemovible)
         {
@@ -2033,6 +2049,118 @@ public class MapDecorator : MonoBehaviour
             versionDecoracionesRemovibles++;
         }
         // Escala del prefab NO se toca (asegurate que este GameObject padre está en 1,1,1).
+    }
+
+    bool ConvertirSombrasBlobCanvas(GameObject decoracion)
+    {
+        if (!convertirSombrasBlobCanvas || decoracion == null)
+        {
+            return false;
+        }
+
+        bool convirtioAlgunaSombra = false;
+        canvasesSombraCandidatos.Clear();
+        decoracion.GetComponentsInChildren(true, canvasesSombraCandidatos);
+
+        for (int i = 0; i < canvasesSombraCandidatos.Count; i++)
+        {
+            Canvas canvas = canvasesSombraCandidatos[i];
+            if (canvas == null || canvas.renderMode != RenderMode.WorldSpace)
+            {
+                continue;
+            }
+
+            graficosSombraCandidatos.Clear();
+            canvas.gameObject.GetComponentsInChildren(true, graficosSombraCandidatos);
+            if (graficosSombraCandidatos.Count != 1
+                || !(graficosSombraCandidatos[0] is Image image)
+                || !EsImagenSombraBlobCompatible(image))
+            {
+                continue;
+            }
+
+            RectTransform rect = image.rectTransform;
+            SpriteRenderer spriteRenderer = image.GetComponent<SpriteRenderer>();
+            if (spriteRenderer == null)
+            {
+                spriteRenderer = image.gameObject.AddComponent<SpriteRenderer>();
+            }
+
+            spriteRenderer.sprite = image.sprite;
+            spriteRenderer.color = image.color;
+            spriteRenderer.drawMode = SpriteDrawMode.Sliced;
+            spriteRenderer.size = rect.rect.size;
+            spriteRenderer.sortingLayerID = canvas.sortingLayerID;
+            spriteRenderer.sortingOrder = canvas.sortingOrder;
+            spriteRenderer.maskInteraction = SpriteMaskInteraction.None;
+            spriteRenderer.shadowCastingMode = ShadowCastingMode.Off;
+            spriteRenderer.receiveShadows = false;
+            spriteRenderer.lightProbeUsage = LightProbeUsage.Off;
+            spriteRenderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
+            spriteRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
+            spriteRenderer.enabled = canvas.enabled && image.enabled;
+
+            image.raycastTarget = false;
+            image.enabled = false;
+
+            GraphicRaycaster raycaster = canvas.GetComponent<GraphicRaycaster>();
+            if (raycaster != null)
+            {
+                raycaster.enabled = false;
+            }
+
+            CanvasScaler scaler = canvas.GetComponent<CanvasScaler>();
+            if (scaler != null)
+            {
+                scaler.enabled = false;
+            }
+
+            canvas.enabled = false;
+            convirtioAlgunaSombra = true;
+        }
+
+        return convirtioAlgunaSombra;
+    }
+
+    void DesactivarSombrasDinamicasRedundantes(GameObject decoracion)
+    {
+        renderersDecoracionConSombraBlob.Clear();
+        decoracion.GetComponentsInChildren(true, renderersDecoracionConSombraBlob);
+
+        for (int i = 0; i < renderersDecoracionConSombraBlob.Count; i++)
+        {
+            MeshRenderer renderer = renderersDecoracionConSombraBlob[i];
+            if (renderer == null)
+            {
+                continue;
+            }
+
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
+        }
+    }
+
+    static bool EsImagenSombraBlobCompatible(Image image)
+    {
+        if (image == null
+            || image.sprite == null
+            || image.type != Image.Type.Simple
+            || image.fillAmount < 0.999f)
+        {
+            return false;
+        }
+
+        RectTransform rect = image.rectTransform;
+        if (rect == null
+            || Mathf.Abs(rect.pivot.x - 0.5f) > 0.001f
+            || Mathf.Abs(rect.pivot.y - 0.5f) > 0.001f)
+        {
+            return false;
+        }
+
+        Sprite sprite = image.sprite;
+        string textureName = sprite.texture != null ? sprite.texture.name : string.Empty;
+        return sprite.name == "Shadow_Blob_1024" || textureName == "Shadow_Blob_1024";
     }
 
     bool TryRaycastCollider(Collider colliderObjetivo, Vector3 posMundo, out Vector3 punto)
