@@ -8,12 +8,15 @@
 [Ll]ogs/
 [Mm]emoryCaptures/
 UserSettings/
+Assets/_Recovery/
+Assets/_Recovery.meta
  
 # Rider / VS / VSCode
 .vscode/
 .idea/
 *.csproj
 *.sln
+*.slnx
 *.user
 *.unityproj
 
