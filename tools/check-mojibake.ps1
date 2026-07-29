@@ -162,7 +162,7 @@ try {
         $repoRoot = $repoRoot.Trim()
         $stagedExportRoot = [System.IO.Path]::Combine(
             [System.IO.Path]::GetTempPath(),
-            ("encoding-guard-" + [guid]::NewGuid().ToString("N"))
+            ("eg-" + [guid]::NewGuid().ToString("N").Substring(0, 12))
         )
         $null = [System.IO.Directory]::CreateDirectory($stagedExportRoot)
         $exportPrefix = $stagedExportRoot + [System.IO.Path]::DirectorySeparatorChar
