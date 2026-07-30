@@ -106,6 +106,8 @@ public class BattleManager : MonoBehaviour
   public UIContadorAP scUIContadorAP;
   public UIBarraOrdenTurno scUIBarraOrdenTurno;
   public UIInfoChar scUIInfoChar;
+  [Header("Banter")]
+  [SerializeField] private GameObject prefabBanter;
 
 
   public GameObject botonConsumibleA;
@@ -248,6 +250,7 @@ public class BattleManager : MonoBehaviour
   private void Start()
   {
     ConfigurarMicroAnimacionesUI();
+    BanterBattleUI.Instalar(this, prefabBanter);
 
     ArmarListadeCasillastotales();
     var handicapDificultad = GetComponent<Sistema.HandicapDificultad>();
@@ -527,6 +530,7 @@ public class BattleManager : MonoBehaviour
       ActualizarlistaHabilidades();//dejar aca y abajo, se llama 2 veces
 
       OnTurnoNuevo?.Invoke(this, EventArgs.Empty);
+      BanterBattleDirector.NotificarInicioTurno(unidadActiva);
 
       unidadActiva.ArrancaTurnoEstaUnidad();
       scUIInfoChar.RefrescarSegunEstadoActual();
@@ -1049,6 +1053,7 @@ public class BattleManager : MonoBehaviour
     EscribirLog("<color=#d92b08>" + nombreRefuerzoEnemigo + txtSeUnio + (enemigosRefuerzos.Count() - 1) + txtRefuerzosRestantes, false);
     AplicarImpactoValentiaPorRefuerzo(true, unidadRefuerzo);
     AplicarEfectosInicioCombate(unidadRefuerzo);
+    BanterBattleDirector.NotificarRefuerzoEnemigo();
     return true;
   }
   bool MandarRefuerzoAliado(GameObject enemigo)
@@ -1175,6 +1180,7 @@ public class BattleManager : MonoBehaviour
 
     ultimoValourGlobalAliadosPct = pctActual;
     OnValourGlobalAliadosCambiado?.Invoke(pctActual);
+    BanterBattleDirector.NotificarMoral(pctActual);
   }
 
   void AplicarReglasValourGlobalInicioRonda()
@@ -2096,6 +2102,7 @@ public class BattleManager : MonoBehaviour
 
       LimpiarFadeHoverObjetivoHabilidad();
       LimpiarPreviewHoverHostil();
+      _habilidadActiva?.LimpiarPreviewCasilla();
       _habilidadActiva?.LimpiarMarcasUnidadesPosibles();
       _habilidadActiva = value;
       ActualizarVisibilidadIndicadorEsfuerzo();
@@ -3625,7 +3632,7 @@ public class BattleManager : MonoBehaviour
     float limiteVertical = focoCamaraDesplazamientoVerticalMax * intensidad;
     offsetObjetivo.y = Mathf.Clamp(offsetObjetivo.y, -limiteVertical, limiteVertical);
     float fovDeltaAjustado = focoCamaraFovDelta - (distanciaYFoco * focoCamaraFovDeltaPorDistanciaY);
-    float fovObjetivo = Mathf.Clamp(fovOrigenFocoCamara + (fovDeltaAjustado * intensidad), 25f, 80f);
+    float fovObjetivo = Mathf.Clamp(fovOrigenFocoCamara + (fovDeltaAjustado * intensidad * 1.15f), 25f, 80f);
     Quaternion rotacionObjetivo = CalcularRotacionFocoHabilidad(objetivos);
 
     if (corrutinaTiltCamara != null)
@@ -4131,10 +4138,12 @@ public class BattleManager : MonoBehaviour
     //Lado Enemigos
     if (aliadosSinUnidades)
     {
+      BanterBattleUI.Finalizar();
       transform.parent.parent.gameObject.GetComponent<AdministradorEscenas>().FinDeBatalla(0); //Perdió jugador
     }
     else if (enemigosSinUnidades)
     {
+      BanterBattleUI.Finalizar();
       transform.parent.parent.gameObject.GetComponent<AdministradorEscenas>().FinDeBatalla(1); //Ganó jugador
     }
 
@@ -4578,11 +4587,14 @@ public class BattleManager : MonoBehaviour
       return;
     }
 
-    AjustarOscurecedorPantalla();
-    oscurecedor.SetActive(true);
+    ConfigurarCanvasOscurecedorCampoCompleto();
 
-    // Primero, asegúrate que el oscurecedor está en el lugar correcto en la jerarquía
-    Transform oscurecedorTransform = oscurecedor.transform;
+    Transform oscurecedorTransform = ObtenerTransformOscurecedorActivo();
+    if (oscurecedorTransform == null)
+    {
+      return;
+    }
+
     HashSet<object> unidadesSet = (unidades != null) ? new HashSet<object>(unidades) : new HashSet<object>();
     int ordenOscurecedor = ObtenerOrdenOscurecedor(oscurecedorTransform);
     foreach (Unidad uni in lUnidadesTotal)
@@ -4593,30 +4605,16 @@ public class BattleManager : MonoBehaviour
       AplicarOrdenDuranteOscurecedor(uni.gameObject, posY, !esNoParticipante, ordenOscurecedor);
       if (esNoParticipante)
       {
-        // Sombrear y poner por encima del oscurecedor
+        // Sombrear y colocar respecto al oscurecedor según el modo visual.
         ConfigurarOscurecidoVisualUnidad(uni, true);
-
-        // Poner por encima del oscurecedor en la jerarquía
-        if (unidadTransform.parent == oscurecedorTransform.parent)
+        if (usarOscurecimientoClasicoSoloUnidades)
         {
-          int oscurecedorIndex = oscurecedorTransform.GetSiblingIndex();
-          int maxIndex = unidadTransform.parent.childCount - 1;
-          int newIndex = Mathf.Min(oscurecedorIndex + 1, maxIndex);
-
-          unidadTransform.SetSiblingIndex(newIndex);
-
+          AjustarOrdenRespectoOscurecedor(unidadTransform, oscurecedorTransform, true);
         }
       }
-      else
+      else if (usarOscurecimientoClasicoSoloUnidades)
       {
-        // Poner por debajo del oscurecedor en la jerarquía
-        if (unidadTransform.parent == oscurecedorTransform.parent)
-        {
-          int oscurecedorIndex = oscurecedorTransform.GetSiblingIndex();
-          int newIndex = Mathf.Max(oscurecedorIndex - 1, 0);
-
-          unidadTransform.SetSiblingIndex(newIndex);
-        }
+        AjustarOrdenRespectoOscurecedor(unidadTransform, oscurecedorTransform, false);
       }
     }
 
@@ -4634,7 +4632,15 @@ public class BattleManager : MonoBehaviour
   }
 
   public GameObject oscurecedor;
+  [SerializeField] private bool usarOscurecimientoClasicoSoloUnidades;
   [SerializeField] private float margenExtraOscurecedor = 360f;
+  [SerializeField] private float duracionEntradaOscurecedor = 0.1f;
+  [SerializeField] private float duracionSalidaOscurecedor = 0.1f;
+  private Canvas canvasOscurecedorCampoCompleto;
+  private CanvasGroup grupoOscurecedorCampoCompleto;
+  private GameObject oscurecedorCampoCompletoRuntime;
+  private Coroutine corrutinaFadeOscurecedor;
+  private const int OrdenOscurecedorCampoCompleto = 150;
   private const int OffsetOscurecedorParticipante = 200;
   private const int OffsetOscurecedorNoParticipante = -200;
 
@@ -4660,6 +4666,123 @@ public class BattleManager : MonoBehaviour
     Vector3 posicionLocal = rect.localPosition;
     posicionLocal.z = zLocal;
     rect.localPosition = posicionLocal;
+  }
+
+  private void ConfigurarCanvasOscurecedorCampoCompleto()
+  {
+    bool campoCompleto = !usarOscurecimientoClasicoSoloUnidades;
+    oscurecedor.SetActive(!campoCompleto);
+    if (!campoCompleto)
+    {
+      AjustarOscurecedorPantalla();
+      if (oscurecedorCampoCompletoRuntime != null)
+      {
+        oscurecedorCampoCompletoRuntime.SetActive(false);
+      }
+      return;
+    }
+
+    if (oscurecedorCampoCompletoRuntime == null)
+    {
+      oscurecedorCampoCompletoRuntime = new GameObject(
+        "OscurecedorCampoCompletoRuntime",
+        typeof(RectTransform),
+        typeof(Canvas),
+        typeof(CanvasGroup));
+      oscurecedorCampoCompletoRuntime.transform.SetParent(transform, false);
+
+      canvasOscurecedorCampoCompleto = oscurecedorCampoCompletoRuntime.GetComponent<Canvas>();
+      grupoOscurecedorCampoCompleto = oscurecedorCampoCompletoRuntime.GetComponent<CanvasGroup>();
+      canvasOscurecedorCampoCompleto.renderMode = RenderMode.ScreenSpaceCamera;
+      canvasOscurecedorCampoCompleto.worldCamera = Camera.main != null
+        ? Camera.main
+        : FindObjectOfType<Camera>();
+      canvasOscurecedorCampoCompleto.planeDistance = 1f;
+      canvasOscurecedorCampoCompleto.overrideSorting = true;
+      canvasOscurecedorCampoCompleto.sortingLayerID = SortingLayer.NameToID("UI3D");
+      canvasOscurecedorCampoCompleto.sortingOrder = OrdenOscurecedorCampoCompleto;
+      grupoOscurecedorCampoCompleto.alpha = 0f;
+      grupoOscurecedorCampoCompleto.interactable = false;
+      grupoOscurecedorCampoCompleto.blocksRaycasts = false;
+
+      GameObject panelGO = new GameObject(
+        "Fondo",
+        typeof(RectTransform),
+        typeof(CanvasRenderer),
+        typeof(Image));
+      panelGO.transform.SetParent(oscurecedorCampoCompletoRuntime.transform, false);
+
+      RectTransform panelRect = panelGO.GetComponent<RectTransform>();
+      panelRect.anchorMin = Vector2.zero;
+      panelRect.anchorMax = Vector2.one;
+      panelRect.offsetMin = Vector2.zero;
+      panelRect.offsetMax = Vector2.zero;
+
+      Image imagenOriginal = oscurecedor.GetComponent<Image>();
+      Image imagenCampoCompleto = panelGO.GetComponent<Image>();
+      imagenCampoCompleto.color = imagenOriginal != null
+        ? imagenOriginal.color
+        : new Color(0f, 0f, 0f, 0.9f);
+      imagenCampoCompleto.raycastTarget = false;
+    }
+
+    oscurecedorCampoCompletoRuntime.SetActive(true);
+    IniciarFadeOscurecedor(true);
+  }
+
+  private void IniciarFadeOscurecedor(bool mostrar, Action alCompletar = null)
+  {
+    if (grupoOscurecedorCampoCompleto == null)
+    {
+      alCompletar?.Invoke();
+      return;
+    }
+
+    if (corrutinaFadeOscurecedor != null)
+    {
+      StopCoroutine(corrutinaFadeOscurecedor);
+    }
+
+    float duracion = mostrar ? duracionEntradaOscurecedor : duracionSalidaOscurecedor;
+    corrutinaFadeOscurecedor = StartCoroutine(
+      FadeOscurecedorCoroutine(mostrar ? 1f : 0f, duracion, mostrar, alCompletar));
+  }
+
+  private IEnumerator FadeOscurecedorCoroutine(float alphaObjetivo, float duracion, bool mantenerActivo, Action alCompletar)
+  {
+    float alphaOrigen = grupoOscurecedorCampoCompleto.alpha;
+    float tiempo = 0f;
+    duracion = Mathf.Max(0f, duracion);
+
+    while (tiempo < duracion)
+    {
+      tiempo += Time.unscaledDeltaTime;
+      float progreso = duracion > 0f ? Mathf.Clamp01(tiempo / duracion) : 1f;
+      grupoOscurecedorCampoCompleto.alpha = Mathf.Lerp(
+        alphaOrigen,
+        alphaObjetivo,
+        Mathf.SmoothStep(0f, 1f, progreso));
+      yield return null;
+    }
+
+    grupoOscurecedorCampoCompleto.alpha = alphaObjetivo;
+    if (!mantenerActivo && oscurecedorCampoCompletoRuntime != null)
+    {
+      oscurecedorCampoCompletoRuntime.SetActive(false);
+    }
+
+    corrutinaFadeOscurecedor = null;
+    alCompletar?.Invoke();
+  }
+
+  private Transform ObtenerTransformOscurecedorActivo()
+  {
+    if (!usarOscurecimientoClasicoSoloUnidades && oscurecedorCampoCompletoRuntime != null)
+    {
+      return oscurecedorCampoCompletoRuntime.transform;
+    }
+
+    return oscurecedor.activeInHierarchy ? oscurecedor.transform : null;
   }
 
   private int CalcularOrdenDuranteOscurecedor(int posY, bool esParticipante, int ordenOscurecedor)
@@ -4708,17 +4831,20 @@ public class BattleManager : MonoBehaviour
 
   public void MarcarUnidadComoParticipanteDuranteOscurecedor(Unidad unidad)
   {
-    if (unidad == null || oscurecedor == null || !oscurecedor.activeInHierarchy)
+    Transform oscurecedorTransform = ObtenerTransformOscurecedorActivo();
+    if (unidad == null || oscurecedorTransform == null)
     {
       return;
     }
 
-    Transform oscurecedorTransform = oscurecedor.transform;
     int posY = unidad.CasillaPosicion != null ? unidad.CasillaPosicion.posY : 0;
     int ordenOscurecedor = ObtenerOrdenOscurecedor(oscurecedorTransform);
     AplicarOrdenDuranteOscurecedor(unidad.gameObject, posY, true, ordenOscurecedor);
     ConfigurarOscurecidoVisualUnidad(unidad, false);
-    AjustarOrdenRespectoOscurecedor(unidad.transform, oscurecedorTransform, false);
+    if (usarOscurecimientoClasicoSoloUnidades)
+    {
+      AjustarOrdenRespectoOscurecedor(unidad.transform, oscurecedorTransform, false);
+    }
   }
 
   public void RefrescarOrdenVisualBatalla()
@@ -4758,6 +4884,9 @@ public class BattleManager : MonoBehaviour
       return;
     }
 
+    bool desvanecerCampoCompleto = !usarOscurecimientoClasicoSoloUnidades
+      && oscurecedorCampoCompletoRuntime != null
+      && oscurecedorCampoCompletoRuntime.activeInHierarchy;
     oscurecedor.SetActive(false);
 
 
@@ -4784,10 +4913,20 @@ public class BattleManager : MonoBehaviour
       }
     }
 
+    if (desvanecerCampoCompleto)
+    {
+      IniciarFadeOscurecedor(false, FinalizarDesombreadoVisual);
+    }
+    else
+    {
+      FinalizarDesombreadoVisual();
+    }
+  }
+
+  private void FinalizarDesombreadoVisual()
+  {
     RestaurarTodosLosObstaculosTrasDesombrear();
     ReordenarTodoPorY();
-
-    // Poner el oscurecedor como primer hijo en la jerarquía
     oscurecedor.transform.SetAsFirstSibling();
   }
 
@@ -4859,12 +4998,12 @@ public class BattleManager : MonoBehaviour
     {
       _siblingOriginalObstaculos[obstaculoTransform] = obstaculoTransform.GetSiblingIndex();
     }
-    // Empuja los obstaculos al fondo de la jerarquia para que no tapen a las unidades ni al oscurecedor
-    if (obstaculoTransform.parent != null)
+    // En el modo clásico conserva el orden histórico por jerarquía.
+    if (usarOscurecimientoClasicoSoloUnidades && obstaculoTransform.parent != null)
     {
       obstaculoTransform.SetSiblingIndex(0);
     }
-    else
+    else if (usarOscurecimientoClasicoSoloUnidades)
     {
       AjustarOrdenRespectoOscurecedor(obstaculoTransform, oscurecedorTransform, false);
     }

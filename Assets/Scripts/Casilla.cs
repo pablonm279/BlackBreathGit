@@ -65,11 +65,18 @@ public class Casilla : MonoBehaviour
   private const float AlphaRellenoDanioVistaTactica = 0.72f;
   private const float IntensidadPulsoVistaTactica = 0.055f;
   private const float VelocidadPulsoVistaTactica = 7.5f;
+  private const float AlphaPreviewHabilidad = 0.86f;
+  private const float IntensidadPulsoPreviewHabilidad = 0.045f;
+  private const float VelocidadPulsoPreviewHabilidad = 5.5f;
   private static readonly int ShaderColorId = Shader.PropertyToID("_Color");
   private static readonly int ShaderBaseColorId = Shader.PropertyToID("_BaseColor");
   private static readonly int ShaderEmissionColorId = Shader.PropertyToID("_EmissionColor");
   private bool estaEnDestruccion;
   private bool hoverVistaTactica;
+  private bool previewIconoHabilidadActivo;
+  private Transform capaAzulPreviewHabilidad;
+  private Vector3 escalaBaseCapaAzulPreviewHabilidad;
+  private bool capaAzulActivaAntesPreviewHabilidad;
   private Unidad unidadHoverVistaTactica;
   private GameObject presenteCache;
   private Unidad unidadPresenteCache;
@@ -214,6 +221,12 @@ public class Casilla : MonoBehaviour
       return;
     }
 
+    if (previewIconoHabilidadActivo)
+    {
+      SetActiveIfChanged(spriteVistaTactica.gameObject, true);
+      return;
+    }
+
     Unidad unidadPresente = ObtenerUnidadPresente();
     bool mostrarRetrato = activa && unidadPresente != null && unidadPresente.uRetrato != null;
     Sprite retrato = mostrarRetrato ? unidadPresente.uRetrato : null;
@@ -228,6 +241,73 @@ public class Casilla : MonoBehaviour
     spriteVistaTactica.sortingOrder = RenderOrderHelper.CalcularOrdenPorY(posY) + OrdenVistaTacticaOffset;
     ActualizarRellenoDanioVistaTactica(unidadPresente, mostrarRetrato);
     SetActiveIfChanged(spriteVistaTactica.gameObject, mostrarRetrato);
+  }
+
+  public void MostrarPreviewIconoHabilidad(Sprite icono)
+  {
+    if (spriteVistaTactica == null || icono == null)
+    {
+      return;
+    }
+
+    if (!previewIconoHabilidadActivo)
+    {
+      capaAzulPreviewHabilidad = graficoBordeHabilidadAzul != null
+        ? graficoBordeHabilidadAzul
+        : (transform.childCount > 0 ? transform.GetChild(0) : null);
+      if (capaAzulPreviewHabilidad != null)
+      {
+        escalaBaseCapaAzulPreviewHabilidad = capaAzulPreviewHabilidad.localScale;
+        capaAzulActivaAntesPreviewHabilidad = capaAzulPreviewHabilidad.gameObject.activeSelf;
+        SetActiveIfChanged(capaAzulPreviewHabilidad.gameObject, true);
+      }
+    }
+
+    previewIconoHabilidadActivo = true;
+    spriteVistaTactica.sprite = icono;
+    spriteVistaTactica.color = new Color(1f, 1f, 1f, AlphaPreviewHabilidad);
+    AplicarEscalaVistaTactica(icono);
+    spriteVistaTactica.sortingOrder = RenderOrderHelper.CalcularOrdenPorY(posY) + OrdenVistaTacticaOffset;
+    SetActiveIfChanged(rellenoDanioVistaTactica != null ? rellenoDanioVistaTactica.gameObject : null, false);
+    SetActiveIfChanged(spriteVistaTactica.gameObject, true);
+  }
+
+  public void OcultarPreviewIconoHabilidad()
+  {
+    if (!previewIconoHabilidadActivo)
+    {
+      return;
+    }
+
+    previewIconoHabilidadActivo = false;
+    spriteVistaTactica.color = Color.white;
+    transformVistaTactica.localScale = escalaActualVistaTactica;
+
+    if (capaAzulPreviewHabilidad != null)
+    {
+      capaAzulPreviewHabilidad.localScale = escalaBaseCapaAzulPreviewHabilidad;
+      SetActiveIfChanged(capaAzulPreviewHabilidad.gameObject, capaAzulActivaAntesPreviewHabilidad);
+    }
+
+    capaAzulPreviewHabilidad = null;
+    ActualizarVistaTactica(BattleManager.Instance != null && BattleManager.Instance.VistaTacticaActiva);
+  }
+
+  private void ActualizarPulsoPreviewHabilidad()
+  {
+    if (!previewIconoHabilidadActivo || transformVistaTactica == null)
+    {
+      return;
+    }
+
+    float fasePulso = Mathf.Sin(Time.time * VelocidadPulsoPreviewHabilidad) * 0.5f + 0.5f;
+    float pulso = 1f + fasePulso * IntensidadPulsoPreviewHabilidad;
+    transformVistaTactica.localScale = escalaActualVistaTactica * pulso;
+
+    if (capaAzulPreviewHabilidad != null)
+    {
+      capaAzulPreviewHabilidad.localScale = escalaBaseCapaAzulPreviewHabilidad * pulso;
+    }
   }
 
   private void CrearRellenoDanioVistaTactica()
@@ -2170,6 +2250,8 @@ public class Casilla : MonoBehaviour
     //Controlar se esta haciendo hablidad en Area, marca las casillas en la zona de alcance y en el area
     if (BattleManager.Instance.HabilidadActiva != null && BattleManager.Instance.SeleccionandoObjetivo)
     {
+      BattleManager.Instance.HabilidadActiva.ActualizarPreviewCasilla(this);
+
       if (BattleManager.Instance.SeleccionandoObjetivo
         && (BattleManager.Instance.HabilidadActiva.enArea > 0 || BattleManager.Instance.HabilidadActiva.targetEspecial > 0))
       {
@@ -2706,6 +2788,7 @@ public class Casilla : MonoBehaviour
 
   public void OnMouseExit()
   {
+    BattleManager.Instance?.HabilidadActiva?.LimpiarPreviewCasilla();
     SetHoverVistaTactica(false);
     hoverMovimientoValido = false;
     RestablecerGlowMovimientoHover();
@@ -2986,6 +3069,7 @@ public class Casilla : MonoBehaviour
     ActualizarEstadoVisualCasilla();
     ActualizarGlowMovimientoHover();
     ActualizarPulsoObjetivoHabilidad();
+    ActualizarPulsoPreviewHabilidad();
     ActualizarVisualTurnoActualEnemigo();
   }
 
@@ -3490,7 +3574,10 @@ public class Casilla : MonoBehaviour
     }
 
     float pulso = 0.5f + (0.5f * Mathf.Sin(Time.time * velocidadPulsoObjetivoHabilidad));
-    float multiplicadorEscala = Mathf.Lerp(1f, 1f + intensidadPulsoObjetivoHabilidad, pulso);
+    float intensidadPulso = BattleVisualJuice.Enabled
+      ? intensidadPulsoObjetivoHabilidad * 0.62f
+      : intensidadPulsoObjetivoHabilidad;
+    float multiplicadorEscala = Mathf.Lerp(1f, 1f + intensidadPulso, pulso);
     capaObjetivo.localScale = escalaBaseCapaObjetivoHabilidad.Value * multiplicadorEscala;
 
     if (DebePulsarBordeActual())

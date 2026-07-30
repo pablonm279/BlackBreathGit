@@ -606,6 +606,7 @@ public abstract class IAHabilidad : MonoBehaviour
         AjustesAudio.ReproducirClipEnPunto(BattleManager.Instance.contenedorPrefabs.sonidoErrar, pos);
       }
       unidadAtacada?.NotificarAtaqueRecibido();
+      BanterBattleDirector.NotificarResultadoAtaque(scEstaUnidad, unidadAtacada, -1);
 
       return -1;
     }
@@ -631,6 +632,7 @@ public abstract class IAHabilidad : MonoBehaviour
           0f,
           TRADU.i.Traducir("Impacto crítico")));
       unidadAtacada?.NotificarAtaqueRecibido();
+      BanterBattleDirector.NotificarResultadoAtaque(scEstaUnidad, unidadAtacada, 3);
       return 3; //Golpe crítico
     }
 

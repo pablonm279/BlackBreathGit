@@ -8,6 +8,7 @@ public class UIBarraOrdenTurno : MonoBehaviour
     public List<Unidad> lUnidades = new List<Unidad>();
     private readonly List<GameObject> tarjetasInstanciadas = new List<GameObject>();
     private readonly List<UITarjetaBarraOrdenTurno> tarjetasComponentes = new List<UITarjetaBarraOrdenTurno>();
+    private Coroutine actualizacionTrasSalidaRoutine;
 
     public void ActualizarBarraOrdenTurno()
     {
@@ -21,6 +22,21 @@ public class UIBarraOrdenTurno : MonoBehaviour
         lUnidades.AddRange(battleManager.lUnidadesTotal);
 
         AsegurarCapacidadTarjetas(lUnidades.Count);
+        if (ReproducirSalidasDerrotadas())
+        {
+            if (actualizacionTrasSalidaRoutine != null)
+            {
+                StopCoroutine(actualizacionTrasSalidaRoutine);
+            }
+            actualizacionTrasSalidaRoutine = StartCoroutine(ActualizarTrasSalidaDerrotada());
+            return;
+        }
+
+        AplicarBarraOrdenTurno();
+    }
+
+    private void AplicarBarraOrdenTurno()
+    {
 
         for (int i = 0; i < tarjetasInstanciadas.Count; i++)
         {
@@ -51,6 +67,36 @@ public class UIBarraOrdenTurno : MonoBehaviour
 
             scTarjeta.Configurar(lUnidades[i], i);
         }
+    }
+
+    private bool ReproducirSalidasDerrotadas()
+    {
+        bool haySalida = false;
+        for (int i = 0; i < tarjetasComponentes.Count; i++)
+        {
+            UITarjetaBarraOrdenTurno tarjeta = tarjetasComponentes[i];
+            if (tarjeta == null || !tarjeta.gameObject.activeInHierarchy || tarjeta.scUnidad == null)
+            {
+                continue;
+            }
+
+            bool fueDerrotada = tarjeta.scUnidad.HP_actual <= 0f && !lUnidades.Contains(tarjeta.scUnidad);
+            if (!fueDerrotada)
+            {
+                continue;
+            }
+
+            tarjeta.ReproducirSalidaDerrotada();
+            haySalida = true;
+        }
+        return haySalida;
+    }
+
+    private IEnumerator ActualizarTrasSalidaDerrotada()
+    {
+        yield return new WaitForSecondsRealtime(UITarjetaBarraOrdenTurno.DuracionSalidaDerrotada);
+        actualizacionTrasSalidaRoutine = null;
+        AplicarBarraOrdenTurno();
     }
 
     private void AsegurarCapacidadTarjetas(int cantidadNecesaria)

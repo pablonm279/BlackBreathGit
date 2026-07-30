@@ -75,7 +75,7 @@ QualitySettings:
     textureMipmapLimitSettings: []
     anisotropicTextures: 1
     antiAliasing: 0
-    softParticles: 0
+    softParticles: 1
     softVegetation: 1
     realtimeReflectionProbes: 1
     billboardsFaceCameraPosition: 1

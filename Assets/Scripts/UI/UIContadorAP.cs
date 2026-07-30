@@ -11,6 +11,11 @@ public class UIContadorAP : MonoBehaviour
     public GameObject esfuerzoAPprefab;
     private Sprite spriteAPUsado;
     private Sprite spriteEsforzar;
+    [SerializeField] private float duracionVaciadoAP = 0.16f;
+    [SerializeField] private float demoraEntreVaciadosAP = 0.035f;
+    private Unidad unidadRepresentada;
+    private int apRepresentado = -1;
+    private Coroutine corrutinaVaciadoAP;
  
    
    
@@ -36,28 +41,128 @@ public class UIContadorAP : MonoBehaviour
         return;
       }
 
-        foreach (Transform buttonTransform in transform)//Esto remueve los botones anteriores antes de recalcular que botones corresponden
-        {
-            Destroy(buttonTransform.gameObject);
-        }
-    
-      
-      if(battleManager.unidadActiva != null)
-      {
-        Unidad unidadSeleccionada = battleManager.unidadActiva.gameObject.GetComponent<Unidad>();
+      Unidad unidadSeleccionada = battleManager.unidadActiva;
+      int apObjetivo = unidadSeleccionada != null
+        ? Mathf.Max(0, (int)unidadSeleccionada.ObtenerAPActual())
+        : 0;
 
-      for (int i = 0; i < unidadSeleccionada.ObtenerAPActual(); i++)
+      bool animarGasto = unidadSeleccionada != null
+        && unidadRepresentada == unidadSeleccionada
+        && apRepresentado > apObjetivo
+        && transform.childCount >= apRepresentado;
+
+      if (animarGasto)
       {
-        GameObject circuloAP = Instantiate(circuloAPprefab, transform);
-          //circuloAP.GetComponent<Image>().color = new Color(0.7f, 0.0f, 0.0f); // Rojo oscuro
-        
-       }
+        if (corrutinaVaciadoAP == null)
+        {
+          corrutinaVaciadoAP = StartCoroutine(
+            AnimarVaciadoAP(apObjetivo, apRepresentado - apObjetivo, unidadSeleccionada));
+        }
       }
+      else if (corrutinaVaciadoAP == null || unidadRepresentada != unidadSeleccionada || apRepresentado != apObjetivo)
+      {
+        CancelarVaciadoAP();
+        ReconstruirCirculos(apObjetivo);
+      }
+
+      unidadRepresentada = unidadSeleccionada;
+      apRepresentado = apObjetivo;
 
     // Luego de actualizar la UI, revisar si debe indicarse pasar turno
      battleManager.RevisarAPUnidadActiva();
      battleManager.ActualizarCasillasMelee();
     }
+
+  private IEnumerator AnimarVaciadoAP(int apObjetivo, int cantidadGastada, Unidad unidadAlIniciar)
+  {
+    int primerIndice = Mathf.Clamp(apObjetivo, 0, transform.childCount);
+    int cantidadAnimable = Mathf.Min(cantidadGastada, transform.childCount - primerIndice);
+    List<Image> imagenes = new List<Image>();
+    List<RectTransform> rects = new List<RectTransform>();
+    List<Vector3> escalasBase = new List<Vector3>();
+
+    for (int i = 0; i < cantidadAnimable; i++)
+    {
+      Transform circulo = transform.GetChild(primerIndice + i);
+      Image imagen = circulo.GetComponent<Image>();
+      RectTransform rect = circulo as RectTransform;
+      if (imagen == null || rect == null)
+      {
+        continue;
+      }
+
+      imagen.type = Image.Type.Filled;
+      imagen.fillMethod = Image.FillMethod.Radial360;
+      imagen.fillOrigin = (int)Image.Origin360.Top;
+      imagen.fillClockwise = false;
+      imagen.fillAmount = 1f;
+      imagenes.Add(imagen);
+      rects.Add(rect);
+      escalasBase.Add(rect.localScale);
+    }
+
+    float duracion = Mathf.Max(0.01f, duracionVaciadoAP);
+    float demora = Mathf.Max(0f, demoraEntreVaciadosAP);
+    float duracionTotal = duracion + demora * Mathf.Max(0, imagenes.Count - 1);
+    float tiempo = 0f;
+
+    while (tiempo < duracionTotal)
+    {
+      tiempo += Time.unscaledDeltaTime;
+      for (int i = 0; i < imagenes.Count; i++)
+      {
+        if (imagenes[i] == null || rects[i] == null)
+        {
+          continue;
+        }
+
+        float progreso = Mathf.Clamp01((tiempo - demora * i) / duracion);
+        float suavizado = Mathf.SmoothStep(0f, 1f, progreso);
+        imagenes[i].fillAmount = 1f - suavizado;
+        imagenes[i].color = new Color(1f, 1f, 1f, 1f - suavizado * 0.65f);
+        float escala = Mathf.Lerp(1f, 0.72f, suavizado);
+        rects[i].localScale = escalasBase[i] * escala;
+      }
+      yield return null;
+    }
+
+    corrutinaVaciadoAP = null;
+    if (BattleManager.Instance != null && BattleManager.Instance.unidadActiva == unidadAlIniciar)
+    {
+      ReconstruirCirculos(apObjetivo);
+      apRepresentado = apObjetivo;
+
+      int apActual = Mathf.Max(0, (int)unidadAlIniciar.ObtenerAPActual());
+      if (apActual != apObjetivo)
+      {
+        ActualizarAPCirculos();
+      }
+    }
+  }
+
+  private void CancelarVaciadoAP()
+  {
+    if (corrutinaVaciadoAP == null)
+    {
+      return;
+    }
+
+    StopCoroutine(corrutinaVaciadoAP);
+    corrutinaVaciadoAP = null;
+  }
+
+  private void ReconstruirCirculos(int cantidad)
+  {
+    foreach (Transform circulo in transform)
+    {
+      Destroy(circulo.gameObject);
+    }
+
+    for (int i = 0; i < cantidad; i++)
+    {
+      Instantiate(circuloAPprefab, transform);
+    }
+  }
 
   public void MarcarCirculos(int n)
   {
@@ -138,4 +243,3 @@ public void SeEsforzaria(int n)
 
 
 }
-

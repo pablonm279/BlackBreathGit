@@ -11,6 +11,7 @@ public class Obstaculo : MonoBehaviour
   private static Material materialFallbackParticulas;
   private static Texture2D texturaCirculoSuave;
   private bool destruccionIniciada;
+  protected virtual bool PermiteVfxImpactoFisico => true;
 
   public string oName;
   public float hpMax;
@@ -80,6 +81,11 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
 
     ReproducirSonidoImpactoRoca();
     hpCurr -= danioFinal;
+    bool seDestruye = hpCurr <= 0;
+    if (PermiteVfxImpactoFisico && !seDestruye)
+    {
+      ReproducirVfxImpactoFisico();
+    }
 
     // Mostrar el daño recibido (también cuando el resultado es 0)
     if (PrefabtxtDaño != null && unidadCanvas != null)
@@ -112,9 +118,9 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
 
     ActualizarBarraVidaPropia();
 
-    if (hpCurr <= 0)
+    if (seDestruye)
     {
-        ObstaculoDestruir();
+        ObstaculoDestruir(PermiteVfxImpactoFisico);
     }
 }
   public Casilla CasillaPosicion;
@@ -131,7 +137,7 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
      }
 
      destruccionIniciada = true;
-     if (reproducirVfxDestruccion)
+     if (reproducirVfxDestruccion && PermiteVfxImpactoFisico)
      {
        ReproducirVfxDestruccionEspecial();
      }
@@ -231,21 +237,32 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
 
     private void ReproducirVfxDestruccionEspecial()
     {
-      GameObject vfxRoot = new GameObject("VFX_DestruirObstaculo");
+      ReproducirVfxFisico("VFX_DestruirObstaculo", 1f);
+    }
+
+    private void ReproducirVfxImpactoFisico()
+    {
+      ReproducirVfxFisico("VFX_ImpactoObstaculo", 0.55f);
+    }
+
+    private void ReproducirVfxFisico(string nombre, float intensidad)
+    {
+      intensidad = Mathf.Clamp01(intensidad);
+      GameObject vfxRoot = new GameObject(nombre);
       vfxRoot.transform.position = transform.position + new Vector3(0f, 0.12f, 0f);
 
       SpriteRenderer referenciaOrden = GetComponentInChildren<SpriteRenderer>();
       int sortingLayerId = referenciaOrden != null ? referenciaOrden.sortingLayerID : 0;
       int sortingOrder = referenciaOrden != null ? referenciaOrden.sortingOrder + 1 : 0;
 
-      CrearPolvo(vfxRoot.transform, sortingLayerId, sortingOrder);
-      CrearPiedritas(vfxRoot.transform, sortingLayerId, sortingOrder);
+      CrearPolvo(vfxRoot.transform, sortingLayerId, sortingOrder, intensidad);
+      CrearPiedritas(vfxRoot.transform, sortingLayerId, sortingOrder, intensidad);
 
       AutodestruirDelay autodestruir = vfxRoot.AddComponent<AutodestruirDelay>();
-      autodestruir.SetDelay(1.6f);
+      autodestruir.SetDelay(1.2f);
     }
 
-    private void CrearPolvo(Transform padre, int sortingLayerId, int sortingOrder)
+    private void CrearPolvo(Transform padre, int sortingLayerId, int sortingOrder, float intensidad)
     {
       GameObject goPolvo = new GameObject("Polvo");
       goPolvo.transform.SetParent(padre, false);
@@ -261,14 +278,14 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
       var main = ps.main;
       main.playOnAwake = true;
       main.loop = false;
-      main.duration = 0.45f;
-      main.startLifetime = new ParticleSystem.MinMaxCurve(0.3f, 0.55f);
-      main.startSpeed = new ParticleSystem.MinMaxCurve(0.14f, 0.36f);
-      main.startSize = new ParticleSystem.MinMaxCurve(0.04f, 0.08f);
-      main.startColor = new Color(0.72f, 0.66f, 0.58f, 0.26f);
+      main.duration = 0.36f;
+      main.startLifetime = new ParticleSystem.MinMaxCurve(0.25f, 0.42f);
+      main.startSpeed = new ParticleSystem.MinMaxCurve(0.1f, 0.26f);
+      main.startSize = new ParticleSystem.MinMaxCurve(0.025f * intensidad, 0.05f * intensidad);
+      main.startColor = new Color(0.72f, 0.66f, 0.58f, 0.18f * intensidad);
       main.gravityModifier = 0.03f;
       main.simulationSpace = ParticleSystemSimulationSpace.World;
-      main.maxParticles = 10;
+      main.maxParticles = 6;
 
       var emission = ps.emission;
       emission.enabled = false;
@@ -295,8 +312,8 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
         },
         new GradientAlphaKey[] {
           new GradientAlphaKey(0f, 0f),
-          new GradientAlphaKey(0.24f, 0.18f),
-          new GradientAlphaKey(0.14f, 0.62f),
+          new GradientAlphaKey(0.18f * intensidad, 0.18f),
+          new GradientAlphaKey(0.1f * intensidad, 0.62f),
           new GradientAlphaKey(0f, 1f)
         });
       colorOverLifetime.color = new ParticleSystem.MinMaxGradient(gradiente);
@@ -309,10 +326,10 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
       curvaTam.AddKey(1f, 1.05f);
       sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1f, curvaTam);
       ps.Play();
-      ps.Emit(6);
+      ps.Emit(intensidad < 0.75f ? 2 : 4);
     }
 
-    private void CrearPiedritas(Transform padre, int sortingLayerId, int sortingOrder)
+    private void CrearPiedritas(Transform padre, int sortingLayerId, int sortingOrder, float intensidad)
     {
       GameObject goPiedras = new GameObject("Piedritas");
       goPiedras.transform.SetParent(padre, false);
@@ -328,14 +345,14 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
       var main = ps.main;
       main.playOnAwake = true;
       main.loop = false;
-      main.duration = 0.42f;
-      main.startLifetime = new ParticleSystem.MinMaxCurve(0.24f, 0.42f);
-      main.startSpeed = new ParticleSystem.MinMaxCurve(0.34f, 0.82f);
-      main.startSize = new ParticleSystem.MinMaxCurve(0.01f, 0.022f);
-      main.startColor = new Color(0.55f, 0.5f, 0.46f, 0.72f);
+      main.duration = 0.34f;
+      main.startLifetime = new ParticleSystem.MinMaxCurve(0.2f, 0.34f);
+      main.startSpeed = new ParticleSystem.MinMaxCurve(0.25f, 0.58f);
+      main.startSize = new ParticleSystem.MinMaxCurve(0.006f * intensidad, 0.014f * intensidad);
+      main.startColor = new Color(0.55f, 0.5f, 0.46f, 0.58f * intensidad);
       main.gravityModifier = 0.85f;
       main.simulationSpace = ParticleSystemSimulationSpace.World;
-      main.maxParticles = 6;
+      main.maxParticles = 4;
 
       var emission = ps.emission;
       emission.enabled = false;
@@ -357,7 +374,7 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
       limit.limit = 0.95f;
       limit.dampen = 0.5f;
       ps.Play();
-      ps.Emit(4);
+      ps.Emit(intensidad < 0.75f ? 2 : 3);
     }
 
     private static Material ObtenerMaterialParticulasSuaves()

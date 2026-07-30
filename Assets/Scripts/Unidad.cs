@@ -359,10 +359,10 @@ public class Unidad : MonoBehaviour
 
     animator = GetComponent<Animator>();
     poseController = GetComponent<UnidadPoseController>();
-    /* if (GetComponent<UnidadIdleMotion>() == null)
+    if (GetComponent<UnidadAmbientMotionFx>() == null)
     {
-      gameObject.AddComponent<UnidadIdleMotion>();
-    }*/
+      gameObject.AddComponent<UnidadAmbientMotionFx>();
+    }
     if (GetComponent<UnidadStatusVfxController>() == null)
     {
       gameObject.AddComponent<UnidadStatusVfxController>();
@@ -805,12 +805,11 @@ public class Unidad : MonoBehaviour
       turnStartLightFx.Reproducir();
     }
 
-    /*UnidadIdleMotion idleMotion = GetComponent<UnidadIdleMotion>();
+    UnidadAmbientMotionFx idleMotion = GetComponent<UnidadAmbientMotionFx>();
     if (idleMotion != null)
     {
       idleMotion.ReproducirReboteTurnoNuevo();
-      return;
-    }*/
+    }
 
     if (animacionTurnoNuevoCoroutine != null)
     {
@@ -3334,7 +3333,9 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
       if (danioTotal > 0)
       {
+        BanterBattleDirector.NotificarDanio(uCausante, this, esCritico, muereConDanio);
         BattleManager.Instance?.ReforzarFocoCamaraImpacto(uCausante, this, esCritico, muereConDanio);
+        BattleVisualJuice.ReproducirImpacto(uCausante, this, esCritico, muereConDanio, danioTotal);
       }
       adminTraitVida?.ProcesarTraitDuroDeMatarSiCorresponde(this);
       AplicarEspinasAlAtacanteSiCorresponde(uCausante, tipoDanio, danioTotal);

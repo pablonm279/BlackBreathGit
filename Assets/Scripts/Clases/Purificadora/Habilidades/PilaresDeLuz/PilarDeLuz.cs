@@ -6,6 +6,8 @@ using TMPro;
 
 public  class PilarDeLuz : Obstaculo
 {
+  protected override bool PermiteVfxImpactoFisico => false;
+
   [Header("Glow Permanente")]
   [SerializeField] private float intensidadGlow = 0.9f;
   [SerializeField] private float velocidadPulsoGlow = 1.35f;

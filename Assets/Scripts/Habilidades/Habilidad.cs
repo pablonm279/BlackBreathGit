@@ -80,6 +80,14 @@ public abstract class Habilidad : MonoBehaviour
   protected const string ColorDescripcionCostos = "#44d3ec";
   private const string TooltipPifiaId = "combate_pifia";
 
+  public virtual void ActualizarPreviewCasilla(Casilla casilla)
+  {
+  }
+
+  public virtual void LimpiarPreviewCasilla()
+  {
+  }
+
   protected struct StatsDescripcionUI
   {
     public int Fuerza;
@@ -593,6 +601,7 @@ public abstract class Habilidad : MonoBehaviour
       }
 
       await EsperarPostImpactoAsync(Objetivos, casillaOrigenTrampas);
+      BanterBattleDirector.NotificarHabilidadAliada(scEstaUnidad, Objetivos, esHostil);
     }
     finally
     {
@@ -860,6 +869,7 @@ public abstract class Habilidad : MonoBehaviour
         unidadAtacada.AnticiparFalloAtaqueRecibido(scEstaUnidad, true);
       }
       unidadAtacada?.NotificarAtaqueRecibido();
+      BanterBattleDirector.NotificarResultadoAtaque(scEstaUnidad, unidadAtacada, -1);
       return -1;
     }
 
@@ -884,6 +894,7 @@ public abstract class Habilidad : MonoBehaviour
           deltaClima,
           TRADU.i.Traducir("Impacto crítico")));
       unidadAtacada?.NotificarAtaqueRecibido();
+      BanterBattleDirector.NotificarResultadoAtaque(scEstaUnidad, unidadAtacada, 3);
       return 3;
     }
 

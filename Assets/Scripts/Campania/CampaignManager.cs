@@ -9137,19 +9137,19 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       txtTooltipAlientoNegro.text += TRADU.i.Traducir("\n\nLlamado el Aliento Negro, esta ola de peste y podredumbre lentamente está envolviendo a los seres vivos que no logran escapar, provocándoles la muerte, o peor. </color>\n\n\n\n");
       if (tierAliento == 1)
       {
-        txtTooltipAlientoNegro.text += TRADU.i.Traducir("<color=#bae895><b>Estado: Distante</b> (") + EstadoAlientoNegro + TRADU.i.Traducir("/20) - La Caravana viaja con tranquilidad.</color>");
+        txtTooltipAlientoNegro.text += "<color=#bae895><b>" + ObtenerTextoDistanciaAliento(Mathf.RoundToInt(GetDistanciaAlientoACaravana()).ToString()) + "</b> - " + TRADU.i.Traducir("La Caravana viaja con tranquilidad.</color>");
       }
       if (tierAliento == 2)
       {
-        txtTooltipAlientoNegro.text += TRADU.i.Traducir("<color=#c8a6e8><b>Estado: Cerca</b> (") + EstadoAlientoNegro + TRADU.i.Traducir("/20) - La Caravana comienza a preocuparse y la podredumbre se siente en el aire. Los Corrompidos acechan en las sombras.</color>");
+        txtTooltipAlientoNegro.text += "<color=#c8a6e8><b>" + ObtenerTextoDistanciaAliento(Mathf.RoundToInt(GetDistanciaAlientoACaravana()).ToString()) + "</b> - " + TRADU.i.Traducir("La Caravana comienza a preocuparse y la podredumbre se siente en el aire. Los Corrompidos acechan en las sombras.</color>");
       }
       if (tierAliento == 3)
       {
-        txtTooltipAlientoNegro.text += TRADU.i.Traducir("<color=#aa66ea><b>Estado: Dentro</b> (") + EstadoAlientoNegro + TRADU.i.Traducir("/20) - La Caravana ya es directamente afectada por el hedor. Los Corrompidos se dejan ver.</color>");
+        txtTooltipAlientoNegro.text += "<color=#aa66ea><b>" + ObtenerTextoDistanciaAliento(Mathf.RoundToInt(GetDistanciaAlientoACaravana()).ToString()) + "</b> - " + TRADU.i.Traducir("La Caravana ya es directamente afectada por el hedor. Los Corrompidos se dejan ver.</color>");
       }
       if (tierAliento == 4)
       {
-        txtTooltipAlientoNegro.text += TRADU.i.Traducir("<color=#7a1dd1><b>Estado: Nocivo</b> (") + EstadoAlientoNegro + TRADU.i.Traducir("/20) - La peste comienza a tomar vidas civiles. Los Corrompidos son implacables.</color>");
+        txtTooltipAlientoNegro.text += "<color=#7a1dd1><b>" + ObtenerTextoDistanciaAliento(Mathf.RoundToInt(GetDistanciaAlientoACaravana()).ToString()) + "</b> - " + TRADU.i.Traducir("La peste comienza a tomar vidas civiles. Los Corrompidos son implacables.</color>");
       }
 
     }

@@ -224,6 +224,57 @@ public class PilaresDeLuz : Habilidad
     }
 
     Casilla Origen;
+    private Casilla casillaPreviewActual;
+    private readonly List<Casilla> casillasPreviewPilares = new List<Casilla>();
+
+    public override void ActualizarPreviewCasilla(Casilla casilla)
+    {
+      if (casilla == casillaPreviewActual
+        || casilla == null
+        || casilla.Presente != null
+        || !lCasillasafectadas.Contains(casilla))
+      {
+        if (casilla != casillaPreviewActual)
+        {
+          LimpiarPreviewCasilla();
+        }
+        return;
+      }
+
+      LimpiarPreviewCasilla();
+      casillaPreviewActual = casilla;
+      casillasPreviewPilares.Add(casilla);
+
+      int cantidadQuedan = NIVEL == 5 ? 2 : 1;
+      foreach (Casilla adyacente in casilla.ObtenerCasillasAdyacentesEnColumna())
+      {
+        if (adyacente.Presente == null && cantidadQuedan > 0)
+        {
+          casillasPreviewPilares.Add(adyacente);
+          cantidadQuedan--;
+        }
+      }
+
+      foreach (Casilla casillaPreview in casillasPreviewPilares)
+      {
+        casillaPreview.MostrarPreviewIconoHabilidad(imHab);
+      }
+    }
+
+    public override void LimpiarPreviewCasilla()
+    {
+      foreach (Casilla casillaPreview in casillasPreviewPilares)
+      {
+        if (casillaPreview != null)
+        {
+          casillaPreview.OcultarPreviewIconoHabilidad();
+        }
+      }
+
+      casillasPreviewPilares.Clear();
+      casillaPreviewActual = null;
+    }
+
     public override void Activar()
     {
         Origen = Usuario.GetComponent<Unidad>().CasillaPosicion;

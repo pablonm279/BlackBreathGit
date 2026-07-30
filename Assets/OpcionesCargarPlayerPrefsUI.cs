@@ -1482,6 +1482,7 @@ public static class AjustesAudio
     public const string PrefVolSfx = "Vol_SFX";
     public const float VolumenMusicaPorDefecto = 0.8f;
     public const float VolumenSfxPorDefecto = 0.8f;
+    private const float AumentoVolumenSfx = 0.15f;
 
     static readonly Dictionary<int, float> volumenesBaseAudioSource = new Dictionary<int, float>();
     static float? volumenSfxCache;
@@ -1523,7 +1524,8 @@ public static class AjustesAudio
 
     public static float EscalarVolumenSfx(float volumenBase = 1f)
     {
-        return Mathf.Max(0f, volumenBase) * ObtenerVolumenSfx();
+        float volumenSfxEfectivo = Mathf.Clamp01(ObtenerVolumenSfx() + AumentoVolumenSfx);
+        return Mathf.Max(0f, volumenBase) * volumenSfxEfectivo;
     }
 
     public static void RegistrarAudioSource(AudioSource audioSource)

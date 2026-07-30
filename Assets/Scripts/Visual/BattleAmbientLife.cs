@@ -22,6 +22,10 @@ public class BattleAmbientLife : MonoBehaviour
   [SerializeField] private bool habilitarParticulas = true;
   [SerializeField] private int maxParticulasMotas = 81;
   [SerializeField] private int maxParticulasBruma = 20;
+  [Header("Luces")]
+  [SerializeField] private bool animarLucesPuntuales = true;
+  [SerializeField] private float variacionIntensidadLuces = 0.075f;
+  [SerializeField] private float velocidadLuces = 1.15f;
 
   private Material materialFondoInstancia;
   private Color colorBaseFondo = Color.white;
@@ -39,6 +43,8 @@ public class BattleAmbientLife : MonoBehaviour
   private bool subterraneoActual;
   private Bounds boundsCampo;
   private bool boundsValido;
+  private readonly Dictionary<Light, float> intensidadBaseLuces = new Dictionary<Light, float>();
+  private readonly Dictionary<Light, float> faseLuces = new Dictionary<Light, float>();
 
   public void Configurar(MeshRenderer fondo, EncounterZoneType zona, bool subterraneo)
   {
@@ -50,6 +56,7 @@ public class BattleAmbientLife : MonoBehaviour
     InicializarFondo();
     RecalcularBoundsCampo();
     InicializarParticulas();
+    InicializarLuces();
     AplicarPresetVisual();
   }
 
@@ -57,6 +64,7 @@ public class BattleAmbientLife : MonoBehaviour
   {
     if (!EstaBatallaActiva())
     {
+      RestaurarLuces();
       if (goAmbientRoot != null && goAmbientRoot.activeSelf)
       {
         goAmbientRoot.SetActive(false);
@@ -71,11 +79,14 @@ public class BattleAmbientLife : MonoBehaviour
     }
 
     AnimarFondo();
+    AnimarLuces();
     SincronizarAreaParticulas();
   }
 
   void OnDestroy()
   {
+    RestaurarLuces();
+
     if (materialFallbackParticulas != null)
     {
       Destroy(materialFallbackParticulas);
@@ -86,6 +97,62 @@ public class BattleAmbientLife : MonoBehaviour
     {
       Destroy(texturaCirculoSuave);
       texturaCirculoSuave = null;
+    }
+  }
+
+  private void InicializarLuces()
+  {
+    RestaurarLuces();
+    intensidadBaseLuces.Clear();
+    faseLuces.Clear();
+
+    Light[] luces = GetComponentsInChildren<Light>(true);
+    for (int i = 0; i < luces.Length; i++)
+    {
+      Light luz = luces[i];
+      if (luz == null || luz.type != LightType.Point || luz.intensity <= 0f)
+      {
+        continue;
+      }
+
+      intensidadBaseLuces[luz] = luz.intensity;
+      faseLuces[luz] = Random.Range(0f, Mathf.PI * 2f);
+    }
+  }
+
+  private void AnimarLuces()
+  {
+    if (!animarLucesPuntuales || !BattleVisualJuice.Enabled)
+    {
+      RestaurarLuces();
+      return;
+    }
+
+    float tiempo = Time.unscaledTime * Mathf.Max(0.01f, velocidadLuces);
+    foreach (KeyValuePair<Light, float> par in intensidadBaseLuces)
+    {
+      Light luz = par.Key;
+      if (luz == null)
+      {
+        continue;
+      }
+
+      float faseLuz = faseLuces.TryGetValue(luz, out float faseGuardada) ? faseGuardada : 0f;
+      float ruidoLento = Mathf.Sin(tiempo + faseLuz);
+      float ruidoRapido = Mathf.Sin(tiempo * 2.37f + faseLuz * 0.61f) * 0.32f;
+      float variacion = (ruidoLento + ruidoRapido) * variacionIntensidadLuces;
+      luz.intensity = par.Value * Mathf.Max(0.72f, 1f + variacion);
+    }
+  }
+
+  private void RestaurarLuces()
+  {
+    foreach (KeyValuePair<Light, float> par in intensidadBaseLuces)
+    {
+      if (par.Key != null)
+      {
+        par.Key.intensity = par.Value;
+      }
     }
   }
 

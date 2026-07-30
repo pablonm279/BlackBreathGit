@@ -33,14 +33,29 @@ public class BotonHabilidad : MonoBehaviour
     TextMeshProUGUI nombreHabilidad;
     private Coroutine hoverDescripcionRoutine;
     private bool hoverDescripcionActiva;
+    private RectTransform rectBoton;
+    private Image imagenBoton;
+    private Image realceInteraccion;
+    private RectTransform rectRealceInteraccion;
+    private Coroutine animacionInteraccionRoutine;
+    private Vector3 escalaBaseBoton;
+    private Quaternion rotacionBaseBoton;
+    private int cooldownAnterior = -1;
     private Sprite spriteCirculoAccionNormal;
     private Sprite spriteCirculoEsfuerzo;
     private static readonly Color colorCirculoDisponible = Color.white;
     private static readonly Color colorCirculoFaltante = new Color(0.5f, 0.5f, 0.5f, 1f);
+    private static readonly Color colorRealceNormal = new Color(1f, 0.84f, 0.38f, 1f);
+    private static readonly Color colorRealceRechazo = new Color(1f, 0.18f, 0.12f, 1f);
+    private static readonly Color colorRealceDisponible = new Color(0.55f, 1f, 0.72f, 1f);
     private void Awake()
     {
         scUiBotonesHabilidades = transform.parent.GetComponent<UIBotonesHabilidades>();
         nombreHabilidad = transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>();
+        rectBoton = GetComponent<RectTransform>();
+        imagenBoton = GetComponent<Image>();
+        escalaBaseBoton = rectBoton.localScale;
+        rotacionBaseBoton = rectBoton.localRotation;
         if (seleccionada != null)
         {
             seleccionada.SetActive(false);
@@ -50,7 +65,9 @@ public class BotonHabilidad : MonoBehaviour
     void Start()
     {
 
-        gameObject.GetComponent<Image>().sprite = HabilidadRepresentada.ObtenerIconoUI();
+        imagenBoton.sprite = HabilidadRepresentada.ObtenerIconoUI();
+        CrearRealceInteraccion();
+        cooldownAnterior = HabilidadRepresentada.cooldownActual;
         CachearSpritesCirculosAccion();
 
 
@@ -74,11 +91,36 @@ public class BotonHabilidad : MonoBehaviour
         ActualizarVisualCirculosAccion();
     }
 
+    private void OnDisable()
+    {
+        if (hoverDescripcionRoutine != null)
+        {
+            StopCoroutine(hoverDescripcionRoutine);
+        }
+        if (animacionInteraccionRoutine != null)
+        {
+            StopCoroutine(animacionInteraccionRoutine);
+        }
+
+        hoverDescripcionActiva = false;
+        hoverDescripcionRoutine = null;
+        animacionInteraccionRoutine = null;
+
+        if (rectBoton != null)
+        {
+            rectBoton.localScale = ObtenerEscalaInteraccion(BotonActivo);
+            rectBoton.localRotation = rotacionBaseBoton;
+        }
+        RestaurarRealceInteraccion();
+        AplicarAlphaRealce(ObtenerAlphaRealce(BotonActivo));
+    }
+
     public void hoverDescripcion(int n)
     {
         if (n == 1)
         {
             hoverDescripcionActiva = true;
+            TransicionarInteraccion(ObtenerEscalaInteraccion(BotonActivo), ObtenerAlphaRealce(), 0.1f);
             if (hoverDescripcionRoutine != null)
             {
                 StopCoroutine(hoverDescripcionRoutine);
@@ -97,6 +139,7 @@ public class BotonHabilidad : MonoBehaviour
         else
         {
             hoverDescripcionActiva = false;
+            TransicionarInteraccion(ObtenerEscalaInteraccion(BotonActivo), ObtenerAlphaRealce(), 0.1f);
             if (hoverDescripcionRoutine != null)
             {
                 StopCoroutine(hoverDescripcionRoutine);
@@ -279,17 +322,19 @@ public class BotonHabilidad : MonoBehaviour
         { return; } //Si se clickea el boton de una pasiva, no pasa nada
 
         if (HabilidadRepresentada.cooldownActual > 0)
-        { return; } //Control extra para que no se puedan activar habilidades en cooldown
+        { ReproducirRechazoInteraccion(); return; } //Control extra para que no se puedan activar habilidades en cooldown
 
         if (HabilidadRepresentada is CargaDeEstoque cargaDeEstoque && !cargaDeEstoque.PuedeActivarseDesdePosicionActual(out string motivoCarga))
         {
             BattleManager.Instance.unidadActiva?.GenerarTextoFlotante(TRADU.i.Traducir(motivoCarga), Color.gray, FloatingTextContext.Generic);
+            ReproducirRechazoInteraccion();
             return;
         }
 
         if (HabilidadRepresentada is RecuperarAire recuperarAire && !recuperarAire.PuedeActivarseDesdePosicionActual(out string motivoRecuperarAire))
         {
             BattleManager.Instance.unidadActiva?.GenerarTextoFlotante(TRADU.i.Traducir(motivoRecuperarAire), Color.gray, FloatingTextContext.Generic);
+            ReproducirRechazoInteraccion();
             return;
         }
 
@@ -304,6 +349,7 @@ public class BotonHabilidad : MonoBehaviour
             {
                 unidadActiva?.GenerarTextoFlotante(TRADU.i.Traducir("Adelántate para usarla"), Color.gray, FloatingTextContext.Generic);
             }
+            ReproducirRechazoInteraccion();
             return;
         }
 
@@ -312,23 +358,24 @@ public class BotonHabilidad : MonoBehaviour
             if (HabilidadRepresentada.nombre == "Tiro con Arco")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseExplorador>().ObtenerCantidadFlechas() < HabilidadRepresentada.requiereRecurso)
-                { BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes flechas"), Color.gray, FloatingTextContext.Resist); return; }
+                { BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes flechas"), Color.gray, FloatingTextContext.Resist); ReproducirRechazoInteraccion(); return; }
             }
             if (HabilidadRepresentada.nombre == "Tiro Potente")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseExplorador>().ObtenerCantidadFlechas() < HabilidadRepresentada.requiereRecurso)
-                { BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes flechas"), Color.gray, FloatingTextContext.Resist); return; }
+                { BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes flechas"), Color.gray, FloatingTextContext.Resist); ReproducirRechazoInteraccion(); return; }
             }
             if (HabilidadRepresentada.nombre == "Vigilancia")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseExplorador>().ObtenerCantidadFlechas() < HabilidadRepresentada.requiereRecurso)
-                { BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes flechas"), Color.gray, FloatingTextContext.Resist); return; }
+                { BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes flechas"), Color.gray, FloatingTextContext.Resist); ReproducirRechazoInteraccion(); return; }
             }
             if (HabilidadRepresentada.nombre == "Enmendar")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClasePurificadora>().ObtenerFervor() < HabilidadRepresentada.requiereRecurso)
                 {
                     BattleManager.Instance.unidadActiva.GenerarTextoFlotante(ObtenerTextoSinFervor(), Color.gray, FloatingTextContext.Resist);
+                    ReproducirRechazoInteraccion();
                     return;
                 }
             }
@@ -337,18 +384,19 @@ public class BotonHabilidad : MonoBehaviour
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseAcechador>().ObtenerEstaEscondido() < HabilidadRepresentada.requiereRecurso)
                 {
                     BattleManager.Instance.unidadActiva.GenerarTextoFlotante(ObtenerTextoRequiereEstarEscondido(), Color.gray, FloatingTextContext.Resist);
+                    ReproducirRechazoInteraccion();
                     return;
                 }
             }
             if (HabilidadRepresentada.nombre == "Descarga Desintegradora")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseCanalizador>().ObtenerEnergia() < HabilidadRepresentada.requiereRecurso)
-                { BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes energía"), Color.gray, FloatingTextContext.Resist); return; }
+                { BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes energía"), Color.gray, FloatingTextContext.Resist); ReproducirRechazoInteraccion(); return; }
             }
             if (HabilidadRepresentada.nombre == "Manifestacion Arcana")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseCanalizador>().ObtenerEnergia() < HabilidadRepresentada.requiereRecurso)
-                { BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes energía"), Color.gray, FloatingTextContext.Resist); return; }
+                { BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes energía"), Color.gray, FloatingTextContext.Resist); ReproducirRechazoInteraccion(); return; }
             }
 
         }
@@ -389,6 +437,7 @@ public class BotonHabilidad : MonoBehaviour
         else
         {
             BattleManager.Instance.unidadActiva?.GenerarTextoFlotante(ObtenerTextoPAInsuficientes(), Color.gray, FloatingTextContext.Resist);
+            ReproducirRechazoInteraccion();
         }
 
 
@@ -464,6 +513,7 @@ public class BotonHabilidad : MonoBehaviour
         VisualBotonActivo(1);
         // BattleManager.Instance.OpacarCasillasMelee();
         BotonActivo = true;
+        ReproducirConfirmacionInteraccion();
         if (BattleManager.Instance.unidadActiva.valorCargando > 0)
         {
             BattleManager.Instance.scUIContadorAP.MarcarCirculos(BattleManager.Instance.unidadActiva.valorCargando);
@@ -531,6 +581,13 @@ public class BotonHabilidad : MonoBehaviour
             // Actualiza el fill de cooldown en tiempo real para reflejar
             // inmediatamente los cambios al usar la habilidad o al cambiar de turno.
             UpdateCooldownMuestra();
+
+            int cooldownActual = HabilidadRepresentada.cooldownActual;
+            if (cooldownAnterior > 0 && cooldownActual <= 0)
+            {
+                ReproducirDisponibleInteraccion();
+            }
+            cooldownAnterior = cooldownActual;
         }
         else if (turnosCooldown != null)
         {
@@ -579,7 +636,7 @@ public class BotonHabilidad : MonoBehaviour
                 {
                     BattleManager.Instance.TiltearCamaraLadoEnemigo(true);
                 }
-                gameObject.GetComponent<RectTransform>().localScale += new Vector3(0.2f, 0.2f, 0.2f);
+                TransicionarInteraccion(ObtenerEscalaInteraccion(true), ObtenerAlphaRealce(true), 0.1f);
             }
 
             if (seleccionada != null)
@@ -598,7 +655,7 @@ public class BotonHabilidad : MonoBehaviour
                 {
                     BattleManager.Instance.TiltearCamaraLadoEnemigo(false);
                 }
-                gameObject.GetComponent<RectTransform>().localScale -= new Vector3(0.2f, 0.2f, 0.2f);
+                TransicionarInteraccion(ObtenerEscalaInteraccion(false), ObtenerAlphaRealce(false), 0.1f);
             }
 
             if (seleccionada != null)
@@ -606,6 +663,231 @@ public class BotonHabilidad : MonoBehaviour
                 seleccionada.SetActive(false);
             }
         }
+    }
+
+    private void CrearRealceInteraccion()
+    {
+        if (imagenBoton == null || realceInteraccion != null)
+        {
+            return;
+        }
+
+        GameObject realce = new GameObject("RealceInteraccion", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        realce.layer = gameObject.layer;
+        RectTransform rectRealce = realce.GetComponent<RectTransform>();
+        rectRealce.SetParent(transform, false);
+        rectRealce.anchorMin = Vector2.zero;
+        rectRealce.anchorMax = Vector2.one;
+        rectRealce.offsetMin = Vector2.zero;
+        rectRealce.offsetMax = Vector2.zero;
+        rectRealce.SetSiblingIndex(0);
+        rectRealceInteraccion = rectRealce;
+
+        realceInteraccion = realce.GetComponent<Image>();
+        realceInteraccion.sprite = imagenBoton.sprite;
+        realceInteraccion.type = imagenBoton.type;
+        realceInteraccion.preserveAspect = imagenBoton.preserveAspect;
+        realceInteraccion.raycastTarget = false;
+        realceInteraccion.color = new Color(colorRealceNormal.r, colorRealceNormal.g, colorRealceNormal.b, 0f);
+    }
+
+    private Vector3 ObtenerEscalaInteraccion(bool seleccionado)
+    {
+        Vector3 escala = escalaBaseBoton + (seleccionado ? Vector3.one * 0.2f : Vector3.zero);
+        if (hoverDescripcionActiva)
+        {
+            escala.x *= 1.035f;
+            escala.y *= 1.035f;
+        }
+        return escala;
+    }
+
+    private float ObtenerAlphaRealce()
+    {
+        return ObtenerAlphaRealce(BotonActivo);
+    }
+
+    private float ObtenerAlphaRealce(bool seleccionado)
+    {
+        if (hoverDescripcionActiva)
+        {
+            return seleccionado ? 0.18f : 0.24f;
+        }
+        return seleccionado ? 0.08f : 0f;
+    }
+
+    private void TransicionarInteraccion(Vector3 escalaObjetivo, float alphaObjetivo, float duracion)
+    {
+        if (animacionInteraccionRoutine != null)
+        {
+            StopCoroutine(animacionInteraccionRoutine);
+        }
+        RestaurarRealceInteraccion();
+        rectBoton.localRotation = rotacionBaseBoton;
+        animacionInteraccionRoutine = StartCoroutine(TransicionInteraccion(escalaObjetivo, alphaObjetivo, duracion));
+    }
+
+    private IEnumerator TransicionInteraccion(Vector3 escalaObjetivo, float alphaObjetivo, float duracion)
+    {
+        yield return AnimarInteraccion(escalaObjetivo, alphaObjetivo, duracion);
+        animacionInteraccionRoutine = null;
+    }
+
+    private IEnumerator AnimarInteraccion(Vector3 escalaObjetivo, float alphaObjetivo, float duracion)
+    {
+        Vector3 escalaInicial = rectBoton.localScale;
+        float alphaInicial = realceInteraccion != null ? realceInteraccion.color.a : 0f;
+        float tiempo = 0f;
+
+        while (tiempo < duracion)
+        {
+            tiempo += Time.unscaledDeltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(tiempo / duracion));
+            rectBoton.localScale = Vector3.LerpUnclamped(escalaInicial, escalaObjetivo, t);
+            AplicarAlphaRealce(Mathf.Lerp(alphaInicial, alphaObjetivo, t));
+            yield return null;
+        }
+
+        rectBoton.localScale = escalaObjetivo;
+        AplicarAlphaRealce(alphaObjetivo);
+    }
+
+    private void ReproducirConfirmacionInteraccion()
+    {
+        if (animacionInteraccionRoutine != null)
+        {
+            StopCoroutine(animacionInteraccionRoutine);
+        }
+        RestaurarRealceInteraccion();
+        rectBoton.localRotation = rotacionBaseBoton;
+        animacionInteraccionRoutine = StartCoroutine(ConfirmarInteraccion());
+    }
+
+    private IEnumerator ConfirmarInteraccion()
+    {
+        Vector3 escalaFinal = ObtenerEscalaInteraccion(true);
+        yield return AnimarInteraccion(escalaFinal * 0.95f, 0.32f, 0.045f);
+        yield return AnimarInteraccion(escalaFinal * 1.025f, 0.4f, 0.065f);
+        yield return AnimarInteraccion(escalaFinal, ObtenerAlphaRealce(true), 0.09f);
+        animacionInteraccionRoutine = null;
+    }
+
+    private void ReproducirRechazoInteraccion()
+    {
+        if (animacionInteraccionRoutine != null)
+        {
+            StopCoroutine(animacionInteraccionRoutine);
+        }
+        RestaurarRealceInteraccion();
+        animacionInteraccionRoutine = StartCoroutine(RechazarInteraccion());
+    }
+
+    private IEnumerator RechazarInteraccion()
+    {
+        Vector3 escalaFinal = ObtenerEscalaInteraccion(BotonActivo);
+        float alphaFinal = ObtenerAlphaRealce();
+        const float duracion = 0.18f;
+        float tiempo = 0f;
+
+        while (tiempo < duracion)
+        {
+            tiempo += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(tiempo / duracion);
+            float intensidad = 1f - t;
+            float golpe = Mathf.Sin(t * Mathf.PI);
+            float angulo = Mathf.Sin(t * Mathf.PI * 6f) * intensidad * 1.8f;
+
+            rectBoton.localRotation = rotacionBaseBoton * Quaternion.Euler(0f, 0f, angulo);
+            rectBoton.localScale = escalaFinal * (1f - golpe * 0.025f);
+            if (rectRealceInteraccion != null)
+            {
+                rectRealceInteraccion.localScale = Vector3.one * (1f + golpe * 0.06f);
+            }
+            AplicarColorRealce(colorRealceRechazo, Mathf.Lerp(alphaFinal, 0.38f, golpe));
+            yield return null;
+        }
+
+        rectBoton.localRotation = rotacionBaseBoton;
+        rectBoton.localScale = escalaFinal;
+        RestaurarRealceInteraccion();
+        AplicarAlphaRealce(alphaFinal);
+        animacionInteraccionRoutine = null;
+    }
+
+    private void ReproducirDisponibleInteraccion()
+    {
+        if (animacionInteraccionRoutine != null)
+        {
+            StopCoroutine(animacionInteraccionRoutine);
+        }
+        RestaurarRealceInteraccion();
+        rectBoton.localRotation = rotacionBaseBoton;
+        animacionInteraccionRoutine = StartCoroutine(MostrarDisponibleInteraccion());
+    }
+
+    private IEnumerator MostrarDisponibleInteraccion()
+    {
+        Vector3 escalaFinal = ObtenerEscalaInteraccion(BotonActivo);
+        float alphaFinal = ObtenerAlphaRealce();
+        const float duracion = 0.3f;
+        float tiempo = 0f;
+
+        while (tiempo < duracion)
+        {
+            tiempo += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(tiempo / duracion);
+            float pulso = Mathf.Sin(t * Mathf.PI);
+
+            rectBoton.localScale = escalaFinal * (1f + pulso * 0.035f);
+            if (rectRealceInteraccion != null)
+            {
+                rectRealceInteraccion.localScale = Vector3.one * Mathf.Lerp(0.92f, 1.2f, t);
+            }
+            AplicarColorRealce(colorRealceDisponible, Mathf.Lerp(alphaFinal, 0.42f, pulso));
+            yield return null;
+        }
+
+        rectBoton.localScale = escalaFinal;
+        RestaurarRealceInteraccion();
+        AplicarAlphaRealce(alphaFinal);
+        animacionInteraccionRoutine = null;
+    }
+
+    private void RestaurarRealceInteraccion()
+    {
+        if (realceInteraccion == null)
+        {
+            return;
+        }
+
+        if (rectRealceInteraccion != null)
+        {
+            rectRealceInteraccion.localScale = Vector3.one;
+        }
+        AplicarColorRealce(colorRealceNormal, realceInteraccion.color.a);
+    }
+
+    private void AplicarColorRealce(Color color, float alpha)
+    {
+        if (realceInteraccion == null)
+        {
+            return;
+        }
+
+        color.a = alpha;
+        realceInteraccion.color = color;
+    }
+
+    private void AplicarAlphaRealce(float alpha)
+    {
+        if (realceInteraccion == null)
+        {
+            return;
+        }
+
+        Color color = realceInteraccion.color;
+        color.a = alpha;
+        realceInteraccion.color = color;
     }
 
     bool ChequearCargaHabilidad()

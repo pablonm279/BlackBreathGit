@@ -1,4 +1,5 @@
 ﻿using TMPro;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,6 +42,18 @@ public class UIValourGlobalBar : MonoBehaviour
   private float valourVisualActual = 50f;
   private float valourObjetivo = 50f;
   private readonly Vector3[] cornersBuffer = new Vector3[4];
+  private RectTransform rectTransformBarra;
+  private Vector3 escalaBaseBarra = Vector3.one;
+  private Coroutine pulsoUmbralRoutine;
+
+  private void Awake()
+  {
+    rectTransformBarra = transform as RectTransform;
+    if (rectTransformBarra != null)
+    {
+      escalaBaseBarra = rectTransformBarra.localScale;
+    }
+  }
 
   private void OnEnable()
   {
@@ -50,6 +63,15 @@ public class UIValourGlobalBar : MonoBehaviour
   private void OnDisable()
   {
     Desuscribir();
+    if (pulsoUmbralRoutine != null)
+    {
+      StopCoroutine(pulsoUmbralRoutine);
+      pulsoUmbralRoutine = null;
+    }
+    if (rectTransformBarra != null)
+    {
+      rectTransformBarra.localScale = escalaBaseBarra;
+    }
   }
 
   private void Update()
@@ -110,13 +132,67 @@ public class UIValourGlobalBar : MonoBehaviour
 
   private void OnValourGlobalCambiado(float pct)
   {
-    valourObjetivo = Mathf.Clamp(pct, 0f, 100f);
+    float nuevoObjetivo = Mathf.Clamp(pct, 0f, 100f);
+    bool cruzoUmbral = visualInicializada
+      && ObtenerIndiceTramo(nuevoObjetivo) != ObtenerIndiceTramo(valourObjetivo);
+    valourObjetivo = nuevoObjetivo;
     if (!visualInicializada)
     {
       visualInicializada = true;
       valourVisualActual = valourObjetivo;
       ActualizarVisual(valourVisualActual);
     }
+    else if (cruzoUmbral)
+    {
+      ReproducirPulsoUmbral();
+    }
+  }
+
+  private int ObtenerIndiceTramo(float pct)
+  {
+    if (pct >= 90f) { return 4; }
+    if (pct >= 70f) { return 3; }
+    if (pct < 15f) { return 0; }
+    if (pct < 40f) { return 1; }
+    return 2;
+  }
+
+  private void ReproducirPulsoUmbral()
+  {
+    if (!isActiveAndEnabled || rectTransformBarra == null)
+    {
+      return;
+    }
+
+    if (pulsoUmbralRoutine != null)
+    {
+      StopCoroutine(pulsoUmbralRoutine);
+    }
+    pulsoUmbralRoutine = StartCoroutine(PulsoUmbral());
+  }
+
+  private IEnumerator PulsoUmbral()
+  {
+    const float duracion = 0.4f;
+    float tiempo = 0f;
+    Color colorTramo = ObtenerColorValour(valourObjetivo);
+
+    while (tiempo < duracion)
+    {
+      tiempo += Time.unscaledDeltaTime;
+      float t = Mathf.Clamp01(tiempo / duracion);
+      float pulso = Mathf.Sin(t * Mathf.PI);
+      rectTransformBarra.localScale = escalaBaseBarra * (1f + pulso * 0.09f);
+      if (fillBarra != null)
+      {
+        fillBarra.color = Color.Lerp(colorTramo, Color.white, pulso * 0.65f);
+      }
+      yield return null;
+    }
+
+    rectTransformBarra.localScale = escalaBaseBarra;
+    ActualizarVisual(valourVisualActual);
+    pulsoUmbralRoutine = null;
   }
 
   private void ActualizarVisual(float pct)

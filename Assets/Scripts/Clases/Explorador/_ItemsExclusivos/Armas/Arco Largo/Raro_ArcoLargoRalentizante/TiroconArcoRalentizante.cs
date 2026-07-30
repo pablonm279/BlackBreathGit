@@ -150,7 +150,43 @@ public class TiroconArcoRalentizante : Habilidad
     
       
 
-    public async override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
+    protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        if (objetivos == null || objetivos.Count == 0)
+        {
+            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
+        }
+
+        List<Task> impactos = new List<Task>();
+        var clase = Usuario.GetComponent<ClaseExplorador>();
+        if (clase != null)
+        {
+            clase.CambiarCantidadFlechas(-1);
+        }
+
+        foreach (var objetivo in objetivos)
+        {
+            var impacto = CrearProyectil(objetivo);
+            if (impacto != null)
+            {
+                impactos.Add(impacto);
+            }
+        }
+
+        if (impactos.Count == 0)
+        {
+            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
+        }
+
+        return Task.WhenAll(impactos);
+    }
+
+    protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
+    {
+        return Task.CompletedTask;
+    }
+
+    public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
     {
     
      if(obj is Unidad) //A van los efectos a Unidades.
@@ -160,10 +196,6 @@ public class TiroconArcoRalentizante : Habilidad
              
        int danioMarca = 0;
        
-       Usuario.GetComponent<ClaseExplorador>().CambiarCantidadFlechas(-1);
-       CrearProyectil(objetivo);
-
-       await BattleManager.DelayCombateAsync(1300);
        float criticoRango = scEstaUnidad.mod_CriticoRangoDado + criticoRangoHab;
        int bonusAtaqueTotal = bonusAtaque;
        
@@ -276,32 +308,52 @@ public class TiroconArcoRalentizante : Habilidad
     }
   }
     
-    async Task CrearProyectil(object Objetivo)
-  {
-    await BattleManager.DelayCombateAsync(200);
-    GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
-    GameObject Proyectil = Instantiate(flechaPrefab);
-    Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-    Proyectil.GetComponent<ArrowFlight>().parabola = 0.9f;
-    Proyectil.GetComponent<ArrowFlight>().velocidad = 4.9f;
-
-
-    if (Objetivo != null)
+    private Task CrearProyectil(object objetivo)
     {
+        if (objetivo == null)
+        {
+            return Task.CompletedTask;
+        }
 
-      if (Objetivo is Unidad)
-      {
-        Unidad obj = (Unidad)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-      }
-      else if (Objetivo is Obstaculo)
-      {
-        Obstaculo obj = (Obstaculo)Objetivo;
-        Proyectil.GetComponent<ArrowFlight>().endMarker = obj.transform;
-      }
+        return LanzarProyectilAsync(objetivo);
     }
 
-  }
+    private async Task LanzarProyectilAsync(object objetivo)
+    {
+        await BattleManager.DelayCombateAsync(200);
+
+        GameObject flechaPrefab = scEstaUnidad.bonusdam_fuego > 0
+            ? BattleManager.Instance.contenedorPrefabs.FlechaFuego
+            : BattleManager.Instance.contenedorPrefabs.Flecha;
+
+        if (flechaPrefab == null)
+        {
+            return;
+        }
+
+        GameObject proyectil = Instantiate(flechaPrefab);
+        ArrowFlight flight = proyectil.GetComponent<ArrowFlight>();
+
+        Transform destino = null;
+        if (objetivo is Unidad unidadObjetivo)
+        {
+            destino = unidadObjetivo.transform;
+        }
+        else if (objetivo is Obstaculo obstaculoObjetivo)
+        {
+            destino = obstaculoObjetivo.transform;
+        }
+
+        if (flight != null && destino != null)
+        {
+            flight.Configure(transform, destino, 0.45f, 5.8f);
+            await flight.EsperarImpactoAsync();
+        }
+        else
+        {
+            await BattleManager.DelayCombateAsync(150);
+        }
+    }
     void VFXAplicar(GameObject objetivo)
     {
        //GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation); 

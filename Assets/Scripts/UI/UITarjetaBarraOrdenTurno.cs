@@ -22,12 +22,50 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
     private bool eventosRegistrados;
     private Vector3 escalaBaseTarjeta = Vector3.one;
     private bool escalaBaseInicializada;
+    private Coroutine animacionTurnoRoutine;
+    private bool eraTurnoActual;
+    private float vidaObjetivo = 1f;
+    private float velocidadVida;
+    private Outline marcadorSiguiente;
+    private bool esSiguiente;
+    private Color colorBaseRetrato = Color.white;
+    private RectTransform rectRetrato;
+    private Vector3 escalaBaseRetrato = Vector3.one;
+    private Quaternion rotacionBaseTarjeta = Quaternion.identity;
+    private float ultimaVidaDetectada = -1f;
+    private Coroutine flashVidaRoutine;
+    private Coroutine salidaDerrotadaRoutine;
+    private CanvasGroup canvasGroupTarjeta;
     private const float MultiplicadorEscalaTurnoActual = 1.15f;
+    public const float DuracionSalidaDerrotada = 0.32f;
 
     private void Awake()
     {
         InicializarEscalaBaseTarjeta();
         ActualizarReferencias();
+        PrepararMarcadorSiguiente();
+        canvasGroupTarjeta = GetComponent<CanvasGroup>();
+        if (canvasGroupTarjeta == null)
+        {
+            canvasGroupTarjeta = gameObject.AddComponent<CanvasGroup>();
+        }
+        if (Retrato != null)
+        {
+            colorBaseRetrato = Retrato.color;
+            rectRetrato = Retrato.rectTransform;
+            escalaBaseRetrato = rectRetrato.localScale;
+        }
+        rotacionBaseTarjeta = transform.localRotation;
+        if (Actual != null)
+        {
+            UIGlowPulse pulsoActual = Actual.GetComponent<UIGlowPulse>();
+            if (pulsoActual != null)
+            {
+                pulsoActual.minAlpha = 0.35f;
+                pulsoActual.maxAlpha = 1f;
+                pulsoActual.pulseSpeed = 3.4f;
+            }
+        }
     }
 
     private void OnEnable()
@@ -40,6 +78,26 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
     private void OnDisable()
     {
         DesuscribirEventos();
+        if (animacionTurnoRoutine != null)
+        {
+            StopCoroutine(animacionTurnoRoutine);
+            animacionTurnoRoutine = null;
+        }
+        if (flashVidaRoutine != null)
+        {
+            StopCoroutine(flashVidaRoutine);
+            flashVidaRoutine = null;
+        }
+        if (salidaDerrotadaRoutine != null)
+        {
+            StopCoroutine(salidaDerrotadaRoutine);
+            salidaDerrotadaRoutine = null;
+        }
+        RestaurarTarjetaVisual();
+        transform.localRotation = rotacionBaseTarjeta;
+        transform.localScale = eraTurnoActual
+            ? escalaBaseTarjeta * MultiplicadorEscalaTurnoActual
+            : escalaBaseTarjeta;
     }
 
     void Update()
@@ -51,6 +109,8 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
 
         ActualizarSeleccionado();
         ActualizarOscurecedor();
+        ActualizarVidaSuavemente();
+        ActualizarPulsoSiguiente();
     }
 
     private void ActualizarReferencias()
@@ -100,10 +160,17 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
 
     public void Configurar(Unidad unidad, int indiceOrden)
     {
+        bool cambioUnidad = scUnidad != unidad;
         scUnidad = unidad;
         ordenIndex = indiceOrden;
+        if (cambioUnidad)
+        {
+            eraTurnoActual = false;
+            transform.localScale = escalaBaseTarjeta;
+        }
+        RestaurarTarjetaVisual();
         ActualizarReferencias();
-        ActualizarInfo();
+        ActualizarInfo(true);
         RefrescarVisuales();
     }
 
@@ -161,7 +228,7 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
         }*/
     }
 
-    public void ActualizarInfo()
+    public void ActualizarInfo(bool instantaneo = true)
     {
         if (scUnidad == null)
         {
@@ -170,7 +237,13 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
 
         if (BarraVida != null)
         {
-            BarraVida.value = scUnidad.mod_maxHP > 0 ? scUnidad.HP_actual / scUnidad.mod_maxHP : 0f;
+            vidaObjetivo = scUnidad.mod_maxHP > 0 ? scUnidad.HP_actual / scUnidad.mod_maxHP : 0f;
+            if (instantaneo)
+            {
+                BarraVida.value = vidaObjetivo;
+                velocidadVida = 0f;
+                ultimaVidaDetectada = vidaObjetivo;
+            }
         }
 
         if (Retrato != null)
@@ -188,7 +261,7 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
             return;
         }
 
-        ActualizarInfo();
+        ActualizarInfo(false);
     }
 
      private void BattleManager_OnTurnoNuevo(object sender, EventArgs empty)
@@ -201,9 +274,15 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
     {
         bool mostrarActual = battleManager != null && battleManager.unidadActiva == scUnidad;
         InicializarEscalaBaseTarjeta();
-        transform.localScale = mostrarActual
-            ? escalaBaseTarjeta * MultiplicadorEscalaTurnoActual
-            : escalaBaseTarjeta;
+        if (mostrarActual != eraTurnoActual)
+        {
+            if (animacionTurnoRoutine != null)
+            {
+                StopCoroutine(animacionTurnoRoutine);
+            }
+            animacionTurnoRoutine = StartCoroutine(AnimarCambioTurno(mostrarActual));
+            eraTurnoActual = mostrarActual;
+        }
 
         if (Actual != null)
         {
@@ -220,6 +299,209 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
 
         escalaBaseTarjeta = transform.localScale;
         escalaBaseInicializada = true;
+    }
+
+    private IEnumerator AnimarCambioTurno(bool mostrarActual)
+    {
+        Vector3 escalaInicial = transform.localScale;
+        Vector3 escalaObjetivo = mostrarActual
+            ? escalaBaseTarjeta * MultiplicadorEscalaTurnoActual
+            : escalaBaseTarjeta;
+        float duracion = mostrarActual ? 0.24f : 0.14f;
+        float tiempo = 0f;
+
+        while (tiempo < duracion)
+        {
+            tiempo += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(tiempo / duracion);
+            float suavizado = Mathf.SmoothStep(0f, 1f, t);
+            float rebote = mostrarActual ? Mathf.Sin(t * Mathf.PI) * 0.08f : 0f;
+            transform.localScale = Vector3.LerpUnclamped(escalaInicial, escalaObjetivo, suavizado) * (1f + rebote);
+            yield return null;
+        }
+
+        transform.localScale = escalaObjetivo;
+        animacionTurnoRoutine = null;
+    }
+
+    private void ActualizarVidaSuavemente()
+    {
+        if (BarraVida == null || scUnidad == null)
+        {
+            return;
+        }
+
+        vidaObjetivo = scUnidad.mod_maxHP > 0 ? Mathf.Clamp01(scUnidad.HP_actual / scUnidad.mod_maxHP) : 0f;
+        if (ultimaVidaDetectada >= 0f && Mathf.Abs(vidaObjetivo - ultimaVidaDetectada) > 0.001f)
+        {
+            ReproducirFlashVida(vidaObjetivo > ultimaVidaDetectada);
+        }
+        ultimaVidaDetectada = vidaObjetivo;
+        if (Mathf.Abs(BarraVida.value - vidaObjetivo) < 0.001f)
+        {
+            BarraVida.value = vidaObjetivo;
+            velocidadVida = 0f;
+            return;
+        }
+
+        BarraVida.value = Mathf.SmoothDamp(
+            BarraVida.value,
+            vidaObjetivo,
+            ref velocidadVida,
+            0.16f,
+            Mathf.Infinity,
+            Time.unscaledDeltaTime);
+    }
+
+    private void ReproducirFlashVida(bool esCuracion)
+    {
+        if (Retrato == null || salidaDerrotadaRoutine != null)
+        {
+            return;
+        }
+
+        if (flashVidaRoutine != null)
+        {
+            StopCoroutine(flashVidaRoutine);
+        }
+        flashVidaRoutine = StartCoroutine(FlashVida(esCuracion));
+    }
+
+    private IEnumerator FlashVida(bool esCuracion)
+    {
+        Color colorFlash = esCuracion
+            ? new Color(0.35f, 1f, 0.48f, colorBaseRetrato.a)
+            : new Color(1f, 0.24f, 0.18f, colorBaseRetrato.a);
+        const float duracion = 0.28f;
+        float tiempo = 0f;
+
+        while (tiempo < duracion)
+        {
+            tiempo += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(tiempo / duracion);
+            float intensidad = Mathf.Sin(t * Mathf.PI) * 0.92f;
+            Retrato.color = Color.Lerp(colorBaseRetrato, colorFlash, intensidad);
+            if (rectRetrato != null)
+            {
+                rectRetrato.localScale = escalaBaseRetrato * (1f + Mathf.Sin(t * Mathf.PI) * 0.12f);
+            }
+            yield return null;
+        }
+
+        Retrato.color = colorBaseRetrato;
+        if (rectRetrato != null)
+        {
+            rectRetrato.localScale = escalaBaseRetrato;
+        }
+        flashVidaRoutine = null;
+    }
+
+    public void ReproducirSalidaDerrotada()
+    {
+        if (!isActiveAndEnabled || salidaDerrotadaRoutine != null)
+        {
+            return;
+        }
+
+        if (flashVidaRoutine != null)
+        {
+            StopCoroutine(flashVidaRoutine);
+            flashVidaRoutine = null;
+        }
+        if (animacionTurnoRoutine != null)
+        {
+            StopCoroutine(animacionTurnoRoutine);
+            animacionTurnoRoutine = null;
+        }
+        salidaDerrotadaRoutine = StartCoroutine(SalidaDerrotada());
+    }
+
+    private IEnumerator SalidaDerrotada()
+    {
+        Vector3 escalaInicial = transform.localScale;
+        float inclinacion = ordenIndex % 2 == 0 ? -7f : 7f;
+        float tiempo = 0f;
+
+        while (tiempo < DuracionSalidaDerrotada)
+        {
+            tiempo += Time.unscaledDeltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(tiempo / DuracionSalidaDerrotada));
+            transform.localScale = Vector3.LerpUnclamped(escalaInicial, escalaBaseTarjeta * 0.45f, t);
+            transform.localRotation = Quaternion.LerpUnclamped(
+                rotacionBaseTarjeta,
+                rotacionBaseTarjeta * Quaternion.Euler(0f, 0f, inclinacion),
+                t);
+            if (canvasGroupTarjeta != null)
+            {
+                canvasGroupTarjeta.alpha = 1f - t;
+            }
+            if (Retrato != null)
+            {
+                Retrato.color = Color.Lerp(colorBaseRetrato, new Color(0.15f, 0.15f, 0.15f, colorBaseRetrato.a), t);
+            }
+            yield return null;
+        }
+
+        salidaDerrotadaRoutine = null;
+    }
+
+    private void RestaurarTarjetaVisual()
+    {
+        if (canvasGroupTarjeta != null)
+        {
+            canvasGroupTarjeta.alpha = 1f;
+        }
+        if (Retrato != null)
+        {
+            Retrato.color = colorBaseRetrato;
+        }
+        if (rectRetrato != null)
+        {
+            rectRetrato.localScale = escalaBaseRetrato;
+        }
+        transform.localRotation = rotacionBaseTarjeta;
+    }
+
+    private void PrepararMarcadorSiguiente()
+    {
+        if (Retrato == null || marcadorSiguiente != null)
+        {
+            return;
+        }
+
+        marcadorSiguiente = Retrato.gameObject.AddComponent<Outline>();
+        marcadorSiguiente.effectDistance = new Vector2(2f, -2f);
+        marcadorSiguiente.useGraphicAlpha = true;
+        marcadorSiguiente.enabled = false;
+    }
+
+    private void ActualizarMarcadorSiguiente()
+    {
+        if (battleManager == null || scUnidad == null)
+        {
+            esSiguiente = false;
+        }
+        else
+        {
+            int indiceActual = battleManager.lUnidadesTotal.IndexOf(battleManager.unidadActiva);
+            esSiguiente = indiceActual >= 0 && ordenIndex == indiceActual + 1;
+        }
+
+        if (marcadorSiguiente != null)
+        {
+            marcadorSiguiente.enabled = esSiguiente;
+        }
+    }
+
+    private void ActualizarPulsoSiguiente()
+    {
+        if (!esSiguiente || marcadorSiguiente == null)
+        {
+            return;
+        }
+
+        float pulso = 0.5f + Mathf.Sin(Time.unscaledTime * 3.2f) * 0.5f;
+        marcadorSiguiente.effectColor = new Color(1f, 0.78f, 0.2f, Mathf.Lerp(0.32f, 0.72f, pulso));
     }
 
     private void ActualizarSeleccionado()
@@ -259,6 +541,7 @@ public class UITarjetaBarraOrdenTurno : MonoBehaviour
     {
         ActualizarSeleccionado();
         MarcarTurnoActual();
+        ActualizarMarcadorSiguiente();
         ActualizarOscurecedor();
     }
 

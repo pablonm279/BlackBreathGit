@@ -475,8 +475,8 @@ public sealed class VisualPolishRuntime : MonoBehaviour
         continue;
       }
 
-      light.shadows = LightShadows.Hard;
-      light.shadowResolution = LightShadowResolution.Low;
+      light.shadows = LightShadows.Soft;
+      light.shadowResolution = LightShadowResolution.Medium;
     }
   }
 
@@ -611,6 +611,9 @@ public sealed class VisualPolishRuntime : MonoBehaviour
       layer.enabled = postFxEnabled;
       if (!postFxEnabled) { continue; }
 
+      // HDR preserves emissive highlights for bloom. PPSv2 adds blue-noise
+      // dithering automatically in its final pass.
+      cam.allowHDR = true;
       layer.stopNaNPropagation = true;
       layer.volumeLayer = volumeMask;
 
@@ -640,7 +643,8 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     bool postFxEnabled = PrefBool(PrefPostFx, defaultPostFxEnabled);
     bool bloomEnabled = PrefBool(PrefBloom, defaultBloomEnabled);
     bool dofEnabled = PrefBool(PrefDoF, defaultDoFEnabled);
-    float brightness = PrefFloat(PrefBrightness, defaultBrightness);
+    const float brightnessIncrease = 0.10f;
+    float brightness = Mathf.Clamp01(PrefFloat(PrefBrightness, defaultBrightness) + brightnessIncrease);
     float sceneBrightnessExposureRange = brightnessExposureRange;
     if (isMenu || isCampaign)
     {
@@ -722,17 +726,17 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     }
     else if (isCampaign)
     {
-      color.temperature.Override(-9f);
-      color.saturation.Override(-5f);
-      baseExposure = 0.24f;
-      baseContrast = 14f;
+      color.temperature.Override(-5f);
+      color.saturation.Override(-3f);
+      baseExposure = 0.18f;
+      baseContrast = 6f;
     }
     else if (isBattle)
     {
-      color.temperature.Override(-6f);
-      color.saturation.Override(-2f);
-      baseExposure = 0.06f;
-      baseContrast = 10f;
+      color.temperature.Override(-3f);
+      color.saturation.Override(-1f);
+      baseExposure = 0.04f;
+      baseContrast = 5f;
     }
     color.postExposure.Override(baseExposure + brightnessExposureOffset);
     color.contrast.Override(Mathf.Clamp(baseContrast + contrastOffset, -100f, 100f));
@@ -747,8 +751,8 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     vignette.enabled.Override(!isMenu);
     if (!isMenu)
     {
-      vignette.intensity.Override(isBattle ? 0.20f : 0.24f);
-      vignette.smoothness.Override(isBattle ? 0.28f : 0.32f);
+      vignette.intensity.Override(isBattle ? 0.12f : 0.14f);
+      vignette.smoothness.Override(isBattle ? 0.24f : 0.26f);
     }
 
     AmbientOcclusion ao = GetOrAddSetting<AmbientOcclusion>(profile);

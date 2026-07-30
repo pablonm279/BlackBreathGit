@@ -88,7 +88,7 @@ public class Nodo : MonoBehaviour
   const int SegmentosLineaIntroCampania = 5;
   const int SegmentosLineaOutroCampania = 6;
   const int ResolucionLineaIntroCampania = 12;
-  const int ResolucionLineaOutroCampania = 16;
+  const int ResolucionLineaOutroCampania = 48;
   const float AlphaIntroCampaniaMinimo = 0.16f;
   const float AlphaIntroCampaniaMaximo = 0.82f;
   const float MultiplicadorLongitudOutroCampania = 1.18f;
